@@ -33,4 +33,5 @@ ipch/
 *.dll
 *.lib
 *.exp
+*.cso
 *.recipe
