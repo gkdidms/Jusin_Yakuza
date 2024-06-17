@@ -30,8 +30,6 @@ ipch/
 *.idb
 *.exe
 *.ilk
-*.dll
-*.lib
 *.exp
 *.cso
 *.recipe
