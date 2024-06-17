@@ -10,6 +10,12 @@
     <Filter Include="98.Default">
       <UniqueIdentifier>{309122e9-6384-4e2f-9d06-6bb7a82c971a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Levels">
+      <UniqueIdentifier>{795188b5-6ada-4a09-ae95-cd954026d2c5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Levels\00.Logo">
+      <UniqueIdentifier>{2ac02900-6516-487e-be4a-3c890eda5971}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">

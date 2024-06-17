@@ -47,7 +47,9 @@ void CMainApp::Render()
 
 HRESULT CMainApp::Open_Level(LEVEL eLevelID)
 {
-    return S_OK;
+
+
+	return S_OK;
 }
 
 HRESULT CMainApp::Ready_Gara()

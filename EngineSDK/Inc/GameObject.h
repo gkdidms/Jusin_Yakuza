@@ -23,13 +23,9 @@ public:
 
 public:
     _bool Get_Dead() { return m_isDead; }
-    _char Get_StateRank() { return m_strStateRank; }
-    _int Get_Index() { return m_iIndex; }
-    _int Get_PathIndex() { return m_iPathIndex; }
 
 public:
     void Set_Dead() { m_isDead = true; }
-    void Set_PathIndex(_int iPathIndex) { m_iPathIndex = iPathIndex; }
 
 public:
     virtual HRESULT Initialize_Prototype();
@@ -53,9 +49,6 @@ protected:
 
 protected:
     _bool m_isDead = { false };
-    _char m_strStateRank = { 'F' }; // 객체의 현재 상태 등급
-    _int m_iIndex = { -1 };
-    _int m_iPathIndex = { -1 };
 
 protected:
     HRESULT Add_Component(_uint iLevelIndex, const wstring strComponentPrototypeTag, const wstring strComponentTag, class CComponent** pComponent, void* pArg = nullptr);
