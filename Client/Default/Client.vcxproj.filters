@@ -22,6 +22,9 @@
     <ClCompile Include="..\Private\Terrain.cpp">
       <Filter>02.GameObjects\01.Terrain</Filter>
     </ClCompile>
+    <ClCompile Include="..\private\Level_Test.cpp">
+      <Filter>01.Levels\98.Test</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\MainApp.h">
@@ -56,6 +59,9 @@
     </ClInclude>
     <ClInclude Include="..\Public\Terrain.h">
       <Filter>02.GameObjects\01.Terrain</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Level_Test.h">
+      <Filter>01.Levels\98.Test</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -99,6 +105,9 @@
     </Filter>
     <Filter Include="02.GameObjects\01.Terrain">
       <UniqueIdentifier>{73fc58be-6ca4-4e86-b2ac-39c7c7e26f66}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Levels\98.Test">
+      <UniqueIdentifier>{a3687eeb-93e4-4da9-95c3-692e153c991f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

@@ -5,6 +5,8 @@
 #pragma region LEVEL_HEADER
 #include "Loader.h"
 #include "Level_Loading.h"
+#include "Level_Logo.h"
+#include "Level_Test.h"
 #pragma endregion
 
 
@@ -39,12 +41,12 @@ void CLevel_Loading::Tick(const _float& fTimeDelta)
 
 			switch (m_eNextLevel)
 			{
-			//case LEVEL_LOGO:
-			//	pNewLevel = CLevel_Logo::Create(m_pDevice, m_pContext);
-			//	break;
-			//case LEVEL_GAMEPLAY:
-			//	pNewLevel = CLevel_GamePlay::Create(m_pDevice, m_pContext);
-			//	break;
+			case LEVEL_LOGO:
+				pNewLevel = CLevel_Logo::Create(m_pDevice, m_pContext);
+				break;
+			case LEVEL_TEST:
+				pNewLevel = CLevel_Test::Create(m_pDevice, m_pContext);
+				break;
 			}
 
 			if (nullptr == pNewLevel)
