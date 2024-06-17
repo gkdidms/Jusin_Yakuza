@@ -105,7 +105,7 @@ CCell* CCell::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const
 
     if (FAILED(pInstance->Initialize(pPoints, iIndex, OptionType)))
     {
-        MSG_BOX("Failed To Cloned : CVIBuffer_Trail");
+        MSG_BOX("Failed To Created : CCell");
         Safe_Release(pInstance);
     }
 

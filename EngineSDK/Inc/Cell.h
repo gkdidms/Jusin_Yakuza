@@ -13,7 +13,7 @@ public:
     enum TYPE { POINT_A, POINT_B, POINT_C, POINT_END };
     enum LINE_TYPE { LINE_AB, LINE_BC, LINE_CA, LINE_END };
 
-    enum OPTION { OPTION_NONE, OPTION_STAIRS, OPTION_FLY, OPTION_END };
+    enum OPTION { OPTION_NONE, OPTION_STAIRS, OPTION_END }; // 셀 타입 (일반, 계단)
 
 private:
     CCell(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

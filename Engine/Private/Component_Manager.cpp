@@ -62,7 +62,10 @@ CComponent_Manager* CComponent_Manager::Create(_uint iMaxLevelIndex)
     CComponent_Manager* pInstance = new CComponent_Manager();
 
     if (FAILED(pInstance->Initialize(iMaxLevelIndex)))
+    {
+        MSG_BOX("Failed To Created : CComponent_Manager");
         Safe_Release(pInstance);
+    }
 
     return pInstance;
 }

@@ -49,7 +49,11 @@ CLevel_Manager* CLevel_Manager::Create(_uint iMaxLevelIndex)
 	CLevel_Manager* pInstance = new CLevel_Manager();
 
 	if (FAILED(pInstance->Initialize(iMaxLevelIndex)))
+	{
+		MSG_BOX("Failed To Created : CLevel_Manager");
+
 		Safe_Release(pInstance);
+	}
 
 	return pInstance;
 }

@@ -157,7 +157,7 @@ CVIBuffer_Instance_Rect* CVIBuffer_Instance_Rect::Create(ID3D11Device* pDevice, 
 
 	if (FAILED(pInstance->Initialize_Prototype(InstanceDesc)))
 	{
-		MSG_BOX("Failed To Cloned : CVIBuffer_Trail");
+		MSG_BOX("Failed To Created : CVIBuffer_Instance_Rect");
 		Safe_Release(pInstance);
 	}
 
@@ -170,7 +170,7 @@ CComponent* CVIBuffer_Instance_Rect::Clone(void* pArg)
 
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
-		MSG_BOX("Failed To Cloned : CVIBuffer_Trail");
+		MSG_BOX("Failed To Cloned : CVIBuffer_Instance_Rect");
 		Safe_Release(pInstance);
 	}
 

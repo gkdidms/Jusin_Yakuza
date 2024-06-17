@@ -134,7 +134,7 @@ CShader* CShader::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, c
 
 	if (FAILED(pInstance->Initialize_Prototype(strShaderFilePath, pElement, iNumElements)))
 	{
-		MSG_BOX("Failed To Cloned : CVIBuffer_Trail");
+		MSG_BOX("Failed To Created : CShader");
 		Safe_Release(pInstance);
 	}
 
@@ -151,7 +151,6 @@ CComponent* CShader::Clone(void* pArg)
 		Safe_Release(pInstance);
 	}
 		
-
 	return pInstance;
 }
 

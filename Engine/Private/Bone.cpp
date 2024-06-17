@@ -35,7 +35,7 @@ CBone* CBone::Create(const char* pName, _int iParentIndex, _fmatrix Transformati
 
     if (FAILED(pInstance->Initialize(pName, iParentIndex, TransformationMatrix)))
     {
-        MSG_BOX("Failed To Cloned : CVIBuffer_Trail");
+        MSG_BOX("Failed To Created : CBone");
         Safe_Release(pInstance);
     }
 

@@ -140,28 +140,35 @@ HRESULT CModel::Ready_Model(const _char* szModelFilePath, const _char* szBinaryF
 
 	for (size_t i = 0; i < m_iNumMeshes; ++i)
 	{
+		CMesh::MESH_DESC Desc{};
 		_char pName[MAX_PATH] = "";
 		_int iNumName = { 0 };
 
 		ifs.read((char*)&iNumName, sizeof(_int));
 		ifs.read((char*)pName, iNumName);
+		Desc.pName = pName;
 
 		_int iMaterialIndex = { 0 };
 		ifs.read((_char*)&iMaterialIndex, sizeof(_int));
+		Desc.iMaterialIndex = iMaterialIndex;
 
 		_int iNumVertices = { 0 };
 		ifs.read((_char*)&iNumVertices, sizeof(_int));
-
+		Desc.iNumVertices = iNumVertices;
+		
 		_int iNumIndices = { 0 };
 		ifs.read((_char*)&iNumIndices, sizeof(_int));
+		Desc.iNumIndices = iNumIndices;
 
 		int iNumFaces = { 0 };
 		ifs.read((_char*)&iNumFaces, sizeof(_int));
+		Desc.iNumFaces = iNumFaces;
 
 		unsigned int* Indices = new unsigned int[iNumIndices];
 		ZeroMemory(Indices, sizeof(unsigned int) * iNumIndices);
 
 		ifs.read((_char*)&Indices[0], sizeof(_uint) * iNumIndices);
+		Desc.Indices = Indices;
 
 		vector<VTXANIMMESH> AnimMeshed;
 		AnimMeshed.resize(iNumVertices);
@@ -177,26 +184,31 @@ HRESULT CModel::Ready_Model(const _char* szModelFilePath, const _char* szBinaryF
 		if (m_eMeshType == CMesh::TYPE_ANIM)
 		{
 			ifs.read((_char*)&AnimMeshed[0], sizeof(VTXANIMMESH) * iNumVertices);
+			Desc.AnimMeshed = AnimMeshed;
 
 			ifs.read((_char*)&iNumBones, sizeof(_int));
+			Desc.iNumBones = iNumBones;
 
 			OffsetMatrices.resize(iNumBones);
 			BoneIndices.resize(iNumBones);
 			ifs.read((_char*)&OffsetMatrices[0], sizeof(_float4x4) * iNumBones);
+			Desc.OffsetMatrices = OffsetMatrices;
+
 			ifs.read((_char*)&BoneIndices[0], sizeof(_int) * iNumBones);
+			Desc.BoneIndices = BoneIndices;
 
 			ifs.read((_char*)&iNumWeight, sizeof(_int));
+			Desc.iNumWeight = iNumWeight;
 		}
 		else
 		{
 			ifs.read((_char*)&Meshed[0], sizeof(VTXMESH) * iNumVertices);
+			Desc.Meshed = Meshed;
 		}
 
 		//Anim & NonAnim 구분하기
-		CMesh* pMesh = CMesh::Create(m_pDevice, m_pContext, m_eMeshType, 
-			XMLoadFloat4x4(&m_PreTransformMatrix), pName, iMaterialIndex, iNumVertices, iNumIndices, 
-			iNumFaces, Indices, AnimMeshed, Meshed, iNumBones, OffsetMatrices, 
-			BoneIndices, iNumWeight, m_Bones);
+		CMesh* pMesh = CMesh::Create(m_pDevice, m_pContext,
+			XMLoadFloat4x4(&m_PreTransformMatrix), m_Bones, &Desc);
 
 		if (nullptr == pMesh)
 			return E_FAIL;
@@ -317,7 +329,7 @@ CModel* CModel::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, con
 
 	if (FAILED(pInstance->Initialize_Prototype(szModelFilePath, PreTransformMatrix, szBinaryFilePath)))
 	{
-		MSG_BOX("Failed To Cloned : CVIBuffer_Trail");
+		MSG_BOX("Failed To Created : CModel");
 		Safe_Release(pInstance);
 	}
 
@@ -330,7 +342,7 @@ CComponent* CModel::Clone(void* vArg)
 
 	if (FAILED(pInstance->Initialize(vArg)))
 	{
-		MSG_BOX("Failed To Cloned : CVIBuffer_Trail");
+		MSG_BOX("Failed To Cloned : CModel");
 		Safe_Release(pInstance);
 	}
 

@@ -120,7 +120,10 @@ CCollider* CCollider::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContex
 	CCollider* pInstance = new CCollider(pDevice, pContext);
 
 	if (FAILED(pInstance->Initialize_Prototype()))
+	{
+		MSG_BOX("Failed To Created : CCollider");
 		Safe_Release(pInstance);
+	}
 
 	return pInstance;
 }
@@ -130,7 +133,10 @@ CComponent* CCollider::Clone(void* pArg)
 	CCollider* pInstance = new CCollider(*this);
 
 	if (FAILED(pInstance->Initialize(pArg)))
+	{
+		MSG_BOX("Failed To Cloned : CCollider");
 		Safe_Release(pInstance);
+	}
 
 	return pInstance;
 }

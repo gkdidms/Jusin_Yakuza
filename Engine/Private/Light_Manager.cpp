@@ -48,7 +48,10 @@ CLight_Manager* CLight_Manager::Create()
 	CLight_Manager* pInstance = new CLight_Manager();
 
 	if (FAILED(pInstance->Initialize()))
+	{
+		MSG_BOX("Failed To Created : CLight_Manager");
 		Safe_Release(pInstance);
+	}
 
 	return pInstance;
 }

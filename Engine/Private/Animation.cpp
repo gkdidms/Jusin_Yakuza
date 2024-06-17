@@ -102,7 +102,7 @@ CAnimation* CAnimation::Create(const char* pName, _double Duration, _double Tick
 
     if (FAILED(pInstance->Initialize(pName, Duration, TickPerSecond, iNumChannels, Channels)))
     {
-        MSG_BOX("Failed To Cloned : CVIBuffer_Trail");
+        MSG_BOX("Failed To Created : CAnimation");
         Safe_Release(pInstance);
     }
 

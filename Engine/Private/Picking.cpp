@@ -124,7 +124,10 @@ CPicking* CPicking::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,
 	CPicking* pInstance = new CPicking(pDevice, pContext);
 
 	if (FAILED(pInstance->Initialize(hWnd)))
+	{
+		MSG_BOX("Failed To Created : CPicking");
 		Safe_Release(pInstance);
+	}
 
 	return pInstance;
 }

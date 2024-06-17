@@ -181,7 +181,7 @@ void CTransform::Rotation(_fvector vAxis, _float fRadian)
 	Set_State(STATE_LOOK, vLook);
 }
 
-void CTransform::WorldRotation(_fvector vAxis, _float fRadian)
+void CTransform::Change_Rotation(_fvector vAxis, _float fRadian)
 {
 	_vector		vRight = Get_State(STATE_RIGHT);
 	_vector		vUp = Get_State(STATE_UP);
@@ -204,7 +204,7 @@ CTransform* CTransform::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
-		MSG_BOX("Failed To Cloned : CVIBuffer_Trail");
+		MSG_BOX("Failed To Created : CTransform");
 		Safe_Release(pInstance);
 	}
 
@@ -221,7 +221,6 @@ CComponent* CTransform::Clone(void* pArg)
 		Safe_Release(pInstance);
 	}
 		
-
 	return pInstance;
 }
 

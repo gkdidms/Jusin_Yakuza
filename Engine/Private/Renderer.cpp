@@ -134,7 +134,7 @@ HRESULT CRenderer::Initialize()
 
 void CRenderer::Add_Renderer(RENDERER_STATE eRenderState,CGameObject* pGameObject)
 {
-	m_Renderers[eRenderState].push_back(pGameObject);
+	m_RenderObject[eRenderState].push_back(pGameObject);
 
 	Safe_AddRef(pGameObject);
 }
@@ -162,10 +162,10 @@ void CRenderer::Clear()
 {
 	for (size_t i = 0; i < RENDER_END; i++)
 	{
-		for (auto& pGameObject : m_Renderers[i])
+		for (auto& pGameObject : m_RenderObject[i])
 			Safe_Release(pGameObject);
 
-		m_Renderers[i].clear();
+		m_RenderObject[i].clear();
 	}
 
 #ifdef _DEBUG
@@ -188,13 +188,13 @@ HRESULT CRenderer::Add_DebugComponent(CComponent* pComponent)
 
 void CRenderer::Render_Priority()
 {
-	for (auto& iter : m_Renderers[RENDER_PRIORITY])
+	for (auto& iter : m_RenderObject[RENDER_PRIORITY])
 	{
 		iter->Render();
 
 		Safe_Release(iter);
 	}
-	m_Renderers[RENDER_PRIORITY].clear();
+	m_RenderObject[RENDER_PRIORITY].clear();
 		
 }
 
@@ -215,14 +215,14 @@ void CRenderer::Render_ShadowObjects()
 	m_pContext->RSSetViewports(1, &ViewPortDesc);
 
 
-	for (auto& pGameObject : m_Renderers[RENDER_SHADOWOBJ])
+	for (auto& pGameObject : m_RenderObject[RENDER_SHADOWOBJ])
 	{
 		if (nullptr != pGameObject)
 			pGameObject->Render_LightDepth();
 
 		Safe_Release(pGameObject);
 	}
-	m_Renderers[RENDER_SHADOWOBJ].clear();
+	m_RenderObject[RENDER_SHADOWOBJ].clear();
 
 	if (FAILED(m_pGameInstance->End_MRT()))
 		return;
@@ -243,13 +243,13 @@ void CRenderer::Render_NonBlender()
 	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_GameObjects"))))
 		return;
 
-	for (auto& iter : m_Renderers[RENDER_NONBLENDER])
+	for (auto& iter : m_RenderObject[RENDER_NONBLENDER])
 	{
 		iter->Render();
 
 		Safe_Release(iter);
 	}
-	m_Renderers[RENDER_NONBLENDER].clear();
+	m_RenderObject[RENDER_NONBLENDER].clear();
 
 	if (FAILED(m_pGameInstance->End_MRT()))
 		return;
@@ -357,41 +357,41 @@ void CRenderer::Render_DeferredResult() // 백버퍼에 Diffuse와 Shade를 더해서 그�
 
 void CRenderer::Render_NonLight()
 {
-	for (auto& iter : m_Renderers[RENDER_NONLIGHT])
+	for (auto& iter : m_RenderObject[RENDER_NONLIGHT])
 	{
 		iter->Render();
 
 		Safe_Release(iter);
 	}
-	m_Renderers[RENDER_NONLIGHT].clear();
+	m_RenderObject[RENDER_NONLIGHT].clear();
 
 }
 
 void CRenderer::Render_Blender()
 {
-	m_Renderers[RENDER_BLENDER].sort([](CGameObject* pSour, CGameObject* pDest)->_bool
+	m_RenderObject[RENDER_BLENDER].sort([](CGameObject* pSour, CGameObject* pDest)->_bool
 		{
 			return dynamic_cast<CBlendObject*>(pSour)->Get_ViewZ() > dynamic_cast<CBlendObject*>(pDest)->Get_ViewZ();
 		});
 
-	for (auto& iter : m_Renderers[RENDER_BLENDER])
+	for (auto& iter : m_RenderObject[RENDER_BLENDER])
 	{
 		iter->Render();
 
 		Safe_Release(iter);
 	}
-	m_Renderers[RENDER_BLENDER].clear();
+	m_RenderObject[RENDER_BLENDER].clear();
 }
 
 void CRenderer::Render_UI()
 {
-	for (auto& iter : m_Renderers[RENDER_UI])
+	for (auto& iter : m_RenderObject[RENDER_UI])
 	{
 		iter->Render();
 
 		Safe_Release(iter);
 	}
-	m_Renderers[RENDER_UI].clear();
+	m_RenderObject[RENDER_UI].clear();
 }
 
 #ifdef _DEBUG
@@ -420,14 +420,15 @@ void CRenderer::Render_Debug()
 }
 #endif // DEBUG
 
-
-
 CRenderer* CRenderer::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
 	CRenderer* pInstance = new CRenderer(pDevice, pContext);
 
 	if (FAILED(pInstance->Initialize()))
+	{
+		MSG_BOX("Failed To Created : CRenderer");
 		Safe_Release(pInstance);
+	}
 
 	return pInstance;
 }
@@ -443,10 +444,10 @@ void CRenderer::Free()
 
 	for (int i = 0; i < RENDER_END; ++i)
 	{
-		for (auto& iter : m_Renderers[i])
+		for (auto& iter : m_RenderObject[i])
 			Safe_Release(iter);
 
-		m_Renderers[i].clear();
+		m_RenderObject[i].clear();
 	}
 
 	Safe_Release(m_pLightDepthStencilView);

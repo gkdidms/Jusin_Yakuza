@@ -12,8 +12,8 @@ private:
 
 public:
     HRESULT Initialize(const wstring& strFontFilePath);
-    HRESULT Render(const wstring& strText, const _float2& vPosition, _fvector vColor);
-    HRESULT Far_Render(const wstring& strText, const _float2& vPosition, _fvector vColor, _float fScale, const _float& fTimeDelta);
+    HRESULT Render(const wstring& strText, const _float2& vPosition, _fvector vColor); // 직교
+    HRESULT Perspective_Render(const wstring& strText, const _float2& vPosition, _fvector vColor, _float fScale, const _float& fTimeDelta); // 원근 
     HRESULT Blend_Render(const wstring& strText, const _float2& vPosition, _fvector vColor);
 
 private:

@@ -295,9 +295,9 @@ HRESULT CGameInstance::Render_Font(const wstring& strFontTag, const wstring& str
 	return m_pFont_Manager->Render_Font(strFontTag, strText, vPosition, vColor);
 }
 
-HRESULT CGameInstance::Far_Render(const wstring& strFontTag, const wstring& strText, const _float2& vPosition, _fvector vColor, _float fScale, const _float& fTimeDelta)
+HRESULT CGameInstance::Perspective_Render(const wstring& strFontTag, const wstring& strText, const _float2& vPosition, _fvector vColor, _float fScale, const _float& fTimeDelta)
 {
-	return m_pFont_Manager->Far_Render(strFontTag, strText, vPosition, vColor, fScale, fTimeDelta);
+	return m_pFont_Manager->Perspective_Render(strFontTag, strText, vPosition, vColor, fScale, fTimeDelta);
 }
 
 HRESULT CGameInstance::Blend_Render(const wstring& strFontTag, const wstring& strText, const _float2& vPosition, _fvector vColor)

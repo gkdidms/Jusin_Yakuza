@@ -72,7 +72,7 @@ CTexture* CTexture::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,
 
 	if (FAILED(pInstance->Initialize_Prototype(strTextureFilePath, iNumTextures)))
 	{
-		MSG_BOX("Failed To Cloned : CVIBuffer_Trail");
+		MSG_BOX("Failed To Created : CTexture");
 		Safe_Release(pInstance);
 	}
 

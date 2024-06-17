@@ -72,7 +72,11 @@ CPipeLine* CPipeLine::Create()
 	CPipeLine* pInstance = new CPipeLine();
 
 	if (FAILED(pInstance->Initialize()))
+	{
+		MSG_BOX("Failed To Created : CPipeLine");
 		Safe_Release(pInstance);
+	}
+		
 
 	return pInstance;
 }

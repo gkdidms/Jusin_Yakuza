@@ -92,7 +92,10 @@ CFrustum* CFrustum::Create()
 	CFrustum* pInstance = new CFrustum();
 
 	if (FAILED(pInstance->Initialize()))
+	{
+		MSG_BOX("Failed To Created : CFrustum");
 		Safe_Release(pInstance);
+	}
 
 	return pInstance;
 }

@@ -133,7 +133,10 @@ CChannel* CChannel::Create(const char* pName, _int iBoneIndex, _uint iNumKeyFram
 	CChannel* pInstance = new CChannel();
 
 	if (FAILED(pInstance->Initialize(pName, iBoneIndex, iNumKeyFrames, KeyFrames)))
+	{
 		Safe_Release(pInstance);
+	}
+		
 
 	return pInstance;
 }

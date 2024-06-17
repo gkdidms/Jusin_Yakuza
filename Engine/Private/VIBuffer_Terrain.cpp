@@ -153,7 +153,7 @@ CVIBuffer_Terrain* CVIBuffer_Terrain::Create(ID3D11Device* pDevice, ID3D11Device
 
 	if (FAILED(pInstance->Initialize_Prototype(strTerrainFilePath)))
 	{
-		MSG_BOX("Failed To Cloned : CVIBuffer_Terrain");
+		MSG_BOX("Failed To Created : CVIBuffer_Terrain");
 		Safe_Release(pInstance);
 	}
 		
@@ -166,7 +166,10 @@ CComponent* CVIBuffer_Terrain::Clone(void* pArg)
 	CVIBuffer_Terrain* pInstance = new CVIBuffer_Terrain(*this);
 
 	if (FAILED(pInstance->Initialize(pArg)))
+	{
+		MSG_BOX("Failed To Cloned : CVIBuffer_Terrain");
 		Safe_Release(pInstance);
+	}
 
 	return pInstance;
 }

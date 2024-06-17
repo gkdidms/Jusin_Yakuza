@@ -171,7 +171,10 @@ CGameObject_Manager* CGameObject_Manager::Create(_uint iMaxLevel)
 	CGameObject_Manager* pInstance = new CGameObject_Manager();
 
 	if (FAILED(pInstance->Initialize(iMaxLevel)))
+	{
+		MSG_BOX("Failed To Created : CGameObject_Manager");
 		Safe_Release(pInstance);
+	}
 
 	return pInstance;
 }

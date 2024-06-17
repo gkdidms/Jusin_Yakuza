@@ -143,7 +143,7 @@ CVIBuffer_Instance_Point* CVIBuffer_Instance_Point::Create(ID3D11Device* pDevice
 
 	if (FAILED(pInstance->Initialize_Prototype(InstanceDesc)))
 	{
-		MSG_BOX("Failed To Created : CVIBuffer_Trail");
+		MSG_BOX("Failed To Created : CVIBuffer_Instance_Point");
 		Safe_Release(pInstance);
 	}
 
@@ -156,7 +156,7 @@ CComponent* CVIBuffer_Instance_Point::Clone(void* pArg)
 
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
-		MSG_BOX("Failed To Cloned : CVIBuffer_Trail");
+		MSG_BOX("Failed To Cloned : CVIBuffer_Instance_Point");
 		Safe_Release(pInstance);
 	}
 

@@ -20,21 +20,26 @@ void CMesh::Fill_Matrices(const vector<CBone*>& Bones, _float4x4* BoneTransformM
 	}
 }
 
-HRESULT CMesh::Initialize_Prototype(MESHTYPE eMeshType, _fmatrix PreTransformMatrix, const char* pName, _int iMaterialIndex, _int iNumVertices, _int iNumIndices, _int iNumFaces, unsigned int* Indices, vector<VTXANIMMESH> AnimMeshed, vector<VTXMESH> Meshed, _int iNumBones, vector<_float4x4> OffsetMatrices, vector<_int> BoneIndices, _int iNumWeight, vector<class CBone*> Bones)
+HRESULT CMesh::Initialize_Prototype(_fmatrix PreTransformMatrix, vector<class CBone*> Bones, void* pArg)
 {
-	strcpy_s(m_szName, pName);
+	if (nullptr == pArg)
+		return E_FAIL;
+
+	MESH_DESC* pDesc = static_cast<MESH_DESC*>(pArg);
+
+	strcpy_s(m_szName, pDesc->pName);
 
 	m_iNumVertexBuffers = 1;
- 	m_iMaterialIndex = iMaterialIndex;
+ 	m_iMaterialIndex = pDesc->iMaterialIndex;
 
 	m_GIFormat = DXGI_FORMAT_R32_UINT;
 	m_Primitive_Topology = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 
-	m_iNumVertices = iNumVertices;
+	m_iNumVertices = pDesc->iNumVertices;
 
-	eMeshType == TYPE_NONANIM ? Ready_Vertices_For_NonAnim(Meshed, PreTransformMatrix) : Ready_Vertices_For_Anim(AnimMeshed, iNumBones, OffsetMatrices, BoneIndices, iNumWeight, Bones);
+	pDesc->eMeshType == TYPE_NONANIM ? Ready_Vertices_For_NonAnim(pDesc->Meshed, PreTransformMatrix) : Ready_Vertices_For_Anim(pDesc->AnimMeshed, pDesc->iNumBones, pDesc->OffsetMatrices, pDesc->BoneIndices, pDesc->iNumWeight, Bones);
 
-	m_iNumIndices = iNumIndices;
+	m_iNumIndices = pDesc->iNumIndices;
 	m_iIndexStride = 4;
 
 	m_Buffer_Desc.ByteWidth = m_iIndexStride * m_iNumIndices;
@@ -52,10 +57,10 @@ HRESULT CMesh::Initialize_Prototype(MESHTYPE eMeshType, _fmatrix PreTransformMat
 
 	_uint iCountIndices = { 0 };
 
-	m_iNumFaces = iNumFaces;
+	m_iNumFaces = pDesc->iNumFaces;
 	for (size_t i = 0; i < m_iNumIndices; ++i)
 	{
-		pIndices[i] = m_pVtxIndices[i] = Indices[i];
+		pIndices[i] = m_pVtxIndices[i] = pDesc->Indices[i];
 	}
 
 	m_ResourceData.pSysMem = pIndices;
@@ -181,16 +186,13 @@ HRESULT CMesh::Ready_Vertices_For_Anim(vector<VTXANIMMESH> AnimMeshed, _int iNum
 	return S_OK;
 }
 
-CMesh* CMesh::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, MESHTYPE eMeshType, _fmatrix PreTransformMatrix, const char* pName, _int iMaterialIndex, _int iNumVertices, _int iNumIndices, _int iNumFaces, unsigned int* Indices, vector<VTXANIMMESH> AnimMeshed, vector<VTXMESH> Meshed, _int iNumBones, vector<_float4x4> OffsetMatrices, vector<_int> BoneIndices, _int iNumWeight, vector<class CBone*> Bones)
+CMesh* CMesh::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, _fmatrix PreTransformMatrix, vector<class CBone*> Bones, void* pArg)
 {
 	CMesh* pInstance = new CMesh(pDevice, pContext);
 
-	if (FAILED(pInstance->Initialize_Prototype(eMeshType, 
-		PreTransformMatrix, pName, iMaterialIndex, 
-		iNumVertices, iNumIndices, iNumFaces, Indices,
-		AnimMeshed, Meshed, iNumBones, OffsetMatrices, BoneIndices, iNumWeight, Bones)))
+	if (FAILED(pInstance->Initialize_Prototype(PreTransformMatrix, Bones, pArg)))
 	{
-		MSG_BOX("Failed To Cloned : CVIBuffer_Trail");
+		MSG_BOX("Failed To Created : CMesh");
 		Safe_Release(pInstance);
 	}
 

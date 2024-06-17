@@ -52,7 +52,7 @@ HRESULT CCustomFont::Render(const wstring& strText, const _float2& vPosition, _f
 	return S_OK;
 }
 
-HRESULT CCustomFont::Far_Render(const wstring& strText, const _float2& vPosition, _fvector vColor, _float fScale, const _float& fTimeDelta)
+HRESULT CCustomFont::Perspective_Render(const wstring& strText, const _float2& vPosition, _fvector vColor, _float fScale, const _float& fTimeDelta)
 {
 	m_pBatch->Begin();
 
@@ -79,7 +79,10 @@ CCustomFont* CCustomFont::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pCo
 	CCustomFont* pInstance = new CCustomFont(pDevice, pContext);
 
 	if (FAILED(pInstance->Initialize(strFontFilePath)))
+	{
+		MSG_BOX("Failed To Created : CCustomFont");
 		Safe_Release(pInstance);
+	}
 
 	return pInstance;
 }

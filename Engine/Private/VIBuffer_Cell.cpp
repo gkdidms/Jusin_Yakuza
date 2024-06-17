@@ -74,7 +74,10 @@ CVIBuffer_Cell* CVIBuffer_Cell::Create(ID3D11Device* pDevice, ID3D11DeviceContex
 	CVIBuffer_Cell* pInstance = new CVIBuffer_Cell(pDevice, pContext);
 
 	if (FAILED(pInstance->Initialize_Prototype(pPoints)))
+	{
+		MSG_BOX("Failed To Created : CVIBuffer_Cell");
 		Safe_Release(pInstance);
+	}
 
 	return pInstance;
 }
@@ -84,7 +87,10 @@ CComponent* CVIBuffer_Cell::Clone(void* pArg)
 	CVIBuffer_Cell* pInstance = new CVIBuffer_Cell(*this);
 
 	if (FAILED(pInstance->Initialize(pArg)))
+	{
+		MSG_BOX("Failed To Cloned : CVIBuffer_Cell");
 		Safe_Release(pInstance);
+	}
 
 	return pInstance;
 }

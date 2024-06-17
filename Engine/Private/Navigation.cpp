@@ -153,11 +153,6 @@ HRESULT CNavigation::Render()
             vColor = XMVectorSet(1.f, 0.f, 0.f, 1.f);
             m_pShaderCom->Bind_RawValue("g_vColor", &vColor, sizeof(_vector));
         }
-        else if (pCell->Get_Option() == CCell::OPTION_FLY)
-        {
-            vColor = XMVectorSet(0.f, 1.f, 0.f, 1.f);
-            m_pShaderCom->Bind_RawValue("g_vColor", &vColor, sizeof(_vector));
-        }
 
         m_pShaderCom->Begin(0);
 
@@ -244,7 +239,7 @@ CNavigation* CNavigation::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pCo
 
     if (FAILED(pInstance->Initialize_Prototype(strFilePath)))
     {
-        MSG_BOX("Failed To Cloned : CVIBuffer_Trail");
+        MSG_BOX("Failed To Created : CNavigation");
         Safe_Release(pInstance);
     }
 
@@ -257,7 +252,7 @@ CNavigation* CNavigation::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pCo
 
     if (FAILED(pInstance->Initialize_Prototype()))
     {
-        MSG_BOX("Failed To Cloned : CVIBuffer_Trail");
+        MSG_BOX("Failed To Created : CNavigation");
         Safe_Release(pInstance);
     }
 
@@ -270,7 +265,7 @@ CComponent* CNavigation::Clone(void* pArg)
 
     if (FAILED(pInstance->Initialize(pArg)))
     {
-        MSG_BOX("Failed To Cloned : CVIBuffer_Trail");
+        MSG_BOX("Failed To Cloned : CNavigation");
         Safe_Release(pInstance);
     }
 
@@ -310,30 +305,6 @@ _bool CNavigation::isMove(_fvector vMovePos)
 _float CNavigation::Compute_Height(_fvector vPosition)
 {
     return m_Cells[m_iCurrentIndex]->Compute_Height(vPosition);
-}
-
-_bool CNavigation::isLook(_fvector vLook)
-{
-    _vector vAB = m_Cells[m_iCurrentIndex]->Get_Point(CCell::POINT_B) - m_Cells[m_iCurrentIndex]->Get_Point(CCell::POINT_A);
-    _vector vCA = m_Cells[m_iCurrentIndex]->Get_Point(CCell::POINT_C) - m_Cells[m_iCurrentIndex]->Get_Point(CCell::POINT_A);
-
-    _vector vCross = XMVector3Normalize(XMVector3Cross(vAB, vCA));
-    
-    _float fAngle = XMConvertToDegrees(XMVectorGetX(XMVector3Dot(vLook, vCross)));
-    
-    return fAngle < 90.f;
-}
-
-_bool CNavigation::isFlyCell(_fvector vLook)
-{
-    _vector vAB = m_Cells[m_iCurrentIndex]->Get_Point(CCell::POINT_B) - m_Cells[m_iCurrentIndex]->Get_Point(CCell::POINT_A);
-    _vector vCA = m_Cells[m_iCurrentIndex]->Get_Point(CCell::POINT_C) - m_Cells[m_iCurrentIndex]->Get_Point(CCell::POINT_A);
-
-    _vector vCross = XMVector3Normalize(XMVector3Cross(vAB, vCA));
-
-    _float fAngle = acosf(XMVectorGetX(XMVector3Dot(vLook, vCross)));
-
-    return fAngle < 0.f;
 }
 
 void CNavigation::Free()

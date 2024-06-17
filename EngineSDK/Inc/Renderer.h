@@ -50,7 +50,7 @@ private:
     ID3D11DeviceContext* m_pContext = { nullptr };
     class CGameInstance* m_pGameInstance = { nullptr };
 
-    list<class CGameObject*> m_Renderers[RENDER_END];
+    list<class CGameObject*> m_RenderObject[RENDER_END];
 
 private:
     class CShader* m_pShader = { nullptr };

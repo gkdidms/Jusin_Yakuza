@@ -161,7 +161,10 @@ CRenderTarget_Manager* CRenderTarget_Manager::Create(ID3D11Device* pDevice, ID3D
 	CRenderTarget_Manager* pInstance = new CRenderTarget_Manager(pDevice, pContext);
 
 	if (FAILED(pInstance->Initialize()))
+	{
+		MSG_BOX("Failed To Created : CRenderTarget_Manager");
 		Safe_Release(pInstance);
+	}
 
 	return pInstance;
 }

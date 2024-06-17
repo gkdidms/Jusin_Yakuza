@@ -171,7 +171,10 @@ CVIBuffer_Trail* CVIBuffer_Trail::Create(ID3D11Device* pDevice, ID3D11DeviceCont
 	CVIBuffer_Trail* pInstance = new CVIBuffer_Trail(pDevice, pContext);
 
 	if (FAILED(pInstance->Initialize_Prototype()))
+	{
+		MSG_BOX("Failed To Created : CVIBuffer_Trail");
 		Safe_Release(pInstance);
+	}
 
 	return pInstance;
 }

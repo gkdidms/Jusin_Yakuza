@@ -7,6 +7,22 @@ class CMesh final :
 {
 public:
     enum MESHTYPE { TYPE_NONANIM, TYPE_ANIM, TYPE_END };
+    
+    typedef struct {
+        MESHTYPE eMeshType;
+        const char* pName;
+        _int iMaterialIndex;
+        _int iNumVertices;
+        _int iNumIndices;
+        _int iNumFaces;
+        unsigned int* Indices;
+        vector<VTXANIMMESH> AnimMeshed;
+        vector<VTXMESH> Meshed;
+        _int iNumBones;
+        vector<_float4x4> OffsetMatrices;
+        vector<_int> BoneIndices;
+        _int iNumWeight;
+    } MESH_DESC ;
 
 private:
     CMesh(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -26,20 +42,7 @@ public:
     void Fill_Matrices(const vector<class CBone*>& Bones, _float4x4* BoneTransformMatrix);
 
 public:
-    HRESULT Initialize_Prototype(MESHTYPE eMeshType, _fmatrix PreTransformMatrix, 
-        const char* pName,
-        _int iMaterialIndex,
-        _int iNumVertices,
-        _int iNumIndices,
-        _int iNumFaces,
-        unsigned int* Indices,
-        vector<VTXANIMMESH> AnimMeshed,
-        vector<VTXMESH> Meshed,
-        _int iNumBones,
-        vector<_float4x4> OffsetMatrices,
-        vector<_int> BoneIndices,
-        _int iNumWeight,
-        vector<class CBone*> Bones);
+    HRESULT Initialize_Prototype(_fmatrix PreTransformMatrix, vector<class CBone*> Bones, void* pArg);
 
 private:
     _uint m_iMaterialIndex = { 0 };
@@ -63,23 +66,11 @@ public:
     static CMesh* Create(
         ID3D11Device* pDevice, 
         ID3D11DeviceContext* pContext, 
-        MESHTYPE eMeshType, 
         _fmatrix PreTransformMatrix, 
-        const char* pName,
-        _int iMaterialIndex,
-        _int iNumVertices,
-        _int iNumIndices,
-        _int iNumFaces,
-        unsigned int* Indices,
-        vector<VTXANIMMESH> AnimMeshed,
-        vector<VTXMESH> Meshed,
-        _int iNumBones,
-        vector<_float4x4> OffsetMatrices,
-        vector<_int> BoneIndices,
-        _int iNumWeight,
-        vector<class CBone*> Bones);
+        vector<class CBone*> Bones,
+        void* pArg);
 
-    virtual CComponent* Clone(void* pArg) override;
+    virtual CComponent* Clone(void* pArg);
     virtual void Free() override;
 };
 
