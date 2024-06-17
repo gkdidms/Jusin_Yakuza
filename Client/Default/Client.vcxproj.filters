@@ -10,6 +10,21 @@
     <Filter Include="98.Default">
       <UniqueIdentifier>{309122e9-6384-4e2f-9d06-6bb7a82c971a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Levels">
+      <UniqueIdentifier>{795188b5-6ada-4a09-ae95-cd954026d2c5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Levels\00.Logo">
+      <UniqueIdentifier>{2ac02900-6516-487e-be4a-3c890eda5971}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Levels\01.GamePlay">
+      <UniqueIdentifier>{6904b1cc-cacb-4833-a4f2-99696cbcc5b7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Levels\99.Loading">
+      <UniqueIdentifier>{f34115cd-e861-46a9-b16b-ffa54d7f5a31}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Levels\99.Loading\Loader">
+      <UniqueIdentifier>{e725a34f-8add-49d9-ab99-5445ada26bf2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="Client.h">

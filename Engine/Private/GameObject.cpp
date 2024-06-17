@@ -35,8 +35,6 @@ HRESULT CGameObject::Initialize(void* pArg)
 	if (nullptr != pArg)
 	{
 		GAMEOBJECT_DESC* pDesc = static_cast<GAMEOBJECT_DESC*>(pArg);
-
-		m_iPathIndex = pDesc->iPathIndex;
 	}
 
 	m_pTransformCom = CTransform::Create(m_pDevice, m_pContext);
@@ -48,8 +46,6 @@ HRESULT CGameObject::Initialize(void* pArg)
 
 	m_Components.emplace(L"Com_Transform", m_pTransformCom);
 	Safe_AddRef(m_pTransformCom);
-
-	m_iIndex = g_iObjectIndex++;
 
 	return S_OK;
 }
