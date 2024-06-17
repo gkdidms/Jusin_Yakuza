@@ -21,7 +21,7 @@ HRESULT CVIBuffer_Instance_Rect::Initialize_Prototype(const CVIBuffer_Instance::
 	m_Primitive_Topology = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 	m_iNumVertexBuffers = 2;
 	m_iNumVertices = 4;
-	m_iVertexStride = sizeof(VXTPOSTEX);
+	m_iVertexStride = sizeof(VTXPOSTEX);
 
 	m_iIndexStride = 2;
 	m_iIndexCountPerInstance = 6;
@@ -36,7 +36,7 @@ HRESULT CVIBuffer_Instance_Rect::Initialize_Prototype(const CVIBuffer_Instance::
 	m_Buffer_Desc.MiscFlags = 0;
 	m_Buffer_Desc.StructureByteStride = m_iVertexStride;
 
-	VXTPOSTEX* pVertexts = new VXTPOSTEX[m_iNumVertices];
+	VTXPOSTEX* pVertexts = new VTXPOSTEX[m_iNumVertices];
 
 	pVertexts[0].vPosition = _float3{ -0.5f, 0.5f, 0.f };
 	pVertexts[0].vTexcoord = _float2{ 0.f, 0.f };

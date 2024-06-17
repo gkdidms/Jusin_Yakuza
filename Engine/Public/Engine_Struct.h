@@ -35,7 +35,7 @@ namespace Engine
 
 		static const _uint iNumElements = 1;
 		static const D3D11_INPUT_ELEMENT_DESC Elements[iNumElements];
-	} VXTPOS;
+	} VTXPOS;
 
 	typedef struct ENGINE_DLL tVtxPoint
 	{
@@ -53,7 +53,7 @@ namespace Engine
 
 		static const _uint iNumElements = 2;
 		static const D3D11_INPUT_ELEMENT_DESC Elements[iNumElements];
-	} VXTPOSTEX;
+	} VTXPOSTEX;
 
 	typedef struct ENGINE_DLL tVexNorTex
 	{

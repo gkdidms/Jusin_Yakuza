@@ -51,7 +51,7 @@ public:
 
     /* Level_Manager */
 public:
-    HRESULT Open_Level(_uint iLevelIndex, class CLevel* pLevel, _bool isRemove = true);
+    HRESULT Open_Level(_uint iLevelIndex, class CLevel* pLevel);
 
     /* GameObject_Manager */
 public: 

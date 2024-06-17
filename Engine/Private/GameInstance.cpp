@@ -124,9 +124,9 @@ HRESULT CGameInstance::Present()
 }
 
 
-HRESULT CGameInstance::Open_Level(_uint iLevelIndex, CLevel* pLevel, _bool isRemove)
+HRESULT CGameInstance::Open_Level(_uint iLevelIndex, CLevel* pLevel)
 {
-	return m_pLevel_Manager->Open_Level(iLevelIndex, pLevel, isRemove);
+	return m_pLevel_Manager->Open_Level(iLevelIndex, pLevel);
 }
 
 _bool CGameInstance::PlaySound_W(const wstring pSoundKey, CHANNELID eID, float fVolume)

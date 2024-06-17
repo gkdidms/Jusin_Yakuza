@@ -72,7 +72,7 @@ HRESULT CRenderer::Initialize()
 	if (nullptr == m_pVIBuffer)
 		return E_FAIL;
 
-	m_pShader = CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_Deferred.hlsl"), VXTPOSTEX::Elements, VXTPOSTEX::iNumElements);
+	m_pShader = CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_Deferred.hlsl"), VTXPOSTEX::Elements, VTXPOSTEX::iNumElements);
 	if (nullptr == m_pShader)
 		return E_FAIL;
 
@@ -120,8 +120,8 @@ HRESULT CRenderer::Initialize()
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_Depth"), 50.f, 250.f, 100.f, 100.f)))
 		return E_FAIL;
-	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_LightDepth"), ViewPort.Width - 150.0f, 150.0f, 300.f, 300.f)))
-		return E_FAIL;
+	//if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_LightDepth"), ViewPort.Width - 150.0f, 150.0f, 300.f, 300.f)))
+	//	return E_FAIL;
 	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_Shade"), 150.f, 50.f, 100.f, 100.f)))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_BackBuffer"), 150.f, 250.f, 100.f, 100.f)))
@@ -142,7 +142,7 @@ void CRenderer::Add_Renderer(RENDERER_STATE eRenderState,CGameObject* pGameObjec
 void CRenderer::Draw()
 {
 	Render_Priority();
-	Render_ShadowObjects();
+	//Render_ShadowObjects();
 	Render_NonBlender();
 	Render_LightAcc();
 	Render_CopyBackBuffer();
@@ -155,7 +155,6 @@ void CRenderer::Draw()
 #ifdef _DEBUG
 	Render_Debug();
 #endif // _DEBUG
-
 }
 
 void CRenderer::Clear()
@@ -257,7 +256,6 @@ void CRenderer::Render_NonBlender()
 
 void CRenderer::Render_LightAcc()
 {
-	
 	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_LightAcc"))))
 		return;
 
@@ -278,7 +276,6 @@ void CRenderer::Render_LightAcc()
 		return;
 	if (FAILED(m_pShader->Bind_RawValue("g_fFar", m_pGameInstance->Get_CamFar(), sizeof(_float))))
 		return;
-
 
 	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Normal"), m_pShader, "g_NormalTexture")))
 		return;
@@ -322,8 +319,6 @@ void CRenderer::Render_CopyBackBuffer()
 	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Diffuse"), m_pShader, "g_DiffuseTexture")))
 		return;
 	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Shade"), m_pShader, "g_ShadeTexture")))
-		return;
-	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Outline"), m_pShader, "g_OutlineTexture")))
 		return;
 	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_LightDepth"), m_pShader, "g_LightDepthTexture")))
 		return;

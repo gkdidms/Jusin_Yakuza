@@ -25,7 +25,7 @@ HRESULT CVIBuffer_Rect::Initialize_Prototype()
 
 	m_iNumVertexBuffers = 1;
 	m_iNumVertices = 4;
-	m_iVertexStride = sizeof(VXTPOSTEX);
+	m_iVertexStride = sizeof(VTXPOSTEX);
 
 	m_Buffer_Desc.ByteWidth = m_iVertexStride * m_iNumVertices;
 	m_Buffer_Desc.Usage = D3D11_USAGE_DEFAULT;
@@ -34,7 +34,7 @@ HRESULT CVIBuffer_Rect::Initialize_Prototype()
 	m_Buffer_Desc.MiscFlags = 0;
 	m_Buffer_Desc.StructureByteStride = m_iVertexStride;
 
-	VXTPOSTEX* pVertexts = new VXTPOSTEX[m_iNumVertices];
+	VTXPOSTEX* pVertexts = new VTXPOSTEX[m_iNumVertices];
 
 	pVertexts[0].vPosition = _float3{ -0.5f, 0.5f, 0.f };
 	pVertexts[0].vTexcoord = _float2{ 0.f, 0.f };
