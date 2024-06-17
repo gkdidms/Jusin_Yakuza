@@ -490,15 +490,15 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <FxCompile Include="..\..\..\Genshin_Project\Engine\Bin\ShaderFiles\Shader_Cell.hlsl">
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_Cell.hlsl">
       <Filter>98.Shader</Filter>
     </FxCompile>
-    <FxCompile Include="..\..\..\Genshin_Project\Engine\Bin\ShaderFiles\Shader_Deferred.hlsl">
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_Deferred.hlsl">
       <Filter>98.Shader</Filter>
     </FxCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\..\Genshin_Project\Engine\Bin\ShaderFiles\Engine_Shader_Defines.hlsli">
+    <None Include="..\Bin\ShaderFiles\Engine_Shader_Defines.hlsli">
       <Filter>98.Shader</Filter>
     </None>
   </ItemGroup>
