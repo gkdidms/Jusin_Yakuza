@@ -3,11 +3,14 @@
 
 #include "framework.h"
 #include "Client.h"
+#include "MainApp.h"
+#include "GameInstance.h"
 
 #define MAX_LOADSTRING 100
 
 // 전역 변수:
-HINSTANCE hInst;                                // 현재 인스턴스입니다.
+HINSTANCE g_hInst;                                // 현재 인스턴스입니다.
+HWND	g_hWnd;
 WCHAR szTitle[MAX_LOADSTRING];                  // 제목 표시줄 텍스트입니다.
 WCHAR szWindowClass[MAX_LOADSTRING];            // 기본 창 클래스 이름입니다.
 
@@ -42,20 +45,56 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
     MSG msg;
 
+    CMainApp* pMainApp = CMainApp::Create();
+    if (nullptr == pMainApp)
+        return FALSE;
+
+    CGameInstance* pGameInstance = CGameInstance::GetInstance();
+    if (nullptr == pGameInstance)
+        return FALSE;
+    Safe_AddRef(pGameInstance);
+
+    if (FAILED(pGameInstance->Ready_Timer(TEXT("Timer_Default"))))
+        return FALSE;
+    if (FAILED(pGameInstance->Ready_Timer(TEXT("Timer_60"))))
+        return FALSE;
+
+    _float		fTimeAcc = { 0.0f };
+
     // 기본 메시지 루프입니다:
-    while (GetMessage(&msg, nullptr, 0, 0))
+    while (TRUE)
     {
-        if (!TranslateAccelerator(msg.hwnd, hAccelTable, &msg))
+        if (PeekMessage(&msg, nullptr, 0, 0, PM_REMOVE))
         {
-            TranslateMessage(&msg);
-            DispatchMessage(&msg);
+            if (WM_QUIT == msg.message)
+                break;
+
+            if (!TranslateAccelerator(msg.hwnd, hAccelTable, &msg))
+            {
+                TranslateMessage(&msg);
+                DispatchMessage(&msg);
+            }
+        }
+
+        pGameInstance->Update_TimeDelta(TEXT("Timer_Default"));
+
+        fTimeAcc += pGameInstance->Get_TimeDelta(TEXT("Timer_Default"));
+
+        if (fTimeAcc > 1.f / 60.0f)
+        {
+            pGameInstance->Update_TimeDelta(TEXT("Timer_60"));
+            pMainApp->Tick(pGameInstance->Get_TimeDelta(TEXT("Timer_60")));
+            pMainApp->Render();
+
+            fTimeAcc = 0.f;
         }
     }
 
+    Safe_Release(pGameInstance);
+    Safe_Release(pMainApp);
+
     return (int) msg.wParam;
 }
-
-
 
 //
 //  함수: MyRegisterClass()
@@ -76,7 +115,7 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
     wcex.hIcon          = LoadIcon(hInstance, MAKEINTRESOURCE(IDI_CLIENT));
     wcex.hCursor        = LoadCursor(nullptr, IDC_ARROW);
     wcex.hbrBackground  = (HBRUSH)(COLOR_WINDOW+1);
-    wcex.lpszMenuName   = MAKEINTRESOURCEW(IDC_CLIENT);
+    wcex.lpszMenuName   = nullptr;
     wcex.lpszClassName  = szWindowClass;
     wcex.hIconSm        = LoadIcon(wcex.hInstance, MAKEINTRESOURCE(IDI_SMALL));
 
@@ -95,10 +134,21 @@ ATOM MyRegisterClass(HINSTANCE hInstance)
 //
 BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 {
-   hInst = hInstance; // 인스턴스 핸들을 전역 변수에 저장합니다.
+    g_hInst = hInstance; // 인스턴스 핸들을 전역 변수에 저장합니다.
+
+   RECT		rcWindow = { 0, 0, g_iWinSizeX, g_iWinSizeY };
+
+   AdjustWindowRect(&rcWindow, WS_OVERLAPPEDWINDOW, TRUE);
+
+   _float ScreentX = (rcWindow.right - rcWindow.left);
+   _float ScreentY = (rcWindow.bottom - rcWindow.top);
+
+   _float fPosX = (GetSystemMetrics(SM_CXSCREEN) - ScreentX) * 0.5f;
+   _float fPosY = (GetSystemMetrics(SM_CYSCREEN) - ScreentY) * 0.5f;
 
    HWND hWnd = CreateWindowW(szWindowClass, szTitle, WS_OVERLAPPEDWINDOW,
-      CW_USEDEFAULT, 0, CW_USEDEFAULT, 0, nullptr, nullptr, hInstance, nullptr);
+       fPosX, fPosY, ScreentX, ScreentY, nullptr, nullptr, hInstance, nullptr);
+
 
    if (!hWnd)
    {
@@ -107,6 +157,8 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 
    ShowWindow(hWnd, nCmdShow);
    UpdateWindow(hWnd);
+
+   g_hWnd = hWnd;
 
    return TRUE;
 }
@@ -132,7 +184,7 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             switch (wmId)
             {
             case IDM_ABOUT:
-                DialogBox(hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
+                DialogBox(g_hInst, MAKEINTRESOURCE(IDD_ABOUTBOX), hWnd, About);
                 break;
             case IDM_EXIT:
                 DestroyWindow(hWnd);
@@ -148,6 +200,16 @@ LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
             HDC hdc = BeginPaint(hWnd, &ps);
             // TODO: 여기에 hdc를 사용하는 그리기 코드를 추가합니다...
             EndPaint(hWnd, &ps);
+        }
+        break;
+    case WM_KEYDOWN:
+        switch (wParam)
+        {
+        case VK_ESCAPE:
+            PostQuitMessage(0);
+            break;
+        default:
+            break;
         }
         break;
     case WM_DESTROY:
