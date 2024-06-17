@@ -47,6 +47,8 @@ void CMainApp::Render()
 
 HRESULT CMainApp::Open_Level(LEVEL eLevelID)
 {
+
+
 	return S_OK;
 }
 

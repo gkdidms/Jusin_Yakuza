@@ -490,16 +490,16 @@
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\Bin\ShaderFiles\Engine_Shader_Defines.hlsli">
-      <Filter>98.Shader</Filter>
-    </None>
-  </ItemGroup>
-  <ItemGroup>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Cell.hlsl">
       <Filter>98.Shader</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Deferred.hlsl">
       <Filter>98.Shader</Filter>
     </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\Bin\ShaderFiles\Engine_Shader_Defines.hlsli">
+      <Filter>98.Shader</Filter>
+    </None>
   </ItemGroup>
 </Project>
