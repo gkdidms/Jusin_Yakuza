@@ -1,11 +1,13 @@
 #include "DebugManager.h"
 
-
+#include "GameInstance.h"
 
 IMPLEMENT_SINGLETON(CDebugManager)
 
 CDebugManager::CDebugManager()
+    : m_pGameInstance { CGameInstance::GetInstance() }
 {
+    Safe_AddRef(m_pGameInstance);
 }
 
 HRESULT CDebugManager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -56,6 +58,12 @@ void CDebugManager::Window_Debug()
     ImGui::Begin("Window");
 
     ImGui::Checkbox("TimeDelta Stop", &m_isTimeStop);
+    
+    _float fSpeed = { -1.f };
+    if (ImGui::InputFloat("TimeSpeed", &fSpeed))
+    {
+        m_pGameInstance->Set_TimeSpeed(TEXT("Timer_60"), fSpeed);
+    }
 
     ImGui::End();
 }
@@ -73,4 +81,6 @@ void CDebugManager::Free()
 {
     Safe_Release(m_pDevice);
     Safe_Release(m_pContext);
+
+    Safe_Release(m_pGameInstance);
 }

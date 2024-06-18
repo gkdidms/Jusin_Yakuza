@@ -74,7 +74,6 @@ void CMainApp::Tick(const _float& fTimeDelta)
 		
 	if (m_isDebug) m_pDebugMananger->Tick();
 #endif // _DEBUG
-
 }
 
 HRESULT CMainApp::Render()
@@ -169,14 +168,14 @@ void CMainApp::Free()
 	Safe_Release(m_pContext);
 	Safe_Release(m_pDevice);
 
-	/* 레퍼런스 카운트를 0으로만든다. */
-	Safe_Release(m_pGameInstance);
-	CGameInstance::Release_Engine();
-
-	Safe_Release(m_pSystemManager);
-	
 #ifdef _DEBUG
 	Safe_Release(m_pDebugMananger);
 	CDebugManager::Release_Debug();
 #endif // _DEBUG
+
+	Safe_Release(m_pSystemManager);
+
+	/* 레퍼런스 카운트를 0으로만든다. */
+	Safe_Release(m_pGameInstance);
+	CGameInstance::Release_Engine();
 }

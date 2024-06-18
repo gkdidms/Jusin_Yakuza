@@ -16,6 +16,10 @@ public:
 	}
 
 public:
+	void Set_Speed(_float fSpeed) { m_fSpeed = fSpeed; }
+	void Reset() { m_fSpeed = 1.f; }
+
+public:
 	HRESULT		Ready_Timer(void);
 	void		Update_TimeDelta(void);
 
@@ -26,6 +30,7 @@ private:
 	LARGE_INTEGER			m_CpuTick;
 
 	_float					m_fTimeDelta;
+	_float m_fSpeed = { 1.f };
 
 public:
 	static CTimer*	Create(void);

@@ -25,7 +25,6 @@ Texture2D g_NormalTexture;
 Texture2D g_DiffuseTexture;
 Texture2D g_ShadeTexture;
 Texture2D g_DepthTexture;
-Texture2D g_OutlineTexture;
 Texture2D g_GlowTexture;
 Texture2D g_GuassianTexture;
 Texture2D g_BackBufferTexture;
@@ -115,7 +114,6 @@ PS_OUT_LIGHT PS_MAIN_LIGHT_DIRECTIONAL(PS_IN In)
 	/* 월드스페이스 상의 위치를 구한다. */
     vWorldPos = mul(vWorldPos, g_ViewMatrixInv);
 
-
     vector vLightDir = vWorldPos - g_vLightPos;
     float fDistance = length(vLightDir);
 
@@ -189,12 +187,16 @@ PS_OUT PS_MAIN_DEFERRED_RESULT(PS_IN In)
 {
     PS_OUT Out = (PS_OUT) 0;
     
+    //vector vDiffuse = g_BackBufferTexture.Sample(LinearSampler, In.vTexcoord);
+   
+    //Out.vColor = vDiffuse;
+    
     vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
     if (0.0f == vDiffuse.a)
         discard;
 
     vector vShade = g_ShadeTexture.Sample(LinearSampler, In.vTexcoord);
-
+    
     Out.vColor = vDiffuse * vShade;
 
     return Out;

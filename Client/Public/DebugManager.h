@@ -10,6 +10,10 @@
 /*
 1. 디버깅 용 툴.
 */
+BEGIN(Engine)
+class CGameInstance;
+END
+
 BEGIN(Client)
 class CDebugManager :
     public CBase
@@ -34,6 +38,7 @@ public:
 private:
     ID3D11Device* m_pDevice = { nullptr };
     ID3D11DeviceContext* m_pContext = { nullptr };
+    CGameInstance* m_pGameInstance = { nullptr };
     _bool m_isDebug = { false }; // 디버그 툴 진입했는지 아닌지 체크
 
 private:
