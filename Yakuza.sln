@@ -11,6 +11,9 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Engine", "Engine\Default\Engine.vcxproj", "{4430E868-DAD8-4CFC-8C41-C29873619124}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "EffectTool", "EffectTool\Default\EffectTool.vcxproj", "{0D09E8AF-3E74-4337-9A54-C466A4C02F00}"
+	ProjectSection(ProjectDependencies) = postProject
+		{4430E868-DAD8-4CFC-8C41-C29873619124} = {4430E868-DAD8-4CFC-8C41-C29873619124}
+	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AnimationTool", "AnimationTool\Default\AnimationTool.vcxproj", "{0ADFC7C1-0CD1-4CEE-98AB-2AC21B35E386}"
 	ProjectSection(ProjectDependencies) = postProject
@@ -41,6 +44,15 @@ Global
 		{4430E868-DAD8-4CFC-8C41-C29873619124}.Release|x64.Build.0 = Release|x64
 		{4430E868-DAD8-4CFC-8C41-C29873619124}.Release|x86.ActiveCfg = Release|Win32
 		{4430E868-DAD8-4CFC-8C41-C29873619124}.Release|x86.Build.0 = Release|Win32
+<<<<<<< HEAD
+		{0ADFC7C1-0CD1-4CEE-98AB-2AC21B35E386}.Debug|x64.ActiveCfg = Debug|x64
+		{0ADFC7C1-0CD1-4CEE-98AB-2AC21B35E386}.Debug|x86.ActiveCfg = Debug|Win32
+		{0ADFC7C1-0CD1-4CEE-98AB-2AC21B35E386}.Debug|x86.Build.0 = Debug|Win32
+		{0ADFC7C1-0CD1-4CEE-98AB-2AC21B35E386}.Release|x64.ActiveCfg = Release|x64
+		{0ADFC7C1-0CD1-4CEE-98AB-2AC21B35E386}.Release|x86.ActiveCfg = Release|Win32
+		{0ADFC7C1-0CD1-4CEE-98AB-2AC21B35E386}.Release|x86.Build.0 = Release|Win32
+=======
+>>>>>>> develop
 		{0D09E8AF-3E74-4337-9A54-C466A4C02F00}.Debug|x64.ActiveCfg = Debug|x64
 		{0D09E8AF-3E74-4337-9A54-C466A4C02F00}.Debug|x64.Build.0 = Debug|x64
 		{0D09E8AF-3E74-4337-9A54-C466A4C02F00}.Debug|x86.ActiveCfg = Debug|Win32
