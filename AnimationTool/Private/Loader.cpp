@@ -2,6 +2,8 @@
 
 #include "GameInstance.h"
 
+#include "ImGuiManager.h"
+
 CLoader::CLoader(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: m_pDevice{pDevice}, 
 	m_pContext{pContext},
@@ -112,6 +114,10 @@ HRESULT CLoader::Loading_For_TestLevel()
 
 	lstrcpy(m_szLoadingText, TEXT("셰이더를(을) 로딩 중 입니다."));
 
+
+	lstrcpy(m_szLoadingText, TEXT("객체 원형을(를) 로딩 중 입니다."));
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("GameObject_Prototype_ImGuiManager"), CImGuiManager::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
 

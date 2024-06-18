@@ -1,4 +1,5 @@
 #include "Level_Test.h"
+#include "GameInstance.h"
 
 CLevel_Test::CLevel_Test(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLevel{ pDevice, pContext }
@@ -31,7 +32,8 @@ HRESULT CLevel_Test::Ready_Object(const wstring& strLayerTag)
 
 HRESULT CLevel_Test::Ready_ImGui(const wstring& strLayerTag)
 {
-
+	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("GameObject_Prototype_ImGuiManager"), strLayerTag)))
+		return E_FAIL;
 
 	return S_OK;
 }

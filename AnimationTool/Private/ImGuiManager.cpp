@@ -42,10 +42,24 @@ HRESULT CImGuiManager::Initialize(void* pArg)
     return S_OK;
 }
 
+void CImGuiManager::Priority_Tick(const _float& fTimeDelta)
+{
+}
+
+void CImGuiManager::Tick(const _float& fTimeDelta)
+{
+}
+
+void CImGuiManager::Late_Tick(const _float& fTimeDelta)
+{
+    m_fTimeDelta = fTimeDelta;
+    m_pGameInstance->Add_Renderer(CRenderer::RENDER_UI, this);
+}
+
 HRESULT CImGuiManager::Render()
 {
     Render_Begin();
-    Update();
+    Windows_Update();
     Render_End();
 
     return S_OK;
@@ -60,16 +74,15 @@ void CImGuiManager::Render_Begin()
 
 void CImGuiManager::Render_End()
 {
+    // Rendering
+    ImGui::Render();
+    ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 }
 
-void CImGuiManager::Update()
+void CImGuiManager::Windows_Update()
 {
-}
-
-void CImGuiManager::Late_Tick(_float fTimeDelta)
-{
-    m_fTimeDelta = fTimeDelta;
-    m_pGameInstance->Add_Renderer(CRenderer::RENDER_UI, this);
+    ImGui::Begin("Navigation Window");
+    ImGui::End();
 }
 
 CImGuiManager* CImGuiManager::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

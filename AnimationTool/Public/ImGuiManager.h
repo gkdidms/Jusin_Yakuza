@@ -18,15 +18,16 @@ private:
 public:
 	virtual HRESULT Initialize_Prototype();
 	virtual HRESULT Initialize(void* pArg);
-
+	virtual void Priority_Tick(const _float& fTimeDelta);
+	virtual void Tick(const _float& fTimeDelta);
+	virtual void Late_Tick(const _float& fTimeDelta);
 	virtual HRESULT Render();
 
 private:
 	void Render_Begin();
 	void Render_End();
 
-	virtual void Update();
-	virtual void Late_Tick(_float fTimeDelta);
+	void Windows_Update();
 
 private:
 	_bool								m_bIsClone = false;
