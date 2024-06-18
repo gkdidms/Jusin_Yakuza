@@ -45,7 +45,7 @@ HRESULT CRenderer::Initialize()
 		return E_FAIL;
 
 	/*Target_BackBuffer*/
-	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_BackBuffer"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_BackBuffer"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 1.f))))
 		return E_FAIL;
 
 	/*MRT_GameObjects*/
@@ -145,7 +145,7 @@ void CRenderer::Draw()
 	//Render_ShadowObjects();
 	Render_NonBlender();
 	Render_LightAcc();
-	//Render_CopyBackBuffer();
+	Render_CopyBackBuffer();
 	Render_DeferredResult();
 
 	Render_NonLight();
@@ -225,7 +225,6 @@ void CRenderer::Render_ShadowObjects()
 
 	if (FAILED(m_pGameInstance->End_MRT()))
 		return;
-
 	
 
 	ZeroMemory(&ViewPortDesc, sizeof(D3D11_VIEWPORT));
@@ -344,13 +343,13 @@ void CRenderer::Render_DeferredResult() // 백버퍼에 Diffuse와 Shade를 더해서 그�
 	if (FAILED(m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
 		return;
 
-	//if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_BackBuffer"), m_pShader, "g_BackBufferTexture")))
-	//	return;
+	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_BackBuffer"), m_pShader, "g_BackBufferTexture")))
+		return;
 
-	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Diffuse"), m_pShader, "g_DiffuseTexture")))
-		return;
-	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Shade"), m_pShader, "g_ShadeTexture")))
-		return;
+	//if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Diffuse"), m_pShader, "g_DiffuseTexture")))
+	//	return;
+	//if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Shade"), m_pShader, "g_ShadeTexture")))
+	//	return;
 
 	m_pShader->Begin(4);
 
@@ -413,8 +412,8 @@ void CRenderer::Render_Debug()
 
 	if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_GameObjects"), m_pShader, m_pVIBuffer)))
 		return;
-	if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_ShadowObjects"), m_pShader, m_pVIBuffer)))
-		return;
+	//if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_ShadowObjects"), m_pShader, m_pVIBuffer)))
+	//	return;
 	if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_LightAcc"), m_pShader, m_pVIBuffer)))
 		return;
 	if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_CopyBackBuffer"), m_pShader, m_pVIBuffer)))

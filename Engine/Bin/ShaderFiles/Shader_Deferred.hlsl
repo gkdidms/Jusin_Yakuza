@@ -98,38 +98,9 @@ PS_OUT_LIGHT PS_MAIN_LIGHT_DIRECTIONAL(PS_IN In)
 
     vector vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexcoord);
     vector vNormal = vector(vNormalDesc.xyz * 2.f - 1.f, 0.0f);
-    vector vDepthDesc = g_DepthTexture.Sample(PointSampler, In.vTexcoord);
-    vector vWorldPos;
-
-    vWorldPos.x = In.vTexcoord.x * 2.f - 1.f;
-    vWorldPos.y = In.vTexcoord.y * -2.f + 1.f;
-    vWorldPos.z = vDepthDesc.x; /* 0 ~ 1 */
-    vWorldPos.w = 1.f;
-
-    vWorldPos = vWorldPos * (vDepthDesc.y * 3000.f);
-
-	/* 뷰스페이스 상의 위치를 구한다. */
-    vWorldPos = mul(vWorldPos, g_ProjMatrixInv);
-
-	/* 월드스페이스 상의 위치를 구한다. */
-    vWorldPos = mul(vWorldPos, g_ViewMatrixInv);
-
-    vector vLightDir = vWorldPos - g_vLightPos;
-    float fDistance = length(vLightDir);
-
-    float fAtt = max((g_fLightRange - fDistance), 0.f) / g_fLightRange;
 
     Out.vShade = g_vLightDiffuse *
-		saturate(max(dot(normalize(vLightDir) * -1.f, normalize(vNormal)), 0.f) + (g_vLightAmbient * g_vMtrlAmbient)) * fAtt;
-
-
-	/* vWorldPos:화면에 그려지고 있는 픽셀들의 실제 월드 위치를 받아와야하낟.  */
-	/* 1. 렌더타겟에 객체들을 그릴때 픽셀의 월드위치를 저장하는 방법.(범위 무제한이라는 조건때문에 저장이 힘들다) */
-	/* 2. 현재 상황에서 픽셀의 투영위치(x, y)까지 먼저구하는 작업은 가능 -> z가 없기때문에 월드까지의 역변환이 힘들다.-> 투영 z( 0 ~ 1), ViewSpace`s Pixel`s Z를(near ~ far) 받아오자.(무제한이아니다.)  */
-    //vector vReflect = reflect(normalize(vLightDir), normalize(vNormal));
-    //vector vLook = vWorldPos - g_vCamPosition;
-
-   // Out.vSpecular = (g_vLightSpecular * g_vMtrlSpecular) * pow(max(dot(normalize(vReflect) * -1.f, normalize(vLook)), 0.f), 30.f) * fAtt;
+		saturate(max(dot(normalize(g_vLightDir) * -1.f, normalize(vNormal)), 0.f) + (g_vLightAmbient * g_vMtrlAmbient));
 
     return Out;
 }
@@ -187,17 +158,9 @@ PS_OUT PS_MAIN_DEFERRED_RESULT(PS_IN In)
 {
     PS_OUT Out = (PS_OUT) 0;
     
-    //vector vDiffuse = g_BackBufferTexture.Sample(LinearSampler, In.vTexcoord);
+    vector vDiffuse = g_BackBufferTexture.Sample(LinearSampler, In.vTexcoord);
    
-    //Out.vColor = vDiffuse;
-    
-    vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
-    if (0.0f == vDiffuse.a)
-        discard;
-
-    vector vShade = g_ShadeTexture.Sample(LinearSampler, In.vTexcoord);
-    
-    Out.vColor = vDiffuse * vShade;
+    Out.vColor = vDiffuse;
 
     return Out;
 }
