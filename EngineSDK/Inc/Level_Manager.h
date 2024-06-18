@@ -14,7 +14,7 @@ public:
     void Tick(const _float& fTimeDelta);
     void Render();
 
-    HRESULT Open_Level(_uint iLevelIndex, class CLevel* pLevel, _bool isRemove);
+    HRESULT Open_Level(_uint iLevelIndex, class CLevel* pLevel);
 
 private:
     class CGameInstance* m_pGameInstance = { nullptr };

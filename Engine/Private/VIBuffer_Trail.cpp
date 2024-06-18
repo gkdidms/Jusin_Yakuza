@@ -31,7 +31,7 @@ HRESULT CVIBuffer_Trail::Initialize(void* pArg)
 	m_iNumVertexBuffers = 1;
 
 	m_iNumVertices = 4 + (m_iMaxTrail - 1) * 2;
-	m_iVertexStride = sizeof(VXTPOSTEX);
+	m_iVertexStride = sizeof(VTXPOSTEX);
 
 	m_Buffer_Desc.ByteWidth = m_iVertexStride * m_iNumVertices;
 	m_Buffer_Desc.Usage = D3D11_USAGE_DYNAMIC;
@@ -40,8 +40,8 @@ HRESULT CVIBuffer_Trail::Initialize(void* pArg)
 	m_Buffer_Desc.MiscFlags = 0;
 	m_Buffer_Desc.StructureByteStride = m_iVertexStride;
 
-	VXTPOSTEX* pVertexts = new VXTPOSTEX[m_iNumVertices];
-	ZeroMemory(pVertexts, sizeof(VXTPOSTEX) * m_iNumVertices);
+	VTXPOSTEX* pVertexts = new VTXPOSTEX[m_iNumVertices];
+	ZeroMemory(pVertexts, sizeof(VTXPOSTEX) * m_iNumVertices);
 
 	for (size_t i = 0; i < m_iNumVertices; ++i)
 	{
@@ -52,7 +52,7 @@ HRESULT CVIBuffer_Trail::Initialize(void* pArg)
 		// 0 2 4 6 8 10
 		// 1 3 5 7 9 11
 
-	m_ResourceData.pSysMem = pVertexts;
+	m_InitialData.pSysMem = pVertexts;
 
 	if (FAILED(__super::Create_Buffer(&m_pVB)))
 		return E_FAIL;
@@ -91,7 +91,7 @@ HRESULT CVIBuffer_Trail::Initialize(void* pArg)
 		pIndices[i + 1]._2 = i + 3;*/
 	}
 
-	m_ResourceData.pSysMem = pIndices;
+	m_InitialData.pSysMem = pIndices;
 
 	if (FAILED(__super::Create_Buffer(&m_pIB)))
 		return E_FAIL;
@@ -126,13 +126,13 @@ HRESULT CVIBuffer_Trail::Render()
 
 void CVIBuffer_Trail::Add_Trail(const _float& fTimeDelta, const _matrix WorldMatrix)
 {
-	VXTPOSTEX* pVertex;
+	VTXPOSTEX* pVertex;
 	_float3 vNewPos[2];
 
 	D3D11_MAPPED_SUBRESOURCE SubResource{};
 	m_pContext->Map(m_pVB, 0, D3D11_MAP_WRITE_NO_OVERWRITE, 0, &SubResource);
 
-	VXTPOSTEX* vResult = ((VXTPOSTEX*)SubResource.pData);
+	VTXPOSTEX* vResult = ((VTXPOSTEX*)SubResource.pData);
 
 	XMStoreFloat3(&vNewPos[0], XMVector3TransformCoord(XMLoadFloat3(&m_vInitPosA), WorldMatrix));
 	XMStoreFloat3(&vNewPos[1], XMVector3TransformCoord(XMLoadFloat3(&m_vInitPosB), WorldMatrix));

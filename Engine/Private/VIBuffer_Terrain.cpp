@@ -120,7 +120,7 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype(const wstring strTerrainFilePath
 	m_Buffer_Desc.MiscFlags = 0;
 	m_Buffer_Desc.StructureByteStride = m_iVertexStride;
 
-	m_ResourceData.pSysMem = pVertices;
+	m_InitialData.pSysMem = pVertices;
 	if (FAILED(__super::Create_Buffer(&m_pVB)))
 		return E_FAIL;
 
@@ -131,7 +131,7 @@ HRESULT CVIBuffer_Terrain::Initialize_Prototype(const wstring strTerrainFilePath
 	m_Buffer_Desc.MiscFlags = 0;
 	m_Buffer_Desc.StructureByteStride = 0;
 
-	m_ResourceData.pSysMem = pIndices;
+	m_InitialData.pSysMem = pIndices;
 	if (FAILED(__super::Create_Buffer(&m_pIB)))
 		return E_FAIL;
 

@@ -166,6 +166,9 @@
     <Filter Include="01.Utility\03.Component\Model\Animation\Channel">
       <UniqueIdentifier>{7e1ebc48-95ac-4058-97fd-68bdc8cbe2a3}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Utility\09.Convert">
+      <UniqueIdentifier>{59290998-d7fe-45e5-93e6-8dd14de04fe2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\Base.h">
@@ -246,18 +249,6 @@
     <ClInclude Include="..\Public\Component_Manager.h">
       <Filter>01.Utility\03.Component\Manager</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Animation.h">
-      <Filter>01.Utility\03.Component\Model\Animation</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Mesh.h">
-      <Filter>01.Utility\03.Component\Model\Mesh</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Model.h">
-      <Filter>01.Utility\03.Component\Model</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Bone.h">
-      <Filter>01.Utility\03.Component\Model\Bone</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\Navigation.h">
       <Filter>01.Utility\03.Component\Navigation</Filter>
     </ClInclude>
@@ -330,8 +321,23 @@
     <ClInclude Include="..\Public\Timer_Manager.h">
       <Filter>00.System\01.Timer\Manager</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\Genshin_Project\Engine\Public\Channel.h">
+    <ClInclude Include="..\public\Convert_Manager.h">
+      <Filter>01.Utility\09.Convert</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Model.h">
+      <Filter>01.Utility\03.Component\Model</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Mesh.h">
+      <Filter>01.Utility\03.Component\Model\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Bone.h">
+      <Filter>01.Utility\03.Component\Model\Bone</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Channel.h">
       <Filter>01.Utility\03.Component\Model\Animation\Channel</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Animation.h">
+      <Filter>01.Utility\03.Component\Model\Animation</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -400,18 +406,6 @@
     </ClCompile>
     <ClCompile Include="..\Private\Component_Manager.cpp">
       <Filter>01.Utility\03.Component\Manager</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\Bone.cpp">
-      <Filter>01.Utility\03.Component\Model\Bone</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\Mesh.cpp">
-      <Filter>01.Utility\03.Component\Model\Mesh</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\Model.cpp">
-      <Filter>01.Utility\03.Component\Model</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\Animation.cpp">
-      <Filter>01.Utility\03.Component\Model\Animation</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Navigation.cpp">
       <Filter>01.Utility\03.Component\Navigation</Filter>
@@ -485,8 +479,23 @@
     <ClCompile Include="..\Private\Timer_Manager.cpp">
       <Filter>00.System\01.Timer\Manager</Filter>
     </ClCompile>
+    <ClCompile Include="..\private\Convert_Manager.cpp">
+      <Filter>01.Utility\09.Convert</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Model.cpp">
+      <Filter>01.Utility\03.Component\Model</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Mesh.cpp">
+      <Filter>01.Utility\03.Component\Model\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Bone.cpp">
+      <Filter>01.Utility\03.Component\Model\Bone</Filter>
+    </ClCompile>
     <ClCompile Include="..\Private\Channel.cpp">
       <Filter>01.Utility\03.Component\Model\Animation\Channel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Animation.cpp">
+      <Filter>01.Utility\03.Component\Model\Animation</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

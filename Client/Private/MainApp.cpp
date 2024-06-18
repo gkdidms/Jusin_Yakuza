@@ -3,6 +3,9 @@
 #include "MainApp.h"
 #include "GameInstance.h"
 
+#include "Level_Loading.h"
+#include "Background.h"
+
 CMainApp::CMainApp() :
 	m_pGameInstance{ CGameInstance::GetInstance() }
 {
@@ -22,7 +25,7 @@ HRESULT CMainApp::Initialize()
 	if (FAILED(m_pGameInstance->Initialize_Engine(LEVEL_END, EngineDesc, &m_pDevice, &m_pContext)))
 		return E_FAIL;
 
-	if (FAILED(Ready_Gara()))
+	if (FAILED(Ready_Font()))
 		return E_FAIL;
 
 	if (FAILED(Ready_Prototype_Component()))
@@ -39,31 +42,78 @@ HRESULT CMainApp::Initialize()
 
 void CMainApp::Tick(const _float& fTimeDelta)
 {
+	m_fTimeAcc += fTimeDelta;
+
+	m_pGameInstance->Tick(fTimeDelta);
 }
 
-void CMainApp::Render()
+HRESULT CMainApp::Render()
 {
-}
+	++m_iNumRender;
 
-HRESULT CMainApp::Open_Level(LEVEL eLevelID)
-{
+	if (m_fTimeAcc >= 1.f)
+	{
+		wsprintf(m_szFPS, TEXT("FPS : %d"), m_iNumRender);
 
+		m_fTimeAcc = 0.f;
+		m_iNumRender = 0;
+	}
+
+	/* ±×¸°´Ù. */
+	m_pGameInstance->Clear_BackBuffer_View(_float4(0.f, 0.f, 1.f, 1.f));
+	m_pGameInstance->Clear_DepthStencil_View();
+
+	m_pGameInstance->Draw();
+
+	m_pGameInstance->Render_Font(TEXT("Font_Default"), m_szFPS, _float2(0.f, 0.f), XMVectorSet(1.f, 1.f, 0.f, 1.f));
+
+	m_pGameInstance->Present();
 
 	return S_OK;
 }
 
-HRESULT CMainApp::Ready_Gara()
+HRESULT CMainApp::Open_Level(LEVEL eLevelID)
 {
+	if (FAILED(m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, eLevelID))))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CMainApp::Ready_Font()
+{
+	if (FAILED(m_pGameInstance->Add_Font(TEXT("Font_Default"), TEXT("../Bin/Resources/Fonts/nanum28.spritefont"))))
+		return E_FAIL;
+
     return S_OK;
 }
 
 HRESULT CMainApp::Ready_Prototype_GameObject()
 {
+	/* For.Prototype_GameObject_BackGround */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_BackGround"), CBackground::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
     return S_OK;
 }
 
 HRESULT CMainApp::Ready_Prototype_Component()
 {
+	/* For.Prototype_Component_VIBuffer_Rect */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Rect"),
+		CVIBuffer_Rect::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Shader_VtxPosTex */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Shader_VtxPosTex"),
+		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxPosTex.hlsl"), VTXPOSTEX::Elements, VTXPOSTEX::iNumElements))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Texture_Loading */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Loading"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Default0.dds")))))
+		return E_FAIL;
+
     return S_OK;
 }
 

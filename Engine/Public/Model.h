@@ -1,81 +1,96 @@
 #pragma once
+
 #include "Component.h"
-#include "Mesh.h"
-#include "Animation.h"
-#include "Bone.h"
 
 BEGIN(Engine)
-class ENGINE_DLL CModel final:
-    public CComponent
+
+class ENGINE_DLL CModel final : public CComponent
 {
 public:
-    typedef struct tAnimDesc{
-        tAnimDesc(_uint iAnimIndex, _bool isLoop)
-            : iAnimIndex{ iAnimIndex }, isLoop{ isLoop } {}
+	enum MODELTYPE { TYPE_NONANIM, TYPE_ANIM, TYPE_END };
 
-        _uint iAnimIndex = { 0 };
-        _bool isLoop = { false };
-    }ANIM_DESC;
+	struct ANIMATION_DESC
+	{
+		ANIMATION_DESC(_uint iAnimIndex, _bool isLoop)
+			: iAnimIndex{ iAnimIndex }, isLoop{ isLoop } {}
+
+		_uint iAnimIndex = { 0 };
+		_bool isLoop = { false };
+	};
 
 private:
-    CModel(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-    CModel(const CModel& rhs);
-    virtual ~CModel() = default;
+	CModel(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	CModel(const CModel& rhs);
+	virtual ~CModel() = default;
 
 public:
-    _uint Get_NumMeshes() { return m_iNumMeshes; }
+	virtual HRESULT Initialize_Prototype(MODELTYPE eModelType, const _char* pModelFilePath, _fmatrix PreTransformMatrix, _bool isExported);
+	virtual HRESULT Initialize(void* pArg);
 
-    _bool Get_Animation_Finished() const { return m_Animations[m_AnimDesc.iAnimIndex]->IsFinished(); } //현재 재생되고 있는 애니메이션 모델이 종료 되었는지 확인하는 함수
-    const _float4x4* Get_BoneCombinedTransformationMatrix(const _char* szBoneName) const;
+	HRESULT	Ready_Meshes();
+	HRESULT	Ready_Materials(const _char* pModelFilePath);
+	HRESULT	Ready_Bones(const aiNode* pAINode, _int iParentIndex);
+	HRESULT	Ready_Animations();
 
-public:
-    HRESULT Initialize_Prototype(const _char* szModelFilePath, _fmatrix PreTransformMatrix, const _char* szBinaryFilePath);
-    HRESULT Initialize(void* pArv) override;
-    void Render(_uint iMeshIndex);
+	HRESULT Render(_uint iMeshIndex);
 
-    HRESULT Bind_Material(class CShader* pShader, const char* strConstansName, _uint iMeshIndex, aiTextureType iTextureType);
-    HRESULT Bind_BoneMatrices(class CShader* pShader, const char* strConstansName, _uint iMeshIndex);
+	HRESULT Bind_Material(class CShader* pShader, const _char* pConstantName, _uint iNumMeshIndex, aiTextureType eTextureType);
+	HRESULT Bind_BoneMatrices(class CShader* pShader, const _char* pConstantName, _uint iNumMeshIndex);
 
-public:
-    void Play_Animation(const _float& fTimeDelta, _float4x4* vMovePos);
-    void Set_Animation(ANIM_DESC AnimDesc) {
-        if (m_AnimDesc.iAnimIndex == AnimDesc.iAnimIndex)
-            return;
-        m_AnimDesc = AnimDesc;
-        m_Animations[m_AnimDesc.iAnimIndex]->Reset();
-    }
-
-private:
-    _float4x4	m_PreTransformMatrix;
-    CMesh::MESHTYPE m_eMeshType = { CMesh::TYPE_END };
-
-private:
-    _uint m_iNumMeshes = { 0 };
-    vector<class CMesh*> m_Meshes;
-
-private:
-    _uint m_iNumMaterials = { 0 };
-    vector<MESH_MATERIAL> m_Materials;
-
-private:
-    _uint m_iNumBones = { 0 };
-    vector<class CBone*> m_Bones;
-
-    _float4x4 m_MeshBoneMatrices[512];
-
-private:
-    _uint m_iNumAnimations = { 0 };
-    vector<class CAnimation*> m_Animations;
-    ANIM_DESC m_AnimDesc{ 0, false};
-
-private:
-    CTexture* Ready_Materials(const char* pModelFilePath, const char* pFilePath);
-    HRESULT Ready_Model(const _char* szModelFilePath, const _char* szBinaryFilePath);
+	void Play_Animation(_float fTimeDelta);
+	void Set_AnimationIndex(const ANIMATION_DESC& AnimDesc, _double ChangeInterval = 0.2);
+	void Reset_Animation(const ANIMATION_DESC& AnimDesc);
 
 public:
-    //static CModel* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CMesh::MESHTYPE eMeshType, const _char* szModelFilePath, _fmatrix PreTransformMatrix, const _char* szBinaryFilePath = nullptr,CREATETYPE eCreateType = CREATE_AI);
-    static CModel* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const _char* szModelFilePath, _fmatrix PreTransformMatrix, const _char* szBinaryFilePath = nullptr);
-    virtual CComponent* Clone(void* vArg) override;
-    virtual void Free() override;
+	_uint Get_NumMeshes() { return m_iNumMeshes; }
+
+	_bool Get_AnimFinished() const;
+
+	const _float4x4* Get_BoneCombinedTransformationMatrix(const _char* pBoneName) const;
+
+private:
+	HRESULT Export_Model(string& pBinFilePath, const _char* pModelFilePath);
+	HRESULT Export_Bones(ofstream& out);
+	HRESULT Export_Meshes(ofstream& out, const string& strOutDirectory);
+	HRESULT Export_Materials(ofstream& out, const _char* pModelFilePath, const string& strOutDirectory);
+	HRESULT Export_Animations(ofstream& out);
+
+	HRESULT Import_Model(string& pBinFilePath);
+	HRESULT Import_Bones(ifstream& in);
+	HRESULT Import_Meshes(ifstream& in);
+	HRESULT Import_Materials(ifstream& in);
+	HRESULT Import_Animations(ifstream& in);
+
+private:
+	MODELTYPE					m_eModelType = { TYPE_END };
+
+	const aiScene*				m_pAIScene = { nullptr };
+	Assimp::Importer			m_Importer;
+	_float4x4					m_PreTransformMatrix;			
+	_float4x4					m_MeshBoneMatrices[512];
+
+
+	_uint						m_iNumMeshes = { 0 };
+	vector<class CMesh*>		m_Meshes;
+
+	_uint						m_iNumMaterials = { 0 };
+	vector<MESH_MATERIAL>		m_Materials;
+
+	vector<class CBone*>		m_Bones;
+
+	_uint						m_iAnimations = { 0 };
+	ANIMATION_DESC				m_AnimDesc{ 0, false };
+	_uint						m_iPrevAnimIndex = { 0 };
+	vector<class CAnimation*>	m_Animations;
+
+	_bool						m_isAnimChange = { false };
+	_float						m_fAnimRatio = { 0.2f };
+	_double						m_ChangeInterval = { 0.2 };
+
+public:
+	static CModel* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, MODELTYPE eModelType, const _char* pModelFilePath, _fmatrix PreTransformMatrix, _bool isExported);
+	virtual CComponent* Clone(void* pArg) override;
+	virtual void Free() override;
 };
+
 END

@@ -16,7 +16,7 @@ HRESULT CVIBuffer_Cell::Initialize_Prototype(const _float3* pPoints)
 	m_Primitive_Topology = D3D_PRIMITIVE_TOPOLOGY_LINESTRIP;
 
 	m_iNumVertices = 3;
-	m_iVertexStride = sizeof(VXTPOS);
+	m_iVertexStride = sizeof(VTXPOS);
 
 	m_iNumVertexBuffers = 1;
 	m_Buffer_Desc.ByteWidth = m_iVertexStride * m_iNumVertices;
@@ -26,13 +26,13 @@ HRESULT CVIBuffer_Cell::Initialize_Prototype(const _float3* pPoints)
 	m_Buffer_Desc.MiscFlags = 0;
 	m_Buffer_Desc.StructureByteStride = m_iVertexStride;
 
-	VXTPOS* pVertexts = new VXTPOS[m_iNumVertices];
+	VTXPOS* pVertexts = new VTXPOS[m_iNumVertices];
 
 	pVertexts[0].vPosition = pPoints[0];
 	pVertexts[1].vPosition = pPoints[1];
 	pVertexts[2].vPosition = pPoints[2];
 
-	m_ResourceData.pSysMem = pVertexts;
+	m_InitialData.pSysMem = pVertexts;
 
 	__super::Create_Buffer(&m_pVB);
 
@@ -56,7 +56,7 @@ HRESULT CVIBuffer_Cell::Initialize_Prototype(const _float3* pPoints)
 	pIndices[2] = 2;
 	pIndices[3] = 0;
 
-	m_ResourceData.pSysMem = pIndices;
+	m_InitialData.pSysMem = pIndices;
 
 	__super::Create_Buffer(&m_pIB);
 

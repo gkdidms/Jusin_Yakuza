@@ -22,7 +22,7 @@ public:
     static _int g_iObjectIndex;
 
 public:
-    _bool Get_Dead() { return m_isDead; }
+    _bool isDead() { return m_isDead; }
 
 public:
     void Set_Dead() { m_isDead = true; }

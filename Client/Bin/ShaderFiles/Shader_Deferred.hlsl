@@ -96,84 +96,43 @@ struct PS_OUT_LIGHT
 PS_OUT_LIGHT PS_MAIN_LIGHT_DIRECTIONAL(PS_IN In)
 {
     PS_OUT_LIGHT Out = (PS_OUT_LIGHT) 0;
-    
+
     vector vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexcoord);
     vector vNormal = vector(vNormalDesc.xyz * 2.f - 1.f, 0.0f);
     vector vDepthDesc = g_DepthTexture.Sample(PointSampler, In.vTexcoord);
     vector vWorldPos;
-    
-    float fDot = max(dot(normalize(g_vLightDir) * -1.f, normalize(vNormal)), 0.f);
-    fDot = ceil(fDot * 3) / 3.f;
-    
-    Out.vShade = g_vLightDiffuse + saturate(fDot + (g_vLightAmbient * g_vMtrlAmbient * fDot));
-    
-    if (vDepthDesc.z == 1.f)
-    {
-        vWorldPos.x = In.vTexcoord.x * 2.f - 1.f;
-        vWorldPos.y = In.vTexcoord.y * -2.f + 1.f;
-        vWorldPos.z = vDepthDesc.x; /* 0 ~ 1 */
-        vWorldPos.w = 1.f;
 
-        vWorldPos = vWorldPos * (vDepthDesc.y * g_fFar);
+    vWorldPos.x = In.vTexcoord.x * 2.f - 1.f;
+    vWorldPos.y = In.vTexcoord.y * -2.f + 1.f;
+    vWorldPos.z = vDepthDesc.x; /* 0 ~ 1 */
+    vWorldPos.w = 1.f;
+
+    vWorldPos = vWorldPos * (vDepthDesc.y * 3000.f);
 
 	/* 뷰스페이스 상의 위치를 구한다. */
-        vWorldPos = mul(vWorldPos, g_ProjMatrixInv);
+    vWorldPos = mul(vWorldPos, g_ProjMatrixInv);
 
 	/* 월드스페이스 상의 위치를 구한다. */
-        vWorldPos = mul(vWorldPos, g_ViewMatrixInv);
-    
-    //주변의 노말 벡터를 비교한다
-    
-        float fOffSetX = 1 / 1280.f;
-        float fOffSetY = 1 / 720.f;
-        float2 offsets[] =
-        {
-            float2(fOffSetX, 0.0f),
-            float2(-fOffSetX, 0.0f),
-            float2(0.0f, fOffSetY),
-            float2(0.0f, -fOffSetY)
-        };
-    
-    //위
-        float4 vNormalUpDesc = g_NormalTexture.Sample(LinearSampler, In.vTexcoord + offsets[2]);
-        vector vNormalUp = vector(vNormalUpDesc.xyz * 2.f - 1.f, 0.0f);
-    
-    //아래
-        float4 vNormalDownDesc = g_NormalTexture.Sample(LinearSampler, In.vTexcoord + offsets[3]);
-        vector vNormalDown = vector(vNormalDownDesc.xyz * 2.f - 1.f, 0.0f);
-    
-    //왼쪽
-        float4 vNormalLeftDesc = g_NormalTexture.Sample(LinearSampler, In.vTexcoord + offsets[1]);
-        vector vNormalLeft = vector(vNormalLeftDesc.xyz * 2.f - 1.f, 0.0f);
-    //오른쪽
-        float4 vNormalRightDesc = g_NormalTexture.Sample(LinearSampler, In.vTexcoord + offsets[0]);
-        vector vNormalRight = vector(vNormalRightDesc.xyz * 2.f - 1.f, 0.0f);
-        
-        //각도 계산하기
-        float4 vAvgNormal = (vNormalUp + vNormalDown + vNormalLeft + vNormalRight) / 4.f;
-        float fAngle = acos(dot(vNormal, vAvgNormal));
-        
-        if (fAngle > g_fOutlineAngle)
-        {
-            Out.vOutline = vector(0.3f, 0.2f, 0.1f, 1.f);
-            Out.vShade = vector(0.f, 0.f, 0.f, 1.f);
-        }
-        /*
-        float fAngleUp = acos(dot(vNormal, vNormalUp));
-        float fAngleDown = acos(dot(vNormal, vNormalDown));
-        float fAngleLeft = acos(dot(vNormal, vNormalLeft));
-        float fAngleRight = acos(dot(vNormal, vNormalRight));
-    
+    vWorldPos = mul(vWorldPos, g_ViewMatrixInv);
 
-        /*if (fAngleUp > fOutlineAngle || fAngleDown > fOutlineAngle || fAngleLeft > fOutlineAngle || fAngleRight > fOutlineAngle)
-        {
-            Out.vOutline = vector(0.3f, 0.2f, 0.1f, 1.f);
-            
-            Out.vShade = vector(0.f, 0.f, 0.f, 1.f);
-        }*/
-        
-    }
-   
+
+    vector vLightDir = vWorldPos - g_vLightPos;
+    float fDistance = length(vLightDir);
+
+    float fAtt = max((g_fLightRange - fDistance), 0.f) / g_fLightRange;
+
+    Out.vShade = g_vLightDiffuse *
+		saturate(max(dot(normalize(vLightDir) * -1.f, normalize(vNormal)), 0.f) + (g_vLightAmbient * g_vMtrlAmbient)) * fAtt;
+
+
+	/* vWorldPos:화면에 그려지고 있는 픽셀들의 실제 월드 위치를 받아와야하낟.  */
+	/* 1. 렌더타겟에 객체들을 그릴때 픽셀의 월드위치를 저장하는 방법.(범위 무제한이라는 조건때문에 저장이 힘들다) */
+	/* 2. 현재 상황에서 픽셀의 투영위치(x, y)까지 먼저구하는 작업은 가능 -> z가 없기때문에 월드까지의 역변환이 힘들다.-> 투영 z( 0 ~ 1), ViewSpace`s Pixel`s Z를(near ~ far) 받아오자.(무제한이아니다.)  */
+    //vector vReflect = reflect(normalize(vLightDir), normalize(vNormal));
+    //vector vLook = vWorldPos - g_vCamPosition;
+
+   // Out.vSpecular = (g_vLightSpecular * g_vMtrlSpecular) * pow(max(dot(normalize(vReflect) * -1.f, normalize(vLook)), 0.f), 30.f) * fAtt;
+
     return Out;
 }
 
@@ -221,40 +180,8 @@ PS_OUT PS_MAIN_COPY_BACKBUFFER_RESULT(PS_IN In)
 
     vector vShade = g_ShadeTexture.Sample(LinearSampler, In.vTexcoord);
     
-    vector vOutline = g_OutlineTexture.Sample(LinearSampler, In.vTexcoord);
+    Out.vColor = vDiffuse * vShade;
     
-    Out.vColor = vDiffuse * vShade + vOutline;
-    
-    vector vDepthDesc = g_DepthTexture.Sample(PointSampler, In.vTexcoord);
-    vector vWorldPos;
-
-    vWorldPos.x = In.vTexcoord.x * 2.f - 1.f;
-    vWorldPos.y = In.vTexcoord.y * -2.f + 1.f;
-    vWorldPos.z = vDepthDesc.x; /* 0 ~ 1 */
-    vWorldPos.w = 1.f;
-
-    vWorldPos = vWorldPos * (vDepthDesc.y * 3000.f);
-
-	/* 뷰스페이스 상의 위치를 구한다. */
-    vWorldPos = mul(vWorldPos, g_ProjMatrixInv);
-
-	/* 월드스페이스 상의 위치를 구한다. */
-    vWorldPos = mul(vWorldPos, g_ViewMatrixInv);
-
-    vector vLightPos = mul(vWorldPos, g_LightViewMatrix);
-    vLightPos = mul(vLightPos, g_LightProjMatrix);
-
-    float2 vTexcoord;
-    vTexcoord.x = (vLightPos.x / vLightPos.w) * 0.5f + 0.5f;
-    vTexcoord.y = (vLightPos.y / vLightPos.w) * -0.5f + 0.5f;
-
-    vector vLightDepthDesc = g_LightDepthTexture.Sample(PointSampler, vTexcoord);
-
-    float fLightOldDepth = vLightDepthDesc.x * 1000.f;
-
-    if (fLightOldDepth + 0.1f < vLightPos.w)
-        Out.vColor = vector(Out.vColor.rgb * 0.5f, 1.f);
-
     return Out;
 }
 
@@ -266,6 +193,8 @@ PS_OUT PS_MAIN_DEFERRED_RESULT(PS_IN In)
 
     return Out;
 }
+
+/*
 
 float weights[9] =
 {
@@ -341,6 +270,7 @@ PS_OUT PS_MAIN_FINAL_RESULT(PS_IN In)
     
     return Out;
 }
+*/
 
 technique11 DefaultTechnique
 {
@@ -413,6 +343,8 @@ technique11 DefaultTechnique
         PixelShader = compile ps_5_0 PS_MAIN_DEFERRED_RESULT();
     }
 
+/*
+
     pass Guassian_Result // 5
     {
         SetRasterizerState(RS_Default);
@@ -451,5 +383,7 @@ technique11 DefaultTechnique
         DomainShader = NULL;
         PixelShader = compile ps_5_0 PS_MAIN_FINAL_RESULT();
     }
+
+*/
 }
 

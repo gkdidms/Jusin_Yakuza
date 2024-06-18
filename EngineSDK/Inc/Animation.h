@@ -1,49 +1,50 @@
 #pragma once
-#include "Bone.h"
+
+#include "Base.h"
 
 BEGIN(Engine)
-class CAnimation final:
-    public CBase
+
+class CAnimation final : public CBase
 {
 private:
-    CAnimation();
-    CAnimation(const CAnimation& rhs);
-    virtual ~CAnimation() = default;
+	CAnimation();
+	CAnimation(const CAnimation& rhs);
+	virtual ~CAnimation() = default;
 
 public:
-    _bool IsFinished() const { return m_IsFinished; }
-    _bool IsLoopFinished() const { return m_IsLoopFinished; }
-    _bool IsFirst() const { return m_IsFirst; }
+	_bool Get_Finished() const {
+		return m_isFinished;
+	}
+
+	_bool Get_Changed() const {
+		return m_isChanged;
+	}
 
 public:
-    HRESULT Initialize(const char* pName, _double Duration, _double TickPerSecond, _uint iNumChannels, vector<class CChannel*> Channels);
-
-public:
-    void Update_TransformationMatrix(const _float& fTimeDelta, const vector<CBone*> Bones, _bool isLoop);
-    void Linear_TransformationMatrix(const _float& fTimeDelta, const vector<CBone*> Bones, _bool isLoop);
-    void Reset();
-    void Loop_Reset() { m_IsLoopFinished = false; }
+	HRESULT Initialize(const aiAnimation* pAnimation, const vector<class CBone*>& Bones);
+	HRESULT Initialize(const BAiAnimation* pAnimation, const vector<class CBone*>& Bones);
+	void Update_TransformationMatrix(_float fTimeDelta, const vector<class CBone*>& Bones, _bool isLoop);
+	void Update_Change_Animation(_float fTimeDelta, const vector<class CBone*>& Bones, CAnimation* pPrevAnimation, _double ChangeInterval);
+	void Reset();
 
 private:
-    char m_szName[MAX_PATH] = "";
-    double m_Duration = { 0.0 };
-    double m_TickPerSecond = { 0.0 };
-    _uint m_iNumChannels = { 0 };
+	_char					m_szName[MAX_PATH] = { "" };
+	_double					m_Duration = { 0.0 };
+	_double					m_TickPerSecond = { 0.0 };
+	_double					m_CurrentPosition = { 0.0 };
+	_double					m_CurrentChangePosition = { 0.0 };
+	_bool					m_isFinished = { false };
+	_bool					m_isChanged = { true };
 
-    vector<class CChannel*> m_Channels;
-
-    double m_iCurrentPosition = { 0 };
-
-    vector<_uint> m_CurrentKeyFrameIndex;
-    _bool m_IsFinished = { false };
-    _bool m_IsFirst = { true };
-
-private:
-    _bool m_IsLoopFinished = { false }; // 루프 애니메이션이 끝났는지 아닌지 확인
+	_uint					m_iNumChannels = { 0 };
+	vector<_uint>			m_CurrentKeyFrameIndices;
+	vector<class CChannel*>	m_Channels;
 
 public:
-    static CAnimation* Create(const char* pName, _double Duration, _double TickPerSecond, _uint iNumChannels, vector<class CChannel*> Channels);
-    CAnimation* Clone();
-    virtual void Free() override;
+	static CAnimation* Create(const aiAnimation* pAnimation, const vector<class CBone*>& Bones);
+	static CAnimation* Create(const BAiAnimation* pAnimation, const vector<class CBone*>& Bones);
+	CAnimation* Clone();
+	virtual void Free() override;
 };
+
 END
