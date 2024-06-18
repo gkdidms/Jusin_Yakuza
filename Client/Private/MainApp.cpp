@@ -4,17 +4,26 @@
 #include "GameInstance.h"
 #include "SystemManager.h"
 
+#ifdef _DEBUG
+#include "DebugManager.h"
+#endif // _DEBUG
+
 #include "Level_Loading.h"
 #include "Background.h"
 
 CMainApp::CMainApp() :
+#ifdef _DEBUG
+	m_pDebugMananger{ CDebugManager::GetInstance() },
+#endif // _DEBUG
 	m_pGameInstance{ CGameInstance::GetInstance() },
-	m_pSystemManager { CSystemManager::GetInstance() },
-	m_pDebugMananger { CDebugManager::GetInstance() }
+	m_pSystemManager{ CSystemManager::GetInstance() }
 {
 	Safe_AddRef(m_pGameInstance);
 	Safe_AddRef(m_pSystemManager);
+
+#ifdef _DEBUG
 	Safe_AddRef(m_pDebugMananger);
+#endif // _DEBUG
 }
 
 HRESULT CMainApp::Initialize()
@@ -58,8 +67,11 @@ void CMainApp::Tick(const _float& fTimeDelta)
 
 #ifdef _DEBUG
 	if (m_pGameInstance->GetKeyState(DIK_F10) == TAP)
+	{
 		m_isDebug = !m_isDebug;
-
+		m_pDebugMananger->Set_Debug(m_isDebug);
+	}
+		
 	if (m_isDebug) m_pDebugMananger->Tick();
 #endif // _DEBUG
 
@@ -163,6 +175,8 @@ void CMainApp::Free()
 
 	Safe_Release(m_pSystemManager);
 	
+#ifdef _DEBUG
 	Safe_Release(m_pDebugMananger);
 	CDebugManager::Release_Debug();
+#endif // _DEBUG
 }

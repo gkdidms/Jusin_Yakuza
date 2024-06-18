@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Client_Defines.h"
-#include "DebugManager.h"
 
 #include "Base.h"
 
@@ -28,7 +27,11 @@ private:
 
 	CGameInstance* m_pGameInstance = { nullptr };
 	class CSystemManager* m_pSystemManager = { nullptr };
+
+#ifdef _DEBUG
+private:
 	class CDebugManager* m_pDebugMananger = { nullptr };
+#endif // _DEBUG
 
 #ifdef _DEBUG
 private:

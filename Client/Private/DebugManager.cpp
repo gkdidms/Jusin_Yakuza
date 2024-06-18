@@ -55,6 +55,8 @@ void CDebugManager::Window_Debug()
 {
     ImGui::Begin("Window");
 
+    ImGui::Checkbox("TimeDelta Stop", &m_isTimeStop);
+
     ImGui::End();
 }
 
@@ -64,7 +66,6 @@ void CDebugManager::Release_Debug()
     ImGui_ImplWin32_Shutdown();
     ImGui::DestroyContext();
 
-    CDebugManager::GetInstance()->Free();
     CDebugManager::DestroyInstance();
 }
 
