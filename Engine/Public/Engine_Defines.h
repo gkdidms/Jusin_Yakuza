@@ -47,7 +47,7 @@ using namespace TriangleTests;
 #include "Engine_Macro.h"
 #include "Engine_Struct.h"
 
-#ifdef _CLIENT
+#if defined(_CLIENT)
 #ifdef _DEBUG
 
 #define _CRTDBG_MAP_ALLOC
@@ -56,15 +56,12 @@ using namespace TriangleTests;
 
 #ifndef DBG_NEW 
 
-//#define DBG_NEW new ( _NORMAL_BLOCK , __FILE__ , __LINE__ ) 
-//#define new DBG_NEW 
+#define DBG_NEW new ( _NORMAL_BLOCK , __FILE__ , __LINE__ ) 
+#define new DBG_NEW 
 
 #endif
-
 #endif // _DEBUG
-#endif // 
-
-
+#endif // !defined(_CLIENT)
 
 namespace Engine
 {
