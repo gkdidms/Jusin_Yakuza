@@ -61,11 +61,11 @@ HRESULT CTestMap::Render()
 
 HRESULT CTestMap::Add_Componenets()
 {
-    if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Shader_Mesh"),
+    if (FAILED(__super::Add_Component(LEVEL_TEST, TEXT("Prototype_Component_Shader_Mesh"),
         TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
         return E_FAIL;
 
-    if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Model_Map"),
+    if (FAILED(__super::Add_Component(LEVEL_TEST, TEXT("Prototype_Component_Model_Map"),
         TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
         return E_FAIL;
 
@@ -76,7 +76,6 @@ HRESULT CTestMap::Bind_ResourceData()
 {
     if (FAILED(m_pTransformCom->Bind_ShaderMatrix(m_pShaderCom, "g_WorldMatrix")))
         return E_FAIL;
-
     if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_VIEW))))
         return E_FAIL;
     if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_PROJ))))
@@ -114,4 +113,7 @@ CGameObject* CTestMap::Clone(void* pArg)
 void CTestMap::Free()
 {
     __super::Free();
+
+    Safe_Release(m_pShaderCom);
+    Safe_Release(m_pModelCom);
 }

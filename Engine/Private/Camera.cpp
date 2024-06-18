@@ -42,7 +42,7 @@ void CCamera::Priority_Tick(const _float& fTimeDelta)
 
 void CCamera::Tick(const _float& fTimeDelta)
 {
-	m_pGameInstance->Set_Transform(CPipeLine::D3DTS_VIEW, XMMatrixInverse(nullptr, XMLoadFloat4x4(&m_WorldMatrix)));
+	m_pGameInstance->Set_Transform(CPipeLine::D3DTS_VIEW, XMMatrixInverse(nullptr, m_pTransformCom->Get_WorldMatrix()));
 	m_pGameInstance->Set_Transform(CPipeLine::D3DTS_PROJ, XMMatrixPerspectiveFovLH(m_fFovY, m_fAspect, m_fNear, m_fFar));
 	m_pGameInstance->Set_CamFar(m_fFar);
 }
