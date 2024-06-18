@@ -32,7 +32,7 @@ HRESULT CVIBuffer_Cell::Initialize_Prototype(const _float3* pPoints)
 	pVertexts[1].vPosition = pPoints[1];
 	pVertexts[2].vPosition = pPoints[2];
 
-	m_ResourceData.pSysMem = pVertexts;
+	m_InitialData.pSysMem = pVertexts;
 
 	__super::Create_Buffer(&m_pVB);
 
@@ -56,7 +56,7 @@ HRESULT CVIBuffer_Cell::Initialize_Prototype(const _float3* pPoints)
 	pIndices[2] = 2;
 	pIndices[3] = 0;
 
-	m_ResourceData.pSysMem = pIndices;
+	m_InitialData.pSysMem = pIndices;
 
 	__super::Create_Buffer(&m_pIB);
 

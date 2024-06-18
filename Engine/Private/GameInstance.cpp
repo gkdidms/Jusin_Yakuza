@@ -13,6 +13,7 @@
 #include "Picking.h"
 #include "SoundMgr.h"
 #include "Frustum.h"
+#include "Convert_Manager.h"
 
 IMPLEMENT_SINGLETON(CGameInstance)
 
@@ -76,6 +77,10 @@ HRESULT CGameInstance::Initialize_Engine(_uint iMaxLevelIndex, const ENGINE_DESC
 
 	m_pFrustum = CFrustum::Create();
 	if (nullptr == m_pFrustum)
+		return E_FAIL;
+
+	m_pConvert_Manager = CConvert_Manager::Create();
+	if (nullptr == m_pConvert_Manager)
 		return E_FAIL;
 
 	return S_OK;
@@ -397,6 +402,105 @@ HRESULT CGameInstance::Render_Debug(const wstring& strMRTTag, CShader* pShader, 
 }
 #endif // _DEBUG
 
+void CGameInstance::Get_FileNames(const wstring& strPath, vector<wstring>& vecOut)
+{
+	m_pConvert_Manager->Get_FileNames(strPath, vecOut);
+}
+
+void CGameInstance::Get_FileNames(const string& strPath, vector<string>& vecOut)
+{
+	m_pConvert_Manager->Get_FileNames(strPath, vecOut);
+}
+
+wstring CGameInstance::Get_FileName(const wstring& strPath)
+{
+	return m_pConvert_Manager->Get_FileName(strPath);
+}
+
+string CGameInstance::Get_FileName(const string& strPath)
+{
+	return m_pConvert_Manager->Get_FileName(strPath);
+}
+
+void CGameInstance::Get_FileExts(const wstring& strPath, vector<wstring>& vecOut)
+{
+	m_pConvert_Manager->Get_FileExts(strPath, vecOut);
+}
+
+void CGameInstance::Get_FileExts(const string& strPath, vector<string>& vecOut)
+{
+	m_pConvert_Manager->Get_FileExts(strPath, vecOut);
+}
+
+wstring CGameInstance::Get_FileExt(const wstring& strPath)
+{
+	return m_pConvert_Manager->Get_FileExt(strPath);
+}
+
+string CGameInstance::Get_FileExt(const string& strPath)
+{
+	return m_pConvert_Manager->Get_FileExt(strPath);
+}
+
+void CGameInstance::Get_DirectoryName(const wstring& strPath, vector<wstring>& vecOut)
+{
+	m_pConvert_Manager->Get_DirectoryName(strPath, vecOut);
+}
+
+void CGameInstance::Get_DirectoryName(const string& strPath, vector<string>& vecOut)
+{
+	m_pConvert_Manager->Get_DirectoryName(strPath, vecOut);
+}
+
+wstring CGameInstance::Get_Directory(const wstring& strPath)
+{
+	return m_pConvert_Manager->Get_Directory(strPath);
+}
+
+string CGameInstance::Get_Directory(const string& strPath)
+{
+	return m_pConvert_Manager->Get_Directory(strPath);
+}
+
+_uint CGameInstance::Get_NumFolders(const wstring& strPath)
+{
+	return m_pConvert_Manager->Get_NumFolders(strPath);
+}
+
+_uint CGameInstance::Get_NumFolders(const string& strPath)
+{
+	return m_pConvert_Manager->Get_NumFolders(strPath);
+}
+
+_uint CGameInstance::Get_NumFiles(const wstring& strPath)
+{
+	return m_pConvert_Manager->Get_NumFiles(strPath);
+}
+
+_uint CGameInstance::Get_NumFiles(const string& strPath)
+{
+	return m_pConvert_Manager->Get_NumFiles(strPath);
+}
+
+_bool CGameInstance::IsExists_Path(const wstring& strPath)
+{
+	return m_pConvert_Manager->IsExists_Path(strPath);
+}
+
+_bool CGameInstance::IsExists_Path(const string& strPath)
+{
+	return  m_pConvert_Manager->IsExists_Path(strPath);
+}
+
+wstring CGameInstance::StringToWstring(const string& str)
+{
+	return  m_pConvert_Manager->StringToWstring(str);
+}
+
+string CGameInstance::WstringToString(const wstring& str)
+{
+	return  m_pConvert_Manager->WstringToString(str);
+}
 
 HRESULT CGameInstance::Add_Light(const LIGHT_DESC& LightDesc)
 {
@@ -430,4 +534,5 @@ void CGameInstance::Free()
 	Safe_Release(m_pInput_Device);
 	Safe_Release(m_pPicking);
 	Safe_Release(m_pFrustum);
+	Safe_Release(m_pConvert_Manager);
 }

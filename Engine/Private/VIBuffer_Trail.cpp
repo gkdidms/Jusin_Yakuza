@@ -52,7 +52,7 @@ HRESULT CVIBuffer_Trail::Initialize(void* pArg)
 		// 0 2 4 6 8 10
 		// 1 3 5 7 9 11
 
-	m_ResourceData.pSysMem = pVertexts;
+	m_InitialData.pSysMem = pVertexts;
 
 	if (FAILED(__super::Create_Buffer(&m_pVB)))
 		return E_FAIL;
@@ -91,7 +91,7 @@ HRESULT CVIBuffer_Trail::Initialize(void* pArg)
 		pIndices[i + 1]._2 = i + 3;*/
 	}
 
-	m_ResourceData.pSysMem = pIndices;
+	m_InitialData.pSysMem = pIndices;
 
 	if (FAILED(__super::Create_Buffer(&m_pIB)))
 		return E_FAIL;

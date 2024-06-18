@@ -50,7 +50,7 @@ HRESULT CVIBuffer_Instance_Rect::Initialize_Prototype(const CVIBuffer_Instance::
 	pVertexts[3].vPosition = _float3{ -0.5f, -0.5f, 0.f };
 	pVertexts[3].vTexcoord = _float2{ 0.f, 1.f };
 
-	m_ResourceData.pSysMem = pVertexts;
+	m_InitialData.pSysMem = pVertexts;
 
 	__super::Create_Buffer(&m_pVB);
 
@@ -82,7 +82,7 @@ HRESULT CVIBuffer_Instance_Rect::Initialize_Prototype(const CVIBuffer_Instance::
 		pIndices[iNumIndices++] = 2;
 		pIndices[iNumIndices++] = 3;
 	}
-	m_ResourceData.pSysMem = pIndices;
+	m_InitialData.pSysMem = pIndices;
 
 	__super::Create_Buffer(&m_pIB);
 
@@ -134,9 +134,9 @@ HRESULT CVIBuffer_Instance_Rect::Initialize_Prototype(const CVIBuffer_Instance::
 		
 		m_pSpeeds[i] = Speed(m_RandomNumber);
 	}
-	m_ResourceData.pSysMem = pInstanceVertices;
+	m_InitialData.pSysMem = pInstanceVertices;
 
-	if (FAILED(m_pDevice->CreateBuffer(&m_InstanceBufferDesc, &m_ResourceData, &m_pVBInstance)))
+	if (FAILED(m_pDevice->CreateBuffer(&m_InstanceBufferDesc, &m_InitialData, &m_pVBInstance)))
 		return E_FAIL;
 
 

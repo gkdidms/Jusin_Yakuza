@@ -10,7 +10,7 @@ CVIBuffer::CVIBuffer(const CVIBuffer& rhs)
 	m_pIB { rhs.m_pIB},
 	m_pVB{ rhs.m_pVB },
 	m_Buffer_Desc {rhs.m_Buffer_Desc},
-	m_ResourceData { rhs.m_ResourceData},
+	m_InitialData { rhs.m_InitialData},
 	m_iNumVertices {rhs.m_iNumVertices},
 	m_iVertexStride { rhs.m_iVertexStride},
 	m_iNumIndices { rhs.m_iNumIndices},
@@ -58,7 +58,7 @@ HRESULT CVIBuffer::Render()
 
 HRESULT CVIBuffer::Create_Buffer(ID3D11Buffer** pOut)
 {
-	if (FAILED(m_pDevice->CreateBuffer(&m_Buffer_Desc, &m_ResourceData, pOut)))
+	if (FAILED(m_pDevice->CreateBuffer(&m_Buffer_Desc, &m_InitialData, pOut)))
 		return E_FAIL;
 
 	return S_OK;

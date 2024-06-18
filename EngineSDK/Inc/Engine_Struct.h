@@ -29,6 +29,95 @@ namespace Engine
 		XMFLOAT4	vSpecular;
 	}LIGHT_DESC;
 
+	// 타임별로 Value를 저장한다.
+	struct KEYFRAME
+	{
+		XMFLOAT3		vScale;
+		XMFLOAT4		vRotation;
+		XMFLOAT3		vPosition;
+		double			Time;
+	};
+
+	/* Model Export용 구조체들*/
+	struct BAiVertexWeight
+	{
+		_uint			mVertexId;
+		_float			mWeight;
+	};
+
+	struct BAiFace
+	{
+		_uint* mIndices;
+	};
+
+	struct BAiNode
+	{
+		_char				mName[MAX_PATH];
+		_int				mParentBoneIndex;
+		XMFLOAT4X4			mTransformationMatrix;
+	};
+
+	struct VectorKey
+	{
+		_double				mTime;
+		XMFLOAT3			mValue;
+	};
+
+	struct QuatKey
+	{
+		_double				mTime;
+		XMFLOAT4			mValue;
+	};
+
+	struct BAiNodeAnim
+	{
+		_char				mName[MAX_PATH];
+		_uint				mNumScalingKeys;
+		_uint				mNumRotationKeys;
+		_uint				mNumPositionKeys;
+
+		VectorKey* mScalingKeys;
+		QuatKey* mRotationKeys;
+		VectorKey* mPositionKeys;
+	};
+
+	struct BAiBone
+	{
+		_char				mName[MAX_PATH];
+		_uint				mNumWeights;
+
+		BAiVertexWeight* mWeights;
+
+		XMFLOAT4X4			mOffsetMatrix;
+	};
+
+	struct BAiMesh
+	{
+		_char				mName[MAX_PATH];
+		_uint				mNumVertices;
+		_uint				mNumFaces;
+
+		_uint				mMaterialIndex;
+		_uint				mNumBones;
+
+		_float3* mVertices;
+		_float3* mNormals;
+		_float2* mTextureCoords[AI_MAX_NUMBER_OF_TEXTURECOORDS];
+		_float3* mTangents;
+
+		BAiFace* mFaces;
+		BAiBone** mBones;
+	};
+
+	struct BAiAnimation
+	{
+		_char				mName[MAX_PATH];
+		_double				mDuration;
+		_double				mTicksPerSecond;
+		_uint				mNumChannels;
+		BAiNodeAnim** mChannels;
+	};
+
 	typedef struct ENGINE_DLL tVexPos
 	{
 		XMFLOAT3 vPosition;
@@ -94,15 +183,6 @@ namespace Engine
 	{
 		class CTexture* pMaterialTextures[AI_TEXTURE_TYPE_MAX];
 	} MESH_MATERIAL;
-
-	typedef struct
-	{
-		XMFLOAT3 m_vScale;
-		XMFLOAT4 vRotate;
-		XMFLOAT3 vPosition;
-
-		double Time;
-	} KEYFRAME;
 
 	typedef struct ENGINE_DLL tVtxMatRix
 	{
