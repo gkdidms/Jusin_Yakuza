@@ -32,13 +32,16 @@
       <Filter>02.GameObjects\03.LandObject</Filter>
     </ClCompile>
     <ClCompile Include="..\private\PlayerCamera.cpp">
-      <Filter>02.GameObjects\02.Camera\00.PlayerCamera</Filter>
+      <Filter>02.GameObjects\99.Camera\00.PlayerCamera</Filter>
     </ClCompile>
     <ClCompile Include="..\private\TestMap.cpp">
       <Filter>02.GameObjects\01.Terrain\TestMap</Filter>
     </ClCompile>
     <ClCompile Include="..\private\DebugCamera.cpp">
-      <Filter>02.GameObjects\02.Camera\99.DebugCamera</Filter>
+      <Filter>02.GameObjects\99.Camera\99.DebugCamera</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\SystemManager.cpp">
+      <Filter>96.System</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -85,13 +88,16 @@
       <Filter>02.GameObjects\03.LandObject</Filter>
     </ClInclude>
     <ClInclude Include="..\public\PlayerCamera.h">
-      <Filter>02.GameObjects\02.Camera\00.PlayerCamera</Filter>
+      <Filter>02.GameObjects\99.Camera\00.PlayerCamera</Filter>
     </ClInclude>
     <ClInclude Include="..\public\TestMap.h">
       <Filter>02.GameObjects\01.Terrain\TestMap</Filter>
     </ClInclude>
     <ClInclude Include="..\public\DebugCamera.h">
-      <Filter>02.GameObjects\02.Camera\99.DebugCamera</Filter>
+      <Filter>02.GameObjects\99.Camera\99.DebugCamera</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\SystemManager.h">
+      <Filter>96.System</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -139,22 +145,25 @@
     <Filter Include="01.Levels\98.Test">
       <UniqueIdentifier>{a3687eeb-93e4-4da9-95c3-692e153c991f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\02.Camera">
-      <UniqueIdentifier>{b978604e-76c6-4218-b76a-65d7fa390062}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObjects\03.LandObject">
       <UniqueIdentifier>{9fbfc139-fa7b-4bb5-8bfa-68ab385abcc7}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObjects\03.LandObject\00.Player">
       <UniqueIdentifier>{8f8aa033-d0f3-43b6-ae6e-e95d1f3c776f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\02.Camera\00.PlayerCamera">
-      <UniqueIdentifier>{d5756e02-bf35-4115-b890-fdff7cc98ae1}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObjects\01.Terrain\TestMap">
       <UniqueIdentifier>{13a0eb4d-9fd9-4a66-90f0-f589933ed093}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\02.Camera\99.DebugCamera">
+    <Filter Include="96.System">
+      <UniqueIdentifier>{7faf8060-da7b-404d-8597-061be83e3f43}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.Camera">
+      <UniqueIdentifier>{b978604e-76c6-4218-b76a-65d7fa390062}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.Camera\00.PlayerCamera">
+      <UniqueIdentifier>{d5756e02-bf35-4115-b890-fdff7cc98ae1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.Camera\99.DebugCamera">
       <UniqueIdentifier>{a56dc720-b3f2-49f1-993d-86fd054eb9be}</UniqueIdentifier>
     </Filter>
   </ItemGroup>

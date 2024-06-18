@@ -25,6 +25,7 @@ private:
 	ID3D11DeviceContext* m_pContext = { nullptr };
 
 	CGameInstance* m_pGameInstance = { nullptr };
+	class CSystemManager* m_pSystemManager = { nullptr };
 
 #ifdef _DEBUG
 private:
