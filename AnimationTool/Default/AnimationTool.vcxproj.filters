@@ -28,6 +28,45 @@
     <ClCompile Include="AnimationTool.cpp">
       <Filter>98.Default</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\ImGuiManager.cpp">
+      <Filter>02.GameObjects\03.ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Imgui\imgui\imgui.cpp">
+      <Filter>ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Imgui\imgui\imgui_demo.cpp">
+      <Filter>ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Imgui\imgui\imgui_draw.cpp">
+      <Filter>ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Imgui\imgui\imgui_tables.cpp">
+      <Filter>ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Imgui\imgui\imgui_widgets.cpp">
+      <Filter>ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Imgui\background\imgui_impl_dx11.cpp">
+      <Filter>ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Imgui\background\imgui_impl_win32.cpp">
+      <Filter>ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Imgui\imGuizmo\GraphEditor.cpp">
+      <Filter>ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Imgui\imGuizmo\ImCurveEdit.cpp">
+      <Filter>ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Imgui\imGuizmo\ImGradient.cpp">
+      <Filter>ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Imgui\imGuizmo\ImGuizmo.cpp">
+      <Filter>ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Imgui\imGuizmo\ImSequencer.cpp">
+      <Filter>ImGui</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\MainApp.h">
@@ -68,6 +107,51 @@
     </ClInclude>
     <ClInclude Include="AnimationTool.h">
       <Filter>98.Default</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ImGuiManager.h">
+      <Filter>02.GameObjects\03.ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Imgui\imgui\imconfig.h">
+      <Filter>ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Imgui\imgui\imgui.h">
+      <Filter>ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Imgui\imgui\imgui_internal.h">
+      <Filter>ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Imgui\imgui\imstb_rectpack.h">
+      <Filter>ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Imgui\imgui\imstb_textedit.h">
+      <Filter>ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Imgui\imgui\imstb_truetype.h">
+      <Filter>ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Imgui\background\imgui_impl_dx11.h">
+      <Filter>ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Imgui\background\imgui_impl_win32.h">
+      <Filter>ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Imgui\imGuizmo\GraphEditor.h">
+      <Filter>ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Imgui\imGuizmo\ImCurveEdit.h">
+      <Filter>ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Imgui\imGuizmo\ImGradient.h">
+      <Filter>ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Imgui\imGuizmo\ImGuizmo.h">
+      <Filter>ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Imgui\imGuizmo\ImSequencer.h">
+      <Filter>ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Imgui\imGuizmo\ImZoomSlider.h">
+      <Filter>ImGui</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -117,6 +201,12 @@
     </Filter>
     <Filter Include="02.GameObjects\02.Camera">
       <UniqueIdentifier>{b978604e-76c6-4218-b76a-65d7fa390062}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\03.ImGui">
+      <UniqueIdentifier>{9b515df5-3e1e-47c8-8a98-b84844bdcd53}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="ImGui">
+      <UniqueIdentifier>{62fd199e-63e1-4d09-b8a3-62706022bae0}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
