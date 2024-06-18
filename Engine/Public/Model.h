@@ -43,6 +43,7 @@ public:
 
 public:
 	_uint Get_NumMeshes() { return m_iNumMeshes; }
+	_uint Get_NumAnimations() { return m_iAnimations; }
 
 	_bool Get_AnimFinished() const;
 

@@ -49,6 +49,7 @@ private:
 	CModel* m_pModelCom = { nullptr };
 
 	wstring m_strModelName;
+	_uint	m_iAnimIndex = { 0 };
 
 public:
 	static CAnimModel* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

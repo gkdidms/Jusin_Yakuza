@@ -21,6 +21,7 @@ CModel::CModel(const CModel& rhs)
 	, m_Materials{ rhs.m_Materials }
 	, m_eModelType{ rhs.m_eModelType }
 	, m_PreTransformMatrix{ rhs.m_PreTransformMatrix }
+	, m_iAnimations{ rhs.m_iAnimations }
 	, m_AnimDesc{ rhs.m_AnimDesc }
 {
 	for (auto& pPrototypeAnimation : rhs.m_Animations)

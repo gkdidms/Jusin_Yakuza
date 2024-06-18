@@ -24,7 +24,7 @@ HRESULT CAnimModel::Initialize(void* pArg)
     if (FAILED(CGameObject::Initialize(&pDesc)))
         return E_FAIL;
 
-    m_strModelName = TEXT("LeeHeeMin");
+    m_strModelName = TEXT("Kiryu");
 
     if (FAILED(Add_Components()))
         return E_FAIL;
@@ -41,12 +41,23 @@ void CAnimModel::Priority_Tick(const _float& fTimeDelta)
 
 void CAnimModel::Tick(const _float& fTimeDelta)
 {
-    /*if (m_pGameInstance->GetKeyState(DIK_UP) == AWAY)
-        itest++;*/
+    _int iAnims = m_pModelCom->Get_NumAnimations();
+    if (m_pGameInstance->GetKeyState(DIK_UP) == TAP)
+    {
+        m_iAnimIndex++;
+        if (iAnims <= m_iAnimIndex)
+            m_iAnimIndex = m_pModelCom->Get_NumAnimations() - 1;
+    }
+    if (m_pGameInstance->GetKeyState(DIK_DOWN) == TAP)
+    {
+        m_iAnimIndex--;
+        if (0 >= m_iAnimIndex)
+            m_iAnimIndex = 0;
+    }
 
-    CModel::ANIMATION_DESC desc{ 0, true };
+    CModel::ANIMATION_DESC desc{ m_iAnimIndex, true };
 
-    m_pModelCom->Set_AnimationIndex(desc);
+    m_pModelCom->Set_AnimationIndex(desc, 7.f);
 
     m_pModelCom->Play_Animation(fTimeDelta);
 }
@@ -89,6 +100,7 @@ void CAnimModel::Change_Model(wstring strModelName)
 {
     Safe_Release(m_pModelCom);
 
+    m_iAnimIndex = 0;
     m_strModelName = strModelName;
 
     wstring strComponentTag = TEXT("Prototype_Component_Model_") + m_strModelName;
