@@ -2,8 +2,6 @@
 
 #include "GameInstance.h"
 
-#include "ImGuiManager.h"
-
 CLoader::CLoader(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: m_pDevice{pDevice}, 
 	m_pContext{pContext},
@@ -52,11 +50,11 @@ HRESULT CLoader::Loading()
 	case LEVEL_LOGO:
 		hr = Loading_For_LogoLevel();
 		break;
-	case LEVEL_TEST:
-		hr = Loading_For_TestLevel();
-		break;
 	case LEVEL_GAMEPLAY:
 		hr = Loading_For_GamePlayLevel();
+		break;
+	case LEVEL_EDIT:
+		hr = Loading_For_EditLevel();
 		break;
 	}
 
@@ -104,7 +102,7 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 	return S_OK;
 }
 
-HRESULT CLoader::Loading_For_TestLevel()
+HRESULT CLoader::Loading_For_EditLevel()
 {
 	lstrcpy(m_szLoadingText, TEXT("텍스쳐를 로딩 중 입니다."));
 
@@ -115,16 +113,11 @@ HRESULT CLoader::Loading_For_TestLevel()
 	lstrcpy(m_szLoadingText, TEXT("셰이더를(을) 로딩 중 입니다."));
 
 
-	lstrcpy(m_szLoadingText, TEXT("객체 원형을(를) 로딩 중 입니다."));
-	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("GameObject_Prototype_ImGuiManager"), CImGuiManager::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
 
 	m_isFinished = true;
 
 	return S_OK;
-
 }
 
 CLoader* CLoader::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, LEVEL eNextLevel)

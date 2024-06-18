@@ -1,126 +1,101 @@
-#include "../../Imgui/imgui/imgui.h"
-#include "../../Imgui/background/imgui_impl_win32.h"
-#include "../../Imgui/background/imgui_impl_dx11.h"
-
-#include "..\Default\framework.h"
-#include "ImGuiManager.h"
-
+#include "ImguiManager.h"
 #include "GameInstance.h"
 
-#include "Layer.h"
+
+#pragma region "Imgui"
+#include "imgui.h"
+#include "imgui_internal.h"
+#include "imgui_impl_dx11.h"
+#include "imgui_impl_win32.h"
+#include "ImGuizmo.h"
+#pragma endregion
 
 
-CImGuiManager::CImGuiManager(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-    :CGameObject{pDevice, pContext}
+static ImGuizmo::OPERATION mCurrentGizmoOperation(ImGuizmo::TRANSLATE);
+bool useWindow = false;
+
+static const float identityMatrix[16] =
+{ 1.f, 0.f, 0.f, 0.f,
+	0.f, 1.f, 0.f, 0.f,
+	0.f, 0.f, 1.f, 0.f,
+	0.f, 0.f, 0.f, 1.f };
+
+CImguiManager::CImguiManager(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+	: m_pDevice{ pDevice }
+	, m_pContext{ pContext }
+	, m_pGameInstance{ CGameInstance::GetInstance() }
 {
+	Safe_AddRef(m_pDevice);
+	Safe_AddRef(m_pContext);
+	Safe_AddRef(m_pGameInstance);
 }
 
-CImGuiManager::CImGuiManager(const CImGuiManager& rhs)
-    :CGameObject{ rhs }
+HRESULT CImguiManager::Initialize(void* pArg)
 {
+	if (nullptr != pArg)
+	{
+
+	}
+
+
+
+	return S_OK;
 }
 
-HRESULT CImGuiManager::Initialize_Prototype()
+
+
+void CImguiManager::Tick(const _float& fTimeDelta)
 {
-    //Setup ImGui
-    IMGUI_CHECKVERSION();
+	ImGuiIO& io = ImGui::GetIO();
+	ImGui_ImplDX11_NewFrame();
+	ImGui_ImplWin32_NewFrame();
+	ImGui::NewFrame();
 
-    ImGui::CreateContext();
+	ImGuizmo::BeginFrame();
 
-    ImGui_ImplWin32_Init(g_hWnd);
-    ImGui_ImplDX11_Init(m_pDevice, m_pContext);
-
-    ImGui::StyleColorsDark();
-
-    return S_OK;
+	bool bDemo = true;
+	ImGui::ShowDemoWindow(&bDemo);
 }
 
-HRESULT CImGuiManager::Initialize(void* pArg)
-{
-    m_bIsClone = true;
 
-    return S_OK;
+
+HRESULT CImguiManager::Render()
+{
+	ImGui::Render();
+
+	return S_OK;
 }
 
-void CImGuiManager::Priority_Tick(const _float& fTimeDelta)
+CImguiManager* CImguiManager::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
+	CImguiManager* pInstance = new CImguiManager(pDevice, pContext);
+
+	if (FAILED(pInstance->Initialize()))
+	{
+		Engine::Safe_Release(pInstance);
+		MSG_BOX("CImguiManager Create Failed");
+		return nullptr;
+	}
+
+	//ImGui
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
+	ImGuiIO io = ImGui::GetIO();
+	ImGui::StyleColorsDark();
+
+	ImGui_ImplWin32_Init(g_hWnd);
+	ImGui_ImplDX11_Init(pDevice, pContext);
+
+	return pInstance;
 }
 
-void CImGuiManager::Tick(const _float& fTimeDelta)
+void CImguiManager::Free()
 {
-}
+	Safe_Release(m_pDevice);
+	Safe_Release(m_pContext);
+	Safe_Release(m_pGameInstance);
 
-void CImGuiManager::Late_Tick(const _float& fTimeDelta)
-{
-    m_fTimeDelta = fTimeDelta;
-    m_pGameInstance->Add_Renderer(CRenderer::RENDER_UI, this);
-}
-
-HRESULT CImGuiManager::Render()
-{
-    Render_Begin();
-    Windows_Update();
-    Render_End();
-
-    return S_OK;
-}
-
-void CImGuiManager::Render_Begin()
-{
-    ImGui_ImplDX11_NewFrame();
-    ImGui_ImplWin32_NewFrame();
-    ImGui::NewFrame();
-}
-
-void CImGuiManager::Render_End()
-{
-    // Rendering
-    ImGui::Render();
-    ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
-}
-
-void CImGuiManager::Windows_Update()
-{
-    ImGui::Begin("Navigation Window");
-    ImGui::End();
-}
-
-CImGuiManager* CImGuiManager::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-{
-    CImGuiManager* pInstance = new CImGuiManager(pDevice, pContext);
-    
-    if (FAILED(pInstance->Initialize_Prototype()))
-    {
-        MSG_BOX("Create Failed : CImGuiManager");
-        Safe_Release(pInstance);
-    }
-
-    return pInstance;
-}
-
-CGameObject* CImGuiManager::Clone(void* pArg)
-{
-    CImGuiManager* pInstance = new CImGuiManager(*this);
-
-    if (FAILED(pInstance->Initialize(pArg)))
-    {
-        MSG_BOX("Create Cloned : CImGuiManager");
-        Safe_Release(pInstance);
-    }
-
-    return pInstance;
-
-}
-
-void CImGuiManager::Free()
-{
-    __super::Free();
-    
-    // 클론이 아닐 때 ImGui 이닛했기때문에 
-    if (!m_bIsClone)
-    {
-        ImGui_ImplDX11_Shutdown();
-        ImGui_ImplWin32_Shutdown();
-        ImGui::DestroyContext();
-    }
+	ImGui_ImplDX11_Shutdown();
+	ImGui_ImplWin32_Shutdown();
+	ImGui::DestroyContext();
 }

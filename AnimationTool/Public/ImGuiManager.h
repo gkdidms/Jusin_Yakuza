@@ -1,45 +1,31 @@
 #pragma once
-#include "AnimationTool_Defines.h"
-#include "GameObject.h"
+#include "Client_Defines.h"
+#include "Base.h"
 
 BEGIN(Engine)
 class CGameInstance;
 END
 
 BEGIN(Client)
-
-class CImGuiManager : public CGameObject
+class CImguiManager final:
+    public CBase
 {
 private:
-	CImGuiManager(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	CImGuiManager(const CImGuiManager& rhs);
-	virtual ~CImGuiManager() = default;
+	CImguiManager(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	virtual ~CImguiManager() = default;
 
 public:
-	virtual HRESULT Initialize_Prototype();
-	virtual HRESULT Initialize(void* pArg);
-	virtual void Priority_Tick(const _float& fTimeDelta);
-	virtual void Tick(const _float& fTimeDelta);
-	virtual void Late_Tick(const _float& fTimeDelta);
-	virtual HRESULT Render();
+	HRESULT Initialize(void* pArg=nullptr) ;
+	void Tick(const _float& fTimeDelta) ;
+	HRESULT Render() ;
 
 private:
-	void Render_Begin();
-	void Render_End();
-
-	void Windows_Update();
-
-private:
-	_bool								m_bIsClone = false;
-
-//Preferences
-private:
-	_float								m_fTimeDelta = { 0 };
+	ID3D11Device* m_pDevice = { nullptr };
+	ID3D11DeviceContext* m_pContext = { nullptr };
+	class CGameInstance* m_pGameInstance = { nullptr };
 
 public:
-	static CImGuiManager* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	virtual CGameObject* Clone(void* pArg);
+	static CImguiManager* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual void Free() override;
 };
-
 END

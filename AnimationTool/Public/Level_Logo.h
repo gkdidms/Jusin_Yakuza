@@ -1,7 +1,7 @@
 #pragma once
 #include "Level.h"
 
-#include "AnimationTool_Defines.h"
+#include "Client_Defines.h"
 
 BEGIN(Client)
 class CLevel_Logo :
