@@ -51,7 +51,7 @@ HRESULT CLevel_Test::Ready_Light()
 
 HRESULT CLevel_Test::Ready_Camera(const wstring& strLayerTag)
 {
-	CPlayerCamera::PLAYER_CAMERA_DESC		CameraDesc{};
+	CDebugCamera::PLAYER_CAMERA_DESC		CameraDesc{};
 
 	CameraDesc.fSensor = 0.1f;
 	CameraDesc.vEye = _float4(1.0f, 20.0f, -20.f, 1.f);
@@ -63,12 +63,10 @@ HRESULT CLevel_Test::Ready_Camera(const wstring& strLayerTag)
 	CameraDesc.fSpeedPecSec = 20.f;
 	CameraDesc.fRotatePecSec = XMConvertToRadians(90.f);
 
-	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_PlayerCamera"), strLayerTag, &CameraDesc)))
+	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_DebugCamera"), strLayerTag, &CameraDesc)))
 		return E_FAIL;
 
 	return S_OK;
-
-
 }
 
 HRESULT CLevel_Test::Ready_Player(const wstring& strLayerTag)

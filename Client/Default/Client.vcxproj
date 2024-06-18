@@ -164,6 +164,7 @@
     <ClInclude Include="..\public\MainApp.h" />
     <ClInclude Include="..\public\Player.h" />
     <ClInclude Include="..\public\PlayerCamera.h" />
+    <ClInclude Include="..\public\SystemManager.h" />
     <ClInclude Include="..\Public\Terrain.h" />
     <ClInclude Include="..\public\TestMap.h" />
     <ClInclude Include="Client.h" />
@@ -182,6 +183,7 @@
     <ClCompile Include="..\private\MainApp.cpp" />
     <ClCompile Include="..\private\Player.cpp" />
     <ClCompile Include="..\private\PlayerCamera.cpp" />
+    <ClCompile Include="..\private\SystemManager.cpp" />
     <ClCompile Include="..\Private\Terrain.cpp" />
     <ClCompile Include="..\private\TestMap.cpp" />
     <ClCompile Include="Client.cpp" />
