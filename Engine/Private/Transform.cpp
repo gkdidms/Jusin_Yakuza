@@ -82,7 +82,7 @@ void CTransform::Go_Straight(const _float& fTimeDelta)
 	Set_State(STATE_POSITION, vPosition);
 }
 
-void CTransform::Go_Backwork(const _float& fTimeDelta)
+void CTransform::Go_Backward(const _float& fTimeDelta)
 {
 	_vector vPosition = Get_State(STATE_POSITION);
 	_vector vLook = Get_State(STATE_LOOK);
