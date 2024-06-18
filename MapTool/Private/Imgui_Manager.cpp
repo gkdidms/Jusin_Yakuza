@@ -71,12 +71,6 @@ void CImgui_Manager::Tick(_float fTimeDelta)
 
     ImGui::Begin(u8"IMGUI 메인화면");
 
-
-
-    CGameInstance::GetInstance()->Get_Transform_Matrix(CPipeLine::D3DTS_VIEW);
-    CGameInstance::GetInstance()->Get_Transform_Matrix(CPipeLine::D3DTS_PROJ);
-
-
     if (ImGui::Button(u8"땅크기수정"))
         m_bTerrain_IMGUI = true;
 
@@ -85,8 +79,6 @@ void CImgui_Manager::Tick(_float fTimeDelta)
 
     if (ImGui::Button(u8"네비게이션 TOOL"))
         m_bNaviTool_IMGUI = true;
-
-
 
     ImGui::End();
 
@@ -115,7 +107,6 @@ void CImgui_Manager::Tick(_float fTimeDelta)
 void CImgui_Manager::Late_Tick(_float fTimeDelta)
 {
     CObjPlace_Manager::GetInstance()->Late_Tick(fTimeDelta);
-
 }
 
 void CImgui_Manager::Render()
@@ -125,8 +116,6 @@ void CImgui_Manager::Render()
 
     m_pNavigationMgr->Render();
 }
-
-
 
 
 void CImgui_Manager::Set_Terrain_IMGUI()

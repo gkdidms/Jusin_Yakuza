@@ -169,6 +169,9 @@
     <Filter Include="01.Utility\09.Convert">
       <UniqueIdentifier>{59290998-d7fe-45e5-93e6-8dd14de04fe2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Utility\03.Component\VIBuffer\Terrain\Terrain_Flat">
+      <UniqueIdentifier>{41e206e5-6bf3-49e5-9b34-76c1dcb0ac91}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\Base.h">
@@ -340,7 +343,7 @@
       <Filter>01.Utility\03.Component\Model\Animation</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\VIBuffer_Terrain_Flat.h">
-      <Filter>01.Utility\03.Component\VIBuffer\Terrain</Filter>
+      <Filter>01.Utility\03.Component\VIBuffer\Terrain\Terrain_Flat</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -501,7 +504,7 @@
       <Filter>01.Utility\03.Component\Model\Animation</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\VIBuffer_Terrain_Flat.cpp">
-      <Filter>01.Utility\03.Component\VIBuffer\Terrain</Filter>
+      <Filter>01.Utility\03.Component\VIBuffer\Terrain\Terrain_Flat</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

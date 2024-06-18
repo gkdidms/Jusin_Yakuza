@@ -4,6 +4,9 @@
 #include "Client_Defines.h"
 #include "imgui.h"
 
+BEGIN(Engine)
+class CGameObject;
+END
 
 class CObjPlace_Manager final : public CBase
 {
@@ -66,14 +69,15 @@ public:
 //	, TEXT("Prototype_Component_Model_Clam") , TEXT("Prototype_Component_Model_CoralB1"), TEXT("Prototype_Component_Model_Gorgonian"), TEXT("Prototype_Component_Model_SeaFan")
 //	};
 //
-//private:
-//	/* object이름, cgameobject */
-//	multimap<wstring, CGameObject*>			m_GameObjects;
-//	vector<char*>							m_ObjectNames;
-//	vector<char*>							m_FileNames;
-//
-//private:
-//	_uint								m_iObjectNums = 0;
+
+private:
+	/* object이름, cgameobject */
+	multimap<wstring, CGameObject*>			m_GameObjects;
+	vector<char*>							m_ObjectNames;
+	vector<char*>							m_FileNames;
+
+private:
+	_uint								m_iObjectNums = 0;
 
 
 public:

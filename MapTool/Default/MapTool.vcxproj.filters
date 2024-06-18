@@ -74,7 +74,10 @@
       <Filter>03.Managers\01.ObjPlace_Manager</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Navigation_Manager.cpp">
-      <Filter>03.Managers\02.Navigation_Manger</Filter>
+      <Filter>03.Managers\02.Navigation_Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Terrain_Manager.cpp">
+      <Filter>03.Managers\03.Terrain_Manager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -169,7 +172,10 @@
       <Filter>03.Managers\01.ObjPlace_Manager</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Navigation_Manager.h">
-      <Filter>03.Managers\02.Navigation_Manger</Filter>
+      <Filter>03.Managers\02.Navigation_Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Terrain_Manager.h">
+      <Filter>03.Managers\03.Terrain_Manager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -235,12 +241,18 @@
     <Filter Include="03.Managers\01.ObjPlace_Manager">
       <UniqueIdentifier>{23c7d0c2-cd40-49f7-9d1e-1226f126bfbc}</UniqueIdentifier>
     </Filter>
-    <Filter Include="03.Managers\02.Navigation_Manger">
+    <Filter Include="03.Managers\03.Terrain_Manager">
+      <UniqueIdentifier>{dc474064-70f1-4422-aed9-2325201d1f57}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.Managers\02.Navigation_Manager">
       <UniqueIdentifier>{6a521a1b-3de9-4765-9af9-b898679c9866}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxPosTex.hlsl">
+      <Filter>97.ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxNorTex.hlsl">
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
   </ItemGroup>

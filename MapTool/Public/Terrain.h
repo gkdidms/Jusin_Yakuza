@@ -8,6 +8,7 @@ class CShader;
 class CTexture;
 class CNavigation;
 class CVIBuffer_Terrain;
+class CVIBuffer_Terrain_Flat;
 END
 
 BEGIN(Client)
@@ -27,11 +28,15 @@ public:
 	virtual void Late_Tick(const _float& fTimeDelta) override;
 	virtual HRESULT Render() override;
 
+public:
+	void	Change_LandScale(_uint iNumX, _uint iNumZ);
+
 private:
 	CShader*						m_pShaderCom = { nullptr };
 	CTexture*						m_pTextureCom = { nullptr };
 	CNavigation*					m_pNavigationCom = { nullptr };
-	CVIBuffer_Terrain*				m_pVIBufferCom = { nullptr };
+	//CVIBuffer_Terrain*			m_pVIBufferCom = { nullptr };
+	CVIBuffer_Terrain_Flat*			m_pVIBufferCom = { nullptr };
 
 private:
 	_float4x4						m_ViewMatrix, m_ProjMatrix;

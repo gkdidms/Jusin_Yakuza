@@ -52,49 +52,7 @@ void CNavigation_Manager::Late_Tick(_float fTimeDelta)
 
 HRESULT CNavigation_Manager::Render()
 {
-//	if (0 == m_Cells.size())
-//		return S_OK;
-//
-//#ifdef _DEBUG
-//	/*if (nullptr != m_pNavigationCom)
-//		m_pNavigationCom->Render();*/
-//
-//	if (0 < m_Cells.size())
-//	{
-//		_float4x4			WorldMatrix;
-//		XMStoreFloat4x4(&WorldMatrix, XMMatrixIdentity());
-//		//WorldMatrix._42 += 0.1f;
-//
-//		m_pShader->Bind_Matrix("g_WorldMatrix", &WorldMatrix);
-//
-//		m_pShader->Bind_Matrix("g_ViewMatrix", CGameInstance::GetInstance()->Get_Transform_float4x4(CPipeLine::D3DTS_VIEW));
-//		m_pShader->Bind_Matrix("g_ProjMatrix", CGameInstance::GetInstance()->Get_Transform_float4x4(CPipeLine::D3DTS_PROJ));
-//
-//		if (FAILED(m_pShader->Bind_RawValue("g_vColor", &_float4(0.f, 1.f, 0.f, 1.f), sizeof(_float4))))
-//			return E_FAIL;
-//
-//		m_pShader->Begin(0);
-//
-//		for (auto& pcell : m_Cells)
-//			pcell->Render();
-//
-//
-//		WorldMatrix._42 += 0.1f;
-//		m_pShader->Bind_Matrix("g_WorldMatrix", &WorldMatrix);
-//
-//		m_pShader->Bind_Matrix("g_ViewMatrix", CGameInstance::GetInstance()->Get_Transform_float4x4(CPipeLine::D3DTS_VIEW));
-//		m_pShader->Bind_Matrix("g_ProjMatrix", CGameInstance::GetInstance()->Get_Transform_float4x4(CPipeLine::D3DTS_PROJ));
-//
-//		if (FAILED(m_pShader->Bind_RawValue("g_vColor", &_float4(1.f, 0.f, 0.f, 1.f), sizeof(_float4))))
-//			return E_FAIL;
-//
-//		m_pShader->Begin(0);
-//
-//		m_Cells[m_iCurrentCellIndex]->Render();
-//	}
-//
-//#endif
-//
+
 	return S_OK;
 }
 

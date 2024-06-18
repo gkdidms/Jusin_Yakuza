@@ -1,7 +1,9 @@
 #include "../Default/framework.h"
-#include "Terrain.h"
-
 #include "GameInstance.h"
+
+#include "Terrain.h"
+#include "Terrain_Manager.h"
+
 
 CTerrain::CTerrain(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CGameObject{ pDevice, pContext }
@@ -60,27 +62,35 @@ HRESULT CTerrain::Render()
 	return S_OK;
 }
 
+void CTerrain::Change_LandScale(_uint iNumX, _uint iNumZ)
+{
+	m_pVIBufferCom->Change_LandScale(iNumX, iNumZ);
+}
+
 HRESULT CTerrain::Add_Components()
 {
 	/* For.Com_VIBuffer */
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_VIBuffer_Terrain"),
+	/*if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_VIBuffer_Terrain"),
+		TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pVIBufferCom))))
+		return E_FAIL;*/
+	if (FAILED(__super::Add_Component(LEVEL_RUNMAP, TEXT("Prototype_Component_VIBuffer_Terrain_Flat"),
 		TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pVIBufferCom))))
 		return E_FAIL;
 
 	/* For.Com_Shader */
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxNorTex"),
+	if (FAILED(__super::Add_Component(LEVEL_RUNMAP, TEXT("Prototype_Component_Shader_VtxNorTex"),
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
 		return E_FAIL;
 
 	/* For.Com_Diffuse */
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Terrain"),
+	if (FAILED(__super::Add_Component(LEVEL_RUNMAP, TEXT("Prototype_Component_Texture_Terrain"),
 		TEXT("Com_Diffuse"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
 		return E_FAIL;
 
-	/* For.Com_Navigation */
-	if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Navigation"),
-		TEXT("Com_Navigation"), reinterpret_cast<CComponent**>(&m_pNavigationCom))))
-		return E_FAIL;
+	///* For.Com_Navigation */
+	//if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Navigation"),
+	//	TEXT("Com_Navigation"), reinterpret_cast<CComponent**>(&m_pNavigationCom))))
+	//	return E_FAIL;
 
 	return S_OK;
 }
@@ -108,6 +118,9 @@ CTerrain * CTerrain::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pConte
 		MSG_BOX("Failed To Created : CTerrain");
 		Safe_Release(pInstance);
 	}
+
+	// terrainmanaer¿¡ Ãß°¡
+	CTerrain_Manager::GetInstance()->Set_Terrain(pInstance);
 
 	return pInstance;
 }

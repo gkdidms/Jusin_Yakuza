@@ -37,11 +37,8 @@ private:
 	void	Set_Map_Object();
 	/* 설치된 Object 선택하게끔 */
 	void	Show_Object_List();
-
 	/* Navi Tool 나오기 */
 	void	Set_NaviTool_IMGUI();
-
-
 
 private:
 	CNavigation_Manager*			m_pNavigationMgr;

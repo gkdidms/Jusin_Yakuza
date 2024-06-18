@@ -62,7 +62,7 @@ HRESULT CLoader::Loading()
 		hr = Loading_For_GamePlayLevel();
 		break;
 	case LEVEL_RUNMAP:
-		hr = Loading_For_RunMapLevel();
+		hr = Loading_For_RunMapLevel(LEVEL_RUNMAP);
 		break;
 	}
 
@@ -115,15 +115,28 @@ HRESULT CLoader::Loading_For_Static()
 	return S_OK;
 }
 
-HRESULT CLoader::Loading_For_RunMapLevel()
+HRESULT CLoader::Loading_For_RunMapLevel(int iLevel)
 {
 	lstrcpy(m_szLoadingText, TEXT("텍스쳐를 로딩 중 입니다."));
 
+	/* For.Prototype_Component_Texture_Terrain */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(iLevel, TEXT("Prototype_Component_Texture_Terrain"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/T_Sand_06_A.png"), 1))))
+		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("모델를(을) 로딩 중 입니다."));
 
+	/* For.Prototype_Component_VIBuffer_Terrain */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(iLevel, TEXT("Prototype_Component_VIBuffer_Terrain_Flat"),
+		CVIBuffer_Terrain_Flat::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("셰이더를(을) 로딩 중 입니다."));
+
+	/* For.Prototype_Component_Shader_VtxNorTex */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(iLevel, TEXT("Prototype_Component_Shader_VtxNorTex"),
+		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxNorTex.hlsl"), VTXNORTEX::Elements, VTXNORTEX::iNumElements))))
+		return E_FAIL;
 
 
 	lstrcpy(m_szLoadingText, TEXT("오브젝트를(을) 로딩 중 입니다."));

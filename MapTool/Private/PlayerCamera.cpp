@@ -26,6 +26,8 @@ HRESULT CPlayerCamera::Initialize(void* pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
+	m_bCameraFix = true;
+
 	return S_OK;
 }
 
@@ -36,7 +38,6 @@ void CPlayerCamera::Priority_Tick(const _float& fTimeDelta)
 
 void CPlayerCamera::Tick(const _float& fTimeDelta)
 {
-
 	if (m_pGameInstance->Get_DIKeyState(DIK_A) & 0x80)
 		m_pTransformCom->Go_Left(fTimeDelta * 7);
 	if (GetKeyState('D') & 0x8000)

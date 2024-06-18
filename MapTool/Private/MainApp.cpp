@@ -6,6 +6,8 @@
 #include "Level_Loading.h"
 #include "Background.h"
 
+#include "Imgui_Manager.h"
+
 CMainApp::CMainApp() :
 	m_pGameInstance{ CGameInstance::GetInstance() }
 {
@@ -37,6 +39,9 @@ HRESULT CMainApp::Initialize()
 	if (FAILED(Open_Level(LEVEL_LOGO)))
 		return E_FAIL;
 
+	if (FAILED(CImgui_Manager::GetInstance()->Initialize(m_pDevice, m_pContext)))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -45,6 +50,10 @@ void CMainApp::Tick(const _float& fTimeDelta)
 	m_fTimeAcc += fTimeDelta;
 
 	m_pGameInstance->Tick(fTimeDelta);
+
+	CImgui_Manager::GetInstance()->Tick(fTimeDelta);
+
+	CImgui_Manager::GetInstance()->Late_Tick(fTimeDelta);
 }
 
 HRESULT CMainApp::Render()
@@ -66,8 +75,12 @@ HRESULT CMainApp::Render()
 	m_pGameInstance->Draw();
 
 	m_pGameInstance->Render_Font(TEXT("Font_Default"), m_szFPS, _float2(0.f, 0.f), XMVectorSet(1.f, 1.f, 0.f, 1.f));
-
+	CImgui_Manager::GetInstance()->Render();
 	m_pGameInstance->Present();
+
+	//m_pGameInstance->Draw();
+	//CImgui_Manager::GetInstance()->Render();
+	//m_pGameInstance->Present();
 
 	return S_OK;
 }

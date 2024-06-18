@@ -43,7 +43,7 @@ private:
 	HRESULT Loading_For_LogoLevel();
 	HRESULT Loading_For_GamePlayLevel();
 	HRESULT	Loading_For_Static();
-	HRESULT Loading_For_RunMapLevel();
+	HRESULT Loading_For_RunMapLevel(int iLevel);
 
 public:
     static CLoader* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, LEVEL eNextLevel);
