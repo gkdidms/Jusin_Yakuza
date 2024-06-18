@@ -64,7 +64,12 @@
     <ClCompile Include="..\..\Imgui\background\imgui_impl_win32.cpp">
       <Filter>96.ImGui\Source</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\CImguiManager.cpp" />
+    <ClCompile Include="..\Private\ImguiManager.cpp">
+      <Filter>96.ImGui\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Level_Edit.cpp">
+      <Filter>01.Levels\01.Edit</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\MainApp.h">
@@ -148,7 +153,12 @@
     <ClInclude Include="..\..\Imgui\background\imgui_impl_win32.h">
       <Filter>96.ImGui\Source</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\ImguiManager.h" />
+    <ClInclude Include="..\Public\ImguiManager.h">
+      <Filter>96.ImGui\Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Level_Edit.h">
+      <Filter>01.Levels\01.Edit</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
@@ -209,6 +219,9 @@
     </Filter>
     <Filter Include="96.ImGui\Manager">
       <UniqueIdentifier>{1373fa70-8540-4743-bbf1-881380805c8e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Levels\01.Edit">
+      <UniqueIdentifier>{5812dbd7-f669-4201-ac49-03cd2bbbd29e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

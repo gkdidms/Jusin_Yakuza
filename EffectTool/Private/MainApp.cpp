@@ -3,6 +3,8 @@
 #include "MainApp.h"
 #include "GameInstance.h"
 
+#include "ImguiManager.h"
+
 #include "Level_Loading.h"
 #include "Background.h"
 
@@ -34,9 +36,12 @@ HRESULT CMainApp::Initialize()
 	if (FAILED(Ready_Prototype_GameObject()))
 		return E_FAIL;
 
-	if (FAILED(Open_Level(LEVEL_LOGO)))
+	if (FAILED(Open_Level(LEVEL_EDIT)))
 		return E_FAIL;
 
+	if (FAILED(Ready_Manager()))
+		return E_FAIL;
+	
 	return S_OK;
 }
 
@@ -45,6 +50,7 @@ void CMainApp::Tick(const _float& fTimeDelta)
 	m_fTimeAcc += fTimeDelta;
 
 	m_pGameInstance->Tick(fTimeDelta);
+	m_pGuimanager->Tick(fTimeDelta);
 }
 
 HRESULT CMainApp::Render()
@@ -115,6 +121,13 @@ HRESULT CMainApp::Ready_Prototype_Component()
 		return E_FAIL;
 
     return S_OK;
+}
+
+HRESULT CMainApp::Ready_Manager()
+{
+	//m_pGuimanager = CImguiManager::Create(m_pDevice, m_pContext);
+	//if(nul)
+	return S_OK;
 }
 
 CMainApp* CMainApp::Create()
