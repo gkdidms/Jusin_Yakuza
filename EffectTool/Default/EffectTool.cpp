@@ -9,13 +9,7 @@
 #define MAX_LOADSTRING 100
 
 #pragma region "Imgui"
-
 #include "imgui.h"
-#include "imgui_internal.h"
-#include "imgui_impl_dx11.h"
-#include "imgui_impl_win32.h"
-#include "ImGuizmo.h"
-
 #pragma endregion
 
 // 전역 변수:

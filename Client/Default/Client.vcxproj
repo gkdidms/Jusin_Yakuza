@@ -155,6 +155,7 @@
   <ItemGroup>
     <ClInclude Include="..\public\Background.h" />
     <ClInclude Include="..\Public\Client_Defines.h" />
+    <ClInclude Include="..\public\DebugCamera.h" />
     <ClInclude Include="..\public\LandObject.h" />
     <ClInclude Include="..\public\Level_Loading.h" />
     <ClInclude Include="..\public\Level_Logo.h" />
@@ -164,6 +165,7 @@
     <ClInclude Include="..\public\Player.h" />
     <ClInclude Include="..\public\PlayerCamera.h" />
     <ClInclude Include="..\Public\Terrain.h" />
+    <ClInclude Include="..\public\TestMap.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="Resource.h" />
@@ -171,6 +173,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\Background.cpp" />
+    <ClCompile Include="..\private\DebugCamera.cpp" />
     <ClCompile Include="..\private\LandObject.cpp" />
     <ClCompile Include="..\private\Level_Loading.cpp" />
     <ClCompile Include="..\private\Level_Logo.cpp" />
@@ -180,6 +183,7 @@
     <ClCompile Include="..\private\Player.cpp" />
     <ClCompile Include="..\private\PlayerCamera.cpp" />
     <ClCompile Include="..\Private\Terrain.cpp" />
+    <ClCompile Include="..\private\TestMap.cpp" />
     <ClCompile Include="Client.cpp" />
   </ItemGroup>
   <ItemGroup>
