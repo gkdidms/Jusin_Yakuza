@@ -24,7 +24,6 @@ ipch/
 # log files
 *.log
 *.tlog
-
 *.lastbuildstate
 *.obj
 *.pch
@@ -36,3 +35,7 @@ ipch/
 *.exp
 *.cso
 *.recipe
+
+# Engine dll/lib
+Engine.dll
+Engine.lib
