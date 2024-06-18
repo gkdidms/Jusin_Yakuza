@@ -57,7 +57,6 @@ void CLevel_Loading::Tick(const _float& fTimeDelta)
 		}
 	}
 
-
 #ifdef _DEBUG
 	SetWindowText(g_hWnd, m_pLoader->Get_LoadingText());
 #endif

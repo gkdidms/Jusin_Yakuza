@@ -76,12 +76,6 @@ HRESULT CModel::Initialize_Prototype(MODELTYPE eModelType, const _char* pModelFi
 
 		string pBinPath = pGameInstance->Get_Directory(pModelFilePath) + "/Bin/" + pGameInstance->Get_FileName(pModelFilePath) + ".dat";
 
-		if (pGameInstance->Get_FileName(pModelFilePath) == "Ghost_DummyMan" || pGameInstance->Get_FileName(pModelFilePath) == "Ghost_TreeMan")
-		{
-			Safe_Release(pGameInstance);
-			return S_OK;
-		}
-
 		if (FAILED(Export_Model(pBinPath, pModelFilePath)))
 			return E_FAIL;
 	}
@@ -260,19 +254,16 @@ HRESULT CModel::Export_Bones(ofstream& out)
 HRESULT CModel::Export_Meshes(ofstream& out, const string& strOutDirectory)
 {
 	_uint iNumFXMeshes = { 0 };
-	_uint iNumSphereMeshes = { 0 };
 
 	for (size_t i = 0; i < m_iNumMeshes; ++i)
 	{
 		string strValue = m_pAIScene->mMeshes[i]->mName.data;
 
-		if (strValue.find("FX_") != string::npos)
+		if (strValue.find("eyelashes") != string::npos)
 			++iNumFXMeshes;
-		if (strValue.find("Sphere") != string::npos)
-			++iNumSphereMeshes;
 	}
 
-	_uint iNumMeshes = m_iNumMeshes - (iNumFXMeshes + iNumSphereMeshes);
+	_uint iNumMeshes = m_iNumMeshes - (iNumFXMeshes);
 
 	out.write((char*)&iNumMeshes, sizeof(_uint));
 
@@ -354,7 +345,7 @@ HRESULT CModel::Export_Meshes(ofstream& out, const string& strOutDirectory)
 
 	if (0 < iNumFXMeshes)
 	{
-		string strOutPath = pGameInstance->Get_Directory(strOutDirectory) + "/" + pGameInstance->Get_FileName(strOutDirectory) + "_FX.dat";
+		string strOutPath = pGameInstance->Get_Directory(strOutDirectory) + "/" + pGameInstance->Get_FileName(strOutDirectory) + "_eyelash.dat";
 
 		ofstream fxOut(strOutPath, ios::binary);
 
@@ -438,91 +429,6 @@ HRESULT CModel::Export_Meshes(ofstream& out, const string& strOutDirectory)
 		
 	}
 
-	if (0 < iNumSphereMeshes)
-	{
-		string strOutPath = pGameInstance->Get_Directory(strOutDirectory) + "/" + pGameInstance->Get_FileName(strOutDirectory) + "_Sphere.dat";
-
-		ofstream SphereOut(strOutPath, ios::binary);
-
-		SphereOut.write((char*)&iNumSphereMeshes, sizeof(_uint));
-
-		for (size_t i = 0; i < m_iNumMeshes; ++i)
-		{
-			string strValue = m_pAIScene->mMeshes[i]->mName.data;
-
-			if (strValue.find("Sphere") != string::npos)
-			{
-				_uint iValue = strValue.size();
-				SphereOut.write((char*)&iValue, sizeof(_uint));
-				SphereOut.write(strValue.c_str(), strValue.size());
-
-				iValue = m_pAIScene->mMeshes[i]->mNumVertices;
-				SphereOut.write((char*)&iValue, sizeof(_uint));
-
-				iValue = m_pAIScene->mMeshes[i]->mNumFaces;
-				SphereOut.write((char*)&iValue, sizeof(_uint));
-
-				iValue = m_pAIScene->mMeshes[i]->mMaterialIndex;
-				SphereOut.write((char*)&iValue, sizeof(_uint));
-
-				iValue = m_pAIScene->mMeshes[i]->mNumBones;
-				SphereOut.write((char*)&iValue, sizeof(_uint));
-
-				for (size_t j = 0; j < m_pAIScene->mMeshes[i]->mNumVertices; j++)
-				{
-					_float3 vVector;
-					_float2 vTexcoord;
-
-					memcpy(&vVector, &m_pAIScene->mMeshes[i]->mVertices[j], sizeof(_float3));
-					SphereOut.write((char*)&vVector, sizeof(_float3));
-
-					memcpy(&vVector, &m_pAIScene->mMeshes[i]->mNormals[j], sizeof(_float3));
-					SphereOut.write((char*)&vVector, sizeof(_float3));
-
-					memcpy(&vTexcoord, &m_pAIScene->mMeshes[i]->mTextureCoords[0][j], sizeof(_float2));
-					SphereOut.write((char*)&vTexcoord, sizeof(_float2));
-
-					memcpy(&vVector, &m_pAIScene->mMeshes[i]->mTangents[j], sizeof(_float3));
-					SphereOut.write((char*)&vVector, sizeof(_float3));
-				}
-
-				for (size_t j = 0; j < m_pAIScene->mMeshes[i]->mNumFaces; j++)
-				{
-					_uint arrInt[3];
-					memcpy(&arrInt, &m_pAIScene->mMeshes[i]->mFaces[j].mIndices[0], sizeof(_uint) * 3);
-					SphereOut.write((char*)&arrInt, sizeof(_uint) * 3);
-				}
-
-				for (size_t j = 0; j < m_pAIScene->mMeshes[i]->mNumBones; j++)
-				{
-					string strBoneName = m_pAIScene->mMeshes[i]->mBones[j]->mName.data;
-					_uint iBoneNameSize = strBoneName.size();
-					SphereOut.write((char*)&iBoneNameSize, sizeof(_uint));
-					SphereOut.write(strBoneName.c_str(), strBoneName.size());
-
-					_uint iNumWeights = m_pAIScene->mMeshes[i]->mBones[j]->mNumWeights;
-					SphereOut.write((char*)&iNumWeights, sizeof(_uint));
-
-					for (size_t k = 0; k < iNumWeights; k++)
-					{
-						_uint iVertexId = m_pAIScene->mMeshes[i]->mBones[j]->mWeights[k].mVertexId;
-						SphereOut.write((char*)&iVertexId, sizeof(_uint));
-
-						_float fValue = m_pAIScene->mMeshes[i]->mBones[j]->mWeights[k].mWeight;
-						SphereOut.write((char*)&fValue, sizeof(_float));
-					}
-
-					_float4x4 matValue;
-					memcpy(&matValue, &m_pAIScene->mMeshes[i]->mBones[j]->mOffsetMatrix, sizeof(_float4x4));
-					SphereOut.write((char*)&matValue, sizeof(_float4x4));
-				}
-
-			}
-		}
-
-		SphereOut.close();
-	}
-
 	Safe_Release(pGameInstance);
 	return S_OK;
 }
@@ -533,63 +439,10 @@ HRESULT CModel::Export_Materials(ofstream& out, const _char* pModelFilePath, con
 	Safe_AddRef(pGameInstance);
 
 	string strOutPath = pGameInstance->Get_Directory(strOutDirectory) + "/" + pGameInstance->Get_FileName(strOutDirectory) + "_FX.dat";
-	string strSphereOutPath = pGameInstance->Get_Directory(strOutDirectory) + "/" + pGameInstance->Get_FileName(strOutDirectory) + "_Sphere.dat";
 
 	if (fs::exists(strOutPath))
 	{
 		ofstream fxOut(strOutPath, ios::binary | ios::app);
-
-		fxOut.write((char*)&m_iNumMaterials, sizeof(_uint));
-
-		for (size_t i = 0; i < m_iNumMaterials; i++)
-		{
-			for (size_t j = aiTextureType_DIFFUSE; j < AI_TEXTURE_TYPE_MAX; j++)
-			{
-				aiString pPath;
-
-				if (FAILED(m_pAIScene->mMaterials[i]->GetTexture((aiTextureType)j, 0, &pPath)))
-				{
-					_uint iZero = 0;
-					string strZero = "";
-
-					fxOut.write((char*)&iZero, sizeof(_uint));
-					fxOut.write(strZero.c_str(), strZero.size());
-					continue;
-				}
-
-				_char szFileName[MAX_PATH] = "";
-				_char szExt[MAX_PATH] = "";
-
-				_splitpath_s(pPath.data, nullptr, 0, nullptr, 0, szFileName, MAX_PATH, szExt, MAX_PATH);
-
-				_char		szDrive[MAX_PATH] = "";
-				_char		szDirectory[MAX_PATH] = "";
-
-				_splitpath_s(pModelFilePath, szDrive, MAX_PATH, szDirectory, MAX_PATH, nullptr, 0, nullptr, 0);
-
-				_char		szFullPath[MAX_PATH] = "";
-
-				strcpy_s(szFullPath, szDrive);
-				strcat_s(szFullPath, szDirectory);
-				strcat_s(szFullPath, szFileName);
-				strcat_s(szFullPath, szExt);
-
-				_tchar		szRealFullPath[MAX_PATH] = TEXT("");
-
-				// WideChar로 형변환해주는 함수. code page를 아스키로 쓴다는 옵션 CP_ACP
-				MultiByteToWideChar(CP_ACP, 0, szFullPath, strlen(szFullPath), szRealFullPath, MAX_PATH);
-
-				_uint iLength = strlen(szFullPath);
-
-				fxOut.write((char*)&iLength, sizeof(_uint));
-				fxOut.write(szFullPath, strlen(szFullPath));
-			}
-		}
-	}
-
-	if (fs::exists(strSphereOutPath))
-	{
-		ofstream fxOut(strSphereOutPath, ios::binary | ios::app);
 
 		fxOut.write((char*)&m_iNumMaterials, sizeof(_uint));
 
@@ -770,7 +623,7 @@ HRESULT CModel::Import_Model(string& pBinFilePath)
 
 	string strFileName = pGameInstance->Get_FileName(pBinFilePath);
 
-	if (strFileName.find("FX") != string::npos || strFileName.find("Sphere") != string::npos)
+	if (strFileName.find("FX") != string::npos)
 	{
 		if (FAILED(Import_Meshes(in)))
 			return E_FAIL;

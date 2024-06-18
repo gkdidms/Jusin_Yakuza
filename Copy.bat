@@ -8,4 +8,7 @@ xcopy			/y		.\Engine\Bin\Engine.dll					.\EffectTool\bin\
 xcopy			/y		.\Engine\Bin\Engine.lib					.\EngineSDK\Lib\
 
 xcopy			/y		.\Engine\Bin\ShaderFiles\*.*				.\Client\bin\ShaderFiles\
-xcopy			/y		.\Engine\Bin\ShaderFiles\*.*				.\EffectTool\bin\ShaderFiles\
+xcopy			/y		.\Engine\Bin\ShaderFiles\*.*				.\EffectTool\bin\ShaderFiles\xcopy			/y		.\Engine\Bin\ShaderFiles\*.*				.\EffectTool\bin\ShaderFiles\
+xcopy			/y		.\Engine\Bin\Engine.dll				.\AnimationTool\bin\
+
+xcopy			/y		.\Engine\Bin\ShaderFiles\*.*				.\AnimationTool\bin\ShaderFiles\
