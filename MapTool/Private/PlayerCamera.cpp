@@ -45,7 +45,7 @@ void CPlayerCamera::Tick(const _float& fTimeDelta)
 	if (GetKeyState('W') & 0x8000)
 		m_pTransformCom->Go_Straight(fTimeDelta * 7);
 	if (GetKeyState('S') & 0x8000)
-		m_pTransformCom->Go_Backwork(fTimeDelta * 7);
+		m_pTransformCom->Go_Backward(fTimeDelta * 7);
 
 	_long		MouseMove = { 0 };
 
