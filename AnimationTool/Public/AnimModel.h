@@ -34,9 +34,11 @@ public:
 	virtual HRESULT Render();
 
 public:
-	void Set_Position(_fvector vPosition);
 	void Set_Scaled(_float x, _float y, _float z);
 	void Set_Rotation(_uint iAxis, _float vRadian, _float fTimeDelta);
+
+public:
+	void Change_Model(wstring strModelName);
 
 private:
 	HRESULT	Add_Components();

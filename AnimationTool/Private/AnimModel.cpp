@@ -18,15 +18,11 @@ HRESULT CAnimModel::Initialize_Prototype()
 
 HRESULT CAnimModel::Initialize(void* pArg)
 {
-    if (FAILED(CGameObject::Initialize(pArg)))
+    GAMEOBJECT_DESC pDesc{};
+    pDesc.fRotatePecSec = XMConvertToRadians(90.f);
+
+    if (FAILED(CGameObject::Initialize(&pDesc)))
         return E_FAIL;
-
-    //PLACEOBJECT_DESC* pDesc = (PLACEOBJECT_DESC*)pArg;
-
-    //m_pTransformCom->Set_State(CTransform::STATE_RIGHT, pDesc->matWorldMatrix.r[CTransform::STATE_RIGHT]);
-    //m_pTransformCom->Set_State(CTransform::STATE_UP, pDesc->matWorldMatrix.r[CTransform::STATE_UP]);
-    //m_pTransformCom->Set_State(CTransform::STATE_LOOK, pDesc->matWorldMatrix.r[CTransform::STATE_LOOK]);
-    //m_pTransformCom->Set_State(CTransform::STATE_POSITION, pDesc->matWorldMatrix.r[CTransform::STATE_POSITION]);
 
     m_strModelName = TEXT("LeeHeeMin");
 
@@ -79,16 +75,25 @@ HRESULT CAnimModel::Render()
     return S_OK;
 }
 
-void CAnimModel::Set_Position(_fvector vPosition)
-{
-}
-
 void CAnimModel::Set_Scaled(_float x, _float y, _float z)
 {
+    m_pTransformCom->Set_Scale(x, y, z);
 }
 
 void CAnimModel::Set_Rotation(_uint iAxis, _float vRadian, _float fTimeDelta)
 {
+    m_pTransformCom->Turn(m_pTransformCom->Get_State((CTransform::STATE)iAxis), vRadian * fTimeDelta);
+}
+
+void CAnimModel::Change_Model(wstring strModelName)
+{
+    Safe_Release(m_pModelCom);
+
+    m_strModelName = strModelName;
+
+    wstring strComponentTag = TEXT("Prototype_Component_Model_") + m_strModelName;
+
+    m_pModelCom = reinterpret_cast<CModel*>(m_pGameInstance->Add_Component_Clone(LEVEL_EDIT, strComponentTag));
 }
 
 HRESULT CAnimModel::Add_Components()

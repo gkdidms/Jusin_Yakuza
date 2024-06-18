@@ -1,6 +1,6 @@
 #include "ImguiManager.h"
 #include "GameInstance.h"
-
+#include "AnimModel.h"
 
 #pragma region "Imgui"
 #include "imgui.h"
@@ -36,16 +36,23 @@ HRESULT CImguiManager::Initialize(void* pArg)
 	return S_OK;
 }
 
-
-
 void CImguiManager::Tick(const _float& fTimeDelta)
 {
+	if (!m_isPause)
+		m_fTimeDelta = fTimeDelta;
+	else
+		m_fTimeDelta = 0.f;
+
+
 	ImGuiIO& io = ImGui::GetIO();
 	ImGui_ImplDX11_NewFrame();
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
 
 	ImGuizmo::BeginFrame();
+
+	if (ImGui::Button("Model Connecting"))
+		Connect_Model_Ref();
 
 	ModelList();
 
@@ -67,33 +74,36 @@ HRESULT CImguiManager::Render()
 
 void CImguiManager::ModelList()
 {
-	if (ImGui::DragFloat("Rotation X", &m_ModelRotation[0], 1.f))
+	if (ImGui::DragFloat("Rotation X", &m_ModelRotation[0], 5.f))
 	{
-		//Update_Model_RotationX();
+		Update_Model_RotationX();
 
 		m_ModelRotation[0] = 0.f;
 	}
 
-	if (ImGui::DragFloat("Rotation Y", &m_ModelRotation[1], 1.f))
+	if (ImGui::DragFloat("Rotation Y", &m_ModelRotation[1], 5.f))
 	{
-		//Update_Model_RotationY();
+		Update_Model_RotationY();
 
 		m_ModelRotation[1] = 0.f;
 	}
 
-	if (ImGui::DragFloat("Rotation Z", &m_ModelRotation[2], 1.f))
+	if (ImGui::DragFloat("Rotation Z", &m_ModelRotation[2], 5.f))
 	{
-		//Update_Model_RotationZ();
+		Update_Model_RotationZ();
 
 		m_ModelRotation[2] = 0.f;
 	}
 
 	if (ImGui::DragFloat("All Scale", &m_ModelScale, 0.05f))
 	{
-		if (0.01f > m_ModelScale) m_ModelScale = 0.1f;
+		if (0.01f > m_ModelScale) m_ModelScale = 0.01f;
 
-		//Update_Model_Scaled();
+		Update_Model_Scaled();
 	}
+
+	if (ImGui::Button("Anim Pause"))
+		m_isPause = !m_isPause;
 
 	ImGui::NewLine();
 	ImGui::Text("Model List");
@@ -110,7 +120,10 @@ void CImguiManager::ModelList()
 		}
 	}
 
-	ImGui::ListBox("##", &m_iModelSelectedIndex, items.data(), m_ModelNameList.size());
+	if (ImGui::ListBox("##", &m_iModelSelectedIndex, items.data(), m_ModelNameList.size()))
+	{
+		m_pRenderModel->Change_Model(m_pGameInstance->StringToWstring(m_ModelNameList[m_iModelSelectedIndex]));
+	}
 
 }
 
@@ -157,21 +170,29 @@ void CImguiManager::LoadAnimationCharacterList()
 	}
 }
 
+void CImguiManager::Connect_Model_Ref()
+{
+	m_pRenderModel = static_cast<CAnimModel*>(m_pGameInstance->Get_GameObject(LEVEL_EDIT, TEXT("Layer_Object"), 0));
+}
+
 void CImguiManager::Update_Model_RotationX()
 {
-	//m_PlacedModels[m_iPlacedModelSeletedIdx]->Set_Rotation(0, XMConvertToRadians(m_ModelRotation[0]), m_fTimeDelta);
+	m_pRenderModel->Set_Rotation(0, XMConvertToRadians(m_ModelRotation[0]), m_fTimeDelta);
 }
 
 void CImguiManager::Update_Model_RotationY()
 {
+	m_pRenderModel->Set_Rotation(1, XMConvertToRadians(m_ModelRotation[1]), m_fTimeDelta);
 }
 
 void CImguiManager::Update_Model_RotationZ()
 {
+	m_pRenderModel->Set_Rotation(2, XMConvertToRadians(m_ModelRotation[2]), m_fTimeDelta);
 }
 
 void CImguiManager::Update_Model_Scaled()
 {
+	m_pRenderModel->Set_Scaled(m_ModelScale, m_ModelScale, m_ModelScale);
 }
 
 CImguiManager* CImguiManager::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
