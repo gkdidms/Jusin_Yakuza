@@ -8,6 +8,11 @@
 #include "Level_Loading.h"
 #include "Background.h"
 
+#pragma region "Imgui"
+#include "imgui.h"
+#include "imgui_impl_dx11.h"
+#pragma endregion	
+
 CMainApp::CMainApp() :
 	m_pGameInstance{ CGameInstance::GetInstance() }
 {
@@ -65,11 +70,17 @@ HRESULT CMainApp::Render()
 		m_iNumRender = 0;
 	}
 
+
+
 	/* ±×¸°´Ù. */
 	m_pGameInstance->Clear_BackBuffer_View(_float4(0.f, 0.f, 1.f, 1.f));
 	m_pGameInstance->Clear_DepthStencil_View();
 
+	m_pGuimanager->Render();
+
 	m_pGameInstance->Draw();
+
+	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 
 	m_pGameInstance->Render_Font(TEXT("Font_Default"), m_szFPS, _float2(0.f, 0.f), XMVectorSet(1.f, 1.f, 0.f, 1.f));
 
@@ -125,8 +136,10 @@ HRESULT CMainApp::Ready_Prototype_Component()
 
 HRESULT CMainApp::Ready_Manager()
 {
-	//m_pGuimanager = CImguiManager::Create(m_pDevice, m_pContext);
-	//if(nul)
+	m_pGuimanager = CImguiManager::Create(m_pDevice, m_pContext);
+	if (nullptr == m_pGuimanager)
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -145,6 +158,7 @@ CMainApp* CMainApp::Create()
 
 void CMainApp::Free()
 {
+	Safe_Release(m_pGuimanager);
 	Safe_Release(m_pContext);
 	Safe_Release(m_pDevice);
 

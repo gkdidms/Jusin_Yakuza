@@ -22,6 +22,8 @@ void CLevel_Edit::Tick(const _float& fTimeDelta)
 
 HRESULT CLevel_Edit::Ready_Object(const wstring& strLayerTag)
 {
+
+
 	return S_OK;
 }
 

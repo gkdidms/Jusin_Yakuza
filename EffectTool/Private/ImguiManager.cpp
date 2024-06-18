@@ -46,6 +46,15 @@ HRESULT CImguiManager::Initialize(void* pArg)
 
 void CImguiManager::Tick(const _float& fTimeDelta)
 {
+	ImGuiIO& io = ImGui::GetIO();
+	ImGui_ImplDX11_NewFrame();
+	ImGui_ImplWin32_NewFrame();
+	ImGui::NewFrame();
+
+	ImGuizmo::BeginFrame();
+
+	bool bDemo = true;
+	ImGui::ShowDemoWindow(&bDemo);
 }
 
 
