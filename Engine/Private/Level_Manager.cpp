@@ -25,7 +25,7 @@ void CLevel_Manager::Render()
 {
 }
 
-HRESULT CLevel_Manager::Open_Level(_uint iLevelIndex, class CLevel* pLevel, _bool isRemove)
+HRESULT CLevel_Manager::Open_Level(_uint iLevelIndex, class CLevel* pLevel)
 {
 	if (nullptr == pLevel)
 		return E_FAIL;

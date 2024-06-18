@@ -23,7 +23,7 @@ void CLayer::Tick(const _float& fTimeDelta)
 	{
 		(*iter)->Tick(fTimeDelta);
 
-		if ((*iter)->Get_Dead())
+		if ((*iter)->isDead())
 		{
 			Safe_Release(*iter);
 			iter = m_vecObjects.erase(iter);

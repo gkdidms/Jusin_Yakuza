@@ -44,7 +44,7 @@ HRESULT CVIBuffer_Instance_Point::Initialize_Prototype(const INSTANCE_DESC& Inst
 	pVertexts[0].vPosition = _float3{ 0.f, 0.f, 0.f };
 	pVertexts[0].vPSize = _float2{ fSize, fSize };
 
-	m_ResourceData.pSysMem = pVertexts;
+	m_InitialData.pSysMem = pVertexts;
 
 	__super::Create_Buffer(&m_pVB);
 
@@ -64,7 +64,7 @@ HRESULT CVIBuffer_Instance_Point::Initialize_Prototype(const INSTANCE_DESC& Inst
 	_ushort* pIndices = new _ushort[m_iNumIndices];
 	ZeroMemory(pIndices, sizeof(_ushort) * m_iNumIndices);
 
-	m_ResourceData.pSysMem = pIndices;
+	m_InitialData.pSysMem = pIndices;
 
 	__super::Create_Buffer(&m_pIB);
 
@@ -121,9 +121,9 @@ HRESULT CVIBuffer_Instance_Point::Initialize_Prototype(const INSTANCE_DESC& Inst
 		m_pSpeeds[i] = Speed(m_RandomNumber);
 		m_pAccelTime[i] = 0.f;
 	}
-	m_ResourceData.pSysMem = pInstanceVertices;
+	m_InitialData.pSysMem = pInstanceVertices;
 
-	if (FAILED(m_pDevice->CreateBuffer(&m_InstanceBufferDesc, &m_ResourceData, &m_pVBInstance)))
+	if (FAILED(m_pDevice->CreateBuffer(&m_InstanceBufferDesc, &m_InitialData, &m_pVBInstance)))
 		return E_FAIL;
 
 

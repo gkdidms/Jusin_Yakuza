@@ -2,11 +2,11 @@
 
 namespace Engine
 {
-	const D3D11_INPUT_ELEMENT_DESC VXTPOS::Elements[] = {
+	const D3D11_INPUT_ELEMENT_DESC VTXPOS::Elements[] = {
 	{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0}, // float3을 받기 때문에 R32G32B32
 	};
 
-	const D3D11_INPUT_ELEMENT_DESC VXTPOSTEX::Elements[] = {
+	const D3D11_INPUT_ELEMENT_DESC VTXPOSTEX::Elements[] = {
 		{"POSITION", 0, DXGI_FORMAT_R32G32B32_FLOAT, 0, 0, D3D11_INPUT_PER_VERTEX_DATA, 0}, // float3을 받기 때문에 R32G32B32
 		{"TEXCOORD", 0, DXGI_FORMAT_R32G32_FLOAT, 0, 12, D3D11_INPUT_PER_VERTEX_DATA, 0} // float2를 받기 때문에 R32G32
 		// 12인 이유 : position이 float 3개이기 때문에 4bype * 3으로 12byte에서 시작한다.

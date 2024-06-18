@@ -18,7 +18,7 @@ private:
 public:
     HRESULT Initialize();
     void Tick(const _float& fTimeDelta);
-    void Render();
+	HRESULT Render();
 
 private:
 	ID3D11Device* m_pDevice = { nullptr };
@@ -36,7 +36,7 @@ private:
 
 public:
 	HRESULT Open_Level(LEVEL eLevelID);
-	HRESULT Ready_Gara();
+	HRESULT Ready_Font();
 	HRESULT Ready_Prototype_GameObject();
 	HRESULT Ready_Prototype_Component();
 

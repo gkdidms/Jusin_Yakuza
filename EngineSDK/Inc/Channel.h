@@ -1,31 +1,37 @@
 #pragma once
+
 #include "Base.h"
 
 BEGIN(Engine)
-class CChannel final:
-    public CBase
+
+class CChannel final : public CBase
 {
 private:
-    CChannel();
-    virtual ~CChannel() = default;
+	CChannel();
+	virtual ~CChannel() = default;
 
 public:
-    HRESULT Initialize(aiNodeAnim* pChannel, const vector<class CBone*> Bones);
-    HRESULT Initialize(const char* pName, _int iBoneIndex, _uint iNumKeyFrames, vector<KEYFRAME> KeyFrames);
+	HRESULT Initialize(const aiNodeAnim* pAIChannel, const vector<class CBone*>& Bones);
+	HRESULT Initialize(const BAiNodeAnim* pAIChannel, const vector<class CBone*>& Bones);
+	void	Update_TransformationMatrix(_double CurrentPosition, const vector<class CBone*>& Bones, _uint* pCurrentKeyFrameIndex);
+	void	Update_TransformationMatrix(_double CurrentPosition, const vector<class CBone*>& Bones, CChannel* pSrcChannel, _uint PrevKeyFrameIndex, _double ChangeInterval, _bool isFinished);
 
-    void Update_TransformationMatrix(double CurrentPosition, const vector<class CBone*> Bones, _uint* iCurrentKeyFrameIndex);
-    void First_TransformationMatrix(double CurrentPosition, const vector<class CBone*> Bones, double LinearDuration);
+public:
+	const _uint& Get_BoneIndex() const { return m_iBoneIndex; }
+	const KEYFRAME& Get_First_KeyFrame() const { return m_KeyFrames.front(); }
+	const KEYFRAME& Get_Last_KeyFrame() const { return m_KeyFrames.back(); }
 
 private:
-    char m_szName[MAX_PATH] = "";
-    _uint m_iBoneIndex = { 0 };
-    _uint m_iNumKeyFrames = { 0 };
+	_char				m_szName[MAX_PATH] = { "" };		// ª¿ ¿Ã∏ß
+	_uint				m_iBoneIndex = { 0 };				// ¿¸√º ª¿¡ﬂ ¿Ã∏ß¿Ã ¿œƒ°«œ¥¬ ª¿¿« ¿Œµ¶Ω∫
 
-    vector<KEYFRAME> m_KeyFrames;
-
+	_uint				m_iNumKeyFrames = { 0 };
+	vector<KEYFRAME>	m_KeyFrames;
+	
 public:
-    static CChannel* Create(aiNodeAnim* pChannel, const vector<class CBone*> Bones);
-    static CChannel* Create(const char* pName, _int iBoneIndex, _uint iNumKeyFrames, vector<KEYFRAME> KeyFrames);
-    virtual void Free() override;
+	static CChannel* Create(const aiNodeAnim* pAIChannel, const vector<class CBone*>& Bones);
+	static CChannel* Create(const BAiNodeAnim* pAIChannel, const vector<class CBone*>& Bones);
+	virtual void Free() override;
 };
+
 END

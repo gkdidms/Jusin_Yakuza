@@ -30,7 +30,7 @@ void CNavigation::Set_Points(const _float3* vPoints, _int OptionType)
 
 HRESULT CNavigation::Initialize_Prototype()
 {
-    m_pShaderCom = CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_Cell.hlsl"), VXTPOS::Elements, VXTPOS::iNumElements);
+    m_pShaderCom = CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_Cell.hlsl"), VTXPOS::Elements, VTXPOS::iNumElements);
     if (nullptr == m_pShaderCom)
         return E_FAIL;
 
@@ -39,7 +39,7 @@ HRESULT CNavigation::Initialize_Prototype()
 
 HRESULT CNavigation::Initialize_Prototype(const wstring strFilePath)
 {
-    m_pShaderCom = CShader::Create(m_pDevice, m_pContext, L"../Bin/ShaderFiles/Shader_Cell.hlsl", VXTPOS::Elements, VXTPOS::iNumElements);
+    m_pShaderCom = CShader::Create(m_pDevice, m_pContext, L"../Bin/ShaderFiles/Shader_Cell.hlsl", VTXPOS::Elements, VTXPOS::iNumElements);
     if (nullptr == m_pShaderCom)
         return E_FAIL;
 

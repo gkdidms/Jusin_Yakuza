@@ -46,27 +46,27 @@ public:
     _byte	Get_DIKeyState(_ubyte byKeyID);
     _byte	Get_DIMouseState(MOUSEKEYSTATE eMouse);
     _long	Get_DIMouseMove(MOUSEMOVESTATE eMouseState);
-    KEYSTATE GetKeyState(_ubyte byKeyID);
-    KEYSTATE GetMouseState(MOUSEKEYSTATE eMouseState);
+    KEYSTATE GetKeyState(_ubyte byKeyID); //Key Input 비교하기 위해 사용 ex) GetKeyState(DIK_M) == HOLD; 
+    KEYSTATE GetMouseState(MOUSEKEYSTATE eMouseState); // Mouse Input 비교하기 위해 사용 ex) GetKeyState(DIM_LB) == HOLD; 
 
     /* Level_Manager */
 public:
-    HRESULT Open_Level(_uint iLevelIndex, class CLevel* pLevel, _bool isRemove = true);
+    HRESULT Open_Level(_uint iLevelIndex, class CLevel* pLevel);
 
     /* GameObject_Manager */
 public: 
-    HRESULT Add_GameObject_Prototype(const wstring strGameObjectTag, class CGameObject* pGameObject);
-    HRESULT Add_GameObject(_uint iLevelIndex, const wstring strGameObjectTag, const wstring strLayerTag, void* pArg = nullptr);
-    class CGameObject* Clone_Object(const wstring strGameObjectTag, void* pArg);
-    void Clear_Object(_uint iLevelIndex);
+    HRESULT Add_GameObject_Prototype(const wstring strGameObjectTag, class CGameObject* pGameObject); // GameObject Prototype 생성 & 저장
+    HRESULT Add_GameObject(_uint iLevelIndex, const wstring strGameObjectTag, const wstring strLayerTag, void* pArg = nullptr); // GameObject Clone 생성 & 저장
+    class CGameObject* Clone_Object(const wstring strGameObjectTag, void* pArg); // GameObject Clone 생성 & 반환 (저장 x)
+    void Clear_Object(_uint iLevelIndex); // GameObject 제거
     class CComponent* Get_GameObject_Component(_uint iLevelIndex, const wstring strLayerTag, const wstring strComponentTag, _uint iIndex = 0);
     class CGameObject* Get_GameObject(_uint iLevelIndex, const wstring strLayerTag, _uint iIndex);
-    vector<CGameObject*> Get_GameObjects(_uint iLevelIndex, const wstring strLayerTag);
+    vector<CGameObject*> Get_GameObjects(_uint iLevelIndex, const wstring strLayerTag); // Layer에 저장된 객체 리스트(vector) 반환
 
     /* Component_Manager */
 public: 
-    HRESULT Add_Component_Prototype(_uint iLevelIndex, const wstring strComponentTag, CComponent* pComponent);
-    CComponent* Add_Component_Clone(_uint iLevelIndex, const wstring strComponentTag, void* pArg = nullptr);
+    HRESULT Add_Component_Prototype(_uint iLevelIndex, const wstring strComponentTag, CComponent* pComponent); // Component Prototype 생성 & 저장
+    CComponent* Add_Component_Clone(_uint iLevelIndex, const wstring strComponentTag, void* pArg = nullptr); // Component Clone 생성 & 저장
 
     /* Renderer */
 public: 
@@ -128,6 +128,33 @@ public:
     HRESULT Render_Debug(const wstring& strMRTTag, class CShader* pShader, class CVIBuffer_Rect* pVIBuffer);
 #endif // _DEBUG
 
+    /* Convert_Manager */
+public:
+    void Get_FileNames(const wstring& strPath, vector<wstring>& vecOut);
+    void Get_FileNames(const string& strPath, vector<string>& vecOut);
+    wstring Get_FileName(const wstring& strPath);
+    string Get_FileName(const string& strPath);
+
+    void Get_FileExts(const wstring& strPath, vector<wstring>& vecOut);
+    void Get_FileExts(const string& strPath, vector<string>& vecOut);
+    wstring Get_FileExt(const wstring& strPath);
+    string Get_FileExt(const string& strPath);
+
+    void Get_DirectoryName(const wstring& strPath, vector<wstring>& vecOut);
+    void Get_DirectoryName(const string& strPath, vector<string>& vecOut);
+    wstring Get_Directory(const wstring& strPath);
+    string Get_Directory(const string& strPath);
+
+    _uint Get_NumFolders(const wstring& strPath);
+    _uint Get_NumFolders(const string& strPath);
+    _uint Get_NumFiles(const wstring& strPath);	
+    _uint Get_NumFiles(const string& strPath);	
+
+    _bool IsExists_Path(const wstring& strPath);		
+    _bool IsExists_Path(const string& strPath);			
+
+    wstring StringToWstring(const string& str);
+    string WstringToString(const wstring& str);
 
 private:
     class CGraphic_Device* m_pGraphic_Device = { nullptr };
@@ -144,6 +171,7 @@ private:
     class CPipeLine* m_pPipeLine = { nullptr };
     class CPicking* m_pPicking = { nullptr };
     class CFrustum* m_pFrustum = { nullptr };
+    class CConvert_Manager* m_pConvert_Manager = { nullptr };
 
 public:
     static void Release_Engine();

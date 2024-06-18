@@ -35,6 +35,8 @@ using namespace TriangleTests;
 #include <algorithm>
 #include <functional>
 
+#include <filesystem>
+#include <locale>
 #include <iostream>
 #include <io.h>
 #include <fstream>
@@ -82,3 +84,4 @@ namespace Engine
 
 using namespace Engine;
 using namespace std;
+namespace fs = std::filesystem;
