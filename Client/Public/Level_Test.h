@@ -16,7 +16,7 @@ public:
     virtual void Tick(const _float& fTimeDelta) override;
 
 private:
-    HRESULT Ready_Light(const wstring& strLayerTag);
+    HRESULT Ready_Light();
     HRESULT Ready_Camera(const wstring& strLayerTag);
     HRESULT Ready_Player(const wstring& strLayerTag);
     HRESULT Ready_Map(const wstring& strLayerTag);

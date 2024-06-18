@@ -124,8 +124,8 @@ HRESULT CRenderer::Initialize()
 	//	return E_FAIL;
 	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_Shade"), 150.f, 50.f, 100.f, 100.f)))
 		return E_FAIL;
-	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_BackBuffer"), 150.f, 250.f, 100.f, 100.f)))
-		return E_FAIL;
+	//if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_BackBuffer"), 150.f, 250.f, 100.f, 100.f)))
+	//	return E_FAIL;
 #endif // _DEBUG
 
 
@@ -145,7 +145,7 @@ void CRenderer::Draw()
 	//Render_ShadowObjects();
 	Render_NonBlender();
 	Render_LightAcc();
-	Render_CopyBackBuffer();
+	//Render_CopyBackBuffer();
 	Render_DeferredResult();
 
 	Render_NonLight();
@@ -342,7 +342,9 @@ void CRenderer::Render_DeferredResult() // 백버퍼에 Diffuse와 Shade를 더해서 그�
 	if (FAILED(m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
 		return;
 
-	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_BackBuffer"), m_pShader, "g_BackBufferTexture")))
+	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Diffuse"), m_pShader, "g_DiffuseTexture")))
+		return;
+	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Shade"), m_pShader, "g_ShadeTexture")))
 		return;
 
 	m_pShader->Begin(4);

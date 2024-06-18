@@ -95,15 +95,32 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 	lstrcpy(m_szLoadingText, TEXT("텍스쳐를 로딩 중 입니다."));
 
 
+	lstrcpy(m_szLoadingText, TEXT("모델를(을) 로딩 중 입니다."));
+
+
+	lstrcpy(m_szLoadingText, TEXT("셰이더를(을) 로딩 중 입니다."));
+
+
+	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
+
+	m_isFinished = true;
+
+	return S_OK;
+}
+
+HRESULT CLoader::Loading_For_Test()
+{
+	lstrcpy(m_szLoadingText, TEXT("텍스쳐를 로딩 중 입니다."));
+
 	_matrix		PreTransformMatrix;
 	lstrcpy(m_szLoadingText, TEXT("모델를(을) 로딩 중 입니다."));
-	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(180.0f));
-	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Model_Player"), CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../Bin/DataFiles/Nilou.dat", PreTransformMatrix, false))))
+	PreTransformMatrix = XMMatrixRotationY(XMConvertToRadians(180.0f));
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Model_Player"), CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../Bin/Resources/Models/LeeHeeMin/LeeHeeMin.fbx", PreTransformMatrix, false))))
 		return E_FAIL;
 
-	PreTransformMatrix = XMMatrixIdentity();
-	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Model_Map"), CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/DataFiles/Dungeon_1.dat", PreTransformMatrix, false))))
-		return E_FAIL;
+	//PreTransformMatrix = XMMatrixIdentity();
+	//if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Model_Map"), CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/DataFiles/Dungeon_1.dat", PreTransformMatrix, true))))
+	//	return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("셰이더를(을) 로딩 중 입니다."));
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Shader_VtxAnim"), CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxAnimMesh.hlsl"), VTXANIMMESH::Elements, VTXANIMMESH::iNumElements))))
@@ -120,24 +137,6 @@ HRESULT CLoader::Loading_For_GamePlayLevel()
 
 	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Map"), CTestMap::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
-
-	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
-
-	m_isFinished = true;
-
-	return S_OK;
-}
-
-HRESULT CLoader::Loading_For_Test()
-{
-	lstrcpy(m_szLoadingText, TEXT("텍스쳐를 로딩 중 입니다."));
-
-
-	lstrcpy(m_szLoadingText, TEXT("모델를(을) 로딩 중 입니다."));
-
-
-	lstrcpy(m_szLoadingText, TEXT("셰이더를(을) 로딩 중 입니다."));
-
 
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
 

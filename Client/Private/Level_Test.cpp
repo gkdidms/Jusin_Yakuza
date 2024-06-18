@@ -11,14 +11,17 @@ CLevel_Test::CLevel_Test(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 
 HRESULT CLevel_Test::Initialize()
 {
+	if (FAILED(Ready_Light()))
+		return E_FAIL;
+
 	if (FAILED(Ready_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
 
 	if (FAILED(Ready_Player(TEXT("Layer_Player"))))
 		return E_FAIL;
 
-	if (FAILED(Ready_Map(TEXT("Layer_Map"))))
-		return E_FAIL;
+	//if (FAILED(Ready_Map(TEXT("Layer_Map"))))
+	//	return E_FAIL;
 
 	return S_OK;
 }
@@ -31,29 +34,37 @@ void CLevel_Test::Tick(const _float& fTimeDelta)
 #endif
 }
 
-HRESULT CLevel_Test::Ready_Light(const wstring& strLayerTag)
+HRESULT CLevel_Test::Ready_Light()
 {
+	LIGHT_DESC			LightDesc{};
+
+	LightDesc.eType = LIGHT_DESC::TYPE_DIRECTIONAL;
+	LightDesc.vDirection = _float4(1.f, -1.f, 1.f, 0.f);
+	LightDesc.vDiffuse = _float4(1.f, 1.f, 1.f, 1.f);
+	LightDesc.vAmbient = _float4(0.4f, 0.4f, 0.4f, 1.f);
+	LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
+
+	m_pGameInstance->Add_Light(LightDesc);
+
 	return S_OK;
 }
 
 HRESULT CLevel_Test::Ready_Camera(const wstring& strLayerTag)
 {
-	//CPlayerCamera::PLAYER_CAMERA_DESC		CameraDesc{};
+	CPlayerCamera::PLAYER_CAMERA_DESC		CameraDesc{};
 
-	//CameraDesc.fSensor = 0.1f;
-	//CameraDesc.vEye = _float4(1.0f, 20.0f, -20.f, 1.f);
-	//CameraDesc.vAt = _float4(0.f, 0.0f, 0.0f, 1.f);
-	//CameraDesc.fFovy = XMConvertToRadians(60.0f);
-	//CameraDesc.fAspect = g_iWinSizeX / (_float)g_iWinSizeY;
-	//CameraDesc.fNear = 0.1f;
-	//CameraDesc.fFar = 3000.f;
-	//CameraDesc.fSpeedPerSec = 20.f;
-	//CameraDesc.fRotationPerSec = XMConvertToRadians(90.f);
+	CameraDesc.fSensor = 0.1f;
+	CameraDesc.vEye = _float4(1.0f, 20.0f, -20.f, 1.f);
+	CameraDesc.vFocus = _float4(0.f, 0.0f, 0.0f, 1.f);
+	CameraDesc.fFovY = XMConvertToRadians(60.0f);
+	CameraDesc.fAspect = g_iWinSizeX / (_float)g_iWinSizeY;
+	CameraDesc.fNear = 0.1f;
+	CameraDesc.fFar = 3000.f;
+	CameraDesc.fSpeedPecSec = 20.f;
+	CameraDesc.fRotatePecSec = XMConvertToRadians(90.f);
 
-	//if (FAILED(m_pGameInstance->Add_CloneObject(LEVEL_GAMEPLAY, strLayerTag, TEXT("Prototype_GameObject_FreeCamera"), &CameraDesc)))
-	//	return E_FAIL;
-
-	//return S_OK;
+	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_PlayerCamera"), strLayerTag, &CameraDesc)))
+		return E_FAIL;
 
 	return S_OK;
 }
