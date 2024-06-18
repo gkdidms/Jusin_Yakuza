@@ -2,7 +2,7 @@
 
 #include "GameInstance.h"
 
-#include "PlayerCamera.h"
+#include "DebugCamera.h"
 
 CLevel_Test::CLevel_Test(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLevel{ pDevice, pContext }
@@ -67,6 +67,8 @@ HRESULT CLevel_Test::Ready_Camera(const wstring& strLayerTag)
 		return E_FAIL;
 
 	return S_OK;
+
+
 }
 
 HRESULT CLevel_Test::Ready_Player(const wstring& strLayerTag)
