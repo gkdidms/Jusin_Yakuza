@@ -2,6 +2,9 @@
 
 #include "GameInstance.h"
 
+#include "PlayerCamera.h"
+#include "AnimModel.h"
+
 CLoader::CLoader(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: m_pDevice{pDevice}, 
 	m_pContext{pContext},
@@ -108,14 +111,94 @@ HRESULT CLoader::Loading_For_EditLevel()
 
 
 	lstrcpy(m_szLoadingText, TEXT("모델를(을) 로딩 중 입니다."));
+	Add_Models_On_Path(TEXT("../Bin/Resources/Model/"));
 
 
 	lstrcpy(m_szLoadingText, TEXT("셰이더를(을) 로딩 중 입니다."));
+	// Prototype_Component_Shader_VtxAnimMesh
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_EDIT, TEXT("Prototype_Component_Shader_VtxAnimMesh"),
+		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxAnimMesh.hlsl"), VTXANIMMESH::Elements, VTXANIMMESH::iNumElements))))
+		return E_FAIL;
 
+	lstrcpy(m_szLoadingText, TEXT("객체 원형을(를) 로딩 중 입니다."));
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Free_Camera"), CPlayerCamera::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_AnimModel"), CAnimModel::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
 
 	m_isFinished = true;
+
+	return S_OK;
+}
+
+HRESULT CLoader::Add_Models_On_Path(const wstring& strPath, _bool bAnim)
+{
+	vector<wstring> vecDirectorys;
+	m_pGameInstance->Get_DirectoryName(strPath, vecDirectorys);
+
+	_matrix		PreTransformMatrix;
+
+	for (auto& strName : vecDirectorys)
+	{
+		//string pBinPath = pGameInstance->Get_Directory(pModelFilePath) + "/Bin/" + pGameInstance->Get_FileName(pModelFilePath) + ".dat";
+
+		//wstring strComponentName = TEXT("Prototype_Component_") + strName;
+		wstring strFilePath = strPath + strName + TEXT("/");
+
+		string strDirectory = m_pGameInstance->WstringToString(strFilePath);
+		string strBinPath = strDirectory + "Bin/";
+
+		if (!fs::exists(strBinPath))
+		{
+			wstring strComponentName = TEXT("Prototype_Component_") + strName;
+			wstring strFbxPath = strFilePath + strName + TEXT(".fbx");
+			string strTransPath = m_pGameInstance->WstringToString(strFbxPath);
+
+			if (!bAnim)
+			{
+				PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(180.0f));
+				if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, strComponentName,
+					CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, strTransPath.c_str(), PreTransformMatrix, false))))
+					return E_FAIL;
+			}
+			else
+			{
+				PreTransformMatrix = XMMatrixRotationY(XMConvertToRadians(180.0f));
+				if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, strComponentName,
+					CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, strTransPath.c_str(), PreTransformMatrix, false))))
+					return E_FAIL;
+			}
+		}
+		else
+		{
+			for (const auto& entry : std::filesystem::directory_iterator(strBinPath))
+			{
+				string file_path = entry.path().string();
+				string strFileName = m_pGameInstance->Get_FileName(file_path);
+				wstring strComponentName = TEXT("Prototype_Component_Model_") + m_pGameInstance->StringToWstring(strFileName);
+
+				if (!bAnim)
+				{
+					PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(180.0f));
+					if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, strComponentName,
+						CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, file_path.c_str(), PreTransformMatrix, true))))
+						return E_FAIL;
+				}
+				else
+				{
+					PreTransformMatrix = XMMatrixRotationY(XMConvertToRadians(180.0f));
+					if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, strComponentName,
+						CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, file_path.c_str(), PreTransformMatrix, true))))
+						return E_FAIL;
+				}
+
+			}
+		}
+
+	}
 
 	return S_OK;
 }

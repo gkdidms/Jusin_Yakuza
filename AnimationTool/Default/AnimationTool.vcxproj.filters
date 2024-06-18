@@ -70,6 +70,9 @@
     <ClCompile Include="AnimationTool.cpp">
       <Filter>98.Default</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\AnimModel.cpp">
+      <Filter>02.GameObjects\03.Model</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\MainApp.h">
@@ -159,6 +162,9 @@
     <ClInclude Include="AnimationTool.h">
       <Filter>98.Default</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\AnimModel.h">
+      <Filter>02.GameObjects\03.Model</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
@@ -229,9 +235,15 @@
     <Filter Include="02.GameObjects\02.Camera\FreeCamera">
       <UniqueIdentifier>{6e2ae2d5-0c9d-4981-8489-dbf9d9d43dfc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\03.Model">
+      <UniqueIdentifier>{a7c328e5-f05a-4ccb-b2d1-5e8e2d818f6e}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxPosTex.hlsl">
+      <Filter>97.ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxAnimMesh.hlsl">
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
   </ItemGroup>

@@ -32,12 +32,6 @@ CImguiManager::CImguiManager(ID3D11Device* pDevice, ID3D11DeviceContext* pContex
 
 HRESULT CImguiManager::Initialize(void* pArg)
 {
-	if (nullptr != pArg)
-	{
-
-	}
-
-
 
 	return S_OK;
 }
@@ -53,8 +47,13 @@ void CImguiManager::Tick(const _float& fTimeDelta)
 
 	ImGuizmo::BeginFrame();
 
-	bool bDemo = true;
-	ImGui::ShowDemoWindow(&bDemo);
+	ModelList();
+
+	if (ImGui::Button("Anim List Window"))
+		m_isAnimListWindow = !m_isAnimListWindow;
+
+	if (m_isAnimListWindow)
+		AnimListWindow();
 }
 
 
@@ -64,6 +63,115 @@ HRESULT CImguiManager::Render()
 	ImGui::Render();
 
 	return S_OK;
+}
+
+void CImguiManager::ModelList()
+{
+	if (ImGui::DragFloat("Rotation X", &m_ModelRotation[0], 1.f))
+	{
+		//Update_Model_RotationX();
+
+		m_ModelRotation[0] = 0.f;
+	}
+
+	if (ImGui::DragFloat("Rotation Y", &m_ModelRotation[1], 1.f))
+	{
+		//Update_Model_RotationY();
+
+		m_ModelRotation[1] = 0.f;
+	}
+
+	if (ImGui::DragFloat("Rotation Z", &m_ModelRotation[2], 1.f))
+	{
+		//Update_Model_RotationZ();
+
+		m_ModelRotation[2] = 0.f;
+	}
+
+	if (ImGui::DragFloat("All Scale", &m_ModelScale, 0.05f))
+	{
+		if (0.01f > m_ModelScale) m_ModelScale = 0.1f;
+
+		//Update_Model_Scaled();
+	}
+
+	ImGui::NewLine();
+	ImGui::Text("Model List");
+
+	string strDirPath = "../Bin/Resources/Model/";
+
+	m_pGameInstance->Get_DirectoryName(strDirPath, m_ModelNameList);
+
+	vector<const char*> items;
+
+	if (0 < m_ModelNameList.size()) {
+		for (const string& str : m_ModelNameList) {
+			items.push_back(str.c_str());
+		}
+	}
+
+	ImGui::ListBox("##", &m_iModelSelectedIndex, items.data(), m_ModelNameList.size());
+
+}
+
+void CImguiManager::AnimListWindow()
+{
+	ImGui::Begin("Anim List", &m_isAnimListWindow);
+
+
+	ImGui::End();
+
+	//m_pGameInstance->Get_DirectoryName(strDirPath, m_AnimNameList);
+
+	//vector<const char*> items;
+
+	//if (0 < m_AnimObjModels.size()) {
+	//	for (const string& str : m_AnimObjModels) {
+	//		items.push_back(str.c_str());
+	//	}
+	//}
+
+	//ImGui::Text("Model List");
+
+	//ImGui::ListBox("##", &m_iAnimObjModelSeletedIdx, items.data(), m_AnimObjModels.size());
+
+	//if (ImGui::Button("Close Me"))
+	//	m_isAnimListWindow = false;
+}
+
+void CImguiManager::LoadAnimationCharacterList()
+{
+	wstring strModelPath = TEXT("../Bin/Resources/Model/");
+
+	vector<wstring> vecDirectorys;
+	m_pGameInstance->Get_DirectoryName(strModelPath, vecDirectorys);
+
+	for (auto& strName : vecDirectorys)
+	{
+		string strBinPath = m_pGameInstance->WstringToString(strModelPath) + "Bin/";
+
+		if (!fs::exists(strBinPath))
+		{
+
+		}
+	}
+}
+
+void CImguiManager::Update_Model_RotationX()
+{
+	//m_PlacedModels[m_iPlacedModelSeletedIdx]->Set_Rotation(0, XMConvertToRadians(m_ModelRotation[0]), m_fTimeDelta);
+}
+
+void CImguiManager::Update_Model_RotationY()
+{
+}
+
+void CImguiManager::Update_Model_RotationZ()
+{
+}
+
+void CImguiManager::Update_Model_Scaled()
+{
 }
 
 CImguiManager* CImguiManager::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

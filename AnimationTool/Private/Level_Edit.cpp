@@ -1,4 +1,6 @@
 #include "Level_Edit.h"
+#include "GameInstance.h"
+#include "Camera.h"
 
 CLevel_Edit::CLevel_Edit(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLevel{ pDevice, pContext }
@@ -7,7 +9,13 @@ CLevel_Edit::CLevel_Edit(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 
 HRESULT CLevel_Edit::Initialize()
 {
-	if (FAILED(Ready_Object(TEXT("Layer_EditObject"))))
+	if (FAILED(Ready_Lights()))
+		return E_FAIL;
+
+	if (FAILED(Ready_Layer_Camera(TEXT("Layer_Camera"))))
+		return E_FAIL;
+	
+	if (FAILED(Ready_Object(TEXT("Layer_Object"))))
 		return E_FAIL;
 
 	return S_OK;
@@ -20,9 +28,44 @@ void CLevel_Edit::Tick(const _float& fTimeDelta)
 #endif
 }
 
+HRESULT CLevel_Edit::Ready_Lights()
+{
+	LIGHT_DESC			LightDesc{};
+
+	LightDesc.eType = LIGHT_DESC::TYPE_DIRECTIONAL;
+	LightDesc.vDirection = _float4(1.f, -1.f, 1.f, 0.f);
+	LightDesc.vDiffuse = _float4(1.f, 1.f, 1.f, 1.f);
+	LightDesc.vAmbient = _float4(0.4f, 0.4f, 0.4f, 1.f);
+	LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
+
+	m_pGameInstance->Add_Light(LightDesc);
+
+	return S_OK;
+}
+
+HRESULT CLevel_Edit::Ready_Layer_Camera(const wstring& strLayerTag)
+{
+	CCamera::tCameraDesc		CameraDesc{};
+
+	CameraDesc.vEye = _float4(0.0f, 50.f, -45.f, 1.f);
+	CameraDesc.vFocus = _float4(0.0f, 0.f, 0.f, 1.f);
+	CameraDesc.fFovY = XMConvertToRadians(60.0f);
+	CameraDesc.fAspect = g_iWinSizeX / (_float)g_iWinSizeY;
+	CameraDesc.fNear = 0.1f;
+	CameraDesc.fFar = 3000.f;
+	CameraDesc.fSpeedPecSec = 20.f;
+	CameraDesc.fRotatePecSec = XMConvertToRadians(90.f);
+
+	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_EDIT, TEXT("Prototype_GameObject_Free_Camera"), strLayerTag, &CameraDesc)))
+		return E_FAIL;
+
+	return S_OK;
+}
+
 HRESULT CLevel_Edit::Ready_Object(const wstring& strLayerTag)
 {
-
+	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_EDIT, TEXT("Prototype_GameObject_AnimModel"), strLayerTag)))
+		return E_FAIL;
 
 	return S_OK;
 }
