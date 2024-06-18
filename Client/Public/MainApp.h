@@ -1,6 +1,8 @@
 #pragma once
 
 #include "Client_Defines.h"
+#include "DebugManager.h"
+
 #include "Base.h"
 
 BEGIN(Engine)
@@ -26,6 +28,7 @@ private:
 
 	CGameInstance* m_pGameInstance = { nullptr };
 	class CSystemManager* m_pSystemManager = { nullptr };
+	class CDebugManager* m_pDebugMananger = { nullptr };
 
 #ifdef _DEBUG
 private:
@@ -33,6 +36,7 @@ private:
 	_float					m_fTimeAcc = {};
 	_uint					m_iNumRender = {};
 
+	_bool m_isDebug = { false };
 #endif
 
 public:
