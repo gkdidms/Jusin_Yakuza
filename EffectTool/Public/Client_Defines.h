@@ -2,10 +2,6 @@
 
 #include <process.h>
 
-#ifdef _DEBUG
-#define _TOOL
-#endif // _DEBUG
-
 namespace Client
 {
 	enum LEVEL { LEVEL_STATIC, LEVEL_LOADING, LEVEL_LOGO, LEVEL_GAMEPLAY, LEVEL_TEST, LEVEL_END };
