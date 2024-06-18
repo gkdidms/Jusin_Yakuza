@@ -42,7 +42,7 @@ void CTerrain::Tick(const _float& fTimeDelta)
 
 void CTerrain::Late_Tick(const _float& fTimeDelta)
 {
-	m_pNavigationCom->Tick();
+	//m_pNavigationCom->Tick();
 
 	m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
 
