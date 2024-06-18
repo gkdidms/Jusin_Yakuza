@@ -2,7 +2,7 @@
 
 #include "GameInstance.h"
 
-#include "PlayerCamera.h"
+#include "DebugCamera.h"
 
 CLevel_Test::CLevel_Test(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLevel{ pDevice, pContext }
@@ -38,7 +38,7 @@ HRESULT CLevel_Test::Ready_Light(const wstring& strLayerTag)
 
 HRESULT CLevel_Test::Ready_Camera(const wstring& strLayerTag)
 {
-	//CPlayerCamera::PLAYER_CAMERA_DESC		CameraDesc{};
+	//CDebugCamera::PLAYER_CAMERA_DESC		CameraDesc{};
 
 	//CameraDesc.fSensor = 0.1f;
 	//CameraDesc.vEye = _float4(1.0f, 20.0f, -20.f, 1.f);
@@ -56,6 +56,8 @@ HRESULT CLevel_Test::Ready_Camera(const wstring& strLayerTag)
 	//return S_OK;
 
 	return S_OK;
+
+
 }
 
 HRESULT CLevel_Test::Ready_Player(const wstring& strLayerTag)
