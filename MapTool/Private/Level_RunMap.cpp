@@ -47,15 +47,17 @@ HRESULT CLevel_RunMap::Ready_Lights()
 
 HRESULT CLevel_RunMap::Ready_Layer_Camera(const wstring& strLayerTag)
 {
-	CPlayerCamera::FREE_CAMERA_DESC		CameraDesc{};
+	CPlayerCamera::PLAYER_CAMERA_DESC		CameraDesc{};
 
 	CameraDesc.fSensor = 0.1f;
-	CameraDesc.vEye = _float4(0.0f, 50.f, -45.f, 1.f);
-	CameraDesc.vFocus = _float4(0.0f, 0.f, 0.f, 1.f);
+	CameraDesc.vEye = _float4(1.0f, 20.0f, -20.f, 1.f);
+	CameraDesc.vFocus = _float4(0.f, 0.0f, 0.0f, 1.f);
 	CameraDesc.fFovY = XMConvertToRadians(60.0f);
 	CameraDesc.fAspect = g_iWinSizeX / (_float)g_iWinSizeY;
 	CameraDesc.fNear = 0.1f;
 	CameraDesc.fFar = 3000.f;
+	CameraDesc.fSpeedPecSec = 20.f;
+	CameraDesc.fRotatePecSec = XMConvertToRadians(90.f);
 
 
 	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_RUNMAP, TEXT("Prototype_GameObject_PlayerCamera"), strLayerTag, &CameraDesc)))

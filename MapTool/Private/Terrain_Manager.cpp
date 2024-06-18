@@ -19,14 +19,10 @@ void CTerrain_Manager::Priority_Tick(_float fTimeDelta)
 
 void CTerrain_Manager::Tick(_float fTimeDelta)
 {
-	for (auto& iter : m_GameObjectsLand)
-		iter->Tick(fTimeDelta);
 }
 
 void CTerrain_Manager::Late_Tick(_float fTimeDelta)
 {
-	for (auto& iter : m_GameObjectsLand)
-		iter->Late_Tick(fTimeDelta);
 }
 
 void CTerrain_Manager::Render()
@@ -42,11 +38,5 @@ void CTerrain_Manager::Change_LandScale(_uint iNumX, _uint iNumZ)
 
 void CTerrain_Manager::Free()
 {
-	for (auto& iter : m_GameObjectsLand)
-		Safe_Release(iter);
-
-	m_GameObjectsLand.clear();
-
 	Safe_Release(m_pTerrain);
-
 }
