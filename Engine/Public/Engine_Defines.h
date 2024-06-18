@@ -53,6 +53,7 @@ using namespace TriangleTests;
 #include <stdlib.h>
 #include <crtdbg.h>
 
+//TODO: 커밋 전에 주석 풀어야함
 //#ifndef DBG_NEW 
 //
 //#define DBG_NEW new ( _NORMAL_BLOCK , __FILE__ , __LINE__ ) 

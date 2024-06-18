@@ -1,5 +1,4 @@
 #pragma once
-
 #include "Camera.h"
 
 #include "Client_Defines.h"
@@ -8,6 +7,12 @@ BEGIN(Client)
 class CPlayerCamera :
     public CCamera
 {
+public:
+    typedef struct tPlayerCameraDesc : public CAMERA_DESC
+    {
+        _float fSensor;
+    } PLAYER_CAMERA_DESC;
+
 private:
     CPlayerCamera(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
     CPlayerCamera(const CPlayerCamera& rhs);
@@ -20,6 +25,9 @@ public:
     virtual void Tick(const _float& fTimeDelta) override;
     virtual void Late_Tick(const _float& fTimeDelta) override;
     virtual HRESULT Render() override;
+
+private:
+    _float m_fSensor = { 0.f };
 
 public:
     static CPlayerCamera* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

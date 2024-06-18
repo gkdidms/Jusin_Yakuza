@@ -2,6 +2,13 @@
 
 #include "GameInstance.h"
 
+#pragma region TEST
+#include "Player.h"
+#include "PlayerCamera.h"
+#include "TestMap.h"
+#pragma endregion
+
+
 CLoader::CLoader(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: m_pDevice{pDevice}, 
 	m_pContext{pContext},
@@ -14,7 +21,7 @@ CLoader::CLoader(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 
 _uint APIENTRY LoadingMain(void* pArg)
 {
-	CoInitializeEx(0, COINIT_MULTITHREADED);
+	CoInitializeEx(NULL, COINIT_MULTITHREADED);
 
 	CLoader* pLoader = (CLoader*)pArg;
 
@@ -53,6 +60,8 @@ HRESULT CLoader::Loading()
 	case LEVEL_GAMEPLAY:
 		hr = Loading_For_GamePlayLevel();
 		break;
+	case LEVEL_TEST:
+		hr = Loading_For_Test();
 	}
 
 	LeaveCriticalSection(&m_Critical_Section);
@@ -82,6 +91,44 @@ HRESULT CLoader::Loading_For_LogoLevel()
 }
 
 HRESULT CLoader::Loading_For_GamePlayLevel()
+{
+	lstrcpy(m_szLoadingText, TEXT("텍스쳐를 로딩 중 입니다."));
+
+
+	_matrix		PreTransformMatrix;
+	lstrcpy(m_szLoadingText, TEXT("모델를(을) 로딩 중 입니다."));
+	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(180.0f));
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Model_Player"), CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../Bin/DataFiles/Nilou.dat", PreTransformMatrix, false))))
+		return E_FAIL;
+
+	PreTransformMatrix = XMMatrixIdentity();
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Model_Map"), CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/DataFiles/Dungeon_1.dat", PreTransformMatrix, false))))
+		return E_FAIL;
+
+	lstrcpy(m_szLoadingText, TEXT("셰이더를(을) 로딩 중 입니다."));
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Shader_VtxAnim"), CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxAnimMesh.hlsl"), VTXANIMMESH::Elements, VTXANIMMESH::iNumElements))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Shader_Mesh"), CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxMesh.hlsl"), VTXMESH::Elements, VTXMESH::iNumElements))))
+		return E_FAIL;
+
+	lstrcpy(m_szLoadingText, TEXT("객체원형를(을) 로딩 중 입니다."));
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_PlayerCamera"), CPlayerCamera::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Player"), CPlayer::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Map"), CTestMap::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
+
+	m_isFinished = true;
+
+	return S_OK;
+}
+
+HRESULT CLoader::Loading_For_Test()
 {
 	lstrcpy(m_szLoadingText, TEXT("텍스쳐를 로딩 중 입니다."));
 
