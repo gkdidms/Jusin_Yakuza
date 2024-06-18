@@ -1,6 +1,8 @@
 #include "ImguiManager.h"
 #include "GameInstance.h"
 #include "AnimModel.h"
+#include "Animation.h"
+#include "Bone.h"
 
 #pragma region "Imgui"
 #include "imgui.h"
@@ -56,11 +58,14 @@ void CImguiManager::Tick(const _float& fTimeDelta)
 
 	ModelList();
 
-	if (ImGui::Button("Anim List Window"))
+	if (ImGui::Button("Open"))
 		m_isAnimListWindow = !m_isAnimListWindow;
 
 	if (m_isAnimListWindow)
+	{
 		AnimListWindow();
+		BoneListWindow();
+	}
 }
 
 
@@ -108,7 +113,7 @@ void CImguiManager::ModelList()
 	ImGui::NewLine();
 	ImGui::Text("Model List");
 
-	string strDirPath = "../Bin/Resources/Model/";
+	string strDirPath = "../Bin/Resources/Model/Anim/";
 
 	m_pGameInstance->Get_DirectoryName(strDirPath, m_ModelNameList);
 
@@ -131,30 +136,67 @@ void CImguiManager::AnimListWindow()
 {
 	ImGui::Begin("Anim List", &m_isAnimListWindow);
 
+	m_AnimNameList.clear();
+	const vector<CAnimation*> pAnims = m_pRenderModel->Get_Animations();
+	m_AnimNameList.resize(pAnims.size());
+
+	_uint i = 0;
+
+	vector<const char*> items;
+
+	for (auto pAnim : pAnims)
+	{
+		string strName = m_pGameInstance->Extract_String(pAnim->Get_AnimName(), '[', ']');
+
+		m_AnimNameList[i] = strName;
+		items.push_back(m_AnimNameList[i].c_str());
+
+		i++;
+	}
+
+	if (ImGui::ListBox("##", &m_iAnimIndex, items.data(), items.size()))
+	{
+		m_pRenderModel->Change_Animation(m_iAnimIndex);
+	}
 
 	ImGui::End();
 
-	//m_pGameInstance->Get_DirectoryName(strDirPath, m_AnimNameList);
+}
 
-	//vector<const char*> items;
+void CImguiManager::BoneListWindow()
+{
+	ImGui::Begin("Bone List", &m_isAnimListWindow);
 
-	//if (0 < m_AnimObjModels.size()) {
-	//	for (const string& str : m_AnimObjModels) {
-	//		items.push_back(str.c_str());
-	//	}
-	//}
+	m_BoneNameList.clear();
+	const vector<CBone*> pBones = m_pRenderModel->Get_Bones();
+	m_BoneNameList.resize(pBones.size());
 
-	//ImGui::Text("Model List");
+	_uint i = 0;
 
-	//ImGui::ListBox("##", &m_iAnimObjModelSeletedIdx, items.data(), m_AnimObjModels.size());
+	vector<const char*> items;
 
-	//if (ImGui::Button("Close Me"))
-	//	m_isAnimListWindow = false;
+	for (auto pBone: pBones)
+	{
+		string strName = pBone->Get_Name();
+		//string strName = m_pGameInstance->Extract_String(pBone->Get_Name(), '[', ']');
+
+		m_BoneNameList[i] = strName;
+		items.push_back(m_BoneNameList[i].c_str());
+
+		i++;
+	}
+
+	if (ImGui::ListBox("##", &m_iBoneSelectedIndex, items.data(), items.size()))
+	{
+		//m_pRenderModel->Change_Animation(m_iBoneSelectedIndex);
+	}
+
+	ImGui::End();
 }
 
 void CImguiManager::LoadAnimationCharacterList()
 {
-	wstring strModelPath = TEXT("../Bin/Resources/Model/");
+	wstring strModelPath = TEXT("../Bin/Resources/Model/Anim/");
 
 	vector<wstring> vecDirectorys;
 	m_pGameInstance->Get_DirectoryName(strModelPath, vecDirectorys);

@@ -41,19 +41,19 @@ void CAnimModel::Priority_Tick(const _float& fTimeDelta)
 
 void CAnimModel::Tick(const _float& fTimeDelta)
 {
-    _int iAnims = m_pModelCom->Get_NumAnimations();
-    if (m_pGameInstance->GetKeyState(DIK_UP) == TAP)
-    {
-        m_iAnimIndex++;
-        if (iAnims <= m_iAnimIndex)
-            m_iAnimIndex = m_pModelCom->Get_NumAnimations() - 1;
-    }
-    if (m_pGameInstance->GetKeyState(DIK_DOWN) == TAP)
-    {
-        m_iAnimIndex--;
-        if (0 >= m_iAnimIndex)
-            m_iAnimIndex = 0;
-    }
+    //_int iAnims = m_pModelCom->Get_NumAnimations();
+    //if (m_pGameInstance->GetKeyState(DIK_UP) == TAP)
+    //{
+    //    m_iAnimIndex++;
+    //    if (iAnims <= m_iAnimIndex)
+    //        m_iAnimIndex = m_pModelCom->Get_NumAnimations() - 1;
+    //}
+    //if (m_pGameInstance->GetKeyState(DIK_DOWN) == TAP)
+    //{
+    //    m_iAnimIndex--;
+    //    if (0 >= m_iAnimIndex)
+    //        m_iAnimIndex = 0;
+    //}
 
     CModel::ANIMATION_DESC desc{ m_iAnimIndex, true };
 
@@ -64,7 +64,7 @@ void CAnimModel::Tick(const _float& fTimeDelta)
 
 void CAnimModel::Late_Tick(const _float& fTimeDelta)
 {
-    m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
+    m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONLIGHT, this);
 }
 
 HRESULT CAnimModel::Render()
@@ -96,6 +96,16 @@ void CAnimModel::Set_Rotation(_uint iAxis, _float vRadian, _float fTimeDelta)
     m_pTransformCom->Turn(m_pTransformCom->Get_State((CTransform::STATE)iAxis), vRadian * fTimeDelta);
 }
 
+const vector<class CAnimation*>& CAnimModel::Get_Animations()
+{
+    return m_pModelCom->Get_Animations();
+}
+
+const vector<class CBone*>& CAnimModel::Get_Bones()
+{
+    return m_pModelCom->Get_Bones();
+}
+
 void CAnimModel::Change_Model(wstring strModelName)
 {
     Safe_Release(m_pModelCom);
@@ -106,6 +116,11 @@ void CAnimModel::Change_Model(wstring strModelName)
     wstring strComponentTag = TEXT("Prototype_Component_Model_") + m_strModelName;
 
     m_pModelCom = reinterpret_cast<CModel*>(m_pGameInstance->Add_Component_Clone(LEVEL_EDIT, strComponentTag));
+}
+
+void CAnimModel::Change_Animation(_uint iAnimIndex)
+{
+    m_iAnimIndex = iAnimIndex;
 }
 
 HRESULT CAnimModel::Add_Components()

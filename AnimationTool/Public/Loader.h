@@ -1,6 +1,5 @@
 #pragma once
 #include "Base.h"
-
 #include "Client_Defines.h"
 
 BEGIN(Engine)
@@ -37,7 +36,7 @@ private:
 	LEVEL					m_eNextLevel = { LEVEL_END };
 	_tchar					m_szLoadingText[MAX_PATH] = { TEXT("") };
 	_bool					m_isFinished = { false };
-	CGameInstance* m_pGameInstance = { nullptr };
+	CGameInstance*			m_pGameInstance = { nullptr };
 
 private:
 	HRESULT Loading_For_LogoLevel();

@@ -22,6 +22,7 @@ public:
 private:
 	void ModelList();
 	void AnimListWindow();
+	void BoneListWindow();
 
 private:
 	void LoadAnimationCharacterList();
@@ -36,12 +37,16 @@ private:
 private:
 	_bool m_isAnimListWindow = { false };
 	int m_iModelSelectedIndex = { 0 };
+	int m_iBoneSelectedIndex = { 0 };
 
 	vector<string> m_ModelNameList;
 	vector<string> m_AnimNameList;
+	vector<string> m_BoneNameList;
 
 private:
 	_float				m_fTimeDelta = { 0.f };
+
+	int					m_iAnimIndex = { 0 };
 
 private:
 	float				m_ModelPosition[3] = { 0.f };

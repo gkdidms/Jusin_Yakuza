@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Client_Defines.h"
 #include "GameObject.h"
+#include "Client_Defines.h"
 
 BEGIN(Engine)
 class CShader;
@@ -38,7 +38,12 @@ public:
 	void Set_Rotation(_uint iAxis, _float vRadian, _float fTimeDelta);
 
 public:
+	const vector<class CAnimation*>& Get_Animations();
+	const vector<class CBone*>& Get_Bones();
+
+public:
 	void Change_Model(wstring strModelName);
+	void Change_Animation(_uint iAnimIndex);
 
 private:
 	HRESULT	Add_Components();

@@ -30,6 +30,8 @@ CModel::CModel(const CModel& rhs)
 	for (auto& pPrototypeBone : rhs.m_Bones)
 		m_Bones.emplace_back(pPrototypeBone->Clone());
 
+	m_iNumBones = m_Bones.size();
+
 	for (auto& pMesh : m_Meshes)
 		Safe_AddRef(pMesh);
 
