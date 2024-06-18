@@ -1,6 +1,11 @@
 #pragma once
 #include "LandObject.h"
 
+BEGIN(Engine)
+class CShader;
+class CModel;
+END
+
 BEGIN(Client)
 class CPlayer :
     public CLandObject
@@ -17,6 +22,10 @@ public:
     virtual void Tick(const _float& fTimeDelta) override;
     virtual void Late_Tick(const _float& fTimeDelta) override;
     virtual HRESULT Render() override;
+
+private:
+    CShader* m_pShaderCom = { nullptr };
+    CModel* m_pModelCom = { nullptr };
 
 private:
     virtual HRESULT Add_Componenets() override;
