@@ -25,6 +25,11 @@
 
 #include "Cell.h"
 
+#pragma region VIBuffer
+#include "VIBuffer_Terrain_Flat.h"
+#pragma endregion
+
+
 BEGIN(Engine)
 class CComponent_Manager :
     public CBase
