@@ -7,6 +7,12 @@ CLevel_Test::CLevel_Test(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 
 HRESULT CLevel_Test::Initialize()
 {
+	//if (FAILED(Ready_Object(TEXT("Layer_GameObejct"))))
+	//	return E_FAIL;
+
+	if (FAILED(Ready_ImGui(TEXT("Layer_UI"))))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -20,6 +26,13 @@ void CLevel_Test::Tick(const _float& fTimeDelta)
 
 HRESULT CLevel_Test::Ready_Object(const wstring& strLayerTag)
 {
+	return S_OK;
+}
+
+HRESULT CLevel_Test::Ready_ImGui(const wstring& strLayerTag)
+{
+
+
 	return S_OK;
 }
 

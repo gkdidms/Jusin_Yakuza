@@ -17,6 +17,7 @@ public:
 
 private:
     HRESULT Ready_Object(const wstring& strLayerTag);
+    HRESULT Ready_ImGui(const wstring& strLayerTag);
 
 public:
     static CLevel_Test* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
