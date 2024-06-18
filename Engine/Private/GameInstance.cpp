@@ -15,6 +15,7 @@
 #include "Frustum.h"
 #include "Convert_Manager.h"
 
+
 IMPLEMENT_SINGLETON(CGameInstance)
 
 CGameInstance::CGameInstance()
@@ -82,6 +83,11 @@ HRESULT CGameInstance::Initialize_Engine(_uint iMaxLevelIndex, const ENGINE_DESC
 	m_pConvert_Manager = CConvert_Manager::Create();
 	if (nullptr == m_pConvert_Manager)
 		return E_FAIL;
+
+	m_pRandom_Manager = CRandomManager::Create();
+	if (nullptr == m_pRandom_Manager)
+		return E_FAIL;
+
 
 	return S_OK;
 }
@@ -535,4 +541,5 @@ void CGameInstance::Free()
 	Safe_Release(m_pPicking);
 	Safe_Release(m_pFrustum);
 	Safe_Release(m_pConvert_Manager);
+	Safe_Release(m_pRandom_Manager);
 }

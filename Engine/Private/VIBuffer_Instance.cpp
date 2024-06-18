@@ -6,31 +6,33 @@ CVIBuffer_Instance::CVIBuffer_Instance(ID3D11Device* pDevice, ID3D11DeviceContex
 }
 
 CVIBuffer_Instance::CVIBuffer_Instance(const CVIBuffer_Instance& rhs)
-	: CVIBuffer{ rhs },
-	m_InstanceDesc{ rhs.m_InstanceDesc },
-	m_iNumInstance{ rhs.m_iNumInstance },
-	m_iIndexCountPerInstance{ rhs.m_iIndexCountPerInstance },
-	m_iInstanceStride{ rhs.m_iInstanceStride },
-	m_InstanceBufferDesc{ rhs.m_InstanceBufferDesc },
-	m_pSpeeds{ rhs.m_pSpeeds },
-	m_pOriginalPositions{ rhs.m_pOriginalPositions },
-	m_pPower{ rhs.m_pPower }
+	: CVIBuffer{ rhs }
 {
-	m_pDevice->CreateBuffer(&m_InstanceBufferDesc, nullptr, &m_pVBInstance);
-	m_pContext->CopyResource(m_pVBInstance, rhs.m_pVBInstance);
 }
 
-HRESULT CVIBuffer_Instance::Initialize_Prototype(const INSTANCE_DESC& InstanceDesc)
+HRESULT CVIBuffer_Instance::Initialize_Prototype()
 {
-	m_iNumInstance = InstanceDesc.iNumInstance;
-
-	m_RandomNumber = mt19937_64(m_RandomDevice());
-
 	return S_OK;
 }
 
 HRESULT CVIBuffer_Instance::Initialize(void* pArg)
 {
+	if (nullptr != pArg)
+	{
+		INSTANCE_DESC* pDesc = static_cast<INSTANCE_DESC*>(pArg);
+
+		m_InstanceDesc.iNumInstance = pDesc->iNumInstance;
+		m_InstanceDesc.vOffsetPos = pDesc->vOffsetPos;
+		m_InstanceDesc.vPivotPos = pDesc->vPivotPos;
+		m_InstanceDesc.vRange = pDesc->vRange;
+		m_InstanceDesc.vSize = pDesc->vSize;
+		m_InstanceDesc.vSpeed = pDesc->vSpeed;
+		m_InstanceDesc.vLifeTime = pDesc->vLifeTime;
+		m_InstanceDesc.vPower = pDesc->vPower;
+		m_InstanceDesc.isLoop = pDesc->isLoop;
+
+	}
+
 	return S_OK;
 }
 

@@ -169,6 +169,9 @@
     <Filter Include="01.Utility\03.Component\07.Navigation\Cell">
       <UniqueIdentifier>{a62f8446-83be-4834-a08b-24e1fe5873e4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Utility\10.RandomManager">
+      <UniqueIdentifier>{a68c1b54-2dec-4eab-9646-f4e2c779026b}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\Base.h">
@@ -339,6 +342,9 @@
     <ClInclude Include="..\Public\Animation.h">
       <Filter>01.Utility\03.Component\05.Model\Animation</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\RandomManager.h">
+      <Filter>01.Utility\10.RandomManager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\Base.cpp">
@@ -496,6 +502,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Animation.cpp">
       <Filter>01.Utility\03.Component\05.Model\Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\RandomManager.cpp">
+      <Filter>01.Utility\10.RandomManager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
