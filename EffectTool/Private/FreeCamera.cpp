@@ -47,11 +47,11 @@ void CFreeCamera::Tick(const _float& fTimeDelta)
     {
         if (m_pGameInstance->GetKeyState(DIK_A) == HOLD)
             m_pTransformCom->Go_Left(fTimeDelta);
-        if (m_pGameInstance->Get_DIKeyState(DIK_D) == HOLD)
+        if (m_pGameInstance->GetKeyState(DIK_D) == HOLD)
             m_pTransformCom->Go_Right(fTimeDelta);
-        if (m_pGameInstance->Get_DIKeyState(DIK_W) == HOLD)
+        if (m_pGameInstance->GetKeyState(DIK_W) == HOLD)
             m_pTransformCom->Go_Straight(fTimeDelta);
-        if (m_pGameInstance->Get_DIKeyState(DIK_S) == HOLD)
+        if (m_pGameInstance->GetKeyState(DIK_S) == HOLD)
             m_pTransformCom->Go_Backward(fTimeDelta);
 
 
@@ -59,14 +59,13 @@ void CFreeCamera::Tick(const _float& fTimeDelta)
 
         if (MouseMove = m_pGameInstance->Get_DIMouseMove(DIMS_X))
         {
-            m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), fTimeDelta * m_fSensor * MouseMove);
+            m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), fTimeDelta * m_fSensor * MouseMove); 
         }
 
         if (MouseMove = m_pGameInstance->Get_DIMouseMove(DIMS_Y))
         {
-            m_pTransformCom->Turn(XMVectorSet(1.f, 0.f, 0.f, 0.f), fTimeDelta * m_fSensor * MouseMove);
+            m_pTransformCom->Turn(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), fTimeDelta * m_fSensor * MouseMove); 
         }
-
         Mouse_Fix();
     }
 

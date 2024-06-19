@@ -30,7 +30,7 @@ HRESULT CVIBuffer_Instance_Point::Initialize(void* pArg)
 
 	m_iIndexStride = 2;
 	m_iIndexCountPerInstance = 1;
-	m_iNumIndices = m_iIndexCountPerInstance * m_iNumInstance;
+	m_iNumIndices = m_iIndexCountPerInstance * m_InstanceDesc->iNumInstance;
 	m_iInstanceStride = sizeof(VTXMATRIX);
 
 #pragma region VERTEX_BUFFER
@@ -44,10 +44,9 @@ HRESULT CVIBuffer_Instance_Point::Initialize(void* pArg)
 	VTXPOINT* pVertexts = new VTXPOINT[m_iNumVertices];
 	ZeroMemory(pVertexts, sizeof(VTXPOINT) * m_iNumVertices);
 
-	_float	fSize= m_pGameInstance->Get_Random(m_InstanceDesc.vSize.x, m_InstanceDesc.vSize.y);
 
 	pVertexts[0].vPosition = _float3{ 0.f, 0.f, 0.f };
-	pVertexts[0].vPSize = _float2{ fSize, fSize };
+	pVertexts[0].vPSize = _float2{ m_InstanceDesc->vSize.x, m_InstanceDesc->vSize. y};
 
 	m_InitialData.pSysMem = pVertexts;
 
@@ -79,49 +78,64 @@ HRESULT CVIBuffer_Instance_Point::Initialize(void* pArg)
 #pragma region INSTANCE_BUFFER
 	// 파티클들의 월드 좌표를 저장하기 위한 버퍼
 	// 좌표 뿐만 아니라 다양한 정보를 저장하여 사용한다.
-	m_InstanceBufferDesc.ByteWidth = m_iInstanceStride * m_iNumInstance;
+	m_InstanceBufferDesc.ByteWidth = m_iInstanceStride * m_InstanceDesc->iNumInstance;
 	m_InstanceBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
 	m_InstanceBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	m_InstanceBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	m_InstanceBufferDesc.MiscFlags = 0;
 	m_InstanceBufferDesc.StructureByteStride = m_iInstanceStride;
 
-	VTXMATRIX* pInstanceVertices = new VTXMATRIX[m_iNumInstance];
-	ZeroMemory(pInstanceVertices, sizeof(VTXMATRIX) * m_iNumInstance);
+	VTXMATRIX* pInstanceVertices = new VTXMATRIX[m_InstanceDesc->iNumInstance];
+	ZeroMemory(pInstanceVertices, sizeof(VTXMATRIX) * m_InstanceDesc->iNumInstance);
 
-	m_pSpeeds = new _float[m_iNumInstance];
-	ZeroMemory(m_pSpeeds, sizeof(_float) * m_iNumInstance);
+	m_pSpeeds = new _float[m_InstanceDesc->iNumInstance];
+	ZeroMemory(m_pSpeeds, sizeof(_float) * m_InstanceDesc->iNumInstance);
 
-	m_pPower = new _float[m_iNumInstance];
-	ZeroMemory(m_pPower, sizeof(_float) * m_iNumInstance);
+	m_pPower = new _float[m_InstanceDesc->iNumInstance];
+	ZeroMemory(m_pPower, sizeof(_float) * m_InstanceDesc->iNumInstance);
 
-	m_pAccelTime = new _float[m_iNumInstance];
-	ZeroMemory(m_pAccelTime, sizeof(_float) * m_iNumInstance);
+	m_pAccelTime = new _float[m_InstanceDesc->iNumInstance];
+	ZeroMemory(m_pAccelTime, sizeof(_float) * m_InstanceDesc->iNumInstance);
 
-	m_pOriginalPositions = new _float3[m_iNumInstance];
-	ZeroMemory(m_pOriginalPositions, sizeof(_float3) * m_iNumInstance);
+	m_pOriginalPositions = new _float3[m_InstanceDesc->iNumInstance];
+	ZeroMemory(m_pOriginalPositions, sizeof(_float3) * m_InstanceDesc->iNumInstance);
 
-	_float RangeX = m_pGameInstance->Get_Random(m_InstanceDesc.vPivotPos.x - m_InstanceDesc.vRange.x * 0.5f, m_InstanceDesc.vPivotPos.x + m_InstanceDesc.vRange.x * 0.5f);
-	_float RangeY = m_pGameInstance->Get_Random(m_InstanceDesc.vPivotPos.y - m_InstanceDesc.vRange.y * 0.5f, m_InstanceDesc.vPivotPos.y + m_InstanceDesc.vRange.y * 0.5f);
-	_float RangeZ = m_pGameInstance->Get_Random(m_InstanceDesc.vPivotPos.z - m_InstanceDesc.vRange.z * 0.5f, m_InstanceDesc.vPivotPos.z + m_InstanceDesc.vRange.z * 0.5f);
 
-	_float Speed = m_pGameInstance->Get_Random(m_InstanceDesc.vSpeed.x, m_InstanceDesc.vSpeed.y);
-	_float Power = m_pGameInstance->Get_Random(m_InstanceDesc.vPower.x, m_InstanceDesc.vPower.y);
-	_float LifeTime = m_pGameInstance->Get_Random(m_InstanceDesc.vLifeTime.x, m_InstanceDesc.vLifeTime.y);
+	for (size_t i = 0; i < m_InstanceDesc->iNumInstance; i++)
+	{	
+	_float	fRectSize = m_pGameInstance->Get_Random(m_InstanceDesc->vRectSize.x, m_InstanceDesc->vRectSize.y);
+	
 
-	for (size_t i = 0; i < m_iNumInstance; i++)
-	{
+	_float Speed = m_pGameInstance->Get_Random(m_InstanceDesc->vSpeed.x, m_InstanceDesc->vSpeed.y);	
+	_float RangeX = m_pGameInstance->Get_Random(m_InstanceDesc->vPivotPos.x - m_InstanceDesc->vRange.x * 0.5f, m_InstanceDesc->vPivotPos.x + m_InstanceDesc->vRange.x * 0.5f);
+	_float RangeY = m_pGameInstance->Get_Random(m_InstanceDesc->vPivotPos.y - m_InstanceDesc->vRange.y * 0.5f, m_InstanceDesc->vPivotPos.y + m_InstanceDesc->vRange.y * 0.5f);
+	_float RangeZ = m_pGameInstance->Get_Random(m_InstanceDesc->vPivotPos.z - m_InstanceDesc->vRange.z * 0.5f, m_InstanceDesc->vPivotPos.z + m_InstanceDesc->vRange.z * 0.5f);
+
+	_float RadiusX = m_pGameInstance->Get_Random(m_InstanceDesc->vPivotPos.x -m_InstanceDesc->fRadius, m_InstanceDesc->vPivotPos.x+m_InstanceDesc->fRadius);
+	_float RadiusY = m_pGameInstance->Get_Random(m_InstanceDesc->vPivotPos.y -m_InstanceDesc->fRadius, m_InstanceDesc->vPivotPos.y+ m_InstanceDesc->fRadius);
+	_float RadiusZ = m_pGameInstance->Get_Random(m_InstanceDesc->vPivotPos.z  -m_InstanceDesc->fRadius, m_InstanceDesc->vPivotPos.z+m_InstanceDesc->fRadius);
+
+
+	_float Power = m_pGameInstance->Get_Random(m_InstanceDesc->vPower.x, m_InstanceDesc->vPower.y);
+	_float LifeTime = m_pGameInstance->Get_Random(m_InstanceDesc->vLifeTime.x, m_InstanceDesc->vLifeTime.y);
+
+
+
+		//m_pRectSize[i] = _float2(m_InstanceDesc.vRectSize.x, m_InstanceDesc.vRectSize.y);
 
 		// Right, Up, Loop, Pos 순서로 월드 행렬의 좌표를 넣어준다.
-		pInstanceVertices[i].vRight = _float4(fSize, 0.f, 0.f, 0.f);
-		pInstanceVertices[i].vUp = _float4(0.f, fSize, 0.f, 0.f);
-		pInstanceVertices[i].vLook = _float4(0.f, 0.f, fSize, 0.f);
-		pInstanceVertices[i].vTranslation = _float4(RangeX, RangeY, RangeZ, 1.f);
+		pInstanceVertices[i].vRight = _float4(1.f, 0.f, 0.f, 0.f);
+		pInstanceVertices[i].vUp = _float4(0.f, 1.f, 0.f, 0.f);
+		pInstanceVertices[i].vLook = _float4(0.f, 0.f, 1.f, 0.f);
+		//pInstanceVertices[i].vTranslation = _float4(RangeX, RangeY, RangeZ, 1.f);
+		pInstanceVertices[i].vTranslation = _float4(RadiusX, RadiusY, RadiusZ, 1.f);		
 		m_pOriginalPositions[i] = _float3(pInstanceVertices[i].vTranslation.x, pInstanceVertices[i].vTranslation.y, pInstanceVertices[i].vTranslation.z); // Loop를 위해 저장해준다.
 		pInstanceVertices[i].vLifeTime.x = LifeTime; // 파티클이 살아있을 수 있는 시간.
+		pInstanceVertices[i].vRectSize = fRectSize;
+
 
 		m_pPower[i] = Power;
-		m_pSpeeds[i] = Speed;
+		m_pSpeeds[i] = Speed;	
 		m_pAccelTime[i] = 0.f;
 	}
 	m_InitialData.pSysMem = pInstanceVertices;

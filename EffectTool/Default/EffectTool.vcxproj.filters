@@ -76,6 +76,9 @@
     <ClCompile Include="..\Private\Particle_Point.cpp">
       <Filter>02.GameObjects\03.Effect\Particle_Point</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\Effect.cpp">
+      <Filter>02.GameObjects\03.Effect</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\MainApp.h">
@@ -170,6 +173,9 @@
     </ClInclude>
     <ClInclude Include="..\Public\Particle_Point.h">
       <Filter>02.GameObjects\03.Effect\Particle_Point</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Effect.h">
+      <Filter>02.GameObjects\03.Effect</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

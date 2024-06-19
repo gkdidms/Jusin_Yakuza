@@ -216,7 +216,10 @@ namespace Engine
 		XMFLOAT4			vUp;
 		XMFLOAT4			vLook;
 		XMFLOAT4			vTranslation;
+		XMFLOAT4			vDirection;
 		XMFLOAT2			vLifeTime;
+		_float					vRectSize;	
+		
 	}VTXMATRIX;
 
 	typedef struct ENGINE_DLL tVtxInstance_Rect
@@ -227,8 +230,8 @@ namespace Engine
 
 	typedef struct ENGINE_DLL tVtxInstance_Point
 	{
-		static const unsigned int		iNumElements = { 7 };
-		static const D3D11_INPUT_ELEMENT_DESC	Elements[7];
+		static const unsigned int		iNumElements = { 9 };
+		static const D3D11_INPUT_ELEMENT_DESC	Elements[9];
 	}VTXINSTANCE_POINT;
 
 	typedef struct ENGINE_DLL tagIndex32
