@@ -9,7 +9,6 @@ class ENGINE_DLL CGameObject abstract :
 public:
     typedef struct tGameObjectDesc: public CTransform::TRANSFORM_DESC
     {
-        _int iPathIndex;
     } GAMEOBJECT_DESC;
 
 protected:

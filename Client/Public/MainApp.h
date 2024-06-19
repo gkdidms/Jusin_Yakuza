@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Client_Defines.h"
+
 #include "Base.h"
 
 BEGIN(Engine)
@@ -29,10 +30,16 @@ private:
 
 #ifdef _DEBUG
 private:
+	class CDebugManager* m_pDebugMananger = { nullptr };
+#endif // _DEBUG
+
+#ifdef _DEBUG
+private:
 	_tchar					m_szFPS[MAX_PATH] = TEXT("");
 	_float					m_fTimeAcc = {};
 	_uint					m_iNumRender = {};
 
+	_bool m_isDebug = { false };
 #endif
 
 public:
