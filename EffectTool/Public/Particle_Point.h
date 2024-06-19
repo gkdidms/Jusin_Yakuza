@@ -40,7 +40,7 @@ private:
     CShader* m_pShaderCom = { nullptr };
     CTexture* m_pTextureCom = { nullptr };
     CVIBuffer_Instance_Point* m_pVIBufferCom = { nullptr };
-    CVIBuffer_Instance_Point::INSTANCE_POINT_DESC* m_pBufferInstance;
+    CVIBuffer_Instance_Point::INSTANCE_POINT_DESC m_BufferInstance;
 
 
 private:

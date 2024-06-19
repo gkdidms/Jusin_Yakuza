@@ -8,6 +8,8 @@ CVIBuffer_Instance::CVIBuffer_Instance(ID3D11Device* pDevice, ID3D11DeviceContex
 CVIBuffer_Instance::CVIBuffer_Instance(const CVIBuffer_Instance& rhs)
 	: CVIBuffer{ rhs }
 {
+	m_pDevice->CreateBuffer(&m_InstanceBufferDesc, nullptr, &m_pVBInstance);
+	//m_pContext->CopyResource(m_pVBInstance, rhs.m_pVBInstance);
 }
 
 HRESULT CVIBuffer_Instance::Initialize_Prototype()
@@ -30,6 +32,13 @@ HRESULT CVIBuffer_Instance::Initialize(void* pArg)
 		m_InstanceDesc.vLifeTime = pDesc->vLifeTime;
 		m_InstanceDesc.vPower = pDesc->vPower;
 		m_InstanceDesc.isLoop = pDesc->isLoop;
+
+		m_iNumInstance = m_InstanceDesc.iNumInstance;
+	//	m_pSpeeds = m_InstanceDesc.vSpeed;
+	//	m_pPower = m_InstanceDesc.vPower;
+
+		
+
 
 	}
 

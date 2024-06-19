@@ -24,7 +24,7 @@ HRESULT CParticle_Point::Initialize(void* pArg)
     if (nullptr != pArg)
     {
         PARTICLE_POINT_DESC* pDesc = static_cast<PARTICLE_POINT_DESC*>(pArg);
-        m_pBufferInstance = &pDesc->BufferInstance;
+        m_BufferInstance = pDesc->BufferInstance;
 
         m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&pDesc ->vStartPos));
 
@@ -42,6 +42,7 @@ void CParticle_Point::Priority_Tick(const _float& fTimeDelta)
 
 void CParticle_Point::Tick(const _float& fTimeDelta)
 {
+    m_pVIBufferCom->Spread(fTimeDelta);
 }
 
 void CParticle_Point::Late_Tick(const _float& fTimeDelta)
@@ -54,7 +55,7 @@ HRESULT CParticle_Point::Render()
     if (FAILED(Bind_ShaderResources()))
         return E_FAIL;
 
-    m_pShaderCom->Begin(0);
+    m_pShaderCom->Begin(1);
 
     m_pVIBufferCom->Render();
 
@@ -64,17 +65,17 @@ HRESULT CParticle_Point::Render()
 HRESULT CParticle_Point::Add_Components()
 {
     /* For.Com_VIBuffer */
-    if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_VIBuffer_Instance_Point"),
-        TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pVIBufferCom), m_pBufferInstance)))
+    if (FAILED(__super::Add_Component(LEVEL_EDIT, TEXT("Prototype_Component_VIBuffer_Instance_Point"),
+        TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pVIBufferCom), &m_BufferInstance)))
         return E_FAIL;
 
     /* For.Com_Shader */
-    if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Shader_VtxInstance_Point"),
+    if (FAILED(__super::Add_Component(LEVEL_EDIT, TEXT("Prototype_Component_Shader_VtxInstance_Point"),
         TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
         return E_FAIL;
 
     /* For.Com_Texture */
-    if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Texture_Dust"),
+    if (FAILED(__super::Add_Component(LEVEL_EDIT, TEXT("Prototype_Component_Texture_Sphere"),
         TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
         return E_FAIL;
 

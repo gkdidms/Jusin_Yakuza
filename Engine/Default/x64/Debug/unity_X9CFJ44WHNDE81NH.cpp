@@ -1,4 +1,7 @@
 
+#include "C:\ProjectFile\3D_Team\Jusin_Yakuza\Engine\Private\Renderer.cpp"
+
+
 #include "C:\ProjectFile\3D_Team\Jusin_Yakuza\Engine\Private\RenderTarget.cpp"
 
 

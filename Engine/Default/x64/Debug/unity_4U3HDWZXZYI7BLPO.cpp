@@ -10,3 +10,6 @@
 
 #include "C:\ProjectFile\3D_Team\Jusin_Yakuza\Engine\Private\Bone.cpp"
 
+
+#include "C:\ProjectFile\3D_Team\Jusin_Yakuza\Engine\Private\Bounding.cpp"
+

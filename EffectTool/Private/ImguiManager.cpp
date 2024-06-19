@@ -56,7 +56,10 @@ void CImguiManager::Tick(const _float& fTimeDelta)
 	bool bDemo = true;
 	ImGui::ShowDemoWindow(&bDemo);
 
+	ImGui::Begin("Editor");
+	Guizmo(fTimeDelta);
 
+	ImGui::End();
 
 }
 
@@ -66,7 +69,82 @@ HRESULT CImguiManager::Render()
 {
 	ImGui::Render();
 
+
 	return S_OK;
+}
+
+void CImguiManager::EditTransform(_float* cameraView, _float* cameraProjection, _float* matrix)
+{
+	static ImGuizmo::MODE mCurrentGizmoMode(ImGuizmo::LOCAL);
+	static bool useSnap = false;
+	static float snap[3] = { 1.f, 1.f, 1.f };
+	static float bounds[] = { -0.5f, -0.5f, -0.5f, 0.5f, 0.5f, 0.5f };
+	static float boundsSnap[] = { 0.1f, 0.1f, 0.1f };
+	static bool boundSizing = false;
+	static bool boundSizingSnap = false;
+
+	if (ImGui::IsKeyPressed(ImGuiKey_T))
+		mCurrentGizmoOperation = ImGuizmo::TRANSLATE;
+	if (ImGui::IsKeyPressed(ImGuiKey_E))
+		mCurrentGizmoOperation = ImGuizmo::ROTATE;
+	if (ImGui::IsKeyPressed(ImGuiKey_R)) // r Key
+		mCurrentGizmoOperation = ImGuizmo::SCALE;
+	if (ImGui::RadioButton("Translate", mCurrentGizmoOperation == ImGuizmo::TRANSLATE))
+		mCurrentGizmoOperation = ImGuizmo::TRANSLATE;
+	ImGui::SameLine();
+	if (ImGui::RadioButton("Rotate", mCurrentGizmoOperation == ImGuizmo::ROTATE))
+		mCurrentGizmoOperation = ImGuizmo::ROTATE;
+	ImGui::SameLine();
+	if (ImGui::RadioButton("Scale", mCurrentGizmoOperation == ImGuizmo::SCALE))
+		mCurrentGizmoOperation = ImGuizmo::SCALE;
+
+	float matrixTranslation[3], matrixRotation[3], matrixScale[3];
+	ImGuizmo::DecomposeMatrixToComponents(matrix, matrixTranslation, matrixRotation, matrixScale);
+	ImGui::InputFloat3("Tr", matrixTranslation);
+	ImGui::InputFloat3("Rt", matrixRotation);
+	ImGui::InputFloat3("Sc", matrixScale);
+	ImGuizmo::RecomposeMatrixFromComponents(matrixTranslation, matrixRotation, matrixScale, matrix);
+
+	if (mCurrentGizmoOperation != ImGuizmo::SCALE)
+	{
+		if (ImGui::RadioButton("Local", mCurrentGizmoMode == ImGuizmo::LOCAL))
+			mCurrentGizmoMode = ImGuizmo::LOCAL;
+		ImGui::SameLine();
+		if (ImGui::RadioButton("World", mCurrentGizmoMode == ImGuizmo::WORLD))
+			mCurrentGizmoMode = ImGuizmo::WORLD;
+	}
+	//ImGui::SameLine();
+
+
+	ImGuiIO& io = ImGui::GetIO();
+	float viewManipulateRight = io.DisplaySize.x;
+	float viewManipulateTop = 0;
+	static ImGuiWindowFlags gizmoWindowFlags = 0;
+
+	ImGuizmo::DrawGrid(cameraView, cameraProjection, identityMatrix, 100.f);	
+	//ImGuizmo::SetRect(0, 0, io.DisplaySize.x, io.DisplaySize.y);
+	//ImGuizmo::Manipulate(cameraView, cameraProjection, mCurrentGizmoOperation, mCurrentGizmoMode, matrix);
+
+	//ImGuizmo::ViewManipulate(cameraView, camDistance, ImVec2(viewManipulateRight - 128, viewManipulateTop), ImVec2(128, 128), 0x10101010);
+	if (useWindow)
+	{
+		ImGui::PopStyleColor(1);
+	}
+}
+
+void CImguiManager::Guizmo(_float fTimeDelta)
+{
+
+	_float* cameraView = (_float*)m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_VIEW);
+	_float* cameraProjection = (_float*)m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_PROJ);
+
+	_float4x4 O = {};
+	XMStoreFloat4x4(&O, XMMatrixIdentity());
+
+	_float* objectWorld = (_float*)(&O);
+	EditTransform(cameraView, cameraProjection, objectWorld);
+	ImGuizmo::IsUsing();
+
 }
 
 CImguiManager* CImguiManager::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

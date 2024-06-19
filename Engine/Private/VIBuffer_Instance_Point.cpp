@@ -42,6 +42,7 @@ HRESULT CVIBuffer_Instance_Point::Initialize(void* pArg)
 	m_Buffer_Desc.StructureByteStride = m_iVertexStride;
 
 	VTXPOINT* pVertexts = new VTXPOINT[m_iNumVertices];
+	ZeroMemory(pVertexts, sizeof(VTXPOINT) * m_iNumVertices);
 
 	_float	fSize= m_pGameInstance->Get_Random(m_InstanceDesc.vSize.x, m_InstanceDesc.vSize.y);
 
