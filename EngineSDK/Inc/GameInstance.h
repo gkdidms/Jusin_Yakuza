@@ -133,6 +133,7 @@ public:
 public:
     void Get_FileNames(const wstring& strPath, vector<wstring>& vecOut);
     void Get_FileNames(const string& strPath, vector<string>& vecOut);
+
     wstring Get_FileName(const wstring& strPath);
     string Get_FileName(const string& strPath);
 

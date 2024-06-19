@@ -38,6 +38,7 @@ public:
 
 public:
     class CComponent* Get_Component(wstring strComponentTag);
+    CTransform* Get_TransformCom() { return m_pTransformCom; }
 
 protected:
     ID3D11Device* m_pDevice = { nullptr };

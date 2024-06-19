@@ -1,5 +1,7 @@
 #include "Convert_Manager.h"
 
+
+
 CConvert_Manager::CConvert_Manager()
 {
 }
@@ -43,6 +45,8 @@ void CConvert_Manager::Get_FileNames(const string& strPath, vector<string>& vecO
 
 	vecOut = vecDirectoryNames;
 }
+
+
 
 wstring CConvert_Manager::Get_FileName(const wstring& strPath)
 {

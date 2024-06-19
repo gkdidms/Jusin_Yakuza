@@ -120,7 +120,8 @@ CTerrain * CTerrain::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pConte
 	}
 
 	// terrainmanaer¿¡ Ãß°¡
-	CTerrain_Manager::GetInstance()->Set_Terrain(pInstance);
+
+
 
 	return pInstance;
 }
@@ -134,6 +135,8 @@ CGameObject * CTerrain::Clone(void * pArg)
 		MSG_BOX("Failed To Cloned : CTerrain");
 		Safe_Release(pInstance);
 	}
+
+	CTerrain_Manager::GetInstance()->Set_Terrain(pInstance);
 
 	return pInstance;
 }

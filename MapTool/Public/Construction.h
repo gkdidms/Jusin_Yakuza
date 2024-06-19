@@ -12,6 +12,12 @@ BEGIN(Client)
 
 class CConstruction final : public CGameObject
 {
+public:
+	typedef struct tMapObjDesc : public CGameObject::GAMEOBJECT_DESC
+	{
+		XMMATRIX		vStartPos;
+	}MAPOBJ_DESC;
+
 
 private:
 	CConstruction(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
