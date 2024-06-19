@@ -3,6 +3,7 @@
 #include "AnimModel.h"
 #include "Animation.h"
 #include "Bone.h"
+#include "Channel.h"
 
 #pragma region "Imgui"
 #include "imgui.h"
@@ -11,16 +12,6 @@
 #include "imgui_impl_win32.h"
 #include "ImGuizmo.h"
 #pragma endregion
-
-
-static ImGuizmo::OPERATION mCurrentGizmoOperation(ImGuizmo::TRANSLATE);
-bool useWindow = false;
-
-static const float identityMatrix[16] =
-{ 1.f, 0.f, 0.f, 0.f,
-	0.f, 1.f, 0.f, 0.f,
-	0.f, 0.f, 1.f, 0.f,
-	0.f, 0.f, 0.f, 1.f };
 
 CImguiManager::CImguiManager(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: m_pDevice{ pDevice }
@@ -58,6 +49,8 @@ void CImguiManager::Tick(const _float& fTimeDelta)
 
 	ModelList();
 
+	//ImDrawList* draw_list = ImDrawList::Add();
+
 	if (ImGui::Button("Open"))
 		m_isAnimListWindow = !m_isAnimListWindow;
 
@@ -65,6 +58,7 @@ void CImguiManager::Tick(const _float& fTimeDelta)
 	{
 		AnimListWindow();
 		BoneListWindow();
+		KeyFrameWindow();
 	}
 }
 
@@ -127,6 +121,7 @@ void CImguiManager::ModelList()
 
 	if (ImGui::ListBox("##", &m_iModelSelectedIndex, items.data(), m_ModelNameList.size()))
 	{
+		m_iAnimIndex = 0;
 		m_pRenderModel->Change_Model(m_pGameInstance->StringToWstring(m_ModelNameList[m_iModelSelectedIndex]));
 	}
 
@@ -192,6 +187,121 @@ void CImguiManager::BoneListWindow()
 	}
 
 	ImGui::End();
+}
+
+void CImguiManager::FXWindow(ImGuiIO& io)
+{
+	ImGui::Begin("FX", NULL, ImGuiWindowFlags_AlwaysAutoResize);
+	ImVec2 size(320.0f, 180.0f);
+	ImGui::InvisibleButton("canvas", size);
+	ImVec2 p0 = ImGui::GetItemRectMin();
+	ImVec2 p1 = ImGui::GetItemRectMax();
+	ImDrawList* draw_list = ImGui::GetWindowDrawList();
+	draw_list->PushClipRect(p0, p1);
+
+	//m_pGameInstance->Mouse
+
+	ImVec4 mouse_data;
+	mouse_data.x = (io.MousePos.x - p0.x) / size.x;
+	mouse_data.y = (io.MousePos.y - p0.y) / size.y;
+	mouse_data.z = io.MouseDownDuration[0];
+	mouse_data.w = io.MouseDownDuration[1];
+
+	vector<float> data = { 10.0f, 20.0f, 30.0f, 40.0f, 50.0f };
+	FX(draw_list, p0, p1, size, mouse_data, (float)ImGui::GetTime());
+	DrawTimeline(draw_list, data);
+	draw_list->PopClipRect();
+	ImGui::End();
+}
+
+void CImguiManager::KeyFrameWindow()
+{
+	ImGui::Begin("KeyFrame", NULL);
+
+	auto Anims = m_pRenderModel->Get_Animations();
+
+	_float Duration = (_float)(*(Anims[m_iAnimIndex]->Get_Duration()));
+	_float CurrentPosition = (_float)(*(Anims[m_iAnimIndex]->Get_CurrentPosition()));
+	
+	ImGui::SliderFloat("##", &CurrentPosition, 0.f, Duration);
+
+	Anims[m_iAnimIndex]->Set_CurrentPosition((_double)CurrentPosition);
+	Anims[m_iAnimIndex]->Update_KeyframeIndex();
+
+	DrawChannels();
+
+	ImGui::End();
+}
+
+void CImguiManager::FX(ImDrawList* d, V2 a, V2 b, V2 sz, ImVec4 m, float t)
+{
+	for (int n = 0; n < (1.0f + sinf(t * 5.7f)) * 40.0f; n++)
+		d->AddCircle(V2(a.x + sz.x * 0.5f, a.y + sz.y * 0.5f), sz.y * (0.01f + n * 0.03f),
+			IM_COL32(255, 140 - n * 4, n * 3, 255));
+}
+
+void CImguiManager::DrawTimeline(ImDrawList* draw_list, const vector<float>& data)
+{
+	//ImVec2 p0 = ImGui::GetItemRectMin();
+	//ImVec2 p1 = ImGui::GetItemRectMax();
+
+	//draw_list->AddRect(ImVec2(p0.x, p0.y), ImVec2(p1.x, p1.y), IM_COL32_WHITE);
+
+	//// 타임라인 배경 그리기
+	//draw_list->AddRect(ImVec2(p0.x, p0.y), ImVec2(p1.x * 0.5f, p1.y * 0.5f), IM_COL32(100, 100, 100, 255));
+
+	//// X축 그리기
+	//draw_list->AddLine(ImVec2(0.0f, 15.0f), ImVec2(ImGui::GetContentRegionMax().x, 15.0f), ImColor(0xAAAAAA));
+
+	//// Y축 그리기
+	//draw_list->AddLine(ImVec2(15.0f, 0.0f), ImVec2(15.0f, ImGui::GetContentRegionMax().y), ImColor(0xAAAAAA));
+
+	  // 타임라인 배경 그리기
+	draw_list->AddRect(ImGui::GetItemRectMin(), ImGui::GetItemRectMax(), IM_COL32_WHITE);
+
+	// X축 그리기
+	draw_list->AddLine(ImVec2(ImGui::GetItemRectMin().x, ImGui::GetItemRectMin().y + 15.f), ImVec2(ImGui::GetItemRectMax().x, ImGui::GetItemRectMin().y + 15.f), IM_COL32(255, 0, 0, 255));
+
+	// Y축 그리기
+	draw_list->AddLine(ImVec2(ImGui::GetItemRectMin().x + 15, ImGui::GetItemRectMin().y), ImVec2(ImGui::GetItemRectMin().x + 15, ImGui::GetItemRectMax().y), IM_COL32(255, 0, 0, 255));
+
+	// 데이터 포인트 루프
+	for (int i = 0; i < data.size(); i++) {
+		float x = (data[i] - 1) / (10 - 1) * (ImGui::GetItemRectMax().x - 15.0f) + 15.0f;
+		float y = data[i] * (ImGui::GetItemRectMax().y - 15.0f) + 15.0f;
+
+		// 데이터 포인트 표시
+		draw_list->AddCircle(ImVec2(x, y), 5.0f, IM_COL32_WHITE);
+	}
+}
+
+void CImguiManager::DrawChannels()
+{
+	auto Anims = m_pRenderModel->Get_Animations();
+	auto& Channels = Anims[m_iAnimIndex]->Get_Channels();
+
+	m_ChannelNameList.clear();
+	m_ChannelNameList.resize(Channels.size());
+
+	_uint i = 0;
+
+	vector<const char*> items;
+
+	for (auto pChannel : Channels)
+	{
+		string strName = pChannel->Get_Name();
+		//string strName = m_pGameInstance->Extract_String(pBone->Get_Name(), '[', ']');
+
+		m_ChannelNameList[i] = strName;
+		items.push_back(m_ChannelNameList[i].c_str());
+
+		i++;
+	}
+
+	if (ImGui::ListBox("##", &m_iChannelSelectedIndex, items.data(), items.size()))
+	{
+		m_pRenderModel->Select_Bone(Channels[m_iChannelSelectedIndex]->Get_BoneIndex());
+	}
 }
 
 void CImguiManager::LoadAnimationCharacterList()

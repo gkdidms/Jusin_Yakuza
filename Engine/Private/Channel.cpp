@@ -170,6 +170,33 @@ void CChannel::Update_TransformationMatrix(_double CurrentPosition, const vector
 	Bones[m_iBoneIndex]->Set_TransformationMatrix(TransformationMatrix);
 }
 
+void CChannel::Update_KeyFrame(_double CurrentPosition, _uint* pCurrentKeyFrameIndex)
+{
+	if (0.0 == CurrentPosition)
+		*pCurrentKeyFrameIndex = 0;
+
+	_double dMin = 999999;
+
+	_uint i = 0;
+	_uint index = 0;
+
+	for (auto& keyFrame : m_KeyFrames)
+	{
+		if (abs(CurrentPosition - keyFrame.Time) < dMin)
+		{
+			index = i;
+			dMin = abs(CurrentPosition - keyFrame.Time);
+		}
+
+		i++;
+	}
+
+	if (0 < index)
+		index--;
+
+	*pCurrentKeyFrameIndex = index;
+}
+
 CChannel* CChannel::Create(const aiNodeAnim* pAIChannel, const vector<class CBone*>& Bones)
 {
 	CChannel* pInstance = new CChannel();
