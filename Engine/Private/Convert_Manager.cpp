@@ -250,6 +250,26 @@ string CConvert_Manager::WstringToString(const wstring& str)
 	return narrow_text;
 }
 
+string CConvert_Manager::Extract_String(const string& str, char cHead, char cTail)
+{
+	string extracted_str;
+	bool extracting = false;
+
+	for (char c : str) {
+		if (c == cHead) {
+			extracting = true;
+		}
+		else if (c == cTail && extracting) {
+			break;
+		}
+		else if (extracting) {
+			extracted_str += c;
+		}
+	}
+
+	return extracted_str;
+}
+
 CConvert_Manager* CConvert_Manager::Create()
 {
 	CConvert_Manager* pInstance = new CConvert_Manager();

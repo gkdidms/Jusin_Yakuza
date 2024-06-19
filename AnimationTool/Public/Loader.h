@@ -1,7 +1,6 @@
 #pragma once
 #include "Base.h"
-
-#include "AnimationTool_Defines.h"
+#include "Client_Defines.h"
 
 BEGIN(Engine)
 class CGameInstance;
@@ -37,12 +36,15 @@ private:
 	LEVEL					m_eNextLevel = { LEVEL_END };
 	_tchar					m_szLoadingText[MAX_PATH] = { TEXT("") };
 	_bool					m_isFinished = { false };
-	CGameInstance* m_pGameInstance = { nullptr };
+	CGameInstance*			m_pGameInstance = { nullptr };
 
 private:
 	HRESULT Loading_For_LogoLevel();
 	HRESULT Loading_For_GamePlayLevel();
-	HRESULT Loading_For_TestLevel();
+	HRESULT Loading_For_EditLevel();
+
+private:
+	HRESULT Add_Models_On_Path(const wstring& strPath, _bool bAnim = true);
 
 public:
     static CLoader* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, LEVEL eNextLevel);

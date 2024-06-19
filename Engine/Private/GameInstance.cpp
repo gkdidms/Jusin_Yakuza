@@ -508,6 +508,11 @@ string CGameInstance::WstringToString(const wstring& str)
 	return  m_pConvert_Manager->WstringToString(str);
 }
 
+string CGameInstance::Extract_String(const string& str, char cHead, char cTail)
+{
+	return  m_pConvert_Manager->Extract_String(str, cHead, cTail);
+}
+
 HRESULT CGameInstance::Add_Light(const LIGHT_DESC& LightDesc)
 {
 	return m_pLight_Manager->Add_Light(LightDesc);

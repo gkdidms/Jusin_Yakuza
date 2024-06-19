@@ -1,6 +1,6 @@
 #pragma once
 
-#include "AnimationTool_Defines.h"
+#include "Client_Defines.h"
 #include "GameObject.h"
 
 BEGIN(Engine)

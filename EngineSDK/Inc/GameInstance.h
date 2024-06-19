@@ -156,8 +156,8 @@ public:
 
     wstring StringToWstring(const string& str);
     string WstringToString(const wstring& str);
+    string Extract_String(const string& str, char cHead, char cTail);
 
-    /* Random_Manager */
 public:
     template<typename T>
     T Get_Random(T Min, T Max);
