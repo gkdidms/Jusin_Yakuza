@@ -29,6 +29,8 @@ public:
 private:
     _float m_fSensor = { 0.f };
 
+    _bool m_isMove = { true };
+
 public:
     static CDebugCamera* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
     virtual CGameObject* Clone(void* pArg);

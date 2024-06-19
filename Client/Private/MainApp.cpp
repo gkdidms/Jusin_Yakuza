@@ -2,14 +2,28 @@
 
 #include "MainApp.h"
 #include "GameInstance.h"
+#include "SystemManager.h"
+
+#ifdef _DEBUG
+#include "DebugManager.h"
+#endif // _DEBUG
 
 #include "Level_Loading.h"
 #include "Background.h"
 
 CMainApp::CMainApp() :
-	m_pGameInstance{ CGameInstance::GetInstance() }
+#ifdef _DEBUG
+	m_pDebugMananger{ CDebugManager::GetInstance() },
+#endif // _DEBUG
+	m_pGameInstance{ CGameInstance::GetInstance() },
+	m_pSystemManager{ CSystemManager::GetInstance() }
 {
 	Safe_AddRef(m_pGameInstance);
+	Safe_AddRef(m_pSystemManager);
+
+#ifdef _DEBUG
+	Safe_AddRef(m_pDebugMananger);
+#endif // _DEBUG
 }
 
 HRESULT CMainApp::Initialize()
@@ -37,6 +51,11 @@ HRESULT CMainApp::Initialize()
 	if (FAILED(Open_Level(LEVEL_TEST)))
 		return E_FAIL;
 
+#ifdef _DEBUG
+	if (FAILED(m_pDebugMananger->Initialize(m_pDevice, m_pContext)))
+		return E_FAIL;
+#endif // _DEBUG
+
 	return S_OK;
 }
 
@@ -45,6 +64,16 @@ void CMainApp::Tick(const _float& fTimeDelta)
 	m_fTimeAcc += fTimeDelta;
 
 	m_pGameInstance->Tick(fTimeDelta);
+
+#ifdef _DEBUG
+	if (m_pGameInstance->GetKeyState(DIK_F10) == TAP)
+	{
+		m_isDebug = !m_isDebug;
+		m_pDebugMananger->Set_Debug(m_isDebug);
+	}
+		
+	if (m_isDebug) m_pDebugMananger->Tick();
+#endif // _DEBUG
 }
 
 HRESULT CMainApp::Render()
@@ -66,6 +95,10 @@ HRESULT CMainApp::Render()
 	m_pGameInstance->Draw();
 
 	m_pGameInstance->Render_Font(TEXT("Font_Default"), m_szFPS, _float2(0.f, 0.f), XMVectorSet(1.f, 1.f, 0.f, 1.f));
+	
+#ifdef _DEBUG
+	if (m_isDebug) m_pDebugMananger->Render();
+#endif // _DEBUG
 
 	m_pGameInstance->Present();
 
@@ -134,6 +167,13 @@ void CMainApp::Free()
 {
 	Safe_Release(m_pContext);
 	Safe_Release(m_pDevice);
+
+#ifdef _DEBUG
+	Safe_Release(m_pDebugMananger);
+	CDebugManager::Release_Debug();
+#endif // _DEBUG
+
+	Safe_Release(m_pSystemManager);
 
 	/* 레퍼런스 카운트를 0으로만든다. */
 	Safe_Release(m_pGameInstance);

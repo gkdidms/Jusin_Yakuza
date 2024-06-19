@@ -113,7 +113,7 @@
       <PreprocessorDefinitions>NOMINMAX;_CLIENT;_DEBUG;_WINDOWS;CLIENT_EXPORT;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>../../EngineSDK/Inc/;../Public/;./;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../EngineSDK/Inc/;../Public/;../../Imgui/background/;../../Imgui/imgui/;./;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>framework.h</PrecompiledHeaderFile>
@@ -139,7 +139,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NOMINMAX;_CLIENT;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>../../EngineSDK/Inc/;../Public/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../EngineSDK/Inc/;../Public/;../../Imgui/background/;../../Imgui/imgui/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
     </ClCompile>
@@ -153,9 +153,29 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClInclude Include="..\..\Imgui\background\imgui_impl_dx11.h" />
+    <ClInclude Include="..\..\Imgui\background\imgui_impl_win32.h" />
+    <ClInclude Include="..\..\Imgui\ImGuiFileDialog\dirent\dirent.h" />
+    <ClInclude Include="..\..\Imgui\ImGuiFileDialog\ImGuiFileDialog.h" />
+    <ClInclude Include="..\..\Imgui\ImGuiFileDialog\ImGuiFileDialogConfig.h" />
+    <ClInclude Include="..\..\Imgui\ImGuiFileDialog\stb\stb_image.h" />
+    <ClInclude Include="..\..\Imgui\ImGuiFileDialog\stb\stb_image_resize2.h" />
+    <ClInclude Include="..\..\Imgui\imGuizmo\GraphEditor.h" />
+    <ClInclude Include="..\..\Imgui\imGuizmo\ImCurveEdit.h" />
+    <ClInclude Include="..\..\Imgui\imGuizmo\ImGradient.h" />
+    <ClInclude Include="..\..\Imgui\imGuizmo\ImGuizmo.h" />
+    <ClInclude Include="..\..\Imgui\imGuizmo\ImSequencer.h" />
+    <ClInclude Include="..\..\Imgui\imGuizmo\ImZoomSlider.h" />
+    <ClInclude Include="..\..\Imgui\imgui\imconfig.h" />
+    <ClInclude Include="..\..\Imgui\imgui\imgui.h" />
+    <ClInclude Include="..\..\Imgui\imgui\imgui_internal.h" />
+    <ClInclude Include="..\..\Imgui\imgui\imstb_rectpack.h" />
+    <ClInclude Include="..\..\Imgui\imgui\imstb_textedit.h" />
+    <ClInclude Include="..\..\Imgui\imgui\imstb_truetype.h" />
     <ClInclude Include="..\public\Background.h" />
     <ClInclude Include="..\Public\Client_Defines.h" />
     <ClInclude Include="..\public\DebugCamera.h" />
+    <ClInclude Include="..\public\DebugManager.h" />
     <ClInclude Include="..\public\LandObject.h" />
     <ClInclude Include="..\public\Level_Loading.h" />
     <ClInclude Include="..\public\Level_Logo.h" />
@@ -173,8 +193,22 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
+    <ClCompile Include="..\..\Imgui\background\imgui_impl_dx11.cpp" />
+    <ClCompile Include="..\..\Imgui\background\imgui_impl_win32.cpp" />
+    <ClCompile Include="..\..\Imgui\ImGuiFileDialog\ImGuiFileDialog.cpp" />
+    <ClCompile Include="..\..\Imgui\imGuizmo\GraphEditor.cpp" />
+    <ClCompile Include="..\..\Imgui\imGuizmo\ImCurveEdit.cpp" />
+    <ClCompile Include="..\..\Imgui\imGuizmo\ImGradient.cpp" />
+    <ClCompile Include="..\..\Imgui\imGuizmo\ImGuizmo.cpp" />
+    <ClCompile Include="..\..\Imgui\imGuizmo\ImSequencer.cpp" />
+    <ClCompile Include="..\..\Imgui\imgui\imgui.cpp" />
+    <ClCompile Include="..\..\Imgui\imgui\imgui_demo.cpp" />
+    <ClCompile Include="..\..\Imgui\imgui\imgui_draw.cpp" />
+    <ClCompile Include="..\..\Imgui\imgui\imgui_tables.cpp" />
+    <ClCompile Include="..\..\Imgui\imgui\imgui_widgets.cpp" />
     <ClCompile Include="..\private\Background.cpp" />
     <ClCompile Include="..\private\DebugCamera.cpp" />
+    <ClCompile Include="..\private\DebugManager.cpp" />
     <ClCompile Include="..\private\LandObject.cpp" />
     <ClCompile Include="..\private\Level_Loading.cpp" />
     <ClCompile Include="..\private\Level_Logo.cpp" />
