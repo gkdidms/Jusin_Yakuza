@@ -188,7 +188,7 @@ void CImguiManager::BoneListWindow()
 
 	if (ImGui::ListBox("##", &m_iBoneSelectedIndex, items.data(), items.size()))
 	{
-		//m_pRenderModel->Change_Animation(m_iBoneSelectedIndex);
+		m_pRenderModel->Select_Bone(m_iBoneSelectedIndex);
 	}
 
 	ImGui::End();

@@ -1,5 +1,7 @@
 #include "AnimModel.h"
 #include "GameInstance.h"
+#include "ModelBoneSphere.h"
+#include "Bone.h"
 
 CAnimModel::CAnimModel(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     :CGameObject{pDevice, pContext}
@@ -29,8 +31,7 @@ HRESULT CAnimModel::Initialize(void* pArg)
     if (FAILED(Add_Components()))
         return E_FAIL;
 
-    //m_pModelCom->Set_AnimationIndex(CModel::ANIMATION_DESC(rand() % 5, true));
-
+    Ready_BoneSphere();
 
     return S_OK;
 }
@@ -41,30 +42,28 @@ void CAnimModel::Priority_Tick(const _float& fTimeDelta)
 
 void CAnimModel::Tick(const _float& fTimeDelta)
 {
-    //_int iAnims = m_pModelCom->Get_NumAnimations();
-    //if (m_pGameInstance->GetKeyState(DIK_UP) == TAP)
-    //{
-    //    m_iAnimIndex++;
-    //    if (iAnims <= m_iAnimIndex)
-    //        m_iAnimIndex = m_pModelCom->Get_NumAnimations() - 1;
-    //}
-    //if (m_pGameInstance->GetKeyState(DIK_DOWN) == TAP)
-    //{
-    //    m_iAnimIndex--;
-    //    if (0 >= m_iAnimIndex)
-    //        m_iAnimIndex = 0;
-    //}
+    if (m_pGameInstance->GetKeyState(DIK_TAB) == TAP)
+    {
+        m_iPassIndex++;
+        m_iPassIndex = m_iPassIndex % 2;
+    }
 
     CModel::ANIMATION_DESC desc{ m_iAnimIndex, true };
 
     m_pModelCom->Set_AnimationIndex(desc, 7.f);
 
     m_pModelCom->Play_Animation(fTimeDelta);
+
+    for (auto& pSphere : m_BoneSpheres)
+        pSphere->Tick(fTimeDelta);
 }
 
 void CAnimModel::Late_Tick(const _float& fTimeDelta)
 {
     m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONLIGHT, this);
+
+    for (auto& pSphere : m_BoneSpheres)
+        pSphere->Late_Tick(fTimeDelta);
 }
 
 HRESULT CAnimModel::Render()
@@ -78,7 +77,7 @@ HRESULT CAnimModel::Render()
 
         m_pModelCom->Bind_Material(m_pShaderCom, "g_Texture", i, aiTextureType_DIFFUSE);
 
-        m_pShaderCom->Begin(0);
+        m_pShaderCom->Begin(m_iPassIndex);
 
         m_pModelCom->Render(i);
     }
@@ -116,11 +115,23 @@ void CAnimModel::Change_Model(wstring strModelName)
     wstring strComponentTag = TEXT("Prototype_Component_Model_") + m_strModelName;
 
     m_pModelCom = reinterpret_cast<CModel*>(m_pGameInstance->Add_Component_Clone(LEVEL_EDIT, strComponentTag));
+
+    Ready_BoneSphere();
 }
 
 void CAnimModel::Change_Animation(_uint iAnimIndex)
 {
     m_iAnimIndex = iAnimIndex;
+}
+
+void CAnimModel::Select_Bone(_uint iBoneIndex)
+{
+    if (m_BoneSpheres.size() <= iBoneIndex) return;
+
+    for (auto& pBoneSphere : m_BoneSpheres)
+        pBoneSphere->Change_TexutreIndex();
+
+    m_BoneSpheres[iBoneIndex]->Change_TexutreIndex(true);
 }
 
 HRESULT CAnimModel::Add_Components()
@@ -148,6 +159,33 @@ HRESULT CAnimModel::Bind_ShaderResources()
         return E_FAIL;
 
     return S_OK;
+}
+
+void CAnimModel::Ready_BoneSphere()
+{
+    for (auto& pBoneSphere : m_BoneSpheres)
+        Safe_Release(pBoneSphere);
+    m_BoneSpheres.clear();
+
+    auto BoneList = m_pModelCom->Get_Bones();
+    m_BoneSpheres.resize(BoneList.size());
+
+    CModelBoneSphere::BoneSphereDesc BoneSphereDesc{};
+
+    BoneSphereDesc.pModelWorldMatrix = m_pTransformCom->Get_WorldFloat4x4();
+
+    _uint i = 0;
+
+    for (auto& pBone : BoneList)
+    {
+        BoneSphereDesc.pBoneWorldMatrix = pBone->Get_CombinedTransformationMatrix();
+
+        CGameObject* pBoneSphere = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_BoneSphere"), &BoneSphereDesc);
+
+        m_BoneSpheres[i] = reinterpret_cast<CModelBoneSphere*>(pBoneSphere);
+
+        i++;
+    }
 }
 
 CAnimModel* CAnimModel::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -179,6 +217,10 @@ CGameObject* CAnimModel::Clone(void* pArg)
 void CAnimModel::Free()
 {
     __super::Free();
+
+    for (auto& pBoneSphere : m_BoneSpheres)
+        Safe_Release(pBoneSphere);
+    m_BoneSpheres.clear();
 
     Safe_Release(m_pShaderCom);
     Safe_Release(m_pModelCom);

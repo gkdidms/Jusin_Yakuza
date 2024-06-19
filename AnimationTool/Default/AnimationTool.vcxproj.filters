@@ -73,6 +73,7 @@
     <ClCompile Include="..\Private\AnimModel.cpp">
       <Filter>02.GameObjects\03.Model</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\ModelBoneSphere.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\MainApp.h">
@@ -165,6 +166,7 @@
     <ClInclude Include="..\Public\AnimModel.h">
       <Filter>02.GameObjects\03.Model</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\ModelBoneSphere.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
@@ -244,6 +246,9 @@
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxAnimMesh.hlsl">
+      <Filter>97.ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxMesh.hlsl">
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
   </ItemGroup>
