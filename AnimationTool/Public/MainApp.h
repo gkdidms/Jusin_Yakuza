@@ -1,6 +1,6 @@
 #pragma once
 
-#include "AnimationTool_Defines.h"
+#include "Client_Defines.h"
 #include "Base.h"
 
 BEGIN(Engine)
@@ -25,6 +25,7 @@ private:
 	ID3D11DeviceContext* m_pContext = { nullptr };
 
 	CGameInstance* m_pGameInstance = { nullptr };
+	class CImguiManager* m_pGuimanager = { nullptr };
 
 #ifdef _DEBUG
 private:
@@ -39,6 +40,7 @@ public:
 	HRESULT Ready_Font();
 	HRESULT Ready_Prototype_GameObject();
 	HRESULT Ready_Prototype_Component();
+	HRESULT Ready_Manager();
 
 public:
     static CMainApp* Create();
