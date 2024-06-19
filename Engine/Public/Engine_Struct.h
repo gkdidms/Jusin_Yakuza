@@ -3,6 +3,32 @@
 
 namespace Engine
 {
+	/* map 저장관련 */
+	struct ENGINE_DLL OBJECTPLACE_DESC
+	{
+		int				iObjID;
+
+		bool			bInteract; /* 상호작용 가능한 물체인지 아닌지 */
+		XMFLOAT4X4		vTransform;
+		char			strLayer[MAX_PATH];
+		char			strPrototype[MAX_PATH];
+
+		char			strModelCom[MAX_PATH];
+		char			strShaderCom[MAX_PATH];
+		int				iShaderNum; /* shader pass 번호 */
+
+	};
+
+
+	struct ENGINE_DLL MAP_TOTALINFORM_DESC
+	{
+		int						iLevelIndex;
+		XMFLOAT2				vPlaneSize;
+		int						iNumMapObj;
+		OBJECTPLACE_DESC*		pMapObjDesc;
+	};
+
+
 	/* 엔진을 초기화하기위해 필요한 데이터 여러개를 묶었다. */
 	typedef struct
 	{
