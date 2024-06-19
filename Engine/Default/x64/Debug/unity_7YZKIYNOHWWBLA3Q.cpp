@@ -1,4 +1,7 @@
 
+#include "C:\Users\yeeun\dev\std\Yakuza\Engine\Private\VIBuffer.cpp"
+
+
 #include "C:\Users\yeeun\dev\std\Yakuza\Engine\Private\VIBuffer_Cell.cpp"
 
 
