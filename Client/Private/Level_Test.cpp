@@ -1,16 +1,22 @@
 #include "Level_Test.h"
 
 #include "GameInstance.h"
+#include "SystemManager.h"
+#include "DebugManager.h"
 
 #include "DebugCamera.h"
 
 CLevel_Test::CLevel_Test(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-	: CLevel{ pDevice, pContext }
+	: CLevel{ pDevice, pContext },
+	m_pSystemManager{ CSystemManager::GetInstance() }
 {
+	Safe_AddRef(m_pSystemManager);
 }
 
 HRESULT CLevel_Test::Initialize()
 {
+	m_pSystemManager->Set_Level(LEVEL_TEST);
+
 	if (FAILED(Ready_Light()))
 		return E_FAIL;
 
@@ -28,7 +34,6 @@ HRESULT CLevel_Test::Initialize()
 
 void CLevel_Test::Tick(const _float& fTimeDelta)
 {
-
 #ifdef _DEBUG
 	SetWindowText(g_hWnd, TEXT("테스트 레벨"));
 #endif
@@ -51,7 +56,7 @@ HRESULT CLevel_Test::Ready_Light()
 
 HRESULT CLevel_Test::Ready_Camera(const wstring& strLayerTag)
 {
-	CPlayerCamera::PLAYER_CAMERA_DESC		CameraDesc{};
+	CDebugCamera::PLAYER_CAMERA_DESC		CameraDesc{};
 
 	CameraDesc.fSensor = 0.1f;
 	CameraDesc.vEye = _float4(1.0f, 20.0f, -20.f, 1.f);
@@ -63,12 +68,10 @@ HRESULT CLevel_Test::Ready_Camera(const wstring& strLayerTag)
 	CameraDesc.fSpeedPecSec = 20.f;
 	CameraDesc.fRotatePecSec = XMConvertToRadians(90.f);
 
-	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_PlayerCamera"), strLayerTag, &CameraDesc)))
+	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_DebugCamera"), strLayerTag, &CameraDesc)))
 		return E_FAIL;
 
 	return S_OK;
-
-
 }
 
 HRESULT CLevel_Test::Ready_Player(const wstring& strLayerTag)
@@ -103,4 +106,6 @@ CLevel_Test* CLevel_Test::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pCo
 void CLevel_Test::Free()
 {
 	__super::Free();
+
+	Safe_Release(m_pSystemManager);
 }

@@ -21,6 +21,7 @@ CModel::CModel(const CModel& rhs)
 	, m_Materials{ rhs.m_Materials }
 	, m_eModelType{ rhs.m_eModelType }
 	, m_PreTransformMatrix{ rhs.m_PreTransformMatrix }
+	, m_iAnimations{ rhs.m_iAnimations }
 	, m_AnimDesc{ rhs.m_AnimDesc }
 {
 	for (auto& pPrototypeAnimation : rhs.m_Animations)
@@ -28,6 +29,8 @@ CModel::CModel(const CModel& rhs)
 
 	for (auto& pPrototypeBone : rhs.m_Bones)
 		m_Bones.emplace_back(pPrototypeBone->Clone());
+
+	m_iNumBones = m_Bones.size();
 
 	for (auto& pMesh : m_Meshes)
 		Safe_AddRef(pMesh);
@@ -255,13 +258,13 @@ HRESULT CModel::Export_Meshes(ofstream& out, const string& strOutDirectory)
 {
 	_uint iNumFXMeshes = { 0 };
 
-	for (size_t i = 0; i < m_iNumMeshes; ++i)
-	{
-		string strValue = m_pAIScene->mMeshes[i]->mName.data;
+	//for (size_t i = 0; i < m_iNumMeshes; ++i)
+	//{
+	//	string strValue = m_pAIScene->mMeshes[i]->mName.data;
 
-		if (strValue.find("eyelashes") != string::npos)
-			++iNumFXMeshes;
-	}
+	//	if (strValue.find("eyelashes") != string::npos)
+	//		++iNumFXMeshes;
+	//}
 
 	_uint iNumMeshes = m_iNumMeshes - (iNumFXMeshes);
 
@@ -435,62 +438,8 @@ HRESULT CModel::Export_Meshes(ofstream& out, const string& strOutDirectory)
 
 HRESULT CModel::Export_Materials(ofstream& out, const _char* pModelFilePath, const string& strOutDirectory)
 {
-	CGameInstance* pGameInstance = CGameInstance::GetInstance();
-	Safe_AddRef(pGameInstance);
-
-	string strOutPath = pGameInstance->Get_Directory(strOutDirectory) + "/" + pGameInstance->Get_FileName(strOutDirectory) + "_FX.dat";
-
-	if (fs::exists(strOutPath))
-	{
-		ofstream fxOut(strOutPath, ios::binary | ios::app);
-
-		fxOut.write((char*)&m_iNumMaterials, sizeof(_uint));
-
-		for (size_t i = 0; i < m_iNumMaterials; i++)
-		{
-			for (size_t j = aiTextureType_DIFFUSE; j < AI_TEXTURE_TYPE_MAX; j++)
-			{
-				aiString pPath;
-
-				if (FAILED(m_pAIScene->mMaterials[i]->GetTexture((aiTextureType)j, 0, &pPath)))
-				{
-					_uint iZero = 0;
-					string strZero = "";
-
-					fxOut.write((char*)&iZero, sizeof(_uint));
-					fxOut.write(strZero.c_str(), strZero.size());
-					continue;
-				}
-
-				_char szFileName[MAX_PATH] = "";
-				_char szExt[MAX_PATH] = "";
-
-				_splitpath_s(pPath.data, nullptr, 0, nullptr, 0, szFileName, MAX_PATH, szExt, MAX_PATH);
-
-				_char		szDrive[MAX_PATH] = "";
-				_char		szDirectory[MAX_PATH] = "";
-
-				_splitpath_s(pModelFilePath, szDrive, MAX_PATH, szDirectory, MAX_PATH, nullptr, 0, nullptr, 0);
-
-				_char		szFullPath[MAX_PATH] = "";
-
-				strcpy_s(szFullPath, szDrive);
-				strcat_s(szFullPath, szDirectory);
-				strcat_s(szFullPath, szFileName);
-				strcat_s(szFullPath, szExt);
-
-				_tchar		szRealFullPath[MAX_PATH] = TEXT("");
-
-				// WideChar로 형변환해주는 함수. code page를 아스키로 쓴다는 옵션 CP_ACP
-				MultiByteToWideChar(CP_ACP, 0, szFullPath, strlen(szFullPath), szRealFullPath, MAX_PATH);
-
-				_uint iLength = strlen(szFullPath);
-
-				fxOut.write((char*)&iLength, sizeof(_uint));
-				fxOut.write(szFullPath, strlen(szFullPath));
-			}
-		}
-	}
+	string strOutPath = m_pGameInstance->Get_Directory(strOutDirectory) + "/" + m_pGameInstance->Get_FileName(strOutDirectory) + "_FX.dat";
+	string strSphereOutPath = m_pGameInstance->Get_Directory(strOutDirectory) + "/" + m_pGameInstance->Get_FileName(strOutDirectory) + "_Sphere.dat";
 
 	out.write((char*)&m_iNumMaterials, sizeof(_uint));
 
@@ -534,12 +483,10 @@ HRESULT CModel::Export_Materials(ofstream& out, const _char* pModelFilePath, con
 
 			_uint iLength = strlen(szFullPath);
 
-			out.write((char*) &iLength, sizeof(_uint));
+			out.write((char*)&iLength, sizeof(_uint));
 			out.write(szFullPath, strlen(szFullPath));
 		}
 	}
-
-	Safe_Release(pGameInstance);
 
 	return S_OK;
 }
@@ -618,24 +565,8 @@ HRESULT CModel::Import_Model(string& pBinFilePath)
 	}
 
 	// 읽어올 때 Mesh만 저장한 파일이라면 Mesh정보만 Import하는 기능을 추가해야한다.
-	CGameInstance* pGameInstance = CGameInstance::GetInstance();
-	Safe_AddRef(pGameInstance);
 
-	string strFileName = pGameInstance->Get_FileName(pBinFilePath);
-
-	if (strFileName.find("FX") != string::npos)
-	{
-		if (FAILED(Import_Meshes(in)))
-			return E_FAIL;
-
-		if (FAILED(Import_Materials(in)))
-			return E_FAIL;
-
-		in.close();
-		Safe_Release(pGameInstance);
-
-		return S_OK;
-	}
+	string strFileName = m_pGameInstance->Get_FileName(pBinFilePath);
 
 	//본 읽어오기
 	if(FAILED(Import_Bones(in)))
@@ -654,7 +585,6 @@ HRESULT CModel::Import_Model(string& pBinFilePath)
 		return E_FAIL;
 
 	in.close();
-	Safe_Release(pGameInstance);
 
 	return S_OK;
 }

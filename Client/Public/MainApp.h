@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Client_Defines.h"
+
 #include "Base.h"
 
 BEGIN(Engine)
@@ -25,6 +26,12 @@ private:
 	ID3D11DeviceContext* m_pContext = { nullptr };
 
 	CGameInstance* m_pGameInstance = { nullptr };
+	class CSystemManager* m_pSystemManager = { nullptr };
+
+#ifdef _DEBUG
+private:
+	class CDebugManager* m_pDebugMananger = { nullptr };
+#endif // _DEBUG
 
 #ifdef _DEBUG
 private:
@@ -32,6 +39,7 @@ private:
 	_float					m_fTimeAcc = {};
 	_uint					m_iNumRender = {};
 
+	_bool m_isDebug = { false };
 #endif
 
 public:

@@ -20,6 +20,10 @@ public:
 		return m_isChanged;
 	}
 
+	const _char* Get_AnimName() const {
+		return m_szName;
+	}
+
 public:
 	HRESULT Initialize(const aiAnimation* pAnimation, const vector<class CBone*>& Bones);
 	HRESULT Initialize(const BAiAnimation* pAnimation, const vector<class CBone*>& Bones);

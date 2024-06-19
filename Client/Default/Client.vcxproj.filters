@@ -26,19 +26,64 @@
       <Filter>01.Levels\98.Test</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Player.cpp">
-      <Filter>02.GameObjects\03.LandObject\00.Player</Filter>
+      <Filter>02.GameObjects\02.LandObject\00.Player</Filter>
     </ClCompile>
     <ClCompile Include="..\private\LandObject.cpp">
-      <Filter>02.GameObjects\03.LandObject</Filter>
+      <Filter>02.GameObjects\02.LandObject</Filter>
     </ClCompile>
     <ClCompile Include="..\private\PlayerCamera.cpp">
-      <Filter>02.GameObjects\02.Camera\00.PlayerCamera</Filter>
+      <Filter>02.GameObjects\99.Camera\00.PlayerCamera</Filter>
     </ClCompile>
     <ClCompile Include="..\private\TestMap.cpp">
       <Filter>02.GameObjects\01.Terrain\TestMap</Filter>
     </ClCompile>
     <ClCompile Include="..\private\DebugCamera.cpp">
-      <Filter>02.GameObjects\02.Camera\99.DebugCamera</Filter>
+      <Filter>02.GameObjects\99.Camera\99.DebugCamera</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\SystemManager.cpp">
+      <Filter>95.Utility\00.System</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\DebugManager.cpp">
+      <Filter>95.Utility\01.DebugTool</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Imgui\background\imgui_impl_dx11.cpp">
+      <Filter>96.ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Imgui\background\imgui_impl_win32.cpp">
+      <Filter>96.ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Imgui\imgui\imgui.cpp">
+      <Filter>96.ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Imgui\imgui\imgui_demo.cpp">
+      <Filter>96.ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Imgui\imgui\imgui_draw.cpp">
+      <Filter>96.ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Imgui\imgui\imgui_tables.cpp">
+      <Filter>96.ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Imgui\imgui\imgui_widgets.cpp">
+      <Filter>96.ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Imgui\ImGuiFileDialog\ImGuiFileDialog.cpp">
+      <Filter>96.ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Imgui\imGuizmo\GraphEditor.cpp">
+      <Filter>96.ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Imgui\imGuizmo\ImCurveEdit.cpp">
+      <Filter>96.ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Imgui\imGuizmo\ImGradient.cpp">
+      <Filter>96.ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Imgui\imGuizmo\ImGuizmo.cpp">
+      <Filter>96.ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\Imgui\imGuizmo\ImSequencer.cpp">
+      <Filter>96.ImGui</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -79,19 +124,82 @@
       <Filter>01.Levels\98.Test</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Player.h">
-      <Filter>02.GameObjects\03.LandObject\00.Player</Filter>
+      <Filter>02.GameObjects\02.LandObject\00.Player</Filter>
     </ClInclude>
     <ClInclude Include="..\public\LandObject.h">
-      <Filter>02.GameObjects\03.LandObject</Filter>
+      <Filter>02.GameObjects\02.LandObject</Filter>
     </ClInclude>
     <ClInclude Include="..\public\PlayerCamera.h">
-      <Filter>02.GameObjects\02.Camera\00.PlayerCamera</Filter>
+      <Filter>02.GameObjects\99.Camera\00.PlayerCamera</Filter>
     </ClInclude>
     <ClInclude Include="..\public\TestMap.h">
       <Filter>02.GameObjects\01.Terrain\TestMap</Filter>
     </ClInclude>
     <ClInclude Include="..\public\DebugCamera.h">
-      <Filter>02.GameObjects\02.Camera\99.DebugCamera</Filter>
+      <Filter>02.GameObjects\99.Camera\99.DebugCamera</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\SystemManager.h">
+      <Filter>95.Utility\00.System</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\DebugManager.h">
+      <Filter>95.Utility\01.DebugTool</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Imgui\background\imgui_impl_dx11.h">
+      <Filter>96.ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Imgui\background\imgui_impl_win32.h">
+      <Filter>96.ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Imgui\imgui\imconfig.h">
+      <Filter>96.ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Imgui\imgui\imgui.h">
+      <Filter>96.ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Imgui\imgui\imgui_internal.h">
+      <Filter>96.ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Imgui\imgui\imstb_rectpack.h">
+      <Filter>96.ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Imgui\imgui\imstb_textedit.h">
+      <Filter>96.ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Imgui\imgui\imstb_truetype.h">
+      <Filter>96.ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Imgui\ImGuiFileDialog\dirent\dirent.h">
+      <Filter>96.ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Imgui\ImGuiFileDialog\ImGuiFileDialog.h">
+      <Filter>96.ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Imgui\ImGuiFileDialog\ImGuiFileDialogConfig.h">
+      <Filter>96.ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Imgui\ImGuiFileDialog\stb\stb_image.h">
+      <Filter>96.ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Imgui\ImGuiFileDialog\stb\stb_image_resize2.h">
+      <Filter>96.ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Imgui\imGuizmo\GraphEditor.h">
+      <Filter>96.ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Imgui\imGuizmo\ImCurveEdit.h">
+      <Filter>96.ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Imgui\imGuizmo\ImGradient.h">
+      <Filter>96.ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Imgui\imGuizmo\ImGuizmo.h">
+      <Filter>96.ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Imgui\imGuizmo\ImSequencer.h">
+      <Filter>96.ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Imgui\imGuizmo\ImZoomSlider.h">
+      <Filter>96.ImGui</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -139,23 +247,35 @@
     <Filter Include="01.Levels\98.Test">
       <UniqueIdentifier>{a3687eeb-93e4-4da9-95c3-692e153c991f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\02.Camera">
-      <UniqueIdentifier>{b978604e-76c6-4218-b76a-65d7fa390062}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\03.LandObject">
-      <UniqueIdentifier>{9fbfc139-fa7b-4bb5-8bfa-68ab385abcc7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\03.LandObject\00.Player">
-      <UniqueIdentifier>{8f8aa033-d0f3-43b6-ae6e-e95d1f3c776f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\02.Camera\00.PlayerCamera">
-      <UniqueIdentifier>{d5756e02-bf35-4115-b890-fdff7cc98ae1}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObjects\01.Terrain\TestMap">
       <UniqueIdentifier>{13a0eb4d-9fd9-4a66-90f0-f589933ed093}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\02.Camera\99.DebugCamera">
+    <Filter Include="02.GameObjects\99.Camera">
+      <UniqueIdentifier>{b978604e-76c6-4218-b76a-65d7fa390062}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.Camera\00.PlayerCamera">
+      <UniqueIdentifier>{d5756e02-bf35-4115-b890-fdff7cc98ae1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.Camera\99.DebugCamera">
       <UniqueIdentifier>{a56dc720-b3f2-49f1-993d-86fd054eb9be}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.LandObject">
+      <UniqueIdentifier>{9fbfc139-fa7b-4bb5-8bfa-68ab385abcc7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.LandObject\00.Player">
+      <UniqueIdentifier>{8f8aa033-d0f3-43b6-ae6e-e95d1f3c776f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility">
+      <UniqueIdentifier>{9bca135e-c393-4bb2-a0b4-5839f0e58aff}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\00.System">
+      <UniqueIdentifier>{7faf8060-da7b-404d-8597-061be83e3f43}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\01.DebugTool">
+      <UniqueIdentifier>{2f4ea963-e06b-4dd5-a81c-e4aa02203d9f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="96.ImGui">
+      <UniqueIdentifier>{7b5a03ce-7679-4274-97a9-075ee883f3f1}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

@@ -15,6 +15,7 @@
 #include "Frustum.h"
 #include "Convert_Manager.h"
 
+
 IMPLEMENT_SINGLETON(CGameInstance)
 
 CGameInstance::CGameInstance()
@@ -82,6 +83,11 @@ HRESULT CGameInstance::Initialize_Engine(_uint iMaxLevelIndex, const ENGINE_DESC
 	m_pConvert_Manager = CConvert_Manager::Create();
 	if (nullptr == m_pConvert_Manager)
 		return E_FAIL;
+
+	m_pRandom_Manager = CRandomManager::Create();
+	if (nullptr == m_pRandom_Manager)
+		return E_FAIL;
+
 
 	return S_OK;
 }
@@ -288,6 +294,16 @@ void CGameInstance::Update_TimeDelta(const _tchar* pTimerTag)
 HRESULT CGameInstance::Ready_Timer(const _tchar* pTimerTag)
 {
 	return m_pTimer_Manager->Ready_Timer(pTimerTag);
+}
+
+void CGameInstance::Set_TimeSpeed(const _tchar* pTimerTag, _float fSpeed)
+{
+	m_pTimer_Manager->Set_TimeSpeed(pTimerTag, fSpeed);
+}
+
+void CGameInstance::Reset_TimeDelta(const _tchar* pTimerTag)
+{
+	m_pTimer_Manager->Reset_TimeDelta(pTimerTag);
 }
 
 HRESULT CGameInstance::Add_Font(const wstring& strFontTag, const wstring& strFontFilePath)
@@ -502,6 +518,11 @@ string CGameInstance::WstringToString(const wstring& str)
 	return  m_pConvert_Manager->WstringToString(str);
 }
 
+string CGameInstance::Extract_String(const string& str, char cHead, char cTail)
+{
+	return  m_pConvert_Manager->Extract_String(str, cHead, cTail);
+}
+
 HRESULT CGameInstance::Add_Light(const LIGHT_DESC& LightDesc)
 {
 	return m_pLight_Manager->Add_Light(LightDesc);
@@ -535,4 +556,5 @@ void CGameInstance::Free()
 	Safe_Release(m_pPicking);
 	Safe_Release(m_pFrustum);
 	Safe_Release(m_pConvert_Manager);
+	Safe_Release(m_pRandom_Manager);
 }

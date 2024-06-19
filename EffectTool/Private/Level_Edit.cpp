@@ -1,5 +1,10 @@
 #include "Level_Edit.h"
+#include "GameInstance.h"
 
+#pragma region "°´Ã¼ ¿øÇü"
+#include "FreeCamera.h"
+#include "Particle_Point.h"
+#pragma endregion 
 CLevel_Edit::CLevel_Edit(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLevel{ pDevice, pContext }
 {
@@ -22,6 +27,47 @@ void CLevel_Edit::Tick(const _float& fTimeDelta)
 
 HRESULT CLevel_Edit::Ready_Object(const wstring& strLayerTag)
 {
+
+	LIGHT_DESC			LightDesc = {};	
+
+	LightDesc.eType = LIGHT_DESC::TYPE_DIRECTIONAL;
+	LightDesc.vDirection = _float4(0.f, -1.f, 0.f, 0.f);
+	LightDesc.vDiffuse = _float4(1.f, 1.f, 1.f, 1.f);
+	LightDesc.vAmbient = _float4(0.3f, 0.3f, 0.4f, 1.f);
+	LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
+
+	m_pGameInstance->Add_Light(LightDesc);
+
+
+	CFreeCamera::FREE_CAMERA_DESC CameraDesc{};
+
+	CameraDesc.vEye = _float4(0.0f, 2.f, -2.f, 1.f);
+	CameraDesc.vFocus = _float4(0.0f, 0.0f, 0.0f, 1.f);
+	CameraDesc.fFovY = XMConvertToRadians(60.0f);
+	CameraDesc.fAspect = (_float)g_iWinSizeX / (_float)g_iWinSizeY;	
+	CameraDesc.fNear = 0.1f;
+	CameraDesc.fFar = 3000.f;
+	CameraDesc.fRotatePecSec = XMConvertToRadians(90.f);
+	CameraDesc.fSpeedPecSec = 10.f;
+
+	XMStoreFloat4x4(&CameraDesc.vPrePosition, XMMatrixTranslation(0.f, 10.f, 0.f));
+
+	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_EDIT, TEXT("Prototype_GameObject_FreeCamera"), strLayerTag, &CameraDesc)))
+		return E_FAIL;
+
+	CParticle_Point::PARTICLE_POINT_DESC PointDesc{};
+	PointDesc.BufferInstance.iNumInstance = 66;
+	PointDesc.BufferInstance.isLoop = true;
+	PointDesc.BufferInstance.vLifeTime = _float2(1.f, 3.f);
+	PointDesc.BufferInstance.vOffsetPos = _float3(0.f, -2.f, 0.f);
+	PointDesc.BufferInstance.vPivotPos = _float3(0.f, 0.f, 0.f);
+	PointDesc.BufferInstance.vRange = _float3(0.2f, 0.f, 0.2f);
+	PointDesc.BufferInstance.vSize = _float2(0.2f, 0.25f);
+	PointDesc.BufferInstance.vSpeed = _float2(0.2f, 0.5f);
+	PointDesc.vStartPos = _float4(0.f, 0.f, 0.f, 1.f);
+	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_EDIT, TEXT("Prototype_GameObject_Particle_Point"), strLayerTag, &PointDesc)))
+		return E_FAIL;
+
 
 
 	return S_OK;

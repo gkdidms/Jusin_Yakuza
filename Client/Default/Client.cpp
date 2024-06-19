@@ -6,6 +6,11 @@
 #include "MainApp.h"
 #include "GameInstance.h"
 
+#ifdef _DEBUG
+#include "DebugManager.h"
+#endif // _DEBUG
+
+
 #define MAX_LOADSTRING 100
 
 // 전역 변수:
@@ -59,6 +64,13 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     if (FAILED(pGameInstance->Ready_Timer(TEXT("Timer_60"))))
         return FALSE;
 
+#ifdef _DEBUG
+    CDebugManager* pDebugManager = CDebugManager::GetInstance();
+    if (nullptr == pDebugManager)
+        return FALSE;
+    Safe_AddRef(pDebugManager);
+#endif // _DEBUG
+
     _float		fTimeAcc = { 0.0f };
 
     // 기본 메시지 루프입니다:
@@ -83,13 +95,21 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         if (fTimeAcc > 1.f / 60.0f)
         {
             pGameInstance->Update_TimeDelta(TEXT("Timer_60"));
-            pMainApp->Tick(pGameInstance->Get_TimeDelta(TEXT("Timer_60")));
+            _float fTimeDelta = pGameInstance->Get_TimeDelta(TEXT("Timer_60"));
+#ifdef _DEBUG
+            if (pDebugManager->isDebug() && pDebugManager->isTimeStop())
+                fTimeDelta = 0.f;
+#endif // _DEBUG
+            pMainApp->Tick(fTimeDelta);
             pMainApp->Render();
 
             fTimeAcc = 0.f;
         }
     }
 
+#ifdef _DEBUG
+    Safe_Release(pDebugManager);
+#endif // _DEBUG
     Safe_Release(pGameInstance);
     Safe_Release(pMainApp);
 
@@ -173,8 +193,18 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //  WM_DESTROY  - 종료 메시지를 게시하고 반환합니다.
 //
 //
+
+#ifdef _DEBUG
+extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
+#endif // _DEBUG
+
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
+#ifdef _DEBUG
+    if (ImGui_ImplWin32_WndProcHandler(hWnd, message, wParam, lParam))
+        return true;
+#endif // _DEBUG
+
     switch (message)
     {
     case WM_COMMAND:

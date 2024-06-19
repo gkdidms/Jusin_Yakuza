@@ -25,6 +25,7 @@ public:
 
 	void Get_DirectoryName(const wstring& strPath, vector<wstring>& vecOut);
 	void Get_DirectoryName(const string& strPath, vector<string>& vecOut);
+
 	wstring Get_Directory(const wstring& strPath);
 	string Get_Directory(const string& strPath);
 
@@ -38,6 +39,8 @@ public:
 
 	wstring StringToWstring(const string& str);
 	string WstringToString(const wstring& str);
+
+	string Extract_String(const string& str, char cHead, char cTail);
     
 public:
     static CConvert_Manager* Create();
