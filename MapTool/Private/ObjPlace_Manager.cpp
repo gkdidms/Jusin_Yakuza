@@ -420,22 +420,22 @@ void CObjPlace_Manager::Set_Map_Object()
 	ImGui::NewLine();
 
 	ImGui::Text(u8"오브젝트유형");
-	static int a = 0;
-	ImGui::RadioButton(u8"radio a", &a, 0);
-	ImGui::RadioButton(u8"radio b", &a, 1);
-	ImGui::RadioButton(u8"radio c", &a, 2);
-	ImGui::RadioButton(u8"radio d", &a, 3);
+	static int objectType = 0;
+	ImGui::RadioButton(u8"radio a", &objectType, 0);
+	ImGui::RadioButton(u8"radio b", &objectType, 1);
+	ImGui::RadioButton(u8"radio c", &objectType, 2);
+	ImGui::RadioButton(u8"radio d", &objectType, 3);
 
 
 	ImGui::NewLine();
 
 
 	ImGui::Text(u8"쉐이더");
-	static int e = 0;
-	ImGui::RadioButton("radio a", &e, 0); 
-	ImGui::RadioButton("radio b", &e, 1); 
-	ImGui::RadioButton("radio c", &e, 2);
-	ImGui::RadioButton("radio d", &e, 3);
+	static int shaderType = 0;
+	ImGui::RadioButton("radio a", &shaderType, 0); 
+	ImGui::RadioButton("radio b", &shaderType, 1); 
+	ImGui::RadioButton("radio c", &shaderType, 2);
+	ImGui::RadioButton("radio d", &shaderType, 3);
 
 
 	ImGui::NewLine();
