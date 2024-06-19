@@ -12,7 +12,7 @@ CVIBuffer_Instance_Rect::CVIBuffer_Instance_Rect(const CVIBuffer_Instance_Rect& 
 
 HRESULT CVIBuffer_Instance_Rect::Initialize_Prototype(const CVIBuffer_Instance::INSTANCE_DESC& InstanceDesc)
 {
-	if (FAILED(__super::Initialize_Prototype(InstanceDesc)))
+	if (FAILED(__super::Initialize_Prototype()))
 		return E_FAIL;
 	
 	m_InstanceDesc = InstanceDesc;
@@ -120,20 +120,20 @@ HRESULT CVIBuffer_Instance_Rect::Initialize_Prototype(const CVIBuffer_Instance::
 
 	uniform_real_distribution<float>	LifeTime(InstanceDesc.vLifeTime.x, InstanceDesc.vLifeTime.y);
 
-	for (size_t i = 0; i < m_iNumInstance; i++)
-	{
-		_float	fSize = Size(m_RandomNumber);
-		// Right, Up, Loop, Pos 순서로 월드 행렬의 좌표를 넣어준다.
-		pInstanceVertices[i].vRight = _float4(fSize, 0.f, 0.f, 0.f);
-		pInstanceVertices[i].vUp = _float4(0.f, fSize, 0.f, 0.f);
-		pInstanceVertices[i].vLook = _float4(0.f, 0.f, fSize, 0.f);
-		pInstanceVertices[i].vTranslation = _float4(RangeX(m_RandomNumber), RangeY(m_RandomNumber), RangeZ(m_RandomNumber), 1.f);
-		m_pOriginalPositions[i] = _float3(pInstanceVertices[i].vTranslation.x, pInstanceVertices[i].vTranslation.y, pInstanceVertices[i].vTranslation.z); // Loop를 위해 저장해준다.
-		pInstanceVertices[i].vLifeTime.x = LifeTime(m_RandomNumber); // 파티클이 살아있을 수 있는 시간.
+	//for (size_t i = 0; i < m_iNumInstance; i++)
+	//{
+	//	_float	fSize = Size(m_RandomNumber);
+	//	// Right, Up, Loop, Pos 순서로 월드 행렬의 좌표를 넣어준다.
+	//	pInstanceVertices[i].vRight = _float4(fSize, 0.f, 0.f, 0.f);
+	//	pInstanceVertices[i].vUp = _float4(0.f, fSize, 0.f, 0.f);
+	//	pInstanceVertices[i].vLook = _float4(0.f, 0.f, fSize, 0.f);
+	//	pInstanceVertices[i].vTranslation = _float4(RangeX(m_RandomNumber), RangeY(m_RandomNumber), RangeZ(m_RandomNumber), 1.f);
+	//	m_pOriginalPositions[i] = _float3(pInstanceVertices[i].vTranslation.x, pInstanceVertices[i].vTranslation.y, pInstanceVertices[i].vTranslation.z); // Loop를 위해 저장해준다.
+	//	pInstanceVertices[i].vLifeTime.x = LifeTime(m_RandomNumber); // 파티클이 살아있을 수 있는 시간.
 
-		
-		m_pSpeeds[i] = Speed(m_RandomNumber);
-	}
+	//	
+	//	m_pSpeeds[i] = Speed(m_RandomNumber);
+	//}
 	m_InitialData.pSysMem = pInstanceVertices;
 
 	if (FAILED(m_pDevice->CreateBuffer(&m_InstanceBufferDesc, &m_InitialData, &m_pVBInstance)))

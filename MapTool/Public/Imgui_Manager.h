@@ -4,6 +4,7 @@
 #include "Client_Defines.h"
 #include "imgui.h"
 #include "Navigation_Manager.h"
+#include "ObjPlace_Manager.h"
 
 BEGIN(Engine)
 class CGameInstance;
@@ -24,7 +25,7 @@ public:
 	void Late_Tick(_float fTimeDelta);
 	void Render();
 
-
+	
 private:
 	ID3D11Device* m_pDevice = { nullptr };
 	ID3D11DeviceContext* m_pContext = { nullptr };
@@ -33,27 +34,24 @@ private:
 private:
 	/* Terrain에 대한 수정 */
 	void	Set_Terrain_IMGUI();
-	/* Object 종류 고르기 */
-	void	Set_Map_Object();
 	/* 설치된 Object 선택하게끔 */
 	void	Show_Object_List();
 	/* Navi Tool 나오기 */
 	void	Set_NaviTool_IMGUI();
+	void	Show_MapObj_Place_IMGUI();
 
 private:
-	CNavigation_Manager*			m_pNavigationMgr;
+	CNavigation_Manager* m_pNavigationMgr;
+	CObjPlace_Manager* m_pObjPlace_Manager;
 
 	/* imgui 창 관련 bool 변수 */
 private:
 	_bool				m_bMain_IMGUI = true;
 	_bool				m_bTerrain_IMGUI = false;
-	_bool				m_bObject_Place_IMGUI = false;
 	_bool				m_bNaviTool_IMGUI = false; /* 네비게이션 툴 화면 */
+	_bool				m_bObject_Place_IMGUI = false;
 
 
-	/* 배치관련 bool 변수 */
-private:
-	_bool				m_bDoing_Place_Object = false;
 
 
 public:

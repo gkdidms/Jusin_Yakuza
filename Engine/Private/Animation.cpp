@@ -99,10 +99,10 @@ void CAnimation::Update_TransformationMatrix(_float fTimeDelta, const vector<cla
 // 새로 입력받은 애니메이션에서 실행시킬 것이다
 void CAnimation::Update_Change_Animation(_float fTimeDelta, const vector<class CBone*>& Bones, CAnimation* pPrevAnimation, _double ChangeInterval)
 {
+	m_CurrentChangePosition += m_TickPerSecond * fTimeDelta;
+
 	if (ChangeInterval <= m_CurrentChangePosition)
 		m_isChanged = true;
-
-	m_CurrentChangePosition += m_TickPerSecond * fTimeDelta;
 
 	_uint		iChannelIndex = { 0 };
 

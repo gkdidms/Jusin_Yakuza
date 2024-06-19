@@ -171,6 +171,12 @@
     </Filter>
     <Filter Include="01.Utility\03.Component\07.Collider\DebugDraw">
       <UniqueIdentifier>{6186c345-8a17-413f-a528-d5c347937e05}</UniqueIdentifier>
+	</Filter>
+	<Filter Include="01.Utility\96.Manager">
+		<UniqueIdentifier>{604dcaba-94b0-469e-a171-1208e1a5cd0b}</UniqueIdentifier>
+	</Filter>
+	<Filter Include="01.Utility\96.Manager\00.MapDataMgr">
+		<UniqueIdentifier>{c6f5df0c-fe5d-4f40-af32-483142ef1d43}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -345,6 +351,9 @@
     <ClInclude Include="..\Public\VIBuffer_Terrain_Flat.h">
       <Filter>01.Utility\03.Component\01.VIBuffer\Terrain\Terrain_Flat</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\MapDataMgr.h">
+      <Filter>01.Utility\96.Manager\00.MapDataMgr</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\Base.cpp">
@@ -505,6 +514,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\VIBuffer_Terrain_Flat.cpp">
       <Filter>01.Utility\03.Component\01.VIBuffer\Terrain\Terrain_Flat</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\MapDataMgr.cpp">
+      <Filter>01.Utility\96.Manager\00.MapDataMgr</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

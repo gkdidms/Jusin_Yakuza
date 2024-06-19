@@ -2,7 +2,7 @@
 
 #include "Camera.h"
 
-#include "AnimationTool_Defines.h"
+#include "Client_Defines.h"
 
 BEGIN(Client)
 class CPlayerCamera :

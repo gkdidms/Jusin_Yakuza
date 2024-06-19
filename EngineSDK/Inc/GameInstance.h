@@ -4,6 +4,7 @@
 #include "Component_Manager.h"
 #include "PipeLine.h"
 #include "Input_Device.h"
+#include "RandomManager.h"
 
 BEGIN(Engine)
 class ENGINE_DLL CGameInstance :
@@ -134,6 +135,7 @@ public:
 public:
     void Get_FileNames(const wstring& strPath, vector<wstring>& vecOut);
     void Get_FileNames(const string& strPath, vector<string>& vecOut);
+
     wstring Get_FileName(const wstring& strPath);
     string Get_FileName(const string& strPath);
 
@@ -157,6 +159,11 @@ public:
 
     wstring StringToWstring(const string& str);
     string WstringToString(const wstring& str);
+    string Extract_String(const string& str, char cHead, char cTail);
+
+public:
+    template<typename T>
+    T Get_Random(T Min, T Max);
 
 private:
     class CGraphic_Device* m_pGraphic_Device = { nullptr };
@@ -174,6 +181,8 @@ private:
     class CPicking* m_pPicking = { nullptr };
     class CFrustum* m_pFrustum = { nullptr };
     class CConvert_Manager* m_pConvert_Manager = { nullptr };
+    class CRandomManager* m_pRandom_Manager = { nullptr };
+
 
 public:
     static void Release_Engine();
@@ -181,3 +190,9 @@ public:
 };
 
 END
+
+template<typename T>
+inline T CGameInstance::Get_Random(T Min, T Max)
+{
+    return m_pRandom_Manager->Get_Random(Min, Max);
+}

@@ -70,6 +70,12 @@
     <ClCompile Include="..\private\PlayerCamera.cpp">
       <Filter>02.GameObjects\02.Camera\PlayerCamera</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\FreeCamera.cpp">
+      <Filter>02.GameObjects\02.Camera\FreeCamera</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Particle_Point.cpp">
+      <Filter>02.GameObjects\03.Effect\Particle_Point</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\MainApp.h">
@@ -159,6 +165,12 @@
     <ClInclude Include="..\public\PlayerCamera.h">
       <Filter>02.GameObjects\02.Camera\PlayerCamera</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\FreeCamera.h">
+      <Filter>02.GameObjects\02.Camera\FreeCamera</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Particle_Point.h">
+      <Filter>02.GameObjects\03.Effect\Particle_Point</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
@@ -229,9 +241,18 @@
     <Filter Include="02.GameObjects\02.Camera\FreeCamera">
       <UniqueIdentifier>{6e2ae2d5-0c9d-4981-8489-dbf9d9d43dfc}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\03.Effect">
+      <UniqueIdentifier>{526c7dac-e924-4344-9a31-756d25bd9858}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\03.Effect\Particle_Point">
+      <UniqueIdentifier>{38ddbcaa-edb5-46f2-830e-6b396b521d98}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxPosTex.hlsl">
+      <Filter>97.ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxInstance_Point.hlsl">
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
   </ItemGroup>
