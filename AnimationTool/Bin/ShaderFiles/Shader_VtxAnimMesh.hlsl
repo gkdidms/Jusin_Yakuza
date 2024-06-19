@@ -22,7 +22,7 @@ struct VS_OUT
     float4 vNormal : NORMAL;
     float2 vTexcoord : TEXCOORD0;
     float4 vProjPos : TEXCOORD1;
-        float4 vLocalPos : TEXCOORD2;
+    float4 vLocalPos : TEXCOORD2;
     float4 vTangent : TANGENT;
     float4 vBinormal : BINORMAL;
 };

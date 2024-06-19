@@ -1,4 +1,10 @@
 
+#include "D:\OneDrive\Study\D3DTeamProject\Engine\Private\RandomManager.cpp"
+
+
+#include "D:\OneDrive\Study\D3DTeamProject\Engine\Private\Renderer.cpp"
+
+
 #include "D:\OneDrive\Study\D3DTeamProject\Engine\Private\RenderTarget.cpp"
 
 
@@ -12,10 +18,4 @@
 
 
 #include "D:\OneDrive\Study\D3DTeamProject\Engine\Private\Texture.cpp"
-
-
-#include "D:\OneDrive\Study\D3DTeamProject\Engine\Private\Timer.cpp"
-
-
-#include "D:\OneDrive\Study\D3DTeamProject\Engine\Private\Timer_Manager.cpp"
 

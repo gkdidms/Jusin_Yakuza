@@ -42,12 +42,12 @@ void CModelBoneSphere::Priority_Tick(const _float& fTimeDelta)
 
 void CModelBoneSphere::Tick(const _float& fTimeDelta)
 {
-    if (m_pGameInstance->GetKeyState(DIK_UP) == TAP)
-        Change_TexutreIndex(true);
-    if (m_pGameInstance->GetKeyState(DIK_DOWN) == TAP)
-        Change_TexutreIndex();
-
     m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(m_pBoneWorldMatrix) * XMLoadFloat4x4(m_pModelWorldMatrix));
+
+    if(0 == m_iTextureIndex)
+        m_pTransformCom->Set_Scale(1, 1, 1);
+    else
+        m_pTransformCom->Set_Scale(3, 3, 3);
 }
 
 void CModelBoneSphere::Late_Tick(const _float& fTimeDelta)

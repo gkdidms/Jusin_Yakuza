@@ -1,4 +1,10 @@
 
+#include "D:\OneDrive\Study\D3DTeamProject\Engine\Private\VIBuffer_Instance_Rect.cpp"
+
+
+#include "D:\OneDrive\Study\D3DTeamProject\Engine\Private\VIBuffer_Rect.cpp"
+
+
 #include "D:\OneDrive\Study\D3DTeamProject\Engine\Private\VIBuffer_Terrain.cpp"
 
 
