@@ -45,29 +45,29 @@ void CFreeCamera::Tick(const _float& fTimeDelta)
 
     if (!m_bTab)
     {
-        if (m_pGameInstance->GetKeyState(DIK_A) == TAP)
+        if (m_pGameInstance->GetKeyState(DIK_A) == HOLD)
             m_pTransformCom->Go_Left(fTimeDelta);
-        if (m_pGameInstance->Get_DIKeyState(DIK_D) == TAP)
+        if (m_pGameInstance->Get_DIKeyState(DIK_D) == HOLD)
             m_pTransformCom->Go_Right(fTimeDelta);
-        if (m_pGameInstance->Get_DIKeyState(DIK_W) == TAP)
+        if (m_pGameInstance->Get_DIKeyState(DIK_W) == HOLD)
             m_pTransformCom->Go_Straight(fTimeDelta);
-        if (m_pGameInstance->Get_DIKeyState(DIK_S) == TAP)
+        if (m_pGameInstance->Get_DIKeyState(DIK_S) == HOLD)
             m_pTransformCom->Go_Backward(fTimeDelta);
 
 
-        //_long		MouseMove = { 0 };
+        _long		MouseMove = { 0 };
 
-        //if (MouseMove = m_pGameInstance->Get_DIMouseMove(DIMS_X))
-        //{
-        //    Turn(&m_WorldMatrix, XMVectorSet(0.f, 1.f, 0.f, 0.f), fTimeDelta * m_fSensor * MouseMove);
-        //}
+        if (MouseMove = m_pGameInstance->Get_DIMouseMove(DIMS_X))
+        {
+            m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), fTimeDelta * m_fSensor * MouseMove);
+        }
 
-        //if (MouseMove = m_pGameInstance->Get_DIMouseMove(DIMS_Y))
-        //{
-        //    Turn(&m_WorldMatrix, XMVectorSet(1.f, 0.f, 0.f, 0.f), fTimeDelta * m_fSensor * MouseMove);
-        //}
+        if (MouseMove = m_pGameInstance->Get_DIMouseMove(DIMS_Y))
+        {
+            m_pTransformCom->Turn(XMVectorSet(1.f, 0.f, 0.f, 0.f), fTimeDelta * m_fSensor * MouseMove);
+        }
 
-      //  Mouse_Fix();
+        Mouse_Fix();
     }
 
     __super::Tick(fTimeDelta);

@@ -131,7 +131,7 @@ PS_OUT PS_MAIN(PS_IN In)
 {
     PS_OUT Out = (PS_OUT) 0;
 
-    Out.vColor = g_Texture.Sample(PointSampler, In.vTexcoord);
+    Out.vColor = g_Texture.Sample(LinearSampler, In.vTexcoord);
     if (Out.vColor.a < 0.1f)
         discard;
 
@@ -155,7 +155,7 @@ PS_OUT PS_MAIN_SPREAD(PS_IN In)
     if (Out.vColor.a < 0.1f)
         discard;
 
-    Out.vColor.a *= In.vLifeTime.x - In.vLifeTime.y;
+    //Out.vColor.a *= In.vLifeTime.x - In.vLifeTime.y;
 
     Out.vColor.rgb = float3(1.f, 1.f, 1.f);
 

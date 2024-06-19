@@ -56,9 +56,9 @@ HRESULT CLevel_Edit::Ready_Object(const wstring& strLayerTag)
 		return E_FAIL;
 
 	CParticle_Point::PARTICLE_POINT_DESC PointDesc{};
-	PointDesc.BufferInstance.iNumInstance = 66;
+	PointDesc.BufferInstance.iNumInstance = 660;
 	PointDesc.BufferInstance.isLoop = true;
-	PointDesc.BufferInstance.vLifeTime = _float2(1.f, 3.f);
+	PointDesc.BufferInstance.vLifeTime = _float2(10.f, 30.f);
 	PointDesc.BufferInstance.vOffsetPos = _float3(0.f, -2.f, 0.f);
 	PointDesc.BufferInstance.vPivotPos = _float3(0.f, 0.f, 0.f);
 	PointDesc.BufferInstance.vRange = _float3(0.2f, 0.f, 0.2f);
