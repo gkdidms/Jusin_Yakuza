@@ -10,6 +10,9 @@ CLevel_RunMap::CLevel_RunMap(ID3D11Device* pDevice, ID3D11DeviceContext* pContex
 
 HRESULT CLevel_RunMap::Initialize()
 {
+	if (FAILED(Ready_Lights()))
+		return E_FAIL;
+
 	if (FAILED(Ready_Layer_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
 
@@ -25,6 +28,21 @@ void CLevel_RunMap::Tick(const _float& fTimeDelta)
 #ifdef _DEBUG
 	SetWindowText(g_hWnd, TEXT("테스트 레벨"));
 #endif
+}
+
+HRESULT CLevel_RunMap::Ready_Lights()
+{
+	LIGHT_DESC			LightDesc{};
+
+	LightDesc.eType = LIGHT_DESC::TYPE_DIRECTIONAL;
+	LightDesc.vDirection = _float4(1.f, -1.f, 1.f, 0.f);
+	LightDesc.vDiffuse = _float4(1.f, 1.f, 1.f, 1.f);
+	LightDesc.vAmbient = _float4(1.f, 1.f, 1.f, 1.f);
+	LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
+
+	m_pGameInstance->Add_Light(LightDesc);
+
+	return S_OK;
 }
 
 HRESULT CLevel_RunMap::Ready_Layer_Camera(const wstring& strLayerTag)
@@ -48,8 +66,8 @@ HRESULT CLevel_RunMap::Ready_Layer_Camera(const wstring& strLayerTag)
 
 HRESULT CLevel_RunMap::Ready_Layer_GameObject(const wstring& strLayerTag)
 {
-	//if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_RUNMAP, TEXT("Prototype_GameObject_Terrain"), strLayerTag)))
-	//	return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_RUNMAP, TEXT("Prototype_GameObject_Terrain"), strLayerTag)))
+		return E_FAIL;
 
 	return S_OK;
 }
