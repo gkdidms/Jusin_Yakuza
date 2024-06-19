@@ -1,7 +1,7 @@
 #pragma once
 #include "GameObject.h"
 
-#include "AnimationTool_Defines.h"
+#include "Client_Defines.h"
 
 BEGIN(Engine)
 class CVIBuffer_Rect;

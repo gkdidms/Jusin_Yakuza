@@ -1,45 +1,68 @@
 #pragma once
-#include "AnimationTool_Defines.h"
-#include "GameObject.h"
+#include "Client_Defines.h"
+#include "Base.h"
 
 BEGIN(Engine)
 class CGameInstance;
 END
 
 BEGIN(Client)
-
-class CImGuiManager : public CGameObject
+class CImguiManager final :
+	public CBase
 {
 private:
-	CImGuiManager(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	CImGuiManager(const CImGuiManager& rhs);
-	virtual ~CImGuiManager() = default;
+	CImguiManager(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	virtual ~CImguiManager() = default;
 
 public:
-	virtual HRESULT Initialize_Prototype();
-	virtual HRESULT Initialize(void* pArg);
-	virtual void Priority_Tick(const _float& fTimeDelta);
-	virtual void Tick(const _float& fTimeDelta);
-	virtual void Late_Tick(const _float& fTimeDelta);
-	virtual HRESULT Render();
+	HRESULT Initialize(void* pArg = nullptr);
+	void Tick(const _float& fTimeDelta);
+	HRESULT Render();
 
 private:
-	void Render_Begin();
-	void Render_End();
-
-	void Windows_Update();
+	void ModelList();
+	void AnimListWindow();
+	void BoneListWindow();
 
 private:
-	_bool								m_bIsClone = false;
+	void LoadAnimationCharacterList();
+	void Connect_Model_Ref();
 
-//Preferences
 private:
-	_float								m_fTimeDelta = { 0 };
+	void Update_Model_RotationX();
+	void Update_Model_RotationY();
+	void Update_Model_RotationZ();
+	void Update_Model_Scaled();
+
+private:
+	_bool m_isAnimListWindow = { false };
+	int m_iModelSelectedIndex = { 0 };
+	int m_iBoneSelectedIndex = { 0 };
+
+	vector<string> m_ModelNameList;
+	vector<string> m_AnimNameList;
+	vector<string> m_BoneNameList;
+
+private:
+	_float				m_fTimeDelta = { 0.f };
+
+	int					m_iAnimIndex = { 0 };
+
+private:
+	float				m_ModelPosition[3] = { 0.f };
+	float				m_ModelRotation[3] = { 0.f };
+	float				m_ModelScale = { 0.f };
+
+	bool				m_isPause = { false };
+
+private:
+	ID3D11Device*			m_pDevice = { nullptr };
+	ID3D11DeviceContext*	m_pContext = { nullptr };
+	class CGameInstance*	m_pGameInstance = { nullptr };
+	class CAnimModel*		m_pRenderModel = { nullptr };
 
 public:
-	static CImGuiManager* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	virtual CGameObject* Clone(void* pArg);
+	static CImguiManager* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual void Free() override;
 };
-
 END

@@ -9,15 +9,15 @@ END
 
 BEGIN(Client)
 class CMainApp :
-    public CBase
+	public CBase
 {
 private:
-    CMainApp();
-    virtual ~CMainApp() = default;
+	CMainApp();
+	virtual ~CMainApp() = default;
 
 public:
-    HRESULT Initialize();
-    void Tick(const _float& fTimeDelta);
+	HRESULT Initialize();
+	void Tick(const _float& fTimeDelta);
 	HRESULT Render();
 
 private:
@@ -25,6 +25,7 @@ private:
 	ID3D11DeviceContext* m_pContext = { nullptr };
 
 	CGameInstance* m_pGameInstance = { nullptr };
+	class CImguiManager* m_pGuimanager = { nullptr };
 
 #ifdef _DEBUG
 private:
@@ -39,9 +40,10 @@ public:
 	HRESULT Ready_Font();
 	HRESULT Ready_Prototype_GameObject();
 	HRESULT Ready_Prototype_Component();
+	HRESULT Ready_Manager();
 
 public:
-    static CMainApp* Create();
-    virtual void Free() override;
+	static CMainApp* Create();
+	virtual void Free() override;
 };
 END

@@ -8,6 +8,11 @@
 
 #include "Imgui_Manager.h"
 
+#pragma region "Imgui"
+#include "imgui.h"
+#include "imgui_impl_dx11.h"
+#pragma endregion	
+
 CMainApp::CMainApp() :
 	m_pGameInstance{ CGameInstance::GetInstance() }
 {
@@ -71,11 +76,15 @@ HRESULT CMainApp::Render()
 	/* 그린다. */
 	m_pGameInstance->Clear_BackBuffer_View(_float4(0.f, 0.f, 1.f, 1.f));
 	m_pGameInstance->Clear_DepthStencil_View();
-
+	
+	CImgui_Manager::GetInstance()->Render();
 	m_pGameInstance->Draw();
+	
+
+	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 
 	m_pGameInstance->Render_Font(TEXT("Font_Default"), m_szFPS, _float2(0.f, 0.f), XMVectorSet(1.f, 1.f, 0.f, 1.f));
-	CImgui_Manager::GetInstance()->Render();
+
 	m_pGameInstance->Present();
 
 	//m_pGameInstance->Draw();
@@ -147,6 +156,9 @@ void CMainApp::Free()
 {
 	Safe_Release(m_pContext);
 	Safe_Release(m_pDevice);
+
+	/* 여기서 instance release 해줌 */
+	CImgui_Manager::GetInstance()->DestroyInstance();
 
 	/* 레퍼런스 카운트를 0으로만든다. */
 	Safe_Release(m_pGameInstance);

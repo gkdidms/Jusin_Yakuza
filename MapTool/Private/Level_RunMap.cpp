@@ -10,6 +10,9 @@ CLevel_RunMap::CLevel_RunMap(ID3D11Device* pDevice, ID3D11DeviceContext* pContex
 
 HRESULT CLevel_RunMap::Initialize()
 {
+	if (FAILED(Ready_Lights()))
+		return E_FAIL;
+
 	if (FAILED(Ready_Layer_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
 
@@ -27,17 +30,34 @@ void CLevel_RunMap::Tick(const _float& fTimeDelta)
 #endif
 }
 
+HRESULT CLevel_RunMap::Ready_Lights()
+{
+	LIGHT_DESC			LightDesc{};
+
+	LightDesc.eType = LIGHT_DESC::TYPE_DIRECTIONAL;
+	LightDesc.vDirection = _float4(1.f, -1.f, 1.f, 0.f);
+	LightDesc.vDiffuse = _float4(1.f, 1.f, 1.f, 1.f);
+	LightDesc.vAmbient = _float4(1.f, 1.f, 1.f, 1.f);
+	LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
+
+	m_pGameInstance->Add_Light(LightDesc);
+
+	return S_OK;
+}
+
 HRESULT CLevel_RunMap::Ready_Layer_Camera(const wstring& strLayerTag)
 {
-	CPlayerCamera::FREE_CAMERA_DESC		CameraDesc{};
+	CPlayerCamera::PLAYER_CAMERA_DESC		CameraDesc{};
 
 	CameraDesc.fSensor = 0.1f;
-	CameraDesc.vEye = _float4(0.0f, 50.f, -45.f, 1.f);
-	CameraDesc.vFocus = _float4(0.0f, 0.f, 0.f, 1.f);
+	CameraDesc.vEye = _float4(1.0f, 20.0f, -20.f, 1.f);
+	CameraDesc.vFocus = _float4(0.f, 0.0f, 0.0f, 1.f);
 	CameraDesc.fFovY = XMConvertToRadians(60.0f);
 	CameraDesc.fAspect = g_iWinSizeX / (_float)g_iWinSizeY;
 	CameraDesc.fNear = 0.1f;
 	CameraDesc.fFar = 3000.f;
+	CameraDesc.fSpeedPecSec = 20.f;
+	CameraDesc.fRotatePecSec = XMConvertToRadians(90.f);
 
 
 	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_RUNMAP, TEXT("Prototype_GameObject_PlayerCamera"), strLayerTag, &CameraDesc)))
@@ -48,8 +68,8 @@ HRESULT CLevel_RunMap::Ready_Layer_Camera(const wstring& strLayerTag)
 
 HRESULT CLevel_RunMap::Ready_Layer_GameObject(const wstring& strLayerTag)
 {
-	//if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_RUNMAP, TEXT("Prototype_GameObject_Terrain"), strLayerTag)))
-	//	return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_RUNMAP, TEXT("Prototype_GameObject_Terrain"), strLayerTag)))
+		return E_FAIL;
 
 	return S_OK;
 }

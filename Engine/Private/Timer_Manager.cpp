@@ -23,6 +23,24 @@ void CTimer_Manager::Update_TimeDelta(const _tchar * pTimerTag)
 	pTimer->Update_TimeDelta();
 }
 
+void CTimer_Manager::Set_TimeSpeed(const _tchar* pTimerTag, _float fSpeed)
+{
+	CTimer* pTimer = Find_Timer(pTimerTag);
+	if (nullptr == pTimer)
+		return;
+
+	pTimer->Set_Speed(fSpeed);
+}
+
+void CTimer_Manager::Reset_TimeDelta(const _tchar* pTimerTag)
+{
+	CTimer* pTimer = Find_Timer(pTimerTag);
+	if (nullptr == pTimer)
+		return;
+
+	pTimer->Reset();
+}
+
 HRESULT CTimer_Manager::Ready_Timer(const _tchar* pTimerTag)
 {
 	CTimer*		pTimer = Find_Timer(pTimerTag);

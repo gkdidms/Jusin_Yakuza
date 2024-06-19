@@ -17,6 +17,7 @@ public:
     virtual void Tick(const _float& fTimeDelta) override;
 
 private:
+    HRESULT Ready_Lights();
     HRESULT Ready_Layer_Camera(const wstring& strLayerTag);
     HRESULT Ready_Layer_GameObject(const wstring& strLayerTag);
 

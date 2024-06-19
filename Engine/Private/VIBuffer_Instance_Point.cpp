@@ -1,4 +1,5 @@
 #include "VIBuffer_Instance_Point.h"
+#include "GameInstance.h"
 
 CVIBuffer_Instance_Point::CVIBuffer_Instance_Point(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CVIBuffer_Instance{ pDevice, pContext }
@@ -10,15 +11,16 @@ CVIBuffer_Instance_Point::CVIBuffer_Instance_Point(const CVIBuffer_Instance_Poin
 {
 }
 
-HRESULT CVIBuffer_Instance_Point::Initialize_Prototype(const INSTANCE_DESC& InstanceDesc)
+HRESULT CVIBuffer_Instance_Point::Initialize_Prototype()
 {
-	if (FAILED(__super::Initialize_Prototype(InstanceDesc)))
+
+	return S_OK;
+}
+
+HRESULT CVIBuffer_Instance_Point::Initialize(void* pArg)
+{
+	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
-
-	m_InstanceDesc = InstanceDesc;
-
-	uniform_real_distribution<float>	Size(InstanceDesc.vSize.x, InstanceDesc.vSize.y);
-	_float	fSize = Size(m_RandomNumber);
 
 	m_GIFormat = DXGI_FORMAT_R16_UINT;
 	m_Primitive_Topology = D3D_PRIMITIVE_TOPOLOGY_POINTLIST;
@@ -40,6 +42,9 @@ HRESULT CVIBuffer_Instance_Point::Initialize_Prototype(const INSTANCE_DESC& Inst
 	m_Buffer_Desc.StructureByteStride = m_iVertexStride;
 
 	VTXPOINT* pVertexts = new VTXPOINT[m_iNumVertices];
+	ZeroMemory(pVertexts, sizeof(VTXPOINT) * m_iNumVertices);
+
+	_float	fSize= m_pGameInstance->Get_Random(m_InstanceDesc.vSize.x, m_InstanceDesc.vSize.y);
 
 	pVertexts[0].vPosition = _float3{ 0.f, 0.f, 0.f };
 	pVertexts[0].vPSize = _float2{ fSize, fSize };
@@ -96,29 +101,27 @@ HRESULT CVIBuffer_Instance_Point::Initialize_Prototype(const INSTANCE_DESC& Inst
 	m_pOriginalPositions = new _float3[m_iNumInstance];
 	ZeroMemory(m_pOriginalPositions, sizeof(_float3) * m_iNumInstance);
 
-	uniform_real_distribution<float>	RangeX(InstanceDesc.vPivotPos.x - InstanceDesc.vRange.x * 0.5f, InstanceDesc.vPivotPos.x + InstanceDesc.vRange.x * 0.5f);
-	uniform_real_distribution<float>	RangeY(InstanceDesc.vPivotPos.y - InstanceDesc.vRange.y * 0.5f, InstanceDesc.vPivotPos.y + InstanceDesc.vRange.y * 0.5f);
-	uniform_real_distribution<float>	RangeZ(InstanceDesc.vPivotPos.z - InstanceDesc.vRange.z * 0.5f, InstanceDesc.vPivotPos.z + InstanceDesc.vRange.z * 0.5f);
+	_float RangeX = m_pGameInstance->Get_Random(m_InstanceDesc.vPivotPos.x - m_InstanceDesc.vRange.x * 0.5f, m_InstanceDesc.vPivotPos.x + m_InstanceDesc.vRange.x * 0.5f);
+	_float RangeY = m_pGameInstance->Get_Random(m_InstanceDesc.vPivotPos.y - m_InstanceDesc.vRange.y * 0.5f, m_InstanceDesc.vPivotPos.y + m_InstanceDesc.vRange.y * 0.5f);
+	_float RangeZ = m_pGameInstance->Get_Random(m_InstanceDesc.vPivotPos.z - m_InstanceDesc.vRange.z * 0.5f, m_InstanceDesc.vPivotPos.z + m_InstanceDesc.vRange.z * 0.5f);
 
-
-	uniform_real_distribution<float>	Speed(InstanceDesc.vSpeed.x, InstanceDesc.vSpeed.y);
-	uniform_real_distribution<float>	Power(InstanceDesc.vPower.x, InstanceDesc.vPower.y);
-
-	uniform_real_distribution<float>	LifeTime(InstanceDesc.vLifeTime.x, InstanceDesc.vLifeTime.y);
+	_float Speed = m_pGameInstance->Get_Random(m_InstanceDesc.vSpeed.x, m_InstanceDesc.vSpeed.y);
+	_float Power = m_pGameInstance->Get_Random(m_InstanceDesc.vPower.x, m_InstanceDesc.vPower.y);
+	_float LifeTime = m_pGameInstance->Get_Random(m_InstanceDesc.vLifeTime.x, m_InstanceDesc.vLifeTime.y);
 
 	for (size_t i = 0; i < m_iNumInstance; i++)
 	{
-		
+
 		// Right, Up, Loop, Pos 순서로 월드 행렬의 좌표를 넣어준다.
 		pInstanceVertices[i].vRight = _float4(fSize, 0.f, 0.f, 0.f);
 		pInstanceVertices[i].vUp = _float4(0.f, fSize, 0.f, 0.f);
 		pInstanceVertices[i].vLook = _float4(0.f, 0.f, fSize, 0.f);
-		pInstanceVertices[i].vTranslation = _float4(RangeX(m_RandomNumber), RangeY(m_RandomNumber), RangeZ(m_RandomNumber), 1.f);
+		pInstanceVertices[i].vTranslation = _float4(RangeX, RangeY, RangeZ, 1.f);
 		m_pOriginalPositions[i] = _float3(pInstanceVertices[i].vTranslation.x, pInstanceVertices[i].vTranslation.y, pInstanceVertices[i].vTranslation.z); // Loop를 위해 저장해준다.
-		pInstanceVertices[i].vLifeTime.x = LifeTime(m_RandomNumber); // 파티클이 살아있을 수 있는 시간.
+		pInstanceVertices[i].vLifeTime.x = LifeTime; // 파티클이 살아있을 수 있는 시간.
 
-		m_pPower[i] = Power(m_RandomNumber);
-		m_pSpeeds[i] = Speed(m_RandomNumber);
+		m_pPower[i] = Power;
+		m_pSpeeds[i] = Speed;
 		m_pAccelTime[i] = 0.f;
 	}
 	m_InitialData.pSysMem = pInstanceVertices;
@@ -129,19 +132,15 @@ HRESULT CVIBuffer_Instance_Point::Initialize_Prototype(const INSTANCE_DESC& Inst
 
 	Safe_Delete_Array(pInstanceVertices);
 #pragma endregion
+
 	return S_OK;
 }
 
-HRESULT CVIBuffer_Instance_Point::Initialize(void* pArg)
-{
-	return S_OK;
-}
-
-CVIBuffer_Instance_Point* CVIBuffer_Instance_Point::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const INSTANCE_DESC& InstanceDesc)
+CVIBuffer_Instance_Point* CVIBuffer_Instance_Point::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
 	CVIBuffer_Instance_Point* pInstance = new CVIBuffer_Instance_Point(pDevice, pContext);
 
-	if (FAILED(pInstance->Initialize_Prototype(InstanceDesc)))
+	if (FAILED(pInstance->Initialize_Prototype()))
 	{
 		MSG_BOX("Failed To Created : CVIBuffer_Instance_Point");
 		Safe_Release(pInstance);
