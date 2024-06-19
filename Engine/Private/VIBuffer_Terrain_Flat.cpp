@@ -150,8 +150,8 @@ HRESULT CVIBuffer_Terrain_Flat::Initialize(void* pArg)
 
 HRESULT CVIBuffer_Terrain_Flat::Change_LandScale(_uint iNumVerticesX, _uint iNumVerticesZ)
 {
-	Safe_Release(m_pIB);
-	Safe_Release(m_pVB);
+	//Safe_Release(m_pIB);
+	//Safe_Release(m_pVB);
 
 	m_iNumVerticesX = iNumVerticesX;
 	m_iNumVerticesZ = iNumVerticesZ;

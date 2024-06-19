@@ -43,8 +43,18 @@ public:
 
 public:
 	_uint Get_NumMeshes() { return m_iNumMeshes; }
+	_uint Get_NumAnimations() { return m_iAnimations; }
+	_uint Get_NumBones() { return m_iNumBones; }
 
 	_bool Get_AnimFinished() const;
+
+	const vector<class CAnimation*>& Get_Animations() {
+		return m_Animations;
+	}
+
+	const vector<class CBone*>& Get_Bones() {
+		return m_Bones;
+	}
 
 	const _float4x4* Get_BoneCombinedTransformationMatrix(const _char* pBoneName) const;
 
@@ -76,6 +86,7 @@ private:
 	_uint						m_iNumMaterials = { 0 };
 	vector<MESH_MATERIAL>		m_Materials;
 
+	_uint						m_iNumBones = { 0 };
 	vector<class CBone*>		m_Bones;
 
 	_uint						m_iAnimations = { 0 };

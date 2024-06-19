@@ -30,10 +30,6 @@ public:
 	_float2			Get_LandScale() { return _float2(m_iNumVerticesX, m_iNumVerticesZ); }
 
 private:
-	vector<CGameObject*>			m_GameObjectsLand;
-
-
-private:
 	CTerrain*					m_pTerrain;
 	_uint						m_iNumVerticesX = 100;
 	_uint						m_iNumVerticesZ = 100;

@@ -1,5 +1,7 @@
 #include "Convert_Manager.h"
 
+
+
 CConvert_Manager::CConvert_Manager()
 {
 }
@@ -43,6 +45,8 @@ void CConvert_Manager::Get_FileNames(const string& strPath, vector<string>& vecO
 
 	vecOut = vecDirectoryNames;
 }
+
+
 
 wstring CConvert_Manager::Get_FileName(const wstring& strPath)
 {
@@ -248,6 +252,26 @@ string CConvert_Manager::WstringToString(const wstring& str)
 	WideCharToMultiByte(CP_UTF8, 0, str.c_str(), -1, &narrow_text[0], num_chars_converted, nullptr, nullptr);
 
 	return narrow_text;
+}
+
+string CConvert_Manager::Extract_String(const string& str, char cHead, char cTail)
+{
+	string extracted_str;
+	bool extracting = false;
+
+	for (char c : str) {
+		if (c == cHead) {
+			extracting = true;
+		}
+		else if (c == cTail && extracting) {
+			break;
+		}
+		else if (extracting) {
+			extracted_str += c;
+		}
+	}
+
+	return extracted_str;
 }
 
 CConvert_Manager* CConvert_Manager::Create()

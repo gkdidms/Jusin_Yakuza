@@ -16,6 +16,9 @@ public:
     virtual void Tick(const _float& fTimeDelta) override;
 
 private:
+    class CSystemManager* m_pSystemManager = { nullptr };
+
+private:
     HRESULT Ready_Light();
     HRESULT Ready_Camera(const wstring& strLayerTag);
     HRESULT Ready_Player(const wstring& strLayerTag);

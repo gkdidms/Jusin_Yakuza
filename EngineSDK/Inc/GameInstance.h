@@ -41,6 +41,8 @@ public:
     _float		Get_TimeDelta(const _tchar* pTimerTag);
     void		Update_TimeDelta(const _tchar* pTimerTag);
     HRESULT		Ready_Timer(const _tchar* pTimerTag);
+    void Set_TimeSpeed(const _tchar* pTimerTag, _float fSpeed);
+    void Reset_TimeDelta(const _tchar* pTimerTag);
 
     /* Input_Device */
 public:
@@ -133,6 +135,7 @@ public:
 public:
     void Get_FileNames(const wstring& strPath, vector<wstring>& vecOut);
     void Get_FileNames(const string& strPath, vector<string>& vecOut);
+
     wstring Get_FileName(const wstring& strPath);
     string Get_FileName(const string& strPath);
 
@@ -156,8 +159,8 @@ public:
 
     wstring StringToWstring(const string& str);
     string WstringToString(const wstring& str);
+    string Extract_String(const string& str, char cHead, char cTail);
 
-    /* Random_Manager */
 public:
     template<typename T>
     T Get_Random(T Min, T Max);
