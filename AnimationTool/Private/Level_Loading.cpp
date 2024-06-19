@@ -7,6 +7,7 @@
 #include "Level_Loading.h"
 #include "Level_Logo.h"
 #include "Level_Test.h"
+#include "Level_Edit.h"
 #pragma endregion
 
 
@@ -35,26 +36,28 @@ void CLevel_Loading::Tick(const _float& fTimeDelta)
 {
 	if (true == m_pLoader->is_Finished())
 	{
-		if (GetKeyState(VK_RETURN) & 0x8000)
+
+		CLevel* pNewLevel = { nullptr };
+
+		switch (m_eNextLevel)
 		{
-			CLevel* pNewLevel = { nullptr };
-
-			switch (m_eNextLevel)
-			{
-			case LEVEL_LOGO:
-				pNewLevel = CLevel_Logo::Create(m_pDevice, m_pContext);
-				break;
-			case LEVEL_TEST:
-				pNewLevel = CLevel_Test::Create(m_pDevice, m_pContext);
-				break;
-			}
-
-			if (nullptr == pNewLevel)
-				return;
-
-			if (FAILED(m_pGameInstance->Open_Level(m_eNextLevel, pNewLevel)))
-				return;
+		case LEVEL_LOGO:
+			pNewLevel = CLevel_Logo::Create(m_pDevice, m_pContext);
+			break;
+		case LEVEL_EDIT:
+			pNewLevel = CLevel_Edit	::Create(m_pDevice, m_pContext);
+			break;
+		case LEVEL_TEST:
+			pNewLevel = CLevel_Test::Create(m_pDevice, m_pContext);
+			break;
 		}
+
+		if (nullptr == pNewLevel)
+			return;
+
+		if (FAILED(m_pGameInstance->Open_Level(m_eNextLevel, pNewLevel)))
+			return;
+		
 	}
 
 

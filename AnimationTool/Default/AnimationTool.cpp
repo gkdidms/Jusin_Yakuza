@@ -6,15 +6,19 @@
 #include "MainApp.h"
 #include "GameInstance.h"
 
-#include "imgui_impl_win32.h"
-
 #define MAX_LOADSTRING 100
+
+#pragma region "Imgui"
+#include "imgui.h"
+#pragma endregion
 
 // 전역 변수:
 HINSTANCE g_hInst;                                // 현재 인스턴스입니다.
 HWND	g_hWnd;
 WCHAR szTitle[MAX_LOADSTRING];                  // 제목 표시줄 텍스트입니다.
 WCHAR szWindowClass[MAX_LOADSTRING];            // 기본 창 클래스 이름입니다.
+
+extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hwnd, UINT msg, WPARAM wParam, LPARAM lParam);
 
 // 이 코드 모듈에 포함된 함수의 선언을 전달합니다:
 ATOM                MyRegisterClass(HINSTANCE hInstance);
@@ -25,7 +29,8 @@ INT_PTR CALLBACK    About(HWND, UINT, WPARAM, LPARAM);
 int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                      _In_opt_ HINSTANCE hPrevInstance,
                      _In_ LPWSTR    lpCmdLine,
-                     _In_ int       nCmdShow){
+                     _In_ int       nCmdShow)
+{
     UNREFERENCED_PARAMETER(hPrevInstance);
     UNREFERENCED_PARAMETER(lpCmdLine);
 
@@ -174,9 +179,6 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 //  WM_DESTROY  - 종료 메시지를 게시하고 반환합니다.
 //
 //
-
-extern IMGUI_IMPL_API LRESULT ImGui_ImplWin32_WndProcHandler(HWND hWnd, UINT msg, WPARAM wParam, LPARAM lParam);
-
 LRESULT CALLBACK WndProc(HWND hWnd, UINT message, WPARAM wParam, LPARAM lParam)
 {
     if (ImGui_ImplWin32_WndProcHandler(hWnd, message, wParam, lParam))

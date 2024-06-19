@@ -1,7 +1,7 @@
 #pragma once
 #include "Level.h"
 
-#include "AnimationTool_Defines.h"
+#include "Client_Defines.h"
 
 BEGIN(Client)
 class CLevel_Test :
@@ -17,7 +17,6 @@ public:
 
 private:
     HRESULT Ready_Object(const wstring& strLayerTag);
-    HRESULT Ready_ImGui(const wstring& strLayerTag);
 
 public:
     static CLevel_Test* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

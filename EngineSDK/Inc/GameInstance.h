@@ -156,6 +156,8 @@ public:
     wstring StringToWstring(const string& str);
     string WstringToString(const wstring& str);
 
+    string Extract_String(const string& str, char cHead, char cTail);
+
 private:
     class CGraphic_Device* m_pGraphic_Device = { nullptr };
     class CSoundMgr* m_pSound_Manager = { nullptr };
