@@ -25,7 +25,7 @@ protected:
     virtual ~CVIBuffer_Instance() = default;
 
 public:
-    virtual HRESULT Initialize_Prototype(const INSTANCE_DESC& InstanceDesc);
+    virtual HRESULT Initialize_Prototype();
     virtual HRESULT Initialize(void* pArg) override;
     virtual HRESULT Render() override;
 
@@ -40,7 +40,7 @@ protected:
 
     _float* m_pSpeeds = { nullptr };
     _float* m_pPower = { nullptr };
-    _float* m_pAccelTime = { nullptr };
+   _float* m_pAccelTime = { nullptr };
     _float3* m_pOriginalPositions = { nullptr };
 
 public:
@@ -48,10 +48,6 @@ public:
     void Drop(_float fTimeDelta);
     void Fountain(_float fTimeDelta);
     
-protected:
-    random_device				m_RandomDevice;
-    mt19937_64					m_RandomNumber;
-
 public:
     virtual CComponent* Clone(void* pArg) = 0;
     virtual void Free() override;

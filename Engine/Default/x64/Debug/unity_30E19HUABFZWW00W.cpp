@@ -1,7 +1,4 @@
 
-#include "C:\ProjectFile\3D_Team\Jusin_Yakuza\Engine\Private\Bounding.cpp"
-
-
 #include "C:\ProjectFile\3D_Team\Jusin_Yakuza\Engine\Private\Bounding_AABB.cpp"
 
 
@@ -9,4 +6,10 @@
 
 
 #include "C:\ProjectFile\3D_Team\Jusin_Yakuza\Engine\Private\Bounding_Sphere.cpp"
+
+
+#include "C:\ProjectFile\3D_Team\Jusin_Yakuza\Engine\Private\Camera.cpp"
+
+
+#include "C:\ProjectFile\3D_Team\Jusin_Yakuza\Engine\Private\Cell.cpp"
 
