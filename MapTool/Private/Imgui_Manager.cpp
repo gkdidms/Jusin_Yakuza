@@ -120,7 +120,7 @@ void CImgui_Manager::Render()
 
 void CImgui_Manager::Set_Terrain_IMGUI()
 {
-    ImGui::Begin(u8"Terrain");   // Pass a pointer to our bool variable (the window will have a closing button that will clear the bool when clicked)
+    ImGui::Begin(u8"Terrain");
     //ImGui::Text(u8"Terrain 크기 수정");
 
     //static int inumx, inumz;

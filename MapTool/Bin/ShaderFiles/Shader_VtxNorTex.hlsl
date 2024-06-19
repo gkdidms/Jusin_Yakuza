@@ -41,17 +41,17 @@ VS_OUT VS_MAIN(VS_IN In)
 struct PS_IN
 {
     float4 vPosition : SV_POSITION;
-   // float4 vNormal : NORMAL0;
+    //float4 vNormal : NORMAL0;
     float2 vTexcoord : TEXCOORD0;
- //   float4 vProjPos : TEXCOORD1;
-  //  float4 vWorldPos : TEXCOORD2;
+    //float4 vProjPos : TEXCOORD1;
+    //float4 vWorldPos : TEXCOORD2;
 };
 
 struct PS_OUT
 {
     vector vDiffuse : SV_TARGET0;
-    //vector vNormal : SV_TARGET1;
-    //vector vDepth : SV_TARGET2;
+    vector vNormal : SV_TARGET1;
+    vector vDepth : SV_TARGET2;
 };
 
 PS_OUT PS_MAIN(PS_IN In)
@@ -59,8 +59,8 @@ PS_OUT PS_MAIN(PS_IN In)
     PS_OUT Out = (PS_OUT) 0;
     
     Out.vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
-  //  Out.vNormal = vector(In.vNormal.xyz * 0.5f - 0.5f, 0.f);
-  //  Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 3000.f, 0.f, 1.f);
+    //Out.vNormal = vector(In.vNormal.xyz * 0.5f - 0.5f, 0.f);
+    //Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 3000.f, 0.f, 1.f);
     return Out;
 }
 

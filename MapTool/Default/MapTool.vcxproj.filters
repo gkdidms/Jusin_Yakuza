@@ -79,6 +79,9 @@
     <ClCompile Include="..\Private\Terrain_Manager.cpp">
       <Filter>03.Managers\03.Terrain_Manager</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\Construction.cpp">
+      <Filter>02.GameObjects\03.Construction</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\MainApp.h">
@@ -177,6 +180,9 @@
     <ClInclude Include="..\Public\Terrain_Manager.h">
       <Filter>03.Managers\03.Terrain_Manager</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Construction.h">
+      <Filter>02.GameObjects\03.Construction</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="MapTool.ico">
@@ -246,6 +252,9 @@
     </Filter>
     <Filter Include="03.Managers\02.Navigation_Manager">
       <UniqueIdentifier>{6a521a1b-3de9-4765-9af9-b898679c9866}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\03.Construction">
+      <UniqueIdentifier>{94f829ca-2130-4431-be39-5b72fc01bdbb}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
