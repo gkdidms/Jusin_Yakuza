@@ -128,6 +128,17 @@ HRESULT CShader::Bind_RawValue(const _char* pConstantName, const void* pValue, _
 	return pVariable->SetRawValue(pValue, 0, iLength);
 }
 
+HRESULT CShader::Bind_ValueFloat(const _char* pConstantName, const _float fValue)
+{
+	ID3DX11EffectVariable* pVariable = m_pEffect->GetVariableByName(pConstantName);
+	if (nullptr == pVariable)
+		return E_FAIL;
+
+	ID3DX11EffectScalarVariable* pScalarVariable = pVariable->AsScalar();
+
+	return pScalarVariable->SetFloat(fValue);
+}
+
 CShader* CShader::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& strShaderFilePath, const D3D11_INPUT_ELEMENT_DESC* pElement, _uint iNumElements)
 {
 	CShader* pInstance = new CShader(pDevice, pContext);

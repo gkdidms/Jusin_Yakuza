@@ -109,6 +109,7 @@ public:
 public: 
     _vector Picking(_bool* isSuccess);
     _float Get_Z();
+    float   FindObjID(_bool* isSuccess);
 
     /*RenderTarget_Manager*/
 public: 
