@@ -8,6 +8,8 @@
 #include "TestMap.h"
 #pragma endregion
 
+#include "Terrain.h"
+#include "Construction.h"
 
 CLoader::CLoader(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: m_pDevice{pDevice}, 
@@ -112,16 +114,46 @@ HRESULT CLoader::Loading_For_Test()
 {
 	lstrcpy(m_szLoadingText, TEXT("텍스쳐를 로딩 중 입니다."));
 
-	_matrix		PreTransformMatrix;
+	/* For.Prototype_Component_Texture_Terrain */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Texture_Terrain"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/T_Sand_06_A.png"), 1))))
+		return E_FAIL;
+
+
 	lstrcpy(m_szLoadingText, TEXT("모델를(을) 로딩 중 입니다."));
+
+	/* For.Prototype_Component_VIBuffer_Terrain */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_VIBuffer_Terrain_Flat"),
+		CVIBuffer_Terrain_Flat::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+
+
+	_matrix		PreTransformMatrix;
 	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(180.0f));
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Model_Player"), CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../Bin/Resources/Models/Anim/Kiryu/Kiryu.fbx", PreTransformMatrix, false))))
+		return E_FAIL;
+
+	//if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Model_f2"), CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/NonAnim/Map/Map1/f2.fbx", PreTransformMatrix, false))))
+	//	return E_FAIL;
+
+	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Model_f1"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/NonAnim/Map/Map0/Bin/f1.dat", PreTransformMatrix, true))))
 		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("셰이더를(을) 로딩 중 입니다."));
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Shader_VtxAnim"), CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxAnimMesh.hlsl"), VTXANIMMESH::Elements, VTXANIMMESH::iNumElements))))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Shader_Mesh"), CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxMesh.hlsl"), VTXMESH::Elements, VTXMESH::iNumElements))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Shader_MeshTemp"), CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxMeshTemp.hlsl"), VTXMESH::Elements, VTXMESH::iNumElements))))
+		return E_FAIL;
+
+
+	/* For.Prototype_Component_Shader_VtxNorTex */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Shader_VtxNorTex"),
+		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxNorTex.hlsl"), VTXNORTEX::Elements, VTXNORTEX::iNumElements))))
 		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("충돌체 원형을 로딩 중 입니다."));
@@ -137,6 +169,16 @@ HRESULT CLoader::Loading_For_Test()
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Map"), CTestMap::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_Terrain */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Terrain"),
+		CTerrain::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_Terrain */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Construction"),
+		CConstruction::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));

@@ -31,6 +31,7 @@ HRESULT CConstruction::Initialize(void* pArg)
 		m_wstrModelName = gameobjDesc->wstrModelName;
 		m_iShaderPassNum = gameobjDesc->iShaderPass;
 		m_iObjectType = gameobjDesc->iObjType;
+		m_iObjectPropertyType = gameobjDesc->iObjPropertyType;
 	}
 
 	if (FAILED(Add_Components(pArg)))
@@ -89,8 +90,9 @@ int CConstruction::Get_ObjPlaceDesc(OBJECTPLACE_DESC* objplaceDesc)
 	string strName = m_pGameInstance->WstringToString(m_wstrModelName);
 	strcpy(objplaceDesc->strModelCom, strName.c_str());
 
-	objplaceDesc->iShaderNum = m_iShaderPassNum;
+	objplaceDesc->iShaderPassNum = m_iShaderPassNum;
 	objplaceDesc->iObjType = m_iObjectType;
+	objplaceDesc->iObjPropertyType = m_iObjectPropertyType;
 
 	/* layer는 return 형식으로 */
 	return m_iLayerNum;
@@ -104,6 +106,26 @@ CConstruction::MAPOBJ_DESC CConstruction::Get_MapObjDesc_For_AddList()
 	mapobjDesc.iShaderPass = m_iShaderPassNum;
 
 	return mapobjDesc;
+}
+
+void CConstruction::Edit_GameObject_Information(CConstruction::MAPOBJ_DESC mapDesc)
+{
+	m_iLayerNum = mapDesc.iLayer;
+	m_iShaderPassNum = mapDesc.iShaderPass;
+	m_iObjectType = mapDesc.iObjType;
+	m_iObjectPropertyType = mapDesc.iObjPropertyType;
+}
+
+CConstruction::MAPOBJ_DESC CConstruction::Send_GameObject_Information()
+{
+	MAPOBJ_DESC		mapObjDesc;
+
+	mapObjDesc.iLayer = m_iLayerNum;
+	mapObjDesc.iShaderPass = m_iShaderPassNum;
+	mapObjDesc.iObjType = m_iObjectType;
+	mapObjDesc.iObjPropertyType = m_iObjectPropertyType;
+
+	return mapObjDesc;
 }
 
 HRESULT CConstruction::Add_Components(void* pArg)

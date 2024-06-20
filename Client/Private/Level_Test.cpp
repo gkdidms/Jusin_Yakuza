@@ -6,11 +6,16 @@
 
 #include "DebugCamera.h"
 
+#include "Client_MapDataMgr.h"
+
+
 CLevel_Test::CLevel_Test(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLevel{ pDevice, pContext },
-	m_pSystemManager{ CSystemManager::GetInstance() }
+	m_pSystemManager{ CSystemManager::GetInstance() },
+	m_pClientMapDataMgr{ CClient_MapDataMgr::GetInstance() }
 {
 	Safe_AddRef(m_pSystemManager);
+	Safe_AddRef(m_pClientMapDataMgr);
 }
 
 HRESULT CLevel_Test::Initialize()
@@ -25,9 +30,12 @@ HRESULT CLevel_Test::Initialize()
 
 	if (FAILED(Ready_Player(TEXT("Layer_Player"))))
 		return E_FAIL;
-
+	
 	//if (FAILED(Ready_Map(TEXT("Layer_Map"))))
 	//	return E_FAIL;
+
+	/* Å¬¶ó ÆÄ½Ì */
+	m_pClientMapDataMgr->Set_MapObj_In_Client(0, LEVEL_TEST);
 
 	return S_OK;
 }
@@ -79,16 +87,16 @@ HRESULT CLevel_Test::Ready_Player(const wstring& strLayerTag)
 	CGameObject::GAMEOBJECT_DESC Desc{};
 	Desc.fSpeedPecSec = 5.f;
 
-	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_Player"), strLayerTag, &Desc)))
-		return E_FAIL;
+	//if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_Player"), strLayerTag, &Desc)))
+	//	return E_FAIL;
 
 	return S_OK;
 }
 
 HRESULT CLevel_Test::Ready_Map(const wstring& strLayerTag)
 {
-	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_Map"), strLayerTag)))
-		return E_FAIL;
+	//if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_Map"), strLayerTag)))
+	//	return E_FAIL;
 
 	return S_OK;
 }
@@ -111,4 +119,5 @@ void CLevel_Test::Free()
 	__super::Free();
 
 	Safe_Release(m_pSystemManager);
+	Safe_Release(m_pClientMapDataMgr);
 }

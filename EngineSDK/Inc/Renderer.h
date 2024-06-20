@@ -31,7 +31,11 @@ private:
     void Render_LightAcc();
     void Render_CopyBackBuffer();
     void Render_DeferredResult();
-    
+    void Render_Luminance();
+    void Render_HDR();
+    void Render_CopyLuminance(); 
+    void Render_AvgLuminance();
+
     void Render_NonLight();
     void Render_Blender();
     void Render_UI();
@@ -61,6 +65,7 @@ private:
     _float4x4 m_ProjMatrix;
 
     ID3D11DepthStencilView* m_pLightDepthStencilView = { nullptr };
+    //ID3D11DepthStencilView* m_pLuminanceStencilView = { nullptr };
 
 public:
     static CRenderer* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

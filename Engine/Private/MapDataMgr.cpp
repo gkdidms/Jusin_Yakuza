@@ -1,8 +1,9 @@
 #include "../Public/MapDataMgr.h"
 #include "GameInstance.h"
 #include "GameObject.h"
-#include <fstream>
+
 #include <string.h>
+#include "Engine_Defines.h"
 
 IMPLEMENT_SINGLETON(CMapDataMgr)
 
@@ -58,10 +59,10 @@ void CMapDataMgr::Render()
 {
 }
 
-HRESULT CMapDataMgr::Save_Bin_Map_Data(MAP_TOTALINFORM_DESC* mapObjData)
+HRESULT CMapDataMgr::Export_Bin_Map_Data(MAP_TOTALINFORM_DESC* mapObjData)
 {
 	char fullPath[MAX_PATH];
-	strcpy_s(fullPath, "../../../Client/Bin/Data/MapData/");
+	strcpy_s(fullPath, "../../Client/Bin/DataFiles/MapData/");
 
 	strcat_s(fullPath, "MapObject_Data");
 
@@ -69,37 +70,46 @@ HRESULT CMapDataMgr::Save_Bin_Map_Data(MAP_TOTALINFORM_DESC* mapObjData)
 	_itoa_s(mapObjData->iLevelIndex, cLevel, 10);
 	strcat_s(fullPath, "_");
 	strcat_s(fullPath, cLevel);
-	strcat_s(fullPath, ".bin");
+	strcat_s(fullPath, ".dat");
 
-	std::ofstream file;
-	file.open(fullPath, ios::out | ios::binary);
+	fs::path path(fullPath);
 
-	if (!file)
+	//if (!exists(path))
+	//	fs::create_(path);
+
+	ofstream out(fullPath, ios::binary);
+	//file.open(fullPath, ios::out | ios::binary);
+
+	if (!out) {
 		return E_FAIL;
+	}
+
 
 	int		iLevel = mapObjData->iLevelIndex;
-	file.write((char*)&iLevel, sizeof(int));
+	out.write((char*)&iLevel, sizeof(int));
 
 	XMFLOAT2 planeSize = mapObjData->vPlaneSize;
-	file.write((char*)&planeSize, sizeof(XMFLOAT2));
+	out.write((char*)&planeSize, sizeof(XMFLOAT2));
 
 
 	int iNumMapObj = mapObjData->iNumMapObj;
-	file.write((char*)&iNumMapObj, sizeof(int));
+	out.write((char*)&iNumMapObj, sizeof(int));
 
 	for (int i = 0; i < mapObjData->iNumMapObj; i++)
 	{
 		OBJECTPLACE_DESC PObjPlaceDesc = mapObjData->pMapObjDesc[i];
-		file.write((char*)&PObjPlaceDesc, sizeof(OBJECTPLACE_DESC));
+		out.write((char*)&PObjPlaceDesc, sizeof(OBJECTPLACE_DESC));
 	}
+
+	out.close();
 
 	return S_OK;
 }
 
-HRESULT CMapDataMgr::Load_Bin_Map_Data_OnClient(MAP_TOTALINFORM_DESC* mapObjData, int iLevel)
+HRESULT CMapDataMgr::Import_Bin_Map_Data_OnClient(MAP_TOTALINFORM_DESC* mapObjData, int iLevel)
 {
 	char fullPath[MAX_PATH];
-	strcpy_s(fullPath, "../../Client/Bin/Data/MapData/");
+	strcpy_s(fullPath, "../../Client/Bin/DataFiles/MapData/");
 
 	strcat_s(fullPath, "MapObject_Data");
 	strcat_s(fullPath, "_");
@@ -107,36 +117,38 @@ HRESULT CMapDataMgr::Load_Bin_Map_Data_OnClient(MAP_TOTALINFORM_DESC* mapObjData
 	char cLevel[2] = "";
 	_itoa_s(iLevel, cLevel, 10);
 	strcat_s(fullPath, cLevel);
-	strcat_s(fullPath, ".bin");
+	strcat_s(fullPath, ".dat");
 
-	std::ifstream file;
-	file.open(fullPath, ios::in | ios::binary);
+	ifstream in(fullPath, ios::binary);
 
-	if (!file)
+	if (!in.is_open()) {
+		MSG_BOX("파일 개방 실패");
 		return E_FAIL;
+	}
 
-	file.read((char*)&mapObjData->iLevelIndex, sizeof(int));
 
-	file.read((char*)&mapObjData->vPlaneSize, sizeof(XMFLOAT2));
+	in.read((char*)&mapObjData->iLevelIndex, sizeof(int));
 
-	file.read((char*)&mapObjData->iNumMapObj, sizeof(int));
+	in.read((char*)&mapObjData->vPlaneSize, sizeof(XMFLOAT2));
+
+	in.read((char*)&mapObjData->iNumMapObj, sizeof(int));
 
 	mapObjData->pMapObjDesc = new OBJECTPLACE_DESC[mapObjData->iNumMapObj];
 
 	for (int i = 0; i < mapObjData->iNumMapObj; i++)
 	{
-		OBJECTPLACE_DESC* pMapDesc = &mapObjData->pMapObjDesc[i];
-		file.read((char*)pMapDesc, sizeof(OBJECTPLACE_DESC));
+		in.read((char*)&mapObjData->pMapObjDesc[i], sizeof(OBJECTPLACE_DESC));
 	}
 
+	in.close();
 
 	return S_OK;
 }
 
-HRESULT CMapDataMgr::Load_Bin_Map_Data_OnTool(MAP_TOTALINFORM_DESC* mapObjData, char* fileName)
+HRESULT CMapDataMgr::Import_Bin_Map_Data_OnTool(MAP_TOTALINFORM_DESC* mapObjData, char* fileName)
 {
 	char fullPath[MAX_PATH];
-	strcpy_s(fullPath, "../../../Client/Bin/Data/MapData/");
+	strcpy_s(fullPath, "../../Client/Bin/DataFiles/MapData/");
 
 	strcat_s(fullPath, fileName);
 
@@ -146,74 +158,32 @@ HRESULT CMapDataMgr::Load_Bin_Map_Data_OnTool(MAP_TOTALINFORM_DESC* mapObjData, 
 	strcat_s(fullPath, ".bin");*/
 
 
-	std::ifstream file;
-	file.open(fullPath, ios::in | ios::binary);
+	ifstream in(fullPath, ios::binary);
 
-	if (!file)
+	if (!in.is_open()) {
+		MSG_BOX("파일 개방 실패");
 		return E_FAIL;
+	}
 
-	file.read((char*)&mapObjData->iLevelIndex, sizeof(int));
 
-	file.read((char*)&mapObjData->vPlaneSize, sizeof(XMFLOAT2));
+	in.read((char*)&mapObjData->iLevelIndex, sizeof(int));
 
-	file.read((char*)&mapObjData->iNumMapObj, sizeof(int));
+	in.read((char*)&mapObjData->vPlaneSize, sizeof(XMFLOAT2));
+
+	in.read((char*)&mapObjData->iNumMapObj, sizeof(int));
 
 	mapObjData->pMapObjDesc = new OBJECTPLACE_DESC[mapObjData->iNumMapObj];
 
 	for (int i = 0; i < mapObjData->iNumMapObj; i++)
 	{
-		file.read((char*)&mapObjData->pMapObjDesc[i], sizeof(OBJECTPLACE_DESC));
+		in.read((char*)&mapObjData->pMapObjDesc[i], sizeof(OBJECTPLACE_DESC));
 	}
 
+	in.close();
 
 	return S_OK;
 }
 
-HRESULT CMapDataMgr::Set_MapObj_In_Tool(int iLevel)
-{
-	return E_NOTIMPL;
-}
-
-HRESULT CMapDataMgr::Set_MapObj_In_Client(int iLevel)
-{
-
-	MAP_TOTALINFORM_DESC* mapData = new MAP_TOTALINFORM_DESC;
-	ZeroMemory(mapData, sizeof(MAP_TOTALINFORM_DESC));
-
-	_bool	bSuccess = true;
-
-	/*if (FAILED(Load_Bin_Map_Data(mapData, iLevel)))
-	{
-		bSuccess = false;
-		Safe_Delete(mapData);
-	}*/
-
-	if (bSuccess)
-	{
-		//for (int i = 0; i < mapData->iNumMapObj; i++)
-		//{
-		//	OBJECTPLACE_DESC data = mapData->pMapObjDesc[i];
-
-		//	string strLayerTag(data.strLayer);
-		//	wstring tLayerTag;
-		//	tLayerTag.assign(strLayerTag.begin(), strLayerTag.end());
-
-		//	string strObjectTag(data.strPrototype);
-		//	wstring tObjectTag;
-		//	tObjectTag.assign(strObjectTag.begin(), strObjectTag.end());
-
-		//	CGameObject::GAMEOBJECT_DESC	pObjectDesc;
-		//	//pObjectDesc.vStartPos = XMLoadFloat3(&data.vPosition);
-
-		//	if (FAILED(CGameInstance::GetInstance()->Add_CloneObject(3, tLayerTag, tObjectTag, &pObjectDesc)))
-		//	{
-		//		return E_FAIL;
-		//	}
-		//}
-	}
-
-	return S_OK;
-}
 
 
 void CMapDataMgr::Free()
