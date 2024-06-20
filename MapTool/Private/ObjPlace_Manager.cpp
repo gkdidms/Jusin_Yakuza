@@ -242,6 +242,7 @@ void CObjPlace_Manager::Show_Installed_GameObjectsList()
 		ImGui::EndListBox();
 	}
 
+
 	static int iLevel;
 	ImGui::InputInt(u8"레벨 : ", &iLevel);
 
@@ -254,6 +255,7 @@ void CObjPlace_Manager::Show_Installed_GameObjectsList()
 	if (ImGui::Button(u8"맵 정보 로드"))
 	{
 		Load_GameObject(layer_current_idx);
+
 	}
 
 
@@ -328,6 +330,7 @@ void CObjPlace_Manager::Show_Installed_GameObjectsList()
 		ImGui::NewLine();
 		ImGui::NewLine();
 			
+		/* 데이터 추가할때마다 수정 */
 		if (0 < m_GameObjects.size())
 		{
 			/* 다른 오브젝트 클릭시 */
@@ -412,9 +415,7 @@ void CObjPlace_Manager::Show_Installed_GameObjectsList()
 				m_tCurrentObjectDesc.iShaderPass = 3;
 			}
 
-			//mapobjDesc.iLayer = LayerType;
-			//mapobjDesc.iObjType = objectType;
-			//mapobjDesc.iShaderPass = shaderType;
+
 
 			if (ImGui::Button(u8"맵 오브젝트 수정"))
 			{
@@ -503,12 +504,12 @@ void CObjPlace_Manager::Edit_Installed_GameObject(int iNumObject)
 {
 	/* 기즈모 열기*/
 	Edit_GameObject_Transform(iNumObject);
-
-
 }
 
 void CObjPlace_Manager::Edit_GameObject_Transform(int iNumObject)
 {
+	/* 회전, 위치 등 transform 관련 수정*/
+
 	multimap<wstring,CGameObject*>::iterator iter = m_GameObjects.begin();
 
 	if (0 != iNumObject)
@@ -585,6 +586,7 @@ bool CObjPlace_Manager::Add_CloneObject_Imgui(MAPTOOL_OBJPLACE_DESC objDesc, _ui
 		mapDesc.wstrModelName = wstr;
 		mapDesc.iShaderPass = objDesc.iShaderPass;
 		mapDesc.iObjType = objDesc.iObjType;
+		mapDesc.iObjPropertyType = objDesc.iObjPropertyType;
 
 		m_GameObjects.emplace(wstr, CGameInstance::GetInstance()->Clone_Object(TEXT("Prototype_GameObject_Construction"), &mapDesc));
 
@@ -660,7 +662,7 @@ void CObjPlace_Manager::Set_Map_Object()
 	ImGui::RadioButton(m_Layers[1], &LayerType, 1);
 
 
-
+	/* 데이터 추가할때마다 수정 */
 	ImGui::NewLine();
 
 	ImGui::Text(u8"오브젝트유형");
@@ -670,8 +672,6 @@ void CObjPlace_Manager::Set_Map_Object()
 	ImGui::RadioButton(u8"아이템", &objectType, OBJECT_TYPE::MONSTER);
 	ImGui::RadioButton(u8"몬스터", &objectType, OBJECT_TYPE::OBJ_END);
 
-
-	ImGui::NewLine();
 	ImGui::NewLine();
 
 	ImGui::Text(u8"쉐이더");
@@ -683,6 +683,14 @@ void CObjPlace_Manager::Set_Map_Object()
 	ImGui::RadioButton("raddvio c", &shaderType, 2);
 	ImGui::NewLine();
 	ImGui::RadioButton("raddio d", &shaderType, 3);
+
+	ImGui::NewLine();
+
+	ImGui::Text(u8"오브젝트속성유형");
+	static int objectPropertyType = 0;
+	ImGui::RadioButton(u8"회복", &objectPropertyType, 0);
+	ImGui::RadioButton(u8"부수기", &objectPropertyType, 1);
+
 
 
 	ImGui::NewLine();
@@ -697,10 +705,12 @@ void CObjPlace_Manager::Set_Map_Object()
 		m_bShowExample = false;
 	}
 
+	/* 데이터 추가할때마다 수정 */
 	MAPTOOL_OBJPLACE_DESC			objDesc;
 	objDesc.iLayer = LayerType;
 	objDesc.iObjType = objectType;
 	objDesc.iShaderPass = shaderType;
+	objDesc.iObjPropertyType = objectPropertyType;
 
 	Show_ExampleModel(objDesc, folder_current_idx, object_current_idx);
 
@@ -792,12 +802,14 @@ void CObjPlace_Manager::Show_ExampleModel(MAPTOOL_OBJPLACE_DESC objDesc, _uint i
 			startPos.r[3].m128_f32[2] = vTargetPos.m128_f32[2];
 			startPos.r[3].m128_f32[3] = vTargetPos.m128_f32[3];
 
+			/* 데이터 추가할때마다 수정 */
 			CConstruction::MAPOBJ_DESC		mapDesc;
 			mapDesc.vStartPos = startPos;
-			mapDesc.iLayer = objDesc.iLayer;
 			mapDesc.wstrModelName = wstr;
+			mapDesc.iLayer = objDesc.iLayer;
 			mapDesc.iShaderPass = objDesc.iShaderPass;
 			mapDesc.iObjType = objDesc.iObjType;
+			mapDesc.iObjPropertyType = objDesc.iObjPropertyType;
 
 
 			m_pShownObject = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Construction"), &mapDesc);
@@ -818,9 +830,12 @@ void CObjPlace_Manager::Show_ExampleModel(MAPTOOL_OBJPLACE_DESC objDesc, _uint i
 				CConstruction::MAPOBJ_DESC		mapDesc;
 				mapDesc = dynamic_cast<CConstruction*>(m_pShownObject)->Get_MapObjDesc_For_AddList();
 
+				/* 데이터 추가할때마다 수정 */
 				mapDesc.iLayer = objDesc.iLayer;
 				mapDesc.iObjType = objDesc.iObjType;
 				mapDesc.iShaderPass = objDesc.iShaderPass;
+				mapDesc.iObjPropertyType = objDesc.iObjPropertyType;
+
 
 				m_GameObjects.emplace(wstr, CGameInstance::GetInstance()->Clone_Object(TEXT("Prototype_GameObject_Construction"), &mapDesc));
 
