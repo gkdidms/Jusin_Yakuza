@@ -3,7 +3,6 @@
 #include "GameInstance.h"
 #include "Component.h"
 
-_int CGameObject::g_iObjectIndex = { 0 };
 
 CGameObject::CGameObject(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: m_pDevice {pDevice},

@@ -6,17 +6,11 @@ namespace Engine
 	/* map 저장관련 */
 	struct ENGINE_DLL OBJECTPLACE_DESC
 	{
-		int				iObjID;
-
-		bool			bInteract; /* 상호작용 가능한 물체인지 아닌지 */
 		XMFLOAT4X4		vTransform;
 		char			strLayer[MAX_PATH];
-		char			strPrototype[MAX_PATH];
-
-		char			strModelCom[MAX_PATH];
-		char			strShaderCom[MAX_PATH];
+		char			strModelCom[MAX_PATH]; /* model 이름 */
 		int				iShaderNum; /* shader pass 번호 */
-
+		int				iObjType; /* 상호작용 관련 */
 	};
 
 
