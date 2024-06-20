@@ -170,39 +170,37 @@ PS_OUT PS_MAIN_DEFERRED_RESULT(PS_IN In)
     return Out;
 }
 
-struct PS_OUT_LUMINANCE_SUM
+PS_OUT PS_MAIN_LUMINANCE_SUM(PS_IN In) // »÷µµ ∏  ±∏«œ±‚ (√≥¿Ω Ω√¿€)
 {
-    float vLuminance : SV_TARGET0;
-};
-
-PS_OUT_LUMINANCE_SUM PS_MAIN_LUMINANCE_SUM(PS_IN In) // »÷µµ ∏  ±∏«œ±‚ (√≥¿Ω Ω√¿€)
-{
-    PS_OUT_LUMINANCE_SUM Out = (PS_OUT_LUMINANCE_SUM) 0;
+    PS_OUT Out = (PS_OUT) 0;
     
     vector vDiffuse = g_BackBufferTexture.Sample(LinearSampler, In.vTexcoord);
     
-    float fLogSum = { 0.f };
-    fLogSum += log(dot(vDiffuse.xyz, Luminance) + fDelta);
-    
-    Out.vLuminance = fLogSum;
+    Out.vColor = log(dot(vDiffuse.xyz, Luminance) + fDelta);
     
     return Out;
 }
 
-PS_OUT_LUMINANCE_SUM PS_MAIN_LUMINANCE_SUM_LOOP(PS_IN In) // »÷µµ ∏  ±∏«œ±‚ (∑Á«¡)
+PS_OUT PS_MAIN_LUMINANCE_SUM_LOOP(PS_IN In) // »÷µµ ∏  ±∏«œ±‚ (∑Á«¡)
 {
-    PS_OUT_LUMINANCE_SUM Out = (PS_OUT_LUMINANCE_SUM) 0;
+    PS_OUT Out = (PS_OUT) 0;
     
-    float vDiffuse = g_LuminanceTexture.Sample(LinearSampler, In.vTexcoord);
+    vector vDiffuse = g_LuminanceTexture.Sample(LinearSampler, In.vTexcoord);
+    float vColor = log(dot(vDiffuse.xyz, Luminance) + 0.0001f);
+  
+    Out.vColor = vColor;
+        
+    return Out;
+}
+
+PS_OUT PS_MAIN_LUMINANCE_SUM_FINAL(PS_IN In) // »÷µµ ∏  ±∏«œ±‚ (∑Á«¡)
+{
+    PS_OUT Out = (PS_OUT) 0;
     
-    float fLogSum = { 0.f };
-    fLogSum += log(dot(vDiffuse, Luminance) + fDelta);
-    
-    if (g_isFinished)
-        Out.vLuminance = exp(fLogSum / 16.f);
-    else
-        Out.vLuminance = fLogSum;
-    
+    vector vDiffuse = g_LuminanceTexture.Sample(LinearSampler, In.vTexcoord);
+    float vColor = log(dot(vDiffuse.xyz, Luminance) + 0.0001f);
+  
+    Out.vColor = exp(vColor / 16.f);
     return Out;
 }
 
@@ -210,8 +208,8 @@ PS_OUT PS_MAIN_LUMINANCE(PS_IN In) // «ˆ¿Á «¡∑π¿”¿« ∆Ú±’ »÷µµ ∏  ±∏«œ±‚ (√÷¡æ)
 {
     PS_OUT Out = (PS_OUT) 0;
     
-    float fNew = g_LuminanceTexture.Sample(LinearSampler, In.vTexcoord);
-    float fOld = g_CopyLuminanceTexture.Sample(LinearSampler, In.vTexcoord);
+    vector fNew = g_LuminanceTexture.Sample(LinearSampler, In.vTexcoord);
+    vector fOld = g_CopyLuminanceTexture.Sample(LinearSampler, In.vTexcoord);
     
     //«ˆ¿Á ∆Ú±’ »÷µµ
     float fAvgLum = fOld + (fNew - fOld) * (1.f - pow(0.98f, 0.5f));
@@ -221,13 +219,13 @@ PS_OUT PS_MAIN_LUMINANCE(PS_IN In) // «ˆ¿Á «¡∑π¿”¿« ∆Ú±’ »÷µµ ∏  ±∏«œ±‚ (√÷¡æ)
     return Out;
 }
 
-PS_OUT_LUMINANCE_SUM PS_MAIN_COPYLUMINANCE(PS_IN In) // ¿Ã¿¸ »÷µµ∏¶ ¿˙¿Â
+PS_OUT PS_MAIN_COPYLUMINANCE(PS_IN In) // ¿Ã¿¸ »÷µµ∏¶ ¿˙¿Â
 {
-    PS_OUT_LUMINANCE_SUM Out = (PS_OUT_LUMINANCE_SUM) 0;
+    PS_OUT Out = (PS_OUT) 0;
     
-    float fNew = g_LuminanceTexture.Sample(LinearSampler, In.vTexcoord);
+    vector fNew = g_LuminanceTexture.Sample(LinearSampler, In.vTexcoord);
     
-    Out.vLuminance = fNew;
+    Out.vColor = fNew;
     
     return Out;
 }
@@ -243,7 +241,7 @@ PS_OUT PS_MAIN_TONEMAPPING(PS_IN In) // ∞®∏∂ ƒ›∑∫º« & ACES ≈Ê∏≈«Œ
     vDiffuse = saturate(vDiffuse * (A * vDiffuse + B)) / (vDiffuse * (C * vDiffuse + D) + E);
 
     
-    Out.vColor = vector(pow(vDiffuse, 1.f / 2.2f), 1.f);
+    Out.vColor = vector(pow(vDiffuse, 1.f / 2.2f), 1.f) * vLuminance * 2.f;
     
     return Out;
 }
@@ -460,6 +458,19 @@ technique11 DefaultTechnique
         HullShader = NULL;
         DomainShader = NULL;
         PixelShader = compile ps_5_0 PS_MAIN_TONEMAPPING();
+    }
+
+    pass Luminance_1x1 // 10
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_None_Test_None_Write, 0);
+        SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        HullShader = NULL;
+        DomainShader = NULL;
+        PixelShader = compile ps_5_0 PS_MAIN_LUMINANCE_SUM_FINAL();
     }
  
 }
