@@ -38,7 +38,7 @@ public:
 	HRESULT Bind_BoneMatrices(class CShader* pShader, const _char* pConstantName, _uint iNumMeshIndex);
 
 	void Play_Animation(_float fTimeDelta);
-	void Set_AnimationIndex(const ANIMATION_DESC& AnimDesc, _double ChangeInterval = 0.2);
+	void Set_AnimationIndex(const ANIMATION_DESC& AnimDesc, _double ChangeInterval = 0.0);
 	void Reset_Animation(const ANIMATION_DESC& AnimDesc);
 
 public:
@@ -47,6 +47,7 @@ public:
 	_uint Get_NumBones() { return m_iNumBones; }
 
 	_bool Get_AnimFinished() const;
+	_bool Get_AnimChanged() const;
 
 	const vector<class CAnimation*>& Get_Animations() {
 		return m_Animations;
