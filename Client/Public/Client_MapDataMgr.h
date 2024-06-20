@@ -6,12 +6,21 @@
 
 BEGIN(Engine)
 class CGameInstance;
+class CMapDataMgr;
 END
 
 BEGIN(Client)
 class CClient_MapDataMgr final : public CBase
 {
 	DECLARE_SINGLETON(CClient_MapDataMgr)
+
+public:
+	enum OBJECT_TYPE {
+		CONSTRUCTION, /* 그냥 건축물 */
+		ITEM,
+		MONSTER,
+		OBJ_END
+	};
 
 private:
 	CClient_MapDataMgr();
@@ -28,6 +37,7 @@ private:
 
 private:
 	class CGameInstance*					m_pGameInstance = { nullptr };
+	class CMapDataMgr*						m_pMapDataMgr = { nullptr };
 
 
 private:

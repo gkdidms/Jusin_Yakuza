@@ -33,9 +33,6 @@ public:
 	HRESULT			Import_Bin_Map_Data_OnClient(MAP_TOTALINFORM_DESC* mapObjData, int iLevel);
 	HRESULT			Import_Bin_Map_Data_OnTool(MAP_TOTALINFORM_DESC* mapObjData, char* fileName);
 
-	HRESULT			Set_MapObj_In_Client(int iLevel);
-	HRESULT			Set_MapObj_In_Tool(int iLevel);
-
 private:
 	ID3D11Device* m_pDevice = { nullptr };
 	ID3D11DeviceContext* m_pContext = { nullptr };

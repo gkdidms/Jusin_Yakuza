@@ -10,6 +10,8 @@ BEGIN(Engine)
 class CGameInstance;
 END
 
+/* 데이터 추가할때마다 수정 */
+
 class CObjPlace_Manager final : public CBase
 {
 	DECLARE_SINGLETON(CObjPlace_Manager);
@@ -29,6 +31,7 @@ public:
 		int				iLayer;
 		int				iShaderPass;
 		int				iObjType;
+		int				iObjPropertyType;
 	}MAPTOOL_OBJPLACE_DESC;
 
 

@@ -4,28 +4,32 @@
 #include "Terrain.h"
 #include "GameObject.h"
 #include "Construction.h"
-
+#include "MapDataMgr.h"
 
 IMPLEMENT_SINGLETON(CClient_MapDataMgr)
 
 
 CClient_MapDataMgr::CClient_MapDataMgr()
     : m_pGameInstance{ CGameInstance::GetInstance() }
+    , m_pMapDataMgr{ CMapDataMgr::GetInstance() }
 {
     Safe_AddRef(m_pGameInstance);
+    Safe_AddRef(m_pMapDataMgr);
 }
 
 
 
 HRESULT CClient_MapDataMgr::Set_MapObj_In_Client(int iMapLoadingNum, int iStageLevel)
 {
-    CMapDataMgr::GetInstance()->Import_Bin_Map_Data_OnClient(&m_MapTotalInform, iMapLoadingNum);
+    Safe_Delete_Array(m_MapTotalInform.pMapObjDesc);
+
+    m_pMapDataMgr->Import_Bin_Map_Data_OnClient(&m_MapTotalInform, iMapLoadingNum);
 
     /* terrain ¼öÁ¤*/
     Set_Terrain_Size(iStageLevel);
     Set_GameObject_In_Client(iStageLevel);
 
-    Safe_Delete_Array(m_MapTotalInform.pMapObjDesc);
+    //Safe_Delete_Array(m_MapTotalInform.pMapObjDesc);
 
     return S_OK;
 }
@@ -61,7 +65,7 @@ HRESULT CClient_MapDataMgr::Set_Terrain_Size(int iStageLevel)
     CTerrain::TERRAIN_DESC terrainDesc;
     terrainDesc.vPlaneSize = m_MapTotalInform.vPlaneSize;
 
-    if (FAILED(CGameInstance::GetInstance()->Add_GameObject(iStageLevel, TEXT("Prototype_GameObject_Terrain"), TEXT("Layer_BackGround"), &terrainDesc)))
+    if (FAILED(m_pGameInstance->Add_GameObject(iStageLevel, TEXT("Prototype_GameObject_Terrain"), TEXT("Layer_BackGround"), &terrainDesc)))
     {
         return E_FAIL;
     }
@@ -86,8 +90,10 @@ int CClient_MapDataMgr::Find_Layers_Index(char* strLayer)
 
 void CClient_MapDataMgr::Free()
 {
-    if (nullptr != m_MapTotalInform.pMapObjDesc)
-        Safe_Delete_Array(m_MapTotalInform.pMapObjDesc);
+    Safe_Delete_Array(m_MapTotalInform.pMapObjDesc);
 
+    m_Layers.clear();
+
+    Safe_Release(m_pMapDataMgr);
     Safe_Release(m_pGameInstance);
 }

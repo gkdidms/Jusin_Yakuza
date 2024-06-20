@@ -28,6 +28,7 @@ public:
 		wstring			wstrModelName;
 		int				iShaderPass;
 		int				iObjType;
+		int				iObjPropertyType;
 	}MAPOBJ_DESC;
 
 
@@ -64,6 +65,7 @@ private:
 	wstring					m_wstrModelName;
 	int						m_iShaderPassNum = { 0 };
 	int						m_iObjectType = { 0 };
+	int						m_iObjectPropertyType = { 0 };
 
 public:
 	HRESULT Add_Components(void* pArg);
