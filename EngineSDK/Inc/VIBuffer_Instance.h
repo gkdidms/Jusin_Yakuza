@@ -11,8 +11,10 @@ public:
         _uint iNumInstance;
         _float3 vOffsetPos;
         _float3 vPivotPos;
-        _float3 vRange;
-        _float2 vSize;
+        _float3 vRange;//정육면체 생성
+        _float fRadius;//구 생성
+        _float2 vSize;//최초 사이즈(기본)(지오메트리)
+        _float2 vRectSize;//각 파티클 사이즈
         _float2 vSpeed;
         _float2 vLifeTime;
         _float2 vPower;
@@ -32,7 +34,7 @@ public:
 protected:
     ID3D11Buffer* m_pVBInstance = { nullptr };
     D3D11_BUFFER_DESC	m_InstanceBufferDesc = {};
-    INSTANCE_DESC m_InstanceDesc = {};
+    INSTANCE_DESC* m_InstanceDesc = {};
 
     _uint m_iNumInstance = { 0 };
     _uint m_iIndexCountPerInstance = { 0 };
