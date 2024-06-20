@@ -184,51 +184,6 @@ HRESULT CMapDataMgr::Import_Bin_Map_Data_OnTool(MAP_TOTALINFORM_DESC* mapObjData
 	return S_OK;
 }
 
-HRESULT CMapDataMgr::Set_MapObj_In_Tool(int iLevel)
-{
-	return E_NOTIMPL;
-}
-
-HRESULT CMapDataMgr::Set_MapObj_In_Client(int iLevel)
-{
-
-	MAP_TOTALINFORM_DESC* mapData = new MAP_TOTALINFORM_DESC;
-	ZeroMemory(mapData, sizeof(MAP_TOTALINFORM_DESC));
-
-	_bool	bSuccess = true;
-
-	/*if (FAILED(Load_Bin_Map_Data(mapData, iLevel)))
-	{
-		bSuccess = false;
-		Safe_Delete(mapData);
-	}*/
-
-	if (bSuccess)
-	{
-		//for (int i = 0; i < mapData->iNumMapObj; i++)
-		//{
-		//	OBJECTPLACE_DESC data = mapData->pMapObjDesc[i];
-
-		//	string strLayerTag(data.strLayer);
-		//	wstring tLayerTag;
-		//	tLayerTag.assign(strLayerTag.begin(), strLayerTag.end());
-
-		//	string strObjectTag(data.strPrototype);
-		//	wstring tObjectTag;
-		//	tObjectTag.assign(strObjectTag.begin(), strObjectTag.end());
-
-		//	CGameObject::GAMEOBJECT_DESC	pObjectDesc;
-		//	//pObjectDesc.vStartPos = XMLoadFloat3(&data.vPosition);
-
-		//	if (FAILED(CGameInstance::GetInstance()->Add_CloneObject(3, tLayerTag, tObjectTag, &pObjectDesc)))
-		//	{
-		//		return E_FAIL;
-		//	}
-		//}
-	}
-
-	return S_OK;
-}
 
 
 void CMapDataMgr::Free()
