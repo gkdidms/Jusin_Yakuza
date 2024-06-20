@@ -243,7 +243,7 @@ PS_OUT PS_MAIN_TONEMAPPING(PS_IN In) // 감마 콜렉션 & ACES 톤매핑
     vDiffuse = saturate(vDiffuse * (A * vDiffuse + B)) / (vDiffuse * (C * vDiffuse + D) + E);
 
     
-    Out.vColor = vector(pow(vDiffuse, 1.f / 2.2f) * vDiffuse, 1.f);
+    Out.vColor = vector(pow(vDiffuse, 1.f / 2.2f), 1.f);
     
     return Out;
 }

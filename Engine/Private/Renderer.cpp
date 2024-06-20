@@ -195,14 +195,11 @@ HRESULT CRenderer::Initialize()
 	//	return E_FAIL;
 	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_Shade"), 150.f, 50.f, 100.f, 100.f)))
 		return E_FAIL;
-	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_BackBuffer"), 150.f, 250.f, 100.f, 100.f)))
+	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_BackBuffer"), 150.f, 150.f, 100.f, 100.f)))
 		return E_FAIL;
-	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_ToneMapping"), 250.f, 50.f, 100.f, 100.f)))
+	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_Luminance"), 250.f, 50.f, 100.f, 100.f)))
 		return E_FAIL;
-
-	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_Luminance"), 350.f, 50.f, 100.f, 100.f)))
-		return E_FAIL;
-	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_128x128"), 350.f, 150.f, 100.f, 100.f)))
+	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_ToneMapping"), 250.f, 150.f, 100.f, 100.f)))
 		return E_FAIL;
 #endif // _DEBUG
 
@@ -704,8 +701,6 @@ void CRenderer::Render_Debug()
 	if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_HDR"), m_pShader, m_pVIBuffer)))
 		return;
 	if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_Luminance"), m_pShader, m_pVIBuffer)))
-		return;
-	if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_128"), m_pShader, m_pVIBuffer)))
 		return;
 }
 #endif // DEBUG
