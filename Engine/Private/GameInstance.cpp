@@ -361,6 +361,11 @@ _float CGameInstance::Get_Z()
 	return m_pPicking->Get_Z();
 }
 
+float CGameInstance::FindObjID(_bool* isSuccess)
+{
+	return m_pPicking->FindObjID(isSuccess);
+}
+
 HRESULT CGameInstance::Add_RenderTarget(const wstring& strRenderTargetTag, _uint iSizeX, _uint iSizeY, DXGI_FORMAT ePixelFormat, const _float4& vClearColor)
 {
 	return m_pRenderTarget_Manager->Add_RenderTarget(strRenderTargetTag, iSizeX, iSizeY, ePixelFormat, vClearColor);

@@ -18,13 +18,14 @@ protected:
 
 public:
     class CTransform* m_pTransformCom = { nullptr };
-    static _int g_iObjectIndex;
 
 public:
     _bool isDead() { return m_isDead; }
 
 public:
-    void Set_Dead() { m_isDead = true; }
+    void        Set_Dead() { m_isDead = true; }
+    float       Get_ObjID() { return m_fObjID; }
+    void        Set_ObjID(float fID) { m_fObjID = fID; }
 
 public:
     virtual HRESULT Initialize_Prototype();
@@ -49,6 +50,8 @@ protected:
 
 protected:
     _bool m_isDead = { false };
+
+    float   m_fObjID = { 0 };
 
 protected:
     HRESULT Add_Component(_uint iLevelIndex, const wstring strComponentPrototypeTag, const wstring strComponentTag, class CComponent** pComponent, void* pArg = nullptr);

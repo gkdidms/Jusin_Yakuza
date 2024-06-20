@@ -89,6 +89,35 @@ _vector CPicking::Picking(_bool* isSuccess)
 	return vMousePos;
 }
 
+float CPicking::FindObjID(_bool* isSuccess)
+{
+	*isSuccess = true;
+
+	POINT		ptMouse = { };
+
+	GetCursorPos(&ptMouse);
+
+	ScreenToClient(m_hWnd, &ptMouse);
+
+	if (ptMouse.x < 0)
+		ptMouse.x = 0;
+	if (ptMouse.x >= m_iWinSizeX)
+		ptMouse.x = m_iWinSizeX;
+	if (ptMouse.y < 0)
+		ptMouse.y = 0;
+	if (ptMouse.y >= m_iWinSizeY)
+		ptMouse.y = m_iWinSizeY;
+
+	_vector		vMousePos = XMVectorZero();
+
+	/* 투영공간상의 좌표다. = 로컬위치 * 월드행렬 * 뷰행렬 * 투영행렬 / w */
+	vMousePos = XMVectorSetX(vMousePos, ptMouse.x / (m_iWinSizeX * 0.5f) - 1.f);
+	vMousePos = XMVectorSetY(vMousePos, ptMouse.y / -(m_iWinSizeY * 0.5f) + 1.f);
+
+
+	return Find_ProjID(ptMouse.x - 1, ptMouse.y - 1);
+}
+
 _float CPicking::Compute_ProjZ(_float fX, _float fY)
 {
 	if (fX < 0.f)
@@ -117,6 +146,36 @@ _float CPicking::Compute_ProjZ(_float fX, _float fY)
 		return -1.f;
 
 	return vResult.x;
+}
+
+_float CPicking::Find_ProjID(_float fX, _float fY)
+{
+	if (fX < 0.f)
+		fX = 0.f;
+	if (fY < 0.f)
+		fY = 0.f;
+
+	m_pGameInstance->Copy_Resource(TEXT("Target_Depth"), m_pTexture2D);
+
+	if (nullptr == m_pTexture2D)
+		return 0.f;
+
+	D3D11_MAPPED_SUBRESOURCE		SubResources{};
+
+	m_pContext->Map(m_pTexture2D, 0, D3D11_MAP_READ, 0, &SubResources);
+
+	/* 내 마우스 좌표가 존재하는 위치에 있는 텍스쳐 픽셀의 인덱스 */
+	_uint		iIndex = fY * (m_iWinSizeX)+fX;
+
+	_float4		vResult = ((_float4*)SubResources.pData)[iIndex];
+
+	m_pContext->Unmap(m_pTexture2D, 0);
+
+
+	if (0.0f == vResult.w)
+		return -1.f;
+
+	return vResult.z;
 }
 
 CPicking* CPicking::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, HWND hWnd)

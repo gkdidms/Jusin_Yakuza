@@ -13,9 +13,21 @@ BEGIN(Client)
 class CConstruction final : public CGameObject
 {
 public:
+	enum OBJECT_TYPE {
+		INTERACT_OBJ,
+		NONINTERACT_OBJ,
+		MONSTER,
+		OBJ_END
+	};
+
+public:
 	typedef struct tMapObjDesc : public CGameObject::GAMEOBJECT_DESC
 	{
 		XMMATRIX		vStartPos;
+		int				iLayer;
+		wstring			wstrModelName;
+		int				iShaderPass;
+		int				iObjType;
 	}MAPOBJ_DESC;
 
 
@@ -35,12 +47,22 @@ public:
 public:
 	CTransform* Get_Transform() { return m_pTransformCom; }
 
+public:
+	int						Get_ObjPlaceDesc(OBJECTPLACE_DESC*	objplaceDesc);
+	MAPOBJ_DESC					Get_MapObjDesc_For_AddList();
+
 private:
 	CShader* m_pShaderCom = { nullptr };
 	CModel* m_pModelCom = { nullptr };
 
+private:
+	int						m_iLayerNum;
+	wstring					m_wstrModelName;
+	int						m_iShaderPassNum = { 0 };
+	int						m_iObjectType = { 0 };
+
 public:
-	HRESULT Add_Components();
+	HRESULT Add_Components(void* pArg);
 	HRESULT Bind_ShaderResources();
 
 public:
