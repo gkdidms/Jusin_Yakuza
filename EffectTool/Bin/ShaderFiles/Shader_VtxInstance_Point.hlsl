@@ -9,18 +9,23 @@ vector g_vCamPosition;
 
 struct VS_IN
 {
+    //m_pVB
     float3 vPosition : POSITION;
     float2 vPSize : PSIZE;
+    //m_pInstance
     row_major matrix TransformMatrix : WORLD;
-    float2 vLifeTime : COLOR0;
+    float4 vDir : COLOR0;
+    float2 vLifeTime : COLOR1;
+    float vRectSize : COLOR2;
 };
 
 struct VS_OUT
 {
     float3 vPosition : POSITION;
     float2 vPSize : TEXCOORD0;
-
-    float2 vLifeTime : COLOR0;
+    float4 vDir : COLOR0;
+    float2 vLifeTime : COLOR1;
+    float vRectSize : COLOR2;
 };
 
 /* 정점 셰이더 :  /* 
@@ -39,8 +44,9 @@ VS_OUT VS_MAIN(VS_IN In)
 
     Out.vPosition = mul(vPosition, g_WorldMatrix).xyz;
     Out.vPSize = In.vPSize;
-
+    Out.vDir = In.vDir;
     Out.vLifeTime = In.vLifeTime;
+    Out.vRectSize = In.vRectSize;
 
     return Out;
 }
@@ -50,7 +56,9 @@ struct GS_IN
     float3 vPosition : POSITION;
     float2 vPSize : TEXCOORD0;
 
-    float2 vLifeTime : COLOR0;
+    float4 vDir : COLOR0;
+    float2 vLifeTime : COLOR1;
+    float vRectSize : COLOR2;
 };
 
 struct GS_OUT
@@ -110,6 +118,53 @@ void GS_MAIN(point GS_IN In[1], inout TriangleStream<GS_OUT> Triangles)
 }
 
 
+[maxvertexcount(6)]
+void GS_CUSTOM(point GS_IN In[1], inout TriangleStream<GS_OUT> Triangles)
+{
+    GS_OUT Out[4];
+
+    for (int i = 0; i < 4; ++i)
+    {
+        Out[i].vPosition = float4(0.f, 0.f, 0.f, 0.f);
+        Out[i].vTexcoord = float2(0.f, 0.f);
+        Out[i].vLifeTime = float2(0.f, 0.f);
+    }
+	
+    float3 vDirection = In[0].vDir.xyz;
+    
+    vector vLook = g_vCamPosition - vector(In[0].vPosition, 1.f);
+    float3 vRight = normalize(cross(vDirection, vLook.xyz)) * In[0].vPSize.x * In[0].vRectSize * 0.5f;
+    float3 vUp = normalize(cross(vLook.xyz, vRight)) * In[0].vPSize.y * In[0].vRectSize* 0.5f;
+
+    float3 vPosition;
+    matrix matVP = mul(g_ViewMatrix, g_ProjMatrix);
+
+    vPosition = In[0].vPosition + vRight + vUp;
+    Out[0].vPosition = mul(float4(vPosition, 1.f), matVP);
+    Out[0].vTexcoord = float2(0.f, 0.f);
+
+    vPosition = In[0].vPosition - vRight + vUp;
+    Out[1].vPosition = mul(float4(vPosition, 1.f), matVP);
+    Out[1].vTexcoord = float2(1.f, 0.f);
+
+    vPosition = In[0].vPosition - vRight - vUp;
+    Out[2].vPosition = mul(float4(vPosition, 1.f), matVP);
+    Out[2].vTexcoord = float2(1.f, 1.f);
+
+    vPosition = In[0].vPosition + vRight - vUp;
+    Out[3].vPosition = mul(float4(vPosition, 1.f), matVP);
+    Out[3].vTexcoord = float2(0.f, 1.f);
+
+    Triangles.Append(Out[0]);
+    Triangles.Append(Out[1]);
+    Triangles.Append(Out[2]);
+    Triangles.RestartStrip();
+
+    Triangles.Append(Out[0]);
+    Triangles.Append(Out[2]);
+    Triangles.Append(Out[3]);
+    Triangles.RestartStrip();
+}
 /* TriangleList인 경우 : 정점 세개를 받아서 w나누기를 각 정점에 대해서 수행한다. */
 /* 뷰포트(윈도우좌표로) 변환. */
 /* 래스터라이즈 : 정점으로 둘러쌓여진 픽셀의 정보를, 정점을 선형보간하여 만든다. -> 픽셀이 만들어졌다!!!!!!!!!!!! */
@@ -131,7 +186,7 @@ PS_OUT PS_MAIN(PS_IN In)
 {
     PS_OUT Out = (PS_OUT) 0;
 
-    Out.vColor = g_Texture.Sample(PointSampler, In.vTexcoord);
+    Out.vColor = g_Texture.Sample(LinearSampler, In.vTexcoord);
     if (Out.vColor.a < 0.1f)
         discard;
 
@@ -148,6 +203,8 @@ PS_OUT PS_MAIN_SPREAD(PS_IN In)
 
     Out.vColor = g_Texture.Sample(LinearSampler, In.vTexcoord);
 
+    
+    
 	/*if (Out.vColor.a < 0.1f || 
 		In.vLifeTime.y > In.vLifeTime.x)
 		discard;*/
@@ -155,9 +212,10 @@ PS_OUT PS_MAIN_SPREAD(PS_IN In)
     if (Out.vColor.a < 0.1f)
         discard;
 
-    Out.vColor.a *= In.vLifeTime.x - In.vLifeTime.y;
+    //Out.vColor.a *= In.vLifeTime.x - In.vLifeTime.y;
 
-    Out.vColor.rgb = float3(1.f, 1.f, 1.f);
+    //Out.vColor.rgb = float3(1.f, 1.f, 1.f);
+   // Out.vColor = float4(1.f, 1.f, 1.f, 1.f);
 
     return Out;
 }
@@ -194,5 +252,20 @@ technique11 DefaultTechnique
         DomainShader = NULL;
         PixelShader = compile ps_5_0 PS_MAIN_SPREAD();
     }
+
+    pass Custom
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		/* 어떤 셰이덜르 국동할지. 셰이더를 몇 버젼으로 컴파일할지. 진입점함수가 무엇이찌. */
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = compile gs_5_0 GS_CUSTOM();
+        HullShader = NULL;
+        DomainShader = NULL;
+        PixelShader = compile ps_5_0 PS_MAIN_SPREAD();
+    }
+
 }
 

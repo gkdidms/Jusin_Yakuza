@@ -4,6 +4,7 @@
 BEGIN(Engine)
 class CShader;
 class CModel;
+class CCollider;
 END
 
 BEGIN(Client)
@@ -24,8 +25,17 @@ public:
     virtual HRESULT Render() override;
 
 private:
-    CShader* m_pShaderCom = { nullptr };
-    CModel* m_pModelCom = { nullptr };
+    void Synchronize_Root();
+
+private:
+    CShader*    m_pShaderCom = { nullptr };
+    CModel*     m_pModelCom = { nullptr };
+    CCollider*  m_pColliderCom = { nullptr };
+
+private:
+    _uint       m_iAnimIndex = { 0 };
+    _float4     m_vPos;
+    _float4x4   m_ModelMatrix;
 
 private:
     virtual HRESULT Add_Componenets() override;

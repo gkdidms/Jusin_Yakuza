@@ -1,13 +1,19 @@
 #include "Particle_Point.h"
 #include "GameInstance.h"
 
+const _uint CParticle_Point::iAction[CParticle_Point::ACTION_END] = {
+    0x00000001, /* 0000 0001 */
+    0x00000002, /* 0000 0010 */
+//    0x00000004, /*0000 0100 */
+
+};
 CParticle_Point::CParticle_Point(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-    :CGameObject{ pDevice , pContext}
+    :CEffect{ pDevice , pContext}
 {
 }
 
 CParticle_Point::CParticle_Point(const CParticle_Point& rhs)
-    :CGameObject{ rhs }
+    :CEffect{ rhs }
 {
 }
 
@@ -18,15 +24,13 @@ HRESULT CParticle_Point::Initialize_Prototype()
 
 HRESULT CParticle_Point::Initialize(void* pArg)
 {
-    if (FAILED(__super::Initialize(nullptr)))
+    if (FAILED(__super::Initialize(pArg)))
         return E_FAIL;
 
     if (nullptr != pArg)
     {
         PARTICLE_POINT_DESC* pDesc = static_cast<PARTICLE_POINT_DESC*>(pArg);
-        m_BufferInstance = pDesc->BufferInstance;
 
-        m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&pDesc ->vStartPos));
 
     }
 
@@ -42,7 +46,16 @@ void CParticle_Point::Priority_Tick(const _float& fTimeDelta)
 
 void CParticle_Point::Tick(const _float& fTimeDelta)
 {
-    m_pVIBufferCom->Spread(fTimeDelta);
+  //  m_iAction = 1;
+    if (m_iAction & iAction[ACTION_SPREAD])
+    {
+         m_pVIBufferCom->Spread(fTimeDelta); 
+    }
+    if(m_iAction & iAction[ACTION_DROP])
+    {
+        m_pVIBufferCom->Drop(fTimeDelta);   
+    }
+
 }
 
 void CParticle_Point::Late_Tick(const _float& fTimeDelta)
@@ -55,9 +68,20 @@ HRESULT CParticle_Point::Render()
     if (FAILED(Bind_ShaderResources()))
         return E_FAIL;
 
-    m_pShaderCom->Begin(1);
+    m_pShaderCom->Begin(2);
 
     m_pVIBufferCom->Render();
+
+    return S_OK;
+}
+
+HRESULT CParticle_Point::Edit_Action(ACTION iEditAction)
+{
+    _uint position = (_uint)iEditAction;    
+
+    _uint mask = 1 << position;
+
+    m_iAction ^= mask;
 
     return S_OK;
 }
