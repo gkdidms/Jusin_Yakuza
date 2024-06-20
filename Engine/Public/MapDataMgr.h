@@ -9,6 +9,14 @@ class ENGINE_DLL CMapDataMgr final : public CBase
 {
 	DECLARE_SINGLETON(CMapDataMgr);
 
+public:
+	enum OBJECT_TYPE {
+		CONSTRUCTION, /* 그냥 건축물 */
+		NONINTERACT_OBJ,
+		MONSTER,
+		OBJ_END
+	};
+
 private:
 	CMapDataMgr();
 	virtual ~CMapDataMgr() = default;
@@ -21,9 +29,9 @@ public:
 	void			Render();
 
 public:
-	HRESULT			Save_Bin_Map_Data(MAP_TOTALINFORM_DESC* mapObjData);
-	HRESULT			Load_Bin_Map_Data_OnClient(MAP_TOTALINFORM_DESC* mapObjData, int iLevel);
-	HRESULT			Load_Bin_Map_Data_OnTool(MAP_TOTALINFORM_DESC* mapObjData, char* fileName);
+	HRESULT			Export_Bin_Map_Data(MAP_TOTALINFORM_DESC* mapObjData);
+	HRESULT			Import_Bin_Map_Data_OnClient(MAP_TOTALINFORM_DESC* mapObjData, int iLevel);
+	HRESULT			Import_Bin_Map_Data_OnTool(MAP_TOTALINFORM_DESC* mapObjData, char* fileName);
 
 	HRESULT			Set_MapObj_In_Client(int iLevel);
 	HRESULT			Set_MapObj_In_Tool(int iLevel);

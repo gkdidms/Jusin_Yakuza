@@ -6,6 +6,9 @@
 
 #include "DebugCamera.h"
 
+#include "Client_MapDataMgr.h"
+
+
 CLevel_Test::CLevel_Test(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLevel{ pDevice, pContext },
 	m_pSystemManager{ CSystemManager::GetInstance() }
@@ -28,6 +31,9 @@ HRESULT CLevel_Test::Initialize()
 
 	//if (FAILED(Ready_Map(TEXT("Layer_Map"))))
 	//	return E_FAIL;
+
+	/* Å¬¶ó ÆÄ½Ì */
+	CClient_MapDataMgr::GetInstance()->Set_MapObj_In_Client(0, LEVEL_TEST);
 
 	return S_OK;
 }
