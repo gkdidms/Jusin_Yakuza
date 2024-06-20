@@ -66,8 +66,6 @@ HRESULT CLevel_Edit::Ready_Object(const wstring& strLayerTag)
 {
 	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_EDIT, TEXT("Prototype_GameObject_AnimModel"), strLayerTag)))
 		return E_FAIL;
-	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_EDIT, TEXT("Prototype_GameObject_BoneSphere"), strLayerTag)))
-		return E_FAIL;
 
 	return S_OK;
 }
