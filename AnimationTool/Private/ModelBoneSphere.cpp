@@ -18,11 +18,17 @@ HRESULT CModelBoneSphere::Initialize_Prototype()
 
 HRESULT CModelBoneSphere::Initialize(void* pArg)
 {
-    GAMEOBJECT_DESC pDesc{};
-    pDesc.fRotatePecSec = XMConvertToRadians(90.f);
+    //GAMEOBJECT_DESC pDesc{};
+    //pDesc.fRotatePecSec = XMConvertToRadians(90.f);
 
-    if (FAILED(CGameObject::Initialize(&pDesc)))
+    if (FAILED(CGameObject::Initialize(pArg)))
         return E_FAIL;
+
+    BoneSphereDesc* pDesc = static_cast<BoneSphereDesc*>(pArg);
+
+    m_pBoneWorldMatrix = pDesc->pBoneWorldMatrix;
+    m_pModelWorldMatrix = pDesc->pModelWorldMatrix;
+    
 
     if (FAILED(Add_Components()))
         return E_FAIL;
@@ -36,15 +42,17 @@ void CModelBoneSphere::Priority_Tick(const _float& fTimeDelta)
 
 void CModelBoneSphere::Tick(const _float& fTimeDelta)
 {
-    if (m_pGameInstance->GetKeyState(DIK_UP) == TAP)
-        m_iTextureIndex = 1;
-    if (m_pGameInstance->GetKeyState(DIK_DOWN) == TAP)
-        m_iTextureIndex = 0;
+    m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(m_pBoneWorldMatrix) * XMLoadFloat4x4(m_pModelWorldMatrix));
+
+    if(0 == m_iTextureIndex)
+        m_pTransformCom->Set_Scale(1, 1, 1);
+    else
+        m_pTransformCom->Set_Scale(3, 3, 3);
 }
 
 void CModelBoneSphere::Late_Tick(const _float& fTimeDelta)
 {
-    m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONLIGHT, this);
+    m_pGameInstance->Add_Renderer(CRenderer::RENDER_UI, this);
 }
 
 HRESULT CModelBoneSphere::Render()
@@ -70,9 +78,7 @@ HRESULT CModelBoneSphere::Add_Components()
         reinterpret_cast<CComponent**>(&m_pShaderCom))))
         return E_FAIL;
 
-    wstring strComponentTag = TEXT("Prototype_Component_Model_Bone_Sphere");
-
-    if (FAILED(__super::Add_Component(LEVEL_EDIT, strComponentTag, TEXT("Com_Model"),
+    if (FAILED(__super::Add_Component(LEVEL_EDIT, TEXT("Prototype_Component_Model_Bone_Sphere"), TEXT("Com_Model"),
         reinterpret_cast<CComponent**>(&m_pModelCom))))
         return E_FAIL;
 
@@ -93,6 +99,14 @@ HRESULT CModelBoneSphere::Bind_ShaderResources()
         return E_FAIL;
 
     return S_OK;
+}
+
+void CModelBoneSphere::Change_TexutreIndex(_bool isOn)
+{
+    if (isOn)
+        m_iTextureIndex = 1;
+    else
+        m_iTextureIndex = 0;
 }
 
 CModelBoneSphere* CModelBoneSphere::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -125,6 +139,7 @@ void CModelBoneSphere::Free()
 {
     __super::Free();
 
+    Safe_Release(m_pTextureCom);
     Safe_Release(m_pShaderCom);
     Safe_Release(m_pModelCom);
 }

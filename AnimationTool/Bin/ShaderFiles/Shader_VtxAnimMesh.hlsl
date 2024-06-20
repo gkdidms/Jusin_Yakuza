@@ -22,7 +22,7 @@ struct VS_OUT
     float4 vNormal : NORMAL;
     float2 vTexcoord : TEXCOORD0;
     float4 vProjPos : TEXCOORD1;
-        float4 vLocalPos : TEXCOORD2;
+    float4 vLocalPos : TEXCOORD2;
     float4 vTangent : TANGENT;
     float4 vBinormal : BINORMAL;
 };
@@ -91,6 +91,19 @@ technique11 DefaultTechnique
     pass DefaultPass
     {
         SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        HullShader = NULL;
+        DomainShader = NULL;
+        PixelShader = compile ps_5_0 PS_MAIN();
+    }
+
+    pass WireframePass
+    {
+        SetRasterizerState(RS_Wireframe_Cull_NON_CW);
         SetDepthStencilState(DSS_Default, 0);
         SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 

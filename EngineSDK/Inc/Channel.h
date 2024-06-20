@@ -15,11 +15,16 @@ public:
 	HRESULT Initialize(const BAiNodeAnim* pAIChannel, const vector<class CBone*>& Bones);
 	void	Update_TransformationMatrix(_double CurrentPosition, const vector<class CBone*>& Bones, _uint* pCurrentKeyFrameIndex);
 	void	Update_TransformationMatrix(_double CurrentPosition, const vector<class CBone*>& Bones, CChannel* pSrcChannel, _uint PrevKeyFrameIndex, _double ChangeInterval, _bool isFinished);
+	void	Update_KeyFrame(_double CurrentPosition, _uint* pCurrentKeyFrameIndex);
 
 public:
 	const _uint& Get_BoneIndex() const { return m_iBoneIndex; }
 	const KEYFRAME& Get_First_KeyFrame() const { return m_KeyFrames.front(); }
 	const KEYFRAME& Get_Last_KeyFrame() const { return m_KeyFrames.back(); }
+
+	const _char* Get_Name() const {
+		return m_szName;
+	}
 
 private:
 	_char				m_szName[MAX_PATH] = { "" };		// ª¿ ¿Ã∏ß
