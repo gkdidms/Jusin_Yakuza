@@ -85,6 +85,12 @@
     <ClCompile Include="..\..\Imgui\imGuizmo\ImSequencer.cpp">
       <Filter>96.ImGui</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\Construction.cpp">
+      <Filter>02.GameObjects\03.Construction</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Client_MapDataMgr.cpp">
+      <Filter>94.Client_MapDataMgr</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\MainApp.h">
@@ -201,6 +207,12 @@
     <ClInclude Include="..\..\Imgui\imGuizmo\ImZoomSlider.h">
       <Filter>96.ImGui</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Construction.h">
+      <Filter>02.GameObjects\03.Construction</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Client_MapDataMgr.h">
+      <Filter>94.Client_MapDataMgr</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -277,6 +289,12 @@
     <Filter Include="96.ImGui">
       <UniqueIdentifier>{7b5a03ce-7679-4274-97a9-075ee883f3f1}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\03.Construction">
+      <UniqueIdentifier>{95e29977-56e8-4ee9-b1c8-71236bd9d68b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="94.Client_MapDataMgr">
+      <UniqueIdentifier>{843f8ce4-c1d6-4160-8deb-14b1689d5a35}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Client.rc">
@@ -291,6 +309,9 @@
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxAnimMesh.hlsl">
+      <Filter>97.ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxNorTex.hlsl">
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
   </ItemGroup>

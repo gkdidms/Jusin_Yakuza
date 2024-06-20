@@ -15,6 +15,14 @@ class CObjPlace_Manager final : public CBase
 	DECLARE_SINGLETON(CObjPlace_Manager);
 
 public:
+	enum OBJECT_TYPE {
+		CONSTRUCTION, /* 그냥 건축물 */
+		ITEM,
+		MONSTER,
+		OBJ_END
+	};
+
+public:
 	typedef struct tObjPlaceDesc
 	{
 		/* 오브젝트 설치할 때 고르는 항목 저장 */
@@ -39,7 +47,11 @@ public:
 	void					Show_Installed_GameObjectsList(); /* imgui에 보여줄 아이들 */
 	void					Save_GameObject(int iLevel); /* 현재 map에 놓여진 object 저장*/
 	void					Load_GameObject(int iNum);
-	void					Edit_GameObject(int iNumObject);
+	void					Edit_Installed_GameObject(int iNumObject);
+	void					Edit_GameObject_Transform(int iNumObject);
+	void					Get_CurrentGameObject_Desc(CConstruction::MAPOBJ_DESC*	mapDesc, int iNumObject);
+	void					Edit_CurrentGameObject_Desc(CConstruction::MAPOBJ_DESC* mapDesc, int iNumObject);
+	void					Update_CurrentGameObject_Desc();
 
 	/* object 배치 */
 	bool					Add_CloneObject_Imgui(MAPTOOL_OBJPLACE_DESC objDesc, _uint iFolderNum, _uint iObjectIndex);
@@ -65,11 +77,13 @@ private:
 
 
 private:
-	int					Click_To_Select_Object();
+	int						Click_To_Select_Object();
+
+	int						Find_Layers_Index(char*	strLayer);
 
 
 private:
-	vector<wstring>								m_Layers = { TEXT("Layer_GameObjects"),TEXT("Layer_Monster") };
+	vector<const char*>							m_Layers = { "Layer_GameObjects", "Layer_Monster" };
 	/* object이름, cgameobject */
 	multimap<wstring, CGameObject*>				m_GameObjects; /* 추가한 오브젝트 저장 */
 	vector<char*>								m_ObjectNames_Map0; /* 추가한 오브젝트 이름들 */
@@ -94,6 +108,10 @@ private:
 
 	/* 마우스 Lbtn 누르면 한번만 추가되게 */
 	_bool										m_bInstallOneTime = { false };
+
+	CConstruction::MAPOBJ_DESC					m_tCurrentObjectDesc;
+
+	int											m_iCurrentObjectIndex = { -1 };
 
 
 public:
