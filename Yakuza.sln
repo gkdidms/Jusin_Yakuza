@@ -11,9 +11,6 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "Engine", "Engine\Default\Engine.vcxproj", "{4430E868-DAD8-4CFC-8C41-C29873619124}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "EffectTool", "EffectTool\Default\EffectTool.vcxproj", "{0D09E8AF-3E74-4337-9A54-C466A4C02F00}"
-	ProjectSection(ProjectDependencies) = postProject
-		{4430E868-DAD8-4CFC-8C41-C29873619124} = {4430E868-DAD8-4CFC-8C41-C29873619124}
-	EndProjectSection
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "AnimationTool", "AnimationTool\Default\AnimationTool.vcxproj", "{1F62F11D-616A-4D4B-96F1-66DC1E000A8E}"
 EndProject

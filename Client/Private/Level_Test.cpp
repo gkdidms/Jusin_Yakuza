@@ -82,7 +82,10 @@ HRESULT CLevel_Test::Ready_Camera(const wstring& strLayerTag)
 
 HRESULT CLevel_Test::Ready_Player(const wstring& strLayerTag)
 {
-	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_Player"), strLayerTag)))
+	CGameObject::GAMEOBJECT_DESC Desc{};
+	Desc.fSpeedPecSec = 5.f;
+
+	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_Player"), strLayerTag, &Desc)))
 		return E_FAIL;
 
 	return S_OK;

@@ -2,6 +2,17 @@
 #include "Client_Defines.h"
 #include "Base.h"
 
+#pragma region "Imgui"
+#include "imgui.h"
+#include "imgui_internal.h"
+#include "imgui_impl_dx11.h"
+#include "imgui_impl_win32.h"
+#include "ImGuizmo.h"
+#pragma endregion
+
+
+#define V2 ImVec2
+
 BEGIN(Engine)
 class CGameInstance;
 END
@@ -23,6 +34,12 @@ private:
 	void ModelList();
 	void AnimListWindow();
 	void BoneListWindow();
+	void FXWindow(ImGuiIO& io);
+	void KeyFrameWindow();
+	void FX(ImDrawList* d, V2 a, V2 b, V2 s, ImVec4 m, float t);
+
+	void DrawTimeline(ImDrawList* d, const vector<float>& data);
+	void DrawChannels();
 
 private:
 	void LoadAnimationCharacterList();
@@ -36,17 +53,19 @@ private:
 
 private:
 	_bool m_isAnimListWindow = { false };
-	int m_iModelSelectedIndex = { 0 };
-	int m_iBoneSelectedIndex = { 0 };
+	int			m_iAnimIndex = { 0 };
+	int			m_iModelSelectedIndex = { 0 };
+	int			m_iBoneSelectedIndex = { 0 };
+	int			m_iChannelSelectedIndex = { 0 };
 
 	vector<string> m_ModelNameList;
 	vector<string> m_AnimNameList;
 	vector<string> m_BoneNameList;
+	vector<string> m_ChannelNameList;
 
 private:
 	_float				m_fTimeDelta = { 0.f };
 
-	int					m_iAnimIndex = { 0 };
 
 private:
 	float				m_ModelPosition[3] = { 0.f };
