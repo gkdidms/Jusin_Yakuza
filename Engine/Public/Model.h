@@ -57,6 +57,7 @@ public:
 	}
 
 	const _float4x4* Get_BoneCombinedTransformationMatrix(const _char* pBoneName) const;
+	const _float4x4* Get_BoneTransformationMatrix(const _char* pBoneName) const;
 
 private:
 	HRESULT Export_Model(string& pBinFilePath, const _char* pModelFilePath);

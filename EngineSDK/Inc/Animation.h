@@ -4,7 +4,7 @@
 
 BEGIN(Engine)
 
-class CAnimation final : public CBase
+class ENGINE_DLL CAnimation final : public CBase
 {
 private:
 	CAnimation();
@@ -24,12 +24,31 @@ public:
 		return m_szName;
 	}
 
+	const _double* Get_Duration() const {
+		return &m_Duration;
+	}
+
+	const _double* Get_CurrentPosition() const {
+		return &m_CurrentPosition;
+	}
+
+	const vector<class CChannel*>& Get_Channels() const {
+		return m_Channels;
+	}
+
+public:
+	void Set_CurrentPosition(_double Position)	{
+		m_CurrentPosition = Position;
+	}
+
 public:
 	HRESULT Initialize(const aiAnimation* pAnimation, const vector<class CBone*>& Bones);
 	HRESULT Initialize(const BAiAnimation* pAnimation, const vector<class CBone*>& Bones);
 	void Update_TransformationMatrix(_float fTimeDelta, const vector<class CBone*>& Bones, _bool isLoop);
 	void Update_Change_Animation(_float fTimeDelta, const vector<class CBone*>& Bones, CAnimation* pPrevAnimation, _double ChangeInterval);
 	void Reset();
+
+	void Update_KeyframeIndex();
 
 private:
 	_char					m_szName[MAX_PATH] = { "" };

@@ -130,6 +130,16 @@ void CAnimation::Reset()
 	ZeroMemory(&m_CurrentKeyFrameIndices.front(), sizeof(_uint) * m_iNumChannels);
 }
 
+void CAnimation::Update_KeyframeIndex()
+{
+	_uint		iChannelIndex = { 0 };
+
+	for (auto& pChannel : m_Channels)
+	{
+		pChannel->Update_KeyFrame(m_CurrentPosition, &m_CurrentKeyFrameIndices[iChannelIndex++]);	
+	}
+}
+
 CAnimation* CAnimation::Create(const aiAnimation* pAnimation, const vector<CBone*>& Bones)
 {
 	CAnimation* pInstance = new CAnimation();
