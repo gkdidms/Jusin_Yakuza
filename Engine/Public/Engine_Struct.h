@@ -6,17 +6,12 @@ namespace Engine
 	/* map 저장관련 */
 	struct ENGINE_DLL OBJECTPLACE_DESC
 	{
-		int				iObjID;
-
-		bool			bInteract; /* 상호작용 가능한 물체인지 아닌지 */
 		XMFLOAT4X4		vTransform;
 		char			strLayer[MAX_PATH];
-		char			strPrototype[MAX_PATH];
-
-		char			strModelCom[MAX_PATH];
-		char			strShaderCom[MAX_PATH];
-		int				iShaderNum; /* shader pass 번호 */
-
+		char			strModelCom[MAX_PATH]; /* model 이름 */
+		int				iShaderPassNum; /* shader pass 번호 */
+		int				iObjType; /* object 종류 관련 - construction, item 등.. */
+		int				iObjPropertyType; /* object 별 특징 */
 	};
 
 
@@ -216,7 +211,10 @@ namespace Engine
 		XMFLOAT4			vUp;
 		XMFLOAT4			vLook;
 		XMFLOAT4			vTranslation;
+		XMFLOAT4			vDirection;
 		XMFLOAT2			vLifeTime;
+		_float					vRectSize;	
+		
 	}VTXMATRIX;
 
 	typedef struct ENGINE_DLL tVtxInstance_Rect
@@ -227,8 +225,8 @@ namespace Engine
 
 	typedef struct ENGINE_DLL tVtxInstance_Point
 	{
-		static const unsigned int		iNumElements = { 7 };
-		static const D3D11_INPUT_ELEMENT_DESC	Elements[7];
+		static const unsigned int		iNumElements = { 9 };
+		static const D3D11_INPUT_ELEMENT_DESC	Elements[9];
 	}VTXINSTANCE_POINT;
 
 	typedef struct ENGINE_DLL tagIndex32

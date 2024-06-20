@@ -886,6 +886,19 @@ const _float4x4* CModel::Get_BoneCombinedTransformationMatrix(const _char* pBone
 	return (*iter)->Get_CombinedTransformationMatrix();
 }
 
+const _float4x4* CModel::Get_BoneTransformationMatrix(const _char* pBoneName) const
+{
+	auto	iter = find_if(m_Bones.begin(), m_Bones.end(), [&](CBone* pBone)->_bool
+		{
+			return pBone->Compare_Name(pBoneName);
+		});
+
+	if (iter == m_Bones.end())
+		return nullptr;
+
+	return (*iter)->Get_TransformationMatrix();
+}
+
 CModel* CModel::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, MODELTYPE eModelType, const _char* pModelFilePath, _fmatrix PreTransformMatrix, _bool isExported)
  {
 	CModel* pInstance = new CModel(pDevice, pContext);

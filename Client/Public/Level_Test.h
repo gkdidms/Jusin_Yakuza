@@ -17,6 +17,7 @@ public:
 
 private:
     class CSystemManager* m_pSystemManager = { nullptr };
+    class CClient_MapDataMgr* m_pClientMapDataMgr = { nullptr };
 
 private:
     HRESULT Ready_Light();

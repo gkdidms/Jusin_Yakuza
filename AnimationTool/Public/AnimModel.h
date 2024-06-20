@@ -44,17 +44,22 @@ public:
 public:
 	void Change_Model(wstring strModelName);
 	void Change_Animation(_uint iAnimIndex);
+	void Select_Bone(_uint iBoneIndex);
 
 private:
 	HRESULT	Add_Components();
 	HRESULT	Bind_ShaderResources();
+	void	Ready_BoneSphere();
 
 private:
 	CShader* m_pShaderCom = { nullptr };
 	CModel* m_pModelCom = { nullptr };
 
+	vector<class CModelBoneSphere*> m_BoneSpheres;
+
 	wstring m_strModelName;
 	_uint	m_iAnimIndex = { 0 };
+	_uint	m_iPassIndex = { 0 };
 
 public:
 	static CAnimModel* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

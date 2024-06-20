@@ -9,7 +9,8 @@
 #include "ImSequencer.h"
 #include "PipeLine.h"
 
-#include "Construction.h"
+#include "MapDataMgr.h"
+#include "Terrain_Manager.h"
 
 #include <iostream>
 #include <io.h>
@@ -21,6 +22,22 @@ char* StringToCharDIY(string s)
 	return chr;
 }
 
+string TCHARToString(const TCHAR* ptsz)
+{
+	int len = (int)wcslen((wchar_t*)ptsz);
+	char* psz = new char[2 * len + 1];
+	wcstombs(psz, (wchar_t*)ptsz, 2 * len + 1);
+	std::string s = psz;
+	delete[] psz;
+	return s;
+}
+
+char* StringToChar(string s)
+{
+	_char chr[MAX_PATH];
+	strcpy_s(chr, s.c_str());
+	return chr;
+}
 
 
 bool useWindow = false;
@@ -171,145 +188,387 @@ void CObjPlace_Manager::Priority_Tick(const _float& fTimeDelta)
 
 void CObjPlace_Manager::Tick(const _float& fTimeDelta)
 {
+	//for (auto& iter : m_GameObjects)
+	//	iter->Tick(fTimeDelta);
+
 	for (auto& iter : m_GameObjects)
 		iter.second->Tick(fTimeDelta);
+
+	if (nullptr != m_pShownObject)
+	{
+		m_pShownObject->Tick(fTimeDelta);
+	}
 }
 
 void CObjPlace_Manager::Late_Tick(const _float& fTimeDelta)
 {
 	for (auto& iter : m_GameObjects)
 		iter.second->Late_Tick(fTimeDelta);
+
+	if (nullptr != m_pShownObject)
+	{
+		m_pShownObject->Late_Tick(fTimeDelta);
+	}
 }
 
 void CObjPlace_Manager::Render()
 {
 }
 
-void CObjPlace_Manager::Set_GameObjectsList()
+void CObjPlace_Manager::Show_Installed_GameObjectsList()
 {
-	//ImGui::Begin(u8"배치 오브젝트");
+	ImGui::Begin(u8"배치 오브젝트");
 
-	//ImGui::Text(u8" 파일 이름 ");
+	ImGui::Text(u8" 파일 이름 ");
 
-	//if (m_FileNames.empty())
-	//{
-	//	Update_FileName();
-	//}
+	if (m_FileNames.empty())
+	{
+		Update_FileName();
+	}
 
-	//static int layer_current_idx;
-	//if (ImGui::BeginListBox("listbox 0"))
-	//{
-	//	for (int n = 0; n < m_FileNames.size(); n++)
-	//	{
-	//		const bool is_selected = (layer_current_idx == n);
-	//		if (ImGui::Selectable(m_FileNames[n], is_selected))
-	//			layer_current_idx = n;
+	/* 맵 저장 파일 관련 */
+	static int layer_current_idx;
+	if (ImGui::BeginListBox("listbox 0"))
+	{
+		for (int n = 0; n < m_FileNames.size(); n++)
+		{
+			const bool is_selected = (layer_current_idx == n);
+			if (ImGui::Selectable(m_FileNames[n], is_selected))
+				layer_current_idx = n;
 
-	//		if (is_selected)
-	//			ImGui::SetItemDefaultFocus();
-	//	}
-	//	ImGui::EndListBox();
-	//}
-
-	//static int iLevel;
-	//ImGui::InputInt(u8"레벨 : ", &iLevel);
-
-	//if (ImGui::Button(u8"맵오브젝트저장"))
-	//{
-	//	Save_GameObject(iLevel);
-	//	Update_FileName();
-	//}
-
-	//if (ImGui::Button(u8"맵 정보 로드"))
-	//{
-	//	Load_GameObject(layer_current_idx);
-	//}
+			if (is_selected)
+				ImGui::SetItemDefaultFocus();
+		}
+		ImGui::EndListBox();
+	}
 
 
-	//if (0 < m_GameObjects.size())
-	//{
+	static int iLevel;
+	ImGui::InputInt(u8"레벨 : ", &iLevel);
 
-	//	ImGui::Text(u8" 배치 오브젝트 리스트 ");
+	if (ImGui::Button(u8"맵오브젝트저장"))
+	{
+		Save_GameObject(iLevel);
+		Update_FileName();
+	}
 
-	//	list<string>	m_layer;
+	if (ImGui::Button(u8"맵 정보 로드"))
+	{
+		Load_GameObject(layer_current_idx);
 
-	//	static int layer_current_idx;
-	//	if (ImGui::BeginListBox("listbox 1"))
-	//	{
-	//		for (int n = 0; n < m_ObjectNames.size(); n++)
-	//		{
-	//			const bool is_selected = (layer_current_idx == n);
-	//			if (ImGui::Selectable(m_ObjectNames[n], is_selected))
-	//				layer_current_idx = n;
-
-	//			if (is_selected)
-	//				ImGui::SetItemDefaultFocus();
-	//		}
-	//		ImGui::EndListBox();
-	//	}
+	}
 
 
-	//	Edit_GameObject(layer_current_idx);
+	/* 오브젝트 관련 */
+	if (0 < m_GameObjects.size())
+	{
+
+		ImGui::Text(u8" 배치 오브젝트 리스트 ");
+
+		list<string>	m_layer;
+
+		static int object_current_idx;
+		if (ImGui::BeginListBox("listbox 1"))
+		{
+			for (int n = 0; n < m_ObjectNames.size(); n++)
+			{
+				const bool is_selected = (object_current_idx == n);
+				if (ImGui::Selectable(m_ObjectNames[n], is_selected))
+					object_current_idx = n;
+
+				if (is_selected)
+					ImGui::SetItemDefaultFocus();
+			}
+			ImGui::EndListBox();
+		}
+
+		int iLayer = Click_To_Select_Object();
 
 
 
+		
 
-	//	if (ImGui::Button(u8"object 삭제"))
-	//	{
-	//		Delete_Object(layer_current_idx);
-	//		/* list 이름 업데이트 */
-	//		Update_ObjectNameList();
-	//	}
+		if (!m_GameObjects.empty())
+		{
+			Edit_Installed_GameObject(object_current_idx);
+		}
+		else if (m_GameObjects.empty())
+		{
+			/* 초기화 */
+			object_current_idx = 0;
+		}
+
+		if (ImGui::Button(u8"object 삭제"))
+		{
+			Delete_Object(object_current_idx);
+			/* list 이름 업데이트 */
+			Update_ObjectNameList();
+		}
+
+		if (ImGui::Button(u8"오브젝트 전체 삭제"))
+		{
+			for (auto& Pair : m_GameObjects)
+				Safe_Release(Pair.second);
+
+			m_GameObjects.clear();
 
 
-	//	if (ImGui::Button(u8"오브젝트 전체 삭제"))
-	//	{
-	//		for (auto& Pair : m_GameObjects)
-	//			Safe_Release(Pair.second);
+			Update_ObjectNameList();
+		}
 
-	//		m_GameObjects.clear();
+		if (iLayer >= 0)
+		{
+			object_current_idx = iLayer;
+		}
+
+		/* 오류 때문에 layer_current_idx 넘어갈때를 대비해서 만들어놓은 아이들 */
+		if (object_current_idx > m_GameObjects.size() - 1)
+		{
+			object_current_idx = m_GameObjects.size() - 1;
+		}
+
+		ImGui::NewLine();
+		ImGui::NewLine();
+			
+		/* 데이터 추가할때마다 수정 */
+		if (0 < m_GameObjects.size())
+		{
+			/* 다른 오브젝트 클릭시 */
+			if (m_iCurrentObjectIndex != object_current_idx)
+			{
+				m_iCurrentObjectIndex = object_current_idx;
+				Get_CurrentGameObject_Desc(&m_tCurrentObjectDesc, object_current_idx);
+			}
 
 
-	//		Update_ObjectNameList();
-	//	}
+			ImGui::Text(u8"Layer");
+			static int LayerType = m_tCurrentObjectDesc.iLayer;
+			if (ImGui::RadioButton(m_Layers[0], m_tCurrentObjectDesc.iLayer == 0))
+			{
+				LayerType = 0;
+				m_tCurrentObjectDesc.iLayer = 0;
+			}
+
+			if (ImGui::RadioButton(m_Layers[1], m_tCurrentObjectDesc.iLayer == 1))
+			{
+				LayerType = 1;
+				m_tCurrentObjectDesc.iLayer = 1;
+			}
 
 
-	//}
 
-	//ImGui::End();
+			ImGui::NewLine();
+
+			ImGui::Text(u8"오브젝트유형");
+			static int objectType = m_tCurrentObjectDesc.iObjType;
+			if (ImGui::RadioButton(u8"그냥건물", m_tCurrentObjectDesc.iObjType == 0))
+			{
+				objectType = 0;
+				m_tCurrentObjectDesc.iObjType = 0;
+			}
+
+			if (ImGui::RadioButton(u8"상호작용가능", m_tCurrentObjectDesc.iObjType == 1))
+			{
+				objectType = 1;
+				m_tCurrentObjectDesc.iObjType = 1;
+			}
+
+			if (ImGui::RadioButton(u8"아이템", m_tCurrentObjectDesc.iObjType == 2))
+			{
+				objectType = 2;
+				m_tCurrentObjectDesc.iObjType = 2;
+			}
+
+			if (ImGui::RadioButton(u8"몬스터", m_tCurrentObjectDesc.iObjType == 3))
+			{
+				objectType = 3;
+				m_tCurrentObjectDesc.iObjType = 3;
+			}
+
+
+			ImGui::NewLine();
+			ImGui::NewLine();
+
+			ImGui::Text(u8"쉐이더");
+			static int shaderType = m_tCurrentObjectDesc.iShaderPass;
+			if (ImGui::RadioButton(u8"shader1", m_tCurrentObjectDesc.iShaderPass == 0))
+			{
+				shaderType = 0;
+				m_tCurrentObjectDesc.iShaderPass = 0;
+			}
+
+			if (ImGui::RadioButton(u8"shader2", m_tCurrentObjectDesc.iShaderPass == 1))
+			{
+				shaderType = 1;
+				m_tCurrentObjectDesc.iShaderPass = 1;
+			}
+
+			if (ImGui::RadioButton(u8"shader3", m_tCurrentObjectDesc.iShaderPass == 2))
+			{
+				shaderType = 2;
+				m_tCurrentObjectDesc.iShaderPass = 2;
+			}
+
+			if (ImGui::RadioButton(u8"shader4", m_tCurrentObjectDesc.iShaderPass == 3))
+			{
+				shaderType = 3;
+				m_tCurrentObjectDesc.iShaderPass = 3;
+			}
+
+
+
+			if (ImGui::Button(u8"맵 오브젝트 수정"))
+			{
+				Edit_CurrentGameObject_Desc(&m_tCurrentObjectDesc, object_current_idx);
+			}
+		}
+	}
+
+	ImGui::End();
 }
 
 void CObjPlace_Manager::Save_GameObject(int iLevel)
 {
+	/* 맵 저장 정보 저장 */
+	MAP_TOTALINFORM_DESC pMapTotalInform;
+
+	pMapTotalInform.iLevelIndex = iLevel;
+	pMapTotalInform.vPlaneSize = CTerrain_Manager::GetInstance()->Get_LandScale();
+
+	pMapTotalInform.iNumMapObj = m_GameObjects.size();
+	pMapTotalInform.pMapObjDesc = new OBJECTPLACE_DESC[m_GameObjects.size()];
+
+	int iIndex = 0;
+
+	for (auto& iter : m_GameObjects)
+	{
+		int iLayer = dynamic_cast<CConstruction*>(iter.second)->Get_ObjPlaceDesc(&pMapTotalInform.pMapObjDesc[iIndex]);
+
+		/* iLayer -> construction에서 layer에 대한 정보를 읽어와서 이에 대해 저장 */
+		XMStoreFloat4x4(&pMapTotalInform.pMapObjDesc[iIndex].vTransform, iter.second->Get_TransformCom()->Get_WorldMatrix());
+		//string strlayer = m_pGameInstance->WstringToString(m_Layers[iLayer]);
+		strcpy(pMapTotalInform.pMapObjDesc[iIndex].strLayer, m_Layers[iLayer]);
+
+		iIndex++;
+	}
+
+	
+	CMapDataMgr::GetInstance()->Export_Bin_Map_Data(&pMapTotalInform);
+
+	Safe_Delete_Array(pMapTotalInform.pMapObjDesc);
 }
 
 void CObjPlace_Manager::Load_GameObject(int iNum)
 {
+
+	/* 맵 저장 정보 로드 */
+	for (auto& Pair : m_GameObjects)
+		Safe_Release(Pair.second);
+	m_GameObjects.clear();
+
+
+	MAP_TOTALINFORM_DESC		mapTotalInform;
+	CMapDataMgr::GetInstance()->Import_Bin_Map_Data_OnTool(&mapTotalInform, m_FileNames[iNum]);
+
+	CTerrain_Manager::GetInstance()->Change_LandScale(mapTotalInform.vPlaneSize.x, mapTotalInform.vPlaneSize.y);
+
+	for (int i = 0; i < mapTotalInform.iNumMapObj; i++)
+	{
+
+		CConstruction::MAPOBJ_DESC		mapDesc;
+		mapDesc.vStartPos = XMLoadFloat4x4(&mapTotalInform.pMapObjDesc[i].vTransform);
+		int		iLayer = Find_Layers_Index(mapTotalInform.pMapObjDesc[i].strLayer);
+
+		/* Layer 정보 안들어옴 */
+		if (iLayer < 0)
+			return;
+		mapDesc.iLayer = iLayer;
+		mapDesc.wstrModelName = m_pGameInstance->StringToWstring(mapTotalInform.pMapObjDesc[i].strModelCom);
+		mapDesc.iShaderPass = mapTotalInform.pMapObjDesc[i].iShaderPassNum;
+		mapDesc.iObjType = mapTotalInform.pMapObjDesc[i].iObjType;
+
+		m_GameObjects.emplace(mapDesc.wstrModelName, CGameInstance::GetInstance()->Clone_Object(TEXT("Prototype_GameObject_Construction"), &mapDesc));
+	}
+
+	for (int i = 0; i < mapTotalInform.iNumMapObj; i++)
+	{
+		Safe_Delete(mapTotalInform.pMapObjDesc);
+	}
+
+	Update_ObjectNameList();
+
+	Safe_Delete_Array(mapTotalInform.pMapObjDesc);
 }
 
-void CObjPlace_Manager::Edit_GameObject(int iNumObject)
+void CObjPlace_Manager::Edit_Installed_GameObject(int iNumObject)
 {
-	//auto& iter = m_GameObjects.begin();
+	/* 기즈모 열기*/
+	Edit_GameObject_Transform(iNumObject);
+}
 
-	//if (0 != iNumObject)
-	//{
-	//	for (int i = 0; i < iNumObject; i++)
-	//	{
-	//		iter++;
-	//	}
-	//}
+void CObjPlace_Manager::Edit_GameObject_Transform(int iNumObject)
+{
+	/* 회전, 위치 등 transform 관련 수정*/
 
-	//EditTransform((float*)CGameInstance::GetInstance()->Get_Transform_Float4x4(CPipeLine::D3DTS_VIEW),
-	//	(float*)CGameInstance::GetInstance()->Get_Transform_Float4x4(CPipeLine::D3DTS_PROJ),
-	//	(float*)iter->second->Get_TransformCom()->Get_WorldFloat4x4(),
-	//	true);
+	multimap<wstring,CGameObject*>::iterator iter = m_GameObjects.begin();
+
+	if (0 != iNumObject)
+	{
+		for (int i = 0; i < iNumObject; i++)
+		{
+			iter++;
+		}
+	}
+
+	EditTransform((float*)CGameInstance::GetInstance()->Get_Transform_Float4x4(CPipeLine::D3DTS_VIEW),
+		(float*)CGameInstance::GetInstance()->Get_Transform_Float4x4(CPipeLine::D3DTS_PROJ),
+		(float*)iter->second->Get_TransformCom()->Get_WorldFloat4x4(),
+		true);
 
 }
 
-bool CObjPlace_Manager::Add_CloneObject_Imgui(_uint iLayerIndex, _uint iObjectIndex)
+void CObjPlace_Manager::Get_CurrentGameObject_Desc(CConstruction::MAPOBJ_DESC* mapDesc, int iNumObject)
+{
+	multimap<wstring, CGameObject*>::iterator iter = m_GameObjects.begin();
+
+	if (0 != iNumObject)
+	{
+		for (int i = 0; i < iNumObject; i++)
+		{
+			iter++;
+		}
+	}
+
+	*mapDesc = dynamic_cast<CConstruction*>(iter->second)->Send_GameObject_Information();
+}
+
+void CObjPlace_Manager::Edit_CurrentGameObject_Desc(CConstruction::MAPOBJ_DESC* mapDesc, int iNumObject)
+{
+	multimap<wstring, CGameObject*>::iterator iter = m_GameObjects.begin();
+
+	if (0 != iNumObject)
+	{
+		for (int i = 0; i < iNumObject; i++)
+		{
+			iter++;
+		}
+	}
+
+	dynamic_cast<CConstruction*>(iter->second)->Edit_GameObject_Information(*mapDesc);
+}
+
+void CObjPlace_Manager::Update_CurrentGameObject_Desc()
+{
+}
+
+bool CObjPlace_Manager::Add_CloneObject_Imgui(MAPTOOL_OBJPLACE_DESC objDesc, _uint iFolderNum, _uint iObjectIndex)
 {
 	if (CGameInstance::GetInstance()->Get_DIMouseState(DIM_LB))
 	{
+		string strObjName = Find_ModelName(objDesc.iLayer, iObjectIndex);
+		wstring wstr = m_pGameInstance->StringToWstring(strObjName);
+
+
 		_bool		isPick;
 		_vector		vTargetPos = CGameInstance::GetInstance()->Picking(&isPick);
 
@@ -320,39 +579,18 @@ bool CObjPlace_Manager::Add_CloneObject_Imgui(_uint iLayerIndex, _uint iObjectIn
 		startPos.r[3].m128_f32[2] = vTargetPos.m128_f32[2];
 		startPos.r[3].m128_f32[3] = vTargetPos.m128_f32[3];
 
+
 		CConstruction::MAPOBJ_DESC		mapDesc;
 		mapDesc.vStartPos = startPos;
+		mapDesc.iLayer = objDesc.iLayer;
+		mapDesc.wstrModelName = wstr;
+		mapDesc.iShaderPass = objDesc.iShaderPass;
+		mapDesc.iObjType = objDesc.iObjType;
+		mapDesc.iObjPropertyType = objDesc.iObjPropertyType;
 
-		//if (0 == iLayerIndex)
-		//{
-		//	gameDesc.iObjID = iObjectIndex;
-		//	m_GameObjects.emplace(TEXT("Prototype_GameObject_Land"), CGameInstance::GetInstance()->Clone_Object(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Land"), &gameDesc));
-		//}
-		//else if (1 == iLayerIndex)
-		//{
-		//	gameDesc.iObjID = iObjectIndex;
-		//	m_GameObjects.emplace(TEXT("Prototype_GameObject_Palm"), CGameInstance::GetInstance()->Clone_Object(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Palm"), &gameDesc));
-		//}
-		//else if (2 == iLayerIndex)
-		//{
-		//	gameDesc.iObjID = iObjectIndex;
-		//	m_GameObjects.emplace(TEXT("Prototype_GameObject_Cliff"), CGameInstance::GetInstance()->Clone_Object(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_Cliff"), &gameDesc));
-		//}
-		//else if (3 == iLayerIndex)
-		//{
-		//	m_GameObjects.emplace(m_Monsters[iObjectIndex], CGameInstance::GetInstance()->Clone_Object(LEVEL_GAMEPLAY, m_Monsters[iObjectIndex], &gameDesc));
-		//}
-		//else if (4 == iLayerIndex)
-		//{
-		//	m_GameObjects.emplace(m_Objects[iObjectIndex], CGameInstance::GetInstance()->Clone_Object(LEVEL_GAMEPLAY, m_Objects[iObjectIndex], &gameDesc));
-		//}
-		//else if (5 == iLayerIndex)
-		//{
-		//	gameDesc.iObjID = iObjectIndex;
-		//	m_GameObjects.emplace(TEXT("Prototype_GameObject_LandCover"), CGameInstance::GetInstance()->Clone_Object(LEVEL_GAMEPLAY, TEXT("Prototype_GameObject_LandCover"), &gameDesc));
-		//}
+		m_GameObjects.emplace(wstr, CGameInstance::GetInstance()->Clone_Object(TEXT("Prototype_GameObject_Construction"), &mapDesc));
 
-		//Update_ObjectNameList();
+		Update_ObjectNameList();
 
 		return true;
 	}
@@ -365,14 +603,14 @@ void CObjPlace_Manager::Set_Map_Object()
 	ImGui::Text(u8"LayerTag 이름");
 
 	const char* pLayerArray[] = { "Map0", "Map1" };
-	static int layer_current_idx = 0;
+	static int folder_current_idx = 0;
 	if (ImGui::BeginListBox("listbox 1"))
 	{
 		for (int n = 0; n < IM_ARRAYSIZE(pLayerArray); n++)
 		{
-			const bool is_selected = (layer_current_idx == n);
+			const bool is_selected = (folder_current_idx == n);
 			if (ImGui::Selectable(pLayerArray[n], is_selected))
-				layer_current_idx = n;
+				folder_current_idx = n;
 
 			if (is_selected)
 				ImGui::SetItemDefaultFocus();
@@ -382,15 +620,15 @@ void CObjPlace_Manager::Set_Map_Object()
 
 	static int object_current_idx = 0;
 
-	if (0 == layer_current_idx)
+	if (0 == folder_current_idx)
 	{
 		if (ImGui::BeginListBox(u8"모델0-엘베있는1층"))
 		{
 			for (int n = 0; n < m_ObjectNames_Map0.size(); n++)
 			{
-				const bool is_selected = (layer_current_idx == n);
+				const bool is_selected = (object_current_idx == n);
 				if (ImGui::Selectable(m_ObjectNames_Map0[n], is_selected))
-					layer_current_idx = n;
+					object_current_idx = n;
 
 				if (is_selected)
 					ImGui::SetItemDefaultFocus();
@@ -398,16 +636,16 @@ void CObjPlace_Manager::Set_Map_Object()
 			ImGui::EndListBox();
 		}
 	}
-	if (1 == layer_current_idx)
+	if (1 == folder_current_idx)
 	{
 
 		if (ImGui::BeginListBox(u8"모델1-엘베있는2층"))
 		{
 			for (int n = 0; n < m_ObjectNames_Map1.size(); n++)
 			{
-				const bool is_selected = (layer_current_idx == n);
+				const bool is_selected = (object_current_idx == n);
 				if (ImGui::Selectable(m_ObjectNames_Map1[n], is_selected))
-					layer_current_idx = n;
+					object_current_idx = n;
 
 				if (is_selected)
 					ImGui::SetItemDefaultFocus();
@@ -416,29 +654,65 @@ void CObjPlace_Manager::Set_Map_Object()
 		}
 	}
 
+	ImGui::NewLine();
 
+	ImGui::Text(u8"Layer");
+	static int LayerType = 0;
+	ImGui::RadioButton(m_Layers[0], &LayerType, 0);
+	ImGui::RadioButton(m_Layers[1], &LayerType, 1);
+
+
+	/* 데이터 추가할때마다 수정 */
 	ImGui::NewLine();
 
 	ImGui::Text(u8"오브젝트유형");
-	static int a = 0;
-	ImGui::RadioButton(u8"radio a", &a, 0);
-	ImGui::RadioButton(u8"radio b", &a, 1);
-	ImGui::RadioButton(u8"radio c", &a, 2);
-	ImGui::RadioButton(u8"radio d", &a, 3);
-
+	static int objectType = 0;
+	ImGui::RadioButton(u8"그냥건물", &objectType, OBJECT_TYPE::CONSTRUCTION);
+	ImGui::RadioButton(u8"상호작용가능", &objectType, OBJECT_TYPE::ITEM);
+	ImGui::RadioButton(u8"아이템", &objectType, OBJECT_TYPE::MONSTER);
+	ImGui::RadioButton(u8"몬스터", &objectType, OBJECT_TYPE::OBJ_END);
 
 	ImGui::NewLine();
-
 
 	ImGui::Text(u8"쉐이더");
-	static int e = 0;
-	ImGui::RadioButton("radio a", &e, 0); 
-	ImGui::RadioButton("radio b", &e, 1); 
-	ImGui::RadioButton("radio c", &e, 2);
-	ImGui::RadioButton("radio d", &e, 3);
+	static int shaderType = 0;
+	ImGui::RadioButton("radio a", &shaderType, 0); 
+	ImGui::NewLine();
+	ImGui::RadioButton("d b", &shaderType, 1); 
+	ImGui::NewLine();
+	ImGui::RadioButton("raddvio c", &shaderType, 2);
+	ImGui::NewLine();
+	ImGui::RadioButton("raddio d", &shaderType, 3);
+
+	ImGui::NewLine();
+
+	ImGui::Text(u8"오브젝트속성유형");
+	static int objectPropertyType = 0;
+	ImGui::RadioButton(u8"회복", &objectPropertyType, 0);
+	ImGui::RadioButton(u8"부수기", &objectPropertyType, 1);
+
 
 
 	ImGui::NewLine();
+
+	ImGui::Text(u8"T 누르면 모델보임");
+	if (m_pGameInstance->GetKeyState(DIK_T) == HOLD)
+	{
+		m_bShowExample = true;
+	}
+	else if (m_pGameInstance->GetKeyState(DIK_T) == NONE)
+	{
+		m_bShowExample = false;
+	}
+
+	/* 데이터 추가할때마다 수정 */
+	MAPTOOL_OBJPLACE_DESC			objDesc;
+	objDesc.iLayer = LayerType;
+	objDesc.iObjType = objectType;
+	objDesc.iShaderPass = shaderType;
+	objDesc.iObjPropertyType = objectPropertyType;
+
+	Show_ExampleModel(objDesc, folder_current_idx, object_current_idx);
 
 
 	if (ImGui::Button(u8"Object 추가"))
@@ -450,7 +724,7 @@ void CObjPlace_Manager::Set_Map_Object()
 	{
 		bool    bcheckFinished = false;
 
-		bcheckFinished = Add_CloneObject_Imgui(layer_current_idx, object_current_idx);
+		bcheckFinished = Add_CloneObject_Imgui(objDesc, folder_current_idx, object_current_idx);
 
 		if (true == bcheckFinished)
 		{
@@ -505,9 +779,236 @@ string CObjPlace_Manager::modifyString(string& input)
 	return newString;
 }
 
+void CObjPlace_Manager::Show_ExampleModel(MAPTOOL_OBJPLACE_DESC objDesc, _uint iFolderNum, _uint iObjectIndex)
+{
+	if (true == m_bShowExample)
+	{
+		//
+		//m_pShownObject = m_pGameInstance->Clone_Object();
+
+		if (nullptr == m_pShownObject)
+		{
+			string strObjName = Find_ModelName(iFolderNum, iObjectIndex);
+			wstring wstr = m_pGameInstance->StringToWstring(strObjName);
+
+
+			_bool		isPick;
+			_vector		vTargetPos = CGameInstance::GetInstance()->Picking(&isPick);
+
+			_matrix			startPos;
+			startPos = XMMatrixIdentity();
+			startPos.r[3].m128_f32[0] = vTargetPos.m128_f32[0];
+			startPos.r[3].m128_f32[1] = vTargetPos.m128_f32[1];
+			startPos.r[3].m128_f32[2] = vTargetPos.m128_f32[2];
+			startPos.r[3].m128_f32[3] = vTargetPos.m128_f32[3];
+
+			/* 데이터 추가할때마다 수정 */
+			CConstruction::MAPOBJ_DESC		mapDesc;
+			mapDesc.vStartPos = startPos;
+			mapDesc.wstrModelName = wstr;
+			mapDesc.iLayer = objDesc.iLayer;
+			mapDesc.iShaderPass = objDesc.iShaderPass;
+			mapDesc.iObjType = objDesc.iObjType;
+			mapDesc.iObjPropertyType = objDesc.iObjPropertyType;
+
+
+			m_pShownObject = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Construction"), &mapDesc);
+
+			/* 한번만 추가되게 - 같은 위치에 */
+			m_bInstallOneTime = true;
+		}
+		else
+		{
+			if (CGameInstance::GetInstance()->Get_DIMouseState(DIM_LB) && true == m_bInstallOneTime)
+			{
+				/* 막아놓기 */
+				m_bInstallOneTime = false;
+
+				string strObjName = Find_ModelName(objDesc.iLayer, iObjectIndex);
+				wstring wstr = m_pGameInstance->StringToWstring(strObjName);
+
+				CConstruction::MAPOBJ_DESC		mapDesc;
+				mapDesc = dynamic_cast<CConstruction*>(m_pShownObject)->Get_MapObjDesc_For_AddList();
+
+				/* 데이터 추가할때마다 수정 */
+				mapDesc.iLayer = objDesc.iLayer;
+				mapDesc.iObjType = objDesc.iObjType;
+				mapDesc.iShaderPass = objDesc.iShaderPass;
+				mapDesc.iObjPropertyType = objDesc.iObjPropertyType;
+
+
+				m_GameObjects.emplace(wstr, CGameInstance::GetInstance()->Clone_Object(TEXT("Prototype_GameObject_Construction"), &mapDesc));
+
+				Update_ObjectNameList();
+			}
+		}
+	}
+	else
+	{
+		/* 설치 전 무슨 모델인지 마우스에다가 보여주는 형식 */
+		if (nullptr != m_pShownObject)
+		{
+			Safe_Release(m_pShownObject);
+		}
+	}
+
+}
+
+string CObjPlace_Manager::Find_ModelName(_uint iFolderNum, _uint iObjectIndex)
+{
+	string strResult;
+
+	if (0 == iFolderNum)
+	{
+		strResult = m_ObjectNames_Map0[iObjectIndex];
+	}
+	else if (1 == iFolderNum)
+	{
+		strResult = m_ObjectNames_Map1[iObjectIndex];
+	}
+	return strResult;
+}
+
+void CObjPlace_Manager::Delete_Object(int iNumObject)
+{
+
+	vector<char*>::iterator objectnameiter = m_ObjectNames.begin();
+	multimap<wstring, CGameObject*>::iterator iter = m_GameObjects.begin();
+
+	if (0 != iNumObject)
+	{
+		for (int i = 0; i < iNumObject; i++)
+		{
+			iter++;
+			objectnameiter++;
+		}
+	}
+
+	Safe_Release(iter->second);
+	m_GameObjects.erase(iter);
+
+	m_ObjectNames.erase(objectnameiter);
+	Update_ObjectNameList();
+}
+
+void CObjPlace_Manager::Update_ObjectNameList()
+{
+	for (auto& iter : m_ObjectNames)
+		Safe_Delete(iter);
+
+	m_ObjectNames.clear();
+
+	int iIndex = 0;
+
+	if (!m_GameObjects.empty())
+	{
+		for (auto& iter : m_GameObjects)
+		{
+			iter.second->Set_ObjID(iIndex+1);
+
+			const wchar_t* layer = iter.first.c_str();
+			string strlayer = TCHARToString(layer);
+			char* clayertag = new char[MAX_PATH];
+			strcpy(clayertag, StringToChar(strlayer));
+
+			char buff[MAX_PATH];
+			sprintf(buff, "%d", iIndex);
+			strcat(clayertag, buff);
+			m_ObjectNames.push_back(clayertag);
+			iIndex++;
+		}
+	}
+
+
+}
+
+void CObjPlace_Manager::Show_FileName()
+{
+	ImGui::Text(u8" 배치 오브젝트 리스트 ");
+
+	if (m_FileNames.empty())
+	{
+		Update_FileName();
+	}
+
+	if (!m_FileNames.empty())
+	{
+		static int layer_current_idx;
+		if (ImGui::BeginListBox("listbox 1"))
+		{
+			for (int n = 0; n < m_FileNames.size(); n++)
+			{
+				const bool is_selected = (layer_current_idx == n);
+				if (ImGui::Selectable(m_FileNames[n], is_selected))
+					layer_current_idx = n;
+
+				if (is_selected)
+					ImGui::SetItemDefaultFocus();
+			}
+			ImGui::EndListBox();
+		}
+	}
+	
+}
+
+void CObjPlace_Manager::Update_FileName()
+{
+	for (auto& iter : m_FileNames)
+		Safe_Delete(iter);
+
+	m_FileNames.clear();
+	string path = "../../Client/Bin/DataFiles/MapData/*.dat";
+
+	struct _finddata_t fd;
+	intptr_t handle;
+
+	if ((handle = _findfirst(path.c_str(), &fd)) == -1L)
+		return; // 파일없을때
+	do
+	{
+		char* cfilename = new char[MAX_PATH];
+		strcpy(cfilename, StringToChar(fd.name));
+		m_FileNames.push_back(cfilename);
+	} while (_findnext(handle, &fd) == 0);
+	_findclose(handle);
+}
+
+int CObjPlace_Manager::Click_To_Select_Object()
+{
+	_bool		isPick;
+
+	_float		iIndex = 0;
+	iIndex = m_pGameInstance->FindObjID(&isPick);
+
+	if (iIndex > 0)
+	{
+		return (iIndex - 1);
+	}
+
+	return -1;
+}
+
+int CObjPlace_Manager::Find_Layers_Index(char* strLayer)
+{
+	for (int i = 0; i < m_Layers.size(); i++)
+	{
+		if (0 == strcmp(strLayer, m_Layers[i]))
+		{
+			return i;
+		}
+	}
+
+	return -1;
+}
+
 
 void CObjPlace_Manager::Free()
 {
+	if (nullptr != m_pShownObject)
+	{
+		Safe_Release(m_pShownObject);
+	}
+
 	for (auto& Pair : m_GameObjects)
 		Safe_Release(Pair.second);
 	m_GameObjects.clear();
@@ -524,13 +1025,8 @@ void CObjPlace_Manager::Free()
 		Safe_Delete(iter);
 	m_FileNames.clear();
 
-	for (auto& iter : m_Layers)
-		Safe_Delete(iter);
 	m_Layers.clear();
 
-	for (auto& iter : m_ModelNames)
-		Safe_Delete(iter);
-	m_ModelNames.clear();
 
 	Safe_Release(m_pGameInstance);
 }

@@ -115,7 +115,6 @@ HRESULT CLoader::Loading_For_EditLevel()
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Model/NonAnim/Bone_Sphere/Color_%d.png"), 2))))
 		return E_FAIL;
 
-
 	lstrcpy(m_szLoadingText, TEXT("모델를(을) 로딩 중 입니다."));
 	Add_Models_On_Path(TEXT("../Bin/Resources/Model/Anim/"));
 	Add_Models_On_Path(TEXT("../Bin/Resources/Model/NonAnim/"), false);

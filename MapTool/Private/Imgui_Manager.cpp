@@ -145,7 +145,7 @@ void CImgui_Manager::Set_Terrain_IMGUI()
 
 void CImgui_Manager::Show_Object_List()
 {
-    //CObjPlace_Manager::GetInstance()->Set_GameObjectsList();
+    CObjPlace_Manager::GetInstance()->Show_Installed_GameObjectsList();
 }
 
 void CImgui_Manager::Set_NaviTool_IMGUI()

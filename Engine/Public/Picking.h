@@ -18,6 +18,9 @@ public:
     HRESULT Initialize(HWND hWnd);
     _vector Picking(_bool* isSuccess);
 
+    /* 맵툴에서 사용하는 ID 판별 */
+    float   FindObjID(_bool* isSuccess);
+
 private:
     ID3D11Device* m_pDevice = { nullptr };
     ID3D11DeviceContext* m_pContext = { nullptr };
@@ -35,6 +38,9 @@ private:
 
 private:
     _float Compute_ProjZ(_float fX, _float fY);
+
+    /* 맵툴에서 사용하는 ID 판별 */
+    _float Find_ProjID(_float fX, _float fY);
 
 public:
     static CPicking* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, HWND hWnd);

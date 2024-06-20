@@ -1,6 +1,6 @@
 #pragma once
 
-#include "GameObject.h"
+#include "Effect.h" 
 
 #include "Client_Defines.h"
 #include "VIBuffer_Instance_Point.h" 
@@ -13,14 +13,17 @@ END
 
 BEGIN(Client)
 class CParticle_Point final:
-    public CGameObject
+    public CEffect
 {
 public:
-    typedef struct tPARTICLE_POINT_DESC :public CGameObject::GAMEOBJECT_DESC
+    typedef struct tPARTICLE_POINT_DESC :public CEffect::EFFECT_DESC
     {
-        _float4			vStartPos;
-        CVIBuffer_Instance_Point::INSTANCE_POINT_DESC BufferInstance;
+
     }PARTICLE_POINT_DESC;
+
+
+    enum ACTION {ACTION_SPREAD , ACTION_DROP , ACTION_END};
+    static const _uint iAction[ACTION_END];
 private:
     CParticle_Point(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
     CParticle_Point(const CParticle_Point& rhs);
@@ -35,13 +38,16 @@ public:
     virtual void Late_Tick(const _float& fTimeDelta);
     virtual HRESULT Render();
 
+public:
+    HRESULT Edit_Action(ACTION iEditAction);
 
 private:
     CShader* m_pShaderCom = { nullptr };
     CTexture* m_pTextureCom = { nullptr };
     CVIBuffer_Instance_Point* m_pVIBufferCom = { nullptr };
-    CVIBuffer_Instance_Point::INSTANCE_POINT_DESC m_BufferInstance;
 
+
+    _uint							m_iAction = { 0 };
 
 private:
     HRESULT Add_Components();
