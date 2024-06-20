@@ -29,7 +29,7 @@ private:
 
 private:
     _float		m_fSensor = { 0.0f };
-    _bool		m_bTab = { false };
+    _bool		m_bTab = { true };
 
 public:
     static CFreeCamera* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
