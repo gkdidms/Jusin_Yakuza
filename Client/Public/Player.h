@@ -12,6 +12,9 @@ class CPlayer :
     public CLandObject
 {
 private:
+    const _float ANIM_INTERVAL = 5.f;
+    
+private:
     CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
     CPlayer(const CPlayer& rhs);
     virtual ~CPlayer() = default;
@@ -33,9 +36,12 @@ private:
     CCollider*  m_pColliderCom = { nullptr };
 
 private:
-    _uint       m_iAnimIndex = { 0 };
-    _float4     m_vPos;
-    _float4x4   m_ModelMatrix;
+    _uint       m_iAnimIndex = { 2 };
+    _uint       m_iTemp = { 1 };
+    _bool       m_iChanged = { true };
+
+    _float4     m_vPrevMove;
+    _float4x4   m_ModelWorldMatrix;
 
 private:
     virtual HRESULT Add_Componenets() override;
