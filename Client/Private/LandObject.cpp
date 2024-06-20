@@ -1,20 +1,4 @@
-#include "LandObject.h"
-
-CLandObject::CLandObject(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-	: CGameObject{ pDevice, pContext}
-{
-}
-
-CLandObject::CLandObject(const CLandObject& rhs)
-	: CGameObject{ rhs }
-{
-}
-
-HRESULT CLandObject::Initialize_Prototype()
-{
-	return S_OK;
-}
-
+#include "LandObject.h"  
 HRESULT CLandObject::Initialize(void* pArg)
 {
 	if (FAILED(__super::Initialize(pArg)))

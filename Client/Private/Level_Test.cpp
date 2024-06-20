@@ -28,7 +28,7 @@ HRESULT CLevel_Test::Initialize()
 
 	if (FAILED(Ready_Player(TEXT("Layer_Player"))))
 		return E_FAIL;
-
+	
 	//if (FAILED(Ready_Map(TEXT("Layer_Map"))))
 	//	return E_FAIL;
 
