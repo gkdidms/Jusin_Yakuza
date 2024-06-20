@@ -39,3 +39,4 @@ ipch/
 # Engine dll/lib
 Engine.dll
 Engine.lib
+/AnimationTool/Bin/Engine.dll
