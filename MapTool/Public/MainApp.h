@@ -2,6 +2,7 @@
 
 #include "Client_Defines.h"
 #include "Base.h"
+#include "Imgui_Manager.h"
 
 BEGIN(Engine)
 class CGameInstance;
@@ -25,7 +26,8 @@ private:
 	ID3D11DeviceContext* m_pContext = { nullptr };
 
 	CGameInstance* m_pGameInstance = { nullptr };
-	class CImguiManager* m_pGuimanager = { nullptr };
+
+	CImgui_Manager* m_pIMGUI_Manager = { nullptr };
 
 #ifdef _DEBUG
 private:

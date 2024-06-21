@@ -42,9 +42,9 @@ HRESULT CBlendObject::Render()
 	return S_OK;
 }
 
-_float CBlendObject::Compute_ViewZ(_fvector vWorldPos)
+void CBlendObject::Compute_ViewZ(_fvector vWorldPos)
 {
-	return XMVectorGetX(XMVector3Length(m_pGameInstance->Get_CamPosition() - vWorldPos));
+	m_fViewZ =  XMVectorGetX(XMVector3Length(m_pGameInstance->Get_CamPosition() - vWorldPos));
 }
 
 void CBlendObject::Free()

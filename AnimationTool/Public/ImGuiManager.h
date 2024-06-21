@@ -52,7 +52,7 @@ private:
 	void Update_Model_Scaled();
 
 private:
-	_bool m_isAnimListWindow = { false };
+	_bool		m_isAnimListWindow = { false };
 	int			m_iAnimIndex = { 0 };
 	int			m_iModelSelectedIndex = { 0 };
 	int			m_iBoneSelectedIndex = { 0 };
