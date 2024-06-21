@@ -725,6 +725,9 @@ void CRenderer::Render_AvgLuminance()
 	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_CopyLuminance"), m_pShader, "g_CopyLuminanceTexture")))
 		return;
 
+	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_BackBuffer"), m_pShader, "g_BackBufferTexture")))
+		return;
+
 	m_pShader->Begin(7);
 
 	m_pVIBuffer->Render();

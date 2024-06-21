@@ -25,7 +25,7 @@ HRESULT CPlayer::Initialize(void* pArg)
 	if (FAILED(Add_Componenets()))
 		return E_FAIL;
 
-	m_pModelCom->Set_AnimationIndex(CModel::ANIMATION_DESC{ 1, false });
+	m_pModelCom->Set_AnimationIndex(CModel::ANIMATION_DESC{ 3, false }, ANIM_INTERVAL);
 	return S_OK;
 }
 
@@ -36,34 +36,62 @@ void CPlayer::Priority_Tick(const _float& fTimeDelta)
 
 void CPlayer::Tick(const _float& fTimeDelta)
 {
-	if (m_pGameInstance->GetKeyState(DIK_UP) == TAP)
-	{
-		m_iAnimIndex++;
+	//if (m_pGameInstance->GetKeyState(DIK_UP) == TAP)
+	//{
+	//	m_iChanged = true;
+	//	m_iAnimIndex++;
 
-		m_ModelMatrix = *(m_pTransformCom->Get_WorldFloat4x4());
-		m_pModelCom->Set_AnimationIndex(CModel::ANIMATION_DESC{ m_iAnimIndex, false });
+	//	m_pModelCom->Set_AnimationIndex(CModel::ANIMATION_DESC{ m_iAnimIndex, false }, ANIM_INTERVAL);
+	//}
+
+	//if (m_pGameInstance->GetKeyState(DIK_DOWN) == TAP)
+	//{
+	//	m_iChanged = true;
+	//	m_iAnimIndex--;
+
+	//	m_pModelCom->Set_AnimationIndex(CModel::ANIMATION_DESC{ m_iAnimIndex, true }, ANIM_INTERVAL);
+	//}
+
+	if (m_pModelCom->Get_AnimFinished())
+	{
+		m_iChanged = true;
+		m_iAnimIndex += m_iTemp;
+
+		m_iTemp *= -1;
+
+		m_pModelCom->Set_AnimationIndex(CModel::ANIMATION_DESC{ m_iAnimIndex, false }, ANIM_INTERVAL);
 	}
 
-	if (m_pGameInstance->GetKeyState(DIK_DOWN) == TAP)
-	{
-		m_iAnimIndex--;
-
-		m_ModelMatrix = *(m_pTransformCom->Get_WorldFloat4x4());
-		m_pModelCom->Set_AnimationIndex(CModel::ANIMATION_DESC{ m_iAnimIndex, false });
-	}
-
-	if (m_pGameInstance->GetKeyState(DIK_LEFT) == HOLD)
+	if (m_pGameInstance->GetKeyState(DIK_UP) == HOLD)
 	{
 		m_pTransformCom->Go_Straight(fTimeDelta);
 	}
-	if (m_pGameInstance->GetKeyState(DIK_RIGHT) == HOLD)
+	if (m_pGameInstance->GetKeyState(DIK_DOWN) == HOLD)
 	{
 		m_pTransformCom->Go_Backward(fTimeDelta);
+	}
+	if (m_pGameInstance->GetKeyState(DIK_LEFT) == HOLD)
+	{
+		m_pTransformCom->Turn(m_pTransformCom->Get_State(CTransform::STATE_UP), fTimeDelta);
+	}
+	if (m_pGameInstance->GetKeyState(DIK_RIGHT) == HOLD)
+	{
+		m_pTransformCom->Turn(m_pTransformCom->Get_State(CTransform::STATE_UP), -fTimeDelta);
+	}
+
+	if (m_pGameInstance->GetKeyState(DIK_0) == TAP)
+	{
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0, 0, 0, 1));
+	}
+	if (m_pGameInstance->GetKeyState(DIK_9) == TAP)
+	{
+		m_iAnimIndex++;
 	}
 
 	m_pModelCom->Play_Animation(fTimeDelta);
 
 	m_pColliderCom->Tick(m_pTransformCom->Get_WorldMatrix());
+
 }
 
 void CPlayer::Late_Tick(const _float& fTimeDelta)
@@ -95,27 +123,53 @@ HRESULT CPlayer::Render()
 	return S_OK;
 }
 
-// TODO: 코드 정리 필요
+// 현재 애니메이션의 y축을 제거하고 사용하는 상태이다 (혹시 애니메이션의 y축 이동도 적용이 필요하다면 로직 수정이 필요함
 void CPlayer::Synchronize_Root()
 {
-	string strRootBoneName = "center_c_n";
-	const _float4x4* pRootBoneMatrix = m_pModelCom->Get_BoneCombinedTransformationMatrix(strRootBoneName.c_str());
+	// center_c_n의 컴바인드 행렬을 가져온다 (모델 본들의 스페이스 상태임)
+	string strBoneName = "center_c_n";
+	const _float4x4* pCenterBoneMatrix = m_pModelCom->Get_BoneCombinedTransformationMatrix(strBoneName.c_str());
 
-	strRootBoneName = "RootNode";
-	const _float4x4* Test = m_pModelCom->Get_BoneCombinedTransformationMatrix(strRootBoneName.c_str());
+	// RootNode의 컴바인드 행렬을 가져온다. (모델 본들의 스페이스 상태임)
+	strBoneName = "RootNode";
+	const _float4x4* pRootBoneMatrix = m_pModelCom->Get_BoneCombinedTransformationMatrix(strBoneName.c_str());
+	
+	// 구해온 각각의 매트릭스들을 본들의 스페이스에서 해당 객체의 월드 스페이스로 변환한다.
+	_matrix CenterBoneMatrix = XMLoadFloat4x4(pCenterBoneMatrix) * m_pTransformCom->Get_WorldMatrix();
+	_matrix RootBoneMatrix = XMLoadFloat4x4(pRootBoneMatrix) * m_pTransformCom->Get_WorldMatrix();
 
-	_vector vPos, vTest;
-	memcpy(&vPos, pRootBoneMatrix->m[CTransform::STATE_POSITION], sizeof(_float4));
-	memcpy(&vTest, Test->m[CTransform::STATE_POSITION], sizeof(_float4));
+	// 월드 변환이 완료된 행렬들에서 포지션값을 꺼내 저장한다.
+	_vector vCenterBonePosistion, vRootBonePosistion;
+	memcpy(&vCenterBonePosistion, &CenterBoneMatrix.r[CTransform::STATE_POSITION], sizeof(_float4));
+	memcpy(&vRootBonePosistion, &RootBoneMatrix.r[CTransform::STATE_POSITION], sizeof(_float4));
 
-	_vector vPosition = vTest;
-	m_ModelMatrix = *(m_pTransformCom->Get_WorldFloat4x4());
+	// 애니메이션이 새로 시작하면 m_vPrevMove에는 이전 애님의 마지막 move의 큰 값이 남아있고, vMovePos는 새로운정보가 되어서 초기화가 필요하다.
+	_vector vMovePos = (XMVectorSet(XMVectorGetX(vCenterBonePosistion), 0, XMVectorGetZ(vCenterBonePosistion), 1.f) - XMVectorSet(XMVectorGetX(vRootBonePosistion), 0, XMVectorGetZ(vRootBonePosistion), 1.f));
 
-	_vector vTemp = (vPos - vTest);
-	vTemp = m_pTransformCom->Get_State(CTransform::STATE_POSITION) - vTemp;
+	//모델이 출력될 월드 위치는, 트랜스폼 컴포넌트의 월드위치에서 센터본과 루트본의 차이만큼 빼준 위치
+	// 모델 랜더 위치잡기
+	XMStoreFloat4x4(&m_ModelWorldMatrix, m_pTransformCom->Get_WorldMatrix());
+	_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION) - XMLoadFloat4(&m_vPrevMove);
+	memcpy(&m_ModelWorldMatrix.m[CTransform::STATE_POSITION], &vPos, sizeof(_float4));
+	
+	// 트랜스폼 위치잡기
+	if (m_pModelCom->Get_AnimChanged())
+	{
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_pTransformCom->Get_State(CTransform::STATE_POSITION) + (m_iChanged ? vMovePos : (vMovePos - XMLoadFloat4(&m_vPrevMove))));
+	}
+	else
+	{
+		cout << "Playings" << endl;
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+	}
+	
 
-	memcpy(&m_ModelMatrix.m[CTransform::STATE_POSITION], &vTemp, sizeof(_float4));
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPosition);
+	XMStoreFloat4(&m_vPrevMove, vMovePos);
+
+	//애니메이션 실행되는 동안에 false를 반환한다.
+
+
+	m_iChanged = false;
 }
 
 HRESULT CPlayer::Add_Componenets()
@@ -147,7 +201,7 @@ HRESULT CPlayer::Bind_ResourceData()
 	//if (FAILED(m_pTransformCom->Bind_ShaderMatrix(m_pShaderCom, "g_WorldMatrix")))
 	//	return E_FAIL;
 
-	if (FAILED(m_pShaderCom->Bind_Matrix("g_WorldMatrix", &m_ModelMatrix)))
+	if (FAILED(m_pShaderCom->Bind_Matrix("g_WorldMatrix", &m_ModelWorldMatrix)))
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_VIEW))))
 		return E_FAIL;
