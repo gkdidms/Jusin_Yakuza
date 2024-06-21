@@ -120,6 +120,8 @@ void CImgui_Manager::Tick(_float fTimeDelta)
 void CImgui_Manager::Late_Tick(_float fTimeDelta)
 {
     CObjPlace_Manager::GetInstance()->Late_Tick(fTimeDelta);
+
+    CLightTool_Mgr::GetInstance()->Late_Tick(fTimeDelta);
 }
 
 void CImgui_Manager::Render()
@@ -204,9 +206,12 @@ void CImgui_Manager::Show_MapObj_Place_IMGUI()
 
 void CImgui_Manager::Show_LightTool_IMGUI()
 {
+    /* 파일 리스트 보여주기 */
+    m_pLightTool_Mgr->Show_FileName();
+
     ImGui::Begin(u8"라이트 설치");
 
-
+    m_pLightTool_Mgr->Show_LightMgr_IMGUI();
 
     if (ImGui::Button("Close"))
     {
@@ -224,6 +229,7 @@ void CImgui_Manager::Free()
     ImGui::DestroyContext();
 
     CObjPlace_Manager::GetInstance()->DestroyInstance();
+    CLightTool_Mgr::GetInstance()->DestroyInstance();
 
     //m_pNavigationMgr->DestroyInstance();
     Safe_Release(m_pNavigationMgr);

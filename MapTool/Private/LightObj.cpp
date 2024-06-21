@@ -15,6 +15,7 @@ CLightObj::CLightObj(const CLightObj& rhs)
 
 HRESULT CLightObj::Initialize_Prototype()
 {
+
 	return S_OK;
 }
 
@@ -25,7 +26,22 @@ HRESULT CLightObj::Initialize(void* pArg)
 
 	if (nullptr != pArg)
 	{
+		LIGHTOBJ_DESC*			lightDesc = (LIGHTOBJ_DESC*)pArg;
+		m_pTransformCom->Set_WorldMatrix(lightDesc->vStartPos);
 
+		LIGHT_DESC			LightDesc{};
+		ZeroMemory(&LightDesc, sizeof(LIGHT_DESC));
+		LightDesc.eType = LIGHT_DESC::TYPE_POINT;
+		LightDesc.fRange = 100.f;
+		LightDesc.vDiffuse = _float4(1.f, 0.42352941f, 0.f, 1.f);
+		LightDesc.vAmbient = _float4(0.4f, 0.1f, 0.1f, 1.f);
+		LightDesc.vSpecular = LightDesc.vDiffuse;
+
+		XMFLOAT4		vPosition;
+		XMStoreFloat4(&vPosition, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+		LightDesc.vPosition = vPosition;
+
+		m_pGameInstance->Add_Light(LightDesc);
 	}
 
 	if (FAILED(Add_Components(pArg)))
@@ -73,19 +89,25 @@ HRESULT CLightObj::Render()
 	return S_OK;
 }
 
+void CLightObj::Set_LightDesc(LIGHT_DESC lightDesc)
+{
+	/* 구조체 변경 */
+	m_tLightDesc = lightDesc;
+}
+
 
 HRESULT CLightObj::Add_Components(void* pArg)
 {
 
-	///* For.Com_Model */
-	//if (FAILED(__super::Add_Component(LEVEL_RUNMAP, gameobjDesc->wstrModelName,
-	//	TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
-	//	return E_FAIL;
+	/* For.Com_Model */
+	if (FAILED(__super::Add_Component(LEVEL_RUNMAP, TEXT("Prototype_Component_Model_Bone_Sphere"),
+		TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
+		return E_FAIL;
 
-	///* For.Com_Shader */
-	//if (FAILED(__super::Add_Component(LEVEL_RUNMAP, TEXT("Prototype_Component_Shader_VtxMesh"),
-	//	TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
-	//	return E_FAIL;
+	/* For.Com_Shader */
+	if (FAILED(__super::Add_Component(LEVEL_RUNMAP, TEXT("Prototype_Component_Shader_VtxMesh"),
+		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
+		return E_FAIL;
 
 	return S_OK;
 }
