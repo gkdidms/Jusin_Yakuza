@@ -198,7 +198,6 @@ HRESULT CRenderer::Initialize()
 	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_BackBuffer"), 150.f, 150.f, 100.f, 100.f)))
 		return E_FAIL;
 
-#if !defined(_CLIEND)
 	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_128x128"), 250.f, 050.f, 100.f, 100.f)))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_Luminance"), 250.f, 150.f, 100.f, 100.f)))
@@ -220,7 +219,6 @@ HRESULT CRenderer::Initialize()
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_1x1"), 450.f, 250.f, 100.f, 100.f)))
 		return E_FAIL;
-#endif // defined(_CLIEND)
 
 #endif // _DEBUG
 
@@ -244,7 +242,6 @@ void CRenderer::Draw()
 	Render_CopyBackBuffer();
 	Render_DeferredResult();
 
-#if !defined(_CLIEND)
 	if (m_isHDR)
 	{
 		Render_Luminance();
@@ -253,7 +250,6 @@ void CRenderer::Draw()
 		Render_HDR();
 		Redner_LuminanceResult();
 	}
-#endif // defined(_CLIEND)
 
 	Render_NonLight();
 	Render_Blender();
@@ -861,26 +857,30 @@ void CRenderer::Render_Debug()
 		return;
 	if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_CopyBackBuffer"), m_pShader, m_pVIBuffer)))
 		return;
-	if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_HDR"), m_pShader, m_pVIBuffer)))
-		return;
-	if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_Luminance"), m_pShader, m_pVIBuffer)))
-		return;
-	if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_128"), m_pShader, m_pVIBuffer)))
-		return;
-	if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_64"), m_pShader, m_pVIBuffer)))
-		return;
-	if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_32"), m_pShader, m_pVIBuffer)))
-		return;
-	if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_16"), m_pShader, m_pVIBuffer)))
-		return;
-	if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_8"), m_pShader, m_pVIBuffer)))
-		return;
-	if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_4"), m_pShader, m_pVIBuffer)))
-		return;
-	if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_2"), m_pShader, m_pVIBuffer)))
-		return;
-	if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_1"), m_pShader, m_pVIBuffer)))
-		return;
+
+	if (m_isHDR)
+	{
+		if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_HDR"), m_pShader, m_pVIBuffer)))
+			return;
+		if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_Luminance"), m_pShader, m_pVIBuffer)))
+			return;
+		if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_128"), m_pShader, m_pVIBuffer)))
+			return;
+		if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_64"), m_pShader, m_pVIBuffer)))
+			return;
+		if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_32"), m_pShader, m_pVIBuffer)))
+			return;
+		if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_16"), m_pShader, m_pVIBuffer)))
+			return;
+		if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_8"), m_pShader, m_pVIBuffer)))
+			return;
+		if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_4"), m_pShader, m_pVIBuffer)))
+			return;
+		if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_2"), m_pShader, m_pVIBuffer)))
+			return;
+		if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_1"), m_pShader, m_pVIBuffer)))
+			return;
+	}
 }
 #endif // DEBUG
 
