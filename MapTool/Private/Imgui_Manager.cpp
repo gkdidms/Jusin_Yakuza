@@ -19,9 +19,11 @@ IMPLEMENT_SINGLETON(CImgui_Manager)
 CImgui_Manager::CImgui_Manager()
     :m_pNavigationMgr(CNavigation_Manager::GetInstance())
     , m_pObjPlace_Manager{CObjPlace_Manager::GetInstance()}
+    , m_pGameInstance{ CGameInstance::GetInstance()}
 {
-    Safe_AddRef(m_pNavigationMgr);
-    Safe_AddRef(m_pObjPlace_Manager);
+    //Safe_AddRef(m_pNavigationMgr);
+    //Safe_AddRef(m_pObjPlace_Manager);
+    Safe_AddRef(m_pGameInstance);
 }
 
 HRESULT CImgui_Manager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -118,7 +120,7 @@ void CImgui_Manager::Render()
     ImGui::Render();
     ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 
-    //m_pNavigationMgr->Render();
+    m_pNavigationMgr->Render();
 }
 
 
@@ -152,29 +154,30 @@ void CImgui_Manager::Set_NaviTool_IMGUI()
 {
     ImGui::Begin(u8"Navigation ¼öÁ¤");
 
-    //m_pNavigationMgr->Load_Cell_IMGUI();
+    m_pNavigationMgr->Load_Cell_IMGUI();
 
-    //m_pNavigationMgr->Show_Cells_IMGUI();
+    m_pNavigationMgr->Show_Cells_IMGUI();
 
-    //static bool    bCanAdd;
+    static bool    bCanAdd;
 
-    //if (CGameInstance::GetInstance()->Key_Pressing(DIK_X))
-    //{
-    //    bCanAdd = true;
-    //}
+    
+    if (m_pGameInstance->GetKeyState(DIK_X) == AWAY)
+    {
+        bCanAdd = true;
+    }
 
 
-    //if (CGameInstance::GetInstance()->Mouse_Pressing(DIM_LB) && true == bCanAdd)
-    //{
-    //    _bool		isPick;
-    //    _vector		vTargetPos = CGameInstance::GetInstance()->Picking(&isPick);
+    if (CGameInstance::GetInstance()->GetMouseState(DIM_LB) == AWAY && true == bCanAdd)
+    {
+        _bool		isPick;
+        _vector		vTargetPos = CGameInstance::GetInstance()->Picking(&isPick);
 
-    //    m_pNavigationMgr->Make_Point(vTargetPos);
-    //    bCanAdd = false;
-    //}
+        m_pNavigationMgr->Make_Point(vTargetPos);
+        bCanAdd = false;
+    }
 
-    //if (ImGui::Button("Close"))
-    //    m_bNaviTool_IMGUI = false;
+    if (ImGui::Button("Close"))
+        m_bNaviTool_IMGUI = false;
     ImGui::End();
 }
 
@@ -204,6 +207,7 @@ void CImgui_Manager::Free()
     //m_pNavigationMgr->DestroyInstance();
     Safe_Release(m_pNavigationMgr);
     Safe_Release(m_pObjPlace_Manager);
+    Safe_Release(m_pGameInstance);
 
     Safe_Release(m_pDevice);
     Safe_Release(m_pContext);
