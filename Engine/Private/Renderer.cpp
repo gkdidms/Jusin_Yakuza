@@ -244,23 +244,31 @@ void CRenderer::Draw()
 	Render_CopyBackBuffer();
 	Render_DeferredResult();
 
-#if !defined(_CLIEND)
-	if (m_isHDR)
-	{
-		Render_Luminance();
-		Render_AvgLuminance();
-		Render_CopyLuminance();
-		Render_HDR();
-		Redner_LuminanceResult();
-	}
-#endif // defined(_CLIEND)
+//#if !defined(_CLIEND)
+//	if (m_isHDR)
+//	{
+//		Render_Luminance();
+//		Render_AvgLuminance();
+//		Render_CopyLuminance();
+//		Render_HDR();
+//		Redner_LuminanceResult();
+//	}
+//#endif // defined(_CLIEND)
+//	if (m_isHDR)
+//{
+//		Render_Luminance();
+//		Render_AvgLuminance();
+//		Render_CopyLuminance();
+//		Render_HDR();
+//		Redner_LuminanceResult();
+//	}
 
 	Render_NonLight();
 	Render_Blender();
 	Render_UI();
 
 #ifdef _DEBUG
-	Render_Debug();
+//	Render_Debug();
 #endif // _DEBUG
 }
 
