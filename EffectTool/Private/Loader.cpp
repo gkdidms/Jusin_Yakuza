@@ -6,6 +6,7 @@
 #pragma region "객체 원형"
 #include "FreeCamera.h"
 #include "Particle_Point.h"
+#include "Sky.h"
 #pragma endregion
 
 
@@ -114,13 +115,33 @@ HRESULT CLoader::Loading_For_EditLevel()
 {
 	lstrcpy(m_szLoadingText, TEXT("텍스쳐를 로딩 중 입니다."));
 
+	/* Prototype_Component_Texture_Sphere */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_EDIT, TEXT("Prototype_Component_Texture_Sphere"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Particle/lm000.dds"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_Trail */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_EDIT, TEXT("Prototype_Component_Texture_Trail"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Particle/015_trc_na.dds"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_Sky */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_EDIT, TEXT("Prototype_Component_Texture_Sky"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/SkyBox/Sky_%d.dds"), 5))))
+		return E_FAIL;
+
 
 	lstrcpy(m_szLoadingText, TEXT("컴포넌트 원형 를(을) 로딩 중 입니다."));
+
 	/* For.Prototype_Component_VIBuffer_Instance_Point */
 	if(FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_EDIT, TEXT("Prototype_Component_VIBuffer_Instance_Point"),
 		CVIBuffer_Instance_Point::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	/* For.Prototype_Component_VIBuffer_Cube */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_EDIT, TEXT("Prototype_Component_VIBuffer_Cube"),
+		CVIBuffer_Cube::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("객체 원형를(을) 로딩 중 입니다."));
 	/* For.Prototype_GameObject_FreeCamera */
@@ -128,17 +149,20 @@ HRESULT CLoader::Loading_For_EditLevel()
 		CFreeCamera::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+
+
+
 	/* For.Prototype_GameObject_Particle_Point */
 	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Particle_Point"),
 		CParticle_Point::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	lstrcpy(m_szLoadingText, TEXT("텍스처 를(을) 로딩 중 입니다."));
-
-	/* Prototype_Component_Texture_Sphere */
-	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_EDIT, TEXT("Prototype_Component_Texture_Sphere"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Particle/lm000.dds"), 1))))
+	/* For.Prototype_GameObject_Sky */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Sky"),
+		CSky::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+
+
 
 
 	lstrcpy(m_szLoadingText, TEXT("셰이더를(을) 로딩 중 입니다."));
@@ -148,6 +172,10 @@ HRESULT CLoader::Loading_For_EditLevel()
 		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxInstance_Point.hlsl"), VTXINSTANCE_POINT::Elements, VTXINSTANCE_POINT::iNumElements))))
 		return E_FAIL;
 
+	/* For.Prototype_Component_Shader_VtxCube */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_EDIT, TEXT("Prototype_Component_Shader_VtxCube"),
+		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxCube.hlsl"), VTXCUBE::Elements, VTXCUBE::iNumElements))))
+		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
 

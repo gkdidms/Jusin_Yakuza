@@ -163,7 +163,7 @@ PS_OUT PS_MAIN_DEFERRED_RESULT(PS_IN In)
 {
     PS_OUT Out = (PS_OUT) 0;
     
-    vector vDiffuse = g_ToneMappingTexture.Sample(LinearSampler, In.vTexcoord);
+    vector vDiffuse = g_BackBufferTexture.Sample(LinearSampler, In.vTexcoord);
    
     Out.vColor = vDiffuse;
 
