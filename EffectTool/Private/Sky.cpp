@@ -42,7 +42,7 @@ void CSky::Late_Tick(const _float& fTimeDelta)
 {
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_pGameInstance->Get_CamPosition());
 
-	m_pGameInstance->Add_Renderer(CRenderer::RENDER_PRIORITY, this);
+	m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
 }
 
 HRESULT CSky::Render()
