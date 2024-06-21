@@ -265,7 +265,7 @@ void CRenderer::Draw()
 	Render_UI();
 
 #ifdef _DEBUG
-//	Render_Debug();
+	Render_Debug();
 #endif // _DEBUG
 }
 
@@ -396,9 +396,6 @@ void CRenderer::Render_LightAcc()
 		return;
 
 	m_pGameInstance->Render_Lights(m_pShader, m_pVIBuffer);
-
-	if (FAILED(m_pGameInstance->End_MRT()))
-		return;
 }
 
 void CRenderer::Render_CopyBackBuffer()
