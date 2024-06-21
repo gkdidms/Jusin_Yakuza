@@ -331,7 +331,7 @@ void CImguiManager::Create_Tick(_float fTimeDelta)
 
 	if (ImGui::TreeNode("Particle"))
 	{
-		const char* Particle[] = { "Point","Rect","Animation" };
+		const char* Particle[] = { "Point","Animation" };
 		static int Particle_current = 0;
 		ImGui::ListBox("Particle List", &Particle_current, Particle, IM_ARRAYSIZE(Particle));
 
@@ -420,9 +420,14 @@ void CImguiManager::Editor_Tick(_float fTimeDelta)
 	ImGui::Text(to_string(m_iCurEditIndex).c_str());
 
 
-	ImGui::RadioButton("DIR", &m_EffectDesc.iShaderPass, PASS_DIRECTION);
-	ImGui::SameLine(); ImGui::RadioButton("NDIR", &m_EffectDesc.iShaderPass, PASS_NODIRECTION);
-	ImGui::SameLine(); ImGui::RadioButton("DIRCOLOR", &m_EffectDesc.iShaderPass, PASS_DIRECTIONCOLOR);
+	if (ImGui::RadioButton("DIR", &m_EffectDesc.iShaderPass, PASS_DIRECTION))
+		bChange = true;
+	ImGui::SameLine();
+	if (ImGui::RadioButton("NDIR", &m_EffectDesc.iShaderPass, PASS_NODIRECTION))
+		bChange = true;
+	ImGui::SameLine(); 
+	if (ImGui::RadioButton("DIRCOLOR", &m_EffectDesc.iShaderPass, PASS_DIRECTIONCOLOR))
+		bChange = true;
 
 	if (ImGui::Checkbox("Spread", &m_bSpread))
 	{
@@ -500,7 +505,6 @@ void CImguiManager::Editor_Tick(_float fTimeDelta)
 			bChange = true;
 		}
 	}
-
 
 	Temp = (_float*)&m_EffectDesc.BufferInstance.vSize;
 	if (ImGui::InputFloat2("Size", Temp))
