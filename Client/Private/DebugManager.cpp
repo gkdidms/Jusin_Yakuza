@@ -33,6 +33,10 @@ HRESULT CDebugManager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pC
     ImGui_ImplWin32_Init(g_hWnd);
     ImGui_ImplDX11_Init(m_pDevice, m_pContext);
 
+
+    //ÃÊ±âÈ­
+    m_isHDR = m_pGameInstance->Get_HDR();
+
     return S_OK;
 }
 
@@ -59,10 +63,14 @@ void CDebugManager::Window_Debug()
 
     ImGui::Checkbox("TimeDelta Stop", &m_isTimeStop);
     
-    _float fSpeed = { -1.f };
-    if (ImGui::InputFloat("TimeSpeed", &fSpeed))
+    if (ImGui::InputFloat("TimeSpeed", &m_fSpeed))
     {
-        m_pGameInstance->Set_TimeSpeed(TEXT("Timer_60"), fSpeed);
+        m_pGameInstance->Set_TimeSpeed(TEXT("Timer_60"), m_fSpeed);
+    }
+
+    if (ImGui::Checkbox("HDR", &m_isHDR))
+    {
+        m_pGameInstance->Set_HDR(m_isHDR);
     }
 
     ImGui::End();
