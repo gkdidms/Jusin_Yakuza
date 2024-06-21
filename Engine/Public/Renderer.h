@@ -5,7 +5,6 @@ BEGIN(Engine)
 class ENGINE_DLL CRenderer :
     public CBase
 {
-
 public:
     enum RENDERER_STATE { RENDER_PRIORITY, RENDER_SHADOWOBJ, RENDER_NONBLENDER, RENDER_NONLIGHT, RENDER_BLENDER, RENDER_UI, RENDER_END };
 
@@ -15,9 +14,11 @@ private:
 
 public:
     void Set_HDR(_bool isHDR) { m_isHDR = isHDR; }
+    void Set_HDRLight(_float fLight) { m_fHDRLight = fLight; } // HDR ¹à±â Á¶Àý(ºû ¼¼±â)
 
 public:
     _bool Get_HDR() { return m_isHDR; }
+    _float Get_HDRLight() { return m_fHDRLight; }
 
 public:
     HRESULT Initialize();
@@ -75,7 +76,8 @@ private:
     //ID3D11DepthStencilView* m_pLuminanceStencilView = { nullptr };
 
 private:
-    _bool m_isHDR = { true };
+    _bool m_isHDR = { false };
+    _float m_fHDRLight = { 1.f };
 
 public:
     static CRenderer* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

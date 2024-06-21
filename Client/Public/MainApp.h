@@ -1,5 +1,4 @@
 #pragma once
-
 #include "Client_Defines.h"
 
 #include "Base.h"
@@ -47,6 +46,7 @@ public:
 	HRESULT Ready_Font();
 	HRESULT Ready_Prototype_GameObject();
 	HRESULT Ready_Prototype_Component();
+	void Render_Colsole(_bool isOpen);
 
 public:
     static CMainApp* Create();

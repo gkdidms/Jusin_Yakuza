@@ -11,10 +11,8 @@ IMPLEMENT_SINGLETON(CClient_MapDataMgr)
 
 CClient_MapDataMgr::CClient_MapDataMgr()
     : m_pGameInstance{ CGameInstance::GetInstance() }
-    , m_pMapDataMgr{ CMapDataMgr::GetInstance() }
 {
     Safe_AddRef(m_pGameInstance);
-    Safe_AddRef(m_pMapDataMgr);
 }
 
 
@@ -23,7 +21,7 @@ HRESULT CClient_MapDataMgr::Set_MapObj_In_Client(int iMapLoadingNum, int iStageL
 {
     Safe_Delete_Array(m_MapTotalInform.pMapObjDesc);
 
-    m_pMapDataMgr->Import_Bin_Map_Data_OnClient(&m_MapTotalInform, iMapLoadingNum);
+    Import_Bin_Map_Data_OnClient(&m_MapTotalInform, iMapLoadingNum);
 
     /* terrain 수정*/
     Set_Terrain_Size(iStageLevel);
@@ -86,6 +84,45 @@ int CClient_MapDataMgr::Find_Layers_Index(char* strLayer)
     return -1;
 }
 
+HRESULT CClient_MapDataMgr::Import_Bin_Map_Data_OnClient(MAP_TOTALINFORM_DESC* mapObjData, int iLevel)
+{
+    char fullPath[MAX_PATH];
+    strcpy_s(fullPath, "../Bin/DataFiles/MapData/");
+
+    strcat_s(fullPath, "MapObject_Data");
+    strcat_s(fullPath, "_");
+
+    char cLevel[2] = "";
+    _itoa_s(iLevel, cLevel, 10);
+    strcat_s(fullPath, cLevel);
+    strcat_s(fullPath, ".dat");
+
+    ifstream in(fullPath, ios::binary);
+
+    if (!in.is_open()) {
+        MSG_BOX("파일 개방 실패");
+        return E_FAIL;
+    }
+
+
+    in.read((char*)&mapObjData->iLevelIndex, sizeof(int));
+
+    in.read((char*)&mapObjData->vPlaneSize, sizeof(XMFLOAT2));
+
+    in.read((char*)&mapObjData->iNumMapObj, sizeof(int));
+
+    mapObjData->pMapObjDesc = new OBJECTPLACE_DESC[mapObjData->iNumMapObj];
+
+    for (int i = 0; i < mapObjData->iNumMapObj; i++)
+    {
+        in.read((char*)&mapObjData->pMapObjDesc[i], sizeof(OBJECTPLACE_DESC));
+    }
+
+    in.close();
+
+    return S_OK;
+}
+
 
 
 void CClient_MapDataMgr::Free()
@@ -94,6 +131,5 @@ void CClient_MapDataMgr::Free()
 
     m_Layers.clear();
 
-    Safe_Release(m_pMapDataMgr);
     Safe_Release(m_pGameInstance);
 }

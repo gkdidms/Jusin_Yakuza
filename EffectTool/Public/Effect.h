@@ -22,6 +22,11 @@ public:
         _float           fStartTime;
         _bool           bDir;
         wstring ParticleTag;
+
+        _float4 vStartColor;
+        _float4 vEndColor;
+
+        _int iShaderPass;
     }EFFECT_DESC;
     enum TYPE { TYPE_POINT , TYPE_RECT ,TYPE_ANIM , TYPE_END};
     enum ACTION { ACTION_SPREAD, ACTION_DROP, ACTION_END };
@@ -54,6 +59,10 @@ public:
     _float* Get_pStartTime() { return &m_fStartTime; }
     _float4 Get_StartPos() { return m_vStartPos; }
     _uint Get_Action() { return m_iAction; }
+    _float4 Get_SColor() { return m_vStartColor; }
+    _float4 Get_EColor() { return m_vEndColor; }
+    _int Get_ShaderPass() { return m_iShaderPass; }
+
 protected:
     CVIBuffer_Instance::INSTANCE_DESC m_BufferInstance; 
     _uint m_eType = { TYPE_END };
@@ -63,6 +72,9 @@ protected:
     _float4 m_vStartPos = {};
     _float m_fCurTime = { 0.f };
     _uint							m_iAction = { 0 };
+    _float4 m_vStartColor = { 0.f , 0.f , 0.f , 0.f };
+    _float4 m_vEndColor = { 0.f , 0.f , 0.f , 0.f };
+    _int        m_iShaderPass = { 0 };
 public:
     virtual void Free() override;
 };

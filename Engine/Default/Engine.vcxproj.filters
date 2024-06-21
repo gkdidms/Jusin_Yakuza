@@ -178,11 +178,11 @@
     <Filter Include="01.Utility\96.Manager\00.MapDataMgr">
       <UniqueIdentifier>{c6f5df0c-fe5d-4f40-af32-483142ef1d43}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01.Utility\10.Random">
-      <UniqueIdentifier>{7023e928-6a8a-4376-a161-481610a029e9}</UniqueIdentifier>
-    </Filter>
     <Filter Include="01.Utility\03.Component\01.VIBuffer\Cube">
       <UniqueIdentifier>{55219448-7564-41f8-b838-0c2a13944b50}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\10.Random">
+      <UniqueIdentifier>{7023e928-6a8a-4376-a161-481610a029e9}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

@@ -126,6 +126,52 @@ void CVIBuffer_Instance::LifeTime_Check()
 
 }
 
+void CVIBuffer_Instance::Blend_Sort()
+{
+	//매 틱 진행이 일어나야 되니깐
+	//이건 무조건 소팅을 위한거지 이동이나 변환이 없으므로 이값을 저장해 놓고 렌더 끝난뒤에 다시 옮겨 주자.
+	list<BlendSort> InstanceMatrix;
+	D3D11_MAPPED_SUBRESOURCE		SubResource{};
+
+	m_pContext->Map(m_pVBInstance, 0, D3D11_MAP_WRITE_NO_OVERWRITE, 0, &SubResource);
+	
+	VTXMATRIX* pVertices = (VTXMATRIX*)SubResource.pData;
+	//받아온 임시저장
+
+	if(nullptr == m_pTempVertices)
+		m_pTempVertices = pVertices;
+
+	_vector CamPos = m_pGameInstance->Get_CamPosition();
+
+	for (size_t i = 0; i < m_InstanceDesc->iNumInstance; i++)
+	{
+		if (nullptr != m_pTempVertices)
+			pVertices[i] = m_pTempVertices[i];
+
+		BlendSort BlendDesc{};
+
+		BlendDesc.ViewZ = XMVectorGetX(XMVector4Length(XMLoadFloat4(&pVertices[i].vTranslation) - CamPos));
+		memcpy(&BlendDesc.vMatrix, &pVertices[i], sizeof(VTXMATRIX));
+
+		InstanceMatrix.emplace_back(BlendDesc);
+	}
+
+	//정렬
+	InstanceMatrix.sort([](BlendSort pSour, BlendSort pDest)->_bool
+		{
+			return pSour.ViewZ > pDest.ViewZ;
+		});
+
+	auto iter = InstanceMatrix.begin();
+	for (size_t i = 0; i < m_InstanceDesc->iNumInstance; i++)
+	{
+		pVertices[i] = iter->vMatrix;
+		iter++;
+	}
+
+	m_pContext->Unmap(m_pVBInstance, 0);
+}
+
 //void CVIBuffer_Instance::Fountain(_float fTimeDelta)
 //{
 //	D3D11_MAPPED_SUBRESOURCE		SubResource{};
@@ -170,6 +216,7 @@ void CVIBuffer_Instance::Free()
 	{
 		Safe_Delete_Array(m_pSpeeds);
 		Safe_Delete_Array(m_pOriginalPositions);
+		Safe_Delete_Array(m_pTempVertices);
 	}
 
 	Safe_Release(m_pVBInstance);
