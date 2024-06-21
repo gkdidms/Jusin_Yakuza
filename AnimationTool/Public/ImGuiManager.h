@@ -45,6 +45,7 @@ private:
 	void DrawTimeline(ImDrawList* d, const vector<float>& data);
 	void DrawChannels();
 
+	//¡÷ºÆ
 private:
 	void LoadAnimationCharacterList();
 
