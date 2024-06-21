@@ -91,12 +91,6 @@ HRESULT CVIBuffer_Instance_Point::Initialize(void* pArg)
 	m_pSpeeds = new _float[m_InstanceDesc->iNumInstance];
 	ZeroMemory(m_pSpeeds, sizeof(_float) * m_InstanceDesc->iNumInstance);
 
-	m_pPower = new _float[m_InstanceDesc->iNumInstance];
-	ZeroMemory(m_pPower, sizeof(_float) * m_InstanceDesc->iNumInstance);
-
-	m_pAccelTime = new _float[m_InstanceDesc->iNumInstance];
-	ZeroMemory(m_pAccelTime, sizeof(_float) * m_InstanceDesc->iNumInstance);
-
 	m_pOriginalPositions = new _float3[m_InstanceDesc->iNumInstance];
 	ZeroMemory(m_pOriginalPositions, sizeof(_float3) * m_InstanceDesc->iNumInstance);
 
@@ -116,27 +110,26 @@ HRESULT CVIBuffer_Instance_Point::Initialize(void* pArg)
 	_float RadiusZ = m_pGameInstance->Get_Random(m_InstanceDesc->vPivotPos.z  -m_InstanceDesc->fRadius, m_InstanceDesc->vPivotPos.z+m_InstanceDesc->fRadius);
 
 
-	_float Power = m_pGameInstance->Get_Random(m_InstanceDesc->vPower.x, m_InstanceDesc->vPower.y);
 	_float LifeTime = m_pGameInstance->Get_Random(m_InstanceDesc->vLifeTime.x, m_InstanceDesc->vLifeTime.y);
 
-
-
-		//m_pRectSize[i] = _float2(m_InstanceDesc.vRectSize.x, m_InstanceDesc.vRectSize.y);
 
 		// Right, Up, Loop, Pos 순서로 월드 행렬의 좌표를 넣어준다.
 		pInstanceVertices[i].vRight = _float4(1.f, 0.f, 0.f, 0.f);
 		pInstanceVertices[i].vUp = _float4(0.f, 1.f, 0.f, 0.f);
 		pInstanceVertices[i].vLook = _float4(0.f, 0.f, 1.f, 0.f);
-		//pInstanceVertices[i].vTranslation = _float4(RangeX, RangeY, RangeZ, 1.f);
-		pInstanceVertices[i].vTranslation = _float4(RadiusX, RadiusY, RadiusZ, 1.f);		
+
+		if(m_InstanceDesc->bRadius)
+			pInstanceVertices[i].vTranslation = _float4(RadiusX, RadiusY, RadiusZ, 1.f);		
+		else
+			pInstanceVertices[i].vTranslation = _float4(RangeX, RangeY, RangeZ, 1.f);
+
 		m_pOriginalPositions[i] = _float3(pInstanceVertices[i].vTranslation.x, pInstanceVertices[i].vTranslation.y, pInstanceVertices[i].vTranslation.z); // Loop를 위해 저장해준다.
 		pInstanceVertices[i].vLifeTime.x = LifeTime; // 파티클이 살아있을 수 있는 시간.
 		pInstanceVertices[i].vRectSize = fRectSize;
+		XMStoreFloat4(& pInstanceVertices[i].vDirection, XMVectorSetW(XMLoadFloat4(&pInstanceVertices[i].vTranslation) - XMLoadFloat3(&m_InstanceDesc->vOffsetPos), 0.f));
 
-
-		m_pPower[i] = Power;
 		m_pSpeeds[i] = Speed;	
-		m_pAccelTime[i] = 0.f;
+
 	}
 	m_InitialData.pSysMem = pInstanceVertices;
 

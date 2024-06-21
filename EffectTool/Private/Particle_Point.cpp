@@ -1,12 +1,7 @@
 #include "Particle_Point.h"
 #include "GameInstance.h"
 
-const _uint CParticle_Point::iAction[CParticle_Point::ACTION_END] = {
-    0x00000001, /* 0000 0001 */
-    0x00000002, /* 0000 0010 */
-//    0x00000004, /*0000 0100 */
 
-};
 CParticle_Point::CParticle_Point(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     :CEffect{ pDevice , pContext}
 {
@@ -46,45 +41,57 @@ void CParticle_Point::Priority_Tick(const _float& fTimeDelta)
 
 void CParticle_Point::Tick(const _float& fTimeDelta)
 {
-  //  m_iAction = 1;
-    if (m_iAction & iAction[ACTION_SPREAD])
+
+    __super::Tick(fTimeDelta);
+
+    if(m_fCurTime>= m_fStartTime)
     {
-         m_pVIBufferCom->Spread(fTimeDelta); 
+        if (m_iAction & iAction[ACTION_SPREAD])
+        {
+            m_pVIBufferCom->Spread(fTimeDelta);
+        }
+        if (m_iAction & iAction[ACTION_DROP])
+        {
+            m_pVIBufferCom->Drop(fTimeDelta);
+        }
     }
-    if(m_iAction & iAction[ACTION_DROP])
-    {
-        m_pVIBufferCom->Drop(fTimeDelta);   
-    }
+
+
 
 }
 
 void CParticle_Point::Late_Tick(const _float& fTimeDelta)
 {
-    m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONLIGHT, this);
+    Compute_ViewZ(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+    if(m_BufferInstance.isLoop)
+    {
+
+        m_pGameInstance->Add_Renderer(CRenderer::RENDER_BLENDER, this);
+    }
+    else
+    {
+        if (m_fCurTime >= m_fStartTime && !m_isDead)
+        {
+            m_pGameInstance->Add_Renderer(CRenderer::RENDER_BLENDER, this);
+        }
+    }
+
 }
 
 HRESULT CParticle_Point::Render()
 {
     if (FAILED(Bind_ShaderResources()))
         return E_FAIL;
-
-    m_pShaderCom->Begin(2);
+    if(m_bDirInfluence)
+        m_pShaderCom->Begin(2);
+    else
+        m_pShaderCom->Begin(3);
 
     m_pVIBufferCom->Render();
 
     return S_OK;
 }
 
-HRESULT CParticle_Point::Edit_Action(ACTION iEditAction)
-{
-    _uint position = (_uint)iEditAction;    
-
-    _uint mask = 1 << position;
-
-    m_iAction ^= mask;
-
-    return S_OK;
-}
 
 HRESULT CParticle_Point::Add_Components()
 {
@@ -99,7 +106,7 @@ HRESULT CParticle_Point::Add_Components()
         return E_FAIL;
 
     /* For.Com_Texture */
-    if (FAILED(__super::Add_Component(LEVEL_EDIT, TEXT("Prototype_Component_Texture_Sphere"),
+    if (FAILED(__super::Add_Component(LEVEL_EDIT, TEXT("Prototype_Component_Texture_Trail"),
         TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
         return E_FAIL;
 

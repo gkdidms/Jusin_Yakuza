@@ -22,8 +22,6 @@ public:
     }PARTICLE_POINT_DESC;
 
 
-    enum ACTION {ACTION_SPREAD , ACTION_DROP , ACTION_END};
-    static const _uint iAction[ACTION_END];
 private:
     CParticle_Point(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
     CParticle_Point(const CParticle_Point& rhs);
@@ -38,8 +36,8 @@ public:
     virtual void Late_Tick(const _float& fTimeDelta);
     virtual HRESULT Render();
 
-public:
-    HRESULT Edit_Action(ACTION iEditAction);
+
+
 
 private:
     CShader* m_pShaderCom = { nullptr };
@@ -47,7 +45,6 @@ private:
     CVIBuffer_Instance_Point* m_pVIBufferCom = { nullptr };
 
 
-    _uint							m_iAction = { 0 };
 
 private:
     HRESULT Add_Components();
