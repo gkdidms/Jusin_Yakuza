@@ -201,21 +201,23 @@ PS_OUT PS_MAIN_SPREAD(PS_IN In)
 {
     PS_OUT Out = (PS_OUT) 0;
 
-    Out.vColor = g_Texture.Sample(LinearSampler, In.vTexcoord);
-
+    vector Color = g_Texture.Sample(LinearSampler, In.vTexcoord);
+    
+   
+    
+    if (Color.a < 0.1f)
+        discard;
+    
+    Out.vColor = Color;
     
     
 	/*if (Out.vColor.a < 0.1f || 
 		In.vLifeTime.y > In.vLifeTime.x)
 		discard;*/
-
-    if (Out.vColor.a < 0.1f)
-        discard;
-
     //Out.vColor.a *= In.vLifeTime.x - In.vLifeTime.y;
 
     //Out.vColor.rgb = float3(1.f, 1.f, 1.f);
-   // Out.vColor = float4(1.f, 1.f, 1.f, 1.f);
+
 
     return Out;
 }
@@ -253,7 +255,21 @@ technique11 DefaultTechnique
         PixelShader = compile ps_5_0 PS_MAIN_SPREAD();
     }
 
-    pass Custom
+    pass Direction
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_Blend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		/* 어떤 셰이덜르 국동할지. 셰이더를 몇 버젼으로 컴파일할지. 진입점함수가 무엇이찌. */
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = compile gs_5_0 GS_CUSTOM();
+        HullShader = NULL;
+        DomainShader = NULL;
+        PixelShader = compile ps_5_0 PS_MAIN_SPREAD();
+    }
+
+    pass NoDirection
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_Default, 0);
@@ -261,7 +277,7 @@ technique11 DefaultTechnique
 
 		/* 어떤 셰이덜르 국동할지. 셰이더를 몇 버젼으로 컴파일할지. 진입점함수가 무엇이찌. */
         VertexShader = compile vs_5_0 VS_MAIN();
-        GeometryShader = compile gs_5_0 GS_CUSTOM();
+        GeometryShader = compile gs_5_0 GS_MAIN();
         HullShader = NULL;
         DomainShader = NULL;
         PixelShader = compile ps_5_0 PS_MAIN_SPREAD();
