@@ -1,7 +1,4 @@
 
-#include "C:\Users\yeeun\dev\std\Yakuza\Engine\Private\SoundMgr.cpp"
-
-
 #include "C:\Users\yeeun\dev\std\Yakuza\Engine\Private\Texture.cpp"
 
 
@@ -12,4 +9,7 @@
 
 
 #include "C:\Users\yeeun\dev\std\Yakuza\Engine\Private\Transform.cpp"
+
+
+#include "C:\Users\yeeun\dev\std\Yakuza\Engine\Private\VIBuffer.cpp"
 

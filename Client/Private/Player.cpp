@@ -88,7 +88,8 @@ void CPlayer::Tick(const _float& fTimeDelta)
 		m_iAnimIndex++;
 	}
 
-	m_pModelCom->Play_Animation(fTimeDelta);
+	if (m_isAnimStart)
+		m_pModelCom->Play_Animation(fTimeDelta);
 
 	m_pColliderCom->Tick(m_pTransformCom->Get_WorldMatrix());
 
