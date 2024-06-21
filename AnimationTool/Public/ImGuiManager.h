@@ -34,8 +34,9 @@ private:
 	void ModelList();
 	void AnimListWindow();
 	void BoneListWindow();
-	void FXWindow(ImGuiIO& io);
 	void KeyFrameWindow();
+	void MeshListWindow();
+	void FXWindow(ImGuiIO& io);
 	void FX(ImDrawList* d, V2 a, V2 b, V2 s, ImVec4 m, float t);
 
 	void DrawTimeline(ImDrawList* d, const vector<float>& data);
@@ -52,27 +53,29 @@ private:
 	void Update_Model_Scaled();
 
 private:
-	_bool		m_isAnimListWindow = { false };
-	int			m_iAnimIndex = { 0 };
-	int			m_iModelSelectedIndex = { 0 };
-	int			m_iBoneSelectedIndex = { 0 };
-	int			m_iChannelSelectedIndex = { 0 };
+	_bool					m_isAnimListWindow = { false };
+	int						m_iAnimIndex = { 0 };
+	int						m_iModelSelectedIndex = { 0 };
+	int						m_iBoneSelectedIndex = { 0 };
+	int						m_iChannelSelectedIndex = { 0 };
+	int						m_iMeshSelectedIndex = { 0 };
 
-	vector<string> m_ModelNameList;
-	vector<string> m_AnimNameList;
-	vector<string> m_BoneNameList;
-	vector<string> m_ChannelNameList;
-
-private:
-	_float				m_fTimeDelta = { 0.f };
-
+	vector<string>			m_ModelNameList;
+	vector<string>			m_AnimNameList;
+	vector<string>			m_BoneNameList;
+	vector<string>			m_ChannelNameList;
+	vector<string>			m_MeshNameList;
 
 private:
-	float				m_ModelPosition[3] = { 0.f };
-	float				m_ModelRotation[3] = { 0.f };
-	float				m_ModelScale = { 0.f };
+	_float					m_fTimeDelta = { 0.f };
 
-	bool				m_isPause = { false };
+
+private:
+	float					m_ModelPosition[3] = { 0.f };
+	float					m_ModelRotation[3] = { 0.f };
+	float					m_ModelScale = { 0.f };
+
+	bool					m_isPause = { false };
 
 private:
 	ID3D11Device*			m_pDevice = { nullptr };
