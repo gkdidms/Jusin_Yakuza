@@ -203,7 +203,7 @@ PS_OUT PS_MAIN_SPREAD(PS_IN In)
 
     vector Color = g_Texture.Sample(LinearSampler, In.vTexcoord);
     
-    Color.a=
+   
     
     if (Color.a < 0.1f)
         discard;
@@ -266,14 +266,14 @@ technique11 DefaultTechnique
         GeometryShader = compile gs_5_0 GS_CUSTOM();
         HullShader = NULL;
         DomainShader = NULL;
-        PixelShader = compile ps_5_0 PS_MAIN_SPREAD();QQ
+        PixelShader = compile ps_5_0 PS_MAIN_SPREAD();
     }
 
     pass NoDirection
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_Default, 0);
-        SetBlendState(BS_Blend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 
 		/* 어떤 셰이덜르 국동할지. 셰이더를 몇 버젼으로 컴파일할지. 진입점함수가 무엇이찌. */
         VertexShader = compile vs_5_0 VS_MAIN();
