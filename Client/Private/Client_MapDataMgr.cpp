@@ -11,10 +11,8 @@ IMPLEMENT_SINGLETON(CClient_MapDataMgr)
 
 CClient_MapDataMgr::CClient_MapDataMgr()
     : m_pGameInstance{ CGameInstance::GetInstance() }
-    , m_pMapDataMgr{ CMapDataMgr::GetInstance() }
 {
     Safe_AddRef(m_pGameInstance);
-    Safe_AddRef(m_pMapDataMgr);
 }
 
 
@@ -133,6 +131,5 @@ void CClient_MapDataMgr::Free()
 
     m_Layers.clear();
 
-    Safe_Release(m_pMapDataMgr);
     Safe_Release(m_pGameInstance);
 }

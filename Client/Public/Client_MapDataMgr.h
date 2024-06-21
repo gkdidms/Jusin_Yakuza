@@ -6,7 +6,6 @@
 
 BEGIN(Engine)
 class CGameInstance;
-class CMapDataMgr;
 END
 
 BEGIN(Client)
@@ -39,8 +38,6 @@ private:
 
 private:
 	class CGameInstance*					m_pGameInstance = { nullptr };
-	class CMapDataMgr*						m_pMapDataMgr = { nullptr };
-
 
 private:
 	MAP_TOTALINFORM_DESC					m_MapTotalInform{};

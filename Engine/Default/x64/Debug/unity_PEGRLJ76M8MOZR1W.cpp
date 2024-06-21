@@ -1,9 +1,9 @@
 
-#include "D:\Jusin_TeamProject\Engine\Private\VIBuffer_Instance.cpp"
-
-
 #include "D:\Jusin_TeamProject\Engine\Private\VIBuffer_Instance_Point.cpp"
 
 
 #include "D:\Jusin_TeamProject\Engine\Private\VIBuffer_Rect.cpp"
+
+
+#include "D:\Jusin_TeamProject\Engine\Private\VIBuffer_Terrain.cpp"
 

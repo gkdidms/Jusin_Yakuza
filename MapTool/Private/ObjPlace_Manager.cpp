@@ -455,8 +455,7 @@ void CObjPlace_Manager::Save_GameObject(int iLevel)
 		iIndex++;
 	}
 
-	
-	/*CMapDataMgr::GetInstance()->Export_Bin_Map_Data(&pMapTotalInform);*/
+
 	Export_Bin_Map_Data(&pMapTotalInform);
 
 	Safe_Delete_Array(pMapTotalInform.pMapObjDesc);
@@ -472,7 +471,6 @@ void CObjPlace_Manager::Load_GameObject(int iNum)
 
 
 	MAP_TOTALINFORM_DESC		mapTotalInform;
-	/*CMapDataMgr::GetInstance()->Import_Bin_Map_Data_OnTool(&mapTotalInform, m_FileNames[iNum]);*/
 	Import_Bin_Map_Data_OnTool(&mapTotalInform, m_FileNames[iNum]);
 
 	CTerrain_Manager::GetInstance()->Change_LandScale(mapTotalInform.vPlaneSize.x, mapTotalInform.vPlaneSize.y);
