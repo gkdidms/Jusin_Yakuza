@@ -1,9 +1,14 @@
 #include "ImguiManager.h"
 #include "GameInstance.h"
+
 #include "AnimModel.h"
+
+#pragma region "Model"
 #include "Animation.h"
 #include "Bone.h"
 #include "Channel.h"
+#include "Mesh.h"
+#pragma endregion
 
 #pragma region "Imgui"
 #include "imgui.h"

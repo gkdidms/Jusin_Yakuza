@@ -40,6 +40,7 @@ public:
 public:
 	const vector<class CAnimation*>& Get_Animations();
 	const vector<class CBone*>& Get_Bones();
+	const vector<class CMesh*>& Get_Meshes();
 
 public:
 	void Change_Model(wstring strModelName);

@@ -59,16 +59,17 @@ private:
 	int						m_iBoneSelectedIndex = { 0 };
 	int						m_iChannelSelectedIndex = { 0 };
 	int						m_iMeshSelectedIndex = { 0 };
+	int						m_iAddedMeshSelectedIndex = { 0 };
 
 	vector<string>			m_ModelNameList;
 	vector<string>			m_AnimNameList;
 	vector<string>			m_BoneNameList;
 	vector<string>			m_ChannelNameList;
 	vector<string>			m_MeshNameList;
+	vector<string>			m_AddedMeshNameList;
 
 private:
-	_float					m_fTimeDelta = { 0.f };
-
+	_float					m_fTimeDeltaScale = { 1.f };
 
 private:
 	float					m_ModelPosition[3] = { 0.f };

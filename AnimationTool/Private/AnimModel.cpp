@@ -105,6 +105,11 @@ const vector<class CBone*>& CAnimModel::Get_Bones()
     return m_pModelCom->Get_Bones();
 }
 
+const vector<class CMesh*>& CAnimModel::Get_Meshes()
+{
+    return m_pModelCom->Get_Meshes();
+}
+
 void CAnimModel::Change_Model(wstring strModelName)
 {
     Safe_Release(m_pModelCom);
