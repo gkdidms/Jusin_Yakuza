@@ -129,7 +129,7 @@ float3 RandomNormal(float2 vTex)
     return normalize(float3(noiseX, noiseY, noiseZ));
 }
 
-float g_fRadiuse = 0.0005f;
+float g_fRadiuse = 0.001f;
 
 float4 SSAO(float2 vTexcoord, float fDepth, float3 vNormal, float fViewZ)
 {
@@ -137,14 +137,14 @@ float4 SSAO(float2 vTexcoord, float fDepth, float3 vNormal, float fViewZ)
     
     for (int i = 0; i < 16; ++i)
     {
-        float3 vRay = normalize(cross(RandomNormal(vTexcoord), g_vRandom[i]));
+        float3 vRay = cross(RandomNormal(vTexcoord), g_vRandom[i]);
         float3 vReflect = normalize(reflect(vRay, vNormal)) * g_fRadiuse;
         vReflect.x *= -1.f;
         float2 vRandowUV = vTexcoord + vReflect.xy;
         
-        float fOccNorm = g_DepthTexture.Sample(LinearSampler, vRandowUV).x * fViewZ;
+        float fOccNorm = g_DepthTexture.Sample(LinearSampler, vRandowUV).x * g_fFar * fViewZ;
         
-        if (fOccNorm <= fDepth + 0.0003f)
+        if (fOccNorm <= fDepth + 0.003f)
             ++fOcclusion;
     }
     
@@ -152,15 +152,6 @@ float4 SSAO(float2 vTexcoord, float fDepth, float3 vNormal, float fViewZ)
     
     return vAmbient;
 }
-
-float weights[9] =
-{
-    0.004f, 0.009f, 0.012f,
-        0.021f, 0.027f, 0.021f,
-    0.012f, 0.009f, 0.004f
-};
-
-float blurRadius = 1.f; // 흐림 정도를 조절하는 값
 
 PS_OUT_LIGHT PS_MAIN_LIGHT_DIRECTIONAL(PS_IN In)
 {
@@ -173,7 +164,7 @@ PS_OUT_LIGHT PS_MAIN_LIGHT_DIRECTIONAL(PS_IN In)
     
     
     float fViewZ = vDepthDesc.y * g_fFar;
-    float fDepth = vDepthDesc.x * fViewZ;
+    float fDepth = vDepthDesc.x * g_fFar * fViewZ;
     float4 fAmbient = SSAO(In.vTexcoord, fDepth, vNormal.xyz, fViewZ);
     
     Out.vAmbient = 1 - fAmbient;
@@ -226,7 +217,7 @@ PS_OUT PS_MAIN_COPY_BACKBUFFER_RESULT(PS_IN In)
     vector vShade = g_ShadeTexture.Sample(LinearSampler, In.vTexcoord);
     vector vAmbient = g_AmbientTexture.Sample(LinearSampler, In.vTexcoord);
     
-    Out.vColor = vDiffuse * (vShade * vAmbient);
+    Out.vColor = vDiffuse * (vShade );
     
     return Out;
 }

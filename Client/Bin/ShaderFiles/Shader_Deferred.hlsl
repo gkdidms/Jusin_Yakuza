@@ -144,7 +144,7 @@ float4 SSAO(float2 vTexcoord, float fDepth, float3 vNormal, float fViewZ)
         
         float fOccNorm = g_DepthTexture.Sample(LinearSampler, vRandowUV).x * g_fFar * fViewZ;
         
-        if (fOccNorm <= fDepth + 0.0003f)
+        if (fOccNorm <= fDepth + 0.003f)
             ++fOcclusion;
     }
     
@@ -217,7 +217,7 @@ PS_OUT PS_MAIN_COPY_BACKBUFFER_RESULT(PS_IN In)
     vector vShade = g_ShadeTexture.Sample(LinearSampler, In.vTexcoord);
     vector vAmbient = g_AmbientTexture.Sample(LinearSampler, In.vTexcoord);
     
-    Out.vColor = vDiffuse * (vShade * vAmbient);
+    Out.vColor = vDiffuse * (vShade );
     
     return Out;
 }
