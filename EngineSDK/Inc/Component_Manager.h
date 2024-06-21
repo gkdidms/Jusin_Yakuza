@@ -27,6 +27,7 @@
 #include "Cell.h"
 
 #pragma region VIBuffer
+#include "VIBuffer_Terrain.h"
 #include "VIBuffer_Terrain_Flat.h"
 #pragma endregion
 

@@ -12,13 +12,13 @@ BEGIN(Client)
 
 class CConstruction final : public CGameObject
 {
-public:
-	enum OBJECT_TYPE {
-		INTERACT_OBJ,
-		NONINTERACT_OBJ,
-		MONSTER,
-		OBJ_END
-	};
+//public:
+//	enum OBJECT_TYPE {
+//		INTERACT_OBJ,
+//		NONINTERACT_OBJ,
+//		MONSTER,
+//		OBJ_END
+//	};
 
 public:
 	typedef struct tMapObjDesc : public CGameObject::GAMEOBJECT_DESC
@@ -28,6 +28,7 @@ public:
 		wstring			wstrModelName;
 		int				iShaderPass;
 		int				iObjType;
+		int				iObjPropertyType;
 	}MAPOBJ_DESC;
 
 
@@ -45,21 +46,26 @@ public:
 	virtual HRESULT Render() override;
 
 public:
-	CTransform* Get_Transform() { return m_pTransformCom; }
+	CTransform*					Get_Transform() { return m_pTransformCom; }
 
 public:
-	int						Get_ObjPlaceDesc(OBJECTPLACE_DESC*	objplaceDesc);
+	int							Get_ObjPlaceDesc(OBJECTPLACE_DESC*	objplaceDesc);
 	MAPOBJ_DESC					Get_MapObjDesc_For_AddList();
+
+	/* 맵 로딩 후 배치된 게임오브젝트 수정을 위한 함수들 */
+	void										Edit_GameObject_Information(CConstruction::MAPOBJ_DESC	mapDesc);
+	CConstruction::MAPOBJ_DESC					Send_GameObject_Information();
 
 private:
 	CShader* m_pShaderCom = { nullptr };
 	CModel* m_pModelCom = { nullptr };
 
 private:
-	int						m_iLayerNum;
+	int						m_iLayerNum = { 0 };
 	wstring					m_wstrModelName;
 	int						m_iShaderPassNum = { 0 };
 	int						m_iObjectType = { 0 };
+	int						m_iObjectPropertyType = { 0 };
 
 public:
 	HRESULT Add_Components(void* pArg);

@@ -9,8 +9,9 @@ namespace Engine
 		XMFLOAT4X4		vTransform;
 		char			strLayer[MAX_PATH];
 		char			strModelCom[MAX_PATH]; /* model 이름 */
-		int				iShaderNum; /* shader pass 번호 */
-		int				iObjType; /* 상호작용 관련 */
+		int				iShaderPassNum; /* shader pass 번호 */
+		int				iObjType; /* object 종류 관련 - construction, item 등.. */
+		int				iObjPropertyType; /* object 별 특징 */
 	};
 
 
