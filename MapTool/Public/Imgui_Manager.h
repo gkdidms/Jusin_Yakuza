@@ -43,6 +43,7 @@ private:
 private:
 	CNavigation_Manager* m_pNavigationMgr;
 	CObjPlace_Manager* m_pObjPlace_Manager;
+	CGameInstance* m_pGameInstance;
 
 	/* imgui 창 관련 bool 변수 */
 private:

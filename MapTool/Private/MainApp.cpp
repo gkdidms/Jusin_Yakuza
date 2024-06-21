@@ -15,6 +15,7 @@
 
 CMainApp::CMainApp() :
 	m_pGameInstance{ CGameInstance::GetInstance() }
+	, m_pIMGUI_Manager {CImgui_Manager::GetInstance()}
 {
 	Safe_AddRef(m_pGameInstance);
 }
@@ -44,7 +45,7 @@ HRESULT CMainApp::Initialize()
 	if (FAILED(Open_Level(LEVEL_LOGO)))
 		return E_FAIL;
 
-	if (FAILED(CImgui_Manager::GetInstance()->Initialize(m_pDevice, m_pContext)))
+	if (FAILED(m_pIMGUI_Manager->Initialize(m_pDevice, m_pContext)))
 		return E_FAIL;
 
 	return S_OK;
@@ -56,9 +57,9 @@ void CMainApp::Tick(const _float& fTimeDelta)
 
 	m_pGameInstance->Tick(fTimeDelta);
 
-	CImgui_Manager::GetInstance()->Tick(fTimeDelta);
+	m_pIMGUI_Manager->Tick(fTimeDelta);
 
-	CImgui_Manager::GetInstance()->Late_Tick(fTimeDelta);
+	m_pIMGUI_Manager->Late_Tick(fTimeDelta);
 }
 
 HRESULT CMainApp::Render()
@@ -77,7 +78,7 @@ HRESULT CMainApp::Render()
 	m_pGameInstance->Clear_BackBuffer_View(_float4(0.f, 0.f, 1.f, 1.f));
 	m_pGameInstance->Clear_DepthStencil_View();
 	
-	CImgui_Manager::GetInstance()->Render();
+	m_pIMGUI_Manager->Render();
 	m_pGameInstance->Draw();
 	
 
@@ -158,7 +159,7 @@ void CMainApp::Free()
 	Safe_Release(m_pDevice);
 
 	/* 여기서 instance release 해줌 */
-	CImgui_Manager::GetInstance()->DestroyInstance();
+	Safe_Release(m_pIMGUI_Manager);
 
 	/* 레퍼런스 카운트를 0으로만든다. */
 	Safe_Release(m_pGameInstance);
