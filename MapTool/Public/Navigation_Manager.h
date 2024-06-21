@@ -30,20 +30,24 @@ public:
 
 public:
 	void					Load_Cell_IMGUI();
-
-public:
 	void					Make_Point(_vector vPickingPos);
 	HRESULT					Make_Cell();
+
 	HRESULT					Save_Cells(_uint iIndex);
 	HRESULT					Load_Cells(_uint iIndex);
+
 	void					Show_FileName();
 	void					Update_FileName();
 
 	void					Delete_Cell(_uint iIndex);
 	void					Delete_AllCell();
 
+	/* cell 수정하는 부분 */
+	void					Find_Cells();
+
 private:
 	_float3					Find_ClosestPoint(_vector pickPos, _float* pMinDistance);
+	_float3					Find_ClosestCells(_vector pickPos, _float* pMinDistance);
 
 
 	/* For IMGUI_MANAGER */
@@ -79,6 +83,8 @@ private:
 	/* For IMGUI_MANAGER */
 private:
 	_int							m_iCurrentCellIndex = { 0 };
+	_int							m_iCurrentFileNavi = { 0 };
+	_int							m_iCurrentOption = { 0 };
 
 
 public:
