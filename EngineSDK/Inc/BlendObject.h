@@ -25,7 +25,7 @@ private:
     _float m_fViewZ = { 0.f };
 
 protected:
-    _float Compute_ViewZ(_fvector vWorldPos);
+    void Compute_ViewZ(_fvector vWorldPos);
 
 public:
     virtual void Free() override;

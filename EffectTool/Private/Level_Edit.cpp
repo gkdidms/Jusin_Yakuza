@@ -28,6 +28,10 @@ void CLevel_Edit::Tick(const _float& fTimeDelta)
 HRESULT CLevel_Edit::Ready_Object(const wstring& strLayerTag)
 {
 
+	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_EDIT, TEXT("Prototype_GameObject_Sky"),strLayerTag)))
+		return E_FAIL;
+
+
 	LIGHT_DESC			LightDesc = {};	
 
 	LightDesc.eType = LIGHT_DESC::TYPE_DIRECTIONAL;
