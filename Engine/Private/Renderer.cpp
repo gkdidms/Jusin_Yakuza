@@ -197,6 +197,8 @@ HRESULT CRenderer::Initialize()
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_BackBuffer"), 150.f, 150.f, 100.f, 100.f)))
 		return E_FAIL;
+
+#if !defined(_CLIEND)
 	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_128x128"), 250.f, 050.f, 100.f, 100.f)))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_Luminance"), 250.f, 150.f, 100.f, 100.f)))
@@ -218,6 +220,8 @@ HRESULT CRenderer::Initialize()
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_1x1"), 450.f, 250.f, 100.f, 100.f)))
 		return E_FAIL;
+#endif // defined(_CLIEND)
+
 #endif // _DEBUG
 
 
@@ -240,6 +244,7 @@ void CRenderer::Draw()
 	Render_CopyBackBuffer();
 	Render_DeferredResult();
 
+#if !defined(_CLIEND)
 	if (m_isHDR)
 	{
 		Render_Luminance();
@@ -248,6 +253,7 @@ void CRenderer::Draw()
 		Render_HDR();
 		Redner_LuminanceResult();
 	}
+#endif // defined(_CLIEND)
 
 	Render_NonLight();
 	Render_Blender();
