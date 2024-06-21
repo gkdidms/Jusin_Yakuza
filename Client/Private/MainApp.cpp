@@ -81,6 +81,10 @@ void CMainApp::Tick(const _float& fTimeDelta)
 		m_isDebug = !m_isDebug;
 		m_pDebugMananger->Set_Debug(m_isDebug);
 	}
+	if (m_pGameInstance->GetKeyState(DIK_F9) == TAP)
+	{
+		m_pGameInstance->Set_HDR(!m_pGameInstance->Get_HDR());
+	}
 		
 	if (m_isDebug) m_pDebugMananger->Tick();
 #endif // _DEBUG
@@ -105,6 +109,10 @@ HRESULT CMainApp::Render()
 	m_pGameInstance->Draw();
 
 	m_pGameInstance->Render_Font(TEXT("Font_Default"), m_szFPS, _float2(0.f, 0.f), XMVectorSet(1.f, 1.f, 0.f, 1.f));
+
+	m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("F9 : HDR On/Off"), _float2(0.f, 20.f), XMVectorSet(1.f, 1.f, 0.f, 1.f));
+	m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("F10 : Debug Tool"), _float2(0.f, 40.f), XMVectorSet(1.f, 1.f, 0.f, 1.f));
+	m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("TAP : Camera Pos Fix"), _float2(0.f, 60.f), XMVectorSet(1.f, 1.f, 0.f, 1.f));
 	
 #ifdef _DEBUG
 	if (m_isDebug) m_pDebugMananger->Render();

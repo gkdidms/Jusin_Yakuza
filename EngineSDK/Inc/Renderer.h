@@ -5,7 +5,6 @@ BEGIN(Engine)
 class ENGINE_DLL CRenderer :
     public CBase
 {
-
 public:
     enum RENDERER_STATE { RENDER_PRIORITY, RENDER_SHADOWOBJ, RENDER_NONBLENDER, RENDER_NONLIGHT, RENDER_BLENDER, RENDER_UI, RENDER_END };
 
@@ -75,7 +74,7 @@ private:
     //ID3D11DepthStencilView* m_pLuminanceStencilView = { nullptr };
 
 private:
-    _bool m_isHDR = { true };
+    _bool m_isHDR = { false };
 
 public:
     static CRenderer* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

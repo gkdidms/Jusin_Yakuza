@@ -46,6 +46,9 @@ void CDebugManager::Tick()
     ImGui_ImplWin32_NewFrame();
     ImGui::NewFrame();
 
+    _bool show_demo_window = true;
+    ImGui::ShowDemoWindow(&show_demo_window);
+
     Window_Debug();
 }
 
