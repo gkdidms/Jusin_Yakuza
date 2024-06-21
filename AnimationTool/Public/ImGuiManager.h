@@ -30,6 +30,9 @@ public:
 	void Tick(const _float& fTimeDelta);
 	HRESULT Render();
 
+public:
+	void Connect_Model_Ref();
+
 private:
 	void ModelList();
 	void AnimListWindow();
@@ -44,29 +47,40 @@ private:
 
 private:
 	void LoadAnimationCharacterList();
-	void Connect_Model_Ref();
 
 private:
+	void Update_Model_Position();
 	void Update_Model_RotationX();
 	void Update_Model_RotationY();
 	void Update_Model_RotationZ();
 	void Update_Model_Scaled();
 
 private:
-	_bool					m_isAnimListWindow = { false };
+	_bool					m_isOnToolWindows = { false };
+
 	int						m_iAnimIndex = { 0 };
+	int						m_iAddedAnimSelectedIndex = { 0 };
+
 	int						m_iModelSelectedIndex = { 0 };
+
 	int						m_iBoneSelectedIndex = { 0 };
+
 	int						m_iChannelSelectedIndex = { 0 };
+
 	int						m_iMeshSelectedIndex = { 0 };
 	int						m_iAddedMeshSelectedIndex = { 0 };
 
-	vector<string>			m_ModelNameList;
-	vector<string>			m_AnimNameList;
-	vector<string>			m_BoneNameList;
-	vector<string>			m_ChannelNameList;
-	vector<string>			m_MeshNameList;
-	vector<string>			m_AddedMeshNameList;
+	vector<string>							m_ModelNameList;
+
+	vector<string>							m_AnimNameList;
+	unordered_map<_uint, string>			m_AddedAnims;
+
+	vector<string>							m_BoneNameList;
+
+	vector<string>							m_ChannelNameList;
+
+	vector<string>							m_MeshNameList;
+	unordered_map<_uint, string>			m_AddedMeshes;
 
 private:
 	_float					m_fTimeDeltaScale = { 1.f };
@@ -75,6 +89,8 @@ private:
 	float					m_ModelPosition[3] = { 0.f };
 	float					m_ModelRotation[3] = { 0.f };
 	float					m_ModelScale = { 0.f };
+
+	float					m_fAnimationPosition = { 0.f };
 
 	bool					m_isPause = { false };
 

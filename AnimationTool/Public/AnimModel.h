@@ -34,6 +34,7 @@ public:
 	virtual HRESULT Render();
 
 public:
+	void Set_Position(_fvector vPosition);
 	void Set_Scaled(_float x, _float y, _float z);
 	void Set_Rotation(_uint iAxis, _float vRadian, _float fTimeDelta);
 
@@ -46,6 +47,9 @@ public:
 	void Change_Model(wstring strModelName);
 	void Change_Animation(_uint iAnimIndex);
 	void Select_Bone(_uint iBoneIndex);
+	void Select_Mesh(_uint iMeshIndex) {
+		m_iSelectedMeshIndex = iMeshIndex;
+	}
 
 private:
 	HRESULT	Add_Components();
@@ -61,6 +65,7 @@ private:
 	wstring m_strModelName;
 	_uint	m_iAnimIndex = { 0 };
 	_uint	m_iPassIndex = { 0 };
+	_uint	m_iSelectedMeshIndex = { 0 };
 
 public:
 	static CAnimModel* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

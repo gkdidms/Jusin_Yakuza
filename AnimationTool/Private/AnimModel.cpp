@@ -2,6 +2,7 @@
 #include "GameInstance.h"
 #include "ModelBoneSphere.h"
 #include "Bone.h"
+#include "Mesh.h"
 
 CAnimModel::CAnimModel(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     :CGameObject{pDevice, pContext}
@@ -71,18 +72,37 @@ HRESULT CAnimModel::Render()
     if (FAILED(Bind_ShaderResources()))
         return E_FAIL;
 
-    for (size_t i = 0; i < m_pModelCom->Get_NumMeshes(); i++)
+    int i = 0;
+
+    for (auto& pMesh : m_pModelCom->Get_Meshes())
     {
         m_pModelCom->Bind_BoneMatrices(m_pShaderCom, "g_BoneMatrices", i);
 
         m_pModelCom->Bind_Material(m_pShaderCom, "g_Texture", i, aiTextureType_DIFFUSE);
 
-        m_pShaderCom->Begin(m_iPassIndex);
+        if (m_iSelectedMeshIndex == i)
+        {
+            m_pShaderCom->Begin(2);
+        }
+        else
+        {
+            if (pMesh->Get_AlphaApply())
+                m_pShaderCom->Begin(3);
+            else
+                m_pShaderCom->Begin(m_iPassIndex);
+        }
 
         m_pModelCom->Render(i);
+
+        i++;
     }
 
     return S_OK;
+}
+
+void CAnimModel::Set_Position(_fvector vPosition)
+{
+    m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPosition);
 }
 
 void CAnimModel::Set_Scaled(_float x, _float y, _float z)

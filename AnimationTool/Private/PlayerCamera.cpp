@@ -1,4 +1,5 @@
 #include "PlayerCamera.h"
+#include "GameInstance.h"
 
 CPlayerCamera::CPlayerCamera(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CCamera{ pDevice, pContext }
@@ -29,7 +30,8 @@ void CPlayerCamera::Priority_Tick(const _float& fTimeDelta)
 
 void CPlayerCamera::Tick(const _float& fTimeDelta)
 {
-
+	if (m_pGameInstance->GetKeyState(DIK_PGUP) == HOLD)
+		Zoom(fTimeDelta);
 	__super::Tick(fTimeDelta);
 }
 
