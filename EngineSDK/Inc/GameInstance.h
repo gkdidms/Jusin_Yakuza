@@ -74,6 +74,8 @@ public:
     /* Renderer */
 public: 
     void Add_Renderer(CRenderer::RENDERER_STATE eRenderState, class CGameObject* pGameObject);
+    void Set_HDR(_bool isHDR);
+    _bool Get_HDR();
 #ifdef _DEBUG
 public:
     HRESULT Add_DebugComponent(class CComponent* pComponent);

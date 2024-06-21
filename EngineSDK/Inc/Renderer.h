@@ -14,6 +14,12 @@ private:
     virtual ~CRenderer() = default;
 
 public:
+    void Set_HDR(_bool isHDR) { m_isHDR = isHDR; }
+
+public:
+    _bool Get_HDR() { return m_isHDR; }
+
+public:
     HRESULT Initialize();
     void Add_Renderer(RENDERER_STATE eRenderState, class CGameObject* pGameObject);
     void Draw();
@@ -35,6 +41,7 @@ private:
     void Render_HDR();
     void Render_CopyLuminance(); 
     void Render_AvgLuminance();
+    void Redner_LuminanceResult();
 
     void Render_NonLight();
     void Render_Blender();
@@ -66,6 +73,9 @@ private:
 
     ID3D11DepthStencilView* m_pLightDepthStencilView = { nullptr };
     //ID3D11DepthStencilView* m_pLuminanceStencilView = { nullptr };
+
+private:
+    _bool m_isHDR = { true };
 
 public:
     static CRenderer* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

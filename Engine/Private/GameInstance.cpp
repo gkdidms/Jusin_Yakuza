@@ -207,6 +207,16 @@ void CGameInstance::Add_Renderer(CRenderer::RENDERER_STATE eRenderState, CGameOb
 	m_pRenderer->Add_Renderer(eRenderState, pGameObject);
 }
 
+void CGameInstance::Set_HDR(_bool isHDR)
+{
+	m_pRenderer->Set_HDR(isHDR);
+}
+
+_bool CGameInstance::Get_HDR()
+{
+	return m_pRenderer->Get_HDR();
+}
+
 #ifdef _DEBUG
 HRESULT CGameInstance::Add_DebugComponent(CComponent* pComponent)
 {
