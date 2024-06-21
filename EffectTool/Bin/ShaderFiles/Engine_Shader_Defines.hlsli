@@ -76,6 +76,8 @@ BlendState BS_AlphaBlend
     SrcBlend = Src_Alpha;
     DestBlend = Inv_Src_Alpha;
     BlendOp = Add;
+    //BlendOp = REV_SUBTRACT;
+
 };
 
 BlendState BS_Blend
