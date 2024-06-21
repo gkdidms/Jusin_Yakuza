@@ -34,6 +34,8 @@ private:
 	HRESULT									Set_Terrain_Size(int iStageLevel);
 	int										Find_Layers_Index(char* strLayer);
 
+	HRESULT									Import_Bin_Map_Data_OnClient(MAP_TOTALINFORM_DESC* mapObjData, int iLevel);
+
 
 private:
 	class CGameInstance*					m_pGameInstance = { nullptr };

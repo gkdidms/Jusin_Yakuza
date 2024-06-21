@@ -64,8 +64,8 @@ public:
 
 private:
 	void					Load_ModelName();
-
-
+	HRESULT					Import_Bin_Map_Data_OnTool(MAP_TOTALINFORM_DESC* mapObjData, char* fileName);
+	HRESULT					Export_Bin_Map_Data(MAP_TOTALINFORM_DESC* mapObjData);
 
 private:
 	string					modifyString(string& input);
