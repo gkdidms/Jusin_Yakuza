@@ -83,8 +83,9 @@ private:
 	/* For IMGUI_MANAGER */
 private:
 	_int							m_iCurrentCellIndex = { 0 };
-
+	_int							m_iCurrentFileNavi = { 0 };
 	_int							m_iCurrentOption = { 0 };
+
 
 public:
 	virtual void Free() override;

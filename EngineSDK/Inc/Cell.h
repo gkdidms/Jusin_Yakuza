@@ -23,6 +23,7 @@ public:
     _vector Get_Point(TYPE eType) { return XMLoadFloat3(&m_vPoints[eType]); }
     _int Get_Index() { return m_iIndex; }
     OPTION Get_Option() { return m_OptionType; }
+    void    Set_Option(CCell::OPTION  iOption) {m_OptionType = iOption;}
 
 public:
     HRESULT Initialize(const _float3* pPoints, _int iIndex, OPTION OptionType);

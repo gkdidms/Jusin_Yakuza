@@ -249,6 +249,9 @@ HRESULT CNavigation_Manager::Load_Cells(_uint iIndex)
 		Safe_Release(iter);
 	m_Cells.clear();
 
+	/* 새로 로드할 때는 index 다시 0으로 되돌리기*/
+	m_iCurrentCellIndex = 0;
+
 	_ulong		dwByte = {};
 	char fullPath[MAX_PATH];
 	strcpy_s(fullPath, "../../Client/Bin/DataFiles/NaviData/");
@@ -290,6 +293,9 @@ HRESULT CNavigation_Manager::Load_Cells(_uint iIndex)
 	}
 
 	in.close();
+
+	/* option 설정 현재 셀에 맞게 */
+	m_iCurrentOption = m_Cells[m_iCurrentCellIndex]->Get_Option();
 
 	Update_CellsName();
 }
@@ -461,18 +467,23 @@ void CNavigation_Manager::Show_Cells_IMGUI()
 	if (0 < m_CellsName.size())
 	{
 		static int cell_current_idx;
+
+		if (cell_current_idx != m_iCurrentCellIndex)
+		{
+			cell_current_idx = m_iCurrentCellIndex;
+		}
+
 		if (ImGui::BeginListBox("listbox 0"))
 		{
 			for (int n = 0; n < m_CellsName.size(); n++)
 			{
 				/*const bool is_selected = (cell_current_idx == n);*/
-				const bool is_selected = (m_iCurrentCellIndex == n);
+				const bool is_selected = (cell_current_idx == n);
 				if (ImGui::Selectable(m_CellsName[n], is_selected))
 				{
 					/*cell_current_idx = n;
 					m_iCurrentCellIndex = cell_current_idx;*/
 					cell_current_idx = n;
-					m_iCurrentCellIndex = n;
 				}
 
 				if (is_selected)
@@ -481,6 +492,35 @@ void CNavigation_Manager::Show_Cells_IMGUI()
 			ImGui::EndListBox();
 		}
 
+		ImGui::Text(u8"네비게이션 옵션");
+		static int naviOption = m_Cells[m_iCurrentCellIndex]->Get_Index();
+
+		/* 다른 오브젝트 클릭시 */
+		if (m_iCurrentCellIndex != cell_current_idx)
+		{
+			m_iCurrentCellIndex = cell_current_idx;
+			m_iCurrentOption = m_Cells[m_iCurrentCellIndex]->Get_Option();
+		}
+
+
+		if (ImGui::RadioButton(u8"navi옵션1", m_iCurrentOption == 0))
+		{
+			naviOption = 0;
+			m_iCurrentOption = 0;
+		}
+		ImGui::SameLine();
+		if (ImGui::RadioButton(u8"navi옵션2", m_iCurrentOption == 1))
+		{
+			naviOption = 1;
+			m_iCurrentOption = 1;
+		}
+
+		m_Cells[m_iCurrentCellIndex]->Set_Option(static_cast<CCell::OPTION>(m_iCurrentOption));
+
+		/*if (ImGui::Button(u8"네비 옵션 수정"))
+		{
+			m_Cells[m_iCurrentCellIndex]->Set_Option(static_cast<CCell::OPTION>(m_iCurrentOption));
+		}*/
 
 	}
 
