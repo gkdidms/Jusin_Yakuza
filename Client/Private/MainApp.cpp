@@ -87,6 +87,13 @@ void CMainApp::Tick(const _float& fTimeDelta)
 
 HRESULT CMainApp::Render()
 {
+	/* 그린다. */
+	m_pGameInstance->Clear_BackBuffer_View(_float4(0.f, 0.f, 1.f, 1.f));
+	m_pGameInstance->Clear_DepthStencil_View();
+
+	m_pGameInstance->Draw();
+
+#ifdef _DEBUG
 	++m_iNumRender;
 
 	if (m_fTimeAcc >= 1.f)
@@ -97,20 +104,13 @@ HRESULT CMainApp::Render()
 		m_iNumRender = 0;
 	}
 
-	/* 그린다. */
-	m_pGameInstance->Clear_BackBuffer_View(_float4(0.f, 0.f, 1.f, 1.f));
-	m_pGameInstance->Clear_DepthStencil_View();
-
-	m_pGameInstance->Draw();
-
 	m_pGameInstance->Render_Font(TEXT("Font_Default"), m_szFPS, _float2(0.f, 0.f), XMVectorSet(1.f, 1.f, 0.f, 1.f));
 
 	m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("F8 : Console"), _float2(0.f, 20.f), XMVectorSet(1.f, 1.f, 0.f, 1.f));
 	m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("F9 : HDR On/Off"), _float2(0.f, 40.f), XMVectorSet(1.f, 1.f, 0.f, 1.f));
 	m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("F10 : Debug Tool"), _float2(0.f, 60.f), XMVectorSet(1.f, 1.f, 0.f, 1.f));
 	m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("TAP : Camera Pos Fix"), _float2(0.f, 80.f), XMVectorSet(1.f, 1.f, 0.f, 1.f));
-	
-#ifdef _DEBUG
+
 	if (m_isDebug) m_pDebugMananger->Render();
 #endif // _DEBUG
 

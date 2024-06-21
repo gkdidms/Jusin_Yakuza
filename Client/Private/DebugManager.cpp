@@ -3,6 +3,7 @@
 #include "GameInstance.h"
 
 #include "DebugCamera.h"
+#include "Player.h"
 
 IMPLEMENT_SINGLETON(CDebugManager)
 
@@ -76,6 +77,12 @@ void CDebugManager::Window_Debug()
         if (ImGui::InputFloat("TimeSpeed", &m_fSpeed))
             m_pGameInstance->Set_TimeSpeed(TEXT("Timer_60"), m_fSpeed);
 
+        CPlayer* pPlayer = dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"), 0));
+
+        _bool isAnimStart = pPlayer->isAnimStart();
+        if (ImGui::Checkbox("Anim Start", &isAnimStart))
+            pPlayer->Set_AnimStart(isAnimStart);
+
         //Camera Á¦¾î
         ImGui::SeparatorText("Camera");
 
@@ -91,7 +98,7 @@ void CDebugManager::Window_Debug()
             pCameraTransform->Set_Speed(fSpeed);
     }
 
-    if (ImGui::CollapsingHeader("Deffude Shader"))
+    if (ImGui::CollapsingHeader("Deferred Shader"))
     {
         ImGui::SeparatorText("HDR");
 
