@@ -203,7 +203,7 @@ HRESULT CLoader::Add_Models_On_Path(const wstring& strPath, _bool bAnim)
 				}
 				else
 				{
-					PreTransformMatrix = XMMatrixRotationY(XMConvertToRadians(180.0f));
+					PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(180.0f));
 					if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, strComponentName,
 						CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, file_path.c_str(), PreTransformMatrix, true))))
 						return E_FAIL;

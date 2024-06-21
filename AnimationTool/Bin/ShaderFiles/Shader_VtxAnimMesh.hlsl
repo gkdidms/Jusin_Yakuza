@@ -86,6 +86,23 @@ PS_OUT PS_MAIN(PS_IN In)
     return Out;
 }
 
+PS_OUT PS_MAGENTA(PS_IN In)
+{
+    PS_OUT Out = (PS_OUT) 0;
+
+    vector vDiffuse = float4(1, 0, 1, 1);
+    
+    //if (vDiffuse.a < 0.1f)
+    //    discard;
+
+    Out.vDiffuse = vDiffuse;
+    //Out.vDiffuse = vector(1, 1, 1, 1);
+    Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
+    Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 3000.f, 0.0f, 0.f);
+
+    return Out;
+}
+
 technique11 DefaultTechnique
 {
     pass DefaultPass
@@ -106,6 +123,32 @@ technique11 DefaultTechnique
         SetRasterizerState(RS_Wireframe_Cull_NON_CW);
         SetDepthStencilState(DSS_Default, 0);
         SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        HullShader = NULL;
+        DomainShader = NULL;
+        PixelShader = compile ps_5_0 PS_MAIN();
+    }
+
+    pass MagentaPass
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        HullShader = NULL;
+        DomainShader = NULL;
+        PixelShader = compile ps_5_0 PS_MAGENTA();
+    }
+
+    pass BlendPass
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 
         VertexShader = compile vs_5_0 VS_MAIN();
         GeometryShader = NULL;
