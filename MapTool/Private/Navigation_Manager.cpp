@@ -51,6 +51,7 @@ void CNavigation_Manager::Tick(_float fTimeDelta)
 
 void CNavigation_Manager::Late_Tick(_float fTimeDelta)
 {
+
 }
 
 HRESULT CNavigation_Manager::Render()
@@ -66,7 +67,7 @@ HRESULT CNavigation_Manager::Render()
 	{
 		_float4x4			WorldMatrix;
 		XMStoreFloat4x4(&WorldMatrix, XMMatrixIdentity());
-		//WorldMatrix._42 += 0.1f;
+		WorldMatrix._42 += 0.1f;
 
 		m_pShader->Bind_Matrix("g_WorldMatrix", &WorldMatrix);
 
@@ -83,7 +84,7 @@ HRESULT CNavigation_Manager::Render()
 			pcell->Render();
 
 
-		WorldMatrix._42 += 1.f;
+		WorldMatrix._42 += 0.2f;
 		m_pShader->Bind_Matrix("g_WorldMatrix", &WorldMatrix);
 
 		m_pShader->Bind_Matrix("g_ViewMatrix", m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_VIEW));
@@ -125,7 +126,7 @@ void CNavigation_Manager::Load_Cell_IMGUI()
 		Update_FileName();
 	}
 
-	static int layer_current_idx;
+	static int layer_current_idx = 0;
 	if (ImGui::BeginListBox("listbox 0"))
 	{
 		for (int n = 0; n < m_FileNames.size(); n++)
@@ -140,11 +141,17 @@ void CNavigation_Manager::Load_Cell_IMGUI()
 		ImGui::EndListBox();
 	}
 
-
-	if (ImGui::Button(u8"Cell 정보 로드"))
+	if (m_iCurrentFileNavi != layer_current_idx)
 	{
-		Load_Cells(layer_current_idx);
+		m_iCurrentFileNavi = layer_current_idx;
+		Load_Cells(m_iCurrentFileNavi);
 	}
+
+
+	//if (ImGui::Button(u8"Cell 정보 로드"))
+	//{
+	//	Load_Cells(layer_current_idx);
+	//}
 
 	ImGui::End();
 }
@@ -159,7 +166,8 @@ void CNavigation_Manager::Make_Point(_vector vPickingPos)
 		vFinalpickpos = Find_ClosestPoint(vPickingPos, &minDistance);
 
 	/* 거리가 너무 멀면 그냥 찍은 점*/
-	if (4.f < minDistance)
+	/* 맵 크기에 따라 유동적으로 바꾸기 */
+	if (1.5f < minDistance)
 		XMStoreFloat3(&vFinalpickpos, vPickingPos);
 
 	m_vPoints.push_back(vFinalpickpos);
@@ -196,8 +204,9 @@ HRESULT CNavigation_Manager::Make_Cell()
 
 HRESULT CNavigation_Manager::Save_Cells(_uint iIndex)
 {
+
 	char fullPath[MAX_PATH];
-	strcpy_s(fullPath, "../../../Client/Bin/DataFiles/");
+	strcpy_s(fullPath, "../../Client/Bin/DataFiles/NaviData/");
 
 	strcat_s(fullPath, "Navigation");
 
@@ -207,28 +216,35 @@ HRESULT CNavigation_Manager::Save_Cells(_uint iIndex)
 	strcat_s(fullPath, cIndex);
 	strcat_s(fullPath, ".dat");
 
-	string strPath(fullPath);
-	TCHAR* tcharPath = StringToTCHAR(strPath);
+	fs::path path(fullPath);
 
-	HANDLE		hFile = CreateFile(tcharPath, GENERIC_WRITE, 0, nullptr, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
-	if (0 == hFile)
+	ofstream out(fullPath, ios::binary);
+
+	if (!out) {
 		return E_FAIL;
+	}
 
 	_ulong		dwByte = {};
 	_float3		vPoints[CCell::POINT_END] = {};
 
-	for (int i = 0; i < m_Cells.size(); i++)
+	_uint		iCellNum = m_Cells.size();
+	out.write((_char*)&iCellNum, sizeof(_uint));
+
+	for (int i = 0; i < iCellNum; i++)
 	{
+		/* 포인트 저장 */
 		XMStoreFloat3(&vPoints[CCell::POINT_A], m_Cells[i]->Get_Point(CCell::POINT_A));
 		XMStoreFloat3(&vPoints[CCell::POINT_B], m_Cells[i]->Get_Point(CCell::POINT_B));
 		XMStoreFloat3(&vPoints[CCell::POINT_C], m_Cells[i]->Get_Point(CCell::POINT_C));
 
-		WriteFile(hFile, vPoints, sizeof(_float3) * 3, &dwByte, nullptr);
+		out.write((_char*)vPoints, sizeof(_float3) * 3);
+
+		/* 옵션 저장 */
+		_int		iOption = m_Cells[i]->Get_Option();
+		out.write((_char*)&iOption, sizeof(_int));
 	}
 
-	CloseHandle(hFile);
-
-	Safe_Delete(tcharPath);
+	out.close();
 
 	Update_FileName();
 }
@@ -239,9 +255,12 @@ HRESULT CNavigation_Manager::Load_Cells(_uint iIndex)
 		Safe_Release(iter);
 	m_Cells.clear();
 
+	/* 새로 로드할 때는 index 다시 0으로 되돌리기*/
+	m_iCurrentCellIndex = 0;
+
 	_ulong		dwByte = {};
 	char fullPath[MAX_PATH];
-	strcpy_s(fullPath, "../../../Client/Bin/DataFiles/");
+	strcpy_s(fullPath, "../../Client/Bin/DataFiles/NaviData/");
 
 	strcat_s(fullPath, "Navigation");
 
@@ -252,32 +271,42 @@ HRESULT CNavigation_Manager::Load_Cells(_uint iIndex)
 	strcat_s(fullPath, ".dat");
 
 	string strPath(fullPath);
-	TCHAR* tcharPath = StringToTCHAR(strPath);
 
+	ifstream in(fullPath, ios::binary);
 
-	HANDLE		hFile = CreateFile(tcharPath, GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
-	if (0 == hFile)
+	if (!in.is_open()) {
+		MSG_BOX("파일 개방 실패");
 		return E_FAIL;
-
-	_float3		vPoint[CCell::POINT_END] = {};
-
-	while (true)
-	{
-		ReadFile(hFile, vPoint, sizeof(_float3) * CCell::POINT_END, &dwByte, nullptr);
-
-		if (0 == dwByte)
-			break;
-
-		CCell* pCell = CCell::Create(m_pDevice, m_pContext, vPoint, m_Cells.size(), CCell::OPTION_NONE);
-		if (nullptr == pCell)
-			return E_FAIL;
-
-		m_Cells.emplace_back(pCell);
 	}
 
-	CloseHandle(hFile);
+	_uint NumCells = { 0 };
+	in.read((_char*)&NumCells, sizeof(_uint));
 
-	Safe_Delete(tcharPath);
+	for (size_t i = 0; i < NumCells; ++i)
+	{
+		/* point 로드 */
+		_float3* vPoint = new _float3[3];
+		in.read((_char*)vPoint, sizeof(_float3) * 3);
+
+		/* 옵션 로드 */
+		_int iOption = { 0 };
+		in.read((_char*)&iOption, sizeof(_int));
+
+		CCell* pCell = CCell::Create(m_pDevice, m_pContext, vPoint, i, CCell::OPTION(iOption));
+
+		m_Cells.emplace_back(pCell);
+		Safe_Delete(vPoint);
+	}
+
+	in.close();
+
+	/* option 설정 현재 셀에 맞게 */
+	/* 현재 cell이 하나라도 있을때 option에 맞게 배치 */
+	if (NumCells != 0)
+	{
+		m_iCurrentOption = m_Cells[m_iCurrentCellIndex]->Get_Option();
+	}
+	
 
 	Update_CellsName();
 }
@@ -313,7 +342,7 @@ void CNavigation_Manager::Update_FileName()
 		Safe_Delete(iter);
 
 	m_FileNames.clear();
-	string path = "../../../Client/Bin/DataFiles/*.dat";
+	string path = "../../Client/Bin/DataFiles/NaviData/*.dat";
 
 	struct _finddata_t fd;
 	intptr_t handle;
@@ -363,6 +392,36 @@ void CNavigation_Manager::Delete_AllCell()
 	m_Cells.clear();
 
 	Update_CellsName();
+
+	/* 인덱스도 같이 초기화 */
+	m_iCurrentCellIndex = 0;
+}
+
+void CNavigation_Manager::Find_Cells()
+{
+	/* F 누르면 작동 */
+	if (m_pGameInstance->GetKeyState(DIK_F) == HOLD)
+	{
+		if (0 < m_Cells.size())
+		{
+			if (CGameInstance::GetInstance()->GetMouseState(DIM_LB) == AWAY)
+			{
+				_bool		isPick;
+				_vector		vTargetPos = CGameInstance::GetInstance()->Picking(&isPick);
+
+				for (int i = 0; i < m_Cells.size(); i++)
+				{
+					/* 그냥 넣어주는거 */
+					int			iNeighborsIndex;
+
+					if (true == m_Cells[i]->isIn(vTargetPos, &iNeighborsIndex))
+					{
+						m_iCurrentCellIndex = i;
+					}
+				}
+			}
+		}
+	}
 }
 
 
@@ -403,23 +462,39 @@ _float3 CNavigation_Manager::Find_ClosestPoint(_vector pickPos, _float* pMinDist
 	return resultPos;
 }
 
+_float3 CNavigation_Manager::Find_ClosestCells(_vector pickPos, _float* pMinDistance)
+{
+	return _float3();
+}
+
 void CNavigation_Manager::Show_Cells_IMGUI()
 {
+	ImGui::Text(u8" F 누르고 왼쪽 마우스 클릭하기 - CELL 찾기 ");
 	ImGui::Text(u8" X 한번 누르고 클릭. 시계방향으로!!!!!!!!! - 점 생성 ");
 	ImGui::Text(u8" 시계방향!!!!!!!!!!! ");
+
+	Find_Cells();
 
 	if (0 < m_CellsName.size())
 	{
 		static int cell_current_idx;
+
+		if (cell_current_idx != m_iCurrentCellIndex)
+		{
+			cell_current_idx = m_iCurrentCellIndex;
+		}
+
 		if (ImGui::BeginListBox("listbox 0"))
 		{
 			for (int n = 0; n < m_CellsName.size(); n++)
 			{
+				/*const bool is_selected = (cell_current_idx == n);*/
 				const bool is_selected = (cell_current_idx == n);
 				if (ImGui::Selectable(m_CellsName[n], is_selected))
 				{
+					/*cell_current_idx = n;
+					m_iCurrentCellIndex = cell_current_idx;*/
 					cell_current_idx = n;
-					m_iCurrentCellIndex = cell_current_idx;
 				}
 
 				if (is_selected)
@@ -427,7 +502,44 @@ void CNavigation_Manager::Show_Cells_IMGUI()
 			}
 			ImGui::EndListBox();
 		}
+
+		ImGui::Text(u8"네비게이션 옵션");
+		static int naviOption = m_Cells[m_iCurrentCellIndex]->Get_Index();
+
+		/* 다른 오브젝트 클릭시 */
+		if (m_iCurrentCellIndex != cell_current_idx && m_Cells.size() > 0)
+		{
+			m_iCurrentCellIndex = cell_current_idx;
+			m_iCurrentOption = m_Cells[m_iCurrentCellIndex]->Get_Option();
+		}
+
+
+		if (ImGui::RadioButton(u8"navi옵션1", m_iCurrentOption == 0))
+		{
+			naviOption = 0;
+			m_iCurrentOption = 0;
+		}
+		ImGui::SameLine();
+		if (ImGui::RadioButton(u8"navi옵션2", m_iCurrentOption == 1))
+		{
+			naviOption = 1;
+			m_iCurrentOption = 1;
+		}
+
+		m_Cells[m_iCurrentCellIndex]->Set_Option(static_cast<CCell::OPTION>(m_iCurrentOption));
+
+		/*if (ImGui::Button(u8"네비 옵션 수정"))
+		{
+			m_Cells[m_iCurrentCellIndex]->Set_Option(static_cast<CCell::OPTION>(m_iCurrentOption));
+		}*/
+
 	}
+
+
+
+
+	
+
 
 
 	static int iNavIndex;
