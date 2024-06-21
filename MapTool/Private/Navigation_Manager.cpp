@@ -126,7 +126,7 @@ void CNavigation_Manager::Load_Cell_IMGUI()
 		Update_FileName();
 	}
 
-	static int layer_current_idx;
+	static int layer_current_idx = 0;
 	if (ImGui::BeginListBox("listbox 0"))
 	{
 		for (int n = 0; n < m_FileNames.size(); n++)
@@ -141,11 +141,17 @@ void CNavigation_Manager::Load_Cell_IMGUI()
 		ImGui::EndListBox();
 	}
 
-
-	if (ImGui::Button(u8"Cell 정보 로드"))
+	if (m_iCurrentFileNavi != layer_current_idx)
 	{
-		Load_Cells(layer_current_idx);
+		m_iCurrentFileNavi = layer_current_idx;
+		Load_Cells(m_iCurrentFileNavi);
 	}
+
+
+	//if (ImGui::Button(u8"Cell 정보 로드"))
+	//{
+	//	Load_Cells(layer_current_idx);
+	//}
 
 	ImGui::End();
 }
@@ -295,7 +301,12 @@ HRESULT CNavigation_Manager::Load_Cells(_uint iIndex)
 	in.close();
 
 	/* option 설정 현재 셀에 맞게 */
-	m_iCurrentOption = m_Cells[m_iCurrentCellIndex]->Get_Option();
+	/* 현재 cell이 하나라도 있을때 option에 맞게 배치 */
+	if (NumCells != 0)
+	{
+		m_iCurrentOption = m_Cells[m_iCurrentCellIndex]->Get_Option();
+	}
+	
 
 	Update_CellsName();
 }
@@ -496,7 +507,7 @@ void CNavigation_Manager::Show_Cells_IMGUI()
 		static int naviOption = m_Cells[m_iCurrentCellIndex]->Get_Index();
 
 		/* 다른 오브젝트 클릭시 */
-		if (m_iCurrentCellIndex != cell_current_idx)
+		if (m_iCurrentCellIndex != cell_current_idx && m_Cells.size() > 0)
 		{
 			m_iCurrentCellIndex = cell_current_idx;
 			m_iCurrentOption = m_Cells[m_iCurrentCellIndex]->Get_Option();
