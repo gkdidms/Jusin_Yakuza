@@ -13,7 +13,8 @@ CVIBuffer_Cell::CVIBuffer_Cell(const CVIBuffer_Cell& rhs)
 HRESULT CVIBuffer_Cell::Initialize_Prototype(const _float3* pPoints)
 {
 	m_GIFormat = DXGI_FORMAT_R16_UINT;
-	m_Primitive_Topology = D3D_PRIMITIVE_TOPOLOGY_LINESTRIP;
+	//m_Primitive_Topology = D3D_PRIMITIVE_TOPOLOGY_LINESTRIP;
+	m_Primitive_Topology = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 
 	m_iNumVertices = 3;
 	m_iVertexStride = sizeof(VTXPOS);
