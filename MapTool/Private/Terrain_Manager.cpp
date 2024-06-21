@@ -38,5 +38,5 @@ void CTerrain_Manager::Change_LandScale(_uint iNumX, _uint iNumZ)
 
 void CTerrain_Manager::Free()
 {
-	Safe_Release(m_pTerrain);
+	//Safe_Release(m_pTerrain);
 }

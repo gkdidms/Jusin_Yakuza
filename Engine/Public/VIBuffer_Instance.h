@@ -11,13 +11,13 @@ public:
         _uint iNumInstance;
         _float3 vOffsetPos;
         _float3 vPivotPos;
+        _bool bRadius;
         _float3 vRange;//정육면체 생성
         _float fRadius;//구 생성
-        _float2 vSize;//최초 사이즈(기본)(지오메트리)
+        _float2 vSize;//최초 사이즈(가로*세로)(지오메트리)
         _float2 vRectSize;//각 파티클 사이즈
         _float2 vSpeed;
         _float2 vLifeTime;
-        _float2 vPower;
         _bool isLoop;
     }INSTANCE_DESC;
 
@@ -41,14 +41,13 @@ protected:
     _uint m_iInstanceStride = { 0 };
 
     _float* m_pSpeeds = { nullptr };
-    _float* m_pPower = { nullptr };
-   _float* m_pAccelTime = { nullptr };
     _float3* m_pOriginalPositions = { nullptr };
 
 public:
     void Spread(_float fTimeDelta);
     void Drop(_float fTimeDelta);
-    void Fountain(_float fTimeDelta);
+    void LifeTime_Check();
+
     
 public:
     virtual CComponent* Clone(void* pArg) = 0;
