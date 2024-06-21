@@ -88,8 +88,8 @@ HRESULT CLevel_Test::Ready_Player(const wstring& strLayerTag)
 	Desc.fSpeedPecSec = 5.f;
 	Desc.fRotatePecSec = XMConvertToRadians(180.f);
 
-	//if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_Player"), strLayerTag, &Desc)))
-	//	return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_Player"), strLayerTag, &Desc)))
+		return E_FAIL;
 
 	return S_OK;
 }
