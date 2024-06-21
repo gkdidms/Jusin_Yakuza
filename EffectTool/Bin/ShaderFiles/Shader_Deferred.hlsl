@@ -36,6 +36,7 @@ float g_fOutlineAngle = 0.8f;
 float3 Luminance = float3(0.2125f, 0.7154f, 0.0721f);
 float fDelta = { 0.0001f };
 bool g_isFinished = { false };
+float g_fLumVar;
 
 
 struct VS_IN
@@ -251,7 +252,7 @@ PS_OUT PS_MAIN_TONEMAPPING(PS_IN In) // 감마 콜렉션 & ACES 톤매핑
     vDiffuse = saturate(vDiffuse * (A * vDiffuse + B)) / (vDiffuse * (C * vDiffuse + D) + E);
 
     
-    Out.vColor = vector(pow(vDiffuse, 1.f / 2.2f), 1.f) * vLuminance * 5.f;
+    Out.vColor = vector(pow(vDiffuse, 1.f / 2.2f), 1.f) * vLuminance * g_fLumVar;
     
     return Out;
 }

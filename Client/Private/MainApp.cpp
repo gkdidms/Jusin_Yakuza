@@ -54,17 +54,8 @@ HRESULT CMainApp::Initialize()
 #ifdef _DEBUG
 	if (FAILED(m_pDebugMananger->Initialize(m_pDevice, m_pContext)))
 		return E_FAIL;
-
-		if (::AllocConsole() == TRUE)
-		{
-			FILE* nfp[3];
-			freopen_s(nfp + 0, "CONOUT$", "rb", stdin);
-			freopen_s(nfp + 1, "CONOUT$", "wb", stdout);
-			freopen_s(nfp + 2, "CONOUT$", "wb", stderr);
-			std::ios::sync_with_stdio();
-		}
-
 #endif // _DEBUG
+
 
 	return S_OK;
 }
@@ -84,6 +75,10 @@ void CMainApp::Tick(const _float& fTimeDelta)
 	if (m_pGameInstance->GetKeyState(DIK_F9) == TAP)
 	{
 		m_pGameInstance->Set_HDR(!m_pGameInstance->Get_HDR());
+	}
+	if (m_pGameInstance->GetKeyState(DIK_F8) == TAP)
+	{
+		Render_Colsole(true);
 	}
 		
 	if (m_isDebug) m_pDebugMananger->Tick();
@@ -110,9 +105,10 @@ HRESULT CMainApp::Render()
 
 	m_pGameInstance->Render_Font(TEXT("Font_Default"), m_szFPS, _float2(0.f, 0.f), XMVectorSet(1.f, 1.f, 0.f, 1.f));
 
-	m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("F9 : HDR On/Off"), _float2(0.f, 20.f), XMVectorSet(1.f, 1.f, 0.f, 1.f));
-	m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("F10 : Debug Tool"), _float2(0.f, 40.f), XMVectorSet(1.f, 1.f, 0.f, 1.f));
-	m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("TAP : Camera Pos Fix"), _float2(0.f, 60.f), XMVectorSet(1.f, 1.f, 0.f, 1.f));
+	m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("F8 : Console"), _float2(0.f, 20.f), XMVectorSet(1.f, 1.f, 0.f, 1.f));
+	m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("F9 : HDR On/Off"), _float2(0.f, 40.f), XMVectorSet(1.f, 1.f, 0.f, 1.f));
+	m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("F10 : Debug Tool"), _float2(0.f, 60.f), XMVectorSet(1.f, 1.f, 0.f, 1.f));
+	m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("TAP : Camera Pos Fix"), _float2(0.f, 80.f), XMVectorSet(1.f, 1.f, 0.f, 1.f));
 	
 #ifdef _DEBUG
 	if (m_isDebug) m_pDebugMananger->Render();
@@ -166,6 +162,20 @@ HRESULT CMainApp::Ready_Prototype_Component()
 		return E_FAIL;
 
     return S_OK;
+}
+
+void CMainApp::Render_Colsole(_bool isOpen)
+{
+#ifdef _DEBUG
+	if (::AllocConsole() == isOpen)
+	{
+		FILE* nfp[3];
+		freopen_s(nfp + 0, "CONOUT$", "rb", stdin);
+		freopen_s(nfp + 1, "CONOUT$", "wb", stdout);
+		freopen_s(nfp + 2, "CONOUT$", "wb", stderr);
+		std::ios::sync_with_stdio();
+	}
+#endif // _DEBUG
 }
 
 CMainApp* CMainApp::Create()

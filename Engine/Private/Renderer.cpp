@@ -702,6 +702,9 @@ void CRenderer::Render_HDR()
 	if (FAILED(m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
 		return;
 
+	if (FAILED(m_pShader->Bind_RawValue("g_fLumVar", &m_fHDRLight, sizeof(_float))))
+		return;
+
 	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_BackBuffer"), m_pShader, "g_BackBufferTexture")))
 		return;
 	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Luminance"), m_pShader, "g_LuminanceTexture")))

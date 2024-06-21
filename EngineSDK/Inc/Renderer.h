@@ -14,9 +14,11 @@ private:
 
 public:
     void Set_HDR(_bool isHDR) { m_isHDR = isHDR; }
+    void Set_HDRLight(_float fLight) { m_fHDRLight = fLight; } // HDR ¹à±â Á¶Àý(ºû ¼¼±â)
 
 public:
     _bool Get_HDR() { return m_isHDR; }
+    _float Get_HDRLight() { return m_fHDRLight; }
 
 public:
     HRESULT Initialize();
@@ -75,6 +77,7 @@ private:
 
 private:
     _bool m_isHDR = { false };
+    _float m_fHDRLight = { 1.f };
 
 public:
     static CRenderer* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
