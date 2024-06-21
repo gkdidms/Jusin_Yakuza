@@ -81,6 +81,8 @@ HRESULT CTestMap::Bind_ResourceData()
     if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_PROJ))))
         return E_FAIL;
 
+
+
     return S_OK;
 }
 

@@ -29,6 +29,7 @@ public:
 
     const _float4x4* Get_WorldFloat4x4() { return &m_WorldMatrix; }
     _matrix Get_WorldMatrix() { return XMLoadFloat4x4(&m_WorldMatrix); }
+    _float Get_Speed() { return m_fSpeedPerSec; }
 
 public:
     void Set_WorldMatrix(_fmatrix WorldMatrix) { XMStoreFloat4x4(&m_WorldMatrix, WorldMatrix); }
@@ -36,6 +37,7 @@ public:
 
     void Scaling(_float fScaleX, _float fScaleY, _float fScaleZ);
     void Set_Scale(_float fScaleX, _float fScaleY, _float fScaleZ);
+    void Set_Speed(_float fSpeed) { m_fSpeedPerSec = fSpeed; }
 
 public:
     virtual HRESULT Initialize_Prototype() override;

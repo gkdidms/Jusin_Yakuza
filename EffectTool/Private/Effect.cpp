@@ -40,6 +40,9 @@ HRESULT CEffect::Initialize(void* pArg)
         m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&pDesc->vStartPos));
         m_ParticleTag = pDesc->ParticleTag;
         m_fStartTime = pDesc->fStartTime;
+        m_vStartColor = pDesc->vStartColor;
+        m_vEndColor = pDesc->vEndColor;
+        m_iShaderPass = pDesc->iShaderPass;
     }
 
     return S_OK;

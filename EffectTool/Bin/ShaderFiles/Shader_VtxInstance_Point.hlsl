@@ -5,6 +5,7 @@ matrix g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
 
 texture2D g_Texture;
 
+vector g_vStartColor, g_vEndColor;
 vector g_vCamPosition;
 
 struct VS_IN
@@ -93,19 +94,24 @@ void GS_MAIN(point GS_IN In[1], inout TriangleStream<GS_OUT> Triangles)
     vPosition = In[0].vPosition + vRight + vUp;
     Out[0].vPosition = mul(float4(vPosition, 1.f), matVP);
     Out[0].vTexcoord = float2(0.f, 0.f);
-
+    Out[0].vLifeTime = In[0].vLifeTime;
+    
     vPosition = In[0].vPosition - vRight + vUp;
     Out[1].vPosition = mul(float4(vPosition, 1.f), matVP);
     Out[1].vTexcoord = float2(1.f, 0.f);
+    Out[1].vLifeTime = In[0].vLifeTime;
 
     vPosition = In[0].vPosition - vRight - vUp;
     Out[2].vPosition = mul(float4(vPosition, 1.f), matVP);
     Out[2].vTexcoord = float2(1.f, 1.f);
+    Out[2].vLifeTime = In[0].vLifeTime;
 
     vPosition = In[0].vPosition + vRight - vUp;
     Out[3].vPosition = mul(float4(vPosition, 1.f), matVP);
     Out[3].vTexcoord = float2(0.f, 1.f);
+    Out[3].vLifeTime = In[0].vLifeTime;
 
+    
     Triangles.Append(Out[0]);
     Triangles.Append(Out[1]);
     Triangles.Append(Out[2]);
@@ -142,18 +148,22 @@ void GS_CUSTOM(point GS_IN In[1], inout TriangleStream<GS_OUT> Triangles)
     vPosition = In[0].vPosition + vRight + vUp;
     Out[0].vPosition = mul(float4(vPosition, 1.f), matVP);
     Out[0].vTexcoord = float2(0.f, 0.f);
-
+    Out[0].vLifeTime = In[0].vLifeTime;
+    
     vPosition = In[0].vPosition - vRight + vUp;
     Out[1].vPosition = mul(float4(vPosition, 1.f), matVP);
     Out[1].vTexcoord = float2(1.f, 0.f);
-
+    Out[1].vLifeTime = In[0].vLifeTime;
+    
     vPosition = In[0].vPosition - vRight - vUp;
     Out[2].vPosition = mul(float4(vPosition, 1.f), matVP);
     Out[2].vTexcoord = float2(1.f, 1.f);
-
+    Out[2].vLifeTime = In[0].vLifeTime;
+    
     vPosition = In[0].vPosition + vRight - vUp;
     Out[3].vPosition = mul(float4(vPosition, 1.f), matVP);
     Out[3].vTexcoord = float2(0.f, 1.f);
+    Out[3].vLifeTime = In[0].vLifeTime;
 
     Triangles.Append(Out[0]);
     Triangles.Append(Out[1]);
@@ -203,12 +213,41 @@ PS_OUT PS_MAIN_SPREAD(PS_IN In)
 
     vector Color = g_Texture.Sample(LinearSampler, In.vTexcoord);
     
-   
-    
     if (Color.a < 0.1f)
         discard;
     
     Out.vColor = Color;
+    
+    
+	/*if (Out.vColor.a < 0.1f || 
+		In.vLifeTime.y > In.vLifeTime.x)
+		discard;*/
+    //Out.vColor.a *= In.vLifeTime.x - In.vLifeTime.y;
+
+    //Out.vColor.rgb = float3(1.f, 1.f, 1.f);
+
+
+    return Out;
+}
+
+PS_OUT PS_MAIN_SPREADCOLOR(PS_IN In)
+{
+    PS_OUT Out = (PS_OUT) 0;
+
+    vector vFinalColor = g_Texture.Sample(LinearSampler, In.vTexcoord);
+    
+
+    
+    float4 LerpColor = lerp(g_vStartColor, g_vEndColor, In.vLifeTime.y / In.vLifeTime.x);
+
+    vFinalColor *= LerpColor;
+   // vFinalColor *= g_vStartColor;
+    
+    if (vFinalColor.a < 0.1f)
+        discard;
+    
+    
+    Out.vColor = vFinalColor;
     
     
 	/*if (Out.vColor.a < 0.1f || 
@@ -245,7 +284,7 @@ technique11 DefaultTechnique
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_Default, 0);
-        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+        SetBlendState(BS_Blend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 
 		/* 어떤 셰이덜르 국동할지. 셰이더를 몇 버젼으로 컴파일할지. 진입점함수가 무엇이찌. */
         VertexShader = compile vs_5_0 VS_MAIN();
@@ -259,7 +298,7 @@ technique11 DefaultTechnique
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_Default, 0);
-        SetBlendState(BS_Blend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 
 		/* 어떤 셰이덜르 국동할지. 셰이더를 몇 버젼으로 컴파일할지. 진입점함수가 무엇이찌. */
         VertexShader = compile vs_5_0 VS_MAIN();
@@ -281,6 +320,20 @@ technique11 DefaultTechnique
         HullShader = NULL;
         DomainShader = NULL;
         PixelShader = compile ps_5_0 PS_MAIN_SPREAD();
+    }
+    
+    pass DirectionColor
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		/* 어떤 셰이덜르 국동할지. 셰이더를 몇 버젼으로 컴파일할지. 진입점함수가 무엇이찌. */
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = compile gs_5_0 GS_CUSTOM();
+        HullShader = NULL;
+        DomainShader = NULL;
+        PixelShader = compile ps_5_0 PS_MAIN_SPREADCOLOR();
     }
 
 }

@@ -5,7 +5,7 @@ Texture2D g_DiffuseTexture;
 Texture2D g_NormalTexture;
 Texture2D g_NoiseTexture;
 
-float g_fFar;
+float g_fFar = { 3000.f };
 float g_fTimeDelta;
 
 struct VS_IN

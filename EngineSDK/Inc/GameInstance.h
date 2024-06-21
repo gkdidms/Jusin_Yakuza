@@ -55,6 +55,7 @@ public:
     /* Level_Manager */
 public:
     HRESULT Open_Level(_uint iLevelIndex, class CLevel* pLevel);
+    _uint Get_CurrentLevel(); // 현재 레벨의 인덱스 반환
 
     /* GameObject_Manager */
 public: 
@@ -75,7 +76,10 @@ public:
 public: 
     void Add_Renderer(CRenderer::RENDERER_STATE eRenderState, class CGameObject* pGameObject);
     void Set_HDR(_bool isHDR);
+    void Set_HDRLight(_float fLight); // HDR 빛 세기 조절 
     _bool Get_HDR();
+    _float Get_HDRLight();
+
 #ifdef _DEBUG
 public:
     HRESULT Add_DebugComponent(class CComponent* pComponent);

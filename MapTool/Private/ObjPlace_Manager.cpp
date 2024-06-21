@@ -284,7 +284,10 @@ void CObjPlace_Manager::Show_Installed_GameObjectsList()
 
 		int iLayer = Click_To_Select_Object();
 
-
+		if (object_current_idx >= m_GameObjects.size() && m_GameObjects.size() > 0)
+		{
+			object_current_idx = m_GameObjects.size() - 1;
+		}
 
 		
 
@@ -452,8 +455,8 @@ void CObjPlace_Manager::Save_GameObject(int iLevel)
 		iIndex++;
 	}
 
-	
-	CMapDataMgr::GetInstance()->Export_Bin_Map_Data(&pMapTotalInform);
+
+	Export_Bin_Map_Data(&pMapTotalInform);
 
 	Safe_Delete_Array(pMapTotalInform.pMapObjDesc);
 }
@@ -468,7 +471,7 @@ void CObjPlace_Manager::Load_GameObject(int iNum)
 
 
 	MAP_TOTALINFORM_DESC		mapTotalInform;
-	CMapDataMgr::GetInstance()->Import_Bin_Map_Data_OnTool(&mapTotalInform, m_FileNames[iNum]);
+	Import_Bin_Map_Data_OnTool(&mapTotalInform, m_FileNames[iNum]);
 
 	CTerrain_Manager::GetInstance()->Change_LandScale(mapTotalInform.vPlaneSize.x, mapTotalInform.vPlaneSize.y);
 
@@ -762,6 +765,92 @@ void CObjPlace_Manager::Load_ModelName()
 		strcpy(cfilename, StringToCharDIY(modifiedString));
 		m_ObjectNames_Map1.push_back(cfilename);
 	}
+}
+
+HRESULT CObjPlace_Manager::Import_Bin_Map_Data_OnTool(MAP_TOTALINFORM_DESC* mapObjData, char* fileName)
+{
+	char fullPath[MAX_PATH];
+	strcpy_s(fullPath, "../../Client/Bin/DataFiles/MapData/");
+
+	strcat_s(fullPath, fileName);
+
+	/*char cLevel[2] = "";
+	_itoa_s(mapObjData->iLevelIndex, cLevel, 10);
+	strcat_s(fullPath, cLevel);
+	strcat_s(fullPath, ".bin");*/
+
+
+	ifstream in(fullPath, ios::binary);
+
+	if (!in.is_open()) {
+		MSG_BOX("파일 개방 실패");
+		return E_FAIL;
+	}
+
+
+	in.read((char*)&mapObjData->iLevelIndex, sizeof(int));
+
+	in.read((char*)&mapObjData->vPlaneSize, sizeof(XMFLOAT2));
+
+	in.read((char*)&mapObjData->iNumMapObj, sizeof(int));
+
+	mapObjData->pMapObjDesc = new OBJECTPLACE_DESC[mapObjData->iNumMapObj];
+
+	for (int i = 0; i < mapObjData->iNumMapObj; i++)
+	{
+		in.read((char*)&mapObjData->pMapObjDesc[i], sizeof(OBJECTPLACE_DESC));
+	}
+
+	in.close();
+
+	return S_OK;
+}
+
+HRESULT CObjPlace_Manager::Export_Bin_Map_Data(MAP_TOTALINFORM_DESC* mapObjData)
+{
+	char fullPath[MAX_PATH];
+	strcpy_s(fullPath, "../../Client/Bin/DataFiles/MapData/");
+
+	strcat_s(fullPath, "MapObject_Data");
+
+	char cLevel[2] = "";
+	_itoa_s(mapObjData->iLevelIndex, cLevel, 10);
+	strcat_s(fullPath, "_");
+	strcat_s(fullPath, cLevel);
+	strcat_s(fullPath, ".dat");
+
+	fs::path path(fullPath);
+
+	//if (!exists(path))
+	//	fs::create_(path);
+
+	ofstream out(fullPath, ios::binary);
+	//file.open(fullPath, ios::out | ios::binary);
+
+	if (!out) {
+		return E_FAIL;
+	}
+
+
+	int		iLevel = mapObjData->iLevelIndex;
+	out.write((char*)&iLevel, sizeof(int));
+
+	XMFLOAT2 planeSize = mapObjData->vPlaneSize;
+	out.write((char*)&planeSize, sizeof(XMFLOAT2));
+
+
+	int iNumMapObj = mapObjData->iNumMapObj;
+	out.write((char*)&iNumMapObj, sizeof(int));
+
+	for (int i = 0; i < mapObjData->iNumMapObj; i++)
+	{
+		OBJECTPLACE_DESC PObjPlaceDesc = mapObjData->pMapObjDesc[i];
+		out.write((char*)&PObjPlaceDesc, sizeof(OBJECTPLACE_DESC));
+	}
+
+	out.close();
+
+	return S_OK;
 }
 
 string CObjPlace_Manager::modifyString(string& input)

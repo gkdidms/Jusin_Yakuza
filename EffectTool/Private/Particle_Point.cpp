@@ -63,9 +63,9 @@ void CParticle_Point::Tick(const _float& fTimeDelta)
 void CParticle_Point::Late_Tick(const _float& fTimeDelta)
 {
     Compute_ViewZ(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+    m_pVIBufferCom->Blend_Sort();
     if(m_BufferInstance.isLoop)
     {
-
         m_pGameInstance->Add_Renderer(CRenderer::RENDER_BLENDER, this);
     }
     else
@@ -82,10 +82,13 @@ HRESULT CParticle_Point::Render()
 {
     if (FAILED(Bind_ShaderResources()))
         return E_FAIL;
-    if(m_bDirInfluence)
-        m_pShaderCom->Begin(2);
-    else
-        m_pShaderCom->Begin(3);
+
+       m_pShaderCom->Begin(m_iShaderPass);
+
+    //if(m_bDirInfluence)
+    //    m_pShaderCom->Begin(2);
+    //else
+    //    m_pShaderCom->Begin(3);
 
     m_pVIBufferCom->Render();
 
@@ -106,7 +109,7 @@ HRESULT CParticle_Point::Add_Components()
         return E_FAIL;
 
     /* For.Com_Texture */
-    if (FAILED(__super::Add_Component(LEVEL_EDIT, TEXT("Prototype_Component_Texture_Trail"),
+    if (FAILED(__super::Add_Component(LEVEL_EDIT, TEXT("Prototype_Component_Texture_Sphere"),
         TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
         return E_FAIL;
 
@@ -128,6 +131,10 @@ HRESULT CParticle_Point::Bind_ShaderResources()
     if (FAILED(m_pShaderCom->Bind_RawValue("g_vCamPosition", m_pGameInstance->Get_CamPosition_Float4(), sizeof(_float4))))
         return E_FAIL;
 
+    if (FAILED(m_pShaderCom->Bind_RawValue("g_vStartColor", &m_vStartColor, sizeof(_float4))))
+        return E_FAIL;
+    if (FAILED(m_pShaderCom->Bind_RawValue("g_vEndColor", &m_vEndColor, sizeof(_float4))))
+        return E_FAIL;
     return S_OK;
 }
 

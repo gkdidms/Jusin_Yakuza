@@ -78,9 +78,9 @@ HRESULT CMainApp::Render()
 	m_pGameInstance->Clear_BackBuffer_View(_float4(0.f, 0.f, 1.f, 1.f));
 	m_pGameInstance->Clear_DepthStencil_View();
 	
-	m_pIMGUI_Manager->Render();
-	m_pGameInstance->Draw();
 	
+	m_pGameInstance->Draw();
+	m_pIMGUI_Manager->Render();
 
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 

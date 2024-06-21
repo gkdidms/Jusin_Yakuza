@@ -18,6 +18,15 @@ private:
     CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
     CPlayer(const CPlayer& rhs);
     virtual ~CPlayer() = default;
+    
+#ifdef _DEBUG
+public:
+    _bool isAnimStart() { return m_isAnimStart; }
+
+public:
+    void Set_AnimStart(_bool isAnim) { m_isAnimStart = isAnim; }
+#endif // DEBUG
+
 
 public:
     virtual HRESULT Initialize_Prototype() override;
@@ -42,6 +51,11 @@ private:
 
     _float4     m_vPrevMove;
     _float4x4   m_ModelWorldMatrix;
+
+#ifdef _DEBUG
+    _bool m_isAnimStart = { true };
+#endif // _DEBUG
+
 
 private:
     virtual HRESULT Add_Componenets() override;

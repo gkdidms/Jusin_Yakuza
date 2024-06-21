@@ -19,6 +19,12 @@ private:
     virtual ~CDebugCamera() = default;
 
 public:
+    void Set_Sensor(_float fSensor) { m_fSensor = fSensor; }
+
+public:
+    _float Get_Sensor() { return m_fSensor; }
+
+public:
     virtual HRESULT Initialize_Prototype() override;
     virtual HRESULT Initialize(void* pArg) override;
     virtual void Priority_Tick(const _float& fTimeDelta) override;
