@@ -2,13 +2,6 @@
 #include "GameInstance.h"
 
 
-#pragma region "Imgui"
-#include "imgui.h"
-#include "imgui_internal.h"
-#include "imgui_impl_dx11.h"
-#include "imgui_impl_win32.h"
-#include "ImGuizmo.h"
-#pragma endregion
 
 #pragma region "객체 원형"
 #include "Particle_Point.h"
@@ -25,6 +18,7 @@ static const float identityMatrix[16] =
 	0.f, 0.f, 1.f, 0.f,
 	0.f, 0.f, 0.f, 1.f };
 
+
 CImguiManager::CImguiManager(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: m_pDevice{ pDevice }
 	, m_pContext{ pContext }
@@ -37,12 +31,17 @@ CImguiManager::CImguiManager(ID3D11Device* pDevice, ID3D11DeviceContext* pContex
 
 HRESULT CImguiManager::Initialize(void* pArg)
 {
+
 	if (nullptr != pArg)
 	{
 
 	}
-	m_EffectDesc.eType = 0;
 	m_EffectDesc.vStartPos = { 0.f, 0.f, 0.f, 1.f };
+	m_EffectDesc.eType = 0;
+	m_EffectDesc.bDir = false;
+	m_EffectDesc.ParticleTag = { TEXT("") };
+	m_EffectDesc.fStartTime = { 0.f };
+
 
 	m_EffectDesc.BufferInstance.iNumInstance = 1;
 	m_EffectDesc.BufferInstance.isLoop = true;
@@ -62,24 +61,38 @@ HRESULT CImguiManager::Initialize(void* pArg)
 
 void CImguiManager::Tick(const _float& fTimeDelta)
 {
+	m_fParticleTime += fTimeDelta;
+	if (m_fParticleTime >= m_fMaxTime)
+	{
+		Reset_Particle();
+		m_fParticleTime = 0.f;
+	}
+
+
 	ImGuiIO& io = ImGui::GetIO();
 	ImGui_ImplDX11_NewFrame();
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
 	ImGuizmo::BeginFrame();
 
-	//bool bDemo = true;
-	//ImGui::ShowDemoWindow(&bDemo);
+	bool bDemo = true;
+	ImGui::ShowDemoWindow(&bDemo);
+
 
 	Create_Tick(fTimeDelta);
 	Editor_Tick(fTimeDelta);
 	Guizmo_Tick(fTimeDelta);
+	Timeline_Tick(fTimeDelta);
 
 
-	if (nullptr != m_EditParticle)
+	if (!m_EditParticle.empty())
 	{
-		m_EditParticle->Tick(fTimeDelta);
-		m_EditParticle->Late_Tick(fTimeDelta);
+
+		for (auto& iter : m_EditParticle)
+		{
+			iter->Tick(fTimeDelta);	
+			iter->Late_Tick(fTimeDelta);
+		}
 	}
 }
 
@@ -142,6 +155,11 @@ void CImguiManager::EditTransform(_float* cameraView, _float* cameraProjection, 
 	ImGuizmo::SetRect(0, 0, io.DisplaySize.x, io.DisplaySize.y);
 
 	ImGuizmo::Manipulate(cameraView, cameraProjection, mCurrentGizmoOperation, mCurrentGizmoMode, matrix, NULL, useSnap ? &snap[0] : NULL, boundSizing ? bounds : NULL, boundSizingSnap ? boundsSnap : NULL);
+	
+	//m_EffectDesc.vStartPos = _float4(matrix[12], matrix[13], matrix[14], matrix[15]);
+	//dynamic_cast<CEffect*>(m_EditParticle[m_iCurEditIndex])->Set_StartPos(m_EffectDesc.vStartPos);
+	dynamic_cast<CEffect*>(m_EditParticle[m_iCurEditIndex])->Set_StartPos(_float4(matrix[12], matrix[13], matrix[14], matrix[15]));
+	
 	if (useWindow)
 	{
 		ImGui::PopStyleColor(1);
@@ -157,10 +175,10 @@ void CImguiManager::Guizmo(_float fTimeDelta)
 		_float* cameraView = (_float*)m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_VIEW);
 		_float* cameraProjection = (_float*)m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_PROJ);
 
-		if (nullptr != m_EditParticle)
+		if (-1 != m_iCurEditIndex)	
 		{
 
-			_float* objectWorld = (_float*)dynamic_cast<CTransform*>(m_EditParticle->Get_TransformCom())->Get_WorldFloat4x4();
+			_float* objectWorld = (_float*)dynamic_cast<CTransform*>(m_EditParticle[m_iCurEditIndex]->Get_TransformCom())->Get_WorldFloat4x4();
 			EditTransform(cameraView, cameraProjection, objectWorld);
 			ImGuizmo::IsUsing();
 		}
@@ -168,12 +186,59 @@ void CImguiManager::Guizmo(_float fTimeDelta)
 
 }
 
-HRESULT CImguiManager::Create_Particle(_uint iType)
+HRESULT CImguiManager::Create_Particle()
 {
-	if (nullptr != m_EditParticle)
+	if (-1 == m_iCurEditIndex)
+		m_iCurEditIndex = 0;
+
+	CEffect::EFFECT_DESC EffectDesc{};
+	EffectDesc.BufferInstance.iNumInstance = 1;
+	EffectDesc.BufferInstance.isLoop = true;
+	EffectDesc.BufferInstance.vLifeTime = _float2(1.f, 1.f);
+	EffectDesc.BufferInstance.vOffsetPos = _float3(0.f, 0.f, 0.f);
+	EffectDesc.BufferInstance.vPivotPos = _float3(0.f, 0.f, 0.f);
+	EffectDesc.BufferInstance.vRange = _float3(0.f, 0.f, 0.f);
+	EffectDesc.BufferInstance.vSize = _float2(1.f, 1.f);
+	EffectDesc.BufferInstance.vSpeed = _float2(1.f, 1.f);
+	EffectDesc.BufferInstance.vRectSize = _float2(1.0f, 1.0f);
+	EffectDesc.BufferInstance.fRadius = 1.f;	
+
+	EffectDesc.vStartPos = { 0.f, 0.f, 0.f, 1.f };
+	EffectDesc.eType = 0;
+	EffectDesc.bDir = false;
+	EffectDesc.ParticleTag = m_pGameInstance->StringToWstring(text_input_buffer);
+	EffectDesc.fStartTime = { 0.f };
+
+
+
+
+	CGameObject* pGameParticle = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Particle_Point"), &EffectDesc);
+	if (nullptr == pGameParticle)
+		return E_FAIL;
+
+	if(m_bSpread)
+		dynamic_cast<CEffect*>(pGameParticle)->Edit_Action(CEffect::ACTION_SPREAD);
+	if(m_bDrop)
+		dynamic_cast<CEffect*>(pGameParticle)->Edit_Action(CEffect::ACTION_DROP);
+
+	m_EditParticle.push_back(pGameParticle);
+	m_iCurEditIndex = m_EditParticle.size() - 1;
+	return S_OK;
+}
+
+HRESULT CImguiManager::Edit_Particle(_uint Index)
+{
+
+
+
+	if (m_EditParticle.size() <= Index)
+		return E_FAIL;
+	else
 	{
-		Safe_Release(m_EditParticle);
+		Safe_Release(m_EditParticle[Index]);
 	}
+
+
 
 	CEffect::EFFECT_DESC EffectDesc{};
 	EffectDesc.BufferInstance.iNumInstance = m_EffectDesc.BufferInstance.iNumInstance;
@@ -186,54 +251,63 @@ HRESULT CImguiManager::Create_Particle(_uint iType)
 	EffectDesc.BufferInstance.vSpeed = m_EffectDesc.BufferInstance.vSpeed;
 	EffectDesc.BufferInstance.vRectSize = m_EffectDesc.BufferInstance.vRectSize;
 	EffectDesc.BufferInstance.fRadius = m_EffectDesc.BufferInstance.fRadius;
+	EffectDesc.BufferInstance.bRadius = m_EffectDesc.BufferInstance.bRadius;
+
 	EffectDesc.vStartPos = m_EffectDesc.vStartPos;
 	EffectDesc.eType = m_EffectDesc.eType;
+	EffectDesc.bDir = m_EffectDesc.bDir;
+	EffectDesc.ParticleTag = m_EffectDesc.ParticleTag;
+	EffectDesc.fStartTime = m_EffectDesc.fStartTime;
 
 
-	m_EditParticle = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Particle_Point"), &EffectDesc);
-	if (nullptr == m_EditParticle)
+	m_EditParticle[Index] = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Particle_Point"), &EffectDesc);
+	if (nullptr == m_EditParticle[Index])
 		return E_FAIL;
 
-	if(m_bSpread)
-		dynamic_cast<CParticle_Point*>(m_EditParticle)->Edit_Action(CParticle_Point::ACTION_SPREAD);
-	if(m_bDrop)
-		dynamic_cast<CParticle_Point*>(m_EditParticle)->Edit_Action(CParticle_Point::ACTION_DROP);
+	if (m_bSpread)
+		dynamic_cast<CEffect*>(m_EditParticle[Index])->Edit_Action(CEffect::ACTION_SPREAD);
+	if (m_bDrop)
+		dynamic_cast<CEffect*>(m_EditParticle[Index])->Edit_Action(CEffect::ACTION_DROP);
 
 
 	return S_OK;
 }
 
-HRESULT CImguiManager::Edit_Particle()
+HRESULT CImguiManager::Load_Desc(_uint Index)
 {
-	if (nullptr == m_EditParticle)
-		return E_FAIL;
+	CEffect* pEffect = dynamic_cast<CEffect*>(m_EditParticle[Index]);
+	CVIBuffer_Instance::INSTANCE_DESC* pDesc= pEffect->Get_Instance();	
+
+
+	m_EffectDesc.BufferInstance.iNumInstance =pDesc->iNumInstance;
+	m_EffectDesc.BufferInstance.isLoop =pDesc->isLoop;
+	m_EffectDesc.BufferInstance.vLifeTime =pDesc->vLifeTime;
+	m_EffectDesc.BufferInstance.vOffsetPos =pDesc->vOffsetPos;
+	m_EffectDesc.BufferInstance.vPivotPos =pDesc->vPivotPos;
+	m_EffectDesc.BufferInstance.vRange =pDesc->vRange;
+	m_EffectDesc.BufferInstance.vSize =pDesc->vSize;
+	m_EffectDesc.BufferInstance.vSpeed =pDesc->vSpeed;
+	m_EffectDesc.BufferInstance.vRectSize =pDesc->vRectSize;
+	m_EffectDesc.BufferInstance.fRadius =pDesc->fRadius;
+	m_EffectDesc.BufferInstance.bRadius =pDesc->bRadius;
+	
+	m_EffectDesc.eType = pEffect->Get_Type();
+	m_EffectDesc.vStartPos = pEffect->Get_StartPos();
+	m_EffectDesc.fStartTime = *pEffect->Get_pStartTime();
+	m_EffectDesc.bDir = pEffect->Get_isDir();
+	m_EffectDesc.ParticleTag = pEffect->Get_Tag();	
+
+	_uint CheckAction = pEffect->Get_Action();	
+	
+	if (CheckAction & pEffect->iAction[CEffect::ACTION_SPREAD])
+		m_bSpread = true;
 	else
-		Safe_Release(m_EditParticle);
+		m_bSpread = false;
 
-
-	CEffect::EFFECT_DESC EffectDesc{};
-	EffectDesc.BufferInstance.iNumInstance = m_EffectDesc.BufferInstance.iNumInstance;
-	EffectDesc.BufferInstance.isLoop = m_EffectDesc.BufferInstance.isLoop;
-	EffectDesc.BufferInstance.vLifeTime = m_EffectDesc.BufferInstance.vLifeTime;
-	EffectDesc.BufferInstance.vOffsetPos = m_EffectDesc.BufferInstance.vOffsetPos;
-	EffectDesc.BufferInstance.vPivotPos = m_EffectDesc.BufferInstance.vPivotPos;
-	EffectDesc.BufferInstance.vRange = m_EffectDesc.BufferInstance.vRange;
-	EffectDesc.BufferInstance.vSize = m_EffectDesc.BufferInstance.vSize;
-	EffectDesc.BufferInstance.vSpeed = m_EffectDesc.BufferInstance.vSpeed;
-	EffectDesc.BufferInstance.vRectSize = m_EffectDesc.BufferInstance.vRectSize;
-	EffectDesc.BufferInstance.fRadius = m_EffectDesc.BufferInstance.fRadius;
-	EffectDesc.vStartPos = m_EffectDesc.vStartPos;
-	EffectDesc.eType = m_EffectDesc.eType;
-
-
-	m_EditParticle = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Particle_Point"), &EffectDesc);
-	if (nullptr == m_EditParticle)
-		return E_FAIL;
-
-	if (m_bSpread)
-		dynamic_cast<CParticle_Point*>(m_EditParticle)->Edit_Action(CParticle_Point::ACTION_SPREAD);
-	if (m_bDrop)
-		dynamic_cast<CParticle_Point*>(m_EditParticle)->Edit_Action(CParticle_Point::ACTION_DROP);
+	if (CheckAction & pEffect->iAction[CEffect::ACTION_DROP])
+		m_bDrop = true;
+	else
+		m_bDrop = false;
 
 
 	return S_OK;
@@ -253,13 +327,29 @@ void CImguiManager::Create_Tick(_float fTimeDelta)
 		static int Particle_current = 0;
 		ImGui::ListBox("Particle List", &Particle_current, Particle, IM_ARRAYSIZE(Particle));
 
+
+		if (ImGui::InputText("ParticleTag", text_input_buffer, IM_ARRAYSIZE(text_input_buffer)))
+		{
+			m_EffectDesc.ParticleTag = m_pGameInstance->StringToWstring(text_input_buffer);	
+		}
+
+
+
 		if (ImGui::Button("Create Particle"))
 		{
-			Create_Particle(Particle_current);
+			Create_Particle();
 		}
 		if (ImGui::Button("Delete Particle"))
 		{
-			Safe_Release(m_EditParticle);
+			if (!m_EditParticle.empty())
+			{
+				Safe_Release(m_EditParticle.back());
+				m_EditParticle.pop_back();
+				if (m_EditParticle.empty())
+					m_iCurEditIndex = -1;
+				else
+					m_iCurEditIndex = 0;
+			}
 		}
 		if (ImGui::Button("Save_binary"))
 		{
@@ -278,69 +368,132 @@ void CImguiManager::Create_Tick(_float fTimeDelta)
 
 void CImguiManager::Editor_Tick(_float fTimeDelta)
 {
-	CParticle_Point* pParticle = dynamic_cast<CParticle_Point*>(m_EditParticle);
-
-	ImGui::SetNextWindowPos(ImVec2(1030, 200), ImGuiCond_None);
-	ImGui::SetNextWindowSize(ImVec2(250, 350), ImGuiCond_None);
 
 	ImGui::Begin("Particle_Edit");
 
+	static int selectedItem = -1;
+	if (ImGui::TreeNode("Particle"))
+	{
+		_int iSize = m_EditParticle.size();
+		if (ImGui::BeginListBox("listBox"))
+		{
+			for (int i = 0; i < iSize; i++)
+			{
+				// 리스트박스 아이템의 텍스트
+				const bool isSelected = (selectedItem == i);
+				char Label[256] = {};
+				strcpy_s(Label, m_pGameInstance->WstringToString(dynamic_cast<CEffect*>(m_EditParticle[i])->Get_Tag()).c_str());
+				if (ImGui::Selectable(Label, isSelected))
+				{
+					selectedItem = i; // 선택된 아이템 업데이트	
+				}
+
+	
+				// 선택된 아이템이 보이도록 스크롤
+				if (isSelected)
+				{
+					ImGui::SetItemDefaultFocus();
+				}
+			}
+			ImGui::EndListBox();	
+		}
+	ImGui::TreePop();
+	}
+	
+	if (-1 != selectedItem)
+	{
+		//1->0
+		m_iCurEditIndex = selectedItem;
+		Load_Desc(m_iCurEditIndex);
+	}
+
+
+	_bool bChange = false;
+	ImGui::Text(to_string(m_iCurEditIndex).c_str());
+
 	if (ImGui::Checkbox("Spread", &m_bSpread))
 	{
-		pParticle->Edit_Action(CParticle_Point::ACTION_SPREAD);
+		if(-1 != m_iCurEditIndex)
+		{
+			CEffect* pParticle = dynamic_cast<CEffect*>(m_EditParticle[m_iCurEditIndex]);
+			pParticle->Edit_Action(CEffect::ACTION_SPREAD);
+		}
 	}
 	ImGui::SameLine();
 
 	if (ImGui::Checkbox("Drop", &m_bDrop))
 	{
-		pParticle->Edit_Action(CParticle_Point::ACTION_DROP);
+		if (-1 != m_iCurEditIndex)
+		{
+			CEffect* pParticle = dynamic_cast<CEffect*>(m_EditParticle[m_iCurEditIndex]);
+			pParticle->Edit_Action(CEffect::ACTION_DROP);
+		}
 	}	
 	ImGui::SameLine();
 
 	if (ImGui::Checkbox("Loop", &m_EffectDesc.BufferInstance.isLoop))
 	{
-		Edit_Particle();
+		bChange = true;
 	}
-	ImGui::NewLine();
+
+
+	if (ImGui::Checkbox("Direction", &m_EffectDesc.bDir))
+	{
+		bChange = true;
+	}
+
+
+	if (ImGui::Checkbox("useRadius", &m_EffectDesc.BufferInstance.bRadius))
+	{
+		bChange = true;
+	}
+
 
 	if (ImGui::InputScalar("NumInstance", ImGuiDataType_U32, &m_EffectDesc.BufferInstance.iNumInstance))
 	{
-		Edit_Particle();
+		bChange = true;
 	}
 
 	_float* Temp = (_float*)&m_EffectDesc.BufferInstance.vOffsetPos;
 	if (ImGui::InputFloat3("OffsetPos", Temp))
 	{
 		memcpy(&m_EffectDesc.BufferInstance.vOffsetPos, Temp, sizeof(_float3));
-		Edit_Particle();
+		bChange = true;
 	}
 
 	Temp = (_float*)&m_EffectDesc.BufferInstance.vPivotPos;
 	if (ImGui::InputFloat3("PivotPos", Temp))
 	{
 		memcpy(&m_EffectDesc.BufferInstance.vPivotPos, Temp, sizeof(_float3));
-		Edit_Particle();
+		bChange = true;
 	}
 
-	Temp = (_float*)&m_EffectDesc.BufferInstance.vRange;
-	if (ImGui::InputFloat3("Range", Temp))
+	if(!m_EffectDesc.BufferInstance.bRadius)
 	{
-		memcpy(&m_EffectDesc.BufferInstance.vRange, Temp, sizeof(_float3));
-		Edit_Particle();
+
+		Temp = (_float*)&m_EffectDesc.BufferInstance.vRange;
+		if (ImGui::InputFloat3("Range", Temp))
+		{
+			memcpy(&m_EffectDesc.BufferInstance.vRange, Temp, sizeof(_float3));
+			bChange = true;
+		}
+	}
+	else
+	{
+		Temp = (_float*)&m_EffectDesc.BufferInstance.fRadius;
+		if (ImGui::InputFloat("Radius", Temp))
+		{
+			memcpy(&m_EffectDesc.BufferInstance.fRadius, Temp, sizeof(_float));
+			bChange = true;
+		}
 	}
 
-	Temp = (_float*)&m_EffectDesc.BufferInstance.fRadius;
-	if (ImGui::InputFloat("Radius", Temp))
-	{
-		memcpy(&m_EffectDesc.BufferInstance.fRadius, Temp, sizeof(_float));
-		Edit_Particle();	
-	}
 
 	Temp = (_float*)&m_EffectDesc.BufferInstance.vSize;
 	if (ImGui::InputFloat2("Size", Temp))
 	{
 		memcpy(&m_EffectDesc.BufferInstance.vSize, Temp, sizeof(_float2));
-		Edit_Particle();
+		bChange = true;
 	}
 
 	Temp = (_float*)&m_EffectDesc.BufferInstance.vRectSize;
@@ -349,7 +502,7 @@ void CImguiManager::Editor_Tick(_float fTimeDelta)
 		if (Temp[0] > Temp[1])
 			Temp[1] = Temp[0];
 		memcpy(&m_EffectDesc.BufferInstance.vRectSize, Temp, sizeof(_float2));
-		Edit_Particle();
+		bChange = true;
 	}
 
 	Temp = (_float*)&m_EffectDesc.BufferInstance.vSpeed;
@@ -358,7 +511,7 @@ void CImguiManager::Editor_Tick(_float fTimeDelta)
 		if (Temp[0] > Temp[1])
 			Temp[1] = Temp[0];
 		memcpy(&m_EffectDesc.BufferInstance.vSpeed, Temp, sizeof(_float2));
-		Edit_Particle();
+		bChange = true;
 	}
 
 	Temp = (_float*)&m_EffectDesc.BufferInstance.vLifeTime;
@@ -367,19 +520,20 @@ void CImguiManager::Editor_Tick(_float fTimeDelta)
 		if (Temp[0] > Temp[1])
 			Temp[1] = Temp[0];
 		memcpy(&m_EffectDesc.BufferInstance.vLifeTime, Temp, sizeof(_float2));
-		Edit_Particle();
+		bChange = true;
 	}
 
-	Temp = (_float*)&m_EffectDesc.BufferInstance.vPower;
-	if (ImGui::InputFloat2("Power", Temp))
+	Temp = (_float*)&m_EffectDesc.fStartTime;	
+	if (ImGui::InputFloat("StartTime", Temp))
 	{
-		if (Temp[0] > Temp[1])
-			Temp[1] = Temp[0];
-		memcpy(&m_EffectDesc.BufferInstance.vPower, Temp, sizeof(_float2));
-		Edit_Particle();
+		memcpy(&m_EffectDesc.fStartTime, Temp, sizeof(_float));	
+		bChange = true;
+		
 	}
-
-
+	if(bChange)
+	{
+		Edit_Particle(m_iCurEditIndex);
+	}
 
 	ImGui::End();
 
@@ -388,8 +542,8 @@ void CImguiManager::Editor_Tick(_float fTimeDelta)
 
 void CImguiManager::Guizmo_Tick(_float fTimeDelta)
 {
-	ImGui::SetNextWindowPos(ImVec2(1030, 550), ImGuiCond_None);
-	ImGui::SetNextWindowSize(ImVec2(250, 170), ImGuiCond_None);
+	ImGui::SetNextWindowPos(ImVec2(1030, 200), ImGuiCond_None);
+	ImGui::SetNextWindowSize(ImVec2(250, 150), ImGuiCond_None);
 
 
 	ImGui::Begin("Editor");
@@ -399,6 +553,115 @@ void CImguiManager::Guizmo_Tick(_float fTimeDelta)
 	Guizmo(fTimeDelta);
 
 	ImGui::End();
+}
+
+bool CImguiManager::IsMouseHoveringCircle(float mouse_x, float mouse_y, float circle_x, float circle_y, float radius)
+{
+	float dx = mouse_x - circle_x;
+	float dy = mouse_y - circle_y;
+	return (dx * dx + dy * dy) <= (radius * radius);
+}
+void CImguiManager::UpdateCirclePosition()
+{
+	// 마우스 입력 받기
+	ImGuiIO& io = ImGui::GetIO();
+	float mouse_x = io.MousePos.x;
+	float mouse_y = io.MousePos.y;
+
+	//// 마우스 클릭 시 드래그 시작
+	//if (ImGui::IsMouseClicked(ImGuiMouseButton_Left))
+	//{
+	//	if (IsMouseHoveringCircle(mouse_x, mouse_y, circle_pos_x, circle_pos_y, circle_radius))
+	//	{
+	//		m_bDragging = true;
+	//		drag_start_mouse_x = mouse_x;
+	//		drag_start_circle_x = circle_pos_x;
+	//	}
+	//}
+
+	//// 마우스 버튼을 떼면 드래그 종료
+	//if (ImGui::IsMouseReleased(ImGuiMouseButton_Left))
+	//{
+	//	m_bDragging = false;
+	//}
+
+	//// 드래그 중일 때 원의 x 위치 업데이트
+	//if (m_bDragging)
+	//{
+	//	float delta_x = mouse_x - drag_start_mouse_x;
+	//	circle_pos_x = drag_start_circle_x + delta_x;
+	//}
+}
+
+void CImguiManager::Reset_Particle()
+{
+
+
+	for (size_t i = 0; i < m_EditParticle.size(); i++)
+	{
+		Load_Desc(i);	
+		Edit_Particle(i);
+	}
+
+	if(!m_EditParticle.empty())
+		Load_Desc(m_iCurEditIndex);
+
+}
+
+void CImguiManager::Timeline_Tick(_float fTimeDelta)
+{
+	ImGui::SetNextWindowPos(ImVec2(0, 550), ImGuiCond_None);
+	ImGui::SetNextWindowSize(ImVec2(700, 170), ImGuiCond_None);
+	//TimelineItem items[] = { {0.0f, 1.0f, "Event 1"},{0.5f, 2.5f, "Event 2"},{3.0f, 4.0f, "Event 3"} };	//생성 타임, 소멸 타임(생성타임+라이프타임), 파티클 네이밍
+
+	ImGui::Begin("Timeline");
+	ImGui::InputFloat("MaxTime", &m_fMaxTime);
+	// 타임라인 배경 그리기
+	ImVec2 canvas_pos = ImGui::GetCursorScreenPos(); // 시작 위치	
+	ImVec2 canvas_size = ImGui::GetContentRegionAvail(); // 크기	
+	if (canvas_size.y < 50.0f)
+		canvas_size.y = 50.0f; // 최소 높이 설정
+	ImDrawList* draw_list = ImGui::GetWindowDrawList();
+	draw_list->AddRectFilled(canvas_pos, ImVec2(canvas_pos.x + canvas_size.x, canvas_pos.y + canvas_size.y), IM_COL32(50, 50, 50, 255));
+
+	float item_height = 10.0f; // 각 아이템의 높이
+	float item_spacing = 5.0f; // 아이템 간의 간격
+
+
+	/*
+	Info.fStartTime = dynamic_cast<CEffect*>(pGameParticle)->Get_pStartTime();
+	Info.fEndTime = &dynamic_cast<CEffect*>(pGameParticle)->Get_Instance()->vLifeTime.y;
+	Info.Label = m_pGameInstance->WstringToString(dynamic_cast<CEffect*>(pGameParticle)->Get_Tag()).c_str();
+
+	ParticleTime.push_back(Info);
+
+	*/
+
+	// 타임라인 아이템 그리기
+	for (int i = 0; i < m_EditParticle.size(); ++i) {
+		CEffect* item = dynamic_cast<CEffect*>(m_EditParticle[i]);
+
+		string itemLabel = m_pGameInstance->WstringToString(item->Get_Tag());
+
+
+		// 아이템의 시작 및 끝 위치 계산
+		float start_pos_x = canvas_pos.x + (*item->Get_pStartTime() / m_fMaxTime) * canvas_size.x;
+		float end_pos_x = canvas_pos.x + ((item->Get_Instance()->vLifeTime.y + *item->Get_pStartTime()) / m_fMaxTime) * canvas_size.x;
+		float item_pos_y = canvas_pos.y + i * (item_height + item_spacing);
+		float middle_posx = start_pos_x + (end_pos_x - start_pos_x) * 0.5f;
+		// 아이템 그리기
+		draw_list->AddRectFilled(ImVec2(start_pos_x, item_pos_y), ImVec2(end_pos_x, item_pos_y + item_height), IM_COL32(255, 100, 100, 255));
+		draw_list->AddCircleFilled(ImVec2(start_pos_x, item_pos_y + item_height * 0.5f), 10.0f, IM_COL32(255, 100, 100, 255));
+		draw_list->AddCircleFilled(ImVec2(end_pos_x, item_pos_y + item_height * 0.5f), 10.0f, IM_COL32(255, 100, 100, 255));
+		draw_list->AddText(ImVec2(middle_posx, item_pos_y), IM_COL32(255, 255, 255, 255), itemLabel.c_str());
+	}
+
+	// 캔버스의 크기를 조정하여 모든 아이템이 보이도록 함
+	canvas_size.y = m_EditParticle.size() * (item_height + item_spacing);
+	ImGui::Dummy(canvas_size); // 빈 공간을 차지하여 레이아웃 유지
+
+	ImGui::End();
+
 }
 
 CImguiManager* CImguiManager::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -426,10 +689,13 @@ CImguiManager* CImguiManager::Create(ID3D11Device* pDevice, ID3D11DeviceContext*
 
 void CImguiManager::Free()
 {
-	Safe_Release(m_EditParticle);
+	for (auto& iter : m_EditParticle)
+		Safe_Release(iter);
+
 	Safe_Release(m_pDevice);
 	Safe_Release(m_pContext);
 	Safe_Release(m_pGameInstance);
+
 
 	ImGui_ImplDX11_Shutdown();
 	ImGui_ImplWin32_Shutdown();

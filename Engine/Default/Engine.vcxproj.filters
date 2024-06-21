@@ -181,6 +181,9 @@
     <Filter Include="01.Utility\10.Random">
       <UniqueIdentifier>{7023e928-6a8a-4376-a161-481610a029e9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Utility\03.Component\01.VIBuffer\Cube">
+      <UniqueIdentifier>{55219448-7564-41f8-b838-0c2a13944b50}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\Base.h">
@@ -360,6 +363,9 @@
     <ClInclude Include="..\Public\RandomManager.h">
       <Filter>01.Utility\10.Random</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\VIBuffer_Cube.h">
+      <Filter>01.Utility\03.Component\01.VIBuffer\Cube</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\Base.cpp">
@@ -526,6 +532,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\RandomManager.cpp">
       <Filter>01.Utility\10.Random</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\VIBuffer_Cube.cpp">
+      <Filter>01.Utility\03.Component\01.VIBuffer\Cube</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
