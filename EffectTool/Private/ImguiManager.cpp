@@ -428,6 +428,9 @@ void CImguiManager::Editor_Tick(_float fTimeDelta)
 	ImGui::SameLine(); 
 	if (ImGui::RadioButton("DIRCOLOR", &m_EffectDesc.iShaderPass, PASS_DIRECTIONCOLOR))
 		bChange = true;
+	ImGui::SameLine();
+	if (ImGui::RadioButton("WEIGHT", &m_EffectDesc.iShaderPass, PASS_WEIGHTBLEND))
+		bChange = true;
 
 	if (ImGui::Checkbox("Spread", &m_bSpread))
 	{

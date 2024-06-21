@@ -72,6 +72,7 @@ BlendState BS_AlphaBlend
 {
     BlendEnable[0] = true;
     BlendEnable[1] = true;
+    BlendEnable[2] = true;
 
     SrcBlend = Src_Alpha;
     DestBlend = Inv_Src_Alpha;
@@ -87,4 +88,15 @@ BlendState BS_Blend
     SrcBlend = One;
     DestBlend = One;
     BlendOp = Add;
+};
+
+BlendState BS_WeightsBlend
+{
+    BlendEnable[0] = true;
+    SrcBlend = Src_Alpha;
+    DestBlend = Inv_Src_Alpha;
+    BlendOp = Add;
+    SrcBlendAlpha = One;
+    DestBlendAlpha = Inv_Src_Alpha;
+    BlendOpAlpha = Add;
 };
