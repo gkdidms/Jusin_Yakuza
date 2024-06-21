@@ -47,21 +47,22 @@ using namespace TriangleTests;
 #include "Engine_Macro.h"
 #include "Engine_Struct.h"
 
-#ifdef _DEBUG
-
-#define _CRTDBG_MAP_ALLOC
-#include <stdlib.h>
-#include <crtdbg.h>
-
-//TODO: 커밋 전에 주석 풀어야함
+//#if !defined(_CLIEND)
+//#ifdef _DEBUG
+//
+//#define _CRTDBG_MAP_ALLOC
+//#include <stdlib.h>
+//#include <crtdbg.h>
+//
 //#ifndef DBG_NEW 
 //
 //#define DBG_NEW new ( _NORMAL_BLOCK , __FILE__ , __LINE__ ) 
 //#define new DBG_NEW 
 //
 //#endif
-
-#endif // _DEBUG
+//
+//#endif // _DEBUG
+//#endif // defined(_CLIEND)
 
 namespace Engine
 {
