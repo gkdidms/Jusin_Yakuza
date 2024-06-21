@@ -82,6 +82,12 @@
     <ClCompile Include="..\Private\Construction.cpp">
       <Filter>02.GameObjects\03.Construction</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\LightTool_Mgr.cpp">
+      <Filter>03.Managers\04.Light_Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\LightObj.cpp">
+      <Filter>02.GameObjects\04. LightObj</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\MainApp.h">
@@ -183,6 +189,12 @@
     <ClInclude Include="..\Public\Construction.h">
       <Filter>02.GameObjects\03.Construction</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\LightTool_Mgr.h">
+      <Filter>03.Managers\04.Light_Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\LightObj.h">
+      <Filter>02.GameObjects\04. LightObj</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="MapTool.ico">
@@ -255,6 +267,12 @@
     </Filter>
     <Filter Include="02.GameObjects\03.Construction">
       <UniqueIdentifier>{94f829ca-2130-4431-be39-5b72fc01bdbb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.Managers\04.Light_Manager">
+      <UniqueIdentifier>{cab749d2-3e6d-4312-93b8-53ab5301b4b9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\04. LightObj">
+      <UniqueIdentifier>{bd6a8a2f-510d-4558-8c9e-35882dddfec1}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
