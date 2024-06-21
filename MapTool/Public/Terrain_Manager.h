@@ -23,7 +23,7 @@ public:
 	void Render();
 
 public:
-	void			Set_Terrain(CTerrain* terrain) { m_pTerrain = terrain; Safe_AddRef(m_pTerrain); }
+	void			Set_Terrain(CTerrain* terrain) { m_pTerrain = terrain; }
 
 public:
 	void			Change_LandScale(_uint iNumX, _uint iNumZ);

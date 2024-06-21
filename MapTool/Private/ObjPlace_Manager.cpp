@@ -1021,12 +1021,15 @@ void CObjPlace_Manager::Free()
 		Safe_Delete(iter);
 	m_ObjectNames_Map1.clear();
 
+	for (auto& iter : m_ObjectNames)
+		Safe_Delete(iter);
+	m_ObjectNames.clear();
+
 	for (auto& iter : m_FileNames)
 		Safe_Delete(iter);
 	m_FileNames.clear();
 
 	m_Layers.clear();
-
 
 	Safe_Release(m_pGameInstance);
 }
