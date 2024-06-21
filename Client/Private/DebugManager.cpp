@@ -2,6 +2,9 @@
 
 #include "GameInstance.h"
 
+#include "DebugCamera.h"
+#include "Player.h"
+
 IMPLEMENT_SINGLETON(CDebugManager)
 
 CDebugManager::CDebugManager()
@@ -35,7 +38,7 @@ HRESULT CDebugManager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pC
 
 
     //초기화
-    m_isHDR = m_pGameInstance->Get_HDR();
+    m_fHDRLight = m_pGameInstance->Get_HDRLight();
 
     return S_OK;
 }
@@ -46,8 +49,8 @@ void CDebugManager::Tick()
     ImGui_ImplWin32_NewFrame();
     ImGui::NewFrame();
 
-    _bool show_demo_window = true;
-    ImGui::ShowDemoWindow(&show_demo_window);
+    /*_bool show_demo_window = true;
+    ImGui::ShowDemoWindow(&show_demo_window);*/
 
     Window_Debug();
 }
@@ -62,18 +65,45 @@ HRESULT CDebugManager::Render()
 
 void CDebugManager::Window_Debug()
 {
-    ImGui::Begin("Window");
+    ImGui::Begin("Debug");
 
-    ImGui::Checkbox("TimeDelta Stop", &m_isTimeStop);
-    
-    if (ImGui::InputFloat("TimeSpeed", &m_fSpeed))
+    if (ImGui::CollapsingHeader("Player"))
     {
-        m_pGameInstance->Set_TimeSpeed(TEXT("Timer_60"), m_fSpeed);
+        //Time 제어
+        ImGui::SeparatorText("Time");
+
+        ImGui::Checkbox("TimeDelta Stop", &m_isTimeStop);
+
+        if (ImGui::InputFloat("TimeSpeed", &m_fSpeed))
+            m_pGameInstance->Set_TimeSpeed(TEXT("Timer_60"), m_fSpeed);
+
+        CPlayer* pPlayer = dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"), 0));
+
+        _bool isAnimStart = pPlayer->isAnimStart();
+        if (ImGui::Checkbox("Anim Start", &isAnimStart))
+            pPlayer->Set_AnimStart(isAnimStart);
+
+        //Camera 제어
+        ImGui::SeparatorText("Camera");
+
+        CDebugCamera* pCamera = dynamic_cast<CDebugCamera*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Camera"), 0));
+        _float fSensor = pCamera->Get_Sensor();
+        if (ImGui::InputFloat("CameraSensor", &fSensor))
+            pCamera->Set_Sensor(fSensor);
+
+        CTransform* pCameraTransform = dynamic_cast<CTransform*>(pCamera->Get_Component(TEXT("Com_Transform")));
+
+        _float fSpeed = pCameraTransform->Get_Speed();
+        if (ImGui::InputFloat("CameraSpeed", &fSpeed))
+            pCameraTransform->Set_Speed(fSpeed);
     }
 
-    if (ImGui::Checkbox("HDR", &m_isHDR))
+    if (ImGui::CollapsingHeader("Deferred Shader"))
     {
-        m_pGameInstance->Set_HDR(m_isHDR);
+        ImGui::SeparatorText("HDR");
+
+        if (ImGui::InputFloat("HDR Light", &m_fHDRLight, 0.f))
+            m_pGameInstance->Set_HDRLight(m_fHDRLight);
     }
 
     ImGui::End();
