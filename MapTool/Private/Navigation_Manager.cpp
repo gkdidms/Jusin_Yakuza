@@ -66,7 +66,7 @@ HRESULT CNavigation_Manager::Render()
 	{
 		_float4x4			WorldMatrix;
 		XMStoreFloat4x4(&WorldMatrix, XMMatrixIdentity());
-		//WorldMatrix._42 += 0.1f;
+		WorldMatrix._42 += 0.1f;
 
 		m_pShader->Bind_Matrix("g_WorldMatrix", &WorldMatrix);
 
@@ -83,7 +83,7 @@ HRESULT CNavigation_Manager::Render()
 			pcell->Render();
 
 
-		WorldMatrix._42 += 1.f;
+		WorldMatrix._42 += 0.3f;
 		m_pShader->Bind_Matrix("g_WorldMatrix", &WorldMatrix);
 
 		m_pShader->Bind_Matrix("g_ViewMatrix", m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_VIEW));

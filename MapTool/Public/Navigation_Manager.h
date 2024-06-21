@@ -30,8 +30,6 @@ public:
 
 public:
 	void					Load_Cell_IMGUI();
-
-public:
 	void					Make_Point(_vector vPickingPos);
 	HRESULT					Make_Cell();
 	HRESULT					Save_Cells(_uint iIndex);
