@@ -89,7 +89,7 @@
       <Filter>02.GameObjects\03.Construction</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Client_MapDataMgr.cpp">
-      <Filter>94.Client_MapDataMgr</Filter>
+      <Filter>95.Utility\02.Client_MapDataMgr</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -211,7 +211,7 @@
       <Filter>02.GameObjects\03.Construction</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Client_MapDataMgr.h">
-      <Filter>94.Client_MapDataMgr</Filter>
+      <Filter>95.Utility\02.Client_MapDataMgr</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -292,7 +292,7 @@
     <Filter Include="02.GameObjects\03.Construction">
       <UniqueIdentifier>{95e29977-56e8-4ee9-b1c8-71236bd9d68b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="94.Client_MapDataMgr">
+    <Filter Include="95.Utility\02.Client_MapDataMgr">
       <UniqueIdentifier>{843f8ce4-c1d6-4160-8deb-14b1689d5a35}</UniqueIdentifier>
     </Filter>
   </ItemGroup>

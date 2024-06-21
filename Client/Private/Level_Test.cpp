@@ -59,31 +59,33 @@ HRESULT CLevel_Test::Ready_Light()
 
 	m_pGameInstance->Add_Light(LightDesc);
 
-	ZeroMemory(&LightDesc, sizeof(LIGHT_DESC));
-	LightDesc.eType = LIGHT_DESC::TYPE_POINT;
-	LightDesc.vPosition = _float4(20.f, 5.f, 20.f, 1.f);
-	LightDesc.fRange = 20.f;
-	LightDesc.vDiffuse = _float4(1.f, 0.0f, 0.f, 1.f);
-	LightDesc.vAmbient = _float4(0.4f, 0.1f, 0.1f, 1.f);
-	LightDesc.vSpecular = LightDesc.vDiffuse;
+	//ZeroMemory(&LightDesc, sizeof(LIGHT_DESC));
+	//LightDesc.eType = LIGHT_DESC::TYPE_POINT;
+	//LightDesc.vPosition = _float4(20.f, 5.f, 20.f, 1.f);
+	//LightDesc.fRange = 20.f;
+	//LightDesc.vDiffuse = _float4(1.f, 0.0f, 0.f, 1.f);
+	//LightDesc.vAmbient = _float4(0.4f, 0.1f, 0.1f, 1.f);
+	//LightDesc.vSpecular = LightDesc.vDiffuse;
 
-	m_pGameInstance->Add_Light(LightDesc);
+	//m_pGameInstance->Add_Light(LightDesc);
 
-	ZeroMemory(&LightDesc, sizeof(LIGHT_DESC));
-	LightDesc.eType = LIGHT_DESC::TYPE_POINT;
-	LightDesc.vPosition = _float4(40.f, 5.f, 20.f, 1.f);
-	LightDesc.fRange = 20.f;
-	LightDesc.vDiffuse = _float4(0.0f, 1.f, 0.f, 1.f);
-	LightDesc.vAmbient = _float4(0.1f, 0.4f, 0.1f, 1.f);
-	LightDesc.vSpecular = LightDesc.vDiffuse;
+	//ZeroMemory(&LightDesc, sizeof(LIGHT_DESC));
+	//LightDesc.eType = LIGHT_DESC::TYPE_POINT;
+	//LightDesc.vPosition = _float4(40.f, 5.f, 20.f, 1.f);
+	//LightDesc.fRange = 20.f;
+	//LightDesc.vDiffuse = _float4(0.0f, 1.f, 0.f, 1.f);
+	//LightDesc.vAmbient = _float4(0.1f, 0.4f, 0.1f, 1.f);
+	//LightDesc.vSpecular = LightDesc.vDiffuse;
 
-	m_pGameInstance->Add_Light(LightDesc);
+	//m_pGameInstance->Add_Light(LightDesc);
 
 	return S_OK;
 }
 
 HRESULT CLevel_Test::Ready_Camera(const wstring& strLayerTag)
 {
+	/* 카메라 추가 시 Debug Camera를 첫번째로 놔두고 추가해주세요 (디버깅 툴에서 사용중)*/
+
 	CDebugCamera::PLAYER_CAMERA_DESC		CameraDesc{};
 
 	CameraDesc.fSensor = 0.1f;

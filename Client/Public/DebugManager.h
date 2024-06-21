@@ -45,7 +45,7 @@ private:
     _bool m_isTimeStop = { false }; // TimeDelta Stop
     _float m_fSpeed = { -1.f };
 private://·»´õ·¯ Á¦¾î 
-    _bool m_isHDR = { false };
+    _float m_fHDRLight = { 1.f };
 
 private:
     void Window_Debug();

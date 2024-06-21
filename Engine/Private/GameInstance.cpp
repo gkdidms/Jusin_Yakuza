@@ -140,6 +140,11 @@ HRESULT CGameInstance::Open_Level(_uint iLevelIndex, CLevel* pLevel)
 	return m_pLevel_Manager->Open_Level(iLevelIndex, pLevel);
 }
 
+_uint CGameInstance::Get_CurrentLevel()
+{
+	return m_pLevel_Manager->Get_CurrentLevel();
+}
+
 _bool CGameInstance::PlaySound_W(const wstring pSoundKey, CHANNELID eID, float fVolume)
 {
 	return m_pSound_Manager->PlaySound_W(pSoundKey, eID, fVolume);
@@ -212,9 +217,19 @@ void CGameInstance::Set_HDR(_bool isHDR)
 	m_pRenderer->Set_HDR(isHDR);
 }
 
+void CGameInstance::Set_HDRLight(_float fLight)
+{
+	m_pRenderer->Set_HDRLight(fLight);
+}
+
 _bool CGameInstance::Get_HDR()
 {
 	return m_pRenderer->Get_HDR();
+}
+
+_float CGameInstance::Get_HDRLight()
+{
+	return m_pRenderer->Get_HDRLight();
 }
 
 #ifdef _DEBUG
