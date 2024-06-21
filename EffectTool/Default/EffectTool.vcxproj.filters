@@ -262,6 +262,9 @@
     <Filter Include="02.GameObjects\04.Sky">
       <UniqueIdentifier>{677cfeba-bf10-4edc-8658-e813affc6f08}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\03.Effect\Animation">
+      <UniqueIdentifier>{60884ec0-2224-450a-af16-2fce2d3a49de}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxPosTex.hlsl">

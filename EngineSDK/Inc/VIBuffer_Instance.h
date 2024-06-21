@@ -21,6 +21,11 @@ public:
         _bool isLoop;
     }INSTANCE_DESC;
 
+    typedef struct tBlendSort
+    {
+        VTXMATRIX vMatrix;
+        _float ViewZ;
+    }BlendSort;
 protected:
     CVIBuffer_Instance(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
     CVIBuffer_Instance(const CVIBuffer_Instance& rhs);
@@ -43,10 +48,14 @@ protected:
     _float* m_pSpeeds = { nullptr };
     _float3* m_pOriginalPositions = { nullptr };
 
+    //인스턴스 임시저장소
+    VTXMATRIX* m_pTempVertices = { nullptr };
+
 public:
     void Spread(_float fTimeDelta);
     void Drop(_float fTimeDelta);
     void LifeTime_Check();
+    void Blend_Sort();
 
     
 public:

@@ -22,6 +22,12 @@ BEGIN(Client)
 class CImguiManager final:
     public CBase
 {
+public:
+	enum PASS{ 
+		PASS_DIRECTION=2 , 
+		PASS_NODIRECTION ,
+		PASS_DIRECTIONCOLOR , 
+		PASS_END};
 private:
 	CImguiManager(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual ~CImguiManager() = default;
@@ -46,7 +52,7 @@ private:
 	bool IsMouseHoveringCircle(float mouse_x, float mouse_y, float circle_x, float circle_y, float radius);
 	void UpdateCirclePosition();
 
-
+	void Color_Palette();
 	void Reset_Particle();
 private:
 	ID3D11Device* m_pDevice = { nullptr };
