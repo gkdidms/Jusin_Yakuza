@@ -7,6 +7,11 @@ CBounding_OBB::CBounding_OBB()
 {
 }
 
+void CBounding_OBB::Set_Value(void* pDesc)
+{
+	m_vExtents = *((_float3*)pDesc);
+}
+
 HRESULT CBounding_OBB::Initialize(const void* pArg)
 {
 	if (nullptr == pArg)

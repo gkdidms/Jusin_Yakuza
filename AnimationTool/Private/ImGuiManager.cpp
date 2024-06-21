@@ -225,24 +225,24 @@ void CImguiManager::BoneListWindow()
 		m_pRenderModel->Select_Bone(m_iBoneSelectedIndex);
 	}
 
-	if (ImGui::RadioButton("Sphere", m_iColliderType == 0))
+	if (ImGui::RadioButton("AABB", m_iColliderType == 0))
 	{
 		m_iColliderType = 0;
 	}
 	ImGui::SameLine();
-	if (ImGui::RadioButton("AABB", m_iColliderType == 1))
+	if (ImGui::RadioButton("OBB", m_iColliderType == 1))
 	{
 		m_iColliderType = 1;
 	}	
 	ImGui::SameLine();
-	if (ImGui::RadioButton("OBB", m_iColliderType == 2))
+	if (ImGui::RadioButton("Sphere", m_iColliderType == 2))
 	{
 		m_iColliderType = 2;
 	}
 
 	if (ImGui::Button("Create Collier"))
 	{
-
+		m_pRenderModel->Create_BoneCollider(m_iColliderType, m_iBoneSelectedIndex);
 	}
 
 	ImGui::End();
