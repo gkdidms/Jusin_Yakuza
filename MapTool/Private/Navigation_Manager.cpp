@@ -51,6 +51,7 @@ void CNavigation_Manager::Tick(_float fTimeDelta)
 
 void CNavigation_Manager::Late_Tick(_float fTimeDelta)
 {
+
 }
 
 HRESULT CNavigation_Manager::Render()
@@ -83,7 +84,7 @@ HRESULT CNavigation_Manager::Render()
 			pcell->Render();
 
 
-		WorldMatrix._42 += 0.3f;
+		WorldMatrix._42 += 0.2f;
 		m_pShader->Bind_Matrix("g_WorldMatrix", &WorldMatrix);
 
 		m_pShader->Bind_Matrix("g_ViewMatrix", m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_VIEW));
@@ -197,8 +198,9 @@ HRESULT CNavigation_Manager::Make_Cell()
 
 HRESULT CNavigation_Manager::Save_Cells(_uint iIndex)
 {
+
 	char fullPath[MAX_PATH];
-	strcpy_s(fullPath, "../../../Client/Bin/DataFiles/");
+	strcpy_s(fullPath, "../../Client/Bin/DataFiles/NaviData/");
 
 	strcat_s(fullPath, "Navigation");
 
@@ -208,28 +210,35 @@ HRESULT CNavigation_Manager::Save_Cells(_uint iIndex)
 	strcat_s(fullPath, cIndex);
 	strcat_s(fullPath, ".dat");
 
-	string strPath(fullPath);
-	TCHAR* tcharPath = StringToTCHAR(strPath);
+	fs::path path(fullPath);
 
-	HANDLE		hFile = CreateFile(tcharPath, GENERIC_WRITE, 0, nullptr, CREATE_ALWAYS, FILE_ATTRIBUTE_NORMAL, 0);
-	if (0 == hFile)
+	ofstream out(fullPath, ios::binary);
+
+	if (!out) {
 		return E_FAIL;
+	}
 
 	_ulong		dwByte = {};
 	_float3		vPoints[CCell::POINT_END] = {};
 
-	for (int i = 0; i < m_Cells.size(); i++)
+	_uint		iCellNum = m_Cells.size();
+	out.write((_char*)&iCellNum, sizeof(_uint));
+
+	for (int i = 0; i < iCellNum; i++)
 	{
+		/* 포인트 저장 */
 		XMStoreFloat3(&vPoints[CCell::POINT_A], m_Cells[i]->Get_Point(CCell::POINT_A));
 		XMStoreFloat3(&vPoints[CCell::POINT_B], m_Cells[i]->Get_Point(CCell::POINT_B));
 		XMStoreFloat3(&vPoints[CCell::POINT_C], m_Cells[i]->Get_Point(CCell::POINT_C));
 
-		WriteFile(hFile, vPoints, sizeof(_float3) * 3, &dwByte, nullptr);
+		out.write((_char*)vPoints, sizeof(_float3) * 3);
+
+		/* 옵션 저장 */
+		_int		iOption = m_Cells[i]->Get_Option();
+		out.write((_char*)&iOption, sizeof(_int));
 	}
 
-	CloseHandle(hFile);
-
-	Safe_Delete(tcharPath);
+	out.close();
 
 	Update_FileName();
 }
@@ -242,7 +251,7 @@ HRESULT CNavigation_Manager::Load_Cells(_uint iIndex)
 
 	_ulong		dwByte = {};
 	char fullPath[MAX_PATH];
-	strcpy_s(fullPath, "../../../Client/Bin/DataFiles/");
+	strcpy_s(fullPath, "../../Client/Bin/DataFiles/NaviData/");
 
 	strcat_s(fullPath, "Navigation");
 
@@ -253,32 +262,34 @@ HRESULT CNavigation_Manager::Load_Cells(_uint iIndex)
 	strcat_s(fullPath, ".dat");
 
 	string strPath(fullPath);
-	TCHAR* tcharPath = StringToTCHAR(strPath);
 
+	ifstream in(fullPath, ios::binary);
 
-	HANDLE		hFile = CreateFile(tcharPath, GENERIC_READ, 0, nullptr, OPEN_EXISTING, FILE_ATTRIBUTE_NORMAL, 0);
-	if (0 == hFile)
+	if (!in.is_open()) {
+		MSG_BOX("파일 개방 실패");
 		return E_FAIL;
-
-	_float3		vPoint[CCell::POINT_END] = {};
-
-	while (true)
-	{
-		ReadFile(hFile, vPoint, sizeof(_float3) * CCell::POINT_END, &dwByte, nullptr);
-
-		if (0 == dwByte)
-			break;
-
-		CCell* pCell = CCell::Create(m_pDevice, m_pContext, vPoint, m_Cells.size(), CCell::OPTION_NONE);
-		if (nullptr == pCell)
-			return E_FAIL;
-
-		m_Cells.emplace_back(pCell);
 	}
 
-	CloseHandle(hFile);
+	_uint NumCells = { 0 };
+	in.read((_char*)&NumCells, sizeof(_uint));
 
-	Safe_Delete(tcharPath);
+	for (size_t i = 0; i < NumCells; ++i)
+	{
+		/* point 로드 */
+		_float3* vPoint = new _float3[3];
+		in.read((_char*)vPoint, sizeof(_float3) * 3);
+
+		/* 옵션 로드 */
+		_int iOption = { 0 };
+		in.read((_char*)&iOption, sizeof(_int));
+
+		CCell* pCell = CCell::Create(m_pDevice, m_pContext, vPoint, i, CCell::OPTION(iOption));
+
+		m_Cells.emplace_back(pCell);
+		Safe_Delete(vPoint);
+	}
+
+	in.close();
 
 	Update_CellsName();
 }
@@ -314,7 +325,7 @@ void CNavigation_Manager::Update_FileName()
 		Safe_Delete(iter);
 
 	m_FileNames.clear();
-	string path = "../../../Client/Bin/DataFiles/*.dat";
+	string path = "../../Client/Bin/DataFiles/NaviData/*.dat";
 
 	struct _finddata_t fd;
 	intptr_t handle;
@@ -369,6 +380,33 @@ void CNavigation_Manager::Delete_AllCell()
 	m_iCurrentCellIndex = 0;
 }
 
+void CNavigation_Manager::Find_Cells()
+{
+	/* F 누르면 작동 */
+	if (m_pGameInstance->GetKeyState(DIK_F) == HOLD)
+	{
+		if (0 < m_Cells.size())
+		{
+			if (CGameInstance::GetInstance()->GetMouseState(DIM_LB) == AWAY)
+			{
+				_bool		isPick;
+				_vector		vTargetPos = CGameInstance::GetInstance()->Picking(&isPick);
+
+				for (int i = 0; i < m_Cells.size(); i++)
+				{
+					/* 그냥 넣어주는거 */
+					int			iNeighborsIndex;
+
+					if (true == m_Cells[i]->isIn(vTargetPos, &iNeighborsIndex))
+					{
+						m_iCurrentCellIndex = i;
+					}
+				}
+			}
+		}
+	}
+}
+
 
 _float3 CNavigation_Manager::Find_ClosestPoint(_vector pickPos, _float* pMinDistance)
 {
@@ -407,10 +445,18 @@ _float3 CNavigation_Manager::Find_ClosestPoint(_vector pickPos, _float* pMinDist
 	return resultPos;
 }
 
+_float3 CNavigation_Manager::Find_ClosestCells(_vector pickPos, _float* pMinDistance)
+{
+	return _float3();
+}
+
 void CNavigation_Manager::Show_Cells_IMGUI()
 {
+	ImGui::Text(u8" F 누르고 왼쪽 마우스 클릭하기 - CELL 찾기 ");
 	ImGui::Text(u8" X 한번 누르고 클릭. 시계방향으로!!!!!!!!! - 점 생성 ");
 	ImGui::Text(u8" 시계방향!!!!!!!!!!! ");
+
+	Find_Cells();
 
 	if (0 < m_CellsName.size())
 	{
@@ -419,11 +465,14 @@ void CNavigation_Manager::Show_Cells_IMGUI()
 		{
 			for (int n = 0; n < m_CellsName.size(); n++)
 			{
-				const bool is_selected = (cell_current_idx == n);
+				/*const bool is_selected = (cell_current_idx == n);*/
+				const bool is_selected = (m_iCurrentCellIndex == n);
 				if (ImGui::Selectable(m_CellsName[n], is_selected))
 				{
+					/*cell_current_idx = n;
+					m_iCurrentCellIndex = cell_current_idx;*/
 					cell_current_idx = n;
-					m_iCurrentCellIndex = cell_current_idx;
+					m_iCurrentCellIndex = n;
 				}
 
 				if (is_selected)
@@ -431,7 +480,15 @@ void CNavigation_Manager::Show_Cells_IMGUI()
 			}
 			ImGui::EndListBox();
 		}
+
+
 	}
+
+
+
+
+	
+
 
 
 	static int iNavIndex;
