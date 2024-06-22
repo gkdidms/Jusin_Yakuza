@@ -24,7 +24,7 @@ HRESULT CComputeShader::Initialize_Prototype(const wstring& strShaderFilePath)
     ID3DBlob* pShaderBlob = nullptr;
     ID3DBlob* pErrorBlob = nullptr;
 
-    if (FAILED(D3DCompileFromFile(strShaderFilePath.c_str(), nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, "main", "cs_5_0", iHlslFlag, 0, &pShaderBlob, &pErrorBlob)))
+    if (FAILED(D3DCompileFromFile(strShaderFilePath.c_str(), nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, "CSMain", "cs_5_0", iHlslFlag, 0, &pShaderBlob, &pErrorBlob)))
     {
         if (pErrorBlob)
         {

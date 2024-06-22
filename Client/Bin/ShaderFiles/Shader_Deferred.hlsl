@@ -404,12 +404,8 @@ PS_OUT PS_MAIN_RESULT(PS_IN In)
     vector vEffect = g_EffectTexture.Sample(LinearSampler, In.vTexcoord);
 
     Out.vColor = vResult + vBlur + vEffect;
-
     
-
     return Out;
-
-
 }
 
 
