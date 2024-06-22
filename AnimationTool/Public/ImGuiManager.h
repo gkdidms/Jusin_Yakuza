@@ -26,6 +26,19 @@ private:
 		AABB, OBB, SPHERE
 	};
 
+	//콜라이더 활성화(노랑), 콜라이더 비활성화(주황), 사운드 활성화(초록), 이펙트 활성화(파랑)
+	enum Animation_Event_Type
+	{
+		COLLIDER_ACTIVATION, COLLIDER_DISABLE, SOUND_ACTIVATION, EFFECT_ACTIVATION, ANIMATION_EVENT_TYPE_END
+	};
+
+public:
+	struct Animation_Event
+	{
+		_uint iType;
+		string strName;
+	};
+
 private:
 	CImguiManager(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual ~CImguiManager() = default;
@@ -44,10 +57,9 @@ private:
 	void BoneListWindow();
 	void KeyFrameWindow();
 	void MeshListWindow();
-	void FXWindow(ImGuiIO& io);
-	void FX(ImDrawList* d, V2 a, V2 b, V2 s, ImVec4 m, float t);
+	void AnimEventWindow();
 
-	void DrawTimeline(ImDrawList* d, const vector<float>& data);
+	void DrawTimeline(ImDrawList* d);
 	void DrawChannels();
 
 	//주석
@@ -90,6 +102,8 @@ private:
 
 	vector<string>							m_MeshNameList;
 	unordered_map<_uint, string>			m_AddedMeshes;
+
+	multimap<string, Animation_Event>		m_AnimationEvents;
 
 private:
 	_float					m_fTimeDeltaScale = { 1.f };

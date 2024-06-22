@@ -48,8 +48,7 @@ void CImguiManager::Tick(const _float& fTimeDelta)
 
 	ModelList();
 
-	//ImDrawList* draw_list = ImDrawList::Add();
-
+	ImGui::SameLine();
 	if (ImGui::Button("Open"))
 		m_isOnToolWindows = !m_isOnToolWindows;
 
@@ -59,6 +58,7 @@ void CImguiManager::Tick(const _float& fTimeDelta)
 		BoneListWindow();
 		KeyFrameWindow();
 		MeshListWindow();
+		AnimEventWindow();
 	}
 }
 
@@ -100,12 +100,12 @@ void CImguiManager::ModelList()
 		m_ModelRotation[2] = 0.f;
 	}
 
-	if (ImGui::DragFloat("All Scale", &m_ModelScale, 0.001f))
-	{
-		if (0.001f > m_ModelScale) m_ModelScale = 0.001f;
+	//if (ImGui::DragFloat("All Scale", &m_ModelScale, 0.001f))
+	//{
+	//	if (0.001f > m_ModelScale) m_ModelScale = 0.001f;
 
-		Update_Model_Scaled();
-	}
+	//	Update_Model_Scaled();
+	//}
 
 	ImGui::NewLine();
 	ImGui::Text("Model List");
@@ -159,6 +159,7 @@ void CImguiManager::AnimListWindow()
 		m_pRenderModel->Change_Animation(m_iAnimIndex);
 	}
 
+	ImGui::SameLine();
 	if (ImGui::Button("Add"))
 	{
 		m_AddedAnims.emplace(m_iAnimIndex, m_AnimNameList[m_iAnimIndex]);
@@ -304,7 +305,7 @@ void CImguiManager::MeshListWindow()
 		i++;
 	}
 
-	ImGui::Text("Model Mesh List");
+	ImGui::Text("Mesh List");
 	if (ImGui::ListBox("##", &m_iMeshSelectedIndex, items.data(), items.size()))
 	{
 		m_pRenderModel->Select_Mesh(m_iMeshSelectedIndex);
@@ -314,16 +315,8 @@ void CImguiManager::MeshListWindow()
 	{
 		m_AddedMeshes.emplace(m_iMeshSelectedIndex, m_MeshNameList[m_iMeshSelectedIndex]);
 	}
-
-	vector<const char*> Addeditems;
-
-	for (auto& AddedMesh : m_AddedMeshes)
-	{
-		Addeditems.push_back(AddedMesh.second.c_str());
-	}
-
-	ImGui::ListBox("Added Meshes", &m_iAddedMeshSelectedIndex, Addeditems.data(), Addeditems.size());
-
+	ImGui::SameLine();
+	// 블랜드 기능 적용하는 버튼
 	if (ImGui::Button("Apply"))
 	{
 		for (auto& AddedMesh : m_AddedMeshes)
@@ -332,12 +325,18 @@ void CImguiManager::MeshListWindow()
 		}
 	}
 
+	//추가한 메시 리스트
+	vector<const char*> Addeditems;
+	for (auto& AddedMesh : m_AddedMeshes)
+	{
+		Addeditems.push_back(AddedMesh.second.c_str());
+	}
+	ImGui::ListBox("Added Meshes", &m_iAddedMeshSelectedIndex, Addeditems.data(), Addeditems.size());
+
 	if (ImGui::Button("Save"))
 	{
 	}
-
 	ImGui::SameLine();
-
 	if (ImGui::Button("Delete"))
 	{
 		auto iter = m_AddedMeshes.begin();
@@ -362,11 +361,13 @@ void CImguiManager::KeyFrameWindow()
 	_float Duration = (_float)(*(Anims[m_iAnimIndex]->Get_Duration()));
 	_float CurrentPosition = (_float)(*(Anims[m_iAnimIndex]->Get_CurrentPosition()));
 	
+	// 애니메이션 재생 위치를 보여준다.
 	ImGui::SliderFloat("##", &CurrentPosition, 0.f, Duration);
 
 	Anims[m_iAnimIndex]->Set_CurrentPosition((_double)CurrentPosition);
 	Anims[m_iAnimIndex]->Update_KeyframeIndex();
 
+#pragma region 애니메이션 재생 관련 버튼
 	if (ImGui::Button("Stop/Play"))
 	{
 		m_isPause = !m_isPause;
@@ -376,116 +377,162 @@ void CImguiManager::KeyFrameWindow()
 		else
 			m_pGameInstance->Set_TimeSpeed(TEXT("Timer_60"), m_fTimeDeltaScale);
 	}
-
 	ImGui::SameLine();
 
 	if (ImGui::Button("1x"))
 	{
 		m_fTimeDeltaScale = 1.f;
 		m_pGameInstance->Set_TimeSpeed(TEXT("Timer_60"), m_fTimeDeltaScale);
-
 	}
-
 	ImGui::SameLine();
-
 	if (ImGui::Button("2x"))
 	{
 		m_fTimeDeltaScale = 2.f;
 		m_pGameInstance->Set_TimeSpeed(TEXT("Timer_60"), m_fTimeDeltaScale);
 	}
-
 	ImGui::SameLine();
-
 	if (ImGui::Button("3x"))
 	{
 		m_fTimeDeltaScale = 3.f;
 		m_pGameInstance->Set_TimeSpeed(TEXT("Timer_60"), m_fTimeDeltaScale);
 	}
+#pragma endregion
 
+	//현재 애니메이션에 맞는 채널들을 보여준다
 	DrawChannels();
 
+	// 이벤트를 추가할 애니메이션 포지션
 	ImGui::InputFloat("Animation Position", &m_fAnimationPosition);
 
+#pragma region 콜라이더 이벤트 버튼들
+	ImGui::Text("Collider Event");
+	if (ImGui::Button("Collider Activation"))
+	{
+		auto Anims = m_pRenderModel->Get_Animations();
+		auto& Channels = Anims[m_iAnimIndex]->Get_Channels();
+
+		if (m_pRenderModel->Created_BoneCollider(Channels[m_iChannelSelectedIndex]->Get_BoneIndex()))
+		{
+			Animation_Event Event{ COLLIDER_ACTIVATION, m_ChannelNameList[m_iChannelSelectedIndex] };
+
+			m_AnimationEvents.emplace(m_AnimNameList[m_iAnimIndex], Event);
+		}
+	}
+	ImGui::SameLine();
+	if (ImGui::Button("Collider Disable"))
+	{
+		auto Anims = m_pRenderModel->Get_Animations();
+		auto& Channels = Anims[m_iAnimIndex]->Get_Channels();
+
+		if (m_pRenderModel->Created_BoneCollider(Channels[m_iChannelSelectedIndex]->Get_BoneIndex()))
+		{
+			Animation_Event Event{ COLLIDER_DISABLE, m_ChannelNameList[m_iChannelSelectedIndex] };
+
+			m_AnimationEvents.emplace(m_AnimNameList[m_iAnimIndex], Event);
+		}
+	}
+#pragma endregion
+
+#pragma region 사운드 이벤트 버튼
+	ImGui::Text("Sound Event");
 	if (ImGui::Button("Add Sound"))
 	{
 
 	}
+#pragma endregion
 
-	ImGui::SameLine();
-
-	if (ImGui::Button("Collider Activation"))
+#pragma region 이펙트 이벤트 버튼들
+	ImGui::Text("Effect Event");
+	if (ImGui::Button("Add Effect"))
 	{
 
 	}
+#pragma endregion
+
+
 
 	ImGui::End();
 }
 
-void CImguiManager::FXWindow(ImGuiIO& io)
+void CImguiManager::AnimEventWindow()
 {
-	ImGui::Begin("FX", NULL, ImGuiWindowFlags_AlwaysAutoResize);
-	ImVec2 size(320.0f, 180.0f);
-	ImGui::InvisibleButton("canvas", size);
-	ImVec2 p0 = ImGui::GetItemRectMin();
-	ImVec2 p1 = ImGui::GetItemRectMax();
+	ImGui::Begin("Animation Events", NULL);
+	//ImGui::Begin("FX", NULL, ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_HorizontalScrollbar);
+
 	ImDrawList* draw_list = ImGui::GetWindowDrawList();
-	draw_list->PushClipRect(p0, p1);
+	DrawTimeline(draw_list);
 
-	//m_pGameInstance->Mouse
-
-	ImVec4 mouse_data;
-	mouse_data.x = (io.MousePos.x - p0.x) / size.x;
-	mouse_data.y = (io.MousePos.y - p0.y) / size.y;
-	mouse_data.z = io.MouseDownDuration[0];
-	mouse_data.w = io.MouseDownDuration[1];
-
-	vector<float> data = { 10.0f, 20.0f, 30.0f, 40.0f, 50.0f };
-	FX(draw_list, p0, p1, size, mouse_data, (float)ImGui::GetTime());
-	DrawTimeline(draw_list, data);
-	draw_list->PopClipRect();
 	ImGui::End();
 }
 
-void CImguiManager::FX(ImDrawList* d, V2 a, V2 b, V2 sz, ImVec4 m, float t)
+void CImguiManager::DrawTimeline(ImDrawList* draw_list)
 {
-	for (int n = 0; n < (1.0f + sinf(t * 5.7f)) * 40.0f; n++)
-		d->AddCircle(V2(a.x + sz.x * 0.5f, a.y + sz.y * 0.5f), sz.y * (0.01f + n * 0.03f),
-			IM_COL32(255, 140 - n * 4, n * 3, 255));
-}
+	ImGui::Text("Animation Name : %s", m_AnimNameList[m_iAnimIndex].c_str());
 
-void CImguiManager::DrawTimeline(ImDrawList* draw_list, const vector<float>& data)
-{
-	//ImVec2 p0 = ImGui::GetItemRectMin();
-	//ImVec2 p1 = ImGui::GetItemRectMax();
+	ImVec2 vCanvas_Start = ImGui::GetCursorScreenPos(); // 시작 위치	
+	ImVec2 vCanvas_Size = ImGui::GetContentRegionAvail(); // 크기	
+	ImVec2 vCanvas_End = vCanvas_Start + vCanvas_Size;
 
-	//draw_list->AddRect(ImVec2(p0.x, p0.y), ImVec2(p1.x, p1.y), IM_COL32_WHITE);
+	draw_list->AddRectFilled(vCanvas_Start, vCanvas_End, IM_COL32(50, 50, 50, 255));
 
-	//// 타임라인 배경 그리기
-	//draw_list->AddRect(ImVec2(p0.x, p0.y), ImVec2(p1.x * 0.5f, p1.y * 0.5f), IM_COL32(100, 100, 100, 255));
+	_float fCircleRadius = 7.f;
 
-	//// X축 그리기
-	//draw_list->AddLine(ImVec2(0.0f, 15.0f), ImVec2(ImGui::GetContentRegionMax().x, 15.0f), ImColor(0xAAAAAA));
+	auto lower_bound_iter = m_AnimationEvents.lower_bound(m_AnimNameList[m_iAnimIndex]);
+	auto upper_bound_iter = m_AnimationEvents.upper_bound(m_AnimNameList[m_iAnimIndex]);
 
-	//// Y축 그리기
-	//draw_list->AddLine(ImVec2(15.0f, 0.0f), ImVec2(15.0f, ImGui::GetContentRegionMax().y), ImColor(0xAAAAAA));
+	_float vCircleStartPosY = vCanvas_Start.y + fCircleRadius;
+	_float vPosY = 0.f;
 
-	  // 타임라인 배경 그리기
-	draw_list->AddRect(ImGui::GetItemRectMin(), ImGui::GetItemRectMax(), IM_COL32_WHITE);
+	//콜라이더 활성화(노랑), 콜라이더 비활성화(주황), 사운드 활성화(초록), 이펙트 활성화(파랑)
+	ImU32 CircleColor = IM_COL32_WHITE;
 
-	// X축 그리기
-	draw_list->AddLine(ImVec2(ImGui::GetItemRectMin().x, ImGui::GetItemRectMin().y + 15.f), ImVec2(ImGui::GetItemRectMax().x, ImGui::GetItemRectMin().y + 15.f), IM_COL32(255, 0, 0, 255));
+	for (; lower_bound_iter != upper_bound_iter; ++lower_bound_iter)
+	{
+		Animation_Event Value = (*lower_bound_iter).second;
 
-	// Y축 그리기
-	draw_list->AddLine(ImVec2(ImGui::GetItemRectMin().x + 15, ImGui::GetItemRectMin().y), ImVec2(ImGui::GetItemRectMin().x + 15, ImGui::GetItemRectMax().y), IM_COL32(255, 0, 0, 255));
+		switch (Value.iType)
+		{
+		case COLLIDER_ACTIVATION:
+			CircleColor = IM_COL32(255, 255, 0, 255);
+			break;
+		case COLLIDER_DISABLE:
+			CircleColor = IM_COL32(255, 127, 0, 255);
+			break;
+		case SOUND_ACTIVATION:
+			CircleColor = IM_COL32(0, 255, 0, 255);
+			break;
+		case EFFECT_ACTIVATION:
+			CircleColor = IM_COL32(0, 0, 255, 255);
+			break;
+		}
 
-	// 데이터 포인트 루프
-	for (int i = 0; i < data.size(); i++) {
-		float x = (data[i] - 1) / (10 - 1) * (ImGui::GetItemRectMax().x - 15.0f) + 15.0f;
-		float y = data[i] * (ImGui::GetItemRectMax().y - 15.0f) + 15.0f;
+		vPosY = vCircleStartPosY + (Value.iType * fCircleRadius * 2.f);
 
-		// 데이터 포인트 표시
-		draw_list->AddCircle(ImVec2(x, y), 5.0f, IM_COL32_WHITE);
+		draw_list->AddCircleFilled(ImVec2(vCanvas_Start.x, vPosY), fCircleRadius, CircleColor);
 	}
+
+	
+	//m_AnimationEvents.find()
+
+	//for (auto& Event : m_AnimationEvents)
+	//{
+	//	if(Event.first == )
+	//}
+
+	//if (0 < m_AnimationEvents.size())
+	//	draw_list->AddCircleFilled(vCanvas_Start, 10, IM_COL32_WHITE);
+
+	//// 아이템의 시작 및 끝 위치 계산
+	//float start_pos_x = canvas_pos.x + (*item->Get_pStartTime() / m_fMaxTime) * canvas_size.x;
+	//float end_pos_x = canvas_pos.x + ((item->Get_Instance()->vLifeTime.y + *item->Get_pStartTime()) / m_fMaxTime) * canvas_size.x;
+	//float item_pos_y = canvas_pos.y + i * (item_height + item_spacing);
+	//float middle_posx = start_pos_x + (end_pos_x - start_pos_x) * 0.5f;
+
+	//// 아이템 그리기
+	//draw_list->AddRectFilled(ImVec2(start_pos_x, item_pos_y), ImVec2(end_pos_x, item_pos_y + item_height), IM_COL32(255, 100, 100, 255));
+	//draw_list->AddCircleFilled(ImVec2(start_pos_x, item_pos_y + item_height * 0.5f), 10.0f, IM_COL32(255, 100, 100, 255));
+	//draw_list->AddCircleFilled(ImVec2(end_pos_x, item_pos_y + item_height * 0.5f), 10.0f, IM_COL32(255, 100, 100, 255));
+	//draw_list->AddText(ImVec2(middle_posx, item_pos_y), IM_COL32(255, 255, 255, 255), itemLabel.c_str());
 }
 
 void CImguiManager::DrawChannels()

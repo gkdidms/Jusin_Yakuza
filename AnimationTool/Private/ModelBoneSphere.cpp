@@ -146,6 +146,11 @@ void CModelBoneSphere::Set_Collider_Value(void* pDesc)
     m_pColliderCom->Set_Value(pDesc);
 }
 
+_bool CModelBoneSphere::Created_Collider()
+{
+    return nullptr == m_pColliderCom ? false : true;
+}
+
 CModelBoneSphere* CModelBoneSphere::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
     CModelBoneSphere* pInstance = new CModelBoneSphere(pDevice, pContext);
