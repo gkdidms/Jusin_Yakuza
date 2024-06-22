@@ -96,7 +96,7 @@ void CLightTool_Mgr::Show_LightMgr_IMGUI()
 		ImGui::NewLine();
 
 		ImGui::Text(u8"라이트 방향");
-		ImGui::InputFloat4("라이트 방향", reinterpret_cast<float*>(&m_tCurLightDesc.vDirection));
+		ImGui::InputFloat4(u8"라이트 방향", reinterpret_cast<float*>(&m_tCurLightDesc.vDirection));
 		/*ImGui::InputFloat("x", &m_tCurLightDesc.vDirection.x);
 		ImGui::InputFloat("y", &m_tCurLightDesc.vDirection.y);
 		ImGui::InputFloat("z", &m_tCurLightDesc.vDirection.z);
@@ -107,7 +107,7 @@ void CLightTool_Mgr::Show_LightMgr_IMGUI()
 		if (m_tCurLightDesc.eType == LIGHT_DESC::TYPE_DIRECTIONAL)
 		{
 			ImGui::Text(u8"라이트 위치");
-			ImGui::InputFloat4("라이트 위치", reinterpret_cast<float*>(&m_tCurLightDesc.vPosition));
+			ImGui::InputFloat4(u8"라이트 위치", reinterpret_cast<float*>(&m_tCurLightDesc.vPosition));
 		}
 		else if (m_tCurLightDesc.eType == LIGHT_DESC::TYPE_POINT)
 		{
@@ -219,10 +219,36 @@ bool CLightTool_Mgr::Add_Light_Imgui()
 
 		m_bLightAdd = false;
 
+		Update_LightsName();
+
 		return true;
 	}
 
 	return false;
+}
+
+void CLightTool_Mgr::Update_LightsName()
+{
+	if (0 < m_LightsName.size())
+	{
+		for (auto& iter : m_LightsName)
+			Safe_Delete(iter);
+
+		m_LightsName.clear();
+	}
+
+	if (0 < m_LightObjects.size())
+	{
+		for (int i = 0; i < m_LightObjects.size(); i++)
+		{
+			char* szName = new char[MAX_PATH];
+			strcpy(szName, "LightObject");
+			char buff[MAX_PATH];
+			sprintf(buff, "%d", i);
+			strcat(szName, buff);
+			m_LightsName.push_back(szName);
+		}
+	}
 }
 
 void CLightTool_Mgr::Free()

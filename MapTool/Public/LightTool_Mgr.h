@@ -29,6 +29,9 @@ private:
 	void							Select_LightDesc();
 	bool							Add_Light_Imgui();
 
+private:
+	void							Update_LightsName();
+
 
 private:
 	CGameInstance*					m_pGameInstance;
@@ -44,6 +47,7 @@ private:
 	LIGHT_DESC						m_tCurLightDesc;
 
 	bool							m_bLightAdd = { false };
+
 
 public:
 	virtual void Free() override;
