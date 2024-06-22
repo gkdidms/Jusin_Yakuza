@@ -35,8 +35,10 @@ public:
     virtual HRESULT Initialize_Prototype();
     virtual HRESULT Initialize(void* pArg) override;
     virtual HRESULT Render() override;
+    virtual HRESULT Compute_Render() ;
 
 protected:
+    //기본 정보 가지고 있게 해야됨.
     ID3D11Buffer* m_pVBInstance = { nullptr };
     D3D11_BUFFER_DESC	m_InstanceBufferDesc = {};
     INSTANCE_DESC* m_InstanceDesc = {};
@@ -48,18 +50,41 @@ protected:
     _float* m_pSpeeds = { nullptr };
     _float3* m_pOriginalPositions = { nullptr };
 
-    //인스턴스 임시저장소<-컴퓨트로 처리 예정
-    VTXMATRIX* m_pTempVertices = { nullptr };
+    //기존 cpu 블렌드 소트용
+    VTXMATRIX* m_pTempVertices;
 
 
-    //컴퓨트 셰이더
+
+    //컴퓨트 셰이더(인스턴스로 생성하면 모두 정령 필요.)
     class CComputeShader* m_pComputeShader = { nullptr };
+
+
+    //넣어줄 버퍼(읽기전용)
     ID3D11Buffer* m_pBlendSortBuffer = { nullptr };
+    D3D11_BUFFER_DESC m_BlendSortbufferDesc = {};
+
+    //계산후 받아올 버퍼(읽기/쓰기 버퍼)
+    ID3D11Buffer* m_pOutBuffer = { nullptr };
+    D3D11_BUFFER_DESC m_OutBufferDesc = {};
+
+    //계산후 복사한 버퍼를 렌더에 필요한 부분만 담아주기.
+    ID3D11Buffer* m_pRenderBuffer = { nullptr };
+    D3D11_BUFFER_DESC m_RenderBufferDesc = {};
+
+    //읽기전용 버퍼 바인딩용으로 변환용
+    D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc;
+    //읽기/쓰기 버퍼 바인딩용으로 변환용
+    D3D11_UNORDERED_ACCESS_VIEW_DESC uavDesc;
+
+    ID3D11ShaderResourceView* mInputSRV = {};  
+    ID3D11UnorderedAccessView* mOutputUAV = {};
+
 public:
     void Spread(_float fTimeDelta);
     void Drop(_float fTimeDelta);
     void LifeTime_Check();
     void Blend_Sort();
+    void Compute_Sort();
 
     
 public:

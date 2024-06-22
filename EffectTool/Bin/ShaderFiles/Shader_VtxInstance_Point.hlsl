@@ -266,7 +266,7 @@ technique11 DefaultTechnique
 {
 	
 	/* 특정 렌더링을 수행할 때 적용해야할 셰이더 기법의 셋트들의 차이가 있다. */
-    pass Loop
+    pass Loop //0
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_Default, 0);
@@ -280,7 +280,7 @@ technique11 DefaultTechnique
         PixelShader = compile ps_5_0 PS_MAIN();
     }
 
-    pass NonLoop
+    pass NonLoop //1
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_Default, 0);
@@ -294,7 +294,7 @@ technique11 DefaultTechnique
         PixelShader = compile ps_5_0 PS_MAIN_SPREAD();
     }
 
-    pass Direction
+    pass Direction  //2
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_Default, 0);
@@ -308,7 +308,7 @@ technique11 DefaultTechnique
         PixelShader = compile ps_5_0 PS_MAIN_SPREAD();
     }
 
-    pass NoDirection
+    pass NoDirection    //3
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_Default, 0);
@@ -322,7 +322,7 @@ technique11 DefaultTechnique
         PixelShader = compile ps_5_0 PS_MAIN_SPREAD();
     }
     
-    pass DirectionColor
+    pass DirectionColor //4
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_Default, 0);
@@ -336,7 +336,7 @@ technique11 DefaultTechnique
         PixelShader = compile ps_5_0 PS_MAIN_SPREADCOLOR();
     }
 
-    pass WeightBlend
+    pass WeightBlend    //5
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_Default, 0);

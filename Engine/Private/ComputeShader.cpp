@@ -21,23 +21,22 @@ HRESULT CComputeShader::Initialize_Prototype(const wstring& strShaderFilePath)
     iHlslFlag = D3DCOMPILE_OPTIMIZATION_LEVEL0;
 #endif // DEBUG
 
+
+
     ID3DBlob* pShaderBlob = nullptr;
     ID3DBlob* pErrorBlob = nullptr;
 
-    if (FAILED(D3DCompileFromFile(strShaderFilePath.c_str(), nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, "CSMain", "cs_5_0", iHlslFlag, 0, &pShaderBlob, &pErrorBlob)))
+
+    if (FAILED(D3DCompileFromFile(strShaderFilePath.c_str(), nullptr, nullptr, "CSMain", "cs_5_0", iHlslFlag, 0, &pShaderBlob, &pErrorBlob)))
     {
-        if (pErrorBlob)
-        {
-            // 컴파일 에러 메시지 출력
-            OutputDebugStringA((char*)pErrorBlob->GetBufferPointer());
-            pErrorBlob->Release();
-        }
         return E_FAIL;
    }
 
     if (FAILED(m_pDevice->CreateComputeShader(pShaderBlob->GetBufferPointer(), pShaderBlob->GetBufferSize(), nullptr, &m_pComputeShader)))
+    {
+        Safe_Release(pShaderBlob);
         return E_FAIL;
-
+    }
 
     Safe_Release(pShaderBlob); 
 
@@ -49,8 +48,24 @@ HRESULT CComputeShader::Initialize(void* pArg)
 	return S_OK;
 }
 
-HRESULT CComputeShader::Bind_Buffer()
+HRESULT CComputeShader::Render(void* pArg)
 {
+
+    if (nullptr != pArg)
+    {
+        COMPUTE_DESC* pDesc = static_cast<COMPUTE_DESC*>(pArg);
+
+        m_pContext->CSSetShaderResources(0, 1, &pDesc->InputBuffer);
+
+        m_pContext->CSSetUnorderedAccessViews(0, 1, &pDesc->OutputBuffer, nullptr);    
+
+        m_pContext->CSSetShader(m_pComputeShader, nullptr, 0);  
+
+        m_pContext->Dispatch(pDesc->NumElement / 128, 1, 1);
+
+    }
+
+
     return S_OK;
 }
 

@@ -35,7 +35,6 @@ HRESULT CEffect::Initialize(void* pArg)
         EFFECT_DESC* pDesc = static_cast<EFFECT_DESC*>(pArg);
         m_eType = pDesc->eType;
         m_BufferInstance = pDesc->BufferInstance;
-        m_bDirInfluence = pDesc->bDir;
         m_vStartPos = pDesc->vStartPos;
         m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&pDesc->vStartPos));
         m_ParticleTag = pDesc->ParticleTag;

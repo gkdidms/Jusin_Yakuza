@@ -292,8 +292,8 @@ void CRenderer::Draw()
 
 	Render_NonLight();
 	Render_Bloom();
+	//Render_FinalEffectBlend();
 	Render_Blender();
-	Render_FinalEffectBlend();
 	Render_UI();
 
 #ifdef _DEBUG
@@ -902,22 +902,6 @@ void CRenderer::Render_Bloom()
 		return;
 }
 
-void CRenderer::Render_Blender()
-{
-	m_RenderObject[RENDER_BLENDER].sort([](CGameObject* pSour, CGameObject* pDest)->_bool
-		{
-			return dynamic_cast<CBlendObject*>(pSour)->Get_ViewZ() > dynamic_cast<CBlendObject*>(pDest)->Get_ViewZ();
-		});
-
-	for (auto& iter : m_RenderObject[RENDER_BLENDER])
-	{
-		iter->Render();
-
-		Safe_Release(iter);
-	}
-	m_RenderObject[RENDER_BLENDER].clear();
-}
-
 void CRenderer::Render_FinalEffectBlend()
 {
 	if (FAILED(m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix)))
@@ -941,6 +925,22 @@ void CRenderer::Render_FinalEffectBlend()
 
 	m_pVIBuffer->Render();
 
+}
+
+void CRenderer::Render_Blender()
+{
+	m_RenderObject[RENDER_BLENDER].sort([](CGameObject* pSour, CGameObject* pDest)->_bool
+		{
+			return dynamic_cast<CBlendObject*>(pSour)->Get_ViewZ() > dynamic_cast<CBlendObject*>(pDest)->Get_ViewZ();
+		});
+
+	for (auto& iter : m_RenderObject[RENDER_BLENDER])
+	{
+		iter->Render();
+
+		Safe_Release(iter);
+	}
+	m_RenderObject[RENDER_BLENDER].clear();
 }
 
 void CRenderer::Render_UI()

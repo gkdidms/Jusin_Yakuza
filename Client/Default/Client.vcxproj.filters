@@ -91,6 +91,9 @@
     <ClCompile Include="..\Private\Client_MapDataMgr.cpp">
       <Filter>95.Utility\02.Client_MapDataMgr</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\Sky.cpp">
+      <Filter>02.GameObjects\04.Sky</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\MainApp.h">
@@ -213,6 +216,9 @@
     <ClInclude Include="..\Public\Client_MapDataMgr.h">
       <Filter>95.Utility\02.Client_MapDataMgr</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Sky.h">
+      <Filter>02.GameObjects\04.Sky</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -295,6 +301,9 @@
     <Filter Include="95.Utility\02.Client_MapDataMgr">
       <UniqueIdentifier>{843f8ce4-c1d6-4160-8deb-14b1689d5a35}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\04.Sky">
+      <UniqueIdentifier>{a460082c-6b47-48ad-8b77-a08f0fc04941}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Client.rc">
@@ -312,6 +321,9 @@
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxNorTex.hlsl">
+      <Filter>97.ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxCube.hlsl">
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
   </ItemGroup>

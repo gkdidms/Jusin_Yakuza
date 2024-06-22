@@ -64,8 +64,10 @@ void CParticle_Point::Late_Tick(const _float& fTimeDelta)
 {
     Compute_ViewZ(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 
-    if(5!=m_iShaderPass)
+    if (5 != m_iShaderPass)
         m_pVIBufferCom->Blend_Sort();
+    else
+        m_pVIBufferCom->Compute_Sort();
 
     if(m_BufferInstance.isLoop)
     {
@@ -88,12 +90,12 @@ HRESULT CParticle_Point::Render()
 
        m_pShaderCom->Begin(m_iShaderPass);
 
-    //if(m_bDirInfluence)
-    //    m_pShaderCom->Begin(2);
-    //else
-    //    m_pShaderCom->Begin(3);
+       if (5!=m_iShaderPass)
+            m_pVIBufferCom->Render();
+       else
+           m_pVIBufferCom->Compute_Render();
 
-    m_pVIBufferCom->Render();
+       
 
     return S_OK;
 }
