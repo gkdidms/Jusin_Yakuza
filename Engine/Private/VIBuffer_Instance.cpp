@@ -254,6 +254,6 @@ void CVIBuffer_Instance::Free()
 		Safe_Delete_Array(m_pTempVertices);
 	}
 	Safe_Release(m_pComputeShader);
-	Safe_Release(pBlendSortBuffer);
+	Safe_Release(m_pBlendSortBuffer);
 	Safe_Release(m_pVBInstance);
 }

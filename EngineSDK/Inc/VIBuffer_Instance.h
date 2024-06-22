@@ -48,9 +48,13 @@ protected:
     _float* m_pSpeeds = { nullptr };
     _float3* m_pOriginalPositions = { nullptr };
 
-    //인스턴스 임시저장소
+    //인스턴스 임시저장소<-컴퓨트로 처리 예정
     VTXMATRIX* m_pTempVertices = { nullptr };
 
+
+    //컴퓨트 셰이더
+    class CComputeShader* m_pComputeShader = { nullptr };
+    ID3D11Buffer* m_pBlendSortBuffer = { nullptr };
 public:
     void Spread(_float fTimeDelta);
     void Drop(_float fTimeDelta);

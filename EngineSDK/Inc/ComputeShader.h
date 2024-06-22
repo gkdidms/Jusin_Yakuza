@@ -17,7 +17,7 @@ public:
     virtual HRESULT Initialize(void* pArg) override;
 
 
-
+    HRESULT Bind_Buffer();
 
 private:
     ID3D11ComputeShader* m_pComputeShader;
