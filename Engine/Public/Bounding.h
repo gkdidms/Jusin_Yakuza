@@ -19,6 +19,10 @@ public:
     virtual void* Get_Desc() = 0;
 
 public:
+    virtual void Set_Value(void* pDesc) {};
+    void Set_Center(const _float3& vCenter) { m_vCenter = vCenter; }
+
+public:
     virtual HRESULT Initialize(const void* pArg) = 0;
     virtual void Tick(_fmatrix WorldMatrix);
     virtual _bool Intersect(CCollider::TYPE eTargetType, CBounding* pTargetBounding) = 0;

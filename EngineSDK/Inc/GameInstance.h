@@ -77,9 +77,10 @@ public:
     void Add_Renderer(CRenderer::RENDERER_STATE eRenderState, class CGameObject* pGameObject);
     void Set_HDR(_bool isHDR);
     void Set_HDRLight(_float fLight); // HDR ºû ¼¼±â Á¶Àý 
-    _bool Get_HDR();
+    _bool isHDR();
     _float Get_HDRLight();
-
+    void Set_SSAO(_bool isSSAO);
+    _bool isSSAO();
 #ifdef _DEBUG
 public:
     HRESULT Add_DebugComponent(class CComponent* pComponent);

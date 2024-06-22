@@ -82,6 +82,16 @@ void CCollider::Tick(_fmatrix WorldMatirx)
 	m_pCurrentBounding->Tick(WorldMatirx);
 }
 
+void CCollider::Set_Value(void* pDesc)
+{
+	m_pCurrentBounding->Set_Value(pDesc);
+}
+
+void CCollider::Set_Center(const _float3& vCenter)
+{
+	m_pCurrentBounding->Set_Center(vCenter);
+}
+
 _bool CCollider::Intersect(CCollider* pTargetCollider)
 {
 	return m_isColl = m_pCurrentBounding->Intersect(pTargetCollider->m_ColliderType, pTargetCollider->m_pCurrentBounding);

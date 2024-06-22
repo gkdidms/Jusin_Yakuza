@@ -15,9 +15,11 @@ private:
 public:
     void Set_HDR(_bool isHDR) { m_isHDR = isHDR; }
     void Set_HDRLight(_float fLight) { m_fHDRLight = fLight; } // HDR ¹à±â Á¶Àý(ºû ¼¼±â)
+    void Set_SSAO(_bool isSSAO) { m_isSSAO = isSSAO; }
 
 public:
-    _bool Get_HDR() { return m_isHDR; }
+    _bool isHDR() { return m_isHDR; }
+    _bool isSSAO() { return m_isSSAO; }
     _float Get_HDRLight() { return m_fHDRLight; }
 
 public:
@@ -77,6 +79,7 @@ private:
 
 private:
     _bool m_isHDR = { false };
+    _bool m_isSSAO = { false };
     _float m_fHDRLight = { 1.f };
 
 public:
