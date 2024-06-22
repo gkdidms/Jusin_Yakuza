@@ -46,9 +46,12 @@ private:
     void Render_AvgLuminance();
     void Redner_LuminanceResult();
 
-    void Render_NonLight();
+    void Render_NonLight();//이펙트 시작
+    void Render_Bloom();//블러
     void Render_Blender();
+    void Render_FinalEffectBlend();//블러 합치기
     void Render_UI();
+
 
 #ifdef _DEBUG
 private:
