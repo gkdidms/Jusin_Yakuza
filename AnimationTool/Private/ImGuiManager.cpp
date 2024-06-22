@@ -36,15 +36,15 @@ HRESULT CImguiManager::Initialize(void* pArg)
 
 void CImguiManager::Tick(const _float& fTimeDelta)
 {
+	if (LEVEL_EDIT == m_pGameInstance->Get_CurrentLevel())
+		Connect_Model_Ref();
+
 	ImGuiIO& io = ImGui::GetIO();
 	ImGui_ImplDX11_NewFrame();
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
 
 	ImGuizmo::BeginFrame();
-
-	if (ImGui::Button("Model Connecting"))
-		Connect_Model_Ref();
 
 	ModelList();
 
@@ -172,8 +172,7 @@ void CImguiManager::AnimListWindow()
 		Addeditems.push_back(AddedAnim.second.c_str());
 	}
 
-	ImGui::Text("Loop Animations");
-	ImGui::ListBox("##", &m_iAddedAnimSelectedIndex, Addeditems.data(), Addeditems.size());
+	ImGui::ListBox("Loop Animations", &m_iAddedAnimSelectedIndex, Addeditems.data(), Addeditems.size());
 
 	if (ImGui::Button("Save"))
 	{
@@ -183,6 +182,14 @@ void CImguiManager::AnimListWindow()
 
 	if (ImGui::Button("Delete"))
 	{
+		auto iter = m_AddedAnims.begin();
+
+		for (size_t i = 0; i < m_iAddedAnimSelectedIndex; i++)
+		{
+			iter++;
+		}
+		
+		m_AddedAnims.erase(iter);
 	}
 
 
@@ -218,9 +225,24 @@ void CImguiManager::BoneListWindow()
 		m_pRenderModel->Select_Bone(m_iBoneSelectedIndex);
 	}
 
+	if (ImGui::RadioButton("AABB", m_iColliderType == 0))
+	{
+		m_iColliderType = 0;
+	}
+	ImGui::SameLine();
+	if (ImGui::RadioButton("OBB", m_iColliderType == 1))
+	{
+		m_iColliderType = 1;
+	}	
+	ImGui::SameLine();
+	if (ImGui::RadioButton("Sphere", m_iColliderType == 2))
+	{
+		m_iColliderType = 2;
+	}
+
 	if (ImGui::Button("Create Collier"))
 	{
-
+		m_pRenderModel->Create_BoneCollider(m_iColliderType, m_iBoneSelectedIndex);
 	}
 
 	ImGui::End();
@@ -268,8 +290,7 @@ void CImguiManager::MeshListWindow()
 		Addeditems.push_back(AddedMesh.second.c_str());
 	}
 
-	ImGui::Text("Added Meshes");
-	ImGui::ListBox("##", &m_iAddedMeshSelectedIndex, Addeditems.data(), Addeditems.size());
+	ImGui::ListBox("Added Meshes", &m_iAddedMeshSelectedIndex, Addeditems.data(), Addeditems.size());
 
 	if (ImGui::Button("Apply"))
 	{
@@ -287,6 +308,14 @@ void CImguiManager::MeshListWindow()
 
 	if (ImGui::Button("Delete"))
 	{
+		auto iter = m_AddedMeshes.begin();
+
+		for (size_t i = 0; i < m_iAddedMeshSelectedIndex; i++)
+		{
+			iter++;
+		}
+
+		m_AddedMeshes.erase(iter);
 	}
 
 	ImGui::End();

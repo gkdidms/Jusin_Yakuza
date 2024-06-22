@@ -269,7 +269,7 @@ void CRenderer::Draw()
 #endif // _DEBUG
 }
 
-void CRenderer::Clear()
+void CRenderer::Clear() 
 {
 	for (size_t i = 0; i < RENDER_END; i++)
 	{

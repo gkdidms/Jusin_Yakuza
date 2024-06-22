@@ -51,6 +51,11 @@ public:
 		m_iSelectedMeshIndex = iMeshIndex;
 	}
 
+	void Create_BoneCollider(_uint iType, _uint iIndex);
+
+	void Set_Collider_Center(_uint iIndex, const _float3& vCenter);
+	void Set_Collider_Value(_uint iIndex, void* pDesc);
+
 private:
 	HRESULT	Add_Components();
 	HRESULT	Bind_ShaderResources();
