@@ -60,7 +60,6 @@ void CModelBoneSphere::Tick(const _float& fTimeDelta)
             WorldMap = ScaleMatrix * WorldMap;
         }
 
-
         m_pColliderCom->Tick(WorldMap);
     }
 }

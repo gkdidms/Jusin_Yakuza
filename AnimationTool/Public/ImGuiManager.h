@@ -105,6 +105,7 @@ private:
 
 	int						m_iColliderType = { 0 };
 	float					m_fColliderRadius = { 0.f };
+	float					m_ColliderPosition[3] = { 0.f };
 	float					m_ColliderExtents[3] = { 0.f };
 
 private:

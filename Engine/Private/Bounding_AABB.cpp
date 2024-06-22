@@ -14,6 +14,13 @@ void CBounding_AABB::Set_Value(void* pDesc)
 	m_pOriginalBox->Extents = m_vExtents;
 }
 
+void CBounding_AABB::Set_Center(const _float3& vCenter)
+{
+	m_vCenter = vCenter;
+
+	m_pOriginalBox->Center = m_vCenter;
+}
+
 HRESULT CBounding_AABB::Initialize(const void* pArg)
 {
 	if (nullptr == pArg)

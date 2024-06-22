@@ -20,7 +20,7 @@ public:
 
 public:
     virtual void Set_Value(void* pDesc) {};
-    void Set_Center(const _float3& vCenter) { m_vCenter = vCenter; }
+    virtual void Set_Center(const _float3& vCenter) {};
 
 public:
     virtual HRESULT Initialize(const void* pArg) = 0;

@@ -243,6 +243,12 @@ void CImguiManager::BoneListWindow()
 		Reset_Collider_Value();
 	}
 
+	if (ImGui::DragFloat3("Position", m_ColliderPosition, 0.1f))
+	{
+		_float3 vPosition = _float3(m_ColliderPosition[0], m_ColliderPosition[1], m_ColliderPosition[2]);
+		m_pRenderModel->Set_Collider_Center(m_iBoneSelectedIndex, vPosition);
+	}
+
 
 	switch (m_iColliderType)
 	{
@@ -261,7 +267,7 @@ void CImguiManager::BoneListWindow()
 	case SPHERE:
 	{
 		if(ImGui::DragFloat("Radius", &m_fColliderRadius, 0.1f))
-			m_pRenderModel->Set_Collider_Value(m_iBoneSelectedIndex, m_ColliderExtents);
+			m_pRenderModel->Set_Collider_Value(m_iBoneSelectedIndex, &m_fColliderRadius);
 		break;
 	}
 	}
