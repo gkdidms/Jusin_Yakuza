@@ -52,7 +52,7 @@ void CConstruction::Tick(const _float& fTimeDelta)
 
 void CConstruction::Late_Tick(const _float& fTimeDelta)
 {
-	m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONLIGHT, this);
+	m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
 }
 
 HRESULT CConstruction::Render()
