@@ -21,6 +21,7 @@ vector g_vCamDir;
 float g_fFar;
 
 Texture2D g_Texture;
+Texture2D g_PriorityTexture;
 Texture2D g_NormalTexture;
 Texture2D g_DiffuseTexture;
 Texture2D g_ShadeTexture;
@@ -405,7 +406,7 @@ PS_OUT PS_MAIN_RESULT(PS_IN In)
     vector vBlur = g_BlurTexture.Sample(LinearSampler, In.vTexcoord);
     vector vEffect = g_EffectTexture.Sample(LinearSampler, In.vTexcoord);
 
-    Out.vColor = vResult + vBlur + vEffect;
+    Out.vColor = vResult;
 
     
 
