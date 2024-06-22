@@ -34,9 +34,6 @@
     <ClCompile Include="..\private\PlayerCamera.cpp">
       <Filter>02.GameObjects\99.Camera\00.PlayerCamera</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\TestMap.cpp">
-      <Filter>02.GameObjects\01.Terrain\TestMap</Filter>
-    </ClCompile>
     <ClCompile Include="..\private\DebugCamera.cpp">
       <Filter>02.GameObjects\99.Camera\99.DebugCamera</Filter>
     </ClCompile>
@@ -137,9 +134,6 @@
     </ClInclude>
     <ClInclude Include="..\public\PlayerCamera.h">
       <Filter>02.GameObjects\99.Camera\00.PlayerCamera</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\TestMap.h">
-      <Filter>02.GameObjects\01.Terrain\TestMap</Filter>
     </ClInclude>
     <ClInclude Include="..\public\DebugCamera.h">
       <Filter>02.GameObjects\99.Camera\99.DebugCamera</Filter>

@@ -5,7 +5,6 @@
 #pragma region TEST
 #include "Player.h"
 #include "DebugCamera.h"
-#include "TestMap.h"
 #pragma endregion
 
 #include "Terrain.h"
@@ -167,9 +166,6 @@ HRESULT CLoader::Loading_For_Test()
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Player"), CPlayer::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Map"), CTestMap::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	/* For.Prototype_GameObject_Terrain */

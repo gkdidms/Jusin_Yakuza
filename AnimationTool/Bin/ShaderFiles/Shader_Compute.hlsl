@@ -1,5 +1,5 @@
 
-/*
+
 struct VTXMATRIX
 {
     float4 vRight;
@@ -27,4 +27,3 @@ void CSMain(uint3 DTid : SV_DispatchThreadID)
     // 상수 버퍼의 BlendSort 구조체 데이터 사용
 }
 
-*/
