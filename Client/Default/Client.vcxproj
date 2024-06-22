@@ -191,7 +191,6 @@
     <ClInclude Include="..\public\PlayerCamera.h" />
     <ClInclude Include="..\public\SystemManager.h" />
     <ClInclude Include="..\Public\Terrain.h" />
-    <ClInclude Include="..\public\TestMap.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="Resource.h" />
@@ -229,7 +228,6 @@
     <ClCompile Include="..\private\PlayerCamera.cpp" />
     <ClCompile Include="..\private\SystemManager.cpp" />
     <ClCompile Include="..\Private\Terrain.cpp" />
-    <ClCompile Include="..\private\TestMap.cpp" />
     <ClCompile Include="Client.cpp" />
   </ItemGroup>
   <ItemGroup>
