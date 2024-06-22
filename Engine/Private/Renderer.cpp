@@ -389,6 +389,8 @@ void CRenderer::Render_LightAcc()
 		return;
 	if (FAILED(m_pShader->Bind_RawValue("g_fFar", m_pGameInstance->Get_CamFar(), sizeof(_float))))
 		return;
+	if (m_pShader->Bind_RawValue("g_isSSAO", &m_isSSAO, sizeof(_bool)))
+		return;
 
 	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Normal"), m_pShader, "g_NormalTexture")))
 		return;
@@ -396,6 +398,7 @@ void CRenderer::Render_LightAcc()
 		return;
 
 	m_pGameInstance->Render_Lights(m_pShader, m_pVIBuffer);
+
 
 	if (FAILED(m_pGameInstance->End_MRT()))
 		return;
@@ -429,12 +432,16 @@ void CRenderer::Render_CopyBackBuffer()
 	//if (FAILED(m_pShader->Bind_Matrix("g_LightProjMatrix", &ProjMatrix)))
 	//	return;
 
+	if (m_pShader->Bind_RawValue("g_isSSAO", &m_isSSAO, sizeof(_bool)))
+		return;
+
 	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Diffuse"), m_pShader, "g_DiffuseTexture")))
 		return;
 	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Shade"), m_pShader, "g_ShadeTexture")))
 		return;
 	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Ambient"), m_pShader, "g_AmbientTexture")))
 		return;
+
 	//if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_LightDepth"), m_pShader, "g_LightDepthTexture")))
 	//	return;
 	//if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Depth"), m_pShader, "g_DepthTexture")))
