@@ -48,6 +48,9 @@ void CModelBoneSphere::Tick(const _float& fTimeDelta)
         m_pTransformCom->Set_Scale(1, 1, 1);
     else
         m_pTransformCom->Set_Scale(3, 3, 3);
+
+    if(nullptr != m_pColliderCom)
+        m_pColliderCom->Tick(m_pTransformCom->Get_WorldMatrix());
 }
 
 void CModelBoneSphere::Late_Tick(const _float& fTimeDelta)
@@ -68,6 +71,11 @@ HRESULT CModelBoneSphere::Render()
 
         m_pModelCom->Render(i);
     }
+
+#ifdef _DEBUG
+    if (nullptr != m_pColliderCom)
+        m_pGameInstance->Add_DebugComponent(m_pColliderCom);
+#endif
 
     return S_OK;
 }
@@ -109,6 +117,22 @@ void CModelBoneSphere::Change_TexutreIndex(_bool isOn)
         m_iTextureIndex = 0;
 }
 
+void CModelBoneSphere::Create_Collider(CCollider::TYPE eType, const CCollider::COLLIDER_DESC* pDesc)
+{
+    if (nullptr != m_pColliderCom) return;
+    m_pColliderCom = static_cast<CCollider*>(m_pGameInstance->Add_Component_Clone(LEVEL_EDIT, TEXT("Prototype_Component_Collider"), (void*)pDesc));
+}
+
+void CModelBoneSphere::Set_Collider_Center(const _float3& vCenter)
+{
+    m_pColliderCom->Set_Center(vCenter);
+}
+
+void CModelBoneSphere::Set_Collider_Value(void* pDesc)
+{
+    m_pColliderCom->Set_Value(pDesc);
+}
+
 CModelBoneSphere* CModelBoneSphere::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
     CModelBoneSphere* pInstance = new CModelBoneSphere(pDevice, pContext);
@@ -139,6 +163,7 @@ void CModelBoneSphere::Free()
 {
     __super::Free();
 
+    Safe_Release(m_pColliderCom);
     Safe_Release(m_pTextureCom);
     Safe_Release(m_pShaderCom);
     Safe_Release(m_pModelCom);

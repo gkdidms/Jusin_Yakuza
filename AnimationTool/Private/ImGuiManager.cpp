@@ -1,9 +1,14 @@
 #include "ImguiManager.h"
 #include "GameInstance.h"
+
 #include "AnimModel.h"
+
+#pragma region "Model"
 #include "Animation.h"
 #include "Bone.h"
 #include "Channel.h"
+#include "Mesh.h"
+#pragma endregion
 
 #pragma region "Imgui"
 #include "imgui.h"
@@ -31,11 +36,8 @@ HRESULT CImguiManager::Initialize(void* pArg)
 
 void CImguiManager::Tick(const _float& fTimeDelta)
 {
-	if (!m_isPause)
-		m_fTimeDelta = fTimeDelta;
-	else
-		m_fTimeDelta = 0.f;
-
+	if (LEVEL_EDIT == m_pGameInstance->Get_CurrentLevel())
+		Connect_Model_Ref();
 
 	ImGuiIO& io = ImGui::GetIO();
 	ImGui_ImplDX11_NewFrame();
@@ -44,21 +46,19 @@ void CImguiManager::Tick(const _float& fTimeDelta)
 
 	ImGuizmo::BeginFrame();
 
-	if (ImGui::Button("Model Connecting"))
-		Connect_Model_Ref();
-
 	ModelList();
 
 	//ImDrawList* draw_list = ImDrawList::Add();
 
 	if (ImGui::Button("Open"))
-		m_isAnimListWindow = !m_isAnimListWindow;
+		m_isOnToolWindows = !m_isOnToolWindows;
 
-	if (m_isAnimListWindow)
+	if (m_isOnToolWindows)
 	{
 		AnimListWindow();
 		BoneListWindow();
 		KeyFrameWindow();
+		MeshListWindow();
 	}
 }
 
@@ -73,36 +73,39 @@ HRESULT CImguiManager::Render()
 
 void CImguiManager::ModelList()
 {
-	if (ImGui::DragFloat("Rotation X", &m_ModelRotation[0], 5.f))
+	//ImGui::DragFloat("drag float", &f1, 0.005f);
+	if (ImGui::DragFloat("Position", &m_ModelPosition[1], 0.1f))
+	{
+		Update_Model_Position();
+	}
+
+	if (ImGui::DragFloat("Rotation X", &m_ModelRotation[0], 10.f))
 	{
 		Update_Model_RotationX();
 
 		m_ModelRotation[0] = 0.f;
 	}
 
-	if (ImGui::DragFloat("Rotation Y", &m_ModelRotation[1], 5.f))
+	if (ImGui::DragFloat("Rotation Y", &m_ModelRotation[1], 10.f))
 	{
 		Update_Model_RotationY();
 
 		m_ModelRotation[1] = 0.f;
 	}
 
-	if (ImGui::DragFloat("Rotation Z", &m_ModelRotation[2], 5.f))
+	if (ImGui::DragFloat("Rotation Z", &m_ModelRotation[2], 10.f))
 	{
 		Update_Model_RotationZ();
 
 		m_ModelRotation[2] = 0.f;
 	}
 
-	if (ImGui::DragFloat("All Scale", &m_ModelScale, 0.05f))
+	if (ImGui::DragFloat("All Scale", &m_ModelScale, 0.001f))
 	{
-		if (0.01f > m_ModelScale) m_ModelScale = 0.01f;
+		if (0.001f > m_ModelScale) m_ModelScale = 0.001f;
 
 		Update_Model_Scaled();
 	}
-
-	if (ImGui::Button("Anim Pause"))
-		m_isPause = !m_isPause;
 
 	ImGui::NewLine();
 	ImGui::Text("Model List");
@@ -129,7 +132,7 @@ void CImguiManager::ModelList()
 
 void CImguiManager::AnimListWindow()
 {
-	ImGui::Begin("Anim List", &m_isAnimListWindow);
+	ImGui::Begin("Anim List", &m_isOnToolWindows);
 
 	m_AnimNameList.clear();
 	const vector<CAnimation*> pAnims = m_pRenderModel->Get_Animations();
@@ -149,10 +152,46 @@ void CImguiManager::AnimListWindow()
 		i++;
 	}
 
+	ImGui::Text("Animation List");
 	if (ImGui::ListBox("##", &m_iAnimIndex, items.data(), items.size()))
 	{
+		m_fAnimationPosition = 0.f;
 		m_pRenderModel->Change_Animation(m_iAnimIndex);
 	}
+
+	if (ImGui::Button("Add"))
+	{
+		m_AddedAnims.emplace(m_iAnimIndex, m_AnimNameList[m_iAnimIndex]);
+	}
+
+
+	vector<const char*> Addeditems;
+
+	for (auto& AddedAnim : m_AddedAnims)
+	{
+		Addeditems.push_back(AddedAnim.second.c_str());
+	}
+
+	ImGui::ListBox("Loop Animations", &m_iAddedAnimSelectedIndex, Addeditems.data(), Addeditems.size());
+
+	if (ImGui::Button("Save"))
+	{
+	}
+
+	ImGui::SameLine();
+
+	if (ImGui::Button("Delete"))
+	{
+		auto iter = m_AddedAnims.begin();
+
+		for (size_t i = 0; i < m_iAddedAnimSelectedIndex; i++)
+		{
+			iter++;
+		}
+		
+		m_AddedAnims.erase(iter);
+	}
+
 
 	ImGui::End();
 
@@ -160,7 +199,7 @@ void CImguiManager::AnimListWindow()
 
 void CImguiManager::BoneListWindow()
 {
-	ImGui::Begin("Bone List", &m_isAnimListWindow);
+	ImGui::Begin("Bone List", &m_isOnToolWindows);
 
 	m_BoneNameList.clear();
 	const vector<CBone*> pBones = m_pRenderModel->Get_Bones();
@@ -184,6 +223,167 @@ void CImguiManager::BoneListWindow()
 	if (ImGui::ListBox("##", &m_iBoneSelectedIndex, items.data(), items.size()))
 	{
 		m_pRenderModel->Select_Bone(m_iBoneSelectedIndex);
+	}
+
+	if (ImGui::RadioButton("AABB", m_iColliderType == 0))
+	{
+		m_iColliderType = 0;
+	}
+	ImGui::SameLine();
+	if (ImGui::RadioButton("OBB", m_iColliderType == 1))
+	{
+		m_iColliderType = 1;
+	}	
+	ImGui::SameLine();
+	if (ImGui::RadioButton("Sphere", m_iColliderType == 2))
+	{
+		m_iColliderType = 2;
+	}
+
+	if (ImGui::Button("Create Collier"))
+	{
+		m_pRenderModel->Create_BoneCollider(m_iColliderType, m_iBoneSelectedIndex);
+	}
+
+	ImGui::End();
+}
+
+
+void CImguiManager::MeshListWindow()
+{
+	ImGui::Begin("Mesh List", &m_isOnToolWindows);
+
+	m_MeshNameList.clear();
+	const vector<CMesh*> pMeshes = m_pRenderModel->Get_Meshes();
+	m_MeshNameList.resize(pMeshes.size());
+
+	_uint i = 0;
+
+	vector<const char*> items;
+
+	for (auto pMesh : pMeshes)
+	{
+		string strName = pMesh->Get_Name();
+		//string strName = m_pGameInstance->Extract_String(pMesh->Get_Name(), '[', ']');
+
+		m_MeshNameList[i] = strName;
+		items.push_back(m_MeshNameList[i].c_str());
+
+		i++;
+	}
+
+	ImGui::Text("Model Mesh List");
+	if (ImGui::ListBox("##", &m_iMeshSelectedIndex, items.data(), items.size()))
+	{
+		m_pRenderModel->Select_Mesh(m_iMeshSelectedIndex);
+	}
+
+	if (ImGui::Button("Add"))
+	{
+		m_AddedMeshes.emplace(m_iMeshSelectedIndex, m_MeshNameList[m_iMeshSelectedIndex]);
+	}
+
+	vector<const char*> Addeditems;
+
+	for (auto& AddedMesh : m_AddedMeshes)
+	{
+		Addeditems.push_back(AddedMesh.second.c_str());
+	}
+
+	ImGui::ListBox("Added Meshes", &m_iAddedMeshSelectedIndex, Addeditems.data(), Addeditems.size());
+
+	if (ImGui::Button("Apply"))
+	{
+		for (auto& AddedMesh : m_AddedMeshes)
+		{
+			pMeshes[AddedMesh.first]->Set_AlphaApply(true);
+		}
+	}
+
+	if (ImGui::Button("Save"))
+	{
+	}
+
+	ImGui::SameLine();
+
+	if (ImGui::Button("Delete"))
+	{
+		auto iter = m_AddedMeshes.begin();
+
+		for (size_t i = 0; i < m_iAddedMeshSelectedIndex; i++)
+		{
+			iter++;
+		}
+
+		m_AddedMeshes.erase(iter);
+	}
+
+	ImGui::End();
+}
+
+void CImguiManager::KeyFrameWindow()
+{
+	ImGui::Begin("KeyFrame", NULL);
+
+	auto Anims = m_pRenderModel->Get_Animations();
+
+	_float Duration = (_float)(*(Anims[m_iAnimIndex]->Get_Duration()));
+	_float CurrentPosition = (_float)(*(Anims[m_iAnimIndex]->Get_CurrentPosition()));
+	
+	ImGui::SliderFloat("##", &CurrentPosition, 0.f, Duration);
+
+	Anims[m_iAnimIndex]->Set_CurrentPosition((_double)CurrentPosition);
+	Anims[m_iAnimIndex]->Update_KeyframeIndex();
+
+	if (ImGui::Button("Stop/Play"))
+	{
+		m_isPause = !m_isPause;
+
+		if (m_isPause)
+			m_pGameInstance->Set_TimeSpeed(TEXT("Timer_60"), 0.f);
+		else
+			m_pGameInstance->Set_TimeSpeed(TEXT("Timer_60"), m_fTimeDeltaScale);
+	}
+
+	ImGui::SameLine();
+
+	if (ImGui::Button("1x"))
+	{
+		m_fTimeDeltaScale = 1.f;
+		m_pGameInstance->Set_TimeSpeed(TEXT("Timer_60"), m_fTimeDeltaScale);
+
+	}
+
+	ImGui::SameLine();
+
+	if (ImGui::Button("2x"))
+	{
+		m_fTimeDeltaScale = 2.f;
+		m_pGameInstance->Set_TimeSpeed(TEXT("Timer_60"), m_fTimeDeltaScale);
+	}
+
+	ImGui::SameLine();
+
+	if (ImGui::Button("3x"))
+	{
+		m_fTimeDeltaScale = 3.f;
+		m_pGameInstance->Set_TimeSpeed(TEXT("Timer_60"), m_fTimeDeltaScale);
+	}
+
+	DrawChannels();
+
+	ImGui::InputFloat("Animation Position", &m_fAnimationPosition);
+
+	if (ImGui::Button("Add Sound"))
+	{
+
+	}
+
+	ImGui::SameLine();
+
+	if (ImGui::Button("Collider Activation"))
+	{
+
 	}
 
 	ImGui::End();
@@ -211,25 +411,6 @@ void CImguiManager::FXWindow(ImGuiIO& io)
 	FX(draw_list, p0, p1, size, mouse_data, (float)ImGui::GetTime());
 	DrawTimeline(draw_list, data);
 	draw_list->PopClipRect();
-	ImGui::End();
-}
-
-void CImguiManager::KeyFrameWindow()
-{
-	ImGui::Begin("KeyFrame", NULL);
-
-	auto Anims = m_pRenderModel->Get_Animations();
-
-	_float Duration = (_float)(*(Anims[m_iAnimIndex]->Get_Duration()));
-	_float CurrentPosition = (_float)(*(Anims[m_iAnimIndex]->Get_CurrentPosition()));
-	
-	ImGui::SliderFloat("##", &CurrentPosition, 0.f, Duration);
-
-	Anims[m_iAnimIndex]->Set_CurrentPosition((_double)CurrentPosition);
-	Anims[m_iAnimIndex]->Update_KeyframeIndex();
-
-	DrawChannels();
-
 	ImGui::End();
 }
 
@@ -327,19 +508,25 @@ void CImguiManager::Connect_Model_Ref()
 	m_pRenderModel = static_cast<CAnimModel*>(m_pGameInstance->Get_GameObject(LEVEL_EDIT, TEXT("Layer_Object"), 0));
 }
 
+void CImguiManager::Update_Model_Position()
+{
+	_vector vPosition = XMVectorSet(m_ModelPosition[0], m_ModelPosition[1], m_ModelPosition[2], 1.f);
+	m_pRenderModel->Set_Position(vPosition);
+}
+
 void CImguiManager::Update_Model_RotationX()
 {
-	m_pRenderModel->Set_Rotation(0, XMConvertToRadians(m_ModelRotation[0]), m_fTimeDelta);
+	m_pRenderModel->Set_Rotation(0, XMConvertToRadians(m_ModelRotation[0]), m_pGameInstance->Get_TimeDelta(TEXT("Timer_Edit")));
 }
 
 void CImguiManager::Update_Model_RotationY()
 {
-	m_pRenderModel->Set_Rotation(1, XMConvertToRadians(m_ModelRotation[1]), m_fTimeDelta);
+	m_pRenderModel->Set_Rotation(1, XMConvertToRadians(m_ModelRotation[1]), m_pGameInstance->Get_TimeDelta(TEXT("Timer_Edit")));
 }
 
 void CImguiManager::Update_Model_RotationZ()
 {
-	m_pRenderModel->Set_Rotation(2, XMConvertToRadians(m_ModelRotation[2]), m_fTimeDelta);
+	m_pRenderModel->Set_Rotation(2, XMConvertToRadians(m_ModelRotation[2]), m_pGameInstance->Get_TimeDelta(TEXT("Timer_Edit")));
 }
 
 void CImguiManager::Update_Model_Scaled()
