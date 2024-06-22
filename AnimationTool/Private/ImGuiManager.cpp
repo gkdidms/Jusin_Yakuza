@@ -413,7 +413,7 @@ void CImguiManager::KeyFrameWindow()
 
 		if (m_pRenderModel->Created_BoneCollider(Channels[m_iChannelSelectedIndex]->Get_BoneIndex()))
 		{
-			Animation_Event Event{ COLLIDER_ACTIVATION, m_ChannelNameList[m_iChannelSelectedIndex] };
+			Animation_Event Event{ COLLIDER_ACTIVATION, m_fAnimationPosition, m_ChannelNameList[m_iChannelSelectedIndex] };
 
 			m_AnimationEvents.emplace(m_AnimNameList[m_iAnimIndex], Event);
 		}
@@ -426,7 +426,7 @@ void CImguiManager::KeyFrameWindow()
 
 		if (m_pRenderModel->Created_BoneCollider(Channels[m_iChannelSelectedIndex]->Get_BoneIndex()))
 		{
-			Animation_Event Event{ COLLIDER_DISABLE, m_ChannelNameList[m_iChannelSelectedIndex] };
+			Animation_Event Event{ COLLIDER_DISABLE, m_fAnimationPosition, m_ChannelNameList[m_iChannelSelectedIndex] };
 
 			m_AnimationEvents.emplace(m_AnimNameList[m_iAnimIndex], Event);
 		}
@@ -475,12 +475,13 @@ void CImguiManager::DrawTimeline(ImDrawList* draw_list)
 
 	draw_list->AddRectFilled(vCanvas_Start, vCanvas_End, IM_COL32(50, 50, 50, 255));
 
-	_float fCircleRadius = 7.f;
+	_float fCircleRadius = 5.f;
 
 	auto lower_bound_iter = m_AnimationEvents.lower_bound(m_AnimNameList[m_iAnimIndex]);
 	auto upper_bound_iter = m_AnimationEvents.upper_bound(m_AnimNameList[m_iAnimIndex]);
 
-	_float vCircleStartPosY = vCanvas_Start.y + fCircleRadius;
+	_float vCircleStartPosY = vCanvas_Start.y + fCircleRadius * 2.f;
+	_float vCircleStartPosX = vCanvas_Start.x + fCircleRadius * 4.f;
 	_float vPosY = 0.f;
 
 	//콜라이더 활성화(노랑), 콜라이더 비활성화(주황), 사운드 활성화(초록), 이펙트 활성화(파랑)
@@ -489,6 +490,15 @@ void CImguiManager::DrawTimeline(ImDrawList* draw_list)
 	for (; lower_bound_iter != upper_bound_iter; ++lower_bound_iter)
 	{
 		Animation_Event Value = (*lower_bound_iter).second;
+
+		//vCanvas_Size
+		auto Anims = m_pRenderModel->Get_Animations();
+
+		_float fDuration = _float(*(Anims[m_iAnimIndex]->Get_Duration()));
+
+		_float fRatio = Value.fAinmPosition / fDuration;
+
+		vCanvas_Size.x * fRatio;
 
 		switch (Value.iType)
 		{
@@ -506,33 +516,10 @@ void CImguiManager::DrawTimeline(ImDrawList* draw_list)
 			break;
 		}
 
-		vPosY = vCircleStartPosY + (Value.iType * fCircleRadius * 2.f);
+		vPosY = vCircleStartPosY + (Value.iType * fCircleRadius * 2.5f);
 
-		draw_list->AddCircleFilled(ImVec2(vCanvas_Start.x, vPosY), fCircleRadius, CircleColor);
+		draw_list->AddCircleFilled(ImVec2(vCanvas_Start.x + vCanvas_Size.x * fRatio, vPosY), fCircleRadius, CircleColor);
 	}
-
-	
-	//m_AnimationEvents.find()
-
-	//for (auto& Event : m_AnimationEvents)
-	//{
-	//	if(Event.first == )
-	//}
-
-	//if (0 < m_AnimationEvents.size())
-	//	draw_list->AddCircleFilled(vCanvas_Start, 10, IM_COL32_WHITE);
-
-	//// 아이템의 시작 및 끝 위치 계산
-	//float start_pos_x = canvas_pos.x + (*item->Get_pStartTime() / m_fMaxTime) * canvas_size.x;
-	//float end_pos_x = canvas_pos.x + ((item->Get_Instance()->vLifeTime.y + *item->Get_pStartTime()) / m_fMaxTime) * canvas_size.x;
-	//float item_pos_y = canvas_pos.y + i * (item_height + item_spacing);
-	//float middle_posx = start_pos_x + (end_pos_x - start_pos_x) * 0.5f;
-
-	//// 아이템 그리기
-	//draw_list->AddRectFilled(ImVec2(start_pos_x, item_pos_y), ImVec2(end_pos_x, item_pos_y + item_height), IM_COL32(255, 100, 100, 255));
-	//draw_list->AddCircleFilled(ImVec2(start_pos_x, item_pos_y + item_height * 0.5f), 10.0f, IM_COL32(255, 100, 100, 255));
-	//draw_list->AddCircleFilled(ImVec2(end_pos_x, item_pos_y + item_height * 0.5f), 10.0f, IM_COL32(255, 100, 100, 255));
-	//draw_list->AddText(ImVec2(middle_posx, item_pos_y), IM_COL32(255, 255, 255, 255), itemLabel.c_str());
 }
 
 void CImguiManager::DrawChannels()

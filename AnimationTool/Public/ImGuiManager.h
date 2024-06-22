@@ -36,6 +36,7 @@ public:
 	struct Animation_Event
 	{
 		_uint iType;
+		_float fAinmPosition;
 		string strName;
 	};
 
