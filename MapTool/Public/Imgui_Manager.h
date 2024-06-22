@@ -5,6 +5,7 @@
 #include "imgui.h"
 #include "Navigation_Manager.h"
 #include "ObjPlace_Manager.h"
+#include "LightTool_Mgr.h"
 
 BEGIN(Engine)
 class CGameInstance;
@@ -39,18 +40,21 @@ private:
 	/* Navi Tool 나오기 */
 	void	Set_NaviTool_IMGUI();
 	void	Show_MapObj_Place_IMGUI();
+	void	Show_LightTool_IMGUI();
 
 private:
-	CNavigation_Manager* m_pNavigationMgr;
-	CObjPlace_Manager* m_pObjPlace_Manager;
-	CGameInstance* m_pGameInstance;
+	CNavigation_Manager*		m_pNavigationMgr;
+	CObjPlace_Manager*			m_pObjPlace_Manager;
+	CLightTool_Mgr*				m_pLightTool_Mgr;
+	CGameInstance*				m_pGameInstance;
 
 	/* imgui 창 관련 bool 변수 */
 private:
-	_bool				m_bMain_IMGUI = true;
-	_bool				m_bTerrain_IMGUI = false;
-	_bool				m_bNaviTool_IMGUI = false; /* 네비게이션 툴 화면 */
-	_bool				m_bObject_Place_IMGUI = false;
+	_bool						m_bMain_IMGUI = true;
+	_bool						m_bTerrain_IMGUI = false;
+	_bool						m_bNaviTool_IMGUI = false; /* 네비게이션 툴 화면 */
+	_bool						m_bObject_Place_IMGUI = false;
+	_bool						m_bLightMgr_IMGUI = false;
 
 
 

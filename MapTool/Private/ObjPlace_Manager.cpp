@@ -218,7 +218,7 @@ void CObjPlace_Manager::Render()
 void CObjPlace_Manager::Show_Installed_GameObjectsList()
 {
 	ImGui::Begin(u8"배치 오브젝트");
-
+	
 	ImGui::Text(u8" 파일 이름 ");
 
 	if (m_FileNames.empty())
