@@ -36,7 +36,7 @@ HRESULT CLevel_Test::Initialize()
 
 	/* Å¬¶ó ÆÄ½Ì */
 	m_pClientMapDataMgr->Set_MapObj_In_Client(0, LEVEL_TEST);
-	m_pClientMapDataMgr->Set_Lights_In_Client(0);
+	m_pClientMapDataMgr->Set_Lights_In_Client(1);
 
 	return S_OK;
 }
