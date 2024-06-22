@@ -31,6 +31,10 @@ Texture2D g_ToneMappingTexture;
 Texture2D g_LuminanceTexture;
 Texture2D g_CopyLuminanceTexture;
 Texture2D g_AmbientTexture;
+//블러용
+Texture2D g_EffectTexture;
+texture2D g_BlurTexture;
+texture2D g_ResultTexture;
 
 float g_fOutlineAngle = 0.8f;
 
@@ -40,6 +44,19 @@ bool g_isFinished = { false };
 float g_fLumVar;
 
 bool g_isSSAO = { false };
+
+//블룸(가우시안)
+float g_fTexW = 1280.0f;
+float g_fTexH = 720.0f;
+
+static const float g_fWeight[13] =
+{
+    0.0044, 0.0175, 0.0540, 0.1295, 0.2420, 0.3521, 0.3989, 0.3521, 0.2420, 0.1295, 0.0540, 0.0175, 0.0044
+	/*0.0561, 0.1353, 0.278, 0.4868, 0.7261, 0.9231, 1, 
+	0.9231, 0.7261, 0.4868, 0.278, 0.1353, 0.0561*/
+};
+
+static const float g_fTotal = 2.f;
 
 struct VS_IN
 {
@@ -322,6 +339,80 @@ PS_OUT PS_MAIN_TONEMAPPING(PS_IN In) // 감마 콜렉션 & ACES 톤매핑
     return Out;
 }
 
+float4 Blur_X(float2 vTexCoord)
+{
+    float4 vOut = (float4) 0;
+
+    float2 vUV = (float2) 0;
+
+    for (int i = -6; i < 7; ++i)
+    {
+        vUV = vTexCoord + float2(1.f / g_fTexW * i, 0);
+        vOut += g_fWeight[6 + i] * g_EffectTexture.Sample(ClampSampler, vUV);
+    }
+
+    vOut /= g_fTotal;
+
+    return vOut;
+}
+
+float4 Blur_Y(float2 vTexCoord)
+{
+    float4 vOut = (float4) 0;
+
+    float2 vUV = (float2) 0;
+
+    for (int i = -6; i < 7; ++i)
+    {
+        vUV = vTexCoord + float2(0, 1.f / g_fTexH * i);
+        vOut += g_fWeight[6 + i] * g_EffectTexture.Sample(ClampSampler, vUV);
+    }
+
+    vOut /= g_fTotal;
+
+    return vOut;
+}
+
+PS_OUT PS_MAIN_BLUR_X(PS_IN In)
+{
+    PS_OUT Out = (PS_OUT) 0;
+
+    Out.vColor = Blur_X(In.vTexcoord);
+	
+
+    return Out;
+}
+
+PS_OUT PS_MAIN_BLUR_Y(PS_IN In)
+{
+    PS_OUT Out = (PS_OUT) 0;
+
+    Out.vColor = Blur_Y(In.vTexcoord);
+	
+
+    return Out;
+}
+
+PS_OUT PS_MAIN_RESULT(PS_IN In)
+{
+
+    PS_OUT Out = (PS_OUT) 0;
+
+    vector vResult = g_ResultTexture.Sample(LinearSampler, In.vTexcoord);
+
+    vector vBlur = g_BlurTexture.Sample(LinearSampler, In.vTexcoord);
+    vector vEffect = g_EffectTexture.Sample(LinearSampler, In.vTexcoord);
+
+    Out.vColor = vResult + vBlur + vEffect;
+
+    
+
+    return Out;
+
+
+}
+
+
 /*
 
 float weights[9] =
@@ -547,6 +638,45 @@ technique11 DefaultTechnique
         HullShader = NULL;
         DomainShader = NULL;
         PixelShader = compile ps_5_0 PS_MAIN_LUMINANCE_SUM_FINAL();
+    }
+
+    pass Blur_X //11
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_None_Test_None_Write, 0);
+        SetBlendState(BS_Default, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        HullShader = NULL;
+        DomainShader = NULL;
+        PixelShader = compile ps_5_0 PS_MAIN_BLUR_X();
+    }
+
+    pass Blur_Y //12
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_None_Test_None_Write, 0);
+        SetBlendState(BS_Default, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        HullShader = NULL;
+        DomainShader = NULL;
+        PixelShader = compile ps_5_0 PS_MAIN_BLUR_Y();
+    }
+
+    pass Result //13
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_None_Test_None_Write, 0);
+        SetBlendState(BS_Default, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        HullShader = NULL;
+        DomainShader = NULL;
+        PixelShader = compile ps_5_0 PS_MAIN_RESULT();
     }
 }
 

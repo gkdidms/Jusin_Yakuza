@@ -49,6 +49,11 @@ HRESULT CComputeShader::Initialize(void* pArg)
 	return S_OK;
 }
 
+HRESULT CComputeShader::Bind_Buffer()
+{
+    return S_OK;
+}
+
 CComputeShader* CComputeShader::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& strShaderFilePath)
 {
     CComputeShader* pInstance = new CComputeShader(pDevice, pContext);
