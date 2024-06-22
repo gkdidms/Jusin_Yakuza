@@ -67,14 +67,18 @@ void CMainApp::Tick(const _float& fTimeDelta)
 	m_pGameInstance->Tick(fTimeDelta);
 
 #ifdef _DEBUG
+	if (m_pGameInstance->GetKeyState(DIK_F1) == TAP)
+	{
+		m_pGameInstance->Set_HDR(!m_pGameInstance->isHDR());
+	}
+	if (m_pGameInstance->GetKeyState(DIK_F2) == TAP)
+	{
+		m_pGameInstance->Set_SSAO(!m_pGameInstance->isSSAO());
+	}
 	if (m_pGameInstance->GetKeyState(DIK_F10) == TAP)
 	{
 		m_isDebug = !m_isDebug;
 		m_pDebugMananger->Set_Debug(m_isDebug);
-	}
-	if (m_pGameInstance->GetKeyState(DIK_F9) == TAP)
-	{
-		m_pGameInstance->Set_HDR(!m_pGameInstance->Get_HDR());
 	}
 	if (m_pGameInstance->GetKeyState(DIK_F8) == TAP)
 	{
@@ -106,10 +110,11 @@ HRESULT CMainApp::Render()
 
 	m_pGameInstance->Render_Font(TEXT("Font_Default"), m_szFPS, _float2(0.f, 0.f), XMVectorSet(1.f, 1.f, 0.f, 1.f));
 
-	m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("F8 : Console"), _float2(0.f, 20.f), XMVectorSet(1.f, 1.f, 0.f, 1.f));
-	m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("F9 : HDR On/Off"), _float2(0.f, 40.f), XMVectorSet(1.f, 1.f, 0.f, 1.f));
-	m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("F10 : Debug Tool"), _float2(0.f, 60.f), XMVectorSet(1.f, 1.f, 0.f, 1.f));
-	m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("TAP : Camera Pos Fix"), _float2(0.f, 80.f), XMVectorSet(1.f, 1.f, 0.f, 1.f));
+	m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("F1 : HDR On/Off"), _float2(0.f, 20.f), XMVectorSet(1.f, 1.f, 0.f, 1.f));
+	m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("F2 : SSAO On/Off"), _float2(0.f, 40.f), XMVectorSet(1.f, 1.f, 0.f, 1.f));
+	m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("F8 : Console"), _float2(0.f, 60.f), XMVectorSet(1.f, 1.f, 0.f, 1.f));
+	m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("F10 : Debug Tool"), _float2(0.f, 80.f), XMVectorSet(1.f, 1.f, 0.f, 1.f));
+	m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("TAP : Camera Pos Fix"), _float2(0.f, 100.f), XMVectorSet(1.f, 1.f, 0.f, 1.f));
 
 	if (m_isDebug) m_pDebugMananger->Render();
 #endif // _DEBUG

@@ -63,7 +63,10 @@ void CParticle_Point::Tick(const _float& fTimeDelta)
 void CParticle_Point::Late_Tick(const _float& fTimeDelta)
 {
     Compute_ViewZ(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-    m_pVIBufferCom->Blend_Sort();
+
+    if(5!=m_iShaderPass)
+        m_pVIBufferCom->Blend_Sort();
+
     if(m_BufferInstance.isLoop)
     {
         m_pGameInstance->Add_Renderer(CRenderer::RENDER_BLENDER, this);

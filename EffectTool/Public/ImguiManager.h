@@ -27,6 +27,7 @@ public:
 		PASS_DIRECTION=2 , 
 		PASS_NODIRECTION ,
 		PASS_DIRECTIONCOLOR , 
+		PASS_WEIGHTBLEND,
 		PASS_END};
 private:
 	CImguiManager(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

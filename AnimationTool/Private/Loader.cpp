@@ -131,6 +131,11 @@ HRESULT CLoader::Loading_For_EditLevel()
 		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxAnimMesh.hlsl"), VTXANIMMESH::Elements, VTXANIMMESH::iNumElements))))
 		return E_FAIL;
 
+	lstrcpy(m_szLoadingText, TEXT("충돌체 원형을 로딩 중 입니다."));
+	/* For.Prototype_Component_Collider */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Collider"), CCollider::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 	lstrcpy(m_szLoadingText, TEXT("객체 원형을(를) 로딩 중 입니다."));
 	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Free_Camera"), CPlayerCamera::Create(m_pDevice, m_pContext))))
 		return E_FAIL;

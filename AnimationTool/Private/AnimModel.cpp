@@ -159,6 +159,61 @@ void CAnimModel::Select_Bone(_uint iBoneIndex)
     m_BoneSpheres[iBoneIndex]->Change_TexutreIndex(true);
 }
 
+void CAnimModel::Create_BoneCollider(_uint iType, _uint iIndex)
+{
+    switch (iType)
+    {
+    case CCollider::COLLIDER_AABB:
+    {
+        CBounding_AABB::BOUNDING_AABB_DESC		ColliderDesc{};
+
+        ColliderDesc.eType = CCollider::COLLIDER_AABB;
+        ColliderDesc.vExtents = _float3(0.1, 0.1, 0.1);
+        ColliderDesc.vCenter = _float3(0, 0.f, 0);
+
+        m_BoneSpheres[iIndex]->Create_Collider(CCollider::COLLIDER_AABB, &ColliderDesc);
+        break;
+    }
+    case CCollider::COLLIDER_OBB:
+    {
+        CBounding_OBB::BOUNDING_OBB_DESC		ColliderDesc{};
+
+        ColliderDesc.eType = CCollider::COLLIDER_OBB;
+        ColliderDesc.vExtents = _float3(0.1, 0.1, 0.1);
+        ColliderDesc.vCenter = _float3(0, 0.f, 0);
+        ColliderDesc.vRotation = _float3(0, 0.f, 0.f);
+
+        m_BoneSpheres[iIndex]->Create_Collider(CCollider::COLLIDER_OBB, &ColliderDesc);
+        break;
+    }
+
+    case CCollider::COLLIDER_SPHERE:
+    {
+        CBounding_Sphere::BOUNDING_SPHERE_DESC		ColliderDesc{};
+
+        ColliderDesc.eType = CCollider::COLLIDER_SPHERE;
+        ColliderDesc.vCenter = _float3(0, 0.f, 0);
+        ColliderDesc.fRadius = 1.f;
+
+        m_BoneSpheres[iIndex]->Create_Collider(CCollider::COLLIDER_SPHERE, &ColliderDesc);
+        break;
+    }
+
+    default:
+        break;
+    }
+}
+
+void CAnimModel::Set_Collider_Center(_uint iIndex, const _float3& vCenter)
+{
+    m_BoneSpheres[iIndex]->Set_Collider_Center(vCenter);
+}
+
+void CAnimModel::Set_Collider_Value(_uint iIndex, void* pDesc)
+{
+    m_BoneSpheres[iIndex]->Set_Collider_Value(pDesc);
+}
+
 HRESULT CAnimModel::Add_Components()
 {
     if (FAILED(__super::Add_Component(LEVEL_EDIT, TEXT("Prototype_Component_Shader_VtxAnimMesh"), TEXT("Com_Shader"),
