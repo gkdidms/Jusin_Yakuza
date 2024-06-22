@@ -18,6 +18,7 @@ HRESULT CLevel_Edit::Initialize()
 	if (FAILED(Ready_Object(TEXT("Layer_Object"))))
 		return E_FAIL;
 
+
 	return S_OK;
 }
 
@@ -47,8 +48,8 @@ HRESULT CLevel_Edit::Ready_Layer_Camera(const wstring& strLayerTag)
 {
 	CCamera::tCameraDesc		CameraDesc{};
 
-	CameraDesc.vEye = _float4(0.7f, 0.8f, -2.f, 1.f);
-	CameraDesc.vFocus = _float4(0.7f, 0.8f, 0, 1.f);
+	CameraDesc.vEye = _float4(0.5f, 0.8f, -2.f, 1.f);
+	CameraDesc.vFocus = _float4(0.5f, 0.8f, 0, 1.f);
 	CameraDesc.fFovY = XMConvertToRadians(60.0f);
 	CameraDesc.fAspect = g_iWinSizeX / (_float)g_iWinSizeY;
 	CameraDesc.fNear = 0.1f;
