@@ -23,6 +23,10 @@ public:
     virtual void Tick(_fmatrix WorldMatirx);
 
 public:
+    void Set_Value(void* pDesc);
+    void Set_Center(const _float3& vCenter);
+
+public:
     _bool Intersect(CCollider* pTargetCollider);
 
 #ifdef _DEBUG

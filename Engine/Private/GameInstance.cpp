@@ -222,14 +222,24 @@ void CGameInstance::Set_HDRLight(_float fLight)
 	m_pRenderer->Set_HDRLight(fLight);
 }
 
-_bool CGameInstance::Get_HDR()
+_bool CGameInstance::isHDR()
 {
-	return m_pRenderer->Get_HDR();
+	return m_pRenderer->isHDR();
 }
 
 _float CGameInstance::Get_HDRLight()
 {
 	return m_pRenderer->Get_HDRLight();
+}
+
+void CGameInstance::Set_SSAO(_bool isSSAO)
+{
+	m_pRenderer->Set_SSAO(isSSAO);
+}
+
+_bool CGameInstance::isSSAO()
+{
+	return m_pRenderer->isSSAO();
 }
 
 #ifdef _DEBUG

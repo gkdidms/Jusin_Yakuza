@@ -10,7 +10,6 @@
 #include "ImGuizmo.h"
 #pragma endregion
 
-
 #define V2 ImVec2
 
 BEGIN(Engine)
@@ -94,6 +93,8 @@ private:
 	float					m_fAnimationPosition = { 0.f };
 
 	bool					m_isPause = { false };
+
+	int						m_iColliderType = { 0 };
 
 private:
 	ID3D11Device*			m_pDevice = { nullptr };

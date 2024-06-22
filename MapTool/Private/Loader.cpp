@@ -7,6 +7,7 @@
 #include "PlayerCamera.h"
 #include "Terrain.h"
 #include "Construction.h"
+#include "LightObj.h"
 #pragma endregion
 
 
@@ -154,7 +155,11 @@ HRESULT CLoader::Loading_For_RunMapLevel(int iLevel)
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/NonAnim/Map/Map1/Bin/f2.dat", PreTransformMatrix, true))))
 		return E_FAIL;
 
+	PreTransformMatrix = XMMatrixIdentity();
 
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(iLevel, TEXT("Prototype_Component_Model_Bone_Sphere"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/NonAnim/Bone_Sphere/Bin/Bone_Sphere.dat", PreTransformMatrix, true))))
+		return E_FAIL;
 
 
 
@@ -189,6 +194,10 @@ HRESULT CLoader::Loading_For_RunMapLevel(int iLevel)
 		CConstruction::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	/* For.Prototype_GameObject_LightObj */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_LightObj"),
+		CLightObj::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 	
 
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));

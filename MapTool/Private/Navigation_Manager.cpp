@@ -597,16 +597,16 @@ void CNavigation_Manager::Free()
 
 	for (auto& cell : m_Cells)
 		Safe_Release(cell);
-
 	m_Cells.clear();
 
 	for (auto& iter : m_CellsName)
 		Safe_Delete(iter);
+	m_CellsName.clear();
 
 	for (auto& iter : m_FileNames)
 		Safe_Delete(iter);
+	m_FileNames.clear();
 
-	m_CellsName.clear();
 
 	m_Cells.clear();
 

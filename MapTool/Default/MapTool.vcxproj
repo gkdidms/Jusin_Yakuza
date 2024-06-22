@@ -175,6 +175,8 @@
     <ClInclude Include="..\public\Level_Logo.h" />
     <ClInclude Include="..\Public\Level_RunMap.h" />
     <ClInclude Include="..\public\Level_Test.h" />
+    <ClInclude Include="..\Public\LightObj.h" />
+    <ClInclude Include="..\Public\LightTool_Mgr.h" />
     <ClInclude Include="..\public\Loader.h" />
     <ClInclude Include="..\public\MainApp.h" />
     <ClInclude Include="..\Public\Navigation_Manager.h" />
@@ -207,6 +209,8 @@
     <ClCompile Include="..\private\Level_Logo.cpp" />
     <ClCompile Include="..\Private\Level_RunMap.cpp" />
     <ClCompile Include="..\private\Level_Test.cpp" />
+    <ClCompile Include="..\Private\LightObj.cpp" />
+    <ClCompile Include="..\Private\LightTool_Mgr.cpp" />
     <ClCompile Include="..\private\Loader.cpp" />
     <ClCompile Include="..\private\MainApp.cpp" />
     <ClCompile Include="..\Private\Navigation_Manager.cpp" />

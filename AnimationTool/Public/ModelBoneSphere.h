@@ -1,6 +1,7 @@
 #pragma once
 
 #include "GameObject.h"
+#include "Component_Manager.h"
 #include "Client_Defines.h"
 
 BEGIN(Engine)
@@ -40,10 +41,17 @@ private:
 public:
 	void Change_TexutreIndex(_bool isOn = false);
 
+	void Create_Collider(CCollider::TYPE eType, const CCollider::COLLIDER_DESC* pDesc);
+
+public:
+	void Set_Collider_Center(const _float3& vCenter);
+	void Set_Collider_Value(void* pDesc);
+
 private:
 	CShader* m_pShaderCom = { nullptr };
 	CTexture* m_pTextureCom = { nullptr };
 	CModel* m_pModelCom = { nullptr };
+	CCollider* m_pColliderCom = { nullptr };
 
 private:
 	_uint				m_iTextureIndex = { 0 };

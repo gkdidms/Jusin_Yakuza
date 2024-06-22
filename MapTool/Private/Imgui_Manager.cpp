@@ -17,12 +17,11 @@
 IMPLEMENT_SINGLETON(CImgui_Manager)
 
 CImgui_Manager::CImgui_Manager()
-    :m_pNavigationMgr(CNavigation_Manager::GetInstance())
-    , m_pObjPlace_Manager{CObjPlace_Manager::GetInstance()}
-    , m_pGameInstance{ CGameInstance::GetInstance()}
+    :m_pNavigationMgr{ CNavigation_Manager::GetInstance() }
+    , m_pObjPlace_Manager { CObjPlace_Manager::GetInstance() }
+    , m_pGameInstance { CGameInstance::GetInstance()}
+    , m_pLightTool_Mgr { CLightTool_Mgr::GetInstance() }
 {
-    //Safe_AddRef(m_pNavigationMgr);
-    //Safe_AddRef(m_pObjPlace_Manager);
     Safe_AddRef(m_pGameInstance);
 }
 
@@ -87,6 +86,9 @@ void CImgui_Manager::Tick(_float fTimeDelta)
     if (ImGui::Button(u8"네비게이션 TOOL"))
         m_bNaviTool_IMGUI = true;
 
+    if (ImGui::Button(u8"라이트 TOOL"))
+        m_bLightMgr_IMGUI = true;
+
     ImGui::End();
 
 #pragma region IMGUI UI
@@ -106,6 +108,11 @@ void CImgui_Manager::Tick(_float fTimeDelta)
         Set_NaviTool_IMGUI();
     }
 
+    if (m_bLightMgr_IMGUI)
+    {
+        Show_LightTool_IMGUI();
+    }
+
 #pragma endregion
     ImGui::EndFrame();
 }
@@ -113,6 +120,8 @@ void CImgui_Manager::Tick(_float fTimeDelta)
 void CImgui_Manager::Late_Tick(_float fTimeDelta)
 {
     CObjPlace_Manager::GetInstance()->Late_Tick(fTimeDelta);
+
+    CLightTool_Mgr::GetInstance()->Late_Tick(fTimeDelta);
 }
 
 void CImgui_Manager::Render()
@@ -195,6 +204,23 @@ void CImgui_Manager::Show_MapObj_Place_IMGUI()
     ImGui::End();
 }
 
+void CImgui_Manager::Show_LightTool_IMGUI()
+{
+    /* 파일 리스트 보여주기 */
+    m_pLightTool_Mgr->Show_FileName();
+
+    ImGui::Begin(u8"라이트 설치");
+
+    m_pLightTool_Mgr->Show_LightMgr_IMGUI();
+
+    if (ImGui::Button("Close"))
+    {
+        m_bLightMgr_IMGUI = false;
+    }
+
+    ImGui::End();
+}
+
 
 void CImgui_Manager::Free()
 {
@@ -203,10 +229,13 @@ void CImgui_Manager::Free()
     ImGui::DestroyContext();
 
     CObjPlace_Manager::GetInstance()->DestroyInstance();
+    CLightTool_Mgr::GetInstance()->DestroyInstance();
 
     //m_pNavigationMgr->DestroyInstance();
     Safe_Release(m_pNavigationMgr);
     Safe_Release(m_pObjPlace_Manager);
+    Safe_Release(m_pLightTool_Mgr);
+
     Safe_Release(m_pGameInstance);
 
     Safe_Release(m_pDevice);

@@ -224,7 +224,6 @@ namespace Engine
 		XMFLOAT4			vDirection;
 		XMFLOAT2			vLifeTime;
 		_float					vRectSize;	
-		
 	}VTXMATRIX;
 
 	typedef struct ENGINE_DLL tVtxInstance_Rect
