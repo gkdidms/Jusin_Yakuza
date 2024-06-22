@@ -121,6 +121,7 @@ float3 g_vRandom[16] =
     float3(-0.0001783f, 0.2834622f, 0.8343929f),
 };
 
+/*
 float3 RandomNormal(float2 vTex)
 {
     float noiseX = (frac(sin(dot(vTex, float2(15.8989f, 76.132f) * 1.0f)) * 46336.23745f));
@@ -129,6 +130,7 @@ float3 RandomNormal(float2 vTex)
     
     return normalize(float3(noiseX, noiseY, noiseZ));
 }
+*/
 
 float g_fRadiuse = 0.001f;
 
@@ -136,9 +138,9 @@ float4 SSAO(float2 vTexcoord, float fDepth, float3 vNormal, float fViewZ)
 {
     float fOcclusion = 0.f;
     
-    for (int i = 0; i < 16; ++i)
+    for (int i = 0; i < 32; ++i)
     {
-        float3 vRay = cross(RandomNormal(vTexcoord), g_vRandom[i]);
+        float3 vRay = cross(float3(0.f, 0.f, -1.f), g_vRandom[i % 16]); // ·£´ý ¹æÇâ º¤ÅÍ »ý¼º
         float3 vReflect = normalize(reflect(vRay, vNormal)) * g_fRadiuse;
         vReflect.x *= -1.f;
         float2 vRandowUV = vTexcoord + vReflect.xy;
