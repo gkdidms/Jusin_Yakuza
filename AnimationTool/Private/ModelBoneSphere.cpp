@@ -49,8 +49,20 @@ void CModelBoneSphere::Tick(const _float& fTimeDelta)
     else
         m_pTransformCom->Set_Scale(3, 3, 3);
 
-    if(nullptr != m_pColliderCom)
-        m_pColliderCom->Tick(m_pTransformCom->Get_WorldMatrix());
+    if (nullptr != m_pColliderCom)
+    {
+        // Bone을 클릭했을 때 Sphere의 크기를 키우기 때문에, 크기를 제거한 매트릭스를 콜라이더에 적용해줘야해서 따로 만듦
+        _matrix WorldMap = m_pTransformCom->Get_WorldMatrix() ;
+
+        if (0 != m_iTextureIndex)
+        {
+            _matrix ScaleMatrix = XMMatrixScaling(ONE_THIRD, ONE_THIRD, ONE_THIRD);
+            WorldMap = ScaleMatrix * WorldMap;
+        }
+
+
+        m_pColliderCom->Tick(WorldMap);
+    }
 }
 
 void CModelBoneSphere::Late_Tick(const _float& fTimeDelta)
@@ -125,11 +137,13 @@ void CModelBoneSphere::Create_Collider(CCollider::TYPE eType, const CCollider::C
 
 void CModelBoneSphere::Set_Collider_Center(const _float3& vCenter)
 {
+    if (nullptr == m_pColliderCom) return;
     m_pColliderCom->Set_Center(vCenter);
 }
 
 void CModelBoneSphere::Set_Collider_Value(void* pDesc)
 {
+    if (nullptr == m_pColliderCom) return;
     m_pColliderCom->Set_Value(pDesc);
 }
 

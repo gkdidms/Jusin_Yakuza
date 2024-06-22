@@ -21,6 +21,12 @@ class CImguiManager final :
 	public CBase
 {
 private:
+	enum Collider_Type
+	{
+		AABB, OBB, SPHERE
+	};
+
+private:
 	CImguiManager(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual ~CImguiManager() = default;
 
@@ -54,6 +60,9 @@ private:
 	void Update_Model_RotationY();
 	void Update_Model_RotationZ();
 	void Update_Model_Scaled();
+
+private:
+	void Reset_Collider_Value();
 
 private:
 	_bool					m_isOnToolWindows = { false };
@@ -95,6 +104,8 @@ private:
 	bool					m_isPause = { false };
 
 	int						m_iColliderType = { 0 };
+	float					m_fColliderRadius = { 0.f };
+	float					m_ColliderExtents[3] = { 0.f };
 
 private:
 	ID3D11Device*			m_pDevice = { nullptr };

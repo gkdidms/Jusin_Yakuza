@@ -74,7 +74,7 @@ HRESULT CImguiManager::Render()
 void CImguiManager::ModelList()
 {
 	//ImGui::DragFloat("drag float", &f1, 0.005f);
-	if (ImGui::DragFloat("Position", &m_ModelPosition[1], 0.1f))
+	if (ImGui::DragFloat3("Position", m_ModelPosition, 0.1f))
 	{
 		Update_Model_Position();
 	}
@@ -225,19 +225,45 @@ void CImguiManager::BoneListWindow()
 		m_pRenderModel->Select_Bone(m_iBoneSelectedIndex);
 	}
 
-	if (ImGui::RadioButton("AABB", m_iColliderType == 0))
+	if (ImGui::RadioButton("AABB", m_iColliderType == AABB))
 	{
-		m_iColliderType = 0;
+		m_iColliderType = AABB;
+		Reset_Collider_Value();
 	}
 	ImGui::SameLine();
-	if (ImGui::RadioButton("OBB", m_iColliderType == 1))
+	if (ImGui::RadioButton("OBB", m_iColliderType == OBB))
 	{
-		m_iColliderType = 1;
+		m_iColliderType = OBB;
+		Reset_Collider_Value();
 	}	
 	ImGui::SameLine();
-	if (ImGui::RadioButton("Sphere", m_iColliderType == 2))
+	if (ImGui::RadioButton("Sphere", m_iColliderType == SPHERE))
 	{
-		m_iColliderType = 2;
+		m_iColliderType = SPHERE;
+		Reset_Collider_Value();
+	}
+
+
+	switch (m_iColliderType)
+	{
+	case AABB:
+	{
+		if(ImGui::DragFloat3("Extents", m_ColliderExtents, 0.1f))
+			m_pRenderModel->Set_Collider_Value(m_iBoneSelectedIndex, m_ColliderExtents);
+		break;
+	}
+	case OBB:
+	{
+		if(ImGui::DragFloat3("Extents", m_ColliderExtents, 0.1f))
+			m_pRenderModel->Set_Collider_Value(m_iBoneSelectedIndex, m_ColliderExtents);
+		break;
+	}
+	case SPHERE:
+	{
+		if(ImGui::DragFloat("Radius", &m_fColliderRadius, 0.1f))
+			m_pRenderModel->Set_Collider_Value(m_iBoneSelectedIndex, m_ColliderExtents);
+		break;
+	}
 	}
 
 	if (ImGui::Button("Create Collier"))
@@ -532,6 +558,12 @@ void CImguiManager::Update_Model_RotationZ()
 void CImguiManager::Update_Model_Scaled()
 {
 	m_pRenderModel->Set_Scaled(m_ModelScale, m_ModelScale, m_ModelScale);
+}
+
+void CImguiManager::Reset_Collider_Value()
+{
+	ZeroMemory(m_ColliderExtents, sizeof(float) * 3);
+	m_fColliderRadius = 0.f;
 }
 
 CImguiManager* CImguiManager::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

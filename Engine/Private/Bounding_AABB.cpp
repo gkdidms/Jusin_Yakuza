@@ -10,6 +10,8 @@ CBounding_AABB::CBounding_AABB()
 void CBounding_AABB::Set_Value(void* pDesc)
 {
 	m_vExtents = *((_float3*)pDesc);
+
+	m_pOriginalBox->Extents = m_vExtents;
 }
 
 HRESULT CBounding_AABB::Initialize(const void* pArg)

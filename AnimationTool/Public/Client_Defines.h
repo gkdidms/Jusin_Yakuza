@@ -2,6 +2,8 @@
 
 #include <process.h>
 
+#define ONE_THIRD 0.3333333333333333f
+
 namespace Client
 {
 	enum LEVEL { LEVEL_STATIC, LEVEL_LOADING, LEVEL_LOGO, LEVEL_GAMEPLAY, LEVEL_TEST, LEVEL_EDIT, LEVEL_END };
