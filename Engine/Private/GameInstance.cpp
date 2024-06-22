@@ -242,6 +242,16 @@ _bool CGameInstance::isSSAO()
 	return m_pRenderer->isSSAO();
 }
 
+void CGameInstance::Set_SSAORadiuse(_float fRadiuse)
+{
+	m_pRenderer->Set_SSAORadiuse(fRadiuse);
+}
+
+_float CGameInstance::Get_SSAORadiuse()
+{
+	return m_pRenderer->Get_SSAORadiuse();
+}
+
 #ifdef _DEBUG
 HRESULT CGameInstance::Add_DebugComponent(CComponent* pComponent)
 {
