@@ -17,6 +17,7 @@
 #include "Transform.h"
 #include "Model.h"
 #include "Navigation.h"
+#include "ComputeShader.h"
 
 #include "Bounding_AABB.h"
 #include "Bounding_OBB.h"
