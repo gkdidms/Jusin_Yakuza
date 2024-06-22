@@ -7,6 +7,11 @@ CBounding_Sphere::CBounding_Sphere()
 {
 }
 
+void CBounding_Sphere::Set_Value(void* pDesc)
+{
+	m_fRadius = *((_float*)pDesc);
+}
+
 HRESULT CBounding_Sphere::Initialize(const void* pArg)
 {
 	if (nullptr == pArg)

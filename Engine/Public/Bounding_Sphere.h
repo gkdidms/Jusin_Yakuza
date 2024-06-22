@@ -17,6 +17,9 @@ public:
     virtual void* Get_Desc() { return m_pBoundingBox; }
 
 public:
+    virtual void Set_Value(void* pDesc) override;
+
+public:
     virtual HRESULT Initialize(const void* pArg);
     virtual void Tick(_fmatrix WorldMatrix) override;
     virtual _bool Intersect(CCollider::TYPE eTargetType, CBounding* pTargetBounding) override;

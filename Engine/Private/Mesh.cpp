@@ -10,6 +10,7 @@ CMesh::CMesh(const CMesh& rhs)
     :CVIBuffer{ rhs }
 	, m_iMaterialIndex{ rhs.m_iMaterialIndex }
 	, m_OffsetMatrices{ rhs.m_OffsetMatrices }
+	, m_isAlphaApply{ rhs.m_isAlphaApply }
 	, m_iNumBones{ rhs.m_iNumBones }
 {
 }
