@@ -50,7 +50,6 @@ private:
 	void							Edit_GameObject_Transform(int iNumObject);
 	void							Edit_Installed_Light();
 
-	int								Click_To_Select_Object();
 
 private:
 	CGameInstance*					m_pGameInstance;

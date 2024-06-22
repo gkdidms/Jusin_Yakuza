@@ -36,6 +36,7 @@ HRESULT CLevel_Test::Initialize()
 
 	/* Å¬¶ó ÆÄ½Ì */
 	m_pClientMapDataMgr->Set_MapObj_In_Client(0, LEVEL_TEST);
+	m_pClientMapDataMgr->Set_Lights_In_Client(0);
 
 	return S_OK;
 }
@@ -49,15 +50,15 @@ void CLevel_Test::Tick(const _float& fTimeDelta)
 
 HRESULT CLevel_Test::Ready_Light()
 {
-	LIGHT_DESC			LightDesc{};
+	//LIGHT_DESC			LightDesc{};
 
-	LightDesc.eType = LIGHT_DESC::TYPE_DIRECTIONAL;
-	LightDesc.vDirection = _float4(1.f, -1.f, 1.f, 0.f);
-	LightDesc.vDiffuse = _float4(1.f, 1.f, 1.f, 1.f);
-	LightDesc.vAmbient = _float4(0.4f, 0.4f, 0.4f, 1.f);
-	LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
+	//LightDesc.eType = LIGHT_DESC::TYPE_DIRECTIONAL;
+	//LightDesc.vDirection = _float4(1.f, -1.f, 1.f, 0.f);
+	//LightDesc.vDiffuse = _float4(1.f, 1.f, 1.f, 1.f);
+	//LightDesc.vAmbient = _float4(0.4f, 0.4f, 0.4f, 1.f);
+	//LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
 
-	m_pGameInstance->Add_Light(LightDesc);
+	//m_pGameInstance->Add_Light(LightDesc);
 
 	//ZeroMemory(&LightDesc, sizeof(LIGHT_DESC));
 	//LightDesc.eType = LIGHT_DESC::TYPE_POINT;
