@@ -38,7 +38,7 @@ void CTestMap::Tick(const _float& fTimeDelta)
 
 void CTestMap::Late_Tick(const _float& fTimeDelta)
 {
-    m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
+    m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONLIGHT, this);
 }
 
 HRESULT CTestMap::Render()
