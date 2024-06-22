@@ -34,7 +34,24 @@ namespace Engine
 		unsigned int	iWinSizeY;
 	}ENGINE_DESC;
 
-	typedef struct tLightDesc
+
+	//typedef struct tLightDesc
+	//{
+	//	enum TYPE { TYPE_DIRECTIONAL, TYPE_POINT, TYPE_END };
+
+	//	TYPE		eType = { TYPE_END };
+
+	//	XMFLOAT4	vDirection;
+	//	XMFLOAT4	vPosition;
+	//	float		fRange;
+
+	//	/* 빛의 기본적인 색상. */
+	//	XMFLOAT4	vDiffuse;
+	//	XMFLOAT4	vAmbient;
+	//	XMFLOAT4	vSpecular;
+	//}LIGHT_DESC;
+
+	struct ENGINE_DLL LIGHT_DESC
 	{
 		enum TYPE { TYPE_DIRECTIONAL, TYPE_POINT, TYPE_END };
 
@@ -48,7 +65,15 @@ namespace Engine
 		XMFLOAT4	vDiffuse;
 		XMFLOAT4	vAmbient;
 		XMFLOAT4	vSpecular;
-	}LIGHT_DESC;
+	};
+
+	struct ENGINE_DLL LIGHT_DESC_IO
+	{
+		int						iNumLights;
+		LIGHT_DESC*				pLightDesc;
+	};
+
+
 
 	// 타임별로 Value를 저장한다.
 	struct KEYFRAME
