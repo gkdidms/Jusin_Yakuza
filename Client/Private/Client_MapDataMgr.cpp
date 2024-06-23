@@ -56,6 +56,27 @@ HRESULT CClient_MapDataMgr::Set_GameObject_In_Client(int iStageLevel)
     return S_OK;
 }
 
+HRESULT CClient_MapDataMgr::Set_Lights_In_Client(int iLightLoadingNum)
+{
+    Safe_Delete_Array(m_LightTotalInform.pLightDesc);
+
+    /* 모든 라이트 삭제 */
+    m_pGameInstance->Delete_AllLights();
+
+    Import_Bin_Light_Data_OnClient(&m_LightTotalInform, iLightLoadingNum);
+
+    for (int i = 0; i < m_LightTotalInform.iNumLights; i++)
+    {
+        LIGHT_DESC		lightDesc;
+        lightDesc = m_LightTotalInform.pLightDesc[i];
+
+        /* gameinstance에 추가 */
+        m_pGameInstance->Add_Light(lightDesc);
+    }
+    
+    return S_OK;
+}
+
 
 HRESULT CClient_MapDataMgr::Set_Terrain_Size(int iStageLevel)
 {
@@ -123,11 +144,48 @@ HRESULT CClient_MapDataMgr::Import_Bin_Map_Data_OnClient(MAP_TOTALINFORM_DESC* m
     return S_OK;
 }
 
+HRESULT CClient_MapDataMgr::Import_Bin_Light_Data_OnClient(LIGHT_DESC_IO* lightData, int iLevel)
+{
+    char fullPath[MAX_PATH];
+    strcpy_s(fullPath, "../Bin/DataFiles/LightData/");
+
+    strcat_s(fullPath, "Light_Data");
+    strcat_s(fullPath, "_");
+
+    char cLevel[2] = "";
+    _itoa_s(iLevel, cLevel, 10);
+    strcat_s(fullPath, cLevel);
+    strcat_s(fullPath, ".dat");
+
+    ifstream in(fullPath, ios::binary);
+
+    if (!in.is_open()) {
+        MSG_BOX("파일 개방 실패");
+        return E_FAIL;
+    }
+
+
+    in.read((char*)&lightData->iNumLights, sizeof(int));
+
+    lightData->pLightDesc = new LIGHT_DESC[lightData->iNumLights];
+
+    for (int i = 0; i < lightData->iNumLights; i++)
+    {
+        in.read((char*)&lightData->pLightDesc[i], sizeof(LIGHT_DESC));
+    }
+
+    in.close();
+
+    return S_OK;
+}
+
+
 
 
 void CClient_MapDataMgr::Free()
 {
     Safe_Delete_Array(m_MapTotalInform.pMapObjDesc);
+    Safe_Delete_Array(m_LightTotalInform.pLightDesc);
 
     m_Layers.clear();
 

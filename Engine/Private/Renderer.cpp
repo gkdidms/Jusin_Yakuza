@@ -311,7 +311,7 @@ void CRenderer::Clear()
 	{
 		for (auto& pGameObject : m_RenderObject[i])
 			Safe_Release(pGameObject);
-
+		
 		m_RenderObject[i].clear();
 	}
 

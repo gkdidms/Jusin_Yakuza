@@ -993,6 +993,7 @@ void CObjPlace_Manager::Update_ObjectNameList()
 	{
 		for (auto& iter : m_GameObjects)
 		{
+			/* 0 이상의 숫자로 화면에 기록해야하니까 */
 			iter.second->Set_ObjID(iIndex+1);
 
 			const wchar_t* layer = iter.first.c_str();
@@ -1071,6 +1072,7 @@ int CObjPlace_Manager::Click_To_Select_Object()
 
 	if (iIndex > 0)
 	{
+		/* ID는 1부터 시작하니까 INDEX 받을때는 -1 해주기 */
 		return (iIndex - 1);
 	}
 

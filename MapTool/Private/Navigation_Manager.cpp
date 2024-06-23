@@ -535,13 +535,6 @@ void CNavigation_Manager::Show_Cells_IMGUI()
 
 	}
 
-
-
-
-	
-
-
-
 	static int iNavIndex;
 	ImGui::InputInt(u8"네비게이션 저장 index : ", &iNavIndex);
 
