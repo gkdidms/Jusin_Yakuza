@@ -18,6 +18,7 @@ public:
 
 public:
     virtual void Set_Value(void* pDesc) override;
+    virtual void Set_Center(const _float3& vCenter) override;
 
 public:
     virtual HRESULT Initialize(const void* pArg);
