@@ -91,6 +91,9 @@
     <ClCompile Include="..\Private\Camera_Manager.cpp">
       <Filter>03.Managers\05.Camera_Manager</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\CameraObj.cpp">
+      <Filter>02.GameObjects\05.CameraObj</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\MainApp.h">
@@ -201,6 +204,9 @@
     <ClInclude Include="..\Public\Camera_Manager.h">
       <Filter>03.Managers\05.Camera_Manager</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\CameraObj.h">
+      <Filter>03.Managers</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="MapTool.ico">
@@ -282,6 +288,9 @@
     </Filter>
     <Filter Include="03.Managers\05.Camera_Manager">
       <UniqueIdentifier>{c73d5f29-067b-448a-8039-5f18c3dfa2ac}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\05.CameraObj">
+      <UniqueIdentifier>{68125e7f-f44e-47b8-838f-5b9039a1e1ab}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
