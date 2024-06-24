@@ -10,6 +10,15 @@ CBounding_Sphere::CBounding_Sphere()
 void CBounding_Sphere::Set_Value(void* pDesc)
 {
 	m_fRadius = *((_float*)pDesc);
+
+	m_pOriginalBox->Radius = m_fRadius;
+}
+
+void CBounding_Sphere::Set_Center(const _float3& vCenter)
+{
+	m_vCenter = vCenter;
+
+	m_pOriginalBox->Center = m_vCenter;
 }
 
 HRESULT CBounding_Sphere::Initialize(const void* pArg)
