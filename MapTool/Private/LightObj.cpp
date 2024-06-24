@@ -28,20 +28,7 @@ HRESULT CLightObj::Initialize(void* pArg)
 	{
 		LIGHTOBJ_DESC*			lightDesc = (LIGHTOBJ_DESC*)pArg;
 		m_pTransformCom->Set_WorldMatrix(lightDesc->vStartPos);
-
-		LIGHT_DESC			LightDesc{};
-		ZeroMemory(&LightDesc, sizeof(LIGHT_DESC));
-		LightDesc.eType = LIGHT_DESC::TYPE_POINT;
-		LightDesc.fRange = 100.f;
-		LightDesc.vDiffuse = _float4(1.f, 0.42352941f, 0.f, 1.f);
-		LightDesc.vAmbient = _float4(0.4f, 0.1f, 0.1f, 1.f);
-		LightDesc.vSpecular = LightDesc.vDiffuse;
-
-		XMFLOAT4		vPosition;
-		XMStoreFloat4(&vPosition, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-		LightDesc.vPosition = vPosition;
-
-		m_pGameInstance->Add_Light(LightDesc);
+		m_tLightDesc = lightDesc->tLightDesc;
 	}
 
 	if (FAILED(Add_Components(pArg)))
@@ -93,6 +80,12 @@ void CLightObj::Set_LightDesc(LIGHT_DESC lightDesc)
 {
 	/* 구조체 변경 */
 	m_tLightDesc = lightDesc;
+
+	XMVECTOR	vPosition = XMLoadFloat4(&m_tLightDesc.vPosition);
+	vPosition.m128_f32[3] = 1;
+
+	/* 객체 위치도 바꾸기 */
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPosition);
 }
 
 
@@ -161,5 +154,5 @@ void CLightObj::Free()
 	__super::Free();
 
 	Safe_Release(m_pShaderCom);
-	//Safe_Release(m_pModelCom);
+	Safe_Release(m_pModelCom);
 }
