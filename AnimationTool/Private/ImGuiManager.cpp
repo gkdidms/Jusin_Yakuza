@@ -530,6 +530,8 @@ void CImguiManager::DrawChannels()
 	m_ChannelNameList.clear();
 	m_ChannelNameList.resize(Channels.size());
 
+	ImGui::InputText("Model Name", m_szSearchChannelName, sizeof(m_szSearchChannelName) * _MAX_PATH);
+
 	_uint i = 0;
 
 	vector<const char*> items;
@@ -545,6 +547,16 @@ void CImguiManager::DrawChannels()
 		i++;
 	}
 
+	if(ImGui::Button("test"))
+	{
+		for (size_t i = 0; i < m_ChannelNameList.size(); i++)
+		{
+			if(m_ChannelNameList[i] == string(m_szSearchChannelName))
+				m_iChannelSelectedIndex = i;
+		}
+	}
+
+	ImGui::ScrollToItem(ImGuiScrollFlags_AlwaysCenterY);
 	if (ImGui::ListBox("##", &m_iChannelSelectedIndex, items.data(), items.size()))
 	{
 		m_pRenderModel->Select_Bone(Channels[m_iChannelSelectedIndex]->Get_BoneIndex());
