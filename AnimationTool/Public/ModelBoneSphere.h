@@ -47,6 +47,9 @@ public:
 	void Set_Collider_Center(const _float3& vCenter);
 	void Set_Collider_Value(void* pDesc);
 
+public:
+	_bool Created_Collider();
+
 private:
 	CShader* m_pShaderCom = { nullptr };
 	CTexture* m_pTextureCom = { nullptr };

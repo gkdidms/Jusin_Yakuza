@@ -81,6 +81,9 @@ public:
     _float Get_HDRLight();
     void Set_SSAO(_bool isSSAO);
     _bool isSSAO();
+    void Set_SSAORadiuse(_float fRadiuse);
+    _float Get_SSAORadiuse();
+
 #ifdef _DEBUG
 public:
     HRESULT Add_DebugComponent(class CComponent* pComponent);
@@ -111,6 +114,9 @@ public:
 public:
     HRESULT Add_Light(const LIGHT_DESC& LightDesc);
     HRESULT Render_Lights(class CShader* pShader, class CVIBuffer_Rect* pVIBuffer);
+    void    Edit_Light(int  iLightIndex, LIGHT_DESC lightDesc);
+    void    Delete_Light(int iLightIndex);
+    void    Delete_AllLights();
 
     /* Picking */
 public: 

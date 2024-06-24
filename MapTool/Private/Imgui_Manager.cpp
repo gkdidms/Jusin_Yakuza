@@ -45,6 +45,7 @@ HRESULT CImgui_Manager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* p
     /* Navigation 초기화 */
     m_pNavigationMgr->Initialize(m_pDevice, m_pContext);
     m_pObjPlace_Manager->Initialize();
+    m_pLightTool_Mgr->Initialize();
 
     return S_OK;
 }
@@ -87,7 +88,11 @@ void CImgui_Manager::Tick(_float fTimeDelta)
         m_bNaviTool_IMGUI = true;
 
     if (ImGui::Button(u8"라이트 TOOL"))
+    {
         m_bLightMgr_IMGUI = true;
+        m_pLightTool_Mgr->Set_LightObj_Render(true);
+    }
+       
 
     ImGui::End();
 
@@ -211,11 +216,12 @@ void CImgui_Manager::Show_LightTool_IMGUI()
 
     ImGui::Begin(u8"라이트 설치");
 
-    m_pLightTool_Mgr->Show_LightMgr_IMGUI();
+    m_pLightTool_Mgr->Show_Add_Light_IMGUI();
 
     if (ImGui::Button("Close"))
     {
         m_bLightMgr_IMGUI = false;
+        m_pLightTool_Mgr->Set_LightObj_Render(false);
     }
 
     ImGui::End();
