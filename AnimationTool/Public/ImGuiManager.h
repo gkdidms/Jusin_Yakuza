@@ -92,6 +92,8 @@ private:
 	int						m_iMeshSelectedIndex = { 0 };
 	int						m_iAddedMeshSelectedIndex = { 0 };
 
+	char									m_szSearchChannelName[_MAX_PATH];
+
 	vector<string>							m_ModelNameList;
 
 	vector<string>							m_AnimNameList;
