@@ -16,11 +16,13 @@ public:
     void Set_HDR(_bool isHDR) { m_isHDR = isHDR; }
     void Set_HDRLight(_float fLight) { m_fHDRLight = fLight; } // HDR 밝기 조절(빛 세기)
     void Set_SSAO(_bool isSSAO) { m_isSSAO = isSSAO; }
+    void Set_SSAORadiuse(_float fRadiuse) { m_fSSAORadiuse = fRadiuse; }
 
 public:
     _bool isHDR() { return m_isHDR; }
     _bool isSSAO() { return m_isSSAO; }
     _float Get_HDRLight() { return m_fHDRLight; }
+    _float Get_SSAORadiuse() { return m_fSSAORadiuse; }
 
 public:
     HRESULT Initialize();
@@ -37,7 +39,9 @@ private:
     void Render_Priority();
     void Render_ShadowObjects();
     void Render_NonBlender();
+    void Render_SSAO();
     void Render_LightAcc();
+    void Render_SSAOBlur();
     void Render_CopyBackBuffer();
     void Render_DeferredResult();
     void Render_Luminance();
@@ -46,9 +50,12 @@ private:
     void Render_AvgLuminance();
     void Redner_LuminanceResult();
 
-    void Render_NonLight();
+    void Render_NonLight();//이펙트 시작
+    void Render_Bloom();//블러
     void Render_Blender();
+    void Render_FinalEffectBlend();//블러 합치기
     void Render_UI();
+
 
 #ifdef _DEBUG
 private:
@@ -81,6 +88,8 @@ private:
     _bool m_isHDR = { false };
     _bool m_isSSAO = { false };
     _float m_fHDRLight = { 1.f };
+    _float m_fSSAORadiuse = { 0.003f };
+
 
 public:
     static CRenderer* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

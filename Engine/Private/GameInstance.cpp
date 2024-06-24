@@ -242,6 +242,16 @@ _bool CGameInstance::isSSAO()
 	return m_pRenderer->isSSAO();
 }
 
+void CGameInstance::Set_SSAORadiuse(_float fRadiuse)
+{
+	m_pRenderer->Set_SSAORadiuse(fRadiuse);
+}
+
+_float CGameInstance::Get_SSAORadiuse()
+{
+	return m_pRenderer->Get_SSAORadiuse();
+}
+
 #ifdef _DEBUG
 HRESULT CGameInstance::Add_DebugComponent(CComponent* pComponent)
 {
@@ -412,9 +422,9 @@ HRESULT CGameInstance::Add_MRT(const wstring& strMRTTag, const wstring& strRende
 	return m_pRenderTarget_Manager->Add_MRT(strMRTTag, strRenderTargetTag);
 }
 
-HRESULT CGameInstance::Begin_MRT(const wstring& strMRTTag, ID3D11DepthStencilView* pDSView)
+HRESULT CGameInstance::Begin_MRT(const wstring& strMRTTag, ID3D11DepthStencilView* pDSView, _bool isClear)
 {
-	return m_pRenderTarget_Manager->Begin_MRT(strMRTTag, pDSView);
+	return m_pRenderTarget_Manager->Begin_MRT(strMRTTag, pDSView, isClear);
 }
 
 HRESULT CGameInstance::End_MRT()
@@ -572,6 +582,21 @@ HRESULT CGameInstance::Add_Light(const LIGHT_DESC& LightDesc)
 HRESULT CGameInstance::Render_Lights(CShader* pShader, CVIBuffer_Rect* pVIBuffer)
 {
 	return m_pLight_Manager->Render(pShader, pVIBuffer);
+}
+
+void CGameInstance::Edit_Light(int iLightIndex, LIGHT_DESC lightDesc)
+{
+	return m_pLight_Manager->Edit_Light(iLightIndex, lightDesc);
+}
+
+void CGameInstance::Delete_Light(int iLightIndex)
+{
+	return m_pLight_Manager->Delete_Light(iLightIndex);
+}
+
+void CGameInstance::Delete_AllLights()
+{
+	return m_pLight_Manager->Delete_AllLights();
 }
 
 void CGameInstance::Release_Engine()

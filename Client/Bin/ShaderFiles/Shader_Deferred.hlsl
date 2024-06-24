@@ -21,6 +21,7 @@ vector g_vCamDir;
 float g_fFar;
 
 Texture2D g_Texture;
+Texture2D g_PriorityTexture;
 Texture2D g_NormalTexture;
 Texture2D g_DiffuseTexture;
 Texture2D g_ShadeTexture;
@@ -31,15 +32,52 @@ Texture2D g_ToneMappingTexture;
 Texture2D g_LuminanceTexture;
 Texture2D g_CopyLuminanceTexture;
 Texture2D g_AmbientTexture;
+//블러용
+Texture2D g_EffectTexture;
+Texture2D g_BlurTexture;
+Texture2D g_ResultTexture;
 
-float g_fOutlineAngle = 0.8f;
-
+//HDR
 float3 Luminance = float3(0.2125f, 0.7154f, 0.0721f);
 float fDelta = { 0.0001f };
 bool g_isFinished = { false };
 float g_fLumVar;
 
+//SSAO
 bool g_isSSAO = { false };
+float g_fRadiuse = { 0.003f };
+float3 g_vRandom[16] =
+{
+    float3(0.2024537f, 0.841204f, -0.9060141f),
+    float3(-0.2200423f, 0.6282339f, -0.8275437f),
+    float3(0.3677659f, 0.1086345f, -0.4466777f),
+    float3(0.8775856f, 0.4617546f, -0.6427765f),
+    float3(0.7867433f, -0.141479f, -0.1567597f),
+    float3(0.4839356f, -0.8253108f, -0.1563844f),
+    float3(0.4401554f, -0.4228428f, -0.3300118f),
+    float3(0.0019193f, -0.8048455f, 0.0726584f),
+    float3(-0.7578573f, -0.5583301f, 0.2347527f),
+    float3(-0.4540417f, -0.252365f, 0.0694318f),
+    float3(-0.0483353f, -0.2527294f, 0.5924745f),
+    float3(-0.4192392f, 0.2084218f, -0.3672943f),
+    float3(-0.8433938f, 0.1451271f, 0.2202872f),
+    float3(-0.4037157f, -0.8263387f, 0.4698132f),
+    float3(-0.6657394f, 0.6298575f, 0.6342437f),
+    float3(-0.0001783f, 0.2834622f, 0.8343929f),
+};
+
+//블룸(가우시안)
+float g_fTexW = 1280.0f;
+float g_fTexH = 720.0f;
+
+static const float g_fWeight[13] =
+{
+    0.0044, 0.0175, 0.0540, 0.1295, 0.2420, 0.3521, 0.3989, 0.3521, 0.2420, 0.1295, 0.0540, 0.0175, 0.0044
+	/*0.0561, 0.1353, 0.278, 0.4868, 0.7261, 0.9231, 1, 
+	0.9231, 0.7261, 0.4868, 0.278, 0.1353, 0.0561*/
+};
+
+static const float g_fTotal = 2.f;
 
 struct VS_IN
 {
@@ -100,45 +138,13 @@ struct PS_OUT_LIGHT
     vector vAmbient : SV_TARGET1;
 };
 
-
-float3 g_vRandom[16] =
-{
-    float3(0.2024537f, 0.841204f, -0.9060141f),
-    float3(-0.2200423f, 0.6282339f, -0.8275437f),
-    float3(0.3677659f, 0.1086345f, -0.4466777f),
-    float3(0.8775856f, 0.4617546f, -0.6427765f),
-    float3(0.7867433f, -0.141479f, -0.1567597f),
-    float3(0.4839356f, -0.8253108f, -0.1563844f),
-    float3(0.4401554f, -0.4228428f, -0.3300118f),
-    float3(0.0019193f, -0.8048455f, 0.0726584f),
-    float3(-0.7578573f, -0.5583301f, 0.2347527f),
-    float3(-0.4540417f, -0.252365f, 0.0694318f),
-    float3(-0.0483353f, -0.2527294f, 0.5924745f),
-    float3(-0.4192392f, 0.2084218f, -0.3672943f),
-    float3(-0.8433938f, 0.1451271f, 0.2202872f),
-    float3(-0.4037157f, -0.8263387f, 0.4698132f),
-    float3(-0.6657394f, 0.6298575f, 0.6342437f),
-    float3(-0.0001783f, 0.2834622f, 0.8343929f),
-};
-
-float3 RandomNormal(float2 vTex)
-{
-    float noiseX = (frac(sin(dot(vTex, float2(15.8989f, 76.132f) * 1.0f)) * 46336.23745f));
-    float noiseY = (frac(sin(dot(vTex, float2(11.9899f, 62.223f) * 2.0f)) * 34748.34744f));
-    float noiseZ = (frac(sin(dot(vTex, float2(13.3238f, 63.122f) * 3.0f)) * 59998.47362f));
-    
-    return normalize(float3(noiseX, noiseY, noiseZ));
-}
-
-float g_fRadiuse = 0.001f;
-
 float4 SSAO(float2 vTexcoord, float fDepth, float3 vNormal, float fViewZ)
 {
     float fOcclusion = 0.f;
     
-    for (int i = 0; i < 16; ++i)
+    for (int i = 0; i < 64; ++i)
     {
-        float3 vRay = cross(RandomNormal(vTexcoord), g_vRandom[i]);
+        float3 vRay = cross(float3(0.f, 0.f, -1.f), g_vRandom[i % 16]); // 랜덤 방향 벡터 생성
         float3 vReflect = normalize(reflect(vRay, vNormal)) * g_fRadiuse;
         vReflect.x *= -1.f;
         float2 vRandowUV = vTexcoord + vReflect.xy;
@@ -149,9 +155,27 @@ float4 SSAO(float2 vTexcoord, float fDepth, float3 vNormal, float fViewZ)
             ++fOcclusion;
     }
     
-    float4 vAmbient = abs((fOcclusion / 16.f) - 1);
+    float4 vAmbient = abs((fOcclusion / 64.f) - 1);
     
     return vAmbient;
+}
+
+PS_OUT PS_MAIN_SSAO(PS_IN In)
+{
+    PS_OUT Out = (PS_OUT) 0;
+
+    vector vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexcoord);
+    vector vDepthDesc = g_DepthTexture.Sample(PointSampler, In.vTexcoord);
+    
+    vector vNormal = vector(vNormalDesc.xyz * 2.f - 1.f, 0.0f);
+    
+    float fViewZ = vDepthDesc.y * g_fFar;
+    float fDepth = vDepthDesc.x * g_fFar * fViewZ;
+    float4 fAmbient = SSAO(In.vTexcoord, fDepth, vNormal.xyz, fViewZ);
+    
+    Out.vColor = 1 - fAmbient;
+    
+    return Out;
 }
 
 PS_OUT_LIGHT PS_MAIN_LIGHT_DIRECTIONAL(PS_IN In)
@@ -160,17 +184,11 @@ PS_OUT_LIGHT PS_MAIN_LIGHT_DIRECTIONAL(PS_IN In)
 
     vector vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexcoord);
     vector vDepthDesc = g_DepthTexture.Sample(PointSampler, In.vTexcoord);
+    vector vAmbientDesc = g_AmbientTexture.Sample(LinearSampler, In.vTexcoord);
     vector vNormal = vector(vNormalDesc.xyz * 2.f - 1.f, 0.0f);
-    Out.vShade = g_vLightDiffuse * saturate(max(dot(normalize(g_vLightDir) * -1.f, normalize(vNormal)), 0.f) + (g_vLightAmbient * g_vMtrlAmbient));
     
-    if (g_isSSAO)
-    {
-        float fViewZ = vDepthDesc.y * g_fFar;
-        float fDepth = vDepthDesc.x * g_fFar * fViewZ;
-        float4 fAmbient = SSAO(In.vTexcoord, fDepth, vNormal.xyz, fViewZ);
-    
-        Out.vAmbient = 1 - fAmbient;
-    }
+    Out.vShade = g_vLightDiffuse * saturate(max(dot(normalize(g_vLightDir) * -1.f, normalize(vNormal)), 0.f) + (g_vLightAmbient * 
+    (g_isSSAO ? vAmbientDesc : g_vMtrlAmbient)));
     
     return Out;
 }
@@ -218,9 +236,8 @@ PS_OUT PS_MAIN_COPY_BACKBUFFER_RESULT(PS_IN In)
         discard;
 
     vector vShade = g_ShadeTexture.Sample(LinearSampler, In.vTexcoord);
-    vector vAmbient = g_AmbientTexture.Sample(LinearSampler, In.vTexcoord);
     
-    Out.vColor = vDiffuse * (g_isSSAO ? vShade * vAmbient : vShade);
+    Out.vColor = vDiffuse * vShade;
     
     return Out;
 }
@@ -316,89 +333,76 @@ PS_OUT PS_MAIN_TONEMAPPING(PS_IN In) // 감마 콜렉션 & ACES 톤매핑
     float A = 2.51f, B = 0.03f, C = 2.43f, D = 0.59f, E = 0.14f;
     vDiffuse = saturate(vDiffuse * (A * vDiffuse + B)) / (vDiffuse * (C * vDiffuse + D) + E);
 
-    
     Out.vColor = vector(pow(vDiffuse, 1.f / 2.2f), 1.f) * vLuminance * g_fLumVar;
     
     return Out;
 }
 
-/*
-
-float weights[9] =
+float4 Blur_X(float2 vTexCoord)
 {
-        0.004f, 0.009f, 0.012f,
-        0.021f, 0.027f, 0.021f,
-    0.012f, 0.009f, 0.004f
-};
+    float4 vOut = (float4) 0;
 
-float blurRadius = 2.f; // 흐림 정도를 조절하는 값
+    float2 vUV = (float2) 0;
 
-PS_OUT PS_MAIN_GUASSIAN(PS_IN In)
-{
-    PS_OUT Out = (PS_OUT) 0;
-    
-    float fNormalization = (weights[0] + 2.0f * (weights[1] + weights[2] + weights[3] + weights[4]));
-    float4 vSum = float4(0.f, 0.f, 0.f, 0.f);
-    
-    float fOffSetX = 1 / 1280.f;
-    float fOffSetY = 1 / 720.f;
-
-    float2 offsets[9] =
+    for (int i = -6; i < 7; ++i)
     {
-        { -fOffSetX, -fOffSetY },
-        { 0.f, -fOffSetY },
-        { fOffSetX, -fOffSetY },
-        { -fOffSetX, 0.0f },
-        { 0.0f, 0.f },
-        { fOffSetX, 0.0f },
-        { -fOffSetX, fOffSetY },
-        { 0.0f, fOffSetY },
-        { fOffSetX, fOffSetY }
-    };
-    
-  // 가우시안 커널을 사용하여 픽셀 값을 샘플링하고 가중치를 적용합니다.
-    for (int i = 0; i < 9; ++i)
-    {
-        float2 vOffset = offsets[i] * blurRadius;
-        float4 vGlow = g_GlowTexture.Sample(LinearSampler, In.vTexcoord + vOffset);
-        float fWeight = weights[i] / fNormalization;
-        vSum += vGlow * fWeight;
+        vUV = vTexCoord + float2(1.f / g_fTexW * i, 0);
+        vOut += g_fWeight[6 + i] * g_EffectTexture.Sample(ClampSampler, vUV);
     }
-    
-    Out.vColor = vSum;
-    Out.vColor.a = 1.f;
-    
-    return Out;
+
+    vOut /= g_fTotal;
+
+    return vOut;
 }
 
+float4 Blur_Y(float2 vTexCoord)
+{
+    float4 vOut = (float4) 0;
 
-PS_OUT PS_MAIN_GUASSIAN_DEFERREND_RESULT(PS_IN In)
+    float2 vUV = (float2) 0;
+
+    for (int i = -6; i < 7; ++i)
+    {
+        vUV = vTexCoord + float2(0, 1.f / g_fTexH * i);
+        vOut += g_fWeight[6 + i] * g_EffectTexture.Sample(ClampSampler, vUV);
+    }
+
+    vOut /= g_fTotal;
+
+    return vOut;
+}
+
+PS_OUT PS_MAIN_BLUR_X(PS_IN In)
 {
     PS_OUT Out = (PS_OUT) 0;
-    
-    vector vGuassian = g_GuassianTexture.Sample(LinearSampler, In.vTexcoord);
-    vector vBackBuffer = g_BackBufferTexture.Sample(LinearSampler, In.vTexcoord);
-    //vector vGlow = g_GlowTexture.Sample(LinearSampler, In.vTexcoord);
-    
-    Out.vColor = vBackBuffer + vGuassian;
-    
+
+    Out.vColor = Blur_X(In.vTexcoord);
+	
     return Out;
 }
 
-PS_OUT PS_MAIN_FINAL_RESULT(PS_IN In)
+PS_OUT PS_MAIN_BLUR_Y(PS_IN In)
 {
     PS_OUT Out = (PS_OUT) 0;
-    
-   // vector vGuassian = g_GuassianTexture.Sample(LinearSampler, In.vTexcoord);
-   // vector vBackBuffer = g_BackBufferTexture.Sample(LinearSampler, In.vTexcoord);
-    vector vFinal = g_FinalBufferTexture.Sample(LinearSampler, In.vTexcoord);
-    vector vGlow = g_GlowTexture.Sample(LinearSampler, In.vTexcoord);
-    
-    Out.vColor = vFinal + vGlow;
+
+    Out.vColor = Blur_Y(In.vTexcoord);
+
+    return Out;
+}
+
+PS_OUT PS_MAIN_RESULT(PS_IN In)
+{
+    PS_OUT Out = (PS_OUT) 0;
+
+    vector vResult = g_ResultTexture.Sample(LinearSampler, In.vTexcoord);
+
+    vector vBlur = g_BlurTexture.Sample(LinearSampler, In.vTexcoord);
+    vector vEffect = g_EffectTexture.Sample(LinearSampler, In.vTexcoord);
+
+    Out.vColor = vResult;
     
     return Out;
 }
-*/
 
 technique11 DefaultTechnique
 {
@@ -547,6 +551,58 @@ technique11 DefaultTechnique
         HullShader = NULL;
         DomainShader = NULL;
         PixelShader = compile ps_5_0 PS_MAIN_LUMINANCE_SUM_FINAL();
+    }
+
+    pass Blur_X //11
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_None_Test_None_Write, 0);
+        SetBlendState(BS_Default, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        HullShader = NULL;
+        DomainShader = NULL;
+        PixelShader = compile ps_5_0 PS_MAIN_BLUR_X();
+    }
+
+    pass Blur_Y //12
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_None_Test_None_Write, 0);
+        SetBlendState(BS_Default, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        HullShader = NULL;
+        DomainShader = NULL;
+        PixelShader = compile ps_5_0 PS_MAIN_BLUR_Y();
+    }
+
+    pass Result //13
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_None_Test_None_Write, 0);
+        SetBlendState(BS_Default, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        HullShader = NULL;
+        DomainShader = NULL;
+        PixelShader = compile ps_5_0 PS_MAIN_RESULT();
+    }
+
+    pass SSAO //14
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_None_Test_None_Write, 0);
+        SetBlendState(BS_Default, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        HullShader = NULL;
+        DomainShader = NULL;
+        PixelShader = compile ps_5_0 PS_MAIN_SSAO();
     }
 }
 

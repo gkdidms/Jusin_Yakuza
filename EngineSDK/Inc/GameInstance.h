@@ -81,6 +81,9 @@ public:
     _float Get_HDRLight();
     void Set_SSAO(_bool isSSAO);
     _bool isSSAO();
+    void Set_SSAORadiuse(_float fRadiuse);
+    _float Get_SSAORadiuse();
+
 #ifdef _DEBUG
 public:
     HRESULT Add_DebugComponent(class CComponent* pComponent);
@@ -111,6 +114,9 @@ public:
 public:
     HRESULT Add_Light(const LIGHT_DESC& LightDesc);
     HRESULT Render_Lights(class CShader* pShader, class CVIBuffer_Rect* pVIBuffer);
+    void    Edit_Light(int  iLightIndex, LIGHT_DESC lightDesc);
+    void    Delete_Light(int iLightIndex);
+    void    Delete_AllLights();
 
     /* Picking */
 public: 
@@ -122,7 +128,7 @@ public:
 public: 
     HRESULT Add_RenderTarget(const wstring& strRenderTargetTag, _uint iSizeX, _uint iSizeY, DXGI_FORMAT ePixelFormat, const _float4& vClearColor);
     HRESULT Add_MRT(const wstring& strMRTTag, const wstring& strRenderTargetTag);
-    HRESULT Begin_MRT(const wstring& strMRTTag, ID3D11DepthStencilView* pDSView = nullptr);
+    HRESULT Begin_MRT(const wstring& strMRTTag, ID3D11DepthStencilView* pDSView = nullptr, _bool isClear = true); // isClear == false 일 시 초기화 안됨.
     HRESULT End_MRT();
     HRESULT Bind_RenderTargetSRV(const wstring& strTargetTag, class CShader* pShader, const _char* pConstantName);
     HRESULT Copy_Resource(const wstring& strTargetTag, ID3D11Texture2D* pDesc);
