@@ -10,6 +10,15 @@ CBounding_OBB::CBounding_OBB()
 void CBounding_OBB::Set_Value(void* pDesc)
 {
 	m_vExtents = *((_float3*)pDesc);
+
+	m_pOriginalBox->Extents = m_vExtents;
+}
+
+void CBounding_OBB::Set_Center(const _float3& vCenter)
+{
+	m_vCenter = vCenter;
+
+	m_pOriginalBox->Center = m_vCenter;
 }
 
 HRESULT CBounding_OBB::Initialize(const void* pArg)

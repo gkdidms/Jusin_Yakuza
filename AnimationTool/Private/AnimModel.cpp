@@ -214,6 +214,11 @@ void CAnimModel::Set_Collider_Value(_uint iIndex, void* pDesc)
     m_BoneSpheres[iIndex]->Set_Collider_Value(pDesc);
 }
 
+_bool CAnimModel::Created_BoneCollider(_uint iIndex)
+{
+    return m_BoneSpheres[iIndex]->Created_Collider();
+}
+
 HRESULT CAnimModel::Add_Components()
 {
     if (FAILED(__super::Add_Component(LEVEL_EDIT, TEXT("Prototype_Component_Shader_VtxAnimMesh"), TEXT("Com_Shader"),

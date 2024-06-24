@@ -81,6 +81,9 @@ public:
     _float Get_HDRLight();
     void Set_SSAO(_bool isSSAO);
     _bool isSSAO();
+    void Set_SSAORadiuse(_float fRadiuse);
+    _float Get_SSAORadiuse();
+
 #ifdef _DEBUG
 public:
     HRESULT Add_DebugComponent(class CComponent* pComponent);
