@@ -157,6 +157,7 @@ void CImguiManager::AnimListWindow()
 	{
 		m_fAnimationPosition = 0.f;
 		m_pRenderModel->Change_Animation(m_iAnimIndex);
+		m_isAnimLoop = m_pRenderModel->Get_AnimLoop(m_iAnimIndex);
 	}
 
 	ImGui::SameLine();

@@ -6,6 +6,9 @@
 BEGIN(Engine)
 class CShader;
 class CModel;
+class CAnimation;
+class CBone;
+class CMesh;
 END
 
 BEGIN(Client)
@@ -39,9 +42,11 @@ public:
 	void Set_Rotation(_uint iAxis, _float vRadian, _float fTimeDelta);
 
 public:
-	const vector<class CAnimation*>& Get_Animations();
-	const vector<class CBone*>& Get_Bones();
-	const vector<class CMesh*>& Get_Meshes();
+	const vector<CAnimation*>& Get_Animations();
+	const vector<CBone*>& Get_Bones();
+	const vector<CMesh*>& Get_Meshes();
+
+	_bool Get_AnimLoop(_uint iAnimIndex);
 
 public:
 	void Change_Model(wstring strModelName);
