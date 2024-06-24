@@ -130,6 +130,11 @@ const vector<class CMesh*>& CAnimModel::Get_Meshes()
     return m_pModelCom->Get_Meshes();
 }
 
+_bool CAnimModel::Get_AnimLoop(_uint iAnimIndex)
+{
+    return m_pModelCom->Get_AnimLoop(iAnimIndex);
+}
+
 void CAnimModel::Change_Model(wstring strModelName)
 {
     Safe_Release(m_pModelCom);
