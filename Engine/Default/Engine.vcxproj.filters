@@ -175,9 +175,6 @@
     <Filter Include="01.Utility\96.Manager">
       <UniqueIdentifier>{604dcaba-94b0-469e-a171-1208e1a5cd0b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01.Utility\96.Manager\00.MapDataMgr">
-      <UniqueIdentifier>{c6f5df0c-fe5d-4f40-af32-483142ef1d43}</UniqueIdentifier>
-    </Filter>
     <Filter Include="01.Utility\03.Component\01.VIBuffer\Cube">
       <UniqueIdentifier>{55219448-7564-41f8-b838-0c2a13944b50}</UniqueIdentifier>
     </Filter>
@@ -186,6 +183,9 @@
     </Filter>
     <Filter Include="01.Utility\03.Component\08.ComputeShader">
       <UniqueIdentifier>{0c4835a7-cc1d-4213-a200-edf37363c233}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\96.Manager\00.CameraPlayMgr">
+      <UniqueIdentifier>{d6ec2168-6a7f-4e90-aa34-b8e7372b6d4e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

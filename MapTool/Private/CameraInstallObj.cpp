@@ -1,33 +1,34 @@
-#include "..\Public\CameraObj.h"
+#include "..\Public\CameraInstallObj.h"
 
 #include "GameInstance.h"
 #include "Transform.h"
 
-CCameraObj::CCameraObj(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+CCameraInstallObj::CCameraInstallObj(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CGameObject{ pDevice, pContext }
 {
 }
 
-CCameraObj::CCameraObj(const CCameraObj& rhs)
+CCameraInstallObj::CCameraInstallObj(const CCameraInstallObj& rhs)
 	: CGameObject{ rhs }
 {
 }
 
-HRESULT CCameraObj::Initialize_Prototype()
+HRESULT CCameraInstallObj::Initialize_Prototype()
 {
 
 	return S_OK;
 }
 
-HRESULT CCameraObj::Initialize(void* pArg)
+HRESULT CCameraInstallObj::Initialize(void* pArg)
 {
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
 	if (nullptr != pArg)
 	{
-		CAMERAOBJINPUT_DESC* inputDesc = (CAMERAOBJINPUT_DESC*)pArg;
-		m_tCameraDesc = inputDesc->tObjDesc;
+		CAMERAINSTALL_DESC* camInstallDesc = (CAMERAINSTALL_DESC*)pArg;
+		m_pTransformCom->Set_WorldMatrix(camInstallDesc->vStartPos);
+		m_eInstallDesc = camInstallDesc->eInstallDesc;
 	}
 
 	if (FAILED(Add_Components(pArg)))
@@ -36,21 +37,21 @@ HRESULT CCameraObj::Initialize(void* pArg)
 	return S_OK;
 }
 
-void CCameraObj::Priority_Tick(const _float& fTimeDelta)
+void CCameraInstallObj::Priority_Tick(const _float& fTimeDelta)
 {
 }
 
-void CCameraObj::Tick(const _float& fTimeDelta)
+void CCameraInstallObj::Tick(const _float& fTimeDelta)
 {
 	//m_pModelCom->Play_Animation(fTimeDelta);
 }
 
-void CCameraObj::Late_Tick(const _float& fTimeDelta)
+void CCameraInstallObj::Late_Tick(const _float& fTimeDelta)
 {
 	m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
 }
 
-HRESULT CCameraObj::Render()
+HRESULT CCameraInstallObj::Render()
 {
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
@@ -63,8 +64,14 @@ HRESULT CCameraObj::Render()
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_Texture", i, aiTextureType_DIFFUSE)))
 			return E_FAIL;
 
-		/*m_pShaderCom->Begin(m_iShaderPassNum);*/
-		m_pShaderCom->Begin(0);
+		if (CAM_EYE == m_eInstallDesc)
+		{
+			m_pShaderCom->Begin(1);
+		}
+		else if (CAM_FOCUS == m_eInstallDesc)
+		{
+			m_pShaderCom->Begin(2);
+		}
 
 		m_pModelCom->Render(i);
 	}
@@ -74,7 +81,7 @@ HRESULT CCameraObj::Render()
 }
 
 
-HRESULT CCameraObj::Add_Components(void* pArg)
+HRESULT CCameraInstallObj::Add_Components(void* pArg)
 {
 	/* For.Com_Model */
 	if (FAILED(__super::Add_Component(LEVEL_RUNMAP, TEXT("Prototype_Component_Model_Bone_Sphere"),
@@ -89,7 +96,7 @@ HRESULT CCameraObj::Add_Components(void* pArg)
 	return S_OK;
 }
 
-HRESULT CCameraObj::Bind_ShaderResources()
+HRESULT CCameraInstallObj::Bind_ShaderResources()
 {
 	if (FAILED(m_pTransformCom->Bind_ShaderMatrix(m_pShaderCom, "g_WorldMatrix")))
 		return E_FAIL;
@@ -101,15 +108,12 @@ HRESULT CCameraObj::Bind_ShaderResources()
 	if (FAILED(m_pShaderCom->Bind_ValueFloat("g_fObjID", m_fObjID)))
 		return E_FAIL;
 
-	//if (FAILED(m_pShaderCom->Bind_RawValue("g_vCamPosition", m_pGameInstance->Get_CamPosition_Float4(), sizeof(_float4))))
-	//	return E_FAIL;
-
 	return S_OK;
 }
 
-CCameraObj* CCameraObj::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+CCameraInstallObj* CCameraInstallObj::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
-	CCameraObj* pInstance = new CCameraObj(pDevice, pContext);
+	CCameraInstallObj* pInstance = new CCameraInstallObj(pDevice, pContext);
 
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
@@ -120,9 +124,9 @@ CCameraObj* CCameraObj::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 	return pInstance;
 }
 
-CGameObject* CCameraObj::Clone(void* pArg)
+CGameObject* CCameraInstallObj::Clone(void* pArg)
 {
-	CCameraObj* pInstance = new CCameraObj(*this);
+	CCameraInstallObj* pInstance = new CCameraInstallObj(*this);
 
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
@@ -133,7 +137,7 @@ CGameObject* CCameraObj::Clone(void* pArg)
 	return pInstance;
 }
 
-void CCameraObj::Free()
+void CCameraInstallObj::Free()
 {
 	__super::Free();
 

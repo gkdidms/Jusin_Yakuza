@@ -14,11 +14,12 @@ BEGIN(Client)
 class CCameraObj final : public CGameObject
 {
 public:
-	typedef struct tLightObjDesc : public CGameObject::GAMEOBJECT_DESC
+
+
+	typedef struct tCameraObjDescInput : public CGameObject::GAMEOBJECT_DESC
 	{
-		XMMATRIX		vStartPos;
-		LIGHT_DESC		tLightDesc;
-	}LIGHTOBJ_DESC;
+		CAMERAOBJ_DESC		tObjDesc;
+	}CAMERAOBJINPUT_DESC;
 
 private:
 	CCameraObj(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -34,13 +35,14 @@ public:
 	virtual HRESULT Render() override;
 
 public:
-	CTransform* Get_Transform() { return m_pTransformCom; }
-
+	CTransform*						Get_Transform() { return m_pTransformCom; }
+	CAMERAOBJ_DESC					Get_CameraObjDesc() { return m_tCameraDesc; }
+	void							Edit_CameraObjDesc(CAMERAOBJ_DESC cameraDesc) { m_tCameraDesc = cameraDesc; }
 
 private:
-	CShader* m_pShaderCom = { nullptr };
-	CModel* m_pModelCom = { nullptr };
-	LIGHT_DESC						m_tLightDesc;
+	CShader*						m_pShaderCom = { nullptr };
+	CModel*							m_pModelCom = { nullptr };
+	CAMERAOBJ_DESC					m_tCameraDesc;
 
 public:
 	HRESULT							Add_Components(void* pArg);
