@@ -56,6 +56,9 @@ public:
 	void Set_Collider_Center(_uint iIndex, const _float3& vCenter);
 	void Set_Collider_Value(_uint iIndex, void* pDesc);
 
+public:
+	_bool Created_BoneCollider(_uint iIndex);
+
 private:
 	HRESULT	Add_Components();
 	HRESULT	Bind_ShaderResources();
