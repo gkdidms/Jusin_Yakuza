@@ -70,21 +70,21 @@ private:
 	vector<char*>							m_FileNames;
 
 private:
-	vector<class CCell*>			m_Cells;
-	static _float4x4				m_WorldMatrix; /* 객체들이 공유할 수 있게끔 static */
-	class CNavigation*				m_pNavigationCom = { nullptr };
+	vector<class CCell*>					m_Cells;
+	static _float4x4						m_WorldMatrix; /* 객체들이 공유할 수 있게끔 static */
+	class CNavigation*						m_pNavigationCom = { nullptr };
 
 private:
-	vector<char*>					m_CellsName;
+	vector<char*>							m_CellsName;
 
 private:
-	vector<_float3>					m_vPoints;
+	vector<_float3>							m_vPoints;
 
 	/* For IMGUI_MANAGER */
 private:
-	_int							m_iCurrentCellIndex = { 0 };
-	_int							m_iCurrentFileNavi = { 0 };
-	_int							m_iCurrentOption = { 0 };
+	_int									m_iCurrentCellIndex = { 0 };
+	_int									m_iCurrentFileNavi = { 0 };
+	_int									m_iCurrentOption = { 0 };
 
 
 public:

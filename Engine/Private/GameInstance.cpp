@@ -584,6 +584,21 @@ HRESULT CGameInstance::Render_Lights(CShader* pShader, CVIBuffer_Rect* pVIBuffer
 	return m_pLight_Manager->Render(pShader, pVIBuffer);
 }
 
+void CGameInstance::Edit_Light(int iLightIndex, LIGHT_DESC lightDesc)
+{
+	return m_pLight_Manager->Edit_Light(iLightIndex, lightDesc);
+}
+
+void CGameInstance::Delete_Light(int iLightIndex)
+{
+	return m_pLight_Manager->Delete_Light(iLightIndex);
+}
+
+void CGameInstance::Delete_AllLights()
+{
+	return m_pLight_Manager->Delete_AllLights();
+}
+
 void CGameInstance::Release_Engine()
 {
 	CGameInstance::GetInstance()->Free();

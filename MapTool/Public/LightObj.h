@@ -37,7 +37,6 @@ public:
 	void							Set_LightDesc(LIGHT_DESC lightDesc);
 	LIGHT_DESC						Get_LightDesc() { return m_tLightDesc; }
 
-
 private:
 	CShader*						m_pShaderCom = { nullptr };
 	CModel*							m_pModelCom = { nullptr };
