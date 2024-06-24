@@ -1001,7 +1001,6 @@ void CRenderer::Render_FinalEffectBlend()
 	m_pShader->Begin(13);
 
 	m_pVIBuffer->Render();
-
 }
 
 void CRenderer::Render_UI()
