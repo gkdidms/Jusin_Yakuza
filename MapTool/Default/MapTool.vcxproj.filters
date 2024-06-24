@@ -13,9 +13,6 @@
     <ClCompile Include="..\private\Level_Logo.cpp">
       <Filter>01.Levels\00.Logo</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\PlayerCamera.cpp">
-      <Filter>02.GameObjects\02.Camera</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\Terrain.cpp">
       <Filter>02.GameObjects\01.Terrain</Filter>
     </ClCompile>
@@ -97,6 +94,12 @@
     <ClCompile Include="..\Private\CameraInstallObj.cpp">
       <Filter>02.GameObjects\06.CameraInstallObj</Filter>
     </ClCompile>
+    <ClCompile Include="..\private\PlayerCamera.cpp">
+      <Filter>02.GameObjects\02.Camera\00.PlayerCamera</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CineCamera.cpp">
+      <Filter>02.GameObjects\02.Camera\01.CineCamera</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\MainApp.h">
@@ -113,9 +116,6 @@
     </ClInclude>
     <ClInclude Include="..\public\Level_Logo.h">
       <Filter>01.Levels\00.Logo</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\PlayerCamera.h">
-      <Filter>02.GameObjects\02.Camera</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Terrain.h">
       <Filter>02.GameObjects\01.Terrain</Filter>
@@ -213,6 +213,12 @@
     <ClInclude Include="..\Public\CameraInstallObj.h">
       <Filter>02.GameObjects\06.CameraInstallObj</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\PlayerCamera.h">
+      <Filter>02.GameObjects\02.Camera\00.PlayerCamera</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CineCamera.h">
+      <Filter>02.GameObjects\02.Camera\01.CineCamera</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="MapTool.ico">
@@ -300,6 +306,12 @@
     </Filter>
     <Filter Include="02.GameObjects\06.CameraInstallObj">
       <UniqueIdentifier>{c0b61b5b-8c3d-4cd9-beb3-056d9fa4db2e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Camera\00.PlayerCamera">
+      <UniqueIdentifier>{2d72c1fe-589c-46ae-b851-4438b9a4b844}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Camera\01.CineCamera">
+      <UniqueIdentifier>{679838a0-1f65-4cce-b106-041b8c0f9ded}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

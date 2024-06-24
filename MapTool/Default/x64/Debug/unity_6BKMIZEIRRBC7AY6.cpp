@@ -4,3 +4,6 @@
 
 #include "D:\Jusin_TeamProject\MapTool\Private\CameraObj.cpp"
 
+
+#include "D:\Jusin_TeamProject\MapTool\Private\CineCamera.cpp"
+
