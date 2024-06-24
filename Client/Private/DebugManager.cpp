@@ -104,6 +104,12 @@ void CDebugManager::Window_Debug()
 
         if (ImGui::InputFloat("HDR Light", &m_fHDRLight, 0.f))
             m_pGameInstance->Set_HDRLight(m_fHDRLight);
+
+        ImGui::SeparatorText("SSAO");
+        _float fRadiuse = m_pGameInstance->Get_SSAORadiuse();
+
+        if (ImGui::SliderFloat("Radiuse", &fRadiuse, 0.001f, 0.1f))
+            m_pGameInstance->Set_SSAORadiuse(fRadiuse);
     }
 
     ImGui::End();
