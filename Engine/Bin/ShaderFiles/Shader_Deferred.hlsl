@@ -34,8 +34,14 @@ Texture2D g_CopyLuminanceTexture;
 Texture2D g_AmbientTexture;
 //블러용
 Texture2D g_EffectTexture;
-Texture2D g_BlurTexture;
-Texture2D g_ResultTexture;
+
+texture2D g_BlurTexture;
+texture2D g_ResultTexture;
+texture2D g_AccumTexture;
+texture2D g_AccumAlpha;
+
+float g_fOutlineAngle = 0.8f;
+
 
 //HDR
 float3 Luminance = float3(0.2125f, 0.7154f, 0.0721f);
@@ -394,12 +400,37 @@ PS_OUT PS_MAIN_RESULT(PS_IN In)
 {
     PS_OUT Out = (PS_OUT) 0;
 
-    vector vResult = g_ResultTexture.Sample(LinearSampler, In.vTexcoord);
+    vector vResult = g_ResultTexture.Sample(LinearSampler, In.vTexcoord);   
 
-    vector vBlur = g_BlurTexture.Sample(LinearSampler, In.vTexcoord);
+    vector vBlur = g_BlurTexture.Sample(LinearSampler, In.vTexcoord);   
+    
     vector vEffect = g_EffectTexture.Sample(LinearSampler, In.vTexcoord);
 
     Out.vColor = vResult + vBlur + vEffect;
+    
+    return Out;
+}
+
+
+PS_OUT PS_OIT_RESULT(PS_IN In)
+{
+
+    PS_OUT Out = (PS_OUT) 0;
+
+    vector vAccumColor = g_AccumTexture.Sample(LinearSampler, In.vTexcoord);
+    vector vAccumAlpha = g_AccumAlpha.Sample(PointSampler, In.vTexcoord);
+   float vAccumWeight = vAccumAlpha.r;
+    
+      // 최종 출력 계산
+    float4 FinalColor = float4(vAccumColor.xyz / clamp(vAccumColor.a, 1e-3, 3e3), vAccumWeight);
+    
+    // 투명 객체와 백그라운드 객체 합성
+    
+    vector vBackground = g_ResultTexture.Sample(PointSampler, In.vTexcoord);
+
+
+    Out.vColor = vBackground + FinalColor * (1 - vAccumWeight);
+    //Out.vColor = vBackground + FinalColor;
     
     return Out;
 }
@@ -592,6 +623,7 @@ technique11 DefaultTechnique
         PixelShader = compile ps_5_0 PS_MAIN_RESULT();
     }
 
+
     pass SSAO //14
     {
         SetRasterizerState(RS_Default);
@@ -603,6 +635,21 @@ technique11 DefaultTechnique
         HullShader = NULL;
         DomainShader = NULL;
         PixelShader = compile ps_5_0 PS_MAIN_SSAO();
+
     }
+    pass OITRender //15
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_None_Test_None_Write, 0);
+        SetBlendState(BS_AlphaBlend, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        HullShader = NULL;
+        DomainShader = NULL;
+        PixelShader = compile ps_5_0 PS_OIT_RESULT();   
+    }
+
+
 }
 

@@ -4,9 +4,13 @@
 matrix g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
 
 texture2D g_Texture;
+texture2D g_ResultTexture;
 
 vector g_vStartColor, g_vEndColor;
 vector g_vCamPosition;
+
+float g_NearZ = 0.01f;
+float g_FarZ = 3000.f;
 
 struct VS_IN
 {
@@ -42,6 +46,7 @@ VS_OUT VS_MAIN(VS_IN In)
 
     matWV = mul(g_WorldMatrix, g_ViewMatrix);
     matWVP = mul(matWV, g_ProjMatrix);
+    
 
     Out.vPosition = mul(vPosition, g_WorldMatrix).xyz;
     Out.vPSize = In.vPSize;
@@ -68,6 +73,7 @@ struct GS_OUT
     float2 vTexcoord : TEXCOORD0;
 
     float2 vLifeTime : COLOR0;
+    float LinearZ : COLOR1;
 };
 
 [maxvertexcount(6)]
@@ -82,8 +88,6 @@ void GS_MAIN(point GS_IN In[1], inout TriangleStream<GS_OUT> Triangles)
         Out[i].vLifeTime = float2(0.f, 0.f);
     }
 	
-
-
     vector vLook = g_vCamPosition - vector(In[0].vPosition, 1.f);
     float3 vRight = normalize(cross(float3(0.f, 1.f, 0.f), vLook.xyz)) * In[0].vPSize.x * 0.5f;
     float3 vUp = normalize(cross(vLook.xyz, vRight)) * In[0].vPSize.y * 0.5f;
@@ -134,6 +138,7 @@ void GS_CUSTOM(point GS_IN In[1], inout TriangleStream<GS_OUT> Triangles)
         Out[i].vPosition = float4(0.f, 0.f, 0.f, 0.f);
         Out[i].vTexcoord = float2(0.f, 0.f);
         Out[i].vLifeTime = float2(0.f, 0.f);
+        Out[i].LinearZ = float(0.f);
     }
 	
     float3 vDirection = In[0].vDir.xyz;
@@ -144,7 +149,14 @@ void GS_CUSTOM(point GS_IN In[1], inout TriangleStream<GS_OUT> Triangles)
 
     float3 vPosition;
     matrix matVP = mul(g_ViewMatrix, g_ProjMatrix);
-
+    
+    float4 PointPosition = float4(In[0].vPosition, 1.f);
+        
+    vector CamPos = mul(PointPosition, g_ViewMatrix);
+    CamPos = CamPos / CamPos.w;
+    Out[0].LinearZ = abs(CamPos.z / (g_FarZ - g_NearZ));
+    
+        
     vPosition = In[0].vPosition + vRight + vUp;
     Out[0].vPosition = mul(float4(vPosition, 1.f), matVP);
     Out[0].vTexcoord = float2(0.f, 0.f);
@@ -185,11 +197,13 @@ struct PS_IN
     float4 vPosition : SV_POSITION;
     float2 vTexcoord : TEXCOORD0;
     float2 vLifeTime : COLOR0;
+    float LinearZ : COLOR1;
 };
 
 struct PS_OUT
 {
     vector vColor : SV_TARGET0;
+    vector vAlpha : SV_TARGET1;
 };
 
 PS_OUT PS_MAIN(PS_IN In)
@@ -230,34 +244,27 @@ PS_OUT PS_MAIN_SPREAD(PS_IN In)
     return Out;
 }
 
+//지오메트리 어차피 그리는 순서나 픽셀이나 똑같다
 PS_OUT PS_MAIN_SPREADCOLOR(PS_IN In)
 {
     PS_OUT Out = (PS_OUT) 0;
 
-    vector vFinalColor = g_Texture.Sample(LinearSampler, In.vTexcoord);
-    
-
+    vector vParticle = g_Texture.Sample(LinearSampler, In.vTexcoord);
     
     float4 LerpColor = lerp(g_vStartColor, g_vEndColor, In.vLifeTime.y / In.vLifeTime.x);
+    
+    vParticle *= LerpColor;
+    
+    float3 ColorN = vParticle.xyz;
+    
+    float AlphaN = vParticle.a;
 
-    vFinalColor *= LerpColor;
-   // vFinalColor *= g_vStartColor;
-    
-  //  if (vFinalColor.a < 0.1f)
-   //     discard;
-    
-    
-    Out.vColor = vFinalColor;
-    
-    
-	/*if (Out.vColor.a < 0.1f || 
-		In.vLifeTime.y > In.vLifeTime.x)
-		discard;*/
-    //Out.vColor.a *= In.vLifeTime.x - In.vLifeTime.y;
+   float WeightN = clamp(0.03f / (1e-3 + pow(In.LinearZ, 4.0)), 0.001f, 3e3);
+    //float WeightN = pow(In.LinearZ, -2.5);
+    WeightN = max(WeightN, 1.0f);
 
-    //Out.vColor.rgb = float3(1.f, 1.f, 1.f);
-
-
+    Out.vColor = float4(ColorN.rgb * AlphaN, AlphaN) * WeightN;
+    Out.vAlpha = float4(AlphaN, 0.f, 0.f, 0.f);
     return Out;
 }
 
@@ -266,7 +273,7 @@ technique11 DefaultTechnique
 {
 	
 	/* 특정 렌더링을 수행할 때 적용해야할 셰이더 기법의 셋트들의 차이가 있다. */
-    pass Loop
+    pass Loop //0
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_Default, 0);
@@ -280,7 +287,7 @@ technique11 DefaultTechnique
         PixelShader = compile ps_5_0 PS_MAIN();
     }
 
-    pass NonLoop
+    pass NonLoop //1
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_Default, 0);
@@ -294,7 +301,7 @@ technique11 DefaultTechnique
         PixelShader = compile ps_5_0 PS_MAIN_SPREAD();
     }
 
-    pass Direction
+    pass Direction  //2
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_Default, 0);
@@ -308,7 +315,7 @@ technique11 DefaultTechnique
         PixelShader = compile ps_5_0 PS_MAIN_SPREAD();
     }
 
-    pass NoDirection
+    pass NoDirection    //3
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_Default, 0);
@@ -322,7 +329,7 @@ technique11 DefaultTechnique
         PixelShader = compile ps_5_0 PS_MAIN_SPREAD();
     }
     
-    pass DirectionColor
+    pass DirectionColor //4
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_Default, 0);
@@ -336,11 +343,11 @@ technique11 DefaultTechnique
         PixelShader = compile ps_5_0 PS_MAIN_SPREADCOLOR();
     }
 
-    pass WeightBlend
+    pass WeightBlend    //5
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_Default, 0);
-        SetBlendState(BS_WeightsBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff); 
+        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 
 		/* 어떤 셰이덜르 국동할지. 셰이더를 몇 버젼으로 컴파일할지. 진입점함수가 무엇이찌. */
         VertexShader = compile vs_5_0 VS_MAIN();

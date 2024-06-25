@@ -49,7 +49,7 @@ HRESULT CLevel_Edit::Ready_Object(const wstring& strLayerTag)
 	CameraDesc.vFocus = _float4(0.0f, 0.0f, 0.0f, 1.f);
 	CameraDesc.fFovY = XMConvertToRadians(60.0f);
 	CameraDesc.fAspect = (_float)g_iWinSizeX / (_float)g_iWinSizeY;	
-	CameraDesc.fNear = 0.1f;
+	CameraDesc.fNear = 0.01f;
 	CameraDesc.fFar = 3000.f;
 	CameraDesc.fRotatePecSec = XMConvertToRadians(90.f);
 	CameraDesc.fSpeedPecSec = 30.f;
