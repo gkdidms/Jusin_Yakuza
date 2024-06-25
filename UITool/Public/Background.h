@@ -1,13 +1,13 @@
 #pragma once
 #include "GameObject.h"
 
-#include "Client_Defines.h"
+#include "UITool_Defines.h"
 
 BEGIN(Engine)
 class CVIBuffer_Rect;
 END
 
-BEGIN(Client)
+BEGIN(UITool)
 class CBackground :
     public CGameObject
 {

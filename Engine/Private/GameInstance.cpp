@@ -257,6 +257,11 @@ HRESULT CGameInstance::Add_DebugComponent(CComponent* pComponent)
 {
 	return m_pRenderer->Add_DebugComponent(pComponent);
 }
+
+void CGameInstance::Set_DebugView(_bool isDebugView)
+{
+	m_pRenderer->Set_DebugView(isDebugView);
+}
 #endif // _DEBUG
 
 
@@ -440,6 +445,11 @@ HRESULT CGameInstance::Bind_RenderTargetSRV(const wstring& strTargetTag, CShader
 HRESULT CGameInstance::Copy_Resource(const wstring& strTargetTag, ID3D11Texture2D* pDesc)
 {
 	return m_pRenderTarget_Manager->Copy_Resource(strTargetTag, pDesc);
+}
+
+HRESULT CGameInstance::Create_Texture(const wstring& strTargetTag, const wstring& strSaveFilePath)
+{
+	return m_pRenderTarget_Manager->Create_Texture(strTargetTag, strSaveFilePath);
 }
 
 void CGameInstance::Transform_ToLocalSpace(_fmatrix WorldMatrixInv)

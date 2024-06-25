@@ -14,6 +14,7 @@
 #include "DirectXTK\WICTextureLoader.h"
 #include "DirectXTK\Keyboard.h"
 #include "DirectXTK\Mouse.h"
+#include "DirectXTK\ScreenGrab.h"
 #include "DirectXTK\PrimitiveBatch.h"
 #include "DirectXTK\VertexTypes.h"
 #include "DirectXTK\SpriteBatch.h"

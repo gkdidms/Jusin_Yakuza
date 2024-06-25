@@ -38,7 +38,6 @@ HRESULT CImguiManager::Initialize(void* pArg)
 	}
 	m_EffectDesc.vStartPos = { 0.f, 0.f, 0.f, 1.f };
 	m_EffectDesc.eType = 0;
-	m_EffectDesc.bDir = false;
 	m_EffectDesc.ParticleTag = { TEXT("") };
 	m_EffectDesc.fStartTime = { 0.f };
 	m_EffectDesc.vStartColor = { 0.0f , 0.0f ,0.0f ,1.0f};
@@ -207,7 +206,6 @@ HRESULT CImguiManager::Create_Particle()
 
 	EffectDesc.vStartPos = { 0.f, 0.f, 0.f, 1.f };
 	EffectDesc.eType = 0;
-	EffectDesc.bDir = false;
 	EffectDesc.ParticleTag = m_pGameInstance->StringToWstring(text_input_buffer);
 	EffectDesc.fStartTime = { 0.f };
 	EffectDesc.iShaderPass = { 0 };
@@ -257,7 +255,6 @@ HRESULT CImguiManager::Edit_Particle(_uint Index)
 
 	EffectDesc.vStartPos = m_EffectDesc.vStartPos;
 	EffectDesc.eType = m_EffectDesc.eType;
-	EffectDesc.bDir = m_EffectDesc.bDir;
 	EffectDesc.ParticleTag = m_EffectDesc.ParticleTag;
 	EffectDesc.fStartTime = m_EffectDesc.fStartTime;
 	EffectDesc.vStartColor = m_EffectDesc.vStartColor;
@@ -299,7 +296,6 @@ HRESULT CImguiManager::Load_Desc(_uint Index)
 	m_EffectDesc.eType = pEffect->Get_Type();
 	m_EffectDesc.vStartPos = pEffect->Get_StartPos();
 	m_EffectDesc.fStartTime = *pEffect->Get_pStartTime();
-	m_EffectDesc.bDir = pEffect->Get_isDir();
 	m_EffectDesc.ParticleTag = pEffect->Get_Tag();	
 	m_EffectDesc.vStartColor= pEffect->Get_SColor();
 	m_EffectDesc.vEndColor = pEffect->Get_EColor();
@@ -456,13 +452,6 @@ void CImguiManager::Editor_Tick(_float fTimeDelta)
 	{
 		bChange = true;
 	}
-
-
-	if (ImGui::Checkbox("Direction", &m_EffectDesc.bDir))
-	{
-		bChange = true;
-	}
-
 
 	if (ImGui::Checkbox("useRadius", &m_EffectDesc.BufferInstance.bRadius))
 	{

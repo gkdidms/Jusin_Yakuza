@@ -32,6 +32,9 @@ public:
 
 #ifdef _DEBUG
 public:
+    void Set_DebugView(_bool isDebugView) { m_isDebugView = isDebugView; }
+
+public:
     HRESULT Add_DebugComponent(class CComponent* pComponent);
 #endif
 
@@ -52,8 +55,9 @@ private:
 
     void Render_NonLight();//이펙트 시작
     void Render_Bloom();//블러
-    void Render_Blender();
     void Render_FinalEffectBlend();//블러 합치기
+    void Render_Blender();
+    void Render_OIT();
     void Render_UI();
 
 
@@ -89,6 +93,10 @@ private:
     _bool m_isSSAO = { false };
     _float m_fHDRLight = { 1.f };
     _float m_fSSAORadiuse = { 0.003f };
+
+#ifdef _DEBUG
+    _bool m_isDebugView = { false };
+#endif // _DEBUG
 
 
 public:

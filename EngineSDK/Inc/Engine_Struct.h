@@ -251,6 +251,19 @@ namespace Engine
 		_float					vRectSize;	
 	}VTXMATRIX;
 
+	typedef struct ENGINE_DLL tComputeMatRix
+	{
+		XMFLOAT4			vRight;
+		XMFLOAT4			vUp;
+		XMFLOAT4			vLook;
+		XMFLOAT4			vTranslation;
+		XMFLOAT4			vDirection;
+		XMFLOAT2			vLifeTime;
+		_float					vRectSize;
+		_float4					vCamPos;
+	}COMPUTEMATRIX;
+
+
 	typedef struct ENGINE_DLL tVtxInstance_Rect
 	{
 		static const unsigned int		iNumElements = { 7 };

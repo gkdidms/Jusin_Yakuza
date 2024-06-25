@@ -20,7 +20,6 @@ public:
         _uint eType;
         _float4			vStartPos;
         _float           fStartTime;
-        _bool           bDir;
         wstring ParticleTag;
 
         _float4 vStartColor;
@@ -51,10 +50,8 @@ public:
         return &m_BufferInstance;
     }
 public:
-    void Set_isDir(_bool bDir) { m_bDirInfluence = bDir; }
     void Set_StartPos(_float4 Pos) { m_vStartPos = Pos; }
     _uint Get_Type() const { return m_eType; }
-    _bool Get_isDir() {  return m_bDirInfluence;    }
     wstring Get_Tag() { return m_ParticleTag; }
     _float* Get_pStartTime() { return &m_fStartTime; }
     _float4 Get_StartPos() { return m_vStartPos; }
@@ -66,7 +63,6 @@ public:
 protected:
     CVIBuffer_Instance::INSTANCE_DESC m_BufferInstance; 
     _uint m_eType = { TYPE_END };
-    _bool m_bDirInfluence = { false };
     wstring m_ParticleTag = { TEXT("") };
     _float m_fStartTime = { 0.f };
     _float4 m_vStartPos = {};

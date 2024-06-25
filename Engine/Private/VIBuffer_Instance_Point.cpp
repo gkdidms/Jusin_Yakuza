@@ -19,6 +19,8 @@ HRESULT CVIBuffer_Instance_Point::Initialize_Prototype()
 
 HRESULT CVIBuffer_Instance_Point::Initialize(void* pArg)
 {
+
+	m_iInstanceStride = sizeof(VTXMATRIX);
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
@@ -31,7 +33,7 @@ HRESULT CVIBuffer_Instance_Point::Initialize(void* pArg)
 	m_iIndexStride = 2;
 	m_iIndexCountPerInstance = 1;
 	m_iNumIndices = m_iIndexCountPerInstance * m_InstanceDesc->iNumInstance;
-	m_iInstanceStride = sizeof(VTXMATRIX);
+	//m_iInstanceStride = sizeof(VTXMATRIX);
 
 #pragma region VERTEX_BUFFER
 	m_Buffer_Desc.ByteWidth = m_iVertexStride * m_iNumVertices;

@@ -64,11 +64,26 @@
     <ClCompile Include="..\..\Imgui\background\imgui_impl_win32.cpp">
       <Filter>96.IMGUI</Filter>
     </ClCompile>
+    <ClCompile Include="UITool.cpp">
+      <Filter>98.Default</Filter>
+    </ClCompile>
     <ClCompile Include="..\Private\Imgui_Manager.cpp">
       <Filter>03.Managers\00.Imgui_Manager</Filter>
     </ClCompile>
-    <ClCompile Include="UITool.cpp">
-      <Filter>98.Default</Filter>
+    <ClCompile Include="..\..\Imgui\ImGuiFileDialog\ImGuiFileDialog.cpp">
+      <Filter>96.IMGUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Object_Manager.cpp">
+      <Filter>03.Managers\01. Object_Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Image_Texture.cpp">
+      <Filter>02.GameObjects\03.Texture\Image</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Btn_Texture.cpp">
+      <Filter>02.GameObjects\03.Texture\Btn</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\UI_Texture.cpp">
+      <Filter>02.GameObjects\03.Texture</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -96,7 +111,7 @@
     <ClInclude Include="..\public\Background.h">
       <Filter>02.GameObjects\00.Background</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Client_Defines.h">
+    <ClInclude Include="..\Public\UITool_Defines.h">
       <Filter>99.Header</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Level_RunMap.h">
@@ -144,9 +159,6 @@
     <ClInclude Include="..\..\Imgui\background\imgui_impl_win32.h">
       <Filter>96.IMGUI</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Imgui_Manager.h">
-      <Filter>03.Managers\00.Imgui_Manager</Filter>
-    </ClInclude>
     <ClInclude Include="framework.h">
       <Filter>98.Default</Filter>
     </ClInclude>
@@ -158,6 +170,27 @@
     </ClInclude>
     <ClInclude Include="UITool.h">
       <Filter>98.Default</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Imgui_Manager.h">
+      <Filter>03.Managers\00.Imgui_Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Imgui\ImGuiFileDialog\ImGuiFileDialog.h">
+      <Filter>96.IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Imgui\ImGuiFileDialog\ImGuiFileDialogConfig.h">
+      <Filter>96.IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Object_Manager.h">
+      <Filter>03.Managers\01. Object_Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Image_Texture.h">
+      <Filter>02.GameObjects\03.Texture\Image</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Btn_Texture.h">
+      <Filter>02.GameObjects\03.Texture\Btn</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\UI_Texture.h">
+      <Filter>02.GameObjects\03.Texture</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -211,6 +244,18 @@
     </Filter>
     <Filter Include="03.Managers\00.Imgui_Manager">
       <UniqueIdentifier>{699c4717-0ecb-4a4a-a36a-91e286840988}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\03.Texture">
+      <UniqueIdentifier>{c03074c3-58b5-45ed-bf83-ea45da3d44ef}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.Managers\01. Object_Manager">
+      <UniqueIdentifier>{1b040f42-4340-42a3-8cb9-b96e35e5f4b6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\03.Texture\Image">
+      <UniqueIdentifier>{710f526b-bb65-4a54-a5d7-a300f58dc589}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\03.Texture\Btn">
+      <UniqueIdentifier>{2e70f75c-f166-4057-9dd3-5815fcbc1e92}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
