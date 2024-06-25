@@ -1,7 +1,7 @@
 #pragma once
-#include "Client_Defines.h"
-#include "Camera.h"
 
+#include "Camera.h"
+#include "Client_Defines.h"
 
 
 BEGIN(Client)
