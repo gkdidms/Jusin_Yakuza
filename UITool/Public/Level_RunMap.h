@@ -1,9 +1,9 @@
 #pragma once
 #include "Level.h"
 
-#include "Client_Defines.h"
+#include "UITool_Defines.h"
 
-BEGIN(Client)
+BEGIN(UITool)
 
 class CLevel_RunMap 
     : public CLevel

@@ -113,6 +113,16 @@ HRESULT CRenderTarget_Manager::Copy_Resource(const wstring& strTargetTag, ID3D11
 	return pRenderTarget->Copy_Resource(pDesc);
 }
 
+HRESULT CRenderTarget_Manager::Create_Texture(const wstring& strTargetTag, const wstring& strSaveFilePath)
+{
+	CRenderTarget* pRenderTarget = Find_RenderTarget(strTargetTag);
+
+	if (nullptr == pRenderTarget)
+		return E_FAIL;
+
+	return pRenderTarget->Create_Texture(strSaveFilePath);
+}
+
 #ifdef _DEBUG
 HRESULT CRenderTarget_Manager::Ready_Debug(const wstring strRenderTargetTag, _float fX, _float fY, _float fSizeX, _float fSizeY)
 {

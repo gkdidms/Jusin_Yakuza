@@ -1,13 +1,13 @@
 #pragma once
 #include "Base.h"
 
-#include "Client_Defines.h"
+#include "UITool_Defines.h"
 
 BEGIN(Engine)
 class CGameInstance;
 END
 
-BEGIN(Client)
+BEGIN(UITool)
 class CLoader :
     public CBase
 {
