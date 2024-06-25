@@ -160,6 +160,9 @@ void CImguiManager::AnimListWindow()
 	}
 
 	ImGui::SameLine();
+	ImGui::Checkbox("Loop", &m_isAnimLoop);
+
+	ImGui::SameLine();
 	if (ImGui::Button("Add"))
 	{
 		m_AddedAnims.emplace(m_iAnimIndex, m_AnimNameList[m_iAnimIndex]);
@@ -547,7 +550,7 @@ void CImguiManager::DrawChannels()
 		i++;
 	}
 
-	if(ImGui::Button("test"))
+	if(ImGui::Button(u8"뼈 이름 검색하기"))
 	{
 		for (size_t i = 0; i < m_ChannelNameList.size(); i++)
 		{
@@ -633,6 +636,7 @@ CImguiManager* CImguiManager::Create(ID3D11Device* pDevice, ID3D11DeviceContext*
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
 	ImGuiIO io = ImGui::GetIO();
+	io.Fonts->AddFontFromFileTTF("C:\\Windows\\fonts\\malgun.ttf", 18.0f, NULL, io.Fonts->GetGlyphRangesKorean());
 	ImGui::StyleColorsDark();
 
 	ImGui_ImplWin32_Init(g_hWnd);

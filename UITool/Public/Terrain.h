@@ -1,6 +1,6 @@
 #pragma once
 
-#include "Client_Defines.h"
+#include "UITool_Defines.h"
 #include "GameObject.h"
 
 BEGIN(Engine)
@@ -11,7 +11,7 @@ class CVIBuffer_Terrain;
 class CVIBuffer_Terrain_Flat;
 END
 
-BEGIN(Client)
+BEGIN(UITool)
 
 class CTerrain final : public CGameObject
 {

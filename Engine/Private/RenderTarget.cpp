@@ -65,6 +65,11 @@ HRESULT CRenderTarget::Copy_Resource(ID3D11Texture2D* pDesc)
 	return S_OK;
 }
 
+HRESULT CRenderTarget::Create_Texture(const wstring& strSaveFilePath)
+{
+	return SaveDDSTextureToFile(m_pContext, m_pTexture2D, strSaveFilePath.c_str());
+}
+
 #ifdef _DEBUG
 HRESULT CRenderTarget::Ready_Debug(_float fX, _float fY, _float fSizeX, _float fSizeY)
 {
