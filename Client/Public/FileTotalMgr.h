@@ -1,8 +1,8 @@
 #pragma once
 
 #include "Base.h"
-#include "Client_Defines.h"
 #include "CineCamera.h"
+#include "Client_Defines.h"
 
 BEGIN(Engine)
 class CGameInstance;
