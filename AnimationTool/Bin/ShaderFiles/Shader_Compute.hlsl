@@ -1,4 +1,4 @@
-struct VTXMATRIX
+struct COMPUTEMATRIX
 {
     float4 vRight;
     float4 vUp;
@@ -7,41 +7,38 @@ struct VTXMATRIX
     float4 vDirection;
     float2 vLifeTime;
     float vRectSize;
-};
-
-struct BlendSort
-{
-    VTXMATRIX vMatrix;
-    float ViewZ;
+    float4 vCamPos;
 };
 
 //이거 버퍼 바인딩은 꼭 다시 한번 둘러보기.
-StructuredBuffer<BlendSort> g_BlendSorts;
-RWStructuredBuffer<BlendSort> g_OutBlendSorts;
+RWStructuredBuffer<COMPUTEMATRIX> g_OutMatrix : register(u0);
 
-// 컴퓨트 셰이더 메인 함수
-[numthreads(256, 1, 1)]
-void CSMain(uint3 DTid : SV_DispatchThreadID)
+groupshared COMPUTEMATRIX shared_data[256];
+
+[numthreads(16, 16, 1)]
+void CSMain(uint3 DTid : SV_DispatchThreadID, uint3 GTid : SV_GroupThreadID)
 {
-     //상수 버퍼에서 BlendSort 배열 가져오기
-    BlendSort blendSorts[256];
-   // blendSorts[DTid.x] = g_BlendSorts[DTid.x];
+    // 스레드 그룹 내부의 고유 인덱스 계산
+    uint index = GTid.y * 16 + GTid.x;
 
-     //버블 정렬 알고리즘을 사용하여 ViewZ 값 기준으로 정렬
-    for (uint i = 0; i < 256; i++)
+    // 입력 버퍼에서 데이터 로드
+    shared_data[index] = g_OutMatrix[DTid.x * 256 + index];
+
+    // 스레드 그룹 내부에서 병렬 정렬 수행
+    for (uint i = 1; i < 256; i *= 2)
     {
-        for (uint j = 0; j < 256 - i; j++)
+        if ((index % (2 * i)) == 0)
         {
-            if (blendSorts[j].ViewZ > blendSorts[j + 1].ViewZ)
+            if (index + i < 256 && any(abs(shared_data[index].vTranslation.xyz - shared_data[index].vCamPos.xyz) < abs(shared_data[index + i].vTranslation.xyz - shared_data[index + i].vCamPos.xyz)))
             {
-                // 두 BlendSort 구조체 swap
-                BlendSort temp = blendSorts[j];
-                blendSorts[j] = blendSorts[j + 1];
-                blendSorts[j + 1] = temp;
+                COMPUTEMATRIX temp = shared_data[index];
+                shared_data[index] = shared_data[index + i];
+                shared_data[index + i] = temp;
             }
         }
+        GroupMemoryBarrierWithGroupSync();
     }
 
-    // 정렬된 BlendSort 배열을 다시 상수 버퍼에 저장
-    //g_OutBlendSorts[DTid.x] = blendSorts[DTid.x];
+    // 정렬된 데이터를 출력 버퍼에 쓰기
+    g_OutMatrix[DTid.x * 256 + index] = shared_data[index];
 }

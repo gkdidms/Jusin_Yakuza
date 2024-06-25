@@ -21,11 +21,11 @@ public:
         _bool isLoop;
     }INSTANCE_DESC;
 
-    typedef struct tBlendSort
-    {
-        VTXMATRIX vMatrix;
-        _float ViewZ;
-    }BlendSort;
+    //typedef struct tBlendSort
+    //{
+    //    VTXMATRIX vMatrix;
+    //    _float ViewZ;
+    //}BlendSort;
 protected:
     CVIBuffer_Instance(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
     CVIBuffer_Instance(const CVIBuffer_Instance& rhs);
@@ -59,25 +59,19 @@ protected:
     class CComputeShader* m_pComputeShader = { nullptr };
 
 
-    //넣어줄 버퍼(읽기전용)
-    ID3D11Buffer* m_pBlendSortBuffer = { nullptr };
-    D3D11_BUFFER_DESC m_BlendSortbufferDesc = {};
-
     //계산후 받아올 버퍼(읽기/쓰기 버퍼)
     ID3D11Buffer* m_pOutBuffer = { nullptr };
     D3D11_BUFFER_DESC m_OutBufferDesc = {};
 
-    //계산후 복사한 버퍼를 렌더에 필요한 부분만 담아주기.
-    ID3D11Buffer* m_pRenderBuffer = { nullptr };
-    D3D11_BUFFER_DESC m_RenderBufferDesc = {};
 
-    //읽기전용 버퍼 바인딩용으로 변환용
-    D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc;
     //읽기/쓰기 버퍼 바인딩용으로 변환용
     D3D11_UNORDERED_ACCESS_VIEW_DESC uavDesc;
 
-    ID3D11ShaderResourceView* mInputSRV = {};  
     ID3D11UnorderedAccessView* mOutputUAV = {};
+
+    //계산후 복사한 버퍼를 렌더에 필요한 부분만 담아주기.
+    ID3D11Buffer* m_pRenderBuffer = { nullptr };
+    D3D11_BUFFER_DESC m_RenderBufferDesc = {};
 
 public:
     void Spread(_float fTimeDelta);

@@ -8,7 +8,6 @@ class ENGINE_DLL CComputeShader final :
 {
 public:
     typedef struct tCOMPUTE_DESC {
-        ID3D11ShaderResourceView* InputBuffer;
         ID3D11UnorderedAccessView* OutputBuffer;
         _uint NumElement;
     }COMPUTE_DESC;
@@ -23,6 +22,11 @@ public:
     virtual HRESULT Initialize(void* pArg) override;
     HRESULT Render(void* pArg);
 
+
+private:
+    HRESULT FindDXSDKShaderFileCch(WCHAR* strDestPath,
+        int cchDest,
+        LPCWSTR strFilename);
 private:
     ID3D11ComputeShader* m_pComputeShader;
 

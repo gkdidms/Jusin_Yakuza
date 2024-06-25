@@ -67,7 +67,7 @@ void CParticle_Point::Late_Tick(const _float& fTimeDelta)
     if (5 != m_iShaderPass)
         m_pVIBufferCom->Blend_Sort();
     else
-        m_pVIBufferCom->Compute_Sort();
+      //  m_pVIBufferCom->Blend_Sort();
 
     if(m_BufferInstance.isLoop)
     {
@@ -93,7 +93,7 @@ HRESULT CParticle_Point::Render()
        if (5!=m_iShaderPass)
             m_pVIBufferCom->Render();
        else
-           m_pVIBufferCom->Compute_Render();
+           m_pVIBufferCom->Render();
 
        
 
