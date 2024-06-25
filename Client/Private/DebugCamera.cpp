@@ -1,6 +1,8 @@
 #include "DebugCamera.h"
 
 #include "GameInstance.h"
+#include "FileTotalMgr.h"
+#include "SystemManager.h"
 
 CDebugCamera::CDebugCamera(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CCamera{ pDevice, pContext }
@@ -29,6 +31,7 @@ HRESULT CDebugCamera::Initialize(void* pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
+	CSystemManager::GetInstance()->Set_Camera(CAMERA_DEBUG);
 
 	return S_OK;
 }
@@ -57,6 +60,7 @@ void CDebugCamera::Tick(const _float& fTimeDelta)
 		if (GetKeyState('S') & 0x8000)
 			m_pTransformCom->Go_Backward(fTimeDelta);
 
+
 		_long		MouseMove = { 0 };
 
 		if (MouseMove = m_pGameInstance->Get_DIMouseMove(DIMS_X))
@@ -69,12 +73,23 @@ void CDebugCamera::Tick(const _float& fTimeDelta)
 			m_pTransformCom->Turn(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), fTimeDelta * m_fSensor * MouseMove);
 		}
 	}
+
+	if (CSystemManager::GetInstance()->Get_Camera() == CAMERA_DEBUG)
+	{
+		__super::Tick(fTimeDelta);
+	}
+
 	
-	__super::Tick(fTimeDelta);
+	
 }
 
 void CDebugCamera::Late_Tick(const _float& fTimeDelta)
 {
+
+	if ((GetKeyState('P') & 0x8000))
+	{
+		CFileTotalMgr::GetInstance()->Load_Cinemachine(0, LEVEL_TEST);
+	}
 }
 
 HRESULT CDebugCamera::Render()

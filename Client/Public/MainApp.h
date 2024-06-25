@@ -26,6 +26,7 @@ private:
 
 	CGameInstance* m_pGameInstance = { nullptr };
 	class CSystemManager* m_pSystemManager = { nullptr };
+	class CFileTotalMgr* m_pFileTotalManager = { nullptr };
 
 #ifdef _DEBUG
 private:

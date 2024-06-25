@@ -13,9 +13,6 @@
     <ClCompile Include="..\private\Level_Logo.cpp">
       <Filter>01.Levels\00.Logo</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\PlayerCamera.cpp">
-      <Filter>02.GameObjects\02.Camera</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\Terrain.cpp">
       <Filter>02.GameObjects\01.Terrain</Filter>
     </ClCompile>
@@ -91,6 +88,21 @@
     <ClCompile Include="..\Private\Camera_Manager.cpp">
       <Filter>03.Managers\05.Camera_Manager</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\CameraObj.cpp">
+      <Filter>02.GameObjects\05.CameraObj</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CameraInstallObj.cpp">
+      <Filter>02.GameObjects\06.CameraInstallObj</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\PlayerCamera.cpp">
+      <Filter>02.GameObjects\02.Camera\00.PlayerCamera</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CineCamera.cpp">
+      <Filter>02.GameObjects\02.Camera\01.CineCamera</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\SystemManager.cpp">
+      <Filter>95.Utility\00.System</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\MainApp.h">
@@ -107,9 +119,6 @@
     </ClInclude>
     <ClInclude Include="..\public\Level_Logo.h">
       <Filter>01.Levels\00.Logo</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\PlayerCamera.h">
-      <Filter>02.GameObjects\02.Camera</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Terrain.h">
       <Filter>02.GameObjects\01.Terrain</Filter>
@@ -201,6 +210,21 @@
     <ClInclude Include="..\Public\Camera_Manager.h">
       <Filter>03.Managers\05.Camera_Manager</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\CameraObj.h">
+      <Filter>02.GameObjects\05.CameraObj</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CameraInstallObj.h">
+      <Filter>02.GameObjects\06.CameraInstallObj</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\PlayerCamera.h">
+      <Filter>02.GameObjects\02.Camera\00.PlayerCamera</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CineCamera.h">
+      <Filter>02.GameObjects\02.Camera\01.CineCamera</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\SystemManager.h">
+      <Filter>95.Utility\00.System</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="MapTool.ico">
@@ -231,9 +255,6 @@
     </Filter>
     <Filter Include="02.GameObjects">
       <UniqueIdentifier>{bb70a0af-9abd-4c10-a437-147c6d2655ca}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\00.Background">
-      <UniqueIdentifier>{800d9b07-732b-44f1-be5b-afe6cfb4a36e}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObjects\01.Terrain">
       <UniqueIdentifier>{74d74461-1f27-4ad3-8c7b-0d77910c223d}</UniqueIdentifier>
@@ -282,6 +303,27 @@
     </Filter>
     <Filter Include="03.Managers\05.Camera_Manager">
       <UniqueIdentifier>{c73d5f29-067b-448a-8039-5f18c3dfa2ac}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\05.CameraObj">
+      <UniqueIdentifier>{68125e7f-f44e-47b8-838f-5b9039a1e1ab}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\00.Background">
+      <UniqueIdentifier>{800d9b07-732b-44f1-be5b-afe6cfb4a36e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\06.CameraInstallObj">
+      <UniqueIdentifier>{c0b61b5b-8c3d-4cd9-beb3-056d9fa4db2e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Camera\00.PlayerCamera">
+      <UniqueIdentifier>{2d72c1fe-589c-46ae-b851-4438b9a4b844}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Camera\01.CineCamera">
+      <UniqueIdentifier>{679838a0-1f65-4cce-b106-041b8c0f9ded}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility">
+      <UniqueIdentifier>{38feb924-f47d-4878-a8ff-08fde2cd9e06}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\00.System">
+      <UniqueIdentifier>{c55aca02-848a-4026-81db-9de5a92d9b59}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

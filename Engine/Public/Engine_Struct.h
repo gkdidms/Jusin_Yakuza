@@ -3,6 +3,24 @@
 
 namespace Engine
 {
+	struct ENGINE_DLL CAMERAOBJ_DESC
+	{
+		_float4 vEye, vFocus;
+		_float fFovY, fAspect, fNear, fFar;
+		_bool	bLerp; /* 선형보간할건지 */
+		_float	fStayTime;
+		_float	fMoveTime;
+		_float	fMoveSpeed;
+	};
+
+	struct ENGINE_DLL CAMERAOBJ_IO
+	{
+		int					iCameraNum;
+		bool				bFirstLerp;
+		CAMERAOBJ_DESC*		pCamObjDesc;
+	};
+
+
 	/* map 저장관련 */
 	struct ENGINE_DLL OBJECTPLACE_DESC
 	{

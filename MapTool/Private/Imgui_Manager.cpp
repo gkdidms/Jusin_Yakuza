@@ -7,6 +7,7 @@
 #include <string.h>
 #include "ObjPlace_Manager.h"
 #include "Terrain_Manager.h"
+#include "Camera_Manager.h"
 
 #include "ImGuizmo.h"
 #include "ImSequencer.h"
@@ -17,12 +18,18 @@
 IMPLEMENT_SINGLETON(CImgui_Manager)
 
 CImgui_Manager::CImgui_Manager()
-    :m_pNavigationMgr{ CNavigation_Manager::GetInstance() }
+    :
+    m_pGameInstance{ CGameInstance::GetInstance() }
+    , m_pNavigationMgr{ CNavigation_Manager::GetInstance() }
     , m_pObjPlace_Manager { CObjPlace_Manager::GetInstance() }
-    , m_pGameInstance { CGameInstance::GetInstance()}
     , m_pLightTool_Mgr { CLightTool_Mgr::GetInstance() }
+    , m_pCameraToolMgr { CCamera_Manager::GetInstance() }
 {
     Safe_AddRef(m_pGameInstance);
+    Safe_AddRef(m_pNavigationMgr);
+    Safe_AddRef(m_pObjPlace_Manager);
+    Safe_AddRef(m_pLightTool_Mgr);
+    Safe_AddRef(m_pCameraToolMgr);
 }
 
 HRESULT CImgui_Manager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -59,6 +66,7 @@ void CImgui_Manager::Tick(_float fTimeDelta)
     CObjPlace_Manager::GetInstance()->Tick(fTimeDelta);
 
     m_pNavigationMgr->Tick(fTimeDelta);
+    m_pCameraToolMgr->Tick(fTimeDelta);
 
     bool show_demo_window = true;
     bool show_another_window = false;
@@ -92,6 +100,9 @@ void CImgui_Manager::Tick(_float fTimeDelta)
         m_bLightMgr_IMGUI = true;
         m_pLightTool_Mgr->Set_LightObj_Render(true);
     }
+
+    if (ImGui::Button(u8"카메라 TOOL"))
+        m_bCameraMgr_IMGUI = true;
        
 
     ImGui::End();
@@ -118,15 +129,26 @@ void CImgui_Manager::Tick(_float fTimeDelta)
         Show_LightTool_IMGUI();
     }
 
+    if (m_bCameraMgr_IMGUI)
+    {
+        Show_CameraTool_IMGUI();
+    }
+
 #pragma endregion
     ImGui::EndFrame();
 }
 
 void CImgui_Manager::Late_Tick(_float fTimeDelta)
 {
-    CObjPlace_Manager::GetInstance()->Late_Tick(fTimeDelta);
+    /* camera object랑 같이 기록되면 안돼서 카메라 할때는 꺼두기 */
+    if (false == m_bCameraMgr_IMGUI)
+    {
+        m_pObjPlace_Manager->Late_Tick(fTimeDelta);
+    }
 
-    CLightTool_Mgr::GetInstance()->Late_Tick(fTimeDelta);
+    m_pLightTool_Mgr->Late_Tick(fTimeDelta);
+
+    m_pCameraToolMgr->Late_Tick(fTimeDelta);
 }
 
 void CImgui_Manager::Render()
@@ -227,6 +249,25 @@ void CImgui_Manager::Show_LightTool_IMGUI()
     ImGui::End();
 }
 
+void CImgui_Manager::Show_CameraTool_IMGUI()
+{
+    /* 파일 리스트 보여주기 */
+    m_pCameraToolMgr->Show_FileName();
+
+    ImGui::Begin(u8"카메라 설치");
+    
+    m_pCameraToolMgr->Install_Camera_IMGUI();
+
+    if (ImGui::Button("Close"))
+    {
+        m_bCameraMgr_IMGUI = false;
+    }
+
+    ImGui::End();
+
+
+}
+
 
 void CImgui_Manager::Free()
 {
@@ -234,13 +275,15 @@ void CImgui_Manager::Free()
     ImGui_ImplWin32_Shutdown();
     ImGui::DestroyContext();
 
-    CObjPlace_Manager::GetInstance()->DestroyInstance();
-    CLightTool_Mgr::GetInstance()->DestroyInstance();
-
-    //m_pNavigationMgr->DestroyInstance();
     Safe_Release(m_pNavigationMgr);
+    CNavigation_Manager::DestroyInstance();
     Safe_Release(m_pObjPlace_Manager);
+    CObjPlace_Manager::DestroyInstance();
     Safe_Release(m_pLightTool_Mgr);
+    CLightTool_Mgr::DestroyInstance();
+    Safe_Release(m_pCameraToolMgr);
+    CCamera_Manager::DestroyInstance();
+
 
     Safe_Release(m_pGameInstance);
 

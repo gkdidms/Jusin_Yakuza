@@ -1,23 +1,35 @@
-#include "Client_MapDataMgr.h"
+#include "FileTotalMgr.h"
 #include "GameInstance.h"
 #include "MapDataMgr.h"
 #include "Terrain.h"
 #include "GameObject.h"
 #include "Construction.h"
-#include "MapDataMgr.h"
+#include "SystemManager.h"
 
-IMPLEMENT_SINGLETON(CClient_MapDataMgr)
+IMPLEMENT_SINGLETON(CFileTotalMgr)
 
 
-CClient_MapDataMgr::CClient_MapDataMgr()
+CFileTotalMgr::CFileTotalMgr()
     : m_pGameInstance{ CGameInstance::GetInstance() }
 {
     Safe_AddRef(m_pGameInstance);
 }
 
+void CFileTotalMgr::Tick(_float fTimeDelta)
+{
+    //if (nullptr != m_pCinemachineCam)
+    //    m_pCinemachineCam->Tick(fTimeDelta);
+}
+
+void CFileTotalMgr::Late_Tick(_float fTimeDelta)
+{
+    //if (nullptr != m_pCinemachineCam)
+    //    m_pCinemachineCam->Late_Tick(fTimeDelta);
+}
 
 
-HRESULT CClient_MapDataMgr::Set_MapObj_In_Client(int iMapLoadingNum, int iStageLevel)
+
+HRESULT CFileTotalMgr::Set_MapObj_In_Client(int iMapLoadingNum, int iStageLevel)
 {
     Safe_Delete_Array(m_MapTotalInform.pMapObjDesc);
 
@@ -33,7 +45,7 @@ HRESULT CClient_MapDataMgr::Set_MapObj_In_Client(int iMapLoadingNum, int iStageL
 }
 
 
-HRESULT CClient_MapDataMgr::Set_GameObject_In_Client(int iStageLevel)
+HRESULT CFileTotalMgr::Set_GameObject_In_Client(int iStageLevel)
 {
     for (int i = 0; i < m_MapTotalInform.iNumMapObj; i++)
     {
@@ -56,7 +68,7 @@ HRESULT CClient_MapDataMgr::Set_GameObject_In_Client(int iStageLevel)
     return S_OK;
 }
 
-HRESULT CClient_MapDataMgr::Set_Lights_In_Client(int iLightLoadingNum)
+HRESULT CFileTotalMgr::Set_Lights_In_Client(int iLightLoadingNum)
 {
     Safe_Delete_Array(m_LightTotalInform.pLightDesc);
 
@@ -73,12 +85,37 @@ HRESULT CClient_MapDataMgr::Set_Lights_In_Client(int iLightLoadingNum)
         /* gameinstance에 추가 */
         m_pGameInstance->Add_Light(lightDesc);
     }
-    
+
     return S_OK;
 }
 
+void CFileTotalMgr::Load_Cinemachine(int iCineNum, int iStageLevel)
+{
+    if (nullptr == m_pCinemachineCam)
+    {
+        CCineCamera::CINE_CAMERA_DESC		cineDesc;
+        cineDesc.iFileNum = iCineNum;
+        m_pGameInstance->Add_GameObject(iStageLevel, TEXT("Prototype_GameObject_CCineCamera"), TEXT("Layer_Camera"), &cineDesc);
+        m_pCinemachineCam = dynamic_cast<CCineCamera*>(m_pGameInstance->Get_GameObject(iStageLevel, TEXT("Layer_Camera"), CAMERA::CAMERA_CINEMACHINE));
+        //m_pCinemachineCam = dynamic_cast<CCineCamera*>(CGameInstance::GetInstance()->Clone_Object(TEXT("Prototype_GameObject_CCineCamera"), &cineDesc));
+    }
+    else
+    {
+        m_pCinemachineCam->Load_CamBin(iCineNum);
+        m_pCinemachineCam->Setting_Start_Cinemachine();
+    }
 
-HRESULT CClient_MapDataMgr::Set_Terrain_Size(int iStageLevel)
+    CSystemManager::GetInstance()->Set_Camera(CAMERA::CAMERA_CINEMACHINE);
+}
+
+void CFileTotalMgr::Reset_Cinemachine()
+{
+    if (nullptr != m_pCinemachineCam)
+        Safe_Release(m_pCinemachineCam);
+}
+
+
+HRESULT CFileTotalMgr::Set_Terrain_Size(int iStageLevel)
 {
     /* 땅 크기 수정*/
     CTerrain::TERRAIN_DESC terrainDesc;
@@ -92,7 +129,7 @@ HRESULT CClient_MapDataMgr::Set_Terrain_Size(int iStageLevel)
     return S_OK;
 }
 
-int CClient_MapDataMgr::Find_Layers_Index(char* strLayer)
+int CFileTotalMgr::Find_Layers_Index(char* strLayer)
 {
     for (int i = 0; i < m_Layers.size(); i++)
     {
@@ -105,7 +142,7 @@ int CClient_MapDataMgr::Find_Layers_Index(char* strLayer)
     return -1;
 }
 
-HRESULT CClient_MapDataMgr::Import_Bin_Map_Data_OnClient(MAP_TOTALINFORM_DESC* mapObjData, int iLevel)
+HRESULT CFileTotalMgr::Import_Bin_Map_Data_OnClient(MAP_TOTALINFORM_DESC* mapObjData, int iLevel)
 {
     char fullPath[MAX_PATH];
     strcpy_s(fullPath, "../Bin/DataFiles/MapData/");
@@ -144,7 +181,7 @@ HRESULT CClient_MapDataMgr::Import_Bin_Map_Data_OnClient(MAP_TOTALINFORM_DESC* m
     return S_OK;
 }
 
-HRESULT CClient_MapDataMgr::Import_Bin_Light_Data_OnClient(LIGHT_DESC_IO* lightData, int iLevel)
+HRESULT CFileTotalMgr::Import_Bin_Light_Data_OnClient(LIGHT_DESC_IO* lightData, int iLevel)
 {
     char fullPath[MAX_PATH];
     strcpy_s(fullPath, "../Bin/DataFiles/LightData/");
@@ -182,12 +219,15 @@ HRESULT CClient_MapDataMgr::Import_Bin_Light_Data_OnClient(LIGHT_DESC_IO* lightD
 
 
 
-void CClient_MapDataMgr::Free()
+void CFileTotalMgr::Free()
 {
     Safe_Delete_Array(m_MapTotalInform.pMapObjDesc);
     Safe_Delete_Array(m_LightTotalInform.pLightDesc);
 
     m_Layers.clear();
+
+    if (nullptr != m_pCinemachineCam)
+        Safe_Release(m_pCinemachineCam);
 
     Safe_Release(m_pGameInstance);
 }
