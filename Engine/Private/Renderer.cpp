@@ -338,7 +338,8 @@ void CRenderer::Draw()
 	Render_UI();
 
 #ifdef _DEBUG
-	Render_Debug();
+	if (m_isDebugView)
+		Render_Debug();
 #endif // _DEBUG
 }
 

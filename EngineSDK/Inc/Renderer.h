@@ -32,6 +32,9 @@ public:
 
 #ifdef _DEBUG
 public:
+    void Set_DebugView(_bool isDebugView) { m_isDebugView = isDebugView; }
+
+public:
     HRESULT Add_DebugComponent(class CComponent* pComponent);
 #endif
 
@@ -90,6 +93,10 @@ private:
     _bool m_isSSAO = { false };
     _float m_fHDRLight = { 1.f };
     _float m_fSSAORadiuse = { 0.003f };
+
+#ifdef _DEBUG
+    _bool m_isDebugView = { false };
+#endif // _DEBUG
 
 
 public:

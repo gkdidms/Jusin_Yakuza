@@ -1,14 +1,13 @@
 #pragma once
-
-#include "Client_Defines.h"
 #include "Base.h"
+#include "UITool_Defines.h"
 #include "Imgui_Manager.h"
 
 BEGIN(Engine)
 class CGameInstance;
 END
 
-BEGIN(Client)
+BEGIN(UITool)
 class CMainApp :
 	public CBase
 {
@@ -28,6 +27,7 @@ private:
 	CGameInstance* m_pGameInstance = { nullptr };
 
 	CImgui_Manager* m_pIMGUI_Manager = { nullptr };
+	class CObject_Manager* m_pObjectManager = { nullptr };
 
 #ifdef _DEBUG
 private:

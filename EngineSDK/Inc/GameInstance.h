@@ -87,6 +87,7 @@ public:
 #ifdef _DEBUG
 public:
     HRESULT Add_DebugComponent(class CComponent* pComponent);
+    void Set_DebugView(_bool isDebugView);
 #endif // _DEBUG
 
     /* PipeLine */
@@ -132,7 +133,7 @@ public:
     HRESULT End_MRT();
     HRESULT Bind_RenderTargetSRV(const wstring& strTargetTag, class CShader* pShader, const _char* pConstantName);
     HRESULT Copy_Resource(const wstring& strTargetTag, ID3D11Texture2D* pDesc);
-
+    HRESULT Create_Texture(const wstring& strTargetTag, const wstring& strSaveFilePath);
     /* Frustum*/
 public:
     void Transform_ToLocalSpace(_fmatrix WorldMatrixInv);

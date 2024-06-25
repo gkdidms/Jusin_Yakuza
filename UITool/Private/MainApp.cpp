@@ -2,7 +2,7 @@
 
 #include "MainApp.h"
 #include "GameInstance.h"
-
+#include "Object_Manager.h"
 #include "Level_Loading.h"
 #include "Background.h"
 
@@ -15,9 +15,12 @@
 
 CMainApp::CMainApp() :
 	m_pGameInstance{ CGameInstance::GetInstance() }
-	, m_pIMGUI_Manager {CImgui_Manager::GetInstance()}
+	, m_pIMGUI_Manager {CImgui_Manager::GetInstance()},
+	m_pObjectManager { CObject_Manager::GetInstance()}
 {
 	Safe_AddRef(m_pGameInstance);
+	Safe_AddRef(m_pIMGUI_Manager);
+	Safe_AddRef(m_pObjectManager);
 }
 
 HRESULT CMainApp::Initialize()
@@ -58,8 +61,10 @@ void CMainApp::Tick(const _float& fTimeDelta)
 	m_pGameInstance->Tick(fTimeDelta);
 
 	m_pIMGUI_Manager->Tick(fTimeDelta);
+	m_pObjectManager->Tick(fTimeDelta);
 
 	m_pIMGUI_Manager->Late_Tick(fTimeDelta);
+	m_pObjectManager->Late_Tick(fTimeDelta);
 }
 
 HRESULT CMainApp::Render()
@@ -81,6 +86,7 @@ HRESULT CMainApp::Render()
 	
 	m_pGameInstance->Draw();
 	m_pIMGUI_Manager->Render();
+	m_pObjectManager->Render();
 
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
 
@@ -160,6 +166,10 @@ void CMainApp::Free()
 
 	/* 여기서 instance release 해줌 */
 	Safe_Release(m_pIMGUI_Manager);
+	CImgui_Manager::GetInstance()->Release_Imgui();
+
+	Safe_Release(m_pObjectManager);
+	CObject_Manager::GetInstance()->Release_ObjectManager();
 
 	/* 레퍼런스 카운트를 0으로만든다. */
 	Safe_Release(m_pGameInstance);
