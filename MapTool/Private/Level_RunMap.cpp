@@ -1,6 +1,6 @@
 #include "../Public/Level_RunMap.h"
 #include "GameInstance.h"
-
+#include "SystemManager.h"
 #include "PlayerCamera.h"
 
 CLevel_RunMap::CLevel_RunMap(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -62,6 +62,8 @@ HRESULT CLevel_RunMap::Ready_Layer_Camera(const wstring& strLayerTag)
 
 	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_RUNMAP, TEXT("Prototype_GameObject_PlayerCamera"), strLayerTag, &CameraDesc)))
 		return E_FAIL;
+
+	CSystemManager::GetInstance()->Set_Camera(CAMERA_PLAYER);
 
 	return S_OK;
 }
