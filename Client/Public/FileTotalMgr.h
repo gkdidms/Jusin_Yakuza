@@ -13,7 +13,8 @@ class CFileTotalMgr final : public CBase
 {
 	DECLARE_SINGLETON(CFileTotalMgr)
 
-public:
+public: 
+	/* MapTool */
 	enum OBJECT_TYPE {
 		CONSTRUCTION, /* 그냥 건축물 */
 		ITEM,
@@ -26,9 +27,10 @@ private:
 	virtual ~CFileTotalMgr() = default;
 
 public:
-	void											Tick(_float fTimeDelta);
-	void											Late_Tick(_float fTimeDelta);
+	void Tick(_float fTimeDelta);
+	void Late_Tick(_float fTimeDelta);
 
+	/* MapTool */
 public:
 	/* 파일번호, LEVEL_GAME같은 레벨 */
 	HRESULT									Set_MapObj_In_Client(int iMapLoadingNum, int iStageLevel);
@@ -40,15 +42,6 @@ public:
 	/* LEVEL 바뀌면 초기화 시키기 */
 	void									Reset_Cinemachine();
 
-
-private:
-	HRESULT									Set_Terrain_Size(int iStageLevel);
-	int										Find_Layers_Index(char* strLayer);
-
-	HRESULT									Import_Bin_Map_Data_OnClient(MAP_TOTALINFORM_DESC* mapObjData, int iLevel);
-	HRESULT									Import_Bin_Light_Data_OnClient(LIGHT_DESC_IO* lightData, int iLevel);
-
-
 private:
 	class CGameInstance* m_pGameInstance = { nullptr };
 	CCineCamera* m_pCinemachineCam = { nullptr };
@@ -59,6 +52,12 @@ private:
 
 	vector<wstring>							m_Layers = { TEXT("Layer_GameObjects"), TEXT("Layer_Monster") };
 
+private:
+	HRESULT									Set_Terrain_Size(int iStageLevel);
+	int										Find_Layers_Index(char* strLayer);
+
+	HRESULT									Import_Bin_Map_Data_OnClient(MAP_TOTALINFORM_DESC* mapObjData, int iLevel);
+	HRESULT									Import_Bin_Light_Data_OnClient(LIGHT_DESC_IO* lightData, int iLevel);
 
 public:
 	virtual void							Free() override;
