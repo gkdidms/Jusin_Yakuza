@@ -6,6 +6,11 @@ BEGIN(Engine)
 class ENGINE_DLL CComputeShader final :
     public CComponent
 {
+public:
+    typedef struct tCOMPUTE_DESC {
+        ID3D11UnorderedAccessView* OutputBuffer;
+        _uint NumElement;
+    }COMPUTE_DESC;
 private:
     CComputeShader(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
     CComputeShader(const CComputeShader& rhs);
@@ -15,10 +20,13 @@ private:
 public:
     virtual HRESULT Initialize_Prototype(const wstring& strShaderFilePath);
     virtual HRESULT Initialize(void* pArg) override;
+    HRESULT Render(void* pArg);
 
 
-    HRESULT Bind_Buffer();
-
+private:
+    HRESULT FindDXSDKShaderFileCch(WCHAR* strDestPath,
+        int cchDest,
+        LPCWSTR strFilename);
 private:
     ID3D11ComputeShader* m_pComputeShader;
 

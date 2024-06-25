@@ -55,8 +55,9 @@ private:
 
     void Render_NonLight();//이펙트 시작
     void Render_Bloom();//블러
-    void Render_Blender();
     void Render_FinalEffectBlend();//블러 합치기
+    void Render_Blender();
+    void Render_OIT();
     void Render_UI();
 
 

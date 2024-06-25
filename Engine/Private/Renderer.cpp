@@ -94,6 +94,16 @@ HRESULT CRenderer::Initialize()
 		return E_FAIL;
 #pragma endregion
 
+
+#pragma region MRT_OIT
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_AccumColor"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(0.f, 0.f, 0.f, 0.f))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_AccumAlpha"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(1.f, 1.f, 1.f, 1.f))))
+		return E_FAIL;
+#pragma endregion
+
+
+
 	/*MRT_GameObjects*/
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_GameObjects"), TEXT("Target_Diffuse"))))
 		return E_FAIL;
@@ -178,6 +188,13 @@ HRESULT CRenderer::Initialize()
 
 	/*MRT_Blur_Y*/
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_Blur_Y"), TEXT("Target_Blur_Y"))))
+		return E_FAIL;
+
+	
+	/*MRT_Accum*/
+	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_Accum"), TEXT("Target_AccumColor"))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_Accum"), TEXT("Target_AccumAlpha"))))
 		return E_FAIL;
 
 	m_pVIBuffer = CVIBuffer_Rect::Create(m_pDevice, m_pContext);
@@ -314,7 +331,10 @@ void CRenderer::Draw()
 	Render_NonLight();
 	Render_Bloom();
 	Render_FinalEffectBlend();
+
 	Render_Blender();
+	Render_OIT();
+
 	Render_UI();
 
 #ifdef _DEBUG
@@ -965,22 +985,6 @@ void CRenderer::Render_Bloom()
 		return;
 }
 
-void CRenderer::Render_Blender()
-{
-	m_RenderObject[RENDER_BLENDER].sort([](CGameObject* pSour, CGameObject* pDest)->_bool
-		{
-			return dynamic_cast<CBlendObject*>(pSour)->Get_ViewZ() > dynamic_cast<CBlendObject*>(pDest)->Get_ViewZ();
-		});
-
-	for (auto& iter : m_RenderObject[RENDER_BLENDER])
-	{
-		iter->Render();
-
-		Safe_Release(iter);
-	}
-	m_RenderObject[RENDER_BLENDER].clear();
-}
-
 void CRenderer::Render_FinalEffectBlend()
 {
 	if (FAILED(m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix)))
@@ -1002,6 +1006,82 @@ void CRenderer::Render_FinalEffectBlend()
 	m_pShader->Begin(13);
 
 	m_pVIBuffer->Render();
+}
+
+void CRenderer::Render_Blender()
+{
+
+	//컴퓨트 시도
+	//m_RenderObject[RENDER_BLENDER].sort([](CGameObject* pSour, CGameObject* pDest)->_bool
+	//	{
+	//		return dynamic_cast<CBlendObject*>(pSour)->Get_ViewZ() > dynamic_cast<CBlendObject*>(pDest)->Get_ViewZ();
+	//	});
+
+	//for (auto& iter : m_RenderObject[RENDER_BLENDER])
+	//{
+	//	iter->Render();
+
+	//	Safe_Release(iter);
+	//}
+	//m_RenderObject[RENDER_BLENDER].clear();
+
+
+
+	//웨이츠 블렌드 시도
+	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_Accum"))))
+		return;
+
+
+	//if(m_isHDR)
+	//{
+	//	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_ToneMapping"), m_pShader, "g_ResultTexture")))//원본 최종
+	//		return;
+	//}
+	//else
+	//{
+	//	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_BackBuffer"), m_pShader, "g_ResultTexture")))//원본 최종
+	//		return;
+	//}
+
+	for (auto& iter : m_RenderObject[RENDER_BLENDER])
+	{
+		if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_AccumAlpha"), m_pShader, "g_AccumAlpha")))//이펙트 텍스처 원본
+			return;
+
+		iter->Render();
+
+		Safe_Release(iter);
+	}
+	m_RenderObject[RENDER_BLENDER].clear();
+
+	if (FAILED(m_pGameInstance->End_MRT()))
+		return;
+}
+
+void CRenderer::Render_OIT()	
+{
+
+	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_AccumColor"), m_pShader, "g_AccumTexture")))//이펙트 텍스처 원본
+		return;
+	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_AccumAlpha"), m_pShader, "g_AccumAlpha")))//이펙트 텍스처 원본
+		return;
+
+
+	if (m_isHDR)
+	{
+		if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_ToneMapping"), m_pShader, "g_ResultTexture")))//원본 최종
+			return;
+	}
+	else
+	{
+		if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_BackBuffer"), m_pShader, "g_ResultTexture")))//원본 최종
+			return;
+	}
+
+	m_pShader->Begin(15);
+
+	m_pVIBuffer->Render();
+
 }
 
 void CRenderer::Render_UI()
