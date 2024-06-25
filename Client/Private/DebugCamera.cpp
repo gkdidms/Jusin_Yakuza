@@ -88,7 +88,7 @@ void CDebugCamera::Late_Tick(const _float& fTimeDelta)
 
 	if ((GetKeyState('P') & 0x8000))
 	{
-		CFileTotalMgr::GetInstance()->Load_Cinemachine(0, LEVEL_TEST);
+		CFileTotalMgr::GetInstance()->Load_Cinemachine(0, m_pGameInstance->Get_CurrentLevel());
 	}
 }
 
