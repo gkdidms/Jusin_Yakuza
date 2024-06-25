@@ -31,8 +31,8 @@ public:
 
 public:
 	/* 파일번호, LEVEL_GAME같은 레벨 */
-	HRESULT									Set_MapObj_In_Client(int iMapLoadingNum, int iStageLevel);
-	HRESULT									Set_GameObject_In_Client(int iStageLevel);
+	HRESULT									Set_MapObj_In_Client(int iMapLoadingNum, LEVEL iStageLevel);
+	HRESULT									Set_GameObject_In_Client(LEVEL iStageLevel);
 	HRESULT									Set_Lights_In_Client(int iLightLoadingNum);
 
 	void									Load_Cinemachine(int iCineNum, int iStageLevel);
