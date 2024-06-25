@@ -18,8 +18,6 @@ CLevel_Test::CLevel_Test(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 
 HRESULT CLevel_Test::Initialize()
 {
-	m_pSystemManager->Set_Level(LEVEL_TEST);
-
 	if (FAILED(Ready_Light()))
 		return E_FAIL;
 
