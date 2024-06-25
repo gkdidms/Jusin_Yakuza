@@ -287,6 +287,10 @@ HRESULT CRenderer::Initialize()
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_Blur_Y"), 550.f, 250.f, 100.f, 100.f)))
 		return E_FAIL;
+	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_AccumColor"), 650.f, 50.f, 100.f, 100.f)))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_AccumAlpha"), 650.f, 150.f, 100.f, 100.f)))
+		return E_FAIL;
 #endif // _DEBUG
 
 
@@ -1154,6 +1158,8 @@ void CRenderer::Render_Debug()
 	if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_Blur_X"), m_pShader, m_pVIBuffer)))
 		return;
 	if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_Blur_Y"), m_pShader, m_pVIBuffer)))
+		return;
+	if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_Accum"), m_pShader, m_pVIBuffer)))
 		return;
 }
 #endif // DEBUG
