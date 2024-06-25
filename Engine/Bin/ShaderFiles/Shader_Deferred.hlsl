@@ -417,7 +417,7 @@ PS_OUT PS_OIT_RESULT(PS_IN In)
 
     PS_OUT Out = (PS_OUT) 0;
 
-    vector vAccumColor = g_AccumTexture.Sample(LinearSampler, In.vTexcoord);
+    vector vAccumColor = g_AccumTexture.Sample(PointSampler, In.vTexcoord);
     vector vAccumAlpha = g_AccumAlpha.Sample(PointSampler, In.vTexcoord);
    float vAccumWeight = vAccumAlpha.r;
     
@@ -426,11 +426,11 @@ PS_OUT PS_OIT_RESULT(PS_IN In)
     
     // 투명 객체와 백그라운드 객체 합성
     
-    vector vBackground = g_ResultTexture.Sample(PointSampler, In.vTexcoord);
+    vector vBackground = g_ResultTexture.Sample(LinearSampler, In.vTexcoord);
 
 
     Out.vColor = vBackground + FinalColor * (1 - vAccumWeight);
-    //Out.vColor = vBackground + FinalColor;
+    //Out.vColor +=  FinalColor;
     
     return Out;
 }
@@ -641,7 +641,7 @@ technique11 DefaultTechnique
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_None_Test_None_Write, 0);
-        SetBlendState(BS_AlphaBlend, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xffffffff);
+        SetBlendState(BS_OIT, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xffffffff);
 
         VertexShader = compile vs_5_0 VS_MAIN();
         GeometryShader = NULL;

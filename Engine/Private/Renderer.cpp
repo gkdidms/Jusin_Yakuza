@@ -96,9 +96,9 @@ HRESULT CRenderer::Initialize()
 
 
 #pragma region MRT_OIT
-	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_AccumColor"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R8G8B8A8_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))	
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_AccumColor"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(0.f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
-	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_AccumAlpha"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R8G8B8A8_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_AccumAlpha"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(1.f, 1.f, 1.f, 1.f))))
 		return E_FAIL;
 #pragma endregion
 
@@ -331,9 +331,8 @@ void CRenderer::Draw()
 	Render_NonLight();
 	Render_Bloom();
 	Render_FinalEffectBlend();
-	//
-	Render_Blender();
 
+	Render_Blender();
 	Render_OIT();
 
 	Render_UI();
@@ -1032,19 +1031,22 @@ void CRenderer::Render_Blender()
 		return;
 
 
-	if(m_isHDR)
-	{
-		if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_ToneMapping"), m_pShader, "g_ResultTexture")))//원본 최종
-			return;
-	}
-	else
-	{
-		if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_BackBuffer"), m_pShader, "g_ResultTexture")))//원본 최종
-			return;
-	}
+	//if(m_isHDR)
+	//{
+	//	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_ToneMapping"), m_pShader, "g_ResultTexture")))//원본 최종
+	//		return;
+	//}
+	//else
+	//{
+	//	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_BackBuffer"), m_pShader, "g_ResultTexture")))//원본 최종
+	//		return;
+	//}
 
 	for (auto& iter : m_RenderObject[RENDER_BLENDER])
 	{
+		if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_AccumAlpha"), m_pShader, "g_AccumAlpha")))//이펙트 텍스처 원본
+			return;
+
 		iter->Render();
 
 		Safe_Release(iter);
@@ -1075,7 +1077,7 @@ void CRenderer::Render_OIT()
 			return;
 	}
 
-	m_pShader->Begin(14);
+	m_pShader->Begin(15);
 
 	m_pVIBuffer->Render();
 

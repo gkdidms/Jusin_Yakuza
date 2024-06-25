@@ -5,6 +5,7 @@ matrix g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
 
 texture2D g_Texture;
 texture2D g_ResultTexture;
+texture2D g_AccumAlpha;
 
 vector g_vStartColor, g_vEndColor;
 vector g_vCamPosition;
@@ -86,6 +87,7 @@ void GS_MAIN(point GS_IN In[1], inout TriangleStream<GS_OUT> Triangles)
         Out[i].vPosition = float4(0.f, 0.f, 0.f, 0.f);
         Out[i].vTexcoord = float2(0.f, 0.f);
         Out[i].vLifeTime = float2(0.f, 0.f);
+        Out[i].LinearZ = float(0.f);
     }
 	
     vector vLook = g_vCamPosition - vector(In[0].vPosition, 1.f);
@@ -250,21 +252,26 @@ PS_OUT PS_MAIN_SPREADCOLOR(PS_IN In)
     PS_OUT Out = (PS_OUT) 0;
 
     vector vParticle = g_Texture.Sample(LinearSampler, In.vTexcoord);
+    vector BackAlpha = g_AccumAlpha.Sample(PointSampler, In.vTexcoord);   
     
     float4 LerpColor = lerp(g_vStartColor, g_vEndColor, In.vLifeTime.y / In.vLifeTime.x);
     
     vParticle *= LerpColor;
     
-    float3 ColorN = vParticle.xyz;
+    float3 ColorN = vParticle.rgb;
     
     float AlphaN = vParticle.a;
 
-   float WeightN = clamp(0.03f / (1e-3 + pow(In.LinearZ, 4.0)), 0.001f, 3e3);
-    //float WeightN = pow(In.LinearZ, -2.5);
+    float WeightN = clamp(0.03f / (1e-5 + pow(In.LinearZ, 4.0)), g_NearZ, g_FarZ);
+
     WeightN = max(WeightN, 1.0f);
 
     Out.vColor = float4(ColorN.rgb * AlphaN, AlphaN) * WeightN;
+
+    AlphaN = (BackAlpha.r * 0.5f + AlphaN * 0.5f);
+
     Out.vAlpha = float4(AlphaN, 0.f, 0.f, 0.f);
+    
     return Out;
 }
 
@@ -347,7 +354,7 @@ technique11 DefaultTechnique
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_Default, 0);
-        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+        SetBlendState(BS_WeightsBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 
 		/* 어떤 셰이덜르 국동할지. 셰이더를 몇 버젼으로 컴파일할지. 진입점함수가 무엇이찌. */
         VertexShader = compile vs_5_0 VS_MAIN();

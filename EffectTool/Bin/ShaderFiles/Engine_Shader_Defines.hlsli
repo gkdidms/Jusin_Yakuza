@@ -99,10 +99,19 @@ BlendState BS_Blend
 BlendState BS_WeightsBlend
 {
     BlendEnable[0] = true;
+
+    SrcBlend = ONE;
+    DestBlend = ONE;
+    BlendOp = ADD;
+};
+
+BlendState BS_OIT
+{
+    BlendEnable[0] = true;
     SrcBlend = Src_Alpha;
     DestBlend = Inv_Src_Alpha;
     BlendOp = Add;
-    SrcBlendAlpha = One;
-    DestBlendAlpha = Inv_Src_Alpha;
+    SrcBlendAlpha = ONE;
+    DestBlendAlpha = INV_SRC_ALPHA;
     BlendOpAlpha = Add;
 };
