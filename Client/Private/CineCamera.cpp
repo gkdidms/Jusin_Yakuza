@@ -33,7 +33,7 @@ HRESULT CCineCamera::Initialize(void* pArg)
 	m_fStayDeltaTime = 0;
 	m_fStayTime = m_vCamerasObjDesc[0].fStayTime;
 	m_fLerpDeltaTime = 0;
-	
+
 	CAMERA_DESC		cameraDesc;
 	cameraDesc.fFovY = m_vCamerasObjDesc[0].fFovY;
 	cameraDesc.fAspect = m_vCamerasObjDesc[0].fAspect;
@@ -45,7 +45,7 @@ HRESULT CCineCamera::Initialize(void* pArg)
 	m_vEye = XMLoadFloat4(&cameraDesc.vEye);
 	m_vFocus = XMLoadFloat4(&cameraDesc.vFocus);
 	m_bLastLerp = false;
-	
+
 	if (FAILED(__super::Initialize(&cameraDesc)))
 		return E_FAIL;
 
@@ -60,6 +60,7 @@ void CCineCamera::Priority_Tick(const _float& fTimeDelta)
 
 void CCineCamera::Tick(const _float& fTimeDelta)
 {
+
 	if (CSystemManager::GetInstance()->Get_Camera() == CAMERA_CINEMACHINE)
 	{
 		Start_Lerp(fTimeDelta);
@@ -71,6 +72,8 @@ void CCineCamera::Tick(const _float& fTimeDelta)
 
 		__super::Tick(fTimeDelta);
 	}
+
+
 }
 
 void CCineCamera::Late_Tick(const _float& fTimeDelta)
@@ -130,7 +133,7 @@ void CCineCamera::Setting_Start_Cinemachine()
 HRESULT CCineCamera::Import_Bin_Cam_Data_OnTool(CAMERAOBJ_IO* camData, int iFileNum)
 {
 	char fullPath[MAX_PATH];
-	strcpy_s(fullPath, "../../Client/Bin/DataFiles/CameraData/");
+	strcpy_s(fullPath, "../Bin/DataFiles/CameraData/");
 
 	strcat_s(fullPath, "Camera_Data");
 	strcat_s(fullPath, "_");
@@ -193,7 +196,7 @@ void CCineCamera::Cam_Move_Handle_Setting(const _float& fTimeDelta)
 				/* 정보 바꾸기 */
 				Change_CamDesc();
 
-				if (true == m_vCamerasObjDesc[m_iCurCamIndex-1].bLerp)
+				if (true == m_vCamerasObjDesc[m_iCurCamIndex - 1].bLerp)
 				{
 					/* 선형보간해서 이동 */
 					m_eCurCamState = CAM_STATE_LERP;
@@ -246,16 +249,16 @@ void CCineCamera::Cam_Move_Handle_Setting(const _float& fTimeDelta)
 				m_pTransformCom->Set_State(CTransform::STATE_POSITION, camEye);
 
 				m_fLerpDeltaTime = 0;
-				
+
 			}
 		}
 	}
-	
+
 }
 
 void CCineCamera::Cam_Lerp(const _float& fTimeDelta)
 {
-	
+
 	if (CAM_STATE_LERP == m_eCurCamState && false == m_bLastLerp && true == m_bStart)
 	{
 		/* 시네머신 선형보간 작동 */
@@ -278,12 +281,12 @@ void CCineCamera::Cam_Lerp(const _float& fTimeDelta)
 		XMVECTOR		vPreEye, vCurEye;
 		XMVECTOR		vPreFocus, vCurFocus;
 		vPreEye = XMLoadFloat4(&m_vCamerasObjDesc[m_iCurCamIndex - 1].vEye);
-		vCurEye = m_pGameInstance->Get_GameObject(LEVEL_RUNMAP, TEXT("Layer_Camera"), 0)->Get_TransformCom()->Get_State(CTransform::STATE_POSITION);
+		vCurEye = m_pGameInstance->Get_GameObject(LEVEL_TEST, TEXT("Layer_Camera"), 0)->Get_TransformCom()->Get_State(CTransform::STATE_POSITION);
 		/*m_vEye = XMVectorLerp(vPreEye, vCurEye, fTime);*/
 		m_vEye = Positioning_Using_Linear_Interpolation(vPreEye, vCurEye, m_vCamerasObjDesc[m_iCurCamIndex - 1].fMoveSpeed);
 
 		vPreFocus = XMLoadFloat4(&m_vCamerasObjDesc[m_iCurCamIndex - 1].vFocus);
-		vCurFocus = XMVectorSet(0,0,0,1);
+		vCurFocus = XMVectorSet(0, 0, 0, 1);
 		/*m_vFocus = XMVectorLerp(vPreFocus, vCurFocus, fTime);*/
 		m_vFocus = Positioning_Using_Linear_Interpolation(vPreFocus, vCurFocus, m_vCamerasObjDesc[m_iCurCamIndex - 1].fMoveSpeed);
 
@@ -295,7 +298,7 @@ void CCineCamera::Cam_Lerp(const _float& fTimeDelta)
 			m_eCurCamState = CAM_STATE_END;
 			m_iCurCamIndex = 0;
 			m_vCamerasObjDesc.clear();
-			CSystemManager::GetInstance()->Set_Camera(CAMERA_PLAYER);
+			CSystemManager::GetInstance()->Set_Camera(CAMERA_DEBUG);
 		}
 	}
 }
@@ -320,7 +323,7 @@ void CCineCamera::Set_Start()
 		m_fLerpTime = m_vCamerasObjDesc[0].fMoveTime;
 		m_fMoveSpeed = m_vCamerasObjDesc[0].fMoveSpeed;
 
-		m_vStartEye = m_pGameInstance->Get_GameObject(LEVEL_RUNMAP, TEXT("Layer_Camera"), 0)->Get_TransformCom()->Get_State(CTransform::STATE_POSITION);
+		m_vStartEye = m_pGameInstance->Get_GameObject(LEVEL_TEST, TEXT("Layer_Camera"), 0)->Get_TransformCom()->Get_State(CTransform::STATE_POSITION);
 		m_vStartFocus = XMVectorSet(0, 0, 0, 1);
 	}
 	else
@@ -361,7 +364,7 @@ void CCineCamera::Start_Lerp(const _float& fTimeDelta)
 		if (m_fLerpDeltaTime > m_fLerpTime)
 		{
 
- 			m_iCurCamIndex++;
+			m_iCurCamIndex++;
 
 			/* 진짜 첫번째 카메라 시작 */
 			m_eCurCamState = CAM_STATE_STAY;

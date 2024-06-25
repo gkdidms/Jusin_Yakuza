@@ -18,13 +18,18 @@
 IMPLEMENT_SINGLETON(CImgui_Manager)
 
 CImgui_Manager::CImgui_Manager()
-    :m_pNavigationMgr{ CNavigation_Manager::GetInstance() }
+    :
+    m_pGameInstance{ CGameInstance::GetInstance() }
+    , m_pNavigationMgr{ CNavigation_Manager::GetInstance() }
     , m_pObjPlace_Manager { CObjPlace_Manager::GetInstance() }
-    , m_pGameInstance { CGameInstance::GetInstance()}
     , m_pLightTool_Mgr { CLightTool_Mgr::GetInstance() }
     , m_pCameraToolMgr { CCamera_Manager::GetInstance() }
 {
     Safe_AddRef(m_pGameInstance);
+    Safe_AddRef(m_pNavigationMgr);
+    Safe_AddRef(m_pObjPlace_Manager);
+    Safe_AddRef(m_pLightTool_Mgr);
+    Safe_AddRef(m_pCameraToolMgr);
 }
 
 HRESULT CImgui_Manager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -61,6 +66,7 @@ void CImgui_Manager::Tick(_float fTimeDelta)
     CObjPlace_Manager::GetInstance()->Tick(fTimeDelta);
 
     m_pNavigationMgr->Tick(fTimeDelta);
+    m_pCameraToolMgr->Tick(fTimeDelta);
 
     bool show_demo_window = true;
     bool show_another_window = false;
@@ -269,14 +275,15 @@ void CImgui_Manager::Free()
     ImGui_ImplWin32_Shutdown();
     ImGui::DestroyContext();
 
-    CObjPlace_Manager::GetInstance()->DestroyInstance();
-    CLightTool_Mgr::GetInstance()->DestroyInstance();
-
-    //m_pNavigationMgr->DestroyInstance();
     Safe_Release(m_pNavigationMgr);
+    CNavigation_Manager::DestroyInstance();
     Safe_Release(m_pObjPlace_Manager);
+    CObjPlace_Manager::DestroyInstance();
     Safe_Release(m_pLightTool_Mgr);
+    CLightTool_Mgr::DestroyInstance();
     Safe_Release(m_pCameraToolMgr);
+    CCamera_Manager::DestroyInstance();
+
 
     Safe_Release(m_pGameInstance);
 

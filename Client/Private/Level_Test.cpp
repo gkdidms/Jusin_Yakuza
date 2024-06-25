@@ -3,19 +3,17 @@
 #include "GameInstance.h"
 #include "SystemManager.h"
 #include "DebugManager.h"
-
 #include "DebugCamera.h"
-
-#include "Client_MapDataMgr.h"
+#include "FileTotalMgr.h"
 
 
 CLevel_Test::CLevel_Test(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLevel{ pDevice, pContext },
 	m_pSystemManager{ CSystemManager::GetInstance() },
-	m_pClientMapDataMgr{ CClient_MapDataMgr::GetInstance() }
+	m_pFileTotalManager{ CFileTotalMgr::GetInstance() }
 {
 	Safe_AddRef(m_pSystemManager);
-	Safe_AddRef(m_pClientMapDataMgr);
+	Safe_AddRef(m_pFileTotalManager);
 }
 
 HRESULT CLevel_Test::Initialize()
@@ -35,8 +33,8 @@ HRESULT CLevel_Test::Initialize()
 		return E_FAIL;
 
 	/* Å¬¶ó ÆÄ½Ì */
-	m_pClientMapDataMgr->Set_MapObj_In_Client(0, LEVEL_TEST);
-	m_pClientMapDataMgr->Set_Lights_In_Client(0);
+	m_pFileTotalManager->Set_MapObj_In_Client(0, LEVEL_TEST);
+	m_pFileTotalManager->Set_Lights_In_Client(0);
 
 	return S_OK;
 }
@@ -143,5 +141,5 @@ void CLevel_Test::Free()
 	__super::Free();
 
 	Safe_Release(m_pSystemManager);
-	Safe_Release(m_pClientMapDataMgr);
+	Safe_Release(m_pFileTotalManager);
 }

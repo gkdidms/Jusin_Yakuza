@@ -195,6 +195,7 @@
     <ClInclude Include="..\Public\Navigation_Manager.h" />
     <ClInclude Include="..\Public\ObjPlace_Manager.h" />
     <ClInclude Include="..\public\PlayerCamera.h" />
+    <ClInclude Include="..\Public\SystemManager.h" />
     <ClInclude Include="..\Public\Terrain.h" />
     <ClInclude Include="..\Public\Terrain_Manager.h" />
     <ClInclude Include="framework.h" />
@@ -242,6 +243,7 @@
     <ClCompile Include="..\Private\Navigation_Manager.cpp" />
     <ClCompile Include="..\Private\ObjPlace_Manager.cpp" />
     <ClCompile Include="..\private\PlayerCamera.cpp" />
+    <ClCompile Include="..\Private\SystemManager.cpp" />
     <ClCompile Include="..\Private\Terrain.cpp" />
     <ClCompile Include="..\Private\Terrain_Manager.cpp" />
     <ClCompile Include="MapTool.cpp" />

@@ -5,6 +5,7 @@
 namespace Client
 {
 	enum LEVEL { LEVEL_STATIC, LEVEL_LOADING, LEVEL_LOGO, LEVEL_GAMEPLAY, LEVEL_TEST, LEVEL_END };
+	enum CAMERA { CAMERA_DEBUG , CAMERA_CINEMACHINE, CAMERA_MAP, CAMERA_PLAYER, CAMERA_END };
 
 	const unsigned int		g_iWinSizeX = 1280;
 	const unsigned int		g_iWinSizeY = 720;

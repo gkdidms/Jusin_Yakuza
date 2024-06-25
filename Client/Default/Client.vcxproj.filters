@@ -85,8 +85,11 @@
     <ClCompile Include="..\Private\Construction.cpp">
       <Filter>02.GameObjects\03.Construction</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Client_MapDataMgr.cpp">
-      <Filter>95.Utility\02.Client_MapDataMgr</Filter>
+    <ClCompile Include="..\Private\CineCamera.cpp">
+      <Filter>02.GameObjects\99.Camera\01.CineCamera</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\FileTotalMgr.cpp">
+      <Filter>95.Utility\02.FileTotalMgr</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -204,8 +207,11 @@
     <ClInclude Include="..\Public\Construction.h">
       <Filter>02.GameObjects\03.Construction</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Client_MapDataMgr.h">
-      <Filter>95.Utility\02.Client_MapDataMgr</Filter>
+    <ClInclude Include="..\Public\CineCamera.h">
+      <Filter>02.GameObjects\99.Camera\01.CineCamera</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\FileTotalMgr.h">
+      <Filter>95.Utility\02.FileTotalMgr</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -286,7 +292,10 @@
     <Filter Include="02.GameObjects\03.Construction">
       <UniqueIdentifier>{95e29977-56e8-4ee9-b1c8-71236bd9d68b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="95.Utility\02.Client_MapDataMgr">
+    <Filter Include="02.GameObjects\99.Camera\01.CineCamera">
+      <UniqueIdentifier>{9380684d-69ad-4059-a4ff-cd5b6adc4875}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\02.FileTotalMgr">
       <UniqueIdentifier>{843f8ce4-c1d6-4160-8deb-14b1689d5a35}</UniqueIdentifier>
     </Filter>
   </ItemGroup>

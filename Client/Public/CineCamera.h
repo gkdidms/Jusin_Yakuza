@@ -1,7 +1,8 @@
 #pragma once
+#include "Client_Defines.h"
 #include "Camera.h"
 
-#include "Client_Defines.h"
+
 
 BEGIN(Client)
 class CCineCamera :
@@ -72,7 +73,7 @@ private:
     bool                                            m_bLastLerp = { false };
     bool                                            m_bStart = { true };
 
-    
+
     XMVECTOR                                        m_vStartEye;
     XMVECTOR                                        m_vStartFocus;
 

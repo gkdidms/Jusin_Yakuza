@@ -100,6 +100,9 @@
     <ClCompile Include="..\Private\CineCamera.cpp">
       <Filter>02.GameObjects\02.Camera\01.CineCamera</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\SystemManager.cpp">
+      <Filter>95.Utility\00.System</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\MainApp.h">
@@ -219,6 +222,9 @@
     <ClInclude Include="..\Public\CineCamera.h">
       <Filter>02.GameObjects\02.Camera\01.CineCamera</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\SystemManager.h">
+      <Filter>95.Utility\00.System</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="MapTool.ico">
@@ -312,6 +318,12 @@
     </Filter>
     <Filter Include="02.GameObjects\02.Camera\01.CineCamera">
       <UniqueIdentifier>{679838a0-1f65-4cce-b106-041b8c0f9ded}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility">
+      <UniqueIdentifier>{38feb924-f47d-4878-a8ff-08fde2cd9e06}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\00.System">
+      <UniqueIdentifier>{c55aca02-848a-4026-81db-9de5a92d9b59}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

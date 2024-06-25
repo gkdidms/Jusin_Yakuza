@@ -10,16 +10,19 @@
 
 #include "Level_Loading.h"
 #include "Background.h"
+#include "FileTotalMgr.h"
 
 CMainApp::CMainApp() :
 #ifdef _DEBUG
 	m_pDebugMananger{ CDebugManager::GetInstance() },
 #endif // _DEBUG
 	m_pGameInstance{ CGameInstance::GetInstance() },
-	m_pSystemManager{ CSystemManager::GetInstance() }
+	m_pSystemManager{ CSystemManager::GetInstance() },
+	m_pFileTotalManager{ CFileTotalMgr::GetInstance() }
 {
 	Safe_AddRef(m_pGameInstance);
 	Safe_AddRef(m_pSystemManager);
+	Safe_AddRef(m_pFileTotalManager);
 
 #ifdef _DEBUG
 	Safe_AddRef(m_pDebugMananger);
@@ -84,6 +87,7 @@ void CMainApp::Tick(const _float& fTimeDelta)
 	{
 		Render_Colsole(true);
 	}
+
 		
 	if (m_isDebug) m_pDebugMananger->Tick();
 #endif // _DEBUG
@@ -120,6 +124,7 @@ HRESULT CMainApp::Render()
 #endif // _DEBUG
 
 	m_pGameInstance->Present();
+
 
 	return S_OK;
 }
@@ -201,12 +206,17 @@ void CMainApp::Free()
 	Safe_Release(m_pContext);
 	Safe_Release(m_pDevice);
 
+
+
 #ifdef _DEBUG
 	Safe_Release(m_pDebugMananger);
 	CDebugManager::Release_Debug();
 #endif // _DEBUG
 
 	Safe_Release(m_pSystemManager);
+
+	Safe_Release(m_pFileTotalManager);
+	CFileTotalMgr::DestroyInstance();
 
 	/* 레퍼런스 카운트를 0으로만든다. */
 	Safe_Release(m_pGameInstance);

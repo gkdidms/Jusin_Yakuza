@@ -7,6 +7,7 @@
 #include "ImGuizmo.h"
 #include "ImSequencer.h"
 #include "PipeLine.h"
+#include "SystemManager.h"
 
 #include <iostream>
 #include <io.h>
@@ -279,6 +280,10 @@ void CCamera_Manager::Priority_Tick(_float fTimeDelta)
 
 void CCamera_Manager::Tick(_float fTimeDelta)
 {
+	if (nullptr != m_pCineCamera && true == m_bCameraTest)
+	{
+		m_pCineCamera->Tick(fTimeDelta);
+	}
 }
 
 void CCamera_Manager::Late_Tick(_float fTimeDelta)
@@ -288,6 +293,11 @@ void CCamera_Manager::Late_Tick(_float fTimeDelta)
 
 	for (auto& iter : m_CameraEyeObjs)
 		iter->Late_Tick(fTimeDelta);
+
+	if (nullptr != m_pCineCamera && true == m_bCameraTest)
+	{
+		m_pCineCamera->Late_Tick(fTimeDelta);
+	}
 }
 
 void CCamera_Manager::Render()
@@ -299,6 +309,8 @@ void CCamera_Manager::Show_FileName()
 	ImGui::Begin(u8" 카메라 파일");
 
 	ImGui::Text(u8" 카메라 리스트 ");
+	ImGui::Text(u8" 저장 : 숫자 입력 후 저장 ");
+	ImGui::Text(u8" 로드 : listbox에서 선택한 후 로드 버튼 누르기 ");
 
 	if (m_FileNames.empty())
 	{
@@ -320,13 +332,27 @@ void CCamera_Manager::Show_FileName()
 		ImGui::EndListBox();
 	}
 
+	static	bool	bFirstLerp = false;
+	bFirstLerp = m_bFirstLerp;
+	ImGui::Checkbox(u8"처음선형보간", &bFirstLerp);
+	m_bFirstLerp = bFirstLerp;
+
 	static int iSaveNum;
 	ImGui::InputInt(u8"저장번호 : ", &iSaveNum);
 
 	if (ImGui::Button(u8"카메라 저장"))
 	{
-		Save_Cameras_InFile(iSaveNum);
+		Save_Cameras_InFile(iSaveNum, m_bFirstLerp);
 		Update_FileName();
+	}
+
+	static int iTestNum;
+	ImGui::InputInt(u8"테스트번호 : ", &iTestNum);
+	ImGui::SameLine();
+	if (ImGui::Button(u8"카메라 테스트"))
+	{
+		Test_Camera(iTestNum);
+		m_bCameraTest = true;
 	}
 
 	if (ImGui::Button(u8"카메라 파일 로드") && m_FileNames.size() > 0)
@@ -339,7 +365,12 @@ void CCamera_Manager::Show_FileName()
 
 void CCamera_Manager::Install_Camera_IMGUI()
 {
+	ImGui::Text(u8" Lerp : 다음 카메라까지 이동할때 선형보간 할지 ");
+	ImGui::Text(u8" 마지막 카메라 Lerp : 플레이어 카메라까지 돌아갈때 Lerp할지 ");
+	ImGui::Text(u8" 마지막 카메라 MoveTime : 플레이어 카메라까지 돌아갈때의 속도 ");
 	ImGui::Text(u8" Eye - 빨강, Focus - 파랑 ");
+
+
 
 	if (m_FileNames.empty())
 	{
@@ -402,7 +433,7 @@ void CCamera_Manager::Install_Camera_IMGUI()
 	static float	fNear = 0.1f;
 	static float	fFar = 3000.f;
 
-	if (ImGui::BeginTable("StructTable", 8)) {
+	if (ImGui::BeginTable("StructTable", 10)) {
 		ImGui::TableNextColumn();
 		ImGui::Text("fFovY");
 		ImGui::TableNextColumn();
@@ -422,6 +453,11 @@ void CCamera_Manager::Install_Camera_IMGUI()
 		ImGui::Text("fFar");
 		ImGui::TableNextColumn();
 		ImGui::InputFloat("##Far", &fFar);
+
+		ImGui::TableNextColumn();
+		ImGui::Text("fMoveTime");
+		ImGui::TableNextColumn();
+		ImGui::InputFloat("##fMoveTime", &cameraObjDesc.fMoveTime);
 
 		ImGui::TableNextColumn();
 		ImGui::Text("fMoveSpeed");
@@ -789,7 +825,7 @@ void CCamera_Manager::Show_Edit_Cameras_Inform_IMGUI()
 
 	static CAMERAOBJ_DESC		cameraObjDesc = m_tCurCameraDesc;
 
-	if (ImGui::BeginTable("StructTable", 8)) {
+	if (ImGui::BeginTable("StructTable", 10)) {
 		ImGui::TableNextColumn();
 		ImGui::Text("fFovY");
 		ImGui::TableNextColumn();
@@ -809,6 +845,11 @@ void CCamera_Manager::Show_Edit_Cameras_Inform_IMGUI()
 		ImGui::Text("fFar");
 		ImGui::TableNextColumn();
 		ImGui::InputFloat("##Far", &m_tCurCameraDesc.fFar);
+
+		ImGui::TableNextColumn();
+		ImGui::Text("fMoveTime");
+		ImGui::TableNextColumn();
+		ImGui::InputFloat("##fMoveTime", &m_tCurCameraDesc.fMoveTime);
 
 		ImGui::TableNextColumn();
 		ImGui::Text("fMoveSpeed");
@@ -911,10 +952,28 @@ void CCamera_Manager::Edit_Eye_Transform()
 		true);
 }
 
-void CCamera_Manager::Save_Cameras_InFile(int iSaveNum)
+void CCamera_Manager::Test_Camera(int iCamNum)
+{
+	if (nullptr == m_pCineCamera)
+	{
+		CCineCamera::CINE_CAMERA_DESC		cineDesc;
+		cineDesc.iFileNum = iCamNum;
+		m_pCineCamera = dynamic_cast<CCineCamera*>(CGameInstance::GetInstance()->Clone_Object(TEXT("Prototype_GameObject_CCineCamera"), &cineDesc));
+	}
+	else
+	{
+		m_pCineCamera->Load_CamBin(iCamNum);
+		m_pCineCamera->Setting_Start_Cinemachine();
+	}
+	
+	CSystemManager::GetInstance()->Set_Camera(CAMERA_CINEMACHINE);
+}
+
+void CCamera_Manager::Save_Cameras_InFile(int iSaveNum, bool bFirstLerp)
 {
 	CAMERAOBJ_IO			CameraIO;
 	CameraIO.iCameraNum = m_CameraObjs.size();
+	CameraIO.bFirstLerp = bFirstLerp;
 	CameraIO.pCamObjDesc = new CAMERAOBJ_DESC[CameraIO.iCameraNum];
 
 	int iIndex = 0;
@@ -936,6 +995,8 @@ void CCamera_Manager::Load_Cameras_File(int iNum)
 
 	CAMERAOBJ_IO		camIODesc;
 	Import_Bin_Cam_Data_OnTool(&camIODesc, m_FileNames[iNum]);
+
+	m_bFirstLerp = camIODesc.bFirstLerp;
 
 	for (int i = 0; i < camIODesc.iCameraNum; i++)
 	{
@@ -975,9 +1036,14 @@ void CCamera_Manager::Load_Cameras_File(int iNum)
 
 	}
 
+	m_iCurrentCameraIndex = 0;
+	m_tCurCameraDesc = m_CameraObjs[0]->Get_CameraObjDesc();
+
 	Update_CameraName();
 	Update_EyeName();
 	Update_FocusName();
+
+	Safe_Delete_Array(camIODesc.pCamObjDesc);
 }
 
 HRESULT CCamera_Manager::Import_Bin_Cam_Data_OnTool(CAMERAOBJ_IO* camData, char* fileName)
@@ -996,6 +1062,8 @@ HRESULT CCamera_Manager::Import_Bin_Cam_Data_OnTool(CAMERAOBJ_IO* camData, char*
 
 
 	in.read((char*)&camData->iCameraNum, sizeof(int));
+
+	in.read((char*)&camData->bFirstLerp, sizeof(bool));
 
 	camData->pCamObjDesc = new CAMERAOBJ_DESC[camData->iCameraNum];
 
@@ -1034,6 +1102,8 @@ HRESULT CCamera_Manager::Export_Bin_Cam_Data(CAMERAOBJ_IO* camData, int iSaveNum
 	int iNumCamObj = camData->iCameraNum;
 	out.write((char*)&iNumCamObj, sizeof(int));
 
+	bool bFistLerp = camData->bFirstLerp;
+	out.write((char*)&bFistLerp, sizeof(bool));
 
 	/* 라이트 정보 저장 */
 	for (int i = 0; i < iNumCamObj; i++)
@@ -1077,6 +1147,8 @@ void CCamera_Manager::Free()
 		Safe_Release(iter);
 	m_CameraEyeObjs.clear();
 
+	if (nullptr != m_pCineCamera)
+		Safe_Release(m_pCineCamera);
 
 	Safe_Release(m_pGameInstance);
 }

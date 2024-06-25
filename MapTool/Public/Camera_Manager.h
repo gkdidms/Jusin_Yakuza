@@ -4,6 +4,7 @@
 #include "Client_Defines.h"
 #include "CameraObj.h"
 #include "CameraInstallObj.h"
+#include "CineCamera.h"
 
 class CCamera_Manager : public CBase
 {
@@ -45,9 +46,11 @@ private:
 	void											Edit_Focus_Transform();
 	void											Edit_Eye_Transform();
 
+	void											Test_Camera(int iCamNum);
+
 	/* 저장관련 */
 private:
-	void											Save_Cameras_InFile(int iSaveNum); 
+	void											Save_Cameras_InFile(int iSaveNum, bool bFirstLerp); 
 	void											Load_Cameras_File(int iNum);
 
 	HRESULT											Import_Bin_Cam_Data_OnTool(CAMERAOBJ_IO* camData, char* fileName);
@@ -55,6 +58,7 @@ private:
 
 private:
 	CGameInstance*									m_pGameInstance;
+	CCineCamera*									m_pCineCamera = { nullptr };
 
 private:
 	vector<char*>									m_FileNames;
@@ -76,6 +80,8 @@ private:
 	_bool											m_bFocusAdd = { false };
 	_bool											m_bCameraAdd = { false };
 
+	_bool											m_bCameraTest = { false };
+	_bool											m_bFirstLerp = { false };
 
 
 public:

@@ -10,6 +10,7 @@
 #include "LightObj.h"
 #include "CameraObj.h"
 #include "CameraInstallObj.h"
+#include "CineCamera.h"
 #pragma endregion
 
 
@@ -210,6 +211,11 @@ HRESULT CLoader::Loading_For_RunMapLevel(int iLevel)
 	/* For.Prototype_GameObject_CameraInstallObj */
 	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_CameraInstallObj"),
 		CCameraInstallObj::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_CCineCamera */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_CCineCamera"),
+		CCineCamera::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 	
 

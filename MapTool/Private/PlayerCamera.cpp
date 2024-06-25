@@ -1,6 +1,7 @@
 #include "../Public/PlayerCamera.h"
 
 #include "GameInstance.h"
+#include "SystemManager.h"
 
 CPlayerCamera::CPlayerCamera(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CCamera{ pDevice, pContext }
@@ -86,8 +87,10 @@ void CPlayerCamera::Tick(const _float& fTimeDelta)
 		}
 	}
 
-	
-	__super::Tick(fTimeDelta);
+	if (CSystemManager::GetInstance()->Get_Camera() == CAMERA_PLAYER)
+	{
+		__super::Tick(fTimeDelta);
+	}
 }
 
 void CPlayerCamera::Late_Tick(const _float& fTimeDelta)

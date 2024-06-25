@@ -9,12 +9,14 @@ namespace Engine
 		_float fFovY, fAspect, fNear, fFar;
 		_bool	bLerp; /* 선형보간할건지 */
 		_float	fStayTime;
+		_float	fMoveTime;
 		_float	fMoveSpeed;
 	};
 
 	struct ENGINE_DLL CAMERAOBJ_IO
 	{
 		int					iCameraNum;
+		bool				bFirstLerp;
 		CAMERAOBJ_DESC*		pCamObjDesc;
 	};
 
