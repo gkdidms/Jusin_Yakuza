@@ -17,9 +17,6 @@ EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "MapTool", "MapTool\Default\MapTool.vcxproj", "{02CBB882-C8DA-4772-9856-91B4752D5A61}"
 EndProject
 Project("{8BC9CEB8-8B4A-11D0-8D11-00A0C91BC942}") = "UITool", "UITool\Default\UITool.vcxproj", "{8E67AC2C-375E-457B-92EE-8E510CAA8EE9}"
-	ProjectSection(ProjectDependencies) = postProject
-		{4430E868-DAD8-4CFC-8C41-C29873619124} = {4430E868-DAD8-4CFC-8C41-C29873619124}
-	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

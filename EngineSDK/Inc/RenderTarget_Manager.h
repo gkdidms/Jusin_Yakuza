@@ -17,12 +17,12 @@ public:
     HRESULT End_MRT();
     HRESULT Bind_RenderTargetSRV(const wstring& strTargetTag, class CShader* pShader, const _char* pConstantName);
     HRESULT Copy_Resource(const wstring& strTargetTag, ID3D11Texture2D* pDesc);
+    HRESULT Create_Texture(const wstring& strTargetTag, const wstring& strSaveFilePath);
 
 #ifdef _DEBUG
     HRESULT Ready_Debug(const wstring strRenderTargetTag, _float fX, _float fY, _float fSizeX, _float fSizeY);
     HRESULT Render_Debug(const wstring& strMRTTag, class CShader* pShader, class CVIBuffer_Rect* pVIBuffer);
 #endif // _DEBUG
-
 
 private:
     ID3D11Device* m_pDevice = { nullptr };

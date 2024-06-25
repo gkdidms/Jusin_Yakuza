@@ -61,7 +61,7 @@ void CAnimModel::Tick(const _float& fTimeDelta)
 
 void CAnimModel::Late_Tick(const _float& fTimeDelta)
 {
-    m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONLIGHT, this);
+    m_pGameInstance->Add_Renderer(CRenderer::RENDER_BLENDER, this);
 
     for (auto& pSphere : m_BoneSpheres)
         pSphere->Late_Tick(fTimeDelta);
