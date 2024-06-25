@@ -2,6 +2,7 @@
 
 #include "GameInstance.h"
 
+
 CPlayerCamera::CPlayerCamera(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CCamera{ pDevice, pContext }
 {
@@ -50,6 +51,7 @@ void CPlayerCamera::Tick(const _float& fTimeDelta)
 		m_pTransformCom->Go_Straight(fTimeDelta);
 	if (GetKeyState('S') & 0x8000)
 		m_pTransformCom->Go_Backward(fTimeDelta);
+
 
 	_long		MouseMove = { 0 };
 

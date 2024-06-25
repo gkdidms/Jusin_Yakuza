@@ -1,7 +1,7 @@
 #pragma once
 
 #include "Base.h"
-
+#include "CineCamera.h"
 #include "Client_Defines.h"
 
 BEGIN(Engine)
@@ -9,9 +9,9 @@ class CGameInstance;
 END
 
 BEGIN(Client)
-class CClient_MapDataMgr final : public CBase
+class CFileTotalMgr final : public CBase
 {
-	DECLARE_SINGLETON(CClient_MapDataMgr)
+	DECLARE_SINGLETON(CFileTotalMgr)
 
 public:
 	enum OBJECT_TYPE {
@@ -22,14 +22,24 @@ public:
 	};
 
 private:
-	CClient_MapDataMgr();
-	virtual ~CClient_MapDataMgr() = default;
+	CFileTotalMgr();
+	virtual ~CFileTotalMgr() = default;
+
+public:
+	void											Tick(_float fTimeDelta);
+	void											Late_Tick(_float fTimeDelta);
 
 public:
 	/* 파일번호, LEVEL_GAME같은 레벨 */
 	HRESULT									Set_MapObj_In_Client(int iMapLoadingNum, int iStageLevel);
 	HRESULT									Set_GameObject_In_Client(int iStageLevel);
 	HRESULT									Set_Lights_In_Client(int iLightLoadingNum);
+
+	void									Load_Cinemachine(int iCineNum, int iStageLevel);
+
+	/* LEVEL 바뀌면 초기화 시키기 */
+	void									Reset_Cinemachine();
+
 
 private:
 	HRESULT									Set_Terrain_Size(int iStageLevel);
@@ -40,7 +50,8 @@ private:
 
 
 private:
-	class CGameInstance*					m_pGameInstance = { nullptr };
+	class CGameInstance* m_pGameInstance = { nullptr };
+	CCineCamera* m_pCinemachineCam = { nullptr };
 
 private:
 	MAP_TOTALINFORM_DESC					m_MapTotalInform{};
