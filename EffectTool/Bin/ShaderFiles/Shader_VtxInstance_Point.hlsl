@@ -49,7 +49,7 @@ VS_OUT VS_MAIN(VS_IN In)
     matWVP = mul(matWV, g_ProjMatrix);
     
 
-    Out.vPosition = mul(vPosition, g_WorldMatrix).xyz;
+    Out.vPosition = mul(vPosition, g_WorldMatrix).xyz;//월드상
     Out.vPSize = In.vPSize;
     Out.vDir = In.vDir;
     Out.vLifeTime = In.vLifeTime;
@@ -129,7 +129,7 @@ void GS_MAIN(point GS_IN In[1], inout TriangleStream<GS_OUT> Triangles)
     Triangles.RestartStrip();
 }
 
-
+//파티클의 점 하나를 그리고 픽셀로 넘어간다 사각형 한개 생성후 픽셸로 감
 [maxvertexcount(6)]
 void GS_CUSTOM(point GS_IN In[1], inout TriangleStream<GS_OUT> Triangles)
 {
@@ -152,11 +152,13 @@ void GS_CUSTOM(point GS_IN In[1], inout TriangleStream<GS_OUT> Triangles)
     float3 vPosition;
     matrix matVP = mul(g_ViewMatrix, g_ProjMatrix);
     
-    float4 PointPosition = float4(In[0].vPosition, 1.f);
-        
-    vector CamPos = mul(PointPosition, g_ViewMatrix);
-    CamPos = CamPos / CamPos.w;
-    Out[0].LinearZ = abs(CamPos.z / (g_FarZ - g_NearZ));
+    float4 PointPosition = float4(In[0].vPosition, 1.f);//월드좌표
+        //-1~1 x,y,z
+    vector CamPos = mul(PointPosition, g_ViewMatrix);//뷰좌표(위치)
+     CamPos = mul(PointPosition, g_ProjMatrix);//투영 (w나누기전)
+    
+    CamPos = CamPos / CamPos.w;//정규화된 윈도우 좌표계
+    Out[0].LinearZ = abs(CamPos.z / (g_FarZ - g_NearZ));//w값을 가져온거다.
     
         
     vPosition = In[0].vPosition + vRight + vUp;
@@ -261,14 +263,12 @@ PS_OUT PS_MAIN_SPREADCOLOR(PS_IN In)
     float3 ColorN = vParticle.rgb;
     
     float AlphaN = vParticle.a;
-
+ 
     float WeightN = clamp(0.03f / (1e-5 + pow(In.LinearZ, 4.0)), g_NearZ, g_FarZ);
-
+    
     WeightN = max(WeightN, 1.0f);
 
-    Out.vColor = float4(ColorN.rgb * AlphaN, AlphaN) * WeightN;
-
-    AlphaN = (BackAlpha.r * 0.5f + AlphaN * 0.5f);
+    Out.vColor = float4(ColorN.rgb * AlphaN, 1) * In.LinearZ;
 
     Out.vAlpha = float4(AlphaN, 0.f, 0.f, 0.f);
     
@@ -354,7 +354,7 @@ technique11 DefaultTechnique
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_Default, 0);
-        SetBlendState(BS_WeightsBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+        SetBlendState(BS_Blend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 
 		/* 어떤 셰이덜르 국동할지. 셰이더를 몇 버젼으로 컴파일할지. 진입점함수가 무엇이찌. */
         VertexShader = compile vs_5_0 VS_MAIN();
