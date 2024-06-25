@@ -29,7 +29,7 @@ void CFileTotalMgr::Late_Tick(_float fTimeDelta)
 
 
 
-HRESULT CFileTotalMgr::Set_MapObj_In_Client(int iMapLoadingNum, LEVEL iStageLevel)
+HRESULT CFileTotalMgr::Set_MapObj_In_Client(int iMapLoadingNum, int iStageLevel)
 {
     Safe_Delete_Array(m_MapTotalInform.pMapObjDesc);
 
@@ -45,7 +45,7 @@ HRESULT CFileTotalMgr::Set_MapObj_In_Client(int iMapLoadingNum, LEVEL iStageLeve
 }
 
 
-HRESULT CFileTotalMgr::Set_GameObject_In_Client(LEVEL iStageLevel)
+HRESULT CFileTotalMgr::Set_GameObject_In_Client(int iStageLevel)
 {
     for (int i = 0; i < m_MapTotalInform.iNumMapObj; i++)
     {
