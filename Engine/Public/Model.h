@@ -49,6 +49,12 @@ public:
 	_bool Get_AnimFinished() const;
 	_bool Get_AnimChanged() const;
 
+	_bool Get_AnimLoop(_uint iAnimIndex) { 
+		if (m_AnimLoops.size() <= iAnimIndex) return false;			//배열 범위 예외처리
+
+		return m_AnimLoops[iAnimIndex];
+	}
+
 	const vector<class CAnimation*>& Get_Animations() {
 		return m_Animations;
 	}
@@ -64,6 +70,8 @@ public:
 	const _float4x4* Get_BoneCombinedTransformationMatrix(const _char* pBoneName) const;
 	const _float4x4* Get_BoneTransformationMatrix(const _char* pBoneName) const;
 
+	void Copy_DecalMaterial(vector<DECAL_DESC>* pDecals);
+
 private:
 	HRESULT Export_Model(string& pBinFilePath, const _char* pModelFilePath);
 	HRESULT Export_Bones(ofstream& out);
@@ -77,6 +85,8 @@ private:
 	HRESULT Import_Materials(ifstream& in);
 	HRESULT Import_Animations(ifstream& in);
 
+	void	Find_Mesh_Using_DECAL();
+
 private:
 	MODELTYPE					m_eModelType = { TYPE_END };
 
@@ -85,6 +95,7 @@ private:
 	_float4x4					m_PreTransformMatrix;			
 	_float4x4					m_MeshBoneMatrices[512];
 
+	vector<_bool>				m_AnimLoops;
 
 	_uint						m_iNumMeshes = { 0 };
 	vector<class CMesh*>		m_Meshes;
@@ -103,6 +114,10 @@ private:
 	_bool						m_isAnimChange = { false };
 	_float						m_fAnimRatio = { 0.2f };
 	_double						m_ChangeInterval = { 0.2 };
+
+
+	vector<DECAL_DESC>			m_vDecalMaterials;
+	bool						m_bOrigin = { false };
 
 public:
 	static CModel* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, MODELTYPE eModelType, const _char* pModelFilePath, _fmatrix PreTransformMatrix, _bool isExported);

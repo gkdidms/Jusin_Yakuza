@@ -3,6 +3,7 @@
 #include "GameInstance.h"
 #include "SystemManager.h"
 #include "DebugManager.h"
+#include "PlayerCamera.h"
 #include "DebugCamera.h"
 #include "FileTotalMgr.h"
 
@@ -32,7 +33,7 @@ HRESULT CLevel_Test::Initialize()
 
 	/* 클라 파싱 */
 	m_pFileTotalManager->Set_MapObj_In_Client(0, LEVEL_TEST);
-	m_pFileTotalManager->Set_Lights_In_Client(0);
+	m_pFileTotalManager->Set_Lights_In_Client(1);
 
 	return S_OK;
 }
@@ -82,8 +83,6 @@ HRESULT CLevel_Test::Ready_Light()
 HRESULT CLevel_Test::Ready_Camera(const wstring& strLayerTag)
 {
 	/* 카메라 추가 시 Debug Camera를 첫번째로 놔두고 추가해주세요 (디버깅 툴에서 사용중)*/
-	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_Sky"), strLayerTag)))
-		return E_FAIL;
 
 	CDebugCamera::PLAYER_CAMERA_DESC		CameraDesc{};
 
@@ -99,6 +98,24 @@ HRESULT CLevel_Test::Ready_Camera(const wstring& strLayerTag)
 
 	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_DebugCamera"), strLayerTag, &CameraDesc)))
 		return E_FAIL;
+
+
+
+	//CPlayerCamera::PLAYER_CAMERA_DESC		PlayerCameraDesc{};
+
+	//PlayerCameraDesc.fSensor = 0.1f;
+	//PlayerCameraDesc.vEye = _float4(1.0f, 20.0f, -20.f, 1.f);
+	//PlayerCameraDesc.vFocus = _float4(0.f, 0.0f, 0.0f, 1.f);
+	//PlayerCameraDesc.fFovY = XMConvertToRadians(60.0f);
+	//PlayerCameraDesc.fAspect = g_iWinSizeX / (_float)g_iWinSizeY;
+	//PlayerCameraDesc.fNear = 0.1f;
+	//PlayerCameraDesc.fFar = 3000.f;
+	//PlayerCameraDesc.fSpeedPecSec = 20.f;
+	//PlayerCameraDesc.fRotatePecSec = XMConvertToRadians(90.f);
+	//PlayerCameraDesc.pPlayerMatrix = dynamic_cast<CTransform*>(m_pGameInstance->Get_GameObject_Component(LEVEL_TEST, TEXT("Layer_Player"), TEXT("Com_Transform", 0)))->Get_WorldFloat4x4();
+	//
+	//if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_PlayerCamera"), strLayerTag, &PlayerCameraDesc)))
+	//	return E_FAIL;
 
 	return S_OK;
 }

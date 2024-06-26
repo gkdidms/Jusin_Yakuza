@@ -15,6 +15,7 @@ private:
 
 public:
     virtual void* Get_Desc() { return m_pBoundingBox; }
+    virtual void* Get_OriginDesc() { return m_pOriginalBox; }       //0625 Çý¿øÃß°¡
 
 public:
     virtual void Set_Value(void* pDesc) override;

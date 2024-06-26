@@ -23,6 +23,11 @@ public:
     virtual void Tick(_fmatrix WorldMatirx);
 
 public:
+    TYPE Get_Type() { return m_ColliderType; }       //0625 Çý¿ø Ãß°¡
+    void* Get_Desc();       //0625 Çý¿ø Ãß°¡
+    void* Get_OriginDesc();       //0625 Çý¿ø Ãß°¡
+
+public:
     void Set_Value(void* pDesc);
     void Set_Center(const _float3& vCenter);
 

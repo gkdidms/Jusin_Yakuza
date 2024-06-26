@@ -41,6 +41,18 @@ namespace Engine
 		OBJECTPLACE_DESC*		pMapObjDesc;
 	};
 
+	struct ENGINE_DLL DECAL_DESC
+	{
+		_char					sTextureFullPath[MAX_PATH];
+		int						iMaterialNum;
+
+		/* mesh 몇개가 사용하는지 */
+		int						iMeshNum;
+		int*					pMeshIndices;
+	};
+
+
+
 
 	/* 엔진을 초기화하기위해 필요한 데이터 여러개를 묶었다. */
 	typedef struct
@@ -90,6 +102,7 @@ namespace Engine
 		int						iNumLights;
 		LIGHT_DESC*				pLightDesc;
 	};
+
 
 
 

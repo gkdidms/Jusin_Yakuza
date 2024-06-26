@@ -179,6 +179,11 @@ HRESULT CLoader::Loading_For_RunMapLevel(int iLevel)
 		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxMesh.hlsl"), VTXMESH::Elements, VTXMESH::iNumElements))))
 		return E_FAIL;
 
+	/* For.Prototype_Component_Shader_VtxNorTex */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(iLevel, TEXT("Prototype_Component_Shader_VtxMesh_CamObj"),
+		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxMesh_CamObj.hlsl"), VTXMESH::Elements, VTXMESH::iNumElements))))
+		return E_FAIL;
+
 
 	lstrcpy(m_szLoadingText, TEXT("오브젝트를(을) 로딩 중 입니다."));
 

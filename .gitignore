@@ -1,6 +1,10 @@
 # Visual Studio 2015/2017 cache/options directory
 .vs/
 
+Textures/
+Models/
+
+
 # User-specific files
 *.suo
 *.user
@@ -37,6 +41,7 @@ ipch/
 *.recipe
 
 # Engine dll/lib
-Engine.dll
-Engine.lib
-/AnimationTool/Bin/Engine.dll
+*.dll
+*.lib
+*.dll
+

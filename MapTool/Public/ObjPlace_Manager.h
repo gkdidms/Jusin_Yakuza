@@ -55,11 +55,13 @@ public:
 	void					Get_CurrentGameObject_Desc(CConstruction::MAPOBJ_DESC*	mapDesc, int iNumObject);
 	void					Edit_CurrentGameObject_Desc(CConstruction::MAPOBJ_DESC* mapDesc, int iNumObject);
 	void					Update_CurrentGameObject_Desc();
-
 	/* object 배치 */
 	bool					Add_CloneObject_Imgui(MAPTOOL_OBJPLACE_DESC objDesc, _uint iFolderNum, _uint iObjectIndex);
 	/* Object 종류 고르기 */
 	void					Set_Map_Object();
+
+	void					Edit_Decal();
+	void					Add_Decal_IMGUI();
 
 
 private:
@@ -67,7 +69,6 @@ private:
 	HRESULT					Import_Bin_Map_Data_OnTool(MAP_TOTALINFORM_DESC* mapObjData, char* fileName);
 	HRESULT					Export_Bin_Map_Data(MAP_TOTALINFORM_DESC* mapObjData);
 
-private:
 	string					modifyString(string& input);
 	void					Show_ExampleModel(MAPTOOL_OBJPLACE_DESC objDesc, _uint iFolderNum, _uint iObjectIndex);
 	string					Find_ModelName(_uint iFolderNum, _uint iObjectIndex);
@@ -78,11 +79,12 @@ private:
 	void					Show_FileName();
 	void					Update_FileName();
 
-
-private:
 	int						Click_To_Select_Object();
-
 	int						Find_Layers_Index(char*	strLayer);
+
+	void					Get_Decal_Texture(int iNumObject);
+	void					Update_DecalNameList();
+
 
 
 private:
@@ -92,30 +94,25 @@ private:
 	vector<char*>								m_ObjectNames_Map0; /* 추가한 오브젝트 이름들 */
 	vector<char*>								m_ObjectNames_Map1; /* 추가한 오브젝트 이름들 */
 	vector<char*>								m_FileNames; /* 맵마다 저장한 bin 리스트들 */
-
-
+	vector<char*>								m_DecalNames; 
 	class CGameInstance*						m_pGameInstance = { nullptr };
-
 	/* 설치 전 무슨 오브젝트인지 보여주는 */
 	CGameObject*								m_pShownObject = { nullptr }; 
 	bool										m_bShowExample = { false };
-
-
 	vector<char*>								m_ObjectNames; /* 맵에 설치된 아이들에 대한 리스트 */
 
 private:
+	bool										m_bAddDecal_IMGUI = { false };
 	_uint										m_iObjectNums = 0;
-
 	/* 배치관련 bool 변수 */
 	_bool										m_bDoing_Place_Object = false;
-
 	/* 마우스 Lbtn 누르면 한번만 추가되게 */
 	_bool										m_bInstallOneTime = { false };
-
 	CConstruction::MAPOBJ_DESC					m_tCurrentObjectDesc;
+	int											m_iCurrentObjectIndex = { 0 };
 
-	int											m_iCurrentObjectIndex = { -1 };
-
+	vector<DECAL_DESC>							m_Decals;
+	int											m_iDecalObjNum = { -1 };
 
 public:
 	virtual void Free() override;
