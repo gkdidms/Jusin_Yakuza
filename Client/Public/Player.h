@@ -61,6 +61,8 @@ private:
     virtual HRESULT Bind_ResourceData() override;
     HRESULT Add_CharacterData();
 
+    void Apply_ChracterData();
+
 public:
     static CPlayer* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
     virtual CGameObject* Clone(void* pArg);

@@ -34,6 +34,20 @@ private:
 
 public:
     HRESULT Initialize(wstring wstrModelName);
+
+public:
+    const vector<_uint>& Get_AlphaMeshes() const {
+        return m_AlphaMeshes;
+    }
+    const vector<_uint>& Get_LoopAnimations() const {
+        return m_LoopAnimations;
+    }
+    const multimap<string, ANIMATION_EVENT>& Get_AnimationEvents() const {
+        return m_AnimationEvents;
+    }
+    const unordered_map<_uint, COLLIDER_STATE>& Get_Colliders() const {
+        return m_Colliders;
+    }
     
 private:
     CGameInstance* m_pGameInstance = { nullptr };

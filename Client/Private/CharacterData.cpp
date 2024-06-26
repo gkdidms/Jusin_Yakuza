@@ -134,18 +134,12 @@ HRESULT CCharacterData::Initialize(wstring wstrModelName)
 			in.read((char*)&ColliderDesc.iType, sizeof(_uint));
 			in.read((char*)&ColliderDesc.vCenter, sizeof(_float3));
 
-			switch (ColliderDesc.iType)
-			{
-			case 0:				// AABB
-				in.read((char*)&ColliderDesc.vValue, sizeof(_float3));
-				break;
-			case 1:				// OBB
-				in.read((char*)&ColliderDesc.vValue, sizeof(_float3));
-				break;
-			case 2:				// Sphere
+			// 2는 Sphere라서 Vlaue가 Radius라 float1개만 쓴다
+			if(2 == ColliderDesc.iType)
 				in.read((char*)&ColliderDesc.vValue, sizeof(_float));
-				break;
-			}
+			else
+				in.read((char*)&ColliderDesc.vValue, sizeof(_float3));
+
 
 			m_Colliders.emplace(iBoneIndex, ColliderDesc);
 		}

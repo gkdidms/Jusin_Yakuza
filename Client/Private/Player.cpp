@@ -3,6 +3,8 @@
 #include "GameInstance.h"
 #include "CharacterData.h"
 
+#include "Mesh.h"
+
 CPlayer::CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLandObject{ pDevice, pContext }
 {
@@ -227,7 +229,33 @@ HRESULT CPlayer::Add_CharacterData()
 	if (nullptr == m_pData)
 		return E_FAIL;
 
+	Apply_ChracterData();
+
 	return S_OK;
+}
+
+void CPlayer::Apply_ChracterData()
+{
+	auto& pAlphaMeshes = m_pData->Get_AlphaMeshes();
+	auto pMeshes = m_pModelCom->Get_Meshes();
+
+	for (size_t i = 0; i < pMeshes.size(); i++)
+	{
+		for (auto& iMeshIndex : pAlphaMeshes)
+		{
+			if (i == iMeshIndex)
+				pMeshes[i]->Set_AlphaApply(true);
+		}
+	}
+
+	auto& pLoopAnimations = m_pData->Get_LoopAnimations();
+
+
+	auto& pAnimationEvents = m_pData->Get_AnimationEvents();
+	auto& pColliders = m_pData->Get_Colliders();
+
+
+
 }
 
 CPlayer* CPlayer::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
