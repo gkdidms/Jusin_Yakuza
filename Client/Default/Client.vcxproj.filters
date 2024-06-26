@@ -97,6 +97,15 @@
     <ClCompile Include="..\Private\CharacterData.cpp">
       <Filter>02.GameObjects\02.Character\CharacterData</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\PartObject.cpp">
+      <Filter>02.GameObjects\02.Character\PartObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\SoketObject.cpp">
+      <Filter>02.GameObjects\02.Character\PartObject\SoketObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\SoketCollider.cpp">
+      <Filter>02.GameObjects\02.Character\SoketCollider</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\MainApp.h">
@@ -225,6 +234,15 @@
     <ClInclude Include="..\Public\CharacterData.h">
       <Filter>02.GameObjects\02.Character\CharacterData</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\PartObject.h">
+      <Filter>02.GameObjects\02.Character\PartObject</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\SoketObject.h">
+      <Filter>02.GameObjects\02.Character\PartObject\SoketObject</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\SoketCollider.h">
+      <Filter>02.GameObjects\02.Character\SoketCollider</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -318,6 +336,15 @@
     </Filter>
     <Filter Include="02.GameObjects\02.Character\CharacterData">
       <UniqueIdentifier>{d47f23c7-f09f-46fd-a441-f1561bb9a95a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\PartObject">
+      <UniqueIdentifier>{8a0f2898-45a3-4206-97c1-f183abd047cd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\PartObject\SoketObject">
+      <UniqueIdentifier>{b7f3897f-c459-4f2d-adf6-c37ae692fadc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\SoketCollider">
+      <UniqueIdentifier>{c1310b64-5e01-4f26-94c2-6170fe82e493}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

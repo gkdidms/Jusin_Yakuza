@@ -40,10 +40,10 @@ private:
     void Synchronize_Root();
 
 private:
-    CShader*    m_pShaderCom = { nullptr };
-    CModel*     m_pModelCom = { nullptr };
-    CCollider*  m_pColliderCom = { nullptr };
-    class CCharacterData* m_pData = { nullptr };
+    CShader*                m_pShaderCom = { nullptr };
+    CModel*                 m_pModelCom = { nullptr };
+    vector<class CSoketCollider*>      m_pColliders;
+    class CCharacterData*   m_pData = { nullptr };
 
 private:
     _uint       m_iAnimIndex = { 2 };

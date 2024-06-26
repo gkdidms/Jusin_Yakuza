@@ -1,4 +1,7 @@
 
+#include "D:\TeamProject\Engine\Private\GameInstance.cpp"
+
+
 #include "D:\TeamProject\Engine\Private\GameObject.cpp"
 
 
@@ -15,7 +18,4 @@
 
 
 #include "D:\TeamProject\Engine\Private\Level.cpp"
-
-
-#include "D:\TeamProject\Engine\Private\Level_Manager.cpp"
 

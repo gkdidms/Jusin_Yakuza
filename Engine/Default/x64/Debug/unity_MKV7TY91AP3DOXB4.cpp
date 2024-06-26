@@ -1,4 +1,7 @@
 
+#include "D:\TeamProject\Engine\Private\VIBuffer_Instance.cpp"
+
+
 #include "D:\TeamProject\Engine\Private\VIBuffer_Instance_Point.cpp"
 
 

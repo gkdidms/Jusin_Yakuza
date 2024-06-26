@@ -1,4 +1,7 @@
 
+#include "D:\TeamProject\Engine\Private\PipeLine.cpp"
+
+
 #include "D:\TeamProject\Engine\Private\RandomManager.cpp"
 
 
@@ -15,7 +18,4 @@
 
 
 #include "D:\TeamProject\Engine\Private\SoundMgr.cpp"
-
-
-#include "D:\TeamProject\Engine\Private\Texture.cpp"
 
