@@ -30,8 +30,19 @@ void CPlayerCamera::Priority_Tick(const _float& fTimeDelta)
 
 void CPlayerCamera::Tick(const _float& fTimeDelta)
 {
+	if (m_pGameInstance->GetKeyState(DIK_UP) == HOLD)
+		m_pTransformCom->Go_Straight(fTimeDelta);
+	if (m_pGameInstance->GetKeyState(DIK_DOWN) == HOLD)
+		m_pTransformCom->Go_Backward(fTimeDelta);
+	if (m_pGameInstance->GetKeyState(DIK_LEFT) == HOLD)
+		m_pTransformCom->Go_Left(fTimeDelta);
+	if (m_pGameInstance->GetKeyState(DIK_RIGHT) == HOLD)
+		m_pTransformCom->Go_Right(fTimeDelta);
 	if (m_pGameInstance->GetKeyState(DIK_PGUP) == HOLD)
-		Zoom(fTimeDelta);
+		m_pTransformCom->Go_Up(fTimeDelta);
+	if (m_pGameInstance->GetKeyState(DIK_PGDN) == HOLD)
+		m_pTransformCom->Go_Down(fTimeDelta);
+		
 	__super::Tick(fTimeDelta);
 }
 

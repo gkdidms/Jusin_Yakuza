@@ -45,6 +45,9 @@ public:
 	const vector<CAnimation*>& Get_Animations();
 	const vector<CBone*>& Get_Bones();
 	const vector<CMesh*>& Get_Meshes();
+	const vector<class CModelBoneSphere*>& Get_BoneSpheres() {
+		return m_BoneSpheres;
+	}
 
 	_bool Get_AnimLoop(_uint iAnimIndex);
 
@@ -56,13 +59,15 @@ public:
 		m_iSelectedMeshIndex = iMeshIndex;
 	}
 
-	void Create_BoneCollider(_uint iType, _uint iIndex);
+	void Create_BoneCollider(_uint iType, _uint iIndex, const _float3& vCenter, void* pDesc);
 
 	void Set_Collider_Center(_uint iIndex, const _float3& vCenter);
 	void Set_Collider_Value(_uint iIndex, void* pDesc);
 
 public:
 	_bool Created_BoneCollider(_uint iIndex);
+
+	HRESULT Release_BoneCollider(_uint iIndex);
 
 private:
 	HRESULT	Add_Components();

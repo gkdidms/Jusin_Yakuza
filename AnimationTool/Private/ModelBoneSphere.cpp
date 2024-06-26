@@ -66,7 +66,7 @@ void CModelBoneSphere::Tick(const _float& fTimeDelta)
 
 void CModelBoneSphere::Late_Tick(const _float& fTimeDelta)
 {
-    m_pGameInstance->Add_Renderer(CRenderer::RENDER_UI, this);
+    m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
 }
 
 HRESULT CModelBoneSphere::Render()
@@ -131,7 +131,72 @@ void CModelBoneSphere::Change_TexutreIndex(_bool isOn)
 void CModelBoneSphere::Create_Collider(CCollider::TYPE eType, const CCollider::COLLIDER_DESC* pDesc)
 {
     if (nullptr != m_pColliderCom) return;
-    m_pColliderCom = static_cast<CCollider*>(m_pGameInstance->Add_Component_Clone(LEVEL_EDIT, TEXT("Prototype_Component_Collider"), (void*)pDesc));
+
+    if ((__super::Add_Component(LEVEL_EDIT, TEXT("Prototype_Component_Collider"),
+        TEXT("Com_Collider"), reinterpret_cast<CComponent**>(&m_pColliderCom), (void*)pDesc)))
+        return;
+
+    //m_pColliderCom = static_cast<CCollider*>(m_pGameInstance->Add_Component_Clone(LEVEL_EDIT, TEXT("Prototype_Component_Collider"), ));
+}
+
+HRESULT CModelBoneSphere::Release_Collider()
+{
+    int iCount = Safe_Release(m_pColliderCom);
+    m_Components.erase(TEXT("Com_Collider"));
+    return 0 < iCount ? Safe_Release(m_pColliderCom) : S_OK;
+}
+
+CCollider::TYPE CModelBoneSphere::Get_Collider_Type()
+{
+    return m_pColliderCom->Get_Type();
+}
+
+const _float3& CModelBoneSphere::Get_Collider_Center()
+{
+    switch (m_pColliderCom->Get_Type())
+    {
+    case CCollider::COLLIDER_AABB:
+    {
+        BoundingBox* pBounding = (BoundingBox*)m_pColliderCom->Get_OriginDesc();
+        return pBounding->Center;
+    }
+    case CCollider::COLLIDER_OBB:
+    {
+        BoundingOrientedBox* pBounding = (BoundingOrientedBox*)m_pColliderCom->Get_OriginDesc();
+        return pBounding->Center;
+    }
+    case CCollider::COLLIDER_SPHERE:
+    {
+        BoundingSphere* pBounding = (BoundingSphere*)m_pColliderCom->Get_OriginDesc();
+        return pBounding->Center;
+    }
+    }
+
+    return _float3();
+}
+
+void* CModelBoneSphere::Get_Collider_Value()
+{
+    switch (m_pColliderCom->Get_Type())
+    {
+    case CCollider::COLLIDER_AABB:
+    {
+        BoundingBox* pBounding = (BoundingBox*)m_pColliderCom->Get_Desc();
+        return (void*)&pBounding->Extents;
+    }
+    case CCollider::COLLIDER_OBB:
+    {
+        BoundingOrientedBox* pBounding = (BoundingOrientedBox*)m_pColliderCom->Get_Desc();
+        return (void*)&pBounding->Extents;
+    }
+    case CCollider::COLLIDER_SPHERE:
+    {
+        BoundingSphere* pBounding = (BoundingSphere*)m_pColliderCom->Get_Desc();
+        return &pBounding->Radius;
+    }
+    }
+
+    return nullptr;
 }
 
 void CModelBoneSphere::Set_Collider_Center(const _float3& vCenter)
