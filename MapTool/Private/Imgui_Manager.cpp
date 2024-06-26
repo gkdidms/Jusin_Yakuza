@@ -117,6 +117,7 @@ void CImgui_Manager::Tick(_float fTimeDelta)
     {
         Show_MapObj_Place_IMGUI();
         Show_Object_List();
+        m_pObjPlace_Manager->Add_Decal_IMGUI();
     }
 
     if (m_bNaviTool_IMGUI)

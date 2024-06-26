@@ -339,6 +339,9 @@
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Cell.hlsl">
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxMesh_CamObj.hlsl">
+      <Filter>97.ShaderFiles</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="MapTool.rc">

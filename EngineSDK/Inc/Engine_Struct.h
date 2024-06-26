@@ -91,6 +91,15 @@ namespace Engine
 		LIGHT_DESC*				pLightDesc;
 	};
 
+	struct ENGINE_DLL DECAL_DESC
+	{
+		_char					sTextureFullPath[MAX_PATH];
+		int						iMaterialNum;
+
+		/* mesh 몇개가 사용하는지 */
+		int						iMeshNum;
+		int*					pMeshIndices;
+	};
 
 
 	// 타임별로 Value를 저장한다.

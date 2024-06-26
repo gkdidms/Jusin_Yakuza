@@ -74,22 +74,8 @@ struct PS_OUT
 };
 
 
-PS_OUT PS_MAIN(PS_IN In)
-{
-    PS_OUT Out = (PS_OUT) 0;
 
-    Out.vDiffuse = g_Texture.Sample(LinearSampler, In.vTexcoord);
-	
-    // 투명할 경우(0.1보다 작으면 투명하니) 그리지 않음
-    if (Out.vDiffuse.a < 0.1f)
-        discard;
-    Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
-    Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 3000.f, g_fObjID, 1.f);
-    
-    return Out;
-}
-
-PS_OUT PS_MAIN_FIND_MESH(PS_IN In)
+PS_OUT PS_MAIN_CAMERAEYE(PS_IN In)
 {
     PS_OUT Out = (PS_OUT) 0;
 
@@ -105,12 +91,27 @@ PS_OUT PS_MAIN_FIND_MESH(PS_IN In)
     return Out;
 }
 
+PS_OUT PS_MAIN_CAMERAFOCUS(PS_IN In)
+{
+    PS_OUT Out = (PS_OUT) 0;
+
+    Out.vDiffuse = g_Texture.Sample(LinearSampler, In.vTexcoord);
+	
+    // 투명할 경우(0.1보다 작으면 투명하니) 그리지 않음
+    if (Out.vDiffuse.a < 0.1f)
+        discard;
+    Out.vDiffuse = float4(0, 0, 1, 1);
+    Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
+    Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 3000.f, g_fObjID, 1.f);
+    
+    return Out;
+}
+
 
 
 technique11 DefaultTechnique
 {
-	/* 특정 렌더링을 수행할 때 적용해야할 셰이더 기법의 셋트들의 차이가 있다. */
-    pass DefaultPass
+    pass CameraEyePass
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_Default, 0);
@@ -121,10 +122,10 @@ technique11 DefaultTechnique
         GeometryShader = NULL;
         HullShader = NULL;
         DomainShader = NULL;
-        PixelShader = compile ps_5_0 PS_MAIN();
+        PixelShader = compile ps_5_0 PS_MAIN_CAMERAEYE();
     }
 
-    pass FindMeshPass
+    pass CameraFocusPass
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_Default, 0);
@@ -135,7 +136,7 @@ technique11 DefaultTechnique
         GeometryShader = NULL;
         HullShader = NULL;
         DomainShader = NULL;
-        PixelShader = compile ps_5_0 PS_MAIN_FIND_MESH();
+        PixelShader = compile ps_5_0 PS_MAIN_CAMERAFOCUS();
     }
 
 }

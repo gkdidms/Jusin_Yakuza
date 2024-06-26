@@ -198,6 +198,7 @@ void CObjPlace_Manager::Tick(const _float& fTimeDelta)
 	{
 		m_pShownObject->Tick(fTimeDelta);
 	}
+
 }
 
 void CObjPlace_Manager::Late_Tick(const _float& fTimeDelta)
@@ -262,12 +263,19 @@ void CObjPlace_Manager::Show_Installed_GameObjectsList()
 	/* 오브젝트 관련 */
 	if (0 < m_GameObjects.size())
 	{
-
 		ImGui::Text(u8" 배치 오브젝트 리스트 ");
 
 		list<string>	m_layer;
 
-		static int object_current_idx;
+		static int object_current_idx = 0;
+
+		if (m_iCurrentObjectIndex != object_current_idx)
+		{
+			/* 밑에서 수정이 생겼을 경우 */
+			object_current_idx = m_iCurrentObjectIndex;
+			Get_CurrentGameObject_Desc(&m_tCurrentObjectDesc, m_iCurrentObjectIndex);
+		}
+
 		if (ImGui::BeginListBox("listbox 1"))
 		{
 			for (int n = 0; n < m_ObjectNames.size(); n++)
@@ -284,28 +292,28 @@ void CObjPlace_Manager::Show_Installed_GameObjectsList()
 
 		int iLayer = Click_To_Select_Object();
 
-		if (object_current_idx >= m_GameObjects.size() && m_GameObjects.size() > 0)
+
+		if (iLayer >= 0)
 		{
-			object_current_idx = m_GameObjects.size() - 1;
+			object_current_idx = iLayer;
 		}
 
-		
+		/* 다른 오브젝트 클릭시 */
+		if (m_iCurrentObjectIndex != object_current_idx)
+		{
+			m_iCurrentObjectIndex = object_current_idx;
+			Get_CurrentGameObject_Desc(&m_tCurrentObjectDesc, m_iCurrentObjectIndex);
+		}
 
-		if (!m_GameObjects.empty())
-		{
-			Edit_Installed_GameObject(object_current_idx);
-		}
-		else if (m_GameObjects.empty())
-		{
-			/* 초기화 */
-			object_current_idx = 0;
-		}
+		/* 구조체 한번 더 업데이트 해줘야하는지 파악 */
+		bool		bChange = false;
 
 		if (ImGui::Button(u8"object 삭제"))
 		{
-			Delete_Object(object_current_idx);
+			Delete_Object(m_iCurrentObjectIndex);
 			/* list 이름 업데이트 */
 			Update_ObjectNameList();
+			bChange = true;
 		}
 
 		if (ImGui::Button(u8"오브젝트 전체 삭제"))
@@ -315,116 +323,163 @@ void CObjPlace_Manager::Show_Installed_GameObjectsList()
 
 			m_GameObjects.clear();
 
+			object_current_idx = 0;
+			m_iCurrentObjectIndex = 0;
 
 			Update_ObjectNameList();
 		}
+		
 
-		if (iLayer >= 0)
+		/* index는 같아도 다른 오브젝트로 됐을때 */
+		if (bChange == true && !m_GameObjects.empty())
 		{
-			object_current_idx = iLayer;
+			Get_CurrentGameObject_Desc(&m_tCurrentObjectDesc, m_iCurrentObjectIndex);
 		}
 
-		/* 오류 때문에 layer_current_idx 넘어갈때를 대비해서 만들어놓은 아이들 */
-		if (object_current_idx > m_GameObjects.size() - 1)
+		if (!m_GameObjects.empty())
 		{
-			object_current_idx = m_GameObjects.size() - 1;
+			ImGui::NewLine();
+
+			static int LayerType = 0;
+			if (ImGui::RadioButton(u8"오브젝트 수정", LayerType == 0))
+			{
+				LayerType = 0;
+			}
+			ImGui::SameLine();
+			if (ImGui::RadioButton(u8"데칼 수정", LayerType == 1))
+			{
+				LayerType = 1;
+			}
+
+			ImGui::NewLine();
+
+			if (LayerType == 0)
+			{
+				m_bAddDecal_IMGUI = false;
+				Edit_Installed_GameObject(m_iCurrentObjectIndex);
+
+				if (ImGui::Button(u8"맵 오브젝트 수정"))
+				{
+					Edit_CurrentGameObject_Desc(&m_tCurrentObjectDesc, object_current_idx);
+				}
+			}
+			else if (LayerType == 1)
+			{
+				m_bAddDecal_IMGUI = true;
+
+				if (ImGui::Button(u8"데칼 수정"))
+				{
+					Get_Decal_Texture(object_current_idx);
+				}
+			}
+			
 		}
+		else if (m_GameObjects.empty())
+		{
+			/* 초기화 */
+			object_current_idx = 0;
+			m_iCurrentObjectIndex = 0;
+		}
+
 
 		ImGui::NewLine();
 		ImGui::NewLine();
 			
-		/* 데이터 추가할때마다 수정 */
-		if (0 < m_GameObjects.size())
-		{
-			/* 다른 오브젝트 클릭시 */
-			if (m_iCurrentObjectIndex != object_current_idx)
-			{
-				m_iCurrentObjectIndex = object_current_idx;
-				Get_CurrentGameObject_Desc(&m_tCurrentObjectDesc, object_current_idx);
-			}
+#pragma region 안씀
+		///* 데이터 추가할때마다 수정 */
+		//if (0 < m_GameObjects.size())
+		//{
+		//	
+		//	ImGui::Text(u8"Layer");
+		//	static int LayerType = m_tCurrentObjectDesc.iLayer;
+		//	if (ImGui::RadioButton(m_Layers[0], m_tCurrentObjectDesc.iLayer == 0))
+		//	{
+		//		LayerType = 0;
+		//		m_tCurrentObjectDesc.iLayer = 0;
+		//	}
 
-
-			ImGui::Text(u8"Layer");
-			static int LayerType = m_tCurrentObjectDesc.iLayer;
-			if (ImGui::RadioButton(m_Layers[0], m_tCurrentObjectDesc.iLayer == 0))
-			{
-				LayerType = 0;
-				m_tCurrentObjectDesc.iLayer = 0;
-			}
-
-			if (ImGui::RadioButton(m_Layers[1], m_tCurrentObjectDesc.iLayer == 1))
-			{
-				LayerType = 1;
-				m_tCurrentObjectDesc.iLayer = 1;
-			}
+		//	if (ImGui::RadioButton(m_Layers[1], m_tCurrentObjectDesc.iLayer == 1))
+		//	{
+		//		LayerType = 1;
+		//		m_tCurrentObjectDesc.iLayer = 1;
+		//	}
 
 
 
-			ImGui::NewLine();
+		//	ImGui::NewLine();
 
-			ImGui::Text(u8"오브젝트유형");
-			static int objectType = m_tCurrentObjectDesc.iObjType;
-			if (ImGui::RadioButton(u8"그냥건물", m_tCurrentObjectDesc.iObjType == 0))
-			{
-				objectType = 0;
-				m_tCurrentObjectDesc.iObjType = 0;
-			}
+		//	ImGui::Text(u8"오브젝트유형");
+		//	static int objectType = m_tCurrentObjectDesc.iObjType;
+		//	if (ImGui::RadioButton(u8"그냥건물", m_tCurrentObjectDesc.iObjType == 0))
+		//	{
+		//		objectType = 0;
+		//		m_tCurrentObjectDesc.iObjType = 0;
+		//	}
 
-			if (ImGui::RadioButton(u8"상호작용가능", m_tCurrentObjectDesc.iObjType == 1))
-			{
-				objectType = 1;
-				m_tCurrentObjectDesc.iObjType = 1;
-			}
+		//	if (ImGui::RadioButton(u8"상호작용가능", m_tCurrentObjectDesc.iObjType == 1))
+		//	{
+		//		objectType = 1;
+		//		m_tCurrentObjectDesc.iObjType = 1;
+		//	}
 
-			if (ImGui::RadioButton(u8"아이템", m_tCurrentObjectDesc.iObjType == 2))
-			{
-				objectType = 2;
-				m_tCurrentObjectDesc.iObjType = 2;
-			}
+		//	if (ImGui::RadioButton(u8"아이템", m_tCurrentObjectDesc.iObjType == 2))
+		//	{
+		//		objectType = 2;
+		//		m_tCurrentObjectDesc.iObjType = 2;
+		//	}
 
-			if (ImGui::RadioButton(u8"몬스터", m_tCurrentObjectDesc.iObjType == 3))
-			{
-				objectType = 3;
-				m_tCurrentObjectDesc.iObjType = 3;
-			}
+		//	if (ImGui::RadioButton(u8"몬스터", m_tCurrentObjectDesc.iObjType == 3))
+		//	{
+		//		objectType = 3;
+		//		m_tCurrentObjectDesc.iObjType = 3;
+		//	}
 
+		//	ImGui::NewLine();
 
-			ImGui::NewLine();
-			ImGui::NewLine();
+		//	ImGui::Text(u8"쉐이더");
+		//	static int shaderType = m_tCurrentObjectDesc.iShaderPass;
+		//	if (ImGui::RadioButton(u8"shader1", m_tCurrentObjectDesc.iShaderPass == 0))
+		//	{
+		//		shaderType = 0;
+		//		m_tCurrentObjectDesc.iShaderPass = 0;
+		//	}
 
-			ImGui::Text(u8"쉐이더");
-			static int shaderType = m_tCurrentObjectDesc.iShaderPass;
-			if (ImGui::RadioButton(u8"shader1", m_tCurrentObjectDesc.iShaderPass == 0))
-			{
-				shaderType = 0;
-				m_tCurrentObjectDesc.iShaderPass = 0;
-			}
+		//	if (ImGui::RadioButton(u8"shader2", m_tCurrentObjectDesc.iShaderPass == 1))
+		//	{
+		//		shaderType = 1;
+		//		m_tCurrentObjectDesc.iShaderPass = 1;
+		//	}
 
-			if (ImGui::RadioButton(u8"shader2", m_tCurrentObjectDesc.iShaderPass == 1))
-			{
-				shaderType = 1;
-				m_tCurrentObjectDesc.iShaderPass = 1;
-			}
+		//	if (ImGui::RadioButton(u8"shader3", m_tCurrentObjectDesc.iShaderPass == 2))
+		//	{
+		//		shaderType = 2;
+		//		m_tCurrentObjectDesc.iShaderPass = 2;
+		//	}
 
-			if (ImGui::RadioButton(u8"shader3", m_tCurrentObjectDesc.iShaderPass == 2))
-			{
-				shaderType = 2;
-				m_tCurrentObjectDesc.iShaderPass = 2;
-			}
-
-			if (ImGui::RadioButton(u8"shader4", m_tCurrentObjectDesc.iShaderPass == 3))
-			{
-				shaderType = 3;
-				m_tCurrentObjectDesc.iShaderPass = 3;
-			}
+		//	if (ImGui::RadioButton(u8"shader4", m_tCurrentObjectDesc.iShaderPass == 3))
+		//	{
+		//		shaderType = 3;
+		//		m_tCurrentObjectDesc.iShaderPass = 3;
+		//	}
 
 
 
-			if (ImGui::Button(u8"맵 오브젝트 수정"))
-			{
-				Edit_CurrentGameObject_Desc(&m_tCurrentObjectDesc, object_current_idx);
-			}
-		}
+		//	if (ImGui::Button(u8"맵 오브젝트 수정"))
+		//	{
+		//		Edit_CurrentGameObject_Desc(&m_tCurrentObjectDesc, object_current_idx);
+		//	}
+
+		//	ImGui::SameLine();
+		//	
+		//	if (ImGui::Button(u8"데칼 텍스처 추가"))
+		//	{
+
+		//		Get_Decal_Texture(object_current_idx);
+		//	}
+		//}
+#pragma endregion
+
+		
 	}
 
 	ImGui::End();
@@ -501,13 +556,89 @@ void CObjPlace_Manager::Load_GameObject(int iNum)
 	Update_ObjectNameList();
 
 	Safe_Delete_Array(mapTotalInform.pMapObjDesc);
+
+	/* 로드할때는 현재 index 초기화 */
+	m_iCurrentObjectIndex = 0;
 }
 
 void CObjPlace_Manager::Edit_Installed_GameObject(int iNumObject)
 {
-	/* 기즈모 열기*/
 	Edit_GameObject_Transform(iNumObject);
+
+	ImGui::Text(u8"Layer");
+	static int LayerType = m_tCurrentObjectDesc.iLayer;
+	if (ImGui::RadioButton(m_Layers[0], m_tCurrentObjectDesc.iLayer == 0))
+	{
+		LayerType = 0;
+		m_tCurrentObjectDesc.iLayer = 0;
+	}
+
+	if (ImGui::RadioButton(m_Layers[1], m_tCurrentObjectDesc.iLayer == 1))
+	{
+		LayerType = 1;
+		m_tCurrentObjectDesc.iLayer = 1;
+	}
+
+
+
+	ImGui::NewLine();
+
+	ImGui::Text(u8"오브젝트유형");
+	static int objectType = m_tCurrentObjectDesc.iObjType;
+	if (ImGui::RadioButton(u8"그냥건물", m_tCurrentObjectDesc.iObjType == 0))
+	{
+		objectType = 0;
+		m_tCurrentObjectDesc.iObjType = 0;
+	}
+
+	if (ImGui::RadioButton(u8"상호작용가능", m_tCurrentObjectDesc.iObjType == 1))
+	{
+		objectType = 1;
+		m_tCurrentObjectDesc.iObjType = 1;
+	}
+
+	if (ImGui::RadioButton(u8"아이템", m_tCurrentObjectDesc.iObjType == 2))
+	{
+		objectType = 2;
+		m_tCurrentObjectDesc.iObjType = 2;
+	}
+
+	if (ImGui::RadioButton(u8"몬스터", m_tCurrentObjectDesc.iObjType == 3))
+	{
+		objectType = 3;
+		m_tCurrentObjectDesc.iObjType = 3;
+	}
+
+	ImGui::NewLine();
+
+	ImGui::Text(u8"쉐이더");
+	static int shaderType = m_tCurrentObjectDesc.iShaderPass;
+	if (ImGui::RadioButton(u8"shader1", m_tCurrentObjectDesc.iShaderPass == 0))
+	{
+		shaderType = 0;
+		m_tCurrentObjectDesc.iShaderPass = 0;
+	}
+
+	if (ImGui::RadioButton(u8"shader2", m_tCurrentObjectDesc.iShaderPass == 1))
+	{
+		shaderType = 1;
+		m_tCurrentObjectDesc.iShaderPass = 1;
+	}
+
+	if (ImGui::RadioButton(u8"shader3", m_tCurrentObjectDesc.iShaderPass == 2))
+	{
+		shaderType = 2;
+		m_tCurrentObjectDesc.iShaderPass = 2;
+	}
+
+	if (ImGui::RadioButton(u8"shader4", m_tCurrentObjectDesc.iShaderPass == 3))
+	{
+		shaderType = 3;
+		m_tCurrentObjectDesc.iShaderPass = 3;
+	}
+
 }
+
 
 void CObjPlace_Manager::Edit_GameObject_Transform(int iNumObject)
 {
@@ -978,6 +1109,13 @@ void CObjPlace_Manager::Delete_Object(int iNumObject)
 
 	m_ObjectNames.erase(objectnameiter);
 	Update_ObjectNameList();
+
+	/* index 조정 */
+	if (m_iCurrentObjectIndex >= m_GameObjects.size())
+	{
+		m_iCurrentObjectIndex = m_GameObjects.size() - 1;
+	}
+
 }
 
 void CObjPlace_Manager::Update_ObjectNameList()
@@ -1092,6 +1230,133 @@ int CObjPlace_Manager::Find_Layers_Index(char* strLayer)
 	return -1;
 }
 
+void CObjPlace_Manager::Get_Decal_Texture(int iNumObject)
+{
+	if (0 < m_Decals.size())
+	{
+		m_Decals.clear();
+	}
+
+	multimap<wstring, CGameObject*>::iterator iter = m_GameObjects.begin();
+
+	if (0 != iNumObject)
+	{
+		for (int i = 0; i < iNumObject; i++)
+		{
+			iter++;
+		}
+	}
+	//int iNum = dynamic_cast<CConstruction*>(iter->second)->Get_Model()->Get_DecalMaterial().size();
+	//memcpy(&m_Decals, &(dynamic_cast<CConstruction*>(iter->second)->Get_Model()->Get_DecalMaterial()), sizeof(DECAL_DESC) * iNum);
+	dynamic_cast<CConstruction*>(iter->second)->Get_Model()->Copy_DecalMaterial(&m_Decals);
+}
+
+void CObjPlace_Manager::Update_DecalNameList()
+{
+	if (0 <= m_DecalNames.size())
+	{
+		for (auto& iter : m_DecalNames)
+			Safe_Delete(iter);
+
+		m_DecalNames.clear();
+	}
+
+	if (0 < m_Decals.size())
+	{
+		for (int i = 0; i < m_Decals.size(); i++)
+		{
+			char* szName = new char[MAX_PATH];
+			strcpy(szName, "Decal");
+			char buff[MAX_PATH];
+			sprintf(buff, "%d", i);
+			strcat(szName, buff);
+			m_DecalNames.push_back(szName);
+		}
+	}
+}
+
+void CObjPlace_Manager::Edit_Decal()
+{
+}
+
+void CObjPlace_Manager::Add_Decal_IMGUI()
+{
+	if (m_bAddDecal_IMGUI == true)
+	{
+		if (m_iDecalObjNum != m_iCurrentObjectIndex)
+		{
+			m_iDecalObjNum = m_iCurrentObjectIndex;
+			Get_Decal_Texture(m_iDecalObjNum);
+			Update_DecalNameList();
+		}
+
+		ImGui::Begin(u8" 데칼 ");
+
+		static int decal_current_idx = 0;
+		if (ImGui::BeginListBox("listbox 0"))
+		{
+			for (int n = 0; n < m_DecalNames.size(); n++)
+			{
+				const bool is_selected = (decal_current_idx == n);
+				if (ImGui::Selectable(m_DecalNames[n], is_selected))
+				{
+					decal_current_idx = n;
+				}
+
+				if (is_selected)
+					ImGui::SetItemDefaultFocus();
+			}
+			ImGui::EndListBox();
+		}
+
+		static int DecalFind = 0;
+		if (ImGui::RadioButton(u8"Decal 찾기O", DecalFind == 0))
+		{
+			DecalFind = 0;
+		}
+		ImGui::SameLine();
+		if (ImGui::RadioButton(u8"Decal 찾기X", DecalFind == 1))
+		{
+			DecalFind = 1;
+		}
+
+		if(DecalFind == 0)
+		{
+			multimap<wstring, CGameObject*>::iterator iter = m_GameObjects.begin();
+
+			if (0 != m_iCurrentObjectIndex)
+			{
+				for (int i = 0; i < m_iCurrentObjectIndex; i++)
+				{
+					iter++;
+					m_iCurrentObjectIndex++;
+				}
+			}
+
+			dynamic_cast<CConstruction*>(iter->second)->On_Find_DecalMesh(m_Decals[decal_current_idx].pMeshIndices, m_Decals[decal_current_idx].iMeshNum);
+		}
+		else if (DecalFind == 1)
+		{
+			multimap<wstring, CGameObject*>::iterator iter = m_GameObjects.begin();
+
+			if (0 != m_iCurrentObjectIndex)
+			{
+				for (int i = 0; i < m_iCurrentObjectIndex; i++)
+				{
+					iter++;
+					m_iCurrentObjectIndex++;
+				}
+			}
+
+			dynamic_cast<CConstruction*>(iter->second)->Off_Find_DecalMesh();
+		}
+
+
+		ImGui::End();
+	}
+	
+}
+
 
 void CObjPlace_Manager::Free()
 {
@@ -1120,7 +1385,15 @@ void CObjPlace_Manager::Free()
 		Safe_Delete(iter);
 	m_FileNames.clear();
 
+	for (auto& iter : m_DecalNames)
+		Safe_Delete(iter);
+	m_DecalNames.clear();
+
 	m_Layers.clear();
+
+	m_Decals.clear();
+
+
 
 	Safe_Release(m_pGameInstance);
 }
