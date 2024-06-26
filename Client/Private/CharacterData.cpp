@@ -19,7 +19,7 @@ HRESULT CCharacterData::Initialize(wstring wstrModelName)
 
 	if (!fs::exists(strFileFullPath))
 	{
-		cout << "_AlphaMeshes Yes!!" << endl;
+		cout << "_AlphaMeshes Yes!!" << endl;;
 	}
 
 	strFileName = m_pGameInstance->WstringToString(wstrModelName) + "_LoopAnimations.dat";
