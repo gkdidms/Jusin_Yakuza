@@ -3,9 +3,10 @@
 /* 컨스턴트 테이블(상수테이블) */
 matrix g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
 
-texture2D g_Texture;
-texture2D g_ResultTexture;
-texture2D g_AccumAlpha;
+Texture2D g_Texture;
+Texture2D g_ResultTexture;
+Texture2D g_AccumColor;
+Texture2D g_AccumAlpha;
 
 vector g_vStartColor, g_vEndColor;
 vector g_vCamPosition;
@@ -155,10 +156,10 @@ void GS_CUSTOM(point GS_IN In[1], inout TriangleStream<GS_OUT> Triangles)
     float4 PointPosition = float4(In[0].vPosition, 1.f);//월드좌표
         //-1~1 x,y,z
     vector CamPos = mul(PointPosition, g_ViewMatrix);//뷰좌표(위치)
-     CamPos = mul(PointPosition, g_ProjMatrix);//투영 (w나누기전)
+    // CamPos = mul(PointPosition, g_ProjMatrix);//투영 (w나누기전)
     
-    CamPos = CamPos / CamPos.w;//정규화된 윈도우 좌표계
-    Out[0].LinearZ = abs(CamPos.z / (g_FarZ - g_NearZ));//w값을 가져온거다.
+  //  CamPos = CamPos / CamPos.w;//정규화된 윈도우 좌표계
+    Out[0].LinearZ = abs(CamPos.z);//정규화된 z 값을 가져옴(0~1)
     
         
     vPosition = In[0].vPosition + vRight + vUp;
@@ -207,7 +208,6 @@ struct PS_IN
 struct PS_OUT
 {
     vector vColor : SV_TARGET0;
-    vector vAlpha : SV_TARGET1;
 };
 
 PS_OUT PS_MAIN(PS_IN In)
@@ -254,7 +254,10 @@ PS_OUT PS_MAIN_SPREADCOLOR(PS_IN In)
     PS_OUT Out = (PS_OUT) 0;
 
     vector vParticle = g_Texture.Sample(LinearSampler, In.vTexcoord);
-    vector BackAlpha = g_AccumAlpha.Sample(PointSampler, In.vTexcoord);   
+    
+    //vector BackColor = g_AccumColor.Sample(PointSampler, In.vTexcoord);
+   
+    //vector BackAlpha = g_AccumAlpha.Sample(PointSampler, In.vTexcoord);   
     
     float4 LerpColor = lerp(g_vStartColor, g_vEndColor, In.vLifeTime.y / In.vLifeTime.x);
     
@@ -264,13 +267,11 @@ PS_OUT PS_MAIN_SPREADCOLOR(PS_IN In)
     
     float AlphaN = vParticle.a;
  
-    float WeightN = clamp(0.03f / (1e-5 + pow(In.LinearZ, 4.0)), g_NearZ, g_FarZ);
-    
-    WeightN = max(WeightN, 1.0f);
+    float fWeight = In.LinearZ ;      
 
-    Out.vColor = float4(ColorN.rgb * AlphaN, 1) * In.LinearZ;
+    Out.vColor = float4(ColorN.rgb , AlphaN) * fWeight;
 
-    Out.vAlpha = float4(AlphaN, 0.f, 0.f, 0.f);
+   // Out.vAlpha = float4(AlphaN, AlphaN, AlphaN, AlphaN) + BackAlpha*(1 - AlphaN);
     
     return Out;
 }
@@ -354,7 +355,7 @@ technique11 DefaultTechnique
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_Default, 0);
-        SetBlendState(BS_Blend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 
 		/* 어떤 셰이덜르 국동할지. 셰이더를 몇 버젼으로 컴파일할지. 진입점함수가 무엇이찌. */
         VertexShader = compile vs_5_0 VS_MAIN();
