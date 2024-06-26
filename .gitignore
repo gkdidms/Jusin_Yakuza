@@ -1,6 +1,10 @@
 # Visual Studio 2015/2017 cache/options directory
 .vs/
 
+./Client/Bin/Resources/Textures/
+./Client/Bin/Resources/Models/
+
+
 # User-specific files
 *.suo
 *.user
@@ -41,5 +45,3 @@ ipch/
 *.lib
 *.dll
 
-./Client/Bin/Resources/Textures/
-./Client/Bin/Resources/Models/
