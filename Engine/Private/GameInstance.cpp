@@ -48,6 +48,10 @@ HRESULT CGameInstance::Initialize_Engine(_uint iMaxLevelIndex, const ENGINE_DESC
 	if (nullptr == m_pGameObject_Manager)
 		return E_FAIL;
 
+	m_pRandom_Manager = CRandomManager::Create();
+	if (nullptr == m_pRandom_Manager)
+		return E_FAIL;
+
 	m_pRenderTarget_Manager = CRenderTarget_Manager::Create(*ppDevice, *ppContext);
 	if (nullptr == m_pRenderTarget_Manager)
 		return E_FAIL;
@@ -84,9 +88,7 @@ HRESULT CGameInstance::Initialize_Engine(_uint iMaxLevelIndex, const ENGINE_DESC
 	if (nullptr == m_pConvert_Manager)
 		return E_FAIL;
 
-	m_pRandom_Manager = CRandomManager::Create();
-	if (nullptr == m_pRandom_Manager)
-		return E_FAIL;
+
 
 
 	return S_OK;
@@ -250,6 +252,26 @@ void CGameInstance::Set_SSAORadiuse(_float fRadiuse)
 _float CGameInstance::Get_SSAORadiuse()
 {
 	return m_pRenderer->Get_SSAORadiuse();
+}
+
+void CGameInstance::Set_SSAOBlur(_float fBlur)
+{
+	m_pRenderer->Set_SSAOBlur(fBlur);
+}
+
+_float CGameInstance::Get_SSAOBlur()
+{
+	return m_pRenderer->Get_SSAOBlur();
+}
+
+_float CGameInstance::Get_SSAOBias()
+{
+	return m_pRenderer->Get_SSAOBias();
+}
+
+void CGameInstance::Set_SSAOBias(_float fBias)
+{
+	m_pRenderer->Set_SSAOBias(fBias);
 }
 
 #ifdef _DEBUG

@@ -17,12 +17,16 @@ public:
     void Set_HDRLight(_float fLight) { m_fHDRLight = fLight; } // HDR 밝기 조절(빛 세기)
     void Set_SSAO(_bool isSSAO) { m_isSSAO = isSSAO; }
     void Set_SSAORadiuse(_float fRadiuse) { m_fSSAORadiuse = fRadiuse; }
+    void Set_SSAOBlur(_float fBlur) { m_fSSAOBlur = fBlur; }
+    void Set_SSAOBias(_float fBias) { m_fSSAOBiae = fBias; }
 
 public:
     _bool isHDR() { return m_isHDR; }
     _bool isSSAO() { return m_isSSAO; }
     _float Get_HDRLight() { return m_fHDRLight; }
     _float Get_SSAORadiuse() { return m_fSSAORadiuse; }
+    _float Get_SSAOBlur() { return m_fSSAOBlur; }
+    _float Get_SSAOBias() { return m_fSSAOBiae; }
 
 public:
     HRESULT Initialize();
@@ -57,10 +61,10 @@ private:
     void Render_Bloom();//블러
     void Render_FinalEffectBlend();//블러 합치기
     void Render_Blender();
-    void Render_OIT();
+    void Render_FinlaOIT();
     void Render_UI();
 
-
+    HRESULT Ready_SSAONoiseTexture();
 #ifdef _DEBUG
 private:
     list<class CComponent*>	m_DebugComponents;
@@ -86,6 +90,7 @@ private:
     _float4x4 m_ProjMatrix;
 
     ID3D11DepthStencilView* m_pLightDepthStencilView = { nullptr };
+    ID3D11ShaderResourceView* m_pSSAONoiseView = { nullptr };
     //ID3D11DepthStencilView* m_pLuminanceStencilView = { nullptr };
 
 private:
@@ -93,6 +98,8 @@ private:
     _bool m_isSSAO = { false };
     _float m_fHDRLight = { 1.f };
     _float m_fSSAORadiuse = { 0.003f };
+    _float m_fSSAOBlur = { 2.f };
+    _float m_fSSAOBiae = { 0.025f };
 
 #ifdef _DEBUG
     _bool m_isDebugView = { false };
