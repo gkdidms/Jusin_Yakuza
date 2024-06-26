@@ -23,8 +23,7 @@ public:
 
     struct COLLIDER_STATE
     {
-        _uint iBoneIndex;       //(AABB, OBB, Sphere)
-        _uint iType;
+        _uint iType;             //(AABB, OBB, Sphere)
         _float3 vCenter;
         _float3 vValue;        // Sphere라면 x에만 값을 저장하자.
     };
@@ -35,13 +34,31 @@ private:
 
 public:
     HRESULT Initialize(wstring wstrModelName);
+
+public:
+    const vector<_uint>& Get_AlphaMeshes() const {
+        return m_AlphaMeshes;
+    }
+    const vector<_uint>& Get_LoopAnimations() const {
+        return m_LoopAnimations;
+    }
+    const multimap<string, ANIMATION_EVENT>& Get_AnimationEvents() const {
+        return m_AnimationEvents;
+    }
+    const unordered_map<_uint, COLLIDER_STATE>& Get_Colliders() const {
+        return m_Colliders;
+    }
     
 private:
     CGameInstance* m_pGameInstance = { nullptr };
 
+    // 모델 전체에서의 각기 인덱스
     vector<_uint> m_AlphaMeshes;
     vector<_uint> m_LoopAnimations;
-    multimap<string, ANIMATION_EVENT> m_AnimationEvents;
+
+    // first: 애니메이션 이름
+    multimap<string, ANIMATION_EVENT> m_AnimationEvents;            
+    // first: 뼈인덱스
     unordered_map<_uint, COLLIDER_STATE> m_Colliders;
 
 public:
