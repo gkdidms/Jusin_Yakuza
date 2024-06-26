@@ -35,10 +35,10 @@ Texture2D g_AmbientTexture;
 //블러용
 Texture2D g_EffectTexture;
 
-texture2D g_BlurTexture;
-texture2D g_ResultTexture;
-texture2D g_AccumTexture;
-texture2D g_AccumAlpha;
+Texture2D g_BlurTexture;
+Texture2D g_ResultTexture;
+Texture2D g_AccumTexture;
+Texture2D g_AccumAlpha;
 
 float g_fOutlineAngle = 0.8f;
 
@@ -456,8 +456,8 @@ PS_OUT PS_MAIN_RESULT(PS_IN In)
     vector vBlur = g_BlurTexture.Sample(LinearSampler, In.vTexcoord);   
     
     vector vEffect = g_EffectTexture.Sample(LinearSampler, In.vTexcoord);
-
-    Out.vColor = vResult + vBlur + vEffect;
+    
+     Out.vColor = vResult + vBlur + vEffect;
     
     return Out;
 }
@@ -472,17 +472,11 @@ PS_OUT PS_OIT_RESULT(PS_IN In)
     vector vAccumAlpha = g_AccumAlpha.Sample(PointSampler, In.vTexcoord);
    float vAccumWeight = vAccumAlpha.r;
     
-      // 최종 출력 계산
-    float4 FinalColor = float4(vAccumColor.xyz / clamp(vAccumColor.a, 1e-3, 3e3), vAccumWeight);
-    
-    // 투명 객체와 백그라운드 객체 합성
-    
-    vector vBackground = g_ResultTexture.Sample(LinearSampler, In.vTexcoord);
+      // 최종 출력 계산(알파*가중치)를 빼주는작업= 모두 함친 색이 나 옴
+    vector FinalColor = float4(vAccumColor.xyz / vAccumColor.a, vAccumWeight);
 
+    Out.vColor = FinalColor;
 
-    Out.vColor = vBackground + FinalColor * (1 - vAccumWeight);
-    //Out.vColor +=  FinalColor;
-    
     return Out;
 }
 
@@ -692,7 +686,7 @@ technique11 DefaultTechnique
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_None_Test_None_Write, 0);
-        SetBlendState(BS_OIT, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xffffffff);
+        SetBlendState(BS_AlphaBlend, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xffffffff);
 
         VertexShader = compile vs_5_0 VS_MAIN();
         GeometryShader = NULL;

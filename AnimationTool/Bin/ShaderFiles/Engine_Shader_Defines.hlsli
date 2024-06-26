@@ -100,8 +100,8 @@ BlendState BS_WeightsBlend
 {
     BlendEnable[0] = true;
 
-    SrcBlend = ONE;
-    DestBlend = ONE;
+    SrcBlend = ZERO;
+    DestBlend = INV_SRC_ALPHA;
     BlendOp = ADD;
 };
 
