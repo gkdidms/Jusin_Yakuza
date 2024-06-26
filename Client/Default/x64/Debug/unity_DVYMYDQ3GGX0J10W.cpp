@@ -5,5 +5,5 @@
 #include "C:\Users\yeeun\dev\std\Yakuza\Client\private\Background.cpp"
 
 
-#include "C:\Users\yeeun\dev\std\Yakuza\Client\Private\Construction.cpp"
+#include "C:\Users\yeeun\dev\std\Yakuza\Client\Private\CharacterData.cpp"
 
