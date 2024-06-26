@@ -2,6 +2,7 @@
 
 #include "GameInstance.h"
 #include "CharacterData.h"
+#include "SoketCollider.h"
 
 #include "Mesh.h"
 
@@ -31,7 +32,7 @@ HRESULT CPlayer::Initialize(void* pArg)
 	if (FAILED(Add_CharacterData()))
 		return E_FAIL;
 
-	m_pModelCom->Set_AnimationIndex(CModel::ANIMATION_DESC{ 3, false }, ANIM_INTERVAL);
+	Change_Animation(3);
 	return S_OK;
 }
 
@@ -42,29 +43,13 @@ void CPlayer::Priority_Tick(const _float& fTimeDelta)
 
 void CPlayer::Tick(const _float& fTimeDelta)
 {
-	//if (m_pGameInstance->GetKeyState(DIK_UP) == TAP)
-	//{
-	//	m_iChanged = true;
-	//	m_iAnimIndex++;
-
-	//	m_pModelCom->Set_AnimationIndex(CModel::ANIMATION_DESC{ m_iAnimIndex, false }, ANIM_INTERVAL);
-	//}
-
-	//if (m_pGameInstance->GetKeyState(DIK_DOWN) == TAP)
-	//{
-	//	m_iChanged = true;
-	//	m_iAnimIndex--;
-
-	//	m_pModelCom->Set_AnimationIndex(CModel::ANIMATION_DESC{ m_iAnimIndex, true }, ANIM_INTERVAL);
-	//}
-
 	if (m_pModelCom->Get_AnimFinished())
 	{
 		m_iAnimIndex += m_iTemp;
 
 		m_iTemp *= -1;
 
-		m_pModelCom->Set_AnimationIndex(CModel::ANIMATION_DESC{ m_iAnimIndex, false }, ANIM_INTERVAL);
+		Change_Animation(m_iAnimIndex);
 	}
 
 	if (m_pGameInstance->GetKeyState(DIK_UP) == HOLD)
@@ -100,12 +85,16 @@ void CPlayer::Tick(const _float& fTimeDelta)
 	if (m_isAnimStart)
 		m_pModelCom->Play_Animation(fTimeDelta);
 
-	m_pColliderCom->Tick(m_pTransformCom->Get_WorldMatrix());
+	for (auto& pCollider : m_pColliders)
+		pCollider->Tick(fTimeDelta);
 }
 
 void CPlayer::Late_Tick(const _float& fTimeDelta)
 {
 	m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
+
+	for (auto& pCollider : m_pColliders)
+		pCollider->Late_Tick(fTimeDelta);
 }
 
 HRESULT CPlayer::Render()
@@ -113,20 +102,25 @@ HRESULT CPlayer::Render()
 	if (FAILED(Bind_ResourceData()))
 		return E_FAIL;
 
-	_uint	iNumMeshes = m_pModelCom->Get_NumMeshes();
-
-	for (size_t i = 0; i < iNumMeshes; i++)
+	int i = 0;
+	for (auto& pMesh : m_pModelCom->Get_Meshes())
 	{
 		m_pModelCom->Bind_BoneMatrices(m_pShaderCom, "g_BoneMatrices", i);
 
 		m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE);
 
-		m_pShaderCom->Begin(0);
+		if (pMesh->Get_AlphaApply())
+			m_pShaderCom->Begin(1);     //블랜드
+		else
+			m_pShaderCom->Begin(0);		//디폴트
+
 		m_pModelCom->Render(i);
+
+		i++;
 	}
 
 #ifdef _DEBUG
-	m_pGameInstance->Add_DebugComponent(m_pColliderCom);
+	//m_pGameInstance->Add_DebugComponent(m_pColliderCom);
 #endif
 
 	return S_OK;
@@ -192,17 +186,6 @@ HRESULT CPlayer::Add_Componenets()
 		TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
 		return E_FAIL;
 
-	CBounding_OBB::BOUNDING_OBB_DESC		ColliderDesc{};
-
-	ColliderDesc.eType = CCollider::COLLIDER_OBB;
-	ColliderDesc.vExtents = _float3(0.1, 0.1, 0.1);
-	ColliderDesc.vCenter = _float3(0, 0.f, 0);
-	ColliderDesc.vRotation = _float3(0, 0.f, 0.f);
-
-	if (FAILED(__super::Add_Component(LEVEL_TEST, TEXT("Prototype_Component_Collider"),
-		TEXT("Com_Collider"), reinterpret_cast<CComponent**>(&m_pColliderCom), &ColliderDesc)))
-		return E_FAIL;
-
 	return S_OK;
 }
 
@@ -249,13 +232,36 @@ void CPlayer::Apply_ChracterData()
 	}
 
 	auto& pLoopAnimations = m_pData->Get_LoopAnimations();
+	for (auto& iAnimIndex : pLoopAnimations)
+	{
+		m_pModelCom->Set_AnimLoop(iAnimIndex, true);
+	}
 
-
-	auto& pAnimationEvents = m_pData->Get_AnimationEvents();
 	auto& pColliders = m_pData->Get_Colliders();
 
+	for (auto& Collider : pColliders)
+	{
+		//Collider.first
+		/* 플래시 이펙트 수정 필요. */
+		CSoketCollider::SOKET_COLLIDER_DESC Desc{};
+		Desc.pParentMatrix = &m_ModelWorldMatrix;
+		Desc.pCombinedTransformationMatrix = m_pModelCom->Get_BoneCombinedTransformationMatrix_AtIndex(Collider.first);
+		Desc.iBoneIndex = Collider.first;
+		Desc.ColliderState = Collider.second;
 
+		CGameObject* pSoketCollider = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_SoketCollider"), &Desc);
+		if (nullptr == pSoketCollider)
+			return;
+		m_pColliders.emplace_back(static_cast<CSoketCollider*>(pSoketCollider));
+	}
 
+}
+
+void CPlayer::Change_Animation(_uint iIndex)
+{
+	m_pModelCom->Set_AnimationIndex(m_iAnimIndex, ANIM_INTERVAL);
+	string strAnimName = m_pModelCom->Get_AnimationName(m_iAnimIndex);
+	m_pData->Set_CurrentAnimation(strAnimName);
 }
 
 CPlayer* CPlayer::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -288,7 +294,11 @@ void CPlayer::Free()
 {
 	__super::Free();
 
-	Safe_Release(m_pColliderCom);
+	for (auto& pCollider : m_pColliders)
+		Safe_Release(pCollider);
+	m_pColliders.clear();
+	//Safe_Release(m_pColliderCom);
+	Safe_Release(m_pData);
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pModelCom);
 }

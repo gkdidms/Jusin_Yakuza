@@ -109,8 +109,27 @@ PS_OUT PS_MAIN(PS_IN In)
     PS_OUT Out = (PS_OUT) 0;
     
     vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
+    
     if (vDiffuse.a < 0.1f)
-        vDiffuse.a = 1.f;
+        discard;
+    
+    Out.vDiffuse = vDiffuse;
+    Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
+    Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_fFar, 1.f, 1.f);
+    
+    return Out;
+}
+
+PS_OUT PS_BLEND(PS_IN In)
+{
+    PS_OUT Out = (PS_OUT) 0;
+    
+    vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
+    
+    vDiffuse.xyz *= vDiffuse.a;
+    
+    if (vDiffuse.a < 0.1f)
+        discard;
     
     Out.vDiffuse = vDiffuse;
     Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
@@ -155,5 +174,18 @@ technique11 DefaultTechnique
         HullShader = NULL;
         DomainShader = NULL;
         PixelShader = compile ps_5_0 PS_MAIN();
+    }
+
+    pass BlendPass
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        HullShader = NULL;
+        DomainShader = NULL;
+        PixelShader = compile ps_5_0 PS_BLEND();
     }
 }

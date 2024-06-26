@@ -24,6 +24,7 @@ CModel::CModel(const CModel& rhs)
 	, m_PreTransformMatrix{ rhs.m_PreTransformMatrix }
 	, m_iAnimations{ rhs.m_iAnimations }
 	, m_AnimDesc{ rhs.m_AnimDesc }
+	, m_AnimLoops{ rhs.m_AnimLoops }
 	, m_vDecalMaterials { rhs.m_vDecalMaterials }
 {
 	for (auto& pPrototypeAnimation : rhs.m_Animations)
@@ -52,9 +53,6 @@ HRESULT CModel::Initialize_Prototype(MODELTYPE eModelType, const _char* pModelFi
 
 	XMStoreFloat4x4(&m_PreTransformMatrix, PreTransformMatrix);
 
-	CGameInstance* pGameInstance = CGameInstance::GetInstance();
-	Safe_AddRef(pGameInstance);
-
 	if (!isExported)
 	{
 		_uint		iFlag = aiProcess_ConvertToLeftHanded;
@@ -81,7 +79,7 @@ HRESULT CModel::Initialize_Prototype(MODELTYPE eModelType, const _char* pModelFi
 		if (FAILED(Ready_Animations()))
 			return E_FAIL;
 
-		string pBinPath = pGameInstance->Get_Directory(pModelFilePath) + "/Bin/" + pGameInstance->Get_FileName(pModelFilePath) + ".dat";
+		string pBinPath = m_pGameInstance->Get_Directory(pModelFilePath) + "/Bin/" + m_pGameInstance->Get_FileName(pModelFilePath) + ".dat";
 
 		if (FAILED(Export_Model(pBinPath, pModelFilePath)))
 			return E_FAIL;
@@ -93,7 +91,8 @@ HRESULT CModel::Initialize_Prototype(MODELTYPE eModelType, const _char* pModelFi
 			return E_FAIL;
 	}
 
-	Safe_Release(pGameInstance);
+	m_AnimLoops.resize(m_iAnimations);
+	fill(m_AnimLoops.begin(), m_AnimLoops.end(), false);			//m_AnimLoops를 일단 전부 false로 초기화한다.
 
     return S_OK;
 }
@@ -920,6 +919,19 @@ void CModel::Set_AnimationIndex(const ANIMATION_DESC& AnimDesc, _double ChangeIn
 	m_Animations[m_AnimDesc.iAnimIndex]->Reset();
 }
 
+void CModel::Set_AnimationIndex(_uint iAnimIndex, _double ChangeInterval)
+{
+	if (iAnimIndex >= m_Animations.size()) return;
+
+	if (m_AnimDesc.iAnimIndex == iAnimIndex && m_AnimLoops[iAnimIndex] == m_AnimDesc.isLoop)
+		return;
+
+	m_iPrevAnimIndex = m_AnimDesc.iAnimIndex;
+	m_AnimDesc = { iAnimIndex, m_AnimLoops[iAnimIndex] };
+	m_ChangeInterval = ChangeInterval;
+	m_Animations[m_AnimDesc.iAnimIndex]->Reset();
+}
+
 void CModel::Reset_Animation(const ANIMATION_DESC& AnimDesc)
 {
 	m_Animations[m_AnimDesc.iAnimIndex]->Reset();
@@ -948,6 +960,14 @@ const _float4x4* CModel::Get_BoneCombinedTransformationMatrix(const _char* pBone
 	return (*iter)->Get_CombinedTransformationMatrix();
 }
 
+const _float4x4* CModel::Get_BoneCombinedTransformationMatrix_AtIndex(_uint iBoneIndex) const
+{
+	if (m_Bones.size() <= iBoneIndex) return nullptr;
+	auto	pBone = m_Bones[iBoneIndex];
+
+	return pBone->Get_CombinedTransformationMatrix();
+}
+
 const _float4x4* CModel::Get_BoneTransformationMatrix(const _char* pBoneName) const
 {
 	auto	iter = find_if(m_Bones.begin(), m_Bones.end(), [&](CBone* pBone)->_bool
@@ -959,6 +979,11 @@ const _float4x4* CModel::Get_BoneTransformationMatrix(const _char* pBoneName) co
 		return nullptr;
 
 	return (*iter)->Get_TransformationMatrix();
+}
+
+const string& CModel::Get_AnimationName(_uint iAnimIndex)
+{
+	return m_Animations[iAnimIndex]->Get_AnimName();
 }
 
 void CModel::Copy_DecalMaterial(vector<DECAL_DESC>* pDecals)
