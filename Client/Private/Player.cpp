@@ -118,16 +118,21 @@ HRESULT CPlayer::Render()
 	if (FAILED(Bind_ResourceData()))
 		return E_FAIL;
 
-	_uint	iNumMeshes = m_pModelCom->Get_NumMeshes();
-
-	for (size_t i = 0; i < iNumMeshes; i++)
+	int i = 0;
+	for (auto& pMesh : m_pModelCom->Get_Meshes())
 	{
 		m_pModelCom->Bind_BoneMatrices(m_pShaderCom, "g_BoneMatrices", i);
 
 		m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE);
 
-		m_pShaderCom->Begin(0);
+		if (pMesh->Get_AlphaApply())
+			m_pShaderCom->Begin(1);     //블랜드
+		else
+			m_pShaderCom->Begin(0);		//디폴트
+
 		m_pModelCom->Render(i);
+
+		i++;
 	}
 
 #ifdef _DEBUG

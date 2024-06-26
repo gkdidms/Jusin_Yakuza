@@ -51,7 +51,7 @@ void CSoketCollider::Late_Tick(const _float& fTimeDelta)
 HRESULT CSoketCollider::Render()
 {
 #ifdef _DEBUG
-	if(m_pColliderCom)
+	if(m_pColliderCom && m_isOn)
 		m_pGameInstance->Add_DebugComponent(m_pColliderCom);
 #endif
 	return S_OK;
