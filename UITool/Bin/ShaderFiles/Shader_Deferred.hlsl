@@ -242,10 +242,14 @@ PS_OUT_LIGHT PS_MAIN_LIGHT_DIRECTIONAL(PS_IN In)
     float vAmbientDesc = g_AmbientTexture.Sample(LinearSampler, In.vTexcoord).r;
     vector vNormal = vector(vNormalDesc.xyz * 2.f - 1.f, 0.0f);
     
-    Out.vShade = g_vLightDiffuse * saturate(max(dot(normalize(g_vLightDir) * -1.f, normalize(vNormal)), 0.f) + (g_vLightAmbient * g_vMtrlAmbient));
-    
+    vector vAmbient = g_vLightAmbient * g_vMtrlAmbient;
     if (g_isSSAO)
-        Out.vShade *= vAmbientDesc;
+        vAmbient *= vAmbientDesc;
+    
+    Out.vShade = g_vLightDiffuse * saturate(max(dot(normalize(g_vLightDir) * -1.f, normalize(vNormal)), 0.f) + vAmbient);
+    
+    //.if (g_isSSAO)
+     //   Out.vShade *= vAmbientDesc;
     
     return Out;
 }
