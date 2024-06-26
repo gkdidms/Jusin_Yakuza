@@ -41,5 +41,5 @@ ipch/
 *.lib
 *.dll
 
-Textures/
-Models/
+./Client/Bin/Resources/Textures/
+./Client/Bin/Resources/Models/
