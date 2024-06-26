@@ -222,7 +222,7 @@ HRESULT CPlayer::Bind_ResourceData()
 
 HRESULT CPlayer::Add_CharacterData()
 {
-	m_pData = CCharacterData::Create(TEXT("Kiruy"));
+	m_pData = CCharacterData::Create(TEXT("Kiryu"));
 
 	if (nullptr == m_pData)
 		return E_FAIL;
