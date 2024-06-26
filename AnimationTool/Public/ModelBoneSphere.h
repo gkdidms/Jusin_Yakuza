@@ -42,6 +42,12 @@ public:
 	void Change_TexutreIndex(_bool isOn = false);
 
 	void Create_Collider(CCollider::TYPE eType, const CCollider::COLLIDER_DESC* pDesc);
+	HRESULT Release_Collider();
+
+public:
+	CCollider::TYPE Get_Collider_Type();
+	const _float3& Get_Collider_Center();
+	void* Get_Collider_Value();
 
 public:
 	void Set_Collider_Center(const _float3& vCenter);

@@ -54,7 +54,6 @@ void CPlayer::Tick(const _float& fTimeDelta)
 
 	if (m_pModelCom->Get_AnimFinished())
 	{
-		m_iChanged = true;
 		m_iAnimIndex += m_iTemp;
 
 		m_iTemp *= -1;
@@ -87,12 +86,15 @@ void CPlayer::Tick(const _float& fTimeDelta)
 	{
 		m_iAnimIndex++;
 	}
+	if (m_pGameInstance->GetKeyState(DIK_8) == TAP)
+	{
+		m_iAnimIndex--;
+	}
 
 	if (m_isAnimStart)
 		m_pModelCom->Play_Animation(fTimeDelta);
 
 	m_pColliderCom->Tick(m_pTransformCom->Get_WorldMatrix());
-
 }
 
 void CPlayer::Late_Tick(const _float& fTimeDelta)
@@ -147,30 +149,31 @@ void CPlayer::Synchronize_Root()
 	// 애니메이션이 새로 시작하면 m_vPrevMove에는 이전 애님의 마지막 move의 큰 값이 남아있고, vMovePos는 새로운정보가 되어서 초기화가 필요하다.
 	_vector vMovePos = (XMVectorSet(XMVectorGetX(vCenterBonePosistion), 0, XMVectorGetZ(vCenterBonePosistion), 1.f) - XMVectorSet(XMVectorGetX(vRootBonePosistion), 0, XMVectorGetZ(vRootBonePosistion), 1.f));
 
-	//모델이 출력될 월드 위치는, 트랜스폼 컴포넌트의 월드위치에서 센터본과 루트본의 차이만큼 빼준 위치
-	// 모델 랜더 위치잡기
-	XMStoreFloat4x4(&m_ModelWorldMatrix, m_pTransformCom->Get_WorldMatrix());
-	_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION) - XMLoadFloat4(&m_vPrevMove);
-	memcpy(&m_ModelWorldMatrix.m[CTransform::STATE_POSITION], &vPos, sizeof(_float4));
-	
 	// 트랜스폼 위치잡기
+	// 애니메이션이 새로 실행되는 경우, center가 다시 0,0 으로 맞춰지는데 m_vPrevMove에는 이전에 center의 move를 그대로 들고있어서 움직임이 정상적이지 않음
+	// 그래서 애니메이션이 바뀌었는지를 구분해서, 바뀌는중(선형보간중)이라면 기존 포지션을 유지시켜주는 코드
 	if (m_pModelCom->Get_AnimChanged())
 	{
-		m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_pTransformCom->Get_State(CTransform::STATE_POSITION) + (m_iChanged ? vMovePos : (vMovePos - XMLoadFloat4(&m_vPrevMove))));
+		// 애니메이션이 끝났으면 본의 움직임을 그대로 적용, 애니메이션이 실행중일 때에는 본의 이전 틱에서의 움직임만큼을 빼주어서 차이만큼만 이동되게한다
+		//if(m_isChanged)
+		//	XMStoreFloat4(&m_vPrevMove, XMVectorZero());
+
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_pTransformCom->Get_State(CTransform::STATE_POSITION) + (vMovePos - XMLoadFloat4(&m_vPrevMove)));
+		//m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_pTransformCom->Get_State(CTransform::STATE_POSITION) + (m_iChanged ? vMovePos : (vMovePos - XMLoadFloat4(&m_vPrevMove))));
 	}
 	else
 	{
-		cout << "Playings" << endl;
+		XMStoreFloat4(&m_vPrevMove, XMVectorZero());
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 	}
-	
+
+	//모델이 출력될 월드 위치는, 트랜스폼 컴포넌트의 월드위치에서 센터본과 루트본의 차이만큼 빼준 위치
+	// 모델 랜더 위치잡기
+	XMStoreFloat4x4(&m_ModelWorldMatrix, m_pTransformCom->Get_WorldMatrix());
+	_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION) - vMovePos;
+	memcpy(&m_ModelWorldMatrix.m[CTransform::STATE_POSITION], &vPos, sizeof(_float4));
 
 	XMStoreFloat4(&m_vPrevMove, vMovePos);
-
-	//애니메이션 실행되는 동안에 false를 반환한다.
-
-
-	m_iChanged = false;
 }
 
 HRESULT CPlayer::Add_Componenets()

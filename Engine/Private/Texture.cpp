@@ -44,6 +44,8 @@ HRESULT CTexture::Initialize_Prototype(const wstring& strTextureFilePath, _uint 
 		else
 			hr = CreateWICTextureFromFile(m_pDevice, szTextureFile, nullptr, &pSRV);
 
+		memcpy_s(&m_szTextureFile, sizeof(szTextureFile), &szTextureFile, sizeof(szTextureFile));
+
 		if (FAILED(hr))
 			return E_FAIL;
 
@@ -72,7 +74,12 @@ CTexture* CTexture::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,
 
 	if (FAILED(pInstance->Initialize_Prototype(strTextureFilePath, iNumTextures)))
 	{
-		MSG_BOX("Failed To Created : CTexture");
+		wstring strFile;
+		strFile.assign(pInstance->m_szTextureFile, pInstance->m_szTextureFile + MAX_PATH);
+		wstring strAlertFile = TEXT("Failed To Created : CTexture\nFailed Path: ");
+		strAlertFile += strFile;
+		
+		MessageBox(nullptr, strAlertFile.c_str(), L"System Message", MB_OK);
 		Safe_Release(pInstance);
 	}
 

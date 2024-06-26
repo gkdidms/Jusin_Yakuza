@@ -82,8 +82,8 @@ HRESULT CLevel_Test::Ready_Light()
 HRESULT CLevel_Test::Ready_Camera(const wstring& strLayerTag)
 {
 	/* 카메라 추가 시 Debug Camera를 첫번째로 놔두고 추가해주세요 (디버깅 툴에서 사용중)*/
-	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_Sky"), strLayerTag)))
-		return E_FAIL;
+	//if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_Sky"), strLayerTag)))
+	//	return E_FAIL;
 
 	CDebugCamera::PLAYER_CAMERA_DESC		CameraDesc{};
 

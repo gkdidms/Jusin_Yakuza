@@ -115,7 +115,7 @@
       <PreprocessorDefinitions>NOMINMAX;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>../../Imgui/background/;../../Imgui/imGuizmo/;../../Imgui/imgui/;../../EngineSDK/Inc/;../Public/;./;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../Imgui/;../Imgui/backend;../../EngineSDK/Inc/;../Public/;./;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>framework.h</PrecompiledHeaderFile>
@@ -155,20 +155,14 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\Imgui\background\imgui_impl_dx11.h" />
-    <ClInclude Include="..\..\Imgui\background\imgui_impl_win32.h" />
-    <ClInclude Include="..\..\Imgui\imGuizmo\GraphEditor.h" />
-    <ClInclude Include="..\..\Imgui\imGuizmo\ImCurveEdit.h" />
-    <ClInclude Include="..\..\Imgui\imGuizmo\ImGradient.h" />
-    <ClInclude Include="..\..\Imgui\imGuizmo\ImGuizmo.h" />
-    <ClInclude Include="..\..\Imgui\imGuizmo\ImSequencer.h" />
-    <ClInclude Include="..\..\Imgui\imGuizmo\ImZoomSlider.h" />
-    <ClInclude Include="..\..\Imgui\imgui\imconfig.h" />
-    <ClInclude Include="..\..\Imgui\imgui\imgui.h" />
-    <ClInclude Include="..\..\Imgui\imgui\imgui_internal.h" />
-    <ClInclude Include="..\..\Imgui\imgui\imstb_rectpack.h" />
-    <ClInclude Include="..\..\Imgui\imgui\imstb_textedit.h" />
-    <ClInclude Include="..\..\Imgui\imgui\imstb_truetype.h" />
+    <ClInclude Include="..\Imgui\backend\imgui_impl_dx11.h" />
+    <ClInclude Include="..\Imgui\backend\imgui_impl_win32.h" />
+    <ClInclude Include="..\Imgui\imconfig.h" />
+    <ClInclude Include="..\Imgui\imgui.h" />
+    <ClInclude Include="..\Imgui\imgui_internal.h" />
+    <ClInclude Include="..\Imgui\imstb_rectpack.h" />
+    <ClInclude Include="..\Imgui\imstb_textedit.h" />
+    <ClInclude Include="..\Imgui\imstb_truetype.h" />
     <ClInclude Include="..\Public\AnimModel.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClInclude>
@@ -192,18 +186,13 @@
     <ClInclude Include="targetver.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\Imgui\background\imgui_impl_dx11.cpp" />
-    <ClCompile Include="..\..\Imgui\background\imgui_impl_win32.cpp" />
-    <ClCompile Include="..\..\Imgui\imGuizmo\GraphEditor.cpp" />
-    <ClCompile Include="..\..\Imgui\imGuizmo\ImCurveEdit.cpp" />
-    <ClCompile Include="..\..\Imgui\imGuizmo\ImGradient.cpp" />
-    <ClCompile Include="..\..\Imgui\imGuizmo\ImGuizmo.cpp" />
-    <ClCompile Include="..\..\Imgui\imGuizmo\ImSequencer.cpp" />
-    <ClCompile Include="..\..\Imgui\imgui\imgui.cpp" />
-    <ClCompile Include="..\..\Imgui\imgui\imgui_demo.cpp" />
-    <ClCompile Include="..\..\Imgui\imgui\imgui_draw.cpp" />
-    <ClCompile Include="..\..\Imgui\imgui\imgui_tables.cpp" />
-    <ClCompile Include="..\..\Imgui\imgui\imgui_widgets.cpp" />
+    <ClCompile Include="..\Imgui\backend\imgui_impl_dx11.cpp" />
+    <ClCompile Include="..\Imgui\backend\imgui_impl_win32.cpp" />
+    <ClCompile Include="..\Imgui\imgui.cpp" />
+    <ClCompile Include="..\Imgui\imgui_demo.cpp" />
+    <ClCompile Include="..\Imgui\imgui_draw.cpp" />
+    <ClCompile Include="..\Imgui\imgui_tables.cpp" />
+    <ClCompile Include="..\Imgui\imgui_widgets.cpp" />
     <ClCompile Include="..\Private\AnimModel.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
     </ClCompile>

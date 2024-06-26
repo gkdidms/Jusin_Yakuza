@@ -82,6 +82,16 @@ void CCollider::Tick(_fmatrix WorldMatirx)
 	m_pCurrentBounding->Tick(WorldMatirx);
 }
 
+void* CCollider::Get_Desc()
+{
+	return m_pCurrentBounding->Get_Desc();
+}
+
+void* CCollider::Get_OriginDesc()
+{
+	return m_pCurrentBounding->Get_OriginDesc();
+}
+
 void CCollider::Set_Value(void* pDesc)
 {
 	m_pCurrentBounding->Set_Value(pDesc);

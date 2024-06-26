@@ -7,10 +7,7 @@
 #include "imgui_internal.h"
 #include "imgui_impl_dx11.h"
 #include "imgui_impl_win32.h"
-#include "ImGuizmo.h"
 #pragma endregion
-
-#define V2 ImVec2
 
 BEGIN(Engine)
 class CGameInstance;
@@ -37,7 +34,7 @@ public:
 	{
 		_uint iType;
 		_float fAinmPosition;
-		string strName;
+		string strChannelName;
 	};
 
 private:
@@ -76,11 +73,30 @@ private:
 
 private:
 	void Reset_Collider_Value();
+	void Setting_Collider_Value(_uint iBoneIndex);
+
+private:
+	/* Save */
+	void All_Save();
+	void AlphaMesh_Save(string strPath);
+	void AnimationLoop_Save(string strPath);
+	void AnimationEvent_Save(string strPath);
+	void ColliderState_Save(string strPath);
+
+	/* Load */
+	void All_Load();
+	void AlphaMesh_Load(string strPath);
+	void AnimationLoop_Load(string strPath);
+	void AnimationEvent_Load(string strPath);
+	void ColliderState_Load(string strPath);
+
+private:
+	ImGuiIO* io;
 
 private:
 	_bool					m_isOnToolWindows = { false };
 
-	bool					m_isAnimLoop = { false };
+	//bool					m_isAnimLoop = { false };
 
 	int						m_iAnimIndex = { 0 };
 	int						m_iAddedAnimSelectedIndex = { 0 };
@@ -88,6 +104,7 @@ private:
 	int						m_iModelSelectedIndex = { 0 };
 
 	int						m_iBoneSelectedIndex = { 0 };
+	int						m_iColliderSelectedIndex = { 0 };
 
 	int						m_iChannelSelectedIndex = { 0 };
 
@@ -95,20 +112,23 @@ private:
 	int						m_iAddedMeshSelectedIndex = { 0 };
 
 	char									m_szSearchChannelName[_MAX_PATH];
+	char									m_szSearchBoneName[_MAX_PATH];
 
 	vector<string>							m_ModelNameList;
 
 	vector<string>							m_AnimNameList;
-	unordered_map<_uint, string>			m_AddedAnims;
+	unordered_map<_uint, string>			m_AddedAnims;			// 애니메이션 인덱스와 이름을 저장한다.
 
 	vector<string>							m_BoneNameList;
+	unordered_map<_uint, string>			m_AddedColliders;		// 뼈 인덱스와 뼈 이름을 저장한다
 
 	vector<string>							m_ChannelNameList;
 
 	vector<string>							m_MeshNameList;
-	unordered_map<_uint, string>			m_AddedMeshes;
+	unordered_map<_uint, string>			m_AddedMeshes;			// 매쉬 인덱스와 이름을 저장한다.
 
-	multimap<string, Animation_Event>		m_AnimationEvents;
+	// first: 애니메이션 이름, second: 이벤트정보
+	multimap<string, Animation_Event>		m_AnimationEvents;		
 
 private:
 	_float					m_fTimeDeltaScale = { 1.f };

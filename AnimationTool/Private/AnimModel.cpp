@@ -61,7 +61,7 @@ void CAnimModel::Tick(const _float& fTimeDelta)
 
 void CAnimModel::Late_Tick(const _float& fTimeDelta)
 {
-    m_pGameInstance->Add_Renderer(CRenderer::RENDER_BLENDER, this);
+    m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
 
     for (auto& pSphere : m_BoneSpheres)
         pSphere->Late_Tick(fTimeDelta);
@@ -164,7 +164,7 @@ void CAnimModel::Select_Bone(_uint iBoneIndex)
     m_BoneSpheres[iBoneIndex]->Change_TexutreIndex(true);
 }
 
-void CAnimModel::Create_BoneCollider(_uint iType, _uint iIndex)
+void CAnimModel::Create_BoneCollider(_uint iType, _uint iIndex, const _float3& vCenter, void* pDesc)
 {
     switch (iType)
     {
@@ -173,8 +173,8 @@ void CAnimModel::Create_BoneCollider(_uint iType, _uint iIndex)
         CBounding_AABB::BOUNDING_AABB_DESC		ColliderDesc{};
 
         ColliderDesc.eType = CCollider::COLLIDER_AABB;
-        ColliderDesc.vExtents = _float3(0.1, 0.1, 0.1);
-        ColliderDesc.vCenter = _float3(0, 0.f, 0);
+        ColliderDesc.vExtents = *((_float3*)pDesc);
+        ColliderDesc.vCenter = _float3(vCenter);
 
         m_BoneSpheres[iIndex]->Create_Collider(CCollider::COLLIDER_AABB, &ColliderDesc);
         break;
@@ -184,8 +184,8 @@ void CAnimModel::Create_BoneCollider(_uint iType, _uint iIndex)
         CBounding_OBB::BOUNDING_OBB_DESC		ColliderDesc{};
 
         ColliderDesc.eType = CCollider::COLLIDER_OBB;
-        ColliderDesc.vExtents = _float3(0.1, 0.1, 0.1);
-        ColliderDesc.vCenter = _float3(0, 0.f, 0);
+        ColliderDesc.vExtents = *((_float3*)pDesc);
+        ColliderDesc.vCenter = _float3(vCenter);
         ColliderDesc.vRotation = _float3(0, 0.f, 0.f);
 
         m_BoneSpheres[iIndex]->Create_Collider(CCollider::COLLIDER_OBB, &ColliderDesc);
@@ -197,8 +197,8 @@ void CAnimModel::Create_BoneCollider(_uint iType, _uint iIndex)
         CBounding_Sphere::BOUNDING_SPHERE_DESC		ColliderDesc{};
 
         ColliderDesc.eType = CCollider::COLLIDER_SPHERE;
-        ColliderDesc.vCenter = _float3(0, 0.f, 0);
-        ColliderDesc.fRadius = 1.f;
+        ColliderDesc.fRadius = *((_float*)pDesc);
+        ColliderDesc.vCenter = _float3(vCenter);
 
         m_BoneSpheres[iIndex]->Create_Collider(CCollider::COLLIDER_SPHERE, &ColliderDesc);
         break;
@@ -222,6 +222,11 @@ void CAnimModel::Set_Collider_Value(_uint iIndex, void* pDesc)
 _bool CAnimModel::Created_BoneCollider(_uint iIndex)
 {
     return m_BoneSpheres[iIndex]->Created_Collider();
+}
+
+HRESULT CAnimModel::Release_BoneCollider(_uint iIndex)
+{
+    return m_BoneSpheres[iIndex]->Release_Collider();
 }
 
 HRESULT CAnimModel::Add_Components()
