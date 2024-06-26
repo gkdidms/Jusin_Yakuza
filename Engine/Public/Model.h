@@ -70,6 +70,8 @@ public:
 	const _float4x4* Get_BoneCombinedTransformationMatrix(const _char* pBoneName) const;
 	const _float4x4* Get_BoneTransformationMatrix(const _char* pBoneName) const;
 
+	void Copy_DecalMaterial(vector<DECAL_DESC>* pDecals);
+
 private:
 	HRESULT Export_Model(string& pBinFilePath, const _char* pModelFilePath);
 	HRESULT Export_Bones(ofstream& out);
@@ -82,6 +84,8 @@ private:
 	HRESULT Import_Meshes(ifstream& in);
 	HRESULT Import_Materials(ifstream& in);
 	HRESULT Import_Animations(ifstream& in);
+
+	void	Find_Mesh_Using_DECAL();
 
 private:
 	MODELTYPE					m_eModelType = { TYPE_END };
@@ -110,6 +114,10 @@ private:
 	_bool						m_isAnimChange = { false };
 	_float						m_fAnimRatio = { 0.2f };
 	_double						m_ChangeInterval = { 0.2 };
+
+
+	vector<DECAL_DESC>			m_vDecalMaterials;
+	bool						m_bOrigin = { false };
 
 public:
 	static CModel* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, MODELTYPE eModelType, const _char* pModelFilePath, _fmatrix PreTransformMatrix, _bool isExported);

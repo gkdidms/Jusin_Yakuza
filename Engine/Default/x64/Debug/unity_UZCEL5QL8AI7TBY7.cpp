@@ -1,4 +1,7 @@
 
+#include "D:\Jusin_TeamProject\Engine\Private\VIBuffer_Cube.cpp"
+
+
 #include "D:\Jusin_TeamProject\Engine\Private\VIBuffer_Instance.cpp"
 
 

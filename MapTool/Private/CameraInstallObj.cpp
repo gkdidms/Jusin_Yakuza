@@ -66,11 +66,11 @@ HRESULT CCameraInstallObj::Render()
 
 		if (CAM_EYE == m_eInstallDesc)
 		{
-			m_pShaderCom->Begin(1);
+			m_pShaderCom->Begin(0);
 		}
 		else if (CAM_FOCUS == m_eInstallDesc)
 		{
-			m_pShaderCom->Begin(2);
+			m_pShaderCom->Begin(1);
 		}
 
 		m_pModelCom->Render(i);
@@ -89,7 +89,7 @@ HRESULT CCameraInstallObj::Add_Components(void* pArg)
 		return E_FAIL;
 
 	/* For.Com_Shader */
-	if (FAILED(__super::Add_Component(LEVEL_RUNMAP, TEXT("Prototype_Component_Shader_VtxMesh"),
+	if (FAILED(__super::Add_Component(LEVEL_RUNMAP, TEXT("Prototype_Component_Shader_VtxMesh_CamObj"),
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
 		return E_FAIL;
 

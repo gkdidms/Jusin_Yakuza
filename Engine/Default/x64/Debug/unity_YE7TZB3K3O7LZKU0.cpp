@@ -7,3 +7,6 @@
 
 #include "D:\Jusin_TeamProject\Engine\Private\BlendObject.cpp"
 
+
+#include "D:\Jusin_TeamProject\Engine\Private\Bone.cpp"
+

@@ -1,4 +1,7 @@
 
+#include "D:\Jusin_TeamProject\Engine\Private\Camera.cpp"
+
+
 #include "D:\Jusin_TeamProject\Engine\Private\Cell.cpp"
 
 
