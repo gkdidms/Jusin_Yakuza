@@ -1,6 +1,7 @@
 #include "Player.h"
 
 #include "GameInstance.h"
+#include "CharacterData.h"
 
 CPlayer::CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLandObject{ pDevice, pContext }
@@ -23,6 +24,9 @@ HRESULT CPlayer::Initialize(void* pArg)
 		return E_FAIL;
 
 	if (FAILED(Add_Componenets()))
+		return E_FAIL;
+
+	if (FAILED(Add_CharacterData()))
 		return E_FAIL;
 
 	m_pModelCom->Set_AnimationIndex(CModel::ANIMATION_DESC{ 3, false }, ANIM_INTERVAL);
@@ -212,6 +216,16 @@ HRESULT CPlayer::Bind_ResourceData()
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_PROJ))))
 		return E_FAIL;
 
+
+	return S_OK;
+}
+
+HRESULT CPlayer::Add_CharacterData()
+{
+	m_pData = CCharacterData::Create(TEXT("Kiruy"));
+
+	if (nullptr == m_pData)
+		return E_FAIL;
 
 	return S_OK;
 }

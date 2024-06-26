@@ -43,6 +43,7 @@ private:
     CShader*    m_pShaderCom = { nullptr };
     CModel*     m_pModelCom = { nullptr };
     CCollider*  m_pColliderCom = { nullptr };
+    class CCharacterData* m_pData = { nullptr };
 
 private:
     _uint       m_iAnimIndex = { 2 };
@@ -58,6 +59,7 @@ private:
 private:
     virtual HRESULT Add_Componenets() override;
     virtual HRESULT Bind_ResourceData() override;
+    HRESULT Add_CharacterData();
 
 public:
     static CPlayer* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

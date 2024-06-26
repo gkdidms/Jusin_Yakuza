@@ -82,12 +82,12 @@ HRESULT CAnimModel::Render()
 
         if (m_iSelectedMeshIndex == i)
         {
-            m_pShaderCom->Begin(2);
+            m_pShaderCom->Begin(2);     //마젠타
         }
         else
         {
             if (pMesh->Get_AlphaApply())
-                m_pShaderCom->Begin(3);
+                m_pShaderCom->Begin(3);     //블랜드
             else
                 m_pShaderCom->Begin(m_iPassIndex);
         }
