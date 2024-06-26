@@ -10,6 +10,7 @@
 
 CModel::CModel(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     :CComponent{pDevice, pContext}
+	, m_bOrigin{ true } /* 원형일때 1번만 지우기 */
 {
 }
 
@@ -23,6 +24,7 @@ CModel::CModel(const CModel& rhs)
 	, m_PreTransformMatrix{ rhs.m_PreTransformMatrix }
 	, m_iAnimations{ rhs.m_iAnimations }
 	, m_AnimDesc{ rhs.m_AnimDesc }
+	, m_vDecalMaterials { rhs.m_vDecalMaterials }
 {
 	for (auto& pPrototypeAnimation : rhs.m_Animations)
 		m_Animations.emplace_back(pPrototypeAnimation->Clone());
@@ -40,6 +42,8 @@ CModel::CModel(const CModel& rhs)
 		for (auto& pTexture : m_Materials[i].pMaterialTextures)
 			Safe_AddRef(pTexture);
 	}
+
+
 }
 
 HRESULT CModel::Initialize_Prototype(MODELTYPE eModelType, const _char* pModelFilePath, _fmatrix PreTransformMatrix, _bool isExported)
@@ -586,6 +590,8 @@ HRESULT CModel::Import_Model(string& pBinFilePath)
 
 	in.close();
 
+	Find_Mesh_Using_DECAL();
+
 	return S_OK;
 }
 
@@ -723,6 +729,16 @@ HRESULT CModel::Import_Materials(ifstream& in)
 			MeshMaterial.pMaterialTextures[j] = CTexture::Create(m_pDevice, m_pContext, szRealFullPath, 1);
 			if (nullptr == MeshMaterial.pMaterialTextures[j])
 				return E_FAIL;
+
+			if (j == aiTextureType_METALNESS)
+			{
+				/* DECAL */
+				DECAL_DESC		decalDesc;
+				decalDesc.iMaterialNum = i;
+				memcpy(&decalDesc.sTextureFullPath, &szFullPath, sizeof(char) * MAX_PATH);
+
+				m_vDecalMaterials.push_back(decalDesc);
+			}
 		}
 		m_Materials.emplace_back(MeshMaterial);
 	}
@@ -808,6 +824,42 @@ HRESULT CModel::Import_Animations(ifstream& in)
 	}
 
 	return S_OK;
+}
+
+void CModel::Find_Mesh_Using_DECAL()
+{
+
+	for (int i = 0; i < m_vDecalMaterials.size(); i++)
+	{
+		int		iNum = 0;
+		int* pMaterialNums = new int[MAX_PATH];
+
+		for (int j = 0; j < m_iNumMeshes; j++)
+		{
+			if (m_vDecalMaterials[i].iMaterialNum == m_Meshes[j]->Get_MaterialIndex())
+			{
+				pMaterialNums[iNum] = j;
+				iNum++;
+			}
+		}
+
+		m_vDecalMaterials[i].iMeshNum = iNum;
+
+		if (iNum > 0)
+		{
+			m_vDecalMaterials[i].pMeshIndices = new int[iNum];
+			
+			for (int j = 0; j < iNum ; j++)
+			{
+				m_vDecalMaterials[i].pMeshIndices[j] = pMaterialNums[j];
+			}
+
+		}
+
+		Safe_Delete_Array(pMaterialNums);
+		
+	}
+
 }
 
 HRESULT CModel::Render(_uint iMeshIndex)
@@ -909,6 +961,16 @@ const _float4x4* CModel::Get_BoneTransformationMatrix(const _char* pBoneName) co
 	return (*iter)->Get_TransformationMatrix();
 }
 
+void CModel::Copy_DecalMaterial(vector<DECAL_DESC>* pDecals)
+{
+	for (int i = 0; i < m_vDecalMaterials.size(); i++)
+	{
+		DECAL_DESC		decalDesc;
+		memcpy(&decalDesc, &m_vDecalMaterials[i], sizeof(DECAL_DESC));
+		pDecals->push_back(decalDesc);
+	}
+}
+
 CModel* CModel::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, MODELTYPE eModelType, const _char* pModelFilePath, _fmatrix PreTransformMatrix, _bool isExported)
  {
 	CModel* pInstance = new CModel(pDevice, pContext);
@@ -952,6 +1014,15 @@ void CModel::Free()
 	}
 
 	m_Materials.clear();
+
+	if (true == m_bOrigin)
+	{
+		for (auto& iter : m_vDecalMaterials)
+		{
+			Safe_Delete(iter.pMeshIndices);
+		}
+	}
+	m_vDecalMaterials.clear();
 
 	for (auto& pMesh : m_Meshes)
 		Safe_Release(pMesh);
