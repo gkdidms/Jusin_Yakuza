@@ -2,20 +2,13 @@
 #include "GameInstance.h"
 
 #include "AnimModel.h"
+#include "ModelBoneSphere.h"
 
 #pragma region "Model"
 #include "Animation.h"
 #include "Bone.h"
 #include "Channel.h"
 #include "Mesh.h"
-#pragma endregion
-
-#pragma region "Imgui"
-#include "imgui.h"
-#include "imgui_internal.h"
-#include "imgui_impl_dx11.h"
-#include "imgui_impl_win32.h"
-#include "ImGuizmo.h"
 #pragma endregion
 
 CImguiManager::CImguiManager(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -30,6 +23,27 @@ CImguiManager::CImguiManager(ID3D11Device* pDevice, ID3D11DeviceContext* pContex
 
 HRESULT CImguiManager::Initialize(void* pArg)
 {
+	//ImGui
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
+	io = &(ImGui::GetIO()); (void)io;
+	io->ConfigFlags |= ImGuiConfigFlags_NavEnableKeyboard;     // Enable Keyboard Controls
+	io->ConfigFlags |= ImGuiConfigFlags_NavEnableGamepad;      // Enable Gamepad Controls
+	io->ConfigFlags |= ImGuiConfigFlags_DockingEnable;
+	io->ConfigFlags |= ImGuiConfigFlags_ViewportsEnable;
+
+	io->Fonts->AddFontFromFileTTF("C:\\Windows\\fonts\\malgun.ttf", 18.0f, NULL, io->Fonts->GetGlyphRangesKorean());
+
+	ImGui::StyleColorsDark();
+	ImGuiStyle& style = ImGui::GetStyle();
+	if (io->ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+	{
+		style.WindowRounding = 0.0f;
+		style.Colors[ImGuiCol_WindowBg].w = 1.0f;
+	}
+
+	ImGui_ImplWin32_Init(g_hWnd);
+	ImGui_ImplDX11_Init(m_pDevice, m_pContext);
 
 	return S_OK;
 }
@@ -39,12 +53,9 @@ void CImguiManager::Tick(const _float& fTimeDelta)
 	if (LEVEL_EDIT == m_pGameInstance->Get_CurrentLevel())
 		Connect_Model_Ref();
 
-	ImGuiIO& io = ImGui::GetIO();
 	ImGui_ImplDX11_NewFrame();
 	ImGui_ImplWin32_NewFrame();
 	ImGui::NewFrame();
-
-	ImGuizmo::BeginFrame();
 
 	ModelList();
 
@@ -60,13 +71,22 @@ void CImguiManager::Tick(const _float& fTimeDelta)
 		MeshListWindow();
 		AnimEventWindow();
 	}
+
 }
 
 
 
 HRESULT CImguiManager::Render()
 {
+	ImGui::EndFrame();
 	ImGui::Render();
+	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
+	
+	if (io->ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
+	{
+		ImGui::UpdatePlatformWindows();
+		ImGui::RenderPlatformWindowsDefault();
+	}
 
 	return S_OK;
 }
@@ -126,6 +146,16 @@ void CImguiManager::ModelList()
 	{
 		m_iAnimIndex = 0;
 		m_pRenderModel->Change_Model(m_pGameInstance->StringToWstring(m_ModelNameList[m_iModelSelectedIndex]));
+		All_Load();
+	}
+
+	if (ImGui::Button(u8"데이터 저장하기"))
+	{
+		All_Save();
+	}
+	if (ImGui::Button(u8"데이터 로드하기"))
+	{
+		All_Load();
 	}
 
 }
@@ -144,9 +174,9 @@ void CImguiManager::AnimListWindow()
 
 	for (auto pAnim : pAnims)
 	{
-		string strName = m_pGameInstance->Extract_String(pAnim->Get_AnimName(), '[', ']');
+		string strChannelName = m_pGameInstance->Extract_String(pAnim->Get_AnimName(), '[', ']');
 
-		m_AnimNameList[i] = strName;
+		m_AnimNameList[i] = strChannelName;
 		items.push_back(m_AnimNameList[i].c_str());
 
 		i++;
@@ -157,10 +187,11 @@ void CImguiManager::AnimListWindow()
 	{
 		m_fAnimationPosition = 0.f;
 		m_pRenderModel->Change_Animation(m_iAnimIndex);
+		//m_isAnimLoop = m_pRenderModel->Get_AnimLoop(m_iAnimIndex);
 	}
 
-	ImGui::SameLine();
-	ImGui::Checkbox("Loop", &m_isAnimLoop);
+	//ImGui::SameLine();
+	//ImGui::Checkbox("Loop", &m_isAnimLoop);
 
 	ImGui::SameLine();
 	if (ImGui::Button("Add"))
@@ -178,8 +209,11 @@ void CImguiManager::AnimListWindow()
 
 	ImGui::ListBox("Loop Animations", &m_iAddedAnimSelectedIndex, Addeditems.data(), Addeditems.size());
 
-	if (ImGui::Button("Save"))
+	if (ImGui::Button(u8"루프 애니메이션 목록 저장"))
 	{
+		string strDirectory = "../../Client/Bin/DataFiles/Character/" + m_ModelNameList[m_iModelSelectedIndex];
+
+		AnimationLoop_Save(strDirectory);
 	}
 
 	ImGui::SameLine();
@@ -215,17 +249,31 @@ void CImguiManager::BoneListWindow()
 
 	for (auto pBone: pBones)
 	{
-		string strName = pBone->Get_Name();
+		string strChannelName = pBone->Get_Name();
 		//string strName = m_pGameInstance->Extract_String(pBone->Get_Name(), '[', ']');
 
-		m_BoneNameList[i] = strName;
+		m_BoneNameList[i] = strChannelName;
 		items.push_back(m_BoneNameList[i].c_str());
 
 		i++;
 	}
 
+	ImGui::InputText("Bone Name", m_szSearchBoneName, sizeof(m_szSearchBoneName) * _MAX_PATH);
+
+	if (ImGui::Button(u8"뼈 이름 검색하기"))
+	{
+		for (size_t i = 0; i < m_BoneNameList.size(); i++)
+		{
+			if (m_BoneNameList[i] == string(m_szSearchBoneName))
+				m_iBoneSelectedIndex = i;
+		}
+	}
+
+	//뼈 리스트
 	if (ImGui::ListBox("##", &m_iBoneSelectedIndex, items.data(), items.size()))
 	{
+		Reset_Collider_Value();
+		Setting_Collider_Value(m_iBoneSelectedIndex);
 		m_pRenderModel->Select_Bone(m_iBoneSelectedIndex);
 	}
 
@@ -278,7 +326,66 @@ void CImguiManager::BoneListWindow()
 
 	if (ImGui::Button("Create Collier"))
 	{
-		m_pRenderModel->Create_BoneCollider(m_iColliderType, m_iBoneSelectedIndex);
+		void* pValue = nullptr;
+		switch (m_iColliderType)
+		{
+		case AABB:
+			pValue = &m_ColliderExtents;
+			break;
+		case OBB:
+			pValue = &m_ColliderExtents;
+			break;
+		case SPHERE:
+			pValue = &m_fColliderRadius;
+			break;
+		}
+
+		_float3 vCenter;
+		memcpy(&vCenter, &m_ColliderPosition, sizeof(_float3));
+		if (!m_pRenderModel->Created_BoneCollider(m_iBoneSelectedIndex))
+		{
+			m_AddedColliders.emplace(m_iBoneSelectedIndex, m_BoneNameList[m_iBoneSelectedIndex]);
+			m_pRenderModel->Create_BoneCollider(m_iColliderType, m_iBoneSelectedIndex, vCenter, pValue);
+		}
+	}
+
+	vector<const char*> Addeditems;
+
+	for (auto& iter : m_AddedColliders)
+	{
+		Addeditems.push_back(iter.second.c_str());
+	}
+
+	if (ImGui::ListBox(u8"추가된 콜라이더 리스트", &m_iColliderSelectedIndex, Addeditems.data(), Addeditems.size()))
+	{
+		auto iter = m_AddedColliders.begin();
+
+		for (size_t i = 0; i < m_iColliderSelectedIndex; i++)
+		{
+			iter++;
+		}
+
+		Setting_Collider_Value((*iter).first);
+	}
+
+	if (ImGui::Button(u8"콜라이더 삭제"))
+	{
+		auto iter = m_AddedColliders.begin();
+
+		for (size_t i = 0; i < m_iColliderSelectedIndex; i++)
+		{
+			iter++;
+		}
+
+		m_pRenderModel->Release_BoneCollider((*iter).first);
+		m_AddedColliders.erase((*iter).first);		// 지울 때에는 뼈인덱스를 기준으로 지워야하기 때문에 m_iColliderSelectedIndex가 아니라 m_iBoneSelectedIndex로 지워야한다.
+	}
+
+	if (ImGui::Button(u8"콜라이더 정보 저장"))
+	{
+		string strDirectory = "../../Client/Bin/DataFiles/Character/" + m_ModelNameList[m_iModelSelectedIndex];
+
+		ColliderState_Save(strDirectory);
 	}
 
 	ImGui::End();
@@ -299,10 +406,10 @@ void CImguiManager::MeshListWindow()
 
 	for (auto pMesh : pMeshes)
 	{
-		string strName = pMesh->Get_Name();
+		string strChannelName = pMesh->Get_Name();
 		//string strName = m_pGameInstance->Extract_String(pMesh->Get_Name(), '[', ']');
 
-		m_MeshNameList[i] = strName;
+		m_MeshNameList[i] = strChannelName;
 		items.push_back(m_MeshNameList[i].c_str());
 
 		i++;
@@ -336,8 +443,11 @@ void CImguiManager::MeshListWindow()
 	}
 	ImGui::ListBox("Added Meshes", &m_iAddedMeshSelectedIndex, Addeditems.data(), Addeditems.size());
 
-	if (ImGui::Button("Save"))
+	if (ImGui::Button(u8"추가한 메시 저장"))
 	{
+		string strDirectory = "../../Client/Bin/DataFiles/Character/" + m_ModelNameList[m_iModelSelectedIndex];
+
+		AlphaMesh_Save(strDirectory);
 	}
 	ImGui::SameLine();
 	if (ImGui::Button("Delete"))
@@ -452,7 +562,12 @@ void CImguiManager::KeyFrameWindow()
 	}
 #pragma endregion
 
+	if (ImGui::Button(u8"애니메이션 이벤트 저장"))
+	{
+		string strDirectory = "../../Client/Bin/DataFiles/Character/" + m_ModelNameList[m_iModelSelectedIndex];
 
+		AnimationEvent_Save(strDirectory);
+	}
 
 	ImGui::End();
 }
@@ -533,7 +648,7 @@ void CImguiManager::DrawChannels()
 	m_ChannelNameList.clear();
 	m_ChannelNameList.resize(Channels.size());
 
-	ImGui::InputText("Model Name", m_szSearchChannelName, sizeof(m_szSearchChannelName) * _MAX_PATH);
+	ImGui::InputText("Channel Name", m_szSearchChannelName, sizeof(m_szSearchChannelName) * _MAX_PATH);
 
 	_uint i = 0;
 
@@ -541,10 +656,10 @@ void CImguiManager::DrawChannels()
 
 	for (auto pChannel : Channels)
 	{
-		string strName = pChannel->Get_Name();
+		string strChannelName = pChannel->Get_Name();
 		//string strName = m_pGameInstance->Extract_String(pBone->Get_Name(), '[', ']');
 
-		m_ChannelNameList[i] = strName;
+		m_ChannelNameList[i] = strChannelName;
 		items.push_back(m_ChannelNameList[i].c_str());
 
 		i++;
@@ -562,7 +677,9 @@ void CImguiManager::DrawChannels()
 	ImGui::ScrollToItem(ImGuiScrollFlags_AlwaysCenterY);
 	if (ImGui::ListBox("##", &m_iChannelSelectedIndex, items.data(), items.size()))
 	{
-		m_pRenderModel->Select_Bone(Channels[m_iChannelSelectedIndex]->Get_BoneIndex());
+		m_iBoneSelectedIndex = Channels[m_iChannelSelectedIndex]->Get_BoneIndex();
+
+		m_pRenderModel->Select_Bone(m_iBoneSelectedIndex);
 	}
 }
 
@@ -573,7 +690,7 @@ void CImguiManager::LoadAnimationCharacterList()
 	vector<wstring> vecDirectorys;
 	m_pGameInstance->Get_DirectoryName(strModelPath, vecDirectorys);
 
-	for (auto& strName : vecDirectorys)
+	for (auto& strChannelName : vecDirectorys)
 	{
 		string strBinPath = m_pGameInstance->WstringToString(strModelPath) + "Bin/";
 
@@ -617,8 +734,380 @@ void CImguiManager::Update_Model_Scaled()
 
 void CImguiManager::Reset_Collider_Value()
 {
+	ZeroMemory(m_ColliderPosition, sizeof(float) * 3);
 	ZeroMemory(m_ColliderExtents, sizeof(float) * 3);
 	m_fColliderRadius = 0.f;
+}
+
+void CImguiManager::Setting_Collider_Value(_uint iBoneIndex)
+{
+	auto& pBoneSpheres = m_pRenderModel->Get_BoneSpheres();
+
+	auto pSphere = pBoneSpheres[iBoneIndex];
+
+	if (!pSphere->Created_Collider())
+		return;
+
+	// 선택한 뼈 인덱스를 뼈 리스트에 동기화
+	m_iBoneSelectedIndex = iBoneIndex;
+
+	int iType = pSphere->Get_Collider_Type();
+	m_iColliderType = iType;
+
+	_float3 vCenter = pSphere->Get_Collider_Center();
+	memcpy(&m_ColliderPosition, &vCenter, sizeof(_float3));
+
+	switch (iType)
+	{
+	case CCollider::COLLIDER_AABB:
+	{
+		_float3* vExtents = (_float3*)pSphere->Get_Collider_Value();
+		memcpy(&m_ColliderExtents, vExtents, sizeof(_float3));
+	}
+	case CCollider::COLLIDER_OBB:
+	{
+		_float3* vExtents = (_float3*)pSphere->Get_Collider_Value();
+		memcpy(&m_ColliderExtents, vExtents, sizeof(_float3));
+	}
+	case CCollider::COLLIDER_SPHERE:
+	{
+		_float* fRadius = (_float*)pSphere->Get_Collider_Value();
+		memcpy(&m_fColliderRadius, fRadius, sizeof(_float));
+	}
+	}
+}
+
+
+void CImguiManager::All_Save()
+{
+	string strDirectory = "../../Client/Bin/DataFiles/Character/" + m_ModelNameList[m_iModelSelectedIndex];
+
+	fs::path path(strDirectory);
+	if (!exists(path))
+		fs::create_directory(path);
+
+	/* 모델 매쉬 정보 저장하기 */
+	AlphaMesh_Save(strDirectory);
+
+	/* 애니메이션 루프 정보 저장하기 */
+	AnimationLoop_Save(strDirectory);
+
+	/* 애니메이션 이벤트 저장하기 */
+	AnimationEvent_Save(strDirectory);
+
+	/* 충돌체 생성 정보 저장하기 */
+	ColliderState_Save(strDirectory);
+}
+
+void CImguiManager::AlphaMesh_Save(string strPath)
+{
+	string strDirectory = strPath;
+	strDirectory += "/" + m_ModelNameList[m_iModelSelectedIndex] + "_AlphaMeshes.dat";
+
+	ofstream out(strDirectory, ios::binary);
+
+	_uint iMeshMapSize = m_AddedMeshes.size();
+
+	out.write((char*)&iMeshMapSize, sizeof(_uint));
+
+	// 매쉬 읽어오는 인덱스 순서가 바뀔 일은 없나?
+	// 없다고 가정하고 인덱스만 저장하기
+	//string strModelName = m_ModelNameList[m_iModelSelectedIndex];
+
+	for (auto& iter : m_AddedMeshes)
+	{
+		out.write((char*)&(iter.first), sizeof(_uint));
+	}
+
+	out.close();
+}
+
+void CImguiManager::AnimationLoop_Save(string strPath)
+{
+	string strDirectory = strPath;
+	strDirectory += "/" + m_ModelNameList[m_iModelSelectedIndex] + "_LoopAnimations.dat";
+
+	ofstream out(strDirectory, ios::binary);
+
+	_uint iAnimMapSize = m_AddedAnims.size();
+
+	out.write((char*)&iAnimMapSize, sizeof(_uint));
+	
+	for (auto& iter : m_AddedAnims)
+	{
+		out.write((char*)&(iter.first), sizeof(_uint));
+	}
+
+	out.close();
+}
+
+void CImguiManager::AnimationEvent_Save(string strPath)
+{
+	string strDirectory = strPath;
+	strDirectory += "/" + m_ModelNameList[m_iModelSelectedIndex] + "_AnimationEvents.dat";
+
+	ofstream out(strDirectory, ios::binary);
+
+	_uint iEventMapSize = m_AnimationEvents.size();
+
+	out << iEventMapSize;
+
+	// first: 애니메이션 이름, second: 이벤트정보
+	// 어떤 애니메이션에 대한 값들인지를 저장함 (애니메이션 이름을 key로 쓴다)
+	for (auto& iter : m_AnimationEvents)
+	{
+		string strAnimName = iter.first;
+		out << strAnimName << endl;
+
+		Animation_Event Desc{};
+		Desc.iType = iter.second.iType;
+		Desc.fAinmPosition = iter.second.fAinmPosition;
+		Desc.strChannelName = iter.second.strChannelName;
+
+		out << Desc.iType << endl;
+		out << Desc.fAinmPosition << endl;
+		out << Desc.strChannelName << endl;
+	}
+
+	out.close();
+}
+
+void CImguiManager::ColliderState_Save(string strPath)
+{
+	string strDirectory = strPath;
+	strDirectory += "/" + m_ModelNameList[m_iModelSelectedIndex] + "_Colliders.dat";
+
+	ofstream out(strDirectory, ios::binary);
+
+	auto pBoneSpheres = m_pRenderModel->Get_BoneSpheres();
+
+	_uint iColliderCount = { 0 };
+
+	// 여기서 i는 뼈의 인덱스를 key값으로 쓰려고 구하는 것
+	_uint i = { 0 };
+	map<_uint, CModelBoneSphere*> Spheres;
+
+	for (auto& pSphere : pBoneSpheres)
+	{
+		if (pSphere->Created_Collider())
+		{
+			Spheres.emplace(i, pSphere);
+		}
+
+		i++;
+	}
+
+	iColliderCount = Spheres.size();
+
+	// 총 몇개의 콜라이더를 읽어올 것인지 작성한다
+	out.write((char*)&iColliderCount, sizeof(_uint));
+
+	// 위에서 저장해둔 본스피어에서 콜라이더 정보를 꺼내온다.
+	for (auto& pSphere : Spheres)
+	{
+		CCollider* pCollider = static_cast<CCollider*>(pSphere.second->Get_Component(TEXT("Com_Collider")));
+
+		//읽어온 콜라이더의 타입에 따라 정보를 읽어서 저장한다 (무슨 타입이던 무조건 2줄씩 쓸 것이긴하나, 
+		// Sphere 일 경우 _float 단독이고, 나머지는 _float3이므로 로드 시 주의 필요
+		CCollider::TYPE eType = pCollider->Get_Type();
+
+		out.write((char*)&pSphere.first, sizeof(_uint));
+		// 이넘은 인트처럼 4바이트를 소모하므로, 인트 크기로 저장한다.
+		out.write((char*)&eType, sizeof(_uint));
+
+		switch (eType)
+		{
+		case Engine::CCollider::COLLIDER_AABB:
+		{
+			BoundingBox* pBounding = static_cast<BoundingBox*>(pCollider->Get_OriginDesc());
+			out.write((char*)&pBounding->Center, sizeof(_float3));
+			out.write((char*)&pBounding->Extents, sizeof(_float3));
+		}
+		break;
+		case Engine::CCollider::COLLIDER_OBB:
+		{
+			//BoundingOrientedBox 구조체에는 Orientation(_float4) 값이 있긴 하나, 
+			// 따로 조절하지 않을 것이므로 저장하지 않는다.
+			BoundingOrientedBox* pBounding = static_cast<BoundingOrientedBox*>(pCollider->Get_OriginDesc());
+			out.write((char*)&pBounding->Center, sizeof(_float3));
+			out.write((char*)&pBounding->Extents, sizeof(_float3));
+		}
+		break;
+		case Engine::CCollider::COLLIDER_SPHERE:
+		{
+			BoundingSphere* pBounding = static_cast<BoundingSphere*>(pCollider->Get_OriginDesc());
+			out.write((char*)&pBounding->Center, sizeof(_float3));
+			out.write((char*)&pBounding->Radius, sizeof(_float));
+		}
+		break;
+		}
+	}
+
+	out.close();
+}
+
+void CImguiManager::All_Load()
+{
+	string strDirectory = "../../Client/Bin/DataFiles/Character/" + m_ModelNameList[m_iModelSelectedIndex];
+
+	AlphaMesh_Load(strDirectory);
+	AnimationLoop_Load(strDirectory);
+	AnimationEvent_Load(strDirectory);
+	ColliderState_Load(strDirectory);
+}
+
+void CImguiManager::AlphaMesh_Load(string strPath)
+{
+	string strDirectory = strPath;
+	strDirectory += "/" + m_ModelNameList[m_iModelSelectedIndex] + "_AlphaMeshes.dat";
+
+	ifstream in(strDirectory, ios::binary);
+
+	if (!in.is_open()) {
+		MSG_BOX("파일 개방 실패");
+		return;
+	}
+
+	_uint iMeshMapSize;
+
+	in.read((char*)&iMeshMapSize, sizeof(_uint));
+
+	m_AddedMeshes.clear();
+
+	for (size_t i = 0; i < iMeshMapSize; i++)
+	{
+		_uint iMeshIndex = { 0 };
+		in.read((char*)&iMeshIndex, sizeof(_uint));
+		m_AddedMeshes.emplace(i, m_MeshNameList[iMeshIndex]);
+	}
+	in.close();
+}
+
+void CImguiManager::AnimationLoop_Load(string strPath)
+{
+	string strDirectory = strPath;
+	strDirectory += "/" + m_ModelNameList[m_iModelSelectedIndex] + "_LoopAnimations.dat";
+
+	ifstream in(strDirectory, ios::binary);
+
+	if (!in.is_open()) {
+		MSG_BOX("파일 개방 실패");
+		return;
+	}
+
+	_uint iAnimMapSize;
+
+	in.read((char*)&iAnimMapSize, sizeof(_uint));
+
+	m_AddedAnims.clear();
+
+	for (size_t i = 0; i < iAnimMapSize; i++)
+	{
+		_uint iAnimIndex = { 0 };
+		in.read((char*)&iAnimIndex, sizeof(_uint));
+		m_AddedAnims.emplace(i, m_AnimNameList[iAnimIndex]);
+	}
+
+	in.close();
+}
+
+void CImguiManager::AnimationEvent_Load(string strPath)
+{
+	string strDirectory = strPath;
+	strDirectory += "/" + m_ModelNameList[m_iModelSelectedIndex] + "_AnimationEvents.dat";
+
+	ifstream in(strDirectory, ios::binary);
+
+	if (!in.is_open()) {
+		MSG_BOX("AnimationEvents 파일 개방 실패");
+		return;
+	}
+
+	m_AnimationEvents.clear();
+
+	_uint iEventMapSize = { 0 };
+
+	in >> iEventMapSize;
+
+	for (size_t i = 0; i < iEventMapSize; i++)
+	{
+		string strAnimName = "";
+		in >> strAnimName;
+
+		Animation_Event Desc{};
+		in >> Desc.iType;
+		in >> Desc.fAinmPosition;
+		in >> Desc.strChannelName;
+
+		m_AnimationEvents.emplace(strAnimName, Desc);
+	}
+
+	in.close();
+}
+
+void CImguiManager::ColliderState_Load(string strPath)
+{
+	string strDirectory = strPath;
+	strDirectory += "/" + m_ModelNameList[m_iModelSelectedIndex] + "_Colliders.dat";
+
+	ifstream in(strDirectory, ios::binary);
+
+	if (!in.is_open()) {
+		MSG_BOX("파일 개방 실패");
+		return;
+	}
+
+	_uint iColliderCount = { 0 };
+
+	in.read((char*)&iColliderCount, sizeof(_uint));
+
+	for (size_t i = 0; i < iColliderCount; i++)
+	{
+		_uint iBoneIndex = { 0 };
+		_uint iColliderType = { 0 };
+		in.read((char*)&iBoneIndex, sizeof(_uint));
+		in.read((char*)&iColliderType, sizeof(_uint));
+
+		_float3 vCenter;
+		in.read((char*)&vCenter, sizeof(_float3));
+
+		_float3 vExtents;
+		_float fRadius;
+
+		void* pValue = nullptr;
+
+		switch (iColliderType)
+		{
+		case Engine::CCollider::COLLIDER_AABB:
+		{
+			in.read((char*)&vExtents, sizeof(_float3));
+
+			pValue = &vExtents;
+		}
+		break;
+		case Engine::CCollider::COLLIDER_OBB:
+		{
+			in.read((char*)&vExtents, sizeof(_float3));
+			pValue = &vExtents;
+		}
+		break;
+		case Engine::CCollider::COLLIDER_SPHERE:
+		{
+			in.read((char*)&fRadius, sizeof(_float));
+			pValue = &fRadius;
+		}
+		break;
+		}
+
+		if (!m_pRenderModel->Created_BoneCollider(iBoneIndex))
+		{
+			m_AddedColliders.emplace(iBoneIndex, m_BoneNameList[iBoneIndex]);
+			m_pRenderModel->Create_BoneCollider(iColliderType, iBoneIndex, vCenter, pValue);
+		}
+
+	}
+
+	in.close();
 }
 
 CImguiManager* CImguiManager::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -631,16 +1120,6 @@ CImguiManager* CImguiManager::Create(ID3D11Device* pDevice, ID3D11DeviceContext*
 		MSG_BOX("CImguiManager Create Failed");
 		return nullptr;
 	}
-
-	//ImGui
-	IMGUI_CHECKVERSION();
-	ImGui::CreateContext();
-	ImGuiIO io = ImGui::GetIO();
-	io.Fonts->AddFontFromFileTTF("C:\\Windows\\fonts\\malgun.ttf", 18.0f, NULL, io.Fonts->GetGlyphRangesKorean());
-	ImGui::StyleColorsDark();
-
-	ImGui_ImplWin32_Init(g_hWnd);
-	ImGui_ImplDX11_Init(pDevice, pContext);
 
 	return pInstance;
 }

@@ -32,6 +32,8 @@ HRESULT CMainApp::Initialize()
 	if (FAILED(m_pGameInstance->Initialize_Engine(LEVEL_END, EngineDesc, &m_pDevice, &m_pContext)))
 		return E_FAIL;
 
+	m_pGameInstance->Set_DebugView(true);
+
 	if (FAILED(Ready_Font()))
 		return E_FAIL;
 

@@ -26,10 +26,10 @@
       <Filter>01.Levels\98.Test</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Player.cpp">
-      <Filter>02.GameObjects\02.LandObject\00.Player</Filter>
+      <Filter>02.GameObjects\02.Character\LandObject\00.Player</Filter>
     </ClCompile>
     <ClCompile Include="..\private\LandObject.cpp">
-      <Filter>02.GameObjects\02.LandObject</Filter>
+      <Filter>02.GameObjects\02.Character\LandObject</Filter>
     </ClCompile>
     <ClCompile Include="..\private\PlayerCamera.cpp">
       <Filter>02.GameObjects\99.Camera\00.PlayerCamera</Filter>
@@ -94,6 +94,9 @@
     <ClCompile Include="..\Private\Sky.cpp">
       <Filter>02.GameObjects\04.Sky</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\CharacterData.cpp">
+      <Filter>02.GameObjects\02.Character\CharacterData</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\MainApp.h">
@@ -133,10 +136,10 @@
       <Filter>01.Levels\98.Test</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Player.h">
-      <Filter>02.GameObjects\02.LandObject\00.Player</Filter>
+      <Filter>02.GameObjects\02.Character\LandObject\00.Player</Filter>
     </ClInclude>
     <ClInclude Include="..\public\LandObject.h">
-      <Filter>02.GameObjects\02.LandObject</Filter>
+      <Filter>02.GameObjects\02.Character\LandObject</Filter>
     </ClInclude>
     <ClInclude Include="..\public\PlayerCamera.h">
       <Filter>02.GameObjects\99.Camera\00.PlayerCamera</Filter>
@@ -219,6 +222,9 @@
     <ClInclude Include="..\Public\Sky.h">
       <Filter>02.GameObjects\04.Sky</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\CharacterData.h">
+      <Filter>02.GameObjects\02.Character\CharacterData</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -277,12 +283,6 @@
     <Filter Include="02.GameObjects\99.Camera\99.DebugCamera">
       <UniqueIdentifier>{a56dc720-b3f2-49f1-993d-86fd054eb9be}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\02.LandObject">
-      <UniqueIdentifier>{9fbfc139-fa7b-4bb5-8bfa-68ab385abcc7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\02.LandObject\00.Player">
-      <UniqueIdentifier>{8f8aa033-d0f3-43b6-ae6e-e95d1f3c776f}</UniqueIdentifier>
-    </Filter>
     <Filter Include="95.Utility">
       <UniqueIdentifier>{9bca135e-c393-4bb2-a0b4-5839f0e58aff}</UniqueIdentifier>
     </Filter>
@@ -306,6 +306,18 @@
     </Filter>
     <Filter Include="02.GameObjects\04.Sky">
       <UniqueIdentifier>{a460082c-6b47-48ad-8b77-a08f0fc04941}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character">
+      <UniqueIdentifier>{a666196a-f926-41d0-a823-380685d12205}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject">
+      <UniqueIdentifier>{9fbfc139-fa7b-4bb5-8bfa-68ab385abcc7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\00.Player">
+      <UniqueIdentifier>{8f8aa033-d0f3-43b6-ae6e-e95d1f3c776f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\CharacterData">
+      <UniqueIdentifier>{d47f23c7-f09f-46fd-a441-f1561bb9a95a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

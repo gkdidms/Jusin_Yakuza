@@ -22,42 +22,6 @@
     <ClCompile Include="..\private\Level_Test.cpp">
       <Filter>01.Levels\98.Test</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Imgui\imgui\imgui.cpp">
-      <Filter>96.ImGui\Source</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Imgui\imgui\imgui_demo.cpp">
-      <Filter>96.ImGui\Source</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Imgui\imgui\imgui_draw.cpp">
-      <Filter>96.ImGui\Source</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Imgui\imgui\imgui_tables.cpp">
-      <Filter>96.ImGui\Source</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Imgui\imgui\imgui_widgets.cpp">
-      <Filter>96.ImGui\Source</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Imgui\imGuizmo\GraphEditor.cpp">
-      <Filter>96.ImGui\Gizomo</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Imgui\imGuizmo\ImCurveEdit.cpp">
-      <Filter>96.ImGui\Gizomo</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Imgui\imGuizmo\ImGradient.cpp">
-      <Filter>96.ImGui\Gizomo</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Imgui\imGuizmo\ImGuizmo.cpp">
-      <Filter>96.ImGui\Gizomo</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Imgui\imGuizmo\ImSequencer.cpp">
-      <Filter>96.ImGui\Gizomo</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Imgui\background\imgui_impl_dx11.cpp">
-      <Filter>96.ImGui\Source</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\Imgui\background\imgui_impl_win32.cpp">
-      <Filter>96.ImGui\Source</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\ImguiManager.cpp">
       <Filter>96.ImGui\Manager</Filter>
     </ClCompile>
@@ -75,6 +39,27 @@
     </ClCompile>
     <ClCompile Include="..\Private\ModelBoneSphere.cpp">
       <Filter>02.GameObjects\03.Model\ModelBoneSphere</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Imgui\imgui_tables.cpp">
+      <Filter>96.ImGui\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Imgui\imgui_widgets.cpp">
+      <Filter>96.ImGui\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Imgui\imgui.cpp">
+      <Filter>96.ImGui\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Imgui\imgui_demo.cpp">
+      <Filter>96.ImGui\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Imgui\imgui_draw.cpp">
+      <Filter>96.ImGui\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Imgui\backend\imgui_impl_dx11.cpp">
+      <Filter>96.ImGui\Source</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Imgui\backend\imgui_impl_win32.cpp">
+      <Filter>96.ImGui\Source</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -111,48 +96,6 @@
     <ClInclude Include="..\public\Level_Test.h">
       <Filter>01.Levels\98.Test</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\Imgui\imgui\imstb_truetype.h">
-      <Filter>96.ImGui\Source</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Imgui\imgui\imconfig.h">
-      <Filter>96.ImGui\Source</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Imgui\imgui\imgui.h">
-      <Filter>96.ImGui\Source</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Imgui\imgui\imgui_internal.h">
-      <Filter>96.ImGui\Source</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Imgui\imgui\imstb_rectpack.h">
-      <Filter>96.ImGui\Source</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Imgui\imgui\imstb_textedit.h">
-      <Filter>96.ImGui\Source</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Imgui\imGuizmo\GraphEditor.h">
-      <Filter>96.ImGui\Gizomo</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Imgui\imGuizmo\ImCurveEdit.h">
-      <Filter>96.ImGui\Gizomo</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Imgui\imGuizmo\ImGradient.h">
-      <Filter>96.ImGui\Gizomo</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Imgui\imGuizmo\ImGuizmo.h">
-      <Filter>96.ImGui\Gizomo</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Imgui\imGuizmo\ImSequencer.h">
-      <Filter>96.ImGui\Gizomo</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Imgui\imGuizmo\ImZoomSlider.h">
-      <Filter>96.ImGui\Gizomo</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Imgui\background\imgui_impl_dx11.h">
-      <Filter>96.ImGui\Source</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Imgui\background\imgui_impl_win32.h">
-      <Filter>96.ImGui\Source</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\ImguiManager.h">
       <Filter>96.ImGui\Manager</Filter>
     </ClInclude>
@@ -170,6 +113,30 @@
     </ClInclude>
     <ClInclude Include="..\Public\ModelBoneSphere.h">
       <Filter>02.GameObjects\03.Model\ModelBoneSphere</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Imgui\imgui_internal.h">
+      <Filter>96.ImGui\Source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Imgui\imstb_rectpack.h">
+      <Filter>96.ImGui\Source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Imgui\imstb_textedit.h">
+      <Filter>96.ImGui\Source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Imgui\imstb_truetype.h">
+      <Filter>96.ImGui\Source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Imgui\imconfig.h">
+      <Filter>96.ImGui\Source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Imgui\imgui.h">
+      <Filter>96.ImGui\Source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Imgui\backend\imgui_impl_dx11.h">
+      <Filter>96.ImGui\Source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Imgui\backend\imgui_impl_win32.h">
+      <Filter>96.ImGui\Source</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -225,9 +192,6 @@
     </Filter>
     <Filter Include="96.ImGui\Source">
       <UniqueIdentifier>{ffde9275-b093-4e25-a0af-c2581d8fcf02}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="96.ImGui\Gizomo">
-      <UniqueIdentifier>{c6349944-aa2f-4b2e-b902-867184b5c9fd}</UniqueIdentifier>
     </Filter>
     <Filter Include="96.ImGui\Manager">
       <UniqueIdentifier>{1373fa70-8540-4743-bbf1-881380805c8e}</UniqueIdentifier>
