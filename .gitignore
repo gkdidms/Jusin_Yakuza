@@ -41,6 +41,5 @@ ipch/
 *.lib
 *.dll
 
-*.png
-*.dds
-*.fbx
+Textures/
+Models/
