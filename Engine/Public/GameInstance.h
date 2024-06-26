@@ -83,6 +83,10 @@ public:
     _bool isSSAO();
     void Set_SSAORadiuse(_float fRadiuse);
     _float Get_SSAORadiuse();
+    void Set_SSAOBlur(_float fBlur);
+    _float Get_SSAOBlur();
+    _float Get_SSAOBias();
+    void Set_SSAOBias(_float fBias);
 
 #ifdef _DEBUG
 public:

@@ -39,6 +39,8 @@ private:
     ID3D11Device* m_pDevice = { nullptr };
     ID3D11DeviceContext* m_pContext = { nullptr };
     CGameInstance* m_pGameInstance = { nullptr };
+    class CFileTotalMgr* m_pFileTotalMgr = { nullptr };
+
     _bool m_isDebug = { false }; // 디버그 툴 진입했는지 아닌지 체크
 
 private:
@@ -46,6 +48,8 @@ private:
     _float m_fSpeed = { -1.f };
 private://렌더러 제어 
     _float m_fHDRLight = { 1.f };
+
+    _int m_iLightPass = { 0 };
 
 private:
     void Window_Debug();

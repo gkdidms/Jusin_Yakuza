@@ -25,6 +25,7 @@ HRESULT CPlayerCamera::Initialize(void* pArg)
 	if (nullptr != pDesc)
 	{
 		m_fSensor = pDesc->fSensor;
+		m_pPlayerMatrix = pDesc->pPlayerMatrix;
 	}
 
 	if (FAILED(__super::Initialize(pArg)))

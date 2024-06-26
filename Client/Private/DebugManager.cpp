@@ -1,6 +1,7 @@
 #include "DebugManager.h"
 
 #include "GameInstance.h"
+#include "FileTotalMgr.h"
 
 #include "DebugCamera.h"
 #include "Player.h"
@@ -8,9 +9,11 @@
 IMPLEMENT_SINGLETON(CDebugManager)
 
 CDebugManager::CDebugManager()
-    : m_pGameInstance { CGameInstance::GetInstance() }
+    : m_pGameInstance { CGameInstance::GetInstance() },
+    m_pFileTotalMgr{ CFileTotalMgr::GetInstance() }
 {
     Safe_AddRef(m_pGameInstance);
+    Safe_AddRef(m_pFileTotalMgr);
 }
 
 HRESULT CDebugManager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -110,6 +113,22 @@ void CDebugManager::Window_Debug()
 
         if (ImGui::SliderFloat("Radiuse", &fRadiuse, 0.001f, 0.1f))
             m_pGameInstance->Set_SSAORadiuse(fRadiuse);
+
+        _float fBlur = m_pGameInstance->Get_SSAOBlur();
+        if (ImGui::SliderFloat("Blur", &fBlur, 0.1f, 10.f))
+            m_pGameInstance->Set_SSAOBlur(fBlur);
+
+        _float fBias = m_pGameInstance->Get_SSAOBias();
+        if (ImGui::SliderFloat("Bias", &fBias, 0.0001f, 1.f))
+            m_pGameInstance->Set_SSAOBias(fBias);
+    }
+
+    if (ImGui::CollapsingHeader("Light"))
+    {
+        ImGui::SeparatorText("Light");
+
+        if (ImGui::InputInt("Light Number", &m_iLightPass, 0))
+            m_pFileTotalMgr->Set_Lights_In_Client(m_iLightPass);
     }
 
     ImGui::End();
@@ -130,4 +149,5 @@ void CDebugManager::Free()
     Safe_Release(m_pContext);
 
     Safe_Release(m_pGameInstance);
+    Safe_Release(m_pFileTotalMgr);
 }

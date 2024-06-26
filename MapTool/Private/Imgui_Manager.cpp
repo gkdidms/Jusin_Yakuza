@@ -13,8 +13,6 @@
 #include "ImSequencer.h"
 #include "PipeLine.h"
 
-
-
 IMPLEMENT_SINGLETON(CImgui_Manager)
 
 CImgui_Manager::CImgui_Manager()
