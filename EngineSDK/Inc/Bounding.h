@@ -17,6 +17,7 @@ protected:
 
 public:
     virtual void* Get_Desc() = 0;
+    virtual void* Get_OriginDesc() = 0;                 //0625 Çý¿øÃß°¡
 
 public:
     virtual void Set_Value(void* pDesc) {};

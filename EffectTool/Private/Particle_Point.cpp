@@ -140,6 +140,7 @@ HRESULT CParticle_Point::Bind_ShaderResources()
         return E_FAIL;
     if (FAILED(m_pShaderCom->Bind_RawValue("g_vEndColor", &m_vEndColor, sizeof(_float4))))
         return E_FAIL;
+
     return S_OK;
 }
 

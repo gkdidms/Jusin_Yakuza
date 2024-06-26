@@ -51,6 +51,8 @@ public:
     void Go_Backward(const _float& fTimeDelta);
     void Go_Left(const _float& fTimeDelta);
     void Go_Right(const _float& fTimeDelta);
+    void Go_Up(const _float& fTimeDelta);          //0625 Çý¿ø Ãß°¡ 
+    void Go_Down(const _float& fTimeDelta);        //0625 Çý¿ø Ãß°¡
     void LookAt(_fvector vTargetPosition);
     void LookForCamera(_fvector vCamLook, _float fRadian);
     void Turn(_fvector vAxis, _float fTimeDelta);

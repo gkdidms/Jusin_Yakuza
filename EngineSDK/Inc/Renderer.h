@@ -61,7 +61,7 @@ private:
     void Render_Bloom();//블러
     void Render_FinalEffectBlend();//블러 합치기
     void Render_Blender();
-    void Render_OIT();
+    void Render_FinlaOIT();
     void Render_UI();
 
     HRESULT Ready_SSAONoiseTexture();

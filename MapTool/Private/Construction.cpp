@@ -2,6 +2,7 @@
 
 #include "GameInstance.h"
 #include "Transform.h"
+#include "Decal.h"
 
 CConstruction::CConstruction(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CGameObject{ pDevice, pContext }
@@ -70,7 +71,30 @@ HRESULT CConstruction::Render()
 			return E_FAIL;
 
 		/*m_pShaderCom->Begin(m_iShaderPassNum);*/
-		m_pShaderCom->Begin(0);
+
+		bool	bFindDecal = false;
+
+		if (true == m_bFindDecalMesh)
+		{
+			for (int j = 0; j < m_iDecalMeshCnt; j++)
+			{
+				if (m_pDecalMeshIndex[j] == i)
+				{
+					bFindDecal = true;
+				}
+			}
+		}
+
+		if (true == bFindDecal)
+		{
+
+			/* decal이 포함된 메쉬는 빨강색으로 */
+			m_pShaderCom->Begin(1);
+		}
+		else
+		{
+			m_pShaderCom->Begin(0);
+		}
 
 		m_pModelCom->Render(i);
 	}
@@ -126,6 +150,18 @@ CConstruction::MAPOBJ_DESC CConstruction::Send_GameObject_Information()
 	mapObjDesc.iObjPropertyType = m_iObjectPropertyType;
 
 	return mapObjDesc;
+}
+
+void CConstruction::On_Find_DecalMesh(int* iNumMesh, int iCnt)
+{
+	m_pDecalMeshIndex = iNumMesh;
+	m_iDecalMeshCnt = iCnt;
+	m_bFindDecalMesh = true;
+}
+
+void CConstruction::Off_Find_DecalMesh()
+{
+	m_bFindDecalMesh = false;
 }
 
 HRESULT CConstruction::Add_Components(void* pArg)
@@ -192,6 +228,12 @@ CGameObject* CConstruction::Clone(void* pArg)
 void CConstruction::Free()
 {
 	__super::Free();
+
+	for (auto& iter : m_vDecals)
+		Safe_Release(iter);
+	m_vDecals.clear();
+
+
 
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pModelCom);
