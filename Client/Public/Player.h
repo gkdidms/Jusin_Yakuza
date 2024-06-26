@@ -60,8 +60,10 @@ private:
     virtual HRESULT Add_Componenets() override;
     virtual HRESULT Bind_ResourceData() override;
     HRESULT Add_CharacterData();
-
     void Apply_ChracterData();
+
+private:
+    void Change_Animation(_uint iAnimIndex);
 
 public:
     static CPlayer* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

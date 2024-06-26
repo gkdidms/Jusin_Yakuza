@@ -32,7 +32,7 @@ HRESULT CPlayer::Initialize(void* pArg)
 	if (FAILED(Add_CharacterData()))
 		return E_FAIL;
 
-	m_pModelCom->Set_AnimationIndex(CModel::ANIMATION_DESC{ 3, false }, ANIM_INTERVAL);
+	Change_Animation(3);
 	return S_OK;
 }
 
@@ -43,29 +43,13 @@ void CPlayer::Priority_Tick(const _float& fTimeDelta)
 
 void CPlayer::Tick(const _float& fTimeDelta)
 {
-	//if (m_pGameInstance->GetKeyState(DIK_UP) == TAP)
-	//{
-	//	m_iChanged = true;
-	//	m_iAnimIndex++;
-
-	//	m_pModelCom->Set_AnimationIndex(CModel::ANIMATION_DESC{ m_iAnimIndex, false }, ANIM_INTERVAL);
-	//}
-
-	//if (m_pGameInstance->GetKeyState(DIK_DOWN) == TAP)
-	//{
-	//	m_iChanged = true;
-	//	m_iAnimIndex--;
-
-	//	m_pModelCom->Set_AnimationIndex(CModel::ANIMATION_DESC{ m_iAnimIndex, true }, ANIM_INTERVAL);
-	//}
-
 	if (m_pModelCom->Get_AnimFinished())
 	{
 		m_iAnimIndex += m_iTemp;
 
 		m_iTemp *= -1;
 
-		m_pModelCom->Set_AnimationIndex(CModel::ANIMATION_DESC{ m_iAnimIndex, false }, ANIM_INTERVAL);
+		Change_Animation(m_iAnimIndex);
 	}
 
 	if (m_pGameInstance->GetKeyState(DIK_UP) == HOLD)
@@ -271,6 +255,13 @@ void CPlayer::Apply_ChracterData()
 		m_pColliders.emplace_back(static_cast<CSoketCollider*>(pSoketCollider));
 	}
 
+}
+
+void CPlayer::Change_Animation(_uint iIndex)
+{
+	m_pModelCom->Set_AnimationIndex(m_iAnimIndex, ANIM_INTERVAL);
+	string strAnimName = m_pModelCom->Get_AnimationName(m_iAnimIndex);
+	m_pData->Set_CurrentAnimation(strAnimName);
 }
 
 CPlayer* CPlayer::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

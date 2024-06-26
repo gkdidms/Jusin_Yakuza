@@ -91,7 +91,7 @@ HRESULT CModel::Initialize_Prototype(MODELTYPE eModelType, const _char* pModelFi
 			return E_FAIL;
 	}
 
-	m_AnimLoops.reserve(m_Animations.size());
+	m_AnimLoops.resize(m_iAnimations);
 	fill(m_AnimLoops.begin(), m_AnimLoops.end(), false);			//m_AnimLoops를 일단 전부 false로 초기화한다.
 
     return S_OK;
@@ -919,6 +919,19 @@ void CModel::Set_AnimationIndex(const ANIMATION_DESC& AnimDesc, _double ChangeIn
 	m_Animations[m_AnimDesc.iAnimIndex]->Reset();
 }
 
+void CModel::Set_AnimationIndex(_uint iAnimIndex, _double ChangeInterval)
+{
+	if (iAnimIndex >= m_Animations.size()) return;
+
+	if (m_AnimDesc.iAnimIndex == iAnimIndex && m_AnimLoops[iAnimIndex] == m_AnimDesc.isLoop)
+		return;
+
+	m_iPrevAnimIndex = m_AnimDesc.iAnimIndex;
+	m_AnimDesc = { iAnimIndex, m_AnimLoops[iAnimIndex] };
+	m_ChangeInterval = ChangeInterval;
+	m_Animations[m_AnimDesc.iAnimIndex]->Reset();
+}
+
 void CModel::Reset_Animation(const ANIMATION_DESC& AnimDesc)
 {
 	m_Animations[m_AnimDesc.iAnimIndex]->Reset();
@@ -966,6 +979,11 @@ const _float4x4* CModel::Get_BoneTransformationMatrix(const _char* pBoneName) co
 		return nullptr;
 
 	return (*iter)->Get_TransformationMatrix();
+}
+
+const string& CModel::Get_AnimationName(_uint iAnimIndex)
+{
+	return m_Animations[iAnimIndex]->Get_AnimName();
 }
 
 void CModel::Copy_DecalMaterial(vector<DECAL_DESC>* pDecals)
