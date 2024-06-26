@@ -45,7 +45,7 @@ HRESULT CRenderer::Initialize()
 		return E_FAIL;
 
 	/*Target_Ambient*/
-	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Ambient"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 1.f))))
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Ambient"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(1.f, 0.f, 0.f, 1.f))))
 		return E_FAIL;
 
 	/*Target_SSAO*/
@@ -242,6 +242,9 @@ HRESULT CRenderer::Initialize()
 
 	Safe_Release(pDepthStencilTexture);
 
+	if (FAILED(Ready_SSAONoiseTexture()))
+		return E_FAIL;
+
 
 #ifdef _DEBUG
 	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_Diffuse"), 50.f, 50.f, 100.f, 100.f)))
@@ -423,7 +426,6 @@ void CRenderer::Render_ShadowObjects()
 
 	if (FAILED(m_pGameInstance->End_MRT()))
 		return;
-	
 
 	ZeroMemory(&ViewPortDesc, sizeof(D3D11_VIEWPORT));
 	ViewPortDesc.TopLeftX = 0;
@@ -453,8 +455,79 @@ void CRenderer::Render_NonBlender()
 		return;
 }
 
+HRESULT CRenderer::Ready_SSAONoiseTexture() // SSAO 연산에 들어갈 랜덤 벡터 텍스쳐 생성
+{
+	ID3D11Texture2D* pSSAONoiseTexture = { nullptr };
+	D3D11_TEXTURE2D_DESC		TextureDesc{};
+
+	ZeroMemory(&TextureDesc, sizeof(D3D11_TEXTURE2D_DESC));
+
+	TextureDesc.Width = 4;
+	TextureDesc.Height = 4;
+	TextureDesc.MipLevels = 1;
+	TextureDesc.ArraySize = 1;
+	TextureDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+
+	TextureDesc.SampleDesc.Quality = 0;
+	TextureDesc.SampleDesc.Count = 1;
+
+	TextureDesc.Usage = D3D11_USAGE_DYNAMIC;
+	TextureDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+	TextureDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	TextureDesc.MiscFlags = 0;
+
+	if (FAILED(m_pDevice->CreateTexture2D(&TextureDesc, nullptr, &pSSAONoiseTexture)))
+		return E_FAIL;
+
+	if (FAILED(m_pDevice->CreateShaderResourceView(pSSAONoiseTexture, nullptr, &m_pSSAONoiseView)))
+		return E_FAIL;
+
+	vector<_float3> vSSAONoise;
+	for (int i = 0; i < 16; i++)
+	{
+		_float3 vNoise = {
+			m_pGameInstance->Get_Random(0.f, 1.f) * 2.f - 1.f,
+			m_pGameInstance->Get_Random(0.f, 1.f) * 2.f - 1.f,
+			0.f
+		};
+		vSSAONoise.push_back(vNoise);
+	}
+
+	D3D11_MAPPED_SUBRESOURCE		SubResource{};
+
+	m_pContext->Map(pSSAONoiseTexture, 0, D3D11_MAP_WRITE_DISCARD, 0, &SubResource);
+
+	memcpy(SubResource.pData, &vSSAONoise, sizeof(_float3) * 16);
+
+	m_pContext->Unmap(pSSAONoiseTexture, 0);
+
+	Safe_Release(pSSAONoiseTexture);
+}
+
 void CRenderer::Render_SSAO()
 {
+	//랜덤 법선 만들기
+	vector<_float3> vSSAOKernal;
+
+	for (int i = 0; i < 64; i++)
+	{
+		_float3 vRandom = {
+			m_pGameInstance->Get_Random(0.f, 1.f) * 2.f - 1.f,
+			m_pGameInstance->Get_Random(0.f, 1.f) * 2.f - 1.f,
+			m_pGameInstance->Get_Random(0.f, 1.f)
+		};
+
+		XMStoreFloat3(&vRandom, XMVector3Normalize(XMLoadFloat3(&vRandom)));
+		XMStoreFloat3(&vRandom, XMLoadFloat3(&vRandom) * m_pGameInstance->Get_Random(0.f, 1.f));
+		float vScale = (_float)i / 64.f;
+		vScale = 0.1f + (vScale * vScale) * (1.f - 0.1f);
+		XMStoreFloat3(&vRandom, XMLoadFloat3(&vRandom) * vScale);
+
+		vSSAOKernal.emplace_back(vRandom);
+	}
+
+
+
 	if(FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_SSAO"))))
 		return;
 
@@ -465,14 +538,27 @@ void CRenderer::Render_SSAO()
 	if (FAILED(m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
 		return;
 
+	if (FAILED(m_pShader->Bind_Matrix("g_ViewMatrixInv", m_pGameInstance->Get_Transform_Inverse_Float4x4(CPipeLine::D3DTS_VIEW))))
+		return;
+	if (FAILED(m_pShader->Bind_Matrix("g_ProjMatrixInv", m_pGameInstance->Get_Transform_Inverse_Float4x4(CPipeLine::D3DTS_PROJ))))
+		return;
+
 	if (FAILED(m_pShader->Bind_RawValue("g_fFar", m_pGameInstance->Get_CamFar(), sizeof(_float))))
 		return;
 	if (FAILED(m_pShader->Bind_RawValue("g_fRadiuse", &m_fSSAORadiuse, sizeof(_float))))
+		return;
+	if (FAILED(m_pShader->Bind_RawValue("g_fSSAOBise", &m_fSSAOBiae, sizeof(_float))))
+		return;
+	if (FAILED(m_pShader->Bind_RawValue("g_vCamPosition", m_pGameInstance->Get_CamPosition_Float4(), sizeof(_float4))))
+		return;
+	if (FAILED(m_pShader->Bind_RawValue("g_SSAORandoms", &vSSAOKernal, sizeof(_float3) * 64)))
 		return;
 
 	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Normal"), m_pShader, "g_NormalTexture")))
 		return;
 	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Depth"), m_pShader, "g_DepthTexture")))
+		return;
+	if (FAILED(m_pShader->Bind_SRV("g_SSAONoisesTexture", m_pSSAONoiseView)))
 		return;
 
 	m_pShader->Begin(14);
@@ -489,6 +575,9 @@ void CRenderer::Render_SSAOBlur()
 	if (FAILED(m_pShader->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix)))
 		return;
 	if (FAILED(m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
+		return;
+
+	if (FAILED(m_pShader->Bind_RawValue("g_fTotal", &m_fSSAOBlur, sizeof(_float))))
 		return;
 
 	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_Blur_X"))))
@@ -673,10 +762,6 @@ void CRenderer::Render_Luminance()
 	if (FAILED(m_pGameInstance->End_MRT()))
 		return;
 
-
-
-
-
 	//32x32
 
 	ZeroMemory(&ViewPortDesc, sizeof(D3D11_VIEWPORT));
@@ -808,7 +893,6 @@ void CRenderer::Render_Luminance()
 	m_pContext->RSSetViewports(1, &ViewPortDesc);
 
 	//_bool isFninshed = { true };
-
 
 	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_1"))))
 		return;
@@ -1090,6 +1174,8 @@ void CRenderer::Render_Debug()
 	{
 		if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_SSAO"), m_pShader, m_pVIBuffer)))
 			return;
+		if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_SSAOBlur"), m_pShader, m_pVIBuffer)))
+			return;
 	}
 
 	if (m_isHDR)
@@ -1158,6 +1244,7 @@ void CRenderer::Free()
 	}
 
 	Safe_Release(m_pLightDepthStencilView);
+	Safe_Release(m_pSSAONoiseView);
 
 	Safe_Release(m_pShader);
 	Safe_Release(m_pVIBuffer);

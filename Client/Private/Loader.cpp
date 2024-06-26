@@ -5,6 +5,7 @@
 #pragma region TEST
 #include "Player.h"
 #include "DebugCamera.h"
+#include "CineCamera.h"
 #pragma endregion
 
 #include "Terrain.h"
@@ -176,6 +177,11 @@ HRESULT CLoader::Loading_For_Test()
 	/* For.Prototype_GameObject_Terrain */
 	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Construction"),
 		CConstruction::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_CCineCamera */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_CCineCamera"),
+		CCineCamera::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));

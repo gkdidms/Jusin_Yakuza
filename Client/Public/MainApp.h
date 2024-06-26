@@ -1,7 +1,7 @@
 #pragma once
-#include "Client_Defines.h"
-
 #include "Base.h"
+
+#include "Client_Defines.h"
 
 BEGIN(Engine)
 class CGameInstance;
@@ -26,6 +26,7 @@ private:
 
 	CGameInstance* m_pGameInstance = { nullptr };
 	class CSystemManager* m_pSystemManager = { nullptr };
+	class CFileTotalMgr* m_pFileTotalManager = { nullptr };
 
 #ifdef _DEBUG
 private:

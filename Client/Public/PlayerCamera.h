@@ -11,6 +11,7 @@ public:
     typedef struct tPlayerCameraDesc : public CAMERA_DESC
     {
         _float fSensor;
+        const _float4x4* pPlayerMatrix;
     } PLAYER_CAMERA_DESC;
 
 private:
@@ -28,6 +29,7 @@ public:
 
 private:
     _float m_fSensor = { 0.f };
+    const _float4x4* m_pPlayerMatrix = { nullptr };
 
 public:
     static CPlayerCamera* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

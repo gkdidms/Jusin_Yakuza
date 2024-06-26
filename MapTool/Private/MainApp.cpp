@@ -2,6 +2,7 @@
 
 #include "MainApp.h"
 #include "GameInstance.h"
+#include "SystemManager.h"
 
 #include "Level_Loading.h"
 #include "Background.h"
@@ -16,8 +17,11 @@
 CMainApp::CMainApp() :
 	m_pGameInstance{ CGameInstance::GetInstance() }
 	, m_pIMGUI_Manager {CImgui_Manager::GetInstance()}
+	, m_pSystemManager{ CSystemManager::GetInstance() }
 {
 	Safe_AddRef(m_pGameInstance);
+	Safe_AddRef(m_pIMGUI_Manager);
+	Safe_AddRef(m_pSystemManager);
 }
 
 HRESULT CMainApp::Initialize()
@@ -160,6 +164,10 @@ void CMainApp::Free()
 
 	/* 여기서 instance release 해줌 */
 	Safe_Release(m_pIMGUI_Manager);
+	CImgui_Manager::DestroyInstance();
+
+	Safe_Release(m_pSystemManager);
+	CSystemManager::DestroyInstance();
 
 	/* 레퍼런스 카운트를 0으로만든다. */
 	Safe_Release(m_pGameInstance);

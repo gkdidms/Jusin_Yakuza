@@ -1,14 +1,12 @@
 #include "LightTool_Mgr.h"
 #include "GameInstance.h"
 
-
 #include "../../Imgui/background/imgui_impl_win32.h"
 #include "../../Imgui/background/imgui_impl_dx11.h"
 
 #include "ImGuizmo.h"
 #include "ImSequencer.h"
 #include "PipeLine.h"
-
 
 #include <iostream>
 #include <io.h>
@@ -63,24 +61,24 @@ void EditTransformL(float* cameraView, float* cameraProjection, float* matrix, b
 			if (ImGui::RadioButton("World", mCurrentGizmoMode == ImGuizmo::WORLD))
 				mCurrentGizmoMode = ImGuizmo::WORLD;
 		}
-		if (ImGui::IsKeyPressed(ImGuiKey_S))
-			useSnap = !useSnap;
-		ImGui::Checkbox("##UseSnap", &useSnap);
-		ImGui::SameLine();
+		//if (ImGui::IsKeyPressed(ImGuiKey_S))
+		//	useSnap = !useSnap;
+		//ImGui::Checkbox("##UseSnap", &useSnap);
+		//ImGui::SameLine();
 
-		switch (mCurrentGizmoOperationL)
-		{
-		case ImGuizmo::TRANSLATE:
-			ImGui::InputFloat3("Snap", &snap[0]);
-			break;
-		case ImGuizmo::ROTATE:
-			ImGui::InputFloat("Angle Snap", &snap[0]);
-			break;
-		case ImGuizmo::SCALE:
-			ImGui::InputFloat("Scale Snap", &snap[0]);
-			break;
-		}
-		ImGui::Checkbox("Bound Sizing", &boundSizing);
+		//switch (mCurrentGizmoOperationL)
+		//{
+		//case ImGuizmo::TRANSLATE:
+		//	ImGui::InputFloat3("Snap", &snap[0]);
+		//	break;
+		//case ImGuizmo::ROTATE:
+		//	ImGui::InputFloat("Angle Snap", &snap[0]);
+		//	break;
+		//case ImGuizmo::SCALE:
+		//	ImGui::InputFloat("Scale Snap", &snap[0]);
+		//	break;
+		//}
+		/*ImGui::Checkbox("Bound Sizing", &boundSizing);
 		if (boundSizing)
 		{
 			ImGui::PushID(3);
@@ -88,7 +86,7 @@ void EditTransformL(float* cameraView, float* cameraProjection, float* matrix, b
 			ImGui::SameLine();
 			ImGui::InputFloat3("Snap", boundsSnap);
 			ImGui::PopID();
-		}
+		}*/
 	}
 
 	ImGuiIO& io = ImGui::GetIO();
@@ -124,7 +122,6 @@ void EditTransformL(float* cameraView, float* cameraProjection, float* matrix, b
 	// 옮기는애
 	// 객체 잡고 동그라미좌표계 그려주는애
 	// 객체 잡고 동그라미좌표계 그려주는애
-	// matrix : 객체월드행ㄹ려
 	ImGuizmo::Manipulate(cameraView, cameraProjection, mCurrentGizmoOperationL, mCurrentGizmoMode, matrix, NULL, useSnap ? &snap[0] : NULL, boundSizing ? bounds : NULL, boundSizingSnap ? boundsSnap : NULL);
 
 	// 화면 상단 카메라 돌아가는애
@@ -374,12 +371,6 @@ HRESULT CLightTool_Mgr::Import_Bin_Light_Data_OnTool(LIGHT_DESC_IO* lightObjData
 
 	strcat_s(fullPath, fileName);
 
-	/*char cLevel[2] = "";
-	_itoa_s(mapObjData->iLevelIndex, cLevel, 10);
-	strcat_s(fullPath, cLevel);
-	strcat_s(fullPath, ".bin");*/
-
-
 	ifstream in(fullPath, ios::binary);
 
 	if (!in.is_open()) {
@@ -577,11 +568,10 @@ void CLightTool_Mgr::Show_Installed_LightsList()
 		Update_FileName();
 	}
 
-
 	/* LightDesc 특성 선택 */
 	if (0 < m_LightObjects.size())
 	{
-		static int light_current_idx;
+		static int light_current_idx = 0;
 
 		if (light_current_idx != m_iCurrentLightIndex)
 		{
@@ -641,7 +631,7 @@ void CLightTool_Mgr::Show_Installed_LightsList()
 
 void CLightTool_Mgr::Update_LightsName()
 {
-	if (0 < m_LightsName.size())
+	if (0 <= m_LightsName.size())
 	{
 		for (auto& iter : m_LightsName)
 			Safe_Delete(iter);
@@ -764,10 +754,10 @@ void CLightTool_Mgr::Edit_Installed_Light()
 
 
 	ImGui::Text(u8"라이트 추가 : 추가버튼 누른후 왼쪽 마우스 클릭 ");
-	if (ImGui::Button(u8"라이트 추가"))
-	{
-		m_bLightAdd = true;
-	}
+	//if (ImGui::Button(u8"라이트 추가"))
+	//{
+	//	m_bLightAdd = true;
+	//}
 
 	if (ImGui::Button(u8"라이트 수정"))
 	{

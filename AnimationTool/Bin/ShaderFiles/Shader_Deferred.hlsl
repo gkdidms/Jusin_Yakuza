@@ -83,7 +83,7 @@ static const float g_fWeight[13] =
 	0.9231, 0.7261, 0.4868, 0.278, 0.1353, 0.0561*/
 };
 
-static const float g_fTotal = 2.f;
+float g_fTotal = 2.f;
 
 struct VS_IN
 {
@@ -144,24 +144,55 @@ struct PS_OUT_LIGHT
     vector vAmbient : SV_TARGET1;
 };
 
-float4 SSAO(float2 vTexcoord, float fDepth, float3 vNormal, float fViewZ)
+float3 g_SSAORandoms[64];
+Texture2D g_SSAONoisesTexture;
+float g_fSSAOBise = { 0.025f };
+
+const float2 noiseScale = float2(1280.0 / 4.0, 720.0 / 4.0);
+
+float3x3 Get_TBN(float3 vNormal, float2 vTexcoord)
+{   
+    float3 vRandomVec = g_SSAONoisesTexture.Sample(LinearSampler, vTexcoord * noiseScale).xyz;
+    
+    float3 tangent = normalize(vRandomVec - vNormal * dot(vRandomVec, vNormal));
+    float3 bitangent = cross(vNormal, tangent);
+    float3x3 TBN = float3x3(tangent, bitangent, vNormal);
+    
+    return TBN;
+}
+
+float4 SSAO(float3x3 TBN, float3 vPosition)
 {
     float fOcclusion = 0.f;
     
-    for (int i = 0; i < 64; ++i)
-    {
-        float3 vRay = cross(float3(0.f, 0.f, -1.f), g_vRandom[i % 16]); // 랜덤 방향 벡터 생성
-        float3 vReflect = normalize(reflect(vRay, vNormal)) * g_fRadiuse;
-        vReflect.x *= -1.f;
-        float2 vRandowUV = vTexcoord + vReflect.xy;
+    for (int i = 0; i < 16; ++i)
+    {   
+        float3 vSample = vPosition + mul(TBN, g_SSAORandoms[i]) * g_fRadiuse;
+       
+        vector vOffset = vector(vSample, 1.f);
+        vOffset = mul(vOffset, g_ProjMatrix);
+        vOffset.xyz /= vOffset.w;
+        vOffset.xyz = vOffset.xyz * 0.5f + 0.5f;
         
-        float fOccNorm = g_DepthTexture.Sample(LinearSampler, vRandowUV).x * g_fFar * fViewZ;
+        vector vOccNorm = g_DepthTexture.Sample(LinearSampler, vOffset.xy);
         
-        if (fOccNorm <= fDepth + 0.0003f)
-            ++fOcclusion;
+        	/* 뷰스페이스 상의 위치를 구한다. */
+        vector vOccPosition;
+        vOccPosition.x = vOffset.x * 2.f - 1.f;
+        vOccPosition.y = vOffset.y * -2.f + 1.f;
+        vOccPosition.z = vOccNorm.x; /* 0 ~ 1 */
+        vOccPosition.w = 1.f;
+        
+        vOccPosition = vOccPosition * (vOccNorm.y * g_fFar);
+       vOccPosition = mul(vOccPosition, g_ProjMatrixInv);
+        
+       
+        //float rangeCheck = smoothstep(0.0, 1.0, g_fRadiuse / abs(vPosition.z - vOccPosition.z));
+        fOcclusion += (vOccPosition.z >= vSample.z + g_fSSAOBise ? 1.0 : 0.0);
+        
     }
     
-    float4 vAmbient = abs((fOcclusion / 64.f) - 1);
+    float4 vAmbient = (fOcclusion / 16.f);
     
     return vAmbient;
 }
@@ -171,15 +202,33 @@ PS_OUT PS_MAIN_SSAO(PS_IN In)
     PS_OUT Out = (PS_OUT) 0;
 
     vector vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexcoord);
-    vector vDepthDesc = g_DepthTexture.Sample(PointSampler, In.vTexcoord);
+    vector vDepthDesc = g_DepthTexture.Sample(LinearSampler, In.vTexcoord);
     
-    vector vNormal = vector(vNormalDesc.xyz * 2.f - 1.f, 0.0f);
-    
-    float fViewZ = vDepthDesc.y * g_fFar;
-    float fDepth = vDepthDesc.x * g_fFar * fViewZ;
-    float4 fAmbient = SSAO(In.vTexcoord, fDepth, vNormal.xyz, fViewZ);
-    
-    Out.vColor = 1 - fAmbient;
+    if (vNormalDesc.a != 0.f)
+    {
+        Out.vColor = vector(1.f, 1.f, 1.f, 1.f);
+    }
+    else
+    {
+        //뷰행렬의 위치로 옮기기
+        vector vNormal = vector(vNormalDesc.xyz * 2.f - 1.f, 0.0f);
+        vNormal = normalize(mul(vNormal, g_ViewMatrix));
+        
+        //뷰행렬 상의 위치 구하기
+        vector vPosition;
+        
+        vPosition.x = In.vTexcoord.x * 2.f - 1.f;
+        vPosition.y = In.vTexcoord.y * -2.f + 1.f;
+        vPosition.z = vDepthDesc.x; /* 0 ~ 1 */
+        vPosition.w = 1.f;
+
+        vPosition = vPosition * (vDepthDesc.y * g_fFar);
+        vPosition = mul(vPosition, g_ProjMatrixInv);
+        
+        float4 fAmbient = SSAO(Get_TBN(vNormal.xyz, In.vTexcoord), vPosition.xyz);
+
+        Out.vColor = 1 - fAmbient;
+    }
     
     return Out;
 }
@@ -190,11 +239,13 @@ PS_OUT_LIGHT PS_MAIN_LIGHT_DIRECTIONAL(PS_IN In)
 
     vector vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexcoord);
     vector vDepthDesc = g_DepthTexture.Sample(PointSampler, In.vTexcoord);
-    vector vAmbientDesc = g_AmbientTexture.Sample(LinearSampler, In.vTexcoord);
+    float vAmbientDesc = g_AmbientTexture.Sample(LinearSampler, In.vTexcoord).r;
     vector vNormal = vector(vNormalDesc.xyz * 2.f - 1.f, 0.0f);
     
-    Out.vShade = g_vLightDiffuse * saturate(max(dot(normalize(g_vLightDir) * -1.f, normalize(vNormal)), 0.f) + (g_vLightAmbient * 
-    (g_isSSAO ? vAmbientDesc : g_vMtrlAmbient)));
+    Out.vShade = g_vLightDiffuse * saturate(max(dot(normalize(g_vLightDir) * -1.f, normalize(vNormal)), 0.f) + (g_vLightAmbient * g_vMtrlAmbient));
+    
+    if (g_isSSAO)
+        Out.vShade *= vAmbientDesc;
     
     return Out;
 }

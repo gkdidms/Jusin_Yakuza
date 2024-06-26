@@ -239,10 +239,10 @@ void CImgui_Manager::Window_Image()
         ImGui::NewLine();
         if (ImGui::Button(u8"렌더타겟 이미지 생성"))
         {
-            if (FAILED(m_pGameInstance->Create_Texture(TEXT("Target_Diffuse"), TEXT("../../Client/Bin/Resources/Textures/UI/CreateFile/test.dds"))))
+            /*if (FAILED(m_pGameInstance->Create_Texture(TEXT("Target_Diffuse"), TEXT("../../Client/Bin/Resources/Textures/UI/CreateFile/test.dds"))))
             {
                 MSG_BOX("렌더타겟 이미지 생성 실패");
-            }
+            }*/
         }
     }
 
