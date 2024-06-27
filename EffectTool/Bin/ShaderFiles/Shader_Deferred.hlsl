@@ -158,7 +158,7 @@ float4 SSAO(float3x3 TBN, float3 vPosition)
         vOffset.xyz /= vOffset.w;
         vOffset.xy = vOffset.xy * float2(0.5f, -0.5f) + float2(0.5f, -0.5f);
         
-        vector vOccNorm = g_DepthTexture.Sample(LinearSampler, vOffset.xy);
+        vector vOccNorm = g_DepthTexture.Sample(PointSampler, vOffset.xy);
         
         	/* 뷰스페이스 상의 위치를 구한다. */
         vector vOccPosition;
@@ -184,7 +184,7 @@ PS_OUT PS_MAIN_SSAO(PS_IN In)
     PS_OUT Out = (PS_OUT) 0;
 
     vector vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexcoord);
-    vector vDepthDesc = g_DepthTexture.Sample(LinearSampler, In.vTexcoord);
+    vector vDepthDesc = g_DepthTexture.Sample(PointSampler, In.vTexcoord);
     
     if (vNormalDesc.a != 0.f)
     {
@@ -200,6 +200,8 @@ PS_OUT PS_MAIN_SSAO(PS_IN In)
         vector vPosition;
         
         vPosition.x = In.vTexcoord.x * 2.f - 1.f;
+        
+      
         vPosition.y = In.vTexcoord.y * -2.f + 1.f;
         vPosition.z = vDepthDesc.x; /* 0 ~ 1 */
         vPosition.w = 1.f;

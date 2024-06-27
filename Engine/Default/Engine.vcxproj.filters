@@ -172,9 +172,6 @@
     <Filter Include="01.Utility\03.Component\07.Collider\DebugDraw">
       <UniqueIdentifier>{6186c345-8a17-413f-a528-d5c347937e05}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01.Utility\96.Manager">
-      <UniqueIdentifier>{604dcaba-94b0-469e-a171-1208e1a5cd0b}</UniqueIdentifier>
-    </Filter>
     <Filter Include="01.Utility\03.Component\01.VIBuffer\Cube">
       <UniqueIdentifier>{55219448-7564-41f8-b838-0c2a13944b50}</UniqueIdentifier>
     </Filter>
