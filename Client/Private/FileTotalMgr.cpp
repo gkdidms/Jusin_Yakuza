@@ -61,6 +61,18 @@ HRESULT CFileTotalMgr::Set_GameObject_In_Client(int iStageLevel)
         mapDesc.wstrModelName = m_pGameInstance->StringToWstring(m_MapTotalInform.pMapObjDesc[i].strModelCom);
         mapDesc.iShaderPass = m_MapTotalInform.pMapObjDesc[i].iShaderPassNum;
         mapDesc.iObjType = m_MapTotalInform.pMapObjDesc[i].iObjType;
+        mapDesc.iDecalNum = m_MapTotalInform.pMapObjDesc[i].iDecalNum;
+
+        if (0 < mapDesc.iDecalNum)
+        {
+            mapDesc.pDecal = new DECAL_DESC_IO[mapDesc.iDecalNum];
+
+            for (int j = 0; j < mapDesc.iDecalNum; j++)
+            {
+                mapDesc.pDecal[i] = m_MapTotalInform.pMapObjDesc[i].pDecals[j];
+            }
+        }
+
 
         m_pGameInstance->Add_GameObject(iStageLevel, TEXT("Prototype_GameObject_Construction"), m_Layers[iLayer], &mapDesc);
 

@@ -257,6 +257,9 @@
     <Filter Include="02.GameObjects\03.Texture\Btn">
       <UniqueIdentifier>{2e70f75c-f166-4057-9dd3-5815fcbc1e92}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03.Managers\NewFilter1">
+      <UniqueIdentifier>{2d496fbc-ab3c-4255-96e9-7cfa90ef4278}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxPosTex.hlsl">

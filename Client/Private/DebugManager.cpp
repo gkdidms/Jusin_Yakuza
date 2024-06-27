@@ -86,6 +86,25 @@ void CDebugManager::Window_Debug()
         if (ImGui::Checkbox("Anim Start", &isAnimStart))
             pPlayer->Set_AnimStart(isAnimStart);
 
+        ImGui::NewLine();
+
+        ImGui::Checkbox("Player Pos Move (Picking)", &m_isPlayerMove);
+        ImGui::Text("! Mouse RB Click !");
+        if (m_isPlayerMove)
+        {
+            if (m_pGameInstance->GetMouseState(DIM_RB) == TAP)
+            {
+                _bool isPicking = { false };
+                _vector vMovePos = m_pGameInstance->Picking(&isPicking);
+
+                if (isPicking)
+                {
+                    CPlayer* pPlayer = dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"), 0));
+                    pPlayer->Get_TransformCom()->Set_State(CTransform::STATE_POSITION, vMovePos);
+                }
+            }
+        }
+
         //Camera Á¦¾î
         ImGui::SeparatorText("Camera");
 

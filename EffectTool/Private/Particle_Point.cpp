@@ -71,13 +71,13 @@ void CParticle_Point::Late_Tick(const _float& fTimeDelta)
 
     if(m_BufferInstance.isLoop)
     {
-        m_pGameInstance->Add_Renderer(CRenderer::RENDER_BLENDER, this);
+        m_pGameInstance->Add_Renderer(CRenderer::RENDER_EFFECT, this);
     }
     else
     {
         if (m_fCurTime >= m_fStartTime && !m_isDead)
         {
-            m_pGameInstance->Add_Renderer(CRenderer::RENDER_BLENDER, this);
+            m_pGameInstance->Add_Renderer(CRenderer::RENDER_EFFECT, this);
         }
     }
 
