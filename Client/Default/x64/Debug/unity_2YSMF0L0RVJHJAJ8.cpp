@@ -7,3 +7,6 @@
 
 #include "D:\TeamProject\Imgui\imGuizmo\GraphEditor.cpp"
 
+
+#include "D:\TeamProject\Imgui\imGuizmo\ImCurveEdit.cpp"
+

@@ -287,8 +287,6 @@ void CPlayer::Apply_ChracterData()
 
 	for (auto& Collider : pColliders)
 	{
-		//Collider.first
-		/* 플래시 이펙트 수정 필요. */
 		CSoketCollider::SOKET_COLLIDER_DESC Desc{};
 		Desc.pParentMatrix = &m_ModelWorldMatrix;
 		Desc.pCombinedTransformationMatrix = m_pModelCom->Get_BoneCombinedTransformationMatrix_AtIndex(Collider.first);
