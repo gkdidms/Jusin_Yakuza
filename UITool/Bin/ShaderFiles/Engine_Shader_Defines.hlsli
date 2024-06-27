@@ -99,12 +99,10 @@ BlendState BS_Blend_Test
 {
     BlendEnable[0] = true;
     SrcBlend = Src_Alpha;
-    //DestBlend = Inv_Src_Alpha;
-    DestBlend = ZERO;
+    DestBlend = Inv_Src_Alpha;
     BlendOp = Add;
     SrcBlendAlpha = ONE;
-    //DestBlendAlpha = INV_SRC_ALPHA;
-    DestBlendAlpha = ZERO;
+    DestBlendAlpha = INV_SRC_ALPHA;
     BlendOpAlpha = Add;
 };
 
