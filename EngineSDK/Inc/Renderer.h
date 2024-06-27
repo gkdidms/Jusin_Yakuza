@@ -102,7 +102,7 @@ private:
     _float m_fSSAOBiae = { 0.025f };
 
 #ifdef _DEBUG
-    _bool m_isDebugView = { false };
+    _bool m_isDebugView = { true };
 #endif // _DEBUG
 
 
