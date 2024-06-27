@@ -6,6 +6,8 @@ matrix g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
 matrix g_ViewMatrixInv, g_ProjMatrixInv;
 matrix g_LightViewMatrix, g_LightProjMatrix;
 
+matrix g_CamProjMatrix, g_CamViewMatrix;
+
 vector g_vLightDir;
 vector g_vLightPos;
 float g_fLightRange;
@@ -52,25 +54,11 @@ float g_fLumVar;
 //SSAO
 bool g_isSSAO = { false };
 float g_fRadiuse = { 0.003f };
-float3 g_vRandom[16] =
-{
-    float3(0.2024537f, 0.841204f, -0.9060141f),
-    float3(-0.2200423f, 0.6282339f, -0.8275437f),
-    float3(0.3677659f, 0.1086345f, -0.4466777f),
-    float3(0.8775856f, 0.4617546f, -0.6427765f),
-    float3(0.7867433f, -0.141479f, -0.1567597f),
-    float3(0.4839356f, -0.8253108f, -0.1563844f),
-    float3(0.4401554f, -0.4228428f, -0.3300118f),
-    float3(0.0019193f, -0.8048455f, 0.0726584f),
-    float3(-0.7578573f, -0.5583301f, 0.2347527f),
-    float3(-0.4540417f, -0.252365f, 0.0694318f),
-    float3(-0.0483353f, -0.2527294f, 0.5924745f),
-    float3(-0.4192392f, 0.2084218f, -0.3672943f),
-    float3(-0.8433938f, 0.1451271f, 0.2202872f),
-    float3(-0.4037157f, -0.8263387f, 0.4698132f),
-    float3(-0.6657394f, 0.6298575f, 0.6342437f),
-    float3(-0.0001783f, 0.2834622f, 0.8343929f),
-};
+float3 g_SSAORandoms[64];
+Texture2D g_SSAONoisesTexture;
+float g_fSSAOBise = { 0.025f };
+const float2 g_NoiseScale = float2(1280.f / 4.f, 720.f / 4.f);
+
 
 //블룸(가우시안)
 float g_fTexW = 1280.0f;
@@ -144,15 +132,13 @@ struct PS_OUT_LIGHT
     vector vAmbient : SV_TARGET1;
 };
 
-float3 g_SSAORandoms[64];
-Texture2D g_SSAONoisesTexture;
-float g_fSSAOBise = { 0.025f };
 
-const float2 noiseScale = float2(1280.0 / 4.0, 720.0 / 4.0);
 
 float3x3 Get_TBN(float3 vNormal, float2 vTexcoord)
 {   
-    float3 vRandomVec = g_SSAONoisesTexture.Sample(LinearSampler, vTexcoord * noiseScale).xyz;
+    float3 vRandomVec = g_SSAONoisesTexture.Sample(PointSampler, vTexcoord * g_NoiseScale).xyz;
+    matrix matWV = mul(g_WorldMatrix, g_ViewMatrix);
+    vRandomVec = normalize(mul(vector(vRandomVec, 0.f), matWV)).xyz;
     
     float3 tangent = normalize(vRandomVec - vNormal * dot(vRandomVec, vNormal));
     float3 bitangent = cross(vNormal, tangent);
@@ -165,14 +151,14 @@ float4 SSAO(float3x3 TBN, float3 vPosition)
 {
     float fOcclusion = 0.f;
     
-    for (int i = 0; i < 16; ++i)
+    for (int i = 0; i < 64; ++i)
     {   
-        float3 vSample = vPosition + mul(TBN, g_SSAORandoms[i]) * g_fRadiuse;
+        float3 vSample = vPosition + mul(g_SSAORandoms[i], TBN) * g_fRadiuse; // 뷰스페이스
        
         vector vOffset = vector(vSample, 1.f);
-        vOffset = mul(vOffset, g_ProjMatrix);
+        vOffset = mul(vOffset, g_CamProjMatrix);
         vOffset.xyz /= vOffset.w;
-        vOffset.xyz = vOffset.xyz * 0.5f + 0.5f;
+        vOffset.xy = vOffset.xy * float2(0.5f, -0.5f) + float2(0.5f, -0.5f);
         
         vector vOccNorm = g_DepthTexture.Sample(LinearSampler, vOffset.xy);
         
@@ -184,15 +170,15 @@ float4 SSAO(float3x3 TBN, float3 vPosition)
         vOccPosition.w = 1.f;
         
         vOccPosition = vOccPosition * (vOccNorm.y * g_fFar);
-       vOccPosition = mul(vOccPosition, g_ProjMatrixInv);
+        float vOccDepth = vOccPosition.z * g_fFar;
+        vOccPosition = mul(vOccPosition, g_ProjMatrixInv);
         
-       
-        //float rangeCheck = smoothstep(0.0, 1.0, g_fRadiuse / abs(vPosition.z - vOccPosition.z));
+        //float rangeCheck = smoothstep(0.0, 1.0, 0.5f / abs(vPosition.z - vOccPosition.z));
         fOcclusion += (vOccPosition.z >= vSample.z + g_fSSAOBise ? 1.0 : 0.0);
-        
+       
     }
     
-    float4 vAmbient = (fOcclusion / 16.f);
+    float4 vAmbient = fOcclusion / 64.f;
     
     return vAmbient;
 }
@@ -210,7 +196,7 @@ PS_OUT PS_MAIN_SSAO(PS_IN In)
     }
     else
     {
-        //뷰행렬의 위치로 옮기기
+        //뷰스페이스 위치로 옮기기
         vector vNormal = vector(vNormalDesc.xyz * 2.f - 1.f, 0.0f);
         vNormal = normalize(mul(vNormal, g_ViewMatrix));
         
@@ -227,7 +213,7 @@ PS_OUT PS_MAIN_SSAO(PS_IN In)
         
         float4 fAmbient = SSAO(Get_TBN(vNormal.xyz, In.vTexcoord), vPosition.xyz);
 
-        Out.vColor = 1 - fAmbient;
+        Out.vColor = 1.f - fAmbient;
     }
     
     return Out;
@@ -242,10 +228,14 @@ PS_OUT_LIGHT PS_MAIN_LIGHT_DIRECTIONAL(PS_IN In)
     float vAmbientDesc = g_AmbientTexture.Sample(LinearSampler, In.vTexcoord).r;
     vector vNormal = vector(vNormalDesc.xyz * 2.f - 1.f, 0.0f);
     
-    Out.vShade = g_vLightDiffuse * saturate(max(dot(normalize(g_vLightDir) * -1.f, normalize(vNormal)), 0.f) + (g_vLightAmbient * g_vMtrlAmbient));
-    
+    vector vAmbient = g_vLightAmbient * g_vMtrlAmbient;
     if (g_isSSAO)
-        Out.vShade *= vAmbientDesc;
+        vAmbient *= vAmbientDesc;
+    
+    Out.vShade = g_vLightDiffuse * saturate(max(dot(normalize(g_vLightDir) * -1.f, normalize(vNormal)), 0.f) + vAmbient);
+    
+    //if (g_isSSAO)
+    //   Out.vShade *= vAmbientDesc;
     
     return Out;
 }
@@ -293,6 +283,7 @@ PS_OUT PS_MAIN_COPY_BACKBUFFER_RESULT(PS_IN In)
         discard;
 
     vector vShade = g_ShadeTexture.Sample(LinearSampler, In.vTexcoord);
+    
     
     Out.vColor = vDiffuse * vShade;
     
@@ -470,11 +461,11 @@ PS_OUT PS_OIT_RESULT(PS_IN In)
 
     vector vAccumColor = g_AccumTexture.Sample(PointSampler, In.vTexcoord);
     vector vAccumAlpha = g_AccumAlpha.Sample(PointSampler, In.vTexcoord);
-   float vAccumWeight = vAccumAlpha.r;
+   float vAccumWeight = vAccumAlpha.a;
     
       // 최종 출력 계산(알파*가중치)를 빼주는작업= 모두 함친 색이 나 옴
-    vector FinalColor = float4(vAccumColor.xyz / vAccumColor.a, vAccumWeight);
-
+    vector FinalColor = float4(vAccumColor.rgb / vAccumColor.a, vAccumWeight);
+   // FragColor = vec4(accum.rgb / clamp(accum.a, 1e-4, 5e4), r);
     Out.vColor = FinalColor;
 
     return Out;
@@ -686,7 +677,7 @@ technique11 DefaultTechnique
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_None_Test_None_Write, 0);
-        SetBlendState(BS_AlphaBlend, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xffffffff);
+        SetBlendState(BS_Blend, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xffffffff);
 
         VertexShader = compile vs_5_0 VS_MAIN();
         GeometryShader = NULL;
@@ -697,4 +688,3 @@ technique11 DefaultTechnique
 
 
 }
-

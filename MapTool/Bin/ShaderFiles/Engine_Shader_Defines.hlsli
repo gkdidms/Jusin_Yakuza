@@ -80,7 +80,6 @@ BlendState BS_AlphaBlend
 {
     BlendEnable[0] = true;
     BlendEnable[1] = true;
-    BlendEnable[2] = true;
 
     SrcBlend = Src_Alpha;
     DestBlend = Inv_Src_Alpha;
@@ -96,11 +95,21 @@ BlendState BS_Blend
     BlendOp = Add;
 };
 
-BlendState BS_WeightsBlend
+BlendState BS_Blend_Test
 {
     BlendEnable[0] = true;
+    SrcBlend = Src_Alpha;
+    DestBlend = Inv_Src_Alpha;
+    BlendOp = Add;
+    SrcBlendAlpha = ONE;
+    DestBlendAlpha = INV_SRC_ALPHA;
+    BlendOpAlpha = Add;
+};
 
-    SrcBlend = ZERO;
+BlendState BS_WeightsBlend
+{
+    BlendEnable[1] = true;
+    SrcBlend = Zero;
     DestBlend = INV_SRC_ALPHA;
     BlendOp = ADD;
 };
@@ -115,3 +124,5 @@ BlendState BS_OIT
     DestBlendAlpha = INV_SRC_ALPHA;
     BlendOpAlpha = Add;
 };
+//src 소스 픽셀 (현제 그리는 픽셀)
+//dest 대상픽셀(이미그려진 픽셀

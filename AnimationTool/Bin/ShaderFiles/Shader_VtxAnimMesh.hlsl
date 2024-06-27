@@ -5,6 +5,11 @@ texture2D g_Texture;
 
 matrix g_BoneMatrices[512];
 
+float g_fFar = { 3000.f };
+float g_fTimeDelta;
+
+float g_fOut = { 0.5f };
+
 struct VS_IN
 {
     float3 vPosition : POSITION;
@@ -103,6 +108,25 @@ PS_OUT PS_MAGENTA(PS_IN In)
     return Out;
 }
 
+PS_OUT PS_BLEND(PS_IN In)
+{
+    PS_OUT Out = (PS_OUT) 0;
+    
+    vector vDiffuse = g_Texture.Sample(LinearSampler, In.vTexcoord);
+    
+    vDiffuse.xyz *= vDiffuse.a;
+    
+    if (vDiffuse.a < 0.1f)
+        discard;
+    
+    Out.vDiffuse = vDiffuse;
+    Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
+    Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_fFar, 1.f, 1.f);
+    
+    return Out;
+}
+
+
 technique11 DefaultTechnique
 {
     pass DefaultPass
@@ -154,6 +178,6 @@ technique11 DefaultTechnique
         GeometryShader = NULL;
         HullShader = NULL;
         DomainShader = NULL;
-        PixelShader = compile ps_5_0 PS_MAIN();
+        PixelShader = compile ps_5_0 PS_BLEND();
     }
 }
