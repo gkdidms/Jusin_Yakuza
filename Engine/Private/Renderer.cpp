@@ -521,7 +521,7 @@ HRESULT CRenderer::Ready_SSAONoiseTexture() // SSAO 연산에 들어갈 랜덤 벡터 텍스
 
 void CRenderer::Render_SSAO()
 {
-	vector<_float3> vSSAOKernal;
+
 	//랜덤 법선 만들기
 	for (int i = 0; i < 64; i++)
 	{
@@ -537,7 +537,7 @@ void CRenderer::Render_SSAO()
 		vScale = 0.1f + (vScale * vScale) * (1.f - 0.1f);
 		XMStoreFloat3(&vRandom, XMLoadFloat3(&vRandom) * vScale);
 
-		vSSAOKernal.emplace_back(vRandom);
+		m_vSSAOKernal.emplace_back(vRandom);
 	}
 
 
@@ -569,7 +569,7 @@ void CRenderer::Render_SSAO()
 		return;
 	if (FAILED(m_pShader->Bind_RawValue("g_vCamPosition", m_pGameInstance->Get_CamPosition_Float4(), sizeof(_float4))))
 		return;
-	if (FAILED(m_pShader->Bind_RawValue("g_SSAORandoms", &vSSAOKernal, sizeof(_float3) * 64)))
+	if (FAILED(m_pShader->Bind_RawValue("g_SSAORandoms", &m_vSSAOKernal, sizeof(_float3) * 64)))
 		return;
 
 	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Normal"), m_pShader, "g_NormalTexture")))
