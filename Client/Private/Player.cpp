@@ -83,7 +83,7 @@ void CPlayer::Tick(const _float& fTimeDelta)
 	}
 	if (m_pGameInstance->GetKeyState(DIK_7) == TAP)
 	{
-		m_iAnimIndex = 9;
+		m_iAnimIndex = 37;
 		Change_Animation(m_iAnimIndex);
 	}
 
@@ -91,9 +91,10 @@ void CPlayer::Tick(const _float& fTimeDelta)
 		m_pModelCom->Play_Animation(fTimeDelta);
 
 	for (auto& pCollider : m_pColliders)
-		pCollider->Tick(fTimeDelta);
+		pCollider.second->Tick(fTimeDelta);
 
 	Synchronize_Root();
+	Animation_Event();
 }
 
 void CPlayer::Late_Tick(const _float& fTimeDelta)
@@ -101,7 +102,7 @@ void CPlayer::Late_Tick(const _float& fTimeDelta)
 	m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
 
 	for (auto& pCollider : m_pColliders)
-		pCollider->Late_Tick(fTimeDelta);
+		pCollider.second->Late_Tick(fTimeDelta);
 }
 
 HRESULT CPlayer::Render()
@@ -190,6 +191,35 @@ void CPlayer::Synchronize_Root()
 	XMStoreFloat4(&m_vPrevMove, vMovePos);
 }
 
+void CPlayer::Animation_Event()
+{
+	auto& pCurEvents = m_pData->Get_CurrentEvents();
+	for (auto& pEvent : pCurEvents)
+	{
+		_double CurPos = *(m_pModelCom->Get_AnimationCurrentPosition());
+
+		if (CurPos >= pEvent.fPlayPosition)
+		{
+			switch (pEvent.iType)
+			{
+			case 0:
+				m_pColliders.at(pEvent.iBoneIndex);
+				break;
+			case 1:
+				cout << "콜라이더 비활성화" << endl;
+				break;
+			case 2:
+				cout << "사운드 재생" << endl;
+				break;
+			case 3:
+				cout << "이펙트 재생" << endl;
+				break;
+			}
+		}
+		
+	}
+}
+
 HRESULT CPlayer::Add_Componenets()
 {
 	if (FAILED(__super::Add_Component(LEVEL_TEST, TEXT("Prototype_Component_Shader_VtxAnim"),
@@ -266,7 +296,8 @@ void CPlayer::Apply_ChracterData()
 		CGameObject* pSoketCollider = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_SoketCollider"), &Desc);
 		if (nullptr == pSoketCollider)
 			return;
-		m_pColliders.emplace_back(static_cast<CSoketCollider*>(pSoketCollider));
+	
+		m_pColliders.emplace(Collider.first, static_cast<CSoketCollider*>(pSoketCollider));
 	}
 
 }
@@ -274,7 +305,8 @@ void CPlayer::Apply_ChracterData()
 void CPlayer::Change_Animation(_uint iIndex)
 {
 	m_pModelCom->Set_AnimationIndex(m_iAnimIndex, ANIM_INTERVAL);
-	string strAnimName = m_pModelCom->Get_AnimationName(m_iAnimIndex);
+	string strAnimName = string(m_pModelCom->Get_AnimationName(m_iAnimIndex));
+	strAnimName = m_pGameInstance->Extract_String(strAnimName, '[', ']');
 	m_pData->Set_CurrentAnimation(strAnimName);
 }
 
@@ -309,7 +341,7 @@ void CPlayer::Free()
 	__super::Free();
 
 	for (auto& pCollider : m_pColliders)
-		Safe_Release(pCollider);
+		Safe_Release(pCollider.second);
 	m_pColliders.clear();
 	//Safe_Release(m_pColliderCom);
 	Safe_Release(m_pData);

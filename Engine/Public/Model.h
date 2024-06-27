@@ -76,7 +76,8 @@ public:
 	void	Copy_DecalMaterial(vector<DECAL_DESC>* pDecals);
 	CTexture* Copy_DecalTexture(int	iMaterialNum);
 
-	const string& Get_AnimationName(_uint iAnimIndex);
+	const _char* Get_AnimationName(_uint iAnimIndex);
+	const _double* Get_AnimationCurrentPosition();
 
 public:
 	void Set_AnimLoop(_uint iAnimIndex, _bool isLoop)
