@@ -47,11 +47,16 @@ private:
     void Render_Priority();
     void Render_ShadowObjects();
     void Render_NonBlender();
+
+    /* SSAO */
     void Render_SSAO();
-    void Render_LightAcc();
     void Render_SSAOBlur();
+
+    void Render_LightAcc(); // Light ¿¬»ê + SSAO ÇÕ
     void Render_CopyBackBuffer();
     void Render_DeferredResult();
+
+    /* HDR*/
     void Render_Luminance();
     void Render_HDR();
     void Render_CopyLuminance(); 
@@ -65,7 +70,9 @@ private:
     void Render_FinlaOIT();
     void Render_UI();
 
+private:
     HRESULT Ready_SSAONoiseTexture();
+
 #ifdef _DEBUG
 private:
     list<class CComponent*>	m_DebugComponents;
