@@ -6,7 +6,7 @@
 #include "PlayerCamera.h"
 #include "DebugCamera.h"
 #include "FileTotalMgr.h"
-
+#include "CineCamera.h"
 
 CLevel_Test::CLevel_Test(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLevel{ pDevice, pContext },
@@ -100,6 +100,11 @@ HRESULT CLevel_Test::Ready_Camera(const wstring& strLayerTag)
 		return E_FAIL;
 
 
+	/* 초기화 할때는 -1 */
+	CCineCamera::CINE_CAMERA_DESC		cineDesc;
+	cineDesc.iFileNum = -1;
+	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_CCineCamera"), strLayerTag, &cineDesc)))
+		return E_FAIL;
 
 	//CPlayerCamera::PLAYER_CAMERA_DESC		PlayerCameraDesc{};
 

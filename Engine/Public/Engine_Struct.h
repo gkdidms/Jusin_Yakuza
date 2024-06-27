@@ -20,6 +20,12 @@ namespace Engine
 		CAMERAOBJ_DESC*		pCamObjDesc;
 	};
 
+	struct ENGINE_DLL DECAL_DESC_IO
+	{
+		int						iMaterialNum;
+		XMFLOAT4X4				vTransform;
+	};
+
 
 	/* map 저장관련 */
 	struct ENGINE_DLL OBJECTPLACE_DESC
@@ -30,6 +36,9 @@ namespace Engine
 		int				iShaderPassNum; /* shader pass 번호 */
 		int				iObjType; /* object 종류 관련 - construction, item 등.. */
 		int				iObjPropertyType; /* object 별 특징 */
+
+		int				iDecalNum;
+		DECAL_DESC_IO*	pDecals;
 	};
 
 
@@ -40,6 +49,9 @@ namespace Engine
 		int						iNumMapObj;
 		OBJECTPLACE_DESC*		pMapObjDesc;
 	};
+
+
+
 
 	struct ENGINE_DLL DECAL_DESC
 	{

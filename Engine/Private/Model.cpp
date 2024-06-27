@@ -589,6 +589,7 @@ HRESULT CModel::Import_Model(string& pBinFilePath)
 
 	in.close();
 
+	/* DECAL 쓰는 MESH NUMBER 저장해두기 */
 	Find_Mesh_Using_DECAL();
 
 	return S_OK;
@@ -827,7 +828,7 @@ HRESULT CModel::Import_Animations(ifstream& in)
 
 void CModel::Find_Mesh_Using_DECAL()
 {
-
+	/* DECAL 쓰는 MESH NUMBER 저장해두기 */
 	for (int i = 0; i < m_vDecalMaterials.size(); i++)
 	{
 		int		iNum = 0;
@@ -1005,6 +1006,11 @@ void CModel::Copy_DecalMaterial(vector<DECAL_DESC>* pDecals)
 		memcpy(&decalDesc, &m_vDecalMaterials[i], sizeof(DECAL_DESC));
 		pDecals->push_back(decalDesc);
 	}
+}
+
+CTexture* CModel::Copy_DecalTexture(int iMaterialNum)
+{
+	return m_Materials[iMaterialNum].pMaterialTextures[aiTextureType_METALNESS];
 }
 
 CModel* CModel::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, MODELTYPE eModelType, const _char* pModelFilePath, _fmatrix PreTransformMatrix, _bool isExported)

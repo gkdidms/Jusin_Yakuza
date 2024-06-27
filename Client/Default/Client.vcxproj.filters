@@ -97,6 +97,9 @@
     <ClCompile Include="..\Private\CharacterData.cpp">
       <Filter>02.GameObjects\02.Character\CharacterData</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\Decal.cpp">
+      <Filter>02.GameObjects\05.Decal</Filter>
+    </ClCompile>
     <ClCompile Include="..\Private\PartObject.cpp">
       <Filter>02.GameObjects\02.Character\PartObject</Filter>
     </ClCompile>
@@ -140,9 +143,6 @@
     </ClInclude>
     <ClInclude Include="..\Public\Terrain.h">
       <Filter>02.GameObjects\01.Terrain</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\Level_Test.h">
-      <Filter>01.Levels\98.Test</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Player.h">
       <Filter>02.GameObjects\02.Character\LandObject\00.Player</Filter>
@@ -234,8 +234,14 @@
     <ClInclude Include="..\Public\CharacterData.h">
       <Filter>02.GameObjects\02.Character\CharacterData</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Decal.h">
+      <Filter>02.GameObjects\05.Decal</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\PartObject.h">
       <Filter>02.GameObjects\02.Character\PartObject</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Level_Test.h">
+      <Filter>01.Levels\98.Test</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\SoketObject.h">
       <Filter>02.GameObjects\02.Character\PartObject\SoketObject</Filter>
@@ -337,14 +343,17 @@
     <Filter Include="02.GameObjects\02.Character\CharacterData">
       <UniqueIdentifier>{d47f23c7-f09f-46fd-a441-f1561bb9a95a}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\05.Decal">
+      <UniqueIdentifier>{a6493902-ed5b-46a7-a21f-1f965ca56dd4}</UniqueIdentifier>
+    </Filter>
     <Filter Include="02.GameObjects\02.Character\PartObject">
-      <UniqueIdentifier>{8a0f2898-45a3-4206-97c1-f183abd047cd}</UniqueIdentifier>
+      <UniqueIdentifier>{83de469b-7019-4bed-9e97-276b7f63de30}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObjects\02.Character\PartObject\SoketObject">
-      <UniqueIdentifier>{b7f3897f-c459-4f2d-adf6-c37ae692fadc}</UniqueIdentifier>
+      <UniqueIdentifier>{5ecdde66-d1d6-47ad-8170-66d5ccd28aa5}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObjects\02.Character\SoketCollider">
-      <UniqueIdentifier>{c1310b64-5e01-4f26-94c2-6170fe82e493}</UniqueIdentifier>
+      <UniqueIdentifier>{260596ca-843e-47fe-ae9b-3a65ebc2b9a0}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
