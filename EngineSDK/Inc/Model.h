@@ -73,8 +73,7 @@ public:
 	const _float4x4* Get_BoneCombinedTransformationMatrix_AtIndex(_uint iBoneIndex) const;
 	const _float4x4* Get_BoneTransformationMatrix(const _char* pBoneName) const;
 
-	const _char* Get_AnimationName(_uint iAnimIndex);
-	const _double* Get_AnimationCurrentPosition();
+	const string& Get_AnimationName(_uint iAnimIndex);
 
 public:
 	void Set_AnimLoop(_uint iAnimIndex, _bool isLoop)
@@ -83,9 +82,6 @@ public:
 
 		m_AnimLoops[iAnimIndex] = isLoop;
 	}
-
-public:
-	void Copy_DecalMaterial(vector<DECAL_DESC>* pDecals);
 
 private:
 	HRESULT Export_Model(string& pBinFilePath, const _char* pModelFilePath);
