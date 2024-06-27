@@ -85,9 +85,6 @@ public:
 		m_AnimLoops[iAnimIndex] = isLoop;
 	}
 
-public:
-	void Copy_DecalMaterial(vector<DECAL_DESC>* pDecals);
-
 private:
 	HRESULT Export_Model(string& pBinFilePath, const _char* pModelFilePath);
 	HRESULT Export_Bones(ofstream& out);
