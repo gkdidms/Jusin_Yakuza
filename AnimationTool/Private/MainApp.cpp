@@ -32,7 +32,6 @@ HRESULT CMainApp::Initialize()
 	if (FAILED(m_pGameInstance->Initialize_Engine(LEVEL_END, EngineDesc, &m_pDevice, &m_pContext)))
 		return E_FAIL;
 
-	m_pGameInstance->Set_DebugView(true);
 
 	if (FAILED(Ready_Font()))
 		return E_FAIL;
@@ -59,6 +58,7 @@ HRESULT CMainApp::Initialize()
       freopen_s(nfp + 2, "CONOUT$", "wb", stderr);
       std::ios::sync_with_stdio();
    }
+   m_pGameInstance->Set_DebugView(true);
 
 #endif // _DEBUG
 	
