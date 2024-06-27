@@ -312,7 +312,8 @@ void CRenderer::Draw()
 	Render_Priority();
 	//Render_ShadowObjects();
 	Render_NonBlender();
-	
+	Render_Decal();
+
 	if (m_isSSAO)
 	{
 		Render_SSAO();
@@ -1168,6 +1169,12 @@ void CRenderer::Render_UI()
 		Safe_Release(iter);
 	}
 	m_RenderObject[RENDER_UI].clear();
+}
+
+void CRenderer::Render_Decal()
+{
+
+
 }
 
 #ifdef _DEBUG

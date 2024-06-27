@@ -70,6 +70,7 @@ private:
     void Render_Effect();// 파티클렌더 
     void Render_FinlaOIT();// 파티클 최종병합
     void Render_UI();
+    void Render_Decal();
 
 private:
     HRESULT Ready_SSAONoiseTexture();

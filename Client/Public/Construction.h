@@ -2,8 +2,8 @@
 
 
 #include "GameObject.h"
-
 #include "Client_Defines.h"
+#include "Decal.h"
 
 BEGIN(Engine)
 class CShader;
@@ -30,6 +30,9 @@ public:
 		wstring			wstrModelName;
 		int				iShaderPass;
 		int				iObjType;
+
+		int				iDecalNum;
+		DECAL_DESC_IO*	pDecal;
 	}MAPOBJ_DESC;
 
 
@@ -61,6 +64,7 @@ private:
 	CModel* m_pModelCom = { nullptr };
 
 private:
+	vector<CDecal*>			m_vDecals;
 	int						m_iLayerNum;
 	wstring					m_wstrModelName;
 	int						m_iShaderPassNum = { 0 };

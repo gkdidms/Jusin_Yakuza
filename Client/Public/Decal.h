@@ -15,7 +15,7 @@ class CDecal final :
     public CGameObject
 {
 public:
-    typedef struct tCameraObjDesc : public CGameObject::GAMEOBJECT_DESC
+    typedef struct tDecalObjDesc : public CGameObject::GAMEOBJECT_DESC
     {
         int         iMaterialNum;
         CTexture* pTexture;
