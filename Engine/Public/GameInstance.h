@@ -92,6 +92,7 @@ public:
 public:
     HRESULT Add_DebugComponent(class CComponent* pComponent);
     void Set_DebugView(_bool isDebugView);
+    _bool isDebugView();
 #endif // _DEBUG
 
     /* PipeLine */

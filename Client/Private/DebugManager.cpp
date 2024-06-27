@@ -111,7 +111,7 @@ void CDebugManager::Window_Debug()
         ImGui::SeparatorText("SSAO");
         _float fRadiuse = m_pGameInstance->Get_SSAORadiuse();
 
-        if (ImGui::SliderFloat("Radiuse", &fRadiuse, 0.001f, 0.1f))
+        if (ImGui::SliderFloat("Radiuse", &fRadiuse, 0.001f, 1.f))
             m_pGameInstance->Set_SSAORadiuse(fRadiuse);
 
         _float fBlur = m_pGameInstance->Get_SSAOBlur();

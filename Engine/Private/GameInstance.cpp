@@ -284,6 +284,10 @@ void CGameInstance::Set_DebugView(_bool isDebugView)
 {
 	m_pRenderer->Set_DebugView(isDebugView);
 }
+_bool CGameInstance::isDebugView()
+{
+	return m_pRenderer->isDebugView();
+}
 #endif // _DEBUG
 
 
