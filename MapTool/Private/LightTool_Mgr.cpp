@@ -360,6 +360,8 @@ void CLightTool_Mgr::Load_Lights_File(int iNum)
 
 	Update_LightsName();
 
+	m_tCurLightDesc = m_LightObjects[0]->Get_LightDesc();
+
 	Safe_Delete_Array(lightIODesc.pLightDesc);
 
 }
