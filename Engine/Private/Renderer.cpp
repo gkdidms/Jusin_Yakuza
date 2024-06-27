@@ -340,7 +340,7 @@ void CRenderer::Draw()
 	Render_FinalEffectBlend();
 
 	Render_Blender();
-
+	Render_Effect();
 	Render_FinlaOIT();
 
 	Render_UI();
@@ -1117,13 +1117,11 @@ void CRenderer::Render_FinalEffectBlend()
 
 void CRenderer::Render_Blender()
 {
-	//m_RenderObject[RENDER_BLENDER].sort([](CGameObject* pSour, CGameObject* pDest)->_bool
-	//	{
-	//		return dynamic_cast<CBlendObject*>(pSour)->Get_ViewZ() > dynamic_cast<CBlendObject*>(pDest)->Get_ViewZ();
-	//	});
+	m_RenderObject[RENDER_BLENDER].sort([](CGameObject* pSour, CGameObject* pDest)->_bool
+	{
+		return dynamic_cast<CBlendObject*>(pSour)->Get_ViewZ() > dynamic_cast<CBlendObject*>(pDest)->Get_ViewZ();
+	});
 
-	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_Accum"))))
-		return;
 
 	for (auto& iter : m_RenderObject[RENDER_BLENDER])
 	{
@@ -1132,6 +1130,21 @@ void CRenderer::Render_Blender()
 		Safe_Release(iter);
 	}
 	m_RenderObject[RENDER_BLENDER].clear();
+
+}
+
+void CRenderer::Render_Effect()
+{
+	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_Accum"))))
+		return;
+
+	for (auto& iter : m_RenderObject[RENDER_EFFECT])
+	{
+		iter->Render();
+
+		Safe_Release(iter);
+	}
+	m_RenderObject[RENDER_EFFECT].clear();
 
 	if (FAILED(m_pGameInstance->End_MRT()))
 		return;

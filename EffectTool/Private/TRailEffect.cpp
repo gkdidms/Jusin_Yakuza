@@ -2,12 +2,12 @@
 #include "GameInstance.h"
 
 CTRailEffect::CTRailEffect(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-	:CBlendObject{pDevice , pContext}
+	:CEffect{pDevice , pContext}
 {
 }
 
 CTRailEffect::CTRailEffect(const CTRailEffect& rhs)
-	:CBlendObject{rhs}
+	:CEffect{rhs}
 {
 }
 
@@ -50,7 +50,6 @@ void CTRailEffect::Late_Tick(const _float& fTimeDelta)
 	Compute_ViewZ(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 
 	m_pGameInstance->Add_Renderer(CRenderer::RENDER_BLENDER, this);
-
 }
 
 HRESULT CTRailEffect::Render()

@@ -5,6 +5,7 @@
 
 #pragma region "객체 원형"
 #include "Particle_Point.h"
+#include "TRailEffect.h"
 #pragma endregion
 
 
@@ -205,7 +206,7 @@ HRESULT CImguiManager::Create_Particle()
 	EffectDesc.BufferInstance.fRadius = 1.f;	
 
 	EffectDesc.vStartPos = { 0.f, 0.f, 0.f, 1.f };
-	EffectDesc.eType = 0;
+	EffectDesc.eType = CEffect::TYPE_POINT;
 	EffectDesc.ParticleTag = m_pGameInstance->StringToWstring(text_input_buffer);
 	EffectDesc.fStartTime = { 0.f };
 	EffectDesc.iShaderPass = { 0 };
@@ -220,6 +221,40 @@ HRESULT CImguiManager::Create_Particle()
 		dynamic_cast<CEffect*>(pGameParticle)->Edit_Action(CEffect::ACTION_SPREAD);
 	if(m_bDrop)
 		dynamic_cast<CEffect*>(pGameParticle)->Edit_Action(CEffect::ACTION_DROP);
+
+	m_EditParticle.push_back(pGameParticle);
+	m_iCurEditIndex = m_EditParticle.size() - 1;
+	return S_OK;
+}
+
+HRESULT CImguiManager::Create_Trail()
+{
+	if (-1 == m_iCurEditIndex)
+		m_iCurEditIndex = 0;
+	//20240627 작업중
+	CTRailEffect::TRAIL_DESC EffectDesc{};
+	EffectDesc.BufferInstance.iNumInstance = 1;
+	EffectDesc.BufferInstance.isLoop = true;
+	EffectDesc.BufferInstance.vLifeTime = _float2(1.f, 1.f);
+	EffectDesc.BufferInstance.vOffsetPos = _float3(0.f, 0.f, 0.f);
+	EffectDesc.BufferInstance.vPivotPos = _float3(0.f, 0.f, 0.f);
+	EffectDesc.BufferInstance.vRange = _float3(0.f, 0.f, 0.f);
+	EffectDesc.BufferInstance.vSize = _float2(1.f, 1.f);
+	EffectDesc.BufferInstance.vSpeed = _float2(1.f, 1.f);
+	EffectDesc.BufferInstance.vRectSize = _float2(1.0f, 1.0f);
+	EffectDesc.BufferInstance.fRadius = 1.f;
+
+	EffectDesc.vStartPos = { 0.f, 0.f, 0.f, 1.f };
+	EffectDesc.eType = CEffect::TYPE_TRAIL;
+	EffectDesc.ParticleTag = m_pGameInstance->StringToWstring(text_input_buffer);
+	EffectDesc.fStartTime = { 0.f };
+	EffectDesc.iShaderPass = { 0 };
+
+
+
+	CGameObject* pGameParticle = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Trail"), &EffectDesc);
+	if (nullptr == pGameParticle)
+		return E_FAIL;
 
 	m_EditParticle.push_back(pGameParticle);
 	m_iCurEditIndex = m_EditParticle.size() - 1;

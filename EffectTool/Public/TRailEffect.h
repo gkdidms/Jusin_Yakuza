@@ -1,5 +1,5 @@
 #pragma once
-#include "BlendObject.h"
+#include "Effect.h"
 #include "Client_Defines.h"
 #include "VIBuffer_Trail.h"
 
@@ -10,10 +10,10 @@ class CVIBuffer_Trail;
 END
 BEGIN(Client)
 class CTRailEffect final:
-    public CBlendObject
+    public CEffect
 {
 public:
-    typedef struct tTRAIL_DESC :public CBlendObject::GAMEOBJECT_DESC
+    typedef struct tTRAIL_DESC :public CEffect::EFFECT_DESC
     {
         CVIBuffer_Trail::VIBUFFER_TRAIL_DESC Trail_Desc;
     }TRAIL_DESC;

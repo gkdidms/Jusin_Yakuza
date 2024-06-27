@@ -44,6 +44,7 @@ private:
 
 
 	HRESULT Create_Particle();
+	HRESULT Create_Trail();
 
 
 	HRESULT Edit_Particle(_uint Index);
