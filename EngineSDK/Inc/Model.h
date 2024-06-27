@@ -73,8 +73,8 @@ public:
 	const _float4x4* Get_BoneTransformationMatrix(const _char* pBoneName) const;
 
 	void	Copy_DecalMaterial(vector<DECAL_DESC>* pDecals);
-
 	CTexture* Copy_DecalTexture(int	iMaterialNum);
+
 	const string& Get_AnimationName(_uint iAnimIndex);
 
 public:

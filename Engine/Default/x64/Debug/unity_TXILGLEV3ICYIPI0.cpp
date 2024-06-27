@@ -1,7 +1,4 @@
 
-#include "C:\Users\yeeun\dev\std\Yakuza\Engine\Private\Input_Device.cpp"
-
-
 #include "C:\Users\yeeun\dev\std\Yakuza\Engine\Private\Layer.cpp"
 
 
@@ -12,4 +9,7 @@
 
 
 #include "C:\Users\yeeun\dev\std\Yakuza\Engine\Private\Light.cpp"
+
+
+#include "C:\Users\yeeun\dev\std\Yakuza\Engine\Private\Light_Manager.cpp"
 

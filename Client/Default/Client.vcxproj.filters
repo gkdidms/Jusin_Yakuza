@@ -100,6 +100,9 @@
     <ClCompile Include="..\Private\Decal.cpp">
       <Filter>02.GameObjects\05.Decal</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\PartObject.cpp" />
+    <ClCompile Include="..\Private\SoketCollider.cpp" />
+    <ClCompile Include="..\Private\SoketObject.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\MainApp.h">
@@ -231,6 +234,9 @@
     <ClInclude Include="..\Public\Decal.h">
       <Filter>02.GameObjects\05.Decal</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\PartObject.h" />
+    <ClInclude Include="..\Public\SoketCollider.h" />
+    <ClInclude Include="..\Public\SoketObject.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">

@@ -1,9 +1,8 @@
 #pragma once
 
-#include "Client_Defines.h"
 #include "GameObject.h"
-#include "Decal.h"
 
+#include "Client_Defines.h"
 BEGIN(Engine)
 class CShader;
 class CVIBuffer_Rect;

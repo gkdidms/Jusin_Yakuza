@@ -1,7 +1,4 @@
 
-#include "C:\Users\yeeun\dev\std\Yakuza\Engine\Private\Transform.cpp"
-
-
 #include "C:\Users\yeeun\dev\std\Yakuza\Engine\Private\VIBuffer.cpp"
 
 
@@ -12,4 +9,7 @@
 
 
 #include "C:\Users\yeeun\dev\std\Yakuza\Engine\Private\VIBuffer_Instance.cpp"
+
+
+#include "C:\Users\yeeun\dev\std\Yakuza\Engine\Private\VIBuffer_Instance_Point.cpp"
 
