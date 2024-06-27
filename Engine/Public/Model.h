@@ -39,6 +39,7 @@ public:
 
 	void Play_Animation(_float fTimeDelta);
 	void Set_AnimationIndex(const ANIMATION_DESC& AnimDesc, _double ChangeInterval = 0.0);
+	void Set_AnimationIndex(_uint iAnimIndex, _double ChangeInterval = 0.0);
 	void Reset_Animation(const ANIMATION_DESC& AnimDesc);
 
 public:
@@ -68,11 +69,24 @@ public:
 	}
 
 	const _float4x4* Get_BoneCombinedTransformationMatrix(const _char* pBoneName) const;
+	const _float4x4* Get_BoneCombinedTransformationMatrix_AtIndex(_uint iBoneIndex) const;
 	const _float4x4* Get_BoneTransformationMatrix(const _char* pBoneName) const;
 
 	void	Copy_DecalMaterial(vector<DECAL_DESC>* pDecals);
-
 	CTexture* Copy_DecalTexture(int	iMaterialNum);
+
+	const string& Get_AnimationName(_uint iAnimIndex);
+
+public:
+	void Set_AnimLoop(_uint iAnimIndex, _bool isLoop)
+	{
+		if (m_AnimLoops.size() <= iAnimIndex) return;
+
+		m_AnimLoops[iAnimIndex] = isLoop;
+	}
+
+public:
+	void Copy_DecalMaterial(vector<DECAL_DESC>* pDecals);
 
 private:
 	HRESULT Export_Model(string& pBinFilePath, const _char* pModelFilePath);
