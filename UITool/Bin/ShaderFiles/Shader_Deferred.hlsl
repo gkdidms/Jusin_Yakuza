@@ -129,16 +129,14 @@ PS_OUT PS_MAIN_DEBUG(PS_IN In)
 struct PS_OUT_LIGHT
 {
     vector vShade : SV_TARGET0;
-    vector vAmbient : SV_TARGET1;
+    //vector vAmbient : SV_TARGET1;
 };
-
-
 
 float3x3 Get_TBN(float3 vNormal, float2 vTexcoord)
 {   
     float3 vRandomVec = g_SSAONoisesTexture.Sample(PointSampler, vTexcoord * g_NoiseScale).xyz;
-    matrix matWV = mul(g_WorldMatrix, g_ViewMatrix);
-    vRandomVec = normalize(mul(vector(vRandomVec, 0.f), matWV)).xyz;
+    //matrix matWV = mul(g_WorldMatrix, g_ViewMatrix);
+    //vRandomVec = normalize(mul(vector(vRandomVec, 0.f), matWV)).xyz;
     
     float3 tangent = normalize(vRandomVec - vNormal * dot(vRandomVec, vNormal));
     float3 bitangent = cross(vNormal, tangent);
@@ -170,12 +168,10 @@ float4 SSAO(float3x3 TBN, float3 vPosition)
         vOccPosition.w = 1.f;
         
         vOccPosition = vOccPosition * (vOccNorm.y * g_fFar);
-        float vOccDepth = vOccPosition.z * g_fFar;
         vOccPosition = mul(vOccPosition, g_ProjMatrixInv);
         
-        //float rangeCheck = smoothstep(0.0, 1.0, 0.5f / abs(vPosition.z - vOccPosition.z));
+        //float rangeCheck = smoothstep(0.0, 1.0, g_fRadiuse / abs(vPosition.z - vOccPosition.z));
         fOcclusion += (vOccPosition.z >= vSample.z + g_fSSAOBise ? 1.0 : 0.0);
-       
     }
     
     float4 vAmbient = fOcclusion / 64.f;
@@ -461,11 +457,11 @@ PS_OUT PS_OIT_RESULT(PS_IN In)
 
     vector vAccumColor = g_AccumTexture.Sample(PointSampler, In.vTexcoord);
     vector vAccumAlpha = g_AccumAlpha.Sample(PointSampler, In.vTexcoord);
-   float vAccumWeight = vAccumAlpha.a;
+   float vAccumWeight = vAccumAlpha.r;
     
       // 최종 출력 계산(알파*가중치)를 빼주는작업= 모두 함친 색이 나 옴
-    vector FinalColor = float4(vAccumColor.rgb / vAccumColor.a, vAccumWeight);
-   // FragColor = vec4(accum.rgb / clamp(accum.a, 1e-4, 5e4), r);
+    vector FinalColor = float4(vAccumColor.xyz / vAccumColor.a, vAccumWeight);
+
     Out.vColor = FinalColor;
 
     return Out;
@@ -677,7 +673,7 @@ technique11 DefaultTechnique
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_None_Test_None_Write, 0);
-        SetBlendState(BS_Blend, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xffffffff);
+        SetBlendState(BS_AlphaBlend, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xffffffff);
 
         VertexShader = compile vs_5_0 VS_MAIN();
         GeometryShader = NULL;
@@ -688,3 +684,4 @@ technique11 DefaultTechnique
 
 
 }
+
