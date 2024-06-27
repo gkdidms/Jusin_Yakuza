@@ -82,6 +82,9 @@
     <ClCompile Include="..\Private\Sky.cpp">
       <Filter>02.GameObjects\04.Sky</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\TRailEffect.cpp">
+      <Filter>02.GameObjects\03.Effect\Trail</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\MainApp.h">
@@ -183,6 +186,9 @@
     <ClInclude Include="..\Public\Sky.h">
       <Filter>02.GameObjects\04.Sky</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\TRailEffect.h">
+      <Filter>02.GameObjects\03.Effect\Trail</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
@@ -262,7 +268,7 @@
     <Filter Include="02.GameObjects\04.Sky">
       <UniqueIdentifier>{677cfeba-bf10-4edc-8658-e813affc6f08}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\03.Effect\Animation">
+    <Filter Include="02.GameObjects\03.Effect\Trail">
       <UniqueIdentifier>{60884ec0-2224-450a-af16-2fce2d3a49de}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -274,6 +280,9 @@
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxCube.hlsl">
+      <Filter>97.ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_Trail.hlsl">
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
   </ItemGroup>

@@ -312,7 +312,6 @@ void CRenderer::Draw()
 	Render_Priority();
 	//Render_ShadowObjects();
 	Render_NonBlender();
-
 	Render_Decal();
 
 	if (m_isSSAO)
@@ -343,7 +342,7 @@ void CRenderer::Draw()
 	Render_FinalEffectBlend();
 
 	Render_Blender();
-
+	Render_Effect();
 	Render_FinlaOIT();
 
 	Render_UI();
@@ -523,7 +522,6 @@ HRESULT CRenderer::Ready_SSAONoiseTexture() // SSAO 연산에 들어갈 랜덤 벡터 텍스
 
 void CRenderer::Render_SSAO()
 {
-
 	//랜덤 법선 만들기
 	for (int i = 0; i < 64; i++)
 	{
@@ -541,7 +539,6 @@ void CRenderer::Render_SSAO()
 
 		m_vSSAOKernal.emplace_back(vRandom);
 	}
-
 
 	if(FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_SSAO"))))
 		return;
@@ -1120,13 +1117,11 @@ void CRenderer::Render_FinalEffectBlend()
 
 void CRenderer::Render_Blender()
 {
-	//m_RenderObject[RENDER_BLENDER].sort([](CGameObject* pSour, CGameObject* pDest)->_bool
-	//	{
-	//		return dynamic_cast<CBlendObject*>(pSour)->Get_ViewZ() > dynamic_cast<CBlendObject*>(pDest)->Get_ViewZ();
-	//	});
+	m_RenderObject[RENDER_BLENDER].sort([](CGameObject* pSour, CGameObject* pDest)->_bool
+	{
+		return dynamic_cast<CBlendObject*>(pSour)->Get_ViewZ() > dynamic_cast<CBlendObject*>(pDest)->Get_ViewZ();
+	});
 
-	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_Accum"))))
-		return;
 
 	for (auto& iter : m_RenderObject[RENDER_BLENDER])
 	{
@@ -1136,11 +1131,26 @@ void CRenderer::Render_Blender()
 	}
 	m_RenderObject[RENDER_BLENDER].clear();
 
+}
+
+void CRenderer::Render_Effect()// 새로운 타겟에 파티클 그리기
+{
+	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_Accum"))))
+		return;
+
+	for (auto& iter : m_RenderObject[RENDER_EFFECT])
+	{
+		iter->Render();
+
+		Safe_Release(iter);
+	}
+	m_RenderObject[RENDER_EFFECT].clear();
+
 	if (FAILED(m_pGameInstance->End_MRT()))
 		return;
 }
 
-void CRenderer::Render_FinlaOIT()
+void CRenderer::Render_FinlaOIT() //파티클 그린 타겟 병합
 {
 	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_AccumColor"), m_pShader, "g_AccumTexture")))//이펙트 텍스처 원본
 		return;
