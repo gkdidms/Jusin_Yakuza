@@ -2,11 +2,11 @@
 
 #include "Client_Defines.h"
 #include "GameObject.h"
+#include "Decal.h"
 
 BEGIN(Engine)
 class CShader;
 class CModel;
-class CDecal;
 END
 
 BEGIN(Client)
@@ -47,43 +47,46 @@ public:
 	virtual HRESULT Render() override;
 
 public:
-	CTransform*									Get_Transform() { return m_pTransformCom; }
-	CModel*										Get_Model() { return m_pModelCom; }
+	CTransform*										Get_Transform() { return m_pTransformCom; }
+	CModel*											Get_Model() { return m_pModelCom; }
+	vector<CDecal*>&								Get_Decals() { return m_vDecals; }
 
 public:
-	HRESULT										Add_Components(void* pArg);
-	HRESULT										Bind_ShaderResources();
+	HRESULT											Add_Components(void* pArg);
+	HRESULT											Bind_ShaderResources();
 
 public:
-	int											Get_ObjPlaceDesc(OBJECTPLACE_DESC*	objplaceDesc);
-	MAPOBJ_DESC									Get_MapObjDesc_For_AddList();
+	int												Get_ObjPlaceDesc(OBJECTPLACE_DESC*	objplaceDesc);
+	MAPOBJ_DESC										Get_MapObjDesc_For_AddList();
 
 	/* 맵 로딩 후 배치된 게임오브젝트 수정을 위한 함수들 */
-	void										Edit_GameObject_Information(CConstruction::MAPOBJ_DESC	mapDesc);
-	CConstruction::MAPOBJ_DESC					Send_GameObject_Information();
+	void											Edit_GameObject_Information(CConstruction::MAPOBJ_DESC	mapDesc);
+	CConstruction::MAPOBJ_DESC						Send_GameObject_Information();
 
 
 	/* 맵툴에서만 필요한 기능 - Decal 관련*/
-	void										On_Find_DecalMesh(int* iNumMesh, int iCnt);
-	void										Off_Find_DecalMesh();
+	void											On_Find_DecalMesh(int* iNumMesh, int iCnt);
+	void											Off_Find_DecalMesh();
+
+	void											Add_Decal(CDecal*	pDecal);
 
 private:
-	CShader* m_pShaderCom = { nullptr };
-	CModel* m_pModelCom = { nullptr };
+	CShader*										m_pShaderCom = { nullptr };
+	CModel*											m_pModelCom = { nullptr };
 
 
 private:
-	vector<CDecal*>			m_vDecals;
-	int						m_iLayerNum = { 0 };
-	wstring					m_wstrModelName;
-	int						m_iShaderPassNum = { 0 };
-	int						m_iObjectType = { 0 };
-	int						m_iObjectPropertyType = { 0 };
+	vector<CDecal*>									m_vDecals;
+	int												m_iLayerNum = { 0 };
+	wstring											m_wstrModelName;
+	int												m_iShaderPassNum = { 0 };
+	int												m_iObjectType = { 0 };
+	int												m_iObjectPropertyType = { 0 };
 
 
-	int*					m_pDecalMeshIndex = { 0 };
-	int						m_iDecalMeshCnt = { 0 };
-	int						m_bFindDecalMesh = { false };
+	int*											m_pDecalMeshIndex = { 0 };
+	int												m_iDecalMeshCnt = { 0 };
+	int												m_bFindDecalMesh = { false };
 
 public:
 	static CConstruction* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

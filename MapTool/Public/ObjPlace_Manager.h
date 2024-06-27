@@ -54,13 +54,10 @@ public:
 	void					Edit_GameObject_Transform(int iNumObject);
 	void					Get_CurrentGameObject_Desc(CConstruction::MAPOBJ_DESC*	mapDesc, int iNumObject);
 	void					Edit_CurrentGameObject_Desc(CConstruction::MAPOBJ_DESC* mapDesc, int iNumObject);
-	void					Update_CurrentGameObject_Desc();
 	/* object 배치 */
 	bool					Add_CloneObject_Imgui(MAPTOOL_OBJPLACE_DESC objDesc, _uint iFolderNum, _uint iObjectIndex);
 	/* Object 종류 고르기 */
 	void					Set_Map_Object();
-
-	void					Edit_Decal();
 	void					Add_Decal_IMGUI();
 
 
@@ -85,6 +82,11 @@ private:
 	void					Get_Decal_Texture(int iNumObject);
 	void					Update_DecalNameList();
 
+	/* gameobject 안에 설치된 decal을 보여줌 */
+	void					Show_Decal_In_Object();
+	void					Update_DecalNameList_In_Object();
+	void					Update_DecalList_In_Object();
+	void					Edit_Installed_Decal(int iObjectDecalNum);
 
 
 private:
@@ -95,11 +97,13 @@ private:
 	vector<char*>								m_ObjectNames_Map1; /* 추가한 오브젝트 이름들 */
 	vector<char*>								m_FileNames; /* 맵마다 저장한 bin 리스트들 */
 	vector<char*>								m_DecalNames; 
+	vector<char*>								m_DecalNames_Obj;
 	class CGameInstance*						m_pGameInstance = { nullptr };
 	/* 설치 전 무슨 오브젝트인지 보여주는 */
 	CGameObject*								m_pShownObject = { nullptr }; 
 	bool										m_bShowExample = { false };
 	vector<char*>								m_ObjectNames; /* 맵에 설치된 아이들에 대한 리스트 */
+	class CDecal*								m_pDecal;
 
 private:
 	bool										m_bAddDecal_IMGUI = { false };
@@ -111,7 +115,8 @@ private:
 	CConstruction::MAPOBJ_DESC					m_tCurrentObjectDesc;
 	int											m_iCurrentObjectIndex = { 0 };
 
-	vector<DECAL_DESC>							m_Decals;
+	vector<DECAL_DESC>							m_Decals; /* 해당 오브젝트에 있는 모든 decal을 저장 */
+	vector<CDecal*>								m_ObjectDecals;
 	int											m_iDecalObjNum = { -1 };
 
 public:

@@ -2,7 +2,7 @@
 
 #include "GameInstance.h"
 #include "Transform.h"
-#include "Decal.h"
+
 
 CConstruction::CConstruction(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CGameObject{ pDevice, pContext }
@@ -50,11 +50,17 @@ void CConstruction::Priority_Tick(const _float& fTimeDelta)
 void CConstruction::Tick(const _float& fTimeDelta)
 {
 	//m_pModelCom->Play_Animation(fTimeDelta);
+
+	for (auto& iter : m_vDecals)
+		iter->Tick(fTimeDelta);
 }
 
 void CConstruction::Late_Tick(const _float& fTimeDelta)
 {
 	m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
+
+	for (auto& iter : m_vDecals)
+		iter->Late_Tick(fTimeDelta);
 }
 
 HRESULT CConstruction::Render()
@@ -164,6 +170,12 @@ void CConstruction::Off_Find_DecalMesh()
 	m_bFindDecalMesh = false;
 }
 
+void CConstruction::Add_Decal(CDecal* pDecal)
+{
+	m_vDecals.push_back(pDecal);
+	Safe_AddRef(pDecal);
+}
+
 HRESULT CConstruction::Add_Components(void* pArg)
 {
 	MAPOBJ_DESC* gameobjDesc = (MAPOBJ_DESC*)pArg;
@@ -193,8 +205,6 @@ HRESULT CConstruction::Bind_ShaderResources()
 	if (FAILED(m_pShaderCom->Bind_ValueFloat("g_fObjID", m_fObjID)))
 		return E_FAIL;
 
-	//if (FAILED(m_pShaderCom->Bind_RawValue("g_vCamPosition", m_pGameInstance->Get_CamPosition_Float4(), sizeof(_float4))))
-	//	return E_FAIL;
 
 	return S_OK;
 }
@@ -232,8 +242,6 @@ void CConstruction::Free()
 	for (auto& iter : m_vDecals)
 		Safe_Release(iter);
 	m_vDecals.clear();
-
-
 
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pModelCom);

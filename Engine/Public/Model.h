@@ -70,7 +70,9 @@ public:
 	const _float4x4* Get_BoneCombinedTransformationMatrix(const _char* pBoneName) const;
 	const _float4x4* Get_BoneTransformationMatrix(const _char* pBoneName) const;
 
-	void Copy_DecalMaterial(vector<DECAL_DESC>* pDecals);
+	void	Copy_DecalMaterial(vector<DECAL_DESC>* pDecals);
+
+	CTexture* Copy_DecalTexture(int	iMaterialNum);
 
 private:
 	HRESULT Export_Model(string& pBinFilePath, const _char* pModelFilePath);
