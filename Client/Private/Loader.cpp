@@ -134,15 +134,13 @@ HRESULT CLoader::Loading_For_Test()
 
 
 	//if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Model_Player"), CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../Bin/Resources/Models/Anim/Kiryu/Kiryu.fbx", PreTransformMatrix, false))))
-	_matrix		PreTransformMatrix;
-	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
-	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Model_Player"), CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../Bin/Resources/Models/Anim/Kiryu/Bin/Kiryu.dat", PreTransformMatrix, true))))
-		return E_FAIL;
 
+	Add_Models_On_Path(LEVEL_TEST, TEXT("../Bin/Resources/Models/Anim/"));
 
 	//if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Model_f2"), CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/NonAnim/Map/Map1/f2.fbx", PreTransformMatrix, false))))
 	//	return E_FAIL;
 
+	_matrix		PreTransformMatrix;
 	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Model_f1"),
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/NonAnim/Map/Map0/Bin/f1.dat", PreTransformMatrix, true))))
@@ -205,6 +203,74 @@ HRESULT CLoader::Loading_For_Test()
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
 
 	m_isFinished = true;
+
+	return S_OK;
+}
+
+// 경로를 넣어주면 디렉토리 이름을 읽어와서 bin존재 유무를 파악해 바이너리화 or bin파일 읽기를 자동으로 해준다
+// 하지만 해당 함수를 사용하려면 넣어준 경로 안에 폴더명과 똑같은 이름의 fbx를 가지고 있어야 한다.
+HRESULT CLoader::Add_Models_On_Path(_uint iLevel, const wstring& strPath, _bool bAnim)
+{
+	vector<wstring> vecDirectorys;
+	m_pGameInstance->Get_DirectoryName(strPath, vecDirectorys);
+
+	_matrix		PreTransformMatrix;
+
+	for (auto& strDirlName : vecDirectorys)
+	{
+		wstring strFilePath = strPath + strDirlName + TEXT("/");
+
+		string strDirectory = m_pGameInstance->WstringToString(strFilePath);
+		string strBinPath = strDirectory + "Bin/";
+
+		if (!fs::exists(strBinPath))
+		{
+			wstring strComponentName = TEXT("Prototype_Component_Model_") + strDirlName;
+			wstring strFbxPath = strFilePath + strDirlName + TEXT(".fbx");
+			string strTransPath = m_pGameInstance->WstringToString(strFbxPath);
+
+			if (!bAnim)
+			{
+				PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(180.0f));
+				if (FAILED(m_pGameInstance->Add_Component_Prototype(iLevel, strComponentName,
+					CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, strTransPath.c_str(), PreTransformMatrix, false))))
+					return E_FAIL;
+			}
+			else
+			{
+				PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
+				if (FAILED(m_pGameInstance->Add_Component_Prototype(iLevel, strComponentName,
+					CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, strTransPath.c_str(), PreTransformMatrix, false))))
+					return E_FAIL;
+			}
+		}
+		else
+		{
+			for (const auto& entry : std::filesystem::directory_iterator(strBinPath))
+			{
+				string file_path = entry.path().string();
+				string strFileName = m_pGameInstance->Get_FileName(file_path);
+				wstring strComponentName = TEXT("Prototype_Component_Model_") + m_pGameInstance->StringToWstring(strFileName);
+
+				if (!bAnim)
+				{
+					PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(180.0f));
+					if (FAILED(m_pGameInstance->Add_Component_Prototype(iLevel, strComponentName,
+						CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, file_path.c_str(), PreTransformMatrix, true))))
+						return E_FAIL;
+				}
+				else
+				{
+					PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
+					if (FAILED(m_pGameInstance->Add_Component_Prototype(iLevel, strComponentName,
+						CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, file_path.c_str(), PreTransformMatrix, true))))
+						return E_FAIL;
+				}
+
+			}
+		}
+
+	}
 
 	return S_OK;
 }
