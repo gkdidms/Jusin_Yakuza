@@ -514,6 +514,14 @@ HRESULT CRenderer::Ready_SSAONoiseTexture() // SSAO 연산에 들어갈 랜덤 벡터 텍스
 	Safe_Delete_Array(pPixel);
 
 
+
+
+	return S_OK;
+}
+
+void CRenderer::Render_SSAO()
+{
+
 	//랜덤 법선 만들기
 	for (int i = 0; i < 64; i++)
 	{
@@ -531,14 +539,6 @@ HRESULT CRenderer::Ready_SSAONoiseTexture() // SSAO 연산에 들어갈 랜덤 벡터 텍스
 
 		m_vSSAOKernal.emplace_back(vRandom);
 	}
-
-	return S_OK;
-}
-
-void CRenderer::Render_SSAO()
-{
-
-
 
 
 	if(FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_SSAO"))))
