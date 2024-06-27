@@ -200,13 +200,15 @@ void CPlayer::Animation_Event()
 
 		if (CurPos >= pEvent.fPlayPosition)
 		{
+			CSoketCollider* pCollider = m_pColliders.at(pEvent.iBoneIndex);
+
 			switch (pEvent.iType)
 			{
 			case 0:
-				m_pColliders.at(pEvent.iBoneIndex);
+				pCollider->On();
 				break;
 			case 1:
-				cout << "콜라이더 비활성화" << endl;
+				pCollider->Off();
 				break;
 			case 2:
 				cout << "사운드 재생" << endl;

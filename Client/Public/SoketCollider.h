@@ -35,6 +35,14 @@ public:
 	virtual void Late_Tick(const _float& fTimeDelta) override;
 	virtual HRESULT Render() override;
 
+public:
+	void On() {
+		m_isOn = true;
+	}
+	void Off() {
+		m_isOn = { false };
+	}
+
 private:
 	//class CSystemManager*			m_pSystemManager = { nullptr };
 	CShader*						m_pShaderCom = { nullptr };
