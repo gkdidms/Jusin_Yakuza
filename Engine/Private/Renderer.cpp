@@ -313,8 +313,7 @@ void CRenderer::Draw()
 	//Render_ShadowObjects();
 	Render_NonBlender();
 
-	/* Decal ÀÚ¸® */
-
+	Render_Decal();
 
 	if (m_isSSAO)
 	{
@@ -1160,6 +1159,12 @@ void CRenderer::Render_UI()
 		Safe_Release(iter);
 	}
 	m_RenderObject[RENDER_UI].clear();
+}
+
+void CRenderer::Render_Decal()
+{
+
+
 }
 
 #ifdef _DEBUG
