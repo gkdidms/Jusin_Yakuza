@@ -37,6 +37,7 @@ public:
 
     HRESULT                                         Load_CamBin(int iFileNum);
     void                                            Setting_Start_Cinemachine(); /* 이미 생성 후 */
+    void                                            Initialize_Camera_Class();
 
 private:
     HRESULT                                         Import_Bin_Cam_Data_OnTool(CAMERAOBJ_IO* camData, int iFileNum);
@@ -51,6 +52,7 @@ private:
     void                                            Start_Lerp(const _float& fTimeDelta);
 
     XMVECTOR                                        Positioning_Using_Linear_Interpolation(XMVECTOR vCurPos, XMVECTOR vTargetPos, float fSpeed);
+
 
 
 private:
@@ -71,7 +73,9 @@ private:
 
     bool                                            m_bFirstLerp = { false };
     bool                                            m_bLastLerp = { false };
-    bool                                            m_bStart = { true };
+    bool                                            m_bStart = { true }; /* 시작할때 선형보간 처리관련 */
+
+    bool                                            m_bInitialize = { false };
 
 
     XMVECTOR                                        m_vStartEye;

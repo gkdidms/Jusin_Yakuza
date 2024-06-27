@@ -75,7 +75,8 @@ HRESULT CFileTotalMgr::Set_Lights_In_Client(int iLightLoadingNum)
     /* 모든 라이트 삭제 */
     m_pGameInstance->Delete_AllLights();
 
-    Import_Bin_Light_Data_OnClient(&m_LightTotalInform, iLightLoadingNum);
+    if(FAILED(Import_Bin_Light_Data_OnClient(&m_LightTotalInform, iLightLoadingNum)))
+        return E_FAIL;
 
     for (int i = 0; i < m_LightTotalInform.iNumLights; i++)
     {
@@ -93,11 +94,11 @@ void CFileTotalMgr::Load_Cinemachine(int iCineNum, int iStageLevel)
 {
     if (nullptr == m_pCinemachineCam)
     {
-        CCineCamera::CINE_CAMERA_DESC		cineDesc;
-        cineDesc.iFileNum = iCineNum;
-        m_pGameInstance->Add_GameObject(iStageLevel, TEXT("Prototype_GameObject_CCineCamera"), TEXT("Layer_Camera"), &cineDesc);
-        m_pCinemachineCam = dynamic_cast<CCineCamera*>(m_pGameInstance->Get_GameObject(iStageLevel, TEXT("Layer_Camera"), CAMERA::CAMERA_CINEMACHINE));
-        //m_pCinemachineCam = dynamic_cast<CCineCamera*>(CGameInstance::GetInstance()->Clone_Object(TEXT("Prototype_GameObject_CCineCamera"), &cineDesc));
+        m_pCinemachineCam = dynamic_cast<CCineCamera*>(m_pGameInstance->Get_GameObject(iStageLevel, TEXT("Layer_Camera"), 1));
+        Safe_AddRef(m_pCinemachineCam);
+        m_pCinemachineCam->Load_CamBin(iCineNum);
+        m_pCinemachineCam->Initialize_Camera_Class();
+        m_pCinemachineCam->Setting_Start_Cinemachine();
     }
     else
     {
@@ -163,7 +164,7 @@ HRESULT CFileTotalMgr::Import_Bin_Map_Data_OnClient(MAP_TOTALINFORM_DESC* mapObj
     }
 
 
-    in.read((char*)&mapObjData->iLevelIndex, sizeof(int));
+    /*in.read((char*)&mapObjData->iLevelIndex, sizeof(int));
 
     in.read((char*)&mapObjData->vPlaneSize, sizeof(XMFLOAT2));
 
@@ -174,6 +175,39 @@ HRESULT CFileTotalMgr::Import_Bin_Map_Data_OnClient(MAP_TOTALINFORM_DESC* mapObj
     for (int i = 0; i < mapObjData->iNumMapObj; i++)
     {
         in.read((char*)&mapObjData->pMapObjDesc[i], sizeof(OBJECTPLACE_DESC));
+    }
+
+    in.close();*/
+
+    in.read((char*)&mapObjData->iLevelIndex, sizeof(int));
+
+    in.read((char*)&mapObjData->vPlaneSize, sizeof(XMFLOAT2));
+
+    in.read((char*)&mapObjData->iNumMapObj, sizeof(int));
+
+    mapObjData->pMapObjDesc = new OBJECTPLACE_DESC[mapObjData->iNumMapObj];
+
+    for (int i = 0; i < mapObjData->iNumMapObj; i++)
+    {
+        //in.read((char*)&mapObjData->pMapObjDesc[i], sizeof(OBJECTPLACE_DESC));
+
+        OBJECTPLACE_DESC* pMapObj = &mapObjData->pMapObjDesc[i];
+
+        in.read((char*)&pMapObj->vTransform, sizeof(XMFLOAT4X4));
+        in.read((char*)&pMapObj->strLayer, sizeof(char) * MAX_PATH);
+        in.read((char*)&pMapObj->strModelCom, sizeof(char) * MAX_PATH);
+        in.read((char*)&pMapObj->iShaderPassNum, sizeof(int));
+        in.read((char*)&pMapObj->iObjType, sizeof(int));
+        in.read((char*)&pMapObj->iObjPropertyType, sizeof(int));
+
+        in.read((char*)&pMapObj->iDecalNum, sizeof(int));
+
+        pMapObj->pDecals = new DECAL_DESC_IO[pMapObj->iDecalNum];
+
+        for (int j = 0; j < pMapObj->iDecalNum; j++)
+        {
+            in.read((char*)&pMapObj->pDecals[j], sizeof(DECAL_DESC_IO));
+        }
     }
 
     in.close();

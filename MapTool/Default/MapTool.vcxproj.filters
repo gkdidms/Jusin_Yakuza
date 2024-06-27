@@ -103,6 +103,9 @@
     <ClCompile Include="..\Private\SystemManager.cpp">
       <Filter>95.Utility\00.System</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\Decal.cpp">
+      <Filter>02.GameObjects\07.Decal</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\MainApp.h">
@@ -225,6 +228,9 @@
     <ClInclude Include="..\Public\SystemManager.h">
       <Filter>95.Utility\00.System</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Decal.h">
+      <Filter>02.GameObjects\07.Decal</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="MapTool.ico">
@@ -324,6 +330,9 @@
     </Filter>
     <Filter Include="95.Utility\00.System">
       <UniqueIdentifier>{c55aca02-848a-4026-81db-9de5a92d9b59}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07.Decal">
+      <UniqueIdentifier>{2c4b6ffe-ebed-4a5f-b3fc-8371ff3dc1b6}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
