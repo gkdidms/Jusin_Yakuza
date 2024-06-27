@@ -150,6 +150,27 @@ HRESULT CCharacterData::Initialize(wstring wstrModelName)
 	return S_OK;
 }
 
+void CCharacterData::Set_CurrentAnimation(string strAnimName)
+{
+	m_CurrentEvents.clear();
+
+	auto lower_bound_iter = m_AnimationEvents.lower_bound(strAnimName);
+	auto upper_bound_iter = m_AnimationEvents.upper_bound(strAnimName);
+
+	if (lower_bound_iter == upper_bound_iter)
+	{
+		m_CurrentEvents.push_back((*lower_bound_iter).second);
+	}
+	else
+	{
+		for (; lower_bound_iter != upper_bound_iter; ++lower_bound_iter)
+		{
+			m_CurrentEvents.push_back((*lower_bound_iter).second);
+		}
+	}
+
+}
+
 CCharacterData* CCharacterData::Create(wstring wstrModelName)
 {
 	CCharacterData* pInstnace = new CCharacterData();

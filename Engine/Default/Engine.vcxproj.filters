@@ -369,9 +369,6 @@
     <ClInclude Include="..\Public\ComputeShader.h">
       <Filter>01.Utility\03.Component\08.ComputeShader</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Decal.h">
-      <Filter>01.Utility\02.GameObject\Decal</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\Base.cpp">
@@ -541,9 +538,6 @@
     </ClCompile>
     <ClCompile Include="..\Private\ComputeShader.cpp">
       <Filter>01.Utility\03.Component\08.ComputeShader</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\Decal.cpp">
-      <Filter>01.Utility\02.GameObject\Decal</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

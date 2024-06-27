@@ -182,6 +182,10 @@
     <ClInclude Include="..\Public\Construction.h" />
     <ClInclude Include="..\public\DebugCamera.h" />
     <ClInclude Include="..\public\DebugManager.h" />
+    <ClInclude Include="..\Public\Decal.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="..\Public\FileTotalMgr.h" />
     <ClInclude Include="..\public\LandObject.h" />
     <ClInclude Include="..\public\Level_Loading.h" />
@@ -189,9 +193,12 @@
     <ClInclude Include="..\public\Level_Test.h" />
     <ClInclude Include="..\public\Loader.h" />
     <ClInclude Include="..\public\MainApp.h" />
+    <ClInclude Include="..\Public\PartObject.h" />
     <ClInclude Include="..\public\Player.h" />
     <ClInclude Include="..\public\PlayerCamera.h" />
     <ClInclude Include="..\Public\Sky.h" />
+    <ClInclude Include="..\Public\SoketCollider.h" />
+    <ClInclude Include="..\Public\SoketObject.h" />
     <ClInclude Include="..\public\SystemManager.h" />
     <ClInclude Include="..\Public\Terrain.h" />
     <ClInclude Include="Client.h" />
@@ -222,6 +229,10 @@
     <ClCompile Include="..\Private\Construction.cpp" />
     <ClCompile Include="..\private\DebugCamera.cpp" />
     <ClCompile Include="..\private\DebugManager.cpp" />
+    <ClCompile Include="..\Private\Decal.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\Private\FileTotalMgr.cpp" />
     <ClCompile Include="..\private\LandObject.cpp" />
     <ClCompile Include="..\private\Level_Loading.cpp" />
@@ -229,9 +240,12 @@
     <ClCompile Include="..\private\Level_Test.cpp" />
     <ClCompile Include="..\private\Loader.cpp" />
     <ClCompile Include="..\private\MainApp.cpp" />
+    <ClCompile Include="..\Private\PartObject.cpp" />
     <ClCompile Include="..\private\Player.cpp" />
     <ClCompile Include="..\private\PlayerCamera.cpp" />
     <ClCompile Include="..\Private\Sky.cpp" />
+    <ClCompile Include="..\Private\SoketCollider.cpp" />
+    <ClCompile Include="..\Private\SoketObject.cpp" />
     <ClCompile Include="..\private\SystemManager.cpp" />
     <ClCompile Include="..\Private\Terrain.cpp" />
     <ClCompile Include="Client.cpp" />
