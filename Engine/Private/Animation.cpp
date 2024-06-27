@@ -16,6 +16,7 @@ CAnimation::CAnimation(const CAnimation& rhs)
 	, m_CurrentKeyFrameIndices{ rhs.m_CurrentKeyFrameIndices }
 	, m_Channels{ rhs.m_Channels }
 	, m_CurrentChangePosition{rhs.m_CurrentChangePosition }
+	, m_isRestart{rhs.m_isRestart }
 {
 	strcpy_s(m_szName, rhs.m_szName);
 
@@ -76,10 +77,12 @@ HRESULT CAnimation::Initialize(const BAiAnimation* pAnimation, const vector<clas
 void CAnimation::Update_TransformationMatrix(_float fTimeDelta, const vector<class CBone*>& Bones, _bool isLoop)
 {
 	m_CurrentPosition += m_TickPerSecond * fTimeDelta;
+	m_isRestart = false;
 
 	if (m_CurrentPosition >= m_Duration)
 	{
 		m_CurrentPosition = 0.0;
+		m_isRestart = true;
 
 		if(false == isLoop)
 			m_isFinished = true;

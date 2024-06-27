@@ -100,6 +100,7 @@ HRESULT CCharacterData::Initialize(wstring wstrModelName)
 			in >> EventDesc.iType;
 			in >> EventDesc.fPlayPosition;
 			in >> EventDesc.strChannelName;
+			in >> EventDesc.iBoneIndex;
 
 			m_AnimationEvents.emplace(strAnimName, EventDesc);
 		}

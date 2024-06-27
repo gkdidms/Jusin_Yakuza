@@ -11,11 +11,11 @@
 #include "D:\TeamProject\Engine\Private\DebugDraw.cpp"
 
 
-#include "D:\TeamProject\Engine\Private\Decal.cpp"
-
-
 #include "D:\TeamProject\Engine\Private\Font_Manager.cpp"
 
 
 #include "D:\TeamProject\Engine\Private\Frustum.cpp"
+
+
+#include "D:\TeamProject\Engine\Private\GameInstance.cpp"
 

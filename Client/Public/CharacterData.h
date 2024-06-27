@@ -16,8 +16,9 @@ class CCharacterData : public CBase
 public:
     struct ANIMATION_EVENT
     {
-        _uint iType;
+        _uint iType;            //0: 콜라이더 활성화, 1: 콜라이더 비활성화, 2:사운드, 3:이펙트
         _float fPlayPosition;
+        _uint iBoneIndex;
         string strChannelName;
     };
 
@@ -48,6 +49,9 @@ public:
     const unordered_map<_uint, COLLIDER_STATE>& Get_Colliders() const {
         return m_Colliders;
     }
+    const vector<ANIMATION_EVENT>& Get_CurrentEvents() const {
+        return m_CurrentEvents;
+    }
 
 public:
     void Set_CurrentAnimation(string strAnimName);
@@ -63,7 +67,6 @@ private:
     multimap<string, ANIMATION_EVENT> m_AnimationEvents;            
     // first: 뼈인덱스
     unordered_map<_uint, COLLIDER_STATE> m_Colliders;
-
 
     vector<ANIMATION_EVENT> m_CurrentEvents;
 
