@@ -41,7 +41,11 @@ public:
 private:
 	void EditTransform(_float* cameraView, _float* cameraProjection, _float* matrix);
 	void Guizmo(_float fTimeDelta);
+
+
 	HRESULT Create_Particle();
+
+
 	HRESULT Edit_Particle(_uint Index);
 	HRESULT Load_Desc(_uint Index);
 
