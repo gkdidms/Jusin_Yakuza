@@ -492,18 +492,19 @@ void CImguiManager::KeyFrameWindow()
 	}
 	ImGui::SameLine();
 
+	if (ImGui::Button("0.5x"))
+	{
+		m_fTimeDeltaScale = 0.5f;
+		m_pGameInstance->Set_TimeSpeed(TEXT("Timer_60"), m_fTimeDeltaScale);
+	}
+	ImGui::SameLine();
 	if (ImGui::Button("1x"))
 	{
 		m_fTimeDeltaScale = 1.f;
 		m_pGameInstance->Set_TimeSpeed(TEXT("Timer_60"), m_fTimeDeltaScale);
 	}
 	ImGui::SameLine();
-	if (ImGui::Button("2x"))
-	{
-		m_fTimeDeltaScale = 2.f;
-		m_pGameInstance->Set_TimeSpeed(TEXT("Timer_60"), m_fTimeDeltaScale);
-	}
-	ImGui::SameLine();
+
 	if (ImGui::Button("3x"))
 	{
 		m_fTimeDeltaScale = 3.f;
@@ -526,7 +527,7 @@ void CImguiManager::KeyFrameWindow()
 
 		if (m_pRenderModel->Created_BoneCollider(Channels[m_iChannelSelectedIndex]->Get_BoneIndex()))
 		{
-			Animation_Event Event{ COLLIDER_ACTIVATION, m_fAnimationPosition, m_ChannelNameList[m_iChannelSelectedIndex] };
+			Animation_Event Event{ COLLIDER_ACTIVATION, m_fAnimationPosition, m_ChannelNameList[m_iChannelSelectedIndex], m_iBoneSelectedIndex };
 
 			m_AnimationEvents.emplace(m_AnimNameList[m_iAnimIndex], Event);
 		}
@@ -539,7 +540,7 @@ void CImguiManager::KeyFrameWindow()
 
 		if (m_pRenderModel->Created_BoneCollider(Channels[m_iChannelSelectedIndex]->Get_BoneIndex()))
 		{
-			Animation_Event Event{ COLLIDER_DISABLE, m_fAnimationPosition, m_ChannelNameList[m_iChannelSelectedIndex] };
+			Animation_Event Event{ COLLIDER_DISABLE, m_fAnimationPosition, m_ChannelNameList[m_iChannelSelectedIndex], m_iBoneSelectedIndex };
 
 			m_AnimationEvents.emplace(m_AnimNameList[m_iAnimIndex], Event);
 		}
@@ -575,7 +576,62 @@ void CImguiManager::KeyFrameWindow()
 void CImguiManager::AnimEventWindow()
 {
 	ImGui::Begin("Animation Events", NULL);
-	//ImGui::Begin("FX", NULL, ImGuiWindowFlags_NoBackground | ImGuiWindowFlags_HorizontalScrollbar);
+
+	//추가한 메시 리스트
+	vector<_uint> EventTypes;
+	vector<const char*> items;
+	for (auto& Event : m_AnimationEvents)
+	{
+		if(Event.first == m_AnimNameList[m_iAnimIndex])
+			EventTypes.push_back(Event.second.iType);
+	}
+	for (auto& iEventType : EventTypes)
+	{
+		switch (iEventType)
+		{
+		case 0:
+			items.push_back("Collider On");
+			break;
+		case 1:
+			items.push_back("Collider Off");
+			break;
+		case 2:
+			items.push_back("Sound On");
+			break;
+		case 3:
+			items.push_back("Effect On");
+			break;
+		}
+	}
+
+	if (ImGui::ListBox("##", &m_iEventSelectedIndex, items.data(), items.size()))
+	{
+		for (auto& Event : m_AnimationEvents)
+			Event.second.isSelected = false;
+
+		auto iter = m_AnimationEvents.begin();
+
+		for (size_t i = 0; i < m_iEventSelectedIndex; i++)
+		{
+			iter++;
+		}
+		(*iter).second.isSelected = true;
+	}
+
+	ImGui::SameLine();
+	if (ImGui::Button("Event Delete"))
+	{
+		auto iter = m_AnimationEvents.begin();
+
+		for (size_t i = 0; i < m_iEventSelectedIndex; i++)
+		{
+			iter++;
+		}
+		m_AnimationEvents.erase(iter);
+	}
+
+	ImGui::Text("Animation Name : %s", m_AnimNameList[m_iAnimIndex].c_str());
+
 
 	ImDrawList* draw_list = ImGui::GetWindowDrawList();
 	DrawTimeline(draw_list);
@@ -585,8 +641,6 @@ void CImguiManager::AnimEventWindow()
 
 void CImguiManager::DrawTimeline(ImDrawList* draw_list)
 {
-	ImGui::Text("Animation Name : %s", m_AnimNameList[m_iAnimIndex].c_str());
-
 	ImVec2 vCanvas_Start = ImGui::GetCursorScreenPos(); // 시작 위치	
 	ImVec2 vCanvas_Size = ImGui::GetContentRegionAvail(); // 크기	
 	ImVec2 vCanvas_End = vCanvas_Start + vCanvas_Size;
@@ -618,21 +672,29 @@ void CImguiManager::DrawTimeline(ImDrawList* draw_list)
 
 		vCanvas_Size.x * fRatio;
 
-		switch (Value.iType)
+		if (Value.isSelected)
 		{
-		case COLLIDER_ACTIVATION:
-			CircleColor = IM_COL32(255, 255, 0, 255);
-			break;
-		case COLLIDER_DISABLE:
-			CircleColor = IM_COL32(255, 127, 0, 255);
-			break;
-		case SOUND_ACTIVATION:
-			CircleColor = IM_COL32(0, 255, 0, 255);
-			break;
-		case EFFECT_ACTIVATION:
-			CircleColor = IM_COL32(0, 0, 255, 255);
-			break;
+			CircleColor = IM_COL32(255, 0, 0, 255);
 		}
+		else
+		{
+			switch (Value.iType)
+			{
+			case COLLIDER_ACTIVATION:
+				CircleColor = IM_COL32(255, 255, 0, 255);
+				break;
+			case COLLIDER_DISABLE:
+				CircleColor = IM_COL32(255, 127, 0, 255);
+				break;
+			case SOUND_ACTIVATION:
+				CircleColor = IM_COL32(0, 255, 0, 255);
+				break;
+			case EFFECT_ACTIVATION:
+				CircleColor = IM_COL32(0, 0, 255, 255);
+				break;
+			}
+		}
+		
 
 		vPosY = vCircleStartPosY + (Value.iType * fCircleRadius * 2.5f);
 
@@ -669,8 +731,15 @@ void CImguiManager::DrawChannels()
 	{
 		for (size_t i = 0; i < m_ChannelNameList.size(); i++)
 		{
-			if(m_ChannelNameList[i] == string(m_szSearchChannelName))
+			if (m_ChannelNameList[i] == string(m_szSearchChannelName))
+			{
 				m_iChannelSelectedIndex = i;
+
+				m_iBoneSelectedIndex = Channels[m_iChannelSelectedIndex]->Get_BoneIndex();
+
+				m_pRenderModel->Select_Bone(m_iBoneSelectedIndex);
+				break;
+			}
 		}
 	}
 
@@ -863,10 +932,12 @@ void CImguiManager::AnimationEvent_Save(string strPath)
 		Desc.iType = iter.second.iType;
 		Desc.fAinmPosition = iter.second.fAinmPosition;
 		Desc.strChannelName = iter.second.strChannelName;
+		Desc.iBoneIndex = iter.second.iBoneIndex;
 
 		out << Desc.iType << endl;
 		out << Desc.fAinmPosition << endl;
 		out << Desc.strChannelName << endl;
+		out << Desc.iBoneIndex << endl;
 	}
 
 	out.close();
@@ -1038,6 +1109,7 @@ void CImguiManager::AnimationEvent_Load(string strPath)
 		in >> Desc.iType;
 		in >> Desc.fAinmPosition;
 		in >> Desc.strChannelName;
+		in >> Desc.iBoneIndex;
 
 		m_AnimationEvents.emplace(strAnimName, Desc);
 	}

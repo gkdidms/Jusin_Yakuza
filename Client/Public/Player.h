@@ -38,11 +38,13 @@ public:
 
 private:
     void Synchronize_Root();
+    void Animation_Event();
 
 private:
     CShader*                m_pShaderCom = { nullptr };
     CModel*                 m_pModelCom = { nullptr };
-    vector<class CSoketCollider*>      m_pColliders;
+    //뼈 인덱스, 소켓 콜라이더
+    unordered_map<_uint, class CSoketCollider*>      m_pColliders;     
     class CCharacterData*   m_pData = { nullptr };
 
 private:

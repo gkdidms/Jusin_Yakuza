@@ -73,7 +73,8 @@ public:
 	const _float4x4* Get_BoneCombinedTransformationMatrix_AtIndex(_uint iBoneIndex) const;
 	const _float4x4* Get_BoneTransformationMatrix(const _char* pBoneName) const;
 
-	const string& Get_AnimationName(_uint iAnimIndex);
+	const _char* Get_AnimationName(_uint iAnimIndex);
+	const _double* Get_AnimationCurrentPosition();
 
 public:
 	void Set_AnimLoop(_uint iAnimIndex, _bool isLoop)
