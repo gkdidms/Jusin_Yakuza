@@ -94,7 +94,7 @@ HRESULT CDecal::Add_Components()
     CBounding_OBB::BOUNDING_OBB_DESC		ColliderDesc{};
 
     ColliderDesc.eType = CCollider::COLLIDER_OBB;
-    ColliderDesc.vExtents = _float3(20, 20, 20);
+    ColliderDesc.vExtents = _float3(4, 4, 4);
     ColliderDesc.vCenter = _float3(0, 0.f, 0);
     ColliderDesc.vRotation = _float3(0, 0.f, 0.f);
 

@@ -23,6 +23,9 @@ HRESULT CConstruction::Initialize(void* pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
+	if (FAILED(Add_Components(pArg)))
+		return E_FAIL;
+
 	if (nullptr != pArg)
 	{
 		MAPOBJ_DESC* gameobjDesc = (MAPOBJ_DESC*)pArg;
@@ -31,10 +34,25 @@ HRESULT CConstruction::Initialize(void* pArg)
 		m_wstrModelName = gameobjDesc->wstrModelName;
 		m_iShaderPassNum = gameobjDesc->iShaderPass;
 		m_iObjectType = gameobjDesc->iObjType;
+
+		for (int i = 0; i < gameobjDesc->iDecalNum; i++)
+		{
+			DECAL_DESC  tDecal;
+			CTexture* pTexture;
+			XMMATRIX    vStartPos;
+
+			CDecal::DECALOBJ_DESC		decalObjDesc{};
+			decalObjDesc.iMaterialNum = gameobjDesc->pDecal[i].iMaterialNum;
+			decalObjDesc.pTexture = m_pModelCom->Copy_DecalTexture(decalObjDesc.iMaterialNum);
+			decalObjDesc.vStartPos = XMLoadFloat4x4(&gameobjDesc->pDecal[i].vTransform);
+
+			CDecal* pDecal = dynamic_cast<CDecal*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Decal"), &decalObjDesc));
+
+			m_vDecals.push_back(pDecal);
+		}
 	}
 
-	if (FAILED(Add_Components(pArg)))
-		return E_FAIL;
+
 
 
 
@@ -47,12 +65,16 @@ void CConstruction::Priority_Tick(const _float& fTimeDelta)
 
 void CConstruction::Tick(const _float& fTimeDelta)
 {
-	//m_pModelCom->Play_Animation(fTimeDelta);
+	for (auto& iter : m_vDecals)
+		iter->Tick(fTimeDelta);
 }
 
 void CConstruction::Late_Tick(const _float& fTimeDelta)
 {
 	m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
+	
+	for (auto& iter : m_vDecals)
+		iter->Late_Tick(fTimeDelta);
 }
 
 HRESULT CConstruction::Render()
@@ -177,6 +199,10 @@ CGameObject* CConstruction::Clone(void* pArg)
 void CConstruction::Free()
 {
 	__super::Free();
+
+	for (auto& iter : m_vDecals)
+		Safe_Release(iter);
+	m_vDecals.clear();
 
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pModelCom);

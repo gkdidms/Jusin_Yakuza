@@ -312,6 +312,10 @@ void CRenderer::Draw()
 	Render_Priority();
 	//Render_ShadowObjects();
 	Render_NonBlender();
+
+	/* Decal ÀÚ¸® */
+
+
 	if (m_isSSAO)
 	{
 		Render_SSAO();
