@@ -1,7 +1,4 @@
 
-#include "D:\TeamProject\Engine\Private\Texture.cpp"
-
-
 #include "D:\TeamProject\Engine\Private\Timer.cpp"
 
 
@@ -18,4 +15,7 @@
 
 
 #include "D:\TeamProject\Engine\Private\VIBuffer_Cube.cpp"
+
+
+#include "D:\TeamProject\Engine\Private\VIBuffer_Instance.cpp"
 
