@@ -94,11 +94,11 @@ HRESULT CRenderer::Initialize()
 		return E_FAIL;
 #pragma endregion
 
-
+	//ID3D11BlendState
 #pragma region MRT_OIT
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_AccumColor"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(0.f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
-	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_AccumAlpha"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(0.f, 0.f, 0.f, 0.f))))
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_AccumAlpha"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(1.f, 1.f, 1.f, 1.f))))
 		return E_FAIL;
 #pragma endregion
 
@@ -194,8 +194,7 @@ HRESULT CRenderer::Initialize()
 	/*MRT_Accum*/
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_Accum"), TEXT("Target_AccumColor"))))
 		return E_FAIL;
-	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_Accum"), TEXT("Target_AccumAlpha"))))
-		return E_FAIL;
+
 
 	m_pVIBuffer = CVIBuffer_Rect::Create(m_pDevice, m_pContext);
 	if (nullptr == m_pVIBuffer)
@@ -342,7 +341,7 @@ void CRenderer::Draw()
 
 	Render_Blender();
 
-	//Render_FinlaOIT();
+	Render_FinlaOIT();
 
 	Render_UI();
 
@@ -1118,39 +1117,34 @@ void CRenderer::Render_FinalEffectBlend()
 
 void CRenderer::Render_Blender()
 {
+	//m_RenderObject[RENDER_BLENDER].sort([](CGameObject* pSour, CGameObject* pDest)->_bool
+	//	{
+	//		return dynamic_cast<CBlendObject*>(pSour)->Get_ViewZ() > dynamic_cast<CBlendObject*>(pDest)->Get_ViewZ();
+	//	});
 
-//	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_Accum"))))
-//		return;
+	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_Accum"))))
+		return;
 
 	for (auto& iter : m_RenderObject[RENDER_BLENDER])
 	{
-	//	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_AccumColor"), m_pShader, "g_AccumTexture")))//이펙트 텍스처 원본
-	//		return;
-	//	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_AccumAlpha"), m_pShader, "g_AccumAlpha")))//이펙트 텍스처 원본
-	//		return;
-
 		iter->Render();
 
 		Safe_Release(iter);
 	}
 	m_RenderObject[RENDER_BLENDER].clear();
 
-//	if (FAILED(m_pGameInstance->End_MRT()))
-//		return;
+	if (FAILED(m_pGameInstance->End_MRT()))
+		return;
 }
 
 void CRenderer::Render_FinlaOIT()
 {
-
 	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_AccumColor"), m_pShader, "g_AccumTexture")))//이펙트 텍스처 원본
-		return;
-	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_AccumAlpha"), m_pShader, "g_AccumAlpha")))//이펙트 텍스처 원본
 		return;
 
 	m_pShader->Begin(15);
 
 	m_pVIBuffer->Render();
-
 }
 
 void CRenderer::Render_UI()
@@ -1172,6 +1166,7 @@ void CRenderer::Render_Debug()
 		pDebugCom->Render();
 		Safe_Release(pDebugCom);
 	}
+
 	m_DebugComponents.clear();
 
 	if (!m_isDebugView) return;
@@ -1222,12 +1217,12 @@ void CRenderer::Render_Debug()
 			return;
 	}
 
-	if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_Effect"), m_pShader, m_pVIBuffer)))
-		return;
-	if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_Blur_X"), m_pShader, m_pVIBuffer)))
-		return;
-	if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_Blur_Y"), m_pShader, m_pVIBuffer)))
-		return;
+//	if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_Effect"), m_pShader, m_pVIBuffer)))
+//		return;
+//	if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_Blur_X"), m_pShader, m_pVIBuffer)))
+//		return;
+//	if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_Blur_Y"), m_pShader, m_pVIBuffer)))
+//		return;
 	if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_Accum"), m_pShader, m_pVIBuffer)))
 		return;
 }

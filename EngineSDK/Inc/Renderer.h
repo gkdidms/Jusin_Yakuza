@@ -104,7 +104,7 @@ private:
     vector<_float3> m_vSSAOKernal;
 
 #ifdef _DEBUG
-    _bool m_isDebugView = { false };
+    _bool m_isDebugView = { true };
 #endif // _DEBUG
 
 

@@ -20,36 +20,12 @@ HRESULT CCineCamera::Initialize_Prototype()
 
 HRESULT CCineCamera::Initialize(void* pArg)
 {
+
 	if (nullptr != pArg)
 	{
 		CINE_CAMERA_DESC* pDesc = static_cast<CINE_CAMERA_DESC*>(pArg);
 		Load_CamBin(pDesc->iFileNum);
 	}
-
-	/* 카메라 초기화 */
-	m_iCurCamIndex = 0;
-	/* 첫 시작은 stay로 시작 */
-	m_eCurCamState = CAM_STATE_STAY;
-	m_fStayDeltaTime = 0;
-	m_fStayTime = m_vCamerasObjDesc[0].fStayTime;
-	m_fLerpDeltaTime = 0;
-
-	CAMERA_DESC		cameraDesc;
-	cameraDesc.fFovY = m_vCamerasObjDesc[0].fFovY;
-	cameraDesc.fAspect = m_vCamerasObjDesc[0].fAspect;
-	cameraDesc.fNear = m_vCamerasObjDesc[0].fNear;
-	cameraDesc.fFar = m_vCamerasObjDesc[0].fFar;
-	cameraDesc.vFocus = m_vCamerasObjDesc[0].vFocus;
-	cameraDesc.vEye = m_vCamerasObjDesc[0].vEye;
-
-	m_vEye = XMLoadFloat4(&cameraDesc.vEye);
-	m_vFocus = XMLoadFloat4(&cameraDesc.vFocus);
-	m_bLastLerp = false;
-
-	if (FAILED(__super::Initialize(&cameraDesc)))
-		return E_FAIL;
-
-	Set_Start();
 
 	return S_OK;
 }
@@ -87,6 +63,12 @@ HRESULT CCineCamera::Render()
 
 HRESULT CCineCamera::Load_CamBin(int iFileNum)
 {
+	if (iFileNum == -1)
+	{
+		m_bInitialize = false;
+		return S_OK;
+	}
+		
 	m_vCamerasObjDesc.clear();
 
 	CAMERAOBJ_IO		camIODesc;
@@ -105,6 +87,8 @@ HRESULT CCineCamera::Load_CamBin(int iFileNum)
 	m_iCurCamIndex = 0;
 
 	Safe_Delete_Array(camIODesc.pCamObjDesc);
+
+
 
 	return S_OK;
 }
@@ -128,6 +112,33 @@ void CCineCamera::Setting_Start_Cinemachine()
 	m_bLastLerp = false;
 
 	Set_Start();
+
+}
+
+void CCineCamera::Initialize_Camera_Class()
+{
+	/* 카메라 초기화 */
+	m_iCurCamIndex = 0;
+	/* 첫 시작은 stay로 시작 */
+	m_eCurCamState = CAM_STATE_STAY;
+	m_fStayDeltaTime = 0;
+	m_fStayTime = m_vCamerasObjDesc[0].fStayTime;
+	m_fLerpDeltaTime = 0;
+
+	CAMERA_DESC		cameraDesc;
+	cameraDesc.fFovY = m_vCamerasObjDesc[0].fFovY;
+	cameraDesc.fAspect = m_vCamerasObjDesc[0].fAspect;
+	cameraDesc.fNear = m_vCamerasObjDesc[0].fNear;
+	cameraDesc.fFar = m_vCamerasObjDesc[0].fFar;
+	cameraDesc.vFocus = m_vCamerasObjDesc[0].vFocus;
+	cameraDesc.vEye = m_vCamerasObjDesc[0].vEye;
+
+	m_vEye = XMLoadFloat4(&cameraDesc.vEye);
+	m_vFocus = XMLoadFloat4(&cameraDesc.vFocus);
+	m_bLastLerp = false;
+
+	__super::Initialize(&cameraDesc);
+
 }
 
 HRESULT CCineCamera::Import_Bin_Cam_Data_OnTool(CAMERAOBJ_IO* camData, int iFileNum)
@@ -407,6 +418,8 @@ XMVECTOR CCineCamera::Positioning_Using_Linear_Interpolation(XMVECTOR vCurPos, X
 
 	return vResult;
 }
+
+
 
 CCineCamera* CCineCamera::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {

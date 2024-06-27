@@ -48,6 +48,9 @@ public:
     const unordered_map<_uint, COLLIDER_STATE>& Get_Colliders() const {
         return m_Colliders;
     }
+
+public:
+    void Set_CurrentAnimation(string strAnimName);
     
 private:
     CGameInstance* m_pGameInstance = { nullptr };
@@ -60,6 +63,9 @@ private:
     multimap<string, ANIMATION_EVENT> m_AnimationEvents;            
     // first: ª¿¿Œµ¶Ω∫
     unordered_map<_uint, COLLIDER_STATE> m_Colliders;
+
+
+    vector<ANIMATION_EVENT> m_CurrentEvents;
 
 public:
     static CCharacterData* Create(wstring wstrModelName);

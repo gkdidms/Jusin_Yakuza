@@ -2,7 +2,7 @@
 
 #include "GameInstance.h"
 #include "Transform.h"
-#include "Decal.h"
+
 
 CConstruction::CConstruction(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CGameObject{ pDevice, pContext }
@@ -24,6 +24,9 @@ HRESULT CConstruction::Initialize(void* pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
+	if (FAILED(Add_Components(pArg)))
+		return E_FAIL;
+
 	if (nullptr != pArg)
 	{
 		MAPOBJ_DESC* gameobjDesc = (MAPOBJ_DESC*)pArg;
@@ -33,11 +36,23 @@ HRESULT CConstruction::Initialize(void* pArg)
 		m_iShaderPassNum = gameobjDesc->iShaderPass;
 		m_iObjectType = gameobjDesc->iObjType;
 		m_iObjectPropertyType = gameobjDesc->iObjPropertyType;
+
+		for (int i = 0; i < gameobjDesc->iDecalNum; i++)
+		{
+			DECAL_DESC  tDecal;
+			CTexture* pTexture;
+			XMMATRIX    vStartPos;
+
+			CDecal::DECALOBJ_DESC		decalObjDesc{};
+			decalObjDesc.iMaterialNum = gameobjDesc->pDecal[i].iMaterialNum;
+			decalObjDesc.pTexture = m_pModelCom->Copy_DecalTexture(decalObjDesc.iMaterialNum);
+			decalObjDesc.vStartPos = XMLoadFloat4x4(&gameobjDesc->pDecal[i].vTransform);
+
+			CDecal* pDecal = dynamic_cast<CDecal*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Decal"), &decalObjDesc));
+
+			m_vDecals.push_back(pDecal);
+		}
 	}
-
-	if (FAILED(Add_Components(pArg)))
-		return E_FAIL;
-
 
 
 	return S_OK;
@@ -50,11 +65,17 @@ void CConstruction::Priority_Tick(const _float& fTimeDelta)
 void CConstruction::Tick(const _float& fTimeDelta)
 {
 	//m_pModelCom->Play_Animation(fTimeDelta);
+
+	for (auto& iter : m_vDecals)
+		iter->Tick(fTimeDelta);
 }
 
 void CConstruction::Late_Tick(const _float& fTimeDelta)
 {
 	m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
+
+	for (auto& iter : m_vDecals)
+		iter->Late_Tick(fTimeDelta);
 }
 
 HRESULT CConstruction::Render()
@@ -118,6 +139,20 @@ int CConstruction::Get_ObjPlaceDesc(OBJECTPLACE_DESC* objplaceDesc)
 	objplaceDesc->iObjType = m_iObjectType;
 	objplaceDesc->iObjPropertyType = m_iObjectPropertyType;
 
+	/* Decal 추가 */
+	objplaceDesc->iDecalNum = m_vDecals.size();
+	
+	if (0 < objplaceDesc->iDecalNum)
+	{
+		objplaceDesc->pDecals = new DECAL_DESC_IO[objplaceDesc->iDecalNum];
+
+		for (int i = 0; i < objplaceDesc->iDecalNum ; i++)
+		{
+			m_vDecals[i]->Get_Decal_Desc_IO(&objplaceDesc->pDecals[i]);
+		}
+	}
+
+
 	/* layer는 return 형식으로 */
 	return m_iLayerNum;
 }
@@ -164,6 +199,12 @@ void CConstruction::Off_Find_DecalMesh()
 	m_bFindDecalMesh = false;
 }
 
+void CConstruction::Add_Decal(CDecal* pDecal)
+{
+	m_vDecals.push_back(pDecal);
+	Safe_AddRef(pDecal);
+}
+
 HRESULT CConstruction::Add_Components(void* pArg)
 {
 	MAPOBJ_DESC* gameobjDesc = (MAPOBJ_DESC*)pArg;
@@ -193,8 +234,6 @@ HRESULT CConstruction::Bind_ShaderResources()
 	if (FAILED(m_pShaderCom->Bind_ValueFloat("g_fObjID", m_fObjID)))
 		return E_FAIL;
 
-	//if (FAILED(m_pShaderCom->Bind_RawValue("g_vCamPosition", m_pGameInstance->Get_CamPosition_Float4(), sizeof(_float4))))
-	//	return E_FAIL;
 
 	return S_OK;
 }
@@ -232,8 +271,6 @@ void CConstruction::Free()
 	for (auto& iter : m_vDecals)
 		Safe_Release(iter);
 	m_vDecals.clear();
-
-
 
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pModelCom);
