@@ -64,6 +64,7 @@ private:
     void Render_Blender();
     void Render_FinlaOIT();
     void Render_UI();
+
     void Render_Decal();
 
     HRESULT Ready_SSAONoiseTexture();
