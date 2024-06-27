@@ -1157,6 +1157,18 @@ void CRenderer::Render_FinlaOIT() //파티클 그린 타겟 병합
 		return;
 	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_AccumAlpha"), m_pShader, "g_AccumAlpha")))//이펙트 텍스처 원본
 		return;
+
+	if (m_isHDR)
+	{
+		if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_ToneMapping"), m_pShader, "g_ResultTexture")))//이펙트 텍스처 원본
+			return;
+	}
+	else
+	{
+		if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_BackBuffer"), m_pShader, "g_ResultTexture")))//이펙트 텍스처 원본
+			return;
+	}
+
 	m_pShader->Begin(15);
 
 	m_pVIBuffer->Render();

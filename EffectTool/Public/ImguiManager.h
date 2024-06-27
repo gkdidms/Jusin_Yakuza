@@ -2,6 +2,8 @@
 #include "Client_Defines.h"
 #include "Base.h"
 #include "Effect.h"
+#include "Particle_Point.h"
+#include "TRailEffect.h"
 
 #pragma region "Imgui"
 #include "imgui.h"
@@ -50,6 +52,7 @@ private:
 	HRESULT Edit_Particle(_uint Index);
 	HRESULT Load_Desc(_uint Index);
 
+
 	void Create_Tick(_float fTimeDelta);
 	void Editor_Tick(_float fTimeDelta);
 	void Guizmo_Tick(_float fTimeDelta);
@@ -72,7 +75,9 @@ private:
 	_bool m_bGuizmo = { false };
 	//생성 파티클 담는 곳
 	vector<CGameObject*> m_EditParticle = {  };
-	CEffect::EFFECT_DESC m_EffectDesc = {};	
+
+	CParticle_Point::PARTICLE_POINT_DESC m_EffectDesc = {};
+	CTRailEffect::TRAIL_DESC m_TrailDesc = {};
 
 	bool m_bDragging = { false };
 
