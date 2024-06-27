@@ -948,6 +948,12 @@ _bool CModel::Get_AnimChanged() const
 	return m_Animations[m_AnimDesc.iAnimIndex]->Get_Changed();
 }
 
+_bool CModel::Get_AnimRestart() const
+{
+	// 루프가 아닐경우 무조건 Restart 는 false를 반환하게한다
+	return m_AnimLoops[m_AnimDesc.iAnimIndex] && m_Animations[m_AnimDesc.iAnimIndex]->Get_Restrat();
+}
+
 const _float4x4* CModel::Get_BoneCombinedTransformationMatrix(const _char* pBoneName) const
 {
 	auto	iter = find_if(m_Bones.begin(), m_Bones.end(), [&](CBone* pBone)->_bool

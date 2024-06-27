@@ -49,6 +49,7 @@ public:
 
 	_bool Get_AnimFinished() const;
 	_bool Get_AnimChanged() const;
+	_bool Get_AnimRestart() const;
 
 	_bool Get_AnimLoop(_uint iAnimIndex) { 
 		if (m_AnimLoops.size() <= iAnimIndex) return false;			//배열 범위 예외처리

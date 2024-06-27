@@ -20,6 +20,10 @@ public:
 		return m_isChanged;
 	}
 
+	_bool Get_Restrat() const {
+		return m_isRestart;
+	}
+
 	const _char* Get_AnimName() const {
 		return m_szName;
 	}
@@ -58,6 +62,7 @@ private:
 	_double					m_CurrentChangePosition = { 0.0 };
 	_bool					m_isFinished = { false };
 	_bool					m_isChanged = { true };
+	_bool					m_isRestart = { false };
 
 	_uint					m_iNumChannels = { 0 };
 	vector<_uint>			m_CurrentKeyFrameIndices;
