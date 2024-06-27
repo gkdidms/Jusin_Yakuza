@@ -49,7 +49,7 @@ void CTRailEffect::Late_Tick(const _float& fTimeDelta)
 {
 	Compute_ViewZ(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 
-	m_pGameInstance->Add_Renderer(CRenderer::RENDER_BLENDER, this);
+	m_pGameInstance->Add_Renderer(CRenderer::RENDER_EFFECT, this);
 }
 
 HRESULT CTRailEffect::Render()

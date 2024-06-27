@@ -61,9 +61,9 @@ private:
     void Render_NonLight();//이펙트 시작
     void Render_Bloom();//블러
     void Render_FinalEffectBlend();//블러 합치기
-    void Render_Blender();
-    void Render_Effect();
-    void Render_FinlaOIT();
+    void Render_Blender();//기존 논블렌드 렌더
+    void Render_Effect();// 파티클렌더 
+    void Render_FinlaOIT();// 파티클 최종병합
     void Render_UI();
 
     HRESULT Ready_SSAONoiseTexture();

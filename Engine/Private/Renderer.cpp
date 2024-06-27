@@ -1133,7 +1133,7 @@ void CRenderer::Render_Blender()
 
 }
 
-void CRenderer::Render_Effect()
+void CRenderer::Render_Effect()// 새로운 타겟에 파티클 그리기
 {
 	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_Accum"))))
 		return;
@@ -1150,7 +1150,7 @@ void CRenderer::Render_Effect()
 		return;
 }
 
-void CRenderer::Render_FinlaOIT()
+void CRenderer::Render_FinlaOIT() //파티클 그린 타겟 병합
 {
 	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_AccumColor"), m_pShader, "g_AccumTexture")))//이펙트 텍스처 원본
 		return;
