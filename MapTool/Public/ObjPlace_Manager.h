@@ -83,7 +83,6 @@ private:
 	void					Update_DecalNameList();
 
 	/* gameobject 안에 설치된 decal을 보여줌 */
-	void					Show_Decal_In_Object();
 	void					Update_DecalNameList_In_Object();
 	void					Update_DecalList_In_Object();
 	void					Edit_Installed_Decal(int iObjectDecalNum);

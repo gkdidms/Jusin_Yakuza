@@ -30,6 +30,9 @@ public:
 		int				iShaderPass;
 		int				iObjType;
 		int				iObjPropertyType;
+
+		int				iDecalNum;
+		DECAL_DESC_IO*	pDecal;
 	}MAPOBJ_DESC;
 
 

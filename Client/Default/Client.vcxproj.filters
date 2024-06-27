@@ -97,6 +97,9 @@
     <ClCompile Include="..\Private\CharacterData.cpp">
       <Filter>02.GameObjects\02.Character\CharacterData</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\Decal.cpp">
+      <Filter>02.GameObjects\05.Decal</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\MainApp.h">
@@ -225,6 +228,9 @@
     <ClInclude Include="..\Public\CharacterData.h">
       <Filter>02.GameObjects\02.Character\CharacterData</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Decal.h">
+      <Filter>02.GameObjects\05.Decal</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -318,6 +324,9 @@
     </Filter>
     <Filter Include="02.GameObjects\02.Character\CharacterData">
       <UniqueIdentifier>{d47f23c7-f09f-46fd-a441-f1561bb9a95a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\05.Decal">
+      <UniqueIdentifier>{a6493902-ed5b-46a7-a21f-1f965ca56dd4}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

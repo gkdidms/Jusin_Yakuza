@@ -182,6 +182,10 @@
     <ClInclude Include="..\Public\Construction.h" />
     <ClInclude Include="..\public\DebugCamera.h" />
     <ClInclude Include="..\public\DebugManager.h" />
+    <ClInclude Include="..\Public\Decal.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="..\Public\FileTotalMgr.h" />
     <ClInclude Include="..\public\LandObject.h" />
     <ClInclude Include="..\public\Level_Loading.h" />
@@ -222,6 +226,10 @@
     <ClCompile Include="..\Private\Construction.cpp" />
     <ClCompile Include="..\private\DebugCamera.cpp" />
     <ClCompile Include="..\private\DebugManager.cpp" />
+    <ClCompile Include="..\Private\Decal.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\Private\FileTotalMgr.cpp" />
     <ClCompile Include="..\private\LandObject.cpp" />
     <ClCompile Include="..\private\Level_Loading.cpp" />

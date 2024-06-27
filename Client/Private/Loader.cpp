@@ -6,6 +6,7 @@
 #include "Player.h"
 #include "DebugCamera.h"
 #include "CineCamera.h"
+#include "Decal.h"
 #pragma endregion
 
 #include "Terrain.h"
@@ -123,14 +124,19 @@ HRESULT CLoader::Loading_For_Test()
 	lstrcpy(m_szLoadingText, TEXT("모델를(을) 로딩 중 입니다."));
 
 	/* For.Prototype_Component_VIBuffer_Terrain */
-	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_VIBuffer_Terrain_Flat"),
-		CVIBuffer_Terrain_Flat::Create(m_pDevice, m_pContext))))
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_VIBuffer_Terrain_Flat"), CVIBuffer_Terrain_Flat::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+
+	/* For.Prototype_Component_VIBuffer_Rect */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_VIBuffer_Rect"), CVIBuffer_Rect::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 
 	_matrix		PreTransformMatrix;
 	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Model_Player"), CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../Bin/Resources/Models/Anim/Kiryu/Bin/Kiryu.dat", PreTransformMatrix, true))))
 		return E_FAIL;
+
 
 	//if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Model_f2"), CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/NonAnim/Map/Map1/f2.fbx", PreTransformMatrix, false))))
 	//	return E_FAIL;
@@ -146,6 +152,9 @@ HRESULT CLoader::Loading_For_Test()
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Shader_Mesh"), CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxMesh.hlsl"), VTXMESH::Elements, VTXMESH::iNumElements))))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Shader_MeshTemp"), CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxMeshTemp.hlsl"), VTXMESH::Elements, VTXMESH::iNumElements))))
+		return E_FAIL;
+	/* For.Prototype_Component_Shader_VtxPosTex */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Shader_VtxPosTex"), CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxPosTex.hlsl"), VTXPOSTEX::Elements, VTXPOSTEX::iNumElements))))
 		return E_FAIL;
 
 
@@ -179,6 +188,11 @@ HRESULT CLoader::Loading_For_Test()
 	/* For.Prototype_GameObject_CCineCamera */
 	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_CCineCamera"),
 		CCineCamera::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_Decal */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Decal"),
+		CDecal::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));

@@ -380,10 +380,7 @@ void CObjPlace_Manager::Show_Installed_GameObjectsList()
 			{
 				m_bAddDecal_IMGUI = true;
 
-				if (ImGui::Button(u8"데칼 수정"))
-				{
-					Get_Decal_Texture(object_current_idx);
-				}
+				
 			}
 			
 		}
@@ -526,6 +523,14 @@ void CObjPlace_Manager::Save_GameObject(int iLevel)
 
 	Export_Bin_Map_Data(&pMapTotalInform);
 
+	for (int i = 0; i < pMapTotalInform.iNumMapObj; i++)
+	{
+		if (0 < pMapTotalInform.pMapObjDesc[i].iDecalNum)
+		{
+			Safe_Delete_Array(pMapTotalInform.pMapObjDesc[i].pDecals);
+		}
+	}
+
 	Safe_Delete_Array(pMapTotalInform.pMapObjDesc);
 }
 
@@ -536,6 +541,11 @@ void CObjPlace_Manager::Load_GameObject(int iNum)
 	for (auto& Pair : m_GameObjects)
 		Safe_Release(Pair.second);
 	m_GameObjects.clear();
+
+
+	for (auto& iter : m_ObjectDecals)
+		Safe_Release(iter);
+	m_ObjectDecals.clear();
 
 
 	MAP_TOTALINFORM_DESC		mapTotalInform;
@@ -557,16 +567,38 @@ void CObjPlace_Manager::Load_GameObject(int iNum)
 		mapDesc.wstrModelName = m_pGameInstance->StringToWstring(mapTotalInform.pMapObjDesc[i].strModelCom);
 		mapDesc.iShaderPass = mapTotalInform.pMapObjDesc[i].iShaderPassNum;
 		mapDesc.iObjType = mapTotalInform.pMapObjDesc[i].iObjType;
+		mapDesc.iDecalNum = mapTotalInform.pMapObjDesc[i].iDecalNum;
+
+		if (0 < mapDesc.iDecalNum)
+		{
+			mapDesc.pDecal = new DECAL_DESC_IO[mapDesc.iDecalNum];
+
+			for (int j = 0; j < mapDesc.iDecalNum; j++)
+			{
+				mapDesc.pDecal[i] = mapTotalInform.pMapObjDesc[i].pDecals[j];
+			}
+		}
+		
 
 		m_GameObjects.emplace(mapDesc.wstrModelName, CGameInstance::GetInstance()->Clone_Object(TEXT("Prototype_GameObject_Construction"), &mapDesc));
+	}
+
+	
+
+	Update_ObjectNameList();
+
+	for (int i = 0; i < mapTotalInform.iNumMapObj; i++)
+	{
+		if (0 < mapTotalInform.pMapObjDesc[i].iDecalNum)
+		{
+			Safe_Delete_Array(mapTotalInform.pMapObjDesc[i].pDecals);
+		}
 	}
 
 	for (int i = 0; i < mapTotalInform.iNumMapObj; i++)
 	{
 		Safe_Delete(mapTotalInform.pMapObjDesc);
 	}
-
-	Update_ObjectNameList();
 
 	Safe_Delete_Array(mapTotalInform.pMapObjDesc);
 
@@ -707,6 +739,7 @@ void CObjPlace_Manager::Edit_CurrentGameObject_Desc(CConstruction::MAPOBJ_DESC* 
 
 bool CObjPlace_Manager::Add_CloneObject_Imgui(MAPTOOL_OBJPLACE_DESC objDesc, _uint iFolderNum, _uint iObjectIndex)
 {
+	/* 게임 오브젝트 설치 - 버튼 누를때 설치되는 경우 */
 	if (CGameInstance::GetInstance()->Get_DIMouseState(DIM_LB))
 	{
 		string strObjName = Find_ModelName(objDesc.iLayer, iObjectIndex);
@@ -731,6 +764,8 @@ bool CObjPlace_Manager::Add_CloneObject_Imgui(MAPTOOL_OBJPLACE_DESC objDesc, _ui
 		mapDesc.iShaderPass = objDesc.iShaderPass;
 		mapDesc.iObjType = objDesc.iObjType;
 		mapDesc.iObjPropertyType = objDesc.iObjPropertyType;
+		mapDesc.iDecalNum = 0;
+		mapDesc.pDecal = nullptr;
 
 		m_GameObjects.emplace(wstr, CGameInstance::GetInstance()->Clone_Object(TEXT("Prototype_GameObject_Construction"), &mapDesc));
 
@@ -939,7 +974,25 @@ HRESULT CObjPlace_Manager::Import_Bin_Map_Data_OnTool(MAP_TOTALINFORM_DESC* mapO
 
 	for (int i = 0; i < mapObjData->iNumMapObj; i++)
 	{
-		in.read((char*)&mapObjData->pMapObjDesc[i], sizeof(OBJECTPLACE_DESC));
+		//in.read((char*)&mapObjData->pMapObjDesc[i], sizeof(OBJECTPLACE_DESC));
+
+		OBJECTPLACE_DESC* pMapObj = &mapObjData->pMapObjDesc[i];
+
+		in.read((char*)&pMapObj->vTransform, sizeof(XMFLOAT4X4));
+		in.read((char*)&pMapObj->strLayer, sizeof(char) * MAX_PATH);
+		in.read((char*)&pMapObj->strModelCom, sizeof(char) * MAX_PATH);
+		in.read((char*)&pMapObj->iShaderPassNum, sizeof(int));
+		in.read((char*)&pMapObj->iObjType, sizeof(int));
+		in.read((char*)&pMapObj->iObjPropertyType, sizeof(int));
+
+		in.read((char*)&pMapObj->iDecalNum, sizeof(int));
+
+		pMapObj->pDecals = new DECAL_DESC_IO[pMapObj->iDecalNum];
+
+		for (int j = 0; j < pMapObj->iDecalNum ; j++)
+		{
+			in.read((char*)&pMapObj->pDecals[j], sizeof(DECAL_DESC_IO));
+		}
 	}
 
 	in.close();
@@ -986,7 +1039,21 @@ HRESULT CObjPlace_Manager::Export_Bin_Map_Data(MAP_TOTALINFORM_DESC* mapObjData)
 	for (int i = 0; i < mapObjData->iNumMapObj; i++)
 	{
 		OBJECTPLACE_DESC PObjPlaceDesc = mapObjData->pMapObjDesc[i];
-		out.write((char*)&PObjPlaceDesc, sizeof(OBJECTPLACE_DESC));
+		/*out.write((char*)&PObjPlaceDesc, sizeof(OBJECTPLACE_DESC));*/
+
+		out.write((char*)&PObjPlaceDesc.vTransform, sizeof(XMFLOAT4X4));
+		out.write((char*)&PObjPlaceDesc.strLayer, sizeof(char) * MAX_PATH);
+		out.write((char*)&PObjPlaceDesc.strModelCom, sizeof(char) * MAX_PATH);
+		out.write((char*)&PObjPlaceDesc.iShaderPassNum, sizeof(int));
+		out.write((char*)&PObjPlaceDesc.iObjType, sizeof(int));
+		out.write((char*)&PObjPlaceDesc.iObjPropertyType, sizeof(int));
+
+		out.write((char*)&PObjPlaceDesc.iDecalNum, sizeof(int));
+
+		for (int j = 0; j < PObjPlaceDesc.iDecalNum; j++)
+		{
+			out.write((char*)&PObjPlaceDesc.pDecals[j], sizeof(DECAL_DESC_IO));
+		}
 	}
 
 	out.close();
@@ -1011,6 +1078,7 @@ string CObjPlace_Manager::modifyString(string& input)
 
 void CObjPlace_Manager::Show_ExampleModel(MAPTOOL_OBJPLACE_DESC objDesc, _uint iFolderNum, _uint iObjectIndex)
 {
+	/* 어떤 모델인지 보여주는 기능 */
 	if (true == m_bShowExample)
 	{
 		//
@@ -1040,7 +1108,8 @@ void CObjPlace_Manager::Show_ExampleModel(MAPTOOL_OBJPLACE_DESC objDesc, _uint i
 			mapDesc.iShaderPass = objDesc.iShaderPass;
 			mapDesc.iObjType = objDesc.iObjType;
 			mapDesc.iObjPropertyType = objDesc.iObjPropertyType;
-
+			mapDesc.iDecalNum = 0;
+			mapDesc.pDecal = nullptr;
 
 			m_pShownObject = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Construction"), &mapDesc);
 
@@ -1049,6 +1118,7 @@ void CObjPlace_Manager::Show_ExampleModel(MAPTOOL_OBJPLACE_DESC objDesc, _uint i
 		}
 		else
 		{
+			/* 보여줄때 추가 */
 			if (CGameInstance::GetInstance()->Get_DIMouseState(DIM_LB) && true == m_bInstallOneTime)
 			{
 				/* 막아놓기 */
@@ -1065,7 +1135,8 @@ void CObjPlace_Manager::Show_ExampleModel(MAPTOOL_OBJPLACE_DESC objDesc, _uint i
 				mapDesc.iObjType = objDesc.iObjType;
 				mapDesc.iShaderPass = objDesc.iShaderPass;
 				mapDesc.iObjPropertyType = objDesc.iObjPropertyType;
-
+				mapDesc.iDecalNum = 0;
+				mapDesc.pDecal = nullptr;
 
 				m_GameObjects.emplace(wstr, CGameInstance::GetInstance()->Clone_Object(TEXT("Prototype_GameObject_Construction"), &mapDesc));
 
@@ -1287,11 +1358,6 @@ void CObjPlace_Manager::Update_DecalNameList()
 	}
 }
 
-void CObjPlace_Manager::Show_Decal_In_Object()
-{
-
-}
-
 void CObjPlace_Manager::Update_DecalNameList_In_Object()
 {
 	if (0 <= m_DecalNames_Obj.size())
@@ -1461,7 +1527,7 @@ void CObjPlace_Manager::Add_Decal_IMGUI()
 			Safe_Release(m_pDecal);
 
 			CDecal::DECALOBJ_DESC		decalObjDesc{};
-			decalObjDesc.tDecal = m_Decals[decal_current_idx];
+			decalObjDesc.iMaterialNum = m_Decals[decal_current_idx].iMaterialNum;
 			decalObjDesc.pTexture = dynamic_cast<CConstruction*>(iter->second)->Get_Model()->Copy_DecalTexture(m_Decals[decal_current_idx].iMaterialNum);
 			decalObjDesc.vStartPos = startPos;
 
@@ -1519,6 +1585,25 @@ void CObjPlace_Manager::Add_Decal_IMGUI()
 
 
 		ImGui::End();
+	}
+	else
+	{
+		if (0 < m_GameObjects.size())
+		{
+			multimap<wstring, CGameObject*>::iterator iter = m_GameObjects.begin();
+
+			if (0 != m_iCurrentObjectIndex)
+			{
+				for (int i = 0; i < m_iCurrentObjectIndex; i++)
+				{
+					iter++;
+					m_iCurrentObjectIndex++;
+				}
+			}
+
+			dynamic_cast<CConstruction*>(iter->second)->Off_Find_DecalMesh();
+		}
+		
 	}
 	
 }

@@ -24,6 +24,9 @@ HRESULT CConstruction::Initialize(void* pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
+	if (FAILED(Add_Components(pArg)))
+		return E_FAIL;
+
 	if (nullptr != pArg)
 	{
 		MAPOBJ_DESC* gameobjDesc = (MAPOBJ_DESC*)pArg;
@@ -33,11 +36,23 @@ HRESULT CConstruction::Initialize(void* pArg)
 		m_iShaderPassNum = gameobjDesc->iShaderPass;
 		m_iObjectType = gameobjDesc->iObjType;
 		m_iObjectPropertyType = gameobjDesc->iObjPropertyType;
+
+		for (int i = 0; i < gameobjDesc->iDecalNum; i++)
+		{
+			DECAL_DESC  tDecal;
+			CTexture* pTexture;
+			XMMATRIX    vStartPos;
+
+			CDecal::DECALOBJ_DESC		decalObjDesc{};
+			decalObjDesc.iMaterialNum = gameobjDesc->pDecal[i].iMaterialNum;
+			decalObjDesc.pTexture = m_pModelCom->Copy_DecalTexture(decalObjDesc.iMaterialNum);
+			decalObjDesc.vStartPos = XMLoadFloat4x4(&gameobjDesc->pDecal[i].vTransform);
+
+			CDecal* pDecal = dynamic_cast<CDecal*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Decal"), &decalObjDesc));
+
+			m_vDecals.push_back(pDecal);
+		}
 	}
-
-	if (FAILED(Add_Components(pArg)))
-		return E_FAIL;
-
 
 
 	return S_OK;
@@ -123,6 +138,20 @@ int CConstruction::Get_ObjPlaceDesc(OBJECTPLACE_DESC* objplaceDesc)
 	objplaceDesc->iShaderPassNum = m_iShaderPassNum;
 	objplaceDesc->iObjType = m_iObjectType;
 	objplaceDesc->iObjPropertyType = m_iObjectPropertyType;
+
+	/* Decal 추가 */
+	objplaceDesc->iDecalNum = m_vDecals.size();
+	
+	if (0 < objplaceDesc->iDecalNum)
+	{
+		objplaceDesc->pDecals = new DECAL_DESC_IO[objplaceDesc->iDecalNum];
+
+		for (int i = 0; i < objplaceDesc->iDecalNum ; i++)
+		{
+			m_vDecals[i]->Get_Decal_Desc_IO(&objplaceDesc->pDecals[i]);
+		}
+	}
+
 
 	/* layer는 return 형식으로 */
 	return m_iLayerNum;

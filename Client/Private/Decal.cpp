@@ -68,21 +68,16 @@ HRESULT CDecal::Render()
     return S_OK;
 }
 
-void CDecal::Get_Decal_Desc_IO(DECAL_DESC_IO* pDecalIODesc)
-{
-    pDecalIODesc->iMaterialNum = m_iMaterialNum;
-    XMStoreFloat4x4(&pDecalIODesc->vTransform, m_pTransformCom->Get_WorldMatrix());
-}
 
 HRESULT CDecal::Add_Components()
 {
     /* For.Com_VIBuffer */
-    if (FAILED(__super::Add_Component(LEVEL_RUNMAP, TEXT("Prototype_Component_VIBuffer_Rect"),
+    if (FAILED(__super::Add_Component(LEVEL_TEST, TEXT("Prototype_Component_VIBuffer_Rect"),
         TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pVIBufferCom))))
         return E_FAIL;
 
     /* For.Com_Shader */
-    if (FAILED(__super::Add_Component(LEVEL_RUNMAP, TEXT("Prototype_Component_Shader_VtxPosTex"),
+    if (FAILED(__super::Add_Component(LEVEL_TEST, TEXT("Prototype_Component_Shader_VtxPosTex"),
         TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
         return E_FAIL;
 
@@ -98,7 +93,7 @@ HRESULT CDecal::Add_Components()
     ColliderDesc.vCenter = _float3(0, 0.f, 0);
     ColliderDesc.vRotation = _float3(0, 0.f, 0.f);
 
-    if (FAILED(__super::Add_Component(LEVEL_RUNMAP, TEXT("Prototype_Component_Collider"),
+    if (FAILED(__super::Add_Component(LEVEL_TEST, TEXT("Prototype_Component_Collider"),
         TEXT("Com_Collider"), reinterpret_cast<CComponent**>(&m_pColliderCom), &ColliderDesc)))
         return E_FAIL;
 

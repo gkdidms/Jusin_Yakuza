@@ -4,3 +4,6 @@
 
 #include "D:\Jusin_TeamProject\Client\Private\CineCamera.cpp"
 
+
+#include "D:\Jusin_TeamProject\Client\Private\Decal.cpp"
+

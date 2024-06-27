@@ -19,7 +19,7 @@ public:
     typedef struct tCameraObjDesc : public CGameObject::GAMEOBJECT_DESC
     {
         int         iMaterialNum;
-        CTexture*   pTexture;
+        CTexture* pTexture;
         XMMATRIX    vStartPos;
     }DECALOBJ_DESC;
 
@@ -36,8 +36,6 @@ public:
     virtual void Late_Tick(const _float& fTimeDelta) override;
     virtual HRESULT Render() override;
 
-public:
-    void           Get_Decal_Desc_IO(DECAL_DESC_IO* pDecalIODesc);
 
 private:
     CTexture* m_pTextureCom = { nullptr };
