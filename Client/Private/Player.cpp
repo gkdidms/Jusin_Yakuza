@@ -1,6 +1,10 @@
 #include "Player.h"
 
 #include "GameInstance.h"
+#include "CharacterData.h"
+#include "SoketCollider.h"
+
+#include "Mesh.h"
 
 CPlayer::CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLandObject{ pDevice, pContext }
@@ -25,7 +29,10 @@ HRESULT CPlayer::Initialize(void* pArg)
 	if (FAILED(Add_Componenets()))
 		return E_FAIL;
 
-	m_pModelCom->Set_AnimationIndex(CModel::ANIMATION_DESC{ 3, false }, ANIM_INTERVAL);
+	if (FAILED(Add_CharacterData()))
+		return E_FAIL;
+
+	Change_Animation(3);
 	return S_OK;
 }
 
@@ -36,30 +43,13 @@ void CPlayer::Priority_Tick(const _float& fTimeDelta)
 
 void CPlayer::Tick(const _float& fTimeDelta)
 {
-	//if (m_pGameInstance->GetKeyState(DIK_UP) == TAP)
-	//{
-	//	m_iChanged = true;
-	//	m_iAnimIndex++;
-
-	//	m_pModelCom->Set_AnimationIndex(CModel::ANIMATION_DESC{ m_iAnimIndex, false }, ANIM_INTERVAL);
-	//}
-
-	//if (m_pGameInstance->GetKeyState(DIK_DOWN) == TAP)
-	//{
-	//	m_iChanged = true;
-	//	m_iAnimIndex--;
-
-	//	m_pModelCom->Set_AnimationIndex(CModel::ANIMATION_DESC{ m_iAnimIndex, true }, ANIM_INTERVAL);
-	//}
-
 	if (m_pModelCom->Get_AnimFinished())
 	{
-		m_iChanged = true;
 		m_iAnimIndex += m_iTemp;
 
 		m_iTemp *= -1;
 
-		m_pModelCom->Set_AnimationIndex(CModel::ANIMATION_DESC{ m_iAnimIndex, false }, ANIM_INTERVAL);
+		Change_Animation(m_iAnimIndex);
 	}
 
 	if (m_pGameInstance->GetKeyState(DIK_UP) == HOLD)
@@ -87,17 +77,24 @@ void CPlayer::Tick(const _float& fTimeDelta)
 	{
 		m_iAnimIndex++;
 	}
+	if (m_pGameInstance->GetKeyState(DIK_8) == TAP)
+	{
+		m_iAnimIndex--;
+	}
 
 	if (m_isAnimStart)
 		m_pModelCom->Play_Animation(fTimeDelta);
 
-	m_pColliderCom->Tick(m_pTransformCom->Get_WorldMatrix());
-
+	for (auto& pCollider : m_pColliders)
+		pCollider->Tick(fTimeDelta);
 }
 
 void CPlayer::Late_Tick(const _float& fTimeDelta)
 {
 	m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
+
+	for (auto& pCollider : m_pColliders)
+		pCollider->Late_Tick(fTimeDelta);
 }
 
 HRESULT CPlayer::Render()
@@ -105,20 +102,25 @@ HRESULT CPlayer::Render()
 	if (FAILED(Bind_ResourceData()))
 		return E_FAIL;
 
-	_uint	iNumMeshes = m_pModelCom->Get_NumMeshes();
-
-	for (size_t i = 0; i < iNumMeshes; i++)
+	int i = 0;
+	for (auto& pMesh : m_pModelCom->Get_Meshes())
 	{
 		m_pModelCom->Bind_BoneMatrices(m_pShaderCom, "g_BoneMatrices", i);
 
 		m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE);
 
-		m_pShaderCom->Begin(0);
+		if (pMesh->Get_AlphaApply())
+			m_pShaderCom->Begin(1);     //블랜드
+		else
+			m_pShaderCom->Begin(0);		//디폴트
+
 		m_pModelCom->Render(i);
+
+		i++;
 	}
 
 #ifdef _DEBUG
-	m_pGameInstance->Add_DebugComponent(m_pColliderCom);
+	//m_pGameInstance->Add_DebugComponent(m_pColliderCom);
 #endif
 
 	return S_OK;
@@ -147,30 +149,31 @@ void CPlayer::Synchronize_Root()
 	// 애니메이션이 새로 시작하면 m_vPrevMove에는 이전 애님의 마지막 move의 큰 값이 남아있고, vMovePos는 새로운정보가 되어서 초기화가 필요하다.
 	_vector vMovePos = (XMVectorSet(XMVectorGetX(vCenterBonePosistion), 0, XMVectorGetZ(vCenterBonePosistion), 1.f) - XMVectorSet(XMVectorGetX(vRootBonePosistion), 0, XMVectorGetZ(vRootBonePosistion), 1.f));
 
-	//모델이 출력될 월드 위치는, 트랜스폼 컴포넌트의 월드위치에서 센터본과 루트본의 차이만큼 빼준 위치
-	// 모델 랜더 위치잡기
-	XMStoreFloat4x4(&m_ModelWorldMatrix, m_pTransformCom->Get_WorldMatrix());
-	_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION) - XMLoadFloat4(&m_vPrevMove);
-	memcpy(&m_ModelWorldMatrix.m[CTransform::STATE_POSITION], &vPos, sizeof(_float4));
-	
 	// 트랜스폼 위치잡기
+	// 애니메이션이 새로 실행되는 경우, center가 다시 0,0 으로 맞춰지는데 m_vPrevMove에는 이전에 center의 move를 그대로 들고있어서 움직임이 정상적이지 않음
+	// 그래서 애니메이션이 바뀌었는지를 구분해서, 바뀌는중(선형보간중)이라면 기존 포지션을 유지시켜주는 코드
 	if (m_pModelCom->Get_AnimChanged())
 	{
-		m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_pTransformCom->Get_State(CTransform::STATE_POSITION) + (m_iChanged ? vMovePos : (vMovePos - XMLoadFloat4(&m_vPrevMove))));
+		// 애니메이션이 끝났으면 본의 움직임을 그대로 적용, 애니메이션이 실행중일 때에는 본의 이전 틱에서의 움직임만큼을 빼주어서 차이만큼만 이동되게한다
+		//if(m_isChanged)
+		//	XMStoreFloat4(&m_vPrevMove, XMVectorZero());
+
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_pTransformCom->Get_State(CTransform::STATE_POSITION) + (vMovePos - XMLoadFloat4(&m_vPrevMove)));
+		//m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_pTransformCom->Get_State(CTransform::STATE_POSITION) + (m_iChanged ? vMovePos : (vMovePos - XMLoadFloat4(&m_vPrevMove))));
 	}
 	else
 	{
-		cout << "Playings" << endl;
+		XMStoreFloat4(&m_vPrevMove, XMVectorZero());
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 	}
-	
+
+	//모델이 출력될 월드 위치는, 트랜스폼 컴포넌트의 월드위치에서 센터본과 루트본의 차이만큼 빼준 위치
+	// 모델 랜더 위치잡기
+	XMStoreFloat4x4(&m_ModelWorldMatrix, m_pTransformCom->Get_WorldMatrix());
+	_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION) - vMovePos;
+	memcpy(&m_ModelWorldMatrix.m[CTransform::STATE_POSITION], &vPos, sizeof(_float4));
 
 	XMStoreFloat4(&m_vPrevMove, vMovePos);
-
-	//애니메이션 실행되는 동안에 false를 반환한다.
-
-
-	m_iChanged = false;
 }
 
 HRESULT CPlayer::Add_Componenets()
@@ -181,17 +184,6 @@ HRESULT CPlayer::Add_Componenets()
 
 	if (FAILED(__super::Add_Component(LEVEL_TEST, TEXT("Prototype_Component_Model_Player"),
 		TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
-		return E_FAIL;
-
-	CBounding_OBB::BOUNDING_OBB_DESC		ColliderDesc{};
-
-	ColliderDesc.eType = CCollider::COLLIDER_OBB;
-	ColliderDesc.vExtents = _float3(0.1, 0.1, 0.1);
-	ColliderDesc.vCenter = _float3(0, 0.f, 0);
-	ColliderDesc.vRotation = _float3(0, 0.f, 0.f);
-
-	if (FAILED(__super::Add_Component(LEVEL_TEST, TEXT("Prototype_Component_Collider"),
-		TEXT("Com_Collider"), reinterpret_cast<CComponent**>(&m_pColliderCom), &ColliderDesc)))
 		return E_FAIL;
 
 	return S_OK;
@@ -211,6 +203,65 @@ HRESULT CPlayer::Bind_ResourceData()
 
 
 	return S_OK;
+}
+
+HRESULT CPlayer::Add_CharacterData()
+{
+	m_pData = CCharacterData::Create(TEXT("Kiryu"));
+
+	if (nullptr == m_pData)
+		return E_FAIL;
+
+	Apply_ChracterData();
+
+	return S_OK;
+}
+
+void CPlayer::Apply_ChracterData()
+{
+	auto& pAlphaMeshes = m_pData->Get_AlphaMeshes();
+	auto pMeshes = m_pModelCom->Get_Meshes();
+
+	for (size_t i = 0; i < pMeshes.size(); i++)
+	{
+		for (auto& iMeshIndex : pAlphaMeshes)
+		{
+			if (i == iMeshIndex)
+				pMeshes[i]->Set_AlphaApply(true);
+		}
+	}
+
+	auto& pLoopAnimations = m_pData->Get_LoopAnimations();
+	for (auto& iAnimIndex : pLoopAnimations)
+	{
+		m_pModelCom->Set_AnimLoop(iAnimIndex, true);
+	}
+
+	auto& pColliders = m_pData->Get_Colliders();
+
+	for (auto& Collider : pColliders)
+	{
+		//Collider.first
+		/* 플래시 이펙트 수정 필요. */
+		CSoketCollider::SOKET_COLLIDER_DESC Desc{};
+		Desc.pParentMatrix = &m_ModelWorldMatrix;
+		Desc.pCombinedTransformationMatrix = m_pModelCom->Get_BoneCombinedTransformationMatrix_AtIndex(Collider.first);
+		Desc.iBoneIndex = Collider.first;
+		Desc.ColliderState = Collider.second;
+
+		CGameObject* pSoketCollider = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_SoketCollider"), &Desc);
+		if (nullptr == pSoketCollider)
+			return;
+		m_pColliders.emplace_back(static_cast<CSoketCollider*>(pSoketCollider));
+	}
+
+}
+
+void CPlayer::Change_Animation(_uint iIndex)
+{
+	m_pModelCom->Set_AnimationIndex(m_iAnimIndex, ANIM_INTERVAL);
+	string strAnimName = m_pModelCom->Get_AnimationName(m_iAnimIndex);
+	m_pData->Set_CurrentAnimation(strAnimName);
 }
 
 CPlayer* CPlayer::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -243,7 +294,11 @@ void CPlayer::Free()
 {
 	__super::Free();
 
-	Safe_Release(m_pColliderCom);
+	for (auto& pCollider : m_pColliders)
+		Safe_Release(pCollider);
+	m_pColliders.clear();
+	//Safe_Release(m_pColliderCom);
+	Safe_Release(m_pData);
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pModelCom);
 }

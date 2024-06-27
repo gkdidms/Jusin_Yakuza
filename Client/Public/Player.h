@@ -12,7 +12,7 @@ class CPlayer :
     public CLandObject
 {
 private:
-    const _float ANIM_INTERVAL = 5.f;
+    const _float ANIM_INTERVAL = 7.f;
     
 private:
     CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -40,14 +40,14 @@ private:
     void Synchronize_Root();
 
 private:
-    CShader*    m_pShaderCom = { nullptr };
-    CModel*     m_pModelCom = { nullptr };
-    CCollider*  m_pColliderCom = { nullptr };
+    CShader*                m_pShaderCom = { nullptr };
+    CModel*                 m_pModelCom = { nullptr };
+    vector<class CSoketCollider*>      m_pColliders;
+    class CCharacterData*   m_pData = { nullptr };
 
 private:
     _uint       m_iAnimIndex = { 2 };
     _uint       m_iTemp = { 1 };
-    _bool       m_iChanged = { true };
 
     _float4     m_vPrevMove;
     _float4x4   m_ModelWorldMatrix;
@@ -56,10 +56,14 @@ private:
     _bool m_isAnimStart = { true };
 #endif // _DEBUG
 
-
 private:
     virtual HRESULT Add_Componenets() override;
     virtual HRESULT Bind_ResourceData() override;
+    HRESULT Add_CharacterData();
+    void Apply_ChracterData();
+
+private:
+    void Change_Animation(_uint iAnimIndex);
 
 public:
     static CPlayer* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

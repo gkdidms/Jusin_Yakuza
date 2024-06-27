@@ -10,6 +10,7 @@
 
 CModel::CModel(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     :CComponent{pDevice, pContext}
+	, m_bOrigin{ true } /* 원형일때 1번만 지우기 */
 {
 }
 
@@ -23,6 +24,8 @@ CModel::CModel(const CModel& rhs)
 	, m_PreTransformMatrix{ rhs.m_PreTransformMatrix }
 	, m_iAnimations{ rhs.m_iAnimations }
 	, m_AnimDesc{ rhs.m_AnimDesc }
+	, m_AnimLoops{ rhs.m_AnimLoops }
+	, m_vDecalMaterials { rhs.m_vDecalMaterials }
 {
 	for (auto& pPrototypeAnimation : rhs.m_Animations)
 		m_Animations.emplace_back(pPrototypeAnimation->Clone());
@@ -40,6 +43,8 @@ CModel::CModel(const CModel& rhs)
 		for (auto& pTexture : m_Materials[i].pMaterialTextures)
 			Safe_AddRef(pTexture);
 	}
+
+
 }
 
 HRESULT CModel::Initialize_Prototype(MODELTYPE eModelType, const _char* pModelFilePath, _fmatrix PreTransformMatrix, _bool isExported)
@@ -47,9 +52,6 @@ HRESULT CModel::Initialize_Prototype(MODELTYPE eModelType, const _char* pModelFi
 	m_eModelType = eModelType;
 
 	XMStoreFloat4x4(&m_PreTransformMatrix, PreTransformMatrix);
-
-	CGameInstance* pGameInstance = CGameInstance::GetInstance();
-	Safe_AddRef(pGameInstance);
 
 	if (!isExported)
 	{
@@ -77,7 +79,7 @@ HRESULT CModel::Initialize_Prototype(MODELTYPE eModelType, const _char* pModelFi
 		if (FAILED(Ready_Animations()))
 			return E_FAIL;
 
-		string pBinPath = pGameInstance->Get_Directory(pModelFilePath) + "/Bin/" + pGameInstance->Get_FileName(pModelFilePath) + ".dat";
+		string pBinPath = m_pGameInstance->Get_Directory(pModelFilePath) + "/Bin/" + m_pGameInstance->Get_FileName(pModelFilePath) + ".dat";
 
 		if (FAILED(Export_Model(pBinPath, pModelFilePath)))
 			return E_FAIL;
@@ -89,7 +91,8 @@ HRESULT CModel::Initialize_Prototype(MODELTYPE eModelType, const _char* pModelFi
 			return E_FAIL;
 	}
 
-	Safe_Release(pGameInstance);
+	m_AnimLoops.resize(m_iAnimations);
+	fill(m_AnimLoops.begin(), m_AnimLoops.end(), false);			//m_AnimLoops를 일단 전부 false로 초기화한다.
 
     return S_OK;
 }
@@ -586,6 +589,8 @@ HRESULT CModel::Import_Model(string& pBinFilePath)
 
 	in.close();
 
+	Find_Mesh_Using_DECAL();
+
 	return S_OK;
 }
 
@@ -723,6 +728,16 @@ HRESULT CModel::Import_Materials(ifstream& in)
 			MeshMaterial.pMaterialTextures[j] = CTexture::Create(m_pDevice, m_pContext, szRealFullPath, 1);
 			if (nullptr == MeshMaterial.pMaterialTextures[j])
 				return E_FAIL;
+
+			if (j == aiTextureType_METALNESS)
+			{
+				/* DECAL */
+				DECAL_DESC		decalDesc;
+				decalDesc.iMaterialNum = i;
+				memcpy(&decalDesc.sTextureFullPath, &szFullPath, sizeof(char) * MAX_PATH);
+
+				m_vDecalMaterials.push_back(decalDesc);
+			}
 		}
 		m_Materials.emplace_back(MeshMaterial);
 	}
@@ -810,6 +825,42 @@ HRESULT CModel::Import_Animations(ifstream& in)
 	return S_OK;
 }
 
+void CModel::Find_Mesh_Using_DECAL()
+{
+
+	for (int i = 0; i < m_vDecalMaterials.size(); i++)
+	{
+		int		iNum = 0;
+		int* pMaterialNums = new int[MAX_PATH];
+
+		for (int j = 0; j < m_iNumMeshes; j++)
+		{
+			if (m_vDecalMaterials[i].iMaterialNum == m_Meshes[j]->Get_MaterialIndex())
+			{
+				pMaterialNums[iNum] = j;
+				iNum++;
+			}
+		}
+
+		m_vDecalMaterials[i].iMeshNum = iNum;
+
+		if (iNum > 0)
+		{
+			m_vDecalMaterials[i].pMeshIndices = new int[iNum];
+			
+			for (int j = 0; j < iNum ; j++)
+			{
+				m_vDecalMaterials[i].pMeshIndices[j] = pMaterialNums[j];
+			}
+
+		}
+
+		Safe_Delete_Array(pMaterialNums);
+		
+	}
+
+}
+
 HRESULT CModel::Render(_uint iMeshIndex)
 {
 	//m_Meshes[iMeshIndex]->Bind_Buffers();
@@ -868,6 +919,19 @@ void CModel::Set_AnimationIndex(const ANIMATION_DESC& AnimDesc, _double ChangeIn
 	m_Animations[m_AnimDesc.iAnimIndex]->Reset();
 }
 
+void CModel::Set_AnimationIndex(_uint iAnimIndex, _double ChangeInterval)
+{
+	if (iAnimIndex >= m_Animations.size()) return;
+
+	if (m_AnimDesc.iAnimIndex == iAnimIndex && m_AnimLoops[iAnimIndex] == m_AnimDesc.isLoop)
+		return;
+
+	m_iPrevAnimIndex = m_AnimDesc.iAnimIndex;
+	m_AnimDesc = { iAnimIndex, m_AnimLoops[iAnimIndex] };
+	m_ChangeInterval = ChangeInterval;
+	m_Animations[m_AnimDesc.iAnimIndex]->Reset();
+}
+
 void CModel::Reset_Animation(const ANIMATION_DESC& AnimDesc)
 {
 	m_Animations[m_AnimDesc.iAnimIndex]->Reset();
@@ -896,6 +960,14 @@ const _float4x4* CModel::Get_BoneCombinedTransformationMatrix(const _char* pBone
 	return (*iter)->Get_CombinedTransformationMatrix();
 }
 
+const _float4x4* CModel::Get_BoneCombinedTransformationMatrix_AtIndex(_uint iBoneIndex) const
+{
+	if (m_Bones.size() <= iBoneIndex) return nullptr;
+	auto	pBone = m_Bones[iBoneIndex];
+
+	return pBone->Get_CombinedTransformationMatrix();
+}
+
 const _float4x4* CModel::Get_BoneTransformationMatrix(const _char* pBoneName) const
 {
 	auto	iter = find_if(m_Bones.begin(), m_Bones.end(), [&](CBone* pBone)->_bool
@@ -907,6 +979,21 @@ const _float4x4* CModel::Get_BoneTransformationMatrix(const _char* pBoneName) co
 		return nullptr;
 
 	return (*iter)->Get_TransformationMatrix();
+}
+
+const string& CModel::Get_AnimationName(_uint iAnimIndex)
+{
+	return m_Animations[iAnimIndex]->Get_AnimName();
+}
+
+void CModel::Copy_DecalMaterial(vector<DECAL_DESC>* pDecals)
+{
+	for (int i = 0; i < m_vDecalMaterials.size(); i++)
+	{
+		DECAL_DESC		decalDesc;
+		memcpy(&decalDesc, &m_vDecalMaterials[i], sizeof(DECAL_DESC));
+		pDecals->push_back(decalDesc);
+	}
 }
 
 CModel* CModel::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, MODELTYPE eModelType, const _char* pModelFilePath, _fmatrix PreTransformMatrix, _bool isExported)
@@ -952,6 +1039,15 @@ void CModel::Free()
 	}
 
 	m_Materials.clear();
+
+	if (true == m_bOrigin)
+	{
+		for (auto& iter : m_vDecalMaterials)
+		{
+			Safe_Delete(iter.pMeshIndices);
+		}
+	}
+	m_vDecalMaterials.clear();
 
 	for (auto& pMesh : m_Meshes)
 		Safe_Release(pMesh);

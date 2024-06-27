@@ -346,8 +346,7 @@ void CRenderer::Draw()
 	Render_UI();
 
 #ifdef _DEBUG
-	if (m_isDebugView)
-		Render_Debug();
+	Render_Debug();
 #endif // _DEBUG
 }
 
@@ -465,7 +464,7 @@ HRESULT CRenderer::Ready_SSAONoiseTexture() // SSAO 연산에 들어갈 랜덤 벡터 텍스
 	TextureDesc.Height = 4;
 	TextureDesc.MipLevels = 1;
 	TextureDesc.ArraySize = 1;
-	TextureDesc.Format = DXGI_FORMAT_R32G32B32A32_FLOAT;
+	TextureDesc.Format = DXGI_FORMAT_R16G16B16A16_FLOAT;
 
 	TextureDesc.SampleDesc.Quality = 0;
 	TextureDesc.SampleDesc.Count = 1;
@@ -475,13 +474,11 @@ HRESULT CRenderer::Ready_SSAONoiseTexture() // SSAO 연산에 들어갈 랜덤 벡터 텍스
 	TextureDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	TextureDesc.MiscFlags = 0;
 
-	if (FAILED(m_pDevice->CreateTexture2D(&TextureDesc, nullptr, &pSSAONoiseTexture)))
-		return E_FAIL;
+	_float3* pPixel = new _float3[TextureDesc.Width * TextureDesc.Height];
+	ZeroMemory(pPixel, sizeof(_float3) * TextureDesc.Width * TextureDesc.Height);
 
-	if (FAILED(m_pDevice->CreateShaderResourceView(pSSAONoiseTexture, nullptr, &m_pSSAONoiseView)))
-		return E_FAIL;
+	D3D11_SUBRESOURCE_DATA		InitialData{};
 
-	vector<_float3> vSSAONoise;
 	for (int i = 0; i < 16; i++)
 	{
 		_float3 vNoise = {
@@ -489,25 +486,42 @@ HRESULT CRenderer::Ready_SSAONoiseTexture() // SSAO 연산에 들어갈 랜덤 벡터 텍스
 			m_pGameInstance->Get_Random(0.f, 1.f) * 2.f - 1.f,
 			0.f
 		};
-		vSSAONoise.push_back(vNoise);
+		pPixel[i] = vNoise;
 	}
 
-	D3D11_MAPPED_SUBRESOURCE		SubResource{};
+	InitialData.pSysMem = pPixel;
+	InitialData.SysMemPitch = 4 * sizeof(_float3);
 
-	m_pContext->Map(pSSAONoiseTexture, 0, D3D11_MAP_WRITE_DISCARD, 0, &SubResource);
+	if (FAILED(m_pDevice->CreateTexture2D(&TextureDesc, &InitialData, &pSSAONoiseTexture)))
+		return E_FAIL;
 
-	memcpy(SubResource.pData, &vSSAONoise, sizeof(_float3) * 16);
+	if (FAILED(m_pDevice->CreateShaderResourceView(pSSAONoiseTexture, nullptr, &m_pSSAONoiseView)))
+		return E_FAIL;
 
-	m_pContext->Unmap(pSSAONoiseTexture, 0);
+
+
+	//D3D11_MAPPED_SUBRESOURCE		SubResource{};
+
+	//m_pContext->Map(pSSAONoiseTexture, 0, D3D11_MAP_WRITE_DISCARD, 0, &SubResource);
+
+	//memcpy(SubResource.pData, pPixel, sizeof(_float3) * 4 * 4);
+
+	//m_pContext->Unmap(pSSAONoiseTexture, 0);
 
 	Safe_Release(pSSAONoiseTexture);
+
+	Safe_Delete_Array(pPixel);
+
+
+
+
+	return S_OK;
 }
 
 void CRenderer::Render_SSAO()
 {
-	//랜덤 법선 만들기
-	vector<_float3> vSSAOKernal;
 
+	//랜덤 법선 만들기
 	for (int i = 0; i < 64; i++)
 	{
 		_float3 vRandom = {
@@ -517,14 +531,13 @@ void CRenderer::Render_SSAO()
 		};
 
 		XMStoreFloat3(&vRandom, XMVector3Normalize(XMLoadFloat3(&vRandom)));
-		XMStoreFloat3(&vRandom, XMLoadFloat3(&vRandom) * m_pGameInstance->Get_Random(0.f, 1.f));
+		//XMStoreFloat3(&vRandom, XMLoadFloat3(&vRandom) * m_pGameInstance->Get_Random(0.f, 1.f));
 		float vScale = (_float)i / 64.f;
 		vScale = 0.1f + (vScale * vScale) * (1.f - 0.1f);
 		XMStoreFloat3(&vRandom, XMLoadFloat3(&vRandom) * vScale);
 
-		vSSAOKernal.emplace_back(vRandom);
+		m_vSSAOKernal.emplace_back(vRandom);
 	}
-
 
 
 	if(FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_SSAO"))))
@@ -535,6 +548,11 @@ void CRenderer::Render_SSAO()
 	if (FAILED(m_pShader->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix)))
 		return;
 	if (FAILED(m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
+		return;
+	
+	if (FAILED(m_pShader->Bind_Matrix("g_CamViewMatrix", m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_VIEW))))
+		return;
+	if (FAILED(m_pShader->Bind_Matrix("g_CamProjMatrix", m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_PROJ))))
 		return;
 
 	if (FAILED(m_pShader->Bind_Matrix("g_ViewMatrixInv", m_pGameInstance->Get_Transform_Inverse_Float4x4(CPipeLine::D3DTS_VIEW))))
@@ -550,7 +568,7 @@ void CRenderer::Render_SSAO()
 		return;
 	if (FAILED(m_pShader->Bind_RawValue("g_vCamPosition", m_pGameInstance->Get_CamPosition_Float4(), sizeof(_float4))))
 		return;
-	if (FAILED(m_pShader->Bind_RawValue("g_SSAORandoms", &vSSAOKernal, sizeof(_float3) * 64)))
+	if (FAILED(m_pShader->Bind_RawValue("g_SSAORandoms", &m_vSSAOKernal, sizeof(_float3) * 64)))
 		return;
 
 	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Normal"), m_pShader, "g_NormalTexture")))
@@ -1150,6 +1168,8 @@ void CRenderer::Render_Debug()
 	}
 
 	m_DebugComponents.clear();
+
+	if (!m_isDebugView) return;
 
 	if (FAILED(m_pShader->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix)))
 		return;

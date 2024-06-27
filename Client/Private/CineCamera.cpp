@@ -281,7 +281,7 @@ void CCineCamera::Cam_Lerp(const _float& fTimeDelta)
 		XMVECTOR		vPreEye, vCurEye;
 		XMVECTOR		vPreFocus, vCurFocus;
 		vPreEye = XMLoadFloat4(&m_vCamerasObjDesc[m_iCurCamIndex - 1].vEye);
-		vCurEye = m_pGameInstance->Get_GameObject(LEVEL_TEST, TEXT("Layer_Camera"), 0)->Get_TransformCom()->Get_State(CTransform::STATE_POSITION);
+		vCurEye = m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Camera"), 0)->Get_TransformCom()->Get_State(CTransform::STATE_POSITION);
 		/*m_vEye = XMVectorLerp(vPreEye, vCurEye, fTime);*/
 		m_vEye = Positioning_Using_Linear_Interpolation(vPreEye, vCurEye, m_vCamerasObjDesc[m_iCurCamIndex - 1].fMoveSpeed);
 
@@ -323,7 +323,7 @@ void CCineCamera::Set_Start()
 		m_fLerpTime = m_vCamerasObjDesc[0].fMoveTime;
 		m_fMoveSpeed = m_vCamerasObjDesc[0].fMoveSpeed;
 
-		m_vStartEye = m_pGameInstance->Get_GameObject(LEVEL_TEST, TEXT("Layer_Camera"), 0)->Get_TransformCom()->Get_State(CTransform::STATE_POSITION);
+		m_vStartEye = m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Camera"), 0)->Get_TransformCom()->Get_State(CTransform::STATE_POSITION);
 		m_vStartFocus = XMVectorSet(0, 0, 0, 1);
 	}
 	else

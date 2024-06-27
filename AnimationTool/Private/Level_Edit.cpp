@@ -36,7 +36,7 @@ HRESULT CLevel_Edit::Ready_Lights()
 	LightDesc.eType = LIGHT_DESC::TYPE_DIRECTIONAL;
 	LightDesc.vDirection = _float4(1.f, -1.f, 1.f, 0.f);
 	LightDesc.vDiffuse = _float4(1.f, 1.f, 1.f, 1.f);
-	LightDesc.vAmbient = _float4(0.4f, 0.4f, 0.4f, 1.f);
+	LightDesc.vAmbient = _float4(1.f, 1.f, 1.f, 1.f);
 	LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
 
 	m_pGameInstance->Add_Light(LightDesc);
@@ -54,7 +54,7 @@ HRESULT CLevel_Edit::Ready_Layer_Camera(const wstring& strLayerTag)
 	CameraDesc.fAspect = g_iWinSizeX / (_float)g_iWinSizeY;
 	CameraDesc.fNear = 0.1f;
 	CameraDesc.fFar = 3000.f;
-	CameraDesc.fSpeedPecSec = 20.f;
+	CameraDesc.fSpeedPecSec = 1.f;
 	CameraDesc.fRotatePecSec = XMConvertToRadians(90.f);
 
 	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_EDIT, TEXT("Prototype_GameObject_Free_Camera"), strLayerTag, &CameraDesc)))

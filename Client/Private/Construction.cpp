@@ -87,7 +87,7 @@ int CConstruction::Get_ObjPlaceDesc(OBJECTPLACE_DESC* objplaceDesc)
 	//objPlaceDesc.iLayer = m_iLayerNum;
 
 	string strName = m_pGameInstance->WstringToString(m_wstrModelName);
-	strcpy(objplaceDesc->strModelCom, strName.c_str());
+	strcpy_s(objplaceDesc->strModelCom, strName.c_str());
 
 	objplaceDesc->iShaderPassNum = m_iShaderPassNum;
 	objplaceDesc->iObjType = m_iObjectType;
