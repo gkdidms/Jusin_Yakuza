@@ -99,7 +99,7 @@ void CPlayer::Tick(const _float& fTimeDelta)
 
 void CPlayer::Late_Tick(const _float& fTimeDelta)
 {
-	m_pGameInstance->Add_Renderer(CRenderer::RENDER_BLENDER, this);
+	m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
 
 	for (auto& pCollider : m_pColliders)
 		pCollider.second->Late_Tick(fTimeDelta);
