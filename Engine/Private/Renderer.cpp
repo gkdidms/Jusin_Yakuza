@@ -312,6 +312,7 @@ void CRenderer::Draw()
 	Render_Priority();
 	//Render_ShadowObjects();
 	Render_NonBlender();
+	
 	if (m_isSSAO)
 	{
 		Render_SSAO();
@@ -520,7 +521,6 @@ HRESULT CRenderer::Ready_SSAONoiseTexture() // SSAO 연산에 들어갈 랜덤 벡터 텍스
 
 void CRenderer::Render_SSAO()
 {
-
 	//랜덤 법선 만들기
 	for (int i = 0; i < 64; i++)
 	{
@@ -538,7 +538,6 @@ void CRenderer::Render_SSAO()
 
 		m_vSSAOKernal.emplace_back(vRandom);
 	}
-
 
 	if(FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_SSAO"))))
 		return;
