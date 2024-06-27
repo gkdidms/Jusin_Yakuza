@@ -32,25 +32,23 @@ HRESULT CPlayer::Initialize(void* pArg)
 	if (FAILED(Add_CharacterData()))
 		return E_FAIL;
 
-	Change_Animation(3);
 	return S_OK;
 }
 
 void CPlayer::Priority_Tick(const _float& fTimeDelta)
 {
-	Synchronize_Root();
 }
 
 void CPlayer::Tick(const _float& fTimeDelta)
 {
-	if (m_pModelCom->Get_AnimFinished())
-	{
-		m_iAnimIndex += m_iTemp;
+	//if (m_pModelCom->Get_AnimFinished())
+	//{
+	//	m_iAnimIndex += m_iTemp;
 
-		m_iTemp *= -1;
+	//	m_iTemp *= -1;
 
-		Change_Animation(m_iAnimIndex);
-	}
+	//	Change_Animation(m_iAnimIndex);
+	//}
 
 	if (m_pGameInstance->GetKeyState(DIK_UP) == HOLD)
 	{
@@ -76,10 +74,17 @@ void CPlayer::Tick(const _float& fTimeDelta)
 	if (m_pGameInstance->GetKeyState(DIK_9) == TAP)
 	{
 		m_iAnimIndex++;
+		Change_Animation(m_iAnimIndex);
 	}
 	if (m_pGameInstance->GetKeyState(DIK_8) == TAP)
 	{
 		m_iAnimIndex--;
+		Change_Animation(m_iAnimIndex);
+	}
+	if (m_pGameInstance->GetKeyState(DIK_7) == TAP)
+	{
+		m_iAnimIndex = 9;
+		Change_Animation(m_iAnimIndex);
 	}
 
 	if (m_isAnimStart)
@@ -87,6 +92,8 @@ void CPlayer::Tick(const _float& fTimeDelta)
 
 	for (auto& pCollider : m_pColliders)
 		pCollider->Tick(fTimeDelta);
+
+	Synchronize_Root();
 }
 
 void CPlayer::Late_Tick(const _float& fTimeDelta)
@@ -158,7 +165,14 @@ void CPlayer::Synchronize_Root()
 		//if(m_isChanged)
 		//	XMStoreFloat4(&m_vPrevMove, XMVectorZero());
 
-		m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_pTransformCom->Get_State(CTransform::STATE_POSITION) + (vMovePos - XMLoadFloat4(&m_vPrevMove)));
+		// 여기서 루프애니메이션일 경우 vMovePos가 0이 되면서 다시 뒤로 가는 문제가 생긴다.
+		// 새로운 루프가 시작하는지를 검사해서 그 때에만 else로 빠지게 해줘야한다.
+		if (m_pModelCom->Get_AnimRestart())
+		{
+			m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+		}
+		else
+			m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_pTransformCom->Get_State(CTransform::STATE_POSITION) + (vMovePos - XMLoadFloat4(&m_vPrevMove)));
 		//m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_pTransformCom->Get_State(CTransform::STATE_POSITION) + (m_iChanged ? vMovePos : (vMovePos - XMLoadFloat4(&m_vPrevMove))));
 	}
 	else
