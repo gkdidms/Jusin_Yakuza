@@ -336,13 +336,13 @@ namespace ImSequencer
          customHeight = 0;
          for (int i = 0; i < sequenceCount; i++)
          {
-            int* start, * end;
+            int* m_fDebugStart, * end;
             unsigned int color;
-            sequence->Get(i, &start, &end, NULL, &color);
+            sequence->Get(i, &m_fDebugStart, &end, NULL, &color);
             size_t localCustomHeight = sequence->GetCustomHeight(i);
 
             ImVec2 pos = ImVec2(contentMin.x + legendWidth - firstFrameUsed * framePixelWidth, contentMin.y + ItemHeight * i + 1 + customHeight);
-            ImVec2 slotP1(pos.x + *start * framePixelWidth, pos.y + 2);
+            ImVec2 slotP1(pos.x + *m_fDebugStart * framePixelWidth, pos.y + 2);
             ImVec2 slotP2(pos.x + *end * framePixelWidth + framePixelWidth, pos.y + ItemHeight - 2);
             ImVec2 slotP3(pos.x + *end * framePixelWidth + framePixelWidth, pos.y + ItemHeight - 2 + localCustomHeight);
             unsigned int slotColor = color | 0xFF000000;
@@ -422,11 +422,11 @@ namespace ImSequencer
             int diffFrame = int((cx - movingPos) / framePixelWidth);
             if (std::abs(diffFrame) > 0)
             {
-               int* start, * end;
-               sequence->Get(movingEntry, &start, &end, NULL, NULL);
+               int* m_fDebugStart, * end;
+               sequence->Get(movingEntry, &m_fDebugStart, &end, NULL, NULL);
                if (selectedEntry)
                   *selectedEntry = movingEntry;
-               int& l = *start;
+               int& l = *m_fDebugStart;
                int& r = *end;
                if (movingPart & 1)
                   l += diffFrame;

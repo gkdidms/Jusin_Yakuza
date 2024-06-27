@@ -3,7 +3,7 @@
 #include "GameInstance.h"
 
 #include "Image_Texture.h"
-#include "Btn_Texture.h"
+#include "Text.h"
 
 #include "UI_Texture.h"
 
@@ -85,6 +85,11 @@ HRESULT CObject_Manager::Remove_Object(const wstring& strTag, _uint iIndex)
 	return S_OK;
 }
 
+HRESULT CObject_Manager::Create_Texture(_uint iIndex, const wstring& strFilePath)
+{
+	return m_Texture2Ds[iIndex]->Create_Texture(strFilePath);
+}
+
 HRESULT CObject_Manager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
 	m_pDevice = pDevice;
@@ -92,6 +97,28 @@ HRESULT CObject_Manager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* 
 
 	Safe_AddRef(m_pDevice);
 	Safe_AddRef(m_pContext);
+
+	m_pContext->OMGetRenderTargets(1, &m_pBackBufferView, &m_pDepthStencilView);
+
+	m_pVIBufferCom = CVIBuffer_Rect::Create(m_pDevice, m_pContext);
+	if (nullptr == m_pVIBufferCom)
+		return E_FAIL;
+
+	m_pShaderCom = CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxPosTex.hlsl"), VTXPOSTEX::Elements, VTXPOSTEX::iNumElements);
+	if (nullptr == m_pShaderCom)
+		return E_FAIL;
+
+	D3D11_VIEWPORT ViewPort{};
+	_uint iNumViewPort = 1;
+
+	m_pContext->RSGetViewports(&iNumViewPort, &ViewPort);
+
+	/* 화면을 꽉 채워주기 위한 월드변환행렬. */
+	XMStoreFloat4x4(&m_WorldMatrix, XMMatrixScaling(ViewPort.Width, ViewPort.Height, 1.f));
+
+	XMStoreFloat4x4(&m_ViewMatrix, XMMatrixIdentity());
+
+	XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH(ViewPort.Width, ViewPort.Height, 0.f, 1.f));
 
 	return S_OK;
 }
@@ -116,11 +143,40 @@ void CObject_Manager::Late_Tick(const _float& fTimeDelta)
 
 HRESULT CObject_Manager::Render()
 {
+	_uint iIndex = 0; 
 	for (auto& Pair : m_Objects)
 	{
+		Texture2D_Begin(iIndex);
+
+		m_Texture2Ds.begin();
 		for (auto& pObj : Pair.second)
 			pObj->Render();
+
+		Texture2D_End();
+
+		++iIndex;
 	}
+
+	if (FAILED(m_pShaderCom->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix)))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix)))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
+		return E_FAIL;
+
+	for (auto& pTexture : m_Texture2Ds)
+	{
+		if (FAILED(pTexture->Bind_SVR(m_pShaderCom, "g_Texture")))
+			return E_FAIL;
+
+		m_pShaderCom->Begin(3);
+		m_pVIBufferCom->Render();
+	}
+
+	for (auto& pTexture : m_Texture2Ds)
+		pTexture->Render_Debug(m_pShaderCom, m_pVIBufferCom);
+		
+
 
 	return S_OK;
 }
@@ -144,6 +200,9 @@ HRESULT CObject_Manager::Add_Group(const wstring& strObjectTag)
 	//Object.emplace_back(pBack);
 
 	m_Objects.emplace(strObjectTag, Object);
+
+	if (FAILED(Create_Texture2D()))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -203,6 +262,53 @@ vector<CUI_Texture*>* CObject_Manager::Find_Object(const wstring& strObjectTag)
 	return &(pObject->second);
 }
 
+HRESULT CObject_Manager::Create_Texture2D()
+{
+	CRenderTarget* pRenderTarget = CRenderTarget::Create(m_pDevice, m_pContext, 1280.f, 720.f, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f));
+
+	if (nullptr == pRenderTarget)
+		return E_FAIL;
+
+	m_Texture2Ds.emplace_back(pRenderTarget);
+	m_iTextureHeightCount++;
+
+	pRenderTarget->Ready_Debug(m_fDebugStart * m_iTextureWidthCount, m_fDebugStart * m_iTextureHeightCount, 100.f, 100.f);
+	
+	if (m_fDebugStart * m_iTextureHeightCount >= 450.f)
+	{
+		m_iTextureHeightCount = 0.f;
+		m_iTextureWidthCount++;
+	}
+
+	return S_OK;
+}
+
+HRESULT CObject_Manager::Texture2D_Begin(_uint iIndex)
+{
+	ID3D11ShaderResourceView* pSRV[D3D11_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT] = {
+	nullptr
+	};
+
+	m_pContext->PSSetShaderResources(0, D3D11_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT, pSRV); //초기화 해주는 작업
+
+	_uint		iNumRenderTargets = {};
+
+	ID3D11RenderTargetView* pRenderTargets[8] = {};
+
+	m_Texture2Ds[iIndex]->Clear();
+	pRenderTargets[iNumRenderTargets++] = m_Texture2Ds[iIndex]->Get_RTV();
+
+	m_pContext->OMSetRenderTargets(iNumRenderTargets, pRenderTargets, m_pDepthStencilView);
+
+	return S_OK;
+}
+
+HRESULT CObject_Manager::Texture2D_End()
+{
+	m_pContext->OMSetRenderTargets(1, &m_pBackBufferView, m_pDepthStencilView);
+	return S_OK;
+}
+
 void CObject_Manager::Release_ObjectManager()
 {
 	//CObject_Manager::GetInstance()->Free();
@@ -220,6 +326,13 @@ void CObject_Manager::Free()
 
 	for (auto& pTexture2D : m_Texture2Ds)
 		Safe_Release(pTexture2D);
+
+	Safe_Release(m_pVIBufferCom);
+	Safe_Release(m_pShaderCom);
+
+	Safe_Release(m_pDepthStencilView);
+	Safe_Release(m_pBackBufferView);
+
 
 	Safe_Release(m_pDevice);
 	Safe_Release(m_pContext);

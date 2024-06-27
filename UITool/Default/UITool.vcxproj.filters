@@ -79,8 +79,8 @@
     <ClCompile Include="..\private\Image_Texture.cpp">
       <Filter>02.GameObjects\03.Texture\Image</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\Btn_Texture.cpp">
-      <Filter>02.GameObjects\03.Texture\Btn</Filter>
+    <ClCompile Include="..\private\Text.cpp">
+      <Filter>02.GameObjects\03.Texture\Text</Filter>
     </ClCompile>
     <ClCompile Include="..\private\UI_Texture.cpp">
       <Filter>02.GameObjects\03.Texture</Filter>
@@ -186,11 +186,11 @@
     <ClInclude Include="..\public\Image_Texture.h">
       <Filter>02.GameObjects\03.Texture\Image</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\Btn_Texture.h">
-      <Filter>02.GameObjects\03.Texture\Btn</Filter>
-    </ClInclude>
     <ClInclude Include="..\public\UI_Texture.h">
       <Filter>02.GameObjects\03.Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Text.h">
+      <Filter>02.GameObjects\03.Texture\Text</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -254,11 +254,8 @@
     <Filter Include="02.GameObjects\03.Texture\Image">
       <UniqueIdentifier>{710f526b-bb65-4a54-a5d7-a300f58dc589}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\03.Texture\Btn">
+    <Filter Include="02.GameObjects\03.Texture\Text">
       <UniqueIdentifier>{2e70f75c-f166-4057-9dd3-5815fcbc1e92}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03.Managers\NewFilter1">
-      <UniqueIdentifier>{2d496fbc-ab3c-4255-96e9-7cfa90ef4278}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

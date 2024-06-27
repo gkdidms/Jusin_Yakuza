@@ -2,7 +2,7 @@
 #include "Base.h"
 
 BEGIN(Engine)
-class CRenderTarget :
+class ENGINE_DLL CRenderTarget :
     public CBase
 {
 private:

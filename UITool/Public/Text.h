@@ -3,13 +3,21 @@
 
 
 BEGIN(UITool)
-class CBtn_Texture :
+class CText :
     public CUI_Texture
 {
+public:
+    typedef struct tTextDesc : public UI_TEXTURE_DESC
+    {
+        wstring& strText;
+        const _uint iTextType;
+        _vector vColor;
+    }TEXT_DESC;
+
 private:
-    CBtn_Texture(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-    CBtn_Texture(const CBtn_Texture& rhs);
-    virtual ~CBtn_Texture() = default;
+    CText(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+    CText(const CText& rhs);
+    virtual ~CText() = default;
 
 public:
     virtual HRESULT Initialize_Prototype() override;
@@ -19,8 +27,12 @@ public:
     virtual void Late_Tick(const _float& fTimeDelta) override;
     virtual HRESULT Render() override;
 
+private:
+    wstring m_strText = { L"" };
+    _vector m_vColor = { };
+
 public:
-    static CBtn_Texture* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+    static CText* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
     virtual CGameObject* Clone(void* pArg);
     virtual void Free();
 };
