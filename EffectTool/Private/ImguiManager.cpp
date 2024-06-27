@@ -5,6 +5,7 @@
 
 #pragma region "객체 원형"
 #include "Particle_Point.h"
+#include "TRailEffect.h"
 #pragma endregion
 
 
@@ -205,7 +206,7 @@ HRESULT CImguiManager::Create_Particle()
 	EffectDesc.BufferInstance.fRadius = 1.f;	
 
 	EffectDesc.vStartPos = { 0.f, 0.f, 0.f, 1.f };
-	EffectDesc.eType = 0;
+	EffectDesc.eType = CEffect::TYPE_POINT;
 	EffectDesc.ParticleTag = m_pGameInstance->StringToWstring(text_input_buffer);
 	EffectDesc.fStartTime = { 0.f };
 	EffectDesc.iShaderPass = { 0 };
@@ -220,6 +221,40 @@ HRESULT CImguiManager::Create_Particle()
 		dynamic_cast<CEffect*>(pGameParticle)->Edit_Action(CEffect::ACTION_SPREAD);
 	if(m_bDrop)
 		dynamic_cast<CEffect*>(pGameParticle)->Edit_Action(CEffect::ACTION_DROP);
+
+	m_EditParticle.push_back(pGameParticle);
+	m_iCurEditIndex = m_EditParticle.size() - 1;
+	return S_OK;
+}
+
+HRESULT CImguiManager::Create_Trail()
+{
+	if (-1 == m_iCurEditIndex)
+		m_iCurEditIndex = 0;
+	//20240627 작업중
+	CTRailEffect::TRAIL_DESC EffectDesc{};
+	EffectDesc.BufferInstance.iNumInstance = 1;
+	EffectDesc.BufferInstance.isLoop = true;
+	EffectDesc.BufferInstance.vLifeTime = _float2(1.f, 1.f);
+	EffectDesc.BufferInstance.vOffsetPos = _float3(0.f, 0.f, 0.f);
+	EffectDesc.BufferInstance.vPivotPos = _float3(0.f, 0.f, 0.f);
+	EffectDesc.BufferInstance.vRange = _float3(0.f, 0.f, 0.f);
+	EffectDesc.BufferInstance.vSize = _float2(1.f, 1.f);
+	EffectDesc.BufferInstance.vSpeed = _float2(1.f, 1.f);
+	EffectDesc.BufferInstance.vRectSize = _float2(1.0f, 1.0f);
+	EffectDesc.BufferInstance.fRadius = 1.f;
+
+	EffectDesc.vStartPos = { 0.f, 0.f, 0.f, 1.f };
+	EffectDesc.eType = CEffect::TYPE_TRAIL;
+	EffectDesc.ParticleTag = m_pGameInstance->StringToWstring(text_input_buffer);
+	EffectDesc.fStartTime = { 0.f };
+	EffectDesc.iShaderPass = { 0 };
+
+
+
+	CGameObject* pGameParticle = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Trail"), &EffectDesc);
+	if (nullptr == pGameParticle)
+		return E_FAIL;
 
 	m_EditParticle.push_back(pGameParticle);
 	m_iCurEditIndex = m_EditParticle.size() - 1;
@@ -325,47 +360,37 @@ void CImguiManager::Create_Tick(_float fTimeDelta)
 	ImGui::Begin("Particle_Create");
 
 
-	if (ImGui::TreeNode("Particle"))
+	if (ImGui::InputText("ParticleTag", text_input_buffer, IM_ARRAYSIZE(text_input_buffer)))
 	{
-		const char* Particle[] = { "Point","Animation" };
-		static int Particle_current = 0;
-		ImGui::ListBox("Particle List", &Particle_current, Particle, IM_ARRAYSIZE(Particle));
-
-
-		if (ImGui::InputText("ParticleTag", text_input_buffer, IM_ARRAYSIZE(text_input_buffer)))
-		{
-			m_EffectDesc.ParticleTag = m_pGameInstance->StringToWstring(text_input_buffer);	
-		}
-
-
-
-		if (ImGui::Button("Create Particle"))
-		{
-			Create_Particle();
-		}
-		if (ImGui::Button("Delete Particle"))
-		{
-			if (!m_EditParticle.empty())
-			{
-				Safe_Release(m_EditParticle.back());
-				m_EditParticle.pop_back();
-				if (m_EditParticle.empty())
-					m_iCurEditIndex = -1;
-				else
-					m_iCurEditIndex = 0;
-			}
-		}
-		if (ImGui::Button("Save_binary"))
-		{
-			//바이너리화
-		}
-		if (ImGui::Button("Load_binary"))
-		{
-			//바이너리 로드
-		}
-		ImGui::TreePop();
+		m_EffectDesc.ParticleTag = m_pGameInstance->StringToWstring(text_input_buffer);
 	}
 
+
+
+	if (ImGui::Button("Create Particle"))
+	{
+		Create_Particle();
+	}
+	if (ImGui::Button("Delete Particle"))
+	{
+		if (!m_EditParticle.empty())
+		{
+			Safe_Release(m_EditParticle.back());
+			m_EditParticle.pop_back();
+			if (m_EditParticle.empty())
+				m_iCurEditIndex = -1;
+			else
+				m_iCurEditIndex = 0;
+		}
+	}
+	if (ImGui::Button("Save_binary"))
+	{
+		//바이너리화
+	}
+	if (ImGui::Button("Load_binary"))
+	{
+		//바이너리 로드
+	}
 
 	ImGui::End();
 }
@@ -615,11 +640,9 @@ void CImguiManager::Color_Palette()
 	static bool hdr = false;
 	ImGuiColorEditFlags misc_flags = (hdr ? ImGuiColorEditFlags_HDR : 0) | (drag_and_drop ? 0 : ImGuiColorEditFlags_NoDragDrop) | (alpha_half_preview ? ImGuiColorEditFlags_AlphaPreviewHalf : (alpha_preview ? ImGuiColorEditFlags_AlphaPreview : 0)) | (options_menu ? 0 : ImGuiColorEditFlags_NoOptions);
 
-	static ImVec4 vStartColor = ImVec4(0.0f / 255.0f, 0.0f / 255.0f, 0.0f / 255.0f, 255.0f / 255.0f);
-	if (ImGui::ColorEdit4("MyColor##2f", (float*)&vStartColor, ImGuiColorEditFlags_Float | misc_flags))
+	if (ImGui::ColorEdit4("MyColor##2f", (float*)&m_EffectDesc.vStartColor, ImGuiColorEditFlags_Float | misc_flags))
 	{
 		bChange = true; 
-		m_EffectDesc.vStartColor =_float4(vStartColor.x, vStartColor.y , vStartColor.z , vStartColor.w);
 	}
 
 	static bool alpha_preview1 = true;
@@ -629,12 +652,9 @@ void CImguiManager::Color_Palette()
 	static bool hdr1 = false;
 	ImGuiColorEditFlags misc_flags1 = (hdr1 ? ImGuiColorEditFlags_HDR : 0) | (drag_and_drop1 ? 0 : ImGuiColorEditFlags_NoDragDrop) | (alpha_half_preview1 ? ImGuiColorEditFlags_AlphaPreviewHalf : (alpha_preview1 ? ImGuiColorEditFlags_AlphaPreview : 0)) | (options_menu1 ? 0 : ImGuiColorEditFlags_NoOptions);
 
-	static ImVec4 vEndColor = ImVec4(0.0f / 255.0f, 0.0f / 255.0f, 0.0f / 255.0f, 255.0f / 255.0f);
-	
-	if (ImGui::ColorEdit4("MyColor##", (float*)&vEndColor, ImGuiColorEditFlags_Float | misc_flags1))
+	if (ImGui::ColorEdit4("MyColor##", (float*)&m_EffectDesc.vEndColor, ImGuiColorEditFlags_Float | misc_flags1))
 	{
 		bChange = true;
-		m_EffectDesc.vEndColor =_float4(vEndColor.x, vEndColor.y , vEndColor.z , vEndColor.w);
 	}
 
 	if (bChange)

@@ -341,7 +341,7 @@ void CRenderer::Draw()
 	Render_FinalEffectBlend();
 
 	Render_Blender();
-
+	Render_Effect();
 	Render_FinlaOIT();
 
 	Render_UI();
@@ -1116,13 +1116,11 @@ void CRenderer::Render_FinalEffectBlend()
 
 void CRenderer::Render_Blender()
 {
-	//m_RenderObject[RENDER_BLENDER].sort([](CGameObject* pSour, CGameObject* pDest)->_bool
-	//	{
-	//		return dynamic_cast<CBlendObject*>(pSour)->Get_ViewZ() > dynamic_cast<CBlendObject*>(pDest)->Get_ViewZ();
-	//	});
+	m_RenderObject[RENDER_BLENDER].sort([](CGameObject* pSour, CGameObject* pDest)->_bool
+	{
+		return dynamic_cast<CBlendObject*>(pSour)->Get_ViewZ() > dynamic_cast<CBlendObject*>(pDest)->Get_ViewZ();
+	});
 
-	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_Accum"))))
-		return;
 
 	for (auto& iter : m_RenderObject[RENDER_BLENDER])
 	{
@@ -1132,11 +1130,26 @@ void CRenderer::Render_Blender()
 	}
 	m_RenderObject[RENDER_BLENDER].clear();
 
+}
+
+void CRenderer::Render_Effect()// 새로운 타겟에 파티클 그리기
+{
+	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_Accum"))))
+		return;
+
+	for (auto& iter : m_RenderObject[RENDER_EFFECT])
+	{
+		iter->Render();
+
+		Safe_Release(iter);
+	}
+	m_RenderObject[RENDER_EFFECT].clear();
+
 	if (FAILED(m_pGameInstance->End_MRT()))
 		return;
 }
 
-void CRenderer::Render_FinlaOIT()
+void CRenderer::Render_FinlaOIT() //파티클 그린 타겟 병합
 {
 	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_AccumColor"), m_pShader, "g_AccumTexture")))//이펙트 텍스처 원본
 		return;

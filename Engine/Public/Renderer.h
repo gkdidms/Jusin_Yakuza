@@ -6,7 +6,7 @@ class ENGINE_DLL CRenderer :
     public CBase
 {
 public:
-    enum RENDERER_STATE { RENDER_PRIORITY, RENDER_SHADOWOBJ, RENDER_NONBLENDER, RENDER_NONLIGHT, RENDER_BLENDER, RENDER_UI, RENDER_END };
+    enum RENDERER_STATE { RENDER_PRIORITY, RENDER_SHADOWOBJ, RENDER_NONBLENDER, RENDER_NONLIGHT, RENDER_BLENDER, RENDER_EFFECT, RENDER_UI, RENDER_END };
 
 private:
     CRenderer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -66,8 +66,9 @@ private:
     void Render_NonLight();//이펙트 시작
     void Render_Bloom();//블러
     void Render_FinalEffectBlend();//블러 합치기
-    void Render_Blender();
-    void Render_FinlaOIT();
+    void Render_Blender();//기존 논블렌드 렌더
+    void Render_Effect();// 파티클렌더 
+    void Render_FinlaOIT();// 파티클 최종병합
     void Render_UI();
 
 private:
