@@ -1,8 +1,9 @@
 #pragma once
 
-#include "Client_Defines.h"
+
 #include "SoketObject.h"
 #include "CharacterData.h"
+#include "Client_Defines.h"
 
 BEGIN(Engine)
 class CCollider;

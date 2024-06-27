@@ -100,9 +100,15 @@
     <ClCompile Include="..\Private\Decal.cpp">
       <Filter>02.GameObjects\05.Decal</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\PartObject.cpp" />
-    <ClCompile Include="..\Private\SoketCollider.cpp" />
-    <ClCompile Include="..\Private\SoketObject.cpp" />
+    <ClCompile Include="..\Private\PartObject.cpp">
+      <Filter>02.GameObjects\02.Character\PartObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\SoketObject.cpp">
+      <Filter>02.GameObjects\02.Character\PartObject\SoketObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\SoketCollider.cpp">
+      <Filter>02.GameObjects\02.Character\SoketCollider</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\MainApp.h">
@@ -137,9 +143,6 @@
     </ClInclude>
     <ClInclude Include="..\Public\Terrain.h">
       <Filter>02.GameObjects\01.Terrain</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\Level_Test.h">
-      <Filter>01.Levels\98.Test</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Player.h">
       <Filter>02.GameObjects\02.Character\LandObject\00.Player</Filter>
@@ -234,9 +237,18 @@
     <ClInclude Include="..\Public\Decal.h">
       <Filter>02.GameObjects\05.Decal</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\PartObject.h" />
-    <ClInclude Include="..\Public\SoketCollider.h" />
-    <ClInclude Include="..\Public\SoketObject.h" />
+    <ClInclude Include="..\Public\PartObject.h">
+      <Filter>02.GameObjects\02.Character\PartObject</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Level_Test.h">
+      <Filter>01.Levels\98.Test</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\SoketObject.h">
+      <Filter>02.GameObjects\02.Character\PartObject\SoketObject</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\SoketCollider.h">
+      <Filter>02.GameObjects\02.Character\SoketCollider</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -333,6 +345,15 @@
     </Filter>
     <Filter Include="02.GameObjects\05.Decal">
       <UniqueIdentifier>{a6493902-ed5b-46a7-a21f-1f965ca56dd4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\PartObject">
+      <UniqueIdentifier>{83de469b-7019-4bed-9e97-276b7f63de30}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\PartObject\SoketObject">
+      <UniqueIdentifier>{5ecdde66-d1d6-47ad-8170-66d5ccd28aa5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\SoketCollider">
+      <UniqueIdentifier>{260596ca-843e-47fe-ae9b-3a65ebc2b9a0}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
