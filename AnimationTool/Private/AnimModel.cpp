@@ -39,6 +39,30 @@ HRESULT CAnimModel::Initialize(void* pArg)
 
 void CAnimModel::Priority_Tick(const _float& fTimeDelta)
 {
+    	// center_c_n의 컴바인드 행렬을 가져온다 (모델 본들의 스페이스 상태임)
+	string strBoneName = "center_c_n";
+	const _float4x4* pCenterBoneMatrix = m_pModelCom->Get_BoneCombinedTransformationMatrix(strBoneName.c_str());
+
+	// RootNode의 컴바인드 행렬을 가져온다. (모델 본들의 스페이스 상태임)
+	strBoneName = "RootNode";
+	const _float4x4* pRootBoneMatrix = m_pModelCom->Get_BoneCombinedTransformationMatrix(strBoneName.c_str());
+	
+	// 구해온 각각의 매트릭스들을 본들의 스페이스에서 해당 객체의 월드 스페이스로 변환한다.
+	_matrix CenterBoneMatrix = XMLoadFloat4x4(pCenterBoneMatrix) * m_pTransformCom->Get_WorldMatrix();
+	_matrix RootBoneMatrix = XMLoadFloat4x4(pRootBoneMatrix) * m_pTransformCom->Get_WorldMatrix();
+
+	// 월드 변환이 완료된 행렬들에서 포지션값을 꺼내 저장한다.
+	_vector vCenterBonePosistion, vRootBonePosistion;
+	memcpy(&vCenterBonePosistion, &CenterBoneMatrix.r[CTransform::STATE_POSITION], sizeof(_float4));
+	memcpy(&vRootBonePosistion, &RootBoneMatrix.r[CTransform::STATE_POSITION], sizeof(_float4));
+
+	// 애니메이션이 새로 시작하면 m_vPrevMove에는 이전 애님의 마지막 move의 큰 값이 남아있고, vMovePos는 새로운정보가 되어서 초기화가 필요하다.
+	_vector vMovePos = (XMVectorSet(XMVectorGetX(vCenterBonePosistion), 0, XMVectorGetZ(vCenterBonePosistion), 1.f) - XMVectorSet(XMVectorGetX(vRootBonePosistion), 0, XMVectorGetZ(vRootBonePosistion), 1.f));
+
+    XMStoreFloat4x4(&m_ModelWorldMatrix, m_pTransformCom->Get_WorldMatrix());
+    _vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION) - vMovePos;
+    memcpy(&m_ModelWorldMatrix.m[CTransform::STATE_POSITION], &vPos, sizeof(_float4));
+
 }
 
 void CAnimModel::Tick(const _float& fTimeDelta)
@@ -246,7 +270,9 @@ HRESULT CAnimModel::Add_Components()
 
 HRESULT CAnimModel::Bind_ShaderResources()
 {
-    if (FAILED(m_pTransformCom->Bind_ShaderMatrix(m_pShaderCom, "g_WorldMatrix")))
+    //if (FAILED(m_pTransformCom->Bind_ShaderMatrix(m_pShaderCom, "g_WorldMatrix")))
+    //    return E_FAIL;
+    if (FAILED(m_pShaderCom->Bind_Matrix("g_WorldMatrix", &m_ModelWorldMatrix)))
         return E_FAIL;
     if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_VIEW))))
         return E_FAIL;
@@ -267,7 +293,7 @@ void CAnimModel::Ready_BoneSphere()
 
     CModelBoneSphere::BoneSphereDesc BoneSphereDesc{};
 
-    BoneSphereDesc.pModelWorldMatrix = m_pTransformCom->Get_WorldFloat4x4();
+    BoneSphereDesc.pModelWorldMatrix = &m_ModelWorldMatrix;
 
     _uint i = 0;
 

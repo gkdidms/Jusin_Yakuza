@@ -433,6 +433,11 @@ _vector CGameInstance::Picking(_bool* isSuccess)
 	return m_pPicking->Picking(isSuccess);
 }
 
+_bool CGameInstance::Picking_UI(CTransform* pUITransform)
+{
+	return m_pPicking->Picking_UI(pUITransform);
+}
+
 _float CGameInstance::Get_Z()
 {
 	return m_pPicking->Get_Z();

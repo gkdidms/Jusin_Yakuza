@@ -1,5 +1,5 @@
 #pragma once
-#include "GameObject.h"
+#include "UI_Object.h"
 #include "UITool_Defines.h"
 
 BEGIN(Engine)
@@ -10,10 +10,10 @@ END
 
 BEGIN(UITool)
 class CUI_Texture :
-    public CGameObject
+    public CUI_Object
 {
 public:
-    typedef struct tUITextureDesc : public CGameObject::GAMEOBJECT_DESC {
+    typedef struct tUITextureDesc : public CUI_Object::UI_OBJECT_DESC {
         wstring strTextureFilePath;
         wstring strTextureFileName;
     } UI_TEXTURE_DESC;
@@ -56,12 +56,13 @@ protected:
     wstring m_strTextureFilePath = { L"" };
     wstring m_strTextureName = { L"" };
 
+
 protected:
     _uint m_iShaderPass = { 0 };
 
 protected:
-    HRESULT Add_Components();
-    HRESULT Bind_ResourceData();
+    virtual HRESULT Add_Components();
+    virtual HRESULT Bind_ResourceData();
 
 public:
     virtual void Free();

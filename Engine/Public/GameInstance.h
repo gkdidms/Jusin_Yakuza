@@ -128,6 +128,7 @@ public:
     /* Picking */
 public: 
     _vector Picking(_bool* isSuccess);
+    _bool Picking_UI(CTransform* pUITransform);
     _float Get_Z();
     float   FindObjID(_bool* isSuccess);
 

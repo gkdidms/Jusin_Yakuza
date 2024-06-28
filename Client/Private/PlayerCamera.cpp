@@ -1,16 +1,20 @@
 #include "PlayerCamera.h"
 
 #include "GameInstance.h"
-
+#include "SystemManager.h"
 
 CPlayerCamera::CPlayerCamera(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-	: CCamera{ pDevice, pContext }
+	: CCamera{ pDevice, pContext },
+	m_pSystemManager{ CSystemManager::GetInstance() }
 {
+	Safe_AddRef(m_pSystemManager);
 }
 
 CPlayerCamera::CPlayerCamera(const CPlayerCamera& rhs)
-	: CCamera { rhs }
+	: CCamera { rhs },
+	m_pSystemManager { rhs.m_pSystemManager }
 {
+	Safe_AddRef(m_pSystemManager);
 }
 
 HRESULT CPlayerCamera::Initialize_Prototype()
@@ -40,19 +44,19 @@ void CPlayerCamera::Priority_Tick(const _float& fTimeDelta)
 
 void CPlayerCamera::Tick(const _float& fTimeDelta)
 {
+	if (m_pSystemManager->Get_Camera() != CAMERA_PLAYER) return;
 	/* 마우스 좌표 고정 */
 	//SetCursorPos(g_iWinSizeX * 0.5f, g_iWinSizeY * 0.5f); // 마우스 좌표 적용해주기
 	//ShowCursor(false);
 
-	if (m_pGameInstance->Get_DIKeyState(DIK_A) & 0x80)
-		m_pTransformCom->Go_Left(fTimeDelta);
-	if (GetKeyState('D') & 0x8000)
-		m_pTransformCom->Go_Right(fTimeDelta);
-	if (GetKeyState('W') & 0x8000)
-		m_pTransformCom->Go_Straight(fTimeDelta);
-	if (GetKeyState('S') & 0x8000)
-		m_pTransformCom->Go_Backward(fTimeDelta);
-
+	//if (m_pGameInstance->Get_DIKeyState(DIK_A) & 0x80)
+	//	m_pTransformCom->Go_Left(fTimeDelta);
+	//if (GetKeyState('D') & 0x8000)
+	//	m_pTransformCom->Go_Right(fTimeDelta);
+	//if (GetKeyState('W') & 0x8000)
+	//	m_pTransformCom->Go_Straight(fTimeDelta);
+	//if (GetKeyState('S') & 0x8000)
+	//	m_pTransformCom->Go_Backward(fTimeDelta);
 
 	_long		MouseMove = { 0 };
 
@@ -71,6 +75,8 @@ void CPlayerCamera::Tick(const _float& fTimeDelta)
 
 void CPlayerCamera::Late_Tick(const _float& fTimeDelta)
 {
+	//플레이어 카메라는 플레이어를 따라다닌다.
+	XMStoreFloat4x4(&m_WorldMatrix, m_pTransformCom->Get_WorldMatrix() * XMLoadFloat4x4(m_pPlayerMatrix));
 }
 
 HRESULT CPlayerCamera::Render()
@@ -107,4 +113,6 @@ CGameObject* CPlayerCamera::Clone(void* pArg)
 void CPlayerCamera::Free()
 {
 	__super::Free();
+
+	Safe_Release(m_pSystemManager);
 }
