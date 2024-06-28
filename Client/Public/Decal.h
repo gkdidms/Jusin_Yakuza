@@ -36,18 +36,11 @@ public:
     virtual void Late_Tick(const _float& fTimeDelta) override;
     virtual HRESULT Render() override;
 
-    /* 모델 로컬 공간으로 Decal 이동시켜야해서 world matrix 받아오기 */
-public:
-    void            Get_Model_Transform(CTransform* pTransform) { m_pModelTransformCom = pTransform; Safe_AddRef(m_pModelTransformCom); }
-
 
 private:
     CTexture*       m_pTextureCom = { nullptr };
     CShader*        m_pShaderCubeCom = { nullptr };
-    CShader*        m_pShaderPosCom = { nullptr };
     CVIBuffer_Cube* m_pVIBufferCubeCom = { nullptr };
-    CVIBuffer_Rect* m_pVIBufferRectCom = { nullptr };
-    CTransform*     m_pModelTransformCom;
 
 private:
     int                 m_iMaterialNum;

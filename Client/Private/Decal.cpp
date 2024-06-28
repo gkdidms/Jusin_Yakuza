@@ -80,15 +80,6 @@ HRESULT CDecal::Add_Components()
         TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCubeCom))))
         return E_FAIL;
 
-    /* For.Com_VIBuffer */
-    if (FAILED(__super::Add_Component(LEVEL_TEST, TEXT("Prototype_Component_VIBuffer_Rect"),
-        TEXT("Com_VIBufferRect"), reinterpret_cast<CComponent**>(&m_pVIBufferRectCom))))
-        return E_FAIL;
-
-    /* For.Com_Shader */
-    if (FAILED(__super::Add_Component(LEVEL_TEST, TEXT("Prototype_Component_Shader_VtxPosTex"),
-        TEXT("Com_ShaderRect"), reinterpret_cast<CComponent**>(&m_pShaderPosCom))))
-        return E_FAIL;
 
     return S_OK;
 }
@@ -101,32 +92,26 @@ HRESULT CDecal::Bind_ShaderResources()
         return E_FAIL;
     if (FAILED(m_pShaderCubeCom->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_PROJ))))
         return E_FAIL;
-    if (FAILED(m_pShaderCubeCom->Bind_Matrix("g_ViewInvMatrix", m_pGameInstance->Get_Transform_Inverse_Float4x4(CPipeLine::D3DTS_VIEW))))
+    if (FAILED(m_pShaderCubeCom->Bind_Matrix("g_ViewMatrixInv", m_pGameInstance->Get_Transform_Inverse_Float4x4(CPipeLine::D3DTS_VIEW))))
+        return E_FAIL;
+    if (FAILED(m_pShaderCubeCom->Bind_Matrix("g_ProjMatrixInv", m_pGameInstance->Get_Transform_Inverse_Float4x4(CPipeLine::D3DTS_PROJ))))
         return E_FAIL;
     if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCubeCom, "g_Texture2D", 0)))
         return E_FAIL;
 
-    XMMATRIX worldInv = XMMatrixInverse(nullptr, m_pModelTransformCom->Get_WorldMatrix());
+
+    XMMATRIX worldInv = XMMatrixInverse(nullptr, m_pTransformCom->Get_WorldMatrix());
     XMFLOAT4X4 wordInvFloat;
     XMStoreFloat4x4(&wordInvFloat, worldInv);
-    if (FAILED(m_pShaderCubeCom->Bind_Matrix("g_WorldInvMatrix", &wordInvFloat)))
+    if (FAILED(m_pShaderCubeCom->Bind_Matrix("g_WorldMatrixInv", &wordInvFloat)))
         return E_FAIL;
 
     if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Depth"), m_pShaderCubeCom, "g_DepthTexture")))
         return E_FAIL;
 
+    if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Diffuse"), m_pShaderCubeCom, "g_DiffuseTexture")))
+        return E_FAIL;
 
-    //if (FAILED(m_pTransformCom->Bind_ShaderMatrix(m_pShaderPosCom, "g_WorldMatrix")))
-    //    return E_FAIL;
-    //if (FAILED(m_pShaderPosCom->Bind_Matrix("g_ViewMatrix", m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_VIEW))))
-    //    return E_FAIL;
-    //if (FAILED(m_pShaderPosCom->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_PROJ))))
-    //    return E_FAIL;
-    //if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderPosCom, "g_Texture", 0)))
-    //    return E_FAIL;
-
-    //if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Position"), m_pShaderPosCom, "g_DepthTexture")))
-    //    return E_FAIL;
 
     return S_OK;
 }
@@ -163,8 +148,5 @@ void CDecal::Free()
 
     Safe_Release(m_pTextureCom);
     Safe_Release(m_pShaderCubeCom);
-    Safe_Release(m_pShaderPosCom);
     Safe_Release(m_pVIBufferCubeCom);
-    Safe_Release(m_pVIBufferRectCom);
-    Safe_Release(m_pModelTransformCom);
 }

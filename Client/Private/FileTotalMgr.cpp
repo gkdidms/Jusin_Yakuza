@@ -84,7 +84,8 @@ HRESULT CFileTotalMgr::Set_GameObject_In_Client(int iStageLevel)
 
             for (int j = 0; j < mapDesc.iDecalNum; j++)
             {
-                mapDesc.pDecal[i] = m_MapTotalInform.pMapObjDesc[i].pDecals[j];
+                mapDesc.pDecal[j].iMaterialNum = m_MapTotalInform.pMapObjDesc[i].pDecals[j].iMaterialNum;
+                mapDesc.pDecal[j].vTransform = m_MapTotalInform.pMapObjDesc[i].pDecals[j].vTransform;
             }
         }
 

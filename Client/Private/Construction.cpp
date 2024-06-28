@@ -48,8 +48,6 @@ HRESULT CConstruction::Initialize(void* pArg)
 
 			CDecal* pDecal = dynamic_cast<CDecal*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Decal"), &decalObjDesc));
 
-			pDecal->Get_Model_Transform(m_pTransformCom);
-
 			m_vDecals.push_back(pDecal);
 		}
 	}

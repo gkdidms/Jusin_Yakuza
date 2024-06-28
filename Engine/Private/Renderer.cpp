@@ -36,6 +36,10 @@ HRESULT CRenderer::Initialize()
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Depth"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(0.f, 0.f, 0.f, 1.f))))
 		return E_FAIL;
 
+	/*Target_Decal*/
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Decal"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(0.f, 0.f, 0.f, 0.f))))
+		return E_FAIL;
+
 	/* Target_LightDepth */
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_LightDepth"), g_iSizeX, g_iSizeY, DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(1.f, 1.f, 1.f, 1.f))))
 		return E_FAIL;
@@ -113,7 +117,11 @@ HRESULT CRenderer::Initialize()
 		return E_FAIL;
 
 	/* MRT_Decals */
-	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_Decals"), TEXT("Target_Diffuse"))))
+	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_Decals"), TEXT("Target_Decal"))))
+		return E_FAIL;
+
+	/* MRT_TotalDecals */
+	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_TotalDecals"), TEXT("Target_Diffuse"))))
 		return E_FAIL;
 
 	/* MRT_ShadowObject */
@@ -462,7 +470,7 @@ void CRenderer::Render_NonBlender()
 
 void CRenderer::Render_Decal()
 {
-	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_Decals") , nullptr, false)))
+	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_TotalDecals"), nullptr, false)))
 		return;
 
 	for (auto& iter : m_RenderObject[RENDER_DECAL])
@@ -477,6 +485,7 @@ void CRenderer::Render_Decal()
 		return;
 
 }
+
 
 HRESULT CRenderer::Ready_SSAONoiseTexture() // SSAO 연산에 들어갈 랜덤 벡터 텍스쳐 생성
 {

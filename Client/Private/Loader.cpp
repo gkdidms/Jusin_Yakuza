@@ -147,6 +147,7 @@ HRESULT CLoader::Loading_For_Test()
 
 	_matrix		PreTransformMatrix;
 	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
+
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Model_f1"),
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/NonAnim/Map/Map0/Bin/f1.dat", PreTransformMatrix, true))))
 		return E_FAIL;
