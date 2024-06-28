@@ -48,6 +48,11 @@ public:
     void Late_Tick(const _float& fTimeDelta);
     HRESULT Render();
 
+public://·»´õ ÁøÇà
+    HRESULT Render_Object();
+    HRESULT Render_Copy();
+    HRESULT Render_BackBuffer();
+
 public:
     HRESULT Add_Group(const wstring& strObjectTag);
     HRESULT Add_RenderTextureObject(const wstring& strObjectTag, void* pArg);
