@@ -72,8 +72,8 @@ public:
 	const _float4x4* Get_BoneCombinedTransformationMatrix_AtIndex(_uint iBoneIndex) const;
 	const _float4x4* Get_BoneTransformationMatrix(const _char* pBoneName) const;
 
-	void	Copy_DecalMaterial(vector<DECAL_DESC>* pDecals);
-	CTexture* Copy_DecalTexture(int	iMaterialNum);
+	void	Copy_DecalMaterial(vector<DECAL_DESC>* pDecals); /* Decal 정보 얻어오기 */
+	CTexture* Copy_DecalTexture(int	iMaterialNum); /* Decal 텍스처 얻어오기 */
 
 	const string& Get_AnimationName(_uint iAnimIndex);
 

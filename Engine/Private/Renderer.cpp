@@ -112,6 +112,10 @@ HRESULT CRenderer::Initialize()
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_GameObjects"), TEXT("Target_Depth"))))
 		return E_FAIL;
 
+	/* MRT_Decals */
+	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_Decals"), TEXT("Target_Diffuse"))))
+		return E_FAIL;
+
 	/* MRT_ShadowObject */
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_ShadowObjects"), TEXT("Target_LightDepth"))))
 		return E_FAIL;
@@ -454,6 +458,24 @@ void CRenderer::Render_NonBlender()
 
 	if (FAILED(m_pGameInstance->End_MRT()))
 		return;
+}
+
+void CRenderer::Render_Decal()
+{
+	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_Decals") , nullptr, false)))
+		return;
+
+	for (auto& iter : m_RenderObject[RENDER_DECAL])
+	{
+		iter->Render();
+
+		Safe_Release(iter);
+	}
+	m_RenderObject[RENDER_DECAL].clear();
+
+	if (FAILED(m_pGameInstance->End_MRT()))
+		return;
+
 }
 
 HRESULT CRenderer::Ready_SSAONoiseTexture() // SSAO 연산에 들어갈 랜덤 벡터 텍스쳐 생성
@@ -1161,11 +1183,7 @@ void CRenderer::Render_UI()
 	m_RenderObject[RENDER_UI].clear();
 }
 
-void CRenderer::Render_Decal()
-{
 
-
-}
 
 #ifdef _DEBUG
 void CRenderer::Render_Debug()

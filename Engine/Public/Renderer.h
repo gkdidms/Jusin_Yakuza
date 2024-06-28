@@ -6,7 +6,7 @@ class ENGINE_DLL CRenderer :
     public CBase
 {
 public:
-    enum RENDERER_STATE { RENDER_PRIORITY, RENDER_SHADOWOBJ, RENDER_NONBLENDER, RENDER_NONLIGHT, RENDER_BLENDER, RENDER_UI, RENDER_END };
+    enum RENDERER_STATE { RENDER_PRIORITY, RENDER_SHADOWOBJ, RENDER_NONBLENDER, RENDER_DECAL, RENDER_NONLIGHT, RENDER_BLENDER, RENDER_UI, RENDER_END };
 
 private:
     CRenderer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -47,6 +47,8 @@ private:
     void Render_Priority();
     void Render_ShadowObjects();
     void Render_NonBlender();
+    void Render_Decal();
+
     void Render_SSAO();
     void Render_LightAcc();
     void Render_SSAOBlur();
@@ -64,8 +66,6 @@ private:
     void Render_Blender();
     void Render_FinlaOIT();
     void Render_UI();
-
-    void Render_Decal();
 
     HRESULT Ready_SSAONoiseTexture();
 
