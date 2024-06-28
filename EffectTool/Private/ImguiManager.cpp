@@ -66,6 +66,7 @@ HRESULT CImguiManager::Initialize(void* pArg)
 	m_TrailDesc.vStartColor = { 0.0f , 0.0f ,0.0f ,1.0f };
 	m_TrailDesc.vEndColor = { 0.0f, 0.0f, 0.0f, 1.0f };
 	m_TrailDesc.iShaderPass = { 0 };
+	m_TrailDesc.fSpeedPecSec = 5.0f;
 
 	m_TrailDesc.Trail_Desc.iMaxTrail = 10;
 	m_TrailDesc.Trail_Desc.vInitPosA = _float3{ 0.0f , 0.0f , 0.0f };
@@ -95,22 +96,50 @@ void CImguiManager::Tick(const _float& fTimeDelta)
 	bool bDemo = true;
 	ImGui::ShowDemoWindow(&bDemo);
 
+	Mode_Select(fTimeDelta);
 
-	Create_Tick(fTimeDelta);
-	Editor_Tick(fTimeDelta);
-	Guizmo_Tick(fTimeDelta);
-	Timeline_Tick(fTimeDelta);
-
-
-	if (!m_EditParticle.empty())
+	switch (m_iMode)
 	{
-
-		for (auto& iter : m_EditParticle)
+	case MODE_PARTICLE :
+	{
+		Create_Tick(fTimeDelta);
+		Editor_Tick(fTimeDelta);
+		Guizmo_Tick(fTimeDelta);
+		Timeline_Tick(fTimeDelta);
+		if (!m_EditParticle.empty())
 		{
-			iter->Tick(fTimeDelta);	
-			iter->Late_Tick(fTimeDelta);
+
+			for (auto& iter : m_EditParticle)
+			{
+				iter->Tick(fTimeDelta);
+				iter->Late_Tick(fTimeDelta);
+			}
 		}
 	}
+		break;
+	case MODE_TRAIL:
+	{
+		CreateTrail_Tick(fTimeDelta);
+		EditorTrail_Tick(fTimeDelta);
+		Guizmo_Tick(fTimeDelta);
+		if (!m_EditTrail.empty())
+		{
+
+			for (auto& iter : m_EditTrail)
+			{
+				iter->Tick(fTimeDelta);
+				iter->Late_Tick(fTimeDelta);
+			}
+		}
+	}
+		break;
+	default:
+		break;
+	}
+
+
+
+
 }
 
 
@@ -175,7 +204,17 @@ void CImguiManager::EditTransform(_float* cameraView, _float* cameraProjection, 
 	
 	//m_EffectDesc.vStartPos = _float4(matrix[12], matrix[13], matrix[14], matrix[15]);
 	//dynamic_cast<CEffect*>(m_EditParticle[m_iCurEditIndex])->Set_StartPos(m_EffectDesc.vStartPos);
-	dynamic_cast<CEffect*>(m_EditParticle[m_iCurEditIndex])->Set_StartPos(_float4(matrix[12], matrix[13], matrix[14], matrix[15]));
+
+	switch (m_iMode)
+	{
+	case MODE_PARTICLE:
+		dynamic_cast<CEffect*>(m_EditParticle[m_iCurEditIndex])->Set_StartPos(_float4(matrix[12], matrix[13], matrix[14], matrix[15]));
+		break;
+	case MODE_TRAIL:
+		dynamic_cast<CEffect*>(m_EditTrail[m_iCurEditIndex])->Set_StartPos(_float4(matrix[12], matrix[13], matrix[14], matrix[15]));
+		break;
+	}
+	
 	
 	if (useWindow)
 	{
@@ -194,13 +233,55 @@ void CImguiManager::Guizmo(_float fTimeDelta)
 
 		if (-1 != m_iCurEditIndex)	
 		{
-
-			_float* objectWorld = (_float*)dynamic_cast<CTransform*>(m_EditParticle[m_iCurEditIndex]->Get_TransformCom())->Get_WorldFloat4x4();
+			_float* objectWorld{};
+			switch (m_iMode)
+			{
+			case MODE_PARTICLE:
+			{
+				objectWorld = (_float*)dynamic_cast<CTransform*>(m_EditParticle[m_iCurEditIndex]->Get_TransformCom())->Get_WorldFloat4x4();
+			}
+				break;
+			case MODE_TRAIL:
+			{
+				objectWorld = (_float*)dynamic_cast<CTransform*>(m_EditTrail[m_iCurEditIndex]->Get_TransformCom())->Get_WorldFloat4x4();
+			}
+				break;
+			default:
+				break;
+			}
 			EditTransform(cameraView, cameraProjection, objectWorld);
 			ImGuizmo::IsUsing();
 		}
 	}
 
+}
+
+HRESULT CImguiManager::Mode_Select(_float fTimeDelta)
+{
+	ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiCond_FirstUseEver);
+	ImGui::SetNextWindowSize(ImVec2(150, 100), ImGuiCond_None);
+
+	ImGui::Begin("Mode_Select");
+
+	if (ImGui::Button("Particle Mode"))
+	{
+		m_iMode = MODE_PARTICLE;
+		if (!m_EditParticle.empty())
+			m_iCurEditIndex = 0;
+		else
+			m_iCurEditIndex = -1;
+	}
+	if (ImGui::Button("Trail Mode"))
+	{
+		m_iMode = MODE_TRAIL;
+		if (!m_EditTrail.empty())
+			m_iCurEditIndex = 0;
+		else
+			m_iCurEditIndex = -1;
+	}
+	ImGui::End();
+
+	return S_OK;
 }
 
 HRESULT CImguiManager::Create_Particle()
@@ -253,82 +334,240 @@ HRESULT CImguiManager::Create_Trail()
 	EffectDesc.Trail_Desc.iMaxTrail = 10;	
 	EffectDesc.Trail_Desc.vInitPosA = _float3{ 0.0f , 0.0f , 0.0f };	
 	EffectDesc.Trail_Desc.vInitPosB = _float3{ 0.0f , 1.0f, 0.0f };	
-
+	EffectDesc.fSpeedPecSec = 5.f;
 	EffectDesc.vStartPos = { 0.f, 0.f, 0.f, 1.f };
 	EffectDesc.eType = CEffect::TYPE_TRAIL;
-	EffectDesc.ParticleTag = m_pGameInstance->StringToWstring(text_input_buffer);
+	EffectDesc.ParticleTag = m_pGameInstance->StringToWstring(m_TrailTag);
 	EffectDesc.fStartTime = { 0.f };
 	EffectDesc.iShaderPass = { 0 };
 
 
 
-	CGameObject* pGameParticle = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Trail"), &EffectDesc);
+	CGameObject* pGameParticle = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_TrailEffect"), &EffectDesc);
 	if (nullptr == pGameParticle)
 		return E_FAIL;
 
-	m_EditParticle.push_back(pGameParticle);
-	m_iCurEditIndex = m_EditParticle.size() - 1;
+	m_EditTrail.push_back(pGameParticle);
+	m_iCurEditIndex = m_EditTrail.size() - 1;
 	return S_OK;
+}
+
+void CImguiManager::CreateTrail_Tick(_float fTimeDelta)
+{
+	ImGui::SetNextWindowPos(ImVec2(1030, 0), ImGuiCond_None);
+	ImGui::SetNextWindowSize(ImVec2(250, 200), ImGuiCond_None);
+
+	ImGui::Begin("Trail_Create");
+
+
+	if (ImGui::InputText("TrailTag", m_TrailTag, IM_ARRAYSIZE(m_TrailTag)))
+	{
+		m_TrailDesc.ParticleTag = m_pGameInstance->StringToWstring(m_TrailTag);
+	}
+
+	if (ImGui::Button("Create Trail"))
+	{
+		Create_Trail();	
+	}
+	if (ImGui::Button("Delete Trail"))
+	{
+		if (!m_EditTrail.empty())
+		{
+			Safe_Release(m_EditTrail.back());
+			m_EditTrail.pop_back();
+			if (m_EditTrail.empty())
+				m_iCurEditIndex = -1;
+			else
+				m_iCurEditIndex = 0;
+		}
+	}
+	if (ImGui::Button("Save_binary"))
+	{
+		//바이너리화
+	}
+	if (ImGui::Button("Load_binary"))
+	{
+		//바이너리 로드
+	}
+
+
+	ImGui::End();
+}
+
+void CImguiManager::EditorTrail_Tick(_float fTimeDelta)
+{
+	ImGui::SetNextWindowPos(ImVec2(980, 200), ImGuiCond_None);
+	ImGui::SetNextWindowSize(ImVec2(300, 520), ImGuiCond_None);
+
+	ImGui::Begin("Trail_Edit");
+
+
+
+
+	_int iSize = m_EditTrail.size();
+	if (ImGui::BeginListBox("listBox"))
+	{
+		for (int i = 0; i < iSize; i++)
+		{
+			// 리스트박스 아이템의 텍스트
+			const bool isSelected = (m_iCurEditIndex == i);
+			char Label[256] = {};
+			strcpy_s(Label, m_pGameInstance->WstringToString(dynamic_cast<CEffect*>(m_EditTrail[i])->Get_Tag()).c_str());
+			if (ImGui::Selectable(Label, isSelected))
+			{
+				m_iCurEditIndex = i; // 선택된 아이템 업데이트	
+			}
+
+			// 선택된 아이템이 보이도록 스크롤
+			if (isSelected)
+			{
+				ImGui::SetItemDefaultFocus();
+			}
+		}
+		ImGui::EndListBox();
+	}
+
+	if (-1 != m_iCurEditIndex)
+	{
+		Load_Desc(m_iCurEditIndex);	
+	}
+
+	_bool bChange = false;
+	ImGui::Text(to_string(m_iCurEditIndex).c_str());	
+
+	
+	_int* Temp = (_int*)&m_TrailDesc.Trail_Desc.iMaxTrail;
+	if (ImGui::InputInt("MaxTrail", Temp))
+	{
+		memcpy(&m_TrailDesc.Trail_Desc.iMaxTrail, Temp, sizeof(_int));
+		bChange = true;	
+	}
+
+	_float* PosTemp = (_float*)&m_TrailDesc.vStartPos;
+	if (ImGui::InputFloat3("StartPos", PosTemp))
+	{
+		memcpy(&m_TrailDesc.vStartPos, PosTemp, sizeof(_float3));	
+		bChange = true;	
+	}
+
+	PosTemp = (_float*)&m_TrailDesc.Trail_Desc.vInitPosA;
+	if (ImGui::InputFloat3("PosA", PosTemp))
+	{
+		memcpy(&m_TrailDesc.Trail_Desc.vInitPosA, PosTemp, sizeof(_float3));
+		bChange = true;
+	}
+
+	PosTemp = (_float*)&m_TrailDesc.Trail_Desc.vInitPosB;
+	if (ImGui::InputFloat3("PosB", PosTemp))
+	{
+		memcpy(&m_TrailDesc.Trail_Desc.vInitPosB, PosTemp, sizeof(_float3));
+		bChange = true;
+	}
+
+
+	if (bChange)
+	{
+		Edit_Particle(m_iCurEditIndex);
+	}
+	ImGui::End();
+
 }
 
 HRESULT CImguiManager::Edit_Particle(_uint Index)
 {
 
-
-
-	if (m_EditParticle.size() <= Index)
-		return E_FAIL;
-	else
+	switch (m_iMode)
 	{
-		Safe_Release(m_EditParticle[Index]);
+	case MODE_PARTICLE:
+	{
+
+		if (m_EditParticle.size() <= Index)
+			return E_FAIL;
+		else
+		{
+			Safe_Release(m_EditParticle[Index]);
+		}
+
+		CParticle_Point::PARTICLE_POINT_DESC EffectDesc{};
+		EffectDesc.BufferInstance.iNumInstance = m_EffectDesc.BufferInstance.iNumInstance;
+		EffectDesc.BufferInstance.isLoop = m_EffectDesc.BufferInstance.isLoop;
+		EffectDesc.BufferInstance.vLifeTime = m_EffectDesc.BufferInstance.vLifeTime;
+		EffectDesc.BufferInstance.vOffsetPos = m_EffectDesc.BufferInstance.vOffsetPos;
+		EffectDesc.BufferInstance.vPivotPos = m_EffectDesc.BufferInstance.vPivotPos;
+		EffectDesc.BufferInstance.vRange = m_EffectDesc.BufferInstance.vRange;
+		EffectDesc.BufferInstance.vSize = m_EffectDesc.BufferInstance.vSize;
+		EffectDesc.BufferInstance.vSpeed = m_EffectDesc.BufferInstance.vSpeed;
+		EffectDesc.BufferInstance.vRectSize = m_EffectDesc.BufferInstance.vRectSize;
+		EffectDesc.BufferInstance.fRadius = m_EffectDesc.BufferInstance.fRadius;
+		EffectDesc.BufferInstance.bRadius = m_EffectDesc.BufferInstance.bRadius;
+
+		EffectDesc.vStartPos = m_EffectDesc.vStartPos;
+		EffectDesc.eType = m_EffectDesc.eType;
+		EffectDesc.ParticleTag = m_EffectDesc.ParticleTag;
+		EffectDesc.fStartTime = m_EffectDesc.fStartTime;
+		EffectDesc.vStartColor = m_EffectDesc.vStartColor;
+		EffectDesc.vEndColor = m_EffectDesc.vEndColor;
+		EffectDesc.iShaderPass = m_EffectDesc.iShaderPass;
+
+
+		m_EditParticle[Index] = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Particle_Point"), &EffectDesc);
+		if (nullptr == m_EditParticle[Index])
+			return E_FAIL;
+
+		if (m_bSpread)
+			dynamic_cast<CEffect*>(m_EditParticle[Index])->Edit_Action(CEffect::ACTION_SPREAD);
+		if (m_bDrop)
+			dynamic_cast<CEffect*>(m_EditParticle[Index])->Edit_Action(CEffect::ACTION_DROP);
+
+
+	}
+		break;
+	case MODE_TRAIL:
+	{
+
+		if (m_EditTrail.size() <= Index)
+			return E_FAIL;
+		else
+		{
+			Safe_Release(m_EditTrail[Index]);
+		}
+
+		CTRailEffect::TRAIL_DESC TrailDesc{};
+
+		TrailDesc.Trail_Desc.iMaxTrail = m_TrailDesc.Trail_Desc.iMaxTrail;
+		TrailDesc.Trail_Desc.vInitPosA = m_TrailDesc.Trail_Desc.vInitPosA;
+		TrailDesc.Trail_Desc.vInitPosB = m_TrailDesc.Trail_Desc.vInitPosB;
+		TrailDesc.fSpeedPecSec = m_TrailDesc.fSpeedPecSec;
+
+		TrailDesc.vStartPos = m_TrailDesc.vStartPos;
+		TrailDesc.eType = CEffect::TYPE_TRAIL;	
+		TrailDesc.ParticleTag = m_pGameInstance->StringToWstring(m_TrailTag);
+		TrailDesc.iShaderPass = m_TrailDesc.iShaderPass;
+
+		m_EditTrail[Index] = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_TrailEffect"), &TrailDesc);
+		if (nullptr == m_EditTrail[Index])
+			return E_FAIL;
+
+	}
+		break;
+	default:
+		break;
 	}
 
-
-
-	CParticle_Point::PARTICLE_POINT_DESC EffectDesc{};
-	EffectDesc.BufferInstance.iNumInstance = m_EffectDesc.BufferInstance.iNumInstance;
-	EffectDesc.BufferInstance.isLoop = m_EffectDesc.BufferInstance.isLoop;
-	EffectDesc.BufferInstance.vLifeTime = m_EffectDesc.BufferInstance.vLifeTime;
-	EffectDesc.BufferInstance.vOffsetPos = m_EffectDesc.BufferInstance.vOffsetPos;
-	EffectDesc.BufferInstance.vPivotPos = m_EffectDesc.BufferInstance.vPivotPos;
-	EffectDesc.BufferInstance.vRange = m_EffectDesc.BufferInstance.vRange;
-	EffectDesc.BufferInstance.vSize = m_EffectDesc.BufferInstance.vSize;
-	EffectDesc.BufferInstance.vSpeed = m_EffectDesc.BufferInstance.vSpeed;
-	EffectDesc.BufferInstance.vRectSize = m_EffectDesc.BufferInstance.vRectSize;
-	EffectDesc.BufferInstance.fRadius = m_EffectDesc.BufferInstance.fRadius;
-	EffectDesc.BufferInstance.bRadius = m_EffectDesc.BufferInstance.bRadius;
-
-	EffectDesc.vStartPos = m_EffectDesc.vStartPos;
-	EffectDesc.eType = m_EffectDesc.eType;
-	EffectDesc.ParticleTag = m_EffectDesc.ParticleTag;
-	EffectDesc.fStartTime = m_EffectDesc.fStartTime;
-	EffectDesc.vStartColor = m_EffectDesc.vStartColor;
-	EffectDesc.vEndColor = m_EffectDesc.vEndColor;
-	EffectDesc.iShaderPass = m_EffectDesc.iShaderPass;
-
-
-	m_EditParticle[Index] = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Particle_Point"), &EffectDesc);
-	if (nullptr == m_EditParticle[Index])
-		return E_FAIL;
-
-	if (m_bSpread)
-		dynamic_cast<CEffect*>(m_EditParticle[Index])->Edit_Action(CEffect::ACTION_SPREAD);
-	if (m_bDrop)
-		dynamic_cast<CEffect*>(m_EditParticle[Index])->Edit_Action(CEffect::ACTION_DROP);
-
+	m_iCurEditIndex = Index;
 
 	return S_OK;
 }
 
 HRESULT CImguiManager::Load_Desc(_uint Index)
 {
-	CEffect* pEffect = dynamic_cast<CEffect*>(m_EditParticle[Index]);
+	CEffect* pEffect = nullptr;
 
-	_uint Type = pEffect->Get_Type();
-	switch (Type)
+	switch (m_iMode)
 	{
-	case CEffect::TYPE_POINT:
+	case MODE_PARTICLE:
 	{
+		pEffect =dynamic_cast<CEffect*>(m_EditParticle[Index]);
 		CVIBuffer_Instance::INSTANCE_DESC* pDesc = static_cast<CVIBuffer_Instance::INSTANCE_DESC*>(pEffect->Get_Instance());
 
 		m_EffectDesc.BufferInstance.iNumInstance = pDesc->iNumInstance;
@@ -365,11 +604,22 @@ HRESULT CImguiManager::Load_Desc(_uint Index)
 
 	}
 		break;
-	case CEffect::TYPE_TRAIL:
+	case MODE_TRAIL:
 	{
-		CVIBuffer_Instance::INSTANCE_DESC* pDesc = static_cast<CVIBuffer_Instance::INSTANCE_DESC*>(pEffect->Get_Instance());	
+		pEffect = dynamic_cast<CEffect*>(m_EditTrail[Index]);
+		CVIBuffer_Trail::VIBUFFER_TRAIL_DESC* pDesc = static_cast<CVIBuffer_Trail::VIBUFFER_TRAIL_DESC*>(pEffect->Get_Instance());
 
+		m_TrailDesc.fSpeedPecSec = 5.0f;
 
+		m_TrailDesc.eType = pEffect->Get_Type();
+		m_TrailDesc.vStartPos = pEffect->Get_StartPos();//이게 곧 트레일 작용위치
+
+		m_TrailDesc.ParticleTag = pEffect->Get_Tag();
+		m_TrailDesc.iShaderPass = pEffect->Get_ShaderPass();
+
+		m_TrailDesc.Trail_Desc.iMaxTrail = pDesc->iMaxTrail;
+		m_TrailDesc.Trail_Desc.vInitPosA = pDesc->vInitPosA;
+		m_TrailDesc.Trail_Desc.vInitPosB = pDesc->vInitPosB;
 	}
 		break;
 	default:
@@ -383,8 +633,8 @@ HRESULT CImguiManager::Load_Desc(_uint Index)
 
 void CImguiManager::Create_Tick(_float fTimeDelta)
 {
-	ImGui::SetNextWindowPos(ImVec2(1030, 0), ImGuiCond_None);
-	ImGui::SetNextWindowSize(ImVec2(250, 200), ImGuiCond_None);
+	ImGui::SetNextWindowPos(ImVec2(980, 0), ImGuiCond_None);
+	ImGui::SetNextWindowSize(ImVec2(300, 200), ImGuiCond_None);
 
 	ImGui::Begin("Particle_Create");
 
@@ -393,8 +643,6 @@ void CImguiManager::Create_Tick(_float fTimeDelta)
 	{
 		m_EffectDesc.ParticleTag = m_pGameInstance->StringToWstring(text_input_buffer);
 	}
-
-
 
 	if (ImGui::Button("Create Particle"))
 	{
@@ -426,24 +674,24 @@ void CImguiManager::Create_Tick(_float fTimeDelta)
 
 void CImguiManager::Editor_Tick(_float fTimeDelta)
 {
+	ImGui::SetNextWindowPos(ImVec2(980, 200), ImGuiCond_None);
+	ImGui::SetNextWindowSize(ImVec2(300, 520), ImGuiCond_None);
 
 	ImGui::Begin("Particle_Edit");
 
-	static int selectedItem = -1;
-	if (ImGui::TreeNode("Particle"))
-	{
+
 		_int iSize = m_EditParticle.size();
 		if (ImGui::BeginListBox("listBox"))
 		{
 			for (int i = 0; i < iSize; i++)
 			{
 				// 리스트박스 아이템의 텍스트
-				const bool isSelected = (selectedItem == i);
+				const bool isSelected = (m_iCurEditIndex == i);
 				char Label[256] = {};
 				strcpy_s(Label, m_pGameInstance->WstringToString(dynamic_cast<CEffect*>(m_EditParticle[i])->Get_Tag()).c_str());
 				if (ImGui::Selectable(Label, isSelected))
 				{
-					selectedItem = i; // 선택된 아이템 업데이트	
+					m_iCurEditIndex = i; // 선택된 아이템 업데이트	
 				}
 
 	
@@ -455,13 +703,12 @@ void CImguiManager::Editor_Tick(_float fTimeDelta)
 			}
 			ImGui::EndListBox();	
 		}
-	ImGui::TreePop();
-	}
+
 	
-	if (-1 != selectedItem)
+	if (-1 != m_iCurEditIndex)
 	{
 		//1->0
-		m_iCurEditIndex = selectedItem;
+		m_iCurEditIndex = m_iCurEditIndex;
 		Load_Desc(m_iCurEditIndex);
 	}
 
@@ -595,11 +842,10 @@ void CImguiManager::Editor_Tick(_float fTimeDelta)
 
 	Color_Palette();
 
-	if(bChange)
+	if (bChange)
 	{
 		Edit_Particle(m_iCurEditIndex);
 	}
-
 	ImGui::End();
 
 
@@ -607,8 +853,8 @@ void CImguiManager::Editor_Tick(_float fTimeDelta)
 
 void CImguiManager::Guizmo_Tick(_float fTimeDelta)
 {
-	ImGui::SetNextWindowPos(ImVec2(1030, 200), ImGuiCond_None);
-	ImGui::SetNextWindowSize(ImVec2(250, 150), ImGuiCond_None);
+	ImGui::SetNextWindowPos(ImVec2(700, 550), ImGuiCond_None);
+	ImGui::SetNextWindowSize(ImVec2(250, 170), ImGuiCond_None);
 
 
 	ImGui::Begin("Editor");
@@ -806,10 +1052,12 @@ void CImguiManager::Free()
 	for (auto& iter : m_EditParticle)
 		Safe_Release(iter);
 
+	for (auto& iter : m_EditTrail)
+		Safe_Release(iter);
+
 	Safe_Release(m_pDevice);
 	Safe_Release(m_pContext);
 	Safe_Release(m_pGameInstance);
-
 
 	ImGui_ImplDX11_Shutdown();
 	ImGui_ImplWin32_Shutdown();

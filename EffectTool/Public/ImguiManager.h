@@ -25,6 +25,11 @@ class CImguiManager final:
     public CBase
 {
 public:
+	enum MODE {
+		MODE_PARTICLE,
+		MODE_TRAIL,
+		MODE_END
+	};
 	enum PASS{ 
 		PASS_DIRECTION=2 , 
 		PASS_NODIRECTION ,
@@ -43,19 +48,19 @@ public:
 private:
 	void EditTransform(_float* cameraView, _float* cameraProjection, _float* matrix);
 	void Guizmo(_float fTimeDelta);
+	
 
-
-	HRESULT Create_Particle();
-	HRESULT Create_Trail();
-
-
+	//공용함수
+	HRESULT Mode_Select(_float fTimeDelta);
 	HRESULT Edit_Particle(_uint Index);
 	HRESULT Load_Desc(_uint Index);
 
+	void Guizmo_Tick(_float fTimeDelta);
 
+	//파티클 함수
+	HRESULT Create_Particle();
 	void Create_Tick(_float fTimeDelta);
 	void Editor_Tick(_float fTimeDelta);
-	void Guizmo_Tick(_float fTimeDelta);
 	void Timeline_Tick(_float fTimeDelta);
 
 	bool IsMouseHoveringCircle(float mouse_x, float mouse_y, float circle_x, float circle_y, float radius);
@@ -63,18 +68,31 @@ private:
 
 	void Color_Palette();
 	void Reset_Particle();
+
+	//트레일 함수
+	HRESULT Create_Trail();
+
+	void CreateTrail_Tick(_float fTimeDelta);
+	void EditorTrail_Tick(_float fTimeDelta);
+
+
+
+
 private:
 	ID3D11Device* m_pDevice = { nullptr };
 	ID3D11DeviceContext* m_pContext = { nullptr };
 	class CGameInstance* m_pGameInstance = { nullptr };
 
 private:
+	//모드
+	_uint m_iMode = { MODE_END };
 	//파티클 액션에 대한 bool 값.
 	_bool m_bSpread = { false };
 	_bool m_bDrop = { false };
 	_bool m_bGuizmo = { false };
 	//생성 파티클 담는 곳
 	vector<CGameObject*> m_EditParticle = {  };
+	vector<CGameObject*> m_EditTrail = {  };
 
 	CParticle_Point::PARTICLE_POINT_DESC m_EffectDesc = {};
 	CTRailEffect::TRAIL_DESC m_TrailDesc = {};
@@ -83,6 +101,7 @@ private:
 
 	_int m_iCurEditIndex = { -1 };
 	char text_input_buffer[256] = { "" };
+	char m_TrailTag[256] = { "" };
 
 	_float m_fParticleTime = { 0.f };
 	_float m_fMaxTime = { 30.f };
