@@ -16,7 +16,6 @@ class CEffect abstract:
 public:
     typedef struct tEFFECT_DESC :public CBlendObject::GAMEOBJECT_DESC
     {
-        
         _uint eType;
         _float4			vStartPos;
         _float           fStartTime;

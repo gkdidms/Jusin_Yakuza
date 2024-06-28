@@ -28,6 +28,7 @@ public:
     virtual HRESULT Render() override;
 
 private:
+    class CSystemManager* m_pSystemManager = { nullptr };
     _float m_fSensor = { 0.f };
     const _float4x4* m_pPlayerMatrix = { nullptr };
 

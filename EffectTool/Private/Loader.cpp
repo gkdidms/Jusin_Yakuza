@@ -6,6 +6,7 @@
 #pragma region "객체 원형"
 #include "FreeCamera.h"
 #include "Particle_Point.h"
+#include "TRailEffect.h"
 #include "Sky.h"
 #pragma endregion
 
@@ -168,6 +169,11 @@ HRESULT CLoader::Loading_For_EditLevel()
 		CParticle_Point::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	/* For.Prototype_GameObject_TrailEffect */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_TrailEffect"),
+		CTRailEffect::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 	/* For.Prototype_GameObject_Sky */
 	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Sky"),
 		CSky::Create(m_pDevice, m_pContext))))
@@ -188,6 +194,11 @@ HRESULT CLoader::Loading_For_EditLevel()
 		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxCube.hlsl"), VTXCUBE::Elements, VTXCUBE::iNumElements))))
 		return E_FAIL;
 
+	/* For.Prototype_Component_Shader_Trail */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_EDIT, TEXT("Prototype_Component_Shader_Trail"),
+		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_Trail.hlsl"), VTXPOSTEX::Elements, VTXPOSTEX::iNumElements))))
+
+		return E_FAIL;
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
 
 	m_isFinished = true;

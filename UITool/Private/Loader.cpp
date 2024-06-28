@@ -9,6 +9,8 @@
 
 #include "Image_Texture.h"
 #include "Text.h"
+#include "Group.h"
+#include "Btn.h"
 #pragma endregion
 
 
@@ -149,6 +151,11 @@ HRESULT CLoader::Loading_For_RunMapLevel(int iLevel)
 		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxMesh.hlsl"), VTXMESH::Elements, VTXMESH::iNumElements))))
 		return E_FAIL;
 
+	lstrcpy(m_szLoadingText, TEXT("컴포넌트를(을) 로딩 중 입니다."));
+	/* For.Prototype_Component_Collider */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(iLevel, TEXT("Prototype_Component_Collider"),
+		CCollider::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("오브젝트를(을) 로딩 중 입니다."));
 
@@ -171,6 +178,16 @@ HRESULT CLoader::Loading_For_RunMapLevel(int iLevel)
 	/* For.Prototype_GameObject_Text */
 	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Text"),
 		CText::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_Group */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Group"),
+		CGroup::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_Btn */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Btn"),
+		CBtn::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 	
 

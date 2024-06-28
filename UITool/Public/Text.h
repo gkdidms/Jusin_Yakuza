@@ -9,10 +9,18 @@ class CText :
 public:
     typedef struct tTextDesc : public UI_TEXTURE_DESC
     {
-        wstring& strText;
-        const _uint iTextType;
+        wstring strText;
+        _uint iTextType;
         _vector vColor;
     }TEXT_DESC;
+
+public:
+    wstring Get_Text() { return m_strText; }
+    _vector Get_Color() { return m_vColor; }
+
+public:
+    void Set_Text(wstring strText) { m_strText = strText; }
+    void Set_Color(_vector vColor) { m_vColor = vColor; }
 
 private:
     CText(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

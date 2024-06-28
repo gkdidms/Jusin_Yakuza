@@ -5,5 +5,5 @@
 #include "C:\Users\yeeun\dev\std\Yakuza\UITool\private\Background.cpp"
 
 
-#include "C:\Users\yeeun\dev\std\Yakuza\UITool\private\Text.cpp"
+#include "C:\Users\yeeun\dev\std\Yakuza\UITool\Private\Btn.cpp"
 

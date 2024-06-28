@@ -4,13 +4,17 @@
 #include "SystemManager.h"
 
 CCineCamera::CCineCamera(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-	: CCamera{ pDevice, pContext }
+	: CCamera{ pDevice, pContext },
+	m_pSystemManager { CSystemManager::GetInstance() }
 {
+	Safe_AddRef(m_pSystemManager);
 }
 
 CCineCamera::CCineCamera(const CCineCamera& rhs)
-	: CCamera{ rhs }
+	: CCamera{ rhs },
+	m_pSystemManager { rhs.m_pSystemManager}
 {
+	Safe_AddRef(m_pSystemManager);
 }
 
 HRESULT CCineCamera::Initialize_Prototype()
@@ -36,8 +40,7 @@ void CCineCamera::Priority_Tick(const _float& fTimeDelta)
 
 void CCineCamera::Tick(const _float& fTimeDelta)
 {
-
-	if (CSystemManager::GetInstance()->Get_Camera() == CAMERA_CINEMACHINE)
+	if (m_pSystemManager->Get_Camera() == CAMERA_CINEMACHINE)
 	{
 		Start_Lerp(fTimeDelta);
 		Cam_Move_Handle_Setting(fTimeDelta);
@@ -46,10 +49,10 @@ void CCineCamera::Tick(const _float& fTimeDelta)
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_vEye);
 		m_pTransformCom->LookAt(m_vFocus);
 
+		m_WorldMatrix = *m_pTransformCom->Get_WorldFloat4x4();
+
 		__super::Tick(fTimeDelta);
 	}
-
-
 }
 
 void CCineCamera::Late_Tick(const _float& fTimeDelta)
@@ -87,8 +90,6 @@ HRESULT CCineCamera::Load_CamBin(int iFileNum)
 	m_iCurCamIndex = 0;
 
 	Safe_Delete_Array(camIODesc.pCamObjDesc);
-
-
 
 	return S_OK;
 }
@@ -449,8 +450,8 @@ CGameObject* CCineCamera::Clone(void* pArg)
 
 void CCineCamera::Free()
 {
-
+	Safe_Release(m_pSystemManager);
 	m_vCamerasObjDesc.clear();
-
+	
 	__super::Free();
 }

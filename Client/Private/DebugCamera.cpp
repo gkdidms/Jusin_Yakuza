@@ -5,13 +5,17 @@
 #include "SystemManager.h"
 
 CDebugCamera::CDebugCamera(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-	: CCamera{ pDevice, pContext }
+	: CCamera{ pDevice, pContext },
+	m_pSystemManager { CSystemManager::GetInstance() }
 {
+	Safe_AddRef(m_pSystemManager);
 }
 
 CDebugCamera::CDebugCamera(const CDebugCamera& rhs)
-	: CCamera{ rhs }
+	: CCamera{ rhs },
+	m_pSystemManager { rhs.m_pSystemManager }
 {
+	Safe_AddRef(m_pSystemManager);
 }
 
 HRESULT CDebugCamera::Initialize_Prototype()
@@ -21,7 +25,7 @@ HRESULT CDebugCamera::Initialize_Prototype()
 
 HRESULT CDebugCamera::Initialize(void* pArg)
 {
-	PLAYER_CAMERA_DESC* pDesc = static_cast<PLAYER_CAMERA_DESC*>(pArg);
+	DEBUG_CAMERA_DESC* pDesc = static_cast<DEBUG_CAMERA_DESC*>(pArg);
 
 	if (nullptr != pDesc)
 	{
@@ -32,6 +36,7 @@ HRESULT CDebugCamera::Initialize(void* pArg)
 		return E_FAIL;
 
 	CSystemManager::GetInstance()->Set_Camera(CAMERA_DEBUG);
+	
 
 	return S_OK;
 }
@@ -42,6 +47,7 @@ void CDebugCamera::Priority_Tick(const _float& fTimeDelta)
 
 void CDebugCamera::Tick(const _float& fTimeDelta)
 {
+	if (m_pSystemManager->Get_Camera() != CAMERA_DEBUG) return;
 	/* 마우스 좌표 고정 & 마우스 커서 사라짐 */
 	//SetCursorPos(g_iWinSizeX * 0.5f, g_iWinSizeY * 0.5f); // 마우스 좌표 적용해주기
 	//ShowCursor(false);
@@ -74,19 +80,15 @@ void CDebugCamera::Tick(const _float& fTimeDelta)
 		}
 	}
 
-	if (CSystemManager::GetInstance()->Get_Camera() == CAMERA_DEBUG)
-	{
-		__super::Tick(fTimeDelta);
-	}
+	m_WorldMatrix = *m_pTransformCom->Get_WorldFloat4x4();
 
-	
-	
+	__super::Tick(fTimeDelta);
 }
 
 void CDebugCamera::Late_Tick(const _float& fTimeDelta)
 {
 
-	if ((GetKeyState('P') & 0x8000))
+	if (m_pGameInstance->GetKeyState(DIK_F5) == TAP)
 	{
 		CFileTotalMgr::GetInstance()->Load_Cinemachine(0, LEVEL_TEST);
 	}
@@ -126,4 +128,6 @@ CGameObject* CDebugCamera::Clone(void* pArg)
 void CDebugCamera::Free()
 {
 	__super::Free();
+
+	Safe_Release(m_pSystemManager);
 }
