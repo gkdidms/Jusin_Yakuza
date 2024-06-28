@@ -352,12 +352,12 @@ technique11 DefaultTechnique
         PixelShader = compile ps_5_0 PS_MAIN_SPREADCOLOR();
     }
 
-    pass WeightBlend //5
+    pass WeightBlend    //5
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_None_Test_None_Write, 0);
         SetBlendState(BS_WeightsBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
-
+   
 		/* 어떤 셰이덜르 국동할지. 셰이더를 몇 버젼으로 컴파일할지. 진입점함수가 무엇이찌. */
         VertexShader = compile vs_5_0 VS_MAIN();
         GeometryShader = compile gs_5_0 GS_CUSTOM();

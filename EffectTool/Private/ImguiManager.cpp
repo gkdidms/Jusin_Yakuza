@@ -56,6 +56,21 @@ HRESULT CImguiManager::Initialize(void* pArg)
 	m_EffectDesc.BufferInstance.vRectSize = _float2(1.0f, 1.0f);
 	m_EffectDesc.BufferInstance.fRadius = 1.f;
 
+	
+
+
+	m_TrailDesc.vStartPos = { 0.f, 0.f, 0.f, 1.f };
+	m_TrailDesc.eType = 1;
+	m_TrailDesc.ParticleTag = { TEXT("") };
+	m_TrailDesc.fStartTime = { 0.f };
+	m_TrailDesc.vStartColor = { 0.0f , 0.0f ,0.0f ,1.0f };
+	m_TrailDesc.vEndColor = { 0.0f, 0.0f, 0.0f, 1.0f };
+	m_TrailDesc.iShaderPass = { 0 };
+
+	m_TrailDesc.Trail_Desc.iMaxTrail = 10;
+	m_TrailDesc.Trail_Desc.vInitPosA = _float3{ 0.0f , 0.0f , 0.0f };
+	m_TrailDesc.Trail_Desc.vInitPosB = _float3{0.0f , 1.0f, 0.0f};	
+
 	return S_OK;
 }
 
@@ -193,7 +208,7 @@ HRESULT CImguiManager::Create_Particle()
 	if (-1 == m_iCurEditIndex)
 		m_iCurEditIndex = 0;
 
-	CEffect::EFFECT_DESC EffectDesc{};
+	CParticle_Point::PARTICLE_POINT_DESC EffectDesc{};
 	EffectDesc.BufferInstance.iNumInstance = 1;
 	EffectDesc.BufferInstance.isLoop = true;
 	EffectDesc.BufferInstance.vLifeTime = _float2(1.f, 1.f);
@@ -231,18 +246,13 @@ HRESULT CImguiManager::Create_Trail()
 {
 	if (-1 == m_iCurEditIndex)
 		m_iCurEditIndex = 0;
-	//20240627 작업중
+
 	CTRailEffect::TRAIL_DESC EffectDesc{};
-	EffectDesc.BufferInstance.iNumInstance = 1;
-	EffectDesc.BufferInstance.isLoop = true;
-	EffectDesc.BufferInstance.vLifeTime = _float2(1.f, 1.f);
-	EffectDesc.BufferInstance.vOffsetPos = _float3(0.f, 0.f, 0.f);
-	EffectDesc.BufferInstance.vPivotPos = _float3(0.f, 0.f, 0.f);
-	EffectDesc.BufferInstance.vRange = _float3(0.f, 0.f, 0.f);
-	EffectDesc.BufferInstance.vSize = _float2(1.f, 1.f);
-	EffectDesc.BufferInstance.vSpeed = _float2(1.f, 1.f);
-	EffectDesc.BufferInstance.vRectSize = _float2(1.0f, 1.0f);
-	EffectDesc.BufferInstance.fRadius = 1.f;
+
+
+	EffectDesc.Trail_Desc.iMaxTrail = 10;	
+	EffectDesc.Trail_Desc.vInitPosA = _float3{ 0.0f , 0.0f , 0.0f };	
+	EffectDesc.Trail_Desc.vInitPosB = _float3{ 0.0f , 1.0f, 0.0f };	
 
 	EffectDesc.vStartPos = { 0.f, 0.f, 0.f, 1.f };
 	EffectDesc.eType = CEffect::TYPE_TRAIL;
@@ -275,7 +285,7 @@ HRESULT CImguiManager::Edit_Particle(_uint Index)
 
 
 
-	CEffect::EFFECT_DESC EffectDesc{};
+	CParticle_Point::PARTICLE_POINT_DESC EffectDesc{};
 	EffectDesc.BufferInstance.iNumInstance = m_EffectDesc.BufferInstance.iNumInstance;
 	EffectDesc.BufferInstance.isLoop = m_EffectDesc.BufferInstance.isLoop;
 	EffectDesc.BufferInstance.vLifeTime = m_EffectDesc.BufferInstance.vLifeTime;
@@ -313,40 +323,59 @@ HRESULT CImguiManager::Edit_Particle(_uint Index)
 HRESULT CImguiManager::Load_Desc(_uint Index)
 {
 	CEffect* pEffect = dynamic_cast<CEffect*>(m_EditParticle[Index]);
-	CVIBuffer_Instance::INSTANCE_DESC* pDesc= pEffect->Get_Instance();	
+
+	_uint Type = pEffect->Get_Type();
+	switch (Type)
+	{
+	case CEffect::TYPE_POINT:
+	{
+		CVIBuffer_Instance::INSTANCE_DESC* pDesc = static_cast<CVIBuffer_Instance::INSTANCE_DESC*>(pEffect->Get_Instance());
+
+		m_EffectDesc.BufferInstance.iNumInstance = pDesc->iNumInstance;
+		m_EffectDesc.BufferInstance.isLoop = pDesc->isLoop;
+		m_EffectDesc.BufferInstance.vLifeTime = pDesc->vLifeTime;
+		m_EffectDesc.BufferInstance.vOffsetPos = pDesc->vOffsetPos;
+		m_EffectDesc.BufferInstance.vPivotPos = pDesc->vPivotPos;
+		m_EffectDesc.BufferInstance.vRange = pDesc->vRange;
+		m_EffectDesc.BufferInstance.vSize = pDesc->vSize;
+		m_EffectDesc.BufferInstance.vSpeed = pDesc->vSpeed;
+		m_EffectDesc.BufferInstance.vRectSize = pDesc->vRectSize;
+		m_EffectDesc.BufferInstance.fRadius = pDesc->fRadius;
+		m_EffectDesc.BufferInstance.bRadius = pDesc->bRadius;
+
+		m_EffectDesc.eType = pEffect->Get_Type();
+		m_EffectDesc.vStartPos = pEffect->Get_StartPos();
+		m_EffectDesc.fStartTime = *pEffect->Get_pStartTime();
+		m_EffectDesc.ParticleTag = pEffect->Get_Tag();
+		m_EffectDesc.vStartColor = pEffect->Get_SColor();
+		m_EffectDesc.vEndColor = pEffect->Get_EColor();
+		m_EffectDesc.iShaderPass = pEffect->Get_ShaderPass();
+
+		_uint CheckAction = pEffect->Get_Action();
+
+		if (CheckAction & pEffect->iAction[CEffect::ACTION_SPREAD])
+			m_bSpread = true;
+		else
+			m_bSpread = false;
+
+		if (CheckAction & pEffect->iAction[CEffect::ACTION_DROP])
+			m_bDrop = true;
+		else
+			m_bDrop = false;
+
+	}
+		break;
+	case CEffect::TYPE_TRAIL:
+	{
+		CVIBuffer_Instance::INSTANCE_DESC* pDesc = static_cast<CVIBuffer_Instance::INSTANCE_DESC*>(pEffect->Get_Instance());	
 
 
-	m_EffectDesc.BufferInstance.iNumInstance =pDesc->iNumInstance;
-	m_EffectDesc.BufferInstance.isLoop =pDesc->isLoop;
-	m_EffectDesc.BufferInstance.vLifeTime =pDesc->vLifeTime;
-	m_EffectDesc.BufferInstance.vOffsetPos =pDesc->vOffsetPos;
-	m_EffectDesc.BufferInstance.vPivotPos =pDesc->vPivotPos;
-	m_EffectDesc.BufferInstance.vRange =pDesc->vRange;
-	m_EffectDesc.BufferInstance.vSize =pDesc->vSize;
-	m_EffectDesc.BufferInstance.vSpeed =pDesc->vSpeed;
-	m_EffectDesc.BufferInstance.vRectSize =pDesc->vRectSize;
-	m_EffectDesc.BufferInstance.fRadius =pDesc->fRadius;
-	m_EffectDesc.BufferInstance.bRadius =pDesc->bRadius;
-	
-	m_EffectDesc.eType = pEffect->Get_Type();
-	m_EffectDesc.vStartPos = pEffect->Get_StartPos();
-	m_EffectDesc.fStartTime = *pEffect->Get_pStartTime();
-	m_EffectDesc.ParticleTag = pEffect->Get_Tag();	
-	m_EffectDesc.vStartColor= pEffect->Get_SColor();
-	m_EffectDesc.vEndColor = pEffect->Get_EColor();
-	m_EffectDesc.iShaderPass = pEffect->Get_ShaderPass();
+	}
+		break;
+	default:
+		break;
+	}
 
-	_uint CheckAction = pEffect->Get_Action();	
-	
-	if (CheckAction & pEffect->iAction[CEffect::ACTION_SPREAD])
-		m_bSpread = true;
-	else
-		m_bSpread = false;
-
-	if (CheckAction & pEffect->iAction[CEffect::ACTION_DROP])
-		m_bDrop = true;
-	else
-		m_bDrop = false;
 
 
 	return S_OK;
@@ -666,10 +695,21 @@ void CImguiManager::Color_Palette()
 void CImguiManager::Reset_Particle()
 {
 
-
 	for (size_t i = 0; i < m_EditParticle.size(); i++)
 	{
-		if(!dynamic_cast<CEffect*>(m_EditParticle[i])->Get_Instance()->isLoop)
+
+		dynamic_cast<CEffect*>(m_EditParticle[i]);
+		//if ()
+		//{
+
+		//}
+
+		void* pVoidpDesc = dynamic_cast<CParticle_Point*>(m_EditParticle[i])->Get_Instance();	
+		CVIBuffer_Instance::INSTANCE_DESC* pDesc = static_cast<CVIBuffer_Instance::INSTANCE_DESC*>(pVoidpDesc);	
+
+
+
+		if(!pDesc->isLoop)	
 		{
 			Load_Desc(i);
 			Edit_Particle(i);
@@ -712,14 +752,15 @@ void CImguiManager::Timeline_Tick(_float fTimeDelta)
 
 	// 타임라인 아이템 그리기
 	for (int i = 0; i < m_EditParticle.size(); ++i) {
-		CEffect* item = dynamic_cast<CEffect*>(m_EditParticle[i]);
+		CParticle_Point* item = dynamic_cast<CParticle_Point*>(m_EditParticle[i]);	
+		CVIBuffer_Instance::INSTANCE_DESC* pDesc = static_cast<CVIBuffer_Instance::INSTANCE_DESC*>(item->Get_Instance());
 
 		string itemLabel = m_pGameInstance->WstringToString(item->Get_Tag());
 
 
 		// 아이템의 시작 및 끝 위치 계산
 		float start_pos_x = canvas_pos.x + (*item->Get_pStartTime() / m_fMaxTime) * canvas_size.x;
-		float end_pos_x = canvas_pos.x + ((item->Get_Instance()->vLifeTime.y + *item->Get_pStartTime()) / m_fMaxTime) * canvas_size.x;
+		float end_pos_x = canvas_pos.x + ((pDesc->vLifeTime.y + *item->Get_pStartTime()) / m_fMaxTime) * canvas_size.x;
 		float item_pos_y = canvas_pos.y + i * (item_height + item_spacing);
 		float middle_posx = start_pos_x + (end_pos_x - start_pos_x) * 0.5f;
 		// 아이템 그리기
