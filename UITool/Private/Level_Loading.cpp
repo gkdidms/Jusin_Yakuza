@@ -21,8 +21,8 @@ HRESULT CLevel_Loading::Initialize(LEVEL eNextLevel)
 	m_eNextLevel = eNextLevel;
 
 	/* 로딩씬에 뭔가를 보여주려한다면 그 보여주기위한 객체들을 생성한다. (백그라운드 + 로딩바 + 폰트) */
-	if (FAILED(Ready_Layer_BackGround(TEXT("Layer_BackGround"))))
-		return E_FAIL;
+	/*if (FAILED(Ready_Layer_BackGround(TEXT("Layer_BackGround"))))
+		return E_FAIL;*/
 
 	/* eNextLevel을 위한 자원을 로드한다.(추가적으로 생성한 스레드) */
 	m_pLoader = CLoader::Create(m_pDevice, m_pContext, eNextLevel);

@@ -68,8 +68,8 @@ HRESULT CLevel_RunMap::Ready_Layer_Camera(const wstring& strLayerTag)
 
 HRESULT CLevel_RunMap::Ready_Layer_GameObject(const wstring& strLayerTag)
 {
-	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_RUNMAP, TEXT("Prototype_GameObject_Terrain"), strLayerTag)))
-		return E_FAIL;
+	/*if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_RUNMAP, TEXT("Prototype_GameObject_Terrain"), strLayerTag)))
+		return E_FAIL;*/
 
 	return S_OK;
 }
