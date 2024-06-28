@@ -45,43 +45,27 @@ void CPlayer::Priority_Tick(const _float& fTimeDelta)
 
 void CPlayer::Tick(const _float& fTimeDelta)
 {
-	if (m_pGameInstance->GetKeyState(DIK_UP) == HOLD)
-	{
-		m_pTransformCom->Go_Straight(fTimeDelta);
-	}
-	if (m_pGameInstance->GetKeyState(DIK_DOWN) == HOLD)
-	{
-		m_pTransformCom->Go_Backward(fTimeDelta);
-	}
-	if (m_pGameInstance->GetKeyState(DIK_LEFT) == HOLD)
-	{
-		m_pTransformCom->Turn(m_pTransformCom->Get_State(CTransform::STATE_UP), fTimeDelta);
-	}
-	if (m_pGameInstance->GetKeyState(DIK_RIGHT) == HOLD)
-	{
-		m_pTransformCom->Turn(m_pTransformCom->Get_State(CTransform::STATE_UP), -fTimeDelta);
-	}
+	Move_KeyInput(fTimeDelta);
+	//if (m_pGameInstance->GetKeyState(DIK_0) == TAP)
+	//{
+	//	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0, 0, 0, 1));
+	//}
+	//if (m_pGameInstance->GetKeyState(DIK_9) == TAP)
+	//{
+	//	m_iAnimIndex++;
+	//	Change_Animation(m_iAnimIndex);
+	//}
+	//if (m_pGameInstance->GetKeyState(DIK_8) == TAP)
+	//{
+	//	m_iAnimIndex--;
+	//	Change_Animation(m_iAnimIndex);
+	//}
 
-	if (m_pGameInstance->GetKeyState(DIK_0) == TAP)
-	{
-		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0, 0, 0, 1));
-	}
-	if (m_pGameInstance->GetKeyState(DIK_9) == TAP)
-	{
-		m_iAnimIndex++;
-		Change_Animation(m_iAnimIndex);
-	}
-	if (m_pGameInstance->GetKeyState(DIK_8) == TAP)
-	{
-		m_iAnimIndex--;
-		Change_Animation(m_iAnimIndex);
-	}
-
-	if (m_pGameInstance->GetKeyState(DIK_7) == TAP)
-	{
-		m_iAnimIndex = 0;
-		Change_Animation(m_iAnimIndex);
-	}
+	//if (m_pGameInstance->GetKeyState(DIK_7) == TAP)
+	//{
+	//	m_iAnimIndex = 0;
+	//	Change_Animation(m_iAnimIndex);
+	//}
 
 	if (m_isAnimStart)
 		m_pModelCom->Play_Animation(fTimeDelta);
@@ -224,6 +208,26 @@ void CPlayer::Animation_Event()
 	}
 }
 
+void CPlayer::Move_KeyInput(const _float& fTimeDelta)
+{
+	if (m_pGameInstance->GetKeyState(DIK_W) == HOLD)
+	{
+		m_pTransformCom->Go_Straight(fTimeDelta);
+	}
+	else if (m_pGameInstance->GetKeyState(DIK_S) == HOLD)
+	{
+		m_pTransformCom->Go_Backward(fTimeDelta);
+	}
+	else if (m_pGameInstance->GetKeyState(DIK_A) == HOLD)
+	{
+		m_pTransformCom->Go_Left(fTimeDelta);
+	}
+	else if (m_pGameInstance->GetKeyState(DIK_D) == HOLD)
+	{
+		m_pTransformCom->Go_Right(fTimeDelta);
+	}
+}
+
 HRESULT CPlayer::Add_Componenets()
 {
 	if (FAILED(__super::Add_Component(LEVEL_TEST, TEXT("Prototype_Component_Shader_VtxAnim"),
@@ -310,10 +314,18 @@ void CPlayer::Apply_ChracterData()
 
 void CPlayer::Change_Animation(_uint iIndex)
 {
-	m_pModelCom->Set_AnimationIndex(m_iAnimIndex, ANIM_INTERVAL);
-	string strAnimName = string(m_pModelCom->Get_AnimationName(m_iAnimIndex));
+	m_pModelCom->Set_AnimationIndex(iIndex, ANIM_INTERVAL);
+	string strAnimName = string(m_pModelCom->Get_AnimationName(iIndex));
 	strAnimName = m_pGameInstance->Extract_String(strAnimName, '[', ']');
 	m_pData->Set_CurrentAnimation(strAnimName);
+}
+
+void CPlayer::Ready_Animations()
+{
+
+	//m_AnimationTree.at()
+
+
 }
 
 CPlayer* CPlayer::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

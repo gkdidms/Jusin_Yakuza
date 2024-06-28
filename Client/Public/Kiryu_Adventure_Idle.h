@@ -18,6 +18,7 @@ public:
 	virtual void Change_Animation();
 
 public:
+	static CBehaviorAnimation* Create(class CPlayer* pPlayer);
 	virtual void Free() override;
 };
 END
