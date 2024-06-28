@@ -118,22 +118,22 @@ HRESULT CLoader::Loading_For_EditLevel()
 
 	/* Prototype_Component_Texture_Sphere */
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_EDIT, TEXT("Prototype_Component_Texture_Sphere"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Particle/lm000.dds"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/lm000.dds"), 1))))
 		return E_FAIL;
 
 	/* Prototype_Component_Texture_Trail */
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_EDIT, TEXT("Prototype_Component_Texture_Trail"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Particle/001_trc_n.dds"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/001_trc_n.dds"), 1))))
 		return E_FAIL;
 
 	/* Prototype_Component_Texture_Sky */
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_EDIT, TEXT("Prototype_Component_Texture_Sky"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/SkyBox/Sky_%d.dds"), 5))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/SkyBox/Sky_%d.dds"), 5))))
 		return E_FAIL;
 
 	/* Prototype_Component_Texture_Test */
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_EDIT, TEXT("Prototype_Component_Texture_Test"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Particle/9923j.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/9923j.png"), 1))))
 		return E_FAIL;
 
 
@@ -161,6 +161,7 @@ HRESULT CLoader::Loading_For_EditLevel()
 		CFreeCamera::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	Add_Particle_On_Path(TEXT("../../Client/Bin/DataFiles/Particle/"));
 
 
 
@@ -203,6 +204,32 @@ HRESULT CLoader::Loading_For_EditLevel()
 
 	m_isFinished = true;
 
+	return S_OK;
+}
+
+HRESULT CLoader::Add_Particle_On_Path(const wstring& strPath)
+{
+	vector<wstring> vecDirectorys;
+	m_pGameInstance->Get_DirectoryName(strPath, vecDirectorys);
+
+	for (auto& strChannelName : vecDirectorys)
+	{
+		wstring strFilePath = strPath + strChannelName + TEXT("/");
+		string strDirectory = m_pGameInstance->WstringToString(strFilePath);
+
+		for (const auto& entry : fs::directory_iterator(strDirectory))
+		{
+			string FileName = entry.path().filename().string();
+			string AllPath = strDirectory + FileName;	
+			/* For.Prototype_Component_VIBuffer_Instance_Point */
+			if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_EDIT, m_pGameInstance->StringToWstring(FileName),
+				CVIBuffer_Instance_Point::Create(m_pDevice, m_pContext, AllPath))))
+				return E_FAIL;
+
+		}
+		
+
+	}
 	return S_OK;
 }
 

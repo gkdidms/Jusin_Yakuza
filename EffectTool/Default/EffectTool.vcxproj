@@ -113,7 +113,7 @@
       <PreprocessorDefinitions>NOMINMAX;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
-      <AdditionalIncludeDirectories>../../Imgui/background/;../../Imgui/imGuizmo/;../../Imgui/imgui/;../../EngineSDK/Inc/;../Public/;./;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../Imgui/imGuiFileDialog/;../../Imgui/background/;../../Imgui/imGuizmo/;../../Imgui/imgui/;../../EngineSDK/Inc/;../Public/;./;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <PrecompiledHeader>NotUsing</PrecompiledHeader>
       <PrecompiledHeaderFile>framework.h</PrecompiledHeaderFile>
@@ -155,6 +155,8 @@
   <ItemGroup>
     <ClInclude Include="..\..\Imgui\background\imgui_impl_dx11.h" />
     <ClInclude Include="..\..\Imgui\background\imgui_impl_win32.h" />
+    <ClInclude Include="..\..\Imgui\ImGuiFileDialog\ImGuiFileDialog.h" />
+    <ClInclude Include="..\..\Imgui\ImGuiFileDialog\ImGuiFileDialogConfig.h" />
     <ClInclude Include="..\..\Imgui\imGuizmo\GraphEditor.h" />
     <ClInclude Include="..\..\Imgui\imGuizmo\ImCurveEdit.h" />
     <ClInclude Include="..\..\Imgui\imGuizmo\ImGradient.h" />
@@ -197,6 +199,7 @@
   <ItemGroup>
     <ClCompile Include="..\..\Imgui\background\imgui_impl_dx11.cpp" />
     <ClCompile Include="..\..\Imgui\background\imgui_impl_win32.cpp" />
+    <ClCompile Include="..\..\Imgui\ImGuiFileDialog\ImGuiFileDialog.cpp" />
     <ClCompile Include="..\..\Imgui\imGuizmo\GraphEditor.cpp" />
     <ClCompile Include="..\..\Imgui\imGuizmo\ImCurveEdit.cpp" />
     <ClCompile Include="..\..\Imgui\imGuizmo\ImGradient.cpp" />
