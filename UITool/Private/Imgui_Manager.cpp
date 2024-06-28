@@ -116,7 +116,6 @@ void CImgui_Manager::Window_Image()
                 ImGui::EndListBox();
             }
 
-
             if (ImGui::Button(u8"이미지 파일 생성"))
             {
                 IGFD::FileDialogConfig config;
@@ -221,7 +220,6 @@ void CImgui_Manager::Window_Image()
 
                     Textures[m_iGroupObjectIndex]->Get_TransformCom()->Set_WorldMatrix(XMLoadFloat4x4(&m_WorldMatirx));
 
-
                     //쉐이더 선택
                     _int iPass = Textures[m_iGroupObjectIndex]->Get_ShaderPass();
 
@@ -239,41 +237,69 @@ void CImgui_Manager::Window_Image()
         ImGui::NewLine();
         if (ImGui::Button(u8"렌더타겟 이미지 생성"))
         {
-            /*if (FAILED(m_pGameInstance->Create_Texture(TEXT("Target_Diffuse"), TEXT("../../Client/Bin/Resources/Textures/UI/CreateFile/test.dds"))))
+            wstring strFilePath = TEXT("../../Client/Bin/Resources/Textures/UI/CreateFile/") + m_pGameInstance->StringToWstring(m_strSelectTag) + TEXT(".dds");
+            if (FAILED(m_pObjectManager->Create_Texture(m_iGroupIndex, strFilePath)))
             {
                 MSG_BOX("렌더타겟 이미지 생성 실패");
-            }*/
+            }
         }
+        ImGui::NewLine();
     }
 
-    if (ImGui::CollapsingHeader(u8"Button 생성"))
+    if (ImGui::CollapsingHeader(u8"기능이 있는 오브젝트 생성"))
     {
-        if (ImGui::Button(u8"Button 파일 열기"))
-        {
-            IGFD::FileDialogConfig config;
-            config.path = "../../Client/Bin/Resources/Textures/UI";
-            ImGuiFileDialog::Instance()->OpenDialog("ChooseButtonKey", "Choose File", ".dds", config);
-        }
-        if (ImGuiFileDialog::Instance()->Display("ChooseButtonKey")) {
-            if (ImGuiFileDialog::Instance()->IsOk()) { // action if OK
-                std::string filePathName = ImGuiFileDialog::Instance()->GetFilePathName();
-                std::string fileName = ImGuiFileDialog::Instance()->GetCurrentFileName();
-                // action
+        ImGui::RadioButton("Button", &m_iObjectType, 1); ImGui::SameLine();
+        ImGui::RadioButton(u8"텍스트", &m_iObjectType, 2); ImGui::SameLine();
+        ImGui::RadioButton(u8"수치값", &m_iObjectType, 3);
 
+        ImGui::NewLine();
+
+        if (m_iObjectType == 1)
+        {
+            if (ImGui::Button(u8"이미지 파일 생성"))
+            {
+                IGFD::FileDialogConfig config;
+                config.path = "../../Client/Bin/Resources/Textures/UI";
+                ImGuiFileDialog::Instance()->OpenDialog("ChooseButtonKey", "Choose File", ".dds, .png", config);
+            }
+            if (ImGuiFileDialog::Instance()->Display("ChooseButtonKey")) {
+                if (ImGuiFileDialog::Instance()->IsOk()) { // action if OK
+                    std::string filePathName = ImGuiFileDialog::Instance()->GetFilePathName();
+                    std::string fileName = ImGuiFileDialog::Instance()->GetCurrentFileName();
+
+                    CObject_Manager::OBJ_MNG_DESC Desc{};
+                    Desc.strFileName = m_pGameInstance->StringToWstring(fileName);
+                    Desc.strFilePath = m_pGameInstance->StringToWstring(filePathName);
+                    Desc.iTextureType = m_iObjectType;
+
+                    m_pObjectManager->Add_Object(TEXT("Layer_Image"), &Desc);
+                }
+
+                // close
+                ImGuiFileDialog::Instance()->Close();
+            }
+        }
+        else if (m_iObjectType == 2 || m_iObjectType == 3)
+        {
+            ImGui::InputText(u8"텍스트 작성 : ", m_szText, MAX_PATH);
+
+            static ImVec4 vAmbientColor = ImVec4(0.0f / 255.0f, 0.0f / 255.0f, 0.0f / 255.0f, 255.0f / 255.0f);
+            ImGui::ColorEdit4(u8"vColor 선택", (float*)&m_vColor, ImGuiColorEditFlags_Float);
+
+            if (ImGui::Button(u8"텍스트 생성"))
+            {
+                //텍스쳐 생성
                 CObject_Manager::OBJ_MNG_DESC Desc{};
-                Desc.strFileName = m_pGameInstance->StringToWstring(fileName);
-                Desc.strFilePath = m_pGameInstance->StringToWstring(filePathName);
-                Desc.iTextureType = CObject_Manager::BTN;
+                Desc.strText = m_pGameInstance->StringToWstring(string(m_szText));
+                Desc.iTextureType = m_iObjectType;
+                Desc.vColor = XMLoadFloat4(&m_vColor);
 
                 m_pObjectManager->Add_Object(TEXT("Layer_Image"), &Desc);
             }
-
-            // close
-            ImGuiFileDialog::Instance()->Close();
         }
+
+        ImGui::NewLine();
     }
-
-
 
     ImGui::End();
 }

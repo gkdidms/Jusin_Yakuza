@@ -108,12 +108,18 @@ BlendState BS_Blend_Test
 
 BlendState BS_WeightsBlend
 {
-    BlendEnable[1] = true;
-    SrcBlend = Zero;
-    DestBlend = INV_SRC_ALPHA;
-    BlendOp = ADD;
-};
+    BlendEnable[0] = true;
+    SrcBlend[0] = One;
+    DestBlend[0] = One;
+    BlendOp[0] = Add;
 
+
+    BlendEnable[1] = true;
+    SrcBlend[1] = Zero;
+    DestBlend[1] = INV_SRC_ALPHA;
+    BlendOp[1] = ADD;
+
+};
 BlendState BS_OIT
 {
     BlendEnable[0] = true;

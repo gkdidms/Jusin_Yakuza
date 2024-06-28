@@ -67,7 +67,7 @@ typedef struct FMOD_OUTPUT_DESCRIPTION
     FMOD_OUTPUT_GETNUMDRIVERS_CALLBACK      getnumdrivers;
     FMOD_OUTPUT_GETDRIVERINFO_CALLBACK      getdriverinfo;
     FMOD_OUTPUT_INIT_CALLBACK               init;
-    FMOD_OUTPUT_START_CALLBACK              start;
+    FMOD_OUTPUT_START_CALLBACK              m_fDebugStart;
     FMOD_OUTPUT_STOP_CALLBACK               stop;
     FMOD_OUTPUT_CLOSE_CALLBACK              close;
     FMOD_OUTPUT_UPDATE_CALLBACK             update;

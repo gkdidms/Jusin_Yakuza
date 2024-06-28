@@ -49,7 +49,7 @@ void CTRailEffect::Late_Tick(const _float& fTimeDelta)
 {
 	Compute_ViewZ(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 
-	m_pGameInstance->Add_Renderer(CRenderer::RENDER_EFFECT, this);
+	m_pGameInstance->Add_Renderer(CRenderer::RENDER_BLENDER, this);
 }
 
 HRESULT CTRailEffect::Render()
@@ -61,8 +61,6 @@ HRESULT CTRailEffect::Render()
 	m_pShaderCom->Begin(0);
 
 	m_pVIBufferCom->Render();
-
-
 
 	return S_OK;
 }
@@ -80,7 +78,7 @@ HRESULT CTRailEffect::Add_Components()
 		return E_FAIL;
 
 	/* For.Com_Texture */
-	if (FAILED(__super::Add_Component(LEVEL_EDIT, TEXT("Prototype_Component_Texture_Sphere"),
+	if (FAILED(__super::Add_Component(LEVEL_EDIT, TEXT("Prototype_Component_Texture_Trail"),
 		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
 		return E_FAIL;
 

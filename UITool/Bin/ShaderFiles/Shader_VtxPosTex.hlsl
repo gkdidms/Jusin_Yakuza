@@ -6,6 +6,7 @@ Texture2D g_Texture;
 
 float g_fProgress;
 
+
 struct VS_IN
 {
     float3 vPosition : POSITION;
@@ -53,7 +54,7 @@ PS_OUT PS_MAIN(PS_IN In)
     return Out;
 }
 
-PS_OUT PS_ALPHA_TEXTURE(PS_IN In)
+PS_OUT PS_BACKBUFFER(PS_IN In)
 {
     PS_OUT Out = (PS_OUT) 0;
     
@@ -101,5 +102,18 @@ technique11 DefaultTechnique
         HullShader = NULL;
         DomainShader = NULL;
         PixelShader = compile ps_5_0 PS_MAIN();
+    }
+
+    pass BackBuffer
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        HullShader = NULL;
+        DomainShader = NULL;
+        PixelShader = compile ps_5_0 PS_BACKBUFFER();
     }
 }

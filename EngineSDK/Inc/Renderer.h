@@ -48,6 +48,9 @@ private:
     void Render_ShadowObjects();
     void Render_NonBlender();
 
+    /*Decal*/
+    void Render_Decal();
+
     /* SSAO */
     void Render_SSAO();
     void Render_SSAOBlur();
@@ -70,8 +73,7 @@ private:
     void Render_Effect();// 파티클렌더 
     void Render_FinlaOIT();// 파티클 최종병합
     void Render_UI();
-    void Render_Decal();
-
+    
 private:
     HRESULT Ready_SSAONoiseTexture();
 
@@ -82,7 +84,6 @@ private:
 private:
     void Render_Debug();
 #endif // DEBUG
-
 
 private:
     ID3D11Device* m_pDevice = { nullptr };

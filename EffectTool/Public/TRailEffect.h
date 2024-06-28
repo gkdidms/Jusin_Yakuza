@@ -8,6 +8,7 @@ class CShader;
 class CTexture;
 class CVIBuffer_Trail;
 END
+
 BEGIN(Client)
 class CTRailEffect final:
     public CEffect

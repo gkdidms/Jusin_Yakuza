@@ -796,9 +796,9 @@ namespace ImGuizmo
       rayDir = Normalized(rayEnd - rayOrigin);
    }
 
-   static float GetSegmentLengthClipSpace(const vec_t& start, const vec_t& end)
+   static float GetSegmentLengthClipSpace(const vec_t& m_fDebugStart, const vec_t& end)
    {
-      vec_t startOfSegment = start;
+      vec_t startOfSegment = m_fDebugStart;
       startOfSegment.TransformPoint(gContext.mMVP);
       if (fabsf(startOfSegment.w) > FLT_EPSILON) // check for axis aligned with camera direction
       {
