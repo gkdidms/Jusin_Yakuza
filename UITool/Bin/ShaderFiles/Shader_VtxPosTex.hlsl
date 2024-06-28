@@ -60,6 +60,9 @@ PS_OUT PS_BACKBUFFER(PS_IN In)
     
     Out.vColor = g_Texture.Sample(LinearSampler, In.vTexcoord);
     
+    if (Out.vColor.a <= 0.1f)
+        discard;
+    
     return Out;
 }
 
