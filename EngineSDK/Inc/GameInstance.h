@@ -5,6 +5,7 @@
 #include "PipeLine.h"
 #include "Input_Device.h"
 #include "RandomManager.h"
+#include "RenderTarget.h"
 
 BEGIN(Engine)
 class ENGINE_DLL CGameInstance :

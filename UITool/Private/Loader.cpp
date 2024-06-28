@@ -8,7 +8,7 @@
 #include "Terrain.h"
 
 #include "Image_Texture.h"
-#include "Btn_Texture.h"
+#include "Text.h"
 #pragma endregion
 
 
@@ -168,9 +168,9 @@ HRESULT CLoader::Loading_For_RunMapLevel(int iLevel)
 		CImage_Texture::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	/* For.Prototype_GameObject_Btn_Texture */
-	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Btn_Texture"),
-		CBtn_Texture::Create(m_pDevice, m_pContext))))
+	/* For.Prototype_GameObject_Text */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Text"),
+		CText::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 	
 

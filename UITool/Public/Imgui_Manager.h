@@ -34,7 +34,7 @@ private:
 private:
 	void Guizmo_Test();
 	HRESULT Create_Texture();
-	
+
 private:
 	ID3D11Device* m_pDevice = { nullptr };
 	ID3D11DeviceContext* m_pContext = { nullptr };
@@ -59,6 +59,11 @@ private:
 	_int m_iGroupIndex = { -1 };
 	_int m_iGroupObjectIndex = { -1 };
 	string m_strSelectTag = "";
+
+private:
+	_int m_iObjectType = { 0 };
+	_char m_szText[MAX_PATH] = { "" };
+	_float4 m_vColor = {};
 
 public:
 	static void Release_Imgui();
