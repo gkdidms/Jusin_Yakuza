@@ -25,7 +25,7 @@ HRESULT CParticle_Point::Initialize(void* pArg)
     if (nullptr != pArg)
     {
         PARTICLE_POINT_DESC* pDesc = static_cast<PARTICLE_POINT_DESC*>(pArg);
-
+        m_BufferInstance = pDesc->BufferInstance;
 
     }
 
@@ -42,7 +42,13 @@ void CParticle_Point::Priority_Tick(const _float& fTimeDelta)
 void CParticle_Point::Tick(const _float& fTimeDelta)
 {
 
-    __super::Tick(fTimeDelta);
+    m_fCurTime += fTimeDelta;
+    if (!m_BufferInstance.isLoop)
+    {
+        _float fTotalTime = m_fStartTime + m_BufferInstance.vLifeTime.y;
+        if (m_fCurTime > fTotalTime)
+            m_isDead = true;
+    }
 
     if(m_fCurTime>= m_fStartTime)
     {
@@ -98,6 +104,11 @@ HRESULT CParticle_Point::Render()
        
 
     return S_OK;
+}
+
+void* CParticle_Point::Get_Instance()
+{
+    return &m_BufferInstance;
 }
 
 

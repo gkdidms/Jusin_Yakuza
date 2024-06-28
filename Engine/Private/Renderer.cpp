@@ -194,7 +194,8 @@ HRESULT CRenderer::Initialize()
 	/*MRT_Accum*/
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_Accum"), TEXT("Target_AccumColor"))))
 		return E_FAIL;
-
+	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_Accum"), TEXT("Target_AccumAlpha"))))
+		return E_FAIL;
 
 	m_pVIBuffer = CVIBuffer_Rect::Create(m_pDevice, m_pContext);
 	if (nullptr == m_pVIBuffer)
@@ -1154,6 +1155,19 @@ void CRenderer::Render_FinlaOIT() //파티클 그린 타겟 병합
 {
 	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_AccumColor"), m_pShader, "g_AccumTexture")))//이펙트 텍스처 원본
 		return;
+	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_AccumAlpha"), m_pShader, "g_AccumAlpha")))//이펙트 텍스처 원본
+		return;
+
+	if (m_isHDR)
+	{
+		if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_ToneMapping"), m_pShader, "g_ResultTexture")))//이펙트 텍스처 원본
+			return;
+	}
+	else
+	{
+		if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_BackBuffer"), m_pShader, "g_ResultTexture")))//이펙트 텍스처 원본
+			return;
+	}
 
 	m_pShader->Begin(15);
 

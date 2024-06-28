@@ -16,17 +16,18 @@ class CEffect abstract:
 public:
     typedef struct tEFFECT_DESC :public CBlendObject::GAMEOBJECT_DESC
     {
-        CVIBuffer_Instance::INSTANCE_DESC BufferInstance;   
+        
         _uint eType;
         _float4			vStartPos;
         _float           fStartTime;
-        wstring ParticleTag;
 
+        wstring ParticleTag;
         _float4 vStartColor;
         _float4 vEndColor;
 
         _int iShaderPass;
     }EFFECT_DESC;
+
     enum TYPE { TYPE_POINT , TYPE_TRAIL, TYPE_END};
     enum ACTION { ACTION_SPREAD, ACTION_DROP, ACTION_END };
     static const _uint iAction[ACTION_END];
@@ -46,9 +47,7 @@ public:
 public:
     HRESULT Edit_Action(ACTION iEditAction);
 
-    CVIBuffer_Instance::INSTANCE_DESC* Get_Instance() {
-        return &m_BufferInstance;
-    }
+    virtual void* Get_Instance();
 public:
     void Set_StartPos(_float4 Pos) { m_vStartPos = Pos; }
     _uint Get_Type() const { return m_eType; }
@@ -61,16 +60,18 @@ public:
     _int Get_ShaderPass() { return m_iShaderPass; }
 
 protected:
-    CVIBuffer_Instance::INSTANCE_DESC m_BufferInstance; 
-    _uint m_eType = { TYPE_END };
-    wstring m_ParticleTag = { TEXT("") };
-    _float m_fStartTime = { 0.f };
-    _float4 m_vStartPos = {};
-    _float m_fCurTime = { 0.f };
-    _uint							m_iAction = { 0 };
-    _float4 m_vStartColor = { 0.f , 0.f , 0.f , 0.f };
-    _float4 m_vEndColor = { 0.f , 0.f , 0.f , 0.f };
-    _int        m_iShaderPass = { 0 };
+    
+    _uint          m_eType = { TYPE_END };
+    wstring     m_ParticleTag = { TEXT("") };
+    _float       m_fStartTime = { 0.f };
+    _float4     m_vStartPos = {};
+
+    _uint			m_iAction = { 0 };
+    _float4     m_vStartColor = { 0.f , 0.f , 0.f , 0.f };
+    _float4     m_vEndColor = { 0.f , 0.f , 0.f , 0.f };
+    _int          m_iShaderPass = { 0 };
+
+
 public:
     virtual void Free() override;
 };

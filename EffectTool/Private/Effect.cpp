@@ -34,14 +34,14 @@ HRESULT CEffect::Initialize(void* pArg)
     {
         EFFECT_DESC* pDesc = static_cast<EFFECT_DESC*>(pArg);
         m_eType = pDesc->eType;
-        m_BufferInstance = pDesc->BufferInstance;
         m_vStartPos = pDesc->vStartPos;
-        m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&pDesc->vStartPos));
         m_ParticleTag = pDesc->ParticleTag;
         m_fStartTime = pDesc->fStartTime;
         m_vStartColor = pDesc->vStartColor;
         m_vEndColor = pDesc->vEndColor;
         m_iShaderPass = pDesc->iShaderPass;
+
+        m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&pDesc->vStartPos));
     }
 
     return S_OK;
@@ -53,14 +53,8 @@ void CEffect::Priority_Tick(const _float& fTimeDelta)
 
 void CEffect::Tick(const _float& fTimeDelta)
 {
-    m_fCurTime += fTimeDelta;
-    
-    if(!m_BufferInstance.isLoop)
-    {
-        _float fTotalTime = m_fStartTime + m_BufferInstance.vLifeTime.y;
-        if (m_fCurTime > fTotalTime)
-            m_isDead = true;
-    }
+
+
 }
 
 void CEffect::Late_Tick(const _float& fTimeDelta)
@@ -81,6 +75,11 @@ HRESULT CEffect::Edit_Action(ACTION iEditAction)
     m_iAction ^= mask;
 
     return S_OK;
+}
+
+void* CEffect::Get_Instance()
+{
+    return nullptr;
 }
 
 void CEffect::Free()
