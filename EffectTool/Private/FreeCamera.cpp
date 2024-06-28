@@ -68,6 +68,7 @@ void CFreeCamera::Tick(const _float& fTimeDelta)
         }
         Mouse_Fix();
     }
+    XMStoreFloat4x4(&m_WorldMatrix, m_pTransformCom->Get_WorldMatrix());
 
     __super::Tick(fTimeDelta);
 }
