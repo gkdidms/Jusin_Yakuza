@@ -1035,7 +1035,7 @@ void CImguiManager::AlphaMesh_Load(string strPath)
 	ifstream in(strDirectory, ios::binary);
 
 	if (!in.is_open()) {
-		MSG_BOX("파일 개방 실패");
+		MSG_BOX("AlphaMeshes.dat 개방 실패");
 		return;
 	}
 
@@ -1062,7 +1062,7 @@ void CImguiManager::AnimationLoop_Load(string strPath)
 	ifstream in(strDirectory, ios::binary);
 
 	if (!in.is_open()) {
-		MSG_BOX("파일 개방 실패");
+		MSG_BOX("LoopAnimations.dat 개방 실패");
 		return;
 	}
 
@@ -1125,7 +1125,7 @@ void CImguiManager::ColliderState_Load(string strPath)
 	ifstream in(strDirectory, ios::binary);
 
 	if (!in.is_open()) {
-		MSG_BOX("파일 개방 실패");
+		MSG_BOX("Colliders 개방 실패");
 		return;
 	}
 
