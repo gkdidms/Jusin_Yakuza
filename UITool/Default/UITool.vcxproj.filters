@@ -77,13 +77,22 @@
       <Filter>03.Managers\01. Object_Manager</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Image_Texture.cpp">
-      <Filter>02.GameObjects\03.Texture\Image</Filter>
+      <Filter>02.GameObjects\03.GameObject\00.UI_Texture\Image</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Text.cpp">
-      <Filter>02.GameObjects\03.Texture\Text</Filter>
+      <Filter>02.GameObjects\03.GameObject\00.UI_Texture\Text</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Btn.cpp">
+      <Filter>02.GameObjects\03.GameObject\00.UI_Texture\Btn</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Group.cpp">
+      <Filter>02.GameObjects\03.GameObject\99.Group</Filter>
     </ClCompile>
     <ClCompile Include="..\private\UI_Texture.cpp">
-      <Filter>02.GameObjects\03.Texture</Filter>
+      <Filter>02.GameObjects\03.GameObject\00.UI_Texture</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\UI_Object.cpp">
+      <Filter>02.GameObjects\03.GameObject</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -184,13 +193,22 @@
       <Filter>03.Managers\01. Object_Manager</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Image_Texture.h">
-      <Filter>02.GameObjects\03.Texture\Image</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\UI_Texture.h">
-      <Filter>02.GameObjects\03.Texture</Filter>
+      <Filter>02.GameObjects\03.GameObject\00.UI_Texture\Image</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Text.h">
-      <Filter>02.GameObjects\03.Texture\Text</Filter>
+      <Filter>02.GameObjects\03.GameObject\00.UI_Texture\Text</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Btn.h">
+      <Filter>02.GameObjects\03.GameObject\00.UI_Texture\Btn</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Group.h">
+      <Filter>02.GameObjects\03.GameObject\99.Group</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\UI_Texture.h">
+      <Filter>02.GameObjects\03.GameObject\00.UI_Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\UI_Object.h">
+      <Filter>02.GameObjects\03.GameObject</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -245,16 +263,25 @@
     <Filter Include="03.Managers\00.Imgui_Manager">
       <UniqueIdentifier>{699c4717-0ecb-4a4a-a36a-91e286840988}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\03.Texture">
-      <UniqueIdentifier>{c03074c3-58b5-45ed-bf83-ea45da3d44ef}</UniqueIdentifier>
-    </Filter>
     <Filter Include="03.Managers\01. Object_Manager">
       <UniqueIdentifier>{1b040f42-4340-42a3-8cb9-b96e35e5f4b6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\03.Texture\Image">
+    <Filter Include="02.GameObjects\03.GameObject">
+      <UniqueIdentifier>{c03074c3-58b5-45ed-bf83-ea45da3d44ef}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\03.GameObject\99.Group">
+      <UniqueIdentifier>{c6f2ac01-b8c9-4663-87a3-8cb502061ba0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\03.GameObject\00.UI_Texture">
+      <UniqueIdentifier>{f7b8107d-71ed-4781-8b09-8891d780712c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\03.GameObject\00.UI_Texture\Image">
       <UniqueIdentifier>{710f526b-bb65-4a54-a5d7-a300f58dc589}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\03.Texture\Text">
+    <Filter Include="02.GameObjects\03.GameObject\00.UI_Texture\Btn">
+      <UniqueIdentifier>{cfdb2f24-43db-4e5f-a05a-8bcd99236d5f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\03.GameObject\00.UI_Texture\Text">
       <UniqueIdentifier>{2e70f75c-f166-4057-9dd3-5815fcbc1e92}</UniqueIdentifier>
     </Filter>
   </ItemGroup>

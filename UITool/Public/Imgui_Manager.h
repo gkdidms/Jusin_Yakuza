@@ -30,6 +30,7 @@ public:
 
 private:
 	void Window_Image();
+	void Window_Binary();
 
 private:
 	void Guizmo_Test();
@@ -55,15 +56,34 @@ private:
 	_uint m_iWinSizeY = { 720 };
 
 private:
+	//렌더타겟용
 	_char m_szGroupName[MAX_PATH] = { "" };
 	_int m_iGroupIndex = { -1 };
 	_int m_iGroupObjectIndex = { -1 };
 	string m_strSelectTag = "";
 
+	//바이너리용
+	_int m_iBinaryGroupIndex = { -1 };
+	_int m_iBinaryObjectIndex = { -1 };
+	string m_strBinarySelectTag = { "" };
+	_bool m_isCreateBinaryObject = { false };
+	_char m_szObjectName[MAX_PATH] = { "" };
+
+	//버튼
+	string m_strBtnFilePath = { "" };
+	string m_strBtnFileName = { "" };
+	string m_strBtnClickFilePath = { "" };
+	string m_strBtnClickFileName = { "" };
+
+	//텍스트 포맷 (숫자)
+	_int m_iNum = { 0 };
+
 private:
 	_int m_iObjectType = { 0 };
+	_int m_iBinaryObjectType = { 0 };
 	_char m_szText[MAX_PATH] = { "" };
 	_float4 m_vColor = {};
+	_bool m_isBinaryPick = { false };
 
 public:
 	static void Release_Imgui();

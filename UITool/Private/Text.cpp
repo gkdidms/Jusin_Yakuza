@@ -30,6 +30,8 @@ HRESULT CText::Initialize(void* pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
+	m_strTextureName = m_strText;
+
 	return S_OK;
 }
 
@@ -49,7 +51,8 @@ HRESULT CText::Render()
 {
 	_float4 vPos;
 	XMStoreFloat4(&vPos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-	m_pGameInstance->Render_Font(TEXT("Font_Default"), m_strText, _float2(vPos.x, vPos.y), m_vColor);
+	_float2 vFontPos = _float2(vPos.x + g_iWinSizeX * 0.5f, -vPos.y + g_iWinSizeY * 0.5f);
+	m_pGameInstance->Render_Font(TEXT("Font_Default"), m_strText, vFontPos, m_vColor);
 
 	return S_OK;
 }

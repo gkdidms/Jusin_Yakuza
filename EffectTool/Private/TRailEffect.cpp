@@ -28,6 +28,7 @@ HRESULT CTRailEffect::Initialize(void* pArg)
 
 		m_TrailDesc = pDesc -> Trail_Desc;
 
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&pDesc->vStartPos));
 	}
 
 	if (FAILED(Add_Components()))
@@ -42,14 +43,15 @@ void CTRailEffect::Priority_Tick(const _float& fTimeDelta)
 
 void CTRailEffect::Tick(const _float& fTimeDelta)
 {
-	
+	__super::Tick(fTimeDelta);
+	m_pVIBufferCom->Add_Trail(fTimeDelta, m_pTransformCom->Get_WorldMatrix());
 }
 
 void CTRailEffect::Late_Tick(const _float& fTimeDelta)
 {
 	Compute_ViewZ(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 
-	m_pGameInstance->Add_Renderer(CRenderer::RENDER_BLENDER, this);
+	m_pGameInstance->Add_Renderer(CRenderer::RENDER_EFFECT, this);
 }
 
 HRESULT CTRailEffect::Render()
@@ -65,15 +67,20 @@ HRESULT CTRailEffect::Render()
 	return S_OK;
 }
 
+void* CTRailEffect::Get_Instance()
+{
+	return &m_TrailDesc;
+}
+
 HRESULT CTRailEffect::Add_Components()
 {
 	/* For.Com_VIBuffer */
-	if (FAILED(__super::Add_Component(LEVEL_EDIT, TEXT("Prototype_Component_VIBuffer_Instance_Point"),
+	if (FAILED(__super::Add_Component(LEVEL_EDIT, TEXT("Prototype_Component_VIBuffer_Trail"),
 		TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pVIBufferCom),&m_TrailDesc)))
 		return E_FAIL;
 
 	/* For.Com_Shader */
-	if (FAILED(__super::Add_Component(LEVEL_EDIT, TEXT("Prototype_Component_Shader_VtxInstance_Point"),
+	if (FAILED(__super::Add_Component(LEVEL_EDIT, TEXT("Prototype_Component_Shader_Trail"),
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
 		return E_FAIL;
 
@@ -130,5 +137,5 @@ void CTRailEffect::Free()
 	__super::Free();
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pTextureCom);
-	Safe_Release(m_pTextureCom);
+	Safe_Release(m_pVIBufferCom);
 }
