@@ -3,12 +3,12 @@
 #include "GameInstance.h"
 
 CUI_Texture::CUI_Texture(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-	: CGameObject { pDevice, pContext}
+	: CUI_Object { pDevice, pContext}
 {
 }
 
 CUI_Texture::CUI_Texture(const CUI_Texture& rhs)
-	: CGameObject {rhs }
+	: CUI_Object {rhs }
 {
 }
 
@@ -25,12 +25,12 @@ HRESULT CUI_Texture::Initialize(void* pArg)
 	UI_TEXTURE_DESC* pDesc = static_cast<UI_TEXTURE_DESC*>(pArg);
 	m_strTextureFilePath = pDesc->strTextureFilePath;
 	m_strTextureName = pDesc->strTextureFileName;
+	m_iTypeIndex = pDesc->iTypeIndex;
 
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
-	if (FAILED(Add_Components()))
-		return E_FAIL;
+
 
 	m_fSizeX = g_iWinSizeX;
 	m_fSizeY = g_iWinSizeY;

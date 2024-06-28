@@ -26,7 +26,7 @@ HRESULT CParticle_Point::Initialize(void* pArg)
     {
         PARTICLE_POINT_DESC* pDesc = static_cast<PARTICLE_POINT_DESC*>(pArg);
         m_BufferInstance = pDesc->BufferInstance;
-
+        m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&pDesc->vStartPos));
     }
 
     if (FAILED(Add_Components()))

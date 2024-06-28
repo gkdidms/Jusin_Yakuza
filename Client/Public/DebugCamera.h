@@ -8,10 +8,10 @@ class CDebugCamera :
     public CCamera
 {
 public:
-    typedef struct tPlayerCameraDesc : public CAMERA_DESC
+    typedef struct tDebugCameraDesc : public CAMERA_DESC
     {
         _float fSensor;
-    } PLAYER_CAMERA_DESC;
+    } DEBUG_CAMERA_DESC;
 
 private:
     CDebugCamera(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -33,8 +33,9 @@ public:
     virtual HRESULT Render() override;
 
 private:
-    _float m_fSensor = { 0.f };
+    class CSystemManager* m_pSystemManager = { nullptr };
 
+    _float m_fSensor = { 0.f };
     _bool m_isMove = { true };
 
 public:

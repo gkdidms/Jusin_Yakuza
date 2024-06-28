@@ -31,6 +31,8 @@ public:
     virtual void Late_Tick(const _float& fTimeDelta);
     virtual HRESULT Render();
 
+    virtual void* Get_Instance()override;
+
 private:
     CShader* m_pShaderCom = { nullptr };
     CTexture* m_pTextureCom = { nullptr };

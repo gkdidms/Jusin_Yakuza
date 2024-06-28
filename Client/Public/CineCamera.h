@@ -56,6 +56,7 @@ private:
 
 
 private:
+    class CSystemManager* m_pSystemManager = { nullptr };
     _float                                          m_fSensor = { 0.f };
     vector<CAMERAOBJ_DESC>							m_vCamerasObjDesc;
 
