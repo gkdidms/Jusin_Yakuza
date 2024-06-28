@@ -47,7 +47,7 @@ CModel::CModel(const CModel& rhs)
 
 }
 
-HRESULT CModel::Initialize_Prototype(MODELTYPE eModelType, const _char* pModelFilePath, _fmatrix PreTransformMatrix, _bool isExported)
+HRESULT CModel::Initialize_Prototype(MODELTYPE eModelType, const _char* pModelFilePath, _fmatrix PreTransformMatrix, _bool isExported, _bool isTool)
 {
 	m_eModelType = eModelType;
 
@@ -87,7 +87,7 @@ HRESULT CModel::Initialize_Prototype(MODELTYPE eModelType, const _char* pModelFi
 	else
 	{
 		string str = pModelFilePath;
-		if (FAILED(Import_Model(str)))
+		if (FAILED(Import_Model(str, isTool)))
 			return E_FAIL;
 	}
 
@@ -259,26 +259,13 @@ HRESULT CModel::Export_Bones(ofstream& out)
 
 HRESULT CModel::Export_Meshes(ofstream& out, const string& strOutDirectory)
 {
-	_uint iNumFXMeshes = { 0 };
-
-	//for (size_t i = 0; i < m_iNumMeshes; ++i)
-	//{
-	//	string strValue = m_pAIScene->mMeshes[i]->mName.data;
-
-	//	if (strValue.find("eyelashes") != string::npos)
-	//		++iNumFXMeshes;
-	//}
-
-	_uint iNumMeshes = m_iNumMeshes - (iNumFXMeshes);
+	_uint iNumMeshes = m_iNumMeshes;
 
 	out.write((char*)&iNumMeshes, sizeof(_uint));
 
 	for (size_t i = 0; i < m_iNumMeshes; ++i)
 	{
 		string strValue = m_pAIScene->mMeshes[i]->mName.data;
-
-		if (strValue.find("FX_") != string::npos || strValue.find("Sphere") != string::npos)
-			continue;
 
 		_uint iValue = strValue.size();
 		out.write((char*)&iValue, sizeof(_uint));
@@ -346,104 +333,11 @@ HRESULT CModel::Export_Meshes(ofstream& out, const string& strOutDirectory)
 		}
 	}
 
-	CGameInstance* pGameInstance = CGameInstance::GetInstance();
-	Safe_AddRef(pGameInstance);
-
-	if (0 < iNumFXMeshes)
-	{
-		string strOutPath = pGameInstance->Get_Directory(strOutDirectory) + "/" + pGameInstance->Get_FileName(strOutDirectory) + "_eyelash.dat";
-
-		ofstream fxOut(strOutPath, ios::binary);
-
-		fxOut.write((char*)&iNumFXMeshes, sizeof(_uint));
-
-		for (size_t i = 0; i < m_iNumMeshes; ++i)
-		{
-			string strValue = m_pAIScene->mMeshes[i]->mName.data;
-
-			if (strValue.find("FX_") != string::npos)
-			{
-				_uint iValue = strValue.size();
-				fxOut.write((char*)&iValue, sizeof(_uint));
-				fxOut.write(strValue.c_str(), strValue.size());
-
-				iValue = m_pAIScene->mMeshes[i]->mNumVertices;
-				fxOut.write((char*)&iValue, sizeof(_uint));
-
-				iValue = m_pAIScene->mMeshes[i]->mNumFaces;
-				fxOut.write((char*)&iValue, sizeof(_uint));
-
-				iValue = m_pAIScene->mMeshes[i]->mMaterialIndex;
-				fxOut.write((char*)&iValue, sizeof(_uint));
-
-				iValue = m_pAIScene->mMeshes[i]->mNumBones;
-				fxOut.write((char*)&iValue, sizeof(_uint));
-
-				for (size_t j = 0; j < m_pAIScene->mMeshes[i]->mNumVertices; j++)
-				{
-					_float3 vVector;
-					_float2 vTexcoord;
-
-					memcpy(&vVector, &m_pAIScene->mMeshes[i]->mVertices[j], sizeof(_float3));
-					fxOut.write((char*)&vVector, sizeof(_float3));
-
-					memcpy(&vVector, &m_pAIScene->mMeshes[i]->mNormals[j], sizeof(_float3));
-					fxOut.write((char*)&vVector, sizeof(_float3));
-
-					memcpy(&vTexcoord, &m_pAIScene->mMeshes[i]->mTextureCoords[0][j], sizeof(_float2));
-					fxOut.write((char*)&vTexcoord, sizeof(_float2));
-
-					memcpy(&vVector, &m_pAIScene->mMeshes[i]->mTangents[j], sizeof(_float3));
-					fxOut.write((char*)&vVector, sizeof(_float3));
-				}
-
-				for (size_t j = 0; j < m_pAIScene->mMeshes[i]->mNumFaces; j++)
-				{
-					_uint arrInt[3];
-					memcpy(&arrInt, &m_pAIScene->mMeshes[i]->mFaces[j].mIndices[0], sizeof(_uint) * 3);
-					fxOut.write((char*)&arrInt, sizeof(_uint) * 3);
-				}
-
-				for (size_t j = 0; j < m_pAIScene->mMeshes[i]->mNumBones; j++)
-				{
-					string strBoneName = m_pAIScene->mMeshes[i]->mBones[j]->mName.data;
-					_uint iBoneNameSize = strBoneName.size();
-					fxOut.write((char*)&iBoneNameSize, sizeof(_uint));
-					fxOut.write(strBoneName.c_str(), strBoneName.size());
-
-					_uint iNumWeights = m_pAIScene->mMeshes[i]->mBones[j]->mNumWeights;
-					fxOut.write((char*)&iNumWeights, sizeof(_uint));
-
-					for (size_t k = 0; k < iNumWeights; k++)
-					{
-						_uint iVertexId = m_pAIScene->mMeshes[i]->mBones[j]->mWeights[k].mVertexId;
-						fxOut.write((char*)&iVertexId, sizeof(_uint));
-
-						_float fValue = m_pAIScene->mMeshes[i]->mBones[j]->mWeights[k].mWeight;
-						fxOut.write((char*)&fValue, sizeof(_float));
-					}
-
-					_float4x4 matValue;
-					memcpy(&matValue, &m_pAIScene->mMeshes[i]->mBones[j]->mOffsetMatrix, sizeof(_float4x4));
-					fxOut.write((char*)&matValue, sizeof(_float4x4));
-				}
-
-			}
-		}
-
-		fxOut.close();
-		
-	}
-
-	Safe_Release(pGameInstance);
 	return S_OK;
 }
 
 HRESULT CModel::Export_Materials(ofstream& out, const _char* pModelFilePath, const string& strOutDirectory)
 {
-	string strOutPath = m_pGameInstance->Get_Directory(strOutDirectory) + "/" + m_pGameInstance->Get_FileName(strOutDirectory) + "_FX.dat";
-	string strSphereOutPath = m_pGameInstance->Get_Directory(strOutDirectory) + "/" + m_pGameInstance->Get_FileName(strOutDirectory) + "_Sphere.dat";
-
 	out.write((char*)&m_iNumMaterials, sizeof(_uint));
 
 	for (size_t i = 0; i < m_iNumMaterials; i++)
@@ -484,10 +378,14 @@ HRESULT CModel::Export_Materials(ofstream& out, const _char* pModelFilePath, con
 			// WideChar로 형변환해주는 함수. code page를 아스키로 쓴다는 옵션 CP_ACP
 			MultiByteToWideChar(CP_ACP, 0, szFullPath, strlen(szFullPath), szRealFullPath, MAX_PATH);
 
-			_uint iLength = strlen(szFullPath);
+			string strPath = szFullPath;
+			size_t pos = strPath.find("Bin");
+			string strFullPath = strPath.substr(pos);
+
+			_uint iLength = strFullPath.size();
 
 			out.write((char*)&iLength, sizeof(_uint));
-			out.write(szFullPath, strlen(szFullPath));
+			out.write(strFullPath.data(), strFullPath.size());
 		}
 	}
 
@@ -558,7 +456,7 @@ HRESULT CModel::Export_Animations(ofstream& out)
 	return S_OK;
 }
 
-HRESULT CModel::Import_Model(string& pBinFilePath)
+HRESULT CModel::Import_Model(string& pBinFilePath, _bool isTool)
 {
 	ifstream in(pBinFilePath, ios::binary);
 
@@ -568,7 +466,6 @@ HRESULT CModel::Import_Model(string& pBinFilePath)
 	}
 
 	// 읽어올 때 Mesh만 저장한 파일이라면 Mesh정보만 Import하는 기능을 추가해야한다.
-
 	string strFileName = m_pGameInstance->Get_FileName(pBinFilePath);
 
 	//본 읽어오기
@@ -580,7 +477,7 @@ HRESULT CModel::Import_Model(string& pBinFilePath)
 		return E_FAIL;
 
 	// 머테리얼 읽어오기
-	if (FAILED(Import_Materials(in)))
+	if (FAILED(Import_Materials(in, isTool)))
 		return E_FAIL;
 
 	// 애니메이션 읽어오기
@@ -704,7 +601,7 @@ HRESULT CModel::Import_Meshes(ifstream& in)
 	return S_OK;
 }
 
-HRESULT CModel::Import_Materials(ifstream& in)
+HRESULT CModel::Import_Materials(ifstream& in, _bool isTool)
 {
 	in.read((char*)&m_iNumMaterials, sizeof(_uint));
 
@@ -726,7 +623,22 @@ HRESULT CModel::Import_Materials(ifstream& in)
 
 			if (0 == iPathLen) continue;
 
-			MeshMaterial.pMaterialTextures[j] = CTexture::Create(m_pDevice, m_pContext, szRealFullPath, 1);
+			wstring wstrPath = TEXT("");
+			string strPath = "";
+			if (isTool)
+			{
+				wstrPath = TEXT("../../Client/");
+				strPath = "../../Client/";
+			}
+			else
+			{
+				wstrPath = TEXT("../");
+				strPath = "../";
+			}
+			wstrPath += szRealFullPath;
+			strPath += szFullPath;
+
+			MeshMaterial.pMaterialTextures[j] = CTexture::Create(m_pDevice, m_pContext, wstrPath.data(), 1);
 			if (nullptr == MeshMaterial.pMaterialTextures[j])
 				return E_FAIL;
 
@@ -735,7 +647,8 @@ HRESULT CModel::Import_Materials(ifstream& in)
 				/* DECAL */
 				DECAL_DESC		decalDesc;
 				decalDesc.iMaterialNum = i;
-				memcpy(&decalDesc.sTextureFullPath, &szFullPath, sizeof(char) * MAX_PATH);
+
+				memcpy(&decalDesc.sTextureFullPath, strPath.data(), sizeof(char) * MAX_PATH);
 
 				m_vDecalMaterials.push_back(decalDesc);
 			}
@@ -1019,11 +932,11 @@ CTexture* CModel::Copy_DecalTexture(int iMaterialNum)
 	return m_Materials[iMaterialNum].pMaterialTextures[aiTextureType_METALNESS];
 }
 
-CModel* CModel::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, MODELTYPE eModelType, const _char* pModelFilePath, _fmatrix PreTransformMatrix, _bool isExported)
+CModel* CModel::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, MODELTYPE eModelType, const _char* pModelFilePath, _fmatrix PreTransformMatrix, _bool isExported, _bool isTool)
  {
 	CModel* pInstance = new CModel(pDevice, pContext);
 
-	if (FAILED(pInstance->Initialize_Prototype(eModelType, pModelFilePath, PreTransformMatrix, isExported)))
+	if (FAILED(pInstance->Initialize_Prototype(eModelType, pModelFilePath, PreTransformMatrix, isExported, isTool)))
 	{
 		MSG_BOX("Failed To Created : CModel");
 		Safe_Release(pInstance);

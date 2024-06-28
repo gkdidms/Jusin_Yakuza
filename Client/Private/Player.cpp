@@ -61,11 +61,11 @@ void CPlayer::Tick(const _float& fTimeDelta)
 	//	Change_Animation(m_iAnimIndex);
 	//}
 
-	//if (m_pGameInstance->GetKeyState(DIK_7) == TAP)
-	//{
-	//	m_iAnimIndex = 0;
-	//	Change_Animation(m_iAnimIndex);
-	//}
+	if (m_pGameInstance->GetKeyState(DIK_7) == TAP)
+	{
+		m_iAnimIndex = 0;
+		Change_Animation(m_iAnimIndex);
+	}
 
 	if (m_isAnimStart)
 		m_pModelCom->Play_Animation(fTimeDelta);

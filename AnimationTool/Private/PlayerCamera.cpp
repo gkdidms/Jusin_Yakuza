@@ -42,6 +42,8 @@ void CPlayerCamera::Tick(const _float& fTimeDelta)
 		m_pTransformCom->Go_Up(fTimeDelta);
 	if (m_pGameInstance->GetKeyState(DIK_PGDN) == HOLD)
 		m_pTransformCom->Go_Down(fTimeDelta);
+
+	m_WorldMatrix = *m_pTransformCom->Get_WorldFloat4x4();
 		
 	__super::Tick(fTimeDelta);
 }

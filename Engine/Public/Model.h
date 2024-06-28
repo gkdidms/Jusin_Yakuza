@@ -24,7 +24,7 @@ private:
 	virtual ~CModel() = default;
 
 public:
-	virtual HRESULT Initialize_Prototype(MODELTYPE eModelType, const _char* pModelFilePath, _fmatrix PreTransformMatrix, _bool isExported);
+	virtual HRESULT Initialize_Prototype(MODELTYPE eModelType, const _char* pModelFilePath, _fmatrix PreTransformMatrix, _bool isExported, _bool isTool);
 	virtual HRESULT Initialize(void* pArg);
 
 	HRESULT	Ready_Meshes();
@@ -95,10 +95,10 @@ private:
 	HRESULT Export_Materials(ofstream& out, const _char* pModelFilePath, const string& strOutDirectory);
 	HRESULT Export_Animations(ofstream& out);
 
-	HRESULT Import_Model(string& pBinFilePath);
+	HRESULT Import_Model(string& pBinFilePath, _bool isTool);
 	HRESULT Import_Bones(ifstream& in);
 	HRESULT Import_Meshes(ifstream& in);
-	HRESULT Import_Materials(ifstream& in);
+	HRESULT Import_Materials(ifstream& in, _bool isTool);
 	HRESULT Import_Animations(ifstream& in);
 
 	void	Find_Mesh_Using_DECAL();
@@ -136,7 +136,7 @@ private:
 	bool						m_bOrigin = { false };
 
 public:
-	static CModel* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, MODELTYPE eModelType, const _char* pModelFilePath, _fmatrix PreTransformMatrix, _bool isExported);
+	static CModel* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, MODELTYPE eModelType, const _char* pModelFilePath, _fmatrix PreTransformMatrix, _bool isExported, _bool isTool = false);
 	virtual CComponent* Clone(void* pArg) override;
 	virtual void Free() override;
 };
