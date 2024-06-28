@@ -1,5 +1,7 @@
 
 #include "Effect.h"
+#include "GameInstance.h"
+
 const _uint CEffect::iAction[CEffect::ACTION_END] = {
     0x00000001, /* 0000 0001 */
     0x00000002, /* 0000 0010 */
@@ -41,7 +43,7 @@ HRESULT CEffect::Initialize(void* pArg)
         m_vEndColor = pDesc->vEndColor;
         m_iShaderPass = pDesc->iShaderPass;
 
-        m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&pDesc->vStartPos));
+       
     }
 
     return S_OK;
@@ -53,7 +55,28 @@ void CEffect::Priority_Tick(const _float& fTimeDelta)
 
 void CEffect::Tick(const _float& fTimeDelta)
 {
+    switch (m_eType)
+    {
+    case Client::CEffect::TYPE_POINT:
+        break;
+    case Client::CEffect::TYPE_TRAIL:
+    {
+        if (m_pGameInstance->GetKeyState(DIK_LEFT) == HOLD)
+            m_pTransformCom->Go_Left(fTimeDelta);
+        if (m_pGameInstance->GetKeyState(DIK_RIGHT) == HOLD)
+            m_pTransformCom->Go_Right(fTimeDelta);
+        if (m_pGameInstance->GetKeyState(DIK_UP) == HOLD)
+            m_pTransformCom->Go_Straight(fTimeDelta);
+        if (m_pGameInstance->GetKeyState(DIK_DOWN) == HOLD)
+            m_pTransformCom->Go_Backward(fTimeDelta);
 
+    }
+        break;
+    case Client::CEffect::TYPE_END:
+        break;
+    default:
+        break;
+    }
 
 }
 
