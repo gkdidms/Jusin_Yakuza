@@ -28,46 +28,6 @@ HRESULT CVIBuffer_Instance::Initialize(void* pArg)
 		
 	}
 
-
-	//m_pComputeShader = CComputeShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_Compute.hlsl"));
-
-
-	////계산셰이더가 자료를 기록할수 있게 생성(계산해서 가지고 나온뒤 다시 instance버퍼에 복사해줘야됨.)
-	//m_OutBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	//m_OutBufferDesc.ByteWidth = sizeof(COMPUTEMATRIX) * m_InstanceDesc->iNumInstance;
-	//m_OutBufferDesc.BindFlags = D3D11_BIND_UNORDERED_ACCESS;
-	//m_OutBufferDesc.CPUAccessFlags = 0;
-	//m_OutBufferDesc.StructureByteStride = sizeof(COMPUTEMATRIX);
-	//m_OutBufferDesc.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
-	//
-
-
-	//uavDesc.Format = DXGI_FORMAT_UNKNOWN;
-	//uavDesc.ViewDimension = D3D11_UAV_DIMENSION_BUFFER;
-	//uavDesc.Buffer.FirstElement = 0;
-	//uavDesc.Buffer.Flags = 0;
-	//uavDesc.Buffer.NumElements = m_InstanceDesc->iNumInstance;
-
-
-
-	//m_RenderBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
-	//m_RenderBufferDesc.ByteWidth = m_iInstanceStride * m_InstanceDesc->iNumInstance;	
-	//m_RenderBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	//m_RenderBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-	//m_RenderBufferDesc.MiscFlags = 0;
-	//m_RenderBufferDesc.StructureByteStride = m_iInstanceStride;
-
-	//VTXMATRIX* pInstanceVertices = new VTXMATRIX[m_InstanceDesc->iNumInstance];
-	//ZeroMemory(pInstanceVertices, sizeof(VTXMATRIX) * m_InstanceDesc->iNumInstance);
-
-	//m_InitialData.pSysMem = pInstanceVertices;
-
-	//if (FAILED(m_pDevice->CreateBuffer(&m_RenderBufferDesc, &m_InitialData, &m_pRenderBuffer)))//렌더 복사용
-	//	return E_FAIL;
-
-
-
-
 	return S_OK;
 }
 

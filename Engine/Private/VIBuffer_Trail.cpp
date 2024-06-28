@@ -29,7 +29,7 @@ HRESULT CVIBuffer_Trail::Initialize(void* pArg)
 	m_Primitive_Topology = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 
 	m_iNumVertexBuffers = 1;
-
+	m_iCurrentIndices = 0;
 	m_iNumVertices = 4 + (m_iMaxTrail - 1) * 2;
 	m_iVertexStride = sizeof(VTXPOSTEX);
 
@@ -151,11 +151,11 @@ void CVIBuffer_Trail::Add_Trail(const _float& fTimeDelta, const _matrix WorldMat
 	for (size_t i = 0; i < m_TrailInfos.size() * 2;)
 	{
 		vResult[i].vPosition = (*tTrailInfo).vPos[0];
-		vResult[i].vTexcoord = _float2((i / (vTexcoordX - 2.f)), 0.f);
+		vResult[i].vTexcoord = _float2(1.f-(i / (vTexcoordX - 2.f)), 0.f);
 		++i;
 
 		vResult[i].vPosition = (*tTrailInfo).vPos[1];
-		vResult[i].vTexcoord = _float2(((i - 1) / (vTexcoordX - 2.f)), 1.f);
+		vResult[i].vTexcoord = _float2(1.f-((i - 1) / (vTexcoordX - 2.f)), 1.f);
 		++i;
 
 		++tTrailInfo;
