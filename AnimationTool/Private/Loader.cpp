@@ -116,8 +116,8 @@ HRESULT CLoader::Loading_For_EditLevel()
 		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("모델를(을) 로딩 중 입니다."));
-	Add_Models_On_Path(TEXT("../Bin/Resources/Model/Anim/"));
-	Add_Models_On_Path(TEXT("../Bin/Resources/Model/NonAnim/"), false);
+	Add_Models_On_Path(TEXT("../../Client/Bin/Resources/Model/Anim/"));
+	Add_Models_On_Path(TEXT("../../Client/Bin/Resources/Model/NonAnim/"), false);
 
 	lstrcpy(m_szLoadingText, TEXT("셰이더를(을) 로딩 중 입니다."));
 

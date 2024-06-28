@@ -8,7 +8,6 @@
 
 BEGIN(Engine)
 class CGameInstance;
-class CModel;
 END
 
 BEGIN(Client)
@@ -24,7 +23,7 @@ public:
 
 protected:
 	CGameInstance* m_pGameInstance = { nullptr };
-	CModel* m_pModelCom = { nullptr };
+	class CPlayer* m_pPlayer = { nullptr };
 	vector<_uint> m_AnimationIndex;
 
 public:

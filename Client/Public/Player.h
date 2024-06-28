@@ -15,8 +15,22 @@ public:
     //KRS: 불한당, KRH: 러쉬, KRC: 파괴자
     enum BATTLE_STYLE
     {
-        KRS, KRH, KRC, BATTLE_STYLE_END
+        ADVENTURE, KRS, KRH, KRC, BATTLE_STYLE_END
     };
+
+    /* 06.28 혜원 추가
+    *  스타일마다 겹치는 행동이 있어서 enum class 사용 
+    *  행동은 임시로 일부만 잡아둔 상태로 추후 수정 예정
+    */
+    enum class ADVENTURE_BEHAVIOR_STATE
+    {
+        IDLE, WALK, RUN, ADVENTURE_BEHAVIOR_END
+    };    
+    enum class KRS_BEHAVIOR_STATE
+    {
+        IDLE, WALK, RUN, GUARD, ATTACK, HIT, KRS_BEHAVIOR_END
+    };
+
 
 private:
     const _float ANIM_INTERVAL = 7.f;
@@ -47,6 +61,10 @@ private:
     void Ready_AnimationTree();
     void Synchronize_Root();
     void Animation_Event();
+    void Move_KeyInput(const _float& fTimeDelta);
+
+public:
+    void Change_Animation(_uint iAnimIndex);
 
 private:
     CShader*                m_pShaderCom = { nullptr };
@@ -55,13 +73,17 @@ private:
     unordered_map<_uint, class CSoketCollider*>      m_pColliders;     
     class CCharacterData*   m_pData = { nullptr };
 
-    map<BATTLE_STYLE, class CBTNode*> m_AnimationTree;
+    map<BATTLE_STYLE, class CBehaviorAnimation*> m_AnimationTree;
 
 private:
-    _uint       m_iAnimIndex = { 351 };
+    BATTLE_STYLE    m_eCurrentStyle = { ADVENTURE };
+    // 스타일마다 겹치는 행동이 있을 수 있어서 int값으로 저장하고 형변환하여 저장한다.
+    _uint           m_iCurrentBehavior = static_cast<_uint>(ADVENTURE_BEHAVIOR_STATE::IDLE);
 
-    _float4     m_vPrevMove;
-    _float4x4   m_ModelWorldMatrix;
+    _float4         m_vPrevMove;
+    _float4x4       m_ModelWorldMatrix;
+
+    _uint m_iAnimIndex = { 351 };
 
 #ifdef _DEBUG
     _bool m_isAnimStart = { true };
@@ -72,9 +94,7 @@ private:
     virtual HRESULT Bind_ResourceData() override;
     HRESULT Add_CharacterData();
     void Apply_ChracterData();
-
-private:
-    void Change_Animation(_uint iAnimIndex);
+    void Ready_Animations();
 
 public:
     static CPlayer* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
