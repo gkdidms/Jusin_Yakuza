@@ -161,7 +161,7 @@ HRESULT CLoader::Loading_For_EditLevel()
 		CFreeCamera::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	Add_Particle_On_Path(TEXT("../../Client/Bin/DataFiles/Particle/"));
+	//Add_Particle_On_Path(TEXT("../../Client/Bin/DataFiles/Particle/"));
 
 
 
