@@ -13,6 +13,13 @@ private:
     virtual ~CGroup() = default;
 
 public:
+    void Set_PartObject(CUI_Object* pObject) { m_PartObjects.emplace_back(pObject); }
+
+public:
+    vector<CUI_Object*> Get_PartObjects() { return m_PartObjects; }
+    CUI_Object* Get_PartObject(_uint iIndex) { return m_PartObjects[iIndex]; }
+
+public:
     virtual HRESULT Initialize_Prototype() override;
     virtual HRESULT Initialize(void* pArg) override;
     virtual void Priority_Tick(const _float& fTimeDelta) override;
