@@ -170,7 +170,7 @@
     <ClInclude Include="..\..\Imgui\imgui\imstb_textedit.h" />
     <ClInclude Include="..\..\Imgui\imgui\imstb_truetype.h" />
     <ClInclude Include="..\public\Background.h" />
-    <ClInclude Include="..\public\Btn_Texture.h" />
+    <ClInclude Include="..\Public\Text.h" />
     <ClInclude Include="..\public\Image_Texture.h" />
     <ClInclude Include="..\public\Object_Manager.h" />
     <ClInclude Include="..\Public\UITool_Defines.h" />
@@ -204,7 +204,7 @@
     <ClCompile Include="..\..\Imgui\imgui\imgui_tables.cpp" />
     <ClCompile Include="..\..\Imgui\imgui\imgui_widgets.cpp" />
     <ClCompile Include="..\private\Background.cpp" />
-    <ClCompile Include="..\private\Btn_Texture.cpp" />
+    <ClCompile Include="..\private\Text.cpp" />
     <ClCompile Include="..\private\Image_Texture.cpp" />
     <ClCompile Include="..\Private\Imgui_Manager.cpp" />
     <ClCompile Include="..\private\Level_Loading.cpp" />

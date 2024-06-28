@@ -208,6 +208,7 @@ struct PS_IN
 struct PS_OUT
 {
     vector vColor : SV_TARGET0;
+    vector vAlpha : SV_TARGET1;
 };
 
 PS_OUT PS_MAIN(PS_IN In)
@@ -253,20 +254,12 @@ PS_OUT PS_MAIN_SPREADCOLOR(PS_IN In)
 {
     PS_OUT Out = (PS_OUT) 0;
 
-    
     float4 PointPosition = In.vPosition; //월드좌표
-        //-1~1 x,y,z
-   // vector CamPos = mul(PointPosition, g_ViewMatrix); //뷰좌표(위치)
-    // CamPos = mul(PointPosition, g_ProjMatrix);//투영 (w나누기전)
-    
-  //  CamPos = CamPos / CamPos.w;//정규화된 윈도우 좌표계
-    
+
     vector vParticle = g_Texture.Sample(LinearSampler, In.vTexcoord);
     
     vector BackColor = g_AccumColor.Sample(PointSampler, In.vTexcoord);
-   
-    //vector BackAlpha = g_AccumAlpha.Sample(PointSampler, In.vTexcoord);   
-    
+
     float4 LerpColor = lerp(g_vStartColor, g_vEndColor, In.vLifeTime.y / In.vLifeTime.x);
     
     vParticle *= LerpColor;
@@ -277,11 +270,9 @@ PS_OUT PS_MAIN_SPREADCOLOR(PS_IN In)
 
     float fWeight = abs(PointPosition.z); //정규화된 z 값을 가져옴(0~1)    
 
-    //float WeightN = pow(AlphaN + 0.01, 4.f) + max(0.01f, min(3000.f, 100 / (0.00001f + pow(In.LinearZ / 5.f, 2.f) + pow(In.LinearZ / 200.f, 6.f))));
-    
-    //WeightN *= 0.01f;
-    
     Out.vColor = float4(ColorN.rgb * AlphaN, AlphaN) * fWeight;
+    
+    Out.vAlpha = float4(AlphaN, AlphaN, AlphaN, AlphaN);
         
     return Out;
 }
@@ -365,8 +356,7 @@ technique11 DefaultTechnique
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_None_Test_None_Write, 0);
-        SetBlendState(BS_Blend_Test, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
-        //SetBlendState(BS_WeightsBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+        SetBlendState(BS_WeightsBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
    
 		/* 어떤 셰이덜르 국동할지. 셰이더를 몇 버젼으로 컴파일할지. 진입점함수가 무엇이찌. */
         VertexShader = compile vs_5_0 VS_MAIN();

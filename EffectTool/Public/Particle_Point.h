@@ -18,7 +18,7 @@ class CParticle_Point final:
 public:
     typedef struct tPARTICLE_POINT_DESC :public CEffect::EFFECT_DESC
     {
-
+        CVIBuffer_Instance::INSTANCE_DESC BufferInstance;
     }PARTICLE_POINT_DESC;
 
 
@@ -36,7 +36,7 @@ public:
     virtual void Late_Tick(const _float& fTimeDelta);
     virtual HRESULT Render();
 
-
+    virtual void* Get_Instance()override;
 
 
 private:
@@ -44,8 +44,8 @@ private:
     CTexture* m_pTextureCom = { nullptr };
     CVIBuffer_Instance_Point* m_pVIBufferCom = { nullptr };
 
-
-
+    CVIBuffer_Instance::INSTANCE_DESC m_BufferInstance;
+    _float       m_fCurTime = { 0.f };
 private:
     HRESULT Add_Components();
     HRESULT Bind_ShaderResources();

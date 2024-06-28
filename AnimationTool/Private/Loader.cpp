@@ -160,20 +160,20 @@ HRESULT CLoader::Add_Models_On_Path(const wstring& strPath, _bool bAnim)
 
 	_matrix		PreTransformMatrix;
 
-	for (auto& strChannelName : vecDirectorys)
+	for (auto& strDirlName : vecDirectorys)
 	{
 		//string pBinPath = pGameInstance->Get_Directory(pModelFilePath) + "/Bin/" + pGameInstance->Get_FileName(pModelFilePath) + ".dat";
 
 		//wstring strComponentName = TEXT("Prototype_Component_") + strName;
-		wstring strFilePath = strPath + strChannelName + TEXT("/");
+		wstring strFilePath = strPath + strDirlName + TEXT("/");
 
 		string strDirectory = m_pGameInstance->WstringToString(strFilePath);
 		string strBinPath = strDirectory + "Bin/";
 
 		if (!fs::exists(strBinPath))
 		{
-			wstring strComponentName = TEXT("Prototype_Component_") + strChannelName;
-			wstring strFbxPath = strFilePath + strChannelName + TEXT(".fbx");
+			wstring strComponentName = TEXT("Prototype_Component_") + strDirlName;
+			wstring strFbxPath = strFilePath + strDirlName + TEXT(".fbx");
 			string strTransPath = m_pGameInstance->WstringToString(strFbxPath);
 
 			if (!bAnim)

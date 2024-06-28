@@ -85,6 +85,9 @@ private:
 	_uint	m_iPassIndex = { 0 };
 	_uint	m_iSelectedMeshIndex = { 0 };
 
+	_float4     m_vPrevMove;
+	_float4x4   m_ModelWorldMatrix;
+
 public:
 	static CAnimModel* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;

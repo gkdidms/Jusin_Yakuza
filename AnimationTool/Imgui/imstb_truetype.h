@@ -1194,8 +1194,8 @@ static stbtt__buf stbtt__buf_range(const stbtt__buf *b, int o, int s)
 
 static stbtt__buf stbtt__cff_get_index(stbtt__buf *b)
 {
-   int count, start, offsize;
-   start = b->cursor;
+   int count, m_fDebugStart, offsize;
+   m_fDebugStart = b->cursor;
    count = stbtt__buf_get16(b);
    if (count) {
       offsize = stbtt__buf_get8(b);
@@ -1203,7 +1203,7 @@ static stbtt__buf stbtt__cff_get_index(stbtt__buf *b)
       stbtt__buf_skip(b, offsize * count);
       stbtt__buf_skip(b, stbtt__buf_get(b, offsize) - 1);
    }
-   return stbtt__buf_range(b, start, b->cursor - start);
+   return stbtt__buf_range(b, m_fDebugStart, b->cursor - m_fDebugStart);
 }
 
 static stbtt_uint32 stbtt__cff_int(stbtt__buf *b)
@@ -1237,13 +1237,13 @@ static stbtt__buf stbtt__dict_get(stbtt__buf *b, int key)
 {
    stbtt__buf_seek(b, 0);
    while (b->cursor < b->size) {
-      int start = b->cursor, end, op;
+      int m_fDebugStart = b->cursor, end, op;
       while (stbtt__buf_peek8(b) >= 28)
          stbtt__cff_skip_operand(b);
       end = b->cursor;
       op = stbtt__buf_get8(b);
       if (op == 12)  op = stbtt__buf_get8(b) | 0x100;
-      if (op == key) return stbtt__buf_range(b, start, end-start);
+      if (op == key) return stbtt__buf_range(b, m_fDebugStart, end-m_fDebugStart);
    }
    return stbtt__buf_range(b, 0, 0);
 }
@@ -1264,16 +1264,16 @@ static int stbtt__cff_index_count(stbtt__buf *b)
 
 static stbtt__buf stbtt__cff_index_get(stbtt__buf b, int i)
 {
-   int count, offsize, start, end;
+   int count, offsize, m_fDebugStart, end;
    stbtt__buf_seek(&b, 0);
    count = stbtt__buf_get16(&b);
    offsize = stbtt__buf_get8(&b);
    STBTT_assert(i >= 0 && i < count);
    STBTT_assert(offsize >= 1 && offsize <= 4);
    stbtt__buf_skip(&b, i*offsize);
-   start = stbtt__buf_get(&b, offsize);
+   m_fDebugStart = stbtt__buf_get(&b, offsize);
    end = stbtt__buf_get(&b, offsize);
-   return stbtt__buf_range(&b, 2+(count+1)*offsize+start, end - start);
+   return stbtt__buf_range(&b, 2+(count+1)*offsize+m_fDebugStart, end - m_fDebugStart);
 }
 
 //////////////////////////////////////////////////////////////////////////
@@ -1549,19 +1549,19 @@ STBTT_DEF int stbtt_FindGlyphIndex(const stbtt_fontinfo *info, int unicode_codep
       search += 2;
 
       {
-         stbtt_uint16 offset, start, last;
+         stbtt_uint16 offset, m_fDebugStart, last;
          stbtt_uint16 item = (stbtt_uint16) ((search - endCount) >> 1);
 
-         start = ttUSHORT(data + index_map + 14 + segcount*2 + 2 + 2*item);
+         m_fDebugStart = ttUSHORT(data + index_map + 14 + segcount*2 + 2 + 2*item);
          last = ttUSHORT(data + endCount + 2*item);
-         if (unicode_codepoint < start || unicode_codepoint > last)
+         if (unicode_codepoint < m_fDebugStart || unicode_codepoint > last)
             return 0;
 
          offset = ttUSHORT(data + index_map + 14 + segcount*6 + 2 + 2*item);
          if (offset == 0)
             return (stbtt_uint16) (unicode_codepoint + ttSHORT(data + index_map + 14 + segcount*4 + 2 + 2*item));
 
-         return ttUSHORT(data + offset + (unicode_codepoint-start)*2 + index_map + 14 + segcount*6 + 2 + 2*item);
+         return ttUSHORT(data + offset + (unicode_codepoint-m_fDebugStart)*2 + index_map + 14 + segcount*6 + 2 + 2*item);
       }
    } else if (format == 12 || format == 13) {
       stbtt_uint32 ngroups = ttULONG(data+index_map+12);
@@ -1987,7 +1987,7 @@ static stbtt__buf stbtt__get_subr(stbtt__buf idx, int n)
 static stbtt__buf stbtt__cid_get_glyph_subrs(const stbtt_fontinfo *info, int glyph_index)
 {
    stbtt__buf fdselect = info->fdselect;
-   int nranges, start, end, v, fmt, fdselector = -1, i;
+   int nranges, m_fDebugStart, end, v, fmt, fdselector = -1, i;
 
    stbtt__buf_seek(&fdselect, 0);
    fmt = stbtt__buf_get8(&fdselect);
@@ -1997,15 +1997,15 @@ static stbtt__buf stbtt__cid_get_glyph_subrs(const stbtt_fontinfo *info, int gly
       fdselector = stbtt__buf_get8(&fdselect);
    } else if (fmt == 3) {
       nranges = stbtt__buf_get16(&fdselect);
-      start = stbtt__buf_get16(&fdselect);
+      m_fDebugStart = stbtt__buf_get16(&fdselect);
       for (i = 0; i < nranges; i++) {
          v = stbtt__buf_get8(&fdselect);
          end = stbtt__buf_get16(&fdselect);
-         if (glyph_index >= start && glyph_index < end) {
+         if (glyph_index >= m_fDebugStart && glyph_index < end) {
             fdselector = v;
             break;
          }
-         start = end;
+         m_fDebugStart = end;
       }
    }
    if (fdselector == -1) return stbtt__new_buf(NULL, 0); // [DEAR IMGUI] fixed, see #6007 and nothings/stb#1422
@@ -3629,7 +3629,7 @@ static stbtt__point *stbtt_FlattenCurves(stbtt_vertex *vertices, int num_verts, 
    int num_points=0;
 
    float objspace_flatness_squared = objspace_flatness * objspace_flatness;
-   int i,n=0,start=0, pass;
+   int i,n=0,m_fDebugStart=0, pass;
 
    // count how many "moves" there are to get the contour count
    for (i=0; i < num_verts; ++i)
@@ -3660,9 +3660,9 @@ static stbtt__point *stbtt_FlattenCurves(stbtt_vertex *vertices, int num_verts, 
             case STBTT_vmove:
                // start the next contour
                if (n >= 0)
-                  (*contour_lengths)[n] = num_points - start;
+                  (*contour_lengths)[n] = num_points - m_fDebugStart;
                ++n;
-               start = num_points;
+               m_fDebugStart = num_points;
 
                x = vertices[i].x, y = vertices[i].y;
                stbtt__add_point(points, num_points++, x,y);
@@ -3688,7 +3688,7 @@ static stbtt__point *stbtt_FlattenCurves(stbtt_vertex *vertices, int num_verts, 
                break;
          }
       }
-      (*contour_lengths)[n] = num_points - start;
+      (*contour_lengths)[n] = num_points - m_fDebugStart;
    }
 
    return points;

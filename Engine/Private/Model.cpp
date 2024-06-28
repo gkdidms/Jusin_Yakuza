@@ -948,6 +948,12 @@ _bool CModel::Get_AnimChanged() const
 	return m_Animations[m_AnimDesc.iAnimIndex]->Get_Changed();
 }
 
+_bool CModel::Get_AnimRestart() const
+{
+	// 루프가 아닐경우 무조건 Restart 는 false를 반환하게한다
+	return m_AnimLoops[m_AnimDesc.iAnimIndex] && m_Animations[m_AnimDesc.iAnimIndex]->Get_Restrat();
+}
+
 const _float4x4* CModel::Get_BoneCombinedTransformationMatrix(const _char* pBoneName) const
 {
 	auto	iter = find_if(m_Bones.begin(), m_Bones.end(), [&](CBone* pBone)->_bool
@@ -982,9 +988,14 @@ const _float4x4* CModel::Get_BoneTransformationMatrix(const _char* pBoneName) co
 	return (*iter)->Get_TransformationMatrix();
 }
 
-const string& CModel::Get_AnimationName(_uint iAnimIndex)
+const _char* CModel::Get_AnimationName(_uint iAnimIndex)
 {
 	return m_Animations[iAnimIndex]->Get_AnimName();
+}
+
+const _double* CModel::Get_AnimationCurrentPosition()
+{
+	return m_Animations[m_AnimDesc.iAnimIndex]->Get_CurrentPosition();
 }
 
 void CModel::Copy_DecalMaterial(vector<DECAL_DESC>* pDecals)

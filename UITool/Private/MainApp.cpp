@@ -84,7 +84,7 @@ HRESULT CMainApp::Render()
 	m_pGameInstance->Clear_DepthStencil_View();
 	
 	
-	m_pGameInstance->Draw();
+	//m_pGameInstance->Draw();
 	m_pIMGUI_Manager->Render();
 	m_pObjectManager->Render();
 

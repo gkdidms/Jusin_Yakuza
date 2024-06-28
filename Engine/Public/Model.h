@@ -49,6 +49,7 @@ public:
 
 	_bool Get_AnimFinished() const;
 	_bool Get_AnimChanged() const;
+	_bool Get_AnimRestart() const;
 
 	_bool Get_AnimLoop(_uint iAnimIndex) { 
 		if (m_AnimLoops.size() <= iAnimIndex) return false;			//배열 범위 예외처리
@@ -75,7 +76,8 @@ public:
 	void	Copy_DecalMaterial(vector<DECAL_DESC>* pDecals); /* Decal 정보 얻어오기 */
 	CTexture* Copy_DecalTexture(int	iMaterialNum); /* Decal 텍스처 얻어오기 */
 
-	const string& Get_AnimationName(_uint iAnimIndex);
+	const _char* Get_AnimationName(_uint iAnimIndex);
+	const _double* Get_AnimationCurrentPosition();
 
 public:
 	void Set_AnimLoop(_uint iAnimIndex, _bool isLoop)

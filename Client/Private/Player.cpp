@@ -32,25 +32,23 @@ HRESULT CPlayer::Initialize(void* pArg)
 	if (FAILED(Add_CharacterData()))
 		return E_FAIL;
 
-	Change_Animation(3);
 	return S_OK;
 }
 
 void CPlayer::Priority_Tick(const _float& fTimeDelta)
 {
-	Synchronize_Root();
 }
 
 void CPlayer::Tick(const _float& fTimeDelta)
 {
-	if (m_pModelCom->Get_AnimFinished())
-	{
-		m_iAnimIndex += m_iTemp;
+	//if (m_pModelCom->Get_AnimFinished())
+	//{
+	//	m_iAnimIndex += m_iTemp;
 
-		m_iTemp *= -1;
+	//	m_iTemp *= -1;
 
-		Change_Animation(m_iAnimIndex);
-	}
+	//	Change_Animation(m_iAnimIndex);
+	//}
 
 	if (m_pGameInstance->GetKeyState(DIK_UP) == HOLD)
 	{
@@ -76,17 +74,27 @@ void CPlayer::Tick(const _float& fTimeDelta)
 	if (m_pGameInstance->GetKeyState(DIK_9) == TAP)
 	{
 		m_iAnimIndex++;
+		Change_Animation(m_iAnimIndex);
 	}
 	if (m_pGameInstance->GetKeyState(DIK_8) == TAP)
 	{
 		m_iAnimIndex--;
+		Change_Animation(m_iAnimIndex);
+	}
+	if (m_pGameInstance->GetKeyState(DIK_7) == TAP)
+	{
+		m_iAnimIndex = 37;
+		Change_Animation(m_iAnimIndex);
 	}
 
 	if (m_isAnimStart)
 		m_pModelCom->Play_Animation(fTimeDelta);
 
 	for (auto& pCollider : m_pColliders)
-		pCollider->Tick(fTimeDelta);
+		pCollider.second->Tick(fTimeDelta);
+
+	Synchronize_Root();
+	Animation_Event();
 }
 
 void CPlayer::Late_Tick(const _float& fTimeDelta)
@@ -94,7 +102,7 @@ void CPlayer::Late_Tick(const _float& fTimeDelta)
 	m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
 
 	for (auto& pCollider : m_pColliders)
-		pCollider->Late_Tick(fTimeDelta);
+		pCollider.second->Late_Tick(fTimeDelta);
 }
 
 HRESULT CPlayer::Render()
@@ -158,7 +166,14 @@ void CPlayer::Synchronize_Root()
 		//if(m_isChanged)
 		//	XMStoreFloat4(&m_vPrevMove, XMVectorZero());
 
-		m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_pTransformCom->Get_State(CTransform::STATE_POSITION) + (vMovePos - XMLoadFloat4(&m_vPrevMove)));
+		// 여기서 루프애니메이션일 경우 vMovePos가 0이 되면서 다시 뒤로 가는 문제가 생긴다.
+		// 새로운 루프가 시작하는지를 검사해서 그 때에만 else로 빠지게 해줘야한다.
+		if (m_pModelCom->Get_AnimRestart())
+		{
+			m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+		}
+		else
+			m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_pTransformCom->Get_State(CTransform::STATE_POSITION) + (vMovePos - XMLoadFloat4(&m_vPrevMove)));
 		//m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_pTransformCom->Get_State(CTransform::STATE_POSITION) + (m_iChanged ? vMovePos : (vMovePos - XMLoadFloat4(&m_vPrevMove))));
 	}
 	else
@@ -176,13 +191,44 @@ void CPlayer::Synchronize_Root()
 	XMStoreFloat4(&m_vPrevMove, vMovePos);
 }
 
+void CPlayer::Animation_Event()
+{
+	auto& pCurEvents = m_pData->Get_CurrentEvents();
+	for (auto& pEvent : pCurEvents)
+	{
+		_double CurPos = *(m_pModelCom->Get_AnimationCurrentPosition());
+
+		if (CurPos >= pEvent.fPlayPosition)
+		{
+			CSoketCollider* pCollider = m_pColliders.at(pEvent.iBoneIndex);
+
+			switch (pEvent.iType)
+			{
+			case 0:
+				pCollider->On();
+				break;
+			case 1:
+				pCollider->Off();
+				break;
+			case 2:
+				cout << "사운드 재생" << endl;
+				break;
+			case 3:
+				cout << "이펙트 재생" << endl;
+				break;
+			}
+		}
+		
+	}
+}
+
 HRESULT CPlayer::Add_Componenets()
 {
 	if (FAILED(__super::Add_Component(LEVEL_TEST, TEXT("Prototype_Component_Shader_VtxAnim"),
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Component(LEVEL_TEST, TEXT("Prototype_Component_Model_Player"),
+	if (FAILED(__super::Add_Component(LEVEL_TEST, TEXT("Prototype_Component_Model_Kiryu"),
 		TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
 		return E_FAIL;
 
@@ -241,8 +287,6 @@ void CPlayer::Apply_ChracterData()
 
 	for (auto& Collider : pColliders)
 	{
-		//Collider.first
-		/* 플래시 이펙트 수정 필요. */
 		CSoketCollider::SOKET_COLLIDER_DESC Desc{};
 		Desc.pParentMatrix = &m_ModelWorldMatrix;
 		Desc.pCombinedTransformationMatrix = m_pModelCom->Get_BoneCombinedTransformationMatrix_AtIndex(Collider.first);
@@ -252,7 +296,8 @@ void CPlayer::Apply_ChracterData()
 		CGameObject* pSoketCollider = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_SoketCollider"), &Desc);
 		if (nullptr == pSoketCollider)
 			return;
-		m_pColliders.emplace_back(static_cast<CSoketCollider*>(pSoketCollider));
+	
+		m_pColliders.emplace(Collider.first, static_cast<CSoketCollider*>(pSoketCollider));
 	}
 
 }
@@ -260,7 +305,8 @@ void CPlayer::Apply_ChracterData()
 void CPlayer::Change_Animation(_uint iIndex)
 {
 	m_pModelCom->Set_AnimationIndex(m_iAnimIndex, ANIM_INTERVAL);
-	string strAnimName = m_pModelCom->Get_AnimationName(m_iAnimIndex);
+	string strAnimName = string(m_pModelCom->Get_AnimationName(m_iAnimIndex));
+	strAnimName = m_pGameInstance->Extract_String(strAnimName, '[', ']');
 	m_pData->Set_CurrentAnimation(strAnimName);
 }
 
@@ -295,7 +341,7 @@ void CPlayer::Free()
 	__super::Free();
 
 	for (auto& pCollider : m_pColliders)
-		Safe_Release(pCollider);
+		Safe_Release(pCollider.second);
 	m_pColliders.clear();
 	//Safe_Release(m_pColliderCom);
 	Safe_Release(m_pData);

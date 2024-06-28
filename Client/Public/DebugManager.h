@@ -46,6 +46,8 @@ private:
 private:
     _bool m_isTimeStop = { false }; // TimeDelta Stop
     _float m_fSpeed = { -1.f };
+    _bool m_isPlayerMove = { false }; // 플레이어 위치 이동 bool 변수
+
 private://렌더러 제어 
     _float m_fHDRLight = { 1.f };
 

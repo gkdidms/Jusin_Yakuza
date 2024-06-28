@@ -24,7 +24,7 @@ HRESULT CCharacterData::Initialize(wstring wstrModelName)
 		ifstream in(strFileFullPath, ios::binary);
 
 		if (!in.is_open()) {
-			MSG_BOX("파일 개방 실패");
+			MSG_BOX("AlphaMeshes 개방 실패");
 			return E_FAIL;
 		}
 
@@ -54,7 +54,7 @@ HRESULT CCharacterData::Initialize(wstring wstrModelName)
 		ifstream in(strFileFullPath, ios::binary);
 
 		if (!in.is_open()) {
-			MSG_BOX("파일 개방 실패");
+			MSG_BOX("LoopAnimations 개방 실패");
 			return E_FAIL;
 		}
 
@@ -83,7 +83,7 @@ HRESULT CCharacterData::Initialize(wstring wstrModelName)
 		ifstream in(strFileFullPath, ios::binary);
 
 		if (!in.is_open()) {
-			MSG_BOX("파일 개방 실패");
+			MSG_BOX("AnimationEvents 개방 실패");
 			return E_FAIL;
 		}
 
@@ -100,6 +100,7 @@ HRESULT CCharacterData::Initialize(wstring wstrModelName)
 			in >> EventDesc.iType;
 			in >> EventDesc.fPlayPosition;
 			in >> EventDesc.strChannelName;
+			in >> EventDesc.iBoneIndex;
 
 			m_AnimationEvents.emplace(strAnimName, EventDesc);
 		}
@@ -117,7 +118,7 @@ HRESULT CCharacterData::Initialize(wstring wstrModelName)
 		ifstream in(strFileFullPath, ios::binary);
 
 		if (!in.is_open()) {
-			MSG_BOX("파일 개방 실패");
+			MSG_BOX("Colliders 개방 실패");
 			return E_FAIL;
 		}
 

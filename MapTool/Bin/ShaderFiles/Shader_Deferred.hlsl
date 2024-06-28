@@ -158,7 +158,7 @@ float4 SSAO(float3x3 TBN, float3 vPosition)
         vOffset.xyz /= vOffset.w;
         vOffset.xy = vOffset.xy * float2(0.5f, -0.5f) + float2(0.5f, -0.5f);
         
-        vector vOccNorm = g_DepthTexture.Sample(LinearSampler, vOffset.xy);
+        vector vOccNorm = g_DepthTexture.Sample(PointSampler, vOffset.xy);
         
         	/* 뷰스페이스 상의 위치를 구한다. */
         vector vOccPosition;
@@ -184,7 +184,7 @@ PS_OUT PS_MAIN_SSAO(PS_IN In)
     PS_OUT Out = (PS_OUT) 0;
 
     vector vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexcoord);
-    vector vDepthDesc = g_DepthTexture.Sample(LinearSampler, In.vTexcoord);
+    vector vDepthDesc = g_DepthTexture.Sample(PointSampler, In.vTexcoord);
     
     if (vNormalDesc.a != 0.f)
     {
@@ -200,6 +200,8 @@ PS_OUT PS_MAIN_SSAO(PS_IN In)
         vector vPosition;
         
         vPosition.x = In.vTexcoord.x * 2.f - 1.f;
+        
+      
         vPosition.y = In.vTexcoord.y * -2.f + 1.f;
         vPosition.z = vDepthDesc.x; /* 0 ~ 1 */
         vPosition.w = 1.f;
@@ -456,11 +458,10 @@ PS_OUT PS_OIT_RESULT(PS_IN In)
     PS_OUT Out = (PS_OUT) 0;
 
     vector vAccumColor = g_AccumTexture.Sample(PointSampler, In.vTexcoord);
-    vector vAccumAlpha = g_AccumAlpha.Sample(PointSampler, In.vTexcoord);
-   float vAccumWeight = vAccumAlpha.r;
+    float vAccumAlpha = g_AccumAlpha.Sample(PointSampler, In.vTexcoord).r;
     
       // 최종 출력 계산(알파*가중치)를 빼주는작업= 모두 함친 색이 나 옴
-    vector FinalColor = float4(vAccumColor.xyz / vAccumColor.a, vAccumWeight);
+    vector FinalColor = float4(vAccumColor.xyz / vAccumColor.a, 1.f -vAccumAlpha);
 
     Out.vColor = FinalColor;
 
@@ -673,7 +674,7 @@ technique11 DefaultTechnique
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_None_Test_None_Write, 0);
-        SetBlendState(BS_AlphaBlend, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xffffffff);
+        SetBlendState(BS_Blend, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xffffffff);
 
         VertexShader = compile vs_5_0 VS_MAIN();
         GeometryShader = NULL;

@@ -35,7 +35,6 @@ void CImage_Texture::Tick(const _float& fTimeDelta)
 
 void CImage_Texture::Late_Tick(const _float& fTimeDelta)
 {
-	//m_pGameInstance->Add_Renderer(CRenderer::RENDER_UI, this);
 }
 
 HRESULT CImage_Texture::Render()
