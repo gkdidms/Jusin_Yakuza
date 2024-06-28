@@ -6,6 +6,8 @@
 
 #include "Mesh.h"
 
+#include "BTNode.h"
+
 CPlayer::CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLandObject{ pDevice, pContext }
 {
@@ -32,6 +34,8 @@ HRESULT CPlayer::Initialize(void* pArg)
 	if (FAILED(Add_CharacterData()))
 		return E_FAIL;
 
+	Change_Animation(m_iAnimIndex);
+
 	return S_OK;
 }
 
@@ -41,15 +45,6 @@ void CPlayer::Priority_Tick(const _float& fTimeDelta)
 
 void CPlayer::Tick(const _float& fTimeDelta)
 {
-	//if (m_pModelCom->Get_AnimFinished())
-	//{
-	//	m_iAnimIndex += m_iTemp;
-
-	//	m_iTemp *= -1;
-
-	//	Change_Animation(m_iAnimIndex);
-	//}
-
 	if (m_pGameInstance->GetKeyState(DIK_UP) == HOLD)
 	{
 		m_pTransformCom->Go_Straight(fTimeDelta);
@@ -81,9 +76,10 @@ void CPlayer::Tick(const _float& fTimeDelta)
 		m_iAnimIndex--;
 		Change_Animation(m_iAnimIndex);
 	}
+
 	if (m_pGameInstance->GetKeyState(DIK_7) == TAP)
 	{
-		m_iAnimIndex = 37;
+		m_iAnimIndex = 0;
 		Change_Animation(m_iAnimIndex);
 	}
 
@@ -132,6 +128,11 @@ HRESULT CPlayer::Render()
 #endif
 
 	return S_OK;
+}
+
+void CPlayer::Ready_AnimationTree()
+{
+	
 }
 
 // 현재 애니메이션의 y축을 제거하고 사용하는 상태이다 (혹시 애니메이션의 y축 이동도 적용이 필요하다면 로직 수정이 필요함
@@ -197,8 +198,9 @@ void CPlayer::Animation_Event()
 	for (auto& pEvent : pCurEvents)
 	{
 		_double CurPos = *(m_pModelCom->Get_AnimationCurrentPosition());
+		_double Duration = *(m_pModelCom->Get_AnimationDuration());
 
-		if (CurPos >= pEvent.fPlayPosition)
+		if (CurPos >= pEvent.fPlayPosition && CurPos < Duration)
 		{
 			CSoketCollider* pCollider = m_pColliders.at(pEvent.iBoneIndex);
 
@@ -297,7 +299,11 @@ void CPlayer::Apply_ChracterData()
 		if (nullptr == pSoketCollider)
 			return;
 	
-		m_pColliders.emplace(Collider.first, static_cast<CSoketCollider*>(pSoketCollider));
+		auto [it, success] = m_pColliders.emplace(Collider.first, static_cast<CSoketCollider*>(pSoketCollider));
+
+		//생성한 모든 콜라이더는 일단 꺼둔다.
+		// 몸체에 붙일 (플레이어가 피격당할) 콜라이더는 항시 켜져있어야하므로 툴에서찍지않음
+		it->second->Off();
 	}
 
 }

@@ -158,7 +158,7 @@ void CCharacterData::Set_CurrentAnimation(string strAnimName)
 	auto lower_bound_iter = m_AnimationEvents.lower_bound(strAnimName);
 	auto upper_bound_iter = m_AnimationEvents.upper_bound(strAnimName);
 
-	if (lower_bound_iter == upper_bound_iter)
+	if (lower_bound_iter == upper_bound_iter && lower_bound_iter != m_AnimationEvents.end())
 	{
 		m_CurrentEvents.push_back((*lower_bound_iter).second);
 	}

@@ -998,6 +998,12 @@ const _double* CModel::Get_AnimationCurrentPosition()
 	return m_Animations[m_AnimDesc.iAnimIndex]->Get_CurrentPosition();
 }
 
+const _double* CModel::Get_AnimationDuration()
+{
+	return m_Animations[m_AnimDesc.iAnimIndex]->Get_Duration();
+}
+
+
 void CModel::Copy_DecalMaterial(vector<DECAL_DESC>* pDecals)
 {
 	for (int i = 0; i < m_vDecalMaterials.size(); i++)

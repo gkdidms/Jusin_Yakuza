@@ -11,6 +11,13 @@ BEGIN(Client)
 class CPlayer :
     public CLandObject
 {
+public:
+    //KRS: 불한당, KRH: 러쉬, KRC: 파괴자
+    enum BATTLE_STYLE
+    {
+        KRS, KRH, KRC, BATTLE_STYLE_END
+    };
+
 private:
     const _float ANIM_INTERVAL = 7.f;
     
@@ -37,6 +44,7 @@ public:
     virtual HRESULT Render() override;
 
 private:
+    void Ready_AnimationTree();
     void Synchronize_Root();
     void Animation_Event();
 
@@ -47,9 +55,10 @@ private:
     unordered_map<_uint, class CSoketCollider*>      m_pColliders;     
     class CCharacterData*   m_pData = { nullptr };
 
+    map<BATTLE_STYLE, class CBTNode*> m_AnimationTree;
+
 private:
-    _uint       m_iAnimIndex = { 2 };
-    _uint       m_iTemp = { 1 };
+    _uint       m_iAnimIndex = { 351 };
 
     _float4     m_vPrevMove;
     _float4x4   m_ModelWorldMatrix;
