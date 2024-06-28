@@ -89,6 +89,24 @@ _vector CPicking::Picking(_bool* isSuccess)
 	return vMousePos;
 }
 
+_bool CPicking::Picking_UI(CTransform* pUITransform)
+{
+	POINT		ptMouse = { };
+
+	GetCursorPos(&ptMouse);
+	ScreenToClient(m_hWnd, &ptMouse);
+
+	_float4 vPos;
+	XMStoreFloat4(&vPos, pUITransform->Get_State(CTransform::STATE_POSITION));
+	_float3 vScale = pUITransform->Get_Scaled();
+
+	if (vPos.x - (vScale.x) < ptMouse.x && ptMouse.x < vPos.x + (vScale.x))
+		if (vPos.y - (vScale.y) < ptMouse.y && ptMouse.y < vPos.y + (vScale.y))
+			return true;
+
+	return false;
+}
+
 float CPicking::FindObjID(_bool* isSuccess)
 {
 	*isSuccess = true;

@@ -4,6 +4,7 @@
 
 #pragma region TEST
 #include "Player.h"
+#include "PlayerCamera.h"
 #include "DebugCamera.h"
 #include "CineCamera.h"
 #include "Decal.h"
@@ -170,6 +171,8 @@ HRESULT CLoader::Loading_For_Test()
 
 	lstrcpy(m_szLoadingText, TEXT("객체원형를(을) 로딩 중 입니다."));
 	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_DebugCamera"), CDebugCamera::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_PlayerCamera"), CPlayerCamera::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Player"), CPlayer::Create(m_pDevice, m_pContext))))
