@@ -17,9 +17,13 @@ private:
 
 public:
     virtual HRESULT Initialize_Prototype() override;
+    HRESULT Initialize_Prototype(string FilePath) ;
     virtual HRESULT Initialize(void* pArg) override;
-    
 public:
+    void Save_Data(ofstream* out);
+    HRESULT Load_Data(string Filepath);
+public:
+    static CVIBuffer_Instance_Point* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, string FilePath);
     static CVIBuffer_Instance_Point* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
     virtual CComponent* Clone(void* pArg);
     virtual void Free() override;
