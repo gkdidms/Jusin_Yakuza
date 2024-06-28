@@ -79,7 +79,7 @@ void CAnimation::Update_TransformationMatrix(_float fTimeDelta, const vector<cla
 	m_CurrentPosition += m_TickPerSecond * fTimeDelta;
 	m_isRestart = false;
 
-	if (m_CurrentPosition >= m_Duration)
+	if (m_CurrentPosition >= m_Duration && !m_isFinished)
 	{
 		m_CurrentPosition = 0.0;
 		m_isRestart = true;

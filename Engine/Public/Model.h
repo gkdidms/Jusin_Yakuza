@@ -78,6 +78,7 @@ public:
 
 	const _char* Get_AnimationName(_uint iAnimIndex);
 	const _double* Get_AnimationCurrentPosition();
+	const _double* Get_AnimationDuration();
 
 public:
 	void Set_AnimLoop(_uint iAnimIndex, _bool isLoop)

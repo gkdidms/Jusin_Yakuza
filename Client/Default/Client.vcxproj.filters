@@ -109,6 +109,24 @@
     <ClCompile Include="..\Private\SoketCollider.cpp">
       <Filter>02.GameObjects\02.Character\SoketCollider</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\BTNode.cpp">
+      <Filter>02.GameObjects\02.Character\BehaviorTree\BTNode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CompositeNode.cpp">
+      <Filter>02.GameObjects\02.Character\BehaviorTree\CompositeNode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\DecoratorNode.cpp">
+      <Filter>02.GameObjects\02.Character\BehaviorTree\DecoratorNode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\LeafNode.cpp">
+      <Filter>02.GameObjects\02.Character\BehaviorTree\LeafNode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\BehaviorAnimation.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\00.Player\Behavior</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Kiryu_Adventure_Idle.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\00.Player\Behavior\Adventure\Idle</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\MainApp.h">
@@ -249,6 +267,24 @@
     <ClInclude Include="..\Public\SoketCollider.h">
       <Filter>02.GameObjects\02.Character\SoketCollider</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\BTNode.h">
+      <Filter>02.GameObjects\02.Character\BehaviorTree\BTNode</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CompositeNode.h">
+      <Filter>02.GameObjects\02.Character\BehaviorTree\CompositeNode</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\DecoratorNode.h">
+      <Filter>02.GameObjects\02.Character\BehaviorTree\DecoratorNode</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\LeafNode.h">
+      <Filter>02.GameObjects\02.Character\BehaviorTree\LeafNode</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\BehaviorAnimation.h">
+      <Filter>02.GameObjects\02.Character\LandObject\00.Player\Behavior</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Kiryu_Adventure_Idle.h">
+      <Filter>02.GameObjects\02.Character\LandObject\00.Player\Behavior\Adventure\Idle</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -354,6 +390,45 @@
     </Filter>
     <Filter Include="02.GameObjects\02.Character\SoketCollider">
       <UniqueIdentifier>{260596ca-843e-47fe-ae9b-3a65ebc2b9a0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\BehaviorTree">
+      <UniqueIdentifier>{490f9c94-1bca-41c9-a680-f2eb77882221}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\BehaviorTree\BTNode">
+      <UniqueIdentifier>{15b76be1-dd33-45f0-ac61-72edf4d78c5c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\BehaviorTree\CompositeNode">
+      <UniqueIdentifier>{a2c51b61-3052-4f69-9513-7d8956a5fbfd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\BehaviorTree\DecoratorNode">
+      <UniqueIdentifier>{9bcb482e-8cd8-46b9-ba50-2f2da538a375}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\BehaviorTree\LeafNode">
+      <UniqueIdentifier>{3352b812-faf6-4a67-8b29-1e9df787da34}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\Behavior">
+      <UniqueIdentifier>{5ece0b8f-54a5-4e8e-935e-6800ae4bd425}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\Behavior\KRS">
+      <UniqueIdentifier>{2e79bf21-5424-4bbb-974c-c3af527ca698}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\Behavior\KRH">
+      <UniqueIdentifier>{1d4cafe1-9cb2-45ed-bfe3-aa4c3bdc39ae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\Behavior\KRC">
+      <UniqueIdentifier>{20354a45-b413-4665-8872-2dd9ad500c03}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\Behavior\Adventure">
+      <UniqueIdentifier>{01eb585a-455f-4390-bc11-248673075203}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\Behavior\Adventure\Idle">
+      <UniqueIdentifier>{db4f74c4-76cc-4218-868f-66ccee366159}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\Behavior\Adventure\Walk">
+      <UniqueIdentifier>{d01633d9-e0ab-4e73-82af-44a33fc04999}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\Behavior\Adventure\Run">
+      <UniqueIdentifier>{b50b0e94-8792-4c99-83ca-c65719880701}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
