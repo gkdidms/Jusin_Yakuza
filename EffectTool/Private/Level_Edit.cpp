@@ -37,7 +37,7 @@ HRESULT CLevel_Edit::Ready_Object(const wstring& strLayerTag)
 	LightDesc.eType = LIGHT_DESC::TYPE_DIRECTIONAL;
 	LightDesc.vDirection = _float4(0.f, -1.f, 0.f, 0.f);
 	LightDesc.vDiffuse = _float4(1.f, 1.f, 1.f, 1.f);
-	LightDesc.vAmbient = _float4(0.3f, 0.3f, 0.4f, 1.f);
+	LightDesc.vAmbient = _float4(0.7f, 0.7f, 0.7f, 1.f);
 	LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
 
 	m_pGameInstance->Add_Light(LightDesc);

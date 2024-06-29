@@ -138,8 +138,7 @@ struct PS_OUT_LIGHT
 float3x3 Get_TBN(float3 vNormal, float2 vTexcoord)
 {   
     float3 vRandomVec = g_SSAONoisesTexture.Sample(PointSampler, vTexcoord * g_NoiseScale).xyz;
-    //matrix matWV = mul(g_WorldMatrix, g_ViewMatrix);
-    //vRandomVec = normalize(mul(vector(vRandomVec, 0.f), matWV)).xyz;
+    vRandomVec = normalize(mul(vector(vRandomVec, 0.f), g_ProjMatrixInv));
     
     float3 tangent = normalize(vRandomVec - vNormal * dot(vRandomVec, vNormal));
     float3 bitangent = cross(vNormal, tangent);
@@ -154,14 +153,14 @@ float4 SSAO(float3x3 TBN, float3 vPosition)
     
     for (int i = 0; i < 64; ++i)
     {   
-        float3 vSample = vPosition + mul(g_SSAORandoms[i], TBN) * g_fRadiuse; // 뷰스페이스
+        float3 vSample = vPosition + mul(g_SSAORandoms[i % 64], TBN) * g_fRadiuse; // 뷰스페이스
        
         vector vOffset = vector(vSample, 1.f);
         vOffset = mul(vOffset, g_CamProjMatrix);
         vOffset.xyz /= vOffset.w;
-        vOffset.xy = vOffset.xy * float2(0.5f, -0.5f) + float2(0.5f, -0.5f);
+        vOffset.xy = vOffset.xy * float2(0.5f, -0.5f) + float2(0.5f, 0.5f);
         
-        vector vOccNorm = g_DepthTexture.Sample(PointSampler, vOffset.xy);
+        vector vOccNorm = g_DepthTexture.Sample(LinearSampler, vOffset.xy);
         
         	/* 뷰스페이스 상의 위치를 구한다. */
         vector vOccPosition;
@@ -203,8 +202,6 @@ PS_OUT PS_MAIN_SSAO(PS_IN In)
         vector vPosition;
         
         vPosition.x = In.vTexcoord.x * 2.f - 1.f;
-        
-      
         vPosition.y = In.vTexcoord.y * -2.f + 1.f;
         vPosition.z = vDepthDesc.x; /* 0 ~ 1 */
         vPosition.w = 1.f;

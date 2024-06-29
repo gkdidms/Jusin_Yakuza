@@ -44,7 +44,10 @@ void CTRailEffect::Priority_Tick(const _float& fTimeDelta)
 void CTRailEffect::Tick(const _float& fTimeDelta)
 {
 	__super::Tick(fTimeDelta);
-	m_pVIBufferCom->Add_Trail(fTimeDelta, m_pTransformCom->Get_WorldMatrix());
+
+	_float4x4 TrailMatrix = *m_pTransformCom->Get_WorldFloat4x4();
+
+	m_pVIBufferCom->Add_Trail(fTimeDelta, XMLoadFloat4x4(&TrailMatrix));
 }
 
 void CTRailEffect::Late_Tick(const _float& fTimeDelta)
@@ -85,7 +88,7 @@ HRESULT CTRailEffect::Add_Components()
 		return E_FAIL;
 
 	/* For.Com_Texture */
-	if (FAILED(__super::Add_Component(LEVEL_EDIT, TEXT("Prototype_Component_Texture_Trail"),
+	if (FAILED(__super::Add_Component(LEVEL_EDIT, m_TextureTag,
 		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
 		return E_FAIL;
 
@@ -100,6 +103,23 @@ HRESULT CTRailEffect::Bind_ShaderResources()
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_PROJ))))
 		return E_FAIL;
+	if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_Texture", 0)))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CTRailEffect::Bind_TrailResourceData()
+{
+	if (FAILED(m_pTransformCom->Bind_ShaderMatrix(m_pShaderCom, "g_WorldMatrix")))
+		return E_FAIL;
+
+	if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_VIEW))))
+		return E_FAIL;
+
+	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_PROJ))))
+		return E_FAIL;
+
 	if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_Texture", 0)))
 		return E_FAIL;
 

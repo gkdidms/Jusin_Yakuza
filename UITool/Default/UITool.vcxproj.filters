@@ -74,7 +74,7 @@
       <Filter>96.IMGUI</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Object_Manager.cpp">
-      <Filter>03.Managers\01. Object_Manager</Filter>
+      <Filter>03.Managers\01.Object_Manager</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Image_Texture.cpp">
       <Filter>02.GameObjects\03.GameObject\00.UI_Texture\Image</Filter>
@@ -190,7 +190,7 @@
       <Filter>96.IMGUI</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Object_Manager.h">
-      <Filter>03.Managers\01. Object_Manager</Filter>
+      <Filter>03.Managers\01.Object_Manager</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Image_Texture.h">
       <Filter>02.GameObjects\03.GameObject\00.UI_Texture\Image</Filter>
@@ -263,9 +263,6 @@
     <Filter Include="03.Managers\00.Imgui_Manager">
       <UniqueIdentifier>{699c4717-0ecb-4a4a-a36a-91e286840988}</UniqueIdentifier>
     </Filter>
-    <Filter Include="03.Managers\01. Object_Manager">
-      <UniqueIdentifier>{1b040f42-4340-42a3-8cb9-b96e35e5f4b6}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObjects\03.GameObject">
       <UniqueIdentifier>{c03074c3-58b5-45ed-bf83-ea45da3d44ef}</UniqueIdentifier>
     </Filter>
@@ -283,6 +280,9 @@
     </Filter>
     <Filter Include="02.GameObjects\03.GameObject\00.UI_Texture\Text">
       <UniqueIdentifier>{2e70f75c-f166-4057-9dd3-5815fcbc1e92}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.Managers\01.Object_Manager">
+      <UniqueIdentifier>{1b040f42-4340-42a3-8cb9-b96e35e5f4b6}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

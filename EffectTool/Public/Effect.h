@@ -21,6 +21,7 @@ public:
         _float           fStartTime;
 
         wstring ParticleTag;
+        wstring TextureTag;
         _float4 vStartColor;
         _float4 vEndColor;
 
@@ -48,7 +49,9 @@ public:
 
     virtual void* Get_Instance();
 public:
-    void Set_StartPos(_float4 Pos) { m_vStartPos = Pos; }
+    void Set_StartPos(_float4 Pos) { 
+        m_vStartPos = Pos; 
+    }
     _uint Get_Type() const { return m_eType; }
     wstring Get_Tag() { return m_ParticleTag; }
     _float* Get_pStartTime() { return &m_fStartTime; }
@@ -57,18 +60,24 @@ public:
     _float4 Get_SColor() { return m_vStartColor; }
     _float4 Get_EColor() { return m_vEndColor; }
     _int Get_ShaderPass() { return m_iShaderPass; }
+    wstring Get_TextureTag() { return m_TextureTag; }
+public:
+    virtual void Save_Data(const string strDirectory);
+    virtual void Load_Data(const string strDirectory);
 
 protected:
     
     _uint          m_eType = { TYPE_END };
     wstring     m_ParticleTag = { TEXT("") };
-    _float       m_fStartTime = { 0.f };
+    wstring     m_TextureTag = { TEXT("") };
+    _int          m_iShaderPass = { 0 };
+
+    _float       m_fStartTime = { 0.f };//ÀÛ¾÷¿ëÆÄ½Ìx
     _float4     m_vStartPos = {};
 
     _uint			m_iAction = { 0 };
     _float4     m_vStartColor = { 0.f , 0.f , 0.f , 0.f };
     _float4     m_vEndColor = { 0.f , 0.f , 0.f , 0.f };
-    _int          m_iShaderPass = { 0 };
 
 
 public:
