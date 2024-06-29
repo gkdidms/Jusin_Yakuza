@@ -12,7 +12,10 @@
 
 #include "Object_Manager.h"
 #include "UI_Texture.h"
-
+#include "Image_Texture.h"
+#include "Text.h"
+#include "Btn.h"
+#include "Group.h"
 
 IMPLEMENT_SINGLETON(CImgui_Manager)
 
@@ -374,7 +377,7 @@ void CImgui_Manager::Window_Binary()
                 {
                     IGFD::FileDialogConfig config;
                     config.path = "../../Client/Bin/Resources/Textures/UI";
-                    ImGuiFileDialog::Instance()->OpenDialog("ChooseBtnTextureKey", "Choose File", ".dds, .png", config);
+                    ImGuiFileDialog::Instance()->OpenDialog("ChooseBtnTextureKey", "ChooseBtnFile", ".dds, .png", config);
                 }
                 if (ImGuiFileDialog::Instance()->Display("ChooseBtnTextureKey")) {
                     if (ImGuiFileDialog::Instance()->IsOk()) { // action if OK
@@ -476,6 +479,17 @@ void CImgui_Manager::Window_Binary()
                 ImGui::EndListBox();
             }
 
+            if (ImGui::Button("Remove"))
+            {
+                if (FAILED(m_pObjectManager->Remove_BinaryObject(m_pGameInstance->StringToWstring(m_strBinarySelectTag), m_iBinaryObjectIndex)))
+                    MSG_BOX("바이너리 오브젝트 삭제 불가");
+
+                if (BinaryObject.size() <= 1)
+                    m_iBinaryObjectIndex = -1;
+
+                auto BinaryObject = m_pObjectManager->Get_GroupBinaryObject(m_pGameInstance->StringToWstring(m_strBinarySelectTag));
+            }
+
             //생성된 바이너리에 따라 수정 옵션 추가 
             if (m_iBinaryObjectIndex != -1 && m_iBinaryPick == BINARY_OBJECT)
             {
@@ -501,15 +515,17 @@ void CImgui_Manager::Window_Binary()
 
 
                 //쉐이더 선택
-                _int iPass = dynamic_cast<CUI_Texture*>(BinaryObject[m_iBinaryObjectIndex])->Get_ShaderPass();
+                if (!m_isOpenBinaryGroup)
+                {
+                    _int iPass = dynamic_cast<CUI_Texture*>(BinaryObject[m_iBinaryObjectIndex])->Get_ShaderPass();
 
-                if (ImGui::RadioButton("NonBlend", &iPass, 0))
-                    dynamic_cast<CUI_Texture*>(BinaryObject[m_iBinaryObjectIndex])->Set_ShaderPass(iPass);
-                else if (ImGui::RadioButton("Blend", &iPass, 1))
-                    dynamic_cast<CUI_Texture*>(BinaryObject[m_iBinaryObjectIndex])->Set_ShaderPass(iPass);
-                else if (ImGui::RadioButton("Alpha Blend", &iPass, 2))
-                    dynamic_cast<CUI_Texture*>(BinaryObject[m_iBinaryObjectIndex])->Set_ShaderPass(iPass);
-
+                    if (ImGui::RadioButton("NonBlend", &iPass, 0))
+                        dynamic_cast<CUI_Texture*>(BinaryObject[m_iBinaryObjectIndex])->Set_ShaderPass(iPass);
+                    else if (ImGui::RadioButton("Blend", &iPass, 1))
+                        dynamic_cast<CUI_Texture*>(BinaryObject[m_iBinaryObjectIndex])->Set_ShaderPass(iPass);
+                    else if (ImGui::RadioButton("Alpha Blend", &iPass, 2))
+                        dynamic_cast<CUI_Texture*>(BinaryObject[m_iBinaryObjectIndex])->Set_ShaderPass(iPass);
+                }
             }
         }
         else m_isOpenBinaryGroup = false;
@@ -529,13 +545,13 @@ void CImgui_Manager::Window_Binary_Group()
 
     if (m_isCreateBinaryGroupObject)
     {
+        auto BinaryObject = m_pObjectManager->Get_GroupBinaryObject(m_pGameInstance->StringToWstring(m_strBinarySelectTag));
         //생성 가능하다면
         ImGui::SeparatorText(u8"오브젝트 생성");
         ImGui::RadioButton(u8"이미지", &m_iBinaryGroupObjectType, 0); ImGui::SameLine();
         ImGui::RadioButton(u8"버튼", &m_iBinaryGroupObjectType, 1); ImGui::SameLine();
         ImGui::RadioButton(u8"텍스트", &m_iBinaryGroupObjectType, 2); ImGui::SameLine();
         ImGui::RadioButton(u8"텍스트 포멧", &m_iBinaryGroupObjectType, 3); ImGui::SameLine();
-        ImGui::RadioButton(u8"그룹", &m_iBinaryGroupObjectType, 4);
 
         ImGui::InputText(u8"저장할 오브젝트 이름 : ", m_szBinaryGroupObjectName, MAX_PATH);
 
@@ -555,12 +571,15 @@ void CImgui_Manager::Window_Binary_Group()
                     std::string fileName = ImGuiFileDialog::Instance()->GetCurrentFileName();
                     // action
 
-                    CObject_Manager::OBJ_MNG_DESC Desc{};
-                    Desc.strFileName = m_pGameInstance->StringToWstring(fileName);
-                    Desc.strFilePath = m_pGameInstance->StringToWstring(filePathName);
-                    Desc.iTextureType = CObject_Manager::IMG;
+                    CImage_Texture::UI_TEXTURE_DESC Desc{};
+                    Desc.strTextureFileName = m_pGameInstance->StringToWstring(fileName);
+                    Desc.strTextureFilePath = m_pGameInstance->StringToWstring(filePathName);
+                    Desc.iTypeIndex = CObject_Manager::IMG;
                     Desc.strName = m_szObjectName;
-
+                    Desc.isParent = true;
+                    Desc.pParentMatrix = BinaryObject[m_iBinaryObjectIndex]->Get_TransformCom()->Get_WorldFloat4x4();
+                    CImage_Texture* pImage = dynamic_cast<CImage_Texture*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Image_Texture"), &Desc));
+                    dynamic_cast<CGroup*>(BinaryObject[m_iBinaryObjectIndex])->Set_PartObject(pImage);
                 }
 
                 // close

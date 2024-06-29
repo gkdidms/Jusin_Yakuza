@@ -136,6 +136,9 @@
     <ClCompile Include="..\Private\Kiryu_Adventure_Idle.cpp">
       <Filter>02.GameObjects\02.Character\LandObject\00.Player\Behavior\Adventure\Idle</Filter>
     </ClCompile>
+    <ClCompile Include="..\private\UI.cpp">
+      <Filter>02.GameObjects\07.UI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\MainApp.h">
@@ -303,6 +306,9 @@
     <ClInclude Include="..\Public\Kiryu_Adventure_Idle.h">
       <Filter>02.GameObjects\02.Character\LandObject\00.Player\Behavior\Adventure\Idle</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\UI.h">
+      <Filter>02.GameObjects\07.UI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -456,6 +462,9 @@
     </Filter>
     <Filter Include="02.GameObjects\02.Character\01.Terrain\TestMap">
       <UniqueIdentifier>{13a0eb4d-9fd9-4a66-90f0-f589933ed093}</UniqueIdentifier>
+	</Filter>
+    <Filter Include="02.GameObjects\07.UI">
+      <UniqueIdentifier>{5ee687d4-5dfa-49a3-92da-8f0756f1687f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
