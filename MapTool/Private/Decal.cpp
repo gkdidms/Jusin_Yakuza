@@ -45,7 +45,6 @@ void CDecal::Priority_Tick(const _float& fTimeDelta)
 
 void CDecal::Tick(const _float& fTimeDelta)
 {
-    m_pColliderCom->Tick(m_pTransformCom->Get_WorldMatrix());
 }
 
 void CDecal::Late_Tick(const _float& fTimeDelta)
@@ -58,12 +57,11 @@ HRESULT CDecal::Render()
     if (FAILED(Bind_ShaderResources()))
         return E_FAIL;
 
-    m_pShaderCom->Begin(0);
-    m_pVIBufferCom->Render();
+    m_pShaderCubeCom->Begin(0);
+    m_pVIBufferCubeCom->Render();
 
-#ifdef _DEBUG
-    m_pGameInstance->Add_DebugComponent(m_pColliderCom);
-#endif
+    m_pShaderPosCom->Begin(0);
+    m_pVIBufferRectCom->Render();
 
     return S_OK;
 }
@@ -77,29 +75,23 @@ void CDecal::Get_Decal_Desc_IO(DECAL_DESC_IO* pDecalIODesc)
 HRESULT CDecal::Add_Components()
 {
     /* For.Com_VIBuffer */
+    if (FAILED(__super::Add_Component(LEVEL_RUNMAP, TEXT("Prototype_Component_VIBuffer_Cube"),
+        TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pVIBufferCubeCom))))
+        return E_FAIL;
+
+    /* For.Com_Shader */
+    if (FAILED(__super::Add_Component(LEVEL_RUNMAP, TEXT("Prototype_Component_Shader_VtxCube"),
+        TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCubeCom))))
+        return E_FAIL;
+
+    /* For.Com_VIBuffer */
     if (FAILED(__super::Add_Component(LEVEL_RUNMAP, TEXT("Prototype_Component_VIBuffer_Rect"),
-        TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pVIBufferCom))))
+        TEXT("Com_VIBufferRect"), reinterpret_cast<CComponent**>(&m_pVIBufferRectCom))))
         return E_FAIL;
 
     /* For.Com_Shader */
     if (FAILED(__super::Add_Component(LEVEL_RUNMAP, TEXT("Prototype_Component_Shader_VtxPosTex"),
-        TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
-        return E_FAIL;
-
-    ///* For.Com_Texture */
-    //if (FAILED(__super::Add_Component(LEVEL_RUNMAP, TEXT("Prototype_Component_Texture_Loading"),
-    //    TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
-    //    return E_FAIL;
-
-    CBounding_OBB::BOUNDING_OBB_DESC		ColliderDesc{};
-
-    ColliderDesc.eType = CCollider::COLLIDER_OBB;
-    ColliderDesc.vExtents = _float3(4, 4, 4);
-    ColliderDesc.vCenter = _float3(0, 0.f, 0);
-    ColliderDesc.vRotation = _float3(0, 0.f, 0.f);
-
-    if (FAILED(__super::Add_Component(LEVEL_RUNMAP, TEXT("Prototype_Component_Collider"),
-        TEXT("Com_Collider"), reinterpret_cast<CComponent**>(&m_pColliderCom), &ColliderDesc)))
+        TEXT("Com_ShaderRect"), reinterpret_cast<CComponent**>(&m_pShaderPosCom))))
         return E_FAIL;
 
     return S_OK;
@@ -107,13 +99,23 @@ HRESULT CDecal::Add_Components()
 
 HRESULT CDecal::Bind_ShaderResources()
 {
-    if (FAILED(m_pTransformCom->Bind_ShaderMatrix(m_pShaderCom, "g_WorldMatrix")))
+    if (FAILED(m_pTransformCom->Bind_ShaderMatrix(m_pShaderCubeCom, "g_WorldMatrix")))
         return E_FAIL;
-    if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_VIEW))))
+    if (FAILED(m_pShaderCubeCom->Bind_Matrix("g_ViewMatrix", m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_VIEW))))
         return E_FAIL;
-    if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_PROJ))))
+    if (FAILED(m_pShaderCubeCom->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_PROJ))))
         return E_FAIL;
-    if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_Texture", 0)))
+    if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCubeCom, "g_Texture2D", 0)))
+        return E_FAIL;
+
+
+    if (FAILED(m_pTransformCom->Bind_ShaderMatrix(m_pShaderPosCom, "g_WorldMatrix")))
+        return E_FAIL;
+    if (FAILED(m_pShaderPosCom->Bind_Matrix("g_ViewMatrix", m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_VIEW))))
+        return E_FAIL;
+    if (FAILED(m_pShaderPosCom->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_PROJ))))
+        return E_FAIL;
+    if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderPosCom, "g_Texture", 0)))
         return E_FAIL;
 
     return S_OK;
@@ -150,7 +152,8 @@ void CDecal::Free()
     __super::Free();
 
     Safe_Release(m_pTextureCom);
-    Safe_Release(m_pShaderCom);
-    Safe_Release(m_pVIBufferCom);
-    Safe_Release(m_pColliderCom);
+    Safe_Release(m_pShaderCubeCom);
+    Safe_Release(m_pShaderPosCom);
+    Safe_Release(m_pVIBufferCubeCom);
+    Safe_Release(m_pVIBufferRectCom);
 }

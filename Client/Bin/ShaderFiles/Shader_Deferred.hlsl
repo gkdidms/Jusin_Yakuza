@@ -36,6 +36,9 @@ Texture2D g_CopyLuminanceTexture;
 Texture2D g_AmbientTexture;
 //블러용
 Texture2D g_EffectTexture;
+//데칼용
+Texture2D g_DecalTexture;
+
 
 Texture2D g_BlurTexture;
 Texture2D g_ResultTexture;
@@ -487,6 +490,7 @@ PS_OUT PS_OIT_RESULT(PS_IN In)
     return Out;
 }
 
+
 technique11 DefaultTechnique
 {
 
@@ -701,7 +705,6 @@ technique11 DefaultTechnique
         DomainShader = NULL;
         PixelShader = compile ps_5_0 PS_OIT_RESULT();   
     }
-
 
 }
 

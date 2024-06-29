@@ -52,10 +52,6 @@ HRESULT CConstruction::Initialize(void* pArg)
 		}
 	}
 
-
-
-
-
 	return S_OK;
 }
 
