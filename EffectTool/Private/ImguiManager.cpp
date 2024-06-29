@@ -32,6 +32,16 @@ CImguiManager::CImguiManager(ID3D11Device* pDevice, ID3D11DeviceContext* pContex
 
 HRESULT CImguiManager::Initialize(void* pArg)
 {
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
+	ImGuiIO& io = ImGui::GetIO();
+	io.Fonts->AddFontFromFileTTF("C:\\Windows\\fonts\\malgun.ttf", 14.0f, NULL, io.Fonts->GetGlyphRangesKorean());
+
+
+	TextureTags.push_back(TEXT("Prototype_Component_Texture_Sphere"));
+	TextureTags.push_back(TEXT("Prototype_Component_Texture_Trail"));
+	TextureTags.push_back(TEXT("Prototype_Component_Texture_Test"));
+
 
 	if (nullptr != pArg)
 	{
@@ -44,6 +54,7 @@ HRESULT CImguiManager::Initialize(void* pArg)
 	m_EffectDesc.vStartColor = { 0.0f , 0.0f ,0.0f ,1.0f};
 	m_EffectDesc.vEndColor = { 0.0f, 0.0f, 0.0f, 1.0f };
 	m_EffectDesc.iShaderPass = { 0 };
+	m_EffectDesc.TextureTag = TextureTags[0];
 
 	m_EffectDesc.BufferInstance.iNumInstance = 1;
 	m_EffectDesc.BufferInstance.isLoop = true;
@@ -67,10 +78,13 @@ HRESULT CImguiManager::Initialize(void* pArg)
 	m_TrailDesc.vEndColor = { 0.0f, 0.0f, 0.0f, 1.0f };
 	m_TrailDesc.iShaderPass = { 0 };
 	m_TrailDesc.fSpeedPecSec = 5.0f;
+	m_TrailDesc.TextureTag = TextureTags[0];
 
 	m_TrailDesc.Trail_Desc.iMaxTrail = 10;
 	m_TrailDesc.Trail_Desc.vInitPosA = _float3{ 0.0f , 0.0f , 0.0f };
 	m_TrailDesc.Trail_Desc.vInitPosB = _float3{0.0f , 1.0f, 0.0f};	
+
+
 
 	return S_OK;
 }
@@ -211,7 +225,7 @@ void CImguiManager::EditTransform(_float* cameraView, _float* cameraProjection, 
 		dynamic_cast<CEffect*>(m_EditParticle[m_iCurEditIndex])->Set_StartPos(_float4(matrix[12], matrix[13], matrix[14], matrix[15]));
 		break;
 	case MODE_TRAIL:
-		dynamic_cast<CEffect*>(m_EditTrail[m_iCurEditIndex])->Set_StartPos(_float4(matrix[12], matrix[13], matrix[14], matrix[15]));
+		//dynamic_cast<CEffect*>(m_EditTrail[m_iCurEditIndex])->Set_StartPos(_float4(matrix[12], matrix[13], matrix[14], matrix[15]));
 		break;
 	}
 	
@@ -306,6 +320,7 @@ HRESULT CImguiManager::Create_Particle()
 	EffectDesc.ParticleTag = m_pGameInstance->StringToWstring(text_input_buffer);
 	EffectDesc.fStartTime = { 0.f };
 	EffectDesc.iShaderPass = { 0 };
+	EffectDesc.TextureTag = TextureTags[0];
 
 
 
@@ -340,7 +355,7 @@ HRESULT CImguiManager::Create_Trail()
 	EffectDesc.ParticleTag = m_pGameInstance->StringToWstring(m_TrailTag);
 	EffectDesc.fStartTime = { 0.f };
 	EffectDesc.iShaderPass = { 0 };
-
+	EffectDesc.TextureTag = TextureTags[0];
 
 
 	CGameObject* pGameParticle = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_TrailEffect"), &EffectDesc);
@@ -464,6 +479,7 @@ void CImguiManager::EditorTrail_Tick(_float fTimeDelta)
 		bChange = true;
 	}
 
+	File_Selctor(&bChange);
 
 	if (bChange)
 	{
@@ -471,6 +487,71 @@ void CImguiManager::EditorTrail_Tick(_float fTimeDelta)
 	}
 	ImGui::End();
 
+}
+
+HRESULT CImguiManager::AllEffect_Save()
+{
+	switch (m_iMode)
+	{
+	case Client::CImguiManager::MODE_PARTICLE:
+	{
+		string strDirectory = "../../Client/Bin/DataFiles/Particle/Point";
+
+		fs::path path(strDirectory);	
+		if (!exists(path))	
+			fs::create_directory(path);	
+
+		for (auto iter : m_EditParticle)
+			dynamic_cast<CParticle_Point*>(iter)->Save_Data(strDirectory);
+
+	}
+		break;
+	case Client::CImguiManager::MODE_TRAIL:
+	{
+
+	}
+		break;
+	case Client::CImguiManager::MODE_END:
+		break;
+	default:
+		break;
+	}
+	
+
+	return S_OK;
+}
+
+HRESULT CImguiManager::AllEffect_Load()
+{
+
+	switch (m_iMode)
+	{
+	case Client::CImguiManager::MODE_PARTICLE:
+	{
+		string strDirectory = "../../Client/Bin/DataFiles/Particle/Point";
+
+		fs::path path(strDirectory);
+		if (!exists(path))
+			fs::create_directory(path);
+
+		for (auto iter : m_EditParticle)
+			dynamic_cast<CParticle_Point*>(iter)->Load_Data(strDirectory);
+
+	}
+	break;
+	case Client::CImguiManager::MODE_TRAIL:
+	{
+
+	}
+	break;
+	case Client::CImguiManager::MODE_END:
+		break;
+	default:
+		break;
+	}
+
+
+	return S_OK;
 }
 
 HRESULT CImguiManager::Edit_Particle(_uint Index)
@@ -508,7 +589,7 @@ HRESULT CImguiManager::Edit_Particle(_uint Index)
 		EffectDesc.vStartColor = m_EffectDesc.vStartColor;
 		EffectDesc.vEndColor = m_EffectDesc.vEndColor;
 		EffectDesc.iShaderPass = m_EffectDesc.iShaderPass;
-
+		EffectDesc.TextureTag = m_EffectDesc.TextureTag;
 
 		m_EditParticle[Index] = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Particle_Point"), &EffectDesc);
 		if (nullptr == m_EditParticle[Index])
@@ -543,6 +624,7 @@ HRESULT CImguiManager::Edit_Particle(_uint Index)
 		TrailDesc.eType = CEffect::TYPE_TRAIL;	
 		TrailDesc.ParticleTag = m_pGameInstance->StringToWstring(m_TrailTag);
 		TrailDesc.iShaderPass = m_TrailDesc.iShaderPass;
+		TrailDesc.TextureTag = m_TrailDesc.TextureTag;
 
 		m_EditTrail[Index] = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_TrailEffect"), &TrailDesc);
 		if (nullptr == m_EditTrail[Index])
@@ -589,6 +671,7 @@ HRESULT CImguiManager::Load_Desc(_uint Index)
 		m_EffectDesc.vStartColor = pEffect->Get_SColor();
 		m_EffectDesc.vEndColor = pEffect->Get_EColor();
 		m_EffectDesc.iShaderPass = pEffect->Get_ShaderPass();
+		m_EffectDesc.TextureTag = pEffect->Get_TextureTag();
 
 		_uint CheckAction = pEffect->Get_Action();
 
@@ -616,6 +699,7 @@ HRESULT CImguiManager::Load_Desc(_uint Index)
 
 		m_TrailDesc.ParticleTag = pEffect->Get_Tag();
 		m_TrailDesc.iShaderPass = pEffect->Get_ShaderPass();
+		m_TrailDesc.TextureTag = pEffect->Get_TextureTag();
 
 		m_TrailDesc.Trail_Desc.iMaxTrail = pDesc->iMaxTrail;
 		m_TrailDesc.Trail_Desc.vInitPosA = pDesc->vInitPosA;
@@ -629,6 +713,61 @@ HRESULT CImguiManager::Load_Desc(_uint Index)
 
 
 	return S_OK;
+}
+
+void CImguiManager::File_Selctor(_bool* bChange)
+{
+
+	_int iSize = TextureTags.size();
+	if (ImGui::BeginListBox("texturebox"))
+	{
+		for (int i = 0; i < iSize; i++)
+		{
+			// 리스트박스 아이템의 텍스트
+			const bool isSelected = (m_iCurTexture == i);
+			char Label[256] = {};
+			strcpy_s(Label, m_pGameInstance->WstringToString(TextureTags[i]).c_str());	
+			if (ImGui::Selectable(Label, isSelected))
+			{
+				m_iCurTexture = i; // 선택된 아이템 업데이트	
+				*bChange = true;	
+			}
+
+
+			// 선택된 아이템이 보이도록 스크롤
+			if (isSelected)
+			{
+				ImGui::SetItemDefaultFocus();
+
+			}
+		}
+		ImGui::EndListBox();
+	}
+
+
+	if (-1 != m_iCurEditIndex)
+	{
+		switch (m_iMode)
+		{
+		case Client::CImguiManager::MODE_PARTICLE:
+		{
+			m_EffectDesc.TextureTag = TextureTags[m_iCurTexture];	
+			
+		}
+			break;
+		case Client::CImguiManager::MODE_TRAIL:
+		{
+			m_TrailDesc.TextureTag = TextureTags[m_iCurTexture];	
+			//bChange = true;
+		}
+			break;
+		case Client::CImguiManager::MODE_END:
+			break;
+		default:
+			break;
+		}
+	}
+
 }
 
 void CImguiManager::Create_Tick(_float fTimeDelta)
@@ -662,7 +801,7 @@ void CImguiManager::Create_Tick(_float fTimeDelta)
 	}
 	if (ImGui::Button("Save_binary"))
 	{
-		//바이너리화
+		AllEffect_Save();
 	}
 	if (ImGui::Button("Load_binary"))
 	{
@@ -841,6 +980,12 @@ void CImguiManager::Editor_Tick(_float fTimeDelta)
 	}
 
 	Color_Palette();
+
+	File_Selctor(&bChange);
+	
+	
+
+
 
 	if (bChange)
 	{

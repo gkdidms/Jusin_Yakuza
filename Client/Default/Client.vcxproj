@@ -173,11 +173,17 @@
     <ClInclude Include="..\..\Imgui\imgui\imstb_textedit.h" />
     <ClInclude Include="..\..\Imgui\imgui\imstb_truetype.h" />
     <ClInclude Include="..\public\Background.h" />
+    <ClInclude Include="..\Public\BehaviorAnimation.h" />
+    <ClInclude Include="..\Public\BTNode.h" />
+    <ClInclude Include="..\Public\CompositeNode.h" />
+    <ClInclude Include="..\Public\DecoratorNode.h" />
     <ClInclude Include="..\Public\CharacterData.h" />
     <ClInclude Include="..\Public\CineCamera.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </ClInclude>
+    <ClInclude Include="..\Public\Kiryu_Adventure_Idle.h" />
+    <ClInclude Include="..\Public\LeafNode.h" />
     <ClInclude Include="..\Public\Client_Defines.h" />
     <ClInclude Include="..\Public\Construction.h" />
     <ClInclude Include="..\public\DebugCamera.h" />
@@ -221,11 +227,17 @@
     <ClCompile Include="..\..\Imgui\imgui\imgui_tables.cpp" />
     <ClCompile Include="..\..\Imgui\imgui\imgui_widgets.cpp" />
     <ClCompile Include="..\private\Background.cpp" />
+    <ClCompile Include="..\Private\BehaviorAnimation.cpp" />
+    <ClCompile Include="..\Private\BTNode.cpp" />
+    <ClCompile Include="..\Private\CompositeNode.cpp" />
+    <ClCompile Include="..\Private\DecoratorNode.cpp" />
     <ClCompile Include="..\Private\CharacterData.cpp" />
     <ClCompile Include="..\Private\CineCamera.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\Private\Kiryu_Adventure_Idle.cpp" />
+    <ClCompile Include="..\Private\LeafNode.cpp" />
     <ClCompile Include="..\Private\Construction.cpp" />
     <ClCompile Include="..\private\DebugCamera.cpp" />
     <ClCompile Include="..\private\DebugManager.cpp" />

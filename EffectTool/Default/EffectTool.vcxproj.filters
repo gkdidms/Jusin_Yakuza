@@ -85,6 +85,9 @@
     <ClCompile Include="..\Private\TRailEffect.cpp">
       <Filter>02.GameObjects\03.Effect\Trail</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Imgui\ImGuiFileDialog\ImGuiFileDialog.cpp">
+      <Filter>96.ImGui\Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\MainApp.h">
@@ -188,6 +191,12 @@
     </ClInclude>
     <ClInclude Include="..\Public\TRailEffect.h">
       <Filter>02.GameObjects\03.Effect\Trail</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Imgui\ImGuiFileDialog\ImGuiFileDialogConfig.h">
+      <Filter>96.ImGui\Source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Imgui\ImGuiFileDialog\ImGuiFileDialog.h">
+      <Filter>96.ImGui\Source</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -485,8 +485,8 @@ HRESULT CRenderer::Ready_SSAONoiseTexture() // SSAO 연산에 들어갈 랜덤 벡터 텍스
 	for (int i = 0; i < 16; i++)
 	{
 		_float3 vNoise = {
-			m_pGameInstance->Get_Random(0.f, 1.f) * 2.f - 1.f,
-			m_pGameInstance->Get_Random(0.f, 1.f) * 2.f - 1.f,
+			m_pGameInstance->Get_Random(-1.f, 1.f) * 2.f - 1.f,
+			m_pGameInstance->Get_Random(-1.f, 1.f) * 2.f - 1.f,
 			0.f
 		};
 		pPixel[i] = vNoise;
@@ -515,20 +515,12 @@ HRESULT CRenderer::Ready_SSAONoiseTexture() // SSAO 연산에 들어갈 랜덤 벡터 텍스
 
 	Safe_Delete_Array(pPixel);
 
-
-
-
-	return S_OK;
-}
-
-void CRenderer::Render_SSAO()
-{
 	//랜덤 법선 만들기
 	for (int i = 0; i < 64; i++)
 	{
 		_float3 vRandom = {
-			m_pGameInstance->Get_Random(0.f, 1.f) * 2.f - 1.f,
-			m_pGameInstance->Get_Random(0.f, 1.f) * 2.f - 1.f,
+			m_pGameInstance->Get_Random(-1.f, 1.f) * 2.f - 1.f,
+			m_pGameInstance->Get_Random(-1.f, 1.f) * 2.f - 1.f,
 			m_pGameInstance->Get_Random(0.f, 1.f)
 		};
 
@@ -540,6 +532,14 @@ void CRenderer::Render_SSAO()
 
 		m_vSSAOKernal.emplace_back(vRandom);
 	}
+
+
+	return S_OK;
+}
+
+void CRenderer::Render_SSAO()
+{
+
 
 	if(FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_SSAO"))))
 		return;
