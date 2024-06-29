@@ -1,5 +1,6 @@
 #include "Engine_Shader_Defines.hlsli"
 matrix g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
+matrix g_ModelWorldMatrix;
 
 Texture2D g_DiffuseTexture;
 Texture2D g_NormalTexture;
@@ -70,12 +71,12 @@ PS_OUT PS_MAIN(PS_IN In)
     if (Out.vDiffuse.a < 0.1f)
         Out.vDiffuse.a = 1.f;
     
-    //vector vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexcoord);
-    //float3 vNormal = vNormalDesc.xyz * 2.f - 1.f;
+    vector vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexcoord);
+    float3 vNormal = vNormalDesc.xyz * 2.f - 1.f;
     
     float3x3 WorldMatrix = float3x3(In.vTangent.xyz, In.vBiNormal.xyz, In.vNormal.xyz);
 
-    float3 vNormal = mul(In.vNormal.xyz, WorldMatrix);
+    vNormal = mul(vNormal.xyz, WorldMatrix);
     
     Out.vNormal = vector(vNormal.xyz * 0.5f + 0.5f, 0.f);
     Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_fFar, 0.f, 1.f);

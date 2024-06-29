@@ -53,16 +53,9 @@ void CPlayerCamera::Tick(const _float& fTimeDelta)
 		m_pTransformCom->Go_Backward(fTimeDelta);
 
 
-	if (m_pGameInstance->Get_DIKeyState(DIK_TAB) & 0x80)
+	if (m_pGameInstance->GetKeyState(DIK_TAB) == TAP)
 	{
-		if (false == m_bCameraFix)
-		{
-			m_bCameraFix = true;
-		}
-		else
-		{
-			m_bCameraFix = false;
-		}
+		m_bCameraFix = !m_bCameraFix;
 	}
 
 	if (false == m_bCameraFix)

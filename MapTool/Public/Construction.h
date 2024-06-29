@@ -72,6 +72,7 @@ public:
 	void											Off_Find_DecalMesh();
 
 	void											Add_Decal(CDecal*	pDecal);
+	void											Delete_Decal(int	iIndex);
 
 private:
 	CShader*										m_pShaderCom = { nullptr };

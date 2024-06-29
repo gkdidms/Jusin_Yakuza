@@ -130,7 +130,7 @@ void CImguiManager::ModelList()
 	ImGui::NewLine();
 	ImGui::Text("Model List");
 
-	string strDirPath = "../Bin/Resources/Model/Anim/";
+	string strDirPath = "../../Client/Bin/Resources/Models/Anim/";
 
 	m_pGameInstance->Get_DirectoryName(strDirPath, m_ModelNameList);
 
@@ -754,7 +754,7 @@ void CImguiManager::DrawChannels()
 
 void CImguiManager::LoadAnimationCharacterList()
 {
-	wstring strModelPath = TEXT("../Bin/Resources/Model/Anim/");
+	wstring strModelPath = TEXT("../../Client/Bin/Resources/Models/Anim/");
 
 	vector<wstring> vecDirectorys;
 	m_pGameInstance->Get_DirectoryName(strModelPath, vecDirectorys);
