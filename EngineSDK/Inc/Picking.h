@@ -1,7 +1,6 @@
 #pragma once
 
 #include "Base.h"
-#include "Transform.h"
 
 BEGIN(Engine)
 
@@ -18,7 +17,7 @@ public:
 public:
     HRESULT Initialize(HWND hWnd);
     _vector Picking(_bool* isSuccess);
-    _bool Picking_UI(CTransform* pUITransform); // UI 피킹 용. 파라미터에 UI의 TransformCom을 넣어주면 된다.
+    _bool Picking_UI(class CTransform* pUITransform); // UI 피킹 용. 파라미터에 UI의 TransformCom을 넣어주면 된다.
 
     /* 맵툴에서 사용하는 ID 판별 */
     float   FindObjID(_bool* isSuccess);
