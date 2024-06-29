@@ -41,6 +41,7 @@ HRESULT CImguiManager::Initialize(void* pArg)
 	TextureTags.push_back(TEXT("Prototype_Component_Texture_Sphere"));
 	TextureTags.push_back(TEXT("Prototype_Component_Texture_Trail"));
 	TextureTags.push_back(TEXT("Prototype_Component_Texture_Test"));
+	TextureTags.push_back(TEXT("Prototype_Component_Texture_HitSpark"));
 
 
 	if (nullptr != pArg)
@@ -48,11 +49,13 @@ HRESULT CImguiManager::Initialize(void* pArg)
 
 	}
 	m_EffectDesc.vStartPos = { 0.f, 0.f, 0.f, 1.f };
+	m_EffectDesc.fRotate = { 0.f};
+	m_EffectDesc.fLifeAlpha = { 1.f, 1.f};
 	m_EffectDesc.eType = 0;
 	m_EffectDesc.ParticleTag = { TEXT("") };
 	m_EffectDesc.fStartTime = { 0.f };
-	m_EffectDesc.vStartColor = { 0.0f , 0.0f ,0.0f ,1.0f};
-	m_EffectDesc.vEndColor = { 0.0f, 0.0f, 0.0f, 1.0f };
+	m_EffectDesc.vStartColor = { 1.0f , 1.0f ,1.0f ,1.0f};
+	m_EffectDesc.vEndColor = { 1.0f, 1.0f, 1.0f, 1.0f };
 	m_EffectDesc.iShaderPass = { 0 };
 	m_EffectDesc.TextureTag = TextureTags[0];
 
@@ -316,6 +319,8 @@ HRESULT CImguiManager::Create_Particle()
 	EffectDesc.BufferInstance.fRadius = 1.f;	
 
 	EffectDesc.vStartPos = { 0.f, 0.f, 0.f, 1.f };
+	EffectDesc.fRotate = { 0.f};
+	EffectDesc.fLifeAlpha = { 0.f, 0.f};
 	EffectDesc.eType = CEffect::TYPE_POINT;
 	EffectDesc.ParticleTag = m_pGameInstance->StringToWstring(text_input_buffer);
 	EffectDesc.fStartTime = { 0.f };
@@ -332,6 +337,8 @@ HRESULT CImguiManager::Create_Particle()
 		dynamic_cast<CEffect*>(pGameParticle)->Edit_Action(CEffect::ACTION_SPREAD);
 	if(m_bDrop)
 		dynamic_cast<CEffect*>(pGameParticle)->Edit_Action(CEffect::ACTION_DROP);
+	if (m_bSize)
+		dynamic_cast<CEffect*>(pGameParticle)->Edit_Action(CEffect::ACTION_SIZE);
 
 	m_EditParticle.push_back(pGameParticle);
 	m_iCurEditIndex = m_EditParticle.size() - 1;
@@ -595,6 +602,8 @@ HRESULT CImguiManager::Edit_Particle(_uint Index)
 		EffectDesc.BufferInstance.bRadius = m_EffectDesc.BufferInstance.bRadius;
 
 		EffectDesc.vStartPos = m_EffectDesc.vStartPos;
+		EffectDesc.fRotate = m_EffectDesc.fRotate;
+		EffectDesc.fLifeAlpha = m_EffectDesc.fLifeAlpha;
 		EffectDesc.eType = m_EffectDesc.eType;
 		EffectDesc.ParticleTag = m_EffectDesc.ParticleTag;
 		EffectDesc.fStartTime = m_EffectDesc.fStartTime;
@@ -611,6 +620,8 @@ HRESULT CImguiManager::Edit_Particle(_uint Index)
 			dynamic_cast<CEffect*>(m_EditParticle[Index])->Edit_Action(CEffect::ACTION_SPREAD);
 		if (m_bDrop)
 			dynamic_cast<CEffect*>(m_EditParticle[Index])->Edit_Action(CEffect::ACTION_DROP);
+		if (m_bSize)
+			dynamic_cast<CEffect*>(m_EditParticle[Index])->Edit_Action(CEffect::ACTION_SIZE);
 
 
 	}
@@ -678,6 +689,8 @@ HRESULT CImguiManager::Load_Desc(_uint Index)
 
 		m_EffectDesc.eType = pEffect->Get_Type();
 		m_EffectDesc.vStartPos = pEffect->Get_StartPos();
+		m_EffectDesc.fRotate = pEffect->Get_Rotate();
+		m_EffectDesc.fLifeAlpha = pEffect->Get_LifeAlpha();
 		m_EffectDesc.fStartTime = *pEffect->Get_pStartTime();
 		m_EffectDesc.ParticleTag = pEffect->Get_Tag();
 		m_EffectDesc.vStartColor = pEffect->Get_SColor();
@@ -696,6 +709,11 @@ HRESULT CImguiManager::Load_Desc(_uint Index)
 			m_bDrop = true;
 		else
 			m_bDrop = false;
+
+		if (CheckAction & pEffect->iAction[CEffect::ACTION_SIZE])
+			m_bSize = true;
+		else
+			m_bSize = false;
 
 	}
 		break;
@@ -943,17 +961,15 @@ void CImguiManager::Editor_Tick(_float fTimeDelta)
 	ImGui::Text(to_string(m_iCurEditIndex).c_str());
 
 
-	if (ImGui::RadioButton("DIR", &m_EffectDesc.iShaderPass, PASS_DIRECTION))
+	if (ImGui::RadioButton("NOCOLOR", &m_EffectDesc.iShaderPass, PASS_NOCOLOR))
 		bChange = true;
 	ImGui::SameLine();
-	if (ImGui::RadioButton("NDIR", &m_EffectDesc.iShaderPass, PASS_NODIRECTION))
-		bChange = true;
-	ImGui::SameLine(); 
-	if (ImGui::RadioButton("DIRCOLOR", &m_EffectDesc.iShaderPass, PASS_DIRECTIONCOLOR))
+	if (ImGui::RadioButton("COLOR", &m_EffectDesc.iShaderPass, PASS_COLOR))
 		bChange = true;
 	ImGui::SameLine();
-	if (ImGui::RadioButton("WEIGHT", &m_EffectDesc.iShaderPass, PASS_WEIGHTBLEND))
+	if (ImGui::RadioButton("ROTATE", &m_EffectDesc.iShaderPass, PASS_ROTATE))
 		bChange = true;
+
 
 	if (ImGui::Checkbox("Spread", &m_bSpread))
 	{
@@ -975,6 +991,17 @@ void CImguiManager::Editor_Tick(_float fTimeDelta)
 	}	
 	ImGui::SameLine();
 
+	if (ImGui::Checkbox("Size", &m_bSize))
+	{
+		if (-1 != m_iCurEditIndex)
+		{
+			CEffect* pParticle = dynamic_cast<CEffect*>(m_EditParticle[m_iCurEditIndex]);
+			pParticle->Edit_Action(CEffect::ACTION_SIZE);
+		}
+	}
+	ImGui::SameLine();
+
+
 	if (ImGui::Checkbox("Loop", &m_EffectDesc.BufferInstance.isLoop))
 	{
 		bChange = true;
@@ -991,6 +1018,7 @@ void CImguiManager::Editor_Tick(_float fTimeDelta)
 		bChange = true;
 	}
 	
+
 	_float* Temp = (_float*)&m_EffectDesc.BufferInstance.vOffsetPos;
 	if (ImGui::InputFloat3("OffsetPos", Temp))
 	{
@@ -1059,14 +1087,48 @@ void CImguiManager::Editor_Tick(_float fTimeDelta)
 		bChange = true;
 	}
 
-	Temp = (_float*)&m_EffectDesc.fStartTime;	
+	Temp = (_float*)&m_EffectDesc.fStartTime;
 	if (ImGui::InputFloat("StartTime", Temp))
 	{
-		memcpy(&m_EffectDesc.fStartTime, Temp, sizeof(_float));	
+		memcpy(&m_EffectDesc.fStartTime, Temp, sizeof(_float));
 		bChange = true;
 	}
 
-	Color_Palette();
+	switch (m_EffectDesc.iShaderPass)
+	{
+	case PASS_NOCOLOR:
+	{
+
+
+		_float* Temp = (_float*)&m_EffectDesc.fLifeAlpha;
+		if (ImGui::InputFloat2("LifeAlpha", Temp))
+		{
+			memcpy(&m_EffectDesc.fLifeAlpha, Temp, sizeof(_float2));
+			bChange = true;
+		}
+
+	}
+		break;
+	case PASS_COLOR:
+	{
+		Color_Palette();
+	}
+		break;
+	case PASS_ROTATE:
+	{
+		Color_Palette();
+		_float* PosTemp = (_float*)&m_TrailDesc.fRotate;
+		if (ImGui::InputFloat("Rotate", PosTemp))
+		{
+			memcpy(&m_TrailDesc.fRotate, PosTemp, sizeof(_float));
+			bChange = true;
+		}
+	}
+	break;
+	default:
+		break;
+	}
+
 
 	File_Selctor(&bChange);
 	

@@ -5,7 +5,7 @@
 const _uint CEffect::iAction[CEffect::ACTION_END] = {
     0x00000001, /* 0000 0001 */
     0x00000002, /* 0000 0010 */
-    //    0x00000004, /*0000 0100 */
+    0x00000004, /*0000 0100 */
 
 };
 
@@ -23,6 +23,7 @@ CEffect::CEffect(const CEffect& rhs)
     m_iShaderPass{rhs.m_iShaderPass },
     m_fStartTime{rhs.m_fStartTime },
     m_vStartPos{rhs.m_vStartPos },
+    m_fLifeAlpha{rhs.m_fLifeAlpha },
     m_iAction{rhs.m_iAction },
     m_vStartColor{rhs.m_vStartColor },
     m_vEndColor{rhs.m_vEndColor }
@@ -52,8 +53,10 @@ HRESULT CEffect::Initialize(void* pArg)
         m_vEndColor = pDesc->vEndColor;
         m_iShaderPass = pDesc->iShaderPass;
         m_TextureTag = pDesc->TextureTag;
+        m_fLifeAlpha = pDesc->fLifeAlpha;
+        m_fRotate = pDesc->fRotate;
     }
-
+    
     return S_OK;
 }
 
