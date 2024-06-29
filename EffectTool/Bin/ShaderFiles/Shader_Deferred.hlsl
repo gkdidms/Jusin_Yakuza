@@ -156,7 +156,7 @@ struct PS_OUT_LIGHT
 float3x3 Get_TBN(float3 vNormal, float2 vTexcoord)
 {   
     float3 vRandomVec = g_SSAONoisesTexture.Sample(PointSampler, vTexcoord * g_NoiseScale).xyz;
-   // vRandomVec = normalize(mul(vector(vRandomVec, 0.f), g_ProjMatrixInv));
+    vRandomVec = normalize(mul(vector(vRandomVec, 0.f), g_ProjMatrixInv));
     
     float3 tangent = normalize(vRandomVec - vNormal * dot(vRandomVec, vNormal));
     float3 bitangent = cross(vNormal, tangent);
