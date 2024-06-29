@@ -20,7 +20,7 @@
       <Filter>02.GameObjects\00.Background</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Terrain.cpp">
-      <Filter>02.GameObjects\01.Terrain</Filter>
+      <Filter>02.GameObjects\02.Character\01.Terrain</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Level_Test.cpp">
       <Filter>01.Levels\98.Test</Filter>
@@ -117,8 +117,8 @@
     </ClCompile>
     <ClCompile Include="..\Private\TRailEffect.cpp">
       <Filter>02.GameObjects\06.Effect\Trail</Filter>
-	</ClCompile>
-	<ClCompile Include="..\Private\BTNode.cpp">
+    </ClCompile>
+    <ClCompile Include="..\Private\BTNode.cpp">
       <Filter>02.GameObjects\02.Character\BehaviorTree\BTNode</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\CompositeNode.cpp">
@@ -169,7 +169,7 @@
       <Filter>02.GameObjects\00.Background</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Terrain.h">
-      <Filter>02.GameObjects\01.Terrain</Filter>
+      <Filter>02.GameObjects\02.Character\01.Terrain</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Player.h">
       <Filter>02.GameObjects\02.Character\LandObject\00.Player</Filter>
@@ -284,7 +284,7 @@
     </ClInclude>
     <ClInclude Include="..\Public\TRailEffect.h">
       <Filter>02.GameObjects\06.Effect\Trail</Filter>
-	</ClInclude>
+    </ClInclude>
     <ClInclude Include="..\Public\BTNode.h">
       <Filter>02.GameObjects\02.Character\BehaviorTree\BTNode</Filter>
     </ClInclude>
@@ -343,14 +343,8 @@
     <Filter Include="97.ShaderFiles">
       <UniqueIdentifier>{e27accf3-8246-4c7b-ac82-cf4f465ec7fb}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\01.Terrain">
-      <UniqueIdentifier>{73fc58be-6ca4-4e86-b2ac-39c7c7e26f66}</UniqueIdentifier>
-    </Filter>
     <Filter Include="01.Levels\98.Test">
       <UniqueIdentifier>{a3687eeb-93e4-4da9-95c3-692e153c991f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\01.Terrain\TestMap">
-      <UniqueIdentifier>{13a0eb4d-9fd9-4a66-90f0-f589933ed093}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObjects\99.Camera">
       <UniqueIdentifier>{b978604e-76c6-4218-b76a-65d7fa390062}</UniqueIdentifier>
@@ -409,7 +403,6 @@
     <Filter Include="02.GameObjects\02.Character\SoketCollider">
       <UniqueIdentifier>{260596ca-843e-47fe-ae9b-3a65ebc2b9a0}</UniqueIdentifier>
     </Filter>
-
     <Filter Include="02.GameObjects\06.Effect">
       <UniqueIdentifier>{8453b934-ceb3-4373-9731-9aff5f9a923e}</UniqueIdentifier>
     </Filter>
@@ -418,7 +411,7 @@
     </Filter>
     <Filter Include="02.GameObjects\06.Effect\Trail">
       <UniqueIdentifier>{d637f30f-2167-4420-bb64-cc2966bdd0fa}</UniqueIdentifier>
-	</Filter>
+    </Filter>
     <Filter Include="02.GameObjects\02.Character\BehaviorTree">
       <UniqueIdentifier>{490f9c94-1bca-41c9-a680-f2eb77882221}</UniqueIdentifier>
     </Filter>
@@ -458,6 +451,12 @@
     <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\Behavior\Adventure\Run">
       <UniqueIdentifier>{b50b0e94-8792-4c99-83ca-c65719880701}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\02.Character\01.Terrain">
+      <UniqueIdentifier>{73fc58be-6ca4-4e86-b2ac-39c7c7e26f66}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\01.Terrain\TestMap">
+      <UniqueIdentifier>{13a0eb4d-9fd9-4a66-90f0-f589933ed093}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Client.rc">
@@ -484,8 +483,8 @@
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Trail.hlsl">
-		<Filter>97.ShaderFiles</Filter>
-	</FxCompile>
+      <Filter>97.ShaderFiles</Filter>
+    </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxMeshTemp.hlsl">
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>

@@ -1354,7 +1354,7 @@ void CObjPlace_Manager::Update_DecalNameList()
 			char* szName = new char[MAX_PATH];
 			strcpy(szName, "Decal");
 			char buff[MAX_PATH];
-			sprintf(buff, "%d", i);
+			sprintf(buff, "%d", m_Decals[i].iMaterialNum);
 			strcat(szName, buff);
 			m_DecalNames.push_back(szName);
 		}

@@ -2,15 +2,18 @@
 #include "Engine_Shader_Defines.hlsli"
 
 /* 컨스턴트 테이블(상수테이블) */
-matrix g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
+matrix      g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
 
-texture2D g_Texture;
-Texture2D g_NormalTexture;
+Texture2D   g_Texture;
+Texture2D   g_NormalTexture;
+Texture2D   g_SpecularMapTexture;
 
-float   g_fObjID;
+float       g_fObjID;
 
-float g_fFar = { 3000.f };
-float g_fTimeDelta;
+float       g_fFar = { 3000.f };
+float       g_fTimeDelta;
+bool        g_bExistNormalTex;
+bool        g_bExistSpecularTex;
 
 
 struct VS_IN
@@ -76,7 +79,7 @@ struct PS_OUT
     vector vDiffuse : SV_TARGET0;
     vector vNormal : SV_TARGET1;
     vector vDepth : SV_TARGET2;
-    //vector vSpecular : SV_TARGET3;
+    vector vSpecular : SV_TARGET3;
 };
 
 
@@ -85,21 +88,39 @@ PS_OUT PS_MAIN(PS_IN In)
     PS_OUT Out = (PS_OUT) 0;
 
     Out.vDiffuse = g_Texture.Sample(LinearSampler, In.vTexcoord);
+    
 	
     // 투명할 경우(0.1보다 작으면 투명하니) 그리지 않음
     if (Out.vDiffuse.a < 0.1f)
         discard;
     
-    vector vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexcoord);
-    float3 vNormal = vNormalDesc.xyz * 2.f - 1.f;
+    if (true == g_bExistNormalTex)
+    {
+        // 매핑되는 texture가 있을때
+        vector vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexcoord);
+        float3 vNormal = vNormalDesc.xyz * 2.f - 1.f;
     
-    float3x3 WorldMatrix = float3x3(In.vTangent.xyz, In.vBinormal.xyz, In.vNormal.xyz);
-    //float3 vNormal = In.vNormal.xyz * 2.f - 1.f;
+        float3x3 WorldMatrix = float3x3(In.vTangent.xyz, In.vBinormal.xyz, In.vNormal.xyz);
+        //float3 vNormal = In.vNormal.xyz * 2.f - 1.f;
     
-    vNormal = mul(vNormal.xyz, WorldMatrix);
+        vNormal = mul(vNormal.xyz, WorldMatrix);
     
-    Out.vNormal = vector(vNormal.xyz * 0.5f + 0.5f, 0.f);
+        Out.vNormal = vector(vNormal.xyz * 0.5f + 0.5f, 0.f);
+    }
+    else
+    {
+        // 텍스처 없을때
+        Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
+    }
+   
     Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_fFar, 0.f, 1.f);
+    
+    
+    if(true == g_bExistSpecularTex)
+    {
+        Out.vSpecular = g_SpecularMapTexture.Sample(LinearSampler, In.vTexcoord);
+    }
+        
     
     return Out;
 }
