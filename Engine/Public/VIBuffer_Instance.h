@@ -49,6 +49,9 @@ protected:
 
     _float* m_pSpeeds = { nullptr };
     _float3* m_pOriginalPositions = { nullptr };
+    _float* m_pOriginalSize = { nullptr };
+
+
 
     //기존 cpu 블렌드 소트용
     VTXMATRIX* m_pTempVertices;
@@ -77,7 +80,8 @@ public:
     void Spread(_float fTimeDelta);
     void Drop(_float fTimeDelta);
     void LifeTime_Check();
-    void Blend_Sort();
+    void Size_Time(_float fTimeDelta);
+
     void Compute_Sort();
 
     
