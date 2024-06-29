@@ -86,6 +86,11 @@ HRESULT CConstruction::Render()
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_Texture", i, aiTextureType_DIFFUSE)))
 			return E_FAIL;
 
+		if (false == m_pModelCom->Check_Exist_Material(i, aiTextureType_NORMALS))
+		{
+			int a = 0;
+		}
+
 		/*m_pShaderCom->Begin(m_iShaderPassNum);*/
 		m_pShaderCom->Begin(0);
 
