@@ -112,12 +112,13 @@ HRESULT CLoader::Loading_For_EditLevel()
 
 	/* Prototype_Component_Texture_BoneSphere */
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_EDIT, TEXT("Prototype_Component_Texture_BoneSphere"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Model/NonAnim/Bone_Sphere/Color_%d.png"), 2))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Models/NonAnim/Bone_Sphere/Color_%d.png"), 2))))
 		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("모델를(을) 로딩 중 입니다."));
-	Add_Models_On_Path(TEXT("../Bin/Resources/Model/Anim/"));
-	Add_Models_On_Path(TEXT("../Bin/Resources/Model/NonAnim/"), false);
+	Add_Models_On_Path(TEXT("../../Client/Bin/Resources/Models/Anim/"));
+	//Add_Models_On_Path(TEXT("../../Client/Bin/Resources/Models/Anim/"));
+	Add_Models_On_Path(TEXT("../../Client/Bin/Resources/Models/NonAnim/"), false);
 
 	lstrcpy(m_szLoadingText, TEXT("셰이더를(을) 로딩 중 입니다."));
 
@@ -172,7 +173,7 @@ HRESULT CLoader::Add_Models_On_Path(const wstring& strPath, _bool bAnim)
 
 		if (!fs::exists(strBinPath))
 		{
-			wstring strComponentName = TEXT("Prototype_Component_") + strDirlName;
+			wstring strComponentName = TEXT("Prototype_Component_Model_") + strDirlName;
 			wstring strFbxPath = strFilePath + strDirlName + TEXT(".fbx");
 			string strTransPath = m_pGameInstance->WstringToString(strFbxPath);
 
@@ -180,14 +181,14 @@ HRESULT CLoader::Add_Models_On_Path(const wstring& strPath, _bool bAnim)
 			{
 				PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(180.0f));
 				if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, strComponentName,
-					CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, strTransPath.c_str(), PreTransformMatrix, false))))
+					CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, strTransPath.c_str(), PreTransformMatrix, false, true))))
 					return E_FAIL;
 			}
 			else
 			{
 				PreTransformMatrix = XMMatrixRotationY(XMConvertToRadians(180.0f));
 				if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, strComponentName,
-					CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, strTransPath.c_str(), PreTransformMatrix, false))))
+					CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, strTransPath.c_str(), PreTransformMatrix, false, true))))
 					return E_FAIL;
 			}
 		}
@@ -203,14 +204,14 @@ HRESULT CLoader::Add_Models_On_Path(const wstring& strPath, _bool bAnim)
 				{
 					PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(180.0f));
 					if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, strComponentName,
-						CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, file_path.c_str(), PreTransformMatrix, true))))
+						CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, file_path.c_str(), PreTransformMatrix, true, true))))
 						return E_FAIL;
 				}
 				else
 				{
 					PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(180.0f));
 					if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, strComponentName,
-						CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, file_path.c_str(), PreTransformMatrix, true))))
+						CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, file_path.c_str(), PreTransformMatrix, true, true))))
 						return E_FAIL;
 				}
 
