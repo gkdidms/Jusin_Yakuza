@@ -70,6 +70,10 @@ void CParticle_Point::Tick(const _float& fTimeDelta)
         {
             m_pVIBufferCom->Drop(fTimeDelta);
         }
+        if (m_iAction & iAction[ACTION_SIZE])
+        {
+            m_pVIBufferCom->Size_Time(fTimeDelta);
+        }
     }
 
 
@@ -79,10 +83,6 @@ void CParticle_Point::Tick(const _float& fTimeDelta)
 void CParticle_Point::Late_Tick(const _float& fTimeDelta)
 {
     Compute_ViewZ(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-
-    if (5 != m_iShaderPass)
-        m_pVIBufferCom->Blend_Sort();
-
 
     if(m_BufferInstance.isLoop)
     {
@@ -103,14 +103,9 @@ HRESULT CParticle_Point::Render()
     if (FAILED(Bind_ShaderResources()))
         return E_FAIL;
 
-       m_pShaderCom->Begin(m_iShaderPass);
+    m_pShaderCom->Begin(m_iShaderPass);
 
-       if (5!=m_iShaderPass)
-            m_pVIBufferCom->Render();
-       else
-           m_pVIBufferCom->Render();
-
-       
+    m_pVIBufferCom->Render();
 
     return S_OK;
 }
@@ -149,6 +144,10 @@ HRESULT CParticle_Point::Save_Data(const string strDirectory)
     out.write((char*)&m_fStartTime, sizeof(_float));
 
     out.write((char*)&m_vStartPos, sizeof(_float4));
+
+    out.write((char*)&m_fRotate, sizeof(_float));
+
+    out.write((char*)&m_fLifeAlpha, sizeof(_float2));
     
     out.write((char*)&m_iAction, sizeof(_uint));
 
@@ -217,7 +216,11 @@ HRESULT CParticle_Point::Load_Data(const string strDirectory)
 
     in.read((char*)&m_fStartTime, sizeof(_float));
 
-    in.read((char*)&m_vStartPos, sizeof(_float4));
+    in.read((char*)&m_vStartPos, sizeof(_float4));  
+
+    in.read((char*)&m_fRotate, sizeof(_float));
+
+    in.read((char*)&m_fLifeAlpha, sizeof(_float2));
 
     in.read((char*)&m_iAction, sizeof(_uint));
 
@@ -280,6 +283,12 @@ HRESULT CParticle_Point::Bind_ShaderResources()
     if (FAILED(m_pShaderCom->Bind_RawValue("g_vStartColor", &m_vStartColor, sizeof(_float4))))
         return E_FAIL;
     if (FAILED(m_pShaderCom->Bind_RawValue("g_vEndColor", &m_vEndColor, sizeof(_float4))))
+        return E_FAIL;
+    if (FAILED(m_pShaderCom->Bind_RawValue("g_lifeAlpha", &m_fLifeAlpha, sizeof(_float2))))
+        return E_FAIL;
+
+    _float Radian = XMConvertToRadians(m_fRotate++);
+    if (FAILED(m_pShaderCom->Bind_RawValue("g_fRadian", &Radian, sizeof(_float))))
         return E_FAIL;
 
     return S_OK;
