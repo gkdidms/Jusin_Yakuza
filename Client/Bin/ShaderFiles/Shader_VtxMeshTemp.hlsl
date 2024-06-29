@@ -3,8 +3,14 @@
 
 /* 컨스턴트 테이블(상수테이블) */
 matrix g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
+
 texture2D g_Texture;
+Texture2D g_NormalTexture;
+
 float   g_fObjID;
+
+float g_fFar = { 3000.f };
+float g_fTimeDelta;
 
 
 struct VS_IN
@@ -83,8 +89,17 @@ PS_OUT PS_MAIN(PS_IN In)
     // 투명할 경우(0.1보다 작으면 투명하니) 그리지 않음
     if (Out.vDiffuse.a < 0.1f)
         discard;
-    Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
-    Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 3000.f, g_fObjID, 1.f);
+    
+    vector vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexcoord);
+    float3 vNormal = vNormalDesc.xyz * 2.f - 1.f;
+    
+    float3x3 WorldMatrix = float3x3(In.vTangent.xyz, In.vBinormal.xyz, In.vNormal.xyz);
+    //float3 vNormal = In.vNormal.xyz * 2.f - 1.f;
+    
+    vNormal = mul(vNormal.xyz, WorldMatrix);
+    
+    Out.vNormal = vector(vNormal.xyz * 0.5f + 0.5f, 0.f);
+    Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_fFar, 0.f, 1.f);
     
     return Out;
 }

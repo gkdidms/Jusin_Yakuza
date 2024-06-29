@@ -14,6 +14,11 @@
 #include "Construction.h"
 #include "SoketCollider.h"
 
+#pragma region Effect
+#include "Particle_Point.h"
+#include "TRailEffect.h"
+#pragma endregion
+
 CLoader::CLoader(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: m_pDevice{pDevice}, 
 	m_pContext{pContext},
@@ -122,7 +127,40 @@ HRESULT CLoader::Loading_For_Test()
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/T_Sand_06_A.png"), 1))))
 		return E_FAIL;
 
+#pragma region Effect
+		/* Prototype_Component_Texture_Sphere */
+		if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Texture_Sphere"),
+			CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/lm000.dds"), 1))))
+			return E_FAIL;
 
+	/* Prototype_Component_Texture_Trail */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Texture_Trail"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/001_trc_n.dds"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_Sky */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Texture_Sky"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/SkyBox/Sky_%d.dds"), 5))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_Test */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Texture_Test"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/9923j.png"), 1))))
+		return E_FAIL;
+#pragma endregion
+
+	lstrcpy(m_szLoadingText, TEXT("컴포넌트 원형 를(을) 로딩 중 입니다."));
+#pragma region Effect
+	/* For.Prototype_Component_VIBuffer_Instance_Point */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_VIBuffer_Instance_Point"),
+		CVIBuffer_Instance_Point::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_VIBuffer_Trail */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_VIBuffer_Trail"),
+		CVIBuffer_Trail::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+#pragma endregion
 	lstrcpy(m_szLoadingText, TEXT("모델를(을) 로딩 중 입니다."));
 
 	/* For.Prototype_Component_VIBuffer_Terrain */
@@ -142,7 +180,9 @@ HRESULT CLoader::Loading_For_Test()
 	//if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Model_Player"), CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, "../Bin/Resources/Models/Anim/Kiryu/Kiryu.fbx", PreTransformMatrix, false))))
 
 	Add_Models_On_Path(LEVEL_TEST, TEXT("../Bin/Resources/Models/Anim/"));
-
+#pragma region Effect
+	Add_Particle_On_Path(TEXT("../../Client/Bin/DataFiles/Particle/"));
+#pragma endregion
 	//if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Model_f2"), CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/NonAnim/Map/Map1/f2.fbx", PreTransformMatrix, false))))
 	//	return E_FAIL;
 
@@ -150,7 +190,7 @@ HRESULT CLoader::Loading_For_Test()
 	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
 
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Model_f1"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/NonAnim/Map/Map0/Bin/f1.dat", PreTransformMatrix, true))))
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/NonAnim/Map/Map0/f1.fbx", PreTransformMatrix, false))))
 		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("셰이더를(을) 로딩 중 입니다."));
@@ -163,11 +203,19 @@ HRESULT CLoader::Loading_For_Test()
 	/* For.Prototype_Component_Shader_VtxPosTex */
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Shader_VtxPosTex"), CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxPosTex.hlsl"), VTXPOSTEX::Elements, VTXPOSTEX::iNumElements))))
 		return E_FAIL;
+#pragma region Effect
+	/* For.Prototype_Component_Shader_Trail */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Shader_Trail"),
+		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_Trail.hlsl"), VTXPOSTEX::Elements, VTXPOSTEX::iNumElements))))
+		return E_FAIL;
+	/* For.Prototype_Component_Shader_VtxInstance_Point */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Shader_VtxInstance_Point"),
+		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxInstance_Point.hlsl"), VTXINSTANCE_POINT::Elements, VTXINSTANCE_POINT::iNumElements))))
+		return E_FAIL;
+#pragma endregion
 	/* For.Prototype_Component_Shader_VtxCube */
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Shader_VtxCube"), CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxCube.hlsl"), VTXCUBE::Elements, VTXCUBE::iNumElements))))
 		return E_FAIL;
-
-
 	/* For.Prototype_Component_Shader_VtxNorTex */
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Shader_VtxNorTex"),
 		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxNorTex.hlsl"), VTXNORTEX::Elements, VTXNORTEX::iNumElements))))
@@ -286,6 +334,65 @@ HRESULT CLoader::Add_Models_On_Path(_uint iLevel, const wstring& strPath, _bool 
 
 	return S_OK;
 }
+
+
+HRESULT CLoader::Add_Particle_On_Path(const wstring& strPath)
+{
+	vector<wstring> vecDirectorys;
+	m_pGameInstance->Get_DirectoryName(strPath, vecDirectorys);
+
+	for (auto& strChannelName : vecDirectorys)
+	{
+		wstring strFilePath = strPath + strChannelName + TEXT("/");
+		string strDirectory = m_pGameInstance->WstringToString(strFilePath);
+
+		if (TEXT("Point") == strChannelName)
+		{
+			for (const auto& entry : fs::directory_iterator(strDirectory))
+			{
+
+				string FileName = entry.path().filename().string();
+				string AllPath = strDirectory + FileName;
+
+				string Tag;
+				_int dotPos = FileName.find_last_of(".");
+				Tag = FileName.substr(0, dotPos);
+
+
+				/* For.Prototype_GameObject_Particle_Point */
+				if (FAILED(m_pGameInstance->Add_GameObject_Prototype(m_pGameInstance->StringToWstring(Tag),
+					CParticle_Point::Create(m_pDevice, m_pContext, AllPath))))
+					return E_FAIL;
+
+			}
+		}
+		else if (TEXT("Trail") == strChannelName)
+		{
+			for (const auto& entry : fs::directory_iterator(strDirectory))
+			{
+
+				string FileName = entry.path().filename().string();
+				string AllPath = strDirectory + FileName;
+
+				string Tag;
+				_int dotPos = FileName.find_last_of(".");
+				Tag = FileName.substr(0, dotPos);
+
+
+				/* For.Prototype_GameObject_Particle_Trail */
+				if (FAILED(m_pGameInstance->Add_GameObject_Prototype(m_pGameInstance->StringToWstring(Tag),
+					CTRailEffect::Create(m_pDevice, m_pContext, AllPath))))
+					return E_FAIL;
+
+			}
+		}
+
+
+
+	}
+	return S_OK;
+}
+
 
 CLoader* CLoader::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, LEVEL eNextLevel)
 {

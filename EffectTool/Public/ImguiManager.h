@@ -57,6 +57,7 @@ private:
 	HRESULT Edit_Particle(_uint Index);
 	HRESULT Load_Desc(_uint Index);
 	void File_Selctor(_bool* bChange);
+	void Load_Selctor();
 	void Guizmo_Tick(_float fTimeDelta);
 
 	//파티클 함수

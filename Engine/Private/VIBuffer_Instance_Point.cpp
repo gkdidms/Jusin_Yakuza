@@ -16,15 +16,6 @@ HRESULT CVIBuffer_Instance_Point::Initialize_Prototype()
 	return S_OK;
 }
 
-HRESULT CVIBuffer_Instance_Point::Initialize_Prototype(string FilePath)
-{
-	string strFilePath = FilePath;
-	if (FAILED(Load_Data(strFilePath)))
-		return E_FAIL;
-
-	return S_OK;
-}
-
 HRESULT CVIBuffer_Instance_Point::Initialize(void* pArg)
 {
 
@@ -151,60 +142,6 @@ HRESULT CVIBuffer_Instance_Point::Initialize(void* pArg)
 #pragma endregion
 
 	return S_OK;
-}
-
-void CVIBuffer_Instance_Point::Save_Data(ofstream* out)
-{
-	//인스턴스 데이터
-	out->write((char*)&m_InstanceDesc->iNumInstance, sizeof(_uint));
-	out->write((char*)&m_InstanceDesc->vOffsetPos, sizeof(_float3));
-	out->write((char*)&m_InstanceDesc->vPivotPos, sizeof(_float3));
-	out->write((char*)&m_InstanceDesc->bRadius, sizeof(_bool));
-	out->write((char*)&m_InstanceDesc->vRange, sizeof(_float3));
-	out->write((char*)&m_InstanceDesc->fRadius, sizeof(_float));
-	out->write((char*)&m_InstanceDesc->vSize, sizeof(_float2));
-	out->write((char*)&m_InstanceDesc->vRectSize, sizeof(_float2));
-	out->write((char*)&m_InstanceDesc->vSpeed, sizeof(_float2));
-	out->write((char*)&m_InstanceDesc->vLifeTime, sizeof(_float2));
-	out->write((char*)&m_InstanceDesc->isLoop, sizeof(_bool));
-
-}
-
-HRESULT CVIBuffer_Instance_Point::Load_Data(string Filepath)
-{
-	ifstream in(Filepath, ios::binary);
-
-	if (!in.is_open()) {
-		MSG_BOX("파일 개방 실패");
-		return E_FAIL;
-	}
-
-	in.read((char*)&m_InstanceDesc->iNumInstance, sizeof(_uint));
-	in.read((char*)&m_InstanceDesc->vOffsetPos, sizeof(_float3));
-	in.read((char*)&m_InstanceDesc->vPivotPos, sizeof(_float3));
-	in.read((char*)&m_InstanceDesc->bRadius, sizeof(_bool));
-	in.read((char*)&m_InstanceDesc->vRange, sizeof(_float3));
-	in.read((char*)&m_InstanceDesc->fRadius, sizeof(_float));
-	in.read((char*)&m_InstanceDesc->vSize, sizeof(_float2));
-	in.read((char*)&m_InstanceDesc->vRectSize, sizeof(_float2));
-	in.read((char*)&m_InstanceDesc->vSpeed, sizeof(_float2));
-	in.read((char*)&m_InstanceDesc->vLifeTime, sizeof(_float2));
-	in.read((char*)&m_InstanceDesc->isLoop, sizeof(_bool));
-
-	return S_OK;
-}
-
-CVIBuffer_Instance_Point* CVIBuffer_Instance_Point::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, string FilePath)
-{
-	CVIBuffer_Instance_Point* pInstance = new CVIBuffer_Instance_Point(pDevice, pContext);
-
-	if (FAILED(pInstance->Initialize_Prototype(FilePath)))
-	{
-		MSG_BOX("Failed To Created : CVIBuffer_Instance_Point");
-		Safe_Release(pInstance);
-	}
-
-	return pInstance;
 }
 
 CVIBuffer_Instance_Point* CVIBuffer_Instance_Point::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

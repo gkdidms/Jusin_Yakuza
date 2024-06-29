@@ -61,7 +61,25 @@ float3 g_SSAORandoms[64];
 Texture2D g_SSAONoisesTexture;
 float g_fSSAOBise = { 0.025f };
 const float2 g_NoiseScale = float2(1280.f / 4.f, 720.f / 4.f);
-
+float3 g_Randoms[16] =
+{
+    float3(0.0363531820, 0.0195892137, 0.0910752937),
+    float3(0.0271668006, -0.0817698613, 0.0511824936),
+    float3(-0.0558262058, -0.0809410140, 0.0225508530),
+    float3(-0.0607699566, 0.0768491626, 0.0282955095),
+    float3(0.0684265420, -0.0224859975, 0.0743483230),
+    float3(-0.0639691651, -0.0760242194, 0.0354552418),
+    float3(0.0966500565, 0.0333450735, 0.0345177278),
+    float3(0.0650642961, 0.0458409302, 0.0770356283),
+    float3(0.0283417776, 0.0408770181, 0.102645352),
+    float3(-0.0685298145, -0.0951056033, 0.0116156377),
+    float3(-0.00153590832, -0.118244737, 0.0298856888),
+    float3(-0.0690319762, 0.0818628073, 0.0675078705),
+    float3(-0.0371511765, 0.0524620637, 0.114877217),
+    float3(-0.104534455, -0.0193042718, 0.0866346955),
+    float3(-0.0627479777, 0.0276224166, 0.125569463),
+    float3(-0.0750860944, -0.122410446, 0.0413474962)
+};
 
 //ºí·ë(°¡¿ì½Ã¾È)
 float g_fTexW = 1280.0f;
@@ -153,12 +171,12 @@ float4 SSAO(float3x3 TBN, float3 vPosition)
     
     for (int i = 0; i < 64; ++i)
     {   
-        float3 vSample = vPosition + mul(g_SSAORandoms[i % 64], TBN) * g_fRadiuse; // ºä½ºÆäÀÌ½º
+        float3 vSample = vPosition + mul(g_Randoms[i % 16], TBN) * g_fRadiuse; // ºä½ºÆäÀÌ½º
        
         vector vOffset = vector(vSample, 1.f);
         vOffset = mul(vOffset, g_CamProjMatrix);
         vOffset.xyz /= vOffset.w;
-        vOffset.xy = vOffset.xy * float2(0.5f, -0.5f) + float2(0.5f, 0.5f);
+        vOffset.xy = vOffset.xy * float2(0.5f, -0.5f) + float2(0.5f, -0.5f);
         
         vector vOccNorm = g_DepthTexture.Sample(LinearSampler, vOffset.xy);
         
