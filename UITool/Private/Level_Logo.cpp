@@ -16,7 +16,7 @@ HRESULT CLevel_Logo::Initialize()
 
 void CLevel_Logo::Tick(const _float& fTimeDelta)
 {
-	if (GetKeyState(VK_SPACE) & 0x8000)
+	if (m_pGameInstance->GetKeyState(DIK_SPACE) == TAP)
 	{
 		if (FAILED(m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_RUNMAP))))
 			return;

@@ -36,11 +36,11 @@ void CLevel_Loading::Tick(const _float& fTimeDelta)
 {
 	if (true == m_pLoader->is_Finished())
 	{
-		if (GetKeyState(VK_RETURN) & 0x8000)
+		if (m_pGameInstance->GetKeyState(DIK_RETURN) == TAP)
 		{
 			CLevel* pNewLevel = { nullptr };
 
-			switch (m_eNextLevel)
+ 			switch (m_eNextLevel)
 			{
 			case LEVEL_LOGO:
 				pNewLevel = CLevel_Logo::Create(m_pDevice, m_pContext);

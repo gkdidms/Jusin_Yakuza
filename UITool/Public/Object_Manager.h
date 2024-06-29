@@ -38,6 +38,7 @@ private:
 public:
     map<const wstring, vector<class CUI_Object*>> Get_Objects() { return m_Objects; }
     vector<class CUI_Object*> Get_GroupObject(const wstring& strTag);
+    vector<class CUI_Object*> Get_BinaryGroupObject(const wstring& strTag, _int iIndex); // 바이너리 오브젝트들 중 그룹인 오브젝트가 가지고 있는 리스트를 가지고 있다.
 
     map<const wstring, vector<class CUI_Object*>> Get_BinaryObjects() { return m_BinaryObjects; }
     vector<class CUI_Object*> Get_GroupBinaryObject(const wstring& strTag);
@@ -47,6 +48,11 @@ public:
     void Tick(const _float& fTimeDelta);
     void Late_Tick(const _float& fTimeDelta);
     HRESULT Render();
+
+public://렌더 진행
+    HRESULT Render_Object();
+    HRESULT Render_Copy();
+    HRESULT Render_BackBuffer();
 
 public:
     HRESULT Add_Group(const wstring& strObjectTag);
@@ -80,8 +86,8 @@ private: // Render용
     CVIBuffer_Rect* m_pVIBufferCom = { nullptr };
 
     _float m_fDebugStart = { 50.f };
-    float m_iTextureHeightCount = { 0.f };
-    float m_iTextureWidthCount = { 1.f };
+    _float m_iTextureHeightCount = { 0.f };
+    _float m_iTextureWidthCount = { 0.f };
 
     _float4x4 m_WorldMatrix;
     _float4x4 m_ViewMatrix;

@@ -19,7 +19,6 @@ HRESULT CGroup::Initialize_Prototype()
 
 HRESULT CGroup::Initialize(void* pArg)
 {
-
 	if (nullptr == pArg)
 		return E_FAIL;
 

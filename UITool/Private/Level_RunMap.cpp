@@ -16,9 +16,6 @@ HRESULT CLevel_RunMap::Initialize()
 	if (FAILED(Ready_Layer_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
 
-	if (FAILED(Ready_Layer_GameObject(TEXT("Layer_GameObject"))))
-		return E_FAIL;
-
 	return S_OK;
 }
 
@@ -62,14 +59,6 @@ HRESULT CLevel_RunMap::Ready_Layer_Camera(const wstring& strLayerTag)
 
 	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_RUNMAP, TEXT("Prototype_GameObject_PlayerCamera"), strLayerTag, &CameraDesc)))
 		return E_FAIL;
-
-	return S_OK;
-}
-
-HRESULT CLevel_RunMap::Ready_Layer_GameObject(const wstring& strLayerTag)
-{
-	/*if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_RUNMAP, TEXT("Prototype_GameObject_Terrain"), strLayerTag)))
-		return E_FAIL;*/
 
 	return S_OK;
 }

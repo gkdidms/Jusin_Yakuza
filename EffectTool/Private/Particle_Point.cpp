@@ -72,8 +72,7 @@ void CParticle_Point::Late_Tick(const _float& fTimeDelta)
 
     if (5 != m_iShaderPass)
         m_pVIBufferCom->Blend_Sort();
-    else
-      //  m_pVIBufferCom->Blend_Sort();
+
 
     if(m_BufferInstance.isLoop)
     {
@@ -112,6 +111,93 @@ void* CParticle_Point::Get_Instance()
 }
 
 
+void CParticle_Point::Save_Data(const string strDirectory)
+{
+    string Directory = strDirectory;
+    string ParticleTag = m_pGameInstance->WstringToString(m_ParticleTag);
+    string TextureTag = m_pGameInstance->WstringToString(m_TextureTag);
+
+    string headTag = "Prototype_Component_Point_";
+    Directory += "/"+ headTag + ParticleTag + ".dat";
+
+    ofstream out(Directory, ios::binary);
+
+    out.write((char*)&m_eType, sizeof(_uint));
+
+    _int strlength = ParticleTag.length();
+    out.write((char*)&strlength, sizeof(_int));
+    out.write(ParticleTag.c_str(), strlength);
+
+    _int strTexturelength = TextureTag.length();
+    out.write((char*)&strTexturelength, sizeof(_int));
+    out.write(TextureTag.c_str(), strTexturelength);
+
+    out.write((char*)&m_iShaderPass, sizeof(_int));
+
+    out.write((char*)&m_vStartPos, sizeof(_float4));
+    
+    out.write((char*)&m_iAction, sizeof(_uint));
+
+    out.write((char*)&m_vStartColor, sizeof(_float4));
+
+    out.write((char*)&m_vEndColor, sizeof(_float4));
+
+    m_pVIBufferCom->Save_Data(&out);
+
+}
+
+void CParticle_Point::Load_Data(const string strDirectory)
+{
+    string Directory = strDirectory;
+    string ParticleTag = m_pGameInstance->WstringToString(m_ParticleTag);
+    string TextureTag = m_pGameInstance->WstringToString(m_TextureTag);
+    Directory += "/" + ParticleTag + ".dat";
+
+    ifstream in(Directory, ios::binary);
+
+    if (!in.is_open()) {
+        MSG_BOX("파일 개방 실패");
+        return;
+    }
+
+    string strFileName = m_pGameInstance->Get_FileName(Directory);
+
+    in.read((char*)&m_eType, sizeof(_uint));
+
+    _int strlength ;
+    char charparticleTag[MAX_PATH];
+
+    in.read((char*)&strlength, sizeof(_int));   
+
+    in.read(charparticleTag, strlength);
+    string tag = charparticleTag;
+    m_ParticleTag = m_pGameInstance->StringToWstring(tag);
+
+
+    _int strTexturelength;
+    char charTextureTag[MAX_PATH];
+
+    in.read((char*)&strTexturelength, sizeof(_int));
+
+    in.read(charTextureTag, strTexturelength);
+    string textag = charTextureTag;
+    m_TextureTag = m_pGameInstance->StringToWstring(textag);
+
+
+    //out.write((char*)&m_iShaderPass, sizeof(_int));
+
+    //out.write((char*)&m_vStartPos, sizeof(_float4));
+
+    //out.write((char*)&m_iAction, sizeof(_uint));
+
+    //out.write((char*)&m_vStartColor, sizeof(_float4));
+
+    //out.write((char*)&m_vEndColor, sizeof(_float4));
+
+    //m_pVIBufferCom->Save_Data(&out);
+
+}
+
 HRESULT CParticle_Point::Add_Components()
 {
     /* For.Com_VIBuffer */
@@ -125,7 +211,7 @@ HRESULT CParticle_Point::Add_Components()
         return E_FAIL;
 
     /* For.Com_Texture */
-    if (FAILED(__super::Add_Component(LEVEL_EDIT, TEXT("Prototype_Component_Texture_Sphere"),
+    if (FAILED(__super::Add_Component(LEVEL_EDIT, m_TextureTag,
         TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
         return E_FAIL;
 

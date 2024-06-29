@@ -26,6 +26,19 @@ vector<class CUI_Object*> CObject_Manager::Get_GroupObject(const wstring& strTag
 	return *pFineObjects;
 }
 
+vector<class CUI_Object*> CObject_Manager::Get_BinaryGroupObject(const wstring& strTag, _int iIndex)
+{
+	vector<class CUI_Object*>* pFineObjects = Find_BinaryObject(strTag);
+
+	if (nullptr == pFineObjects)
+		return vector<class CUI_Object*>();
+
+	if ((*pFineObjects)[iIndex]->Get_TypeIndex() != GROUP)
+		return vector<class CUI_Object*>();
+
+	return dynamic_cast<CGroup*>((*pFineObjects)[iIndex])->Get_PartObjects();
+}
+
 vector<class CUI_Object*> CObject_Manager::Get_GroupBinaryObject(const wstring& strTag)
 {
 	vector<class CUI_Object*>* pFineObjects = Find_BinaryObject(strTag);
@@ -186,10 +199,11 @@ HRESULT CObject_Manager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* 
 	XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH(ViewPort.Width, ViewPort.Height, 0.f, 1.f));
 
 	//¹é¹öÆÛ Ä«ÇÇ
-	CRenderTarget* pCopyBackBuffer = CRenderTarget::Create(m_pDevice, m_pContext, 1280.f, 720.f, DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(0.f, 0.f, 0.f, 0.f));
+	CRenderTarget* pCopyBackBuffer = CRenderTarget::Create(m_pDevice, m_pContext, 1280.f, 720.f, DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(1.f, 0.f, 0.f, 1.f));
 	if (nullptr == pCopyBackBuffer)
 		return E_FAIL;
 
+	pCopyBackBuffer->Ready_Debug(g_iWinSizeX - 100.f, 100.f, 200.f, 200.f);
 	m_CopyBackTexture2Ds.emplace_back(pCopyBackBuffer);
 
 	return S_OK;
@@ -215,7 +229,28 @@ void CObject_Manager::Late_Tick(const _float& fTimeDelta)
 
 HRESULT CObject_Manager::Render()
 {
-	_uint iIndex = 0; 
+	if (FAILED(Render_Object()))
+		return E_FAIL;
+
+	if (FAILED(Render_Copy()))
+		return E_FAIL;
+
+	if (FAILED(Render_BackBuffer()))
+		return E_FAIL;
+
+	//µð¹ö±ë¿ë ·»´õ Å¸°Ù ºä
+	for (auto& pTexture : m_Texture2Ds)
+		pTexture->Render_Debug(m_pShaderCom, m_pVIBufferCom);
+		
+	for (auto& pTexture : m_CopyBackTexture2Ds)
+		pTexture->Render_Debug(m_pShaderCom, m_pVIBufferCom);
+
+	return S_OK;
+}
+
+HRESULT CObject_Manager::Render_Object()
+{
+	_uint iIndex = 0;
 	auto BinaryIter = m_BinaryObjects.begin();
 
 	for (auto& Pair : m_Objects)
@@ -240,6 +275,11 @@ HRESULT CObject_Manager::Render()
 		++iIndex;
 	}
 
+	return S_OK;
+}
+
+HRESULT CObject_Manager::Render_Copy()
+{
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix)))
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix)))
@@ -247,12 +287,13 @@ HRESULT CObject_Manager::Render()
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
 		return E_FAIL;
 
+	//CopyTexture2D¿¡ ¿©ÅÂ±îÁö ±×¸° ¸ðµç ·»´õÅ¸°Ù ÇÕ»ê 
 	for (int i = 0; i < m_Texture2Ds.size(); ++i)
 	{
 		Texture2D_Begin(m_CopyBackTexture2Ds, 0, i == 0);
 		if (FAILED(m_Texture2Ds[i]->Bind_SVR(m_pShaderCom, "g_Texture")))
 			return E_FAIL;
-		
+
 		m_pShaderCom->Begin(3);
 		m_pVIBufferCom->Render();
 
@@ -268,15 +309,24 @@ HRESULT CObject_Manager::Render()
 		Texture2D_End();
 	}
 
+	return S_OK;
+}
+
+HRESULT CObject_Manager::Render_BackBuffer()
+{
+	if (FAILED(m_pShaderCom->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix)))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix)))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
+		return E_FAIL;
+
 	if (FAILED(m_CopyBackTexture2Ds[0]->Bind_SVR(m_pShaderCom, "g_Texture")))
 		return E_FAIL;
 
 	m_pShaderCom->Begin(3);
 	m_pVIBufferCom->Render();
 
-	for (auto& pTexture : m_Texture2Ds)
-		pTexture->Render_Debug(m_pShaderCom, m_pVIBufferCom);
-		
 	return S_OK;
 }
 
@@ -501,8 +551,7 @@ HRESULT CObject_Manager::Texture2D_Begin(vector<CRenderTarget*> Textures, _uint 
 
 	ID3D11RenderTargetView* pRenderTargets[8] = {};
 
-	if (isClear)
-		Textures[iIndex]->Clear();
+	if (isClear) Textures[iIndex]->Clear();
 	pRenderTargets[iNumRenderTargets++] = Textures[iIndex]->Get_RTV();
 
 	m_pContext->OMSetRenderTargets(iNumRenderTargets, pRenderTargets, m_pDepthStencilView);
