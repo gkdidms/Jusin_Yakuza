@@ -42,6 +42,7 @@ HRESULT CEffect::Initialize(void* pArg)
         m_vStartColor = pDesc->vStartColor;
         m_vEndColor = pDesc->vEndColor;
         m_iShaderPass = pDesc->iShaderPass;
+        m_TextureTag = pDesc->TextureTag;
 
        
     }
@@ -103,6 +104,18 @@ HRESULT CEffect::Edit_Action(ACTION iEditAction)
 void* CEffect::Get_Instance()
 {
     return nullptr;
+}
+
+void CEffect::Save_Data(const string strDirectory)
+{
+
+    
+
+
+}
+
+void CEffect::Load_Data(const string strDirectory)
+{
 }
 
 void CEffect::Free()

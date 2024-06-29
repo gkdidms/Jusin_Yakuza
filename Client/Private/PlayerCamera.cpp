@@ -70,7 +70,7 @@ void CPlayerCamera::Tick(const _float& fTimeDelta)
 		m_pTransformCom->Turn(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), fTimeDelta * m_fSensor * MouseMove);
 	}
 
-	__super::Tick(fTimeDelta);
+	__super::Tick(fTimeDelta, false);
 }
 
 void CPlayerCamera::Late_Tick(const _float& fTimeDelta)

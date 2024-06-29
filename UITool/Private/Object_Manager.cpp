@@ -26,6 +26,19 @@ vector<class CUI_Object*> CObject_Manager::Get_GroupObject(const wstring& strTag
 	return *pFineObjects;
 }
 
+vector<class CUI_Object*> CObject_Manager::Get_BinaryGroupObject(const wstring& strTag, _int iIndex)
+{
+	vector<class CUI_Object*>* pFineObjects = Find_BinaryObject(strTag);
+
+	if (nullptr == pFineObjects)
+		return vector<class CUI_Object*>();
+
+	if ((*pFineObjects)[iIndex]->Get_TypeIndex() != GROUP)
+		return vector<class CUI_Object*>();
+
+	return dynamic_cast<CGroup*>((*pFineObjects)[iIndex])->Get_PartObjects();
+}
+
 vector<class CUI_Object*> CObject_Manager::Get_GroupBinaryObject(const wstring& strTag)
 {
 	vector<class CUI_Object*>* pFineObjects = Find_BinaryObject(strTag);

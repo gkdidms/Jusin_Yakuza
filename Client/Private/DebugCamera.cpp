@@ -80,8 +80,6 @@ void CDebugCamera::Tick(const _float& fTimeDelta)
 		}
 	}
 
-	m_WorldMatrix = *m_pTransformCom->Get_WorldFloat4x4();
-
 	__super::Tick(fTimeDelta);
 }
 

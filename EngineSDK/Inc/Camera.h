@@ -22,7 +22,7 @@ public:
     virtual HRESULT Initialize_Prototype() override;
     virtual HRESULT Initialize(void* pArg) override;
     virtual void Priority_Tick(const _float& fTimeDelta) override;
-    virtual void Tick(const _float& fTimeDelta) override;
+    virtual void Tick(const _float& fTimeDelta, _bool isAuto = true);
     virtual void Late_Tick(const _float& fTimeDelta) override;
     virtual HRESULT Render() override;
 

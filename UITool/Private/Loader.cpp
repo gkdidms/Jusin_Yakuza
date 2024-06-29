@@ -121,6 +121,11 @@ HRESULT CLoader::Loading_For_Static()
 
 HRESULT CLoader::Loading_For_RunMapLevel(int iLevel)
 {
+	lstrcpy(m_szLoadingText, TEXT("텍스쳐를 로딩 중 입니다."));
+
+	lstrcpy(m_szLoadingText, TEXT("모델를(을) 로딩 중 입니다."));
+
+
 	_matrix		PreTransformMatrix;
 
 	lstrcpy(m_szLoadingText, TEXT("셰이더를(을) 로딩 중 입니다."));
@@ -147,11 +152,6 @@ HRESULT CLoader::Loading_For_RunMapLevel(int iLevel)
 
 	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_PlayerCamera"),
 		CPlayerCamera::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	/* For.Prototype_GameObject_Terrain */
-	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Terrain"),
-		CTerrain::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	/* For.Prototype_GameObject_Image_Texture */

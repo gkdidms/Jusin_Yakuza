@@ -6,6 +6,8 @@
 
 #include "Mesh.h"
 
+#include "BTNode.h"
+
 CPlayer::CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLandObject{ pDevice, pContext }
 {
@@ -32,6 +34,8 @@ HRESULT CPlayer::Initialize(void* pArg)
 	if (FAILED(Add_CharacterData()))
 		return E_FAIL;
 
+	Change_Animation(m_iAnimIndex);
+
 	return S_OK;
 }
 
@@ -41,49 +45,25 @@ void CPlayer::Priority_Tick(const _float& fTimeDelta)
 
 void CPlayer::Tick(const _float& fTimeDelta)
 {
-	//if (m_pModelCom->Get_AnimFinished())
+	Move_KeyInput(fTimeDelta);
+	//if (m_pGameInstance->GetKeyState(DIK_0) == TAP)
 	//{
-	//	m_iAnimIndex += m_iTemp;
-
-	//	m_iTemp *= -1;
-
+	//	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0, 0, 0, 1));
+	//}
+	//if (m_pGameInstance->GetKeyState(DIK_9) == TAP)
+	//{
+	//	m_iAnimIndex++;
+	//	Change_Animation(m_iAnimIndex);
+	//}
+	//if (m_pGameInstance->GetKeyState(DIK_8) == TAP)
+	//{
+	//	m_iAnimIndex--;
 	//	Change_Animation(m_iAnimIndex);
 	//}
 
-	if (m_pGameInstance->GetKeyState(DIK_UP) == HOLD)
-	{
-		m_pTransformCom->Go_Straight(fTimeDelta);
-	}
-	if (m_pGameInstance->GetKeyState(DIK_DOWN) == HOLD)
-	{
-		m_pTransformCom->Go_Backward(fTimeDelta);
-	}
-	if (m_pGameInstance->GetKeyState(DIK_LEFT) == HOLD)
-	{
-		m_pTransformCom->Turn(m_pTransformCom->Get_State(CTransform::STATE_UP), fTimeDelta);
-	}
-	if (m_pGameInstance->GetKeyState(DIK_RIGHT) == HOLD)
-	{
-		m_pTransformCom->Turn(m_pTransformCom->Get_State(CTransform::STATE_UP), -fTimeDelta);
-	}
-
-	if (m_pGameInstance->GetKeyState(DIK_0) == TAP)
-	{
-		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0, 0, 0, 1));
-	}
-	if (m_pGameInstance->GetKeyState(DIK_9) == TAP)
-	{
-		m_iAnimIndex++;
-		Change_Animation(m_iAnimIndex);
-	}
-	if (m_pGameInstance->GetKeyState(DIK_8) == TAP)
-	{
-		m_iAnimIndex--;
-		Change_Animation(m_iAnimIndex);
-	}
 	if (m_pGameInstance->GetKeyState(DIK_7) == TAP)
 	{
-		m_iAnimIndex = 37;
+		m_iAnimIndex = 0;
 		Change_Animation(m_iAnimIndex);
 	}
 
@@ -132,6 +112,11 @@ HRESULT CPlayer::Render()
 #endif
 
 	return S_OK;
+}
+
+void CPlayer::Ready_AnimationTree()
+{
+	
 }
 
 // 현재 애니메이션의 y축을 제거하고 사용하는 상태이다 (혹시 애니메이션의 y축 이동도 적용이 필요하다면 로직 수정이 필요함
@@ -197,8 +182,9 @@ void CPlayer::Animation_Event()
 	for (auto& pEvent : pCurEvents)
 	{
 		_double CurPos = *(m_pModelCom->Get_AnimationCurrentPosition());
+		_double Duration = *(m_pModelCom->Get_AnimationDuration());
 
-		if (CurPos >= pEvent.fPlayPosition)
+		if (CurPos >= pEvent.fPlayPosition && CurPos < Duration)
 		{
 			CSoketCollider* pCollider = m_pColliders.at(pEvent.iBoneIndex);
 
@@ -219,6 +205,26 @@ void CPlayer::Animation_Event()
 			}
 		}
 		
+	}
+}
+
+void CPlayer::Move_KeyInput(const _float& fTimeDelta)
+{
+	if (m_pGameInstance->GetKeyState(DIK_W) == HOLD)
+	{
+		m_pTransformCom->Go_Straight(fTimeDelta);
+	}
+	else if (m_pGameInstance->GetKeyState(DIK_S) == HOLD)
+	{
+		m_pTransformCom->Go_Backward(fTimeDelta);
+	}
+	else if (m_pGameInstance->GetKeyState(DIK_A) == HOLD)
+	{
+		m_pTransformCom->Go_Left(fTimeDelta);
+	}
+	else if (m_pGameInstance->GetKeyState(DIK_D) == HOLD)
+	{
+		m_pTransformCom->Go_Right(fTimeDelta);
 	}
 }
 
@@ -297,17 +303,29 @@ void CPlayer::Apply_ChracterData()
 		if (nullptr == pSoketCollider)
 			return;
 	
-		m_pColliders.emplace(Collider.first, static_cast<CSoketCollider*>(pSoketCollider));
+		auto [it, success] = m_pColliders.emplace(Collider.first, static_cast<CSoketCollider*>(pSoketCollider));
+
+		//생성한 모든 콜라이더는 일단 꺼둔다.
+		// 몸체에 붙일 (플레이어가 피격당할) 콜라이더는 항시 켜져있어야하므로 툴에서찍지않음
+		it->second->Off();
 	}
 
 }
 
 void CPlayer::Change_Animation(_uint iIndex)
 {
-	m_pModelCom->Set_AnimationIndex(m_iAnimIndex, ANIM_INTERVAL);
-	string strAnimName = string(m_pModelCom->Get_AnimationName(m_iAnimIndex));
+	m_pModelCom->Set_AnimationIndex(iIndex, ANIM_INTERVAL);
+	string strAnimName = string(m_pModelCom->Get_AnimationName(iIndex));
 	strAnimName = m_pGameInstance->Extract_String(strAnimName, '[', ']');
 	m_pData->Set_CurrentAnimation(strAnimName);
+}
+
+void CPlayer::Ready_Animations()
+{
+
+	//m_AnimationTree.at()
+
+
 }
 
 CPlayer* CPlayer::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
