@@ -150,7 +150,7 @@ HRESULT CLoader::Loading_For_Test()
 	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
 
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Model_f1"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/NonAnim/Map/Map0/Bin/f1.dat", PreTransformMatrix, true))))
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/NonAnim/Map/Map0/f1.fbx", PreTransformMatrix, false))))
 		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("셰이더를(을) 로딩 중 입니다."));
