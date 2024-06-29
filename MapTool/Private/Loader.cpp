@@ -126,7 +126,7 @@ HRESULT CLoader::Loading_For_RunMapLevel(int iLevel)
 
 	/* For.Prototype_Component_Texture_Terrain */
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(iLevel, TEXT("Prototype_Component_Texture_Terrain"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/T_Sand_06_A.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/T_Sand_06_A.png"), 1))))
 		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("모델를(을) 로딩 중 입니다."));
@@ -158,22 +158,22 @@ HRESULT CLoader::Loading_For_RunMapLevel(int iLevel)
 
 
 	/*PreTransformMatrix = XMMatrixIdentity();*/
-	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
+	//PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
 
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(iLevel, TEXT("Prototype_Component_Model_f1"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/NonAnim/Map/Map0/Bin/f1.dat", PreTransformMatrix, true))))
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/NonAnim/Map/Map0/Bin/f1.dat", PreTransformMatrix, true))))
 		return E_FAIL;
 
 
 	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(iLevel, TEXT("Prototype_Component_Model_f2"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/NonAnim/Map/Map1/Bin/f2.dat", PreTransformMatrix, true))))
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/NonAnim/Map/Map1/Bin/f2.dat", PreTransformMatrix, true))))
 		return E_FAIL;
 
 	PreTransformMatrix = XMMatrixIdentity();
 
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(iLevel, TEXT("Prototype_Component_Model_Bone_Sphere"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/NonAnim/Bone_Sphere/Bin/Bone_Sphere.dat", PreTransformMatrix, true))))
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/NonAnim/Bone_Sphere/Bin/Bone_Sphere.dat", PreTransformMatrix, true))))
 		return E_FAIL;
 
 
