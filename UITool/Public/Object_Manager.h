@@ -62,6 +62,7 @@ public:
     HRESULT Copy_Group(const wstring& strTag);
     HRESULT Remove_Group(const wstring& strTag);
     HRESULT Remove_Object(const wstring& strTag, _uint iIndex);
+    HRESULT Remove_BinaryObject(const wstring& strTag, _uint iIndex);
     HRESULT Create_Texture(_uint iIndex, const wstring& strFilePath);
 
     HRESULT Move_ObjectIndex(const wstring& strTag, _uint iIndex, _uint iMoveType);

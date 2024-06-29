@@ -801,6 +801,15 @@ HRESULT CModel::Bind_BoneMatrices(CShader* pShader, const _char* pConstantName, 
 	return pShader->Bind_Matrices(pConstantName, m_MeshBoneMatrices, 512);;
 }
 
+bool CModel::Check_Exist_Material(_uint iNumMeshIndex, aiTextureType eTextureType)
+{
+	auto* pTexture = m_Materials[m_Meshes[iNumMeshIndex]->Get_MaterialIndex()].pMaterialTextures[eTextureType];
+	if (nullptr == pTexture)
+		return false;
+
+	return true;
+}
+
 void CModel::Play_Animation(_float fTimeDelta)
 {
 	if (1 > m_Animations.size()) return;

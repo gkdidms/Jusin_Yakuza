@@ -36,6 +36,7 @@ public:
 
 	HRESULT Bind_Material(class CShader* pShader, const _char* pConstantName, _uint iNumMeshIndex, aiTextureType eTextureType);
 	HRESULT Bind_BoneMatrices(class CShader* pShader, const _char* pConstantName, _uint iNumMeshIndex);
+	bool	Check_Exist_Material(_uint iNumMeshIndex, aiTextureType eTextureType);
 
 	void Play_Animation(_float fTimeDelta);
 	void Set_AnimationIndex(const ANIMATION_DESC& AnimDesc, _double ChangeInterval = 0.0);

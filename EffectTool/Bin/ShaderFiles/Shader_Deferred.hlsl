@@ -27,6 +27,8 @@ Texture2D g_PriorityTexture;
 Texture2D g_NormalTexture;
 Texture2D g_DiffuseTexture;
 Texture2D g_ShadeTexture;
+Texture2D g_SpecularMapTexture;
+Texture2D g_SpecularTexture;
 Texture2D g_DepthTexture;
 Texture2D g_BackBufferTexture;
 Texture2D g_LightDepthTexture;
@@ -150,6 +152,7 @@ PS_OUT PS_MAIN_DEBUG(PS_IN In)
 struct PS_OUT_LIGHT
 {
     vector vShade : SV_TARGET0;
+    vector vSpecular : SV_TARGET1;
     //vector vAmbient : SV_TARGET1;
 };
 
@@ -250,6 +253,28 @@ PS_OUT_LIGHT PS_MAIN_LIGHT_DIRECTIONAL(PS_IN In)
     
     Out.vShade = g_vLightDiffuse * saturate(max(dot(normalize(g_vLightDir) * -1.f, normalize(vNormal)), 0.f) + vAmbient);
     
+    vector vWorldPos;
+
+    vWorldPos.x = In.vTexcoord.x * 2.f - 1.f;
+    vWorldPos.y = In.vTexcoord.y * -2.f + 1.f;
+    vWorldPos.z = vDepthDesc.x; /* 0 ~ 1 */
+    vWorldPos.w = 1.f;
+
+    vWorldPos = vWorldPos * (vDepthDesc.y * g_fFar);
+
+	/* 뷰스페이스 상의 위치를 구한다. */
+    vWorldPos = mul(vWorldPos, g_ProjMatrixInv);
+
+	/* 월드스페이스 상의 위치를 구한다. */
+    vWorldPos = mul(vWorldPos, g_ViewMatrixInv);
+
+    vector vReflect = reflect(normalize(g_vLightDir), normalize(vNormal));
+    vector vLook = vWorldPos - g_vCamPosition;
+    
+    vector vSpecularMap = g_SpecularMapTexture.Sample(LinearSampler, In.vTexcoord);
+
+    Out.vSpecular = pow(max(dot(normalize(vReflect) * -1.f, normalize(vLook)), 0.f), 30.f) * (1.f - vSpecularMap.r);
+    
     //if (g_isSSAO)
     //   Out.vShade *= vAmbientDesc;
     
@@ -300,8 +325,9 @@ PS_OUT PS_MAIN_COPY_BACKBUFFER_RESULT(PS_IN In)
 
     vector vShade = g_ShadeTexture.Sample(LinearSampler, In.vTexcoord);
     
+    vector vSpecular = g_SpecularTexture.Sample(LinearSampler, In.vTexcoord);
     
-    Out.vColor = vDiffuse * vShade;
+    Out.vColor = vDiffuse * vShade + vSpecular;
     
     return Out;
 }

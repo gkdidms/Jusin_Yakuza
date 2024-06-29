@@ -16,6 +16,8 @@ public:
     typedef struct tUITextureDesc : public CUI_Object::UI_OBJECT_DESC {
         wstring strTextureFilePath;
         wstring strTextureFileName;
+        _bool isParent = { false };
+        const _float4x4* pParentMatrix;
     } UI_TEXTURE_DESC;
 
 public:
@@ -46,7 +48,7 @@ public:
 
 protected:
     _float							m_fX, m_fY, m_fSizeX, m_fSizeY;
-    _float4x4						m_ViewMatrix, m_ProjMatrix;
+    _float4x4						m_WorldMatrix, m_ViewMatrix, m_ProjMatrix;
 
 protected:
     CShader* m_pShaderCom = { nullptr };
@@ -56,6 +58,8 @@ protected:
     wstring m_strTextureFilePath = { L"" };
     wstring m_strTextureName = { L"" };
 
+    _bool m_isParent = { false };
+    const _float4x4* m_pParentMatrix = { nullptr };
 
 protected:
     _uint m_iShaderPass = { 0 };

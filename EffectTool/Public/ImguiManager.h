@@ -33,10 +33,9 @@ public:
 		MODE_END
 	};
 	enum PASS{ 
-		PASS_DIRECTION=2 , 
-		PASS_NODIRECTION ,
-		PASS_DIRECTIONCOLOR , 
-		PASS_WEIGHTBLEND,
+		PASS_NOCOLOR,
+		PASS_COLOR,
+		PASS_ROTATE,
 		PASS_END};
 private:
 	CImguiManager(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -93,6 +92,7 @@ private:
 	//파티클 액션에 대한 bool 값.
 	_bool m_bSpread = { false };
 	_bool m_bDrop = { false };
+	_bool m_bSize = { false };
 	_bool m_bGuizmo = { false };
 	//생성 파티클 담는 곳
 	vector<CGameObject*> m_EditParticle = {  };
