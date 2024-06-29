@@ -24,6 +24,7 @@ private:
     HRESULT Ready_Camera(const wstring& strLayerTag);
     HRESULT Ready_Player(const wstring& strLayerTag);
     HRESULT Ready_Map(const wstring& strLayerTag);
+    HRESULT Ready_Effect(const wstring& strLayerTag);
 
 public:
     static CLevel_Test* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

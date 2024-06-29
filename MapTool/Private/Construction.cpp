@@ -205,6 +205,44 @@ void CConstruction::Add_Decal(CDecal* pDecal)
 	Safe_AddRef(pDecal);
 }
 
+void CConstruction::Delete_Decal(int iIndex)
+{
+	if (1 == m_vDecals.size())
+	{
+		vector<CDecal*>::iterator		iter = m_vDecals.begin();
+
+		if (0 != iIndex)
+		{
+			for (int i = 0; i < iIndex; i++)
+			{
+				iter++;
+			}
+		}
+
+		Safe_Release(*iter);
+		m_vDecals.erase(iter);
+
+		m_vDecals.clear();
+	}
+	else
+	{
+		vector<CDecal*>::iterator		iter = m_vDecals.begin();
+
+		if (0 != iIndex)
+		{
+			for (int i = 0; i < iIndex; i++)
+			{
+				iter++;
+			}
+		}
+
+		Safe_Release(*iter);
+		m_vDecals.erase(iter);
+	}
+
+
+}
+
 HRESULT CConstruction::Add_Components(void* pArg)
 {
 	MAPOBJ_DESC* gameobjDesc = (MAPOBJ_DESC*)pArg;

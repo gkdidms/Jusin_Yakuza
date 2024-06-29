@@ -36,6 +36,10 @@ HRESULT CRenderer::Initialize()
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Depth"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(0.f, 0.f, 0.f, 1.f))))
 		return E_FAIL;
 
+	/*Target_Decal*/
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Decal"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(0.f, 0.f, 0.f, 0.f))))
+		return E_FAIL;
+
 	/* Target_LightDepth */
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_LightDepth"), g_iSizeX, g_iSizeY, DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(1.f, 1.f, 1.f, 1.f))))
 		return E_FAIL;
@@ -110,6 +114,14 @@ HRESULT CRenderer::Initialize()
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_GameObjects"), TEXT("Target_Normal"))))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_GameObjects"), TEXT("Target_Depth"))))
+		return E_FAIL;
+
+	/* MRT_Decals */
+	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_Decals"), TEXT("Target_Decal"))))
+		return E_FAIL;
+
+	/* MRT_TotalDecals */
+	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_TotalDecals"), TEXT("Target_Diffuse"))))
 		return E_FAIL;
 
 	/* MRT_ShadowObject */
@@ -456,6 +468,25 @@ void CRenderer::Render_NonBlender()
 		return;
 }
 
+void CRenderer::Render_Decal()
+{
+	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_TotalDecals"), nullptr, false)))
+		return;
+
+	for (auto& iter : m_RenderObject[RENDER_DECAL])
+	{
+		iter->Render();
+
+		Safe_Release(iter);
+	}
+	m_RenderObject[RENDER_DECAL].clear();
+
+	if (FAILED(m_pGameInstance->End_MRT()))
+		return;
+
+}
+
+
 HRESULT CRenderer::Ready_SSAONoiseTexture() // SSAO 연산에 들어갈 랜덤 벡터 텍스쳐 생성
 {
 	ID3D11Texture2D* pSSAONoiseTexture = { nullptr };
@@ -485,8 +516,8 @@ HRESULT CRenderer::Ready_SSAONoiseTexture() // SSAO 연산에 들어갈 랜덤 벡터 텍스
 	for (int i = 0; i < 16; i++)
 	{
 		_float3 vNoise = {
-			m_pGameInstance->Get_Random(-1.f, 1.f) * 2.f - 1.f,
-			m_pGameInstance->Get_Random(-1.f, 1.f) * 2.f - 1.f,
+			m_pGameInstance->Get_Random(0.f, 1.f) * 2.f - 1.f,
+			m_pGameInstance->Get_Random(0.f, 1.f) * 2.f - 1.f,
 			0.f
 		};
 		pPixel[i] = vNoise;
@@ -519,8 +550,8 @@ HRESULT CRenderer::Ready_SSAONoiseTexture() // SSAO 연산에 들어갈 랜덤 벡터 텍스
 	for (int i = 0; i < 64; i++)
 	{
 		_float3 vRandom = {
-			m_pGameInstance->Get_Random(-1.f, 1.f) * 2.f - 1.f,
-			m_pGameInstance->Get_Random(-1.f, 1.f) * 2.f - 1.f,
+			m_pGameInstance->Get_Random(0.f, 1.f) * 2.f - 1.f,
+			m_pGameInstance->Get_Random(0.f, 1.f) * 2.f - 1.f,
 			m_pGameInstance->Get_Random(0.f, 1.f)
 		};
 
@@ -1185,11 +1216,7 @@ void CRenderer::Render_UI()
 	m_RenderObject[RENDER_UI].clear();
 }
 
-void CRenderer::Render_Decal()
-{
 
-
-}
 
 #ifdef _DEBUG
 void CRenderer::Render_Debug()
