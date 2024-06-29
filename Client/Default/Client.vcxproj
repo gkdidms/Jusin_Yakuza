@@ -186,6 +186,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </ClInclude>
+    <ClInclude Include="..\Public\Effect.h" />
     <ClInclude Include="..\Public\FileTotalMgr.h" />
     <ClInclude Include="..\public\LandObject.h" />
     <ClInclude Include="..\public\Level_Loading.h" />
@@ -193,6 +194,7 @@
     <ClInclude Include="..\public\Level_Test.h" />
     <ClInclude Include="..\public\Loader.h" />
     <ClInclude Include="..\public\MainApp.h" />
+    <ClInclude Include="..\Public\Particle_Point.h" />
     <ClInclude Include="..\Public\PartObject.h" />
     <ClInclude Include="..\public\Player.h" />
     <ClInclude Include="..\public\PlayerCamera.h" />
@@ -201,6 +203,7 @@
     <ClInclude Include="..\Public\SoketObject.h" />
     <ClInclude Include="..\public\SystemManager.h" />
     <ClInclude Include="..\Public\Terrain.h" />
+    <ClInclude Include="..\Public\TRailEffect.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="Resource.h" />
@@ -233,6 +236,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\Private\Effect.cpp" />
     <ClCompile Include="..\Private\FileTotalMgr.cpp" />
     <ClCompile Include="..\private\LandObject.cpp" />
     <ClCompile Include="..\private\Level_Loading.cpp" />
@@ -240,6 +244,7 @@
     <ClCompile Include="..\private\Level_Test.cpp" />
     <ClCompile Include="..\private\Loader.cpp" />
     <ClCompile Include="..\private\MainApp.cpp" />
+    <ClCompile Include="..\Private\Particle_Point.cpp" />
     <ClCompile Include="..\Private\PartObject.cpp" />
     <ClCompile Include="..\private\Player.cpp" />
     <ClCompile Include="..\private\PlayerCamera.cpp" />
@@ -248,6 +253,7 @@
     <ClCompile Include="..\Private\SoketObject.cpp" />
     <ClCompile Include="..\private\SystemManager.cpp" />
     <ClCompile Include="..\Private\Terrain.cpp" />
+    <ClCompile Include="..\Private\TRailEffect.cpp" />
     <ClCompile Include="Client.cpp" />
   </ItemGroup>
   <ItemGroup>
@@ -258,8 +264,10 @@
     <Image Include="small.ico" />
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_Trail.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxAnimMesh.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxCube.hlsl" />
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxInstance_Point.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxMesh.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxNorTex.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxPosTex.hlsl" />
