@@ -396,14 +396,11 @@ void CImguiManager::CreateTrail_Tick(_float fTimeDelta)
 				m_iCurEditIndex = 0;
 		}
 	}
-	if (ImGui::Button("Save_binary"))
+	if (ImGui::Button(u8"파티클 모두저장"))
 	{
-		//바이너리화
+		AllEffect_Save();
 	}
-	if (ImGui::Button("Load_binary"))
-	{
-		//바이너리 로드
-	}
+	Load_Selctor();
 
 
 	ImGui::End();
@@ -508,6 +505,14 @@ HRESULT CImguiManager::AllEffect_Save()
 		break;
 	case Client::CImguiManager::MODE_TRAIL:
 	{
+		string strDirectory = "../../Client/Bin/DataFiles/Particle/Trail";
+
+		fs::path path(strDirectory);
+		if (!exists(path))
+			fs::create_directory(path);
+
+		for (auto iter : m_EditTrail)
+			dynamic_cast<CTRailEffect*>(iter)->Save_Data(strDirectory);
 
 	}
 		break;
@@ -536,11 +541,18 @@ HRESULT CImguiManager::AllEffect_Load()
 
 		for (auto iter : m_EditParticle)
 			dynamic_cast<CParticle_Point*>(iter)->Load_Data(strDirectory);
-
 	}
 	break;
 	case Client::CImguiManager::MODE_TRAIL:
 	{
+		string strDirectory = "../../Client/Bin/DataFiles/Particle/Trail";
+
+		fs::path path(strDirectory);
+		if (!exists(path))
+			fs::create_directory(path);
+
+		for (auto iter : m_EditParticle)
+			dynamic_cast<CTRailEffect*>(iter)->Load_Data(strDirectory);
 
 	}
 	break;
@@ -636,7 +648,7 @@ HRESULT CImguiManager::Edit_Particle(_uint Index)
 		break;
 	}
 
-	m_iCurEditIndex = Index;
+	//m_iCurEditIndex = Index;
 
 	return S_OK;
 }
@@ -770,6 +782,83 @@ void CImguiManager::File_Selctor(_bool* bChange)
 
 }
 
+void CImguiManager::Load_Selctor()
+{
+	switch (m_iMode)
+	{
+	case Client::CImguiManager::MODE_PARTICLE:
+	{
+		if (ImGui::Button(u8"로드 파티클"))
+		{
+			IGFD::FileDialogConfig config;
+			config.path = "../../Client/Bin/DataFiles/Particle/Point";
+			ImGuiFileDialog::Instance()->OpenDialog("ChooseTextureKey", "Choose File", ".dat", config);
+		}
+		if (ImGuiFileDialog::Instance()->Display("ChooseTextureKey")) {
+			if (ImGuiFileDialog::Instance()->IsOk()) { // action if OK
+				std::string filePathName = ImGuiFileDialog::Instance()->GetFilePathName();
+				std::string fileName = ImGuiFileDialog::Instance()->GetCurrentFileName();
+				// action
+
+				string Tag;
+				_int dotPos = fileName.find_last_of(".");
+				Tag = fileName.substr(0, dotPos);
+
+				
+				CGameObject* pGameParticle = m_pGameInstance->Clone_Object(m_pGameInstance->StringToWstring(Tag),nullptr);
+				if (nullptr == pGameParticle)
+					MSG_BOX("생성 실패");
+
+				m_EditParticle.push_back(pGameParticle);
+				m_iCurEditIndex = m_EditParticle.size() - 1;
+			}
+
+			// close
+			ImGuiFileDialog::Instance()->Close();
+		}
+	}
+		break;
+	case Client::CImguiManager::MODE_TRAIL:
+	{
+		if (ImGui::Button(u8"로드 파티클생성"))
+		{
+			IGFD::FileDialogConfig config;
+			config.path = "../../Client/Bin/DataFiles/Particle/Trail";
+			ImGuiFileDialog::Instance()->OpenDialog("ChooseTextureKey", "Choose File", ".dat", config);
+		}
+		if (ImGuiFileDialog::Instance()->Display("ChooseTextureKey")) {
+			if (ImGuiFileDialog::Instance()->IsOk()) { // action if OK
+				std::string filePathName = ImGuiFileDialog::Instance()->GetFilePathName();
+				std::string fileName = ImGuiFileDialog::Instance()->GetCurrentFileName();
+				// action
+
+
+				string Tag;
+				_int dotPos = fileName.find_last_of(".");
+				Tag = fileName.substr(0, dotPos);
+
+
+				CGameObject* pGameParticle = m_pGameInstance->Clone_Object(m_pGameInstance->StringToWstring(Tag), nullptr);
+				if (nullptr == pGameParticle)
+					MSG_BOX("생성 실패");
+
+				m_EditTrail.push_back(pGameParticle);
+				m_iCurEditIndex = m_EditTrail.size() - 1;
+			}
+
+			// close
+			ImGuiFileDialog::Instance()->Close();
+		}
+	}
+		break;
+	case Client::CImguiManager::MODE_END:
+		break;
+	default:
+		break;
+	}
+	
+}
+
 void CImguiManager::Create_Tick(_float fTimeDelta)
 {
 	ImGui::SetNextWindowPos(ImVec2(980, 0), ImGuiCond_None);
@@ -799,14 +888,12 @@ void CImguiManager::Create_Tick(_float fTimeDelta)
 				m_iCurEditIndex = 0;
 		}
 	}
-	if (ImGui::Button("Save_binary"))
+	if (ImGui::Button(u8"파티클 모두저장"))
 	{
 		AllEffect_Save();
 	}
-	if (ImGui::Button("Load_binary"))
-	{
-		//바이너리 로드
-	}
+	Load_Selctor();
+
 
 	ImGui::End();
 }
@@ -1107,8 +1194,8 @@ void CImguiManager::Reset_Particle()
 		}
 	}
 
-	if(!m_EditParticle.empty())
-		Load_Desc(m_iCurEditIndex);
+//	if(!m_EditParticle.empty())
+		//Load_Desc(m_iCurEditIndex);
 
 }
 

@@ -161,7 +161,8 @@ HRESULT CLoader::Loading_For_EditLevel()
 		CFreeCamera::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	//Add_Particle_On_Path(TEXT("../../Client/Bin/DataFiles/Particle/"));
+
+	Add_Particle_On_Path(TEXT("../../Client/Bin/DataFiles/Particle/"));
 
 
 
@@ -216,17 +217,48 @@ HRESULT CLoader::Add_Particle_On_Path(const wstring& strPath)
 	{
 		wstring strFilePath = strPath + strChannelName + TEXT("/");
 		string strDirectory = m_pGameInstance->WstringToString(strFilePath);
-
-		for (const auto& entry : fs::directory_iterator(strDirectory))
+		
+		if ( TEXT("Point")==strChannelName)
 		{
-			string FileName = entry.path().filename().string();
-			string AllPath = strDirectory + FileName;	
-			/* For.Prototype_Component_VIBuffer_Instance_Point */
-			if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_EDIT, m_pGameInstance->StringToWstring(FileName),
-				CVIBuffer_Instance_Point::Create(m_pDevice, m_pContext, AllPath))))
-				return E_FAIL;
+			for (const auto& entry : fs::directory_iterator(strDirectory))
+			{
 
+				string FileName = entry.path().filename().string();
+				string AllPath = strDirectory + FileName;
+
+				string Tag;
+				_int dotPos = FileName.find_last_of(".");
+				Tag = FileName.substr(0, dotPos);
+
+
+				/* For.Prototype_GameObject_Particle_Point */
+				if (FAILED(m_pGameInstance->Add_GameObject_Prototype(m_pGameInstance->StringToWstring(Tag),
+					CParticle_Point::Create(m_pDevice, m_pContext, AllPath))))
+					return E_FAIL;
+
+			}
 		}
+		else if(TEXT("Trail") == strChannelName)
+		{
+			for (const auto& entry : fs::directory_iterator(strDirectory))
+			{
+
+				string FileName = entry.path().filename().string();
+				string AllPath = strDirectory + FileName;
+
+				string Tag;
+				_int dotPos = FileName.find_last_of(".");
+				Tag = FileName.substr(0, dotPos);
+
+
+				/* For.Prototype_GameObject_Particle_Trail */
+				if (FAILED(m_pGameInstance->Add_GameObject_Prototype(m_pGameInstance->StringToWstring(Tag),
+					CTRailEffect::Create(m_pDevice, m_pContext, AllPath))))
+					return E_FAIL;
+
+			}
+		}
+		
 		
 
 	}

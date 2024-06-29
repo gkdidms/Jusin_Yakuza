@@ -109,7 +109,16 @@
     <ClCompile Include="..\Private\SoketCollider.cpp">
       <Filter>02.GameObjects\02.Character\SoketCollider</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\BTNode.cpp">
+    <ClCompile Include="..\Private\Effect.cpp">
+      <Filter>02.GameObjects\06.Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Particle_Point.cpp">
+      <Filter>02.GameObjects\06.Effect\Point</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\TRailEffect.cpp">
+      <Filter>02.GameObjects\06.Effect\Trail</Filter>
+	</ClCompile>
+	<ClCompile Include="..\Private\BTNode.cpp">
       <Filter>02.GameObjects\02.Character\BehaviorTree\BTNode</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\CompositeNode.cpp">
@@ -267,6 +276,15 @@
     <ClInclude Include="..\Public\SoketCollider.h">
       <Filter>02.GameObjects\02.Character\SoketCollider</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Effect.h">
+      <Filter>02.GameObjects\06.Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Particle_Point.h">
+      <Filter>02.GameObjects\06.Effect\Point</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\TRailEffect.h">
+      <Filter>02.GameObjects\06.Effect\Trail</Filter>
+	</ClInclude>
     <ClInclude Include="..\Public\BTNode.h">
       <Filter>02.GameObjects\02.Character\BehaviorTree\BTNode</Filter>
     </ClInclude>
@@ -391,6 +409,16 @@
     <Filter Include="02.GameObjects\02.Character\SoketCollider">
       <UniqueIdentifier>{260596ca-843e-47fe-ae9b-3a65ebc2b9a0}</UniqueIdentifier>
     </Filter>
+
+    <Filter Include="02.GameObjects\06.Effect">
+      <UniqueIdentifier>{8453b934-ceb3-4373-9731-9aff5f9a923e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\06.Effect\Point">
+      <UniqueIdentifier>{3e39e219-241e-44c2-bab6-73ebd1642692}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\06.Effect\Trail">
+      <UniqueIdentifier>{d637f30f-2167-4420-bb64-cc2966bdd0fa}</UniqueIdentifier>
+	</Filter>
     <Filter Include="02.GameObjects\02.Character\BehaviorTree">
       <UniqueIdentifier>{490f9c94-1bca-41c9-a680-f2eb77882221}</UniqueIdentifier>
     </Filter>
@@ -452,6 +480,12 @@
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxCube.hlsl">
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxInstance_Point.hlsl">
+      <Filter>97.ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_Trail.hlsl">
+		<Filter>97.ShaderFiles</Filter>
+	</FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxMeshTemp.hlsl">
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
