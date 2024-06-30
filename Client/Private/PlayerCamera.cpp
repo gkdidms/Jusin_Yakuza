@@ -45,43 +45,53 @@ void CPlayerCamera::Priority_Tick(const _float& fTimeDelta)
 void CPlayerCamera::Tick(const _float& fTimeDelta)
 {
 	if (m_pSystemManager->Get_Camera() != CAMERA_PLAYER) return;
-	/* 마우스 좌표 고정 */
-	//SetCursorPos(g_iWinSizeX * 0.5f, g_iWinSizeY * 0.5f); // 마우스 좌표 적용해주기
-	//ShowCursor(false);
-
-	//if (m_pGameInstance->Get_DIKeyState(DIK_A) & 0x80)
-	//	m_pTransformCom->Go_Left(fTimeDelta);
-	//if (GetKeyState('D') & 0x8000)
-	//	m_pTransformCom->Go_Right(fTimeDelta);
-	//if (GetKeyState('W') & 0x8000)
-	//	m_pTransformCom->Go_Straight(fTimeDelta);
-	//if (GetKeyState('S') & 0x8000)
-	//	m_pTransformCom->Go_Backward(fTimeDelta);
-
-	_long		MouseMove = { 0 };
-
-	if (MouseMove = m_pGameInstance->Get_DIMouseMove(DIMS_X))
-	{
-		m_pTransformCom->Turn(XMVectorSet(0.f, 1.f, 0.f, 0.f), fTimeDelta * m_fSensor * MouseMove);
-	}
-
-	if (MouseMove = m_pGameInstance->Get_DIMouseMove(DIMS_Y))
-	{
-		m_pTransformCom->Turn(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), fTimeDelta * m_fSensor * MouseMove);
-	}
-
-	__super::Tick(fTimeDelta);
+	Compute_View(fTimeDelta);
 }
 
 void CPlayerCamera::Late_Tick(const _float& fTimeDelta)
 {
-	//플레이어 카메라는 플레이어를 따라다닌다.
-	XMStoreFloat4x4(&m_WorldMatrix, m_pTransformCom->Get_WorldMatrix() * XMLoadFloat4x4(m_pPlayerMatrix));
+	if (m_pSystemManager->Get_Camera() != CAMERA_PLAYER) return;
+	Compute_View(fTimeDelta);
+
+	__super::Tick(fTimeDelta);
 }
 
 HRESULT CPlayerCamera::Render()
 {
 	return S_OK;
+}
+
+void CPlayerCamera::Compute_View(const _float& fTimeDelta)
+{
+	SetCursorPos(g_iWinSizeX * 0.5f, g_iWinSizeY * 0.5f); // 마우스 좌표 적용해주기
+	ShowCursor(false);
+
+	_vector vPlayerPosition;
+	memcpy(&vPlayerPosition, m_pPlayerMatrix->m[CTransform::STATE_POSITION], sizeof(_float4));
+
+	//마우스 입력을 이용한 카메라 회전
+	_long MouseMove = { 0 };
+	if (MouseMove = m_pGameInstance->Get_DIMouseMove(DIMS_X))
+	{
+		fCamAngleY -= fTimeDelta * m_fSensor * MouseMove;
+	}
+	if (MouseMove = m_pGameInstance->Get_DIMouseMove(DIMS_Y))
+	{
+		fCamAngleX += fTimeDelta * m_fSensor * MouseMove;
+	}
+
+	// 카메라 포지션 계산
+	_vector vCamPosition = XMVectorSet(
+		m_fCamDistance * cosf(XMConvertToRadians(fCamAngleY)) * cosf(XMConvertToRadians(fCamAngleX)),
+		m_fCamDistance * sinf(XMConvertToRadians(fCamAngleX)),
+		m_fCamDistance * sinf(XMConvertToRadians(fCamAngleY)) * cosf(XMConvertToRadians(fCamAngleX)),
+		1.f
+	);
+	vCamPosition += XMVectorSet(XMVectorGetX(vPlayerPosition), XMVectorGetY(vPlayerPosition), XMVectorGetZ(vPlayerPosition), 0);
+	m_pTransformCom->LookAt(XMVectorSet(XMVectorGetX(vPlayerPosition), XMVectorGetY(vPlayerPosition) + 1.f, XMVectorGetZ(vPlayerPosition), 1));
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vCamPosition);
+
+	XMStoreFloat4x4(&m_WorldMatrix, m_pTransformCom->Get_WorldMatrix());
 }
 
 CPlayerCamera* CPlayerCamera::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

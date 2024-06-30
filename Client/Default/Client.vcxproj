@@ -183,6 +183,8 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </ClInclude>
     <ClInclude Include="..\Public\Kiryu_Adventure_Idle.h" />
+    <ClInclude Include="..\Public\Kiryu_Adventure_Run.h" />
+    <ClInclude Include="..\Public\Kiryu_Adventure_Walk.h" />
     <ClInclude Include="..\Public\LeafNode.h" />
     <ClInclude Include="..\Public\Client_Defines.h" />
     <ClInclude Include="..\Public\Construction.h" />
@@ -237,6 +239,8 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </ClCompile>
     <ClCompile Include="..\Private\Kiryu_Adventure_Idle.cpp" />
+    <ClCompile Include="..\Private\Kiryu_Adventure_Run.cpp" />
+    <ClCompile Include="..\Private\Kiryu_Adventure_Walk.cpp" />
     <ClCompile Include="..\Private\LeafNode.cpp" />
     <ClCompile Include="..\Private\Construction.cpp" />
     <ClCompile Include="..\private\DebugCamera.cpp" />

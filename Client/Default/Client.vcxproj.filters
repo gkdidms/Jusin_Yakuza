@@ -127,6 +127,12 @@
     <ClCompile Include="..\Private\Kiryu_Adventure_Idle.cpp">
       <Filter>02.GameObjects\02.Character\LandObject\00.Player\Behavior\Adventure\Idle</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\Kiryu_Adventure_Walk.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\00.Player\Behavior\Adventure\Walk</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Kiryu_Adventure_Run.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\00.Player\Behavior\Adventure\Run</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\MainApp.h">
@@ -284,6 +290,12 @@
     </ClInclude>
     <ClInclude Include="..\Public\Kiryu_Adventure_Idle.h">
       <Filter>02.GameObjects\02.Character\LandObject\00.Player\Behavior\Adventure\Idle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Kiryu_Adventure_Walk.h">
+      <Filter>02.GameObjects\02.Character\LandObject\00.Player\Behavior\Adventure\Walk</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Kiryu_Adventure_Run.h">
+      <Filter>02.GameObjects\02.Character\LandObject\00.Player\Behavior\Adventure\Run</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
