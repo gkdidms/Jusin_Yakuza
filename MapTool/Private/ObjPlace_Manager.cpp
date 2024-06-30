@@ -665,7 +665,7 @@ void CObjPlace_Manager::Edit_Installed_GameObject(int iNumObject)
 		m_tCurrentObjectDesc.iShaderPass = 0;
 	}
 
-	if (ImGui::RadioButton(u8"shader2", m_tCurrentObjectDesc.iShaderPass == 1))
+	if (ImGui::RadioButton(u8"À¯¸®", m_tCurrentObjectDesc.iShaderPass == 1))
 	{
 		shaderType = 1;
 		m_tCurrentObjectDesc.iShaderPass = 1;
@@ -1486,7 +1486,6 @@ void CObjPlace_Manager::Add_Decal_IMGUI()
 				for (int i = 0; i < m_iCurrentObjectIndex; i++)
 				{
 					iter++;
-					m_iCurrentObjectIndex++;
 				}
 			}
 
@@ -1631,7 +1630,6 @@ void CObjPlace_Manager::Add_Decal_IMGUI()
 				for (int i = 0; i < m_iCurrentObjectIndex; i++)
 				{
 					iter++;
-					m_iCurrentObjectIndex++;
 				}
 			}
 
