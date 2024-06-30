@@ -6,7 +6,6 @@ matrix g_WorldMatrix, g_ViewMatrix, g_ProjMatrix, g_WorldMatrixInv, g_ViewMatrix
 textureCUBE	 g_Texture;
 Texture2D g_Texture2D;
 Texture2D g_DepthTexture;
-Texture2D g_DiffuseTexture;
 
 //Decal
 float2 g_RenderResolution = float2(1280, 720);
@@ -116,7 +115,11 @@ PS_OUT PS_DECAL(PS_IN In)
     
     
     vector vDecalColor = g_Texture2D.Sample(LinearSampler, vLocalPos.xy);
-   
+
+    if(vDecalColor.a < 0.3)
+        discard;
+    
+    
     
     Out.vColor = vDecalColor;
     
@@ -142,7 +145,7 @@ technique11 DefaultTechnique
 		PixelShader = compile ps_5_0 PS_MAIN();
 	}
 
-    pass DefaultPassCube
+    pass DecalCubePass
     {
         SetRasterizerState(RS_Cull_NON_CW);
         SetDepthStencilState(DSS_Default, 0);
