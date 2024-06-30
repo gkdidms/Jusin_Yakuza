@@ -555,8 +555,8 @@ HRESULT CRenderer::Ready_SSAONoiseTexture() // SSAO 연산에 들어갈 랜덤 벡터 텍스
 
 	Safe_Delete_Array(pPixel);
 
+	/* 랜덤 커널 만들기 */
 	m_vSSAOKernal = new _float4[64];
-
 	for (int i = 0; i < 64; i++)
 	{
 		_float4 vRandom = {
@@ -666,6 +666,7 @@ void CRenderer::Render_SSAOBlur()
 
 void CRenderer::Render_LightAcc()
 {
+	/* Light + PBR */
 	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_LightAcc"))))
 		return;
 
@@ -689,6 +690,8 @@ void CRenderer::Render_LightAcc()
 	if (FAILED(m_pShader->Bind_RawValue("g_isSSAO", &m_isSSAO, sizeof(_bool))))
 		return;
 
+	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Diffuse"), m_pShader, "g_DiffuseTexture")))
+		return;
 	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Normal"), m_pShader, "g_NormalTexture")))
 		return;
 	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Depth"), m_pShader, "g_DepthTexture")))
