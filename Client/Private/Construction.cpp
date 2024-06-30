@@ -101,17 +101,18 @@ HRESULT CConstruction::Render()
 				return E_FAIL;
 		}
 
-		bool	bSpecularExist = m_pModelCom->Check_Exist_Material(i, aiTextureType_METALNESS);
-		if (true == bSpecularExist)
+		bool	bRMExist = m_pModelCom->Check_Exist_Material(i, aiTextureType_METALNESS);
+		if (true == bRMExist)
 		{
-			m_pModelCom->Bind_Material(m_pShaderCom, "g_SpecularMapTexture", i, aiTextureType_METALNESS);
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RMTexture", i, aiTextureType_METALNESS)))
+				return E_FAIL;
 
-			if (FAILED(m_pShaderCom->Bind_RawValue("g_bExistSpecularTex", &bSpecularExist, sizeof(bool))))
+			if (FAILED(m_pShaderCom->Bind_RawValue("g_bExistRMTex", &bRMExist, sizeof(bool))))
 				return E_FAIL;
 		}
 		else
 		{
-			if (FAILED(m_pShaderCom->Bind_RawValue("g_bExistSpecularTex", &bSpecularExist, sizeof(bool))))
+			if (FAILED(m_pShaderCom->Bind_RawValue("g_bExistRMTex", &bRMExist, sizeof(bool))))
 				return E_FAIL;
 		}
 

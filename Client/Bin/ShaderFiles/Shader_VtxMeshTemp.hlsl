@@ -6,7 +6,7 @@ matrix      g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
 
 Texture2D   g_DiffuseTexture;
 Texture2D   g_NormalTexture;
-Texture2D   g_SpecularMapTexture;
+Texture2D   g_RMTexture;
 Texture2D   g_EmissionTexture;
 
 float       g_fObjID;
@@ -14,7 +14,7 @@ float       g_fObjID;
 float       g_fFar = { 3000.f };
 float       g_fTimeDelta;
 bool        g_bExistNormalTex;
-bool        g_bExistSpecularTex;
+bool        g_bExistRMTex;
 bool        g_bExistEmissionTex;
 
 struct VS_IN
@@ -118,10 +118,10 @@ PS_OUT PS_MAIN(PS_IN In)
     Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_fFar, 0.f, 1.f);
     
     // specularTex와 metalic 같은 rm 사용 - bool 값 같이 사용하기
-    if(true == g_bExistSpecularTex)
+    if (true == g_bExistRMTex)
     {
-        Out.vSpecular = g_SpecularMapTexture.Sample(LinearSampler, In.vTexcoord);
-        Out.vMetalic = g_SpecularMapTexture.Sample(LinearSampler, In.vTexcoord);
+        Out.vSpecular = g_RMTexture.Sample(LinearSampler, In.vTexcoord);
+        Out.vMetalic = g_RMTexture.Sample(LinearSampler, In.vTexcoord);
     }
     
     
