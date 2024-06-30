@@ -36,9 +36,10 @@ HRESULT CRenderer::Initialize()
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Depth"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(0.f, 0.f, 0.f, 1.f))))
 		return E_FAIL;
 
-	/*Target_Decal*/
-	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Decal"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(0.f, 0.f, 0.f, 0.f))))
+	/*Target_Metalic*/
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Metalic"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(0.f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
+
 
 	/* Target_LightDepth */
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_LightDepth"), g_iSizeX, g_iSizeY, DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(1.f, 1.f, 1.f, 1.f))))
@@ -48,6 +49,7 @@ HRESULT CRenderer::Initialize()
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Shade"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 1.f))))
 		return E_FAIL;
 
+
 	/* Target_Specular */
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Specular"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
@@ -56,8 +58,8 @@ HRESULT CRenderer::Initialize()
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Ambient"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(1.f, 0.f, 0.f, 1.f))))
 		return E_FAIL;
 
-	/* Target_SpecularMap */
-	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_SpecularMap"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(1.f, 0.f, 0.f, 0.f))))
+	/* Target_RM */
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_RM"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(1.f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
 
 	/*Target_SSAO*/
@@ -123,11 +125,9 @@ HRESULT CRenderer::Initialize()
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_GameObjects"), TEXT("Target_Depth"))))
 		return E_FAIL;
-	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_GameObjects"), TEXT("Target_SpecularMap"))))
+	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_GameObjects"), TEXT("Target_RM"))))
 		return E_FAIL;
-
-	/* MRT_Decals */
-	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_Decals"), TEXT("Target_Decal"))))
+	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_GameObjects"), TEXT("Target_Metalic"))))
 		return E_FAIL;
 
 	/* MRT_TotalDecals */
@@ -283,7 +283,7 @@ HRESULT CRenderer::Initialize()
 	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_Specular"), 50.f, 350.f, 100.f, 100.f)))
 		return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_SpecularMap"), 50.f, 450.f, 100.f, 100.f)))
+	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_RM"), 50.f, 450.f, 100.f, 100.f)))
 		return E_FAIL;
 	
 	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_Shade"), 150.f, 50.f, 100.f, 100.f)))
@@ -535,8 +535,8 @@ HRESULT CRenderer::Ready_SSAONoiseTexture() // SSAO 연산에 들어갈 랜덤 벡터 텍스
 	for (int i = 0; i < 16; i++)
 	{
 		_float3 vNoise = {
-			m_pGameInstance->Get_Random(0.f, 1.f) * 2.f - 1.f,
-			m_pGameInstance->Get_Random(0.f, 1.f) * 2.f - 1.f,
+			m_pGameInstance->Get_Random(0.f, 1.f),
+			m_pGameInstance->Get_Random(0.f, 1.f),
 			0.f
 		};
 		pPixel[i] = vNoise;
@@ -551,46 +551,35 @@ HRESULT CRenderer::Ready_SSAONoiseTexture() // SSAO 연산에 들어갈 랜덤 벡터 텍스
 	if (FAILED(m_pDevice->CreateShaderResourceView(pSSAONoiseTexture, nullptr, &m_pSSAONoiseView)))
 		return E_FAIL;
 
-
-
-	//D3D11_MAPPED_SUBRESOURCE		SubResource{};
-
-	//m_pContext->Map(pSSAONoiseTexture, 0, D3D11_MAP_WRITE_DISCARD, 0, &SubResource);
-
-	//memcpy(SubResource.pData, pPixel, sizeof(_float3) * 4 * 4);
-
-	//m_pContext->Unmap(pSSAONoiseTexture, 0);
-
 	Safe_Release(pSSAONoiseTexture);
 
 	Safe_Delete_Array(pPixel);
 
-	//랜덤 법선 만들기
+	m_vSSAOKernal = new _float4[64];
+
 	for (int i = 0; i < 64; i++)
 	{
-		_float3 vRandom = {
+		_float4 vRandom = {
 			m_pGameInstance->Get_Random(0.f, 1.f) * 2.f - 1.f,
 			m_pGameInstance->Get_Random(0.f, 1.f) * 2.f - 1.f,
-			m_pGameInstance->Get_Random(0.f, 1.f)
+			m_pGameInstance->Get_Random(0.f, 1.f),
+			0.f
 		};
 
-		XMStoreFloat3(&vRandom, XMVector3Normalize(XMLoadFloat3(&vRandom)));
+		XMStoreFloat4(&vRandom, XMVector4Normalize(XMLoadFloat4(&vRandom)));
 		//XMStoreFloat3(&vRandom, XMLoadFloat3(&vRandom) * m_pGameInstance->Get_Random(0.f, 1.f));
 		float vScale = (_float)i / 64.f;
-		vScale = 0.1f + (vScale * vScale) * (1.f - 0.1f);
-		XMStoreFloat3(&vRandom, XMLoadFloat3(&vRandom) * vScale);
+		vScale = 0.3f + (vScale * vScale) * (0.8f - 0.3f);
+		XMStoreFloat4(&vRandom, XMLoadFloat4(&vRandom) * vScale);
 
-		m_vSSAOKernal.emplace_back(vRandom);
+		m_vSSAOKernal[i] = vRandom;
 	}
-
 
 	return S_OK;
 }
 
 void CRenderer::Render_SSAO()
 {
-
-
 	if(FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_SSAO"))))
 		return;
 
@@ -619,7 +608,7 @@ void CRenderer::Render_SSAO()
 		return;
 	if (FAILED(m_pShader->Bind_RawValue("g_vCamPosition", m_pGameInstance->Get_CamPosition_Float4(), sizeof(_float4))))
 		return;
-	if (FAILED(m_pShader->Bind_RawValue("g_SSAORandoms", &m_vSSAOKernal, sizeof(_float3) * 64)))
+	if (FAILED(m_pShader->Bind_Vectors("g_SSAORandoms", m_vSSAOKernal, 64)))
 		return;
 
 	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Normal"), m_pShader, "g_NormalTexture")))
@@ -706,7 +695,7 @@ void CRenderer::Render_LightAcc()
 		return;
 	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_SSAO"), m_pShader, "g_AmbientTexture")))
 		return;
-	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_SpecularMap"), m_pShader, "g_SpecularMapTexture")))
+	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_RM"), m_pShader, "g_RMTexture")))
 		return;
 
 	m_pGameInstance->Render_Lights(m_pShader, m_pVIBuffer);
@@ -749,6 +738,8 @@ void CRenderer::Render_CopyBackBuffer()
 	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Shade"), m_pShader, "g_ShadeTexture")))
 		return;
 	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Specular"), m_pShader, "g_SpecularTexture")))
+		return;
+	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Metalic"), m_pShader, "g_MetallicTexture")))
 		return;
 
 	m_pShader->Begin(3);
@@ -1340,6 +1331,8 @@ void CRenderer::Free()
 
 		m_RenderObject[i].clear();
 	}
+
+	Safe_Delete_Array(m_vSSAOKernal);
 
 	Safe_Release(m_pLightDepthStencilView);
 	Safe_Release(m_pSSAONoiseView);
