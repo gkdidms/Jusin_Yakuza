@@ -83,11 +83,10 @@ HRESULT CConstruction::Render()
 
 	for (size_t i = 0; i < iNumMeshes; i++)
 	{
-		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_Texture", i, aiTextureType_DIFFUSE)))
+		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
 			return E_FAIL;
 
 		bool	bNormalExist = m_pModelCom->Check_Exist_Material(i, aiTextureType_NORMALS);
-
 		// Normal texture가 있을 경우
 		if (true == bNormalExist)
 		{
@@ -103,7 +102,6 @@ HRESULT CConstruction::Render()
 		}
 
 		bool	bSpecularExist = m_pModelCom->Check_Exist_Material(i, aiTextureType_METALNESS);
-
 		if (true == bSpecularExist)
 		{
 			m_pModelCom->Bind_Material(m_pShaderCom, "g_SpecularMapTexture", i, aiTextureType_METALNESS);
@@ -114,6 +112,21 @@ HRESULT CConstruction::Render()
 		else
 		{
 			if (FAILED(m_pShaderCom->Bind_RawValue("g_bExistSpecularTex", &bSpecularExist, sizeof(bool))))
+				return E_FAIL;
+		}
+
+
+		bool	bEmissionExist = m_pModelCom->Check_Exist_Material(i, aiTextureType_EMISSIVE);
+		if (true == bEmissionExist)
+		{
+			m_pModelCom->Bind_Material(m_pShaderCom, "g_EmissionTexture", i, aiTextureType_EMISSIVE);
+
+			if (FAILED(m_pShaderCom->Bind_RawValue("g_bExistEmissionTex", &bEmissionExist, sizeof(bool))))
+				return E_FAIL;
+		}
+		else
+		{
+			if (FAILED(m_pShaderCom->Bind_RawValue("g_bExistEmissionTex", &bEmissionExist, sizeof(bool))))
 				return E_FAIL;
 		}
 		
