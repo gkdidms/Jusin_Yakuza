@@ -90,7 +90,7 @@ float3 BRDF(float4 vPosition, float2 vTexcoord, float4 vNormal, float4 vDepthDes
     
     F0 = lerp(F0, vAlbedo, vRM.r); // vRM.g : Metalic
     
-    float3 vLightDir = -normalize(g_vLightDir);
+    float3 vLightDir = normalize(g_vLightDir) * -1.f;
     float3 vHalfway = normalize(vLook + vLightDir);
     float3 vRadiance = g_vLightDiffuse;
     
