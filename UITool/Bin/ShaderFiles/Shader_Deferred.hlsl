@@ -27,9 +27,10 @@ Texture2D g_PriorityTexture;
 Texture2D g_NormalTexture;
 Texture2D g_DiffuseTexture;
 Texture2D g_ShadeTexture;
-Texture2D g_SpecularMapTexture;
+Texture2D g_RMTexture;
 Texture2D g_SpecularTexture;
 Texture2D g_DepthTexture;
+Texture2D g_MetallicTexture;
 Texture2D g_BackBufferTexture;
 Texture2D g_LightDepthTexture;
 Texture2D g_ToneMappingTexture;
@@ -48,6 +49,7 @@ Texture2D g_AccumTexture;
 Texture2D g_AccumAlpha;
 
 float g_fOutlineAngle = 0.8f;
+float g_fSpecularIntensity = 0.5f;
 
 
 //HDR
@@ -275,9 +277,9 @@ PS_OUT_LIGHT PS_MAIN_LIGHT_DIRECTIONAL(PS_IN In)
     vector vReflect = reflect(normalize(g_vLightDir), normalize(vNormal));
     vector vLook = vWorldPos - g_vCamPosition;
     
-    vector vSpecularMap = g_SpecularMapTexture.Sample(LinearSampler, In.vTexcoord);
+    vector vSpecularMap = g_RMTexture.Sample(LinearSampler, In.vTexcoord);
 
-    Out.vSpecular = pow(max(dot(normalize(vReflect) * -1.f, normalize(vLook)), 0.f), 30.f) * (1.f - vSpecularMap.r);
+    Out.vSpecular = pow(max(dot(normalize(vReflect) * -1.f, normalize(vLook)), 0.f), 10.f) * (1.f - vSpecularMap.r);
     
     //if (g_isSSAO)
     //   Out.vShade *= vAmbientDesc;
@@ -328,10 +330,13 @@ PS_OUT PS_MAIN_COPY_BACKBUFFER_RESULT(PS_IN In)
         discard;
 
     vector vShade = g_ShadeTexture.Sample(LinearSampler, In.vTexcoord);
-    
     vector vSpecular = g_SpecularTexture.Sample(LinearSampler, In.vTexcoord);
+
+    float fMetallic = 0.0f; // 기본값
+    fMetallic = g_MetallicTexture.Sample(LinearSampler, In.vTexcoord).g; // Metallic 값 샘플링
     
-    Out.vColor = vDiffuse * vShade + vSpecular;
+    // 기존
+    Out.vColor = vDiffuse * vShade + vSpecular * g_fSpecularIntensity;
     
     return Out;
 }

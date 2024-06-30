@@ -110,7 +110,9 @@ private:
     _float m_fSSAORadiuse = { 0.003f };
     _float m_fSSAOBlur = { 2.f };
     _float m_fSSAOBiae = { 0.025f };
+
     _float4* m_vSSAOKernal;
+
 
 #ifdef _DEBUG
     _bool m_isDebugView = { true };
