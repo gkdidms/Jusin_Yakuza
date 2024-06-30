@@ -48,6 +48,15 @@ struct PS_OUT
     vector vColor : SV_TARGET0;
 };
 
+struct PS_OUT_GAMEOBJECT
+{
+    vector vColor : SV_TARGET0;
+    vector vNormal : SV_TARGET1;
+    vector vDepth : SV_TARGET2;
+    vector vRM : SV_TARGET3;
+    vector vMetallic : SV_Target4;
+};
+
 PS_OUT PS_MAIN_DEBUG(PS_IN In)
 {
     PS_OUT Out = (PS_OUT) 0;
@@ -355,6 +364,52 @@ PS_OUT PS_OIT_RESULT(PS_IN In)
     return Out;
 }
 
+PS_OUT_GAMEOBJECT PS_INCLUDE_GLASS(PS_IN In)
+{
+
+    PS_OUT_GAMEOBJECT Out = (PS_OUT_GAMEOBJECT) 0;
+
+    vector vDiffuseColor = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
+    vector vGlassDiffuseColor = g_GlassDiffuseTexture.Sample(LinearSampler, In.vTexcoord);
+    
+    vector vNonBlendNormal = g_NormalTexture.Sample(LinearSampler, In.vTexcoord);
+    vector vGlassNormal = g_GlassNormalTexture.Sample(LinearSampler, In.vTexcoord);
+    
+    vector vNonBlendDepth = g_DepthTexture.Sample(LinearSampler, In.vTexcoord);
+    vector vGlassDepth = g_GlassDepthTexture.Sample(LinearSampler, In.vTexcoord);
+    
+    vector vNonBlendRM = g_RMTexture.Sample(LinearSampler, In.vTexcoord);
+    vector vGlassRM = g_GlassRMTexture.Sample(LinearSampler, In.vTexcoord);
+    
+    vector vNonBlendMetallic = g_MetallicTexture.Sample(LinearSampler, In.vTexcoord);
+    vector vGlassMetallic = g_GlassMetallicTexture.Sample(LinearSampler, In.vTexcoord);
+    
+    
+    if (vNonBlendDepth.r < vGlassDepth.r)
+    {
+        // Nonblend
+        Out.vColor = vDiffuseColor;
+        Out.vNormal = vNonBlendNormal;
+        Out.vDepth = vNonBlendDepth;
+        Out.vRM = vNonBlendRM;
+        Out.vMetallic = vNonBlendMetallic;
+    }
+    else
+    {
+        // Glass
+        Out.vColor = vGlassDiffuseColor;
+        Out.vNormal = vGlassNormal;
+        Out.vDepth = vGlassDepth;
+        Out.vRM = vGlassRM;
+        Out.vMetallic = vGlassMetallic;
+    }
+    
+    
+
+    return Out;
+}
+
+
 
 technique11 DefaultTechnique
 {
@@ -570,6 +625,18 @@ technique11 DefaultTechnique
         DomainShader = NULL;
         PixelShader = compile ps_5_0 PS_OIT_RESULT();   
     }
+    
+    pass IncludeGlassRender //16 - diffuse와 Glass 합치기
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_None_Test_None_Write, 0);
+        SetBlendState(BS_Blend, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xffffffff);
 
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        HullShader = NULL;
+        DomainShader = NULL;
+        PixelShader = compile ps_5_0 PS_INCLUDE_GLASS();
+    }
 }
 

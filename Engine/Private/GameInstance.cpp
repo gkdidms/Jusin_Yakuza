@@ -483,6 +483,11 @@ HRESULT CGameInstance::Create_Texture(const wstring& strTargetTag, const wstring
 	return m_pRenderTarget_Manager->Create_Texture(strTargetTag, strSaveFilePath);
 }
 
+HRESULT CGameInstance::Clear_RenderTarget(const wstring& strTargetTag)
+{
+	return m_pRenderTarget_Manager->Clear_RenderTarget(strTargetTag);
+}
+
 void CGameInstance::Transform_ToLocalSpace(_fmatrix WorldMatrixInv)
 {
 	return m_pFrustum->Transform_ToLocalSpace(WorldMatrixInv);

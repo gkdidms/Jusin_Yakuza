@@ -67,7 +67,15 @@ void CConstruction::Tick(const _float& fTimeDelta)
 
 void CConstruction::Late_Tick(const _float& fTimeDelta)
 {
-	m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
+	if (1 == m_iShaderPassNum)
+	{
+		m_pGameInstance->Add_Renderer(CRenderer::RENDER_GLASS, this);
+	}
+	else
+	{
+		m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
+	}
+	
 	
 	for (auto& iter : m_vDecals)
 		iter->Late_Tick(fTimeDelta);
@@ -101,39 +109,32 @@ HRESULT CConstruction::Render()
 				return E_FAIL;
 		}
 
-		bool	bSpecularExist = m_pModelCom->Check_Exist_Material(i, aiTextureType_METALNESS);
-		if (true == bSpecularExist)
+		bool	bRMExist = m_pModelCom->Check_Exist_Material(i, aiTextureType_METALNESS);
+		if (true == bRMExist)
 		{
-			m_pModelCom->Bind_Material(m_pShaderCom, "g_SpecularMapTexture", i, aiTextureType_METALNESS);
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RMTexture", i, aiTextureType_METALNESS)))
+				return E_FAIL;
 
-			if (FAILED(m_pShaderCom->Bind_RawValue("g_bExistSpecularTex", &bSpecularExist, sizeof(bool))))
+			if (FAILED(m_pShaderCom->Bind_RawValue("g_bExistRMTex", &bRMExist, sizeof(bool))))
 				return E_FAIL;
 		}
 		else
 		{
-			if (FAILED(m_pShaderCom->Bind_RawValue("g_bExistSpecularTex", &bSpecularExist, sizeof(bool))))
+			if (FAILED(m_pShaderCom->Bind_RawValue("g_bExistRMTex", &bRMExist, sizeof(bool))))
 				return E_FAIL;
 		}
 
-
-		bool	bEmissionExist = m_pModelCom->Check_Exist_Material(i, aiTextureType_EMISSIVE);
-		if (true == bEmissionExist)
-		{
-			m_pModelCom->Bind_Material(m_pShaderCom, "g_EmissionTexture", i, aiTextureType_EMISSIVE);
-
-			if (FAILED(m_pShaderCom->Bind_RawValue("g_bExistEmissionTex", &bEmissionExist, sizeof(bool))))
-				return E_FAIL;
-		}
-		else
-		{
-			if (FAILED(m_pShaderCom->Bind_RawValue("g_bExistEmissionTex", &bEmissionExist, sizeof(bool))))
-				return E_FAIL;
-		}
 		
-		
+		// 유리문 처리
+		if (1 == m_iShaderPassNum)
+		{
+			if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_NonBlendDiffuse"), m_pShaderCom, "g_RefractionTexture")))
+				return E_FAIL;
+		}
+
 
 		/*m_pShaderCom->Begin(m_iShaderPassNum);*/
-		m_pShaderCom->Begin(0);
+		m_pShaderCom->Begin(m_iShaderPassNum);
 
 		m_pModelCom->Render(i);
 	}
