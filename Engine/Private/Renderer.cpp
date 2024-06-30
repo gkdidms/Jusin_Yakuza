@@ -44,6 +44,10 @@ HRESULT CRenderer::Initialize()
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_NonBlendRM"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(1.f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
 
+	/* Target_NonBlendRS */
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_NonBlendRS"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(1.f, 0.f, 0.f, 0.f))))
+		return E_FAIL;
+
 
 
 	/*Target_Glass - Diffuse 같은*/
@@ -64,6 +68,10 @@ HRESULT CRenderer::Initialize()
 
 	/* Target_GlassRM */
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_GlassRM"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(1.f, 0.f, 0.f, 0.f))))
+		return E_FAIL;
+
+	/* Target_GlassRS */
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_GlassRS"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(1.f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
 
 	/*Target_Diffuse*/
@@ -88,6 +96,10 @@ HRESULT CRenderer::Initialize()
 
 	/* Target_RM */
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_RM"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(1.f, 0.f, 0.f, 0.f))))
+		return E_FAIL;
+
+	/* Target_RS */
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_RS"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(1.f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
 
 	/* Target_LightDepth */
@@ -170,6 +182,8 @@ HRESULT CRenderer::Initialize()
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_NonBlend"), TEXT("Target_NonBlendMetalic"))))
 		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_NonBlend"), TEXT("Target_NonBlendRS"))))
+		return E_FAIL;
 
 	/* MRT_Decals */
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_Decals"), TEXT("Target_NonBlendDiffuse"))))
@@ -186,6 +200,8 @@ HRESULT CRenderer::Initialize()
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_Glass"), TEXT("Target_GlassMetalic"))))
 		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_Glass"), TEXT("Target_GlassRS"))))
+		return E_FAIL;
 
 
 	/* MRT_GameObject - 유리 이후의 합산 mrt */
@@ -198,6 +214,8 @@ HRESULT CRenderer::Initialize()
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_GameObject"), TEXT("Target_RM"))))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_GameObject"), TEXT("Target_Metalic"))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_GameObject"), TEXT("Target_RS"))))
 		return E_FAIL;
 
 
@@ -617,6 +635,8 @@ void CRenderer::Render_Glass()
 		return;
 	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_GlassMetalic"), m_pShader, "g_GlassMetallicTexture")))
 		return;
+	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_GlassRS"), m_pShader, "g_GlassRSTexture")))
+		return;
 
 	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_NonBlendDiffuse"), m_pShader, "g_DiffuseTexture")))
 		return;
@@ -627,6 +647,8 @@ void CRenderer::Render_Glass()
 	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_NonBlendRM"), m_pShader, "g_RMTexture")))
 		return;
 	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_NonBlendMetalic"), m_pShader, "g_MetallicTexture")))
+		return;
+	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_NonBlendRS"), m_pShader, "g_RSTexture")))
 		return;
 
 	m_pShader->Begin(16);
