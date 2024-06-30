@@ -125,17 +125,17 @@ HRESULT CConstruction::Render()
 		}
 
 		bool	bRSExist = m_pModelCom->Check_Exist_Material(i, aiTextureType_SPECULAR);
-		if (true == bRMExist)
+		if (true == bRSExist)
 		{
 			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RSTexture", i, aiTextureType_SPECULAR)))
 				return E_FAIL;
 
-			if (FAILED(m_pShaderCom->Bind_RawValue("g_bRSExist", &bRMExist, sizeof(bool))))
+			if (FAILED(m_pShaderCom->Bind_RawValue("g_bExistRSTex", &bRSExist, sizeof(bool))))
 				return E_FAIL;
 		}
 		else
 		{
-			if (FAILED(m_pShaderCom->Bind_RawValue("g_bRSExist", &bRMExist, sizeof(bool))))
+			if (FAILED(m_pShaderCom->Bind_RawValue("g_bExistRSTex", &bRSExist, sizeof(bool))))
 				return E_FAIL;
 		}
 

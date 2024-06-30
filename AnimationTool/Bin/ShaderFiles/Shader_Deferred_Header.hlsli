@@ -27,6 +27,7 @@ Texture2D g_NormalTexture;
 Texture2D g_DiffuseTexture;
 Texture2D g_ShadeTexture;
 Texture2D g_RMTexture;
+Texture2D g_RSTexture;
 Texture2D g_SpecularTexture;
 Texture2D g_DepthTexture;
 Texture2D g_MetallicTexture;
@@ -51,6 +52,7 @@ Texture2D g_GlassNormalTexture;
 Texture2D g_GlassDepthTexture;
 Texture2D g_GlassRMTexture;
 Texture2D g_GlassMetallicTexture;
+Texture2D g_GlassRSTexture;
 
 float g_fOutlineAngle = 0.8f;
 

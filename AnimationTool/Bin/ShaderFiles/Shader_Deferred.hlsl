@@ -51,6 +51,7 @@ struct PS_OUT_GAMEOBJECT
     vector vDepth : SV_TARGET2;
     vector vRM : SV_TARGET3;
     vector vMetallic : SV_Target4;
+    vector vRS : SV_Target5;
 };
 
 PS_OUT PS_MAIN_DEBUG(PS_IN In)
@@ -380,6 +381,9 @@ PS_OUT_GAMEOBJECT PS_INCLUDE_GLASS(PS_IN In)
     vector vNonBlendMetallic = g_MetallicTexture.Sample(LinearSampler, In.vTexcoord);
     vector vGlassMetallic = g_GlassMetallicTexture.Sample(LinearSampler, In.vTexcoord);
     
+    vector vNonBlendRS = g_RSTexture.Sample(LinearSampler, In.vTexcoord);
+    vector vGlassRS = g_GlassRSTexture.Sample(LinearSampler, In.vTexcoord);
+    
     
     if (vNonBlendDepth.r < vGlassDepth.r)
     {
@@ -389,6 +393,7 @@ PS_OUT_GAMEOBJECT PS_INCLUDE_GLASS(PS_IN In)
         Out.vDepth = vNonBlendDepth;
         Out.vRM = vNonBlendRM;
         Out.vMetallic = vNonBlendMetallic;
+        Out.vRS = vNonBlendRS;
     }
     else
     {
@@ -398,6 +403,7 @@ PS_OUT_GAMEOBJECT PS_INCLUDE_GLASS(PS_IN In)
         Out.vDepth = vGlassDepth;
         Out.vRM = vGlassRM;
         Out.vMetallic = vGlassMetallic;
+        Out.vRS = vGlassRS;
     }
     
     

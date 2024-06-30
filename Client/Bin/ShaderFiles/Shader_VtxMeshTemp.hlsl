@@ -17,7 +17,7 @@ float       g_fFar = { 3000.f };
 float       g_fTimeDelta;
 bool        g_bExistNormalTex;
 bool        g_bExistRMTex;
-bool        g_bRSExist;
+bool        g_bExistRSTex;
 
 
 struct VS_IN
@@ -83,8 +83,9 @@ struct PS_OUT
     vector vDiffuse : SV_TARGET0;
     vector vNormal : SV_TARGET1;
     vector vDepth : SV_TARGET2;
-    vector vSpecular : SV_TARGET3;
+    vector vRM : SV_TARGET3;
     vector vMetalic : SV_TARGET4;
+    vector vRS : SV_Target5;
 };
 
 
@@ -123,8 +124,13 @@ PS_OUT PS_MAIN(PS_IN In)
     // specularTex와 metalic 같은 rm 사용 - bool 값 같이 사용하기
     if (true == g_bExistRMTex)
     {
-        Out.vSpecular = g_RMTexture.Sample(LinearSampler, In.vTexcoord);
+        Out.vRM = g_RMTexture.Sample(LinearSampler, In.vTexcoord);
         Out.vMetalic = g_RMTexture.Sample(LinearSampler, In.vTexcoord);
+    }
+    
+    if (true == g_bExistRSTex)
+    {
+        Out.vRS = g_RSTexture.Sample(LinearSampler, In.vTexcoord);
     }
     
     
@@ -175,7 +181,7 @@ PS_OUT PS_GLASSDOOR(PS_IN In)
     // specularTex와 metalic 같은 rm 사용 - bool 값 같이 사용하기
     if (true == g_bExistRMTex)
     {
-        Out.vSpecular = g_RMTexture.Sample(LinearSampler, In.vTexcoord);
+        Out.vRM = g_RMTexture.Sample(LinearSampler, In.vTexcoord);
         Out.vMetalic = g_RMTexture.Sample(LinearSampler, In.vTexcoord);
     }
     
