@@ -46,6 +46,12 @@ Texture2D g_ResultTexture;
 Texture2D g_AccumTexture;
 Texture2D g_AccumAlpha;
 
+Texture2D g_GlassDiffuseTexture;
+Texture2D g_GlassNormalTexture;
+Texture2D g_GlassDepthTexture;
+Texture2D g_GlassRMTexture;
+Texture2D g_GlassMetallicTexture;
+
 float g_fOutlineAngle = 0.8f;
 
 //HDR

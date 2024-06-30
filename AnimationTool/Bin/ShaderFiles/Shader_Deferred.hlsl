@@ -1,7 +1,4 @@
-//#include "Shader_SSAO.hlsl"
 #include "Shader_PBR.hlsl"
-//#include "Engine_Shader_Defines.hlsli"
-//#include "Shader_Deferred_Header.hlsli"
 
 struct VS_IN
 {

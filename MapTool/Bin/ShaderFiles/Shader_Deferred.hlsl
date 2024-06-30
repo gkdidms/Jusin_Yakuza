@@ -1,3 +1,5 @@
+#include "Shader_PBR.hlsl"
+
 struct VS_IN
 {
     float3 vPosition : POSITION;
