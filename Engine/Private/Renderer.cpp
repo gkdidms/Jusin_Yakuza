@@ -688,8 +688,6 @@ void CRenderer::Render_LightAcc()
 		return;
 	if (FAILED(m_pShader->Bind_RawValue("g_isSSAO", &m_isSSAO, sizeof(_bool))))
 		return;
-	if (FAILED(m_pShader->Bind_RawValue("g_fSpecularIntensity", &m_fSpecularIntensity, sizeof(_float))))
-		return;
 
 	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Normal"), m_pShader, "g_NormalTexture")))
 		return;

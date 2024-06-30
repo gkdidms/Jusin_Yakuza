@@ -274,11 +274,6 @@ void CGameInstance::Set_SSAOBias(_float fBias)
 	m_pRenderer->Set_SSAOBias(fBias);
 }
 
-void CGameInstance::Set_SpecularLightIntensity(_float fIntensity)
-{
-	m_pRenderer->Set_SpecularLightIntensity(fIntensity);
-}
-
 #ifdef _DEBUG
 HRESULT CGameInstance::Add_DebugComponent(CComponent* pComponent)
 {
