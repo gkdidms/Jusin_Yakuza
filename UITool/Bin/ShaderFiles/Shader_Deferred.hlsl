@@ -27,9 +27,10 @@ Texture2D g_PriorityTexture;
 Texture2D g_NormalTexture;
 Texture2D g_DiffuseTexture;
 Texture2D g_ShadeTexture;
-Texture2D g_SpecularMapTexture;
+Texture2D g_RMTexture;
 Texture2D g_SpecularTexture;
 Texture2D g_DepthTexture;
+Texture2D g_MetallicTexture;
 Texture2D g_BackBufferTexture;
 Texture2D g_LightDepthTexture;
 Texture2D g_ToneMappingTexture;
@@ -48,6 +49,7 @@ Texture2D g_AccumTexture;
 Texture2D g_AccumAlpha;
 
 float g_fOutlineAngle = 0.8f;
+float g_fSpecularIntensity = 0.5f;
 
 
 //HDR
@@ -59,8 +61,9 @@ float g_fLumVar;
 //SSAO
 bool g_isSSAO = { false };
 float g_fRadiuse = { 0.003f };
-float3 g_SSAORandoms[64];
+float4 g_SSAORandoms[64];
 Texture2D g_SSAONoisesTexture;
+
 float g_fSSAOBise = { 0.025f };
 const float2 g_NoiseScale = float2(1280.f / 4.f, 720.f / 4.f);
 float3 g_Randoms[16] =
@@ -162,7 +165,9 @@ struct PS_OUT_LIGHT
 float3x3 Get_TBN(float3 vNormal, float2 vTexcoord)
 {   
     float3 vRandomVec = g_SSAONoisesTexture.Sample(PointSampler, vTexcoord * g_NoiseScale).xyz;
-    vRandomVec = normalize(mul(vector(vRandomVec, 0.f), g_ProjMatrixInv));
+    vRandomVec = vRandomVec * 2.f - 1.f;
+    matrix matWV = mul(g_WorldMatrix, g_CamViewMatrix);
+    vRandomVec = normalize(mul(vector(vRandomVec, 0.f), matWV)).xyz;
     
     float3 tangent = normalize(vRandomVec - vNormal * dot(vRandomVec, vNormal));
     float3 bitangent = cross(vNormal, tangent);
@@ -176,8 +181,8 @@ float4 SSAO(float3x3 TBN, float3 vPosition)
     float fOcclusion = 0.f;
     
     for (int i = 0; i < 64; ++i)
-    {   
-        float3 vSample = vPosition + mul(g_Randoms[i % 16], TBN) * g_fRadiuse; // 뷰스페이스
+    {  
+        float3 vSample = vPosition + mul(g_SSAORandoms[i % 64].xyz, TBN) * g_fRadiuse; // 뷰스페이스
        
         vector vOffset = vector(vSample, 1.f);
         vOffset = mul(vOffset, g_CamProjMatrix);
@@ -194,6 +199,7 @@ float4 SSAO(float3x3 TBN, float3 vPosition)
         vOccPosition.w = 1.f;
         
         vOccPosition = vOccPosition * (vOccNorm.y * g_fFar);
+        
         vOccPosition = mul(vOccPosition, g_ProjMatrixInv);
         
         //float rangeCheck = smoothstep(0.0, 1.0, g_fRadiuse / abs(vPosition.z - vOccPosition.z));
@@ -220,7 +226,7 @@ PS_OUT PS_MAIN_SSAO(PS_IN In)
     {
         //뷰스페이스 위치로 옮기기
         vector vNormal = vector(vNormalDesc.xyz * 2.f - 1.f, 0.0f);
-        vNormal = normalize(mul(vNormal, g_ViewMatrix));
+        vNormal = normalize(mul(vNormal, g_CamViewMatrix));
         
         //뷰행렬 상의 위치 구하기
         vector vPosition;
@@ -274,9 +280,9 @@ PS_OUT_LIGHT PS_MAIN_LIGHT_DIRECTIONAL(PS_IN In)
     vector vReflect = reflect(normalize(g_vLightDir), normalize(vNormal));
     vector vLook = vWorldPos - g_vCamPosition;
     
-    vector vSpecularMap = g_SpecularMapTexture.Sample(LinearSampler, In.vTexcoord);
+    vector vSpecularMap = g_RMTexture.Sample(LinearSampler, In.vTexcoord);
 
-    Out.vSpecular = pow(max(dot(normalize(vReflect) * -1.f, normalize(vLook)), 0.f), 30.f) * (1.f - vSpecularMap.r);
+    Out.vSpecular = pow(max(dot(normalize(vReflect) * -1.f, normalize(vLook)), 0.f), 10.f) * (1.f - vSpecularMap.r);
     
     //if (g_isSSAO)
     //   Out.vShade *= vAmbientDesc;
@@ -327,10 +333,13 @@ PS_OUT PS_MAIN_COPY_BACKBUFFER_RESULT(PS_IN In)
         discard;
 
     vector vShade = g_ShadeTexture.Sample(LinearSampler, In.vTexcoord);
-    
     vector vSpecular = g_SpecularTexture.Sample(LinearSampler, In.vTexcoord);
+
+    float fMetallic = 0.0f; // 기본값
+    fMetallic = g_MetallicTexture.Sample(LinearSampler, In.vTexcoord).g; // Metallic 값 샘플링
     
-    Out.vColor = vDiffuse * vShade + vSpecular;
+    // 기존
+    Out.vColor = vDiffuse * vShade + vSpecular * g_fSpecularIntensity;
     
     return Out;
 }

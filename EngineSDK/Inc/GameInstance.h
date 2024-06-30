@@ -88,6 +88,7 @@ public:
     _float Get_SSAOBlur();
     _float Get_SSAOBias();
     void Set_SSAOBias(_float fBias);
+    void Set_SpecularLightIntensity(_float fIntensity);
 
 #ifdef _DEBUG
 public:
