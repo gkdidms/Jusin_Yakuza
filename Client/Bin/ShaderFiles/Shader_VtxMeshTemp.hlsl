@@ -8,6 +8,7 @@ Texture2D   g_DiffuseTexture;
 Texture2D   g_NormalTexture;
 Texture2D   g_RMTexture;
 Texture2D   g_RefractionTexture;
+Texture2D   g_RSTexture;
 
 
 float       g_fObjID;
@@ -16,6 +17,7 @@ float       g_fFar = { 3000.f };
 float       g_fTimeDelta;
 bool        g_bExistNormalTex;
 bool        g_bExistRMTex;
+bool        g_bRSExist;
 
 
 struct VS_IN
