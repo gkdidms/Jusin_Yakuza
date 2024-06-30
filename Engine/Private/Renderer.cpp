@@ -589,8 +589,6 @@ HRESULT CRenderer::Ready_SSAONoiseTexture() // SSAO 연산에 들어갈 랜덤 벡터 텍스
 
 void CRenderer::Render_SSAO()
 {
-
-
 	if(FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_SSAO"))))
 		return;
 

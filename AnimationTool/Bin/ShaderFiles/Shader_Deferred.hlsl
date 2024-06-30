@@ -83,6 +83,9 @@ float3 g_Randoms[16] =
     float3(-0.0750860944, -0.122410446, 0.0413474962)
 };
 
+//PBR
+float fGamma = { 2.2f };
+
 //블룸(가우시안)
 float g_fTexW = 1280.0f;
 float g_fTexH = 720.0f;
