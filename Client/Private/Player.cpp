@@ -46,7 +46,6 @@ void CPlayer::Priority_Tick(const _float& fTimeDelta)
 	m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Tick(fTimeDelta);
 	m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Change_Animation();
 
-	Move_KeyInput(fTimeDelta);
 
 	if (m_pGameInstance->GetKeyState(DIK_0) == TAP)
 	{
@@ -54,12 +53,15 @@ void CPlayer::Priority_Tick(const _float& fTimeDelta)
 	}
 	if (m_pGameInstance->GetKeyState(DIK_UP) == HOLD)
 	{
-		m_pTransformCom->Go_Straight(fTimeDelta);
+		m_pTransformCom->Turn(XMVectorSet(0, 1, 0, 0), fTimeDelta);
 	}
-
 	if (m_pGameInstance->GetKeyState(DIK_LEFT) == HOLD)
 	{
-		m_pTransformCom->Turn(XMVectorSet(0, 1, 0, 0), fTimeDelta);
+		m_pTransformCom->LookAt(XMVectorSet(10, 0, 10, 1));
+	}
+	if (m_pGameInstance->GetKeyState(DIK_RIGHT) == HOLD)
+	{
+		m_pTransformCom->LookAt(XMVectorSet(-10, 0, -10, 1));
 	}
 
 	if (m_isAnimStart)
@@ -67,6 +69,11 @@ void CPlayer::Priority_Tick(const _float& fTimeDelta)
 
 	for (auto& pCollider : m_pColliders)
 		pCollider.second->Tick(fTimeDelta);
+
+
+	Move_KeyInput(fTimeDelta);
+
+	m_pColliderCom->Tick(m_pTransformCom->Get_WorldMatrix());
 
 	Synchronize_Root();
 	Animation_Event();
@@ -107,6 +114,10 @@ HRESULT CPlayer::Render()
 		i++;
 	}
 
+#ifdef _DEBUG
+	m_pGameInstance->Add_DebugComponent(m_pColliderCom);
+#endif
+
 	return S_OK;
 }
 
@@ -131,6 +142,11 @@ void CPlayer::Synchronize_Root()
 	const _float4x4* pRootBoneMatrix = m_pModelCom->Get_BoneCombinedTransformationMatrix(strBoneName.c_str());
 	
 	// 구해온 각각의 매트릭스들을 본들의 스페이스에서 해당 객체의 월드 스페이스로 변환한다.
+	_matrix PlayerMatrix_NonRotation = XMMatrixIdentity();
+	PlayerMatrix_NonRotation.r[CTransform::STATE_POSITION] = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+
+	//_matrix CenterBoneMatrix = XMLoadFloat4x4(pCenterBoneMatrix) * PlayerMatrix_NonRotation;
+	//_matrix RootBoneMatrix = XMLoadFloat4x4(pRootBoneMatrix) * PlayerMatrix_NonRotation;
 	_matrix CenterBoneMatrix = XMLoadFloat4x4(pCenterBoneMatrix) * m_pTransformCom->Get_WorldMatrix();
 	_matrix RootBoneMatrix = XMLoadFloat4x4(pRootBoneMatrix) * m_pTransformCom->Get_WorldMatrix();
 
@@ -141,7 +157,7 @@ void CPlayer::Synchronize_Root()
 
 	// 애니메이션이 새로 시작하면 m_vPrevMove에는 이전 애님의 마지막 move의 큰 값이 남아있고, vMovePos는 새로운정보가 되어서 초기화가 필요하다.
 	_vector vMovePos = (XMVectorSet(XMVectorGetX(vCenterBonePosistion), 0, XMVectorGetZ(vCenterBonePosistion), 1.f) - XMVectorSet(XMVectorGetX(vRootBonePosistion), 0, XMVectorGetZ(vRootBonePosistion), 1.f));
-
+	
 	// 트랜스폼 위치잡기
 	// 애니메이션이 새로 실행되는 경우, center가 다시 0,0 으로 맞춰지는데 m_vPrevMove에는 이전에 center의 move를 그대로 들고있어서 움직임이 정상적이지 않음
 	// 그래서 애니메이션이 바뀌었는지를 구분해서, 바뀌는중(선형보간중)이라면 기존 포지션을 유지시켜주는 코드
@@ -153,14 +169,17 @@ void CPlayer::Synchronize_Root()
 		// 새로운 루프가 시작하는지를 검사해서 그 때에만 else로 빠지게 해줘야한다.
 		if (m_pModelCom->Get_AnimRestart())
 		{
+			XMStoreFloat4(&m_vPrevMove, XMVectorZero());
 			m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 		}
 		else
 		{
+			//m_pTransformCom->Turn(XMVectorSet(0, 1, 0, 0), 0.01);
 			m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_pTransformCom->Get_State(CTransform::STATE_POSITION) + (vMovePos - XMLoadFloat4(&m_vPrevMove)));
+			//m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_pTransformCom->Get_State(CTransform::STATE_POSITION) + (vMovePos - XMLoadFloat4(&m_vPrevMove)));
 		}
 		//m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_pTransformCom->Get_State(CTransform::STATE_POSITION) + (m_iChanged ? vMovePos : (vMovePos - XMLoadFloat4(&m_vPrevMove))));
-
+		
 		XMStoreFloat4(&m_vPrevMove, vMovePos);
 	}
 	else
@@ -216,8 +235,8 @@ void CPlayer::Move_KeyInput(const _float& fTimeDelta)
 	{
 		if(m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Get_AnimationEnd())
 			m_iCurrentBehavior = (_uint)ADVENTURE_BEHAVIOR_STATE::IDLE;
+
 		_bool isShift = { false };
-		_bool isStop = { false };
 
 		if (m_pGameInstance->GetKeyState(DIK_LSHIFT) == HOLD)
 		{
@@ -226,61 +245,136 @@ void CPlayer::Move_KeyInput(const _float& fTimeDelta)
 
 		if (m_pGameInstance->GetKeyState(DIK_W) == HOLD)
 		{
-			m_pTransformCom->Go_Straight(fTimeDelta);
+			_vector vLookPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION) + (m_pTransformCom->Get_State(CTransform::STATE_LOOK) + m_pGameInstance->Get_CamLook());
+			m_pTransformCom->LookAt_For_LandObject(vLookPos);
+			//m_pTransformCom->Go_Straight(fTimeDelta);
+
 			m_iCurrentBehavior = isShift ? (_uint)ADVENTURE_BEHAVIOR_STATE::WALK : (_uint)ADVENTURE_BEHAVIOR_STATE::RUN;
-
 			m_MoveDirection[F] = true;
-
-			isStop = true;
 		}
 		else if (m_pGameInstance->GetKeyState(DIK_W) == AWAY)
 		{
-			m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Stop();
+			//m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Stop();
 			m_MoveDirection[F] = false;
 		}
 
 		if (m_pGameInstance->GetKeyState(DIK_S) == HOLD)
 		{
-			//m_pTransformCom->Turn(XMVectorSet(0, 1, 0, 0), fTimeDelta);
-			m_pTransformCom->Go_Straight(fTimeDelta);
+			_vector vLookPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION) + (m_pTransformCom->Get_State(CTransform::STATE_LOOK) - m_pGameInstance->Get_CamLook());
+			m_pTransformCom->LookAt_For_LandObject(vLookPos);
+			//m_pTransformCom->Go_Straight(fTimeDelta);
+
 			m_iCurrentBehavior = isShift ? (_uint)ADVENTURE_BEHAVIOR_STATE::WALK : (_uint)ADVENTURE_BEHAVIOR_STATE::RUN;
 			m_MoveDirection[B] = true;
-
-			isStop = true;
 		}
 		else if (m_pGameInstance->GetKeyState(DIK_S) == AWAY)
 		{
+			//m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Stop();
 			m_MoveDirection[B] = false;
 		}
 
 		if (m_pGameInstance->GetKeyState(DIK_A) == HOLD)
 		{
-			m_pTransformCom->Turn(XMVectorSet(0, 1, 0, 0), -fTimeDelta);
-			m_pTransformCom->Go_Straight(fTimeDelta);
+			_vector vLookPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION) + (m_pTransformCom->Get_State(CTransform::STATE_LOOK) - m_pGameInstance->Get_CamRight());
+			m_pTransformCom->LookAt_For_LandObject(vLookPos);
+			//m_pTransformCom->Go_Straight(fTimeDelta);
+
 			m_iCurrentBehavior = isShift ? (_uint)ADVENTURE_BEHAVIOR_STATE::WALK : (_uint)ADVENTURE_BEHAVIOR_STATE::RUN;
 			m_MoveDirection[L] = true;
-
-			isStop = true;
 		}
 		else if (m_pGameInstance->GetKeyState(DIK_A) == AWAY)
 		{
+			//m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Stop();
 			m_MoveDirection[L] = false;
 		}
 
 		if (m_pGameInstance->GetKeyState(DIK_D) == HOLD)
 		{
-			m_pTransformCom->Turn(XMVectorSet(0, 1, 0, 0), fTimeDelta);
-			m_pTransformCom->Go_Straight(fTimeDelta);
+			_vector vLookPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION) + (m_pTransformCom->Get_State(CTransform::STATE_LOOK) + m_pGameInstance->Get_CamRight());
+			m_pTransformCom->LookAt_For_LandObject(vLookPos);
+			//m_pTransformCom->Go_Straight(fTimeDelta);
+
 			m_iCurrentBehavior = isShift ? (_uint)ADVENTURE_BEHAVIOR_STATE::WALK : (_uint)ADVENTURE_BEHAVIOR_STATE::RUN;
 			m_MoveDirection[R] = true;
-
-			isStop = true;
 		}
 		else if (m_pGameInstance->GetKeyState(DIK_D) == AWAY)
 		{
+			//m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Stop();
 			m_MoveDirection[R] = false;
 		}
 
+
+#pragma region 플레이어 이동 관련 애니메이션 출력
+		//if(m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Get_AnimationEnd())
+		//	m_iCurrentBehavior = (_uint)ADVENTURE_BEHAVIOR_STATE::IDLE;
+		//_bool isShift = { false };
+		//_bool isStop = { false };
+
+		//if (m_pGameInstance->GetKeyState(DIK_LSHIFT) == HOLD)
+		//{
+		//	isShift = true;
+		//}
+
+		//if (m_pGameInstance->GetKeyState(DIK_W) == HOLD)
+		//{
+		//	m_pTransformCom->Go_Straight(fTimeDelta);
+		//	m_iCurrentBehavior = isShift ? (_uint)ADVENTURE_BEHAVIOR_STATE::WALK : (_uint)ADVENTURE_BEHAVIOR_STATE::RUN;
+
+		//	m_MoveDirection[F] = true;
+
+		//	isStop = true;
+		//}
+		//else if (m_pGameInstance->GetKeyState(DIK_W) == AWAY)
+		//{
+		//	m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Stop();
+		//	m_MoveDirection[F] = false;
+		//}
+
+		//if (m_pGameInstance->GetKeyState(DIK_S) == HOLD)
+		//{
+		//	//m_pTransformCom->Turn(XMVectorSet(0, 1, 0, 0), fTimeDelta);
+		//	m_pTransformCom->Go_Straight(fTimeDelta);
+		//	m_iCurrentBehavior = isShift ? (_uint)ADVENTURE_BEHAVIOR_STATE::WALK : (_uint)ADVENTURE_BEHAVIOR_STATE::RUN;
+		//	m_MoveDirection[B] = true;
+
+		//	isStop = true;
+		//}
+		//else if (m_pGameInstance->GetKeyState(DIK_S) == AWAY)
+		//{
+		//	m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Stop();
+		//	m_MoveDirection[B] = false;
+		//}
+
+		//if (m_pGameInstance->GetKeyState(DIK_A) == HOLD)
+		//{
+		//	m_pTransformCom->Turn(XMVectorSet(0, 1, 0, 0), -fTimeDelta);
+		//	m_pTransformCom->Go_Straight(fTimeDelta);
+		//	m_iCurrentBehavior = isShift ? (_uint)ADVENTURE_BEHAVIOR_STATE::WALK : (_uint)ADVENTURE_BEHAVIOR_STATE::RUN;
+		//	m_MoveDirection[L] = true;
+
+		//	isStop = true;
+		//}
+		//else if (m_pGameInstance->GetKeyState(DIK_A) == AWAY)
+		//{
+		//	m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Stop();
+		//	m_MoveDirection[L] = false;
+		//}
+
+		//if (m_pGameInstance->GetKeyState(DIK_D) == HOLD)
+		//{
+		//	m_pTransformCom->Turn(XMVectorSet(0, 1, 0, 0), fTimeDelta);
+		//	m_pTransformCom->Go_Straight(fTimeDelta);
+		//	m_iCurrentBehavior = isShift ? (_uint)ADVENTURE_BEHAVIOR_STATE::WALK : (_uint)ADVENTURE_BEHAVIOR_STATE::RUN;
+		//	m_MoveDirection[R] = true;
+
+		//	isStop = true;
+		//}
+		//else if (m_pGameInstance->GetKeyState(DIK_D) == AWAY)
+		//{
+		//	m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Stop();
+		//	m_MoveDirection[R] = false;
+		//}
+#pragma endregion
 		break;
 	}
 	case CPlayer::KRS:
@@ -303,6 +397,17 @@ HRESULT CPlayer::Add_Componenets()
 
 	if (FAILED(__super::Add_Component(LEVEL_TEST, TEXT("Prototype_Component_Model_Kiryu"),
 		TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
+		return E_FAIL;
+
+	CBounding_OBB::BOUNDING_OBB_DESC		ColliderDesc{};
+
+	ColliderDesc.eType = CCollider::COLLIDER_OBB;
+	ColliderDesc.vExtents = _float3(0.8, 0.8, 0.8);
+	ColliderDesc.vCenter = _float3(0, 0.f, 0);
+	ColliderDesc.vRotation = _float3(0, 0.f, 0.f);
+
+	if (FAILED(__super::Add_Component(LEVEL_TEST, TEXT("Prototype_Component_Collider"),
+		TEXT("Com_Collider"), reinterpret_cast<CComponent**>(&m_pColliderCom), &ColliderDesc)))
 		return E_FAIL;
 
 	return S_OK;
@@ -423,4 +528,5 @@ void CPlayer::Free()
 	Safe_Release(m_pData);
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pModelCom);
+	Safe_Release(m_pColliderCom);
 }

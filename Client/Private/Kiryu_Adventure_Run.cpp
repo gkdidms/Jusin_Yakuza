@@ -28,8 +28,12 @@ void CKiryu_Adventure_Run::Tick(const _float& fTimeDelta)
 	switch (m_eAnimState)
 	{
 	case CKiryu_Adventure_Run::ANIM_START:
-		if (Get_AnimationEnd())
+	{
+		CModel* pModelCom = static_cast<CModel*>(m_pPlayer->Get_Component(TEXT("Com_Model")));
+
+		if (pModelCom->Get_AnimFinished())
 			m_eAnimState = ANIM_LOOP;
+	}
 		break;
 	case CKiryu_Adventure_Run::ANIM_LOOP:
 		if(m_isStop)
@@ -60,11 +64,11 @@ void CKiryu_Adventure_Run::Change_Animation()
 	}
 	else if (m_eAnimState == ANIM_LOOP)
 	{
-		if ((pDirction[CPlayer::B] || pDirction[CPlayer::F]) && pDirction[CPlayer::L])
-			m_iCurrentIndex = 5;
-		else if ((pDirction[CPlayer::B] || pDirction[CPlayer::F]) && pDirction[CPlayer::R])
-			m_iCurrentIndex = 6;
-		else
+		//if ((pDirction[CPlayer::B] || pDirction[CPlayer::F]) && pDirction[CPlayer::L])
+		//	m_iCurrentIndex = 5;
+		//else if ((pDirction[CPlayer::B] || pDirction[CPlayer::F]) && pDirction[CPlayer::R])
+		//	m_iCurrentIndex = 6;
+		//else
 			m_iCurrentIndex = 4;
 	}
 	else if (m_eAnimState == ANIM_END)

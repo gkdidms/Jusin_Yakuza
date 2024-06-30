@@ -129,8 +129,9 @@ HRESULT CLevel_Test::Ready_Camera(const wstring& strLayerTag)
 HRESULT CLevel_Test::Ready_Player(const wstring& strLayerTag)
 {
 	CGameObject::GAMEOBJECT_DESC Desc{};
-	Desc.fSpeedPecSec = 1.f;
-	Desc.fRotatePecSec = XMConvertToRadians(30.f);
+	Desc.fSpeedPecSec = 0.f;
+	//Desc.fRotatePecSec = XMConvertToRadians(0.f);
+	Desc.fRotatePecSec = XMConvertToRadians(180.f);
 
 	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_Player"), strLayerTag, &Desc)))
 		return E_FAIL;

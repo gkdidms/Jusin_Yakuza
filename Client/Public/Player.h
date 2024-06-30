@@ -38,7 +38,7 @@ public:
 
 
 private:
-    const _float ANIM_INTERVAL = 2.f;
+    const _float ANIM_INTERVAL = 5.f;
     
 private:
     CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -79,6 +79,8 @@ public:
 private:
     CShader*                m_pShaderCom = { nullptr };
     CModel*                 m_pModelCom = { nullptr };
+    CCollider*              m_pColliderCom = { nullptr };
+
     //뼈 인덱스, 소켓 콜라이더
     unordered_map<_uint, class CSoketCollider*>      m_pColliders;     
     class CCharacterData*   m_pData = { nullptr };
