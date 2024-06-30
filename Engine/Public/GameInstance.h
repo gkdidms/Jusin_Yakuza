@@ -141,6 +141,7 @@ public:
     HRESULT Bind_RenderTargetSRV(const wstring& strTargetTag, class CShader* pShader, const _char* pConstantName);
     HRESULT Copy_Resource(const wstring& strTargetTag, ID3D11Texture2D* pDesc);
     HRESULT Create_Texture(const wstring& strTargetTag, const wstring& strSaveFilePath);
+    HRESULT Clear_RenderTarget(const wstring& strTargetTag);
     /* Frustum*/
 public:
     void Transform_ToLocalSpace(_fmatrix WorldMatrixInv);

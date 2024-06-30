@@ -6,16 +6,17 @@ matrix      g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
 
 Texture2D   g_DiffuseTexture;
 Texture2D   g_NormalTexture;
-Texture2D   g_SpecularMapTexture;
-Texture2D   g_EmissionTexture;
+Texture2D   g_RMTexture;
+Texture2D   g_RefractionTexture;
+
 
 float       g_fObjID;
 
 float       g_fFar = { 3000.f };
 float       g_fTimeDelta;
 bool        g_bExistNormalTex;
-bool        g_bExistSpecularTex;
-bool        g_bExistEmissionTex;
+bool        g_bExistRMTex;
+
 
 struct VS_IN
 {
@@ -118,16 +119,67 @@ PS_OUT PS_MAIN(PS_IN In)
     Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_fFar, 0.f, 1.f);
     
     // specularTex와 metalic 같은 rm 사용 - bool 값 같이 사용하기
-    if(true == g_bExistSpecularTex)
+    if (true == g_bExistRMTex)
     {
-        Out.vSpecular = g_SpecularMapTexture.Sample(LinearSampler, In.vTexcoord);
-        Out.vMetalic = g_SpecularMapTexture.Sample(LinearSampler, In.vTexcoord);
+        Out.vSpecular = g_RMTexture.Sample(LinearSampler, In.vTexcoord);
+        Out.vMetalic = g_RMTexture.Sample(LinearSampler, In.vTexcoord);
     }
     
     
     return Out;
 }
 
+PS_OUT PS_GLASSDOOR(PS_IN In)
+{
+    PS_OUT Out = (PS_OUT) 0;
+    
+    float2 vRefractTexCoord;
+    vRefractTexCoord.x = In.vProjPos.x / In.vProjPos.w / 2.0f + 0.5f;
+    vRefractTexCoord.y = -In.vProjPos.y / In.vProjPos.w / 2.0f + 0.5f;
+
+   
+    float4 vRefractColor = g_RefractionTexture.Sample(LinearSampler, vRefractTexCoord);
+    float4 vGlassTexColor = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
+    float4 vFinalColor = lerp(vRefractColor, vGlassTexColor, 0.5f);
+    
+    Out.vDiffuse = vFinalColor;
+    
+	
+    // 투명할 경우(0.1보다 작으면 투명하니) 그리지 않음
+    if (Out.vDiffuse.a < 0.1f)
+        discard;
+    
+    float3 vNormal;
+    if (true == g_bExistNormalTex)
+    {
+        // 매핑되는 texture가 있을때
+        vector vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexcoord);
+        vNormal = vNormalDesc.xyz * 2.f - 1.f;
+    
+        float3x3 WorldMatrix = float3x3(In.vTangent.xyz, In.vBinormal.xyz, In.vNormal.xyz);
+    
+        vNormal = mul(vNormal.xyz, WorldMatrix);
+    }
+    else
+    {
+        float3x3 WorldMatrix = float3x3(In.vTangent.xyz, In.vBinormal.xyz, In.vNormal.xyz);
+        // 텍스처 없을때
+        vNormal = mul(In.vNormal.xyz, WorldMatrix);
+    }
+    
+    Out.vNormal = vector(vNormal.xyz * 0.5f + 0.5f, 0.f);
+    Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_fFar, 0.f, 1.f);
+    
+    // specularTex와 metalic 같은 rm 사용 - bool 값 같이 사용하기
+    if (true == g_bExistRMTex)
+    {
+        Out.vSpecular = g_RMTexture.Sample(LinearSampler, In.vTexcoord);
+        Out.vMetalic = g_RMTexture.Sample(LinearSampler, In.vTexcoord);
+    }
+    
+    
+    return Out;
+}
 
 
 technique11 DefaultTechnique
@@ -147,6 +199,18 @@ technique11 DefaultTechnique
         PixelShader = compile ps_5_0 PS_MAIN();
     }
 
+    pass GlassDoorPass
+    {
+        SetRasterizerState(RS_Cull_NON_CW);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        HullShader = NULL;
+        DomainShader = NULL;
+        PixelShader = compile ps_5_0 PS_GLASSDOOR();
+    }
 
 }
 

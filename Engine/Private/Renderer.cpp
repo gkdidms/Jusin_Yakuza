@@ -24,8 +24,51 @@ HRESULT CRenderer::Initialize()
 
 	m_pContext->RSGetViewports(&iNumViewPort, &ViewPort);
 
+	/*Target_NonBlendDiffuse*/
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_NonBlendDiffuse"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_B8G8R8A8_UNORM, _float4(1.f, 0.f, 1.f, 0.f))))
+		return E_FAIL;
+
+	/*Target_NonBlendNormal*/
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_NonBlendNormal"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 1.f))))
+		return E_FAIL;
+
+	/*Target_NonBlendDepth*/
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_NonBlendDepth"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(0.f, 0.f, 0.f, 1.f))))
+		return E_FAIL;
+
+	/*Target_NonBlendMetalic*/
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_NonBlendMetalic"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(0.f, 0.f, 0.f, 0.f))))
+		return E_FAIL;
+
+	/* Target_NonBlendRM */
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_NonBlendRM"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(1.f, 0.f, 0.f, 0.f))))
+		return E_FAIL;
+
+
+
+	/*Target_Glass - Diffuse 같은*/
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_GlassDiffuse"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(0.f, 0.f, 0.f, 1.f))))
+		return E_FAIL;
+
+	/*Target_GlassNormal*/
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_GlassNormal"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 1.f))))
+		return E_FAIL;
+
+	/*Target_GlassDepth - NonBlendDepth와 비교해야해서 1로 초기화 */
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_GlassDepth"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(1.f, 1.f, 1.f, 1.f))))
+		return E_FAIL;
+
+	/*Target_GlassMetalic*/
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_GlassMetalic"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(0.f, 0.f, 0.f, 0.f))))
+		return E_FAIL;
+
+	/* Target_GlassRM */
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_GlassRM"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(1.f, 0.f, 0.f, 0.f))))
+		return E_FAIL;
+
+
 	/*Target_Diffuse*/
-	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Diffuse"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_B8G8R8A8_UNORM, _float4(1.f, 0.f, 1.f, 0.f))))
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Diffuse"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_B8G8R8A8_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
 
 	/*Target_Normal*/
@@ -39,6 +82,13 @@ HRESULT CRenderer::Initialize()
 	/*Target_Metalic*/
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Metalic"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(0.f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
+
+	/* Target_RM */
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_RM"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(1.f, 0.f, 0.f, 0.f))))
+		return E_FAIL;
+
+	
+
 
 
 	/* Target_LightDepth */
@@ -56,10 +106,6 @@ HRESULT CRenderer::Initialize()
 
 	/*Target_Ambient*/
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Ambient"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(1.f, 0.f, 0.f, 1.f))))
-		return E_FAIL;
-
-	/* Target_RM */
-	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_RM"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(1.f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
 
 	/*Target_SSAO*/
@@ -118,21 +164,48 @@ HRESULT CRenderer::Initialize()
 
 
 
-	/*MRT_GameObjects*/
-	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_GameObjects"), TEXT("Target_Diffuse"))))
+	/*MRT_NonBlend*/
+	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_NonBlend"), TEXT("Target_NonBlendDiffuse"))))
 		return E_FAIL;
-	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_GameObjects"), TEXT("Target_Normal"))))
+	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_NonBlend"), TEXT("Target_NonBlendNormal"))))
 		return E_FAIL;
-	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_GameObjects"), TEXT("Target_Depth"))))
+	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_NonBlend"), TEXT("Target_NonBlendDepth"))))
 		return E_FAIL;
-	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_GameObjects"), TEXT("Target_RM"))))
+	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_NonBlend"), TEXT("Target_NonBlendRM"))))
 		return E_FAIL;
-	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_GameObjects"), TEXT("Target_Metalic"))))
+	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_NonBlend"), TEXT("Target_NonBlendMetalic"))))
 		return E_FAIL;
 
-	/* MRT_TotalDecals */
-	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_TotalDecals"), TEXT("Target_Diffuse"))))
+	/* MRT_Decals */
+	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_Decals"), TEXT("Target_NonBlendDiffuse"))))
 		return E_FAIL;
+
+	/* MRT_Glass - 덮어쓰기 */
+	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_Glass"), TEXT("Target_GlassDiffuse"))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_Glass"), TEXT("Target_GlassNormal"))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_Glass"), TEXT("Target_GlassDepth"))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_Glass"), TEXT("Target_GlassRM"))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_Glass"), TEXT("Target_GlassMetalic"))))
+		return E_FAIL;
+
+
+	/* MRT_GameObject - 유리 이후의 합산 mrt */
+	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_GameObject"), TEXT("Target_Diffuse"))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_GameObject"), TEXT("Target_Normal"))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_GameObject"), TEXT("Target_Depth"))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_GameObject"), TEXT("Target_RM"))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_GameObject"), TEXT("Target_Metalic"))))
+		return E_FAIL;
+
+
 
 	/* MRT_ShadowObject */
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_ShadowObjects"), TEXT("Target_LightDepth"))))
@@ -292,6 +365,8 @@ HRESULT CRenderer::Initialize()
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_BackBuffer"), 150.f, 250.f, 100.f, 100.f)))
 		return E_FAIL;
+	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_GlassDiffuse"), 150.f, 450.f, 100.f, 100.f)))
+		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_128x128"), 250.f, 050.f, 100.f, 100.f)))
 		return E_FAIL;
@@ -345,6 +420,7 @@ void CRenderer::Draw()
 	//Render_ShadowObjects();
 	Render_NonBlender();
 	Render_Decal();
+	Render_Glass();
 
 	if (m_isSSAO)
 	{
@@ -472,7 +548,7 @@ void CRenderer::Render_ShadowObjects()
 
 void CRenderer::Render_NonBlender()
 {
-	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_GameObjects"))))
+	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_NonBlend"))))
 		return;
 
 	for (auto& iter : m_RenderObject[RENDER_NONBLENDER])
@@ -489,7 +565,7 @@ void CRenderer::Render_NonBlender()
 
 void CRenderer::Render_Decal()
 {
-	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_TotalDecals"), nullptr, false)))
+	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_Decals"), nullptr, false)))
 		return;
 
 	for (auto& iter : m_RenderObject[RENDER_DECAL])
@@ -499,6 +575,66 @@ void CRenderer::Render_Decal()
 		Safe_Release(iter);
 	}
 	m_RenderObject[RENDER_DECAL].clear();
+
+	if (FAILED(m_pGameInstance->End_MRT()))
+		return;
+
+}
+
+void CRenderer::Render_Glass()
+{
+	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_Glass"))))
+		return;
+
+	for (auto& iter : m_RenderObject[RENDER_GLASS])
+	{
+		iter->Render();
+
+		Safe_Release(iter);
+	}
+
+	m_RenderObject[RENDER_GLASS].clear();
+
+	if (FAILED(m_pGameInstance->End_MRT()))
+		return;
+
+
+	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_GameObject"))))
+		return;
+
+	if (FAILED(m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix)))
+		return;
+	if (FAILED(m_pShader->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix)))
+		return;
+	if (FAILED(m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
+		return;
+
+
+
+	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_GlassDiffuse"), m_pShader, "g_GlassDiffuseTexture")))
+		return;
+	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_GlassNormal"), m_pShader, "g_GlassNormalTexture")))
+		return;
+	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_GlassDepth"), m_pShader, "g_GlassDepthTexture")))
+		return;
+	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_GlassRM"), m_pShader, "g_GlassRMTexture")))
+		return;
+	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_GlassMetalic"), m_pShader, "g_GlassMetallicTexture")))
+		return;
+
+	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_NonBlendDiffuse"), m_pShader, "g_DiffuseTexture")))
+		return;
+	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_NonBlendNormal"), m_pShader, "g_NormalTexture")))
+		return;
+	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_NonBlendDepth"), m_pShader, "g_DepthTexture")))
+		return;
+	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_NonBlendRM"), m_pShader, "g_RMTexture")))
+		return;
+	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_NonBlendMetalic"), m_pShader, "g_MetallicTexture")))
+		return;
+
+	m_pShader->Begin(16);
+	m_pVIBuffer->Render();
 
 	if (FAILED(m_pGameInstance->End_MRT()))
 		return;
@@ -555,8 +691,8 @@ HRESULT CRenderer::Ready_SSAONoiseTexture() // SSAO 연산에 들어갈 랜덤 벡터 텍스
 
 	Safe_Delete_Array(pPixel);
 
+	/* 랜덤 커널 만들기 */
 	m_vSSAOKernal = new _float4[64];
-
 	for (int i = 0; i < 64; i++)
 	{
 		_float4 vRandom = {
@@ -666,6 +802,7 @@ void CRenderer::Render_SSAOBlur()
 
 void CRenderer::Render_LightAcc()
 {
+	/* Light + PBR */
 	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_LightAcc"))))
 		return;
 
@@ -689,6 +826,8 @@ void CRenderer::Render_LightAcc()
 	if (FAILED(m_pShader->Bind_RawValue("g_isSSAO", &m_isSSAO, sizeof(_bool))))
 		return;
 
+	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Diffuse"), m_pShader, "g_DiffuseTexture")))
+		return;
 	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Normal"), m_pShader, "g_NormalTexture")))
 		return;
 	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Depth"), m_pShader, "g_DepthTexture")))
@@ -1250,7 +1389,7 @@ void CRenderer::Render_Debug()
 	if (FAILED(m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
 		return;
 
-	if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_GameObjects"), m_pShader, m_pVIBuffer)))
+	if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_NonBlend"), m_pShader, m_pVIBuffer)))
 		return;
 	//if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_ShadowObjects"), m_pShader, m_pVIBuffer)))
 	//	return;

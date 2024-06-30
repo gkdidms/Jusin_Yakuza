@@ -41,12 +41,6 @@ Texture2D g_EffectTexture;
 //µ¥Ä®¿ë
 Texture2D g_DecalTexture;
 
-Texture2D g_GlassDiffuseTexture;
-Texture2D g_GlassNormalTexture;
-Texture2D g_GlassDepthTexture;
-Texture2D g_GlassRMTexture;
-Texture2D g_GlassMetallicTexture;
-
 Texture2D g_BlurTexture;
 Texture2D g_ResultTexture;
 Texture2D g_AccumTexture;
