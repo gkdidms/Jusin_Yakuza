@@ -96,25 +96,25 @@ PS_OUT PS_MAIN(PS_IN In)
     if (Out.vDiffuse.a < 0.1f)
         discard;
     
+    float3 vNormal;
     if (true == g_bExistNormalTex)
     {
         // 매핑되는 texture가 있을때
         vector vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexcoord);
-        float3 vNormal = vNormalDesc.xyz * 2.f - 1.f;
+        vNormal = vNormalDesc.xyz * 2.f - 1.f;
     
         float3x3 WorldMatrix = float3x3(In.vTangent.xyz, In.vBinormal.xyz, In.vNormal.xyz);
-        //float3 vNormal = In.vNormal.xyz * 2.f - 1.f;
     
         vNormal = mul(vNormal.xyz, WorldMatrix);
-    
-        Out.vNormal = vector(vNormal.xyz * 0.5f + 0.5f, 0.f);
     }
     else
     {
+        float3x3 WorldMatrix = float3x3(In.vTangent.xyz, In.vBinormal.xyz, In.vNormal.xyz);
         // 텍스처 없을때
-        Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
+        vNormal = mul(In.vNormal.xyz, WorldMatrix);
     }
-   
+    
+    Out.vNormal = vector(vNormal.xyz * 0.5f + 0.5f, 0.f);
     Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_fFar, 0.f, 1.f);
     
     // specularTex와 metalic 같은 rm 사용 - bool 값 같이 사용하기
