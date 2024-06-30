@@ -54,13 +54,16 @@ PS_OUT PS_MAIN(PS_IN In)
 
     float4 PointPosition = In.vPosition; //월드좌표
 
-    vector vParticle = g_Texture.Sample(LinearSampler, In.vTexcoord);
-    
-    vector BackColor = g_AccumColor.Sample(PointSampler, In.vTexcoord);
-        
+    vector vParticle = g_Texture.Sample(PointSampler, In.vTexcoord);
+
     float3 ColorN = vParticle.rgb;
     
     float AlphaN = vParticle.a;
+    
+    if(AlphaN<0.1f)
+    {
+        AlphaN = 0.f;
+    }
 
     float fWeight = abs(PointPosition.z); //정규화된 z 값을 가져옴(0~1)    
 

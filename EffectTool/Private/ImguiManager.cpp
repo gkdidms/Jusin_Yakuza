@@ -960,6 +960,12 @@ void CImguiManager::Editor_Tick(_float fTimeDelta)
 	_bool bChange = false;
 	ImGui::Text(to_string(m_iCurEditIndex).c_str());
 
+	if (ImGui::RadioButton("Point",(_int*) & m_EffectDesc.eType, CEffect::TYPE::TYPE_POINT))
+		bChange = true;
+	ImGui::SameLine();
+	if (ImGui::RadioButton("Glow",(_int*) & m_EffectDesc.eType, CEffect::TYPE::TYPE_GLOW))
+		bChange = true;
+
 
 	if (ImGui::RadioButton("NOCOLOR", &m_EffectDesc.iShaderPass, PASS_NOCOLOR))
 		bChange = true;

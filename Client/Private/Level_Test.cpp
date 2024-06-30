@@ -151,7 +151,7 @@ HRESULT CLevel_Test::Ready_Map(const wstring& strLayerTag)
 HRESULT CLevel_Test::Ready_Effect(const wstring& strLayerTag)
 {
 
-	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_Particle_Point_fin"), strLayerTag, nullptr)))
+	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_Particle_Point_Hit1_Part0"), strLayerTag, nullptr)))
 		return E_FAIL;
 	return S_OK;
 }

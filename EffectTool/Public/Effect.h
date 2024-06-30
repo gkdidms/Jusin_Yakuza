@@ -29,7 +29,7 @@ public:
         _int iShaderPass;
     }EFFECT_DESC;
 
-    enum TYPE { TYPE_POINT , TYPE_TRAIL, TYPE_END};
+    enum TYPE { TYPE_POINT , TYPE_TRAIL, TYPE_GLOW, TYPE_END};
     enum ACTION { ACTION_SPREAD, ACTION_DROP,ACTION_SIZE, ACTION_END };
     static const _uint iAction[ACTION_END];
 
