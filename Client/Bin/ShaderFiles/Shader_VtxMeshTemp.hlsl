@@ -80,6 +80,7 @@ struct PS_OUT
     vector vNormal : SV_TARGET1;
     vector vDepth : SV_TARGET2;
     vector vSpecular : SV_TARGET3;
+    vector vMetalic : SV_TARGET4;
 };
 
 
@@ -115,12 +116,13 @@ PS_OUT PS_MAIN(PS_IN In)
    
     Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_fFar, 0.f, 1.f);
     
-    
+    // specularTex와 metalic 같은 rm 사용 - bool 값 같이 사용하기
     if(true == g_bExistSpecularTex)
     {
         Out.vSpecular = g_SpecularMapTexture.Sample(LinearSampler, In.vTexcoord);
+        Out.vMetalic = g_SpecularMapTexture.Sample(LinearSampler, In.vTexcoord);
     }
-        
+    
     
     return Out;
 }

@@ -19,6 +19,7 @@ public:
     void Set_SSAORadiuse(_float fRadiuse) { m_fSSAORadiuse = fRadiuse; }
     void Set_SSAOBlur(_float fBlur) { m_fSSAOBlur = fBlur; }
     void Set_SSAOBias(_float fBias) { m_fSSAOBiae = fBias; }
+    void Set_SpecularLightIntensity(_float fIntensity) { m_fSpecularIntensity = fIntensity; }
 
 public:
     _bool isHDR() { return m_isHDR; }
@@ -112,6 +113,7 @@ private:
     _float m_fSSAOBlur = { 2.f };
     _float m_fSSAOBiae = { 0.025f };
     vector<_float3> m_vSSAOKernal;
+    _float m_fSpecularIntensity = { 0.5 }; // 빛 약하게 하기 위해서 specular에 곱해줄 값
 
 #ifdef _DEBUG
     _bool m_isDebugView = { true };

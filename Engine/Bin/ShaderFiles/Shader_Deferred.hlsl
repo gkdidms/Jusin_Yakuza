@@ -30,6 +30,7 @@ Texture2D g_ShadeTexture;
 Texture2D g_SpecularMapTexture;
 Texture2D g_SpecularTexture;
 Texture2D g_DepthTexture;
+Texture2D g_MetallicTexture;
 Texture2D g_BackBufferTexture;
 Texture2D g_LightDepthTexture;
 Texture2D g_ToneMappingTexture;
@@ -48,6 +49,7 @@ Texture2D g_AccumTexture;
 Texture2D g_AccumAlpha;
 
 float g_fOutlineAngle = 0.8f;
+float g_fSpecularIntensity = 0.5f;
 
 
 //HDR
@@ -324,10 +326,25 @@ PS_OUT PS_MAIN_COPY_BACKBUFFER_RESULT(PS_IN In)
         discard;
 
     vector vShade = g_ShadeTexture.Sample(LinearSampler, In.vTexcoord);
-    
     vector vSpecular = g_SpecularTexture.Sample(LinearSampler, In.vTexcoord);
     
-    Out.vColor = vDiffuse * vShade + vSpecular;
+   // float3 F0 = lerp(float3(0.04, 0.04, 0.04), vDiffuse.rgb, fMetallic);
+    float fMetallic = 0.0f; // 기본값
+    fMetallic = g_MetallicTexture.Sample(LinearSampler, In.vTexcoord).r; // Metallic 값 샘플링
+    
+
+    float3 kS = lerp(float3(0.04, 0.04, 0.04), float3(1.0, 1.0, 1.0), fMetallic); // 스펙큘러 반사율
+    //float3 kD = (1.0 - kS) * (1.0 - fMetallic); // 디퓨즈 반사율
+
+    //// 최종 색상 계산
+    //float3 diffuseColor = kD * vDiffuse.rgb * vShade.rgb; // 디퓨즈 색상
+    //float3 specularColor = kS * vSpecular.rgb; // 스펙큘러 색상
+
+    float3 color = vDiffuse.rgb * (1 - kS) + vSpecular.rgb * kS;
+
+    Out.vColor = float4(color, vDiffuse.a);
+    
+    Out.vColor = vDiffuse * vShade + vSpecular * g_fSpecularIntensity;
     
     return Out;
 }
