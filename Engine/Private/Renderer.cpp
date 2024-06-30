@@ -535,8 +535,8 @@ HRESULT CRenderer::Ready_SSAONoiseTexture() // SSAO 연산에 들어갈 랜덤 벡터 텍스
 	for (int i = 0; i < 16; i++)
 	{
 		_float3 vNoise = {
-			m_pGameInstance->Get_Random(0.f, 1.f) * 2.f - 1.f,
-			m_pGameInstance->Get_Random(0.f, 1.f) * 2.f - 1.f,
+			m_pGameInstance->Get_Random(0.f, 1.f),
+			m_pGameInstance->Get_Random(0.f, 1.f),
 			0.f
 		};
 		pPixel[i] = vNoise;
@@ -551,38 +551,29 @@ HRESULT CRenderer::Ready_SSAONoiseTexture() // SSAO 연산에 들어갈 랜덤 벡터 텍스
 	if (FAILED(m_pDevice->CreateShaderResourceView(pSSAONoiseTexture, nullptr, &m_pSSAONoiseView)))
 		return E_FAIL;
 
-
-
-	//D3D11_MAPPED_SUBRESOURCE		SubResource{};
-
-	//m_pContext->Map(pSSAONoiseTexture, 0, D3D11_MAP_WRITE_DISCARD, 0, &SubResource);
-
-	//memcpy(SubResource.pData, pPixel, sizeof(_float3) * 4 * 4);
-
-	//m_pContext->Unmap(pSSAONoiseTexture, 0);
-
 	Safe_Release(pSSAONoiseTexture);
 
 	Safe_Delete_Array(pPixel);
 
-	//랜덤 법선 만들기
+	m_vSSAOKernal = new _float4[64];
+
 	for (int i = 0; i < 64; i++)
 	{
-		_float3 vRandom = {
+		_float4 vRandom = {
 			m_pGameInstance->Get_Random(0.f, 1.f) * 2.f - 1.f,
 			m_pGameInstance->Get_Random(0.f, 1.f) * 2.f - 1.f,
-			m_pGameInstance->Get_Random(0.f, 1.f)
+			m_pGameInstance->Get_Random(0.f, 1.f),
+			0.f
 		};
 
-		XMStoreFloat3(&vRandom, XMVector3Normalize(XMLoadFloat3(&vRandom)));
+		XMStoreFloat4(&vRandom, XMVector4Normalize(XMLoadFloat4(&vRandom)));
 		//XMStoreFloat3(&vRandom, XMLoadFloat3(&vRandom) * m_pGameInstance->Get_Random(0.f, 1.f));
 		float vScale = (_float)i / 64.f;
-		vScale = 0.1f + (vScale * vScale) * (1.f - 0.1f);
-		XMStoreFloat3(&vRandom, XMLoadFloat3(&vRandom) * vScale);
+		vScale = 0.3f + (vScale * vScale) * (0.8f - 0.3f);
+		XMStoreFloat4(&vRandom, XMLoadFloat4(&vRandom) * vScale);
 
-		m_vSSAOKernal.emplace_back(vRandom);
+		m_vSSAOKernal[i] = vRandom;
 	}
-
 
 	return S_OK;
 }
@@ -619,7 +610,7 @@ void CRenderer::Render_SSAO()
 		return;
 	if (FAILED(m_pShader->Bind_RawValue("g_vCamPosition", m_pGameInstance->Get_CamPosition_Float4(), sizeof(_float4))))
 		return;
-	if (FAILED(m_pShader->Bind_RawValue("g_SSAORandoms", &m_vSSAOKernal, sizeof(_float3) * 64)))
+	if (FAILED(m_pShader->Bind_Vectors("g_SSAORandoms", m_vSSAOKernal, 64)))
 		return;
 
 	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Normal"), m_pShader, "g_NormalTexture")))
@@ -1340,6 +1331,8 @@ void CRenderer::Free()
 
 		m_RenderObject[i].clear();
 	}
+
+	Safe_Delete_Array(m_vSSAOKernal);
 
 	Safe_Release(m_pLightDepthStencilView);
 	Safe_Release(m_pSSAONoiseView);

@@ -20,7 +20,7 @@
       <Filter>02.GameObjects\00.Background</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Terrain.cpp">
-      <Filter>02.GameObjects\02.Character\01.Terrain</Filter>
+      <Filter>02.GameObjects\01.Terrain</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Level_Test.cpp">
       <Filter>01.Levels\98.Test</Filter>
@@ -172,7 +172,7 @@
       <Filter>02.GameObjects\00.Background</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Terrain.h">
-      <Filter>02.GameObjects\02.Character\01.Terrain</Filter>
+      <Filter>02.GameObjects\01.Terrain</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Player.h">
       <Filter>02.GameObjects\02.Character\LandObject\00.Player</Filter>
@@ -457,14 +457,14 @@
     <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\Behavior\Adventure\Run">
       <UniqueIdentifier>{b50b0e94-8792-4c99-83ca-c65719880701}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\02.Character\01.Terrain">
-      <UniqueIdentifier>{73fc58be-6ca4-4e86-b2ac-39c7c7e26f66}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\02.Character\01.Terrain\TestMap">
-      <UniqueIdentifier>{13a0eb4d-9fd9-4a66-90f0-f589933ed093}</UniqueIdentifier>
-	</Filter>
     <Filter Include="02.GameObjects\07.UI">
       <UniqueIdentifier>{5ee687d4-5dfa-49a3-92da-8f0756f1687f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\01.Terrain">
+      <UniqueIdentifier>{73fc58be-6ca4-4e86-b2ac-39c7c7e26f66}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\01.Terrain\TestMap">
+      <UniqueIdentifier>{13a0eb4d-9fd9-4a66-90f0-f589933ed093}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
