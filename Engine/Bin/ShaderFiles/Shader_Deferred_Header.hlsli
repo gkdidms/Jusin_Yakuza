@@ -1,4 +1,5 @@
 /* Header */
+/* 상수 테이블과 struct 모음*/
 
 /* 컨스턴트 테이블(상수테이블) */
 matrix g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
@@ -74,6 +75,19 @@ static const float g_fWeight[13] =
 
 float g_fTotal = 2.f;
 
+struct VS_IN
+{
+    float3 vPosition : POSITION;
+    float2 vTexcoord : TEXCOORD0;
+};
+
+struct VS_OUT
+{
+    float4 vPosition : SV_POSITION;
+    float2 vTexcoord : TEXCOORD0;
+};
+
+
 struct PS_IN
 {
     float4 vPosition : SV_POSITION;
@@ -84,3 +98,4 @@ struct PS_OUT
 {
     vector vColor : SV_TARGET0;
 };
+

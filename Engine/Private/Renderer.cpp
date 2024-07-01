@@ -36,10 +36,6 @@ HRESULT CRenderer::Initialize()
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_NonBlendDepth"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(0.f, 0.f, 0.f, 1.f))))
 		return E_FAIL;
 
-	/*Target_NonBlendMetalic*/
-	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_NonBlendMetalic"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(0.f, 0.f, 0.f, 0.f))))
-		return E_FAIL;
-
 	/* Target_NonBlendRM */
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_NonBlendRM"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(1.f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
@@ -60,10 +56,6 @@ HRESULT CRenderer::Initialize()
 
 	/*Target_GlassDepth - NonBlendDepth와 비교해야해서 1로 초기화 */
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_GlassDepth"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(1.f, 1.f, 1.f, 1.f))))
-		return E_FAIL;
-
-	/*Target_GlassMetalic*/
-	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_GlassMetalic"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(0.f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
 
 	/* Target_GlassRM */
@@ -180,8 +172,6 @@ HRESULT CRenderer::Initialize()
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_NonBlend"), TEXT("Target_NonBlendRM"))))
 		return E_FAIL;
-	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_NonBlend"), TEXT("Target_NonBlendMetalic"))))
-		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_NonBlend"), TEXT("Target_NonBlendRS"))))
 		return E_FAIL;
 
@@ -197,8 +187,6 @@ HRESULT CRenderer::Initialize()
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_Glass"), TEXT("Target_GlassDepth"))))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_Glass"), TEXT("Target_GlassRM"))))
-		return E_FAIL;
-	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_Glass"), TEXT("Target_GlassMetalic"))))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_Glass"), TEXT("Target_GlassRS"))))
 		return E_FAIL;
@@ -433,6 +421,7 @@ void CRenderer::Draw()
 	Render_Priority();
 	//Render_ShadowObjects();
 	Render_NonBlender();
+
 	Render_Decal();
 	Render_Glass();
 
@@ -633,8 +622,6 @@ void CRenderer::Render_Glass()
 		return;
 	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_GlassRM"), m_pShader, "g_GlassRMTexture")))
 		return;
-	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_GlassMetalic"), m_pShader, "g_GlassMetallicTexture")))
-		return;
 	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_GlassRS"), m_pShader, "g_GlassRSTexture")))
 		return;
 
@@ -646,8 +633,6 @@ void CRenderer::Render_Glass()
 		return;
 	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_NonBlendRM"), m_pShader, "g_RMTexture")))
 		return;
-	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_NonBlendMetalic"), m_pShader, "g_MetallicTexture")))
-		return;
 	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_NonBlendRS"), m_pShader, "g_RSTexture")))
 		return;
 
@@ -658,7 +643,6 @@ void CRenderer::Render_Glass()
 		return;
 
 }
-
 
 HRESULT CRenderer::Ready_SSAONoiseTexture() // SSAO 연산에 들어갈 랜덤 벡터 텍스쳐 생성
 {
