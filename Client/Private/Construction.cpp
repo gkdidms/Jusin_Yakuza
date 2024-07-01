@@ -147,9 +147,15 @@ HRESULT CConstruction::Render()
 				return E_FAIL;
 		}
 
-
-		/*m_pShaderCom->Begin(m_iShaderPassNum);*/
-		m_pShaderCom->Begin(m_iShaderPassNum);
+		if (2 == m_iShaderPassNum)
+		{
+			m_pShaderCom->Begin(1);
+		}
+		else
+		{
+			m_pShaderCom->Begin(m_iShaderPassNum);
+		}
+		
 
 		m_pModelCom->Render(i);
 	}
