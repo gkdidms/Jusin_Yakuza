@@ -118,26 +118,29 @@ HRESULT CLoader::Loading_For_EditLevel()
 
 	/* Prototype_Component_Texture_Sphere */
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_EDIT, TEXT("Prototype_Component_Texture_Sphere"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Particle/lm000.dds"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/lm000.dds"), 1))))
 		return E_FAIL;
 
 	/* Prototype_Component_Texture_Trail */
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_EDIT, TEXT("Prototype_Component_Texture_Trail"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Particle/001_trc_n.dds"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/001_trc_n.dds"), 1))))
 		return E_FAIL;
 
 	/* Prototype_Component_Texture_Sky */
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_EDIT, TEXT("Prototype_Component_Texture_Sky"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/SkyBox/Sky_%d.dds"), 5))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/SkyBox/Sky_%d.dds"), 5))))
 		return E_FAIL;
 
 	/* Prototype_Component_Texture_Test */
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_EDIT, TEXT("Prototype_Component_Texture_Test"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Particle/9923j.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/9923j.png"), 1))))
 		return E_FAIL;
 
-
-
+	/* Prototype_Component_Texture_HitSpark */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_EDIT, TEXT("Prototype_Component_Texture_HitSpark"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/015_trc_na.dds"), 1))))
+		return E_FAIL;
+	
 	lstrcpy(m_szLoadingText, TEXT("컴포넌트 원형 를(을) 로딩 중 입니다."));
 
 	/* For.Prototype_Component_VIBuffer_Instance_Point */
@@ -161,6 +164,8 @@ HRESULT CLoader::Loading_For_EditLevel()
 		CFreeCamera::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+
+	Add_Particle_On_Path(TEXT("../../Client/Bin/DataFiles/Particle/"));
 
 
 
@@ -197,12 +202,69 @@ HRESULT CLoader::Loading_For_EditLevel()
 	/* For.Prototype_Component_Shader_Trail */
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_EDIT, TEXT("Prototype_Component_Shader_Trail"),
 		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_Trail.hlsl"), VTXPOSTEX::Elements, VTXPOSTEX::iNumElements))))
-
 		return E_FAIL;
+
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
 
 	m_isFinished = true;
 
+	return S_OK;
+}
+
+HRESULT CLoader::Add_Particle_On_Path(const wstring& strPath)
+{
+	vector<wstring> vecDirectorys;
+	m_pGameInstance->Get_DirectoryName(strPath, vecDirectorys);
+
+	for (auto& strChannelName : vecDirectorys)
+	{
+		wstring strFilePath = strPath + strChannelName + TEXT("/");
+		string strDirectory = m_pGameInstance->WstringToString(strFilePath);
+		
+		if ( TEXT("Point")==strChannelName)
+		{
+			for (const auto& entry : fs::directory_iterator(strDirectory))
+			{
+
+				string FileName = entry.path().filename().string();
+				string AllPath = strDirectory + FileName;
+
+				string Tag;
+				_int dotPos = FileName.find_last_of(".");
+				Tag = FileName.substr(0, dotPos);
+
+
+				/* For.Prototype_GameObject_Particle_Point */
+				if (FAILED(m_pGameInstance->Add_GameObject_Prototype(m_pGameInstance->StringToWstring(Tag),
+					CParticle_Point::Create(m_pDevice, m_pContext, AllPath))))
+					return E_FAIL;
+
+			}
+		}
+		else if(TEXT("Trail") == strChannelName)
+		{
+			for (const auto& entry : fs::directory_iterator(strDirectory))
+			{
+
+				string FileName = entry.path().filename().string();
+				string AllPath = strDirectory + FileName;
+
+				string Tag;
+				_int dotPos = FileName.find_last_of(".");
+				Tag = FileName.substr(0, dotPos);
+
+
+				/* For.Prototype_GameObject_Particle_Trail */
+				if (FAILED(m_pGameInstance->Add_GameObject_Prototype(m_pGameInstance->StringToWstring(Tag),
+					CTRailEffect::Create(m_pDevice, m_pContext, AllPath))))
+					return E_FAIL;
+
+			}
+		}
+		
+		
+
+	}
 	return S_OK;
 }
 

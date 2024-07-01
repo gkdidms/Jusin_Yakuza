@@ -26,6 +26,19 @@ vector<class CUI_Object*> CObject_Manager::Get_GroupObject(const wstring& strTag
 	return *pFineObjects;
 }
 
+vector<class CUI_Object*> CObject_Manager::Get_BinaryGroupObject(const wstring& strTag, _int iIndex)
+{
+	vector<class CUI_Object*>* pFineObjects = Find_BinaryObject(strTag);
+
+	if (nullptr == pFineObjects)
+		return vector<class CUI_Object*>();
+
+	if ((*pFineObjects)[iIndex]->Get_TypeIndex() != GROUP)
+		return vector<class CUI_Object*>();
+
+	return dynamic_cast<CGroup*>((*pFineObjects)[iIndex])->Get_PartObjects();
+}
+
 vector<class CUI_Object*> CObject_Manager::Get_GroupBinaryObject(const wstring& strTag)
 {
 	vector<class CUI_Object*>* pFineObjects = Find_BinaryObject(strTag);
@@ -105,7 +118,6 @@ HRESULT CObject_Manager::Copy_Group(const wstring& strTag)
 HRESULT CObject_Manager::Remove_Group(const wstring& strTag)
 {
 	vector<class CUI_Object*>* pFineObjects = Find_RenderTextureObject(strTag);
-
 	if (nullptr == pFineObjects)
 		return E_FAIL;
 
@@ -114,12 +126,34 @@ HRESULT CObject_Manager::Remove_Group(const wstring& strTag)
 
 	m_Objects.erase(strTag);
 
+	vector<class CUI_Object*>* pFineBinaryObjects = Find_BinaryObject(strTag);
+	if (nullptr == pFineBinaryObjects)
+		return E_FAIL;
+
+	for (auto& pObject : *pFineBinaryObjects)
+		Safe_Release(pObject);
+
+	m_BinaryObjects.erase(strTag);
+
 	return S_OK;
 }
 
 HRESULT CObject_Manager::Remove_Object(const wstring& strTag, _uint iIndex)
 {
 	vector<class CUI_Object*>* pFineObjects = Find_RenderTextureObject(strTag);
+
+	if (nullptr == pFineObjects)
+		return E_FAIL;
+
+	Safe_Release((*pFineObjects)[iIndex]);
+	pFineObjects->erase((*pFineObjects).begin() + iIndex);
+
+	return S_OK;
+}
+
+HRESULT CObject_Manager::Remove_BinaryObject(const wstring& strTag, _uint iIndex)
+{
+	vector<class CUI_Object*>* pFineObjects = Find_BinaryObject(strTag);
 
 	if (nullptr == pFineObjects)
 		return E_FAIL;
@@ -203,11 +237,23 @@ void CObject_Manager::Tick(const _float& fTimeDelta)
 		for (auto& pObj : Pair.second)
 			pObj->Tick(fTimeDelta);
 	}
+
+	for (auto& Pair : m_BinaryObjects)
+	{
+		for (auto& pObj : Pair.second)
+			pObj->Tick(fTimeDelta);
+	}
 }
 
 void CObject_Manager::Late_Tick(const _float& fTimeDelta)
 {
 	for (auto& Pair : m_Objects)
+	{
+		for (auto& pObj : Pair.second)
+			pObj->Late_Tick(fTimeDelta);
+	}
+
+	for (auto& Pair : m_BinaryObjects)
 	{
 		for (auto& pObj : Pair.second)
 			pObj->Late_Tick(fTimeDelta);
@@ -434,8 +480,10 @@ HRESULT CObject_Manager::Add_BinaryObject(const wstring& strObjectTag, void* pAr
 		BtnDesc.strName = pDesc->strName;
 		BtnDesc.iTypeIndex = pDesc->iTextureType;
 
-		CBtn* mBtn = dynamic_cast<CBtn*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Btn"), &BtnDesc));
-		
+		CBtn* pBtn	= dynamic_cast<CBtn*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Btn"), &BtnDesc));
+		if (nullptr == pBtn)
+			return E_FAIL;
+		pObjects->emplace_back(pBtn);
 	}
 	else if (iType == TEXT || iType == TEXT_FORMAT)
 	{

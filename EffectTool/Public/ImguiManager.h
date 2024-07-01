@@ -1,9 +1,10 @@
 #pragma once
-#include "Client_Defines.h"
+
 #include "Base.h"
 #include "Effect.h"
 #include "Particle_Point.h"
 #include "TRailEffect.h"
+#include "Client_Defines.h"
 
 #pragma region "Imgui"
 #include "imgui.h"
@@ -12,6 +13,7 @@
 #include "imgui_impl_win32.h"
 #include "ImGuizmo.h"
 #include "ImCurveEdit.h"
+#include "ImGuiFileDialog.h"
 #pragma endregion
 
 BEGIN(Engine)
@@ -31,10 +33,9 @@ public:
 		MODE_END
 	};
 	enum PASS{ 
-		PASS_DIRECTION=2 , 
-		PASS_NODIRECTION ,
-		PASS_DIRECTIONCOLOR , 
-		PASS_WEIGHTBLEND,
+		PASS_NOCOLOR,
+		PASS_COLOR,
+		PASS_ROTATE,
 		PASS_END};
 private:
 	CImguiManager(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -54,7 +55,8 @@ private:
 	HRESULT Mode_Select(_float fTimeDelta);
 	HRESULT Edit_Particle(_uint Index);
 	HRESULT Load_Desc(_uint Index);
-
+	void File_Selctor(_bool* bChange);
+	void Load_Selctor();
 	void Guizmo_Tick(_float fTimeDelta);
 
 	//파티클 함수
@@ -76,7 +78,8 @@ private:
 	void EditorTrail_Tick(_float fTimeDelta);
 
 
-
+	HRESULT AllEffect_Save();
+	HRESULT AllEffect_Load();
 
 private:
 	ID3D11Device* m_pDevice = { nullptr };
@@ -89,6 +92,7 @@ private:
 	//파티클 액션에 대한 bool 값.
 	_bool m_bSpread = { false };
 	_bool m_bDrop = { false };
+	_bool m_bSize = { false };
 	_bool m_bGuizmo = { false };
 	//생성 파티클 담는 곳
 	vector<CGameObject*> m_EditParticle = {  };
@@ -105,6 +109,9 @@ private:
 
 	_float m_fParticleTime = { 0.f };
 	_float m_fMaxTime = { 30.f };
+
+	_int m_iCurTexture = { 0 };
+	vector<wstring> TextureTags;
 
 	public:
 	static CImguiManager* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

@@ -28,46 +28,6 @@ HRESULT CVIBuffer_Instance::Initialize(void* pArg)
 		
 	}
 
-
-	//m_pComputeShader = CComputeShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_Compute.hlsl"));
-
-
-	////계산셰이더가 자료를 기록할수 있게 생성(계산해서 가지고 나온뒤 다시 instance버퍼에 복사해줘야됨.)
-	//m_OutBufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	//m_OutBufferDesc.ByteWidth = sizeof(COMPUTEMATRIX) * m_InstanceDesc->iNumInstance;
-	//m_OutBufferDesc.BindFlags = D3D11_BIND_UNORDERED_ACCESS;
-	//m_OutBufferDesc.CPUAccessFlags = 0;
-	//m_OutBufferDesc.StructureByteStride = sizeof(COMPUTEMATRIX);
-	//m_OutBufferDesc.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
-	//
-
-
-	//uavDesc.Format = DXGI_FORMAT_UNKNOWN;
-	//uavDesc.ViewDimension = D3D11_UAV_DIMENSION_BUFFER;
-	//uavDesc.Buffer.FirstElement = 0;
-	//uavDesc.Buffer.Flags = 0;
-	//uavDesc.Buffer.NumElements = m_InstanceDesc->iNumInstance;
-
-
-
-	//m_RenderBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
-	//m_RenderBufferDesc.ByteWidth = m_iInstanceStride * m_InstanceDesc->iNumInstance;	
-	//m_RenderBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	//m_RenderBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-	//m_RenderBufferDesc.MiscFlags = 0;
-	//m_RenderBufferDesc.StructureByteStride = m_iInstanceStride;
-
-	//VTXMATRIX* pInstanceVertices = new VTXMATRIX[m_InstanceDesc->iNumInstance];
-	//ZeroMemory(pInstanceVertices, sizeof(VTXMATRIX) * m_InstanceDesc->iNumInstance);
-
-	//m_InitialData.pSysMem = pInstanceVertices;
-
-	//if (FAILED(m_pDevice->CreateBuffer(&m_RenderBufferDesc, &m_InitialData, &m_pRenderBuffer)))//렌더 복사용
-	//	return E_FAIL;
-
-
-
-
 	return S_OK;
 }
 
@@ -253,52 +213,38 @@ void CVIBuffer_Instance::LifeTime_Check()
 
 }
 
-void CVIBuffer_Instance::Blend_Sort()
+void CVIBuffer_Instance::Size_Time(_float fTimeDelta)
 {
-//	//매 틱 진행이 일어나야 되니깐
-//	//이건 무조건 소팅을 위한거지 이동이나 변환이 없으므로 이값을 저장해 놓고 렌더 끝난뒤에 다시 옮겨 주자.
-//	
-//	list<BlendSort> InstanceMatrix;
-//
-//	D3D11_MAPPED_SUBRESOURCE		SubResource{};
-//
-//	m_pContext->Map(m_pVBInstance, 0, D3D11_MAP_WRITE_NO_OVERWRITE, 0, &SubResource);
-//	
-//	VTXMATRIX* pVertices = (VTXMATRIX*)SubResource.pData;
-//	//받아온 임시저장
-//
-//	if(nullptr == m_pTempVertices)
-//		m_pTempVertices = pVertices;
-//
-//	_vector CamPos = m_pGameInstance->Get_CamPosition();
-//
-//	for (size_t i = 0; i < m_InstanceDesc->iNumInstance; i++)
-//	{
-//		if (nullptr != m_pTempVertices)
-//			pVertices[i] = m_pTempVertices[i];
-//
-//		BlendSort BlendDesc{};
-//
-//		BlendDesc.ViewZ = XMVectorGetX(XMVector4Length(XMLoadFloat4(&pVertices[i].vTranslation) - CamPos));
-//		memcpy(&BlendDesc.vMatrix, &pVertices[i], sizeof(VTXMATRIX));
-//
-//		InstanceMatrix.emplace_back(BlendDesc);
-//	}
-//
-//	//정렬
-//	InstanceMatrix.sort([](BlendSort pSour, BlendSort pDest)->_bool
-//		{
-//			return pSour.ViewZ > pDest.ViewZ;
-//		});
-//
-//	auto iter = InstanceMatrix.begin();
-//	for (size_t i = 0; i < m_InstanceDesc->iNumInstance; i++)
-//	{
-//		pVertices[i] = iter->vMatrix;
-//		iter++;
-//	}
-//
-//	m_pContext->Unmap(m_pVBInstance, 0);
+	D3D11_MAPPED_SUBRESOURCE		SubResource{};
+
+	m_pContext->Map(m_pVBInstance, 0, D3D11_MAP_WRITE_NO_OVERWRITE, 0, &SubResource);
+
+	for (size_t i = 0; i < m_InstanceDesc->iNumInstance; i++)
+	{
+		VTXMATRIX* pVertices = (VTXMATRIX*)SubResource.pData;
+
+		//x가 최종,y 가 current
+
+		//시간에 지남에 따라 작아짐
+		//	pVertices[i].vRectSize = pVertices[i].vRectSize * ((pVertices[i].vLifeTime.x - pVertices[i].vLifeTime.y) / pVertices[i].vLifeTime.x);
+		//시간에 지남에 따라 커짐
+		pVertices[i].vRectSize = (1.f + (pVertices[i].vLifeTime.y / pVertices[i].vLifeTime.x)) * m_pOriginalSize[i];
+
+		if (pVertices[i].vLifeTime.y >= pVertices[i].vLifeTime.x)
+		{
+			if (true == m_InstanceDesc->isLoop)
+			{
+				pVertices[i].vTranslation = _float4(m_pOriginalPositions[i].x, m_pOriginalPositions[i].y, m_pOriginalPositions[i].z, 1.f);
+				pVertices[i].vLifeTime.y = 0.f;
+				_vector			vDir = XMVectorSetW(XMLoadFloat4(&pVertices[i].vTranslation) - XMLoadFloat3(&m_InstanceDesc->vOffsetPos), 0.f);
+				XMStoreFloat4(&pVertices[i].vDirection, vDir);
+				pVertices[i].vRectSize = m_pGameInstance->Get_Random(m_InstanceDesc->vRectSize.x, m_InstanceDesc->vRectSize.y);
+			}
+		}
+
+	}
+
+	m_pContext->Unmap(m_pVBInstance, 0);
 }
 
 void CVIBuffer_Instance::Compute_Sort()
@@ -348,6 +294,7 @@ void CVIBuffer_Instance::Free()
 	{
 		Safe_Delete_Array(m_pSpeeds);
 		Safe_Delete_Array(m_pOriginalPositions);
+		Safe_Delete_Array(m_pOriginalSize);
 	}
 
 	Safe_Release(m_pComputeShader);

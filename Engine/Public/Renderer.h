@@ -6,7 +6,7 @@ class ENGINE_DLL CRenderer :
     public CBase
 {
 public:
-    enum RENDERER_STATE { RENDER_PRIORITY, RENDER_SHADOWOBJ, RENDER_NONBLENDER, RENDER_NONLIGHT, RENDER_BLENDER, RENDER_EFFECT, RENDER_UI, RENDER_END };
+    enum RENDERER_STATE { RENDER_PRIORITY, RENDER_SHADOWOBJ, RENDER_NONBLENDER, RENDER_DECAL, RENDER_GLASS, RENDER_NONLIGHT, RENDER_BLENDER, RENDER_EFFECT, RENDER_UI, RENDER_END };
 
 private:
     CRenderer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -48,8 +48,11 @@ private:
     void Render_ShadowObjects();
     void Render_NonBlender();
 
-    /*Decal*/
+    /* Decal */
     void Render_Decal();
+
+    /* 유리 관련 */
+    void Render_Glass();
 
     /* SSAO */
     void Render_SSAO();
@@ -102,7 +105,6 @@ private:
 
     ID3D11DepthStencilView* m_pLightDepthStencilView = { nullptr };
     ID3D11ShaderResourceView* m_pSSAONoiseView = { nullptr };
-    //ID3D11DepthStencilView* m_pLuminanceStencilView = { nullptr };
 
 private:
     _bool m_isHDR = { false };
@@ -111,7 +113,9 @@ private:
     _float m_fSSAORadiuse = { 0.003f };
     _float m_fSSAOBlur = { 2.f };
     _float m_fSSAOBiae = { 0.025f };
-    vector<_float3> m_vSSAOKernal;
+
+    _float4* m_vSSAOKernal;
+
 
 #ifdef _DEBUG
     _bool m_isDebugView = { true };

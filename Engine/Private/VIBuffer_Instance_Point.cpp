@@ -13,7 +13,6 @@ CVIBuffer_Instance_Point::CVIBuffer_Instance_Point(const CVIBuffer_Instance_Poin
 
 HRESULT CVIBuffer_Instance_Point::Initialize_Prototype()
 {
-
 	return S_OK;
 }
 
@@ -96,6 +95,9 @@ HRESULT CVIBuffer_Instance_Point::Initialize(void* pArg)
 	m_pOriginalPositions = new _float3[m_InstanceDesc->iNumInstance];
 	ZeroMemory(m_pOriginalPositions, sizeof(_float3) * m_InstanceDesc->iNumInstance);
 
+	m_pOriginalSize = new _float[m_InstanceDesc->iNumInstance];
+	ZeroMemory(m_pOriginalSize, sizeof(_float) * m_InstanceDesc->iNumInstance);
+
 
 	for (size_t i = 0; i < m_InstanceDesc->iNumInstance; i++)
 	{	
@@ -127,7 +129,7 @@ HRESULT CVIBuffer_Instance_Point::Initialize(void* pArg)
 
 		m_pOriginalPositions[i] = _float3(pInstanceVertices[i].vTranslation.x, pInstanceVertices[i].vTranslation.y, pInstanceVertices[i].vTranslation.z); // Loop를 위해 저장해준다.
 		pInstanceVertices[i].vLifeTime.x = LifeTime; // 파티클이 살아있을 수 있는 시간.
-		pInstanceVertices[i].vRectSize = fRectSize;
+		m_pOriginalSize[i] = pInstanceVertices[i].vRectSize = fRectSize;
 		XMStoreFloat4(& pInstanceVertices[i].vDirection, XMVectorSetW(XMLoadFloat4(&pInstanceVertices[i].vTranslation) - XMLoadFloat3(&m_InstanceDesc->vOffsetPos), 0.f));
 
 		m_pSpeeds[i] = Speed;	

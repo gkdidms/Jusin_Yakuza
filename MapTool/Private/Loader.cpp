@@ -126,7 +126,7 @@ HRESULT CLoader::Loading_For_RunMapLevel(int iLevel)
 
 	/* For.Prototype_Component_Texture_Terrain */
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(iLevel, TEXT("Prototype_Component_Texture_Terrain"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/T_Sand_06_A.png"), 1))))
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/T_Sand_06_A.png"), 1))))
 		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("모델를(을) 로딩 중 입니다."));
@@ -141,6 +141,11 @@ HRESULT CLoader::Loading_For_RunMapLevel(int iLevel)
 		CVIBuffer_Rect::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	/* For.Prototype_Component_VIBuffer_Cube */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(iLevel, TEXT("Prototype_Component_VIBuffer_Cube"),
+		CVIBuffer_Cube::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 	_matrix		PreTransformMatrix;
 
 	PreTransformMatrix = XMMatrixRotationY(XMConvertToRadians(180.0f));
@@ -152,24 +157,33 @@ HRESULT CLoader::Loading_For_RunMapLevel(int iLevel)
 	//PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
 
 
-	/*PreTransformMatrix = XMMatrixIdentity();*/
+	PreTransformMatrix = XMMatrixIdentity();
+	//if (FAILED(m_pGameInstance->Add_Component_Prototype(iLevel, TEXT("Prototype_Component_Model_GlassDoor"),
+	//	CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/NonAnim/Map/Map0/GlassDoor.fbx", PreTransformMatrix, false, true))))
+	//	return E_FAIL;
+
 	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
 
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(iLevel, TEXT("Prototype_Component_Model_f1"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/NonAnim/Map/Map0/Bin/f1.dat", PreTransformMatrix, true))))
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/NonAnim/Map/Map0/Bin/f1.dat", PreTransformMatrix, true, true))))
 		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(iLevel, TEXT("Prototype_Component_Model_GlassDoor"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/NonAnim/Map/Map0/Bin/GlassDoor.dat", PreTransformMatrix, true, true))))
+		return E_FAIL;
+
 
 
 	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
-	if (FAILED(m_pGameInstance->Add_Component_Prototype(iLevel, TEXT("Prototype_Component_Model_f2"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/NonAnim/Map/Map1/Bin/f2.dat", PreTransformMatrix, true))))
-		return E_FAIL;
+	//if (FAILED(m_pGameInstance->Add_Component_Prototype(iLevel, TEXT("Prototype_Component_Model_f2"),
+	//	CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/NonAnim/Map/Map1/Bin/f2.dat", PreTransformMatrix, true))))
+	//	return E_FAIL;
 
-	PreTransformMatrix = XMMatrixIdentity();
 
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(iLevel, TEXT("Prototype_Component_Model_Bone_Sphere"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/NonAnim/Bone_Sphere/Bin/Bone_Sphere.dat", PreTransformMatrix, true))))
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/NonAnim/Bone_Sphere/Bin/Bone_Sphere.dat", PreTransformMatrix, true, true))))
 		return E_FAIL;
+
+
 
 
 
@@ -193,6 +207,11 @@ HRESULT CLoader::Loading_For_RunMapLevel(int iLevel)
 	/* For.Prototype_Component_Shader_VtxPosTex */
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(iLevel, TEXT("Prototype_Component_Shader_VtxPosTex"),
 		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxPosTex.hlsl"), VTXPOSTEX::Elements, VTXPOSTEX::iNumElements))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Shader_VtxCube */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(iLevel, TEXT("Prototype_Component_Shader_VtxCube"),
+		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxCube.hlsl"), VTXCUBE::Elements, VTXCUBE::iNumElements))))
 		return E_FAIL;
 
 

@@ -31,6 +31,19 @@ void CFileTotalMgr::Late_Tick(_float fTimeDelta)
 
 HRESULT CFileTotalMgr::Set_MapObj_In_Client(int iMapLoadingNum, int iStageLevel)
 {
+    for (int i = 0; i < m_MapTotalInform.iNumMapObj; i++)
+    {
+        if (0 < m_MapTotalInform.pMapObjDesc[i].iDecalNum)
+        {
+            Safe_Delete_Array(m_MapTotalInform.pMapObjDesc[i].pDecals);
+        }
+    }
+
+    for (int i = 0; i < m_MapTotalInform.iNumMapObj; i++)
+    {
+        Safe_Delete(m_MapTotalInform.pMapObjDesc);
+    }
+
     Safe_Delete_Array(m_MapTotalInform.pMapObjDesc);
 
     Import_Bin_Map_Data_OnClient(&m_MapTotalInform, iMapLoadingNum);
@@ -38,6 +51,8 @@ HRESULT CFileTotalMgr::Set_MapObj_In_Client(int iMapLoadingNum, int iStageLevel)
     /* terrain ¼öÁ¤*/
     Set_Terrain_Size(iStageLevel);
     Set_GameObject_In_Client(iStageLevel);
+
+
 
     //Safe_Delete_Array(m_MapTotalInform.pMapObjDesc);
 
@@ -69,7 +84,8 @@ HRESULT CFileTotalMgr::Set_GameObject_In_Client(int iStageLevel)
 
             for (int j = 0; j < mapDesc.iDecalNum; j++)
             {
-                mapDesc.pDecal[i] = m_MapTotalInform.pMapObjDesc[i].pDecals[j];
+                mapDesc.pDecal[j].iMaterialNum = m_MapTotalInform.pMapObjDesc[i].pDecals[j].iMaterialNum;
+                mapDesc.pDecal[j].vTransform = m_MapTotalInform.pMapObjDesc[i].pDecals[j].vTransform;
             }
         }
 
@@ -267,7 +283,22 @@ HRESULT CFileTotalMgr::Import_Bin_Light_Data_OnClient(LIGHT_DESC_IO* lightData, 
 
 void CFileTotalMgr::Free()
 {
+    for (int i = 0; i < m_MapTotalInform.iNumMapObj; i++)
+    {
+        if (0 < m_MapTotalInform.pMapObjDesc[i].iDecalNum)
+        {
+            Safe_Delete_Array(m_MapTotalInform.pMapObjDesc[i].pDecals);
+        }
+    }
+
+    for (int i = 0; i < m_MapTotalInform.iNumMapObj; i++)
+    {
+        Safe_Delete(m_MapTotalInform.pMapObjDesc);
+    }
+
     Safe_Delete_Array(m_MapTotalInform.pMapObjDesc);
+
+
     Safe_Delete_Array(m_LightTotalInform.pLightDesc);
 
     m_Layers.clear();

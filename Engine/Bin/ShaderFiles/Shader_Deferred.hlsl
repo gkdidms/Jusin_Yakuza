@@ -1,77 +1,4 @@
-
-#include "Engine_Shader_Defines.hlsli"
-
-/* 컨스턴트 테이블(상수테이블) */
-matrix g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
-matrix g_ViewMatrixInv, g_ProjMatrixInv;
-matrix g_LightViewMatrix, g_LightProjMatrix;
-
-matrix g_CamProjMatrix, g_CamViewMatrix;
-
-vector g_vLightDir;
-vector g_vLightPos;
-float g_fLightRange;
-vector g_vLightDiffuse;
-vector g_vLightAmbient;
-vector g_vLightSpecular;
-
-vector g_vMtrlAmbient = vector(1.f, 1.f, 1.f, 1.f);
-vector g_vMtrlSpecular = vector(1.f, 1.f, 1.f, 1.f);
-
-vector g_vCamPosition;
-vector g_vCamDir;
-float g_fFar;
-
-Texture2D g_Texture;
-Texture2D g_PriorityTexture;
-Texture2D g_NormalTexture;
-Texture2D g_DiffuseTexture;
-Texture2D g_ShadeTexture;
-Texture2D g_DepthTexture;
-Texture2D g_BackBufferTexture;
-Texture2D g_LightDepthTexture;
-Texture2D g_ToneMappingTexture;
-Texture2D g_LuminanceTexture;
-Texture2D g_CopyLuminanceTexture;
-Texture2D g_AmbientTexture;
-//블러용
-Texture2D g_EffectTexture;
-
-Texture2D g_BlurTexture;
-Texture2D g_ResultTexture;
-Texture2D g_AccumTexture;
-Texture2D g_AccumAlpha;
-
-float g_fOutlineAngle = 0.8f;
-
-
-//HDR
-float3 Luminance = float3(0.2125f, 0.7154f, 0.0721f);
-float fDelta = { 0.0001f };
-bool g_isFinished = { false };
-float g_fLumVar;
-
-//SSAO
-bool g_isSSAO = { false };
-float g_fRadiuse = { 0.003f };
-float3 g_SSAORandoms[64];
-Texture2D g_SSAONoisesTexture;
-float g_fSSAOBise = { 0.025f };
-const float2 g_NoiseScale = float2(1280.f / 4.f, 720.f / 4.f);
-
-
-//블룸(가우시안)
-float g_fTexW = 1280.0f;
-float g_fTexH = 720.0f;
-
-static const float g_fWeight[13] =
-{
-    0.0044, 0.0175, 0.0540, 0.1295, 0.2420, 0.3521, 0.3989, 0.3521, 0.2420, 0.1295, 0.0540, 0.0175, 0.0044
-	/*0.0561, 0.1353, 0.278, 0.4868, 0.7261, 0.9231, 1, 
-	0.9231, 0.7261, 0.4868, 0.278, 0.1353, 0.0561*/
-};
-
-float g_fTotal = 2.f;
+#include "Shader_PBR.hlsl"
 
 struct VS_IN
 {
@@ -117,6 +44,15 @@ struct PS_OUT
     vector vColor : SV_TARGET0;
 };
 
+struct PS_OUT_GAMEOBJECT
+{
+    vector vColor : SV_TARGET0;
+    vector vNormal : SV_TARGET1;
+    vector vDepth : SV_TARGET2;
+    vector vRM : SV_TARGET3;
+    vector vMetallic : SV_Target4;
+};
+
 PS_OUT PS_MAIN_DEBUG(PS_IN In)
 {
     PS_OUT Out = (PS_OUT) 0;
@@ -129,55 +65,11 @@ PS_OUT PS_MAIN_DEBUG(PS_IN In)
 struct PS_OUT_LIGHT
 {
     vector vShade : SV_TARGET0;
+    vector vDiffuse : SV_TARGET1;
+    vector vSpecular : SV_TARGET2;
     //vector vAmbient : SV_TARGET1;
 };
 
-float3x3 Get_TBN(float3 vNormal, float2 vTexcoord)
-{   
-    float3 vRandomVec = g_SSAONoisesTexture.Sample(PointSampler, vTexcoord * g_NoiseScale).xyz;
-    //matrix matWV = mul(g_WorldMatrix, g_ViewMatrix);
-    //vRandomVec = normalize(mul(vector(vRandomVec, 0.f), matWV)).xyz;
-    
-    float3 tangent = normalize(vRandomVec - vNormal * dot(vRandomVec, vNormal));
-    float3 bitangent = cross(vNormal, tangent);
-    float3x3 TBN = float3x3(tangent, bitangent, vNormal);
-    
-    return TBN;
-}
-
-float4 SSAO(float3x3 TBN, float3 vPosition)
-{
-    float fOcclusion = 0.f;
-    
-    for (int i = 0; i < 64; ++i)
-    {   
-        float3 vSample = vPosition + mul(g_SSAORandoms[i], TBN) * g_fRadiuse; // 뷰스페이스
-       
-        vector vOffset = vector(vSample, 1.f);
-        vOffset = mul(vOffset, g_CamProjMatrix);
-        vOffset.xyz /= vOffset.w;
-        vOffset.xy = vOffset.xy * float2(0.5f, -0.5f) + float2(0.5f, -0.5f);
-        
-        vector vOccNorm = g_DepthTexture.Sample(PointSampler, vOffset.xy);
-        
-        	/* 뷰스페이스 상의 위치를 구한다. */
-        vector vOccPosition;
-        vOccPosition.x = vOffset.x * 2.f - 1.f;
-        vOccPosition.y = vOffset.y * -2.f + 1.f;
-        vOccPosition.z = vOccNorm.x; /* 0 ~ 1 */
-        vOccPosition.w = 1.f;
-        
-        vOccPosition = vOccPosition * (vOccNorm.y * g_fFar);
-        vOccPosition = mul(vOccPosition, g_ProjMatrixInv);
-        
-        //float rangeCheck = smoothstep(0.0, 1.0, g_fRadiuse / abs(vPosition.z - vOccPosition.z));
-        fOcclusion += (vOccPosition.z >= vSample.z + g_fSSAOBise ? 1.0 : 0.0);
-    }
-    
-    float4 vAmbient = fOcclusion / 64.f;
-    
-    return vAmbient;
-}
 
 PS_OUT PS_MAIN_SSAO(PS_IN In)
 {
@@ -194,14 +86,12 @@ PS_OUT PS_MAIN_SSAO(PS_IN In)
     {
         //뷰스페이스 위치로 옮기기
         vector vNormal = vector(vNormalDesc.xyz * 2.f - 1.f, 0.0f);
-        vNormal = normalize(mul(vNormal, g_ViewMatrix));
+        vNormal = normalize(mul(vNormal, g_CamViewMatrix));
         
         //뷰행렬 상의 위치 구하기
         vector vPosition;
         
         vPosition.x = In.vTexcoord.x * 2.f - 1.f;
-        
-      
         vPosition.y = In.vTexcoord.y * -2.f + 1.f;
         vPosition.z = vDepthDesc.x; /* 0 ~ 1 */
         vPosition.w = 1.f;
@@ -232,8 +122,33 @@ PS_OUT_LIGHT PS_MAIN_LIGHT_DIRECTIONAL(PS_IN In)
     
     Out.vShade = g_vLightDiffuse * saturate(max(dot(normalize(g_vLightDir) * -1.f, normalize(vNormal)), 0.f) + vAmbient);
     
-    //if (g_isSSAO)
-    //   Out.vShade *= vAmbientDesc;
+    //Grass
+    vector vGlassNormalDesc = g_GlassNormalTexture.Sample(LinearSampler,In.vTexcoord);
+    vector vGlassNormal = vector(vGlassNormalDesc.xyz * 2.f - 1.f, 0.f);
+    
+    Out.vDiffuse = vector(BRDF(In.vPosition, In.vTexcoord, normalize(vNormal), vDepthDesc), 1.f);
+    
+    if (vGlassNormalDesc.a == 0.f)
+    {
+        vector vGlassDepthDesc = g_GlassDepthTexture.Sample(PointSampler, In.vTexcoord);
+    
+        vector vWorldPos;
+
+        vWorldPos.x = In.vTexcoord.x * 2.f - 1.f;
+        vWorldPos.y = In.vTexcoord.y * -2.f + 1.f;
+        vWorldPos.z = vGlassDepthDesc.x;
+        vWorldPos.w = 1.f;
+
+        vWorldPos = vWorldPos * (vGlassDepthDesc.y * g_fFar);
+    
+        vWorldPos = mul(vWorldPos, g_ProjMatrixInv);
+        vWorldPos = mul(vWorldPos, g_ViewMatrixInv);
+
+        vector vReflect = reflect(normalize(g_vLightDir) , normalize(vGlassNormal));
+        vector vLook = g_vCamPosition - vWorldPos;
+    
+        Out.vSpecular = pow(max(dot(normalize(vReflect), normalize(vLook)), 0.f), 30.f);
+    }
     
     return Out;
 }
@@ -276,14 +191,15 @@ PS_OUT PS_MAIN_COPY_BACKBUFFER_RESULT(PS_IN In)
 {
     PS_OUT Out = (PS_OUT) 0;
 
-    vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
-    if (0.0f == vDiffuse.a)
+    vector vAlbedo = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
+    if (0.0f == vAlbedo.a)
         discard;
-
+    
     vector vShade = g_ShadeTexture.Sample(LinearSampler, In.vTexcoord);
+    vector vSpeculer = g_SpecularTexture.Sample(LinearSampler, In.vTexcoord);
     
-    
-    Out.vColor = vDiffuse * vShade;
+    // 기존
+    Out.vColor = vAlbedo * vShade + vSpeculer;
     
     return Out;
 }
@@ -471,6 +387,53 @@ PS_OUT PS_OIT_RESULT(PS_IN In)
 
     return Out;
 }
+
+PS_OUT_GAMEOBJECT PS_INCLUDE_GLASS(PS_IN In)
+{
+
+    PS_OUT_GAMEOBJECT Out = (PS_OUT_GAMEOBJECT) 0;
+
+    vector vDiffuseColor = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
+    vector vGlassDiffuseColor = g_GlassDiffuseTexture.Sample(LinearSampler, In.vTexcoord);
+    
+    vector vNonBlendNormal = g_NormalTexture.Sample(LinearSampler, In.vTexcoord);
+    vector vGlassNormal = g_GlassNormalTexture.Sample(LinearSampler, In.vTexcoord);
+    
+    vector vNonBlendDepth = g_DepthTexture.Sample(LinearSampler, In.vTexcoord);
+    vector vGlassDepth = g_GlassDepthTexture.Sample(LinearSampler, In.vTexcoord);
+    
+    vector vNonBlendRM = g_RMTexture.Sample(LinearSampler, In.vTexcoord);
+    vector vGlassRM = g_GlassRMTexture.Sample(LinearSampler, In.vTexcoord);
+    
+    vector vNonBlendMetallic = g_MetallicTexture.Sample(LinearSampler, In.vTexcoord);
+    vector vGlassMetallic = g_GlassMetallicTexture.Sample(LinearSampler, In.vTexcoord);
+    
+    
+    if (vNonBlendDepth.r < vGlassDepth.r)
+    {
+        // Nonblend
+        Out.vColor = vDiffuseColor;
+        Out.vNormal = vNonBlendNormal;
+        Out.vDepth = vNonBlendDepth;
+        Out.vRM = vNonBlendRM;
+        Out.vMetallic = vNonBlendMetallic;
+    }
+    else
+    {
+        // Glass
+        Out.vColor = vGlassDiffuseColor;
+        Out.vNormal = vGlassNormal;
+        Out.vDepth = vGlassDepth;
+        Out.vRM = vGlassRM;
+        Out.vMetallic = vGlassMetallic;
+    }
+    
+    
+
+    return Out;
+}
+
+
 
 technique11 DefaultTechnique
 {
@@ -686,7 +649,18 @@ technique11 DefaultTechnique
         DomainShader = NULL;
         PixelShader = compile ps_5_0 PS_OIT_RESULT();   
     }
+    
+    pass IncludeGlassRender //16 - diffuse와 Glass 합치기
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_None_Test_None_Write, 0);
+        SetBlendState(BS_Blend, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xffffffff);
 
-
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        HullShader = NULL;
+        DomainShader = NULL;
+        PixelShader = compile ps_5_0 PS_INCLUDE_GLASS();
+    }
 }
 

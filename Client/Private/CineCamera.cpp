@@ -49,8 +49,6 @@ void CCineCamera::Tick(const _float& fTimeDelta)
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_vEye);
 		m_pTransformCom->LookAt(m_vFocus);
 
-		m_WorldMatrix = *m_pTransformCom->Get_WorldFloat4x4();
-
 		__super::Tick(fTimeDelta);
 	}
 }

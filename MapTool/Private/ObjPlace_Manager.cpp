@@ -575,7 +575,8 @@ void CObjPlace_Manager::Load_GameObject(int iNum)
 
 			for (int j = 0; j < mapDesc.iDecalNum; j++)
 			{
-				mapDesc.pDecal[i] = mapTotalInform.pMapObjDesc[i].pDecals[j];
+				mapDesc.pDecal[j].iMaterialNum = mapTotalInform.pMapObjDesc[i].pDecals[j].iMaterialNum;
+				mapDesc.pDecal[j].vTransform = mapTotalInform.pMapObjDesc[i].pDecals[j].vTransform;
 			}
 		}
 		
@@ -664,7 +665,7 @@ void CObjPlace_Manager::Edit_Installed_GameObject(int iNumObject)
 		m_tCurrentObjectDesc.iShaderPass = 0;
 	}
 
-	if (ImGui::RadioButton(u8"shader2", m_tCurrentObjectDesc.iShaderPass == 1))
+	if (ImGui::RadioButton(u8"유리", m_tCurrentObjectDesc.iShaderPass == 1))
 	{
 		shaderType = 1;
 		m_tCurrentObjectDesc.iShaderPass = 1;
@@ -991,7 +992,8 @@ HRESULT CObjPlace_Manager::Import_Bin_Map_Data_OnTool(MAP_TOTALINFORM_DESC* mapO
 
 		for (int j = 0; j < pMapObj->iDecalNum ; j++)
 		{
-			in.read((char*)&pMapObj->pDecals[j], sizeof(DECAL_DESC_IO));
+			in.read((char*)&pMapObj->pDecals[j].iMaterialNum, sizeof(int));
+			in.read((char*)&pMapObj->pDecals[j].vTransform, sizeof(XMFLOAT4X4));
 		}
 	}
 
@@ -1052,7 +1054,8 @@ HRESULT CObjPlace_Manager::Export_Bin_Map_Data(MAP_TOTALINFORM_DESC* mapObjData)
 
 		for (int j = 0; j < PObjPlaceDesc.iDecalNum; j++)
 		{
-			out.write((char*)&PObjPlaceDesc.pDecals[j], sizeof(DECAL_DESC_IO));
+			out.write((char*)&PObjPlaceDesc.pDecals[j].iMaterialNum, sizeof(int));
+			out.write((char*)&PObjPlaceDesc.pDecals[j].vTransform, sizeof(XMFLOAT4X4));
 		}
 	}
 
@@ -1351,7 +1354,7 @@ void CObjPlace_Manager::Update_DecalNameList()
 			char* szName = new char[MAX_PATH];
 			strcpy(szName, "Decal");
 			char buff[MAX_PATH];
-			sprintf(buff, "%d", i);
+			sprintf(buff, "%d", m_Decals[i].iMaterialNum);
 			strcat(szName, buff);
 			m_DecalNames.push_back(szName);
 		}
@@ -1483,7 +1486,6 @@ void CObjPlace_Manager::Add_Decal_IMGUI()
 				for (int i = 0; i < m_iCurrentObjectIndex; i++)
 				{
 					iter++;
-					m_iCurrentObjectIndex++;
 				}
 			}
 
@@ -1557,6 +1559,8 @@ void CObjPlace_Manager::Add_Decal_IMGUI()
 		}
 
 		
+
+		
 		if (0 < m_ObjectDecals.size())
 		{
 			ImGui::Text(u8" 추가된 리스트 ");
@@ -1578,9 +1582,38 @@ void CObjPlace_Manager::Add_Decal_IMGUI()
 				ImGui::EndListBox();
 			}
 
+			if (ImGui::Button(u8"Decal 오브젝트 삭제"))
+			{
+				multimap<wstring, CGameObject*>::iterator iter = m_GameObjects.begin();
 
-			Edit_Installed_Decal(decal_obj_current_idx);
+				if (0 != m_iCurrentObjectIndex)
+				{
+					for (int i = 0; i < m_iCurrentObjectIndex; i++)
+					{
+						iter++;
+					}
+				}
 
+				dynamic_cast<CConstruction*>(iter->second)->Delete_Decal(decal_obj_current_idx);
+
+				Update_DecalList_In_Object();
+				Update_DecalNameList_In_Object();
+
+				if (decal_obj_current_idx >= m_DecalNames_Obj.size() && m_DecalNames_Obj.size() != 0)
+				{
+					decal_obj_current_idx = m_DecalNames_Obj.size() - 1;
+				}
+				else if (m_DecalNames_Obj.size() == 0)
+				{
+					decal_obj_current_idx = 0;
+				}
+			}
+
+			if (0 < m_ObjectDecals.size())
+			{
+				Edit_Installed_Decal(decal_obj_current_idx);
+			}
+			
 		}
 
 
@@ -1597,7 +1630,6 @@ void CObjPlace_Manager::Add_Decal_IMGUI()
 				for (int i = 0; i < m_iCurrentObjectIndex; i++)
 				{
 					iter++;
-					m_iCurrentObjectIndex++;
 				}
 			}
 

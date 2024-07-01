@@ -32,18 +32,32 @@ CImguiManager::CImguiManager(ID3D11Device* pDevice, ID3D11DeviceContext* pContex
 
 HRESULT CImguiManager::Initialize(void* pArg)
 {
+	IMGUI_CHECKVERSION();
+	ImGui::CreateContext();
+	ImGuiIO& io = ImGui::GetIO();
+	io.Fonts->AddFontFromFileTTF("C:\\Windows\\fonts\\malgun.ttf", 14.0f, NULL, io.Fonts->GetGlyphRangesKorean());
+
+
+	TextureTags.push_back(TEXT("Prototype_Component_Texture_Sphere"));
+	TextureTags.push_back(TEXT("Prototype_Component_Texture_Trail"));
+	TextureTags.push_back(TEXT("Prototype_Component_Texture_Test"));
+	TextureTags.push_back(TEXT("Prototype_Component_Texture_HitSpark"));
+
 
 	if (nullptr != pArg)
 	{
 
 	}
 	m_EffectDesc.vStartPos = { 0.f, 0.f, 0.f, 1.f };
+	m_EffectDesc.fRotate = { 0.f};
+	m_EffectDesc.fLifeAlpha = { 1.f, 1.f};
 	m_EffectDesc.eType = 0;
 	m_EffectDesc.ParticleTag = { TEXT("") };
 	m_EffectDesc.fStartTime = { 0.f };
-	m_EffectDesc.vStartColor = { 0.0f , 0.0f ,0.0f ,1.0f};
-	m_EffectDesc.vEndColor = { 0.0f, 0.0f, 0.0f, 1.0f };
+	m_EffectDesc.vStartColor = { 1.0f , 1.0f ,1.0f ,1.0f};
+	m_EffectDesc.vEndColor = { 1.0f, 1.0f, 1.0f, 1.0f };
 	m_EffectDesc.iShaderPass = { 0 };
+	m_EffectDesc.TextureTag = TextureTags[0];
 
 	m_EffectDesc.BufferInstance.iNumInstance = 1;
 	m_EffectDesc.BufferInstance.isLoop = true;
@@ -67,10 +81,13 @@ HRESULT CImguiManager::Initialize(void* pArg)
 	m_TrailDesc.vEndColor = { 0.0f, 0.0f, 0.0f, 1.0f };
 	m_TrailDesc.iShaderPass = { 0 };
 	m_TrailDesc.fSpeedPecSec = 5.0f;
+	m_TrailDesc.TextureTag = TextureTags[0];
 
 	m_TrailDesc.Trail_Desc.iMaxTrail = 10;
 	m_TrailDesc.Trail_Desc.vInitPosA = _float3{ 0.0f , 0.0f , 0.0f };
 	m_TrailDesc.Trail_Desc.vInitPosB = _float3{0.0f , 1.0f, 0.0f};	
+
+
 
 	return S_OK;
 }
@@ -211,7 +228,7 @@ void CImguiManager::EditTransform(_float* cameraView, _float* cameraProjection, 
 		dynamic_cast<CEffect*>(m_EditParticle[m_iCurEditIndex])->Set_StartPos(_float4(matrix[12], matrix[13], matrix[14], matrix[15]));
 		break;
 	case MODE_TRAIL:
-		dynamic_cast<CEffect*>(m_EditTrail[m_iCurEditIndex])->Set_StartPos(_float4(matrix[12], matrix[13], matrix[14], matrix[15]));
+		//dynamic_cast<CEffect*>(m_EditTrail[m_iCurEditIndex])->Set_StartPos(_float4(matrix[12], matrix[13], matrix[14], matrix[15]));
 		break;
 	}
 	
@@ -302,10 +319,13 @@ HRESULT CImguiManager::Create_Particle()
 	EffectDesc.BufferInstance.fRadius = 1.f;	
 
 	EffectDesc.vStartPos = { 0.f, 0.f, 0.f, 1.f };
+	EffectDesc.fRotate = { 0.f};
+	EffectDesc.fLifeAlpha = { 0.f, 0.f};
 	EffectDesc.eType = CEffect::TYPE_POINT;
 	EffectDesc.ParticleTag = m_pGameInstance->StringToWstring(text_input_buffer);
 	EffectDesc.fStartTime = { 0.f };
 	EffectDesc.iShaderPass = { 0 };
+	EffectDesc.TextureTag = TextureTags[0];
 
 
 
@@ -317,6 +337,8 @@ HRESULT CImguiManager::Create_Particle()
 		dynamic_cast<CEffect*>(pGameParticle)->Edit_Action(CEffect::ACTION_SPREAD);
 	if(m_bDrop)
 		dynamic_cast<CEffect*>(pGameParticle)->Edit_Action(CEffect::ACTION_DROP);
+	if (m_bSize)
+		dynamic_cast<CEffect*>(pGameParticle)->Edit_Action(CEffect::ACTION_SIZE);
 
 	m_EditParticle.push_back(pGameParticle);
 	m_iCurEditIndex = m_EditParticle.size() - 1;
@@ -340,7 +362,7 @@ HRESULT CImguiManager::Create_Trail()
 	EffectDesc.ParticleTag = m_pGameInstance->StringToWstring(m_TrailTag);
 	EffectDesc.fStartTime = { 0.f };
 	EffectDesc.iShaderPass = { 0 };
-
+	EffectDesc.TextureTag = TextureTags[0];
 
 
 	CGameObject* pGameParticle = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_TrailEffect"), &EffectDesc);
@@ -381,14 +403,11 @@ void CImguiManager::CreateTrail_Tick(_float fTimeDelta)
 				m_iCurEditIndex = 0;
 		}
 	}
-	if (ImGui::Button("Save_binary"))
+	if (ImGui::Button(u8"파티클 모두저장"))
 	{
-		//바이너리화
+		AllEffect_Save();
 	}
-	if (ImGui::Button("Load_binary"))
-	{
-		//바이너리 로드
-	}
+	Load_Selctor();
 
 
 	ImGui::End();
@@ -464,6 +483,7 @@ void CImguiManager::EditorTrail_Tick(_float fTimeDelta)
 		bChange = true;
 	}
 
+	File_Selctor(&bChange);
 
 	if (bChange)
 	{
@@ -471,6 +491,86 @@ void CImguiManager::EditorTrail_Tick(_float fTimeDelta)
 	}
 	ImGui::End();
 
+}
+
+HRESULT CImguiManager::AllEffect_Save()
+{
+	switch (m_iMode)
+	{
+	case Client::CImguiManager::MODE_PARTICLE:
+	{
+		string strDirectory = "../../Client/Bin/DataFiles/Particle/Point";
+
+		fs::path path(strDirectory);	
+		if (!exists(path))	
+			fs::create_directory(path);	
+
+		for (auto iter : m_EditParticle)
+			dynamic_cast<CParticle_Point*>(iter)->Save_Data(strDirectory);
+
+	}
+		break;
+	case Client::CImguiManager::MODE_TRAIL:
+	{
+		string strDirectory = "../../Client/Bin/DataFiles/Particle/Trail";
+
+		fs::path path(strDirectory);
+		if (!exists(path))
+			fs::create_directory(path);
+
+		for (auto iter : m_EditTrail)
+			dynamic_cast<CTRailEffect*>(iter)->Save_Data(strDirectory);
+
+	}
+		break;
+	case Client::CImguiManager::MODE_END:
+		break;
+	default:
+		break;
+	}
+	
+
+	return S_OK;
+}
+
+HRESULT CImguiManager::AllEffect_Load()
+{
+
+	switch (m_iMode)
+	{
+	case Client::CImguiManager::MODE_PARTICLE:
+	{
+		string strDirectory = "../../Client/Bin/DataFiles/Particle/Point";
+
+		fs::path path(strDirectory);
+		if (!exists(path))
+			fs::create_directory(path);
+
+		for (auto iter : m_EditParticle)
+			dynamic_cast<CParticle_Point*>(iter)->Load_Data(strDirectory);
+	}
+	break;
+	case Client::CImguiManager::MODE_TRAIL:
+	{
+		string strDirectory = "../../Client/Bin/DataFiles/Particle/Trail";
+
+		fs::path path(strDirectory);
+		if (!exists(path))
+			fs::create_directory(path);
+
+		for (auto iter : m_EditParticle)
+			dynamic_cast<CTRailEffect*>(iter)->Load_Data(strDirectory);
+
+	}
+	break;
+	case Client::CImguiManager::MODE_END:
+		break;
+	default:
+		break;
+	}
+
+
+	return S_OK;
 }
 
 HRESULT CImguiManager::Edit_Particle(_uint Index)
@@ -502,13 +602,15 @@ HRESULT CImguiManager::Edit_Particle(_uint Index)
 		EffectDesc.BufferInstance.bRadius = m_EffectDesc.BufferInstance.bRadius;
 
 		EffectDesc.vStartPos = m_EffectDesc.vStartPos;
+		EffectDesc.fRotate = m_EffectDesc.fRotate;
+		EffectDesc.fLifeAlpha = m_EffectDesc.fLifeAlpha;
 		EffectDesc.eType = m_EffectDesc.eType;
 		EffectDesc.ParticleTag = m_EffectDesc.ParticleTag;
 		EffectDesc.fStartTime = m_EffectDesc.fStartTime;
 		EffectDesc.vStartColor = m_EffectDesc.vStartColor;
 		EffectDesc.vEndColor = m_EffectDesc.vEndColor;
 		EffectDesc.iShaderPass = m_EffectDesc.iShaderPass;
-
+		EffectDesc.TextureTag = m_EffectDesc.TextureTag;
 
 		m_EditParticle[Index] = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Particle_Point"), &EffectDesc);
 		if (nullptr == m_EditParticle[Index])
@@ -518,6 +620,8 @@ HRESULT CImguiManager::Edit_Particle(_uint Index)
 			dynamic_cast<CEffect*>(m_EditParticle[Index])->Edit_Action(CEffect::ACTION_SPREAD);
 		if (m_bDrop)
 			dynamic_cast<CEffect*>(m_EditParticle[Index])->Edit_Action(CEffect::ACTION_DROP);
+		if (m_bSize)
+			dynamic_cast<CEffect*>(m_EditParticle[Index])->Edit_Action(CEffect::ACTION_SIZE);
 
 
 	}
@@ -543,6 +647,7 @@ HRESULT CImguiManager::Edit_Particle(_uint Index)
 		TrailDesc.eType = CEffect::TYPE_TRAIL;	
 		TrailDesc.ParticleTag = m_pGameInstance->StringToWstring(m_TrailTag);
 		TrailDesc.iShaderPass = m_TrailDesc.iShaderPass;
+		TrailDesc.TextureTag = m_TrailDesc.TextureTag;
 
 		m_EditTrail[Index] = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_TrailEffect"), &TrailDesc);
 		if (nullptr == m_EditTrail[Index])
@@ -554,7 +659,7 @@ HRESULT CImguiManager::Edit_Particle(_uint Index)
 		break;
 	}
 
-	m_iCurEditIndex = Index;
+	//m_iCurEditIndex = Index;
 
 	return S_OK;
 }
@@ -584,11 +689,14 @@ HRESULT CImguiManager::Load_Desc(_uint Index)
 
 		m_EffectDesc.eType = pEffect->Get_Type();
 		m_EffectDesc.vStartPos = pEffect->Get_StartPos();
+		m_EffectDesc.fRotate = pEffect->Get_Rotate();
+		m_EffectDesc.fLifeAlpha = pEffect->Get_LifeAlpha();
 		m_EffectDesc.fStartTime = *pEffect->Get_pStartTime();
 		m_EffectDesc.ParticleTag = pEffect->Get_Tag();
 		m_EffectDesc.vStartColor = pEffect->Get_SColor();
 		m_EffectDesc.vEndColor = pEffect->Get_EColor();
 		m_EffectDesc.iShaderPass = pEffect->Get_ShaderPass();
+		m_EffectDesc.TextureTag = pEffect->Get_TextureTag();
 
 		_uint CheckAction = pEffect->Get_Action();
 
@@ -601,6 +709,11 @@ HRESULT CImguiManager::Load_Desc(_uint Index)
 			m_bDrop = true;
 		else
 			m_bDrop = false;
+
+		if (CheckAction & pEffect->iAction[CEffect::ACTION_SIZE])
+			m_bSize = true;
+		else
+			m_bSize = false;
 
 	}
 		break;
@@ -616,6 +729,7 @@ HRESULT CImguiManager::Load_Desc(_uint Index)
 
 		m_TrailDesc.ParticleTag = pEffect->Get_Tag();
 		m_TrailDesc.iShaderPass = pEffect->Get_ShaderPass();
+		m_TrailDesc.TextureTag = pEffect->Get_TextureTag();
 
 		m_TrailDesc.Trail_Desc.iMaxTrail = pDesc->iMaxTrail;
 		m_TrailDesc.Trail_Desc.vInitPosA = pDesc->vInitPosA;
@@ -629,6 +743,138 @@ HRESULT CImguiManager::Load_Desc(_uint Index)
 
 
 	return S_OK;
+}
+
+void CImguiManager::File_Selctor(_bool* bChange)
+{
+
+	_int iSize = TextureTags.size();
+	if (ImGui::BeginListBox("texturebox"))
+	{
+		for (int i = 0; i < iSize; i++)
+		{
+			// 리스트박스 아이템의 텍스트
+			const bool isSelected = (m_iCurTexture == i);
+			char Label[256] = {};
+			strcpy_s(Label, m_pGameInstance->WstringToString(TextureTags[i]).c_str());	
+			if (ImGui::Selectable(Label, isSelected))
+			{
+				m_iCurTexture = i; // 선택된 아이템 업데이트	
+				*bChange = true;	
+			}
+
+
+			// 선택된 아이템이 보이도록 스크롤
+			if (isSelected)
+			{
+				ImGui::SetItemDefaultFocus();
+
+			}
+		}
+		ImGui::EndListBox();
+	}
+
+
+	if (-1 != m_iCurEditIndex)
+	{
+		switch (m_iMode)
+		{
+		case Client::CImguiManager::MODE_PARTICLE:
+		{
+			m_EffectDesc.TextureTag = TextureTags[m_iCurTexture];	
+			
+		}
+			break;
+		case Client::CImguiManager::MODE_TRAIL:
+		{
+			m_TrailDesc.TextureTag = TextureTags[m_iCurTexture];	
+			//bChange = true;
+		}
+			break;
+		case Client::CImguiManager::MODE_END:
+			break;
+		default:
+			break;
+		}
+	}
+
+}
+
+void CImguiManager::Load_Selctor()
+{
+	switch (m_iMode)
+	{
+	case Client::CImguiManager::MODE_PARTICLE:
+	{
+		if (ImGui::Button(u8"로드 파티클"))
+		{
+			IGFD::FileDialogConfig config;
+			config.path = "../../Client/Bin/DataFiles/Particle/Point";
+			ImGuiFileDialog::Instance()->OpenDialog("ChooseTextureKey", "Choose File", ".dat", config);
+		}
+		if (ImGuiFileDialog::Instance()->Display("ChooseTextureKey")) {
+			if (ImGuiFileDialog::Instance()->IsOk()) { // action if OK
+				std::string filePathName = ImGuiFileDialog::Instance()->GetFilePathName();
+				std::string fileName = ImGuiFileDialog::Instance()->GetCurrentFileName();
+				// action
+
+				string Tag;
+				_int dotPos = fileName.find_last_of(".");
+				Tag = fileName.substr(0, dotPos);
+
+				
+				CGameObject* pGameParticle = m_pGameInstance->Clone_Object(m_pGameInstance->StringToWstring(Tag),nullptr);
+				if (nullptr == pGameParticle)
+					MSG_BOX("생성 실패");
+
+				m_EditParticle.push_back(pGameParticle);
+				m_iCurEditIndex = m_EditParticle.size() - 1;
+			}
+
+			// close
+			ImGuiFileDialog::Instance()->Close();
+		}
+	}
+		break;
+	case Client::CImguiManager::MODE_TRAIL:
+	{
+		if (ImGui::Button(u8"로드 파티클생성"))
+		{
+			IGFD::FileDialogConfig config;
+			config.path = "../../Client/Bin/DataFiles/Particle/Trail";
+			ImGuiFileDialog::Instance()->OpenDialog("ChooseTextureKey", "Choose File", ".dat", config);
+		}
+		if (ImGuiFileDialog::Instance()->Display("ChooseTextureKey")) {
+			if (ImGuiFileDialog::Instance()->IsOk()) { // action if OK
+				std::string filePathName = ImGuiFileDialog::Instance()->GetFilePathName();
+				std::string fileName = ImGuiFileDialog::Instance()->GetCurrentFileName();
+				// action
+
+
+				string Tag;
+				_int dotPos = fileName.find_last_of(".");
+				Tag = fileName.substr(0, dotPos);
+
+
+				CGameObject* pGameParticle = m_pGameInstance->Clone_Object(m_pGameInstance->StringToWstring(Tag), nullptr);
+				if (nullptr == pGameParticle)
+					MSG_BOX("생성 실패");
+
+				m_EditTrail.push_back(pGameParticle);
+				m_iCurEditIndex = m_EditTrail.size() - 1;
+			}
+
+			// close
+			ImGuiFileDialog::Instance()->Close();
+		}
+	}
+		break;
+	case Client::CImguiManager::MODE_END:
+		break;
+	default:
+		break;
+	}
+	
 }
 
 void CImguiManager::Create_Tick(_float fTimeDelta)
@@ -660,14 +906,12 @@ void CImguiManager::Create_Tick(_float fTimeDelta)
 				m_iCurEditIndex = 0;
 		}
 	}
-	if (ImGui::Button("Save_binary"))
+	if (ImGui::Button(u8"파티클 모두저장"))
 	{
-		//바이너리화
+		AllEffect_Save();
 	}
-	if (ImGui::Button("Load_binary"))
-	{
-		//바이너리 로드
-	}
+	Load_Selctor();
+
 
 	ImGui::End();
 }
@@ -717,17 +961,15 @@ void CImguiManager::Editor_Tick(_float fTimeDelta)
 	ImGui::Text(to_string(m_iCurEditIndex).c_str());
 
 
-	if (ImGui::RadioButton("DIR", &m_EffectDesc.iShaderPass, PASS_DIRECTION))
+	if (ImGui::RadioButton("NOCOLOR", &m_EffectDesc.iShaderPass, PASS_NOCOLOR))
 		bChange = true;
 	ImGui::SameLine();
-	if (ImGui::RadioButton("NDIR", &m_EffectDesc.iShaderPass, PASS_NODIRECTION))
-		bChange = true;
-	ImGui::SameLine(); 
-	if (ImGui::RadioButton("DIRCOLOR", &m_EffectDesc.iShaderPass, PASS_DIRECTIONCOLOR))
+	if (ImGui::RadioButton("COLOR", &m_EffectDesc.iShaderPass, PASS_COLOR))
 		bChange = true;
 	ImGui::SameLine();
-	if (ImGui::RadioButton("WEIGHT", &m_EffectDesc.iShaderPass, PASS_WEIGHTBLEND))
+	if (ImGui::RadioButton("ROTATE", &m_EffectDesc.iShaderPass, PASS_ROTATE))
 		bChange = true;
+
 
 	if (ImGui::Checkbox("Spread", &m_bSpread))
 	{
@@ -749,6 +991,17 @@ void CImguiManager::Editor_Tick(_float fTimeDelta)
 	}	
 	ImGui::SameLine();
 
+	if (ImGui::Checkbox("Size", &m_bSize))
+	{
+		if (-1 != m_iCurEditIndex)
+		{
+			CEffect* pParticle = dynamic_cast<CEffect*>(m_EditParticle[m_iCurEditIndex]);
+			pParticle->Edit_Action(CEffect::ACTION_SIZE);
+		}
+	}
+	ImGui::SameLine();
+
+
 	if (ImGui::Checkbox("Loop", &m_EffectDesc.BufferInstance.isLoop))
 	{
 		bChange = true;
@@ -765,6 +1018,7 @@ void CImguiManager::Editor_Tick(_float fTimeDelta)
 		bChange = true;
 	}
 	
+
 	_float* Temp = (_float*)&m_EffectDesc.BufferInstance.vOffsetPos;
 	if (ImGui::InputFloat3("OffsetPos", Temp))
 	{
@@ -833,14 +1087,54 @@ void CImguiManager::Editor_Tick(_float fTimeDelta)
 		bChange = true;
 	}
 
-	Temp = (_float*)&m_EffectDesc.fStartTime;	
+	Temp = (_float*)&m_EffectDesc.fStartTime;
 	if (ImGui::InputFloat("StartTime", Temp))
 	{
-		memcpy(&m_EffectDesc.fStartTime, Temp, sizeof(_float));	
+		memcpy(&m_EffectDesc.fStartTime, Temp, sizeof(_float));
 		bChange = true;
 	}
 
-	Color_Palette();
+	switch (m_EffectDesc.iShaderPass)
+	{
+	case PASS_NOCOLOR:
+	{
+
+
+		_float* Temp = (_float*)&m_EffectDesc.fLifeAlpha;
+		if (ImGui::InputFloat2("LifeAlpha", Temp))
+		{
+			memcpy(&m_EffectDesc.fLifeAlpha, Temp, sizeof(_float2));
+			bChange = true;
+		}
+
+	}
+		break;
+	case PASS_COLOR:
+	{
+		Color_Palette();
+	}
+		break;
+	case PASS_ROTATE:
+	{
+		Color_Palette();
+		_float* PosTemp = (_float*)&m_TrailDesc.fRotate;
+		if (ImGui::InputFloat("Rotate", PosTemp))
+		{
+			memcpy(&m_TrailDesc.fRotate, PosTemp, sizeof(_float));
+			bChange = true;
+		}
+	}
+	break;
+	default:
+		break;
+	}
+
+
+	File_Selctor(&bChange);
+	
+	
+
+
 
 	if (bChange)
 	{
@@ -962,8 +1256,8 @@ void CImguiManager::Reset_Particle()
 		}
 	}
 
-	if(!m_EditParticle.empty())
-		Load_Desc(m_iCurEditIndex);
+//	if(!m_EditParticle.empty())
+		//Load_Desc(m_iCurEditIndex);
 
 }
 

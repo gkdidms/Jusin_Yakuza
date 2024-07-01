@@ -69,8 +69,8 @@ void CLevel_Loading::Tick(const _float& fTimeDelta)
 
 HRESULT CLevel_Loading::Ready_Layer_BackGround(const wstring& strLayerTag)
 {
-	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_LOADING, TEXT("Prototype_GameObject_BackGround"), strLayerTag)))
-		return E_FAIL;
+	/*if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_LOADING, TEXT("Prototype_GameObject_BackGround"), strLayerTag)))
+		return E_FAIL;*/
 
 	return S_OK;
 }

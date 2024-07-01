@@ -6,8 +6,9 @@
 
 BEGIN(Engine)
 class CShader;
-class CVIBuffer_Rect;
+class CVIBuffer_Cube;
 class CCollider;
+class CVIBuffer_Rect;
 END
 
 BEGIN(Client)
@@ -41,9 +42,10 @@ public:
 
 private:
     CTexture* m_pTextureCom = { nullptr };
-    CShader* m_pShaderCom = { nullptr };
-    CVIBuffer_Rect* m_pVIBufferCom = { nullptr };
-    CCollider* m_pColliderCom = { nullptr };
+    CShader* m_pShaderCubeCom = { nullptr };
+    CShader* m_pShaderPosCom = { nullptr };
+    CVIBuffer_Cube* m_pVIBufferCubeCom = { nullptr };
+    CVIBuffer_Rect* m_pVIBufferRectCom = { nullptr };
 
 private:
     int             m_iMaterialNum;

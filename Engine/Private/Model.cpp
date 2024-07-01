@@ -642,7 +642,7 @@ HRESULT CModel::Import_Materials(ifstream& in, _bool isTool)
 			if (nullptr == MeshMaterial.pMaterialTextures[j])
 				return E_FAIL;
 
-			if (j == aiTextureType_METALNESS)
+			if (j == aiTextureType_EMISSIVE)
 			{
 				/* DECAL */
 				DECAL_DESC		decalDesc;
@@ -801,6 +801,15 @@ HRESULT CModel::Bind_BoneMatrices(CShader* pShader, const _char* pConstantName, 
 	return pShader->Bind_Matrices(pConstantName, m_MeshBoneMatrices, 512);;
 }
 
+bool CModel::Check_Exist_Material(_uint iNumMeshIndex, aiTextureType eTextureType)
+{
+	auto* pTexture = m_Materials[m_Meshes[iNumMeshIndex]->Get_MaterialIndex()].pMaterialTextures[eTextureType];
+	if (nullptr == pTexture)
+		return false;
+
+	return true;
+}
+
 void CModel::Play_Animation(_float fTimeDelta)
 {
 	if (1 > m_Animations.size()) return;
@@ -929,7 +938,7 @@ void CModel::Copy_DecalMaterial(vector<DECAL_DESC>* pDecals)
 
 CTexture* CModel::Copy_DecalTexture(int iMaterialNum)
 {
-	return m_Materials[iMaterialNum].pMaterialTextures[aiTextureType_METALNESS];
+	return m_Materials[iMaterialNum].pMaterialTextures[aiTextureType_EMISSIVE];
 }
 
 CModel* CModel::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, MODELTYPE eModelType, const _char* pModelFilePath, _fmatrix PreTransformMatrix, _bool isExported, _bool isTool)

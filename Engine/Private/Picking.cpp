@@ -99,6 +99,10 @@ _bool CPicking::Picking_UI(CTransform* pUITransform)
 	_float4 vPos;
 	XMStoreFloat4(&vPos, pUITransform->Get_State(CTransform::STATE_POSITION));
 	_float3 vScale = pUITransform->Get_Scaled();
+	vScale.x *= 0.5f;
+	vScale.y *= 0.5f;
+	vPos.x = vPos.x + 1280.f * 0.5f;
+	vPos.y = -vPos.y + 720.f * 0.5f;
 
 	if (vPos.x - (vScale.x) < ptMouse.x && ptMouse.x < vPos.x + (vScale.x))
 		if (vPos.y - (vScale.y) < ptMouse.y && ptMouse.y < vPos.y + (vScale.y))

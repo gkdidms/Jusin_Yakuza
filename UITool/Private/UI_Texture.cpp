@@ -26,11 +26,10 @@ HRESULT CUI_Texture::Initialize(void* pArg)
 	m_strTextureFilePath = pDesc->strTextureFilePath;
 	m_strTextureName = pDesc->strTextureFileName;
 	m_iTypeIndex = pDesc->iTypeIndex;
-
+	m_isParent = pDesc->isParent;
+	m_pParentMatrix = pDesc->pParentMatrix;
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
-
-
 
 	m_fSizeX = g_iWinSizeX;
 	m_fSizeY = g_iWinSizeY;
@@ -82,8 +81,17 @@ HRESULT CUI_Texture::Add_Components()
 
 HRESULT CUI_Texture::Bind_ResourceData()
 {
-	if (FAILED(m_pTransformCom->Bind_ShaderMatrix(m_pShaderCom, "g_WorldMatrix")))
-		return E_FAIL;
+	if (m_isParent)
+	{
+		XMStoreFloat4x4(&m_WorldMatrix, m_pTransformCom->Get_WorldMatrix() * XMLoadFloat4x4(m_pParentMatrix));
+		if (FAILED(m_pShaderCom->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix)))
+			return E_FAIL;
+	}
+	else
+	{
+		if (FAILED(m_pTransformCom->Bind_ShaderMatrix(m_pShaderCom, "g_WorldMatrix")))
+			return E_FAIL;
+	}
 
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix)))
 		return E_FAIL;

@@ -45,7 +45,9 @@ void CPlayerCamera::Priority_Tick(const _float& fTimeDelta)
 void CPlayerCamera::Tick(const _float& fTimeDelta)
 {
 	if (m_pSystemManager->Get_Camera() != CAMERA_PLAYER) return;
+
 	Compute_View(fTimeDelta);
+
 }
 
 void CPlayerCamera::Late_Tick(const _float& fTimeDelta)

@@ -38,6 +38,7 @@ private:
 public:
     map<const wstring, vector<class CUI_Object*>> Get_Objects() { return m_Objects; }
     vector<class CUI_Object*> Get_GroupObject(const wstring& strTag);
+    vector<class CUI_Object*> Get_BinaryGroupObject(const wstring& strTag, _int iIndex); // 바이너리 오브젝트들 중 그룹인 오브젝트가 가지고 있는 리스트를 가지고 있다.
 
     map<const wstring, vector<class CUI_Object*>> Get_BinaryObjects() { return m_BinaryObjects; }
     vector<class CUI_Object*> Get_GroupBinaryObject(const wstring& strTag);
@@ -61,6 +62,7 @@ public:
     HRESULT Copy_Group(const wstring& strTag);
     HRESULT Remove_Group(const wstring& strTag);
     HRESULT Remove_Object(const wstring& strTag, _uint iIndex);
+    HRESULT Remove_BinaryObject(const wstring& strTag, _uint iIndex);
     HRESULT Create_Texture(_uint iIndex, const wstring& strFilePath);
 
     HRESULT Move_ObjectIndex(const wstring& strTag, _uint iIndex, _uint iMoveType);
@@ -85,8 +87,8 @@ private: // Render용
     CVIBuffer_Rect* m_pVIBufferCom = { nullptr };
 
     _float m_fDebugStart = { 50.f };
-    float m_iTextureHeightCount = { 0.f };
-    float m_iTextureWidthCount = { 1.f };
+    _float m_iTextureHeightCount = { 0.f };
+    _float m_iTextureWidthCount = { 0.f };
 
     _float4x4 m_WorldMatrix;
     _float4x4 m_ViewMatrix;

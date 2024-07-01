@@ -7,12 +7,21 @@ CTRailEffect::CTRailEffect(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 }
 
 CTRailEffect::CTRailEffect(const CTRailEffect& rhs)
-	:CEffect{rhs}
+	:CEffect{rhs},
+	m_TrailDesc{ rhs.m_TrailDesc }
 {
 }
 
 HRESULT CTRailEffect::Initialize_Prototype()
 {
+	return S_OK;
+}
+
+HRESULT CTRailEffect::Initialize_Prototype(string strFilePath)
+{
+	if (FAILED(Load_Data(strFilePath)))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -28,7 +37,6 @@ HRESULT CTRailEffect::Initialize(void* pArg)
 
 		m_TrailDesc = pDesc -> Trail_Desc;
 
-		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&pDesc->vStartPos));
 	}
 
 	if (FAILED(Add_Components()))
@@ -44,7 +52,10 @@ void CTRailEffect::Priority_Tick(const _float& fTimeDelta)
 void CTRailEffect::Tick(const _float& fTimeDelta)
 {
 	__super::Tick(fTimeDelta);
-	m_pVIBufferCom->Add_Trail(fTimeDelta, m_pTransformCom->Get_WorldMatrix());
+
+	_float4x4 TrailMatrix = *m_pTransformCom->Get_WorldFloat4x4();
+
+	m_pVIBufferCom->Add_Trail(fTimeDelta, XMLoadFloat4x4(&TrailMatrix));
 }
 
 void CTRailEffect::Late_Tick(const _float& fTimeDelta)
@@ -72,6 +83,89 @@ void* CTRailEffect::Get_Instance()
 	return &m_TrailDesc;
 }
 
+HRESULT CTRailEffect::Save_Data(const string strDirectory)
+{
+	string Directory = strDirectory;
+	string ParticleTag = m_pGameInstance->WstringToString(m_ParticleTag);
+	string TextureTag = m_pGameInstance->WstringToString(m_TextureTag);
+
+	string headTag = "Prototype_GameObject_Particle_Trail_";
+	Directory += "/" + headTag + ParticleTag + ".dat";
+
+	ofstream out(Directory, ios::binary);
+
+	out.sync_with_stdio(false);
+
+	out.write((char*)&m_eType, sizeof(_uint));
+
+	_int strlength = ParticleTag.length();
+	out.write((char*)&strlength, sizeof(_int));
+	out.write(ParticleTag.c_str(), strlength);
+
+	_int strTexturelength = TextureTag.length();
+	out.write((char*)&strTexturelength, sizeof(_int));
+	out.write(TextureTag.c_str(), strTexturelength);
+
+	out.write((char*)&m_iShaderPass, sizeof(_int));
+
+	out.write((char*)&m_TrailDesc.iMaxTrail, sizeof(_uint));
+	out.write((char*)&m_TrailDesc.vInitPosA, sizeof(_float3));
+	out.write((char*)&m_TrailDesc.vInitPosB, sizeof(_float3));
+
+	out.flush();
+
+	out.close();
+
+	return S_OK;
+}
+
+HRESULT CTRailEffect::Load_Data(const string strDirectory)
+{
+
+	string Directory = strDirectory;
+
+	ifstream in(Directory, ios::binary);
+
+	in.sync_with_stdio(false);
+
+	if (!in.is_open()) {
+		MSG_BOX("파일 개방 실패");
+		return E_FAIL;
+	}
+
+	string strFileName = m_pGameInstance->Get_FileName(Directory);
+
+	in.read((char*)&m_eType, sizeof(_uint));
+
+	_int strlength;
+	char charparticleTag[MAX_PATH] = {};
+
+	in.read((char*)&strlength, sizeof(_int));
+
+	in.read(charparticleTag, strlength);
+	string tag = charparticleTag;
+	m_ParticleTag = m_pGameInstance->StringToWstring(tag);
+
+	_int strTexturelength;
+	char charTextureTag[MAX_PATH] = {};
+
+	in.read((char*)&strTexturelength, sizeof(_int));
+
+	in.read(charTextureTag, strTexturelength);
+	string textag = charTextureTag;
+	m_TextureTag = m_pGameInstance->StringToWstring(textag);
+
+	in.read((char*)&m_iShaderPass, sizeof(_int));
+
+	in.read((char*)&m_TrailDesc.iMaxTrail, sizeof(_uint));
+	in.read((char*)&m_TrailDesc.vInitPosA, sizeof(_float3));
+	in.read((char*)&m_TrailDesc.vInitPosB, sizeof(_float3));
+
+	in.close();
+
+	return S_OK;
+}
+
 HRESULT CTRailEffect::Add_Components()
 {
 	/* For.Com_VIBuffer */
@@ -85,7 +179,7 @@ HRESULT CTRailEffect::Add_Components()
 		return E_FAIL;
 
 	/* For.Com_Texture */
-	if (FAILED(__super::Add_Component(LEVEL_EDIT, TEXT("Prototype_Component_Texture_Trail"),
+	if (FAILED(__super::Add_Component(LEVEL_EDIT, m_TextureTag,
 		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
 		return E_FAIL;
 
@@ -106,11 +200,41 @@ HRESULT CTRailEffect::Bind_ShaderResources()
 	return S_OK;
 }
 
+HRESULT CTRailEffect::Bind_TrailResourceData()
+{
+	if (FAILED(m_pTransformCom->Bind_ShaderMatrix(m_pShaderCom, "g_WorldMatrix")))
+		return E_FAIL;
+
+	if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_VIEW))))
+		return E_FAIL;
+
+	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_PROJ))))
+		return E_FAIL;
+
+	if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_Texture", 0)))
+		return E_FAIL;
+
+	return S_OK;
+}
+
 CTRailEffect* CTRailEffect::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
 	CTRailEffect* pInstance = new CTRailEffect(pDevice, pContext);
 
 	if (FAILED(pInstance->Initialize_Prototype()))
+	{
+		MSG_BOX("Failed To Created : CTRailEffect");
+		Safe_Release(pInstance);
+	}
+
+	return pInstance;
+}
+
+CTRailEffect* CTRailEffect::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, string strFilePath)
+{
+	CTRailEffect* pInstance = new CTRailEffect(pDevice, pContext);
+
+	if (FAILED(pInstance->Initialize_Prototype(strFilePath)))
 	{
 		MSG_BOX("Failed To Created : CTRailEffect");
 		Safe_Release(pInstance);

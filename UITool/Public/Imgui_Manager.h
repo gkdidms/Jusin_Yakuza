@@ -16,7 +16,8 @@ BEGIN(UITool)
 class CImgui_Manager final : public CBase
 {
 	DECLARE_SINGLETON(CImgui_Manager);
-
+public:
+	enum WORLD_TYPE { RENDER_TARGET, BINARY_OBJECT, GROUP_OBJECT, WORLD_END };
 private:
 	CImgui_Manager();
 	virtual ~CImgui_Manager() = default;
@@ -31,6 +32,7 @@ public:
 private:
 	void Window_Image();
 	void Window_Binary();
+	void Window_Binary_Group();
 
 private:
 	void Guizmo_Test();
@@ -78,12 +80,19 @@ private:
 	//텍스트 포맷 (숫자)
 	_int m_iNum = { 0 };
 
+	//바이너리 오브젝트 중 그룹
+	_bool m_isOpenBinaryGroup = { false };
+	_bool m_isCreateBinaryGroupObject = { false };
+	_int m_iBinaryGroupObjectIndex = { -1 };
+	_int m_iBinaryGroupObjectType = { -1 };
+	_char m_szBinaryGroupObjectName[MAX_PATH] = { "" };
+
 private:
 	_int m_iObjectType = { 0 };
 	_int m_iBinaryObjectType = { 0 };
 	_char m_szText[MAX_PATH] = { "" };
 	_float4 m_vColor = {};
-	_bool m_isBinaryPick = { false };
+	_uint m_iBinaryPick = { WORLD_END };
 
 public:
 	static void Release_Imgui();
