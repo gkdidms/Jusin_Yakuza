@@ -107,6 +107,7 @@ public:
     void Set_Transform(CPipeLine::D3DTRANSFORMSTATE eState, _fmatrix matTransform);
     const _float4* Get_ComLook_Float4();
     _vector Get_CamLook();
+    _vector Get_CamRight();
     const _float* Get_CamFar();
     void Set_CamFar(_float fFar);
 
