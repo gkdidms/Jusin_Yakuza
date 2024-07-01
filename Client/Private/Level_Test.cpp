@@ -112,7 +112,7 @@ HRESULT CLevel_Test::Ready_Camera(const wstring& strLayerTag)
 
 	/* 2. 플레이어 카메라 */
 	CPlayerCamera::PLAYER_CAMERA_DESC		PlayerCameraDesc{};
-	PlayerCameraDesc.fSensor = 0.1f;
+	PlayerCameraDesc.fSensor = 5.f;
 	PlayerCameraDesc.vEye = _float4(0.f, 2.0f, -3.f, 1.f);
 	PlayerCameraDesc.vFocus = _float4(0.f, 0.0f, 0.0f, 1.f);
 	PlayerCameraDesc.fFovY = XMConvertToRadians(60.0f);
@@ -132,7 +132,8 @@ HRESULT CLevel_Test::Ready_Camera(const wstring& strLayerTag)
 HRESULT CLevel_Test::Ready_Player(const wstring& strLayerTag)
 {
 	CGameObject::GAMEOBJECT_DESC Desc{};
-	Desc.fSpeedPecSec = 5.f;
+	Desc.fSpeedPecSec = 0.f;
+	//Desc.fRotatePecSec = XMConvertToRadians(0.f);
 	Desc.fRotatePecSec = XMConvertToRadians(180.f);
 
 	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_Player"), strLayerTag, &Desc)))
