@@ -8,16 +8,16 @@
 
 BEGIN(Client)
 
-class CKiryu_Adventure_Idle : public CBehaviorAnimation
+class CKiryu_Adventure_Walk : public CBehaviorAnimation
 {
 private:
-	CKiryu_Adventure_Idle();
-	virtual ~CKiryu_Adventure_Idle() = default;
+	CKiryu_Adventure_Walk();
+	virtual ~CKiryu_Adventure_Walk() = default;
 
 public:
 	virtual void Tick(const _float& fTimeDelta) override;
 	virtual void Change_Animation() override;
-
+	
 public:
 	static CBehaviorAnimation* Create(class CPlayer* pPlayer);
 	virtual void Free() override;

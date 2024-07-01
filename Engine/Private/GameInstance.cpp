@@ -347,6 +347,11 @@ _vector CGameInstance::Get_CamLook()
 	return m_pPipeLine->Get_CamLook();
 }
 
+_vector CGameInstance::Get_CamRight()
+{
+	return m_pPipeLine->Get_CamRight();
+}
+
 const _float* CGameInstance::Get_CamFar()
 {
 	return m_pPipeLine->Get_CamFar();

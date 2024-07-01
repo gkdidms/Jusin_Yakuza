@@ -145,6 +145,19 @@ void CTransform::LookAt(_fvector vTargetPosition)
 	Set_State(STATE_LOOK, XMVector4Normalize(vLook) * m_vScale.z);
 }
 
+void CTransform::LookAt_For_LandObject(_fvector vTargetPosition)
+{
+	_vector vLook = XMVector3Normalize(vTargetPosition - Get_State(STATE_POSITION));
+
+	_vector vRight = XMVector3Cross(XMVectorSet(0.f, 1.f, 0.f, 0.f), vLook);
+
+	// Look, Right 벡터를 구한 뒤, Up은 변환이 불필요하니, 직교를 맞추는 Look을 다시 구한다.
+	vLook = XMVector3Cross(vRight, XMVectorSet(0.f, 1.f, 0.f, 0.f));
+
+	Set_State(STATE_RIGHT, XMVector3Normalize(vRight) * Get_Scaled().x);
+	Set_State(STATE_LOOK, XMVector3Normalize(vLook) * Get_Scaled().z);
+}
+
 void CTransform::LookForCamera(_fvector vCamLook, _float fRadian)
 {
 	_float3 m_vScale = Get_Scaled();
