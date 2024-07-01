@@ -34,6 +34,9 @@ HRESULT CAnimation::Initialize(const aiAnimation* pAnimation, const vector<CBone
 	m_iNumChannels = pAnimation->mNumChannels;
 
 	m_CurrentKeyFrameIndices.resize(m_iNumChannels);
+
+	XMStoreFloat3(&m_vCenterMoveValue, XMVectorZero());
+	XMStoreFloat4(&m_vCenterRotationValue, XMVectorZero());
 	
 	for (size_t i = 0; i < m_iNumChannels; i++)
 	{
@@ -59,6 +62,9 @@ HRESULT CAnimation::Initialize(const BAiAnimation* pAnimation, const vector<clas
 	m_iNumChannels = pAnimation->mNumChannels;
 
 	m_CurrentKeyFrameIndices.resize(m_iNumChannels);
+
+	XMStoreFloat3(&m_vCenterMoveValue, XMVectorZero());
+	XMStoreFloat4(&m_vCenterRotationValue, XMVectorZero());
 
 	for (size_t i = 0; i < m_iNumChannels; i++)
 	{
@@ -94,7 +100,7 @@ void CAnimation::Update_TransformationMatrix(_float fTimeDelta, const vector<cla
 
 		for (auto& pChannel : m_Channels)
 		{
-			pChannel->Update_TransformationMatrix(m_CurrentPosition, Bones, &m_CurrentKeyFrameIndices[iChannelIndex++]);
+			pChannel->Update_TransformationMatrix(m_CurrentPosition, Bones, &m_CurrentKeyFrameIndices[iChannelIndex++], &m_vCenterMoveValue, &m_vCenterRotationValue);
 		}
 	}
 }
@@ -118,7 +124,7 @@ void CAnimation::Update_Change_Animation(_float fTimeDelta, const vector<class C
 			// 선형보간이 필요한 상황이다.
 			if (pDstChannel->Get_BoneIndex() == pSrcChannel->Get_BoneIndex())
 			{
-				pDstChannel->Update_TransformationMatrix(m_CurrentChangePosition, Bones, pSrcChannel, pPrevAnimation->m_CurrentKeyFrameIndices[iChannelIndex++], ChangeInterval, pPrevAnimation->Get_Finished());
+				pDstChannel->Update_TransformationMatrix(m_CurrentChangePosition, Bones, pSrcChannel, pPrevAnimation->m_CurrentKeyFrameIndices[iChannelIndex++], ChangeInterval, pPrevAnimation->Get_Finished(), &m_vCenterMoveValue, &m_vCenterRotationValue);
 			}
 		}
 	}
@@ -130,6 +136,10 @@ void CAnimation::Reset()
 	m_isFinished = false;
 	m_CurrentChangePosition = 0.0;
 	m_isChanged = false;
+
+	XMStoreFloat3(&m_vCenterMoveValue, XMVectorZero());
+	XMStoreFloat4(&m_vCenterRotationValue, XMVectorZero());
+
 	ZeroMemory(&m_CurrentKeyFrameIndices.front(), sizeof(_uint) * m_iNumChannels);
 }
 

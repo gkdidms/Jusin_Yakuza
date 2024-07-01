@@ -842,17 +842,19 @@ void CModel::Set_AnimationIndex(const ANIMATION_DESC& AnimDesc, _double ChangeIn
 	m_Animations[m_AnimDesc.iAnimIndex]->Reset();
 }
 
-void CModel::Set_AnimationIndex(_uint iAnimIndex, _double ChangeInterval)
+_bool CModel::Set_AnimationIndex(_uint iAnimIndex, _double ChangeInterval)
 {
-	if (iAnimIndex >= m_Animations.size()) return;
+	if (iAnimIndex >= m_Animations.size()) return false;
 
 	if (m_AnimDesc.iAnimIndex == iAnimIndex && m_AnimLoops[iAnimIndex] == m_AnimDesc.isLoop)
-		return;
+		return false;
 
 	m_iPrevAnimIndex = m_AnimDesc.iAnimIndex;
 	m_AnimDesc = { iAnimIndex, m_AnimLoops[iAnimIndex] };
 	m_ChangeInterval = ChangeInterval;
 	m_Animations[m_AnimDesc.iAnimIndex]->Reset();
+
+	return true;
 }
 
 void CModel::Reset_Animation(const ANIMATION_DESC& AnimDesc)
@@ -874,6 +876,11 @@ _bool CModel::Get_AnimRestart() const
 {
 	// 루프가 아닐경우 무조건 Restart 는 false를 반환하게한다
 	return m_AnimLoops[m_AnimDesc.iAnimIndex] && m_Animations[m_AnimDesc.iAnimIndex]->Get_Restrat();
+}
+
+_bool CModel::Get_AnimLerp() const
+{
+	return m_ChangeInterval == 0.f ? false : true;
 }
 
 const _float4x4* CModel::Get_BoneCombinedTransformationMatrix(const _char* pBoneName) const
@@ -925,6 +932,15 @@ const _double* CModel::Get_AnimationDuration()
 	return m_Animations[m_AnimDesc.iAnimIndex]->Get_Duration();
 }
 
+const _float3* CModel::Get_AnimationCenterMove()
+{
+	return m_Animations[m_AnimDesc.iAnimIndex]->Get_CenterMoveValue();
+}
+
+const _float4* CModel::Get_AnimationCenterRotation()
+{
+	return m_Animations[m_AnimDesc.iAnimIndex]->Get_CenterRotationValue();
+}
 
 void CModel::Copy_DecalMaterial(vector<DECAL_DESC>* pDecals)
 {
