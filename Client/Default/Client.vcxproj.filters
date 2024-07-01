@@ -168,9 +168,6 @@
     <ClInclude Include="..\public\Level_Loading.h">
       <Filter>01.Levels\99.Loading</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\Loader.h">
-      <Filter>01.Levels\99.Loading\Loader</Filter>
-    </ClInclude>
     <ClInclude Include="..\public\Level_Logo.h">
       <Filter>01.Levels\00.Logo</Filter>
     </ClInclude>
@@ -320,6 +317,9 @@
 	</ClInclude>
     <ClInclude Include="..\public\UI.h">
       <Filter>02.GameObjects\07.UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Loader.h">
+      <Filter>01.Levels\99.Loading\Loader</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
