@@ -52,8 +52,6 @@ Texture2D g_GlassDepthTexture;
 Texture2D g_GlassRMTexture;
 Texture2D g_GlassMetallicTexture;
 
-float g_fOutlineAngle = 0.8f;
-
 //HDR
 float3 Luminance = float3(0.2125f, 0.7154f, 0.0721f);
 float fDelta = { 0.0001f };
@@ -73,3 +71,14 @@ static const float g_fWeight[13] =
 };
 
 float g_fTotal = 2.f;
+
+struct PS_IN
+{
+    float4 vPosition : SV_POSITION;
+    float2 vTexcoord : TEXCOORD0;
+};
+
+struct PS_OUT
+{
+    vector vColor : SV_TARGET0;
+};

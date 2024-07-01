@@ -44,8 +44,6 @@ HRESULT CRenderer::Initialize()
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_NonBlendRM"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(1.f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
 
-
-
 	/*Target_Glass - Diffuse °°Àº*/
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_GlassDiffuse"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(0.f, 0.f, 0.f, 1.f))))
 		return E_FAIL;
@@ -199,8 +197,6 @@ HRESULT CRenderer::Initialize()
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_GameObject"), TEXT("Target_Metalic"))))
 		return E_FAIL;
-
-
 
 	/* MRT_ShadowObject */
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_ShadowObjects"), TEXT("Target_LightDepth"))))
@@ -1366,8 +1362,6 @@ void CRenderer::Render_UI()
 	}
 	m_RenderObject[RENDER_UI].clear();
 }
-
-
 
 #ifdef _DEBUG
 void CRenderer::Render_Debug()
