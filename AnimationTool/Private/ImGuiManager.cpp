@@ -190,10 +190,9 @@ void CImguiManager::AnimListWindow()
 		//m_isAnimLoop = m_pRenderModel->Get_AnimLoop(m_iAnimIndex);
 	}
 
-	//ImGui::SameLine();
-	//ImGui::Checkbox("Loop", &m_isAnimLoop);
-
 	ImGui::SameLine();
+	ImGui::Text("Anim Index: %d", m_iAnimIndex);
+
 	if (ImGui::Button("Add"))
 	{
 		m_AddedAnims.emplace(m_iAnimIndex, m_AnimNameList[m_iAnimIndex]);
