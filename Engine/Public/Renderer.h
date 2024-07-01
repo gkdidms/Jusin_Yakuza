@@ -62,6 +62,9 @@ private:
     void Render_CopyBackBuffer();
     void Render_DeferredResult();
 
+    /* AerialPerspective*/
+    void Render_DeferredBlur();
+
     /* HDR*/
     void Render_Luminance();
     void Render_HDR();
@@ -75,8 +78,11 @@ private:
     void Render_Blender();//기존 논블렌드 렌더
     void Render_Effect();// 파티클렌더 
     void Render_FinlaOIT();// 파티클 최종병합
+
+    void Render_BOF();
+
     void Render_UI();
-    
+   
 private:
     HRESULT Ready_SSAONoiseTexture();
 

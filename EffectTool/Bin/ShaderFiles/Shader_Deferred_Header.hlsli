@@ -29,6 +29,7 @@ Texture2D g_DiffuseTexture;
 Texture2D g_ShadeTexture;
 Texture2D g_RMTexture;
 Texture2D g_RSTexture;
+Texture2D g_LightMapTexture;
 Texture2D g_SpecularTexture;
 Texture2D g_DepthTexture;
 Texture2D g_MetallicTexture;
@@ -38,6 +39,7 @@ Texture2D g_ToneMappingTexture;
 Texture2D g_LuminanceTexture;
 Texture2D g_CopyLuminanceTexture;
 Texture2D g_AmbientTexture;
+Texture2D g_BackBlurTexture;
 //블러용
 Texture2D g_EffectTexture;
 //데칼용

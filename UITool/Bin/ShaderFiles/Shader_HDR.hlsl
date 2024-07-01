@@ -75,12 +75,12 @@ PS_OUT PS_MAIN_TONEMAPPING(PS_IN In) // 감마 콜렉션 & ACES 톤매핑
 {
     PS_OUT Out = (PS_OUT) 0;
     
-    vector vLuminance = g_LuminanceTexture.Sample(LinearSampler, In.vTexcoord);
+    //vector vLuminance = g_LuminanceTexture.Sample(LinearSampler, In.vTexcoord);
     float3 vDiffuse = pow(g_BackBufferTexture.Sample(LinearSampler, In.vTexcoord).xyz, 2.2f);
     float A = 2.51f, B = 0.03f, C = 2.43f, D = 0.59f, E = 0.14f;
     vDiffuse = saturate(vDiffuse * (A * vDiffuse + B)) / (vDiffuse * (C * vDiffuse + D) + E);
 
-    Out.vColor = vector(pow(vDiffuse, 1.f / 2.2f), 1.f) * vLuminance * g_fLumVar;
+    Out.vColor = vector(pow(vDiffuse, 1.f / 2.2f), 1.f); // * vLuminance * g_fLumVar;
     
     return Out;
 }
