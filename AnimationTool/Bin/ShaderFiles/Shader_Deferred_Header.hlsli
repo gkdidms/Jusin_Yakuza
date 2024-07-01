@@ -1,4 +1,5 @@
 /* Header */
+/* 상수 테이블과 struct 모음*/
 
 /* 컨스턴트 테이블(상수테이블) */
 matrix g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
@@ -27,6 +28,7 @@ Texture2D g_NormalTexture;
 Texture2D g_DiffuseTexture;
 Texture2D g_ShadeTexture;
 Texture2D g_RMTexture;
+Texture2D g_RSTexture;
 Texture2D g_SpecularTexture;
 Texture2D g_DepthTexture;
 Texture2D g_MetallicTexture;
@@ -51,6 +53,7 @@ Texture2D g_GlassNormalTexture;
 Texture2D g_GlassDepthTexture;
 Texture2D g_GlassRMTexture;
 Texture2D g_GlassMetallicTexture;
+Texture2D g_GlassRSTexture;
 
 //HDR
 float3 Luminance = float3(0.2125f, 0.7154f, 0.0721f);
@@ -72,6 +75,19 @@ static const float g_fWeight[13] =
 
 float g_fTotal = 2.f;
 
+struct VS_IN
+{
+    float3 vPosition : POSITION;
+    float2 vTexcoord : TEXCOORD0;
+};
+
+struct VS_OUT
+{
+    float4 vPosition : SV_POSITION;
+    float2 vTexcoord : TEXCOORD0;
+};
+
+
 struct PS_IN
 {
     float4 vPosition : SV_POSITION;
@@ -82,3 +98,4 @@ struct PS_OUT
 {
     vector vColor : SV_TARGET0;
 };
+

@@ -124,6 +124,21 @@ HRESULT CConstruction::Render()
 				return E_FAIL;
 		}
 
+		bool	bRSExist = m_pModelCom->Check_Exist_Material(i, aiTextureType_SPECULAR);
+		if (true == bRSExist)
+		{
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RSTexture", i, aiTextureType_SPECULAR)))
+				return E_FAIL;
+
+			if (FAILED(m_pShaderCom->Bind_RawValue("g_bExistRSTex", &bRSExist, sizeof(bool))))
+				return E_FAIL;
+		}
+		else
+		{
+			if (FAILED(m_pShaderCom->Bind_RawValue("g_bExistRSTex", &bRSExist, sizeof(bool))))
+				return E_FAIL;
+		}
+
 		
 		// 유리문 처리
 		if (1 == m_iShaderPassNum)
@@ -193,7 +208,7 @@ HRESULT CConstruction::Add_Components(void* pArg)
 		return E_FAIL;
 
 	/* For.Com_Shader */
-	if (FAILED(__super::Add_Component(LEVEL_TEST, TEXT("Prototype_Component_Shader_MeshTemp"),
+	if (FAILED(__super::Add_Component(LEVEL_TEST, TEXT("Prototype_Component_Shader_Mesh"),
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
 		return E_FAIL;
 
