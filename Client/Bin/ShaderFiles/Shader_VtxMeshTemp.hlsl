@@ -12,7 +12,7 @@ Texture2D   g_RSTexture;
 
 
 float       g_fObjID;
-float       g_fRefractionScale = { 0.1f };
+float       g_fRefractionScale = { 0.001f };
 
 float       g_fFar = { 3000.f };
 float       g_fTimeDelta;

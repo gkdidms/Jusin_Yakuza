@@ -188,7 +188,7 @@ HRESULT CLoader::Loading_For_Test()
 	//	return E_FAIL;
 
 	_matrix		PreTransformMatrix;
-	//PreTransformMatrix = XMMatrixIdentity();
+	PreTransformMatrix = XMMatrixIdentity();
 	//if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Model_GlassDoor"),
 	//	CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/NonAnim/Map/Map0/GlassDoor.fbx", PreTransformMatrix, false))))
 	//	return E_FAIL;

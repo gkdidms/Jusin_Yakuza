@@ -35,7 +35,7 @@ HRESULT CLevel_Test::Initialize()
 		return E_FAIL;
 
 	/* Å¬¶ó ÆÄ½Ì */
-	m_pFileTotalManager->Set_MapObj_In_Client(3, LEVEL_TEST);
+	m_pFileTotalManager->Set_MapObj_In_Client(2, LEVEL_TEST);
 	m_pFileTotalManager->Set_Lights_In_Client(0);
 
 	return S_OK;
