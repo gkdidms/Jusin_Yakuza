@@ -12,6 +12,7 @@ Texture2D   g_RSTexture;
 
 
 float       g_fObjID;
+float       g_fRefractionScale = { 0.1f };
 
 float       g_fFar = { 3000.f };
 float       g_fTimeDelta;
@@ -145,7 +146,17 @@ PS_OUT PS_GLASSDOOR(PS_IN In)
     vRefractTexCoord.x = In.vProjPos.x / In.vProjPos.w / 2.0f + 0.5f;
     vRefractTexCoord.y = -In.vProjPos.y / In.vProjPos.w / 2.0f + 0.5f;
 
-   
+
+    if (true == g_bExistNormalTex)
+    {
+        // Normal texture 있으면 vTexcoord 다시
+        float3 normal;
+        vector vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexcoord);
+        normal = vNormalDesc.xyz * 2.f - 1.f;
+        vRefractTexCoord = vRefractTexCoord + (normal.xy * g_fRefractionScale);
+    }
+
+    // Refract - 유리 뒤에 비치는 씬
     float4 vRefractColor = g_RefractionTexture.Sample(LinearSampler, vRefractTexCoord);
     float4 vGlassTexColor = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
     float4 vFinalColor = lerp(vRefractColor, vGlassTexColor, 0.5f);

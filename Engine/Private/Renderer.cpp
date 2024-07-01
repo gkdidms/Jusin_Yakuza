@@ -1409,7 +1409,7 @@ void CRenderer::Render_Debug()
 	if (FAILED(m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
 		return;
 
-	if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_NonBlend"), m_pShader, m_pVIBuffer)))
+	if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_GameObject"), m_pShader, m_pVIBuffer)))
 		return;
 	//if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_ShadowObjects"), m_pShader, m_pVIBuffer)))
 	//	return;
