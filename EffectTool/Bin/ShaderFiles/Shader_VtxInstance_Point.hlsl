@@ -25,7 +25,7 @@ struct VS_IN
     row_major matrix TransformMatrix : WORLD;
     float4 vDir : COLOR0;
     float2 vLifeTime : COLOR1;
-    float vRectSize : COLOR2;
+    float2 vRectSize : COLOR2;
 };
 
 struct VS_OUT
@@ -34,7 +34,7 @@ struct VS_OUT
     float2 vPSize : TEXCOORD0;
     float4 vDir : COLOR0;
     float2 vLifeTime : COLOR1;
-    float vRectSize : COLOR2;
+    float2 vRectSize : COLOR2;
 };
 
 /* 정점 셰이더 :  /* 
@@ -44,7 +44,7 @@ VS_OUT VS_MAIN(VS_IN In)
 {
     VS_OUT Out = (VS_OUT) 0;
 
-    vector vPosition = mul(float4(In.vPosition, 1.f), In.TransformMatrix);
+    vector vPosition = mul(float4(In.vPosition, 1.f), In.TransformMatrix);//로컬이동.
 
     matrix matWV, matWVP;
 
@@ -88,7 +88,7 @@ struct GS_IN
 
     float4 vDir : COLOR0;
     float2 vLifeTime : COLOR1;
-    float vRectSize : COLOR2;
+    float2 vRectSize : COLOR2;
 };
 
 struct GS_OUT
@@ -117,8 +117,8 @@ void GS_DEAFULT(point GS_IN In[1], inout TriangleStream<GS_OUT> Triangles)
     float3 vDirection = In[0].vDir.xyz;
     
     vector vLook = g_vCamPosition - vector(In[0].vPosition, 1.f);
-    float3 vRight = normalize(cross(float3(0.f, 1.f, 0.f), vLook.xyz)) * In[0].vPSize.x * In[0].vRectSize * 0.5f;
-    float3 vUp = normalize(cross(vLook.xyz, vRight)) * In[0].vPSize.y * In[0].vRectSize* 0.5f;
+    float3 vRight = normalize(cross(float3(0.f, 1.f, 0.f), vLook.xyz)) * In[0].vPSize.x * In[0].vRectSize.x * 0.5f;
+    float3 vUp = normalize(cross(vLook.xyz, vRight)) * In[0].vPSize.y * In[0].vRectSize.x* 0.5f;
 
     float3 vPosition;
     matrix matVP = mul(g_ViewMatrix, g_ProjMatrix);
@@ -177,8 +177,8 @@ void GS_DIRSCALE(point GS_IN In[1], inout TriangleStream<GS_OUT> Triangles)
     //방향에 회전을 준다.
    
     vector vLook = g_vCamPosition - vector(In[0].vPosition, 1.f);
-    float3 vRight = normalize(cross(vDirection, vLook.xyz)) * In[0].vPSize.x * In[0].vRectSize * 0.5f;
-    float3 vUp = normalize(cross(vLook.xyz, vRight)) * In[0].vPSize.y * In[0].vRectSize * 0.5f;
+    float3 vRight = normalize(cross(vDirection, vLook.xyz)) * In[0].vPSize.x * In[0].vRectSize.x * 0.5f;
+    float3 vUp = normalize(cross(vLook.xyz, vRight)) * In[0].vPSize.y * In[0].vRectSize.x * 0.5f;
 
     float3 vPosition;
     matrix matVP = mul(g_ViewMatrix, g_ProjMatrix);
@@ -244,12 +244,6 @@ float4x4 RotationMatrix(float3 axis, float angle)
     );
 }
 
-// 월드 상의 위치 벡터를 회전시키는 함수
-float3 RotateWorldPosition(float4 worldPos , float4 vLook)
-{
-    float4x4 rotationMatrix = RotationMatrix(vLook.xyz, g_fRadian);
-    return mul(float3(worldPos.xyz), (float3x3) rotationMatrix);
-}
 
 [maxvertexcount(6)] //방향성o 기본 회전 o 지속 회전은넘겨주는 각도를 계속 증가시켜주면될듯
 void GS_ROTSCALE(point GS_IN In[1], inout TriangleStream<GS_OUT> Triangles)
@@ -267,14 +261,17 @@ void GS_ROTSCALE(point GS_IN In[1], inout TriangleStream<GS_OUT> Triangles)
     float3 vDirection = In[0].vDir.xyz;
 
     float3 vLook = g_vCamPosition - vector(In[0].vPosition, 1.f);
-    float3 vRight = normalize(cross(vDirection, vLook.xyz)) * In[0].vPSize.x * In[0].vRectSize * 0.5f;
-    float3 vUp = normalize(cross(vLook.xyz, vRight)) * In[0].vPSize.y * In[0].vRectSize * 0.5f;
+    float3 vRight = (cross(vDirection, vLook.xyz));
+    float3 vUp = (cross(vLook.xyz, vRight));
 
+    
+   float LookLength= length(vLook);
+    
     matrix rotate = RotationMatrix(vLook,g_fRadian);
     
     vLook = normalize(mul(vector(vLook, 0.f), rotate)).xyz;
-    vRight = normalize(mul(vector(vRight, 0.f), rotate)).xyz;
-    vUp = normalize(mul(vector(vUp, 0.f), rotate)).xyz;
+    vRight = normalize(mul(vector(vRight, 0.f), rotate)).xyz * In[0].vPSize.x * In[0].vRectSize.x * 0.5f;
+    vUp = normalize(mul(vector(vUp, 0.f), rotate)).xyz * In[0].vPSize.y * In[0].vRectSize.x * 0.5f;
     
 
   //  float3x3 wpos = g_WorldMatrix._11_12_13_21_41_42_43;
@@ -423,6 +420,60 @@ PS_OUT PS_MAIN_COLOR(PS_IN In)
     return Out;
 }
 
+PS_OUT PS_ROTANIM_COLOR(PS_IN In)
+{
+    PS_OUT Out = (PS_OUT) 0;
+
+    float4 PointPosition = In.vPosition; //월드좌표
+
+    vector vParticle = g_Texture.Sample(LinearSampler, In.vTexcoord);
+
+    float4 LerpColor = lerp(g_vStartColor, g_vEndColor, In.vLifeTime.y / In.vLifeTime.x);
+    
+    vParticle *= LerpColor;
+    
+    float3 ColorN = vParticle.rgb;
+    
+    float AlphaN = vParticle.a;
+
+    float fWeight = abs(PointPosition.z); //정규화된 z 값을 가져옴(0~1)    
+
+    Out.vColor = float4(ColorN.rgb * AlphaN, AlphaN) * fWeight;
+    
+    Out.vAlpha = float4(AlphaN, AlphaN, AlphaN, AlphaN);
+        
+    return Out;
+
+}
+
+PS_OUT PS_ANIM_COLOR(PS_IN In)
+{
+    PS_OUT Out = (PS_OUT) 0;
+
+    float4 PointPosition = In.vPosition; //월드좌표
+
+    float BaseAlpha = g_Texture.Sample(LinearSampler, In.vTexcoord).g;
+
+    vector vParticle = vector(1.f, 1.f, 1.f, BaseAlpha);
+    
+    float4 LerpColor = lerp(g_vStartColor, g_vEndColor, In.vLifeTime.y / In.vLifeTime.x);
+    
+    vParticle.rgba *= LerpColor;
+    
+    float3 ColorN = vParticle.rgb;
+    
+    float AlphaN = vParticle.a;
+
+    float fWeight = abs(PointPosition.z); //정규화된 z 값을 가져옴(0~1)    
+
+    Out.vColor = float4(ColorN.rgb * AlphaN, AlphaN) * fWeight;
+    
+    Out.vAlpha = float4(AlphaN, AlphaN, AlphaN, AlphaN);
+        
+    return Out;
+
+}
+
 technique11 DefaultTechnique
 {
 	
@@ -434,28 +485,28 @@ technique11 DefaultTechnique
         SetBlendState(BS_WeightsBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
    
 		/* 어떤 셰이덜르 국동할지. 셰이더를 몇 버젼으로 컴파일할지. 진입점함수가 무엇이찌. */
-        VertexShader = compile vs_5_0 VS_MAIN();
+        VertexShader = compile vs_5_0 VS_LOCAL();
         GeometryShader = compile gs_5_0 GS_DIRSCALE();
         HullShader = NULL;
         DomainShader = NULL;
         PixelShader = compile ps_5_0 PS_MAIN_NOCOLOR();
     }
 
-    pass COLOR //0
+    pass COLOR //1
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_None_Test_None_Write, 0);
         SetBlendState(BS_WeightsBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
    
 		/* 어떤 셰이덜르 국동할지. 셰이더를 몇 버젼으로 컴파일할지. 진입점함수가 무엇이찌. */
-        VertexShader = compile vs_5_0 VS_MAIN();
+        VertexShader = compile vs_5_0 VS_LOCAL();
         GeometryShader = compile gs_5_0 GS_DIRSCALE();
         HullShader = NULL;
         DomainShader = NULL;
         PixelShader = compile ps_5_0 PS_MAIN_COLOR();
     }
     
-    pass ROTATE//0
+    pass ROTATE//2
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_None_Test_None_Write, 0);
@@ -469,5 +520,32 @@ technique11 DefaultTechnique
         PixelShader = compile ps_5_0 PS_MAIN_COLOR();
     }
 
+    pass ROTANIM//3
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_None_Test_None_Write, 0);
+        SetBlendState(BS_WeightsBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+   
+		/* 어떤 셰이덜르 국동할지. 셰이더를 몇 버젼으로 컴파일할지. 진입점함수가 무엇이찌. */
+        VertexShader = compile vs_5_0 VS_LOCAL();
+        GeometryShader = compile gs_5_0 GS_ROTSCALE();
+        HullShader = NULL;
+        DomainShader = NULL;
+        PixelShader = compile ps_5_0 PS_ANIM_COLOR();
+    }
+    pass ANIM //4
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_None_Test_None_Write, 0);
+        SetBlendState(BS_WeightsBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+   
+		/* 어떤 셰이덜르 국동할지. 셰이더를 몇 버젼으로 컴파일할지. 진입점함수가 무엇이찌. */
+        VertexShader = compile vs_5_0 VS_LOCAL();
+        GeometryShader = compile gs_5_0 GS_DIRSCALE();
+        HullShader = NULL;
+        DomainShader = NULL;
+        PixelShader = compile ps_5_0 PS_ANIM_COLOR();
+
+    }
 }
 

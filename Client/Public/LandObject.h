@@ -1,11 +1,11 @@
 #pragma once
-#include "ShaderObject.h"
+#include "GameObject.h"
 
 #include "Client_Defines.h"
 
 BEGIN(Client)
 class CLandObject abstract :
-    public CShaderObject
+    public CGameObject
 {
 protected:
     CLandObject(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -19,6 +19,10 @@ public:
     virtual void Tick(const _float& fTimeDelta) override;
     virtual void Late_Tick(const _float& fTimeDelta) override;
     virtual HRESULT Render() override;
+
+
+protected:
+    class CSystemManager* m_pSystemManager = { nullptr };
 
 protected:
     virtual HRESULT Add_Componenets();

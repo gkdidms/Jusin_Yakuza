@@ -2,6 +2,7 @@
 
 #include "GameInstance.h"
 #include "FileTotalMgr.h"
+#include "SystemManager.h"
 
 #include "DebugCamera.h"
 #include "Player.h"
@@ -10,10 +11,12 @@ IMPLEMENT_SINGLETON(CDebugManager)
 
 CDebugManager::CDebugManager()
     : m_pGameInstance { CGameInstance::GetInstance() },
-    m_pFileTotalMgr{ CFileTotalMgr::GetInstance() }
+    m_pFileTotalMgr{ CFileTotalMgr::GetInstance() },
+    m_pSystemManager{ CSystemManager::GetInstance() }
 {
     Safe_AddRef(m_pGameInstance);
     Safe_AddRef(m_pFileTotalMgr);
+    Safe_AddRef(m_pSystemManager);
 }
 
 HRESULT CDebugManager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -75,6 +78,7 @@ void CDebugManager::Window_Debug()
         //Time 제어
         ImGui::SeparatorText("Time");
 
+        ImGui::Checkbox("Limit", &m_isLimit);
         ImGui::Checkbox("TimeDelta Stop", &m_isTimeStop);
 
         if (ImGui::InputFloat("TimeSpeed", &m_fSpeed))
@@ -118,6 +122,17 @@ void CDebugManager::Window_Debug()
         _float fSpeed = pCameraTransform->Get_Speed();
         if (ImGui::InputFloat("CameraSpeed", &fSpeed))
             pCameraTransform->Set_Speed(fSpeed);
+
+        //그림자 제어
+        ImGui::NewLine();
+        ImGui::SeparatorText("Shadow");
+        _vector vShadowPos = m_pSystemManager->Get_ShadowViewPos();
+
+        if (ImGui::InputFloat4("ShadowViewPos", (_float*)&vShadowPos))
+        {
+            m_pSystemManager->Set_ShadowViewPos(vShadowPos);
+            m_pGameInstance->Set_ShadowViewPos(vShadowPos);
+        }
     }
 
     if (ImGui::CollapsingHeader("Deferred Shader"))
@@ -149,7 +164,16 @@ void CDebugManager::Window_Debug()
         if (ImGui::InputInt("Light Number", &m_iLightPass, 0))
             m_pFileTotalMgr->Set_Lights_In_Client(m_iLightPass);
     }
+    if (ImGui::CollapsingHeader("Particle"))
+    {
+        ImGui::SeparatorText("Particle");
+        if (ImGui::Button("pang"))
+        {
+            if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_Particle_Point_Hit1_Part0"), TEXT("Layer_Particle"), nullptr)))
+                MSG_BOX("pang!");
+        }
 
+    }
     ImGui::End();
 }
 
@@ -169,4 +193,5 @@ void CDebugManager::Free()
 
     Safe_Release(m_pGameInstance);
     Safe_Release(m_pFileTotalMgr);
+    Safe_Release(m_pSystemManager);
 }

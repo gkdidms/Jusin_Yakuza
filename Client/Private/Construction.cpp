@@ -1,16 +1,21 @@
 #include "..\Public\Construction.h"
 
 #include "GameInstance.h"
+#include "SystemManager.h"
 #include "Transform.h"
 
 CConstruction::CConstruction(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-	: CShaderObject{ pDevice, pContext }
+	: CGameObject{ pDevice, pContext },
+	m_pSystemManager { CSystemManager::GetInstance() }
 {
+	Safe_AddRef(m_pSystemManager);
 }
 
 CConstruction::CConstruction(const CConstruction& rhs)
-	: CShaderObject{ rhs }
+	: CGameObject{ rhs },
+	m_pSystemManager{ rhs.m_pSystemManager}
 {
+	Safe_AddRef(m_pSystemManager);
 }
 
 HRESULT CConstruction::Initialize_Prototype()
@@ -99,9 +104,16 @@ void CConstruction::Late_Tick(const _float& fTimeDelta)
 		m_pGameInstance->Add_Renderer(CRenderer::RENDER_PUDDLE, this);
 	}
 	
+	if (m_pGameInstance->isShadow() && m_isFirst)
+	{
+		// 처음 렌더를 돌 때만 그림자를 그려준다.
+		m_pGameInstance->Add_Renderer(CRenderer::RENDER_PASSIVE_SHADOW, this);
+		m_isFirst = false;
+	}
+		
 	
 	for (auto& iter : m_vDecals)
-		iter->Late_Tick(fTimeDelta);
+		iter->Late_Tick(fTimeDelta);	
 }
 
 HRESULT CConstruction::Render()
@@ -193,6 +205,38 @@ HRESULT CConstruction::Render()
 		}
 
 		m_pShaderCom->Begin(m_iShaderPassNum);
+
+		m_pModelCom->Render(i);
+	}
+
+	return S_OK;
+}
+
+HRESULT CConstruction::Render_LightDepth()
+{
+	if (FAILED(m_pShaderCom->Bind_Matrix("g_WorldMatrix", m_pTransformCom->Get_WorldFloat4x4())))
+		return E_FAIL;
+
+	_float4x4		ViewMatrix, ProjMatrix;
+
+	/* 광원 기준의 뷰 변환행렬. */
+	_vector vViewPos = m_pSystemManager->Get_ShadowViewPos();
+	XMStoreFloat4x4(&ViewMatrix, XMMatrixLookAtLH(vViewPos, XMVectorSet(0.f, 0.f, 0.f, 1.f), XMVectorSet(0.f, 1.f, 0.f, 0.f)));
+	XMStoreFloat4x4(&ProjMatrix, XMMatrixPerspectiveFovLH(XMConvertToRadians(120.0f), (_float)g_iWinSizeX / g_iWinSizeY, 0.1f, 1000.f));
+
+	if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", &ViewMatrix)))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", &ProjMatrix)))
+		return E_FAIL;
+
+	_uint	iNumMeshes = m_pModelCom->Get_NumMeshes();
+
+	for (size_t i = 0; i < iNumMeshes; i++)
+	{
+		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
+			return E_FAIL;
+
+		m_pShaderCom->Begin(3);
 
 		m_pModelCom->Render(i);
 	}
@@ -310,7 +354,5 @@ void CConstruction::Free()
 
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pModelCom);
-	
-	//if (nullptr != m_pTexture)
-	//	Safe_Release(m_pTexture);
+	Safe_Release(m_pSystemManager);
 }

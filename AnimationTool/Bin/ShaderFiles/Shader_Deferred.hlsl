@@ -188,6 +188,44 @@ PS_OUT PS_MAIN_COPY_BACKBUFFER_RESULT(PS_IN In)
         Out.vColor = vDiffuse * vShade;
     }
     
+    if (g_isShadow)
+    {
+        vector vDepthDesc = g_DepthTexture.Sample(PointSampler, In.vTexcoord);
+        vector vWorldPos;
+
+        vWorldPos.x = In.vTexcoord.x * 2.f - 1.f;
+        vWorldPos.y = In.vTexcoord.y * -2.f + 1.f;
+        vWorldPos.z = vDepthDesc.x; /* 0 ~ 1 */
+        vWorldPos.w = 1.f;
+
+        vWorldPos = vWorldPos * (vDepthDesc.y * g_fFar);
+
+	/* 뷰스페이스 상의 위치를 구한다. */
+        vWorldPos = mul(vWorldPos, g_ProjMatrixInv);
+
+	/* 월드스페이스 상의 위치를 구한다. */
+        vWorldPos = mul(vWorldPos, g_ViewMatrixInv);
+
+        vector vLightPos = mul(vWorldPos, g_LightViewMatrix);
+        vLightPos = mul(vLightPos, g_LightProjMatrix);
+
+        float2 vTexcoord;
+        vTexcoord.x = (vLightPos.x / vLightPos.w) * 0.5f + 0.5f;
+        vTexcoord.y = (vLightPos.y / vLightPos.w) * -0.5f + 0.5f;
+    
+        vector vLightDepthDesc = g_LightDepthTexture.Sample(PointSampler, vTexcoord);
+        vector vPassiveLightDepthDesc = g_PassiveLightDepthTexture.Sample(PointSampler, vTexcoord);
+        
+        float fLightOldDepth = vLightDepthDesc.x * 1000.f;
+        float fPassiveLightOldDepth = vPassiveLightDepthDesc.x * 1000.f;
+        
+        if (fLightOldDepth + 0.1f < vLightPos.w)
+            Out.vColor = vector(Out.vColor.rgb * 0.5f, 1.f);
+        
+        if (fPassiveLightOldDepth + 0.1f < vLightPos.w)
+            Out.vColor = vector(Out.vColor.rgb * 0.5f, 1.f);
+    }
+    
     return Out;
 }
 
@@ -333,7 +371,7 @@ PS_OUT_GAMEOBJECT PS_INCLUDE_GLASS(PS_IN In)
     return Out;
 }
 
-//AerialPerspective
+//BOF
 PS_OUT PS_MAIN_BOF(PS_IN In)
 {
     PS_OUT Out = (PS_OUT) 0;

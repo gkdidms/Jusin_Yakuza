@@ -4,6 +4,7 @@
 #include "Effect.h"
 #include "Particle_Point.h"
 #include "TRailEffect.h"
+#include "Aura.h"
 #include "Client_Defines.h"
 
 #pragma region "Imgui"
@@ -30,12 +31,15 @@ public:
 	enum MODE {
 		MODE_PARTICLE,
 		MODE_TRAIL,
+		MODE_AURA,
 		MODE_END
 	};
 	enum PASS{ 
 		PASS_NOCOLOR,
 		PASS_COLOR,
 		PASS_ROTATE,
+		PASS_ROTANIM,
+		PASS_ANIM,
 		PASS_END};
 private:
 	CImguiManager(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -78,6 +82,15 @@ private:
 	void EditorTrail_Tick(_float fTimeDelta);
 
 
+	//아우라 함수
+	HRESULT Create_Aura();
+
+	void CreateAura_Tick(_float fTimeDelta);
+	void EditorAura_Tick(_float fTimeDelta);
+
+
+
+
 	HRESULT AllEffect_Save();
 	HRESULT AllEffect_Load();
 
@@ -92,20 +105,24 @@ private:
 	//파티클 액션에 대한 bool 값.
 	_bool m_bSpread = { false };
 	_bool m_bDrop = { false };
-	_bool m_bSize = { false };
+	_bool m_bSizeup = { false };
+	_bool m_bSizedown = { false };
 	_bool m_bGuizmo = { false };
 	//생성 파티클 담는 곳
 	vector<CGameObject*> m_EditParticle = {  };
 	vector<CGameObject*> m_EditTrail = {  };
+	vector<CGameObject*> m_EditAura = {  };
 
 	CParticle_Point::PARTICLE_POINT_DESC m_EffectDesc = {};
 	CTRailEffect::TRAIL_DESC m_TrailDesc = {};
+	CAura::AURA_DESC m_AuraDesc = {};
 
 	bool m_bDragging = { false };
 
 	_int m_iCurEditIndex = { -1 };
 	char text_input_buffer[256] = { "" };
 	char m_TrailTag[256] = { "" };
+	char m_AuraTag[256] = { "" };
 
 	_float m_fParticleTime = { 0.f };
 	_float m_fMaxTime = { 30.f };
