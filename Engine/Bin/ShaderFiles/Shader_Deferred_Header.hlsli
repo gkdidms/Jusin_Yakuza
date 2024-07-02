@@ -22,6 +22,10 @@ vector g_vCamPosition;
 vector g_vCamDir;
 float g_fFar;
 
+bool g_isSSAO;
+bool g_isPBR;
+bool g_isBOF;
+
 Texture2D g_Texture;
 Texture2D g_PriorityTexture;
 Texture2D g_NormalTexture;

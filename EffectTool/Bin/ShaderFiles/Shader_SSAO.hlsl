@@ -2,7 +2,6 @@
 #include "Engine_Shader_Defines.hlsli"
 #include "Shader_Deferred_Header.hlsli"
 
-bool g_isSSAO = { false };
 float g_fRadiuse = { 0.003f };
 float4 g_SSAORandoms[64];
 Texture2D g_SSAONoisesTexture;

@@ -174,12 +174,19 @@ PS_OUT PS_MAIN_COPY_BACKBUFFER_RESULT(PS_IN In)
     vector vShade = g_ShadeTexture.Sample(LinearSampler, In.vTexcoord);
     vector vSpeculer = g_SpecularTexture.Sample(LinearSampler, In.vTexcoord);
     
-    vector vSpeculerRM = g_RMTexture.Sample(LinearSampler, In.vTexcoord);
-    vector vSpeculerRS = g_RSTexture.Sample(LinearSampler, In.vTexcoord);
+    if (g_isPBR)
+    {
+        vector vSpeculerRM = g_RMTexture.Sample(LinearSampler, In.vTexcoord);
+        vector vSpeculerRS = g_RSTexture.Sample(LinearSampler, In.vTexcoord);
     
-    vector vLightmap = g_LightMapTexture.Sample(LinearSampler, In.vTexcoord);
+        vector vLightmap = g_LightMapTexture.Sample(LinearSampler, In.vTexcoord);
     // ±‚¡∏
-    Out.vColor = vDiffuse * vShade + (vSpeculerRM + vSpeculerRS) * vLightmap;
+        Out.vColor = vDiffuse * vShade + (vSpeculerRM + vSpeculerRS) * vLightmap;
+    }
+    else
+    {
+        Out.vColor = vDiffuse * vShade;
+    }
     
     return Out;
 }

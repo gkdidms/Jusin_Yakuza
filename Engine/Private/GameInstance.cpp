@@ -244,6 +244,26 @@ _bool CGameInstance::isSSAO()
 	return m_pRenderer->isSSAO();
 }
 
+_bool CGameInstance::isPBR()
+{
+	return m_pRenderer->isPBR();
+}
+
+_bool CGameInstance::isBOF()
+{
+	return m_pRenderer->isBOF();
+}
+
+void CGameInstance::Set_PBR(_bool isPBR)
+{
+	m_pRenderer->Set_PBR(isPBR);
+}
+
+void CGameInstance::Set_BOF(_bool isBOF)
+{
+	m_pRenderer->Set_BOF(isBOF);
+}
+
 void CGameInstance::Set_SSAORadiuse(_float fRadiuse)
 {
 	m_pRenderer->Set_SSAORadiuse(fRadiuse);

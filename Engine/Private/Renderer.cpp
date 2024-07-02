@@ -19,9 +19,112 @@ CRenderer::CRenderer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 
 HRESULT CRenderer::Initialize()
 {
+	if (FAILED(Ready_Targets()))
+		return E_FAIL;
+
+	if (FAILED(Ready_MRTs()))
+		return E_FAIL;
+	
+	m_pVIBuffer = CVIBuffer_Rect::Create(m_pDevice, m_pContext);
+	if (nullptr == m_pVIBuffer)
+		return E_FAIL;
+
+	m_pShader = CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_Deferred.hlsl"), VTXPOSTEX::Elements, VTXPOSTEX::iNumElements);
+	if (nullptr == m_pShader)
+		return E_FAIL;
+
+	/* 화면을 꽉 채워주기 위한 월드변환행렬. */
 	D3D11_VIEWPORT ViewPort{};
 	_uint iNumViewPort = 1;
+	m_pContext->RSGetViewports(&iNumViewPort, &ViewPort);
 
+	XMStoreFloat4x4(&m_WorldMatrix, XMMatrixScaling(ViewPort.Width, ViewPort.Height, 1.f));
+
+	XMStoreFloat4x4(&m_ViewMatrix, XMMatrixIdentity());
+
+	XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH(ViewPort.Width, ViewPort.Height, 0.f, 1.f));
+
+	if (FAILED(Ready_LightDepth()))
+		return E_FAIL;
+
+	if (FAILED(Ready_SSAONoiseTexture()))
+		return E_FAIL;
+
+
+#ifdef _DEBUG
+	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_Diffuse"), 50.f, 50.f, 100.f, 100.f)))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_Normal"), 50.f, 150.f, 100.f, 100.f)))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_Depth"), 50.f, 250.f, 100.f, 100.f)))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_NonBlendDepth"), 50.f, 650.f, 100.f, 100.f)))
+		return E_FAIL;
+	//if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_LightDepth"), ViewPort.Width - 150.0f, 150.0f, 300.f, 300.f)))
+	//	return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_Specular"), 50.f, 350.f, 100.f, 100.f)))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_RM"), 50.f, 450.f, 100.f, 100.f)))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_RS"), 50.f, 550.f, 100.f, 100.f)))
+		return E_FAIL;
+	
+	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_Shade"), 150.f, 50.f, 100.f, 100.f)))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_Ambient"), 150.f, 150.f, 100.f, 100.f)))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_BackBuffer"), 150.f, 250.f, 100.f, 100.f)))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_LightMap"), 150.f, 350.f, 100.f, 100.f)))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_BackBlur"), 150.f, 450.f, 100.f, 100.f)))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_128x128"), 250.f, 050.f, 100.f, 100.f)))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_Luminance"), 250.f, 150.f, 100.f, 100.f)))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_ToneMapping"), 250.f, 250.f, 100.f, 100.f)))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_64x64"), 350.f, 050.f, 100.f, 100.f)))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_32x32"), 350.f, 150.f, 100.f, 100.f)))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_16x16"), 350.f, 250.f, 100.f, 100.f)))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_8x8"), 350.f, 350.f, 100.f, 100.f)))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_4x4"), 450.f, 50.f, 100.f, 100.f)))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_2x2"), 450.f, 150.f, 100.f, 100.f)))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_1x1"), 450.f, 250.f, 100.f, 100.f)))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_Effect"), 550.f, 50.f, 100.f, 100.f)))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_Blur_X"), 550.f, 150.f, 100.f, 100.f)))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_Blur_Y"), 550.f, 250.f, 100.f, 100.f)))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_AccumColor"), 750.f, 50.f, 100.f, 100.f)))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_AccumAlpha"), 750.f, 150.f, 100.f, 100.f)))
+		return E_FAIL;
+
+
+#endif // _DEBUG
+
+
+	return S_OK;
+}
+
+HRESULT CRenderer::Ready_Targets()
+{
+	D3D11_VIEWPORT ViewPort{};
+	_uint iNumViewPort = 1;
 	m_pContext->RSGetViewports(&iNumViewPort, &ViewPort);
 
 	/*Target_NonBlendDiffuse*/
@@ -43,8 +146,6 @@ HRESULT CRenderer::Initialize()
 	/* Target_NonBlendRS */
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_NonBlendRS"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(1.f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
-
-
 
 	/*Target_Glass - Diffuse 같은*/
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_GlassDiffuse"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(0.f, 0.f, 0.f, 1.f))))
@@ -164,6 +265,7 @@ HRESULT CRenderer::Initialize()
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Luminance"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 1.f))))
 		return E_FAIL;
 
+
 #pragma region MRT_Bloom
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Effect"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R8G8B8A8_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
@@ -182,7 +284,13 @@ HRESULT CRenderer::Initialize()
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_AccumAlpha"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(1.f, 1.f, 1.f, 1.f))))
 		return E_FAIL;
 #pragma endregion
-	
+
+
+	return S_OK;
+}
+
+HRESULT CRenderer::Ready_MRTs()
+{
 	/*MRT_NonBlend*/
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_NonBlend"), TEXT("Target_NonBlendDiffuse"))))
 		return E_FAIL;
@@ -319,28 +427,18 @@ HRESULT CRenderer::Initialize()
 	/*MRT_Blur_Y*/
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_Blur_Y"), TEXT("Target_Blur_Y"))))
 		return E_FAIL;
-	
+
 	/*MRT_Accum*/
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_Accum"), TEXT("Target_AccumColor"))))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_Accum"), TEXT("Target_AccumAlpha"))))
 		return E_FAIL;
 
-	m_pVIBuffer = CVIBuffer_Rect::Create(m_pDevice, m_pContext);
-	if (nullptr == m_pVIBuffer)
-		return E_FAIL;
+	return S_OK;
+}
 
-	m_pShader = CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_Deferred.hlsl"), VTXPOSTEX::Elements, VTXPOSTEX::iNumElements);
-	if (nullptr == m_pShader)
-		return E_FAIL;
-
-	/* 화면을 꽉 채워주기 위한 월드변환행렬. */
-	XMStoreFloat4x4(&m_WorldMatrix, XMMatrixScaling(ViewPort.Width, ViewPort.Height, 1.f));
-
-	XMStoreFloat4x4(&m_ViewMatrix, XMMatrixIdentity());
-
-	XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH(ViewPort.Width, ViewPort.Height, 0.f, 1.f));
-
+HRESULT CRenderer::Ready_LightDepth()
+{
 	if (nullptr == m_pDevice)
 		return E_FAIL;
 
@@ -371,76 +469,77 @@ HRESULT CRenderer::Initialize()
 
 	Safe_Release(pDepthStencilTexture);
 
-	if (FAILED(Ready_SSAONoiseTexture()))
+	return S_OK;
+}
+
+HRESULT CRenderer::Ready_SSAONoiseTexture() // SSAO 연산에 들어갈 랜덤 벡터 텍스쳐 생성
+{
+	ID3D11Texture2D* pSSAONoiseTexture = { nullptr };
+	D3D11_TEXTURE2D_DESC		TextureDesc{};
+
+	ZeroMemory(&TextureDesc, sizeof(D3D11_TEXTURE2D_DESC));
+
+	TextureDesc.Width = 4;
+	TextureDesc.Height = 4;
+	TextureDesc.MipLevels = 1;
+	TextureDesc.ArraySize = 1;
+	TextureDesc.Format = DXGI_FORMAT_R16G16B16A16_FLOAT;
+
+	TextureDesc.SampleDesc.Quality = 0;
+	TextureDesc.SampleDesc.Count = 1;
+
+	TextureDesc.Usage = D3D11_USAGE_DYNAMIC;
+	TextureDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
+	TextureDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	TextureDesc.MiscFlags = 0;
+
+	_float3* pPixel = new _float3[TextureDesc.Width * TextureDesc.Height];
+	ZeroMemory(pPixel, sizeof(_float3) * TextureDesc.Width * TextureDesc.Height);
+
+	D3D11_SUBRESOURCE_DATA		InitialData{};
+
+	for (int i = 0; i < 16; i++)
+	{
+		_float3 vNoise = {
+			m_pGameInstance->Get_Random(0.f, 1.f),
+			m_pGameInstance->Get_Random(0.f, 1.f),
+			0.f
+		};
+		pPixel[i] = vNoise;
+	}
+
+	InitialData.pSysMem = pPixel;
+	InitialData.SysMemPitch = 4 * sizeof(_float3);
+
+	if (FAILED(m_pDevice->CreateTexture2D(&TextureDesc, &InitialData, &pSSAONoiseTexture)))
 		return E_FAIL;
 
-
-#ifdef _DEBUG
-	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_Diffuse"), 50.f, 50.f, 100.f, 100.f)))
-		return E_FAIL;
-	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_Normal"), 50.f, 150.f, 100.f, 100.f)))
-		return E_FAIL;
-	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_Depth"), 50.f, 250.f, 100.f, 100.f)))
-		return E_FAIL;
-	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_NonBlendDepth"), 50.f, 650.f, 100.f, 100.f)))
-		return E_FAIL;
-	//if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_LightDepth"), ViewPort.Width - 150.0f, 150.0f, 300.f, 300.f)))
-	//	return E_FAIL;
-
-	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_Specular"), 50.f, 350.f, 100.f, 100.f)))
+	if (FAILED(m_pDevice->CreateShaderResourceView(pSSAONoiseTexture, nullptr, &m_pSSAONoiseView)))
 		return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_RM"), 50.f, 450.f, 100.f, 100.f)))
-		return E_FAIL;
-	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_RS"), 50.f, 550.f, 100.f, 100.f)))
-		return E_FAIL;
-	
-	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_Shade"), 150.f, 50.f, 100.f, 100.f)))
-		return E_FAIL;
-	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_Ambient"), 150.f, 150.f, 100.f, 100.f)))
-		return E_FAIL;
-	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_BackBuffer"), 150.f, 250.f, 100.f, 100.f)))
-		return E_FAIL;
-	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_LightMap"), 150.f, 350.f, 100.f, 100.f)))
-		return E_FAIL;
-	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_BackBlur"), 150.f, 450.f, 100.f, 100.f)))
-		return E_FAIL;
+	Safe_Release(pSSAONoiseTexture);
 
-	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_128x128"), 250.f, 050.f, 100.f, 100.f)))
-		return E_FAIL;
-	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_Luminance"), 250.f, 150.f, 100.f, 100.f)))
-		return E_FAIL;
-	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_ToneMapping"), 250.f, 250.f, 100.f, 100.f)))
-		return E_FAIL;
+	Safe_Delete_Array(pPixel);
 
-	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_64x64"), 350.f, 050.f, 100.f, 100.f)))
-		return E_FAIL;
-	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_32x32"), 350.f, 150.f, 100.f, 100.f)))
-		return E_FAIL;
-	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_16x16"), 350.f, 250.f, 100.f, 100.f)))
-		return E_FAIL;
-	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_8x8"), 350.f, 350.f, 100.f, 100.f)))
-		return E_FAIL;
-	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_4x4"), 450.f, 50.f, 100.f, 100.f)))
-		return E_FAIL;
-	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_2x2"), 450.f, 150.f, 100.f, 100.f)))
-		return E_FAIL;
-	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_1x1"), 450.f, 250.f, 100.f, 100.f)))
-		return E_FAIL;
-	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_Effect"), 550.f, 50.f, 100.f, 100.f)))
-		return E_FAIL;
-	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_Blur_X"), 550.f, 150.f, 100.f, 100.f)))
-		return E_FAIL;
-	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_Blur_Y"), 550.f, 250.f, 100.f, 100.f)))
-		return E_FAIL;
-	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_AccumColor"), 750.f, 50.f, 100.f, 100.f)))
-		return E_FAIL;
-	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_AccumAlpha"), 750.f, 150.f, 100.f, 100.f)))
-		return E_FAIL;
+	/* 랜덤 커널 만들기 */
+	m_vSSAOKernal = new _float4[64];
+	for (int i = 0; i < 64; i++)
+	{
+		_float4 vRandom = {
+			m_pGameInstance->Get_Random(0.f, 1.f) * 2.f - 1.f,
+			m_pGameInstance->Get_Random(0.f, 1.f) * 2.f - 1.f,
+			m_pGameInstance->Get_Random(0.f, 1.f),
+			0.f
+		};
 
+		XMStoreFloat4(&vRandom, XMVector4Normalize(XMLoadFloat4(&vRandom)));
+		//XMStoreFloat3(&vRandom, XMLoadFloat3(&vRandom) * m_pGameInstance->Get_Random(0.f, 1.f));
+		float vScale = (_float)i / 64.f;
+		vScale = 0.3f + (vScale * vScale) * (0.8f - 0.3f);
+		XMStoreFloat4(&vRandom, XMLoadFloat4(&vRandom) * vScale);
 
-#endif // _DEBUG
-
+		m_vSSAOKernal[i] = vRandom;
+	}
 
 	return S_OK;
 }
@@ -455,22 +554,32 @@ void CRenderer::Add_Renderer(RENDERER_STATE eRenderState,CGameObject* pGameObjec
 void CRenderer::Draw()
 {
 	Render_Priority();
-	//Render_ShadowObjects();
+	Render_ShadowObjects();
 	Render_NonBlender();
 
 	Render_Decal();
 	Render_Glass();
-
+	
 	if (m_isSSAO)
 	{
 		Render_SSAO();
 		Render_SSAOBlur();
 	}
+
 	Render_LightAcc();
 	Render_CopyBackBuffer(); // 최종으로 그려서 백버퍼에 올라갈 이미지 복사
+
+	//캡쳐장면만듦
+	//물웅덩이에 캡쳐장면 넣어줌
+	
 	Render_DeferredResult(); // 복사한 이미지를 백버퍼에 넣어줌. (Deferred 최종)
 
-	Render_BOF();
+	if (m_isBOF)
+	{
+		Render_DeferredBlur();
+		Render_BOF();
+	}
+	
 	if (m_isHDR)
 	{
 		//HDR
@@ -485,7 +594,7 @@ void CRenderer::Draw()
 		Redner_LuminanceResult();
 	}
 
-	Render_DeferredBlur();
+	
 
 	Render_NonLight();
 	Render_Bloom();
@@ -684,78 +793,6 @@ void CRenderer::Render_Glass()
 
 }
 
-HRESULT CRenderer::Ready_SSAONoiseTexture() // SSAO 연산에 들어갈 랜덤 벡터 텍스쳐 생성
-{
-	ID3D11Texture2D* pSSAONoiseTexture = { nullptr };
-	D3D11_TEXTURE2D_DESC		TextureDesc{};
-
-	ZeroMemory(&TextureDesc, sizeof(D3D11_TEXTURE2D_DESC));
-
-	TextureDesc.Width = 4;
-	TextureDesc.Height = 4;
-	TextureDesc.MipLevels = 1;
-	TextureDesc.ArraySize = 1;
-	TextureDesc.Format = DXGI_FORMAT_R16G16B16A16_FLOAT;
-
-	TextureDesc.SampleDesc.Quality = 0;
-	TextureDesc.SampleDesc.Count = 1;
-
-	TextureDesc.Usage = D3D11_USAGE_DYNAMIC;
-	TextureDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE;
-	TextureDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
-	TextureDesc.MiscFlags = 0;
-
-	_float3* pPixel = new _float3[TextureDesc.Width * TextureDesc.Height];
-	ZeroMemory(pPixel, sizeof(_float3) * TextureDesc.Width * TextureDesc.Height);
-
-	D3D11_SUBRESOURCE_DATA		InitialData{};
-
-	for (int i = 0; i < 16; i++)
-	{
-		_float3 vNoise = {
-			m_pGameInstance->Get_Random(0.f, 1.f),
-			m_pGameInstance->Get_Random(0.f, 1.f),
-			0.f
-		};
-		pPixel[i] = vNoise;
-	}
-
-	InitialData.pSysMem = pPixel;
-	InitialData.SysMemPitch = 4 * sizeof(_float3);
-
-	if (FAILED(m_pDevice->CreateTexture2D(&TextureDesc, &InitialData, &pSSAONoiseTexture)))
-		return E_FAIL;
-
-	if (FAILED(m_pDevice->CreateShaderResourceView(pSSAONoiseTexture, nullptr, &m_pSSAONoiseView)))
-		return E_FAIL;
-
-	Safe_Release(pSSAONoiseTexture);
-
-	Safe_Delete_Array(pPixel);
-
-	/* 랜덤 커널 만들기 */
-	m_vSSAOKernal = new _float4[64];
-	for (int i = 0; i < 64; i++)
-	{
-		_float4 vRandom = {
-			m_pGameInstance->Get_Random(0.f, 1.f) * 2.f - 1.f,
-			m_pGameInstance->Get_Random(0.f, 1.f) * 2.f - 1.f,
-			m_pGameInstance->Get_Random(0.f, 1.f),
-			0.f
-		};
-
-		XMStoreFloat4(&vRandom, XMVector4Normalize(XMLoadFloat4(&vRandom)));
-		//XMStoreFloat3(&vRandom, XMLoadFloat3(&vRandom) * m_pGameInstance->Get_Random(0.f, 1.f));
-		float vScale = (_float)i / 64.f;
-		vScale = 0.3f + (vScale * vScale) * (0.8f - 0.3f);
-		XMStoreFloat4(&vRandom, XMLoadFloat4(&vRandom) * vScale);
-
-		m_vSSAOKernal[i] = vRandom;
-	}
-
-	return S_OK;
-}
-
 void CRenderer::Render_SSAO()
 {
 	if(FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_SSAO"))))
@@ -922,6 +959,8 @@ void CRenderer::Render_CopyBackBuffer()
 	//if (FAILED(m_pShader->Bind_Matrix("g_LightProjMatrix", &ProjMatrix)))
 	//	return;
 
+	if (FAILED(m_pShader->Bind_RawValue("g_isPBR", &m_isPBR, sizeof(_bool))))
+		return;
 	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Diffuse"), m_pShader, "g_DiffuseTexture")))
 		return;
 	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Shade"), m_pShader, "g_ShadeTexture")))
@@ -1061,7 +1100,8 @@ void CRenderer::Render_Luminance()
 	if (FAILED(m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
 		return;
 
-	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_BOF"), m_pShader, "g_BackBufferTexture")))
+	
+	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(m_isBOF ? TEXT("Target_BOF") : TEXT("Target_BackBuffer"), m_pShader, "g_BackBufferTexture")))
 		return;
 
 
@@ -1423,7 +1463,7 @@ void CRenderer::Render_FinalEffectBlend()
 	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Effect"), m_pShader, "g_EffectTexture")))//이펙트 텍스처 원본
 		return;
 
-	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(m_isHDR ? TEXT("Target_ToneMapping") : TEXT("Target_BOF"), m_pShader, "g_ResultTexture")))//원본 최종
+	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(m_isHDR ? TEXT("Target_ToneMapping") : m_isBOF ? TEXT("Target_BOF") : TEXT("Target_BackBuffer"), m_pShader, "g_ResultTexture")))//원본 최종
 		return;
 
 	m_pShader->Begin(13);

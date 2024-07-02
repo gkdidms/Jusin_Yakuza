@@ -4,12 +4,12 @@
 #include "Transform.h"
 
 CConstruction::CConstruction(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-	: CGameObject{ pDevice, pContext }
+	: CShaderObject{ pDevice, pContext }
 {
 }
 
 CConstruction::CConstruction(const CConstruction& rhs)
-	: CGameObject{ rhs }
+	: CShaderObject{ rhs }
 {
 }
 
@@ -18,6 +18,7 @@ HRESULT CConstruction::Initialize_Prototype()
 	return S_OK;
 }
 
+
 HRESULT CConstruction::Initialize(void* pArg)
 {
 	if (FAILED(__super::Initialize(pArg)))
@@ -25,7 +26,7 @@ HRESULT CConstruction::Initialize(void* pArg)
 
 	if (FAILED(Add_Components(pArg)))
 		return E_FAIL;
-
+	
 	if (nullptr != pArg)
 	{
 		MAPOBJ_DESC* gameobjDesc = (MAPOBJ_DESC*)pArg;
