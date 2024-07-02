@@ -51,6 +51,7 @@ public:
 
 public:
 	void Connect_Model_Ref();
+	string Get_FirstModel_Name();
 
 private:
 	void ModelList();
@@ -102,6 +103,7 @@ private:
 	//bool					m_isAnimLoop = { false };
 
 	int						m_iAnimIndex = { 0 };
+	int						m_iSearchAnimIndex = { 0 };
 	int						m_iAddedAnimSelectedIndex = { 0 };
 
 	int						m_iModelSelectedIndex = { 0 };

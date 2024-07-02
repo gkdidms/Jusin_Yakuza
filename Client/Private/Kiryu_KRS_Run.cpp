@@ -5,34 +5,46 @@
 CKiryu_KRS_Run::CKiryu_KRS_Run()
 	:CBehaviorAnimation{}
 {
-	// 전투 중 아이들 모션은 어드벤처와 동일하다
-	//[308]	p_mov_run_btl[p_mov_run_btl]
-	m_AnimationIndex.push_back(308);
+	m_AnimationIndex.push_back(308); // [308] p_mov_run_btl
+	m_AnimationIndex.push_back(59); // [59] p_krc_mov_run_stop_btl
 }
 
 void CKiryu_KRS_Run::Tick(const _float& fTimeDelta)
 {
+	switch (m_eAnimState)
+	{
+	case CKiryu_KRS_Run::ANIM_LOOP:
+		if (m_isStop)
+			m_eAnimState = ANIM_END;
+		break;
+	}
 }
 
 void CKiryu_KRS_Run::Change_Animation()
 {
-	m_pPlayer->Change_Animation(m_AnimationIndex[0]);
+	m_pPlayer->Change_Animation(m_AnimationIndex[m_eAnimState]);
 }
 
 _bool CKiryu_KRS_Run::Get_AnimationEnd()
 {
-	//CModel* pModelCom = static_cast<CModel*>(m_pPlayer->Get_Component(TEXT("Com_Model")));
-	//if (pModelCom->Get_AnimFinished())
-	//{
-	//	m_pGameInstance->Set_TimeSpeed(TEXT("Timer_60"), 1.f);
-	//	return true;
-	//}
+	if (m_eAnimState != ANIM_END) return false;
+
+	CModel* pModelCom = static_cast<CModel*>(m_pPlayer->Get_Component(TEXT("Com_Model")));
+
+	if (pModelCom->Get_AnimFinished())
+	{
+		m_eAnimState = { ANIM_LOOP};
+		m_isStop = false;
+
+		return true;
+	}
 
 	return false;
 }
 
 void CKiryu_KRS_Run::Stop()
 {
+	m_isStop = true;
 }
 
 CBehaviorAnimation* CKiryu_KRS_Run::Create(CPlayer* pPlayer)

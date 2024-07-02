@@ -11,6 +11,8 @@
 #include "Mesh.h"
 #pragma endregion
 
+wstring g_wstrModelName;
+
 CImguiManager::CImguiManager(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: m_pDevice{ pDevice }
 	, m_pContext{ pContext }
@@ -133,6 +135,7 @@ void CImguiManager::ModelList()
 	string strDirPath = "../../Client/Bin/Resources/Models/Anim/";
 
 	m_pGameInstance->Get_DirectoryName(strDirPath, m_ModelNameList);
+	g_wstrModelName = m_pGameInstance->StringToWstring(m_ModelNameList.front());
 
 	vector<const char*> items;
 
@@ -146,7 +149,7 @@ void CImguiManager::ModelList()
 	{
 		m_iAnimIndex = 0;
 		m_pRenderModel->Change_Model(m_pGameInstance->StringToWstring(m_ModelNameList[m_iModelSelectedIndex]));
-		All_Load();
+		//All_Load();
 	}
 
 	if (ImGui::Button(u8"데이터 저장하기"))
@@ -188,6 +191,13 @@ void CImguiManager::AnimListWindow()
 		m_fAnimationPosition = 0.f;
 		m_pRenderModel->Change_Animation(m_iAnimIndex);
 		//m_isAnimLoop = m_pRenderModel->Get_AnimLoop(m_iAnimIndex);
+	}
+
+
+	ImGui::InputInt("Search Anim Index", &m_iSearchAnimIndex);
+	if (ImGui::Button(u8"애니메이션 인덱스 검색하기"))
+	{
+		m_iAnimIndex = m_iSearchAnimIndex;
 	}
 
 	ImGui::SameLine();
@@ -772,6 +782,11 @@ void CImguiManager::LoadAnimationCharacterList()
 void CImguiManager::Connect_Model_Ref()
 {
 	m_pRenderModel = static_cast<CAnimModel*>(m_pGameInstance->Get_GameObject(LEVEL_EDIT, TEXT("Layer_Object"), 0));
+}
+
+string CImguiManager::Get_FirstModel_Name()
+{
+	return m_ModelNameList.front();
 }
 
 void CImguiManager::Update_Model_Position()
