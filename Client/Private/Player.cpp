@@ -332,7 +332,7 @@ void CPlayer::Move_KeyInput(const _float& fTimeDelta)
 			m_MoveDirection[R] = false;
 		}
 
-		if(!isMove && m_iCurrentBehavior == (_uint)ADVENTURE_BEHAVIOR_STATE::RUN)
+		if(!isMove && m_iCurrentBehavior != (_uint)ADVENTURE_BEHAVIOR_STATE::IDLE)
 			m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Stop();
 
 		break;
