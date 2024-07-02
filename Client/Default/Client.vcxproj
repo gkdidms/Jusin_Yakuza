@@ -207,7 +207,6 @@
     <ClInclude Include="..\Public\PartObject.h" />
     <ClInclude Include="..\public\Player.h" />
     <ClInclude Include="..\public\PlayerCamera.h" />
-    <ClInclude Include="..\public\ShaderObject.h" />
     <ClInclude Include="..\Public\Sky.h" />
     <ClInclude Include="..\Public\SoketCollider.h" />
     <ClInclude Include="..\Public\SoketObject.h" />
@@ -268,7 +267,6 @@
     <ClCompile Include="..\Private\PartObject.cpp" />
     <ClCompile Include="..\private\Player.cpp" />
     <ClCompile Include="..\private\PlayerCamera.cpp" />
-    <ClCompile Include="..\private\ShaderObject.cpp" />
     <ClCompile Include="..\Private\Sky.cpp" />
     <ClCompile Include="..\Private\SoketCollider.cpp" />
     <ClCompile Include="..\Private\SoketObject.cpp" />
