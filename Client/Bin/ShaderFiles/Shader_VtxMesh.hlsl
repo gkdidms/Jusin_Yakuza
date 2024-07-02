@@ -282,9 +282,8 @@ PS_OUT PS_PUDDLE(PS_IN In)
 
     if(true == bReflect)
     {
-        
         vector reflectColor = g_RefractionTexture.Sample(PointSampler, vReflectScreenPos.xy + 0.02 * normal.xy);
-    
+
         Out.vDiffuse = reflectColor;
     }
     else
