@@ -82,6 +82,26 @@ void CTransform::Go_Straight(const _float& fTimeDelta)
 	Set_State(STATE_POSITION, vPosition);
 }
 
+void CTransform::Go_Straight_CustumSpeed(const _float& fSpeed, const _float& fTimeDelta)
+{
+	_vector vPosition = Get_State(STATE_POSITION);
+	_vector vLook = Get_State(STATE_LOOK);
+
+	vPosition += XMVector3Normalize(vLook) * fSpeed * fTimeDelta;
+
+	Set_State(STATE_POSITION, vPosition);
+}
+
+void CTransform::Go_Straight_CustumDir(const _float4& vDir, const _float& fTimeDelta)
+{
+	_vector vPosition = Get_State(STATE_POSITION);
+	_vector vLook = Get_State(STATE_LOOK);
+
+	vPosition += XMLoadFloat4(&vDir) * m_fSpeedPerSec * fTimeDelta;
+
+	Set_State(STATE_POSITION, vPosition);
+}
+
 void CTransform::Go_Backward(const _float& fTimeDelta)
 {
 	_vector vPosition = Get_State(STATE_POSITION);
@@ -226,6 +246,27 @@ void CTransform::Change_Rotation(_fvector vAxis, _float fRadian)
 	vUp = XMVector3TransformNormal(vUp, RotationMatrix);
 	vLook = XMVector3TransformNormal(vLook, RotationMatrix);
 
+	Set_State(STATE_RIGHT, vRight);
+	Set_State(STATE_UP, vUp);
+	Set_State(STATE_LOOK, vLook);
+}
+
+void CTransform::Change_Rotation_Quaternion(const _float4& vQuaternion)
+{
+	// 축 벡터들을 가져온다고 가정
+	_vector vRight = Get_State(STATE_RIGHT);
+	_vector vUp = Get_State(STATE_UP);
+	_vector vLook = Get_State(STATE_LOOK);
+
+	// 쿼터니언을 XMMATRIX로 변환
+	XMMATRIX rotationMatrix = XMMatrixRotationQuaternion(XMLoadFloat4(&vQuaternion));
+
+	// 축 벡터들을 회전시킨다
+	vRight = XMVector3TransformNormal(vRight, rotationMatrix);
+	vUp = XMVector3TransformNormal(vUp, rotationMatrix);
+	vLook = XMVector3TransformNormal(vLook, rotationMatrix);
+
+	// 변경된 축 벡터들을 저장한다
 	Set_State(STATE_RIGHT, vRight);
 	Set_State(STATE_UP, vUp);
 	Set_State(STATE_LOOK, vLook);
