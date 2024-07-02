@@ -28,7 +28,7 @@ public:
     };    
     enum class KRS_BEHAVIOR_STATE
     {
-        IDLE, WALK, RUN, GUARD, ATTACK, HIT, KRS_BEHAVIOR_END
+        BTL_START, IDLE, WALK, RUN, GUARD, ATTACK, HIT, KRS_BEHAVIOR_END
     };
 
     enum MOVE_DIRECTION
@@ -72,10 +72,23 @@ private:
     void Ready_AnimationTree();
     void Synchronize_Root(const _float& fTimeDelta);
     void Animation_Event();
-    void Move_KeyInput(const _float& fTimeDelta);
+
+    //키 입력관련함수들
+private:
+    void KeyInput(const _float& fTimeDelta);       //현재 플레이어의 상태에 따른 키입력처리 하는 함수
+
+    // 어드벤처 모드에서의 키입력
+    void Adventure_KeyInput(const _float& fTimeDelta);      
+    // 불한당 모드 키입력
+    void KRS_KeyInput(const _float& fTimeDelta);  
+    // 러쉬 모드 키입력
+    void KRH_KeyInput(const _float& fTimeDelta);      
+    // 파괴자 모드 키입력
+    void KRC_KeyInput(const _float& fTimeDelta);
 
 public:
     void Change_Animation(_uint iAnimIndex);
+    void Style_Change(BATTLE_STYLE eStyle);
 
 private:
     CShader*                m_pShaderCom = { nullptr };

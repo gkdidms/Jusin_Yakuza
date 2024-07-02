@@ -7,6 +7,16 @@
 #include "Kiryu_Adventure_Run.h"
 #pragma endregion
 
+#pragma region Adventure
+#include "Kiryu_KRS_BattleStart.h"
+#include "Kiryu_KRS_Idle.h"
+#include "Kiryu_KRS_Walk.h"
+#include "Kiryu_KRS_Run.h"
+#include "Kiryu_KRS_Gaurd.h"
+#include "Kiryu_KRS_Attack.h"
+#include "Kiryu_KRS_Hit.h"
+#pragma endregion
+
 CBehaviorAnimation::CBehaviorAnimation()
 	: m_pGameInstance{CGameInstance::GetInstance()}
 {
@@ -31,6 +41,24 @@ CBehaviorAnimation* CBehaviorAnimation::Create_Adventure_Behavior(_uint iBehavio
 
 CBehaviorAnimation* CBehaviorAnimation::Create_KRS_Behavior(_uint iBehavior, class CPlayer* pPlayer)
 {
+	//BTL_START, IDLE, WALK, RUN, GUARD, ATTACK, HIT, KRS_BEHAVIOR_END
+	switch (iBehavior)
+	{
+	case 0:
+		return CKiryu_KRS_BattleStart::Create(pPlayer);
+	case 1:
+		return CKiryu_KRS_Idle::Create(pPlayer);
+	case 2:
+		return CKiryu_KRS_Walk::Create(pPlayer);
+	case 3:
+		return CKiryu_KRS_Run::Create(pPlayer);
+	case 4:
+		return CKiryu_KRS_Gaurd::Create(pPlayer);
+	case 5:
+		return CKiryu_KRS_Attack::Create(pPlayer);
+	case 6:
+		return CKiryu_KRS_Hit::Create(pPlayer);
+	}
 	return nullptr;
 }
 
