@@ -50,26 +50,27 @@ public:
 	virtual HRESULT Render() override;
 
 public:
-	CTransform* Get_Transform() { return m_pTransformCom; }
+	CTransform*					Get_Transform() { return m_pTransformCom; }
 
 public:
 	int							Get_ObjPlaceDesc(OBJECTPLACE_DESC* objplaceDesc);
 	MAPOBJ_DESC					Get_MapObjDesc_For_AddList();
 
 	void						Edit_GameObject_Information(MAPOBJ_DESC	mapDesc);
-	CConstruction::MAPOBJ_DESC					Send_GameObject_Information();
+	CConstruction::MAPOBJ_DESC	Send_GameObject_Information();
 
 private:
-	CShader* m_pShaderCom = { nullptr };
-	CModel* m_pModelCom = { nullptr };
+	CShader*					m_pShaderCom = { nullptr };
+	CModel*						m_pModelCom = { nullptr };
+	//CTexture*					m_pTexture = { nullptr };
 
 private:
-	vector<CDecal*>			m_vDecals;
-	int						m_iLayerNum;
-	wstring					m_wstrModelName;
-	int						m_iShaderPassNum = { 0 };
-	int						m_iObjectType = { 0 };
-	float					m_fWaterDeltaTime = { 0 };
+	vector<CDecal*>				m_vDecals;
+	int							m_iLayerNum;
+	wstring						m_wstrModelName;
+	int							m_iShaderPassNum = { 0 };
+	int							m_iObjectType = { 0 };
+	float						m_fWaterDeltaTime = { 0 };
 
 public:
 	HRESULT Add_Components(void* pArg);

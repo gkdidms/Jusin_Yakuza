@@ -127,6 +127,10 @@ HRESULT CLoader::Loading_For_Test()
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/T_Sand_06_A.png"), 1))))
 		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Texture_NoiseTexture"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/NoiseTexture.dds"), 1))))
+		return E_FAIL;
+
 #pragma region Effect
 		/* Prototype_Component_Texture_Sphere */
 		if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Texture_Sphere"),
@@ -204,7 +208,7 @@ HRESULT CLoader::Loading_For_Test()
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Model_Water011"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/NonAnim/Map/Map1/Bin/Water011_test.dat", PreTransformMatrix, true))))
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/NonAnim/Map/Map1/Bin/Water011.dat", PreTransformMatrix, true))))
 		return E_FAIL;
 
 

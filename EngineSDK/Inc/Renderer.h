@@ -6,7 +6,7 @@ class ENGINE_DLL CRenderer :
     public CBase
 {
 public:
-    enum RENDERER_STATE { RENDER_PRIORITY, RENDER_SHADOWOBJ, RENDER_NONBLENDER, RENDER_DECAL, RENDER_GLASS, RENDER_NONLIGHT, RENDER_BLENDER, RENDER_EFFECT, RENDER_UI, RENDER_END };
+    enum RENDERER_STATE { RENDER_PRIORITY, RENDER_SHADOWOBJ, RENDER_NONBLENDER, RENDER_DECAL, RENDER_GLASS, RENDER_PUDDLE, RENDER_NONLIGHT, RENDER_BLENDER, RENDER_EFFECT, RENDER_UI, RENDER_END };
 
 private:
     CRenderer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -64,6 +64,7 @@ private:
 
     void Render_LightAcc(); // Light ¿¬»ê + SSAO ÇÕ + PBR
     void Render_CopyBackBuffer();
+    void Render_Puddle();
     void Render_DeferredResult();
 
     /* AerialPerspective*/
