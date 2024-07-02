@@ -96,7 +96,7 @@ float3 BRDF(float4 vPosition, float2 vTexcoord, float4 vNormal, float4 vDepthDes
     float3 vRadiance = g_vLightDiffuse;
     
     //BRDF
-    float vRoughness = vRM.r;
+    float vRoughness = 1 - vRM.r;
     float D = NormalDistributionGGXTR(vNormal.xyz, vHalfway, vRoughness); //r : Roughness
     float G = GeometrySmith(vNormal.xyz, vLook, vLightDir, vRoughness);
     float3 F = FresnelSchlick(max(dot(vHalfway, vLook), 0.f), F0);
@@ -116,11 +116,11 @@ float3 BRDF(float4 vPosition, float2 vTexcoord, float4 vNormal, float4 vDepthDes
 
     //  Calculate radiance
     //vAlbedo = LinearToGamma(vAlbedo);
-    float3 vResult = (((kD * vAlbedo / PI) + vSpecular) * vLi);
+    float3 vResult = (((vAlbedo/ PI) + vSpecular) * vLi);
     
     vResult = LinearToGamma(vResult);
     
-    return vResult;
+    return vSpecular * vLi;
 }
 
 float3 BRDF_RS(float4 vPosition, float2 vTexcoord, float4 vNormal, float4 vDepthDesc)
@@ -162,7 +162,7 @@ float3 BRDF_RS(float4 vPosition, float2 vTexcoord, float4 vNormal, float4 vDepth
     float3 vRadiance = g_vLightDiffuse;
     
     //BRDF
-    float vRoughness = vRM.r;
+    float vRoughness = 1 - vRM.r;
     float D = NormalDistributionGGXTR(vNormal.xyz, vHalfway, vRoughness); //g : Roughness
     float G = GeometrySmith(vNormal.xyz, vLook, vLightDir, vRoughness);
     float3 F = FresnelSchlick(max(dot(vHalfway, vLook), 0.f), F0);
@@ -183,6 +183,6 @@ float3 BRDF_RS(float4 vPosition, float2 vTexcoord, float4 vNormal, float4 vDepth
     //  Calculate radiance
     //vAlbedo = LinearToGamma(vAlbedo);
     //float3 vResult = (((vAlbedo / PI) + vSpecular) * vLi);
-    
+    vSpecular *= vLi * WiDotN;
     return vSpecular;
 }

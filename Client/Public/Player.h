@@ -38,7 +38,7 @@ public:
 
 
 private:
-    const _float ANIM_INTERVAL = 5.f;
+    const _float ANIM_INTERVAL = 4.f;
     
 private:
     CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -69,7 +69,7 @@ public:
 
 private:
     void Ready_AnimationTree();
-    void Synchronize_Root();
+    void Synchronize_Root(const _float& fTimeDelta);
     void Animation_Event();
     void Move_KeyInput(const _float& fTimeDelta);
 
@@ -95,7 +95,9 @@ private:
 
     _bool           m_MoveDirection[MOVE_DIRECTION_END];
 
+    _float          m_fPrevSpeed = { 0.f };
     _float4         m_vPrevMove;
+    _float4         m_vPrevRotation;
     _float4x4       m_ModelWorldMatrix;
 
 #ifdef _DEBUG

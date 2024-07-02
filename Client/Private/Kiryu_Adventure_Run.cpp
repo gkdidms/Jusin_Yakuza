@@ -17,6 +17,11 @@ CKiryu_Adventure_Run::CKiryu_Adventure_Run()
 	m_AnimationIndex.push_back(315); 	//	p_mov_run_l 315 / 5
 	m_AnimationIndex.push_back(316); 	//	p_mov_run_r 316 / 6
 
+	//p_mov_run_dash 310
+	//p_mov_run_dash_tired 311
+	//p_mov_run_dash_stop_l 312
+	//p_mov_run_dash_stop_s 313
+
 	// 끝날 때 애니메이션
 	m_AnimationIndex.push_back(323);	//	p_mov_run_stop 323 / 7
 
@@ -48,18 +53,20 @@ void CKiryu_Adventure_Run::Change_Animation()
 
 	if (m_eAnimState == ANIM_START)
 	{
-		// 정면은 달리기 시작하는 모션이 없다!
-		if (pDirction[CPlayer::F])
-		{
-			m_eAnimState = ANIM_LOOP;
-			m_iCurrentIndex = 4;
-		}
-		if (pDirction[CPlayer::B])
-			m_iCurrentIndex = 0;
-		if (pDirction[CPlayer::L])
-			m_iCurrentIndex = 1;
-		if (pDirction[CPlayer::R])
-			m_iCurrentIndex = 3;
+		//// 정면은 달리기 시작하는 모션이 없다!
+		//if (pDirction[CPlayer::F])
+		//{
+		//	m_eAnimState = ANIM_LOOP;
+		//	m_iCurrentIndex = 4;
+		//}
+		//if (pDirction[CPlayer::B])
+		//	m_iCurrentIndex = 0;
+		//if (pDirction[CPlayer::L])
+		//	m_iCurrentIndex = 1;
+		//if (pDirction[CPlayer::R])
+		//	m_iCurrentIndex = 3;
+
+		m_iCurrentIndex = 4;
 
 	}
 	else if (m_eAnimState == ANIM_LOOP)

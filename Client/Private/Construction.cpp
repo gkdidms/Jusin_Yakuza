@@ -4,12 +4,12 @@
 #include "Transform.h"
 
 CConstruction::CConstruction(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-	: CGameObject{ pDevice, pContext }
+	: CShaderObject{ pDevice, pContext }
 {
 }
 
 CConstruction::CConstruction(const CConstruction& rhs)
-	: CGameObject{ rhs }
+	: CShaderObject{ rhs }
 {
 }
 
@@ -18,6 +18,7 @@ HRESULT CConstruction::Initialize_Prototype()
 	return S_OK;
 }
 
+
 HRESULT CConstruction::Initialize(void* pArg)
 {
 	if (FAILED(__super::Initialize(pArg)))
@@ -25,7 +26,7 @@ HRESULT CConstruction::Initialize(void* pArg)
 
 	if (FAILED(Add_Components(pArg)))
 		return E_FAIL;
-
+	
 	if (nullptr != pArg)
 	{
 		MAPOBJ_DESC* gameobjDesc = (MAPOBJ_DESC*)pArg;
@@ -63,17 +64,29 @@ void CConstruction::Tick(const _float& fTimeDelta)
 {
 	for (auto& iter : m_vDecals)
 		iter->Tick(fTimeDelta);
+
+	if (2 == m_iShaderPassNum)
+	{
+		m_fWaterDeltaTime += fTimeDelta*0.07;
+
+		if (m_fWaterDeltaTime > 1)
+			m_fWaterDeltaTime = 0;
+	}
 }
 
 void CConstruction::Late_Tick(const _float& fTimeDelta)
 {
-	if (1 == m_iShaderPassNum)
+	if (0 == m_iShaderPassNum)
+	{
+		m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
+	}
+	else if (1 == m_iShaderPassNum)
 	{
 		m_pGameInstance->Add_Renderer(CRenderer::RENDER_GLASS, this);
 	}
-	else
+	else if (2 == m_iShaderPassNum)
 	{
-		m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
+		m_pGameInstance->Add_Renderer(CRenderer::RENDER_GLASS, this);
 	}
 	
 	
@@ -138,7 +151,6 @@ HRESULT CConstruction::Render()
 			if (FAILED(m_pShaderCom->Bind_RawValue("g_bExistRSTex", &bRSExist, sizeof(bool))))
 				return E_FAIL;
 		}
-
 		
 		// 유리문 처리
 		if (1 == m_iShaderPassNum)
@@ -146,14 +158,30 @@ HRESULT CConstruction::Render()
 			if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_NonBlendDiffuse"), m_pShaderCom, "g_RefractionTexture")))
 				return E_FAIL;
 		}
+		else if (2 == m_iShaderPassNum)
+		{
+			if (FAILED(m_pShaderCom->Bind_RawValue("g_fTimeDelta", &m_fWaterDeltaTime, sizeof(float))))
+				return E_FAIL;
 
+			if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_NonBlendDiffuse"), m_pShaderCom, "g_RefractionTexture")))
+				return E_FAIL;
 
-		/*m_pShaderCom->Begin(m_iShaderPassNum);*/
+			if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_NonBlendDepth"), m_pShaderCom, "g_DepthTexture")))
+				return E_FAIL;
+
+			if (FAILED(m_pShaderCom->Bind_RawValue("g_vCamPosition", m_pGameInstance->Get_CamPosition_Float4(), sizeof(_float4))))
+				return E_FAIL;
+
+			if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrixInv", m_pGameInstance->Get_Transform_Inverse_Float4x4(CPipeLine::D3DTS_VIEW))))
+				return E_FAIL;
+			if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrixInv", m_pGameInstance->Get_Transform_Inverse_Float4x4(CPipeLine::D3DTS_PROJ))))
+				return E_FAIL;
+		}
+
 		m_pShaderCom->Begin(m_iShaderPassNum);
 
 		m_pModelCom->Render(i);
 	}
-
 
 	return S_OK;
 }
@@ -224,6 +252,8 @@ HRESULT CConstruction::Bind_ShaderResources()
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_PROJ))))
 		return E_FAIL;
 
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_fFar", m_pGameInstance->Get_CamFar(), sizeof(_float))))
+		return E_FAIL;
 
 	return S_OK;
 }
