@@ -172,6 +172,7 @@
     <ClInclude Include="..\..\Imgui\imgui\imstb_rectpack.h" />
     <ClInclude Include="..\..\Imgui\imgui\imstb_textedit.h" />
     <ClInclude Include="..\..\Imgui\imgui\imstb_truetype.h" />
+    <ClInclude Include="..\Public\Aura.h" />
     <ClInclude Include="..\public\Background.h" />
     <ClInclude Include="..\Public\BehaviorAnimation.h" />
     <ClInclude Include="..\Public\BTNode.h" />
@@ -232,6 +233,7 @@
     <ClCompile Include="..\..\Imgui\imgui\imgui_draw.cpp" />
     <ClCompile Include="..\..\Imgui\imgui\imgui_tables.cpp" />
     <ClCompile Include="..\..\Imgui\imgui\imgui_widgets.cpp" />
+    <ClCompile Include="..\Private\Aura.cpp" />
     <ClCompile Include="..\private\Background.cpp" />
     <ClCompile Include="..\Private\BehaviorAnimation.cpp" />
     <ClCompile Include="..\Private\BTNode.cpp" />
@@ -282,6 +284,7 @@
     <Image Include="small.ico" />
   </ItemGroup>
   <ItemGroup>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_Aura.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Trail.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxAnimMesh.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxCube.hlsl" />

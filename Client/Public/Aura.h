@@ -1,27 +1,28 @@
 #pragma once
 #include "Effect.h"
 #include "Client_Defines.h"
-#include "VIBuffer_Trail.h"
+#include "VIBuffer_Instance_Point.h"
 
 BEGIN(Engine)
 class CShader;
 class CTexture;
-class CVIBuffer_Trail;
+class CVIBuffer_Instance_Point;
 END
-
 BEGIN(Client)
-class CTRailEffect final:
+class CAura final:
     public CEffect
 {
 public:
-    typedef struct tTRAIL_DESC :public CEffect::EFFECT_DESC
+    typedef struct tAURA_DESC :public CEffect::EFFECT_DESC
     {
-        CVIBuffer_Trail::VIBUFFER_TRAIL_DESC Trail_Desc;
-    }TRAIL_DESC;
+        CVIBuffer_Instance::INSTANCE_DESC BufferInstance;
+        _float2 fUVCount;
+
+    }AURA_DESC;
 private:
-    CTRailEffect(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-    CTRailEffect(const CTRailEffect& rhs);
-    virtual ~CTRailEffect() = default;
+    CAura(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+    CAura(const CAura& rhs);
+    virtual ~CAura() = default;
 
 public:
     virtual HRESULT Initialize_Prototype();
@@ -33,24 +34,27 @@ public:
     virtual HRESULT Render();
 
     virtual void* Get_Instance()override;
-
+    _float2  Get_UVCount() { return m_fUVCount; }
 public:
     virtual HRESULT Save_Data(const string strDirectory)override;
     virtual HRESULT Load_Data(const string strDirectory)override;
 
 private:
     CShader* m_pShaderCom = { nullptr };
-    CTexture* m_pTextureCom = {nullptr};
-    CVIBuffer_Trail* m_pVIBufferCom = { nullptr };
+    CTexture* m_pTextureCom[4] = {nullptr};
+    CVIBuffer_Instance_Point* m_pVIBufferCom = { nullptr };
 
 private:
-    CVIBuffer_Trail::VIBUFFER_TRAIL_DESC m_TrailDesc = {};
+    CVIBuffer_Instance::INSTANCE_DESC m_BufferInstance;
+    _float2     m_fUVCount = { 0.f, 0.f };//uv °¹¼ö
+
 private:
     HRESULT Add_Components();
     HRESULT Bind_ShaderResources();
+
 public:
-    static CTRailEffect* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-    static CTRailEffect* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, string strFilePath);
+    static CAura* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+    static CAura* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, string strFilePath);
     virtual CGameObject* Clone(void* pArg) override;
     virtual void Free() override;
 };

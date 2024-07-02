@@ -40,7 +40,7 @@ public:
 
 private:
     CShader* m_pShaderCom = { nullptr };
-    CTexture* m_pTextureCom = { nullptr };
+    CTexture* m_pTextureCom = {nullptr};
     CVIBuffer_Trail* m_pVIBufferCom = { nullptr };
 
 private:
@@ -48,7 +48,6 @@ private:
 private:
     HRESULT Add_Components();
     HRESULT Bind_ShaderResources();
-    HRESULT Bind_TrailResourceData();
 public:
     static CTRailEffect* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
     static CTRailEffect* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, string strFilePath);

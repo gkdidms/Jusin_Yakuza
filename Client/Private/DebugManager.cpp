@@ -164,7 +164,16 @@ void CDebugManager::Window_Debug()
         if (ImGui::InputInt("Light Number", &m_iLightPass, 0))
             m_pFileTotalMgr->Set_Lights_In_Client(m_iLightPass);
     }
+    if (ImGui::CollapsingHeader("Particle"))
+    {
+        ImGui::SeparatorText("Particle");
+        if (ImGui::Button("pang"))
+        {
+            if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_Particle_Point_Hit1_Part0"), TEXT("Layer_Particle"), nullptr)))
+                MSG_BOX("pang!");
+        }
 
+    }
     ImGui::End();
 }
 

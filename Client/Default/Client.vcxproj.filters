@@ -145,6 +145,12 @@
     <ClCompile Include="..\private\UI.cpp">
       <Filter>02.GameObjects\07.UI</Filter>
     </ClCompile>
+    <ClCompile Include="..\private\ShaderObject.cpp">
+      <Filter>02.GameObjects\02.ShaderObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Aura.cpp">
+      <Filter>02.GameObjects\06.Effect\Aura</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\MainApp.h">
@@ -321,6 +327,12 @@
     <ClInclude Include="..\public\Loader.h">
       <Filter>01.Levels\99.Loading\Loader</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\ShaderObject.h">
+      <Filter>02.GameObjects\02.ShaderObject</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Aura.h">
+      <Filter>02.GameObjects\06.Effect\Aura</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -478,6 +490,9 @@
     <Filter Include="02.GameObjects\03.Construction">
       <UniqueIdentifier>{95e29977-56e8-4ee9-b1c8-71236bd9d68b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\06.Effect\Aura">
+      <UniqueIdentifier>{e1163822-540f-4bdd-9163-9b24fe1b27c1}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Client.rc">
@@ -504,6 +519,9 @@
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Trail.hlsl">
+      <Filter>97.ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_Aura.hlsl">
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
   </ItemGroup>

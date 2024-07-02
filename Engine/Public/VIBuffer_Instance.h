@@ -19,6 +19,7 @@ public:
         _float2 vSpeed;
         _float2 vLifeTime;
         _bool isLoop;
+        const _float4x4* WorldMatrix;
     }INSTANCE_DESC;
 
     //typedef struct tBlendSort
@@ -50,6 +51,10 @@ protected:
     _float* m_pSpeeds = { nullptr };
     _float3* m_pOriginalPositions = { nullptr };
     _float* m_pOriginalSize = { nullptr };
+    _float3* m_pOriginalOffsets = { nullptr };
+
+
+    const _float4x4* m_pCurrentWorldMatrix = { nullptr };
 
 
 
@@ -80,7 +85,8 @@ public:
     void Spread(_float fTimeDelta);
     void Drop(_float fTimeDelta);
     void LifeTime_Check();
-    void Size_Time(_float fTimeDelta);
+    void SizeUp_Time(_float fTimeDelta);
+    void SizeDown_Time(_float fTimeDelta);
 
     void Compute_Sort();
 

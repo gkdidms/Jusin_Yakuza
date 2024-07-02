@@ -38,6 +38,7 @@ HRESULT CParticle_Point::Initialize(void* pArg)
         m_BufferInstance = pDesc->BufferInstance;
         m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&pDesc->vStartPos));
     }
+        m_BufferInstance.WorldMatrix  = m_pTransformCom->Get_WorldFloat4x4();
 
     if (FAILED(Add_Components()))
         return E_FAIL;
@@ -51,7 +52,7 @@ void CParticle_Point::Priority_Tick(const _float& fTimeDelta)
 
 void CParticle_Point::Tick(const _float& fTimeDelta)
 {
-
+    
     m_fCurTime += fTimeDelta;
     if (!m_BufferInstance.isLoop)
     {
@@ -70,9 +71,13 @@ void CParticle_Point::Tick(const _float& fTimeDelta)
         {
             m_pVIBufferCom->Drop(fTimeDelta);
         }
-        if (m_iAction & iAction[ACTION_SIZE])
+        if (m_iAction & iAction[ACTION_SIZEUP])
         {
-            m_pVIBufferCom->Size_Time(fTimeDelta);
+            m_pVIBufferCom->SizeUp_Time(fTimeDelta);
+        }
+        if (m_iAction & iAction[ACTION_SIZEDOWN])
+        {
+            m_pVIBufferCom->SizeDown_Time(fTimeDelta);
         }
     }
 
@@ -82,19 +87,63 @@ void CParticle_Point::Tick(const _float& fTimeDelta)
 
 void CParticle_Point::Late_Tick(const _float& fTimeDelta)
 {
-    Compute_ViewZ(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 
-    if(m_BufferInstance.isLoop)
+    switch (m_eType)
     {
-        m_pGameInstance->Add_Renderer(CRenderer::RENDER_EFFECT, this);
-    }
-    else
+    case Client::CEffect::TYPE_POINT:
     {
-        if (m_fCurTime >= m_fStartTime && !m_isDead)
+        if (m_BufferInstance.isLoop)
         {
             m_pGameInstance->Add_Renderer(CRenderer::RENDER_EFFECT, this);
         }
+        else
+        {
+            if (m_fCurTime >= m_fStartTime && !m_isDead)
+            {
+                m_pGameInstance->Add_Renderer(CRenderer::RENDER_EFFECT, this);
+            }
+        }
     }
+        break;
+    case Client::CEffect::TYPE_TRAIL:
+        break;
+    case Client::CEffect::TYPE_GLOW:
+    {
+        if (m_BufferInstance.isLoop)
+        {
+            m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONLIGHT, this);
+        }
+        else
+        {
+            if (m_fCurTime >= m_fStartTime && !m_isDead)
+            {
+                m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONLIGHT, this);
+            }
+        }
+    }
+        break;
+    case Client::CEffect::TYPE_AURA:
+    {
+        if (m_BufferInstance.isLoop)
+        {
+            m_pGameInstance->Add_Renderer(CRenderer::RENDER_EFFECT, this);
+        }
+        else
+        {
+            if (m_fCurTime >= m_fStartTime && !m_isDead)
+            {
+                m_pGameInstance->Add_Renderer(CRenderer::RENDER_EFFECT, this);
+            }
+        }
+    }
+    break;
+    case Client::CEffect::TYPE_END:
+        break;
+    default:
+        break;
+    }
+   // Compute_ViewZ(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+
 
 }
 
@@ -248,17 +297,17 @@ HRESULT CParticle_Point::Load_Data(const string strDirectory)
 HRESULT CParticle_Point::Add_Components()
 {
     /* For.Com_VIBuffer */
-    if (FAILED(__super::Add_Component(LEVEL_EDIT, TEXT("Prototype_Component_VIBuffer_Instance_Point"),
+    if (FAILED(__super::Add_Component(LEVEL_TEST, TEXT("Prototype_Component_VIBuffer_Instance_Point"),
         TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pVIBufferCom), &m_BufferInstance)))
         return E_FAIL;
 
     /* For.Com_Shader */
-    if (FAILED(__super::Add_Component(LEVEL_EDIT, TEXT("Prototype_Component_Shader_VtxInstance_Point"),
+    if (FAILED(__super::Add_Component(LEVEL_TEST, TEXT("Prototype_Component_Shader_VtxInstance_Point"),
         TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
         return E_FAIL;
 
     /* For.Com_Texture */
-    if (FAILED(__super::Add_Component(LEVEL_EDIT, m_TextureTag,
+    if (FAILED(__super::Add_Component(LEVEL_TEST, m_TextureTag,
         TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
         return E_FAIL;
 
