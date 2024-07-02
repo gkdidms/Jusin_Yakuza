@@ -23,6 +23,7 @@ public:
 	virtual void Change_Animation() = 0;
 	virtual _bool Get_AnimationEnd() { return false; };
 	virtual void Stop() {};
+	virtual void Reset() {};
 
 protected:
 	CGameInstance* m_pGameInstance = { nullptr };

@@ -120,12 +120,12 @@ void CImguiManager::ModelList()
 		m_ModelRotation[2] = 0.f;
 	}
 
-	//if (ImGui::DragFloat("All Scale", &m_ModelScale, 0.001f))
-	//{
-	//	if (0.001f > m_ModelScale) m_ModelScale = 0.001f;
+	if (ImGui::DragFloat("All Scale", &m_ModelScale, 0.001f))
+	{
+		if (0.001f > m_ModelScale) m_ModelScale = 0.001f;
 
-	//	Update_Model_Scaled();
-	//}
+		Update_Model_Scaled();
+	}
 
 	ImGui::NewLine();
 	ImGui::Text("Model List");
