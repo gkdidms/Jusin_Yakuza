@@ -76,7 +76,20 @@ PS_OUT PS_MAIN(PS_IN In)
 
 technique11 DefaultTechnique
 {
-    pass DefaultPass
+    pass DefaultTrailPass
+    {
+        SetRasterizerState(RS_Cull_NON_CW);
+        SetDepthStencilState(DSS_None_Test_None_Write, 0);
+        SetBlendState(BS_WeightsBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        HullShader = NULL;
+        DomainShader = NULL;
+        PixelShader = compile ps_5_0 PS_MAIN();
+    }
+
+    pass AuraTrailPass
     {
         SetRasterizerState(RS_Cull_NON_CW);
         SetDepthStencilState(DSS_None_Test_None_Write, 0);

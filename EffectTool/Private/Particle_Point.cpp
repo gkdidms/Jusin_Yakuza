@@ -38,6 +38,7 @@ HRESULT CParticle_Point::Initialize(void* pArg)
         m_BufferInstance = pDesc->BufferInstance;
         m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&pDesc->vStartPos));
     }
+        m_BufferInstance.WorldMatrix  = m_pTransformCom->Get_WorldFloat4x4();
 
     if (FAILED(Add_Components()))
         return E_FAIL;
@@ -70,9 +71,13 @@ void CParticle_Point::Tick(const _float& fTimeDelta)
         {
             m_pVIBufferCom->Drop(fTimeDelta);
         }
-        if (m_iAction & iAction[ACTION_SIZE])
+        if (m_iAction & iAction[ACTION_SIZEUP])
         {
-            m_pVIBufferCom->Size_Time(fTimeDelta);
+            m_pVIBufferCom->SizeUp_Time(fTimeDelta);
+        }
+        if (m_iAction & iAction[ACTION_SIZEDOWN])
+        {
+            m_pVIBufferCom->SizeDown_Time(fTimeDelta);
         }
     }
 
@@ -117,6 +122,21 @@ void CParticle_Point::Late_Tick(const _float& fTimeDelta)
         }
     }
         break;
+    case Client::CEffect::TYPE_AURA:
+    {
+        if (m_BufferInstance.isLoop)
+        {
+            m_pGameInstance->Add_Renderer(CRenderer::RENDER_EFFECT, this);
+        }
+        else
+        {
+            if (m_fCurTime >= m_fStartTime && !m_isDead)
+            {
+                m_pGameInstance->Add_Renderer(CRenderer::RENDER_EFFECT, this);
+            }
+        }
+    }
+    break;
     case Client::CEffect::TYPE_END:
         break;
     default:

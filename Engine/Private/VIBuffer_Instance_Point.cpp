@@ -35,6 +35,7 @@ HRESULT CVIBuffer_Instance_Point::Initialize(void* pArg)
 	//m_iInstanceStride = sizeof(VTXMATRIX);
 
 #pragma region VERTEX_BUFFER
+	ZeroMemory(&m_Buffer_Desc, sizeof(D3D11_BUFFER_DESC));
 	m_Buffer_Desc.ByteWidth = m_iVertexStride * m_iNumVertices;
 	m_Buffer_Desc.Usage = D3D11_USAGE_DEFAULT;
 	m_Buffer_Desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
@@ -98,6 +99,11 @@ HRESULT CVIBuffer_Instance_Point::Initialize(void* pArg)
 	m_pOriginalSize = new _float[m_InstanceDesc->iNumInstance];
 	ZeroMemory(m_pOriginalSize, sizeof(_float) * m_InstanceDesc->iNumInstance);
 
+	m_pOriginalOffsets = new _float3[m_InstanceDesc->iNumInstance];
+	ZeroMemory(m_pOriginalOffsets, sizeof(_float3) * m_InstanceDesc->iNumInstance);
+
+
+	m_pCurrentWorldMatrix = m_InstanceDesc->WorldMatrix;
 
 	for (size_t i = 0; i < m_InstanceDesc->iNumInstance; i++)
 	{	
@@ -116,7 +122,7 @@ HRESULT CVIBuffer_Instance_Point::Initialize(void* pArg)
 
 	_float LifeTime = m_pGameInstance->Get_Random(m_InstanceDesc->vLifeTime.x, m_InstanceDesc->vLifeTime.y);
 
-
+	
 		// Right, Up, Loop, Pos 순서로 월드 행렬의 좌표를 넣어준다.
 		pInstanceVertices[i].vRight = _float4(1.f, 0.f, 0.f, 0.f);
 		pInstanceVertices[i].vUp = _float4(0.f, 1.f, 0.f, 0.f);
@@ -127,14 +133,24 @@ HRESULT CVIBuffer_Instance_Point::Initialize(void* pArg)
 		else
 			pInstanceVertices[i].vTranslation = _float4(RangeX, RangeY, RangeZ, 1.f);
 
+		_vector WorlPosition= XMLoadFloat4x4(m_pCurrentWorldMatrix).r[3];	
+
 		m_pOriginalPositions[i] = _float3(pInstanceVertices[i].vTranslation.x, pInstanceVertices[i].vTranslation.y, pInstanceVertices[i].vTranslation.z); // Loop를 위해 저장해준다.
+		m_pOriginalOffsets[i] = _float3(m_InstanceDesc->vOffsetPos.x+ XMVectorGetX(WorlPosition), m_InstanceDesc->vOffsetPos.y+ XMVectorGetY(WorlPosition), m_InstanceDesc->vOffsetPos.z+ XMVectorGetZ(WorlPosition)); // Loop를 위해 저장해준다.
 		pInstanceVertices[i].vLifeTime.x = LifeTime; // 파티클이 살아있을 수 있는 시간.
-		m_pOriginalSize[i] = pInstanceVertices[i].vRectSize = fRectSize;
-		XMStoreFloat4(& pInstanceVertices[i].vDirection, XMVectorSetW(XMLoadFloat4(&pInstanceVertices[i].vTranslation) - XMLoadFloat3(&m_InstanceDesc->vOffsetPos), 0.f));
+		m_pOriginalSize[i] = pInstanceVertices[i].vRectSize.x = fRectSize;
+		XMStoreFloat4(& pInstanceVertices[i].vDirection, XMVectorSetW(XMLoadFloat4(&pInstanceVertices[i].vTranslation) - XMLoadFloat3(&m_pOriginalOffsets[i]), 0.f));
+
+		pInstanceVertices[i].vTranslation.x += XMVectorGetX(WorlPosition);
+		pInstanceVertices[i].vTranslation.y += XMVectorGetY(WorlPosition);
+		pInstanceVertices[i].vTranslation.z += XMVectorGetZ(WorlPosition);
+		pInstanceVertices[i].vRectSize.y = m_pGameInstance->Get_Random(0.f, 360.f);
+
 
 		m_pSpeeds[i] = Speed;	
 
 	}
+	
 	m_InitialData.pSysMem = pInstanceVertices;
 
 	if (FAILED(m_pDevice->CreateBuffer(&m_InstanceBufferDesc, &m_InitialData, &m_pVBInstance)))
