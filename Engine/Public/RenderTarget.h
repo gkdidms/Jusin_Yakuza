@@ -18,6 +18,7 @@ public:
     HRESULT Bind_SVR(class CShader* pShader, const _char* pConstantName);
     HRESULT Copy_Resource(ID3D11Texture2D* pDesc);
     HRESULT Create_Texture(const wstring& strSaveFilePath);
+
 #ifdef _DEBUG
 public:
     HRESULT Ready_Debug(_float fX, _float fY, _float fSizeX, _float fSizeY);

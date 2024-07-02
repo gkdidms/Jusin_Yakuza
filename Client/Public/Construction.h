@@ -1,7 +1,7 @@
 #pragma once
 
 
-#include "GameObject.h"
+#include "ShaderObject.h"
 #include "Client_Defines.h"
 #include "Decal.h"
 
@@ -12,7 +12,7 @@ END
 
 BEGIN(Client)
 
-class CConstruction final : public CGameObject
+class CConstruction final : public CShaderObject
 {
 //public:
 //	enum OBJECT_TYPE {

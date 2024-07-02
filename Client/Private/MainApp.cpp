@@ -80,6 +80,14 @@ void CMainApp::Tick(const _float& fTimeDelta)
 	{
 		m_pGameInstance->Set_SSAO(!m_pGameInstance->isSSAO());
 	}
+	if (m_pGameInstance->GetKeyState(DIK_F3) == TAP)
+	{
+		m_pGameInstance->Set_PBR(!m_pGameInstance->isPBR());
+	}
+	if (m_pGameInstance->GetKeyState(DIK_F4) == TAP)
+	{
+		m_pGameInstance->Set_BOF(!m_pGameInstance->isBOF());
+	}
 	if (m_pGameInstance->GetKeyState(DIK_F6) == TAP)
 	{
 		m_pSystemManager->Set_Camera(m_pSystemManager->Get_Camera() == CAMERA_DEBUG ? CAMERA_PLAYER : CAMERA_DEBUG);
@@ -125,14 +133,23 @@ HRESULT CMainApp::Render()
 	m_pGameInstance->Render_Font(TEXT("Font_Default"), m_szFPS, _float2(0.f, 0.f), XMVectorSet(1.f, 1.f, 0.f, 1.f));
 	m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("!!!테스트용 키는 화면에 모두 작성할것 !!! "), _float2(500.f, 0.f), XMVectorSet(1.f, 0.f, 0.f, 1.f));
 
-	m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("F1 : HDR On/Off"), _float2(0.f, 20.f), XMVectorSet(1.f, 1.f, 0.f, 1.f));
-	m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("F2 : SSAO On/Off"), _float2(0.f, 40.f), XMVectorSet(1.f, 1.f, 0.f, 1.f));
-	m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("F5 : Scene Camera Test"), _float2(0.f, 60.f), XMVectorSet(1.f, 1.f, 0.f, 1.f));
-	m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("F6 : Camera Change"), _float2(0.f, 80.f), XMVectorSet(1.f, 1.f, 0.f, 1.f));
-	m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("F7 : DebugView On/Off"), _float2(0.f, 100.f), XMVectorSet(1.f, 1.f, 0.f, 1.f));
-	m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("F8 : Console"), _float2(0.f, 120.f), XMVectorSet(1.f, 1.f, 0.f, 1.f));
-	m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("F10 : Debug Tool"), _float2(0.f, 140.f), XMVectorSet(1.f, 1.f, 0.f, 1.f));
-	m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("TAP : Camera Pos Fix"), _float2(0.f, 160.f), XMVectorSet(1.f, 1.f, 0.f, 1.f));
+
+	m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("!!!Shader 관련 단축키"), _float2(0.f, 50.f), XMVectorSet(1.f, 0.f, 0.f, 1.f));
+	m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("F1 : HDR On/Off"), _float2(0.f, 70.f), XMVectorSet(1.f, 1.f, 0.f, 1.f));
+	m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("F2 : SSAO On/Off"), _float2(0.f, 90.f), XMVectorSet(1.f, 1.f, 0.f, 1.f));
+	m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("F3 : PBR On/Off"), _float2(0.f, 110.f), XMVectorSet(1.f, 1.f, 0.f, 1.f));
+	m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("F4 : BOF On/Off"), _float2(0.f, 130.f), XMVectorSet(1.f, 1.f, 0.f, 1.f));
+
+
+	m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("!!!카메라 단축키"), _float2(300.f, 20.f), XMVectorSet(1.f, 0.f, 0.f, 1.f));
+	m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("F5 : Scene Camera Test"), _float2(300.f, 40.f), XMVectorSet(1.f, 1.f, 0.f, 1.f));
+	m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("F6 : Camera Change"), _float2(300.f, 60.f), XMVectorSet(1.f, 1.f, 0.f, 1.f));
+
+	m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("!!!그 외"), _float2(1000.f, 50.f), XMVectorSet(1.f, 0.f, 0.f, 1.f));
+	m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("F7 : DebugView On/Off"), _float2(1000.f, 70.f), XMVectorSet(1.f, 1.f, 0.f, 1.f));
+	m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("F8 : Console"), _float2(1000.f, 90.f), XMVectorSet(1.f, 1.f, 0.f, 1.f));
+	m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("F10 : Debug Tool"), _float2(1000.f, 110.f), XMVectorSet(1.f, 1.f, 0.f, 1.f));
+	m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("TAP : Camera Pos Fix"), _float2(1000.f, 130.f), XMVectorSet(1.f, 1.f, 0.f, 1.f));
 
 
 	/* 플레이어/ 몬스터 용 테스트 키 작성 */
