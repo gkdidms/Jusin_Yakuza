@@ -13,12 +13,32 @@ CKiryu_Adventure_Idle::CKiryu_Adventure_Idle()
 
 void CKiryu_Adventure_Idle::Tick(const _float& fTimeDelta)
 {
+	switch (m_eCurrentBehavior)
+	{
+	case Client::CKiryu_Adventure_Idle::IDLE:
+	{
+		LookAroundTimer(fTimeDelta);
+		break;
+	}
+	case Client::CKiryu_Adventure_Idle::LOOK_AROUND:
+	{
+		CModel* pModelCom = static_cast<CModel*>(m_pPlayer->Get_Component(TEXT("Com_Model")));
+
+		if (pModelCom->Get_AnimFinished())
+		{
+			m_eCurrentBehavior = IDLE;
+		}
+
+		break;
+	}
+	}
+
 }
 
 void CKiryu_Adventure_Idle::Change_Animation()
 {
 	// 아이들은 모션을 하나만 둔다 (추후 추가예정)
-	m_pPlayer->Change_Animation(m_AnimationIndex[0]);
+	m_pPlayer->Change_Animation(m_AnimationIndex[m_eCurrentBehavior]);
 }
 
 CBehaviorAnimation* CKiryu_Adventure_Idle::Create(CPlayer* pPlayer)
@@ -40,4 +60,16 @@ CBehaviorAnimation* CKiryu_Adventure_Idle::Create(CPlayer* pPlayer)
 void CKiryu_Adventure_Idle::Free()
 {
 	__super::Free();
+}
+
+void CKiryu_Adventure_Idle::LookAroundTimer(const _float& fTimeDelta)
+{
+	m_fLookAroundTimer += fTimeDelta;
+
+	if (ANIM_CHANGE_TIME <= m_fLookAroundTimer)
+	{
+		m_fLookAroundTimer = { 0.f };
+
+		m_eCurrentBehavior = LOOK_AROUND;
+	}
 }
