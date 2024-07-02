@@ -76,7 +76,7 @@ private:
 	void					Show_FileName();
 	void					Update_FileName();
 
-	int						Click_To_Select_Object();
+	void					Click_To_Select_Object(int& iObjectNum);
 	int						Find_Layers_Index(char*	strLayer);
 
 	void					Get_Decal_Texture(int iNumObject);
@@ -105,6 +105,7 @@ private:
 	class CDecal*								m_pDecal;
 
 private:
+	bool										m_bFindObject = { false };
 	bool										m_bAddDecal_IMGUI = { false };
 	_uint										m_iObjectNums = 0;
 	/* 배치관련 bool 변수 */
