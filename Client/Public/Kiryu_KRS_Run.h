@@ -18,7 +18,7 @@ public:
 
 	enum ANIM_STATE
 	{
-		ANIM_START, ANIM_LOOP, ANIM_END
+		ANIM_LOOP, ANIM_END
 	};
 
 
@@ -33,7 +33,7 @@ public:
 	virtual void Stop() override;
 
 private:
-	ANIM_STATE m_eAnimState = { ANIM_START };
+	ANIM_STATE m_eAnimState = { ANIM_LOOP };
 	_bool m_isStop = { false };
 
 public:

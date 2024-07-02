@@ -15,4 +15,6 @@ namespace Client
 extern HINSTANCE g_hInst;
 extern HWND g_hWnd;
 
+extern wstring g_wstrModelName;
+
 using namespace Client;

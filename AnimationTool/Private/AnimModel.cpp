@@ -1,8 +1,10 @@
 #include "AnimModel.h"
 #include "GameInstance.h"
+#include "ImGuiManager.h"
 #include "ModelBoneSphere.h"
 #include "Bone.h"
 #include "Mesh.h"
+
 
 CAnimModel::CAnimModel(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     :CGameObject{pDevice, pContext}
@@ -27,7 +29,7 @@ HRESULT CAnimModel::Initialize(void* pArg)
     if (FAILED(CGameObject::Initialize(&pDesc)))
         return E_FAIL;
 
-    m_strModelName = TEXT("Kiryu");
+    m_strModelName = g_wstrModelName;
 
     if (FAILED(Add_Components()))
         return E_FAIL;
