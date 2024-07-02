@@ -25,6 +25,7 @@ float g_fFar;
 bool g_isSSAO;
 bool g_isPBR;
 bool g_isBOF;
+bool g_isShadow;
 
 Texture2D g_Texture;
 Texture2D g_PriorityTexture;
@@ -39,6 +40,7 @@ Texture2D g_DepthTexture;
 Texture2D g_MetallicTexture;
 Texture2D g_BackBufferTexture;
 Texture2D g_LightDepthTexture;
+Texture2D g_PassiveLightDepthTexture;
 Texture2D g_ToneMappingTexture;
 Texture2D g_LuminanceTexture;
 Texture2D g_CopyLuminanceTexture;

@@ -26,6 +26,7 @@ private:
 public:
     _bool isTimeStop() { return m_isTimeStop; }
     _bool isDebug() { return m_isDebug; }
+    _bool isLimit() { return m_isLimit; }
 
 public:
     void Set_Debug(_bool isDebug) { m_isDebug = isDebug; }
@@ -39,11 +40,13 @@ private:
     ID3D11Device* m_pDevice = { nullptr };
     ID3D11DeviceContext* m_pContext = { nullptr };
     CGameInstance* m_pGameInstance = { nullptr };
+    class CSystemManager* m_pSystemManager = { nullptr };
     class CFileTotalMgr* m_pFileTotalMgr = { nullptr };
 
     _bool m_isDebug = { false }; // 디버그 툴 진입했는지 아닌지 체크
 
 private:
+    _bool m_isLimit = { true };
     _bool m_isTimeStop = { false }; // TimeDelta Stop
     _float m_fSpeed = { -1.f };
     _bool m_isPlayerMove = { false }; // 플레이어 위치 이동 bool 변수

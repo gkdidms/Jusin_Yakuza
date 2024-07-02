@@ -1,12 +1,18 @@
 #include "LandObject.h"  
 
+#include "SystemManager.h"
+
 CLandObject::CLandObject(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-	: CShaderObject{ pDevice, pContext}
+	: CGameObject{ pDevice, pContext},
+	m_pSystemManager{ CSystemManager::GetInstance() }
 {
+	Safe_AddRef(m_pSystemManager);
 }
 CLandObject::CLandObject(const CLandObject& rhs)
-	: CShaderObject{ rhs }
+	: CGameObject{ rhs },
+	m_pSystemManager{ CSystemManager::GetInstance()}
 {
+	Safe_AddRef(m_pSystemManager);
 }
 
 HRESULT CLandObject::Initialize_Prototype()
@@ -52,4 +58,6 @@ HRESULT CLandObject::Bind_ResourceData()
 void CLandObject::Free()
 {
 	__super::Free();
+
+	Safe_Release(m_pSystemManager);
 }
