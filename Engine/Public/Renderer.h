@@ -6,7 +6,7 @@ class ENGINE_DLL CRenderer :
     public CBase
 {
 public:
-    enum RENDERER_STATE { RENDER_PRIORITY, RENDER_SHADOWOBJ, RENDER_NONBLENDER, RENDER_DECAL, RENDER_NONLIGHT, RENDER_BLENDER, RENDER_EFFECT, RENDER_UI, RENDER_END };
+    enum RENDERER_STATE { RENDER_PRIORITY, RENDER_SHADOWOBJ, RENDER_NONBLENDER, RENDER_DECAL, RENDER_GLASS, RENDER_NONLIGHT, RENDER_BLENDER, RENDER_EFFECT, RENDER_UI, RENDER_END };
 
 private:
     CRenderer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -19,10 +19,14 @@ public:
     void Set_SSAORadiuse(_float fRadiuse) { m_fSSAORadiuse = fRadiuse; }
     void Set_SSAOBlur(_float fBlur) { m_fSSAOBlur = fBlur; }
     void Set_SSAOBias(_float fBias) { m_fSSAOBiae = fBias; }
+    void Set_PBR(_bool isPBR) { m_isPBR = isPBR; }
+    void Set_BOF(_bool isBOF) { m_isBOF = isBOF; }
 
 public:
     _bool isHDR() { return m_isHDR; }
     _bool isSSAO() { return m_isSSAO; }
+    _bool isPBR() { return m_isPBR; }
+    _bool isBOF() { return m_isBOF; }
     _float Get_HDRLight() { return m_fHDRLight; }
     _float Get_SSAORadiuse() { return m_fSSAORadiuse; }
     _float Get_SSAOBlur() { return m_fSSAOBlur; }
@@ -48,16 +52,23 @@ private:
     void Render_ShadowObjects();
     void Render_NonBlender();
 
-    /*Decal*/
+    /* Decal */
     void Render_Decal();
+
+    /* 유리 관련 */
+    void Render_Glass();
 
     /* SSAO */
     void Render_SSAO();
     void Render_SSAOBlur();
 
-    void Render_LightAcc(); // Light 연산 + SSAO 합
+    void Render_LightAcc(); // Light 연산 + SSAO 합 + PBR
     void Render_CopyBackBuffer();
     void Render_DeferredResult();
+
+    /* AerialPerspective*/
+    void Render_DeferredBlur();
+    void Render_BOF();
 
     /* HDR*/
     void Render_Luminance();
@@ -72,10 +83,17 @@ private:
     void Render_Blender();//기존 논블렌드 렌더
     void Render_Effect();// 파티클렌더 
     void Render_FinlaOIT();// 파티클 최종병합
+
+
+
     void Render_UI();
-    
+   
 private:
+    HRESULT Ready_Targets();
+    HRESULT Ready_MRTs();
+    HRESULT Ready_LightDepth();
     HRESULT Ready_SSAONoiseTexture();
+    
 
 #ifdef _DEBUG
 private:
@@ -102,16 +120,19 @@ private:
 
     ID3D11DepthStencilView* m_pLightDepthStencilView = { nullptr };
     ID3D11ShaderResourceView* m_pSSAONoiseView = { nullptr };
-    //ID3D11DepthStencilView* m_pLuminanceStencilView = { nullptr };
 
 private:
     _bool m_isHDR = { false };
     _bool m_isSSAO = { false };
+    _bool m_isPBR = { false };
+    _bool m_isBOF = { false };
     _float m_fHDRLight = { 1.f };
     _float m_fSSAORadiuse = { 0.003f };
     _float m_fSSAOBlur = { 2.f };
     _float m_fSSAOBiae = { 0.025f };
-    vector<_float3> m_vSSAOKernal;
+
+    _float4* m_vSSAOKernal;
+
 
 #ifdef _DEBUG
     _bool m_isDebugView = { true };

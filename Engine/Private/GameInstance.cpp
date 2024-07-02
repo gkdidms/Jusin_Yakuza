@@ -244,6 +244,26 @@ _bool CGameInstance::isSSAO()
 	return m_pRenderer->isSSAO();
 }
 
+_bool CGameInstance::isPBR()
+{
+	return m_pRenderer->isPBR();
+}
+
+_bool CGameInstance::isBOF()
+{
+	return m_pRenderer->isBOF();
+}
+
+void CGameInstance::Set_PBR(_bool isPBR)
+{
+	m_pRenderer->Set_PBR(isPBR);
+}
+
+void CGameInstance::Set_BOF(_bool isBOF)
+{
+	m_pRenderer->Set_BOF(isBOF);
+}
+
 void CGameInstance::Set_SSAORadiuse(_float fRadiuse)
 {
 	m_pRenderer->Set_SSAORadiuse(fRadiuse);
@@ -345,6 +365,11 @@ const _float4* CGameInstance::Get_ComLook_Float4()
 _vector CGameInstance::Get_CamLook()
 {
 	return m_pPipeLine->Get_CamLook();
+}
+
+_vector CGameInstance::Get_CamRight()
+{
+	return m_pPipeLine->Get_CamRight();
 }
 
 const _float* CGameInstance::Get_CamFar()
@@ -481,6 +506,11 @@ HRESULT CGameInstance::Copy_Resource(const wstring& strTargetTag, ID3D11Texture2
 HRESULT CGameInstance::Create_Texture(const wstring& strTargetTag, const wstring& strSaveFilePath)
 {
 	return m_pRenderTarget_Manager->Create_Texture(strTargetTag, strSaveFilePath);
+}
+
+HRESULT CGameInstance::Clear_RenderTarget(const wstring& strTargetTag)
+{
+	return m_pRenderTarget_Manager->Clear_RenderTarget(strTargetTag);
 }
 
 void CGameInstance::Transform_ToLocalSpace(_fmatrix WorldMatrixInv)

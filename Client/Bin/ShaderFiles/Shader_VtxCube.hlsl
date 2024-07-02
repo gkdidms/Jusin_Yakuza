@@ -6,7 +6,6 @@ matrix g_WorldMatrix, g_ViewMatrix, g_ProjMatrix, g_WorldMatrixInv, g_ViewMatrix
 textureCUBE	 g_Texture;
 Texture2D g_Texture2D;
 Texture2D g_DepthTexture;
-Texture2D g_DiffuseTexture;
 
 //Decal
 float2 g_RenderResolution = float2(1280, 720);
@@ -23,12 +22,6 @@ struct VS_OUT
 	float3		vTexcoord : TEXCOORD0;
 };
 
-struct VS_OUT_DECAL
-{
-    float4 vPosition : SV_POSITION;
-    float3 vTexcoord : TEXCOORD0;
-    float4 vDecalPos : TEXCOORD1;
-};
 
 /* 정점 셰이더 :  /* 
 /* 1. 정점의 위치 변환(월드, 뷰, 투영).*/
@@ -48,6 +41,21 @@ VS_OUT VS_MAIN(VS_IN In)
 	return Out;
 }
 
+
+VS_OUT VS_ENVIRONMENT(VS_IN In)
+{
+    VS_OUT Out = (VS_OUT) 0;
+
+    matrix matWV, matWVP;
+
+    matWV = mul(g_WorldMatrix, g_ViewMatrix);
+    matWVP = mul(matWV, g_ProjMatrix);
+
+    Out.vPosition = mul(float4(In.vPosition, 1.f), matWVP);
+    Out.vTexcoord = In.vPosition;
+
+    return Out;
+}
 
 
 struct PS_IN
@@ -104,7 +112,6 @@ PS_OUT PS_DECAL(PS_IN In)
     vLocalPos = mul(vLocalPos, g_WorldMatrixInv);
     
     // Cube 볼륨메쉬의 로컬 공간으로 데려간다
-    
     vLocalPos += 0.5f;
     
     if (vLocalPos.x < 0.f || 1.f < vLocalPos.x ||
@@ -116,7 +123,11 @@ PS_OUT PS_DECAL(PS_IN In)
     
     
     vector vDecalColor = g_Texture2D.Sample(LinearSampler, vLocalPos.xy);
-   
+
+    if(vDecalColor.a < 0.3)
+        discard;
+    
+    
     
     Out.vColor = vDecalColor;
     
@@ -142,7 +153,7 @@ technique11 DefaultTechnique
 		PixelShader = compile ps_5_0 PS_MAIN();
 	}
 
-    pass DefaultPassCube
+    pass DecalCubePass
     {
         SetRasterizerState(RS_Cull_NON_CW);
         SetDepthStencilState(DSS_Default, 0);

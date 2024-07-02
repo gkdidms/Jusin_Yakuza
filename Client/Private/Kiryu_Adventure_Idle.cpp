@@ -2,26 +2,34 @@
 #include "Kiryu_Adventure_Idle.h"
 #include "Player.h"
 
-CKiryu_Adventer_Idel::CKiryu_Adventer_Idel()
+CKiryu_Adventure_Idle::CKiryu_Adventure_Idle()
 	:CBehaviorAnimation{}
 {
-	// 351: p_stand_nml 애니메이션 인덱스
+	//p_stand_nml 351
+	//p_stand_idle_lookaround 350
 	m_AnimationIndex.push_back(351);
+	m_AnimationIndex.push_back(350);
 }
 
-void CKiryu_Adventer_Idel::Change_Animation()
+void CKiryu_Adventure_Idle::Tick(const _float& fTimeDelta)
+{
+}
+
+void CKiryu_Adventure_Idle::Change_Animation()
 {
 	// 아이들은 모션을 하나만 둔다 (추후 추가예정)
 	m_pPlayer->Change_Animation(m_AnimationIndex[0]);
 }
 
-CBehaviorAnimation* CKiryu_Adventer_Idel::Create(CPlayer* pPlayer)
+CBehaviorAnimation* CKiryu_Adventure_Idle::Create(CPlayer* pPlayer)
 {
-	CKiryu_Adventer_Idel* pInstnace = new CKiryu_Adventer_Idel();
+	CKiryu_Adventure_Idle* pInstnace = new CKiryu_Adventure_Idle();
 
 	if (nullptr == pInstnace)
 	{
 		Safe_Release(pInstnace);
+		MSG_BOX("Faild To Created : Kiryu_Adventure_Idle");
+		return pInstnace;
 	}
 
 	pInstnace->m_pPlayer = pPlayer;
@@ -29,7 +37,7 @@ CBehaviorAnimation* CKiryu_Adventer_Idel::Create(CPlayer* pPlayer)
 	return pInstnace;
 }
 
-void CKiryu_Adventer_Idel::Free()
+void CKiryu_Adventure_Idle::Free()
 {
 	__super::Free();
 }

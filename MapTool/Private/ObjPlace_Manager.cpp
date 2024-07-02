@@ -276,6 +276,7 @@ void CObjPlace_Manager::Show_Installed_GameObjectsList()
 	/* 오브젝트 관련 */
 	if (0 < m_GameObjects.size())
 	{
+		ImGui::Text(u8" pick로 찾을땐 f 누르기 ");
 		ImGui::Text(u8" 배치 오브젝트 리스트 ");
 
 		list<string>	m_layer;
@@ -303,13 +304,8 @@ void CObjPlace_Manager::Show_Installed_GameObjectsList()
 			ImGui::EndListBox();
 		}
 
-		int iLayer = Click_To_Select_Object();
+		Click_To_Select_Object(object_current_idx);
 
-
-		if (iLayer >= 0)
-		{
-			object_current_idx = iLayer;
-		}
 
 		/* 다른 오브젝트 클릭시 */
 		if (m_iCurrentObjectIndex != object_current_idx)
@@ -394,101 +390,6 @@ void CObjPlace_Manager::Show_Installed_GameObjectsList()
 
 		ImGui::NewLine();
 		ImGui::NewLine();
-			
-#pragma region 안씀
-		///* 데이터 추가할때마다 수정 */
-		//if (0 < m_GameObjects.size())
-		//{
-		//	
-		//	ImGui::Text(u8"Layer");
-		//	static int LayerType = m_tCurrentObjectDesc.iLayer;
-		//	if (ImGui::RadioButton(m_Layers[0], m_tCurrentObjectDesc.iLayer == 0))
-		//	{
-		//		LayerType = 0;
-		//		m_tCurrentObjectDesc.iLayer = 0;
-		//	}
-
-		//	if (ImGui::RadioButton(m_Layers[1], m_tCurrentObjectDesc.iLayer == 1))
-		//	{
-		//		LayerType = 1;
-		//		m_tCurrentObjectDesc.iLayer = 1;
-		//	}
-
-
-
-		//	ImGui::NewLine();
-
-		//	ImGui::Text(u8"오브젝트유형");
-		//	static int objectType = m_tCurrentObjectDesc.iObjType;
-		//	if (ImGui::RadioButton(u8"그냥건물", m_tCurrentObjectDesc.iObjType == 0))
-		//	{
-		//		objectType = 0;
-		//		m_tCurrentObjectDesc.iObjType = 0;
-		//	}
-
-		//	if (ImGui::RadioButton(u8"상호작용가능", m_tCurrentObjectDesc.iObjType == 1))
-		//	{
-		//		objectType = 1;
-		//		m_tCurrentObjectDesc.iObjType = 1;
-		//	}
-
-		//	if (ImGui::RadioButton(u8"아이템", m_tCurrentObjectDesc.iObjType == 2))
-		//	{
-		//		objectType = 2;
-		//		m_tCurrentObjectDesc.iObjType = 2;
-		//	}
-
-		//	if (ImGui::RadioButton(u8"몬스터", m_tCurrentObjectDesc.iObjType == 3))
-		//	{
-		//		objectType = 3;
-		//		m_tCurrentObjectDesc.iObjType = 3;
-		//	}
-
-		//	ImGui::NewLine();
-
-		//	ImGui::Text(u8"쉐이더");
-		//	static int shaderType = m_tCurrentObjectDesc.iShaderPass;
-		//	if (ImGui::RadioButton(u8"shader1", m_tCurrentObjectDesc.iShaderPass == 0))
-		//	{
-		//		shaderType = 0;
-		//		m_tCurrentObjectDesc.iShaderPass = 0;
-		//	}
-
-		//	if (ImGui::RadioButton(u8"shader2", m_tCurrentObjectDesc.iShaderPass == 1))
-		//	{
-		//		shaderType = 1;
-		//		m_tCurrentObjectDesc.iShaderPass = 1;
-		//	}
-
-		//	if (ImGui::RadioButton(u8"shader3", m_tCurrentObjectDesc.iShaderPass == 2))
-		//	{
-		//		shaderType = 2;
-		//		m_tCurrentObjectDesc.iShaderPass = 2;
-		//	}
-
-		//	if (ImGui::RadioButton(u8"shader4", m_tCurrentObjectDesc.iShaderPass == 3))
-		//	{
-		//		shaderType = 3;
-		//		m_tCurrentObjectDesc.iShaderPass = 3;
-		//	}
-
-
-
-		//	if (ImGui::Button(u8"맵 오브젝트 수정"))
-		//	{
-		//		Edit_CurrentGameObject_Desc(&m_tCurrentObjectDesc, object_current_idx);
-		//	}
-
-		//	ImGui::SameLine();
-		//	
-		//	if (ImGui::Button(u8"데칼 텍스처 추가"))
-		//	{
-
-		//		Get_Decal_Texture(object_current_idx);
-		//	}
-		//}
-#pragma endregion
-
 		
 	}
 
@@ -665,13 +566,13 @@ void CObjPlace_Manager::Edit_Installed_GameObject(int iNumObject)
 		m_tCurrentObjectDesc.iShaderPass = 0;
 	}
 
-	if (ImGui::RadioButton(u8"shader2", m_tCurrentObjectDesc.iShaderPass == 1))
+	if (ImGui::RadioButton(u8"유리", m_tCurrentObjectDesc.iShaderPass == 1))
 	{
 		shaderType = 1;
 		m_tCurrentObjectDesc.iShaderPass = 1;
 	}
 
-	if (ImGui::RadioButton(u8"shader3", m_tCurrentObjectDesc.iShaderPass == 2))
+	if (ImGui::RadioButton(u8"물", m_tCurrentObjectDesc.iShaderPass == 2))
 	{
 		shaderType = 2;
 		m_tCurrentObjectDesc.iShaderPass = 2;
@@ -743,7 +644,7 @@ bool CObjPlace_Manager::Add_CloneObject_Imgui(MAPTOOL_OBJPLACE_DESC objDesc, _ui
 	/* 게임 오브젝트 설치 - 버튼 누를때 설치되는 경우 */
 	if (CGameInstance::GetInstance()->Get_DIMouseState(DIM_LB))
 	{
-		string strObjName = Find_ModelName(objDesc.iLayer, iObjectIndex);
+		string strObjName = Find_ModelName(iFolderNum, iObjectIndex);
 		wstring wstr = m_pGameInstance->StringToWstring(strObjName);
 
 
@@ -1084,9 +985,6 @@ void CObjPlace_Manager::Show_ExampleModel(MAPTOOL_OBJPLACE_DESC objDesc, _uint i
 	/* 어떤 모델인지 보여주는 기능 */
 	if (true == m_bShowExample)
 	{
-		//
-		//m_pShownObject = m_pGameInstance->Clone_Object();
-
 		if (nullptr == m_pShownObject)
 		{
 			string strObjName = Find_ModelName(iFolderNum, iObjectIndex);
@@ -1127,7 +1025,7 @@ void CObjPlace_Manager::Show_ExampleModel(MAPTOOL_OBJPLACE_DESC objDesc, _uint i
 				/* 막아놓기 */
 				m_bInstallOneTime = false;
 
-				string strObjName = Find_ModelName(objDesc.iLayer, iObjectIndex);
+				string strObjName = Find_ModelName(iFolderNum, iObjectIndex);
 				wstring wstr = m_pGameInstance->StringToWstring(strObjName);
 
 				CConstruction::MAPOBJ_DESC		mapDesc;
@@ -1285,20 +1183,34 @@ void CObjPlace_Manager::Update_FileName()
 	_findclose(handle);
 }
 
-int CObjPlace_Manager::Click_To_Select_Object()
+void CObjPlace_Manager::Click_To_Select_Object(int& iObjectNum)
 {
-	_bool		isPick;
-
-	_float		iIndex = 0;
-	iIndex = m_pGameInstance->FindObjID(&isPick);
-
-	if (iIndex > 0)
+	if (HOLD == m_pGameInstance->GetKeyState(DIK_F))
 	{
-		/* ID는 1부터 시작하니까 INDEX 받을때는 -1 해주기 */
-		return (iIndex - 1);
+		m_bFindObject = true;
+	}
+	else
+	{
+		m_bFindObject = false;
 	}
 
-	return -1;
+	if (true == m_bFindObject)
+	{
+		m_bFindObject = false;
+
+		_bool		isPick;
+
+		_float		iIndex = 0;
+		iIndex = m_pGameInstance->FindObjID(&isPick);
+
+		if (iIndex > 0)
+		{
+			/* ID는 1부터 시작하니까 INDEX 받을때는 -1 해주기 */
+			iObjectNum = iIndex - 1;
+
+		}
+
+	}
 }
 
 int CObjPlace_Manager::Find_Layers_Index(char* strLayer)
@@ -1486,7 +1398,6 @@ void CObjPlace_Manager::Add_Decal_IMGUI()
 				for (int i = 0; i < m_iCurrentObjectIndex; i++)
 				{
 					iter++;
-					m_iCurrentObjectIndex++;
 				}
 			}
 
@@ -1631,7 +1542,6 @@ void CObjPlace_Manager::Add_Decal_IMGUI()
 				for (int i = 0; i < m_iCurrentObjectIndex; i++)
 				{
 					iter++;
-					m_iCurrentObjectIndex++;
 				}
 			}
 

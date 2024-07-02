@@ -21,9 +21,12 @@ public:
     _vector Get_CamPosition();
     const _float4* Get_ComLook_Float4();
     _vector Get_CamLook();
+    _vector Get_CamRight();
     const _float* Get_CamFar() {
         return &m_fFar;
     }
+
+
 
 public:
     void Set_Transform(D3DTRANSFORMSTATE eState, _fmatrix matTransform) {
@@ -43,6 +46,7 @@ private:
     _float4x4 m_TransformStateInverseMatrix[D3DTS_END];
     _float4 m_vCamPosition;
     _float4 m_vCamLook;
+    _float4 m_vCamRight;
     _float m_fFar;
 
 public:

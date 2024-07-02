@@ -1,11 +1,11 @@
 #pragma once
-#include "GameObject.h"
+#include "ShaderObject.h"
 
 #include "Client_Defines.h"
 
 BEGIN(Client)
 class CLandObject abstract :
-    public CGameObject
+    public CShaderObject
 {
 protected:
     CLandObject(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

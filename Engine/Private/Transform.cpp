@@ -82,6 +82,26 @@ void CTransform::Go_Straight(const _float& fTimeDelta)
 	Set_State(STATE_POSITION, vPosition);
 }
 
+void CTransform::Go_Straight_CustumSpeed(const _float& fSpeed, const _float& fTimeDelta)
+{
+	_vector vPosition = Get_State(STATE_POSITION);
+	_vector vLook = Get_State(STATE_LOOK);
+
+	vPosition += XMVector3Normalize(vLook) * fSpeed * fTimeDelta;
+
+	Set_State(STATE_POSITION, vPosition);
+}
+
+void CTransform::Go_Straight_CustumDir(const _float4& vDir, const _float& fTimeDelta)
+{
+	_vector vPosition = Get_State(STATE_POSITION);
+	_vector vLook = Get_State(STATE_LOOK);
+
+	vPosition += XMLoadFloat4(&vDir) * m_fSpeedPerSec * fTimeDelta;
+
+	Set_State(STATE_POSITION, vPosition);
+}
+
 void CTransform::Go_Backward(const _float& fTimeDelta)
 {
 	_vector vPosition = Get_State(STATE_POSITION);
@@ -143,6 +163,19 @@ void CTransform::LookAt(_fvector vTargetPosition)
 	Set_State(STATE_RIGHT, XMVector4Normalize(vRight) * m_vScale.x);
 	Set_State(STATE_UP, XMVector4Normalize(vUp) * m_vScale.y);
 	Set_State(STATE_LOOK, XMVector4Normalize(vLook) * m_vScale.z);
+}
+
+void CTransform::LookAt_For_LandObject(_fvector vTargetPosition)
+{
+	_vector vLook = XMVector3Normalize(vTargetPosition - Get_State(STATE_POSITION));
+
+	_vector vRight = XMVector3Cross(XMVectorSet(0.f, 1.f, 0.f, 0.f), vLook);
+
+	// Look, Right 벡터를 구한 뒤, Up은 변환이 불필요하니, 직교를 맞추는 Look을 다시 구한다.
+	vLook = XMVector3Cross(vRight, XMVectorSet(0.f, 1.f, 0.f, 0.f));
+
+	Set_State(STATE_RIGHT, XMVector3Normalize(vRight) * Get_Scaled().x);
+	Set_State(STATE_LOOK, XMVector3Normalize(vLook) * Get_Scaled().z);
 }
 
 void CTransform::LookForCamera(_fvector vCamLook, _float fRadian)
@@ -213,6 +246,27 @@ void CTransform::Change_Rotation(_fvector vAxis, _float fRadian)
 	vUp = XMVector3TransformNormal(vUp, RotationMatrix);
 	vLook = XMVector3TransformNormal(vLook, RotationMatrix);
 
+	Set_State(STATE_RIGHT, vRight);
+	Set_State(STATE_UP, vUp);
+	Set_State(STATE_LOOK, vLook);
+}
+
+void CTransform::Change_Rotation_Quaternion(const _float4& vQuaternion)
+{
+	// 축 벡터들을 가져온다고 가정
+	_vector vRight = Get_State(STATE_RIGHT);
+	_vector vUp = Get_State(STATE_UP);
+	_vector vLook = Get_State(STATE_LOOK);
+
+	// 쿼터니언을 XMMATRIX로 변환
+	XMMATRIX rotationMatrix = XMMatrixRotationQuaternion(XMLoadFloat4(&vQuaternion));
+
+	// 축 벡터들을 회전시킨다
+	vRight = XMVector3TransformNormal(vRight, rotationMatrix);
+	vUp = XMVector3TransformNormal(vUp, rotationMatrix);
+	vLook = XMVector3TransformNormal(vLook, rotationMatrix);
+
+	// 변경된 축 벡터들을 저장한다
 	Set_State(STATE_RIGHT, vRight);
 	Set_State(STATE_UP, vUp);
 	Set_State(STATE_LOOK, vLook);

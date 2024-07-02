@@ -79,9 +79,13 @@ public:
     void Set_HDR(_bool isHDR);
     void Set_HDRLight(_float fLight); // HDR ºû ¼¼±â Á¶Àý 
     _bool isHDR();
+    _bool isSSAO();
+    _bool isPBR();
+    _bool isBOF();
+    void Set_PBR(_bool isPBR);
+    void Set_BOF(_bool isBOF);
     _float Get_HDRLight();
     void Set_SSAO(_bool isSSAO);
-    _bool isSSAO();
     void Set_SSAORadiuse(_float fRadiuse);
     _float Get_SSAORadiuse();
     void Set_SSAOBlur(_float fBlur);
@@ -107,6 +111,7 @@ public:
     void Set_Transform(CPipeLine::D3DTRANSFORMSTATE eState, _fmatrix matTransform);
     const _float4* Get_ComLook_Float4();
     _vector Get_CamLook();
+    _vector Get_CamRight();
     const _float* Get_CamFar();
     void Set_CamFar(_float fFar);
 
@@ -141,6 +146,7 @@ public:
     HRESULT Bind_RenderTargetSRV(const wstring& strTargetTag, class CShader* pShader, const _char* pConstantName);
     HRESULT Copy_Resource(const wstring& strTargetTag, ID3D11Texture2D* pDesc);
     HRESULT Create_Texture(const wstring& strTargetTag, const wstring& strSaveFilePath);
+    HRESULT Clear_RenderTarget(const wstring& strTargetTag);
     /* Frustum*/
 public:
     void Transform_ToLocalSpace(_fmatrix WorldMatrixInv);

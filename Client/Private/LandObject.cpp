@@ -1,11 +1,11 @@
 #include "LandObject.h"  
 
 CLandObject::CLandObject(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-	: CGameObject{ pDevice, pContext}
+	: CShaderObject{ pDevice, pContext}
 {
 }
 CLandObject::CLandObject(const CLandObject& rhs)
-	: CGameObject{ rhs }
+	: CShaderObject{ rhs }
 {
 }
 

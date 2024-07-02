@@ -123,6 +123,16 @@ HRESULT CRenderTarget_Manager::Create_Texture(const wstring& strTargetTag, const
 	return pRenderTarget->Create_Texture(strSaveFilePath);
 }
 
+HRESULT CRenderTarget_Manager::Clear_RenderTarget(const wstring& strTargetTag)
+{
+	CRenderTarget* pRenderTarget = Find_RenderTarget(strTargetTag);
+
+	if (nullptr == pRenderTarget)
+		return E_FAIL;
+
+	return pRenderTarget->Clear();
+}
+
 #ifdef _DEBUG
 HRESULT CRenderTarget_Manager::Ready_Debug(const wstring strRenderTargetTag, _float fX, _float fY, _float fSizeX, _float fSizeY)
 {
