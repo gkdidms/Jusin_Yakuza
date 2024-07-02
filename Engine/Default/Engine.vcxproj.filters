@@ -181,9 +181,6 @@
     <Filter Include="01.Utility\03.Component\08.ComputeShader">
       <UniqueIdentifier>{0c4835a7-cc1d-4213-a200-edf37363c233}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01.Utility\02.GameObject\Decal">
-      <UniqueIdentifier>{87d3edba-21e9-4044-b5f5-ef84adc1b384}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\Base.h">

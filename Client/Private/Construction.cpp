@@ -4,12 +4,12 @@
 #include "Transform.h"
 
 CConstruction::CConstruction(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-	: CGameObject{ pDevice, pContext }
+	: CShaderObject{ pDevice, pContext }
 {
 }
 
 CConstruction::CConstruction(const CConstruction& rhs)
-	: CGameObject{ rhs }
+	: CShaderObject{ rhs }
 {
 }
 
@@ -18,6 +18,7 @@ HRESULT CConstruction::Initialize_Prototype()
 	return S_OK;
 }
 
+
 HRESULT CConstruction::Initialize(void* pArg)
 {
 	if (FAILED(__super::Initialize(pArg)))
@@ -25,7 +26,7 @@ HRESULT CConstruction::Initialize(void* pArg)
 
 	if (FAILED(Add_Components(pArg)))
 		return E_FAIL;
-
+	
 	if (nullptr != pArg)
 	{
 		MAPOBJ_DESC* gameobjDesc = (MAPOBJ_DESC*)pArg;
@@ -124,6 +125,21 @@ HRESULT CConstruction::Render()
 				return E_FAIL;
 		}
 
+		bool	bRSExist = m_pModelCom->Check_Exist_Material(i, aiTextureType_SPECULAR);
+		if (true == bRSExist)
+		{
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RSTexture", i, aiTextureType_SPECULAR)))
+				return E_FAIL;
+
+			if (FAILED(m_pShaderCom->Bind_RawValue("g_bExistRSTex", &bRSExist, sizeof(bool))))
+				return E_FAIL;
+		}
+		else
+		{
+			if (FAILED(m_pShaderCom->Bind_RawValue("g_bExistRSTex", &bRSExist, sizeof(bool))))
+				return E_FAIL;
+		}
+
 		
 		// 유리문 처리
 		if (1 == m_iShaderPassNum)
@@ -193,7 +209,7 @@ HRESULT CConstruction::Add_Components(void* pArg)
 		return E_FAIL;
 
 	/* For.Com_Shader */
-	if (FAILED(__super::Add_Component(LEVEL_TEST, TEXT("Prototype_Component_Shader_MeshTemp"),
+	if (FAILED(__super::Add_Component(LEVEL_TEST, TEXT("Prototype_Component_Shader_Mesh"),
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
 		return E_FAIL;
 
@@ -209,6 +225,8 @@ HRESULT CConstruction::Bind_ShaderResources()
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_PROJ))))
 		return E_FAIL;
 
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_fFar", m_pGameInstance->Get_CamFar(), sizeof(_float))))
+		return E_FAIL;
 
 	return S_OK;
 }
