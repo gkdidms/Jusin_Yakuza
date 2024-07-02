@@ -36,6 +36,14 @@ public:
 		return &m_CurrentPosition;
 	}
 
+	const _float3* Get_CenterMoveValue() const {
+		return &m_vCenterMoveValue;
+	}
+
+	const _float4* Get_CenterRotationValue() const {
+		return &m_vCenterRotationValue;
+	}
+
 	const vector<class CChannel*>& Get_Channels() const {
 		return m_Channels;
 	}
@@ -63,6 +71,9 @@ private:
 	_bool					m_isFinished = { false };
 	_bool					m_isChanged = { true };
 	_bool					m_isRestart = { false };
+
+	_float3					m_vCenterMoveValue;
+	_float4					m_vCenterRotationValue;
 
 	_uint					m_iNumChannels = { 0 };
 	vector<_uint>			m_CurrentKeyFrameIndices;

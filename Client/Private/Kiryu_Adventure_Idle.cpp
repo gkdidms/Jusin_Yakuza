@@ -7,8 +7,8 @@ CKiryu_Adventure_Idle::CKiryu_Adventure_Idle()
 {
 	//p_stand_nml 351
 	//p_stand_idle_lookaround 350
-	m_AnimationIndex.push_back(350);
 	m_AnimationIndex.push_back(351);
+	m_AnimationIndex.push_back(350);
 }
 
 void CKiryu_Adventure_Idle::Tick(const _float& fTimeDelta)

@@ -48,6 +48,8 @@ public:
 
 public:
     void Go_Straight(const _float& fTimeDelta);
+    void Go_Straight_CustumSpeed(const _float& fSpeed, const _float& fTimeDelta);
+    void Go_Straight_CustumDir(const _float4& vDir, const _float& fTimeDelta);
     void Go_Backward(const _float& fTimeDelta);
     void Go_Left(const _float& fTimeDelta);
     void Go_Right(const _float& fTimeDelta);
@@ -59,6 +61,7 @@ public:
     void Turn(_fvector vAxis, _float fTimeDelta);
     void Rotation(_fvector vAxis, _float fRadian); // 방향 초기화 후 회전
     void Change_Rotation(_fvector vAxis, _float fRadian); // 오브젝트가 바라보는 방향을 기준으로 회전
+    void Change_Rotation_Quaternion(const _float4& vQuaternion); // 오브젝트가 바라보는 방향을 기준으로 회전
 
 private:
     _float4x4 m_WorldMatrix;

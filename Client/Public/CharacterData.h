@@ -54,7 +54,7 @@ public:
     }
 
 public:
-    void Set_CurrentAnimation(string strAnimName);
+    void Set_CurrentAnimation(string strAnimName);          //현재 애니메이션에 맞는 이벤트를 설정해둔다.
     
 private:
     CGameInstance* m_pGameInstance = { nullptr };
