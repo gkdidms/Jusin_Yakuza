@@ -16,3 +16,4 @@ xcopy			/y		.\Engine\Bin\ShaderFiles\*.*				.\EffectTool\bin\ShaderFiles\
 xcopy			/y		.\Engine\Bin\ShaderFiles\*.*				.\AnimationTool\bin\ShaderFiles\
 xcopy			/y		.\Engine\Bin\ShaderFiles\*.*				.\MapTool\bin\ShaderFiles\
 xcopy			/y		.\Engine\Bin\ShaderFiles\*.*				.\UITool\bin\ShaderFiles\
+

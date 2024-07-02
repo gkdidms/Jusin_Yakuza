@@ -6,7 +6,19 @@ class ENGINE_DLL CRenderer :
     public CBase
 {
 public:
-    enum RENDERER_STATE { RENDER_PRIORITY, RENDER_SHADOWOBJ, RENDER_NONBLENDER, RENDER_DECAL, RENDER_GLASS, RENDER_NONLIGHT, RENDER_BLENDER, RENDER_EFFECT, RENDER_UI, RENDER_END };
+    enum RENDERER_STATE { 
+        RENDER_PRIORITY, 
+        RENDER_PASSIVE_SHADOW,
+        RENDER_SHADOWOBJ, 
+        RENDER_NONBLENDER, 
+        RENDER_DECAL, 
+        RENDER_GLASS, 
+        RENDER_NONLIGHT,
+        RENDER_BLENDER, 
+        RENDER_EFFECT,
+        RENDER_UI,
+        RENDER_END 
+    };
 
 private:
     CRenderer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -21,17 +33,20 @@ public:
     void Set_SSAOBias(_float fBias) { m_fSSAOBiae = fBias; }
     void Set_PBR(_bool isPBR) { m_isPBR = isPBR; }
     void Set_BOF(_bool isBOF) { m_isBOF = isBOF; }
+    void Set_ShadowViewPos(_vector vPos) { m_vShadowViewPos = vPos; }
+    void Set_Shadow(_bool isShadow) { m_isShadow = isShadow; }
 
 public:
     _bool isHDR() { return m_isHDR; }
     _bool isSSAO() { return m_isSSAO; }
     _bool isPBR() { return m_isPBR; }
     _bool isBOF() { return m_isBOF; }
+    _bool isShadow() { return m_isShadow; }
     _float Get_HDRLight() { return m_fHDRLight; }
     _float Get_SSAORadiuse() { return m_fSSAORadiuse; }
     _float Get_SSAOBlur() { return m_fSSAOBlur; }
     _float Get_SSAOBias() { return m_fSSAOBiae; }
-
+    
 public:
     HRESULT Initialize();
     void Add_Renderer(RENDERER_STATE eRenderState, class CGameObject* pGameObject);
@@ -49,6 +64,7 @@ public:
 
 private:
     void Render_Priority();
+    void Render_Passive_Shadow();
     void Render_ShadowObjects();
     void Render_NonBlender();
 
@@ -84,8 +100,6 @@ private:
     void Render_Effect();// 파티클렌더 
     void Render_FinlaOIT();// 파티클 최종병합
 
-
-
     void Render_UI();
    
 private:
@@ -118,6 +132,7 @@ private:
     _float4x4 m_ViewMatrix;
     _float4x4 m_ProjMatrix;
 
+    ID3D11DepthStencilView* m_pPassiveLightDepthStencilView = { nullptr };
     ID3D11DepthStencilView* m_pLightDepthStencilView = { nullptr };
     ID3D11ShaderResourceView* m_pSSAONoiseView = { nullptr };
 
@@ -126,13 +141,14 @@ private:
     _bool m_isSSAO = { false };
     _bool m_isPBR = { false };
     _bool m_isBOF = { false };
+    _bool m_isShadow = { false };
+
     _float m_fHDRLight = { 1.f };
     _float m_fSSAORadiuse = { 0.003f };
     _float m_fSSAOBlur = { 2.f };
     _float m_fSSAOBiae = { 0.025f };
-
     _float4* m_vSSAOKernal;
-
+    _vector m_vShadowViewPos = { XMVectorSet(0.f, 10.f, -10.f, 1.f) };
 
 #ifdef _DEBUG
     _bool m_isDebugView = { true };

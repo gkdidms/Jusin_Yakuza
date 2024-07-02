@@ -291,7 +291,7 @@ namespace Engine
 		XMFLOAT4			vTranslation;
 		XMFLOAT4			vDirection;
 		XMFLOAT2			vLifeTime;
-		_float					vRectSize;	
+		_float2					vRectSize;	
 	}VTXMATRIX;
 
 	typedef struct ENGINE_DLL tComputeMatRix

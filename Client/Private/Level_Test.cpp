@@ -35,7 +35,7 @@ HRESULT CLevel_Test::Initialize()
 		return E_FAIL;
 
 	/* Å¬¶ó ÆÄ½Ì */
-	m_pFileTotalManager->Set_MapObj_In_Client(4, LEVEL_TEST);
+	m_pFileTotalManager->Set_MapObj_In_Client(0, LEVEL_TEST);
 	m_pFileTotalManager->Set_Lights_In_Client(0);
 
 	return S_OK;
@@ -153,8 +153,12 @@ HRESULT CLevel_Test::Ready_Map(const wstring& strLayerTag)
 HRESULT CLevel_Test::Ready_Effect(const wstring& strLayerTag)
 {
 
-	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_Particle_Point_fin"), strLayerTag, nullptr)))
+	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_Particle_Point_Hit1_Part0"), strLayerTag, nullptr)))
 		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_Particle_Aura_asd"), strLayerTag, nullptr)))
+		return E_FAIL;
+
 	return S_OK;
 }
 

@@ -17,13 +17,37 @@ CKiryu_Adventure_Run::CKiryu_Adventure_Run()
 	m_AnimationIndex.push_back(315); 	//	p_mov_run_l 315 / 5
 	m_AnimationIndex.push_back(316); 	//	p_mov_run_r 316 / 6
 
-	//p_mov_run_dash 310
-	//p_mov_run_dash_tired 311
-	//p_mov_run_dash_stop_l 312
-	//p_mov_run_dash_stop_s 313
-
 	// 끝날 때 애니메이션
-	m_AnimationIndex.push_back(323);	//	p_mov_run_stop 323 / 7
+	m_AnimationIndex.push_back(323);	//	p_mov_run_stop 323	/	 7
+	m_AnimationIndex.push_back(312);	//[312]	p_mov_run_dash_tired_stop_l	/	8
+	m_AnimationIndex.push_back(313);	//[313]	p_mov_run_dash_tired_stop_s	/	9
+
+	// 대시 (어따쓰는진 모ㅓ르겟음)
+	m_AnimationIndex.push_back(310);	// p_mov_run_dash 310
+	m_AnimationIndex.push_back(311);	// p_mov_run_dash_tired 311
+	m_AnimationIndex.push_back(312);	// [312]	p_mov_run_dash_tired_stop_l
+	m_AnimationIndex.push_back(313);	// [313]	p_mov_run_dash_tired_stop_s
+
+	// 범프 (부딪힐때)
+	
+	//[294]	p_mov_bump_car_f[p_mov_bump_car_f]
+	//[295]	p_mov_bump_car_l[p_mov_bump_car_l]
+	//[296]	p_mov_bump_car_r[p_mov_bump_car_r]
+	//[297]	p_mov_bump_f[p_mov_bump_f]
+	//[298]	p_mov_bump_l[p_mov_bump_l]
+	//[299]	p_mov_bump_r[p_mov_bump_r]
+	//[300]	p_mov_bump_wall_l[p_mov_bump_wall_l]
+	//[301]	p_mov_bump_wall_r[p_mov_bump_wall_r]
+
+
+	//데미지 입은 상태일 때
+	//[302]	p_mov_dam_lp[p_mov_dam_lp]
+	//[303]	p_mov_dam_run[p_mov_dam_run]
+	//[304]	p_mov_dam_walk[p_mov_dam_walk]
+	//[305]	p_mov_dam_walk_turnl[p_mov_dam_walk_turnl]
+	//[306]	p_mov_dam_walk_turnr[p_mov_dam_walk_turnr]
+
+
 
 	m_iCurrentIndex = 0;
 }

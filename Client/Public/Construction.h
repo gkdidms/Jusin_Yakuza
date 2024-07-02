@@ -1,7 +1,7 @@
 #pragma once
 
 
-#include "ShaderObject.h"
+#include "GameObject.h"
 #include "Client_Defines.h"
 #include "Decal.h"
 
@@ -12,7 +12,7 @@ END
 
 BEGIN(Client)
 
-class CConstruction final : public CShaderObject
+class CConstruction final : public CGameObject
 {
 //public:
 //	enum OBJECT_TYPE {
@@ -48,6 +48,7 @@ public:
 	virtual void Tick(const _float& fTimeDelta) override;
 	virtual void Late_Tick(const _float& fTimeDelta) override;
 	virtual HRESULT Render() override;
+	virtual HRESULT Render_LightDepth() override;
 
 public:
 	CTransform* Get_Transform() { return m_pTransformCom; }
@@ -62,8 +63,10 @@ public:
 private:
 	CShader* m_pShaderCom = { nullptr };
 	CModel* m_pModelCom = { nullptr };
+	class CSystemManager* m_pSystemManager = { nullptr };
 
 private:
+	_bool m_isFirst = { true };
 	vector<CDecal*>			m_vDecals;
 	int						m_iLayerNum;
 	wstring					m_wstrModelName;
