@@ -65,6 +65,7 @@ _bool CKiryu_KRS_Attack::Get_AnimationEnd()
 	CModel* pModelCom = static_cast<CModel*>(m_pPlayer->Get_Component(TEXT("Com_Model")));
 	if (pModelCom->Get_AnimFinished())
 	{
+		Reset();
 		return true;
 	}
 
@@ -87,9 +88,6 @@ void CKiryu_KRS_Attack::Combo_Count(_bool isFinAction)
 		// 인덱스 3번까지는 기본콤보고, +4하게되면 블로우 피니시 기술을 실행한다.
 		else if (m_iComboCount < 4)
 			m_iComboCount += 4;
-		
-		
-			
 	}
 	else
 	{
