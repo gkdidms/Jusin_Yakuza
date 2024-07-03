@@ -12,7 +12,6 @@
 #include "Kiryu_KRS_Idle.h"
 #include "Kiryu_KRS_Walk.h"
 #include "Kiryu_KRS_Run.h"
-#include "Kiryu_KRS_Gaurd.h"
 #include "Kiryu_KRS_Attack.h"
 #include "Kiryu_KRS_Hit.h"
 #include "Kiryu_KRS_Sway.h"
@@ -42,7 +41,7 @@ CBehaviorAnimation* CBehaviorAnimation::Create_Adventure_Behavior(_uint iBehavio
 
 CBehaviorAnimation* CBehaviorAnimation::Create_KRS_Behavior(_uint iBehavior, class CPlayer* pPlayer)
 {
-	//BTL_START, IDLE, WALK, RUN, GUARD, ATTACK, HIT, KRS_BEHAVIOR_END
+	//BTL_START, IDLE, WALK, RUN, ATTACK, HIT, KRS_BEHAVIOR_END
 	switch (iBehavior)
 	{
 	case 0:
@@ -54,12 +53,10 @@ CBehaviorAnimation* CBehaviorAnimation::Create_KRS_Behavior(_uint iBehavior, cla
 	case 3:
 		return CKiryu_KRS_Run::Create(pPlayer);
 	case 4:
-		return CKiryu_KRS_Gaurd::Create(pPlayer);
-	case 5:
 		return CKiryu_KRS_Attack::Create(pPlayer);
-	case 6:
+	case 5:
 		return CKiryu_KRS_Hit::Create(pPlayer);
-	case 7:
+	case 6:
 		return CKiryu_KRS_Sway::Create(pPlayer);
 	}
 	return nullptr;
