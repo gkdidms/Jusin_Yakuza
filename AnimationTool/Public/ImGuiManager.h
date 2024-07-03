@@ -100,8 +100,6 @@ private:
 private:
 	_bool					m_isOnToolWindows = { false };
 
-	//bool					m_isAnimLoop = { false };
-
 	int						m_iAnimIndex = { 0 };
 	int						m_iSearchAnimIndex = { 0 };
 	int						m_iAddedAnimSelectedIndex = { 0 };

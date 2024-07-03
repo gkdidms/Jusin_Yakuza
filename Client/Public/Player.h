@@ -28,7 +28,7 @@ public:
     };    
     enum class KRS_BEHAVIOR_STATE
     {
-        BTL_START, IDLE, WALK, RUN, GUARD, ATTACK, HIT, SWAY, KRS_BEHAVIOR_END
+        BTL_START, IDLE, WALK, RUN, ATTACK, HIT, SWAY, KRS_BEHAVIOR_END
     };
 
     enum MOVE_DIRECTION

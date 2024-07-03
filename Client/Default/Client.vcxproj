@@ -188,7 +188,6 @@
     <ClInclude Include="..\Public\Kiryu_Adventure_Walk.h" />
     <ClInclude Include="..\Public\Kiryu_KRS_Attack.h" />
     <ClInclude Include="..\Public\Kiryu_KRS_BattleStart.h" />
-    <ClInclude Include="..\Public\Kiryu_KRS_Gaurd.h" />
     <ClInclude Include="..\Public\Kiryu_KRS_Hit.h" />
     <ClInclude Include="..\Public\Kiryu_KRS_Idle.h" />
     <ClInclude Include="..\Public\Kiryu_KRS_Run.h" />
@@ -257,7 +256,6 @@
     <ClCompile Include="..\Private\Kiryu_Adventure_Walk.cpp" />
     <ClCompile Include="..\Private\Kiryu_KRS_Attack.cpp" />
     <ClCompile Include="..\Private\Kiryu_KRS_BattleStart.cpp" />
-    <ClCompile Include="..\Private\Kiryu_KRS_Gaurd.cpp" />
     <ClCompile Include="..\Private\Kiryu_KRS_Hit.cpp" />
     <ClCompile Include="..\Private\Kiryu_KRS_Idle.cpp" />
     <ClCompile Include="..\Private\Kiryu_KRS_Run.cpp" />
