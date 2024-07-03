@@ -24,11 +24,12 @@ public:
 	virtual _bool Get_AnimationEnd() { return false; };
 	virtual void Stop() {};
 	virtual void Reset() {};
+	virtual void Combo_Count(_bool isFinAction = false) {};
 
 protected:
 	CGameInstance* m_pGameInstance = { nullptr };
 	class CPlayer* m_pPlayer = { nullptr };
-	vector<_uint> m_AnimationIndex;
+	vector<_uint> m_AnimationIndices;
 	_uint m_iCurrentIndex = { 0 };
 
 public:

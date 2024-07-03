@@ -157,9 +157,6 @@
     <ClCompile Include="..\Private\Kiryu_KRS_Run.cpp">
       <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\Run</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Kiryu_KRS_Gaurd.cpp">
-      <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\Gaurd</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\Kiryu_KRS_Hit.cpp">
       <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\Hit</Filter>
     </ClCompile>
@@ -168,6 +165,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Kiryu_KRS_Attack.cpp">
       <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\Attack</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Kiryu_KRS_Sway.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\Sway</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -357,9 +357,6 @@
     <ClInclude Include="..\Public\Kiryu_KRS_Run.h">
       <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\Run</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Kiryu_KRS_Gaurd.h">
-      <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\Gaurd</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\Kiryu_KRS_Hit.h">
       <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\Hit</Filter>
     </ClInclude>
@@ -368,6 +365,9 @@
     </ClInclude>
     <ClInclude Include="..\Public\Kiryu_KRS_Attack.h">
       <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\Attack</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Kiryu_KRS_Sway.h">
+      <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\Sway</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -541,9 +541,6 @@
     <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\Run">
       <UniqueIdentifier>{fc4260f2-3453-487a-b883-4fa2246bf6d4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\Gaurd">
-      <UniqueIdentifier>{dc53955a-2d8b-41fe-87ac-b59cebf0863f}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\Hit">
       <UniqueIdentifier>{7cf79ae3-ef79-4117-9a62-fe488833ab5e}</UniqueIdentifier>
     </Filter>
@@ -552,6 +549,9 @@
     </Filter>
     <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\Attack">
       <UniqueIdentifier>{a779f621-febb-412f-8f06-ea83facfeadb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\Sway">
+      <UniqueIdentifier>{596a2668-9e66-4326-a847-a7267712f098}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

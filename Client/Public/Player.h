@@ -28,7 +28,7 @@ public:
     };    
     enum class KRS_BEHAVIOR_STATE
     {
-        BTL_START, IDLE, WALK, RUN, GUARD, ATTACK, HIT, KRS_BEHAVIOR_END
+        BTL_START, IDLE, WALK, RUN, ATTACK, HIT, SWAY, KRS_BEHAVIOR_END
     };
 
     enum MOVE_DIRECTION
@@ -87,8 +87,13 @@ private:
     void KRC_KeyInput(const _float& fTimeDelta);
 
 public:
-    void Change_Animation(_uint iAnimIndex);
+    void Change_Animation(_uint iAnimIndex, _float fInterval = 4.f);
     void Style_Change(BATTLE_STYLE eStyle);
+    void Reset_MoveDirection();
+
+private:
+    void Compute_MoveDirection_FB();
+    void Compute_MoveDirection_RL();
 
 private:
     CShader*                m_pShaderCom = { nullptr };
@@ -107,6 +112,8 @@ private:
     // 스타일마다 겹치는 행동이 있을 수 있어서 int값으로 저장하고 형변환하여 저장한다.
     _uint           m_iCurrentBehavior = static_cast<_uint>(ADVENTURE_BEHAVIOR_STATE::IDLE);
 
+    // 스웨이용 키입력 디렉션 (카메라 기준으로 처리하기 위함)
+    _bool           m_InputDirection[MOVE_DIRECTION_END];
     _bool           m_MoveDirection[MOVE_DIRECTION_END];
 
     _float          m_fPrevSpeed = { 0.f };
