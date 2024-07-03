@@ -169,6 +169,9 @@
     <ClCompile Include="..\Private\Kiryu_KRS_Attack.cpp">
       <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\Attack</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\Kiryu_KRS_Sway.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\Sway</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\MainApp.h">
@@ -369,6 +372,9 @@
     <ClInclude Include="..\Public\Kiryu_KRS_Attack.h">
       <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\Attack</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Kiryu_KRS_Sway.h">
+      <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\Sway</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -552,6 +558,9 @@
     </Filter>
     <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\Attack">
       <UniqueIdentifier>{a779f621-febb-412f-8f06-ea83facfeadb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\Sway">
+      <UniqueIdentifier>{596a2668-9e66-4326-a847-a7267712f098}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

@@ -15,6 +15,7 @@
 #include "Kiryu_KRS_Gaurd.h"
 #include "Kiryu_KRS_Attack.h"
 #include "Kiryu_KRS_Hit.h"
+#include "Kiryu_KRS_Sway.h"
 #pragma endregion
 
 CBehaviorAnimation::CBehaviorAnimation()
@@ -58,6 +59,8 @@ CBehaviorAnimation* CBehaviorAnimation::Create_KRS_Behavior(_uint iBehavior, cla
 		return CKiryu_KRS_Attack::Create(pPlayer);
 	case 6:
 		return CKiryu_KRS_Hit::Create(pPlayer);
+	case 7:
+		return CKiryu_KRS_Sway::Create(pPlayer);
 	}
 	return nullptr;
 }

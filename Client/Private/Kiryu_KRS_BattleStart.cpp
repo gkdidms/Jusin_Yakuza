@@ -6,7 +6,7 @@ CKiryu_KRS_BattleStart::CKiryu_KRS_BattleStart()
 	:CBehaviorAnimation{}
 {
 	// [284] p_krs_style_st[p_krs_style_st]
-	m_AnimationIndex.push_back(284);
+	m_AnimationIndices.push_back(284);
 }
 
 void CKiryu_KRS_BattleStart::Tick(const _float& fTimeDelta)
@@ -16,7 +16,7 @@ void CKiryu_KRS_BattleStart::Tick(const _float& fTimeDelta)
 void CKiryu_KRS_BattleStart::Change_Animation()
 {
 	m_pGameInstance->Set_TimeSpeed(TEXT("Timer_60"), 0.3f);
-	m_pPlayer->Change_Animation(m_AnimationIndex[0]);
+	m_pPlayer->Change_Animation(m_AnimationIndices[0]);
 }
 
 _bool CKiryu_KRS_BattleStart::Get_AnimationEnd()
