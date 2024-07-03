@@ -7,7 +7,7 @@ CKiryu_KRS_Hit::CKiryu_KRS_Hit()
 {
 	// 전투 중 아이들 모션은 어드벤처와 동일하다
 	//p_stand_nml 351
-	m_AnimationIndex.push_back(351);
+	m_AnimationIndices.push_back(351);
 }
 
 void CKiryu_KRS_Hit::Tick(const _float& fTimeDelta)
@@ -16,7 +16,7 @@ void CKiryu_KRS_Hit::Tick(const _float& fTimeDelta)
 
 void CKiryu_KRS_Hit::Change_Animation()
 {
-	m_pPlayer->Change_Animation(m_AnimationIndex[0]);
+	m_pPlayer->Change_Animation(m_AnimationIndices[0]);
 }
 
 _bool CKiryu_KRS_Hit::Get_AnimationEnd()

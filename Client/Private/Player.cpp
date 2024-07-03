@@ -285,35 +285,26 @@ void CPlayer::Adventure_KeyInput(const _float& fTimeDelta)
 	_bool isShift = { false };
 	_bool isMove = { false };
 
+	_vector vCamLook = m_pGameInstance->Get_CamLook();
+	_vector vCamRight = m_pGameInstance->Get_CamRight();
+	_vector vPlayerLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
+	_vector vPlayerRight = m_pTransformCom->Get_State(CTransform::STATE_RIGHT);
+
+	if (XMVectorGetX(XMVector3Dot(vCamLook, vPlayerLook)) < 0)
+		m_MoveDirection[B] = true;
+	else if (XMVectorGetX(XMVector3Dot(vCamLook, vPlayerLook)) > 0)
+		m_MoveDirection[F] = true;
+
 	if (m_pGameInstance->GetKeyState(DIK_LSHIFT) == HOLD)
-	{
 		isShift = true;
-	}
 
 	if (m_pGameInstance->GetKeyState(DIK_W) == HOLD)
 	{
 		_vector vLookPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION) + (m_pTransformCom->Get_State(CTransform::STATE_LOOK) + m_pGameInstance->Get_CamLook());
-		_vector vLookDir = XMVectorSet(XMVectorGetX(vLookPos), XMVectorGetY(vLookPos), XMVectorGetZ(vLookPos), 0.f);
-		_vector vPlayerLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
 
 		m_iCurrentBehavior = isShift ? (_uint)ADVENTURE_BEHAVIOR_STATE::WALK : (_uint)ADVENTURE_BEHAVIOR_STATE::RUN;
-
 		isMove = true;
-
-		//m_MoveDirection[B] = true;
-
-		////양수인 경우 같은 방향, 음수인 경우 반대방향, 0인경우 수직
-		if (XMVectorGetX(XMVector3Dot(vLookDir, vPlayerLook)) < 0)
-			m_MoveDirection[B] = true;
-		else if (XMVectorGetX(XMVector3Dot(vLookDir, vPlayerLook)) > 0)
-			m_MoveDirection[F] = true;
-
 		m_pTransformCom->LookAt_For_LandObject(vLookPos);
-	}
-	else if (m_pGameInstance->GetKeyState(DIK_W) == AWAY)
-	{
-		m_MoveDirection[B] = false;
-		m_MoveDirection[F] = false;
 	}
 
 	if (m_pGameInstance->GetKeyState(DIK_S) == HOLD)
@@ -322,14 +313,10 @@ void CPlayer::Adventure_KeyInput(const _float& fTimeDelta)
 		m_pTransformCom->LookAt_For_LandObject(vLookPos);
 
 		m_iCurrentBehavior = isShift ? (_uint)ADVENTURE_BEHAVIOR_STATE::WALK : (_uint)ADVENTURE_BEHAVIOR_STATE::RUN;
-		m_MoveDirection[B] = true;
 
 		isMove = true;
 	}
-	else if (m_pGameInstance->GetKeyState(DIK_S) == AWAY)
-	{
-		m_MoveDirection[B] = false;
-	}
+
 
 	if (m_pGameInstance->GetKeyState(DIK_A) == HOLD)
 	{
@@ -337,14 +324,10 @@ void CPlayer::Adventure_KeyInput(const _float& fTimeDelta)
 		m_pTransformCom->LookAt_For_LandObject(vLookPos);
 
 		m_iCurrentBehavior = isShift ? (_uint)ADVENTURE_BEHAVIOR_STATE::WALK : (_uint)ADVENTURE_BEHAVIOR_STATE::RUN;
-		m_MoveDirection[L] = true;
 
 		isMove = true;
 	}
-	else if (m_pGameInstance->GetKeyState(DIK_A) == AWAY)
-	{
-		m_MoveDirection[L] = false;
-	}
+
 
 	if (m_pGameInstance->GetKeyState(DIK_D) == HOLD)
 	{
@@ -352,14 +335,10 @@ void CPlayer::Adventure_KeyInput(const _float& fTimeDelta)
 		m_pTransformCom->LookAt_For_LandObject(vLookPos);
 
 		m_iCurrentBehavior = isShift ? (_uint)ADVENTURE_BEHAVIOR_STATE::WALK : (_uint)ADVENTURE_BEHAVIOR_STATE::RUN;
-		m_MoveDirection[R] = true;
 
 		isMove = true;
 	}
-	else if (m_pGameInstance->GetKeyState(DIK_D) == AWAY)
-	{
-		m_MoveDirection[R] = false;
-	}
+
 
 	if (!isMove && m_iCurrentBehavior != (_uint)ADVENTURE_BEHAVIOR_STATE::IDLE)
 		m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Stop();
@@ -369,7 +348,10 @@ void CPlayer::Adventure_KeyInput(const _float& fTimeDelta)
 void CPlayer::KRS_KeyInput(const _float& fTimeDelta)
 {
 	if (m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Get_AnimationEnd())
+	{
+		m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Reset();
 		m_iCurrentBehavior = (_uint)KRS_BEHAVIOR_STATE::IDLE;
+	}
 
 	_bool isShift = { false };
 	_bool isMove = { false };
@@ -379,42 +361,54 @@ void CPlayer::KRS_KeyInput(const _float& fTimeDelta)
 		isShift = true;
 	}
 
+	if (m_pGameInstance->GetKeyState(DIK_E) == TAP)
+	{
+		m_iCurrentBehavior = (_uint)KRS_BEHAVIOR_STATE::SWAY;
+	}
+
 	if (m_pGameInstance->GetMouseState(DIM_LB) == TAP)
 	{
 		// 기존 행동을 초기화하고 어택으로 바꿔준다.
-		m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Reset();
-		m_iCurrentBehavior = (_uint)KRS_BEHAVIOR_STATE::ATTACK;
-	}
+		if(m_iCurrentBehavior != (_uint)KRS_BEHAVIOR_STATE::ATTACK)
+			m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Reset();
 
+		m_iCurrentBehavior = (_uint)KRS_BEHAVIOR_STATE::ATTACK;
+		m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Combo_Count();
+	}
+	if (m_pGameInstance->GetMouseState(DIM_RB) == TAP)
+	{
+		// 현재 어택상태인지를 구분해서 마무리 액션을 실행시키거나
+		// 그에 맞는 커맨드 액션을 실행시ㅕ켜야 한다.
+
+		m_iCurrentBehavior = (_uint)KRS_BEHAVIOR_STATE::ATTACK;
+		m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Combo_Count(true);
+	}
 
 	if (m_pGameInstance->GetKeyState(DIK_W) == HOLD)
 	{
-		_vector vLookPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION) + (m_pTransformCom->Get_State(CTransform::STATE_LOOK) + m_pGameInstance->Get_CamLook());
-		_vector vLookDir = XMVectorSet(XMVectorGetX(vLookPos), XMVectorGetY(vLookPos), XMVectorGetZ(vLookPos), 0.f);
-		_vector vPlayerLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
+		if (m_iCurrentBehavior == (_uint)KRS_BEHAVIOR_STATE::WALK || m_iCurrentBehavior == (_uint)KRS_BEHAVIOR_STATE::RUN)
+			m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Reset();
 
-		m_iCurrentBehavior = isShift ? (_uint)KRS_BEHAVIOR_STATE::WALK : (_uint)KRS_BEHAVIOR_STATE::RUN;
+		_vector vLookPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION) + (m_pTransformCom->Get_State(CTransform::STATE_LOOK) + m_pGameInstance->Get_CamLook());
+
+		_vector vCamLookDir = XMVectorSet(XMVectorGetX(vLookPos), XMVectorGetY(vLookPos), XMVectorGetZ(vLookPos), 0.f);
+		_vector vPlayerLookDir = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
+
+		m_pGameInstance->Get_CamLook();
+
+		if (m_iCurrentBehavior != (_uint)KRS_BEHAVIOR_STATE::SWAY)
+			m_iCurrentBehavior = isShift ? (_uint)KRS_BEHAVIOR_STATE::WALK : (_uint)KRS_BEHAVIOR_STATE::RUN;
 
 		isMove = true;
 
-		//m_MoveDirection[B] = true;
-
-		////양수인 경우 같은 방향, 음수인 경우 반대방향, 0인경우 수직
-		if (XMVectorGetX(XMVector3Dot(vLookDir, vPlayerLook)) < 0)
-			m_MoveDirection[B] = true;
-		else if (XMVectorGetX(XMVector3Dot(vLookDir, vPlayerLook)) > 0)
-			m_MoveDirection[F] = true;
-
 		m_pTransformCom->LookAt_For_LandObject(vLookPos);
-	}
-	else if (m_pGameInstance->GetKeyState(DIK_W) == AWAY)
-	{
-		m_MoveDirection[B] = false;
-		m_MoveDirection[F] = false;
 	}
 
 	if (m_pGameInstance->GetKeyState(DIK_S) == HOLD)
 	{
+		if (m_iCurrentBehavior == (_uint)KRS_BEHAVIOR_STATE::WALK || m_iCurrentBehavior == (_uint)KRS_BEHAVIOR_STATE::RUN)
+			m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Reset();
+
 		_vector vLookPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION) + (m_pTransformCom->Get_State(CTransform::STATE_LOOK) - m_pGameInstance->Get_CamLook());
 		m_pTransformCom->LookAt_For_LandObject(vLookPos);
 
@@ -423,13 +417,12 @@ void CPlayer::KRS_KeyInput(const _float& fTimeDelta)
 
 		isMove = true;
 	}
-	else if (m_pGameInstance->GetKeyState(DIK_S) == AWAY)
-	{
-		m_MoveDirection[B] = false;
-	}
 
 	if (m_pGameInstance->GetKeyState(DIK_A) == HOLD)
 	{
+		if (m_iCurrentBehavior == (_uint)KRS_BEHAVIOR_STATE::WALK || m_iCurrentBehavior == (_uint)KRS_BEHAVIOR_STATE::RUN)
+			m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Reset();
+
 		_vector vLookPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION) + (m_pTransformCom->Get_State(CTransform::STATE_LOOK) - m_pGameInstance->Get_CamRight());
 		m_pTransformCom->LookAt_For_LandObject(vLookPos);
 
@@ -438,13 +431,12 @@ void CPlayer::KRS_KeyInput(const _float& fTimeDelta)
 
 		isMove = true;
 	}
-	else if (m_pGameInstance->GetKeyState(DIK_A) == AWAY)
-	{
-		m_MoveDirection[L] = false;
-	}
 
 	if (m_pGameInstance->GetKeyState(DIK_D) == HOLD)
 	{
+		if (m_iCurrentBehavior == (_uint)KRS_BEHAVIOR_STATE::WALK || m_iCurrentBehavior == (_uint)KRS_BEHAVIOR_STATE::RUN)
+			m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Reset();
+
 		_vector vLookPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION) + (m_pTransformCom->Get_State(CTransform::STATE_LOOK) + m_pGameInstance->Get_CamRight());
 		m_pTransformCom->LookAt_For_LandObject(vLookPos);
 
@@ -452,10 +444,6 @@ void CPlayer::KRS_KeyInput(const _float& fTimeDelta)
 		m_MoveDirection[R] = true;
 
 		isMove = true;
-	}
-	else if (m_pGameInstance->GetKeyState(DIK_D) == AWAY)
-	{
-		m_MoveDirection[R] = false;
 	}
 
 	if (!isMove && m_iCurrentBehavior != (_uint)KRS_BEHAVIOR_STATE::IDLE)
@@ -565,12 +553,9 @@ void CPlayer::Apply_ChracterData()
 
 }
 
-void CPlayer::Change_Animation(_uint iIndex)
+void CPlayer::Change_Animation(_uint iIndex, _float fInterval)
 {
-	//if(314 <= iIndex && 323 > iIndex)
-	//	m_pModelCom->Set_AnimationIndex(iIndex, 0);
-	//else
-	if (m_pModelCom->Set_AnimationIndex(iIndex, ANIM_INTERVAL))
+	if (m_pModelCom->Set_AnimationIndex(iIndex, fInterval))
 	{
 		XMStoreFloat4(&m_vPrevMove, XMVectorZero());
 		m_fPrevSpeed = 0.f;

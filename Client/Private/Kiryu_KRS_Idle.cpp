@@ -6,9 +6,9 @@ CKiryu_KRS_Idle::CKiryu_KRS_Idle()
 	:CBehaviorAnimation{}
 {
 	// 전투 중 아이들 모션은 어드벤처와 동일하다
-	m_AnimationIndex.push_back(348);	//[348]	p_stand_btl_lp[p_stand_btl_lp]
-	m_AnimationIndex.push_back(282);	//[282]	p_krs_stand_btl_en[p_krs_stand_btl_en]
-	m_AnimationIndex.push_back(351);	//p_stand_nml 351
+	m_AnimationIndices.push_back(348);	//[348]	p_stand_btl_lp[p_stand_btl_lp]
+	m_AnimationIndices.push_back(282);	//[282]	p_krs_stand_btl_en[p_krs_stand_btl_en]
+	m_AnimationIndices.push_back(351);	//p_stand_nml 351
 }
 
 void CKiryu_KRS_Idle::Tick(const _float& fTimeDelta)
@@ -18,7 +18,7 @@ void CKiryu_KRS_Idle::Tick(const _float& fTimeDelta)
 
 void CKiryu_KRS_Idle::Change_Animation()
 {
-	m_pPlayer->Change_Animation(m_AnimationIndex[m_eCurrentBehavior]);
+	m_pPlayer->Change_Animation(m_AnimationIndices[m_eCurrentBehavior]);
 }
 
 _bool CKiryu_KRS_Idle::Get_AnimationEnd()

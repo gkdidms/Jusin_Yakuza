@@ -8,27 +8,19 @@
 
 BEGIN(Client)
 
-class CKiryu_KRS_Attack : public CBehaviorAnimation
+class CKiryu_KRS_Sway : public CBehaviorAnimation
 {
 private:
-	CKiryu_KRS_Attack();
-	virtual ~CKiryu_KRS_Attack() = default;
+	CKiryu_KRS_Sway();
+	virtual ~CKiryu_KRS_Sway() = default;
 
 public:
 	virtual void Tick(const _float& fTimeDelta) override;
 	virtual void Change_Animation() override;
 	virtual _bool Get_AnimationEnd() override;
-	virtual void Reset();
-	virtual void Combo_Count(_bool isFinAction = false) override;
-
-private:
-	_bool Changeable_Combo_Animation();
 
 public:
 	static CBehaviorAnimation* Create(class CPlayer* pPlayer);
 	virtual void Free() override;
-
-private:
-	_int m_iComboCount = { -1 };
 };
 END

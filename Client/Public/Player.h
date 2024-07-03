@@ -28,7 +28,7 @@ public:
     };    
     enum class KRS_BEHAVIOR_STATE
     {
-        BTL_START, IDLE, WALK, RUN, GUARD, ATTACK, HIT, KRS_BEHAVIOR_END
+        BTL_START, IDLE, WALK, RUN, GUARD, ATTACK, HIT, SWAY, KRS_BEHAVIOR_END
     };
 
     enum MOVE_DIRECTION
@@ -87,7 +87,7 @@ private:
     void KRC_KeyInput(const _float& fTimeDelta);
 
 public:
-    void Change_Animation(_uint iAnimIndex);
+    void Change_Animation(_uint iAnimIndex, _float fInterval = 4.f);
     void Style_Change(BATTLE_STYLE eStyle);
 
 private:
