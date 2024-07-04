@@ -267,7 +267,7 @@ void CPlayer::Move_KeyInput(const _float& fTimeDelta)
 			_vector vLookDir = XMVectorSet(XMVectorGetX(vLookPos), XMVectorGetY(vLookPos), XMVectorGetZ(vLookPos), 0.f);
 			_vector vPlayerLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
 
-			m_iCurrentBehavior = isShift ? (_uint)ADVENTURE_BEHAVIOR_STATE::WALK : (_uint)ADVENTURE_BEHAVIOR_STATE::RUN;
+			m_iCurrentBehavior = isShift ? (_uint)ADVENTURE_BEHAVIOR_STATE::Shift : (_uint)ADVENTURE_BEHAVIOR_STATE::RUN;
 
 			isMove = true;
 
@@ -292,7 +292,7 @@ void CPlayer::Move_KeyInput(const _float& fTimeDelta)
 			_vector vLookPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION) + (m_pTransformCom->Get_State(CTransform::STATE_LOOK) - m_pGameInstance->Get_CamLook());
 			m_pTransformCom->LookAt_For_LandObject(vLookPos);
 
-			m_iCurrentBehavior = isShift ? (_uint)ADVENTURE_BEHAVIOR_STATE::WALK : (_uint)ADVENTURE_BEHAVIOR_STATE::RUN;
+			m_iCurrentBehavior = isShift ? (_uint)ADVENTURE_BEHAVIOR_STATE::Shift : (_uint)ADVENTURE_BEHAVIOR_STATE::RUN;
 			m_MoveDirection[B] = true;
 
 			isMove = true;
@@ -307,7 +307,7 @@ void CPlayer::Move_KeyInput(const _float& fTimeDelta)
 			_vector vLookPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION) + (m_pTransformCom->Get_State(CTransform::STATE_LOOK) - m_pGameInstance->Get_CamRight());
 			m_pTransformCom->LookAt_For_LandObject(vLookPos);
 
-			m_iCurrentBehavior = isShift ? (_uint)ADVENTURE_BEHAVIOR_STATE::WALK : (_uint)ADVENTURE_BEHAVIOR_STATE::RUN;
+			m_iCurrentBehavior = isShift ? (_uint)ADVENTURE_BEHAVIOR_STATE::Shift : (_uint)ADVENTURE_BEHAVIOR_STATE::RUN;
 			m_MoveDirection[L] = true;
 
 			isMove = true;
@@ -322,7 +322,7 @@ void CPlayer::Move_KeyInput(const _float& fTimeDelta)
 			_vector vLookPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION) + (m_pTransformCom->Get_State(CTransform::STATE_LOOK) + m_pGameInstance->Get_CamRight());
 			m_pTransformCom->LookAt_For_LandObject(vLookPos);
 
-			m_iCurrentBehavior = isShift ? (_uint)ADVENTURE_BEHAVIOR_STATE::WALK : (_uint)ADVENTURE_BEHAVIOR_STATE::RUN;
+			m_iCurrentBehavior = isShift ? (_uint)ADVENTURE_BEHAVIOR_STATE::Shift : (_uint)ADVENTURE_BEHAVIOR_STATE::RUN;
 			m_MoveDirection[R] = true;
 
 			isMove = true;

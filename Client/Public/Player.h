@@ -24,11 +24,11 @@ public:
     */
     enum class ADVENTURE_BEHAVIOR_STATE
     {
-        IDLE, WALK, RUN, ADVENTURE_BEHAVIOR_END
+        IDLE, Shift, RUN, ADVENTURE_BEHAVIOR_END
     };    
     enum class KRS_BEHAVIOR_STATE
     {
-        IDLE, WALK, RUN, GUARD, ATTACK, HIT, KRS_BEHAVIOR_END
+        IDLE, Shift, RUN, GUARD, ATTACK, HIT, KRS_BEHAVIOR_END
     };
 
     enum MOVE_DIRECTION
@@ -53,6 +53,9 @@ public:
     void Set_AnimStart(_bool isAnim) { m_isAnimStart = isAnim; }
 #endif // DEBUG
 
+public:
+    _uint Get_BattleStyle() { return m_eCurrentStyle; }
+    _bool isAttack() { return m_iCurrentBehavior == static_cast<_uint>(KRS_BEHAVIOR_STATE::ATTACK); }
 
 public:
     virtual HRESULT Initialize_Prototype() override;

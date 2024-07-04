@@ -76,7 +76,6 @@ HRESULT CAnimation::Initialize(const BAiAnimation* pAnimation, const vector<clas
 		m_Channels.emplace_back(pChannel);
 	}
 
-
 	return S_OK;
 }
 

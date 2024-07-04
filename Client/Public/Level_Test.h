@@ -23,6 +23,7 @@ private:
     HRESULT Ready_Light();
     HRESULT Ready_Camera(const wstring& strLayerTag);
     HRESULT Ready_Player(const wstring& strLayerTag);
+    HRESULT Ready_Monster(const wstring& strLayerTag);
     HRESULT Ready_Map(const wstring& strLayerTag);
     HRESULT Ready_Effect(const wstring& strLayerTag);
 
