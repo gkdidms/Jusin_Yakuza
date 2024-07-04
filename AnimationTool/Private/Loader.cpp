@@ -6,6 +6,12 @@
 #include "AnimModel.h"
 #include "ModelBoneSphere.h"
 
+#pragma region Effect
+#include "Particle_Point.h"
+#include "TRailEffect.h"
+#include "Aura.h"
+#pragma endregion
+
 CLoader::CLoader(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: m_pDevice{pDevice}, 
 	m_pContext{pContext},
@@ -115,10 +121,83 @@ HRESULT CLoader::Loading_For_EditLevel()
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Models/NonAnim/Bone_Sphere/Color_%d.png"), 2))))
 		return E_FAIL;
 
+
+#pragma region Effect_Texture
+	/* Prototype_Component_Texture_Sphere */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_EDIT, TEXT("Prototype_Component_Texture_Sphere"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/lm000.dds"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_Trail */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_EDIT, TEXT("Prototype_Component_Texture_Trail"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/001_trc_n.dds"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_Test */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_EDIT, TEXT("Prototype_Component_Texture_Test"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/9923j.png"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_HitSpark */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_EDIT, TEXT("Prototype_Component_Texture_HitSpark"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/015_trc_na.dds"), 1))))
+		return E_FAIL;
+
+
+	/* Prototype_Component_Texture_AuraAnim */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_EDIT, TEXT("Prototype_Component_Texture_AuraAnim"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/e_j_0076_aura_g.dds"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_AuraFluid */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_EDIT, TEXT("Prototype_Component_Texture_AuraFluid"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/e_j_0309_fluidFlowA01.dds"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_AuraBase */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_EDIT, TEXT("Prototype_Component_Texture_AuraBase"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/e_j_0291_smoke_jA8L8.dds"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_AuraTone */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_EDIT, TEXT("Prototype_Component_Texture_AuraTone"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/auratone24.dds"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_HitBase */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_EDIT, TEXT("Prototype_Component_Texture_HitBase"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/e_j_0233_radialpat_d.dds"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_SmokeBase */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_EDIT, TEXT("Prototype_Component_Texture_SmokeBase"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/e_o_2208_smoke_j.dds"), 1))))
+		return E_FAIL;
+
+#pragma endregion
+
+	lstrcpy(m_szLoadingText, TEXT("컴포넌트 원형 를(을) 로딩 중 입니다."));
+#pragma region Effect
+
+	/* For.Prototype_Component_VIBuffer_Instance_Point */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_EDIT, TEXT("Prototype_Component_VIBuffer_Instance_Point"),
+		CVIBuffer_Instance_Point::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_VIBuffer_Trail */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_EDIT, TEXT("Prototype_Component_VIBuffer_Trail"),
+		CVIBuffer_Trail::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+#pragma endregion
+
 	lstrcpy(m_szLoadingText, TEXT("모델를(을) 로딩 중 입니다."));
 	Add_Models_On_Path(TEXT("../../Client/Bin/Resources/Models/Anim/"));
-	//Add_Models_On_Path(TEXT("../../Client/Bin/Resources/Models/Anim/"));
 	Add_Models_On_Path(TEXT("../../Client/Bin/Resources/Models/NonAnim/"), false);
+
+#pragma region Effect
+	Add_Particle_On_Path(TEXT("../../Client/Bin/DataFiles/Particle/"));
+#pragma endregion
 
 	lstrcpy(m_szLoadingText, TEXT("셰이더를(을) 로딩 중 입니다."));
 
@@ -131,6 +210,23 @@ HRESULT CLoader::Loading_For_EditLevel()
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_EDIT, TEXT("Prototype_Component_Shader_VtxAnimMesh"),
 		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxAnimMesh.hlsl"), VTXANIMMESH::Elements, VTXANIMMESH::iNumElements))))
 		return E_FAIL;
+
+
+#pragma region Effect
+	/* For.Prototype_Component_Shader_Trail */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_EDIT, TEXT("Prototype_Component_Shader_Trail"),
+		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_Trail.hlsl"), VTXPOSTEX::Elements, VTXPOSTEX::iNumElements))))
+		return E_FAIL;
+	/* For.Prototype_Component_Shader_VtxInstance_Point */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_EDIT, TEXT("Prototype_Component_Shader_VtxInstance_Point"),
+		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxInstance_Point.hlsl"), VTXINSTANCE_POINT::Elements, VTXINSTANCE_POINT::iNumElements))))
+		return E_FAIL;
+	/* For.Prototype_Component_Shader_Aura*/
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_EDIT, TEXT("Prototype_Component_Shader_Aura"),
+		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_Aura.hlsl"), VTXINSTANCE_POINT::Elements, VTXINSTANCE_POINT::iNumElements))))
+		return E_FAIL;
+#pragma endregion
+
 
 	lstrcpy(m_szLoadingText, TEXT("충돌체 원형을 로딩 중 입니다."));
 	/* For.Prototype_Component_Collider */
@@ -220,6 +316,82 @@ HRESULT CLoader::Add_Models_On_Path(const wstring& strPath, _bool bAnim)
 
 	}
 
+	return S_OK;
+}
+
+HRESULT CLoader::Add_Particle_On_Path(const wstring& strPath)
+{
+	vector<wstring> vecDirectorys;
+	m_pGameInstance->Get_DirectoryName(strPath, vecDirectorys);
+
+	for (auto& strChannelName : vecDirectorys)
+	{
+		wstring strFilePath = strPath + strChannelName + TEXT("/");
+		string strDirectory = m_pGameInstance->WstringToString(strFilePath);
+
+		if (TEXT("Point") == strChannelName)
+		{
+			for (const auto& entry : fs::directory_iterator(strDirectory))
+			{
+
+				string FileName = entry.path().filename().string();
+				string AllPath = strDirectory + FileName;
+
+				string Tag;
+				_int dotPos = FileName.find_last_of(".");
+				Tag = FileName.substr(0, dotPos);
+
+
+				/* For.Prototype_GameObject_Particle_Point */
+				if (FAILED(m_pGameInstance->Add_GameObject_Prototype(m_pGameInstance->StringToWstring(Tag),
+					CParticle_Point::Create(m_pDevice, m_pContext, AllPath))))
+					return E_FAIL;
+
+			}
+		}
+		else if (TEXT("Trail") == strChannelName)
+		{
+			for (const auto& entry : fs::directory_iterator(strDirectory))
+			{
+
+				string FileName = entry.path().filename().string();
+				string AllPath = strDirectory + FileName;
+
+				string Tag;
+				_int dotPos = FileName.find_last_of(".");
+				Tag = FileName.substr(0, dotPos);
+
+
+				/* For.Prototype_GameObject_Particle_Trail */
+				if (FAILED(m_pGameInstance->Add_GameObject_Prototype(m_pGameInstance->StringToWstring(Tag),
+					CTRailEffect::Create(m_pDevice, m_pContext, AllPath))))
+					return E_FAIL;
+
+			}
+		}
+		else if (TEXT("Aura") == strChannelName)
+		{
+			for (const auto& entry : fs::directory_iterator(strDirectory))
+			{
+
+				string FileName = entry.path().filename().string();
+				string AllPath = strDirectory + FileName;
+
+				string Tag;
+				_int dotPos = FileName.find_last_of(".");
+				Tag = FileName.substr(0, dotPos);
+
+
+				/* For.Prototype_GameObject_Particle_Aura */
+				if (FAILED(m_pGameInstance->Add_GameObject_Prototype(m_pGameInstance->StringToWstring(Tag),
+					CAura::Create(m_pDevice, m_pContext, AllPath))))
+					return E_FAIL;
+
+			}
+		}
+
+
+	}
 	return S_OK;
 }
 
