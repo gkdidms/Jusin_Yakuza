@@ -18,6 +18,9 @@ HRESULT CLevel_Edit::Initialize()
 	if (FAILED(Ready_Object(TEXT("Layer_Object"))))
 		return E_FAIL;
 
+	if (FAILED(Ready_Effect(TEXT("Layer_Effect"))))
+		return E_FAIL;
+
 
 	return S_OK;
 }
@@ -66,6 +69,17 @@ HRESULT CLevel_Edit::Ready_Layer_Camera(const wstring& strLayerTag)
 HRESULT CLevel_Edit::Ready_Object(const wstring& strLayerTag)
 {
 	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_EDIT, TEXT("Prototype_GameObject_AnimModel"), strLayerTag)))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CLevel_Edit::Ready_Effect(const wstring& strLayerTag)
+{
+	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_EDIT, TEXT("Prototype_GameObject_Particle_Point_Hit1_Part0"), strLayerTag, nullptr)))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_EDIT, TEXT("Prototype_GameObject_Particle_Aura_asd"), strLayerTag, nullptr)))
 		return E_FAIL;
 
 	return S_OK;

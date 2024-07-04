@@ -61,6 +61,18 @@
     <ClCompile Include="..\Imgui\backend\imgui_impl_win32.cpp">
       <Filter>96.ImGui\Source</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\Particle_Point.cpp">
+      <Filter>02.GameObjects\04.Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Aura.cpp">
+      <Filter>02.GameObjects\04.Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\TRailEffect.cpp">
+      <Filter>02.GameObjects\04.Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Effect.cpp">
+      <Filter>02.GameObjects\04.Effect</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\MainApp.h">
@@ -138,6 +150,18 @@
     <ClInclude Include="..\Imgui\backend\imgui_impl_win32.h">
       <Filter>96.ImGui\Source</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Particle_Point.h">
+      <Filter>02.GameObjects\04.Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\TRailEffect.h">
+      <Filter>02.GameObjects\04.Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Aura.h">
+      <Filter>02.GameObjects\04.Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Effect.h">
+      <Filter>02.GameObjects\04.Effect</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
@@ -211,6 +235,9 @@
     <Filter Include="02.GameObjects\03.Model\ModelBoneSphere">
       <UniqueIdentifier>{be6d3b18-eadc-4690-ba34-ebe32720d169}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\04.Effect">
+      <UniqueIdentifier>{585ac177-909f-4b5f-a53e-efdf429f7f3c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxPosTex.hlsl">
@@ -220,6 +247,15 @@
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxMesh.hlsl">
+      <Filter>97.ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_Trail.hlsl">
+      <Filter>97.ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxInstance_Point.hlsl">
+      <Filter>97.ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_Aura.hlsl">
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
   </ItemGroup>
