@@ -32,13 +32,20 @@ HRESULT CParticle_Point::Initialize(void* pArg)
     if (FAILED(__super::Initialize(pArg)))
         return E_FAIL;
 
-    if (nullptr != pArg)
+    EFFECT_DESC* pDesc = static_cast<EFFECT_DESC*>(pArg);
+
+    if (nullptr == pDesc->pWorldMatrix)
     {
         PARTICLE_POINT_DESC* pDesc = static_cast<PARTICLE_POINT_DESC*>(pArg);
         m_BufferInstance = pDesc->BufferInstance;
         m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&pDesc->vStartPos));
     }
-        m_BufferInstance.WorldMatrix  = m_pTransformCom->Get_WorldFloat4x4();
+    else
+    {
+        m_pWorldMatrix = pDesc->pWorldMatrix;
+    }
+
+    m_BufferInstance.WorldMatrix = m_pWorldMatrix;
 
     if (FAILED(Add_Components()))
         return E_FAIL;
@@ -52,7 +59,6 @@ void CParticle_Point::Priority_Tick(const _float& fTimeDelta)
 
 void CParticle_Point::Tick(const _float& fTimeDelta)
 {
-    
     m_fCurTime += fTimeDelta;
     if (!m_BufferInstance.isLoop)
     {

@@ -10,7 +10,7 @@ END
 
 
 BEGIN(Client)
-class CEffect abstract:
+class CEffect abstract :
     public CBlendObject
 {
 public:
@@ -27,10 +27,12 @@ public:
         _float2 fLifeAlpha;
 
         _int iShaderPass;
+
+        const _float4x4* pWorldMatrix = { nullptr };
     }EFFECT_DESC;
 
-    enum TYPE { TYPE_POINT , TYPE_TRAIL, TYPE_GLOW, TYPE_AURA,  TYPE_END};
-    enum ACTION { ACTION_SPREAD, ACTION_DROP,ACTION_SIZEUP,ACTION_SIZEDOWN, ACTION_END };
+    enum TYPE { TYPE_POINT, TYPE_TRAIL, TYPE_GLOW, TYPE_AURA, TYPE_END };
+    enum ACTION { ACTION_SPREAD, ACTION_DROP, ACTION_SIZEUP, ACTION_SIZEDOWN, ACTION_END };
     static const _uint iAction[ACTION_END];
 
 protected:
@@ -49,6 +51,9 @@ public:
     HRESULT Edit_Action(ACTION iEditAction);
 
     virtual void* Get_Instance();
+
+    void Set_WorldMatrix(const _float4x4* mat) { m_pWorldMatrix = mat; }
+
 public:
     void Set_StartPos(_float4 Pos) { 
         m_vStartPos = Pos; 
@@ -82,6 +87,8 @@ protected:
     _uint			m_iAction = { 0 };
     _float4     m_vStartColor = { 0.f , 0.f , 0.f , 0.f };
     _float4     m_vEndColor = { 0.f , 0.f , 0.f , 0.f };
+
+    const _float4x4* m_pWorldMatrix = { nullptr };
 
 public:
     virtual void Free() override;

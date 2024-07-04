@@ -18,8 +18,8 @@ HRESULT CLevel_Edit::Initialize()
 	if (FAILED(Ready_Object(TEXT("Layer_Object"))))
 		return E_FAIL;
 
-	if (FAILED(Ready_Effect(TEXT("Layer_Effect"))))
-		return E_FAIL;
+	//if (FAILED(Ready_Effect(TEXT("Layer_Effect"))))
+	//	return E_FAIL;
 
 
 	return S_OK;

@@ -41,8 +41,9 @@ HRESULT CEffect::Initialize(void* pArg)
     if (FAILED(__super::Initialize(pArg)))
         return E_FAIL;
 
+    EFFECT_DESC* pDesc = static_cast<EFFECT_DESC*>(pArg);
 
-    if (nullptr != pArg)
+    if (nullptr == pDesc->pWorldMatrix)
     {
         EFFECT_DESC* pDesc = static_cast<EFFECT_DESC*>(pArg);
         m_eType = pDesc->eType;
@@ -56,6 +57,10 @@ HRESULT CEffect::Initialize(void* pArg)
         m_fLifeAlpha = pDesc->fLifeAlpha;
         m_fRotate = pDesc->fRotate;
     }
+    else
+    {
+        m_pWorldMatrix = pDesc->pWorldMatrix;
+    }
     
     return S_OK;
 }
@@ -66,29 +71,10 @@ void CEffect::Priority_Tick(const _float& fTimeDelta)
 
 void CEffect::Tick(const _float& fTimeDelta)
 {
-    switch (m_eType)
-    {
-    case Client::CEffect::TYPE_POINT:
-        break;
-    case Client::CEffect::TYPE_TRAIL:
-    {
-        if (m_pGameInstance->GetKeyState(DIK_LEFT) == HOLD)
-            m_pTransformCom->Go_Left(fTimeDelta);
-        if (m_pGameInstance->GetKeyState(DIK_RIGHT) == HOLD)
-            m_pTransformCom->Go_Right(fTimeDelta);
-        if (m_pGameInstance->GetKeyState(DIK_UP) == HOLD)
-            m_pTransformCom->Go_Straight(fTimeDelta);
-        if (m_pGameInstance->GetKeyState(DIK_DOWN) == HOLD)
-            m_pTransformCom->Go_Backward(fTimeDelta);
+    //_matrix matWorld = XMMatrixIdentity();
+    //memcpy(&matWorld.r[CTransform::STATE_POSITION], m_pWorldMatrix->m[CTransform::STATE_POSITION], sizeof(_float4));
 
-    }
-        break;
-    case Client::CEffect::TYPE_END:
-        break;
-    default:
-        break;
-    }
-
+    m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(m_pWorldMatrix));
 }
 
 void CEffect::Late_Tick(const _float& fTimeDelta)

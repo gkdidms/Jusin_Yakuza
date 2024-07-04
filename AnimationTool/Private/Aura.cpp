@@ -31,13 +31,21 @@ HRESULT CAura::Initialize(void* pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
-	if (nullptr != pArg)
+	EFFECT_DESC* pDesc = static_cast<EFFECT_DESC*>(pArg);
+
+	if (nullptr == pDesc->pWorldMatrix)
 	{
 		AURA_DESC* pDesc = static_cast<AURA_DESC*>(pArg);
 		m_BufferInstance = pDesc->BufferInstance;
 		m_fUVCount = pDesc->fUVCount;
 	}
-		m_BufferInstance.WorldMatrix = m_pTransformCom->Get_WorldFloat4x4();
+	else
+	{
+		m_pWorldMatrix = pDesc->pWorldMatrix;
+	}
+
+
+	m_BufferInstance.WorldMatrix = m_pWorldMatrix;
 
 	//m_fUVCount = _float2(64.f, 1.f);
 
@@ -53,7 +61,7 @@ void CAura::Priority_Tick(const _float& fTimeDelta)
 
 void CAura::Tick(const _float& fTimeDelta)
 {
-
+	__super::Tick(fTimeDelta);
 
 	if (m_iAction & iAction[ACTION_SPREAD])
 	{

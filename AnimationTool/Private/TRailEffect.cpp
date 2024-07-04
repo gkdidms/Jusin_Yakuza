@@ -27,20 +27,26 @@ HRESULT CTRailEffect::Initialize_Prototype(string strFilePath)
 
 HRESULT CTRailEffect::Initialize(void* pArg)
 {
-
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
-	if (nullptr != pArg)
+	EFFECT_DESC* pDesc = static_cast<EFFECT_DESC*>(pArg);
+
+	if (nullptr == pDesc->pWorldMatrix)
 	{
 		TRAIL_DESC* pDesc = static_cast<TRAIL_DESC*>(pArg);
 
 		m_TrailDesc = pDesc -> Trail_Desc;
-
+	}
+	else
+	{
+		m_pWorldMatrix = pDesc->pWorldMatrix;
 	}
 
 	if (FAILED(Add_Components()))
 		return E_FAIL;
+
+	//m_pTransformCom->Set_Speed(3.f);
 
 	return S_OK;
 }
@@ -51,6 +57,10 @@ void CTRailEffect::Priority_Tick(const _float& fTimeDelta)
 
 void CTRailEffect::Tick(const _float& fTimeDelta)
 {
+	if (m_pGameInstance->GetKeyState(DIK_W))
+		m_pTransformCom->Go_Straight(fTimeDelta);
+
+
 	__super::Tick(fTimeDelta);
 
 	_float4x4 TrailMatrix = *m_pTransformCom->Get_WorldFloat4x4();
