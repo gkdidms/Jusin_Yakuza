@@ -145,6 +145,9 @@
     <ClCompile Include="..\Private\Kiryu_Adventure_Walk.cpp">
       <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\Adventure\Walk</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\MapCollider.cpp">
+      <Filter>02.GameObjects\08. MapCollider</Filter>
+	</ClCompile>
     <ClCompile Include="..\private\Monster.cpp">
       <Filter>02.GameObjects\02.Character\LandObject\01.Monster</Filter>
     </ClCompile>
@@ -154,7 +157,7 @@
     <ClCompile Include="..\Private\BTNode.cpp">
       <Filter>95.Utility\03.BehaviorTree</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\AI_OfficeYakuza.cpp">
+    <ClCompile Include="..\private\AI_RushYakuza.cpp">
       <Filter>02.GameObjects\02.Character\LandObject\01.Monster\00.OfficeYakuza\AI</Filter>
     </ClCompile>
   </ItemGroup>
@@ -333,6 +336,10 @@
     <ClInclude Include="..\Public\Kiryu_Adventure_Walk.h">
       <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\Adventure\Walk</Filter>
     </ClInclude>
+
+    <ClInclude Include="..\Public\MapCollider.h">
+      <Filter>02.GameObjects\08. MapCollider</Filter>
+	</ClInclude>
     <ClInclude Include="..\public\Monster.h">
       <Filter>02.GameObjects\02.Character\LandObject\01.Monster</Filter>
     </ClInclude>
@@ -342,9 +349,9 @@
     <ClInclude Include="..\Public\BTNode.h">
       <Filter>95.Utility\03.BehaviorTree</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\AI_OfficeYakuza.h">
+    <ClInclude Include="..\public\AI_RushYakuza.h">
       <Filter>02.GameObjects\02.Character\LandObject\01.Monster\00.OfficeYakuza\AI</Filter>
-    </ClInclude>
+	</ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -517,6 +524,9 @@
     <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\Adventure\Walk">
       <UniqueIdentifier>{61c6b900-fea8-49ce-b5e2-a428e2dd1444}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\08. MapCollider">
+      <UniqueIdentifier>{28cec43f-865c-488e-83e1-e6b15b632319}</UniqueIdentifier>
+	</Filter>
     <Filter Include="02.GameObjects\02.Character\LandObject\01.Monster">
       <UniqueIdentifier>{45d3ed81-5372-4412-bf1f-89cbd1f74552}</UniqueIdentifier>
     </Filter>

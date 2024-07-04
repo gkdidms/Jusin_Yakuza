@@ -1,8 +1,9 @@
 #pragma once
 
-#include "Client_Defines.h"
 #include "GameObject.h"
 #include "Decal.h"
+#include "Client_Defines.h"
+
 
 BEGIN(Engine)
 class CShader;
@@ -10,7 +11,6 @@ class CModel;
 END
 
 BEGIN(Client)
-
 class CConstruction final : public CGameObject
 {
 //public:
@@ -91,6 +91,8 @@ private:
 	int*											m_pDecalMeshIndex = { 0 };
 	int												m_iDecalMeshCnt = { 0 };
 	int												m_bFindDecalMesh = { false };
+
+	bool											m_bOrigin = { false };
 
 public:
 	static CConstruction* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

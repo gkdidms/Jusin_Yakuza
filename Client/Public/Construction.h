@@ -51,14 +51,14 @@ public:
 	virtual HRESULT Render_LightDepth() override;
 
 public:
-	CTransform* Get_Transform() { return m_pTransformCom; }
+	CTransform*					Get_Transform() { return m_pTransformCom; }
 
 public:
 	int							Get_ObjPlaceDesc(OBJECTPLACE_DESC* objplaceDesc);
 	MAPOBJ_DESC					Get_MapObjDesc_For_AddList();
 
 	void						Edit_GameObject_Information(MAPOBJ_DESC	mapDesc);
-	CConstruction::MAPOBJ_DESC					Send_GameObject_Information();
+	CConstruction::MAPOBJ_DESC	Send_GameObject_Information();
 
 private:
 	CShader* m_pShaderCom = { nullptr };

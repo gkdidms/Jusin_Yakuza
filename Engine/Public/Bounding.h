@@ -22,6 +22,7 @@ public:
 public:
     virtual void Set_Value(void* pDesc) {};
     virtual void Set_Center(const _float3& vCenter) {};
+    virtual void Set_Rotation(const _float3& vRotation) {};
 
 public:
     virtual HRESULT Initialize(const void* pArg) = 0;

@@ -26,6 +26,20 @@ namespace Engine
 		XMFLOAT4X4				vTransform;
 	};
 
+	struct ENGINE_DLL COLLIDER_DESC
+	{
+		XMFLOAT4X4				vTransform;
+		_float3					vCenter;
+		_float3					vExtents;
+		_float3					vQuaternion;
+	};
+
+	struct ENGINE_DLL COLLIDER_IO
+	{
+		int						iColliderNum;
+		COLLIDER_DESC*			pColliderDesc;
+	};
+
 
 	/* map 저장관련 */
 	struct ENGINE_DLL OBJECTPLACE_DESC

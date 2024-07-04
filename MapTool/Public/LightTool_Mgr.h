@@ -1,8 +1,8 @@
 #pragma once
 
 #include "Base.h"
-#include "Client_Defines.h"
 #include "LightObj.h"
+#include "Client_Defines.h"
 
 class CLightTool_Mgr final : public CBase
 {
