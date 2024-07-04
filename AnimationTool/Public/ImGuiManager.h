@@ -61,6 +61,11 @@ private:
 	void MeshListWindow();
 	void AnimEventWindow();
 
+	/* 키프레임 윈도우에서 애니메이션 이벤트에 이펙트, 사운드 추가하는 창 */
+	void EffectListWindow();
+	void SoundListWindow();
+
+
 	void DrawTimeline(ImDrawList* d);
 	void DrawChannels();
 
@@ -93,6 +98,9 @@ private:
 	void AnimationLoop_Load(string strPath);
 	void AnimationEvent_Load(string strPath);
 	void ColliderState_Load(string strPath);
+
+	/* Initailize */
+	void Setting_InitialData();
 
 private:
 	ImGuiIO* io;
@@ -135,6 +143,22 @@ private:
 	// first: 애니메이션 이름, second: 이벤트정보
 	multimap<string, Animation_Event>		m_AnimationEvents;		
 
+
+private:
+	_bool					m_isEffectListWindow = { false };
+
+	_uint						m_iEffectType = { 0 };
+	int							m_iEffectSelectedIndex = { 0 };
+
+	vector<string>				m_EffectTypeList;
+	multimap<_uint, string>		m_EffectFiles;
+
+private:
+	_bool					m_isSoundListWindow = { false };
+
+	_uint					m_iSoundType = { 0 };
+	vector<string>			m_SoundTypeList;
+	
 private:
 	_float					m_fTimeDeltaScale = { 1.f };
 
