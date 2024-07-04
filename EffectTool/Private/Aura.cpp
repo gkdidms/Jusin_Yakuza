@@ -33,11 +33,22 @@ HRESULT CAura::Initialize(void* pArg)
 
 	if (nullptr != pArg)
 	{
-		AURA_DESC* pDesc = static_cast<AURA_DESC*>(pArg);
-		m_BufferInstance = pDesc->BufferInstance;
-		m_fUVCount = pDesc->fUVCount;
+		EFFECT_DESC* pDesc = static_cast<EFFECT_DESC*>(pArg);
+
+		if (nullptr == pDesc->pWorldMatrix)
+		{
+			AURA_DESC* pDesc = static_cast<AURA_DESC*>(pArg);
+			m_BufferInstance = pDesc->BufferInstance;
+			m_fUVCount = pDesc->fUVCount;
+		}
+		else
+		{
+			m_pWorldMatrix = pDesc->pWorldMatrix;
+			m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(m_pWorldMatrix));
+		}
 	}
-		m_BufferInstance.WorldMatrix = m_pTransformCom->Get_WorldFloat4x4();
+
+	m_BufferInstance.WorldMatrix = m_pTransformCom->Get_WorldFloat4x4();
 
 	//m_fUVCount = _float2(64.f, 1.f);
 
@@ -53,7 +64,7 @@ void CAura::Priority_Tick(const _float& fTimeDelta)
 
 void CAura::Tick(const _float& fTimeDelta)
 {
-
+	__super::Tick(fTimeDelta);
 
 	if (m_iAction & iAction[ACTION_SPREAD])
 	{
@@ -71,7 +82,7 @@ void CAura::Tick(const _float& fTimeDelta)
 	{
 		m_pVIBufferCom->SizeDown_Time(fTimeDelta);
 	}
-	
+
 }
 
 void CAura::Late_Tick(const _float& fTimeDelta)
@@ -103,7 +114,7 @@ HRESULT CAura::Save_Data(const string strDirectory)
 	string Directory = strDirectory;
 	string ParticleTag = m_pGameInstance->WstringToString(m_ParticleTag);
 	string TextureTag = m_pGameInstance->WstringToString(m_TextureTag);
-	 
+
 	string headTag = "Prototype_GameObject_Particle_Aura_";
 	Directory += "/" + headTag + ParticleTag + ".dat";
 
