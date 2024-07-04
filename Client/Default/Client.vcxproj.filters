@@ -118,17 +118,14 @@
     <ClCompile Include="..\Private\TRailEffect.cpp">
       <Filter>02.GameObjects\06.Effect\Trail</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\BTNode.cpp">
-      <Filter>02.GameObjects\02.Character\BehaviorTree\BTNode</Filter>
+    <ClCompile Include="..\Private\Sequance.cpp">
+      <Filter>95.Utility\03.BehaviorTree\SquanceNode</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\CompositeNode.cpp">
-      <Filter>02.GameObjects\02.Character\BehaviorTree\CompositeNode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\DecoratorNode.cpp">
-      <Filter>02.GameObjects\02.Character\BehaviorTree\DecoratorNode</Filter>
+    <ClCompile Include="..\Private\Selector.cpp">
+      <Filter>95.Utility\03.BehaviorTree\SelectorNode</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\LeafNode.cpp">
-      <Filter>02.GameObjects\02.Character\BehaviorTree\LeafNode</Filter>
+      <Filter>95.Utility\03.BehaviorTree\LeafNode</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\BehaviorAnimation.cpp">
       <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior</Filter>
@@ -142,14 +139,23 @@
     <ClCompile Include="..\private\UI.cpp">
       <Filter>02.GameObjects\07.UI</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\ShaderObject.cpp">
-      <Filter>02.GameObjects\02.ShaderObject</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\Aura.cpp">
       <Filter>02.GameObjects\06.Effect\Aura</Filter>
-	</ClCompile>
+    </ClCompile>
     <ClCompile Include="..\Private\Kiryu_Adventure_Walk.cpp">
       <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\Adventure\Walk</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Monster.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\01.Monster</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\OfficeYakuza.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\00.OfficeYakuza</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\BTNode.cpp">
+      <Filter>95.Utility\03.BehaviorTree</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\AI_OfficeYakuza.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\00.OfficeYakuza\AI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -297,17 +303,14 @@
     <ClInclude Include="..\Public\TRailEffect.h">
       <Filter>02.GameObjects\06.Effect\Trail</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\BTNode.h">
-      <Filter>02.GameObjects\02.Character\BehaviorTree\BTNode</Filter>
+    <ClInclude Include="..\Public\Sequance.h">
+      <Filter>95.Utility\03.BehaviorTree\SquanceNode</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\CompositeNode.h">
-      <Filter>02.GameObjects\02.Character\BehaviorTree\CompositeNode</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\DecoratorNode.h">
-      <Filter>02.GameObjects\02.Character\BehaviorTree\DecoratorNode</Filter>
+    <ClInclude Include="..\Public\Selector.h">
+      <Filter>95.Utility\03.BehaviorTree\SelectorNode</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\LeafNode.h">
-      <Filter>02.GameObjects\02.Character\BehaviorTree\LeafNode</Filter>
+      <Filter>95.Utility\03.BehaviorTree\LeafNode</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\BehaviorAnimation.h">
       <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior</Filter>
@@ -324,14 +327,23 @@
     <ClInclude Include="..\public\Loader.h">
       <Filter>01.Levels\99.Loading\Loader</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\ShaderObject.h">
-      <Filter>02.GameObjects\02.ShaderObject</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\Aura.h">
       <Filter>02.GameObjects\06.Effect\Aura</Filter>
-	</ClInclude>
+    </ClInclude>
     <ClInclude Include="..\Public\Kiryu_Adventure_Walk.h">
       <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\Adventure\Walk</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Monster.h">
+      <Filter>02.GameObjects\02.Character\LandObject\01.Monster</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\OfficeYakuza.h">
+      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\00.OfficeYakuza</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\BTNode.h">
+      <Filter>95.Utility\03.BehaviorTree</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\AI_OfficeYakuza.h">
+      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\00.OfficeYakuza\AI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -462,7 +474,7 @@
     </Filter>
     <Filter Include="02.GameObjects\02.Character\CharacterData">
       <UniqueIdentifier>{d47f23c7-f09f-46fd-a441-f1561bb9a95a}</UniqueIdentifier>
-	</Filter>
+    </Filter>
     <Filter Include="02.GameObjects\07.UI">
       <UniqueIdentifier>{5ee687d4-5dfa-49a3-92da-8f0756f1687f}</UniqueIdentifier>
     </Filter>
@@ -474,21 +486,6 @@
     </Filter>
     <Filter Include="02.GameObjects\02.Character\SoketCollider">
       <UniqueIdentifier>{260596ca-843e-47fe-ae9b-3a65ebc2b9a0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\02.Character\BehaviorTree">
-      <UniqueIdentifier>{490f9c94-1bca-41c9-a680-f2eb77882221}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\02.Character\BehaviorTree\BTNode">
-      <UniqueIdentifier>{15b76be1-dd33-45f0-ac61-72edf4d78c5c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\02.Character\BehaviorTree\CompositeNode">
-      <UniqueIdentifier>{a2c51b61-3052-4f69-9513-7d8956a5fbfd}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\02.Character\BehaviorTree\DecoratorNode">
-      <UniqueIdentifier>{9bcb482e-8cd8-46b9-ba50-2f2da538a375}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\02.Character\BehaviorTree\LeafNode">
-      <UniqueIdentifier>{3352b812-faf6-4a67-8b29-1e9df787da34}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObjects\03.Construction">
       <UniqueIdentifier>{95e29977-56e8-4ee9-b1c8-71236bd9d68b}</UniqueIdentifier>
@@ -519,6 +516,27 @@
     </Filter>
     <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\Adventure\Walk">
       <UniqueIdentifier>{61c6b900-fea8-49ce-b5e2-a428e2dd1444}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\01.Monster">
+      <UniqueIdentifier>{45d3ed81-5372-4412-bf1f-89cbd1f74552}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\01.Monster\00.OfficeYakuza">
+      <UniqueIdentifier>{58dcf1b7-f012-4f21-92c4-d4317d03352d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\03.BehaviorTree">
+      <UniqueIdentifier>{490f9c94-1bca-41c9-a680-f2eb77882221}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\03.BehaviorTree\SquanceNode">
+      <UniqueIdentifier>{a2c51b61-3052-4f69-9513-7d8956a5fbfd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\03.BehaviorTree\SelectorNode">
+      <UniqueIdentifier>{9bcb482e-8cd8-46b9-ba50-2f2da538a375}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\03.BehaviorTree\LeafNode">
+      <UniqueIdentifier>{3352b812-faf6-4a67-8b29-1e9df787da34}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\01.Monster\00.OfficeYakuza\AI">
+      <UniqueIdentifier>{9e849697-ae77-4632-b243-cfb720c7f930}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

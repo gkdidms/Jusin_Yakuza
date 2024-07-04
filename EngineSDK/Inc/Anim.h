@@ -1,0 +1,59 @@
+#pragma once
+#include "Component.h"
+#include "Engine_Defines.h"
+
+/*
+캐릭터 애니메이션를 모아두는 컴포넌트
+모델 play 함수에서 해당 컴포넌트를 받아서 사용할 수 있도록 한다.
+*/
+BEGIN(Engine)
+class ENGINE_DLL CAnim :
+    public CComponent
+{
+private:
+    CAnim(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+    CAnim(const CAnim& rhs);
+    virtual ~CAnim() = default;
+
+public:
+    vector<class CAnimation*> Get_Animations() { return m_Animations; }
+    _uint Get_NumAnimation() { return m_iAnimations; }
+    _uint Get_AnimationIndex(const _char* pName);
+
+public:
+    void Set_CurrentAnimIndex(_uint iIndex) { m_iCurrentIndex = iIndex; }
+    
+public: // 애니메이션 관련
+    void Reset_Animation();
+    _bool Get_AnimFinished();
+    _bool Get_LoopAnimFinished();
+    const _double* Get_AnimDuration();
+    const _double* Get_AnimPosition();
+public:
+    virtual HRESULT Initialize_Prototype(const _char* pModelFilePath, _bool isSave);
+    virtual HRESULT Initialize(void* pArg);
+
+public:
+    HRESULT Export_Animation(const _char* pModelFilePath);
+    HRESULT Ready_Bones(const aiNode* pAINode, _int iParentIndex);
+
+private:
+    const aiScene* m_pAIScene = { nullptr };
+    Assimp::Importer			m_Importer;
+
+    _uint m_iAnimations = { 0 };
+    vector<class CBone*> m_Bones;
+    vector<class CAnimation*> m_Animations;
+
+    _uint m_iCurrentIndex = { 0 };
+
+private:
+    HRESULT Save_File(const _char* pModelFilePath, vector<class CBone*> Bones);
+    HRESULT Load_File(const _char* pModelFilePath);
+    
+public:
+    static CAnim* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const _char* pModelFilePath, _bool isSave);
+    virtual CComponent* Clone(void* pArg);
+    virtual void Free();  
+};
+END

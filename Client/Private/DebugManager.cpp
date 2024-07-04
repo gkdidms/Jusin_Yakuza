@@ -137,8 +137,28 @@ void CDebugManager::Window_Debug()
 
     if (ImGui::CollapsingHeader("Deferred Shader"))
     {
-        ImGui::SeparatorText("HDR");
+        ImGui::SeparatorText("Shader ON/OFF");
+        _bool isHDR = m_pGameInstance->isHDR();
+        if (ImGui::Checkbox("HDR", &isHDR))
+            m_pGameInstance->Set_HDR(isHDR);
 
+        _bool isSSAO = m_pGameInstance->isSSAO();
+        if (ImGui::Checkbox("SSAO", &isSSAO))
+            m_pGameInstance->Set_SSAO(isSSAO);
+
+        _bool isPBR = m_pGameInstance->isPBR();
+        if (ImGui::Checkbox("PBR", &isPBR))
+            m_pGameInstance->Set_PBR((isPBR));
+
+        _bool isBOF = m_pGameInstance->isBOF();
+        if (ImGui::Checkbox("BOF", &isBOF))
+            m_pGameInstance->Set_BOF(isBOF);
+
+        _bool isShadow = m_pGameInstance->isShadow();
+        if (ImGui::Checkbox("Shadow", &isShadow))
+            m_pGameInstance->Set_Shadow(isShadow);
+        
+        ImGui::SeparatorText("HDR");
         if (ImGui::InputFloat("HDR Light", &m_fHDRLight, 0.f))
             m_pGameInstance->Set_HDRLight(m_fHDRLight);
 
