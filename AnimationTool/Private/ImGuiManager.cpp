@@ -1347,7 +1347,6 @@ void CImguiManager::EffectState_Load(string strPath)
 		in >> strEffectName;
 		
 		Create_Effect(strBoneName, strEffectName);
-		m_EffectState.emplace(strBoneName, strEffectName);
 	}
 
 	

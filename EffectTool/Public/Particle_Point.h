@@ -12,7 +12,7 @@ class CVIBuffer_Instance_Point;
 END
 
 BEGIN(Client)
-class CParticle_Point final:
+class CParticle_Point final :
     public CEffect
 {
 public:
@@ -45,7 +45,7 @@ private:
     CTexture* m_pTextureCom = { nullptr };
     CVIBuffer_Instance_Point* m_pVIBufferCom = { nullptr };
 
-    CVIBuffer_Instance::INSTANCE_DESC m_BufferInstance; 
+    CVIBuffer_Instance::INSTANCE_DESC m_BufferInstance;
     _float       m_fCurTime = { 0.f };
 
 

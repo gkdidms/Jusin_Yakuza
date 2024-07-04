@@ -11,22 +11,22 @@ const _uint CEffect::iAction[CEffect::ACTION_END] = {
 
 
 CEffect::CEffect(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-    :CBlendObject{pDevice,pContext}
+    :CBlendObject{ pDevice,pContext }
 {
 }
 
 CEffect::CEffect(const CEffect& rhs)
-    :CBlendObject{rhs},
-    m_eType{rhs.m_eType},
-    m_ParticleTag{rhs.m_ParticleTag },
-    m_TextureTag{rhs.m_TextureTag },
-    m_iShaderPass{rhs.m_iShaderPass },
-    m_fStartTime{rhs.m_fStartTime },
-    m_vStartPos{rhs.m_vStartPos },
-    m_fLifeAlpha{rhs.m_fLifeAlpha },
-    m_iAction{rhs.m_iAction },
-    m_vStartColor{rhs.m_vStartColor },
-    m_vEndColor{rhs.m_vEndColor }
+    :CBlendObject{ rhs },
+    m_eType{ rhs.m_eType },
+    m_ParticleTag{ rhs.m_ParticleTag },
+    m_TextureTag{ rhs.m_TextureTag },
+    m_iShaderPass{ rhs.m_iShaderPass },
+    m_fStartTime{ rhs.m_fStartTime },
+    m_vStartPos{ rhs.m_vStartPos },
+    m_fLifeAlpha{ rhs.m_fLifeAlpha },
+    m_iAction{ rhs.m_iAction },
+    m_vStartColor{ rhs.m_vStartColor },
+    m_vEndColor{ rhs.m_vEndColor }
 {
 }
 
@@ -41,22 +41,31 @@ HRESULT CEffect::Initialize(void* pArg)
     if (FAILED(__super::Initialize(pArg)))
         return E_FAIL;
 
-
     if (nullptr != pArg)
     {
         EFFECT_DESC* pDesc = static_cast<EFFECT_DESC*>(pArg);
-        m_eType = pDesc->eType;
-        m_vStartPos = pDesc->vStartPos;
-        m_ParticleTag = pDesc->ParticleTag;
-        m_fStartTime = pDesc->fStartTime;
-        m_vStartColor = pDesc->vStartColor;
-        m_vEndColor = pDesc->vEndColor;
-        m_iShaderPass = pDesc->iShaderPass;
-        m_TextureTag = pDesc->TextureTag;
-        m_fLifeAlpha = pDesc->fLifeAlpha;
-        m_fRotate = pDesc->fRotate;
+
+        if (nullptr == pDesc->pWorldMatrix)
+        {
+            EFFECT_DESC* pDesc = static_cast<EFFECT_DESC*>(pArg);
+            m_eType = pDesc->eType;
+            m_vStartPos = pDesc->vStartPos;
+            m_ParticleTag = pDesc->ParticleTag;
+            m_fStartTime = pDesc->fStartTime;
+            m_vStartColor = pDesc->vStartColor;
+            m_vEndColor = pDesc->vEndColor;
+            m_iShaderPass = pDesc->iShaderPass;
+            m_TextureTag = pDesc->TextureTag;
+            m_fLifeAlpha = pDesc->fLifeAlpha;
+            m_fRotate = pDesc->fRotate;
+        }
+        else
+        {
+            m_pWorldMatrix = pDesc->pWorldMatrix;
+        }
+
     }
-    
+
     return S_OK;
 }
 
@@ -66,29 +75,11 @@ void CEffect::Priority_Tick(const _float& fTimeDelta)
 
 void CEffect::Tick(const _float& fTimeDelta)
 {
-    switch (m_eType)
-    {
-    case Client::CEffect::TYPE_POINT:
-        break;
-    case Client::CEffect::TYPE_TRAIL:
-    {
-        if (m_pGameInstance->GetKeyState(DIK_LEFT) == HOLD)
-            m_pTransformCom->Go_Left(fTimeDelta);
-        if (m_pGameInstance->GetKeyState(DIK_RIGHT) == HOLD)
-            m_pTransformCom->Go_Right(fTimeDelta);
-        if (m_pGameInstance->GetKeyState(DIK_UP) == HOLD)
-            m_pTransformCom->Go_Straight(fTimeDelta);
-        if (m_pGameInstance->GetKeyState(DIK_DOWN) == HOLD)
-            m_pTransformCom->Go_Backward(fTimeDelta);
+    //_matrix matWorld = XMMatrixIdentity();
+    //memcpy(&matWorld.r[CTransform::STATE_POSITION], m_pWorldMatrix->m[CTransform::STATE_POSITION], sizeof(_float4));
 
-    }
-        break;
-    case Client::CEffect::TYPE_END:
-        break;
-    default:
-        break;
-    }
-
+    if (nullptr != m_pWorldMatrix)
+        m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(m_pWorldMatrix));
 }
 
 void CEffect::Late_Tick(const _float& fTimeDelta)
