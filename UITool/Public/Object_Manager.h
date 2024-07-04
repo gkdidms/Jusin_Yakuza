@@ -16,7 +16,7 @@ class CObject_Manager :
     DECLARE_SINGLETON(CObject_Manager)
 
 public:
-    enum TEXTURE_TYPE { IMG, BTN, TEXT, TEXT_FORMAT, GROUP, TEXTURE_TYPE_END };
+    enum TEXTURE_TYPE { IMG, BTN, TEXT,  GROUP, EFFECT, TEXTURE_TYPE_END };
     enum MOVE_TYPE { UP, DOWN, MOVE_END };
     typedef struct {
         _uint iTextureType;
@@ -26,7 +26,10 @@ public:
         wstring strBtnClickFileName;
         wstring strText;
         _uint iTextType;
-        _vector vColor;
+        _float4 vColor;
+        //이펙트
+        _float3 vLifeTime;
+        _float fSpeed;
 
         string strName;
     } OBJ_MNG_DESC;
@@ -57,16 +60,22 @@ public://렌더 진행
 public:
     HRESULT Add_Group(const wstring& strObjectTag);
     HRESULT Add_RenderTextureObject(const wstring& strObjectTag, void* pArg);
+    HRESULT Copy_RenderTextureObject(const wstring& strObjectTag, _uint iIndex);
     HRESULT Add_BinaryObject(const wstring& strObjectTag, void* pArg);
 
     HRESULT Copy_Group(const wstring& strTag);
     HRESULT Remove_Group(const wstring& strTag);
+    HRESULT Remove_GroupObject(const wstring& strTag, const _uint ibinaryIndex, const _uint iIndex);
     HRESULT Remove_Object(const wstring& strTag, _uint iIndex);
     HRESULT Remove_BinaryObject(const wstring& strTag, _uint iIndex);
     HRESULT Create_Texture(_uint iIndex, const wstring& strFilePath);
 
     HRESULT Move_ObjectIndex(const wstring& strTag, _uint iIndex, _uint iMoveType);
 
+
+public :
+    HRESULT Save_binary();
+    HRESULT Load_binary();
 private:
     ID3D11Device* m_pDevice = { nullptr };
     ID3D11DeviceContext* m_pContext = { nullptr };
@@ -75,8 +84,8 @@ private:
     vector<CRenderTarget*> m_Texture2Ds;
     vector<CRenderTarget*> m_BinaryTexture2Ds;
     vector< CRenderTarget*> m_CopyBackTexture2Ds;
-    map<const wstring, vector<class CUI_Object*>> m_Objects;
-    map<const wstring, vector<class CUI_Object*>> m_BinaryObjects;
+    map<const wstring, vector<class CUI_Object*>> m_Objects;//렌더타겟용
+    map<const wstring, vector<class CUI_Object*>> m_BinaryObjects;//바이너리화 할애들
 
     
 private: // Render용

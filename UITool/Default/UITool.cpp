@@ -144,7 +144,7 @@ BOOL InitInstance(HINSTANCE hInstance, int nCmdShow)
 
    RECT		rcWindow = { 0, 0, g_iWinSizeX, g_iWinSizeY };
 
-   AdjustWindowRect(&rcWindow, WS_OVERLAPPEDWINDOW, TRUE);
+   AdjustWindowRect(&rcWindow, WS_OVERLAPPEDWINDOW, FALSE);
 
    _float ScreentX = (rcWindow.right - rcWindow.left);
    _float ScreentY = (rcWindow.bottom - rcWindow.top);

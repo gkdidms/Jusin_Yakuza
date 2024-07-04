@@ -47,6 +47,21 @@ HRESULT CUI_Object::Render()
 	return S_OK;
 }
 
+HRESULT CUI_Object::Save_binary(const string strDirectory)
+{
+	return E_FAIL;
+}
+
+HRESULT CUI_Object::Save_Groupbinary( ofstream& out)
+{
+	return S_OK;
+}
+
+HRESULT CUI_Object::Load_binary()
+{
+	return E_FAIL;
+}
+
 void CUI_Object::Free()
 {
 	__super::Free();

@@ -27,6 +27,7 @@ HRESULT CBtn::Initialize(void* pArg)
 	m_strClickFilePath = pDesc->strClickFilePath;
 	m_StrClickFileName = pDesc->strClickFileName;
 
+
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
@@ -46,8 +47,10 @@ void CBtn::Tick(const _float& fTimeDelta)
 
 void CBtn::Late_Tick(const _float& fTimeDelta)
 {
-	//피킹 확인
+#ifndef _TOOL
+	//커서 확인
 	m_isClick = m_pGameInstance->Picking_UI(m_pTransformCom);
+#endif // _TOOL
 }
 
 HRESULT CBtn::Render()
@@ -56,7 +59,136 @@ HRESULT CBtn::Render()
 		return E_FAIL;
 
 	m_pShaderCom->Begin(m_iShaderPass);
-	m_pVIBufferCom->Render();
+
+	if (m_isClick)
+		m_pClickVIBufferCom->Render();
+	else
+		m_pVIBufferCom->Render();	
+
+	return S_OK;
+}
+
+HRESULT CBtn::Chage_ClickUV(_float2 StartUV, _float2 EndUV)
+{
+	m_ClickStartUV = StartUV;
+	m_ClickEndUV = EndUV;
+
+	if (FAILED(m_pClickVIBufferCom->EditUV(m_ClickStartUV, m_ClickEndUV)))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CBtn::Save_binary(const string strDirectory)
+{
+
+	string Directory = strDirectory;
+
+	Directory = Directory + m_strName + ".dat";
+	ofstream out(Directory, ios::binary);
+
+	out.write((char*)&m_iTypeIndex, sizeof(_uint));
+
+	_int strTexturelength = m_strName.length();
+	out.write((char*)&strTexturelength, sizeof(_int));
+	out.write(m_strName.c_str(), strTexturelength);
+
+
+	out.write((char*)&m_isParent, sizeof(_bool));
+
+	strTexturelength = m_strParentName.length();
+	out.write((char*)&strTexturelength, sizeof(_int));
+	out.write(m_strParentName.c_str(), strTexturelength);
+
+	string FilePath = m_pGameInstance->WstringToString(m_strTextureFilePath);
+	strTexturelength = FilePath.length();
+	out.write((char*)&strTexturelength, sizeof(_int));
+	out.write(FilePath.c_str(), strTexturelength);
+
+	string FileName = m_pGameInstance->WstringToString(m_strTextureName);
+	strTexturelength = FileName.length();
+	out.write((char*)&strTexturelength, sizeof(_int));
+	out.write(FileName.c_str(), strTexturelength);
+
+	out.write((char*)&m_fStartUV, sizeof(_float2));
+
+	out.write((char*)&m_fEndUV, sizeof(_float2));
+
+	out.write((char*)&m_vColor, sizeof(_float4));
+
+	out.write((char*)&m_iShaderPass, sizeof(_uint));
+
+	//개별 저장
+
+	string ClickFilePath = m_pGameInstance->WstringToString(m_strClickFilePath);
+	strTexturelength = ClickFilePath.length();
+	out.write((char*)&strTexturelength, sizeof(_int));
+	out.write(ClickFilePath.c_str(), strTexturelength);
+
+	string ClickFileName = m_pGameInstance->WstringToString(m_StrClickFileName);
+	strTexturelength = ClickFileName.length();
+	out.write((char*)&strTexturelength, sizeof(_int));
+	out.write(ClickFileName.c_str(), strTexturelength);
+
+	out.write((char*)&m_ClickStartUV, sizeof(_float2));
+
+	out.write((char*)&m_ClickEndUV, sizeof(_float2));
+
+	out.close();
+
+
+	return S_OK;
+}
+
+HRESULT CBtn::Save_Groupbinary(ofstream& out)
+{
+
+	out.write((char*)&m_iTypeIndex, sizeof(_uint));
+
+	_int strTexturelength = m_strName.length();
+	out.write((char*)&strTexturelength, sizeof(_int));
+	out.write(m_strName.c_str(), strTexturelength);
+
+
+	out.write((char*)&m_isParent, sizeof(_bool));
+
+	strTexturelength = m_strParentName.length();
+	out.write((char*)&strTexturelength, sizeof(_int));
+	out.write(m_strParentName.c_str(), strTexturelength);
+
+	string FilePath = m_pGameInstance->WstringToString(m_strTextureFilePath);
+	strTexturelength = FilePath.length();
+	out.write((char*)&strTexturelength, sizeof(_int));
+	out.write(FilePath.c_str(), strTexturelength);
+
+	string FileName = m_pGameInstance->WstringToString(m_strTextureName);
+	strTexturelength = FileName.length();
+	out.write((char*)&strTexturelength, sizeof(_int));
+	out.write(FileName.c_str(), strTexturelength);
+
+	out.write((char*)&m_fStartUV, sizeof(_float2));
+
+	out.write((char*)&m_fEndUV, sizeof(_float2));
+
+	out.write((char*)&m_vColor, sizeof(_float4));
+
+	out.write((char*)&m_iShaderPass, sizeof(_uint));
+
+	//개별 저장
+
+	string ClickFilePath = m_pGameInstance->WstringToString(m_strClickFilePath);
+	strTexturelength = ClickFilePath.length();
+	out.write((char*)&strTexturelength, sizeof(_int));
+	out.write(ClickFilePath.c_str(), strTexturelength);
+
+	string ClickFileName = m_pGameInstance->WstringToString(m_StrClickFileName);
+	strTexturelength = ClickFileName.length();
+	out.write((char*)&strTexturelength, sizeof(_int));
+	out.write(ClickFileName.c_str(), strTexturelength);
+
+	out.write((char*)&m_ClickStartUV, sizeof(_float2));
+
+	out.write((char*)&m_ClickEndUV, sizeof(_float2));
 
 	return S_OK;
 }
@@ -66,10 +198,13 @@ HRESULT CBtn::Add_Components()
 	if (FAILED(__super::Add_Components()))
 		return E_FAIL;
 
+	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Rect"),
+		TEXT("Com_ClickVIBuffer"), reinterpret_cast<CComponent**>(&m_pClickVIBufferCom))))
+		return E_FAIL;
+
 	m_pClickTextureCom = CTexture::Create(m_pDevice, m_pContext, m_strClickFilePath, 1);
 	if (nullptr == m_pClickTextureCom)
 		return E_FAIL;
-
 
 	return S_OK;
 }
@@ -123,4 +258,5 @@ void CBtn::Free()
 	__super::Free();
 	
 	Safe_Release(m_pClickTextureCom);
+	Safe_Release(m_pClickVIBufferCom);
 }

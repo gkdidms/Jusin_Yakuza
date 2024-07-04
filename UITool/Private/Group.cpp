@@ -1,6 +1,11 @@
 #include "Group.h"
 
 #include "GameInstance.h"
+#include "Object_Manager.h"
+#include "Image_Texture.h"
+#include "Text.h"
+#include "Btn.h"
+#include "UI_Effect.h"	
 
 CGroup::CGroup(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CUI_Object{ pDevice, pContext}
@@ -10,6 +15,16 @@ CGroup::CGroup(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 CGroup::CGroup(const CGroup& rhs)
 	: CUI_Object{ rhs }
 {
+}
+
+void CGroup::Remove_PartObject(_uint iIndex)
+{
+	auto iter = m_PartObjects.begin();
+
+	Safe_Release(m_PartObjects[iIndex]);
+
+	m_PartObjects.erase(iter + iIndex);
+
 }
 
 HRESULT CGroup::Initialize_Prototype()
@@ -50,6 +65,22 @@ HRESULT CGroup::Render()
 {
 	for (auto& pObject : m_PartObjects)
 		pObject->Render();
+
+	return S_OK;
+}
+
+HRESULT CGroup::Save_binary(const string strDirectory)
+{
+
+	return S_OK;
+}
+
+HRESULT CGroup::Save_Groupbinary(ofstream& out)
+{
+	for (auto& pObject : m_PartObjects)
+	{
+		pObject->Save_Groupbinary(out);
+	}
 
 	return S_OK;
 }

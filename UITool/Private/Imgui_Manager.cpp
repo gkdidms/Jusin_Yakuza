@@ -16,6 +16,7 @@
 #include "Text.h"
 #include "Btn.h"
 #include "Group.h"
+#include "UI_Effect.h"
 
 IMPLEMENT_SINGLETON(CImgui_Manager)
 
@@ -40,6 +41,7 @@ HRESULT CImgui_Manager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* p
     IMGUI_CHECKVERSION();
     ImGui::CreateContext();
     ImGuiIO& io = ImGui::GetIO();
+
     io.Fonts->AddFontFromFileTTF("C:\\Windows\\fonts\\malgun.ttf", 18.0f, NULL, io.Fonts->GetGlyphRangesKorean());
 
     /* IMGUI 초기화 */
@@ -60,7 +62,7 @@ void CImgui_Manager::Tick(_float fTimeDelta)
 {
     bool show_demo_window = true;
     bool show_another_window = false;
-    ImVec4 clear_color = ImVec4(0.45f, 0.55f, 0.60f, 1.00f);
+    ImVec4 clear_color = ImVec4(0.f, 0.f, 0.f, 0.00f);
 
     //매 업데이트마다 돌아감
     ImGui_ImplDX11_NewFrame();
@@ -80,20 +82,25 @@ void CImgui_Manager::Tick(_float fTimeDelta)
 
 void CImgui_Manager::Window_Image()
 {
-    ImGui::Begin(u8"렌더타겟 이미지 생성");
+    ImGui::Begin(u8"렌더타겟 이미지 생성",nullptr , ImGuiWindowFlags_NoCollapse);
 
     if (ImGui::CollapsingHeader(u8"그룹 / 렌더타겟 이미지 생성"))
     {
         //1.그룹을 만들기
         auto Objects = m_pObjectManager->Get_Objects();
-
-        ImGui::InputText(u8"생성할 Group 이름", m_szGroupName, MAX_PATH);
-        if (ImGui::Button(u8"Group 생성"))
+        ImGui::Text(u8"UI 틀 이름");
+        ImGui::InputText(u8" ", m_szGroupName, MAX_PATH);
+        if (ImGui::Button(u8"UI 틀 생성"))
         {
-            if (FAILED(m_pObjectManager->Add_Group(m_pGameInstance->StringToWstring(string(m_szGroupName)))))
+            if ('\0' != m_szGroupName[0])
             {
-                MSG_BOX("Group 생성 실패 / 이미 존재하는 그룹입니다.");
+                if (FAILED(m_pObjectManager->Add_Group(m_pGameInstance->StringToWstring(string(m_szGroupName)))))
+                {
+                    MSG_BOX("Group 생성 실패 / 이미 존재하는 그룹입니다.");
+                }
             }
+            else
+                MSG_BOX("이름 부터 지어줘!");
         }
 
 
@@ -139,10 +146,12 @@ void CImgui_Manager::Window_Image()
                 m_pObjectManager->Copy_Group(m_pGameInstance->StringToWstring(m_strSelectTag));
             }
 
-            ImGui::RadioButton(u8"이미지 생성", &m_iObjectType, 0); ImGui::SameLine();
-            ImGui::RadioButton(u8"텍스트 생성", &m_iObjectType, 2);
+            ImGui::RadioButton(u8"이미지 생성", &m_iObjectType, CObject_Manager::IMG); ImGui::SameLine();
+            ImGui::RadioButton(u8"텍스트 생성", &m_iObjectType, CObject_Manager::TEXT);
 
-            if (m_iObjectType == 0)
+            ImGui::InputText(u8"이미지이름", m_szImageName, MAX_PATH);
+
+            if (m_iObjectType == CObject_Manager::IMG)
             {
                 if (ImGui::Button(u8"이미지 파일 생성"))
                 {
@@ -155,26 +164,33 @@ void CImgui_Manager::Window_Image()
                         std::string filePathName = ImGuiFileDialog::Instance()->GetFilePathName();
                         std::string fileName = ImGuiFileDialog::Instance()->GetCurrentFileName();
                         // action
+                        if('\0'!= m_szImageName[0])
+                        {
+                            CObject_Manager::OBJ_MNG_DESC Desc{};
+                            Desc.strName = string(m_szImageName);
+                            Desc.strFileName = m_pGameInstance->StringToWstring(fileName);
+                            Desc.strFilePath = m_pGameInstance->StringToWstring(filePathName);
+                            Desc.iTextureType = CObject_Manager::IMG;
 
-                        CObject_Manager::OBJ_MNG_DESC Desc{};
-                        Desc.strFileName = m_pGameInstance->StringToWstring(fileName);
-                        Desc.strFilePath = m_pGameInstance->StringToWstring(filePathName);
-                        Desc.iTextureType = CObject_Manager::IMG;
-
-                        if (FAILED(m_pObjectManager->Add_RenderTextureObject(m_pGameInstance->StringToWstring(strName), &Desc)))
-                            MSG_BOX("이미지 생성 실패");
+                            if (FAILED(m_pObjectManager->Add_RenderTextureObject(m_pGameInstance->StringToWstring(strName), &Desc)))
+                                MSG_BOX("이미지 생성 실패");
+                        }
+                        else
+                        {
+                            MSG_BOX("이름 작성");
+                        }
                     }
 
                     // close
                     ImGuiFileDialog::Instance()->Close();
                 }
             }
-            else if (m_iObjectType == 2)
+            else if (m_iObjectType == CObject_Manager::TEXT)
             {
                 ImGui::InputText(u8"텍스트 작성 : ", m_szText, MAX_PATH);
 
-                static ImVec4 vAmbientColor = ImVec4(0.0f / 255.0f, 0.0f / 255.0f, 0.0f / 255.0f, 255.0f / 255.0f);
-                ImGui::ColorEdit4(u8"Color 선택", (float*)&m_vColor, ImGuiColorEditFlags_Float);
+                //static ImVec4 vAmbientColor = ImVec4(0.0f / 255.0f, 0.0f / 255.0f, 0.0f / 255.0f, 255.0f / 255.0f);
+                //ImGui::ColorEdit4(u8"Color 선택", (float*)&m_vColor, ImGuiColorEditFlags_Float);
 
                 if (ImGui::Button("Create"))
                 {
@@ -182,7 +198,8 @@ void CImgui_Manager::Window_Image()
                     CObject_Manager::OBJ_MNG_DESC Desc{};
                     Desc.strText = m_pGameInstance->StringToWstring(string(m_szText));
                     Desc.iTextureType = m_iObjectType;
-                    Desc.vColor = XMLoadFloat4(&m_vColor);
+                    Desc.vColor = m_vColor;
+                    Desc.strName = string(m_szImageName);
 
                     m_pObjectManager->Add_RenderTextureObject(m_pGameInstance->StringToWstring(strName), &Desc);
                 }
@@ -202,12 +219,14 @@ void CImgui_Manager::Window_Image()
                         for (int n = 0; n < Textures.size(); n++)
                         {
                             const bool is_selected = (m_iGroupObjectIndex == n);
-                            strObjectName = m_pGameInstance->WstringToString(dynamic_cast<CUI_Texture*>(Textures[n])->Get_FileName());
+                            strObjectName = dynamic_cast<CUI_Texture*>(Textures[n])->Get_Name();
                             if (ImGui::Selectable(strObjectName.c_str(), is_selected))
                             {
                                 m_iGroupObjectIndex = n;
 
                                 m_WorldMatirx = *Textures[n]->Get_TransformCom()->Get_WorldFloat4x4();
+                                m_StartUV = dynamic_cast<CUI_Texture*>(Textures[n])->Get_StartUV();
+                                m_EndUV = dynamic_cast<CUI_Texture*>(Textures[n])->Get_EndUV();
                                 m_iBinaryPick = RENDER_TARGET;
                             }
                             if (is_selected)
@@ -225,7 +244,7 @@ void CImgui_Manager::Window_Image()
                         m_iGroupObjectIndex = -1; // 초기화 시키기
                     }
                     ImGui::SameLine();
-                    if (ImGui::Button("Up"))
+                    if (ImGui::Button(u8"앞으로"))
                     {
                         if (FAILED(m_pObjectManager->Move_ObjectIndex(m_pGameInstance->StringToWstring(m_strSelectTag), m_iGroupObjectIndex, CObject_Manager::UP)))
                             MSG_BOX("이동 실패");
@@ -233,20 +252,33 @@ void CImgui_Manager::Window_Image()
                             m_iGroupObjectIndex++;
                     }
                     ImGui::SameLine();
-                    if (ImGui::Button("Down"))
+                    if (ImGui::Button(u8"뒤로"))
                     {
                         if (FAILED(m_pObjectManager->Move_ObjectIndex(m_pGameInstance->StringToWstring(m_strSelectTag), m_iGroupObjectIndex, CObject_Manager::DOWN)))
                             MSG_BOX("이동 실패");
                         else
                             m_iGroupObjectIndex--;
                     }
-
+                    ImGui::SameLine();
+                    if (ImGui::Button(u8"복사"))
+                    {
+                        if (FAILED(m_pObjectManager->Copy_RenderTextureObject(m_pGameInstance->StringToWstring(m_strSelectTag), m_iGroupObjectIndex)))
+                            MSG_BOX("이미지 생성 실패");
+                    }
                     Textures = m_pObjectManager->Get_GroupObject(m_pGameInstance->StringToWstring(m_strSelectTag)); // 파일 다시 불러오기
                 }
 
+                ImGui::Text(to_string(m_iGroupObjectIndex).c_str());
                 if (m_iGroupObjectIndex != -1 && m_iBinaryPick == RENDER_TARGET)
                 {
                     ImGui::Text(ImGuizmo::IsOver(ImGuizmo::TRANSLATE) ? "Over translate gizmo" : "");
+
+                    if (ImGui::IsKeyPressed(ImGuiKey_W))
+                        mCurrentGizmoOperation = ImGuizmo::TRANSLATE;
+                    if (ImGui::IsKeyPressed(ImGuiKey_E))
+                        mCurrentGizmoOperation = ImGuizmo::ROTATE;
+                    if (ImGui::IsKeyPressed(ImGuiKey_R)) // r Key
+                        mCurrentGizmoOperation = ImGuizmo::SCALE;
 
                     if (ImGui::RadioButton("Translate", mCurrentGizmoOperation == ImGuizmo::TRANSLATE))
                         mCurrentGizmoOperation = ImGuizmo::TRANSLATE;
@@ -276,18 +308,72 @@ void CImgui_Manager::Window_Image()
                         dynamic_cast<CUI_Texture*>(Textures[m_iGroupObjectIndex])->Set_ShaderPass(iPass);
                     else if (ImGui::RadioButton("Alpha Blend", &iPass, 2))
                         dynamic_cast<CUI_Texture*>(Textures[m_iGroupObjectIndex])->Set_ShaderPass(iPass);
+                    else if (ImGui::RadioButton("Color Alpha Blend", &iPass, 4))
+                        dynamic_cast<CUI_Texture*>(Textures[m_iGroupObjectIndex])->Set_ShaderPass(iPass);
+                    else if (ImGui::RadioButton("Color Alpha Blend Effect", &iPass, 5))
+                        dynamic_cast<CUI_Texture*>(Textures[m_iGroupObjectIndex])->Set_ShaderPass(iPass);
 
+
+                    if(4==iPass)
+                    {
+                        _float4 vColor = dynamic_cast<CUI_Texture*>(Textures[m_iGroupObjectIndex])->Get_Color();
+                        static bool alpha_preview = true;
+                        static bool alpha_half_preview = false;
+                        static bool drag_and_drop = true;
+                        static bool options_menu = true;
+                        static bool hdr = false;
+                        ImGuiColorEditFlags misc_flags = (hdr ? ImGuiColorEditFlags_HDR : 0) | (drag_and_drop ? 0 : ImGuiColorEditFlags_NoDragDrop) | (alpha_half_preview ? ImGuiColorEditFlags_AlphaPreviewHalf : (alpha_preview ? ImGuiColorEditFlags_AlphaPreview : 0)) | (options_menu ? 0 : ImGuiColorEditFlags_NoOptions);
+
+                        if (ImGui::ColorEdit4("MyColor##2f", (float*)&vColor, ImGuiColorEditFlags_Float | misc_flags))
+                        {
+                            dynamic_cast<CUI_Texture*>(Textures[m_iGroupObjectIndex])->Set_Color(vColor);
+                        }
+                    }
+                    else if (5 == iPass)
+                    {
+                        _float4 vColor = dynamic_cast<CUI_Texture*>(Textures[m_iGroupObjectIndex])->Get_Color();
+                        static bool alpha_preview = true;
+                        static bool alpha_half_preview = false;
+                        static bool drag_and_drop = true;
+                        static bool options_menu = true;
+                        static bool hdr = false;
+                        ImGuiColorEditFlags misc_flags = (hdr ? ImGuiColorEditFlags_HDR : 0) | (drag_and_drop ? 0 : ImGuiColorEditFlags_NoDragDrop) | (alpha_half_preview ? ImGuiColorEditFlags_AlphaPreviewHalf : (alpha_preview ? ImGuiColorEditFlags_AlphaPreview : 0)) | (options_menu ? 0 : ImGuiColorEditFlags_NoOptions);
+
+                        if (ImGui::ColorEdit4("MyColor##2f", (float*)&vColor, ImGuiColorEditFlags_Float | misc_flags))
+                        {
+                            dynamic_cast<CUI_Texture*>(Textures[m_iGroupObjectIndex])->Set_Color(vColor);
+                        }
+
+                        
+                    }
+                    
+                    if(CObject_Manager::TEXT != dynamic_cast<CUI_Texture*>(Textures[m_iGroupObjectIndex])->Get_TypeIndex())
+                    {
+                        ImGui::DragFloat2("StartUV", (float*)&m_StartUV, 0.001f, 0.0f, 1.f);
+                        ImGui::DragFloat2("EndUV", (float*)&m_EndUV, 0.001f, 0.0f, 1.f);
+
+                        if (FAILED(dynamic_cast<CUI_Texture*>(Textures[m_iGroupObjectIndex])->Change_UV(m_StartUV, m_EndUV)))
+                            MSG_BOX("UV 변경 실패");
+                    }
+                    
                 }
             }
         }
 
         ImGui::NewLine();
-        if (ImGui::Button(u8"렌더타겟 이미지 생성"))
+        if (ImGui::Button(u8"UI 틀 저장"))
         {
-            wstring strFilePath = TEXT("../../Client/Bin/Resources/Textures/UI/CreateFile/") + m_pGameInstance->StringToWstring(m_strSelectTag) + TEXT(".dds");
-            if (FAILED(m_pObjectManager->Create_Texture(m_iGroupIndex, strFilePath)))
+            if("" != m_strSelectTag)
             {
-                MSG_BOX("렌더타겟 이미지 생성 실패");
+                wstring strFilePath = TEXT("../../Client/Bin/Resources/Textures/UI/CreateFile/") + m_pGameInstance->StringToWstring(m_strSelectTag) + TEXT(".dds");
+                if (FAILED(m_pObjectManager->Create_Texture(m_iGroupIndex, strFilePath)))
+                {
+                    MSG_BOX("UI 이미지 저장 실패");
+                }
+            }
+            else
+            {
+                MSG_BOX("UI 만들고 저장해줘");
             }
         }
         ImGui::NewLine();
@@ -329,19 +415,26 @@ void CImgui_Manager::Window_Binary()
 
         ImGui::NewLine();
         ImGui::Checkbox(u8"바이너리 오브젝트 생성", &m_isCreateBinaryObject);
+
+        if(ImGui::Button(u8"바이너리 저장"))
+        {
+            m_pObjectManager->Save_binary();
+        }
+
         if (m_isCreateBinaryObject)
         {
+            
             ImGui::SeparatorText(u8"오브젝트 생성");
-            ImGui::RadioButton(u8"이미지", &m_iBinaryObjectType, 0); ImGui::SameLine();
-            ImGui::RadioButton(u8"버튼", &m_iBinaryObjectType, 1); ImGui::SameLine();
-            ImGui::RadioButton(u8"텍스트", &m_iBinaryObjectType, 2); ImGui::SameLine();
-            ImGui::RadioButton(u8"텍스트 포멧", &m_iBinaryObjectType, 3); ImGui::SameLine();
-            ImGui::RadioButton(u8"그룹", &m_iBinaryObjectType, 4);
-
+            ImGui::RadioButton(u8"이미지", &m_iBinaryObjectType, CObject_Manager::IMG); ImGui::SameLine();
+            ImGui::RadioButton(u8"버튼", &m_iBinaryObjectType, CObject_Manager::BTN); ImGui::SameLine();
+            ImGui::RadioButton(u8"텍스트", &m_iBinaryObjectType, CObject_Manager::TEXT); ImGui::SameLine();
+            ImGui::RadioButton(u8"그룹", &m_iBinaryObjectType, CObject_Manager::GROUP); ImGui::SameLine();
+            ImGui::RadioButton(u8"UI이펙트", &m_iBinaryObjectType, CObject_Manager::EFFECT);
+            ImGui::NewLine();
             ImGui::InputText(u8"저장할 오브젝트 이름 : ", m_szObjectName, MAX_PATH);
 
             //오브젝트 생성
-            if (m_iBinaryObjectType == 0)
+            if (m_iBinaryObjectType == CObject_Manager::IMG)
             {
                 //일반 이미지
                 if (ImGui::Button(u8"이미지 파일 생성"))
@@ -370,7 +463,7 @@ void CImgui_Manager::Window_Binary()
                     ImGuiFileDialog::Instance()->Close();
                 }
             }
-            else if (m_iBinaryObjectType == 1)
+            else if (m_iBinaryObjectType == CObject_Manager::BTN)
             {
                 //버튼 생성
                 if (ImGui::Button(u8"이미지 파일"))
@@ -419,13 +512,10 @@ void CImgui_Manager::Window_Binary()
                         MSG_BOX("버튼 생성 실패");
                 }
             }
-            else if (m_iBinaryObjectType == 2 || m_iBinaryObjectType == 3)
+            else if (m_iBinaryObjectType == CObject_Manager::TEXT)
             {
                 //텍스트 생성
                 ImGui::InputText(u8"텍스트 작성 : ", m_szText, MAX_PATH);
-
-                static ImVec4 vAmbientColor = ImVec4(0.0f / 255.0f, 0.0f / 255.0f, 0.0f / 255.0f, 255.0f / 255.0f);
-                ImGui::ColorEdit4(u8"vColor 선택", (float*)&m_vColor, ImGuiColorEditFlags_Float);
 
                 if (ImGui::Button(u8"텍스트 생성"))
                 {
@@ -433,13 +523,14 @@ void CImgui_Manager::Window_Binary()
                     CObject_Manager::OBJ_MNG_DESC Desc{};
                     Desc.strText = m_pGameInstance->StringToWstring(string(m_szText));
                     Desc.iTextureType = m_iBinaryObjectType;
-                    Desc.vColor = XMLoadFloat4(&m_vColor);
+                    Desc.vColor = m_vColor;
                     Desc.strName = m_szObjectName;
 
-                    m_pObjectManager->Add_RenderTextureObject(TEXT("Layer_Image"), &Desc);
+                    if (FAILED(m_pObjectManager->Add_BinaryObject(m_pGameInstance->StringToWstring(m_strBinarySelectTag), &Desc)))
+                        MSG_BOX("텍스트 오브젝트 생성 실패");
                 }
             }
-            else if (m_iBinaryObjectType == 4)
+            else if (m_iBinaryObjectType == CObject_Manager::GROUP)
             {
                 //그룹 생성
                 if (ImGui::Button(u8"그룹 생성"))
@@ -447,10 +538,42 @@ void CImgui_Manager::Window_Binary()
                     CObject_Manager::OBJ_MNG_DESC Desc{};
                     Desc.strName = m_szObjectName;
                     Desc.iTextureType = m_iBinaryObjectType;
+                    Desc.vColor = m_vColor; 
+                    Desc.strName = m_szObjectName;
 
                     if (FAILED(m_pObjectManager->Add_BinaryObject(m_pGameInstance->StringToWstring(m_strBinarySelectTag), &Desc)))
                         MSG_BOX("바이너리 오브젝트 생성 실패");
                 }
+            }
+            else if (m_iBinaryObjectType == CObject_Manager::EFFECT)
+            {
+                //이펙트 생성
+                if (ImGui::Button(u8"이미지 파일 생성"))
+                {
+                    IGFD::FileDialogConfig config;
+                    config.path = "../../Client/Bin/Resources/Textures/UI";
+                    ImGuiFileDialog::Instance()->OpenDialog("ChooseBinaryTextureKey", "Choose File", ".dds, .png", config);
+                }
+                if (ImGuiFileDialog::Instance()->Display("ChooseBinaryTextureKey")) {
+                    if (ImGuiFileDialog::Instance()->IsOk()) { // action if OK
+                        std::string filePathName = ImGuiFileDialog::Instance()->GetFilePathName();
+                        std::string fileName = ImGuiFileDialog::Instance()->GetCurrentFileName();
+                        // action
+
+                        CObject_Manager::OBJ_MNG_DESC Desc{};
+                        Desc.strFileName = m_pGameInstance->StringToWstring(fileName);  
+                        Desc.strFilePath = m_pGameInstance->StringToWstring(filePathName);  
+                        Desc.iTextureType = m_iBinaryObjectType;    
+                        Desc.strName = m_szObjectName;  
+
+                        if (FAILED(m_pObjectManager->Add_BinaryObject(m_pGameInstance->StringToWstring(strName), &Desc)))   
+                            MSG_BOX("이미지 생성 실패");
+                    }
+
+                    // close
+                    ImGuiFileDialog::Instance()->Close();
+                }
+
             }
         }
 
@@ -471,6 +594,10 @@ void CImgui_Manager::Window_Binary()
                         m_WorldMatirx = *BinaryObject[n]->Get_TransformCom()->Get_WorldFloat4x4();
                         m_iBinaryPick = BINARY_OBJECT;
 
+
+                        //m_StartUV = dynamic_cast<CUI_Texture*>(BinaryObject[n])->Get_StartUV();
+                        //m_EndUV = dynamic_cast<CUI_Texture*>(BinaryObject[n])->Get_EndUV();
+
                         m_isOpenBinaryGroup = BinaryObject[m_iBinaryObjectIndex]->Get_TypeIndex() == CObject_Manager::GROUP;
                     }
                     if (is_selected)
@@ -481,6 +608,9 @@ void CImgui_Manager::Window_Binary()
 
             if (ImGui::Button("Remove"))
             {
+                if (BinaryObject[m_iBinaryObjectIndex]->Get_TypeIndex() == CObject_Manager::GROUP)
+                    m_isOpenBinaryGroup = false;
+
                 if (FAILED(m_pObjectManager->Remove_BinaryObject(m_pGameInstance->StringToWstring(m_strBinarySelectTag), m_iBinaryObjectIndex)))
                     MSG_BOX("바이너리 오브젝트 삭제 불가");
 
@@ -493,7 +623,15 @@ void CImgui_Manager::Window_Binary()
             //생성된 바이너리에 따라 수정 옵션 추가 
             if (m_iBinaryObjectIndex != -1 && m_iBinaryPick == BINARY_OBJECT)
             {
+
                 ImGui::Text(ImGuizmo::IsOver(ImGuizmo::TRANSLATE) ? "Over translate gizmo" : "");
+
+                if (ImGui::IsKeyPressed(ImGuiKey_W))
+                    mCurrentGizmoOperation = ImGuizmo::TRANSLATE;
+                if (ImGui::IsKeyPressed(ImGuiKey_E))
+                    mCurrentGizmoOperation = ImGuizmo::ROTATE;
+                if (ImGui::IsKeyPressed(ImGuiKey_R)) // r Key
+                    mCurrentGizmoOperation = ImGuizmo::SCALE;
 
                 if (ImGui::RadioButton("Translate", mCurrentGizmoOperation == ImGuizmo::TRANSLATE))
                     mCurrentGizmoOperation = ImGuizmo::TRANSLATE;
@@ -513,7 +651,6 @@ void CImgui_Manager::Window_Binary()
 
                 BinaryObject[m_iBinaryObjectIndex]->Get_TransformCom()->Set_WorldMatrix(XMLoadFloat4x4(&m_WorldMatirx));
 
-
                 //쉐이더 선택
                 if (!m_isOpenBinaryGroup)
                 {
@@ -525,6 +662,70 @@ void CImgui_Manager::Window_Binary()
                         dynamic_cast<CUI_Texture*>(BinaryObject[m_iBinaryObjectIndex])->Set_ShaderPass(iPass);
                     else if (ImGui::RadioButton("Alpha Blend", &iPass, 2))
                         dynamic_cast<CUI_Texture*>(BinaryObject[m_iBinaryObjectIndex])->Set_ShaderPass(iPass);
+                    else if (ImGui::RadioButton("Color Alpha Blend", &iPass, 4))
+                        dynamic_cast<CUI_Texture*>(BinaryObject[m_iBinaryObjectIndex])->Set_ShaderPass(iPass);
+                    else if (ImGui::RadioButton("Color Alpha Blend Effect", &iPass, 5))
+                        dynamic_cast<CUI_Texture*>(BinaryObject[m_iBinaryObjectIndex])->Set_ShaderPass(iPass);
+
+                    if (4 == iPass || 5 == iPass)
+                    {
+                        _float4 vColor = dynamic_cast<CUI_Texture*>(BinaryObject[m_iBinaryObjectIndex])->Get_Color();
+                        static bool alpha_preview = true;
+                        static bool alpha_half_preview = false;
+                        static bool drag_and_drop = true;
+                        static bool options_menu = true;
+                        static bool hdr = false;
+                        ImGuiColorEditFlags misc_flags = (hdr ? ImGuiColorEditFlags_HDR : 0) | (drag_and_drop ? 0 : ImGuiColorEditFlags_NoDragDrop) | (alpha_half_preview ? ImGuiColorEditFlags_AlphaPreviewHalf : (alpha_preview ? ImGuiColorEditFlags_AlphaPreview : 0)) | (options_menu ? 0 : ImGuiColorEditFlags_NoOptions);
+
+                        if (ImGui::ColorEdit4("MyColor##2f", (float*)&vColor, ImGuiColorEditFlags_Float | misc_flags))
+                        {
+                            dynamic_cast<CUI_Texture*>(BinaryObject[m_iBinaryObjectIndex])->Set_Color(vColor);
+                        }
+                    }
+
+                    if (CObject_Manager::TEXT != dynamic_cast<CUI_Texture*>(BinaryObject[m_iBinaryObjectIndex])->Get_TypeIndex())
+                    {
+                        ImGui::DragFloat2("StartUV", (float*)&m_StartUV, 0.001f, 0.0f, 1.f);
+                        ImGui::DragFloat2("EndUV", (float*)&m_EndUV, 0.001f, 0.0f, 1.f);
+
+                        if (FAILED(dynamic_cast<CUI_Texture*>(BinaryObject[m_iBinaryObjectIndex])->Change_UV(m_StartUV, m_EndUV)))
+                            MSG_BOX("UV 변경 실패");
+                    }
+
+                    if (CObject_Manager::BTN == dynamic_cast<CUI_Texture*>(BinaryObject[m_iBinaryObjectIndex])->Get_TypeIndex())
+                    {
+                        ImGui::DragFloat2("ClickStartUV", (float*)&m_ClickStartUV, 0.001f, 0.0f, 1.f);
+                        ImGui::DragFloat2("ClickEndUV", (float*)&m_ClickEndUV, 0.001f, 0.0f, 1.f);
+
+                        if (FAILED(dynamic_cast<CBtn*>(BinaryObject[m_iBinaryObjectIndex])->Chage_ClickUV(m_ClickStartUV, m_ClickEndUV)))
+                            MSG_BOX("ClickUV 변경 실패");
+
+                        _bool Click = dynamic_cast<CBtn*>(BinaryObject[m_iBinaryObjectIndex])->Get_Click(); 
+                        if (ImGui::Checkbox("Click", &Click))
+                        {
+                            dynamic_cast<CBtn*>(BinaryObject[m_iBinaryObjectIndex])->Set_Click(Click);
+                        }
+
+                    }
+
+                    if (CObject_Manager::EFFECT == dynamic_cast<CUI_Texture*>(BinaryObject[m_iBinaryObjectIndex])->Get_TypeIndex())
+                    {
+                        _float3 vLifeTime = dynamic_cast<CUI_Effect*>(BinaryObject[m_iBinaryObjectIndex])->Get_LifeTime();
+                        _float fLife[2] = { vLifeTime.y, vLifeTime.z };
+                        if (ImGui::DragFloat2("LifeTime", fLife, 0.001f, 0.0f, 10.f))
+                        {
+                            vLifeTime.y = fLife[0];
+                            vLifeTime.z = fLife[1];
+                            dynamic_cast<CUI_Effect*>(BinaryObject[m_iBinaryObjectIndex])->Set_LifeTime(vLifeTime);
+                        }
+
+                        _float fSpeed = dynamic_cast<CUI_Effect*>(BinaryObject[m_iBinaryObjectIndex])->Get_Speed();
+                        if (ImGui::DragFloat("LifeSpeed", &fSpeed, 0.001f, 0.0f, 10.f))
+                        {
+                            dynamic_cast<CUI_Effect*>(BinaryObject[m_iBinaryObjectIndex])->Set_Speed(fSpeed);
+                        }
+                    }
+
                 }
             }
         }
@@ -548,15 +749,16 @@ void CImgui_Manager::Window_Binary_Group()
         auto BinaryObject = m_pObjectManager->Get_GroupBinaryObject(m_pGameInstance->StringToWstring(m_strBinarySelectTag));
         //생성 가능하다면
         ImGui::SeparatorText(u8"오브젝트 생성");
-        ImGui::RadioButton(u8"이미지", &m_iBinaryGroupObjectType, 0); ImGui::SameLine();
-        ImGui::RadioButton(u8"버튼", &m_iBinaryGroupObjectType, 1); ImGui::SameLine();
-        ImGui::RadioButton(u8"텍스트", &m_iBinaryGroupObjectType, 2); ImGui::SameLine();
-        ImGui::RadioButton(u8"텍스트 포멧", &m_iBinaryGroupObjectType, 3); ImGui::SameLine();
+        ImGui::RadioButton(u8"이미지", &m_iBinaryGroupObjectType, CObject_Manager::IMG); ImGui::SameLine();
+        ImGui::RadioButton(u8"버튼", &m_iBinaryGroupObjectType, CObject_Manager::BTN); ImGui::SameLine();
+        ImGui::RadioButton(u8"텍스트", &m_iBinaryGroupObjectType, CObject_Manager::TEXT); ImGui::SameLine();
+        ImGui::RadioButton(u8"UI 이펙트", &m_iBinaryGroupObjectType, CObject_Manager::EFFECT);
 
+        ImGui::NewLine();
         ImGui::InputText(u8"저장할 오브젝트 이름 : ", m_szBinaryGroupObjectName, MAX_PATH);
 
         //오브젝트 생성
-        if (m_iBinaryGroupObjectType == 0)
+        if (m_iBinaryGroupObjectType == CObject_Manager::IMG)
         {
             //일반 이미지
             if (ImGui::Button(u8"이미지 파일 생성"))
@@ -575,9 +777,11 @@ void CImgui_Manager::Window_Binary_Group()
                     Desc.strTextureFileName = m_pGameInstance->StringToWstring(fileName);
                     Desc.strTextureFilePath = m_pGameInstance->StringToWstring(filePathName);
                     Desc.iTypeIndex = CObject_Manager::IMG;
-                    Desc.strName = m_szObjectName;
+                    Desc.strName = m_szBinaryGroupObjectName;
                     Desc.isParent = true;
                     Desc.pParentMatrix = BinaryObject[m_iBinaryObjectIndex]->Get_TransformCom()->Get_WorldFloat4x4();
+                    Desc.strParentName = BinaryObject[m_iBinaryObjectIndex]->Get_Name();
+
                     CImage_Texture* pImage = dynamic_cast<CImage_Texture*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Image_Texture"), &Desc));
                     dynamic_cast<CGroup*>(BinaryObject[m_iBinaryObjectIndex])->Set_PartObject(pImage);
                 }
@@ -586,7 +790,7 @@ void CImgui_Manager::Window_Binary_Group()
                 ImGuiFileDialog::Instance()->Close();
             }
         }
-        else if (m_iBinaryGroupObjectType == 1)
+        else if (m_iBinaryGroupObjectType == CObject_Manager::BTN)
         {
             //버튼 생성
             if (ImGui::Button(u8"이미지 파일"))
@@ -623,45 +827,79 @@ void CImgui_Manager::Window_Binary_Group()
 
             if (ImGui::Button(u8"버튼 생성"))
             {
-                CObject_Manager::OBJ_MNG_DESC Desc{};
-                Desc.strFilePath = m_pGameInstance->StringToWstring(m_strBtnFilePath);
-                Desc.strFileName = m_pGameInstance->StringToWstring(m_strBtnFileName);
-                Desc.strBtnClickFilePath = m_pGameInstance->StringToWstring(m_strBtnClickFilePath);
-                Desc.strBtnClickFileName = m_pGameInstance->StringToWstring(m_strBtnClickFileName);
-                Desc.strName = m_szObjectName;
-                Desc.iTextureType = m_iBinaryGroupObjectType;
+                CBtn::BTN_DESC Desc{};  
+                Desc.strTextureFilePath = m_pGameInstance->StringToWstring(m_strBtnFilePath);
+                Desc.strTextureFileName = m_pGameInstance->StringToWstring(m_strBtnFileName);
+                Desc.strClickFilePath = m_pGameInstance->StringToWstring(m_strBtnClickFilePath);
+                Desc.strClickFileName = m_pGameInstance->StringToWstring(m_strBtnClickFileName);
+                Desc.strName = m_szBinaryGroupObjectName;   
+                Desc.iTypeIndex = m_iBinaryGroupObjectType; 
+                Desc.isParent = true;   
+                Desc.pParentMatrix = BinaryObject[m_iBinaryObjectIndex]->Get_TransformCom()->Get_WorldFloat4x4();
+                Desc.strParentName = BinaryObject[m_iBinaryObjectIndex]->Get_Name();
+                CBtn* pBtn = dynamic_cast<CBtn*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Btn"), &Desc));
+                if (nullptr == pBtn)
+                    MSG_BOX("버튼 생성 실패");
 
+                dynamic_cast<CGroup*>(BinaryObject[m_iBinaryObjectIndex])->Set_PartObject(pBtn);
             }
         }
-        else if (m_iBinaryGroupObjectType == 2 || m_iBinaryGroupObjectType == 3)
+        else if (m_iBinaryGroupObjectType == CObject_Manager::TEXT)
         {
             //텍스트 생성
             ImGui::InputText(u8"텍스트 작성 : ", m_szText, MAX_PATH);
 
-            static ImVec4 vAmbientColor = ImVec4(0.0f / 255.0f, 0.0f / 255.0f, 0.0f / 255.0f, 255.0f / 255.0f);
-            ImGui::ColorEdit4(u8"vColor 선택", (float*)&m_vColor, ImGuiColorEditFlags_Float);
+            //static ImVec4 vAmbientColor = ImVec4(0.0f / 255.0f, 0.0f / 255.0f, 0.0f / 255.0f, 255.0f / 255.0f);
+            //ImGui::ColorEdit4(u8"vColor 선택", (float*)&m_vColor, ImGuiColorEditFlags_Float);
 
             if (ImGui::Button(u8"텍스트 생성"))
             {
                 //텍스쳐 생성
-                CObject_Manager::OBJ_MNG_DESC Desc{};
+                CText::TEXT_DESC Desc{};
                 Desc.strText = m_pGameInstance->StringToWstring(string(m_szText));
-                Desc.iTextureType = m_iBinaryGroupObjectType;
-                Desc.vColor = XMLoadFloat4(&m_vColor);
-                Desc.strName = m_szObjectName;
+                Desc.iTypeIndex = m_iBinaryGroupObjectType;
+                Desc.vColor = m_vColor; 
+                Desc.strName = m_szBinaryGroupObjectName;
+                Desc.isParent = true;
+                Desc.pParentMatrix = BinaryObject[m_iBinaryObjectIndex]->Get_TransformCom()->Get_WorldFloat4x4();
+                Desc.strParentName = BinaryObject[m_iBinaryObjectIndex]->Get_Name();
+                CText* pText = dynamic_cast<CText*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Text"), &Desc));
+                dynamic_cast<CGroup*>(BinaryObject[m_iBinaryObjectIndex])->Set_PartObject(pText);
+
+
             }
         }
-        else if (m_iBinaryGroupObjectType == 4)
+        else if (m_iBinaryGroupObjectType == CObject_Manager::EFFECT)
         {
-            //그룹 생성
-            if (ImGui::Button(u8"그룹 생성"))
+            //이펙트 생성
+            if (ImGui::Button(u8"이펙트 파일 생성"))
             {
-                CObject_Manager::OBJ_MNG_DESC Desc{};
-                Desc.strName = m_szObjectName;
-                Desc.iTextureType = m_iBinaryGroupObjectType;
+                IGFD::FileDialogConfig config;
+                config.path = "../../Client/Bin/Resources/Textures/UI";
+                ImGuiFileDialog::Instance()->OpenDialog("ChooseBinaryTextureKey", "Choose File", ".dds, .png", config);
+            }
+            if (ImGuiFileDialog::Instance()->Display("ChooseBinaryTextureKey"))
+            {
+                if (ImGuiFileDialog::Instance()->IsOk())
+                { // action if OK
+                    std::string filePathName = ImGuiFileDialog::Instance()->GetFilePathName();
+                    std::string fileName = ImGuiFileDialog::Instance()->GetCurrentFileName();
+                    // action
 
-                if (FAILED(m_pObjectManager->Add_BinaryObject(m_pGameInstance->StringToWstring(m_strBinarySelectTag), &Desc)))
-                    MSG_BOX("바이너리 오브젝트 생성 실패");
+                    CUI_Effect::UI_EFFECT_DESC Desc{};
+                    Desc.strTextureFileName = m_pGameInstance->StringToWstring(fileName);
+                    Desc.strTextureFilePath = m_pGameInstance->StringToWstring(filePathName);
+                    Desc.iTypeIndex = m_iBinaryGroupObjectType;
+                    Desc.strName = m_szBinaryGroupObjectName;
+                    Desc.isParent = true;
+                    Desc.pParentMatrix = BinaryObject[m_iBinaryObjectIndex]->Get_TransformCom()->Get_WorldFloat4x4();
+                    Desc.strParentName = BinaryObject[m_iBinaryObjectIndex]->Get_Name();
+                    CUI_Effect* pEffect = dynamic_cast<CUI_Effect*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UIEffect"), &Desc));
+                    dynamic_cast<CGroup*>(BinaryObject[m_iBinaryObjectIndex])->Set_PartObject(pEffect);
+                }
+
+                // close
+                ImGuiFileDialog::Instance()->Close();
             }
         }
     }
@@ -670,26 +908,46 @@ void CImgui_Manager::Window_Binary_Group()
     vector<CUI_Object*> Objects = m_pObjectManager->Get_BinaryGroupObject(m_pGameInstance->StringToWstring(m_strBinarySelectTag), m_iBinaryObjectIndex);
     if (ImGui::BeginListBox("BinaryGroupObjectList"))
     {
-        for (int n = 0; n < Objects.size(); n++)
-        {
-            const bool is_selected = (m_iBinaryGroupObjectIndex == n);
-            string strName = Objects[n]->Get_Name();
-            if (ImGui::Selectable(strName.c_str(), is_selected))
-            {
-                m_iBinaryGroupObjectIndex = n;
-                m_WorldMatirx = *Objects[n]->Get_TransformCom()->Get_WorldFloat4x4();
-                m_iBinaryPick = GROUP_OBJECT;
-            }
-            if (is_selected)
-                ImGui::SetItemDefaultFocus();
-        }
-        ImGui::EndListBox();
+         for (int n = 0; n < Objects.size(); n++)
+         {
+             const bool is_selected = (m_iBinaryGroupObjectIndex == n);
+             string strName = Objects[n]->Get_Name();
+             if (ImGui::Selectable(strName.c_str(), is_selected))
+             {
+                 m_iBinaryGroupObjectIndex = n;
+                 m_WorldMatirx = *Objects[n]->Get_TransformCom()->Get_WorldFloat4x4();
+                 m_StartUV = dynamic_cast<CUI_Texture*>(Objects[n])->Get_StartUV();
+                 m_EndUV = dynamic_cast<CUI_Texture*>(Objects[n])->Get_EndUV();
+                 m_iBinaryPick = GROUP_OBJECT;
+             }
+             if (is_selected)
+                 ImGui::SetItemDefaultFocus();
+         }
+         ImGui::EndListBox();
     }
+
+
+
+    if (ImGui::Button("Group Object Remove"))
+    {
+        m_pObjectManager->Remove_GroupObject(m_pGameInstance->StringToWstring(m_strBinarySelectTag), m_iBinaryObjectIndex, m_iBinaryGroupObjectIndex);
+        m_iBinaryGroupObjectIndex = -1; // 초기화 시키기S
+    }
+    ImGui::SameLine();
+
+
 
     if (m_iBinaryGroupObjectIndex != -1 && m_iBinaryPick == GROUP_OBJECT)
     {
         //바이너리 선택했을때
         ImGui::Text(ImGuizmo::IsOver(ImGuizmo::TRANSLATE) ? "Over translate gizmo" : "");
+
+        if (ImGui::IsKeyPressed(ImGuiKey_W))
+            mCurrentGizmoOperation = ImGuizmo::TRANSLATE;   
+        if (ImGui::IsKeyPressed(ImGuiKey_E))
+            mCurrentGizmoOperation = ImGuizmo::ROTATE;
+        if (ImGui::IsKeyPressed(ImGuiKey_R)) // r Key
+            mCurrentGizmoOperation = ImGuizmo::SCALE;   
 
         if (ImGui::RadioButton("Translate", mCurrentGizmoOperation == ImGuizmo::TRANSLATE))
             mCurrentGizmoOperation = ImGuizmo::TRANSLATE;
@@ -708,6 +966,73 @@ void CImgui_Manager::Window_Binary_Group()
         ImGuizmo::RecomposeMatrixFromComponents(matrixTranslation, matrixRotation, matrixScale, (_float*)&m_WorldMatirx);
 
         Objects[m_iBinaryGroupObjectIndex]->Get_TransformCom()->Set_WorldMatrix(XMLoadFloat4x4(&m_WorldMatirx));
+
+
+        _int iPass = dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Get_ShaderPass();
+
+        if (ImGui::RadioButton("NonBlend", &iPass, 0))
+            dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Set_ShaderPass(iPass);
+        else if (ImGui::RadioButton("Blend", &iPass, 1))
+            dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Set_ShaderPass(iPass);
+        else if (ImGui::RadioButton("Alpha Blend", &iPass, 2))
+            dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Set_ShaderPass(iPass);
+        else if (ImGui::RadioButton("Color Alpha Blend", &iPass, 4))
+            dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Set_ShaderPass(iPass);
+        else if (ImGui::RadioButton("Color Alpha Blend Effect", &iPass, 5))
+            dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Set_ShaderPass(iPass);
+
+        if (4 == iPass|| 5 == iPass)
+        {
+            _float4 vColor = dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Get_Color();
+            static bool alpha_preview = true;
+            static bool alpha_half_preview = false;
+            static bool drag_and_drop = true;
+            static bool options_menu = true;
+            static bool hdr = false;
+            ImGuiColorEditFlags misc_flags = (hdr ? ImGuiColorEditFlags_HDR : 0) | (drag_and_drop ? 0 : ImGuiColorEditFlags_NoDragDrop) | (alpha_half_preview ? ImGuiColorEditFlags_AlphaPreviewHalf : (alpha_preview ? ImGuiColorEditFlags_AlphaPreview : 0)) | (options_menu ? 0 : ImGuiColorEditFlags_NoOptions);
+
+            if (ImGui::ColorEdit4("MyColor##2f", (float*)&vColor, ImGuiColorEditFlags_Float | misc_flags))
+            {
+                dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Set_Color(vColor);
+            }
+        }
+
+        if (CObject_Manager::TEXT != dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Get_TypeIndex())
+        {
+            ImGui::DragFloat2("StartUV", (float*)&m_StartUV, 0.001f, 0.0f, 1.f);
+            ImGui::DragFloat2("EndUV", (float*)&m_EndUV, 0.001f, 0.0f, 1.f);
+
+            if (FAILED(dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Change_UV(m_StartUV, m_EndUV)))
+                MSG_BOX("UV 변경 실패");
+        }
+
+        if (CObject_Manager::BTN == dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Get_TypeIndex())
+        {
+            ImGui::DragFloat2("ClickStartUV", (float*)&m_ClickStartUV, 0.001f, 0.0f, 1.f);
+            ImGui::DragFloat2("ClickEndUV", (float*)&m_ClickEndUV, 0.001f, 0.0f, 1.f);
+
+            if (FAILED(dynamic_cast<CBtn*>(Objects[m_iBinaryGroupObjectIndex])->Chage_ClickUV(m_ClickStartUV, m_ClickEndUV)))
+                MSG_BOX("ClickUV 변경 실패");
+        }
+
+        if(CObject_Manager::EFFECT == dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Get_TypeIndex())
+        {
+            _float3 vLifeTime = dynamic_cast<CUI_Effect*>(Objects[m_iBinaryGroupObjectIndex])->Get_LifeTime();
+            _float fLife[2] = { vLifeTime.y, vLifeTime.z };
+            if (ImGui::DragFloat2("LifeTime", fLife, 0.001f, 0.0f, 10.f))
+            {
+                vLifeTime.y = fLife[0];
+                vLifeTime.z = fLife[1];
+                dynamic_cast<CUI_Effect*>(Objects[m_iBinaryGroupObjectIndex])->Set_LifeTime(vLifeTime);
+            }
+
+            _float fSpeed = dynamic_cast<CUI_Effect*>(Objects[m_iBinaryGroupObjectIndex])->Get_Speed();
+            if (ImGui::DragFloat("LifeSpeed", &fSpeed, 0.001f, 0.0f, 10.f))
+            {
+                dynamic_cast<CUI_Effect*>(Objects[m_iBinaryGroupObjectIndex])->Set_Speed(fSpeed);
+            }
+        }
+
     }
 
     ImGui::End();
@@ -717,7 +1042,7 @@ void CImgui_Manager::Guizmo_Test()
 {
     ImGuizmo::BeginFrame();
 
-    static bool useSnap = true;
+    static bool useSnap = false;
     static float snap[3] = { 1.f, 1.f, 1.f };
     static float bounds[] = { -0.5f, -0.5f, -0.5f, 0.5f, 0.5f, 0.5f };
     static float boundsSnap[] = { 0.1f, 0.1f, 0.1f };
