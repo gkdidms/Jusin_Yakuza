@@ -110,7 +110,7 @@
     <ClCompile>
       <WarningLevel>Level3</WarningLevel>
       <SDLCheck>true</SDLCheck>
-      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;NOMINMAX;_DEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
+      <PreprocessorDefinitions>_CRT_SECURE_NO_WARNINGS;NOMINMAX;_DEBUG;_WINDOWS;_TOOL;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
       <LanguageStandard>stdcpp17</LanguageStandard>
       <AdditionalIncludeDirectories>../../Imgui/background;../../Imgui/imGuizmo;../../Imgui/imgui;../../EngineSDK/Inc/;../Public/;../../Imgui/ImGuiFileDialog;./;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
@@ -185,6 +185,7 @@
     <ClInclude Include="..\public\MainApp.h" />
     <ClInclude Include="..\public\PlayerCamera.h" />
     <ClInclude Include="..\Public\Terrain.h" />
+    <ClInclude Include="..\Public\UI_Effect.h" />
     <ClInclude Include="..\public\UI_Object.h" />
     <ClInclude Include="..\public\UI_Texture.h" />
     <ClInclude Include="framework.h" />
@@ -221,6 +222,7 @@
     <ClCompile Include="..\private\Object_Manager.cpp" />
     <ClCompile Include="..\private\PlayerCamera.cpp" />
     <ClCompile Include="..\Private\Terrain.cpp" />
+    <ClCompile Include="..\Private\UI_Effect.cpp" />
     <ClCompile Include="..\private\UI_Object.cpp" />
     <ClCompile Include="..\private\UI_Texture.cpp" />
     <ClCompile Include="UITool.cpp" />

@@ -131,13 +131,16 @@
       <Filter>02.GameObjects\02.Character\BehaviorTree\LeafNode</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\BehaviorAnimation.cpp">
-      <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior</Filter>
+      <Filter>02.GameObjects\02.Character\LandObject\00.Player\Behavior</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Kiryu_Adventure_Idle.cpp">
-      <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\Adventure\Idle</Filter>
+      <Filter>02.GameObjects\02.Character\LandObject\00.Player\Behavior\Adventure\Idle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Kiryu_Adventure_Walk.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\00.Player\Behavior\Adventure\Walk</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Kiryu_Adventure_Run.cpp">
-      <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\Adventure\Run</Filter>
+      <Filter>02.GameObjects\02.Character\LandObject\00.Player\Behavior\Adventure\Run</Filter>
     </ClCompile>
     <ClCompile Include="..\private\UI.cpp">
       <Filter>02.GameObjects\07.UI</Filter>
@@ -147,9 +150,6 @@
     </ClCompile>
     <ClCompile Include="..\Private\Aura.cpp">
       <Filter>02.GameObjects\06.Effect\Aura</Filter>
-	</ClCompile>
-    <ClCompile Include="..\Private\Kiryu_Adventure_Walk.cpp">
-      <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\Adventure\Walk</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -310,13 +310,16 @@
       <Filter>02.GameObjects\02.Character\BehaviorTree\LeafNode</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\BehaviorAnimation.h">
-      <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior</Filter>
+      <Filter>02.GameObjects\02.Character\LandObject\00.Player\Behavior</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Kiryu_Adventure_Idle.h">
-      <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\Adventure\Idle</Filter>
+      <Filter>02.GameObjects\02.Character\LandObject\00.Player\Behavior\Adventure\Idle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Kiryu_Adventure_Walk.h">
+      <Filter>02.GameObjects\02.Character\LandObject\00.Player\Behavior\Adventure\Walk</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Kiryu_Adventure_Run.h">
-      <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\Adventure\Run</Filter>
+      <Filter>02.GameObjects\02.Character\LandObject\00.Player\Behavior\Adventure\Run</Filter>
     </ClInclude>
     <ClInclude Include="..\public\UI.h">
       <Filter>02.GameObjects\07.UI</Filter>
@@ -329,9 +332,6 @@
     </ClInclude>
     <ClInclude Include="..\Public\Aura.h">
       <Filter>02.GameObjects\06.Effect\Aura</Filter>
-	</ClInclude>
-    <ClInclude Include="..\Public\Kiryu_Adventure_Walk.h">
-      <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\Adventure\Walk</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -462,9 +462,6 @@
     </Filter>
     <Filter Include="02.GameObjects\02.Character\CharacterData">
       <UniqueIdentifier>{d47f23c7-f09f-46fd-a441-f1561bb9a95a}</UniqueIdentifier>
-	</Filter>
-    <Filter Include="02.GameObjects\07.UI">
-      <UniqueIdentifier>{5ee687d4-5dfa-49a3-92da-8f0756f1687f}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObjects\02.Character\PartObject">
       <UniqueIdentifier>{83de469b-7019-4bed-9e97-276b7f63de30}</UniqueIdentifier>
@@ -495,30 +492,6 @@
     </Filter>
     <Filter Include="02.GameObjects\06.Effect\Aura">
       <UniqueIdentifier>{e1163822-540f-4bdd-9163-9b24fe1b27c1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior">
-      <UniqueIdentifier>{5ece0b8f-54a5-4e8e-935e-6800ae4bd425}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS">
-      <UniqueIdentifier>{2e79bf21-5424-4bbb-974c-c3af527ca698}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRH">
-      <UniqueIdentifier>{1d4cafe1-9cb2-45ed-bfe3-aa4c3bdc39ae}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRC">
-      <UniqueIdentifier>{20354a45-b413-4665-8872-2dd9ad500c03}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\Adventure">
-      <UniqueIdentifier>{01eb585a-455f-4390-bc11-248673075203}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\Adventure\Idle">
-      <UniqueIdentifier>{db4f74c4-76cc-4218-868f-66ccee366159}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\Adventure\Run">
-      <UniqueIdentifier>{b50b0e94-8792-4c99-83ca-c65719880701}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\Adventure\Walk">
-      <UniqueIdentifier>{61c6b900-fea8-49ce-b5e2-a428e2dd1444}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

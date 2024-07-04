@@ -13,6 +13,8 @@ public:
     typedef struct tBtnDesc : public UI_TEXTURE_DESC {
         wstring strClickFilePath; // 클릭했을때의 이미지
         wstring strClickFileName;
+        _float2 ClickStartUV;
+        _float2 ClickEndUV;
     }BTN_DESC;
 private:
     CBtn(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -27,14 +29,29 @@ public:
     virtual void Late_Tick(const _float& fTimeDelta) override;
     virtual HRESULT Render() override;
 
+public:
+    HRESULT Chage_ClickUV(_float2 StartUV, _float2 EndUV);
+    
+    _float2 Get_ClickStartUV() { return m_ClickStartUV; }
+    _float2 Get_ClickEndUV() { return m_ClickEndUV; }
+
+    void Set_Click(_bool Click) { m_isClick = Click; }
+    _bool Get_Click() { return m_isClick; }
+
+public:
+    virtual HRESULT Save_binary(const string strDirectory)override;
+    virtual HRESULT Save_Groupbinary(ofstream& out)override;
 private:
     CTexture* m_pClickTextureCom = { nullptr };
+    CVIBuffer_Rect* m_pClickVIBufferCom = { nullptr };
 
     wstring m_strClickFilePath = { L"" };
     wstring m_StrClickFileName = { L"" };
     
 private:
     _bool m_isClick = { false };
+    _float2 m_ClickStartUV = { 0.f ,0.f };
+    _float2 m_ClickEndUV = { 1.f, 1.f };
 
 private:
     virtual HRESULT Add_Components() override;

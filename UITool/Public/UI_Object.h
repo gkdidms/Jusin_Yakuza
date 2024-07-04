@@ -33,6 +33,10 @@ public:
     virtual void Late_Tick(const _float& fTimeDelta) override;
     virtual HRESULT Render() override;
 
+public:
+    virtual HRESULT Save_binary(const string strDirectory);
+    virtual HRESULT Save_Groupbinary(ofstream& out);
+    virtual HRESULT Load_binary();
 protected:
     string m_strName = { "" }; // 저장될 이름
     _uint m_iTypeIndex = { 0 }; // 오브젝트 타입
