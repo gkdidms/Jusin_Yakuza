@@ -30,6 +30,7 @@ public:
 public:
     void Set_Value(void* pDesc);
     void Set_Center(const _float3& vCenter);
+    void Set_Rotation(const _float3& vRotation);
 
 public:
     _bool Intersect(CCollider* pTargetCollider);

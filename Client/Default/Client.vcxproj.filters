@@ -142,14 +142,14 @@
     <ClCompile Include="..\private\UI.cpp">
       <Filter>02.GameObjects\07.UI</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\ShaderObject.cpp">
-      <Filter>02.GameObjects\02.ShaderObject</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\Aura.cpp">
       <Filter>02.GameObjects\06.Effect\Aura</Filter>
-	</ClCompile>
+    </ClCompile>
     <ClCompile Include="..\Private\Kiryu_Adventure_Walk.cpp">
       <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\Adventure\Walk</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\MapCollider.cpp">
+      <Filter>02.GameObjects\08. MapCollider</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -324,14 +324,14 @@
     <ClInclude Include="..\public\Loader.h">
       <Filter>01.Levels\99.Loading\Loader</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\ShaderObject.h">
-      <Filter>02.GameObjects\02.ShaderObject</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\Aura.h">
       <Filter>02.GameObjects\06.Effect\Aura</Filter>
-	</ClInclude>
+    </ClInclude>
     <ClInclude Include="..\Public\Kiryu_Adventure_Walk.h">
       <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\Adventure\Walk</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\MapCollider.h">
+      <Filter>02.GameObjects\08. MapCollider</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -462,7 +462,7 @@
     </Filter>
     <Filter Include="02.GameObjects\02.Character\CharacterData">
       <UniqueIdentifier>{d47f23c7-f09f-46fd-a441-f1561bb9a95a}</UniqueIdentifier>
-	</Filter>
+    </Filter>
     <Filter Include="02.GameObjects\07.UI">
       <UniqueIdentifier>{5ee687d4-5dfa-49a3-92da-8f0756f1687f}</UniqueIdentifier>
     </Filter>
@@ -519,6 +519,9 @@
     </Filter>
     <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\Adventure\Walk">
       <UniqueIdentifier>{61c6b900-fea8-49ce-b5e2-a428e2dd1444}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\08. MapCollider">
+      <UniqueIdentifier>{28cec43f-865c-488e-83e1-e6b15b632319}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

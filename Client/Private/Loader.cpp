@@ -13,6 +13,7 @@
 #include "Terrain.h"
 #include "Construction.h"
 #include "SoketCollider.h"
+#include "MapCollider.h"
 
 #pragma region Effect
 #include "Particle_Point.h"
@@ -128,9 +129,6 @@ HRESULT CLoader::Loading_For_Test()
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/T_Sand_06_A.png"), 1))))
 		return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Texture_NoiseTexture"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/NoiseTexture.dds"), 1))))
-		return E_FAIL;
 
 #pragma region Effect
 		/* Prototype_Component_Texture_Sphere */
@@ -321,6 +319,11 @@ HRESULT CLoader::Loading_For_Test()
 	/* For.Prototype_GameObject_SoketCollider */
 	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_SoketCollider"),
 		CSoketCollider::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_SoketCollider */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_MapCollider"),
+		CMapCollider::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));

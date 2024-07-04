@@ -234,6 +234,10 @@ PS_OUT PS_PUDDLE(PS_IN In)
     if(0.3 > vMaskTexture.r)
         discard;
     
+    
+    
+    
+    
     float2 vRefractTexCoord;
     vRefractTexCoord.x = In.vProjPos.x / In.vProjPos.w / 2.0f + 0.5f;
     vRefractTexCoord.y = -In.vProjPos.y / In.vProjPos.w / 2.0f + 0.5f;
@@ -244,8 +248,9 @@ PS_OUT PS_PUDDLE(PS_IN In)
     // 물 표현(물 밑 투영)
     vector vRefractionColor = g_RefractionTexture.Sample(LinearSampler, vRefractTexCoord + 0.02 * normal.xy);
 
+    
     float2 vScreenPos = In.vPosition.xy / g_RenderResolution;
-    float4 vViewDepth = g_DepthTexture.Sample(LinearSampler, vScreenPos);
+    float4 vViewDepth = g_DepthTexture.Sample(LinearSampler, vScreenPos.xy);
     
     vector vWorldPos;
     vWorldPos.x = vScreenPos.x * 2.f - 1.f;
@@ -254,24 +259,26 @@ PS_OUT PS_PUDDLE(PS_IN In)
     vWorldPos.w = 1.f;
     
     vWorldPos = vWorldPos * (vViewDepth.y * 3000.f);
+    
     vWorldPos = mul(vWorldPos, g_ProjMatrixInv);
     vWorldPos = mul(vWorldPos, g_ViewMatrixInv); // world
     
+    
+    
     float3 viewDir = normalize(vWorldPos.xyz - g_vCamPosition.xyz);
-    // 물 법선
-    float3 vNormalDir = g_NormalTexture.Sample(LinearSampler, vTexUV);
+
+    
+    float3 reflectedDir = normalize(reflect(viewDir, In.vNormal.xyz));
     
     
-    float3 reflectedDir = reflect(viewDir, vNormalDir);
+    float fLength = length(g_vCamPosition.xyz - vWorldPos.xyz);
     
-    float4 vReflectPos = vWorldPos + float4(reflectedDir.xyz, 0);
-    
+    float4 vReflectPos = vWorldPos + float4(reflectedDir.xyz, 0) * fLength;
+    vReflectPos = float4(vReflectPos.xyz, 1);
     
     float bReflect = true;
     
 
-    // 반사 강도 조절
-    float reflectAngle = dot(normalize(reflectedDir), normalize(vNormalDir));
     
     float4 vReflectScreenPos = mul(vReflectPos, g_ViewMatrix);
     vReflectScreenPos = mul(vReflectScreenPos, g_ProjMatrix);
@@ -294,10 +301,10 @@ PS_OUT PS_PUDDLE(PS_IN In)
     vCalculateWorld = mul(vCalculateWorld, g_ViewMatrixInv);
     
     float fDistance = length(g_vCamPosition.xyz - vCalculateWorld.xyz);
-    if (fDistance > 10 || vCalculateWorld.y <= vWorldPos.y)
-    {
-        bReflect = false;
-    }
+    //if (fDistance > 10 || vCalculateWorld.y <= vWorldPos.y)
+    //{
+    //    bReflect = false;
+    //}
 
     if(true == bReflect)
     {

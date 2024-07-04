@@ -607,6 +607,9 @@ void CRenderer::Draw()
 	if (m_isBOF)
 	{
 		Render_DeferredBlur();
+
+		//Render_Puddle();
+
 		Render_BOF();
 	}
 	
@@ -1164,6 +1167,7 @@ void CRenderer::Render_DeferredBlur()
 
 void CRenderer::Render_BOF()
 {
+
 	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MTR_BOF"))))
 		return;
 

@@ -13,6 +13,7 @@ public:
         RENDER_NONBLENDER, 
         RENDER_DECAL, 
         RENDER_GLASS, 
+        RENDER_PUDDLE,
         RENDER_NONLIGHT,
         RENDER_BLENDER, 
         RENDER_EFFECT,
