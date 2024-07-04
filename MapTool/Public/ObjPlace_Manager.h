@@ -1,10 +1,10 @@
 #pragma once
 
 #include "Base.h"
-#include "Client_Defines.h"
 #include "imgui.h"
 #include "GameObject.h"
 #include "Construction.h"
+#include "Client_Defines.h"
 
 BEGIN(Engine)
 class CGameInstance;

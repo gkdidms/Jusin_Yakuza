@@ -88,6 +88,8 @@ HRESULT CRenderer::Initialize()
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_ToneMapping"), 250.f, 250.f, 100.f, 100.f)))
 		return E_FAIL;
+	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_PuddleDiffuse"), 250.f, 250.f, 100.f, 100.f)))
+		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_64x64"), 350.f, 050.f, 100.f, 100.f)))
 		return E_FAIL;
@@ -235,6 +237,10 @@ HRESULT CRenderer::Ready_Targets()
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_BackBuffer"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
 
+	/*Target_Diffuse*/
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_PuddleDiffuse"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_B8G8R8A8_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
+		return E_FAIL;
+
 	/*Target_ToneMapping*/
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_ToneMapping"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 1.f))))
 		return E_FAIL;
@@ -368,6 +374,15 @@ HRESULT CRenderer::Ready_MRTs()
 
 	/*MRT_CopyBackBuffer*/
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_CopyBackBuffer"), TEXT("Target_BackBuffer"))))
+		return E_FAIL;
+
+
+	/*MRT_Puddle*/
+	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_Puddle"), TEXT("Target_PuddleDiffuse"))))
+		return E_FAIL;
+
+	/*MRT_DiffuseAddPuddle*/
+	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_DiffuseAddPuddle"), TEXT("Target_BackBuffer"))))
 		return E_FAIL;
 
 	/*MTR_DeferredBlur*/
@@ -583,15 +598,18 @@ void CRenderer::Draw()
 
 	Render_LightAcc();
 	Render_CopyBackBuffer(); // 최종으로 그려서 백버퍼에 올라갈 이미지 복사
-
-	//캡쳐장면만듦
+	
 	//물웅덩이에 캡쳐장면 넣어줌
+	Render_Puddle();
 	
 	Render_DeferredResult(); // 복사한 이미지를 백버퍼에 넣어줌. (Deferred 최종)
 
 	if (m_isBOF)
 	{
 		Render_DeferredBlur();
+
+		//Render_Puddle();
+
 		Render_BOF();
 	}
 	
@@ -1048,6 +1066,46 @@ void CRenderer::Render_CopyBackBuffer()
 
 	if (FAILED(m_pGameInstance->End_MRT()))
 		return;
+
+}
+
+void CRenderer::Render_Puddle()
+{
+	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_Puddle"))))
+		return;
+
+	for (auto& iter : m_RenderObject[RENDER_PUDDLE])
+	{
+		iter->Render();
+
+		Safe_Release(iter);
+	}
+	m_RenderObject[RENDER_PUDDLE].clear();
+
+	if (FAILED(m_pGameInstance->End_MRT()))
+		return;
+
+
+	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_DiffuseAddPuddle"), nullptr, false)))
+		return;
+
+	if (FAILED(m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix)))
+		return;
+	if (FAILED(m_pShader->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix)))
+		return;
+	if (FAILED(m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
+		return;
+
+	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_PuddleDiffuse"), m_pShader, "g_DiffuseTexture")))
+		return;
+
+	
+	m_pShader->Begin(18);
+
+	m_pVIBuffer->Render();
+
+	if (FAILED(m_pGameInstance->End_MRT()))
+		return;
 }
 
 void CRenderer::Render_DeferredResult() // 백버퍼에 Diffuse와 Shade를 더해서 그려줌
@@ -1109,6 +1167,7 @@ void CRenderer::Render_DeferredBlur()
 
 void CRenderer::Render_BOF()
 {
+
 	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MTR_BOF"))))
 		return;
 
@@ -1647,6 +1706,9 @@ void CRenderer::Render_Debug()
 		if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_PassiveShadowObjects"), m_pShader, m_pVIBuffer)))
 			return;
 	}
+	if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_Puddle"), m_pShader, m_pVIBuffer)))
+		return;
+
 	if (m_isSSAO)
 	{
 		if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_SSAO"), m_pShader, m_pVIBuffer)))

@@ -58,6 +58,16 @@ HRESULT CConstruction::Initialize(void* pArg)
 		}
 	}
 
+	// ¹°¿õµ¢ÀÌ noiseTexture
+	//if (2 == m_iShaderPassNum)
+	//{
+	//	/* For.Com_Shader */
+	//	if (FAILED(__super::Add_Component(LEVEL_TEST, TEXT("Prototype_Component_Texture_NoiseTexture"),
+	//		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTexture))))
+	//		return E_FAIL;
+	//}
+
+
 	return S_OK;
 }
 
@@ -91,7 +101,7 @@ void CConstruction::Late_Tick(const _float& fTimeDelta)
 	}
 	else if (2 == m_iShaderPassNum)
 	{
-		m_pGameInstance->Add_Renderer(CRenderer::RENDER_GLASS, this);
+		m_pGameInstance->Add_Renderer(CRenderer::RENDER_PUDDLE, this);
 	}
 	
 	if (m_pGameInstance->isShadow() && m_isFirst)
@@ -164,14 +174,18 @@ HRESULT CConstruction::Render()
 				return E_FAIL;
 		}
 		
-		// À¯¸®¹® Ã³¸®
+		
 		if (1 == m_iShaderPassNum)
 		{
+			// À¯¸®¹® Ã³¸®
 			if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_NonBlendDiffuse"), m_pShaderCom, "g_RefractionTexture")))
 				return E_FAIL;
 		}
 		else if (2 == m_iShaderPassNum)
 		{
+			//m_pTexture->Bind_ShaderResource(m_pShaderCom, "g_NoiseTexture", 0);
+
+			// ¿õµ¢ÀÌ
 			if (FAILED(m_pShaderCom->Bind_RawValue("g_fTimeDelta", &m_fWaterDeltaTime, sizeof(float))))
 				return E_FAIL;
 
@@ -188,6 +202,10 @@ HRESULT CConstruction::Render()
 				return E_FAIL;
 			if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrixInv", m_pGameInstance->Get_Transform_Inverse_Float4x4(CPipeLine::D3DTS_PROJ))))
 				return E_FAIL;
+			if (FAILED(m_pShaderCom->Bind_Matrix("g_ReflectViewMatrix", m_pGameInstance->Get_ReflectViewMatrix())))
+				return E_FAIL;
+
+			
 		}
 
 		m_pShaderCom->Begin(m_iShaderPassNum);
@@ -283,6 +301,8 @@ HRESULT CConstruction::Add_Components(void* pArg)
 	if (FAILED(__super::Add_Component(LEVEL_TEST, TEXT("Prototype_Component_Shader_Mesh"),
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
 		return E_FAIL;
+
+
 
 	return S_OK;
 }

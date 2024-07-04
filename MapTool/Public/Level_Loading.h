@@ -1,7 +1,7 @@
 #pragma once
 
-#include "Client_Defines.h"
 #include "Level.h"
+#include "Client_Defines.h"
 
 /* 화면에 로딩 씬을 보여준다 + 다음 레벨을 위한 리소스를 준비하낟. */
 

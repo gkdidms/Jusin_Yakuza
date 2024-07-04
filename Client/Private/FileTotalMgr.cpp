@@ -118,6 +118,21 @@ HRESULT CFileTotalMgr::Set_Lights_In_Client(int iLightLoadingNum)
     return S_OK;
 }
 
+HRESULT CFileTotalMgr::Set_Collider_In_Client(int iColliderLoadingNum, int iStageLevel)
+{
+    Safe_Delete_Array(m_MapCollider.pColliderDesc);
+
+    if (FAILED(Import_Bin_Collider_Data_OnTool(&m_MapCollider, iColliderLoadingNum)))
+        return E_FAIL;
+
+    if (FAILED(m_pGameInstance->Add_GameObject(iStageLevel, TEXT("Prototype_GameObject_MapCollider"), TEXT("Layer_MapCollider"), &m_MapCollider)))
+    {
+        return E_FAIL;
+    }
+
+    return S_OK;
+}
+
 void CFileTotalMgr::Load_Cinemachine(int iCineNum, int iStageLevel)
 {
     if (nullptr == m_pCinemachineCam)
@@ -278,7 +293,40 @@ HRESULT CFileTotalMgr::Import_Bin_Light_Data_OnClient(LIGHT_DESC_IO* lightData, 
     return S_OK;
 }
 
+HRESULT CFileTotalMgr::Import_Bin_Collider_Data_OnTool(COLLIDER_IO* ColliderData, int iLevel)
+{
+    char fullPath[MAX_PATH];
+    strcpy_s(fullPath, "../Bin/DataFiles/ColliderData/");
 
+    strcat_s(fullPath, "Collider_Data");
+    strcat_s(fullPath, "_");
+
+    char cLevel[2] = "";
+    _itoa_s(iLevel, cLevel, 10);
+    strcat_s(fullPath, cLevel);
+    strcat_s(fullPath, ".dat");
+
+    ifstream in(fullPath, ios::binary);
+
+    if (!in.is_open()) {
+        MSG_BOX("파일 개방 실패");
+        return E_FAIL;
+    }
+
+
+    in.read((char*)&ColliderData->iColliderNum, sizeof(int));
+
+    ColliderData->pColliderDesc = new COLLIDER_DESC[ColliderData->iColliderNum];
+
+    for (int i = 0; i < ColliderData->iColliderNum; i++)
+    {
+        in.read((char*)&ColliderData->pColliderDesc[i], sizeof(COLLIDER_DESC));
+    }
+
+    in.close();
+
+    return S_OK;
+}
 
 
 void CFileTotalMgr::Free()
@@ -297,9 +345,8 @@ void CFileTotalMgr::Free()
     }
 
     Safe_Delete_Array(m_MapTotalInform.pMapObjDesc);
-
-
     Safe_Delete_Array(m_LightTotalInform.pLightDesc);
+    Safe_Delete_Array(m_MapCollider.pColliderDesc);
 
     m_Layers.clear();
 

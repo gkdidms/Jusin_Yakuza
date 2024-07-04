@@ -44,7 +44,11 @@ void CCamera::Tick(const _float& fTimeDelta, _bool isAuto)
 {
 	if (isAuto)
 		m_WorldMatrix = *m_pTransformCom->Get_WorldFloat4x4();
-	
+
+	XMFLOAT4X4	reflectWorldMatrix = m_WorldMatrix;
+	reflectWorldMatrix._42 *= -1;
+	m_pGameInstance->Set_ReflectViewMatrix(XMMatrixInverse(nullptr, XMLoadFloat4x4(&reflectWorldMatrix)));
+
 	m_pGameInstance->Set_Transform(CPipeLine::D3DTS_VIEW, XMMatrixInverse(nullptr, XMLoadFloat4x4(&m_WorldMatrix)));
 	m_pGameInstance->Set_Transform(CPipeLine::D3DTS_PROJ, XMMatrixPerspectiveFovLH(m_fFovY, m_fAspect, m_fNear, m_fFar));
 	m_pGameInstance->Set_CamFar(m_fFar);

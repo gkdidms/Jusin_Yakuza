@@ -22,12 +22,14 @@ CImgui_Manager::CImgui_Manager()
     , m_pObjPlace_Manager { CObjPlace_Manager::GetInstance() }
     , m_pLightTool_Mgr { CLightTool_Mgr::GetInstance() }
     , m_pCameraToolMgr { CCamera_Manager::GetInstance() }
+    , m_pColliderMgr{ CCollider_Manager::GetInstance() }
 {
     Safe_AddRef(m_pGameInstance);
     Safe_AddRef(m_pNavigationMgr);
     Safe_AddRef(m_pObjPlace_Manager);
     Safe_AddRef(m_pLightTool_Mgr);
     Safe_AddRef(m_pCameraToolMgr);
+    Safe_AddRef(m_pColliderMgr);
 }
 
 HRESULT CImgui_Manager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -65,6 +67,7 @@ void CImgui_Manager::Tick(_float fTimeDelta)
 
     m_pNavigationMgr->Tick(fTimeDelta);
     m_pCameraToolMgr->Tick(fTimeDelta);
+    m_pColliderMgr->Tick(fTimeDelta);
 
     bool show_demo_window = true;
     bool show_another_window = false;
@@ -101,6 +104,9 @@ void CImgui_Manager::Tick(_float fTimeDelta)
 
     if (ImGui::Button(u8"카메라 TOOL"))
         m_bCameraMgr_IMGUI = true;
+
+    if (ImGui::Button(u8"콜라이더 TOOL"))
+        m_bColliderMgr_imgui = true;
        
 
     ImGui::End();
@@ -116,6 +122,7 @@ void CImgui_Manager::Tick(_float fTimeDelta)
         Show_MapObj_Place_IMGUI();
         Show_Object_List();
         m_pObjPlace_Manager->Add_Decal_IMGUI();
+        m_eWrieID = OBJPLACE;
     }
 
     if (m_bNaviTool_IMGUI)
@@ -133,6 +140,14 @@ void CImgui_Manager::Tick(_float fTimeDelta)
         Show_CameraTool_IMGUI();
     }
 
+
+    if (m_bColliderMgr_imgui)
+    {
+        Show_Collider_IMGUI();
+        m_pColliderMgr->Add_Collider_IMGUI();
+        m_eWrieID = COLLIDER;
+    }
+
 #pragma endregion
     ImGui::EndFrame();
 }
@@ -144,6 +159,7 @@ void CImgui_Manager::Late_Tick(_float fTimeDelta)
     {
         m_pObjPlace_Manager->Late_Tick(fTimeDelta);
     }
+    m_pColliderMgr->Late_Tick(fTimeDelta);
 
     m_pLightTool_Mgr->Late_Tick(fTimeDelta);
 
@@ -267,6 +283,21 @@ void CImgui_Manager::Show_CameraTool_IMGUI()
 
 }
 
+void CImgui_Manager::Show_Collider_IMGUI()
+{
+    ImGui::Begin(u8"레이어 선택");
+
+    m_pColliderMgr->Show_FileName();
+
+
+    if (ImGui::Button(u8"닫기"))
+    {
+        m_bColliderMgr_imgui = false;
+    }
+
+    ImGui::End();
+}
+
 
 void CImgui_Manager::Free()
 {
@@ -282,6 +313,8 @@ void CImgui_Manager::Free()
     CLightTool_Mgr::DestroyInstance();
     Safe_Release(m_pCameraToolMgr);
     CCamera_Manager::DestroyInstance();
+    Safe_Release(m_pColliderMgr);
+    CCollider_Manager::DestroyInstance();
 
 
     Safe_Release(m_pGameInstance);
