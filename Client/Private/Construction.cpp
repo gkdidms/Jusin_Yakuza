@@ -202,6 +202,10 @@ HRESULT CConstruction::Render()
 				return E_FAIL;
 			if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrixInv", m_pGameInstance->Get_Transform_Inverse_Float4x4(CPipeLine::D3DTS_PROJ))))
 				return E_FAIL;
+			if (FAILED(m_pShaderCom->Bind_Matrix("g_ReflectViewMatrix", m_pGameInstance->Get_ReflectViewMatrix())))
+				return E_FAIL;
+
+			
 		}
 
 		m_pShaderCom->Begin(m_iShaderPassNum);

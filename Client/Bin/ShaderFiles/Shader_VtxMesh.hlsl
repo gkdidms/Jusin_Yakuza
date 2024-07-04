@@ -2,7 +2,7 @@
 #include "Engine_Shader_Defines.hlsli"
 
 /* 컨스턴트 테이블(상수테이블) */
-matrix g_WorldMatrix, g_ViewMatrix, g_ProjMatrix, g_WorldMatrixInv, g_ViewMatrixInv, g_ProjMatrixInv;
+matrix g_WorldMatrix, g_ViewMatrix, g_ProjMatrix, g_WorldMatrixInv, g_ViewMatrixInv, g_ProjMatrixInv, g_ReflectViewMatrix;
 
 Texture2D g_DiffuseTexture;
 Texture2D g_NormalTexture;
@@ -235,9 +235,6 @@ PS_OUT PS_PUDDLE(PS_IN In)
         discard;
     
     
-    
-    
-    
     float2 vRefractTexCoord;
     vRefractTexCoord.x = In.vProjPos.x / In.vProjPos.w / 2.0f + 0.5f;
     vRefractTexCoord.y = -In.vProjPos.y / In.vProjPos.w / 2.0f + 0.5f;
@@ -263,17 +260,14 @@ PS_OUT PS_PUDDLE(PS_IN In)
     vWorldPos = mul(vWorldPos, g_ProjMatrixInv);
     vWorldPos = mul(vWorldPos, g_ViewMatrixInv); // world
     
-    
-    
     float3 viewDir = normalize(vWorldPos.xyz - g_vCamPosition.xyz);
 
-    
     float3 reflectedDir = normalize(reflect(viewDir, In.vNormal.xyz));
     
     
     float fLength = length(g_vCamPosition.xyz - vWorldPos.xyz);
     
-    float4 vReflectPos = vWorldPos + float4(reflectedDir.xyz, 0) * fLength;
+    float4 vReflectPos = vWorldPos + float4(reflectedDir.xyz, 0) * 1.2;
     vReflectPos = float4(vReflectPos.xyz, 1);
     
     float bReflect = true;
@@ -283,13 +277,16 @@ PS_OUT PS_PUDDLE(PS_IN In)
     float4 vReflectScreenPos = mul(vReflectPos, g_ViewMatrix);
     vReflectScreenPos = mul(vReflectScreenPos, g_ProjMatrix);
     vReflectScreenPos /= vReflectScreenPos.w;
-    vReflectScreenPos.xy = vReflectScreenPos.xy * 0.5 + 0.5;
+    vReflectScreenPos.x = vReflectScreenPos.x * 0.5 + 0.5;
+    vReflectScreenPos.y = vReflectScreenPos.y * -0.5 + 0.5;
     
     vector vDepth = g_DepthTexture.Sample(LinearSampler, vReflectScreenPos.xy);
     
-    vector vCalculateWorld =0;
+
+    
+    vector vCalculateWorld = 0;
     vCalculateWorld.x = vReflectScreenPos.x * 2.f - 1.f;
-    vCalculateWorld.y = vCalculateWorld.y * -2.f + 1.f;
+    vCalculateWorld.y = vReflectScreenPos.y * -2.f + 1.f;
     vCalculateWorld.z = vDepth.x; /* 0 ~ 1 */
     vCalculateWorld.w = 1.f;
     
@@ -301,10 +298,10 @@ PS_OUT PS_PUDDLE(PS_IN In)
     vCalculateWorld = mul(vCalculateWorld, g_ViewMatrixInv);
     
     float fDistance = length(g_vCamPosition.xyz - vCalculateWorld.xyz);
-    //if (fDistance > 10 || vCalculateWorld.y <= vWorldPos.y)
-    //{
-    //    bReflect = false;
-    //}
+    if (fDistance > 10)
+    {
+        bReflect = false;
+    }
 
     if(true == bReflect)
     {

@@ -397,6 +397,16 @@ void CGameInstance::Set_CamFar(_float fFar)
 	m_pPipeLine->Set_CamFar(fFar);
 }
 
+const _float4x4* CGameInstance::Get_ReflectViewMatrix()
+{
+	return m_pPipeLine->Get_ReflectViewMatrix();
+}
+
+void CGameInstance::Set_ReflectViewMatrix(_fmatrix matTransform)
+{
+	m_pPipeLine->Set_ReflectViewMatrix(matTransform);
+}
+
 _float CGameInstance::Get_TimeDelta(const _tchar* pTimerTag)
 {
 	return m_pTimer_Manager->Get_TimeDelta(pTimerTag);
