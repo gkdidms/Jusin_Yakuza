@@ -1,27 +1,27 @@
-#include "OfficeYakuza.h"
+#include "RushYakuza.h"
 
 #include "GameInstance.h"
-#include "AI_OfficeYakuza.h"
+#include "AI_RushYakuza.h"
 
 #include "Bounding_OBB.h"
 #include "Mesh.h"
 
-COfficeYakuza::COfficeYakuza(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+CRushYakuza::CRushYakuza(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CMonster{pDevice, pContext}
 {
 }
 
-COfficeYakuza::COfficeYakuza(const COfficeYakuza& rhs)
+CRushYakuza::CRushYakuza(const CRushYakuza& rhs)
 	: CMonster{ rhs }
 {
 }
 
-HRESULT COfficeYakuza::Initialize_Prototype()
+HRESULT CRushYakuza::Initialize_Prototype()
 {
 	return S_OK;
 }
 
-HRESULT COfficeYakuza::Initialize(void* pArg)
+HRESULT CRushYakuza::Initialize(void* pArg)
 {
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
@@ -34,11 +34,11 @@ HRESULT COfficeYakuza::Initialize(void* pArg)
 	return S_OK;
 }
 
-void COfficeYakuza::Priority_Tick(const _float& fTimeDelta)
+void CRushYakuza::Priority_Tick(const _float& fTimeDelta)
 {
 }
 
-void COfficeYakuza::Tick(const _float& fTimeDelta)
+void CRushYakuza::Tick(const _float& fTimeDelta)
 {
 	m_pTree->Tick(fTimeDelta);
 
@@ -51,12 +51,12 @@ void COfficeYakuza::Tick(const _float& fTimeDelta)
 	m_pColliderCom->Tick(m_pTransformCom->Get_WorldMatrix());
 }
 
-void COfficeYakuza::Late_Tick(const _float& fTimeDelta)
+void CRushYakuza::Late_Tick(const _float& fTimeDelta)
 {
 	m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
 }
 
-HRESULT COfficeYakuza::Render()
+HRESULT CRushYakuza::Render()
 {
 	if (FAILED(Bind_ResourceData()))
 		return E_FAIL;
@@ -85,7 +85,7 @@ HRESULT COfficeYakuza::Render()
 	return S_OK;
 }
 
-HRESULT COfficeYakuza::Add_Componenets()
+HRESULT CRushYakuza::Add_Componenets()
 {
 	if (FAILED(__super::Add_Component(LEVEL_TEST, TEXT("Prototype_Component_Shader_VtxAnim"),
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
@@ -111,21 +111,20 @@ HRESULT COfficeYakuza::Add_Componenets()
 		return E_FAIL;
 
 	//행동트리 저장
-	CAI_OfficeYakuza::AI_OFFICE_YAKUZA_DESC Desc{};
+	CAI_RushYakuza::AI_OFFICE_YAKUZA_DESC Desc{};
 	Desc.pYakuza = this;
 	Desc.pModel = m_pModelCom;
 	Desc.pState = &m_iState;
 	Desc.pAnim = m_pAnimCom;
 
-	m_pTree = CAI_OfficeYakuza::Create(&Desc);
+	m_pTree = CAI_RushYakuza::Create(&Desc);
 	if (nullptr == m_pTree)
 		return E_FAIL;
-
 
 	return S_OK;
 }
 
-HRESULT COfficeYakuza::Bind_ResourceData()
+HRESULT CRushYakuza::Bind_ResourceData()
 {
 	if (FAILED(m_pTransformCom->Bind_ShaderMatrix(m_pShaderCom, "g_WorldMatrix")))
 		return E_FAIL;
@@ -137,7 +136,7 @@ HRESULT COfficeYakuza::Bind_ResourceData()
 	return S_OK;
 }
 
-void COfficeYakuza::Synchronize_Root(const _float& fTimeDelta)
+void CRushYakuza::Synchronize_Root(const _float& fTimeDelta)
 {
 	_vector vFF = XMVector3TransformNormal(XMLoadFloat3(m_pModelCom->Get_AnimationCenterMove()), m_pTransformCom->Get_WorldMatrix());
 	vFF = XMVectorSet(XMVectorGetX(vFF), XMVectorGetZ(vFF), XMVectorGetY(vFF), 1.f);
@@ -189,7 +188,7 @@ void COfficeYakuza::Synchronize_Root(const _float& fTimeDelta)
 	XMStoreFloat4(&m_vPrevRotation, resultQuaternionVector);
 }
 
-void COfficeYakuza::Change_Animation()
+void CRushYakuza::Change_Animation()
 {
 	_uint iAnim = { 0 };
 	m_isAnimLoop = false;
@@ -320,9 +319,9 @@ void COfficeYakuza::Change_Animation()
 	m_pModelCom->Set_AnimationIndex(iAnim, m_pAnimCom->Get_Animations(), 0.5);
 }
 
-COfficeYakuza* COfficeYakuza::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+CRushYakuza* CRushYakuza::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
-	COfficeYakuza* pInstance = new COfficeYakuza(pDevice, pContext);
+	CRushYakuza* pInstance = new CRushYakuza(pDevice, pContext);
 
 	if (FAILED(pInstance->Initialize_Prototype()))
 		Safe_Release(pInstance);
@@ -330,9 +329,9 @@ COfficeYakuza* COfficeYakuza::Create(ID3D11Device* pDevice, ID3D11DeviceContext*
 	return pInstance;
 }
 
-CGameObject* COfficeYakuza::Clone(void* pArg)
+CGameObject* CRushYakuza::Clone(void* pArg)
 {
-	COfficeYakuza* pInstance = new COfficeYakuza(*this);
+	CRushYakuza* pInstance = new CRushYakuza(*this);
 
 	if (FAILED(pInstance->Initialize(pArg)))
 		Safe_Release(pInstance);
@@ -340,7 +339,7 @@ CGameObject* COfficeYakuza::Clone(void* pArg)
 	return pInstance;
 }
 
-void COfficeYakuza::Free()
+void CRushYakuza::Free()
 {
 	__super::Free();
 }

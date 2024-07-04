@@ -8,7 +8,7 @@
 #include "DebugCamera.h"
 #include "CineCamera.h"
 #include "Decal.h"
-#include "OfficeYakuza.h"
+#include "RushYakuza.h"
 #pragma endregion
 
 #include "Terrain.h"
@@ -292,7 +292,7 @@ HRESULT CLoader::Loading_For_Test()
 		return E_FAIL;
 
 	/* For.Prototype_GameObject_Jimu */
-	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Jimu"), COfficeYakuza::Create(m_pDevice, m_pContext))))
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Jimu"), CRushYakuza::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	/* For.Prototype_GameObject_Terrain */

@@ -2,13 +2,13 @@
 #include "Monster.h"
 
 BEGIN(Client)
-class COfficeYakuza :
+class CRushYakuza :
     public CMonster
 {
 private:
-    COfficeYakuza(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-    COfficeYakuza(const COfficeYakuza& rhs);
-    virtual ~COfficeYakuza() = default;
+    CRushYakuza(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+    CRushYakuza(const CRushYakuza& rhs);
+    virtual ~CRushYakuza() = default;
 
 public:
     virtual HRESULT Initialize_Prototype() override;
@@ -19,7 +19,7 @@ public:
     virtual HRESULT Render() override;
 
 private:
-    class CAI_OfficeYakuza* m_pTree = { nullptr };
+    class CAI_RushYakuza* m_pTree = { nullptr };
 
     _bool m_isAnimLoop = { false };
 
@@ -37,7 +37,7 @@ private:
     void Change_Animation();
 
 public:
-    static COfficeYakuza* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+    static CRushYakuza* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
     virtual CGameObject* Clone(void* pArg);
     virtual void Free();
 };

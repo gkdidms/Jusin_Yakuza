@@ -1,4 +1,4 @@
-#include "AI_OfficeYakuza.h"
+#include "AI_RushYakuza.h"
 
 #include "GameInstance.h"
 
@@ -6,16 +6,16 @@
 #include "Selector.h"
 #include "Sequance.h"
 
-#include "OfficeYakuza.h"
+#include "RushYakuza.h"
 #include "Player.h"
 
-CAI_OfficeYakuza::CAI_OfficeYakuza()
+CAI_RushYakuza::CAI_RushYakuza()
 	: m_pGameInstance{ CGameInstance::GetInstance() }
 {
 	Safe_AddRef(m_pGameInstance);
 }
 
-HRESULT CAI_OfficeYakuza::Initialize(void* pArg)
+HRESULT CAI_RushYakuza::Initialize(void* pArg)
 {
 	if (nullptr == pArg)
 		return E_FAIL;
@@ -32,7 +32,7 @@ HRESULT CAI_OfficeYakuza::Initialize(void* pArg)
 	return S_OK;
 }
 
-void CAI_OfficeYakuza::Tick(const _float& fTimeDelta)
+void CAI_RushYakuza::Tick(const _float& fTimeDelta)
 {
 	if (m_isAttack == false)
 		m_fAttackDelayTime += fTimeDelta;
@@ -43,44 +43,44 @@ void CAI_OfficeYakuza::Tick(const _float& fTimeDelta)
 	this->Execute();
 }
 
-CBTNode::NODE_STATE CAI_OfficeYakuza::Execute()
+CBTNode::NODE_STATE CAI_RushYakuza::Execute()
 {
 	return m_pRootNode->Execute();
 }
 
-void CAI_OfficeYakuza::Ready_Tree()
+void CAI_RushYakuza::Ready_Tree()
 {
 	CSelector* pRoot = CSelector::Create();
 	
 #pragma region Death
 	CSequance* pDeadSeq = CSequance::Create();
-	pDeadSeq->Add_Children(CLeafNode::Create(bind(&CAI_OfficeYakuza::Check_Death, this)));
+	pDeadSeq->Add_Children(CLeafNode::Create(bind(&CAI_RushYakuza::Check_Death, this)));
 #pragma endregion
 
 #pragma region Sway
 	CSequance* pSwaySeq = CSequance::Create();
-	pSwaySeq->Add_Children(CLeafNode::Create(bind(&CAI_OfficeYakuza::Check_Sway, this)));
-	pSwaySeq->Add_Children(CLeafNode::Create(bind(&CAI_OfficeYakuza::Sway, this)));
+	pSwaySeq->Add_Children(CLeafNode::Create(bind(&CAI_RushYakuza::Check_Sway, this)));
+	pSwaySeq->Add_Children(CLeafNode::Create(bind(&CAI_RushYakuza::Sway, this)));
 #pragma endregion
 
 #pragma region Sync
 	CSequance* pSyncSeq = CSequance::Create();
-	pSyncSeq->Add_Children(CLeafNode::Create(bind(&CAI_OfficeYakuza::Chcek_Sync, this)));
-	pSyncSeq->Add_Children(CLeafNode::Create(bind(&CAI_OfficeYakuza::Sync_Neck, this)));
+	pSyncSeq->Add_Children(CLeafNode::Create(bind(&CAI_RushYakuza::Chcek_Sync, this)));
+	pSyncSeq->Add_Children(CLeafNode::Create(bind(&CAI_RushYakuza::Sync_Neck, this)));
 #pragma endregion
 
 #pragma region HIT/GUARD
 	CSequance* pHitGuardSeq = CSequance::Create();
-	pHitGuardSeq->Add_Children(CLeafNode::Create(bind(&CAI_OfficeYakuza::Check_Hit, this)));
-	pHitGuardSeq->Add_Children(CLeafNode::Create(bind(&CAI_OfficeYakuza::HitAndGuard, this)));
+	pHitGuardSeq->Add_Children(CLeafNode::Create(bind(&CAI_RushYakuza::Check_Hit, this)));
+	pHitGuardSeq->Add_Children(CLeafNode::Create(bind(&CAI_RushYakuza::HitAndGuard, this)));
 
 	CSelector* pHitGuard = CSelector::Create();
 	CSelector* pHitSelector = CSelector::Create();
-	pHitSelector->Add_Children(CLeafNode::Create(bind(&CAI_OfficeYakuza::Normal_Hit, this)));
-	pHitSelector->Add_Children(CLeafNode::Create(bind(&CAI_OfficeYakuza::Strong_Hit, this)));
+	pHitSelector->Add_Children(CLeafNode::Create(bind(&CAI_RushYakuza::Normal_Hit, this)));
+	pHitSelector->Add_Children(CLeafNode::Create(bind(&CAI_RushYakuza::Strong_Hit, this)));
 
 	CSelector* pGuardSelector = CSelector::Create();
-	pGuardSelector->Add_Children(CLeafNode::Create(bind(&CAI_OfficeYakuza::Guard, this)));
+	pGuardSelector->Add_Children(CLeafNode::Create(bind(&CAI_RushYakuza::Guard, this)));
 
 	pHitGuard->Add_Children(pHitSelector);
 	pHitGuard->Add_Children(pGuardSelector);
@@ -90,34 +90,34 @@ void CAI_OfficeYakuza::Ready_Tree()
 
 #pragma region Angry
 	CSequance* pAngrySeq = CSequance::Create();
-	pAngrySeq->Add_Children(CLeafNode::Create(bind(&CAI_OfficeYakuza::Check_Angry, this)));
-	pAngrySeq->Add_Children(CLeafNode::Create(bind(&CAI_OfficeYakuza::Angry, this)));
+	pAngrySeq->Add_Children(CLeafNode::Create(bind(&CAI_RushYakuza::Check_Angry, this)));
+	pAngrySeq->Add_Children(CLeafNode::Create(bind(&CAI_RushYakuza::Angry, this)));
 #pragma endregion
 
 #pragma region Attack
 	CSequance* pAttackSeq = CSequance::Create();
-	pAttackSeq->Add_Children(CLeafNode::Create(bind(&CAI_OfficeYakuza::Check_Attack, this)));
-	pAttackSeq->Add_Children(CLeafNode::Create(bind(&CAI_OfficeYakuza::Attack, this)));
-	pAttackSeq->Add_Children(CLeafNode::Create(bind(&CAI_OfficeYakuza::Angry_Attack, this)));
+	pAttackSeq->Add_Children(CLeafNode::Create(bind(&CAI_RushYakuza::Check_Attack, this)));
+	pAttackSeq->Add_Children(CLeafNode::Create(bind(&CAI_RushYakuza::Attack, this)));
+	pAttackSeq->Add_Children(CLeafNode::Create(bind(&CAI_RushYakuza::Angry_Attack, this)));
 
 	CSelector* pAttackSelector = CSelector::Create();
-	pAttackSelector->Add_Children(CLeafNode::Create(bind(&CAI_OfficeYakuza::ATK_Punch, this)));
-	pAttackSelector->Add_Children(CLeafNode::Create(bind(&CAI_OfficeYakuza::ATK_CMD, this)));
-	pAttackSelector->Add_Children(CLeafNode::Create(bind(&CAI_OfficeYakuza::ATK_Angry_Punch, this)));
-	pAttackSelector->Add_Children(CLeafNode::Create(bind(&CAI_OfficeYakuza::ATK_Angry_Kick, this)));
+	pAttackSelector->Add_Children(CLeafNode::Create(bind(&CAI_RushYakuza::ATK_Punch, this)));
+	pAttackSelector->Add_Children(CLeafNode::Create(bind(&CAI_RushYakuza::ATK_CMD, this)));
+	pAttackSelector->Add_Children(CLeafNode::Create(bind(&CAI_RushYakuza::ATK_Angry_Punch, this)));
+	pAttackSelector->Add_Children(CLeafNode::Create(bind(&CAI_RushYakuza::ATK_Angry_Kick, this)));
 
 	pAttackSeq->Add_Children(pAttackSelector);
 #pragma endregion
 
 #pragma region Shift
 	CSequance* pShiftSeq = CSequance::Create();
-	pShiftSeq->Add_Children(CLeafNode::Create(bind(&CAI_OfficeYakuza::Check_Shift, this)));
-	pShiftSeq->Add_Children(CLeafNode::Create(bind(&CAI_OfficeYakuza::Shift, this)));
+	pShiftSeq->Add_Children(CLeafNode::Create(bind(&CAI_RushYakuza::Check_Shift, this)));
+	pShiftSeq->Add_Children(CLeafNode::Create(bind(&CAI_RushYakuza::Shift, this)));
 #pragma endregion
 
 #pragma region Idle
 	CSequance* pIdleSeq = CSequance::Create();
-	pIdleSeq->Add_Children(CLeafNode::Create(bind(&CAI_OfficeYakuza::Idle, this)));
+	pIdleSeq->Add_Children(CLeafNode::Create(bind(&CAI_RushYakuza::Idle, this)));
 #pragma endregion
 
 #pragma region Root
@@ -134,7 +134,7 @@ void CAI_OfficeYakuza::Ready_Tree()
 	m_pRootNode = pRoot;
 }
 
-CBTNode::NODE_STATE CAI_OfficeYakuza::Check_Death()
+CBTNode::NODE_STATE CAI_RushYakuza::Check_Death()
 {
 	if (*m_pState != CMonster::DEATH)
 		return CBTNode::FAIL;
@@ -142,18 +142,18 @@ CBTNode::NODE_STATE CAI_OfficeYakuza::Check_Death()
 	return CBTNode::RUNNING;
 }
 
-CBTNode::NODE_STATE CAI_OfficeYakuza::Check_Sway()
+CBTNode::NODE_STATE CAI_RushYakuza::Check_Sway()
 {
 	
 	return CBTNode::FAIL;
 }
 
-CBTNode::NODE_STATE CAI_OfficeYakuza::Sway()
+CBTNode::NODE_STATE CAI_RushYakuza::Sway()
 {
 	return CBTNode::SUCCESS;
 }
 
-CBTNode::NODE_STATE CAI_OfficeYakuza::Chcek_Sync()
+CBTNode::NODE_STATE CAI_RushYakuza::Chcek_Sync()
 {
 	if (!m_isSync)
 		return CBTNode::SUCCESS;
@@ -164,7 +164,7 @@ CBTNode::NODE_STATE CAI_OfficeYakuza::Chcek_Sync()
 	return CBTNode::RUNNING;
 }
 
-CBTNode::NODE_STATE CAI_OfficeYakuza::Sync_Neck()
+CBTNode::NODE_STATE CAI_RushYakuza::Sync_Neck()
 {
 	// 플레이어가 멱살을 잡는 모션을 할때
 	CPlayer* pPlayer = dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"), 0));
@@ -176,7 +176,7 @@ CBTNode::NODE_STATE CAI_OfficeYakuza::Sync_Neck()
 	return CBTNode::FAIL;
 }
 
-CBTNode::NODE_STATE CAI_OfficeYakuza::Check_Hit()
+CBTNode::NODE_STATE CAI_RushYakuza::Check_Hit()
 {
 	if (m_iSkill != SKILL_HIT)
 		return CBTNode::SUCCESS;
@@ -187,7 +187,7 @@ CBTNode::NODE_STATE CAI_OfficeYakuza::Check_Hit()
 	return CBTNode::RUNNING;
 }
 
-CBTNode::NODE_STATE CAI_OfficeYakuza::HitAndGuard()
+CBTNode::NODE_STATE CAI_RushYakuza::HitAndGuard()
 {
 	//Hit 체크하고 가드를 할 것인지, Hit할 것인지?
 	//충돌할것인가?
@@ -195,7 +195,7 @@ CBTNode::NODE_STATE CAI_OfficeYakuza::HitAndGuard()
 }
 
 //KRS: 불한당, KRH: 러쉬, KRC: 파괴자
-CBTNode::NODE_STATE CAI_OfficeYakuza::Normal_Hit()
+CBTNode::NODE_STATE CAI_RushYakuza::Normal_Hit()
 {
 	CPlayer* pPlayer = dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"), 0));
 
@@ -216,7 +216,7 @@ CBTNode::NODE_STATE CAI_OfficeYakuza::Normal_Hit()
 }
 
 //KRS: 불한당, KRH: 러쉬, KRC: 파괴자
-CBTNode::NODE_STATE CAI_OfficeYakuza::Strong_Hit()
+CBTNode::NODE_STATE CAI_RushYakuza::Strong_Hit()
 {
 	CPlayer* pPlayer = dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"), 0));
 
@@ -236,7 +236,7 @@ CBTNode::NODE_STATE CAI_OfficeYakuza::Strong_Hit()
 	return CBTNode::SUCCESS();
 }
 
-CBTNode::NODE_STATE CAI_OfficeYakuza::Guard()
+CBTNode::NODE_STATE CAI_RushYakuza::Guard()
 {
 	//랜덤?
 	
@@ -244,7 +244,7 @@ CBTNode::NODE_STATE CAI_OfficeYakuza::Guard()
 }
 
 
-CBTNode::NODE_STATE CAI_OfficeYakuza::Check_Angry()
+CBTNode::NODE_STATE CAI_RushYakuza::Check_Angry()
 {
 	// 분노상태 전환 분기
 	if (!m_isAngry)
@@ -269,7 +269,7 @@ CBTNode::NODE_STATE CAI_OfficeYakuza::Check_Angry()
 	return CBTNode::FAIL;
 }
 
-CBTNode::NODE_STATE CAI_OfficeYakuza::Angry()
+CBTNode::NODE_STATE CAI_RushYakuza::Angry()
 {
 	m_isAngry = true;
 	*m_pState = CMonster::ANGRY_START;
@@ -277,7 +277,7 @@ CBTNode::NODE_STATE CAI_OfficeYakuza::Angry()
 	return CBTNode::SUCCESS;
 }
 
-CBTNode::NODE_STATE CAI_OfficeYakuza::Check_Attack()
+CBTNode::NODE_STATE CAI_RushYakuza::Check_Attack()
 {
 	if (m_isAttack == false)
 	{
@@ -290,7 +290,7 @@ CBTNode::NODE_STATE CAI_OfficeYakuza::Check_Attack()
 	return CBTNode::SUCCESS;
 }
 
-CBTNode::NODE_STATE CAI_OfficeYakuza::Attack()
+CBTNode::NODE_STATE CAI_RushYakuza::Attack()
 {
 	if (m_isAngry) return CBTNode::SUCCESS;
 
@@ -309,7 +309,7 @@ CBTNode::NODE_STATE CAI_OfficeYakuza::Attack()
 	return CBTNode::SUCCESS;
 }
 
-CBTNode::NODE_STATE CAI_OfficeYakuza::Angry_Attack()
+CBTNode::NODE_STATE CAI_RushYakuza::Angry_Attack()
 {
 	if (!m_isAngry) return CBTNode::SUCCESS;
 
@@ -329,7 +329,7 @@ CBTNode::NODE_STATE CAI_OfficeYakuza::Angry_Attack()
 	return CBTNode::SUCCESS;
 }
 
-CBTNode::NODE_STATE CAI_OfficeYakuza::ATK_Punch()
+CBTNode::NODE_STATE CAI_RushYakuza::ATK_Punch()
 {
 	if (m_iSkill == SKILL_PUNCH && m_isAttack)
 	{
@@ -354,7 +354,7 @@ CBTNode::NODE_STATE CAI_OfficeYakuza::ATK_Punch()
 	return CBTNode::FAIL;
 }
 
-CBTNode::NODE_STATE CAI_OfficeYakuza::ATK_CMD()
+CBTNode::NODE_STATE CAI_RushYakuza::ATK_CMD()
 {
 	if (m_iSkill == SKILL_CMD && m_isAttack)
 	{
@@ -398,7 +398,7 @@ CBTNode::NODE_STATE CAI_OfficeYakuza::ATK_CMD()
 	return CBTNode::FAIL;
 }
 
-CBTNode::NODE_STATE CAI_OfficeYakuza::ATK_Angry_Punch()
+CBTNode::NODE_STATE CAI_RushYakuza::ATK_Angry_Punch()
 {
 	if (m_iSkill == SKILL_ANGRY_CHOP && m_isAttack)
 	{
@@ -423,7 +423,7 @@ CBTNode::NODE_STATE CAI_OfficeYakuza::ATK_Angry_Punch()
 	return CBTNode::FAIL;
 }
 
-CBTNode::NODE_STATE CAI_OfficeYakuza::ATK_Angry_Kick()
+CBTNode::NODE_STATE CAI_RushYakuza::ATK_Angry_Kick()
 {
 	if (m_iSkill == SKILL_ANGRY_KICK && m_isAttack)
 	{
@@ -448,7 +448,7 @@ CBTNode::NODE_STATE CAI_OfficeYakuza::ATK_Angry_Kick()
 	return CBTNode::FAIL;
 }
 
-CBTNode::NODE_STATE CAI_OfficeYakuza::Check_Shift()
+CBTNode::NODE_STATE CAI_RushYakuza::Check_Shift()
 {
 	if (m_iSkill != SKILL_SHIFT)
 		return CBTNode::SUCCESS;
@@ -463,7 +463,7 @@ CBTNode::NODE_STATE CAI_OfficeYakuza::Check_Shift()
 	return CBTNode::RUNNING;
 }
 
-CBTNode::NODE_STATE CAI_OfficeYakuza::Shift()
+CBTNode::NODE_STATE CAI_RushYakuza::Shift()
 {
 	m_fShiftDuration = m_pGameInstance->Get_Random(1.f, 3.f);
 
@@ -484,16 +484,16 @@ CBTNode::NODE_STATE CAI_OfficeYakuza::Shift()
 	return CBTNode::SUCCESS;
 }
 
-CBTNode::NODE_STATE CAI_OfficeYakuza::Idle()
+CBTNode::NODE_STATE CAI_RushYakuza::Idle()
 {
 	*m_pState = CMonster::IDLE;
 
 	return CBTNode::SUCCESS;
 }
 
-CAI_OfficeYakuza* CAI_OfficeYakuza::Create(void* pArg)
+CAI_RushYakuza* CAI_RushYakuza::Create(void* pArg)
 {
-	CAI_OfficeYakuza* pInstance = new CAI_OfficeYakuza();
+	CAI_RushYakuza* pInstance = new CAI_RushYakuza();
 
 	if (FAILED(pInstance->Initialize(pArg)))
 		Safe_Release(pInstance);
@@ -501,7 +501,7 @@ CAI_OfficeYakuza* CAI_OfficeYakuza::Create(void* pArg)
 	return pInstance;
 }
 
-void CAI_OfficeYakuza::Free()
+void CAI_RushYakuza::Free()
 {
 	__super::Free();
 

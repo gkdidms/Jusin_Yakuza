@@ -148,13 +148,13 @@
     <ClCompile Include="..\private\Monster.cpp">
       <Filter>02.GameObjects\02.Character\LandObject\01.Monster</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\OfficeYakuza.cpp">
+    <ClCompile Include="..\private\RushYakuza.cpp">
       <Filter>02.GameObjects\02.Character\LandObject\01.Monster\00.OfficeYakuza</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\BTNode.cpp">
       <Filter>95.Utility\03.BehaviorTree</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\AI_OfficeYakuza.cpp">
+    <ClCompile Include="..\private\AI_RushYakuza.cpp">
       <Filter>02.GameObjects\02.Character\LandObject\01.Monster\00.OfficeYakuza\AI</Filter>
     </ClCompile>
   </ItemGroup>
@@ -336,13 +336,13 @@
     <ClInclude Include="..\public\Monster.h">
       <Filter>02.GameObjects\02.Character\LandObject\01.Monster</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\OfficeYakuza.h">
+    <ClInclude Include="..\public\RushYakuza.h">
       <Filter>02.GameObjects\02.Character\LandObject\01.Monster\00.OfficeYakuza</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\BTNode.h">
       <Filter>95.Utility\03.BehaviorTree</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\AI_OfficeYakuza.h">
+    <ClInclude Include="..\public\AI_RushYakuza.h">
       <Filter>02.GameObjects\02.Character\LandObject\01.Monster\00.OfficeYakuza\AI</Filter>
     </ClInclude>
   </ItemGroup>

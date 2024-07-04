@@ -9,7 +9,7 @@ class CGameInstance;
 END
 
 BEGIN(Client)
-class CAI_OfficeYakuza :
+class CAI_RushYakuza :
     public CBTNode
 {
 public:
@@ -26,7 +26,7 @@ public:
     };
 
     typedef struct tAIOfficeYakuzaDest {
-        class COfficeYakuza* pYakuza; // 자기 자신의 포인터
+        class CRushYakuza* pYakuza; // 자기 자신의 포인터
         class CModel* pModel;
         class CAnim* pAnim;
 
@@ -34,8 +34,8 @@ public:
     } AI_OFFICE_YAKUZA_DESC;
 
 private:
-    CAI_OfficeYakuza();
-    virtual ~CAI_OfficeYakuza() = default;
+    CAI_RushYakuza();
+    virtual ~CAI_RushYakuza() = default;
 
 public:
     HRESULT Initialize(void* pArg);
@@ -49,7 +49,7 @@ private:
     CModel* m_pModelCom = { nullptr };
     CAnim* m_pAnimCom = { nullptr };
 
-    class COfficeYakuza* m_pThis = { nullptr };
+    class CRushYakuza* m_pThis = { nullptr };
     _uint* m_pState = { nullptr };
 
     _uint m_iSkill = { SKILL_END };
@@ -117,7 +117,7 @@ private:
     CBTNode::NODE_STATE Idle();
 
 public:
-    static CAI_OfficeYakuza* Create(void* pArg);
+    static CAI_RushYakuza* Create(void* pArg);
     virtual void Free() override;
 };
 END
