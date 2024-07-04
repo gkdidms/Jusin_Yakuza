@@ -25,6 +25,8 @@ CImguiManager::CImguiManager(ID3D11Device* pDevice, ID3D11DeviceContext* pContex
 
 HRESULT CImguiManager::Initialize(void* pArg)
 {
+	Setting_InitialData();
+
 	//ImGui
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
@@ -46,6 +48,7 @@ HRESULT CImguiManager::Initialize(void* pArg)
 
 	ImGui_ImplWin32_Init(g_hWnd);
 	ImGui_ImplDX11_Init(m_pDevice, m_pContext);
+
 
 	return S_OK;
 }
@@ -72,6 +75,11 @@ void CImguiManager::Tick(const _float& fTimeDelta)
 		KeyFrameWindow();
 		MeshListWindow();
 		AnimEventWindow();
+
+		if (m_isEffectListWindow)
+			EffectListWindow();
+		if (m_isSoundListWindow)
+			SoundListWindow();
 	}
 
 }
@@ -131,11 +139,6 @@ void CImguiManager::ModelList()
 
 	ImGui::NewLine();
 	ImGui::Text("Model List");
-
-	string strDirPath = "../../Client/Bin/Resources/Models/Anim/";
-
-	m_pGameInstance->Get_DirectoryName(strDirPath, m_ModelNameList);
-	g_wstrModelName = m_pGameInstance->StringToWstring(m_ModelNameList.front());
 
 	vector<const char*> items;
 
@@ -556,21 +559,22 @@ void CImguiManager::KeyFrameWindow()
 	}
 #pragma endregion
 
-#pragma region 사운드 이벤트 버튼
-	ImGui::Text("Sound Event");
-	if (ImGui::Button("Add Sound"))
-	{
-
-	}
-#pragma endregion
-
 #pragma region 이펙트 이벤트 버튼들
 	ImGui::Text("Effect Event");
 	if (ImGui::Button("Add Effect"))
 	{
-
+		m_isEffectListWindow = true;
 	}
 #pragma endregion
+
+#pragma region 사운드 이벤트 버튼
+	ImGui::Text("Sound Event");
+	if (ImGui::Button("Add Sound"))
+	{
+		m_isSoundListWindow = true;
+	}
+#pragma endregion
+
 
 	if (ImGui::Button(u8"애니메이션 이벤트 저장"))
 	{
@@ -644,6 +648,46 @@ void CImguiManager::AnimEventWindow()
 
 	ImDrawList* draw_list = ImGui::GetWindowDrawList();
 	DrawTimeline(draw_list);
+
+	ImGui::End();
+}
+
+void CImguiManager::EffectListWindow()
+{
+	ImGui::Begin("Effect List", &m_isEffectListWindow);
+
+	for (size_t i = 0; i < m_EffectTypeList.size(); i++)
+	{
+		ImGui::SameLine();
+		if (ImGui::RadioButton(m_EffectTypeList[i].c_str(), m_iEffectType == i))
+		{
+			m_iEffectType = i;
+		}
+	}
+
+	//추가한 메시 리스트
+	auto lower_bound_iter = m_EffectFiles.lower_bound(m_iEffectType);
+	auto upper_bound_iter = m_EffectFiles.upper_bound(m_iEffectType);
+
+	vector<const char*> items;
+	for (; lower_bound_iter != upper_bound_iter; ++lower_bound_iter)
+	{
+		items.push_back((*lower_bound_iter).second.c_str());
+	}
+
+	if (ImGui::ListBox("##", &m_iEffectSelectedIndex, items.data(), items.size()))
+	{
+
+	}
+
+	ImGui::End();
+}
+
+void CImguiManager::SoundListWindow()
+{
+	ImGui::Begin("Sound List", &m_isSoundListWindow);
+
+	ImGui::Text(u8"테스트용으로 띄웠습니다");
 
 	ImGui::End();
 }
@@ -1194,6 +1238,29 @@ void CImguiManager::ColliderState_Load(string strPath)
 	}
 
 	in.close();
+}
+
+void CImguiManager::Setting_InitialData()
+{
+	string strDirPath = "../../Client/Bin/Resources/Models/Anim/";
+
+	m_pGameInstance->Get_DirectoryName(strDirPath, m_ModelNameList);
+	g_wstrModelName = m_pGameInstance->StringToWstring(m_ModelNameList.front());
+
+	strDirPath = "../../Client/Bin/DataFiles/Particle/";
+	m_pGameInstance->Get_DirectoryName(strDirPath, m_EffectTypeList);
+
+	
+	for (size_t i = 0; i < m_EffectTypeList.size(); i++)
+	{
+		vector<string> tempFileNames;
+		m_pGameInstance->Get_FileNames(strDirPath + m_EffectTypeList[i], tempFileNames);
+
+		for (size_t j = 0; j < tempFileNames.size(); j++)
+		{
+			m_EffectFiles.emplace(i, tempFileNames[j]);
+		}
+	}
 }
 
 CImguiManager* CImguiManager::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
