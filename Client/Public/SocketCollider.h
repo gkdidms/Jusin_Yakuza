@@ -1,0 +1,66 @@
+#pragma once
+
+
+#include "SocketObject.h"
+#include "CharacterData.h"
+#include "Client_Defines.h"
+
+BEGIN(Engine)
+class CCollider;
+class CShader;
+class CModel;
+END
+
+BEGIN(Client)
+
+class CSocketCollider final : public CSocketObject
+{
+public:
+	struct SOKET_COLLIDER_DESC : public SOCKETOBJECT_DESC
+	{
+		_uint iBoneIndex;
+		CCharacterData::COLLIDER_STATE ColliderState;
+	};
+
+private:
+	CSocketCollider(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	CSocketCollider(const CSocketCollider& rhs);
+	virtual ~CSocketCollider() = default;
+
+public:
+	virtual HRESULT Initialize_Prototype() override;
+	virtual HRESULT Initialize(void* pArg) override;
+	virtual void Priority_Tick(const _float& fTimeDelta) override;
+	virtual void Tick(const _float& fTimeDelta) override;
+	virtual void Late_Tick(const _float& fTimeDelta) override;
+	virtual HRESULT Render() override;
+
+public:
+	void On() {
+		m_isOn = true;
+	}
+	void Off() {
+		m_isOn = { false };
+	}
+
+private:
+	//class CSystemManager*			m_pSystemManager = { nullptr };
+	CShader*						m_pShaderCom = { nullptr };
+	CModel*							m_pModelCom = { nullptr };
+	CCollider*						m_pColliderCom = { nullptr };
+
+	_float							m_fAlphaScale = { 0.f };
+	
+	_bool							m_isOn = { true };
+
+public:
+	HRESULT Add_Components(void* pArg);
+	HRESULT Bind_ShaderResources();
+
+public:
+	static CSocketCollider* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	virtual CGameObject* Clone(void* pArg) override;
+	virtual void Free() override;
+};
+
+END

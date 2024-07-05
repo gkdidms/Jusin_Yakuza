@@ -4,18 +4,18 @@
 
 BEGIN(Client)
 
-class CSoketObject abstract : public CPartObject
+class CSocketObject abstract : public CPartObject
 {
 public:
-	struct SOKETOBJECT_DESC : public CPartObject::PARTOBJ_DESC
+	struct SOCKETOBJECT_DESC : public CPartObject::PARTOBJ_DESC
 	{
 		const _float4x4* pCombinedTransformationMatrix;
 	};
 
 protected:
-	CSoketObject(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	CSoketObject(const CSoketObject& rhs);
-	virtual ~CSoketObject() = default;
+	CSocketObject(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	CSocketObject(const CSocketObject& rhs);
+	virtual ~CSocketObject() = default;
 
 public:
 	virtual HRESULT Initialize_Prototype() override;

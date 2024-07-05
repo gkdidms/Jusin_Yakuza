@@ -42,6 +42,8 @@ private:
 private:
 	HRESULT Loading_For_LogoLevel();
 	HRESULT Loading_For_GamePlayLevel();
+	HRESULT Loading_For_Office_1F();
+	HRESULT Loading_For_Office_2F();
 	HRESULT Loading_For_Test();
 
 private:
