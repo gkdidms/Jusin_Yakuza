@@ -193,7 +193,7 @@ void CChannel::Update_TransformationMatrix(_double CurrentPosition, const vector
 
 	vScale = XMVectorLerp(XMLoadFloat3(&m_KeyFrames.front().vScale), XMLoadFloat3(&KeyFrame.vScale), fRatio);
 	
-
+	// center_c_n 뼈가 아니면 기존에 하던 것 그대로 하기
 	if (!Bones[m_iBoneIndex]->Compare_Name("center_c_n"))
 	{
 		vRotation = XMQuaternionSlerp(XMLoadFloat4(&m_KeyFrames.front().vRotation), XMLoadFloat4(&KeyFrame.vRotation), fRatio);
@@ -201,6 +201,7 @@ void CChannel::Update_TransformationMatrix(_double CurrentPosition, const vector
 	}
 	else
 	{
+		// center_c_n 뼈라면 회전값 죽이기
 		vRotation = XMVectorZero();
 		vTranslation = XMVectorSet(0, 0, XMVectorGetZ(XMVectorLerp(XMVectorSetW(XMLoadFloat3(&m_KeyFrames.front().vPosition), 1.f), XMVectorSetW(XMLoadFloat3(&KeyFrame.vPosition), 1.f), fRatio)), 1);
 
