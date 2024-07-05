@@ -42,6 +42,7 @@ void CRushYakuza::Tick(const _float& fTimeDelta)
 {
 	m_pTree->Tick(fTimeDelta);
 
+
 	Change_Animation(); //애니메이션 변경
 
 	m_pModelCom->Play_Animation(fTimeDelta, m_pAnimCom, m_isAnimLoop);

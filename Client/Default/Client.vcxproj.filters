@@ -149,13 +149,13 @@
       <Filter>02.GameObjects\02.Character\LandObject\01.Monster</Filter>
     </ClCompile>
     <ClCompile Include="..\private\RushYakuza.cpp">
-      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\00.RushYakuza</Filter>
+      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\Yakuza\00.RushYakuza</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\BTNode.cpp">
       <Filter>95.Utility\03.BehaviorTree</Filter>
     </ClCompile>
     <ClCompile Include="..\private\AI_RushYakuza.cpp">
-      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\00.RushYakuza\AI</Filter>
+      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\Yakuza\00.RushYakuza\AI</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\MapCollider.cpp">
       <Filter>02.GameObjects\08. MapCollider</Filter>
@@ -188,7 +188,16 @@
       <Filter>02.GameObjects\02.Character\LandObject\01.Monster\AI</Filter>
     </ClCompile>
     <ClCompile Include="..\private\WPAYakuza.cpp">
-      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\01. WPAYakuza</Filter>
+      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\Yakuza\01.WPAYakuza</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\AI_WPAYakuza.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\Yakuza\01.WPAYakuza\AI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Level_Office1F.cpp">
+      <Filter>01.Levels\01.Office1F</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Level_Office2F.cpp">
+      <Filter>01.Levels\02.Office2F</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -370,13 +379,13 @@
       <Filter>02.GameObjects\02.Character\LandObject\01.Monster</Filter>
     </ClInclude>
     <ClInclude Include="..\public\RushYakuza.h">
-      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\00.RushYakuza</Filter>
+      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\Yakuza\00.RushYakuza</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\BTNode.h">
       <Filter>95.Utility\03.BehaviorTree</Filter>
     </ClInclude>
     <ClInclude Include="..\public\AI_RushYakuza.h">
-      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\00.RushYakuza\AI</Filter>
+      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\Yakuza\00.RushYakuza\AI</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\MapCollider.h">
       <Filter>02.GameObjects\08. MapCollider</Filter>
@@ -409,7 +418,16 @@
       <Filter>02.GameObjects\02.Character\LandObject\01.Monster\AI</Filter>
     </ClInclude>
     <ClInclude Include="..\public\WPAYakuza.h">
-      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\01. WPAYakuza</Filter>
+      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\Yakuza\01.WPAYakuza</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\AI_WPAYakuza.h">
+      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\Yakuza\01.WPAYakuza\AI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Level_Office1F.h">
+      <Filter>01.Levels\01.Office1F</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Level_Office2F.h">
+      <Filter>01.Levels\02.Office2F</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -631,8 +649,26 @@
     <Filter Include="02.GameObjects\02.Character\LandObject\01.Monster\AI">
       <UniqueIdentifier>{7c984c39-25b1-4b6b-b10a-cd7e33117ecd}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\02.Character\LandObject\01.Monster\01. WPAYakuza">
+    <Filter Include="02.GameObjects\02.Character\LandObject\01.Monster\Yakuza">
+      <UniqueIdentifier>{24b27e4b-f104-4dd9-b8b0-a0eeb1f91357}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\01.Monster\Yakuza\00.RushYakuza">
+      <UniqueIdentifier>{58dcf1b7-f012-4f21-92c4-d4317d03352d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\01.Monster\Yakuza\00.RushYakuza\AI">
+      <UniqueIdentifier>{9e849697-ae77-4632-b243-cfb720c7f930}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\01.Monster\Yakuza\01.WPAYakuza">
       <UniqueIdentifier>{3704e0ba-7ed6-4e63-8e8b-f61177bd0faf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\01.Monster\Yakuza\01.WPAYakuza\AI">
+      <UniqueIdentifier>{ef0c8a11-98f3-45df-981d-12a77f36e84a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Levels\01.Office1F">
+      <UniqueIdentifier>{93e0ad20-97d5-4c82-8681-669fe5987803}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Levels\02.Office2F">
+      <UniqueIdentifier>{1248b5da-70c7-4199-9597-40c53e064f0a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

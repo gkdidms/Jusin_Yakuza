@@ -8,6 +8,9 @@
 
 #include "SocketCollider.h"
 #include "SocketEffect.h"
+
+#include "RushYakuza.h"
+#include "WPAYakuza.h"
 #pragma endregion
 
 #pragma region Camera
@@ -80,6 +83,12 @@ HRESULT CLoader::Loading()
 	case LEVEL_GAMEPLAY:
 		hr = Loading_For_GamePlayLevel();
 		break;
+	case LEVEL_OFFICE_1F:
+		hr = Loading_For_Office_1F();
+		break;
+	case LEVEL_OFFICE_2F:
+		hr = Loading_For_Office_2F();
+		break;
 	case LEVEL_TEST:
 		hr = Loading_For_Test();
 	}
@@ -111,6 +120,42 @@ HRESULT CLoader::Loading_For_LogoLevel()
 }
 
 HRESULT CLoader::Loading_For_GamePlayLevel()
+{
+	lstrcpy(m_szLoadingText, TEXT("텍스쳐를 로딩 중 입니다."));
+
+
+	lstrcpy(m_szLoadingText, TEXT("모델를(을) 로딩 중 입니다."));
+
+
+	lstrcpy(m_szLoadingText, TEXT("셰이더를(을) 로딩 중 입니다."));
+
+
+	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
+
+	m_isFinished = true;
+
+	return S_OK;
+}
+
+HRESULT CLoader::Loading_For_Office_1F()
+{
+	lstrcpy(m_szLoadingText, TEXT("텍스쳐를 로딩 중 입니다."));
+
+
+	lstrcpy(m_szLoadingText, TEXT("모델를(을) 로딩 중 입니다."));
+
+
+	lstrcpy(m_szLoadingText, TEXT("셰이더를(을) 로딩 중 입니다."));
+
+
+	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
+
+	m_isFinished = true;
+
+	return S_OK	;
+}
+
+HRESULT CLoader::Loading_For_Office_2F()
 {
 	lstrcpy(m_szLoadingText, TEXT("텍스쳐를 로딩 중 입니다."));
 
@@ -302,8 +347,12 @@ HRESULT CLoader::Loading_For_Test()
 	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Player"), CPlayer::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	/* For.Prototype_GameObject_Jimu */
-	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Jimu"), CRushYakuza::Create(m_pDevice, m_pContext))))
+	/* For.Prototype_GameObject_RushYakuza */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_RushYakuza"), CRushYakuza::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_WPAYakuza */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_WPAYakuza"), CWPAYakuza::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	/* For.Prototype_GameObject_Terrain */

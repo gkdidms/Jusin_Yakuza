@@ -135,8 +135,6 @@ void CAI_RushYakuza::Ready_Tree()
 	m_pRootNode = pRoot;
 }
 
-
-
 CBTNode::NODE_STATE CAI_RushYakuza::Check_Angry()
 {
 	// 분노상태 전환 분기

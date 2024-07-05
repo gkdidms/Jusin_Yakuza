@@ -1,6 +1,9 @@
 #include "WPAYakuza.h"
 
 #include "GameInstance.h"
+#include "Mesh.h"
+
+#include "AI_WPAYakuza.h"
 
 CWPAYakuza::CWPAYakuza(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CMonster { pDevice, pContext}
@@ -22,6 +25,9 @@ HRESULT CWPAYakuza::Initialize(void* pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
+	if (FAILED(Add_Componenets()))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -31,14 +37,48 @@ void CWPAYakuza::Priority_Tick(const _float& fTimeDelta)
 
 void CWPAYakuza::Tick(const _float& fTimeDelta)
 {
+	m_pTree->Tick(fTimeDelta);
+
+	Change_Animation(); //애니메이션 변경
+
+	m_pModelCom->Play_Animation(fTimeDelta, m_pAnimCom, m_isAnimLoop);
+
+	Synchronize_Root(fTimeDelta);
+
+	m_pColliderCom->Tick(m_pTransformCom->Get_WorldMatrix());
 }
 
 void CWPAYakuza::Late_Tick(const _float& fTimeDelta)
 {
+	m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
+
 }
 
 HRESULT CWPAYakuza::Render()
 {
+	if (FAILED(Bind_ResourceData()))
+		return E_FAIL;
+
+	int i = 0;
+	for (auto& pMesh : m_pModelCom->Get_Meshes())
+	{
+		m_pModelCom->Bind_BoneMatrices(m_pShaderCom, "g_BoneMatrices", i);
+
+		m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE);
+
+		if (pMesh->Get_AlphaApply())
+			m_pShaderCom->Begin(1);     //블랜드
+		else
+			m_pShaderCom->Begin(0);		//디폴트
+
+		m_pModelCom->Render(i);
+
+		i++;
+	}
+
+#ifdef _DEBUG
+	m_pGameInstance->Add_DebugComponent(m_pColliderCom);
+#endif
 	return S_OK;
 }
 
@@ -68,6 +108,13 @@ HRESULT CWPAYakuza::Add_Componenets()
 		return E_FAIL;
 
 	//행동트리 저장
+	CAI_WPAYakuza::AI_MONSTER_DESC AIDesc{};
+	AIDesc.pState = &m_iState;
+	AIDesc.pAnim = m_pAnimCom;
+
+	m_pTree = CAI_WPAYakuza::Create(&AIDesc);
+	if (nullptr == m_pTree)
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -86,13 +133,111 @@ HRESULT CWPAYakuza::Bind_ResourceData()
 
 void CWPAYakuza::Change_Animation()
 {
+	_uint iAnim = { 0 };
+	m_isAnimLoop = false;
+
 	switch (m_iState)
 	{
 	case MONSTER_IDLE:
+	{
+		iAnim = m_pAnimCom->Get_AnimationIndex("e_wpa_stand_btl[e_wpa_stand_btl]");
+		m_isAnimLoop = true;
 		break;
+	}
+	case MONSTER_SHIFT_F:
+	{
+		//e_wpa_shift_f[e_wpa_shift_f]
+		iAnim = m_pAnimCom->Get_AnimationIndex("e_wpa_shift_f[e_wpa_shift_f]");
+		m_isAnimLoop = true;
+		break;
+	}
+	case MONSTER_SHIFT_L:
+	{
+		//e_wpa_shift_l[e_wpa_shift_l]
+		iAnim = m_pAnimCom->Get_AnimationIndex("e_wpa_shift_l[e_wpa_shift_l]");
+		m_isAnimLoop = true;
+		break;
+	}
+	case MONSTER_SHIFT_R:
+	{
+		//e_wpa_shift_r[e_wpa_shift_r]
+		iAnim = m_pAnimCom->Get_AnimationIndex("e_wpa_shift_r[e_wpa_shift_r]");
+		m_isAnimLoop = true;
+		break;
+	}
+	case MONSTER_SHIFT_B:
+	{
+		//e_wpa_shift_b[e_wpa_shift_b]
+		iAnim = m_pAnimCom->Get_AnimationIndex("e_wpa_shift_b[e_wpa_shift_b]");
+		m_isAnimLoop = true;
+		break;
+	}
+	case MONSTER_SWAY_B:
+	{
+		//e_wpa_sway_b[e_wpa_sway_b]
+		iAnim = m_pAnimCom->Get_AnimationIndex("e_wpa_sway_b[e_wpa_sway_b]");
+		break;
+	}
+	case MONSTER_SWAY_F:
+	{
+		//e_wpa_sway_f[e_wpa_sway_f]
+		iAnim = m_pAnimCom->Get_AnimationIndex("e_wpa_sway_f[e_wpa_sway_f]");
+		break;
+	}
+	case MONSTER_SWAY_R:
+	{
+		//e_wpa_sway_r[e_wpa_sway_r]
+		iAnim = m_pAnimCom->Get_AnimationIndex("e_wpa_sway_r[e_wpa_sway_r]");
+		break;
+	}
+	case MONSTER_SWAY_L:
+	{
+		//e_wpa_sway_l[e_wpa_sway_l]
+		iAnim = m_pAnimCom->Get_AnimationIndex("e_wpa_sway_l[e_wpa_sway_l]");
+		break;
+	}
+	case MONSTER_CMD_1:
+	{
+		//e_wpa_cmb_01[e_wpa_cmb_01]
+		iAnim = m_pAnimCom->Get_AnimationIndex("e_wpa_cmb_01[e_wpa_cmb_01]");
+		break;
+	}
+	case MONSTER_CMD_2:
+	{
+		//e_wpa_cmb_02[e_wpa_cmb_02]
+		iAnim = m_pAnimCom->Get_AnimationIndex("e_wpa_cmb_02[e_wpa_cmb_02]");
+		break;
+	}
+	case MONSTER_ANGRY_START:
+	{
+		//e_angry_typec[e_angry_typec]
+		iAnim = m_pAnimCom->Get_AnimationIndex("e_angry_typec[e_angry_typec]");
+		break;
+	}
+	case MONSTER_ANGRY_CHOP:
+	{
+		//e_knk_atk_chop[e_knk_atk_chop]
+		iAnim = m_pAnimCom->Get_AnimationIndex("e_knk_atk_chop[e_knk_atk_chop]");
+		break;
+	}
+	case MONSTER_ANGRY_KICK:
+	{
+		//e_knk_atk_kick[e_knk_atk_kick]
+		iAnim = m_pAnimCom->Get_AnimationIndex("e_knk_atk_kick[e_knk_atk_kick]");
+		break;
+	}
+	case MONSTER_DEATH:
+	{
+		break;
+	}
 	default:
 		break;
 	}
+
+	if (iAnim == -1)
+		return;
+
+	m_pModelCom->Set_AnimationIndex(iAnim, m_pAnimCom->Get_Animations(), m_fChangeInterval);
 }
 
 CWPAYakuza* CWPAYakuza::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -118,4 +263,6 @@ CGameObject* CWPAYakuza::Clone(void* pArg)
 void CWPAYakuza::Free()
 {
 	__super::Free();
+
+	Safe_Release(m_pTree);
 }
