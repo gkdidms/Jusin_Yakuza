@@ -223,8 +223,9 @@
     <ClInclude Include="..\public\Player.h" />
     <ClInclude Include="..\public\PlayerCamera.h" />
     <ClInclude Include="..\Public\Sky.h" />
-    <ClInclude Include="..\Public\SoketCollider.h" />
-    <ClInclude Include="..\Public\SoketObject.h" />
+    <ClInclude Include="..\Public\SocketCollider.h" />
+    <ClInclude Include="..\Public\SocketEffect.h" />
+    <ClInclude Include="..\Public\SocketObject.h" />
     <ClInclude Include="..\public\SystemManager.h" />
     <ClInclude Include="..\Public\Terrain.h" />
     <ClInclude Include="..\Public\TRailEffect.h" />
@@ -299,8 +300,9 @@
     <ClCompile Include="..\private\Player.cpp" />
     <ClCompile Include="..\private\PlayerCamera.cpp" />
     <ClCompile Include="..\Private\Sky.cpp" />
-    <ClCompile Include="..\Private\SoketCollider.cpp" />
-    <ClCompile Include="..\Private\SoketObject.cpp" />
+    <ClCompile Include="..\Private\SocketCollider.cpp" />
+    <ClCompile Include="..\Private\SocketEffect.cpp" />
+    <ClCompile Include="..\Private\SocketObject.cpp" />
     <ClCompile Include="..\private\SystemManager.cpp" />
     <ClCompile Include="..\Private\Terrain.cpp" />
     <ClCompile Include="..\Private\TRailEffect.cpp" />

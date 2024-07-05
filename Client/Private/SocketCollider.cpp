@@ -1,23 +1,23 @@
-#include "SoketCollider.h"
+#include "SocketCollider.h"
 #include "GameInstance.h"
 #include "SystemManager.h"
 
-CSoketCollider::CSoketCollider(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
-	: CSoketObject{ pDevice, pContext }
+CSocketCollider::CSocketCollider(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
+	: CSocketObject{ pDevice, pContext }
 {
 }
 
-CSoketCollider::CSoketCollider(const CSoketCollider & rhs)
-	: CSoketObject{ rhs }
+CSocketCollider::CSocketCollider(const CSocketCollider & rhs)
+	: CSocketObject{ rhs }
 {
 }
 
-HRESULT CSoketCollider::Initialize_Prototype()
+HRESULT CSocketCollider::Initialize_Prototype()
 {
 	return S_OK;
 }
 
-HRESULT CSoketCollider::Initialize(void * pArg)
+HRESULT CSocketCollider::Initialize(void * pArg)
 {
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;	
@@ -28,17 +28,17 @@ HRESULT CSoketCollider::Initialize(void * pArg)
 	return S_OK;
 }
 
-void CSoketCollider::Priority_Tick(const _float& fTimeDelta)
+void CSocketCollider::Priority_Tick(const _float& fTimeDelta)
 {
 }
 
-void CSoketCollider::Tick(const _float& fTimeDelta)
+void CSocketCollider::Tick(const _float& fTimeDelta)
 {
 	if(m_pColliderCom)
 		m_pColliderCom->Tick(XMLoadFloat4x4(&m_WorldMatrix));
 }
 
-void CSoketCollider::Late_Tick(const _float& fTimeDelta)
+void CSocketCollider::Late_Tick(const _float& fTimeDelta)
 {
 	__super::Late_Tick(fTimeDelta);
 
@@ -48,7 +48,7 @@ void CSoketCollider::Late_Tick(const _float& fTimeDelta)
 	m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
 }
 
-HRESULT CSoketCollider::Render()
+HRESULT CSocketCollider::Render()
 {
 #ifdef _DEBUG
 	if(m_pColliderCom && m_isOn)
@@ -57,7 +57,7 @@ HRESULT CSoketCollider::Render()
 	return S_OK;
 }
 
-HRESULT CSoketCollider::Add_Components(void* pArg)
+HRESULT CSocketCollider::Add_Components(void* pArg)
 {
 	SOKET_COLLIDER_DESC* pDesc = static_cast<SOKET_COLLIDER_DESC*>(pArg);
 
@@ -109,7 +109,7 @@ HRESULT CSoketCollider::Add_Components(void* pArg)
 	return S_OK;
 }
 
-HRESULT CSoketCollider::Bind_ShaderResources()
+HRESULT CSocketCollider::Bind_ShaderResources()
 {
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix)))
 		return E_FAIL;	
@@ -121,33 +121,33 @@ HRESULT CSoketCollider::Bind_ShaderResources()
 	return S_OK;
 }
 
-CSoketCollider * CSoketCollider::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
+CSocketCollider * CSocketCollider::Create(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 {
-	CSoketCollider*		pInstance = new CSoketCollider(pDevice, pContext);
+	CSocketCollider*		pInstance = new CSocketCollider(pDevice, pContext);
 
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
-		MSG_BOX("Failed To Created : CSoketCollider");
+		MSG_BOX("Failed To Created : CSocketCollider");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-CGameObject * CSoketCollider::Clone(void * pArg)
+CGameObject * CSocketCollider::Clone(void * pArg)
 {
-	CSoketCollider*		pInstance = new CSoketCollider(*this);
+	CSocketCollider*		pInstance = new CSocketCollider(*this);
 
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
-		MSG_BOX("Failed To Cloned : CSoketCollider");
+		MSG_BOX("Failed To Cloned : CSocketCollider");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-void CSoketCollider::Free()
+void CSocketCollider::Free()
 {
 	__super::Free();
 

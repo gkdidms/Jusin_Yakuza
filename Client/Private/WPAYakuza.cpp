@@ -51,6 +51,7 @@ void CWPAYakuza::Tick(const _float& fTimeDelta)
 void CWPAYakuza::Late_Tick(const _float& fTimeDelta)
 {
 	m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
+
 }
 
 HRESULT CWPAYakuza::Render()
@@ -78,7 +79,6 @@ HRESULT CWPAYakuza::Render()
 #ifdef _DEBUG
 	m_pGameInstance->Add_DebugComponent(m_pColliderCom);
 #endif
-
 	return S_OK;
 }
 

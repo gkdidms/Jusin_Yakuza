@@ -34,7 +34,7 @@ private:
     virtual ~CCharacterData() = default;
 
 public:
-    HRESULT Initialize(wstring wstrModelName);
+    HRESULT Initialize(class CLandObject* pCharacter);
 
 public:
     const vector<_uint>& Get_AlphaMeshes() const {
@@ -49,6 +49,11 @@ public:
     const unordered_map<_uint, COLLIDER_STATE>& Get_Colliders() const {
         return m_Colliders;
     }
+
+    const multimap<string, wstring>& Get_Effets() const {
+        return m_Effects;
+    }
+
     const vector<ANIMATION_EVENT>& Get_CurrentEvents() const {
         return m_CurrentEvents;
     }
@@ -68,7 +73,7 @@ private:
     
 private:
     CGameInstance* m_pGameInstance = { nullptr };
-    wstring m_wstrModelName = TEXT("");
+    class CLandObject* m_pCharacter = { nullptr };
 
     // 모델 전체에서의 각기 인덱스
     vector<_uint> m_AlphaMeshes;
@@ -78,12 +83,13 @@ private:
     multimap<string, ANIMATION_EVENT> m_AnimationEvents;            
     // first: 뼈인덱스
     unordered_map<_uint, COLLIDER_STATE> m_Colliders;
-    multimap<string, _uint> m_Effects;
+    // first 뼈 이름, second 이펙트 파일 이름 (.dat 제거한 이름)
+    multimap<string, wstring> m_Effects;
 
     vector<ANIMATION_EVENT> m_CurrentEvents; 
 
 public:
-    static CCharacterData* Create(wstring wstrModelName);
+    static CCharacterData* Create(class CLandObject* pCharacter);
     virtual void Free() override;
 };
 END

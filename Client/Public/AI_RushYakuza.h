@@ -28,8 +28,14 @@ public:
 private:
     CModel* m_pModelCom = { nullptr };
 
+    _uint m_iSkill = { SKILL_END };
 
+private:
+    _float m_fDelayAttackDuration = { 10.f }; 
+    _float m_fAttackDelayTime = { 0.f }; // 공격이 끝난 후 지속시간
 
+    _float m_fShiftDuration = { 0.f }; // 랜덤으로 부여받는다.
+    _float m_fShiftTime = { 0.f };
 
 private:
     void Ready_Tree();

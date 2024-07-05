@@ -2,20 +2,29 @@
 
 #include "GameInstance.h"
 
-#pragma region TEST
+#pragma region Character
 #include "Player.h"
-#include "PlayerCamera.h"
-#include "DebugCamera.h"
-#include "CineCamera.h"
-#include "Decal.h"
+#include "RushYakuza.h"
+
+#include "SocketCollider.h"
+#include "SocketEffect.h"
+
 #include "RushYakuza.h"
 #include "WPAYakuza.h"
 #pragma endregion
 
+#pragma region Camera
+#include "PlayerCamera.h"
+#include "DebugCamera.h"
+#include "CineCamera.h"
+#include "Decal.h"
+#pragma endregion
+
+#pragma region Map
 #include "Terrain.h"
 #include "Construction.h"
-#include "SoketCollider.h"
 #include "MapCollider.h"
+#pragma endregion
 
 #pragma region Effect
 #include "Particle_Point.h"
@@ -368,10 +377,15 @@ HRESULT CLoader::Loading_For_Test()
 
 	/* For.Prototype_GameObject_SoketCollider */
 	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_SoketCollider"),
-		CSoketCollider::Create(m_pDevice, m_pContext))))
+		CSocketCollider::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	/* For.Prototype_GameObject_SoketCollider */
+	/* For.Prototype_GameObject_SoketEffect */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_SoketEffect"),
+		CSocketEffect::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_MapCollider */
 	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_MapCollider"),
 		CMapCollider::Create(m_pDevice, m_pContext))))
 		return E_FAIL;

@@ -1,7 +1,7 @@
 #pragma once
 
 
-#include "SoketObject.h"
+#include "SocketObject.h"
 #include "CharacterData.h"
 #include "Client_Defines.h"
 
@@ -13,19 +13,18 @@ END
 
 BEGIN(Client)
 
-class CSoketCollider final : public CSoketObject
+class CSocketEffect final : public CSocketObject
 {
 public:
-	struct SOKET_COLLIDER_DESC : public SOKETOBJECT_DESC
+	struct SOKET_EFFECT_DESC : public SOCKETOBJECT_DESC
 	{
-		_uint iBoneIndex;
-		CCharacterData::COLLIDER_STATE ColliderState;
+		wstring wstrEffectName;
 	};
 
 private:
-	CSoketCollider(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	CSoketCollider(const CSoketCollider& rhs);
-	virtual ~CSoketCollider() = default;
+	CSocketEffect(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	CSocketEffect(const CSocketEffect& rhs);
+	virtual ~CSocketEffect() = default;
 
 public:
 	virtual HRESULT Initialize_Prototype() override;
@@ -44,21 +43,14 @@ public:
 	}
 
 private:
-	//class CSystemManager*			m_pSystemManager = { nullptr };
-	CShader*						m_pShaderCom = { nullptr };
-	CModel*							m_pModelCom = { nullptr };
-	CCollider*						m_pColliderCom = { nullptr };
-
-	_float							m_fAlphaScale = { 0.f };
-	
-	_bool							m_isOn = { true };
+	class CEffect*				m_pEffect = { nullptr };
+	_bool						m_isOn = { true };
 
 public:
 	HRESULT Add_Components(void* pArg);
-	HRESULT Bind_ShaderResources();
 
 public:
-	static CSoketCollider* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	static CSocketEffect* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;
 	virtual void Free() override;
 };
