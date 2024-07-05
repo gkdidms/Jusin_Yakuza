@@ -391,16 +391,16 @@ void CPlayer::KRS_KeyInput(const _float& fTimeDelta)
 		{
 			if (m_iCurrentBehavior == (_uint)KRS_BEHAVIOR_STATE::WALK || m_iCurrentBehavior == (_uint)KRS_BEHAVIOR_STATE::RUN)
 				m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Reset();
-
+		//_bool isStop = { false };
 			_vector vLookPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION) + (m_pTransformCom->Get_State(CTransform::STATE_LOOK) - m_pGameInstance->Get_CamLook());
 			m_iCurrentBehavior = isShift ? (_uint)KRS_BEHAVIOR_STATE::WALK : (_uint)KRS_BEHAVIOR_STATE::RUN;
-
+		//	isShift = true;
 			m_InputDirection[B] = true;
 			Compute_MoveDirection_FB();
 			m_pTransformCom->LookAt_For_LandObject(vLookPos);
 			isMove = true;
 		}
-
+		//	m_pTransformCom->Go_Straight(fTimeDelta);
 		if (m_pGameInstance->GetKeyState(DIK_A) == HOLD)
 		{
 			if (m_iCurrentBehavior == (_uint)KRS_BEHAVIOR_STATE::WALK || m_iCurrentBehavior == (_uint)KRS_BEHAVIOR_STATE::RUN)
@@ -408,26 +408,30 @@ void CPlayer::KRS_KeyInput(const _float& fTimeDelta)
 
 			_vector vLookPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION) + (m_pTransformCom->Get_State(CTransform::STATE_LOOK) - m_pGameInstance->Get_CamRight());
 			m_iCurrentBehavior = isShift ? (_uint)KRS_BEHAVIOR_STATE::WALK : (_uint)KRS_BEHAVIOR_STATE::RUN;
-
+		//	m_MoveDirection[F] = false;
 			m_InputDirection[L] = true;
 			Compute_MoveDirection_RL();
 			m_pTransformCom->LookAt_For_LandObject(vLookPos);
 			isMove = true;
 		}
-
+		//	m_iCurrentBehavior = isShift ? (_uint)ADVENTURE_BEHAVIOR_STATE::WALK : (_uint)ADVENTURE_BEHAVIOR_STATE::RUN;
 		if (m_pGameInstance->GetKeyState(DIK_D) == HOLD)
 		{
 			if (m_iCurrentBehavior == (_uint)KRS_BEHAVIOR_STATE::WALK || m_iCurrentBehavior == (_uint)KRS_BEHAVIOR_STATE::RUN)
 				m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Reset();
-
+		//	m_MoveDirection[B] = false;
 			_vector vLookPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION) + (m_pTransformCom->Get_State(CTransform::STATE_LOOK) + m_pGameInstance->Get_CamRight());
 			m_iCurrentBehavior = isShift ? (_uint)KRS_BEHAVIOR_STATE::WALK : (_uint)KRS_BEHAVIOR_STATE::RUN;
-
+		//	m_iCurrentBehavior = isShift ? (_uint)ADVENTURE_BEHAVIOR_STATE::WALK : (_uint)ADVENTURE_BEHAVIOR_STATE::RUN;
 			m_InputDirection[R] = true;
 			Compute_MoveDirection_RL();
 			m_pTransformCom->LookAt_For_LandObject(vLookPos);
 			isMove = true;
 		}
+		//	m_MoveDirection[L] = false;
+		//}
+		//	m_MoveDirection[L] = false;
+		//}
 
 		if (m_pGameInstance->GetKeyState(DIK_E) == TAP)
 		{

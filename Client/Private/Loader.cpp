@@ -15,11 +15,14 @@
 #include "DebugCamera.h"
 #include "CineCamera.h"
 #include "Decal.h"
+#include "RushYakuza.h"
 #pragma endregion
 
 #pragma region Map
 #include "Terrain.h"
 #include "Construction.h"
+#include "SoketCollider.h"
+#include "MapCollider.h"
 #include "MapCollider.h"
 #pragma endregion
 
@@ -224,6 +227,8 @@ HRESULT CLoader::Loading_For_Test()
 	/* For.Prototype_Component_Anim */
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Anim"), CAnim::Create(m_pDevice, m_pContext, "../Bin/DataFiles/AnimationData/Animation.dat", false))))
 		return E_FAIL;
+	/*if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Anim"), CAnim::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Anim/Animation.fbx", true))))
+		return E_FAIL;*/
 
 	lstrcpy(m_szLoadingText, TEXT("모델를(을) 로딩 중 입니다."));
 	Add_Models_On_Path(LEVEL_TEST, TEXT("../Bin/Resources/Models/Anim/"));
@@ -335,6 +340,11 @@ HRESULT CLoader::Loading_For_Test()
 		return E_FAIL;
 
 	/* For.Prototype_GameObject_MapCollider */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_MapCollider"),
+		CMapCollider::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_SoketCollider */
 	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_MapCollider"),
 		CMapCollider::Create(m_pDevice, m_pContext))))
 		return E_FAIL;

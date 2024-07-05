@@ -172,6 +172,7 @@
     <ClInclude Include="..\..\Imgui\imgui\imstb_rectpack.h" />
     <ClInclude Include="..\..\Imgui\imgui\imstb_textedit.h" />
     <ClInclude Include="..\..\Imgui\imgui\imstb_truetype.h" />
+    <ClInclude Include="..\public\AI_Monster.h" />
     <ClInclude Include="..\public\AI_RushYakuza.h" />
     <ClInclude Include="..\Public\Aura.h" />
     <ClInclude Include="..\public\Background.h" />
@@ -226,6 +227,7 @@
     <ClInclude Include="..\Public\Terrain.h" />
     <ClInclude Include="..\Public\TRailEffect.h" />
     <ClInclude Include="..\public\UI.h" />
+    <ClInclude Include="..\public\WPAYakuza.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="Resource.h" />
@@ -245,6 +247,7 @@
     <ClCompile Include="..\..\Imgui\imgui\imgui_draw.cpp" />
     <ClCompile Include="..\..\Imgui\imgui\imgui_tables.cpp" />
     <ClCompile Include="..\..\Imgui\imgui\imgui_widgets.cpp" />
+    <ClCompile Include="..\private\AI_Monster.cpp" />
     <ClCompile Include="..\private\AI_RushYakuza.cpp" />
     <ClCompile Include="..\Private\Aura.cpp" />
     <ClCompile Include="..\private\Background.cpp" />
@@ -298,6 +301,7 @@
     <ClCompile Include="..\Private\Terrain.cpp" />
     <ClCompile Include="..\Private\TRailEffect.cpp" />
     <ClCompile Include="..\private\UI.cpp" />
+    <ClCompile Include="..\private\WPAYakuza.cpp" />
     <ClCompile Include="Client.cpp" />
   </ItemGroup>
   <ItemGroup>
