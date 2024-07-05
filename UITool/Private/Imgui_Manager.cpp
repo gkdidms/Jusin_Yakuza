@@ -593,12 +593,19 @@ void CImgui_Manager::Window_Binary()
                         m_iBinaryObjectIndex = n;
                         m_WorldMatirx = *BinaryObject[n]->Get_TransformCom()->Get_WorldFloat4x4();
                         m_iBinaryPick = BINARY_OBJECT;
-
-
-                        //m_StartUV = dynamic_cast<CUI_Texture*>(BinaryObject[n])->Get_StartUV();
-                        //m_EndUV = dynamic_cast<CUI_Texture*>(BinaryObject[n])->Get_EndUV();
-
                         m_isOpenBinaryGroup = BinaryObject[m_iBinaryObjectIndex]->Get_TypeIndex() == CObject_Manager::GROUP;
+
+                        if(CObject_Manager::GROUP !=BinaryObject[m_iBinaryObjectIndex]->Get_TypeIndex())
+                        {
+                            m_StartUV = dynamic_cast<CUI_Texture*>(BinaryObject[n])->Get_StartUV();
+                            m_EndUV = dynamic_cast<CUI_Texture*>(BinaryObject[n])->Get_EndUV();
+                        }
+                        if (CObject_Manager::BTN == BinaryObject[m_iBinaryObjectIndex]->Get_TypeIndex())
+                        {
+                            m_ClickStartUV= dynamic_cast<CBtn*>(BinaryObject[n])->Get_ClickStartUV();
+                            m_ClickEndUV = dynamic_cast<CBtn*>(BinaryObject[n])->Get_ClickEndUV();
+                        }
+
                     }
                     if (is_selected)
                         ImGui::SetItemDefaultFocus();
@@ -918,6 +925,11 @@ void CImgui_Manager::Window_Binary_Group()
                  m_WorldMatirx = *Objects[n]->Get_TransformCom()->Get_WorldFloat4x4();
                  m_StartUV = dynamic_cast<CUI_Texture*>(Objects[n])->Get_StartUV();
                  m_EndUV = dynamic_cast<CUI_Texture*>(Objects[n])->Get_EndUV();
+                 if (CObject_Manager::BTN == Objects[n]->Get_TypeIndex())
+                 {
+                     m_ClickStartUV = dynamic_cast<CBtn*>(Objects[n])->Get_ClickStartUV();
+                     m_ClickEndUV = dynamic_cast<CBtn*>(Objects[n])->Get_ClickEndUV();
+                 }
                  m_iBinaryPick = GROUP_OBJECT;
              }
              if (is_selected)
