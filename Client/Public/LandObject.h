@@ -31,11 +31,6 @@ protected:
     wstring m_wstrModelName = TEXT("");
 
 protected:
-    class CSystemManager* m_pSystemManager = { nullptr };
-
-    wstring m_wstrModelName = TEXT("");
-
-protected:
     virtual HRESULT Add_Componenets();
     virtual HRESULT Bind_ResourceData();
 

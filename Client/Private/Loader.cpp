@@ -341,11 +341,6 @@ HRESULT CLoader::Loading_For_Test()
 		CMapCollider::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	/* For.Prototype_GameObject_MapCollider */
-	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_MapCollider"),
-		CMapCollider::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
 
 	m_isFinished = true;
