@@ -6,6 +6,7 @@
 #include "Text.h"
 #include "Group.h"
 #include "Btn.h"
+#include "UI_Effect.h"	
 
 #include "UI_Object.h"
 
@@ -79,6 +80,12 @@ HRESULT CObject_Manager::Copy_Group(const wstring& strTag)
 			if (nullptr == pImage)
 				return E_FAIL;
 
+			pImage->Set_Color(pUI->Get_Color());	
+			pImage->Set_SizeX(pUI->Get_SizeX());
+			pImage->Set_SizeY(pUI->Get_SizeY());
+			pImage->Set_ShaderPass(pUI->Get_ShaderPass());
+			pImage->Change_UV(pUI->Get_StartUV(), pUI->Get_EndUV());
+			pImage->Get_TransformCom()->Set_WorldMatrix(pUI->Get_TransformCom()->Get_WorldMatrix());			
 			CopyFineObjects.emplace_back(pImage);
 		}
 		else if (pTexture->Get_TypeIndex() == TEXT)
@@ -138,6 +145,17 @@ HRESULT CObject_Manager::Remove_Group(const wstring& strTag)
 	return S_OK;
 }
 
+HRESULT CObject_Manager::Remove_GroupObject(const wstring& strTag, const _uint ibinaryIndex,const _uint iIndex)
+{
+	vector<class CUI_Object*>* pFineBinaryObjects = Find_BinaryObject(strTag);
+	if (nullptr == pFineBinaryObjects)
+		return E_FAIL;
+
+	dynamic_cast<CGroup*>((*pFineBinaryObjects)[ibinaryIndex])->Remove_PartObject(iIndex);
+
+	return S_OK;
+}
+
 HRESULT CObject_Manager::Remove_Object(const wstring& strTag, _uint iIndex)
 {
 	vector<class CUI_Object*>* pFineObjects = Find_RenderTextureObject(strTag);
@@ -189,6 +207,53 @@ HRESULT CObject_Manager::Move_ObjectIndex(const wstring& strTag, _uint iIndex, _
 	return S_OK;
 }
 
+HRESULT CObject_Manager::Save_binary()
+{
+	string strDirectory = "../../Client/Bin/DataFiles/UIData/";
+
+	fs::path path(strDirectory);	
+	if (!exists(path))	
+		fs::create_directory(path);	
+
+	for (auto& Pair : m_BinaryObjects)
+	{
+		for (auto& pObj : Pair.second)
+		{
+			switch (pObj->Get_TypeIndex())
+			{
+			case UITool::CObject_Manager::IMG:
+			case UITool::CObject_Manager::BTN:	
+			case UITool::CObject_Manager::TEXT:
+			case UITool::CObject_Manager::EFFECT:
+				pObj->Save_binary(strDirectory);
+				break;
+			case UITool::CObject_Manager::GROUP:
+			{
+				string Directory = strDirectory;
+
+				Directory = Directory + pObj->Get_Name() + ".dat";
+				ofstream out(Directory, ios::binary);
+
+				dynamic_cast<CGroup*>(pObj)->Save_Groupbinary(out);
+
+				out.close();
+			}
+				break;
+			default:
+				break;
+			}
+			
+		}
+	}
+
+	return S_OK;
+}
+
+HRESULT CObject_Manager::Load_binary()
+{
+	return E_NOTIMPL;
+}
+
 HRESULT CObject_Manager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
 	m_pDevice = pDevice;
@@ -220,7 +285,7 @@ HRESULT CObject_Manager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* 
 	XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH(ViewPort.Width, ViewPort.Height, 0.f, 1.f));
 
 	//백버퍼 카피
-	CRenderTarget* pCopyBackBuffer = CRenderTarget::Create(m_pDevice, m_pContext, 1280.f, 720.f, DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(1.f, 0.f, 0.f, 1.f));
+	CRenderTarget* pCopyBackBuffer = CRenderTarget::Create(m_pDevice, m_pContext, 1280.f, 720.f, DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(0.f, 0.f, 0.f, 0.f));
 	if (nullptr == pCopyBackBuffer)
 		return E_FAIL;
 
@@ -411,7 +476,7 @@ HRESULT CObject_Manager::Add_RenderTextureObject(const wstring& strObjectTag, vo
 		TextureDesc.strTextureFileName = pDesc->strFileName;
 		TextureDesc.strTextureFilePath = pDesc->strFilePath;
 		TextureDesc.iTypeIndex = pDesc->iTextureType;
-
+		TextureDesc.strName = pDesc->strName;
 		CUI_Texture* pImage = dynamic_cast<CUI_Texture*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Image_Texture"), &TextureDesc));
 		if (nullptr == pImage)
 			return E_FAIL;
@@ -422,8 +487,74 @@ HRESULT CObject_Manager::Add_RenderTextureObject(const wstring& strObjectTag, vo
 	{
 		CText::TEXT_DESC TextDesc = {};
 		TextDesc.strText = pDesc->strText;
-		TextDesc.iTextType = TEXT;
 		TextDesc.vColor = pDesc->vColor;
+		TextDesc.strName = pDesc->strName;
+		TextDesc.iTypeIndex = pDesc->iTextureType;	
+		CText* pText = dynamic_cast<CText*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Text"), &TextDesc));
+		if (nullptr == pText)
+			return E_FAIL;
+
+		pObjects->emplace_back(pText);
+	}
+
+	if (nullptr == pObjects)
+	{
+		m_Objects.emplace(strObjectTag, *pObjects);
+	}
+
+	return S_OK;
+}
+
+HRESULT CObject_Manager::Copy_RenderTextureObject(const wstring& strObjectTag, _uint iIndex)
+{
+	//RenderTargetGroup에 오브젝트 추가
+
+	vector<CUI_Object*>* pObjects = Find_RenderTextureObject(strObjectTag);
+
+	//복사 객체 찾아오기 (인덱스로)
+	OBJ_MNG_DESC pDesc{};
+	pDesc.iTextureType = (*pObjects)[iIndex]->Get_TypeIndex();
+	static _uint Index = 0;
+
+
+	// 타입별로 클래스 생성.
+	if (nullptr == pObjects)
+	{
+		//생성
+		vector<CUI_Object*> Objects;	
+		pObjects = &Objects;	
+	}
+
+	if (pDesc.iTextureType == IMG)
+	{
+		
+		CUI_Texture::UI_TEXTURE_DESC TextureDesc = {};
+		TextureDesc.strTextureFileName = dynamic_cast<CUI_Texture*>((*pObjects)[iIndex])->Get_FileName();
+		TextureDesc.strTextureFilePath = dynamic_cast<CUI_Texture*>((*pObjects)[iIndex])->Get_FilePath();
+		TextureDesc.iTypeIndex = dynamic_cast<CUI_Texture*>((*pObjects)[iIndex])->Get_TypeIndex();
+		TextureDesc.strName = dynamic_cast<CUI_Texture*>((*pObjects)[iIndex])->Get_Name()+"%d";
+		char buffer[MAX_PATH] = { "" };
+		sprintf(buffer, TextureDesc.strName.c_str(), Index);
+		string result(buffer);
+		TextureDesc.strName = result;
+
+		CUI_Texture* pImage = dynamic_cast<CUI_Texture*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Image_Texture"), &TextureDesc));
+		if (nullptr == pImage)
+			return E_FAIL;
+
+		pImage->Set_SizeX(dynamic_cast<CUI_Texture*>((*pObjects)[iIndex])->Get_SizeX());
+		pImage->Set_SizeY(dynamic_cast<CUI_Texture*>((*pObjects)[iIndex])->Get_SizeY());
+		pImage->Set_ShaderPass(dynamic_cast<CUI_Texture*>((*pObjects)[iIndex])->Get_ShaderPass());
+		pImage->Set_Color(dynamic_cast<CUI_Texture*>((*pObjects)[iIndex])->Get_Color());
+		pImage->Change_UV(dynamic_cast<CUI_Texture*>((*pObjects)[iIndex])->Get_StartUV(), dynamic_cast<CUI_Texture*>((*pObjects)[iIndex])->Get_EndUV());
+		pImage->Get_TransformCom()->Set_WorldMatrix(dynamic_cast<CUI_Texture*>((*pObjects)[iIndex])->Get_TransformCom()->Get_WorldMatrix());
+		pObjects->emplace_back(pImage);
+	}
+	else if (pDesc.iTextureType == TEXT)
+	{
+		CText::TEXT_DESC TextDesc = {};
+		TextDesc.strText = dynamic_cast<CText*>((*pObjects)[iIndex])->Get_Text();	
+		TextDesc.vColor = dynamic_cast<CText*>((*pObjects)[iIndex])->Get_Color();
 
 		CText* pText = dynamic_cast<CText*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Text"), &TextDesc));
 		if (nullptr == pText)
@@ -485,11 +616,10 @@ HRESULT CObject_Manager::Add_BinaryObject(const wstring& strObjectTag, void* pAr
 			return E_FAIL;
 		pObjects->emplace_back(pBtn);
 	}
-	else if (iType == TEXT || iType == TEXT_FORMAT)
+	else if (iType == TEXT)
 	{
 		CText::TEXT_DESC TextDesc = {};
 		TextDesc.strText = pDesc->strText;
-		TextDesc.iTextType = TEXT;
 		TextDesc.vColor = pDesc->vColor;
 		TextDesc.strName = pDesc->strName;
 		TextDesc.iTypeIndex = pDesc->iTextureType;
@@ -512,6 +642,24 @@ HRESULT CObject_Manager::Add_BinaryObject(const wstring& strObjectTag, void* pAr
 
 		pObjects->emplace_back(pGroup);
 	}
+	else if (iType == EFFECT)
+	{
+		CUI_Effect::UI_EFFECT_DESC EffectDesc{};
+		EffectDesc.strTextureFileName = pDesc->strFileName;
+		EffectDesc.strTextureFilePath = pDesc->strFilePath;
+		EffectDesc.strName = pDesc->strName;
+		EffectDesc.iTypeIndex = pDesc->iTextureType;
+		EffectDesc.vLifeTime = pDesc->vLifeTime;
+		EffectDesc.fSpeed = pDesc->fSpeed;
+		EffectDesc.vColor = pDesc->vColor;
+
+		CUI_Effect* pUIEffect = dynamic_cast<CUI_Effect*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UIEffect"), &EffectDesc));
+		if (nullptr == pUIEffect)
+			return E_FAIL;
+
+		pObjects->emplace_back(pUIEffect);
+	}
+
 
 	if (nullptr == pObjects)
 	{

@@ -54,10 +54,21 @@ public:
     }
 
 public:
-    void Set_CurrentAnimation(string strAnimName);
+    void Set_CurrentAnimation(string strAnimName);          //현재 애니메이션에 맞는 이벤트를 설정해둔다.
+
+private:
+    HRESULT Load_AlphaMeshes(string strFilePath);
+    HRESULT Load_LoopAnimations(string strFilePath);
+    HRESULT Load_AnimationEvents(string strFilePath);
+    HRESULT Load_Colliders(string strFilePath);
+    HRESULT Load_EffectState(string strFilePath);
+
+private:
+    void Create_Effect(string& strBoneName, string& strEffectName);
     
 private:
     CGameInstance* m_pGameInstance = { nullptr };
+    wstring m_wstrModelName = TEXT("");
 
     // 모델 전체에서의 각기 인덱스
     vector<_uint> m_AlphaMeshes;
@@ -67,8 +78,9 @@ private:
     multimap<string, ANIMATION_EVENT> m_AnimationEvents;            
     // first: 뼈인덱스
     unordered_map<_uint, COLLIDER_STATE> m_Colliders;
+    multimap<string, _uint> m_Effects;
 
-    vector<ANIMATION_EVENT> m_CurrentEvents;
+    vector<ANIMATION_EVENT> m_CurrentEvents; 
 
 public:
     static CCharacterData* Create(wstring wstrModelName);

@@ -1,6 +1,10 @@
 #include "CharacterData.h"  
 #include "GameInstance.h"
 
+#include "Effect.h"
+#include "Model.h"
+#include "SystemManager.h"
+
 CCharacterData::CCharacterData()
 	:m_pGameInstance{CGameInstance::GetInstance()}
 {
@@ -11,17 +15,69 @@ HRESULT CCharacterData::Initialize(wstring wstrModelName)
 {
 	wstring wstrFilePath = TEXT("../Bin/DataFiles/Character/");
 	wstrFilePath += wstrModelName + TEXT("/");
+
+	// 알파 적용할 메시 로드
 	string strFilePath = m_pGameInstance->WstringToString(wstrFilePath);
-
 	string strFileName = m_pGameInstance->WstringToString(wstrModelName) + "_AlphaMeshes.dat";
-
 	string strFileFullPath = strFilePath + strFileName;
+	if (FAILED(Load_AlphaMeshes(strFileFullPath)))
+		return E_FAIL;
 
-	if (fs::exists(strFileFullPath))
+	// 루프애니메이션 정보 로드
+	strFileName = m_pGameInstance->WstringToString(wstrModelName) + "_LoopAnimations.dat";
+	strFileFullPath = strFilePath + strFileName;
+	if (FAILED(Load_LoopAnimations(strFileFullPath)))
+		return E_FAIL;
+	
+	// 애니메이션 이벤트 정보 로드
+	strFileName = m_pGameInstance->WstringToString(wstrModelName) + "_AnimationEvents.dat";
+	strFileFullPath = strFilePath + strFileName;
+	if (FAILED(Load_AnimationEvents(strFileFullPath)))
+		return E_FAIL;
+
+	// 콜라이더 정보 로드
+	strFileName = m_pGameInstance->WstringToString(wstrModelName) + "_Colliders.dat";
+	strFileFullPath = strFilePath + strFileName;
+	if (FAILED(Load_Colliders(strFileFullPath)))
+		return E_FAIL;
+
+	// 이펙트 정보 로드
+	strFileName = m_pGameInstance->WstringToString(wstrModelName) + "_EffectState.dat";
+	strFileFullPath = strFilePath + strFileName;
+	if (FAILED(Load_EffectState(strFileFullPath)))
+		return E_FAIL;
+	
+	return S_OK;
+}
+
+void CCharacterData::Set_CurrentAnimation(string strAnimName)
+{
+	m_CurrentEvents.clear();
+
+	auto lower_bound_iter = m_AnimationEvents.lower_bound(strAnimName);
+	auto upper_bound_iter = m_AnimationEvents.upper_bound(strAnimName);
+
+	if (lower_bound_iter == upper_bound_iter && lower_bound_iter != m_AnimationEvents.end())
+	{
+		m_CurrentEvents.push_back((*lower_bound_iter).second);
+	}
+	else
+	{
+		for (; lower_bound_iter != upper_bound_iter; ++lower_bound_iter)
+		{
+			m_CurrentEvents.push_back((*lower_bound_iter).second);
+		}
+	}
+
+}
+
+HRESULT CCharacterData::Load_AlphaMeshes(string strFilePath)
+{
+	if (fs::exists(strFilePath))
 	{
 		cout << "_AlphaMeshes Yes!!" << endl;
 
-		ifstream in(strFileFullPath, ios::binary);
+		ifstream in(strFilePath, ios::binary);
 
 		if (!in.is_open()) {
 			MSG_BOX("AlphaMeshes 개방 실패");
@@ -44,14 +100,15 @@ HRESULT CCharacterData::Initialize(wstring wstrModelName)
 		in.close();
 
 	}
+}
 
-	strFileName = m_pGameInstance->WstringToString(wstrModelName) + "_LoopAnimations.dat";
-	strFileFullPath = strFilePath + strFileName;
-	if (fs::exists(strFileFullPath))
+HRESULT CCharacterData::Load_LoopAnimations(string strFilePath)
+{
+	if (fs::exists(strFilePath))
 	{
 		cout << "_LoopAnimations Yes!!" << endl;
 
-		ifstream in(strFileFullPath, ios::binary);
+		ifstream in(strFilePath, ios::binary);
 
 		if (!in.is_open()) {
 			MSG_BOX("LoopAnimations 개방 실패");
@@ -73,14 +130,15 @@ HRESULT CCharacterData::Initialize(wstring wstrModelName)
 
 		in.close();
 	}
+}
 
-	strFileName = m_pGameInstance->WstringToString(wstrModelName) + "_AnimationEvents.dat";
-	strFileFullPath = strFilePath + strFileName;
-	if (fs::exists(strFileFullPath))
+HRESULT CCharacterData::Load_AnimationEvents(string strFilePath)
+{
+	if (fs::exists(strFilePath))
 	{
 		cout << "_AnimationEvents Yes!!" << endl;
 
-		ifstream in(strFileFullPath, ios::binary);
+		ifstream in(strFilePath, ios::binary);
 
 		if (!in.is_open()) {
 			MSG_BOX("AnimationEvents 개방 실패");
@@ -108,14 +166,15 @@ HRESULT CCharacterData::Initialize(wstring wstrModelName)
 		in.close();
 
 	}
+}
 
-	strFileName = m_pGameInstance->WstringToString(wstrModelName) + "_Colliders.dat";
-	strFileFullPath = strFilePath + strFileName;
-	if (fs::exists(strFileFullPath))
+HRESULT CCharacterData::Load_Colliders(string strFilePath)
+{
+	if (fs::exists(strFilePath))
 	{
 		cout << "_Colliders Yes!!" << endl;
 
-		ifstream in(strFileFullPath, ios::binary);
+		ifstream in(strFilePath, ios::binary);
 
 		if (!in.is_open()) {
 			MSG_BOX("Colliders 개방 실패");
@@ -136,7 +195,7 @@ HRESULT CCharacterData::Initialize(wstring wstrModelName)
 			in.read((char*)&ColliderDesc.vCenter, sizeof(_float3));
 
 			// 2는 Sphere라서 Vlaue가 Radius라 float1개만 쓴다
-			if(2 == ColliderDesc.iType)
+			if (2 == ColliderDesc.iType)
 				in.read((char*)&ColliderDesc.vValue, sizeof(_float));
 			else
 				in.read((char*)&ColliderDesc.vValue, sizeof(_float3));
@@ -147,29 +206,53 @@ HRESULT CCharacterData::Initialize(wstring wstrModelName)
 
 		in.close();
 	}
-
-	return S_OK;
 }
 
-void CCharacterData::Set_CurrentAnimation(string strAnimName)
+HRESULT CCharacterData::Load_EffectState(string strFilePath)
 {
-	m_CurrentEvents.clear();
-
-	auto lower_bound_iter = m_AnimationEvents.lower_bound(strAnimName);
-	auto upper_bound_iter = m_AnimationEvents.upper_bound(strAnimName);
-
-	if (lower_bound_iter == upper_bound_iter && lower_bound_iter != m_AnimationEvents.end())
+	if (fs::exists(strFilePath))
 	{
-		m_CurrentEvents.push_back((*lower_bound_iter).second);
-	}
-	else
-	{
-		for (; lower_bound_iter != upper_bound_iter; ++lower_bound_iter)
-		{
-			m_CurrentEvents.push_back((*lower_bound_iter).second);
+		cout << "_EffectState Yes!!" << endl;
+
+		ifstream in(strFilePath, ios::binary);
+
+		if (!in.is_open()) {
+			MSG_BOX("EffectState 개방 실패");
+			return E_FAIL;
 		}
-	}
 
+		_uint iNumEffectState = { 0 };
+		in >> iNumEffectState;
+
+		for (size_t i = 0; i < iNumEffectState; i++)
+		{
+			string strBoneName = "";
+			in >> strBoneName;
+
+			string strEffectName = "";
+			in >> strEffectName;
+
+			Create_Effect(strBoneName, strEffectName);
+
+			m_Effects.emplace(strBoneName, i);
+		}
+
+		in.close();
+
+	}
+}
+
+void CCharacterData::Create_Effect(string& strBoneName, string& strEffectName)
+{
+	const _float4x4* pBoneMatrix = { nullptr };
+
+	//wstring wstrTag = TEXT("Prototype") + m_wstrModelName
+	//CModel* pModel = static_cast<CModel*>(m_pGameInstance->Get_GameObject_Component(LEVEL_TEST, TEXT("Layer_Player"), TEXT("Com_Model")));
+	//pBoneMatrix = pModel->Get_BoneCombinedTransformationMatrix(strBoneName.c_str());
+
+	//CEffect::EFFECT_DESC Desc{};
+	//Desc.pWorldMatrix = pBoneMatrix;
+	//m_pGameInstance->Add_GameObject(LEVEL_TEST, m_pGameInstance->StringToWstring(strEffectName), TEXT("Layer_Effect"), &Desc);
 }
 
 CCharacterData* CCharacterData::Create(wstring wstrModelName)

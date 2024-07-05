@@ -10,7 +10,7 @@ END
 
 
 BEGIN(Client)
-class CEffect abstract:
+class CEffect abstract :
     public CBlendObject
 {
 public:
@@ -19,17 +19,20 @@ public:
         _uint eType;
         _float4			vStartPos;
         _float           fStartTime;
-
+        _float          fRotate;
         wstring ParticleTag;
         wstring TextureTag;
         _float4 vStartColor;
         _float4 vEndColor;
+        _float2 fLifeAlpha;
 
         _int iShaderPass;
+
+        const _float4x4* pWorldMatrix = { nullptr };
     }EFFECT_DESC;
 
-    enum TYPE { TYPE_POINT , TYPE_TRAIL, TYPE_END};
-    enum ACTION { ACTION_SPREAD, ACTION_DROP, ACTION_END };
+    enum TYPE { TYPE_POINT, TYPE_TRAIL, TYPE_GLOW, TYPE_AURA, TYPE_END };
+    enum ACTION { ACTION_SPREAD, ACTION_DROP, ACTION_SIZEUP, ACTION_SIZEDOWN, ACTION_END };
     static const _uint iAction[ACTION_END];
 
 protected:
@@ -48,9 +51,12 @@ public:
     HRESULT Edit_Action(ACTION iEditAction);
 
     virtual void* Get_Instance();
+
+    void Set_WorldMatrix(const _float4x4* mat) { m_pWorldMatrix = mat; }
+
 public:
-    void Set_StartPos(_float4 Pos) { 
-        m_vStartPos = Pos; 
+    void Set_StartPos(_float4 Pos) {
+        m_vStartPos = Pos;
     }
     _uint Get_Type() const { return m_eType; }
     wstring Get_Tag() { return m_ParticleTag; }
@@ -61,12 +67,14 @@ public:
     _float4 Get_EColor() { return m_vEndColor; }
     _int Get_ShaderPass() { return m_iShaderPass; }
     wstring Get_TextureTag() { return m_TextureTag; }
+    _float2 Get_LifeAlpha() { return m_fLifeAlpha; }
+    _float Get_Rotate() { return m_fRotate; }
 public:
     virtual HRESULT Save_Data(const string strDirectory);
     virtual HRESULT Load_Data(const string strDirectory);
 
 protected:
-    
+
     _uint          m_eType = { TYPE_END };
     wstring     m_ParticleTag = { TEXT("") };
     wstring     m_TextureTag = { TEXT("") };
@@ -74,11 +82,13 @@ protected:
 
     _float       m_fStartTime = { 0.f };//작업용파싱x(세이브로드엔 들어가기)
     _float4     m_vStartPos = {};
-
+    _float       m_fRotate = { 0.f };
+    _float2     m_fLifeAlpha = { 0.f,0.f };
     _uint			m_iAction = { 0 };
     _float4     m_vStartColor = { 0.f , 0.f , 0.f , 0.f };
     _float4     m_vEndColor = { 0.f , 0.f , 0.f , 0.f };
 
+    const _float4x4* m_pWorldMatrix = { nullptr };
 
 public:
     virtual void Free() override;

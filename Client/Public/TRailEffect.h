@@ -10,7 +10,7 @@ class CVIBuffer_Trail;
 END
 
 BEGIN(Client)
-class CTRailEffect final:
+class CTRailEffect final :
     public CEffect
 {
 public:
@@ -48,7 +48,6 @@ private:
 private:
     HRESULT Add_Components();
     HRESULT Bind_ShaderResources();
-    HRESULT Bind_TrailResourceData();
 public:
     static CTRailEffect* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
     static CTRailEffect* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, string strFilePath);

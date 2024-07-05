@@ -43,6 +43,7 @@ private:
 	HRESULT Loading_For_LogoLevel();
 	HRESULT Loading_For_GamePlayLevel();
 	HRESULT Loading_For_EditLevel();
+	HRESULT Loading_For_TestLevel();
 
 private:
 	HRESULT Add_Particle_On_Path(const wstring& strPath);

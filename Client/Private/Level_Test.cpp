@@ -25,6 +25,9 @@ HRESULT CLevel_Test::Initialize()
 	if (FAILED(Ready_Player(TEXT("Layer_Player"))))
 		return E_FAIL;
 
+	if (FAILED(Ready_Monster(TEXT("Layer_Monster"))))
+		return E_FAIL;
+
 	if (FAILED(Ready_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
 
@@ -35,8 +38,9 @@ HRESULT CLevel_Test::Initialize()
 		return E_FAIL;
 
 	/* Å¬¶ó ÆÄ½Ì */
-	m_pFileTotalManager->Set_MapObj_In_Client(2, LEVEL_TEST);
+	m_pFileTotalManager->Set_MapObj_In_Client(4, LEVEL_TEST);
 	m_pFileTotalManager->Set_Lights_In_Client(0);
+	m_pFileTotalManager->Set_Collider_In_Client(2, LEVEL_TEST);
 
 	return S_OK;
 }
@@ -132,11 +136,24 @@ HRESULT CLevel_Test::Ready_Camera(const wstring& strLayerTag)
 HRESULT CLevel_Test::Ready_Player(const wstring& strLayerTag)
 {
 	CGameObject::GAMEOBJECT_DESC Desc{};
-	Desc.fSpeedPecSec = 0.f;
+	Desc.fSpeedPecSec = 10.f;
 	//Desc.fRotatePecSec = XMConvertToRadians(0.f);
 	Desc.fRotatePecSec = XMConvertToRadians(180.f);
 
 	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_Player"), strLayerTag, &Desc)))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CLevel_Test::Ready_Monster(const wstring& strLayerTag)
+{
+	CGameObject::GAMEOBJECT_DESC Desc{};
+	Desc.fSpeedPecSec = 10.f;
+	//Desc.fRotatePecSec = XMConvertToRadians(0.f);
+	Desc.fRotatePecSec = XMConvertToRadians(180.f);
+
+	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_Jimu"), strLayerTag, &Desc)))
 		return E_FAIL;
 
 	return S_OK;
@@ -153,8 +170,12 @@ HRESULT CLevel_Test::Ready_Map(const wstring& strLayerTag)
 HRESULT CLevel_Test::Ready_Effect(const wstring& strLayerTag)
 {
 
-	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_Particle_Point_fin"), strLayerTag, nullptr)))
+	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_Particle_Point_Hit1_Part0"), strLayerTag, nullptr)))
 		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_Particle_Aura_asd"), strLayerTag, nullptr)))
+		return E_FAIL;
+
 	return S_OK;
 }
 

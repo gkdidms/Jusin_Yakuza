@@ -12,6 +12,7 @@
 #include "CameraInstallObj.h"
 #include "CineCamera.h"
 #include "Decal.h"
+#include "ColliderObj.h"
 #pragma endregion
 
 
@@ -148,18 +149,18 @@ HRESULT CLoader::Loading_For_RunMapLevel(int iLevel)
 
 	_matrix		PreTransformMatrix;
 
-	PreTransformMatrix = XMMatrixRotationY(XMConvertToRadians(180.0f));
+	PreTransformMatrix = XMMatrixIdentity();
 
-	//if (FAILED(m_pGameInstance->Add_Component_Prototype(iLevel, TEXT("Prototype_Component_Model_f1"), 
-	//	CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/NonAnim/Map/Map0/f1.fbx", PreTransformMatrix, false))))
+	//if (FAILED(m_pGameInstance->Add_Component_Prototype(iLevel, TEXT("Prototype_Component_Model_f1"),
+	//	CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/NonAnim/Map/Map0/f1.fbx", PreTransformMatrix, false, true))))
 	//	return E_FAIL;
 
 	//PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
 
 
 	PreTransformMatrix = XMMatrixIdentity();
-	//if (FAILED(m_pGameInstance->Add_Component_Prototype(iLevel, TEXT("Prototype_Component_Model_GlassDoor"),
-	//	CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/NonAnim/Map/Map0/GlassDoor.fbx", PreTransformMatrix, false, true))))
+	//if (FAILED(m_pGameInstance->Add_Component_Prototype(iLevel, TEXT("Prototype_Component_Model_Bone_Sphere"),
+	//	CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/NonAnim/Bone_Sphere/Bone_Sphere.fbx", PreTransformMatrix, false, true))))
 	//	return E_FAIL;
 
 	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
@@ -170,7 +171,9 @@ HRESULT CLoader::Loading_For_RunMapLevel(int iLevel)
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(iLevel, TEXT("Prototype_Component_Model_GlassDoor"),
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/NonAnim/Map/Map0/Bin/GlassDoor.dat", PreTransformMatrix, true, true))))
 		return E_FAIL;
-
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(iLevel, TEXT("Prototype_Component_Model_Water011"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/NonAnim/Map/Map1/Bin/Water011.dat", PreTransformMatrix, true, true))))
+		return E_FAIL;
 
 
 	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
@@ -178,9 +181,9 @@ HRESULT CLoader::Loading_For_RunMapLevel(int iLevel)
 	//	CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/NonAnim/Map/Map1/Bin/f2.dat", PreTransformMatrix, true))))
 	//	return E_FAIL;
 
-
+	PreTransformMatrix = XMMatrixIdentity();
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(iLevel, TEXT("Prototype_Component_Model_Bone_Sphere"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/NonAnim/Bone_Sphere/Bin/Bone_Sphere.dat", PreTransformMatrix, true, true))))
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/NonAnim/Bone_Sphere/Bone_Sphere.fbx", PreTransformMatrix, false, true))))
 		return E_FAIL;
 
 
@@ -263,6 +266,12 @@ HRESULT CLoader::Loading_For_RunMapLevel(int iLevel)
 	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Decal"),
 		CDecal::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+
+	/* For.Prototype_GameObject_Decal */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_ColliderObj"),
+		CColliderObj::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 
 
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));

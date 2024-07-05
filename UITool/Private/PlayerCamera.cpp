@@ -53,12 +53,7 @@ void CPlayerCamera::Tick(const _float& fTimeDelta)
 		m_pTransformCom->Go_Backward(fTimeDelta);
 
 
-	if (m_pGameInstance->GetKeyState(DIK_TAB) == TAP)
-	{
-		m_bCameraFix = !m_bCameraFix;
-	}
-
-	if (false == m_bCameraFix)
+	if (true == m_bCameraFix)
 	{
 		Mouse_Fix();
 	}
@@ -66,7 +61,7 @@ void CPlayerCamera::Tick(const _float& fTimeDelta)
 
 	_long		MouseMove = { 0 };
 
-	if (false == m_bCameraFix)
+	if (true == m_bCameraFix)
 	{
 		if (MouseMove = m_pGameInstance->Get_DIMouseMove(DIMS_X))
 		{

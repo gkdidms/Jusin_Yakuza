@@ -18,6 +18,7 @@ private:
 
     HRESULT Ready_Layer_Camera(const wstring& strLayerTag);
     HRESULT Ready_Object(const wstring& strLayerTag);
+    HRESULT Ready_Effect(const wstring& strLayerTag);
 
 public:
     static CLevel_Edit* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

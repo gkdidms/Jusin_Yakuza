@@ -21,6 +21,11 @@ public:
     virtual HRESULT Render() override;
 
 public:
+    virtual HRESULT Save_binary(const string strDirectory)override;
+    virtual HRESULT Save_Groupbinary( ofstream& out)override;
+    virtual HRESULT Load_binary()override;
+
+public:
     static CImage_Texture* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
     virtual CGameObject* Clone(void* pArg);
     virtual void Free();

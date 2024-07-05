@@ -244,6 +244,31 @@ _bool CGameInstance::isSSAO()
 	return m_pRenderer->isSSAO();
 }
 
+_bool CGameInstance::isPBR()
+{
+	return m_pRenderer->isPBR();
+}
+
+_bool CGameInstance::isBOF()
+{
+	return m_pRenderer->isBOF();
+}
+
+_bool CGameInstance::isShadow()
+{
+	return m_pRenderer->isShadow();
+}
+
+void CGameInstance::Set_PBR(_bool isPBR)
+{
+	m_pRenderer->Set_PBR(isPBR);
+}
+
+void CGameInstance::Set_BOF(_bool isBOF)
+{
+	m_pRenderer->Set_BOF(isBOF);
+}
+
 void CGameInstance::Set_SSAORadiuse(_float fRadiuse)
 {
 	m_pRenderer->Set_SSAORadiuse(fRadiuse);
@@ -272,6 +297,16 @@ _float CGameInstance::Get_SSAOBias()
 void CGameInstance::Set_SSAOBias(_float fBias)
 {
 	m_pRenderer->Set_SSAOBias(fBias);
+}
+
+void CGameInstance::Set_ShadowViewPos(_vector vPos)
+{
+	m_pRenderer->Set_ShadowViewPos(vPos);
+}
+
+void CGameInstance::Set_Shadow(_bool isShadow)
+{
+	m_pRenderer->Set_Shadow(isShadow);
 }
 
 #ifdef _DEBUG
@@ -360,6 +395,16 @@ const _float* CGameInstance::Get_CamFar()
 void CGameInstance::Set_CamFar(_float fFar)
 {
 	m_pPipeLine->Set_CamFar(fFar);
+}
+
+const _float4x4* CGameInstance::Get_ReflectViewMatrix()
+{
+	return m_pPipeLine->Get_ReflectViewMatrix();
+}
+
+void CGameInstance::Set_ReflectViewMatrix(_fmatrix matTransform)
+{
+	m_pPipeLine->Set_ReflectViewMatrix(matTransform);
 }
 
 _float CGameInstance::Get_TimeDelta(const _tchar* pTimerTag)

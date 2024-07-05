@@ -5,6 +5,7 @@
 matrix g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
 texture2D g_Texture;
 float   g_fObjID;
+bool g_bWriteID = false;
 
 
 struct VS_IN
@@ -84,13 +85,19 @@ PS_OUT PS_MAIN(PS_IN In)
     if (Out.vDiffuse.a < 0.1f)
         discard;
     Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
-    Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 3000.f, g_fObjID, 1.f);
+    
+    if (true == g_bWriteID)
+        Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 3000.f, g_fObjID, 1.f);
+    else
+        Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 3000.f, 0, 1.f);
+    
     
     return Out;
 }
 
 PS_OUT PS_MAIN_FIND_MESH(PS_IN In)
 {
+    // material 가지고 있는 mesh는 빨강으로
     PS_OUT Out = (PS_OUT) 0;
 
     Out.vDiffuse = g_Texture.Sample(LinearSampler, In.vTexcoord);
@@ -100,7 +107,10 @@ PS_OUT PS_MAIN_FIND_MESH(PS_IN In)
         discard;
     Out.vDiffuse = float4(1, 0, 0, 1);
     Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
-    Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 3000.f, g_fObjID, 1.f);
+    if (true == g_bWriteID)
+        Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 3000.f, g_fObjID, 1.f);
+    else
+        Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 3000.f, 0, 1.f);
     
     return Out;
 }

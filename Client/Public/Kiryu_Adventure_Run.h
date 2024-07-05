@@ -11,6 +11,11 @@ BEGIN(Client)
 class CKiryu_Adventure_Run : public CBehaviorAnimation
 {
 public:
+	enum BEHAVIOR_STATE
+	{
+		TURN, WALK, RUN, BUMP, BEHAVIOR_STATE_END
+	};
+
 	enum ANIM_STATE
 	{
 		ANIM_START, ANIM_LOOP, ANIM_END
@@ -23,9 +28,7 @@ private:
 public:
 	virtual void Tick(const _float& fTimeDelta) override;
 	virtual void Change_Animation() override;
-
-public:
-	_bool Get_AnimationEnd();
+	virtual _bool Get_AnimationEnd() override;
 	virtual void Stop() override;
 
 public:

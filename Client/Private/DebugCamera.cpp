@@ -85,11 +85,6 @@ void CDebugCamera::Tick(const _float& fTimeDelta)
 
 void CDebugCamera::Late_Tick(const _float& fTimeDelta)
 {
-
-	if (m_pGameInstance->GetKeyState(DIK_F5) == TAP)
-	{
-		CFileTotalMgr::GetInstance()->Load_Cinemachine(0, LEVEL_TEST);
-	}
 }
 
 HRESULT CDebugCamera::Render()

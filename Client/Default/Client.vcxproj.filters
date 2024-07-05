@@ -118,32 +118,74 @@
     <ClCompile Include="..\Private\TRailEffect.cpp">
       <Filter>02.GameObjects\06.Effect\Trail</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\BTNode.cpp">
-      <Filter>02.GameObjects\02.Character\BehaviorTree\BTNode</Filter>
+    <ClCompile Include="..\Private\Sequance.cpp">
+      <Filter>95.Utility\03.BehaviorTree\SquanceNode</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\CompositeNode.cpp">
-      <Filter>02.GameObjects\02.Character\BehaviorTree\CompositeNode</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\DecoratorNode.cpp">
-      <Filter>02.GameObjects\02.Character\BehaviorTree\DecoratorNode</Filter>
+    <ClCompile Include="..\Private\Selector.cpp">
+      <Filter>95.Utility\03.BehaviorTree\SelectorNode</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\LeafNode.cpp">
-      <Filter>02.GameObjects\02.Character\BehaviorTree\LeafNode</Filter>
+      <Filter>95.Utility\03.BehaviorTree\LeafNode</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\BehaviorAnimation.cpp">
-      <Filter>02.GameObjects\02.Character\LandObject\00.Player\Behavior</Filter>
+      <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Kiryu_Adventure_Idle.cpp">
-      <Filter>02.GameObjects\02.Character\LandObject\00.Player\Behavior\Adventure\Idle</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\Kiryu_Adventure_Walk.cpp">
-      <Filter>02.GameObjects\02.Character\LandObject\00.Player\Behavior\Adventure\Walk</Filter>
+      <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\Adventure\Idle</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Kiryu_Adventure_Run.cpp">
-      <Filter>02.GameObjects\02.Character\LandObject\00.Player\Behavior\Adventure\Run</Filter>
-	</ClCompile>
+      <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\Adventure\Run</Filter>
+    </ClCompile>
     <ClCompile Include="..\private\UI.cpp">
       <Filter>02.GameObjects\07.UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Aura.cpp">
+      <Filter>02.GameObjects\06.Effect\Aura</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Kiryu_Adventure_Walk.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\Adventure\Walk</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Monster.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\01.Monster</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\RushYakuza.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\00.RushYakuza</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\BTNode.cpp">
+      <Filter>95.Utility\03.BehaviorTree</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\AI_RushYakuza.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\00.RushYakuza\AI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\MapCollider.cpp">
+      <Filter>02.GameObjects\08. MapCollider</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Kiryu_KRS_Attack.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\Attack</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Kiryu_KRS_Hit.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\Hit</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Kiryu_KRS_BattleStart.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\BattleStart</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Kiryu_KRS_Idle.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\Idle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Kiryu_KRS_Run.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\Run</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Kiryu_KRS_Sway.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\Sway</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Kiryu_KRS_Walk.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\Walk</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\AI_Monster.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\AI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\WPAYakuza.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\01. WPAYakuza</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -291,35 +333,77 @@
     <ClInclude Include="..\Public\TRailEffect.h">
       <Filter>02.GameObjects\06.Effect\Trail</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\BTNode.h">
-      <Filter>02.GameObjects\02.Character\BehaviorTree\BTNode</Filter>
+    <ClInclude Include="..\Public\Sequance.h">
+      <Filter>95.Utility\03.BehaviorTree\SquanceNode</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\CompositeNode.h">
-      <Filter>02.GameObjects\02.Character\BehaviorTree\CompositeNode</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\DecoratorNode.h">
-      <Filter>02.GameObjects\02.Character\BehaviorTree\DecoratorNode</Filter>
+    <ClInclude Include="..\Public\Selector.h">
+      <Filter>95.Utility\03.BehaviorTree\SelectorNode</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\LeafNode.h">
-      <Filter>02.GameObjects\02.Character\BehaviorTree\LeafNode</Filter>
+      <Filter>95.Utility\03.BehaviorTree\LeafNode</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\BehaviorAnimation.h">
-      <Filter>02.GameObjects\02.Character\LandObject\00.Player\Behavior</Filter>
+      <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Kiryu_Adventure_Idle.h">
-      <Filter>02.GameObjects\02.Character\LandObject\00.Player\Behavior\Adventure\Idle</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Kiryu_Adventure_Walk.h">
-      <Filter>02.GameObjects\02.Character\LandObject\00.Player\Behavior\Adventure\Walk</Filter>
+      <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\Adventure\Idle</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Kiryu_Adventure_Run.h">
-      <Filter>02.GameObjects\02.Character\LandObject\00.Player\Behavior\Adventure\Run</Filter>
-	</ClInclude>
+      <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\Adventure\Run</Filter>
+    </ClInclude>
     <ClInclude Include="..\public\UI.h">
       <Filter>02.GameObjects\07.UI</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Loader.h">
       <Filter>01.Levels\99.Loading\Loader</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Aura.h">
+      <Filter>02.GameObjects\06.Effect\Aura</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Kiryu_Adventure_Walk.h">
+      <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\Adventure\Walk</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Monster.h">
+      <Filter>02.GameObjects\02.Character\LandObject\01.Monster</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\RushYakuza.h">
+      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\00.RushYakuza</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\BTNode.h">
+      <Filter>95.Utility\03.BehaviorTree</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\AI_RushYakuza.h">
+      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\00.RushYakuza\AI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\MapCollider.h">
+      <Filter>02.GameObjects\08. MapCollider</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Kiryu_KRS_Attack.h">
+      <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\Attack</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Kiryu_KRS_Hit.h">
+      <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\Hit</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Kiryu_KRS_BattleStart.h">
+      <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\BattleStart</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Kiryu_KRS_Idle.h">
+      <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\Idle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Kiryu_KRS_Run.h">
+      <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\Run</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Kiryu_KRS_Sway.h">
+      <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\Sway</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Kiryu_KRS_Walk.h">
+      <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\Walk</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\AI_Monster.h">
+      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\AI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\WPAYakuza.h">
+      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\01. WPAYakuza</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -385,9 +469,6 @@
     <Filter Include="96.ImGui">
       <UniqueIdentifier>{7b5a03ce-7679-4274-97a9-075ee883f3f1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\03.Construction">
-      <UniqueIdentifier>{95e29977-56e8-4ee9-b1c8-71236bd9d68b}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObjects\99.Camera\01.CineCamera">
       <UniqueIdentifier>{9380684d-69ad-4059-a4ff-cd5b6adc4875}</UniqueIdentifier>
     </Filter>
@@ -397,29 +478,8 @@
     <Filter Include="02.GameObjects\04.Sky">
       <UniqueIdentifier>{a460082c-6b47-48ad-8b77-a08f0fc04941}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\02.Character">
-      <UniqueIdentifier>{a666196a-f926-41d0-a823-380685d12205}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\02.Character\LandObject">
-      <UniqueIdentifier>{9fbfc139-fa7b-4bb5-8bfa-68ab385abcc7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\02.Character\LandObject\00.Player">
-      <UniqueIdentifier>{8f8aa033-d0f3-43b6-ae6e-e95d1f3c776f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\02.Character\CharacterData">
-      <UniqueIdentifier>{d47f23c7-f09f-46fd-a441-f1561bb9a95a}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObjects\05.Decal">
       <UniqueIdentifier>{a6493902-ed5b-46a7-a21f-1f965ca56dd4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\02.Character\PartObject">
-      <UniqueIdentifier>{83de469b-7019-4bed-9e97-276b7f63de30}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\02.Character\PartObject\SoketObject">
-      <UniqueIdentifier>{5ecdde66-d1d6-47ad-8170-66d5ccd28aa5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\02.Character\SoketCollider">
-      <UniqueIdentifier>{260596ca-843e-47fe-ae9b-3a65ebc2b9a0}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObjects\06.Effect">
       <UniqueIdentifier>{8453b934-ceb3-4373-9731-9aff5f9a923e}</UniqueIdentifier>
@@ -430,20 +490,20 @@
     <Filter Include="02.GameObjects\06.Effect\Trail">
       <UniqueIdentifier>{d637f30f-2167-4420-bb64-cc2966bdd0fa}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\02.Character\BehaviorTree">
-      <UniqueIdentifier>{490f9c94-1bca-41c9-a680-f2eb77882221}</UniqueIdentifier>
+    <Filter Include="02.GameObjects\07.UI">
+      <UniqueIdentifier>{5ee687d4-5dfa-49a3-92da-8f0756f1687f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\02.Character\BehaviorTree\BTNode">
-      <UniqueIdentifier>{15b76be1-dd33-45f0-ac61-72edf4d78c5c}</UniqueIdentifier>
+    <Filter Include="02.GameObjects\01.Terrain">
+      <UniqueIdentifier>{73fc58be-6ca4-4e86-b2ac-39c7c7e26f66}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\02.Character\BehaviorTree\CompositeNode">
-      <UniqueIdentifier>{a2c51b61-3052-4f69-9513-7d8956a5fbfd}</UniqueIdentifier>
+    <Filter Include="02.GameObjects\02.Character">
+      <UniqueIdentifier>{a666196a-f926-41d0-a823-380685d12205}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\02.Character\BehaviorTree\DecoratorNode">
-      <UniqueIdentifier>{9bcb482e-8cd8-46b9-ba50-2f2da538a375}</UniqueIdentifier>
+    <Filter Include="02.GameObjects\02.Character\LandObject">
+      <UniqueIdentifier>{9fbfc139-fa7b-4bb5-8bfa-68ab385abcc7}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\02.Character\BehaviorTree\LeafNode">
-      <UniqueIdentifier>{3352b812-faf6-4a67-8b29-1e9df787da34}</UniqueIdentifier>
+    <Filter Include="02.GameObjects\02.Character\LandObject\00.Player">
+      <UniqueIdentifier>{8f8aa033-d0f3-43b6-ae6e-e95d1f3c776f}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\Behavior">
       <UniqueIdentifier>{5ece0b8f-54a5-4e8e-935e-6800ae4bd425}</UniqueIdentifier>
@@ -469,14 +529,101 @@
     <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\Behavior\Adventure\Run">
       <UniqueIdentifier>{b50b0e94-8792-4c99-83ca-c65719880701}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\02.Character\CharacterData">
+      <UniqueIdentifier>{d47f23c7-f09f-46fd-a441-f1561bb9a95a}</UniqueIdentifier>
+    </Filter>
     <Filter Include="02.GameObjects\07.UI">
       <UniqueIdentifier>{5ee687d4-5dfa-49a3-92da-8f0756f1687f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\01.Terrain">
-      <UniqueIdentifier>{73fc58be-6ca4-4e86-b2ac-39c7c7e26f66}</UniqueIdentifier>
+    <Filter Include="02.GameObjects\02.Character\PartObject">
+      <UniqueIdentifier>{83de469b-7019-4bed-9e97-276b7f63de30}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\01.Terrain\TestMap">
-      <UniqueIdentifier>{13a0eb4d-9fd9-4a66-90f0-f589933ed093}</UniqueIdentifier>
+    <Filter Include="02.GameObjects\02.Character\PartObject\SoketObject">
+      <UniqueIdentifier>{5ecdde66-d1d6-47ad-8170-66d5ccd28aa5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\SoketCollider">
+      <UniqueIdentifier>{260596ca-843e-47fe-ae9b-3a65ebc2b9a0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\03.Construction">
+      <UniqueIdentifier>{95e29977-56e8-4ee9-b1c8-71236bd9d68b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\06.Effect\Aura">
+      <UniqueIdentifier>{e1163822-540f-4bdd-9163-9b24fe1b27c1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior">
+      <UniqueIdentifier>{5ece0b8f-54a5-4e8e-935e-6800ae4bd425}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS">
+      <UniqueIdentifier>{2e79bf21-5424-4bbb-974c-c3af527ca698}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRH">
+      <UniqueIdentifier>{1d4cafe1-9cb2-45ed-bfe3-aa4c3bdc39ae}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRC">
+      <UniqueIdentifier>{20354a45-b413-4665-8872-2dd9ad500c03}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\Adventure">
+      <UniqueIdentifier>{01eb585a-455f-4390-bc11-248673075203}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\Adventure\Idle">
+      <UniqueIdentifier>{db4f74c4-76cc-4218-868f-66ccee366159}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\Adventure\Run">
+      <UniqueIdentifier>{b50b0e94-8792-4c99-83ca-c65719880701}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\Adventure\Walk">
+      <UniqueIdentifier>{61c6b900-fea8-49ce-b5e2-a428e2dd1444}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\08. MapCollider">
+      <UniqueIdentifier>{28cec43f-865c-488e-83e1-e6b15b632319}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\01.Monster">
+      <UniqueIdentifier>{45d3ed81-5372-4412-bf1f-89cbd1f74552}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\03.BehaviorTree">
+      <UniqueIdentifier>{490f9c94-1bca-41c9-a680-f2eb77882221}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\03.BehaviorTree\SquanceNode">
+      <UniqueIdentifier>{a2c51b61-3052-4f69-9513-7d8956a5fbfd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\03.BehaviorTree\SelectorNode">
+      <UniqueIdentifier>{9bcb482e-8cd8-46b9-ba50-2f2da538a375}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\03.BehaviorTree\LeafNode">
+      <UniqueIdentifier>{3352b812-faf6-4a67-8b29-1e9df787da34}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\Attack">
+      <UniqueIdentifier>{af748daf-3b67-450b-a834-8f3c58512bc2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\Hit">
+      <UniqueIdentifier>{b6d1caf0-5614-4158-a6ec-26762e76566f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\BattleStart">
+      <UniqueIdentifier>{24d714ab-e911-4f19-9f10-59ee9c7f2896}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\Idle">
+      <UniqueIdentifier>{6afb6683-e3a9-43dd-84d4-13c0e154dffc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\Run">
+      <UniqueIdentifier>{753ccaf5-3ccb-450d-b56c-b0fb41508333}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\Sway">
+      <UniqueIdentifier>{0832b841-afdc-478b-b7a0-a6155b72dd6e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\Walk">
+      <UniqueIdentifier>{9d473ed7-1045-45b0-b810-601d5ce04716}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\01.Monster\00.RushYakuza">
+      <UniqueIdentifier>{58dcf1b7-f012-4f21-92c4-d4317d03352d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\01.Monster\00.RushYakuza\AI">
+      <UniqueIdentifier>{9e849697-ae77-4632-b243-cfb720c7f930}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\01.Monster\AI">
+      <UniqueIdentifier>{7c984c39-25b1-4b6b-b10a-cd7e33117ecd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\01.Monster\01. WPAYakuza">
+      <UniqueIdentifier>{3704e0ba-7ed6-4e63-8e8b-f61177bd0faf}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -506,7 +653,7 @@
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Trail.hlsl">
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
-    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxMeshTemp.hlsl">
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_Aura.hlsl">
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
   </ItemGroup>

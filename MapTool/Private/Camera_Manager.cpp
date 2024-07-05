@@ -271,7 +271,7 @@ CCamera_Manager::CCamera_Manager()
 
 HRESULT CCamera_Manager::Initialize()
 {
-	return E_NOTIMPL;
+	return S_OK;
 }
 
 void CCamera_Manager::Priority_Tick(_float fTimeDelta)

@@ -79,16 +79,23 @@ public:
     void Set_HDR(_bool isHDR);
     void Set_HDRLight(_float fLight); // HDR ºû ¼¼±â Á¶Àý 
     _bool isHDR();
+    _bool isSSAO();
+    _bool isPBR();
+    _bool isBOF();
+    _bool isShadow();
+
+    void Set_PBR(_bool isPBR);
+    void Set_BOF(_bool isBOF);
     _float Get_HDRLight();
     void Set_SSAO(_bool isSSAO);
-    _bool isSSAO();
     void Set_SSAORadiuse(_float fRadiuse);
     _float Get_SSAORadiuse();
     void Set_SSAOBlur(_float fBlur);
     _float Get_SSAOBlur();
     _float Get_SSAOBias();
     void Set_SSAOBias(_float fBias);
-
+    void Set_ShadowViewPos(_vector vPos);
+    void Set_Shadow(_bool isShadow);
 #ifdef _DEBUG
 public:
     HRESULT Add_DebugComponent(class CComponent* pComponent);
@@ -110,6 +117,8 @@ public:
     _vector Get_CamRight();
     const _float* Get_CamFar();
     void Set_CamFar(_float fFar);
+    const _float4x4* Get_ReflectViewMatrix();
+    void Set_ReflectViewMatrix(_fmatrix matTransform);
 
     /* Font_Manager */
 public: 

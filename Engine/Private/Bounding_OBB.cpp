@@ -21,6 +21,14 @@ void CBounding_OBB::Set_Center(const _float3& vCenter)
 	m_pOriginalBox->Center = m_vCenter;
 }
 
+void CBounding_OBB::Set_Rotation(const _float3& vRotation)
+{
+	_float4		vQuaternion;
+	XMStoreFloat4(&vQuaternion, XMQuaternionRotationRollPitchYaw(vRotation.x, vRotation.y, vRotation.z));
+
+	m_pOriginalBox->Orientation = vQuaternion;
+}
+
 HRESULT CBounding_OBB::Initialize(const void* pArg)
 {
 	if (nullptr == pArg)

@@ -21,6 +21,9 @@ public:
     virtual HRESULT Render() override;
 
 protected:
+    class CSystemManager* m_pSystemManager = { nullptr };
+
+private:
     virtual HRESULT Add_Componenets();
     virtual HRESULT Bind_ResourceData();
 

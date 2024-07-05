@@ -2,12 +2,12 @@
 #include "GameInstance.h"
 
 CTRailEffect::CTRailEffect(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-	:CEffect{pDevice , pContext}
+	:CEffect{ pDevice , pContext }
 {
 }
 
 CTRailEffect::CTRailEffect(const CTRailEffect& rhs)
-	:CEffect{rhs},
+	:CEffect{ rhs },
 	m_TrailDesc{ rhs.m_TrailDesc }
 {
 }
@@ -27,20 +27,29 @@ HRESULT CTRailEffect::Initialize_Prototype(string strFilePath)
 
 HRESULT CTRailEffect::Initialize(void* pArg)
 {
-
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
 	if (nullptr != pArg)
 	{
-		TRAIL_DESC* pDesc = static_cast<TRAIL_DESC*>(pArg);
+		EFFECT_DESC* pDesc = static_cast<EFFECT_DESC*>(pArg);
 
-		m_TrailDesc = pDesc -> Trail_Desc;
+		if (nullptr == pDesc->pWorldMatrix)
+		{
+			TRAIL_DESC* pDesc = static_cast<TRAIL_DESC*>(pArg);
 
+			m_TrailDesc = pDesc->Trail_Desc;
+		}
+		else
+		{
+			m_pWorldMatrix = pDesc->pWorldMatrix;
+		}
 	}
 
 	if (FAILED(Add_Components()))
 		return E_FAIL;
+
+	//m_pTransformCom->Set_Speed(3.f);
 
 	return S_OK;
 }
@@ -51,6 +60,10 @@ void CTRailEffect::Priority_Tick(const _float& fTimeDelta)
 
 void CTRailEffect::Tick(const _float& fTimeDelta)
 {
+	if (m_pGameInstance->GetKeyState(DIK_W))
+		m_pTransformCom->Go_Straight(fTimeDelta);
+
+
 	__super::Tick(fTimeDelta);
 
 	_float4x4 TrailMatrix = *m_pTransformCom->Get_WorldFloat4x4();
@@ -60,7 +73,7 @@ void CTRailEffect::Tick(const _float& fTimeDelta)
 
 void CTRailEffect::Late_Tick(const _float& fTimeDelta)
 {
-	Compute_ViewZ(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+	//Compute_ViewZ(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 
 	m_pGameInstance->Add_Renderer(CRenderer::RENDER_EFFECT, this);
 }
@@ -170,7 +183,7 @@ HRESULT CTRailEffect::Add_Components()
 {
 	/* For.Com_VIBuffer */
 	if (FAILED(__super::Add_Component(LEVEL_TEST, TEXT("Prototype_Component_VIBuffer_Trail"),
-		TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pVIBufferCom),&m_TrailDesc)))
+		TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pVIBufferCom), &m_TrailDesc)))
 		return E_FAIL;
 
 	/* For.Com_Shader */
@@ -182,6 +195,7 @@ HRESULT CTRailEffect::Add_Components()
 	if (FAILED(__super::Add_Component(LEVEL_TEST, m_TextureTag,
 		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
 		return E_FAIL;
+
 
 	return S_OK;
 }
@@ -200,22 +214,6 @@ HRESULT CTRailEffect::Bind_ShaderResources()
 	return S_OK;
 }
 
-HRESULT CTRailEffect::Bind_TrailResourceData()
-{
-	if (FAILED(m_pTransformCom->Bind_ShaderMatrix(m_pShaderCom, "g_WorldMatrix")))
-		return E_FAIL;
-
-	if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_VIEW))))
-		return E_FAIL;
-
-	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_PROJ))))
-		return E_FAIL;
-
-	if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_Texture", 0)))
-		return E_FAIL;
-
-	return S_OK;
-}
 
 CTRailEffect* CTRailEffect::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
@@ -260,6 +258,8 @@ void CTRailEffect::Free()
 {
 	__super::Free();
 	Safe_Release(m_pShaderCom);
+
 	Safe_Release(m_pTextureCom);
+
 	Safe_Release(m_pVIBufferCom);
 }

@@ -48,27 +48,31 @@ public:
 	virtual void Tick(const _float& fTimeDelta) override;
 	virtual void Late_Tick(const _float& fTimeDelta) override;
 	virtual HRESULT Render() override;
+	virtual HRESULT Render_LightDepth() override;
 
 public:
-	CTransform* Get_Transform() { return m_pTransformCom; }
+	CTransform*					Get_Transform() { return m_pTransformCom; }
 
 public:
 	int							Get_ObjPlaceDesc(OBJECTPLACE_DESC* objplaceDesc);
 	MAPOBJ_DESC					Get_MapObjDesc_For_AddList();
 
 	void						Edit_GameObject_Information(MAPOBJ_DESC	mapDesc);
-	CConstruction::MAPOBJ_DESC					Send_GameObject_Information();
+	CConstruction::MAPOBJ_DESC	Send_GameObject_Information();
 
 private:
 	CShader* m_pShaderCom = { nullptr };
 	CModel* m_pModelCom = { nullptr };
+	class CSystemManager* m_pSystemManager = { nullptr };
 
 private:
+	_bool m_isFirst = { true };
 	vector<CDecal*>			m_vDecals;
 	int						m_iLayerNum;
 	wstring					m_wstrModelName;
 	int						m_iShaderPassNum = { 0 };
 	int						m_iObjectType = { 0 };
+	float					m_fWaterDeltaTime = { 0 };
 
 public:
 	HRESULT Add_Components(void* pArg);

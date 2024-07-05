@@ -41,7 +41,7 @@ HRESULT CMainApp::Initialize()
 	if (FAILED(Ready_Prototype_GameObject()))
 		return E_FAIL;
 
-	if (FAILED(Open_Level(LEVEL_EDIT)))
+	if (FAILED(Open_Level(LEVEL_TEST)))
 		return E_FAIL;
 
 	if (FAILED(Ready_Manager()))
