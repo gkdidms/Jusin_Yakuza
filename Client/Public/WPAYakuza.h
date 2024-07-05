@@ -19,6 +19,9 @@ public:
     virtual HRESULT Render() override;
 
 private:
+    class CAI_WPAYakuza* m_pTree = { nullptr };
+
+private:
     virtual HRESULT Add_Componenets() override;
     virtual HRESULT Bind_ResourceData() override;
 

@@ -845,7 +845,9 @@ void CModel::Play_Animation(_float fTimeDelta, CAnim* pAnim, _bool isLoop)
 		if (Animations[m_AnimDesc.iAnimIndex]->Get_Changed())
 			Animations[m_AnimDesc.iAnimIndex]->Update_TransformationMatrix(fTimeDelta, m_Bones, isLoop);
 		else
+		{
 			Animations[m_AnimDesc.iAnimIndex]->Update_Change_Animation(fTimeDelta, m_Bones, Animations[m_iPrevAnimIndex], m_ChangeInterval);
+		}
 	}
 
 	/* 전체뼈를 순회하면서 모든 뼈의 CombinedTransformationMatrix를 갱신한다. */

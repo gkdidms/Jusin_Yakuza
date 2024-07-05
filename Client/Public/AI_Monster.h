@@ -12,6 +12,19 @@ class CAI_Monster :
     public CBTNode
 {
 public:
+    //스킬 리스트
+    enum SKILL {
+        SKILL_HIT,
+        SKILL_SWAY,
+        SKILL_SHIFT,
+        SKILL_CMD,
+        SKILL_PUNCH,
+        SKILL_HEAVY,
+        SKILL_ANGRY_CHOP,
+        SKILL_ANGRY_KICK,
+        SKILL_END
+    };
+
     typedef struct tAIMonster {
         class CAnim* pAnim;
         _uint* pState;
@@ -38,6 +51,19 @@ protected:
     _bool m_isAngry = { false };
     _bool m_isSync = { false };
     _bool m_isShift = { false };
+    _bool m_isIdle = { false };
+
+    _uint m_iSkill = { SKILL_END };
+
+protected:
+    _float m_fDelayAttackDuration = { 10.f };
+    _float m_fAttackDelayTime = { 0.f }; // 공격이 끝난 후 지속시간
+
+    _float m_fShiftDuration = { 0.f }; // 랜덤으로 부여받는다.
+    _float m_fShiftTime = { 0.f };
+
+    _float m_fIdleDuration = { 0.f };
+    _float m_fIdleTime = { 0.f };
 
 protected:
     //죽음
@@ -61,6 +87,22 @@ protected:
 
     // 가드
     virtual CBTNode::NODE_STATE Guard();
+
+    //분노
+    virtual CBTNode::NODE_STATE Check_Angry(); // 화가 난 상태인지 체크
+    virtual CBTNode::NODE_STATE Angry();
+
+    virtual CBTNode::NODE_STATE ATK_Angry_Punch(); // 화가 난 상태일때 펀치
+    virtual CBTNode::NODE_STATE ATK_Angry_Kick(); // 화가 난 상태일때 발차기
+
+    //Stand 
+    virtual CBTNode::NODE_STATE Check_Shift(); // 걷고 있는가?
+    //걸을 것 인가?
+    virtual CBTNode::NODE_STATE Shift(); // 걸을 것인지 분기처리
+
+    //Idle
+    virtual CBTNode::NODE_STATE Check_Idle(); 
+    virtual CBTNode::NODE_STATE Idle();
 
 protected:
     virtual void Ready_Tree();

@@ -153,7 +153,7 @@ HRESULT CLevel_Test::Ready_Monster(const wstring& strLayerTag)
 	//Desc.fRotatePecSec = XMConvertToRadians(0.f);
 	Desc.fRotatePecSec = XMConvertToRadians(180.f);
 
-	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_Jimu"), strLayerTag, &Desc)))
+	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_WPAYakuza"), strLayerTag, &Desc)))
 		return E_FAIL;
 
 	return S_OK;
