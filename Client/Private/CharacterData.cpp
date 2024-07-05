@@ -1,9 +1,10 @@
 #include "CharacterData.h"  
 #include "GameInstance.h"
+#include "SystemManager.h"
 
 #include "Effect.h"
 #include "Model.h"
-#include "SystemManager.h"
+#include "LandObject.h"
 
 CCharacterData::CCharacterData()
 	:m_pGameInstance{CGameInstance::GetInstance()}
@@ -11,38 +12,40 @@ CCharacterData::CCharacterData()
 	Safe_AddRef(m_pGameInstance);
 }
 
-HRESULT CCharacterData::Initialize(wstring wstrModelName)
+HRESULT CCharacterData::Initialize(CLandObject* pCharacter)
 {
+	m_pCharacter = pCharacter;
+
 	wstring wstrFilePath = TEXT("../Bin/DataFiles/Character/");
-	wstrFilePath += wstrModelName + TEXT("/");
+	wstrFilePath += m_pCharacter->Get_ModelName() + TEXT("/");
 
 	// 알파 적용할 메시 로드
 	string strFilePath = m_pGameInstance->WstringToString(wstrFilePath);
-	string strFileName = m_pGameInstance->WstringToString(wstrModelName) + "_AlphaMeshes.dat";
+	string strFileName = m_pGameInstance->WstringToString(m_pCharacter->Get_ModelName()) + "_AlphaMeshes.dat";
 	string strFileFullPath = strFilePath + strFileName;
 	if (FAILED(Load_AlphaMeshes(strFileFullPath)))
 		return E_FAIL;
 
 	// 루프애니메이션 정보 로드
-	strFileName = m_pGameInstance->WstringToString(wstrModelName) + "_LoopAnimations.dat";
+	strFileName = m_pGameInstance->WstringToString(m_pCharacter->Get_ModelName()) + "_LoopAnimations.dat";
 	strFileFullPath = strFilePath + strFileName;
 	if (FAILED(Load_LoopAnimations(strFileFullPath)))
 		return E_FAIL;
 	
 	// 애니메이션 이벤트 정보 로드
-	strFileName = m_pGameInstance->WstringToString(wstrModelName) + "_AnimationEvents.dat";
+	strFileName = m_pGameInstance->WstringToString(m_pCharacter->Get_ModelName()) + "_AnimationEvents.dat";
 	strFileFullPath = strFilePath + strFileName;
 	if (FAILED(Load_AnimationEvents(strFileFullPath)))
 		return E_FAIL;
 
 	// 콜라이더 정보 로드
-	strFileName = m_pGameInstance->WstringToString(wstrModelName) + "_Colliders.dat";
+	strFileName = m_pGameInstance->WstringToString(m_pCharacter->Get_ModelName()) + "_Colliders.dat";
 	strFileFullPath = strFilePath + strFileName;
 	if (FAILED(Load_Colliders(strFileFullPath)))
 		return E_FAIL;
 
-	// 이펙트 정보 로드
-	strFileName = m_pGameInstance->WstringToString(wstrModelName) + "_EffectState.dat";
+	// 이펙트 정보는 레이어와 오브젝트가 전부 생성된 뒤에 뼈 정보를 꺼내와서 넘겨줘야한다.
+	strFileName = m_pGameInstance->WstringToString(m_pCharacter->Get_ModelName()) + "_EffectState.dat";
 	strFileFullPath = strFilePath + strFileName;
 	if (FAILED(Load_EffectState(strFileFullPath)))
 		return E_FAIL;
@@ -232,35 +235,34 @@ HRESULT CCharacterData::Load_EffectState(string strFilePath)
 			string strEffectName = "";
 			in >> strEffectName;
 
-			Create_Effect(strBoneName, strEffectName);
+			//Create_Effect(strBoneName, strEffectName);
 
-			m_Effects.emplace(strBoneName, i);
+			m_Effects.emplace(strBoneName, m_pGameInstance->StringToWstring(strEffectName));
 		}
 
 		in.close();
 
 	}
 }
-
+		
 void CCharacterData::Create_Effect(string& strBoneName, string& strEffectName)
 {
 	const _float4x4* pBoneMatrix = { nullptr };
 
-	//wstring wstrTag = TEXT("Prototype") + m_wstrModelName
-	//CModel* pModel = static_cast<CModel*>(m_pGameInstance->Get_GameObject_Component(LEVEL_TEST, TEXT("Layer_Player"), TEXT("Com_Model")));
-	//pBoneMatrix = pModel->Get_BoneCombinedTransformationMatrix(strBoneName.c_str());
+	CModel* pModel = reinterpret_cast<CModel*>(m_pCharacter->Get_Component(TEXT("Com_Model")));
+	pBoneMatrix = pModel->Get_BoneCombinedTransformationMatrix(strBoneName.c_str());
 
-	//CEffect::EFFECT_DESC Desc{};
-	//Desc.pWorldMatrix = pBoneMatrix;
-	//m_pGameInstance->Add_GameObject(LEVEL_TEST, m_pGameInstance->StringToWstring(strEffectName), TEXT("Layer_Effect"), &Desc);
+	CEffect::EFFECT_DESC Desc{};
+	Desc.pWorldMatrix = pBoneMatrix;
+	m_pGameInstance->Add_GameObject(LEVEL_TEST, m_pGameInstance->StringToWstring(strEffectName), TEXT("Layer_Effect"), &Desc);
 }
 
-CCharacterData* CCharacterData::Create(wstring wstrModelName)
+
+CCharacterData* CCharacterData::Create(CLandObject* pCharacter)
 {
 	CCharacterData* pInstnace = new CCharacterData();
 
-
-	if (FAILED(pInstnace->Initialize(wstrModelName)))
+	if (FAILED(pInstnace->Initialize(pCharacter)))
 	{
 		MSG_BOX("Failed To Created : CCharacterData");
 		Safe_Release(pInstnace);

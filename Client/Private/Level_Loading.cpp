@@ -6,6 +6,8 @@
 #include "Loader.h"
 #include "Level_Loading.h"
 #include "Level_Logo.h"
+#include "Level_Office1F.h"
+#include "Level_Office2F.h"
 #include "Level_Test.h"
 #pragma endregion
 
@@ -43,6 +45,12 @@ void CLevel_Loading::Tick(const _float& fTimeDelta)
 			{
 			case LEVEL_LOGO:
 				pNewLevel = CLevel_Logo::Create(m_pDevice, m_pContext);
+				break;
+			case LEVEL_OFFICE_1F:
+				pNewLevel = CLevel_Office1F::Create(m_pDevice, m_pContext);
+				break;
+			case LEVEL_OFFICE_2F:
+				pNewLevel = CLevel_Office2F::Create(m_pDevice, m_pContext);
 				break;
 			case LEVEL_TEST:
 				pNewLevel = CLevel_Test::Create(m_pDevice, m_pContext);

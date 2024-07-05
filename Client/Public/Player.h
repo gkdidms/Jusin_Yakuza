@@ -105,7 +105,9 @@ private:
     CCollider*              m_pColliderCom = { nullptr };
 
     //뼈 인덱스, 소켓 콜라이더
-    unordered_map<_uint, class CSoketCollider*>      m_pColliders;     
+    unordered_map<_uint, class CSocketCollider*>      m_pColliders;  
+    //뼈 이름, 소켓 이펙트
+    unordered_map<string, class CSocketEffect*>      m_pEffects;     
     class CCharacterData*   m_pData = { nullptr };
 
     // 이 때, 사용하는 키 값은 행동에 대한 키값을 가진다. (스타일은 배열 인덱스)

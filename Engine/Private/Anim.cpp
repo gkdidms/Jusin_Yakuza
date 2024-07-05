@@ -33,6 +33,37 @@ _uint CAnim::Get_AnimationIndex(const _char* pName)
 	return -1;
 }
 
+const _float4* CAnim::Get_AnimationCenterRotation()
+{
+	return m_Animations[m_iCurrentIndex]->Get_CenterRotationValue();
+}
+
+const _float3* CAnim::Get_AnimationCenterMove()
+{
+	return m_Animations[m_iCurrentIndex]->Get_CenterMoveValue();
+}
+
+_bool CAnim::Get_AnimFinished() const
+{
+	return m_Animations[m_iCurrentIndex]->Get_Finished();
+}
+
+_bool CAnim::Get_AnimChanged() const
+{
+	return m_Animations[m_iCurrentIndex]->Get_Changed();
+}
+
+_bool CAnim::Get_AnimRestart(_bool isLoop) const
+{
+	return isLoop && m_Animations[m_iCurrentIndex]->Get_Restrat();
+}
+
+_bool CAnim::Get_AnimLerp(_float ChangeInterval) const
+{
+	return ChangeInterval == 0.f ? false : true;
+}
+
+
 void CAnim::Reset_Animation()
 {
 	m_Animations[m_iCurrentIndex]->Reset();
