@@ -103,6 +103,7 @@ HRESULT CChannel::Initialize(const BAiNodeAnim* pAIChannel, const vector<class C
 	return S_OK;
 }
 
+// 일반 키프레임간 선형보간 함수
 void CChannel::Update_TransformationMatrix(_double CurrentPosition, const vector<class CBone*>& Bones, _uint* pCurrentKeyFrameIndex, _float3* fCenterMoveValue, _float4* fCenterRotationValue)
 {
 	if (0.0 == CurrentPosition)
@@ -172,6 +173,7 @@ void CChannel::Update_TransformationMatrix(_double CurrentPosition, const vector
 	Bones[m_iBoneIndex]->Set_TransformationMatrix(TransformationMatrix);
 }
 
+// 애니메이션간 선형보간하는 함수
 void CChannel::Update_TransformationMatrix(_double CurrentPosition, const vector<class CBone*>& Bones, CChannel* pSrcChannel, _uint PrevKeyFrameIndex, _double ChangeInterval, _bool isFinished, _float3* fCenterMoveValue, _float4* fCenterRotationValue)
 {
 	_vector			vScale, vRotation, vTranslation;

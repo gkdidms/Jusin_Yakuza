@@ -51,7 +51,11 @@ HRESULT CPlayer::Initialize(void* pArg)
 void CPlayer::Priority_Tick(const _float& fTimeDelta)
 {
 	if (m_pModelCom->Get_AnimFinished())
+	{
+		//m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_pTransformCom->Get_State(CTransform::STATE_POSITION) + XMVectorSetY(XMLoadFloat4(&m_vPrevMove), 0));
 		XMStoreFloat4(&m_vPrevMove, XMVectorZero());
+	}
+
 }
 
 void CPlayer::Tick(const _float& fTimeDelta)
@@ -73,10 +77,10 @@ void CPlayer::Tick(const _float& fTimeDelta)
 		Style_Change(ADVENTURE);
 	}
 
+	Synchronize_Root(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")));
+
 	if (m_isAnimStart)
 		m_pModelCom->Play_Animation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")));
-
-	Synchronize_Root(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")));
 
 	for (auto& pCollider : m_pColliders)
 		pCollider.second->Tick(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")));
@@ -227,12 +231,18 @@ void CPlayer::Synchronize_Root(const _float& fTimeDelta)
 			m_pTransformCom->Go_Move_Custum(fMoveDir, fMoveSpeed, 1);
 			m_fPrevSpeed = fMoveSpeed;
 
+			XMStoreFloat4(&m_vPrevMove, vFF);
+
 		}
+	}
+	else
+	{
+		// 선형보간중일때는 무조건 초기화
+		XMStoreFloat4(&m_vPrevMove, XMVectorZero());
 	}
 
 	
 	XMStoreFloat4x4(&m_ModelWorldMatrix, m_pTransformCom->Get_WorldMatrix());
-	XMStoreFloat4(&m_vPrevMove, vFF);
 	//m_vPrevRotation = vQuaternion;
 	XMStoreFloat4(&m_vPrevRotation, resultQuaternionVector);
 }
