@@ -160,6 +160,27 @@
     <ClCompile Include="..\Private\MapCollider.cpp">
       <Filter>02.GameObjects\08. MapCollider</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\Kiryu_KRS_Attack.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\Attack</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Kiryu_KRS_Hit.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\Hit</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Kiryu_KRS_BattleStart.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\BattleStart</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Kiryu_KRS_Idle.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\Idle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Kiryu_KRS_Run.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\Run</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Kiryu_KRS_Sway.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\Sway</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Kiryu_KRS_Walk.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\Walk</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\MainApp.h">
@@ -350,6 +371,27 @@
     </ClInclude>
     <ClInclude Include="..\Public\MapCollider.h">
       <Filter>02.GameObjects\08. MapCollider</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Kiryu_KRS_Attack.h">
+      <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\Attack</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Kiryu_KRS_Hit.h">
+      <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\Hit</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Kiryu_KRS_BattleStart.h">
+      <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\BattleStart</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Kiryu_KRS_Idle.h">
+      <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\Idle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Kiryu_KRS_Run.h">
+      <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\Run</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Kiryu_KRS_Sway.h">
+      <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\Sway</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Kiryu_KRS_Walk.h">
+      <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\Walk</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -546,6 +588,27 @@
     </Filter>
     <Filter Include="02.GameObjects\02.Character\LandObject\01.Monster\00.OfficeYakuza\AI">
       <UniqueIdentifier>{9e849697-ae77-4632-b243-cfb720c7f930}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\Attack">
+      <UniqueIdentifier>{af748daf-3b67-450b-a834-8f3c58512bc2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\Hit">
+      <UniqueIdentifier>{b6d1caf0-5614-4158-a6ec-26762e76566f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\BattleStart">
+      <UniqueIdentifier>{24d714ab-e911-4f19-9f10-59ee9c7f2896}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\Idle">
+      <UniqueIdentifier>{6afb6683-e3a9-43dd-84d4-13c0e154dffc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\Run">
+      <UniqueIdentifier>{753ccaf5-3ccb-450d-b56c-b0fb41508333}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\Sway">
+      <UniqueIdentifier>{0832b841-afdc-478b-b7a0-a6155b72dd6e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\Walk">
+      <UniqueIdentifier>{9d473ed7-1045-45b0-b810-601d5ce04716}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
