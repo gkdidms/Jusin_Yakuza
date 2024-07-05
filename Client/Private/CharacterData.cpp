@@ -235,9 +235,9 @@ HRESULT CCharacterData::Load_EffectState(string strFilePath)
 			string strEffectName = "";
 			in >> strEffectName;
 
-			Create_Effect(strBoneName, strEffectName);
+			//Create_Effect(strBoneName, strEffectName);
 
-			m_Effects.emplace(strBoneName, i);
+			m_Effects.emplace(strBoneName, m_pGameInstance->StringToWstring(strEffectName));
 		}
 
 		in.close();
@@ -250,7 +250,7 @@ void CCharacterData::Create_Effect(string& strBoneName, string& strEffectName)
 	const _float4x4* pBoneMatrix = { nullptr };
 
 	CModel* pModel = reinterpret_cast<CModel*>(m_pCharacter->Get_Component(TEXT("Com_Model")));
-	pBoneMatrix = pModel->Get_BoneCombinedTransformationMatrix(m_pGameInstance->WstringToString(m_pCharacter->Get_ModelName()).c_str());
+	pBoneMatrix = pModel->Get_BoneCombinedTransformationMatrix(strBoneName.c_str());
 
 	CEffect::EFFECT_DESC Desc{};
 	Desc.pWorldMatrix = pBoneMatrix;

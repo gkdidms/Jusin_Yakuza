@@ -49,6 +49,11 @@ public:
     const unordered_map<_uint, COLLIDER_STATE>& Get_Colliders() const {
         return m_Colliders;
     }
+
+    const multimap<string, wstring>& Get_Effets() const {
+        return m_Effects;
+    }
+
     const vector<ANIMATION_EVENT>& Get_CurrentEvents() const {
         return m_CurrentEvents;
     }
@@ -78,7 +83,8 @@ private:
     multimap<string, ANIMATION_EVENT> m_AnimationEvents;            
     // first: ª¿¿Œµ¶Ω∫
     unordered_map<_uint, COLLIDER_STATE> m_Colliders;
-    multimap<string, _uint> m_Effects;
+    // first ª¿ ¿Ã∏ß, second ¿Ã∆Â∆Æ ∆ƒ¿œ ¿Ã∏ß (.dat ¡¶∞≈«— ¿Ã∏ß)
+    multimap<string, wstring> m_Effects;
 
     vector<ANIMATION_EVENT> m_CurrentEvents; 
 

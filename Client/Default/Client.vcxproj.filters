@@ -103,11 +103,11 @@
     <ClCompile Include="..\Private\PartObject.cpp">
       <Filter>02.GameObjects\02.Character\PartObject</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\SoketObject.cpp">
-      <Filter>02.GameObjects\02.Character\PartObject\SoketObject</Filter>
+    <ClCompile Include="..\Private\SocketObject.cpp">
+      <Filter>02.GameObjects\02.Character\PartObject\SocketObject</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\SoketCollider.cpp">
-      <Filter>02.GameObjects\02.Character\SoketCollider</Filter>
+    <ClCompile Include="..\Private\SocketCollider.cpp">
+      <Filter>02.GameObjects\02.Character\SocketCollider</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Effect.cpp">
       <Filter>02.GameObjects\06.Effect</Filter>
@@ -180,6 +180,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Kiryu_KRS_Walk.cpp">
       <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\Walk</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\SocketEffect.cpp">
+      <Filter>02.GameObjects\02.Character\SocketEffect</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -312,11 +315,11 @@
     <ClInclude Include="..\public\Level_Test.h">
       <Filter>01.Levels\98.Test</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\SoketObject.h">
-      <Filter>02.GameObjects\02.Character\PartObject\SoketObject</Filter>
+    <ClInclude Include="..\Public\SocketObject.h">
+      <Filter>02.GameObjects\02.Character\PartObject\SocketObject</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\SoketCollider.h">
-      <Filter>02.GameObjects\02.Character\SoketCollider</Filter>
+    <ClInclude Include="..\Public\SocketCollider.h">
+      <Filter>02.GameObjects\02.Character\SocketCollider</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Effect.h">
       <Filter>02.GameObjects\06.Effect</Filter>
@@ -392,6 +395,9 @@
     </ClInclude>
     <ClInclude Include="..\Public\Kiryu_KRS_Walk.h">
       <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\Walk</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\SocketEffect.h">
+      <Filter>02.GameObjects\02.Character\SocketEffect</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -529,12 +535,6 @@
     <Filter Include="02.GameObjects\02.Character\PartObject">
       <UniqueIdentifier>{83de469b-7019-4bed-9e97-276b7f63de30}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\02.Character\PartObject\SoketObject">
-      <UniqueIdentifier>{5ecdde66-d1d6-47ad-8170-66d5ccd28aa5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\02.Character\SoketCollider">
-      <UniqueIdentifier>{260596ca-843e-47fe-ae9b-3a65ebc2b9a0}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObjects\03.Construction">
       <UniqueIdentifier>{95e29977-56e8-4ee9-b1c8-71236bd9d68b}</UniqueIdentifier>
     </Filter>
@@ -609,6 +609,15 @@
     </Filter>
     <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\Walk">
       <UniqueIdentifier>{9d473ed7-1045-45b0-b810-601d5ce04716}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\SocketCollider">
+      <UniqueIdentifier>{260596ca-843e-47fe-ae9b-3a65ebc2b9a0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\SocketEffect">
+      <UniqueIdentifier>{9f450e59-cfd3-4163-ba5b-93f729ea938c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\PartObject\SocketObject">
+      <UniqueIdentifier>{5ecdde66-d1d6-47ad-8170-66d5ccd28aa5}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
