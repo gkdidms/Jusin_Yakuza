@@ -10,6 +10,10 @@ float4 g_vColor;
 
 float3 g_vLifeTime;
 
+float3 g_vStartPos;
+float2 g_fAnimTime;
+
+
 struct VS_IN
 {
     float3 vPosition : POSITION;
@@ -37,6 +41,25 @@ VS_OUT VS_MAIN(VS_IN In)
     return Out;
 }
 
+VS_OUT VS_ANIM(VS_IN In)
+{
+    VS_OUT Out = (VS_OUT) 0;
+
+    matrix matVP;
+
+    matVP = mul(g_ViewMatrix, g_ProjMatrix);
+
+    float4 WorldPos = mul(float4(In.vPosition, 1.f), g_WorldMatrix);
+    float3 StartPos = g_vStartPos;
+    float factor =g_fAnimTime.x / g_fAnimTime.y;
+    
+    WorldPos.xyz = lerp(StartPos, WorldPos.xyz, float3(factor, factor, factor));
+    WorldPos.w = 1.f;
+    Out.vPosition = mul(WorldPos, matVP);
+    Out.vTexcoord = In.vTexcoord;
+
+    return Out;
+}
 struct PS_IN
 {
     float4 vPosition : SV_POSITION;
@@ -64,7 +87,7 @@ PS_OUT PS_ALPHABLEND(PS_IN In)
 {
     PS_OUT Out = (PS_OUT) 0;
     
-    Out.vColor = g_Texture.Sample(LinearSampler, In.vTexcoord);
+    Out.vColor = g_Texture.Sample(PointSampler, In.vTexcoord);
     if (Out.vColor.a <= 0.1f)
         discard;
     return Out;
@@ -74,7 +97,7 @@ PS_OUT PS_COLOR_ALPHABLEND(PS_IN In)
 {
     PS_OUT Out = (PS_OUT) 0;
     
-    vector BaseColor = g_Texture.Sample(LinearSampler, In.vTexcoord);
+    vector BaseColor = g_Texture.Sample(PointSampler, In.vTexcoord);
     vector vMergeColor = g_vColor;
     
     Out.vColor = vMergeColor * BaseColor;
@@ -120,7 +143,17 @@ PS_OUT PS_COLOR_ALPHABLEND_EFFECT(PS_IN In)
     return Out;
 }
 
-
+PS_OUT PS_ALPHABLEND_ANIM(PS_IN In)
+{
+    PS_OUT Out = (PS_OUT) 0;
+    
+    Out.vColor = g_Texture.Sample(PointSampler, In.vTexcoord);
+    
+    
+    if (Out.vColor.a <= 0.1f)
+        discard;
+    return Out;
+}
 
 PS_OUT PS_BACKBUFFER(PS_IN In)
 {
@@ -213,5 +246,18 @@ technique11 DefaultTechnique
         HullShader = NULL;
         DomainShader = NULL;
         PixelShader = compile ps_5_0 PS_COLOR_ALPHABLEND_EFFECT();
+    }
+
+    pass AlphaBlend_Anim_Texture //6
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_ANIM();
+        GeometryShader = NULL;
+        HullShader = NULL;
+        DomainShader = NULL;
+        PixelShader = compile ps_5_0 PS_ALPHABLEND_ANIM();
     }
 }

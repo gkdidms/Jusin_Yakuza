@@ -26,7 +26,8 @@ HRESULT CBtn::Initialize(void* pArg)
 	BTN_DESC* pDesc = static_cast<BTN_DESC*>(pArg);
 	m_strClickFilePath = pDesc->strClickFilePath;
 	m_StrClickFileName = pDesc->strClickFileName;
-
+	m_ClickStartUV = pDesc->ClickStartUV;
+	m_ClickEndUV = pDesc->ClickEndUV;
 
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
@@ -43,10 +44,12 @@ void CBtn::Priority_Tick(const _float& fTimeDelta)
 
 void CBtn::Tick(const _float& fTimeDelta)
 {
+	__super::Tick(fTimeDelta);
 }
 
 void CBtn::Late_Tick(const _float& fTimeDelta)
 {
+	__super::Late_Tick(fTimeDelta);
 #ifndef _TOOL
 	//커서 확인
 	m_isClick = m_pGameInstance->Picking_UI(m_pTransformCom);
@@ -118,6 +121,19 @@ HRESULT CBtn::Save_binary(const string strDirectory)
 
 	out.write((char*)&m_iShaderPass, sizeof(_uint));
 
+	_float4x4 WorldMatrix = *m_pTransformCom->Get_WorldFloat4x4();
+
+	out.write((char*)&WorldMatrix, sizeof(_float4x4));
+
+	out.write((char*)&m_isAnim, sizeof(_bool));
+
+	m_fAnimTime.x = 0.f;
+	out.write((char*)&m_fAnimTime, sizeof(_float2));
+
+	out.write((char*)&m_vStartPos, sizeof(_float3));
+
+
+
 	//개별 저장
 
 	string ClickFilePath = m_pGameInstance->WstringToString(m_strClickFilePath);
@@ -174,6 +190,19 @@ HRESULT CBtn::Save_Groupbinary(ofstream& out)
 
 	out.write((char*)&m_iShaderPass, sizeof(_uint));
 
+	_float4x4 WorldMatrix = *m_pTransformCom->Get_WorldFloat4x4();
+
+	out.write((char*)&WorldMatrix, sizeof(_float4x4));
+
+	out.write((char*)&m_isAnim, sizeof(_bool));
+
+	m_fAnimTime.x = 0.f;
+	out.write((char*)&m_fAnimTime, sizeof(_float2));
+
+	out.write((char*)&m_vStartPos, sizeof(_float3));
+
+
+
 	//개별 저장
 
 	string ClickFilePath = m_pGameInstance->WstringToString(m_strClickFilePath);
@@ -201,6 +230,8 @@ HRESULT CBtn::Add_Components()
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Rect"),
 		TEXT("Com_ClickVIBuffer"), reinterpret_cast<CComponent**>(&m_pClickVIBufferCom))))
 		return E_FAIL;
+
+	m_pClickVIBufferCom->EditUV(m_ClickStartUV, m_ClickEndUV);
 
 	m_pClickTextureCom = CTexture::Create(m_pDevice, m_pContext, m_strClickFilePath, 1);
 	if (nullptr == m_pClickTextureCom)

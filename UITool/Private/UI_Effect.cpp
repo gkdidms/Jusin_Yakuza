@@ -39,13 +39,13 @@ void CUI_Effect::Priority_Tick(const _float& fTimeDelta)
 
 void CUI_Effect::Tick(const _float& fTimeDelta)
 {
+	__super::Tick(fTimeDelta);
 	m_vLifeTime.x += m_fSpeed * fTimeDelta;
-
-
 }
 
 void CUI_Effect::Late_Tick(const _float& fTimeDelta)
 {
+	__super::Late_Tick(fTimeDelta);
 	//종료시간 넘으면 죽음
 #ifdef _TOOL
 	if (m_vLifeTime.x >= m_vLifeTime.z)
@@ -54,8 +54,6 @@ void CUI_Effect::Late_Tick(const _float& fTimeDelta)
 	if (m_vLifeTime.x >= m_vLifeTime.z)
 		m_isDead = true;
 #endif // _TOOL
-
-
 }
 
 HRESULT CUI_Effect::Render()
@@ -135,6 +133,20 @@ HRESULT CUI_Effect::Save_binary(const string strDirectory)
 
 	out.write((char*)&m_iShaderPass, sizeof(_uint));
 
+	_float4x4 WorldMatrix = *m_pTransformCom->Get_WorldFloat4x4();
+
+	out.write((char*)&WorldMatrix, sizeof(_float4x4));
+
+
+	out.write((char*)&m_isAnim, sizeof(_bool));
+
+	m_fAnimTime.x = 0.f;
+	out.write((char*)&m_fAnimTime, sizeof(_float2));
+
+	out.write((char*)&m_vStartPos, sizeof(_float3));
+
+
+
 	//개별저장
 	_float3 LifeTime{};
 	LifeTime.x = 0.f;
@@ -181,6 +193,19 @@ HRESULT CUI_Effect::Save_Groupbinary(ofstream& out)
 	out.write((char*)&m_vColor, sizeof(_float4));
 
 	out.write((char*)&m_iShaderPass, sizeof(_uint));
+
+	_float4x4 WorldMatrix = *m_pTransformCom->Get_WorldFloat4x4();
+
+	out.write((char*)&WorldMatrix, sizeof(_float4x4));
+
+
+	out.write((char*)&m_isAnim, sizeof(_bool));
+
+	m_fAnimTime.x = 0.f;
+	out.write((char*)&m_fAnimTime, sizeof(_float2));
+
+	out.write((char*)&m_vStartPos, sizeof(_float3));
+
 
 	//개별저장
 	_float3 LifeTime{};

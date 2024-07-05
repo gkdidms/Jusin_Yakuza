@@ -14,7 +14,7 @@ public:
         wstring strClickFilePath; // 클릭했을때의 이미지
         wstring strClickFileName;
         _float2 ClickStartUV;
-        _float2 ClickEndUV;
+        _float2 ClickEndUV = { 1.f,1.f };
     }BTN_DESC;
 private:
     CBtn(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
