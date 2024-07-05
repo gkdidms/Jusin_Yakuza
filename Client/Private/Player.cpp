@@ -204,6 +204,7 @@ void CPlayer::Synchronize_Root(const _float& fTimeDelta)
 			m_fPrevSpeed = 0.f;
 		}	
 		else
+
 		{
 			// 쿼터니언 회전값 적용은 중단 (추후 마저 진행예정)
 			//_float4 v;
@@ -214,8 +215,11 @@ void CPlayer::Synchronize_Root(const _float& fTimeDelta)
 			//_float4 vb;
 			//XMStoreFloat4(&vb, vFF - XMLoadFloat4(&m_vPrevMove));
 			//m_pTransformCom->Go_Straight_CustumDir(vb, fTimeDelta);
+			_float4 fMoveDir;
+			XMStoreFloat4(&fMoveDir, vFF - XMLoadFloat4(&m_vPrevMove));
 			_float fMoveSpeed = XMVectorGetX(XMVector3Length(vFF - XMLoadFloat4(&m_vPrevMove)));
 			m_pTransformCom->Go_Straight_CustumSpeed(m_fPrevSpeed, 1);
+			//m_pTransformCom->Go_Straight_CustumDir(fMoveDir, 1);
 			m_fPrevSpeed = fMoveSpeed;
 		}
 	}
@@ -545,7 +549,7 @@ void CPlayer::Apply_ChracterData()
 
 		//생성한 모든 콜라이더는 일단 꺼둔다.
 		// 몸체에 붙일 (플레이어가 피격당할) 콜라이더는 항시 켜져있어야하므로 툴에서찍지않음
-		it->second->On();
+		it->second->Off();
 	}
 
 	auto& pEffects = m_pData->Get_Effets();
