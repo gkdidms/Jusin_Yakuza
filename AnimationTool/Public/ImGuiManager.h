@@ -27,7 +27,7 @@ private:
 	//콜라이더 활성화(노랑), 콜라이더 비활성화(주황), 사운드 활성화(초록), 이펙트 활성화(파랑)
 	enum Animation_Event_Type
 	{
-		COLLIDER_ACTIVATION, COLLIDER_DISABLE, SOUND_ACTIVATION, EFFECT_ACTIVATION, ANIMATION_EVENT_TYPE_END
+		COLLIDER_ACTIVATION, COLLIDER_DISABLE, SOUND_ACTIVATION, ANIMATION_EVENT_TYPE_END
 	};
 
 public:
@@ -51,6 +51,7 @@ public:
 
 public:
 	void Connect_Model_Ref();
+	string Get_FirstModel_Name();
 
 private:
 	void ModelList();
@@ -60,12 +61,12 @@ private:
 	void MeshListWindow();
 	void AnimEventWindow();
 
+	/* 키프레임 윈도우에서 애니메이션 이벤트에 이펙트, 사운드 추가하는 창 */
+	void EffectListWindow();
+	void SoundListWindow();
+
 	void DrawTimeline(ImDrawList* d);
 	void DrawChannels();
-
-	//주석
-private:
-	void LoadAnimationCharacterList();
 
 private:
 	void Update_Model_Position();
@@ -75,8 +76,17 @@ private:
 	void Update_Model_Scaled();
 
 private:
+	/* Initailize */
+	void Setting_Collider_Value(_uint iBoneIndex);	
+	void Setting_InitialData();
+
+	/* Reset */
 	void Reset_Collider_Value();
-	void Setting_Collider_Value(_uint iBoneIndex);
+	void Clear_EffectStateMap();
+
+private:
+	void Create_Effect(string& strBoneName, string& strEffectName);
+
 
 private:
 	/* Save */
@@ -85,6 +95,7 @@ private:
 	void AnimationLoop_Save(string strPath);
 	void AnimationEvent_Save(string strPath);
 	void ColliderState_Save(string strPath);
+	void EffectState_Save(string strPath);
 
 	/* Load */
 	void All_Load();
@@ -92,6 +103,8 @@ private:
 	void AnimationLoop_Load(string strPath);
 	void AnimationEvent_Load(string strPath);
 	void ColliderState_Load(string strPath);
+	void EffectState_Load(string strPath);
+	
 
 private:
 	ImGuiIO* io;
@@ -99,15 +112,15 @@ private:
 private:
 	_bool					m_isOnToolWindows = { false };
 
-	//bool					m_isAnimLoop = { false };
-
 	int						m_iAnimIndex = { 0 };
+	int						m_iSearchAnimIndex = { 0 };
 	int						m_iAddedAnimSelectedIndex = { 0 };
 
 	int						m_iModelSelectedIndex = { 0 };
 
 	int						m_iBoneSelectedIndex = { 0 };
 	int						m_iColliderSelectedIndex = { 0 };
+	int						m_iEventBoneIndex = { 0 };
 
 	int						m_iChannelSelectedIndex = { 0 };
 
@@ -135,6 +148,26 @@ private:
 	// first: 애니메이션 이름, second: 이벤트정보
 	multimap<string, Animation_Event>		m_AnimationEvents;		
 
+	//first: 뼈 이름, second: 이름
+	multimap<string, string>				m_EffectState;
+
+
+private:
+	_bool					m_isEffectListWindow = { false };
+
+	_uint						m_iEffectType = { 0 };
+	int							m_iEffectSelectedIndex = { 0 };
+	int							m_iAddedEffectSelectedIndex = { 0 };
+
+	vector<string>				m_EffectTypeList;
+	multimap<_uint, string>		m_EffectFiles;
+
+private:
+	_bool					m_isSoundListWindow = { false };
+
+	_uint					m_iSoundType = { 0 };
+	vector<string>			m_SoundTypeList;
+	
 private:
 	_float					m_fTimeDeltaScale = { 1.f };
 

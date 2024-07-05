@@ -2,7 +2,7 @@
 #include "Engine_Shader_Defines.hlsli"
 
 /* 컨스턴트 테이블(상수테이블) */
-matrix g_WorldMatrix, g_ViewMatrix, g_ProjMatrix, g_WorldMatrixInv, g_ViewMatrixInv, g_ProjMatrixInv;
+matrix g_WorldMatrix, g_ViewMatrix, g_ProjMatrix, g_WorldMatrixInv, g_ViewMatrixInv, g_ProjMatrixInv, g_ReflectViewMatrix;
 
 Texture2D g_DiffuseTexture;
 Texture2D g_NormalTexture;
@@ -10,6 +10,7 @@ Texture2D g_RMTexture;
 Texture2D g_RefractionTexture;
 Texture2D g_RSTexture;
 Texture2D g_DepthTexture;
+Texture2D g_NoiseTexture;
 
 float g_fObjID;
 float g_fRefractionScale = { 0.001f };
@@ -233,6 +234,7 @@ PS_OUT PS_PUDDLE(PS_IN In)
     if(0.3 > vMaskTexture.r)
         discard;
     
+    
     float2 vRefractTexCoord;
     vRefractTexCoord.x = In.vProjPos.x / In.vProjPos.w / 2.0f + 0.5f;
     vRefractTexCoord.y = -In.vProjPos.y / In.vProjPos.w / 2.0f + 0.5f;
@@ -240,16 +242,79 @@ PS_OUT PS_PUDDLE(PS_IN In)
     // 물 움직이는거
     float2 vTexUV = float2(In.vTexcoord.x + g_fTimeDelta * g_fSpeed, In.vTexcoord.y);
     vector normal = g_NormalTexture.Sample(LinearSampler, vTexUV);
+    // 물 표현(물 밑 투영)
     vector vRefractionColor = g_RefractionTexture.Sample(LinearSampler, vRefractTexCoord + 0.02 * normal.xy);
 
+    
+    float2 vScreenPos = In.vPosition.xy / g_RenderResolution;
+    float4 vViewDepth = g_DepthTexture.Sample(LinearSampler, vScreenPos.xy);
+    
+    vector vWorldPos;
+    vWorldPos.x = vScreenPos.x * 2.f - 1.f;
+    vWorldPos.y = vScreenPos.y * -2.f + 1.f;
+    vWorldPos.z = vViewDepth.x; /* 0 ~ 1 */
+    vWorldPos.w = 1.f;
+    
+    vWorldPos = vWorldPos * (vViewDepth.y * 3000.f);
+    
+    vWorldPos = mul(vWorldPos, g_ProjMatrixInv);
+    vWorldPos = mul(vWorldPos, g_ViewMatrixInv); // world
+    
+    float3 viewDir = normalize(vWorldPos.xyz - g_vCamPosition.xyz);
 
-    vector vFinalColor = vRefractionColor;
+    float3 reflectedDir = normalize(reflect(viewDir, In.vNormal.xyz));
     
-    Out.vDiffuse = vFinalColor;
     
-    if(Out.vDiffuse.r < 0.4)
-        discard;
+    float fLength = length(g_vCamPosition.xyz - vWorldPos.xyz);
     
+    float4 vReflectPos = vWorldPos + float4(reflectedDir.xyz, 0) * 1.2;
+    vReflectPos = float4(vReflectPos.xyz, 1);
+    
+    float bReflect = true;
+    
+
+    
+    float4 vReflectScreenPos = mul(vReflectPos, g_ViewMatrix);
+    vReflectScreenPos = mul(vReflectScreenPos, g_ProjMatrix);
+    vReflectScreenPos /= vReflectScreenPos.w;
+    vReflectScreenPos.x = vReflectScreenPos.x * 0.5 + 0.5;
+    vReflectScreenPos.y = vReflectScreenPos.y * -0.5 + 0.5;
+    
+    vector vDepth = g_DepthTexture.Sample(LinearSampler, vReflectScreenPos.xy);
+    
+
+    
+    vector vCalculateWorld = 0;
+    vCalculateWorld.x = vReflectScreenPos.x * 2.f - 1.f;
+    vCalculateWorld.y = vReflectScreenPos.y * -2.f + 1.f;
+    vCalculateWorld.z = vDepth.x; /* 0 ~ 1 */
+    vCalculateWorld.w = 1.f;
+    
+    vCalculateWorld = vCalculateWorld * (vDepth.y * 3000.f);
+    
+    vCalculateWorld = mul(vCalculateWorld, g_ProjMatrixInv);
+
+	/* 월드스페이스 상의 위치를 구한다. */
+    vCalculateWorld = mul(vCalculateWorld, g_ViewMatrixInv);
+    
+    float fDistance = length(g_vCamPosition.xyz - vCalculateWorld.xyz);
+    if (fDistance > 10)
+    {
+        bReflect = false;
+    }
+
+    if(true == bReflect)
+    {
+        vector reflectColor = g_RefractionTexture.Sample(PointSampler, vReflectScreenPos.xy + 0.02 * normal.xy);
+
+        Out.vDiffuse = reflectColor;
+    }
+    else
+    {
+        Out.vDiffuse = vRefractionColor;
+    }
+    
+
 	
     // 투명할 경우(0.1보다 작으면 투명하니) 그리지 않음
     if (Out.vDiffuse.a < 0.1f)

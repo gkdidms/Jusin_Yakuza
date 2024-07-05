@@ -106,6 +106,12 @@
     <ClCompile Include="..\Private\Decal.cpp">
       <Filter>02.GameObjects\07.Decal</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\Collider_Manager.cpp">
+      <Filter>03.Managers\06.Collider_Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ColliderObj.cpp">
+      <Filter>02.GameObjects\08.ColliderObj</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\MainApp.h">
@@ -231,6 +237,12 @@
     <ClInclude Include="..\Public\Decal.h">
       <Filter>02.GameObjects\07.Decal</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Collider_Manager.h">
+      <Filter>03.Managers\06.Collider_Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ColliderObj.h">
+      <Filter>02.GameObjects\08.ColliderObj</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="MapTool.ico">
@@ -333,6 +345,12 @@
     </Filter>
     <Filter Include="02.GameObjects\07.Decal">
       <UniqueIdentifier>{2c4b6ffe-ebed-4a5f-b3fc-8371ff3dc1b6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.Managers\06.Collider_Manager">
+      <UniqueIdentifier>{7468e3ec-4543-4698-9882-8251deb49b62}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\08.ColliderObj">
+      <UniqueIdentifier>{eabbb79c-c0dd-4f3f-b081-b980fb89f34c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

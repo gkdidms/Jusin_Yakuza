@@ -401,6 +401,22 @@ PS_OUT PS_MAIN_BOF(PS_IN In)
 }
 
 
+PS_OUT PS_ADD_PUDDLE(PS_IN In)
+{
+    PS_OUT Out = (PS_OUT) 0;
+
+    vector vPuddle = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
+    
+    if(0 == vPuddle.r && 0 == vPuddle.g && 0 == vPuddle.b)
+        discard;
+    
+    Out.vColor = vPuddle;
+
+    
+    return Out;
+}
+
+
 technique11 DefaultTechnique
 {
 
@@ -640,6 +656,20 @@ technique11 DefaultTechnique
         HullShader = NULL;
         DomainShader = NULL;
         PixelShader = compile ps_5_0 PS_MAIN_BOF();
+    }
+
+
+    pass DiffusePuddleAdd //18
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_None_Test_None_Write, 0);
+        SetBlendState(BS_Default, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        HullShader = NULL;
+        DomainShader = NULL;
+        PixelShader = compile ps_5_0 PS_ADD_PUDDLE();
     }
 }
 

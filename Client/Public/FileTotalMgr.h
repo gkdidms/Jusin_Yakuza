@@ -36,6 +36,7 @@ public:
 	HRESULT									Set_MapObj_In_Client(int iMapLoadingNum, int iStageLevel);
 	HRESULT									Set_GameObject_In_Client(int iStageLevel);
 	HRESULT									Set_Lights_In_Client(int iLightLoadingNum);
+	HRESULT									Set_Collider_In_Client(int iColliderLoadingNum, int iStageLevel);
 
 	void									Load_Cinemachine(int iCineNum, int iStageLevel);
 
@@ -49,6 +50,7 @@ private:
 private:
 	MAP_TOTALINFORM_DESC					m_MapTotalInform{};
 	LIGHT_DESC_IO							m_LightTotalInform{};
+	COLLIDER_IO								m_MapCollider{};
 
 	vector<wstring>							m_Layers = { TEXT("Layer_GameObjects"), TEXT("Layer_Monster") };
 
@@ -58,6 +60,9 @@ private:
 
 	HRESULT									Import_Bin_Map_Data_OnClient(MAP_TOTALINFORM_DESC* mapObjData, int iLevel);
 	HRESULT									Import_Bin_Light_Data_OnClient(LIGHT_DESC_IO* lightData, int iLevel);
+
+	HRESULT									Import_Bin_Collider_Data_OnTool(COLLIDER_IO* ColliderData, int iLevel);
+
 
 public:
 	virtual void							Free() override;

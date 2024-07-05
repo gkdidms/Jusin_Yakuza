@@ -4,16 +4,29 @@ CLeafNode::CLeafNode()
 {
 }
 
-CBTNode::NODE_EXE_TYPE CLeafNode::Execute()
+HRESULT CLeafNode::Initialize(function<CBTNode::NODE_STATE()> Action)
 {
-    return NODE_EXE_TYPE();
+    m_pAction = Action;
+
+    return S_OK;
 }
 
-CBTNode* CLeafNode::Create()
+CBTNode::NODE_STATE CLeafNode::Execute()
 {
-    return nullptr;
+    return m_pAction();
+}
+
+CBTNode* CLeafNode::Create(function<CBTNode::NODE_STATE()> Action)
+{
+    CLeafNode* pInstance = new CLeafNode();
+    
+    if (FAILED(pInstance->Initialize(Action)))
+        Safe_Release(pInstance);
+
+    return pInstance;
 }
 
 void CLeafNode::Free()
 {
+    __super::Free();
 }

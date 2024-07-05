@@ -19,6 +19,7 @@ public:
     vector<CUI_Object*> Get_PartObjects() { return m_PartObjects; }
     CUI_Object* Get_PartObject(_uint iIndex) { return m_PartObjects[iIndex]; }
 
+    void Remove_PartObject(_uint iIndex);
 public:
     virtual HRESULT Initialize_Prototype() override;
     virtual HRESULT Initialize(void* pArg) override;
@@ -29,7 +30,9 @@ public:
 
 private:
     vector<CUI_Object*> m_PartObjects;
-
+public:
+    virtual HRESULT Save_binary(const string strDirectory)override;
+    virtual HRESULT Save_Groupbinary( ofstream& out)override;
 public:
     static CGroup* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
     virtual CGameObject* Clone(void* pArg);

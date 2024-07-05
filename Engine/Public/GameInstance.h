@@ -117,6 +117,8 @@ public:
     _vector Get_CamRight();
     const _float* Get_CamFar();
     void Set_CamFar(_float fFar);
+    const _float4x4* Get_ReflectViewMatrix();
+    void Set_ReflectViewMatrix(_fmatrix matTransform);
 
     /* Font_Manager */
 public: 

@@ -36,29 +36,23 @@ void CLevel_Loading::Tick(const _float& fTimeDelta)
 {
 	if (true == m_pLoader->is_Finished())
 	{
-		if (m_pGameInstance->GetKeyState(DIK_RETURN) == TAP)
+		CLevel* pNewLevel = { nullptr };
+ 		switch (m_eNextLevel)
 		{
-			CLevel* pNewLevel = { nullptr };
-
- 			switch (m_eNextLevel)
-			{
-			case LEVEL_LOGO:
-				pNewLevel = CLevel_Logo::Create(m_pDevice, m_pContext);
-				break;
-			case LEVEL_TEST:
-				pNewLevel = CLevel_Test::Create(m_pDevice, m_pContext);
-				break;
-			case LEVEL_RUNMAP:
-				pNewLevel = CLevel_RunMap::Create(m_pDevice, m_pContext);
-				break;
-			}
-
-			if (nullptr == pNewLevel)
-				return;
-
-			if (FAILED(m_pGameInstance->Open_Level(m_eNextLevel, pNewLevel)))
-				return;
+		case LEVEL_LOGO:
+			pNewLevel = CLevel_Logo::Create(m_pDevice, m_pContext);
+			break;
+		case LEVEL_TEST:
+			pNewLevel = CLevel_Test::Create(m_pDevice, m_pContext);
+			break;
+		case LEVEL_RUNMAP:
+			pNewLevel = CLevel_RunMap::Create(m_pDevice, m_pContext);
+			break;
 		}
+		if (nullptr == pNewLevel)
+			return;
+		if (FAILED(m_pGameInstance->Open_Level(m_eNextLevel, pNewLevel)))
+			return;
 	}
 
 

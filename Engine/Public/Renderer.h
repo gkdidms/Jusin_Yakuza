@@ -13,6 +13,7 @@ public:
         RENDER_NONBLENDER, 
         RENDER_DECAL, 
         RENDER_GLASS, 
+        RENDER_PUDDLE,
         RENDER_NONLIGHT,
         RENDER_BLENDER, 
         RENDER_EFFECT,
@@ -80,6 +81,7 @@ private:
 
     void Render_LightAcc(); // Light ¿¬»ê + SSAO ÇÕ + PBR
     void Render_CopyBackBuffer();
+    void Render_Puddle();
     void Render_DeferredResult();
 
     /* AerialPerspective*/
