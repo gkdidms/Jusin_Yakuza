@@ -177,6 +177,7 @@
     <ClInclude Include="..\public\Background.h" />
     <ClInclude Include="..\Public\BehaviorAnimation.h" />
     <ClInclude Include="..\Public\BTNode.h" />
+    <ClInclude Include="..\Public\MapCollider.h" />
     <ClInclude Include="..\Public\Sequance.h" />
     <ClInclude Include="..\Public\Selector.h" />
     <ClInclude Include="..\Public\CharacterData.h" />
@@ -241,6 +242,7 @@
     <ClCompile Include="..\private\Background.cpp" />
     <ClCompile Include="..\Private\BehaviorAnimation.cpp" />
     <ClCompile Include="..\Private\BTNode.cpp" />
+    <ClCompile Include="..\Private\MapCollider.cpp" />
     <ClCompile Include="..\Private\Sequance.cpp" />
     <ClCompile Include="..\Private\Selector.cpp" />
     <ClCompile Include="..\Private\CharacterData.cpp" />

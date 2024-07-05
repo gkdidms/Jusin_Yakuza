@@ -145,9 +145,6 @@
     <ClCompile Include="..\Private\Kiryu_Adventure_Walk.cpp">
       <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\Adventure\Walk</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\MapCollider.cpp">
-      <Filter>02.GameObjects\08. MapCollider</Filter>
-	</ClCompile>
     <ClCompile Include="..\private\Monster.cpp">
       <Filter>02.GameObjects\02.Character\LandObject\01.Monster</Filter>
     </ClCompile>
@@ -159,6 +156,9 @@
     </ClCompile>
     <ClCompile Include="..\private\AI_RushYakuza.cpp">
       <Filter>02.GameObjects\02.Character\LandObject\01.Monster\00.OfficeYakuza\AI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\MapCollider.cpp">
+      <Filter>02.GameObjects\08. MapCollider</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -336,10 +336,6 @@
     <ClInclude Include="..\Public\Kiryu_Adventure_Walk.h">
       <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\Adventure\Walk</Filter>
     </ClInclude>
-
-    <ClInclude Include="..\Public\MapCollider.h">
-      <Filter>02.GameObjects\08. MapCollider</Filter>
-	</ClInclude>
     <ClInclude Include="..\public\Monster.h">
       <Filter>02.GameObjects\02.Character\LandObject\01.Monster</Filter>
     </ClInclude>
@@ -351,7 +347,10 @@
     </ClInclude>
     <ClInclude Include="..\public\AI_RushYakuza.h">
       <Filter>02.GameObjects\02.Character\LandObject\01.Monster\00.OfficeYakuza\AI</Filter>
-	</ClInclude>
+    </ClInclude>
+    <ClInclude Include="..\Public\MapCollider.h">
+      <Filter>02.GameObjects\08. MapCollider</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -526,7 +525,7 @@
     </Filter>
     <Filter Include="02.GameObjects\08. MapCollider">
       <UniqueIdentifier>{28cec43f-865c-488e-83e1-e6b15b632319}</UniqueIdentifier>
-	</Filter>
+    </Filter>
     <Filter Include="02.GameObjects\02.Character\LandObject\01.Monster">
       <UniqueIdentifier>{45d3ed81-5372-4412-bf1f-89cbd1f74552}</UniqueIdentifier>
     </Filter>
