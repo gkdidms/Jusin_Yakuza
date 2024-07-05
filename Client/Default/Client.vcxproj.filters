@@ -640,12 +640,6 @@
     <Filter Include="02.GameObjects\02.Character\PartObject\SocketObject">
       <UniqueIdentifier>{5ecdde66-d1d6-47ad-8170-66d5ccd28aa5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\02.Character\LandObject\01.Monster\00.RushYakuza">
-      <UniqueIdentifier>{58dcf1b7-f012-4f21-92c4-d4317d03352d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\02.Character\LandObject\01.Monster\00.RushYakuza\AI">
-      <UniqueIdentifier>{9e849697-ae77-4632-b243-cfb720c7f930}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObjects\02.Character\LandObject\01.Monster\AI">
       <UniqueIdentifier>{7c984c39-25b1-4b6b-b10a-cd7e33117ecd}</UniqueIdentifier>
     </Filter>
