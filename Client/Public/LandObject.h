@@ -20,10 +20,17 @@ public:
     virtual void Late_Tick(const _float& fTimeDelta) override;
     virtual HRESULT Render() override;
 
+public:
+    const wstring& Get_ModelName() {
+        return m_wstrModelName;
+    }
+        
 protected:
     class CSystemManager* m_pSystemManager = { nullptr };
 
-private:
+    wstring m_wstrModelName = TEXT("");
+
+protected:
     virtual HRESULT Add_Componenets();
     virtual HRESULT Bind_ResourceData();
 

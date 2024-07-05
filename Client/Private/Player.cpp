@@ -28,16 +28,19 @@ HRESULT CPlayer::Initialize_Prototype()
 
 HRESULT CPlayer::Initialize(void* pArg)
 {
+	m_wstrModelName = TEXT("Kiryu");
+
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
 	if (FAILED(Add_Componenets()))
 		return E_FAIL;
 
+	Ready_AnimationTree();
+
 	if (FAILED(Add_CharacterData()))
 		return E_FAIL;
 
-	Ready_AnimationTree();
 	ZeroMemory(&m_MoveDirection, sizeof(_bool) * MOVE_DIRECTION_END);
 	ZeroMemory(&m_InputDirection, sizeof(_bool) * MOVE_DIRECTION_END);
 
@@ -509,7 +512,7 @@ HRESULT CPlayer::Bind_ResourceData()
 
 HRESULT CPlayer::Add_CharacterData()
 {
-	m_pData = CCharacterData::Create(TEXT("Kiryu"));
+	m_pData = CCharacterData::Create(this);
 
 	if (nullptr == m_pData)
 		return E_FAIL;

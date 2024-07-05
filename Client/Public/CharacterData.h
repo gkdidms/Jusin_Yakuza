@@ -34,7 +34,7 @@ private:
     virtual ~CCharacterData() = default;
 
 public:
-    HRESULT Initialize(wstring wstrModelName);
+    HRESULT Initialize(class CLandObject* pCharacter);
 
 public:
     const vector<_uint>& Get_AlphaMeshes() const {
@@ -68,7 +68,7 @@ private:
     
 private:
     CGameInstance* m_pGameInstance = { nullptr };
-    wstring m_wstrModelName = TEXT("");
+    class CLandObject* m_pCharacter = { nullptr };
 
     // 모델 전체에서의 각기 인덱스
     vector<_uint> m_AlphaMeshes;
@@ -83,7 +83,7 @@ private:
     vector<ANIMATION_EVENT> m_CurrentEvents; 
 
 public:
-    static CCharacterData* Create(wstring wstrModelName);
+    static CCharacterData* Create(class CLandObject* pCharacter);
     virtual void Free() override;
 };
 END
