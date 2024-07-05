@@ -181,6 +181,9 @@
     <Filter Include="01.Utility\03.Component\08.ComputeShader">
       <UniqueIdentifier>{0c4835a7-cc1d-4213-a200-edf37363c233}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Utility\03.Component\09.Animation">
+      <UniqueIdentifier>{2ff9a63d-40d0-42e3-affa-f343d3f9c0b4}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\Base.h">
@@ -363,6 +366,9 @@
     <ClInclude Include="..\Public\ComputeShader.h">
       <Filter>01.Utility\03.Component\08.ComputeShader</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Anim.h">
+      <Filter>01.Utility\03.Component\09.Animation</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\Base.cpp">
@@ -532,6 +538,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\ComputeShader.cpp">
       <Filter>01.Utility\03.Component\08.ComputeShader</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Anim.cpp">
+      <Filter>01.Utility\03.Component\09.Animation</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

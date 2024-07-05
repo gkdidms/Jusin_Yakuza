@@ -1,19 +1,25 @@
 #pragma once
 #include "BTNode.h"
 
+/* 트리의 마지막 노드 (행동 노드)*/
+
 BEGIN(Client)
 class CLeafNode :
     public CBTNode
 {
-public:
+private:
 	CLeafNode();
 	virtual ~CLeafNode() = default;
 
 public:
-	virtual CBTNode::NODE_EXE_TYPE Execute();
+	HRESULT Initialize(function<CBTNode::NODE_STATE()> Action);
+	virtual CBTNode::NODE_STATE Execute();
+
+private:
+	function<CBTNode::NODE_STATE()> m_pAction = { nullptr };
 
 public:
-	static CBTNode* Create();
+	static CBTNode* Create(function<CBTNode::NODE_STATE()> Action);
 	virtual void Free() override;
 };
 

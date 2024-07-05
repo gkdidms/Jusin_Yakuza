@@ -210,6 +210,7 @@
     <ClInclude Include="..\public\Level_Test.h" />
     <ClInclude Include="..\public\Loader.h" />
     <ClInclude Include="..\public\MainApp.h" />
+    <ClInclude Include="..\Public\MapCollider.h" />
     <ClInclude Include="..\Public\Particle_Point.h" />
     <ClInclude Include="..\Public\PartObject.h" />
     <ClInclude Include="..\public\Player.h" />
@@ -277,6 +278,7 @@
     <ClCompile Include="..\private\Level_Test.cpp" />
     <ClCompile Include="..\private\Loader.cpp" />
     <ClCompile Include="..\private\MainApp.cpp" />
+    <ClCompile Include="..\Private\MapCollider.cpp" />
     <ClCompile Include="..\Private\Particle_Point.cpp" />
     <ClCompile Include="..\Private\PartObject.cpp" />
     <ClCompile Include="..\private\Player.cpp" />

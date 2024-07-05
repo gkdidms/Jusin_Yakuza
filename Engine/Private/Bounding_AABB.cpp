@@ -21,6 +21,10 @@ void CBounding_AABB::Set_Center(const _float3& vCenter)
 	m_pOriginalBox->Center = m_vCenter;
 }
 
+void CBounding_AABB::Set_Rotation(const _float3& vRotation)
+{
+}
+
 HRESULT CBounding_AABB::Initialize(const void* pArg)
 {
 	if (nullptr == pArg)

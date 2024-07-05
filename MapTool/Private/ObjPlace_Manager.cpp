@@ -1391,17 +1391,22 @@ void CObjPlace_Manager::Add_Decal_IMGUI()
 
 		if(DecalFind == 0)
 		{
-			multimap<wstring, CGameObject*>::iterator iter = m_GameObjects.begin();
 
-			if (0 != m_iCurrentObjectIndex)
+			if (m_Decals.size() > 0)
 			{
-				for (int i = 0; i < m_iCurrentObjectIndex; i++)
-				{
-					iter++;
-				}
-			}
+				multimap<wstring, CGameObject*>::iterator iter = m_GameObjects.begin();
 
-			dynamic_cast<CConstruction*>(iter->second)->On_Find_DecalMesh(m_Decals[decal_current_idx].pMeshIndices, m_Decals[decal_current_idx].iMeshNum);
+				if (0 != m_iCurrentObjectIndex)
+				{
+					for (int i = 0; i < m_iCurrentObjectIndex; i++)
+					{
+						iter++;
+					}
+				}
+
+				dynamic_cast<CConstruction*>(iter->second)->On_Find_DecalMesh(m_Decals[decal_current_idx].pMeshIndices, m_Decals[decal_current_idx].iMeshNum);
+			}
+			
 		}
 		else if (DecalFind == 1)
 		{

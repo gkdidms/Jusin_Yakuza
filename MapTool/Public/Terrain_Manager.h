@@ -1,8 +1,8 @@
 #pragma once
 
 #include "Base.h"
-#include "Client_Defines.h"
 #include "Terrain.h"
+#include "Client_Defines.h"
 
 // IMGUI에서 사용할 아이
 // TERRAIN에 대한 정보

@@ -368,8 +368,22 @@ void CPlayer::KRS_KeyInput(const _float& fTimeDelta)
 				m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Reset();
 
 			_vector vLookPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION) + (m_pTransformCom->Get_State(CTransform::STATE_LOOK) + m_pGameInstance->Get_CamLook());
-			m_pGameInstance->Get_CamLook();
-			m_iCurrentBehavior = isShift ? (_uint)KRS_BEHAVIOR_STATE::WALK : (_uint)KRS_BEHAVIOR_STATE::RUN;
+
+			_vector vLookDir = XMVectorSet(XMVectorGetX(vLookPos), XMVectorGetY(vLookPos), XMVectorGetZ(vLookPos), 0.f);
+			_vector vPlayerLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
+
+			m_iCurrentBehavior = isShift ? (_uint)ADVENTURE_BEHAVIOR_STATE::Shift : (_uint)ADVENTURE_BEHAVIOR_STATE::RUN;
+
+			isMove = true;
+
+			//m_MoveDirection[B] = true;
+
+			////양수인 경우 같은 방향, 음수인 경우 반대방향, 0인경우 수직
+			if (XMVectorGetX(XMVector3Dot(vLookDir, vPlayerLook)) < 0)
+				m_MoveDirection[B] = true;
+			else if (XMVectorGetX(XMVector3Dot(vLookDir, vPlayerLook)) > 0)
+				m_MoveDirection[F] = true;
+
 
 			m_InputDirection[F] = true;
 			Compute_MoveDirection_FB();
@@ -388,6 +402,10 @@ void CPlayer::KRS_KeyInput(const _float& fTimeDelta)
 			m_InputDirection[B] = true;
 			Compute_MoveDirection_FB();
 			m_pTransformCom->LookAt_For_LandObject(vLookPos);
+
+			m_iCurrentBehavior = isShift ? (_uint)ADVENTURE_BEHAVIOR_STATE::Shift : (_uint)ADVENTURE_BEHAVIOR_STATE::RUN;
+			m_MoveDirection[B] = true;
+
 			isMove = true;
 		}
 
@@ -402,6 +420,10 @@ void CPlayer::KRS_KeyInput(const _float& fTimeDelta)
 			m_InputDirection[L] = true;
 			Compute_MoveDirection_RL();
 			m_pTransformCom->LookAt_For_LandObject(vLookPos);
+
+			m_iCurrentBehavior = isShift ? (_uint)ADVENTURE_BEHAVIOR_STATE::Shift : (_uint)ADVENTURE_BEHAVIOR_STATE::RUN;
+			m_MoveDirection[L] = true;
+
 			isMove = true;
 		}
 
@@ -415,7 +437,11 @@ void CPlayer::KRS_KeyInput(const _float& fTimeDelta)
 
 			m_InputDirection[R] = true;
 			Compute_MoveDirection_RL();
+
 			m_pTransformCom->LookAt_For_LandObject(vLookPos);
+			m_iCurrentBehavior = isShift ? (_uint)ADVENTURE_BEHAVIOR_STATE::Shift : (_uint)ADVENTURE_BEHAVIOR_STATE::RUN;
+			m_MoveDirection[R] = true;
+
 			isMove = true;
 		}
 

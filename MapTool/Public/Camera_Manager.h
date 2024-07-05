@@ -1,10 +1,10 @@
 #pragma once
 
 #include "Base.h"
-#include "Client_Defines.h"
 #include "CameraObj.h"
 #include "CameraInstallObj.h"
 #include "CineCamera.h"
+#include "Client_Defines.h"
 
 class CCamera_Manager : public CBase
 {

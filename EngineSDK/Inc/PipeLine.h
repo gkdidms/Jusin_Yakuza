@@ -25,7 +25,7 @@ public:
     const _float* Get_CamFar() {
         return &m_fFar;
     }
-
+    const _float4x4* Get_ReflectViewMatrix() { return &m_ReflectMatrix; }
 
 
 public:
@@ -37,6 +37,10 @@ public:
         m_fFar = fFar;
     }
 
+    void Set_ReflectViewMatrix(_fmatrix matTransform) {
+        XMStoreFloat4x4(&m_ReflectMatrix, matTransform);
+    }
+
 public:
     HRESULT Initialize();
     void Tick();
@@ -44,6 +48,7 @@ public:
 private:
     _float4x4 m_TransformStateMatrix[D3DTS_END];
     _float4x4 m_TransformStateInverseMatrix[D3DTS_END];
+    _float4x4 m_ReflectMatrix;
     _float4 m_vCamPosition;
     _float4 m_vCamLook;
     _float4 m_vCamRight;
