@@ -45,6 +45,9 @@ private:
 	HRESULT	Loading_For_Static();
 	HRESULT Loading_For_RunMapLevel(int iLevel);
 
+private:
+	HRESULT Add_Models_On_Path(_uint iLevel, const wstring& strPath, _bool bAnim = true);		// 0627 Çý¿øÃß°¡
+
 public:
     static CLoader* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, LEVEL eNextLevel);
     virtual void Free() override;

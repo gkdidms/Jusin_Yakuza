@@ -1,13 +1,12 @@
 #include "RushYakuza.h"
 
 #include "GameInstance.h"
-#include "AI_RushYakuza.h"
 
 #include "Bounding_OBB.h"
 #include "Mesh.h"
 
 CRushYakuza::CRushYakuza(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-	: CMonster{pDevice, pContext}
+	: CMonster{ pDevice, pContext }
 {
 }
 
@@ -26,16 +25,19 @@ HRESULT CRushYakuza::Initialize(void* pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
-	if (nullptr != pArg)
-	{
-		MONSTER_IODESC* gameobjDesc = (MONSTER_IODESC*)pArg;
-		m_pTransformCom->Set_WorldMatrix(gameobjDesc->vStartPos);
-		m_wstrModelName = gameobjDesc->wstrModelName;
-		m_iShaderPassNum = 0;
-	}
-
 	if (FAILED(Add_Componenets()))
 		return E_FAIL;
+
+	if (nullptr != pArg)
+	{
+		MONSTER_DESC* gameobjDesc = (MONSTER_DESC*)pArg;
+		m_pTransformCom->Set_WorldMatrix(gameobjDesc->vStartPos);
+		m_iLayerNum = gameobjDesc->iLayer;
+		m_wstrModelName = gameobjDesc->wstrModelName;
+		m_iShaderPassNum = 0;
+		m_iObjectType = gameobjDesc->iObjType;
+		m_iObjectPropertyType = gameobjDesc->iObjPropertyType;
+	}
 
 	m_pModelCom->Set_AnimationIndex(1, 0.5);
 	//m_pModelCom->Set_AnimLoop(1, true);
@@ -48,13 +50,6 @@ void CRushYakuza::Priority_Tick(const _float& fTimeDelta)
 
 void CRushYakuza::Tick(const _float& fTimeDelta)
 {
-	m_pTree->Tick(fTimeDelta);
-
-	Change_Animation(); //애니메이션 변경
-
-	m_pModelCom->Play_Animation(fTimeDelta, m_pAnimCom, m_isAnimLoop);
-
-	Synchronize_Root(fTimeDelta);
 
 	m_pColliderCom->Tick(m_pTransformCom->Get_WorldMatrix());
 }
@@ -93,6 +88,25 @@ HRESULT CRushYakuza::Render()
 	return S_OK;
 }
 
+int CRushYakuza::Get_ObjPlaceDesc(OBJECTPLACE_DESC* objplaceDesc)
+{
+	/* 바이너리화하기 위한 데이터 제공 */
+
+	XMStoreFloat4x4(&objplaceDesc->vTransform, m_pTransformCom->Get_WorldMatrix());
+
+	//objPlaceDesc.iLayer = m_iLayerNum;
+
+	string strName = m_pGameInstance->WstringToString(m_wstrModelName);
+	strcpy_s(objplaceDesc->strModelCom, strName.c_str());
+
+	objplaceDesc->iShaderPassNum = m_iShaderPassNum;
+	objplaceDesc->iObjType = m_iObjectType;
+	objplaceDesc->iObjPropertyType = m_iObjectPropertyType;
+
+	/* layer는 return 형식으로 */
+	return m_iLayerNum;
+}
+
 
 HRESULT CRushYakuza::Add_Componenets()
 {
@@ -103,10 +117,6 @@ HRESULT CRushYakuza::Add_Componenets()
 	if (FAILED(__super::Add_Component(LEVEL_TEST, m_wstrModelName,
 		TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
 		return E_FAIL;
-
-	//if (FAILED(__super::Add_Component(LEVEL_TEST, TEXT("Prototype_Component_Model_Jimu"),
-	//	TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
-	//	return E_FAIL;
 
 	CBounding_OBB::BOUNDING_OBB_DESC		ColliderDesc{};
 
@@ -123,16 +133,7 @@ HRESULT CRushYakuza::Add_Componenets()
 		TEXT("Com_Anim"), reinterpret_cast<CComponent**>(&m_pAnimCom))))
 		return E_FAIL;
 
-	//행동트리 저장
-	CAI_RushYakuza::AI_OFFICE_YAKUZA_DESC Desc{};
-	Desc.pYakuza = this;
-	Desc.pModel = m_pModelCom;
-	Desc.pState = &m_iState;
-	Desc.pAnim = m_pAnimCom;
 
-	m_pTree = CAI_RushYakuza::Create(&Desc);
-	if (nullptr == m_pTree)
-		return E_FAIL;
 
 	return S_OK;
 }

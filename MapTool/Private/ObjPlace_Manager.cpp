@@ -12,6 +12,7 @@
 #include "MapDataMgr.h"
 #include "Terrain_Manager.h"
 #include "Decal.h"
+#include "RushYakuza.h"
 
 #include <iostream>
 #include <io.h>
@@ -538,23 +539,18 @@ void CObjPlace_Manager::Edit_Installed_GameObject(int iNumObject)
 		m_tCurrentObjectDesc.iObjType = 0;
 	}
 
-	if (ImGui::RadioButton(u8"상호작용가능", m_tCurrentObjectDesc.iObjType == 1))
+	if (ImGui::RadioButton(u8"아이템", m_tCurrentObjectDesc.iObjType == 1))
 	{
 		objectType = 1;
 		m_tCurrentObjectDesc.iObjType = 1;
 	}
 
-	if (ImGui::RadioButton(u8"아이템", m_tCurrentObjectDesc.iObjType == 2))
+	if (ImGui::RadioButton(u8"몬스터", m_tCurrentObjectDesc.iObjType == 2))
 	{
 		objectType = 2;
 		m_tCurrentObjectDesc.iObjType = 2;
 	}
 
-	if (ImGui::RadioButton(u8"몬스터", m_tCurrentObjectDesc.iObjType == 3))
-	{
-		objectType = 3;
-		m_tCurrentObjectDesc.iObjType = 3;
-	}
 
 	ImGui::NewLine();
 
@@ -683,7 +679,7 @@ void CObjPlace_Manager::Set_Map_Object()
 {
 	ImGui::Text(u8"LayerTag 이름");
 
-	const char* pLayerArray[] = { "Map0", "Map1" };
+	const char* pLayerArray[] = { "Map0", "Map1", "Monster"};
 	static int folder_current_idx = 0;
 	if (ImGui::BeginListBox("listbox 1"))
 	{
@@ -734,6 +730,22 @@ void CObjPlace_Manager::Set_Map_Object()
 			ImGui::EndListBox();
 		}
 	}
+	if (2 == folder_current_idx)
+	{
+		if (ImGui::BeginListBox(u8"모델0-엘베있는1층"))
+		{
+			for (int n = 0; n < m_MonsterNames.size(); n++)
+			{
+				const bool is_selected = (object_current_idx == n);
+				if (ImGui::Selectable(m_MonsterNames[n], is_selected))
+					object_current_idx = n;
+
+				if (is_selected)
+					ImGui::SetItemDefaultFocus();
+			}
+			ImGui::EndListBox();
+		}
+	}
 
 	ImGui::NewLine();
 
@@ -749,9 +761,9 @@ void CObjPlace_Manager::Set_Map_Object()
 	ImGui::Text(u8"오브젝트유형");
 	static int objectType = 0;
 	ImGui::RadioButton(u8"그냥건물", &objectType, OBJECT_TYPE::CONSTRUCTION);
-	ImGui::RadioButton(u8"상호작용가능", &objectType, OBJECT_TYPE::ITEM);
-	ImGui::RadioButton(u8"아이템", &objectType, OBJECT_TYPE::MONSTER);
-	ImGui::RadioButton(u8"몬스터", &objectType, OBJECT_TYPE::OBJ_END);
+	ImGui::RadioButton(u8"아이템", &objectType, OBJECT_TYPE::ITEM);
+	ImGui::RadioButton(u8"몬스터", &objectType, OBJECT_TYPE::MONSTER);
+
 
 	ImGui::NewLine();
 
@@ -842,6 +854,20 @@ void CObjPlace_Manager::Load_ModelName()
 		char* cfilename = new char[MAX_PATH];
 		strcpy(cfilename, StringToCharDIY(modifiedString));
 		m_ObjectNames_Map1.push_back(cfilename);
+	}
+
+	vObjectNames.clear();
+
+	/* 몬스터 모델 로드*/
+	m_pGameInstance->Get_FileNames("../../Client/Bin/Resources/Models/Anim", vObjectNames);
+
+	for (int i = 0; i < vObjectNames.size(); i++)
+	{
+		string modifiedString = modifyString(vObjectNames[i]);
+
+		char* cfilename = new char[MAX_PATH];
+		strcpy(cfilename, StringToCharDIY(modifiedString));
+		m_MonsterNames.push_back(cfilename);
 	}
 }
 
@@ -969,9 +995,9 @@ string CObjPlace_Manager::modifyString(string& input)
 {
 	// "."을 기준으로 문자열을 분리
 	size_t pos = input.find('.');
-	if (pos == std::string::npos) {
-		return input; // "." 없음
-	}
+	//if (pos == std::string::npos) {
+	//	return input; // "." 없음
+	//}
 
 	std::string base = input.substr(0, pos);
 
@@ -1011,8 +1037,36 @@ void CObjPlace_Manager::Show_ExampleModel(MAPTOOL_OBJPLACE_DESC objDesc, _uint i
 			mapDesc.iObjPropertyType = objDesc.iObjPropertyType;
 			mapDesc.iDecalNum = 0;
 			mapDesc.pDecal = nullptr;
-
 			m_pShownObject = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Construction"), &mapDesc);
+
+
+			//if (CONSTRUCTION == objDesc.iObjType)
+			//{
+			//	/* 데이터 추가할때마다 수정 */
+			//	CConstruction::MAPOBJ_DESC		mapDesc;
+			//	mapDesc.vStartPos = startPos;
+			//	mapDesc.wstrModelName = wstr;
+			//	mapDesc.iLayer = objDesc.iLayer;
+			//	mapDesc.iShaderPass = objDesc.iShaderPass;
+			//	mapDesc.iObjType = objDesc.iObjType;
+			//	mapDesc.iObjPropertyType = objDesc.iObjPropertyType;
+			//	mapDesc.iDecalNum = 0;
+			//	mapDesc.pDecal = nullptr;
+			//	m_pShownObject = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Construction"), &mapDesc);
+			//}
+			//else if (MONSTER == objDesc.iObjType)
+			//{
+			//	/* 데이터 추가할때마다 수정 */
+			//	CRushYakuza::MONSTER_DESC		monsterDesc;
+			//	monsterDesc.vStartPos = startPos;
+			//	monsterDesc.wstrModelName = wstr;
+			//	monsterDesc.iLayer = objDesc.iLayer;
+			//	monsterDesc.iShaderPass = objDesc.iShaderPass;
+			//	monsterDesc.iObjType = objDesc.iObjType;
+			//	monsterDesc.iObjPropertyType = objDesc.iObjPropertyType;
+			//	m_pShownObject = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_RushYakuza"), &monsterDesc);
+			//}
+			
 
 			/* 한번만 추가되게 - 같은 위치에 */
 			m_bInstallOneTime = true;
@@ -1067,6 +1121,10 @@ string CObjPlace_Manager::Find_ModelName(_uint iFolderNum, _uint iObjectIndex)
 	else if (1 == iFolderNum)
 	{
 		strResult = m_ObjectNames_Map1[iObjectIndex];
+	}
+	else if (2 == iFolderNum)
+	{
+		strResult = m_MonsterNames[iObjectIndex];
 	}
 	return strResult;
 }
@@ -1576,6 +1634,10 @@ void CObjPlace_Manager::Free()
 	for (auto& iter : m_ObjectNames_Map1)
 		Safe_Delete(iter);
 	m_ObjectNames_Map1.clear();
+
+	for (auto& iter : m_MonsterNames)
+		Safe_Delete(iter);
+	m_MonsterNames.clear();
 
 	for (auto& iter : m_ObjectNames)
 		Safe_Delete(iter);

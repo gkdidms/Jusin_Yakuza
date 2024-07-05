@@ -8,10 +8,10 @@
       <Filter>98.Default</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Level_Loading.cpp">
-      <Filter>01.Levels\99.Loading</Filter>
+      <Filter>01.Levels\98.Test\99.Loading</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Loader.cpp">
-      <Filter>01.Levels\99.Loading\Loader</Filter>
+      <Filter>01.Levels\98.Test\99.Loading\Loader</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Level_Logo.cpp">
       <Filter>01.Levels\00.Logo</Filter>
@@ -202,7 +202,7 @@
       <Filter>98.Default</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Level_Loading.h">
-      <Filter>01.Levels\99.Loading</Filter>
+      <Filter>01.Levels\98.Test\99.Loading</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Level_Logo.h">
       <Filter>01.Levels\00.Logo</Filter>
@@ -349,7 +349,7 @@
       <Filter>02.GameObjects\07.UI</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Loader.h">
-      <Filter>01.Levels\99.Loading\Loader</Filter>
+      <Filter>01.Levels\98.Test\99.Loading\Loader</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Aura.h">
       <Filter>02.GameObjects\06.Effect\Aura</Filter>
@@ -417,12 +417,6 @@
     </Filter>
     <Filter Include="01.Levels\00.Logo">
       <UniqueIdentifier>{acd6bdc4-297f-4e89-9454-3abb81d2846b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="01.Levels\99.Loading">
-      <UniqueIdentifier>{d06dab47-5003-4361-b6d8-c34dff86b5a8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="01.Levels\99.Loading\Loader">
-      <UniqueIdentifier>{deceae20-eac1-4897-90e4-6be64c64fa48}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObjects">
       <UniqueIdentifier>{e5fc0de4-b0a4-439f-89c9-ec57d1daef08}</UniqueIdentifier>
@@ -609,6 +603,12 @@
     </Filter>
     <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\Walk">
       <UniqueIdentifier>{9d473ed7-1045-45b0-b810-601d5ce04716}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Levels\98.Test\99.Loading">
+      <UniqueIdentifier>{d06dab47-5003-4361-b6d8-c34dff86b5a8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Levels\98.Test\99.Loading\Loader">
+      <UniqueIdentifier>{deceae20-eac1-4897-90e4-6be64c64fa48}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

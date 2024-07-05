@@ -95,6 +95,13 @@ struct VS_OUT
     float2 vTexcoord : TEXCOORD0;
 };
 
+struct VS_OUT_REVERSE
+{
+    float4 vPosition : SV_POSITION;
+    float2 vTexcoord : TEXCOORD0;
+    float4 vPositionReverse : TEXCOORD1;
+};
+
 
 struct PS_IN
 {
@@ -102,8 +109,21 @@ struct PS_IN
     float2 vTexcoord : TEXCOORD0;
 };
 
+struct PS_IN_REVERSE
+{
+    float4 vPosition : SV_POSITION;
+    float2 vTexcoord : TEXCOORD0;
+    float4 vPositionReverse : TEXCOORD1;
+};
+
 struct PS_OUT
 {
     vector vColor : SV_TARGET0;
+};
+
+struct PS_OUT_REVERSE
+{
+    vector vColor : SV_TARGET0;
+    vector vReverseColor : SV_Target1;
 };
 

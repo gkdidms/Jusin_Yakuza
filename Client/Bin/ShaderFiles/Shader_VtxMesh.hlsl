@@ -11,6 +11,7 @@ Texture2D g_RefractionTexture;
 Texture2D g_RSTexture;
 Texture2D g_DepthTexture;
 Texture2D g_NoiseTexture;
+Texture2D g_BlurReverseTexture;
 
 float g_fObjID;
 float g_fRefractionScale = { 0.001f };
@@ -264,15 +265,13 @@ PS_OUT PS_PUDDLE(PS_IN In)
 
     float3 reflectedDir = normalize(reflect(viewDir, In.vNormal.xyz));
     
-    
     float fLength = length(g_vCamPosition.xyz - vWorldPos.xyz);
     
-    float4 vReflectPos = vWorldPos + float4(reflectedDir.xyz, 0) * 1.2;
+    float4 vReflectPos = vWorldPos + float4(reflectedDir.xyz, 0) * 1;
     vReflectPos = float4(vReflectPos.xyz, 1);
+    vReflectPos.y -= 1;
     
     float bReflect = true;
-    
-
     
     float4 vReflectScreenPos = mul(vReflectPos, g_ViewMatrix);
     vReflectScreenPos = mul(vReflectScreenPos, g_ProjMatrix);
@@ -305,7 +304,7 @@ PS_OUT PS_PUDDLE(PS_IN In)
 
     if(true == bReflect)
     {
-        vector reflectColor = g_RefractionTexture.Sample(PointSampler, vReflectScreenPos.xy + 0.02 * normal.xy);
+        vector reflectColor = g_BlurReverseTexture.Sample(PointSampler, vReflectScreenPos.xy + 0.02 * normal.xy);
 
         Out.vDiffuse = reflectColor;
     }

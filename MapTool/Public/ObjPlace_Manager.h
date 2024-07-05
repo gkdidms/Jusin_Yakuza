@@ -94,6 +94,7 @@ private:
 	multimap<wstring, CGameObject*>				m_GameObjects; /* 추가한 오브젝트 저장 */
 	vector<char*>								m_ObjectNames_Map0; /* 추가한 오브젝트 이름들 */
 	vector<char*>								m_ObjectNames_Map1; /* 추가한 오브젝트 이름들 */
+	vector<char*>								m_MonsterNames; /* 추가한 오브젝트 이름들 */
 	vector<char*>								m_FileNames; /* 맵마다 저장한 bin 리스트들 */
 	vector<char*>								m_DecalNames; 
 	vector<char*>								m_DecalNames_Obj;

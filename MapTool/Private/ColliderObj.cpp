@@ -114,6 +114,7 @@ void CColliderObj::Tick(const _float& fTimeDelta)
 
 	XMVECTOR vPosition = XMVectorSet(m_ColliderWorldMatrix._41, m_ColliderWorldMatrix._42, m_ColliderWorldMatrix._43, 1);
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPosition);
+	m_pTransformCom->Set_Scale(vScale.x, vScale.y, vScale.z);
 
 	m_tColliderDesc.vExtents = vScale;
 
@@ -143,9 +144,9 @@ HRESULT CColliderObj::Render()
 		m_pModelCom->Render(i);
 	}
 
-#ifdef _DEBUG
-	m_pGameInstance->Add_DebugComponent(m_pColliderCom);
-#endif
+//#ifdef _DEBUG
+//	m_pGameInstance->Add_DebugComponent(m_pColliderCom);
+//#endif
 
 
 	return S_OK;

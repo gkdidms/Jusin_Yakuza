@@ -15,6 +15,27 @@ VS_OUT VS_MAIN(VS_IN In)
     return Out;
 }
 
+
+VS_OUT_REVERSE VS_MAIN_REVERSE(VS_IN In)
+{
+    VS_OUT_REVERSE Out = (VS_OUT_REVERSE) 0;
+
+    matrix matWV, matWVP;
+
+    matWV = mul(g_WorldMatrix, g_ViewMatrix);
+    matWVP = mul(matWV, g_ProjMatrix);
+
+    Out.vPosition = mul(float4(In.vPosition, 1.f), matWVP);
+    Out.vTexcoord = In.vTexcoord;
+    
+    float3 vPosReverse = In.vPosition;
+    vPosReverse.y *= -1;
+    
+    Out.vPositionReverse = mul(float4(vPosReverse, 1.f), matWVP);
+
+    return Out;
+}
+
 struct PS_OUT_GAMEOBJECT
 {
     vector vColor : SV_TARGET0;
@@ -283,11 +304,17 @@ PS_OUT PS_MAIN_BLUR_X(PS_IN In)
     return Out;
 }
 
-PS_OUT PS_MAIN_BLUR_Y(PS_IN In)
+PS_OUT_REVERSE PS_MAIN_BLUR_Y(PS_IN_REVERSE In)
 {
-    PS_OUT Out = (PS_OUT) 0;
+    PS_OUT_REVERSE Out = (PS_OUT_REVERSE) 0;
 
     Out.vColor = Blur_Y(In.vTexcoord);
+    
+    float2 reverseTexcoord;
+    reverseTexcoord.x = In.vPositionReverse.x / In.vPositionReverse.w / 2.f + 0.5f;
+    reverseTexcoord.y = -In.vPositionReverse.y / In.vPositionReverse.w / 2.f + 0.5f;
+    
+    Out.vReverseColor = Blur_Y(reverseTexcoord);
 
     return Out;
 }
@@ -585,7 +612,7 @@ technique11 DefaultTechnique
         SetDepthStencilState(DSS_None_Test_None_Write, 0);
         SetBlendState(BS_Default, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xffffffff);
 
-        VertexShader = compile vs_5_0 VS_MAIN();
+        VertexShader = compile vs_5_0 VS_MAIN_REVERSE();
         GeometryShader = NULL;
         HullShader = NULL;
         DomainShader = NULL;

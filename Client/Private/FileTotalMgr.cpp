@@ -5,6 +5,7 @@
 #include "GameObject.h"
 #include "Construction.h"
 #include "SystemManager.h"
+#include "RushYakuza.h"
 
 IMPLEMENT_SINGLETON(CFileTotalMgr)
 
@@ -64,33 +65,56 @@ HRESULT CFileTotalMgr::Set_GameObject_In_Client(int iStageLevel)
 {
     for (int i = 0; i < m_MapTotalInform.iNumMapObj; i++)
     {
-        CConstruction::MAPOBJ_DESC		mapDesc;
-        mapDesc.vStartPos = XMLoadFloat4x4(&m_MapTotalInform.pMapObjDesc[i].vTransform);
-        int		iLayer = Find_Layers_Index(m_MapTotalInform.pMapObjDesc[i].strLayer);
-
-        /* Layer 정보 안들어옴 */
-        if (iLayer < 0)
-            return S_OK;
-
-        mapDesc.iLayer = iLayer;
-        mapDesc.wstrModelName = m_pGameInstance->StringToWstring(m_MapTotalInform.pMapObjDesc[i].strModelCom);
-        mapDesc.iShaderPass = m_MapTotalInform.pMapObjDesc[i].iShaderPassNum;
-        mapDesc.iObjType = m_MapTotalInform.pMapObjDesc[i].iObjType;
-        mapDesc.iDecalNum = m_MapTotalInform.pMapObjDesc[i].iDecalNum;
-
-        if (0 < mapDesc.iDecalNum)
+        if (OBJECT_TYPE::MONSTER == m_MapTotalInform.pMapObjDesc[i].iObjType)
         {
-            mapDesc.pDecal = new DECAL_DESC_IO[mapDesc.iDecalNum];
+            CRushYakuza::MONSTER_IODESC		monsterDesc;
+            monsterDesc.vStartPos = XMLoadFloat4x4(&m_MapTotalInform.pMapObjDesc[i].vTransform);
+            int		iLayer = Find_Layers_Index(m_MapTotalInform.pMapObjDesc[i].strLayer);
 
-            for (int j = 0; j < mapDesc.iDecalNum; j++)
-            {
-                mapDesc.pDecal[j].iMaterialNum = m_MapTotalInform.pMapObjDesc[i].pDecals[j].iMaterialNum;
-                mapDesc.pDecal[j].vTransform = m_MapTotalInform.pMapObjDesc[i].pDecals[j].vTransform;
-            }
+            /* Layer 정보 안들어옴 */
+            if (iLayer < 0)
+                return S_OK;
+
+            monsterDesc.wstrModelName = m_pGameInstance->StringToWstring(m_MapTotalInform.pMapObjDesc[i].strModelCom);
+            monsterDesc.iShaderPass = m_MapTotalInform.pMapObjDesc[i].iShaderPassNum;
+
+            monsterDesc.fSpeedPecSec = 10.f;
+            monsterDesc.fRotatePecSec = XMConvertToRadians(0.f);
+            monsterDesc.fRotatePecSec = XMConvertToRadians(180.f);
+
+            m_pGameInstance->Add_GameObject(iStageLevel, TEXT("Prototype_GameObject_RushYakuza"), m_Layers[iLayer], &monsterDesc);
         }
+        else
+        {
+            CConstruction::MAPOBJ_DESC		mapDesc;
+            mapDesc.vStartPos = XMLoadFloat4x4(&m_MapTotalInform.pMapObjDesc[i].vTransform);
+            int		iLayer = Find_Layers_Index(m_MapTotalInform.pMapObjDesc[i].strLayer);
+
+            /* Layer 정보 안들어옴 */
+            if (iLayer < 0)
+                return S_OK;
+
+            mapDesc.iLayer = iLayer;
+            mapDesc.wstrModelName = m_pGameInstance->StringToWstring(m_MapTotalInform.pMapObjDesc[i].strModelCom);
+            mapDesc.iShaderPass = m_MapTotalInform.pMapObjDesc[i].iShaderPassNum;
+            mapDesc.iObjType = m_MapTotalInform.pMapObjDesc[i].iObjType;
+            mapDesc.iDecalNum = m_MapTotalInform.pMapObjDesc[i].iDecalNum;
+
+            if (0 < mapDesc.iDecalNum)
+            {
+                mapDesc.pDecal = new DECAL_DESC_IO[mapDesc.iDecalNum];
+
+                for (int j = 0; j < mapDesc.iDecalNum; j++)
+                {
+                    mapDesc.pDecal[j].iMaterialNum = m_MapTotalInform.pMapObjDesc[i].pDecals[j].iMaterialNum;
+                    mapDesc.pDecal[j].vTransform = m_MapTotalInform.pMapObjDesc[i].pDecals[j].vTransform;
+                }
+            }
 
 
-        m_pGameInstance->Add_GameObject(iStageLevel, TEXT("Prototype_GameObject_Construction"), m_Layers[iLayer], &mapDesc);
+            m_pGameInstance->Add_GameObject(iStageLevel, TEXT("Prototype_GameObject_Construction"), m_Layers[iLayer], &mapDesc);
+        }
+        
 
     }
     return S_OK;
