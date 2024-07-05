@@ -231,7 +231,7 @@ HRESULT CObject_Manager::Save_binary()
 			{
 				string Directory = strDirectory;
 
-				Directory = Directory + pObj->Get_Name() + ".dat";
+				Directory = Directory + pObj->Get_Name() +"Group" + ".dat";
 				ofstream out(Directory, ios::binary);
 
 				dynamic_cast<CGroup*>(pObj)->Save_Groupbinary(out);

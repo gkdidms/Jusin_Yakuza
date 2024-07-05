@@ -3,6 +3,10 @@
 
 #include "UITool_Defines.h"
 
+BEGIN(Engine)
+class CVIBuffer_Rect;
+END
+
 BEGIN(UITool)
 class CGroup :
     public CUI_Object
