@@ -7,8 +7,8 @@ CKiryu_Adventure_Idle::CKiryu_Adventure_Idle()
 {
 	//p_stand_nml 351
 	//p_stand_idle_lookaround 350
-	m_AnimationIndex.push_back(351);
-	m_AnimationIndex.push_back(350);
+	m_AnimationIndices.push_back(351);
+	m_AnimationIndices.push_back(350);
 }
 
 void CKiryu_Adventure_Idle::Tick(const _float& fTimeDelta)
@@ -38,7 +38,7 @@ void CKiryu_Adventure_Idle::Tick(const _float& fTimeDelta)
 void CKiryu_Adventure_Idle::Change_Animation()
 {
 	// 아이들은 모션을 하나만 둔다 (추후 추가예정)
-	m_pPlayer->Change_Animation(m_AnimationIndex[m_eCurrentBehavior]);
+	m_pPlayer->Change_Animation(m_AnimationIndices[m_eCurrentBehavior]);
 }
 
 CBehaviorAnimation* CKiryu_Adventure_Idle::Create(CPlayer* pPlayer)
