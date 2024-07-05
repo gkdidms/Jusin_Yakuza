@@ -15,14 +15,11 @@
 #include "DebugCamera.h"
 #include "CineCamera.h"
 #include "Decal.h"
-#include "RushYakuza.h"
 #pragma endregion
 
 #pragma region Map
 #include "Terrain.h"
 #include "Construction.h"
-#include "SoketCollider.h"
-#include "MapCollider.h"
 #include "MapCollider.h"
 #pragma endregion
 
@@ -344,7 +341,7 @@ HRESULT CLoader::Loading_For_Test()
 		CMapCollider::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	/* For.Prototype_GameObject_SoketCollider */
+	/* For.Prototype_GameObject_MapCollider */
 	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_MapCollider"),
 		CMapCollider::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
