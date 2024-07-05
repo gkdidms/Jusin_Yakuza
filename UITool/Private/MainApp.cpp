@@ -45,7 +45,7 @@ HRESULT CMainApp::Initialize()
 	if (FAILED(Ready_Prototype_GameObject()))
 		return E_FAIL;
 
-	if (FAILED(Open_Level(LEVEL_LOGO)))
+	if (FAILED(Open_Level(LEVEL_RUNMAP)))
 		return E_FAIL;
 
 	if (FAILED(m_pIMGUI_Manager->Initialize(m_pDevice, m_pContext)))
@@ -80,7 +80,7 @@ HRESULT CMainApp::Render()
 	}
 
 	/* ±×¸°´Ù. */
-	m_pGameInstance->Clear_BackBuffer_View(_float4(0.f, 0.f, 1.f, 1.f));
+	m_pGameInstance->Clear_BackBuffer_View(_float4(0.f, 0.f, 0.f, 0.f));
 	m_pGameInstance->Clear_DepthStencil_View();
 	
 	
@@ -138,10 +138,7 @@ HRESULT CMainApp::Ready_Prototype_Component()
 		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxPosTex.hlsl"), VTXPOSTEX::Elements, VTXPOSTEX::iNumElements))))
 		return E_FAIL;
 
-	/* For.Prototype_Component_Texture_Loading */
-	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Loading"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Default0.dds")))))
-		return E_FAIL;
+
 
     return S_OK;
 }

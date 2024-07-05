@@ -1,24 +1,29 @@
-#include "Image_Texture.h"
-
+#include "UI_Effect.h"
 #include "GameInstance.h"
-
-CImage_Texture::CImage_Texture(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+CUI_Effect::CUI_Effect(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CUI_Texture{ pDevice, pContext }
 {
 }
 
-CImage_Texture::CImage_Texture(const CImage_Texture& rhs)
+CUI_Effect::CUI_Effect(const CUI_Effect& rhs)
 	: CUI_Texture{ rhs }
 {
 }
 
-HRESULT CImage_Texture::Initialize_Prototype()
+HRESULT CUI_Effect::Initialize_Prototype()
 {
 	return S_OK;
 }
 
-HRESULT CImage_Texture::Initialize(void* pArg)
+HRESULT CUI_Effect::Initialize(void* pArg)
 {
+	if (nullptr == pArg)
+		return E_FAIL;
+
+	UI_EFFECT_DESC* pDesc = static_cast<UI_EFFECT_DESC*>(pArg);
+	m_vLifeTime = pDesc->vLifeTime;
+	m_fSpeed = pDesc->fSpeed;
+
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
@@ -28,19 +33,32 @@ HRESULT CImage_Texture::Initialize(void* pArg)
 	return S_OK;
 }
 
-void CImage_Texture::Priority_Tick(const _float& fTimeDelta)
+void CUI_Effect::Priority_Tick(const _float& fTimeDelta)
 {
 }
 
-void CImage_Texture::Tick(const _float& fTimeDelta)
+void CUI_Effect::Tick(const _float& fTimeDelta)
 {
+	m_vLifeTime.x += m_fSpeed * fTimeDelta;
+
+
 }
 
-void CImage_Texture::Late_Tick(const _float& fTimeDelta)
+void CUI_Effect::Late_Tick(const _float& fTimeDelta)
 {
+	//종료시간 넘으면 죽음
+#ifdef _TOOL
+	if (m_vLifeTime.x >= m_vLifeTime.z)
+		m_vLifeTime.x = 0.f;
+#else
+	if (m_vLifeTime.x >= m_vLifeTime.z)
+		m_isDead = true;
+#endif // _TOOL
+
+
 }
 
-HRESULT CImage_Texture::Render()
+HRESULT CUI_Effect::Render()
 {
 	if (FAILED(Bind_ResourceData()))
 		return E_FAIL;
@@ -52,11 +70,38 @@ HRESULT CImage_Texture::Render()
 	return S_OK;
 }
 
-HRESULT CImage_Texture::Save_binary(const string strDirectory)
+HRESULT CUI_Effect::Add_Components()
+{
+	if (FAILED(__super::Add_Components()))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CUI_Effect::Bind_ResourceData()
+{
+	if (FAILED(m_pTransformCom->Bind_ShaderMatrix(m_pShaderCom, "g_WorldMatrix")))
+		return E_FAIL;
+
+	if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix)))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_vLifeTime", &m_vLifeTime, sizeof(_float3))))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_vColor", &m_vColor, sizeof(_float4))))
+		return E_FAIL;
+	if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_Texture", 0)))	
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CUI_Effect::Save_binary(const string strDirectory)
 {
 	string Directory = strDirectory;
 
-	Directory = Directory + m_strName+".dat";
+	Directory = Directory + m_strName + ".dat";
 	ofstream out(Directory, ios::binary);
 
 	out.write((char*)&m_iTypeIndex, sizeof(_uint));
@@ -65,7 +110,7 @@ HRESULT CImage_Texture::Save_binary(const string strDirectory)
 	out.write((char*)&strTexturelength, sizeof(_int));
 	out.write(m_strName.c_str(), strTexturelength);
 
-	
+
 	out.write((char*)&m_isParent, sizeof(_bool));
 
 	strTexturelength = m_strParentName.length();
@@ -76,7 +121,7 @@ HRESULT CImage_Texture::Save_binary(const string strDirectory)
 	strTexturelength = FilePath.length();
 	out.write((char*)&strTexturelength, sizeof(_int));
 	out.write(FilePath.c_str(), strTexturelength);
-	
+
 	string FileName = m_pGameInstance->WstringToString(m_strTextureName);
 	strTexturelength = FileName.length();
 	out.write((char*)&strTexturelength, sizeof(_int));
@@ -90,14 +135,22 @@ HRESULT CImage_Texture::Save_binary(const string strDirectory)
 
 	out.write((char*)&m_iShaderPass, sizeof(_uint));
 
+	//개별저장
+	_float3 LifeTime{};
+	LifeTime.x = 0.f;
+	LifeTime.y = m_vLifeTime.y;
+	LifeTime.z = m_vLifeTime.z;
+	out.write((char*)&LifeTime, sizeof(_float3));
+
+	out.write((char*)&m_fSpeed, sizeof(_float));
+
 	out.close();
 
 	return S_OK;
 }
 
-HRESULT CImage_Texture::Save_Groupbinary( ofstream& out)
+HRESULT CUI_Effect::Save_Groupbinary(ofstream& out)
 {
-
 	out.write((char*)&m_iTypeIndex, sizeof(_uint));
 
 	_int strTexturelength = m_strName.length();
@@ -129,17 +182,21 @@ HRESULT CImage_Texture::Save_Groupbinary( ofstream& out)
 
 	out.write((char*)&m_iShaderPass, sizeof(_uint));
 
+	//개별저장
+	_float3 LifeTime{};
+	LifeTime.x = 0.f;
+	LifeTime.y = m_vLifeTime.y;
+	LifeTime.z = m_vLifeTime.z;
+	out.write((char*)&LifeTime, sizeof(_float3));
+
+	out.write((char*)&m_fSpeed, sizeof(_float));
+
 	return S_OK;
 }
 
-HRESULT CImage_Texture::Load_binary()
+CUI_Effect* CUI_Effect::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
-	return S_OK;
-}
-
-CImage_Texture* CImage_Texture::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-{
-	CImage_Texture* pInstance = new CImage_Texture(pDevice, pContext);
+	CUI_Effect* pInstance = new CUI_Effect(pDevice, pContext);
 
 	if (FAILED(pInstance->Initialize_Prototype()))
 		Safe_Release(pInstance);
@@ -147,9 +204,9 @@ CImage_Texture* CImage_Texture::Create(ID3D11Device* pDevice, ID3D11DeviceContex
 	return pInstance;
 }
 
-CGameObject* CImage_Texture::Clone(void* pArg)
+CGameObject* CUI_Effect::Clone(void* pArg)
 {
-	CImage_Texture* pInstance = new CImage_Texture(*this);
+	CUI_Effect* pInstance = new CUI_Effect(*this);
 
 	if (FAILED(pInstance->Initialize(pArg)))
 		Safe_Release(pInstance);
@@ -157,7 +214,7 @@ CGameObject* CImage_Texture::Clone(void* pArg)
 	return pInstance;
 }
 
-void CImage_Texture::Free()
+void CUI_Effect::Free()
 {
 	__super::Free();
 }
