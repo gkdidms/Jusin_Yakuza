@@ -9,7 +9,7 @@ class CTexture;
 class CVIBuffer_Instance_Point;
 END
 BEGIN(Client)
-class CAura final:
+class CAura final :
     public CEffect
 {
 public:
@@ -41,7 +41,7 @@ public:
 
 private:
     CShader* m_pShaderCom = { nullptr };
-    CTexture* m_pTextureCom[4] = {nullptr};
+    CTexture* m_pTextureCom[4] = { nullptr };
     CVIBuffer_Instance_Point* m_pVIBufferCom = { nullptr };
 
 private:

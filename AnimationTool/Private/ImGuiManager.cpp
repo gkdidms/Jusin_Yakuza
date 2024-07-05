@@ -3,6 +3,7 @@
 
 #include "AnimModel.h"
 #include "ModelBoneSphere.h"
+#include "TRailEffect.h"
 
 #pragma region "Model"
 #include "Animation.h"
@@ -10,6 +11,8 @@
 #include "Channel.h"
 #include "Mesh.h"
 #pragma endregion
+
+wstring g_wstrModelName;
 
 CImguiManager::CImguiManager(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: m_pDevice{ pDevice }
@@ -23,6 +26,8 @@ CImguiManager::CImguiManager(ID3D11Device* pDevice, ID3D11DeviceContext* pContex
 
 HRESULT CImguiManager::Initialize(void* pArg)
 {
+	Setting_InitialData();
+
 	//ImGui
 	IMGUI_CHECKVERSION();
 	ImGui::CreateContext();
@@ -44,6 +49,7 @@ HRESULT CImguiManager::Initialize(void* pArg)
 
 	ImGui_ImplWin32_Init(g_hWnd);
 	ImGui_ImplDX11_Init(m_pDevice, m_pContext);
+
 
 	return S_OK;
 }
@@ -70,6 +76,11 @@ void CImguiManager::Tick(const _float& fTimeDelta)
 		KeyFrameWindow();
 		MeshListWindow();
 		AnimEventWindow();
+
+		if (m_isEffectListWindow)
+			EffectListWindow();
+		if (m_isSoundListWindow)
+			SoundListWindow();
 	}
 
 }
@@ -130,10 +141,6 @@ void CImguiManager::ModelList()
 	ImGui::NewLine();
 	ImGui::Text("Model List");
 
-	string strDirPath = "../../Client/Bin/Resources/Models/Anim/";
-
-	m_pGameInstance->Get_DirectoryName(strDirPath, m_ModelNameList);
-
 	vector<const char*> items;
 
 	if (0 < m_ModelNameList.size()) {
@@ -146,7 +153,7 @@ void CImguiManager::ModelList()
 	{
 		m_iAnimIndex = 0;
 		m_pRenderModel->Change_Model(m_pGameInstance->StringToWstring(m_ModelNameList[m_iModelSelectedIndex]));
-		All_Load();
+		//All_Load();
 	}
 
 	if (ImGui::Button(u8"데이터 저장하기"))
@@ -188,6 +195,13 @@ void CImguiManager::AnimListWindow()
 		m_fAnimationPosition = 0.f;
 		m_pRenderModel->Change_Animation(m_iAnimIndex);
 		//m_isAnimLoop = m_pRenderModel->Get_AnimLoop(m_iAnimIndex);
+	}
+
+
+	ImGui::InputInt("Search Anim Index", &m_iSearchAnimIndex);
+	if (ImGui::Button(u8"애니메이션 인덱스 검색하기"))
+	{
+		m_iAnimIndex = m_iSearchAnimIndex;
 	}
 
 	ImGui::SameLine();
@@ -546,21 +560,22 @@ void CImguiManager::KeyFrameWindow()
 	}
 #pragma endregion
 
-#pragma region 사운드 이벤트 버튼
-	ImGui::Text("Sound Event");
-	if (ImGui::Button("Add Sound"))
-	{
-
-	}
-#pragma endregion
-
 #pragma region 이펙트 이벤트 버튼들
 	ImGui::Text("Effect Event");
 	if (ImGui::Button("Add Effect"))
 	{
-
+		m_isEffectListWindow = true;
 	}
 #pragma endregion
+
+#pragma region 사운드 이벤트 버튼
+	ImGui::Text("Sound Event");
+	if (ImGui::Button("Add Sound"))
+	{
+		m_isSoundListWindow = true;
+	}
+#pragma endregion
+
 
 	if (ImGui::Button(u8"애니메이션 이벤트 저장"))
 	{
@@ -581,7 +596,7 @@ void CImguiManager::AnimEventWindow()
 	vector<const char*> items;
 	for (auto& Event : m_AnimationEvents)
 	{
-		if(Event.first == m_AnimNameList[m_iAnimIndex])
+		if (Event.first == m_AnimNameList[m_iAnimIndex])
 			EventTypes.push_back(Event.second.iType);
 	}
 	for (auto& iEventType : EventTypes)
@@ -596,9 +611,6 @@ void CImguiManager::AnimEventWindow()
 			break;
 		case 2:
 			items.push_back("Sound On");
-			break;
-		case 3:
-			items.push_back("Effect On");
 			break;
 		}
 	}
@@ -631,6 +643,21 @@ void CImguiManager::AnimEventWindow()
 
 	ImGui::Text("Animation Name : %s", m_AnimNameList[m_iAnimIndex].c_str());
 
+	auto lower_bound_iter = m_AnimationEvents.lower_bound(m_AnimNameList[m_iAnimIndex]);
+	auto upper_bound_iter = m_AnimationEvents.upper_bound(m_AnimNameList[m_iAnimIndex]);
+
+	for (; lower_bound_iter != upper_bound_iter; ++lower_bound_iter)
+	{
+		Animation_Event Value = (*lower_bound_iter).second;
+		if (Value.isSelected) m_iEventBoneIndex = Value.iBoneIndex;
+	}
+
+	if (-1 < m_iEventBoneIndex)
+		ImGui::Text("[Bone Info]\nIndex: %i Name: %s", m_iEventBoneIndex, m_BoneNameList[m_iEventBoneIndex].c_str());
+	else
+		ImGui::Text("[Bone Info]\nNone");
+
+	ImGui::Text(u8"Bone Info가 None이라면 선택된 이벤트가 없거나\n본에 영향을 받지 않는 이벤트를 선택한 상태");
 
 	ImDrawList* draw_list = ImGui::GetWindowDrawList();
 	DrawTimeline(draw_list);
@@ -638,10 +665,85 @@ void CImguiManager::AnimEventWindow()
 	ImGui::End();
 }
 
+void CImguiManager::EffectListWindow()
+{
+	ImGui::Begin("Effect List", &m_isEffectListWindow);
+
+	for (size_t i = 0; i < m_EffectTypeList.size(); i++)
+	{
+		ImGui::SameLine();
+		if (ImGui::RadioButton(m_EffectTypeList[i].c_str(), m_iEffectType == i))
+		{
+			m_iEffectType = i;
+		}
+	}
+
+	//추가한 메시 리스트
+	auto lower_bound_iter = m_EffectFiles.lower_bound(m_iEffectType);
+	auto upper_bound_iter = m_EffectFiles.upper_bound(m_iEffectType);
+
+	vector<const char*> items;
+	for (; lower_bound_iter != upper_bound_iter; ++lower_bound_iter)
+	{
+		items.push_back((*lower_bound_iter).second.c_str());
+	}
+
+	ImGui::ListBox("##", &m_iEffectSelectedIndex, items.data(), items.size());
+
+	if (ImGui::Button(u8"이펙트 생성"))
+	{
+		string strSelectedEffectName = m_pGameInstance->Get_FileName(items[m_iEffectSelectedIndex]);
+		Create_Effect(m_BoneNameList[m_iBoneSelectedIndex], strSelectedEffectName);
+	}
+
+
+	vector<const char*> Addeditems;
+	for (auto& strEffect : m_EffectState)
+		Addeditems.push_back(strEffect.second.data());
+
+	auto iter = m_EffectState.begin();
+	for (size_t i = 0; i < m_iAddedEffectSelectedIndex; i++)	iter++;
+
+	if (0 < Addeditems.size())
+	{
+		if(iter != m_EffectState.end())
+			ImGui::Text(u8"대상 뼈 이름: %s", (*iter).first.c_str());
+	}
+	else
+		ImGui::Text(u8"대상 뼈 이름: None");
+
+	ImGui::ListBox("Added Effects", &m_iAddedEffectSelectedIndex, Addeditems.data(), Addeditems.size());
+	if (ImGui::Button(u8"이펙트 삭제"))
+	{
+		CEffect* pEffect = reinterpret_cast<CEffect*>(m_pGameInstance->Get_GameObject(LEVEL_EDIT, TEXT("Layer_Effect"), m_iAddedEffectSelectedIndex));
+		pEffect->Set_Dead();
+
+		m_EffectState.erase(iter);
+	}
+
+	if (ImGui::Button(u8"이펙트 정보 저장"))
+	{
+		string strDirectory = "../../Client/Bin/DataFiles/Character/" + m_ModelNameList[m_iModelSelectedIndex];
+
+		EffectState_Save(strDirectory);
+	}
+
+	ImGui::End();
+}
+
+void CImguiManager::SoundListWindow()
+{
+	ImGui::Begin("Sound List", &m_isSoundListWindow);
+
+	ImGui::Text(u8"테스트용으로 띄웠습니다");
+
+	ImGui::End();
+}
+
 void CImguiManager::DrawTimeline(ImDrawList* draw_list)
 {
-	ImVec2 vCanvas_Start = ImGui::GetCursorScreenPos(); // 시작 위치	
-	ImVec2 vCanvas_Size = ImGui::GetContentRegionAvail(); // 크기	
+	ImVec2 vCanvas_Start = ImGui::GetCursorScreenPos();			// 시작 위치	
+	ImVec2 vCanvas_Size = ImGui::GetContentRegionAvail();		// 크기	
 	ImVec2 vCanvas_End = vCanvas_Start + vCanvas_Size;
 
 	draw_list->AddRectFilled(vCanvas_Start, vCanvas_End, IM_COL32(50, 50, 50, 255));
@@ -687,9 +789,6 @@ void CImguiManager::DrawTimeline(ImDrawList* draw_list)
 				break;
 			case SOUND_ACTIVATION:
 				CircleColor = IM_COL32(0, 255, 0, 255);
-				break;
-			case EFFECT_ACTIVATION:
-				CircleColor = IM_COL32(0, 0, 255, 255);
 				break;
 			}
 		}
@@ -751,27 +850,14 @@ void CImguiManager::DrawChannels()
 	}
 }
 
-void CImguiManager::LoadAnimationCharacterList()
-{
-	wstring strModelPath = TEXT("../../Client/Bin/Resources/Models/Anim/");
-
-	vector<wstring> vecDirectorys;
-	m_pGameInstance->Get_DirectoryName(strModelPath, vecDirectorys);
-
-	for (auto& strChannelName : vecDirectorys)
-	{
-		string strBinPath = m_pGameInstance->WstringToString(strModelPath) + "Bin/";
-
-		if (!fs::exists(strBinPath))
-		{
-
-		}
-	}
-}
-
 void CImguiManager::Connect_Model_Ref()
 {
 	m_pRenderModel = static_cast<CAnimModel*>(m_pGameInstance->Get_GameObject(LEVEL_EDIT, TEXT("Layer_Object"), 0));
+}
+
+string CImguiManager::Get_FirstModel_Name()
+{
+	return m_ModelNameList.front();
 }
 
 void CImguiManager::Update_Model_Position()
@@ -805,6 +891,35 @@ void CImguiManager::Reset_Collider_Value()
 	ZeroMemory(m_ColliderPosition, sizeof(float) * 3);
 	ZeroMemory(m_ColliderExtents, sizeof(float) * 3);
 	m_fColliderRadius = 0.f;
+}
+
+void CImguiManager::Clear_EffectStateMap()
+{
+	auto pEffectLayer = m_pGameInstance->Get_GameObjects(LEVEL_EDIT, TEXT("Layer_Effect"));
+
+	for (auto& pEffect : pEffectLayer)
+		pEffect->Set_Dead();
+
+	m_EffectState.clear();
+}
+
+void CImguiManager::Create_Effect(string& strBoneName, string& strEffectName)
+{
+	auto& pBones = m_pRenderModel->Get_Bones();
+
+	const _float4x4* pBoneMatrix = { nullptr };
+
+	for (auto& pBone : pBones)
+	{
+		if (pBone->Compare_Name(strBoneName.c_str()))
+			pBoneMatrix = pBone->Get_CombinedTransformationMatrix();
+	}
+
+	CEffect::EFFECT_DESC Desc{};
+	Desc.pWorldMatrix = pBoneMatrix;
+	m_pGameInstance->Add_GameObject(LEVEL_EDIT, m_pGameInstance->StringToWstring(strEffectName), TEXT("Layer_Effect"), &Desc);
+
+	m_EffectState.emplace(strBoneName, strEffectName);
 }
 
 void CImguiManager::Setting_Collider_Value(_uint iBoneIndex)
@@ -865,6 +980,9 @@ void CImguiManager::All_Save()
 
 	/* 충돌체 생성 정보 저장하기 */
 	ColliderState_Save(strDirectory);
+
+	/* 이펙트 생성 정보 저장하기 */
+	EffectState_Save(strDirectory);
 }
 
 void CImguiManager::AlphaMesh_Save(string strPath)
@@ -1016,6 +1134,26 @@ void CImguiManager::ColliderState_Save(string strPath)
 	out.close();
 }
 
+void CImguiManager::EffectState_Save(string strPath)
+{
+	string strDirectory = strPath;
+	strDirectory += "/" + m_ModelNameList[m_iModelSelectedIndex] + "_EffectState.dat";
+
+	ofstream out(strDirectory, ios::binary);
+
+	_uint iNumEffectState = m_EffectState.size();
+	// 총 몇개의 이펙트를 읽어올 것인지 작성한다
+	out << iNumEffectState;
+
+	for (auto& Effect : m_EffectState)
+	{
+		out << Effect.first << endl;
+		out << Effect.second << endl;
+	}
+
+	out.close();
+}
+
 void CImguiManager::All_Load()
 {
 	string strDirectory = "../../Client/Bin/DataFiles/Character/" + m_ModelNameList[m_iModelSelectedIndex];
@@ -1024,6 +1162,7 @@ void CImguiManager::All_Load()
 	AnimationLoop_Load(strDirectory);
 	AnimationEvent_Load(strDirectory);
 	ColliderState_Load(strDirectory);
+	EffectState_Load(strDirectory);
 }
 
 void CImguiManager::AlphaMesh_Load(string strPath)
@@ -1179,6 +1318,63 @@ void CImguiManager::ColliderState_Load(string strPath)
 	}
 
 	in.close();
+}
+
+void CImguiManager::EffectState_Load(string strPath)
+{
+	// 기존에 저장해둔 정보 클리어
+	Clear_EffectStateMap();
+
+	string strDirectory = strPath;
+	strDirectory += "/" + m_ModelNameList[m_iModelSelectedIndex] + "_EffectState.dat";
+
+	ifstream in(strDirectory, ios::binary);
+
+	if (!in.is_open()) {
+		MSG_BOX("EffectState 파일 개방 실패");
+		return;
+	}
+
+	_uint iNumEffectState = { 0 };
+	in >> iNumEffectState;
+
+	for (size_t i = 0; i < iNumEffectState; i++)
+	{
+		string strBoneName = "";
+		in >> strBoneName;
+
+		string strEffectName = "";
+		in >> strEffectName;
+		
+		Create_Effect(strBoneName, strEffectName);
+	}
+
+	
+
+	in.close();
+}
+
+void CImguiManager::Setting_InitialData()
+{
+	string strDirPath = "../../Client/Bin/Resources/Models/Anim/";
+
+	m_pGameInstance->Get_DirectoryName(strDirPath, m_ModelNameList);
+	g_wstrModelName = m_pGameInstance->StringToWstring(m_ModelNameList.front());
+
+	strDirPath = "../../Client/Bin/DataFiles/Particle/";
+	m_pGameInstance->Get_DirectoryName(strDirPath, m_EffectTypeList);
+
+	
+	for (size_t i = 0; i < m_EffectTypeList.size(); i++)
+	{
+		vector<string> tempFileNames;
+		m_pGameInstance->Get_FileNames(strDirPath + m_EffectTypeList[i], tempFileNames);
+
+		for (size_t j = 0; j < tempFileNames.size(); j++)
+		{
+			m_EffectFiles.emplace(i, tempFileNames[j]);
+		}
+	}
 }
 
 CImguiManager* CImguiManager::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

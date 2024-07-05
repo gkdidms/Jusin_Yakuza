@@ -9,22 +9,22 @@ CKiryu_Adventure_Walk::CKiryu_Adventure_Walk()
 	//	p_mov_walk_fast 330
 	//	p_mov_walk_en 328
 	//	p_mov_walk_en_mir 329
-	m_AnimationIndex.push_back(330);
-	m_AnimationIndex.push_back(332);
-	m_AnimationIndex.push_back(328);
-	m_AnimationIndex.push_back(329);
+	m_AnimationIndices.push_back(330);
+	m_AnimationIndices.push_back(332);
+	m_AnimationIndices.push_back(328);
+	m_AnimationIndices.push_back(329);
 }
 
 void CKiryu_Adventure_Walk::Tick(const _float& fTimeDelta)
 {
-	m_pPlayer->Change_Animation(m_AnimationIndex[m_iCurrentIndex]);
+	m_pPlayer->Change_Animation(m_AnimationIndices[m_iCurrentIndex]);
 }
 
 void CKiryu_Adventure_Walk::Change_Animation()
 {
 	const _bool* pDirction = m_pPlayer->Get_MoveDirection();
 
-	m_pPlayer->Change_Animation(m_AnimationIndex[m_iCurrentIndex]);
+	m_pPlayer->Change_Animation(m_AnimationIndices[m_iCurrentIndex]);
 }
 
 _bool CKiryu_Adventure_Walk::Get_AnimationEnd()
