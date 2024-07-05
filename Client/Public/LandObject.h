@@ -33,7 +33,9 @@ protected:
 protected:
     class CSystemManager* m_pSystemManager = { nullptr };
 
-private:
+    wstring m_wstrModelName = TEXT("");
+
+protected:
     virtual HRESULT Add_Componenets();
     virtual HRESULT Bind_ResourceData();
 
