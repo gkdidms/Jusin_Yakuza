@@ -13,7 +13,7 @@ class CKiryu_Adventure_Run : public CBehaviorAnimation
 public:
 	enum BEHAVIOR_STATE
 	{
-		TURN, Shift, RUN, BUMP, BEHAVIOR_STATE_END
+		TURN, WALK, RUN, BUMP, BEHAVIOR_STATE_END
 	};
 
 	enum ANIM_STATE
