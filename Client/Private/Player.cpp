@@ -51,10 +51,7 @@ HRESULT CPlayer::Initialize(void* pArg)
 void CPlayer::Priority_Tick(const _float& fTimeDelta)
 {
 	if (m_pModelCom->Get_AnimFinished())
-	{
 		XMStoreFloat4(&m_vPrevMove, XMVectorZero());
-	}
-
 }
 
 void CPlayer::Tick(const _float& fTimeDelta)

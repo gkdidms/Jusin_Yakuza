@@ -82,6 +82,9 @@ void CPlayerCamera::Compute_View(const _float& fTimeDelta)
 		fCamAngleX += fTimeDelta * m_fSensor * MouseMove;
 	}
 
+	// 이전 카메라 포지션 저장
+	_vector vPrevCamPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+
 	// 카메라 포지션 계산
 	_vector vCamPosition = XMVectorSet(
 		m_fCamDistance * cosf(XMConvertToRadians(fCamAngleY)) * cosf(XMConvertToRadians(fCamAngleX)),
@@ -89,9 +92,14 @@ void CPlayerCamera::Compute_View(const _float& fTimeDelta)
 		m_fCamDistance * sinf(XMConvertToRadians(fCamAngleY)) * cosf(XMConvertToRadians(fCamAngleX)),
 		1.f
 	);
+
 	vCamPosition += XMVectorSet(XMVectorGetX(vPlayerPosition), XMVectorGetY(vPlayerPosition), XMVectorGetZ(vPlayerPosition), 0);
+
+	// 이전 카메라 포지션과 새로운 카메라 포지션 사이의 선형보간
+	_vector vLerpedCamPosition = XMVectorLerp(vPrevCamPosition, vCamPosition, fTimeDelta * 5.f);
+
 	m_pTransformCom->LookAt(XMVectorSet(XMVectorGetX(vPlayerPosition), XMVectorGetY(vPlayerPosition) + 1.f, XMVectorGetZ(vPlayerPosition), 1));
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vCamPosition);
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vLerpedCamPosition);
 
 	XMStoreFloat4x4(&m_WorldMatrix, m_pTransformCom->Get_WorldMatrix());
 }
