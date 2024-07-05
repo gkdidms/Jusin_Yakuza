@@ -24,7 +24,7 @@ public:
     */
     enum class ADVENTURE_BEHAVIOR_STATE
     {
-        IDLE, Shift, RUN, ADVENTURE_BEHAVIOR_END
+        IDLE, WALK, RUN, ADVENTURE_BEHAVIOR_END
     };    
     enum class KRS_BEHAVIOR_STATE
     {
