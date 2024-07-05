@@ -149,13 +149,13 @@
       <Filter>02.GameObjects\02.Character\LandObject\01.Monster</Filter>
     </ClCompile>
     <ClCompile Include="..\private\RushYakuza.cpp">
-      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\00.OfficeYakuza</Filter>
+      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\00.RushYakuza</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\BTNode.cpp">
       <Filter>95.Utility\03.BehaviorTree</Filter>
     </ClCompile>
     <ClCompile Include="..\private\AI_RushYakuza.cpp">
-      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\00.OfficeYakuza\AI</Filter>
+      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\00.RushYakuza\AI</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\MapCollider.cpp">
       <Filter>02.GameObjects\08. MapCollider</Filter>
@@ -180,6 +180,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\Kiryu_KRS_Walk.cpp">
       <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\Walk</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\AI_Monster.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\AI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\WPAYakuza.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\01. WPAYakuza</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -361,13 +367,13 @@
       <Filter>02.GameObjects\02.Character\LandObject\01.Monster</Filter>
     </ClInclude>
     <ClInclude Include="..\public\RushYakuza.h">
-      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\00.OfficeYakuza</Filter>
+      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\00.RushYakuza</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\BTNode.h">
       <Filter>95.Utility\03.BehaviorTree</Filter>
     </ClInclude>
     <ClInclude Include="..\public\AI_RushYakuza.h">
-      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\00.OfficeYakuza\AI</Filter>
+      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\00.RushYakuza\AI</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\MapCollider.h">
       <Filter>02.GameObjects\08. MapCollider</Filter>
@@ -392,6 +398,12 @@
     </ClInclude>
     <ClInclude Include="..\Public\Kiryu_KRS_Walk.h">
       <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\Walk</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\AI_Monster.h">
+      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\AI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\WPAYakuza.h">
+      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\01. WPAYakuza</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -484,9 +496,6 @@
     <Filter Include="02.GameObjects\01.Terrain">
       <UniqueIdentifier>{73fc58be-6ca4-4e86-b2ac-39c7c7e26f66}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\01.Terrain\TestMap">
-      <UniqueIdentifier>{13a0eb4d-9fd9-4a66-90f0-f589933ed093}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObjects\02.Character">
       <UniqueIdentifier>{a666196a-f926-41d0-a823-380685d12205}</UniqueIdentifier>
     </Filter>
@@ -571,9 +580,6 @@
     <Filter Include="02.GameObjects\02.Character\LandObject\01.Monster">
       <UniqueIdentifier>{45d3ed81-5372-4412-bf1f-89cbd1f74552}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\02.Character\LandObject\01.Monster\00.OfficeYakuza">
-      <UniqueIdentifier>{58dcf1b7-f012-4f21-92c4-d4317d03352d}</UniqueIdentifier>
-    </Filter>
     <Filter Include="95.Utility\03.BehaviorTree">
       <UniqueIdentifier>{490f9c94-1bca-41c9-a680-f2eb77882221}</UniqueIdentifier>
     </Filter>
@@ -585,9 +591,6 @@
     </Filter>
     <Filter Include="95.Utility\03.BehaviorTree\LeafNode">
       <UniqueIdentifier>{3352b812-faf6-4a67-8b29-1e9df787da34}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\02.Character\LandObject\01.Monster\00.OfficeYakuza\AI">
-      <UniqueIdentifier>{9e849697-ae77-4632-b243-cfb720c7f930}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\Attack">
       <UniqueIdentifier>{af748daf-3b67-450b-a834-8f3c58512bc2}</UniqueIdentifier>
@@ -609,6 +612,18 @@
     </Filter>
     <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\Walk">
       <UniqueIdentifier>{9d473ed7-1045-45b0-b810-601d5ce04716}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\01.Monster\00.RushYakuza">
+      <UniqueIdentifier>{58dcf1b7-f012-4f21-92c4-d4317d03352d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\01.Monster\00.RushYakuza\AI">
+      <UniqueIdentifier>{9e849697-ae77-4632-b243-cfb720c7f930}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\01.Monster\AI">
+      <UniqueIdentifier>{7c984c39-25b1-4b6b-b10a-cd7e33117ecd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\01.Monster\01. WPAYakuza">
+      <UniqueIdentifier>{3704e0ba-7ed6-4e63-8e8b-f61177bd0faf}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

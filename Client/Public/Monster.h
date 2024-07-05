@@ -15,25 +15,25 @@ class CMonster abstract:
 public:
     enum MONSTER_STATE
     {
-        IDLE,
-        SHIFT_F,
-        SHIFT_L,
-        SHIFT_R,
-        SHIFT_B,
-        SHIFT_FR,
-        SHIFT_FL,
-        SHIFT_BR,
-        SHIFT_BL,
-        CMD_1,
-        CMD_2,
-        CMD_3,
-        CMD_4,
-        CMD_5,
-        PUNCH,
-        ANGRY_START,
-        ANGRY_CHOP,
-        ANGRY_KICK,
-        DEATH,
+        MONSTER_IDLE,
+        MONSTER_SHIFT_F,
+        MONSTER_SHIFT_L,
+        MONSTER_SHIFT_R,
+        MONSTER_SHIFT_B,
+        MONSTER_SHIFT_FR,
+        MONSTER_SHIFT_FL,
+        MONSTER_SHIFT_BR,
+        MONSTER_SHIFT_BL,
+        MONSTER_CMD_1,
+        MONSTER_CMD_2,
+        MONSTER_CMD_3,
+        MONSTER_CMD_4,
+        MONSTER_CMD_5,
+        MONSTER_PUNCH,
+        MONSTER_ANGRY_START,
+        MONSTER_ANGRY_CHOP,
+        MONSTER_ANGRY_KICK,
+        MONSTER_DEATH,
         MONSTER_STATE_END
     };
 
@@ -54,12 +54,22 @@ protected:
     CShader* m_pShaderCom = { nullptr };
     CModel* m_pModelCom = { nullptr };
     CCollider* m_pColliderCom = { nullptr };
-    CAnim* m_pAnimCom = { nullptr };
+    CAnim* m_pAnimCom = { nullptr }; // 애니메이션만 따로 저장하고있는 애니메이션 컴포넌트
 
     class CCharacterData* m_pData = { nullptr }; // 캐릭터 데이터 파일 입출력
 
 protected:
+    _bool m_isAnimLoop = { false };
     _uint m_iState = { 0 };
+    _float m_fChangeInterval = { 4.f };
+
+    _float          m_fPrevSpeed = { 0.f };
+    _float4         m_vPrevMove;
+    _float4         m_vPrevRotation;
+    _float4x4       m_ModelWorldMatrix;
+
+protected:
+    void Synchronize_Root(const _float& fTimeDelta);
 
 private:
     virtual HRESULT Add_Componenets() override;
