@@ -1,12 +1,13 @@
 #pragma once
 
 #include "Base.h"
-#include "Client_Defines.h"
 #include "imgui.h"
 #include "Navigation_Manager.h"
 #include "ObjPlace_Manager.h"
 #include "LightTool_Mgr.h"
 #include "Camera_Manager.h"
+#include "Collider_Manager.h"
+#include "Client_Defines.h"
 
 BEGIN(Engine)
 class CGameInstance;
@@ -15,6 +16,13 @@ END
 class CImgui_Manager final : public CBase
 {
 	DECLARE_SINGLETON(CImgui_Manager);
+
+public:
+	enum IDWRIE {
+		OBJPLACE,
+		COLLIDER,
+		IDWRITE_END
+	};
 
 private:
 	CImgui_Manager();
@@ -26,6 +34,9 @@ public:
 	void Tick(_float fTimeDelta);
 	void Late_Tick(_float fTimeDelta);
 	void Render();
+
+public:
+	IDWRIE				Get_Write() { return m_eWrieID; }
 
 	
 private:
@@ -43,12 +54,15 @@ private:
 	void	Show_MapObj_Place_IMGUI();
 	void	Show_LightTool_IMGUI();
 	void	Show_CameraTool_IMGUI();
+	void	Show_Collider_IMGUI();
+
 
 private:
 	CNavigation_Manager*		m_pNavigationMgr;
 	CObjPlace_Manager*			m_pObjPlace_Manager;
 	CLightTool_Mgr*				m_pLightTool_Mgr;
 	CCamera_Manager*			m_pCameraToolMgr;
+	CCollider_Manager*			m_pColliderMgr;
 	CGameInstance*				m_pGameInstance;
 
 	/* imgui 창 관련 bool 변수 */
@@ -59,7 +73,9 @@ private:
 	_bool						m_bObject_Place_IMGUI = { false };
 	_bool						m_bLightMgr_IMGUI = { false };
 	_bool						m_bCameraMgr_IMGUI = { false };
+	_bool						m_bColliderMgr_imgui = { false };
 
+	IDWRIE						m_eWrieID = { IDWRITE_END };
 
 
 public:

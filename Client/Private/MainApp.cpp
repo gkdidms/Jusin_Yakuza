@@ -72,26 +72,6 @@ void CMainApp::Tick(const _float& fTimeDelta)
 	m_pGameInstance->Tick(fTimeDelta);
 
 #ifdef _DEBUG
-	if (m_pGameInstance->GetKeyState(DIK_F1) == TAP)
-	{
-		m_pGameInstance->Set_HDR(!m_pGameInstance->isHDR());
-	}
-	if (m_pGameInstance->GetKeyState(DIK_F2) == TAP)
-	{
-		m_pGameInstance->Set_SSAO(!m_pGameInstance->isSSAO());
-	}
-	if (m_pGameInstance->GetKeyState(DIK_F3) == TAP)
-	{
-		m_pGameInstance->Set_PBR(!m_pGameInstance->isPBR());
-	}
-	if (m_pGameInstance->GetKeyState(DIK_F4) == TAP)
-	{
-		m_pGameInstance->Set_BOF(!m_pGameInstance->isBOF());
-	}
-	if (m_pGameInstance->GetKeyState(DIK_F5) == TAP)
-	{
-		m_pGameInstance->Set_Shadow(!m_pGameInstance->isShadow());
-	}
 	if (m_pGameInstance->GetKeyState(DIK_F6) == TAP)
 	{
 		m_pFileTotalManager->Load_Cinemachine(0, LEVEL_TEST);
@@ -142,14 +122,6 @@ HRESULT CMainApp::Render()
 	m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("!!!테스트용 키는 화면에 모두 작성할것 !!! "), _float2(500.f, 0.f), XMVectorSet(1.f, 0.f, 0.f, 1.f));
 
 	_float fSize = 320.f;
-	m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("!!!Shader 관련 단축키"), _float2(1000.f, fSize), XMVectorSet(0.f, 0.f, 1.f, 1.f));
-	m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("F1 : HDR On/Off"), _float2(1000.f, fSize + 20.f), XMVectorSet(1.f, 1.f, 0.f, 1.f));
-	m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("F2 : SSAO On/Off"), _float2(1000.f, fSize + 40.f), XMVectorSet(1.f, 1.f, 0.f, 1.f));
-	m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("F3 : PBR On/Off"), _float2(1000.f, fSize + 60.f), XMVectorSet(1.f, 1.f, 0.f, 1.f));
-	m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("F4 : BOF On/Off"), _float2(1000.f, fSize + 80.f), XMVectorSet(1.f, 1.f, 0.f, 1.f));
-	m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("F5 : Shadow On/Off"), _float2(1000.f, fSize + 100.f), XMVectorSet(1.f, 1.f, 0.f, 1.f));
-
-
 	m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("!!!카메라 단축키"), _float2(1000.f, fSize + 120.f), XMVectorSet(0.f, 0.f, 1.f, 1.f));
 	m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("F6 : Scene Camera Test"), _float2(1000.f, fSize + 140.f), XMVectorSet(1.f, 1.f, 0.f, 1.f));
 	m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("F7 : Camera Change"), _float2(1000.f, fSize + 160.f), XMVectorSet(1.f, 1.f, 0.f, 1.f));

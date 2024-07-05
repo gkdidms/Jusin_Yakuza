@@ -92,6 +92,7 @@ void* CCollider::Get_OriginDesc()
 	return m_pCurrentBounding->Get_OriginDesc();
 }
 
+
 void CCollider::Set_Value(void* pDesc)
 {
 	m_pCurrentBounding->Set_Value(pDesc);
@@ -100,6 +101,11 @@ void CCollider::Set_Value(void* pDesc)
 void CCollider::Set_Center(const _float3& vCenter)
 {
 	m_pCurrentBounding->Set_Center(vCenter);
+}
+
+void CCollider::Set_Rotation(const _float3& vRotation)
+{
+	m_pCurrentBounding->Set_Rotation(vRotation);
 }
 
 _bool CCollider::Intersect(CCollider* pTargetCollider)

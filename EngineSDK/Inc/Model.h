@@ -39,8 +39,10 @@ public:
 	bool	Check_Exist_Material(_uint iNumMeshIndex, aiTextureType eTextureType);
 
 	void Play_Animation(_float fTimeDelta);
+	void Play_Animation(_float fTimeDelta, class CAnim* pAnim, _bool isLoop = false);
 	void Set_AnimationIndex(const ANIMATION_DESC& AnimDesc, _double ChangeInterval = 0.0);
 	_bool Set_AnimationIndex(_uint iAnimIndex, _double ChangeInterval = 0.0);
+	void Set_AnimationIndex(_uint iAnimIndex, vector<class CAnimation*> Animations, _double ChangeInterval = 0.0);
 	void Reset_Animation(const ANIMATION_DESC& AnimDesc);
 
 public:

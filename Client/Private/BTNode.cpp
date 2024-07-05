@@ -3,3 +3,7 @@
 CBTNode::CBTNode()
 {
 }
+
+void CBTNode::Free()
+{
+}

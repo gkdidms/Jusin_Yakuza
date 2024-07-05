@@ -20,11 +20,10 @@ public:
     virtual void Late_Tick(const _float& fTimeDelta) override;
     virtual HRESULT Render() override;
 
-
 protected:
     class CSystemManager* m_pSystemManager = { nullptr };
 
-protected:
+private:
     virtual HRESULT Add_Componenets();
     virtual HRESULT Bind_ResourceData();
 
