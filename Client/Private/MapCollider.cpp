@@ -1,5 +1,7 @@
 #include "MapCollider.h"
 
+#include "GameInstance.h"
+
 CMapCollider::CMapCollider(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     : CGameObject(pDevice, pContext)
 {

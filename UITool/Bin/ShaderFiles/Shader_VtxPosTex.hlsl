@@ -6,6 +6,9 @@ Texture2D g_Texture;
 
 float g_fProgress;
 
+float4 g_vColor;
+
+float3 g_vLifeTime;
 
 struct VS_IN
 {
@@ -51,8 +54,73 @@ PS_OUT PS_MAIN(PS_IN In)
     
     Out.vColor = g_Texture.Sample(LinearSampler, In.vTexcoord);
     
+    if (Out.vColor.a <= 0.1f)
+        discard;
+    
     return Out;
 }
+
+PS_OUT PS_ALPHABLEND(PS_IN In)
+{
+    PS_OUT Out = (PS_OUT) 0;
+    
+    Out.vColor = g_Texture.Sample(LinearSampler, In.vTexcoord);
+    if (Out.vColor.a <= 0.1f)
+        discard;
+    return Out;
+}
+
+PS_OUT PS_COLOR_ALPHABLEND(PS_IN In)
+{
+    PS_OUT Out = (PS_OUT) 0;
+    
+    vector BaseColor = g_Texture.Sample(LinearSampler, In.vTexcoord);
+    vector vMergeColor = g_vColor;
+    
+    Out.vColor = vMergeColor * BaseColor;
+    if (Out.vColor.a <= 0.1f)
+        discard;
+    return Out;
+}
+
+PS_OUT PS_COLOR_ALPHABLEND_EFFECT(PS_IN In)
+{
+    PS_OUT Out = (PS_OUT) 0;
+    
+    vector BaseColor = g_Texture.Sample(PointSampler, In.vTexcoord);
+    vector BaseAlpha = 0.f;
+    vector MergeColor = g_vColor;
+    vector FinalColor = vector(0.f, 0.f, 0.f, 0.f);
+    
+    if (g_vLifeTime.x < g_vLifeTime.y || g_vLifeTime.x > g_vLifeTime.z)
+        discard;
+    else
+    {
+        FinalColor = BaseColor * MergeColor;
+        float MiddleTime =(g_vLifeTime.z - g_vLifeTime.y) / 2.f;
+        float CurrentTime = (g_vLifeTime.x - g_vLifeTime.y);
+        
+        if (MiddleTime > CurrentTime)
+        {
+            BaseAlpha = CurrentTime / MiddleTime;
+            FinalColor.a *= BaseAlpha;
+        }
+        else
+        {
+            BaseAlpha = (CurrentTime - MiddleTime) / MiddleTime;
+            FinalColor.a *= 1.f-BaseAlpha;
+        }
+    }
+    
+    Out.vColor = FinalColor;
+    
+    if (Out.vColor.a <= 0.1f)
+        discard;
+    
+    return Out;
+}
+
+
 
 PS_OUT PS_BACKBUFFER(PS_IN In)
 {
@@ -68,7 +136,8 @@ PS_OUT PS_BACKBUFFER(PS_IN In)
 
 technique11 DefaultTechnique
 {
-    pass DefaultPass
+
+    pass DefaultPass//0
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_None_Test_None_Write, 0);
@@ -81,7 +150,20 @@ technique11 DefaultTechnique
         PixelShader = compile ps_5_0 PS_MAIN();
     }
 
-    pass Alpha_Texture
+    pass Blend_Texture//1
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_Blend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        HullShader = NULL;
+        DomainShader = NULL;
+        PixelShader = compile ps_5_0 PS_MAIN();
+    }
+
+    pass AlphaBlend_Texture//2
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_Default, 0);
@@ -91,23 +173,10 @@ technique11 DefaultTechnique
         GeometryShader = NULL;
         HullShader = NULL;
         DomainShader = NULL;
-        PixelShader = compile ps_5_0 PS_MAIN();
+        PixelShader = compile ps_5_0 PS_ALPHABLEND();
     }
 
-    pass Blend_Texture
-    {
-        SetRasterizerState(RS_Default);
-        SetDepthStencilState(DSS_Default, 0);
-        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
-
-        VertexShader = compile vs_5_0 VS_MAIN();
-        GeometryShader = NULL;
-        HullShader = NULL;
-        DomainShader = NULL;
-        PixelShader = compile ps_5_0 PS_MAIN();
-    }
-
-    pass BackBuffer
+    pass BackBuffer//3
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_Default, 0);
@@ -118,5 +187,31 @@ technique11 DefaultTechnique
         HullShader = NULL;
         DomainShader = NULL;
         PixelShader = compile ps_5_0 PS_BACKBUFFER();
+    }
+
+    pass Color_AlphaBlend_Texture//4
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        HullShader = NULL;
+        DomainShader = NULL;
+        PixelShader = compile ps_5_0 PS_COLOR_ALPHABLEND();
+    }
+
+    pass Color_AlphaBlend_Effect_Texture //5
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        HullShader = NULL;
+        DomainShader = NULL;
+        PixelShader = compile ps_5_0 PS_COLOR_ALPHABLEND_EFFECT();
     }
 }

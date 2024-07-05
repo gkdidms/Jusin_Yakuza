@@ -29,6 +29,14 @@ public: // 애니메이션 관련
     _bool Get_LoopAnimFinished();
     const _double* Get_AnimDuration();
     const _double* Get_AnimPosition();
+    const _float4* Get_AnimationCenterRotation();
+    const _float3* Get_AnimationCenterMove();
+
+    _bool Get_AnimFinished() const;
+    _bool Get_AnimChanged() const;
+    _bool Get_AnimRestart(_bool isLoop) const;
+    _bool Get_AnimLerp(_float ChangeInterval) const;
+
 public:
     virtual HRESULT Initialize_Prototype(const _char* pModelFilePath, _bool isSave);
     virtual HRESULT Initialize(void* pArg);

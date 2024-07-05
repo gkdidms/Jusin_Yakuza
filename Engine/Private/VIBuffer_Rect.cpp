@@ -20,6 +20,7 @@ HRESULT CVIBuffer_Rect::Initialize_Prototype()
 //	UINT MiscFlags;
 //	UINT StructureByteStride;
 //} 	D3D11_BUFFER_DESC;
+
 	m_GIFormat = DXGI_FORMAT_R16_UINT;
 	m_Primitive_Topology = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 
@@ -28,9 +29,9 @@ HRESULT CVIBuffer_Rect::Initialize_Prototype()
 	m_iVertexStride = sizeof(VTXPOSTEX);
 
 	m_Buffer_Desc.ByteWidth = m_iVertexStride * m_iNumVertices;
-	m_Buffer_Desc.Usage = D3D11_USAGE_DEFAULT;
+	m_Buffer_Desc.Usage = D3D11_USAGE_DYNAMIC;
 	m_Buffer_Desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
-	m_Buffer_Desc.CPUAccessFlags = 0;
+	m_Buffer_Desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	m_Buffer_Desc.MiscFlags = 0;
 	m_Buffer_Desc.StructureByteStride = m_iVertexStride;
 
@@ -80,12 +81,98 @@ HRESULT CVIBuffer_Rect::Initialize_Prototype()
 	__super::Create_Buffer(&m_pIB);
 
 	Safe_Delete_Array(pIndices);
-	
+
 	return S_OK;
 }
 
 HRESULT CVIBuffer_Rect::Initialize(void* pArg)
 {
+	Safe_Release(m_pVB);
+	Safe_Release(m_pIB);
+	m_GIFormat = DXGI_FORMAT_R16_UINT;
+	m_Primitive_Topology = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
+
+	m_iNumVertexBuffers = 1;
+	m_iNumVertices = 4;
+	m_iVertexStride = sizeof(VTXPOSTEX);
+
+	m_Buffer_Desc.ByteWidth = m_iVertexStride * m_iNumVertices;
+	m_Buffer_Desc.Usage = D3D11_USAGE_DYNAMIC;
+	m_Buffer_Desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	m_Buffer_Desc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
+	m_Buffer_Desc.MiscFlags = 0;
+	m_Buffer_Desc.StructureByteStride = m_iVertexStride;
+
+	VTXPOSTEX* pVertexts = new VTXPOSTEX[m_iNumVertices];
+
+	pVertexts[0].vPosition = _float3{ -0.5f, 0.5f, 0.f };
+	pVertexts[0].vTexcoord = _float2{ 0.f, 0.f };
+
+	pVertexts[1].vPosition = _float3{ 0.5f, 0.5f, 0.f };
+	pVertexts[1].vTexcoord = _float2{ 1.f, 0.f };
+
+	pVertexts[2].vPosition = _float3{ 0.5f, -0.5f, 0.f };
+	pVertexts[2].vTexcoord = _float2{ 1.f, 1.f };
+
+	pVertexts[3].vPosition = _float3{ -0.5f, -0.5f, 0.f };
+	pVertexts[3].vTexcoord = _float2{ 0.f, 1.f };
+
+	m_InitialData.pSysMem = pVertexts;
+
+	__super::Create_Buffer(&m_pVB);
+
+	Safe_Delete_Array(pVertexts);
+
+	m_iNumIndices = 6;
+	m_iIndexStride = 2;
+
+	m_Buffer_Desc.ByteWidth = m_iIndexStride * m_iNumIndices;
+	m_Buffer_Desc.Usage = D3D11_USAGE_DEFAULT;
+	m_Buffer_Desc.BindFlags = D3D11_BIND_INDEX_BUFFER;
+	m_Buffer_Desc.CPUAccessFlags = 0;
+	m_Buffer_Desc.MiscFlags = 0;
+	m_Buffer_Desc.StructureByteStride = 0;
+
+	_ushort* pIndices = new _ushort[m_iNumIndices];
+	ZeroMemory(pIndices, sizeof(_ushort) * m_iNumIndices);
+
+	pIndices[0] = 0;
+	pIndices[1] = 1;
+	pIndices[2] = 2;
+
+	pIndices[3] = 0;
+	pIndices[4] = 2;
+	pIndices[5] = 3;
+
+	m_InitialData.pSysMem = pIndices;
+
+	__super::Create_Buffer(&m_pIB);
+
+	Safe_Delete_Array(pIndices);
+
+	return S_OK;
+}
+
+HRESULT CVIBuffer_Rect::EditUV(_float2 fStartUV, _float2 fEndUV)	
+{
+	_float fX = fStartUV.x;
+	_float fY = fStartUV.y;
+	_float fWeightX = fEndUV.x - fStartUV.x;
+	_float fWeightY = fEndUV.y - fStartUV.y;
+
+	D3D11_MAPPED_SUBRESOURCE		SubResource{};
+
+	m_pContext->Map(m_pVB, 0, D3D11_MAP_WRITE_NO_OVERWRITE, 0, &SubResource);
+
+	VTXPOSTEX* pVertices = (VTXPOSTEX*)SubResource.pData;	
+
+	pVertices[0].vTexcoord = {fX,fY};
+	pVertices[1].vTexcoord = {fX+fWeightX,fY};
+	pVertices[2].vTexcoord = {fX+fWeightX,fY+fWeightY};
+	pVertices[3].vTexcoord = {fX,fY+fWeightY};
+
+	m_pContext->Unmap(m_pVB, 0);
+
 	return S_OK;
 }
 

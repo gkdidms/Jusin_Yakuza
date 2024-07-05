@@ -172,12 +172,15 @@
     <ClInclude Include="..\..\Imgui\imgui\imstb_rectpack.h" />
     <ClInclude Include="..\..\Imgui\imgui\imstb_textedit.h" />
     <ClInclude Include="..\..\Imgui\imgui\imstb_truetype.h" />
+    <ClInclude Include="..\public\AI_Monster.h" />
+    <ClInclude Include="..\public\AI_RushYakuza.h" />
     <ClInclude Include="..\Public\Aura.h" />
     <ClInclude Include="..\public\Background.h" />
     <ClInclude Include="..\Public\BehaviorAnimation.h" />
     <ClInclude Include="..\Public\BTNode.h" />
-    <ClInclude Include="..\Public\CompositeNode.h" />
-    <ClInclude Include="..\Public\DecoratorNode.h" />
+    <ClInclude Include="..\Public\MapCollider.h" />
+    <ClInclude Include="..\Public\Sequance.h" />
+    <ClInclude Include="..\Public\Selector.h" />
     <ClInclude Include="..\Public\CharacterData.h" />
     <ClInclude Include="..\Public\CineCamera.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
@@ -210,7 +213,8 @@
     <ClInclude Include="..\public\Level_Test.h" />
     <ClInclude Include="..\public\Loader.h" />
     <ClInclude Include="..\public\MainApp.h" />
-    <ClInclude Include="..\Public\MapCollider.h" />
+    <ClInclude Include="..\public\Monster.h" />
+    <ClInclude Include="..\public\RushYakuza.h" />
     <ClInclude Include="..\Public\Particle_Point.h" />
     <ClInclude Include="..\Public\PartObject.h" />
     <ClInclude Include="..\public\Player.h" />
@@ -222,6 +226,7 @@
     <ClInclude Include="..\Public\Terrain.h" />
     <ClInclude Include="..\Public\TRailEffect.h" />
     <ClInclude Include="..\public\UI.h" />
+    <ClInclude Include="..\public\WPAYakuza.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="Resource.h" />
@@ -241,12 +246,15 @@
     <ClCompile Include="..\..\Imgui\imgui\imgui_draw.cpp" />
     <ClCompile Include="..\..\Imgui\imgui\imgui_tables.cpp" />
     <ClCompile Include="..\..\Imgui\imgui\imgui_widgets.cpp" />
+    <ClCompile Include="..\private\AI_Monster.cpp" />
+    <ClCompile Include="..\private\AI_RushYakuza.cpp" />
     <ClCompile Include="..\Private\Aura.cpp" />
     <ClCompile Include="..\private\Background.cpp" />
     <ClCompile Include="..\Private\BehaviorAnimation.cpp" />
     <ClCompile Include="..\Private\BTNode.cpp" />
-    <ClCompile Include="..\Private\CompositeNode.cpp" />
-    <ClCompile Include="..\Private\DecoratorNode.cpp" />
+    <ClCompile Include="..\Private\MapCollider.cpp" />
+    <ClCompile Include="..\Private\Sequance.cpp" />
+    <ClCompile Include="..\Private\Selector.cpp" />
     <ClCompile Include="..\Private\CharacterData.cpp" />
     <ClCompile Include="..\Private\CineCamera.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
@@ -278,7 +286,8 @@
     <ClCompile Include="..\private\Level_Test.cpp" />
     <ClCompile Include="..\private\Loader.cpp" />
     <ClCompile Include="..\private\MainApp.cpp" />
-    <ClCompile Include="..\Private\MapCollider.cpp" />
+    <ClCompile Include="..\private\Monster.cpp" />
+    <ClCompile Include="..\private\RushYakuza.cpp" />
     <ClCompile Include="..\Private\Particle_Point.cpp" />
     <ClCompile Include="..\Private\PartObject.cpp" />
     <ClCompile Include="..\private\Player.cpp" />
@@ -290,6 +299,7 @@
     <ClCompile Include="..\Private\Terrain.cpp" />
     <ClCompile Include="..\Private\TRailEffect.cpp" />
     <ClCompile Include="..\private\UI.cpp" />
+    <ClCompile Include="..\private\WPAYakuza.cpp" />
     <ClCompile Include="Client.cpp" />
   </ItemGroup>
   <ItemGroup>
