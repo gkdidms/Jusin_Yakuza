@@ -188,6 +188,13 @@
     <ClInclude Include="..\Public\Kiryu_Adventure_Idle.h" />
     <ClInclude Include="..\Public\Kiryu_Adventure_Run.h" />
     <ClInclude Include="..\Public\Kiryu_Adventure_Walk.h" />
+    <ClInclude Include="..\Public\Kiryu_KRS_Attack.h" />
+    <ClInclude Include="..\Public\Kiryu_KRS_BattleStart.h" />
+    <ClInclude Include="..\Public\Kiryu_KRS_Hit.h" />
+    <ClInclude Include="..\Public\Kiryu_KRS_Idle.h" />
+    <ClInclude Include="..\Public\Kiryu_KRS_Run.h" />
+    <ClInclude Include="..\Public\Kiryu_KRS_Sway.h" />
+    <ClInclude Include="..\Public\Kiryu_KRS_Walk.h" />
     <ClInclude Include="..\Public\LeafNode.h" />
     <ClInclude Include="..\Public\Client_Defines.h" />
     <ClInclude Include="..\Public\Construction.h" />
@@ -253,6 +260,13 @@
     <ClCompile Include="..\Private\Kiryu_Adventure_Idle.cpp" />
     <ClCompile Include="..\Private\Kiryu_Adventure_Run.cpp" />
     <ClCompile Include="..\Private\Kiryu_Adventure_Walk.cpp" />
+    <ClCompile Include="..\Private\Kiryu_KRS_Attack.cpp" />
+    <ClCompile Include="..\Private\Kiryu_KRS_BattleStart.cpp" />
+    <ClCompile Include="..\Private\Kiryu_KRS_Hit.cpp" />
+    <ClCompile Include="..\Private\Kiryu_KRS_Idle.cpp" />
+    <ClCompile Include="..\Private\Kiryu_KRS_Run.cpp" />
+    <ClCompile Include="..\Private\Kiryu_KRS_Sway.cpp" />
+    <ClCompile Include="..\Private\Kiryu_KRS_Walk.cpp" />
     <ClCompile Include="..\Private\LeafNode.cpp" />
     <ClCompile Include="..\Private\Construction.cpp" />
     <ClCompile Include="..\private\DebugCamera.cpp" />

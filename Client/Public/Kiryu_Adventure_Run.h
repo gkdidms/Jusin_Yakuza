@@ -28,8 +28,6 @@ private:
 public:
 	virtual void Tick(const _float& fTimeDelta) override;
 	virtual void Change_Animation() override;
-
-public:
 	virtual _bool Get_AnimationEnd() override;
 	virtual void Stop() override;
 

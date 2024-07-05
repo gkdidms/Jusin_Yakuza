@@ -48,6 +48,11 @@ private:
 	ImGuizmo::OPERATION mCurrentGizmoOperation = { ImGuizmo::TRANSLATE };
 	ImGuizmo::MODE mCurrentGizmoMode = { ImGuizmo::WORLD };
 	_float4x4 m_WorldMatirx = {};
+	_float2 m_StartUV = {  };
+	_float2 m_EndUV = {};	
+	_float2 m_ClickStartUV = {};
+	_float2 m_ClickEndUV = {};
+
 	_float4x4						m_ViewMatrix, m_ProjMatrix;
 
 private:
@@ -58,6 +63,7 @@ private:
 	_uint m_iWinSizeY = { 720 };
 
 private:
+
 	//렌더타겟용
 	_char m_szGroupName[MAX_PATH] = { "" };
 	_int m_iGroupIndex = { -1 };
@@ -87,6 +93,8 @@ private:
 	_int m_iBinaryGroupObjectType = { -1 };
 	_char m_szBinaryGroupObjectName[MAX_PATH] = { "" };
 
+	//이미지 작업 오브젝트 이름용
+	_char m_szImageName[MAX_PATH] = { "" };
 private:
 	_int m_iObjectType = { 0 };
 	_int m_iBinaryObjectType = { 0 };

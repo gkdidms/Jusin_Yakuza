@@ -31,7 +31,7 @@ private:
 
 private:
     _float      m_fSensor = { 0.f };
-    _bool		m_bCameraFix = false;
+    _bool		m_bCameraFix = { false };
 
 public:
     static CPlayerCamera* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

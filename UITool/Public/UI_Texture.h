@@ -18,21 +18,29 @@ public:
         wstring strTextureFileName;
         _bool isParent = { false };
         const _float4x4* pParentMatrix;
+        _float2 fStartUV;
+        _float2 fEndUV;
+        _float4 vColor;
+        string strParentName;
     } UI_TEXTURE_DESC;
 
 public:
     void Set_SizeX(_float fSizeX) { m_fSizeX = fSizeX; }
     void Set_SizeY(_float fSizeY) { m_fSizeY = fSizeY; }
     void Set_ShaderPass(_uint iPass) { m_iShaderPass = iPass; }
-
+    void Set_Color(_float4 vColor) { m_vColor = vColor; }
 public:
     _float Get_SizeX() { return m_fSizeX; }
     _float Get_SizeY() { return m_fSizeY; }
     _uint Get_ShaderPass() { return m_iShaderPass; }
 
+    _float2 Get_StartUV() { return m_fStartUV; }
+    _float2 Get_EndUV() { return m_fEndUV; }
+
     wstring Get_FileName() { return m_strTextureName; }
     wstring Get_FilePath() { return m_strTextureFilePath; }
 
+    _float4 Get_Color() { return m_vColor; }
 protected:
     CUI_Texture(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
     CUI_Texture(const CUI_Texture& rhs);
@@ -46,23 +54,34 @@ public:
     virtual void Late_Tick(const _float& fTimeDelta) override;
     virtual HRESULT Render() override;
 
+public:
+     HRESULT Change_UV(_float2 fStartUV, _float2 fEndUV);
 protected:
     _float							m_fX, m_fY, m_fSizeX, m_fSizeY;
     _float4x4						m_WorldMatrix, m_ViewMatrix, m_ProjMatrix;
 
-protected:
     CShader* m_pShaderCom = { nullptr };
     CVIBuffer_Rect* m_pVIBufferCom = { nullptr };
     CTexture* m_pTextureCom = { nullptr };
+
+    const _float4x4* m_pParentMatrix = { nullptr };
+
+protected:
+    _float2                         m_fStartUV = { 0.f, 0.f }, m_fEndUV = { 1.f, 1.f };
+    _float4                         m_vColor = { 1.f, 1.f, 1.f, 1.f };
 
     wstring m_strTextureFilePath = { L"" };
     wstring m_strTextureName = { L"" };
 
     _bool m_isParent = { false };
-    const _float4x4* m_pParentMatrix = { nullptr };
+    string m_strParentName = { "" };
 
-protected:
     _uint m_iShaderPass = { 0 };
+
+public:
+    virtual HRESULT Save_binary(const string strDirectory)override; 
+    virtual HRESULT Save_Groupbinary( ofstream& out)override;
+    virtual HRESULT Load_binary()override; 
 
 protected:
     virtual HRESULT Add_Components();

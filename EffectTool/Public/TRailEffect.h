@@ -10,7 +10,7 @@ class CVIBuffer_Trail;
 END
 
 BEGIN(Client)
-class CTRailEffect final:
+class CTRailEffect final :
     public CEffect
 {
 public:
@@ -40,7 +40,7 @@ public:
 
 private:
     CShader* m_pShaderCom = { nullptr };
-    CTexture* m_pTextureCom = {nullptr};
+    CTexture* m_pTextureCom = { nullptr };
     CVIBuffer_Trail* m_pVIBufferCom = { nullptr };
 
 private:

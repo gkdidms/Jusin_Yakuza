@@ -11,6 +11,7 @@
 #include "Text.h"
 #include "Group.h"
 #include "Btn.h"
+#include "UI_Effect.h"
 #pragma endregion
 
 
@@ -168,12 +169,15 @@ HRESULT CLoader::Loading_For_RunMapLevel(int iLevel)
 	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Group"),
 		CGroup::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
-
+	
 	/* For.Prototype_GameObject_Btn */
 	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Btn"),
 		CBtn::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
-	
+	/* For.Prototype_GameObject_UIEffect */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_UIEffect"),
+		CUI_Effect::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
 
