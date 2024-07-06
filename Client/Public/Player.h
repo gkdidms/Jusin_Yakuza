@@ -4,7 +4,6 @@
 BEGIN(Engine)
 class CShader;
 class CModel;
-class CCollider;
 END
 
 BEGIN(Client)
@@ -67,6 +66,9 @@ public:
     virtual HRESULT Render() override;
     virtual HRESULT Render_LightDepth() override;
 
+    virtual _bool Intersect(CLandObject* pTargetObject);
+    virtual void ImpulseResolution(CLandObject* pTargetObject);
+
 public:
     const _bool* Get_MoveDirection() {
         return m_MoveDirection;
@@ -102,7 +104,6 @@ private:
 private:
     CShader*                m_pShaderCom = { nullptr };
     CModel*                 m_pModelCom = { nullptr };
-    CCollider*              m_pColliderCom = { nullptr };
 
     //뼈 인덱스, 소켓 콜라이더
     unordered_map<_uint, class CSocketCollider*>      m_pColliders;  

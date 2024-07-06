@@ -105,16 +105,11 @@ HRESULT CRushYakuza::Add_Componenets()
 		TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
 		return E_FAIL;
 
-	//if (FAILED(__super::Add_Component(LEVEL_TEST, TEXT("Prototype_Component_Model_Jimu"),
-	//	TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
-	//	return E_FAIL;
+	CBounding_AABB::BOUNDING_AABB_DESC		ColliderDesc{};
 
-	CBounding_OBB::BOUNDING_OBB_DESC		ColliderDesc{};
-
-	ColliderDesc.eType = CCollider::COLLIDER_OBB;
-	ColliderDesc.vExtents = _float3(0.8, 0.8, 0.8);
-	ColliderDesc.vCenter = _float3(0, 0.f, 0);
-	ColliderDesc.vRotation = _float3(0, 0.f, 0.f);
+	ColliderDesc.eType = CCollider::COLLIDER_AABB;
+	ColliderDesc.vExtents = _float3(0.3, 0.8, 0.3);
+	ColliderDesc.vCenter = _float3(0, ColliderDesc.vExtents.y, 0);
 
 	if (FAILED(__super::Add_Component(LEVEL_TEST, TEXT("Prototype_Component_Collider"),
 		TEXT("Com_Collider"), reinterpret_cast<CComponent**>(&m_pColliderCom), &ColliderDesc)))

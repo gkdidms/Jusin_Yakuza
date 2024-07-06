@@ -105,7 +105,6 @@ void CMonster::Free()
 	__super::Free();
 
 	Safe_Release(m_pAnimCom);
-	Safe_Release(m_pColliderCom);
 	Safe_Release(m_pModelCom);
 	Safe_Release(m_pShaderCom);
 

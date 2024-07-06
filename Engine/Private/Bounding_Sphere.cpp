@@ -76,6 +76,44 @@ _bool CBounding_Sphere::Intersect(CCollider::TYPE eTargetType, CBounding* pTarge
 	return isColl;
 }
 
+const _float3& CBounding_Sphere::ImpulseResolution(CCollider::TYPE eTargetType, CBounding* pTargetBounding)
+{
+	_float3 currentPosition = _float3();
+
+	if (Intersect(eTargetType, pTargetBounding))
+	{
+		switch (eTargetType)
+		{
+		case Engine::CCollider::COLLIDER_AABB:
+		{
+			BoundingBox* pDesc = static_cast<BoundingBox*>(pTargetBounding->Get_Desc());
+			currentPosition = pDesc->Center;
+
+			break;
+		}
+		case Engine::CCollider::COLLIDER_OBB:
+		{
+			BoundingOrientedBox* pDesc = static_cast<BoundingOrientedBox*>(pTargetBounding->Get_Desc());
+			currentPosition = pDesc->Center;
+
+			break;
+		}
+		case Engine::CCollider::COLLIDER_SPHERE:
+		{
+			BoundingSphere* pDesc = static_cast<BoundingSphere*>(pTargetBounding->Get_Desc());
+			currentPosition = pDesc->Center;
+
+			break;
+		}
+		}
+
+		_vector direction = XMLoadFloat3(&currentPosition) - XMLoadFloat3(&m_pBoundingBox->Center);
+		direction = XMVector3Normalize(direction);
+	}
+
+	return currentPosition;
+}
+
 #ifdef _DEBUG
 HRESULT CBounding_Sphere::Render(PrimitiveBatch<VertexPositionColor>* pBatch)
 {

@@ -2,6 +2,7 @@
 
 #include "GameInstance.h"
 #include "SystemManager.h"
+#include "Collision_Manager.h"
 
 #include "CharacterData.h"
 #include "SocketCollider.h"
@@ -55,12 +56,10 @@ void CPlayer::Priority_Tick(const _float& fTimeDelta)
 		//m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_pTransformCom->Get_State(CTransform::STATE_POSITION) + XMVectorSetY(XMLoadFloat4(&m_vPrevMove), 0));
 		XMStoreFloat4(&m_vPrevMove, XMVectorZero());
 	}
-
 }
 
 void CPlayer::Tick(const _float& fTimeDelta)
 {
-
 	m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Change_Animation();
 	m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Tick(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")));
 
@@ -100,6 +99,7 @@ void CPlayer::Late_Tick(const _float& fTimeDelta)
 {
 	m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
 	m_pGameInstance->Add_Renderer(CRenderer::RENDER_SHADOWOBJ, this); // Shadow용 렌더 추가
+	m_pCollisionManager->Add_ImpulseResolution(this);
 
 	for (auto& pCollider : m_pColliders)
 		pCollider.second->Late_Tick(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")));
@@ -169,6 +169,21 @@ HRESULT CPlayer::Render_LightDepth()
 	}
 
 	return S_OK;
+}
+
+_bool CPlayer::Intersect(CLandObject* pTargetObject)
+{
+	return _bool();
+}
+
+void CPlayer::ImpulseResolution(CLandObject* pTargetObject)
+{
+	_float3 vDir = m_pColliderCom->ImpulseResolution(pTargetObject->Get_Collider());
+	
+	if (!XMVector3Equal(XMLoadFloat3(&vDir), XMVectorZero()))
+	{
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_pTransformCom->Get_State(CTransform::STATE_POSITION) + XMLoadFloat3(&vDir));
+	}
 }
 
 void CPlayer::Ready_AnimationTree()
@@ -491,12 +506,11 @@ HRESULT CPlayer::Add_Componenets()
 		TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
 		return E_FAIL;
 
-	CBounding_OBB::BOUNDING_OBB_DESC		ColliderDesc{};
+	CBounding_AABB::BOUNDING_AABB_DESC		ColliderDesc{};
 
-	ColliderDesc.eType = CCollider::COLLIDER_OBB;
-	ColliderDesc.vExtents = _float3(0.8, 0.8, 0.8);
-	ColliderDesc.vCenter = _float3(0, 0.f, 0);
-	ColliderDesc.vRotation = _float3(0, 0.f, 0.f);
+	ColliderDesc.eType = CCollider::COLLIDER_AABB;
+	ColliderDesc.vExtents = _float3(0.3, 0.8, 0.3);
+	ColliderDesc.vCenter = _float3(0, ColliderDesc.vExtents.y, 0);
 
 	if (FAILED(__super::Add_Component(LEVEL_TEST, TEXT("Prototype_Component_Collider"),
 		TEXT("Com_Collider"), reinterpret_cast<CComponent**>(&m_pColliderCom), &ColliderDesc)))
@@ -571,7 +585,10 @@ void CPlayer::Apply_ChracterData()
 
 		//생성한 모든 콜라이더는 일단 꺼둔다.
 		// 몸체에 붙일 (플레이어가 피격당할) 콜라이더는 항시 켜져있어야하므로 툴에서찍지않음
-		it->second->Off();
+		if(Collider.second.isAlways)
+			it->second->On();
+		else
+			it->second->Off();
 	}
 
 	auto& pEffects = m_pData->Get_Effets();
@@ -720,5 +737,4 @@ void CPlayer::Free()
 	Safe_Release(m_pData);
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pModelCom);
-	Safe_Release(m_pColliderCom);
 }

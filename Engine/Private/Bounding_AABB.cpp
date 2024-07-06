@@ -86,6 +86,81 @@ _bool CBounding_AABB::Intersect(CCollider::TYPE eTargetType, CBounding* pTargetB
 
 	return isColl;
 }
+
+const _float3& CBounding_AABB::ImpulseResolution(CCollider::TYPE eTargetType, CBounding* pTargetBounding)
+{
+	_float3 currentPosition = _float3();
+	float fIntersectSize = { 0.f };
+
+	if (Intersect(eTargetType, pTargetBounding))
+	{
+		switch (eTargetType)
+		{
+		case Engine::CCollider::COLLIDER_AABB:
+		{
+			BoundingBox* pDesc = static_cast<BoundingBox*>(pTargetBounding->Get_Desc());
+			currentPosition = pDesc->Center;
+
+			if (m_pBoundingBox->Intersects(*pDesc)) {
+				// Calculate the intersection boundaries
+				XMVECTOR box1Min = XMVectorSubtract(XMLoadFloat3(&m_pBoundingBox->Center), XMLoadFloat3(&m_pBoundingBox->Extents));
+				XMVECTOR box1Max = XMVectorAdd(XMLoadFloat3(&m_pBoundingBox->Center), XMLoadFloat3(&m_pBoundingBox->Extents));
+
+				XMVECTOR box2Min = XMVectorSubtract(XMLoadFloat3(&pDesc->Center), XMLoadFloat3(&pDesc->Extents));
+				XMVECTOR box2Max = XMVectorAdd(XMLoadFloat3(&pDesc->Center), XMLoadFloat3(&pDesc->Extents));
+
+				XMVECTOR intersectMin = XMVectorMax(box1Min, box2Min);
+				XMVECTOR intersectMax = XMVectorMin(box1Max, box2Max);
+
+				XMVECTOR intersectSize = XMVectorSubtract(intersectMax, intersectMin);
+
+				float intersectWidth = XMVectorGetX(intersectSize);
+				float intersectHeight = XMVectorGetY(intersectSize);
+				float intersectDepth = XMVectorGetZ(intersectSize);
+
+				// Determine the smallest axis to push out along
+				if (intersectWidth < intersectHeight && intersectWidth < intersectDepth) {
+					// Push out along the X-axis
+					float pushX = (m_pBoundingBox->Center.x < pDesc->Center.x) ? -intersectWidth : intersectWidth;
+					currentPosition = XMFLOAT3(pushX, 0.0f, 0.0f);
+				}
+				else if (intersectHeight < intersectDepth) {
+					// Push out along the Y-axis
+					float pushY = (m_pBoundingBox->Center.y < pDesc->Center.y) ? -intersectHeight : intersectHeight;
+					currentPosition = XMFLOAT3(0.0f, pushY, 0.0f);
+				}
+				else {
+					// Push out along the Z-axis
+					float pushZ = (m_pBoundingBox->Center.z < pDesc->Center.z) ? -intersectDepth : intersectDepth;
+					currentPosition = XMFLOAT3(0.0f, 0.0f, pushZ);
+				}
+			}
+			else {
+				// No intersection, no push out needed
+				currentPosition = XMFLOAT3(0.0f, 0.0f, 0.0f);
+			}
+			break;
+		}
+		case Engine::CCollider::COLLIDER_OBB:
+		{
+			BoundingOrientedBox* pDesc = static_cast<BoundingOrientedBox*>(pTargetBounding->Get_Desc());
+			currentPosition = pDesc->Center;
+
+			break;
+		}
+		case Engine::CCollider::COLLIDER_SPHERE:
+		{
+			BoundingSphere* pDesc = static_cast<BoundingSphere*>(pTargetBounding->Get_Desc());
+			currentPosition = pDesc->Center;
+
+			break;
+		}
+		}
+	}
+
+	return currentPosition;
+}
+
 #ifdef _DEBUG
 HRESULT CBounding_AABB::Render(PrimitiveBatch<VertexPositionColor>* pBatch)
 {

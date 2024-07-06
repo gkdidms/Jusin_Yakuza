@@ -40,6 +40,12 @@ public:
 		_bool isSelected = { false };
 	};
 
+	struct Collider_State
+	{
+		string strBoneName;
+		_bool	isAlways;
+	};
+
 private:
 	CImguiManager(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual ~CImguiManager() = default;
@@ -138,7 +144,7 @@ private:
 	unordered_map<_uint, string>			m_AddedAnims;			// 애니메이션 인덱스와 이름을 저장한다.
 
 	vector<string>							m_BoneNameList;
-	unordered_map<_uint, string>			m_AddedColliders;		// 뼈 인덱스와 뼈 이름을 저장한다
+	unordered_map<_uint, Collider_State>	m_AddedColliders;		// 뼈 인덱스와 뼈 이름을 저장한다
 
 	vector<string>							m_ChannelNameList;
 
@@ -172,6 +178,7 @@ private:
 	_float					m_fTimeDeltaScale = { 1.f };
 
 private:
+	bool					m_isAlwaysCollider = { false };
 	float					m_ModelPosition[3] = { 0.f };
 	float					m_ModelRotation[3] = { 0.f };
 	float					m_ModelScale = { 0.f };

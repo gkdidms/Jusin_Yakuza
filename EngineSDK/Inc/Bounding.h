@@ -28,6 +28,7 @@ public:
     virtual HRESULT Initialize(const void* pArg) = 0;
     virtual void Tick(_fmatrix WorldMatrix);
     virtual _bool Intersect(CCollider::TYPE eTargetType, CBounding* pTargetBounding) = 0;
+    virtual const _float3& ImpulseResolution(CCollider::TYPE eTargetType, CBounding* pTargetBounding) = 0;
 #ifdef _DEBUG
 public:
     virtual HRESULT Render(PrimitiveBatch<VertexPositionColor>* pBatch);

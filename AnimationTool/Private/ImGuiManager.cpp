@@ -200,25 +200,17 @@ void CImguiManager::AnimListWindow()
 
 	ImGui::InputInt("Search Anim Index", &m_iSearchAnimIndex);
 	if (ImGui::Button(u8"애니메이션 인덱스 검색하기"))
-	{
 		m_iAnimIndex = m_iSearchAnimIndex;
-	}
 
 	ImGui::SameLine();
 	ImGui::Text("Anim Index: %d", m_iAnimIndex);
 
 	if (ImGui::Button("Add"))
-	{
 		m_AddedAnims.emplace(m_iAnimIndex, m_AnimNameList[m_iAnimIndex]);
-	}
-
 
 	vector<const char*> Addeditems;
-
 	for (auto& AddedAnim : m_AddedAnims)
-	{
 		Addeditems.push_back(AddedAnim.second.c_str());
-	}
 
 	ImGui::ListBox("Loop Animations", &m_iAddedAnimSelectedIndex, Addeditems.data(), Addeditems.size());
 
@@ -337,6 +329,8 @@ void CImguiManager::BoneListWindow()
 	}
 	}
 
+	ImGui::Checkbox(u8"상시", &m_isAlwaysCollider);
+
 	if (ImGui::Button("Create Collier"))
 	{
 		void* pValue = nullptr;
@@ -357,7 +351,7 @@ void CImguiManager::BoneListWindow()
 		memcpy(&vCenter, &m_ColliderPosition, sizeof(_float3));
 		if (!m_pRenderModel->Created_BoneCollider(m_iBoneSelectedIndex))
 		{
-			m_AddedColliders.emplace(m_iBoneSelectedIndex, m_BoneNameList[m_iBoneSelectedIndex]);
+			m_AddedColliders.emplace(m_iBoneSelectedIndex, Collider_State{ m_BoneNameList[m_iBoneSelectedIndex], m_isAlwaysCollider });
 			m_pRenderModel->Create_BoneCollider(m_iColliderType, m_iBoneSelectedIndex, vCenter, pValue);
 		}
 	}
@@ -366,7 +360,7 @@ void CImguiManager::BoneListWindow()
 
 	for (auto& iter : m_AddedColliders)
 	{
-		Addeditems.push_back(iter.second.c_str());
+		Addeditems.push_back(iter.second.strBoneName.c_str());
 	}
 
 	if (ImGui::ListBox(u8"추가된 콜라이더 리스트", &m_iColliderSelectedIndex, Addeditems.data(), Addeditems.size()))
@@ -379,6 +373,7 @@ void CImguiManager::BoneListWindow()
 		}
 
 		Setting_Collider_Value((*iter).first);
+		m_isAlwaysCollider = (*iter).second.isAlways;
 	}
 
 	if (ImGui::Button(u8"콜라이더 삭제"))
@@ -1129,6 +1124,8 @@ void CImguiManager::ColliderState_Save(string strPath)
 		}
 		break;
 		}
+
+		out.write((char*)&m_AddedColliders.at(pSphere.first).isAlways, sizeof(_bool));
 	}
 
 	out.close();
@@ -1309,9 +1306,12 @@ void CImguiManager::ColliderState_Load(string strPath)
 		break;
 		}
 
+		_bool isAlways = { false };
+		in.read((char*)&isAlways, sizeof(_bool));
+
 		if (!m_pRenderModel->Created_BoneCollider(iBoneIndex))
 		{
-			m_AddedColliders.emplace(iBoneIndex, m_BoneNameList[iBoneIndex]);
+			m_AddedColliders.emplace(iBoneIndex, Collider_State{ m_BoneNameList[iBoneIndex], isAlways });
 			m_pRenderModel->Create_BoneCollider(iColliderType, iBoneIndex, vCenter, pValue);
 		}
 

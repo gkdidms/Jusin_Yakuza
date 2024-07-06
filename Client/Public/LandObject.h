@@ -3,6 +3,10 @@
 
 #include "Client_Defines.h"
 
+BEGIN(Engine)
+class CCollider;
+END
+
 BEGIN(Client)
 class CLandObject abstract :
     public CGameObject
@@ -19,14 +23,22 @@ public:
     virtual void Tick(const _float& fTimeDelta) override;
     virtual void Late_Tick(const _float& fTimeDelta) override;
     virtual HRESULT Render() override;
+    virtual _bool Intersect(CLandObject* pTargetObject) { return false; }
+    virtual void ImpulseResolution(CLandObject* pTargetObject) {};
 
 public:
     const wstring& Get_ModelName() {
         return m_wstrModelName;
     }
-        
+
+    CCollider* Get_Collider() {
+        return m_pColliderCom;
+    }
+ 
 protected:
     class CSystemManager* m_pSystemManager = { nullptr };
+    class CCollision_Manager* m_pCollisionManager = { nullptr };
+    CCollider* m_pColliderCom = { nullptr };
 
     wstring m_wstrModelName = TEXT("");
 

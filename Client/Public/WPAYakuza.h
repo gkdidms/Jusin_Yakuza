@@ -18,6 +18,8 @@ public:
     virtual void Late_Tick(const _float& fTimeDelta) override;
     virtual HRESULT Render() override;
 
+    virtual void ImpulseResolution(CLandObject* pTargetObject);
+
 private:
     class CAI_WPAYakuza* m_pTree = { nullptr };
 

@@ -113,6 +113,11 @@ _bool CCollider::Intersect(CCollider* pTargetCollider)
 	return m_isColl = m_pCurrentBounding->Intersect(pTargetCollider->m_ColliderType, pTargetCollider->m_pCurrentBounding);
 }
 
+const _float3& CCollider::ImpulseResolution(CCollider* pTargetCollider)
+{
+	return m_pCurrentBounding->ImpulseResolution(pTargetCollider->m_ColliderType, pTargetCollider->m_pCurrentBounding);
+}
+
 #ifdef _DEBUG
 HRESULT CCollider::Render()
 {

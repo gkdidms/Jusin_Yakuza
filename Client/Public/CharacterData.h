@@ -24,6 +24,7 @@ public:
 
     struct COLLIDER_STATE
     {
+        _bool isAlways;
         _uint iType;             //(AABB, OBB, Sphere)
         _float3 vCenter;
         _float3 vValue;        // Sphere라면 x에만 값을 저장하자.
