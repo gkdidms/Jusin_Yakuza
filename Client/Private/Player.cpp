@@ -571,11 +571,12 @@ void CPlayer::Apply_ChracterData()
 
 	for (auto& Collider : pColliders)
 	{
-		CSocketCollider::SOKET_COLLIDER_DESC Desc{};
+		CSocketCollider::SOCKET_COLLIDER_DESC Desc{};
 		Desc.pParentMatrix = m_pTransformCom->Get_WorldFloat4x4();
 		Desc.pCombinedTransformationMatrix = m_pModelCom->Get_BoneCombinedTransformationMatrix_AtIndex(Collider.first);
 		Desc.iBoneIndex = Collider.first;
 		Desc.ColliderState = Collider.second;
+		Desc.iType = Collider.second.isAlways ? 1 : 0;
 
 		CGameObject* pSoketCollider = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_SoketCollider"), &Desc);
 		if (nullptr == pSoketCollider)
@@ -583,8 +584,8 @@ void CPlayer::Apply_ChracterData()
 	
 		auto [it, success] = m_pColliders.emplace(Collider.first, static_cast<CSocketCollider*>(pSoketCollider));
 
-		//생성한 모든 콜라이더는 일단 꺼둔다.
-		// 몸체에 붙일 (플레이어가 피격당할) 콜라이더는 항시 켜져있어야하므로 툴에서찍지않음
+		// 생성한 모든 콜라이더는 일단 꺼둔다.
+		// 몸체에 붙일 (플레이어가 피격당할) 콜라이더는 항시 켜져있어야하므로 On으로 켜둔다
 		if(Collider.second.isAlways)
 			it->second->On();
 		else

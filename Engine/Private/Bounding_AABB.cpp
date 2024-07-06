@@ -89,9 +89,10 @@ _bool CBounding_AABB::Intersect(CCollider::TYPE eTargetType, CBounding* pTargetB
 
 const _float3& CBounding_AABB::ImpulseResolution(CCollider::TYPE eTargetType, CBounding* pTargetBounding)
 {
-	_float3 currentPosition = _float3();
+	_float3 vPosition = _float3();
 	float fIntersectSize = { 0.f };
 
+	// 밀어내기 기능은 AABB에서만 할 것
 	if (Intersect(eTargetType, pTargetBounding))
 	{
 		switch (eTargetType)
@@ -99,66 +100,55 @@ const _float3& CBounding_AABB::ImpulseResolution(CCollider::TYPE eTargetType, CB
 		case Engine::CCollider::COLLIDER_AABB:
 		{
 			BoundingBox* pDesc = static_cast<BoundingBox*>(pTargetBounding->Get_Desc());
-			currentPosition = pDesc->Center;
+			vPosition = pDesc->Center;
 
 			if (m_pBoundingBox->Intersects(*pDesc)) {
 				// Calculate the intersection boundaries
-				XMVECTOR box1Min = XMVectorSubtract(XMLoadFloat3(&m_pBoundingBox->Center), XMLoadFloat3(&m_pBoundingBox->Extents));
-				XMVECTOR box1Max = XMVectorAdd(XMLoadFloat3(&m_pBoundingBox->Center), XMLoadFloat3(&m_pBoundingBox->Extents));
+				_vector vBox1Min = XMVectorSubtract(XMLoadFloat3(&m_pBoundingBox->Center), XMLoadFloat3(&m_pBoundingBox->Extents));
+				_vector vBox1Max = XMVectorAdd(XMLoadFloat3(&m_pBoundingBox->Center), XMLoadFloat3(&m_pBoundingBox->Extents));
 
-				XMVECTOR box2Min = XMVectorSubtract(XMLoadFloat3(&pDesc->Center), XMLoadFloat3(&pDesc->Extents));
-				XMVECTOR box2Max = XMVectorAdd(XMLoadFloat3(&pDesc->Center), XMLoadFloat3(&pDesc->Extents));
+				_vector vBox2Min = XMVectorSubtract(XMLoadFloat3(&pDesc->Center), XMLoadFloat3(&pDesc->Extents));
+				_vector vBox2Max = XMVectorAdd(XMLoadFloat3(&pDesc->Center), XMLoadFloat3(&pDesc->Extents));
 
-				XMVECTOR intersectMin = XMVectorMax(box1Min, box2Min);
-				XMVECTOR intersectMax = XMVectorMin(box1Max, box2Max);
+				_vector vIntersectMin = XMVectorMax(vBox1Min, vBox2Min);
+				_vector vIntersectMax = XMVectorMin(vBox1Max, vBox2Max);
 
-				XMVECTOR intersectSize = XMVectorSubtract(intersectMax, intersectMin);
+				_vector vIntersectSize = XMVectorSubtract(vIntersectMax, vIntersectMin);
 
-				float intersectWidth = XMVectorGetX(intersectSize);
-				float intersectHeight = XMVectorGetY(intersectSize);
-				float intersectDepth = XMVectorGetZ(intersectSize);
+				_float fIntersectWidth = XMVectorGetX(vIntersectSize);
+				_float fIntersectHeight = XMVectorGetY(vIntersectSize);
+				_float fIntersectDepth = XMVectorGetZ(vIntersectSize);
 
 				// Determine the smallest axis to push out along
-				if (intersectWidth < intersectHeight && intersectWidth < intersectDepth) {
+				if (fIntersectWidth < fIntersectHeight && fIntersectWidth < fIntersectDepth) {
 					// Push out along the X-axis
-					float pushX = (m_pBoundingBox->Center.x < pDesc->Center.x) ? -intersectWidth : intersectWidth;
-					currentPosition = XMFLOAT3(pushX, 0.0f, 0.0f);
+					float fPushX = (m_pBoundingBox->Center.x < pDesc->Center.x) ? -fIntersectWidth : fIntersectWidth;
+					vPosition = XMFLOAT3(fPushX, 0.0f, 0.0f);
 				}
-				else if (intersectHeight < intersectDepth) {
+				else if (fIntersectHeight < fIntersectDepth) {
 					// Push out along the Y-axis
-					float pushY = (m_pBoundingBox->Center.y < pDesc->Center.y) ? -intersectHeight : intersectHeight;
-					currentPosition = XMFLOAT3(0.0f, pushY, 0.0f);
+					float fPushY = (m_pBoundingBox->Center.y < pDesc->Center.y) ? -fIntersectHeight : fIntersectHeight;
+					vPosition = XMFLOAT3(0.0f, fPushY, 0.0f);
 				}
 				else {
 					// Push out along the Z-axis
-					float pushZ = (m_pBoundingBox->Center.z < pDesc->Center.z) ? -intersectDepth : intersectDepth;
-					currentPosition = XMFLOAT3(0.0f, 0.0f, pushZ);
+					float fPushZ = (m_pBoundingBox->Center.z < pDesc->Center.z) ? -fIntersectDepth : fIntersectDepth;
+					vPosition = XMFLOAT3(0.0f, 0.0f, fPushZ);
 				}
 			}
 			else {
 				// No intersection, no push out needed
-				currentPosition = XMFLOAT3(0.0f, 0.0f, 0.0f);
+				vPosition = _float3();
 			}
 			break;
 		}
-		case Engine::CCollider::COLLIDER_OBB:
-		{
-			BoundingOrientedBox* pDesc = static_cast<BoundingOrientedBox*>(pTargetBounding->Get_Desc());
-			currentPosition = pDesc->Center;
-
+		default:
+			vPosition = _float3();
 			break;
-		}
-		case Engine::CCollider::COLLIDER_SPHERE:
-		{
-			BoundingSphere* pDesc = static_cast<BoundingSphere*>(pTargetBounding->Get_Desc());
-			currentPosition = pDesc->Center;
-
-			break;
-		}
 		}
 	}
 
-	return currentPosition;
+	return vPosition;
 }
 
 #ifdef _DEBUG

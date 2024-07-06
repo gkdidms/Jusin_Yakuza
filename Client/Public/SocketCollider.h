@@ -16,8 +16,15 @@ BEGIN(Client)
 class CSocketCollider final : public CSocketObject
 {
 public:
-	struct SOKET_COLLIDER_DESC : public SOCKETOBJECT_DESC
+	enum SOKET_COLLIDER_TYPE
 	{
+		ATTACK, HIT, TYPE_END
+	};
+
+public:
+	struct SOCKET_COLLIDER_DESC : public SOCKETOBJECT_DESC
+	{
+		_uint iType;
 		_uint iBoneIndex;
 		CCharacterData::COLLIDER_STATE ColliderState;
 	};
@@ -44,7 +51,8 @@ public:
 	}
 
 private:
-	//class CSystemManager*			m_pSystemManager = { nullptr };
+	SOKET_COLLIDER_TYPE				m_eColliderType = { ATTACK };
+
 	CShader*						m_pShaderCom = { nullptr };
 	CModel*							m_pModelCom = { nullptr };
 	CCollider*						m_pColliderCom = { nullptr };
