@@ -174,11 +174,11 @@
     <ClInclude Include="..\..\Imgui\imgui\imstb_truetype.h" />
     <ClInclude Include="..\public\AI_Monster.h" />
     <ClInclude Include="..\public\AI_RushYakuza.h" />
+    <ClInclude Include="..\public\AI_Shakedown.h" />
     <ClInclude Include="..\public\AI_WPAYakuza.h" />
     <ClInclude Include="..\Public\Aura.h" />
     <ClInclude Include="..\public\Background.h" />
     <ClInclude Include="..\Public\BehaviorAnimation.h" />
-    <ClInclude Include="..\Public\BTNode.h" />
     <ClInclude Include="..\public\Level_Office1F.h" />
     <ClInclude Include="..\public\Level_Office2F.h" />
     <ClInclude Include="..\Public\MapCollider.h" />
@@ -222,6 +222,7 @@
     <ClInclude Include="..\Public\PartObject.h" />
     <ClInclude Include="..\public\Player.h" />
     <ClInclude Include="..\public\PlayerCamera.h" />
+    <ClInclude Include="..\public\Shakedown.h" />
     <ClInclude Include="..\Public\Sky.h" />
     <ClInclude Include="..\Public\SocketCollider.h" />
     <ClInclude Include="..\Public\SocketEffect.h" />
@@ -252,11 +253,11 @@
     <ClCompile Include="..\..\Imgui\imgui\imgui_widgets.cpp" />
     <ClCompile Include="..\private\AI_Monster.cpp" />
     <ClCompile Include="..\private\AI_RushYakuza.cpp" />
+    <ClCompile Include="..\private\AI_Shakedown.cpp" />
     <ClCompile Include="..\private\AI_WPAYakuza.cpp" />
     <ClCompile Include="..\Private\Aura.cpp" />
     <ClCompile Include="..\private\Background.cpp" />
     <ClCompile Include="..\Private\BehaviorAnimation.cpp" />
-    <ClCompile Include="..\Private\BTNode.cpp" />
     <ClCompile Include="..\private\Level_Office1F.cpp" />
     <ClCompile Include="..\private\Level_Office2F.cpp" />
     <ClCompile Include="..\Private\MapCollider.cpp" />
@@ -299,6 +300,7 @@
     <ClCompile Include="..\Private\PartObject.cpp" />
     <ClCompile Include="..\private\Player.cpp" />
     <ClCompile Include="..\private\PlayerCamera.cpp" />
+    <ClCompile Include="..\private\Shakedown.cpp" />
     <ClCompile Include="..\Private\Sky.cpp" />
     <ClCompile Include="..\Private\SocketCollider.cpp" />
     <ClCompile Include="..\Private\SocketEffect.cpp" />

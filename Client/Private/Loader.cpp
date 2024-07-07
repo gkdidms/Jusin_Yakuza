@@ -11,6 +11,13 @@
 
 #include "RushYakuza.h"
 #include "WPAYakuza.h"
+#include "Shakedown.h"
+#pragma endregion
+
+#pragma region BTNode
+#include "AI_RushYakuza.h"
+#include "AI_WPAYakuza.h"
+#include "AI_Shakedown.h"
 #pragma endregion
 
 #pragma region Camera
@@ -239,6 +246,22 @@ HRESULT CLoader::Loading_For_Test()
 		return E_FAIL;
 #pragma endregion
 
+	lstrcpy(m_szLoadingText, TEXT("행동트리 원형 를(을) 로딩 중 입니다."));
+	/* For.Prototype_BTNode_RushYakuza*/
+	if (FAILED(m_pGameInstance->Add_BTNode_Prototype(LEVEL_TEST, TEXT("Prototype_BTNode_RushYakuza"),
+		CAI_RushYakuza::Create())))
+		return E_FAIL;
+
+	/* For.Prototype_BTNode_WPAYakuza*/
+	if (FAILED(m_pGameInstance->Add_BTNode_Prototype(LEVEL_TEST, TEXT("Prototype_BTNode_WPAYakuza"),
+		CAI_WPAYakuza::Create())))
+		return E_FAIL;
+
+	/* For.Prototype_BTNode_Shakedown*/
+	if (FAILED(m_pGameInstance->Add_BTNode_Prototype(LEVEL_TEST, TEXT("Prototype_BTNode_Shakedown"),
+		CAI_Shakedown::Create())))
+		return E_FAIL;
+
 	lstrcpy(m_szLoadingText, TEXT("컴포넌트 원형 를(을) 로딩 중 입니다."));
 #pragma region Effect
 
@@ -353,6 +376,10 @@ HRESULT CLoader::Loading_For_Test()
 
 	/* For.Prototype_GameObject_WPAYakuza */
 	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_WPAYakuza"), CWPAYakuza::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_Shakedown */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Shakedown"), CShakedown::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	/* For.Prototype_GameObject_Terrain */
