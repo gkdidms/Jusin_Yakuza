@@ -58,7 +58,7 @@ void CWPAYakuza::Tick(const _float& fTimeDelta)
 void CWPAYakuza::Late_Tick(const _float& fTimeDelta)
 {
 	m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
-	m_pCollisionManager->Add_ImpulseResolution(this);
+	//m_pCollisionManager->Add_ImpulseResolution(this);
 }
 
 HRESULT CWPAYakuza::Render()
