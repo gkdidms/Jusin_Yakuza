@@ -102,6 +102,8 @@ private:
 	_float4 m_vColor = {};
 	_uint m_iBinaryPick = { WORLD_END };
 
+	//파일경로
+	filesystem::path m_RootDir;
 public:
 	static void Release_Imgui();
 	virtual void Free() override;

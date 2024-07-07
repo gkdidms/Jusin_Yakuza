@@ -14,6 +14,16 @@ CAI_RushYakuza::CAI_RushYakuza()
 {
 }
 
+CAI_RushYakuza::CAI_RushYakuza(const CAI_RushYakuza& rhs)
+	: CAI_Monster{}
+{
+}
+
+HRESULT CAI_RushYakuza::Initialize_Prototype()
+{
+	return S_OK;
+}
+
 HRESULT CAI_RushYakuza::Initialize(void* pArg)
 {
 	if (nullptr == pArg)
@@ -21,11 +31,6 @@ HRESULT CAI_RushYakuza::Initialize(void* pArg)
 
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
-
-	AI_OFFICE_YAKUZA_DESC* pDesc = static_cast<AI_OFFICE_YAKUZA_DESC*>(pArg);
-	m_pModelCom = pDesc->pModel;
-	Safe_AddRef(m_pModelCom);
-
 
 	//트리 구현
 	Ready_Tree();
@@ -155,6 +160,8 @@ CBTNode::NODE_STATE CAI_RushYakuza::Attack()
 	//화가 나지 않앗을때 스킬 선택 (임시)
 	static _uint iCount = 0;
 
+	//삥쟁이는 거리가 멀어졌을때, 가까울때 공격 패턴이 다르다.
+
 	if (iCount == 0 || iCount == 1)
 		m_iSkill = SKILL_CMD;
 	else
@@ -256,7 +263,18 @@ CBTNode::NODE_STATE CAI_RushYakuza::ATK_CMD()
 	return CBTNode::FAIL;
 }
 
-CAI_RushYakuza* CAI_RushYakuza::Create(void* pArg)
+CAI_RushYakuza* CAI_RushYakuza::Create()
+{
+	CAI_RushYakuza* pInstance = new CAI_RushYakuza();
+
+
+	if (FAILED(pInstance->Initialize_Prototype()))
+		Safe_Release(pInstance);
+
+	return pInstance;
+}
+
+CBTNode* CAI_RushYakuza::Clone(void* pArg)
 {
 	CAI_RushYakuza* pInstance = new CAI_RushYakuza();
 
@@ -269,6 +287,4 @@ CAI_RushYakuza* CAI_RushYakuza::Create(void* pArg)
 void CAI_RushYakuza::Free()
 {
 	__super::Free();
-
-	Safe_Release(m_pModelCom);
 }

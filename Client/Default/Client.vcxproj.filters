@@ -151,9 +151,6 @@
     <ClCompile Include="..\private\RushYakuza.cpp">
       <Filter>02.GameObjects\02.Character\LandObject\01.Monster\Yakuza\00.RushYakuza</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\BTNode.cpp">
-      <Filter>95.Utility\03.BehaviorTree</Filter>
-    </ClCompile>
     <ClCompile Include="..\private\AI_RushYakuza.cpp">
       <Filter>02.GameObjects\02.Character\LandObject\01.Monster\Yakuza\00.RushYakuza\AI</Filter>
     </ClCompile>
@@ -198,6 +195,12 @@
     </ClCompile>
     <ClCompile Include="..\private\Level_Office2F.cpp">
       <Filter>01.Levels\02.Office2F</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Shakedown.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\Shakedown</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\AI_Shakedown.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\Shakedown\AI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -381,9 +384,6 @@
     <ClInclude Include="..\public\RushYakuza.h">
       <Filter>02.GameObjects\02.Character\LandObject\01.Monster\Yakuza\00.RushYakuza</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\BTNode.h">
-      <Filter>95.Utility\03.BehaviorTree</Filter>
-    </ClInclude>
     <ClInclude Include="..\public\AI_RushYakuza.h">
       <Filter>02.GameObjects\02.Character\LandObject\01.Monster\Yakuza\00.RushYakuza\AI</Filter>
     </ClInclude>
@@ -428,6 +428,12 @@
     </ClInclude>
     <ClInclude Include="..\public\Level_Office2F.h">
       <Filter>01.Levels\02.Office2F</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Shakedown.h">
+      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\Shakedown</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\AI_Shakedown.h">
+      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\Shakedown\AI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -663,6 +669,12 @@
     </Filter>
     <Filter Include="01.Levels\02.Office2F">
       <UniqueIdentifier>{1248b5da-70c7-4199-9597-40c53e064f0a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\01.Monster\Shakedown">
+      <UniqueIdentifier>{5e40b008-37a1-4a45-8157-605b1207b571}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\01.Monster\Shakedown\AI">
+      <UniqueIdentifier>{b1020963-a080-4a4f-aae3-e4c2b01b1a01}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

@@ -11,6 +11,7 @@ public:
     typedef struct tUIObjectDesc : public CGameObject::GAMEOBJECT_DESC {
         string strName;
         _uint iTypeIndex;
+        _bool isLoad = { false };
     } UI_OBJECT_DESC;
 
 protected:
@@ -36,7 +37,7 @@ public:
 public:
     virtual HRESULT Save_binary(const string strDirectory);
     virtual HRESULT Save_Groupbinary(ofstream& out);
-    virtual HRESULT Load_binary();
+    virtual HRESULT Load_binary(const string strDirectory);
 protected:
     string m_strName = { "" }; // 저장될 이름
     _uint m_iTypeIndex = { 0 }; // 오브젝트 타입

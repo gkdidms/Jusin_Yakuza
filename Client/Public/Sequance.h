@@ -1,6 +1,8 @@
 #pragma once
 #include "BTNode.h"
 
+#include "Client_Defines.h"
+
 /* or ¿¬»ê*/
 BEGIN(Client)
 class CSequance :

@@ -14,12 +14,15 @@ class CAI_Monster :
 public:
     //스킬 리스트
     enum SKILL {
-        SKILL_HIT,
+        SKILL_HIT, 
         SKILL_SWAY,
         SKILL_SHIFT,
         SKILL_CMD,
         SKILL_PUNCH,
         SKILL_HEAVY,
+        SKILL_GUARD_RUN,
+        SKILL_RARIATTO, 
+        SKILL_DOWN,
         SKILL_ANGRY_CHOP,
         SKILL_ANGRY_KICK,
         SKILL_END
@@ -27,14 +30,17 @@ public:
 
     typedef struct tAIMonster {
         class CAnim* pAnim;
+        class CMonster* pThis;
         _uint* pState;
     } AI_MONSTER_DESC;
 
 protected:
     CAI_Monster();
+    CAI_Monster(const CAI_Monster& rhs);
     virtual ~CAI_Monster() = default;
 
 public:
+    virtual HRESULT Initialize_Prototype();
     virtual HRESULT Initialize(void* pArg);
     virtual void Tick(const _float& fTimeDelta);
     virtual NODE_STATE Execute() = 0;
@@ -43,6 +49,9 @@ protected:
     CBTNode* m_pRootNode = { nullptr };
     CGameInstance* m_pGameInstance = { nullptr };
     CAnim* m_pAnimCom = { nullptr };
+
+    class CPlayer* m_pPlayer = { nullptr }; // 플레이어의 주소를 가지고 있도록 한다.
+    class CMonster* m_pThis = { nullptr }; // 자기 자신의 주소를 가지고 있도록 한다.
 
     _uint* m_pState = { nullptr };
 
@@ -97,8 +106,8 @@ protected:
 
     //Stand 
     virtual CBTNode::NODE_STATE Check_Shift(); // 걷고 있는가?
-    //걸을 것 인가?
-    virtual CBTNode::NODE_STATE Shift(); // 걸을 것인지 분기처리
+    virtual CBTNode::NODE_STATE ShiftAndIdle(); // 걸을 것인지 분기처리
+    virtual CBTNode::NODE_STATE Shift(); 
 
     //Idle
     virtual CBTNode::NODE_STATE Check_Idle(); 
@@ -106,6 +115,9 @@ protected:
 
 protected:
     virtual void Ready_Tree();
+    _float DistanceFromPlayer();
+    _bool isBehine();
+    void LookAtPlayer();
 
 public:
     virtual void Free();

@@ -1,6 +1,8 @@
 #pragma once
 #include "BTNode.h"
 
+#include "Client_Defines.h"
+
 /*  And ¿¬»ê */
 BEGIN(Client)
 class CSelector :

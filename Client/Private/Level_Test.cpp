@@ -148,13 +148,13 @@ HRESULT CLevel_Test::Ready_Player(const wstring& strLayerTag)
 
 HRESULT CLevel_Test::Ready_Monster(const wstring& strLayerTag)
 {
-	//CGameObject::GAMEOBJECT_DESC Desc{};
-	//Desc.fSpeedPecSec = 10.f;
-	////Desc.fRotatePecSec = XMConvertToRadians(0.f);
-	//Desc.fRotatePecSec = XMConvertToRadians(180.f);
+	CGameObject::GAMEOBJECT_DESC Desc{};
+	Desc.fSpeedPecSec = 10.f;
+	//Desc.fRotatePecSec = XMConvertToRadians(0.f);
+	Desc.fRotatePecSec = XMConvertToRadians(180.f);
 
-	//if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_RushYakuza"), strLayerTag, &Desc)))
-	//	return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_Shakedown"), strLayerTag, &Desc)))
+		return E_FAIL;
 
 	return S_OK;
 }

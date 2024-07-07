@@ -112,7 +112,7 @@ HRESULT CWPAYakuza::Add_Componenets()
 	AIDesc.pState = &m_iState;
 	AIDesc.pAnim = m_pAnimCom;
 
-	m_pTree = CAI_WPAYakuza::Create(&AIDesc);
+	m_pTree = dynamic_cast<CAI_WPAYakuza*>(m_pGameInstance->Add_BTNode(LEVEL_TEST, TEXT("Prototype_BTNode_WPAYakuza"), &AIDesc));
 	if (nullptr == m_pTree)
 		return E_FAIL;
 

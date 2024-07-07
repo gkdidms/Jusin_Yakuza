@@ -86,6 +86,7 @@ HRESULT CObject_Manager::Copy_Group(const wstring& strTag)
 			pImage->Set_ShaderPass(pUI->Get_ShaderPass());
 			pImage->Change_UV(pUI->Get_StartUV(), pUI->Get_EndUV());
 			pImage->Get_TransformCom()->Set_WorldMatrix(pUI->Get_TransformCom()->Get_WorldMatrix());			
+
 			CopyFineObjects.emplace_back(pImage);
 		}
 		else if (pTexture->Get_TypeIndex() == TEXT)
@@ -207,6 +208,47 @@ HRESULT CObject_Manager::Move_ObjectIndex(const wstring& strTag, _uint iIndex, _
 	return S_OK;
 }
 
+HRESULT CObject_Manager::Move_BinaryObjectIndex(const wstring& strTag, _uint iIndex, _uint iMoveType)
+{
+	vector<class CUI_Object*>* pFineObjects = Find_BinaryObject(strTag);
+
+	if (nullptr == pFineObjects)
+		return E_FAIL;
+
+	//예외처리
+	if ((iMoveType == DOWN && iIndex <= 0) || (iMoveType == UP && iIndex >= (*pFineObjects).size() - 1) || (iMoveType == MOVE_END))
+		return E_FAIL;
+
+	//스왑
+	auto iter1 = (*pFineObjects).begin() + iIndex;
+	auto iter2 = iMoveType == DOWN ? (*pFineObjects).begin() + iIndex - 1 : (*pFineObjects).begin() + iIndex + 1;	
+
+	iter_swap(iter1, iter2);	
+
+	return S_OK;	
+}
+
+HRESULT CObject_Manager::Move_BinaryGroupObjectIndex(const wstring& strTag, const _uint ibinaryIndex, _uint iIndex, _uint iMoveType)
+{
+	vector<class CUI_Object*>* pFineObjects = Find_BinaryObject(strTag);
+	if (nullptr == pFineObjects)
+		return E_FAIL;
+
+	vector<class CUI_Object*>* pFineGroupObjects = dynamic_cast<CGroup*>((*pFineObjects)[ibinaryIndex])->Get_pPartObjects();
+
+	//예외처리
+	if ((iMoveType == DOWN && iIndex <= 0) || (iMoveType == UP && iIndex >= (*pFineGroupObjects).size() - 1) || (iMoveType == MOVE_END))
+		return E_FAIL;
+
+	//스왑
+	auto iter1 = (*pFineGroupObjects).begin() + iIndex;
+	auto iter2 = iMoveType == DOWN ? (*pFineGroupObjects).begin() + iIndex - 1 : (*pFineGroupObjects).begin() + iIndex + 1;
+
+	iter_swap(iter1, iter2);
+
+	return S_OK;
+}
+
 HRESULT CObject_Manager::Save_binary()
 {
 	string strDirectory = "../../Client/Bin/DataFiles/UIData/";
@@ -230,9 +272,19 @@ HRESULT CObject_Manager::Save_binary()
 			case UITool::CObject_Manager::GROUP:
 			{
 				string Directory = strDirectory;
+				string Name = pObj->Get_Name();
+				_uint Type = pObj->Get_TypeIndex();
 
-				Directory = Directory + pObj->Get_Name() + ".dat";
+				Directory = Directory + Name + ".dat";
+
 				ofstream out(Directory, ios::binary);
+
+				out.write((char*)&Type, sizeof(_uint));
+
+				_int strlength = Name.length();
+				out.write((char*)&strlength, sizeof(_int));
+				out.write(Name.c_str(), strlength);
+
 
 				dynamic_cast<CGroup*>(pObj)->Save_Groupbinary(out);
 
@@ -249,12 +301,275 @@ HRESULT CObject_Manager::Save_binary()
 	return S_OK;
 }
 
-HRESULT CObject_Manager::Load_binary()
+//지금 타겟에 바이너리파일을 생성시켜줌
+HRESULT CObject_Manager::Load_binary(const wstring& strObjectTag, const string FilePath)
 {
-	return E_NOTIMPL;
+	auto pObjects = Find_BinaryObject(strObjectTag);
+
+	ifstream in(FilePath, ios::binary);	
+
+	if (!in.is_open()) {
+		MSG_BOX("개방 실패");
+		return E_FAIL;
+	}
+	_uint Type;
+	
+	in.read((char*)&Type, sizeof(_uint));
+
+	switch (Type)	
+	{
+	case IMG:
+	{
+		CImage_Texture::tUITextureDesc pDesc{};
+		pDesc.iTypeIndex = Type;
+
+		_int strTexturelength;
+		char charBox[MAX_PATH] = {};
+		in.read((char*)&strTexturelength, sizeof(_int));
+		in.read((char*)&charBox, strTexturelength);	
+		pDesc.strName = charBox;
+
+		in.read((char*)&pDesc.isParent, sizeof(_bool));
+
+		in.read((char*)&strTexturelength, sizeof(_int));
+		in.read((char*)&charBox, strTexturelength);
+		pDesc.strParentName = charBox;
+
+		string path;
+		in.read((char*)&strTexturelength, sizeof(_int));
+		in.read((char*) &charBox, strTexturelength);
+		path = charBox;
+		pDesc.strTextureFilePath = m_pGameInstance->StringToWstring(path);
+
+		ZeroMemory(charBox, MAX_PATH);
+		in.read((char*)&strTexturelength, sizeof(_int));
+		in.read((char*)&charBox, strTexturelength);
+		path = charBox;
+		pDesc.strTextureFileName = m_pGameInstance->StringToWstring(path);
+
+		in.read((char*)&pDesc.fStartUV, sizeof(_float2));
+		in.read((char*)&pDesc.fEndUV, sizeof(_float2));
+		in.read((char*)&pDesc.vColor, sizeof(_float4));
+		in.read((char*)&pDesc.iShaderPass, sizeof(_uint));
+		in.read((char*)&pDesc.WorldMatrix, sizeof(_float4x4));
+
+		in.read((char*)&pDesc.bAnim, sizeof(_bool));
+		in.read((char*)&pDesc.fAnimTime, sizeof(_float2));
+		in.read((char*)&pDesc.vStartPos, sizeof(_float3));
+		
+		pDesc.isLoad = true;
+		in.close();
+
+		CUI_Texture* pImage = dynamic_cast<CUI_Texture*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Image_Texture"), &pDesc));
+		if (nullptr == pImage)
+			return E_FAIL;
+
+		pObjects->emplace_back(pImage);
+	}
+		break;
+
+	case BTN:
+	{
+		CBtn::BTN_DESC pDesc{};	
+		pDesc.iTypeIndex = Type;	
+
+		_int strTexturelength;
+		char charBox[MAX_PATH] = {};
+		in.read((char*)&strTexturelength, sizeof(_int));
+		in.read((char*)&charBox, strTexturelength);
+		pDesc.strName = charBox;
+
+		in.read((char*)&pDesc.isParent, sizeof(_bool));
+
+		in.read((char*)&strTexturelength, sizeof(_int));
+		in.read((char*)&charBox, strTexturelength);
+		pDesc.strParentName = charBox;
+
+		string path;
+		in.read((char*)&strTexturelength, sizeof(_int));
+		in.read((char*)&charBox, strTexturelength);
+		path = charBox;
+		pDesc.strTextureFilePath = m_pGameInstance->StringToWstring(path);
+
+		ZeroMemory(charBox, MAX_PATH);
+		in.read((char*)&strTexturelength, sizeof(_int));
+		in.read((char*)&charBox, strTexturelength);
+		path = charBox;
+		pDesc.strTextureFileName = m_pGameInstance->StringToWstring(path);
+
+		in.read((char*)&pDesc.fStartUV, sizeof(_float2));
+		in.read((char*)&pDesc.fEndUV, sizeof(_float2));
+		in.read((char*)&pDesc.vColor, sizeof(_float4));
+		in.read((char*)&pDesc.iShaderPass, sizeof(_uint));
+		in.read((char*)&pDesc.WorldMatrix, sizeof(_float4x4));
+
+		in.read((char*)&pDesc.bAnim, sizeof(_bool));
+		in.read((char*)&pDesc.fAnimTime, sizeof(_float2));
+		in.read((char*)&pDesc.vStartPos, sizeof(_float3));
+
+		//개별
+		ZeroMemory(charBox, MAX_PATH);	
+		in.read((char*)&strTexturelength, sizeof(_int));	
+		in.read((char*)&charBox, strTexturelength);	
+		path = charBox;	
+		pDesc.strClickFilePath = m_pGameInstance->StringToWstring(path);
+
+		ZeroMemory(charBox, MAX_PATH);
+		in.read((char*)&strTexturelength, sizeof(_int));
+		in.read((char*)&charBox, strTexturelength);
+		path = charBox;
+		pDesc.strClickFileName = m_pGameInstance->StringToWstring(path);
+
+		in.read((char*)&pDesc.ClickStartUV, sizeof(_float2));
+		in.read((char*)&pDesc.ClickEndUV, sizeof(_float2));
+
+		pDesc.isLoad = true;
+
+
+
+		in.close();
+
+		CBtn* pBtn = dynamic_cast<CBtn*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Btn"), &pDesc));
+		if (nullptr == pBtn)
+			return E_FAIL;
+
+		pObjects->emplace_back(pBtn);
+	}
+		break;
+
+	case TEXT:
+	{
+		CText::TEXT_DESC pDesc{};
+		pDesc.iTypeIndex = Type;
+
+		_int strTexturelength;
+		char charBox[MAX_PATH] = {};
+		in.read((char*)&strTexturelength, sizeof(_int));
+		in.read((char*)&charBox, strTexturelength);
+		pDesc.strName = charBox;
+
+		in.read((char*)&pDesc.isParent, sizeof(_bool));
+
+		in.read((char*)&strTexturelength, sizeof(_int));
+		in.read((char*)&charBox, strTexturelength);
+		pDesc.strParentName = charBox;
+
+		string path;
+
+		in.read((char*)&pDesc.vColor, sizeof(_float4));
+		in.read((char*)&pDesc.iShaderPass, sizeof(_uint));
+		in.read((char*)&pDesc.WorldMatrix, sizeof(_float4x4));
+
+		in.read((char*)&pDesc.bAnim, sizeof(_bool));
+		in.read((char*)&pDesc.fAnimTime, sizeof(_float2));
+		in.read((char*)&pDesc.vStartPos, sizeof(_float3));
+
+		//개별
+		ZeroMemory(charBox, MAX_PATH);
+		in.read((char*)&strTexturelength, sizeof(_int));
+		in.read((char*)&charBox, strTexturelength);
+		path = charBox;
+		pDesc.strText = m_pGameInstance->StringToWstring(path);
+
+		pDesc.isLoad = true;
+		in.close();
+
+		CText* pText = dynamic_cast<CText*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Text"), &pDesc));
+		if (nullptr == pText)
+			return E_FAIL;
+
+		pObjects->emplace_back(pText);
+	}
+		break;
+
+	case GROUP:
+	{
+		CGroup::UI_OBJECT_DESC pDesc{};
+		pDesc.iTypeIndex = Type;
+		
+		_int strTexturelength;
+		char charBox[MAX_PATH] = {};
+		in.read((char*)&strTexturelength, sizeof(_int));
+		in.read((char*)&charBox, strTexturelength);
+		pDesc.strName = charBox;
+
+		CGroup* pGroup = dynamic_cast<CGroup*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Group"), &pDesc));
+		if (nullptr == pGroup)
+			return E_FAIL;
+
+		pGroup->Load_Groupbinary(in);
+
+		in.close();
+
+		pObjects->emplace_back(pGroup);
+	}
+		break;
+
+	case EFFECT:
+	{
+		CUI_Effect::UI_EFFECT_DESC pDesc{};
+		pDesc.iTypeIndex = Type;
+
+		_int strTexturelength;
+		char charBox[MAX_PATH] = {};
+		in.read((char*)&strTexturelength, sizeof(_int));
+		in.read((char*)&charBox, strTexturelength);
+		pDesc.strName = charBox;
+
+		in.read((char*)&pDesc.isParent, sizeof(_bool));
+
+		in.read((char*)&strTexturelength, sizeof(_int));
+		in.read((char*)&charBox, strTexturelength);
+		pDesc.strParentName = charBox;
+
+		string path;
+		in.read((char*)&strTexturelength, sizeof(_int));
+		in.read((char*)&charBox, strTexturelength);
+		path = charBox;
+		pDesc.strTextureFilePath = m_pGameInstance->StringToWstring(path);
+
+		ZeroMemory(charBox, MAX_PATH);
+		in.read((char*)&strTexturelength, sizeof(_int));
+		in.read((char*)&charBox, strTexturelength);
+		path = charBox;
+		pDesc.strTextureFileName = m_pGameInstance->StringToWstring(path);
+
+		in.read((char*)&pDesc.fStartUV, sizeof(_float2));
+		in.read((char*)&pDesc.fEndUV, sizeof(_float2));
+		in.read((char*)&pDesc.vColor, sizeof(_float4));
+		in.read((char*)&pDesc.iShaderPass, sizeof(_uint));
+		in.read((char*)&pDesc.WorldMatrix, sizeof(_float4x4));
+
+		in.read((char*)&pDesc.bAnim, sizeof(_bool));
+		in.read((char*)&pDesc.fAnimTime, sizeof(_float2));
+		in.read((char*)&pDesc.vStartPos, sizeof(_float3));
+
+		//개별
+
+		in.read((char*)&pDesc.vLifeTime, sizeof(_float3));	
+		in.read((char*)&pDesc.fSpeed, sizeof(_float));
+
+		pDesc.isLoad = true;
+		in.close();
+
+		CUI_Effect* pUIEffect = dynamic_cast<CUI_Effect*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UIEffect"), &pDesc));
+		if (nullptr == pUIEffect)
+			return E_FAIL;
+
+		pObjects->emplace_back(pUIEffect);
+	}
+		break;
+
+	default:
+		break;
+	}
+
+	in.close();
+
+	return S_OK;
 }
 
-HRESULT CObject_Manager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+HRESULT CObject_Manager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)	
 {
 	m_pDevice = pDevice;
 	m_pContext = pContext;
@@ -664,6 +979,92 @@ HRESULT CObject_Manager::Add_BinaryObject(const wstring& strObjectTag, void* pAr
 	if (nullptr == pObjects)
 	{
 		m_Objects.emplace(strObjectTag, *pObjects);
+	}
+
+	return S_OK;
+}
+
+HRESULT CObject_Manager::Copy_BinaryObject(const wstring& strObjectTag, _uint iIndex)
+{
+	vector<CUI_Object*>* pObjects = Find_BinaryObject(strObjectTag);
+
+	_uint Type =(*pObjects)[iIndex]->Get_TypeIndex();
+	static _uint Index = 0;
+
+	if (IMG == Type)
+	{
+		CUI_Texture::UI_TEXTURE_DESC TextureDesc = {};
+		TextureDesc.strTextureFileName = dynamic_cast<CUI_Texture*>((*pObjects)[iIndex])->Get_FileName();	
+		TextureDesc.strTextureFilePath = dynamic_cast<CUI_Texture*>((*pObjects)[iIndex])->Get_FilePath();	
+		TextureDesc.iTypeIndex = dynamic_cast<CUI_Texture*>((*pObjects)[iIndex])->Get_TypeIndex();	
+		TextureDesc.strName = dynamic_cast<CUI_Texture*>((*pObjects)[iIndex])->Get_Name() + "%d";	
+		char buffer[MAX_PATH] = { "" };	
+		sprintf(buffer, TextureDesc.strName.c_str(), Index);		
+		string result(buffer);	
+		TextureDesc.strName = result;	
+
+		TextureDesc.bAnim = dynamic_cast<CUI_Texture*>((*pObjects)[iIndex])->Get_isAnim();
+		TextureDesc.vStartPos = dynamic_cast<CUI_Texture*>((*pObjects)[iIndex])->Get_StartPos();
+		TextureDesc.fAnimTime = dynamic_cast<CUI_Texture*>((*pObjects)[iIndex])->Get_AnimTime();
+
+		CUI_Texture* pImage = dynamic_cast<CUI_Texture*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Image_Texture"), &TextureDesc));
+		if (nullptr == pImage)
+			return E_FAIL;
+
+		pImage->Set_SizeX(dynamic_cast<CUI_Texture*>((*pObjects)[iIndex])->Get_SizeX());
+		pImage->Set_SizeY(dynamic_cast<CUI_Texture*>((*pObjects)[iIndex])->Get_SizeY());
+		pImage->Set_ShaderPass(dynamic_cast<CUI_Texture*>((*pObjects)[iIndex])->Get_ShaderPass());
+		pImage->Set_Color(dynamic_cast<CUI_Texture*>((*pObjects)[iIndex])->Get_Color());
+		pImage->Change_UV(dynamic_cast<CUI_Texture*>((*pObjects)[iIndex])->Get_StartUV(), dynamic_cast<CUI_Texture*>((*pObjects)[iIndex])->Get_EndUV());
+		pImage->Get_TransformCom()->Set_WorldMatrix(dynamic_cast<CUI_Texture*>((*pObjects)[iIndex])->Get_TransformCom()->Get_WorldMatrix());
+
+
+		pObjects->emplace_back(pImage);
+	}
+
+	return S_OK;
+}
+
+HRESULT CObject_Manager::Copy_BinaryGroupObject(const wstring& strObjectTag, const _uint ibinaryIndex, _uint iIndex)
+{
+	vector<CUI_Object*>* pFineObjects = Find_BinaryObject(strObjectTag);	
+	if (nullptr == pFineObjects)
+		return E_FAIL;
+
+	vector<class CUI_Object*>* pFineGroupObjects = dynamic_cast<CGroup*>((*pFineObjects)[ibinaryIndex])->Get_pPartObjects();	
+
+
+	_uint Type = (*pFineGroupObjects)[iIndex]->Get_TypeIndex();
+	static _uint Index = 0;
+
+	if (IMG == Type)
+	{
+		CUI_Texture::UI_TEXTURE_DESC TextureDesc = {};
+		TextureDesc.strTextureFileName = dynamic_cast<CUI_Texture*>((*pFineGroupObjects)[iIndex])->Get_FileName();
+		TextureDesc.strTextureFilePath = dynamic_cast<CUI_Texture*>((*pFineGroupObjects)[iIndex])->Get_FilePath();
+		TextureDesc.iTypeIndex = dynamic_cast<CUI_Texture*>((*pFineGroupObjects)[iIndex])->Get_TypeIndex();
+		TextureDesc.strName = dynamic_cast<CUI_Texture*>((*pFineGroupObjects)[iIndex])->Get_Name() + "%d";
+		char buffer[MAX_PATH] = { "" };
+		sprintf(buffer, TextureDesc.strName.c_str(), Index);
+		string result(buffer);
+		TextureDesc.strName = result;
+
+		TextureDesc.bAnim = dynamic_cast<CUI_Texture*>((*pFineGroupObjects)[iIndex])->Get_isAnim();
+		TextureDesc.vStartPos = dynamic_cast<CUI_Texture*>((*pFineGroupObjects)[iIndex])->Get_StartPos();
+		TextureDesc.fAnimTime = dynamic_cast<CUI_Texture*>((*pFineGroupObjects)[iIndex])->Get_AnimTime();
+
+
+		CUI_Texture* pImage = dynamic_cast<CUI_Texture*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Image_Texture"), &TextureDesc));
+		if (nullptr == pImage)
+			return E_FAIL;
+
+		pImage->Set_SizeX(dynamic_cast<CUI_Texture*>((*pFineGroupObjects)[iIndex])->Get_SizeX());
+		pImage->Set_SizeY(dynamic_cast<CUI_Texture*>((*pFineGroupObjects)[iIndex])->Get_SizeY());
+		pImage->Set_ShaderPass(dynamic_cast<CUI_Texture*>((*pFineGroupObjects)[iIndex])->Get_ShaderPass());
+		pImage->Set_Color(dynamic_cast<CUI_Texture*>((*pFineGroupObjects)[iIndex])->Get_Color());
+		pImage->Change_UV(dynamic_cast<CUI_Texture*>((*pFineGroupObjects)[iIndex])->Get_StartUV(), dynamic_cast<CUI_Texture*>((*pFineGroupObjects)[iIndex])->Get_EndUV());
+		pImage->Get_TransformCom()->Set_WorldMatrix(dynamic_cast<CUI_Texture*>((*pFineGroupObjects)[iIndex])->Get_TransformCom()->Get_WorldMatrix());
+		pFineGroupObjects->emplace_back(pImage);
 	}
 
 	return S_OK;

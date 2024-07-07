@@ -7,9 +7,11 @@ class CAI_WPAYakuza :
 {
 private:
     CAI_WPAYakuza();
+    CAI_WPAYakuza(const CAI_WPAYakuza& rhs);
     virtual ~CAI_WPAYakuza() = default;
 
 public:
+    virtual HRESULT Initialize_Prototype();
     virtual HRESULT Initialize(void* pArg);
     virtual void Tick(const _float& fTimeDelta);
     virtual NODE_STATE Execute();
@@ -28,7 +30,8 @@ private:
     CBTNode::NODE_STATE ATK_CMD();
 
 public:
-    static CAI_WPAYakuza* Create(void* pArg);
+    static CAI_WPAYakuza* Create();
+    virtual CBTNode* Clone(void* pArg);
     virtual void Free() override; 
 };
 END

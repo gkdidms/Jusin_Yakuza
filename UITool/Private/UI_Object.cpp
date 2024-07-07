@@ -27,6 +27,8 @@ HRESULT CUI_Object::Initialize(void* pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
+
+
 	return S_OK;
 }
 
@@ -57,7 +59,7 @@ HRESULT CUI_Object::Save_Groupbinary( ofstream& out)
 	return S_OK;
 }
 
-HRESULT CUI_Object::Load_binary()
+HRESULT CUI_Object::Load_binary(const string strDirectory)
 {
 	return E_FAIL;
 }
