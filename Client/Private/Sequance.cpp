@@ -1,5 +1,7 @@
 #include "Sequance.h"
 
+#include "BTNode.h"
+
 CSequance::CSequance()
 {
 }

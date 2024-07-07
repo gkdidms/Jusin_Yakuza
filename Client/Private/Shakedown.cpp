@@ -1,27 +1,26 @@
-#include "RushYakuza.h"
+#include "Shakedown.h"
 
 #include "GameInstance.h"
-#include "AI_RushYakuza.h"
-
-#include "Bounding_OBB.h"
 #include "Mesh.h"
 
-CRushYakuza::CRushYakuza(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-	: CMonster{pDevice, pContext}
+#include "AI_Shakedown.h"
+
+CShakedown::CShakedown(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+	: CMonster { pDevice, pContext}
 {
 }
 
-CRushYakuza::CRushYakuza(const CRushYakuza& rhs)
-	: CMonster{ rhs }
+CShakedown::CShakedown(const CShakedown& rhs)
+	: CMonster { rhs }
 {
 }
 
-HRESULT CRushYakuza::Initialize_Prototype()
+HRESULT CShakedown::Initialize_Prototype()
 {
 	return S_OK;
 }
 
-HRESULT CRushYakuza::Initialize(void* pArg)
+HRESULT CShakedown::Initialize(void* pArg)
 {
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
@@ -30,18 +29,17 @@ HRESULT CRushYakuza::Initialize(void* pArg)
 		return E_FAIL;
 
 	m_pModelCom->Set_AnimationIndex(1, 0.5);
-	//m_pModelCom->Set_AnimLoop(1, true);
+
 	return S_OK;
 }
 
-void CRushYakuza::Priority_Tick(const _float& fTimeDelta)
+void CShakedown::Priority_Tick(const _float& fTimeDelta)
 {
 }
 
-void CRushYakuza::Tick(const _float& fTimeDelta)
+void CShakedown::Tick(const _float& fTimeDelta)
 {
 	m_pTree->Tick(fTimeDelta);
-
 
 	Change_Animation(); //애니메이션 변경
 
@@ -52,12 +50,12 @@ void CRushYakuza::Tick(const _float& fTimeDelta)
 	m_pColliderCom->Tick(m_pTransformCom->Get_WorldMatrix());
 }
 
-void CRushYakuza::Late_Tick(const _float& fTimeDelta)
+void CShakedown::Late_Tick(const _float& fTimeDelta)
 {
 	m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
 }
 
-HRESULT CRushYakuza::Render()
+HRESULT CShakedown::Render()
 {
 	if (FAILED(Bind_ResourceData()))
 		return E_FAIL;
@@ -86,7 +84,7 @@ HRESULT CRushYakuza::Render()
 	return S_OK;
 }
 
-HRESULT CRushYakuza::Add_Componenets()
+HRESULT CShakedown::Add_Componenets()
 {
 	if (FAILED(__super::Add_Component(LEVEL_TEST, TEXT("Prototype_Component_Shader_VtxAnim"),
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
@@ -112,19 +110,19 @@ HRESULT CRushYakuza::Add_Componenets()
 		return E_FAIL;
 
 	//행동트리 저장
-	CAI_RushYakuza::AI_MONSTER_DESC Desc{};
-	Desc.pState = &m_iState;
-	Desc.pAnim = m_pAnimCom;
-	Desc.pThis = this;
+	CAI_Shakedown::AI_MONSTER_DESC AIDesc{};
+	AIDesc.pAnim = m_pAnimCom;
+	AIDesc.pState = &m_iState;
+	AIDesc.pThis = this;
 
-	m_pTree = dynamic_cast<CAI_RushYakuza*>(m_pGameInstance->Add_BTNode(LEVEL_TEST, TEXT("Prototype_BTNode_RushYakuza"), &Desc));
+	m_pTree = dynamic_cast<CAI_Shakedown*>(m_pGameInstance->Add_BTNode(LEVEL_TEST, TEXT("Prototype_BTNode_Shakedown"), &AIDesc));
 	if (nullptr == m_pTree)
 		return E_FAIL;
 
 	return S_OK;
 }
 
-HRESULT CRushYakuza::Bind_ResourceData()
+HRESULT CShakedown::Bind_ResourceData()
 {
 	if (FAILED(m_pTransformCom->Bind_ShaderMatrix(m_pShaderCom, "g_WorldMatrix")))
 		return E_FAIL;
@@ -136,7 +134,7 @@ HRESULT CRushYakuza::Bind_ResourceData()
 	return S_OK;
 }
 
-void CRushYakuza::Change_Animation()
+void CShakedown::Change_Animation()
 {
 	_uint iAnim = { 0 };
 	m_isAnimLoop = false;
@@ -267,9 +265,9 @@ void CRushYakuza::Change_Animation()
 	m_pModelCom->Set_AnimationIndex(iAnim, m_pAnimCom->Get_Animations(), m_fChangeInterval);
 }
 
-CRushYakuza* CRushYakuza::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+CShakedown* CShakedown::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
-	CRushYakuza* pInstance = new CRushYakuza(pDevice, pContext);
+	CShakedown* pInstance = new CShakedown(pDevice, pContext);
 
 	if (FAILED(pInstance->Initialize_Prototype()))
 		Safe_Release(pInstance);
@@ -277,9 +275,9 @@ CRushYakuza* CRushYakuza::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pCo
 	return pInstance;
 }
 
-CGameObject* CRushYakuza::Clone(void* pArg)
+CGameObject* CShakedown::Clone(void* pArg)
 {
-	CRushYakuza* pInstance = new CRushYakuza(*this);
+	CShakedown* pInstance = new CShakedown(*this);
 
 	if (FAILED(pInstance->Initialize(pArg)))
 		Safe_Release(pInstance);
@@ -287,7 +285,7 @@ CGameObject* CRushYakuza::Clone(void* pArg)
 	return pInstance;
 }
 
-void CRushYakuza::Free()
+void CShakedown::Free()
 {
 	__super::Free();
 

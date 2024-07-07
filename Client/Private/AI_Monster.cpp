@@ -10,13 +10,27 @@ CAI_Monster::CAI_Monster()
 	Safe_AddRef(m_pGameInstance);
 }
 
+CAI_Monster::CAI_Monster(const CAI_Monster& rhs)
+	: m_pGameInstance { rhs.m_pGameInstance}
+{
+	Safe_AddRef(m_pGameInstance);
+}
+
+HRESULT CAI_Monster::Initialize_Prototype()
+{
+	return S_OK;
+}
+
 HRESULT CAI_Monster::Initialize(void* pArg)
 {
 	AI_MONSTER_DESC* pDesc = static_cast<AI_MONSTER_DESC*>(pArg);
 	m_pState = pDesc->pState;
 	m_pAnimCom = pDesc->pAnim;
+	m_pThis = pDesc->pThis;
 	Safe_AddRef(m_pAnimCom);
-	
+
+	m_pPlayer = dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject(LEVEL_TEST, TEXT("Layer_Player"), 0));
+
 	return S_OK;
 }
 
@@ -26,6 +40,41 @@ void CAI_Monster::Tick(const _float& fTimeDelta)
 
 void CAI_Monster::Ready_Tree()
 {
+}
+
+//플레이어와의 거리
+_float CAI_Monster::DistanceFromPlayer()
+{
+	_vector vPlayerPos = m_pPlayer->m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	_vector vThisPos = m_pThis->m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+
+	_float fDistance = XMVector3Length(vPlayerPos - vThisPos).m128_f32[0]; // 거리 측정	
+
+	return fDistance;
+}
+
+_bool CAI_Monster::isBehine()
+{
+	//몬스터를 기준으로 플레이어가 뒤에 존재하는지 확인하기.
+	_vector vThisLook = m_pThis->Get_TransformCom()->Get_State(CTransform::STATE_LOOK);
+	_vector vThisPos = m_pThis->Get_TransformCom()->Get_State(CTransform::STATE_POSITION);
+	_vector vPlayerPos = m_pPlayer->Get_TransformCom()->Get_State(CTransform::STATE_POSITION);
+
+	_vector vToPlayer = XMVector3Normalize(vPlayerPos - vThisPos);
+	
+	_float fDot = XMVector3Dot(vThisLook, vToPlayer).m128_f32[0];
+	_float fAngle = acos(fDot);
+	
+	//플레이어의 시야각을 180도로 두고 계산한다.
+	//뒤에 있는지 없는지 체크.
+	return  fAngle > (XMConvertToRadians(180.f) * 0.5f);
+}
+
+void CAI_Monster::LookAtPlayer()
+{
+	_vector vPlayerPos = m_pPlayer->Get_TransformCom()->Get_State(CTransform::STATE_POSITION);
+
+	m_pThis->Get_TransformCom()->LookAt(vPlayerPos);
 }
 
 CBTNode::NODE_STATE CAI_Monster::Check_Death()
@@ -222,6 +271,9 @@ CBTNode::NODE_STATE CAI_Monster::ATK_Angry_Kick()
 
 CBTNode::NODE_STATE CAI_Monster::Check_Shift()
 {
+	if (m_isIdle)
+		return CBTNode::FAIL;
+
 	if (m_iSkill != SKILL_SHIFT)
 		return CBTNode::SUCCESS;
 
@@ -236,21 +288,25 @@ CBTNode::NODE_STATE CAI_Monster::Check_Shift()
 	return CBTNode::RUNNING;
 }
 
+CBTNode::NODE_STATE CAI_Monster::ShiftAndIdle()
+{
+	static _uint iCount = 0;
+
+	iCount++;
+	if (iCount != 5)
+	{
+		return CBTNode::FAIL;
+	}
+	
+	if (iCount <= 10)
+		iCount = 0;
+	
+	return CBTNode::SUCCESS;
+}
+
 CBTNode::NODE_STATE CAI_Monster::Shift()
 {
 	m_fShiftDuration = m_pGameInstance->Get_Random(1.f, 3.f);
-
-	static _uint iCount = 0;
-	
-	if (iCount == 5 || iCount == 7)
-	{
-		m_iSkill = SKILL_SHIFT;
-	}
-	else
-	{
-		iCount++;
-		return CBTNode::FAIL;
-	}
 
 	_uint iIndex = m_pGameInstance->Get_Random(0, 4);
 	if (iIndex == 0)
@@ -263,6 +319,8 @@ CBTNode::NODE_STATE CAI_Monster::Shift()
 		*m_pState = CMonster::MONSTER_SHIFT_R;
 	else
 		return CBTNode::FAIL;
+
+	m_iSkill = SKILL_SHIFT;
 
 	return CBTNode::SUCCESS;
 }
@@ -299,7 +357,11 @@ void CAI_Monster::Free()
 {
 	__super::Free();
 
-	Safe_Release(m_pAnimCom);
 	Safe_Release(m_pGameInstance);
-	Safe_Release(m_pRootNode);
+
+	if (m_isClone)
+	{
+		Safe_Release(m_pRootNode);
+		Safe_Release(m_pAnimCom);
+	}
 }
