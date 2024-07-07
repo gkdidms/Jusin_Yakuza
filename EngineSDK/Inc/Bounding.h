@@ -21,6 +21,9 @@ public:
     virtual const _float4& Get_Color() {
         return m_vColor;
     }
+    virtual const _float3& Get_Center() {
+        return m_vCenter;
+    }
 
 public:
     virtual void Set_Value(void* pDesc) {};
