@@ -30,6 +30,8 @@ HRESULT CShakedown::Initialize(void* pArg)
 
 	m_pModelCom->Set_AnimationIndex(1, 0.5);
 
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(5.f, 0.f, 5.f, 1.f));
+
 	return S_OK;
 }
 
@@ -143,75 +145,97 @@ void CShakedown::Change_Animation()
 	{
 	case MONSTER_IDLE:
 	{
-		iAnim = m_pAnimCom->Get_AnimationIndex("e_pnc_stand[e_pnc_stand]");
+		//e_kta_stand[e_kta_stand]
+		iAnim = m_pAnimCom->Get_AnimationIndex("e_kta_stand[e_kta_stand]");
 		m_isAnimLoop = true;
 		break;
 	}
 	case MONSTER_SHIFT_F:
 	{
-		iAnim = m_pAnimCom->Get_AnimationIndex("p_krh_shift_f[p_krh_shift_f]");
+		//e_kta_shift_f[e_kta_shift_f]
+		iAnim = m_pAnimCom->Get_AnimationIndex("e_kta_shift_f[e_kta_shift_f]");
 		m_isAnimLoop = true;
 		break;
 	}
 	case MONSTER_SHIFT_L:
 	{
-		iAnim = m_pAnimCom->Get_AnimationIndex("p_krh_shift_l[p_krh_shift_l]");
+		//e_kta_shift_l[e_kta_shift_l]
+		iAnim = m_pAnimCom->Get_AnimationIndex("e_kta_shift_l[e_kta_shift_l]");
 		m_isAnimLoop = true;
 		break;
 	}
 	case MONSTER_SHIFT_R:
 	{
-		iAnim = m_pAnimCom->Get_AnimationIndex("p_krh_shift_r[p_krh_shift_r]");
+		//e_kta_shift_r[e_kta_shift_r]
+		iAnim = m_pAnimCom->Get_AnimationIndex("e_kta_shift_r[e_kta_shift_r]");
 		m_isAnimLoop = true;
 		break;
 	}
 	case MONSTER_SHIFT_B:
 	{
-		iAnim = m_pAnimCom->Get_AnimationIndex("p_krh_shift_b[p_krh_shift_b]");
+		//e_kta_shift_b[e_kta_shift_b]
+		iAnim = m_pAnimCom->Get_AnimationIndex("e_kta_shift_b[e_kta_shift_b]");
 		m_isAnimLoop = true;
 		break;
 	}
 	case MONSTER_SWAY_B:
 	{
+		//e_kta_sway_b[e_kta_sway_b]
+		iAnim = m_pAnimCom->Get_AnimationIndex("e_kta_sway_b[e_kta_sway_b]");
 		break;
 	}
 	case MONSTER_SWAY_F:
 	{
+		//e_kta_sway_f[e_kta_sway_f]
+		iAnim = m_pAnimCom->Get_AnimationIndex("e_kta_sway_f[e_kta_sway_f]");
 		break;
 	}
 	case MONSTER_SWAY_L:
 	{
+		//e_kta_sway_l[e_kta_sway_l]
+		iAnim = m_pAnimCom->Get_AnimationIndex("e_kta_sway_l[e_kta_sway_l]");
 		break;
 	}
 	case MONSTER_SWAY_R:
 	{
+		//e_kta_sway_r[e_kta_sway_r]
+		iAnim = m_pAnimCom->Get_AnimationIndex("e_kta_sway_r[e_kta_sway_r]");
 		break;
 	}
 	case MONSTER_ATK_DOWN:
 	{
+		//e_kta_atk_down[e_kta_atk_down]
+		iAnim = m_pAnimCom->Get_AnimationIndex("e_kta_atk_down[e_kta_atk_down]");
 		break;
 	}
 	case MONSTER_RARIATTO:
 	{
+		//e_kta_atk_rariatto[e_kta_atk_rariatto]
+		iAnim = m_pAnimCom->Get_AnimationIndex("e_kta_atk_rariatto[e_kta_atk_rariatto]");
 		break;
 	}
 	case MONSTER_GUARD_RUN:
 	{
+		//e_kta_atk_gurad_run[e_kta_atk_gurad_run]
+		iAnim = m_pAnimCom->Get_AnimationIndex("e_kta_atk_gurad_run[e_kta_atk_gurad_run]");
 		break;
 	}
 	case MONSTER_CMD_1:
 	{
-		iAnim = m_pAnimCom->Get_AnimationIndex("p_krh_cmb_01[p_krh_cmb_01]");
+		//e_kta_cmb_a_01[e_kta_cmb_a_01]
+		iAnim = m_pAnimCom->Get_AnimationIndex("e_kta_cmb_a_01[e_kta_cmb_a_01]");
 		break;
 	}
 	case MONSTER_CMD_2:
 	{
-		iAnim = m_pAnimCom->Get_AnimationIndex("p_krh_cmb_02[p_krh_cmb_02]");
+		//e_kta_cmb_a_02[e_kta_cmb_a_02]
+		iAnim = m_pAnimCom->Get_AnimationIndex("e_kta_cmb_a_02[e_kta_cmb_a_02]");
 		break;
 	}
 	case MONSTER_CMD_3:
 	{
-		iAnim = m_pAnimCom->Get_AnimationIndex("p_krh_cmb_03[p_krh_cmb_03]");
+		//e_kta_cmb_a_03[e_kta_cmb_a_03]
+		iAnim = m_pAnimCom->Get_AnimationIndex("e_kta_cmb_a_03[e_kta_cmb_a_03]");
 		break;
 	}
 	case MONSTER_DEATH:
