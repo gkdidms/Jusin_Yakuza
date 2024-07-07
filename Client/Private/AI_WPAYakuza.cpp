@@ -13,6 +13,11 @@ CAI_WPAYakuza::CAI_WPAYakuza()
 {
 }
 
+HRESULT CAI_WPAYakuza::Initialize_Prototype()
+{
+	return S_OK;
+}
+
 HRESULT CAI_WPAYakuza::Initialize(void* pArg)
 {
 	if (FAILED(__super::Initialize(pArg)))
@@ -236,7 +241,17 @@ CBTNode::NODE_STATE CAI_WPAYakuza::Execute()
 	return m_pRootNode->Execute();
 }
 
-CAI_WPAYakuza* CAI_WPAYakuza::Create(void* pArg)
+CAI_WPAYakuza* CAI_WPAYakuza::Create()
+{
+	CAI_WPAYakuza* pInstance = new CAI_WPAYakuza();
+
+	if (FAILED(pInstance->Initialize_Prototype()))
+		Safe_Release(pInstance);
+
+	return pInstance;
+}
+
+CBTNode* CAI_WPAYakuza::Clone(void* pArg)
 {
 	CAI_WPAYakuza* pInstance = new CAI_WPAYakuza();
 
