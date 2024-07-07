@@ -50,6 +50,20 @@ HRESULT CPlayer::Initialize(void* pArg)
 
 void CPlayer::Priority_Tick(const _float& fTimeDelta)
 {
+	if (m_pModelCom->Get_AnimFinished())
+	{
+		//m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_pTransformCom->Get_State(CTransform::STATE_POSITION) + XMVectorSetY(XMLoadFloat4(&m_vPrevMove), 0));
+		XMStoreFloat4(&m_vPrevMove, XMVectorZero());
+	}
+
+}
+
+void CPlayer::Tick(const _float& fTimeDelta)
+{
+
+	m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Change_Animation();
+	m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Tick(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")));
+
 	if (m_pGameInstance->GetKeyState(DIK_0) == TAP)
 	{
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0, 0, 0, 1));
@@ -79,15 +93,7 @@ void CPlayer::Priority_Tick(const _float& fTimeDelta)
 
 	m_pColliderCom->Tick(m_pTransformCom->Get_WorldMatrix());
 
-	m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Change_Animation();
-	m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Tick(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")));
-
 	Animation_Event();
-}
-
-void CPlayer::Tick(const _float& fTimeDelta)
-{
-
 }
 
 void CPlayer::Late_Tick(const _float& fTimeDelta)
@@ -182,8 +188,9 @@ void CPlayer::Ready_AnimationTree()
 // 현재 애니메이션의 y축을 제거하고 사용하는 상태이다 (혹시 애니메이션의 y축 이동도 적용이 필요하다면 로직 수정이 필요함
 void CPlayer::Synchronize_Root(const _float& fTimeDelta)
 {
-	_vector vFF = XMVector3TransformNormal(XMLoadFloat3(m_pModelCom->Get_AnimationCenterMove()), m_pTransformCom->Get_WorldMatrix());
-	vFF = XMVectorSet(XMVectorGetX(vFF), XMVectorGetZ(vFF), XMVectorGetY(vFF), 1.f);
+	//_vector vFF = XMVectorSetZ(XMLoadFloat3(m_pModelCom->Get_AnimationCenterMove()), 0);
+	//_vector vFF = XMVector3TransformNormal(XMLoadFloat3(m_pModelCom->Get_AnimationCenterMove()), m_pTransformCom->Get_WorldMatrix());
+	_vector vFF = XMVector3TransformNormal(XMVectorSetZ(XMLoadFloat3(m_pModelCom->Get_AnimationCenterMove()), 0), m_pTransformCom->Get_WorldMatrix());
 
 	// 월드 행렬
 	_matrix worldMatrix = m_pTransformCom->Get_WorldMatrix();
@@ -201,33 +208,41 @@ void CPlayer::Synchronize_Root(const _float& fTimeDelta)
 		if (m_pModelCom->Get_AnimRestart())
 		{
 			XMStoreFloat4(&m_vPrevMove, XMVectorZero());
-			m_fPrevSpeed = 0.f;
-		}	
+			m_pTransformCom->Go_Straight_CustumSpeed(m_fPrevSpeed, 1);
+		}
 		else
 		{
 			// 쿼터니언 회전값 적용은 중단 (추후 마저 진행예정)
-			//_float4 v;
-			//_vector diffQuaternionVector = XMQuaternionMultiply(resultQuaternionVector, XMQuaternionConjugate(XMLoadFloat4(&m_vPrevRotation)));
-			//XMStoreFloat4(&v, diffQuaternionVector);
-			//m_pTransformCom->Change_Rotation_Quaternion(v);
+			_float4 v;
+			_vector diffQuaternionVector = XMQuaternionMultiply(resultQuaternionVector, XMQuaternionConjugate(XMLoadFloat4(&m_vPrevRotation)));
+			XMStoreFloat4(&v, diffQuaternionVector);
+			m_pTransformCom->Change_Rotation_Quaternion(v);
 
 			//_float4 vb;
 			//XMStoreFloat4(&vb, vFF - XMLoadFloat4(&m_vPrevMove));
 			//m_pTransformCom->Go_Straight_CustumDir(vb, fTimeDelta);
+			_float4 fMoveDir;
 			_float fMoveSpeed = XMVectorGetX(XMVector3Length(vFF - XMLoadFloat4(&m_vPrevMove)));
+			
+			//Y값 이동을 죽인 방향으로 적용해야한다.
+			XMStoreFloat4(&fMoveDir, XMVectorSetY(XMVector3Normalize(vFF - XMLoadFloat4(&m_vPrevMove)), 0.f));
+			//m_pTransformCom->Go_Straight_CustumSpeed(0.2, 1);
 			m_pTransformCom->Go_Straight_CustumSpeed(m_fPrevSpeed, 1);
+			m_pTransformCom->Go_Move_Custum(fMoveDir, fMoveSpeed, 1);
 			m_fPrevSpeed = fMoveSpeed;
+
+			XMStoreFloat4(&m_vPrevMove, vFF);
+
 		}
 	}
 	else
 	{
+		// 선형보간중일때는 무조건 초기화
 		XMStoreFloat4(&m_vPrevMove, XMVectorZero());
-		m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_pTransformCom->Get_State(CTransform::STATE_POSITION) + XMLoadFloat4(&m_vPrevMove));
-		//m_pTransformCom->Go_Straight_CustumSpeed(m_fPrevSpeed);
 	}
+
 	
 	XMStoreFloat4x4(&m_ModelWorldMatrix, m_pTransformCom->Get_WorldMatrix());
-	XMStoreFloat4(&m_vPrevMove, vFF);
 	//m_vPrevRotation = vQuaternion;
 	XMStoreFloat4(&m_vPrevRotation, resultQuaternionVector);
 }
@@ -288,7 +303,6 @@ void CPlayer::KeyInput(const _float& fTimeDelta)
 
 void CPlayer::Adventure_KeyInput(const _float& fTimeDelta)
 {
-
 	if (m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Get_AnimationEnd())
 		m_iCurrentBehavior = (_uint)ADVENTURE_BEHAVIOR_STATE::IDLE;
 
@@ -302,7 +316,10 @@ void CPlayer::Adventure_KeyInput(const _float& fTimeDelta)
 	{
 		_vector vLookPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION) + (m_pTransformCom->Get_State(CTransform::STATE_LOOK) + m_pGameInstance->Get_CamLook());
 		m_iCurrentBehavior = isShift ? (_uint)ADVENTURE_BEHAVIOR_STATE::WALK : (_uint)ADVENTURE_BEHAVIOR_STATE::RUN;
-		m_pTransformCom->LookAt_For_LandObject(vLookPos);
+
+		if(m_iCurrentBehavior == (_uint)ADVENTURE_BEHAVIOR_STATE::WALK || m_iCurrentBehavior ==(_uint)ADVENTURE_BEHAVIOR_STATE::RUN)
+			m_pTransformCom->LookAt_For_LandObject(vLookPos);
+
 		isMove = true;
 	}
 
@@ -310,7 +327,10 @@ void CPlayer::Adventure_KeyInput(const _float& fTimeDelta)
 	{
 		_vector vLookPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION) + (m_pTransformCom->Get_State(CTransform::STATE_LOOK) - m_pGameInstance->Get_CamLook());
 		m_iCurrentBehavior = isShift ? (_uint)ADVENTURE_BEHAVIOR_STATE::WALK : (_uint)ADVENTURE_BEHAVIOR_STATE::RUN;
-		m_pTransformCom->LookAt_For_LandObject(vLookPos);
+
+		if (m_iCurrentBehavior == (_uint)ADVENTURE_BEHAVIOR_STATE::WALK || m_iCurrentBehavior == (_uint)ADVENTURE_BEHAVIOR_STATE::RUN)
+			m_pTransformCom->LookAt_For_LandObject(vLookPos);
+
 		isMove = true;
 	}
 
@@ -318,7 +338,10 @@ void CPlayer::Adventure_KeyInput(const _float& fTimeDelta)
 	{
 		_vector vLookPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION) + (m_pTransformCom->Get_State(CTransform::STATE_LOOK) - m_pGameInstance->Get_CamRight());
 		m_iCurrentBehavior = isShift ? (_uint)ADVENTURE_BEHAVIOR_STATE::WALK : (_uint)ADVENTURE_BEHAVIOR_STATE::RUN;
-		m_pTransformCom->LookAt_For_LandObject(vLookPos);
+		
+		if (m_iCurrentBehavior == (_uint)ADVENTURE_BEHAVIOR_STATE::WALK || m_iCurrentBehavior == (_uint)ADVENTURE_BEHAVIOR_STATE::RUN)
+			m_pTransformCom->LookAt_For_LandObject(vLookPos);
+
 		isMove = true;
 	}
 
@@ -326,7 +349,10 @@ void CPlayer::Adventure_KeyInput(const _float& fTimeDelta)
 	{
 		_vector vLookPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION) + (m_pTransformCom->Get_State(CTransform::STATE_LOOK) + m_pGameInstance->Get_CamRight());
 		m_iCurrentBehavior = isShift ? (_uint)ADVENTURE_BEHAVIOR_STATE::WALK : (_uint)ADVENTURE_BEHAVIOR_STATE::RUN;
-		m_pTransformCom->LookAt_For_LandObject(vLookPos);
+		
+		if (m_iCurrentBehavior == (_uint)ADVENTURE_BEHAVIOR_STATE::WALK || m_iCurrentBehavior == (_uint)ADVENTURE_BEHAVIOR_STATE::RUN)
+			m_pTransformCom->LookAt_For_LandObject(vLookPos);
+
 		isMove = true;
 	}
 
@@ -545,7 +571,7 @@ void CPlayer::Apply_ChracterData()
 
 		//생성한 모든 콜라이더는 일단 꺼둔다.
 		// 몸체에 붙일 (플레이어가 피격당할) 콜라이더는 항시 켜져있어야하므로 툴에서찍지않음
-		it->second->On();
+		it->second->Off();
 	}
 
 	auto& pEffects = m_pData->Get_Effets();
@@ -603,7 +629,7 @@ void CPlayer::Compute_MoveDirection_FB()
 	// 방향벡터간 내적의 결과값이 양수면 90도미만(같은방향), 음수면 90도 초과(반대방향), 0이면 직교한다.
 	
 	// 지금 입력한 키가 앞이면 앞으로 스웨이할건데
-	if (m_InputDirection[F])
+	if (m_InputDirection[B])
 	{
 		// 이 때 캐릭터가 카메라랑 같은 방향을 보고있다면 Front 스웨이
 		if (XMVectorGetX(XMVector3Dot(vCamLook, vPlayerLook)) < 0)
@@ -613,7 +639,7 @@ void CPlayer::Compute_MoveDirection_FB()
 			m_MoveDirection[B] = true;
 	}
 	// 지금 입력한 키가 뒤면 뒤로 스웨이할건데, 
-	if (m_InputDirection[B])
+	if (m_InputDirection[F])
 	{
 		//캐릭터가 카메라랑 같은 방향을 보고있다면 Back방향 스웨이
 		if (XMVectorGetX(XMVector3Dot(vCamLook, vPlayerLook)) < 0)

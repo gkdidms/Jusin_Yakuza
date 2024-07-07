@@ -31,12 +31,8 @@ public:
 	virtual _bool Get_AnimationEnd() override;
 	virtual void Stop() override;
 
-public:
-	void Set_Stop(_bool isStop) { m_isStop = isStop; }
-
 private:
 	ANIM_STATE m_eAnimState = { ANIM_START };
-	_bool m_isStop = { false };
 
 public:
 	static CBehaviorAnimation* Create(class CPlayer* pPlayer);
