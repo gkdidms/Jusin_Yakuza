@@ -36,10 +36,21 @@ HRESULT CUI_Texture::Initialize(void* pArg)
 	UI_TEXTURE_DESC* pDesc = static_cast<UI_TEXTURE_DESC*>(pArg);
 	m_strTextureFilePath = pDesc->strTextureFilePath;
 	m_strTextureName = pDesc->strTextureFileName;
-	m_iTypeIndex = pDesc->iTypeIndex;
+
 	m_isParent = pDesc->isParent;
 	m_pParentMatrix = pDesc->pParentMatrix;
 	m_strParentName = pDesc->strParentName;
+
+	m_fStartUV = pDesc->fStartUV;
+	m_fEndUV = pDesc->fEndUV;
+	m_vColor = pDesc->vColor;
+
+	m_iShaderPass = pDesc->iShaderPass;
+
+	m_fAnimTime = pDesc->fAnimTime;
+	m_vStartPos = pDesc->vStartPos;
+	m_isAnim = pDesc->bAnim;
+
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
@@ -50,6 +61,11 @@ HRESULT CUI_Texture::Initialize(void* pArg)
 
 	m_pTransformCom->Set_Scale(m_fSizeX, m_fSizeY, 1.f);
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(m_fX - g_iWinSizeX * 0.5f, -m_fY + g_iWinSizeY * 0.5f, 0.01f, 1.f));
+	if (pDesc->isLoad)
+	{
+		m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(&pDesc->WorldMatrix));
+	}
+
 
 	XMStoreFloat4x4(&m_ViewMatrix, XMMatrixIdentity());
 	XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH(g_iWinSizeX, g_iWinSizeY, 0.f, 1.0f));
@@ -63,10 +79,19 @@ void CUI_Texture::Priority_Tick(const _float& fTimeDelta)
 
 void CUI_Texture::Tick(const _float& fTimeDelta)
 {
+#ifdef _TOOL
+	if (m_isAnim && m_isPlay)
+		m_fAnimTime.x += fTimeDelta;
+#else
+	if (m_isAnim)
+		m_fAnimTime.x += fTimeDelta;
+#endif // _TOOL
 }
 
 void CUI_Texture::Late_Tick(const _float& fTimeDelta)
 {
+	if (m_fAnimTime.x > m_fAnimTime.y)
+		m_fAnimTime.x = 0.f;
 }
 
 HRESULT CUI_Texture::Render()
@@ -95,7 +120,7 @@ HRESULT CUI_Texture::Save_Groupbinary( ofstream& out)
 	return E_FAIL;
 }
 
-HRESULT CUI_Texture::Load_binary()
+HRESULT CUI_Texture::Load_binary(const string strDirectory)
 {
 	return E_FAIL;
 }
@@ -132,6 +157,15 @@ HRESULT CUI_Texture::Bind_ResourceData()
 	else
 	{
 		if (FAILED(m_pTransformCom->Bind_ShaderMatrix(m_pShaderCom, "g_WorldMatrix")))
+			return E_FAIL;
+	}
+
+	if (m_isAnim)
+	{
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_vStartPos", &m_vStartPos, sizeof(_float3))))
+			return E_FAIL;
+
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_fAnimTime", &m_fAnimTime, sizeof(_float2))))
 			return E_FAIL;
 	}
 

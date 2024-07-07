@@ -22,6 +22,9 @@ HRESULT CImage_Texture::Initialize(void* pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
+	IMAGE_DESC* pDesc = static_cast<IMAGE_DESC*>(pArg);
+
+
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
@@ -34,16 +37,21 @@ void CImage_Texture::Priority_Tick(const _float& fTimeDelta)
 
 void CImage_Texture::Tick(const _float& fTimeDelta)
 {
+	__super::Tick(fTimeDelta);
+
 }
 
 void CImage_Texture::Late_Tick(const _float& fTimeDelta)
 {
+	__super::Late_Tick(fTimeDelta);
+	//일단 클라에서 어케 쓸지 정하고 따라서 만들자
 }
 
 HRESULT CImage_Texture::Render()
 {
 	if (FAILED(Bind_ResourceData()))
 		return E_FAIL;
+
 
 	m_pShaderCom->Begin(m_iShaderPass);
 
@@ -90,6 +98,19 @@ HRESULT CImage_Texture::Save_binary(const string strDirectory)
 
 	out.write((char*)&m_iShaderPass, sizeof(_uint));
 
+	_float4x4 WorldMatrix = *m_pTransformCom->Get_WorldFloat4x4();
+
+	out.write((char*)&WorldMatrix, sizeof(_float4x4));
+
+	out.write((char*)&m_isAnim, sizeof(_bool));
+
+	m_fAnimTime.x = 0.f;
+	out.write((char*)&m_fAnimTime, sizeof(_float2));
+
+	out.write((char*)&m_vStartPos, sizeof(_float3));
+
+
+
 	out.close();
 
 	return S_OK;
@@ -97,13 +118,11 @@ HRESULT CImage_Texture::Save_binary(const string strDirectory)
 
 HRESULT CImage_Texture::Save_Groupbinary( ofstream& out)
 {
-
 	out.write((char*)&m_iTypeIndex, sizeof(_uint));
 
 	_int strTexturelength = m_strName.length();
 	out.write((char*)&strTexturelength, sizeof(_int));
 	out.write(m_strName.c_str(), strTexturelength);
-
 
 	out.write((char*)&m_isParent, sizeof(_bool));
 
@@ -129,10 +148,21 @@ HRESULT CImage_Texture::Save_Groupbinary( ofstream& out)
 
 	out.write((char*)&m_iShaderPass, sizeof(_uint));
 
+	_float4x4 WorldMatrix = *m_pTransformCom->Get_WorldFloat4x4();
+
+	out.write((char*)&WorldMatrix, sizeof(_float4x4));
+
+	out.write((char*)&m_isAnim, sizeof(_bool));
+
+	m_fAnimTime.x = 0.f;
+	out.write((char*)&m_fAnimTime, sizeof(_float2));
+
+	out.write((char*)&m_vStartPos, sizeof(_float3));
+
 	return S_OK;
 }
 
-HRESULT CImage_Texture::Load_binary()
+HRESULT CImage_Texture::Load_binary(const string strDirectory)
 {
 	return S_OK;
 }

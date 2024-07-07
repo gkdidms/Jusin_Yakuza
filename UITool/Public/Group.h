@@ -3,6 +3,10 @@
 
 #include "UITool_Defines.h"
 
+BEGIN(Engine)
+class CVIBuffer_Rect;
+END
+
 BEGIN(UITool)
 class CGroup :
     public CUI_Object
@@ -17,6 +21,7 @@ public:
 
 public:
     vector<CUI_Object*> Get_PartObjects() { return m_PartObjects; }
+    vector<CUI_Object*>* Get_pPartObjects() { return &m_PartObjects; }
     CUI_Object* Get_PartObject(_uint iIndex) { return m_PartObjects[iIndex]; }
 
     void Remove_PartObject(_uint iIndex);
@@ -33,6 +38,9 @@ private:
 public:
     virtual HRESULT Save_binary(const string strDirectory)override;
     virtual HRESULT Save_Groupbinary( ofstream& out)override;
+public:
+    HRESULT Load_Groupbinary(ifstream& in);
+
 public:
     static CGroup* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
     virtual CGameObject* Clone(void* pArg);

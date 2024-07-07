@@ -62,6 +62,8 @@ public:
     HRESULT Add_RenderTextureObject(const wstring& strObjectTag, void* pArg);
     HRESULT Copy_RenderTextureObject(const wstring& strObjectTag, _uint iIndex);
     HRESULT Add_BinaryObject(const wstring& strObjectTag, void* pArg);
+    HRESULT Copy_BinaryObject(const wstring& strObjectTag, _uint iIndex);
+    HRESULT Copy_BinaryGroupObject(const wstring& strObjectTag, const _uint ibinaryIndex, _uint iIndex);
 
     HRESULT Copy_Group(const wstring& strTag);
     HRESULT Remove_Group(const wstring& strTag);
@@ -71,11 +73,13 @@ public:
     HRESULT Create_Texture(_uint iIndex, const wstring& strFilePath);
 
     HRESULT Move_ObjectIndex(const wstring& strTag, _uint iIndex, _uint iMoveType);
+    HRESULT Move_BinaryObjectIndex(const wstring& strTag, _uint iIndex, _uint iMoveType);
+    HRESULT Move_BinaryGroupObjectIndex(const wstring& strTag, const _uint ibinaryIndex, _uint iIndex, _uint iMoveType);
 
 
 public :
     HRESULT Save_binary();
-    HRESULT Load_binary();
+    HRESULT Load_binary(const wstring& strObjectTag, const string FilePath);
 private:
     ID3D11Device* m_pDevice = { nullptr };
     ID3D11DeviceContext* m_pContext = { nullptr };
