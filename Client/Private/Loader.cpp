@@ -13,8 +13,8 @@
 
 #include "Terrain.h"
 #include "Construction.h"
-#include "SoketCollider.h"
 #include "MapCollider.h"
+#include "SocketCollider.h"
 
 #pragma region Effect
 #include "Particle_Point.h"
@@ -319,7 +319,7 @@ HRESULT CLoader::Loading_For_Test()
 
 	/* For.Prototype_GameObject_SoketCollider */
 	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_SoketCollider"),
-		CSoketCollider::Create(m_pDevice, m_pContext))))
+		CSocketCollider::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	/* For.Prototype_GameObject_SoketCollider */

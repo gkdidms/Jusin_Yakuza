@@ -17,6 +17,11 @@ HRESULT CLevel_Office1F::Initialize()
 	if (FAILED(Ready_Light()))
 		return E_FAIL;
 
+	/* Å¬¶ó ÆÄ½Ì */
+	m_pFileTotalManager->Set_MapObj_In_Client(0, LEVEL_TEST);
+	m_pFileTotalManager->Set_Lights_In_Client(0);
+	m_pFileTotalManager->Set_Collider_In_Client(0, LEVEL_TEST);
+
 	return S_OK;
 }
 

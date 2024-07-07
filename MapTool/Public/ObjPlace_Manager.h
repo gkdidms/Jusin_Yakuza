@@ -21,6 +21,7 @@ public:
 		CONSTRUCTION, /* 그냥 건축물 */
 		ITEM,
 		MONSTER,
+		PLAYER,
 		OBJ_END
 	};
 
@@ -89,7 +90,7 @@ private:
 
 
 private:
-	vector<const char*>							m_Layers = { "Layer_GameObjects", "Layer_Monster" };
+	vector<const char*>							m_Layers = { "Layer_GameObjects", "Layer_Monster", "Layer_Player" };
 	/* object이름, cgameobject */
 	multimap<wstring, CGameObject*>				m_GameObjects; /* 추가한 오브젝트 저장 */
 	vector<char*>								m_ObjectNames_Map0; /* 추가한 오브젝트 이름들 */

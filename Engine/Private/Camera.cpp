@@ -45,11 +45,6 @@ void CCamera::Tick(const _float& fTimeDelta, _bool isAuto)
 	if (isAuto)
 		m_WorldMatrix = *m_pTransformCom->Get_WorldFloat4x4();
 
-
-
-
-	
-
 	XMFLOAT4	vUp, vPosition, vLookAt;
 	vUp.x = 0;
 	vUp.y = 1;
@@ -58,7 +53,7 @@ void CCamera::Tick(const _float& fTimeDelta, _bool isAuto)
 	XMVECTOR upVector = XMLoadFloat4(&vUp);
 
 	vPosition.x = m_WorldMatrix._41;
-	vPosition.y = -3;
+	vPosition.y = -7;
 	vPosition.z = m_WorldMatrix._43;
 	vPosition.w = 1;
 	XMVECTOR positionVec = XMLoadFloat4(&vPosition);

@@ -527,6 +527,11 @@ void CObjPlace_Manager::Edit_Installed_GameObject(int iNumObject)
 		m_tCurrentObjectDesc.iLayer = 1;
 	}
 
+	if (ImGui::RadioButton(m_Layers[2], m_tCurrentObjectDesc.iLayer == 2))
+	{
+		LayerType = 2;
+		m_tCurrentObjectDesc.iLayer = 2;
+	}
 
 
 	ImGui::NewLine();
@@ -549,6 +554,12 @@ void CObjPlace_Manager::Edit_Installed_GameObject(int iNumObject)
 	{
 		objectType = 2;
 		m_tCurrentObjectDesc.iObjType = 2;
+	}
+
+	if (ImGui::RadioButton(u8"플레이어", m_tCurrentObjectDesc.iObjType == 3))
+	{
+		objectType = 3;
+		m_tCurrentObjectDesc.iObjType = 3;
 	}
 
 
@@ -679,7 +690,7 @@ void CObjPlace_Manager::Set_Map_Object()
 {
 	ImGui::Text(u8"LayerTag 이름");
 
-	const char* pLayerArray[] = { "Map0", "Map1", "Monster"};
+	const char* pLayerArray[] = { "Map0", "Map1", "Character"};
 	static int folder_current_idx = 0;
 	if (ImGui::BeginListBox("listbox 1"))
 	{
@@ -753,7 +764,7 @@ void CObjPlace_Manager::Set_Map_Object()
 	static int LayerType = 0;
 	ImGui::RadioButton(m_Layers[0], &LayerType, 0);
 	ImGui::RadioButton(m_Layers[1], &LayerType, 1);
-
+	ImGui::RadioButton(m_Layers[2], &LayerType, 2);
 
 	/* 데이터 추가할때마다 수정 */
 	ImGui::NewLine();
@@ -763,7 +774,7 @@ void CObjPlace_Manager::Set_Map_Object()
 	ImGui::RadioButton(u8"그냥건물", &objectType, OBJECT_TYPE::CONSTRUCTION);
 	ImGui::RadioButton(u8"아이템", &objectType, OBJECT_TYPE::ITEM);
 	ImGui::RadioButton(u8"몬스터", &objectType, OBJECT_TYPE::MONSTER);
-
+	ImGui::RadioButton(u8"플레이어", &objectType, OBJECT_TYPE::PLAYER);
 
 	ImGui::NewLine();
 

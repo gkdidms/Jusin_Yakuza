@@ -1,6 +1,7 @@
 #pragma once
 #include "Monster.h"
 
+
 BEGIN(Client)
 class CRushYakuza :
     public CMonster
@@ -47,7 +48,6 @@ private:
     virtual HRESULT Bind_ResourceData() override;
 
 private:
-    void Synchronize_Root(const _float& fTimeDelta);
     void Change_Animation();
 
 public:
