@@ -149,106 +149,69 @@ void CShakedown::Change_Animation()
 	}
 	case MONSTER_SHIFT_F:
 	{
-		//p_krh_shift_f[p_krh_shift_f]
 		iAnim = m_pAnimCom->Get_AnimationIndex("p_krh_shift_f[p_krh_shift_f]");
 		m_isAnimLoop = true;
 		break;
 	}
 	case MONSTER_SHIFT_L:
 	{
-		//p_krh_shift_l[p_krh_shift_l]
 		iAnim = m_pAnimCom->Get_AnimationIndex("p_krh_shift_l[p_krh_shift_l]");
 		m_isAnimLoop = true;
 		break;
 	}
 	case MONSTER_SHIFT_R:
 	{
-		//p_krh_shift_r[p_krh_shift_r]
 		iAnim = m_pAnimCom->Get_AnimationIndex("p_krh_shift_r[p_krh_shift_r]");
 		m_isAnimLoop = true;
 		break;
 	}
 	case MONSTER_SHIFT_B:
 	{
-		//p_krh_shift_b[p_krh_shift_b]
 		iAnim = m_pAnimCom->Get_AnimationIndex("p_krh_shift_b[p_krh_shift_b]");
 		m_isAnimLoop = true;
 		break;
 	}
-	case MONSTER_SHIFT_FR:
+	case MONSTER_SWAY_B:
 	{
-		//p_krh_shift_fr[p_krh_shift_fr]
-		iAnim = m_pAnimCom->Get_AnimationIndex("p_krh_shift_fr[p_krh_shift_fr]");
-		m_isAnimLoop = true;
 		break;
 	}
-	case MONSTER_SHIFT_FL:
+	case MONSTER_SWAY_F:
 	{
-		//p_krh_shift_fl[p_krh_shift_fl]
-		iAnim = m_pAnimCom->Get_AnimationIndex("p_krh_shift_fl[p_krh_shift_fl]");
-		m_isAnimLoop = true;
 		break;
 	}
-	case MONSTER_SHIFT_BR:
+	case MONSTER_SWAY_L:
 	{
-		//p_krh_shift_br[p_krh_shift_br]
-		iAnim = m_pAnimCom->Get_AnimationIndex("p_krh_shift_br[p_krh_shift_br]");
-		m_isAnimLoop = true;
 		break;
 	}
-	case MONSTER_SHIFT_BL:
+	case MONSTER_SWAY_R:
 	{
-		//p_krh_shift_bl[p_krh_shift_bl]
-		iAnim = m_pAnimCom->Get_AnimationIndex("p_krh_shift_bl[p_krh_shift_bl]");
-		m_isAnimLoop = true;
+		break;
+	}
+	case MONSTER_ATK_DOWN:
+	{
+		break;
+	}
+	case MONSTER_RARIATTO:
+	{
+		break;
+	}
+	case MONSTER_GUARD_RUN:
+	{
 		break;
 	}
 	case MONSTER_CMD_1:
 	{
-		//p_krh_cmb_01[p_krh_cmb_01]
 		iAnim = m_pAnimCom->Get_AnimationIndex("p_krh_cmb_01[p_krh_cmb_01]");
 		break;
 	}
 	case MONSTER_CMD_2:
 	{
-		//p_krh_cmb_02[p_krh_cmb_02]
 		iAnim = m_pAnimCom->Get_AnimationIndex("p_krh_cmb_02[p_krh_cmb_02]");
 		break;
 	}
 	case MONSTER_CMD_3:
 	{
-		//p_krh_cmb_03[p_krh_cmb_03]
 		iAnim = m_pAnimCom->Get_AnimationIndex("p_krh_cmb_03[p_krh_cmb_03]");
-		break;
-	}
-	case MONSTER_CMD_4:
-	{
-		//p_krh_cmb_04[p_krh_cmb_04]
-		iAnim = m_pAnimCom->Get_AnimationIndex("p_krh_cmb_04[p_krh_cmb_04]");
-		break;
-	}
-	case MONSTER_CMD_5:
-	{
-		//p_krh_cmb_05[p_krh_cmb_05]
-		iAnim = m_pAnimCom->Get_AnimationIndex("p_krh_cmb_05[p_krh_cmb_05]");
-		break;
-	}
-	case MONSTER_ANGRY_START:
-	{
-		//e_angry_typec[e_angry_typec]
-		iAnim = m_pAnimCom->Get_AnimationIndex("e_angry_typec[e_angry_typec]");
-		break;
-	}
-	case MONSTER_ANGRY_CHOP:
-	{
-		//e_knk_atk_chop[e_knk_atk_chop]
-		iAnim = m_pAnimCom->Get_AnimationIndex("e_knk_atk_chop[e_knk_atk_chop]");
-		break;
-	}
-	case MONSTER_ANGRY_KICK:
-	{
-		//e_knk_atk_kick[e_knk_atk_kick]
-		iAnim = m_pAnimCom->Get_AnimationIndex("e_knk_atk_kick[e_knk_atk_kick]");
 		break;
 	}
 	case MONSTER_DEATH:
