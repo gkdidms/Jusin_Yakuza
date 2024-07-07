@@ -21,6 +21,7 @@
 
 2. 래리어트 는 공격을 맞는 중 발동하거나 가까이 있을 시 확률적으로 나타난다.
 플레이어가 래리어트를 피하게 되면 히트액션을 무조건 넣을 수 있다.
+https://www.youtube.com/watch?v=N3vh9EAJvzE
 
 3. 콤보 3단계는 확률적으로 1~3단계로 발동한다.
 
@@ -58,22 +59,17 @@ HRESULT CAI_Shakedown::Initialize(void* pArg)
 
 void CAI_Shakedown::Tick(const _float& fTimeDelta)
 {
-	if (m_isAttack == false)
+	if (!m_isAttack)
 		m_fAttackDelayTime += fTimeDelta;
 
-	if (m_iSkill == SKILL_SHIFT)
-		m_fShiftTime += fTimeDelta;
-
-	if (m_isIdle)
+	if (m_isBreak)
 	{
-		if (*m_pState != CMonster::MONSTER_IDLE)
+		m_fBreakTime += fTimeDelta;
+
+		if (m_fBreakDuration <= m_fBreakTime)
 		{
-			m_isIdle = false;
-			m_fIdleTime = 0.f;
-		}
-		else
-		{
-			m_fIdleTime += fTimeDelta;
+			m_isBreak = false;
+			m_fBreakTime = 0.f;
 		}
 	}
 
@@ -139,18 +135,18 @@ void CAI_Shakedown::Ready_Tree()
 	pAttackSeq->Add_Children(pAttackSelector);
 #pragma endregion
 
-#pragma region Shift
-	CSequance* pShiftSeq = CSequance::Create();
-	pShiftSeq->Add_Children(CLeafNode::Create(bind(&CAI_Shakedown::Check_Shift, this)));
-	pShiftSeq->Add_Children(CLeafNode::Create(bind(&CAI_Shakedown::ShiftAndIdle, this)));
-	pShiftSeq->Add_Children(CLeafNode::Create(bind(&CAI_Shakedown::Shift, this)));
+#pragma region Shift/Idle
+	CSequance* pBreakSeq = CSequance::Create();
+	pBreakSeq->Add_Children(CLeafNode::Create(bind(&CAI_Shakedown::Check_Break, this)));
+	pBreakSeq->Add_Children(CLeafNode::Create(bind(&CAI_Shakedown::ShiftAndIdle, this)));
+
+	CSelector* pBreakSelector = CSelector::Create();
+	pBreakSelector->Add_Children(CLeafNode::Create(bind(&CAI_Shakedown::Shift, this)));
+	pBreakSelector->Add_Children(CLeafNode::Create(bind(&CAI_Shakedown::Idle, this)));
+
+	pBreakSeq->Add_Children(pBreakSelector);
 #pragma endregion
 
-#pragma region Idle
-	CSequance* pIdleSeq = CSequance::Create();
-	pIdleSeq->Add_Children(CLeafNode::Create(bind(&CAI_Shakedown::Check_Idle, this)));
-	pIdleSeq->Add_Children(CLeafNode::Create(bind(&CAI_Shakedown::Idle, this)));
-#pragma endregion
 
 #pragma region Root
 	pRoot->Add_Children(pDeadSeq);
@@ -158,8 +154,7 @@ void CAI_Shakedown::Ready_Tree()
 	pRoot->Add_Children(pSyncSeq);
 	pRoot->Add_Children(pHitGuardSeq);
 	pRoot->Add_Children(pAttackSeq);
-	pRoot->Add_Children(pShiftSeq);
-	pRoot->Add_Children(pIdleSeq);
+	pRoot->Add_Children(pBreakSeq);
 #pragma endregion
 
 	m_pRootNode = pRoot;
@@ -167,22 +162,25 @@ void CAI_Shakedown::Ready_Tree()
 
 CBTNode::NODE_STATE CAI_Shakedown::Check_Attack()
 {
-	if (m_isAttack == false)
+	if (!m_isAttack)
 	{
-		if (m_fDelayAttackDuration >= m_fAttackDelayTime)
+		if (m_fDelayAttackDuration > m_fAttackDelayTime)
 			return CBTNode::FAIL;
 
-		m_fAttackDelayTime = 0.f; // 초기화
+		m_fAttackDelayTime = 0.f;
 	}
-
+	
 	return CBTNode::SUCCESS;
 }
 
 CBTNode::NODE_STATE CAI_Shakedown::Attack()
 {
-	if (DistanceFromPlayer() > 5.f) // 거리가 멀다면
+	LookAtPlayer();
+
+	_float fDistance = DistanceFromPlayer();
+	if (fDistance > 5.f) // 거리가 멀다면
 	{
-		m_iSkill == SKILL_GUARD_RUN;
+		m_iSkill = SKILL_GUARD_RUN;
 	}
 	else
 	{
@@ -190,11 +188,10 @@ CBTNode::NODE_STATE CAI_Shakedown::Attack()
 		//1. 래리어트
 		//2. 콤보
 		//3. 플레이어가 다운되었을때, 다운공격 진행함
-		
 		_float fRariattoRamdom = m_pGameInstance->Get_Random(0.f, 100.f);
 		if (fRariattoRamdom >= 80.f)
 		{
-			//10% 확률로 래리어트가 나옴
+			//20% 확률로 래리어트가 나옴
 			m_iSkill = SKILL_RARIATTO;
 		}
 		else
@@ -249,13 +246,15 @@ CBTNode::NODE_STATE CAI_Shakedown::ATK_CMD()
 			return CBTNode::RUNNING;
 		}
 
-		if (*m_pState == CMonster::MONSTER_CMD_1 && *(m_pAnimCom->Get_AnimPosition()) >= 27.0)
+		if (*m_pState == CMonster::MONSTER_CMD_1 && *(m_pAnimCom->Get_AnimPosition()) >= 24.0)
 		{
+			LookAtPlayer();
 			*m_pState = CMonster::MONSTER_CMD_2;
 			m_fCmbCount++;
 		}
-		else if (*m_pState == CMonster::MONSTER_CMD_2 && *(m_pAnimCom->Get_AnimPosition()) >= 31.0)
+		else if (*m_pState == CMonster::MONSTER_CMD_2 && *(m_pAnimCom->Get_AnimPosition()) >= 32.0)
 		{
+			LookAtPlayer();
 			*m_pState = CMonster::MONSTER_CMD_3;
 			m_fCmbCount++;
 		}
@@ -286,7 +285,7 @@ CBTNode::NODE_STATE CAI_Shakedown::ATK_GuardRun()
 {
 	if (m_iSkill == SKILL_GUARD_RUN && m_isAttack)
 	{
-		if (*m_pState == CMonster::MONSTER_GUARD_RUN && m_pAnimCom->Get_AnimFinished())
+		if (m_pAnimCom->Get_AnimFinished())
 		{
 			m_isAttack = false;
 			return CBTNode::SUCCESS;
