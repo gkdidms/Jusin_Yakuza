@@ -39,7 +39,6 @@ private:
     _float4x4       m_ModelWorldMatrix;
 
     // map 배치 관련
-    wstring					m_wstrModelName;
     int						m_iShaderPassNum = { 0 };
 
 

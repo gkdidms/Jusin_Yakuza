@@ -111,6 +111,10 @@ private:
 	void ColliderState_Load(string strPath);
 	void EffectState_Load(string strPath);
 	
+	/* Functional*/
+private:
+	void Gui_Select_Bone(_uint iBoneIndex);
+
 
 private:
 	ImGuiIO* io;

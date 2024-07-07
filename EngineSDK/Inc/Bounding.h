@@ -18,11 +18,15 @@ protected:
 public:
     virtual void* Get_Desc() = 0;
     virtual void* Get_OriginDesc() = 0;                 //0625 Çý¿øÃß°¡
+    virtual const _float4& Get_Color() {
+        return m_vColor;
+    }
 
 public:
     virtual void Set_Value(void* pDesc) {};
     virtual void Set_Center(const _float3& vCenter) {};
     virtual void Set_Rotation(const _float3& vRotation) {};
+    void Set_Color(const _float4& vColor) { m_vColor = vColor; }
 
 public:
     virtual HRESULT Initialize(const void* pArg) = 0;
@@ -36,6 +40,7 @@ public:
 
 protected:
     _float3 m_vCenter;
+    _float4 m_vColor;
 
 public:
     virtual void Free() override;

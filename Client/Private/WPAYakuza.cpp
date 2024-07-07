@@ -24,10 +24,15 @@ HRESULT CWPAYakuza::Initialize_Prototype()
 
 HRESULT CWPAYakuza::Initialize(void* pArg)
 {
+	m_wstrModelName = TEXT("Jimu");
+
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
 	if (FAILED(Add_Componenets()))
+		return E_FAIL;
+
+	if (FAILED(Add_CharacterData()))
 		return E_FAIL;
 
 	return S_OK;
@@ -53,11 +58,15 @@ void CWPAYakuza::Tick(const _float& fTimeDelta)
 	Synchronize_Root(fTimeDelta);
 
 	m_pColliderCom->Tick(m_pTransformCom->Get_WorldMatrix());
+
+	__super::Tick(fTimeDelta);
 }
 
 void CWPAYakuza::Late_Tick(const _float& fTimeDelta)
 {
 	m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
+
+	__super::Late_Tick(fTimeDelta);
 	//m_pCollisionManager->Add_ImpulseResolution(this);
 }
 

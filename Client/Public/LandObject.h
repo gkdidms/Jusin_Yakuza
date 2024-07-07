@@ -5,6 +5,7 @@
 
 BEGIN(Engine)
 class CCollider;
+class CModel;
 END
 
 BEGIN(Client)
@@ -23,8 +24,14 @@ public:
     virtual void Tick(const _float& fTimeDelta) override;
     virtual void Late_Tick(const _float& fTimeDelta) override;
     virtual HRESULT Render() override;
-    virtual _bool Intersect(CLandObject* pTargetObject) { return false; }
+
+    /* 충돌관련 함수들 */
+    virtual _bool Intersect(CLandObject* pTargetObject);
     virtual void ImpulseResolution(CLandObject* pTargetObject);
+
+protected:
+    virtual HRESULT Add_CharacterData();
+    virtual void Apply_ChracterData();
 
 public:
     const wstring& Get_ModelName() {
@@ -39,6 +46,19 @@ protected:
     class CSystemManager* m_pSystemManager = { nullptr };
     class CCollision_Manager* m_pCollisionManager = { nullptr };
     CCollider* m_pColliderCom = { nullptr };
+    CModel* m_pModelCom = { nullptr };
+
+    // 애니메이션 툴에서 찍은 데이터 파싱해서 들고있는 객체
+    class CCharacterData* m_pData = { nullptr };
+
+    // first: 뼈 인덱스, secone: 소켓 콜라이더
+    // 파싱된 콜라이더 객체를 저장할 배열
+    unordered_map<_uint, class CSocketCollider*>      m_pColliders;
+
+    //뼈 이름, 소켓 이펙트
+    unordered_map<string, class CSocketEffect*>      m_pEffects;
+
+
 
     wstring m_wstrModelName = TEXT("");
 

@@ -34,6 +34,8 @@ HRESULT CBounding_AABB::Initialize(const void* pArg)
 	m_vCenter = pDesc->vCenter;
 	m_vExtents = pDesc->vExtents;
 
+	m_vColor = _float4(0.f, 1.f, 0.f, 1.f);
+
 	m_pOriginalBox = new BoundingBox(m_vCenter, m_vExtents);
 	m_pBoundingBox = new BoundingBox(*m_pOriginalBox);
 	if (nullptr == m_pBoundingBox)
@@ -154,7 +156,7 @@ const _float3& CBounding_AABB::ImpulseResolution(CCollider::TYPE eTargetType, CB
 #ifdef _DEBUG
 HRESULT CBounding_AABB::Render(PrimitiveBatch<VertexPositionColor>* pBatch)
 {
-	DX::Draw(pBatch, *m_pBoundingBox, XMVectorSet(0.f, 1.f, 0.f, 1.f));
+	DX::Draw(pBatch, *m_pBoundingBox, XMLoadFloat4(&m_vColor));
 
 	return S_OK;
 }

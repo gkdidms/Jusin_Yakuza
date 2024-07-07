@@ -42,12 +42,19 @@ public:
 	virtual void Late_Tick(const _float& fTimeDelta) override;
 	virtual HRESULT Render() override;
 
+	virtual _bool Intersect(CCollider* pTargetObject);
+
 public:
 	void On() {
 		m_isOn = true;
 	}
 	void Off() {
 		m_isOn = { false };
+	}
+
+public:
+	_uint Get_CollierType() {
+		return static_cast<_uint>(m_eColliderType);
 	}
 
 private:

@@ -55,18 +55,20 @@ void CCollision_Manager::ImpulseResolution()
     Impulse_Clear();
 }
 
-void CCollision_Manager::BattleCollision()
+_bool CCollision_Manager::Collision_FromPlayer(CLandObject* pObejct)
 {
-    //// 여기에 충돌처리 코드 구현
-    //for (size_t i = 0; i < m_BattleColliders.size(); i++)
-    //{
-    //    for (size_t j = 0; j < m_BattleColliders.size(); j++)
-    //    {
-    //        if (i == j) continue;
-    //    }
-    //}
+    for (auto& pObjects : m_BattleObjects[FROM_PLAYER])
+    {
+        pObjects->Intersect(pObejct);
+    }
 
-    Battle_Clear();
+
+    return _bool();
+}
+
+_bool CCollision_Manager::Collision_FromEnemy(CLandObject* pObejct)
+{
+    return _bool();
 }
 
 void CCollision_Manager::Impulse_Clear()
@@ -79,10 +81,13 @@ void CCollision_Manager::Impulse_Clear()
 
 void CCollision_Manager::Battle_Clear()
 {
-    //for (auto& pObject : m_BattleColliders)
-    //    Safe_Release(pObject);
+    for (size_t i = 0; i < TYPE_END; i++)
+    {
+        for (auto& pObject : m_BattleObjects[i])
+            Safe_Release(pObject);
 
-    //m_BattleColliders.clear();
+        m_BattleObjects[i].clear();
+    }
 }
 
 void CCollision_Manager::Free()

@@ -11,8 +11,6 @@
 #include "BehaviorAnimation.h"
 #include "Mesh.h"
 
-#include "BTNode.h"
-
 CPlayer::CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLandObject{ pDevice, pContext }
 {
@@ -525,82 +523,6 @@ HRESULT CPlayer::Bind_ResourceData()
 	return S_OK;
 }
 
-HRESULT CPlayer::Add_CharacterData()
-{
-	m_pData = CCharacterData::Create(this);
-
-	if (nullptr == m_pData)
-		return E_FAIL;
-
-	Apply_ChracterData();
-
-	return S_OK;
-}
-
-void CPlayer::Apply_ChracterData()
-{
-	auto& pAlphaMeshes = m_pData->Get_AlphaMeshes();
-	auto pMeshes = m_pModelCom->Get_Meshes();
-
-	for (size_t i = 0; i < pMeshes.size(); i++)
-	{
-		for (auto& iMeshIndex : pAlphaMeshes)
-		{
-			if (i == iMeshIndex)
-				pMeshes[i]->Set_AlphaApply(true);
-		}
-	}
-
-	auto& pLoopAnimations = m_pData->Get_LoopAnimations();
-	for (auto& iAnimIndex : pLoopAnimations)
-	{
-		m_pModelCom->Set_AnimLoop(iAnimIndex, true);
-	}
-
-	auto& pColliders = m_pData->Get_Colliders();
-
-	for (auto& Collider : pColliders)
-	{
-		CSocketCollider::SOCKET_COLLIDER_DESC Desc{};
-		Desc.pParentMatrix = m_pTransformCom->Get_WorldFloat4x4();
-		Desc.pCombinedTransformationMatrix = m_pModelCom->Get_BoneCombinedTransformationMatrix_AtIndex(Collider.first);
-		Desc.iBoneIndex = Collider.first;
-		Desc.ColliderState = Collider.second;
-		Desc.iType = Collider.second.isAlways ? 1 : 0;
-
-		CGameObject* pSoketCollider = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_SoketCollider"), &Desc);
-		if (nullptr == pSoketCollider)
-			return;
-	
-		auto [it, success] = m_pColliders.emplace(Collider.first, static_cast<CSocketCollider*>(pSoketCollider));
-
-		// 생성한 모든 콜라이더는 일단 꺼둔다.
-		// 몸체에 붙일 (플레이어가 피격당할) 콜라이더는 항시 켜져있어야하므로 On으로 켜둔다
-		if(Collider.second.isAlways)
-			it->second->On();
-		else
-			it->second->Off();
-	}
-
-	auto& pEffects = m_pData->Get_Effets();
-	for (auto& pEffect : pEffects)
-	{
-		CSocketEffect::SOKET_EFFECT_DESC Desc{};
-		Desc.pParentMatrix = m_pTransformCom->Get_WorldFloat4x4();
-		Desc.pCombinedTransformationMatrix = m_pModelCom->Get_BoneCombinedTransformationMatrix(pEffect.first.c_str());
-		Desc.wstrEffectName = pEffect.second;
-
-		CGameObject* pSoketEffect = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_SoketEffect"), &Desc);
-		if (nullptr == pSoketEffect)
-			return;
-
-		auto [it, success] = m_pEffects.emplace(pEffect.first, static_cast<CSocketEffect*>(pSoketEffect));
-
-		it->second->On();
-	}
-
-}
-
 void CPlayer::Change_Animation(_uint iIndex, _float fInterval)
 {
 	if (m_pModelCom->Set_AnimationIndex(iIndex, fInterval))
@@ -717,15 +639,5 @@ void CPlayer::Free()
 {
 	__super::Free();
 
-	for (auto& pCollider : m_pColliders)
-		Safe_Release(pCollider.second);
-	m_pColliders.clear();
-
-	for (auto& pEffect : m_pEffects)
-		Safe_Release(pEffect.second);
-	m_pEffects.clear();
-
-	Safe_Release(m_pData);
 	Safe_Release(m_pShaderCom);
-	Safe_Release(m_pModelCom);
 }

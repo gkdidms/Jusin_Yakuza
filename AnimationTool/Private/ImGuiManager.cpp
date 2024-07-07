@@ -83,6 +83,39 @@ void CImguiManager::Tick(const _float& fTimeDelta)
 			SoundListWindow();
 	}
 
+
+	if (m_pGameInstance->Get_CurrentLevel() != LEVEL_LOADING)
+	{
+		if (0 < m_AnimNameList.size())
+		{
+			auto lower_bound_iter = m_AnimationEvents.lower_bound(m_AnimNameList[m_iAnimIndex]);
+			auto upper_bound_iter = m_AnimationEvents.upper_bound(m_AnimNameList[m_iAnimIndex]);
+
+			auto pBoneSpheres = m_pRenderModel->Get_BoneSpheres();
+
+			for (; lower_bound_iter != upper_bound_iter; ++lower_bound_iter)
+			{
+				Animation_Event Value = (*lower_bound_iter).second;
+
+				CModel* pModel = static_cast<CModel*>(m_pRenderModel->Get_Model());
+				if (nullptr != pModel)
+				{
+					_double Position = *pModel->Get_AnimationCurrentPosition();
+
+					if (Value.iType == COLLIDER_ACTIVATION && Value.fAinmPosition < Position)
+					{
+						pBoneSpheres[Value.iBoneIndex]->Change_ColliderColor(true);
+					}
+					if(Value.iType == COLLIDER_DISABLE && Value.fAinmPosition < Position)
+					{
+						pBoneSpheres[Value.iBoneIndex]->Change_ColliderColor(false);
+					}
+				}
+			}
+		}
+
+	}
+
 }
 
 
@@ -272,14 +305,14 @@ void CImguiManager::BoneListWindow()
 			if (m_BoneNameList[i] == string(m_szSearchBoneName))
 				m_iBoneSelectedIndex = i;
 		}
+
+		Gui_Select_Bone(m_iBoneSelectedIndex);
 	}
 
 	//»À ¸®½ºÆ®
 	if (ImGui::ListBox("##", &m_iBoneSelectedIndex, items.data(), items.size()))
 	{
-		Reset_Collider_Value();
-		Setting_Collider_Value(m_iBoneSelectedIndex);
-		m_pRenderModel->Select_Bone(m_iBoneSelectedIndex);
+		Gui_Select_Bone(m_iBoneSelectedIndex);
 	}
 
 	if (ImGui::RadioButton("AABB", m_iColliderType == AABB))
@@ -372,7 +405,7 @@ void CImguiManager::BoneListWindow()
 			iter++;
 		}
 
-		Setting_Collider_Value((*iter).first);
+		Gui_Select_Bone((*iter).first);
 		m_isAlwaysCollider = (*iter).second.isAlways;
 	}
 
@@ -627,13 +660,12 @@ void CImguiManager::AnimEventWindow()
 	ImGui::SameLine();
 	if (ImGui::Button("Event Delete"))
 	{
-		auto iter = m_AnimationEvents.begin();
+		auto lower_bound_iter = m_AnimationEvents.lower_bound(m_AnimNameList[m_iAnimIndex]);
 
 		for (size_t i = 0; i < m_iEventSelectedIndex; i++)
-		{
-			iter++;
-		}
-		m_AnimationEvents.erase(iter);
+			lower_bound_iter++;
+
+		m_AnimationEvents.erase(lower_bound_iter);
 	}
 
 	ImGui::Text("Animation Name : %s", m_AnimNameList[m_iAnimIndex].c_str());
@@ -830,7 +862,7 @@ void CImguiManager::DrawChannels()
 
 				m_iBoneSelectedIndex = Channels[m_iChannelSelectedIndex]->Get_BoneIndex();
 
-				m_pRenderModel->Select_Bone(m_iBoneSelectedIndex);
+				Gui_Select_Bone(m_iBoneSelectedIndex);
 				break;
 			}
 		}
@@ -1352,6 +1384,13 @@ void CImguiManager::EffectState_Load(string strPath)
 	
 
 	in.close();
+}
+
+void CImguiManager::Gui_Select_Bone(_uint iBoneIndex)
+{
+	Reset_Collider_Value();
+	Setting_Collider_Value(iBoneIndex);
+	m_pRenderModel->Select_Bone(iBoneIndex);
 }
 
 void CImguiManager::Setting_InitialData()

@@ -61,7 +61,14 @@ void CModelBoneSphere::Tick(const _float& fTimeDelta)
         }
 
         m_pColliderCom->Tick(WorldMap);
+
+        if (m_isEventPlaying)
+            m_pColliderCom->Set_Color(_float4(0, 1, 1, 1));
+        else
+            m_pColliderCom->Reset_Color();
     }
+
+
 }
 
 void CModelBoneSphere::Late_Tick(const _float& fTimeDelta)
@@ -126,6 +133,11 @@ void CModelBoneSphere::Change_TexutreIndex(_bool isOn)
         m_iTextureIndex = 1;
     else
         m_iTextureIndex = 0;
+}
+
+void CModelBoneSphere::Change_ColliderColor(_bool isOn)
+{
+    m_isEventPlaying = isOn;
 }
 
 void CModelBoneSphere::Create_Collider(CCollider::TYPE eType, const CCollider::COLLIDER_DESC* pDesc)

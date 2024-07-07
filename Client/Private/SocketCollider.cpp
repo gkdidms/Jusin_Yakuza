@@ -56,6 +56,11 @@ HRESULT CSocketCollider::Render()
 	return S_OK;
 }
 
+_bool CSocketCollider::Intersect(CCollider* pTargetObject)
+{
+	return pTargetObject->Intersect(m_pColliderCom);
+}
+
 HRESULT CSocketCollider::Add_Components(void* pArg)
 {
 	SOCKET_COLLIDER_DESC* pDesc = static_cast<SOCKET_COLLIDER_DESC*>(pArg);

@@ -37,6 +37,11 @@ HRESULT CRushYakuza::Initialize(void* pArg)
 	if (FAILED(Add_Componenets()))
 		return E_FAIL;
 
+	m_wstrModelName = TEXT("Jimu");
+
+	if (FAILED(Add_CharacterData()))
+		return E_FAIL;
+
 	m_pModelCom->Set_AnimationIndex(1, 0.5);
 	//m_pModelCom->Set_AnimLoop(1, true);
 	return S_OK;
@@ -50,7 +55,6 @@ void CRushYakuza::Tick(const _float& fTimeDelta)
 {
 	m_pTree->Tick(fTimeDelta);
 
-
 	Change_Animation(); //애니메이션 변경
 
 	m_pModelCom->Play_Animation(fTimeDelta, m_pAnimCom, m_isAnimLoop);
@@ -58,12 +62,16 @@ void CRushYakuza::Tick(const _float& fTimeDelta)
 	Synchronize_Root(fTimeDelta);
 
 	m_pColliderCom->Tick(m_pTransformCom->Get_WorldMatrix());
+
+	__super::Tick(fTimeDelta);
 }
 
 void CRushYakuza::Late_Tick(const _float& fTimeDelta)
 {
 	m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
 	//m_pCollisionManager->Add_ImpulseResolution(this);
+
+	__super::Late_Tick(fTimeDelta);
 }
 
 HRESULT CRushYakuza::Render()

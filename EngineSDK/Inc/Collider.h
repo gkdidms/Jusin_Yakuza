@@ -31,6 +31,8 @@ public:
     void Set_Value(void* pDesc);
     void Set_Center(const _float3& vCenter);
     void Set_Rotation(const _float3& vRotation);
+    void Set_Color(const _float4& vColor);
+    void Reset_Color();
 
 public:
     _bool Intersect(CCollider* pTargetCollider);
@@ -53,6 +55,8 @@ private:
     PrimitiveBatch<VertexPositionColor>* m_pBatch = { nullptr };
     BasicEffect* m_pShader = { nullptr };
     ID3D11InputLayout* m_pInputLayout = { nullptr };
+
+    _float4 m_vColor;
 #endif
 
 public:
