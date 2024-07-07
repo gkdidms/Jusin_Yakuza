@@ -1,5 +1,6 @@
 #include "Collision_Manager.h"
 #include "LandObject.h"
+#include "SocketCollider.h"
 
 IMPLEMENT_SINGLETON(CCollision_Manager)
 
@@ -20,10 +21,10 @@ HRESULT CCollision_Manager::Add_ImpulseResolution(CLandObject* pObejct)
     return S_OK;
 }
 
-HRESULT CCollision_Manager::Add_BattleCollider(CLandObject* pObejct)
+HRESULT CCollision_Manager::Add_BattleCollider(CSocketCollider* pCollider, COLLIDER_TYPE eType)
 {
-    Safe_AddRef(pObejct);
-    //m_BattleColliders.push_back(pObejct);
+    Safe_AddRef(pCollider);
+    m_BattleColliders[eType].push_back(pCollider);
 
     return S_OK;
 }
@@ -52,16 +53,22 @@ void CCollision_Manager::ImpulseResolution()
         }
     }
 
-    Impulse_Clear();
+        Impulse_Clear();
 }
-
-_bool CCollision_Manager::Collision_FromPlayer(CLandObject* pObejct)
+ 
+_bool CCollision_Manager::Collision_FromPlayer(CSocketCollider* pAttackCollider)
 {
-    for (auto& pObjects : m_BattleObjects[FROM_PLAYER])
+    for (auto& pSocketCollider : m_BattleColliders[FROM_PLAYER])
     {
-        pObjects->Intersect(pObejct);
+        if (pSocketCollider->Intersect(pAttackCollider->Get_Collider()))
+            cout << "InterSect!!!" << endl;
+
     }
 
+    for (auto& pObject : m_BattleColliders[FROM_PLAYER])
+        Safe_Release(pObject);
+
+    m_BattleColliders[FROM_PLAYER].clear();
 
     return _bool();
 }
@@ -83,10 +90,10 @@ void CCollision_Manager::Battle_Clear()
 {
     for (size_t i = 0; i < TYPE_END; i++)
     {
-        for (auto& pObject : m_BattleObjects[i])
+        for (auto& pObject : m_BattleColliders[i])
             Safe_Release(pObject);
 
-        m_BattleObjects[i].clear();
+        m_BattleColliders[i].clear();
     }
 }
 

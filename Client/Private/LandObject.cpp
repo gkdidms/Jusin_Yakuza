@@ -57,18 +57,6 @@ HRESULT CLandObject::Render()
 	return S_OK;
 }
 
-_bool CLandObject::Intersect(CLandObject* pTargetObject)
-{
-	//pTargetObject 으로부터 데미지 입을 객체들
-	for (auto& pSocketCollider : m_pColliders)
-	{
-		if (pSocketCollider.second->Get_CollierType() == CSocketCollider::HIT)
-			pSocketCollider.second->Intersect(pTargetObject->Get_Collider());
-	}
-
-	return _bool();
-}
-
 void CLandObject::ImpulseResolution(CLandObject* pTargetObject)
 {
 	if (nullptr == m_pColliderCom) return;
