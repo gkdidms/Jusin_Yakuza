@@ -112,6 +112,15 @@
     <ClCompile Include="..\Private\ColliderObj.cpp">
       <Filter>02.GameObjects\08.ColliderObj</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\RushYakuza.cpp">
+      <Filter>02.GameObjects\09.RushYakuza</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Monster.cpp">
+      <Filter>02.GameObjects\09.RushYakuza\Monster</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\LandObject.cpp">
+      <Filter>02.GameObjects\09.RushYakuza\LandObject</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\MainApp.h">
@@ -243,6 +252,15 @@
     <ClInclude Include="..\Public\ColliderObj.h">
       <Filter>02.GameObjects\08.ColliderObj</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\RushYakuza.h">
+      <Filter>02.GameObjects\09.RushYakuza</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Monster.h">
+      <Filter>02.GameObjects\09.RushYakuza\Monster</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\LandObject.h">
+      <Filter>02.GameObjects\09.RushYakuza\LandObject</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="MapTool.ico">
@@ -351,6 +369,15 @@
     </Filter>
     <Filter Include="02.GameObjects\08.ColliderObj">
       <UniqueIdentifier>{eabbb79c-c0dd-4f3f-b081-b980fb89f34c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\09.RushYakuza">
+      <UniqueIdentifier>{5d8f1c46-06c3-4fc7-9397-5b74598a47d8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\09.RushYakuza\Monster">
+      <UniqueIdentifier>{1aa1de79-331b-4447-b3d1-f74f58f65d5e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\09.RushYakuza\LandObject">
+      <UniqueIdentifier>{ff1b610f-8f2b-41f1-b054-fca8dddb7287}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

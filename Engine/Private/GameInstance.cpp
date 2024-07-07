@@ -4,6 +4,7 @@
 #include "Input_Device.h"
 #include "Level_Manager.h"
 #include "GameObject_Manager.h"
+#include "BTNode_Manager.h"
 #include "Component_Manager.h"
 #include "RenderTarget_Manager.h"
 #include "Light_Manager.h"
@@ -45,6 +46,10 @@ HRESULT CGameInstance::Initialize_Engine(_uint iMaxLevelIndex, const ENGINE_DESC
 		return E_FAIL;
 
 	m_pGameObject_Manager = CGameObject_Manager::Create(iMaxLevelIndex);
+	if (nullptr == m_pGameObject_Manager)
+		return E_FAIL;
+
+	m_pBTNode_Manager = CBTNode_Manager::Create(iMaxLevelIndex);
 	if (nullptr == m_pGameObject_Manager)
 		return E_FAIL;
 
@@ -192,6 +197,7 @@ void CGameInstance::Clear_Object(_uint iLevelIndex)
 	m_pRenderer->Clear();
 	m_pGameObject_Manager->Clear(iLevelIndex);
 	m_pComponent_Manager->Clear(iLevelIndex);
+	m_pBTNode_Manager->Clear(iLevelIndex);
 }
 
 CComponent* CGameInstance::Get_GameObject_Component(_uint iLevelIndex, const wstring strLayerTag, const wstring strComponentTag, _uint iIndex)
@@ -335,6 +341,16 @@ HRESULT CGameInstance::Add_Component_Prototype(_uint iLevelIndex, const wstring 
 CComponent* CGameInstance::Add_Component_Clone(_uint iLevelIndex, const wstring strComponentTag, void* pArg)
 {
 	return m_pComponent_Manager->Add_Component_Clone(iLevelIndex, strComponentTag, pArg);
+}
+
+HRESULT CGameInstance::Add_BTNode_Prototype(_uint iLevelIndex, const wstring strBTNodeTag, CBTNode* pBTNode)
+{
+	return m_pBTNode_Manager->Add_BTNode_Prototype(iLevelIndex, strBTNodeTag, pBTNode);
+}
+
+CBTNode* CGameInstance::Add_BTNode(_uint iLevelIndex, const wstring strBTNodeTag, void* pArg)
+{
+	return m_pBTNode_Manager->Add_BTNode(iLevelIndex, strBTNodeTag, pArg);
 }
 
 const _float4x4* CGameInstance::Get_Transform_Float4x4(CPipeLine::D3DTRANSFORMSTATE eState)
@@ -707,6 +723,7 @@ void CGameInstance::Free()
 	Safe_Release(m_pLevel_Manager);
 	Safe_Release(m_pGameObject_Manager);
 	Safe_Release(m_pComponent_Manager);
+	Safe_Release(m_pBTNode_Manager);
 	Safe_Release(m_pRenderTarget_Manager);
 	Safe_Release(m_pLight_Manager);
 	Safe_Release(m_pTimer_Manager);

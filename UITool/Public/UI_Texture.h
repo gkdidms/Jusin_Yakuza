@@ -19,9 +19,16 @@ public:
         _bool isParent = { false };
         const _float4x4* pParentMatrix;
         _float2 fStartUV;
-        _float2 fEndUV;
+        _float2 fEndUV = { 1.f , 1.f };
         _float4 vColor;
         string strParentName;
+        _uint iShaderPass;
+        _float4x4 WorldMatrix;
+
+        _bool bAnim;
+        _float2 fAnimTime;
+        _float3 vStartPos;//최종위치는 worldpos 
+
     } UI_TEXTURE_DESC;
 
 public:
@@ -29,6 +36,16 @@ public:
     void Set_SizeY(_float fSizeY) { m_fSizeY = fSizeY; }
     void Set_ShaderPass(_uint iPass) { m_iShaderPass = iPass; }
     void Set_Color(_float4 vColor) { m_vColor = vColor; }
+
+
+    void Set_StartPos(_float3 vStartPos) { m_vStartPos = vStartPos;}
+    void Set_AnimTime(_float2 fAnimTime) { m_fAnimTime = fAnimTime; }
+    void Set_isAnim(_bool isAnim) { m_isAnim = isAnim; }
+#ifdef _TOOL
+    void Set_isPlay(_bool isPlay) { m_isPlay = isPlay; }
+#endif // _TOOL
+
+
 public:
     _float Get_SizeX() { return m_fSizeX; }
     _float Get_SizeY() { return m_fSizeY; }
@@ -41,6 +58,16 @@ public:
     wstring Get_FilePath() { return m_strTextureFilePath; }
 
     _float4 Get_Color() { return m_vColor; }
+
+    _float3 Get_StartPos() { return m_vStartPos; }
+    _float2 Get_AnimTime() { return m_fAnimTime; }
+    _bool Get_isAnim() { return m_isAnim; }
+
+#ifdef _TOOL
+    _bool Get_isPlay() { return m_isPlay; }
+#endif // _TOOL
+
+
 protected:
     CUI_Texture(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
     CUI_Texture(const CUI_Texture& rhs);
@@ -78,10 +105,17 @@ protected:
 
     _uint m_iShaderPass = { 0 };
 
+    _float3 m_vStartPos;
+    _float2 m_fAnimTime;
+    _bool m_isAnim;
+#ifdef _TOOL
+    _bool m_isPlay = { true };
+#endif // _TOOL
+
 public:
     virtual HRESULT Save_binary(const string strDirectory)override; 
     virtual HRESULT Save_Groupbinary( ofstream& out)override;
-    virtual HRESULT Load_binary()override; 
+    virtual HRESULT Load_binary(const string strDirectory)override;
 
 protected:
     virtual HRESULT Add_Components();

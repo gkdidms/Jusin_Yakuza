@@ -1,10 +1,20 @@
 #pragma once
 #include "Monster.h"
 
+
 BEGIN(Client)
 class CRushYakuza :
     public CMonster
 {
+public:
+    typedef struct tMapMonsterObjDesc : public CGameObject::GAMEOBJECT_DESC
+    {
+        XMMATRIX		vStartPos;
+        wstring			wstrModelName;
+        int				iShaderPass;
+    }MONSTER_IODESC;
+
+
 private:
     CRushYakuza(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
     CRushYakuza(const CRushYakuza& rhs);
@@ -20,6 +30,18 @@ public:
 
 private:
     class CAI_RushYakuza* m_pTree = { nullptr };
+
+    _bool m_isAnimLoop = { false };
+
+    _float          m_fPrevSpeed = { 0.f };
+    _float4         m_vPrevMove;
+    _float4         m_vPrevRotation;
+    _float4x4       m_ModelWorldMatrix;
+
+    // map 배치 관련
+    wstring					m_wstrModelName;
+    int						m_iShaderPassNum = { 0 };
+
 
 private:
     virtual HRESULT Add_Componenets() override;

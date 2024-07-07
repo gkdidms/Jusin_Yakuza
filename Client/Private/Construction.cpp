@@ -174,7 +174,7 @@ HRESULT CConstruction::Render()
 				return E_FAIL;
 		}
 		
-		
+
 		if (1 == m_iShaderPassNum)
 		{
 			// 유리문 처리
@@ -205,7 +205,9 @@ HRESULT CConstruction::Render()
 			if (FAILED(m_pShaderCom->Bind_Matrix("g_ReflectViewMatrix", m_pGameInstance->Get_ReflectViewMatrix())))
 				return E_FAIL;
 
-			
+			if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_BackBlurReverse"), m_pShaderCom, "g_BlurReverseTexture")))
+				return E_FAIL;
+
 		}
 
 		m_pShaderCom->Begin(m_iShaderPassNum);

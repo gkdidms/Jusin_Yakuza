@@ -26,6 +26,14 @@ HRESULT CRushYakuza::Initialize(void* pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
+	if (nullptr != pArg)
+	{
+		MONSTER_IODESC* gameobjDesc = (MONSTER_IODESC*)pArg;
+		m_pTransformCom->Set_WorldMatrix(gameobjDesc->vStartPos);
+		m_wstrModelName = gameobjDesc->wstrModelName;
+		m_iShaderPassNum = 0;
+	}
+
 	if (FAILED(Add_Componenets()))
 		return E_FAIL;
 
@@ -86,15 +94,20 @@ HRESULT CRushYakuza::Render()
 	return S_OK;
 }
 
+
 HRESULT CRushYakuza::Add_Componenets()
 {
 	if (FAILED(__super::Add_Component(LEVEL_TEST, TEXT("Prototype_Component_Shader_VtxAnim"),
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Component(LEVEL_TEST, TEXT("Prototype_Component_Model_Jimu"),
+	if (FAILED(__super::Add_Component(LEVEL_TEST, m_wstrModelName,
 		TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
 		return E_FAIL;
+
+	//if (FAILED(__super::Add_Component(LEVEL_TEST, TEXT("Prototype_Component_Model_Jimu"),
+	//	TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
+	//	return E_FAIL;
 
 	CBounding_OBB::BOUNDING_OBB_DESC		ColliderDesc{};
 
@@ -112,12 +125,12 @@ HRESULT CRushYakuza::Add_Componenets()
 		return E_FAIL;
 
 	//행동트리 저장
-	CAI_RushYakuza::AI_OFFICE_YAKUZA_DESC Desc{};
-	Desc.pModel = m_pModelCom;
+	CAI_RushYakuza::AI_MONSTER_DESC Desc{};
 	Desc.pState = &m_iState;
 	Desc.pAnim = m_pAnimCom;
+	Desc.pThis = this;
 
-	m_pTree = CAI_RushYakuza::Create(&Desc);
+	m_pTree = dynamic_cast<CAI_RushYakuza*>(m_pGameInstance->Add_BTNode(LEVEL_TEST, TEXT("Prototype_BTNode_RushYakuza"), &Desc));
 	if (nullptr == m_pTree)
 		return E_FAIL;
 

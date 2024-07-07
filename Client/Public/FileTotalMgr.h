@@ -19,6 +19,7 @@ public:
 		CONSTRUCTION, /* 그냥 건축물 */
 		ITEM,
 		MONSTER,
+		PLAYER,
 		OBJ_END
 	};
 
@@ -52,7 +53,7 @@ private:
 	LIGHT_DESC_IO							m_LightTotalInform{};
 	COLLIDER_IO								m_MapCollider{};
 
-	vector<wstring>							m_Layers = { TEXT("Layer_GameObjects"), TEXT("Layer_Monster") };
+	vector<wstring>							m_Layers = { TEXT("Layer_GameObjects"), TEXT("Layer_Monster"), TEXT("Layer_Player") };
 
 private:
 	HRESULT									Set_Terrain_Size(int iStageLevel);

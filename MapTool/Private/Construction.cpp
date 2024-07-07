@@ -40,7 +40,7 @@ HRESULT CConstruction::Initialize(void* pArg)
 		for (int i = 0; i < gameobjDesc->iDecalNum; i++)
 		{
 			DECAL_DESC  tDecal;
-			CTexture* pTexture;
+			CTexture*	pTexture;
 			XMMATRIX    vStartPos;
 
 			CDecal::DECALOBJ_DESC		decalObjDesc{};
@@ -256,6 +256,8 @@ HRESULT CConstruction::Add_Components(void* pArg)
 	if (FAILED(__super::Add_Component(LEVEL_RUNMAP, TEXT("Prototype_Component_Shader_VtxMesh"),
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
 		return E_FAIL;
+	
+
 
 	return S_OK;
 }

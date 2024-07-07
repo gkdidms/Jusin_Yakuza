@@ -184,6 +184,12 @@
     <Filter Include="01.Utility\03.Component\09.Animation">
       <UniqueIdentifier>{2ff9a63d-40d0-42e3-affa-f343d3f9c0b4}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Utility\11.BTNode">
+      <UniqueIdentifier>{a10b8bd0-185e-4336-bdb6-e77a92033ac9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\11.BTNode\Manager">
+      <UniqueIdentifier>{3bdfb931-41b4-4b0f-b653-8b9c0f754f16}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\Base.h">
@@ -369,6 +375,12 @@
     <ClInclude Include="..\public\Anim.h">
       <Filter>01.Utility\03.Component\09.Animation</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\BTNode.h">
+      <Filter>01.Utility\11.BTNode</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\BTNode_Manager.h">
+      <Filter>01.Utility\11.BTNode\Manager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\Base.cpp">
@@ -541,6 +553,12 @@
     </ClCompile>
     <ClCompile Include="..\private\Anim.cpp">
       <Filter>01.Utility\03.Component\09.Animation</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\BTNode.cpp">
+      <Filter>01.Utility\11.BTNode</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\BTNode_Manager.cpp">
+      <Filter>01.Utility\11.BTNode\Manager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

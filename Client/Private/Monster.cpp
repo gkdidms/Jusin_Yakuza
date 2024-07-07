@@ -67,17 +67,12 @@ void CMonster::Synchronize_Root(const _float& fTimeDelta)
 		}
 		else
 		{
-			// 쿼터니언 회전값 적용은 중단 (추후 마저 진행예정)
-			//_float4 v;
-			//_vector diffQuaternionVector = XMQuaternionMultiply(resultQuaternionVector, XMQuaternionConjugate(XMLoadFloat4(&m_vPrevRotation)));
-			//XMStoreFloat4(&v, diffQuaternionVector);
-			//m_pTransformCom->Change_Rotation_Quaternion(v);
-
-			//_float4 vb;
-			//XMStoreFloat4(&vb, vFF - XMLoadFloat4(&m_vPrevMove));
-			//m_pTransformCom->Go_Straight_CustumDir(vb, fTimeDelta);
+			_float4 fMoveDir;
 			_float fMoveSpeed = XMVectorGetX(XMVector3Length(vFF - XMLoadFloat4(&m_vPrevMove)));
-			m_pTransformCom->Go_Straight_CustumSpeed(m_fPrevSpeed, 1);
+			
+			//Y값 이동을 죽인 방향으로 적용해야한다.
+			XMStoreFloat4(&fMoveDir, XMVectorSetY(XMVector3Normalize(vFF - XMLoadFloat4(&m_vPrevMove)), 0.f));
+			m_pTransformCom->Go_Move_Custum(fMoveDir, fMoveSpeed, 1);
 			m_fPrevSpeed = fMoveSpeed;
 		}
 	}

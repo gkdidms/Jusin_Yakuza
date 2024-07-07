@@ -37,8 +37,10 @@ HRESULT CGroup::Initialize(void* pArg)
 	if (nullptr == pArg)
 		return E_FAIL;
 
-	if (FAILED(__super::Initialize(pArg)))
-		return E_FAIL;
+
+		if (FAILED(__super::Initialize(pArg)))
+			return E_FAIL;
+
 
 	return S_OK;
 }
@@ -77,9 +79,234 @@ HRESULT CGroup::Save_binary(const string strDirectory)
 
 HRESULT CGroup::Save_Groupbinary(ofstream& out)
 {
+	_int size = m_PartObjects.size();
+	out.write((char*)&size, sizeof(_int));	
+
 	for (auto& pObject : m_PartObjects)
 	{
 		pObject->Save_Groupbinary(out);
+	}
+
+	return S_OK;
+}
+
+HRESULT CGroup::Load_Groupbinary(ifstream& in)
+{
+	_int size;
+	in.read((char*)&size, sizeof(_int));
+
+	for (_int i = 0; i < size; i++)
+	{
+		_uint Type;
+		in.read((char*)&Type, sizeof(_uint));
+
+		switch (Type)
+		{
+		case 0:
+		{
+			CImage_Texture::tUITextureDesc pDesc{};
+			pDesc.iTypeIndex = Type;
+
+			_int strTexturelength;
+			char charBox[MAX_PATH] = {};
+			in.read((char*)&strTexturelength, sizeof(_int));
+			in.read((char*)&charBox, strTexturelength);
+			pDesc.strName = charBox;
+
+			in.read((char*)&pDesc.isParent, sizeof(_bool));
+
+			in.read((char*)&strTexturelength, sizeof(_int));
+			in.read((char*)&charBox, strTexturelength);
+			pDesc.strParentName = charBox;
+
+			pDesc.pParentMatrix = m_pTransformCom->Get_WorldFloat4x4();	
+
+			string path;
+			in.read((char*)&strTexturelength, sizeof(_int));
+			in.read((char*)&charBox, strTexturelength);
+			path = charBox;
+			pDesc.strTextureFilePath = m_pGameInstance->StringToWstring(path);
+
+			ZeroMemory(charBox, MAX_PATH);
+			in.read((char*)&strTexturelength, sizeof(_int));
+			in.read((char*)&charBox, strTexturelength);
+			path = charBox;
+			pDesc.strTextureFileName = m_pGameInstance->StringToWstring(path);
+
+			in.read((char*)&pDesc.fStartUV, sizeof(_float2));
+			in.read((char*)&pDesc.fEndUV, sizeof(_float2));
+			in.read((char*)&pDesc.vColor, sizeof(_float4));
+			in.read((char*)&pDesc.iShaderPass, sizeof(_uint));
+			in.read((char*)&pDesc.WorldMatrix, sizeof(_float4x4));
+
+			pDesc.isLoad = true;
+
+			CUI_Texture* pImage = dynamic_cast<CUI_Texture*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Image_Texture"), &pDesc));
+			if (nullptr == pImage)
+				return E_FAIL;
+
+			m_PartObjects.emplace_back(pImage);	
+		}
+		break;
+
+		case 1:
+		{
+			CBtn::BTN_DESC pDesc{};
+			pDesc.iTypeIndex = Type;
+
+			_int strTexturelength;
+			char charBox[MAX_PATH] = {};
+			in.read((char*)&strTexturelength, sizeof(_int));
+			in.read((char*)&charBox, strTexturelength);
+			pDesc.strName = charBox;
+
+			in.read((char*)&pDesc.isParent, sizeof(_bool));
+
+			in.read((char*)&strTexturelength, sizeof(_int));
+			in.read((char*)&charBox, strTexturelength);
+			pDesc.strParentName = charBox;
+
+			pDesc.pParentMatrix = m_pTransformCom->Get_WorldFloat4x4();
+
+			string path;
+			in.read((char*)&strTexturelength, sizeof(_int));
+			in.read((char*)&charBox, strTexturelength);
+			path = charBox;
+			pDesc.strTextureFilePath = m_pGameInstance->StringToWstring(path);
+
+			ZeroMemory(charBox, MAX_PATH);
+			in.read((char*)&strTexturelength, sizeof(_int));
+			in.read((char*)&charBox, strTexturelength);
+			path = charBox;
+			pDesc.strTextureFileName = m_pGameInstance->StringToWstring(path);
+
+			in.read((char*)&pDesc.fStartUV, sizeof(_float2));
+			in.read((char*)&pDesc.fEndUV, sizeof(_float2));
+			in.read((char*)&pDesc.vColor, sizeof(_float4));
+			in.read((char*)&pDesc.iShaderPass, sizeof(_uint));
+			in.read((char*)&pDesc.WorldMatrix, sizeof(_float4x4));
+
+			ZeroMemory(charBox, MAX_PATH);
+			in.read((char*)&strTexturelength, sizeof(_int));
+			in.read((char*)&charBox, strTexturelength);
+			path = charBox;
+			pDesc.strClickFilePath = m_pGameInstance->StringToWstring(path);
+
+			ZeroMemory(charBox, MAX_PATH);
+			in.read((char*)&strTexturelength, sizeof(_int));
+			in.read((char*)&charBox, strTexturelength);
+			path = charBox;
+			pDesc.strClickFileName = m_pGameInstance->StringToWstring(path);
+
+			in.read((char*)&pDesc.ClickStartUV, sizeof(_float2));
+			in.read((char*)&pDesc.ClickEndUV, sizeof(_float2));
+
+			pDesc.isLoad = true;
+
+
+			CBtn* pBtn = dynamic_cast<CBtn*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Btn"), &pDesc));
+			if (nullptr == pBtn)
+				return E_FAIL;
+
+			m_PartObjects.emplace_back(pBtn);
+		}
+		break;
+
+		case 2:
+		{
+			CText::TEXT_DESC pDesc{};
+			pDesc.iTypeIndex = Type;
+
+			_int strTexturelength;
+			char charBox[MAX_PATH] = {};
+			in.read((char*)&strTexturelength, sizeof(_int));
+			in.read((char*)&charBox, strTexturelength);
+			pDesc.strName = charBox;
+
+			in.read((char*)&pDesc.isParent, sizeof(_bool));
+
+			in.read((char*)&strTexturelength, sizeof(_int));
+			in.read((char*)&charBox, strTexturelength);
+			pDesc.strParentName = charBox;
+
+			pDesc.pParentMatrix = m_pTransformCom->Get_WorldFloat4x4();
+
+			string path;
+
+			in.read((char*)&pDesc.vColor, sizeof(_float4));
+			in.read((char*)&pDesc.iShaderPass, sizeof(_uint));
+			in.read((char*)&pDesc.WorldMatrix, sizeof(_float4x4));
+
+			ZeroMemory(charBox, MAX_PATH);
+			in.read((char*)&strTexturelength, sizeof(_int));
+			in.read((char*)&charBox, strTexturelength);
+			path = charBox;
+			pDesc.strText = m_pGameInstance->StringToWstring(path);
+
+			pDesc.isLoad = true;
+
+			CText* pText = dynamic_cast<CText*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Text"), &pDesc));
+			if (nullptr == pText)
+				return E_FAIL;
+
+			m_PartObjects.emplace_back(pText);
+		}
+		break;
+
+		case 4:
+		{
+			CUI_Effect::UI_EFFECT_DESC pDesc{};
+			pDesc.iTypeIndex = Type;
+
+			_int strTexturelength;
+			char charBox[MAX_PATH] = {};
+			in.read((char*)&strTexturelength, sizeof(_int));
+			in.read((char*)&charBox, strTexturelength);
+			pDesc.strName = charBox;
+
+			in.read((char*)&pDesc.isParent, sizeof(_bool));
+
+			in.read((char*)&strTexturelength, sizeof(_int));
+			in.read((char*)&charBox, strTexturelength);
+			pDesc.strParentName = charBox;
+
+			pDesc.pParentMatrix = m_pTransformCom->Get_WorldFloat4x4();
+
+			string path;
+			in.read((char*)&strTexturelength, sizeof(_int));
+			in.read((char*)&charBox, strTexturelength);
+			path = charBox;
+			pDesc.strTextureFilePath = m_pGameInstance->StringToWstring(path);
+
+			ZeroMemory(charBox, MAX_PATH);
+			in.read((char*)&strTexturelength, sizeof(_int));
+			in.read((char*)&charBox, strTexturelength);
+			path = charBox;
+			pDesc.strTextureFileName = m_pGameInstance->StringToWstring(path);
+
+			in.read((char*)&pDesc.fStartUV, sizeof(_float2));
+			in.read((char*)&pDesc.fEndUV, sizeof(_float2));
+			in.read((char*)&pDesc.vColor, sizeof(_float4));
+			in.read((char*)&pDesc.iShaderPass, sizeof(_uint));
+			in.read((char*)&pDesc.WorldMatrix, sizeof(_float4x4));
+
+			in.read((char*)&pDesc.vLifeTime, sizeof(_float3));
+			in.read((char*)&pDesc.fSpeed, sizeof(_float));
+
+			pDesc.isLoad = true;
+
+			CUI_Effect* pUIEffect = dynamic_cast<CUI_Effect*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UIEffect"), &pDesc));
+			if (nullptr == pUIEffect)
+				return E_FAIL;
+
+			m_PartObjects.emplace_back(pUIEffect);
+		}
+		break;
+
+		default:
+			break;
+		}
+
 	}
 
 	return S_OK;

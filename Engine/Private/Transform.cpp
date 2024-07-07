@@ -92,12 +92,12 @@ void CTransform::Go_Straight_CustumSpeed(const _float& fSpeed, const _float& fTi
 	Set_State(STATE_POSITION, vPosition);
 }
 
-void CTransform::Go_Straight_CustumDir(const _float4& vDir, const _float& fTimeDelta)
+void CTransform::Go_Move_Custum(const _float4& vDir, const _float& fSpeed, const _float& fTimeDelta)
 {
 	_vector vPosition = Get_State(STATE_POSITION);
 	_vector vLook = Get_State(STATE_LOOK);
 
-	vPosition += XMLoadFloat4(&vDir) * m_fSpeedPerSec * fTimeDelta;
+	vPosition += XMLoadFloat4(&vDir) * fSpeed * fTimeDelta;
 
 	Set_State(STATE_POSITION, vPosition);
 }

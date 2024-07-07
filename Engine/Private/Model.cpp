@@ -139,6 +139,9 @@ HRESULT CModel::Ready_Materials(const _char* pModelFilePath)
 
 			_splitpath_s(pPath.data, nullptr, 0, nullptr, 0, szFileName, MAX_PATH, szExt, MAX_PATH);
 
+			if (strcmp(szFileName, "."))
+				continue;
+
 			_char		szDrive[MAX_PATH] = "";
 			_char		szDirectory[MAX_PATH] = "";
 
@@ -617,6 +620,26 @@ HRESULT CModel::Import_Materials(ifstream& in, _bool isTool)
 			_uint iPathLen = 0;
 			in.read((char*)&iPathLen, sizeof(_uint));
 			in.read((char*)&szFullPath, iPathLen);
+
+
+			string input = szFullPath;
+			stringstream ss(input);
+			string token;
+			vector<string> tokens;
+
+			// '/'를 구분자로 문자열을 분리
+			while (std::getline(ss, token, '/')) {
+				tokens.push_back(token);
+			}
+
+			if (!tokens.empty())
+			{
+				string lastToken = tokens.back();
+
+				if (lastToken == ".") {
+					continue;
+				}
+			}
 
 			// WideChar로 형변환해주는 함수. code page를 아스키로 쓴다는 옵션 CP_ACP
 			MultiByteToWideChar(CP_ACP, 0, szFullPath, strlen(szFullPath), szRealFullPath, MAX_PATH);

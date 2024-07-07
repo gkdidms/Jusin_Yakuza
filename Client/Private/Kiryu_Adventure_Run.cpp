@@ -63,7 +63,6 @@ void CKiryu_Adventure_Run::Tick(const _float& fTimeDelta)
 	}
 		break;
 	case CKiryu_Adventure_Run::ANIM_LOOP:
-		if(m_isStop)
 			m_eAnimState = ANIM_END;
 		break;
 	}
@@ -117,7 +116,6 @@ _bool CKiryu_Adventure_Run::Get_AnimationEnd()
 	if (pModelCom->Get_AnimFinished())
 	{
 		m_eAnimState = { ANIM_START };
-		m_isStop = { false };
 
 		return true;
 	}
