@@ -1,7 +1,6 @@
 #pragma once
 #include "Monster.h"
 
-
 BEGIN(Client)
 class CRushYakuza :
     public CMonster
@@ -10,10 +9,12 @@ public:
     typedef struct tMapMonsterObjDesc : public CGameObject::GAMEOBJECT_DESC
     {
         XMMATRIX		vStartPos;
+        int				iLayer;
         wstring			wstrModelName;
         int				iShaderPass;
-    }MONSTER_IODESC;
-
+        int				iObjType;
+        int				iObjPropertyType;
+    }MONSTER_DESC;
 
 private:
     CRushYakuza(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -28,8 +29,10 @@ public:
     virtual void Late_Tick(const _float& fTimeDelta) override;
     virtual HRESULT Render() override;
 
+public:
+    int							Get_ObjPlaceDesc(OBJECTPLACE_DESC* objplaceDesc);
+
 private:
-    class CAI_RushYakuza* m_pTree = { nullptr };
 
     _bool m_isAnimLoop = { false };
 
@@ -38,9 +41,12 @@ private:
     _float4         m_vPrevRotation;
     _float4x4       m_ModelWorldMatrix;
 
-    // map 배치 관련
+    // MAP 배치관련
+    int						m_iLayerNum;
     wstring					m_wstrModelName;
     int						m_iShaderPassNum = { 0 };
+    int						m_iObjectType = { 0 };
+    int						m_iObjectPropertyType = { 0 };
 
 
 private:
@@ -48,6 +54,7 @@ private:
     virtual HRESULT Bind_ResourceData() override;
 
 private:
+    void Synchronize_Root(const _float& fTimeDelta);
     void Change_Animation();
 
 public:

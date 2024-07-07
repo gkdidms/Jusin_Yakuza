@@ -88,7 +88,7 @@ HRESULT CRenderer::Initialize()
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_ToneMapping"), 250.f, 250.f, 100.f, 100.f)))
 		return E_FAIL;
-	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_PuddleDiffuse"), 250.f, 250.f, 100.f, 100.f)))
+	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_BackBlurReverse"), 250.f, 350.f, 100.f, 100.f)))
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_64x64"), 350.f, 050.f, 100.f, 100.f)))
@@ -248,6 +248,10 @@ HRESULT CRenderer::Ready_Targets()
 	/*Target_BackBlur*/
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_BackBlur"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 1.f))))
 		return E_FAIL;
+	//
+	/*Target_BackBlur*/
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_BackBlurReverse"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 1.f))))
+		return E_FAIL;
 
 	/*Target_BOF*/
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_BOF"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 1.f))))
@@ -387,6 +391,10 @@ HRESULT CRenderer::Ready_MRTs()
 
 	/*MTR_DeferredBlur*/
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MTR_DeferredBlur"), TEXT("Target_BackBlur"))))
+		return E_FAIL;
+	
+	/*MTR_DeferredBlurReverse*/
+	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MTR_DeferredBlur"), TEXT("Target_BackBlurReverse"))))
 		return E_FAIL;
 
 	/*MTR_BOF*/
@@ -600,7 +608,7 @@ void CRenderer::Draw()
 	Render_CopyBackBuffer(); // 최종으로 그려서 백버퍼에 올라갈 이미지 복사
 	
 	//물웅덩이에 캡쳐장면 넣어줌
-	Render_Puddle();
+	//Render_Puddle();
 	
 	Render_DeferredResult(); // 복사한 이미지를 백버퍼에 넣어줌. (Deferred 최종)
 
@@ -608,7 +616,7 @@ void CRenderer::Draw()
 	{
 		Render_DeferredBlur();
 
-		//Render_Puddle();
+		Render_Puddle();
 
 		Render_BOF();
 	}
@@ -1163,6 +1171,9 @@ void CRenderer::Render_DeferredBlur()
 
 	if (FAILED(m_pGameInstance->End_MRT()))
 		return;
+
+
+
 }
 
 void CRenderer::Render_BOF()

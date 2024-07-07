@@ -13,6 +13,7 @@
 #include "CineCamera.h"
 #include "Decal.h"
 #include "ColliderObj.h"
+#include "RushYakuza.h"
 #pragma endregion
 
 
@@ -131,8 +132,9 @@ HRESULT CLoader::Loading_For_RunMapLevel(int iLevel)
 		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("모델를(을) 로딩 중 입니다."));
-
+	Add_Models_On_Path(iLevel, TEXT("../../Client/Bin/Resources/Models/Anim/"));
 	/* For.Prototype_Component_VIBuffer_Terrain */
+
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(iLevel, TEXT("Prototype_Component_VIBuffer_Terrain_Flat"),
 		CVIBuffer_Terrain_Flat::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
@@ -151,17 +153,23 @@ HRESULT CLoader::Loading_For_RunMapLevel(int iLevel)
 
 	PreTransformMatrix = XMMatrixIdentity();
 
-	//if (FAILED(m_pGameInstance->Add_Component_Prototype(iLevel, TEXT("Prototype_Component_Model_f1"),
-	//	CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/NonAnim/Map/Map0/f1.fbx", PreTransformMatrix, false, true))))
+	//if (FAILED(m_pGameInstance->Add_Component_Prototype(iLevel, TEXT("Prototype_Component_Model_OfficeSet1"),
+	//	CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/NonAnim/Map/Map1/OfficeSet1.fbx", PreTransformMatrix, false, true))))
 	//	return E_FAIL;
 
 	//PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
 
 
 	PreTransformMatrix = XMMatrixIdentity();
-	//if (FAILED(m_pGameInstance->Add_Component_Prototype(iLevel, TEXT("Prototype_Component_Model_Bone_Sphere"),
-	//	CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/NonAnim/Bone_Sphere/Bone_Sphere.fbx", PreTransformMatrix, false, true))))
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(iLevel, TEXT("Prototype_Component_Model_bookshelf"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/NonAnim/Map/Map1/bookshelf.fbx", PreTransformMatrix, false, true))))
+		return E_FAIL;
+	//if (FAILED(m_pGameInstance->Add_Component_Prototype(iLevel, TEXT("Prototype_Component_Model_OfficeSet1"),
+	//	CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/NonAnim/Map/Map1/OfficeSet1.fbx", PreTransformMatrix, false, true))))
 	//	return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(iLevel, TEXT("Prototype_Component_Model_OfficeSet2"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/NonAnim/Map/Map1/OfficeSet2.fbx", PreTransformMatrix, false, true))))
+		return E_FAIL;
 
 	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
 
@@ -175,15 +183,35 @@ HRESULT CLoader::Loading_For_RunMapLevel(int iLevel)
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/NonAnim/Map/Map1/Bin/Water011.dat", PreTransformMatrix, true, true))))
 		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(iLevel, TEXT("Prototype_Component_Model_Paperbox"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/NonAnim/Map/Map1/Bin/Paperbox.dat", PreTransformMatrix, true, true))))
+		return E_FAIL;
 
-	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
-	//if (FAILED(m_pGameInstance->Add_Component_Prototype(iLevel, TEXT("Prototype_Component_Model_f2"),
-	//	CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/NonAnim/Map/Map1/Bin/f2.dat", PreTransformMatrix, true))))
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(iLevel, TEXT("Prototype_Component_Model_bookshelfglass"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/NonAnim/Map/Map1/Bin/bookshelfglass.dat", PreTransformMatrix, true, true))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(iLevel, TEXT("Prototype_Component_Model_OfficeSet1"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/NonAnim/Map/Map1/Bin/OfficeSet1.dat", PreTransformMatrix, true, true))))
+		return E_FAIL;
+
+	//if (FAILED(m_pGameInstance->Add_Component_Prototype(iLevel, TEXT("Prototype_Component_Model_bookshelf"),
+	//	CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/NonAnim/Map/Map1/Bin/bookshelf.dat", PreTransformMatrix, true, true))))
 	//	return E_FAIL;
 
-	PreTransformMatrix = XMMatrixIdentity();
+	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(iLevel, TEXT("Prototype_Component_Model_f2"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/NonAnim/Map/Map1/Bin/f2.dat", PreTransformMatrix, true, true))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(iLevel, TEXT("Prototype_Component_Model_trashbox"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/NonAnim/Map/Map1/Bin/trashbox.dat", PreTransformMatrix, true, true))))
+		return E_FAIL;
+
+
+	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(iLevel, TEXT("Prototype_Component_Model_Bone_Sphere"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/NonAnim/Bone_Sphere/Bone_Sphere.fbx", PreTransformMatrix, false, true))))
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/NonAnim/Bone_Sphere/Square.fbx", PreTransformMatrix, false, true))))
 		return E_FAIL;
 
 
@@ -195,6 +223,9 @@ HRESULT CLoader::Loading_For_RunMapLevel(int iLevel)
 	/* For.Prototype_Component_Shader_VtxNorTex */
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(iLevel, TEXT("Prototype_Component_Shader_VtxNorTex"),
 		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxNorTex.hlsl"), VTXNORTEX::Elements, VTXNORTEX::iNumElements))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(iLevel, TEXT("Prototype_Component_Shader_VtxAnim"), CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxAnimMesh.hlsl"), VTXANIMMESH::Elements, VTXANIMMESH::iNumElements))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Shader_VtxMesh */
@@ -277,6 +308,72 @@ HRESULT CLoader::Loading_For_RunMapLevel(int iLevel)
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
 
 	m_isFinished = true;
+
+	return S_OK;
+}
+
+HRESULT CLoader::Add_Models_On_Path(_uint iLevel, const wstring& strPath, _bool bAnim)
+{
+	vector<wstring> vecDirectorys;
+	m_pGameInstance->Get_DirectoryName(strPath, vecDirectorys);
+
+	_matrix		PreTransformMatrix;
+
+	for (auto& strDirlName : vecDirectorys)
+	{
+		wstring strFilePath = strPath + strDirlName + TEXT("/");
+
+		string strDirectory = m_pGameInstance->WstringToString(strFilePath);
+		string strBinPath = strDirectory + "Bin/";
+
+		if (!fs::exists(strBinPath))
+		{
+			wstring strComponentName = TEXT("Prototype_Component_Model_") + strDirlName;
+			wstring strFbxPath = strFilePath + strDirlName + TEXT(".fbx");
+			string strTransPath = m_pGameInstance->WstringToString(strFbxPath);
+
+			if (!bAnim)
+			{
+				PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(180.0f));
+				if (FAILED(m_pGameInstance->Add_Component_Prototype(iLevel, strComponentName,
+					CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, strTransPath.c_str(), PreTransformMatrix, false, true))))
+					return E_FAIL;
+			}
+			else
+			{
+				PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
+				if (FAILED(m_pGameInstance->Add_Component_Prototype(iLevel, strComponentName,
+					CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, strTransPath.c_str(), PreTransformMatrix, false, true))))
+					return E_FAIL;
+			}
+		}
+		else
+		{
+			for (const auto& entry : std::filesystem::directory_iterator(strBinPath))
+			{
+				string file_path = entry.path().string();
+				string strFileName = m_pGameInstance->Get_FileName(file_path);
+				wstring strComponentName = TEXT("Prototype_Component_Model_") + m_pGameInstance->StringToWstring(strFileName);
+
+				if (!bAnim)
+				{
+					PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f) * XMMatrixRotationY(XMConvertToRadians(180.0f));
+					if (FAILED(m_pGameInstance->Add_Component_Prototype(iLevel, strComponentName,
+						CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, file_path.c_str(), PreTransformMatrix, true, true))))
+						return E_FAIL;
+				}
+				else
+				{
+					PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
+					if (FAILED(m_pGameInstance->Add_Component_Prototype(iLevel, strComponentName,
+						CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, file_path.c_str(), PreTransformMatrix, true,true))))
+						return E_FAIL;
+				}
+
+			}
+		}
+
+	}
 
 	return S_OK;
 }
