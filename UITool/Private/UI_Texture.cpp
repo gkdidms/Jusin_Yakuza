@@ -16,10 +16,17 @@ CUI_Texture::CUI_Texture(const CUI_Texture& rhs)
 	m_WorldMatrix{rhs.m_WorldMatrix },
 	m_ViewMatrix{rhs.m_ViewMatrix },
 	m_ProjMatrix{rhs.m_ProjMatrix },
+	m_strParentName{rhs.m_strParentName },
 	m_fStartUV{rhs.m_fStartUV },
 	m_fEndUV{rhs.m_fEndUV },
+	m_isColor{rhs.m_isColor},
 	m_vColor{rhs.m_vColor },
-	m_iShaderPass{rhs.m_iShaderPass }
+	m_isAnim{rhs.m_isAnim},
+	m_fAnimTime{rhs.m_fAnimTime },
+	m_vStartPos{rhs.m_vStartPos },
+	m_iShaderPass{rhs.m_iShaderPass },
+	m_fControlAlpha{rhs.m_fControlAlpha },
+	m_isReverse{rhs.m_isReverse }
 {
 }
 
@@ -43,6 +50,7 @@ HRESULT CUI_Texture::Initialize(void* pArg)
 
 	m_fStartUV = pDesc->fStartUV;
 	m_fEndUV = pDesc->fEndUV;
+	m_isColor = pDesc->isColor;
 	m_vColor = pDesc->vColor;
 
 	m_iShaderPass = pDesc->iShaderPass;
@@ -50,6 +58,9 @@ HRESULT CUI_Texture::Initialize(void* pArg)
 	m_fAnimTime = pDesc->fAnimTime;
 	m_vStartPos = pDesc->vStartPos;
 	m_isAnim = pDesc->bAnim;
+
+	m_fControlAlpha = pDesc->fControlAlpha;
+	m_isReverse = pDesc->isReverse;
 
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
@@ -80,18 +91,40 @@ void CUI_Texture::Priority_Tick(const _float& fTimeDelta)
 void CUI_Texture::Tick(const _float& fTimeDelta)
 {
 #ifdef _TOOL
-	if (m_isAnim && m_isPlay)
+
+	if (m_isAnim && m_isPlay && !m_isReverse)
 		m_fAnimTime.x += fTimeDelta;
+	else if (m_isAnim && m_isPlay && m_isReverse)
+		m_fAnimTime.x -= fTimeDelta;
+
 #else
-	if (m_isAnim)
+
+	if (m_isAnim && !m_isReverse)
 		m_fAnimTime.x += fTimeDelta;
+	else if (m_isAnim  && m_isReverse)
+		m_fAnimTime.x -= fTimeDelta;
+
 #endif // _TOOL
 }
 
 void CUI_Texture::Late_Tick(const _float& fTimeDelta)
 {
-	if (m_fAnimTime.x > m_fAnimTime.y)
-		m_fAnimTime.x = 0.f;
+	if(!m_isReverse)
+	{
+		if (m_fAnimTime.x >= m_fAnimTime.y)
+		{
+			m_isPlay = false;
+			m_fAnimTime.x = m_fAnimTime.y;
+		}
+	}
+	else
+	{
+		if (0.f >= m_fAnimTime.x)
+		{
+			m_isPlay = false;
+			m_fAnimTime.x = 0.f;
+		}
+	}
 }
 
 HRESULT CUI_Texture::Render()
@@ -167,13 +200,18 @@ HRESULT CUI_Texture::Bind_ResourceData()
 
 		if (FAILED(m_pShaderCom->Bind_RawValue("g_fAnimTime", &m_fAnimTime, sizeof(_float2))))
 			return E_FAIL;
+
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_fControlAlpha", &m_fControlAlpha, sizeof(_float2))))
+			return E_FAIL;
+
 	}
 
-	if(4==m_iShaderPass)
+	if(m_isColor)
 	{
 		if (FAILED(m_pShaderCom->Bind_RawValue("g_vColor", &m_vColor, sizeof(_float4))))
 			return E_FAIL;
 	}
+
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix)))
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))

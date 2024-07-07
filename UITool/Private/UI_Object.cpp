@@ -6,7 +6,9 @@ CUI_Object::CUI_Object(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 }
 
 CUI_Object::CUI_Object(const CUI_Object& rhs)
-	: CGameObject { rhs }
+	: CGameObject { rhs },
+	m_strName{rhs.m_strName},
+	m_iTypeIndex{rhs.m_iTypeIndex}
 {
 }
 
