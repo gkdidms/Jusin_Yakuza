@@ -535,30 +535,6 @@
     <Filter Include="02.GameObjects\02.Character\LandObject\00.Player">
       <UniqueIdentifier>{8f8aa033-d0f3-43b6-ae6e-e95d1f3c776f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\Behavior">
-      <UniqueIdentifier>{5ece0b8f-54a5-4e8e-935e-6800ae4bd425}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\Behavior\KRS">
-      <UniqueIdentifier>{2e79bf21-5424-4bbb-974c-c3af527ca698}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\Behavior\KRH">
-      <UniqueIdentifier>{1d4cafe1-9cb2-45ed-bfe3-aa4c3bdc39ae}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\Behavior\KRC">
-      <UniqueIdentifier>{20354a45-b413-4665-8872-2dd9ad500c03}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\Behavior\Adventure">
-      <UniqueIdentifier>{01eb585a-455f-4390-bc11-248673075203}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\Behavior\Adventure\Idle">
-      <UniqueIdentifier>{db4f74c4-76cc-4218-868f-66ccee366159}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\Behavior\Adventure\Walk">
-      <UniqueIdentifier>{d01633d9-e0ab-4e73-82af-44a33fc04999}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\Behavior\Adventure\Run">
-      <UniqueIdentifier>{b50b0e94-8792-4c99-83ca-c65719880701}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObjects\02.Character\CharacterData">
       <UniqueIdentifier>{d47f23c7-f09f-46fd-a441-f1561bb9a95a}</UniqueIdentifier>
     </Filter>

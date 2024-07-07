@@ -110,7 +110,12 @@ void CAnimation::Update_Change_Animation(_float fTimeDelta, const vector<class C
 	m_CurrentChangePosition += m_TickPerSecond * fTimeDelta;
 
 	if (ChangeInterval <= m_CurrentChangePosition)
+	{
 		m_isChanged = true;
+		XMStoreFloat3(&m_vCenterMoveValue, XMVectorZero());
+		XMStoreFloat4(&m_vCenterRotationValue, XMVectorZero());
+		return;
+	}
 
 	_uint		iChannelIndex = { 0 };
 
