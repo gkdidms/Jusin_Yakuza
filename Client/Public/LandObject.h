@@ -26,7 +26,6 @@ public:
     virtual HRESULT Render() override;
 
     /* 충돌관련 함수들 */
-    virtual _bool Intersect(CLandObject* pTargetObject);
     virtual void ImpulseResolution(CLandObject* pTargetObject);
 
 protected:
@@ -40,6 +39,10 @@ public:
 
     CCollider* Get_Collider() {
         return m_pColliderCom;
+    }
+
+    const unordered_map<_uint, class CSocketCollider*>& Get_Colliders() {
+        return m_pColliders;
     }
  
 protected:

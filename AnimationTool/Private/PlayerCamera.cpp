@@ -45,7 +45,7 @@ void CPlayerCamera::Tick(const _float& fTimeDelta)
 
 	m_WorldMatrix = *m_pTransformCom->Get_WorldFloat4x4();
 		
-	__super::Tick(fTimeDelta);
+	__super::Tick(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Edit")));
 }
 
 void CPlayerCamera::Late_Tick(const _float& fTimeDelta)

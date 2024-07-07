@@ -53,8 +53,16 @@ public:
 	}
 
 public:
+	_bool IsOn() {
+		return m_isOn;
+	}
+
 	_uint Get_CollierType() {
 		return static_cast<_uint>(m_eColliderType);
+	}
+
+	CCollider* Get_Collider()	{
+		return m_pColliderCom;
 	}
 
 private:

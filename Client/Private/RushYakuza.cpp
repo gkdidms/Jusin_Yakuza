@@ -3,6 +3,7 @@
 #include "GameInstance.h"
 #include "Collision_Manager.h"
 #include "AI_RushYakuza.h"
+#include "SocketCollider.h"
 
 #include "Mesh.h"
 
@@ -63,6 +64,11 @@ void CRushYakuza::Tick(const _float& fTimeDelta)
 
 	m_pColliderCom->Tick(m_pTransformCom->Get_WorldMatrix());
 
+	for (auto& pair : m_pColliders)
+	{
+		if (pair.second->Get_CollierType() == CSocketCollider::HIT)
+			m_pCollisionManager->Add_BattleCollider(pair.second, CCollision_Manager::FROM_PLAYER);
+	}
 	__super::Tick(fTimeDelta);
 }
 

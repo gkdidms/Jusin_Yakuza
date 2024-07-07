@@ -120,9 +120,17 @@ void CCollider::Reset_Color()
 	m_pCurrentBounding->Set_Color(m_vColor);
 }
 
-_bool CCollider::Intersect(CCollider* pTargetCollider)
+_bool CCollider::Intersect(CCollider* pTargetCollider, _float fDistance)
 {
-	return m_isColl = m_pCurrentBounding->Intersect(pTargetCollider->m_ColliderType, pTargetCollider->m_pCurrentBounding);
+	_vector vTargetPos = XMLoadFloat3(&pTargetCollider->m_pCurrentBounding->Get_Center());
+	_vector vMyPos = XMLoadFloat3(&m_pCurrentBounding->Get_Center());
+
+	if (fDistance > XMVectorGetX(XMVector3Length(vTargetPos - vMyPos)))
+	{
+		return m_isColl = m_pCurrentBounding->Intersect(pTargetCollider->m_ColliderType, pTargetCollider->m_pCurrentBounding);
+	}
+
+	return m_isColl = false;
 }
 
 const _float3& CCollider::ImpulseResolution(CCollider* pTargetCollider)
