@@ -20,6 +20,14 @@ HRESULT CCollision_Manager::Add_ImpulseResolution(CLandObject* pObejct)
     return S_OK;
 }
 
+HRESULT CCollision_Manager::Add_BattleCollider(CLandObject* pObejct)
+{
+    Safe_AddRef(pObejct);
+    m_BattleColliders.push_back(pObejct);
+
+    return S_OK;
+}
+
 void CCollision_Manager::Tick()
 {
     ImpulseResolution();
@@ -44,29 +52,41 @@ void CCollision_Manager::ImpulseResolution()
         }
     }
 
-    Clear();
+    Impulse_Clear();
 }
 
-void CCollision_Manager::AttackCollision()
+void CCollision_Manager::BattleCollision()
 {
+    //// 여기에 충돌처리 코드 구현
+    //for (size_t i = 0; i < m_BattleColliders.size(); i++)
+    //{
+    //    for (size_t j = 0; j < m_BattleColliders.size(); j++)
+    //    {
+    //        if (i == j) continue;
+    //    }
+    //}
 
-
-    Clear();
+    Battle_Clear();
 }
 
-void CCollision_Manager::Clear()
+void CCollision_Manager::Impulse_Clear()
 {
-    for (auto& pComponents : m_ImpulseResolutionObjects)
-        Safe_Release(pComponents);
+    for (auto& pObject : m_ImpulseResolutionObjects)
+        Safe_Release(pObject);
 
     m_ImpulseResolutionObjects.clear();
+}
+
+void CCollision_Manager::Battle_Clear()
+{
+    for (auto& pObject : m_BattleColliders)
+        Safe_Release(pObject);
+
+    m_BattleColliders.clear();
 }
 
 void CCollision_Manager::Free()
 {
-    for (auto& pObject : m_ImpulseResolutionObjects)
-    {
-        Safe_Release(pObject);
-    }
-    m_ImpulseResolutionObjects.clear();
+    Impulse_Clear();
+    Battle_Clear();
 }
