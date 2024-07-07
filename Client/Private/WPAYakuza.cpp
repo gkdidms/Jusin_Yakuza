@@ -89,16 +89,6 @@ HRESULT CWPAYakuza::Render()
 	return S_OK;
 }
 
-void CWPAYakuza::ImpulseResolution(CLandObject* pTargetObject)
-{
-	_float3 vDir = m_pColliderCom->ImpulseResolution(pTargetObject->Get_Collider());
-
-	if (!XMVector3Equal(XMLoadFloat3(&vDir), XMVectorZero()))
-	{
-		m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_pTransformCom->Get_State(CTransform::STATE_POSITION) + XMLoadFloat3(&vDir));
-	}
-}
-
 HRESULT CWPAYakuza::Add_Componenets()
 {
 	if (FAILED(__super::Add_Component(LEVEL_TEST, TEXT("Prototype_Component_Shader_VtxAnim"),

@@ -1,6 +1,7 @@
 #include "LandObject.h"  
 
 #include "SystemManager.h"
+#include "GameInstance.h"
 #include "Collision_Manager.h"
 
 
@@ -49,6 +50,18 @@ void CLandObject::Late_Tick(const _float& fTimeDelta)
 HRESULT CLandObject::Render()
 {
 	return S_OK;
+}
+
+void CLandObject::ImpulseResolution(CLandObject* pTargetObject)
+{
+	if (nullptr == m_pColliderCom) return;
+
+	_float3 vDir = m_pColliderCom->ImpulseResolution(pTargetObject->Get_Collider());
+
+	if (!XMVector3Equal(XMLoadFloat3(&vDir), XMVectorZero()))
+	{
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_pTransformCom->Get_State(CTransform::STATE_POSITION) + XMLoadFloat3(&vDir));
+	}
 }
 
 HRESULT CLandObject::Add_Componenets()

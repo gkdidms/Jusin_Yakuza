@@ -24,7 +24,7 @@ public:
     virtual void Late_Tick(const _float& fTimeDelta) override;
     virtual HRESULT Render() override;
     virtual _bool Intersect(CLandObject* pTargetObject) { return false; }
-    virtual void ImpulseResolution(CLandObject* pTargetObject) {};
+    virtual void ImpulseResolution(CLandObject* pTargetObject);
 
 public:
     const wstring& Get_ModelName() {

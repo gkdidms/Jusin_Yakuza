@@ -176,16 +176,6 @@ _bool CPlayer::Intersect(CLandObject* pTargetObject)
 	return _bool();
 }
 
-void CPlayer::ImpulseResolution(CLandObject* pTargetObject)
-{
-	_float3 vDir = m_pColliderCom->ImpulseResolution(pTargetObject->Get_Collider());
-	
-	if (!XMVector3Equal(XMLoadFloat3(&vDir), XMVectorZero()))
-	{
-		m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_pTransformCom->Get_State(CTransform::STATE_POSITION) + XMLoadFloat3(&vDir));
-	}
-}
-
 void CPlayer::Ready_AnimationTree()
 {
 	for (size_t i = 0; i < (_uint)ADVENTURE_BEHAVIOR_STATE::ADVENTURE_BEHAVIOR_END; i++)

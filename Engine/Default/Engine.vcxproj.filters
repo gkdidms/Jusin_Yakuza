@@ -184,8 +184,11 @@
     <Filter Include="01.Utility\03.Component\09.Animation">
       <UniqueIdentifier>{2ff9a63d-40d0-42e3-affa-f343d3f9c0b4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01.Utility\Manager">
-      <UniqueIdentifier>{100df93f-3974-4be1-8e22-33d9df5cf84f}</UniqueIdentifier>
+    <Filter Include="01.Utility\11.BTNode">
+      <UniqueIdentifier>{a10b8bd0-185e-4336-bdb6-e77a92033ac9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\11.BTNode\Manager">
+      <UniqueIdentifier>{3bdfb931-41b4-4b0f-b653-8b9c0f754f16}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

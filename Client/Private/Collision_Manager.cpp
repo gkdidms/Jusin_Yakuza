@@ -23,7 +23,7 @@ HRESULT CCollision_Manager::Add_ImpulseResolution(CLandObject* pObejct)
 HRESULT CCollision_Manager::Add_BattleCollider(CLandObject* pObejct)
 {
     Safe_AddRef(pObejct);
-    m_BattleColliders.push_back(pObejct);
+    //m_BattleColliders.push_back(pObejct);
 
     return S_OK;
 }
@@ -79,10 +79,10 @@ void CCollision_Manager::Impulse_Clear()
 
 void CCollision_Manager::Battle_Clear()
 {
-    for (auto& pObject : m_BattleColliders)
-        Safe_Release(pObject);
+    //for (auto& pObject : m_BattleColliders)
+    //    Safe_Release(pObject);
 
-    m_BattleColliders.clear();
+    //m_BattleColliders.clear();
 }
 
 void CCollision_Manager::Free()

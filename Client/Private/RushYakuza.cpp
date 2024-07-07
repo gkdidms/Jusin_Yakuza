@@ -1,9 +1,9 @@
 #include "RushYakuza.h"
 
 #include "GameInstance.h"
+#include "Collision_Manager.h"
 #include "AI_RushYakuza.h"
 
-#include "Bounding_OBB.h"
 #include "Mesh.h"
 
 CRushYakuza::CRushYakuza(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -63,6 +63,7 @@ void CRushYakuza::Tick(const _float& fTimeDelta)
 void CRushYakuza::Late_Tick(const _float& fTimeDelta)
 {
 	m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
+	m_pCollisionManager->Add_ImpulseResolution(this);
 }
 
 HRESULT CRushYakuza::Render()

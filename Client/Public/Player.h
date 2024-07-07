@@ -67,7 +67,6 @@ public:
     virtual HRESULT Render_LightDepth() override;
 
     virtual _bool Intersect(CLandObject* pTargetObject);
-    virtual void ImpulseResolution(CLandObject* pTargetObject);
 
 public:
     const _bool* Get_MoveDirection() {
