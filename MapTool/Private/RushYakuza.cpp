@@ -1,13 +1,12 @@
 #include "RushYakuza.h"
 
 #include "GameInstance.h"
-#include "AI_RushYakuza.h"
 
 #include "Bounding_OBB.h"
 #include "Mesh.h"
 
 CRushYakuza::CRushYakuza(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-	: CMonster{pDevice, pContext}
+	: CMonster{ pDevice, pContext }
 {
 }
 
@@ -26,16 +25,19 @@ HRESULT CRushYakuza::Initialize(void* pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
-	if (nullptr != pArg)
-	{
-		MONSTER_IODESC* gameobjDesc = (MONSTER_IODESC*)pArg;
-		m_pTransformCom->Set_WorldMatrix(gameobjDesc->vStartPos);
-		m_wstrModelName = gameobjDesc->wstrModelName;
-		m_iShaderPassNum = 0;
-	}
-
 	if (FAILED(Add_Componenets()))
 		return E_FAIL;
+
+	if (nullptr != pArg)
+	{
+		MONSTER_DESC* gameobjDesc = (MONSTER_DESC*)pArg;
+		m_pTransformCom->Set_WorldMatrix(gameobjDesc->vStartPos);
+		m_iLayerNum = gameobjDesc->iLayer;
+		m_wstrModelName = gameobjDesc->wstrModelName;
+		m_iShaderPassNum = 0;
+		m_iObjectType = gameobjDesc->iObjType;
+		m_iObjectPropertyType = gameobjDesc->iObjPropertyType;
+	}
 
 	m_pModelCom->Set_AnimationIndex(1, 0.5);
 	//m_pModelCom->Set_AnimLoop(1, true);
@@ -48,14 +50,6 @@ void CRushYakuza::Priority_Tick(const _float& fTimeDelta)
 
 void CRushYakuza::Tick(const _float& fTimeDelta)
 {
-	m_pTree->Tick(fTimeDelta);
-
-
-	Change_Animation(); //애니메이션 변경
-
-	m_pModelCom->Play_Animation(fTimeDelta, m_pAnimCom, m_isAnimLoop);
-
-	Synchronize_Root(fTimeDelta);
 
 	m_pColliderCom->Tick(m_pTransformCom->Get_WorldMatrix());
 }
@@ -94,6 +88,25 @@ HRESULT CRushYakuza::Render()
 	return S_OK;
 }
 
+int CRushYakuza::Get_ObjPlaceDesc(OBJECTPLACE_DESC* objplaceDesc)
+{
+	/* 바이너리화하기 위한 데이터 제공 */
+
+	XMStoreFloat4x4(&objplaceDesc->vTransform, m_pTransformCom->Get_WorldMatrix());
+
+	//objPlaceDesc.iLayer = m_iLayerNum;
+
+	string strName = m_pGameInstance->WstringToString(m_wstrModelName);
+	strcpy_s(objplaceDesc->strModelCom, strName.c_str());
+
+	objplaceDesc->iShaderPassNum = m_iShaderPassNum;
+	objplaceDesc->iObjType = m_iObjectType;
+	objplaceDesc->iObjPropertyType = m_iObjectPropertyType;
+
+	/* layer는 return 형식으로 */
+	return m_iLayerNum;
+}
+
 
 HRESULT CRushYakuza::Add_Componenets()
 {
@@ -104,10 +117,6 @@ HRESULT CRushYakuza::Add_Componenets()
 	if (FAILED(__super::Add_Component(LEVEL_TEST, m_wstrModelName,
 		TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
 		return E_FAIL;
-
-	//if (FAILED(__super::Add_Component(LEVEL_TEST, TEXT("Prototype_Component_Model_Jimu"),
-	//	TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
-	//	return E_FAIL;
 
 	CBounding_OBB::BOUNDING_OBB_DESC		ColliderDesc{};
 
@@ -124,15 +133,7 @@ HRESULT CRushYakuza::Add_Componenets()
 		TEXT("Com_Anim"), reinterpret_cast<CComponent**>(&m_pAnimCom))))
 		return E_FAIL;
 
-	//행동트리 저장
-	CAI_RushYakuza::AI_MONSTER_DESC Desc{};
-	Desc.pState = &m_iState;
-	Desc.pAnim = m_pAnimCom;
-	Desc.pThis = this;
 
-	m_pTree = dynamic_cast<CAI_RushYakuza*>(m_pGameInstance->Add_BTNode(LEVEL_TEST, TEXT("Prototype_BTNode_RushYakuza"), &Desc));
-	if (nullptr == m_pTree)
-		return E_FAIL;
 
 	return S_OK;
 }
@@ -149,6 +150,58 @@ HRESULT CRushYakuza::Bind_ResourceData()
 	return S_OK;
 }
 
+void CRushYakuza::Synchronize_Root(const _float& fTimeDelta)
+{
+	_vector vFF = XMVector3TransformNormal(XMLoadFloat3(m_pModelCom->Get_AnimationCenterMove()), m_pTransformCom->Get_WorldMatrix());
+	vFF = XMVectorSet(XMVectorGetX(vFF), XMVectorGetZ(vFF), XMVectorGetY(vFF), 1.f);
+
+	// 월드 행렬
+	_matrix worldMatrix = m_pTransformCom->Get_WorldMatrix();
+	_float4 vQuaternion = *m_pModelCom->Get_AnimationCenterRotation();
+
+	_vector scale, rotation, translation;
+	XMMatrixDecompose(&scale, &rotation, &translation, worldMatrix);
+
+	_vector resultQuaternionVector = XMQuaternionMultiply(XMLoadFloat4(&vQuaternion), rotation);
+
+	// m_pModelCom->Get_AnimChanged()  선형보간이 끝났는지
+	// m_pModelCom->Get_AnimLerp() 선형보간이 필요한 애니메이션인지
+	if (m_pModelCom->Get_AnimChanged() || !m_pModelCom->Get_AnimLerp())
+	{
+		if (m_pModelCom->Get_AnimRestart())
+		{
+			XMStoreFloat4(&m_vPrevMove, XMVectorZero());
+			m_fPrevSpeed = 0.f;
+		}
+		else
+		{
+			// 쿼터니언 회전값 적용은 중단 (추후 마저 진행예정)
+			//_float4 v;
+			//_vector diffQuaternionVector = XMQuaternionMultiply(resultQuaternionVector, XMQuaternionConjugate(XMLoadFloat4(&m_vPrevRotation)));
+			//XMStoreFloat4(&v, diffQuaternionVector);
+			//m_pTransformCom->Change_Rotation_Quaternion(v);
+
+			//_float4 vb;
+			//XMStoreFloat4(&vb, vFF - XMLoadFloat4(&m_vPrevMove));
+			//m_pTransformCom->Go_Straight_CustumDir(vb, fTimeDelta);
+			_float fMoveSpeed = XMVectorGetX(XMVector3Length(vFF - XMLoadFloat4(&m_vPrevMove)));
+			m_pTransformCom->Go_Straight_CustumSpeed(m_fPrevSpeed, 1);
+			m_fPrevSpeed = fMoveSpeed;
+		}
+	}
+	else
+	{
+		XMStoreFloat4(&m_vPrevMove, XMVectorZero());
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_pTransformCom->Get_State(CTransform::STATE_POSITION) + XMLoadFloat4(&m_vPrevMove));
+		//m_pTransformCom->Go_Straight_CustumSpeed(m_fPrevSpeed);
+	}
+
+	XMStoreFloat4x4(&m_ModelWorldMatrix, m_pTransformCom->Get_WorldMatrix());
+	XMStoreFloat4(&m_vPrevMove, vFF);
+	//m_vPrevRotation = vQuaternion;
+	XMStoreFloat4(&m_vPrevRotation, resultQuaternionVector);
+}
+
 void CRushYakuza::Change_Animation()
 {
 	_uint iAnim = { 0 };
@@ -156,117 +209,117 @@ void CRushYakuza::Change_Animation()
 
 	switch (m_iState)
 	{
-	case MONSTER_IDLE:
+	case IDLE:
 	{
 		iAnim = m_pAnimCom->Get_AnimationIndex("e_pnc_stand[e_pnc_stand]");
 		m_isAnimLoop = true;
 		break;
 	}
-	case MONSTER_SHIFT_F:
+	case SHIFT_F:
 	{
 		//p_krh_shift_f[p_krh_shift_f]
 		iAnim = m_pAnimCom->Get_AnimationIndex("p_krh_shift_f[p_krh_shift_f]");
 		m_isAnimLoop = true;
 		break;
 	}
-	case MONSTER_SHIFT_L:
+	case SHIFT_L:
 	{
 		//p_krh_shift_l[p_krh_shift_l]
 		iAnim = m_pAnimCom->Get_AnimationIndex("p_krh_shift_l[p_krh_shift_l]");
 		m_isAnimLoop = true;
 		break;
 	}
-	case MONSTER_SHIFT_R:
+	case SHIFT_R:
 	{
 		//p_krh_shift_r[p_krh_shift_r]
 		iAnim = m_pAnimCom->Get_AnimationIndex("p_krh_shift_r[p_krh_shift_r]");
 		m_isAnimLoop = true;
 		break;
 	}
-	case MONSTER_SHIFT_B:
+	case SHIFT_B:
 	{
 		//p_krh_shift_b[p_krh_shift_b]
 		iAnim = m_pAnimCom->Get_AnimationIndex("p_krh_shift_b[p_krh_shift_b]");
 		m_isAnimLoop = true;
 		break;
 	}
-	case MONSTER_SHIFT_FR:
+	case SHIFT_FR:
 	{
 		//p_krh_shift_fr[p_krh_shift_fr]
 		iAnim = m_pAnimCom->Get_AnimationIndex("p_krh_shift_fr[p_krh_shift_fr]");
 		m_isAnimLoop = true;
 		break;
 	}
-	case MONSTER_SHIFT_FL:
+	case SHIFT_FL:
 	{
 		//p_krh_shift_fl[p_krh_shift_fl]
 		iAnim = m_pAnimCom->Get_AnimationIndex("p_krh_shift_fl[p_krh_shift_fl]");
 		m_isAnimLoop = true;
 		break;
 	}
-	case MONSTER_SHIFT_BR:
+	case SHIFT_BR:
 	{
 		//p_krh_shift_br[p_krh_shift_br]
 		iAnim = m_pAnimCom->Get_AnimationIndex("p_krh_shift_br[p_krh_shift_br]");
 		m_isAnimLoop = true;
 		break;
 	}
-	case MONSTER_SHIFT_BL:
+	case SHIFT_BL:
 	{
 		//p_krh_shift_bl[p_krh_shift_bl]
 		iAnim = m_pAnimCom->Get_AnimationIndex("p_krh_shift_bl[p_krh_shift_bl]");
 		m_isAnimLoop = true;
 		break;
 	}
-	case MONSTER_CMD_1:
+	case CMD_1:
 	{
 		//p_krh_cmb_01[p_krh_cmb_01]
 		iAnim = m_pAnimCom->Get_AnimationIndex("p_krh_cmb_01[p_krh_cmb_01]");
 		break;
 	}
-	case MONSTER_CMD_2:
+	case CMD_2:
 	{
 		//p_krh_cmb_02[p_krh_cmb_02]
 		iAnim = m_pAnimCom->Get_AnimationIndex("p_krh_cmb_02[p_krh_cmb_02]");
 		break;
 	}
-	case MONSTER_CMD_3:
+	case CMD_3:
 	{
 		//p_krh_cmb_03[p_krh_cmb_03]
 		iAnim = m_pAnimCom->Get_AnimationIndex("p_krh_cmb_03[p_krh_cmb_03]");
 		break;
 	}
-	case MONSTER_CMD_4:
+	case CMD_4:
 	{
 		//p_krh_cmb_04[p_krh_cmb_04]
 		iAnim = m_pAnimCom->Get_AnimationIndex("p_krh_cmb_04[p_krh_cmb_04]");
 		break;
 	}
-	case MONSTER_CMD_5:
+	case CMD_5:
 	{
 		//p_krh_cmb_05[p_krh_cmb_05]
 		iAnim = m_pAnimCom->Get_AnimationIndex("p_krh_cmb_05[p_krh_cmb_05]");
 		break;
 	}
-	case MONSTER_ANGRY_START:
+	case ANGRY_START:
 	{
 		//e_angry_typec[e_angry_typec]
 		iAnim = m_pAnimCom->Get_AnimationIndex("e_angry_typec[e_angry_typec]");
 		break;
 	}
-	case MONSTER_ANGRY_CHOP:
+	case ANGRY_CHOP:
 	{
 		//e_knk_atk_chop[e_knk_atk_chop]
 		iAnim = m_pAnimCom->Get_AnimationIndex("e_knk_atk_chop[e_knk_atk_chop]");
 		break;
 	}
-	case MONSTER_ANGRY_KICK:
+	case ANGRY_KICK:
 	{
 		//e_knk_atk_kick[e_knk_atk_kick]
 		iAnim = m_pAnimCom->Get_AnimationIndex("e_knk_atk_kick[e_knk_atk_kick]");
 		break;
 	}
-	case MONSTER_DEATH:
+	case DEATH:
 	{
 		break;
 	}
@@ -277,7 +330,7 @@ void CRushYakuza::Change_Animation()
 	if (iAnim == -1)
 		return;
 
-	m_pModelCom->Set_AnimationIndex(iAnim, m_pAnimCom->Get_Animations(), m_fChangeInterval);
+	m_pModelCom->Set_AnimationIndex(iAnim, m_pAnimCom->Get_Animations(), 0.5);
 }
 
 CRushYakuza* CRushYakuza::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -303,6 +356,4 @@ CGameObject* CRushYakuza::Clone(void* pArg)
 void CRushYakuza::Free()
 {
 	__super::Free();
-
-	Safe_Release(m_pTree);
 }

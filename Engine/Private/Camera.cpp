@@ -45,9 +45,28 @@ void CCamera::Tick(const _float& fTimeDelta, _bool isAuto)
 	if (isAuto)
 		m_WorldMatrix = *m_pTransformCom->Get_WorldFloat4x4();
 
-	XMFLOAT4X4	reflectWorldMatrix = m_WorldMatrix;
-	reflectWorldMatrix._42 *= -1;
-	m_pGameInstance->Set_ReflectViewMatrix(XMMatrixInverse(nullptr, XMLoadFloat4x4(&reflectWorldMatrix)));
+	XMFLOAT4	vUp, vPosition, vLookAt;
+	vUp.x = 0;
+	vUp.y = 1;
+	vUp.z = 0;
+	vUp.w = 0;
+	XMVECTOR upVector = XMLoadFloat4(&vUp);
+
+	vPosition.x = m_WorldMatrix._41;
+	vPosition.y = -7;
+	vPosition.z = m_WorldMatrix._43;
+	vPosition.w = 1;
+	XMVECTOR positionVec = XMLoadFloat4(&vPosition);
+
+	vLookAt.x = m_WorldMatrix._41;
+	vLookAt.y = 0;
+	vLookAt.z = m_WorldMatrix._43;
+	vLookAt.w = 1;
+	
+	XMVECTOR lookAtVec = XMLoadFloat4(&vLookAt);
+
+	XMMATRIX viewReflect = XMMatrixLookAtLH(positionVec, lookAtVec, upVector);
+	m_pGameInstance->Set_ReflectViewMatrix(viewReflect);
 
 	m_pGameInstance->Set_Transform(CPipeLine::D3DTS_VIEW, XMMatrixInverse(nullptr, XMLoadFloat4x4(&m_WorldMatrix)));
 	m_pGameInstance->Set_Transform(CPipeLine::D3DTS_PROJ, XMMatrixPerspectiveFovLH(m_fFovY, m_fAspect, m_fNear, m_fFar));
