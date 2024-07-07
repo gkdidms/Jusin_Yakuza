@@ -910,11 +910,11 @@ void CModel::Set_AnimationIndex(_uint iAnimIndex, vector<class CAnimation*> Anim
 {
 	if (iAnimIndex >= Animations.size()) return;
 
-	if (m_AnimDesc.iAnimIndex == iAnimIndex && m_AnimLoops[iAnimIndex] == m_AnimDesc.isLoop)
+	if (m_AnimDesc.iAnimIndex == iAnimIndex)
 		return;
 
 	m_iPrevAnimIndex = m_AnimDesc.iAnimIndex;
-	m_AnimDesc = { iAnimIndex, m_AnimLoops[iAnimIndex] };
+	m_AnimDesc = { iAnimIndex, false };
 	m_ChangeInterval = ChangeInterval;
 	Animations[m_AnimDesc.iAnimIndex]->Reset();
 

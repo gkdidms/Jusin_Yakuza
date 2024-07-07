@@ -43,8 +43,16 @@ void CAI_RushYakuza::Tick(const _float& fTimeDelta)
 	if (m_isAttack == false)
 		m_fAttackDelayTime += fTimeDelta;
 
-	if (m_iSkill == SKILL_SHIFT)
-		m_fShiftTime += fTimeDelta;
+	if (m_isBreak)
+	{
+		m_fBreakTime += fTimeDelta;
+
+		if (m_fBreakDuration <= m_fBreakTime)
+		{
+			m_isBreak = false;
+			m_fBreakTime = 0.f;
+		}
+	}
 
 	this->Execute();
 }
@@ -115,15 +123,16 @@ void CAI_RushYakuza::Ready_Tree()
 	pAttackSeq->Add_Children(pAttackSelector);
 #pragma endregion
 
-#pragma region Shift
-	CSequance* pShiftSeq = CSequance::Create();
-	pShiftSeq->Add_Children(CLeafNode::Create(bind(&CAI_RushYakuza::Check_Shift, this)));
-	pShiftSeq->Add_Children(CLeafNode::Create(bind(&CAI_RushYakuza::Shift, this)));
-#pragma endregion
+#pragma region Shift/Idle
+	CSequance* pBreakSeq = CSequance::Create();
+	pBreakSeq->Add_Children(CLeafNode::Create(bind(&CAI_RushYakuza::Check_Break, this)));
+	pBreakSeq->Add_Children(CLeafNode::Create(bind(&CAI_RushYakuza::ShiftAndIdle, this)));
 
-#pragma region Idle
-	CSequance* pIdleSeq = CSequance::Create();
-	pIdleSeq->Add_Children(CLeafNode::Create(bind(&CAI_RushYakuza::Idle, this)));
+	CSelector* pBreakSelector = CSelector::Create();
+	pBreakSelector->Add_Children(CLeafNode::Create(bind(&CAI_RushYakuza::Shift, this)));
+	pBreakSelector->Add_Children(CLeafNode::Create(bind(&CAI_RushYakuza::Idle, this)));
+
+	pBreakSeq->Add_Children(pBreakSelector);
 #pragma endregion
 
 #pragma region Root
@@ -133,8 +142,7 @@ void CAI_RushYakuza::Ready_Tree()
 	pRoot->Add_Children(pHitGuardSeq);
 	pRoot->Add_Children(pAngrySeq);
 	pRoot->Add_Children(pAttackSeq);
-	pRoot->Add_Children(pShiftSeq);
-	pRoot->Add_Children(pIdleSeq);
+	pRoot->Add_Children(pBreakSeq);
 #pragma endregion
 
 	m_pRootNode = pRoot;
@@ -142,12 +150,12 @@ void CAI_RushYakuza::Ready_Tree()
 
 CBTNode::NODE_STATE CAI_RushYakuza::Check_Attack()
 {
-	if (m_isAttack == false)
+	if (!m_isAttack)
 	{
-		if (m_fDelayAttackDuration >= m_fAttackDelayTime)
+		if (m_fDelayAttackDuration > m_fAttackDelayTime)
 			return CBTNode::FAIL;
 
-		m_fAttackDelayTime = 0.f; // 초기화
+		m_fAttackDelayTime = 0.f;
 	}
 
 	return CBTNode::SUCCESS;
@@ -155,8 +163,9 @@ CBTNode::NODE_STATE CAI_RushYakuza::Check_Attack()
 
 CBTNode::NODE_STATE CAI_RushYakuza::Attack()
 {
-	if (m_isAngry) return CBTNode::SUCCESS;
+	if (m_isAngry || m_isAttack) return CBTNode::SUCCESS;
 
+	LookAtPlayer();
 	//화가 나지 않앗을때 스킬 선택 (임시)
 	static _uint iCount = 0;
 
@@ -176,8 +185,9 @@ CBTNode::NODE_STATE CAI_RushYakuza::Attack()
 
 CBTNode::NODE_STATE CAI_RushYakuza::Angry_Attack()
 {
-	if (!m_isAngry) return CBTNode::SUCCESS;
+	if (!m_isAngry || m_isAttack) return CBTNode::SUCCESS;
 
+	LookAtPlayer();
 	//화낫을때 스킬 선택 (임시)
 	static _uint iCount = 0;
 
@@ -225,7 +235,6 @@ CBTNode::NODE_STATE CAI_RushYakuza::ATK_CMD()
 	{
 		if (*m_pState == CMonster::MONSTER_CMD_1 && *(m_pAnimCom->Get_AnimPosition()) >= 10.0)
 		{
-			// 아 개졸려
 			*m_pState = CMonster::MONSTER_CMD_2;
 		}
 		else if (*m_pState == CMonster::MONSTER_CMD_2 && *(m_pAnimCom->Get_AnimPosition()) >= 10.0)
