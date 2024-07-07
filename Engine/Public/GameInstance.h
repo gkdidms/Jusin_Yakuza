@@ -7,6 +7,7 @@
 #include "RandomManager.h"
 #include "RenderTarget.h"
 
+
 BEGIN(Engine)
 class ENGINE_DLL CGameInstance :
     public CBase
@@ -72,6 +73,11 @@ public:
 public: 
     HRESULT Add_Component_Prototype(_uint iLevelIndex, const wstring strComponentTag, CComponent* pComponent); // Component Prototype 积己 & 历厘
     CComponent* Add_Component_Clone(_uint iLevelIndex, const wstring strComponentTag, void* pArg = nullptr); // Component Clone 积己 & 历厘
+
+    /* BTNode_Manager*/
+public:
+    HRESULT Add_BTNode_Prototype(_uint iLevelIndex, const wstring strBTNodeTag, class CBTNode* pBTNode);
+    class CBTNode* Add_BTNode(_uint iLevelIndex, const wstring strBTNodeTag, void* pArg);
 
     /* Renderer */
 public: 
@@ -152,6 +158,7 @@ public:
     HRESULT Copy_Resource(const wstring& strTargetTag, ID3D11Texture2D* pDesc);
     HRESULT Create_Texture(const wstring& strTargetTag, const wstring& strSaveFilePath);
     HRESULT Clear_RenderTarget(const wstring& strTargetTag);
+
     /* Frustum*/
 public:
     void Transform_ToLocalSpace(_fmatrix WorldMatrixInv);
@@ -205,6 +212,7 @@ private:
     class CLevel_Manager* m_pLevel_Manager = { nullptr };
     class CGameObject_Manager* m_pGameObject_Manager = { nullptr };
     class CComponent_Manager* m_pComponent_Manager = { nullptr };
+    class CBTNode_Manager* m_pBTNode_Manager = { nullptr };
     class CTimer_Manager* m_pTimer_Manager = { nullptr };
     class CFont_Manager* m_pFont_Manager = { nullptr };
     class CRenderTarget_Manager* m_pRenderTarget_Manager = { nullptr };

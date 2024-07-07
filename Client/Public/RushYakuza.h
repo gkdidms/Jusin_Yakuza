@@ -21,19 +21,11 @@ public:
 private:
     class CAI_RushYakuza* m_pTree = { nullptr };
 
-    _bool m_isAnimLoop = { false };
-
-    _float          m_fPrevSpeed = { 0.f };
-    _float4         m_vPrevMove;
-    _float4         m_vPrevRotation;
-    _float4x4       m_ModelWorldMatrix;
-
 private:
     virtual HRESULT Add_Componenets() override;
     virtual HRESULT Bind_ResourceData() override;
 
 private:
-    void Synchronize_Root(const _float& fTimeDelta);
     void Change_Animation();
 
 public:

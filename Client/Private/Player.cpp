@@ -4,7 +4,8 @@
 #include "SystemManager.h"
 
 #include "CharacterData.h"
-#include "SoketCollider.h"
+#include "SocketCollider.h"
+#include "SocketEffect.h"
 
 #include "BehaviorAnimation.h"
 #include "Mesh.h"
@@ -28,16 +29,19 @@ HRESULT CPlayer::Initialize_Prototype()
 
 HRESULT CPlayer::Initialize(void* pArg)
 {
+	m_wstrModelName = TEXT("Kiryu");
+
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
 	if (FAILED(Add_Componenets()))
 		return E_FAIL;
 
+	Ready_AnimationTree();
+
 	if (FAILED(Add_CharacterData()))
 		return E_FAIL;
 
-	Ready_AnimationTree();
 	ZeroMemory(&m_MoveDirection, sizeof(_bool) * MOVE_DIRECTION_END);
 	ZeroMemory(&m_InputDirection, sizeof(_bool) * MOVE_DIRECTION_END);
 
@@ -67,6 +71,9 @@ void CPlayer::Priority_Tick(const _float& fTimeDelta)
 	for (auto& pCollider : m_pColliders)
 		pCollider.second->Tick(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")));
 
+	for (auto& pEffect : m_pEffects)
+		pEffect.second->Tick(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")));
+
 
 	KeyInput(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")));
 
@@ -90,6 +97,9 @@ void CPlayer::Late_Tick(const _float& fTimeDelta)
 
 	for (auto& pCollider : m_pColliders)
 		pCollider.second->Late_Tick(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")));
+
+	for (auto& pEffect : m_pEffects)
+		pEffect.second->Late_Tick(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")));
 }
 
 HRESULT CPlayer::Render()
@@ -232,7 +242,7 @@ void CPlayer::Animation_Event()
 
 		if (CurPos >= pEvent.fPlayPosition && CurPos < Duration)
 		{
-			CSoketCollider* pCollider = m_pColliders.at(pEvent.iBoneIndex);
+			CSocketCollider* pCollider = m_pColliders.at(pEvent.iBoneIndex);
 
 			switch (pEvent.iType)
 			{
@@ -368,22 +378,8 @@ void CPlayer::KRS_KeyInput(const _float& fTimeDelta)
 				m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Reset();
 
 			_vector vLookPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION) + (m_pTransformCom->Get_State(CTransform::STATE_LOOK) + m_pGameInstance->Get_CamLook());
-
-			_vector vLookDir = XMVectorSet(XMVectorGetX(vLookPos), XMVectorGetY(vLookPos), XMVectorGetZ(vLookPos), 0.f);
-			_vector vPlayerLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
-
-			m_iCurrentBehavior = isShift ? (_uint)ADVENTURE_BEHAVIOR_STATE::WALK : (_uint)ADVENTURE_BEHAVIOR_STATE::RUN;
-
-			isMove = true;
-
-			//m_MoveDirection[B] = true;
-
-			////양수인 경우 같은 방향, 음수인 경우 반대방향, 0인경우 수직
-			if (XMVectorGetX(XMVector3Dot(vLookDir, vPlayerLook)) < 0)
-				m_MoveDirection[B] = true;
-			else if (XMVectorGetX(XMVector3Dot(vLookDir, vPlayerLook)) > 0)
-				m_MoveDirection[F] = true;
-
+			m_pGameInstance->Get_CamLook();
+			m_iCurrentBehavior = isShift ? (_uint)KRS_BEHAVIOR_STATE::WALK : (_uint)KRS_BEHAVIOR_STATE::RUN;
 
 			m_InputDirection[F] = true;
 			Compute_MoveDirection_FB();
@@ -395,20 +391,16 @@ void CPlayer::KRS_KeyInput(const _float& fTimeDelta)
 		{
 			if (m_iCurrentBehavior == (_uint)KRS_BEHAVIOR_STATE::WALK || m_iCurrentBehavior == (_uint)KRS_BEHAVIOR_STATE::RUN)
 				m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Reset();
-			
+		//_bool isStop = { false };
 			_vector vLookPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION) + (m_pTransformCom->Get_State(CTransform::STATE_LOOK) - m_pGameInstance->Get_CamLook());
 			m_iCurrentBehavior = isShift ? (_uint)KRS_BEHAVIOR_STATE::WALK : (_uint)KRS_BEHAVIOR_STATE::RUN;
-
+		//	isShift = true;
 			m_InputDirection[B] = true;
 			Compute_MoveDirection_FB();
 			m_pTransformCom->LookAt_For_LandObject(vLookPos);
-
-			m_iCurrentBehavior = isShift ? (_uint)ADVENTURE_BEHAVIOR_STATE::WALK : (_uint)ADVENTURE_BEHAVIOR_STATE::RUN;
-			m_MoveDirection[B] = true;
-
 			isMove = true;
 		}
-
+		//	m_pTransformCom->Go_Straight(fTimeDelta);
 		if (m_pGameInstance->GetKeyState(DIK_A) == HOLD)
 		{
 			if (m_iCurrentBehavior == (_uint)KRS_BEHAVIOR_STATE::WALK || m_iCurrentBehavior == (_uint)KRS_BEHAVIOR_STATE::RUN)
@@ -416,34 +408,30 @@ void CPlayer::KRS_KeyInput(const _float& fTimeDelta)
 
 			_vector vLookPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION) + (m_pTransformCom->Get_State(CTransform::STATE_LOOK) - m_pGameInstance->Get_CamRight());
 			m_iCurrentBehavior = isShift ? (_uint)KRS_BEHAVIOR_STATE::WALK : (_uint)KRS_BEHAVIOR_STATE::RUN;
-
+		//	m_MoveDirection[F] = false;
 			m_InputDirection[L] = true;
 			Compute_MoveDirection_RL();
 			m_pTransformCom->LookAt_For_LandObject(vLookPos);
-
-			m_iCurrentBehavior = isShift ? (_uint)ADVENTURE_BEHAVIOR_STATE::WALK : (_uint)ADVENTURE_BEHAVIOR_STATE::RUN;
-			m_MoveDirection[L] = true;
-
 			isMove = true;
 		}
-
+		//	m_iCurrentBehavior = isShift ? (_uint)ADVENTURE_BEHAVIOR_STATE::WALK : (_uint)ADVENTURE_BEHAVIOR_STATE::RUN;
 		if (m_pGameInstance->GetKeyState(DIK_D) == HOLD)
 		{
 			if (m_iCurrentBehavior == (_uint)KRS_BEHAVIOR_STATE::WALK || m_iCurrentBehavior == (_uint)KRS_BEHAVIOR_STATE::RUN)
 				m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Reset();
-
+		//	m_MoveDirection[B] = false;
 			_vector vLookPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION) + (m_pTransformCom->Get_State(CTransform::STATE_LOOK) + m_pGameInstance->Get_CamRight());
 			m_iCurrentBehavior = isShift ? (_uint)KRS_BEHAVIOR_STATE::WALK : (_uint)KRS_BEHAVIOR_STATE::RUN;
-
+		//	m_iCurrentBehavior = isShift ? (_uint)ADVENTURE_BEHAVIOR_STATE::WALK : (_uint)ADVENTURE_BEHAVIOR_STATE::RUN;
 			m_InputDirection[R] = true;
 			Compute_MoveDirection_RL();
-
 			m_pTransformCom->LookAt_For_LandObject(vLookPos);
-			m_iCurrentBehavior = isShift ? (_uint)ADVENTURE_BEHAVIOR_STATE::WALK : (_uint)ADVENTURE_BEHAVIOR_STATE::RUN;
-			m_MoveDirection[R] = true;
-
 			isMove = true;
 		}
+		//	m_MoveDirection[L] = false;
+		//}
+		//	m_MoveDirection[L] = false;
+		//}
 
 		if (m_pGameInstance->GetKeyState(DIK_E) == TAP)
 		{
@@ -509,7 +497,7 @@ HRESULT CPlayer::Bind_ResourceData()
 
 HRESULT CPlayer::Add_CharacterData()
 {
-	m_pData = CCharacterData::Create(TEXT("Kiryu"));
+	m_pData = CCharacterData::Create(this);
 
 	if (nullptr == m_pData)
 		return E_FAIL;
@@ -543,8 +531,8 @@ void CPlayer::Apply_ChracterData()
 
 	for (auto& Collider : pColliders)
 	{
-		CSoketCollider::SOKET_COLLIDER_DESC Desc{};
-		Desc.pParentMatrix = &m_ModelWorldMatrix;
+		CSocketCollider::SOKET_COLLIDER_DESC Desc{};
+		Desc.pParentMatrix = m_pTransformCom->Get_WorldFloat4x4();
 		Desc.pCombinedTransformationMatrix = m_pModelCom->Get_BoneCombinedTransformationMatrix_AtIndex(Collider.first);
 		Desc.iBoneIndex = Collider.first;
 		Desc.ColliderState = Collider.second;
@@ -553,11 +541,28 @@ void CPlayer::Apply_ChracterData()
 		if (nullptr == pSoketCollider)
 			return;
 	
-		auto [it, success] = m_pColliders.emplace(Collider.first, static_cast<CSoketCollider*>(pSoketCollider));
+		auto [it, success] = m_pColliders.emplace(Collider.first, static_cast<CSocketCollider*>(pSoketCollider));
 
 		//생성한 모든 콜라이더는 일단 꺼둔다.
 		// 몸체에 붙일 (플레이어가 피격당할) 콜라이더는 항시 켜져있어야하므로 툴에서찍지않음
-		it->second->Off();
+		it->second->On();
+	}
+
+	auto& pEffects = m_pData->Get_Effets();
+	for (auto& pEffect : pEffects)
+	{
+		CSocketEffect::SOKET_EFFECT_DESC Desc{};
+		Desc.pParentMatrix = m_pTransformCom->Get_WorldFloat4x4();
+		Desc.pCombinedTransformationMatrix = m_pModelCom->Get_BoneCombinedTransformationMatrix(pEffect.first.c_str());
+		Desc.wstrEffectName = pEffect.second;
+
+		CGameObject* pSoketEffect = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_SoketEffect"), &Desc);
+		if (nullptr == pSoketEffect)
+			return;
+
+		auto [it, success] = m_pEffects.emplace(pEffect.first, static_cast<CSocketEffect*>(pSoketEffect));
+
+		it->second->On();
 	}
 
 }
@@ -681,6 +686,11 @@ void CPlayer::Free()
 	for (auto& pCollider : m_pColliders)
 		Safe_Release(pCollider.second);
 	m_pColliders.clear();
+
+	for (auto& pEffect : m_pEffects)
+		Safe_Release(pEffect.second);
+	m_pEffects.clear();
+
 	Safe_Release(m_pData);
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pModelCom);

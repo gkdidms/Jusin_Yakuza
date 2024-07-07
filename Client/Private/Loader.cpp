@@ -2,19 +2,36 @@
 
 #include "GameInstance.h"
 
-#pragma region TEST
+#pragma region Character
 #include "Player.h"
+#include "RushYakuza.h"
+
+#include "SocketCollider.h"
+#include "SocketEffect.h"
+
+#include "RushYakuza.h"
+#include "WPAYakuza.h"
+#include "Shakedown.h"
+#pragma endregion
+
+#pragma region BTNode
+#include "AI_RushYakuza.h"
+#include "AI_WPAYakuza.h"
+#include "AI_Shakedown.h"
+#pragma endregion
+
+#pragma region Camera
 #include "PlayerCamera.h"
 #include "DebugCamera.h"
 #include "CineCamera.h"
 #include "Decal.h"
-#include "RushYakuza.h"
 #pragma endregion
 
+#pragma region Map
 #include "Terrain.h"
 #include "Construction.h"
-#include "SoketCollider.h"
 #include "MapCollider.h"
+#pragma endregion
 
 #pragma region Effect
 #include "Particle_Point.h"
@@ -73,6 +90,12 @@ HRESULT CLoader::Loading()
 	case LEVEL_GAMEPLAY:
 		hr = Loading_For_GamePlayLevel();
 		break;
+	case LEVEL_OFFICE_1F:
+		hr = Loading_For_Office_1F();
+		break;
+	case LEVEL_OFFICE_2F:
+		hr = Loading_For_Office_2F();
+		break;
 	case LEVEL_TEST:
 		hr = Loading_For_Test();
 	}
@@ -104,6 +127,42 @@ HRESULT CLoader::Loading_For_LogoLevel()
 }
 
 HRESULT CLoader::Loading_For_GamePlayLevel()
+{
+	lstrcpy(m_szLoadingText, TEXT("텍스쳐를 로딩 중 입니다."));
+
+
+	lstrcpy(m_szLoadingText, TEXT("모델를(을) 로딩 중 입니다."));
+
+
+	lstrcpy(m_szLoadingText, TEXT("셰이더를(을) 로딩 중 입니다."));
+
+
+	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
+
+	m_isFinished = true;
+
+	return S_OK;
+}
+
+HRESULT CLoader::Loading_For_Office_1F()
+{
+	lstrcpy(m_szLoadingText, TEXT("텍스쳐를 로딩 중 입니다."));
+
+
+	lstrcpy(m_szLoadingText, TEXT("모델를(을) 로딩 중 입니다."));
+
+
+	lstrcpy(m_szLoadingText, TEXT("셰이더를(을) 로딩 중 입니다."));
+
+
+	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
+
+	m_isFinished = true;
+
+	return S_OK	;
+}
+
+HRESULT CLoader::Loading_For_Office_2F()
 {
 	lstrcpy(m_szLoadingText, TEXT("텍스쳐를 로딩 중 입니다."));
 
@@ -187,6 +246,22 @@ HRESULT CLoader::Loading_For_Test()
 		return E_FAIL;
 #pragma endregion
 
+	lstrcpy(m_szLoadingText, TEXT("행동트리 원형 를(을) 로딩 중 입니다."));
+	/* For.Prototype_BTNode_RushYakuza*/
+	if (FAILED(m_pGameInstance->Add_BTNode_Prototype(LEVEL_TEST, TEXT("Prototype_BTNode_RushYakuza"),
+		CAI_RushYakuza::Create())))
+		return E_FAIL;
+
+	/* For.Prototype_BTNode_WPAYakuza*/
+	if (FAILED(m_pGameInstance->Add_BTNode_Prototype(LEVEL_TEST, TEXT("Prototype_BTNode_WPAYakuza"),
+		CAI_WPAYakuza::Create())))
+		return E_FAIL;
+
+	/* For.Prototype_BTNode_Shakedown*/
+	if (FAILED(m_pGameInstance->Add_BTNode_Prototype(LEVEL_TEST, TEXT("Prototype_BTNode_Shakedown"),
+		CAI_Shakedown::Create())))
+		return E_FAIL;
+
 	lstrcpy(m_szLoadingText, TEXT("컴포넌트 원형 를(을) 로딩 중 입니다."));
 #pragma region Effect
 
@@ -217,6 +292,8 @@ HRESULT CLoader::Loading_For_Test()
 	/* For.Prototype_Component_Anim */
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Anim"), CAnim::Create(m_pDevice, m_pContext, "../Bin/DataFiles/AnimationData/Animation.dat", false))))
 		return E_FAIL;
+	/*if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Anim"), CAnim::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Anim/Animation.fbx", true))))
+		return E_FAIL;*/
 
 	lstrcpy(m_szLoadingText, TEXT("모델를(을) 로딩 중 입니다."));
 	Add_Models_On_Path(LEVEL_TEST, TEXT("../Bin/Resources/Models/Anim/"));
@@ -293,8 +370,16 @@ HRESULT CLoader::Loading_For_Test()
 	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Player"), CPlayer::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	/* For.Prototype_GameObject_Jimu */
-	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Jimu"), CRushYakuza::Create(m_pDevice, m_pContext))))
+	/* For.Prototype_GameObject_RushYakuza */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_RushYakuza"), CRushYakuza::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_WPAYakuza */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_WPAYakuza"), CWPAYakuza::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_Shakedown */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Shakedown"), CShakedown::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	/* For.Prototype_GameObject_Terrain */
@@ -319,10 +404,15 @@ HRESULT CLoader::Loading_For_Test()
 
 	/* For.Prototype_GameObject_SoketCollider */
 	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_SoketCollider"),
-		CSoketCollider::Create(m_pDevice, m_pContext))))
+		CSocketCollider::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	/* For.Prototype_GameObject_SoketCollider */
+	/* For.Prototype_GameObject_SoketEffect */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_SoketEffect"),
+		CSocketEffect::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_MapCollider */
 	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_MapCollider"),
 		CMapCollider::Create(m_pDevice, m_pContext))))
 		return E_FAIL;

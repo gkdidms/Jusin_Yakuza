@@ -18,12 +18,17 @@ void CLevel_Logo::Tick(const _float& fTimeDelta)
 {
 	if (GetKeyState(VK_SPACE) & 0x8000)
 	{
-		if (FAILED(m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_GAMEPLAY))))
+		if (FAILED(m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_TEST))))
+			return;
+	}
+	else if (GetKeyState(VK_DELETE) & 0x8000)
+	{
+		if (FAILED(m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_OFFICE_1F))))
 			return;
 	}
 
 #ifdef _DEBUG
-	SetWindowText(g_hWnd, TEXT("로고레벨"));
+	SetWindowText(g_hWnd, TEXT("로고레벨 Space : TEST / Delete : Office 1F"));
 #endif
 }
 
