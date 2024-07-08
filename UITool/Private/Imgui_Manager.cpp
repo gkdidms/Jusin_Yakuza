@@ -304,22 +304,21 @@ void CImgui_Manager::Window_Image()
                     Textures[m_iGroupObjectIndex]->Get_TransformCom()->Set_WorldMatrix(XMLoadFloat4x4(&m_WorldMatirx));
 
 
+                    _bool isColor = dynamic_cast<CUI_Texture*>(Textures[m_iGroupObjectIndex])->Get_isColor();
+                    if (ImGui::Checkbox("isColor", &isColor))
+                        dynamic_cast<CUI_Texture*>(Textures[m_iGroupObjectIndex])->Set_isColor(isColor);
+
+
                     //쉐이더 선택
                     _int iPass =  dynamic_cast<CUI_Texture*>(Textures[m_iGroupObjectIndex])->Get_ShaderPass();
 
-                    if (ImGui::RadioButton("NonBlend", &iPass, 0))
+                    if (ImGui::RadioButton("Alpha Blend", &iPass, 1))
                         dynamic_cast<CUI_Texture*>(Textures[m_iGroupObjectIndex])->Set_ShaderPass(iPass);
-                    else if (ImGui::RadioButton("Blend", &iPass, 1))
-                        dynamic_cast<CUI_Texture*>(Textures[m_iGroupObjectIndex])->Set_ShaderPass(iPass);
-                    else if (ImGui::RadioButton("Alpha Blend", &iPass, 2))
-                        dynamic_cast<CUI_Texture*>(Textures[m_iGroupObjectIndex])->Set_ShaderPass(iPass);
-                    else if (ImGui::RadioButton("Color Alpha Blend", &iPass, 4))
-                        dynamic_cast<CUI_Texture*>(Textures[m_iGroupObjectIndex])->Set_ShaderPass(iPass);
-                    else if (ImGui::RadioButton("Color Alpha Blend Effect", &iPass, 5))
+                    else if (ImGui::RadioButton("Color Alpha Blend", &iPass, 2))
                         dynamic_cast<CUI_Texture*>(Textures[m_iGroupObjectIndex])->Set_ShaderPass(iPass);
 
 
-                    if(4==iPass)
+                    if(dynamic_cast<CUI_Texture*>(Textures[m_iGroupObjectIndex])->Get_isColor())
                     {
                         _float4 vColor = dynamic_cast<CUI_Texture*>(Textures[m_iGroupObjectIndex])->Get_Color();
                         static bool alpha_preview = true;
@@ -333,23 +332,6 @@ void CImgui_Manager::Window_Image()
                         {
                             dynamic_cast<CUI_Texture*>(Textures[m_iGroupObjectIndex])->Set_Color(vColor);
                         }
-                    }
-                    else if (5 == iPass)
-                    {
-                        _float4 vColor = dynamic_cast<CUI_Texture*>(Textures[m_iGroupObjectIndex])->Get_Color();
-                        static bool alpha_preview = true;
-                        static bool alpha_half_preview = false;
-                        static bool drag_and_drop = true;
-                        static bool options_menu = true;
-                        static bool hdr = false;
-                        ImGuiColorEditFlags misc_flags = (hdr ? ImGuiColorEditFlags_HDR : 0) | (drag_and_drop ? 0 : ImGuiColorEditFlags_NoDragDrop) | (alpha_half_preview ? ImGuiColorEditFlags_AlphaPreviewHalf : (alpha_preview ? ImGuiColorEditFlags_AlphaPreview : 0)) | (options_menu ? 0 : ImGuiColorEditFlags_NoOptions);
-
-                        if (ImGui::ColorEdit4("MyColor##2f", (float*)&vColor, ImGuiColorEditFlags_Float | misc_flags))
-                        {
-                            dynamic_cast<CUI_Texture*>(Textures[m_iGroupObjectIndex])->Set_Color(vColor);
-                        }
-
-                        
                     }
                     
                     if(CObject_Manager::TEXT != dynamic_cast<CUI_Texture*>(Textures[m_iGroupObjectIndex])->Get_TypeIndex())
@@ -409,6 +391,7 @@ void CImgui_Manager::Window_Binary()
                     m_iBinaryGroupIndex = n;
                     m_strBinarySelectTag = strName;
                     m_iBinaryObjectIndex = -1; // 초기화 시키기
+                    m_isOpenBinaryGroup = false;
                 }
                 if (is_selected)
                     ImGui::SetItemDefaultFocus();
@@ -619,9 +602,9 @@ void CImgui_Manager::Window_Binary()
                 {
                     IGFD::FileDialogConfig config;
                     config.path = (m_RootDir / "Client" / "Bin" / "Resources" / "Textures" / "UI").string();
-                    ImGuiFileDialog::Instance()->OpenDialog("ChooseBinaryTextureKey", "Choose File", ".dds, .png", config);
+                    ImGuiFileDialog::Instance()->OpenDialog("ChooseBinaryEffectTextureKey", "Choose File", ".dds, .png", config);
                 }
-                if (ImGuiFileDialog::Instance()->Display("ChooseBinaryTextureKey")) {
+                if (ImGuiFileDialog::Instance()->Display("ChooseBinaryEffectTextureKey")) {
                     if (ImGuiFileDialog::Instance()->IsOk()) { // action if OK
                         if ('\0' != m_szObjectName[0])
                         {
@@ -726,6 +709,7 @@ void CImgui_Manager::Window_Binary()
                     MSG_BOX("이미지 생성 실패");
             }
 
+            BinaryObject = m_pObjectManager->Get_GroupBinaryObject(m_pGameInstance->StringToWstring(m_strBinarySelectTag));
 
             //생성된 바이너리에 따라 수정 옵션 추가 
             if (m_iBinaryObjectIndex != -1 && m_iBinaryPick == BINARY_OBJECT)
@@ -761,39 +745,113 @@ void CImgui_Manager::Window_Binary()
                 //쉐이더 선택
                 if (!m_isOpenBinaryGroup)
                 {
-                    _int iPass = dynamic_cast<CUI_Texture*>(BinaryObject[m_iBinaryObjectIndex])->Get_ShaderPass();
 
-                    if (ImGui::RadioButton("NonBlend", &iPass, 0))
-                        dynamic_cast<CUI_Texture*>(BinaryObject[m_iBinaryObjectIndex])->Set_ShaderPass(iPass);
-                    else if (ImGui::RadioButton("Blend", &iPass, 1))
-                        dynamic_cast<CUI_Texture*>(BinaryObject[m_iBinaryObjectIndex])->Set_ShaderPass(iPass);
-                    else if (ImGui::RadioButton("Alpha Blend", &iPass, 2))
-                        dynamic_cast<CUI_Texture*>(BinaryObject[m_iBinaryObjectIndex])->Set_ShaderPass(iPass);
-                    else if (ImGui::RadioButton("Color Alpha Blend", &iPass, 4))
-                        dynamic_cast<CUI_Texture*>(BinaryObject[m_iBinaryObjectIndex])->Set_ShaderPass(iPass);
-                    else if (ImGui::RadioButton("Color Alpha Blend Effect", &iPass, 5))
-                        dynamic_cast<CUI_Texture*>(BinaryObject[m_iBinaryObjectIndex])->Set_ShaderPass(iPass);
-                    else if (ImGui::RadioButton("Alpha Blend Anim", &iPass, 6))
-                        dynamic_cast<CUI_Texture*>(BinaryObject[m_iBinaryObjectIndex])->Set_ShaderPass(iPass);
 
-                    _bool isAnim = dynamic_cast<CUI_Texture*>(BinaryObject[m_iBinaryObjectIndex])->Get_isAnim();
-                    if (ImGui::Checkbox("isAnim", &isAnim))
-                        dynamic_cast<CUI_Texture*>(BinaryObject[m_iBinaryObjectIndex])->Set_isAnim(isAnim);
-
-                   if(isAnim)
+                    if (CObject_Manager::EFFECT != dynamic_cast<CUI_Texture*>(BinaryObject[m_iBinaryObjectIndex])->Get_TypeIndex())
                     {
-                        _float2 fAnimTime = dynamic_cast<CUI_Texture*>(BinaryObject[m_iBinaryObjectIndex])->Get_AnimTime();
-                        if (ImGui::DragFloat2("AnimTime", (float*)&fAnimTime, 0.001f, 0.0f, 5.f))
-                            dynamic_cast<CUI_Texture*>(BinaryObject[m_iBinaryObjectIndex])->Set_AnimTime(fAnimTime);
+                        _bool isAnim = dynamic_cast<CUI_Texture*>(BinaryObject[m_iBinaryObjectIndex])->Get_isAnim();
+                        if (ImGui::Checkbox("isAnim", &isAnim))
+                            dynamic_cast<CUI_Texture*>(BinaryObject[m_iBinaryObjectIndex])->Set_isAnim(isAnim);
+                        ImGui::SameLine();
 
-                        _float3 vStartPos= dynamic_cast<CUI_Texture*>(BinaryObject[m_iBinaryObjectIndex])->Get_StartPos();
-                        if(ImGui::DragFloat3("StartPos", (float*)&vStartPos, 0.001f))
-                            dynamic_cast<CUI_Texture*>(BinaryObject[m_iBinaryObjectIndex])->Set_StartPos(vStartPos);
-                   }
+                        _bool isColor = dynamic_cast<CUI_Texture*>(BinaryObject[m_iBinaryObjectIndex])->Get_isColor();
+                        if (ImGui::Checkbox("isColor", &isColor))
+                            dynamic_cast<CUI_Texture*>(BinaryObject[m_iBinaryObjectIndex])->Set_isColor(isColor);
+
+                        if (!isAnim && !isColor)
+                        {
+                            dynamic_cast<CUI_Texture*>(BinaryObject[m_iBinaryObjectIndex])->Set_ShaderPass(1);
+                        }
+                        else if (isAnim && !isColor)
+                        {
+                            dynamic_cast<CUI_Texture*>(BinaryObject[m_iBinaryObjectIndex])->Set_ShaderPass(4);
+                        }
+                        else if (!isAnim && isColor)
+                        {
+                            dynamic_cast<CUI_Texture*>(BinaryObject[m_iBinaryObjectIndex])->Set_ShaderPass(2);
+                        }
+                        else if (isAnim && isColor)
+                        {
+                            dynamic_cast<CUI_Texture*>(BinaryObject[m_iBinaryObjectIndex])->Set_ShaderPass(5);
+                        }
+
+                        if (isAnim)
+                        {
+
+                            _bool isPlay = dynamic_cast<CUI_Texture*>(BinaryObject[m_iBinaryObjectIndex])->Get_isPlay();
+                            if (ImGui::Checkbox("isPlay", &isPlay))
+                                dynamic_cast<CUI_Texture*>(BinaryObject[m_iBinaryObjectIndex])->Set_isPlay(isPlay);
+
+                            ImGui::SameLine();
+                            _bool isReverse = dynamic_cast<CUI_Texture*>(BinaryObject[m_iBinaryObjectIndex])->Get_isReverse();
+                            if (ImGui::Checkbox("isReverse", &isReverse))
+                                dynamic_cast<CUI_Texture*>(BinaryObject[m_iBinaryObjectIndex])->Set_isReverse(isReverse);
+
+                            _float2 fAnimTime = dynamic_cast<CUI_Texture*>(BinaryObject[m_iBinaryObjectIndex])->Get_AnimTime();
+                            if (ImGui::DragFloat2("AnimTime", (float*)&fAnimTime, 0.001f, 0.0f, 5.f))
+                                dynamic_cast<CUI_Texture*>(BinaryObject[m_iBinaryObjectIndex])->Set_AnimTime(fAnimTime);
+
+                            _float3 vStartPos = dynamic_cast<CUI_Texture*>(BinaryObject[m_iBinaryObjectIndex])->Get_StartPos();
+                            if (ImGui::DragFloat3("StartPos", (float*)&vStartPos, 0.001f))
+                                dynamic_cast<CUI_Texture*>(BinaryObject[m_iBinaryObjectIndex])->Set_StartPos(vStartPos);
+
+                            _float2 fControlAlpha = dynamic_cast<CUI_Texture*>(BinaryObject[m_iBinaryObjectIndex])->Get_ControlAlpha();
+                            if (ImGui::DragFloat2("ControlAlpha", (float*)&fControlAlpha, 0.001f, 0.0f, 1.0f))
+                                dynamic_cast<CUI_Texture*>(BinaryObject[m_iBinaryObjectIndex])->Set_ControlAlpha(fControlAlpha);
+
+                        }
 
 
-                    if (4 == iPass || 5 == iPass)
+                        if(isColor)
+                        {
+                            if (dynamic_cast<CUI_Texture*>(BinaryObject[m_iBinaryObjectIndex])->Get_isColor())
+                            {
+                                _float4 vColor = dynamic_cast<CUI_Texture*>(BinaryObject[m_iBinaryObjectIndex])->Get_Color();
+                                static bool alpha_preview = true;
+                                static bool alpha_half_preview = false;
+                                static bool drag_and_drop = true;
+                                static bool options_menu = true;
+                                static bool hdr = false;
+                                ImGuiColorEditFlags misc_flags = (hdr ? ImGuiColorEditFlags_HDR : 0) | (drag_and_drop ? 0 : ImGuiColorEditFlags_NoDragDrop) | (alpha_half_preview ? ImGuiColorEditFlags_AlphaPreviewHalf : (alpha_preview ? ImGuiColorEditFlags_AlphaPreview : 0)) | (options_menu ? 0 : ImGuiColorEditFlags_NoOptions);
+
+                                if (ImGui::ColorEdit4("MyColor##2f", (float*)&vColor, ImGuiColorEditFlags_Float | misc_flags))
+                                {
+                                    dynamic_cast<CUI_Texture*>(BinaryObject[m_iBinaryObjectIndex])->Set_Color(vColor);
+                                }
+                            }
+                        }
+
+
+                        if (CObject_Manager::TEXT != dynamic_cast<CUI_Texture*>(BinaryObject[m_iBinaryObjectIndex])->Get_TypeIndex())
+                        {
+                            ImGui::DragFloat2("StartUV", (float*)&m_StartUV, 0.001f, 0.0f, 1.f);
+                            ImGui::DragFloat2("EndUV", (float*)&m_EndUV, 0.001f, 0.0f, 1.f);
+
+                            if (FAILED(dynamic_cast<CUI_Texture*>(BinaryObject[m_iBinaryObjectIndex])->Change_UV(m_StartUV, m_EndUV)))
+                                MSG_BOX("UV 변경 실패");
+                        }
+
+                        if (CObject_Manager::BTN == dynamic_cast<CUI_Texture*>(BinaryObject[m_iBinaryObjectIndex])->Get_TypeIndex())
+                        {
+                            ImGui::DragFloat2("ClickStartUV", (float*)&m_ClickStartUV, 0.001f, 0.0f, 1.f);
+                            ImGui::DragFloat2("ClickEndUV", (float*)&m_ClickEndUV, 0.001f, 0.0f, 1.f);
+
+                            if (FAILED(dynamic_cast<CBtn*>(BinaryObject[m_iBinaryObjectIndex])->Chage_ClickUV(m_ClickStartUV, m_ClickEndUV)))
+                                MSG_BOX("ClickUV 변경 실패");
+
+                            _bool Click = dynamic_cast<CBtn*>(BinaryObject[m_iBinaryObjectIndex])->Get_Click();
+                            if (ImGui::Checkbox("Click", &Click))
+                            {
+                                dynamic_cast<CBtn*>(BinaryObject[m_iBinaryObjectIndex])->Set_Click(Click);
+                            }
+
+                        }
+
+                    }
+                    else
                     {
+                        dynamic_cast<CUI_Texture*>(BinaryObject[m_iBinaryObjectIndex])->Set_ShaderPass(3);
+
                         _float4 vColor = dynamic_cast<CUI_Texture*>(BinaryObject[m_iBinaryObjectIndex])->Get_Color();
                         static bool alpha_preview = true;
                         static bool alpha_half_preview = false;
@@ -806,50 +864,27 @@ void CImgui_Manager::Window_Binary()
                         {
                             dynamic_cast<CUI_Texture*>(BinaryObject[m_iBinaryObjectIndex])->Set_Color(vColor);
                         }
-                    }
+                      
 
-                    if (CObject_Manager::TEXT != dynamic_cast<CUI_Texture*>(BinaryObject[m_iBinaryObjectIndex])->Get_TypeIndex())
-                    {
-                        ImGui::DragFloat2("StartUV", (float*)&m_StartUV, 0.001f, 0.0f, 1.f);
-                        ImGui::DragFloat2("EndUV", (float*)&m_EndUV, 0.001f, 0.0f, 1.f);
+                      _float3 vLifeTime = dynamic_cast<CUI_Effect*>(BinaryObject[m_iBinaryObjectIndex])->Get_LifeTime();
+                      _float fLife[2] = { vLifeTime.y, vLifeTime.z };
+                      if (ImGui::DragFloat2("LifeTime", fLife, 0.001f, 0.0f, 10.f))
+                      {
+                          vLifeTime.y = fLife[0];
+                          vLifeTime.z = fLife[1];
+                          dynamic_cast<CUI_Effect*>(BinaryObject[m_iBinaryObjectIndex])->Set_LifeTime(vLifeTime);
+                      }
 
-                        if (FAILED(dynamic_cast<CUI_Texture*>(BinaryObject[m_iBinaryObjectIndex])->Change_UV(m_StartUV, m_EndUV)))
-                            MSG_BOX("UV 변경 실패");
-                    }
-
-                    if (CObject_Manager::BTN == dynamic_cast<CUI_Texture*>(BinaryObject[m_iBinaryObjectIndex])->Get_TypeIndex())
-                    {
-                        ImGui::DragFloat2("ClickStartUV", (float*)&m_ClickStartUV, 0.001f, 0.0f, 1.f);
-                        ImGui::DragFloat2("ClickEndUV", (float*)&m_ClickEndUV, 0.001f, 0.0f, 1.f);
-
-                        if (FAILED(dynamic_cast<CBtn*>(BinaryObject[m_iBinaryObjectIndex])->Chage_ClickUV(m_ClickStartUV, m_ClickEndUV)))
-                            MSG_BOX("ClickUV 변경 실패");
-
-                        _bool Click = dynamic_cast<CBtn*>(BinaryObject[m_iBinaryObjectIndex])->Get_Click();
-                        if (ImGui::Checkbox("Click", &Click))
-                        {
-                            dynamic_cast<CBtn*>(BinaryObject[m_iBinaryObjectIndex])->Set_Click(Click);
-                        }
+                      _float fSpeed = dynamic_cast<CUI_Effect*>(BinaryObject[m_iBinaryObjectIndex])->Get_Speed();
+                      if (ImGui::DragFloat("LifeSpeed", &fSpeed, 0.001f, 0.0f, 10.f))
+                      {
+                          dynamic_cast<CUI_Effect*>(BinaryObject[m_iBinaryObjectIndex])->Set_Speed(fSpeed);
+                      }
+                        
 
                     }
 
-                    if (CObject_Manager::EFFECT == dynamic_cast<CUI_Texture*>(BinaryObject[m_iBinaryObjectIndex])->Get_TypeIndex())
-                    {
-                        _float3 vLifeTime = dynamic_cast<CUI_Effect*>(BinaryObject[m_iBinaryObjectIndex])->Get_LifeTime();
-                        _float fLife[2] = { vLifeTime.y, vLifeTime.z };
-                        if (ImGui::DragFloat2("LifeTime", fLife, 0.001f, 0.0f, 10.f))
-                        {
-                            vLifeTime.y = fLife[0];
-                            vLifeTime.z = fLife[1];
-                            dynamic_cast<CUI_Effect*>(BinaryObject[m_iBinaryObjectIndex])->Set_LifeTime(vLifeTime);
-                        }
 
-                        _float fSpeed = dynamic_cast<CUI_Effect*>(BinaryObject[m_iBinaryObjectIndex])->Get_Speed();
-                        if (ImGui::DragFloat("LifeSpeed", &fSpeed, 0.001f, 0.0f, 10.f))
-                        {
-                            dynamic_cast<CUI_Effect*>(BinaryObject[m_iBinaryObjectIndex])->Set_Speed(fSpeed);
-                        }
-                    }
 
                 }
             }
@@ -890,9 +925,9 @@ void CImgui_Manager::Window_Binary_Group()
             {
                 IGFD::FileDialogConfig config;
                 config.path = (m_RootDir / "Client" / "Bin" / "Resources" / "Textures" / "UI").string();
-                ImGuiFileDialog::Instance()->OpenDialog("ChooseBinaryTextureKey", "Choose File", ".dds, .png", config);
+                ImGuiFileDialog::Instance()->OpenDialog("ChooseBinaryGroupTextureKey", "Choose File", ".dds, .png", config);
             }
-            if (ImGuiFileDialog::Instance()->Display("ChooseBinaryTextureKey")) {
+            if (ImGuiFileDialog::Instance()->Display("ChooseBinaryGroupTextureKey")) {
                 if (ImGuiFileDialog::Instance()->IsOk()) { // action if OK
                     if ('\0' != m_szBinaryGroupObjectName[0])
                     {
@@ -929,9 +964,9 @@ void CImgui_Manager::Window_Binary_Group()
             {
                 IGFD::FileDialogConfig config;
                 config.path = (m_RootDir / "Client" / "Bin" / "Resources" / "Textures" / "UI").string();
-                ImGuiFileDialog::Instance()->OpenDialog("ChooseBtnTextureKey", "Choose File", ".dds, .png", config);
+                ImGuiFileDialog::Instance()->OpenDialog("ChooseBtnGroupTextureKey", "Choose File", ".dds, .png", config);
             }
-            if (ImGuiFileDialog::Instance()->Display("ChooseBtnTextureKey")) {
+            if (ImGuiFileDialog::Instance()->Display("ChooseBtnGroupTextureKey")) {
                 if (ImGuiFileDialog::Instance()->IsOk()) { // action if OK
 
                     filesystem::path filePathName = ImGuiFileDialog::Instance()->GetFilePathName();
@@ -949,9 +984,9 @@ void CImgui_Manager::Window_Binary_Group()
             {
                 IGFD::FileDialogConfig config;
                 config.path = (m_RootDir / "Client" / "Bin" / "Resources" / "Textures" / "UI").string();
-                ImGuiFileDialog::Instance()->OpenDialog("ChooseBtnClickTextureKey", "Choose File", ".dds, .png", config);
+                ImGuiFileDialog::Instance()->OpenDialog("ChooseBtnGroupClickTextureKey", "Choose File", ".dds, .png", config);
             }
-            if (ImGuiFileDialog::Instance()->Display("ChooseBtnClickTextureKey")) {
+            if (ImGuiFileDialog::Instance()->Display("ChooseBtnGroupClickTextureKey")) {
                 if (ImGuiFileDialog::Instance()->IsOk()) { // action if OK
                     filesystem::path filePathName = ImGuiFileDialog::Instance()->GetFilePathName();
                     filesystem::path filePath = filePathName;
@@ -1024,9 +1059,9 @@ void CImgui_Manager::Window_Binary_Group()
             {
                 IGFD::FileDialogConfig config;
                 config.path = (m_RootDir / "Client" / "Bin" / "Resources" / "Textures" / "UI").string();
-                ImGuiFileDialog::Instance()->OpenDialog("ChooseBinaryTextureKey", "Choose File", ".dds, .png", config);
+                ImGuiFileDialog::Instance()->OpenDialog("ChooseBinaryGroupEffectTextureKey", "Choose File", ".dds, .png", config);
             }
-            if (ImGuiFileDialog::Instance()->Display("ChooseBinaryTextureKey"))
+            if (ImGuiFileDialog::Instance()->Display("ChooseBinaryGroupEffectTextureKey"))
             {
                 if (ImGuiFileDialog::Instance()->IsOk())
                 { // action if OK
@@ -1122,6 +1157,7 @@ void CImgui_Manager::Window_Binary_Group()
             MSG_BOX("이미지 생성 실패");
     }
 
+  Objects = m_pObjectManager->Get_BinaryGroupObject(m_pGameInstance->StringToWstring(m_strBinarySelectTag), m_iBinaryObjectIndex);
 
     if (m_iBinaryGroupObjectIndex != -1 && m_iBinaryPick == GROUP_OBJECT)
     {
@@ -1154,38 +1190,114 @@ void CImgui_Manager::Window_Binary_Group()
         Objects[m_iBinaryGroupObjectIndex]->Get_TransformCom()->Set_WorldMatrix(XMLoadFloat4x4(&m_WorldMatirx));
 
 
-        _int iPass = dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Get_ShaderPass();
-
-        if (ImGui::RadioButton("NonBlend", &iPass, 0))
-            dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Set_ShaderPass(iPass);
-        else if (ImGui::RadioButton("Blend", &iPass, 1))
-            dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Set_ShaderPass(iPass);
-        else if (ImGui::RadioButton("Alpha Blend", &iPass, 2))
-            dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Set_ShaderPass(iPass);
-        else if (ImGui::RadioButton("Color Alpha Blend", &iPass, 4))
-            dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Set_ShaderPass(iPass);
-        else if (ImGui::RadioButton("Color Alpha Blend Effect", &iPass, 5))
-            dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Set_ShaderPass(iPass);
-        else if (ImGui::RadioButton("Alpha Blend Anim", &iPass, 6))
-            dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Set_ShaderPass(iPass);  
-
-        _bool isAnim = dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Get_isAnim();
-        if (ImGui::Checkbox("isAnim", &isAnim))
-            dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Set_isAnim(isAnim);
-
-        if (isAnim)
+        if(CObject_Manager::EFFECT != dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Get_TypeIndex())
         {
-            _float2 fAnimTime = dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Get_AnimTime();
-            if (ImGui::DragFloat2("AnimTime", (float*)&fAnimTime, 0.001f, 0.0f, 5.f))
-                dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Set_AnimTime(fAnimTime);
+            _bool isAnim = dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Get_isAnim();
+            if (ImGui::Checkbox("isAnim", &isAnim))
+                dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Set_isAnim(isAnim);
+            ImGui::SameLine();
 
-            _float3 vStartPos = dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Get_StartPos();
-            if (ImGui::DragFloat3("StartPos", (float*)&vStartPos, 0.001f))
-                dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Set_StartPos(vStartPos);
+            _bool isColor = dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Get_isColor();
+            if (ImGui::Checkbox("isColor", &isColor))
+                dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Set_isColor(isColor);
+
+            if (!isAnim && !isColor)
+            {
+                dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Set_ShaderPass(1);
+            }
+            else if (isAnim && !isColor)
+            {
+                dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Set_ShaderPass(4);
+            }
+            else if (!isAnim && isColor)
+            {
+                dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Set_ShaderPass(2);
+            }
+            else if (isAnim && isColor)
+            {
+                dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Set_ShaderPass(5);
+            }
+
+
+            if (isAnim)
+            {
+
+                _bool isPlay = dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Get_isPlay();
+                if (ImGui::Checkbox("isPlay", &isPlay))
+                    dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Set_isPlay(isPlay);
+
+                ImGui::SameLine();
+                _bool isReverse = dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Get_isReverse();
+                if (ImGui::Checkbox("isReverse", &isReverse))
+                    dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Set_isReverse(isReverse);
+
+                _float2 fAnimTime = dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Get_AnimTime();
+                if (ImGui::DragFloat2("AnimTime", (float*)&fAnimTime, 0.001f, 0.0f, 5.f))
+                    dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Set_AnimTime(fAnimTime);
+
+                _float3 vStartPos = dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Get_StartPos();
+                if (ImGui::DragFloat3("StartPos", (float*)&vStartPos, 0.001f))
+                    dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Set_StartPos(vStartPos);
+
+                _float2 fControlAlpha = dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Get_ControlAlpha();
+                if (ImGui::DragFloat2("ControlAlpha", (float*)&fControlAlpha, 0.001f, 0.0f, 1.0f))
+                    dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Set_ControlAlpha(fControlAlpha);
+            }
+
+            if(isColor)
+            {
+                if (dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Get_isColor())
+                {
+                    _float4 vColor = dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Get_Color();
+                    static bool alpha_preview = true;
+                    static bool alpha_half_preview = false;
+                    static bool drag_and_drop = true;
+                    static bool options_menu = true;
+                    static bool hdr = false;
+                    ImGuiColorEditFlags misc_flags = (hdr ? ImGuiColorEditFlags_HDR : 0) | (drag_and_drop ? 0 : ImGuiColorEditFlags_NoDragDrop) | (alpha_half_preview ? ImGuiColorEditFlags_AlphaPreviewHalf : (alpha_preview ? ImGuiColorEditFlags_AlphaPreview : 0)) | (options_menu ? 0 : ImGuiColorEditFlags_NoOptions);
+
+                    if (ImGui::ColorEdit4("MyColor##2f", (float*)&vColor, ImGuiColorEditFlags_Float | misc_flags))
+                    {
+                        dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Set_Color(vColor);
+                    }
+                }
+            }
+
+
+            if (CObject_Manager::TEXT != dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Get_TypeIndex())
+            {
+                ImGui::DragFloat2("StartUV", (float*)&m_StartUV, 0.001f, 0.0f, 1.f);
+                ImGui::DragFloat2("EndUV", (float*)&m_EndUV, 0.001f, 0.0f, 1.f);
+
+                if (FAILED(dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Change_UV(m_StartUV, m_EndUV)))
+                    MSG_BOX("UV 변경 실패");
+            }
+
+
+
+            if (CObject_Manager::BTN == dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Get_TypeIndex())
+            {
+                ImGui::DragFloat2("ClickStartUV", (float*)&m_ClickStartUV, 0.001f, 0.0f, 1.f);
+                ImGui::DragFloat2("ClickEndUV", (float*)&m_ClickEndUV, 0.001f, 0.0f, 1.f);
+
+                if (FAILED(dynamic_cast<CBtn*>(Objects[m_iBinaryGroupObjectIndex])->Chage_ClickUV(m_ClickStartUV, m_ClickEndUV)))
+                    MSG_BOX("ClickUV 변경 실패");
+
+                _bool Click = dynamic_cast<CBtn*>(Objects[m_iBinaryGroupObjectIndex])->Get_Click();
+                if (ImGui::Checkbox("Click", &Click))
+                {
+                    dynamic_cast<CBtn*>(Objects[m_iBinaryGroupObjectIndex])->Set_Click(Click);
+                }
+
+            }
+
+
         }
-
-        if (4 == iPass|| 5 == iPass)
+        else
         {
+            dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Set_ShaderPass(3);
+
+
             _float4 vColor = dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Get_Color();
             static bool alpha_preview = true;
             static bool alpha_half_preview = false;
@@ -1198,34 +1310,8 @@ void CImgui_Manager::Window_Binary_Group()
             {
                 dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Set_Color(vColor);
             }
-        }
+            
 
-        if (CObject_Manager::TEXT != dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Get_TypeIndex())
-        {
-            ImGui::DragFloat2("StartUV", (float*)&m_StartUV, 0.001f, 0.0f, 1.f);
-            ImGui::DragFloat2("EndUV", (float*)&m_EndUV, 0.001f, 0.0f, 1.f);
-
-            if (FAILED(dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Change_UV(m_StartUV, m_EndUV)))
-                MSG_BOX("UV 변경 실패");
-        }
-
-        if (CObject_Manager::BTN == dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Get_TypeIndex())
-        {
-            ImGui::DragFloat2("ClickStartUV", (float*)&m_ClickStartUV, 0.001f, 0.0f, 1.f);
-            ImGui::DragFloat2("ClickEndUV", (float*)&m_ClickEndUV, 0.001f, 0.0f, 1.f);
-
-            if (FAILED(dynamic_cast<CBtn*>(Objects[m_iBinaryGroupObjectIndex])->Chage_ClickUV(m_ClickStartUV, m_ClickEndUV)))
-                MSG_BOX("ClickUV 변경 실패");
-
-            _bool Click = dynamic_cast<CBtn*>(Objects[m_iBinaryGroupObjectIndex])->Get_Click();
-            if (ImGui::Checkbox("Click", &Click))
-            {
-                dynamic_cast<CBtn*>(Objects[m_iBinaryGroupObjectIndex])->Set_Click(Click);
-            }
-
-        }
-        if(CObject_Manager::EFFECT == dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Get_TypeIndex())
-        {
             _float3 vLifeTime = dynamic_cast<CUI_Effect*>(Objects[m_iBinaryGroupObjectIndex])->Get_LifeTime();
             _float fLife[2] = { vLifeTime.y, vLifeTime.z };
             if (ImGui::DragFloat2("LifeTime", fLife, 0.001f, 0.0f, 10.f))
@@ -1240,9 +1326,12 @@ void CImgui_Manager::Window_Binary_Group()
             {
                 dynamic_cast<CUI_Effect*>(Objects[m_iBinaryGroupObjectIndex])->Set_Speed(fSpeed);
             }
-        }
 
-    }
+
+         }
+}
+
+
 
     ImGui::End();
 }

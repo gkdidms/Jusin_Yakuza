@@ -20,6 +20,7 @@ public:
         const _float4x4* pParentMatrix;
         _float2 fStartUV;
         _float2 fEndUV = { 1.f , 1.f };
+        _bool isColor;
         _float4 vColor;
         string strParentName;
         _uint iShaderPass;
@@ -28,6 +29,8 @@ public:
         _bool bAnim;
         _float2 fAnimTime;
         _float3 vStartPos;//최종위치는 worldpos 
+        _float2 fControlAlpha;
+        _bool isReverse;
 
     } UI_TEXTURE_DESC;
 
@@ -35,6 +38,7 @@ public:
     void Set_SizeX(_float fSizeX) { m_fSizeX = fSizeX; }
     void Set_SizeY(_float fSizeY) { m_fSizeY = fSizeY; }
     void Set_ShaderPass(_uint iPass) { m_iShaderPass = iPass; }
+    void Set_isColor(_bool isColor) { m_isColor = isColor; }
     void Set_Color(_float4 vColor) { m_vColor = vColor; }
 
 
@@ -44,7 +48,8 @@ public:
 #ifdef _TOOL
     void Set_isPlay(_bool isPlay) { m_isPlay = isPlay; }
 #endif // _TOOL
-
+    void Set_ControlAlpha(_float2 ControlAlpha) { m_fControlAlpha = ControlAlpha; }
+    void Set_isReverse(_bool isReverse) { m_isReverse = isReverse; }
 
 public:
     _float Get_SizeX() { return m_fSizeX; }
@@ -57,16 +62,21 @@ public:
     wstring Get_FileName() { return m_strTextureName; }
     wstring Get_FilePath() { return m_strTextureFilePath; }
 
+    _bool Get_isColor(){ return m_isColor; }
     _float4 Get_Color() { return m_vColor; }
 
     _float3 Get_StartPos() { return m_vStartPos; }
     _float2 Get_AnimTime() { return m_fAnimTime; }
     _bool Get_isAnim() { return m_isAnim; }
+    
+
 
 #ifdef _TOOL
     _bool Get_isPlay() { return m_isPlay; }
 #endif // _TOOL
 
+    _float2 Get_ControlAlpha() { return m_fControlAlpha; }
+    _bool Get_isReverse() { return m_isReverse; }
 
 protected:
     CUI_Texture(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -95,6 +105,7 @@ protected:
 
 protected:
     _float2                         m_fStartUV = { 0.f, 0.f }, m_fEndUV = { 1.f, 1.f };
+    _bool                           m_isColor = { false };
     _float4                         m_vColor = { 1.f, 1.f, 1.f, 1.f };
 
     wstring m_strTextureFilePath = { L"" };
@@ -103,14 +114,17 @@ protected:
     _bool m_isParent = { false };
     string m_strParentName = { "" };
 
-    _uint m_iShaderPass = { 0 };
+    _uint m_iShaderPass = { 1 };
 
-    _float3 m_vStartPos;
-    _float2 m_fAnimTime;
     _bool m_isAnim;
+    _float2 m_fAnimTime;
+    _float3 m_vStartPos;
 #ifdef _TOOL
     _bool m_isPlay = { true };
 #endif // _TOOL
+    //시작하면 0-1 사라질땐 반대로
+    _float2 m_fControlAlpha = { 0.f, 1.f };//시작,종료 알파(애님일경우)]
+    _bool m_isReverse = { false };
 
 public:
     virtual HRESULT Save_binary(const string strDirectory)override; 
