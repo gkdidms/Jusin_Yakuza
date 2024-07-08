@@ -18,6 +18,9 @@ HRESULT CSocketCollider::Initialize_Prototype()
 
 HRESULT CSocketCollider::Initialize(void * pArg)
 {
+	SOCKET_COLLIDER_DESC* pDesc = static_cast<SOCKET_COLLIDER_DESC*>(pArg);
+	m_pParentObject = pDesc->pParentObject;
+
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;	
 

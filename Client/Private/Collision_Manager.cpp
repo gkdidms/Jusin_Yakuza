@@ -75,7 +75,9 @@ void CCollision_Manager::Collision_FromPlayer()
         {
             if (pEnemyHitCollider->Intersect(pPlayerAttackCollider->Get_Collider()))
             {
-                cout << "Enemy Hit!!!" << endl;
+                _float3 vHitDir = pPlayerAttackCollider->Get_MoveDir();
+                cout << "Enemy Hit!!" << endl
+                    << "[Dir] x:" << vHitDir.x << "y:" << vHitDir.y << "z:" << vHitDir.z << endl;
             }
 
         }

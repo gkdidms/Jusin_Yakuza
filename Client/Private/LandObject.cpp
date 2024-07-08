@@ -111,6 +111,7 @@ void CLandObject::Apply_ChracterData()
 		Desc.iBoneIndex = Collider.first;
 		Desc.ColliderState = Collider.second;
 		Desc.iType = Collider.second.isAlways ? 1 : 0;
+		Desc.pParentObject = this;
 
 		CGameObject* pSoketCollider = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_SoketCollider"), &Desc);
 		if (nullptr == pSoketCollider)
