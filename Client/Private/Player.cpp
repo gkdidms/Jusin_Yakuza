@@ -105,11 +105,18 @@ void CPlayer::Late_Tick(const _float& fTimeDelta)
 	for (auto& pEffect : m_pEffects)
 		pEffect.second->Late_Tick(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")));
 
-	// Tick에서 추가한 몬스터의 HIT 콜라이더들과, 현재 틱에서 켜져있는 플레이어의 Attack 콜라이더와 충돌 비교한다.
+	// 현재 켜져있는 Attack용 콜라이더 삽입
 	for (auto& pPair : m_pColliders)
 	{
 		if(pPair.second->Get_CollierType() == CSocketCollider::ATTACK && pPair.second->IsOn())
-			m_pCollisionManager->Collision_FromPlayer(pPair.second);
+			m_pCollisionManager->Add_AttackCollider(pPair.second, CCollision_Manager::PLAYER);
+	}
+
+	// 현재 켜져있는 Hit용 콜라이더 삽입 (아직까지는 Hit용 콜라이더는 항상 켜져있음)
+	for (auto& pPair : m_pColliders)
+	{
+		if (pPair.second->Get_CollierType() == CSocketCollider::HIT && pPair.second->IsOn())
+			m_pCollisionManager->Add_HitCollider(pPair.second, CCollision_Manager::PLAYER);
 	}
 	
 }
