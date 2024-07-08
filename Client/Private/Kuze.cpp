@@ -1,26 +1,26 @@
-#include "Shakedown.h"
+#include "Kuze.h"
 
 #include "GameInstance.h"
 #include "Mesh.h"
 
-#include "AI_Shakedown.h"
+#include "AI_Kuze.h"
 
-CShakedown::CShakedown(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+CKuze::CKuze(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CMonster { pDevice, pContext}
 {
 }
 
-CShakedown::CShakedown(const CShakedown& rhs)
-	: CMonster { rhs }
+CKuze::CKuze(const CKuze& rhs)
+	: CMonster {rhs }
 {
 }
 
-HRESULT CShakedown::Initialize_Prototype()
+HRESULT CKuze::Initialize_Prototype()
 {
 	return S_OK;
 }
 
-HRESULT CShakedown::Initialize(void* pArg)
+HRESULT CKuze::Initialize(void* pArg)
 {
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
@@ -35,13 +35,13 @@ HRESULT CShakedown::Initialize(void* pArg)
 	return S_OK;
 }
 
-void CShakedown::Priority_Tick(const _float& fTimeDelta)
+void CKuze::Priority_Tick(const _float& fTimeDelta)
 {
 }
 
-void CShakedown::Tick(const _float& fTimeDelta)
+void CKuze::Tick(const _float& fTimeDelta)
 {
-	m_pTree->Tick(fTimeDelta);
+	//m_pTree->Tick(fTimeDelta);
 
 	Change_Animation(); //애니메이션 변경
 
@@ -52,12 +52,12 @@ void CShakedown::Tick(const _float& fTimeDelta)
 	m_pColliderCom->Tick(m_pTransformCom->Get_WorldMatrix());
 }
 
-void CShakedown::Late_Tick(const _float& fTimeDelta)
+void CKuze::Late_Tick(const _float& fTimeDelta)
 {
 	m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
 }
 
-HRESULT CShakedown::Render()
+HRESULT CKuze::Render()
 {
 	if (FAILED(Bind_ResourceData()))
 		return E_FAIL;
@@ -68,20 +68,6 @@ HRESULT CShakedown::Render()
 		m_pModelCom->Bind_BoneMatrices(m_pShaderCom, "g_BoneMatrices", i);
 
 		m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE);
-		m_pModelCom->Bind_Material(m_pShaderCom, "g_MultiDiffuseTexture", i, aiTextureType_SHININESS);
-		m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS);
-
-		_bool isRS = true;
-		_bool isRD = true;
-
-		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RSTexture", i, aiTextureType_SPECULAR)))
-			isRS = false;
-		m_pShaderCom->Bind_RawValue("g_isRS", &isRS, sizeof(_bool));
-
-		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RDTexture", i, aiTextureType_OPACITY)))
-			isRD = false;
-
-		m_pShaderCom->Bind_RawValue("g_isRD", &isRD, sizeof(_bool));
 
 		if (pMesh->Get_AlphaApply())
 			m_pShaderCom->Begin(1);     //블랜드
@@ -93,14 +79,10 @@ HRESULT CShakedown::Render()
 		i++;
 	}
 
-#ifdef _DEBUG
-	m_pGameInstance->Add_DebugComponent(m_pColliderCom);
-#endif
-
 	return S_OK;
 }
 
-HRESULT CShakedown::Add_Components()
+HRESULT CKuze::Add_Components()
 {
 	if (FAILED(__super::Add_Component(LEVEL_TEST, TEXT("Prototype_Component_Shader_VtxAnim"),
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
@@ -126,19 +108,19 @@ HRESULT CShakedown::Add_Components()
 		return E_FAIL;
 
 	//행동트리 저장
-	CAI_Shakedown::AI_MONSTER_DESC AIDesc{};
+	CAI_Kuze::AI_MONSTER_DESC AIDesc{};
 	AIDesc.pAnim = m_pAnimCom;
 	AIDesc.pState = &m_iState;
 	AIDesc.pThis = this;
 
-	m_pTree = dynamic_cast<CAI_Shakedown*>(m_pGameInstance->Add_BTNode(LEVEL_TEST, TEXT("Prototype_BTNode_Shakedown"), &AIDesc));
+	m_pTree = dynamic_cast<CAI_Kuze*>(m_pGameInstance->Add_BTNode(LEVEL_TEST, TEXT(""), &AIDesc));
 	if (nullptr == m_pTree)
 		return E_FAIL;
 
 	return S_OK;
 }
 
-HRESULT CShakedown::Bind_ResourceData()
+HRESULT CKuze::Bind_ResourceData()
 {
 	if (FAILED(m_pTransformCom->Bind_ShaderMatrix(m_pShaderCom, "g_WorldMatrix")))
 		return E_FAIL;
@@ -150,7 +132,7 @@ HRESULT CShakedown::Bind_ResourceData()
 	return S_OK;
 }
 
-void CShakedown::Change_Animation()
+void CKuze::Change_Animation()
 {
 	_uint iAnim = { 0 };
 	m_isAnimLoop = false;
@@ -266,9 +248,9 @@ void CShakedown::Change_Animation()
 	m_pModelCom->Set_AnimationIndex(iAnim, m_pAnimCom->Get_Animations(), m_fChangeInterval);
 }
 
-CShakedown* CShakedown::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+CKuze* CKuze::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
-	CShakedown* pInstance = new CShakedown(pDevice, pContext);
+	CKuze* pInstance = new CKuze(pDevice, pContext);
 
 	if (FAILED(pInstance->Initialize_Prototype()))
 		Safe_Release(pInstance);
@@ -276,9 +258,9 @@ CShakedown* CShakedown::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 	return pInstance;
 }
 
-CGameObject* CShakedown::Clone(void* pArg)
+CGameObject* CKuze::Clone(void* pArg)
 {
-	CShakedown* pInstance = new CShakedown(*this);
+	CKuze* pInstance = new CKuze(*this);
 
 	if (FAILED(pInstance->Initialize(pArg)))
 		Safe_Release(pInstance);
@@ -286,9 +268,7 @@ CGameObject* CShakedown::Clone(void* pArg)
 	return pInstance;
 }
 
-void CShakedown::Free()
+void CKuze::Free()
 {
-	__super::Free();
-
-	Safe_Release(m_pTree);
+	__super::Free();  
 }

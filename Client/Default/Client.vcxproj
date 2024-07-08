@@ -172,6 +172,7 @@
     <ClInclude Include="..\..\Imgui\imgui\imstb_rectpack.h" />
     <ClInclude Include="..\..\Imgui\imgui\imstb_textedit.h" />
     <ClInclude Include="..\..\Imgui\imgui\imstb_truetype.h" />
+    <ClInclude Include="..\public\AI_Kuze.h" />
     <ClInclude Include="..\public\AI_Monster.h" />
     <ClInclude Include="..\public\AI_RushYakuza.h" />
     <ClInclude Include="..\public\AI_Shakedown.h" />
@@ -179,6 +180,7 @@
     <ClInclude Include="..\Public\Aura.h" />
     <ClInclude Include="..\public\Background.h" />
     <ClInclude Include="..\Public\BehaviorAnimation.h" />
+    <ClInclude Include="..\public\Kuze.h" />
     <ClInclude Include="..\public\Level_Office1F.h" />
     <ClInclude Include="..\public\Level_Office2F.h" />
     <ClInclude Include="..\Public\MapCollider.h" />
@@ -251,6 +253,7 @@
     <ClCompile Include="..\..\Imgui\imgui\imgui_draw.cpp" />
     <ClCompile Include="..\..\Imgui\imgui\imgui_tables.cpp" />
     <ClCompile Include="..\..\Imgui\imgui\imgui_widgets.cpp" />
+    <ClCompile Include="..\private\AI_Kuze.cpp" />
     <ClCompile Include="..\private\AI_Monster.cpp" />
     <ClCompile Include="..\private\AI_RushYakuza.cpp" />
     <ClCompile Include="..\private\AI_Shakedown.cpp" />
@@ -258,6 +261,7 @@
     <ClCompile Include="..\Private\Aura.cpp" />
     <ClCompile Include="..\private\Background.cpp" />
     <ClCompile Include="..\Private\BehaviorAnimation.cpp" />
+    <ClCompile Include="..\private\Kuze.cpp" />
     <ClCompile Include="..\private\Level_Office1F.cpp" />
     <ClCompile Include="..\private\Level_Office2F.cpp" />
     <ClCompile Include="..\Private\MapCollider.cpp" />
