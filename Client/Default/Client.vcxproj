@@ -179,7 +179,10 @@
     <ClInclude Include="..\Public\Aura.h" />
     <ClInclude Include="..\public\Background.h" />
     <ClInclude Include="..\Public\BehaviorAnimation.h" />
+    <ClInclude Include="..\Public\Btn.h" />
     <ClInclude Include="..\Public\Collision_Manager.h" />
+    <ClInclude Include="..\Public\Group.h" />
+    <ClInclude Include="..\Public\Image_Texture.h" />
     <ClInclude Include="..\public\Level_Office1F.h" />
     <ClInclude Include="..\public\Level_Office2F.h" />
     <ClInclude Include="..\Public\MapCollider.h" />
@@ -230,8 +233,12 @@
     <ClInclude Include="..\Public\SocketObject.h" />
     <ClInclude Include="..\public\SystemManager.h" />
     <ClInclude Include="..\Public\Terrain.h" />
+    <ClInclude Include="..\Public\Text.h" />
     <ClInclude Include="..\Public\TRailEffect.h" />
     <ClInclude Include="..\public\UI.h" />
+    <ClInclude Include="..\Public\UI_Effect.h" />
+    <ClInclude Include="..\Public\UI_Object.h" />
+    <ClInclude Include="..\Public\UI_Texture.h" />
     <ClInclude Include="..\public\WPAYakuza.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="framework.h" />
@@ -259,7 +266,10 @@
     <ClCompile Include="..\Private\Aura.cpp" />
     <ClCompile Include="..\private\Background.cpp" />
     <ClCompile Include="..\Private\BehaviorAnimation.cpp" />
+    <ClCompile Include="..\Private\Btn.cpp" />
     <ClCompile Include="..\Private\Collision_Manager.cpp" />
+    <ClCompile Include="..\Private\Group.cpp" />
+    <ClCompile Include="..\Private\Image_Texture.cpp" />
     <ClCompile Include="..\private\Level_Office1F.cpp" />
     <ClCompile Include="..\private\Level_Office2F.cpp" />
     <ClCompile Include="..\Private\MapCollider.cpp" />
@@ -309,8 +319,12 @@
     <ClCompile Include="..\Private\SocketObject.cpp" />
     <ClCompile Include="..\private\SystemManager.cpp" />
     <ClCompile Include="..\Private\Terrain.cpp" />
+    <ClCompile Include="..\Private\Text.cpp" />
     <ClCompile Include="..\Private\TRailEffect.cpp" />
     <ClCompile Include="..\private\UI.cpp" />
+    <ClCompile Include="..\Private\UI_Effect.cpp" />
+    <ClCompile Include="..\Private\UI_Object.cpp" />
+    <ClCompile Include="..\Private\UI_Texture.cpp" />
     <ClCompile Include="..\private\WPAYakuza.cpp" />
     <ClCompile Include="Client.cpp" />
   </ItemGroup>

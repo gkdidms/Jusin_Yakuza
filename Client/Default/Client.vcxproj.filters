@@ -205,11 +205,26 @@
     <ClCompile Include="..\private\AI_Shakedown.cpp">
       <Filter>02.GameObjects\02.Character\LandObject\01.Monster\Shakedown\AI</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\Kuze.cpp">
-      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\Kuze</Filter>
+    <ClCompile Include="..\Private\UI_Texture.cpp">
+      <Filter>02.GameObjects\07.UI</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\AI_Kuze.cpp">
-      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\Kuze\AI</Filter>
+    <ClCompile Include="..\Private\Btn.cpp">
+      <Filter>02.GameObjects\07.UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Group.cpp">
+      <Filter>02.GameObjects\07.UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Image_Texture.cpp">
+      <Filter>02.GameObjects\07.UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Text.cpp">
+      <Filter>02.GameObjects\07.UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_Effect.cpp">
+      <Filter>02.GameObjects\07.UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_Object.cpp">
+      <Filter>02.GameObjects\07.UI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -447,11 +462,26 @@
     <ClInclude Include="..\public\AI_Shakedown.h">
       <Filter>02.GameObjects\02.Character\LandObject\01.Monster\Shakedown\AI</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\Kuze.h">
-      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\Kuze</Filter>
+    <ClInclude Include="..\Public\Text.h">
+      <Filter>02.GameObjects\07.UI</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\AI_Kuze.h">
-      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\Kuze\AI</Filter>
+    <ClInclude Include="..\Public\UI_Effect.h">
+      <Filter>02.GameObjects\07.UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_Object.h">
+      <Filter>02.GameObjects\07.UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_Texture.h">
+      <Filter>02.GameObjects\07.UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Btn.h">
+      <Filter>02.GameObjects\07.UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Group.h">
+      <Filter>02.GameObjects\07.UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Image_Texture.h">
+      <Filter>02.GameObjects\07.UI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -666,7 +696,7 @@
     </Filter>
     <Filter Include="02.GameObjects\02.Character\LandObject\01.Monster\Kuze">
       <UniqueIdentifier>{a9b58fce-7d6f-4a11-b6d9-392394cb6b6b}</UniqueIdentifier>
-	</Filter>
+    </Filter>
     <Filter Include="95.Utility\04.CollisionManager">
       <UniqueIdentifier>{43f7aea2-8b44-48b5-8565-d0e4557344a8}</UniqueIdentifier>
     </Filter>
