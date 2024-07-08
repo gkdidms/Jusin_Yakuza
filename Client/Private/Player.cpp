@@ -261,9 +261,12 @@ void CPlayer::Synchronize_Root(const _float& fTimeDelta)
 			
 			//Y값 이동을 죽인 방향으로 적용해야한다.
 			XMStoreFloat4(&fMoveDir, XMVectorSetY(XMVector3Normalize(vFF - XMLoadFloat4(&m_vPrevMove)), 0.f));
-			//m_pTransformCom->Go_Straight_CustumSpeed(0.2, 1);
+
+			if (0.01 > m_fPrevSpeed)
+				m_fPrevSpeed = 0.f;
+
 			m_pTransformCom->Go_Straight_CustumSpeed(m_fPrevSpeed, 1);
-			m_pTransformCom->Go_Move_Custum(fMoveDir, fMoveSpeed, 1);
+			m_pTransformCom->Go_Move_Custum(fMoveDir, m_fPrevSpeed, 1);
 			m_fPrevSpeed = fMoveSpeed;
 
 			XMStoreFloat4(&m_vPrevMove, vFF);
@@ -331,9 +334,6 @@ void CPlayer::KeyInput(const _float& fTimeDelta)
 		KRC_KeyInput(fTimeDelta);
 		break;
 	}
-
-
-
 }
 
 void CPlayer::Adventure_KeyInput(const _float& fTimeDelta)
@@ -559,80 +559,6 @@ HRESULT CPlayer::Bind_ResourceData()
 
 	return S_OK;
 }
-
-/*
-HRESULT CPlayer::Add_CharacterData()
-{
-	m_pData = CCharacterData::Create(this);
-
-	if (nullptr == m_pData)
-		return E_FAIL;
-
-	Apply_ChracterData();
-
-	return S_OK;
-}
-
-void CPlayer::Apply_ChracterData()
-{
-	auto& pAlphaMeshes = m_pData->Get_AlphaMeshes();
-	auto pMeshes = m_pModelCom->Get_Meshes();
-
-	for (size_t i = 0; i < pMeshes.size(); i++)
-	{
-		for (auto& iMeshIndex : pAlphaMeshes)
-		{
-			if (i == iMeshIndex)
-				pMeshes[i]->Set_AlphaApply(true);
-		}
-	}
-
-	auto& pLoopAnimations = m_pData->Get_LoopAnimations();
-	for (auto& iAnimIndex : pLoopAnimations)
-	{
-		m_pModelCom->Set_AnimLoop(iAnimIndex, true);
-	}
-
-	auto& pColliders = m_pData->Get_Colliders();
-
-	for (auto& Collider : pColliders)
-	{
-		CSocketCollider::SOCKET_COLLIDER_DESC Desc{};
-		Desc.pParentMatrix = m_pTransformCom->Get_WorldFloat4x4();
-		Desc.pCombinedTransformationMatrix = m_pModelCom->Get_BoneCombinedTransformationMatrix_AtIndex(Collider.first);
-		Desc.iBoneIndex = Collider.first;
-		Desc.ColliderState = Collider.second;
-
-		CGameObject* pSoketCollider = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_SoketCollider"), &Desc);
-		if (nullptr == pSoketCollider)
-			return;
-	
-		auto [it, success] = m_pColliders.emplace(Collider.first, static_cast<CSocketCollider*>(pSoketCollider));
-
-		//생성한 모든 콜라이더는 일단 꺼둔다.
-		// 몸체에 붙일 (플레이어가 피격당할) 콜라이더는 항시 켜져있어야하므로 툴에서찍지않음
-		it->second->Off();
-	}
-
-	//auto& pEffects = m_pData->Get_Effets();
-	//for (auto& pEffect : pEffects)
-	//{
-	//	CSocketEffect::SOKET_EFFECT_DESC Desc{};
-	//	Desc.pParentMatrix = m_pTransformCom->Get_WorldFloat4x4();
-	//	Desc.pCombinedTransformationMatrix = m_pModelCom->Get_BoneCombinedTransformationMatrix(pEffect.first.c_str());
-	//	Desc.wstrEffectName = pEffect.second;
-
-	//	CGameObject* pSoketEffect = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_SoketEffect"), &Desc);
-	//	if (nullptr == pSoketEffect)
-	//		return;
-
-	//	auto [it, success] = m_pEffects.emplace(pEffect.first, static_cast<CSocketEffect*>(pSoketEffect));
-
-	//	it->second->Off();
-	//}
-
-}
-*/
 
 void CPlayer::Change_Animation(_uint iIndex, _float fInterval)
 {

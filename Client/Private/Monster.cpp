@@ -162,9 +162,12 @@ void CMonster::Synchronize_Root(const _float& fTimeDelta)
 
 			//Y값 이동을 죽인 방향으로 적용해야한다.
 			XMStoreFloat4(&fMoveDir, XMVectorSetY(XMVector3Normalize(vFF - XMLoadFloat4(&m_vPrevMove)), 0.f));
-			//m_pTransformCom->Go_Straight_CustumSpeed(0.2, 1);
+			
+			if (0.01 > m_fPrevSpeed)
+				m_fPrevSpeed = 0.f;
+
 			m_pTransformCom->Go_Straight_CustumSpeed(m_fPrevSpeed, 1);
-			m_pTransformCom->Go_Move_Custum(fMoveDir, fMoveSpeed, 1);
+			m_pTransformCom->Go_Move_Custum(fMoveDir, m_fPrevSpeed, 1);
 			m_fPrevSpeed = fMoveSpeed;
 
 			XMStoreFloat4(&m_vPrevMove, vFF);

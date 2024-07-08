@@ -364,6 +364,28 @@ void CImguiManager::BoneListWindow()
 
 	ImGui::Checkbox(u8"»ó½Ã", &m_isAlwaysCollider);
 
+	if (ImGui::RadioButton("Attack", m_iColliderActionType == ATTACK))
+	{
+		m_iColliderActionType = ATTACK;
+	}
+	ImGui::SameLine();
+	if (ImGui::RadioButton("Hit", m_iColliderActionType == HIT))
+	{
+		m_iColliderActionType = HIT;
+	}
+	ImGui::SameLine();
+
+	switch (m_iColliderActionType)
+	{
+	case ATTACK:
+
+		break;
+	case HIT:
+
+
+		break;
+	}
+
 	if (ImGui::Button("Create Collier"))
 	{
 		void* pValue = nullptr;
