@@ -62,7 +62,11 @@ _bool CCollision_Manager::Collision_FromPlayer(CSocketCollider* pAttackCollider)
     {
         if (pSocketCollider->Intersect(pAttackCollider->Get_Collider()))
         {
-            cout << "Intersect!!!" << endl;     
+            cout << "Intersect!!!" << endl;
+        }
+        else
+        {
+            cout << "이건되냐?" << endl;
         }
     }
 

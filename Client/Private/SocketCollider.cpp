@@ -33,8 +33,15 @@ void CSocketCollider::Priority_Tick(const _float& fTimeDelta)
 
 void CSocketCollider::Tick(const _float& fTimeDelta)
 {
+	m_vPrevMovePos = m_vMovePos;
+
 	if(m_pColliderCom)
 		m_pColliderCom->Tick(XMLoadFloat4x4(&m_WorldMatrix));
+
+	memcpy(&m_vMovePos, m_WorldMatrix.m[CTransform::STATE_POSITION], sizeof(_float3));
+
+	_vector vDirection = XMVector3Normalize(XMLoadFloat3(&m_vPrevMovePos) - XMLoadFloat3(&m_vMovePos));
+	XMStoreFloat3(&m_vMoveDir, vDirection);
 }
 
 void CSocketCollider::Late_Tick(const _float& fTimeDelta)
