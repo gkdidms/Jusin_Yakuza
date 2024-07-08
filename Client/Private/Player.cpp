@@ -547,6 +547,7 @@ HRESULT CPlayer::Bind_ResourceData()
 	return S_OK;
 }
 
+/*
 HRESULT CPlayer::Add_CharacterData()
 {
 	m_pData = CCharacterData::Create(this);
@@ -583,7 +584,7 @@ void CPlayer::Apply_ChracterData()
 
 	for (auto& Collider : pColliders)
 	{
-		CSocketCollider::SOKET_COLLIDER_DESC Desc{};
+		CSocketCollider::SOCKET_COLLIDER_DESC Desc{};
 		Desc.pParentMatrix = m_pTransformCom->Get_WorldFloat4x4();
 		Desc.pCombinedTransformationMatrix = m_pModelCom->Get_BoneCombinedTransformationMatrix_AtIndex(Collider.first);
 		Desc.iBoneIndex = Collider.first;
@@ -618,6 +619,7 @@ void CPlayer::Apply_ChracterData()
 	//}
 
 }
+*/
 
 void CPlayer::Change_Animation(_uint iIndex, _float fInterval)
 {
