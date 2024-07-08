@@ -22,6 +22,14 @@
 #include "Aura.h"
 #pragma endregion
 
+#pragma region UI
+#include "Image_Texture.h"
+#include "Text.h"
+#include "Group.h"
+#include "Btn.h"
+#include "UI_Effect.h"
+#pragma endregion
+
 CLoader::CLoader(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: m_pDevice{pDevice}, 
 	m_pContext{pContext},
@@ -223,6 +231,7 @@ HRESULT CLoader::Loading_For_Test()
 #pragma region Effect
 	Add_Particle_On_Path(TEXT("../../Client/Bin/DataFiles/Particle/"));
 #pragma endregion
+
 	//if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Model_f2"), CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/NonAnim/Map/Map1/f2.fbx", PreTransformMatrix, false))))
 	//	return E_FAIL;
 
@@ -327,6 +336,36 @@ HRESULT CLoader::Loading_For_Test()
 		CMapCollider::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+#pragma region UI
+	/* For.Prototype_GameObject_Image_Texture */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Image_Texture"),
+		CImage_Texture::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_Text */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Text"),
+		CText::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_Group */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Group"),
+		CGroup::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_Btn */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Btn"),
+		CBtn::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	/* For.Prototype_GameObject_UIEffect */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_UIEffect"),
+		CUI_Effect::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+#pragma region UI
+	Add_UI_On_Path(TEXT("../../Client/Bin/DataFiles/UIData/"));
+#pragma endregion
+
+#pragma endregion
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
 
 	m_isFinished = true;
@@ -475,6 +514,107 @@ HRESULT CLoader::Add_Particle_On_Path(const wstring& strPath)
 		}
 
 
+	}
+	return S_OK;
+}
+
+HRESULT CLoader::Add_UI_On_Path(const wstring& strPath)
+{
+	vector<wstring> vecDirectorys;
+	m_pGameInstance->Get_DirectoryName(strPath, vecDirectorys);
+
+	for (auto& strChannelName : vecDirectorys)
+	{
+		wstring strFilePath = strPath + strChannelName + TEXT("/");
+		string strDirectory = m_pGameInstance->WstringToString(strFilePath);
+
+		wstring ProtoFrontName = strChannelName + TEXT("_");
+
+		for (const auto& entry : fs::directory_iterator(strDirectory))
+		{
+
+			string FileName = entry.path().filename().string();
+			string AllPath = strDirectory + FileName;
+
+			string Tag;
+			_int dotPos = FileName.find_last_of(".");
+			Tag = FileName.substr(0, dotPos);
+
+
+			ifstream in(AllPath, ios::binary);
+
+			if (!in.is_open()) {
+				MSG_BOX("개방 실패");
+				return E_FAIL;
+			}
+			_uint Type;
+
+			in.read((char*)&Type, sizeof(_uint));
+
+			switch (Type)
+			{
+			case 0:
+			{
+				_int strTexturelength;
+				char charBox[MAX_PATH] = {};
+
+				/* For.Prototype_GameObject_Image_Texture */
+				if (FAILED(m_pGameInstance->Add_GameObject_Prototype(ProtoFrontName + m_pGameInstance->StringToWstring(Tag),
+					CImage_Texture::Create(m_pDevice, m_pContext, in))))
+					return E_FAIL;
+
+			}
+			break;
+
+			case 1:
+			{
+
+				/* For.Prototype_GameObject_Btn */
+				if (FAILED(m_pGameInstance->Add_GameObject_Prototype(ProtoFrontName + m_pGameInstance->StringToWstring(Tag),
+					CBtn::Create(m_pDevice, m_pContext, in))))
+					return E_FAIL;
+			}
+			break;
+
+			case 2:
+			{
+
+				/* For.Prototype_GameObject_Text */
+				if (FAILED(m_pGameInstance->Add_GameObject_Prototype(ProtoFrontName + m_pGameInstance->StringToWstring(Tag),
+					CText::Create(m_pDevice, m_pContext, in))))
+					return E_FAIL;
+			}
+			break;
+
+			case 3:
+			{
+				_int strTexturelength;
+				char charBox[MAX_PATH] = {};
+				in.read((char*)&strTexturelength, sizeof(_int));
+				in.read((char*)&charBox, strTexturelength);
+				string ProtoName = charBox;
+
+				/* For.Prototype_GameObject_Group */
+				if (FAILED(m_pGameInstance->Add_GameObject_Prototype(ProtoFrontName + m_pGameInstance->StringToWstring(ProtoName),
+					CGroup::Create(m_pDevice, m_pContext, in))))
+					return E_FAIL;
+			}
+			break;
+
+			case 4:
+			{
+
+				/* For.Prototype_GameObject_UIEffect */
+				if (FAILED(m_pGameInstance->Add_GameObject_Prototype(ProtoFrontName + m_pGameInstance->StringToWstring(Tag),
+					CUI_Effect::Create(m_pDevice, m_pContext, in))))
+					return E_FAIL;
+			}
+			break;
+
+			default:
+				break;
+			}
+		}
 	}
 	return S_OK;
 }

@@ -181,6 +181,11 @@ HRESULT CMainApp::Ready_Prototype_Component()
 		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxPosTex.hlsl"), VTXPOSTEX::Elements, VTXPOSTEX::iNumElements))))
 		return E_FAIL;
 
+	/* For.Prototype_Component_Shader_VtxUI */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Shader_VtxUI"),
+		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxUI.hlsl"), VTXPOSTEX::Elements, VTXPOSTEX::iNumElements))))
+		return E_FAIL;
+
 	/* For.Prototype_Component_Texture_Loading */
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Texture_Loading"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/Default0.dds")))))

@@ -176,7 +176,10 @@
     <ClInclude Include="..\Public\Aura.h" />
     <ClInclude Include="..\public\Background.h" />
     <ClInclude Include="..\Public\BehaviorAnimation.h" />
+    <ClInclude Include="..\Public\Btn.h" />
     <ClInclude Include="..\Public\BTNode.h" />
+    <ClInclude Include="..\Public\Group.h" />
+    <ClInclude Include="..\Public\Image_Texture.h" />
     <ClInclude Include="..\Public\MapCollider.h" />
     <ClInclude Include="..\Public\Sequance.h" />
     <ClInclude Include="..\Public\Selector.h" />
@@ -223,8 +226,12 @@
     <ClInclude Include="..\Public\SoketObject.h" />
     <ClInclude Include="..\public\SystemManager.h" />
     <ClInclude Include="..\Public\Terrain.h" />
+    <ClInclude Include="..\Public\Text.h" />
     <ClInclude Include="..\Public\TRailEffect.h" />
     <ClInclude Include="..\public\UI.h" />
+    <ClInclude Include="..\Public\UI_Effect.h" />
+    <ClInclude Include="..\Public\UI_Object.h" />
+    <ClInclude Include="..\Public\UI_Texture.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="Resource.h" />
@@ -248,7 +255,10 @@
     <ClCompile Include="..\Private\Aura.cpp" />
     <ClCompile Include="..\private\Background.cpp" />
     <ClCompile Include="..\Private\BehaviorAnimation.cpp" />
+    <ClCompile Include="..\Private\Btn.cpp" />
     <ClCompile Include="..\Private\BTNode.cpp" />
+    <ClCompile Include="..\Private\Group.cpp" />
+    <ClCompile Include="..\Private\Image_Texture.cpp" />
     <ClCompile Include="..\Private\MapCollider.cpp" />
     <ClCompile Include="..\Private\Sequance.cpp" />
     <ClCompile Include="..\Private\Selector.cpp" />
@@ -294,8 +304,12 @@
     <ClCompile Include="..\Private\SoketObject.cpp" />
     <ClCompile Include="..\private\SystemManager.cpp" />
     <ClCompile Include="..\Private\Terrain.cpp" />
+    <ClCompile Include="..\Private\Text.cpp" />
     <ClCompile Include="..\Private\TRailEffect.cpp" />
     <ClCompile Include="..\private\UI.cpp" />
+    <ClCompile Include="..\Private\UI_Effect.cpp" />
+    <ClCompile Include="..\Private\UI_Object.cpp" />
+    <ClCompile Include="..\Private\UI_Texture.cpp" />
     <ClCompile Include="Client.cpp" />
   </ItemGroup>
   <ItemGroup>
