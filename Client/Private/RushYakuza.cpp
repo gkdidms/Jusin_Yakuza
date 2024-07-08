@@ -1,9 +1,9 @@
 #include "RushYakuza.h"
 
 #include "GameInstance.h"
+#include "Collision_Manager.h"
 #include "AI_RushYakuza.h"
 
-#include "Bounding_OBB.h"
 #include "Mesh.h"
 
 CRushYakuza::CRushYakuza(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -37,6 +37,11 @@ HRESULT CRushYakuza::Initialize(void* pArg)
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
+	m_wstrModelName = TEXT("Jimu");
+
+	if (FAILED(Add_CharacterData()))
+		return E_FAIL;
+
 	m_pModelCom->Set_AnimationIndex(1, 0.5);
 	//m_pModelCom->Set_AnimLoop(1, true);
 	return S_OK;
@@ -50,7 +55,6 @@ void CRushYakuza::Tick(const _float& fTimeDelta)
 {
 	m_pTree->Tick(fTimeDelta);
 
-
 	Change_Animation(); //애니메이션 변경
 
 	m_pModelCom->Play_Animation(fTimeDelta, m_pAnimCom, m_isAnimLoop);
@@ -58,11 +62,16 @@ void CRushYakuza::Tick(const _float& fTimeDelta)
 	Synchronize_Root(fTimeDelta);
 
 	m_pColliderCom->Tick(m_pTransformCom->Get_WorldMatrix());
+
+	__super::Tick(fTimeDelta);
 }
 
 void CRushYakuza::Late_Tick(const _float& fTimeDelta)
 {
 	m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
+	//m_pCollisionManager->Add_ImpulseResolution(this);
+
+	__super::Late_Tick(fTimeDelta);
 }
 
 HRESULT CRushYakuza::Render()
@@ -105,16 +114,11 @@ HRESULT CRushYakuza::Add_Components()
 		TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
 		return E_FAIL;
 
-	//if (FAILED(__super::Add_Component(LEVEL_TEST, TEXT("Prototype_Component_Model_Jimu"),
-	//	TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
-	//	return E_FAIL;
+	CBounding_AABB::BOUNDING_AABB_DESC		ColliderDesc{};
 
-	CBounding_OBB::BOUNDING_OBB_DESC		ColliderDesc{};
-
-	ColliderDesc.eType = CCollider::COLLIDER_OBB;
-	ColliderDesc.vExtents = _float3(0.8, 0.8, 0.8);
-	ColliderDesc.vCenter = _float3(0, 0.f, 0);
-	ColliderDesc.vRotation = _float3(0, 0.f, 0.f);
+	ColliderDesc.eType = CCollider::COLLIDER_AABB;
+	ColliderDesc.vExtents = _float3(0.3, 0.8, 0.3);
+	ColliderDesc.vCenter = _float3(0, ColliderDesc.vExtents.y, 0);
 
 	if (FAILED(__super::Add_Component(LEVEL_TEST, TEXT("Prototype_Component_Collider"),
 		TEXT("Com_Collider"), reinterpret_cast<CComponent**>(&m_pColliderCom), &ColliderDesc)))

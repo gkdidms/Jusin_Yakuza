@@ -1,6 +1,8 @@
 #include "WPAYakuza.h"
 
 #include "GameInstance.h"
+#include "Collision_Manager.h"
+
 #include "Mesh.h"
 
 #include "AI_WPAYakuza.h"
@@ -22,10 +24,15 @@ HRESULT CWPAYakuza::Initialize_Prototype()
 
 HRESULT CWPAYakuza::Initialize(void* pArg)
 {
+	m_wstrModelName = TEXT("Jimu");
+
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
 	if (FAILED(Add_Components()))
+		return E_FAIL;
+
+	if (FAILED(Add_CharacterData()))
 		return E_FAIL;
 
 	return S_OK;
@@ -39,6 +46,11 @@ void CWPAYakuza::Tick(const _float& fTimeDelta)
 {
 	m_pTree->Tick(fTimeDelta);
 
+	if (m_pGameInstance->GetKeyState(DIK_9) == TAP)
+	{
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0, 0, 0, 1));
+	}
+
 	Change_Animation(); //애니메이션 변경
 
 	m_pModelCom->Play_Animation(fTimeDelta, m_pAnimCom, m_isAnimLoop);
@@ -46,12 +58,16 @@ void CWPAYakuza::Tick(const _float& fTimeDelta)
 	Synchronize_Root(fTimeDelta);
 
 	m_pColliderCom->Tick(m_pTransformCom->Get_WorldMatrix());
+
+	__super::Tick(fTimeDelta);
 }
 
 void CWPAYakuza::Late_Tick(const _float& fTimeDelta)
 {
 	m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
 
+	__super::Late_Tick(fTimeDelta);
+	//m_pCollisionManager->Add_ImpulseResolution(this);
 }
 
 HRESULT CWPAYakuza::Render()
@@ -92,12 +108,11 @@ HRESULT CWPAYakuza::Add_Components()
 		TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
 		return E_FAIL;
 
-	CBounding_OBB::BOUNDING_OBB_DESC		ColliderDesc{};
+	CBounding_AABB::BOUNDING_AABB_DESC		ColliderDesc{};
 
-	ColliderDesc.eType = CCollider::COLLIDER_OBB;
-	ColliderDesc.vExtents = _float3(0.8, 0.8, 0.8);
-	ColliderDesc.vCenter = _float3(0, 0.f, 0);
-	ColliderDesc.vRotation = _float3(0, 0.f, 0.f);
+	ColliderDesc.eType = CCollider::COLLIDER_AABB;
+	ColliderDesc.vExtents = _float3(0.3, 0.8, 0.3);
+	ColliderDesc.vCenter = _float3(0, ColliderDesc.vExtents.y, 0);
 
 	if (FAILED(__super::Add_Component(LEVEL_TEST, TEXT("Prototype_Component_Collider"),
 		TEXT("Com_Collider"), reinterpret_cast<CComponent**>(&m_pColliderCom), &ColliderDesc)))

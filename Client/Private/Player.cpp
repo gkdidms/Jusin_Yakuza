@@ -2,6 +2,7 @@
 
 #include "GameInstance.h"
 #include "SystemManager.h"
+#include "Collision_Manager.h"
 
 #include "CharacterData.h"
 #include "SocketCollider.h"
@@ -9,8 +10,6 @@
 
 #include "BehaviorAnimation.h"
 #include "Mesh.h"
-
-#include "BTNode.h"
 
 CPlayer::CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLandObject{ pDevice, pContext }
@@ -55,12 +54,10 @@ void CPlayer::Priority_Tick(const _float& fTimeDelta)
 		//m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_pTransformCom->Get_State(CTransform::STATE_POSITION) + XMVectorSetY(XMLoadFloat4(&m_vPrevMove), 0));
 		XMStoreFloat4(&m_vPrevMove, XMVectorZero());
 	}
-
 }
 
 void CPlayer::Tick(const _float& fTimeDelta)
 {
-
 	m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Change_Animation();
 	m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Tick(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")));
 
@@ -100,6 +97,7 @@ void CPlayer::Late_Tick(const _float& fTimeDelta)
 {
 	m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
 	m_pGameInstance->Add_Renderer(CRenderer::RENDER_SHADOWOBJ, this); // Shadow¿ë ·»´õ Ãß°¡
+	m_pCollisionManager->Add_ImpulseResolution(this);
 
 	for (auto& pCollider : m_pColliders)
 		pCollider.second->Late_Tick(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")));
@@ -188,6 +186,11 @@ HRESULT CPlayer::Render_LightDepth()
 	}
 
 	return S_OK;
+}
+
+_bool CPlayer::Intersect(CLandObject* pTargetObject)
+{
+	return _bool();
 }
 
 void CPlayer::Ready_AnimationTree()
@@ -515,12 +518,11 @@ HRESULT CPlayer::Add_Components()
 		TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
 		return E_FAIL;
 
-	CBounding_OBB::BOUNDING_OBB_DESC		ColliderDesc{};
+	CBounding_AABB::BOUNDING_AABB_DESC		ColliderDesc{};
 
-	ColliderDesc.eType = CCollider::COLLIDER_OBB;
-	ColliderDesc.vExtents = _float3(0.8, 0.8, 0.8);
-	ColliderDesc.vCenter = _float3(0, 0.f, 0);
-	ColliderDesc.vRotation = _float3(0, 0.f, 0.f);
+	ColliderDesc.eType = CCollider::COLLIDER_AABB;
+	ColliderDesc.vExtents = _float3(0.3, 0.8, 0.3);
+	ColliderDesc.vCenter = _float3(0, ColliderDesc.vExtents.y, 0);
 
 	if (FAILED(__super::Add_Component(LEVEL_TEST, TEXT("Prototype_Component_Collider"),
 		TEXT("Com_Collider"), reinterpret_cast<CComponent**>(&m_pColliderCom), &ColliderDesc)))
@@ -733,16 +735,5 @@ void CPlayer::Free()
 {
 	__super::Free();
 
-	for (auto& pCollider : m_pColliders)
-		Safe_Release(pCollider.second);
-	m_pColliders.clear();
-
-	for (auto& pEffect : m_pEffects)
-		Safe_Release(pEffect.second);
-	m_pEffects.clear();
-
-	Safe_Release(m_pData);
 	Safe_Release(m_pShaderCom);
-	Safe_Release(m_pModelCom);
-	Safe_Release(m_pColliderCom);
 }

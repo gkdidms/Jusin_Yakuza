@@ -16,8 +16,15 @@ BEGIN(Client)
 class CSocketCollider final : public CSocketObject
 {
 public:
-	struct SOKET_COLLIDER_DESC : public SOCKETOBJECT_DESC
+	enum SOKET_COLLIDER_TYPE
 	{
+		ATTACK, HIT, TYPE_END
+	};
+
+public:
+	struct SOCKET_COLLIDER_DESC : public SOCKETOBJECT_DESC
+	{
+		_uint iType;
 		_uint iBoneIndex;
 		CCharacterData::COLLIDER_STATE ColliderState;
 	};
@@ -35,6 +42,8 @@ public:
 	virtual void Late_Tick(const _float& fTimeDelta) override;
 	virtual HRESULT Render() override;
 
+	virtual _bool Intersect(CCollider* pTargetObject);
+
 public:
 	void On() {
 		m_isOn = true;
@@ -43,8 +52,14 @@ public:
 		m_isOn = { false };
 	}
 
+public:
+	_uint Get_CollierType() {
+		return static_cast<_uint>(m_eColliderType);
+	}
+
 private:
-	//class CSystemManager*			m_pSystemManager = { nullptr };
+	SOKET_COLLIDER_TYPE				m_eColliderType = { ATTACK };
+
 	CShader*						m_pShaderCom = { nullptr };
 	CModel*							m_pModelCom = { nullptr };
 	CCollider*						m_pColliderCom = { nullptr };

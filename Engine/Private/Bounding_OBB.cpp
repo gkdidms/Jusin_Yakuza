@@ -42,6 +42,8 @@ HRESULT CBounding_OBB::Initialize(const void* pArg)
 	m_vCenter = pDesc->vCenter;
 	m_vExtents = pDesc->vExtents;
 
+	m_vColor = _float4(0.f, 0.f, 1.f, 1.f);
+
 	m_pOriginalBox = new BoundingOrientedBox(m_vCenter, m_vExtents, vQuaternion);
 	m_pBoundingBox = new BoundingOrientedBox(*m_pOriginalBox);
 	if (m_pBoundingBox == nullptr)
@@ -86,7 +88,7 @@ _bool CBounding_OBB::Intersect(CCollider::TYPE eTargetType, CBounding* pTargetBo
 #ifdef _DEBUG
 HRESULT CBounding_OBB::Render(PrimitiveBatch<VertexPositionColor>* pBatch)
 {
-	DX::Draw(pBatch, *m_pBoundingBox, XMVectorSet(0.f, 0.f, 1.f, 1.f));
+	DX::Draw(pBatch, *m_pBoundingBox, XMLoadFloat4(&m_vColor));
 
 	return S_OK;
 }

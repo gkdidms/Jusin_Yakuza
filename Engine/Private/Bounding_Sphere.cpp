@@ -30,6 +30,8 @@ HRESULT CBounding_Sphere::Initialize(const void* pArg)
 
 	m_fRadius = pDesc->fRadius;
 
+	m_vColor = _float4(1.f, 0.f, 0.f, 1.f);
+
 	m_pOriginalBox = new BoundingSphere(m_vCenter, m_fRadius);
 	m_pBoundingBox = new BoundingSphere(*m_pOriginalBox);
 	if (m_pBoundingBox == nullptr)
@@ -79,7 +81,7 @@ _bool CBounding_Sphere::Intersect(CCollider::TYPE eTargetType, CBounding* pTarge
 #ifdef _DEBUG
 HRESULT CBounding_Sphere::Render(PrimitiveBatch<VertexPositionColor>* pBatch)
 {
-	DX::Draw(pBatch, *m_pBoundingBox, XMVectorSet(1.f, 0.f, 0.f, 1.f));
+	DX::Draw(pBatch, *m_pBoundingBox, XMLoadFloat4(&m_vColor));
 
 	return S_OK;
 }
