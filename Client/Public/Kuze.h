@@ -2,13 +2,13 @@
 #include "Monster.h"
 
 BEGIN(Client)
-class CWPAYakuza :
+class CKuze :
     public CMonster
 {
 private:
-    CWPAYakuza(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-    CWPAYakuza(const CWPAYakuza& rhs);
-    virtual ~CWPAYakuza() = default;
+    CKuze(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+    CKuze(const CKuze& rhs);
+    virtual ~CKuze() = default;
 
 public:
     virtual HRESULT Initialize_Prototype() override;
@@ -19,7 +19,7 @@ public:
     virtual HRESULT Render() override;
 
 private:
-    class CAI_WPAYakuza* m_pTree = { nullptr };
+    class CAI_Kuze* m_pTree = { nullptr };
 
 private:
     virtual HRESULT Add_Components() override;
@@ -27,10 +27,10 @@ private:
 
 private:
     void Change_Animation();
-
+    
 public:
-    static CWPAYakuza* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+    static CKuze* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
     virtual CGameObject* Clone(void* pArg);
-    virtual void Free();
+    virtual void Free() override;
 };
 END

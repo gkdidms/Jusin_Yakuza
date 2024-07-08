@@ -31,7 +31,7 @@ protected:
     wstring m_wstrModelName = TEXT("");
 
 protected:
-    virtual HRESULT Add_Componenets();
+    virtual HRESULT Add_Components();
     virtual HRESULT Bind_ResourceData();
 
 public:

@@ -34,7 +34,7 @@ HRESULT CRushYakuza::Initialize(void* pArg)
 		m_iShaderPassNum = 0;
 	}
 
-	if (FAILED(Add_Componenets()))
+	if (FAILED(Add_Components()))
 		return E_FAIL;
 
 	m_pModelCom->Set_AnimationIndex(1, 0.5);
@@ -95,7 +95,7 @@ HRESULT CRushYakuza::Render()
 }
 
 
-HRESULT CRushYakuza::Add_Componenets()
+HRESULT CRushYakuza::Add_Components()
 {
 	if (FAILED(__super::Add_Component(LEVEL_TEST, TEXT("Prototype_Component_Shader_VtxAnim"),
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))

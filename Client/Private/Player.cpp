@@ -34,7 +34,7 @@ HRESULT CPlayer::Initialize(void* pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
-	if (FAILED(Add_Componenets()))
+	if (FAILED(Add_Components()))
 		return E_FAIL;
 
 	Ready_AnimationTree();
@@ -119,6 +119,25 @@ HRESULT CPlayer::Render()
 		m_pModelCom->Bind_BoneMatrices(m_pShaderCom, "g_BoneMatrices", i);
 
 		m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE);
+		m_pModelCom->Bind_Material(m_pShaderCom, "g_MultiDiffuseTexture", i, aiTextureType_SHININESS);
+		m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS);
+
+		_bool isRS = true;
+		_bool isRD = true;
+		if (!strcmp(pMesh->Get_Name(), "[l0]face_kiryu"))
+		{
+			isRS = false;
+			isRD = false;
+		}
+
+		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RSTexture", i, aiTextureType_SPECULAR)))
+			isRS = false;
+		m_pShaderCom->Bind_RawValue("g_isRS", &isRS, sizeof(_bool));
+
+		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RDTexture", i, aiTextureType_OPACITY)))
+			isRD = false;
+
+		m_pShaderCom->Bind_RawValue("g_isRD", &isRD, sizeof(_bool));
 
 		if (pMesh->Get_AlphaApply())
 			m_pShaderCom->Begin(1);     //ºí·£µå
@@ -303,6 +322,11 @@ void CPlayer::KeyInput(const _float& fTimeDelta)
 
 void CPlayer::Adventure_KeyInput(const _float& fTimeDelta)
 {
+#ifdef _DEBUG
+	if (m_pSystemManager->Get_Camera() == CAMERA_DEBUG)
+		return;
+#endif // _DEBUG
+
 	if (m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Get_AnimationEnd())
 		m_iCurrentBehavior = (_uint)ADVENTURE_BEHAVIOR_STATE::IDLE;
 
@@ -481,7 +505,7 @@ void CPlayer::KRC_KeyInput(const _float& fTimeDelta)
 {
 }
 
-HRESULT CPlayer::Add_Componenets()
+HRESULT CPlayer::Add_Components()
 {
 	if (FAILED(__super::Add_Component(LEVEL_TEST, TEXT("Prototype_Component_Shader_VtxAnim"),
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
@@ -574,22 +598,22 @@ void CPlayer::Apply_ChracterData()
 		it->second->Off();
 	}
 
-	auto& pEffects = m_pData->Get_Effets();
-	for (auto& pEffect : pEffects)
-	{
-		CSocketEffect::SOKET_EFFECT_DESC Desc{};
-		Desc.pParentMatrix = m_pTransformCom->Get_WorldFloat4x4();
-		Desc.pCombinedTransformationMatrix = m_pModelCom->Get_BoneCombinedTransformationMatrix(pEffect.first.c_str());
-		Desc.wstrEffectName = pEffect.second;
+	//auto& pEffects = m_pData->Get_Effets();
+	//for (auto& pEffect : pEffects)
+	//{
+	//	CSocketEffect::SOKET_EFFECT_DESC Desc{};
+	//	Desc.pParentMatrix = m_pTransformCom->Get_WorldFloat4x4();
+	//	Desc.pCombinedTransformationMatrix = m_pModelCom->Get_BoneCombinedTransformationMatrix(pEffect.first.c_str());
+	//	Desc.wstrEffectName = pEffect.second;
 
-		CGameObject* pSoketEffect = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_SoketEffect"), &Desc);
-		if (nullptr == pSoketEffect)
-			return;
+	//	CGameObject* pSoketEffect = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_SoketEffect"), &Desc);
+	//	if (nullptr == pSoketEffect)
+	//		return;
 
-		auto [it, success] = m_pEffects.emplace(pEffect.first, static_cast<CSocketEffect*>(pSoketEffect));
+	//	auto [it, success] = m_pEffects.emplace(pEffect.first, static_cast<CSocketEffect*>(pSoketEffect));
 
-		it->second->On();
-	}
+	//	it->second->Off();
+	//}
 
 }
 

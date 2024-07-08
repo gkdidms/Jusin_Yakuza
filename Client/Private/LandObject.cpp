@@ -45,7 +45,7 @@ HRESULT CLandObject::Render()
 	return S_OK;
 }
 
-HRESULT CLandObject::Add_Componenets()
+HRESULT CLandObject::Add_Components()
 {
 	return S_OK;
 }

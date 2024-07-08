@@ -80,7 +80,7 @@ protected:
     void Synchronize_Root(const _float& fTimeDelta);
 
 private:
-    virtual HRESULT Add_Componenets() override;
+    virtual HRESULT Add_Components() override;
     virtual HRESULT Bind_ResourceData() override;
 
 public:

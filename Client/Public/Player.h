@@ -132,7 +132,7 @@ private:
 #endif // _DEBUG
 
 private:
-    virtual HRESULT Add_Componenets() override;
+    virtual HRESULT Add_Components() override;
     virtual HRESULT Bind_ResourceData() override;
     HRESULT Add_CharacterData();
     void Apply_ChracterData();

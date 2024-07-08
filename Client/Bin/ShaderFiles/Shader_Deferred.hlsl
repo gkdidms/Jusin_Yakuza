@@ -61,9 +61,9 @@ struct PS_OUT_LIGHT
     vector vLightMap : SV_TARGET1;
     vector vSpecularRM : SV_TARGET2;
     vector vSpecularRS : SV_TARGET3;
-    vector vSpecular : SV_TARGET4;
+    vector vSpecularMulti : SV_TARGET4;
+    vector vSpecular : SV_TARGET5;
 };
-
 
 PS_OUT PS_MAIN_SSAO(PS_IN In)
 {
@@ -121,6 +121,7 @@ PS_OUT_LIGHT PS_MAIN_LIGHT_DIRECTIONAL(PS_IN In)
     
     Out.vSpecularRM = vector(BRDF(In.vPosition, In.vTexcoord, normalize(vNormal), vDepthDesc), 0.f);
     Out.vSpecularRS = vector(BRDF_RS(In.vPosition, In.vTexcoord, normalize(vNormal), vDepthDesc), 0.f);
+    Out.vSpecularMulti = vector(BRDF_MULTI(In.vPosition, In.vTexcoord, normalize(vNormal), vDepthDesc), 0.f);
     Out.vLightMap = g_vLightDiffuse;
     
     if (vGlassNormalDesc.a == 0.f)
@@ -199,10 +200,11 @@ PS_OUT PS_MAIN_COPY_BACKBUFFER_RESULT(PS_IN In)
     {
         vector vSpeculerRM = g_RMTexture.Sample(LinearSampler, In.vTexcoord);
         vector vSpeculerRS = g_RSTexture.Sample(LinearSampler, In.vTexcoord);
+        vector vSpeculerMulti = g_MultiDiffuseTexture.Sample(LinearSampler, In.vTexcoord);
     
         vector vLightmap = g_LightMapTexture.Sample(LinearSampler, In.vTexcoord);
     // ±‚¡∏
-        Out.vColor = vDiffuse * vShade + (vSpeculerRM + vSpeculerRS) * vLightmap;
+        Out.vColor = (vSpeculerMulti * vDiffuse) * vShade + (vSpeculerRM + vSpeculerRS) * vLightmap;
     }
     else
     {

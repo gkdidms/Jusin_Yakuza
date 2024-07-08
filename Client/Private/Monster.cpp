@@ -89,7 +89,7 @@ void CMonster::Synchronize_Root(const _float& fTimeDelta)
 	XMStoreFloat4(&m_vPrevRotation, resultQuaternionVector);
 }
 
-HRESULT CMonster::Add_Componenets()
+HRESULT CMonster::Add_Components()
 {
 	
 	return S_OK;

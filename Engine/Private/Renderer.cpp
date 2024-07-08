@@ -61,6 +61,10 @@ HRESULT CRenderer::Initialize()
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_RS"), 50.f, 450.f, 100.f, 100.f)))
 		return E_FAIL;
+	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_NonBlendMulti"), 50.f, 550.f, 100.f, 100.f)))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_NonBlendRD"), 50.f, 650.f, 100.f, 100.f)))
+		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_LightDepth"), ViewPort.Width - 150.0f, 150.0f, 300.f, 300.f)))
 		return E_FAIL;
@@ -80,6 +84,8 @@ HRESULT CRenderer::Initialize()
 	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_LightMap"), 150.f, 350.f, 100.f, 100.f)))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_BackBlur"), 150.f, 450.f, 100.f, 100.f)))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_SpecularMulti"), 150.f, 550.f, 100.f, 100.f)))
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_128x128"), 250.f, 050.f, 100.f, 100.f)))
@@ -147,6 +153,14 @@ HRESULT CRenderer::Ready_Targets()
 
 	/* Target_NonBlendRS */
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_NonBlendRS"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(1.f, 0.f, 0.f, 0.f))))
+		return E_FAIL;
+
+	/* Target_NonBlendRD */
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_NonBlendRD"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(1.f, 0.f, 0.f, 0.f))))
+		return E_FAIL;
+
+	/* Target_NonBlendMulti */
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_NonBlendMulti"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
 
 	/*Target_Glass - Diffuse °°Àº*/
@@ -233,6 +247,10 @@ HRESULT CRenderer::Ready_Targets()
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_SpecularRS"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
 
+	/*Target_SpecularMulti*/
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_SpecularMulti"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
+		return E_FAIL;
+
 	/*Target_BackBuffer*/
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_BackBuffer"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
@@ -316,7 +334,11 @@ HRESULT CRenderer::Ready_MRTs()
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_NonBlend"), TEXT("Target_NonBlendRS"))))
 		return E_FAIL;
-
+	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_NonBlend"), TEXT("Target_NonBlendMulti"))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_NonBlend"), TEXT("Target_NonBlendRD"))))
+		return E_FAIL;
+	
 	/* MRT_Decals */
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_Decals"), TEXT("Target_NonBlendDiffuse"))))
 		return E_FAIL;
@@ -364,6 +386,8 @@ HRESULT CRenderer::Ready_MRTs()
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_LightAcc"), TEXT("Target_SpecularRM"))))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_LightAcc"), TEXT("Target_SpecularRS"))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_LightAcc"), TEXT("Target_SpecularMulti"))))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_LightAcc"), TEXT("Target_Specular"))))
 		return E_FAIL;
@@ -1000,6 +1024,8 @@ void CRenderer::Render_LightAcc()
 		return;
 	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_RS"), m_pShader, "g_RSTexture")))
 		return;
+	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_NonBlendMulti"), m_pShader, "g_MultiDiffuseTexture")))
+		return;
 	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_GlassNormal"), m_pShader, "g_GlassNormalTexture")))
 		return;
 	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_GlassDepth"), m_pShader, "g_GlassDepthTexture")))
@@ -1056,6 +1082,8 @@ void CRenderer::Render_CopyBackBuffer()
 	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_SpecularRM"), m_pShader, "g_RMTexture")))
 		return;
 	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_SpecularRS"), m_pShader, "g_RSTexture")))
+		return;
+	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_SpecularMulti"), m_pShader, "g_MultiDiffuseTexture")))
 		return;
 	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_LightDepth"), m_pShader, "g_LightDepthTexture")))
 		return;
@@ -1698,7 +1726,7 @@ void CRenderer::Render_Debug()
 		return;
 	if (FAILED(m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
 		return;
-
+	
 	if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_NonBlend"), m_pShader, m_pVIBuffer)))
 		return;
 	if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_GameObject"), m_pShader, m_pVIBuffer)))
