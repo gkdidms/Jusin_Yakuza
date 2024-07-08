@@ -82,6 +82,9 @@ HRESULT CGroup::Save_Groupbinary(ofstream& out)
 	_int size = m_PartObjects.size();
 	out.write((char*)&size, sizeof(_int));	
 
+	_float4x4 GroupWorld = *m_pTransformCom->Get_WorldFloat4x4();
+	out.write((char*)&GroupWorld, sizeof(_float4x4));
+
 	for (auto& pObject : m_PartObjects)
 	{
 		pObject->Save_Groupbinary(out);
@@ -94,6 +97,9 @@ HRESULT CGroup::Load_Groupbinary(ifstream& in)
 {
 	_int size;
 	in.read((char*)&size, sizeof(_int));
+	_float4x4 GroupWorld = {};
+	in.read((char*)&GroupWorld, sizeof(_float4x4));
+	m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(&GroupWorld));	
 
 	for (_int i = 0; i < size; i++)
 	{
@@ -119,8 +125,6 @@ HRESULT CGroup::Load_Groupbinary(ifstream& in)
 			in.read((char*)&charBox, strTexturelength);
 			pDesc.strParentName = charBox;
 
-			pDesc.pParentMatrix = m_pTransformCom->Get_WorldFloat4x4();	
-
 			string path;
 			in.read((char*)&strTexturelength, sizeof(_int));
 			in.read((char*)&charBox, strTexturelength);
@@ -136,14 +140,24 @@ HRESULT CGroup::Load_Groupbinary(ifstream& in)
 			in.read((char*)&pDesc.fStartUV, sizeof(_float2));
 			in.read((char*)&pDesc.fEndUV, sizeof(_float2));
 			in.read((char*)&pDesc.vColor, sizeof(_float4));
+			in.read((char*)&pDesc.isColor, sizeof(_bool));
 			in.read((char*)&pDesc.iShaderPass, sizeof(_uint));
 			in.read((char*)&pDesc.WorldMatrix, sizeof(_float4x4));
 
+			in.read((char*)&pDesc.bAnim, sizeof(_bool));
+			in.read((char*)&pDesc.fAnimTime, sizeof(_float2));
+			in.read((char*)&pDesc.vStartPos, sizeof(_float3));
+			in.read((char*)&pDesc.fControlAlpha, sizeof(_float2));
+			in.read((char*)&pDesc.isReverse, sizeof(_bool));
+
 			pDesc.isLoad = true;
+			pDesc.pParentMatrix = m_pTransformCom->Get_WorldFloat4x4();
 
 			CUI_Texture* pImage = dynamic_cast<CUI_Texture*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Image_Texture"), &pDesc));
 			if (nullptr == pImage)
 				return E_FAIL;
+
+			
 
 			m_PartObjects.emplace_back(pImage);	
 		}
@@ -166,8 +180,6 @@ HRESULT CGroup::Load_Groupbinary(ifstream& in)
 			in.read((char*)&charBox, strTexturelength);
 			pDesc.strParentName = charBox;
 
-			pDesc.pParentMatrix = m_pTransformCom->Get_WorldFloat4x4();
-
 			string path;
 			in.read((char*)&strTexturelength, sizeof(_int));
 			in.read((char*)&charBox, strTexturelength);
@@ -183,8 +195,16 @@ HRESULT CGroup::Load_Groupbinary(ifstream& in)
 			in.read((char*)&pDesc.fStartUV, sizeof(_float2));
 			in.read((char*)&pDesc.fEndUV, sizeof(_float2));
 			in.read((char*)&pDesc.vColor, sizeof(_float4));
+			in.read((char*)&pDesc.isColor, sizeof(_bool));
 			in.read((char*)&pDesc.iShaderPass, sizeof(_uint));
 			in.read((char*)&pDesc.WorldMatrix, sizeof(_float4x4));
+
+			in.read((char*)&pDesc.bAnim, sizeof(_bool));
+			in.read((char*)&pDesc.fAnimTime, sizeof(_float2));
+			in.read((char*)&pDesc.vStartPos, sizeof(_float3));
+			in.read((char*)&pDesc.fControlAlpha, sizeof(_float2));
+			in.read((char*)&pDesc.isReverse, sizeof(_bool));
+
 
 			ZeroMemory(charBox, MAX_PATH);
 			in.read((char*)&strTexturelength, sizeof(_int));
@@ -203,7 +223,7 @@ HRESULT CGroup::Load_Groupbinary(ifstream& in)
 
 			pDesc.isLoad = true;
 
-
+			pDesc.pParentMatrix = m_pTransformCom->Get_WorldFloat4x4();
 			CBtn* pBtn = dynamic_cast<CBtn*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Btn"), &pDesc));
 			if (nullptr == pBtn)
 				return E_FAIL;
@@ -229,13 +249,19 @@ HRESULT CGroup::Load_Groupbinary(ifstream& in)
 			in.read((char*)&charBox, strTexturelength);
 			pDesc.strParentName = charBox;
 
-			pDesc.pParentMatrix = m_pTransformCom->Get_WorldFloat4x4();
-
 			string path;
 
 			in.read((char*)&pDesc.vColor, sizeof(_float4));
+			in.read((char*)&pDesc.isColor, sizeof(_bool));
 			in.read((char*)&pDesc.iShaderPass, sizeof(_uint));
 			in.read((char*)&pDesc.WorldMatrix, sizeof(_float4x4));
+
+			in.read((char*)&pDesc.bAnim, sizeof(_bool));
+			in.read((char*)&pDesc.fAnimTime, sizeof(_float2));
+			in.read((char*)&pDesc.vStartPos, sizeof(_float3));
+			in.read((char*)&pDesc.fControlAlpha, sizeof(_float2));
+			in.read((char*)&pDesc.isReverse, sizeof(_bool));
+
 
 			ZeroMemory(charBox, MAX_PATH);
 			in.read((char*)&strTexturelength, sizeof(_int));
@@ -244,7 +270,7 @@ HRESULT CGroup::Load_Groupbinary(ifstream& in)
 			pDesc.strText = m_pGameInstance->StringToWstring(path);
 
 			pDesc.isLoad = true;
-
+			pDesc.pParentMatrix = m_pTransformCom->Get_WorldFloat4x4();
 			CText* pText = dynamic_cast<CText*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Text"), &pDesc));
 			if (nullptr == pText)
 				return E_FAIL;
@@ -270,7 +296,6 @@ HRESULT CGroup::Load_Groupbinary(ifstream& in)
 			in.read((char*)&charBox, strTexturelength);
 			pDesc.strParentName = charBox;
 
-			pDesc.pParentMatrix = m_pTransformCom->Get_WorldFloat4x4();
 
 			string path;
 			in.read((char*)&strTexturelength, sizeof(_int));
@@ -287,14 +312,22 @@ HRESULT CGroup::Load_Groupbinary(ifstream& in)
 			in.read((char*)&pDesc.fStartUV, sizeof(_float2));
 			in.read((char*)&pDesc.fEndUV, sizeof(_float2));
 			in.read((char*)&pDesc.vColor, sizeof(_float4));
+			in.read((char*)&pDesc.isColor, sizeof(_bool));
 			in.read((char*)&pDesc.iShaderPass, sizeof(_uint));
 			in.read((char*)&pDesc.WorldMatrix, sizeof(_float4x4));
+
+			in.read((char*)&pDesc.bAnim, sizeof(_bool));
+			in.read((char*)&pDesc.fAnimTime, sizeof(_float2));
+			in.read((char*)&pDesc.vStartPos, sizeof(_float3));
+			in.read((char*)&pDesc.fControlAlpha, sizeof(_float2));
+			in.read((char*)&pDesc.isReverse, sizeof(_bool));
+
 
 			in.read((char*)&pDesc.vLifeTime, sizeof(_float3));
 			in.read((char*)&pDesc.fSpeed, sizeof(_float));
 
 			pDesc.isLoad = true;
-
+			pDesc.pParentMatrix = m_pTransformCom->Get_WorldFloat4x4();
 			CUI_Effect* pUIEffect = dynamic_cast<CUI_Effect*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UIEffect"), &pDesc));
 			if (nullptr == pUIEffect)
 				return E_FAIL;

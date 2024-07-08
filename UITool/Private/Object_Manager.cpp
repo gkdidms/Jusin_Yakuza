@@ -300,7 +300,6 @@ HRESULT CObject_Manager::Save_binary()
 
 	return S_OK;
 }
-
 //지금 타겟에 바이너리파일을 생성시켜줌
 HRESULT CObject_Manager::Load_binary(const wstring& strObjectTag, const string FilePath)
 {
@@ -350,6 +349,7 @@ HRESULT CObject_Manager::Load_binary(const wstring& strObjectTag, const string F
 		in.read((char*)&pDesc.fStartUV, sizeof(_float2));
 		in.read((char*)&pDesc.fEndUV, sizeof(_float2));
 		in.read((char*)&pDesc.vColor, sizeof(_float4));
+		in.read((char*)&pDesc.isColor, sizeof(_bool));
 		in.read((char*)&pDesc.iShaderPass, sizeof(_uint));
 		in.read((char*)&pDesc.WorldMatrix, sizeof(_float4x4));
 
@@ -357,6 +357,9 @@ HRESULT CObject_Manager::Load_binary(const wstring& strObjectTag, const string F
 		in.read((char*)&pDesc.fAnimTime, sizeof(_float2));
 		in.read((char*)&pDesc.vStartPos, sizeof(_float3));
 		
+		in.read((char*)&pDesc.fControlAlpha, sizeof(_float2));
+		in.read((char*)&pDesc.isReverse, sizeof(_bool));
+
 		pDesc.isLoad = true;
 		in.close();
 
@@ -400,12 +403,16 @@ HRESULT CObject_Manager::Load_binary(const wstring& strObjectTag, const string F
 		in.read((char*)&pDesc.fStartUV, sizeof(_float2));
 		in.read((char*)&pDesc.fEndUV, sizeof(_float2));
 		in.read((char*)&pDesc.vColor, sizeof(_float4));
+		in.read((char*)&pDesc.isColor, sizeof(_bool));
 		in.read((char*)&pDesc.iShaderPass, sizeof(_uint));
 		in.read((char*)&pDesc.WorldMatrix, sizeof(_float4x4));
 
 		in.read((char*)&pDesc.bAnim, sizeof(_bool));
 		in.read((char*)&pDesc.fAnimTime, sizeof(_float2));
 		in.read((char*)&pDesc.vStartPos, sizeof(_float3));
+
+		in.read((char*)&pDesc.fControlAlpha, sizeof(_float2));
+		in.read((char*)&pDesc.isReverse, sizeof(_bool));
 
 		//개별
 		ZeroMemory(charBox, MAX_PATH);	
@@ -457,12 +464,16 @@ HRESULT CObject_Manager::Load_binary(const wstring& strObjectTag, const string F
 		string path;
 
 		in.read((char*)&pDesc.vColor, sizeof(_float4));
+		in.read((char*)&pDesc.isColor, sizeof(_bool));
 		in.read((char*)&pDesc.iShaderPass, sizeof(_uint));
 		in.read((char*)&pDesc.WorldMatrix, sizeof(_float4x4));
 
 		in.read((char*)&pDesc.bAnim, sizeof(_bool));
 		in.read((char*)&pDesc.fAnimTime, sizeof(_float2));
 		in.read((char*)&pDesc.vStartPos, sizeof(_float3));
+
+		in.read((char*)&pDesc.fControlAlpha, sizeof(_float2));
+		in.read((char*)&pDesc.isReverse, sizeof(_bool));
 
 		//개별
 		ZeroMemory(charBox, MAX_PATH);
@@ -537,6 +548,7 @@ HRESULT CObject_Manager::Load_binary(const wstring& strObjectTag, const string F
 		in.read((char*)&pDesc.fStartUV, sizeof(_float2));
 		in.read((char*)&pDesc.fEndUV, sizeof(_float2));
 		in.read((char*)&pDesc.vColor, sizeof(_float4));
+		in.read((char*)&pDesc.isColor, sizeof(_bool));
 		in.read((char*)&pDesc.iShaderPass, sizeof(_uint));
 		in.read((char*)&pDesc.WorldMatrix, sizeof(_float4x4));
 
@@ -651,12 +663,12 @@ HRESULT CObject_Manager::Render()
 	if (FAILED(Render_BackBuffer()))
 		return E_FAIL;
 
-	//디버깅용 렌더 타겟 뷰
-	for (auto& pTexture : m_Texture2Ds)
-		pTexture->Render_Debug(m_pShaderCom, m_pVIBufferCom);
-		
-	for (auto& pTexture : m_CopyBackTexture2Ds)
-		pTexture->Render_Debug(m_pShaderCom, m_pVIBufferCom);
+	////디버깅용 렌더 타겟 뷰
+	//for (auto& pTexture : m_Texture2Ds)
+	//	pTexture->Render_Debug(m_pShaderCom, m_pVIBufferCom);
+	//	
+	//for (auto& pTexture : m_CopyBackTexture2Ds)
+	//	pTexture->Render_Debug(m_pShaderCom, m_pVIBufferCom);
 
 	return S_OK;
 }
@@ -674,11 +686,6 @@ HRESULT CObject_Manager::Render_Object()
 		for (auto& pObj : Pair.second)
 			pObj->Render();
 
-		Texture2D_End();
-
-		Texture2D_Begin(m_BinaryTexture2Ds, iIndex);
-
-		//바이너리화 할 오브젝트들 그려줌
 		for (auto& pObj : BinaryIter->second)
 			pObj->Render();
 
@@ -689,6 +696,36 @@ HRESULT CObject_Manager::Render_Object()
 	}
 
 	return S_OK;
+
+
+
+
+	//_uint iIndex = 0;
+	//auto BinaryIter = m_BinaryObjects.begin();
+
+	//for (auto& Pair : m_Objects)
+	//{
+	//	//Texture2D_Begin(m_Texture2Ds, iIndex);
+
+	//	////렌더타겟 먼저 그려줌
+	//	//for (auto& pObj : Pair.second)
+	//	//	pObj->Render();
+
+	//	//Texture2D_End();
+
+	//	Texture2D_Begin(m_BinaryTexture2Ds, iIndex);
+
+	//	//바이너리화 할 오브젝트들 그려줌
+	//	for (auto& pObj : BinaryIter->second)
+	//		pObj->Render();
+
+	//	Texture2D_End();
+
+	//	++BinaryIter;
+	//	++iIndex;
+	//}
+	//	return S_OK;
+
 }
 
 HRESULT CObject_Manager::Render_Copy()
@@ -707,19 +744,19 @@ HRESULT CObject_Manager::Render_Copy()
 		if (FAILED(m_Texture2Ds[i]->Bind_SVR(m_pShaderCom, "g_Texture")))
 			return E_FAIL;
 
-		m_pShaderCom->Begin(3);
+		m_pShaderCom->Begin(0);
 		m_pVIBufferCom->Render();
 
 		Texture2D_End();
 
-		Texture2D_Begin(m_CopyBackTexture2Ds, 0, false);
-		if (FAILED(m_BinaryTexture2Ds[i]->Bind_SVR(m_pShaderCom, "g_Texture")))
-			return E_FAIL;
+		//Texture2D_Begin(m_CopyBackTexture2Ds, 0, false);
+		//if (FAILED(m_BinaryTexture2Ds[i]->Bind_SVR(m_pShaderCom, "g_Texture")))
+		//	return E_FAIL;
 
-		m_pShaderCom->Begin(3);
-		m_pVIBufferCom->Render();
+		//m_pShaderCom->Begin(3);
+		//m_pVIBufferCom->Render();
 
-		Texture2D_End();
+		//Texture2D_End();
 	}
 
 	return S_OK;
@@ -734,10 +771,10 @@ HRESULT CObject_Manager::Render_BackBuffer()
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
 		return E_FAIL;
 
-	if (FAILED(m_CopyBackTexture2Ds[0]->Bind_SVR(m_pShaderCom, "g_Texture")))
+	if (FAILED(m_CopyBackTexture2Ds[0]->Bind_SVR(m_pShaderCom, "g_Texture")))//모든 데이터 합산.
 		return E_FAIL;
 
-	m_pShaderCom->Begin(3);
+	m_pShaderCom->Begin(0);
 	m_pVIBufferCom->Render();
 
 	return S_OK;
@@ -890,15 +927,15 @@ HRESULT CObject_Manager::Add_BinaryObject(const wstring& strObjectTag, void* pAr
 {
 	//BinaryObjects에 오브젝트 추가
 
-	vector<CUI_Object*>* pObjects = Find_BinaryObject(strObjectTag);
+	vector<CUI_Object*>* pBinaryObjects = Find_BinaryObject(strObjectTag);
 
 	OBJ_MNG_DESC* pDesc = static_cast<OBJ_MNG_DESC*>(pArg);
 	_uint iType = pDesc->iTextureType;
 
-	if (nullptr == pObjects)
+	if (nullptr == pBinaryObjects)
 	{
 		vector<CUI_Object*> Objects;
-		pObjects = &Objects;
+		pBinaryObjects = &Objects;
 	}
 
 	// 타입별로 클래스 생성.
@@ -914,7 +951,7 @@ HRESULT CObject_Manager::Add_BinaryObject(const wstring& strObjectTag, void* pAr
 		if (nullptr == pImage)
 			return E_FAIL;
 
-		pObjects->emplace_back(pImage);
+		pBinaryObjects->emplace_back(pImage);
 	}
 	else if (iType == BTN)
 	{
@@ -929,7 +966,7 @@ HRESULT CObject_Manager::Add_BinaryObject(const wstring& strObjectTag, void* pAr
 		CBtn* pBtn	= dynamic_cast<CBtn*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Btn"), &BtnDesc));
 		if (nullptr == pBtn)
 			return E_FAIL;
-		pObjects->emplace_back(pBtn);
+		pBinaryObjects->emplace_back(pBtn);
 	}
 	else if (iType == TEXT)
 	{
@@ -943,7 +980,7 @@ HRESULT CObject_Manager::Add_BinaryObject(const wstring& strObjectTag, void* pAr
 		if (nullptr == pText)
 			return E_FAIL;
 
-		pObjects->emplace_back(pText);
+		pBinaryObjects->emplace_back(pText);
 	}
 	else if (iType == GROUP)
 	{
@@ -955,7 +992,7 @@ HRESULT CObject_Manager::Add_BinaryObject(const wstring& strObjectTag, void* pAr
 		if (nullptr == pGroup)
 			return E_FAIL;
 
-		pObjects->emplace_back(pGroup);
+		pBinaryObjects->emplace_back(pGroup);
 	}
 	else if (iType == EFFECT)
 	{
@@ -972,13 +1009,13 @@ HRESULT CObject_Manager::Add_BinaryObject(const wstring& strObjectTag, void* pAr
 		if (nullptr == pUIEffect)
 			return E_FAIL;
 
-		pObjects->emplace_back(pUIEffect);
+		pBinaryObjects->emplace_back(pUIEffect);
 	}
 
 
-	if (nullptr == pObjects)
+	if (nullptr == pBinaryObjects)
 	{
-		m_Objects.emplace(strObjectTag, *pObjects);
+		m_Objects.emplace(strObjectTag, *pBinaryObjects);
 	}
 
 	return S_OK;
@@ -1006,6 +1043,10 @@ HRESULT CObject_Manager::Copy_BinaryObject(const wstring& strObjectTag, _uint iI
 		TextureDesc.bAnim = dynamic_cast<CUI_Texture*>((*pObjects)[iIndex])->Get_isAnim();
 		TextureDesc.vStartPos = dynamic_cast<CUI_Texture*>((*pObjects)[iIndex])->Get_StartPos();
 		TextureDesc.fAnimTime = dynamic_cast<CUI_Texture*>((*pObjects)[iIndex])->Get_AnimTime();
+		TextureDesc.vColor = dynamic_cast<CUI_Texture*>((*pObjects)[iIndex])->Get_Color();
+		TextureDesc.isColor = dynamic_cast<CUI_Texture*>((*pObjects)[iIndex])->Get_isColor();
+		TextureDesc.fControlAlpha = dynamic_cast<CUI_Texture*>((*pObjects)[iIndex])->Get_ControlAlpha();
+		TextureDesc.iShaderPass = dynamic_cast<CUI_Texture*>((*pObjects)[iIndex])->Get_ShaderPass();
 
 		CUI_Texture* pImage = dynamic_cast<CUI_Texture*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Image_Texture"), &TextureDesc));
 		if (nullptr == pImage)
@@ -1013,13 +1054,48 @@ HRESULT CObject_Manager::Copy_BinaryObject(const wstring& strObjectTag, _uint iI
 
 		pImage->Set_SizeX(dynamic_cast<CUI_Texture*>((*pObjects)[iIndex])->Get_SizeX());
 		pImage->Set_SizeY(dynamic_cast<CUI_Texture*>((*pObjects)[iIndex])->Get_SizeY());
-		pImage->Set_ShaderPass(dynamic_cast<CUI_Texture*>((*pObjects)[iIndex])->Get_ShaderPass());
-		pImage->Set_Color(dynamic_cast<CUI_Texture*>((*pObjects)[iIndex])->Get_Color());
+
 		pImage->Change_UV(dynamic_cast<CUI_Texture*>((*pObjects)[iIndex])->Get_StartUV(), dynamic_cast<CUI_Texture*>((*pObjects)[iIndex])->Get_EndUV());
 		pImage->Get_TransformCom()->Set_WorldMatrix(dynamic_cast<CUI_Texture*>((*pObjects)[iIndex])->Get_TransformCom()->Get_WorldMatrix());
 
-
 		pObjects->emplace_back(pImage);
+	}
+	else if(BTN== Type)
+	{
+		CBtn::BTN_DESC BtnDesc = {};
+		BtnDesc.strTextureFileName = dynamic_cast<CBtn*>((*pObjects)[iIndex])->Get_FileName();
+		BtnDesc.strTextureFilePath = dynamic_cast<CBtn*>((*pObjects)[iIndex])->Get_FilePath();
+
+		BtnDesc.strClickFileName = dynamic_cast<CBtn*>((*pObjects)[iIndex])->Get_ClickFileName();
+		BtnDesc.strClickFilePath = dynamic_cast<CBtn*>((*pObjects)[iIndex])->Get_ClickFilePath();
+
+		BtnDesc.iTypeIndex = dynamic_cast<CBtn*>((*pObjects)[iIndex])->Get_TypeIndex();
+		BtnDesc.strName = dynamic_cast<CBtn*>((*pObjects)[iIndex])->Get_Name() + "%d";
+		char buffer[MAX_PATH] = { "" };
+		sprintf(buffer, BtnDesc.strName.c_str(), Index);
+		string result(buffer);
+		BtnDesc.strName = result;
+
+		BtnDesc.bAnim = dynamic_cast<CBtn*>((*pObjects)[iIndex])->Get_isAnim();
+		BtnDesc.vStartPos = dynamic_cast<CBtn*>((*pObjects)[iIndex])->Get_StartPos();
+		BtnDesc.fAnimTime = dynamic_cast<CBtn*>((*pObjects)[iIndex])->Get_AnimTime();
+		BtnDesc.vColor = dynamic_cast<CBtn*>((*pObjects)[iIndex])->Get_Color();
+		BtnDesc.isColor = dynamic_cast<CBtn*>((*pObjects)[iIndex])->Get_isColor();
+		BtnDesc.fControlAlpha = dynamic_cast<CBtn*>((*pObjects)[iIndex])->Get_ControlAlpha();
+		BtnDesc.iShaderPass = dynamic_cast<CUI_Texture*>((*pObjects)[iIndex])->Get_ShaderPass();
+
+		CBtn* pBtn = dynamic_cast<CBtn*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Btn"), &BtnDesc));
+		if (nullptr == pBtn)
+			return E_FAIL;
+
+		pBtn->Set_SizeX(dynamic_cast<CUI_Texture*>((*pObjects)[iIndex])->Get_SizeX());
+		pBtn->Set_SizeY(dynamic_cast<CUI_Texture*>((*pObjects)[iIndex])->Get_SizeY());
+
+		pBtn->Change_UV(dynamic_cast<CUI_Texture*>((*pObjects)[iIndex])->Get_StartUV(), dynamic_cast<CUI_Texture*>((*pObjects)[iIndex])->Get_EndUV());
+		pBtn->Chage_ClickUV(dynamic_cast<CBtn*>((*pObjects)[iIndex])->Get_ClickStartUV(), dynamic_cast<CBtn*>((*pObjects)[iIndex])->Get_ClickEndUV());
+		pBtn->Get_TransformCom()->Set_WorldMatrix(dynamic_cast<CUI_Texture*>((*pObjects)[iIndex])->Get_TransformCom()->Get_WorldMatrix());
+
+		pObjects->emplace_back(pBtn);
 	}
 
 	return S_OK;
@@ -1052,7 +1128,10 @@ HRESULT CObject_Manager::Copy_BinaryGroupObject(const wstring& strObjectTag, con
 		TextureDesc.bAnim = dynamic_cast<CUI_Texture*>((*pFineGroupObjects)[iIndex])->Get_isAnim();
 		TextureDesc.vStartPos = dynamic_cast<CUI_Texture*>((*pFineGroupObjects)[iIndex])->Get_StartPos();
 		TextureDesc.fAnimTime = dynamic_cast<CUI_Texture*>((*pFineGroupObjects)[iIndex])->Get_AnimTime();
-
+		TextureDesc.isColor = dynamic_cast<CUI_Texture*>((*pFineGroupObjects)[iIndex])->Get_isColor();
+		TextureDesc.fControlAlpha = dynamic_cast<CUI_Texture*>((*pFineGroupObjects)[iIndex])->Get_ControlAlpha();
+		TextureDesc.isParent = true;
+		TextureDesc.pParentMatrix = (*pFineObjects)[ibinaryIndex]->Get_TransformCom()->Get_WorldFloat4x4();
 
 		CUI_Texture* pImage = dynamic_cast<CUI_Texture*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Image_Texture"), &TextureDesc));
 		if (nullptr == pImage)
@@ -1064,6 +1143,8 @@ HRESULT CObject_Manager::Copy_BinaryGroupObject(const wstring& strObjectTag, con
 		pImage->Set_Color(dynamic_cast<CUI_Texture*>((*pFineGroupObjects)[iIndex])->Get_Color());
 		pImage->Change_UV(dynamic_cast<CUI_Texture*>((*pFineGroupObjects)[iIndex])->Get_StartUV(), dynamic_cast<CUI_Texture*>((*pFineGroupObjects)[iIndex])->Get_EndUV());
 		pImage->Get_TransformCom()->Set_WorldMatrix(dynamic_cast<CUI_Texture*>((*pFineGroupObjects)[iIndex])->Get_TransformCom()->Get_WorldMatrix());
+
+
 		pFineGroupObjects->emplace_back(pImage);
 	}
 

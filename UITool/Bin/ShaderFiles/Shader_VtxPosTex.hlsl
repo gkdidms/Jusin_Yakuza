@@ -12,6 +12,7 @@ float3 g_vLifeTime;
 
 float3 g_vStartPos;
 float2 g_fAnimTime;
+float2 g_fControlAlpha;
 
 
 struct VS_IN
@@ -49,15 +50,29 @@ VS_OUT VS_ANIM(VS_IN In)
 
     matVP = mul(g_ViewMatrix, g_ProjMatrix);
 
-    float4 WorldPos = mul(float4(In.vPosition, 1.f), g_WorldMatrix);
-    float3 StartPos = g_vStartPos;
-    float factor =g_fAnimTime.x / g_fAnimTime.y;
+    //float4 WorldPos = mul(float4(In.vPosition, 1.f), g_WorldMatrix);
+    //float3 StartPos = g_vStartPos;
+    //float factor =g_fAnimTime.x / g_fAnimTime.y;
     
-    WorldPos.xyz = lerp(StartPos, WorldPos.xyz, float3(factor, factor, factor));
-    WorldPos.w = 1.f;
+    //WorldPos.xyz = lerp(StartPos, WorldPos.xyz, float3(factor, factor, factor));
+    //WorldPos.w = 1.f;
+    //Out.vPosition = mul(WorldPos, matVP);
+    //Out.vTexcoord = In.vTexcoord;
+
+    matrix World=g_WorldMatrix;
+    
+    float3 EndPos = World._41_42_43;
+    float3 StartPos = EndPos.xyz+g_vStartPos.xyz;
+    float factor = g_fAnimTime.x / g_fAnimTime.y;
+    
+    World._41_42_43 = lerp(StartPos, EndPos, float3(factor, factor, factor));
+    
+    float4 WorldPos = mul(float4(In.vPosition, 1.f), World);
+    
     Out.vPosition = mul(WorldPos, matVP);
     Out.vTexcoord = In.vTexcoord;
-
+    
+    
     return Out;
 }
 struct PS_IN
@@ -76,8 +91,8 @@ PS_OUT PS_MAIN(PS_IN In)
     PS_OUT Out = (PS_OUT) 0;
     
     Out.vColor = g_Texture.Sample(LinearSampler, In.vTexcoord);
-    
-    if (Out.vColor.a <= 0.1f)
+
+    if (Out.vColor.a < 0.1f)
         discard;
     
     return Out;
@@ -87,9 +102,12 @@ PS_OUT PS_ALPHABLEND(PS_IN In)
 {
     PS_OUT Out = (PS_OUT) 0;
     
-    Out.vColor = g_Texture.Sample(PointSampler, In.vTexcoord);
-    if (Out.vColor.a <= 0.1f)
-        discard;
+    
+    vector BaseColor= g_Texture.Sample(PointSampler, In.vTexcoord);
+    
+    //BaseColor.rgb = BaseColor.rgb * BaseColor.a;
+    Out.vColor = BaseColor;
+    
     return Out;
 }
 
@@ -100,9 +118,10 @@ PS_OUT PS_COLOR_ALPHABLEND(PS_IN In)
     vector BaseColor = g_Texture.Sample(PointSampler, In.vTexcoord);
     vector vMergeColor = g_vColor;
     
-    Out.vColor = vMergeColor * BaseColor;
-    if (Out.vColor.a <= 0.1f)
-        discard;
+   vector FinalColor = vMergeColor * BaseColor;
+
+    Out.vColor = FinalColor;
+    
     return Out;
 }
 
@@ -137,8 +156,26 @@ PS_OUT PS_COLOR_ALPHABLEND_EFFECT(PS_IN In)
     
     Out.vColor = FinalColor;
     
-    if (Out.vColor.a <= 0.1f)
-        discard;
+    
+    return Out;
+}
+
+PS_OUT PS_COLOR_ALPHABLEND_ANIM(PS_IN In)
+{
+    PS_OUT Out = (PS_OUT) 0;
+    
+    vector BaseColor = g_Texture.Sample(PointSampler, In.vTexcoord);
+    
+    vector MergeColor = g_vColor;
+    BaseColor *= MergeColor;
+    
+    float factor = g_fAnimTime.x / g_fAnimTime.y;
+    
+    float2 ControlAlpha = g_fControlAlpha;
+    
+    BaseColor.a *= lerp(ControlAlpha.x, ControlAlpha.y, factor);//20240706
+    
+    Out.vColor = BaseColor;
     
     return Out;
 }
@@ -147,22 +184,26 @@ PS_OUT PS_ALPHABLEND_ANIM(PS_IN In)
 {
     PS_OUT Out = (PS_OUT) 0;
     
-    Out.vColor = g_Texture.Sample(PointSampler, In.vTexcoord);
+    vector BaseColor = g_Texture.Sample(PointSampler, In.vTexcoord);
     
+    float factor = g_fAnimTime.x / g_fAnimTime.y;
     
-    if (Out.vColor.a <= 0.1f)
-        discard;
+    float2 ControlAlpha = g_fControlAlpha;
+    
+    BaseColor.a *= lerp(ControlAlpha.x, ControlAlpha.y, factor); //20240706
+    
+    Out.vColor = BaseColor;
+    
     return Out;
 }
+
 
 PS_OUT PS_BACKBUFFER(PS_IN In)
 {
     PS_OUT Out = (PS_OUT) 0;
     
     Out.vColor = g_Texture.Sample(LinearSampler, In.vTexcoord);
-    
-    if (Out.vColor.a <= 0.1f)
-        discard;
+
     
     return Out;
 }
@@ -170,33 +211,20 @@ PS_OUT PS_BACKBUFFER(PS_IN In)
 technique11 DefaultTechnique
 {
 
-    pass DefaultPass//0
-    {
-        SetRasterizerState(RS_Default);
-        SetDepthStencilState(DSS_None_Test_None_Write, 0);
-        SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
-
-        VertexShader = compile vs_5_0 VS_MAIN();
-        GeometryShader = NULL;
-        HullShader = NULL;
-        DomainShader = NULL;
-        PixelShader = compile ps_5_0 PS_MAIN();
-    }
-
-    pass Blend_Texture//1
+    pass BackBuffer //0
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_Default, 0);
-        SetBlendState(BS_Blend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 
         VertexShader = compile vs_5_0 VS_MAIN();
         GeometryShader = NULL;
         HullShader = NULL;
         DomainShader = NULL;
-        PixelShader = compile ps_5_0 PS_MAIN();
+        PixelShader = compile ps_5_0 PS_BACKBUFFER();
     }
 
-    pass AlphaBlend_Texture//2
+    pass AlphaBlend_Texture//1
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_Default, 0);
@@ -209,20 +237,8 @@ technique11 DefaultTechnique
         PixelShader = compile ps_5_0 PS_ALPHABLEND();
     }
 
-    pass BackBuffer//3
-    {
-        SetRasterizerState(RS_Default);
-        SetDepthStencilState(DSS_Default, 0);
-        SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 
-        VertexShader = compile vs_5_0 VS_MAIN();
-        GeometryShader = NULL;
-        HullShader = NULL;
-        DomainShader = NULL;
-        PixelShader = compile ps_5_0 PS_BACKBUFFER();
-    }
-
-    pass Color_AlphaBlend_Texture//4
+    pass Color_AlphaBlend_Texture//2
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_Default, 0);
@@ -235,7 +251,7 @@ technique11 DefaultTechnique
         PixelShader = compile ps_5_0 PS_COLOR_ALPHABLEND();
     }
 
-    pass Color_AlphaBlend_Effect_Texture //5
+    pass Color_AlphaBlend_Effect_Texture //3
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_Default, 0);
@@ -248,7 +264,7 @@ technique11 DefaultTechnique
         PixelShader = compile ps_5_0 PS_COLOR_ALPHABLEND_EFFECT();
     }
 
-    pass AlphaBlend_Anim_Texture //6
+    pass AlphaBlend_Anim_Texture //4
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_Default, 0);
@@ -260,4 +276,19 @@ technique11 DefaultTechnique
         DomainShader = NULL;
         PixelShader = compile ps_5_0 PS_ALPHABLEND_ANIM();
     }
+
+    pass Color_AlphaBlend_Anim_Texture //5
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_ANIM();
+        GeometryShader = NULL;
+        HullShader = NULL;
+        DomainShader = NULL;
+        PixelShader = compile ps_5_0 PS_COLOR_ALPHABLEND_ANIM();
+    }
+
+
 }
