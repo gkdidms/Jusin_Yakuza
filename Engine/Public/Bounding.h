@@ -22,12 +22,6 @@ public:
         return m_vColor;
     }
 
-    //이 센터는 최초의 센터이기 때문에 Current바운딩의 센터를 꺼내오는 함수로 수정해야한다
-    // 자식 클래스들의 각 m_pBoundingBox 에서 꺼내와야하는 작업 이어서 해야함
-    virtual const _float3& Get_Center() {
-        return m_vCenter;
-    }
-
 public:
     virtual void Set_Value(void* pDesc) {};
     virtual void Set_Center(const _float3& vCenter) {};
