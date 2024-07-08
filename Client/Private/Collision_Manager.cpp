@@ -61,8 +61,9 @@ _bool CCollision_Manager::Collision_FromPlayer(CSocketCollider* pAttackCollider)
     for (auto& pSocketCollider : m_BattleColliders[FROM_PLAYER])
     {
         if (pSocketCollider->Intersect(pAttackCollider->Get_Collider()))
-            cout << "InterSect!!!" << endl;
-
+        {
+            cout << "Intersect!!!" << endl;     
+        }
     }
 
     for (auto& pObject : m_BattleColliders[FROM_PLAYER])
