@@ -76,6 +76,9 @@ private:
 	
 	_bool							m_isOn = { true };
 
+	_float3							m_vPrevMovePos, m_vMovePos;
+	_float3							m_vMoveDir;
+
 public:
 	HRESULT Add_Components(void* pArg);
 	HRESULT Bind_ShaderResources();
