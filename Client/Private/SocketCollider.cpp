@@ -58,7 +58,7 @@ HRESULT CSocketCollider::Render()
 
 _bool CSocketCollider::Intersect(CCollider* pTargetObject)
 {
-	return pTargetObject->Intersect(m_pColliderCom);
+	return pTargetObject->Intersect(m_pColliderCom, 1);
 }
 
 HRESULT CSocketCollider::Add_Components(void* pArg)

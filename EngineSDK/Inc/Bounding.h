@@ -21,9 +21,6 @@ public:
     virtual const _float4& Get_Color() {
         return m_vColor;
     }
-    virtual const _float3& Get_Center() {
-        return m_vCenter;
-    }
 
 public:
     virtual void Set_Value(void* pDesc) {};
@@ -34,7 +31,7 @@ public:
 public:
     virtual HRESULT Initialize(const void* pArg) = 0;
     virtual void Tick(_fmatrix WorldMatrix);
-    virtual _bool Intersect(CCollider::TYPE eTargetType, CBounding* pTargetBounding) = 0;
+    virtual _bool Intersect(CCollider::TYPE eTargetType, CBounding* pTargetBounding, _float fDistance = 0.5f) = 0;
     virtual const _float3& ImpulseResolution(CCollider::TYPE eTargetType, CBounding* pTargetBounding) { return _float3(); }
 #ifdef _DEBUG
 public:
