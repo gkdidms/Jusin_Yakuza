@@ -24,15 +24,18 @@ class CConstruction final : public CGameObject
 public:
 	typedef struct tMapObjDesc : public CGameObject::GAMEOBJECT_DESC
 	{
-		XMMATRIX		vStartPos;
-		int				iLayer;
-		wstring			wstrModelName;
-		int				iShaderPass;
-		int				iObjType;
-		int				iObjPropertyType;
+		XMMATRIX			vStartPos;
+		int					iLayer;
+		wstring				wstrModelName;
+		int					iShaderPass;
+		int					iObjType;
+		int					iObjPropertyType;
 
-		int				iDecalNum;
-		DECAL_DESC_IO*	pDecal;
+		int					iDecalNum;
+		DECAL_DESC_IO*		pDecal;
+
+		int					iColliderNum;
+		OBJCOLLIDER_DESC*	pColliderDesc;
 	}MAPOBJ_DESC;
 
 
@@ -53,6 +56,8 @@ public:
 	CTransform*										Get_Transform() { return m_pTransformCom; }
 	CModel*											Get_Model() { return m_pModelCom; }
 	vector<CDecal*>&								Get_Decals() { return m_vDecals; }
+	vector<CCollider*>								Get_Colliders() { return m_vColliders; }
+	OBJCOLLIDER_DESC								Get_ColliderDesc(int iIndex) { return m_vColliderDesc[iIndex]; }
 
 public:
 	HRESULT											Add_Components(void* pArg);
@@ -73,6 +78,11 @@ public:
 
 	void											Add_Decal(CDecal*	pDecal);
 	void											Delete_Decal(int	iIndex);
+	
+
+	void											Add_Collider(OBJCOLLIDER_DESC tCollider);
+	void											Delete_Collider(int		iIndex);
+	void											Delete_AllCollider();
 
 private:
 	CShader*										m_pShaderCom = { nullptr };
@@ -81,6 +91,9 @@ private:
 
 private:
 	vector<CDecal*>									m_vDecals;
+	vector<CCollider*>								m_vColliders;
+	vector<OBJCOLLIDER_DESC>						m_vColliderDesc;
+
 	int												m_iLayerNum = { 0 };
 	wstring											m_wstrModelName;
 	int												m_iShaderPassNum = { 0 };

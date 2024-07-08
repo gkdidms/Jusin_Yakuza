@@ -24,15 +24,18 @@ class CConstruction final : public CGameObject
 //
 public:
 	typedef struct tMapObjDesc : public CGameObject::GAMEOBJECT_DESC
-	{
-		XMMATRIX		vStartPos;
-		int				iLayer;
-		wstring			wstrModelName;
-		int				iShaderPass;
-		int				iObjType;
+	{	
+		XMMATRIX			vStartPos;
+		int					iLayer;
+		wstring				wstrModelName;
+		int					iShaderPass;
+		int					iObjType;
 
-		int				iDecalNum;
-		DECAL_DESC_IO*	pDecal;
+		int					iDecalNum;
+		DECAL_DESC_IO*		pDecal;
+
+		int					iColliderNum;
+		OBJCOLLIDER_DESC*	pColliderDesc;
 	}MAPOBJ_DESC;
 
 
@@ -68,6 +71,7 @@ private:
 private:
 	_bool m_isFirst = { true };
 	vector<CDecal*>			m_vDecals;
+	vector<CCollider*>		m_vColliders;
 	int						m_iLayerNum;
 	wstring					m_wstrModelName;
 	int						m_iShaderPassNum = { 0 };

@@ -153,23 +153,22 @@ HRESULT CLoader::Loading_For_RunMapLevel(int iLevel)
 
 	PreTransformMatrix = XMMatrixIdentity();
 
-	//if (FAILED(m_pGameInstance->Add_Component_Prototype(iLevel, TEXT("Prototype_Component_Model_OfficeSet1"),
-	//	CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/NonAnim/Map/Map1/OfficeSet1.fbx", PreTransformMatrix, false, true))))
+	//if (FAILED(m_pGameInstance->Add_Component_Prototype(iLevel, TEXT("Prototype_Component_Model_sofa"),
+	//	CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/NonAnim/Map/Map2/sofa.fbx", PreTransformMatrix, false, true))))
 	//	return E_FAIL;
 
 	//PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
 
 
 	PreTransformMatrix = XMMatrixIdentity();
-	if (FAILED(m_pGameInstance->Add_Component_Prototype(iLevel, TEXT("Prototype_Component_Model_bookshelf"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/NonAnim/Map/Map1/bookshelf.fbx", PreTransformMatrix, false, true))))
-		return E_FAIL;
-	//if (FAILED(m_pGameInstance->Add_Component_Prototype(iLevel, TEXT("Prototype_Component_Model_OfficeSet1"),
-	//	CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/NonAnim/Map/Map1/OfficeSet1.fbx", PreTransformMatrix, false, true))))
+	//if (FAILED(m_pGameInstance->Add_Component_Prototype(iLevel, TEXT("Prototype_Component_Model_2FTable"),
+	//	CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/NonAnim/Map/Map2/2FTable.fbx", PreTransformMatrix, false, true))))
 	//	return E_FAIL;
-	if (FAILED(m_pGameInstance->Add_Component_Prototype(iLevel, TEXT("Prototype_Component_Model_OfficeSet2"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/NonAnim/Map/Map1/OfficeSet2.fbx", PreTransformMatrix, false, true))))
-		return E_FAIL;
+	
+	//if (FAILED(m_pGameInstance->Add_Component_Prototype(iLevel, TEXT("Prototype_Component_Model_Borderglass"),
+	//	CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/NonAnim/Map/Map1/Borderglass.fbx", PreTransformMatrix, false, true))))
+	//	return E_FAIL;
+
 
 	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
 
@@ -179,6 +178,7 @@ HRESULT CLoader::Loading_For_RunMapLevel(int iLevel)
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(iLevel, TEXT("Prototype_Component_Model_GlassDoor"),
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/NonAnim/Map/Map0/Bin/GlassDoor.dat", PreTransformMatrix, true, true))))
 		return E_FAIL;
+
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(iLevel, TEXT("Prototype_Component_Model_Water011"),
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/NonAnim/Map/Map1/Bin/Water011.dat", PreTransformMatrix, true, true))))
 		return E_FAIL;
@@ -195,9 +195,22 @@ HRESULT CLoader::Loading_For_RunMapLevel(int iLevel)
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/NonAnim/Map/Map1/Bin/OfficeSet1.dat", PreTransformMatrix, true, true))))
 		return E_FAIL;
 
-	//if (FAILED(m_pGameInstance->Add_Component_Prototype(iLevel, TEXT("Prototype_Component_Model_bookshelf"),
-	//	CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/NonAnim/Map/Map1/Bin/bookshelf.dat", PreTransformMatrix, true, true))))
-	//	return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(iLevel, TEXT("Prototype_Component_Model_OfficeSet2"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/NonAnim/Map/Map1/Bin/OfficeSet2.dat", PreTransformMatrix, true, true))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(iLevel, TEXT("Prototype_Component_Model_Borderglass"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/NonAnim/Map/Map1/Bin/Borderglass.dat", PreTransformMatrix, true, true))))
+		return E_FAIL;
+
+
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(iLevel, TEXT("Prototype_Component_Model_Door"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/NonAnim/Map/Map1/Bin/Door.dat", PreTransformMatrix, true, true))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(iLevel, TEXT("Prototype_Component_Model_Pottery"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/NonAnim/Map/Map2/Bin/Pottery.dat", PreTransformMatrix, true, true))))
+		return E_FAIL;
 
 	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(iLevel, TEXT("Prototype_Component_Model_f2"),
@@ -208,11 +221,25 @@ HRESULT CLoader::Loading_For_RunMapLevel(int iLevel)
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/NonAnim/Map/Map1/Bin/trashbox.dat", PreTransformMatrix, true, true))))
 		return E_FAIL;
 
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(iLevel, TEXT("Prototype_Component_Model_Dojima2f"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/NonAnim/Map/Map2/Bin/Dojima2f.dat", PreTransformMatrix, true, true))))
+		return E_FAIL;
+
+
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(iLevel, TEXT("Prototype_Component_Model_sofa"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/NonAnim/Map/Map2/Bin/sofa.dat", PreTransformMatrix, true, true))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(iLevel, TEXT("Prototype_Component_Model_2FTable"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/NonAnim/Map/Map2/Bin/2FTable.dat", PreTransformMatrix, true, true))))
+		return E_FAIL;
 
 	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(iLevel, TEXT("Prototype_Component_Model_Bone_Sphere"),
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/NonAnim/Bone_Sphere/Square.fbx", PreTransformMatrix, false, true))))
 		return E_FAIL;
+
+
 
 
 

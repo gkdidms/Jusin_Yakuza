@@ -25,6 +25,23 @@ public:
 		OBJ_END
 	};
 
+	//Edit 함수 사용하는중인것
+	enum EDITTYPE
+	{
+		OBJECT,
+		DECAL,
+		COLLIDER,
+		EDITTYPE_END
+	};
+
+	enum ColliderType
+	{
+		AABB,
+		OBB,
+		SPHERE,
+		COLLIDER_END
+	};
+
 public:
 	typedef struct tObjPlaceDesc
 	{
@@ -60,6 +77,7 @@ public:
 	/* Object 종류 고르기 */
 	void					Set_Map_Object();
 	void					Add_Decal_IMGUI();
+	void					Add_ObjectCollider_IMGUI();
 
 
 private:
@@ -85,8 +103,14 @@ private:
 
 	/* gameobject 안에 설치된 decal을 보여줌 */
 	void					Update_DecalNameList_In_Object();
+	void					Update_ColliderNameList();
+	void					Update_ColliderList_In_Object();
+
+
 	void					Update_DecalList_In_Object();
 	void					Edit_Installed_Decal(int iObjectDecalNum);
+
+	void					Reset_Collider();
 
 
 private:
@@ -95,10 +119,14 @@ private:
 	multimap<wstring, CGameObject*>				m_GameObjects; /* 추가한 오브젝트 저장 */
 	vector<char*>								m_ObjectNames_Map0; /* 추가한 오브젝트 이름들 */
 	vector<char*>								m_ObjectNames_Map1; /* 추가한 오브젝트 이름들 */
+	vector<char*>								m_ObjectNames_Map2; /* 추가한 오브젝트 이름들 */
 	vector<char*>								m_MonsterNames; /* 추가한 오브젝트 이름들 */
+
 	vector<char*>								m_FileNames; /* 맵마다 저장한 bin 리스트들 */
 	vector<char*>								m_DecalNames; 
 	vector<char*>								m_DecalNames_Obj;
+	vector<char*>								m_ColliderNames;
+
 	class CGameInstance*						m_pGameInstance = { nullptr };
 	/* 설치 전 무슨 오브젝트인지 보여주는 */
 	CGameObject*								m_pShownObject = { nullptr }; 
@@ -109,6 +137,7 @@ private:
 private:
 	bool										m_bFindObject = { false };
 	bool										m_bAddDecal_IMGUI = { false };
+	bool										m_bAddObjectCollider_IMGUI = { false };
 	_uint										m_iObjectNums = 0;
 	/* 배치관련 bool 변수 */
 	_bool										m_bDoing_Place_Object = false;
@@ -116,10 +145,18 @@ private:
 	_bool										m_bInstallOneTime = { false };
 	CConstruction::MAPOBJ_DESC					m_tCurrentObjectDesc;
 	int											m_iCurrentObjectIndex = { 0 };
+	
+	int											m_iCurrentCollidrNum = { 0 };
 
 	vector<DECAL_DESC>							m_Decals; /* 해당 오브젝트에 있는 모든 decal을 저장 */
 	vector<CDecal*>								m_ObjectDecals;
+	vector<CCollider*>							m_ObjectColliders;
 	int											m_iDecalObjNum = { -1 };
+
+	EDITTYPE									m_eEditType;
+
+	OBJCOLLIDER_DESC							m_tCurColliderDesc;
+	int											m_iCurColliderIndex = { 0 };
 
 public:
 	virtual void Free() override;

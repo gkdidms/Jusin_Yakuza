@@ -42,6 +42,14 @@ HRESULT CFileTotalMgr::Set_MapObj_In_Client(int iMapLoadingNum, int iStageLevel)
 
     for (int i = 0; i < m_MapTotalInform.iNumMapObj; i++)
     {
+        if (0 < m_MapTotalInform.pMapObjDesc[i].iColliderNum)
+        {
+            Safe_Delete_Array(m_MapTotalInform.pMapObjDesc[i].pObjColliders);
+        }
+    }
+
+    for (int i = 0; i < m_MapTotalInform.iNumMapObj; i++)
+    {
         Safe_Delete(m_MapTotalInform.pMapObjDesc);
     }
 
@@ -130,6 +138,20 @@ HRESULT CFileTotalMgr::Set_GameObject_In_Client(int iStageLevel)
                 }
             }
 
+            mapDesc.iColliderNum = m_MapTotalInform.pMapObjDesc[i].iColliderNum;
+            
+            if (0 < mapDesc.iColliderNum)
+            {
+                mapDesc.pColliderDesc = new OBJCOLLIDER_DESC[mapDesc.iColliderNum];
+
+                for (int j = 0; j < mapDesc.iColliderNum; j++)
+                {
+                    mapDesc.pColliderDesc[j].iColliderType = m_MapTotalInform.pMapObjDesc[i].pObjColliders[j].iColliderType;
+                    mapDesc.pColliderDesc[j].vCenter = m_MapTotalInform.pMapObjDesc[i].pObjColliders[j].vCenter;
+                    mapDesc.pColliderDesc[j].vExtents = m_MapTotalInform.pMapObjDesc[i].pObjColliders[j].vExtents;
+                    mapDesc.pColliderDesc[j].vQuaternion = m_MapTotalInform.pMapObjDesc[i].pObjColliders[j].vQuaternion;
+                }
+            }
 
             m_pGameInstance->Add_GameObject(iStageLevel, TEXT("Prototype_GameObject_Construction"), m_Layers[iLayer], &mapDesc);
         }
@@ -249,22 +271,6 @@ HRESULT CFileTotalMgr::Import_Bin_Map_Data_OnClient(MAP_TOTALINFORM_DESC* mapObj
         return E_FAIL;
     }
 
-
-    /*in.read((char*)&mapObjData->iLevelIndex, sizeof(int));
-
-    in.read((char*)&mapObjData->vPlaneSize, sizeof(XMFLOAT2));
-
-    in.read((char*)&mapObjData->iNumMapObj, sizeof(int));
-
-    mapObjData->pMapObjDesc = new OBJECTPLACE_DESC[mapObjData->iNumMapObj];
-
-    for (int i = 0; i < mapObjData->iNumMapObj; i++)
-    {
-        in.read((char*)&mapObjData->pMapObjDesc[i], sizeof(OBJECTPLACE_DESC));
-    }
-
-    in.close();*/
-
     in.read((char*)&mapObjData->iLevelIndex, sizeof(int));
 
     in.read((char*)&mapObjData->vPlaneSize, sizeof(XMFLOAT2));
@@ -293,6 +299,19 @@ HRESULT CFileTotalMgr::Import_Bin_Map_Data_OnClient(MAP_TOTALINFORM_DESC* mapObj
         for (int j = 0; j < pMapObj->iDecalNum; j++)
         {
             in.read((char*)&pMapObj->pDecals[j], sizeof(DECAL_DESC_IO));
+        }
+
+
+        in.read((char*)&pMapObj->iColliderNum, sizeof(int));
+
+        pMapObj->pObjColliders = new OBJCOLLIDER_DESC[pMapObj->iColliderNum];
+
+        for (int j = 0; j < pMapObj->iColliderNum; j++)
+        {
+            in.read((char*)&pMapObj->pObjColliders[j].iColliderType, sizeof(int));
+            in.read((char*)&pMapObj->pObjColliders[j].vCenter, sizeof(_float3));
+            in.read((char*)&pMapObj->pObjColliders[j].vExtents, sizeof(_float3));
+            in.read((char*)&pMapObj->pObjColliders[j].vQuaternion, sizeof(_float3));
         }
     }
 
@@ -379,6 +398,15 @@ void CFileTotalMgr::Free()
         if (0 < m_MapTotalInform.pMapObjDesc[i].iDecalNum)
         {
             Safe_Delete_Array(m_MapTotalInform.pMapObjDesc[i].pDecals);
+        }
+    }
+
+
+    for (int i = 0; i < m_MapTotalInform.iNumMapObj; i++)
+    {
+        if (0 < m_MapTotalInform.pMapObjDesc[i].iColliderNum)
+        {
+            Safe_Delete_Array(m_MapTotalInform.pMapObjDesc[i].pObjColliders);
         }
     }
 

@@ -116,13 +116,34 @@ PS_OUT PS_MAIN_FIND_MESH(PS_IN In)
 }
 
 
+PS_OUT PS_MAIN_RED(PS_IN In)
+{
+    // material 가지고 있는 mesh는 빨강으로
+    PS_OUT Out = (PS_OUT) 0;
+
+    Out.vDiffuse = g_Texture.Sample(LinearSampler, In.vTexcoord);
+	
+    // 투명할 경우(0.1보다 작으면 투명하니) 그리지 않음
+    if (Out.vDiffuse.a < 0.1f)
+        discard;
+    Out.vDiffuse = float4(1, 0, 0, 1);
+    Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
+    if (true == g_bWriteID)
+        Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 3000.f, g_fObjID, 1.f);
+    else
+        Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 3000.f, 0, 1.f);
+    
+    return Out;
+}
+
+
 
 technique11 DefaultTechnique
 {
 	/* 특정 렌더링을 수행할 때 적용해야할 셰이더 기법의 셋트들의 차이가 있다. */
     pass DefaultPass
     {
-        SetRasterizerState(RS_Cull_NON_CW);
+        SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_Default, 0);
         SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 
@@ -146,6 +167,20 @@ technique11 DefaultTechnique
         HullShader = NULL;
         DomainShader = NULL;
         PixelShader = compile ps_5_0 PS_MAIN_FIND_MESH();
+    }
+
+    pass RedMeshPass
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+		/* 어떤 셰이덜르 국동할지. 셰이더를 몇 버젼으로 컴파일할지. 진입점함수가 무엇이찌. */
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        HullShader = NULL;
+        DomainShader = NULL;
+        PixelShader = compile ps_5_0 PS_MAIN_RED();
     }
 
 }

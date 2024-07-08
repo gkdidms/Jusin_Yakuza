@@ -360,12 +360,18 @@ void CObjPlace_Manager::Show_Installed_GameObjectsList()
 			{
 				LayerType = 1;
 			}
+			ImGui::SameLine();
+			if (ImGui::RadioButton(u8"콜라이더 추가", LayerType == 2))
+			{
+				LayerType = 2;
+			}
 
 			ImGui::NewLine();
 
 			if (LayerType == 0)
 			{
 				m_bAddDecal_IMGUI = false;
+				m_bAddObjectCollider_IMGUI = false;
 				Edit_Installed_GameObject(m_iCurrentObjectIndex);
 
 				if (ImGui::Button(u8"맵 오브젝트 수정"))
@@ -376,8 +382,18 @@ void CObjPlace_Manager::Show_Installed_GameObjectsList()
 			else if (LayerType == 1)
 			{
 				m_bAddDecal_IMGUI = true;
+				m_bAddObjectCollider_IMGUI = false;
+			}
+			else if (LayerType == 2)
+			{
+				m_bAddDecal_IMGUI = false;
 
+				if (true == m_bAddObjectCollider_IMGUI)
+				{
+					Reset_Collider();
+				}
 				
+				m_bAddObjectCollider_IMGUI = true;
 			}
 			
 		}
@@ -481,6 +497,21 @@ void CObjPlace_Manager::Load_GameObject(int iNum)
 				mapDesc.pDecal[j].vTransform = mapTotalInform.pMapObjDesc[i].pDecals[j].vTransform;
 			}
 		}
+
+		mapDesc.iColliderNum = mapTotalInform.pMapObjDesc[i].iColliderNum;
+
+		if (0 < mapDesc.iColliderNum)
+		{
+			mapDesc.pColliderDesc = new OBJCOLLIDER_DESC[mapDesc.iColliderNum];
+
+			for (int j = 0; j < mapDesc.iColliderNum; j++)
+			{
+				mapDesc.pColliderDesc[j].iColliderType = mapTotalInform.pMapObjDesc[i].pObjColliders[j].iColliderType;
+				mapDesc.pColliderDesc[j].vCenter = mapTotalInform.pMapObjDesc[i].pObjColliders[j].vCenter;
+				mapDesc.pColliderDesc[j].vExtents = mapTotalInform.pMapObjDesc[i].pObjColliders[j].vExtents;
+				mapDesc.pColliderDesc[j].vQuaternion = mapTotalInform.pMapObjDesc[i].pObjColliders[j].vQuaternion;
+			}
+		}
 		
 
 		m_GameObjects.emplace(mapDesc.wstrModelName, CGameInstance::GetInstance()->Clone_Object(TEXT("Prototype_GameObject_Construction"), &mapDesc));
@@ -495,6 +526,14 @@ void CObjPlace_Manager::Load_GameObject(int iNum)
 		if (0 < mapTotalInform.pMapObjDesc[i].iDecalNum)
 		{
 			Safe_Delete_Array(mapTotalInform.pMapObjDesc[i].pDecals);
+		}
+	}
+
+	for (int i = 0; i < mapTotalInform.iNumMapObj; i++)
+	{
+		if (0 < mapTotalInform.pMapObjDesc[i].iColliderNum)
+		{
+			Safe_Delete_Array(mapTotalInform.pMapObjDesc[i].pObjColliders);
 		}
 	}
 
@@ -675,6 +714,7 @@ bool CObjPlace_Manager::Add_CloneObject_Imgui(MAPTOOL_OBJPLACE_DESC objDesc, _ui
 		mapDesc.iObjPropertyType = objDesc.iObjPropertyType;
 		mapDesc.iDecalNum = 0;
 		mapDesc.pDecal = nullptr;
+		mapDesc.iColliderNum = 0;
 
 		m_GameObjects.emplace(wstr, CGameInstance::GetInstance()->Clone_Object(TEXT("Prototype_GameObject_Construction"), &mapDesc));
 
@@ -690,7 +730,7 @@ void CObjPlace_Manager::Set_Map_Object()
 {
 	ImGui::Text(u8"LayerTag 이름");
 
-	const char* pLayerArray[] = { "Map0", "Map1", "Character"};
+	const char* pLayerArray[] = { "Map0", "Map1", "Character", "Map2"};
 	static int folder_current_idx = 0;
 	if (ImGui::BeginListBox("listbox 1"))
 	{
@@ -749,6 +789,23 @@ void CObjPlace_Manager::Set_Map_Object()
 			{
 				const bool is_selected = (object_current_idx == n);
 				if (ImGui::Selectable(m_MonsterNames[n], is_selected))
+					object_current_idx = n;
+
+				if (is_selected)
+					ImGui::SetItemDefaultFocus();
+			}
+			ImGui::EndListBox();
+		}
+	}
+	if (3 == folder_current_idx)
+	{
+
+		if (ImGui::BeginListBox(u8"도지마조-2f"))
+		{
+			for (int n = 0; n < m_ObjectNames_Map2.size(); n++)
+			{
+				const bool is_selected = (object_current_idx == n);
+				if (ImGui::Selectable(m_ObjectNames_Map2[n], is_selected))
 					object_current_idx = n;
 
 				if (is_selected)
@@ -880,6 +937,21 @@ void CObjPlace_Manager::Load_ModelName()
 		strcpy(cfilename, StringToCharDIY(modifiedString));
 		m_MonsterNames.push_back(cfilename);
 	}
+
+	vObjectNames.clear();
+
+	/* 몬스터 모델 로드*/
+	m_pGameInstance->Get_FileNames("../../Client/Bin/Resources/Models/NonAnim/Map/Map2/Bin", vObjectNames);
+
+	for (int i = 0; i < vObjectNames.size(); i++)
+	{
+		string modifiedString = modifyString(vObjectNames[i]);
+
+		char* cfilename = new char[MAX_PATH];
+		strcpy(cfilename, StringToCharDIY(modifiedString));
+		m_ObjectNames_Map2.push_back(cfilename);
+	}
+
 }
 
 HRESULT CObjPlace_Manager::Import_Bin_Map_Data_OnTool(MAP_TOTALINFORM_DESC* mapObjData, char* fileName)
@@ -932,6 +1004,19 @@ HRESULT CObjPlace_Manager::Import_Bin_Map_Data_OnTool(MAP_TOTALINFORM_DESC* mapO
 		{
 			in.read((char*)&pMapObj->pDecals[j].iMaterialNum, sizeof(int));
 			in.read((char*)&pMapObj->pDecals[j].vTransform, sizeof(XMFLOAT4X4));
+		}
+
+
+		in.read((char*)&pMapObj->iColliderNum, sizeof(int));
+
+		pMapObj->pObjColliders = new OBJCOLLIDER_DESC[pMapObj->iColliderNum];
+
+		for (int j = 0; j < pMapObj->iColliderNum; j++)
+		{
+			in.read((char*)&pMapObj->pObjColliders[j].iColliderType, sizeof(int));
+			in.read((char*)&pMapObj->pObjColliders[j].vCenter, sizeof(_float3));
+			in.read((char*)&pMapObj->pObjColliders[j].vExtents, sizeof(_float3));
+			in.read((char*)&pMapObj->pObjColliders[j].vQuaternion, sizeof(_float3));
 		}
 	}
 
@@ -994,6 +1079,16 @@ HRESULT CObjPlace_Manager::Export_Bin_Map_Data(MAP_TOTALINFORM_DESC* mapObjData)
 		{
 			out.write((char*)&PObjPlaceDesc.pDecals[j].iMaterialNum, sizeof(int));
 			out.write((char*)&PObjPlaceDesc.pDecals[j].vTransform, sizeof(XMFLOAT4X4));
+		}
+
+		out.write((char*)&PObjPlaceDesc.iColliderNum, sizeof(int));
+
+		for (int j = 0; j < PObjPlaceDesc.iColliderNum; j++)
+		{
+			out.write((char*)&PObjPlaceDesc.pObjColliders[j].iColliderType, sizeof(int));
+			out.write((char*)&PObjPlaceDesc.pObjColliders[j].vCenter, sizeof(_float3));
+			out.write((char*)&PObjPlaceDesc.pObjColliders[j].vExtents, sizeof(_float3));
+			out.write((char*)&PObjPlaceDesc.pObjColliders[j].vQuaternion, sizeof(_float3));
 		}
 	}
 
@@ -1103,6 +1198,7 @@ void CObjPlace_Manager::Show_ExampleModel(MAPTOOL_OBJPLACE_DESC objDesc, _uint i
 				mapDesc.iObjPropertyType = objDesc.iObjPropertyType;
 				mapDesc.iDecalNum = 0;
 				mapDesc.pDecal = nullptr;
+				mapDesc.iColliderNum = 0;
 
 				m_GameObjects.emplace(wstr, CGameInstance::GetInstance()->Clone_Object(TEXT("Prototype_GameObject_Construction"), &mapDesc));
 
@@ -1136,6 +1232,10 @@ string CObjPlace_Manager::Find_ModelName(_uint iFolderNum, _uint iObjectIndex)
 	else if (2 == iFolderNum)
 	{
 		strResult = m_MonsterNames[iObjectIndex];
+	}
+	else if (3 == iFolderNum)
+	{
+		strResult = m_ObjectNames_Map2[iObjectIndex];
 	}
 	return strResult;
 }
@@ -1367,6 +1467,58 @@ void CObjPlace_Manager::Update_DecalNameList_In_Object()
 	}
 }
 
+void CObjPlace_Manager::Update_ColliderNameList()
+{
+	if (0 <= m_ColliderNames.size())
+	{
+		for (auto& iter : m_ColliderNames)
+			Safe_Delete(iter);
+
+		m_ColliderNames.clear();
+	}
+
+	if (0 < m_ObjectColliders.size())
+	{
+		for (int i = 0; i < m_ObjectColliders.size(); i++)
+		{
+			char* szName = new char[MAX_PATH];
+			strcpy(szName, "Collider");
+			char buff[MAX_PATH];
+			sprintf(buff, "%d", i);
+			strcat(szName, buff);
+			m_ColliderNames.push_back(szName);
+		}
+	}
+}
+
+void CObjPlace_Manager::Update_ColliderList_In_Object()
+{
+	
+	for (int i = 0; i < m_ObjectColliders.size(); i++)
+	{
+		Safe_Release(m_ObjectColliders[i]);
+	}
+	m_ObjectColliders.clear();
+
+	multimap<wstring, CGameObject*>::iterator iter = m_GameObjects.begin();
+
+	if (0 != m_iCurrentObjectIndex)
+	{
+		for (int i = 0; i < m_iCurrentObjectIndex; i++)
+		{
+			iter++;
+		}
+	}
+
+	vector<CCollider*>		vCollider = dynamic_cast<CConstruction*>(iter->second)->Get_Colliders();
+
+	for (int i = 0; i < vCollider.size(); i++)
+	{
+		m_ObjectColliders.push_back(vCollider[i]);
+		Safe_AddRef(vCollider[i]);
+	}
+}
+
 void CObjPlace_Manager::Update_DecalList_In_Object()
 {
 	for (int i = 0; i < m_ObjectDecals.size(); i++)
@@ -1400,6 +1552,22 @@ void CObjPlace_Manager::Edit_Installed_Decal(int iObjectDecalNum)
 		(float*)CGameInstance::GetInstance()->Get_Transform_Float4x4(CPipeLine::D3DTS_PROJ),
 		(float*)m_ObjectDecals[iObjectDecalNum]->Get_TransformCom()->Get_WorldFloat4x4(),
 		true);
+}
+
+void CObjPlace_Manager::Reset_Collider()
+{
+	for (auto& iter : m_ColliderNames)
+		Safe_Delete(iter);
+	m_ColliderNames.clear();
+
+
+	for (auto& iter : m_ObjectColliders)
+		Safe_Release(iter);
+	m_ObjectColliders.clear();
+
+	Update_ColliderList_In_Object();
+	Update_ColliderNameList();
+	
 }
 
 
@@ -1597,6 +1765,7 @@ void CObjPlace_Manager::Add_Decal_IMGUI()
 
 			if (0 < m_ObjectDecals.size())
 			{
+				m_eEditType = EDITTYPE::DECAL;
 				Edit_Installed_Decal(decal_obj_current_idx);
 			}
 			
@@ -1626,6 +1795,187 @@ void CObjPlace_Manager::Add_Decal_IMGUI()
 	
 }
 
+void CObjPlace_Manager::Add_ObjectCollider_IMGUI()
+{
+	if (m_bAddObjectCollider_IMGUI == true)
+	{
+		ImGui::Begin(u8" 콜라이더 ");
+
+		ImGui::Text(u8" 콜라이더 리스트 ");
+
+		static int collider_current_idx = 0;
+
+		if (ImGui::BeginListBox("listbox 0"))
+		{
+			for (int n = 0; n < m_ColliderNames.size(); n++)
+			{
+				const bool is_selected = (collider_current_idx == n);
+				if (ImGui::Selectable(m_ColliderNames[n], is_selected))
+				{
+					collider_current_idx = n;
+				}
+
+				if (is_selected)
+					ImGui::SetItemDefaultFocus();
+			}
+			ImGui::EndListBox();
+		}
+
+		if (ImGui::Button(u8"콜라이더삭제"))
+		{
+			multimap<wstring, CGameObject*>::iterator iter = m_GameObjects.begin();
+
+			if (0 != m_iCurrentObjectIndex)
+			{
+				for (int i = 0; i < m_iCurrentObjectIndex; i++)
+				{
+					iter++;
+				}
+			}
+
+			dynamic_cast<CConstruction*>(iter->second)->Delete_Collider(collider_current_idx);
+
+
+			Update_ColliderList_In_Object();
+			Update_ColliderNameList();
+
+			if (m_ObjectColliders.size() <= collider_current_idx)
+				collider_current_idx = m_ObjectColliders.size() - 1;
+		}
+
+		ImGui::SameLine();
+		if (ImGui::Button(u8"콜라이더전체삭제"))
+		{
+			multimap<wstring, CGameObject*>::iterator iter = m_GameObjects.begin();
+
+			if (0 != m_iCurrentObjectIndex)
+			{
+				for (int i = 0; i < m_iCurrentObjectIndex; i++)
+				{
+					iter++;
+				}
+			}
+
+			dynamic_cast<CConstruction*>(iter->second)->Delete_AllCollider();
+
+			Update_ColliderList_In_Object();
+			Update_ColliderNameList();
+
+			collider_current_idx = 0;
+		}
+
+
+		static int ColliderType = 0;
+		if (ImGui::RadioButton(u8"AABB", ColliderType == CCollider::COLLIDER_AABB))
+		{
+			ColliderType = CCollider::COLLIDER_AABB;
+		}
+		ImGui::SameLine();
+		if (ImGui::RadioButton(u8"OBB", ColliderType == CCollider::COLLIDER_OBB))
+		{
+			ColliderType = CCollider::COLLIDER_OBB;
+		}
+		ImGui::SameLine();
+		if (ImGui::RadioButton(u8"SPHERE", ColliderType == CCollider::COLLIDER_SPHERE))
+		{
+			ColliderType = CCollider::COLLIDER_SPHERE;
+		}
+
+		static XMFLOAT3		vCenter = _float3(0, 0, 0);
+		ImGui::InputFloat3(u8"Collider center", reinterpret_cast<float*>(&vCenter));
+		
+		static XMFLOAT3		vExtents = _float3(0, 0, 0);
+		ImGui::InputFloat3(u8"Collider Extents", reinterpret_cast<float*>(&vExtents));
+
+		static XMFLOAT3		vQuaternion = _float3(0, 0, 0);
+		ImGui::InputFloat3(u8"Collider Quaternion", reinterpret_cast<float*>(&vQuaternion));
+
+		if (ImGui::Button(u8"콜라이더추가"))
+		{
+			OBJCOLLIDER_DESC	objColliderDesc;
+			objColliderDesc.iColliderType = ColliderType;
+			objColliderDesc.vCenter = vCenter;
+			objColliderDesc.vExtents = vExtents;
+			objColliderDesc.vQuaternion = vQuaternion;
+
+			multimap<wstring, CGameObject*>::iterator iter = m_GameObjects.begin();
+
+			if (0 != m_iCurrentObjectIndex)
+			{
+				for (int i = 0; i < m_iCurrentObjectIndex; i++)
+				{
+					iter++;
+				}
+			}
+
+			dynamic_cast<CConstruction*>(iter->second)->Add_Collider(objColliderDesc);
+
+			Update_ColliderList_In_Object();
+			Update_ColliderNameList();
+		}
+
+		ImGui::NewLine();
+		ImGui::NewLine();
+
+		if (0 < m_ObjectColliders.size())
+		{
+			static int CurColliderType;
+			static XMFLOAT3		vCurCenter;
+			static XMFLOAT3		vCurExtents;
+			static XMFLOAT3		vCurQuaternion;
+
+			if (m_iCurColliderIndex != collider_current_idx)
+			{
+				m_iCurColliderIndex = collider_current_idx;
+
+				multimap<wstring, CGameObject*>::iterator iter = m_GameObjects.begin();
+
+				if (0 != m_iCurrentObjectIndex)
+				{
+					for (int i = 0; i < m_iCurrentObjectIndex; i++)
+					{
+						iter++;
+					}
+				}
+				m_tCurColliderDesc = dynamic_cast<CConstruction*>(iter->second)->Get_ColliderDesc(m_iCurColliderIndex);
+
+				CurColliderType = m_tCurColliderDesc.iColliderType;
+				vCurCenter = m_tCurColliderDesc.vCenter;
+				vCurExtents = m_tCurColliderDesc.vExtents;
+				vCurQuaternion = m_tCurColliderDesc.vQuaternion;
+			}
+
+
+			if (ImGui::RadioButton(u8"OJBAABB", m_tCurColliderDesc.iColliderType == (int)CCollider::COLLIDER_AABB))
+			{
+				CurColliderType = CCollider::COLLIDER_AABB;
+			}
+			ImGui::SameLine();
+			if (ImGui::RadioButton(u8"OBJOBB", m_tCurColliderDesc.iColliderType == (int)CCollider::COLLIDER_OBB))
+			{
+				CurColliderType = CCollider::COLLIDER_OBB;
+			}
+			ImGui::SameLine();
+			if (ImGui::RadioButton(u8"OBJSPHERE", m_tCurColliderDesc.iColliderType == (int)CCollider::COLLIDER_SPHERE))
+			{
+				CurColliderType = CCollider::COLLIDER_SPHERE;
+			}
+
+
+			ImGui::InputFloat3(u8"ObjCollider center", reinterpret_cast<float*>(&m_tCurColliderDesc.vCenter));
+
+
+			ImGui::InputFloat3(u8"ObjCollider Extents", reinterpret_cast<float*>(&m_tCurColliderDesc.vExtents));
+
+
+			ImGui::InputFloat3(u8"ObjCollider Quaternion", reinterpret_cast<float*>(&m_tCurColliderDesc.vQuaternion));
+		}
+
+
+		ImGui::End();
+	}
+}
+
 
 void CObjPlace_Manager::Free()
 {
@@ -1646,6 +1996,10 @@ void CObjPlace_Manager::Free()
 		Safe_Delete(iter);
 	m_ObjectNames_Map1.clear();
 
+	for (auto& iter : m_ObjectNames_Map2)
+		Safe_Delete(iter);
+	m_ObjectNames_Map2.clear();
+
 	for (auto& iter : m_MonsterNames)
 		Safe_Delete(iter);
 	m_MonsterNames.clear();
@@ -1662,6 +2016,10 @@ void CObjPlace_Manager::Free()
 		Safe_Delete(iter);
 	m_DecalNames.clear();
 
+	for (auto& iter : m_ColliderNames)
+		Safe_Delete(iter);
+	m_ColliderNames.clear();
+
 	for (auto& iter : m_DecalNames_Obj)
 		Safe_Delete(iter);
 	m_DecalNames_Obj.clear();
@@ -1669,6 +2027,10 @@ void CObjPlace_Manager::Free()
 	for (auto& iter : m_ObjectDecals)
 		Safe_Release(iter);
 	m_ObjectDecals.clear();
+
+	for (auto& iter : m_ObjectColliders)
+		Safe_Release(iter);
+	m_ObjectColliders.clear();
 
 	m_Layers.clear();
 

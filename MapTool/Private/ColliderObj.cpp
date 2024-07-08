@@ -139,7 +139,7 @@ HRESULT CColliderObj::Render()
 			return E_FAIL;
 
 		/*m_pShaderCom->Begin(m_iShaderPassNum);*/
-		m_pShaderCom->Begin(0);
+		m_pShaderCom->Begin(2);
 
 		m_pModelCom->Render(i);
 	}
