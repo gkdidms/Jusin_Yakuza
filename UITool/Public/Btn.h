@@ -35,6 +35,9 @@ public:
     _float2 Get_ClickStartUV() { return m_ClickStartUV; }
     _float2 Get_ClickEndUV() { return m_ClickEndUV; }
 
+    wstring Get_ClickFileName() { return m_StrClickFileName; }
+    wstring Get_ClickFilePath() { return m_strClickFilePath; }
+
     void Set_Click(_bool Click) { m_isClick = Click; }
     _bool Get_Click() { return m_isClick; }
 

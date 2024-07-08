@@ -4,12 +4,19 @@ matrix g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
 Texture2D g_DiffuseTexture;
 Texture2D g_NormalTexture;
 Texture2D g_DissolveTexture;
+Texture2D g_MultiDiffuseTexture;
+Texture2D g_RSTexture;
+Texture2D g_RMTexture;
+Texture2D g_RDTexture;
 matrix g_BoneMatrices[512];
 
 float g_fFar = { 3000.f };
 float g_fTimeDelta;
 
 float g_fOut = { 0.5f };
+
+bool g_isRS;
+bool g_isRD;
 
 struct VS_IN
 {
@@ -28,6 +35,9 @@ struct VS_OUT
     float4 vNormal : NORMAL;
     float2 vTexcoord : TEXCOORD0;
     float4 vProjPos : TEXCOORD1;
+    float4 vLocalPos : TEXCOORD2;
+    float4 vTangent : TANGENT;
+    float4 vBinormal : BINORMAL;
 };
 
 VS_OUT VS_MAIN(VS_IN In)
@@ -53,6 +63,9 @@ VS_OUT VS_MAIN(VS_IN In)
     Out.vNormal = normalize(mul(vNormal, g_WorldMatrix));
     Out.vTexcoord = In.vTexcoord;
     Out.vProjPos = Out.vPosition, 1.f;
+    Out.vLocalPos = float4(In.vPosition, 1.f);
+    Out.vTangent = normalize(mul(vector(In.vTangent.xyz, 0.f), g_WorldMatrix));
+    Out.vBinormal = vector(cross(Out.vNormal.xyz, Out.vTangent.xyz), 0.f);
     
     return Out;
 }
@@ -96,6 +109,9 @@ struct PS_IN
     float4 vNormal : NORMAL;
     float2 vTexcoord : TEXCOORD0;
     float4 vProjPos : TEXCOORD1;
+    float4 vLocalPos : TEXCOORD2;
+    float4 vTangent : TANGENT;
+    float4 vBinormal : BINORMAL;
 };
 
 struct PS_OUT
@@ -103,6 +119,10 @@ struct PS_OUT
     vector vDiffuse : SV_TARGET0;
     vector vNormal : SV_TARGET1;
     vector vDepth : SV_TARGET2;
+    vector vRM : SV_TARGET3;
+    vector vRS : SV_Target4;
+    vector vMulti : SV_Target5;
+    vector vRD : SV_Target6;
 };
 
 PS_OUT PS_MAIN(PS_IN In)
@@ -110,15 +130,50 @@ PS_OUT PS_MAIN(PS_IN In)
     PS_OUT Out = (PS_OUT) 0;
     
     vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
-    //vector vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexcoord);
-    //vector vNormal = vector(vNormalDesc.xyz * 2.f - 1.f, 0.f);
+    vector vMultiDiffuce = g_MultiDiffuseTexture.Sample(LinearSampler, In.vTexcoord);
+    vector vTangentDesc = g_NormalTexture.Sample(LinearSampler, In.vTexcoord);
+    
+    float3 vNormal = In.vNormal.xyz * 2.f - 1.f;
+    
+    vector vTangent = normalize(mul(vector(vTangentDesc.xyz, 0.f), g_WorldMatrix));
+    vector vBinormal = vector(cross(vNormal.xyz, vTangent.xyz), 0.f);
+    
+    float3x3 WorldMatrix = float3x3(vTangent.xyz, vBinormal.xyz, vNormal.xyz);
+    vNormal = mul(vNormal, WorldMatrix);
     
     if (vDiffuse.a < 0.1f)
         discard;
     
-    Out.vDiffuse = vDiffuse;
-    Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
+    //RS + RD
+    vector vRSRD;
+    vector vRDDesc;
+    if (g_isRD)
+    {
+        vRDDesc = g_RDTexture.Sample(LinearSampler, In.vTexcoord * 50.f);
+        Out.vRD = vRDDesc;
+    }
+    
+    if (g_isRS)
+    {
+        vector vRSDesc = g_RSTexture.Sample(LinearSampler, In.vTexcoord * 20.f);
+        Out.vRS = vRSDesc;
+        vRSDesc = lerp(vRSDesc, vRDDesc, 0.7f);
+        Out.vDiffuse = lerp(vDiffuse, vRSDesc, vMultiDiffuce.z);
+        
+    }
+    else
+    {
+        if (g_isRD)
+            Out.vDiffuse = lerp(vRDDesc, vDiffuse, vMultiDiffuce.z);
+        else
+            Out.vDiffuse = vDiffuse;
+    }
+
+    
+    Out.vNormal = vector(vNormal.xyz * 0.5f + 0.5f, 0.f);
     Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_fFar, 1.f, 1.f);
+    Out.vMulti = vMultiDiffuce;
+    
     
     return Out;
 }
@@ -128,16 +183,50 @@ PS_OUT PS_BLEND(PS_IN In)
     PS_OUT Out = (PS_OUT) 0;
     
     vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
+    vector vMultiDiffuce = g_MultiDiffuseTexture.Sample(LinearSampler, In.vTexcoord);
+    vector vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexcoord);
+    
+    float3 vNormal = vNormalDesc.xyz * 2.f - 1.f;
+    
+    float3x3 WorldMatrix = float3x3(In.vTangent.xyz, In.vBinormal.xyz, In.vNormal.xyz);
+    vNormal = mul(vNormal, WorldMatrix);
     
     vDiffuse.xyz *= vDiffuse.a;
     
     if (vDiffuse.a < 0.1f)
         discard;
     
-    Out.vDiffuse = vDiffuse;
-    Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
-    Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_fFar, 1.f, 1.f);
+    //RS + RD
+    vector vRSRD;
+    vector vRDDesc;
+    if (g_isRD)
+    {
+        vRDDesc = g_RDTexture.Sample(LinearSampler, In.vTexcoord * 50.f);
+        Out.vRD = vRDDesc;
+    }
     
+    if (g_isRS)
+    {
+        vector vRSDesc = g_RSTexture.Sample(LinearSampler, In.vTexcoord * 20.f);
+        Out.vRS = vRSDesc;
+        vRSDesc = lerp(vRSDesc, vRDDesc, 0.7f);
+        Out.vDiffuse = lerp(vDiffuse, vRSDesc, vMultiDiffuce.z);
+        
+    }
+    else
+    {
+        if (g_isRD)
+            Out.vDiffuse = lerp(vRDDesc, vDiffuse, vMultiDiffuce.z);
+        else
+            Out.vDiffuse = vDiffuse;
+    }
+
+    
+    Out.vNormal = vector(vNormal.xyz * 0.5f + 0.5f, 0.f);
+    Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_fFar, 1.f, 1.f);
+    Out.vMulti = vMultiDiffuce;
+    
+
     return Out;
 }
 

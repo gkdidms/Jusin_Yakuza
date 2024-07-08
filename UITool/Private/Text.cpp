@@ -80,6 +80,8 @@ HRESULT CText::Save_binary(const string strDirectory)
 
 	out.write((char*)&m_vColor, sizeof(_float4));
 
+	out.write((char*)&m_isColor, sizeof(_bool));
+
 	out.write((char*)&m_iShaderPass, sizeof(_uint));
 
 	_float4x4 WorldMatrix = *m_pTransformCom->Get_WorldFloat4x4();
@@ -89,12 +91,14 @@ HRESULT CText::Save_binary(const string strDirectory)
 
 	out.write((char*)&m_isAnim, sizeof(_bool));
 
-	m_fAnimTime.x = 0.f;
+	_float2 AnimTime = { 0.f , m_fAnimTime.y };
 	out.write((char*)&m_fAnimTime, sizeof(_float2));
 
 	out.write((char*)&m_vStartPos, sizeof(_float3));
 
+	out.write((char*)&m_fControlAlpha, sizeof(_float2));
 
+	out.write((char*)&m_isReverse, sizeof(_bool));
 	//개별적인 저장
 
 	string Text = m_pGameInstance->WstringToString(m_strText);
@@ -124,6 +128,8 @@ HRESULT CText::Save_Groupbinary(ofstream& out)
 
 	out.write((char*)&m_vColor, sizeof(_float4));
 
+	out.write((char*)&m_isColor, sizeof(_bool));
+
 	out.write((char*)&m_iShaderPass, sizeof(_uint));
 
 	_float4x4 WorldMatrix = *m_pTransformCom->Get_WorldFloat4x4();
@@ -132,12 +138,14 @@ HRESULT CText::Save_Groupbinary(ofstream& out)
 
 	out.write((char*)&m_isAnim, sizeof(_bool));
 
-	m_fAnimTime.x = 0.f;
-	out.write((char*)&m_fAnimTime, sizeof(_float2));
+	_float2 AnimTime = { 0.f , m_fAnimTime.y };
+	out.write((char*)&AnimTime, sizeof(_float2));
 
 	out.write((char*)&m_vStartPos, sizeof(_float3));
 
+	out.write((char*)&m_fControlAlpha, sizeof(_float2));
 
+	out.write((char*)&m_isReverse, sizeof(_bool));
 	//개별적인 저장
 
 	string Text = m_pGameInstance->WstringToString(m_strText);

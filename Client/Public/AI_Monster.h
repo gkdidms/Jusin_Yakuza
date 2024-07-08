@@ -72,6 +72,9 @@ protected:
     _float m_fBreakDuration = { 0.f }; // 랜덤으로 부여받는다.
     _float m_fBreakTime = { 0.f };
 
+    _float m_fCmbNum = { 0.f }; // 스킬 발동시 확률적으로 몇번 공격할것인지 저장.
+    _float m_fCmbCount = { 0.f }; // 콥보 누적 카운트
+
 protected:
     //죽음
     virtual CBTNode::NODE_STATE Check_Death();

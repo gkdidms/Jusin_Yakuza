@@ -810,7 +810,7 @@ HRESULT CModel::Bind_Material(CShader* pShader, const _char* pConstantName, _uin
 {
 	auto* pTexture = m_Materials[m_Meshes[iNumMeshIndex]->Get_MaterialIndex()].pMaterialTextures[eTextureType];
 	if (nullptr == pTexture)
-		return S_OK;
+		return E_FAIL;
 
 	return pTexture->Bind_ShaderResource(pShader, pConstantName, 0);
 }

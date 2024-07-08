@@ -2,6 +2,7 @@
 
 #include "GameInstance.h"
 #include "SystemManager.h"
+#include "Collision_Manager.h"
 
 #include "CharacterData.h"
 #include "SocketCollider.h"
@@ -9,8 +10,6 @@
 
 #include "BehaviorAnimation.h"
 #include "Mesh.h"
-
-#include "BTNode.h"
 
 CPlayer::CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLandObject{ pDevice, pContext }
@@ -34,7 +33,7 @@ HRESULT CPlayer::Initialize(void* pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
-	if (FAILED(Add_Componenets()))
+	if (FAILED(Add_Components()))
 		return E_FAIL;
 
 	Ready_AnimationTree();
@@ -55,12 +54,10 @@ void CPlayer::Priority_Tick(const _float& fTimeDelta)
 		//m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_pTransformCom->Get_State(CTransform::STATE_POSITION) + XMVectorSetY(XMLoadFloat4(&m_vPrevMove), 0));
 		XMStoreFloat4(&m_vPrevMove, XMVectorZero());
 	}
-
 }
 
 void CPlayer::Tick(const _float& fTimeDelta)
 {
-
 	m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Change_Animation();
 	m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Tick(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")));
 
@@ -100,6 +97,7 @@ void CPlayer::Late_Tick(const _float& fTimeDelta)
 {
 	m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
 	m_pGameInstance->Add_Renderer(CRenderer::RENDER_SHADOWOBJ, this); // Shadow용 렌더 추가
+	m_pCollisionManager->Add_ImpulseResolution(this);
 
 	for (auto& pCollider : m_pColliders)
 		pCollider.second->Late_Tick(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")));
@@ -119,6 +117,25 @@ HRESULT CPlayer::Render()
 		m_pModelCom->Bind_BoneMatrices(m_pShaderCom, "g_BoneMatrices", i);
 
 		m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE);
+		m_pModelCom->Bind_Material(m_pShaderCom, "g_MultiDiffuseTexture", i, aiTextureType_SHININESS);
+		m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS);
+
+		_bool isRS = true;
+		_bool isRD = true;
+		if (!strcmp(pMesh->Get_Name(), "[l0]face_kiryu"))
+		{
+			isRS = false;
+			isRD = false;
+		}
+
+		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RSTexture", i, aiTextureType_SPECULAR)))
+			isRS = false;
+		m_pShaderCom->Bind_RawValue("g_isRS", &isRS, sizeof(_bool));
+
+		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RDTexture", i, aiTextureType_OPACITY)))
+			isRD = false;
+
+		m_pShaderCom->Bind_RawValue("g_isRD", &isRD, sizeof(_bool));
 
 		if (pMesh->Get_AlphaApply())
 			m_pShaderCom->Begin(1);     //블랜드
@@ -169,6 +186,11 @@ HRESULT CPlayer::Render_LightDepth()
 	}
 
 	return S_OK;
+}
+
+_bool CPlayer::Intersect(CLandObject* pTargetObject)
+{
+	return _bool();
 }
 
 void CPlayer::Ready_AnimationTree()
@@ -303,6 +325,11 @@ void CPlayer::KeyInput(const _float& fTimeDelta)
 
 void CPlayer::Adventure_KeyInput(const _float& fTimeDelta)
 {
+#ifdef _DEBUG
+	if (m_pSystemManager->Get_Camera() == CAMERA_DEBUG)
+		return;
+#endif // _DEBUG
+
 	if (m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Get_AnimationEnd())
 		m_iCurrentBehavior = (_uint)ADVENTURE_BEHAVIOR_STATE::IDLE;
 
@@ -481,7 +508,7 @@ void CPlayer::KRC_KeyInput(const _float& fTimeDelta)
 {
 }
 
-HRESULT CPlayer::Add_Componenets()
+HRESULT CPlayer::Add_Components()
 {
 	if (FAILED(__super::Add_Component(LEVEL_TEST, TEXT("Prototype_Component_Shader_VtxAnim"),
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
@@ -491,12 +518,11 @@ HRESULT CPlayer::Add_Componenets()
 		TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
 		return E_FAIL;
 
-	CBounding_OBB::BOUNDING_OBB_DESC		ColliderDesc{};
+	CBounding_AABB::BOUNDING_AABB_DESC		ColliderDesc{};
 
-	ColliderDesc.eType = CCollider::COLLIDER_OBB;
-	ColliderDesc.vExtents = _float3(0.8, 0.8, 0.8);
-	ColliderDesc.vCenter = _float3(0, 0.f, 0);
-	ColliderDesc.vRotation = _float3(0, 0.f, 0.f);
+	ColliderDesc.eType = CCollider::COLLIDER_AABB;
+	ColliderDesc.vExtents = _float3(0.3, 0.8, 0.3);
+	ColliderDesc.vCenter = _float3(0, ColliderDesc.vExtents.y, 0);
 
 	if (FAILED(__super::Add_Component(LEVEL_TEST, TEXT("Prototype_Component_Collider"),
 		TEXT("Com_Collider"), reinterpret_cast<CComponent**>(&m_pColliderCom), &ColliderDesc)))
@@ -521,6 +547,7 @@ HRESULT CPlayer::Bind_ResourceData()
 	return S_OK;
 }
 
+/*
 HRESULT CPlayer::Add_CharacterData()
 {
 	m_pData = CCharacterData::Create(this);
@@ -557,7 +584,7 @@ void CPlayer::Apply_ChracterData()
 
 	for (auto& Collider : pColliders)
 	{
-		CSocketCollider::SOKET_COLLIDER_DESC Desc{};
+		CSocketCollider::SOCKET_COLLIDER_DESC Desc{};
 		Desc.pParentMatrix = m_pTransformCom->Get_WorldFloat4x4();
 		Desc.pCombinedTransformationMatrix = m_pModelCom->Get_BoneCombinedTransformationMatrix_AtIndex(Collider.first);
 		Desc.iBoneIndex = Collider.first;
@@ -574,24 +601,25 @@ void CPlayer::Apply_ChracterData()
 		it->second->Off();
 	}
 
-	auto& pEffects = m_pData->Get_Effets();
-	for (auto& pEffect : pEffects)
-	{
-		CSocketEffect::SOKET_EFFECT_DESC Desc{};
-		Desc.pParentMatrix = m_pTransformCom->Get_WorldFloat4x4();
-		Desc.pCombinedTransformationMatrix = m_pModelCom->Get_BoneCombinedTransformationMatrix(pEffect.first.c_str());
-		Desc.wstrEffectName = pEffect.second;
+	//auto& pEffects = m_pData->Get_Effets();
+	//for (auto& pEffect : pEffects)
+	//{
+	//	CSocketEffect::SOKET_EFFECT_DESC Desc{};
+	//	Desc.pParentMatrix = m_pTransformCom->Get_WorldFloat4x4();
+	//	Desc.pCombinedTransformationMatrix = m_pModelCom->Get_BoneCombinedTransformationMatrix(pEffect.first.c_str());
+	//	Desc.wstrEffectName = pEffect.second;
 
-		CGameObject* pSoketEffect = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_SoketEffect"), &Desc);
-		if (nullptr == pSoketEffect)
-			return;
+	//	CGameObject* pSoketEffect = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_SoketEffect"), &Desc);
+	//	if (nullptr == pSoketEffect)
+	//		return;
 
-		auto [it, success] = m_pEffects.emplace(pEffect.first, static_cast<CSocketEffect*>(pSoketEffect));
+	//	auto [it, success] = m_pEffects.emplace(pEffect.first, static_cast<CSocketEffect*>(pSoketEffect));
 
-		it->second->On();
-	}
+	//	it->second->Off();
+	//}
 
 }
+*/
 
 void CPlayer::Change_Animation(_uint iIndex, _float fInterval)
 {
@@ -709,16 +737,5 @@ void CPlayer::Free()
 {
 	__super::Free();
 
-	for (auto& pCollider : m_pColliders)
-		Safe_Release(pCollider.second);
-	m_pColliders.clear();
-
-	for (auto& pEffect : m_pEffects)
-		Safe_Release(pEffect.second);
-	m_pEffects.clear();
-
-	Safe_Release(m_pData);
 	Safe_Release(m_pShaderCom);
-	Safe_Release(m_pModelCom);
-	Safe_Release(m_pColliderCom);
 }

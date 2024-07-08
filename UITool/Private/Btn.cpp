@@ -119,6 +119,8 @@ HRESULT CBtn::Save_binary(const string strDirectory)
 
 	out.write((char*)&m_vColor, sizeof(_float4));
 
+	out.write((char*)&m_isColor, sizeof(_bool));
+
 	out.write((char*)&m_iShaderPass, sizeof(_uint));
 
 	_float4x4 WorldMatrix = *m_pTransformCom->Get_WorldFloat4x4();
@@ -127,12 +129,14 @@ HRESULT CBtn::Save_binary(const string strDirectory)
 
 	out.write((char*)&m_isAnim, sizeof(_bool));
 
-	m_fAnimTime.x = 0.f;
+	_float2 AnimTime = { 0.f , m_fAnimTime.y };
 	out.write((char*)&m_fAnimTime, sizeof(_float2));
 
 	out.write((char*)&m_vStartPos, sizeof(_float3));
 
+	out.write((char*)&m_fControlAlpha, sizeof(_float2));
 
+	out.write((char*)&m_isReverse, sizeof(_bool));
 
 	//개별 저장
 
@@ -188,6 +192,8 @@ HRESULT CBtn::Save_Groupbinary(ofstream& out)
 
 	out.write((char*)&m_vColor, sizeof(_float4));
 
+	out.write((char*)&m_isColor, sizeof(_bool));
+
 	out.write((char*)&m_iShaderPass, sizeof(_uint));
 
 	_float4x4 WorldMatrix = *m_pTransformCom->Get_WorldFloat4x4();
@@ -196,11 +202,14 @@ HRESULT CBtn::Save_Groupbinary(ofstream& out)
 
 	out.write((char*)&m_isAnim, sizeof(_bool));
 
-	m_fAnimTime.x = 0.f;
-	out.write((char*)&m_fAnimTime, sizeof(_float2));
+	_float2 AnimTime = { 0.f , m_fAnimTime.y };
+	out.write((char*)&AnimTime, sizeof(_float2));
 
 	out.write((char*)&m_vStartPos, sizeof(_float3));
 
+	out.write((char*)&m_fControlAlpha, sizeof(_float2));
+
+	out.write((char*)&m_isReverse, sizeof(_bool));
 
 
 	//개별 저장
@@ -242,8 +251,37 @@ HRESULT CBtn::Add_Components()
 
 HRESULT CBtn::Bind_ResourceData()
 {
-	if (FAILED(m_pTransformCom->Bind_ShaderMatrix(m_pShaderCom, "g_WorldMatrix")))
-		return E_FAIL;
+	if (m_isParent)
+	{
+		XMStoreFloat4x4(&m_WorldMatrix, m_pTransformCom->Get_WorldMatrix() * XMLoadFloat4x4(m_pParentMatrix));
+
+		if (FAILED(m_pShaderCom->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix)))
+			return E_FAIL;
+	}
+	else
+	{
+		if (FAILED(m_pTransformCom->Bind_ShaderMatrix(m_pShaderCom, "g_WorldMatrix")))
+			return E_FAIL;
+	}
+
+	if (m_isAnim)
+	{
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_vStartPos", &m_vStartPos, sizeof(_float3))))
+			return E_FAIL;
+
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_fAnimTime", &m_fAnimTime, sizeof(_float2))))
+			return E_FAIL;
+
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_fControlAlpha", &m_fControlAlpha, sizeof(_float2))))
+			return E_FAIL;
+
+	}
+
+	if (m_isColor)
+	{
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_vColor", &m_vColor, sizeof(_float4))))
+			return E_FAIL;
+	}
 
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix)))
 		return E_FAIL;

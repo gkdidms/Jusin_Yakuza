@@ -25,7 +25,7 @@ HRESULT CShakedown::Initialize(void* pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
-	if (FAILED(Add_Componenets()))
+	if (FAILED(Add_Components()))
 		return E_FAIL;
 
 	m_pModelCom->Set_AnimationIndex(1, 0.5);
@@ -68,6 +68,20 @@ HRESULT CShakedown::Render()
 		m_pModelCom->Bind_BoneMatrices(m_pShaderCom, "g_BoneMatrices", i);
 
 		m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE);
+		m_pModelCom->Bind_Material(m_pShaderCom, "g_MultiDiffuseTexture", i, aiTextureType_SHININESS);
+		m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS);
+
+		_bool isRS = true;
+		_bool isRD = true;
+
+		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RSTexture", i, aiTextureType_SPECULAR)))
+			isRS = false;
+		m_pShaderCom->Bind_RawValue("g_isRS", &isRS, sizeof(_bool));
+
+		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RDTexture", i, aiTextureType_OPACITY)))
+			isRD = false;
+
+		m_pShaderCom->Bind_RawValue("g_isRD", &isRD, sizeof(_bool));
 
 		if (pMesh->Get_AlphaApply())
 			m_pShaderCom->Begin(1);     //ºí·£µå
@@ -86,7 +100,7 @@ HRESULT CShakedown::Render()
 	return S_OK;
 }
 
-HRESULT CShakedown::Add_Componenets()
+HRESULT CShakedown::Add_Components()
 {
 	if (FAILED(__super::Add_Component(LEVEL_TEST, TEXT("Prototype_Component_Shader_VtxAnim"),
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
