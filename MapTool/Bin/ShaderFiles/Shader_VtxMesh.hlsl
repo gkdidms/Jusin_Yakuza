@@ -143,7 +143,7 @@ technique11 DefaultTechnique
 	/* 특정 렌더링을 수행할 때 적용해야할 셰이더 기법의 셋트들의 차이가 있다. */
     pass DefaultPass
     {
-        SetRasterizerState(RS_Default);
+        SetRasterizerState(RS_Cull_NON_CW);
         SetDepthStencilState(DSS_Default, 0);
         SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 

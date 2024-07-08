@@ -205,11 +205,8 @@
     <ClCompile Include="..\private\AI_Shakedown.cpp">
       <Filter>02.GameObjects\02.Character\LandObject\01.Monster\Shakedown\AI</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\Kuze.cpp">
-      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\Kuze</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\AI_Kuze.cpp">
-      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\Kuze\AI</Filter>
+    <ClCompile Include="..\Private\SkyDome.cpp">
+      <Filter>02.GameObjects\04.Sky</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -447,11 +444,8 @@
     <ClInclude Include="..\public\AI_Shakedown.h">
       <Filter>02.GameObjects\02.Character\LandObject\01.Monster\Shakedown\AI</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\Kuze.h">
-      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\Kuze</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\AI_Kuze.h">
-      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\Kuze\AI</Filter>
+    <ClInclude Include="..\Public\SkyDome.h">
+      <Filter>02.GameObjects\04.Sky</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -666,7 +660,7 @@
     </Filter>
     <Filter Include="02.GameObjects\02.Character\LandObject\01.Monster\Kuze">
       <UniqueIdentifier>{a9b58fce-7d6f-4a11-b6d9-392394cb6b6b}</UniqueIdentifier>
-	</Filter>
+    </Filter>
     <Filter Include="95.Utility\04.CollisionManager">
       <UniqueIdentifier>{43f7aea2-8b44-48b5-8565-d0e4557344a8}</UniqueIdentifier>
     </Filter>
@@ -708,6 +702,9 @@
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Aura.hlsl">
+      <Filter>97.ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxMeshSky.hlsl">
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
   </ItemGroup>

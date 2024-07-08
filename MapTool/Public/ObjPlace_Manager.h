@@ -22,6 +22,7 @@ public:
 		ITEM,
 		MONSTER,
 		PLAYER,
+		SKY,
 		OBJ_END
 	};
 

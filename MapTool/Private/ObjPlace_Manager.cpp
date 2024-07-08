@@ -580,25 +580,31 @@ void CObjPlace_Manager::Edit_Installed_GameObject(int iNumObject)
 	if (ImGui::RadioButton(u8"그냥건물", m_tCurrentObjectDesc.iObjType == 0))
 	{
 		objectType = 0;
-		m_tCurrentObjectDesc.iObjType = 0;
+		m_tCurrentObjectDesc.iObjType = OBJECT_TYPE::CONSTRUCTION;
 	}
 
 	if (ImGui::RadioButton(u8"아이템", m_tCurrentObjectDesc.iObjType == 1))
 	{
 		objectType = 1;
-		m_tCurrentObjectDesc.iObjType = 1;
+		m_tCurrentObjectDesc.iObjType = OBJECT_TYPE::ITEM;
 	}
 
 	if (ImGui::RadioButton(u8"몬스터", m_tCurrentObjectDesc.iObjType == 2))
 	{
 		objectType = 2;
-		m_tCurrentObjectDesc.iObjType = 2;
+		m_tCurrentObjectDesc.iObjType = OBJECT_TYPE::MONSTER;
 	}
 
 	if (ImGui::RadioButton(u8"플레이어", m_tCurrentObjectDesc.iObjType == 3))
 	{
 		objectType = 3;
-		m_tCurrentObjectDesc.iObjType = 3;
+		m_tCurrentObjectDesc.iObjType = OBJECT_TYPE::PLAYER;
+	}
+
+	if (ImGui::RadioButton(u8"스카이", m_tCurrentObjectDesc.iObjType == 4))
+	{
+		objectType = 4;
+		m_tCurrentObjectDesc.iObjType = OBJECT_TYPE::SKY;
 	}
 
 
@@ -624,7 +630,7 @@ void CObjPlace_Manager::Edit_Installed_GameObject(int iNumObject)
 		m_tCurrentObjectDesc.iShaderPass = 2;
 	}
 
-	if (ImGui::RadioButton(u8"shader4", m_tCurrentObjectDesc.iShaderPass == 3))
+	if (ImGui::RadioButton(u8"기타", m_tCurrentObjectDesc.iShaderPass == 3))
 	{
 		shaderType = 3;
 		m_tCurrentObjectDesc.iShaderPass = 3;
@@ -832,18 +838,20 @@ void CObjPlace_Manager::Set_Map_Object()
 	ImGui::RadioButton(u8"아이템", &objectType, OBJECT_TYPE::ITEM);
 	ImGui::RadioButton(u8"몬스터", &objectType, OBJECT_TYPE::MONSTER);
 	ImGui::RadioButton(u8"플레이어", &objectType, OBJECT_TYPE::PLAYER);
+	ImGui::RadioButton(u8"스카이", &objectType, OBJECT_TYPE::SKY);
 
 	ImGui::NewLine();
 
 	ImGui::Text(u8"쉐이더");
 	static int shaderType = 0;
-	ImGui::RadioButton("radio a", &shaderType, 0); 
+	ImGui::RadioButton("일반", &shaderType, 0); 
 	ImGui::NewLine();
-	ImGui::RadioButton("d b", &shaderType, 1); 
+	ImGui::RadioButton("유리", &shaderType, 1); 
 	ImGui::NewLine();
-	ImGui::RadioButton("raddvio c", &shaderType, 2);
+	ImGui::RadioButton("물", &shaderType, 2);
 	ImGui::NewLine();
-	ImGui::RadioButton("raddio d", &shaderType, 3);
+	ImGui::RadioButton("기타", &shaderType, 3);
+
 
 	ImGui::NewLine();
 
@@ -941,16 +949,16 @@ void CObjPlace_Manager::Load_ModelName()
 	vObjectNames.clear();
 
 	/* 몬스터 모델 로드*/
-	m_pGameInstance->Get_FileNames("../../Client/Bin/Resources/Models/NonAnim/Map/Map2/Bin", vObjectNames);
+	//m_pGameInstance->Get_FileNames("../../Client/Bin/Resources/Models/NonAnim/Map/Map2/Bin", vObjectNames);
 
-	for (int i = 0; i < vObjectNames.size(); i++)
-	{
-		string modifiedString = modifyString(vObjectNames[i]);
+	//for (int i = 0; i < vObjectNames.size(); i++)
+	//{
+	//	string modifiedString = modifyString(vObjectNames[i]);
 
-		char* cfilename = new char[MAX_PATH];
-		strcpy(cfilename, StringToCharDIY(modifiedString));
-		m_ObjectNames_Map2.push_back(cfilename);
-	}
+	//	char* cfilename = new char[MAX_PATH];
+	//	strcpy(cfilename, StringToCharDIY(modifiedString));
+	//	m_ObjectNames_Map2.push_back(cfilename);
+	//}
 
 }
 
@@ -1145,34 +1153,6 @@ void CObjPlace_Manager::Show_ExampleModel(MAPTOOL_OBJPLACE_DESC objDesc, _uint i
 			mapDesc.pDecal = nullptr;
 			m_pShownObject = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Construction"), &mapDesc);
 
-
-			//if (CONSTRUCTION == objDesc.iObjType)
-			//{
-			//	/* 데이터 추가할때마다 수정 */
-			//	CConstruction::MAPOBJ_DESC		mapDesc;
-			//	mapDesc.vStartPos = startPos;
-			//	mapDesc.wstrModelName = wstr;
-			//	mapDesc.iLayer = objDesc.iLayer;
-			//	mapDesc.iShaderPass = objDesc.iShaderPass;
-			//	mapDesc.iObjType = objDesc.iObjType;
-			//	mapDesc.iObjPropertyType = objDesc.iObjPropertyType;
-			//	mapDesc.iDecalNum = 0;
-			//	mapDesc.pDecal = nullptr;
-			//	m_pShownObject = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Construction"), &mapDesc);
-			//}
-			//else if (MONSTER == objDesc.iObjType)
-			//{
-			//	/* 데이터 추가할때마다 수정 */
-			//	CRushYakuza::MONSTER_DESC		monsterDesc;
-			//	monsterDesc.vStartPos = startPos;
-			//	monsterDesc.wstrModelName = wstr;
-			//	monsterDesc.iLayer = objDesc.iLayer;
-			//	monsterDesc.iShaderPass = objDesc.iShaderPass;
-			//	monsterDesc.iObjType = objDesc.iObjType;
-			//	monsterDesc.iObjPropertyType = objDesc.iObjPropertyType;
-			//	m_pShownObject = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_RushYakuza"), &monsterDesc);
-			//}
-			
 
 			/* 한번만 추가되게 - 같은 위치에 */
 			m_bInstallOneTime = true;

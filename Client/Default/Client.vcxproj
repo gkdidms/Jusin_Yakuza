@@ -225,6 +225,7 @@
     <ClInclude Include="..\public\PlayerCamera.h" />
     <ClInclude Include="..\public\Shakedown.h" />
     <ClInclude Include="..\Public\Sky.h" />
+    <ClInclude Include="..\Public\SkyDome.h" />
     <ClInclude Include="..\Public\SocketCollider.h" />
     <ClInclude Include="..\Public\SocketEffect.h" />
     <ClInclude Include="..\Public\SocketObject.h" />
@@ -304,6 +305,7 @@
     <ClCompile Include="..\private\PlayerCamera.cpp" />
     <ClCompile Include="..\private\Shakedown.cpp" />
     <ClCompile Include="..\Private\Sky.cpp" />
+    <ClCompile Include="..\Private\SkyDome.cpp" />
     <ClCompile Include="..\Private\SocketCollider.cpp" />
     <ClCompile Include="..\Private\SocketEffect.cpp" />
     <ClCompile Include="..\Private\SocketObject.cpp" />
@@ -328,6 +330,7 @@
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxCube.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxInstance_Point.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxMesh.hlsl" />
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxMeshSky.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxNorTex.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxPosTex.hlsl" />
   </ItemGroup>

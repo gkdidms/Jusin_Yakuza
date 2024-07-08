@@ -6,6 +6,7 @@
 #include "Construction.h"
 #include "SystemManager.h"
 #include "RushYakuza.h"
+#include "SkyDome.h"
 
 IMPLEMENT_SINGLETON(CFileTotalMgr)
 
@@ -110,6 +111,21 @@ HRESULT CFileTotalMgr::Set_GameObject_In_Client(int iStageLevel)
             monsterDesc.fRotatePecSec = XMConvertToRadians(180.f);
 
             m_pGameInstance->Add_GameObject(iStageLevel, TEXT("Prototype_GameObject_Player"), m_Layers[iLayer], &monsterDesc);
+        }
+        else if (OBJECT_TYPE::SKY == m_MapTotalInform.pMapObjDesc[i].iObjType)
+        {
+            CSkyDome::SkyObj_Desc		skyDesc;
+            skyDesc.vStartPos = XMLoadFloat4x4(&m_MapTotalInform.pMapObjDesc[i].vTransform);
+            int		iLayer = Find_Layers_Index(m_MapTotalInform.pMapObjDesc[i].strLayer);
+
+            /* Layer 정보 안들어옴 */
+            if (iLayer < 0)
+                return S_OK;
+
+            skyDesc.wstrModelName = m_pGameInstance->StringToWstring(m_MapTotalInform.pMapObjDesc[i].strModelCom);
+
+
+            m_pGameInstance->Add_GameObject(iStageLevel, TEXT("Prototype_GameObject_SkyDome"), m_Layers[iLayer], &skyDesc);
         }
         else 
         {

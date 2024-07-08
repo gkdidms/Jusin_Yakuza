@@ -59,18 +59,18 @@ HRESULT CConstruction::Initialize(void* pArg)
 
 		for (int i = 0; i < gameobjDesc->iColliderNum; i++)
 		{
-			//OBJCOLLIDER_DESC		objDesc = gameobjDesc->pColliderDesc[i];
+			OBJCOLLIDER_DESC		objDesc = gameobjDesc->pColliderDesc[i];
 
-			//CBounding_OBB::BOUNDING_OBB_DESC		ColliderDesc{};
+			CBounding_OBB::BOUNDING_OBB_DESC		ColliderDesc{};
 
-			//ColliderDesc.eType = (CCollider::TYPE)objDesc.iColliderType;
-			//ColliderDesc.vExtents = objDesc.vExtents;
-			//ColliderDesc.vCenter = objDesc.vCenter;
-			//ColliderDesc.vRotation = objDesc.vQuaternion;
+			ColliderDesc.eType = (CCollider::TYPE)objDesc.iColliderType;
+			ColliderDesc.vExtents = objDesc.vExtents;
+			ColliderDesc.vCenter = objDesc.vCenter;
+			ColliderDesc.vRotation = objDesc.vQuaternion;
 
-			//CCollider* pCollider = dynamic_cast<CCollider*>(m_pGameInstance->Add_Component_Clone(LEVEL_TEST, TEXT("Prototype_Component_Collider"), &ColliderDesc));
+			CCollider* pCollider = dynamic_cast<CCollider*>(m_pGameInstance->Add_Component_Clone(LEVEL_TEST, TEXT("Prototype_Component_Collider"), &ColliderDesc));
 
-			//m_vColliders.push_back(pCollider);
+			m_vColliders.push_back(pCollider);
 
 		}
 	}
@@ -126,6 +126,7 @@ void CConstruction::Late_Tick(const _float& fTimeDelta)
 	{
 		m_pGameInstance->Add_Renderer(CRenderer::RENDER_PUDDLE, this);
 	}
+
 	
 	if (m_pGameInstance->isShadow() && m_isFirst)
 	{
