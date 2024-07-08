@@ -83,6 +83,39 @@ void CImguiManager::Tick(const _float& fTimeDelta)
 			SoundListWindow();
 	}
 
+
+	if (m_pGameInstance->Get_CurrentLevel() != LEVEL_LOADING)
+	{
+		if (0 < m_AnimNameList.size())
+		{
+			auto lower_bound_iter = m_AnimationEvents.lower_bound(m_AnimNameList[m_iAnimIndex]);
+			auto upper_bound_iter = m_AnimationEvents.upper_bound(m_AnimNameList[m_iAnimIndex]);
+
+			auto pBoneSpheres = m_pRenderModel->Get_BoneSpheres();
+
+			for (; lower_bound_iter != upper_bound_iter; ++lower_bound_iter)
+			{
+				Animation_Event Value = (*lower_bound_iter).second;
+
+				CModel* pModel = static_cast<CModel*>(m_pRenderModel->Get_Model());
+				if (nullptr != pModel)
+				{
+					_double Position = *pModel->Get_AnimationCurrentPosition();
+
+					if (Value.iType == COLLIDER_ACTIVATION && Value.fAinmPosition < Position)
+					{
+						pBoneSpheres[Value.iBoneIndex]->Change_ColliderColor(true);
+					}
+					if(Value.iType == COLLIDER_DISABLE && Value.fAinmPosition < Position)
+					{
+						pBoneSpheres[Value.iBoneIndex]->Change_ColliderColor(false);
+					}
+				}
+			}
+		}
+
+	}
+
 }
 
 
@@ -200,25 +233,17 @@ void CImguiManager::AnimListWindow()
 
 	ImGui::InputInt("Search Anim Index", &m_iSearchAnimIndex);
 	if (ImGui::Button(u8"애니메이션 인덱스 검색하기"))
-	{
 		m_iAnimIndex = m_iSearchAnimIndex;
-	}
 
 	ImGui::SameLine();
 	ImGui::Text("Anim Index: %d", m_iAnimIndex);
 
 	if (ImGui::Button("Add"))
-	{
 		m_AddedAnims.emplace(m_iAnimIndex, m_AnimNameList[m_iAnimIndex]);
-	}
-
 
 	vector<const char*> Addeditems;
-
 	for (auto& AddedAnim : m_AddedAnims)
-	{
 		Addeditems.push_back(AddedAnim.second.c_str());
-	}
 
 	ImGui::ListBox("Loop Animations", &m_iAddedAnimSelectedIndex, Addeditems.data(), Addeditems.size());
 
@@ -280,14 +305,14 @@ void CImguiManager::BoneListWindow()
 			if (m_BoneNameList[i] == string(m_szSearchBoneName))
 				m_iBoneSelectedIndex = i;
 		}
+
+		Gui_Select_Bone(m_iBoneSelectedIndex);
 	}
 
 	//뼈 리스트
 	if (ImGui::ListBox("##", &m_iBoneSelectedIndex, items.data(), items.size()))
 	{
-		Reset_Collider_Value();
-		Setting_Collider_Value(m_iBoneSelectedIndex);
-		m_pRenderModel->Select_Bone(m_iBoneSelectedIndex);
+		Gui_Select_Bone(m_iBoneSelectedIndex);
 	}
 
 	if (ImGui::RadioButton("AABB", m_iColliderType == AABB))
@@ -337,6 +362,8 @@ void CImguiManager::BoneListWindow()
 	}
 	}
 
+	ImGui::Checkbox(u8"상시", &m_isAlwaysCollider);
+
 	if (ImGui::Button("Create Collier"))
 	{
 		void* pValue = nullptr;
@@ -357,7 +384,7 @@ void CImguiManager::BoneListWindow()
 		memcpy(&vCenter, &m_ColliderPosition, sizeof(_float3));
 		if (!m_pRenderModel->Created_BoneCollider(m_iBoneSelectedIndex))
 		{
-			m_AddedColliders.emplace(m_iBoneSelectedIndex, m_BoneNameList[m_iBoneSelectedIndex]);
+			m_AddedColliders.emplace(m_iBoneSelectedIndex, Collider_State{ m_BoneNameList[m_iBoneSelectedIndex], m_isAlwaysCollider });
 			m_pRenderModel->Create_BoneCollider(m_iColliderType, m_iBoneSelectedIndex, vCenter, pValue);
 		}
 	}
@@ -366,7 +393,7 @@ void CImguiManager::BoneListWindow()
 
 	for (auto& iter : m_AddedColliders)
 	{
-		Addeditems.push_back(iter.second.c_str());
+		Addeditems.push_back(iter.second.strBoneName.c_str());
 	}
 
 	if (ImGui::ListBox(u8"추가된 콜라이더 리스트", &m_iColliderSelectedIndex, Addeditems.data(), Addeditems.size()))
@@ -378,7 +405,8 @@ void CImguiManager::BoneListWindow()
 			iter++;
 		}
 
-		Setting_Collider_Value((*iter).first);
+		Gui_Select_Bone((*iter).first);
+		m_isAlwaysCollider = (*iter).second.isAlways;
 	}
 
 	if (ImGui::Button(u8"콜라이더 삭제"))
@@ -632,13 +660,12 @@ void CImguiManager::AnimEventWindow()
 	ImGui::SameLine();
 	if (ImGui::Button("Event Delete"))
 	{
-		auto iter = m_AnimationEvents.begin();
+		auto lower_bound_iter = m_AnimationEvents.lower_bound(m_AnimNameList[m_iAnimIndex]);
 
 		for (size_t i = 0; i < m_iEventSelectedIndex; i++)
-		{
-			iter++;
-		}
-		m_AnimationEvents.erase(iter);
+			lower_bound_iter++;
+
+		m_AnimationEvents.erase(lower_bound_iter);
 	}
 
 	ImGui::Text("Animation Name : %s", m_AnimNameList[m_iAnimIndex].c_str());
@@ -835,7 +862,7 @@ void CImguiManager::DrawChannels()
 
 				m_iBoneSelectedIndex = Channels[m_iChannelSelectedIndex]->Get_BoneIndex();
 
-				m_pRenderModel->Select_Bone(m_iBoneSelectedIndex);
+				Gui_Select_Bone(m_iBoneSelectedIndex);
 				break;
 			}
 		}
@@ -1129,6 +1156,8 @@ void CImguiManager::ColliderState_Save(string strPath)
 		}
 		break;
 		}
+
+		out.write((char*)&m_AddedColliders.at(pSphere.first).isAlways, sizeof(_bool));
 	}
 
 	out.close();
@@ -1309,9 +1338,12 @@ void CImguiManager::ColliderState_Load(string strPath)
 		break;
 		}
 
+		_bool isAlways = { false };
+		in.read((char*)&isAlways, sizeof(_bool));
+
 		if (!m_pRenderModel->Created_BoneCollider(iBoneIndex))
 		{
-			m_AddedColliders.emplace(iBoneIndex, m_BoneNameList[iBoneIndex]);
+			m_AddedColliders.emplace(iBoneIndex, Collider_State{ m_BoneNameList[iBoneIndex], isAlways });
 			m_pRenderModel->Create_BoneCollider(iColliderType, iBoneIndex, vCenter, pValue);
 		}
 
@@ -1352,6 +1384,13 @@ void CImguiManager::EffectState_Load(string strPath)
 	
 
 	in.close();
+}
+
+void CImguiManager::Gui_Select_Bone(_uint iBoneIndex)
+{
+	Reset_Collider_Value();
+	Setting_Collider_Value(iBoneIndex);
+	m_pRenderModel->Select_Bone(iBoneIndex);
 }
 
 void CImguiManager::Setting_InitialData()

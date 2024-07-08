@@ -84,6 +84,9 @@ BlendState BS_AlphaBlend
     SrcBlend = Src_Alpha;
     DestBlend = Inv_Src_Alpha;
     BlendOp = Add;
+    SrcBlendAlpha = Src_Alpha;
+    DestBlendAlpha = Inv_Src_Alpha;
+    BlendOpAlpha = Add;
 };
 
 BlendState BS_Blend
@@ -128,6 +131,17 @@ BlendState BS_OIT
     BlendOp = Add;
     SrcBlendAlpha = ONE;
     DestBlendAlpha = INV_SRC_ALPHA;
+    BlendOpAlpha = Add;
+};
+
+BlendState BS_UIMerge
+{
+    BlendEnable[0] = true;
+    SrcBlend = Src_Alpha;
+    DestBlend = Inv_Src_Alpha;
+    BlendOp = Add;
+    SrcBlendAlpha = ONE;
+    DestBlendAlpha = ZERO;
     BlendOpAlpha = Add;
 };
 //src 소스 픽셀 (현제 그리는 픽셀)

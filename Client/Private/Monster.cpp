@@ -2,6 +2,13 @@
 
 #include "GameInstance.h"
 
+#include "CharacterData.h"
+#include "SocketCollider.h"
+#include "SocketEffect.h"
+
+#include "Mesh.h"
+
+
 CMonster::CMonster(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLandObject{ pDevice, pContext }
 {
@@ -31,10 +38,20 @@ void CMonster::Priority_Tick(const _float& fTimeDelta)
 
 void CMonster::Tick(const _float& fTimeDelta)
 {
+	for (auto& pCollider : m_pColliders)
+		pCollider.second->Tick(fTimeDelta);
+
+	for (auto& pEffect : m_pEffects)
+		pEffect.second->Tick(fTimeDelta);
 }
 
 void CMonster::Late_Tick(const _float& fTimeDelta)
 {
+	for (auto& pCollider : m_pColliders)
+		pCollider.second->Late_Tick(fTimeDelta);
+
+	for (auto& pEffect : m_pEffects)
+		pEffect.second->Late_Tick(fTimeDelta);
 }
 
 HRESULT CMonster::Render()
@@ -89,7 +106,7 @@ void CMonster::Synchronize_Root(const _float& fTimeDelta)
 	XMStoreFloat4(&m_vPrevRotation, resultQuaternionVector);
 }
 
-HRESULT CMonster::Add_Componenets()
+HRESULT CMonster::Add_Components()
 {
 	
 	return S_OK;
@@ -105,9 +122,5 @@ void CMonster::Free()
 	__super::Free();
 
 	Safe_Release(m_pAnimCom);
-	Safe_Release(m_pColliderCom);
-	Safe_Release(m_pModelCom);
 	Safe_Release(m_pShaderCom);
-
-	//Safe_Release(m_pData);
 }

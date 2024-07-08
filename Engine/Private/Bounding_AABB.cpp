@@ -34,6 +34,8 @@ HRESULT CBounding_AABB::Initialize(const void* pArg)
 	m_vCenter = pDesc->vCenter;
 	m_vExtents = pDesc->vExtents;
 
+	m_vColor = _float4(0.f, 1.f, 0.f, 1.f);
+
 	m_pOriginalBox = new BoundingBox(m_vCenter, m_vExtents);
 	m_pBoundingBox = new BoundingBox(*m_pOriginalBox);
 	if (nullptr == m_pBoundingBox)
@@ -86,10 +88,75 @@ _bool CBounding_AABB::Intersect(CCollider::TYPE eTargetType, CBounding* pTargetB
 
 	return isColl;
 }
+
+const _float3& CBounding_AABB::ImpulseResolution(CCollider::TYPE eTargetType, CBounding* pTargetBounding)
+{
+	_float3 vPosition = _float3();
+	float fIntersectSize = { 0.f };
+
+	// 밀어내기 기능은 AABB에서만 할 것
+	if (Intersect(eTargetType, pTargetBounding))
+	{
+		switch (eTargetType)
+		{
+		case Engine::CCollider::COLLIDER_AABB:
+		{
+			BoundingBox* pDesc = static_cast<BoundingBox*>(pTargetBounding->Get_Desc());
+			vPosition = pDesc->Center;
+
+			if (m_pBoundingBox->Intersects(*pDesc)) {
+				// Calculate the intersection boundaries
+				_vector vBox1Min = XMVectorSubtract(XMLoadFloat3(&m_pBoundingBox->Center), XMLoadFloat3(&m_pBoundingBox->Extents));
+				_vector vBox1Max = XMVectorAdd(XMLoadFloat3(&m_pBoundingBox->Center), XMLoadFloat3(&m_pBoundingBox->Extents));
+
+				_vector vBox2Min = XMVectorSubtract(XMLoadFloat3(&pDesc->Center), XMLoadFloat3(&pDesc->Extents));
+				_vector vBox2Max = XMVectorAdd(XMLoadFloat3(&pDesc->Center), XMLoadFloat3(&pDesc->Extents));
+
+				_vector vIntersectMin = XMVectorMax(vBox1Min, vBox2Min);
+				_vector vIntersectMax = XMVectorMin(vBox1Max, vBox2Max);
+
+				_vector vIntersectSize = XMVectorSubtract(vIntersectMax, vIntersectMin);
+
+				_float fIntersectWidth = XMVectorGetX(vIntersectSize);
+				_float fIntersectHeight = XMVectorGetY(vIntersectSize);
+				_float fIntersectDepth = XMVectorGetZ(vIntersectSize);
+
+				// Determine the smallest axis to push out along
+				if (fIntersectWidth < fIntersectHeight && fIntersectWidth < fIntersectDepth) {
+					// Push out along the X-axis
+					float fPushX = (m_pBoundingBox->Center.x < pDesc->Center.x) ? -fIntersectWidth : fIntersectWidth;
+					vPosition = XMFLOAT3(fPushX, 0.0f, 0.0f);
+				}
+				else if (fIntersectHeight < fIntersectDepth) {
+					// Push out along the Y-axis
+					float fPushY = (m_pBoundingBox->Center.y < pDesc->Center.y) ? -fIntersectHeight : fIntersectHeight;
+					vPosition = XMFLOAT3(0.0f, fPushY, 0.0f);
+				}
+				else {
+					// Push out along the Z-axis
+					float fPushZ = (m_pBoundingBox->Center.z < pDesc->Center.z) ? -fIntersectDepth : fIntersectDepth;
+					vPosition = XMFLOAT3(0.0f, 0.0f, fPushZ);
+				}
+			}
+			else {
+				// No intersection, no push out needed
+				vPosition = _float3();
+			}
+			break;
+		}
+		default:
+			vPosition = _float3();
+			break;
+		}
+	}
+
+	return vPosition;
+}
+
 #ifdef _DEBUG
 HRESULT CBounding_AABB::Render(PrimitiveBatch<VertexPositionColor>* pBatch)
 {
-	DX::Draw(pBatch, *m_pBoundingBox, XMVectorSet(0.f, 1.f, 0.f, 1.f));
+	DX::Draw(pBatch, *m_pBoundingBox, XMLoadFloat4(&m_vColor));
 
 	return S_OK;
 }

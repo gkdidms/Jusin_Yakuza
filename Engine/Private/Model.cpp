@@ -810,7 +810,7 @@ HRESULT CModel::Bind_Material(CShader* pShader, const _char* pConstantName, _uin
 {
 	auto* pTexture = m_Materials[m_Meshes[iNumMeshIndex]->Get_MaterialIndex()].pMaterialTextures[eTextureType];
 	if (nullptr == pTexture)
-		return S_OK;
+		return E_FAIL;
 
 	return pTexture->Bind_ShaderResource(pShader, pConstantName, 0);
 }
@@ -910,11 +910,11 @@ void CModel::Set_AnimationIndex(_uint iAnimIndex, vector<class CAnimation*> Anim
 {
 	if (iAnimIndex >= Animations.size()) return;
 
-	if (m_AnimDesc.iAnimIndex == iAnimIndex && m_AnimLoops[iAnimIndex] == m_AnimDesc.isLoop)
+	if (m_AnimDesc.iAnimIndex == iAnimIndex)
 		return;
 
 	m_iPrevAnimIndex = m_AnimDesc.iAnimIndex;
-	m_AnimDesc = { iAnimIndex, m_AnimLoops[iAnimIndex] };
+	m_AnimDesc = { iAnimIndex, false };
 	m_ChangeInterval = ChangeInterval;
 	Animations[m_AnimDesc.iAnimIndex]->Reset();
 

@@ -31,6 +31,7 @@ Texture2D g_Texture;
 Texture2D g_PriorityTexture;
 Texture2D g_NormalTexture;
 Texture2D g_DiffuseTexture;
+Texture2D g_MultiDiffuseTexture;
 Texture2D g_ShadeTexture;
 Texture2D g_RMTexture;
 Texture2D g_RSTexture;

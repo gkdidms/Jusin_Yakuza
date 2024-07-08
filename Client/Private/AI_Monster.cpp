@@ -27,7 +27,6 @@ HRESULT CAI_Monster::Initialize(void* pArg)
 	m_pState = pDesc->pState;
 	m_pAnimCom = pDesc->pAnim;
 	m_pThis = pDesc->pThis;
-	Safe_AddRef(m_pAnimCom);
 
 	m_pPlayer = dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject(LEVEL_TEST, TEXT("Layer_Player"), 0));
 
@@ -269,21 +268,11 @@ CBTNode::NODE_STATE CAI_Monster::ATK_Angry_Kick()
 	return CBTNode::FAIL;
 }
 
-CBTNode::NODE_STATE CAI_Monster::Check_Shift()
+CBTNode::NODE_STATE CAI_Monster::Check_Break()
 {
-	if (m_isIdle)
-		return CBTNode::FAIL;
+	if (m_isBreak == false) return CBTNode::SUCCESS;
 
-	if (m_iSkill != SKILL_SHIFT)
-		return CBTNode::SUCCESS;
-
-	if (m_fShiftDuration <= m_fShiftTime)
-	{
-		m_iSkill = SKILL_END;
-		m_fShiftTime = 0.f;
-
-		return CBTNode::FAIL;
-	}
+	LookAtPlayer();
 
 	return CBTNode::RUNNING;
 }
@@ -293,22 +282,25 @@ CBTNode::NODE_STATE CAI_Monster::ShiftAndIdle()
 	static _uint iCount = 0;
 
 	iCount++;
-	if (iCount != 5)
-	{
-		return CBTNode::FAIL;
-	}
+	if (iCount == 5)
+		m_iSkill = SKILL_SHIFT;
+	else 
+		m_iSkill = SKILL_IDLE;
 	
 	if (iCount <= 10)
 		iCount = 0;
+
+	m_fBreakDuration = m_pGameInstance->Get_Random(2.f, 4.f);
 	
 	return CBTNode::SUCCESS;
 }
 
 CBTNode::NODE_STATE CAI_Monster::Shift()
 {
-	m_fShiftDuration = m_pGameInstance->Get_Random(1.f, 3.f);
+	if (m_iSkill != SKILL_SHIFT)
+		return CBTNode::FAIL;
 
-	_uint iIndex = m_pGameInstance->Get_Random(0, 4);
+	_uint iIndex = m_pGameInstance->Get_Random(0, 3);
 	if (iIndex == 0)
 		*m_pState = CMonster::MONSTER_SHIFT_F;
 	else if (iIndex == 1)
@@ -317,38 +309,16 @@ CBTNode::NODE_STATE CAI_Monster::Shift()
 		*m_pState = CMonster::MONSTER_SHIFT_L;
 	else if (iIndex == 3)
 		*m_pState = CMonster::MONSTER_SHIFT_R;
-	else
-		return CBTNode::FAIL;
 
-	m_iSkill = SKILL_SHIFT;
+	m_isBreak = true;
 
 	return CBTNode::SUCCESS;
 }
 
-CBTNode::NODE_STATE CAI_Monster::Check_Idle()
-{
-	if (*m_pState != CMonster::MONSTER_IDLE)
-		return CBTNode::SUCCESS;
-
-	if (m_fIdleDuration <= m_fIdleTime)
-	{
-		m_isIdle = false;
-		m_fIdleTime = 0.f;
-
-		return CBTNode::RUNNING;
-	}
-
-	return CBTNode::RUNNING;
-}
-
 CBTNode::NODE_STATE CAI_Monster::Idle()
 {
-	if (m_isIdle) return CBTNode::SUCCESS;
-
-	m_fIdleDuration = m_pGameInstance->Get_Random(2.f, 4.f);
-
 	*m_pState = CMonster::MONSTER_IDLE;
-	m_isIdle = true;
+	m_isBreak = true;
 
 	return CBTNode::SUCCESS;
 }
@@ -362,6 +332,5 @@ void CAI_Monster::Free()
 	if (m_isClone)
 	{
 		Safe_Release(m_pRootNode);
-		Safe_Release(m_pAnimCom);
 	}
 }

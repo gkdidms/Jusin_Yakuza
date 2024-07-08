@@ -50,6 +50,10 @@ public:
 	}
 
 	_bool Get_AnimLoop(_uint iAnimIndex);
+	CModel* Get_Model() {
+		return m_pModelCom;
+	}
+
 
 public:
 	void Change_Model(wstring strModelName);

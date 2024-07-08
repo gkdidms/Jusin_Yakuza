@@ -14,9 +14,10 @@ class CAI_Monster :
 public:
     //스킬 리스트
     enum SKILL {
-        SKILL_HIT, 
-        SKILL_SWAY,
+        SKILL_IDLE,
         SKILL_SHIFT,
+        SKILL_SWAY,
+        SKILL_HIT, 
         SKILL_CMD,
         SKILL_PUNCH,
         SKILL_HEAVY,
@@ -60,7 +61,7 @@ protected:
     _bool m_isAngry = { false };
     _bool m_isSync = { false };
     _bool m_isShift = { false };
-    _bool m_isIdle = { false };
+    _bool m_isBreak = { false };
 
     _uint m_iSkill = { SKILL_END };
 
@@ -68,11 +69,11 @@ protected:
     _float m_fDelayAttackDuration = { 10.f };
     _float m_fAttackDelayTime = { 0.f }; // 공격이 끝난 후 지속시간
 
-    _float m_fShiftDuration = { 0.f }; // 랜덤으로 부여받는다.
-    _float m_fShiftTime = { 0.f };
+    _float m_fBreakDuration = { 0.f }; // 랜덤으로 부여받는다.
+    _float m_fBreakTime = { 0.f };
 
-    _float m_fIdleDuration = { 0.f };
-    _float m_fIdleTime = { 0.f };
+    _float m_fCmbNum = { 0.f }; // 스킬 발동시 확률적으로 몇번 공격할것인지 저장.
+    _float m_fCmbCount = { 0.f }; // 콥보 누적 카운트
 
 protected:
     //죽음
@@ -104,14 +105,11 @@ protected:
     virtual CBTNode::NODE_STATE ATK_Angry_Punch(); // 화가 난 상태일때 펀치
     virtual CBTNode::NODE_STATE ATK_Angry_Kick(); // 화가 난 상태일때 발차기
 
-    //Stand 
-    virtual CBTNode::NODE_STATE Check_Shift(); // 걷고 있는가?
+    //Break
+    virtual CBTNode::NODE_STATE Check_Break(); // 쉬는 타임인가?
     virtual CBTNode::NODE_STATE ShiftAndIdle(); // 걸을 것인지 분기처리
-    virtual CBTNode::NODE_STATE Shift(); 
-
-    //Idle
-    virtual CBTNode::NODE_STATE Check_Idle(); 
-    virtual CBTNode::NODE_STATE Idle();
+    virtual CBTNode::NODE_STATE Shift(); // 쉬프트(걷기)
+    virtual CBTNode::NODE_STATE Idle(); // 정좌
 
 protected:
     virtual void Ready_Tree();

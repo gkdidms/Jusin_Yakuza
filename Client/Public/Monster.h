@@ -3,7 +3,6 @@
 
 BEGIN(Engine)
 class CShader;
-class CModel;
 class CCollider;
 class CAnim;
 END
@@ -60,11 +59,7 @@ public:
 
 protected:
     CShader* m_pShaderCom = { nullptr };
-    CModel* m_pModelCom = { nullptr };
-    CCollider* m_pColliderCom = { nullptr };
     CAnim* m_pAnimCom = { nullptr }; // 애니메이션만 따로 저장하고있는 애니메이션 컴포넌트
-
-    class CCharacterData* m_pData = { nullptr }; // 캐릭터 데이터 파일 입출력
 
 protected:
     _bool m_isAnimLoop = { false };
@@ -80,7 +75,7 @@ protected:
     void Synchronize_Root(const _float& fTimeDelta);
 
 private:
-    virtual HRESULT Add_Componenets() override;
+    virtual HRESULT Add_Components() override;
     virtual HRESULT Bind_ResourceData() override;
 
 public:

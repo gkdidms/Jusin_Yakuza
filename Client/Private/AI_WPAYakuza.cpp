@@ -89,16 +89,16 @@ void CAI_WPAYakuza::Ready_Tree()
 	pAttackSeq->Add_Children(pAttackSelector);
 #pragma endregion
 
-#pragma region Shift
-	CSequance* pShiftSeq = CSequance::Create();
-	pShiftSeq->Add_Children(CLeafNode::Create(bind(&CAI_WPAYakuza::Check_Shift, this)));
-	pShiftSeq->Add_Children(CLeafNode::Create(bind(&CAI_WPAYakuza::Shift, this)));
-#pragma endregion
+#pragma region Shift/Idle
+	CSequance* pBreakSeq = CSequance::Create();
+	pBreakSeq->Add_Children(CLeafNode::Create(bind(&CAI_WPAYakuza::Check_Break, this)));
+	pBreakSeq->Add_Children(CLeafNode::Create(bind(&CAI_WPAYakuza::ShiftAndIdle, this)));
 
-#pragma region Idle
-	CSequance* pIdleSeq = CSequance::Create();
-	pIdleSeq->Add_Children(CLeafNode::Create(bind(&CAI_WPAYakuza::Check_Idle, this)));
-	pIdleSeq->Add_Children(CLeafNode::Create(bind(&CAI_WPAYakuza::Idle, this)));
+	CSelector* pBreakSelector = CSelector::Create();
+	pBreakSelector->Add_Children(CLeafNode::Create(bind(&CAI_WPAYakuza::Shift, this)));
+	pBreakSelector->Add_Children(CLeafNode::Create(bind(&CAI_WPAYakuza::Idle, this)));
+
+	pBreakSeq->Add_Children(pBreakSelector);
 #pragma endregion
 
 #pragma region Root
@@ -108,8 +108,7 @@ void CAI_WPAYakuza::Ready_Tree()
 	pRoot->Add_Children(pHitGuardSeq);
 	pRoot->Add_Children(pAngrySeq);
 	pRoot->Add_Children(pAttackSeq);
-	pRoot->Add_Children(pShiftSeq);
-	pRoot->Add_Children(pIdleSeq);
+	pRoot->Add_Children(pBreakSeq);
 #pragma endregion
 
 	m_pRootNode = pRoot;
@@ -117,12 +116,12 @@ void CAI_WPAYakuza::Ready_Tree()
 
 CBTNode::NODE_STATE CAI_WPAYakuza::Check_Attack()
 {
-	if (m_isAttack == false)
+	if (!m_isAttack)
 	{
-		if (m_fDelayAttackDuration >= m_fAttackDelayTime)
+		if (m_fDelayAttackDuration > m_fAttackDelayTime)
 			return CBTNode::FAIL;
 
-		m_fAttackDelayTime = 0.f; // 초기화
+		m_fAttackDelayTime = 0.f;
 	}
 
 	return CBTNode::SUCCESS;
@@ -130,9 +129,10 @@ CBTNode::NODE_STATE CAI_WPAYakuza::Check_Attack()
 
 CBTNode::NODE_STATE CAI_WPAYakuza::Attack()
 {
-	if (m_isAngry) return CBTNode::SUCCESS;
+	if (m_isAngry || m_isAttack) return CBTNode::SUCCESS;
 
 	//화가 나지 않앗을때 스킬 선택 (임시)
+	LookAtPlayer();
 	static _uint iCount = 0;
 
 	if (iCount == 0 || iCount == 2)
@@ -149,9 +149,10 @@ CBTNode::NODE_STATE CAI_WPAYakuza::Attack()
 
 CBTNode::NODE_STATE CAI_WPAYakuza::Angry_Attack()
 {
-	if (!m_isAngry) return CBTNode::SUCCESS;
+	if (!m_isAngry || m_isAttack) return CBTNode::SUCCESS;
 
 	//화낫을때 스킬 선택 (임시)
+	LookAtPlayer();
 	static _uint iCount = 0;
 
 	if (iCount == 0 || iCount == 1)
@@ -230,8 +231,16 @@ void CAI_WPAYakuza::Tick(const _float& fTimeDelta)
 	if (m_isAttack == false)
 		m_fAttackDelayTime += fTimeDelta;
 
-	if (m_iSkill == SKILL_SHIFT)
-		m_fShiftTime += fTimeDelta;
+	if (m_isBreak)
+	{
+		m_fBreakTime += fTimeDelta;
+
+		if (m_fBreakDuration <= m_fBreakTime)
+		{
+			m_isBreak = false;
+			m_fBreakTime = 0.f;
+		}
+	}
 
 	this->Execute();
 }
