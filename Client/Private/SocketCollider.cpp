@@ -1,6 +1,5 @@
 #include "SocketCollider.h"
 #include "GameInstance.h"
-#include "SystemManager.h"
 
 CSocketCollider::CSocketCollider(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CSocketObject{ pDevice, pContext }
@@ -57,10 +56,19 @@ HRESULT CSocketCollider::Render()
 	return S_OK;
 }
 
+_bool CSocketCollider::Intersect(CCollider* pTargetObject)
+{
+	return pTargetObject->Intersect(m_pColliderCom);
+}
+
 HRESULT CSocketCollider::Add_Components(void* pArg)
 {
-	SOKET_COLLIDER_DESC* pDesc = static_cast<SOKET_COLLIDER_DESC*>(pArg);
+	SOCKET_COLLIDER_DESC* pDesc = static_cast<SOCKET_COLLIDER_DESC*>(pArg);
 
+	//pDesc->iType는 소켓 콜라이더 타입
+	m_eColliderType = static_cast<SOKET_COLLIDER_TYPE>(pDesc->iType);
+
+	// ColliderState.iType는 바운딩 구조체 생성용 타입
 	switch (pDesc->ColliderState.iType)
 	{
 	case 0:			//AABB

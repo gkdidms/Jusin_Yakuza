@@ -3,8 +3,6 @@
 
 BEGIN(Engine)
 class CShader;
-class CModel;
-class CCollider;
 END
 
 BEGIN(Client)
@@ -67,6 +65,8 @@ public:
     virtual HRESULT Render() override;
     virtual HRESULT Render_LightDepth() override;
 
+    virtual _bool Intersect(CLandObject* pTargetObject);
+
 public:
     const _bool* Get_MoveDirection() {
         return m_MoveDirection;
@@ -101,14 +101,6 @@ private:
 
 private:
     CShader*                m_pShaderCom = { nullptr };
-    CModel*                 m_pModelCom = { nullptr };
-    CCollider*              m_pColliderCom = { nullptr };
-
-    //뼈 인덱스, 소켓 콜라이더
-    unordered_map<_uint, class CSocketCollider*>      m_pColliders;  
-    //뼈 이름, 소켓 이펙트
-    unordered_map<string, class CSocketEffect*>      m_pEffects;     
-    class CCharacterData*   m_pData = { nullptr };
 
     // 이 때, 사용하는 키 값은 행동에 대한 키값을 가진다. (스타일은 배열 인덱스)
     map<_uint, class CBehaviorAnimation*> m_AnimationTree[BATTLE_STYLE_END];
@@ -134,8 +126,6 @@ private:
 private:
     virtual HRESULT Add_Components() override;
     virtual HRESULT Bind_ResourceData() override;
-    HRESULT Add_CharacterData();
-    void Apply_ChracterData();
 
 public:
     static CPlayer* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

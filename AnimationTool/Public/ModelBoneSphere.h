@@ -40,6 +40,7 @@ private:
 
 public:
 	void Change_TexutreIndex(_bool isOn = false);
+	void Change_ColliderColor(_bool isOn = false);
 
 	void Create_Collider(CCollider::TYPE eType, const CCollider::COLLIDER_DESC* pDesc);
 	HRESULT Release_Collider();
@@ -66,6 +67,8 @@ private:
 	_uint				m_iTextureIndex = { 0 };
 	const _float4x4*	m_pModelWorldMatrix = { nullptr };
 	const _float4x4*	m_pBoneWorldMatrix = { nullptr };
+
+	_bool m_isEventPlaying = { false };
 
 public:
 	static CModelBoneSphere* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

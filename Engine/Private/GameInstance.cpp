@@ -16,7 +16,6 @@
 #include "Frustum.h"
 #include "Convert_Manager.h"
 
-
 IMPLEMENT_SINGLETON(CGameInstance)
 
 CGameInstance::CGameInstance()
@@ -92,9 +91,6 @@ HRESULT CGameInstance::Initialize_Engine(_uint iMaxLevelIndex, const ENGINE_DESC
 	m_pConvert_Manager = CConvert_Manager::Create();
 	if (nullptr == m_pConvert_Manager)
 		return E_FAIL;
-
-
-
 
 	return S_OK;
 }

@@ -3,6 +3,7 @@
 #include "MainApp.h"
 #include "GameInstance.h"
 #include "SystemManager.h"
+#include "Collision_Manager.h"
 
 #ifdef _DEBUG
 #include "DebugManager.h"
@@ -18,11 +19,13 @@ CMainApp::CMainApp() :
 #endif // _DEBUG
 	m_pGameInstance{ CGameInstance::GetInstance() },
 	m_pSystemManager{ CSystemManager::GetInstance() },
-	m_pFileTotalManager{ CFileTotalMgr::GetInstance() }
+	m_pFileTotalManager{ CFileTotalMgr::GetInstance() },
+	m_pCollisionManager{ CCollision_Manager::GetInstance() }
 {
 	Safe_AddRef(m_pGameInstance);
 	Safe_AddRef(m_pSystemManager);
 	Safe_AddRef(m_pFileTotalManager);
+	Safe_AddRef(m_pCollisionManager);
 
 #ifdef _DEBUG
 	Safe_AddRef(m_pDebugMananger);
@@ -70,6 +73,7 @@ void CMainApp::Tick(const _float& fTimeDelta)
 	m_fTimeAcc += fTimeDelta;
 
 	m_pGameInstance->Tick(fTimeDelta);
+	m_pCollisionManager->Tick();
 
 #ifdef _DEBUG
 	if (m_pGameInstance->GetKeyState(DIK_F6) == TAP)
@@ -232,6 +236,9 @@ void CMainApp::Free()
 
 	Safe_Release(m_pFileTotalManager);
 	CFileTotalMgr::DestroyInstance();
+
+	Safe_Release(m_pCollisionManager);
+	CCollision_Manager::DestroyInstance();
 
 	/* 레퍼런스 카운트를 0으로만든다. */
 	Safe_Release(m_pGameInstance);
