@@ -75,8 +75,6 @@ void CPlayerCamera::Late_Tick(const _float& fTimeDelta)
 
 	if (fTempDistnace > MAX_DISTANCE)
 		fTempDistnace = MAX_DISTANCE;
-	//if (fTempDistnace < MIN_DISTANCE)
-	//	fTempDistnace = MIN_DISTANCE;
 
 	Compute_View(fTimeDelta);
 
@@ -102,31 +100,26 @@ HRESULT CPlayerCamera::Render()
 
 void CPlayerCamera::Compute_View(const _float& fTimeDelta)
 {
-	SetCursorPos(g_iWinSizeX * 0.5f, g_iWinSizeY * 0.5f); // 마우스 좌표 적용해주기
-	//ShowCursor(false);
+	// 마우스 좌표 적용
+	SetCursorPos(g_iWinSizeX * 0.5f, g_iWinSizeY * 0.5f);
+	ShowCursor(false);
 
+	// 플레이어 위치 가져오기
 	_vector vPlayerPosition;
 	memcpy(&vPlayerPosition, m_pPlayerMatrix->m[CTransform::STATE_POSITION], sizeof(_float4));
 
-	//마우스 입력을 이용한 카메라 회전
-	_long MouseMove = { 0 };
-	if (MouseMove = m_pGameInstance->Get_DIMouseMove(DIMS_X))
-	{
-		fCamAngleY -= fTimeDelta * m_fSensor * MouseMove;
-	}
-	if (MouseMove = m_pGameInstance->Get_DIMouseMove(DIMS_Y))
-	{
-		fCamAngleX += fTimeDelta * m_fSensor * MouseMove;
-	}
+	// 마우스 입력을 이용한 카메라 회전
+	_long MouseMoveX = m_pGameInstance->Get_DIMouseMove(DIMS_X);
+	_long MouseMoveY = m_pGameInstance->Get_DIMouseMove(DIMS_Y);
 
-	if (m_pGameInstance->GetKeyState(DIK_PGUP) == HOLD)
-	{
-		m_fCamDistance -= 1.f * fTimeDelta;
-	}
-	if (m_pGameInstance->GetKeyState(DIK_PGDN) == HOLD)
-	{
-		m_fCamDistance += 1.f * fTimeDelta;
-	}
+	fCamAngleY -= fTimeDelta * m_fSensor * MouseMoveX;
+	fCamAngleX += fTimeDelta * m_fSensor * MouseMoveY;
+
+	// 카메라 각도 제한 (수직 각도 제한)
+	if (fCamAngleX > 89.0f)  // 캐릭터를 아래서 보지 않도록 최대 각도를 45도로 제한
+		fCamAngleX = 89.0f;
+	if (fCamAngleX < 20) // 카메라가 수직 아래로 향하지 않도록 최소 각도를 -89도로 제한
+		fCamAngleX = 20;
 
 	// 이전 카메라 포지션 저장
 	_vector vPrevCamPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
@@ -144,9 +137,11 @@ void CPlayerCamera::Compute_View(const _float& fTimeDelta)
 	// 이전 카메라 포지션과 새로운 카메라 포지션 사이의 선형보간
 	_vector vLerpedCamPosition = XMVectorLerp(vPrevCamPosition, vCamPosition, fTimeDelta * 5.f);
 
+	// 카메라가 플레이어를 바라보도록 설정
 	m_pTransformCom->LookAt(XMVectorSet(XMVectorGetX(vPlayerPosition), XMVectorGetY(vPlayerPosition) + 1.f, XMVectorGetZ(vPlayerPosition), 1));
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vLerpedCamPosition);
 
+	// 월드 매트릭스 업데이트
 	XMStoreFloat4x4(&m_WorldMatrix, m_pTransformCom->Get_WorldMatrix());
 }
 
