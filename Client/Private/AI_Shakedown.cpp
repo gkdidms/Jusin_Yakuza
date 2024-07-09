@@ -26,6 +26,7 @@ https://www.youtube.com/watch?v=N3vh9EAJvzE
 3. 콤보 3단계는 확률적으로 1~3단계로 발동한다.
 
 4. 다운어택은 플레이어가 다운될 시 발동한다.
+플레이어가 다운된 즉시 스킬 사용이 끝나면 발동한다.
 맞는 순간 거의 즉사.
 */
 
@@ -146,7 +147,6 @@ void CAI_Shakedown::Ready_Tree()
 
 	pBreakSeq->Add_Children(pBreakSelector);
 #pragma endregion
-
 
 #pragma region Root
 	pRoot->Add_Children(pDeadSeq);

@@ -25,8 +25,8 @@ HRESULT CLevel_Test::Initialize()
 	if (FAILED(Ready_Player(TEXT("Layer_Player"))))
 		return E_FAIL;
 
-	if (FAILED(Ready_Monster(TEXT("Layer_Monster"))))
-		return E_FAIL;
+	/*if (FAILED(Ready_Monster(TEXT("Layer_Monster"))))
+		return E_FAIL;*/
 
 	if (FAILED(Ready_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
@@ -153,7 +153,7 @@ HRESULT CLevel_Test::Ready_Monster(const wstring& strLayerTag)
 	//Desc.fRotatePecSec = XMConvertToRadians(0.f);
 	Desc.fRotatePecSec = XMConvertToRadians(180.f);
 
-	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_Shakedown"), strLayerTag, &Desc)))
+	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_Kuze"), strLayerTag, &Desc)))
 		return E_FAIL;
 
 	return S_OK;
