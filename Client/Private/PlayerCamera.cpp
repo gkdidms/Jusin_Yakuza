@@ -66,7 +66,7 @@ HRESULT CPlayerCamera::Render()
 void CPlayerCamera::Compute_View(const _float& fTimeDelta)
 {
 	SetCursorPos(g_iWinSizeX * 0.5f, g_iWinSizeY * 0.5f); // 마우스 좌표 적용해주기
-	ShowCursor(false);
+	//ShowCursor(false);
 
 	_vector vPlayerPosition;
 	memcpy(&vPlayerPosition, m_pPlayerMatrix->m[CTransform::STATE_POSITION], sizeof(_float4));

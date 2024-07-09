@@ -8,16 +8,22 @@
 
 #include "SocketCollider.h"
 #include "SocketEffect.h"
+#pragma endregion
 
+#pragma region Monster
 #include "RushYakuza.h"
 #include "WPAYakuza.h"
 #include "Shakedown.h"
+#include "Kuze.h"
+
 #pragma endregion
+
 
 #pragma region BTNode
 #include "AI_RushYakuza.h"
 #include "AI_WPAYakuza.h"
 #include "AI_Shakedown.h"
+#include "AI_Kuze.h"
 #pragma endregion
 
 #pragma region Camera
@@ -264,6 +270,11 @@ HRESULT CLoader::Loading_For_Test()
 		CAI_Shakedown::Create())))
 		return E_FAIL;
 
+	/* For.Prototype_BTNode_Kuze*/
+	if (FAILED(m_pGameInstance->Add_BTNode_Prototype(LEVEL_TEST, TEXT("Prototype_BTNode_Kuze"),
+		CAI_Kuze::Create())))
+		return E_FAIL;
+
 	lstrcpy(m_szLoadingText, TEXT("컴포넌트 원형 를(을) 로딩 중 입니다."));
 #pragma region Effect
 
@@ -382,6 +393,10 @@ HRESULT CLoader::Loading_For_Test()
 
 	/* For.Prototype_GameObject_Shakedown */
 	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Shakedown"), CShakedown::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_Shakedown */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Kuze"), CKuze::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	/* For.Prototype_GameObject_Terrain */

@@ -93,7 +93,7 @@ private:
     void Render_HDR();
     void Render_CopyLuminance(); 
     void Render_AvgLuminance();
-    void Redner_LuminanceResult();
+    void Render_LuminanceResult();
 
     void Render_NonLight();//이펙트 시작
     void Render_Bloom();//블러
