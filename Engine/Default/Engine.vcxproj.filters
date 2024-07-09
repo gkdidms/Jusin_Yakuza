@@ -178,17 +178,17 @@
     <Filter Include="01.Utility\10.Random">
       <UniqueIdentifier>{7023e928-6a8a-4376-a161-481610a029e9}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Utility\03.Component\08.ComputeShader">
+      <UniqueIdentifier>{0c4835a7-cc1d-4213-a200-edf37363c233}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\03.Component\09.Animation">
+      <UniqueIdentifier>{2ff9a63d-40d0-42e3-affa-f343d3f9c0b4}</UniqueIdentifier>
+    </Filter>
     <Filter Include="01.Utility\11.BTNode">
       <UniqueIdentifier>{a10b8bd0-185e-4336-bdb6-e77a92033ac9}</UniqueIdentifier>
     </Filter>
     <Filter Include="01.Utility\11.BTNode\Manager">
       <UniqueIdentifier>{3bdfb931-41b4-4b0f-b653-8b9c0f754f16}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="01.Utility\03.Component\04.Shader\ComputeShader">
-      <UniqueIdentifier>{0c4835a7-cc1d-4213-a200-edf37363c233}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="01.Utility\03.Component\08.Animation">
-      <UniqueIdentifier>{2ff9a63d-40d0-42e3-affa-f343d3f9c0b4}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -370,10 +370,10 @@
       <Filter>01.Utility\03.Component\01.VIBuffer\Cube</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\ComputeShader.h">
-      <Filter>01.Utility\03.Component\04.Shader\ComputeShader</Filter>
+      <Filter>01.Utility\03.Component\08.ComputeShader</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Anim.h">
-      <Filter>01.Utility\03.Component\08.Animation</Filter>
+      <Filter>01.Utility\03.Component\09.Animation</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\BTNode.h">
       <Filter>01.Utility\11.BTNode</Filter>
@@ -549,10 +549,10 @@
       <Filter>01.Utility\03.Component\01.VIBuffer\Cube</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\ComputeShader.cpp">
-      <Filter>01.Utility\03.Component\04.Shader\ComputeShader</Filter>
+      <Filter>01.Utility\03.Component\08.ComputeShader</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Anim.cpp">
-      <Filter>01.Utility\03.Component\08.Animation</Filter>
+      <Filter>01.Utility\03.Component\09.Animation</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\BTNode.cpp">
       <Filter>01.Utility\11.BTNode</Filter>
