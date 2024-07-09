@@ -40,19 +40,31 @@ namespace Engine
 		COLLIDER_DESC*			pColliderDesc;
 	};
 
+	// Object 관련 Collider
+	struct ENGINE_DLL OBJCOLLIDER_DESC
+	{
+		int						iColliderType; // OBB, AABB, SPHERE
+		_float3					vCenter;
+		_float3					vExtents;
+		_float3					vQuaternion;
+	};
+
 
 	/* map 저장관련 */
 	struct ENGINE_DLL OBJECTPLACE_DESC
 	{
-		XMFLOAT4X4		vTransform;
-		char			strLayer[MAX_PATH];
-		char			strModelCom[MAX_PATH]; /* model 이름 */
-		int				iShaderPassNum; /* shader pass 번호 */
-		int				iObjType; /* object 종류 관련 - construction, item 등.. */
-		int				iObjPropertyType; /* object 별 특징 */
+		XMFLOAT4X4			vTransform;
+		char				strLayer[MAX_PATH];
+		char				strModelCom[MAX_PATH]; /* model 이름 */
+		int					iShaderPassNum; /* shader pass 번호 */
+		int					iObjType; /* object 종류 관련 - construction, item 등.. */
+		int					iObjPropertyType; /* object 별 특징 */
 
-		int				iDecalNum;
-		DECAL_DESC_IO*	pDecals;
+		int					iDecalNum;
+		DECAL_DESC_IO*		pDecals;
+
+		int					iColliderNum;
+		OBJCOLLIDER_DESC*	pObjColliders;
 	};
 
 

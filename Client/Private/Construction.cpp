@@ -58,6 +58,23 @@ HRESULT CConstruction::Initialize(void* pArg)
 
 			m_vDecals.push_back(pDecal);
 		}
+
+		for (int i = 0; i < gameobjDesc->iColliderNum; i++)
+		{
+			OBJCOLLIDER_DESC		objDesc = gameobjDesc->pColliderDesc[i];
+
+			CBounding_OBB::BOUNDING_OBB_DESC		ColliderDesc{};
+
+			ColliderDesc.eType = (CCollider::TYPE)objDesc.iColliderType;
+			ColliderDesc.vExtents = objDesc.vExtents;
+			ColliderDesc.vCenter = objDesc.vCenter;
+			ColliderDesc.vRotation = objDesc.vQuaternion;
+
+			CCollider* pCollider = dynamic_cast<CCollider*>(m_pGameInstance->Add_Component_Clone(LEVEL_TEST, TEXT("Prototype_Component_Collider"), &ColliderDesc));
+
+			m_vColliders.push_back(pCollider);
+
+		}
 	}
 
 	m_Casecade = { 0.f, 10.f, 24.f, 40.f };
@@ -91,6 +108,12 @@ void CConstruction::Tick(const _float& fTimeDelta)
 		if (m_fWaterDeltaTime > 1)
 			m_fWaterDeltaTime = 0;
 	}
+
+
+#ifdef _DEBUG
+	for (auto& iter : m_vColliders)
+		iter->Tick(m_pTransformCom->Get_WorldMatrix());
+#endif
 }
 
 void CConstruction::Late_Tick(const _float& fTimeDelta)
@@ -107,6 +130,7 @@ void CConstruction::Late_Tick(const _float& fTimeDelta)
 	{
 		m_pGameInstance->Add_Renderer(CRenderer::RENDER_PUDDLE, this);
 	}
+
 	
 	if (m_pGameInstance->isShadow())
 	{
@@ -122,6 +146,12 @@ void CConstruction::Late_Tick(const _float& fTimeDelta)
 
 HRESULT CConstruction::Render()
 {
+#ifdef _DEBUG
+	for (auto& iter : m_vColliders)
+		m_pGameInstance->Add_DebugComponent(iter);
+#endif
+
+
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
 
@@ -468,6 +498,10 @@ void CConstruction::Free()
 	for (auto& iter : m_vDecals)
 		Safe_Release(iter);
 	m_vDecals.clear();
+
+	for (auto& iter : m_vColliders)
+		Safe_Release(iter);
+	m_vColliders.clear();
 
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pModelCom);

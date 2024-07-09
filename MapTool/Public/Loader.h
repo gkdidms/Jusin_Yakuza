@@ -47,6 +47,7 @@ private:
 
 private:
 	HRESULT Add_Models_On_Path(_uint iLevel, const wstring& strPath, _bool bAnim = true);		// 0627 Çý¿øÃß°¡
+	HRESULT Add_Models_On_Path_NonAnim(_uint iLevel, const wstring& strPath);
 
 public:
     static CLoader* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, LEVEL eNextLevel);

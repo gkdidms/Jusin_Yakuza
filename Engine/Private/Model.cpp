@@ -661,6 +661,7 @@ HRESULT CModel::Import_Materials(ifstream& in, _bool isTool)
 			wstrPath += szRealFullPath;
 			strPath += szFullPath;
 
+
 			MeshMaterial.pMaterialTextures[j] = CTexture::Create(m_pDevice, m_pContext, wstrPath.data(), 1);
 			if (nullptr == MeshMaterial.pMaterialTextures[j])
 				return E_FAIL;

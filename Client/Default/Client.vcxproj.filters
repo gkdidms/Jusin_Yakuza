@@ -205,9 +205,12 @@
     <ClCompile Include="..\private\AI_Shakedown.cpp">
       <Filter>02.GameObjects\02.Character\LandObject\01.Monster\Shakedown\AI</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\Kuze.cpp">
-      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\Kuze</Filter>
+    <ClCompile Include="..\Private\SkyDome.cpp">
+      <Filter>02.GameObjects\04.Sky</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\MapColliderObj.cpp">
+      <Filter>02.GameObjects\08. MapCollider</Filter>
+	</ClCompile>
     <ClCompile Include="..\Private\AI_Kuze.cpp">
       <Filter>02.GameObjects\02.Character\LandObject\01.Monster\Kuze\AI</Filter>
     </ClCompile>
@@ -453,9 +456,12 @@
     <ClInclude Include="..\public\AI_Shakedown.h">
       <Filter>02.GameObjects\02.Character\LandObject\01.Monster\Shakedown\AI</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\Kuze.h">
-      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\Kuze</Filter>
+    <ClInclude Include="..\Public\SkyDome.h">
+      <Filter>02.GameObjects\04.Sky</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\MapColliderObj.h">
+      <Filter>02.GameObjects\08. MapCollider</Filter>
+	</ClInclude>
     <ClInclude Include="..\Public\AI_Kuze.h">
       <Filter>02.GameObjects\02.Character\LandObject\01.Monster\Kuze\AI</Filter>
     </ClInclude>
@@ -726,6 +732,9 @@
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Aura.hlsl">
+      <Filter>97.ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxMeshSky.hlsl">
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
   </ItemGroup>

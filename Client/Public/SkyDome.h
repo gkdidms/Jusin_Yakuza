@@ -1,21 +1,29 @@
 #pragma once
 
 #include "GameObject.h"
-#include "MapColliderObj.h"
 #include "Client_Defines.h"
 
 BEGIN(Engine)
-class CCollider;
+class CShader;
+class CTexture;
+class CModel;
 END
 
 BEGIN(Client)
 
-class CMapCollider final : public CGameObject
+class CSkyDome final : public CGameObject
 {
+public:
+	typedef struct tSkyObjDesc : public CGameObject::GAMEOBJECT_DESC
+	{
+		XMMATRIX			vStartPos;
+		wstring				wstrModelName;
+	}SkyObj_Desc;
+
 private:
-	CMapCollider(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-	CMapCollider(const CMapCollider& rhs);
-	virtual ~CMapCollider() = default;
+	CSkyDome(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	CSkyDome(const CSkyDome& rhs);
+	virtual ~CSkyDome() = default;
 
 public:
 	virtual HRESULT Initialize_Prototype() override;
@@ -26,17 +34,15 @@ public:
 	virtual HRESULT Render() override;
 
 private:
-	_matrix							m_WorldMatrix;
-	vector<CCollider*>				m_vCollider;
-
-	vector<CMapColliderObj*>		m_ColliderObjs;
+	CShader* m_pShaderCom = { nullptr };
+	CModel* m_pModelCom = { nullptr };
 
 private:
 	HRESULT Add_Components(void* pArg);
 	HRESULT Bind_ShaderResources();
 
 public:
-	static CMapCollider* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	static CSkyDome* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;
 	virtual void Free() override;
 };

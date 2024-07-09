@@ -37,6 +37,8 @@
 #include "Terrain.h"
 #include "Construction.h"
 #include "MapCollider.h"
+#include "SkyDome.h"
+#include "MapColliderObj.h"
 #pragma endregion
 
 #pragma region Effect
@@ -311,56 +313,38 @@ HRESULT CLoader::Loading_For_Test()
 #pragma region Effect
 	Add_Particle_On_Path(TEXT("../../Client/Bin/DataFiles/Particle/"));
 #pragma endregion
-	//if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Model_f2"), CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/NonAnim/Map/Map1/f2.fbx", PreTransformMatrix, false))))
-	//	return E_FAIL;
 
-	_matrix		PreTransformMatrix;
-	PreTransformMatrix = XMMatrixIdentity();
-	//if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Model_Water011"),
-	//	CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/NonAnim/Map/Map1/water_test.fbx", PreTransformMatrix, false))))
-	//	return E_FAIL;
-	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
+#pragma region NONANIM
+	Add_Models_On_Path_NonAnim(LEVEL_TEST, TEXT("../Bin/Resources/Models/NonAnim/Map"));
+#pragma endregion
 
-	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Model_f1"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/NonAnim/Map/Map0/Bin/f1.dat", PreTransformMatrix, true))))
+
+	_matrix PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Model_Bone_Sphere"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/NonAnim/Bone_Sphere/Bin/Square.dat", PreTransformMatrix, true))))
 		return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Model_GlassDoor"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/NonAnim/Map/Map0/Bin/GlassDoor.dat", PreTransformMatrix, true))))
+#pragma region Navigation_Loading
+	lstrcpy(m_szLoadingText, TEXT("네비게이션(을) 로딩 중 입니다."));
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Navigation"),
+		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/NaviData/Navigation_0.dat")))))
 		return E_FAIL;
+#pragma endregion
 
-	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Model_Water011"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/NonAnim/Map/Map1/Bin/Water011.dat", PreTransformMatrix, true))))
-		return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Model_bookshelfglass"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/NonAnim/Map/Map1/Bin/bookshelfglass.dat", PreTransformMatrix, true))))
-		return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Model_OfficeSet1"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/NonAnim/Map/Map1/Bin/OfficeSet1.dat", PreTransformMatrix, true))))
-		return E_FAIL;
-
-	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Model_OfficeSet2"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/NonAnim/Map/Map1/Bin/OfficeSet2.dat", PreTransformMatrix, true))))
-		return E_FAIL;
-
-	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Model_Borderglass"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/NonAnim/Map/Map1/Bin/Borderglass.dat", PreTransformMatrix, true))))
-		return E_FAIL;
-
-	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Model_f2"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/NonAnim/Map/Map1/Bin/f2.dat", PreTransformMatrix, true))))
-		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("셰이더를(을) 로딩 중 입니다."));
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Shader_VtxAnim"), CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxAnimMesh.hlsl"), VTXANIMMESH::Elements, VTXANIMMESH::iNumElements))))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Shader_Mesh"), CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxMesh.hlsl"), VTXMESH::Elements, VTXMESH::iNumElements))))
 		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Shader_VtxMeshSky"), CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxMeshSky.hlsl"), VTXMESH::Elements, VTXMESH::iNumElements))))
+		return E_FAIL;
 	/* For.Prototype_Component_Shader_VtxPosTex */
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Shader_VtxPosTex"), CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxPosTex.hlsl"), VTXPOSTEX::Elements, VTXPOSTEX::iNumElements))))
 		return E_FAIL;
+
 
 #pragma region Effect
 	/* For.Prototype_Component_Shader_Trail */
@@ -420,7 +404,7 @@ HRESULT CLoader::Loading_For_Test()
 		CTerrain::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	/* For.Prototype_GameObject_Terrain */
+	/* For.Prototype_GameObject_Construction */
 	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Construction"),
 		CConstruction::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
@@ -449,6 +433,18 @@ HRESULT CLoader::Loading_For_Test()
 	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_MapCollider"),
 		CMapCollider::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+
+	/* For.Prototype_GameObject_SkyDome */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_SkyDome"),
+		CSkyDome::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_MapColliderObj */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_MapColliderObj"),
+		CMapColliderObj::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	
 
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
 
@@ -600,6 +596,89 @@ HRESULT CLoader::Add_Particle_On_Path(const wstring& strPath)
 
 	}
 	return S_OK;
+}
+
+HRESULT CLoader::Add_Models_On_Path_NonAnim(_uint iLevel, const wstring& strPath)
+{
+	vector<wstring> vecDirectorys;
+	m_pGameInstance->Get_DirectoryName(strPath, vecDirectorys);
+
+	for (int i = 0; i < vecDirectorys.size(); i++)
+	{
+		wstring original = vecDirectorys[i];
+		wstring to_remove = L"\\";
+		int pos = original.find(to_remove);
+
+		if (pos != wstring::npos) {
+			original.erase(pos, to_remove.length());
+		}
+
+		vecDirectorys[i] = original;
+	}
+
+	_matrix		NonAnimPreTransformMatrix;
+
+	for (auto& strDirlName : vecDirectorys)
+	{
+
+		vector<string> fbxFilesName;
+		wstring		wstrFullPath = strPath + L"/" + strDirlName;
+
+		// fbx 제외하고 fbx 파일 이름들 저장
+		for (const auto& entry : fs::directory_iterator(wstrFullPath)) {
+			if (entry.is_regular_file() && entry.path().extension() == L".fbx") {
+
+				string strFileName = entry.path().filename().string();
+
+				size_t lastDot = entry.path().filename().string().find_last_of(".");
+
+				strFileName = entry.path().filename().string().substr(0, lastDot);
+
+				fbxFilesName.push_back(strFileName);
+			}
+		}
+
+		for (const auto& fbxNames : fbxFilesName)
+		{
+			wstring strFilePath = strPath + TEXT("/") + strDirlName + TEXT("/");
+
+			string strDirectory = m_pGameInstance->WstringToString(strFilePath);
+			string strBinPath = strDirectory + "Bin/" + fbxNames + ".dat";
+
+			if (!fs::exists(strBinPath))
+			{
+				wstring strFbxName = m_pGameInstance->StringToWstring(fbxNames);
+				wstring strComponentName = TEXT("Prototype_Component_Model_") + strFbxName;
+				wstring strFbxPath = strFilePath + strFbxName + TEXT(".fbx");
+				string strTransPath = m_pGameInstance->WstringToString(strFbxPath);
+
+
+				NonAnimPreTransformMatrix = XMMatrixIdentity();
+				if (FAILED(m_pGameInstance->Add_Component_Prototype(iLevel, strComponentName,
+					CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, strTransPath.c_str(), NonAnimPreTransformMatrix, false))))
+					return E_FAIL;
+
+			}
+			else
+			{
+
+				wstring strComponentName = TEXT("Prototype_Component_Model_") + m_pGameInstance->StringToWstring(fbxNames);
+
+				NonAnimPreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
+				if (FAILED(m_pGameInstance->Add_Component_Prototype(iLevel, strComponentName,
+					CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, strBinPath.c_str(), NonAnimPreTransformMatrix, true))))
+					return E_FAIL;
+
+
+
+			}
+		}
+
+	}
+
+	vecDirectorys.clear();
+
+	return E_NOTIMPL;
 }
 
 
