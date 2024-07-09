@@ -309,13 +309,13 @@ HRESULT CLoader::Loading_For_Test()
 		return E_FAIL;*/
 
 	lstrcpy(m_szLoadingText, TEXT("모델를(을) 로딩 중 입니다."));
-	Add_Models_On_Path(LEVEL_TEST, TEXT("../Bin/Resources/Models/Anim/"));
+	//Add_Models_On_Path(LEVEL_TEST, TEXT("../Bin/Resources/Models/Anim/"));
 #pragma region Effect
-	Add_Particle_On_Path(TEXT("../../Client/Bin/DataFiles/Particle/"));
+	//Add_Particle_On_Path(TEXT("../../Client/Bin/DataFiles/Particle/"));
 #pragma endregion
 
 #pragma region NONANIM
-	Add_Models_On_Path_NonAnim(LEVEL_TEST, TEXT("../Bin/Resources/Models/NonAnim/Map"));
+	//Add_Models_On_Path_NonAnim(LEVEL_TEST, TEXT("../Bin/Resources/Models/NonAnim/Map"));
 #pragma endregion
 
 
@@ -345,7 +345,7 @@ HRESULT CLoader::Loading_For_Test()
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Shader_VtxPosTex"), CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxPosTex.hlsl"), VTXPOSTEX::Elements, VTXPOSTEX::iNumElements))))
 		return E_FAIL;
 
-
+	lstrcpy(m_szLoadingText, TEXT("컴포넌트 원형을 로딩 중 입니다."));
 #pragma region Effect
 	/* For.Prototype_Component_Shader_Trail */
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Shader_Trail"),
@@ -369,7 +369,6 @@ HRESULT CLoader::Loading_For_Test()
 		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxNorTex.hlsl"), VTXNORTEX::Elements, VTXNORTEX::iNumElements))))
 		return E_FAIL;
 
-	lstrcpy(m_szLoadingText, TEXT("충돌체 원형을 로딩 중 입니다."));
 	/* For.Prototype_Component_Collider */
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Collider"), CCollider::Create(m_pDevice, m_pContext))))
 		return E_FAIL;

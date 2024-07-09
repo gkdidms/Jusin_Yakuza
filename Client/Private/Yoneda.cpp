@@ -174,4 +174,6 @@ CGameObject* CYoneda::Clone(void* pArg)
 void CYoneda::Free()
 {
 	__super::Free();
+
+	Safe_Release(m_pTree);
 }

@@ -325,4 +325,6 @@ CGameObject* CKuze::Clone(void* pArg)
 void CKuze::Free()
 {
 	__super::Free();  
+
+	Safe_Release(m_pTree);
 }

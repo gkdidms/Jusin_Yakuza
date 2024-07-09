@@ -132,12 +132,12 @@ void CConstruction::Late_Tick(const _float& fTimeDelta)
 	}
 
 	
-	if (m_pGameInstance->isShadow())
-	{
-		// 처음 렌더를 돌 때만 그림자를 그려준다.
-		m_pGameInstance->Add_Renderer(CRenderer::RENDER_PASSIVE_SHADOW, this);
-		m_isFirst = false;
-	}
+	//if (m_pGameInstance->isShadow())
+	//{
+	//	// 처음 렌더를 돌 때만 그림자를 그려준다.
+	//	m_pGameInstance->Add_Renderer(CRenderer::RENDER_PASSIVE_SHADOW, this);
+	//	m_isFirst = false;
+	//}
 		
 	
 	for (auto& iter : m_vDecals)

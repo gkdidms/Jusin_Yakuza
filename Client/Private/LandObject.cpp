@@ -168,7 +168,7 @@ void CLandObject::Free()
 	m_pEffects.clear();
 
 
-	//Safe_Release(m_pData);
+	Safe_Release(m_pData);
 	Safe_Release(m_pModelCom);
 	Safe_Release(m_pColliderCom);
 	Safe_Release(m_pSystemManager);
