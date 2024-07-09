@@ -19,6 +19,20 @@ public:
 private:
     void Ready_Tree();
 
+private:
+    CBTNode::NODE_STATE Check_Attack(); // 공격 가능한 상태인지 체크
+
+    CBTNode::NODE_STATE Attack(); //공격 가능할때 공격 선택
+    CBTNode::NODE_STATE ATK_Down();
+    CBTNode::NODE_STATE ATK_Heavy();
+    CBTNode::NODE_STATE ATK_Hiji_2Ren();
+    CBTNode::NODE_STATE ATK_Jab();
+    CBTNode::NODE_STATE ATK_CMD_A();
+    CBTNode::NODE_STATE ATK_CMD_B();
+    CBTNode::NODE_STATE ATK_HeadButt();
+    CBTNode::NODE_STATE ATK_Renda();
+
+
 public:
     static CAI_Kuze* Create();
     virtual CBTNode* Clone(void* pArg);

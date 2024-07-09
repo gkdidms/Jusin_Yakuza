@@ -127,4 +127,3 @@ struct PS_OUT_REVERSE
     vector vColor : SV_TARGET0;
     vector vReverseColor : SV_Target1;
 };
-
