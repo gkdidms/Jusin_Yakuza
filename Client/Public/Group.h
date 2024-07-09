@@ -51,7 +51,10 @@ public:
 public:
     HRESULT Load_Groupbinary(ifstream& in);
 
-
+public:
+    virtual HRESULT Show_UI()override;
+    virtual HRESULT Close_UI()override;
+    virtual _bool Check_AnimFin() override;
 
 public:
     static CGroup* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

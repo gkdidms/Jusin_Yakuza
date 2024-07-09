@@ -22,6 +22,8 @@ public:
         _bool isLoad = { false };
     } UI_OBJECT_DESC;
 
+    enum TEXTURE_TYPE { TYPE_IMG, TYPE_BTN, TYPE_TEXT, TYPE_GROUP, TYPE_UIEFFECT, TEXTURE_TYPE_END };
+
 protected:
     CUI_Object(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
     CUI_Object(const CUI_Object& rhs);
@@ -47,11 +49,15 @@ public:
     virtual HRESULT Save_Groupbinary(ofstream& out);
     virtual HRESULT  Load_binary(ifstream& in);
 
-
+public:
+    virtual HRESULT Show_UI();
+    virtual HRESULT Close_UI();
+    virtual _bool Check_AnimFin();
 
 protected:
     string m_strName = { "" }; // 저장될 이름
     _uint m_iTypeIndex = { 0 }; // 오브젝트 타입
+    _bool m_isFinAnim = { false };
 
 public:
     virtual void Free();

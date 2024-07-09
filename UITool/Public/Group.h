@@ -51,6 +51,9 @@ public:
 public:
     HRESULT Load_Groupbinary(ifstream& in);
 
+public:
+    virtual HRESULT Show_UI()override;
+    virtual HRESULT Close_UI()override;
 
 
 public:

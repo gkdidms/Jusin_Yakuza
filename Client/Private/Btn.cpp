@@ -69,7 +69,8 @@ void CBtn::Late_Tick(const _float& fTimeDelta)
 	__super::Late_Tick(fTimeDelta);
 #ifndef _TOOL
 	//커서 확인
-	m_isClick = m_pGameInstance->Picking_UI(m_pTransformCom);
+	m_isOverlap = m_pGameInstance->Picking_UI(m_pTransformCom);//오버렙 되면 이펙트 출력 하고 변동된 이미지 출력
+
 #endif // _TOOL
 }
 
@@ -316,16 +317,26 @@ HRESULT CBtn::Load_binary(ifstream& in)
 	return S_OK;
 }
 
+_bool CBtn::Click_Intersect()
+{
+	return m_pGameInstance->Picking_UI(m_pTransformCom	);
+}
+
 HRESULT CBtn::Add_Components()
 {
 	if (FAILED(__super::Add_Components()))
 		return E_FAIL;
 
+	CVIBuffer_Rect::RECT_DESC Desc;
+
+	Desc.fStartUV = m_ClickStartUV;
+	Desc.fEndUV = m_ClickEndUV;
+
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Rect"),
-		TEXT("Com_ClickVIBuffer"), reinterpret_cast<CComponent**>(&m_pClickVIBufferCom))))
+		TEXT("Com_ClickVIBuffer"), reinterpret_cast<CComponent**>(&m_pClickVIBufferCom),&Desc)))
 		return E_FAIL;
 
-	m_pClickVIBufferCom->EditUV(m_ClickStartUV, m_ClickEndUV);
+	//m_pClickVIBufferCom->EditUV(m_ClickStartUV, m_ClickEndUV);
 
 	m_pClickTextureCom = CTexture::Create(m_pDevice, m_pContext, m_strClickFilePath, 1);
 	if (nullptr == m_pClickTextureCom)

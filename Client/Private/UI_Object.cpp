@@ -29,10 +29,6 @@ HRESULT CUI_Object::Initialize(void* pArg)
 		m_iTypeIndex = pDesc->iTypeIndex;
 	}
 
-
-
-
-
 	return S_OK;
 }
 
@@ -67,6 +63,21 @@ HRESULT CUI_Object::Save_Groupbinary( ofstream& out)
 HRESULT CUI_Object::Load_binary(ifstream& in)
 {
 	return E_FAIL;
+}
+
+HRESULT CUI_Object::Show_UI()
+{
+	return E_FAIL;
+}
+
+HRESULT CUI_Object::Close_UI()
+{
+	return E_FAIL;
+}
+
+_bool CUI_Object::Check_AnimFin()
+{
+	return _bool();
 }
 
 

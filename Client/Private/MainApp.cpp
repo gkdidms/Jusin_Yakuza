@@ -1,6 +1,7 @@
 #include "../Default/framework.h"
 
 #include "MainApp.h"
+#include "UIManager.h"
 #include "GameInstance.h"
 #include "SystemManager.h"
 #include "Collision_Manager.h"
@@ -20,12 +21,14 @@ CMainApp::CMainApp() :
 	m_pGameInstance{ CGameInstance::GetInstance() },
 	m_pSystemManager{ CSystemManager::GetInstance() },
 	m_pFileTotalManager{ CFileTotalMgr::GetInstance() },
-	m_pCollisionManager{ CCollision_Manager::GetInstance() }
+	m_pCollisionManager{ CCollision_Manager::GetInstance() },
+	m_pUIManager{CUIManager::GetInstance()}
 {
 	Safe_AddRef(m_pGameInstance);
 	Safe_AddRef(m_pSystemManager);
 	Safe_AddRef(m_pFileTotalManager);
 	Safe_AddRef(m_pCollisionManager);
+	Safe_AddRef(m_pUIManager);
 
 #ifdef _DEBUG
 	Safe_AddRef(m_pDebugMananger);
@@ -44,7 +47,7 @@ HRESULT CMainApp::Initialize()
 
 	if (FAILED(m_pGameInstance->Initialize_Engine(LEVEL_END, EngineDesc, &m_pDevice, &m_pContext)))
 		return E_FAIL;
-
+	m_pUIManager->Initialize();
 	if (FAILED(Ready_Font()))
 		return E_FAIL;
 
@@ -74,6 +77,8 @@ void CMainApp::Tick(const _float& fTimeDelta)
 
 	m_pGameInstance->Tick(fTimeDelta);
 	m_pCollisionManager->Tick();
+	m_pUIManager->Tick(fTimeDelta);
+	m_pUIManager->Late_Tick(fTimeDelta);	
 
 #ifdef _DEBUG
 	if (m_pGameInstance->GetKeyState(DIK_F6) == TAP)
@@ -238,6 +243,9 @@ void CMainApp::Free()
 #endif // _DEBUG
 
 	Safe_Release(m_pSystemManager);
+
+	Safe_Release(m_pUIManager);
+	CUIManager::DestroyInstance();
 
 	Safe_Release(m_pFileTotalManager);
 	CFileTotalMgr::DestroyInstance();

@@ -235,7 +235,11 @@
     <ClInclude Include="..\Public\Terrain.h" />
     <ClInclude Include="..\Public\Text.h" />
     <ClInclude Include="..\Public\TRailEffect.h" />
-    <ClInclude Include="..\public\UI.h" />
+    <ClInclude Include="..\Public\UILife.h" />
+    <ClInclude Include="..\public\UIManager.h" />
+    <ClInclude Include="..\Public\UIMenu.h" />
+    <ClInclude Include="..\Public\UIMoney.h" />
+    <ClInclude Include="..\Public\UIScene.h" />
     <ClInclude Include="..\Public\UI_Effect.h" />
     <ClInclude Include="..\Public\UI_Object.h" />
     <ClInclude Include="..\Public\UI_Texture.h" />
@@ -321,7 +325,11 @@
     <ClCompile Include="..\Private\Terrain.cpp" />
     <ClCompile Include="..\Private\Text.cpp" />
     <ClCompile Include="..\Private\TRailEffect.cpp" />
-    <ClCompile Include="..\private\UI.cpp" />
+    <ClCompile Include="..\Private\UILife.cpp" />
+    <ClCompile Include="..\private\UIManager.cpp" />
+    <ClCompile Include="..\Private\UIMenu.cpp" />
+    <ClCompile Include="..\Private\UIMoney.cpp" />
+    <ClCompile Include="..\Private\UIScene.cpp" />
     <ClCompile Include="..\Private\UI_Effect.cpp" />
     <ClCompile Include="..\Private\UI_Object.cpp" />
     <ClCompile Include="..\Private\UI_Texture.cpp" />
@@ -344,6 +352,7 @@
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxMesh.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxNorTex.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxPosTex.hlsl" />
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxUI.hlsl" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

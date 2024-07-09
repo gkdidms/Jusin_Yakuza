@@ -105,6 +105,10 @@ public:
 
 public:
      HRESULT Change_UV(_float2 fStartUV, _float2 fEndUV);
+
+public:
+    virtual HRESULT Show_UI() override;
+    virtual HRESULT Close_UI() override;
 protected:
     _float							m_fX, m_fY, m_fSizeX, m_fSizeY;
     _float4x4						m_WorldMatrix, m_ViewMatrix, m_ProjMatrix;

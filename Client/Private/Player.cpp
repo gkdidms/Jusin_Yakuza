@@ -11,14 +11,18 @@
 #include "BehaviorAnimation.h"
 #include "Mesh.h"
 
+#include "UIManager.h"
+
 CPlayer::CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLandObject{ pDevice, pContext }
 {
 }
 
 CPlayer::CPlayer(const CPlayer& rhs)
-	: CLandObject{ rhs }
+	: CLandObject{ rhs },
+	m_pUIManager{CUIManager::GetInstance()}
 {
+	Safe_AddRef(m_pUIManager);
 }
 
 HRESULT CPlayer::Initialize_Prototype()
@@ -73,7 +77,15 @@ void CPlayer::Tick(const _float& fTimeDelta)
 	{
 		Style_Change(ADVENTURE);
 	}
-
+	//메뉴 창 추가
+	if (m_pGameInstance->GetKeyState(DIK_I) == TAP)
+	{
+		m_pUIManager->Open_Scene(TEXT("Menu"));
+	}
+	if (m_pGameInstance->GetKeyState(DIK_Q) == TAP)
+	{
+		m_pUIManager->Close_Scene();
+	}
 	Synchronize_Root(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")));
 
 	if (m_isAnimStart)
@@ -382,6 +394,7 @@ void CPlayer::Adventure_KeyInput(const _float& fTimeDelta)
 
 		isMove = true;
 	}
+
 
 	if (!isMove && m_iCurrentBehavior != (_uint)ADVENTURE_BEHAVIOR_STATE::IDLE)
 		m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Stop();
@@ -736,6 +749,6 @@ CGameObject* CPlayer::Clone(void* pArg)
 void CPlayer::Free()
 {
 	__super::Free();
-
+	Safe_Release(m_pUIManager);
 	Safe_Release(m_pShaderCom);
 }

@@ -19,13 +19,8 @@ HRESULT CImage_Texture::Initialize_Prototype()
 
 HRESULT CImage_Texture::Initialize_Prototype(ifstream& in)
 {
-	if (FAILED(__super::Initialize(nullptr)))
-		return E_FAIL;
 
 	if (FAILED(Load_binary(in)))
-		return E_FAIL;
-
-	if (FAILED(Add_Components()))
 		return E_FAIL;
 
 	return S_OK;
@@ -219,8 +214,7 @@ HRESULT CImage_Texture::Load_binary(ifstream& in)
 
 	_float4x4 World{};
 	in.read((char*)&World, sizeof(_float4x4));
-	m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(&World));
-
+	m_WorldMatrix = World;
 
 	in.read((char*)&m_isAnim, sizeof(_bool));
 	in.read((char*)&m_fAnimTime, sizeof(_float2));

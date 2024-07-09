@@ -85,14 +85,6 @@ HRESULT CUI_Effect::Render()
 	return S_OK;
 }
 
-HRESULT CUI_Effect::Add_Components()
-{
-	if (FAILED(__super::Add_Components()))
-		return E_FAIL;
-
-	return S_OK;
-}
-
 HRESULT CUI_Effect::Bind_ResourceData()
 {
 	if (FAILED(m_pTransformCom->Bind_ShaderMatrix(m_pShaderCom, "g_WorldMatrix")))

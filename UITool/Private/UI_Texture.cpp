@@ -137,6 +137,12 @@ void CUI_Texture::Late_Tick(const _float& fTimeDelta)
 			m_fAnimTime.x = 0.f;
 		}
 	}
+
+#ifndef _TOOL
+	m_pGameInstance->Add_Renderer(CRenderer::RENDER_UI, this);
+#endif // _TOOL
+
+
 }
 
 HRESULT CUI_Texture::Render()
@@ -152,6 +158,20 @@ HRESULT CUI_Texture::Change_UV(_float2 fStartUV, _float2 fEndUV)
 	if (FAILED(m_pVIBufferCom->EditUV(m_fStartUV, m_fEndUV)))
 		return E_FAIL;
 
+	return S_OK;
+}
+
+HRESULT CUI_Texture::Show_UI()
+{
+	m_fAnimTime.x = 0.f;
+	m_isReverse = false;
+	return S_OK;
+}
+
+HRESULT CUI_Texture::Close_UI()
+{
+	m_fAnimTime.x = m_fAnimTime.y;
+	m_isReverse = true;
 	return S_OK;
 }
 
@@ -172,12 +192,17 @@ HRESULT CUI_Texture::Load_binary(ifstream& in)
 
 HRESULT CUI_Texture::Add_Components()
 {
+	CVIBuffer_Rect::RECT_DESC Desc;
+
+	Desc.fStartUV = m_fStartUV;
+	Desc.fEndUV = m_fEndUV;
+
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Rect"),
-		TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pVIBufferCom))))
+		TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pVIBufferCom),&Desc)))
 		return E_FAIL;
 
-	if (FAILED(m_pVIBufferCom->EditUV(m_fStartUV, m_fEndUV)))
-		return E_FAIL;
+	//if (FAILED(m_pVIBufferCom->EditUV(m_fStartUV, m_fEndUV)))
+	//	return E_FAIL;
 
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Shader_VtxUI"),
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))

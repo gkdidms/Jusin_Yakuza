@@ -40,6 +40,7 @@
 #pragma endregion
 
 #pragma region UI
+#include "UIManager.h"
 #include "Image_Texture.h"
 #include "Text.h"
 #include "Group.h"
@@ -464,16 +465,17 @@ HRESULT CLoader::Loading_For_Test()
 	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Btn"),
 		CBtn::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+
 	/* For.Prototype_GameObject_UIEffect */
 	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_UIEffect"),
 		CUI_Effect::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-#pragma region UI
-	Add_UI_On_Path(TEXT("../../Client/Bin/DataFiles/UIData/"));
+	//만들어둔 데이터 로딩
+	if (FAILED(Add_UI_On_Path(TEXT("../../Client/Bin/DataFiles/UIData/"))))
+		return E_FAIL;
 #pragma endregion
 
-#pragma endregion
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
 
 	m_isFinished = true;
@@ -548,7 +550,6 @@ HRESULT CLoader::Add_Models_On_Path(_uint iLevel, const wstring& strPath, _bool 
 
 	return S_OK;
 }
-
 
 HRESULT CLoader::Add_Particle_On_Path(const wstring& strPath)
 {
@@ -631,6 +632,8 @@ HRESULT CLoader::Add_UI_On_Path(const wstring& strPath)
 	vector<wstring> vecDirectorys;
 	m_pGameInstance->Get_DirectoryName(strPath, vecDirectorys);
 
+	CUIManager* m_pUIManager = CUIManager::GetInstance();
+	
 	for (auto& strChannelName : vecDirectorys)
 	{
 		wstring strFilePath = strPath + strChannelName + TEXT("/");
@@ -658,7 +661,7 @@ HRESULT CLoader::Add_UI_On_Path(const wstring& strPath)
 			_uint Type;
 
 			in.read((char*)&Type, sizeof(_uint));
-
+			
 			switch (Type)
 			{
 			case 0:
@@ -671,6 +674,8 @@ HRESULT CLoader::Add_UI_On_Path(const wstring& strPath)
 					CImage_Texture::Create(m_pDevice, m_pContext, in))))
 					return E_FAIL;
 
+				if (FAILED(m_pUIManager->Add_Data(strChannelName, ProtoFrontName + m_pGameInstance->StringToWstring(Tag))))
+					return E_FAIL;
 			}
 			break;
 
@@ -681,6 +686,9 @@ HRESULT CLoader::Add_UI_On_Path(const wstring& strPath)
 				if (FAILED(m_pGameInstance->Add_GameObject_Prototype(ProtoFrontName + m_pGameInstance->StringToWstring(Tag),
 					CBtn::Create(m_pDevice, m_pContext, in))))
 					return E_FAIL;
+
+			//	if (FAILED(m_pUIManager->Add_Data(strChannelName, ProtoFrontName + m_pGameInstance->StringToWstring(Tag))))
+			//		return E_FAIL;
 			}
 			break;
 
@@ -691,21 +699,23 @@ HRESULT CLoader::Add_UI_On_Path(const wstring& strPath)
 				if (FAILED(m_pGameInstance->Add_GameObject_Prototype(ProtoFrontName + m_pGameInstance->StringToWstring(Tag),
 					CText::Create(m_pDevice, m_pContext, in))))
 					return E_FAIL;
+
+			//	if (FAILED(m_pUIManager->Add_Data(strChannelName, ProtoFrontName + m_pGameInstance->StringToWstring(Tag))))
+			//		return E_FAIL;
 			}
 			break;
 
 			case 3:
 			{
-				_int strTexturelength;
-				char charBox[MAX_PATH] = {};
-				in.read((char*)&strTexturelength, sizeof(_int));
-				in.read((char*)&charBox, strTexturelength);
-				string ProtoName = charBox;
+
 
 				/* For.Prototype_GameObject_Group */
-				if (FAILED(m_pGameInstance->Add_GameObject_Prototype(ProtoFrontName + m_pGameInstance->StringToWstring(ProtoName),
+				if (FAILED(m_pGameInstance->Add_GameObject_Prototype(ProtoFrontName + m_pGameInstance->StringToWstring(Tag),
 					CGroup::Create(m_pDevice, m_pContext, in))))
 					return E_FAIL;
+
+			//	if (FAILED(m_pUIManager->Add_Data(strChannelName, ProtoFrontName + m_pGameInstance->StringToWstring(Tag))))
+			//		return E_FAIL;
 			}
 			break;
 
@@ -716,6 +726,9 @@ HRESULT CLoader::Add_UI_On_Path(const wstring& strPath)
 				if (FAILED(m_pGameInstance->Add_GameObject_Prototype(ProtoFrontName + m_pGameInstance->StringToWstring(Tag),
 					CUI_Effect::Create(m_pDevice, m_pContext, in))))
 					return E_FAIL;
+
+			//	if (FAILED(m_pUIManager->Add_Data(strChannelName, ProtoFrontName + m_pGameInstance->StringToWstring(Tag))))
+			//		return E_FAIL;
 			}
 			break;
 
@@ -724,6 +737,7 @@ HRESULT CLoader::Add_UI_On_Path(const wstring& strPath)
 			}
 		}
 	}
+
 	return S_OK;
 }
 

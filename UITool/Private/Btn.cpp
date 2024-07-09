@@ -321,11 +321,16 @@ HRESULT CBtn::Add_Components()
 	if (FAILED(__super::Add_Components()))
 		return E_FAIL;
 
+	CVIBuffer_Rect::RECT_DESC Desc;
+
+	Desc.fStartUV = m_ClickStartUV;
+	Desc.fEndUV = m_ClickEndUV;
+
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Rect"),
-		TEXT("Com_ClickVIBuffer"), reinterpret_cast<CComponent**>(&m_pClickVIBufferCom))))
+		TEXT("Com_ClickVIBuffer"), reinterpret_cast<CComponent**>(&m_pClickVIBufferCom),&Desc)))
 		return E_FAIL;
 
-	m_pClickVIBufferCom->EditUV(m_ClickStartUV, m_ClickEndUV);
+	//m_pClickVIBufferCom->EditUV(m_ClickStartUV, m_ClickEndUV);
 
 	m_pClickTextureCom = CTexture::Create(m_pDevice, m_pContext, m_strClickFilePath, 1);
 	if (nullptr == m_pClickTextureCom)

@@ -19,6 +19,11 @@ CGroup::CGroup(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 CGroup::CGroup(const CGroup& rhs)
 	: CUI_Object{ rhs }
 {
+	for (auto& iter : rhs.m_PartObjects)
+	{
+		m_PartObjects.push_back(iter);
+	}
+
 }
 
 void CGroup::Remove_PartObject(_uint iIndex)
@@ -76,8 +81,8 @@ void CGroup::Late_Tick(const _float& fTimeDelta)
 
 HRESULT CGroup::Render()
 {
-	for (auto& pObject : m_PartObjects)
-		pObject->Render();
+//	for (auto& pObject : m_PartObjects)
+	//	pObject->Render();
 
 	return S_OK;
 }
@@ -107,6 +112,12 @@ HRESULT CGroup::Save_Groupbinary(ofstream& out)
 
 HRESULT CGroup::Load_Groupbinary(ifstream& in)
 {
+	_int strTexturelength;
+	char charBox[MAX_PATH] = {};
+	in.read((char*)&strTexturelength, sizeof(_int));
+	in.read((char*)&charBox, strTexturelength);
+	m_strName = charBox;
+
 	_int size;
 	in.read((char*)&size, sizeof(_int));
 	_float4x4 GroupWorld = {};
@@ -353,6 +364,34 @@ HRESULT CGroup::Load_Groupbinary(ifstream& in)
 	}
 
 	return S_OK;
+}
+
+HRESULT CGroup::Show_UI()
+{
+	for (auto& UIObject : m_PartObjects)
+	{
+		UIObject->Show_UI();
+	}
+	return S_OK;
+}
+
+HRESULT CGroup::Close_UI()
+{
+	for (auto& UIObject : m_PartObjects)
+	{
+		UIObject->Close_UI();
+	}
+	return S_OK;
+}
+
+_bool CGroup::Check_AnimFin()
+{
+	for (auto& UIObject : m_PartObjects)
+	{
+		if (!UIObject->Check_AnimFin())
+			return false;
+	}
+	return true;
 }
 
 

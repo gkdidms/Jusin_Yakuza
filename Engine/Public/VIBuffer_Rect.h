@@ -5,6 +5,12 @@ BEGIN(Engine)
 class ENGINE_DLL CVIBuffer_Rect :
     public CVIBuffer
 {
+public:
+    typedef struct tRect_Desc {
+        _float2 fStartUV;
+        _float2 fEndUV;
+    }RECT_DESC;
+
 private:
     CVIBuffer_Rect(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
     CVIBuffer_Rect(const CVIBuffer_Rect& rhs);

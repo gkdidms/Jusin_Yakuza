@@ -44,7 +44,6 @@ private:
     _float m_fSpeed = { 1.f };//이펙트 진행 속도
 
 private:
-    virtual HRESULT Add_Components() override;
     virtual HRESULT Bind_ResourceData() override;
 public:
     virtual HRESULT Save_binary(const string strDirectory)override;

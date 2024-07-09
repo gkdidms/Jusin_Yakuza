@@ -17,6 +17,8 @@ CUI_Texture::CUI_Texture(const CUI_Texture& rhs)
 	m_ViewMatrix{rhs.m_ViewMatrix },
 	m_ProjMatrix{rhs.m_ProjMatrix },
 	m_strParentName{rhs.m_strParentName },
+	m_strTextureFilePath{rhs.m_strTextureFilePath },
+	m_strTextureName{rhs.m_strTextureName },
 	m_fStartUV{rhs.m_fStartUV },
 	m_fEndUV{rhs.m_fEndUV },
 	m_isColor{rhs.m_isColor},
@@ -65,7 +67,7 @@ HRESULT CUI_Texture::Initialize(void* pArg)
 		m_fControlAlpha = pDesc->fControlAlpha;
 		m_isReverse = pDesc->isReverse;
 
-
+		m_WorldMatrix = pDesc->WorldMatrix;
 
 		m_fSizeX = g_iWinSizeX;
 		m_fSizeY = g_iWinSizeY;
@@ -81,7 +83,7 @@ HRESULT CUI_Texture::Initialize(void* pArg)
 			m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(&pDesc->WorldMatrix));
 		}
 	}
-
+	m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(&m_WorldMatrix));
 	XMStoreFloat4x4(&m_ViewMatrix, XMMatrixIdentity());
 	XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH(g_iWinSizeX, g_iWinSizeY, 0.f, 1.0f));
 	
@@ -137,6 +139,12 @@ void CUI_Texture::Late_Tick(const _float& fTimeDelta)
 			m_fAnimTime.x = 0.f;
 		}
 	}
+
+#ifndef _TOOL
+	m_pGameInstance->Add_Renderer(CRenderer::RENDER_UI, this);
+#endif // _TOOL
+
+
 }
 
 HRESULT CUI_Texture::Render()
@@ -153,6 +161,28 @@ HRESULT CUI_Texture::Change_UV(_float2 fStartUV, _float2 fEndUV)
 		return E_FAIL;
 
 	return S_OK;
+}
+
+HRESULT CUI_Texture::Show_UI()
+{
+	m_fAnimTime.x = 0.f;
+	m_isReverse = false;
+	return S_OK;
+}
+
+HRESULT CUI_Texture::Close_UI()
+{
+	m_fAnimTime.x = m_fAnimTime.y;
+	m_isReverse = true;
+	return S_OK;
+}
+
+_bool CUI_Texture::Check_AnimFin()
+{
+	if (m_fAnimTime.x >= m_fAnimTime.y)
+		return true;
+	else
+		return false;
 }
 
 HRESULT CUI_Texture::Save_binary(const string strDirectory)
@@ -172,12 +202,17 @@ HRESULT CUI_Texture::Load_binary(ifstream& in)
 
 HRESULT CUI_Texture::Add_Components()
 {
+	CVIBuffer_Rect::RECT_DESC Desc;
+
+	Desc.fStartUV = m_fStartUV;
+	Desc.fEndUV = m_fEndUV;
+
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Rect"),
-		TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pVIBufferCom))))
+		TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pVIBufferCom),&Desc)))
 		return E_FAIL;
 
-	if (FAILED(m_pVIBufferCom->EditUV(m_fStartUV, m_fEndUV)))
-		return E_FAIL;
+	//if (FAILED(m_pVIBufferCom->EditUV(m_fStartUV, m_fEndUV)))
+	//	return E_FAIL;
 
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Shader_VtxUI"),
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))

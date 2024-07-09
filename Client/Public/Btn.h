@@ -54,6 +54,8 @@ public:
     virtual HRESULT Save_binary(const string strDirectory)override;
     virtual HRESULT Save_Groupbinary(ofstream& out)override;
     virtual HRESULT Load_binary(ifstream& in)override;
+
+    _bool Click_Intersect();
 private:
     CTexture* m_pClickTextureCom = { nullptr };
     CVIBuffer_Rect* m_pClickVIBufferCom = { nullptr };
@@ -63,6 +65,7 @@ private:
     wstring m_StrClickFileName = { L"" };
     
     _bool m_isClick = { false };
+    _bool m_isOverlap = { false };
     _float2 m_ClickStartUV = { 0.f ,0.f };
     _float2 m_ClickEndUV = { 1.f, 1.f };
 

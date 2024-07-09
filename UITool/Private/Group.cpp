@@ -355,6 +355,24 @@ HRESULT CGroup::Load_Groupbinary(ifstream& in)
 	return S_OK;
 }
 
+HRESULT CGroup::Show_UI()
+{
+	for (auto& UIObject : m_PartObjects)
+	{
+		UIObject->Show_UI();
+	}
+	return S_OK;
+}
+
+HRESULT CGroup::Close_UI()
+{
+	for (auto& UIObject : m_PartObjects)
+	{
+		UIObject->Close_UI();
+	}
+	return S_OK;
+}
+
 
 
 CGroup* CGroup::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
