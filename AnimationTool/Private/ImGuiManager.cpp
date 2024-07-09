@@ -83,7 +83,7 @@ void CImguiManager::Tick(const _float& fTimeDelta)
 			SoundListWindow();
 	}
 
-
+	// 애니메이션 이벤트가 있는 콜라이더의 색상을 시안색으로 바꿔주는 기능
 	if (m_pGameInstance->Get_CurrentLevel() != LEVEL_LOADING)
 	{
 		if (0 < m_AnimNameList.size())
@@ -362,7 +362,15 @@ void CImguiManager::BoneListWindow()
 	}
 	}
 
+	if (m_iColliderActionType == HIT)
+		m_isAlwaysCollider = true;
+	else
+		m_isAlwaysCollider = false;
+
+	ImGui::PushItemFlag(ImGuiItemFlags_Disabled, true);
 	ImGui::Checkbox(u8"상시", &m_isAlwaysCollider);
+	ImGui::PopItemFlag();
+	ImGui::SameLine();
 
 	if (ImGui::RadioButton("Attack", m_iColliderActionType == ATTACK))
 	{
@@ -373,16 +381,48 @@ void CImguiManager::BoneListWindow()
 	{
 		m_iColliderActionType = HIT;
 	}
-	ImGui::SameLine();
 
 	switch (m_iColliderActionType)
 	{
 	case ATTACK:
-
+		ImGui::Text(u8"공격용 콜라이더 타입");
+		if (ImGui::RadioButton("Hand", m_iColliderPartType == HAND_A))
+		{
+			m_iColliderPartType = HAND_A;
+		}
+		ImGui::SameLine();
+		if (ImGui::RadioButton("Foot", m_iColliderPartType == FOOT_A))
+		{
+			m_iColliderPartType = FOOT_A;
+		}
+		ImGui::SameLine();
+		if (ImGui::RadioButton("Joint", m_iColliderPartType == JOINT_A))
+		{
+			m_iColliderPartType = JOINT_A;
+		}
+		ImGui::SameLine();
+		if (ImGui::RadioButton("Head", m_iColliderPartType == HEAD_A))
+		{
+			m_iColliderPartType = HEAD_A;
+		}
 		break;
 	case HIT:
 
-
+		ImGui::Text(u8"피격용 콜라이더 타입");
+		if (ImGui::RadioButton("Head(Neck)", m_iColliderPartType == HEAD_H))
+		{
+			m_iColliderPartType = HEAD_H;
+		}
+		ImGui::SameLine();
+		if (ImGui::RadioButton("Body", m_iColliderPartType == BODY_H))
+		{
+			m_iColliderPartType = BODY_H;
+		}
+		ImGui::SameLine();
+		if (ImGui::RadioButton("Leg", m_iColliderPartType == LEG_H))
+		{
+			m_iColliderPartType = LEG_H;
+		}
 		break;
 	}
 
@@ -406,7 +446,7 @@ void CImguiManager::BoneListWindow()
 		memcpy(&vCenter, &m_ColliderPosition, sizeof(_float3));
 		if (!m_pRenderModel->Created_BoneCollider(m_iBoneSelectedIndex))
 		{
-			m_AddedColliders.emplace(m_iBoneSelectedIndex, Collider_State{ m_BoneNameList[m_iBoneSelectedIndex], m_isAlwaysCollider });
+			m_AddedColliders.emplace(m_iBoneSelectedIndex, Collider_State{ m_BoneNameList[m_iBoneSelectedIndex], m_iColliderActionType,  m_iColliderPartType, m_isAlwaysCollider });
 			m_pRenderModel->Create_BoneCollider(m_iColliderType, m_iBoneSelectedIndex, vCenter, pValue);
 		}
 	}
@@ -429,6 +469,8 @@ void CImguiManager::BoneListWindow()
 
 		Gui_Select_Bone((*iter).first);
 		m_isAlwaysCollider = (*iter).second.isAlways;
+		m_iColliderActionType = (*iter).second.iColliderActionType;
+		m_iColliderPartType = (*iter).second.iColliderPartType;
 	}
 
 	if (ImGui::Button(u8"콜라이더 삭제"))
@@ -655,16 +697,19 @@ void CImguiManager::AnimEventWindow()
 
 	if (ImGui::ListBox("##", &m_iEventSelectedIndex, items.data(), items.size()))
 	{
+		// 모든 이벤트들의 Selected를 끈다
 		for (auto& Event : m_AnimationEvents)
 			Event.second.isSelected = false;
 
-		auto iter = m_AnimationEvents.begin();
+		// 현재 선택된 애니메이션 이름을 key로 가진 원소의 첫번째를 찾아서
+		auto lower_bound_iter = m_AnimationEvents.lower_bound(m_AnimNameList[m_iAnimIndex]);
 
+		//선택된 이벤트만큼 이터 증가시키고
 		for (size_t i = 0; i < m_iEventSelectedIndex; i++)
-		{
-			iter++;
-		}
-		(*iter).second.isSelected = true;
+			lower_bound_iter++;
+
+		// 찾은 원소를 선택한 것으로 변경한다
+		(*lower_bound_iter).second.isSelected = true;
 	}
 
 	ImGui::SameLine();
@@ -1167,6 +1212,11 @@ void CImguiManager::ColliderState_Save(string strPath)
 		break;
 		}
 
+		int iColliderActionType = m_AddedColliders.at(pSphere.first).iColliderActionType;
+		int iColliderPartType = m_AddedColliders.at(pSphere.first).iColliderPartType;
+
+		out.write((char*)&iColliderActionType, sizeof(int));
+		out.write((char*)&iColliderPartType, sizeof(int));
 		out.write((char*)&m_AddedColliders.at(pSphere.first).isAlways, sizeof(_bool));
 	}
 
@@ -1349,11 +1399,16 @@ void CImguiManager::ColliderState_Load(string strPath)
 		}
 
 		_bool isAlways = { false };
+		int iColliderPartType, iColliderActionType;
+		iColliderPartType = iColliderActionType = 0;
+
+		in.read((char*)&iColliderActionType, sizeof(int));
+		in.read((char*)&iColliderPartType, sizeof(int));
 		in.read((char*)&isAlways, sizeof(_bool));
 
 		if (!m_pRenderModel->Created_BoneCollider(iBoneIndex))
 		{
-			m_AddedColliders.emplace(iBoneIndex, Collider_State{ m_BoneNameList[iBoneIndex], isAlways });
+			m_AddedColliders.emplace(iBoneIndex, Collider_State{ m_BoneNameList[iBoneIndex], iColliderActionType, iColliderPartType, isAlways });
 			m_pRenderModel->Create_BoneCollider(iColliderType, iBoneIndex, vCenter, pValue);
 		}
 

@@ -203,9 +203,9 @@ HRESULT CPlayer::Render_LightDepth(_uint iIndex)
 	return S_OK;
 }
 
-_bool CPlayer::Intersect(CLandObject* pTargetObject)
+void CPlayer::Take_Damage(_uint iHitColliderType, const _float3& vDir, _float fDamage, _bool isBlowAttack)
 {
-	return _bool();
+	// iHitColliderType 는 충돌한 HIT타입 콜라이더가 헤드, 바디, 레그인지를 갖고있다.
 }
 
 void CPlayer::Ready_AnimationTree()

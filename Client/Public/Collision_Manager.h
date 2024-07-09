@@ -35,8 +35,8 @@ public:
     * 실제 충돌처리를 비교할 함수
     * 인자로 넣는 객체와 m_HitColliders 벡터 원소들의 충돌을 비교한다.
     */
-    void Collision_FromPlayer();
-    void Collision_FromEnemy();
+    void Enemy_Hit_Collision();
+    void Player_Hit_Collision();
 
 private:
     // 캐릭터가 겹치지않고 밀어내는 함수

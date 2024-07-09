@@ -52,12 +52,12 @@ void CMapCollider::Late_Tick(const _float& fTimeDelta)
 
 HRESULT CMapCollider::Render()
 {
-//#ifdef _DEBUG
-//    for (auto& iter : m_vCollider)
-//    {
-//        m_pGameInstance->Add_DebugComponent(iter);
-//    }
-//#endif
+#ifdef _DEBUG
+    for (auto& iter : m_vCollider)
+    {
+        m_pGameInstance->Add_DebugComponent(iter);
+    }
+#endif
 
     return S_OK;
 }
