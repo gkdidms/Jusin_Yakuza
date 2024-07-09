@@ -1,11 +1,13 @@
 #include "Level_Test.h"
 
 #include "GameInstance.h"
+
 #include "SystemManager.h"
 #include "DebugManager.h"
+#include "FileTotalMgr.h"
+
 #include "PlayerCamera.h"
 #include "DebugCamera.h"
-#include "FileTotalMgr.h"
 #include "CineCamera.h"
 
 CLevel_Test::CLevel_Test(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -19,14 +21,11 @@ CLevel_Test::CLevel_Test(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 
 HRESULT CLevel_Test::Initialize()
 {
-	if (FAILED(Ready_Light()))
-		return E_FAIL;
-
 	//if (FAILED(Ready_Player(TEXT("Layer_Player"))))
 	//	return E_FAIL;
 
-	//if (FAILED(Ready_Monster(TEXT("Layer_Monster"))))
-	//	return E_FAIL;
+	///*if (FAILED(Ready_Monster(TEXT("Layer_Monster"))))
+	//	return E_FAIL;*/
 
 	//if (FAILED(Ready_Camera(TEXT("Layer_Camera"))))
 	//	return E_FAIL;
@@ -52,41 +51,6 @@ void CLevel_Test::Tick(const _float& fTimeDelta)
 #endif
 }
 
-HRESULT CLevel_Test::Ready_Light()
-{
-	//LIGHT_DESC			LightDesc{};
-
-	//LightDesc.eType = LIGHT_DESC::TYPE_DIRECTIONAL;
-	//LightDesc.vDirection = _float4(1.f, -1.f, 1.f, 0.f);
-	//LightDesc.vDiffuse = _float4(1.f, 1.f, 1.f, 1.f);
-	//LightDesc.vAmbient = _float4(0.4f, 0.4f, 0.4f, 1.f);
-	//LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
-
-	//m_pGameInstance->Add_Light(LightDesc);
-
-	//ZeroMemory(&LightDesc, sizeof(LIGHT_DESC));
-	//LightDesc.eType = LIGHT_DESC::TYPE_POINT;
-	//LightDesc.vPosition = _float4(20.f, 5.f, 20.f, 1.f);
-	//LightDesc.fRange = 20.f;
-	//LightDesc.vDiffuse = _float4(1.f, 0.0f, 0.f, 1.f);
-	//LightDesc.vAmbient = _float4(0.4f, 0.1f, 0.1f, 1.f);
-	//LightDesc.vSpecular = LightDesc.vDiffuse;
-
-	//m_pGameInstance->Add_Light(LightDesc);
-
-	//ZeroMemory(&LightDesc, sizeof(LIGHT_DESC));
-	//LightDesc.eType = LIGHT_DESC::TYPE_POINT;
-	//LightDesc.vPosition = _float4(40.f, 5.f, 20.f, 1.f);
-	//LightDesc.fRange = 20.f;
-	//LightDesc.vDiffuse = _float4(0.0f, 1.f, 0.f, 1.f);
-	//LightDesc.vAmbient = _float4(0.1f, 0.4f, 0.1f, 1.f);
-	//LightDesc.vSpecular = LightDesc.vDiffuse;
-
-	//m_pGameInstance->Add_Light(LightDesc);
-
-	return S_OK;
-}
-
 HRESULT CLevel_Test::Ready_Camera(const wstring& strLayerTag)
 {
 	/* 카메라 추가 시 Debug Camera를 첫번째로 놔두고 추가해주세요 (디버깅 툴에서 사용중)*/
@@ -105,7 +69,6 @@ HRESULT CLevel_Test::Ready_Camera(const wstring& strLayerTag)
 
 	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_DebugCamera"), strLayerTag, &CameraDesc)))
 		return E_FAIL;
-
 
 	/* 초기화 할때는 -1 */
 	/* 1. 씬용 카메라 */

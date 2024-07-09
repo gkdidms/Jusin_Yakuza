@@ -213,27 +213,28 @@ private:
     class CGraphic_Device* m_pGraphic_Device = { nullptr };
     class CSoundMgr* m_pSound_Manager = { nullptr };
     class CInput_Device* m_pInput_Device = { nullptr };
+    class CTimer_Manager* m_pTimer_Manager = { nullptr };
+    
     class CLevel_Manager* m_pLevel_Manager = { nullptr };
     class CGameObject_Manager* m_pGameObject_Manager = { nullptr };
     class CComponent_Manager* m_pComponent_Manager = { nullptr };
     class CBTNode_Manager* m_pBTNode_Manager = { nullptr };
-    class CTimer_Manager* m_pTimer_Manager = { nullptr };
-    class CFont_Manager* m_pFont_Manager = { nullptr };
+
     class CRenderTarget_Manager* m_pRenderTarget_Manager = { nullptr };
+    class CFont_Manager* m_pFont_Manager = { nullptr };
     class CLight_Manager* m_pLight_Manager = { nullptr };
+    class CConvert_Manager* m_pConvert_Manager = { nullptr };
+    class CRandomManager* m_pRandom_Manager = { nullptr };
+
     class CRenderer* m_pRenderer = { nullptr };
     class CPipeLine* m_pPipeLine = { nullptr };
     class CPicking* m_pPicking = { nullptr };
     class CFrustum* m_pFrustum = { nullptr };
-    class CConvert_Manager* m_pConvert_Manager = { nullptr };
-    class CRandomManager* m_pRandom_Manager = { nullptr };
-
 
 public:
     static void Release_Engine();
     virtual void Free() override;
 };
-
 END
 
 template<typename T>
