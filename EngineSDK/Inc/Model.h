@@ -83,7 +83,7 @@ public:
 	const _char* Get_AnimationName(_uint iAnimIndex);
 	const _double* Get_AnimationCurrentPosition();
 	const _double* Get_AnimationDuration();
-	const _float3* Get_AnimationCenterMove();
+	const _float3* Get_AnimationCenterMove(class CAnim* pAnim = nullptr);
 	const _float4* Get_AnimationCenterRotation();
 
 public:

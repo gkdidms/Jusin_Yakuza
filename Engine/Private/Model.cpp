@@ -661,6 +661,7 @@ HRESULT CModel::Import_Materials(ifstream& in, _bool isTool)
 			wstrPath += szRealFullPath;
 			strPath += szFullPath;
 
+
 			MeshMaterial.pMaterialTextures[j] = CTexture::Create(m_pDevice, m_pContext, wstrPath.data(), 1);
 			if (nullptr == MeshMaterial.pMaterialTextures[j])
 				return E_FAIL;
@@ -996,9 +997,12 @@ const _double* CModel::Get_AnimationDuration()
 	return m_Animations[m_AnimDesc.iAnimIndex]->Get_Duration();
 }
 
-const _float3* CModel::Get_AnimationCenterMove()
+const _float3* CModel::Get_AnimationCenterMove(CAnim* pAnim)
 {
-	return m_Animations[m_AnimDesc.iAnimIndex]->Get_CenterMoveValue();
+	if(nullptr == pAnim)
+		return m_Animations[m_AnimDesc.iAnimIndex]->Get_CenterMoveValue();
+	else
+		return pAnim->Get_AnimationCenterMove();
 }
 
 const _float4* CModel::Get_AnimationCenterRotation()

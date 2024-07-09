@@ -364,6 +364,28 @@ void CImguiManager::BoneListWindow()
 
 	ImGui::Checkbox(u8"상시", &m_isAlwaysCollider);
 
+	if (ImGui::RadioButton("Attack", m_iColliderActionType == ATTACK))
+	{
+		m_iColliderActionType = ATTACK;
+	}
+	ImGui::SameLine();
+	if (ImGui::RadioButton("Hit", m_iColliderActionType == HIT))
+	{
+		m_iColliderActionType = HIT;
+	}
+	ImGui::SameLine();
+
+	switch (m_iColliderActionType)
+	{
+	case ATTACK:
+
+		break;
+	case HIT:
+
+
+		break;
+	}
+
 	if (ImGui::Button("Create Collier"))
 	{
 		void* pValue = nullptr;
@@ -533,24 +555,12 @@ void CImguiManager::KeyFrameWindow()
 	}
 	ImGui::SameLine();
 
-	if (ImGui::Button("0.5x"))
+	if (ImGui::SliderFloat("Speed Scale", &m_fTimeDeltaScale, 0.f, 3.f))
 	{
-		m_fTimeDeltaScale = 0.5f;
-		m_pGameInstance->Set_TimeSpeed(TEXT("Timer_60"), m_fTimeDeltaScale);
-	}
-	ImGui::SameLine();
-	if (ImGui::Button("1x"))
-	{
-		m_fTimeDeltaScale = 1.f;
 		m_pGameInstance->Set_TimeSpeed(TEXT("Timer_60"), m_fTimeDeltaScale);
 	}
 	ImGui::SameLine();
 
-	if (ImGui::Button("3x"))
-	{
-		m_fTimeDeltaScale = 3.f;
-		m_pGameInstance->Set_TimeSpeed(TEXT("Timer_60"), m_fTimeDeltaScale);
-	}
 #pragma endregion
 
 	//현재 애니메이션에 맞는 채널들을 보여준다

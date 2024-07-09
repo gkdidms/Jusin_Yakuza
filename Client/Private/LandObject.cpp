@@ -57,18 +57,6 @@ HRESULT CLandObject::Render()
 	return S_OK;
 }
 
-_bool CLandObject::Intersect(CLandObject* pTargetObject)
-{
-	//pTargetObject 으로부터 데미지 입을 객체들
-	for (auto& pSocketCollider : m_pColliders)
-	{
-		if (pSocketCollider.second->Get_CollierType() == CSocketCollider::HIT)
-			pSocketCollider.second->Intersect(pTargetObject->Get_Collider());
-	}
-
-	return _bool();
-}
-
 void CLandObject::ImpulseResolution(CLandObject* pTargetObject)
 {
 	if (nullptr == m_pColliderCom) return;
@@ -123,6 +111,7 @@ void CLandObject::Apply_ChracterData()
 		Desc.iBoneIndex = Collider.first;
 		Desc.ColliderState = Collider.second;
 		Desc.iType = Collider.second.isAlways ? 1 : 0;
+		Desc.pParentObject = this;
 
 		CGameObject* pSoketCollider = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_SoketCollider"), &Desc);
 		if (nullptr == pSoketCollider)
@@ -138,22 +127,22 @@ void CLandObject::Apply_ChracterData()
 			it->second->Off();
 	}
 
-	auto& pEffects = m_pData->Get_Effets();
-	for (auto& pEffect : pEffects)
-	{
-		CSocketEffect::SOKET_EFFECT_DESC Desc{};
-		Desc.pParentMatrix = m_pTransformCom->Get_WorldFloat4x4();
-		Desc.pCombinedTransformationMatrix = m_pModelCom->Get_BoneCombinedTransformationMatrix(pEffect.first.c_str());
-		Desc.wstrEffectName = pEffect.second;
+	//auto& pEffects = m_pData->Get_Effets();
+	//for (auto& pEffect : pEffects)
+	//{
+	//	CSocketEffect::SOKET_EFFECT_DESC Desc{};
+	//	Desc.pParentMatrix = m_pTransformCom->Get_WorldFloat4x4();
+	//	Desc.pCombinedTransformationMatrix = m_pModelCom->Get_BoneCombinedTransformationMatrix(pEffect.first.c_str());
+	//	Desc.wstrEffectName = pEffect.second;
 
-		CGameObject* pSoketEffect = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_SoketEffect"), &Desc);
-		if (nullptr == pSoketEffect)
-			return;
+	//	CGameObject* pSoketEffect = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_SoketEffect"), &Desc);
+	//	if (nullptr == pSoketEffect)
+	//		return;
 
-		auto [it, success] = m_pEffects.emplace(pEffect.first, static_cast<CSocketEffect*>(pSoketEffect));
+	//	auto [it, success] = m_pEffects.emplace(pEffect.first, static_cast<CSocketEffect*>(pSoketEffect));
 
-		it->second->On();
-	}
+	//	it->second->On();
+	//}
 }
 
 HRESULT CLandObject::Add_Components()
@@ -179,7 +168,7 @@ void CLandObject::Free()
 	m_pEffects.clear();
 
 
-	//Safe_Release(m_pData);
+	Safe_Release(m_pData);
 	Safe_Release(m_pModelCom);
 	Safe_Release(m_pColliderCom);
 	Safe_Release(m_pSystemManager);

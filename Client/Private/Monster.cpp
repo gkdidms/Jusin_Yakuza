@@ -59,8 +59,44 @@ HRESULT CMonster::Render()
 	return S_OK;
 }
 
-void CMonster::Synchronize_Root(const _float& fTimeDelta)
-{
+/*		수정본
+	_vector vFF = XMVector3TransformNormal(XMVectorSetZ(XMLoadFloat3(m_pModelCom->Get_AnimationCenterMove()), 0), m_pTransformCom->Get_WorldMatrix());
+
+	// m_pModelCom->Get_AnimChanged()  선형보간이 끝났는지
+	// m_pModelCom->Get_AnimLerp() 선형보간이 필요한 애니메이션인지
+	if (m_pAnimCom->Get_AnimChanged() || !m_pAnimCom->Get_AnimLerp(m_fChangeInterval))
+	{
+		if (m_pAnimCom->Get_AnimRestart(m_isAnimLoop))
+		{
+			XMStoreFloat4(&m_vPrevMove, XMVectorZero());
+			m_fPrevSpeed = 0.f;
+		}
+		else
+		{
+			_float4 fMoveDir;
+			_float fMoveSpeed = XMVectorGetX(XMVector3Length(vFF - XMLoadFloat4(&m_vPrevMove)));
+
+			//Y값 이동을 죽인 방향으로 적용해야한다.
+			XMStoreFloat4(&fMoveDir, XMVectorSetY(XMVector3Normalize(vFF - XMLoadFloat4(&m_vPrevMove)), 0.f));
+			//m_pTransformCom->Go_Straight_CustumSpeed(0.2, 1);
+			m_pTransformCom->Go_Straight_CustumSpeed(m_fPrevSpeed, 1);
+			m_pTransformCom->Go_Move_Custum(fMoveDir, fMoveSpeed, 1);
+			m_fPrevSpeed = fMoveSpeed;
+
+			XMStoreFloat4(&m_vPrevMove, vFF);
+		}
+	}
+	else
+	{
+		// 선형보간중일때는 무조건 초기화
+		XMStoreFloat4(&m_vPrevMove, XMVectorZero());
+	}
+
+	XMStoreFloat4x4(&m_ModelWorldMatrix, m_pTransformCom->Get_WorldMatrix());
+*/
+
+/*		수정전
+
 	_vector vFF = XMVector3TransformNormal(XMLoadFloat3(m_pAnimCom->Get_AnimationCenterMove()), m_pTransformCom->Get_WorldMatrix());
 	vFF = XMVectorSet(XMVectorGetX(vFF), XMVectorGetZ(vFF), XMVectorGetY(vFF), 1.f);
 
@@ -86,7 +122,7 @@ void CMonster::Synchronize_Root(const _float& fTimeDelta)
 		{
 			_float4 fMoveDir;
 			_float fMoveSpeed = XMVectorGetX(XMVector3Length(vFF - XMLoadFloat4(&m_vPrevMove)));
-			
+
 			//Y값 이동을 죽인 방향으로 적용해야한다.
 			XMStoreFloat4(&fMoveDir, XMVectorSetY(XMVector3Normalize(vFF - XMLoadFloat4(&m_vPrevMove)), 0.f));
 			m_pTransformCom->Go_Move_Custum(fMoveDir, fMoveSpeed, 1);
@@ -104,6 +140,46 @@ void CMonster::Synchronize_Root(const _float& fTimeDelta)
 	XMStoreFloat4(&m_vPrevMove, vFF);
 	//m_vPrevRotation = vQuaternion;
 	XMStoreFloat4(&m_vPrevRotation, resultQuaternionVector);
+*/
+
+void CMonster::Synchronize_Root(const _float& fTimeDelta)
+{
+	_vector vFF = XMVector3TransformNormal(XMVectorSetZ(XMLoadFloat3(m_pModelCom->Get_AnimationCenterMove(m_pAnimCom)), 0), m_pTransformCom->Get_WorldMatrix());
+
+	// m_pModelCom->Get_AnimChanged()  선형보간이 끝났는지
+	// m_pModelCom->Get_AnimLerp() 선형보간이 필요한 애니메이션인지
+	if (m_pAnimCom->Get_AnimChanged() || !m_pAnimCom->Get_AnimLerp(m_fChangeInterval))
+	{
+		if (m_pAnimCom->Get_AnimRestart(m_isAnimLoop))
+		{
+			XMStoreFloat4(&m_vPrevMove, XMVectorZero());
+			m_fPrevSpeed = 0.f;
+		}
+		else
+		{
+			_float4 fMoveDir;
+			_float fMoveSpeed = XMVectorGetX(XMVector3Length(vFF - XMLoadFloat4(&m_vPrevMove)));
+
+			//Y값 이동을 죽인 방향으로 적용해야한다.
+			XMStoreFloat4(&fMoveDir, XMVectorSetY(XMVector3Normalize(vFF - XMLoadFloat4(&m_vPrevMove)), 0.f));
+			
+			if (0.01 > m_fPrevSpeed)
+				m_fPrevSpeed = 0.f;
+
+			m_pTransformCom->Go_Straight_CustumSpeed(m_fPrevSpeed, 1);
+			m_pTransformCom->Go_Move_Custum(fMoveDir, m_fPrevSpeed, 1);
+			m_fPrevSpeed = fMoveSpeed;
+
+			XMStoreFloat4(&m_vPrevMove, vFF);
+		}
+	}
+	else
+	{
+		// 선형보간중일때는 무조건 초기화
+		XMStoreFloat4(&m_vPrevMove, XMVectorZero());
+	}
+
+	XMStoreFloat4x4(&m_ModelWorldMatrix, m_pTransformCom->Get_WorldMatrix());
 }
 
 HRESULT CMonster::Add_Components()

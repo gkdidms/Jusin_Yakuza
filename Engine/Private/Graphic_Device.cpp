@@ -244,6 +244,8 @@ void CGraphic_Device::Free()
 	//	if (d3dDebug != nullptr)            d3dDebug->Release();
 	//#endif
 
+		//_CrtSetDbgFlag(_CRTDBG_ALLOC_MEM_DF | _CRTDBG_LEAK_CHECK_DF);
+		//_CrtSetBreakAlloc(515); // Ãß°¡
 
 	Safe_Release(m_pDevice);
 }

@@ -12,6 +12,9 @@ Texture2D g_RSTexture;
 Texture2D g_DepthTexture;
 Texture2D g_NoiseTexture;
 Texture2D g_BlurReverseTexture;
+Texture2D g_MultiDiffuseTexture;
+Texture2D g_RDTexture;
+Texture2D g_ReflectionTexture;
 
 float g_fObjID;
 float g_fRefractionScale = { 0.001f };
@@ -22,10 +25,17 @@ float g_fSpeed = 2.f;
 bool g_bExistNormalTex;
 bool g_bExistRMTex;
 bool g_bExistRSTex;
+bool g_bReflExist;
+
 
 vector g_vCamPosition;
 
 float2 g_RenderResolution = float2(1280, 720);
+
+bool g_isRS;
+bool g_isRD;
+
+int g_iCount = { 0 };
 
 struct VS_IN
 {
@@ -112,6 +122,8 @@ struct PS_OUT
     vector vDepth : SV_TARGET2;
     vector vRM : SV_TARGET3;
     vector vRS : SV_Target4;
+    vector vMulti : SV_Target5;
+    vector vRD : SV_Target6;
 };
 
 
@@ -119,12 +131,37 @@ PS_OUT PS_MAIN(PS_IN In)
 {
     PS_OUT Out = (PS_OUT) 0;
 
-    Out.vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
+    vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
+    vector vMultiDiffuce = g_MultiDiffuseTexture.Sample(LinearSampler, In.vTexcoord);
     
-	
     // 투명할 경우(0.1보다 작으면 투명하니) 그리지 않음
-    if (Out.vDiffuse.a < 0.1f)
+    if (vDiffuse.a < 0.1f)
         discard;
+    
+     //RS + RD
+    vector vRSRD;
+    vector vRDDesc;
+    if (g_isRD)
+    {
+        vRDDesc = g_RDTexture.Sample(LinearSampler, In.vTexcoord);
+        Out.vRD = vRDDesc;
+    }
+    
+    if (g_isRS)
+    {
+        vector vRSDesc = g_RSTexture.Sample(LinearSampler, In.vTexcoord);
+        Out.vRS = vRSDesc;
+        vRSDesc = lerp(vRSDesc, vRDDesc, 0.7f);
+        Out.vDiffuse = lerp(vDiffuse, vRSDesc, vMultiDiffuce.z);
+        
+    }
+    else
+    {
+        if (g_isRD)
+            Out.vDiffuse = lerp(vDiffuse, vRDDesc, vMultiDiffuce.z);
+        else
+            Out.vDiffuse = vDiffuse;
+    }
     
     float3 vNormal;
     if (true == g_bExistNormalTex)
@@ -146,6 +183,8 @@ PS_OUT PS_MAIN(PS_IN In)
     
     Out.vNormal = vector(vNormal.xyz * 0.5f + 0.5f, 0.f);
     Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_fFar, 0.f, 1.f);
+    Out.vMulti = vMultiDiffuce;
+    
     
     // specularTex와 metalic 같은 rm 사용 - bool 값 같이 사용하기
     if (true == g_bExistRMTex)
@@ -368,24 +407,20 @@ PS_OUT_LIGHTDEPTH PS_MAIN_LIGHTDEPTH(PS_IN_LIGHTDEPTH In)
 {
     PS_OUT_LIGHTDEPTH Out = (PS_OUT_LIGHTDEPTH) 0;
 
-    vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
-	
     Out.vLightDepth = vector(In.vProjPos.w / 1000.f, 0.0f, 0.f, 0.f);
-
+    
     return Out;
 }
 
 
 technique11 DefaultTechnique
 {
-	/* 특정 렌더링을 수행할 때 적용해야할 셰이더 기법의 셋트들의 차이가 있다. */
-    pass DefaultPass
+    pass DefaultPass //0
     {
-        SetRasterizerState(RS_Default);
+        SetRasterizerState(RS_Cull_NON_CW);
         SetDepthStencilState(DSS_Default, 0);
         SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 
-		/* 어떤 셰이덜르 국동할지. 셰이더를 몇 버젼으로 컴파일할지. 진입점함수가 무엇이찌. */
         VertexShader = compile vs_5_0 VS_MAIN();
         GeometryShader = NULL;
         HullShader = NULL;
@@ -393,7 +428,7 @@ technique11 DefaultTechnique
         PixelShader = compile ps_5_0 PS_MAIN();
     }
 
-    pass GlassDoorPass
+    pass GlassDoorPass //1
     {
         SetRasterizerState(RS_Cull_NON_CW);
         SetDepthStencilState(DSS_Default, 0);
@@ -407,7 +442,7 @@ technique11 DefaultTechnique
     }
 
 
-    pass PuddlePass
+    pass PuddlePass //2
     {
         SetRasterizerState(RS_Cull_NON_CW);
         SetDepthStencilState(DSS_Default, 0);
@@ -419,8 +454,9 @@ technique11 DefaultTechnique
         DomainShader = NULL;
         PixelShader = compile ps_5_0 PS_PUDDLE();
     }
+    
 
-    pass LightDepth
+    pass LightDepth //3 - construction , Construction의 render light depth에서 변경해주기
     {
         SetRasterizerState(RS_Cull_NON_CW);
         SetDepthStencilState(DSS_Default, 0);
@@ -433,5 +469,7 @@ technique11 DefaultTechnique
         DomainShader = NULL;
         PixelShader = compile ps_5_0 PS_MAIN_LIGHTDEPTH();
     }
+
+   
 }
 

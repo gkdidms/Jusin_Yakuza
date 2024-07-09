@@ -122,6 +122,7 @@ void CImgui_Manager::Tick(_float fTimeDelta)
         Show_MapObj_Place_IMGUI();
         Show_Object_List();
         m_pObjPlace_Manager->Add_Decal_IMGUI();
+        m_pObjPlace_Manager->Add_ObjectCollider_IMGUI();
         m_eWrieID = OBJPLACE;
     }
 
@@ -159,6 +160,7 @@ void CImgui_Manager::Late_Tick(_float fTimeDelta)
     {
         m_pObjPlace_Manager->Late_Tick(fTimeDelta);
     }
+
     m_pColliderMgr->Late_Tick(fTimeDelta);
 
     m_pLightTool_Mgr->Late_Tick(fTimeDelta);
