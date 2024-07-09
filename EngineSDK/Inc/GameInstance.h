@@ -115,16 +115,20 @@ public:
     _matrix Get_Transform_Matrix(CPipeLine::D3DTRANSFORMSTATE eState);
     const _float4x4* Get_Transform_Inverse_Float4x4(CPipeLine::D3DTRANSFORMSTATE eState);
     _matrix Get_Transform_Inverse_Matrix(CPipeLine::D3DTRANSFORMSTATE eState);
+    const _float4x4* Get_Shadow_Transform_Float4x4(CPipeLine::D3DTRANSFORMSTATE eState);
     const _float4* Get_CamPosition_Float4();
     _vector Get_CamPosition();
-    void Set_Transform(CPipeLine::D3DTRANSFORMSTATE eState, _fmatrix matTransform);
     const _float4* Get_ComLook_Float4();
     _vector Get_CamLook();
     _vector Get_CamRight();
     const _float* Get_CamFar();
-    void Set_CamFar(_float fFar);
     const _float4x4* Get_ReflectViewMatrix();
+
+    void Set_Transform(CPipeLine::D3DTRANSFORMSTATE eState, _fmatrix matTransform);
+    void Set_CamFar(_float fFar);
     void Set_ReflectViewMatrix(_fmatrix matTransform);
+    void Set_Shadow_Transform(CPipeLine::D3DTRANSFORMSTATE eState, _fmatrix matTransform);
+    
 
     /* Font_Manager */
 public: 
