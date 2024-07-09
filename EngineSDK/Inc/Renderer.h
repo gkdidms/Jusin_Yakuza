@@ -84,7 +84,7 @@ private:
     void Render_Puddle();
     void Render_DeferredResult();
 
-    /* AerialPerspective*/
+    /* BOF */
     void Render_DeferredBlur();
     void Render_BOF();
 
