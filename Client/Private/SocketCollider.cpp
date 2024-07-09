@@ -18,6 +18,9 @@ HRESULT CSocketCollider::Initialize_Prototype()
 
 HRESULT CSocketCollider::Initialize(void * pArg)
 {
+	SOCKET_COLLIDER_DESC* pDesc = static_cast<SOCKET_COLLIDER_DESC*>(pArg);
+	m_pParentObject = pDesc->pParentObject;
+
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;	
 
@@ -33,8 +36,15 @@ void CSocketCollider::Priority_Tick(const _float& fTimeDelta)
 
 void CSocketCollider::Tick(const _float& fTimeDelta)
 {
+	m_vPrevMovePos = m_vMovePos;
+
 	if(m_pColliderCom)
 		m_pColliderCom->Tick(XMLoadFloat4x4(&m_WorldMatrix));
+
+	memcpy(&m_vMovePos, m_WorldMatrix.m[CTransform::STATE_POSITION], sizeof(_float3));
+
+	_vector vDirection = XMVector3Normalize(XMLoadFloat3(&m_vPrevMovePos) - XMLoadFloat3(&m_vMovePos));
+	XMStoreFloat3(&m_vMoveDir, vDirection);
 }
 
 void CSocketCollider::Late_Tick(const _float& fTimeDelta)
@@ -58,7 +68,7 @@ HRESULT CSocketCollider::Render()
 
 _bool CSocketCollider::Intersect(CCollider* pTargetObject)
 {
-	return pTargetObject->Intersect(m_pColliderCom);
+	return pTargetObject->Intersect(m_pColliderCom, 1);
 }
 
 HRESULT CSocketCollider::Add_Components(void* pArg)

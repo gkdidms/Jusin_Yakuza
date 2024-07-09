@@ -22,6 +22,15 @@ private:
 	{
 		AABB, OBB, SPHERE
 	};
+	enum Collider_Action_Type
+	{
+		ATTACK, HIT
+	};
+	enum Collider_Parts_Type
+	{
+		NECK, BODY, LEG, HAND, FOOT, JOINT, 
+	};
+
 
 	// 선택된거는 빨간색으로 보여준다
 	//콜라이더 활성화(노랑), 콜라이더 비활성화(주황), 사운드 활성화(초록), 이펙트 활성화(파랑)
@@ -192,6 +201,7 @@ private:
 	bool					m_isPause = { false };
 
 	int						m_iColliderType = { 0 };
+	int						m_iColliderActionType = { 0 };
 	float					m_fColliderRadius = { 0.f };
 	float					m_ColliderPosition[3] = { 0.f };
 	float					m_ColliderExtents[3] = { 0.f };
