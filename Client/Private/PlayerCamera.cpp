@@ -16,7 +16,7 @@ CPlayerCamera::CPlayerCamera(ID3D11Device* pDevice, ID3D11DeviceContext* pContex
 CPlayerCamera::CPlayerCamera(const CPlayerCamera& rhs)
 	: CCamera { rhs },
 	m_pSystemManager { rhs.m_pSystemManager },
-	m_pCollisionManager{ CCollision_Manager::GetInstance() }
+	m_pCollisionManager{ rhs.m_pCollisionManager }
 {
 	Safe_AddRef(m_pSystemManager);
 	Safe_AddRef(m_pCollisionManager);
