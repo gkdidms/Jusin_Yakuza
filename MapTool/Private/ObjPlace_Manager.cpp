@@ -844,13 +844,13 @@ void CObjPlace_Manager::Set_Map_Object()
 
 	ImGui::Text(u8"쉐이더");
 	static int shaderType = 0;
-	ImGui::RadioButton("일반", &shaderType, 0); 
+	ImGui::RadioButton(u8"일반", &shaderType, 0);
 	ImGui::NewLine();
-	ImGui::RadioButton("유리", &shaderType, 1); 
+	ImGui::RadioButton(u8"유리", &shaderType, 1);
 	ImGui::NewLine();
-	ImGui::RadioButton("물", &shaderType, 2);
+	ImGui::RadioButton(u8"물", &shaderType, 2);
 	ImGui::NewLine();
-	ImGui::RadioButton("기타", &shaderType, 3);
+	ImGui::RadioButton(u8"기타", &shaderType, 3);
 
 
 	ImGui::NewLine();

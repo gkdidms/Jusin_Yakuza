@@ -144,9 +144,9 @@ HRESULT CColliderObj::Render()
 		m_pModelCom->Render(i);
 	}
 
-//#ifdef _DEBUG
-//	m_pGameInstance->Add_DebugComponent(m_pColliderCom);
-//#endif
+#ifdef _DEBUG
+	m_pGameInstance->Add_DebugComponent(m_pColliderCom);
+#endif
 
 
 	return S_OK;

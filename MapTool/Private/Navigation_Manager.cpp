@@ -148,10 +148,10 @@ void CNavigation_Manager::Load_Cell_IMGUI()
 	}
 
 
-	//if (ImGui::Button(u8"Cell 정보 로드"))
-	//{
-	//	Load_Cells(layer_current_idx);
-	//}
+	if (ImGui::Button(u8"Cell 정보 로드"))
+	{
+		Load_Cells(layer_current_idx);
+	}
 
 	ImGui::End();
 }

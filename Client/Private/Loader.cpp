@@ -306,6 +306,12 @@ HRESULT CLoader::Loading_For_Test()
 	Add_Models_On_Path_NonAnim(LEVEL_TEST, TEXT("../Bin/Resources/Models/NonAnim/Map"));
 #pragma endregion
 
+#pragma region Navigation_Loading
+	lstrcpy(m_szLoadingText, TEXT("네비게이션(을) 로딩 중 입니다."));
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Navigation"),
+		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/NaviData/Navigation_0.dat")))))
+		return E_FAIL;
+#pragma endregion
 
 
 
