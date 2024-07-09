@@ -39,15 +39,7 @@ ipch/
 *.recipe
 
 # Engine dll/lib
-/Engine/Bin/Engine.dll
-/Engine/Bin/Engine.lib
-
-/Client/Bin/Engine.dll
-/MapTool/Bin/Engine.dll
-/AnimationTool/Bin/Engine.dll
-/EffectTool/Bin/Engine.dll
-/UITool/Bin/Engine.dll
-
-/EngineSDK/Lib/Engine.lib
+Engine.dll
+Engine.lib
 
 Debug/
