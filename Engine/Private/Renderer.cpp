@@ -8,6 +8,32 @@
 //_uint		g_iSizeX = 6400;//8192 / 2;
 //_uint		g_iSizeY = 3600;//4608 / 2;
 
+/*
+셰이더 전체 흐름
+
+[Diferred Shader]
+
+	Priority ->  Shadow -> NonBlend -> Decal -> Glass ->
+
+	[SSAO]
+	SSAO -> SSAOBlur ->
+
+	LightAcc -> CopyBackBuffer -> DeferredResult ->
+
+[후처리 Shader]
+
+	[HDR]
+	Luminance -> AvgLuminance -> CopyLuminance -> HDR -> LuminanceResult ->
+
+	[BOF]
+	DeferredBlur -> Puddle -> BOF ->
+
+	[Effect]
+	NonLight -> Bloom -> FinalEffectBlend -> Blend -> Effect ->FinalOIT ->
+
+	UI (최종)
+*/
+
 CRenderer::CRenderer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: m_pDevice{pDevice}, m_pContext{pContext},
 	m_pGameInstance{ CGameInstance::GetInstance() }
