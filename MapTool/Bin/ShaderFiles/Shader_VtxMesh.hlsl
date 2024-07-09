@@ -82,8 +82,8 @@ PS_OUT PS_MAIN(PS_IN In)
     Out.vDiffuse = g_Texture.Sample(LinearSampler, In.vTexcoord);
 	
     // 투명할 경우(0.1보다 작으면 투명하니) 그리지 않음
-    if (Out.vDiffuse.a < 0.1f)
-        discard;
+    //if (Out.vDiffuse.a < 0.1f)
+    //    discard;
     Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
     
     if (true == g_bWriteID)

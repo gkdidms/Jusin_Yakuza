@@ -183,6 +183,7 @@
     <ClInclude Include="..\public\Level_Office1F.h" />
     <ClInclude Include="..\public\Level_Office2F.h" />
     <ClInclude Include="..\Public\MapCollider.h" />
+    <ClInclude Include="..\Public\MapColliderObj.h" />
     <ClInclude Include="..\Public\Sequance.h" />
     <ClInclude Include="..\Public\Selector.h" />
     <ClInclude Include="..\Public\CharacterData.h" />
@@ -264,6 +265,7 @@
     <ClCompile Include="..\private\Level_Office1F.cpp" />
     <ClCompile Include="..\private\Level_Office2F.cpp" />
     <ClCompile Include="..\Private\MapCollider.cpp" />
+    <ClCompile Include="..\Private\MapColliderObj.cpp" />
     <ClCompile Include="..\Private\Sequance.cpp" />
     <ClCompile Include="..\Private\Selector.cpp" />
     <ClCompile Include="..\Private\CharacterData.cpp" />

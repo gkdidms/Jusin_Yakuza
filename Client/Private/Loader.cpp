@@ -32,6 +32,7 @@
 #include "Construction.h"
 #include "MapCollider.h"
 #include "SkyDome.h"
+#include "MapColliderObj.h"
 #pragma endregion
 
 #pragma region Effect
@@ -306,6 +307,12 @@ HRESULT CLoader::Loading_For_Test()
 	Add_Models_On_Path_NonAnim(LEVEL_TEST, TEXT("../Bin/Resources/Models/NonAnim/Map"));
 #pragma endregion
 
+
+	_matrix PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Model_Bone_Sphere"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/NonAnim/Bone_Sphere/Bin/Square.dat", PreTransformMatrix, true))))
+		return E_FAIL;
+
 #pragma region Navigation_Loading
 	lstrcpy(m_szLoadingText, TEXT("네비게이션(을) 로딩 중 입니다."));
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Navigation"),
@@ -415,6 +422,11 @@ HRESULT CLoader::Loading_For_Test()
 	/* For.Prototype_GameObject_SkyDome */
 	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_SkyDome"),
 		CSkyDome::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_MapColliderObj */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_MapColliderObj"),
+		CMapColliderObj::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	
