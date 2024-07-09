@@ -3,6 +3,7 @@
 #include "GameInstance.h"
 #include "Collision_Manager.h"
 #include "AI_RushYakuza.h"
+#include "SocketCollider.h"
 
 #include "Mesh.h"
 
@@ -69,7 +70,21 @@ void CRushYakuza::Tick(const _float& fTimeDelta)
 void CRushYakuza::Late_Tick(const _float& fTimeDelta)
 {
 	m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
-	//m_pCollisionManager->Add_ImpulseResolution(this);
+	m_pCollisionManager->Add_ImpulseResolution(this);
+
+	// 현재 켜져있는 Attack용 콜라이더 삽입
+	for (auto& pPair : m_pColliders)
+	{
+		if (pPair.second->Get_CollierType() == CSocketCollider::ATTACK && pPair.second->IsOn())
+			m_pCollisionManager->Add_AttackCollider(pPair.second, CCollision_Manager::PLAYER);
+	}
+
+	// 현재 켜져있는 Hit용 콜라이더 삽입 (아직까지는 Hit용 콜라이더는 항상 켜져있음)
+	for (auto& pPair : m_pColliders)
+	{
+		if (pPair.second->Get_CollierType() == CSocketCollider::HIT && pPair.second->IsOn())
+			m_pCollisionManager->Add_HitCollider(pPair.second, CCollision_Manager::ENEMY);
+	}
 
 	__super::Late_Tick(fTimeDelta);
 }

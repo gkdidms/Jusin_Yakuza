@@ -15,7 +15,7 @@ class CCollision_Manager :
 public:
     enum COLLIDER_TYPE
     {
-        FROM_PLAYER, FROM_ENEMY, TYPE_END
+        PLAYER, ENEMY, TYPE_END
     };
 
 private:
@@ -25,34 +25,39 @@ private:
 public:
     HRESULT Initialize();
     HRESULT Add_ImpulseResolution(class CLandObject* pObejct);          // 서로 밀어내는 작업을 할 객체를 추가해주는 함수
-    HRESULT Add_BattleCollider(class CLandObject* pObejct);          // 서로 밀어내는 작업을 할 객체를 추가해주는 함수
+    HRESULT Add_AttackCollider(class CSocketCollider* pCollider, COLLIDER_TYPE eType);          // 서로 밀어내는 작업을 할 객체를 추가해주는 함수
+    HRESULT Add_HitCollider(class CSocketCollider* pCollider, COLLIDER_TYPE eType);          // 서로 밀어내는 작업을 할 객체를 추가해주는 함수
 
     void Tick();
+
+public:
+    /*
+    * 실제 충돌처리를 비교할 함수
+    * 인자로 넣는 객체와 m_HitColliders 벡터 원소들의 충돌을 비교한다.
+    */
+    void Collision_FromPlayer();
+    void Collision_FromEnemy();
 
 private:
     // 캐릭터가 겹치지않고 밀어내는 함수
     // AABB끼리만 구현되어있음
     void ImpulseResolution();           // 따로 모아둔 벡터에서 서로 밀어내는 작업을 한다 (Tick에서 돌림)
-    
-    /*
-    * 실제 충돌처리를 비교할 함수
-    * 인자로 넣는 객체와 m_BattleColliders 벡터 원소들의 충돌을 비교한다.
-    */
-    _bool Collision_FromPlayer(class CLandObject* pObejct);
-    _bool Collision_FromEnemy(class CLandObject* pObejct);
+
 
 private:
     vector<class CLandObject*> m_ImpulseResolutionObjects;
 
     /*
-    * FROM 타입이 플레이어라면 플레이어의 ATTACK 콜라이더와 상호작용할 대상들을 저장한다
-    * ex) 몬스터의 HIT 콜라이더(몸통, 다리 등), 아이템의 콜라이더
-    * 플레이어가 아이템을 무기로 사용중이라면 Collision_FromPlayer() 함수의 인자에 아이템을 넣어준다.
+    * AttackColliders는 Attack타입의 소켓 콜라이더들을 모아둘 벡터
+    * m_AttackColliders[PLAYER] 라면 플레이어의 Attack타입의 콜라이더 중, 현재 켜져있는 애들만 모아둠
+    * m_AttackColliders[ENEMY] 라면 적들의 Attack 타입의 콜라이더 중 현재 틱에서 켜져있는 애들만 모아둠
     * 
-    * FROM 타입이 몬스터라면 몬스터의 ATTACK 콜라이더와 상호작용할 대상들을 저장한다.
-    * ex) 플레이어의 HIT 콜라이더 (몸통, 다리 등)
+    * HitColliders는 Hit타입의 소켓 콜라이더들을 모아둘 벡터
+    * m_HitColliders[PLAYER] 라면 플레이어의 Hit콜라이더를 모아둘 것이며, m_AttackColliders[ENEMY]와 충돌처리 한다.
+    * m_HitColliders[ENEMY] 라면 플레이어의 Hit콜라이더를 모아둘 것이며, m_AttackColliders[PLAYER]와 충돌처리 한다.
     */
-    vector<class CLandObject*> m_BattleObjects[TYPE_END];
+    vector<class CSocketCollider*> m_AttackColliders[TYPE_END];
+    vector<class CSocketCollider*> m_HitColliders[TYPE_END];
 
 private:
     void Impulse_Clear();

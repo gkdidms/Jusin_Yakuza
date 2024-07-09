@@ -27,6 +27,7 @@ public:
 		_uint iType;
 		_uint iBoneIndex;
 		CCharacterData::COLLIDER_STATE ColliderState;
+		class CLandObject* pParentObject;
 	};
 
 private:
@@ -53,8 +54,24 @@ public:
 	}
 
 public:
+	_bool IsOn() {
+		return m_isOn;
+	}
+
 	_uint Get_CollierType() {
 		return static_cast<_uint>(m_eColliderType);
+	}
+
+	CCollider* Get_Collider()	{
+		return m_pColliderCom;
+	}
+
+	const class CLandObject* Get_Parent() {
+		return m_pParentObject;
+	}
+
+	const _float3& Get_MoveDir() {
+		return m_vMoveDir;
 	}
 
 private:
@@ -64,9 +81,14 @@ private:
 	CModel*							m_pModelCom = { nullptr };
 	CCollider*						m_pColliderCom = { nullptr };
 
-	_float							m_fAlphaScale = { 0.f };
+	const class CLandObject*		m_pParentObject = { nullptr };
+
+	_float							m_fDamage = { 0.f };
 	
 	_bool							m_isOn = { true };
+
+	_float3							m_vPrevMovePos, m_vMovePos;
+	_float3							m_vMoveDir;
 
 public:
 	HRESULT Add_Components(void* pArg);
