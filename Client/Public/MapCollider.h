@@ -25,6 +25,8 @@ public:
 	virtual HRESULT Render() override;
 
 private:
+	class CCollision_Manager* m_pCollisionManager = { nullptr };
+
 	_matrix							m_WorldMatrix;
 	vector<CCollider*>				m_vCollider;
 

@@ -1,15 +1,20 @@
 #include "MapCollider.h"
 
 #include "GameInstance.h"
+#include "Collision_Manager.h"
 
 CMapCollider::CMapCollider(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-    : CGameObject(pDevice, pContext)
+    : CGameObject(pDevice, pContext),
+    m_pCollisionManager{ CCollision_Manager::GetInstance() }
 {
+    Safe_AddRef(m_pCollisionManager);
 }
 
 CMapCollider::CMapCollider(const CMapCollider& rhs)
-    : CGameObject(rhs)
+    : CGameObject(rhs),
+    m_pCollisionManager{ CCollision_Manager::GetInstance() }
 {
+    Safe_AddRef(m_pCollisionManager);
 }
 
 HRESULT CMapCollider::Initialize_Prototype()
@@ -78,9 +83,8 @@ HRESULT CMapCollider::Add_Components(void* pArg)
         ColliderDesc.vRotation = collderIOdesc.vQuaternion;
 
         m_vCollider.push_back(dynamic_cast<CCollider*>(m_pGameInstance->Add_Component_Clone(LEVEL_TEST, TEXT("Prototype_Component_Collider"), &ColliderDesc)));
+        m_pCollisionManager->Add_MapCollider(m_vCollider.back());
     }
-
-
 
     return S_OK;
 }
@@ -126,4 +130,6 @@ void CMapCollider::Free()
     }
 
     m_vCollider.clear();
+
+    Safe_Release(m_pCollisionManager);
 }

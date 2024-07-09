@@ -65,6 +65,7 @@ void CPlayer::Tick(const _float& fTimeDelta)
 	{
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0, 0, 0, 1));
 	}
+
 	if (m_pGameInstance->GetKeyState(DIK_UP) == TAP)
 	{
 		Style_Change(KRS);
