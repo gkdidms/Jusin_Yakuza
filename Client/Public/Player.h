@@ -63,7 +63,7 @@ public:
     virtual void Tick(const _float& fTimeDelta) override;
     virtual void Late_Tick(const _float& fTimeDelta) override;
     virtual HRESULT Render() override;
-    virtual HRESULT Render_LightDepth() override;
+    virtual HRESULT Render_LightDepth(_uint iIndex) override;
 
     virtual _bool Intersect(CLandObject* pTargetObject);
 
