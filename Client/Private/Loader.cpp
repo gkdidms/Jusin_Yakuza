@@ -256,9 +256,9 @@ HRESULT CLoader::Loading_For_Test()
 
 #pragma region Model
 	lstrcpy(m_szLoadingText, TEXT("모델를(을) 로딩 중 입니다."));
-	/*Add_Models_On_Path(LEVEL_TEST, TEXT("../Bin/Resources/Models/Anim/"));
-	* 
-	Add_Particle_On_Path(TEXT("../../Client/Bin/DataFiles/Particle/"));*/
+	Add_Models_On_Path(LEVEL_TEST, TEXT("../Bin/Resources/Models/Anim/"));
+	
+	Add_Particle_On_Path(TEXT("../../Client/Bin/DataFiles/Particle/"));
 
 	Add_Models_On_Path_NonAnim(LEVEL_TEST, TEXT("../Bin/Resources/Models/NonAnim/Map"));
 

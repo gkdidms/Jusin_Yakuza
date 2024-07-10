@@ -21,20 +21,20 @@ CLevel_Test::CLevel_Test(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 
 HRESULT CLevel_Test::Initialize()
 {
-	//if (FAILED(Ready_Player(TEXT("Layer_Player"))))
-	//	return E_FAIL;
+	if (FAILED(Ready_Player(TEXT("Layer_Player"))))
+		return E_FAIL;
 
-	///*if (FAILED(Ready_Monster(TEXT("Layer_Monster"))))
-	//	return E_FAIL;*/
+	/*if (FAILED(Ready_Monster(TEXT("Layer_Monster"))))
+		return E_FAIL;*/
 
-	//if (FAILED(Ready_Camera(TEXT("Layer_Camera"))))
-	//	return E_FAIL;
+	if (FAILED(Ready_Camera(TEXT("Layer_Camera"))))
+		return E_FAIL;
 
-	//if (FAILED(Ready_Map(TEXT("Layer_Map"))))
-	//	return E_FAIL;
+	if (FAILED(Ready_Map(TEXT("Layer_Map"))))
+		return E_FAIL;
 
-	//if (FAILED(Ready_Effect(TEXT("Layer_Effect"))))
-	//	return E_FAIL;
+	if (FAILED(Ready_Effect(TEXT("Layer_Effect"))))
+		return E_FAIL;
 
 	/* Å¬¶ó ÆÄ½Ì */
 	m_pFileTotalManager->Set_MapObj_In_Client(0, LEVEL_TEST);

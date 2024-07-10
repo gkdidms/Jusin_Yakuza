@@ -95,7 +95,7 @@ void CPlayer::Tick(const _float& fTimeDelta)
 
 void CPlayer::Late_Tick(const _float& fTimeDelta)
 {
-	//m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
+	m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
 	//m_pGameInstance->Add_Renderer(CRenderer::RENDER_SHADOWOBJ, this); // Shadow¿ë ·»´õ Ãß°¡
 	m_pCollisionManager->Add_ImpulseResolution(this);
 
