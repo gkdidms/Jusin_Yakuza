@@ -106,7 +106,7 @@ void CImguiManager::Tick(const _float& fTimeDelta)
 					{
 						pBoneSpheres[Value.iBoneIndex]->Change_ColliderColor(true);
 					}
-					if(Value.iType == COLLIDER_DISABLE && Value.fAinmPosition < Position)
+					if (Value.iType == COLLIDER_DISABLE && Value.fAinmPosition < Position)
 					{
 						pBoneSpheres[Value.iBoneIndex]->Change_ColliderColor(false);
 					}
@@ -125,7 +125,7 @@ HRESULT CImguiManager::Render()
 	ImGui::EndFrame();
 	ImGui::Render();
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
-	
+
 	if (io->ConfigFlags & ImGuiConfigFlags_ViewportsEnable)
 	{
 		ImGui::UpdatePlatformWindows();
@@ -264,7 +264,7 @@ void CImguiManager::AnimListWindow()
 		{
 			iter++;
 		}
-		
+
 		m_AddedAnims.erase(iter);
 	}
 
@@ -285,7 +285,7 @@ void CImguiManager::BoneListWindow()
 
 	vector<const char*> items;
 
-	for (auto pBone: pBones)
+	for (auto pBone : pBones)
 	{
 		string strChannelName = pBone->Get_Name();
 		//string strName = m_pGameInstance->Extract_String(pBone->Get_Name(), '[', ']');
@@ -325,7 +325,7 @@ void CImguiManager::BoneListWindow()
 	{
 		m_iColliderType = OBB;
 		Reset_Collider_Value();
-	}	
+	}
 	ImGui::SameLine();
 	if (ImGui::RadioButton("Sphere", m_iColliderType == SPHERE))
 	{
@@ -344,19 +344,19 @@ void CImguiManager::BoneListWindow()
 	{
 	case AABB:
 	{
-		if(ImGui::DragFloat3("Extents", m_ColliderExtents, 0.1f))
+		if (ImGui::DragFloat3("Extents", m_ColliderExtents, 0.1f))
 			m_pRenderModel->Set_Collider_Value(m_iBoneSelectedIndex, m_ColliderExtents);
 		break;
 	}
 	case OBB:
 	{
-		if(ImGui::DragFloat3("Extents", m_ColliderExtents, 0.1f))
+		if (ImGui::DragFloat3("Extents", m_ColliderExtents, 0.1f))
 			m_pRenderModel->Set_Collider_Value(m_iBoneSelectedIndex, m_ColliderExtents);
 		break;
 	}
 	case SPHERE:
 	{
-		if(ImGui::DragFloat("Radius", &m_fColliderRadius, 0.1f))
+		if (ImGui::DragFloat("Radius", &m_fColliderRadius, 0.1f))
 			m_pRenderModel->Set_Collider_Value(m_iBoneSelectedIndex, &m_fColliderRadius);
 		break;
 	}
@@ -423,28 +423,6 @@ void CImguiManager::BoneListWindow()
 		{
 			m_iColliderPartType = LEG_H;
 		}
-		break;
-	}
-
-	if (ImGui::RadioButton("Attack", m_iColliderActionType == ATTACK))
-	{
-		m_iColliderActionType = ATTACK;
-	}
-	ImGui::SameLine();
-	if (ImGui::RadioButton("Hit", m_iColliderActionType == HIT))
-	{
-		m_iColliderActionType = HIT;
-	}
-	ImGui::SameLine();
-
-	switch (m_iColliderActionType)
-	{
-	case ATTACK:
-
-		break;
-	case HIT:
-
-
 		break;
 	}
 
@@ -600,7 +578,7 @@ void CImguiManager::KeyFrameWindow()
 
 	_float Duration = (_float)(*(Anims[m_iAnimIndex]->Get_Duration()));
 	_float CurrentPosition = (_float)(*(Anims[m_iAnimIndex]->Get_CurrentPosition()));
-	
+
 	// 애니메이션 재생 위치를 보여준다.
 	ImGui::SliderFloat("##", &CurrentPosition, 0.f, Duration);
 
@@ -810,7 +788,7 @@ void CImguiManager::EffectListWindow()
 
 	if (0 < Addeditems.size())
 	{
-		if(iter != m_EffectState.end())
+		if (iter != m_EffectState.end())
 			ImGui::Text(u8"대상 뼈 이름: %s", (*iter).first.c_str());
 	}
 	else
@@ -875,7 +853,7 @@ void CImguiManager::DrawTimeline(ImDrawList* draw_list)
 
 		_float fRatio = Value.fAinmPosition / fDuration;
 
-		vCanvas_Size.x * fRatio;
+		vCanvas_Size.x* fRatio;
 
 		if (Value.isSelected)
 		{
@@ -896,7 +874,7 @@ void CImguiManager::DrawTimeline(ImDrawList* draw_list)
 				break;
 			}
 		}
-		
+
 
 		vPosY = vCircleStartPosY + (Value.iType * fCircleRadius * 2.5f);
 
@@ -929,7 +907,7 @@ void CImguiManager::DrawChannels()
 		i++;
 	}
 
-	if(ImGui::Button(u8"뼈 이름 검색하기"))
+	if (ImGui::Button(u8"뼈 이름 검색하기"))
 	{
 		for (size_t i = 0; i < m_ChannelNameList.size(); i++)
 		{
@@ -1122,7 +1100,7 @@ void CImguiManager::AnimationLoop_Save(string strPath)
 	_uint iAnimMapSize = m_AddedAnims.size();
 
 	out.write((char*)&iAnimMapSize, sizeof(_uint));
-	
+
 	for (auto& iter : m_AddedAnims)
 	{
 		out.write((char*)&(iter.first), sizeof(_uint));
@@ -1464,11 +1442,11 @@ void CImguiManager::EffectState_Load(string strPath)
 
 		string strEffectName = "";
 		in >> strEffectName;
-		
+
 		Create_Effect(strBoneName, strEffectName);
 	}
 
-	
+
 
 	in.close();
 }
@@ -1490,7 +1468,7 @@ void CImguiManager::Setting_InitialData()
 	strDirPath = "../../Client/Bin/DataFiles/Particle/";
 	m_pGameInstance->Get_DirectoryName(strDirPath, m_EffectTypeList);
 
-	
+
 	for (size_t i = 0; i < m_EffectTypeList.size(); i++)
 	{
 		vector<string> tempFileNames;

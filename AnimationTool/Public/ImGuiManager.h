@@ -26,14 +26,15 @@ private:
 	{
 		ATTACK, HIT
 	};
-	enum Collider_Parts_Type
+	enum Collider_Part_Type
 	{
-		NECK, BODY, LEG, HAND, FOOT, JOINT, 
+		HAND_A, FOOT_A, JOINT_A, HEAD_A,
+		HEAD_H = 10, BODY_H, LEG_H,
 	};
 
 
 	// 선택된거는 빨간색으로 보여준다
-	//콜라이더 활성화(노랑), 콜라이더 비활성화(주황), 사운드 활성화(초록), 이펙트 활성화(파랑)
+	//콜라이더 활성화(노랑), 콜라이더 비활성화(주황), 사운드 활성화(초록)
 	enum Animation_Event_Type
 	{
 		COLLIDER_ACTIVATION, COLLIDER_DISABLE, SOUND_ACTIVATION, ANIMATION_EVENT_TYPE_END
@@ -52,6 +53,8 @@ public:
 	struct Collider_State
 	{
 		string strBoneName;
+		int iColliderActionType;
+		int iColliderPartType;
 		_bool	isAlways;
 	};
 
@@ -92,7 +95,7 @@ private:
 
 private:
 	/* Initailize */
-	void Setting_Collider_Value(_uint iBoneIndex);	
+	void Setting_Collider_Value(_uint iBoneIndex);
 	void Setting_InitialData();
 
 	/* Reset */
@@ -119,7 +122,7 @@ private:
 	void AnimationEvent_Load(string strPath);
 	void ColliderState_Load(string strPath);
 	void EffectState_Load(string strPath);
-	
+
 	/* Functional*/
 private:
 	void Gui_Select_Bone(_uint iBoneIndex);
@@ -165,7 +168,7 @@ private:
 	unordered_map<_uint, string>			m_AddedMeshes;			// 매쉬 인덱스와 이름을 저장한다.
 
 	// first: 애니메이션 이름, second: 이벤트정보
-	multimap<string, Animation_Event>		m_AnimationEvents;		
+	multimap<string, Animation_Event>		m_AnimationEvents;
 
 	//first: 뼈 이름, second: 이름
 	multimap<string, string>				m_EffectState;
@@ -186,7 +189,7 @@ private:
 
 	_uint					m_iSoundType = { 0 };
 	vector<string>			m_SoundTypeList;
-	
+
 private:
 	_float					m_fTimeDeltaScale = { 1.f };
 
@@ -202,15 +205,17 @@ private:
 
 	int						m_iColliderType = { 0 };
 	int						m_iColliderActionType = { 0 };
+	int						m_iColliderPartType = { 0 };
+
 	float					m_fColliderRadius = { 0.f };
 	float					m_ColliderPosition[3] = { 0.f };
 	float					m_ColliderExtents[3] = { 0.f };
 
 private:
-	ID3D11Device*			m_pDevice = { nullptr };
-	ID3D11DeviceContext*	m_pContext = { nullptr };
-	class CGameInstance*	m_pGameInstance = { nullptr };
-	class CAnimModel*		m_pRenderModel = { nullptr };
+	ID3D11Device* m_pDevice = { nullptr };
+	ID3D11DeviceContext* m_pContext = { nullptr };
+	class CGameInstance* m_pGameInstance = { nullptr };
+	class CAnimModel* m_pRenderModel = { nullptr };
 
 public:
 	static CImguiManager* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

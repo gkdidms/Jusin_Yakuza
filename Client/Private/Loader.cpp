@@ -261,7 +261,7 @@ HRESULT CLoader::Loading_For_Test()
 	
 	Add_Particle_On_Path(TEXT("../../Client/Bin/DataFiles/Particle/"));
 
-	Add_Models_On_Path_NonAnim(LEVEL_TEST, TEXT("../Bin/Resources/Models/NonAnim/Map"));
+	//Add_Models_On_Path_NonAnim(LEVEL_TEST, TEXT("../Bin/Resources/Models/NonAnim/Map"));
 
 	_matrix PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Model_Bone_Sphere"),
