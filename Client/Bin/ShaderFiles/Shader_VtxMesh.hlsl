@@ -134,34 +134,21 @@ PS_OUT PS_MAIN(PS_IN In)
     vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
     vector vMultiDiffuce = g_MultiDiffuseTexture.Sample(LinearSampler, In.vTexcoord);
     
-    // 투명할 경우(0.1보다 작으면 투명하니) 그리지 않음
-    if (vDiffuse.a < 0.1f)
-        discard;
+   //  투명할 경우(0.1보다 작으면 투명하니) 그리지 않음
+    //if (vDiffuse.a < 0.1f)
+     //   discard;
     
      //RS + RD
     vector vRSRD;
-    vector vRDDesc;
-    if (g_isRD)
-    {
-        vRDDesc = g_RDTexture.Sample(LinearSampler, In.vTexcoord);
-        Out.vRD = vRDDesc;
-    }
     
     if (g_isRS)
     {
         vector vRSDesc = g_RSTexture.Sample(LinearSampler, In.vTexcoord);
         Out.vRS = vRSDesc;
-        vRSDesc = lerp(vRSDesc, vRDDesc, 0.7f);
         Out.vDiffuse = lerp(vDiffuse, vRSDesc, vMultiDiffuce.z);
-        
     }
     else
-    {
-        if (g_isRD)
-            Out.vDiffuse = lerp(vDiffuse, vRDDesc, vMultiDiffuce.z);
-        else
-            Out.vDiffuse = vDiffuse;
-    }
+        Out.vDiffuse = vDiffuse;
     
     float3 vNormal;
     if (true == g_bExistNormalTex)
