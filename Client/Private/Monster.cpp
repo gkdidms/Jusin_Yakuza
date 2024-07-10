@@ -59,6 +59,10 @@ HRESULT CMonster::Render()
 	return S_OK;
 }
 
+void CMonster::Take_Damage(_uint iHitColliderType, const _float3& vDir, _float fDamage, _bool isBlowAttack)
+{
+}
+
 /*		¼öÁ¤º»
 	_vector vFF = XMVector3TransformNormal(XMVectorSetZ(XMLoadFloat3(m_pModelCom->Get_AnimationCenterMove()), 0), m_pTransformCom->Get_WorldMatrix());
 

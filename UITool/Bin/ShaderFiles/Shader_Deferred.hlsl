@@ -253,6 +253,8 @@ PS_OUT PS_MAIN_COPY_BACKBUFFER_RESULT(PS_IN In)
         //if (fLightOldDepth + 0.1f < vLightPos.w)
         //    Out.vColor = vector(Out.vColor.rgb * 0.5f, 1.f);
         
+        
+        
         if (fPassiveLightOldDepth + 0.1f < vLightPos.w)
             Out.vColor = vector(Out.vColor.rgb * 0.5f, 1.f);
     }

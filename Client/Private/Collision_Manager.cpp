@@ -74,7 +74,7 @@ void CCollision_Manager::ImpulseResolution()
         }
     }
 
-        Impulse_Clear();
+    Impulse_Clear();
 }
 
 void CCollision_Manager::ResolveCollision(BoundingSphere* sphere, BoundingOrientedBox* box)
@@ -133,7 +133,7 @@ void CCollision_Manager::ResolveCollision(BoundingSphere* sphere, BoundingOrient
     sphere->Center.y += push.y;
     sphere->Center.z += push.z;
 }
- 
+
 void CCollision_Manager::Enemy_Hit_Collision()
 {
     for (auto pPlayerAttackCollider : m_AttackColliders[PLAYER])
@@ -142,27 +142,6 @@ void CCollision_Manager::Enemy_Hit_Collision()
         {
             if (pEnemyHitCollider->Intersect(pPlayerAttackCollider->Get_Collider()))
             {
-                _float3 vHitDir = pPlayerAttackCollider->Get_MoveDir();
-                cout << "Enemy Hit!!" << endl
-                    << "[Dir] x:" << vHitDir.x << "y:" << vHitDir.y << "z:" << vHitDir.z << endl;
-            }
-
-        }
-    }
-}
-
-void CCollision_Manager::Collision_FromEnemy()
-{
-    for (auto pEnemyAttackCollider : m_AttackColliders[ENEMY])
-    {
-        for (auto& pPlayerHitCollider : m_HitColliders[PLAYER])
-        {
-            if (pPlayerHitCollider->Intersect(pEnemyAttackCollider->Get_Collider()))
-            {
-                cout << "Player Hit!!!!" << endl;
-            }
-        }
-    }
                 pEnemyHitCollider->ParentObject_Hit(pPlayerAttackCollider->Get_MoveDir(), pPlayerAttackCollider->Get_Damage(), pPlayerAttackCollider->Get_Parent()->Is_BlowAttack());
             }
 
@@ -195,14 +174,14 @@ _bool CCollision_Manager::Map_Collision(CCollider* pCollider)
         {
             switch (pMapCollider->Get_Type())
             {
-            case CCollider::COLLIDER_AABB :
+            case CCollider::COLLIDER_AABB:
             {
                 BoundingBox* pDesc = static_cast<BoundingBox*>(pMapCollider->Get_Desc());
                 vCenter = pDesc->Center;
 
                 break;
             }
-               
+
 
             case CCollider::COLLIDER_OBB:
             {
@@ -213,7 +192,7 @@ _bool CCollision_Manager::Map_Collision(CCollider* pCollider)
 
                 return true;
             }
-         
+
 
             case CCollider::COLLIDER_SPHERE:
             {
@@ -222,7 +201,7 @@ _bool CCollision_Manager::Map_Collision(CCollider* pCollider)
 
                 break;
             }
-             
+
             }
         }
     }
