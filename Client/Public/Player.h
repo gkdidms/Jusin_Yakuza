@@ -65,7 +65,8 @@ public:
     virtual HRESULT Render() override;
     virtual HRESULT Render_LightDepth(_uint iIndex) override;
 
-    virtual _bool Intersect(CLandObject* pTargetObject);
+    // 충돌함수
+    virtual void Take_Damage(_uint iHitColliderType, const _float3& vDir, _float fDamage, _bool isBlowAttack = false) override;
 
 public:
     const _bool* Get_MoveDirection() {
