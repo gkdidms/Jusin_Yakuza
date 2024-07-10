@@ -1245,6 +1245,12 @@ void CImguiManager::EffectState_Save(string strPath)
 
 void CImguiManager::All_Load()
 {
+	if (!m_isOnToolWindows)
+	{
+		MSG_BOX("Please Open the Windows");
+		return;
+	}
+
 	string strDirectory = "../../Client/Bin/DataFiles/Character/" + m_ModelNameList[m_iModelSelectedIndex];
 
 	AlphaMesh_Load(strDirectory);
@@ -1348,6 +1354,8 @@ void CImguiManager::ColliderState_Load(string strPath)
 {
 	string strDirectory = strPath;
 	strDirectory += "/" + m_ModelNameList[m_iModelSelectedIndex] + "_Colliders.dat";
+
+	m_AddedColliders.clear();
 
 	ifstream in(strDirectory, ios::binary);
 
