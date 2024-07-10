@@ -21,6 +21,34 @@ CKiryu_KRH_Attack::CKiryu_KRH_Attack()
 
 	m_AnimationIndices.push_back(292);	//[292]	p_krs_sync_cmb_03_fin[p_krs_sync_cmb_03_fin]
 	m_AnimationIndices.push_back(257);	//[257]	p_krs_cmb_04_finw[p_krs_cmb_04_finw]
+
+
+	/*
+	* +[146]	p_krh_cmb_01_sway_r[p_krh_cmb_01_sway_r]
+		+[147]	p_krh_cmb_01_tame[p_krh_cmb_01_tame]
+		+[148]	p_krh_cmb_02[p_krh_cmb_02]
+		+[149]	p_krh_cmb_02_fin[p_krh_cmb_02_fin]
+		+[150]	p_krh_cmb_02_tame[p_krh_cmb_02_tame]
+		+[151]	p_krh_cmb_03[p_krh_cmb_03]
+		+[152]	p_krh_cmb_03_fin[p_krh_cmb_03_fin]
+		+[153]	p_krh_cmb_03_tame[p_krh_cmb_03_tame]
+		+[154]	p_krh_cmb_04[p_krh_cmb_04]
+		+[155]	p_krh_cmb_04_fin[p_krh_cmb_04_fin]
+		+[156]	p_krh_cmb_04_tame[p_krh_cmb_04_tame]
+		+[157]	p_krh_cmb_05[p_krh_cmb_05]
+		+[158]	p_krh_cmb_05_fin[p_krh_cmb_05_fin]
+		+[159]	p_krh_cmb_05_tame[p_krh_cmb_05_tame]
+		+[160]	p_krh_cmb_06[p_krh_cmb_06]
+		+[161]	p_krh_cmb_06_fin[p_krh_cmb_06_fin]
+		+[162]	p_krh_cmb_06_tame[p_krh_cmb_06_tame]
+		+[163]	p_krh_cmb_07[p_krh_cmb_07]
+		+[164]	p_krh_cmb_07_fin[p_krh_cmb_07_fin]
+		+[165]	p_krh_cmb_07_tame[p_krh_cmb_07_tame]
+		+[166]	p_krh_cmb_08[p_krh_cmb_08]
+		+[167]	p_krh_cmb_08_fin[p_krh_cmb_08_fin]
+		+[168]	p_krh_cmb_08_tame[p_krh_cmb_08_tame]
+
+	*/
 }
 
 void CKiryu_KRH_Attack::Tick(const _float& fTimeDelta)

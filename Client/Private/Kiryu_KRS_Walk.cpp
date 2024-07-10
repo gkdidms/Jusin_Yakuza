@@ -5,9 +5,7 @@
 CKiryu_KRS_Walk::CKiryu_KRS_Walk()
 	:CBehaviorAnimation{}
 {
-	// 전투 중 아이들 모션은 어드벤처와 동일하다
-	//p_stand_nml 351
-	m_AnimationIndices.push_back(351);
+	m_AnimationIndices.push_back(272);			//[272]	p_krs_shift_f[p_krs_shift_f]
 }
 
 void CKiryu_KRS_Walk::Tick(const _float& fTimeDelta)

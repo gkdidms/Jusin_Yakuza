@@ -12,6 +12,23 @@ CKiryu_KRH_Sway::CKiryu_KRH_Sway()
 	m_AnimationIndices.push_back(286);	//[286]	p_krs_sway_b[p_krs_sway_b]
 	m_AnimationIndices.push_back(288);	//[288]	p_krs_sway_l[p_krs_sway_l]
 	m_AnimationIndices.push_back(289);	//[289]	p_krs_sway_r[p_krs_sway_r]
+
+
+	/*
+	* +[196]	p_krh_sway_02_b[p_krh_sway_02_b]
+		+[197]	p_krh_sway_02_f[p_krh_sway_02_f]
+		+[198]	p_krh_sway_02_l[p_krh_sway_02_l]
+		+[199]	p_krh_sway_02_r[p_krh_sway_02_r]
+		+[200]	p_krh_sway_03_b[p_krh_sway_03_b]
+		+[201]	p_krh_sway_03_f[p_krh_sway_03_f]
+		+[202]	p_krh_sway_03_l[p_krh_sway_03_l]
+		+[203]	p_krh_sway_03_r[p_krh_sway_03_r]
+		+[204]	p_krh_sway_b[p_krh_sway_b]
+		+[205]	p_krh_sway_f[p_krh_sway_f]
+		+[206]	p_krh_sway_l[p_krh_sway_l]
+		+[207]	p_krh_sway_r[p_krh_sway_r]
+	
+	*/
 }
 
 void CKiryu_KRH_Sway::Tick(const _float& fTimeDelta)
