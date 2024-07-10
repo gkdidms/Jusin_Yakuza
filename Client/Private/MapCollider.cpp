@@ -1,15 +1,20 @@
 #include "MapCollider.h"
 
 #include "GameInstance.h"
+#include "Collision_Manager.h"
 
 CMapCollider::CMapCollider(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-    : CGameObject(pDevice, pContext)
+    : CGameObject(pDevice, pContext),
+    m_pCollisionManager{ CCollision_Manager::GetInstance() }
 {
+    Safe_AddRef(m_pCollisionManager);
 }
 
 CMapCollider::CMapCollider(const CMapCollider& rhs)
-    : CGameObject(rhs)
+    : CGameObject(rhs),
+    m_pCollisionManager{ CCollision_Manager::GetInstance() }
 {
+    Safe_AddRef(m_pCollisionManager);
 }
 
 HRESULT CMapCollider::Initialize_Prototype()
@@ -90,15 +95,17 @@ HRESULT CMapCollider::Add_Components(void* pArg)
 
         m_vCollider.push_back(dynamic_cast<CCollider*>(m_pGameInstance->Add_Component_Clone(LEVEL_TEST, TEXT("Prototype_Component_Collider"), &ColliderDesc)));
 
+
         // 테스트시에만 생성
         CMapColliderObj::COLLIDEROBJ_DESC colliderDescobj;
         colliderDescobj.vCenter = collderIOdesc.vCenter;
         colliderDescobj.vExtents = collderIOdesc.vExtents;
 
         m_ColliderObjs.push_back(dynamic_cast<CMapColliderObj*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_MapColliderObj"), &colliderDescobj)));
+
+        m_pCollisionManager->Add_MapCollider(m_vCollider.back());
+
     }
-
-
 
     return S_OK;
 }
@@ -152,4 +159,5 @@ void CMapCollider::Free()
     }
 
     m_ColliderObjs.clear();
+    Safe_Release(m_pCollisionManager);
 }
