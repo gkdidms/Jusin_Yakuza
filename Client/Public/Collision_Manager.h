@@ -28,6 +28,8 @@ public:
     HRESULT Add_AttackCollider(class CSocketCollider* pCollider, COLLIDER_TYPE eType);          // 서로 밀어내는 작업을 할 객체를 추가해주는 함수
     HRESULT Add_HitCollider(class CSocketCollider* pCollider, COLLIDER_TYPE eType);          // 서로 밀어내는 작업을 할 객체를 추가해주는 함수
 
+    HRESULT Add_MapCollider(CCollider* pCollider);
+
     void Tick();
 
 public:
@@ -36,14 +38,17 @@ public:
 
     * 인자로 넣는 객체와 m_HitColliders 벡터 원소들의 충돌을 비교한다.
     */
-    void Collision_FromPlayer();
-    void Collision_FromEnemy();
+    void Enemy_Hit_Collision();
+    void Player_Hit_Collision();
+
+    _bool Map_Collision(CCollider* pCollider);
 
 private:
     // 캐릭터가 겹치지않고 밀어내는 함수
     // AABB끼리만 구현되어있음
     void ImpulseResolution();           // 따로 모아둔 벡터에서 서로 밀어내는 작업을 한다 (Tick에서 돌림)
 
+    void ResolveCollision(BoundingSphere* sphere, BoundingOrientedBox* box);
 
 private:
     vector<class CLandObject*> m_ImpulseResolutionObjects;
@@ -59,6 +64,9 @@ private:
     */
     vector<class CSocketCollider*> m_AttackColliders[TYPE_END];
     vector<class CSocketCollider*> m_HitColliders[TYPE_END];
+
+
+    vector<CCollider*> m_MapColliders;
 
 private:
     void Impulse_Clear();
