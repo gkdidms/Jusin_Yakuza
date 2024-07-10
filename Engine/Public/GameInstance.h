@@ -115,16 +115,20 @@ public:
     _matrix Get_Transform_Matrix(CPipeLine::D3DTRANSFORMSTATE eState);
     const _float4x4* Get_Transform_Inverse_Float4x4(CPipeLine::D3DTRANSFORMSTATE eState);
     _matrix Get_Transform_Inverse_Matrix(CPipeLine::D3DTRANSFORMSTATE eState);
+    const _float4x4* Get_Shadow_Transform_Float4x4(CPipeLine::D3DTRANSFORMSTATE eState);
     const _float4* Get_CamPosition_Float4();
     _vector Get_CamPosition();
-    void Set_Transform(CPipeLine::D3DTRANSFORMSTATE eState, _fmatrix matTransform);
     const _float4* Get_ComLook_Float4();
     _vector Get_CamLook();
     _vector Get_CamRight();
     const _float* Get_CamFar();
-    void Set_CamFar(_float fFar);
     const _float4x4* Get_ReflectViewMatrix();
+
+    void Set_Transform(CPipeLine::D3DTRANSFORMSTATE eState, _fmatrix matTransform);
+    void Set_CamFar(_float fFar);
     void Set_ReflectViewMatrix(_fmatrix matTransform);
+    void Set_Shadow_Transform(CPipeLine::D3DTRANSFORMSTATE eState, _fmatrix matTransform);
+    
 
     /* Font_Manager */
 public: 
@@ -209,27 +213,28 @@ private:
     class CGraphic_Device* m_pGraphic_Device = { nullptr };
     class CSoundMgr* m_pSound_Manager = { nullptr };
     class CInput_Device* m_pInput_Device = { nullptr };
+    class CTimer_Manager* m_pTimer_Manager = { nullptr };
+    
     class CLevel_Manager* m_pLevel_Manager = { nullptr };
     class CGameObject_Manager* m_pGameObject_Manager = { nullptr };
     class CComponent_Manager* m_pComponent_Manager = { nullptr };
     class CBTNode_Manager* m_pBTNode_Manager = { nullptr };
-    class CTimer_Manager* m_pTimer_Manager = { nullptr };
-    class CFont_Manager* m_pFont_Manager = { nullptr };
+
     class CRenderTarget_Manager* m_pRenderTarget_Manager = { nullptr };
+    class CFont_Manager* m_pFont_Manager = { nullptr };
     class CLight_Manager* m_pLight_Manager = { nullptr };
+    class CConvert_Manager* m_pConvert_Manager = { nullptr };
+    class CRandomManager* m_pRandom_Manager = { nullptr };
+
     class CRenderer* m_pRenderer = { nullptr };
     class CPipeLine* m_pPipeLine = { nullptr };
     class CPicking* m_pPicking = { nullptr };
     class CFrustum* m_pFrustum = { nullptr };
-    class CConvert_Manager* m_pConvert_Manager = { nullptr };
-    class CRandomManager* m_pRandom_Manager = { nullptr };
-
 
 public:
     static void Release_Engine();
     virtual void Free() override;
 };
-
 END
 
 template<typename T>

@@ -27,6 +27,7 @@ public:
 		_uint iType;
 		_uint iBoneIndex;
 		CCharacterData::COLLIDER_STATE ColliderState;
+		class CLandObject* pParentObject;
 	};
 
 private:
@@ -65,6 +66,14 @@ public:
 		return m_pColliderCom;
 	}
 
+	const class CLandObject* Get_Parent() {
+		return m_pParentObject;
+	}
+
+	const _float3& Get_MoveDir() {
+		return m_vMoveDir;
+	}
+
 private:
 	SOKET_COLLIDER_TYPE				m_eColliderType = { ATTACK };
 
@@ -72,7 +81,9 @@ private:
 	CModel*							m_pModelCom = { nullptr };
 	CCollider*						m_pColliderCom = { nullptr };
 
-	_float							m_fAlphaScale = { 0.f };
+	const class CLandObject*		m_pParentObject = { nullptr };
+
+	_float							m_fDamage = { 0.f };
 	
 	_bool							m_isOn = { true };
 

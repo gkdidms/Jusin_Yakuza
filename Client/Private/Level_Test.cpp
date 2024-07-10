@@ -1,11 +1,13 @@
 #include "Level_Test.h"
 
 #include "GameInstance.h"
+
 #include "SystemManager.h"
 #include "DebugManager.h"
+#include "FileTotalMgr.h"
+
 #include "PlayerCamera.h"
 #include "DebugCamera.h"
-#include "FileTotalMgr.h"
 #include "CineCamera.h"
 
 CLevel_Test::CLevel_Test(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -19,28 +21,25 @@ CLevel_Test::CLevel_Test(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 
 HRESULT CLevel_Test::Initialize()
 {
-	if (FAILED(Ready_Light()))
-		return E_FAIL;
+	//if (FAILED(Ready_Player(TEXT("Layer_Player"))))
+	//	return E_FAIL;
 
-	if (FAILED(Ready_Player(TEXT("Layer_Player"))))
-		return E_FAIL;
+	///*if (FAILED(Ready_Monster(TEXT("Layer_Monster"))))
+	//	return E_FAIL;*/
 
-	if (FAILED(Ready_Monster(TEXT("Layer_Monster"))))
-		return E_FAIL;
+	//if (FAILED(Ready_Camera(TEXT("Layer_Camera"))))
+	//	return E_FAIL;
 
-	if (FAILED(Ready_Camera(TEXT("Layer_Camera"))))
-		return E_FAIL;
+	//if (FAILED(Ready_Map(TEXT("Layer_Map"))))
+	//	return E_FAIL;
 
-	if (FAILED(Ready_Map(TEXT("Layer_Map"))))
-		return E_FAIL;
-
-	if (FAILED(Ready_Effect(TEXT("Layer_Effect"))))
-		return E_FAIL;
+	//if (FAILED(Ready_Effect(TEXT("Layer_Effect"))))
+	//	return E_FAIL;
 
 	/* 클라 파싱 */
-	m_pFileTotalManager->Set_MapObj_In_Client(4, LEVEL_TEST);
+	m_pFileTotalManager->Set_MapObj_In_Client(0, LEVEL_TEST);
 	m_pFileTotalManager->Set_Lights_In_Client(0);
-	m_pFileTotalManager->Set_Collider_In_Client(0, LEVEL_TEST);
+	m_pFileTotalManager->Set_Collider_In_Client(1, LEVEL_TEST);
 
 	return S_OK;
 }
@@ -50,41 +49,6 @@ void CLevel_Test::Tick(const _float& fTimeDelta)
 #ifdef _DEBUG
 	SetWindowText(g_hWnd, TEXT("테스트 레벨"));
 #endif
-}
-
-HRESULT CLevel_Test::Ready_Light()
-{
-	//LIGHT_DESC			LightDesc{};
-
-	//LightDesc.eType = LIGHT_DESC::TYPE_DIRECTIONAL;
-	//LightDesc.vDirection = _float4(1.f, -1.f, 1.f, 0.f);
-	//LightDesc.vDiffuse = _float4(1.f, 1.f, 1.f, 1.f);
-	//LightDesc.vAmbient = _float4(0.4f, 0.4f, 0.4f, 1.f);
-	//LightDesc.vSpecular = _float4(1.f, 1.f, 1.f, 1.f);
-
-	//m_pGameInstance->Add_Light(LightDesc);
-
-	//ZeroMemory(&LightDesc, sizeof(LIGHT_DESC));
-	//LightDesc.eType = LIGHT_DESC::TYPE_POINT;
-	//LightDesc.vPosition = _float4(20.f, 5.f, 20.f, 1.f);
-	//LightDesc.fRange = 20.f;
-	//LightDesc.vDiffuse = _float4(1.f, 0.0f, 0.f, 1.f);
-	//LightDesc.vAmbient = _float4(0.4f, 0.1f, 0.1f, 1.f);
-	//LightDesc.vSpecular = LightDesc.vDiffuse;
-
-	//m_pGameInstance->Add_Light(LightDesc);
-
-	//ZeroMemory(&LightDesc, sizeof(LIGHT_DESC));
-	//LightDesc.eType = LIGHT_DESC::TYPE_POINT;
-	//LightDesc.vPosition = _float4(40.f, 5.f, 20.f, 1.f);
-	//LightDesc.fRange = 20.f;
-	//LightDesc.vDiffuse = _float4(0.0f, 1.f, 0.f, 1.f);
-	//LightDesc.vAmbient = _float4(0.1f, 0.4f, 0.1f, 1.f);
-	//LightDesc.vSpecular = LightDesc.vDiffuse;
-
-	//m_pGameInstance->Add_Light(LightDesc);
-
-	return S_OK;
 }
 
 HRESULT CLevel_Test::Ready_Camera(const wstring& strLayerTag)
@@ -105,7 +69,6 @@ HRESULT CLevel_Test::Ready_Camera(const wstring& strLayerTag)
 
 	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_DebugCamera"), strLayerTag, &CameraDesc)))
 		return E_FAIL;
-
 
 	/* 초기화 할때는 -1 */
 	/* 1. 씬용 카메라 */
@@ -153,7 +116,7 @@ HRESULT CLevel_Test::Ready_Monster(const wstring& strLayerTag)
 	//Desc.fRotatePecSec = XMConvertToRadians(0.f);
 	Desc.fRotatePecSec = XMConvertToRadians(180.f);
 
-	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_Shakedown"), strLayerTag, &Desc)))
+	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_Kuze"), strLayerTag, &Desc)))
 		return E_FAIL;
 
 	return S_OK;

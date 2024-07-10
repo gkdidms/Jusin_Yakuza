@@ -21,10 +21,18 @@ HRESULT CCollision_Manager::Add_ImpulseResolution(CLandObject* pObejct)
     return S_OK;
 }
 
-HRESULT CCollision_Manager::Add_BattleCollider(CSocketCollider* pCollider, COLLIDER_TYPE eType)
+HRESULT CCollision_Manager::Add_AttackCollider(CSocketCollider* pCollider, COLLIDER_TYPE eType)
 {
     Safe_AddRef(pCollider);
-    m_BattleColliders[eType].push_back(pCollider);
+    m_AttackColliders[eType].push_back(pCollider);
+
+    return S_OK;
+}
+
+HRESULT CCollision_Manager::Add_HitCollider(CSocketCollider* pCollider, COLLIDER_TYPE eType)
+{
+    Safe_AddRef(pCollider);
+    m_HitColliders[eType].push_back(pCollider);
 
     return S_OK;
 }
@@ -32,6 +40,9 @@ HRESULT CCollision_Manager::Add_BattleCollider(CSocketCollider* pCollider, COLLI
 void CCollision_Manager::Tick()
 {
     ImpulseResolution();
+    Collision_FromPlayer();
+    Collision_FromEnemy();
+    Battle_Clear();
 }
 
 void CCollision_Manager::ImpulseResolution()
@@ -56,31 +67,35 @@ void CCollision_Manager::ImpulseResolution()
         Impulse_Clear();
 }
  
-_bool CCollision_Manager::Collision_FromPlayer(CSocketCollider* pAttackCollider)
+void CCollision_Manager::Collision_FromPlayer()
 {
-    for (auto& pSocketCollider : m_BattleColliders[FROM_PLAYER])
+    for (auto pPlayerAttackCollider : m_AttackColliders[PLAYER])
     {
-        if (pSocketCollider->Intersect(pAttackCollider->Get_Collider()))
+        for (auto& pEnemyHitCollider : m_HitColliders[ENEMY])
         {
-            cout << "Intersect!!!" << endl;
-        }
-        else
-        {
-            cout << "이건되냐?" << endl;
+            if (pEnemyHitCollider->Intersect(pPlayerAttackCollider->Get_Collider()))
+            {
+                _float3 vHitDir = pPlayerAttackCollider->Get_MoveDir();
+                cout << "Enemy Hit!!" << endl
+                    << "[Dir] x:" << vHitDir.x << "y:" << vHitDir.y << "z:" << vHitDir.z << endl;
+            }
+
         }
     }
-
-    for (auto& pObject : m_BattleColliders[FROM_PLAYER])
-        Safe_Release(pObject);
-
-    m_BattleColliders[FROM_PLAYER].clear();
-
-    return _bool();
 }
 
-_bool CCollision_Manager::Collision_FromEnemy(CLandObject* pObejct)
+void CCollision_Manager::Collision_FromEnemy()
 {
-    return _bool();
+    for (auto pEnemyAttackCollider : m_AttackColliders[ENEMY])
+    {
+        for (auto& pPlayerHitCollider : m_HitColliders[PLAYER])
+        {
+            if (pPlayerHitCollider->Intersect(pEnemyAttackCollider->Get_Collider()))
+            {
+                cout << "Player Hit!!!!" << endl;
+            }
+        }
+    }
 }
 
 void CCollision_Manager::Impulse_Clear()
@@ -95,10 +110,14 @@ void CCollision_Manager::Battle_Clear()
 {
     for (size_t i = 0; i < TYPE_END; i++)
     {
-        for (auto& pObject : m_BattleColliders[i])
+        for (auto& pObject : m_AttackColliders[i])
             Safe_Release(pObject);
 
-        m_BattleColliders[i].clear();
+        for (auto& pObject : m_HitColliders[i])
+            Safe_Release(pObject);
+
+        m_AttackColliders[i].clear();
+        m_HitColliders[i].clear();
     }
 }
 

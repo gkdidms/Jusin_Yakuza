@@ -277,16 +277,16 @@ void CCollider_Manager::Show_FileName()
 
 	if (0 < m_pColliders.size())
 	{
-		Edit_Collider_Transform(object_current_idx);
+		Edit_Collider_Transform(m_iCurentColliderIndex);
 	}
 
 
 	/* 다른 오브젝트 클릭시 */
-	if (m_iCurentColliderIndex != object_current_idx)
-	{
-		m_iCurentColliderIndex = object_current_idx;
+	//if (m_iCurentColliderIndex != object_current_idx)
+	//{
+	//	m_iCurentColliderIndex = object_current_idx;
 
-	}
+	//}
 
 
 
