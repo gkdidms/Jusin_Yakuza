@@ -1,8 +1,8 @@
 #include "GameInstance.h"
-#include "Kiryu_KRS_Sway.h"
+#include "Kiryu_KRH_Sway.h"
 #include "Player.h"
 
-CKiryu_KRS_Sway::CKiryu_KRS_Sway()
+CKiryu_KRH_Sway::CKiryu_KRH_Sway()
 	:CBehaviorAnimation{}
 {
 	// 스웨이는 그냥 키입력이 있으면 back 방향이 기본임
@@ -14,7 +14,7 @@ CKiryu_KRS_Sway::CKiryu_KRS_Sway()
 	m_AnimationIndices.push_back(289);	//[289]	p_krs_sway_r[p_krs_sway_r]
 }
 
-void CKiryu_KRS_Sway::Tick(const _float& fTimeDelta)
+void CKiryu_KRH_Sway::Tick(const _float& fTimeDelta)
 {
 	const _bool* pDirection = m_pPlayer->Get_MoveDirection();
 
@@ -28,12 +28,12 @@ void CKiryu_KRS_Sway::Tick(const _float& fTimeDelta)
 		m_iCurrentIndex = CPlayer::B;
 }
 
-void CKiryu_KRS_Sway::Change_Animation()
+void CKiryu_KRH_Sway::Change_Animation()
 {
 	m_pPlayer->Change_Animation(m_AnimationIndices[m_iCurrentIndex]);
 }
 
-_bool CKiryu_KRS_Sway::Get_AnimationEnd()
+_bool CKiryu_KRH_Sway::Get_AnimationEnd()
 {
 	CModel* pModelCom = static_cast<CModel*>(m_pPlayer->Get_Component(TEXT("Com_Model")));
 	if (pModelCom->Get_AnimFinished())
@@ -44,14 +44,14 @@ _bool CKiryu_KRS_Sway::Get_AnimationEnd()
 	return false;
 }
 
-CBehaviorAnimation* CKiryu_KRS_Sway::Create(CPlayer* pPlayer)
+CBehaviorAnimation* CKiryu_KRH_Sway::Create(CPlayer* pPlayer)
 {
-	CKiryu_KRS_Sway* pInstnace = new CKiryu_KRS_Sway();
+	CKiryu_KRH_Sway* pInstnace = new CKiryu_KRH_Sway();
 
 	if (nullptr == pInstnace) 
 	{
 		Safe_Release(pInstnace);
-		MSG_BOX("Faild To Created : Kiryu_KRS_Sway");
+		MSG_BOX("Faild To Created : Kiryu_KRH_Sway");
 		return pInstnace;
 	}
 
@@ -60,7 +60,7 @@ CBehaviorAnimation* CKiryu_KRS_Sway::Create(CPlayer* pPlayer)
 	return pInstnace;
 }
 
-void CKiryu_KRS_Sway::Free()
+void CKiryu_KRH_Sway::Free()
 {
 	__super::Free();
 }

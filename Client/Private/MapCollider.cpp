@@ -97,13 +97,13 @@ HRESULT CMapCollider::Add_Components(void* pArg)
 
 
         // 테스트시에만 생성
-        CMapColliderObj::COLLIDEROBJ_DESC colliderDescobj;
-        colliderDescobj.vCenter = collderIOdesc.vCenter;
-        colliderDescobj.vExtents = collderIOdesc.vExtents;
+        //CMapColliderObj::COLLIDEROBJ_DESC colliderDescobj;
+        //colliderDescobj.vCenter = collderIOdesc.vCenter;
+        //colliderDescobj.vExtents = collderIOdesc.vExtents;
 
-        m_ColliderObjs.push_back(dynamic_cast<CMapColliderObj*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_MapColliderObj"), &colliderDescobj)));
+        //m_ColliderObjs.push_back(dynamic_cast<CMapColliderObj*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_MapColliderObj"), &colliderDescobj)));
 
-        m_pCollisionManager->Add_MapCollider(m_vCollider.back());
+        //m_pCollisionManager->Add_MapCollider(m_vCollider.back());
 
     }
 

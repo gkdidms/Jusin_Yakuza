@@ -1,8 +1,8 @@
 #include "GameInstance.h"
-#include "Kiryu_KRS_Idle.h"
+#include "Kiryu_KRH_Idle.h"
 #include "Player.h"
 
-CKiryu_KRS_Idle::CKiryu_KRS_Idle()
+CKiryu_KRH_Idle::CKiryu_KRH_Idle()
 	:CBehaviorAnimation{}
 {
 	// 전투 중 아이들 모션은 어드벤처와 동일하다
@@ -11,17 +11,17 @@ CKiryu_KRS_Idle::CKiryu_KRS_Idle()
 	m_AnimationIndices.push_back(351);	//p_stand_nml 351
 }
 
-void CKiryu_KRS_Idle::Tick(const _float& fTimeDelta)
+void CKiryu_KRH_Idle::Tick(const _float& fTimeDelta)
 {
 	Off_Battle(fTimeDelta);
 }
 
-void CKiryu_KRS_Idle::Change_Animation()
+void CKiryu_KRH_Idle::Change_Animation()
 {
 	m_pPlayer->Change_Animation(m_AnimationIndices[m_eCurrentBehavior]);
 }
 
-_bool CKiryu_KRS_Idle::Get_AnimationEnd()
+_bool CKiryu_KRH_Idle::Get_AnimationEnd()
 {
 	CModel* pModelCom = static_cast<CModel*>(m_pPlayer->Get_Component(TEXT("Com_Model")));
 	if (pModelCom->Get_AnimFinished())
@@ -34,12 +34,12 @@ _bool CKiryu_KRS_Idle::Get_AnimationEnd()
 	return false;
 }
 
-void CKiryu_KRS_Idle::Reset()
+void CKiryu_KRH_Idle::Reset()
 {
 	m_eCurrentBehavior = BATTLE_ON;
 }
 
-void CKiryu_KRS_Idle::Off_Battle(const _float& fTimeDelta)
+void CKiryu_KRH_Idle::Off_Battle(const _float& fTimeDelta)
 {
 	if (BATTLE_ON != m_eCurrentBehavior) return;
 
@@ -53,14 +53,14 @@ void CKiryu_KRS_Idle::Off_Battle(const _float& fTimeDelta)
 	}
 }
 
-CBehaviorAnimation* CKiryu_KRS_Idle::Create(CPlayer* pPlayer)
+CBehaviorAnimation* CKiryu_KRH_Idle::Create(CPlayer* pPlayer)
 {
-	CKiryu_KRS_Idle* pInstnace = new CKiryu_KRS_Idle();
+	CKiryu_KRH_Idle* pInstnace = new CKiryu_KRH_Idle();
 
 	if (nullptr == pInstnace) 
 	{
 		Safe_Release(pInstnace);
-		MSG_BOX("Faild To Created : Kiryu_KRS_Idle");
+		MSG_BOX("Faild To Created : Kiryu_KRH_Idle");
 		return pInstnace;
 	}
 
@@ -69,7 +69,7 @@ CBehaviorAnimation* CKiryu_KRS_Idle::Create(CPlayer* pPlayer)
 	return pInstnace;
 }
 
-void CKiryu_KRS_Idle::Free()
+void CKiryu_KRH_Idle::Free()
 {
 	__super::Free();
 }

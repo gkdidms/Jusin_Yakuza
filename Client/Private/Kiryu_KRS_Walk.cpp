@@ -38,7 +38,7 @@ CBehaviorAnimation* CKiryu_KRS_Walk::Create(CPlayer* pPlayer)
 	if (nullptr == pInstnace) 
 	{
 		Safe_Release(pInstnace);
-		MSG_BOX("Faild To Created : Kiryu_Adventure_Idle");
+		MSG_BOX("Faild To Created : Kiryu_KRS_Walk");
 		return pInstnace;
 	}
 

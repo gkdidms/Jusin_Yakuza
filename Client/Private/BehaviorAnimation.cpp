@@ -13,6 +13,8 @@
 #include "Kiryu_KRS_Walk.h"
 #include "Kiryu_KRS_Run.h"
 #include "Kiryu_KRS_Attack.h"
+#include "Kiryu_KRS_FlyKick.h"
+#include "Kiryu_KRS_KickCombo.h"
 #include "Kiryu_KRS_Hit.h"
 #include "Kiryu_KRS_Sway.h"
 #pragma endregion
@@ -41,29 +43,66 @@ CBehaviorAnimation* CBehaviorAnimation::Create_Adventure_Behavior(_uint iBehavio
 
 CBehaviorAnimation* CBehaviorAnimation::Create_KRS_Behavior(_uint iBehavior, class CPlayer* pPlayer)
 {
-	//BTL_START, IDLE, WALK, RUN, ATTACK, HIT, KRS_BEHAVIOR_END
+/*
+        BTL_START, IDLE, WALK, RUN, ATTACK, HIT, 
+        SWAY, DOWN, 
+		SKILL_FLY_KICK, SKILL_KICK_COMBO,
+*/
 	switch (iBehavior)
 	{
-	case 0:
+	case 0:			//BTL_START
 		return CKiryu_KRS_BattleStart::Create(pPlayer);
-	case 1:
+	case 1:			// IDLE
 		return CKiryu_KRS_Idle::Create(pPlayer);
-	case 2:
+	case 2:			// WALK
 		return CKiryu_KRS_Walk::Create(pPlayer);
-	case 3:
+	case 3:			// RUN
 		return CKiryu_KRS_Run::Create(pPlayer);
-	case 4:
+	case 4:			//ATTACK
 		return CKiryu_KRS_Attack::Create(pPlayer);
-	case 5:
+	case 5:			//HIT
 		return CKiryu_KRS_Hit::Create(pPlayer);
-	case 6:
+	case 6:			// SWAY
 		return CKiryu_KRS_Sway::Create(pPlayer);
+	case 7:			// DOWN
+		break;
+	case 8:			//SKILL_FLY_KICK
+		return CKiryu_KRS_FlyKick::Create(pPlayer);
+	case 9:			// SKILL_KICK_COMBO
+		return CKiryu_KRS_KickCombo::Create(pPlayer);
 	}
 	return nullptr;
 }
 
 CBehaviorAnimation* CBehaviorAnimation::Create_KRH_Behavior(_uint iBehavior, class CPlayer* pPlayer)
 {
+	/*
+		BTL_START, IDLE, WALK, RUN, ATTACK, HIT,
+		SWAY, DOWN, KRS_BEHAVIOR_END
+	*/
+	switch (iBehavior)
+	{
+	case 0:			//BTL_START
+		return CKiryu_KRS_BattleStart::Create(pPlayer);
+	case 1:			// IDLE
+		return CKiryu_KRS_Idle::Create(pPlayer);
+	case 2:			// WALK
+		return CKiryu_KRS_Walk::Create(pPlayer);
+	case 3:			// RUN
+		return CKiryu_KRS_Run::Create(pPlayer);
+	case 4:			//ATTACK
+		return CKiryu_KRS_Attack::Create(pPlayer);
+	case 5:			//HIT
+		return CKiryu_KRS_Hit::Create(pPlayer);
+	case 6:			// SWAY
+		return CKiryu_KRS_Sway::Create(pPlayer);
+	case 7:			// DOWN
+		break;
+	case 8:			//SKILL_FLY_KICK
+		return CKiryu_KRS_FlyKick::Create(pPlayer);
+	case 9:			// SKILL_KICK_COMBO
+		return CKiryu_KRS_KickCombo::Create(pPlayer);
+	}
 	return nullptr;
 }
 

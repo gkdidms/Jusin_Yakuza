@@ -221,6 +221,16 @@ void CPlayer::Ready_AnimationTree()
 		m_AnimationTree[KRS].emplace(i, CBehaviorAnimation::Create(KRS, i, this));
 	}
 
+	for (size_t i = 0; i < (_uint)KRH_BEHAVIOR_STATE::KRH_BEHAVIOR_END; i++)
+	{
+		m_AnimationTree[KRH].emplace(i, CBehaviorAnimation::Create(KRH, i, this));
+	}
+
+	for (size_t i = 0; i < (_uint)KRC_BEHAVIOR_STATE::KRC_BEHAVIOR_END; i++)
+	{
+		m_AnimationTree[KRC].emplace(i, CBehaviorAnimation::Create(KRC, i, this));
+	}
+
 }
 
 // 현재 애니메이션의 y축을 제거하고 사용하는 상태이다 (혹시 애니메이션의 y축 이동도 적용이 필요하다면 로직 수정이 필요함
@@ -414,6 +424,8 @@ void CPlayer::KRS_KeyInput(const _float& fTimeDelta)
 	_bool isShift = { false };
 	_bool isMove = { false };
 
+	if (m_iCurrentBehavior == (_uint)KRS_BEHAVIOR_STATE::SKILL_FLY_KICK) return;
+
 	if (m_pGameInstance->GetKeyState(DIK_LSHIFT) == HOLD)
 	{
 		isShift = true;
@@ -433,8 +445,23 @@ void CPlayer::KRS_KeyInput(const _float& fTimeDelta)
 		// 현재 어택상태인지를 구분해서 마무리 액션을 실행시키거나
 		// 그에 맞는 커맨드 액션을 실행시ㅕ켜야 한다.
 
-		m_iCurrentBehavior = (_uint)KRS_BEHAVIOR_STATE::ATTACK;
-		m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Combo_Count(true);
+		// 여기에 스킬트리가 완료되면 스킬을 보유중인지에 대한 조건식을 추가로 잡아야한다
+		if (m_iCurrentBehavior == (_uint)KRS_BEHAVIOR_STATE::RUN)
+		{
+			m_iCurrentBehavior = (_uint)KRS_BEHAVIOR_STATE::SKILL_FLY_KICK;
+		}
+		// 기본 러쉬콤보 진행중일 때에 우클릭이 들어오면 피니시 블로 실행
+		else if(m_iCurrentBehavior == (_uint)KRS_BEHAVIOR_STATE::ATTACK)
+		{
+			m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Combo_Count(true);
+		}
+		// 아무것도 아닌 상태에서 우클릭이 들어온다면 킥콤보를 실행
+		else
+		{
+			m_iCurrentBehavior = (_uint)KRS_BEHAVIOR_STATE::SKILL_KICK_COMBO;
+			m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Combo_Count();
+		}
+
 	}
 
 	if (m_iCurrentBehavior < (_uint)KRS_BEHAVIOR_STATE::ATTACK)
@@ -481,7 +508,6 @@ void CPlayer::KRS_KeyInput(const _float& fTimeDelta)
 			m_pTransformCom->LookAt_For_LandObject(vLookPos);
 			isMove = true;
 		}
-		//	m_iCurrentBehavior = isShift ? (_uint)ADVENTURE_BEHAVIOR_STATE::WALK : (_uint)ADVENTURE_BEHAVIOR_STATE::RUN;
 		if (m_pGameInstance->GetKeyState(DIK_D) == HOLD)
 		{
 			if (m_iCurrentBehavior == (_uint)KRS_BEHAVIOR_STATE::WALK || m_iCurrentBehavior == (_uint)KRS_BEHAVIOR_STATE::RUN)
@@ -489,16 +515,11 @@ void CPlayer::KRS_KeyInput(const _float& fTimeDelta)
 		//	m_MoveDirection[B] = false;
 			_vector vLookPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION) + (m_pTransformCom->Get_State(CTransform::STATE_LOOK) + m_pGameInstance->Get_CamRight());
 			m_iCurrentBehavior = isShift ? (_uint)KRS_BEHAVIOR_STATE::WALK : (_uint)KRS_BEHAVIOR_STATE::RUN;
-		//	m_iCurrentBehavior = isShift ? (_uint)ADVENTURE_BEHAVIOR_STATE::WALK : (_uint)ADVENTURE_BEHAVIOR_STATE::RUN;
 			m_InputDirection[R] = true;
 			Compute_MoveDirection_RL();
 			m_pTransformCom->LookAt_For_LandObject(vLookPos);
 			isMove = true;
 		}
-		//	m_MoveDirection[L] = false;
-		//}
-		//	m_MoveDirection[L] = false;
-		//}
 
 		if (m_pGameInstance->GetKeyState(DIK_E) == TAP)
 		{

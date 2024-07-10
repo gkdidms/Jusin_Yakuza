@@ -1,8 +1,8 @@
 #include "GameInstance.h"
-#include "Kiryu_KRS_Attack.h"
+#include "Kiryu_KRH_Attack.h"
 #include "Player.h"
 
-CKiryu_KRS_Attack::CKiryu_KRS_Attack()
+CKiryu_KRH_Attack::CKiryu_KRH_Attack()
 	:CBehaviorAnimation{}
 {
 	// 전투 중 아이들 모션은 어드벤처와 동일하다
@@ -23,7 +23,7 @@ CKiryu_KRS_Attack::CKiryu_KRS_Attack()
 	m_AnimationIndices.push_back(257);	//[257]	p_krs_cmb_04_finw[p_krs_cmb_04_finw]
 }
 
-void CKiryu_KRS_Attack::Tick(const _float& fTimeDelta)
+void CKiryu_KRH_Attack::Tick(const _float& fTimeDelta)
 {
 
 	if (m_pGameInstance->GetKeyState(DIK_Q) == TAP)
@@ -37,14 +37,14 @@ void CKiryu_KRS_Attack::Tick(const _float& fTimeDelta)
 		
 }
 
-void CKiryu_KRS_Attack::Change_Animation()
+void CKiryu_KRH_Attack::Change_Animation()
 {
 	if (0 > m_iComboCount) return;
 
 	m_pPlayer->Change_Animation(m_AnimationIndices[m_iComboCount]);
 }
 
-_bool CKiryu_KRS_Attack::Get_AnimationEnd()
+_bool CKiryu_KRH_Attack::Get_AnimationEnd()
 {
 	CModel* pModelCom = static_cast<CModel*>(m_pPlayer->Get_Component(TEXT("Com_Model")));
 	if (pModelCom->Get_AnimFinished())
@@ -56,12 +56,12 @@ _bool CKiryu_KRS_Attack::Get_AnimationEnd()
 	return false;
 }
 
-void CKiryu_KRS_Attack::Reset()
+void CKiryu_KRH_Attack::Reset()
 {
 	m_iComboCount = 0;
 }
 
-void CKiryu_KRS_Attack::Combo_Count(_bool isFinAction)
+void CKiryu_KRH_Attack::Combo_Count(_bool isFinAction)
 {
 	if (isFinAction)
 	{
@@ -87,7 +87,7 @@ void CKiryu_KRS_Attack::Combo_Count(_bool isFinAction)
 	
 }		
 
-_bool CKiryu_KRS_Attack::Changeable_Combo_Animation()
+_bool CKiryu_KRH_Attack::Changeable_Combo_Animation()
 {
 	_float fInterval = 0.15f;
 
@@ -113,14 +113,14 @@ _bool CKiryu_KRS_Attack::Changeable_Combo_Animation()
 	return false;
 }
 
-CBehaviorAnimation* CKiryu_KRS_Attack::Create(CPlayer* pPlayer)
+CBehaviorAnimation* CKiryu_KRH_Attack::Create(CPlayer* pPlayer)
 {
-	CKiryu_KRS_Attack* pInstnace = new CKiryu_KRS_Attack();
+	CKiryu_KRH_Attack* pInstnace = new CKiryu_KRH_Attack();
 
 	if (nullptr == pInstnace) 
 	{
 		Safe_Release(pInstnace);
-		MSG_BOX("Faild To Created : Kiryu_KRS_Attack");
+		MSG_BOX("Faild To Created : Kiryu_KRH_Attack");
 		return pInstnace;
 	}
 
@@ -129,7 +129,7 @@ CBehaviorAnimation* CKiryu_KRS_Attack::Create(CPlayer* pPlayer)
 	return pInstnace;
 }
 
-void CKiryu_KRS_Attack::Free()
+void CKiryu_KRH_Attack::Free()
 {
 	__super::Free();
 }
