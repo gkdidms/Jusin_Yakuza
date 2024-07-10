@@ -21,25 +21,27 @@ CLevel_Test::CLevel_Test(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 
 HRESULT CLevel_Test::Initialize()
 {
-	//if (FAILED(Ready_Player(TEXT("Layer_Player"))))
-	//	return E_FAIL;
+	if (FAILED(Ready_Player(TEXT("Layer_Player"))))
+		return E_FAIL;
 
-	///*if (FAILED(Ready_Monster(TEXT("Layer_Monster"))))
-	//	return E_FAIL;*/
+	/*if (FAILED(Ready_Monster(TEXT("Layer_Monster"))))
+		return E_FAIL;*/
 
-	//if (FAILED(Ready_Camera(TEXT("Layer_Camera"))))
-	//	return E_FAIL;
+	if (FAILED(Ready_Camera(TEXT("Layer_Camera"))))
+		return E_FAIL;
 
-	//if (FAILED(Ready_Map(TEXT("Layer_Map"))))
-	//	return E_FAIL;
+	if (FAILED(Ready_Map(TEXT("Layer_Map"))))
+		return E_FAIL;
 
-	//if (FAILED(Ready_Effect(TEXT("Layer_Effect"))))
-	//	return E_FAIL;
+	if (FAILED(Ready_Effect(TEXT("Layer_Effect"))))
+		return E_FAIL;
 
 	/* Å¬¶ó ÆÄ½Ì */
 	m_pFileTotalManager->Set_MapObj_In_Client(0, LEVEL_TEST);
 	m_pFileTotalManager->Set_Lights_In_Client(0);
 	m_pFileTotalManager->Set_Collider_In_Client(1, LEVEL_TEST);
+
+	_uint i = m_pGameInstance->Get_CurrentLevel();
 
 	return S_OK;
 }
@@ -93,6 +95,8 @@ HRESULT CLevel_Test::Ready_Camera(const wstring& strLayerTag)
 	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_PlayerCamera"), strLayerTag, &PlayerCameraDesc)))
 		return E_FAIL;
 
+	
+
 	return S_OK;
 }
 
@@ -132,7 +136,6 @@ HRESULT CLevel_Test::Ready_Map(const wstring& strLayerTag)
 
 HRESULT CLevel_Test::Ready_Effect(const wstring& strLayerTag)
 {
-
 	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_Particle_Point_Hit1_Part0"), strLayerTag, nullptr)))
 		return E_FAIL;
 

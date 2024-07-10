@@ -221,7 +221,16 @@
       <Filter>02.GameObjects\04.Sky\Dome</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\MapColliderObj.cpp">
-      <Filter>02.GameObjects\08. MapCollider\Obj</Filter>
+      <Filter>02.GameObjects\08.MapCollider\Obj</Filter>
+	</ClCompile>
+    <ClCompile Include="..\Private\AI_Kuze.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\Kuze\AI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Yoneda.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\Yoneda</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\AI_Yoneda.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\Yoneda\AI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -475,7 +484,16 @@
       <Filter>02.GameObjects\04.Sky\Dome</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\MapColliderObj.h">
-      <Filter>02.GameObjects\08. MapCollider\Obj</Filter>
+      <Filter>02.GameObjects\08.MapCollider\Obj</Filter>
+	</ClInclude>
+    <ClInclude Include="..\Public\AI_Kuze.h">
+      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\Kuze\AI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Yoneda.h">
+      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\Yoneda</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\AI_Yoneda.h">
+      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\Yoneda\AI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

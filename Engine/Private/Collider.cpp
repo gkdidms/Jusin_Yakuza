@@ -122,7 +122,7 @@ void CCollider::Reset_Color()
 
 _bool CCollider::Intersect(CCollider* pTargetCollider, _float fDistance)
 {
-	return m_isColl = m_pCurrentBounding->Intersect(pTargetCollider->m_ColliderType, pTargetCollider->m_pCurrentBounding);
+	return m_isColl = m_pCurrentBounding->Intersect(pTargetCollider->m_ColliderType, pTargetCollider->m_pCurrentBounding, fDistance);
 }
 
 const _float3& CCollider::ImpulseResolution(CCollider* pTargetCollider)

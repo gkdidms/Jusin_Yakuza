@@ -65,6 +65,7 @@ void CPlayer::Tick(const _float& fTimeDelta)
 	{
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0, 0, 0, 1));
 	}
+
 	if (m_pGameInstance->GetKeyState(DIK_UP) == TAP)
 	{
 		Style_Change(KRS);
@@ -95,7 +96,7 @@ void CPlayer::Tick(const _float& fTimeDelta)
 
 void CPlayer::Late_Tick(const _float& fTimeDelta)
 {
-	//m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
+	m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
 	//m_pGameInstance->Add_Renderer(CRenderer::RENDER_SHADOWOBJ, this); // Shadow용 렌더 추가
 	m_pCollisionManager->Add_ImpulseResolution(this);
 
@@ -203,9 +204,9 @@ HRESULT CPlayer::Render_LightDepth(_uint iIndex)
 	return S_OK;
 }
 
-_bool CPlayer::Intersect(CLandObject* pTargetObject)
+void CPlayer::Take_Damage(_uint iHitColliderType, const _float3& vDir, _float fDamage, _bool isBlowAttack)
 {
-	return _bool();
+	// iHitColliderType 는 충돌한 HIT타입 콜라이더가 헤드, 바디, 레그인지를 갖고있다.
 }
 
 void CPlayer::Ready_AnimationTree()

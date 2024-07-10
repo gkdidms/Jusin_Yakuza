@@ -110,7 +110,7 @@ void CLandObject::Apply_ChracterData()
 		Desc.pCombinedTransformationMatrix = m_pModelCom->Get_BoneCombinedTransformationMatrix_AtIndex(Collider.first);
 		Desc.iBoneIndex = Collider.first;
 		Desc.ColliderState = Collider.second;
-		Desc.iType = Collider.second.isAlways ? 1 : 0;
+		//Desc.iType = Collider.second.isAlways ? 1 : 0;
 		Desc.pParentObject = this;
 
 		CGameObject* pSoketCollider = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_SoketCollider"), &Desc);
