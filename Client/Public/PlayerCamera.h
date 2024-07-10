@@ -3,10 +3,18 @@
 
 #include "Client_Defines.h"
 
+BEGIN(Engine)
+class CCollider;
+END
+
 BEGIN(Client)
 class CPlayerCamera :
     public CCamera
 {
+private:
+    const _float MAX_DISTANCE = 5.f;
+    const _float MIN_DISTANCE = 1.f;
+
 public:
     typedef struct tPlayerCameraDesc : public CAMERA_DESC
     {
@@ -36,6 +44,8 @@ private:
 
 private:
     class CSystemManager* m_pSystemManager = { nullptr };
+    class CCollision_Manager* m_pCollisionManager = { nullptr };
+    CCollider* m_pColliderCom = { nullptr };
     _float m_fSensor = { 0.f };
     const _float4x4* m_pPlayerMatrix = { nullptr };
 
@@ -43,6 +53,9 @@ private:
 
     _float fCamAngleX = 45.f;
     _float fCamAngleY = -90.f;
+
+private:
+    HRESULT Add_Components();
 
 public:
     static CPlayerCamera* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
