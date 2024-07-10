@@ -27,6 +27,7 @@ public:
 
     /* 충돌관련 함수들 */
     virtual void ImpulseResolution(CLandObject* pTargetObject);
+    virtual void Take_Damage(_uint iHitColliderType, const _float3& vDir, _float fDamage, _bool isBlowAttack = false) {};
 
 protected:
     virtual HRESULT Add_CharacterData();
@@ -44,6 +45,8 @@ public:
     const unordered_map<_uint, class CSocketCollider*>& Get_Colliders() {
         return m_pColliders;
     }
+
+    virtual _bool Is_BlowAttack() { return false; }             // 재정의 필요
  
 protected:
     class CSystemManager* m_pSystemManager = { nullptr };
