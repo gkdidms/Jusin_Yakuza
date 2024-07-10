@@ -1,19 +1,17 @@
 #include "../Default/framework.h"
 
 #include "MainApp.h"
-
 #include "GameInstance.h"
 #include "SystemManager.h"
 #include "Collision_Manager.h"
-#include "FileTotalMgr.h"
+
 #ifdef _DEBUG
 #include "DebugManager.h"
 #endif // _DEBUG
 
 #include "Level_Loading.h"
-
 #include "Background.h"
-
+#include "FileTotalMgr.h"
 
 CMainApp::CMainApp() :
 #ifdef _DEBUG
