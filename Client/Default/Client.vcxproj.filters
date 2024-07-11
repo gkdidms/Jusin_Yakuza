@@ -220,9 +220,6 @@
     <ClCompile Include="..\Private\SkyDome.cpp">
       <Filter>02.GameObjects\04.Sky\Dome</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\MapColliderObj.cpp">
-      <Filter>02.GameObjects\08.MapCollider\Obj</Filter>
-	</ClCompile>
     <ClCompile Include="..\Private\AI_Kuze.cpp">
       <Filter>02.GameObjects\02.Character\LandObject\01.Monster\Kuze\AI</Filter>
     </ClCompile>
@@ -232,6 +229,7 @@
     <ClCompile Include="..\private\AI_Yoneda.cpp">
       <Filter>02.GameObjects\02.Character\LandObject\01.Monster\Yoneda\AI</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\MapColliderObj.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\MainApp.h">
@@ -483,9 +481,6 @@
     <ClInclude Include="..\Public\SkyDome.h">
       <Filter>02.GameObjects\04.Sky\Dome</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\MapColliderObj.h">
-      <Filter>02.GameObjects\08.MapCollider\Obj</Filter>
-	</ClInclude>
     <ClInclude Include="..\Public\AI_Kuze.h">
       <Filter>02.GameObjects\02.Character\LandObject\01.Monster\Kuze\AI</Filter>
     </ClInclude>
@@ -495,6 +490,7 @@
     <ClInclude Include="..\public\AI_Yoneda.h">
       <Filter>02.GameObjects\02.Character\LandObject\01.Monster\Yoneda\AI</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\MapColliderObj.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
