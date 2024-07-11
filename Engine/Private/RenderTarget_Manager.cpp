@@ -18,12 +18,12 @@ HRESULT CRenderTarget_Manager::Initialize()
 	return S_OK;
 }
 
-HRESULT CRenderTarget_Manager::Add_RenderTarget(const wstring& strRenderTargetTag, _uint iSizeX, _uint iSizeY, DXGI_FORMAT ePixelFormat, const _float4& vClearColor)
+HRESULT CRenderTarget_Manager::Add_RenderTarget(const wstring& strRenderTargetTag, _uint iSizeX, _uint iSizeY, DXGI_FORMAT ePixelFormat, const _float4& vClearColor, _uint iArrayCount)
 {
 	if (nullptr != Find_RenderTarget(strRenderTargetTag))
 		return E_FAIL;
 
-	CRenderTarget* pRenderTarget = CRenderTarget::Create(m_pDevice, m_pContext, iSizeX, iSizeY, ePixelFormat, vClearColor);
+	CRenderTarget* pRenderTarget = CRenderTarget::Create(m_pDevice, m_pContext, iSizeX, iSizeY, ePixelFormat, vClearColor, iArrayCount);
 	if (nullptr == pRenderTarget)
 		return E_FAIL;
 
@@ -98,7 +98,7 @@ HRESULT CRenderTarget_Manager::Bind_RenderTargetSRV(const wstring& strTargetTag,
 	CRenderTarget* pRenderTarget = Find_RenderTarget(strTargetTag);
 	if (nullptr == pRenderTarget)
 		return E_FAIL;
-
+	
 	return pRenderTarget->Bind_SVR(pShader, pConstantName);
 }
 
@@ -143,14 +143,14 @@ HRESULT CRenderTarget_Manager::Ready_Debug(const wstring strRenderTargetTag, _fl
 	return pRenderTarget->Ready_Debug(fX, fY, fSizeX, fSizeY);
 }
 
-HRESULT CRenderTarget_Manager::Render_Debug(const wstring& strMRTTag, CShader* pShader, CVIBuffer_Rect* pVIBuffer)
+HRESULT CRenderTarget_Manager::Render_Debug(const wstring& strMRTTag, CShader* pShader, CVIBuffer_Rect* pVIBuffer, _bool isArray)
 {
 	list<CRenderTarget*>* pMRTList = Find_MRT(strMRTTag);
 	if (nullptr == pMRTList)
 		return E_FAIL;
 
 	for (auto& pRenderTarget : *pMRTList)
-		pRenderTarget->Render_Debug(pShader, pVIBuffer);
+		pRenderTarget->Render_Debug(pShader, pVIBuffer, isArray);
 
 	return S_OK;
 }

@@ -138,6 +138,7 @@ HRESULT CPlayer::Render()
 
 		_bool isRS = true;
 		_bool isRD = true;
+
 		if (!strcmp(pMesh->Get_Name(), "[l0]face_kiryu"))
 		{
 			isRS = false;

@@ -174,7 +174,6 @@ PS_OUT PS_MAIN(PS_IN In)
     Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_fFar, 1.f, 1.f);
     Out.vMulti = vMultiDiffuce;
     
-    
     return Out;
 }
 

@@ -22,6 +22,17 @@ sampler LinearSampler = sampler_state
     AddressV = WRAP;
 };
 
+SamplerComparisonState ShadowSampler = sampler_state
+{
+   // sampler state
+    Filter = MIN_MAG_LINEAR_MIP_POINT;
+    AddressU = MIRROR;
+    AddressV = MIRROR;
+    
+   // sampler comparison state
+    ComparisonFunc = LESS;
+    Filter = COMPARISON_MIN_MAG_LINEAR_MIP_POINT;
+};
 
 RasterizerState RS_Default
 {
