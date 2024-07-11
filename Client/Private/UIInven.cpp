@@ -1,27 +1,34 @@
-#include "UIMenu.h"
+#include "UIInven.h"
 
 #include "UIManager.h"
 #include "UI_Object.h"
 #include "Group.h"
 #include "Btn.h"
 #include"GameInstance.h"
-CUIMenu::CUIMenu()
-	:CUIScene{}
+#include"InventoryManager.h"
+CUIInven::CUIInven()
+    :CUIScene{}
 {
 }
 
-CUIMenu::CUIMenu(const CUIMenu& rhs)
-	:CUIScene{rhs}
+CUIInven::CUIInven(const CUIInven& rhs)
+    :CUIScene{ rhs }
 {
 }
 
-HRESULT CUIMenu::Initialize(void* pArg)
+HRESULT CUIInven::Initialize(void* pArg)
 {
-
-	return S_OK;
+	if (nullptr != pArg)
+	{
+		IVENSCENE_DESC* pDesc = static_cast<IVENSCENE_DESC*>(pArg);
+		
+		m_pInvenctory = pDesc->pInventory;	
+		Safe_AddRef(m_pInvenctory);
+	}
+    return S_OK;
 }
 
-HRESULT CUIMenu::Tick(const _float& fTimeDelta)
+HRESULT CUIInven::Tick(const _float& fTimeDelta)
 {
 
 	__super::Tick(fTimeDelta);
@@ -40,8 +47,9 @@ HRESULT CUIMenu::Tick(const _float& fTimeDelta)
 	return S_OK;
 }
 
-HRESULT CUIMenu::Late_Tick(const _float& fTimeDelta)
+HRESULT CUIInven::Late_Tick(const _float& fTimeDelta)
 {
+
 	__super::Late_Tick(fTimeDelta);
 
 
@@ -70,7 +78,7 @@ HRESULT CUIMenu::Late_Tick(const _float& fTimeDelta)
 	return S_OK;
 }
 
-void CUIMenu::Action()
+void CUIInven::Action()
 {
 	switch (m_iCurButton)
 	{
@@ -99,17 +107,17 @@ void CUIMenu::Action()
 	}
 }
 
-void CUIMenu::OverAction()
+void CUIInven::OverAction()
 {
 	//이벤트순서(자기가 만든 ui 순서를 기록해서 쓰기)
 	// 1. 이펙트 2.설명 3.파티클 
 	//수동으로 그룹으로 정리해서 들어온 이펙트,파티클을 기록하고 사용하자
 	_matrix ButtonWorld = m_Button[m_iCurButton]->Get_TransformCom()->Get_WorldMatrix();
 	_vector Position = ButtonWorld.r[3];
-	ButtonWorld=XMMatrixTranslation(XMVectorGetX(Position), XMVectorGetY(Position), 0.f);
+	ButtonWorld = XMMatrixTranslation(XMVectorGetX(Position), XMVectorGetY(Position), 0.f);
 	//ButtonWorld=XMMatrixTranslation(-100.f, 100.f, 0.f);
 
-	if(m_iCurButton !=m_iPrevButton)
+	if (m_iCurButton != m_iPrevButton)
 	{
 		m_Button[m_iCurButton]->Show_UI();
 
@@ -119,12 +127,12 @@ void CUIMenu::OverAction()
 		}
 	}
 
-	
+
 	switch (m_iCurButton)
 	{
-	case 0 :
+	case 0:
 	{
-		
+
 		m_EventUI[0]->Show_UI();
 		m_EventUI[0]->Get_TransformCom()->Set_WorldMatrix(ButtonWorld);
 
@@ -156,10 +164,10 @@ void CUIMenu::OverAction()
 	}
 }
 
-CUIMenu* CUIMenu::Create(void* pArg)
+CUIInven* CUIInven::Create(void* pArg)	
 {
-	CUIMenu* pInstance = new CUIMenu();
-	if(FAILED(pInstance->Initialize(pArg)))
+	CUIInven* pInstance = new CUIInven();
+	if (FAILED(pInstance->Initialize(pArg)))
 	{
 		Safe_Release(pInstance);
 		return nullptr;
@@ -168,7 +176,8 @@ CUIMenu* CUIMenu::Create(void* pArg)
 	return pInstance;
 }
 
-void CUIMenu::Free()
+void CUIInven::Free()
 {
+	Safe_Release(m_pInvenctory);	
 	__super::Free();
 }

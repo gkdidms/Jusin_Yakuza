@@ -6,6 +6,8 @@
 #include "UIMenu.h"
 #include "UILife.h"
 #include "UIMoney.h"
+#include "UIInven.h"
+#include "InventoryManager.h"
 IMPLEMENT_SINGLETON(CUIManager)
 
 CUIManager::CUIManager()
@@ -16,6 +18,8 @@ CUIManager::CUIManager()
 
 HRESULT CUIManager::Initialize()
 {
+	m_pInventory = CInventoryManager::Create();//¿øº»
+	
 	CUIScene* pScene = CUIMenu::Create();
 	m_AllScene.emplace( make_pair(TEXT("Menu"), pScene) );
 
@@ -24,6 +28,12 @@ HRESULT CUIManager::Initialize()
 
 	pScene = CUIMoney::Create();
 	m_AllScene.emplace(make_pair(TEXT("Money"), pScene));
+
+	CUIInven::IVENSCENE_DESC Desc{};
+	Desc.pInventory = m_pInventory;
+
+	pScene = CUIInven::Create(&Desc);
+	m_AllScene.emplace(make_pair(TEXT("Inven"), pScene));
 
 	return S_OK;
 }
@@ -56,6 +66,12 @@ void CUIManager::Close_Scene()
 		m_PlayScene.top()->Close_Scene();	
 }
 
+void CUIManager::Click()
+{
+	if (!m_PlayScene.empty())
+		m_PlayScene.top()->Click_InterSect();
+}
+
 HRESULT CUIManager::Tick(const _float& fTimeDelta)
 {
 	if(!m_PlayScene.empty())
@@ -77,7 +93,6 @@ HRESULT CUIManager::Late_Tick(const _float& fTimeDelta)
 	{
 		if (m_PlayScene.top()->Get_isClose()&& m_PlayScene.top()->Get_isAnimFinish())
 		{
-
 			m_PlayScene.pop();
 		}
 		else
@@ -92,12 +107,6 @@ HRESULT CUIManager::Late_Tick(const _float& fTimeDelta)
 	}
 	
 	return S_OK;
-}
-
-void CUIManager::Click_InterSect()
-{
-	if(m_PlayScene.top()->Get_isAnimFinish())
-		m_PlayScene.top()->Click_InterSect();
 }
 
 
@@ -131,5 +140,6 @@ void CUIManager::Free()
 	}
 	m_AllScene.clear();
 
+	Safe_Release(m_pInventory);
 	Safe_Release(m_pGameInstance);
 }

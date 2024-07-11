@@ -144,5 +144,16 @@ BlendState BS_UIMerge
     DestBlendAlpha = ZERO;
     BlendOpAlpha = Add;
 };
+
+BlendState BS_Screen
+{
+    BlendEnable[0] = true;
+    SrcBlend = Src_Alpha;
+    DestBlend = Inv_Src_Alpha;
+    BlendOp = Add;
+    SrcBlendAlpha = ONE;
+    DestBlendAlpha = Inv_Src_Alpha;
+    BlendOpAlpha = Add;
+};
 //src 소스 픽셀 (현제 그리는 픽셀)
 //dest 대상픽셀(이미그려진 픽셀

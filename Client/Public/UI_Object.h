@@ -20,6 +20,8 @@ public:
         string strName;
         _uint iTypeIndex;
         _bool isLoad = { false };
+        _bool isEvent;
+        _bool isScreen;
     } UI_OBJECT_DESC;
 
     enum TEXTURE_TYPE { TYPE_IMG, TYPE_BTN, TYPE_TEXT, TYPE_GROUP, TYPE_UIEFFECT, TEXTURE_TYPE_END };
@@ -31,11 +33,15 @@ protected:
 
 public:
     void Set_Name(string strName) { m_strName = strName; }
-
+    void Set_Event(_bool isEvent) { m_isEvent = isEvent; }
+    void Set_isScreen(_bool isScreen) { m_isScreen = isScreen; }
+    void Set_isPlay(_bool isPlay) { m_isPlay = isPlay; }
 public:
     string Get_Name() { return m_strName; }
+    _bool Get_Event() { return m_isEvent; }
+    _bool Get_isScreen() { return m_isScreen; }
     _int Get_TypeIndex() { return m_iTypeIndex; }
-
+    _bool Get_isPlay() { return m_isPlay; }
 public:
     virtual HRESULT Initialize_Prototype() override;
     virtual HRESULT Initialize(void* pArg) override;
@@ -58,7 +64,9 @@ protected:
     string m_strName = { "" }; // 저장될 이름
     _uint m_iTypeIndex = { 0 }; // 오브젝트 타입
     _bool m_isFinAnim = { false };
-
+    _bool m_isEvent = { false };
+    _bool m_isScreen = { false };
+    _bool m_isPlay = { true };
 public:
     virtual void Free();
 };

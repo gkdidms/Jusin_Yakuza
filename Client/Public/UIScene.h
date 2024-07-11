@@ -10,26 +10,32 @@ BEGIN(Client)
 class CUIScene :
     public CBase
 {
+public:
+    typedef struct tSceneDesc {
 
+    }SCENE_DESC;
 protected:
     CUIScene();
     CUIScene(const CUIScene& rhs);
     virtual ~CUIScene() = default;
 
 public:
+    //loader 에서 만든 ui객체를 받아와서 저장해둠. 무조건 파일 순서대로 받아와서 정렬함(순서중요)
     HRESULT Add_UIData(class CUI_Object* pUIObject);
     
-    virtual HRESULT Show_Scene();
-    virtual HRESULT Close_Scene();
+    virtual HRESULT Show_Scene();//ui 애님 준비(초기화/열때 정방향 진행)
+    virtual HRESULT Close_Scene();//ui 애님 준비(초기화/닫을떄 반대로진행)
 
-    virtual HRESULT Initialize();
+    virtual HRESULT Initialize(void* pArg);
     virtual HRESULT Tick(const _float& fTimeDelta);
     virtual HRESULT Late_Tick(const _float& fTimeDelta);
 
-    virtual void Check_AimFin();
+    virtual void Check_AimFin();//모든 상호작용은 애니메이션이 다 끝난뒤 진행함(m_UI 에 들어간 상시 떠있는 ui)
 
-    virtual _bool Click_InterSect();
-    virtual void Action(_int EventNum);
+    virtual _bool Click_InterSect();//클릭시충돌
+    virtual _bool Over_InterSect();//오버시 충동
+    virtual void Action();//클릭시 행동
+    virtual void OverAction();//오버시 행동
 
 public:
     _bool Get_isAnimFinish() { return m_isAnimFin; }
@@ -40,10 +46,14 @@ public:
     }
 protected:
     class CGameInstance* m_pGameInstance = { nullptr };
-    class CUIManager* m_pUIManager = { nullptr };
 
-    vector<class CUI_Object*> m_UI;//모든 ui를 받는곧
-    vector<class CBtn*> m_Button;//받은 ui 중 버튼만 모아 둠
+
+    vector<class CUI_Object*> m_UI;//이벤트 제외한 ui를 받는곳(상시 떠있을 ui)
+    vector<class CUI_Object*> m_EventUI;//이벤트 ui를 받는곳(특정 상황에 쓸 ui)ex.클릭,오버
+    vector<class CBtn*> m_Button;//버튼만 복사해서 모아 둠(반응할 버튼을 모아서 순서대로 관리)
+
+    _int m_iCurButton = { -1 };
+    _int m_iPrevButton = { -1 };
 
 
     _bool m_isAnimFin = { false };

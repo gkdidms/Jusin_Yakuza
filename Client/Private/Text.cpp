@@ -189,9 +189,8 @@ HRESULT CText::Load_binary(ifstream& in)
 	in.read((char*)&m_isColor, sizeof(_bool));
 	in.read((char*)&m_iShaderPass, sizeof(_uint));
 	
-	_float4x4 World{};
-	in.read((char*)&World, sizeof(_float4x4));
-	m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(&World));
+
+	in.read((char*)&m_WorldMatrix, sizeof(_float4x4));
 
 	in.read((char*)&m_isAnim, sizeof(_bool));
 	in.read((char*)&m_fAnimTime, sizeof(_float2));
@@ -199,7 +198,8 @@ HRESULT CText::Load_binary(ifstream& in)
 
 	in.read((char*)&m_fControlAlpha, sizeof(_float2));
 	in.read((char*)&m_isReverse, sizeof(_bool));
-
+	in.read((char*)&m_isEvent, sizeof(_bool));
+	in.read((char*)&m_isScreen, sizeof(_bool));
 	//°³º°
 	ZeroMemory(charBox, MAX_PATH);
 	in.read((char*)&strTexturelength, sizeof(_int));

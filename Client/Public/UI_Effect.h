@@ -21,6 +21,7 @@ private:
     CUI_Effect(const CUI_Effect& rhs);
     virtual ~CUI_Effect() = default;
 
+    //이펙트만 개별 틱진행
 public:
     virtual HRESULT Initialize_Prototype() override;
      HRESULT Initialize_Prototype(ifstream& in) ;
@@ -38,11 +39,13 @@ public:
     _float3 Get_LifeTime() { return m_vLifeTime; }
 private:
     //이펙트시가 시작되면 시작시간 부터 끝시간까지만 렌더 되는 구조
-    //끝나면 자동소멸
-    //
     _float3 m_vLifeTime = { 0.f, 0.f, 1.f };//현재 시간 ,시작시간, 종료시간
     _float m_fSpeed = { 1.f };//이펙트 진행 속도
 
+public:
+    virtual HRESULT Show_UI() override;
+    virtual HRESULT Close_UI() override;
+    
 private:
     virtual HRESULT Bind_ResourceData() override;
 public:

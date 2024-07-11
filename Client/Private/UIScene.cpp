@@ -1,14 +1,12 @@
 #include "UIScene.h"
 #include "UI_Object.h"
 #include "Btn.h"
-#include "UIManager.h"
 #include"GameInstance.h"
+
 CUIScene::CUIScene()
-	:m_pGameInstance{CGameInstance::GetInstance()},
-	m_pUIManager{CUIManager::GetInstance()}
+	:m_pGameInstance{CGameInstance::GetInstance()}
 {
 	Safe_AddRef(m_pGameInstance);
-	Safe_AddRef(m_pUIManager);
 }
 
 CUIScene::CUIScene(const CUIScene& rhs)
@@ -18,12 +16,24 @@ CUIScene::CUIScene(const CUIScene& rhs)
 
 HRESULT CUIScene::Add_UIData(CUI_Object* pUIObject)
 {
-	m_UI.push_back(pUIObject);
+	
+	if (pUIObject->Get_Event())
+	{
+		m_EventUI.push_back(pUIObject);	
+		return S_OK;
+	}
+	else
+	{
+		m_UI.push_back(pUIObject);
+	}
 
 	if (CUI_Object::TYPE_BTN == pUIObject->Get_TypeIndex())
 	{
-		m_Button.push_back(dynamic_cast<CBtn*>(pUIObject));	
+		Safe_AddRef(pUIObject);
+		m_Button.push_back(dynamic_cast<CBtn*>(pUIObject));
+
 	}
+
 
 	return S_OK;
 }
@@ -32,11 +42,16 @@ HRESULT CUIScene::Show_Scene()
 {
 	for (auto& iter : m_UI)
 	{
-		iter->Show_UI();
+		if (CUI_Object::TYPE_BTN != iter->Get_TypeIndex())
+			iter->Show_UI();
+		else
+			iter->Close_UI();
 	}
 	m_isAnimFin = false;
 	m_isClose = false;
-	return S_OK;
+
+		
+		return S_OK;
 }
 
 HRESULT CUIScene::Close_Scene()
@@ -47,10 +62,12 @@ HRESULT CUIScene::Close_Scene()
 	}
 	m_isAnimFin = false;
 	m_isClose = true;
+	m_iCurButton = -1;
+	m_iPrevButton = -1;
 	return S_OK;
 }
 
-HRESULT CUIScene::Initialize()
+HRESULT CUIScene::Initialize(void* pArg)
 {
 	return S_OK;
 }
@@ -70,8 +87,6 @@ HRESULT CUIScene::Late_Tick(const _float& fTimeDelta)
 	for (auto& iter : m_UI)
 		iter->Late_Tick(fTimeDelta);
 
-	if (!m_isAnimFin)
-		Check_AimFin();
 
 	return S_OK;
 }
@@ -94,30 +109,57 @@ _bool CUIScene::Click_InterSect()
 	{
 		if (m_Button[i]->Click_Intersect())
 		{
-			Action(i);
+			m_iCurButton = i;
+			Action();
 			return true;
 		}
 	}
 	return false;
 }
 
-void CUIScene::Action(_int EventNum)
+_bool CUIScene::Over_InterSect()
 {
+	for (size_t i = 0; i < m_Button.size(); i++)
+	{
+		if (m_Button[i]->Click_Intersect())
+		{
+			m_iCurButton = i;
+			if (m_iPrevButton != m_iCurButton)
+			{
+				OverAction();
+				m_iPrevButton = m_iCurButton;
+				return true;
+			}
+			else
+				return false;
+		}
+	}
+	return false;
+}
+
+void CUIScene::Action()
+{
+}
+
+void CUIScene::OverAction()
+{
+
 }
 
 void CUIScene::Free()
 {
 	for (auto iter : m_UI)
 		Safe_Release(iter);
-
 	m_UI.clear();
 
 	for (auto iter : m_Button)
 		Safe_Release(iter);
-
 	m_Button.clear();
+
+	for (auto iter : m_EventUI)
+		Safe_Release(iter);
+	m_EventUI.clear();
 
 
 	Safe_Release(m_pGameInstance);
-	Safe_Release(m_pUIManager);
 }
