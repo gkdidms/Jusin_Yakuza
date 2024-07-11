@@ -7,6 +7,7 @@
 #include "SystemManager.h"
 #include "RushYakuza.h"
 #include "SkyDome.h"
+#include "Player.h"
 
 IMPLEMENT_SINGLETON(CFileTotalMgr)
 
@@ -95,22 +96,9 @@ HRESULT CFileTotalMgr::Set_GameObject_In_Client(int iStageLevel)
         }
         else if (OBJECT_TYPE::PLAYER == m_MapTotalInform.pMapObjDesc[i].iObjType)
         {
-            CRushYakuza::MONSTER_IODESC		monsterDesc;
-            monsterDesc.vStartPos = XMLoadFloat4x4(&m_MapTotalInform.pMapObjDesc[i].vTransform);
-            int		iLayer = Find_Layers_Index(m_MapTotalInform.pMapObjDesc[i].strLayer);
-
-            /* Layer 정보 안들어옴 */
-            if (iLayer < 0)
-                return S_OK;
-
-            monsterDesc.wstrModelName = m_pGameInstance->StringToWstring(m_MapTotalInform.pMapObjDesc[i].strModelCom);
-            monsterDesc.iShaderPass = m_MapTotalInform.pMapObjDesc[i].iShaderPassNum;
-
-            monsterDesc.fSpeedPecSec = 10.f;
-            monsterDesc.fRotatePecSec = XMConvertToRadians(0.f);
-            monsterDesc.fRotatePecSec = XMConvertToRadians(180.f);
-
-            m_pGameInstance->Add_GameObject(iStageLevel, TEXT("Prototype_GameObject_Player"), m_Layers[iLayer], &monsterDesc);
+            XMMATRIX vStartPos = XMLoadFloat4x4(&m_MapTotalInform.pMapObjDesc[i].vTransform);
+            dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject(iStageLevel, TEXT("Layer_Player"), 0))->Set_StartPos(vStartPos);
+            
         }
         else if (OBJECT_TYPE::SKY == m_MapTotalInform.pMapObjDesc[i].iObjType)
         {
