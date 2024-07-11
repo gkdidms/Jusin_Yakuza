@@ -42,6 +42,8 @@ public:
     virtual void Late_Tick(const _float& fTimeDelta) override;
     virtual HRESULT Render() override;
 
+public:
+    void Show_Choice(_int Index);
 private:
     vector<CUI_Object*> m_PartObjects;
 

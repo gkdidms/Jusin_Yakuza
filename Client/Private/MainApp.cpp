@@ -244,8 +244,6 @@ void CMainApp::Free()
 
 	Safe_Release(m_pSystemManager);
 
-	Safe_Release(m_pUIManager);
-	CUIManager::DestroyInstance();
 
 	Safe_Release(m_pFileTotalManager);
 	CFileTotalMgr::DestroyInstance();
@@ -253,6 +251,8 @@ void CMainApp::Free()
 	Safe_Release(m_pCollisionManager);
 	CCollision_Manager::DestroyInstance();
 
+	Safe_Release(m_pUIManager);
+	CUIManager::DestroyInstance();
 	/* 레퍼런스 카운트를 0으로만든다. */
 	Safe_Release(m_pGameInstance);
 	CGameInstance::Release_Engine();

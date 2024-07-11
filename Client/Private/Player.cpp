@@ -86,6 +86,11 @@ void CPlayer::Tick(const _float& fTimeDelta)
 	{
 		m_pUIManager->Close_Scene();
 	}
+	if (m_pGameInstance->GetMouseState(DIM_LB) == TAP)
+	{
+		m_pUIManager->Click();
+	}
+
 	Synchronize_Root(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")));
 
 	if (m_isAnimStart)

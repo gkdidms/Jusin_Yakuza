@@ -53,13 +53,13 @@ public:
     void Set_isColor(_bool isColor) { m_isColor = isColor; }
     void Set_Color(_float4 vColor) { m_vColor = vColor; }
 
-
+    void Set_pParentWorld(const _float4x4* pWorld) { m_pParentMatrix = pWorld; }
     void Set_StartPos(_float3 vStartPos) { m_vStartPos = vStartPos;}
     void Set_AnimTime(_float2 fAnimTime) { m_fAnimTime = fAnimTime; }
     void Set_isAnim(_bool isAnim) { m_isAnim = isAnim; }
-#ifdef _TOOL
-    void Set_isPlay(_bool isPlay) { m_isPlay = isPlay; }
-#endif // _TOOL
+
+
+
     void Set_ControlAlpha(_float2 ControlAlpha) { m_fControlAlpha = ControlAlpha; }
     void Set_isReverse(_bool isReverse) { m_isReverse = isReverse; }
 
@@ -83,9 +83,9 @@ public:
     
 
 
-#ifdef _TOOL
-    _bool Get_isPlay() { return m_isPlay; }
-#endif // _TOOL
+
+
+
 
     _float2 Get_ControlAlpha() { return m_fControlAlpha; }
     _bool Get_isReverse() { return m_isReverse; }
@@ -95,6 +95,7 @@ protected:
     CUI_Texture(const CUI_Texture& rhs);
     virtual ~CUI_Texture() = default;
 
+    //이펙트 빼고 이 걸 공용으로 씀
 public:
     virtual HRESULT Initialize_Prototype() override;
     virtual HRESULT Initialize(void* pArg) override;
@@ -110,6 +111,7 @@ public:
     virtual HRESULT Show_UI() override;
     virtual HRESULT Close_UI() override;
     virtual _bool Check_AnimFin() override;
+
 protected:
     _float							m_fX, m_fY, m_fSizeX, m_fSizeY;
     _float4x4						m_WorldMatrix, m_ViewMatrix, m_ProjMatrix;
@@ -136,9 +138,9 @@ protected:
     _bool m_isAnim;
     _float2 m_fAnimTime;
     _float3 m_vStartPos;
-#ifdef _TOOL
-    _bool m_isPlay = { true };
-#endif // _TOOL
+
+
+
     //시작하면 0-1 사라질땐 반대로
     _float2 m_fControlAlpha = { 0.f, 1.f };//시작,종료 알파(애님일경우)]
     _bool m_isReverse = { false };

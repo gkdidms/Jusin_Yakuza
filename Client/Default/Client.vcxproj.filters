@@ -238,6 +238,15 @@
     <ClCompile Include="..\Private\UIMoney.cpp">
       <Filter>95.Utility\05.UIManager\UIScene\UIMoney</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\UIInven.cpp">
+      <Filter>95.Utility\05.UIManager\UIScene\UIInven</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\InventoryManager.cpp">
+      <Filter>95.Utility\06.InventoryManager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ItemData.cpp">
+      <Filter>95.Utility\06.InventoryManager\ITemData</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\MainApp.h">
@@ -507,6 +516,15 @@
     <ClInclude Include="..\Public\UIMoney.h">
       <Filter>95.Utility\05.UIManager\UIScene\UIMoney</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\UIInven.h">
+      <Filter>95.Utility\05.UIManager\UIScene\UIInven</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\InventoryManager.h">
+      <Filter>95.Utility\06.InventoryManager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ItemData.h">
+      <Filter>95.Utility\06.InventoryManager\ITemData</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -733,9 +751,6 @@
     <Filter Include="95.Utility\05.UIManager">
       <UniqueIdentifier>{5ee687d4-5dfa-49a3-92da-8f0756f1687f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="95.Utility\05.UIManager\UIScene">
-      <UniqueIdentifier>{48325182-d69d-455f-964c-312c00654d53}</UniqueIdentifier>
-    </Filter>
     <Filter Include="95.Utility\05.UIManager\UI_Object">
       <UniqueIdentifier>{98a8cc86-9c6d-41fc-8ecf-b11acbe5106f}</UniqueIdentifier>
     </Filter>
@@ -757,6 +772,9 @@
     <Filter Include="95.Utility\05.UIManager\UI_Object\UI_Texture\Text">
       <UniqueIdentifier>{43e97ed7-1749-4b93-920a-16c45f819d1f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="95.Utility\05.UIManager\UIScene">
+      <UniqueIdentifier>{48325182-d69d-455f-964c-312c00654d53}</UniqueIdentifier>
+    </Filter>
     <Filter Include="95.Utility\05.UIManager\UIScene\UIMenu">
       <UniqueIdentifier>{1f609ef4-3eb0-42b1-89dc-457ed2b589d2}</UniqueIdentifier>
     </Filter>
@@ -765,6 +783,15 @@
     </Filter>
     <Filter Include="95.Utility\05.UIManager\UIScene\UIMoney">
       <UniqueIdentifier>{f1c99a77-f59d-4ff3-9b2f-d70dd581972d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\05.UIManager\UIScene\UIInven">
+      <UniqueIdentifier>{f869175b-a5a0-4e03-b45c-37ed3a949f25}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\06.InventoryManager">
+      <UniqueIdentifier>{e864225e-4d2e-4031-aea9-bc86043c3a91}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\06.InventoryManager\ITemData">
+      <UniqueIdentifier>{5ef2d5e4-1359-407d-ab59-d2a67dfcf914}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

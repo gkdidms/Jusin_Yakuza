@@ -183,6 +183,8 @@
     <ClInclude Include="..\Public\Collision_Manager.h" />
     <ClInclude Include="..\Public\Group.h" />
     <ClInclude Include="..\Public\Image_Texture.h" />
+    <ClInclude Include="..\Public\InventoryManager.h" />
+    <ClInclude Include="..\Public\ItemData.h" />
     <ClInclude Include="..\public\Level_Office1F.h" />
     <ClInclude Include="..\public\Level_Office2F.h" />
     <ClInclude Include="..\Public\MapCollider.h" />
@@ -235,6 +237,7 @@
     <ClInclude Include="..\Public\Terrain.h" />
     <ClInclude Include="..\Public\Text.h" />
     <ClInclude Include="..\Public\TRailEffect.h" />
+    <ClInclude Include="..\Public\UIInven.h" />
     <ClInclude Include="..\Public\UILife.h" />
     <ClInclude Include="..\public\UIManager.h" />
     <ClInclude Include="..\Public\UIMenu.h" />
@@ -271,9 +274,11 @@
     <ClCompile Include="..\private\Background.cpp" />
     <ClCompile Include="..\Private\BehaviorAnimation.cpp" />
     <ClCompile Include="..\Private\Btn.cpp" />
+    <ClCompile Include="..\Private\ItemData.cpp" />
     <ClCompile Include="..\Private\Collision_Manager.cpp" />
     <ClCompile Include="..\Private\Group.cpp" />
     <ClCompile Include="..\Private\Image_Texture.cpp" />
+    <ClCompile Include="..\Private\InventoryManager.cpp" />
     <ClCompile Include="..\private\Level_Office1F.cpp" />
     <ClCompile Include="..\private\Level_Office2F.cpp" />
     <ClCompile Include="..\Private\MapCollider.cpp" />
@@ -325,6 +330,7 @@
     <ClCompile Include="..\Private\Terrain.cpp" />
     <ClCompile Include="..\Private\Text.cpp" />
     <ClCompile Include="..\Private\TRailEffect.cpp" />
+    <ClCompile Include="..\Private\UIInven.cpp" />
     <ClCompile Include="..\Private\UILife.cpp" />
     <ClCompile Include="..\private\UIManager.cpp" />
     <ClCompile Include="..\Private\UIMenu.cpp" />

@@ -8,7 +8,9 @@ CUI_Object::CUI_Object(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 CUI_Object::CUI_Object(const CUI_Object& rhs)
 	: CGameObject { rhs },
 	m_strName{rhs.m_strName},
-	m_iTypeIndex{rhs.m_iTypeIndex}
+	m_iTypeIndex{rhs.m_iTypeIndex},
+	m_isEvent{rhs.m_isEvent},
+	m_isScreen{rhs.m_isScreen }
 {
 }
 
@@ -27,6 +29,8 @@ HRESULT CUI_Object::Initialize(void* pArg)
 		UI_OBJECT_DESC* pDesc = static_cast<UI_OBJECT_DESC*>(pArg);
 		m_strName = pDesc->strName;
 		m_iTypeIndex = pDesc->iTypeIndex;
+		m_isEvent = pDesc->isEvent;
+		m_isScreen = pDesc->isScreen;
 	}
 
 	return S_OK;

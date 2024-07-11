@@ -687,8 +687,8 @@ HRESULT CLoader::Add_UI_On_Path(const wstring& strPath)
 					CBtn::Create(m_pDevice, m_pContext, in))))
 					return E_FAIL;
 
-			//	if (FAILED(m_pUIManager->Add_Data(strChannelName, ProtoFrontName + m_pGameInstance->StringToWstring(Tag))))
-			//		return E_FAIL;
+				if (FAILED(m_pUIManager->Add_Data(strChannelName, ProtoFrontName + m_pGameInstance->StringToWstring(Tag))))
+					return E_FAIL;
 			}
 			break;
 
@@ -700,8 +700,8 @@ HRESULT CLoader::Add_UI_On_Path(const wstring& strPath)
 					CText::Create(m_pDevice, m_pContext, in))))
 					return E_FAIL;
 
-			//	if (FAILED(m_pUIManager->Add_Data(strChannelName, ProtoFrontName + m_pGameInstance->StringToWstring(Tag))))
-			//		return E_FAIL;
+				if (FAILED(m_pUIManager->Add_Data(strChannelName, ProtoFrontName + m_pGameInstance->StringToWstring(Tag))))
+					return E_FAIL;
 			}
 			break;
 
@@ -714,8 +714,8 @@ HRESULT CLoader::Add_UI_On_Path(const wstring& strPath)
 					CGroup::Create(m_pDevice, m_pContext, in))))
 					return E_FAIL;
 
-			//	if (FAILED(m_pUIManager->Add_Data(strChannelName, ProtoFrontName + m_pGameInstance->StringToWstring(Tag))))
-			//		return E_FAIL;
+				if (FAILED(m_pUIManager->Add_Data(strChannelName, ProtoFrontName + m_pGameInstance->StringToWstring(Tag))))
+					return E_FAIL;
 			}
 			break;
 
@@ -727,8 +727,8 @@ HRESULT CLoader::Add_UI_On_Path(const wstring& strPath)
 					CUI_Effect::Create(m_pDevice, m_pContext, in))))
 					return E_FAIL;
 
-			//	if (FAILED(m_pUIManager->Add_Data(strChannelName, ProtoFrontName + m_pGameInstance->StringToWstring(Tag))))
-			//		return E_FAIL;
+				if (FAILED(m_pUIManager->Add_Data(strChannelName, ProtoFrontName + m_pGameInstance->StringToWstring(Tag))))
+					return E_FAIL;
 			}
 			break;
 

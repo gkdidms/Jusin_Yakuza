@@ -4,20 +4,20 @@ BEGIN(Client)
 class CUIMenu :
     public CUIScene
 {
-
-private:
+protected:
     CUIMenu();
     CUIMenu(const CUIMenu& rhs);
     virtual ~CUIMenu() = default;
 
 public:
-    virtual HRESULT Initialize() override;
+    virtual HRESULT Initialize(void* pArg) override;
     virtual HRESULT Tick(const _float& fTimeDelta) override;
     virtual HRESULT Late_Tick(const _float& fTimeDelta) override;
 
-    virtual void Action(_int EventNum) override;
+    virtual void Action() override;
+    virtual void OverAction() override;
 public:
-    static CUIMenu* Create();
+    static CUIMenu* Create(void* pArg=nullptr);
     virtual void Free();
 };
 END
