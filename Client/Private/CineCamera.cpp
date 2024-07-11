@@ -42,6 +42,7 @@ void CCineCamera::Tick(const _float& fTimeDelta)
 {
 	if (m_pSystemManager->Get_Camera() == CAMERA_CINEMACHINE)
 	{
+
 		Start_Lerp(fTimeDelta);
 		Cam_Move_Handle_Setting(fTimeDelta);
 		Cam_Lerp(fTimeDelta);

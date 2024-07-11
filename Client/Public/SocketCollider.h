@@ -16,17 +16,22 @@ BEGIN(Client)
 class CSocketCollider final : public CSocketObject
 {
 public:
-	enum SOKET_COLLIDER_TYPE
+	enum COLLIDER_ACTION_TYPE
 	{
 		ATTACK, HIT, TYPE_END
+	};
+	enum COLLIDER_PART_TYPE
+	{
+		HAND_A, FOOT_A, JOINT_A, HEAD_A,
+		HEAD_H = 10, BODY_H, LEG_H
 	};
 
 public:
 	struct SOCKET_COLLIDER_DESC : public SOCKETOBJECT_DESC
 	{
-		_uint iType;
 		_uint iBoneIndex;
 		CCharacterData::COLLIDER_STATE ColliderState;
+		class CLandObject* pParentObject;
 	};
 
 private:
@@ -42,7 +47,7 @@ public:
 	virtual void Late_Tick(const _float& fTimeDelta) override;
 	virtual HRESULT Render() override;
 
-	virtual _bool Intersect(CCollider* pTargetObject);
+	virtual _bool Intersect(CCollider* pTargetObject, _float fDistance = 1.f);
 
 public:
 	void On() {
@@ -53,20 +58,51 @@ public:
 	}
 
 public:
-	_uint Get_CollierType() {
-		return static_cast<_uint>(m_eColliderType);
+	_bool IsOn() {
+		return m_isOn;
 	}
 
+	_uint Get_CollierType() {
+		return static_cast<_uint>(m_eColliderActionType);
+	}
+
+	CCollider* Get_Collider()	{
+		return m_pColliderCom;
+	}
+
+	class CLandObject* Get_Parent() {
+		return m_pParentObject;
+	}
+
+	const _float3& Get_MoveDir() {
+		return m_vMoveDir;
+	}
+
+	_float Get_Damage() {
+		return m_fDamage;
+	}
+
+public:
+	void ParentObject_Hit(const _float3& vDir, _float fDamage, _bool isBlowAttack = false);
+
 private:
-	SOKET_COLLIDER_TYPE				m_eColliderType = { ATTACK };
+	COLLIDER_ACTION_TYPE			m_eColliderActionType = { ATTACK };
+	COLLIDER_PART_TYPE				m_eColliderPartType = { HAND_A };
 
 	CShader*						m_pShaderCom = { nullptr };
 	CModel*							m_pModelCom = { nullptr };
 	CCollider*						m_pColliderCom = { nullptr };
 
-	_float							m_fAlphaScale = { 0.f };
+
+	class CLandObject*				m_pParentObject = { nullptr };
+
+
+	_float							m_fDamage = { 0.f };
 	
 	_bool							m_isOn = { true };
+
+	_float3							m_vPrevMovePos, m_vMovePos;
+	_float3							m_vMoveDir;
 
 public:
 	HRESULT Add_Components(void* pArg);

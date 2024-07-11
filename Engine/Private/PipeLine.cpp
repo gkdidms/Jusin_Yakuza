@@ -24,6 +24,11 @@ _matrix CPipeLine::Get_Transform_Inverse_Matrix(D3DTRANSFORMSTATE eState)
 	return XMLoadFloat4x4(&m_TransformStateInverseMatrix[eState]);
 }
 
+const _float4x4* CPipeLine::Get_Shadow_Transform_Float4x4(D3DTRANSFORMSTATE eState)
+{
+	return &m_ShadowTransformStateMatrix[eState];
+}
+
 const _float4* CPipeLine::Get_CamPosition_Float4()
 {
 	return &m_vCamPosition;

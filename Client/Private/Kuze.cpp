@@ -6,7 +6,7 @@
 #include "AI_Kuze.h"
 
 CKuze::CKuze(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-	: CMonster { pDevice, pContext}
+	: CMonster { pDevice, pContext }
 {
 }
 
@@ -113,7 +113,7 @@ HRESULT CKuze::Add_Components()
 	AIDesc.pState = &m_iState;
 	AIDesc.pThis = this;
 
-	m_pTree = dynamic_cast<CAI_Kuze*>(m_pGameInstance->Add_BTNode(LEVEL_TEST, TEXT(""), &AIDesc));
+	m_pTree = dynamic_cast<CAI_Kuze*>(m_pGameInstance->Add_BTNode(LEVEL_TEST, TEXT("Prototype_BTNode_Kuze"), &AIDesc));
 	if (nullptr == m_pTree)
 		return E_FAIL;
 
@@ -141,97 +141,151 @@ void CKuze::Change_Animation()
 	{
 	case MONSTER_IDLE:
 	{
-		//e_kta_stand[e_kta_stand]
-		iAnim = m_pAnimCom->Get_AnimationIndex("e_kta_stand[e_kta_stand]");
+		//e_kuz_stand_blend[e_kuz_stand_blend]
+		iAnim = m_pAnimCom->Get_AnimationIndex("e_kuz_stand_blend[e_kuz_stand_blend]");
 		m_isAnimLoop = true;
 		break;
 	}
 	case MONSTER_SHIFT_F:
 	{
-		//e_kta_shift_f[e_kta_shift_f]
-		iAnim = m_pAnimCom->Get_AnimationIndex("e_kta_shift_f[e_kta_shift_f]");
+		//e_kuz_shift_f[e_kuz_shift_f]
+		iAnim = m_pAnimCom->Get_AnimationIndex("e_kuz_shift_f[e_kuz_shift_f]");
 		m_isAnimLoop = true;
 		break;
 	}
 	case MONSTER_SHIFT_L:
 	{
-		//e_kta_shift_l[e_kta_shift_l]
-		iAnim = m_pAnimCom->Get_AnimationIndex("e_kta_shift_l[e_kta_shift_l]");
+		//e_kuz_shift_l[e_kuz_shift_l]
+		iAnim = m_pAnimCom->Get_AnimationIndex("e_kuz_shift_l[e_kuz_shift_l]");
 		m_isAnimLoop = true;
 		break;
 	}
 	case MONSTER_SHIFT_R:
 	{
-		//e_kta_shift_r[e_kta_shift_r]
-		iAnim = m_pAnimCom->Get_AnimationIndex("e_kta_shift_r[e_kta_shift_r]");
+		//e_kuz_shift_r[e_kuz_shift_r]
+		iAnim = m_pAnimCom->Get_AnimationIndex("e_kuz_shift_r[e_kuz_shift_r]");
 		m_isAnimLoop = true;
 		break;
 	}
 	case MONSTER_SHIFT_B:
 	{
-		//e_kta_shift_b[e_kta_shift_b]
-		iAnim = m_pAnimCom->Get_AnimationIndex("e_kta_shift_b[e_kta_shift_b]");
+		//e_kuz_shift_b[e_kuz_shift_b]
+		iAnim = m_pAnimCom->Get_AnimationIndex("e_kuz_shift_b[e_kuz_shift_b]");
 		m_isAnimLoop = true;
 		break;
 	}
 	case MONSTER_SWAY_B:
 	{
-		//e_kta_sway_b[e_kta_sway_b]
-		iAnim = m_pAnimCom->Get_AnimationIndex("e_kta_sway_b[e_kta_sway_b]");
+		//e_kuz_sway_b[e_kuz_sway_b]
+		iAnim = m_pAnimCom->Get_AnimationIndex("e_kuz_sway_b[e_kuz_sway_b]");
 		break;
 	}
 	case MONSTER_SWAY_F:
 	{
-		//e_kta_sway_f[e_kta_sway_f]
-		iAnim = m_pAnimCom->Get_AnimationIndex("e_kta_sway_f[e_kta_sway_f]");
+		//e_kuz_sway_f[e_kuz_sway_f]
+		iAnim = m_pAnimCom->Get_AnimationIndex("e_kuz_sway_f[e_kuz_sway_f]");
 		break;
 	}
 	case MONSTER_SWAY_L:
 	{
-		//e_kta_sway_l[e_kta_sway_l]
-		iAnim = m_pAnimCom->Get_AnimationIndex("e_kta_sway_l[e_kta_sway_l]");
+		//e_kuz_sway_l[e_kuz_sway_l]
+		iAnim = m_pAnimCom->Get_AnimationIndex("e_kuz_sway_l[e_kuz_sway_l]");
 		break;
 	}
 	case MONSTER_SWAY_R:
 	{
-		//e_kta_sway_r[e_kta_sway_r]
-		iAnim = m_pAnimCom->Get_AnimationIndex("e_kta_sway_r[e_kta_sway_r]");
+		//e_kuz_sway_r[e_kuz_sway_r]
+		iAnim = m_pAnimCom->Get_AnimationIndex("e_kuz_sway_r[e_kuz_sway_r]");
 		break;
 	}
 	case MONSTER_ATK_DOWN:
 	{
-		//e_kta_atk_down[e_kta_atk_down]
-		iAnim = m_pAnimCom->Get_AnimationIndex("e_kta_atk_down[e_kta_atk_down]");
+		//e_kuz_atk_down[e_kuz_atk_down]
+		iAnim = m_pAnimCom->Get_AnimationIndex("e_kuz_atk_down[e_kuz_atk_down]");
 		break;
 	}
-	case MONSTER_RARIATTO:
+	case MONSTER_JAB:
 	{
-		//e_kta_atk_rariatto[e_kta_atk_rariatto]
-		iAnim = m_pAnimCom->Get_AnimationIndex("e_kta_atk_rariatto[e_kta_atk_rariatto]");
+		//e_kuz_atk_jab[e_kuz_atk_jab]
+		iAnim = m_pAnimCom->Get_AnimationIndex("e_kuz_atk_jab[e_kuz_atk_jab]");
 		break;
 	}
-	case MONSTER_GUARD_RUN:
+	case MONSTER_CMD_A_1:
 	{
-		//e_kta_atk_gurad_run[e_kta_atk_gurad_run]
-		iAnim = m_pAnimCom->Get_AnimationIndex("e_kta_atk_gurad_run[e_kta_atk_gurad_run]");
+		//e_kuz_cmb_a_01[e_kuz_cmb_a_01]
+		iAnim = m_pAnimCom->Get_AnimationIndex("e_kuz_cmb_a_01[e_kuz_cmb_a_01]");
 		break;
 	}
-	case MONSTER_CMD_1:
+	case MONSTER_CMD_A_2:
 	{
-		//e_kta_cmb_a_01[e_kta_cmb_a_01]
-		iAnim = m_pAnimCom->Get_AnimationIndex("e_kta_cmb_a_01[e_kta_cmb_a_01]");
+		//e_kuz_cmb_a_02[e_kuz_cmb_a_02]
+		iAnim = m_pAnimCom->Get_AnimationIndex("e_kuz_cmb_a_02[e_kuz_cmb_a_02]");
 		break;
 	}
-	case MONSTER_CMD_2:
+	case MONSTER_CMD_A_3:
 	{
-		//e_kta_cmb_a_02[e_kta_cmb_a_02]
-		iAnim = m_pAnimCom->Get_AnimationIndex("e_kta_cmb_a_02[e_kta_cmb_a_02]");
+		//e_kuz_cmb_a_03[e_kuz_cmb_a_03]
+		iAnim = m_pAnimCom->Get_AnimationIndex("e_kuz_cmb_a_03[e_kuz_cmb_a_03]");
 		break;
 	}
-	case MONSTER_CMD_3:
+	case MONSTER_CMD_B_1:
 	{
-		//e_kta_cmb_a_03[e_kta_cmb_a_03]
-		iAnim = m_pAnimCom->Get_AnimationIndex("e_kta_cmb_a_03[e_kta_cmb_a_03]");
+		//e_kuz_cmb_b_01[e_kuz_cmb_b_01]
+		iAnim = m_pAnimCom->Get_AnimationIndex("e_kuz_cmb_b_01[e_kuz_cmb_b_01]");
+		break;
+	}
+	case MONSTER_CMD_B_2:
+	{
+		//e_kuz_cmb_b_02[e_kuz_cmb_b_02]
+		iAnim = m_pAnimCom->Get_AnimationIndex("e_kuz_cmb_b_02[e_kuz_cmb_b_02]");
+		break;
+	}
+	case MONSTER_CMD_B_3:
+	{
+		//e_kuz_cmb_b_03[e_kuz_cmb_b_03]
+		iAnim = m_pAnimCom->Get_AnimationIndex("e_kuz_cmb_b_03[e_kuz_cmb_b_03]");
+		break;
+	}
+	case MONSTER_CMD_HEADBUTT_1:
+	{
+		//e_kuz_cmb_headbutt_01[e_kuz_cmb_headbutt_01]
+		iAnim = m_pAnimCom->Get_AnimationIndex("e_kuz_cmb_headbutt_01[e_kuz_cmb_headbutt_01]");
+		break;
+	}
+	case MONSTER_CMD_HEADBUTT_2:
+	{
+		//e_kuz_cmb_headbutt_02[e_kuz_cmb_headbutt_02]
+		iAnim = m_pAnimCom->Get_AnimationIndex("e_kuz_cmb_headbutt_02[e_kuz_cmb_headbutt_02]");
+		break;
+	}
+	case MONSTER_CMD_RENDA_1:
+	{
+		//e_kuz_cmb_renda_01[e_kuz_cmb_renda_01]
+		iAnim = m_pAnimCom->Get_AnimationIndex("e_kuz_cmb_renda_01[e_kuz_cmb_renda_01]");
+		break;
+	}
+	case MONSTER_CMD_RENDA_2:
+	{
+		//e_kuz_cmb_renda_02_l[e_kuz_cmb_renda_02_l]
+		iAnim = m_pAnimCom->Get_AnimationIndex("e_kuz_cmb_renda_02_l[e_kuz_cmb_renda_02_l]");
+		break;
+	}
+	case MONSTER_CMD_RENDA_3:
+	{
+		//e_kuz_cmb_renda_02_l_fin[e_kuz_cmb_renda_02_l_fin]
+		iAnim = m_pAnimCom->Get_AnimationIndex("e_kuz_cmb_renda_02_l_fin[e_kuz_cmb_renda_02_l_fin]");
+		break;
+	}
+	case MONSTER_HEAVY_ATTACK:
+	{
+		//e_kuz_atk_heavy[e_kuz_atk_heavy]
+		iAnim = m_pAnimCom->Get_AnimationIndex("e_kuz_atk_heavy[e_kuz_atk_heavy]");
+		break;
+	}
+	case MONSTER_HIJI_2REN:
+	{
+		//e_kuz_atk_hiji_2ren[e_kuz_atk_hiji_2ren]
+		iAnim = m_pAnimCom->Get_AnimationIndex("e_kuz_atk_hiji_2ren[e_kuz_atk_hiji_2ren]");
 		break;
 	}
 	case MONSTER_DEATH:
@@ -271,4 +325,6 @@ CGameObject* CKuze::Clone(void* pArg)
 void CKuze::Free()
 {
 	__super::Free();  
+
+	Safe_Release(m_pTree);
 }

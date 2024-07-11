@@ -203,6 +203,8 @@ HRESULT CCharacterData::Load_Colliders(string strFilePath)
 			else
 				in.read((char*)&ColliderDesc.vValue, sizeof(_float3));
 
+			in.read((char*)&ColliderDesc.iActionType, sizeof(_int));
+			in.read((char*)&ColliderDesc.iPartType, sizeof(_int));
 			in.read((char*)&ColliderDesc.isAlways, sizeof(_bool));
 
 			m_Colliders.emplace(iBoneIndex, ColliderDesc);

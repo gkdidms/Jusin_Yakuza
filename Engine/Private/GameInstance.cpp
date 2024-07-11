@@ -369,6 +369,11 @@ _matrix CGameInstance::Get_Transform_Inverse_Matrix(CPipeLine::D3DTRANSFORMSTATE
 	return m_pPipeLine->Get_Transform_Inverse_Matrix(eState);
 }
 
+const _float4x4* CGameInstance::Get_Shadow_Transform_Float4x4(CPipeLine::D3DTRANSFORMSTATE eState)
+{
+	return m_pPipeLine->Get_Shadow_Transform_Float4x4(eState);
+}
+
 const _float4* CGameInstance::Get_CamPosition_Float4()
 {
 	return m_pPipeLine->Get_CamPosition_Float4();
@@ -417,6 +422,11 @@ const _float4x4* CGameInstance::Get_ReflectViewMatrix()
 void CGameInstance::Set_ReflectViewMatrix(_fmatrix matTransform)
 {
 	m_pPipeLine->Set_ReflectViewMatrix(matTransform);
+}
+
+void CGameInstance::Set_Shadow_Transform(CPipeLine::D3DTRANSFORMSTATE eState, _fmatrix matTransform)
+{
+	m_pPipeLine->Set_Shadow_Transform(eState, matTransform);
 }
 
 _float CGameInstance::Get_TimeDelta(const _tchar* pTimerTag)

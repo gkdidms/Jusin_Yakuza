@@ -205,11 +205,32 @@
     <ClCompile Include="..\private\AI_Shakedown.cpp">
       <Filter>02.GameObjects\02.Character\LandObject\01.Monster\Shakedown\AI</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\AI_Kuze.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\Kuze\AI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Yoneda.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\Yoneda</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\AI_Yoneda.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\Yoneda\AI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Kuze.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\Kuze</Filter>
+    </ClCompile>
     <ClCompile Include="..\Private\SkyDome.cpp">
-      <Filter>02.GameObjects\04.Sky</Filter>
+      <Filter>02.GameObjects\04.Sky\Dome</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\MapColliderObj.cpp">
-      <Filter>02.GameObjects\08. MapCollider</Filter>
+      <Filter>02.GameObjects\08.MapCollider\Obj</Filter>
+	</ClCompile>
+    <ClCompile Include="..\Private\AI_Kuze.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\Kuze\AI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Yoneda.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\Yoneda</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\AI_Yoneda.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\Yoneda\AI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -447,11 +468,32 @@
     <ClInclude Include="..\public\AI_Shakedown.h">
       <Filter>02.GameObjects\02.Character\LandObject\01.Monster\Shakedown\AI</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\AI_Kuze.h">
+      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\Kuze\AI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Yoneda.h">
+      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\Yoneda</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\AI_Yoneda.h">
+      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\Yoneda\AI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Kuze.h">
+      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\Kuze</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\SkyDome.h">
-      <Filter>02.GameObjects\04.Sky</Filter>
+      <Filter>02.GameObjects\04.Sky\Dome</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\MapColliderObj.h">
-      <Filter>02.GameObjects\08. MapCollider</Filter>
+      <Filter>02.GameObjects\08.MapCollider\Obj</Filter>
+	</ClInclude>
+    <ClInclude Include="..\Public\AI_Kuze.h">
+      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\Kuze\AI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Yoneda.h">
+      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\Yoneda</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\AI_Yoneda.h">
+      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\Yoneda\AI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -678,6 +720,18 @@
     </Filter>
     <Filter Include="02.GameObjects\02.Character\LandObject\01.Monster\Kuze\AI">
       <UniqueIdentifier>{7a5d0ae0-e2c2-40be-bcf3-91e5079f1854}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\01.Monster\Yoneda">
+      <UniqueIdentifier>{88d812e2-894f-4605-8fca-4c8e35857e46}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\01.Monster\Yoneda\AI">
+      <UniqueIdentifier>{ce943862-3c8c-4c61-af0a-695062dd5489}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\04.Sky\Dome">
+      <UniqueIdentifier>{81f7471f-237e-45ae-a6af-15b9cf067a60}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\08. MapCollider\Obj">
+      <UniqueIdentifier>{4e8421d6-5ada-48ec-9fce-0aed349f2f59}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

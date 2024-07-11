@@ -20,7 +20,6 @@ private:
     class CFileTotalMgr* m_pFileTotalManager = { nullptr };
 
 private:
-    HRESULT Ready_Light();
     HRESULT Ready_Camera(const wstring& strLayerTag);
     HRESULT Ready_Player(const wstring& strLayerTag);
     HRESULT Ready_Monster(const wstring& strLayerTag);

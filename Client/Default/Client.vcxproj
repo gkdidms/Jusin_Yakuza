@@ -172,14 +172,17 @@
     <ClInclude Include="..\..\Imgui\imgui\imstb_rectpack.h" />
     <ClInclude Include="..\..\Imgui\imgui\imstb_textedit.h" />
     <ClInclude Include="..\..\Imgui\imgui\imstb_truetype.h" />
+    <ClInclude Include="..\Public\AI_Kuze.h" />
     <ClInclude Include="..\public\AI_Monster.h" />
     <ClInclude Include="..\public\AI_RushYakuza.h" />
     <ClInclude Include="..\public\AI_Shakedown.h" />
     <ClInclude Include="..\public\AI_WPAYakuza.h" />
+    <ClInclude Include="..\public\AI_Yoneda.h" />
     <ClInclude Include="..\Public\Aura.h" />
     <ClInclude Include="..\public\Background.h" />
     <ClInclude Include="..\Public\BehaviorAnimation.h" />
     <ClInclude Include="..\Public\Collision_Manager.h" />
+    <ClInclude Include="..\public\Kuze.h" />
     <ClInclude Include="..\public\Level_Office1F.h" />
     <ClInclude Include="..\public\Level_Office2F.h" />
     <ClInclude Include="..\Public\MapCollider.h" />
@@ -235,6 +238,7 @@
     <ClInclude Include="..\Public\TRailEffect.h" />
     <ClInclude Include="..\public\UI.h" />
     <ClInclude Include="..\public\WPAYakuza.h" />
+    <ClInclude Include="..\public\Yoneda.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="Resource.h" />
@@ -254,14 +258,17 @@
     <ClCompile Include="..\..\Imgui\imgui\imgui_draw.cpp" />
     <ClCompile Include="..\..\Imgui\imgui\imgui_tables.cpp" />
     <ClCompile Include="..\..\Imgui\imgui\imgui_widgets.cpp" />
+    <ClCompile Include="..\Private\AI_Kuze.cpp" />
     <ClCompile Include="..\private\AI_Monster.cpp" />
     <ClCompile Include="..\private\AI_RushYakuza.cpp" />
     <ClCompile Include="..\private\AI_Shakedown.cpp" />
     <ClCompile Include="..\private\AI_WPAYakuza.cpp" />
+    <ClCompile Include="..\private\AI_Yoneda.cpp" />
     <ClCompile Include="..\Private\Aura.cpp" />
     <ClCompile Include="..\private\Background.cpp" />
     <ClCompile Include="..\Private\BehaviorAnimation.cpp" />
     <ClCompile Include="..\Private\Collision_Manager.cpp" />
+    <ClCompile Include="..\private\Kuze.cpp" />
     <ClCompile Include="..\private\Level_Office1F.cpp" />
     <ClCompile Include="..\private\Level_Office2F.cpp" />
     <ClCompile Include="..\Private\MapCollider.cpp" />
@@ -316,6 +323,7 @@
     <ClCompile Include="..\Private\TRailEffect.cpp" />
     <ClCompile Include="..\private\UI.cpp" />
     <ClCompile Include="..\private\WPAYakuza.cpp" />
+    <ClCompile Include="..\private\Yoneda.cpp" />
     <ClCompile Include="Client.cpp" />
   </ItemGroup>
   <ItemGroup>
