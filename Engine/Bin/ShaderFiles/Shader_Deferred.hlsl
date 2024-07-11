@@ -113,17 +113,14 @@ PS_OUT_LIGHT PS_MAIN_LIGHT_DIRECTIONAL(PS_IN In)
         vAmbient *= vAmbientDesc;
     
     Out.vShade = g_vLightDiffuse * saturate(max(dot(normalize(g_vLightDir) * -1.f, normalize(vNormal)), 0.f) + vAmbient);
+    //Grass
+    vector vGlassNormalDesc = g_GlassNormalTexture.Sample(LinearSampler,In.vTexcoord);
+    vector vGlassNormal = vector(vGlassNormalDesc.xyz * 2.f - 1.f, 0.f);
     
-    if (g_isPBR)
-    {
-        Out.vSpecularRM = BRDF(In.vPosition, In.vTexcoord, normalize(vNormal), vDepthDesc);
-        Out.vSpecularMulti = vector(BRDF_MULTI(In.vPosition, In.vTexcoord, normalize(vNormal), vDepthDesc), 1.f);
-    }
+    Out.vSpecularRM = BRDF(In.vPosition, In.vTexcoord, normalize(vNormal), vDepthDesc);
+    Out.vSpecularMulti = vector(BRDF_MULTI(In.vPosition, In.vTexcoord, normalize(vNormal), vDepthDesc), 1.f);
     Out.vLightMap = g_vLightDiffuse;
     
-    //Grass
-    vector vGlassNormalDesc = g_GlassNormalTexture.Sample(LinearSampler, In.vTexcoord);
-    vector vGlassNormal = vector(vGlassNormalDesc.xyz * 2.f - 1.f, 0.f);
     if (vGlassNormalDesc.a == 0.f)
     {
         vector vGlassDepthDesc = g_GlassDepthTexture.Sample(PointSampler, In.vTexcoord);
@@ -190,6 +187,8 @@ PS_OUT PS_MAIN_COPY_BACKBUFFER_RESULT(PS_IN In)
     PS_OUT Out = (PS_OUT) 0;
 
     vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
+    if (0.0f == vDiffuse.a)
+        discard;
     
     vector vShade = g_ShadeTexture.Sample(LinearSampler, In.vTexcoord);
     vector vSpeculer = g_SpecularTexture.Sample(LinearSampler, In.vTexcoord);
@@ -200,7 +199,7 @@ PS_OUT PS_MAIN_COPY_BACKBUFFER_RESULT(PS_IN In)
         vector vMetallicMulti = g_MultiDiffuseTexture.Sample(LinearSampler, In.vTexcoord);
     
         vector vLightmap = g_LightMapTexture.Sample(LinearSampler, In.vTexcoord);
-    // 여기 Speculer 수정해야 함.
+    // 기존
         Out.vColor = (vDiffuse * vMetallicMulti) * vShade + (vSpeculerRM + vSpeculer) * vLightmap;
     }
     else
@@ -253,6 +252,8 @@ PS_OUT PS_MAIN_COPY_BACKBUFFER_RESULT(PS_IN In)
         
         //if (fLightOldDepth + 0.1f < vLightPos.w)
         //    Out.vColor = vector(Out.vColor.rgb * 0.5f, 1.f);
+        
+        
         
         if (fPassiveLightOldDepth + 0.1f < vLightPos.w)
             Out.vColor = vector(Out.vColor.rgb * 0.5f, 1.f);
