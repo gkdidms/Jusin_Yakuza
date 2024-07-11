@@ -656,7 +656,7 @@ void CImgui_Manager::Window_Binary()
                             m_StartUV = dynamic_cast<CUI_Texture*>(BinaryObject[n])->Get_StartUV();
                             m_EndUV = dynamic_cast<CUI_Texture*>(BinaryObject[n])->Get_EndUV();
                         }
-                        else if (CObject_Manager::BTN == BinaryObject[m_iBinaryObjectIndex]->Get_TypeIndex())
+                        if (CObject_Manager::BTN == BinaryObject[m_iBinaryObjectIndex]->Get_TypeIndex())
                         {
                             m_ClickStartUV= dynamic_cast<CBtn*>(BinaryObject[n])->Get_ClickStartUV();
                             m_ClickEndUV = dynamic_cast<CBtn*>(BinaryObject[n])->Get_ClickEndUV();

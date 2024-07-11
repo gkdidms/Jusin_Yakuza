@@ -25,9 +25,10 @@ HRESULT CUIManager::Initialize()
 
 	pScene = CUILife::Create();
 	m_AllScene.emplace(make_pair(TEXT("Life"), pScene));
-
+	m_AlwaysUI.push_back(pScene);
 	pScene = CUIMoney::Create();
 	m_AllScene.emplace(make_pair(TEXT("Money"), pScene));
+	m_AlwaysUI.push_back(pScene);
 
 	CUIInven::IVENSCENE_DESC Desc{};
 	Desc.pInventory = m_pInventory;
@@ -56,27 +57,27 @@ void CUIManager::Open_Scene(const wstring strSceneName)
 {
 	CUIScene* pUIScene = Find_Scene(strSceneName);	
 
-	m_PlayScene.push(pUIScene);
-	m_PlayScene.top()->Show_Scene();
+	m_PlayScene.push_back(pUIScene);
+	m_PlayScene.back()->Show_Scene();
 }
 
 void CUIManager::Close_Scene()
 {
 	if(!m_PlayScene.empty())
-		m_PlayScene.top()->Close_Scene();	
+		m_PlayScene.back()->Close_Scene();
 }
 
 void CUIManager::Click()
 {
 	if (!m_PlayScene.empty())
-		m_PlayScene.top()->Click_InterSect();
+		m_PlayScene.back()->Click_InterSect();
 }
 
 HRESULT CUIManager::Tick(const _float& fTimeDelta)
 {
 	if(!m_PlayScene.empty())
 	{
-		m_PlayScene.top()->Tick(fTimeDelta);
+		m_PlayScene.back()->Tick(fTimeDelta);
 	}
 
 	for (auto& pUIScene : m_AlwaysUI)
@@ -91,14 +92,14 @@ HRESULT CUIManager::Late_Tick(const _float& fTimeDelta)
 {
 	if (!m_PlayScene.empty())
 	{
-		if (m_PlayScene.top()->Get_isClose()&& m_PlayScene.top()->Get_isAnimFinish())
+		if (m_PlayScene.back()->Get_isClose()&& m_PlayScene.back()->Get_isAnimFinish())
 		{
-			m_PlayScene.pop();
+			m_PlayScene.pop_back();
 		}
-		else
-		{
-			m_PlayScene.top()->Late_Tick(fTimeDelta);
-		}
+
+		if (!m_PlayScene.empty())
+			m_PlayScene.back()->Late_Tick(fTimeDelta);
+		
 	}
 
 	for (auto& pUIScene : m_AlwaysUI)
@@ -128,12 +129,10 @@ void CUIManager::Free()
 		Safe_Release(iter);
 	}
 
-	for (size_t i = 0; i < m_PlayScene.size(); i++)
+	for (auto iter : m_PlayScene)
 	{
-		Safe_Release(m_PlayScene.top());
-		m_PlayScene.pop();
+		Safe_Release(iter);
 	}
-
 	for (auto iter : m_AllScene)
 	{
 		Safe_Release(iter.second);

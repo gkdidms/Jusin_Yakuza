@@ -76,7 +76,7 @@ void CUIMenu::Action()
 	{
 	case 0://뒤로
 	{
-		CUIManager::GetInstance()->Close_Scene();
+		CUIManager::GetInstance()->Open_Scene(TEXT("Inven"));
 		break;
 	}
 	case 1://소지품

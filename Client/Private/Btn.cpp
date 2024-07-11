@@ -323,6 +323,21 @@ _bool CBtn::Click_Intersect()
 	return m_pGameInstance->Picking_UI(m_pTransformCom	);
 }
 
+HRESULT CBtn::Show_UI()
+{
+	m_fAnimTime.x = 0.f;
+	m_isReverse = false;
+	return S_OK;
+}
+
+HRESULT CBtn::Close_UI()
+{
+	m_fAnimTime.x = m_fAnimTime.y;
+	m_isReverse = true;
+	m_isClick = false;
+	return S_OK;
+}
+
 HRESULT CBtn::Add_Components()
 {
 	if (FAILED(__super::Add_Components()))

@@ -16,6 +16,29 @@ CUIInven::CUIInven(const CUIInven& rhs)
 {
 }
 
+HRESULT CUIInven::Add_UIData(CUI_Object* pUIObject)
+{
+
+	if (pUIObject->Get_Event())
+	{
+		m_EventUI.push_back(pUIObject);
+		return S_OK;
+	}
+	else if(CUI_Object::TYPE_BTN == pUIObject->Get_TypeIndex())
+	{
+		if(m_Toggle.size() < 3)
+			m_Toggle.push_back(dynamic_cast<CBtn*>(pUIObject));
+		else
+			m_Button.push_back(dynamic_cast<CBtn*>(pUIObject));
+	}
+	else
+	{
+		m_UI.push_back(pUIObject);
+	}
+
+	return S_OK;
+}
+
 HRESULT CUIInven::Initialize(void* pArg)
 {
 	if (nullptr != pArg)
@@ -25,6 +48,7 @@ HRESULT CUIInven::Initialize(void* pArg)
 		m_pInvenctory = pDesc->pInventory;	
 		Safe_AddRef(m_pInvenctory);
 	}
+
     return S_OK;
 }
 
@@ -33,6 +57,30 @@ HRESULT CUIInven::Tick(const _float& fTimeDelta)
 
 	__super::Tick(fTimeDelta);
 
+	for (auto& iter : m_Toggle)
+	{
+		iter->Tick(fTimeDelta);
+	}
+
+	switch (m_iToggle)
+	{
+	case 0:
+	{
+		
+		for (size_t i = 0; i < 20; i++)
+		{
+			m_Button[i]->Tick(fTimeDelta);
+		}
+		break;
+	}
+	case 1:
+		break;
+	case 2:
+		break;
+	default:
+		break;
+	}
+	m_Toggle[m_iToggle]->Set_Click(true);
 	//등장 애니메이션 끝난뒤 모든 행동 코드
 	if (m_isAnimFin)
 	{
@@ -52,6 +100,28 @@ HRESULT CUIInven::Late_Tick(const _float& fTimeDelta)
 
 	__super::Late_Tick(fTimeDelta);
 
+	for (auto& iter : m_Toggle)
+	{
+		iter->Late_Tick(fTimeDelta);
+	}
+
+	switch (m_iToggle)
+	{
+	case 0:
+	{
+		for (size_t i = 0; i < 20; i++)
+		{
+			m_Button[i]->Late_Tick(fTimeDelta);
+		}
+		break;
+	}
+	case 1:
+		break;
+	case 2:
+		break;
+	default:
+		break;
+	}
 
 	//등장 애니메이션 끝난뒤 모든 행동 코드
 	if (m_isAnimFin)
@@ -78,32 +148,47 @@ HRESULT CUIInven::Late_Tick(const _float& fTimeDelta)
 	return S_OK;
 }
 
+_bool CUIInven::Click_InterSect()
+{
+	for (size_t i = 0; i < m_Button.size(); i++)
+	{
+		if (m_Button[i]->Click_Intersect())
+		{
+			m_iCurButton = i;
+			Action();
+			return true;
+		}
+	}
+	for (size_t i = 0; i < m_Toggle.size(); i++)
+	{
+		if (m_Toggle[i]->Click_Intersect())
+		{
+			m_iToggle = i;
+			Toggle_Action();
+			return true;
+		}
+	}
+	return false;
+}
+
 void CUIInven::Action()
 {
-	switch (m_iCurButton)
+	if (20 > m_iCurButton)
 	{
-	case 0://뒤로
-	{
-		CUIManager::GetInstance()->Close_Scene();
-		break;
+
+
+		//인벤에서 아이템 상호 작용
 	}
-	case 1://소지품
+
+	
+}
+
+void CUIInven::Toggle_Action()
+{
+	for (size_t i = 0; i < m_Toggle.size(); i++)
 	{
-		//m_pUIManager->Open_Scene(TEXT("Invectory"));
-		break;
-	}
-	case 2://스킬
-	{
-		//m_pUIManager->Open_Scene(TEXT("SkillSelect"));
-		break;
-	}
-	case 3://설정
-	{
-		//m_pUIManager->Open_Scene(TEXT("Setting"));
-		break;
-	}
-	default:
-		break;
+			m_Toggle[i]->Set_Click(false);
+
 	}
 }
 
@@ -115,47 +200,60 @@ void CUIInven::OverAction()
 	_matrix ButtonWorld = m_Button[m_iCurButton]->Get_TransformCom()->Get_WorldMatrix();
 	_vector Position = ButtonWorld.r[3];
 	ButtonWorld = XMMatrixTranslation(XMVectorGetX(Position), XMVectorGetY(Position), 0.f);
-	//ButtonWorld=XMMatrixTranslation(-100.f, 100.f, 0.f);
 
-	if (m_iCurButton != m_iPrevButton)
+	switch (m_iToggle)
 	{
-		m_Button[m_iCurButton]->Show_UI();
+	case 0:
+	{
 
-		if (-1 != m_iPrevButton)
+		if (m_iCurButton != m_iPrevButton)
 		{
-			m_Button[m_iPrevButton]->Close_UI();
+			m_Button[m_iCurButton]->Set_Click(true);
+
+			if (-1 != m_iPrevButton)
+			{
+				m_Button[m_iPrevButton]->Set_Click(false);
+			}
 		}
+		break;
 	}
 
+	case 1:
+		break;
+
+	case 2:
+		break;
+	default:
+		break;
+	}
 
 	switch (m_iCurButton)
 	{
 	case 0:
 	{
 
-		m_EventUI[0]->Show_UI();
-		m_EventUI[0]->Get_TransformCom()->Set_WorldMatrix(ButtonWorld);
+		//m_EventUI[0]->Show_UI();
+		//m_EventUI[0]->Get_TransformCom()->Set_WorldMatrix(ButtonWorld);
 
-		//그룹으로 제작 (설명창 다 모아두기)
-		//버튼 번호 받아서 끄고 킬 이미지 관리(isPlay)
-		dynamic_cast<CGroup*>(m_EventUI[1])->Show_Choice(m_iCurButton);
+		////그룹으로 제작 (설명창 다 모아두기)
+		////버튼 번호 받아서 끄고 킬 이미지 관리(isPlay)
+		//dynamic_cast<CGroup*>(m_EventUI[1])->Show_Choice(m_iCurButton);
 
-
-		m_EventUI[2]->Show_UI();
-		m_EventUI[2]->Get_TransformCom()->Set_WorldMatrix(ButtonWorld);
+		//m_EventUI[2]->Show_UI();
+		//m_EventUI[2]->Get_TransformCom()->Set_WorldMatrix(ButtonWorld);
 		break;
 	}
 	case 1:
 	{
-		m_EventUI[0]->Show_UI();
-		m_EventUI[0]->Get_TransformCom()->Set_WorldMatrix(ButtonWorld);
+		//m_EventUI[0]->Show_UI();
+		//m_EventUI[0]->Get_TransformCom()->Set_WorldMatrix(ButtonWorld);
 
-		//그룹으로 제작 (설명창 다 모아두기)
-		//버튼 번호 받아서 끄고 킬 이미지 관리(isPlay)
-		dynamic_cast<CGroup*>(m_EventUI[1])->Show_Choice(m_iCurButton);
+		////그룹으로 제작 (설명창 다 모아두기)
+		////버튼 번호 받아서 끄고 킬 이미지 관리(isPlay)
+		//dynamic_cast<CGroup*>(m_EventUI[1])->Show_Choice(m_iCurButton);
 
-		m_EventUI[2]->Show_UI();
-		m_EventUI[2]->Get_TransformCom()->Set_WorldMatrix(ButtonWorld);
+		//m_EventUI[2]->Show_UI();
+		//m_EventUI[2]->Get_TransformCom()->Set_WorldMatrix(ButtonWorld);
 		break;
 	}
 

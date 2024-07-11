@@ -21,7 +21,8 @@ protected:
 
 public:
     //loader 에서 만든 ui객체를 받아와서 저장해둠. 무조건 파일 순서대로 받아와서 정렬함(순서중요)
-    HRESULT Add_UIData(class CUI_Object* pUIObject);
+    //씬마다 사용법 다르면 오버라이딩 ㄱ
+    virtual HRESULT Add_UIData(class CUI_Object* pUIObject);
     
     virtual HRESULT Show_Scene();//ui 애님 준비(초기화/열때 정방향 진행)
     virtual HRESULT Close_Scene();//ui 애님 준비(초기화/닫을떄 반대로진행)

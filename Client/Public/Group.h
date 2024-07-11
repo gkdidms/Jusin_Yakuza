@@ -46,7 +46,7 @@ public:
     void Show_Choice(_int Index);
 private:
     vector<CUI_Object*> m_PartObjects;
-
+    _float4x4 m_GroupWorld;
 public:
     virtual HRESULT Save_binary(const string strDirectory)override;
     virtual HRESULT Save_Groupbinary(ofstream& out)override;

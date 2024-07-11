@@ -17,7 +17,8 @@ CGroup::CGroup(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 }
 
 CGroup::CGroup(const CGroup& rhs)
-	: CUI_Object{ rhs }
+	: CUI_Object{ rhs },
+	m_GroupWorld{rhs.m_GroupWorld}
 {
 	for (auto& iter : rhs.m_PartObjects)
 	{
@@ -58,6 +59,7 @@ HRESULT CGroup::Initialize(void* pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
+	m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(&m_GroupWorld));
 	for (auto& iter : m_PartObjects)
 	{
 		dynamic_cast<CUI_Texture*>(iter)->Set_pParentWorld(m_pTransformCom->Get_WorldFloat4x4());
@@ -137,9 +139,8 @@ HRESULT CGroup::Load_Groupbinary(ifstream& in)
 
 	_int size;
 	in.read((char*)&size, sizeof(_int));
-	_float4x4 GroupWorld = {};
-	in.read((char*)&GroupWorld, sizeof(_float4x4));
-	//m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(&GroupWorld));
+
+	in.read((char*)&m_GroupWorld, sizeof(_float4x4));
 
 	in.read((char*)&m_isEvent, sizeof(_bool));
 
@@ -196,7 +197,7 @@ HRESULT CGroup::Load_Groupbinary(ifstream& in)
 			in.read((char*)&pDesc.isScreen, sizeof(_bool));
 
 			pDesc.isLoad = true;
-			//pDesc.pParentMatrix = m_pTransformCom->Get_WorldFloat4x4();
+			pDesc.pParentMatrix = m_pTransformCom->Get_WorldFloat4x4();
 
 			CUI_Texture* pImage = dynamic_cast<CUI_Texture*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Image_Texture"), &pDesc));
 			if (nullptr == pImage)

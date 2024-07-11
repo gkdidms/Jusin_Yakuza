@@ -243,7 +243,7 @@
       <Filter>95.Utility\05.UIManager\UIScene\UIObject\UITexture\Image_Texture</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Group.cpp">
-      <Filter>95.Utility\05.UIManager\UIScene\UIObject\UITexture\Group</Filter>
+      <Filter>95.Utility\05.UIManager\UIScene\UIObject\Group</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Text.cpp">
       <Filter>95.Utility\05.UIManager\UIScene\UIObject\UITexture\Text</Filter>
@@ -546,7 +546,7 @@
       <Filter>95.Utility\05.UIManager\UIScene\UIObject\UITexture\Image_Texture</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Group.h">
-      <Filter>95.Utility\05.UIManager\UIScene\UIObject\UITexture\Group</Filter>
+      <Filter>95.Utility\05.UIManager\UIScene\UIObject\Group</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Text.h">
       <Filter>95.Utility\05.UIManager\UIScene\UIObject\UITexture\Text</Filter>
@@ -846,14 +846,14 @@
     <Filter Include="95.Utility\05.UIManager\UIScene\UIObject\UITexture\Text">
       <UniqueIdentifier>{7e154e24-f9cd-44d6-98a0-3740478d46b4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="95.Utility\05.UIManager\UIScene\UIObject\UITexture\Group">
-      <UniqueIdentifier>{4978f2c8-2f0c-4e8e-aee4-94423890d362}</UniqueIdentifier>
-    </Filter>
     <Filter Include="95.Utility\05.UIManager\UIScene\UIObject\UITexture\Image_Texture">
       <UniqueIdentifier>{7ba24c26-5011-468c-9922-c8db8eb8224c}</UniqueIdentifier>
     </Filter>
     <Filter Include="95.Utility\05.UIManager\UIScene\UIObject\UITexture\Btn">
       <UniqueIdentifier>{76b96514-5b82-403e-858f-16580839fe1e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\05.UIManager\UIScene\UIObject\Group">
+      <UniqueIdentifier>{4978f2c8-2f0c-4e8e-aee4-94423890d362}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -887,6 +887,9 @@
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxMeshSky.hlsl">
+      <Filter>97.ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxUI.hlsl">
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
   </ItemGroup>

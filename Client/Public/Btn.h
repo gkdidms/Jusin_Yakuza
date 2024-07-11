@@ -56,6 +56,8 @@ public:
     virtual HRESULT Load_binary(ifstream& in)override;
 
     _bool Click_Intersect();
+    virtual HRESULT Show_UI() override;
+    virtual HRESULT Close_UI() override;
 private:
     CTexture* m_pClickTextureCom = { nullptr };
     CVIBuffer_Rect* m_pClickVIBufferCom = { nullptr };
@@ -68,6 +70,7 @@ private:
     _bool m_isOverlap = { false };
     _float2 m_ClickStartUV = { 0.f ,0.f };
     _float2 m_ClickEndUV = { 1.f, 1.f };
+
 
 private:
     virtual HRESULT Add_Components() override;
