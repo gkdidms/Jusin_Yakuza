@@ -360,9 +360,6 @@ HRESULT CObject_Manager::Load_binary(const wstring& strObjectTag, const string F
 		in.read((char*)&pDesc.fControlAlpha, sizeof(_float2));
 		in.read((char*)&pDesc.isReverse, sizeof(_bool));
 
-		in.read((char*)&pDesc.isEvent, sizeof(_bool));
-		in.read((char*)&pDesc.isScreen, sizeof(_bool));
-
 		pDesc.isLoad = true;
 		in.close();
 
@@ -417,8 +414,6 @@ HRESULT CObject_Manager::Load_binary(const wstring& strObjectTag, const string F
 		in.read((char*)&pDesc.fControlAlpha, sizeof(_float2));
 		in.read((char*)&pDesc.isReverse, sizeof(_bool));
 
-		in.read((char*)&pDesc.isEvent, sizeof(_bool));
-		in.read((char*)&pDesc.isScreen, sizeof(_bool));
 		//개별
 		ZeroMemory(charBox, MAX_PATH);	
 		in.read((char*)&strTexturelength, sizeof(_int));	
@@ -480,8 +475,6 @@ HRESULT CObject_Manager::Load_binary(const wstring& strObjectTag, const string F
 		in.read((char*)&pDesc.fControlAlpha, sizeof(_float2));
 		in.read((char*)&pDesc.isReverse, sizeof(_bool));
 
-		in.read((char*)&pDesc.isEvent, sizeof(_bool));
-		in.read((char*)&pDesc.isScreen, sizeof(_bool));
 		//개별
 		ZeroMemory(charBox, MAX_PATH);
 		in.read((char*)&strTexturelength, sizeof(_int));
@@ -563,11 +556,6 @@ HRESULT CObject_Manager::Load_binary(const wstring& strObjectTag, const string F
 		in.read((char*)&pDesc.fAnimTime, sizeof(_float2));
 		in.read((char*)&pDesc.vStartPos, sizeof(_float3));
 
-		in.read((char*)&pDesc.fControlAlpha, sizeof(_float2));
-		in.read((char*)&pDesc.isReverse, sizeof(_bool));
-
-		in.read((char*)&pDesc.isEvent, sizeof(_bool));
-		in.read((char*)&pDesc.isScreen, sizeof(_bool));
 		//개별
 
 		in.read((char*)&pDesc.vLifeTime, sizeof(_float3));	
@@ -1145,49 +1133,7 @@ HRESULT CObject_Manager::Copy_BinaryGroupObject(const wstring& strObjectTag, con
 		TextureDesc.isParent = true;
 		TextureDesc.pParentMatrix = (*pFineObjects)[ibinaryIndex]->Get_TransformCom()->Get_WorldFloat4x4();
 
-		TextureDesc.isScreen = (*pFineObjects)[ibinaryIndex]->Get_isScreen();
-		TextureDesc.isEvent = (*pFineObjects)[ibinaryIndex]->Get_Event();
 		CUI_Texture* pImage = dynamic_cast<CUI_Texture*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Image_Texture"), &TextureDesc));
-		if (nullptr == pImage)
-			return E_FAIL;
-
-		pImage->Set_SizeX(dynamic_cast<CUI_Texture*>((*pFineGroupObjects)[iIndex])->Get_SizeX());
-		pImage->Set_SizeY(dynamic_cast<CUI_Texture*>((*pFineGroupObjects)[iIndex])->Get_SizeY());
-		pImage->Set_ShaderPass(dynamic_cast<CUI_Texture*>((*pFineGroupObjects)[iIndex])->Get_ShaderPass());
-		pImage->Set_Color(dynamic_cast<CUI_Texture*>((*pFineGroupObjects)[iIndex])->Get_Color());
-		pImage->Change_UV(dynamic_cast<CUI_Texture*>((*pFineGroupObjects)[iIndex])->Get_StartUV(), dynamic_cast<CUI_Texture*>((*pFineGroupObjects)[iIndex])->Get_EndUV());
-		pImage->Get_TransformCom()->Set_WorldMatrix(dynamic_cast<CUI_Texture*>((*pFineGroupObjects)[iIndex])->Get_TransformCom()->Get_WorldMatrix());
-
-
-		pFineGroupObjects->emplace_back(pImage);
-	}
-	else if (EFFECT == Type)
-	{
-		CUI_Effect::UI_EFFECT_DESC TextureDesc = {};
-
-		TextureDesc.strTextureFileName = dynamic_cast<CUI_Texture*>((*pFineGroupObjects)[iIndex])->Get_FileName();
-		TextureDesc.strTextureFilePath = dynamic_cast<CUI_Texture*>((*pFineGroupObjects)[iIndex])->Get_FilePath();
-		TextureDesc.iTypeIndex = dynamic_cast<CUI_Texture*>((*pFineGroupObjects)[iIndex])->Get_TypeIndex();
-		TextureDesc.strName = dynamic_cast<CUI_Texture*>((*pFineGroupObjects)[iIndex])->Get_Name() + "%d";
-		char buffer[MAX_PATH] = { "" };
-		sprintf(buffer, TextureDesc.strName.c_str(), Index);
-		string result(buffer);
-		TextureDesc.strName = result;
-
-		TextureDesc.bAnim = dynamic_cast<CUI_Texture*>((*pFineGroupObjects)[iIndex])->Get_isAnim();
-		TextureDesc.vStartPos = dynamic_cast<CUI_Texture*>((*pFineGroupObjects)[iIndex])->Get_StartPos();
-		TextureDesc.fAnimTime = dynamic_cast<CUI_Texture*>((*pFineGroupObjects)[iIndex])->Get_AnimTime();
-		TextureDesc.isColor = dynamic_cast<CUI_Texture*>((*pFineGroupObjects)[iIndex])->Get_isColor();
-		TextureDesc.fControlAlpha = dynamic_cast<CUI_Texture*>((*pFineGroupObjects)[iIndex])->Get_ControlAlpha();
-		TextureDesc.isParent = true;
-		TextureDesc.pParentMatrix = (*pFineObjects)[ibinaryIndex]->Get_TransformCom()->Get_WorldFloat4x4();
-
-		TextureDesc.vLifeTime = dynamic_cast<CUI_Effect*>((*pFineGroupObjects)[iIndex])->Get_LifeTime();
-		TextureDesc.fSpeed = dynamic_cast<CUI_Effect*>((*pFineGroupObjects)[iIndex])->Get_Speed();
-
-		TextureDesc.isScreen = (*pFineGroupObjects)[iIndex]->Get_isScreen();
-		TextureDesc.isEvent = (*pFineGroupObjects)[iIndex]->Get_Event();
-		CUI_Texture* pImage = dynamic_cast<CUI_Texture*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UIEffect"), &TextureDesc));
 		if (nullptr == pImage)
 			return E_FAIL;
 

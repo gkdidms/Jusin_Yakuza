@@ -31,6 +31,7 @@ HRESULT CImage_Texture::Initialize(void* pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
+
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
@@ -211,7 +212,9 @@ HRESULT CImage_Texture::Load_binary(ifstream& in)
 
 	in.read((char*)&m_iShaderPass, sizeof(_uint));
 
-	in.read((char*)&m_WorldMatrix, sizeof(_float4x4));
+	_float4x4 World{};
+	in.read((char*)&World, sizeof(_float4x4));
+	m_WorldMatrix = World;
 
 	in.read((char*)&m_isAnim, sizeof(_bool));
 	in.read((char*)&m_fAnimTime, sizeof(_float2));
@@ -219,8 +222,7 @@ HRESULT CImage_Texture::Load_binary(ifstream& in)
 
 	in.read((char*)&m_fControlAlpha, sizeof(_float2));
 	in.read((char*)&m_isReverse, sizeof(_bool));
-	in.read((char*)&m_isEvent, sizeof(_bool));
-	in.read((char*)&m_isScreen, sizeof(_bool));
+
 	in.close();
 
 

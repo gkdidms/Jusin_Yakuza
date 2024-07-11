@@ -51,8 +51,6 @@ HRESULT CUI_Texture::Initialize(void* pArg)
 		m_pParentMatrix = pDesc->pParentMatrix;
 		m_strParentName = pDesc->strParentName;
 
-		m_WorldMatrix = pDesc->WorldMatrix;
-
 		m_fStartUV = pDesc->fStartUV;
 		m_fEndUV = pDesc->fEndUV;
 		m_isColor = pDesc->isColor;
@@ -83,7 +81,7 @@ HRESULT CUI_Texture::Initialize(void* pArg)
 			m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(&pDesc->WorldMatrix));
 		}
 	}
-	//m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(&m_WorldMatrix));
+
 	XMStoreFloat4x4(&m_ViewMatrix, XMMatrixIdentity());
 	XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH(g_iWinSizeX, g_iWinSizeY, 0.f, 1.0f));
 	
@@ -221,10 +219,9 @@ HRESULT CUI_Texture::Bind_ResourceData()
 {
 	if (m_isParent)
 	{
-		_float4x4 ResultWorld;
-		XMStoreFloat4x4(&ResultWorld, m_pTransformCom->Get_WorldMatrix() * XMLoadFloat4x4(m_pParentMatrix));
+		XMStoreFloat4x4(&m_WorldMatrix, m_pTransformCom->Get_WorldMatrix() * XMLoadFloat4x4(m_pParentMatrix));
 
-		if (FAILED(m_pShaderCom->Bind_Matrix("g_WorldMatrix", &ResultWorld)))
+		if (FAILED(m_pShaderCom->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix)))
 			return E_FAIL;
 	}
 	else

@@ -742,17 +742,6 @@ void CImgui_Manager::Window_Binary()
 
                 BinaryObject[m_iBinaryObjectIndex]->Get_TransformCom()->Set_WorldMatrix(XMLoadFloat4x4(&m_WorldMatirx));
 
-                _bool isEvent = dynamic_cast<CUI_Object*>(BinaryObject[m_iBinaryObjectIndex])->Get_Event();
-                if (ImGui::Checkbox("isEvent", &isEvent))
-                    dynamic_cast<CUI_Object*>(BinaryObject[m_iBinaryObjectIndex])->Set_Event(isEvent);
-
-               static char szObName[MAX_PATH] ;
-                ImGui::InputText(u8"이름 변경 ", szObName, MAX_PATH);
-                if (ImGui::Button(u8"변경하기"))
-                {
-                    string Name = szObName;
-                    dynamic_cast<CUI_Object*>(BinaryObject[m_iBinaryObjectIndex])->Set_Name(Name);
-                }
                 //쉐이더 선택
                 if (!m_isOpenBinaryGroup)
                 {
@@ -768,13 +757,6 @@ void CImgui_Manager::Window_Binary()
                         _bool isColor = dynamic_cast<CUI_Texture*>(BinaryObject[m_iBinaryObjectIndex])->Get_isColor();
                         if (ImGui::Checkbox("isColor", &isColor))
                             dynamic_cast<CUI_Texture*>(BinaryObject[m_iBinaryObjectIndex])->Set_isColor(isColor);
-                        ImGui::SameLine();
-
-                        _bool isScreen = dynamic_cast<CUI_Texture*>(BinaryObject[m_iBinaryObjectIndex])->Get_isScreen();
-                        if (ImGui::Checkbox("isScreen", &isScreen))
-                            dynamic_cast<CUI_Texture*>(BinaryObject[m_iBinaryObjectIndex])->Set_isScreen(isScreen);
-
-
 
                         if (!isAnim && !isColor)
                         {
@@ -788,13 +770,9 @@ void CImgui_Manager::Window_Binary()
                         {
                             dynamic_cast<CUI_Texture*>(BinaryObject[m_iBinaryObjectIndex])->Set_ShaderPass(2);
                         }
-                        else if (isAnim && isColor && !isScreen)
+                        else if (isAnim && isColor)
                         {
                             dynamic_cast<CUI_Texture*>(BinaryObject[m_iBinaryObjectIndex])->Set_ShaderPass(5);
-                        }
-                        else if (isAnim && isColor && isScreen)
-                        {
-                            dynamic_cast<CUI_Texture*>(BinaryObject[m_iBinaryObjectIndex])->Set_ShaderPass(6);
                         }
 
                         if (isAnim)
@@ -1210,15 +1188,7 @@ void CImgui_Manager::Window_Binary_Group()
         ImGuizmo::RecomposeMatrixFromComponents(matrixTranslation, matrixRotation, matrixScale, (_float*)&m_WorldMatirx);
 
         Objects[m_iBinaryGroupObjectIndex]->Get_TransformCom()->Set_WorldMatrix(XMLoadFloat4x4(&m_WorldMatirx));
-        dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Set_WorldMatrix(m_WorldMatirx);
 
-        static char szGroupObName[MAX_PATH];
-        ImGui::InputText(u8"이름 변경 ", szGroupObName, MAX_PATH);
-        if (ImGui::Button(u8"변경하기"))
-        {
-            string Name = szGroupObName;
-            dynamic_cast<CUI_Object*>(Objects[m_iBinaryGroupObjectIndex])->Set_Name(Name);
-        }
 
         if(CObject_Manager::EFFECT != dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Get_TypeIndex())
         {
@@ -1230,10 +1200,6 @@ void CImgui_Manager::Window_Binary_Group()
             _bool isColor = dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Get_isColor();
             if (ImGui::Checkbox("isColor", &isColor))
                 dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Set_isColor(isColor);
-            ImGui::SameLine();
-            _bool isScreen = dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Get_isScreen();
-            if (ImGui::Checkbox("isScreen", &isScreen))
-                dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Set_isScreen(isScreen);
 
             if (!isAnim && !isColor)
             {
@@ -1247,14 +1213,11 @@ void CImgui_Manager::Window_Binary_Group()
             {
                 dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Set_ShaderPass(2);
             }
-            else if (isAnim && isColor &&!isScreen)
+            else if (isAnim && isColor)
             {
                 dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Set_ShaderPass(5);
             }
-            else if (isAnim && isColor && isScreen)
-            {
-                dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Set_ShaderPass(6);
-            }
+
 
             if (isAnim)
             {
@@ -1335,22 +1298,6 @@ void CImgui_Manager::Window_Binary_Group()
             dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Set_ShaderPass(3);
 
 
-            _bool isPlay = dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Get_isPlay();
-            if (ImGui::Checkbox("isPlay", &isPlay))
-                dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Set_isPlay(isPlay);
-            ImGui::SameLine();
-            _bool isAnim = dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Get_isAnim();
-            if (ImGui::Checkbox("isAnim", &isAnim))
-                dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Set_isAnim(isAnim);
-
-            _float2 fControlAlpha = dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Get_ControlAlpha();
-            if (ImGui::DragFloat2("ControlAlpha", (float*)&fControlAlpha, 0.001f, 0.0f, 1.0f))
-                dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Set_ControlAlpha(fControlAlpha);
-
-            _float3 vStartPos = dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Get_StartPos();
-            if (ImGui::DragFloat3("StartPos", (float*)&vStartPos, 0.001f))
-                dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Set_StartPos(vStartPos);
-
             _float4 vColor = dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Get_Color();
             static bool alpha_preview = true;
             static bool alpha_half_preview = false;
@@ -1366,9 +1313,11 @@ void CImgui_Manager::Window_Binary_Group()
             
 
             _float3 vLifeTime = dynamic_cast<CUI_Effect*>(Objects[m_iBinaryGroupObjectIndex])->Get_LifeTime();
-
-            if (ImGui::DragFloat3("LifeTime", (_float*) & vLifeTime, 0.001f, 0.0f, 10.f))
+            _float fLife[2] = { vLifeTime.y, vLifeTime.z };
+            if (ImGui::DragFloat2("LifeTime", fLife, 0.001f, 0.0f, 10.f))
             {
+                vLifeTime.y = fLife[0];
+                vLifeTime.z = fLife[1];
                 dynamic_cast<CUI_Effect*>(Objects[m_iBinaryGroupObjectIndex])->Set_LifeTime(vLifeTime);
             }
 
@@ -1378,11 +1327,6 @@ void CImgui_Manager::Window_Binary_Group()
                 dynamic_cast<CUI_Effect*>(Objects[m_iBinaryGroupObjectIndex])->Set_Speed(fSpeed);
             }
 
-            ImGui::DragFloat2("StartUV", (float*)&m_StartUV, 0.001f, 0.0f, 1.f);
-            ImGui::DragFloat2("EndUV", (float*)&m_EndUV, 0.001f, 0.0f, 1.f);
-
-            if (FAILED(dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Change_UV(m_StartUV, m_EndUV)))
-                MSG_BOX("UV 변경 실패");
 
          }
 }

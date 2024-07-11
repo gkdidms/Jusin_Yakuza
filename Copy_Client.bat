@@ -15,7 +15,5 @@ xcopy			/y		.\EffectTool\Private\TRailEffect.cpp				.\Client\Private\TRailEffect
 xcopy			/y		.\EffectTool\Private\Particle_Point.cpp			.\Client\Private\Particle_Point.cpp
 xcopy			/y		.\EffectTool\Private\Aura.cpp				.\Client\Private\Aura.cpp
 
-xcopy			/y		.\UITool\Bin\ShaderFiles\Shader_VtxUI.hlsl			.\Client\Bin\ShaderFiles\Shader_VtxUI.hlsl			
-
 
 					

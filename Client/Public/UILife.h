@@ -11,12 +11,12 @@ private:
 
 public:
 
-    virtual HRESULT Initialize(void* pArg) override;
+    virtual HRESULT Initialize() override;
     virtual HRESULT Tick(const _float& fTimeDelta) override;
     virtual HRESULT Late_Tick(const _float& fTimeDelta) override;
 
 public:
-    static CUILife* Create(void* pArg=nullptr);
+    static CUILife* Create();
     virtual void Free();
 };
 END

@@ -19,14 +19,14 @@ HRESULT CUI_Effect::Initialize_Prototype()
 
 HRESULT CUI_Effect::Initialize_Prototype(ifstream& in)
 {
-	//if (FAILED(__super::Initialize(nullptr)))
-	//	return E_FAIL;
+	if (FAILED(__super::Initialize(nullptr)))
+		return E_FAIL;
 
 	if (FAILED(Load_binary(in)))
 		return E_FAIL;
 
-	//if (FAILED(Add_Components()))
-	//	return E_FAIL;
+	if (FAILED(Add_Components()))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -56,19 +56,21 @@ void CUI_Effect::Priority_Tick(const _float& fTimeDelta)
 
 void CUI_Effect::Tick(const _float& fTimeDelta)
 {
-	if(m_isPlay)
-		m_vLifeTime.x += m_fSpeed * fTimeDelta;
+	__super::Tick(fTimeDelta);
+	m_vLifeTime.x += m_fSpeed * fTimeDelta;
 }
 
 void CUI_Effect::Late_Tick(const _float& fTimeDelta)
 {
-	//종료시간 넘으면 멈춤
+	__super::Late_Tick(fTimeDelta);
+	//종료시간 넘으면 죽음
+#ifdef _TOOL
 	if (m_vLifeTime.x >= m_vLifeTime.z)
-		m_isPlay = false;
-
-	if(m_isPlay)
-		m_pGameInstance->Add_Renderer(CRenderer::RENDER_UI, this);
-
+		m_vLifeTime.x = 0.f;
+#else
+	if (m_vLifeTime.x >= m_vLifeTime.z)
+		m_isDead = true;
+#endif // _TOOL
 }
 
 HRESULT CUI_Effect::Render()
@@ -83,58 +85,22 @@ HRESULT CUI_Effect::Render()
 	return S_OK;
 }
 
-HRESULT CUI_Effect::Show_UI()
-{
-	m_vLifeTime.x = 0.f;
-	m_isReverse = false;
-	m_isPlay = true;
-
-	return S_OK;
-}
-
-HRESULT CUI_Effect::Close_UI()
-{
-	m_vLifeTime.x = 0.f;
-	m_isReverse = false;
-	m_isPlay = false;
-	return S_OK;
-}
-
 HRESULT CUI_Effect::Bind_ResourceData()
 {
-	if (m_isParent)
-	{
-		_float4x4 ResultWorld;
-	//	XMStoreFloat4x4(&ResultWorld, m_pTransformCom->Get_WorldMatrix() * XMLoadFloat4x4(m_pParentMatrix));
-		XMStoreFloat4x4(&ResultWorld, XMLoadFloat4x4(&m_WorldMatrix) * XMLoadFloat4x4(m_pParentMatrix));
-
-		if (FAILED(m_pShaderCom->Bind_Matrix("g_WorldMatrix", &ResultWorld)))
-			return E_FAIL;
-	}
-	else
-	{
-		if (FAILED(m_pTransformCom->Bind_ShaderMatrix(m_pShaderCom, "g_WorldMatrix")))
-			return E_FAIL;
-	}
-
-
+	if (FAILED(m_pTransformCom->Bind_ShaderMatrix(m_pShaderCom, "g_WorldMatrix")))
+		return E_FAIL;
 
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix)))
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
 		return E_FAIL;
-
-	if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_Texture", 0)))
-		return E_FAIL;
-
-	if (FAILED(m_pShaderCom->Bind_RawValue("g_fControlAlpha", &m_fControlAlpha, sizeof(_float2))))
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_vLifeTime", &m_vLifeTime, sizeof(_float3))))
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_vColor", &m_vColor, sizeof(_float4))))
 		return E_FAIL;
-	if (FAILED(m_pShaderCom->Bind_RawValue("g_vLifeTime", &m_vLifeTime, sizeof(_float3))))
+	if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_Texture", 0)))	
 		return E_FAIL;
-	if (FAILED(m_pShaderCom->Bind_RawValue("g_vStartPos", &m_vStartPos, sizeof(_float3))))
-		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -305,20 +271,15 @@ HRESULT CUI_Effect::Load_binary(ifstream& in)
 	in.read((char*)&m_isColor, sizeof(_bool));
 	in.read((char*)&m_iShaderPass, sizeof(_uint));
 
-
-	in.read((char*)&m_WorldMatrix, sizeof(_float4x4));
+	_float4x4 World{};
+	in.read((char*)&World, sizeof(_float4x4));
+	m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(&World));
 
 
 	in.read((char*)&m_isAnim, sizeof(_bool));
 	in.read((char*)&m_fAnimTime, sizeof(_float2));
 	in.read((char*)&m_vStartPos, sizeof(_float3));
 
-
-	in.read((char*)&m_fControlAlpha, sizeof(_float2));
-	in.read((char*)&m_isReverse, sizeof(_bool));
-
-	in.read((char*)&m_isEvent, sizeof(_bool));
-	in.read((char*)&m_isScreen, sizeof(_bool));
 	//개별
 
 	in.read((char*)&m_vLifeTime, sizeof(_float3));

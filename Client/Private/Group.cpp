@@ -21,7 +21,6 @@ CGroup::CGroup(const CGroup& rhs)
 {
 	for (auto& iter : rhs.m_PartObjects)
 	{
-		Safe_AddRef(iter);
 		m_PartObjects.push_back(iter);
 	}
 
@@ -44,8 +43,8 @@ HRESULT CGroup::Initialize_Prototype()
 
 HRESULT CGroup::Initialize_Prototype(ifstream& in)
 {
-	//if (FAILED(__super::Initialize(nullptr)))
-	//	return E_FAIL;
+	if (FAILED(__super::Initialize(nullptr)))
+		return E_FAIL;
 
 	if (FAILED(Load_Groupbinary(in)))
 		return E_FAIL;
@@ -55,13 +54,9 @@ HRESULT CGroup::Initialize_Prototype(ifstream& in)
 
 HRESULT CGroup::Initialize(void* pArg)
 {
+
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
-
-	for (auto& iter : m_PartObjects)
-	{
-		dynamic_cast<CUI_Texture*>(iter)->Set_pParentWorld(m_pTransformCom->Get_WorldFloat4x4());
-	}
 
 	return S_OK;
 }
@@ -90,18 +85,6 @@ HRESULT CGroup::Render()
 	//	pObject->Render();
 
 	return S_OK;
-}
-
-void CGroup::Show_Choice(_int Index)
-{
-
-	for (size_t i = 0; i < m_PartObjects.size(); i++)
-	{
-		if (Index == i)
-			m_PartObjects[i]->Set_isPlay(true);
-		else
-			m_PartObjects[i]->Set_isPlay(false);
-	}
 }
 
 
@@ -139,9 +122,7 @@ HRESULT CGroup::Load_Groupbinary(ifstream& in)
 	in.read((char*)&size, sizeof(_int));
 	_float4x4 GroupWorld = {};
 	in.read((char*)&GroupWorld, sizeof(_float4x4));
-	//m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(&GroupWorld));
-
-	in.read((char*)&m_isEvent, sizeof(_bool));
+	m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(&GroupWorld));
 
 	for (_int i = 0; i < size; i++)
 	{
@@ -192,11 +173,8 @@ HRESULT CGroup::Load_Groupbinary(ifstream& in)
 			in.read((char*)&pDesc.fControlAlpha, sizeof(_float2));
 			in.read((char*)&pDesc.isReverse, sizeof(_bool));
 
-			in.read((char*)&pDesc.isEvent, sizeof(_bool));
-			in.read((char*)&pDesc.isScreen, sizeof(_bool));
-
 			pDesc.isLoad = true;
-			//pDesc.pParentMatrix = m_pTransformCom->Get_WorldFloat4x4();
+			pDesc.pParentMatrix = m_pTransformCom->Get_WorldFloat4x4();
 
 			CUI_Texture* pImage = dynamic_cast<CUI_Texture*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Image_Texture"), &pDesc));
 			if (nullptr == pImage)
@@ -248,8 +226,6 @@ HRESULT CGroup::Load_Groupbinary(ifstream& in)
 			in.read((char*)&pDesc.fControlAlpha, sizeof(_float2));
 			in.read((char*)&pDesc.isReverse, sizeof(_bool));
 
-			in.read((char*)&pDesc.isEvent, sizeof(_bool));
-			in.read((char*)&pDesc.isScreen, sizeof(_bool));
 
 			ZeroMemory(charBox, MAX_PATH);
 			in.read((char*)&strTexturelength, sizeof(_int));
@@ -268,7 +244,7 @@ HRESULT CGroup::Load_Groupbinary(ifstream& in)
 
 			pDesc.isLoad = true;
 
-			//pDesc.pParentMatrix = m_pTransformCom->Get_WorldFloat4x4();
+			pDesc.pParentMatrix = m_pTransformCom->Get_WorldFloat4x4();
 			CBtn* pBtn = dynamic_cast<CBtn*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Btn"), &pDesc));
 			if (nullptr == pBtn)
 				return E_FAIL;
@@ -304,12 +280,9 @@ HRESULT CGroup::Load_Groupbinary(ifstream& in)
 			in.read((char*)&pDesc.bAnim, sizeof(_bool));
 			in.read((char*)&pDesc.fAnimTime, sizeof(_float2));
 			in.read((char*)&pDesc.vStartPos, sizeof(_float3));
-
 			in.read((char*)&pDesc.fControlAlpha, sizeof(_float2));
 			in.read((char*)&pDesc.isReverse, sizeof(_bool));
 
-			in.read((char*)&pDesc.isEvent, sizeof(_bool));
-			in.read((char*)&pDesc.isScreen, sizeof(_bool));
 
 			ZeroMemory(charBox, MAX_PATH);
 			in.read((char*)&strTexturelength, sizeof(_int));
@@ -318,7 +291,7 @@ HRESULT CGroup::Load_Groupbinary(ifstream& in)
 			pDesc.strText = m_pGameInstance->StringToWstring(path);
 
 			pDesc.isLoad = true;
-			//pDesc.pParentMatrix = m_pTransformCom->Get_WorldFloat4x4();
+			pDesc.pParentMatrix = m_pTransformCom->Get_WorldFloat4x4();
 			CText* pText = dynamic_cast<CText*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Text"), &pDesc));
 			if (nullptr == pText)
 				return E_FAIL;
@@ -367,18 +340,15 @@ HRESULT CGroup::Load_Groupbinary(ifstream& in)
 			in.read((char*)&pDesc.bAnim, sizeof(_bool));
 			in.read((char*)&pDesc.fAnimTime, sizeof(_float2));
 			in.read((char*)&pDesc.vStartPos, sizeof(_float3));
-
 			in.read((char*)&pDesc.fControlAlpha, sizeof(_float2));
 			in.read((char*)&pDesc.isReverse, sizeof(_bool));
 
-			in.read((char*)&pDesc.isEvent, sizeof(_bool));
-			in.read((char*)&pDesc.isScreen, sizeof(_bool));
-			//°³º°
+
 			in.read((char*)&pDesc.vLifeTime, sizeof(_float3));
 			in.read((char*)&pDesc.fSpeed, sizeof(_float));
 
 			pDesc.isLoad = true;
-		//	pDesc.pParentMatrix = m_pTransformCom->Get_WorldFloat4x4();
+			pDesc.pParentMatrix = m_pTransformCom->Get_WorldFloat4x4();
 			CUI_Effect* pUIEffect = dynamic_cast<CUI_Effect*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_UIEffect"), &pDesc));
 			if (nullptr == pUIEffect)
 				return E_FAIL;

@@ -23,15 +23,14 @@ HRESULT CBtn::Initialize_Prototype()
 
 HRESULT CBtn::Initialize_Prototype(ifstream& in)
 {
-	//if (FAILED(__super::Initialize(nullptr)))
-	//	return E_FAIL;
+	if (FAILED(__super::Initialize(nullptr)))
+		return E_FAIL;
 
 	if (FAILED(Load_binary(in)))
 		return E_FAIL;
 
-
-	//if (FAILED(Add_Components()))
-	//	return E_FAIL;
+	if (FAILED(Add_Components()))
+		return E_FAIL;
 	return S_OK;
 }
 
@@ -48,6 +47,7 @@ HRESULT CBtn::Initialize(void* pArg)
 		m_ClickStartUV = pDesc->ClickStartUV;
 		m_ClickEndUV = pDesc->ClickEndUV;
 	}
+
 
 	if (FAILED(Add_Components()))
 		return E_FAIL;
@@ -227,6 +227,7 @@ HRESULT CBtn::Save_Groupbinary(ofstream& out)
 
 	out.write((char*)&m_isReverse, sizeof(_bool));
 
+
 	//개별 저장
 
 	string ClickFilePath = m_pGameInstance->WstringToString(m_strClickFilePath);
@@ -283,8 +284,9 @@ HRESULT CBtn::Load_binary(ifstream& in)
 	in.read((char*)&m_isColor, sizeof(_bool));
 	in.read((char*)&m_iShaderPass, sizeof(_uint));
 
-
-	in.read((char*)&m_WorldMatrix, sizeof(_float4x4));
+	_float4x4 World{};
+	in.read((char*)&World, sizeof(_float4x4));
+	m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(&World));
 
 	in.read((char*)&m_isAnim, sizeof(_bool));
 	in.read((char*)&m_fAnimTime, sizeof(_float2));
@@ -292,9 +294,6 @@ HRESULT CBtn::Load_binary(ifstream& in)
 
 	in.read((char*)&m_fControlAlpha, sizeof(_float2));
 	in.read((char*)&m_isReverse, sizeof(_bool));
-
-	in.read((char*)&m_isEvent, sizeof(_bool));
-	in.read((char*)&m_isScreen, sizeof(_bool));
 
 	//개별
 	ZeroMemory(charBox, MAX_PATH);

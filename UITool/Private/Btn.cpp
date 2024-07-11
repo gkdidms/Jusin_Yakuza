@@ -154,10 +154,6 @@ HRESULT CBtn::Save_binary(const string strDirectory)
 
 	out.write((char*)&m_isReverse, sizeof(_bool));
 
-	out.write((char*)&m_isEvent, sizeof(_bool));
-
-	out.write((char*)&m_isScreen, sizeof(_bool));
-
 	//개별 저장
 
 	string ClickFilePath = m_pGameInstance->WstringToString(m_strClickFilePath);
@@ -215,9 +211,9 @@ HRESULT CBtn::Save_Groupbinary(ofstream& out)
 
 	out.write((char*)&m_iShaderPass, sizeof(_uint));
 
-	//_float4x4 WorldMatrix = *m_pTransformCom->Get_WorldFloat4x4();
+	_float4x4 WorldMatrix = *m_pTransformCom->Get_WorldFloat4x4();
 
-	out.write((char*)&m_WorldMatrix, sizeof(_float4x4));
+	out.write((char*)&WorldMatrix, sizeof(_float4x4));
 
 	out.write((char*)&m_isAnim, sizeof(_bool));
 
@@ -230,9 +226,6 @@ HRESULT CBtn::Save_Groupbinary(ofstream& out)
 
 	out.write((char*)&m_isReverse, sizeof(_bool));
 
-	out.write((char*)&m_isEvent, sizeof(_bool));
-
-	out.write((char*)&m_isScreen, sizeof(_bool));
 
 	//개별 저장
 
@@ -300,9 +293,6 @@ HRESULT CBtn::Load_binary(ifstream& in)
 
 	in.read((char*)&m_fControlAlpha, sizeof(_float2));
 	in.read((char*)&m_isReverse, sizeof(_bool));
-
-	in.read((char*)&m_isEvent, sizeof(_bool));
-	in.read((char*)&m_isScreen, sizeof(_bool));
 
 	//개별
 	ZeroMemory(charBox, MAX_PATH);

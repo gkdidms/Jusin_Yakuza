@@ -97,8 +97,6 @@ HRESULT CGroup::Save_Groupbinary(ofstream& out)
 	_float4x4 GroupWorld = *m_pTransformCom->Get_WorldFloat4x4();
 	out.write((char*)&GroupWorld, sizeof(_float4x4));
 
-	out.write((char*)&m_isEvent, sizeof(_bool));
-
 	for (auto& pObject : m_PartObjects)
 	{
 		pObject->Save_Groupbinary(out);
@@ -114,8 +112,6 @@ HRESULT CGroup::Load_Groupbinary(ifstream& in)
 	_float4x4 GroupWorld = {};
 	in.read((char*)&GroupWorld, sizeof(_float4x4));
 	m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(&GroupWorld));
-
-	in.read((char*)&m_isEvent, sizeof(_bool));
 
 	for (_int i = 0; i < size; i++)
 	{
@@ -166,8 +162,6 @@ HRESULT CGroup::Load_Groupbinary(ifstream& in)
 			in.read((char*)&pDesc.fControlAlpha, sizeof(_float2));
 			in.read((char*)&pDesc.isReverse, sizeof(_bool));
 
-			in.read((char*)&pDesc.isEvent, sizeof(_bool));
-			in.read((char*)&pDesc.isScreen, sizeof(_bool));
 			pDesc.isLoad = true;
 			pDesc.pParentMatrix = m_pTransformCom->Get_WorldFloat4x4();
 
@@ -221,8 +215,6 @@ HRESULT CGroup::Load_Groupbinary(ifstream& in)
 			in.read((char*)&pDesc.fControlAlpha, sizeof(_float2));
 			in.read((char*)&pDesc.isReverse, sizeof(_bool));
 
-			in.read((char*)&pDesc.isEvent, sizeof(_bool));
-			in.read((char*)&pDesc.isScreen, sizeof(_bool));
 
 			ZeroMemory(charBox, MAX_PATH);
 			in.read((char*)&strTexturelength, sizeof(_int));
@@ -280,8 +272,6 @@ HRESULT CGroup::Load_Groupbinary(ifstream& in)
 			in.read((char*)&pDesc.fControlAlpha, sizeof(_float2));
 			in.read((char*)&pDesc.isReverse, sizeof(_bool));
 
-			in.read((char*)&pDesc.isEvent, sizeof(_bool));
-			in.read((char*)&pDesc.isScreen, sizeof(_bool));
 
 			ZeroMemory(charBox, MAX_PATH);
 			in.read((char*)&strTexturelength, sizeof(_int));
@@ -342,9 +332,6 @@ HRESULT CGroup::Load_Groupbinary(ifstream& in)
 			in.read((char*)&pDesc.fControlAlpha, sizeof(_float2));
 			in.read((char*)&pDesc.isReverse, sizeof(_bool));
 
-
-			in.read((char*)&pDesc.isEvent, sizeof(_bool));
-			in.read((char*)&pDesc.isScreen, sizeof(_bool));
 
 			in.read((char*)&pDesc.vLifeTime, sizeof(_float3));
 			in.read((char*)&pDesc.fSpeed, sizeof(_float));
