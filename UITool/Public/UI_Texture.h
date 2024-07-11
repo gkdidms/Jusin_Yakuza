@@ -52,7 +52,7 @@ public:
     void Set_ShaderPass(_uint iPass) { m_iShaderPass = iPass; }
     void Set_isColor(_bool isColor) { m_isColor = isColor; }
     void Set_Color(_float4 vColor) { m_vColor = vColor; }
-
+    void Set_WorldMatrix(_float4x4 World) { m_WorldMatrix = World; }
 
     void Set_StartPos(_float3 vStartPos) { m_vStartPos = vStartPos;}
     void Set_AnimTime(_float2 fAnimTime) { m_fAnimTime = fAnimTime; }

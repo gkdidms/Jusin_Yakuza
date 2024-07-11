@@ -10,7 +10,7 @@ CUIMoney::CUIMoney(const CUIMoney& rhs)
 {
 }
 
-HRESULT CUIMoney::Initialize()
+HRESULT CUIMoney::Initialize(void* pArg)
 {
 	return S_OK;
 }
@@ -27,10 +27,10 @@ HRESULT CUIMoney::Late_Tick(const _float& fTimeDelta)
 	return S_OK;
 }
 
-CUIMoney* CUIMoney::Create()
+CUIMoney* CUIMoney::Create(void* pArg)
 {
 	CUIMoney* pInstance = new CUIMoney();
-	if (FAILED(pInstance->Initialize()))
+	if (FAILED(pInstance->Initialize(pArg)))
 	{
 		Safe_Release(pInstance);
 		return nullptr;

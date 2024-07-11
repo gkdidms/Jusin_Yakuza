@@ -10,7 +10,7 @@ CUILife::CUILife(const CUILife& rhs)
 {
 }
 
-HRESULT CUILife::Initialize()
+HRESULT CUILife::Initialize(void* pArg)
 {
 	return S_OK;
 }
@@ -29,10 +29,10 @@ HRESULT CUILife::Late_Tick(const _float& fTimeDelta)
 	return S_OK;
 }
 
-CUILife* CUILife::Create()
+CUILife* CUILife::Create(void* pArg)
 {
 	CUILife* pInstance = new CUILife();
-	if (FAILED(pInstance->Initialize()))
+	if (FAILED(pInstance->Initialize(pArg)))
 	{
 		Safe_Release(pInstance);
 		return nullptr;

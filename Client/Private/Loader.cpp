@@ -762,9 +762,6 @@ HRESULT CLoader::Add_UI_On_Path(const wstring& strPath)
 			{
 			case 0:
 			{
-				_int strTexturelength;
-				char charBox[MAX_PATH] = {};
-
 				/* For.Prototype_GameObject_Image_Texture */
 				if (FAILED(m_pGameInstance->Add_GameObject_Prototype(ProtoFrontName + m_pGameInstance->StringToWstring(Tag),
 					CImage_Texture::Create(m_pDevice, m_pContext, in))))

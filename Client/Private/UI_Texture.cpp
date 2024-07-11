@@ -83,7 +83,8 @@ HRESULT CUI_Texture::Initialize(void* pArg)
 			m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(&pDesc->WorldMatrix));
 		}
 	}
-	m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(&m_WorldMatrix));
+
+	m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(&m_WorldMatrix));	
 	XMStoreFloat4x4(&m_ViewMatrix, XMMatrixIdentity());
 	XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH(g_iWinSizeX, g_iWinSizeY, 0.f, 1.0f));
 	
@@ -96,21 +97,10 @@ void CUI_Texture::Priority_Tick(const _float& fTimeDelta)
 
 void CUI_Texture::Tick(const _float& fTimeDelta)
 {
-#ifdef _TOOL
-
 	if (m_isAnim && m_isPlay && !m_isReverse)
 		m_fAnimTime.x += fTimeDelta;
 	else if (m_isAnim && m_isPlay && m_isReverse)
 		m_fAnimTime.x -= fTimeDelta;
-
-#else
-
-	if (m_isAnim && !m_isReverse)
-		m_fAnimTime.x += fTimeDelta;
-	else if (m_isAnim  && m_isReverse)
-		m_fAnimTime.x -= fTimeDelta;
-
-#endif // _TOOL
 }
 
 void CUI_Texture::Late_Tick(const _float& fTimeDelta)
@@ -119,11 +109,6 @@ void CUI_Texture::Late_Tick(const _float& fTimeDelta)
 	{
 		if (m_fAnimTime.x >= m_fAnimTime.y)
 		{
-
-#ifdef _TOOL
-			m_isPlay = false;
-#endif // _TOOL
-
 			m_fAnimTime.x = m_fAnimTime.y;
 		}
 	}
@@ -131,18 +116,12 @@ void CUI_Texture::Late_Tick(const _float& fTimeDelta)
 	{
 		if (0.f >= m_fAnimTime.x)
 		{
-#ifdef _TOOL
-
-			m_isPlay = false;
-#endif // _TOOL
-
 			m_fAnimTime.x = 0.f;
 		}
 	}
+	if(m_isPlay)
+		m_pGameInstance->Add_Renderer(CRenderer::RENDER_UI, this);
 
-#ifndef _TOOL
-	m_pGameInstance->Add_Renderer(CRenderer::RENDER_UI, this);
-#endif // _TOOL
 
 
 }
@@ -179,10 +158,20 @@ HRESULT CUI_Texture::Close_UI()
 
 _bool CUI_Texture::Check_AnimFin()
 {
-	if (m_fAnimTime.x >= m_fAnimTime.y)
-		return true;
+	if(!m_isReverse)
+	{
+		if (m_fAnimTime.x >= m_fAnimTime.y)
+			return true;
+		else
+			return false;
+	}
 	else
-		return false;
+	{
+		if (m_fAnimTime.x <= 0.f)
+			return true;
+		else
+			return false;
+	}
 }
 
 HRESULT CUI_Texture::Save_binary(const string strDirectory)
@@ -211,9 +200,6 @@ HRESULT CUI_Texture::Add_Components()
 		TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pVIBufferCom),&Desc)))
 		return E_FAIL;
 
-	//if (FAILED(m_pVIBufferCom->EditUV(m_fStartUV, m_fEndUV)))
-	//	return E_FAIL;
-
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_Shader_VtxUI"),
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
 		return E_FAIL;
@@ -229,9 +215,11 @@ HRESULT CUI_Texture::Bind_ResourceData()
 {
 	if (m_isParent)
 	{
-		XMStoreFloat4x4(&m_WorldMatrix, m_pTransformCom->Get_WorldMatrix() * XMLoadFloat4x4(m_pParentMatrix));
+		_float4x4 ResultWorld;
+		//XMStoreFloat4x4(&ResultWorld, m_pTransformCom->Get_WorldMatrix() * XMLoadFloat4x4(m_pParentMatrix));
+		XMStoreFloat4x4(&ResultWorld, XMLoadFloat4x4(&m_WorldMatrix) * XMLoadFloat4x4(m_pParentMatrix));
 
-		if (FAILED(m_pShaderCom->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix)))
+		if (FAILED(m_pShaderCom->Bind_Matrix("g_WorldMatrix", &ResultWorld)))
 			return E_FAIL;
 	}
 	else

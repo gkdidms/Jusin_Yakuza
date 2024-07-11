@@ -263,6 +263,15 @@
     <ClCompile Include="..\Private\Image_Texture.cpp">
       <Filter>95.Utility\05.UIManager</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\UIInven.cpp">
+      <Filter>95.Utility\05.UIManager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\InventoryManager.cpp">
+      <Filter>95.Utility\05.UIManager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ItemData.cpp">
+      <Filter>95.Utility\05.UIManager</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\MainApp.h">
@@ -555,6 +564,15 @@
       <Filter>95.Utility\05.UIManager</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\UIMoney.h">
+      <Filter>95.Utility\05.UIManager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIInven.h">
+      <Filter>95.Utility\05.UIManager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\InventoryManager.h">
+      <Filter>95.Utility\05.UIManager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ItemData.h">
       <Filter>95.Utility\05.UIManager</Filter>
     </ClInclude>
   </ItemGroup>
