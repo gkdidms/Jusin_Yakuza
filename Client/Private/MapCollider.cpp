@@ -1,15 +1,20 @@
 #include "MapCollider.h"
 
 #include "GameInstance.h"
+#include "Collision_Manager.h"
 
 CMapCollider::CMapCollider(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-    : CGameObject(pDevice, pContext)
+    : CGameObject(pDevice, pContext),
+    m_pCollisionManager{ CCollision_Manager::GetInstance() }
 {
+    Safe_AddRef(m_pCollisionManager);
 }
 
 CMapCollider::CMapCollider(const CMapCollider& rhs)
-    : CGameObject(rhs)
+    : CGameObject(rhs),
+    m_pCollisionManager{ CCollision_Manager::GetInstance() }
 {
+    Safe_AddRef(m_pCollisionManager);
 }
 
 HRESULT CMapCollider::Initialize_Prototype()
@@ -48,16 +53,27 @@ void CMapCollider::Tick(const _float& fTimeDelta)
 void CMapCollider::Late_Tick(const _float& fTimeDelta)
 {
     m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
+
+
+    for (auto& iter : m_ColliderObjs)
+    {
+        iter->Late_Tick(fTimeDelta);
+    }
 }
 
 HRESULT CMapCollider::Render()
 {
-//#ifdef _DEBUG
-//    for (auto& iter : m_vCollider)
-//    {
-//        m_pGameInstance->Add_DebugComponent(iter);
-//    }
-//#endif
+#ifdef _DEBUG
+    for (auto& iter : m_vCollider)
+    {
+        m_pGameInstance->Add_DebugComponent(iter);
+    }
+#endif
+
+    for (auto& iter : m_ColliderObjs)
+    {
+        iter->Render();
+    }
 
     return S_OK;
 }
@@ -78,9 +94,18 @@ HRESULT CMapCollider::Add_Components(void* pArg)
         ColliderDesc.vRotation = collderIOdesc.vQuaternion;
 
         m_vCollider.push_back(dynamic_cast<CCollider*>(m_pGameInstance->Add_Component_Clone(LEVEL_TEST, TEXT("Prototype_Component_Collider"), &ColliderDesc)));
+
+
+        // 테스트시에만 생성
+        CMapColliderObj::COLLIDEROBJ_DESC colliderDescobj;
+        colliderDescobj.vCenter = collderIOdesc.vCenter;
+        colliderDescobj.vExtents = collderIOdesc.vExtents;
+
+        m_ColliderObjs.push_back(dynamic_cast<CMapColliderObj*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_MapColliderObj"), &colliderDescobj)));
+
+        m_pCollisionManager->Add_MapCollider(m_vCollider.back());
+
     }
-
-
 
     return S_OK;
 }
@@ -126,4 +151,13 @@ void CMapCollider::Free()
     }
 
     m_vCollider.clear();
+
+
+    for (auto& iter : m_ColliderObjs)
+    {
+        Safe_Release(iter);
+    }
+
+    m_ColliderObjs.clear();
+    Safe_Release(m_pCollisionManager);
 }

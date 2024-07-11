@@ -35,6 +35,7 @@ HRESULT CTerrain::Initialize(void * pArg)
 		m_vTerrainScale.y = terrainDesc->vPlaneSize.y;
 	}
 
+
 	return S_OK;
 }
 
@@ -49,12 +50,12 @@ void CTerrain::Tick(const _float& fTimeDelta)
 
 void CTerrain::Late_Tick(const _float& fTimeDelta)
 {
-	//m_pNavigationCom->Tick();
+	m_pNavigationCom->Tick();
 
 	m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
 
 #ifdef _DEBUG	
-//	m_pGameInstance->Add_DebugComponent(m_pNavigationCom);
+	m_pGameInstance->Add_DebugComponent(m_pNavigationCom);
 #endif
 }
 
@@ -86,10 +87,10 @@ HRESULT CTerrain::Add_Components()
 		TEXT("Com_Diffuse"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
 		return E_FAIL;
 
-	///* For.Com_Navigation */
-	//if (FAILED(__super::Add_Component(LEVEL_GAMEPLAY, TEXT("Prototype_Component_Navigation"),
-	//	TEXT("Com_Navigation"), reinterpret_cast<CComponent**>(&m_pNavigationCom))))
-	//	return E_FAIL;
+	/* For.Com_Navigation */
+	if (FAILED(__super::Add_Component(LEVEL_TEST, TEXT("Prototype_Component_Navigation"),
+		TEXT("Com_Navigation"), reinterpret_cast<CComponent**>(&m_pNavigationCom))))
+		return E_FAIL;
 
 	return S_OK;
 }

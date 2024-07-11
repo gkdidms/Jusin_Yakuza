@@ -216,7 +216,7 @@ PS_OUT PS_BLEND(PS_IN In)
     else
     {
         if (g_isRD)
-            Out.vDiffuse = lerp(vRDDesc, vDiffuse, vMultiDiffuce.z);
+            Out.vDiffuse = lerp(vDiffuse, vRDDesc, vMultiDiffuce.z);
         else
             Out.vDiffuse = vDiffuse;
     }

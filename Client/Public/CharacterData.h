@@ -23,7 +23,9 @@ public:
     };
 
     struct COLLIDER_STATE
-    {
+    {   
+        _int iActionType;       // ATTACK, HIT
+        _int iPartType;         //HAND_A, FOOT_A, JOINT_A, HEAD_A, HEAD_H = 10, BODY_H, LEG_H
         _bool isAlways;
         _uint iType;             //(AABB, OBB, Sphere)
         _float3 vCenter;

@@ -329,8 +329,5 @@ void CAI_Monster::Free()
 
 	Safe_Release(m_pGameInstance);
 
-	if (m_isClone)
-	{
-		Safe_Release(m_pRootNode);
-	}
+	Safe_Release(m_pRootNode);
 }

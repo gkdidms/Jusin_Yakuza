@@ -1,6 +1,8 @@
 #include "SocketCollider.h"
 #include "GameInstance.h"
 
+#include "LandObject.h"
+
 CSocketCollider::CSocketCollider(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
 	: CSocketObject{ pDevice, pContext }
 {
@@ -18,11 +20,72 @@ HRESULT CSocketCollider::Initialize_Prototype()
 
 HRESULT CSocketCollider::Initialize(void * pArg)
 {
+	SOCKET_COLLIDER_DESC* pDesc = static_cast<SOCKET_COLLIDER_DESC*>(pArg);
+	m_pParentObject = pDesc->pParentObject;
+
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;	
 
 	if (FAILED(Add_Components(pArg)))
 		return E_FAIL;
+
+	// ATTACK, HIT
+	if (pDesc->ColliderState.iActionType == 0)
+	{
+		// HAND_A, FOOT_A, JOINT_A, HEAD_A
+		switch (pDesc->ColliderState.iPartType)
+		{
+		case 0:
+		{
+			m_fDamage = 10.f;
+
+			break;
+		}
+		case 1:
+		{
+			m_fDamage = 30.f;
+
+			break;
+		}
+		case 2:
+		{
+			m_fDamage = 20.f;
+
+			break;
+		}
+		case 3:
+		{
+			m_fDamage = 20.f;
+			break;
+		}
+		}
+	}
+	else if (pDesc->ColliderState.iActionType == 1)
+	{
+		// 히트용 콜라이더라면 부위별로 딜 받는 수치를 m_fDamage에 저장해두자 (사용할지는 모르겟음)
+		// 사용할거라면 머리를 히트당했다면 기존 데미지보다 2배 딜들어오게 몸은 1배 다리는 0.7배 이런식으로 사용예정
+		// HEAD_H = 10, BODY_H, LEG_H
+		switch (pDesc->ColliderState.iPartType)
+		{
+		case 10:
+		{
+			m_fDamage = 2.f;
+			break;
+		}
+		case 11:
+		{
+			m_fDamage = 1.f;
+			break;
+		}
+		case 12:
+		{
+			m_fDamage = 0.8f;
+			break;
+		}
+		}
+	}
+
+
 
 	return S_OK;
 }
@@ -33,8 +96,15 @@ void CSocketCollider::Priority_Tick(const _float& fTimeDelta)
 
 void CSocketCollider::Tick(const _float& fTimeDelta)
 {
+	m_vPrevMovePos = m_vMovePos;
+
 	if(m_pColliderCom)
 		m_pColliderCom->Tick(XMLoadFloat4x4(&m_WorldMatrix));
+
+	memcpy(&m_vMovePos, m_WorldMatrix.m[CTransform::STATE_POSITION], sizeof(_float3));
+
+	_vector vDirection = XMVector3Normalize(XMLoadFloat3(&m_vPrevMovePos) - XMLoadFloat3(&m_vMovePos));
+	XMStoreFloat3(&m_vMoveDir, vDirection);
 }
 
 void CSocketCollider::Late_Tick(const _float& fTimeDelta)
@@ -56,9 +126,15 @@ HRESULT CSocketCollider::Render()
 	return S_OK;
 }
 
-_bool CSocketCollider::Intersect(CCollider* pTargetObject)
+_bool CSocketCollider::Intersect(CCollider* pTargetObject, _float fDistance)
 {
-	return pTargetObject->Intersect(m_pColliderCom);
+	return pTargetObject->Intersect(m_pColliderCom, fDistance);
+}
+
+void CSocketCollider::ParentObject_Hit(const _float3& vDir, _float fDamage, _bool isBlowAttack)
+{
+	// m_eColliderPartType는 본인이 헤드인지, 바디인지, 레그인지를 가지고있다
+	m_pParentObject->Take_Damage(m_eColliderPartType, vDir, fDamage, isBlowAttack);
 }
 
 HRESULT CSocketCollider::Add_Components(void* pArg)
@@ -66,7 +142,8 @@ HRESULT CSocketCollider::Add_Components(void* pArg)
 	SOCKET_COLLIDER_DESC* pDesc = static_cast<SOCKET_COLLIDER_DESC*>(pArg);
 
 	//pDesc->iType는 소켓 콜라이더 타입
-	m_eColliderType = static_cast<SOKET_COLLIDER_TYPE>(pDesc->iType);
+	m_eColliderActionType = static_cast<COLLIDER_ACTION_TYPE>(pDesc->ColliderState.iActionType);
+	m_eColliderPartType = static_cast<COLLIDER_PART_TYPE>(pDesc->ColliderState.iPartType);
 
 	// ColliderState.iType는 바운딩 구조체 생성용 타입
 	switch (pDesc->ColliderState.iType)

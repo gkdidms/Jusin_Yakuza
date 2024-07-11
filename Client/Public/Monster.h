@@ -32,11 +32,24 @@ public:
         MONSTER_CMD_3,
         MONSTER_CMD_4,
         MONSTER_CMD_5,
+        MONSTER_CMD_A_1,
+        MONSTER_CMD_A_2,
+        MONSTER_CMD_A_3,
+        MONSTER_CMD_B_1,
+        MONSTER_CMD_B_2,
+        MONSTER_CMD_B_3,
+        MONSTER_CMD_HEADBUTT_1,
+        MONSTER_CMD_HEADBUTT_2,
+        MONSTER_CMD_RENDA_1,
+        MONSTER_CMD_RENDA_2,
+        MONSTER_CMD_RENDA_3,
         MONSTER_PUNCH,
+        MONSTER_JAB,
         MONSTER_HEAVY_ATTACK,
         MONSTER_ATK_DOWN,
         MONSTER_GUARD_RUN,
         MONSTER_RARIATTO,
+        MONSTER_HIJI_2REN,
         MONSTER_ANGRY_START,
         MONSTER_ANGRY_CHOP,
         MONSTER_ANGRY_KICK,
@@ -56,6 +69,9 @@ public:
     virtual void Tick(const _float& fTimeDelta) override;
     virtual void Late_Tick(const _float& fTimeDelta) override;
     virtual HRESULT Render() override;
+
+    // 충돌함수
+    virtual void Take_Damage(_uint iHitColliderType, const _float3& vDir, _float fDamage, _bool isBlowAttack = false) override;
 
 protected:
     CShader* m_pShaderCom = { nullptr };

@@ -42,8 +42,7 @@ struct PS_OUT_GAMEOBJECT
     vector vNormal : SV_TARGET1;
     vector vDepth : SV_TARGET2;
     vector vRM : SV_TARGET3;
-    vector vMetallic : SV_Target4;
-    vector vRS : SV_Target5;
+    vector vRS : SV_Target4;
 };
 
 PS_OUT PS_MAIN_DEBUG(PS_IN In)
@@ -60,9 +59,8 @@ struct PS_OUT_LIGHT
     vector vShade : SV_TARGET0;
     vector vLightMap : SV_TARGET1;
     vector vSpecularRM : SV_TARGET2;
-    vector vSpecularRS : SV_TARGET3;
-    vector vSpecularMulti : SV_TARGET4;
-    vector vSpecular : SV_TARGET5;
+    vector vSpecularMulti : SV_TARGET3;
+    vector vSpecular : SV_TARGET4;
 };
 
 PS_OUT PS_MAIN_SSAO(PS_IN In)
@@ -115,15 +113,17 @@ PS_OUT_LIGHT PS_MAIN_LIGHT_DIRECTIONAL(PS_IN In)
         vAmbient *= vAmbientDesc;
     
     Out.vShade = g_vLightDiffuse * saturate(max(dot(normalize(g_vLightDir) * -1.f, normalize(vNormal)), 0.f) + vAmbient);
-    //Grass
-    vector vGlassNormalDesc = g_GlassNormalTexture.Sample(LinearSampler,In.vTexcoord);
-    vector vGlassNormal = vector(vGlassNormalDesc.xyz * 2.f - 1.f, 0.f);
     
-    Out.vSpecularRM = vector(BRDF(In.vPosition, In.vTexcoord, normalize(vNormal), vDepthDesc), 0.f);
-    Out.vSpecularRS = vector(BRDF_RS(In.vPosition, In.vTexcoord, normalize(vNormal), vDepthDesc), 0.f);
-    Out.vSpecularMulti = vector(BRDF_MULTI(In.vPosition, In.vTexcoord, normalize(vNormal), vDepthDesc), 0.f);
+    if (g_isPBR)
+    {
+        Out.vSpecularRM = BRDF(In.vPosition, In.vTexcoord, normalize(vNormal), vDepthDesc);
+        Out.vSpecularMulti = vector(BRDF_MULTI(In.vPosition, In.vTexcoord, normalize(vNormal), vDepthDesc), 1.f);
+    }
     Out.vLightMap = g_vLightDiffuse;
     
+    //Grass
+    vector vGlassNormalDesc = g_GlassNormalTexture.Sample(LinearSampler, In.vTexcoord);
+    vector vGlassNormal = vector(vGlassNormalDesc.xyz * 2.f - 1.f, 0.f);
     if (vGlassNormalDesc.a == 0.f)
     {
         vector vGlassDepthDesc = g_GlassDepthTexture.Sample(PointSampler, In.vTexcoord);
@@ -141,7 +141,7 @@ PS_OUT_LIGHT PS_MAIN_LIGHT_DIRECTIONAL(PS_IN In)
         vWorldPos = mul(vWorldPos, g_ViewMatrixInv);
 
         vector vReflect = reflect(normalize(g_vLightDir) , normalize(vGlassNormal));
-        vector vLook = g_vCamPosition - vWorldPos;
+        vector vLook = normalize(g_vCamPosition - vWorldPos);
     
         Out.vSpecular = pow(max(dot(normalize(vReflect), normalize(vLook)), 0.f), 30.f);
     }
@@ -172,7 +172,7 @@ PS_OUT_LIGHT PS_MAIN_LIGHT_POINT(PS_IN In)
     vWorldPos = mul(vWorldPos, g_ViewMatrixInv);
 
 
-    vector vLightDir = vWorldPos - g_vLightPos;
+    vector vLightDir = normalize(vWorldPos - g_vLightPos);
     float fDistance = length(vLightDir);
 
     float fAtt = max((g_fLightRange - fDistance), 0.f) / g_fLightRange;
@@ -190,8 +190,6 @@ PS_OUT PS_MAIN_COPY_BACKBUFFER_RESULT(PS_IN In)
     PS_OUT Out = (PS_OUT) 0;
 
     vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
-    if (0.0f == vDiffuse.a)
-        discard;
     
     vector vShade = g_ShadeTexture.Sample(LinearSampler, In.vTexcoord);
     vector vSpeculer = g_SpecularTexture.Sample(LinearSampler, In.vTexcoord);
@@ -199,12 +197,11 @@ PS_OUT PS_MAIN_COPY_BACKBUFFER_RESULT(PS_IN In)
     if (g_isPBR)
     {
         vector vSpeculerRM = g_RMTexture.Sample(LinearSampler, In.vTexcoord);
-        vector vSpeculerRS = g_RSTexture.Sample(LinearSampler, In.vTexcoord);
-        vector vSpeculerMulti = g_MultiDiffuseTexture.Sample(LinearSampler, In.vTexcoord);
+        vector vMetallicMulti = g_MultiDiffuseTexture.Sample(LinearSampler, In.vTexcoord);
     
         vector vLightmap = g_LightMapTexture.Sample(LinearSampler, In.vTexcoord);
-    // 기존
-        Out.vColor = (vSpeculerMulti * vDiffuse) * vShade + (vSpeculerRM + vSpeculerRS) * vLightmap;
+    // 여기 Speculer 수정해야 함.
+        Out.vColor = (vDiffuse * vMetallicMulti) * vShade + (vSpeculerRM + vSpeculer) * vLightmap;
     }
     else
     {
@@ -231,19 +228,31 @@ PS_OUT PS_MAIN_COPY_BACKBUFFER_RESULT(PS_IN In)
 
         vector vLightPos = mul(vWorldPos, g_LightViewMatrix);
         vLightPos = mul(vLightPos, g_LightProjMatrix);
-
+        vLightPos = vector(vLightPos.xyz / vLightPos.w, 1.f);
+        
         float2 vTexcoord;
-        vTexcoord.x = (vLightPos.x / vLightPos.w) * 0.5f + 0.5f;
-        vTexcoord.y = (vLightPos.y / vLightPos.w) * -0.5f + 0.5f;
-    
-        vector vLightDepthDesc = g_LightDepthTexture.Sample(PointSampler, vTexcoord);
+        vTexcoord.x = vLightPos.x * 0.5f + 0.5f;
+        vTexcoord.y = vLightPos.y * -0.5f + 0.5f;
+        float fDepth = vLightPos.z;
+        
+       // float percentLit = 0.0f;
+        
+        /*const float2 offsets[9] =
+        {
+            float2(-dx, -dx), float2(0.0f, -dx), float2(dx, -dx),
+            float2(-dx, 0.0f), float2(0.0f, 0.0f), float2(dx, 0.0f),
+            float2(-dx, +dx), float2(0.0f, +dx), float2(dx, +dx)
+        };
+        */
+        
+       // vector vLightDepthDesc = g_LightDepthTexture.Sample(PointSampler, vTexcoord);
         vector vPassiveLightDepthDesc = g_PassiveLightDepthTexture.Sample(PointSampler, vTexcoord);
         
-        float fLightOldDepth = vLightDepthDesc.x * 1000.f;
+        //float fLightOldDepth = vLightDepthDesc.x * 1000.f;
         float fPassiveLightOldDepth = vPassiveLightDepthDesc.x * 1000.f;
         
-        if (fLightOldDepth + 0.1f < vLightPos.w)
-            Out.vColor = vector(Out.vColor.rgb * 0.5f, 1.f);
+        //if (fLightOldDepth + 0.1f < vLightPos.w)
+        //    Out.vColor = vector(Out.vColor.rgb * 0.5f, 1.f);
         
         if (fPassiveLightOldDepth + 0.1f < vLightPos.w)
             Out.vColor = vector(Out.vColor.rgb * 0.5f, 1.f);
@@ -424,7 +433,7 @@ PS_OUT PS_MAIN_BOF(PS_IN In)
     
     float fDistance = length(g_vCamPosition.xyz - vWorldPos.xyz);
     
-    Out.vColor = lerp(vDiffuseDesc, vDiffuseBlurDesc, fDistance / g_fFar * 150.f);
+    Out.vColor = lerp(vDiffuseDesc, vDiffuseBlurDesc, fDistance / g_fFar * 100.f);
     
     return Out;
 }

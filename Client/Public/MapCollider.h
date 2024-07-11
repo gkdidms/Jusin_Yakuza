@@ -1,6 +1,7 @@
 #pragma once
 
 #include "GameObject.h"
+#include "MapColliderObj.h"
 #include "Client_Defines.h"
 
 BEGIN(Engine)
@@ -25,8 +26,12 @@ public:
 	virtual HRESULT Render() override;
 
 private:
+	class CCollision_Manager* m_pCollisionManager = { nullptr };
+
 	_matrix							m_WorldMatrix;
 	vector<CCollider*>				m_vCollider;
+
+	vector<CMapColliderObj*>		m_ColliderObjs;
 
 private:
 	HRESULT Add_Components(void* pArg);

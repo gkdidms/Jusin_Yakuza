@@ -52,6 +52,25 @@ HRESULT CConstruction::Initialize(void* pArg)
 
 			m_vDecals.push_back(pDecal);
 		}
+
+
+		for (int i = 0; i < gameobjDesc->iColliderNum; i++)
+		{
+			OBJCOLLIDER_DESC		objDesc = gameobjDesc->pColliderDesc[i];
+
+			CBounding_OBB::BOUNDING_OBB_DESC		ColliderDesc{};
+
+			ColliderDesc.eType = (CCollider::TYPE)objDesc.iColliderType;
+			ColliderDesc.vExtents = objDesc.vExtents;
+			ColliderDesc.vCenter = objDesc.vCenter;
+			ColliderDesc.vRotation = objDesc.vQuaternion;
+
+			CCollider* pCollider = dynamic_cast<CCollider*>(m_pGameInstance->Add_Component_Clone(LEVEL_RUNMAP, TEXT("Prototype_Component_Collider"), &ColliderDesc));
+
+			m_vColliders.push_back(pCollider);
+
+			m_vColliderDesc.push_back(objDesc);
+		}
 	}
 
 
@@ -68,6 +87,13 @@ void CConstruction::Tick(const _float& fTimeDelta)
 
 	for (auto& iter : m_vDecals)
 		iter->Tick(fTimeDelta);
+
+
+#ifdef _DEBUG
+	for (auto& iter : m_vColliders)
+		iter->Tick(m_pTransformCom->Get_WorldMatrix());
+#endif
+
 }
 
 void CConstruction::Late_Tick(const _float& fTimeDelta)
@@ -120,6 +146,10 @@ HRESULT CConstruction::Render()
 		m_pModelCom->Render(i);
 	}
 
+#ifdef _DEBUG
+	for (auto& iter : m_vColliders)
+		m_pGameInstance->Add_DebugComponent(iter);
+#endif
 
 	return S_OK;
 }
@@ -149,6 +179,18 @@ int CConstruction::Get_ObjPlaceDesc(OBJECTPLACE_DESC* objplaceDesc)
 		for (int i = 0; i < objplaceDesc->iDecalNum ; i++)
 		{
 			m_vDecals[i]->Get_Decal_Desc_IO(&objplaceDesc->pDecals[i]);
+		}
+	}
+
+	objplaceDesc->iColliderNum = m_vColliders.size();
+
+	if (0 < objplaceDesc->iColliderNum)
+	{
+		objplaceDesc->pObjColliders = new OBJCOLLIDER_DESC[objplaceDesc->iColliderNum];
+
+		for (int i = 0; i < objplaceDesc->iColliderNum ; i++)
+		{
+			objplaceDesc->pObjColliders[i] = m_vColliderDesc[i];
 		}
 	}
 
@@ -243,6 +285,67 @@ void CConstruction::Delete_Decal(int iIndex)
 
 }
 
+void CConstruction::Add_Collider(OBJCOLLIDER_DESC tCollider)
+{
+	CBounding_OBB::BOUNDING_OBB_DESC		ColliderDesc{};
+
+	ColliderDesc.eType = (CCollider::TYPE)tCollider.iColliderType;
+	ColliderDesc.vExtents = tCollider.vExtents;
+	ColliderDesc.vCenter = tCollider.vCenter;
+	ColliderDesc.vRotation = tCollider.vQuaternion;
+
+	CCollider*	pCollider = dynamic_cast<CCollider*>(m_pGameInstance->Add_Component_Clone(LEVEL_RUNMAP, TEXT("Prototype_Component_Collider"), &ColliderDesc));
+
+	m_vColliders.push_back(pCollider);
+
+	m_vColliderDesc.push_back(tCollider);
+}
+
+void CConstruction::Delete_Collider(int iIndex)
+{
+	if (1 == m_vColliders.size())
+	{
+		vector<CCollider*>::iterator		iter = m_vColliders.begin();
+
+		if (0 != iIndex)
+		{
+			for (int i = 0; i < iIndex; i++)
+			{
+				iter++;
+			}
+		}
+
+		Safe_Release(*iter);
+		m_vColliders.erase(iter);
+
+		m_vColliders.clear();
+	}
+	else
+	{
+		vector<CCollider*>::iterator		iter = m_vColliders.begin();
+
+		if (0 != iIndex)
+		{
+			for (int i = 0; i < iIndex; i++)
+			{
+				iter++;
+			}
+		}
+
+		Safe_Release(*iter);
+		m_vColliders.erase(iter);
+	}
+}
+
+void CConstruction::Delete_AllCollider()
+{
+	for (auto& iter : m_vColliders)
+		Safe_Release(iter);
+	m_vColliders.clear();
+}
+
+
+
 HRESULT CConstruction::Add_Components(void* pArg)
 {
 	MAPOBJ_DESC* gameobjDesc = (MAPOBJ_DESC*)pArg;
@@ -325,6 +428,12 @@ void CConstruction::Free()
 	for (auto& iter : m_vDecals)
 		Safe_Release(iter);
 	m_vDecals.clear();
+
+	for (auto& iter : m_vColliders)
+		Safe_Release(iter);
+	m_vColliders.clear();
+
+	m_vColliderDesc.clear();
 
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pModelCom);

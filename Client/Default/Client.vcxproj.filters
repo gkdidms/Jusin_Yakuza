@@ -136,6 +136,9 @@
     <ClCompile Include="..\Private\Kiryu_Adventure_Run.cpp">
       <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\Adventure\Run</Filter>
     </ClCompile>
+    <ClCompile Include="..\private\UI.cpp">
+      <Filter>02.GameObjects\07.UI</Filter>
+    </ClCompile>
     <ClCompile Include="..\Private\Aura.cpp">
       <Filter>02.GameObjects\06.Effect\Aura</Filter>
     </ClCompile>
@@ -202,41 +205,32 @@
     <ClCompile Include="..\private\AI_Shakedown.cpp">
       <Filter>02.GameObjects\02.Character\LandObject\01.Monster\Shakedown\AI</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Btn.cpp">
-      <Filter>95.Utility\05.UIManager\UI_Object\UI_Texture\Btn</Filter>
+    <ClCompile Include="..\Private\AI_Kuze.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\Kuze\AI</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Group.cpp">
-      <Filter>95.Utility\05.UIManager\UI_Object\Group</Filter>
+    <ClCompile Include="..\private\Yoneda.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\Yoneda</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Image_Texture.cpp">
-      <Filter>95.Utility\05.UIManager\UI_Object\UI_Texture\Image_Texture</Filter>
+    <ClCompile Include="..\private\AI_Yoneda.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\Yoneda\AI</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Text.cpp">
-      <Filter>95.Utility\05.UIManager\UI_Object\UI_Texture\Text</Filter>
+    <ClCompile Include="..\private\Kuze.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\Kuze</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\UI_Effect.cpp">
-      <Filter>95.Utility\05.UIManager\UI_Object\UI_Texture\UI_Effect</Filter>
+    <ClCompile Include="..\Private\SkyDome.cpp">
+      <Filter>02.GameObjects\04.Sky\Dome</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\UI_Object.cpp">
-      <Filter>95.Utility\05.UIManager\UI_Object</Filter>
+    <ClCompile Include="..\Private\MapColliderObj.cpp">
+      <Filter>02.GameObjects\08.MapCollider\Obj</Filter>
+	</ClCompile>
+    <ClCompile Include="..\Private\AI_Kuze.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\Kuze\AI</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\UI_Texture.cpp">
-      <Filter>95.Utility\05.UIManager\UI_Object\UI_Texture</Filter>
+    <ClCompile Include="..\private\Yoneda.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\Yoneda</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\UIManager.cpp">
-      <Filter>95.Utility\05.UIManager</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\UIScene.cpp">
-      <Filter>95.Utility\05.UIManager\UIScene</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\UIMenu.cpp">
-      <Filter>95.Utility\05.UIManager\UIScene\UIMenu</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\UILife.cpp">
-      <Filter>95.Utility\05.UIManager\UIScene\UILife</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\UIMoney.cpp">
-      <Filter>95.Utility\05.UIManager\UIScene\UIMoney</Filter>
+    <ClCompile Include="..\private\AI_Yoneda.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\Yoneda\AI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -402,6 +396,9 @@
     <ClInclude Include="..\Public\Kiryu_Adventure_Run.h">
       <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\Adventure\Run</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\UI.h">
+      <Filter>02.GameObjects\07.UI</Filter>
+    </ClInclude>
     <ClInclude Include="..\public\Loader.h">
       <Filter>01.Levels\99.Loading\Loader</Filter>
     </ClInclude>
@@ -471,41 +468,32 @@
     <ClInclude Include="..\public\AI_Shakedown.h">
       <Filter>02.GameObjects\02.Character\LandObject\01.Monster\Shakedown\AI</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Btn.h">
-      <Filter>95.Utility\05.UIManager\UI_Object\UI_Texture\Btn</Filter>
+    <ClInclude Include="..\Public\AI_Kuze.h">
+      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\Kuze\AI</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Group.h">
-      <Filter>95.Utility\05.UIManager\UI_Object\Group</Filter>
+    <ClInclude Include="..\public\Yoneda.h">
+      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\Yoneda</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Image_Texture.h">
-      <Filter>95.Utility\05.UIManager\UI_Object\UI_Texture\Image_Texture</Filter>
+    <ClInclude Include="..\public\AI_Yoneda.h">
+      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\Yoneda\AI</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Text.h">
-      <Filter>95.Utility\05.UIManager\UI_Object\UI_Texture\Text</Filter>
+    <ClInclude Include="..\public\Kuze.h">
+      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\Kuze</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\UI_Effect.h">
-      <Filter>95.Utility\05.UIManager\UI_Object\UI_Texture\UI_Effect</Filter>
+    <ClInclude Include="..\Public\SkyDome.h">
+      <Filter>02.GameObjects\04.Sky\Dome</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\UI_Object.h">
-      <Filter>95.Utility\05.UIManager\UI_Object</Filter>
+    <ClInclude Include="..\Public\MapColliderObj.h">
+      <Filter>02.GameObjects\08.MapCollider\Obj</Filter>
+	</ClInclude>
+    <ClInclude Include="..\Public\AI_Kuze.h">
+      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\Kuze\AI</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\UI_Texture.h">
-      <Filter>95.Utility\05.UIManager\UI_Object\UI_Texture</Filter>
+    <ClInclude Include="..\public\Yoneda.h">
+      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\Yoneda</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\UIScene.h">
-      <Filter>95.Utility\05.UIManager\UIScene</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\UIManager.h">
-      <Filter>95.Utility\05.UIManager</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\UIMenu.h">
-      <Filter>95.Utility\05.UIManager\UIScene\UIMenu</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\UILife.h">
-      <Filter>95.Utility\05.UIManager\UIScene\UILife</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\UIMoney.h">
-      <Filter>95.Utility\05.UIManager\UIScene\UIMoney</Filter>
+    <ClInclude Include="..\public\AI_Yoneda.h">
+      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\Yoneda\AI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -591,6 +579,9 @@
     </Filter>
     <Filter Include="02.GameObjects\06.Effect\Trail">
       <UniqueIdentifier>{d637f30f-2167-4420-bb64-cc2966bdd0fa}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07.UI">
+      <UniqueIdentifier>{5ee687d4-5dfa-49a3-92da-8f0756f1687f}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObjects\01.Terrain">
       <UniqueIdentifier>{73fc58be-6ca4-4e86-b2ac-39c7c7e26f66}</UniqueIdentifier>
@@ -730,41 +721,17 @@
     <Filter Include="02.GameObjects\02.Character\LandObject\01.Monster\Kuze\AI">
       <UniqueIdentifier>{7a5d0ae0-e2c2-40be-bcf3-91e5079f1854}</UniqueIdentifier>
     </Filter>
-    <Filter Include="95.Utility\05.UIManager">
-      <UniqueIdentifier>{5ee687d4-5dfa-49a3-92da-8f0756f1687f}</UniqueIdentifier>
+    <Filter Include="02.GameObjects\02.Character\LandObject\01.Monster\Yoneda">
+      <UniqueIdentifier>{88d812e2-894f-4605-8fca-4c8e35857e46}</UniqueIdentifier>
     </Filter>
-    <Filter Include="95.Utility\05.UIManager\UIScene">
-      <UniqueIdentifier>{48325182-d69d-455f-964c-312c00654d53}</UniqueIdentifier>
+    <Filter Include="02.GameObjects\02.Character\LandObject\01.Monster\Yoneda\AI">
+      <UniqueIdentifier>{ce943862-3c8c-4c61-af0a-695062dd5489}</UniqueIdentifier>
     </Filter>
-    <Filter Include="95.Utility\05.UIManager\UI_Object">
-      <UniqueIdentifier>{98a8cc86-9c6d-41fc-8ecf-b11acbe5106f}</UniqueIdentifier>
+    <Filter Include="02.GameObjects\04.Sky\Dome">
+      <UniqueIdentifier>{81f7471f-237e-45ae-a6af-15b9cf067a60}</UniqueIdentifier>
     </Filter>
-    <Filter Include="95.Utility\05.UIManager\UI_Object\Group">
-      <UniqueIdentifier>{a99da704-7c99-4d3d-8486-8e5e4aa5b76d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="95.Utility\05.UIManager\UI_Object\UI_Texture">
-      <UniqueIdentifier>{634e1361-682d-4c40-a74e-a46d64d102b7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="95.Utility\05.UIManager\UI_Object\UI_Texture\Image_Texture">
-      <UniqueIdentifier>{c8e22be5-7945-4c86-8f79-68282266bfb1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="95.Utility\05.UIManager\UI_Object\UI_Texture\Btn">
-      <UniqueIdentifier>{065786c9-6232-4db6-9de7-af1b38bc0d3e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="95.Utility\05.UIManager\UI_Object\UI_Texture\UI_Effect">
-      <UniqueIdentifier>{f81d3f00-5930-4df3-afe7-8420c8610516}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="95.Utility\05.UIManager\UI_Object\UI_Texture\Text">
-      <UniqueIdentifier>{43e97ed7-1749-4b93-920a-16c45f819d1f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="95.Utility\05.UIManager\UIScene\UIMenu">
-      <UniqueIdentifier>{1f609ef4-3eb0-42b1-89dc-457ed2b589d2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="95.Utility\05.UIManager\UIScene\UILife">
-      <UniqueIdentifier>{1d76b4e5-d59f-408e-b892-d39962c6c578}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="95.Utility\05.UIManager\UIScene\UIMoney">
-      <UniqueIdentifier>{f1c99a77-f59d-4ff3-9b2f-d70dd581972d}</UniqueIdentifier>
+    <Filter Include="02.GameObjects\08. MapCollider\Obj">
+      <UniqueIdentifier>{4e8421d6-5ada-48ec-9fce-0aed349f2f59}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -797,7 +764,7 @@
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Aura.hlsl">
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
-    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxUI.hlsl">
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxMeshSky.hlsl">
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
   </ItemGroup>

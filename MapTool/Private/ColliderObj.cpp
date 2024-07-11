@@ -139,14 +139,14 @@ HRESULT CColliderObj::Render()
 			return E_FAIL;
 
 		/*m_pShaderCom->Begin(m_iShaderPassNum);*/
-		m_pShaderCom->Begin(0);
+		m_pShaderCom->Begin(2);
 
 		m_pModelCom->Render(i);
 	}
 
-//#ifdef _DEBUG
-//	m_pGameInstance->Add_DebugComponent(m_pColliderCom);
-//#endif
+#ifdef _DEBUG
+	m_pGameInstance->Add_DebugComponent(m_pColliderCom);
+#endif
 
 
 	return S_OK;

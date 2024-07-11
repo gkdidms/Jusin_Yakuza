@@ -56,28 +56,41 @@ void CBounding_AABB::Tick(_fmatrix WorldMatrix)
 	m_pOriginalBox->Transform(*m_pBoundingBox, TransformMatrix);
 }
 
-_bool CBounding_AABB::Intersect(CCollider::TYPE eTargetType, CBounding* pTargetBounding)
+_bool CBounding_AABB::Intersect(CCollider::TYPE eTargetType, CBounding* pTargetBounding, _float fDistance)
 {
 	_bool isColl = { false };
+
+	_vector vTargetPos = XMVectorZero();
+	_vector vMyPos = XMLoadFloat3(&m_pBoundingBox->Center);
+
 	switch (eTargetType)
 	{
 	case Engine::CCollider::COLLIDER_AABB:
 	{
 		BoundingBox* pDesc = static_cast<BoundingBox*>(pTargetBounding->Get_Desc());
-		isColl = m_pBoundingBox->Intersects(*pDesc);
+		vTargetPos = XMLoadFloat3(&pDesc->Center);
+
+		if (fDistance > XMVectorGetX(XMVector3Length(vTargetPos - vMyPos)))
+			isColl = m_pBoundingBox->Intersects(*pDesc);
 		
 		break;
 	}
 	case Engine::CCollider::COLLIDER_OBB:
 	{
 		BoundingOrientedBox* pDesc = static_cast<BoundingOrientedBox*>(pTargetBounding->Get_Desc());
-		isColl = m_pBoundingBox->Intersects(*pDesc);
+		vTargetPos = XMLoadFloat3(&pDesc->Center);
+
+		if (fDistance > XMVectorGetX(XMVector3Length(vTargetPos - vMyPos)))
+			isColl = m_pBoundingBox->Intersects(*pDesc);
 		break;
 	}
 	case Engine::CCollider::COLLIDER_SPHERE:
 	{
 		BoundingSphere* pDesc = static_cast<BoundingSphere*>(pTargetBounding->Get_Desc());
-		isColl = m_pBoundingBox->Intersects(*pDesc);
+		vTargetPos = XMLoadFloat3(&pDesc->Center);
+
+		if (fDistance > XMVectorGetX(XMVector3Length(vTargetPos - vMyPos)))
+			isColl = m_pBoundingBox->Intersects(*pDesc);
 		break;
 	}
 	case Engine::CCollider::COLLIDER_END:

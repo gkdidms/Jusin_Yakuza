@@ -69,6 +69,7 @@ void CPlayer::Tick(const _float& fTimeDelta)
 	{
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0, 0, 0, 1));
 	}
+
 	if (m_pGameInstance->GetKeyState(DIK_UP) == TAP)
 	{
 		Style_Change(KRS);
@@ -108,7 +109,7 @@ void CPlayer::Tick(const _float& fTimeDelta)
 void CPlayer::Late_Tick(const _float& fTimeDelta)
 {
 	m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
-	m_pGameInstance->Add_Renderer(CRenderer::RENDER_SHADOWOBJ, this); // Shadow용 렌더 추가
+	//m_pGameInstance->Add_Renderer(CRenderer::RENDER_SHADOWOBJ, this); // Shadow용 렌더 추가
 	m_pCollisionManager->Add_ImpulseResolution(this);
 
 	for (auto& pCollider : m_pColliders)
@@ -116,6 +117,21 @@ void CPlayer::Late_Tick(const _float& fTimeDelta)
 
 	for (auto& pEffect : m_pEffects)
 		pEffect.second->Late_Tick(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")));
+
+	// 현재 켜져있는 Attack용 콜라이더 삽입
+	for (auto& pPair : m_pColliders)
+	{
+		if(pPair.second->Get_CollierType() == CSocketCollider::ATTACK && pPair.second->IsOn())
+			m_pCollisionManager->Add_AttackCollider(pPair.second, CCollision_Manager::PLAYER);
+	}
+
+	// 현재 켜져있는 Hit용 콜라이더 삽입 (아직까지는 Hit용 콜라이더는 항상 켜져있음)
+	for (auto& pPair : m_pColliders)
+	{
+		if (pPair.second->Get_CollierType() == CSocketCollider::HIT && pPair.second->IsOn())
+			m_pCollisionManager->Add_HitCollider(pPair.second, CCollision_Manager::PLAYER);
+	}
+	
 }
 
 HRESULT CPlayer::Render()
@@ -166,7 +182,7 @@ HRESULT CPlayer::Render()
 	return S_OK;
 }
 
-HRESULT CPlayer::Render_LightDepth()
+HRESULT CPlayer::Render_LightDepth(_uint iIndex)
 {
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_WorldMatrix", m_pTransformCom->Get_WorldFloat4x4())))
 		return E_FAIL;
@@ -200,9 +216,9 @@ HRESULT CPlayer::Render_LightDepth()
 	return S_OK;
 }
 
-_bool CPlayer::Intersect(CLandObject* pTargetObject)
+void CPlayer::Take_Damage(_uint iHitColliderType, const _float3& vDir, _float fDamage, _bool isBlowAttack)
 {
-	return _bool();
+	// iHitColliderType 는 충돌한 HIT타입 콜라이더가 헤드, 바디, 레그인지를 갖고있다.
 }
 
 void CPlayer::Ready_AnimationTree()
@@ -222,8 +238,6 @@ void CPlayer::Ready_AnimationTree()
 // 현재 애니메이션의 y축을 제거하고 사용하는 상태이다 (혹시 애니메이션의 y축 이동도 적용이 필요하다면 로직 수정이 필요함
 void CPlayer::Synchronize_Root(const _float& fTimeDelta)
 {
-	//_vector vFF = XMVectorSetZ(XMLoadFloat3(m_pModelCom->Get_AnimationCenterMove()), 0);
-	//_vector vFF = XMVector3TransformNormal(XMLoadFloat3(m_pModelCom->Get_AnimationCenterMove()), m_pTransformCom->Get_WorldMatrix());
 	_vector vFF = XMVector3TransformNormal(XMVectorSetZ(XMLoadFloat3(m_pModelCom->Get_AnimationCenterMove()), 0), m_pTransformCom->Get_WorldMatrix());
 
 	// 월드 행렬
@@ -260,9 +274,12 @@ void CPlayer::Synchronize_Root(const _float& fTimeDelta)
 			
 			//Y값 이동을 죽인 방향으로 적용해야한다.
 			XMStoreFloat4(&fMoveDir, XMVectorSetY(XMVector3Normalize(vFF - XMLoadFloat4(&m_vPrevMove)), 0.f));
-			//m_pTransformCom->Go_Straight_CustumSpeed(0.2, 1);
+
+			if (0.01 > m_fPrevSpeed)
+				m_fPrevSpeed = 0.f;
+
 			m_pTransformCom->Go_Straight_CustumSpeed(m_fPrevSpeed, 1);
-			m_pTransformCom->Go_Move_Custum(fMoveDir, fMoveSpeed, 1);
+			m_pTransformCom->Go_Move_Custum(fMoveDir, m_fPrevSpeed, 1);
 			m_fPrevSpeed = fMoveSpeed;
 
 			XMStoreFloat4(&m_vPrevMove, vFF);
@@ -330,9 +347,6 @@ void CPlayer::KeyInput(const _float& fTimeDelta)
 		KRC_KeyInput(fTimeDelta);
 		break;
 	}
-
-
-
 }
 
 void CPlayer::Adventure_KeyInput(const _float& fTimeDelta)
@@ -559,80 +573,6 @@ HRESULT CPlayer::Bind_ResourceData()
 
 	return S_OK;
 }
-
-/*
-HRESULT CPlayer::Add_CharacterData()
-{
-	m_pData = CCharacterData::Create(this);
-
-	if (nullptr == m_pData)
-		return E_FAIL;
-
-	Apply_ChracterData();
-
-	return S_OK;
-}
-
-void CPlayer::Apply_ChracterData()
-{
-	auto& pAlphaMeshes = m_pData->Get_AlphaMeshes();
-	auto pMeshes = m_pModelCom->Get_Meshes();
-
-	for (size_t i = 0; i < pMeshes.size(); i++)
-	{
-		for (auto& iMeshIndex : pAlphaMeshes)
-		{
-			if (i == iMeshIndex)
-				pMeshes[i]->Set_AlphaApply(true);
-		}
-	}
-
-	auto& pLoopAnimations = m_pData->Get_LoopAnimations();
-	for (auto& iAnimIndex : pLoopAnimations)
-	{
-		m_pModelCom->Set_AnimLoop(iAnimIndex, true);
-	}
-
-	auto& pColliders = m_pData->Get_Colliders();
-
-	for (auto& Collider : pColliders)
-	{
-		CSocketCollider::SOCKET_COLLIDER_DESC Desc{};
-		Desc.pParentMatrix = m_pTransformCom->Get_WorldFloat4x4();
-		Desc.pCombinedTransformationMatrix = m_pModelCom->Get_BoneCombinedTransformationMatrix_AtIndex(Collider.first);
-		Desc.iBoneIndex = Collider.first;
-		Desc.ColliderState = Collider.second;
-
-		CGameObject* pSoketCollider = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_SoketCollider"), &Desc);
-		if (nullptr == pSoketCollider)
-			return;
-	
-		auto [it, success] = m_pColliders.emplace(Collider.first, static_cast<CSocketCollider*>(pSoketCollider));
-
-		//생성한 모든 콜라이더는 일단 꺼둔다.
-		// 몸체에 붙일 (플레이어가 피격당할) 콜라이더는 항시 켜져있어야하므로 툴에서찍지않음
-		it->second->Off();
-	}
-
-	//auto& pEffects = m_pData->Get_Effets();
-	//for (auto& pEffect : pEffects)
-	//{
-	//	CSocketEffect::SOKET_EFFECT_DESC Desc{};
-	//	Desc.pParentMatrix = m_pTransformCom->Get_WorldFloat4x4();
-	//	Desc.pCombinedTransformationMatrix = m_pModelCom->Get_BoneCombinedTransformationMatrix(pEffect.first.c_str());
-	//	Desc.wstrEffectName = pEffect.second;
-
-	//	CGameObject* pSoketEffect = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_SoketEffect"), &Desc);
-	//	if (nullptr == pSoketEffect)
-	//		return;
-
-	//	auto [it, success] = m_pEffects.emplace(pEffect.first, static_cast<CSocketEffect*>(pSoketEffect));
-
-	//	it->second->Off();
-	//}
-
-}
-*/
 
 void CPlayer::Change_Animation(_uint iIndex, _float fInterval)
 {
