@@ -5,8 +5,8 @@
 CKiryu_KRH_Run::CKiryu_KRH_Run()
 	:CBehaviorAnimation{}
 {
-	m_AnimationIndices.push_back(174); // [174]	p_krh_mov_run_btl[p_krh_mov_run_btl]
-	m_AnimationIndices.push_back(175); // [175]	p_krh_mov_run_stop_btl[p_krh_mov_run_stop_btl]
+	m_AnimationIndices.push_back(296); // +[296]	p_krh_mov_run_btl[p_krh_mov_run_btl]
+	m_AnimationIndices.push_back(297); // +[297]	p_krh_mov_run_stop_btl[p_krh_mov_run_stop_btl]
 }
 
 void CKiryu_KRH_Run::Tick(const _float& fTimeDelta)

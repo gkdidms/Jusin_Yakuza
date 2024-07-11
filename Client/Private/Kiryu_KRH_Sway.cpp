@@ -8,26 +8,20 @@ CKiryu_KRH_Sway::CKiryu_KRH_Sway()
 	// 스웨이는 그냥 키입력이 있으면 back 방향이 기본임
 	// 카메라 기준 wasd를 입력받아 스웨이하는지 그 방향으로 스웨이를 하는건 맞는데, 
 	// 출력되는 애니메이션은 캐릭터의 Look을 기준으로 나온다.
-	m_AnimationIndices.push_back(287);	//[287]	p_krs_sway_f[p_krs_sway_f]
-	m_AnimationIndices.push_back(286);	//[286]	p_krs_sway_b[p_krs_sway_b]
-	m_AnimationIndices.push_back(288);	//[288]	p_krs_sway_l[p_krs_sway_l]
-	m_AnimationIndices.push_back(289);	//[289]	p_krs_sway_r[p_krs_sway_r]
-
+	m_AnimationIndices.push_back(320);	//+[320]	p_krh_sway_f[p_krh_sway_f]
+	m_AnimationIndices.push_back(319);	//+[319]	p_krh_sway_b[p_krh_sway_b]
+	m_AnimationIndices.push_back(321);	//+[321]	p_krh_sway_l[p_krh_sway_l]
+	m_AnimationIndices.push_back(322);	//+[322]	p_krh_sway_r[p_krh_sway_r]
 
 	/*
-	* +[196]	p_krh_sway_02_b[p_krh_sway_02_b]
-		+[197]	p_krh_sway_02_f[p_krh_sway_02_f]
-		+[198]	p_krh_sway_02_l[p_krh_sway_02_l]
-		+[199]	p_krh_sway_02_r[p_krh_sway_02_r]
-		+[200]	p_krh_sway_03_b[p_krh_sway_03_b]
-		+[201]	p_krh_sway_03_f[p_krh_sway_03_f]
-		+[202]	p_krh_sway_03_l[p_krh_sway_03_l]
-		+[203]	p_krh_sway_03_r[p_krh_sway_03_r]
-		+[204]	p_krh_sway_b[p_krh_sway_b]
-		+[205]	p_krh_sway_f[p_krh_sway_f]
-		+[206]	p_krh_sway_l[p_krh_sway_l]
-		+[207]	p_krh_sway_r[p_krh_sway_r]
-	
+	+[311]	p_krh_sway_02_b[p_krh_sway_02_b]
+	+[312]	p_krh_sway_02_f[p_krh_sway_02_f]
+	+[313]	p_krh_sway_02_l[p_krh_sway_02_l]
+	+[314]	p_krh_sway_02_r[p_krh_sway_02_r]
+	+[315]	p_krh_sway_03_b[p_krh_sway_03_b]
+	+[316]	p_krh_sway_03_f[p_krh_sway_03_f]
+	+[317]	p_krh_sway_03_l[p_krh_sway_03_l]
+	+[318]	p_krh_sway_03_r[p_krh_sway_03_r]
 	*/
 }
 

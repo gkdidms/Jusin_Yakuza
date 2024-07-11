@@ -5,7 +5,7 @@
 CKiryu_KRH_Idle::CKiryu_KRH_Idle()
 	:CBehaviorAnimation{}
 {
-	m_AnimationIndices.push_back(351);	//p_stand_nml 351
+	m_AnimationIndices.push_back(428);	//+[428]	p_stand_nml[p_stand_nml]
 }
 
 void CKiryu_KRH_Idle::Tick(const _float& fTimeDelta)

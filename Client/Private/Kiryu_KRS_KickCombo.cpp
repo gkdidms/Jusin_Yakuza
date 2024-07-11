@@ -5,9 +5,9 @@
 CKiryu_KRS_KickCombo::CKiryu_KRS_KickCombo()
 	:CBehaviorAnimation{}
 {
-	m_AnimationIndices.push_back(226);	//[226]	p_krs_atk_kick_f[p_krs_atk_kick_f]
-	m_AnimationIndices.push_back(227);	//[227]	p_krs_atk_kick_f_02[p_krs_atk_kick_f_02]
-	m_AnimationIndices.push_back(228);	//[228]	p_krs_atk_kick_f_03[p_krs_atk_kick_f_03]
+	m_AnimationIndices.push_back(333);	//+[333]	p_krs_atk_kick_f[p_krs_atk_kick_f]
+	m_AnimationIndices.push_back(334);	//+[334]	p_krs_atk_kick_f_02[p_krs_atk_kick_f_02]
+	m_AnimationIndices.push_back(335);	//+[335]	p_krs_atk_kick_f_03[p_krs_atk_kick_f_03]
 }
 
 void CKiryu_KRS_KickCombo::Tick(const _float& fTimeDelta)

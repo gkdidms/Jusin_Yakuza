@@ -8,19 +8,20 @@ CKiryu_KRS_Attack::CKiryu_KRS_Attack()
 	// 전투 중 아이들 모션은 어드벤처와 동일하다
 	
 	/* 0 ~ 3 */
-	m_AnimationIndices.push_back(237);	//[237]	p_krs_cmb_01[p_krs_cmb_01]
-	m_AnimationIndices.push_back(246);	//[246]	p_krs_cmb_02[p_krs_cmb_02]
-	m_AnimationIndices.push_back(251);	//[251]	p_krs_cmb_03[p_krs_cmb_03]
-	m_AnimationIndices.push_back(255);	//[255]	p_krs_cmb_04[p_krs_cmb_04]
+	m_AnimationIndices.push_back(344);	//[344]	p_krs_cmb_01[p_krs_cmb_01]
+	m_AnimationIndices.push_back(353);	//[353]	p_krs_cmb_02[p_krs_cmb_02]
+	m_AnimationIndices.push_back(358);	//[358]	p_krs_cmb_03[p_krs_cmb_03]
+	m_AnimationIndices.push_back(362);	//[362]	p_krs_cmb_04[p_krs_cmb_04]
 
 	/* 4 ~ 7 */
-	m_AnimationIndices.push_back(244);	//[244]	p_krs_cmb_01_fin[p_krs_cmb_01_fin]
-	m_AnimationIndices.push_back(250);	//[250]	p_krs_cmb_02_fin[p_krs_cmb_02_fin]
-	m_AnimationIndices.push_back(254);	//[254]	p_krs_cmb_03_fin[p_krs_cmb_03_fin]
-	m_AnimationIndices.push_back(256);	//[256]	p_krs_cmb_04_fin[p_krs_cmb_04_fin]
+	m_AnimationIndices.push_back(351);	//+[351]	p_krs_cmb_01_fin[p_krs_cmb_01_fin]
+	m_AnimationIndices.push_back(357);	//+[357]	p_krs_cmb_02_fin[p_krs_cmb_02_fin]
+	m_AnimationIndices.push_back(361);	//+[361]	p_krs_cmb_03_fin[p_krs_cmb_03_fin]
+	m_AnimationIndices.push_back(363);	//+[363]	p_krs_cmb_04_fin[p_krs_cmb_04_fin]
+	
 
-	m_AnimationIndices.push_back(292);	//[292]	p_krs_sync_cmb_03_fin[p_krs_sync_cmb_03_fin]
-	m_AnimationIndices.push_back(257);	//[257]	p_krs_cmb_04_finw[p_krs_cmb_04_finw]
+	m_AnimationIndices.push_back(390);	//[390]	p_krs_sync_cmb_03_fin[p_krs_sync_cmb_03_fin]
+	m_AnimationIndices.push_back(364);	//[364]	p_krs_cmb_04_finw[p_krs_cmb_04_finw]
 }
 
 void CKiryu_KRS_Attack::Tick(const _float& fTimeDelta)
