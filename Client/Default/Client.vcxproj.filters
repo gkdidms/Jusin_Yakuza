@@ -278,11 +278,11 @@
     <ClCompile Include="..\Private\LightConstruction.cpp">
       <Filter>02.GameObjects\03.Construction\LightConstruction</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Kiryu_KRS_FlyKick.cpp">
-      <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\FlyKick</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\Kiryu_KRS_KickCombo.cpp">
       <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\KickCombo</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Kiryu_KRS_FlyKick.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\FlyKick</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Kiryu_KRH_Attack.cpp">
       <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRH\Attack</Filter>
@@ -614,6 +614,12 @@
     <ClInclude Include="..\Public\LightConstruction.h">
       <Filter>02.GameObjects\03.Construction\LightConstruction</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Kiryu_KRS_KickCombo.h">
+      <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\KickCombo</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Kiryu_KRS_FlyKick.h">
+      <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\FlyKick</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\Kiryu_KRH_Attack.h">
       <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRH\Attack</Filter>
     </ClInclude>
@@ -634,12 +640,6 @@
     </ClInclude>
     <ClInclude Include="..\Public\Kiryu_KRH_Walk.h">
       <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRH\Walk</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Kiryu_KRS_FlyKick.h">
-      <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\FlyKick</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\Kiryu_KRS_KickCombo.h">
-      <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\KickCombo</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
