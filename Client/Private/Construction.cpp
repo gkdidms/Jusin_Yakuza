@@ -131,14 +131,15 @@ void CConstruction::Late_Tick(const _float& fTimeDelta)
 		m_pGameInstance->Add_Renderer(CRenderer::RENDER_PUDDLE, this);
 	}
 
-	
-	if (m_pGameInstance->isShadow())
+	if (1 != m_iObjectType)
 	{
-		// 처음 렌더를 돌 때만 그림자를 그려준다.
-		m_pGameInstance->Add_Renderer(CRenderer::RENDER_SHADOWOBJ, this);
-		m_isFirst = false;
+		if (m_pGameInstance->isShadow())
+		{
+			// 처음 렌더를 돌 때만 그림자를 그려준다.
+			m_pGameInstance->Add_Renderer(CRenderer::RENDER_SHADOWOBJ, this);
+			m_isFirst = false;
+		}
 	}
-		
 	
 	for (auto& iter : m_vDecals)
 		iter->Late_Tick(fTimeDelta);	

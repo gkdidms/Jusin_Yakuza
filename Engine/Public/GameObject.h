@@ -34,6 +34,7 @@ public:
     virtual void Tick(const _float& fTimeDelta);
     virtual void Late_Tick(const _float& fTimeDelta);
     virtual HRESULT Render();
+    virtual HRESULT Render_Bloom() { return S_OK; }
     virtual HRESULT Render_LightDepth() { return S_OK; }
 
 public:

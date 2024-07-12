@@ -275,6 +275,9 @@
     <ClCompile Include="..\Private\MapColliderObj.cpp">
       <Filter>02.GameObjects\08. MapCollider\Obj</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\LightConstruction.cpp">
+      <Filter>02.GameObjects\03.Construction\LightConstruction</Filter>
+	</ClCompile>
     <ClCompile Include="..\Private\Kiryu_KRS_FlyKick.cpp">
       <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\FlyKick</Filter>
     </ClCompile>
@@ -608,6 +611,9 @@
     <ClInclude Include="..\Public\MapColliderObj.h">
       <Filter>02.GameObjects\08. MapCollider\Obj</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\LightConstruction.h">
+      <Filter>02.GameObjects\03.Construction\LightConstruction</Filter>
+	</ClInclude>
     <ClInclude Include="..\Public\Kiryu_KRS_FlyKick.h">
       <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\FlyKick</Filter>
     </ClInclude>
@@ -870,6 +876,9 @@
     <Filter Include="02.GameObjects\08. MapCollider\Obj">
       <UniqueIdentifier>{4e8421d6-5ada-48ec-9fce-0aed349f2f59}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\03.Construction\LightConstruction">
+      <UniqueIdentifier>{66dcb392-2821-4235-8686-00b40a167705}</UniqueIdentifier>
+	</Filter>
     <Filter Include="95.Utility\05.UIManager">
       <UniqueIdentifier>{a9202d9c-ebfb-42c2-8f41-ba5c40000cda}</UniqueIdentifier>
     </Filter>
@@ -982,6 +991,9 @@
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxMeshSky.hlsl">
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxMeshLight.hlsl">
+		<Filter>97.ShaderFiles</Filter>
+	</FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxUI.hlsl">
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
