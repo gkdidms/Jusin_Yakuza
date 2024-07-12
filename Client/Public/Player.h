@@ -123,7 +123,8 @@ private:
 
     // 이 때, 사용하는 키 값은 행동에 대한 키값을 가진다. (스타일은 배열 인덱스)
     map<_uint, class CBehaviorAnimation*> m_AnimationTree[BATTLE_STYLE_END];
-
+    //ui
+    class CUIManager* m_pUIManager = { nullptr };
 private:
     BATTLE_STYLE    m_eCurrentStyle = { ADVENTURE };
     // 스타일마다 겹치는 행동이 있을 수 있어서 int값으로 저장하고 형변환하여 저장한다.

@@ -166,6 +166,11 @@ HRESULT CConstruction::Render()
 
 		_bool isRS = true;
 		_bool isRD = true;
+		if (!strcmp(Meshes[i]->Get_Name(), "[l0]face_kiryu"))
+		{
+			isRS = false;
+			isRD = false;
+		}
 
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RSTexture", i, aiTextureType_SPECULAR)))
 			isRS = false;
