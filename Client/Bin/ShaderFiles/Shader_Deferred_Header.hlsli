@@ -8,6 +8,10 @@ matrix g_LightViewMatrix, g_LightProjMatrix;
 
 matrix g_CamProjMatrix, g_CamViewMatrix;
 
+//그림자용
+matrix g_ViewMatrixArray[3];
+matrix g_ProjMatrixArray[3];
+
 vector g_vLightDir;
 vector g_vLightPos;
 float g_fLightRange;
@@ -28,6 +32,8 @@ bool g_isBOF;
 bool g_isShadow;
 
 Texture2D g_Texture;
+Texture2DArray g_TextureArray;
+
 Texture2D g_PriorityTexture;
 Texture2D g_NormalTexture;
 Texture2D g_DiffuseTexture;
@@ -40,13 +46,17 @@ Texture2D g_SpecularTexture;
 Texture2D g_DepthTexture;
 Texture2D g_MetallicTexture;
 Texture2D g_BackBufferTexture;
-Texture2D g_LightDepthTexture;
-Texture2D g_PassiveLightDepthTexture;
 Texture2D g_ToneMappingTexture;
 Texture2D g_LuminanceTexture;
 Texture2D g_CopyLuminanceTexture;
 Texture2D g_AmbientTexture;
 Texture2D g_BackBlurTexture;
+
+//그림자
+Texture2DArray g_LightDepthTextureArray : register(t0);
+bool g_isArray;
+float4 g_CasecadesZ[3];
+
 //블러용
 Texture2D g_EffectTexture;
 //데칼용

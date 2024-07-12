@@ -94,17 +94,14 @@ HRESULT CMapCollider::Add_Components(void* pArg)
         ColliderDesc.vRotation = collderIOdesc.vQuaternion;
 
         m_vCollider.push_back(dynamic_cast<CCollider*>(m_pGameInstance->Add_Component_Clone(LEVEL_TEST, TEXT("Prototype_Component_Collider"), &ColliderDesc)));
-
-
-        // 테스트시에만 생성
-        CMapColliderObj::COLLIDEROBJ_DESC colliderDescobj;
-        colliderDescobj.vCenter = collderIOdesc.vCenter;
-        colliderDescobj.vExtents = collderIOdesc.vExtents;
-
-        m_ColliderObjs.push_back(dynamic_cast<CMapColliderObj*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_MapColliderObj"), &colliderDescobj)));
-
         m_pCollisionManager->Add_MapCollider(m_vCollider.back());
 
+        // 테스트시에만 생성
+        //CMapColliderObj::COLLIDEROBJ_DESC colliderDescobj;
+        //colliderDescobj.vCenter = collderIOdesc.vCenter;
+        //colliderDescobj.vExtents = collderIOdesc.vExtents;
+
+        //m_ColliderObjs.push_back(dynamic_cast<CMapColliderObj*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_MapColliderObj"), &colliderDescobj)));
     }
 
     return S_OK;
