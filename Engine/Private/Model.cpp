@@ -686,7 +686,7 @@ HRESULT CModel::Import_Materials(ifstream& in, _bool isTool)
 				DECAL_DESC		decalDesc;
 				decalDesc.iMaterialNum = i;
 
-				memcpy(&decalDesc.sTextureFullPath, strPath.data(), sizeof(char) * MAX_PATH);
+				//memcpy(&decalDesc.sTextureFullPath, strPath.data(), sizeof(char) * MAX_PATH);
 
 				//m_vDecalMaterials.push_back(decalDesc);
 			}
