@@ -53,9 +53,8 @@ PS_OUT PS_MAIN_DEBUG(PS_IN In)
     {
         for (int i = 0; i < 3; i++)
         {
-            Out.vColor = g_TextureArray.Sample(LinearSampler, float3(In.vTexcoord, i));
+            Out.vColor = g_TextureArray.Sample(LinearSampler, float3(In.vTexcoord, 0));
         }
-            
     }
     else
         Out.vColor = g_Texture.Sample(LinearSampler, In.vTexcoord);
@@ -191,38 +190,26 @@ PS_OUT_LIGHT PS_MAIN_LIGHT_POINT(PS_IN In)
     return Out;
 }
 
-float Light_Shadow(uint iIndex, float2 vTexcoord)
+float Light_Shadow(vector vDepthDesc, vector vWorldPos, uint iIndex)
 {
-    vector vDepthDesc = g_DepthTexture.Sample(PointSampler, vTexcoord);
-    vector vWorldPos;
-
-    vWorldPos.x = vTexcoord.x * 2.f - 1.f;
-    vWorldPos.y = vTexcoord.y * -2.f + 1.f;
-    vWorldPos.z = vDepthDesc.x; /* 0 ~ 1 */
-    vWorldPos.w = 1.f;
-
-    vWorldPos = vWorldPos * (vDepthDesc.y * g_fFar);
-
-	/* 뷰스페이스 상의 위치를 구한다. */
-    vWorldPos = mul(vWorldPos, g_ProjMatrixInv);
-
-	/* 월드스페이스 상의 위치를 구한다. */
-    vWorldPos = mul(vWorldPos, g_ViewMatrixInv);
-
+    /*
     vector vLightPos = mul(vWorldPos, g_ViewMatrixArray[iIndex]);
     vLightPos = mul(vLightPos, g_ProjMatrixArray[iIndex]);
-    vLightPos = vector(vLightPos.xyz / vLightPos.w, 1.f);
         
-    float2 vTexcoordPos;
-    vTexcoordPos.x = vLightPos.x * 0.5f + 0.5f;
-    vTexcoordPos.y = vLightPos.y * -0.5f + 0.5f;
-    float fDepth = vLightPos.z;
-        
-    /*
+    float3 vTexcoord;
+    vTexcoord.x = (vLightPos.x / vLightPos.w) * 0.5f + 0.5f;
+    vTexcoord.y = (vLightPos.y / vLightPos.w) * -0.5f + 0.5f;
+    vTexcoord.z = (vLightPos.z / vLightPos.w);
+    if (vTexcoord.z > 1.0)
+        return 0.0f;
+    
     float percentLit = 0.0f;
+
+    float currentDepth = vTexcoord.z;
+    float bias = 0.01f;
         
-    int fOffsetX = 1;
-    int fOffsetY = 1;
+    int fOffsetX = 1 / 1280;
+    int fOffsetY = 1 / 720;
     const int2 offsets[9] =
     {
         int2(-fOffsetX, -fOffsetY), int2(0, -fOffsetY), int2(fOffsetX, -fOffsetY),
@@ -232,16 +219,21 @@ float Light_Shadow(uint iIndex, float2 vTexcoord)
         
     for (int i = 0; i < 9; i++)
     {
-        percentLit += g_PassiveLightDepthTextureArray.SampleCmpLevelZero(ShadowSampler, float3(vTexcoordPos, iIndex), fDepth, offsets[i]);
+        percentLit += g_PassiveLightDepthTextureArray.SampleCmpLevelZero(ShadowComparisonSampler, float3(vTexcoord.xy, iIndex), currentDepth  bias, offsets[i]);
     }
         
     percentLit /= 9;
+    
+    return percentLit;
+    
     */
+}
+
+vector Get_CameraProj(vector vWorldPos)
+{
+    matrix matCamVP = mul(g_CamViewMatrix, g_CamProjMatrix);
     
-    vector vLightDepthDesc = g_PassiveLightDepthTextureArray.SampleLevel(PointSampler, float3(vTexcoordPos, iIndex), fDepth);
-    float fLightOldDepth = vLightDepthDesc.x * 1000.f;
-    
-    return fLightOldDepth;
+    return mul(vWorldPos, matCamVP);
 }
 
 PS_OUT PS_MAIN_COPY_BACKBUFFER_RESULT(PS_IN In)
@@ -270,37 +262,46 @@ PS_OUT PS_MAIN_COPY_BACKBUFFER_RESULT(PS_IN In)
     if (g_isShadow)
     {
         vector vDepthDesc = g_DepthTexture.Sample(PointSampler, In.vTexcoord);
-        for (uint i = 0; i < 3; ++i)
-        {
-            vector vWorldPos;
+        
+        vector vWorldPos;
 
-            vWorldPos.x = In.vTexcoord.x * 2.f - 1.f;
-            vWorldPos.y = In.vTexcoord.y * -2.f + 1.f;
-            vWorldPos.z = vDepthDesc.x; /* 0 ~ 1 */
-            vWorldPos.w = 1.f;
+        vWorldPos.x = In.vTexcoord.x * 2.f - 1.f;
+        vWorldPos.y = In.vTexcoord.y * -2.f + 1.f;
+        vWorldPos.z = vDepthDesc.x; /* 0 ~ 1 */
+        vWorldPos.w = 1.f;
 
-            vWorldPos = vWorldPos * (vDepthDesc.y * g_fFar);
+        vWorldPos = vWorldPos * (vDepthDesc.y * g_fFar);
+        float fProjZ = vWorldPos.z;
 
 	        /* 뷰스페이스 상의 위치를 구한다. */
-            vWorldPos = mul(vWorldPos, g_ProjMatrixInv);
+        vWorldPos = mul(vWorldPos, g_ProjMatrixInv);
 
 	        /* 월드스페이스 상의 위치를 구한다. */
-            vWorldPos = mul(vWorldPos, g_ViewMatrixInv);
-
-            matrix matVP = mul(g_ViewMatrixArray[i], g_ProjMatrixArray[i]);
-            vector vLightPos = mul(vWorldPos, matVP);
+        vWorldPos = mul(vWorldPos, g_ViewMatrixInv);
+        
+        //vector vCamPos = Get_CameraProj(vWorldPos);
+        
+        for (int i = 0; i < 3; ++i)
+        {
+            vector vLightPos = mul(vWorldPos, g_ViewMatrixArray[i]);
+            vLightPos = mul(vLightPos, g_ProjMatrixArray[i]);
         
             float2 vTexcoord;
             vTexcoord.x = (vLightPos.x / vLightPos.w) * 0.5f + 0.5f;
             vTexcoord.y = (vLightPos.y / vLightPos.w) * -0.5f + 0.5f;
+            
+            if (vTexcoord.x < 0 || vTexcoord.x > 1 || vTexcoord.y < 0 || vTexcoord.y > 1)
+            {
+                continue;
+            }
         
-            vector vLightDepthDesc = g_PassiveLightDepthTextureArray.Sample(PointSampler, float3(vTexcoord, i));
+            vector vLightDepthDesc = g_LightDepthTextureArray.Sample(ShadowSampler, float3(vTexcoord, i));
             float fLightOldDepth = vLightDepthDesc.x * 1000.f;
             
-            if (fLightOldDepth + 0.01f < vLightPos.w)
+            if (fLightOldDepth - 0.001f < vLightPos.w)
             {
                 Out.vColor = vector(Out.vColor.rgb * 0.5f, 1.f);
-            
+                
                 break;
             }
         }

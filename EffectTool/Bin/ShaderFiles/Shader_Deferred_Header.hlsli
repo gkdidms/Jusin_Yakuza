@@ -53,9 +53,9 @@ Texture2D g_AmbientTexture;
 Texture2D g_BackBlurTexture;
 
 //그림자
-Texture2D g_LightDepthTexture;
-Texture2DArray g_PassiveLightDepthTextureArray;
+Texture2DArray g_LightDepthTextureArray : register(t0);
 bool g_isArray;
+float4 g_CasecadesZ[3];
 
 //블러용
 Texture2D g_EffectTexture;

@@ -77,7 +77,7 @@ HRESULT CConstruction::Initialize(void* pArg)
 		}
 	}
 
-	m_Casecade = { 0.f, 10.f, 24.f, 40.f };
+
 
 	// 물웅덩이 noiseTexture
 	//if (2 == m_iShaderPassNum)
@@ -135,7 +135,7 @@ void CConstruction::Late_Tick(const _float& fTimeDelta)
 	if (m_pGameInstance->isShadow())
 	{
 		// 처음 렌더를 돌 때만 그림자를 그려준다.
-		m_pGameInstance->Add_Renderer(CRenderer::RENDER_PASSIVE_SHADOW, this);
+		m_pGameInstance->Add_Renderer(CRenderer::RENDER_SHADOWOBJ, this);
 		m_isFirst = false;
 	}
 		
@@ -265,7 +265,7 @@ HRESULT CConstruction::Render()
 	return S_OK;
 }
 
-HRESULT CConstruction::Render_LightDepth(_uint iIndex)
+HRESULT CConstruction::Render_LightDepth()
 {
 	//케스케이드 그림자맵을 위한 절두체
 	_float3 vFrustum[]{
@@ -332,6 +332,8 @@ HRESULT CConstruction::Render_LightDepth(_uint iIndex)
 		_float fRadius = 0;
 		for (auto& v : Frustum)
 			fRadius = max(fRadius, XMVector3Length(XMLoadFloat3(&v) - vCenter).m128_f32[0]);
+
+		fRadius = ceil(fRadius * 16.f) / 16.f;
 
 		/* 광원 기준의 뷰 변환행렬. */
 		_float4x4		ViewMatrix, ProjMatrix;

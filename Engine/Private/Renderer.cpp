@@ -95,12 +95,6 @@ HRESULT CRenderer::Initialize()
 
 	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_LightDepth"), ViewPort.Width - 150.0f, 150.0f, 300.f, 300.f)))
 		return E_FAIL;
-	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_PassiveLightDepth"), ViewPort.Width - 300.0f, 350.0f, 100.f * 3, 100.f)))
-		return E_FAIL;
-
-	//if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_Specular"), 50.f, 350.f, 100.f, 100.f)))
-	//	return E_FAIL;
-	
 	
 	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_Shade"), 150.f, 50.f, 100.f, 100.f)))
 		return E_FAIL;
@@ -235,11 +229,7 @@ HRESULT CRenderer::Ready_Targets()
 		return E_FAIL;
 
 	/* Target_LightDepth */
-	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_LightDepth"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(1.f, 1.f, 1.f, 1.f))))
-		return E_FAIL;
-
-	/* Target_PassiveLightDepth_1 */
-	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_PassiveLightDepth"), ViewPort.Width * 3, ViewPort.Height, DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(1.f, 1.f, 1.f, 1.f), 3)))
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_LightDepth"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(1.f, 1.f, 1.f, 1.f), 3)))
 		return E_FAIL;
 
 	/* Target_LightMap */
@@ -391,10 +381,6 @@ HRESULT CRenderer::Ready_MRTs()
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_ShadowObjects"), TEXT("Target_LightDepth"))))
 		return E_FAIL;
 
-	/* MRT_ShadowObject */
-	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_PassiveShadowObjects"), TEXT("Target_PassiveLightDepth"))))
-		return E_FAIL;
-
 	/*MRT_LightAcc*/
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_LightAcc"), TEXT("Target_Shade"))))
 		return E_FAIL;
@@ -517,7 +503,7 @@ HRESULT CRenderer::Ready_LightDepth()
 	D3D11_TEXTURE2D_DESC	TextureDesc;
 	ZeroMemory(&TextureDesc, sizeof(D3D11_TEXTURE2D_DESC));
 
-	TextureDesc.Width = 1280 * 3;
+	TextureDesc.Width = 1280;
 	TextureDesc.Height = 720;
 	TextureDesc.MipLevels = 1;
 	TextureDesc.ArraySize = 3;
@@ -632,8 +618,7 @@ void CRenderer::Draw()
 	Render_Priority();
 	if (m_isShadow)
 	{
-		Render_Passive_Shadow(); // 첫 프레임시 한번만 돌아감.
-		//Render_ShadowObjects();
+		Render_ShadowObjects();
 	}
 
 	Render_NonBlender();
@@ -737,45 +722,10 @@ void CRenderer::Render_Priority()
 		return;
 }
 
-/* 
-	지형지물의 경우 한번만 렌더타겟에 넣어두고 재활용하여 사용한다.
-	사용 시 오브젝트의 Initialize()에 오브젝트를 넣어준다.
-*/
-void CRenderer::Render_Passive_Shadow()
-{
-	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_PassiveShadowObjects"), m_pLightDepthStencilView)))
-		return;
-
-	for (auto& pGameObject : m_RenderObject[RENDER_PASSIVE_SHADOW])
-	{
-		if (nullptr != pGameObject)
-			pGameObject->Render_LightDepth(2);
-
-		Safe_Release(pGameObject);
-	}
-	m_RenderObject[RENDER_PASSIVE_SHADOW].clear();
-
-	if (FAILED(m_pGameInstance->End_MRT()))
-		return;
-
-}
-
 void CRenderer::Render_ShadowObjects()
 {
 	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_ShadowObjects"), m_pLightDepthStencilView)))
 		return;
-
-	//D3D11_VIEWPORT			ViewPortDesc;
-	//ZeroMemory(&ViewPortDesc, sizeof(D3D11_VIEWPORT));
-	//ViewPortDesc.TopLeftX = 0;
-	//ViewPortDesc.TopLeftY = 0;
-	//ViewPortDesc.Width = (_float)g_iSizeX;
-	//ViewPortDesc.Height = (_float)g_iSizeY;
-	//ViewPortDesc.MinDepth = 0.f;
-	//ViewPortDesc.MaxDepth = 1.f;
-
-	//m_pContext->RSSetViewports(1, &ViewPortDesc);
-
 
 	for (auto& pGameObject : m_RenderObject[RENDER_SHADOWOBJ])
 	{
@@ -788,16 +738,6 @@ void CRenderer::Render_ShadowObjects()
 
 	if (FAILED(m_pGameInstance->End_MRT()))
 		return;
-
-	//ZeroMemory(&ViewPortDesc, sizeof(D3D11_VIEWPORT));
-	//ViewPortDesc.TopLeftX = 0;
-	//ViewPortDesc.TopLeftY = 0;
-	//ViewPortDesc.Width = (_float)1280.0f;
-	//ViewPortDesc.Height = (_float)720.0f;
-	//ViewPortDesc.MinDepth = 0.f;
-	//ViewPortDesc.MaxDepth = 1.f;
-
-	//m_pContext->RSSetViewports(1, &ViewPortDesc);
 }
 
 void CRenderer::Render_NonBlender()
@@ -1051,19 +991,16 @@ void CRenderer::Render_CopyBackBuffer()
 	if (FAILED(m_pShader->Bind_Matrix("g_ProjMatrixInv", m_pGameInstance->Get_Transform_Inverse_Float4x4(CPipeLine::D3DTS_PROJ))))
 		return;
 
+	if (FAILED(m_pShader->Bind_Matrix("g_CamViewMatrix", m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_VIEW))))
+		return;
+	if (FAILED(m_pShader->Bind_Matrix("g_CamProjMatrix", m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_PROJ))))
+		return;
+
 	const _float4x4* ViewMatrix;
 	const _float4x4* ProjMatrix;
 
 	ViewMatrix = m_pGameInstance->Get_Shadow_Transform_View_Float4x4();
 	ProjMatrix = m_pGameInstance->Get_Shadow_Transform_Proj_Float4x4();
-
-	/*_float4x4 ViewMatrix, ProjMatrix;
-	XMStoreFloat4x4(&ViewMatrix, XMMatrixLookAtLH(XMVectorSet(0.f, -0.7f, 0.1f, 1.f), XMVectorSet(0.f, 0.f, 0.f, 1.f), XMVectorSet(0.f, 1.f, 0.f, 0.f)));
-	XMStoreFloat4x4(&ProjMatrix, XMMatrixPerspectiveFovLH(XMConvertToRadians(120.0f), 1280.f / 720.f, 0.1f, 1000.f));*/
-
-
-	//_vector vPos = m_pGameInstance->Get_CamPosition();
-	//_matrix matVP = XMLoadFloat4x4(&ViewMatrix[0]) * XMLoadFloat4x4(&ProjMatrix[0]);
 
 	if (FAILED(m_pShader->Bind_Matrices("g_ViewMatrixArray", ViewMatrix, 3)))
 		return;
@@ -1077,6 +1014,22 @@ void CRenderer::Render_CopyBackBuffer()
 	if (FAILED(m_pShader->Bind_RawValue("g_isShadow", &m_isShadow, sizeof(_bool))))
 		return;
 
+	//연산
+	vector<_float> CasecadeDistance = { 10.f, 24.f, 40.f };
+	_float4 Casecades[3];
+
+	for (_int i = 0; i < 3; ++i)
+	{
+		_vector vPos = XMVectorSet(0.f, 0.f, CasecadeDistance[i], 1.f);
+		vPos = XMVector3TransformCoord(vPos, m_pGameInstance->Get_Transform_Matrix(CPipeLine::D3DTS_VIEW));
+		vPos = XMVector3TransformCoord(vPos, m_pGameInstance->Get_Transform_Matrix(CPipeLine::D3DTS_PROJ));
+		//vPos.m128_f32[3] = 1.f;
+		XMStoreFloat4(&Casecades[i], vPos);
+	}
+	
+	if (FAILED(m_pShader->Bind_Vectors("g_CasecadesZ", Casecades, 3)))
+		return;
+
 	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Diffuse"), m_pShader, "g_DiffuseTexture")))
 		return;
 	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Shade"), m_pShader, "g_ShadeTexture")))
@@ -1085,9 +1038,7 @@ void CRenderer::Render_CopyBackBuffer()
 		return;
 	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_MetallicMulti"), m_pShader, "g_MultiDiffuseTexture")))
 		return;
-	/*if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_LightDepth"), m_pShader, "g_LightDepthTexture")))
-		return;*/
-	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_PassiveLightDepth"), m_pShader, "g_PassiveLightDepthTextureArray")))
+	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_LightDepth"), m_pShader, "g_LightDepthTextureArray")))
 		return;
 	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Depth"), m_pShader, "g_DepthTexture")))
 		return;
@@ -1738,10 +1689,6 @@ void CRenderer::Render_Debug()
 	{
 		if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_ShadowObjects"), m_pShader, m_pVIBuffer)))
 			return;
-		if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_PassiveShadowObjects"), m_pShader, m_pVIBuffer, true)))
-			return;
-		
-
 	}
 	if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_Puddle"), m_pShader, m_pVIBuffer)))
 		return;

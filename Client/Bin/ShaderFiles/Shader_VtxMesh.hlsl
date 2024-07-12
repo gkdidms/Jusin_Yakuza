@@ -122,7 +122,7 @@ struct GS_OUT
     uint fIndex : SV_RenderTargetArrayIndex;
 };
 
-[maxvertexcount(9)]
+[maxvertexcount(28)]
 void GS_MAIN_LIGHTDEPTH(triangle GS_IN In[3], inout TriangleStream<GS_OUT> Out)
 {
     GS_OUT Output[3];
@@ -451,7 +451,7 @@ technique11 DefaultTechnique
 
     pass GlassDoorPass //1
     {
-        SetRasterizerState(RS_Cull_NON_CW);
+        SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_Default, 0);
         SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 
@@ -465,7 +465,7 @@ technique11 DefaultTechnique
 
     pass PuddlePass //2
     {
-        SetRasterizerState(RS_Cull_NON_CW);
+        SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_Default, 0);
         SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 
