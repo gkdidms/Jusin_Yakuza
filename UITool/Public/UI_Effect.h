@@ -1,7 +1,11 @@
 #pragma once
 #include "UI_Texture.h" 
 
+#ifdef _TOOL
 BEGIN(UITool)
+#else
+BEGIN(Client)
+#endif // _TOOL
 class CUI_Effect :
     public CUI_Texture
 {
@@ -19,6 +23,7 @@ private:
 
 public:
     virtual HRESULT Initialize_Prototype() override;
+     HRESULT Initialize_Prototype(ifstream& in) ;
     virtual HRESULT Initialize(void* pArg) override;
     virtual void Priority_Tick(const _float& fTimeDelta) override;
     virtual void Tick(const _float& fTimeDelta) override;
@@ -39,13 +44,14 @@ private:
     _float m_fSpeed = { 1.f };//이펙트 진행 속도
 
 private:
-    virtual HRESULT Add_Components() override;
     virtual HRESULT Bind_ResourceData() override;
 public:
     virtual HRESULT Save_binary(const string strDirectory)override;
     virtual HRESULT Save_Groupbinary(ofstream& out)override;
+    virtual HRESULT Load_binary(ifstream& in)override;
 public:
     static CUI_Effect* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+    static CUI_Effect* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, ifstream& in);
     virtual CGameObject* Clone(void* pArg);
     virtual void Free();
 };

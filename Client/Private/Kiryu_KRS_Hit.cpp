@@ -6,8 +6,7 @@ CKiryu_KRS_Hit::CKiryu_KRS_Hit()
 	:CBehaviorAnimation{}
 {
 	// 전투 중 아이들 모션은 어드벤처와 동일하다
-	//p_stand_nml 351
-	m_AnimationIndices.push_back(351);
+	m_AnimationIndices.push_back(428);			//+[428]	p_stand_nml[p_stand_nml]
 }
 
 void CKiryu_KRS_Hit::Tick(const _float& fTimeDelta)
@@ -38,7 +37,7 @@ CBehaviorAnimation* CKiryu_KRS_Hit::Create(CPlayer* pPlayer)
 	if (nullptr == pInstnace) 
 	{
 		Safe_Release(pInstnace);
-		MSG_BOX("Faild To Created : Kiryu_Adventure_Idle");
+		MSG_BOX("Faild To Created : Kiryu_KRS_Hit");
 		return pInstnace;
 	}
 

@@ -1,6 +1,13 @@
 #pragma once
 #include "UI_Object.h"
+
+#ifdef _TOOL
 #include "UITool_Defines.h"
+#else
+#include "Client_Defines.h"
+#endif // _TOOL
+
+
 
 BEGIN(Engine)
 class CShader;
@@ -8,7 +15,12 @@ class CVIBuffer_Rect;
 class CTexture;
 END
 
+#ifdef _TOOL
 BEGIN(UITool)
+#else
+BEGIN(Client)
+#endif
+
 class CUI_Texture :
     public CUI_Object
 {
@@ -40,7 +52,7 @@ public:
     void Set_ShaderPass(_uint iPass) { m_iShaderPass = iPass; }
     void Set_isColor(_bool isColor) { m_isColor = isColor; }
     void Set_Color(_float4 vColor) { m_vColor = vColor; }
-
+    void Set_WorldMatrix(_float4x4 World) { m_WorldMatrix = World; }
 
     void Set_StartPos(_float3 vStartPos) { m_vStartPos = vStartPos;}
     void Set_AnimTime(_float2 fAnimTime) { m_fAnimTime = fAnimTime; }
@@ -93,6 +105,10 @@ public:
 
 public:
      HRESULT Change_UV(_float2 fStartUV, _float2 fEndUV);
+
+public:
+    virtual HRESULT Show_UI() override;
+    virtual HRESULT Close_UI() override;
 protected:
     _float							m_fX, m_fY, m_fSizeX, m_fSizeY;
     _float4x4						m_WorldMatrix, m_ViewMatrix, m_ProjMatrix;
@@ -104,15 +120,15 @@ protected:
     const _float4x4* m_pParentMatrix = { nullptr };
 
 protected:
-    _float2                         m_fStartUV = { 0.f, 0.f }, m_fEndUV = { 1.f, 1.f };
-    _bool                           m_isColor = { false };
-    _float4                         m_vColor = { 1.f, 1.f, 1.f, 1.f };
+    _bool m_isParent = { false };
+    string m_strParentName = { "" };
 
     wstring m_strTextureFilePath = { L"" };
     wstring m_strTextureName = { L"" };
 
-    _bool m_isParent = { false };
-    string m_strParentName = { "" };
+    _float2                         m_fStartUV = { 0.f, 0.f }, m_fEndUV = { 1.f, 1.f };
+    _float4                         m_vColor = { 1.f, 1.f, 1.f, 1.f };
+    _bool                           m_isColor = { false };
 
     _uint m_iShaderPass = { 1 };
 
@@ -129,7 +145,7 @@ protected:
 public:
     virtual HRESULT Save_binary(const string strDirectory)override; 
     virtual HRESULT Save_Groupbinary( ofstream& out)override;
-    virtual HRESULT Load_binary(const string strDirectory)override;
+    virtual HRESULT  Load_binary(ifstream& in)override;
 
 protected:
     virtual HRESULT Add_Components();

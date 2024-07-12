@@ -5,8 +5,8 @@
 CKiryu_KRS_Run::CKiryu_KRS_Run()
 	:CBehaviorAnimation{}
 {
-	m_AnimationIndices.push_back(308); // [308] p_mov_run_btl
-	m_AnimationIndices.push_back(59); // [59] p_krc_mov_run_stop_btl
+	m_AnimationIndices.push_back(180); //+[180]	p_krc_mov_run_btl[p_krc_mov_run_btl]
+	m_AnimationIndices.push_back(181); // +[181]	p_krc_mov_run_stop_btl[p_krc_mov_run_stop_btl]
 }
 
 void CKiryu_KRS_Run::Tick(const _float& fTimeDelta)
@@ -54,7 +54,7 @@ CBehaviorAnimation* CKiryu_KRS_Run::Create(CPlayer* pPlayer)
 	if (nullptr == pInstnace) 
 	{
 		Safe_Release(pInstnace);
-		MSG_BOX("Faild To Created : Kiryu_Adventure_Idle");
+		MSG_BOX("Faild To Created : Kiryu_KRS_Run");
 		return pInstnace;
 	}
 

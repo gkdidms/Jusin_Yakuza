@@ -26,9 +26,26 @@ public:
     };    
     enum class KRS_BEHAVIOR_STATE
     {
-        BTL_START, IDLE, WALK, RUN, ATTACK, HIT, SWAY, DOWN, KRS_BEHAVIOR_END
-
+        BTL_START, IDLE, WALK, RUN, ATTACK, HIT, 
+        SWAY, DOWN, 
+        SKILL_FLY_KICK, SKILL_KICK_COMBO,
+        KRS_BEHAVIOR_END
     };
+
+    enum class KRH_BEHAVIOR_STATE
+    {
+        BTL_START, IDLE, WALK, RUN, ATTACK, HIT,
+        SWAY, DOWN, 
+        KRH_BEHAVIOR_END
+    };
+
+    enum class KRC_BEHAVIOR_STATE
+    {
+        BTL_START, IDLE, WALK, RUN, ATTACK, HIT,
+        SWAY, DOWN, GAURD,
+        KRC_BEHAVIOR_END
+    };
+
 
     enum MOVE_DIRECTION
     {
@@ -55,6 +72,7 @@ public:
 public:
     _uint Get_BattleStyle() { return m_eCurrentStyle; }
     _bool isAttack() { return m_iCurrentBehavior == static_cast<_uint>(KRS_BEHAVIOR_STATE::ATTACK); }
+    void  Set_StartPos(XMMATRIX    vStartPos) { m_pTransformCom->Set_WorldMatrix(vStartPos); }
 
 public:
     virtual HRESULT Initialize_Prototype() override;
@@ -105,7 +123,8 @@ private:
 
     // 이 때, 사용하는 키 값은 행동에 대한 키값을 가진다. (스타일은 배열 인덱스)
     map<_uint, class CBehaviorAnimation*> m_AnimationTree[BATTLE_STYLE_END];
-
+    //ui
+    class CUIManager* m_pUIManager = { nullptr };
 private:
     BATTLE_STYLE    m_eCurrentStyle = { ADVENTURE };
     // 스타일마다 겹치는 행동이 있을 수 있어서 int값으로 저장하고 형변환하여 저장한다.
