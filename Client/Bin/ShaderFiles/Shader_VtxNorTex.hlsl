@@ -1,8 +1,5 @@
 #include "Engine_Shader_Defines.hlsli"
-
-matrix g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
-
-Texture2D g_DiffuseTexture;
+#include "Shader_Client_Defines.hlsli"
 
 struct VS_IN
 {

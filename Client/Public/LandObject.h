@@ -16,6 +16,15 @@ protected:
     CLandObject(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
     CLandObject(const CLandObject& rhs);
     virtual ~CLandObject() = default;
+    
+
+#ifdef _DEBUG
+public:
+    void Set_ObjectRender(_bool isRender) { m_isObjectRender = isRender; }
+    
+public:
+    _bool Get_ObjectRender() { return m_isObjectRender; }
+#endif // _DEBUG
 
 public:
     virtual HRESULT Initialize_Prototype() override;
@@ -47,7 +56,7 @@ public:
     }
 
     virtual _bool Is_BlowAttack() { return false; }             // 재정의 필요
- 
+
 protected:
     class CSystemManager* m_pSystemManager = { nullptr };
     class CCollision_Manager* m_pCollisionManager = { nullptr };
@@ -64,9 +73,12 @@ protected:
     //뼈 이름, 소켓 이펙트
     unordered_map<string, class CSocketEffect*>      m_pEffects;
 
-
-
     wstring m_wstrModelName = TEXT("");
+
+#ifdef _DEBUG
+    _bool m_isObjectRender = { true };
+#endif // _DEBUG
+
 
 protected:
     virtual HRESULT Add_Components();
