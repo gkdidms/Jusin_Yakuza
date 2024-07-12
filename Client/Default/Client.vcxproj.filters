@@ -220,9 +220,6 @@
     <ClCompile Include="..\Private\SkyDome.cpp">
       <Filter>02.GameObjects\04.Sky\Dome</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\MapColliderObj.cpp">
-      <Filter>02.GameObjects\08.MapCollider\Obj</Filter>
-	</ClCompile>
     <ClCompile Include="..\Private\AI_Kuze.cpp">
       <Filter>02.GameObjects\02.Character\LandObject\01.Monster\Kuze\AI</Filter>
     </ClCompile>
@@ -231,6 +228,12 @@
     </ClCompile>
     <ClCompile Include="..\private\AI_Yoneda.cpp">
       <Filter>02.GameObjects\02.Character\LandObject\01.Monster\Yoneda\AI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\MapColliderObj.cpp">
+      <Filter>02.GameObjects\08. MapCollider\Obj</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\LightConstruction.cpp">
+      <Filter>02.GameObjects\03.Construction\LightConstruction</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -483,9 +486,6 @@
     <ClInclude Include="..\Public\SkyDome.h">
       <Filter>02.GameObjects\04.Sky\Dome</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\MapColliderObj.h">
-      <Filter>02.GameObjects\08.MapCollider\Obj</Filter>
-	</ClInclude>
     <ClInclude Include="..\Public\AI_Kuze.h">
       <Filter>02.GameObjects\02.Character\LandObject\01.Monster\Kuze\AI</Filter>
     </ClInclude>
@@ -494,6 +494,12 @@
     </ClInclude>
     <ClInclude Include="..\public\AI_Yoneda.h">
       <Filter>02.GameObjects\02.Character\LandObject\01.Monster\Yoneda\AI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\MapColliderObj.h">
+      <Filter>02.GameObjects\08. MapCollider\Obj</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\LightConstruction.h">
+      <Filter>02.GameObjects\03.Construction\LightConstruction</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -733,6 +739,9 @@
     <Filter Include="02.GameObjects\08. MapCollider\Obj">
       <UniqueIdentifier>{4e8421d6-5ada-48ec-9fce-0aed349f2f59}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\03.Construction\LightConstruction">
+      <UniqueIdentifier>{66dcb392-2821-4235-8686-00b40a167705}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Client.rc">
@@ -765,6 +774,9 @@
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxMeshSky.hlsl">
+      <Filter>97.ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxMeshLight.hlsl">
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
   </ItemGroup>

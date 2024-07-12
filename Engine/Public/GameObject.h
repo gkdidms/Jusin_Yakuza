@@ -35,6 +35,7 @@ public:
     virtual void Late_Tick(const _float& fTimeDelta);
     virtual HRESULT Render();
     virtual HRESULT Render_LightDepth(_uint iIndex = 0) { return S_OK; }
+    virtual HRESULT Render_Bloom() { return S_OK; }
 
 public:
     class CComponent* Get_Component(wstring strComponentTag);

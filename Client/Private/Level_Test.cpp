@@ -39,7 +39,7 @@ HRESULT CLevel_Test::Initialize()
 	/* Å¬¶ó ÆÄ½Ì */
 	m_pFileTotalManager->Set_MapObj_In_Client(0, LEVEL_TEST);
 	m_pFileTotalManager->Set_Lights_In_Client(0);
-	m_pFileTotalManager->Set_Collider_In_Client(1, LEVEL_TEST);
+	//m_pFileTotalManager->Set_Collider_In_Client(1, LEVEL_TEST);
 
 	_uint i = m_pGameInstance->Get_CurrentLevel();
 
