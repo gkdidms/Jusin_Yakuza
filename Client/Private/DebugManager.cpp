@@ -123,12 +123,16 @@ void CDebugManager::Window_Debug()
         if (ImGui::InputFloat("CameraSpeed", &fSpeed))
             pCameraTransform->Set_Speed(fSpeed);
 
-        ImGui::SeparatorText("Object");
+        //그림자 제어
+        ImGui::NewLine();
+        ImGui::SeparatorText("Shadow");
+        _vector vShadowPos = m_pSystemManager->Get_ShadowViewPos();
 
-        _bool isRender = pPlayer->Get_ObjectRender();
-
-        if (ImGui::Checkbox("Render ON/OFF", &isRender))
-            pPlayer->Set_ObjectRender(isRender);
+        if (ImGui::InputFloat4("ShadowViewPos", (_float*)&vShadowPos))
+        {
+            m_pSystemManager->Set_ShadowViewPos(vShadowPos);
+            m_pGameInstance->Set_ShadowViewPos(vShadowPos);
+        }
     }
 
     if (ImGui::CollapsingHeader("Deferred Shader"))
@@ -171,17 +175,6 @@ void CDebugManager::Window_Debug()
         _float fBias = m_pGameInstance->Get_SSAOBias();
         if (ImGui::SliderFloat("Bias", &fBias, 0.0001f, 1.f))
             m_pGameInstance->Set_SSAOBias(fBias);
-
-        //그림자 제어
-        ImGui::NewLine();
-        ImGui::SeparatorText("Shadow");
-        _vector vShadowPos = m_pSystemManager->Get_ShadowViewPos();
-
-        if (ImGui::InputFloat4("ShadowViewPos", (_float*)&vShadowPos))
-        {
-            m_pSystemManager->Set_ShadowViewPos(vShadowPos);
-            m_pGameInstance->Set_ShadowViewPos(vShadowPos);
-        }
     }
 
     if (ImGui::CollapsingHeader("Light"))

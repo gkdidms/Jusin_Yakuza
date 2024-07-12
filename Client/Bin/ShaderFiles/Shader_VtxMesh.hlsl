@@ -3,7 +3,6 @@
 
 /* 컨스턴트 테이블(상수테이블) */
 matrix g_WorldMatrix, g_ViewMatrix, g_ProjMatrix, g_WorldMatrixInv, g_ViewMatrixInv, g_ProjMatrixInv, g_ReflectViewMatrix;
-matrix g_ViewMatrixArray[3], g_ProjMatrixArray[3];
 
 Texture2D g_DiffuseTexture;
 Texture2D g_NormalTexture;
@@ -28,6 +27,7 @@ bool g_bExistRMTex;
 bool g_bExistRSTex;
 bool g_bReflExist;
 
+
 vector g_vCamPosition;
 
 float2 g_RenderResolution = float2(1280, 720);
@@ -36,7 +36,6 @@ bool g_isRS;
 bool g_isRD;
 
 int g_iCount = { 0 };
-const int g_iMaxCasCade = { 3 };
 
 struct VS_IN
 {
@@ -83,7 +82,7 @@ VS_OUT VS_MAIN(VS_IN In)
 
 struct VS_OUT_LIGHTDEPTH
 {
-    float4 vPosition : POSITION;
+    float4 vPosition : SV_POSITION;
     float2 vTexcoord : TEXCOORD0;
     float4 vProjPos : TEXCOORD1;
 };
@@ -97,49 +96,12 @@ VS_OUT_LIGHTDEPTH VS_MAIN_LIGHTDEPTH(VS_IN In)
     matWV = mul(g_WorldMatrix, g_ViewMatrix);
     matWVP = mul(matWV, g_ProjMatrix);
 
-    Out.vPosition = mul(vector(In.vPosition, 1.f), g_WorldMatrix);
+    Out.vPosition = mul(vector(In.vPosition, 1.f), matWVP);
     Out.vTexcoord = In.vTexcoord;
     Out.vProjPos = Out.vPosition;
 
     return Out;
 
-}
-
-// LightDepth용 GS
-struct GS_IN
-{
-    float4 vPosition : POSITION;
-    float2 vTexcoord : TEXCOORD0;
-    float4 vProjPos : TEXCOORD1;
-};
-
-struct GS_OUT
-{
-    float4 vPosition : SV_POSITION;
-    float2 vTexcoord : TEXCOORD0;
-    float4 vProjPos : TEXCOORD1;
-    
-    uint fIndex : SV_RenderTargetArrayIndex;
-};
-
-[maxvertexcount(28)]
-void GS_MAIN_LIGHTDEPTH(triangle GS_IN In[3], inout TriangleStream<GS_OUT> Out)
-{
-    GS_OUT Output[3];
-    for (int i = 0; i < 3; i++)
-    {
-        for (int j = 0; j < 3; j++)
-        {
-            float4 vViewPos = mul(In[j].vPosition, g_ViewMatrixArray[i]);
-            vViewPos.z += 2.5f;
-            Output[j].vPosition = mul(vViewPos, g_ProjMatrixArray[i]);
-            Output[j].vProjPos = In[j].vProjPos;
-            Output[j].vTexcoord = In[j].vTexcoord;
-            Output[j].fIndex = i;
-            Out.Append(Output[j]);
-        }
-        Out.RestartStrip();
-    }
 }
 
 struct PS_IN
@@ -300,6 +262,8 @@ PS_OUT PS_GLASSDOOR(PS_IN In)
     return Out;
 }
 
+
+
 PS_OUT PS_PUDDLE(PS_IN In)
 {
     PS_OUT Out = (PS_OUT) 0;
@@ -355,6 +319,8 @@ PS_OUT PS_PUDDLE(PS_IN In)
     vReflectScreenPos.y = vReflectScreenPos.y * -0.5 + 0.5;
     
     vector vDepth = g_DepthTexture.Sample(LinearSampler, vReflectScreenPos.xy);
+    
+
     
     vector vCalculateWorld = 0;
     vCalculateWorld.x = vReflectScreenPos.x * 2.f - 1.f;
@@ -451,7 +417,7 @@ technique11 DefaultTechnique
 {
     pass DefaultPass //0
     {
-        SetRasterizerState(RS_Default);
+        SetRasterizerState(RS_Cull_NON_CW);
         SetDepthStencilState(DSS_Default, 0);
         SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 
@@ -464,7 +430,7 @@ technique11 DefaultTechnique
 
     pass GlassDoorPass //1
     {
-        SetRasterizerState(RS_Default);
+        SetRasterizerState(RS_Cull_NON_CW);
         SetDepthStencilState(DSS_Default, 0);
         SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 
@@ -478,7 +444,7 @@ technique11 DefaultTechnique
 
     pass PuddlePass //2
     {
-        SetRasterizerState(RS_Default);
+        SetRasterizerState(RS_Cull_NON_CW);
         SetDepthStencilState(DSS_Default, 0);
         SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 
@@ -498,7 +464,7 @@ technique11 DefaultTechnique
 
 		/* 어떤 셰이덜르 국동할지. 셰이더를 몇 버젼으로 컴파일할지. 진입점함수가 무엇이찌. */
         VertexShader = compile vs_5_0 VS_MAIN_LIGHTDEPTH();
-        GeometryShader = compile gs_5_0 GS_MAIN_LIGHTDEPTH();
+        GeometryShader = NULL;
         HullShader = NULL;
         DomainShader = NULL;
         PixelShader = compile ps_5_0 PS_MAIN_LIGHTDEPTH();

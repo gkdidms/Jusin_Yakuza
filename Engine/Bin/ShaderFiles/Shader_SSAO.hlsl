@@ -53,7 +53,7 @@ float4 SSAO(float3x3 TBN, float3 vPosition)
         vector vOffset = vector(vSample, 1.f);
         vOffset = mul(vOffset, g_CamProjMatrix);
         vOffset.xyz /= vOffset.w;
-        vOffset.xy = vOffset.xy * float2(0.5f, -0.5f) + float2(0.5f, 0.5f);
+        vOffset.xy = vOffset.xy * float2(0.5f, -0.5f) + float2(0.5f, -0.5f);
         
         vector vOccNorm = g_DepthTexture.Sample(LinearSampler, vOffset.xy);
         

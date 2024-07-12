@@ -124,12 +124,8 @@ void CPlayer::Tick(const _float& fTimeDelta)
 
 void CPlayer::Late_Tick(const _float& fTimeDelta)
 {
-	if (m_isObjectRender)
-	{
-		m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
-		m_pGameInstance->Add_Renderer(CRenderer::RENDER_SHADOWOBJ, this);
-	}
-	
+	m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
+	//m_pGameInstance->Add_Renderer(CRenderer::RENDER_SHADOWOBJ, this); // Shadow용 렌더 추가
 	m_pCollisionManager->Add_ImpulseResolution(this);
 
 	for (auto& pCollider : m_pColliders)
@@ -170,7 +166,6 @@ HRESULT CPlayer::Render()
 
 		_bool isRS = true;
 		_bool isRD = true;
-
 		if (!strcmp(pMesh->Get_Name(), "[l0]face_kiryu"))
 		{
 			isRS = false;
@@ -203,101 +198,29 @@ HRESULT CPlayer::Render()
 	return S_OK;
 }
 
-HRESULT CPlayer::Render_LightDepth()
+HRESULT CPlayer::Render_LightDepth(_uint iIndex)
 {
-	//케스케이드 그림자맵을 위한 절두체
-	_float3 vFrustum[]{
-		{-1.f, 1.f, 0.f},
-		{1.f, 1.f, 0.f},
-		{1.f, -1.f, 0.f},
-		{-1.f, -1.f, 0.f},
-
-		{-1.f, 1.f, 1.f},
-		{1.f, 1.f, 1.f},
-		{1.f, -1.f, 1.f},
-		{-1.f, -1.f, 1.f}
-	};
-
-	// NDC좌표계 -> 월드 좌표계 변환 행렬
-	_matrix ViewMatrixInverse = m_pGameInstance->Get_Transform_Inverse_Matrix(CPipeLine::D3DTS_VIEW);
-	_matrix ProjMatrixInverse = m_pGameInstance->Get_Transform_Inverse_Matrix(CPipeLine::D3DTS_PROJ);
-
-	_float4	vPoints[8] = {};
-	_float4x4 ViewMatrixArray[3] = {};
-	_float4x4 ProjMatrixArray[3] = {};
-
-	for (size_t i = 0; i < 8; i++)
-	{
-		XMStoreFloat4(&vPoints[i], XMVector3TransformCoord(XMLoadFloat3(&vFrustum[i]), ProjMatrixInverse));
-	}
-	for (size_t i = 0; i < 8; i++)
-		XMStoreFloat3(&vFrustum[i], XMVector3Transform(XMLoadFloat4(&vPoints[i]), ViewMatrixInverse));
-
-	for (size_t i = 0; i < m_Casecade.size() - 1; ++i)
-	{
-		//큐브의 정점을 시야절두체 구간으로 변경
-		_float3 Frustum[8];
-		for (size_t j = 0; j < 8; ++j)
-			Frustum[j] = vFrustum[j];
-
-		for (size_t j = 0; j < 4; ++j)
-		{
-			//앞에서 뒤쪽으로 향하는 벡터
-			_vector vTemp = XMVector3Normalize(XMLoadFloat3(&Frustum[j + 4]) - XMLoadFloat3(&Frustum[j]));
-
-			//구간 시작, 끝으로 만들어주는 벡터
-			_vector n = vTemp * m_Casecade[i];
-			_vector f = vTemp * m_Casecade[i + 1];
-
-			//구간 시작, 끝으로 설정
-			XMStoreFloat3(&Frustum[j + 4], XMLoadFloat3(&Frustum[j]) + f);
-			XMStoreFloat3(&Frustum[j], XMLoadFloat3(&Frustum[j]) + n);
-		}
-
-		//해당 구간을 포함할 바운딩구의 중심을 계산
-		_vector vCenter{};
-		for (auto& v : Frustum)
-		{
-			//_matrix matCamInv = m_pGameInstance->Get_Transform_Inverse_Matrix(CPipeLine::D3DTS_VIEW);
-			//XMStoreFloat3(&v, XMVector3TransformCoord(XMLoadFloat3(&v), matCamInv));
-			vCenter = vCenter + XMLoadFloat3(&v);
-		}
-
-		vCenter = vCenter / 8.f;
-		vCenter.m128_f32[3] = 1.f;
-
-		//바운딩구의 반지름을 계산
-		_float fRadius = 0;
-		for (auto& v : Frustum)
-			fRadius = max(fRadius, XMVector3Length(XMLoadFloat3(&v) - vCenter).m128_f32[0]);
-
-		fRadius = ceil(fRadius * 16.f) / 16.f;
-
-		/* 광원 기준의 뷰 변환행렬. */
-		_float4x4		ViewMatrix, ProjMatrix;
-
-		_vector vLightDir = m_pSystemManager->Get_ShadowViewPos();
-		_vector  shadowLightPos = vCenter + (vLightDir * -fRadius);
-		shadowLightPos.m128_f32[3] = 1.f;
-
-		XMStoreFloat4x4(&ViewMatrix, XMMatrixLookAtLH(shadowLightPos, vCenter, XMVectorSet(0.f, 1.f, 0.f, 0.f)));
-		XMStoreFloat4x4(&ProjMatrix, XMMatrixOrthographicLH(fRadius * 2.f, fRadius * 2.f, 0.1f, 1000.f));
-
-		ViewMatrixArray[i] = ViewMatrix;
-		ProjMatrixArray[i] = ProjMatrix;
-	}
-
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_WorldMatrix", m_pTransformCom->Get_WorldFloat4x4())))
 		return E_FAIL;
-	if (FAILED(m_pShaderCom->Bind_Matrices("g_ViewMatrixArray", ViewMatrixArray, 3)))
+
+	_float4x4		ViewMatrix, ProjMatrix;
+
+	/* 광원 기준의 뷰 변환행렬. */
+	_vector vViewPos = m_pSystemManager->Get_ShadowViewPos();
+	XMStoreFloat4x4(&ViewMatrix, XMMatrixLookAtLH(vViewPos, XMVectorSet(0.f, 0.f, 0.f, 1.f), XMVectorSet(0.f, 1.f, 0.f, 0.f)));
+	XMStoreFloat4x4(&ProjMatrix, XMMatrixPerspectiveFovLH(XMConvertToRadians(120.0f), (_float)g_iWinSizeX / g_iWinSizeY, 0.1f, 1000.f));
+
+	if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", &ViewMatrix)))
 		return E_FAIL;
-	if (FAILED(m_pShaderCom->Bind_Matrices("g_ProjMatrixArray", ProjMatrixArray, 3)))
+	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", &ProjMatrix)))
 		return E_FAIL;
 
 	_uint	iNumMeshes = m_pModelCom->Get_NumMeshes();
 
 	for (size_t i = 0; i < iNumMeshes; i++)
 	{
+		m_pModelCom->Bind_BoneMatrices(m_pShaderCom, "g_BoneMatrices", i);
+
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
 			return E_FAIL;
 
@@ -305,9 +228,6 @@ HRESULT CPlayer::Render_LightDepth()
 
 		m_pModelCom->Render(i);
 	}
-
-	m_pGameInstance->Set_ShadowTransformViewMatrix(ViewMatrixArray);
-	m_pGameInstance->Set_ShadowTransformProjMatrix(ProjMatrixArray);
 
 	return S_OK;
 }
