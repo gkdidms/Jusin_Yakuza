@@ -242,11 +242,25 @@ HRESULT CModel::Export_Bones(ofstream& out)
 {
 	// ReadyBones에서 저장하는 데이터들만 저장한다.
 	_int iNumBones = m_Bones.size();
+
+	// 사용하지 않는 뼈를 제거한다
+	_uint	iCount = { 0 };
+	for (size_t i = 0; i < iNumBones; i++)
+	{
+		if ("" != m_pGameInstance->Extract_String(m_Bones[i]->Get_Name(), '[', ']'))
+			++iCount;
+	}
+
+	iNumBones -= iCount;
+
 	out.write((char*)&iNumBones, sizeof(_uint));
 
 	for (auto& Bone : m_Bones)
 	{
 		string strValue = Bone->Get_Name();
+		if ("" != m_pGameInstance->Extract_String(strValue, '[', ']'))
+			continue;
+		
 		_int iValue = strValue.size();
 		out.write((char*)&iValue, sizeof(_uint));
 		out.write(strValue.c_str(), strValue.size());
