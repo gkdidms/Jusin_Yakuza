@@ -6,19 +6,19 @@ class ENGINE_DLL CRenderer :
     public CBase
 {
 public:
-    enum RENDERER_STATE { 
-        RENDER_PRIORITY, 
+    enum RENDERER_STATE {
+        RENDER_PRIORITY,
         RENDER_PASSIVE_SHADOW,
-        RENDER_SHADOWOBJ, 
-        RENDER_NONBLENDER, 
-        RENDER_DECAL, 
-        RENDER_GLASS, 
+        RENDER_SHADOWOBJ,
+        RENDER_NONBLENDER,
+        RENDER_DECAL,
+        RENDER_GLASS,
         RENDER_PUDDLE,
         RENDER_NONLIGHT,
-        RENDER_BLENDER, 
+        RENDER_BLENDER,
         RENDER_EFFECT,
         RENDER_UI,
-        RENDER_END 
+        RENDER_END
     };
 
 private:
@@ -47,7 +47,7 @@ public:
     _float Get_SSAORadiuse() { return m_fSSAORadiuse; }
     _float Get_SSAOBlur() { return m_fSSAOBlur; }
     _float Get_SSAOBias() { return m_fSSAOBiae; }
-    
+
 public:
     HRESULT Initialize();
     void Add_Renderer(RENDERER_STATE eRenderState, class CGameObject* pGameObject);
@@ -65,7 +65,6 @@ public:
 
 private:
     void Render_Priority();
-    void Render_Passive_Shadow();
     void Render_ShadowObjects();
     void Render_NonBlender();
 
@@ -89,7 +88,7 @@ private:
     /* HDR*/
     void Render_Luminance();
     void Render_HDR();
-    void Render_CopyLuminance(); 
+    void Render_CopyLuminance();
     void Render_AvgLuminance();
     void Render_LuminanceResult();
 
@@ -102,13 +101,13 @@ private:
     void Render_FinlaOIT();// 파티클 최종병합
 
     void Render_UI();
-   
+
 private:
     HRESULT Ready_Targets();
     HRESULT Ready_MRTs();
     HRESULT Ready_LightDepth();
     HRESULT Ready_SSAONoiseTexture();
-    
+
 
 #ifdef _DEBUG
 private:
@@ -161,4 +160,3 @@ public:
     virtual void Free();
 };
 END
-

@@ -1,6 +1,7 @@
 #include "../Default/framework.h"
 
 #include "MainApp.h"
+#include "UIManager.h"
 #include "GameInstance.h"
 #include "SystemManager.h"
 #include "Collision_Manager.h"
@@ -20,12 +21,14 @@ CMainApp::CMainApp() :
 	m_pGameInstance{ CGameInstance::GetInstance() },
 	m_pSystemManager{ CSystemManager::GetInstance() },
 	m_pFileTotalManager{ CFileTotalMgr::GetInstance() },
-	m_pCollisionManager{ CCollision_Manager::GetInstance() }
+	m_pCollisionManager{ CCollision_Manager::GetInstance() },
+	m_pUIManager{CUIManager::GetInstance()}
 {
 	Safe_AddRef(m_pGameInstance);
 	Safe_AddRef(m_pSystemManager);
 	Safe_AddRef(m_pFileTotalManager);
 	Safe_AddRef(m_pCollisionManager);
+	Safe_AddRef(m_pUIManager);
 
 #ifdef _DEBUG
 	Safe_AddRef(m_pDebugMananger);
@@ -44,7 +47,7 @@ HRESULT CMainApp::Initialize()
 
 	if (FAILED(m_pGameInstance->Initialize_Engine(LEVEL_END, EngineDesc, &m_pDevice, &m_pContext)))
 		return E_FAIL;
-
+	m_pUIManager->Initialize();
 	if (FAILED(Ready_Font()))
 		return E_FAIL;
 
@@ -74,6 +77,8 @@ void CMainApp::Tick(const _float& fTimeDelta)
 
 	m_pGameInstance->Tick(fTimeDelta);
 	m_pCollisionManager->Tick();
+	m_pUIManager->Tick(fTimeDelta);
+	m_pUIManager->Late_Tick(fTimeDelta);	
 
 #ifdef _DEBUG
 	if (m_pGameInstance->GetKeyState(DIK_F6) == TAP)
@@ -136,6 +141,7 @@ HRESULT CMainApp::Render()
 	m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("F10 : Debug Tool"), _float2(1000.f, fSize + 240.f), XMVectorSet(1.f, 1.f, 0.f, 1.f));
 	m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("TAP : Camera Pos Fix"), _float2(1000.f, fSize + 260.f), XMVectorSet(1.f, 1.f, 0.f, 1.f));
 
+
 	/* 플레이어/ 몬스터 용 테스트 키 작성 */
 
 	if (m_isDebug) m_pDebugMananger->Render();
@@ -182,6 +188,11 @@ HRESULT CMainApp::Ready_Prototype_Component()
 	/* For.Prototype_Component_Shader_VtxPosTex */
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Shader_VtxPosTex"),
 		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxPosTex.hlsl"), VTXPOSTEX::Elements, VTXPOSTEX::iNumElements))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Shader_VtxUI */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_STATIC, TEXT("Prototype_Component_Shader_VtxUI"),
+		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxUI.hlsl"), VTXPOSTEX::Elements, VTXPOSTEX::iNumElements))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Texture_Loading */
@@ -232,6 +243,9 @@ void CMainApp::Free()
 #endif // _DEBUG
 
 	Safe_Release(m_pSystemManager);
+
+	Safe_Release(m_pUIManager);
+	CUIManager::DestroyInstance();
 
 	Safe_Release(m_pFileTotalManager);
 	CFileTotalMgr::DestroyInstance();

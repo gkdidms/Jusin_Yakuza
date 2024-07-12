@@ -141,11 +141,8 @@ HRESULT CLightConstruction::Render()
 	return S_OK;
 }
 
-HRESULT CLightConstruction::Render_LightDepth(_uint iIndex)
+HRESULT CLightConstruction::Render_LightDepth()
 {
-	if (iIndex >= m_Casecade.size() - 1.f)
-		return E_FAIL;
-
 	//케스케이드 그림자맵을 위한 절두체
 	_float3 vFrustum[]{
 		{-1.f, 1.f, 0.f},
@@ -164,6 +161,8 @@ HRESULT CLightConstruction::Render_LightDepth(_uint iIndex)
 	_matrix ProjMatrixInverse = m_pGameInstance->Get_Transform_Inverse_Matrix(CPipeLine::D3DTS_PROJ);
 
 	_float4	vPoints[8] = {};
+	_float4x4 ViewMatrixArray[3] = {};
+	_float4x4 ProjMatrixArray[3] = {};
 
 	for (size_t i = 0; i < 8; i++)
 	{
@@ -172,79 +171,65 @@ HRESULT CLightConstruction::Render_LightDepth(_uint iIndex)
 	for (size_t i = 0; i < 8; i++)
 		XMStoreFloat3(&vFrustum[i], XMVector3Transform(XMLoadFloat4(&vPoints[i]), ViewMatrixInverse));
 
-	//큐브의 정점을 시야절두체 구간으로 변경
-	_float3 Frustum[8];
-	for (size_t j = 0; j < 8; ++j)
-		Frustum[j] = vFrustum[j];
-
-	for (size_t j = 0; j < 4; ++j)
+	for (size_t i = 0; i < m_Casecade.size() - 1; ++i)
 	{
-		//앞에서 뒤쪽으로 향하는 벡터
-		_vector vTemp = XMVector3Normalize(XMLoadFloat3(&Frustum[j + 4]) - XMLoadFloat3(&Frustum[j]));
+		//큐브의 정점을 시야절두체 구간으로 변경
+		_float3 Frustum[8];
+		for (size_t j = 0; j < 8; ++j)
+			Frustum[j] = vFrustum[j];
 
-		//구간 시작, 끝으로 만들어주는 벡터
-		_vector n = vTemp * m_Casecade[iIndex];
-		_vector f = vTemp * m_Casecade[iIndex + 1];
+		for (size_t j = 0; j < 4; ++j)
+		{
+			//앞에서 뒤쪽으로 향하는 벡터
+			_vector vTemp = XMVector3Normalize(XMLoadFloat3(&Frustum[j + 4]) - XMLoadFloat3(&Frustum[j]));
 
-		//구간 시작, 끝으로 설정
-		XMStoreFloat3(&Frustum[j + 4], XMLoadFloat3(&Frustum[j]) + f);
-		XMStoreFloat3(&Frustum[j], XMLoadFloat3(&Frustum[j]) + n);
+			//구간 시작, 끝으로 만들어주는 벡터
+			_vector n = vTemp * m_Casecade[i];
+			_vector f = vTemp * m_Casecade[i + 1];
+
+			//구간 시작, 끝으로 설정
+			XMStoreFloat3(&Frustum[j + 4], XMLoadFloat3(&Frustum[j]) + f);
+			XMStoreFloat3(&Frustum[j], XMLoadFloat3(&Frustum[j]) + n);
+		}
+
+		//해당 구간을 포함할 바운딩구의 중심을 계산
+		_vector vCenter{};
+		for (auto& v : Frustum)
+		{
+			//_matrix matCamInv = m_pGameInstance->Get_Transform_Inverse_Matrix(CPipeLine::D3DTS_VIEW);
+			//XMStoreFloat3(&v, XMVector3TransformCoord(XMLoadFloat3(&v), matCamInv));
+			vCenter = vCenter + XMLoadFloat3(&v);
+		}
+
+		vCenter = vCenter / 8.f;
+		vCenter.m128_f32[3] = 1.f;
+
+		//바운딩구의 반지름을 계산
+		_float fRadius = 0;
+		for (auto& v : Frustum)
+			fRadius = max(fRadius, XMVector3Length(XMLoadFloat3(&v) - vCenter).m128_f32[0]);
+
+		fRadius = ceil(fRadius * 16.f) / 16.f;
+
+		/* 광원 기준의 뷰 변환행렬. */
+		_float4x4		ViewMatrix, ProjMatrix;
+
+		_vector vLightDir = m_pSystemManager->Get_ShadowViewPos();
+		_vector  shadowLightPos = vCenter + (vLightDir * -fRadius);
+		shadowLightPos.m128_f32[3] = 1.f;
+
+		XMStoreFloat4x4(&ViewMatrix, XMMatrixLookAtLH(shadowLightPos, vCenter, XMVectorSet(0.f, 1.f, 0.f, 0.f)));
+		XMStoreFloat4x4(&ProjMatrix, XMMatrixOrthographicLH(fRadius * 2.f, fRadius * 2.f, 0.1f, 1000.f));
+
+		ViewMatrixArray[i] = ViewMatrix;
+		ProjMatrixArray[i] = ProjMatrix;
 	}
-
-	//해당 구간을 포함할 바운딩구의 중심을 계산
-	_vector vCenter{};
-	for (auto& v : Frustum)
-	{
-		//_matrix matCamInv = m_pGameInstance->Get_Transform_Inverse_Matrix(CPipeLine::D3DTS_VIEW);
-		//XMStoreFloat3(&v, XMVector3TransformCoord(XMLoadFloat3(&v), matCamInv));
-		vCenter = vCenter + XMLoadFloat3(&v);
-	}
-
-	vCenter = vCenter / 8.f;
-	vCenter.m128_f32[3] = 1.f;
-
-	//바운딩구의 반지름을 계산
-	_float fRadius = 0;
-	for (auto& v : Frustum)
-		fRadius = max(fRadius, XMVector3Length(XMLoadFloat3(&v) - vCenter).m128_f32[0]);
-
-	/* 광원 기준의 뷰 변환행렬. */
-	_float4x4		ViewMatrix, ProjMatrix;
-
-	_vector vLightDir = XMVectorSet(0.f, -0.7f, 0.1f, 0.f);
-	_vector  shadowLightPos = vCenter + (vLightDir * -fRadius);
-	shadowLightPos.m128_f32[3] = 1.f;
-
-	XMStoreFloat4x4(&ViewMatrix, XMMatrixLookAtLH(shadowLightPos, vCenter, XMVectorSet(0.f, 1.f, 0.f, 0.f)));
-	XMStoreFloat4x4(&ProjMatrix, XMMatrixPerspectiveFovLH(XMConvertToRadians(120.0f), (_float)g_iWinSizeX / g_iWinSizeY, 0.1f, 1000.f));
-	//XMStoreFloat4x4(&ProjMatrix, XMMatrixOrthographicLH(fRadius * 2.f, fRadius * 2.f, 0.1f, 1000.f));
-
-	//XMStoreFloat4x4(&ViewMatrix, XMMatrixTranspose(XMLoadFloat4x4(&ViewMatrix)));
-	//XMStoreFloat4x4(&ProjMatrix, XMMatrixTranspose(XMLoadFloat4x4(&ProjMatrix)));
-
-	if (iIndex == 0)
-	{
-		m_pGameInstance->Set_Shadow_Transform(CPipeLine::D3DTS_VIEW, XMLoadFloat4x4(&ViewMatrix));
-		m_pGameInstance->Set_Shadow_Transform(CPipeLine::D3DTS_PROJ, XMLoadFloat4x4(&ProjMatrix));
-	}
-
-	//D3D11_VIEWPORT			ViewPortDesc;
-	//ZeroMemory(&ViewPortDesc, sizeof(D3D11_VIEWPORT));
-	//ViewPortDesc.TopLeftX = 0;
-	//ViewPortDesc.TopLeftY = 0;
-	//ViewPortDesc.Width = fRadius * 2.f;
-	//ViewPortDesc.Height = fRadius * 2.f;
-	//ViewPortDesc.MinDepth = 0.f;
-	//ViewPortDesc.MaxDepth = 1.f;
-
-	//m_pContext->RSSetViewports(1, &ViewPortDesc);
-
 
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_WorldMatrix", m_pTransformCom->Get_WorldFloat4x4())))
 		return E_FAIL;
-	if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", &ViewMatrix)))
+	if (FAILED(m_pShaderCom->Bind_Matrices("g_ViewMatrixArray", ViewMatrixArray, 3)))
 		return E_FAIL;
-	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", &ProjMatrix)))
+	if (FAILED(m_pShaderCom->Bind_Matrices("g_ProjMatrixArray", ProjMatrixArray, 3)))
 		return E_FAIL;
 
 	_uint	iNumMeshes = m_pModelCom->Get_NumMeshes();
@@ -258,6 +243,9 @@ HRESULT CLightConstruction::Render_LightDepth(_uint iIndex)
 
 		m_pModelCom->Render(i);
 	}
+
+	m_pGameInstance->Set_ShadowTransformViewMatrix(ViewMatrixArray);
+	m_pGameInstance->Set_ShadowTransformProjMatrix(ProjMatrixArray);
 
 	return S_OK;
 }

@@ -24,9 +24,14 @@ _matrix CPipeLine::Get_Transform_Inverse_Matrix(D3DTRANSFORMSTATE eState)
 	return XMLoadFloat4x4(&m_TransformStateInverseMatrix[eState]);
 }
 
-const _float4x4* CPipeLine::Get_Shadow_Transform_Float4x4(D3DTRANSFORMSTATE eState)
+const _float4x4* CPipeLine::Get_Shadow_Transform_View_Float4x4()
 {
-	return &m_ShadowTransformStateMatrix[eState];
+	return &m_ShadowTransformViewMatrix[0];
+}
+
+const _float4x4* CPipeLine::Get_Shadow_Transform_Proj_Float4x4()
+{
+	return &m_ShadowTransformProjMatrix[0];
 }
 
 const _float4* CPipeLine::Get_CamPosition_Float4()
@@ -87,7 +92,7 @@ CPipeLine* CPipeLine::Create()
 		MSG_BOX("Failed To Created : CPipeLine");
 		Safe_Release(pInstance);
 	}
-		
+
 
 	return pInstance;
 }

@@ -8,7 +8,8 @@ CText::CText(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 }
 
 CText::CText(const CText& rhs)
-	: CUI_Texture{ rhs }
+	: CUI_Texture{ rhs },
+	m_strText{rhs.m_strText}
 {
 }
 
@@ -17,18 +18,29 @@ HRESULT CText::Initialize_Prototype()
 	return S_OK;
 }
 
+HRESULT CText::Initialize_Prototype(ifstream& in)
+{
+	if (FAILED(__super::Initialize(nullptr)))
+		return E_FAIL;
+
+	if (FAILED(Load_binary(in)))
+		return E_FAIL;
+
+	return S_OK;
+}
+
 HRESULT CText::Initialize(void* pArg)
 {
 
-	if (nullptr == pArg)
-		return E_FAIL;
-
-	TEXT_DESC* pDesc = static_cast<TEXT_DESC*>(pArg);
-	m_strText = pDesc->strText;
-
-
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
+
+	if (nullptr != pArg)
+	{
+		TEXT_DESC* pDesc = static_cast<TEXT_DESC*>(pArg);
+		m_strText = pDesc->strText;
+	}
+
 
 
 	return S_OK;
@@ -71,7 +83,6 @@ HRESULT CText::Save_binary(const string strDirectory)
 	out.write((char*)&strTexturelength, sizeof(_int));
 	out.write(m_strName.c_str(), strTexturelength);
 
-
 	out.write((char*)&m_isParent, sizeof(_bool));
 
 	strTexturelength = m_strParentName.length();
@@ -84,9 +95,9 @@ HRESULT CText::Save_binary(const string strDirectory)
 
 	out.write((char*)&m_iShaderPass, sizeof(_uint));
 
-	_float4x4 WorldMatrix = *m_pTransformCom->Get_WorldFloat4x4();
+	//_float4x4 WorldMatrix = *m_pTransformCom->Get_WorldFloat4x4();
 
-	out.write((char*)&WorldMatrix, sizeof(_float4x4));
+	out.write((char*)&m_WorldMatrix, sizeof(_float4x4));
 
 
 	out.write((char*)&m_isAnim, sizeof(_bool));
@@ -99,6 +110,10 @@ HRESULT CText::Save_binary(const string strDirectory)
 	out.write((char*)&m_fControlAlpha, sizeof(_float2));
 
 	out.write((char*)&m_isReverse, sizeof(_bool));
+
+	out.write((char*)&m_isEvent, sizeof(_bool));
+
+	out.write((char*)&m_isScreen, sizeof(_bool));
 	//개별적인 저장
 
 	string Text = m_pGameInstance->WstringToString(m_strText);
@@ -146,6 +161,10 @@ HRESULT CText::Save_Groupbinary(ofstream& out)
 	out.write((char*)&m_fControlAlpha, sizeof(_float2));
 
 	out.write((char*)&m_isReverse, sizeof(_bool));
+
+	out.write((char*)&m_isEvent, sizeof(_bool));
+
+	out.write((char*)&m_isScreen, sizeof(_bool));
 	//개별적인 저장
 
 	string Text = m_pGameInstance->WstringToString(m_strText);
@@ -156,11 +175,67 @@ HRESULT CText::Save_Groupbinary(ofstream& out)
 	return S_OK;
 }
 
+HRESULT CText::Load_binary(ifstream& in)
+{
+	m_iTypeIndex = 3;
+
+	_int strTexturelength;
+	char charBox[MAX_PATH] = {};
+	in.read((char*)&strTexturelength, sizeof(_int));
+	in.read((char*)&charBox, strTexturelength);
+	m_strName = charBox;
+
+	in.read((char*)&m_isParent, sizeof(_bool));
+
+	in.read((char*)&strTexturelength, sizeof(_int));
+	in.read((char*)&charBox, strTexturelength);
+	m_strParentName = charBox;
+
+	string path;
+
+	in.read((char*)&m_vColor, sizeof(_float4));
+	in.read((char*)&m_isColor, sizeof(_bool));
+	in.read((char*)&m_iShaderPass, sizeof(_uint));
+	
+	_float4x4 World{};
+	in.read((char*)&World, sizeof(_float4x4));
+	m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(&World));
+
+	in.read((char*)&m_isAnim, sizeof(_bool));
+	in.read((char*)&m_fAnimTime, sizeof(_float2));
+	in.read((char*)&m_vStartPos, sizeof(_float3));
+
+	in.read((char*)&m_fControlAlpha, sizeof(_float2));
+	in.read((char*)&m_isReverse, sizeof(_bool));
+	in.read((char*)&m_isEvent, sizeof(_bool));
+	in.read((char*)&m_isScreen, sizeof(_bool));
+	//개별
+	ZeroMemory(charBox, MAX_PATH);
+	in.read((char*)&strTexturelength, sizeof(_int));
+	in.read((char*)&charBox, strTexturelength);
+	path = charBox;
+	m_strText = m_pGameInstance->StringToWstring(path);
+
+	in.close();
+	
+	return S_OK;
+}
+
 CText* CText::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
 	CText* pInstance = new CText(pDevice, pContext);
 
 	if (FAILED(pInstance->Initialize_Prototype()))
+		Safe_Release(pInstance);
+
+	return pInstance;
+}
+
+CText* CText::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, ifstream& in)
+{
+	CText* pInstance = new CText(pDevice, pContext);
+
+	if (FAILED(pInstance->Initialize_Prototype(in)))
 		Safe_Release(pInstance);
 
 	return pInstance;
