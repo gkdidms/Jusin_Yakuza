@@ -1030,6 +1030,10 @@ void CRenderer::Render_CopyBackBuffer()
 	if (FAILED(m_pShader->Bind_Vectors("g_CasecadesZ", Casecades, 3)))
 		return;
 
+	_vector vCamDir = m_pGameInstance->Get_CamLook();
+	if (FAILED(m_pShader->Bind_RawValue("g_vCamDir", &vCamDir, sizeof(_vector))))
+		return;
+
 	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Diffuse"), m_pShader, "g_DiffuseTexture")))
 		return;
 	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Shade"), m_pShader, "g_ShadeTexture")))
