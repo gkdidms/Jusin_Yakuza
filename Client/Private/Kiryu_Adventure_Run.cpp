@@ -7,45 +7,45 @@ CKiryu_Adventure_Run::CKiryu_Adventure_Run()
 	:CBehaviorAnimation{}
 {
 	// 시작 애니메이션들
-	m_AnimationIndices.push_back(319);	//	p_move_run_start_l180 319					/ 0
-	m_AnimationIndices.push_back(320);	//	p_move_run_start_l90 320					/ 1
-	m_AnimationIndices.push_back(321);	//	p_move_run_start_r180 321					/ 2
-	m_AnimationIndices.push_back(322);	//	p_move_run_start_r90 322					/ 3
+	m_AnimationIndices.push_back(413);	//	+[413]	p_mov_run_start_l180[p_mov_run_start_l180]
+	m_AnimationIndices.push_back(414);	//	+[414]	p_mov_run_start_l90[p_mov_run_start_l90]
+	m_AnimationIndices.push_back(415);	//	+[415]	p_mov_run_start_r180[p_mov_run_start_r180]
+	m_AnimationIndices.push_back(416);	//	+[416]	p_mov_run_start_r90[p_mov_run_start_r90]
 
 	// 달리는 루프 애니메이션들
-	m_AnimationIndices.push_back(314); 	//	p_mov_run_kyoro 314							/ 4
-	m_AnimationIndices.push_back(315); 	//	p_mov_run_l 315								/ 5
-	m_AnimationIndices.push_back(316); 	//	p_mov_run_r 316								/ 6
+	m_AnimationIndices.push_back(410); 	//	+[410]	p_mov_run_kyoro[p_mov_run_kyoro]
+	m_AnimationIndices.push_back(411); 	//	+[411]	p_mov_run_l[p_mov_run_l]
+	m_AnimationIndices.push_back(412); 	//	+[412]	p_mov_run_l[p_mov_run_r]
 
 	// 끝날 때 애니메이션
-	m_AnimationIndices.push_back(323);	//	p_mov_run_stop 323							/ 7
-	m_AnimationIndices.push_back(312);	//[311]	p_mov_run_dash_tired_stop_l				/ 8
-	m_AnimationIndices.push_back(313);	//[312]	p_mov_run_dash_tired_stop_s				/ 9
+	m_AnimationIndices.push_back(417);	//	+[417]	p_mov_run_stop[p_mov_run_stop]
+	m_AnimationIndices.push_back(408);	//+[408]	p_mov_run_dash_tired_stop_l[p_mov_run_dash_tired_stop_l]
+	m_AnimationIndices.push_back(409);	//+[409]	p_mov_run_dash_tired_stop_s[p_mov_run_dash_tired_stop_s]
 
 	// 대시 (어따쓰는진 모르겟음)
-	m_AnimationIndices.push_back(310);	// p_mov_run_dash 309							/ 10
-	m_AnimationIndices.push_back(311);	// p_mov_run_dash_tired 310						/ 11
-	m_AnimationIndices.push_back(312);	// [312]	p_mov_run_dash_tired_stop_l			/ 12
-	m_AnimationIndices.push_back(313);	// [313]	p_mov_run_dash_tired_stop_s			/ 13
+	m_AnimationIndices.push_back(406);	// +[406]	p_mov_run_dash[p_mov_run_dash]
+	m_AnimationIndices.push_back(407);	// +[407]	p_mov_run_dash_tired[p_mov_run_dash_tired]
+	m_AnimationIndices.push_back(408);	// +[408]	p_mov_run_dash_tired_stop_l[p_mov_run_dash_tired_stop_l]
+	m_AnimationIndices.push_back(409);	// +[409]	p_mov_run_dash_tired_stop_s[p_mov_run_dash_tired_stop_s]
 
 	// 범프 (부딪힐때)
 	
-	m_AnimationIndices.push_back(294); //[293]	p_mov_bump_car_f[p_mov_bump_car_f]		 / 14
-	m_AnimationIndices.push_back(295); //[294]	p_mov_bump_car_l[p_mov_bump_car_l]		 / 15
-	m_AnimationIndices.push_back(296); //[295]	p_mov_bump_car_r[p_mov_bump_car_r]		 / 16
-	m_AnimationIndices.push_back(297); //[296]	p_mov_bump_f[p_mov_bump_f]				 / 17
-	m_AnimationIndices.push_back(298); //[297]	p_mov_bump_l[p_mov_bump_l]				 / 18
-	m_AnimationIndices.push_back(299); //[298]	p_mov_bump_r[p_mov_bump_r]				 / 19
-	m_AnimationIndices.push_back(300); //[299]	p_mov_bump_wall_l[p_mov_bump_wall_l]	 / 20
-	m_AnimationIndices.push_back(301); //[300]	p_mov_bump_wall_r[p_mov_bump_wall_r]	 / 21
+	m_AnimationIndices.push_back(391); //+[391]	p_mov_bump_car_f[p_mov_bump_car_f]
+	m_AnimationIndices.push_back(392); //+[392]	p_mov_bump_car_l[p_mov_bump_car_l]
+	m_AnimationIndices.push_back(393); //+[393]	p_mov_bump_car_r[p_mov_bump_car_r]
+	m_AnimationIndices.push_back(395); //+[395]	p_mov_bump_f[p_mov_bump_f]
+	m_AnimationIndices.push_back(396); //+[396]	p_mov_bump_l[p_mov_bump_l]
+	m_AnimationIndices.push_back(397); //+[397]	p_mov_bump_r[p_mov_bump_r]
+	m_AnimationIndices.push_back(398); //+[398]	p_mov_bump_wall_l[p_mov_bump_wall_l]
+	m_AnimationIndices.push_back(399); //+[399]	p_mov_bump_wall_r[p_mov_bump_wall_r]
 
 
 	//데미지 입은 상태일 때																 
-	m_AnimationIndices.push_back(302); //[301]	p_mov_dam_lp[p_mov_dam_lp]				 / 22
-	m_AnimationIndices.push_back(303); //[302]	p_mov_dam_run[p_mov_dam_run]			 / 23
-	m_AnimationIndices.push_back(304); //[303]	p_mov_dam_walk[p_mov_dam_walk]			 / 24
-	m_AnimationIndices.push_back(305); //[304]	p_mov_dam_walk_turnl[p_mov_dam_walk_turnl]	 / 25
-	m_AnimationIndices.push_back(306); //[305]	p_mov_dam_walk_turnr[p_mov_dam_walk_turnr]	 / 26
+	m_AnimationIndices.push_back(400); //+[400]	p_mov_dam_lp[p_mov_dam_lp]
+	m_AnimationIndices.push_back(401); //+[401]	p_mov_dam_run[p_mov_dam_run]
+	m_AnimationIndices.push_back(402); //+[402]	p_mov_dam_walk[p_mov_dam_walk]
+	m_AnimationIndices.push_back(403); //+[403]	p_mov_dam_walk_turnl[p_mov_dam_walk_turnl]
+	m_AnimationIndices.push_back(404); //+[404]	p_mov_dam_walk_turnr[p_mov_dam_walk_turnr]
 
 	m_iCurrentIndex = 0;
 }

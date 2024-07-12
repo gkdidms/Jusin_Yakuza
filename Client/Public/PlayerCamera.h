@@ -12,7 +12,7 @@ class CPlayerCamera :
     public CCamera
 {
 private:
-    const _float MAX_DISTANCE = 5.f;
+    const _float MAX_DISTANCE = 4.f;
     const _float MIN_DISTANCE = 1.f;
 
 public:
@@ -49,7 +49,7 @@ private:
     _float m_fSensor = { 0.f };
     const _float4x4* m_pPlayerMatrix = { nullptr };
 
-    _float m_fCamDistance = { 5.f };            //해당 값을 변경하면 카메라의 거리를 조절할 수 있음.
+    _float m_fCamDistance = { 4.f };            //해당 값을 변경하면 카메라의 거리를 조절할 수 있음.
 
     _float fCamAngleX = 45.f;
     _float fCamAngleY = -90.f;
