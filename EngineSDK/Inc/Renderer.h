@@ -65,7 +65,6 @@ public:
 
 private:
     void Render_Priority();
-    void Render_Passive_Shadow();
     void Render_ShadowObjects();
     void Render_NonBlender();
 
