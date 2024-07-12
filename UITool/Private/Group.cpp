@@ -1,7 +1,11 @@
 #include "Group.h"
 
 #include "GameInstance.h"
+
+#ifdef _TOOL
 #include "Object_Manager.h"
+#endif // _TOOL
+
 #include "Image_Texture.h"
 #include "Text.h"
 #include "Btn.h"
@@ -32,15 +36,22 @@ HRESULT CGroup::Initialize_Prototype()
 	return S_OK;
 }
 
-HRESULT CGroup::Initialize(void* pArg)
+HRESULT CGroup::Initialize_Prototype(ifstream& in)
 {
-	if (nullptr == pArg)
+	if (FAILED(__super::Initialize(nullptr)))
 		return E_FAIL;
 
+	if (FAILED(Load_Groupbinary(in)))
+		return E_FAIL;
 
-		if (FAILED(__super::Initialize(pArg)))
-			return E_FAIL;
+	return S_OK;
+}
 
+HRESULT CGroup::Initialize(void* pArg)
+{
+
+	if (FAILED(__super::Initialize(pArg)))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -71,6 +82,7 @@ HRESULT CGroup::Render()
 	return S_OK;
 }
 
+
 HRESULT CGroup::Save_binary(const string strDirectory)
 {
 
@@ -80,10 +92,12 @@ HRESULT CGroup::Save_binary(const string strDirectory)
 HRESULT CGroup::Save_Groupbinary(ofstream& out)
 {
 	_int size = m_PartObjects.size();
-	out.write((char*)&size, sizeof(_int));	
+	out.write((char*)&size, sizeof(_int));
 
 	_float4x4 GroupWorld = *m_pTransformCom->Get_WorldFloat4x4();
 	out.write((char*)&GroupWorld, sizeof(_float4x4));
+
+	out.write((char*)&m_isEvent, sizeof(_bool));
 
 	for (auto& pObject : m_PartObjects)
 	{
@@ -99,7 +113,9 @@ HRESULT CGroup::Load_Groupbinary(ifstream& in)
 	in.read((char*)&size, sizeof(_int));
 	_float4x4 GroupWorld = {};
 	in.read((char*)&GroupWorld, sizeof(_float4x4));
-	m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(&GroupWorld));	
+	m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(&GroupWorld));
+
+	in.read((char*)&m_isEvent, sizeof(_bool));
 
 	for (_int i = 0; i < size; i++)
 	{
@@ -150,6 +166,8 @@ HRESULT CGroup::Load_Groupbinary(ifstream& in)
 			in.read((char*)&pDesc.fControlAlpha, sizeof(_float2));
 			in.read((char*)&pDesc.isReverse, sizeof(_bool));
 
+			in.read((char*)&pDesc.isEvent, sizeof(_bool));
+			in.read((char*)&pDesc.isScreen, sizeof(_bool));
 			pDesc.isLoad = true;
 			pDesc.pParentMatrix = m_pTransformCom->Get_WorldFloat4x4();
 
@@ -157,9 +175,7 @@ HRESULT CGroup::Load_Groupbinary(ifstream& in)
 			if (nullptr == pImage)
 				return E_FAIL;
 
-			
-
-			m_PartObjects.emplace_back(pImage);	
+			m_PartObjects.emplace_back(pImage);
 		}
 		break;
 
@@ -205,6 +221,8 @@ HRESULT CGroup::Load_Groupbinary(ifstream& in)
 			in.read((char*)&pDesc.fControlAlpha, sizeof(_float2));
 			in.read((char*)&pDesc.isReverse, sizeof(_bool));
 
+			in.read((char*)&pDesc.isEvent, sizeof(_bool));
+			in.read((char*)&pDesc.isScreen, sizeof(_bool));
 
 			ZeroMemory(charBox, MAX_PATH);
 			in.read((char*)&strTexturelength, sizeof(_int));
@@ -262,6 +280,8 @@ HRESULT CGroup::Load_Groupbinary(ifstream& in)
 			in.read((char*)&pDesc.fControlAlpha, sizeof(_float2));
 			in.read((char*)&pDesc.isReverse, sizeof(_bool));
 
+			in.read((char*)&pDesc.isEvent, sizeof(_bool));
+			in.read((char*)&pDesc.isScreen, sizeof(_bool));
 
 			ZeroMemory(charBox, MAX_PATH);
 			in.read((char*)&strTexturelength, sizeof(_int));
@@ -323,6 +343,9 @@ HRESULT CGroup::Load_Groupbinary(ifstream& in)
 			in.read((char*)&pDesc.isReverse, sizeof(_bool));
 
 
+			in.read((char*)&pDesc.isEvent, sizeof(_bool));
+			in.read((char*)&pDesc.isScreen, sizeof(_bool));
+
 			in.read((char*)&pDesc.vLifeTime, sizeof(_float3));
 			in.read((char*)&pDesc.fSpeed, sizeof(_float));
 
@@ -345,11 +368,41 @@ HRESULT CGroup::Load_Groupbinary(ifstream& in)
 	return S_OK;
 }
 
+HRESULT CGroup::Show_UI()
+{
+	for (auto& UIObject : m_PartObjects)
+	{
+		UIObject->Show_UI();
+	}
+	return S_OK;
+}
+
+HRESULT CGroup::Close_UI()
+{
+	for (auto& UIObject : m_PartObjects)
+	{
+		UIObject->Close_UI();
+	}
+	return S_OK;
+}
+
+
+
 CGroup* CGroup::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
 	CGroup* pInstance = new CGroup(pDevice, pContext);
 
 	if (FAILED(pInstance->Initialize_Prototype()))
+		Safe_Release(pInstance);
+
+	return pInstance;
+}
+
+CGroup* CGroup::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, ifstream& in)
+{
+	CGroup* pInstance = new CGroup(pDevice, pContext);
+
+	if (FAILED(pInstance->Initialize_Prototype(in)))
 		Safe_Release(pInstance);
 
 	return pInstance;

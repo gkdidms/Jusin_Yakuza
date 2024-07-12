@@ -1,5 +1,5 @@
 // 명령어			옵션		원본 파일이 있는 위치					사본 파일을 저장할 위치
-
+//이펙트
 xcopy			/y		.\EffectTool\Bin\ShaderFiles\Shader_Trail.hlsl			.\Client\Bin\ShaderFiles\Shader_Trail.hlsl	
 xcopy			/y		.\EffectTool\Bin\ShaderFiles\Shader_VtxInstance_Point.hlsl	.\Client\Bin\ShaderFiles\Shader_VtxInstance_Point.hlsl
 xcopy			/y		.\EffectTool\Bin\ShaderFiles\Shader_Aura.hlsl			.\Client\Bin\ShaderFiles\Shader_Aura.hlsl		
@@ -16,4 +16,4 @@ xcopy			/y		.\EffectTool\Private\Particle_Point.cpp			.\Client\Private\Particle_
 xcopy			/y		.\EffectTool\Private\Aura.cpp				.\Client\Private\Aura.cpp
 
 
-
+					
