@@ -363,7 +363,7 @@ PS_OUT PS_OIT_RESULT(PS_IN In)
     vector vAccumColor = g_AccumTexture.Sample(PointSampler, In.vTexcoord);
     float vAccumAlpha = g_AccumAlpha.Sample(PointSampler, In.vTexcoord).r;
     
-    float vResult = g_ResultTexture.Sample(PointSampler, In.vTexcoord).r;
+  //  float vResult = g_ResultTexture.Sample(PointSampler, In.vTexcoord).r;
     
       // 최종 출력 계산(알파*가중치)를 빼주는작업= 모두 함친 색이 나 옴
     //vector FinalColor = float4(vAccumColor.xyz / vAccumColor.a, (1-vAccumAlpha));

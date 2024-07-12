@@ -156,8 +156,9 @@ HRESULT CRenderer::Ready_Targets()
 	_uint iNumViewPort = 1;
 	m_pContext->RSGetViewports(&iNumViewPort, &ViewPort);
 
+	//20240712_NonBlendDiffuse 의 백버퍼 칼라(알파 빼고 )가 기본 스카이 박스에 곱해져서 색이 핑크핑크로 나왔었음 일단 0,0,0,0 으로 바꾸면 수습가능 (만약 다른색 원하면 구조 고쳐야됨.
 	/*Target_NonBlendDiffuse*/
-	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_NonBlendDiffuse"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_B8G8R8A8_UNORM, _float4(1.f, 0.f, 1.f, 0.f))))
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_NonBlendDiffuse"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_B8G8R8A8_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
 
 	/*Target_NonBlendNormal*/
@@ -976,7 +977,8 @@ void CRenderer::Render_LightAcc()
 
 void CRenderer::Render_CopyBackBuffer()
 {
-	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_CopyBackBuffer"))))
+	//20240712 priority  에서 copybackbuffer  를 사용하므로 false로 둬야됨
+	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_CopyBackBuffer"), nullptr, false)))
 		return;
 
 	if (FAILED(m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix)))
