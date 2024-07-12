@@ -1,20 +1,5 @@
 #include "Engine_Shader_Defines.hlsli"
-
-/* 컨스턴트 테이블(상수테이블) */
-matrix g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
-
-
-Texture2D g_Texture;
-Texture2D g_ResultTexture;
-Texture2D g_AccumColor;
-Texture2D g_AccumAlpha;
-
-vector g_vStartColor, g_vEndColor;
-vector g_vCamPosition;
-float2 g_lifeAlpha;
-float g_fRadian;
-float g_NearZ = 0.01f;
-float g_FarZ = 3000.f;
+#include "Shader_Client_Defines.hlsli"
 
 struct VS_IN
 {

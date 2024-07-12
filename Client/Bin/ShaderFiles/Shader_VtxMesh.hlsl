@@ -1,42 +1,6 @@
-
 #include "Engine_Shader_Defines.hlsli"
+#include "Shader_Client_Defines.hlsli"
 
-/* 컨스턴트 테이블(상수테이블) */
-matrix g_WorldMatrix, g_ViewMatrix, g_ProjMatrix, g_WorldMatrixInv, g_ViewMatrixInv, g_ProjMatrixInv, g_ReflectViewMatrix;
-matrix g_ViewMatrixArray[3], g_ProjMatrixArray[3];
-
-Texture2D g_DiffuseTexture;
-Texture2D g_NormalTexture;
-Texture2D g_RMTexture;
-Texture2D g_RefractionTexture;
-Texture2D g_RSTexture;
-Texture2D g_DepthTexture;
-Texture2D g_NoiseTexture;
-Texture2D g_BlurReverseTexture;
-Texture2D g_MultiDiffuseTexture;
-Texture2D g_RDTexture;
-Texture2D g_ReflectionTexture;
-
-float g_fObjID;
-float g_fRefractionScale = { 0.001f };
-
-float g_fFar = { 3000.f };
-float g_fTimeDelta;
-float g_fSpeed = 2.f;
-bool g_bExistNormalTex;
-bool g_bExistRMTex;
-bool g_bExistRSTex;
-bool g_bReflExist;
-
-vector g_vCamPosition;
-
-float2 g_RenderResolution = float2(1280, 720);
-
-bool g_isRS;
-bool g_isRD;
-
-int g_iCount = { 0 };
-const int g_iMaxCasCade = { 3 };
 
 struct VS_IN
 {
@@ -122,7 +86,7 @@ struct GS_OUT
     uint fIndex : SV_RenderTargetArrayIndex;
 };
 
-[maxvertexcount(28)]
+[maxvertexcount(9)]
 void GS_MAIN_LIGHTDEPTH(triangle GS_IN In[3], inout TriangleStream<GS_OUT> Out)
 {
     GS_OUT Output[3];
@@ -479,7 +443,7 @@ technique11 DefaultTechnique
 
     pass LightDepth //3 - construction , Construction의 render light depth에서 변경해주기
     {
-        SetRasterizerState(RS_Cull_NON_CW);
+        SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_Default, 0);
         SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 

@@ -1,23 +1,5 @@
 #include "Engine_Shader_Defines.hlsli"
-matrix g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
-matrix g_ViewMatrixArray[3], g_ProjMatrixArray[3];
-
-Texture2D g_DiffuseTexture;
-Texture2D g_NormalTexture;
-Texture2D g_DissolveTexture;
-Texture2D g_MultiDiffuseTexture;
-Texture2D g_RSTexture;
-Texture2D g_RMTexture;
-Texture2D g_RDTexture;
-matrix g_BoneMatrices[512];
-
-float g_fFar = { 3000.f };
-float g_fTimeDelta;
-
-float g_fOut = { 0.5f };
-
-bool g_isRS;
-bool g_isRD;
+#include "Shader_Client_Defines.hlsli"
 
 struct VS_IN
 {
