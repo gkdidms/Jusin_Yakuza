@@ -7,6 +7,7 @@ BEGIN(Engine)
 class CShader;
 class CModel;
 class CAnimation;
+class CAnim;
 class CBone;
 class CMesh;
 END
@@ -54,6 +55,10 @@ public:
 		return m_pModelCom;
 	}
 
+	CAnim* Get_AnimComponent() {
+		return m_pAnimCom;
+	}
+
 
 public:
 	void Change_Model(wstring strModelName);
@@ -79,6 +84,7 @@ private:
 	void	Ready_BoneSphere();
 
 private:
+	CAnim* m_pAnimCom = { nullptr }; // 애니메이션만 따로 저장하고있는 애니메이션 컴포넌트
 	CShader* m_pShaderCom = { nullptr };
 	CModel* m_pModelCom = { nullptr };
 

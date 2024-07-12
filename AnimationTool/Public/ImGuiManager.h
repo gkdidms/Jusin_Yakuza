@@ -18,6 +18,11 @@ class CImguiManager final :
 	public CBase
 {
 private:
+	enum Model_Type
+	{
+		PLAYER, ENEMY
+	};
+
 	enum Collider_Type
 	{
 		AABB, OBB, SPHERE
@@ -126,6 +131,7 @@ private:
 	/* Functional*/
 private:
 	void Gui_Select_Bone(_uint iBoneIndex);
+	void Setting_AnimationList();			//플레이어,적 선택한 값에 따라 애니메이션 컴포넌트를 읽어온다
 
 
 private:
@@ -173,9 +179,12 @@ private:
 	//first: 뼈 이름, second: 이름
 	multimap<string, string>				m_EffectState;
 
+private:
+	vector<CAnimation*>			m_pAnims;
+
 
 private:
-	_bool					m_isEffectListWindow = { false };
+	_bool						m_isEffectListWindow = { false };
 
 	_uint						m_iEffectType = { 0 };
 	int							m_iEffectSelectedIndex = { 0 };
@@ -185,31 +194,34 @@ private:
 	multimap<_uint, string>		m_EffectFiles;
 
 private:
-	_bool					m_isSoundListWindow = { false };
+	_bool						m_isSoundListWindow = { false };
 
-	_uint					m_iSoundType = { 0 };
-	vector<string>			m_SoundTypeList;
-
-private:
-	_float					m_fTimeDeltaScale = { 1.f };
+	_uint						m_iSoundType = { 0 };
+	vector<string>				m_SoundTypeList;
 
 private:
-	bool					m_isAlwaysCollider = { false };
-	float					m_ModelPosition[3] = { 0.f };
-	float					m_ModelRotation[3] = { 0.f };
-	float					m_ModelScale = { 0.f };
+	_float						m_fTimeDeltaScale = { 1.f };
 
-	float					m_fAnimationPosition = { 0.f };
+private:
+	bool						m_isAlwaysCollider = { false };
+	float						m_ModelPosition[3] = { 0.f };
+	float						m_ModelRotation[3] = { 0.f };
+	float						m_ModelScale = { 0.f };
 
-	bool					m_isPause = { false };
+	float						m_fAnimationPosition = { 0.f };
 
-	int						m_iColliderType = { 0 };
-	int						m_iColliderActionType = { 0 };
-	int						m_iColliderPartType = { 0 };
+	int							m_iModelType = { PLAYER };
 
-	float					m_fColliderRadius = { 0.f };
-	float					m_ColliderPosition[3] = { 0.f };
-	float					m_ColliderExtents[3] = { 0.f };
+private:
+	bool						m_isPause = { false };
+
+	int							m_iColliderType = { 0 };
+	int							m_iColliderActionType = { 0 };
+	int							m_iColliderPartType = { 0 };
+
+	float						m_fColliderRadius = { 0.f };
+	float						m_ColliderPosition[3] = { 0.f };
+	float						m_ColliderExtents[3] = { 0.f };
 
 private:
 	ID3D11Device* m_pDevice = { nullptr };

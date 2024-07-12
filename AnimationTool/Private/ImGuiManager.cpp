@@ -7,6 +7,7 @@
 
 #pragma region "Model"
 #include "Animation.h"
+#include "Anim.h"
 #include "Bone.h"
 #include "Channel.h"
 #include "Mesh.h"
@@ -49,8 +50,6 @@ HRESULT CImguiManager::Initialize(void* pArg)
 
 	ImGui_ImplWin32_Init(g_hWnd);
 	ImGui_ImplDX11_Init(m_pDevice, m_pContext);
-
-
 	return S_OK;
 }
 
@@ -137,7 +136,23 @@ HRESULT CImguiManager::Render()
 
 void CImguiManager::ModelList()
 {
-	//ImGui::DragFloat("drag float", &f1, 0.005f);
+	ImGui::Text(u8"적 체크 시 AnimComponent의 애니메이션 목록으로 설정한다");
+	if (ImGui::RadioButton(u8"플레이어", m_iModelType == PLAYER))
+	{
+		m_iModelType = PLAYER;
+		m_pAnims = m_pRenderModel->Get_Animations();
+	}
+	ImGui::SameLine();
+	if (ImGui::RadioButton(u8"적", m_iModelType == ENEMY))
+	{
+		m_iModelType = ENEMY;
+
+		auto pAnimCom = m_pRenderModel->Get_AnimComponent();
+		m_pAnims = pAnimCom->Get_Animations();
+	}
+
+	Setting_AnimationList();
+
 	if (ImGui::DragFloat3("Position", m_ModelPosition, 0.1f))
 	{
 		Update_Model_Position();
@@ -205,14 +220,13 @@ void CImguiManager::AnimListWindow()
 	ImGui::Begin("Anim List", &m_isOnToolWindows);
 
 	m_AnimNameList.clear();
-	const vector<CAnimation*> pAnims = m_pRenderModel->Get_Animations();
-	m_AnimNameList.resize(pAnims.size());
+	m_AnimNameList.resize(m_pAnims.size());
 
 	_uint i = 0;
 
 	vector<const char*> items;
 
-	for (auto pAnim : pAnims)
+	for (auto pAnim : m_pAnims)
 	{
 		string strChannelName = m_pGameInstance->Extract_String(pAnim->Get_AnimName(), '[', ']');
 
@@ -1258,6 +1272,8 @@ void CImguiManager::All_Load()
 	AnimationEvent_Load(strDirectory);
 	ColliderState_Load(strDirectory);
 	EffectState_Load(strDirectory);
+
+	Setting_AnimationList();
 }
 
 void CImguiManager::AlphaMesh_Load(string strPath)
@@ -1464,6 +1480,26 @@ void CImguiManager::Gui_Select_Bone(_uint iBoneIndex)
 	Reset_Collider_Value();
 	Setting_Collider_Value(iBoneIndex);
 	m_pRenderModel->Select_Bone(iBoneIndex);
+}
+
+void CImguiManager::Setting_AnimationList()
+{
+	if (nullptr == m_pRenderModel) return;
+
+	switch (m_iModelType)
+	{
+	case PLAYER:
+	{
+		m_pAnims = m_pRenderModel->Get_Animations();
+		break;
+	}
+	case ENEMY:
+	{
+		auto pAnimCom = m_pRenderModel->Get_AnimComponent();
+		m_pAnims = pAnimCom->Get_Animations();
+		break;
+	}
+	}
 }
 
 void CImguiManager::Setting_InitialData()

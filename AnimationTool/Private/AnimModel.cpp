@@ -267,6 +267,10 @@ HRESULT CAnimModel::Add_Components()
         reinterpret_cast<CComponent**>(&m_pModelCom))))
         return E_FAIL;
 
+    if (FAILED(__super::Add_Component(LEVEL_EDIT, TEXT("Prototype_Component_Anim"),
+        TEXT("Com_Anim"), reinterpret_cast<CComponent**>(&m_pAnimCom))))
+        return E_FAIL;
+
     return S_OK;
 }
 
