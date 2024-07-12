@@ -102,7 +102,7 @@ void CKiryu_KRH_Attack::Combo_Count(_bool isFinAction)
 
 _bool CKiryu_KRH_Attack::Changeable_Combo_Animation()
 {
-	_float fInterval = 0.2f;
+	_float fInterval = 0.18f;
 
 	//if (m_iComboCount > 0)			// 3Å¸Â° ÄÞº¸
 	//	fInterval = 0.3f;
