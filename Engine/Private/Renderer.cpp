@@ -722,6 +722,55 @@ void CRenderer::Render_Priority()
 		return;
 }
 
+/* 
+	지형지물의 경우 한번만 렌더타겟에 넣어두고 재활용하여 사용한다.
+	사용 시 오브젝트의 Initialize()에 오브젝트를 넣어준다.
+*/
+void CRenderer::Render_Passive_Shadow()
+{
+	if (m_RenderObject[RENDER_PASSIVE_SHADOW].size() <= 0)
+		return;
+
+	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_PassiveShadowObjects_1"), m_pLightDepthStencilView)))
+		return;
+
+	for (auto& pGameObject : m_RenderObject[RENDER_PASSIVE_SHADOW])
+	{
+		if (nullptr != pGameObject)
+			pGameObject->Render_LightDepth(0);	
+	}
+
+	if (FAILED(m_pGameInstance->End_MRT()))
+		return;
+
+	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_PassiveShadowObjects_2"), m_pLightDepthStencilView)))
+		return;
+
+	for (auto& pGameObject : m_RenderObject[RENDER_PASSIVE_SHADOW])
+	{
+		if (nullptr != pGameObject)
+			pGameObject->Render_LightDepth(1);
+	}
+
+	if (FAILED(m_pGameInstance->End_MRT()))
+		return;
+
+	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_PassiveShadowObjects_3"), m_pLightDepthStencilView)))
+		return;
+
+	for (auto& pGameObject : m_RenderObject[RENDER_PASSIVE_SHADOW])
+	{
+		if (nullptr != pGameObject)
+			pGameObject->Render_LightDepth(2);
+
+		Safe_Release(pGameObject);
+	}
+	m_RenderObject[RENDER_PASSIVE_SHADOW].clear();
+
+	if (FAILED(m_pGameInstance->End_MRT()))
+		return;
+}
+
 void CRenderer::Render_ShadowObjects()
 {
 	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_ShadowObjects"), m_pLightDepthStencilView)))
