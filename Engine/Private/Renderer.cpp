@@ -741,7 +741,7 @@ void CRenderer::Render_Passive_Shadow()
 	for (auto& pGameObject : m_RenderObject[RENDER_PASSIVE_SHADOW])
 	{
 		if (nullptr != pGameObject)
-			pGameObject->Render_LightDepth(0);	
+			pGameObject->Render_LightDepth();	
 	}
 
 	if (FAILED(m_pGameInstance->End_MRT()))
@@ -753,7 +753,7 @@ void CRenderer::Render_Passive_Shadow()
 	for (auto& pGameObject : m_RenderObject[RENDER_PASSIVE_SHADOW])
 	{
 		if (nullptr != pGameObject)
-			pGameObject->Render_LightDepth(1);
+			pGameObject->Render_LightDepth();
 	}
 
 	if (FAILED(m_pGameInstance->End_MRT()))
@@ -765,7 +765,7 @@ void CRenderer::Render_Passive_Shadow()
 	for (auto& pGameObject : m_RenderObject[RENDER_PASSIVE_SHADOW])
 	{
 		if (nullptr != pGameObject)
-			pGameObject->Render_LightDepth(2);
+			pGameObject->Render_LightDepth();
 
 		Safe_Release(pGameObject);
 	}
