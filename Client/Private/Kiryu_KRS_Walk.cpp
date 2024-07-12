@@ -5,9 +5,18 @@
 CKiryu_KRS_Walk::CKiryu_KRS_Walk()
 	:CBehaviorAnimation{}
 {
-	// 전투 중 아이들 모션은 어드벤처와 동일하다
-	//p_stand_nml 351
-	m_AnimationIndices.push_back(351);
+	m_AnimationIndices.push_back(376);			//+[376]	p_krs_shift_f[p_krs_shift_f]
+
+	/*
+		+[373]	p_krs_shift_b[p_krs_shift_b]
+		+[374]	p_krs_shift_bl[p_krs_shift_bl]
+		+[375]	p_krs_shift_br[p_krs_shift_br]
+		+[376]	p_krs_shift_f[p_krs_shift_f]
+		+[377]	p_krs_shift_fl[p_krs_shift_fl]
+		+[378]	p_krs_shift_fr[p_krs_shift_fr]
+		+[379]	p_krs_shift_l[p_krs_shift_l]
+		+[380]	p_krs_shift_r[p_krs_shift_r]
+	*/
 }
 
 void CKiryu_KRS_Walk::Tick(const _float& fTimeDelta)
@@ -38,7 +47,7 @@ CBehaviorAnimation* CKiryu_KRS_Walk::Create(CPlayer* pPlayer)
 	if (nullptr == pInstnace) 
 	{
 		Safe_Release(pInstnace);
-		MSG_BOX("Faild To Created : Kiryu_Adventure_Idle");
+		MSG_BOX("Faild To Created : Kiryu_KRS_Walk");
 		return pInstnace;
 	}
 

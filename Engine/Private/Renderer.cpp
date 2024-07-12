@@ -8,33 +8,6 @@
 //_uint		g_iSizeX = 6400;//8192 / 2;
 //_uint		g_iSizeY = 3600;//4608 / 2;
 
-/*
-셰이더 전체 흐름
-!! 수정중
-
-[Diferred Shader]
-
-	Priority ->  Shadow -> NonBlend -> Decal -> Glass ->
-
-	[SSAO]
-	SSAO -> SSAOBlur ->
-
-	LightAcc -> CopyBackBuffer -> DeferredResult ->
-
-[후처리 Shader]
-
-	[HDR]
-	Luminance -> AvgLuminance -> CopyLuminance -> HDR -> LuminanceResult ->
-
-	[BOF]
-	DeferredBlur -> Puddle -> BOF ->
-
-	[Effect]
-	NonLight -> Bloom -> FinalEffectBlend -> Blend -> Effect ->FinalOIT ->
-
-	UI (최종)
-*/
-
 CRenderer::CRenderer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: m_pDevice{pDevice}, m_pContext{pContext},
 	m_pGameInstance{ CGameInstance::GetInstance() }
@@ -674,6 +647,8 @@ void CRenderer::Draw()
 		//HDR
 		//최종 백버퍼에 그려지는 렌더 타겟은 Target_ToneMapping
 		//후처리 쉐이더 제작 시 분기처리를 해야함.
+		//HDR이 켜져있는 경우엔 (m_isHDR == true) Target_ToneMapping을 백버퍼 복사본으로 사용함.
+		//HDR이 꺼저있는 경우엔 (m_isHDR == false) Target_BackBuffer를 백버퍼 복사본으로 사용함.
 		Render_Luminance();
 		Render_AvgLuminance();
 		Render_CopyLuminance();
@@ -1054,8 +1029,6 @@ void CRenderer::Render_LightAcc()
 		return;
 	if (FAILED(m_pShader->Bind_RawValue("g_isSSAO", &m_isSSAO, sizeof(_bool))))
 		return;
-	if (FAILED(m_pShader->Bind_RawValue("g_isPBR", &m_isPBR, sizeof(_bool))))
-		return;
 
 	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Diffuse"), m_pShader, "g_DiffuseTexture")))
 		return;
@@ -1087,7 +1060,7 @@ void CRenderer::Render_LightAcc()
 
 void CRenderer::Render_CopyBackBuffer()
 {
-	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_CopyBackBuffer"))))
+	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_CopyBackBuffer"), nullptr, false)))
 		return;
 
 	if (FAILED(m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix)))
@@ -1610,7 +1583,7 @@ void CRenderer::Render_NonLight()
 
 	for (auto& iter : m_RenderObject[RENDER_NONLIGHT])
 	{
-		iter->Render();
+		iter->Render_Bloom();
 
 		Safe_Release(iter);
 	}
@@ -1629,11 +1602,16 @@ void CRenderer::Render_Bloom()
 	if (FAILED(m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
 		return;
 
+	float	fBlur = 1;
+	if (FAILED(m_pShader->Bind_RawValue("g_fTotal", &fBlur, sizeof(_float))))
+		return;
+
 	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_Blur_X"))))
 		return;
 
 	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Effect"), m_pShader, "g_EffectTexture")))
 		return;
+
 
 	m_pShader->Begin(11);
 
@@ -1827,12 +1805,12 @@ void CRenderer::Render_Debug()
 			return;
 	}
 
-//	if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_Effect"), m_pShader, m_pVIBuffer)))
-//		return;
-//	if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_Blur_X"), m_pShader, m_pVIBuffer)))
-//		return;
-//	if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_Blur_Y"), m_pShader, m_pVIBuffer)))
-//		return;
+	if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_Effect"), m_pShader, m_pVIBuffer)))
+		return;
+	if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_Blur_X"), m_pShader, m_pVIBuffer)))
+		return;
+	if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_Blur_Y"), m_pShader, m_pVIBuffer)))
+		return;
 	if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_Accum"), m_pShader, m_pVIBuffer)))
 		return;
 }

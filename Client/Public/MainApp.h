@@ -28,6 +28,7 @@ private:
 	class CSystemManager* m_pSystemManager = { nullptr };
 	class CFileTotalMgr* m_pFileTotalManager = { nullptr };
 	class CCollision_Manager* m_pCollisionManager = { nullptr };
+	class CUIManager* m_pUIManager = { nullptr };
 
 #ifdef _DEBUG
 private:

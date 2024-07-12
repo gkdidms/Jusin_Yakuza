@@ -19,10 +19,12 @@ class CObjPlace_Manager final : public CBase
 public:
 	enum OBJECT_TYPE {
 		CONSTRUCTION, /* 그냥 건축물 */
+		ROAD,
 		ITEM,
 		MONSTER,
 		PLAYER,
 		SKY,
+		LIGHT,
 		OBJ_END
 	};
 

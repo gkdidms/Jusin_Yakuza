@@ -131,15 +131,17 @@ void CConstruction::Late_Tick(const _float& fTimeDelta)
 		m_pGameInstance->Add_Renderer(CRenderer::RENDER_PUDDLE, this);
 	}
 
-	
-	//if (m_pGameInstance->isShadow())
-	//{
-	//	// 처음 렌더를 돌 때만 그림자를 그려준다.
-	//	m_pGameInstance->Add_Renderer(CRenderer::RENDER_PASSIVE_SHADOW, this);
-	//	m_isFirst = false;
-	//}
-		
-	
+
+	if (1 != m_iObjectType)
+	{
+		if (m_pGameInstance->isShadow())
+		{
+			// 처음 렌더를 돌 때만 그림자를 그려준다.
+			m_pGameInstance->Add_Renderer(CRenderer::RENDER_SHADOWOBJ, this);
+			m_isFirst = false;
+		}
+	}
+
 	for (auto& iter : m_vDecals)
 		iter->Late_Tick(fTimeDelta);	
 }
@@ -165,6 +167,11 @@ HRESULT CConstruction::Render()
 
 		_bool isRS = true;
 		_bool isRD = true;
+		if (!strcmp(Meshes[i]->Get_Name(), "[l0]face_kiryu"))
+		{
+			isRS = false;
+			isRD = false;
+		}
 
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RSTexture", i, aiTextureType_SPECULAR)))
 			isRS = false;

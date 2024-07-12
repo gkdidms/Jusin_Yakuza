@@ -136,9 +136,6 @@
     <ClCompile Include="..\Private\Kiryu_Adventure_Run.cpp">
       <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\Adventure\Run</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\UI.cpp">
-      <Filter>02.GameObjects\07.UI</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\Aura.cpp">
       <Filter>02.GameObjects\06.Effect\Aura</Filter>
     </ClCompile>
@@ -220,9 +217,6 @@
     <ClCompile Include="..\Private\SkyDome.cpp">
       <Filter>02.GameObjects\04.Sky\Dome</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\MapColliderObj.cpp">
-      <Filter>02.GameObjects\08.MapCollider\Obj</Filter>
-	</ClCompile>
     <ClCompile Include="..\Private\AI_Kuze.cpp">
       <Filter>02.GameObjects\02.Character\LandObject\01.Monster\Kuze\AI</Filter>
     </ClCompile>
@@ -231,6 +225,85 @@
     </ClCompile>
     <ClCompile Include="..\private\AI_Yoneda.cpp">
       <Filter>02.GameObjects\02.Character\LandObject\01.Monster\Yoneda\AI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\MapColliderObj.cpp" />
+    <ClCompile Include="..\Private\UIManager.cpp">
+      <Filter>95.Utility\05.UIManager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIScene.cpp">
+      <Filter>95.Utility\05.UIManager\UIScene</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_Object.cpp">
+      <Filter>95.Utility\05.UIManager\UIScene\UIObject</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Btn.cpp">
+      <Filter>95.Utility\05.UIManager\UIScene\UIObject\UITexture\Btn</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Image_Texture.cpp">
+      <Filter>95.Utility\05.UIManager\UIScene\UIObject\UITexture\Image_Texture</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Group.cpp">
+      <Filter>95.Utility\05.UIManager\UIScene\UIObject\Group</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Text.cpp">
+      <Filter>95.Utility\05.UIManager\UIScene\UIObject\UITexture\Text</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_Effect.cpp">
+      <Filter>95.Utility\05.UIManager\UIScene\UIObject\UITexture\UI_Effect</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIInven.cpp">
+      <Filter>95.Utility\05.UIManager\UIScene\UIInven</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UILife.cpp">
+      <Filter>95.Utility\05.UIManager\UIScene\UILife</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIMenu.cpp">
+      <Filter>95.Utility\05.UIManager\UIScene\UIMenu</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIMoney.cpp">
+      <Filter>95.Utility\05.UIManager\UIScene\UIMoney</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\InventoryManager.cpp">
+      <Filter>95.Utility\05.UIManager\InventoryManager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\ItemData.cpp">
+      <Filter>95.Utility\05.UIManager\InventoryManager\ItemData</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UI_Texture.cpp">
+      <Filter>95.Utility\05.UIManager\UIScene\UIObject\UITexture</Filter>
+	</ClCompile>
+    <ClCompile Include="..\Private\MapColliderObj.cpp">
+      <Filter>02.GameObjects\08. MapCollider\Obj</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\LightConstruction.cpp">
+      <Filter>02.GameObjects\03.Construction\LightConstruction</Filter>
+	</ClCompile>
+    <ClCompile Include="..\Private\Kiryu_KRS_FlyKick.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\FlyKick</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Kiryu_KRS_KickCombo.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\KickCombo</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Kiryu_KRH_BattleStart.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRH\BattleStart</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Kiryu_KRH_Hit.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRH\Hit</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Kiryu_KRH_Idle.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRH\Idle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Kiryu_KRH_Sway.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRH\Sway</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Kiryu_KRH_Walk.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRH\Walk</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Kiryu_KRH_Run.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRH\Run</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Kiryu_KRH_Attack.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRH\Attack</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -396,9 +469,6 @@
     <ClInclude Include="..\Public\Kiryu_Adventure_Run.h">
       <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\Adventure\Run</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\UI.h">
-      <Filter>02.GameObjects\07.UI</Filter>
-    </ClInclude>
     <ClInclude Include="..\public\Loader.h">
       <Filter>01.Levels\99.Loading\Loader</Filter>
     </ClInclude>
@@ -483,9 +553,6 @@
     <ClInclude Include="..\Public\SkyDome.h">
       <Filter>02.GameObjects\04.Sky\Dome</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\MapColliderObj.h">
-      <Filter>02.GameObjects\08.MapCollider\Obj</Filter>
-	</ClInclude>
     <ClInclude Include="..\Public\AI_Kuze.h">
       <Filter>02.GameObjects\02.Character\LandObject\01.Monster\Kuze\AI</Filter>
     </ClInclude>
@@ -494,6 +561,85 @@
     </ClInclude>
     <ClInclude Include="..\public\AI_Yoneda.h">
       <Filter>02.GameObjects\02.Character\LandObject\01.Monster\Yoneda\AI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\MapColliderObj.h" />
+    <ClInclude Include="..\Public\UIManager.h">
+      <Filter>95.Utility\05.UIManager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIScene.h">
+      <Filter>95.Utility\05.UIManager\UIScene</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_Object.h">
+      <Filter>95.Utility\05.UIManager\UIScene\UIObject</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Btn.h">
+      <Filter>95.Utility\05.UIManager\UIScene\UIObject\UITexture\Btn</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Image_Texture.h">
+      <Filter>95.Utility\05.UIManager\UIScene\UIObject\UITexture\Image_Texture</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Group.h">
+      <Filter>95.Utility\05.UIManager\UIScene\UIObject\Group</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Text.h">
+      <Filter>95.Utility\05.UIManager\UIScene\UIObject\UITexture\Text</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_Effect.h">
+      <Filter>95.Utility\05.UIManager\UIScene\UIObject\UITexture\UI_Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIInven.h">
+      <Filter>95.Utility\05.UIManager\UIScene\UIInven</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UILife.h">
+      <Filter>95.Utility\05.UIManager\UIScene\UILife</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIMenu.h">
+      <Filter>95.Utility\05.UIManager\UIScene\UIMenu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIMoney.h">
+      <Filter>95.Utility\05.UIManager\UIScene\UIMoney</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\InventoryManager.h">
+      <Filter>95.Utility\05.UIManager\InventoryManager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\ItemData.h">
+      <Filter>95.Utility\05.UIManager\InventoryManager\ItemData</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UI_Texture.h">
+      <Filter>95.Utility\05.UIManager\UIScene\UIObject\UITexture</Filter>
+	</ClInclude>
+    <ClInclude Include="..\Public\MapColliderObj.h">
+      <Filter>02.GameObjects\08. MapCollider\Obj</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\LightConstruction.h">
+      <Filter>02.GameObjects\03.Construction\LightConstruction</Filter>
+	</ClInclude>
+    <ClInclude Include="..\Public\Kiryu_KRS_FlyKick.h">
+      <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\FlyKick</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Kiryu_KRS_KickCombo.h">
+      <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\KickCombo</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Kiryu_KRH_BattleStart.h">
+      <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRH\BattleStart</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Kiryu_KRH_Idle.h">
+      <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRH\Idle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Kiryu_KRH_Hit.h">
+      <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRH\Hit</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Kiryu_KRH_Run.h">
+      <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRH\Run</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Kiryu_KRH_Attack.h">
+      <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRH\Attack</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Kiryu_KRH_Sway.h">
+      <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRH\Sway</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Kiryu_KRH_Walk.h">
+      <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRH\Walk</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -579,9 +725,6 @@
     </Filter>
     <Filter Include="02.GameObjects\06.Effect\Trail">
       <UniqueIdentifier>{d637f30f-2167-4420-bb64-cc2966bdd0fa}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\07.UI">
-      <UniqueIdentifier>{5ee687d4-5dfa-49a3-92da-8f0756f1687f}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObjects\01.Terrain">
       <UniqueIdentifier>{73fc58be-6ca4-4e86-b2ac-39c7c7e26f66}</UniqueIdentifier>
@@ -733,6 +876,87 @@
     <Filter Include="02.GameObjects\08. MapCollider\Obj">
       <UniqueIdentifier>{4e8421d6-5ada-48ec-9fce-0aed349f2f59}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\03.Construction\LightConstruction">
+      <UniqueIdentifier>{66dcb392-2821-4235-8686-00b40a167705}</UniqueIdentifier>
+	</Filter>
+    <Filter Include="95.Utility\05.UIManager">
+      <UniqueIdentifier>{a9202d9c-ebfb-42c2-8f41-ba5c40000cda}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\05.UIManager\UIScene">
+      <UniqueIdentifier>{83ce56e8-0e17-4ffc-b2e5-000528c20f54}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\05.UIManager\UIScene\UIObject">
+      <UniqueIdentifier>{5c86afa3-8050-43e6-be46-c45bd8c73406}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\05.UIManager\UIScene\UIInven">
+      <UniqueIdentifier>{5a2d21e4-6e70-41b2-9ba4-d716f92d65a3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\05.UIManager\UIScene\UILife">
+      <UniqueIdentifier>{252a1ef7-55e9-46cf-a20a-72d190aff5b7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\05.UIManager\UIScene\UIMenu">
+      <UniqueIdentifier>{2f9119e0-9ea5-4bdf-b2af-3e897c0854c0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\05.UIManager\UIScene\UIMoney">
+      <UniqueIdentifier>{7e36ba30-a92e-4595-bba6-d760cf7feefb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\05.UIManager\InventoryManager">
+      <UniqueIdentifier>{ec9969f6-f3fc-42e1-bb34-c5b79b4087a3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\05.UIManager\InventoryManager\ItemData">
+      <UniqueIdentifier>{1b6edbda-4992-4482-8fe5-f74f11bf2ce4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\05.UIManager\UIScene\UIObject\UITexture">
+      <UniqueIdentifier>{8b20b3a1-e821-47b7-9519-e6bda1f9c855}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\05.UIManager\UIScene\UIObject\UITexture\UI_Effect">
+      <UniqueIdentifier>{7687d4f7-e9b7-4653-9727-d52abd2dc4e5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\05.UIManager\UIScene\UIObject\UITexture\Text">
+      <UniqueIdentifier>{7e154e24-f9cd-44d6-98a0-3740478d46b4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\05.UIManager\UIScene\UIObject\UITexture\Image_Texture">
+      <UniqueIdentifier>{7ba24c26-5011-468c-9922-c8db8eb8224c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\05.UIManager\UIScene\UIObject\UITexture\Btn">
+      <UniqueIdentifier>{76b96514-5b82-403e-858f-16580839fe1e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\05.UIManager\UIScene\UIObject\Group">
+      <UniqueIdentifier>{4978f2c8-2f0c-4e8e-aee4-94423890d362}</UniqueIdentifier>
+	</Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\FlyKick">
+      <UniqueIdentifier>{5265b649-6ac1-4ac6-bba9-3786b7074296}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\KickCombo">
+      <UniqueIdentifier>{72158909-e047-4d28-ab17-be6d25e67c58}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRH\BattleStart">
+      <UniqueIdentifier>{46e340d0-46a7-4a2b-91b9-064ee1157713}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRH\Idle">
+      <UniqueIdentifier>{18f81c01-481a-457c-b573-6bdeb570882c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRH\Walk">
+      <UniqueIdentifier>{2678933d-7668-41e1-a7cc-74c249426a81}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRH\Run">
+      <UniqueIdentifier>{17aa0652-59b1-4433-99c7-7b0d04b562b9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRH\Hit">
+      <UniqueIdentifier>{4e902025-ef9b-428a-a4bf-3c5ffd96488f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRH\Sway">
+      <UniqueIdentifier>{177254a2-f938-4bcf-832b-651a89c71db0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRH\Down">
+      <UniqueIdentifier>{77a71db9-7253-4b34-b5b5-0c33cc5c900c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\Down">
+      <UniqueIdentifier>{411f4610-fe97-4d33-920b-5bb3aace9a06}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRH\Attack">
+      <UniqueIdentifier>{6953a11a-cc95-482b-8336-fe9b43317e6c}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Client.rc">
@@ -765,6 +989,12 @@
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxMeshSky.hlsl">
+      <Filter>97.ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxMeshLight.hlsl">
+		<Filter>97.ShaderFiles</Filter>
+	</FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxUI.hlsl">
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
   </ItemGroup>

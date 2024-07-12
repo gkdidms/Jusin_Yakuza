@@ -1,11 +1,19 @@
 #pragma once
 #include "UI_Texture.h"
-
+#ifdef _TOOL
+#include "UITool_Defines.h"
+#else
+#include "Client_Defines.h"
+#endif // _TOOL
 BEGIN(Engine)
 class CCollider;
 END
 
+#ifdef _TOOL
 BEGIN(UITool)
+#else
+BEGIN(Client)
+#endif
 class CBtn :
     public CUI_Texture
 {
@@ -23,6 +31,7 @@ private:
 
 public:
     virtual HRESULT Initialize_Prototype() override;
+     HRESULT Initialize_Prototype(ifstream& in) ;
     virtual HRESULT Initialize(void* pArg) override;
     virtual void Priority_Tick(const _float& fTimeDelta) override;
     virtual void Tick(const _float& fTimeDelta) override;
@@ -44,14 +53,15 @@ public:
 public:
     virtual HRESULT Save_binary(const string strDirectory)override;
     virtual HRESULT Save_Groupbinary(ofstream& out)override;
+    virtual HRESULT Load_binary(ifstream& in)override;
 private:
     CTexture* m_pClickTextureCom = { nullptr };
     CVIBuffer_Rect* m_pClickVIBufferCom = { nullptr };
 
+private:
     wstring m_strClickFilePath = { L"" };
     wstring m_StrClickFileName = { L"" };
     
-private:
     _bool m_isClick = { false };
     _float2 m_ClickStartUV = { 0.f ,0.f };
     _float2 m_ClickEndUV = { 1.f, 1.f };
@@ -62,6 +72,7 @@ private:
 
 public:
     static CBtn* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+    static CBtn* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,ifstream& in);
     virtual CGameObject* Clone(void* pArg);
     virtual void Free();
 };
