@@ -114,6 +114,29 @@ CBehaviorAnimation* CBehaviorAnimation::Create_KRH_Behavior(_uint iBehavior, cla
 
 CBehaviorAnimation* CBehaviorAnimation::Create_KRC_Behavior(_uint iBehavior, class CPlayer* pPlayer)
 {
+	/*
+		BTL_START, IDLE, WALK, RUN, ATTACK, HIT,
+		SWAY, DOWN, KRS_BEHAVIOR_END
+	*/
+	switch (iBehavior)
+	{
+	case 0:			//BTL_START
+		return CKiryu_KRH_BattleStart::Create(pPlayer);
+	case 1:			// IDLE
+		return CKiryu_KRH_Idle::Create(pPlayer);
+	case 2:			// WALK
+		return CKiryu_KRH_Walk::Create(pPlayer);
+	case 3:			// RUN
+		return CKiryu_KRH_Run::Create(pPlayer);
+	case 4:			//ATTACK
+		return CKiryu_KRH_Attack::Create(pPlayer);
+	case 5:			//HIT
+		return CKiryu_KRH_Hit::Create(pPlayer);
+	case 6:			// SWAY
+		return CKiryu_KRH_Sway::Create(pPlayer);
+	case 7:			// DOWN
+		break;
+	}
 	return nullptr;
 }
 
