@@ -11,7 +11,7 @@ private:
 
 public:
     HRESULT Initialize();
-    HRESULT Add_RenderTarget(const wstring& strRenderTargetTag, _uint iSizeX, _uint iSizeY, DXGI_FORMAT ePixelFormat, const _float4& vClearColor);
+    HRESULT Add_RenderTarget(const wstring& strRenderTargetTag, _uint iSizeX, _uint iSizeY, DXGI_FORMAT ePixelFormat, const _float4& vClearColor, _uint iArrayCount);
     HRESULT Add_MRT(const wstring& strMRTTag, const wstring& strRenderTargetTag);
     HRESULT Begin_MRT(const wstring& strMRTTag, ID3D11DepthStencilView* pDSView, _bool isClear);
     HRESULT End_MRT();
@@ -22,7 +22,7 @@ public:
 
 #ifdef _DEBUG
     HRESULT Ready_Debug(const wstring strRenderTargetTag, _float fX, _float fY, _float fSizeX, _float fSizeY);
-    HRESULT Render_Debug(const wstring& strMRTTag, class CShader* pShader, class CVIBuffer_Rect* pVIBuffer);
+    HRESULT Render_Debug(const wstring& strMRTTag, class CShader* pShader, class CVIBuffer_Rect* pVIBuffer, _bool isArray);
 #endif // _DEBUG
 
 private:

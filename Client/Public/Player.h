@@ -26,9 +26,26 @@ public:
     };    
     enum class KRS_BEHAVIOR_STATE
     {
-        BTL_START, IDLE, WALK, RUN, ATTACK, HIT, SWAY, DOWN, KRS_BEHAVIOR_END
-
+        BTL_START, IDLE, WALK, RUN, ATTACK, HIT, 
+        SWAY, DOWN, 
+        SKILL_FLY_KICK, SKILL_KICK_COMBO,
+        KRS_BEHAVIOR_END
     };
+
+    enum class KRH_BEHAVIOR_STATE
+    {
+        BTL_START, IDLE, WALK, RUN, ATTACK, HIT,
+        SWAY, DOWN, 
+        KRH_BEHAVIOR_END
+    };
+
+    enum class KRC_BEHAVIOR_STATE
+    {
+        BTL_START, IDLE, WALK, RUN, ATTACK, HIT,
+        SWAY, DOWN, GAURD,
+        KRC_BEHAVIOR_END
+    };
+
 
     enum MOVE_DIRECTION
     {
@@ -55,6 +72,7 @@ public:
 public:
     _uint Get_BattleStyle() { return m_eCurrentStyle; }
     _bool isAttack() { return m_iCurrentBehavior == static_cast<_uint>(KRS_BEHAVIOR_STATE::ATTACK); }
+    void  Set_StartPos(XMMATRIX    vStartPos) { m_pTransformCom->Set_WorldMatrix(vStartPos); }
 
 public:
     virtual HRESULT Initialize_Prototype() override;
@@ -63,7 +81,7 @@ public:
     virtual void Tick(const _float& fTimeDelta) override;
     virtual void Late_Tick(const _float& fTimeDelta) override;
     virtual HRESULT Render() override;
-    virtual HRESULT Render_LightDepth(_uint iIndex) override;
+    virtual HRESULT Render_LightDepth() override;
 
     // 충돌함수
     virtual void Take_Damage(_uint iHitColliderType, const _float3& vDir, _float fDamage, _bool isBlowAttack = false) override;

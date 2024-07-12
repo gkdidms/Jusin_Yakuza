@@ -583,58 +583,102 @@ void CObjPlace_Manager::Edit_Installed_GameObject(int iNumObject)
 		m_tCurrentObjectDesc.iObjType = OBJECT_TYPE::CONSTRUCTION;
 	}
 
-	if (ImGui::RadioButton(u8"아이템", m_tCurrentObjectDesc.iObjType == 1))
+	if (ImGui::RadioButton(u8"도로", m_tCurrentObjectDesc.iObjType == 1))
+	{
+		objectType = 0;
+		m_tCurrentObjectDesc.iObjType = OBJECT_TYPE::ROAD;
+	}
+
+	if (ImGui::RadioButton(u8"아이템", m_tCurrentObjectDesc.iObjType == 2))
 	{
 		objectType = 1;
 		m_tCurrentObjectDesc.iObjType = OBJECT_TYPE::ITEM;
 	}
 
-	if (ImGui::RadioButton(u8"몬스터", m_tCurrentObjectDesc.iObjType == 2))
+	if (ImGui::RadioButton(u8"몬스터", m_tCurrentObjectDesc.iObjType == 3))
 	{
 		objectType = 2;
 		m_tCurrentObjectDesc.iObjType = OBJECT_TYPE::MONSTER;
 	}
 
-	if (ImGui::RadioButton(u8"플레이어", m_tCurrentObjectDesc.iObjType == 3))
+	if (ImGui::RadioButton(u8"플레이어", m_tCurrentObjectDesc.iObjType == 4))
 	{
 		objectType = 3;
 		m_tCurrentObjectDesc.iObjType = OBJECT_TYPE::PLAYER;
 	}
 
-	if (ImGui::RadioButton(u8"스카이", m_tCurrentObjectDesc.iObjType == 4))
+	if (ImGui::RadioButton(u8"스카이", m_tCurrentObjectDesc.iObjType == 5))
 	{
 		objectType = 4;
 		m_tCurrentObjectDesc.iObjType = OBJECT_TYPE::SKY;
+	}
+
+	if (ImGui::RadioButton(u8"라이트", m_tCurrentObjectDesc.iObjType == 6))
+	{
+		objectType = 5;
+		m_tCurrentObjectDesc.iObjType = OBJECT_TYPE::LIGHT;
 	}
 
 
 	ImGui::NewLine();
 
 	ImGui::Text(u8"쉐이더");
+
 	static int shaderType = m_tCurrentObjectDesc.iShaderPass;
-	if (ImGui::RadioButton(u8"shader1", m_tCurrentObjectDesc.iShaderPass == 0))
+	// Light관련
+	if (objectType == 5)
 	{
-		shaderType = 0;
-		m_tCurrentObjectDesc.iShaderPass = 0;
-	}
+		if (ImGui::RadioButton(u8"그냥 간판", m_tCurrentObjectDesc.iShaderPass == 0))
+		{
+			shaderType = 0;
+			m_tCurrentObjectDesc.iShaderPass = 0;
+		}
 
-	if (ImGui::RadioButton(u8"유리", m_tCurrentObjectDesc.iShaderPass == 1))
-	{
-		shaderType = 1;
-		m_tCurrentObjectDesc.iShaderPass = 1;
-	}
+		if (ImGui::RadioButton(u8"x로 움직이는", m_tCurrentObjectDesc.iShaderPass == 1))
+		{
+			shaderType = 1;
+			m_tCurrentObjectDesc.iShaderPass = 1;
+		}
 
-	if (ImGui::RadioButton(u8"물", m_tCurrentObjectDesc.iShaderPass == 2))
-	{
-		shaderType = 2;
-		m_tCurrentObjectDesc.iShaderPass = 2;
-	}
+		if (ImGui::RadioButton(u8"물", m_tCurrentObjectDesc.iShaderPass == 2))
+		{
+			shaderType = 2;
+			m_tCurrentObjectDesc.iShaderPass = 2;
+		}
 
-	if (ImGui::RadioButton(u8"기타", m_tCurrentObjectDesc.iShaderPass == 3))
-	{
-		shaderType = 3;
-		m_tCurrentObjectDesc.iShaderPass = 3;
+		if (ImGui::RadioButton(u8"기타", m_tCurrentObjectDesc.iShaderPass == 3))
+		{
+			shaderType = 3;
+			m_tCurrentObjectDesc.iShaderPass = 3;
+		}
 	}
+	else
+	{
+		if (ImGui::RadioButton(u8"shader1", m_tCurrentObjectDesc.iShaderPass == 0))
+		{
+			shaderType = 0;
+			m_tCurrentObjectDesc.iShaderPass = 0;
+		}
+
+		if (ImGui::RadioButton(u8"유리", m_tCurrentObjectDesc.iShaderPass == 1))
+		{
+			shaderType = 1;
+			m_tCurrentObjectDesc.iShaderPass = 1;
+		}
+
+		if (ImGui::RadioButton(u8"물", m_tCurrentObjectDesc.iShaderPass == 2))
+		{
+			shaderType = 2;
+			m_tCurrentObjectDesc.iShaderPass = 2;
+		}
+
+		if (ImGui::RadioButton(u8"기타", m_tCurrentObjectDesc.iShaderPass == 3))
+		{
+			shaderType = 3;
+			m_tCurrentObjectDesc.iShaderPass = 3;
+		}
+	}
+	
 
 }
 
@@ -835,22 +879,39 @@ void CObjPlace_Manager::Set_Map_Object()
 	ImGui::Text(u8"오브젝트유형");
 	static int objectType = 0;
 	ImGui::RadioButton(u8"그냥건물", &objectType, OBJECT_TYPE::CONSTRUCTION);
+	ImGui::RadioButton(u8"도로", &objectType, OBJECT_TYPE::ROAD);
 	ImGui::RadioButton(u8"아이템", &objectType, OBJECT_TYPE::ITEM);
 	ImGui::RadioButton(u8"몬스터", &objectType, OBJECT_TYPE::MONSTER);
 	ImGui::RadioButton(u8"플레이어", &objectType, OBJECT_TYPE::PLAYER);
 	ImGui::RadioButton(u8"스카이", &objectType, OBJECT_TYPE::SKY);
+	ImGui::RadioButton(u8"라이트", &objectType, OBJECT_TYPE::LIGHT);
 
 	ImGui::NewLine();
 
 	ImGui::Text(u8"쉐이더");
 	static int shaderType = 0;
-	ImGui::RadioButton(u8"일반", &shaderType, 0);
-	ImGui::NewLine();
-	ImGui::RadioButton(u8"유리", &shaderType, 1);
-	ImGui::NewLine();
-	ImGui::RadioButton(u8"물", &shaderType, 2);
-	ImGui::NewLine();
-	ImGui::RadioButton(u8"기타", &shaderType, 3);
+
+	if (objectType == (int)OBJECT_TYPE::LIGHT)
+	{
+		ImGui::RadioButton(u8"그냥간판", &shaderType, 0);
+		ImGui::NewLine();
+		ImGui::RadioButton(u8"움직이는", &shaderType, 1);
+		ImGui::NewLine();
+		ImGui::RadioButton(u8"물", &shaderType, 2);
+		ImGui::NewLine();
+		ImGui::RadioButton(u8"기타", &shaderType, 3);
+	}
+	else
+	{
+		ImGui::RadioButton(u8"일반", &shaderType, 0);
+		ImGui::NewLine();
+		ImGui::RadioButton(u8"유리", &shaderType, 1);
+		ImGui::NewLine();
+		ImGui::RadioButton(u8"물", &shaderType, 2);
+		ImGui::NewLine();
+		ImGui::RadioButton(u8"기타", &shaderType, 3);
+	}
+	
 
 
 	ImGui::NewLine();

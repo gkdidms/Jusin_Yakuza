@@ -276,6 +276,9 @@ CUIInven* CUIInven::Create(void* pArg)
 
 void CUIInven::Free()
 {
+	for (auto& iter : m_Toggle)
+		Safe_Release(iter);
+
 	Safe_Release(m_pInvenctory);	
 	__super::Free();
 }

@@ -49,7 +49,15 @@ PS_OUT PS_MAIN_DEBUG(PS_IN In)
 {
     PS_OUT Out = (PS_OUT) 0;
 
-    Out.vColor = g_Texture.Sample(LinearSampler, In.vTexcoord);
+    if (g_isArray)
+    {
+        for (int i = 0; i < 3; i++)
+        {
+            Out.vColor = g_TextureArray.Sample(LinearSampler, float3(In.vTexcoord, 0));
+        }
+    }
+    else
+        Out.vColor = g_Texture.Sample(LinearSampler, In.vTexcoord);
 
     return Out;
 }
@@ -113,14 +121,14 @@ PS_OUT_LIGHT PS_MAIN_LIGHT_DIRECTIONAL(PS_IN In)
         vAmbient *= vAmbientDesc;
     
     Out.vShade = g_vLightDiffuse * saturate(max(dot(normalize(g_vLightDir) * -1.f, normalize(vNormal)), 0.f) + vAmbient);
-    //Grass
-    vector vGlassNormalDesc = g_GlassNormalTexture.Sample(LinearSampler,In.vTexcoord);
-    vector vGlassNormal = vector(vGlassNormalDesc.xyz * 2.f - 1.f, 0.f);
     
     Out.vSpecularRM = BRDF(In.vPosition, In.vTexcoord, normalize(vNormal), vDepthDesc);
     Out.vSpecularMulti = vector(BRDF_MULTI(In.vPosition, In.vTexcoord, normalize(vNormal), vDepthDesc), 1.f);
     Out.vLightMap = g_vLightDiffuse;
     
+    //Grass
+    vector vGlassNormalDesc = g_GlassNormalTexture.Sample(LinearSampler, In.vTexcoord);
+    vector vGlassNormal = vector(vGlassNormalDesc.xyz * 2.f - 1.f, 0.f);
     if (vGlassNormalDesc.a == 0.f)
     {
         vector vGlassDepthDesc = g_GlassDepthTexture.Sample(PointSampler, In.vTexcoord);
@@ -137,8 +145,8 @@ PS_OUT_LIGHT PS_MAIN_LIGHT_DIRECTIONAL(PS_IN In)
         vWorldPos = mul(vWorldPos, g_ProjMatrixInv);
         vWorldPos = mul(vWorldPos, g_ViewMatrixInv);
 
-        vector vReflect = reflect(normalize(g_vLightDir) , normalize(vGlassNormal));
-        vector vLook = normalize(g_vCamPosition - vWorldPos);
+        vector vReflect = reflect(normalize(g_vLightDir), normalize(vGlassNormal));
+        vector vLook = g_vCamPosition - vWorldPos;
     
         Out.vSpecular = pow(max(dot(normalize(vReflect), normalize(vLook)), 0.f), 30.f);
     }
@@ -182,13 +190,18 @@ PS_OUT_LIGHT PS_MAIN_LIGHT_POINT(PS_IN In)
     return Out;
 }
 
+vector Get_CameraProj(vector vWorldPos)
+{
+    matrix matCamVP = mul(g_CamViewMatrix, g_CamProjMatrix);
+    
+    return mul(vWorldPos, matCamVP);
+}
+
 PS_OUT PS_MAIN_COPY_BACKBUFFER_RESULT(PS_IN In)
 {
     PS_OUT Out = (PS_OUT) 0;
 
     vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
-    if (0.0f == vDiffuse.a)
-        discard;
     
     vector vShade = g_ShadeTexture.Sample(LinearSampler, In.vTexcoord);
     vector vSpeculer = g_SpecularTexture.Sample(LinearSampler, In.vTexcoord);
@@ -199,7 +212,7 @@ PS_OUT PS_MAIN_COPY_BACKBUFFER_RESULT(PS_IN In)
         vector vMetallicMulti = g_MultiDiffuseTexture.Sample(LinearSampler, In.vTexcoord);
     
         vector vLightmap = g_LightMapTexture.Sample(LinearSampler, In.vTexcoord);
-    // 기존
+    // 여기 Speculer 수정해야 함.
         Out.vColor = (vDiffuse * vMetallicMulti) * vShade + (vSpeculerRM + vSpeculer) * vLightmap;
     }
     else
@@ -210,6 +223,7 @@ PS_OUT PS_MAIN_COPY_BACKBUFFER_RESULT(PS_IN In)
     if (g_isShadow)
     {
         vector vDepthDesc = g_DepthTexture.Sample(PointSampler, In.vTexcoord);
+        
         vector vWorldPos;
 
         vWorldPos.x = In.vTexcoord.x * 2.f - 1.f;
@@ -218,47 +232,41 @@ PS_OUT PS_MAIN_COPY_BACKBUFFER_RESULT(PS_IN In)
         vWorldPos.w = 1.f;
 
         vWorldPos = vWorldPos * (vDepthDesc.y * g_fFar);
+        float fProjZ = vWorldPos.z;
 
-	/* 뷰스페이스 상의 위치를 구한다. */
+	        /* 뷰스페이스 상의 위치를 구한다. */
         vWorldPos = mul(vWorldPos, g_ProjMatrixInv);
 
-	/* 월드스페이스 상의 위치를 구한다. */
+	        /* 월드스페이스 상의 위치를 구한다. */
         vWorldPos = mul(vWorldPos, g_ViewMatrixInv);
-
-        vector vLightPos = mul(vWorldPos, g_LightViewMatrix);
-        vLightPos = mul(vLightPos, g_LightProjMatrix);
-        vLightPos = vector(vLightPos.xyz / vLightPos.w, 1.f);
         
-        float2 vTexcoord;
-        vTexcoord.x = vLightPos.x * 0.5f + 0.5f;
-        vTexcoord.y = vLightPos.y * -0.5f + 0.5f;
-        float fDepth = vLightPos.z;
+        //vector vCamPos = Get_CameraProj(vWorldPos);
         
-       // float percentLit = 0.0f;
-        
-        /*const float2 offsets[9] =
+        for (int i = 0; i < 3; ++i)
         {
-            float2(-dx, -dx), float2(0.0f, -dx), float2(dx, -dx),
-            float2(-dx, 0.0f), float2(0.0f, 0.0f), float2(dx, 0.0f),
-            float2(-dx, +dx), float2(0.0f, +dx), float2(dx, +dx)
-        };
-        */
+            vector vLightPos = mul(vWorldPos, g_ViewMatrixArray[i]);
+            vLightPos = mul(vLightPos, g_ProjMatrixArray[i]);
         
-       // vector vLightDepthDesc = g_LightDepthTexture.Sample(PointSampler, vTexcoord);
-        vector vPassiveLightDepthDesc = g_PassiveLightDepthTexture.Sample(PointSampler, vTexcoord);
+            float2 vTexcoord;
+            vTexcoord.x = (vLightPos.x / vLightPos.w) * 0.5f + 0.5f;
+            vTexcoord.y = (vLightPos.y / vLightPos.w) * -0.5f + 0.5f;
+            
+            if (vTexcoord.x < 0 || vTexcoord.x > 1 || vTexcoord.y < 0 || vTexcoord.y > 1)
+            {
+                continue;
+            }
         
-        //float fLightOldDepth = vLightDepthDesc.x * 1000.f;
-        float fPassiveLightOldDepth = vPassiveLightDepthDesc.x * 1000.f;
-        
-        //if (fLightOldDepth + 0.1f < vLightPos.w)
-        //    Out.vColor = vector(Out.vColor.rgb * 0.5f, 1.f);
-        
-        
-        
-        if (fPassiveLightOldDepth + 0.1f < vLightPos.w)
-            Out.vColor = vector(Out.vColor.rgb * 0.5f, 1.f);
+            vector vLightDepthDesc = g_LightDepthTextureArray.Sample(ShadowSampler, float3(vTexcoord, i));
+            float fLightOldDepth = vLightDepthDesc.x * 1000.f;
+            
+            if (fLightOldDepth - 0.001f < vLightPos.w)
+            {
+                Out.vColor = vector(Out.vColor.rgb * 0.5f, 1.f);
+                
+                break;
+            }
+        }
     }
-    
     return Out;
 }
 
@@ -335,13 +343,13 @@ PS_OUT PS_MAIN_RESULT(PS_IN In)
 {
     PS_OUT Out = (PS_OUT) 0;
 
-    vector vResult = g_ResultTexture.Sample(LinearSampler, In.vTexcoord);   
+    vector vResult = g_ResultTexture.Sample(LinearSampler, In.vTexcoord);
 
-    vector vBlur = g_BlurTexture.Sample(LinearSampler, In.vTexcoord);   
+    vector vBlur = g_BlurTexture.Sample(LinearSampler, In.vTexcoord);
     
     vector vEffect = g_EffectTexture.Sample(LinearSampler, In.vTexcoord);
     
-     Out.vColor = vResult + vBlur + vEffect;
+    Out.vColor = vResult + vBlur + vEffect;
     
     return Out;
 }
@@ -359,7 +367,7 @@ PS_OUT PS_OIT_RESULT(PS_IN In)
     
       // 최종 출력 계산(알파*가중치)를 빼주는작업= 모두 함친 색이 나 옴
     //vector FinalColor = float4(vAccumColor.xyz / vAccumColor.a, (1-vAccumAlpha));
-    vector FinalColor = float4(vAccumColor.xyz , (1-vAccumAlpha));
+    vector FinalColor = float4(vAccumColor.xyz, (1 - vAccumAlpha));
 
     //Out.vColor = vResult+FinalColor;
     Out.vColor = FinalColor;
@@ -434,7 +442,7 @@ PS_OUT PS_MAIN_BOF(PS_IN In)
     
     float fDistance = length(g_vCamPosition.xyz - vWorldPos.xyz);
     
-    Out.vColor = lerp(vDiffuseDesc, vDiffuseBlurDesc, fDistance / g_fFar * 100.f);
+    Out.vColor = lerp(vDiffuseDesc, vDiffuseBlurDesc, saturate(fDistance / g_fFar * 50.f));
     
     return Out;
 }
@@ -446,7 +454,7 @@ PS_OUT PS_ADD_PUDDLE(PS_IN In)
 
     vector vPuddle = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
     
-    if(0 == vPuddle.r && 0 == vPuddle.g && 0 == vPuddle.b)
+    if (0 == vPuddle.r && 0 == vPuddle.g && 0 == vPuddle.b)
         discard;
     
     Out.vColor = vPuddle;
@@ -668,7 +676,7 @@ technique11 DefaultTechnique
         GeometryShader = NULL;
         HullShader = NULL;
         DomainShader = NULL;
-        PixelShader = compile ps_5_0 PS_OIT_RESULT();   
+        PixelShader = compile ps_5_0 PS_OIT_RESULT();
     }
     
     pass IncludeGlassRender //16 - diffuse와 Glass 합치기
@@ -711,4 +719,3 @@ technique11 DefaultTechnique
         PixelShader = compile ps_5_0 PS_ADD_PUDDLE();
     }
 }
-

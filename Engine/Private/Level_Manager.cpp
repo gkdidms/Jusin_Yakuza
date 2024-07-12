@@ -4,7 +4,7 @@
 #include "Level.h"
 
 CLevel_Manager::CLevel_Manager()
-	: m_pGameInstance{CGameInstance::GetInstance()}
+	: m_pGameInstance{ CGameInstance::GetInstance() }
 {
 	Safe_AddRef(m_pGameInstance);
 }

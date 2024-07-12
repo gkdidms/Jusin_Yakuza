@@ -74,6 +74,17 @@ void CPlayer::Tick(const _float& fTimeDelta)
 	{
 		Style_Change(KRS);
 	}
+
+	if (m_pGameInstance->GetKeyState(DIK_LEFT) == TAP)
+	{
+		Style_Change(KRH);
+	}
+
+	if (m_pGameInstance->GetKeyState(DIK_RIGHT) == TAP)
+	{
+		Style_Change(KRC);
+	}
+
 	if (m_pGameInstance->GetKeyState(DIK_DOWN) == TAP)
 	{
 		Style_Change(ADVENTURE);
@@ -187,36 +198,111 @@ HRESULT CPlayer::Render()
 	return S_OK;
 }
 
-HRESULT CPlayer::Render_LightDepth(_uint iIndex)
+HRESULT CPlayer::Render_LightDepth()
 {
+	//케스케이드 그림자맵을 위한 절두체
+	_float3 vFrustum[]{
+		{-1.f, 1.f, 0.f},
+		{1.f, 1.f, 0.f},
+		{1.f, -1.f, 0.f},
+		{-1.f, -1.f, 0.f},
+
+		{-1.f, 1.f, 1.f},
+		{1.f, 1.f, 1.f},
+		{1.f, -1.f, 1.f},
+		{-1.f, -1.f, 1.f}
+	};
+
+	// NDC좌표계 -> 월드 좌표계 변환 행렬
+	_matrix ViewMatrixInverse = m_pGameInstance->Get_Transform_Inverse_Matrix(CPipeLine::D3DTS_VIEW);
+	_matrix ProjMatrixInverse = m_pGameInstance->Get_Transform_Inverse_Matrix(CPipeLine::D3DTS_PROJ);
+
+	_float4	vPoints[8] = {};
+	_float4x4 ViewMatrixArray[3] = {};
+	_float4x4 ProjMatrixArray[3] = {};
+
+	for (size_t i = 0; i < 8; i++)
+	{
+		XMStoreFloat4(&vPoints[i], XMVector3TransformCoord(XMLoadFloat3(&vFrustum[i]), ProjMatrixInverse));
+	}
+	for (size_t i = 0; i < 8; i++)
+		XMStoreFloat3(&vFrustum[i], XMVector3Transform(XMLoadFloat4(&vPoints[i]), ViewMatrixInverse));
+
+	for (size_t i = 0; i < m_Casecade.size() - 1; ++i)
+	{
+		//큐브의 정점을 시야절두체 구간으로 변경
+		_float3 Frustum[8];
+		for (size_t j = 0; j < 8; ++j)
+			Frustum[j] = vFrustum[j];
+
+		for (size_t j = 0; j < 4; ++j)
+		{
+			//앞에서 뒤쪽으로 향하는 벡터
+			_vector vTemp = XMVector3Normalize(XMLoadFloat3(&Frustum[j + 4]) - XMLoadFloat3(&Frustum[j]));
+
+			//구간 시작, 끝으로 만들어주는 벡터
+			_vector n = vTemp * m_Casecade[i];
+			_vector f = vTemp * m_Casecade[i + 1];
+
+			//구간 시작, 끝으로 설정
+			XMStoreFloat3(&Frustum[j + 4], XMLoadFloat3(&Frustum[j]) + f);
+			XMStoreFloat3(&Frustum[j], XMLoadFloat3(&Frustum[j]) + n);
+		}
+
+		//해당 구간을 포함할 바운딩구의 중심을 계산
+		_vector vCenter{};
+		for (auto& v : Frustum)
+		{
+			//_matrix matCamInv = m_pGameInstance->Get_Transform_Inverse_Matrix(CPipeLine::D3DTS_VIEW);
+			//XMStoreFloat3(&v, XMVector3TransformCoord(XMLoadFloat3(&v), matCamInv));
+			vCenter = vCenter + XMLoadFloat3(&v);
+		}
+
+		vCenter = vCenter / 8.f;
+		vCenter.m128_f32[3] = 1.f;
+
+		//바운딩구의 반지름을 계산
+		_float fRadius = 0;
+		for (auto& v : Frustum)
+			fRadius = max(fRadius, XMVector3Length(XMLoadFloat3(&v) - vCenter).m128_f32[0]);
+
+		fRadius = ceil(fRadius * 16.f) / 16.f;
+
+		/* 광원 기준의 뷰 변환행렬. */
+		_float4x4		ViewMatrix, ProjMatrix;
+
+		_vector vLightDir = m_pSystemManager->Get_ShadowViewPos();
+		_vector  shadowLightPos = vCenter + (vLightDir * -fRadius);
+		shadowLightPos.m128_f32[3] = 1.f;
+
+		XMStoreFloat4x4(&ViewMatrix, XMMatrixLookAtLH(shadowLightPos, vCenter, XMVectorSet(0.f, 1.f, 0.f, 0.f)));
+		XMStoreFloat4x4(&ProjMatrix, XMMatrixOrthographicLH(fRadius * 2.f, fRadius * 2.f, 0.1f, 1000.f));
+
+		ViewMatrixArray[i] = ViewMatrix;
+		ProjMatrixArray[i] = ProjMatrix;
+	}
+
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_WorldMatrix", m_pTransformCom->Get_WorldFloat4x4())))
 		return E_FAIL;
-
-	_float4x4		ViewMatrix, ProjMatrix;
-
-	/* 광원 기준의 뷰 변환행렬. */
-	_vector vViewPos = m_pSystemManager->Get_ShadowViewPos();
-	XMStoreFloat4x4(&ViewMatrix, XMMatrixLookAtLH(vViewPos, XMVectorSet(0.f, 0.f, 0.f, 1.f), XMVectorSet(0.f, 1.f, 0.f, 0.f)));
-	XMStoreFloat4x4(&ProjMatrix, XMMatrixPerspectiveFovLH(XMConvertToRadians(120.0f), (_float)g_iWinSizeX / g_iWinSizeY, 0.1f, 1000.f));
-
-	if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", &ViewMatrix)))
+	if (FAILED(m_pShaderCom->Bind_Matrices("g_ViewMatrixArray", ViewMatrixArray, 3)))
 		return E_FAIL;
-	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", &ProjMatrix)))
+	if (FAILED(m_pShaderCom->Bind_Matrices("g_ProjMatrixArray", ProjMatrixArray, 3)))
 		return E_FAIL;
 
 	_uint	iNumMeshes = m_pModelCom->Get_NumMeshes();
 
 	for (size_t i = 0; i < iNumMeshes; i++)
 	{
-		m_pModelCom->Bind_BoneMatrices(m_pShaderCom, "g_BoneMatrices", i);
-
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
 			return E_FAIL;
 
-		m_pShaderCom->Begin(2);
+		m_pShaderCom->Begin(3);
 
 		m_pModelCom->Render(i);
 	}
+
+	m_pGameInstance->Set_ShadowTransformViewMatrix(ViewMatrixArray);
+	m_pGameInstance->Set_ShadowTransformProjMatrix(ProjMatrixArray);
 
 	return S_OK;
 }
@@ -236,6 +322,16 @@ void CPlayer::Ready_AnimationTree()
 	for (size_t i = 0; i < (_uint)KRS_BEHAVIOR_STATE::KRS_BEHAVIOR_END; i++)
 	{
 		m_AnimationTree[KRS].emplace(i, CBehaviorAnimation::Create(KRS, i, this));
+	}
+
+	for (size_t i = 0; i < (_uint)KRH_BEHAVIOR_STATE::KRH_BEHAVIOR_END; i++)
+	{
+		m_AnimationTree[KRH].emplace(i, CBehaviorAnimation::Create(KRH, i, this));
+	}
+
+	for (size_t i = 0; i < (_uint)KRC_BEHAVIOR_STATE::KRC_BEHAVIOR_END; i++)
+	{
+		m_AnimationTree[KRC].emplace(i, CBehaviorAnimation::Create(KRC, i, this));
 	}
 
 }
@@ -432,6 +528,8 @@ void CPlayer::KRS_KeyInput(const _float& fTimeDelta)
 	_bool isShift = { false };
 	_bool isMove = { false };
 
+	if (m_iCurrentBehavior == (_uint)KRS_BEHAVIOR_STATE::SKILL_FLY_KICK) return;
+
 	if (m_pGameInstance->GetKeyState(DIK_LSHIFT) == HOLD)
 	{
 		isShift = true;
@@ -451,8 +549,23 @@ void CPlayer::KRS_KeyInput(const _float& fTimeDelta)
 		// 현재 어택상태인지를 구분해서 마무리 액션을 실행시키거나
 		// 그에 맞는 커맨드 액션을 실행시ㅕ켜야 한다.
 
-		m_iCurrentBehavior = (_uint)KRS_BEHAVIOR_STATE::ATTACK;
-		m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Combo_Count(true);
+		// 여기에 스킬트리가 완료되면 스킬을 보유중인지에 대한 조건식을 추가로 잡아야한다
+		if (m_iCurrentBehavior == (_uint)KRS_BEHAVIOR_STATE::RUN)
+		{
+			m_iCurrentBehavior = (_uint)KRS_BEHAVIOR_STATE::SKILL_FLY_KICK;
+		}
+		// 기본 러쉬콤보 진행중일 때에 우클릭이 들어오면 피니시 블로 실행
+		else if(m_iCurrentBehavior == (_uint)KRS_BEHAVIOR_STATE::ATTACK)
+		{
+			m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Combo_Count(true);
+		}
+		// 아무것도 아닌 상태에서 우클릭이 들어온다면 킥콤보를 실행
+		else
+		{
+			m_iCurrentBehavior = (_uint)KRS_BEHAVIOR_STATE::SKILL_KICK_COMBO;
+			m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Combo_Count();
+		}
+
 	}
 
 	if (m_iCurrentBehavior < (_uint)KRS_BEHAVIOR_STATE::ATTACK)
@@ -499,7 +612,6 @@ void CPlayer::KRS_KeyInput(const _float& fTimeDelta)
 			m_pTransformCom->LookAt_For_LandObject(vLookPos);
 			isMove = true;
 		}
-		//	m_iCurrentBehavior = isShift ? (_uint)ADVENTURE_BEHAVIOR_STATE::WALK : (_uint)ADVENTURE_BEHAVIOR_STATE::RUN;
 		if (m_pGameInstance->GetKeyState(DIK_D) == HOLD)
 		{
 			if (m_iCurrentBehavior == (_uint)KRS_BEHAVIOR_STATE::WALK || m_iCurrentBehavior == (_uint)KRS_BEHAVIOR_STATE::RUN)
@@ -507,16 +619,11 @@ void CPlayer::KRS_KeyInput(const _float& fTimeDelta)
 		//	m_MoveDirection[B] = false;
 			_vector vLookPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION) + (m_pTransformCom->Get_State(CTransform::STATE_LOOK) + m_pGameInstance->Get_CamRight());
 			m_iCurrentBehavior = isShift ? (_uint)KRS_BEHAVIOR_STATE::WALK : (_uint)KRS_BEHAVIOR_STATE::RUN;
-		//	m_iCurrentBehavior = isShift ? (_uint)ADVENTURE_BEHAVIOR_STATE::WALK : (_uint)ADVENTURE_BEHAVIOR_STATE::RUN;
 			m_InputDirection[R] = true;
 			Compute_MoveDirection_RL();
 			m_pTransformCom->LookAt_For_LandObject(vLookPos);
 			isMove = true;
 		}
-		//	m_MoveDirection[L] = false;
-		//}
-		//	m_MoveDirection[L] = false;
-		//}
 
 		if (m_pGameInstance->GetKeyState(DIK_E) == TAP)
 		{
@@ -534,6 +641,107 @@ void CPlayer::KRS_KeyInput(const _float& fTimeDelta)
 
 void CPlayer::KRH_KeyInput(const _float& fTimeDelta)
 {
+	if (m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Get_AnimationEnd())
+	{
+		if ((_uint)KRH_BEHAVIOR_STATE::IDLE != m_iCurrentBehavior)
+			m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Reset();
+		m_iCurrentBehavior = (_uint)KRH_BEHAVIOR_STATE::IDLE;
+	}
+
+	_bool isShift = { false };
+	_bool isMove = { false };
+
+	if (m_pGameInstance->GetKeyState(DIK_LSHIFT) == HOLD)
+	{
+		isShift = true;
+	}
+
+	if (m_pGameInstance->GetMouseState(DIM_LB) == TAP)
+	{
+		// 기존 행동을 초기화하고 어택으로 바꿔준다.
+		if (m_iCurrentBehavior != (_uint)KRH_BEHAVIOR_STATE::ATTACK)
+			m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Reset();
+
+		m_iCurrentBehavior = (_uint)KRH_BEHAVIOR_STATE::ATTACK;
+		m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Combo_Count();
+	}
+	if (m_pGameInstance->GetMouseState(DIM_RB) == TAP)
+	{
+		if (m_iCurrentBehavior == (_uint)KRH_BEHAVIOR_STATE::ATTACK)
+		{
+			m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Combo_Count(true);
+		}
+	}
+
+	if (m_iCurrentBehavior < (_uint)KRH_BEHAVIOR_STATE::ATTACK)
+	{
+		if (m_pGameInstance->GetKeyState(DIK_W) == HOLD)
+		{
+			if (m_iCurrentBehavior == (_uint)KRH_BEHAVIOR_STATE::WALK || m_iCurrentBehavior == (_uint)KRH_BEHAVIOR_STATE::RUN)
+				m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Reset();
+
+			_vector vLookPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION) + (m_pTransformCom->Get_State(CTransform::STATE_LOOK) + m_pGameInstance->Get_CamLook());
+			m_pGameInstance->Get_CamLook();
+			m_iCurrentBehavior = isShift ? (_uint)KRH_BEHAVIOR_STATE::WALK : (_uint)KRH_BEHAVIOR_STATE::RUN;
+
+			m_InputDirection[F] = true;
+			Compute_MoveDirection_FB();
+			m_pTransformCom->LookAt_For_LandObject(vLookPos);
+			isMove = true;
+		}
+
+		if (m_pGameInstance->GetKeyState(DIK_S) == HOLD)
+		{
+			if (m_iCurrentBehavior == (_uint)KRH_BEHAVIOR_STATE::WALK || m_iCurrentBehavior == (_uint)KRH_BEHAVIOR_STATE::RUN)
+				m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Reset();
+			//_bool isStop = { false };
+			_vector vLookPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION) + (m_pTransformCom->Get_State(CTransform::STATE_LOOK) - m_pGameInstance->Get_CamLook());
+			m_iCurrentBehavior = isShift ? (_uint)KRH_BEHAVIOR_STATE::WALK : (_uint)KRH_BEHAVIOR_STATE::RUN;
+			//	isShift = true;
+			m_InputDirection[B] = true;
+			Compute_MoveDirection_FB();
+			m_pTransformCom->LookAt_For_LandObject(vLookPos);
+			isMove = true;
+		}
+		//	m_pTransformCom->Go_Straight(fTimeDelta);
+		if (m_pGameInstance->GetKeyState(DIK_A) == HOLD)
+		{
+			if (m_iCurrentBehavior == (_uint)KRH_BEHAVIOR_STATE::WALK || m_iCurrentBehavior == (_uint)KRH_BEHAVIOR_STATE::RUN)
+				m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Reset();
+
+			_vector vLookPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION) + (m_pTransformCom->Get_State(CTransform::STATE_LOOK) - m_pGameInstance->Get_CamRight());
+			m_iCurrentBehavior = isShift ? (_uint)KRH_BEHAVIOR_STATE::WALK : (_uint)KRH_BEHAVIOR_STATE::RUN;
+			//	m_MoveDirection[F] = false;
+			m_InputDirection[L] = true;
+			Compute_MoveDirection_RL();
+			m_pTransformCom->LookAt_For_LandObject(vLookPos);
+			isMove = true;
+		}
+		if (m_pGameInstance->GetKeyState(DIK_D) == HOLD)
+		{
+			if (m_iCurrentBehavior == (_uint)KRH_BEHAVIOR_STATE::WALK || m_iCurrentBehavior == (_uint)KRH_BEHAVIOR_STATE::RUN)
+				m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Reset();
+			//	m_MoveDirection[B] = false;
+			_vector vLookPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION) + (m_pTransformCom->Get_State(CTransform::STATE_LOOK) + m_pGameInstance->Get_CamRight());
+			m_iCurrentBehavior = isShift ? (_uint)KRH_BEHAVIOR_STATE::WALK : (_uint)KRH_BEHAVIOR_STATE::RUN;
+			m_InputDirection[R] = true;
+			Compute_MoveDirection_RL();
+			m_pTransformCom->LookAt_For_LandObject(vLookPos);
+			isMove = true;
+		}
+
+		if (m_pGameInstance->GetKeyState(DIK_E) == TAP)
+		{
+			// 움직임 관련 키 입력이 없을 때에는 무조건 Back방향으로 이동해야하기 때문에 키입력여부 체크해서 방향 초기화
+			if (!isMove)
+				Reset_MoveDirection();
+
+			m_iCurrentBehavior = (_uint)KRH_BEHAVIOR_STATE::SWAY;
+		}
+	}
+
+	if (!isMove && m_iCurrentBehavior == (_uint)KRH_BEHAVIOR_STATE::RUN || m_iCurrentBehavior == (_uint)KRH_BEHAVIOR_STATE::WALK)
+		m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Stop();
 }
 
 void CPlayer::KRC_KeyInput(const _float& fTimeDelta)
@@ -598,6 +806,7 @@ void CPlayer::Style_Change(BATTLE_STYLE eStyle)
 	// 설정한 스타일의 첫번째 액션을 실행시킨다 (배틀모드들은 무조건 첫번째에 배틀 시작 액션을 둘 예정)
 	m_eCurrentStyle = eStyle;
 	m_iCurrentBehavior = 0;
+	m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Reset();
 	m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Change_Animation();
 }
 
