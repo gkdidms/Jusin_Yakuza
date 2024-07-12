@@ -17,6 +17,16 @@ protected:
     CLandObject(const CLandObject& rhs);
     virtual ~CLandObject() = default;
 
+#ifdef _DEBUG
+public:
+    void Set_ObjectRender(_bool isRender) { m_isObjectRender = isRender; }
+
+public:
+    _bool Get_ObjectRender() { return m_isObjectRender; }
+
+#endif // _DEBUG
+
+
 public:
     virtual HRESULT Initialize_Prototype() override;
     virtual HRESULT Initialize(void* pArg) override;
@@ -25,6 +35,7 @@ public:
     virtual void Late_Tick(const _float& fTimeDelta) override;
     virtual HRESULT Render() override;
 
+public:
     /* 충돌관련 함수들 */
     virtual void ImpulseResolution(CLandObject* pTargetObject);
     virtual void Take_Damage(_uint iHitColliderType, const _float3& vDir, _float fDamage, _bool isBlowAttack = false) {};
@@ -34,18 +45,9 @@ protected:
     virtual void Apply_ChracterData();
 
 public:
-    const wstring& Get_ModelName() {
-        return m_wstrModelName;
-    }
-
-    CCollider* Get_Collider() {
-        return m_pColliderCom;
-    }
-
-    const unordered_map<_uint, class CSocketCollider*>& Get_Colliders() {
-        return m_pColliders;
-    }
-
+    const wstring& Get_ModelName() { return m_wstrModelName;}
+    CCollider* Get_Collider() { return m_pColliderCom; }
+    const unordered_map<_uint, class CSocketCollider*>& Get_Colliders() { return m_pColliders; }
     virtual _bool Is_BlowAttack() { return false; }             // 재정의 필요
  
 protected:
@@ -64,9 +66,11 @@ protected:
     //뼈 이름, 소켓 이펙트
     unordered_map<string, class CSocketEffect*>      m_pEffects;
 
-
-
     wstring m_wstrModelName = TEXT("");
+
+#ifdef _DEBUG
+    _bool m_isObjectRender = { true };
+#endif // _DEBUG
 
 protected:
     virtual HRESULT Add_Components();

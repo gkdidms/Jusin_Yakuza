@@ -119,6 +119,19 @@ HRESULT CShader::Bind_SRV(const _char* pConstantName, ID3D11ShaderResourceView* 
 	return pShaderResourceVariable->SetResource(pSRV);
 }
 
+HRESULT CShader::Bind_SRVArray(const _char* pConstantName, ID3D11ShaderResourceView* pSRV, _uint iCount)
+{
+	ID3DX11EffectVariable* pVariable = m_pEffect->GetVariableByName(pConstantName);
+	if (nullptr == pVariable)
+		return E_FAIL;
+
+	ID3DX11EffectShaderResourceVariable* pShaderResourceVariable = pVariable->AsShaderResource();
+	if (nullptr == pShaderResourceVariable)
+		return E_FAIL;
+
+	return pShaderResourceVariable->SetResourceArray(&pSRV, 0, iCount);
+}
+
 HRESULT CShader::Bind_Vectors(const _char* pConstantName, const _float4* pVectors, _uint iNumVectors)
 {
 	ID3DX11EffectVariable* pVariable = m_pEffect->GetVariableByName(pConstantName);
