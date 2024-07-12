@@ -349,6 +349,7 @@ void CAnimModel::Free()
         Safe_Release(pBoneSphere);
     m_BoneSpheres.clear();
 
+    Safe_Release(m_pAnimCom);
     Safe_Release(m_pShaderCom);
     Safe_Release(m_pModelCom);
 }
