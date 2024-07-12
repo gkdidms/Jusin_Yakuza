@@ -13,9 +13,6 @@ public:
     _uint Get_CurrentLevel() { return m_iLevelIndex; }
 
 public:
-    void Set_CurrentLevel(_uint iLevelIndex) { m_iLevelIndex = iLevelIndex; }
-
-public:
     HRESULT Initialize(_uint iMaxLevelIndex);
     void Tick(const _float& fTimeDelta);
     void Render();

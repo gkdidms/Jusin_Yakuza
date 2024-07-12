@@ -46,8 +46,6 @@ HRESULT CGameObject::Initialize(void* pArg)
 	m_Components.emplace(L"Com_Transform", m_pTransformCom);
 	Safe_AddRef(m_pTransformCom);
 
-	m_Casecade = { 0.f, 10.f, 25.f, 50.f };
-
 	return S_OK;
 }
 

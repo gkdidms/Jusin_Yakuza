@@ -58,7 +58,6 @@ public:
 public:
     HRESULT Open_Level(_uint iLevelIndex, class CLevel* pLevel);
     _uint Get_CurrentLevel(); // 현재 레벨의 인덱스 반환
-    void Set_CurrentLevel(_uint iLevelIndex);
 
     /* GameObject_Manager */
 public: 
@@ -116,8 +115,7 @@ public:
     _matrix Get_Transform_Matrix(CPipeLine::D3DTRANSFORMSTATE eState);
     const _float4x4* Get_Transform_Inverse_Float4x4(CPipeLine::D3DTRANSFORMSTATE eState);
     _matrix Get_Transform_Inverse_Matrix(CPipeLine::D3DTRANSFORMSTATE eState);
-    const _float4x4* Get_Shadow_Transform_View_Float4x4();
-    const _float4x4* Get_Shadow_Transform_Proj_Float4x4();
+    const _float4x4* Get_Shadow_Transform_Float4x4(CPipeLine::D3DTRANSFORMSTATE eState);
     const _float4* Get_CamPosition_Float4();
     _vector Get_CamPosition();
     const _float4* Get_ComLook_Float4();
@@ -129,8 +127,8 @@ public:
     void Set_Transform(CPipeLine::D3DTRANSFORMSTATE eState, _fmatrix matTransform);
     void Set_CamFar(_float fFar);
     void Set_ReflectViewMatrix(_fmatrix matTransform);
-    void Set_ShadowTransformViewMatrix(_float4x4* ViewMatrixArray);
-    void Set_ShadowTransformProjMatrix(_float4x4* ProjMatrixArray);
+    void Set_Shadow_Transform(CPipeLine::D3DTRANSFORMSTATE eState, _fmatrix matTransform);
+    
 
     /* Font_Manager */
 public: 
@@ -156,7 +154,7 @@ public:
 
     /*RenderTarget_Manager*/
 public: 
-    HRESULT Add_RenderTarget(const wstring& strRenderTargetTag, _uint iSizeX, _uint iSizeY, DXGI_FORMAT ePixelFormat, const _float4& vClearColor, _uint iArrayCount = 1);
+    HRESULT Add_RenderTarget(const wstring& strRenderTargetTag, _uint iSizeX, _uint iSizeY, DXGI_FORMAT ePixelFormat, const _float4& vClearColor);
     HRESULT Add_MRT(const wstring& strMRTTag, const wstring& strRenderTargetTag);
     HRESULT Begin_MRT(const wstring& strMRTTag, ID3D11DepthStencilView* pDSView = nullptr, _bool isClear = true); // isClear == false 일 시 초기화 안됨.
     HRESULT End_MRT();
@@ -174,7 +172,7 @@ public:
 #ifdef _DEBUG
 public:
     HRESULT Ready_Debug(const wstring strRenderTargetTag, _float fX, _float fY, _float fSizeX, _float fSizeY);
-    HRESULT Render_Debug(const wstring& strMRTTag, class CShader* pShader, class CVIBuffer_Rect* pVIBuffer, _bool isArray = false);
+    HRESULT Render_Debug(const wstring& strMRTTag, class CShader* pShader, class CVIBuffer_Rect* pVIBuffer);
 #endif // _DEBUG
 
     /* Convert_Manager */

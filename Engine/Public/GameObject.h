@@ -34,7 +34,7 @@ public:
     virtual void Tick(const _float& fTimeDelta);
     virtual void Late_Tick(const _float& fTimeDelta);
     virtual HRESULT Render();
-    virtual HRESULT Render_LightDepth() { return S_OK; }
+    virtual HRESULT Render_LightDepth(_uint iIndex = 0) { return S_OK; }
 
 public:
     class CComponent* Get_Component(wstring strComponentTag);
@@ -55,6 +55,10 @@ protected:
 
 protected:
     vector<_float> m_Casecade;
+
+    _vector m_vShadowCenter = {};
+    _float m_fShadowRadiuse = { 0 };
+
 
 protected:
     HRESULT Add_Component(_uint iLevelIndex, const wstring strComponentPrototypeTag, const wstring strComponentTag, class CComponent** pComponent, void* pArg = nullptr);
