@@ -260,7 +260,7 @@ PS_OUT PS_BLEND(PS_IN In)
 
     
     Out.vNormal = vector(vNormal.xyz * 0.5f + 0.5f, 0.f);
-    Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_fFar, 1.f, 1.f);
+    Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_fFar, 2.f, 1.f);
     Out.vMulti = vMultiDiffuce;
     
 
@@ -329,4 +329,5 @@ technique11 DefaultTechnique
         DomainShader = NULL;
         PixelShader = compile ps_5_0 PS_MAIN_LIGHTDEPTH();
     }
+
 }
