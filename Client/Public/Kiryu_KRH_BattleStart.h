@@ -8,7 +8,7 @@
 
 BEGIN(Client)
 
-class CKiryu_KRS_BattleStart : public CBehaviorAnimation
+class CKiryu_KRH_BattleStart : public CBehaviorAnimation
 {
 	enum ANIM_STATE
 	{
@@ -19,8 +19,8 @@ private:
 	const _float ANIM_CHANGE_TIME = 4.f;		// 몇 초 이상 움직이거나, 공격하지않으면 손을 내린다
 
 private:
-	CKiryu_KRS_BattleStart();
-	virtual ~CKiryu_KRS_BattleStart() = default;
+	CKiryu_KRH_BattleStart();
+	virtual ~CKiryu_KRH_BattleStart() = default;
 
 public:
 	virtual void Tick(const _float& fTimeDelta) override;

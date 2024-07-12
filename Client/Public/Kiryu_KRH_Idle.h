@@ -8,11 +8,11 @@
 
 BEGIN(Client)
 
-class CKiryu_KRS_Idle : public CBehaviorAnimation
+class CKiryu_KRH_Idle : public CBehaviorAnimation
 {
 private:
-	CKiryu_KRS_Idle();
-	virtual ~CKiryu_KRS_Idle() = default;
+	CKiryu_KRH_Idle();
+	virtual ~CKiryu_KRH_Idle() = default;
 
 public:
 	virtual void Tick(const _float& fTimeDelta) override;

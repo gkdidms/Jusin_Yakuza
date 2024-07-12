@@ -674,7 +674,7 @@ HRESULT CModel::Import_Materials(ifstream& in, _bool isTool)
 
 				memcpy(&decalDesc.sTextureFullPath, strPath.data(), sizeof(char) * MAX_PATH);
 
-				m_vDecalMaterials.push_back(decalDesc);
+				//m_vDecalMaterials.push_back(decalDesc);
 			}
 		}
 		m_Materials.emplace_back(MeshMaterial);
@@ -1085,6 +1085,3 @@ void CModel::Free()
 
 	m_Importer.FreeScene();
 }
-
-
-

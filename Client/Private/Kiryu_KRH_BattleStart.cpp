@@ -1,28 +1,29 @@
 #include "GameInstance.h"
-#include "Kiryu_KRS_BattleStart.h"
+#include "Kiryu_KRH_BattleStart.h"
 #include "Player.h"
 
-CKiryu_KRS_BattleStart::CKiryu_KRS_BattleStart()
+CKiryu_KRH_BattleStart::CKiryu_KRH_BattleStart()
 	:CBehaviorAnimation{}
 {
-	m_AnimationIndices.push_back(384);	//[384]	p_krs_style_st[p_krs_style_st]
-	m_AnimationIndices.push_back(382);	//[382]	p_krs_stand_btl_lp[p_krs_stand_btl_lp]
-	m_AnimationIndices.push_back(381);	//[381]	p_krs_stand_btl_en[p_krs_stand_btl_en]
+	m_AnimationIndices.push_back(309);	// +[309]	p_krh_style_st[p_krh_style_st]
+	m_AnimationIndices.push_back(307);	//[307]	p_krh_stand_btl_lp[p_krh_stand_btl_lp]
+	//m_AnimationIndices.push_back(308);	//[308]	p_krh_stand_btl_st[p_krh_stand_btl_st]
+	m_AnimationIndices.push_back(306);	// [306]	p_krh_stand_btl_en[p_krh_stand_btl_en]
 }
 
-void CKiryu_KRS_BattleStart::Tick(const _float& fTimeDelta)
+void CKiryu_KRH_BattleStart::Tick(const _float& fTimeDelta)
 {
 	Off_Battle(fTimeDelta);
 }
 
-void CKiryu_KRS_BattleStart::Change_Animation()
+void CKiryu_KRH_BattleStart::Change_Animation()
 {
 	if(ANIM_START == m_eAnimState)
 		m_pGameInstance->Set_TimeSpeed(TEXT("Timer_60"), 0.3f);
 	m_pPlayer->Change_Animation(m_AnimationIndices[m_eAnimState]);
 }
 
-_bool CKiryu_KRS_BattleStart::Get_AnimationEnd()
+_bool CKiryu_KRH_BattleStart::Get_AnimationEnd()
 {
 	CModel* pModelCom = static_cast<CModel*>(m_pPlayer->Get_Component(TEXT("Com_Model")));
 	if (pModelCom->Get_AnimFinished())
@@ -39,13 +40,13 @@ _bool CKiryu_KRS_BattleStart::Get_AnimationEnd()
 	return false;
 }
 
-void CKiryu_KRS_BattleStart::Reset()
+void CKiryu_KRH_BattleStart::Reset()
 {
 	m_eAnimState = ANIM_START;
 	m_fOffBattleTimer = 0.f;
 }
 
-void CKiryu_KRS_BattleStart::Off_Battle(const _float& fTimeDelta)
+void CKiryu_KRH_BattleStart::Off_Battle(const _float& fTimeDelta)
 {
 	if (ANIM_LOOP != m_eAnimState) return;
 
@@ -59,9 +60,9 @@ void CKiryu_KRS_BattleStart::Off_Battle(const _float& fTimeDelta)
 	}
 }
 
-CBehaviorAnimation* CKiryu_KRS_BattleStart::Create(CPlayer* pPlayer)
+CBehaviorAnimation* CKiryu_KRH_BattleStart::Create(CPlayer* pPlayer)
 {
-	CKiryu_KRS_BattleStart* pInstnace = new CKiryu_KRS_BattleStart();
+	CKiryu_KRH_BattleStart* pInstnace = new CKiryu_KRH_BattleStart();
 
 	if (nullptr == pInstnace) 
 	{
@@ -75,7 +76,7 @@ CBehaviorAnimation* CKiryu_KRS_BattleStart::Create(CPlayer* pPlayer)
 	return pInstnace;
 }
 
-void CKiryu_KRS_BattleStart::Free()
+void CKiryu_KRH_BattleStart::Free()
 {
 	__super::Free();
 }
