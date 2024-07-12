@@ -65,15 +65,13 @@ public:
 
 private:
     void Render_Priority();
-    void Render_Passive_Shadow();
     void Render_ShadowObjects();
     void Render_NonBlender();
 
-    /* Decal */
+    /* Map */
     void Render_Decal();
-
-    /* 유리 관련 */
     void Render_Glass();
+    void Render_Puddle();
 
     /* SSAO */
     void Render_SSAO();
@@ -81,7 +79,6 @@ private:
 
     void Render_LightAcc(); // Light 연산 + SSAO 합 + PBR
     void Render_CopyBackBuffer();
-    void Render_Puddle();
     void Render_DeferredResult();
 
     /* BOF */
@@ -95,6 +92,7 @@ private:
     void Render_AvgLuminance();
     void Render_LuminanceResult();
 
+    /* Effect */
     void Render_NonLight();//이펙트 시작
     void Render_Bloom();//블러
     void Render_FinalEffectBlend();//블러 합치기
