@@ -1,19 +1,5 @@
 #include "Engine_Shader_Defines.hlsli"
-
-matrix g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
-
-Texture2D g_Texture;
-
-float g_fProgress;
-
-float4 g_vColor;
-
-float3 g_vLifeTime;
-
-float3 g_vStartPos;
-float2 g_fAnimTime;
-float2 g_fControlAlpha;
-
+#include "Shader_Client_Defines.hlsli"
 
 struct VS_IN
 {

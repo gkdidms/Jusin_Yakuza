@@ -1,30 +1,6 @@
-
 #include "Engine_Shader_Defines.hlsli"
+#include "Shader_Client_Defines.hlsli"
 
-/* 컨스턴트 테이블(상수테이블) */
-matrix g_WorldMatrix, g_ViewMatrix, g_ProjMatrix, g_WorldMatrixInv, g_ViewMatrixInv, g_ProjMatrixInv, g_ReflectViewMatrix;
-
-Texture2D g_DiffuseTexture;
-Texture2D g_RMTexture;
-
-float g_fObjID;
-float g_fRefractionScale = { 0.001f };
-
-float g_fFar = { 3000.f };
-float g_fTimeDelta;
-float g_fSpeed = 2.f;
-
-
-
-vector g_vCamPosition;
-
-float2 g_RenderResolution = float2(1280, 720);
-
-bool g_isRS;
-bool g_isRD;
-bool g_bExistRMTex;
-
-int g_iCount = { 0 };
 
 struct VS_IN
 {

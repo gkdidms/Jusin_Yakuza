@@ -124,8 +124,20 @@ void CPlayer::Tick(const _float& fTimeDelta)
 
 void CPlayer::Late_Tick(const _float& fTimeDelta)
 {
+#ifdef _DEBUG
+	if (m_isObjectRender)
+	{
+		m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
+		m_pGameInstance->Add_Renderer(CRenderer::RENDER_SHADOWOBJ, this); // Shadow¿ë ·»´õ Ãß°¡
+	}
+#elif
 	m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
-	//m_pGameInstance->Add_Renderer(CRenderer::RENDER_SHADOWOBJ, this); // Shadow¿ë ·»´õ Ãß°¡
+	m_pGameInstance->Add_Renderer(CRenderer::RENDER_SHADOWOBJ, this); // Shadow¿ë ·»´õ Ãß°¡
+#endif // _DEBUG
+
+
+	
+	
 	m_pCollisionManager->Add_ImpulseResolution(this);
 
 	for (auto& pCollider : m_pColliders)
@@ -296,7 +308,7 @@ HRESULT CPlayer::Render_LightDepth()
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
 			return E_FAIL;
 
-		m_pShaderCom->Begin(3);
+		m_pShaderCom->Begin(2);
 
 		m_pModelCom->Render(i);
 	}

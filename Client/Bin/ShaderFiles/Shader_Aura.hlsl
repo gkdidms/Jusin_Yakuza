@@ -1,22 +1,7 @@
 #include "Engine_Shader_Defines.hlsli"
-
-matrix g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
-vector g_vCamPosition;
-
-Texture2D g_ToneTexture;
-Texture2D g_UVAnimTexture;
-Texture2D g_BaseAlphaTexture;
-Texture2D g_FluidTexture;
-
-float g_fProgress;
-float2 g_lifeAlpha;
-float g_iSpriteIndex;
-float2 g_fUVCount;
-float g_fCurTime;
-
-float g_NearZ = 0.01f;
-float g_FarZ = 3000.f;
+#include "Shader_Client_Defines.hlsli"
 //vLifeTime.x 종료시간 /vLifeTime.y 현재시간 / vLifeTime.z 누적인덱스
+
 struct VS_IN
 {
     //m_pVB

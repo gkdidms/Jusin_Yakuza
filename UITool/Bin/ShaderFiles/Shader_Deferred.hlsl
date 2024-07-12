@@ -177,7 +177,7 @@ PS_OUT_LIGHT PS_MAIN_LIGHT_POINT(PS_IN In)
     vWorldPos = mul(vWorldPos, g_ViewMatrixInv);
 
 
-    vector vLightDir = normalize(vWorldPos - g_vLightPos);
+    vector vLightDir = vWorldPos - g_vLightPos;
     float fDistance = length(vLightDir);
 
     float fAtt = max((g_fLightRange - fDistance), 0.f) / g_fLightRange;
