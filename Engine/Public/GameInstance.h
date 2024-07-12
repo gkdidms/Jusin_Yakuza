@@ -31,7 +31,7 @@ public:
     HRESULT Present();
 
     /*Sound_Manager*/
-public: 
+public:
     _bool PlaySound_W(const wstring pSoundKey, CHANNELID eID, float fVolume);
     void PlayBGM(const wstring pSoundKey, float fVolume);
     void StopSound(CHANNELID eID);
@@ -58,9 +58,10 @@ public:
 public:
     HRESULT Open_Level(_uint iLevelIndex, class CLevel* pLevel);
     _uint Get_CurrentLevel(); // 현재 레벨의 인덱스 반환
+    void Set_CurrentLevel(_uint iLevelIndex);
 
     /* GameObject_Manager */
-public: 
+public:
     HRESULT Add_GameObject_Prototype(const wstring strGameObjectTag, class CGameObject* pGameObject); // GameObject Prototype 생성 & 저장
     HRESULT Add_GameObject(_uint iLevelIndex, const wstring strGameObjectTag, const wstring strLayerTag, void* pArg = nullptr); // GameObject Clone 생성 & 저장
     class CGameObject* Clone_Object(const wstring strGameObjectTag, void* pArg); // GameObject Clone 생성 & 반환 (저장 x)
@@ -70,7 +71,7 @@ public:
     vector<CGameObject*> Get_GameObjects(_uint iLevelIndex, const wstring strLayerTag); // Layer에 저장된 객체 리스트(vector) 반환
 
     /* Component_Manager */
-public: 
+public:
     HRESULT Add_Component_Prototype(_uint iLevelIndex, const wstring strComponentTag, CComponent* pComponent); // Component Prototype 생성 & 저장
     CComponent* Add_Component_Clone(_uint iLevelIndex, const wstring strComponentTag, void* pArg = nullptr); // Component Clone 생성 & 저장
 
@@ -80,7 +81,7 @@ public:
     class CBTNode* Add_BTNode(_uint iLevelIndex, const wstring strBTNodeTag, void* pArg);
 
     /* Renderer */
-public: 
+public:
     void Add_Renderer(CRenderer::RENDERER_STATE eRenderState, class CGameObject* pGameObject);
     void Set_HDR(_bool isHDR);
     void Set_HDRLight(_float fLight); // HDR 빛 세기 조절 
@@ -110,12 +111,13 @@ public:
 #endif // _DEBUG
 
     /* PipeLine */
-public: 
+public:
     const _float4x4* Get_Transform_Float4x4(CPipeLine::D3DTRANSFORMSTATE eState);
     _matrix Get_Transform_Matrix(CPipeLine::D3DTRANSFORMSTATE eState);
     const _float4x4* Get_Transform_Inverse_Float4x4(CPipeLine::D3DTRANSFORMSTATE eState);
     _matrix Get_Transform_Inverse_Matrix(CPipeLine::D3DTRANSFORMSTATE eState);
-    const _float4x4* Get_Shadow_Transform_Float4x4(CPipeLine::D3DTRANSFORMSTATE eState);
+    const _float4x4* Get_Shadow_Transform_View_Float4x4();
+    const _float4x4* Get_Shadow_Transform_Proj_Float4x4();
     const _float4* Get_CamPosition_Float4();
     _vector Get_CamPosition();
     const _float4* Get_ComLook_Float4();
@@ -127,11 +129,11 @@ public:
     void Set_Transform(CPipeLine::D3DTRANSFORMSTATE eState, _fmatrix matTransform);
     void Set_CamFar(_float fFar);
     void Set_ReflectViewMatrix(_fmatrix matTransform);
-    void Set_Shadow_Transform(CPipeLine::D3DTRANSFORMSTATE eState, _fmatrix matTransform);
-    
+    void Set_ShadowTransformViewMatrix(_float4x4* ViewMatrixArray);
+    void Set_ShadowTransformProjMatrix(_float4x4* ProjMatrixArray);
 
     /* Font_Manager */
-public: 
+public:
     HRESULT Add_Font(const wstring& strFontTag, const wstring& strFontFilePath);
     HRESULT Render_Font(const wstring& strFontTag, const wstring& strText, const _float2& vPosition, _fvector vColor);
     HRESULT Perspective_Render(const wstring& strFontTag, const wstring& strText, const _float2& vPosition, _fvector vColor, _float fScale, const _float& fTimeDelta);
@@ -146,15 +148,15 @@ public:
     void    Delete_AllLights();
 
     /* Picking */
-public: 
+public:
     _vector Picking(_bool* isSuccess);
     _bool Picking_UI(CTransform* pUITransform);
     _float Get_Z();
     float   FindObjID(_bool* isSuccess);
 
     /*RenderTarget_Manager*/
-public: 
-    HRESULT Add_RenderTarget(const wstring& strRenderTargetTag, _uint iSizeX, _uint iSizeY, DXGI_FORMAT ePixelFormat, const _float4& vClearColor);
+public:
+    HRESULT Add_RenderTarget(const wstring& strRenderTargetTag, _uint iSizeX, _uint iSizeY, DXGI_FORMAT ePixelFormat, const _float4& vClearColor, _uint iArrayCount = 1);
     HRESULT Add_MRT(const wstring& strMRTTag, const wstring& strRenderTargetTag);
     HRESULT Begin_MRT(const wstring& strMRTTag, ID3D11DepthStencilView* pDSView = nullptr, _bool isClear = true); // isClear == false 일 시 초기화 안됨.
     HRESULT End_MRT();
@@ -172,7 +174,7 @@ public:
 #ifdef _DEBUG
 public:
     HRESULT Ready_Debug(const wstring strRenderTargetTag, _float fX, _float fY, _float fSizeX, _float fSizeY);
-    HRESULT Render_Debug(const wstring& strMRTTag, class CShader* pShader, class CVIBuffer_Rect* pVIBuffer);
+    HRESULT Render_Debug(const wstring& strMRTTag, class CShader* pShader, class CVIBuffer_Rect* pVIBuffer, _bool isArray = false);
 #endif // _DEBUG
 
     /* Convert_Manager */
@@ -195,11 +197,11 @@ public:
 
     _uint Get_NumFolders(const wstring& strPath);
     _uint Get_NumFolders(const string& strPath);
-    _uint Get_NumFiles(const wstring& strPath);	
-    _uint Get_NumFiles(const string& strPath);	
+    _uint Get_NumFiles(const wstring& strPath);
+    _uint Get_NumFiles(const string& strPath);
 
-    _bool IsExists_Path(const wstring& strPath);		
-    _bool IsExists_Path(const string& strPath);			
+    _bool IsExists_Path(const wstring& strPath);
+    _bool IsExists_Path(const string& strPath);
 
     wstring StringToWstring(const string& str);
     string WstringToString(const wstring& str);
@@ -214,7 +216,7 @@ private:
     class CSoundMgr* m_pSound_Manager = { nullptr };
     class CInput_Device* m_pInput_Device = { nullptr };
     class CTimer_Manager* m_pTimer_Manager = { nullptr };
-    
+
     class CLevel_Manager* m_pLevel_Manager = { nullptr };
     class CGameObject_Manager* m_pGameObject_Manager = { nullptr };
     class CComponent_Manager* m_pComponent_Manager = { nullptr };
