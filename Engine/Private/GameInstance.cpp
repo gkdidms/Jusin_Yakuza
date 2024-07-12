@@ -148,11 +148,6 @@ _uint CGameInstance::Get_CurrentLevel()
 	return m_pLevel_Manager->Get_CurrentLevel();
 }
 
-void CGameInstance::Set_CurrentLevel(_uint iLevelIndex)
-{
-	m_pLevel_Manager->Set_CurrentLevel(iLevelIndex);
-}
-
 _bool CGameInstance::PlaySound_W(const wstring pSoundKey, CHANNELID eID, float fVolume)
 {
 	return m_pSound_Manager->PlaySound_W(pSoundKey, eID, fVolume);
@@ -374,14 +369,9 @@ _matrix CGameInstance::Get_Transform_Inverse_Matrix(CPipeLine::D3DTRANSFORMSTATE
 	return m_pPipeLine->Get_Transform_Inverse_Matrix(eState);
 }
 
-const _float4x4* CGameInstance::Get_Shadow_Transform_View_Float4x4()
+const _float4x4* CGameInstance::Get_Shadow_Transform_Float4x4(CPipeLine::D3DTRANSFORMSTATE eState)
 {
-	return m_pPipeLine->Get_Shadow_Transform_View_Float4x4();
-}
-
-const _float4x4* CGameInstance::Get_Shadow_Transform_Proj_Float4x4()
-{
-	return m_pPipeLine->Get_Shadow_Transform_Proj_Float4x4();
+	return m_pPipeLine->Get_Shadow_Transform_Float4x4(eState);
 }
 
 const _float4* CGameInstance::Get_CamPosition_Float4()
@@ -434,14 +424,9 @@ void CGameInstance::Set_ReflectViewMatrix(_fmatrix matTransform)
 	m_pPipeLine->Set_ReflectViewMatrix(matTransform);
 }
 
-void CGameInstance::Set_ShadowTransformViewMatrix(_float4x4* ViewMatrixArray)
+void CGameInstance::Set_Shadow_Transform(CPipeLine::D3DTRANSFORMSTATE eState, _fmatrix matTransform)
 {
-	m_pPipeLine->Set_ShadowTransformViewMatrix(ViewMatrixArray);
-}
-
-void CGameInstance::Set_ShadowTransformProjMatrix(_float4x4* ProjMatrixArray)
-{
-	m_pPipeLine->Set_ShadowTransformProjMatrix(ProjMatrixArray);
+	m_pPipeLine->Set_Shadow_Transform(eState, matTransform);
 }
 
 _float CGameInstance::Get_TimeDelta(const _tchar* pTimerTag)
@@ -535,9 +520,9 @@ float CGameInstance::FindObjID(_bool* isSuccess)
 	return m_pPicking->FindObjID(isSuccess);
 }
 
-HRESULT CGameInstance::Add_RenderTarget(const wstring& strRenderTargetTag, _uint iSizeX, _uint iSizeY, DXGI_FORMAT ePixelFormat, const _float4& vClearColor, _uint iArrayCount)
+HRESULT CGameInstance::Add_RenderTarget(const wstring& strRenderTargetTag, _uint iSizeX, _uint iSizeY, DXGI_FORMAT ePixelFormat, const _float4& vClearColor)
 {
-	return m_pRenderTarget_Manager->Add_RenderTarget(strRenderTargetTag, iSizeX, iSizeY, ePixelFormat, vClearColor, iArrayCount);
+	return m_pRenderTarget_Manager->Add_RenderTarget(strRenderTargetTag, iSizeX, iSizeY, ePixelFormat, vClearColor);
 }
 
 HRESULT CGameInstance::Add_MRT(const wstring& strMRTTag, const wstring& strRenderTargetTag)
@@ -596,9 +581,9 @@ HRESULT CGameInstance::Ready_Debug(const wstring strRenderTargetTag, _float fX, 
 	return m_pRenderTarget_Manager->Ready_Debug(strRenderTargetTag, fX, fY, fSizeX, fSizeY);
 }
 
-HRESULT CGameInstance::Render_Debug(const wstring& strMRTTag, CShader* pShader, CVIBuffer_Rect* pVIBuffer, _bool isArray)
+HRESULT CGameInstance::Render_Debug(const wstring& strMRTTag, CShader* pShader, CVIBuffer_Rect* pVIBuffer)
 {
-	return m_pRenderTarget_Manager->Render_Debug(strMRTTag, pShader, pVIBuffer, isArray);
+	return m_pRenderTarget_Manager->Render_Debug(strMRTTag, pShader, pVIBuffer);
 }
 #endif // _DEBUG
 

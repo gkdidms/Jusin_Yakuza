@@ -9,7 +9,7 @@ CRenderTarget::CRenderTarget(ID3D11Device* pDevice, ID3D11DeviceContext* pContex
 	Safe_AddRef(m_pContext);
 }
 
-HRESULT CRenderTarget::Initialize(_uint iSizeX, _uint iSizeY, DXGI_FORMAT ePixelFormat, const _float4& vClearColor, _uint iArrayCount)
+HRESULT CRenderTarget::Initialize(_uint iSizeX, _uint iSizeY, DXGI_FORMAT ePixelFormat, const _float4& vClearColor)
 {
 	//D3D11_VIEWPORT ViewPort{};
 	//_uint iViewPortNum = 1;
@@ -21,7 +21,7 @@ HRESULT CRenderTarget::Initialize(_uint iSizeX, _uint iSizeY, DXGI_FORMAT ePixel
 	TextureDesc.Width = iSizeX;
 	TextureDesc.Height = iSizeY;
 	TextureDesc.MipLevels = 1;
-	TextureDesc.ArraySize = iArrayCount;
+	TextureDesc.ArraySize = 1;
 	TextureDesc.Format = ePixelFormat;
 
 	TextureDesc.SampleDesc.Quality = 0;
@@ -38,22 +38,8 @@ HRESULT CRenderTarget::Initialize(_uint iSizeX, _uint iSizeY, DXGI_FORMAT ePixel
 	if (FAILED(m_pDevice->CreateRenderTargetView(m_pTexture2D, nullptr, &m_pRTV)))
 		return E_FAIL;
 
-	if (iArrayCount == 1)
-	{
-		if (FAILED(m_pDevice->CreateShaderResourceView(m_pTexture2D, nullptr, &m_pSRV)))
-			return E_FAIL;
-	}
-	else
-	{
-		D3D11_SHADER_RESOURCE_VIEW_DESC ShaderDesc{ ePixelFormat, D3D11_SRV_DIMENSION_TEXTURE2DARRAY, 0, 0 };
-		ShaderDesc.Texture2DArray.ArraySize = iArrayCount;
-		ShaderDesc.Texture2DArray.FirstArraySlice = 0;
-		ShaderDesc.Texture2DArray.MipLevels = 1;
-		ShaderDesc.Texture2DArray.MostDetailedMip = 0;
-
-		if (FAILED(m_pDevice->CreateShaderResourceView(m_pTexture2D, &ShaderDesc, &m_pSRV)))
-			return E_FAIL;
-	}
+	if (FAILED(m_pDevice->CreateShaderResourceView(m_pTexture2D, nullptr, &m_pSRV)))
+		return E_FAIL;
 
 	m_vClearColor = vClearColor;
 
@@ -102,25 +88,13 @@ HRESULT CRenderTarget::Ready_Debug(_float fX, _float fY, _float fSizeX, _float f
 	return S_OK;
 }
 
-HRESULT CRenderTarget::Render_Debug(CShader* pShader, CVIBuffer_Rect* pVIBuffer, _bool isArray)
+HRESULT CRenderTarget::Render_Debug(CShader* pShader, CVIBuffer_Rect* pVIBuffer)
 {
 	if (FAILED(pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix)))
 		return E_FAIL;
 
-	if (FAILED(pShader->Bind_RawValue("g_isArray", &isArray, sizeof(_bool))))
+	if (FAILED(pShader->Bind_SRV("g_Texture", m_pSRV)))
 		return E_FAIL;
-
-	if (isArray)
-	{
-		if (FAILED(pShader->Bind_SRV("g_TextureArray", m_pSRV)))
-			return E_FAIL;
-	}
-	else
-	{
-		if (FAILED(pShader->Bind_SRV("g_Texture", m_pSRV)))
-			return E_FAIL;
-	}
-
 
 	pShader->Begin(0);
 	pVIBuffer->Render();
@@ -129,11 +103,11 @@ HRESULT CRenderTarget::Render_Debug(CShader* pShader, CVIBuffer_Rect* pVIBuffer,
 }
 #endif // _DEBUG
 
-CRenderTarget* CRenderTarget::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, _uint iSizeX, _uint iSizeY, DXGI_FORMAT ePixelFormat, const _float4& vClearColor, _uint iArrayCount)
+CRenderTarget* CRenderTarget::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, _uint iSizeX, _uint iSizeY, DXGI_FORMAT ePixelFormat, const _float4& vClearColor)
 {
 	CRenderTarget* pInstance = new CRenderTarget(pDevice, pContext);
 
-	if (FAILED(pInstance->Initialize(iSizeX, iSizeY, ePixelFormat, vClearColor, iArrayCount)))
+	if (FAILED(pInstance->Initialize(iSizeX, iSizeY, ePixelFormat, vClearColor)))
 		Safe_Release(pInstance);
 
 	return pInstance;

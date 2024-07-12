@@ -13,7 +13,7 @@ public:
     ID3D11RenderTargetView* Get_RTV() { return m_pRTV; }
 
 public:
-    HRESULT Initialize(_uint iSizeX, _uint iSizeY, DXGI_FORMAT ePixelFormat, const _float4& vClearColor, _uint iArrayCount);
+    HRESULT Initialize(_uint iSizeX, _uint iSizeY, DXGI_FORMAT ePixelFormat, const _float4& vClearColor);
     HRESULT Clear();
     HRESULT Bind_SVR(class CShader* pShader, const _char* pConstantName);
     HRESULT Copy_Resource(ID3D11Texture2D* pDesc);
@@ -22,7 +22,7 @@ public:
 #ifdef _DEBUG
 public:
     HRESULT Ready_Debug(_float fX, _float fY, _float fSizeX, _float fSizeY);
-    HRESULT Render_Debug(class CShader* pShader, class CVIBuffer_Rect* pVIBuffer, _bool isArray);
+    HRESULT Render_Debug(class CShader* pShader, class CVIBuffer_Rect* pVIBuffer);
 #endif // _DEBUG
 
 private:
@@ -43,7 +43,7 @@ private:
     _float4 m_vClearColor;
 
 public:
-    static CRenderTarget* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, _uint iSizeX, _uint iSizeY, DXGI_FORMAT ePixelFormat, const _float4& vClearColor, _uint iArrayCount);
+    static CRenderTarget* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, _uint iSizeX, _uint iSizeY, DXGI_FORMAT ePixelFormat, const _float4& vClearColor);
     virtual void Free() override;
 };
 END
