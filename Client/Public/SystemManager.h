@@ -27,7 +27,7 @@ private:
     LEVEL                       m_iCurrentLevel = { LEVEL_END };
     CAMERA                      m_iCamera = { CAMERA_END };
 
-    _vector m_vShadowViewPos = { XMVectorSet(0.f, 10.f, -10.f, 1.f) };
+    _vector m_vShadowViewPos = { XMVectorSet(-0.6f, -0.7f, 0.1f, 1.f) };
 
 public:
     virtual void Free();

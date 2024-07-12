@@ -1,14 +1,5 @@
-
 #include "Engine_Shader_Defines.hlsli"
-
-/* 컨스턴트 테이블(상수테이블) */
-matrix g_WorldMatrix, g_ViewMatrix, g_ProjMatrix, g_WorldMatrixInv, g_ViewMatrixInv, g_ProjMatrixInv;
-textureCUBE	 g_Texture;
-Texture2D g_Texture2D;
-Texture2D g_DepthTexture;
-
-//Decal
-float2 g_RenderResolution = float2(1280, 720);
+#include "Shader_Client_Defines.hlsli"
 
 struct VS_IN
 {
@@ -75,7 +66,7 @@ PS_OUT PS_MAIN(PS_IN In)
 {
 	PS_OUT		Out = (PS_OUT)0;
 
-	Out.vColor = g_Texture.Sample(LinearSampler, In.vTexcoord);
+	//Out.vColor = g_Texture.Sample(LinearSampler, In.vTexcoord);
 //	Out.vColor = 1.f;
 
 	return Out;
@@ -122,7 +113,7 @@ PS_OUT PS_DECAL(PS_IN In)
     }
     
     
-    vector vDecalColor = g_Texture2D.Sample(LinearSampler, vLocalPos.xy);
+    vector vDecalColor = g_Texture.Sample(LinearSampler, vLocalPos.xy);
 
     if(vDecalColor.a < 0.3)
         discard;

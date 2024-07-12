@@ -1,22 +1,5 @@
 #include "Engine_Shader_Defines.hlsli"
-matrix g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
-
-Texture2D g_DiffuseTexture;
-Texture2D g_NormalTexture;
-Texture2D g_DissolveTexture;
-Texture2D g_MultiDiffuseTexture;
-Texture2D g_RSTexture;
-Texture2D g_RMTexture;
-Texture2D g_RDTexture;
-matrix g_BoneMatrices[512];
-
-float g_fFar = { 3000.f };
-float g_fTimeDelta;
-
-float g_fOut = { 0.5f };
-
-bool g_isRS;
-bool g_isRD;
+#include "Shader_Client_Defines.hlsli"
 
 struct VS_IN
 {
@@ -72,7 +55,7 @@ VS_OUT VS_MAIN(VS_IN In)
 
 struct VS_OUT_LIGHTDEPTH
 {
-    float4 vPosition : SV_POSITION;
+    float4 vPosition : POSITION;
     float2 vTexcoord : TEXCOORD0;
     float4 vProjPos : TEXCOORD1;
 };
@@ -103,6 +86,43 @@ VS_OUT_LIGHTDEPTH VS_MAIN_LIGHTDEPTH(VS_IN In)
     return Out;
 }
 
+// LightDepth용 GS
+struct GS_IN
+{
+    float4 vPosition : POSITION;
+    float2 vTexcoord : TEXCOORD0;
+    float4 vProjPos : TEXCOORD1;
+};
+
+struct GS_OUT
+{
+    float4 vPosition : SV_POSITION;
+    float2 vTexcoord : TEXCOORD0;
+    float4 vProjPos : TEXCOORD1;
+    
+    uint fIndex : SV_RenderTargetArrayIndex;
+};
+
+[maxvertexcount(9)]
+void GS_MAIN_LIGHTDEPTH(triangle GS_IN In[3], inout TriangleStream<GS_OUT> Out)
+{
+    GS_OUT Output[3];
+    for (int i = 0; i < 3; i++)
+    {
+        for (int j = 0; j < 3; j++)
+        {
+            float4 vViewPos = mul(In[j].vPosition, g_ViewMatrixArray[i]);
+            vViewPos.z += 2.5f;
+            Output[j].vPosition = mul(vViewPos, g_ProjMatrixArray[i]);
+            Output[j].vProjPos = In[j].vProjPos;
+            Output[j].vTexcoord = In[j].vTexcoord;
+            Output[j].fIndex = i;
+            Out.Append(Output[j]);
+        }
+        Out.RestartStrip();
+    }
+}
+
 struct PS_IN
 {
     float4 vPosition : SV_POSITION;
@@ -115,7 +135,7 @@ struct PS_IN
 };
 
 struct PS_OUT
-{   
+{
     vector vDiffuse : SV_TARGET0;
     vector vNormal : SV_TARGET1;
     vector vDepth : SV_TARGET2;
@@ -173,7 +193,6 @@ PS_OUT PS_MAIN(PS_IN In)
     Out.vNormal = vector(vNormal.xyz * 0.5f + 0.5f, 0.f);
     Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_fFar, 1.f, 1.f);
     Out.vMulti = vMultiDiffuce;
-    
     
     return Out;
 }
@@ -245,8 +264,6 @@ struct PS_OUT_LIGHTDEPTH
 PS_OUT_LIGHTDEPTH PS_MAIN_LIGHTDEPTH(PS_IN_LIGHTDEPTH In)
 {
     PS_OUT_LIGHTDEPTH Out = (PS_OUT_LIGHTDEPTH) 0;
-
-    vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
 	
     Out.vLightDepth = vector(In.vProjPos.w / 1000.f, 0.0f, 0.f, 0.f);
 
@@ -283,13 +300,13 @@ technique11 DefaultTechnique
 
     pass LightDepth
     {
-        SetRasterizerState(RS_Default);
+        SetRasterizerState(RS_Cull_NON_CW);
         SetDepthStencilState(DSS_Default, 0);
         SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 
 		/* 어떤 셰이덜르 국동할지. 셰이더를 몇 버젼으로 컴파일할지. 진입점함수가 무엇이찌. */
         VertexShader = compile vs_5_0 VS_MAIN_LIGHTDEPTH();
-        GeometryShader = NULL;
+        GeometryShader = compile gs_5_0 GS_MAIN_LIGHTDEPTH();
         HullShader = NULL;
         DomainShader = NULL;
         PixelShader = compile ps_5_0 PS_MAIN_LIGHTDEPTH();

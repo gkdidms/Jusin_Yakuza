@@ -102,12 +102,22 @@ HRESULT CUIManager::Late_Tick(const _float& fTimeDelta)
 		
 	}
 
+#ifdef _DEBUG
+	if (m_isRender)
+	{
+		for (auto& pUIScene : m_AlwaysUI)
+		{
+			pUIScene->Late_Tick(fTimeDelta);
+		}
+		return S_OK;
+	}
+#else
 	for (auto& pUIScene : m_AlwaysUI)
 	{
 		pUIScene->Late_Tick(fTimeDelta);
 	}
-	
 	return S_OK;
+#endif // _DEBUG
 }
 
 

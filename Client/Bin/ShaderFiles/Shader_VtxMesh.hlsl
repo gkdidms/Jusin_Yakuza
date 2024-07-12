@@ -1,41 +1,6 @@
-
 #include "Engine_Shader_Defines.hlsli"
+#include "Shader_Client_Defines.hlsli"
 
-/* 컨스턴트 테이블(상수테이블) */
-matrix g_WorldMatrix, g_ViewMatrix, g_ProjMatrix, g_WorldMatrixInv, g_ViewMatrixInv, g_ProjMatrixInv, g_ReflectViewMatrix;
-
-Texture2D g_DiffuseTexture;
-Texture2D g_NormalTexture;
-Texture2D g_RMTexture;
-Texture2D g_RefractionTexture;
-Texture2D g_RSTexture;
-Texture2D g_DepthTexture;
-Texture2D g_NoiseTexture;
-Texture2D g_BlurReverseTexture;
-Texture2D g_MultiDiffuseTexture;
-Texture2D g_RDTexture;
-Texture2D g_ReflectionTexture;
-
-float g_fObjID;
-float g_fRefractionScale = { 0.001f };
-
-float g_fFar = { 3000.f };
-float g_fTimeDelta;
-float g_fSpeed = 2.f;
-bool g_bExistNormalTex;
-bool g_bExistRMTex;
-bool g_bExistRSTex;
-bool g_bReflExist;
-
-
-vector g_vCamPosition;
-
-float2 g_RenderResolution = float2(1280, 720);
-
-bool g_isRS;
-bool g_isRD;
-
-int g_iCount = { 0 };
 
 struct VS_IN
 {
@@ -82,7 +47,7 @@ VS_OUT VS_MAIN(VS_IN In)
 
 struct VS_OUT_LIGHTDEPTH
 {
-    float4 vPosition : SV_POSITION;
+    float4 vPosition : POSITION;
     float2 vTexcoord : TEXCOORD0;
     float4 vProjPos : TEXCOORD1;
 };
@@ -96,12 +61,49 @@ VS_OUT_LIGHTDEPTH VS_MAIN_LIGHTDEPTH(VS_IN In)
     matWV = mul(g_WorldMatrix, g_ViewMatrix);
     matWVP = mul(matWV, g_ProjMatrix);
 
-    Out.vPosition = mul(vector(In.vPosition, 1.f), matWVP);
+    Out.vPosition = mul(vector(In.vPosition, 1.f), g_WorldMatrix);
     Out.vTexcoord = In.vTexcoord;
     Out.vProjPos = Out.vPosition;
 
     return Out;
 
+}
+
+// LightDepth용 GS
+struct GS_IN
+{
+    float4 vPosition : POSITION;
+    float2 vTexcoord : TEXCOORD0;
+    float4 vProjPos : TEXCOORD1;
+};
+
+struct GS_OUT
+{
+    float4 vPosition : SV_POSITION;
+    float2 vTexcoord : TEXCOORD0;
+    float4 vProjPos : TEXCOORD1;
+    
+    uint fIndex : SV_RenderTargetArrayIndex;
+};
+
+[maxvertexcount(9)]
+void GS_MAIN_LIGHTDEPTH(triangle GS_IN In[3], inout TriangleStream<GS_OUT> Out)
+{
+    GS_OUT Output[3];
+    for (int i = 0; i < 3; i++)
+    {
+        for (int j = 0; j < 3; j++)
+        {
+            float4 vViewPos = mul(In[j].vPosition, g_ViewMatrixArray[i]);
+            vViewPos.z += 2.5f;
+            Output[j].vPosition = mul(vViewPos, g_ProjMatrixArray[i]);
+            Output[j].vProjPos = In[j].vProjPos;
+            Output[j].vTexcoord = In[j].vTexcoord;
+            Output[j].fIndex = i;
+            Out.Append(Output[j]);
+        }
+        Out.RestartStrip();
+    }
 }
 
 struct PS_IN
@@ -134,34 +136,21 @@ PS_OUT PS_MAIN(PS_IN In)
     vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
     vector vMultiDiffuce = g_MultiDiffuseTexture.Sample(LinearSampler, In.vTexcoord);
     
-    // 투명할 경우(0.1보다 작으면 투명하니) 그리지 않음
-    if (vDiffuse.a < 0.1f)
-        discard;
+   //  투명할 경우(0.1보다 작으면 투명하니) 그리지 않음
+    //if (vDiffuse.a < 0.1f)
+     //   discard;
     
      //RS + RD
     vector vRSRD;
-    vector vRDDesc;
-    if (g_isRD)
-    {
-        vRDDesc = g_RDTexture.Sample(LinearSampler, In.vTexcoord);
-        Out.vRD = vRDDesc;
-    }
     
     if (g_isRS)
     {
         vector vRSDesc = g_RSTexture.Sample(LinearSampler, In.vTexcoord);
         Out.vRS = vRSDesc;
-        vRSDesc = lerp(vRSDesc, vRDDesc, 0.7f);
         Out.vDiffuse = lerp(vDiffuse, vRSDesc, vMultiDiffuce.z);
-        
     }
     else
-    {
-        if (g_isRD)
-            Out.vDiffuse = lerp(vDiffuse, vRDDesc, vMultiDiffuce.z);
-        else
-            Out.vDiffuse = vDiffuse;
-    }
+        Out.vDiffuse = vDiffuse;
     
     float3 vNormal;
     if (true == g_bExistNormalTex)
@@ -262,8 +251,6 @@ PS_OUT PS_GLASSDOOR(PS_IN In)
     return Out;
 }
 
-
-
 PS_OUT PS_PUDDLE(PS_IN In)
 {
     PS_OUT Out = (PS_OUT) 0;
@@ -271,7 +258,7 @@ PS_OUT PS_PUDDLE(PS_IN In)
     // 물 웅덩이 모양 잡기
     vector vMaskTexture = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
     
-    if(0.3 > vMaskTexture.r)
+    if (0.3 > vMaskTexture.r)
         discard;
     
     
@@ -320,8 +307,6 @@ PS_OUT PS_PUDDLE(PS_IN In)
     
     vector vDepth = g_DepthTexture.Sample(LinearSampler, vReflectScreenPos.xy);
     
-
-    
     vector vCalculateWorld = 0;
     vCalculateWorld.x = vReflectScreenPos.x * 2.f - 1.f;
     vCalculateWorld.y = vReflectScreenPos.y * -2.f + 1.f;
@@ -341,7 +326,7 @@ PS_OUT PS_PUDDLE(PS_IN In)
         bReflect = false;
     }
 
-    if(true == bReflect)
+    if (true == bReflect)
     {
         vector reflectColor = g_BlurReverseTexture.Sample(PointSampler, vReflectScreenPos.xy + 0.02 * normal.xy);
 
@@ -417,7 +402,7 @@ technique11 DefaultTechnique
 {
     pass DefaultPass //0
     {
-        SetRasterizerState(RS_Cull_NON_CW);
+        SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_Default, 0);
         SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 
@@ -430,7 +415,7 @@ technique11 DefaultTechnique
 
     pass GlassDoorPass //1
     {
-        SetRasterizerState(RS_Cull_NON_CW);
+        SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_Default, 0);
         SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 
@@ -444,7 +429,7 @@ technique11 DefaultTechnique
 
     pass PuddlePass //2
     {
-        SetRasterizerState(RS_Cull_NON_CW);
+        SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_Default, 0);
         SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 
@@ -458,13 +443,13 @@ technique11 DefaultTechnique
 
     pass LightDepth //3 - construction , Construction의 render light depth에서 변경해주기
     {
-        SetRasterizerState(RS_Cull_NON_CW);
+        SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_Default, 0);
         SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 
 		/* 어떤 셰이덜르 국동할지. 셰이더를 몇 버젼으로 컴파일할지. 진입점함수가 무엇이찌. */
         VertexShader = compile vs_5_0 VS_MAIN_LIGHTDEPTH();
-        GeometryShader = NULL;
+        GeometryShader = compile gs_5_0 GS_MAIN_LIGHTDEPTH();
         HullShader = NULL;
         DomainShader = NULL;
         PixelShader = compile ps_5_0 PS_MAIN_LIGHTDEPTH();
@@ -472,4 +457,3 @@ technique11 DefaultTechnique
 
    
 }
-

@@ -42,6 +42,7 @@ private:
     CGameInstance* m_pGameInstance = { nullptr };
     class CSystemManager* m_pSystemManager = { nullptr };
     class CFileTotalMgr* m_pFileTotalMgr = { nullptr };
+    class CUIManager* m_pUIManager = { nullptr };
 
     _bool m_isDebug = { false }; // 디버그 툴 진입했는지 아닌지 체크
 

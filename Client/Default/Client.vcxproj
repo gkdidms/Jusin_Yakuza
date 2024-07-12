@@ -187,6 +187,15 @@
     <ClInclude Include="..\Public\Image_Texture.h" />
     <ClInclude Include="..\Public\InventoryManager.h" />
     <ClInclude Include="..\Public\ItemData.h" />
+    <ClInclude Include="..\Public\Kiryu_KRH_Attack.h" />
+    <ClInclude Include="..\Public\Kiryu_KRH_BattleStart.h" />
+    <ClInclude Include="..\Public\Kiryu_KRH_Hit.h" />
+    <ClInclude Include="..\Public\Kiryu_KRH_Idle.h" />
+    <ClInclude Include="..\Public\Kiryu_KRH_Run.h" />
+    <ClInclude Include="..\Public\Kiryu_KRH_Sway.h" />
+    <ClInclude Include="..\Public\Kiryu_KRH_Walk.h" />
+    <ClInclude Include="..\Public\Kiryu_KRS_FlyKick.h" />
+    <ClInclude Include="..\Public\Kiryu_KRS_KickCombo.h" />
     <ClInclude Include="..\public\Kuze.h" />
     <ClInclude Include="..\public\Level_Office1F.h" />
     <ClInclude Include="..\public\Level_Office2F.h" />
@@ -288,6 +297,15 @@
     <ClCompile Include="..\Private\Image_Texture.cpp" />
     <ClCompile Include="..\Private\InventoryManager.cpp" />
     <ClCompile Include="..\Private\ItemData.cpp" />
+    <ClCompile Include="..\Private\Kiryu_KRH_Attack.cpp" />
+    <ClCompile Include="..\Private\Kiryu_KRH_BattleStart.cpp" />
+    <ClCompile Include="..\Private\Kiryu_KRH_Hit.cpp" />
+    <ClCompile Include="..\Private\Kiryu_KRH_Idle.cpp" />
+    <ClCompile Include="..\Private\Kiryu_KRH_Run.cpp" />
+    <ClCompile Include="..\Private\Kiryu_KRH_Sway.cpp" />
+    <ClCompile Include="..\Private\Kiryu_KRH_Walk.cpp" />
+    <ClCompile Include="..\Private\Kiryu_KRS_FlyKick.cpp" />
+    <ClCompile Include="..\Private\Kiryu_KRS_KickCombo.cpp" />
     <ClCompile Include="..\private\Kuze.cpp" />
     <ClCompile Include="..\private\Level_Office1F.cpp" />
     <ClCompile Include="..\private\Level_Office2F.cpp" />
@@ -375,6 +393,9 @@
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxNorTex.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxPosTex.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxUI.hlsl" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\Bin\ShaderFiles\Shader_Client_Defines.hlsli" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
