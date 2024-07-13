@@ -92,6 +92,7 @@ private:
     void Render_LuminanceResult();
 
     /* Effect */
+    void Render_RimLight();
     void Render_NonLight();//이펙트 시작
     void Render_Bloom();//블러
     void Render_FinalEffectBlend();//블러 합치기

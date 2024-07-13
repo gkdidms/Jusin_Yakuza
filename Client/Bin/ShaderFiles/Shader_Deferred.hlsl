@@ -463,6 +463,53 @@ PS_OUT PS_ADD_PUDDLE(PS_IN In)
     return Out;
 }
 
+PS_OUT PS_RIMLIGHT(PS_IN In)
+{
+    PS_OUT Out = (PS_OUT) 0;
+
+    vector BaseNormal = g_NormalTexture.Sample(LinearSampler, In.vTexcoord);//월드 노멀
+    BaseNormal = vector(BaseNormal.xyz * 2.f - 1.f, 0.f);
+
+    vector BaseDepth = g_DepthTexture.Sample(LinearSampler, In.vTexcoord);
+
+    vector vCamDir = g_vCamPosition; //월드 카메라
+   
+    vector RimColor = vector(1.0f, 0.0f, 1.0f, 1.0f);
+    
+    float fRimpower = 3.f;
+    
+    vector vWorldPos;
+
+    vWorldPos.x = In.vTexcoord.x * 2.f - 1.f;
+    vWorldPos.y = In.vTexcoord.y * -2.f + 1.f;
+    vWorldPos.z = BaseDepth.x; /* 0 ~ 1 */
+    vWorldPos.w = 1.f;
+
+    vWorldPos = vWorldPos * (BaseDepth.y * g_fFar);
+    float fProjZ = vWorldPos.z;
+
+	        /* 뷰스페이스 상의 위치를 구한다. */
+    vWorldPos = mul(vWorldPos, g_ProjMatrixInv);
+
+	        /* 월드스페이스 상의 위치를 구한다. */
+    vWorldPos = mul(vWorldPos, g_ViewMatrixInv);
+    
+    vector vRim = normalize(vCamDir - vWorldPos);
+    
+    if(1.f==BaseDepth.z)
+    {
+        float fRim = saturate(dot(BaseNormal, vRim));
+
+        Out.vColor = float4(pow(1.f - fRim, fRimpower) * RimColor);
+    }
+    else
+    {
+        Out.vColor = vector(0.f, 0.f, 0.f, 0.f);
+    }
+   
+    
+    return Out;
+}
 
 technique11 DefaultTechnique
 {
@@ -717,5 +764,18 @@ technique11 DefaultTechnique
         HullShader = NULL;
         DomainShader = NULL;
         PixelShader = compile ps_5_0 PS_ADD_PUDDLE();
+    }
+
+    pass RimLight //19
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_None_Test_None_Write, 0);
+        SetBlendState(BS_Default, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        HullShader = NULL;
+        DomainShader = NULL;
+        PixelShader = compile ps_5_0 PS_RIMLIGHT();
     }
 }

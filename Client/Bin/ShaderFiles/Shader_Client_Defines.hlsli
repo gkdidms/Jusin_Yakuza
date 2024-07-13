@@ -60,7 +60,8 @@ float g_fOut = { 0.5f };
 
 bool g_isRS;
 bool g_isRD;
-
+//림라이트
+bool g_isRimLight;
 
 /* Decal */
 float2 g_RenderResolution = float2(1280, 720);
@@ -82,6 +83,7 @@ bool g_bExistNormalTex;
 bool g_bExistRMTex;
 bool g_bExistRSTex;
 bool g_bReflExist;
+
 
 int g_iCount = { 0 };
 const int g_iMaxCasCade = { 3 };
