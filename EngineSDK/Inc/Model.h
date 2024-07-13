@@ -81,10 +81,10 @@ public:
 	CTexture* Copy_DecalTexture(int	iMaterialNum); /* Decal 텍스처 얻어오기 */
 
 	const _char* Get_AnimationName(_uint iAnimIndex);
-	const _double* Get_AnimationCurrentPosition();
-	const _double* Get_AnimationDuration();
+	const _double* Get_AnimationCurrentPosition(class CAnim* pAnim = nullptr);
+	const _double* Get_AnimationDuration(class CAnim* pAnim = nullptr);
 	const _float3* Get_AnimationCenterMove(class CAnim* pAnim = nullptr);
-	const _float4* Get_AnimationCenterRotation();
+	const _float4* Get_AnimationCenterRotation(class CAnim* pAnim = nullptr);
 
 public:
 	void Set_AnimLoop(_uint iAnimIndex, _bool isLoop)

@@ -1001,14 +1001,20 @@ const _char* CModel::Get_AnimationName(_uint iAnimIndex)
 	return m_Animations[iAnimIndex]->Get_AnimName();
 }
 
-const _double* CModel::Get_AnimationCurrentPosition()
+const _double* CModel::Get_AnimationCurrentPosition(CAnim* pAnim)
 {
-	return m_Animations[m_AnimDesc.iAnimIndex]->Get_CurrentPosition();
+	if (nullptr == pAnim)
+		return m_Animations[m_AnimDesc.iAnimIndex]->Get_CurrentPosition();
+	else
+		return pAnim->Get_AnimPosition();
 }
 
-const _double* CModel::Get_AnimationDuration()
+const _double* CModel::Get_AnimationDuration(CAnim* pAnim)
 {
-	return m_Animations[m_AnimDesc.iAnimIndex]->Get_Duration();
+	if (nullptr == pAnim)
+		return m_Animations[m_AnimDesc.iAnimIndex]->Get_Duration();
+	else
+		return pAnim->Get_AnimDuration();
 }
 
 const _float3* CModel::Get_AnimationCenterMove(CAnim* pAnim)
@@ -1019,9 +1025,12 @@ const _float3* CModel::Get_AnimationCenterMove(CAnim* pAnim)
 		return pAnim->Get_AnimationCenterMove();
 }
 
-const _float4* CModel::Get_AnimationCenterRotation()
+const _float4* CModel::Get_AnimationCenterRotation(CAnim* pAnim)
 {
-	return m_Animations[m_AnimDesc.iAnimIndex]->Get_CenterRotationValue();
+	if (nullptr == pAnim)
+		return m_Animations[m_AnimDesc.iAnimIndex]->Get_CenterRotationValue();
+	else
+		return pAnim->Get_AnimationCenterRotation();
 }
 
 void CModel::Copy_DecalMaterial(vector<DECAL_DESC>* pDecals)

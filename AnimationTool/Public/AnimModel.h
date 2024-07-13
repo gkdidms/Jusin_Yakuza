@@ -62,7 +62,7 @@ public:
 
 public:
 	void Change_Model(wstring strModelName);
-	void Change_Animation(_uint iAnimIndex);
+	void Change_Animation(_uint iAnimIndex, _bool isMonster = false);
 	void Select_Bone(_uint iBoneIndex);
 	void Select_Mesh(_uint iMeshIndex) {
 		m_iSelectedMeshIndex = iMeshIndex;
@@ -91,6 +91,8 @@ private:
 	vector<class CModelBoneSphere*> m_BoneSpheres;
 
 	wstring m_strModelName;
+
+	_bool	m_isMonster = { false };
 	_uint	m_iAnimIndex = { 0 };
 	_uint	m_iPassIndex = { 0 };
 	_uint	m_iSelectedMeshIndex = { 0 };

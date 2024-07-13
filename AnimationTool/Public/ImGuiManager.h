@@ -180,7 +180,7 @@ private:
 	multimap<string, string>				m_EffectState;
 
 private:
-	vector<CAnimation*>			m_pAnims;
+	vector<CAnimation*>			m_Anims;
 
 
 private:
