@@ -99,7 +99,6 @@ void CTransform::Go_Straight_CustumSpeed(const _float& fSpeed, const _float& fTi
 void CTransform::Go_Move_Custum(const _float4& vDir, const _float& fSpeed, const _float& fTimeDelta)
 {
 	_vector vPosition = Get_State(STATE_POSITION);
-	_vector vLook = Get_State(STATE_LOOK);
 
 	vPosition += XMLoadFloat4(&vDir) * fSpeed * fTimeDelta;
 
@@ -188,19 +187,20 @@ void CTransform::LookAt(_fvector vTargetPosition)
 
 void CTransform::LookAt_For_LandObject(_fvector vTargetPosition)
 {
-	_vector vLook = XMVector3Normalize(vTargetPosition - Get_State(STATE_POSITION));
-	_vector vRight = XMVector3Cross(XMVectorSet(0.f, 1.f, 0.f, 0.f), vLook);
+	_vector vPosition = Get_State(STATE_POSITION);
+	_vector vLook = XMVector3Normalize(vTargetPosition - vPosition);
 
-	// Look, Right 벡터를 구한 뒤, Up은 변환이 불필요하니, 직교를 맞추는 Look을 다시 구한다.
-	vLook = XMVector3Cross(vRight, Get_State(STATE_UP));
+	// Y축 벡터 고정
+	_vector vUp = XMVectorSet(0.f, 1.f, 0.f, 0.f);
 
-	if (isnan(XMVector4Normalize(vRight).m128_f32[0]) || isnan(XMVector4Normalize(vLook).m128_f32[0]))
-	{
-		return;
-	}
+	// Right 벡터 계산
+	_vector vRight = XMVector3Normalize(XMVector3Cross(vUp, vLook));
 
-	Set_State(STATE_RIGHT, XMVector3Normalize(vRight) * Get_Scaled().x);
-	Set_State(STATE_LOOK, XMVector3Normalize(vLook) * Get_Scaled().z);
+	// Look 벡터 재계산
+	vLook = XMVector3Normalize(XMVector3Cross(vRight, vUp));
+
+	Set_State(STATE_RIGHT, vRight * Get_Scaled().x);
+	Set_State(STATE_LOOK, vLook * Get_Scaled().z);
 }
 
 void CTransform::LookForCamera(_fvector vCamLook, _float fRadian)

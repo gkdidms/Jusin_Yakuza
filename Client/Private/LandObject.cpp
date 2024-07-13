@@ -141,7 +141,39 @@ void CLandObject::Apply_ChracterData()
 
 		auto [it, success] = m_pEffects.emplace(pEffect.first, static_cast<CSocketEffect*>(pSoketEffect));
 
-		it->second->On();
+		it->second->Off();
+	}
+}
+
+void CLandObject::Animation_Event()
+{
+	auto& pCurEvents = m_pData->Get_CurrentEvents();
+	for (auto& pEvent : pCurEvents)
+	{
+		_double CurPos = *(m_pModelCom->Get_AnimationCurrentPosition());
+		_double Duration = *(m_pModelCom->Get_AnimationDuration());
+
+		if (CurPos >= pEvent.fPlayPosition && CurPos < Duration)
+		{
+			CSocketCollider* pCollider = m_pColliders.at(pEvent.iBoneIndex);
+
+			switch (pEvent.iType)
+			{
+			case 0:
+				pCollider->On();
+				break;
+			case 1:
+				pCollider->Off();
+				break;
+			case 2:
+				cout << "사운드 재생" << endl;
+				break;
+			case 3:
+				cout << "이펙트 재생" << endl;
+				break;
+			}
+		}
+
 	}
 }
 

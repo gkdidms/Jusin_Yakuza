@@ -1,44 +1,6 @@
 #include "BehaviorAnimation.h"
 #include "GameInstance.h"
 
-#pragma region Adventure
-#include "Kiryu_Adventure_Idle.h"
-#include "Kiryu_Adventure_Walk.h"
-#include "Kiryu_Adventure_Run.h"
-#pragma endregion
-
-#pragma region KRS
-#include "Kiryu_KRS_BattleStart.h"
-#include "Kiryu_KRS_Idle.h"
-#include "Kiryu_KRS_Walk.h"
-#include "Kiryu_KRS_Run.h"
-#include "Kiryu_KRS_Attack.h"
-#include "Kiryu_KRS_FlyKick.h"
-#include "Kiryu_KRS_KickCombo.h"
-#include "Kiryu_KRS_Hit.h"
-#include "Kiryu_KRS_Sway.h"
-#pragma endregion
-
-#pragma region KRH
-#include "Kiryu_KRH_BattleStart.h"
-#include "Kiryu_KRH_Idle.h"
-#include "Kiryu_KRH_Walk.h"
-#include "Kiryu_KRH_Run.h"
-#include "Kiryu_KRH_Attack.h"
-#include "Kiryu_KRH_Hit.h"
-#include "Kiryu_KRH_Sway.h"
-#pragma endregion
-
-#pragma region KRC
-#include "Kiryu_KRC_BattleStart.h"
-#include "Kiryu_KRC_Idle.h"
-#include "Kiryu_KRC_Walk.h"
-#include "Kiryu_KRC_Run.h"
-#include "Kiryu_KRC_Attack.h"
-#include "Kiryu_KRC_Hit.h"
-#include "Kiryu_KRC_Sway.h"
-#pragma endregion
-
 CBehaviorAnimation::CBehaviorAnimation()
 	: m_pGameInstance{CGameInstance::GetInstance()}
 {

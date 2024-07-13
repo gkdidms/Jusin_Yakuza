@@ -49,6 +49,7 @@ public:
 	_uint Get_NumMeshes() { return m_iNumMeshes; }
 	_uint Get_NumAnimations() { return m_iAnimations; }
 	_uint Get_NumBones() { return m_iNumBones; }
+	_uint Get_CurrentAnimationIndex() { return m_AnimDesc.iAnimIndex; }
 
 	_bool Get_AnimFinished() const;
 	_bool Get_AnimChanged() const;

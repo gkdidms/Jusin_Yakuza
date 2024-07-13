@@ -268,7 +268,13 @@ void CImguiManager::AnimListWindow()
 	ImGui::Text("Anim Index: %d", m_iAnimIndex);
 
 	if (ImGui::Button("Add"))
-		m_AddedAnims.emplace(m_iAnimIndex, m_AnimNameList[m_iAnimIndex]);
+	{
+		if (m_AddedAnims.find(m_iAnimIndex) == m_AddedAnims.end())
+		{
+			m_AddedAnims.emplace(m_iAnimIndex, m_AnimNameList[m_iAnimIndex]);
+		}
+
+	}
 
 	vector<const char*> Addeditems;
 	for (auto& AddedAnim : m_AddedAnims)
@@ -1363,7 +1369,7 @@ void CImguiManager::AnimationLoop_Load(string strPath)
 	{
 		_uint iAnimIndex = { 0 };
 		in.read((char*)&iAnimIndex, sizeof(_uint));
-		m_AddedAnims.emplace(i, m_AnimNameList[iAnimIndex]);
+		m_AddedAnims.emplace(iAnimIndex, m_AnimNameList[iAnimIndex]);
 	}
 
 	in.close();

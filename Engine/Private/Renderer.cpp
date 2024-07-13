@@ -157,7 +157,7 @@ HRESULT CRenderer::Ready_Targets()
 	m_pContext->RSGetViewports(&iNumViewPort, &ViewPort);
 
 	/*Target_NonBlendDiffuse*/
-	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_NonBlendDiffuse"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_B8G8R8A8_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_NonBlendDiffuse"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_B8G8R8A8_UNORM, _float4(1.f, 0.f, 1.f, 0.f))))
 		return E_FAIL;
 
 	/*Target_NonBlendNormal*/

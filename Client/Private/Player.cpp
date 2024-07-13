@@ -120,6 +120,8 @@ void CPlayer::Tick(const _float& fTimeDelta)
 	m_pColliderCom->Tick(m_pTransformCom->Get_WorldMatrix());
 
 	Animation_Event();
+
+	Effect_Control_Aura();
 }
 
 void CPlayer::Late_Tick(const _float& fTimeDelta)
@@ -307,9 +309,38 @@ HRESULT CPlayer::Render_LightDepth()
 	return S_OK;
 }
 
-void CPlayer::Take_Damage(_uint iHitColliderType, const _float3& vDir, _float fDamage, _bool isBlowAttack)
+void CPlayer::Take_Damage(_uint iHitColliderType, const _float3& vDir, _float fDamage, CLandObject* pAttackedObject, _bool isBlowAttack)
 {
 	// iHitColliderType 는 충돌한 HIT타입 콜라이더가 헤드, 바디, 레그인지를 갖고있다.
+
+	// 때린 상대의 현재 애니메이션 네임을 가져온다.
+	switch (m_eCurrentStyle)
+	{
+	case CPlayer::KRS:
+	{
+		CKiryu_KRS_Hit::KRS_Hit_DESC Desc{ &vDir, fDamage, pAttackedObject->Get_CurrentAnimationName()};
+
+		m_iCurrentBehavior = (_uint)KRS_BEHAVIOR_STATE::HIT;
+		m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Setting_Value((void*) &Desc);
+		break;
+	}
+	case CPlayer::KRH:
+	{
+
+		break;
+	}
+	case CPlayer::KRC:
+	{
+
+		break;
+	}
+	}
+	pAttackedObject->Get_CurrentAnimationName();
+}
+
+string CPlayer::Get_CurrentAnimationName()
+{
+	return m_pModelCom->Get_AnimationName(m_pModelCom->Get_CurrentAnimationIndex());
 }
 
 void CPlayer::Ready_AnimationTree()
@@ -362,29 +393,30 @@ void CPlayer::Synchronize_Root(const _float& fTimeDelta)
 		else
 		{
 			// 쿼터니언 회전값 적용은 중단 (추후 마저 진행예정)
-			_float4 v;
-			_vector diffQuaternionVector = XMQuaternionMultiply(resultQuaternionVector, XMQuaternionConjugate(XMLoadFloat4(&m_vPrevRotation)));
-			XMStoreFloat4(&v, diffQuaternionVector);
-			m_pTransformCom->Change_Rotation_Quaternion(v);
+			//_float4 v;
+			//_vector diffQuaternionVector = XMQuaternionMultiply(resultQuaternionVector, XMQuaternionConjugate(XMLoadFloat4(&m_vPrevRotation)));
+			//XMStoreFloat4(&v, diffQuaternionVector);
+			//m_pTransformCom->Change_Rotation_Quaternion(v);
 
 			//_float4 vb;
 			//XMStoreFloat4(&vb, vFF - XMLoadFloat4(&m_vPrevMove));
 			//m_pTransformCom->Go_Straight_CustumDir(vb, fTimeDelta);
+
 			_float4 fMoveDir;
 			_float fMoveSpeed = XMVectorGetX(XMVector3Length(vFF - XMLoadFloat4(&m_vPrevMove)));
 			
 			//Y값 이동을 죽인 방향으로 적용해야한다.
-			XMStoreFloat4(&fMoveDir, XMVectorSetY(XMVector3NormalizeEst(vFF - XMLoadFloat4(&m_vPrevMove)), 0.f));
+			_vector vTemp = XMVector3NormalizeEst((vFF - XMLoadFloat4(&m_vPrevMove)));
+			vTemp = XMVectorSetZ(vTemp, XMVectorGetY(vTemp));
+			XMStoreFloat4(&fMoveDir, XMVector3TransformNormal(XMVectorSetY(vTemp, 0.f), m_pTransformCom->Get_WorldMatrix()));
 
 			if (0.01 > m_fPrevSpeed)
 				m_fPrevSpeed = 0.f;
 
-			m_pTransformCom->Go_Straight_CustumSpeed(m_fPrevSpeed, 1);
 			m_pTransformCom->Go_Move_Custum(fMoveDir, m_fPrevSpeed, 1);
 			m_fPrevSpeed = fMoveSpeed;
 
 			XMStoreFloat4(&m_vPrevMove, vFF);
-
 		}
 	}
 	else
@@ -397,38 +429,6 @@ void CPlayer::Synchronize_Root(const _float& fTimeDelta)
 	XMStoreFloat4x4(&m_ModelWorldMatrix, m_pTransformCom->Get_WorldMatrix());
 	//m_vPrevRotation = vQuaternion;
 	XMStoreFloat4(&m_vPrevRotation, resultQuaternionVector);
-}
-
-void CPlayer::Animation_Event()
-{
-	auto& pCurEvents = m_pData->Get_CurrentEvents();
-	for (auto& pEvent : pCurEvents)
-	{
-		_double CurPos = *(m_pModelCom->Get_AnimationCurrentPosition());
-		_double Duration = *(m_pModelCom->Get_AnimationDuration());
-
-		if (CurPos >= pEvent.fPlayPosition && CurPos < Duration)
-		{
-			CSocketCollider* pCollider = m_pColliders.at(pEvent.iBoneIndex);
-
-			switch (pEvent.iType)
-			{
-			case 0:
-				pCollider->On();
-				break;
-			case 1:
-				pCollider->Off();
-				break;
-			case 2:
-				cout << "사운드 재생" << endl;
-				break;
-			case 3:
-				cout << "이펙트 재생" << endl;
-				break;
-			}
-		}
-		
-	}
 }
 
 void CPlayer::KeyInput(const _float& fTimeDelta)
@@ -469,35 +469,31 @@ void CPlayer::Adventure_KeyInput(const _float& fTimeDelta)
 	if (m_pGameInstance->GetKeyState(DIK_W) == HOLD)
 	{
 		_vector vCamLook = m_pGameInstance->Get_CamLook();
+		_vector vLookPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION) + XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK) + vCamLook);
 
-		_vector vLookPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION) + XMVector3Normalize((m_pTransformCom->Get_State(CTransform::STATE_LOOK) + m_pGameInstance->Get_CamLook()));
 		m_iCurrentBehavior = isShift ? (_uint)ADVENTURE_BEHAVIOR_STATE::WALK : (_uint)ADVENTURE_BEHAVIOR_STATE::RUN;
 
-		_float a = XMVectorGetX(vLookPos);
-		if (isnan(a))
-			int h = 99;
+		vLookPos = XMVectorSetY(vLookPos, XMVectorGetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION)));
 
-		if(m_iCurrentBehavior == (_uint)ADVENTURE_BEHAVIOR_STATE::WALK || m_iCurrentBehavior ==(_uint)ADVENTURE_BEHAVIOR_STATE::RUN)
+		if (!XMVector3Equal(vLookPos, XMVectorZero())) {
 			m_pTransformCom->LookAt_For_LandObject(vLookPos);
-
-		isMove = true;
+			isMove = true;
+		}
 	}
 
 	if (m_pGameInstance->GetKeyState(DIK_S) == HOLD)
 	{
 		_vector vCamLook = m_pGameInstance->Get_CamLook();
+		_vector vLookPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION) + XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK) - vCamLook);
 
-		_vector vLookPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION) + XMVector3Normalize((m_pTransformCom->Get_State(CTransform::STATE_LOOK) - vCamLook));
 		m_iCurrentBehavior = isShift ? (_uint)ADVENTURE_BEHAVIOR_STATE::WALK : (_uint)ADVENTURE_BEHAVIOR_STATE::RUN;
 
-		_float a = XMVectorGetX(vLookPos);
-		if (isnan(a))
-			int h = 99;
+		vLookPos = XMVectorSetY(vLookPos, XMVectorGetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION)));
 
-		if (m_iCurrentBehavior == (_uint)ADVENTURE_BEHAVIOR_STATE::WALK || m_iCurrentBehavior == (_uint)ADVENTURE_BEHAVIOR_STATE::RUN)
+		if (!XMVector3Equal(vLookPos, XMVectorZero())) {
 			m_pTransformCom->LookAt_For_LandObject(vLookPos);
-
-		isMove = true;
+			isMove = true;
+		}
 	}
 
 	if (m_pGameInstance->GetKeyState(DIK_A) == HOLD)
@@ -505,8 +501,10 @@ void CPlayer::Adventure_KeyInput(const _float& fTimeDelta)
 		_vector vCamLook = m_pGameInstance->Get_CamLook();
 
 		_vector vLookPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION) + XMVector3Normalize((m_pTransformCom->Get_State(CTransform::STATE_LOOK) - m_pGameInstance->Get_CamRight()));
+
 		m_iCurrentBehavior = isShift ? (_uint)ADVENTURE_BEHAVIOR_STATE::WALK : (_uint)ADVENTURE_BEHAVIOR_STATE::RUN;
 		
+		vLookPos = XMVectorSetY(vLookPos, XMVectorGetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION)));
 		_float a = XMVectorGetX(vLookPos);
 		if (isnan(a))
 			int h = 99;
@@ -522,8 +520,10 @@ void CPlayer::Adventure_KeyInput(const _float& fTimeDelta)
 		_vector vCamLook = m_pGameInstance->Get_CamLook();
 
 		_vector vLookPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION) + XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK) + m_pGameInstance->Get_CamRight());
+
 		m_iCurrentBehavior = isShift ? (_uint)ADVENTURE_BEHAVIOR_STATE::WALK : (_uint)ADVENTURE_BEHAVIOR_STATE::RUN;
 		
+		vLookPos = XMVectorSetY(vLookPos, XMVectorGetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION)));
 		_float a = XMVectorGetX(vLookPos);
 		if (isnan(a))
 			int h = 99;
@@ -914,7 +914,6 @@ void CPlayer::Change_Animation(_uint iIndex, _float fInterval)
 		XMStoreFloat4(&m_vPrevMove, XMVectorZero());
 		m_fPrevSpeed = 0.f;
 	}
-			
 	
 	string strAnimName = string(m_pModelCom->Get_AnimationName(iIndex));
 	strAnimName = m_pGameInstance->Extract_String(strAnimName, '[', ']');
@@ -992,6 +991,40 @@ void CPlayer::Compute_MoveDirection_RL()
 			m_MoveDirection[R] = true;
 	}
 
+}
+
+void CPlayer::Effect_Control_Aura()
+{
+	CSocketEffect* pEffect = { nullptr };
+
+	for (auto& pair : m_pEffects)
+	{
+		string strKey = pair.first;
+
+		if (string::npos != strKey.find("Aura"))
+			pEffect = pair.second;
+	}
+
+	if (0 < m_iCurrentHitLevel)
+	{
+		if(nullptr != pEffect)
+			pEffect->On();
+	}
+	else
+	{
+		if (nullptr != pEffect)
+			pEffect->Off();
+	}
+}
+
+void CPlayer::AccHitGauge()
+{
+	if (PLAYER_HITGAUGE_LEVEL_INTERVAL * 3.f < m_fHitGauge)
+		m_fHitGauge = PLAYER_HITGAUGE_LEVEL_INTERVAL * 3.f;
+	else
+		m_fHitGauge += 10.f;
+
+	m_iCurrentHitLevel = (m_fHitGauge / PLAYER_HITGAUGE_LEVEL_INTERVAL);
 }
 
 CPlayer* CPlayer::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
