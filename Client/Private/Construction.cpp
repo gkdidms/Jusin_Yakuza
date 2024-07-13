@@ -28,6 +28,7 @@ HRESULT CConstruction::Initialize_Prototype()
 
 HRESULT CConstruction::Initialize(void* pArg)
 {
+
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
@@ -350,7 +351,7 @@ HRESULT CConstruction::Render_LightDepth()
 		shadowLightPos.m128_f32[3] = 1.f;
 
 		XMStoreFloat4x4(&ViewMatrix, XMMatrixLookAtLH(shadowLightPos, vCenter, XMVectorSet(0.f, 1.f, 0.f, 0.f)));
-		XMStoreFloat4x4(&ProjMatrix, XMMatrixOrthographicLH(fRadius * 2.f, fRadius * 2.f, 0.1f, 1000.f));
+		XMStoreFloat4x4(&ProjMatrix, XMMatrixOrthographicLH(fRadius * 2,  fRadius * 2, 0.f, fRadius * 2.f));
 
 		ViewMatrixArray[i] = ViewMatrix;
 		ProjMatrixArray[i] = ProjMatrix;

@@ -105,8 +105,10 @@ void CPlayer::Tick(const _float& fTimeDelta)
 
 	Synchronize_Root(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")));
 
+#ifdef _DEBUG
 	if (m_isAnimStart)
 		m_pModelCom->Play_Animation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")));
+#endif // _DEBUG
 
 	for (auto& pCollider : m_pColliders)
 		pCollider.second->Tick(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")));
@@ -130,7 +132,7 @@ void CPlayer::Late_Tick(const _float& fTimeDelta)
 		m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
 		m_pGameInstance->Add_Renderer(CRenderer::RENDER_SHADOWOBJ, this); // Shadow¿ë ·»´õ Ãß°¡
 	}
-#elif
+#else
 	m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
 	m_pGameInstance->Add_Renderer(CRenderer::RENDER_SHADOWOBJ, this); // Shadow¿ë ·»´õ Ãß°¡
 #endif // _DEBUG
@@ -288,7 +290,7 @@ HRESULT CPlayer::Render_LightDepth()
 		shadowLightPos.m128_f32[3] = 1.f;
 
 		XMStoreFloat4x4(&ViewMatrix, XMMatrixLookAtLH(shadowLightPos, vCenter, XMVectorSet(0.f, 1.f, 0.f, 0.f)));
-		XMStoreFloat4x4(&ProjMatrix, XMMatrixOrthographicLH(fRadius * 2.f, fRadius * 2.f, 0.1f, 1000.f));
+		XMStoreFloat4x4(&ProjMatrix, XMMatrixOrthographicLH(fRadius * 2, fRadius * 2, 0.f, fRadius * 2.f));
 
 		ViewMatrixArray[i] = ViewMatrix;
 		ProjMatrixArray[i] = ProjMatrix;

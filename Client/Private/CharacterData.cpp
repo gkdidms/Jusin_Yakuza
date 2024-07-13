@@ -238,7 +238,7 @@ HRESULT CCharacterData::Load_EffectState(string strFilePath)
 			string strEffectName = "";
 			in >> strEffectName;
 
-			//Create_Effect(strBoneName, strEffectName);
+			Create_Effect(strBoneName, strEffectName);
 
 			m_Effects.emplace(strBoneName, m_pGameInstance->StringToWstring(strEffectName));
 		}
@@ -266,6 +266,8 @@ CCharacterData* CCharacterData::Create(CLandObject* pCharacter)
 	CCharacterData* pInstnace = new CCharacterData();
 
 	if (FAILED(pInstnace->Initialize(pCharacter)))
+
+
 	{
 		MSG_BOX("Failed To Created : CCharacterData");
 		Safe_Release(pInstnace);

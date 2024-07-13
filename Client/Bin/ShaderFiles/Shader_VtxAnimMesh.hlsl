@@ -43,7 +43,7 @@ VS_OUT VS_MAIN(VS_IN In)
     matWVP = mul(matWV, g_ProjMatrix);
 
     Out.vPosition = mul(vPosition, matWVP);
-    Out.vNormal = normalize(mul(vNormal, g_WorldMatrix));
+    Out.vNormal = normalize(vNormal);
     Out.vTexcoord = In.vTexcoord;
     Out.vProjPos = Out.vPosition, 1.f;
     Out.vLocalPos = float4(In.vPosition, 1.f);
@@ -74,12 +74,7 @@ VS_OUT_LIGHTDEPTH VS_MAIN_LIGHTDEPTH(VS_IN In)
 
     vector vPosition = mul(float4(In.vPosition, 1.f), TransformMatrix);
 
-    matrix matWV, matWVP;
-
-    matWV = mul(g_WorldMatrix, g_ViewMatrix);
-    matWVP = mul(matWV, g_ProjMatrix);
-
-    Out.vPosition = mul(vPosition, matWVP);
+    Out.vPosition = mul(vPosition, g_WorldMatrix);
     Out.vTexcoord = In.vTexcoord;
     Out.vProjPos = Out.vPosition;
 
@@ -106,15 +101,15 @@ struct GS_OUT
 [maxvertexcount(9)]
 void GS_MAIN_LIGHTDEPTH(triangle GS_IN In[3], inout TriangleStream<GS_OUT> Out)
 {
-    GS_OUT Output[3];
+    GS_OUT Output[3] = (GS_OUT[3])0;
+    
     for (int i = 0; i < 3; i++)
     {
         for (int j = 0; j < 3; j++)
         {
-            float4 vViewPos = mul(In[j].vPosition, g_ViewMatrixArray[i]);
-            vViewPos.z += 2.5f;
-            Output[j].vPosition = mul(vViewPos, g_ProjMatrixArray[i]);
-            Output[j].vProjPos = In[j].vProjPos;
+            float4 vViewPos = mul(In[j].vPosition, mul(g_ViewMatrixArray[i], g_ProjMatrixArray[i]));
+            Output[j].vPosition = vViewPos;
+            Output[j].vProjPos = vViewPos;
             Output[j].vTexcoord = In[j].vTexcoord;
             Output[j].fIndex = i;
             Out.Append(Output[j]);
@@ -153,13 +148,14 @@ PS_OUT PS_MAIN(PS_IN In)
     vector vMultiDiffuce = g_MultiDiffuseTexture.Sample(LinearSampler, In.vTexcoord);
     vector vTangentDesc = g_NormalTexture.Sample(LinearSampler, In.vTexcoord);
     
-    float3 vNormal = In.vNormal.xyz * 2.f - 1.f;
+    vector vNormal = mul(vector(In.vNormal.xyz * 2.f - 1.f, 0.f), g_WorldMatrix);
+    vTangentDesc = mul(vector(vTangentDesc.a, vTangentDesc.y, 1.f, 0.f), g_WorldMatrix);
     
-    vector vTangent = normalize(mul(vector(vTangentDesc.xyz, 0.f), g_WorldMatrix));
+    vector vTangent = normalize(vector(vTangentDesc.xyz, 0.f));
     vector vBinormal = vector(cross(vNormal.xyz, vTangent.xyz), 0.f);
     
     float3x3 WorldMatrix = float3x3(vTangent.xyz, vBinormal.xyz, vNormal.xyz);
-    vNormal = mul(vNormal, WorldMatrix);
+    float3 vNormalBTN = mul(In.vNormal.xyz, WorldMatrix);
     
     if (vDiffuse.a < 0.1f)
         discard;
@@ -190,7 +186,7 @@ PS_OUT PS_MAIN(PS_IN In)
     }
 
     
-    Out.vNormal = vector(vNormal.xyz * 0.5f + 0.5f, 0.f);
+    Out.vNormal = vector(vNormalBTN.xyz * 0.5f + 0.5f, 0.f);
     Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_fFar, 1.f, 1.f);
     Out.vMulti = vMultiDiffuce;
     

@@ -1,0 +1,581 @@
+{
+  "version": "2.1.0",
+  "$schema": "https://schemastore.azurewebsites.net/schemas/json/sarif-2.1.0-rtm.5.json",
+  "runs": [
+    {
+      "results": [
+        {
+          "ruleId": "C6011",
+          "message": {
+            "text": "NULL 포인터 'p_open'을(를) 역참조하고 있습니다. "
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/AnimationTool/Imgui/imgui_demo.cpp"
+                },
+                "region": {
+                  "startLine": 8652,
+                  "startColumn": 18,
+                  "endLine": 8652,
+                  "endColumn": 27
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "ShowExampleAppDockSpace",
+                  "decoratedName": "?ShowExampleAppDockSpace@@YAXPEA_N@Z",
+                  "kind": "function"
+                }
+              ]
+            }
+          ],
+          "codeFlows": [
+            {
+              "threadFlows": [
+                {
+                  "locations": [
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/AnimationTool/Imgui/imgui_demo.cpp"
+                          },
+                          "region": {
+                            "startLine": 8579,
+                            "startColumn": 17
+                          }
+                        }
+                      },
+                      "importance": "unimportant"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/AnimationTool/Imgui/imgui_demo.cpp"
+                          },
+                          "region": {
+                            "startLine": 8580,
+                            "startColumn": 17
+                          }
+                        }
+                      },
+                      "importance": "unimportant"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/AnimationTool/Imgui/imgui_demo.cpp"
+                          },
+                          "region": {
+                            "startLine": 8581,
+                            "startColumn": 31
+                          }
+                        }
+                      },
+                      "importance": "unimportant"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/AnimationTool/Imgui/imgui_demo.cpp"
+                          },
+                          "region": {
+                            "startLine": 8585,
+                            "startColumn": 22
+                          }
+                        }
+                      },
+                      "importance": "unimportant"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/AnimationTool/Imgui/imgui_demo.cpp"
+                          },
+                          "region": {
+                            "startLine": 8586,
+                            "startColumn": 9
+                          }
+                        }
+                      },
+                      "importance": "unimportant"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/AnimationTool/Imgui/imgui_demo.cpp"
+                          },
+                          "region": {
+                            "startLine": 8599,
+                            "startColumn": 25
+                          }
+                        }
+                      },
+                      "importance": "unimportant"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/AnimationTool/Imgui/imgui_demo.cpp"
+                          },
+                          "region": {
+                            "startLine": 8604,
+                            "startColumn": 25
+                          }
+                        }
+                      },
+                      "importance": "unimportant"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/AnimationTool/Imgui/imgui_demo.cpp"
+                          },
+                          "region": {
+                            "startLine": 8612,
+                            "startColumn": 9
+                          }
+                        }
+                      },
+                      "importance": "unimportant"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/AnimationTool/Imgui/imgui_demo.cpp"
+                          },
+                          "region": {
+                            "startLine": 8614,
+                            "startColumn": 17
+                          }
+                        }
+                      },
+                      "importance": "unimportant"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/AnimationTool/Imgui/imgui_demo.cpp"
+                          },
+                          "region": {
+                            "startLine": 8615,
+                            "startColumn": 9
+                          }
+                        }
+                      },
+                      "importance": "unimportant"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/AnimationTool/Imgui/imgui_demo.cpp"
+                          },
+                          "region": {
+                            "startLine": 8618,
+                            "startColumn": 9
+                          }
+                        }
+                      },
+                      "importance": "unimportant"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/AnimationTool/Imgui/imgui_demo.cpp"
+                          },
+                          "region": {
+                            "startLine": 8622,
+                            "startColumn": 14
+                          }
+                        }
+                      },
+                      "importance": "unimportant"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/AnimationTool/Imgui/imgui_demo.cpp"
+                          },
+                          "region": {
+                            "startLine": 8623,
+                            "startColumn": 24
+                          }
+                        }
+                      },
+                      "importance": "unimportant"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/AnimationTool/Imgui/imgui_demo.cpp"
+                          },
+                          "region": {
+                            "startLine": 8630,
+                            "startColumn": 35
+                          }
+                        }
+                      },
+                      "importance": "unimportant"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/AnimationTool/Imgui/imgui_demo.cpp"
+                          },
+                          "region": {
+                            "startLine": 8633,
+                            "startColumn": 28
+                          }
+                        }
+                      },
+                      "importance": "unimportant"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/AnimationTool/Imgui/imgui_demo.cpp"
+                          },
+                          "region": {
+                            "startLine": 8635,
+                            "startColumn": 29
+                          }
+                        }
+                      },
+                      "importance": "unimportant"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/AnimationTool/Imgui/imgui_demo.cpp"
+                          },
+                          "region": {
+                            "startLine": 8639,
+                            "startColumn": 28
+                          }
+                        }
+                      },
+                      "importance": "unimportant"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/AnimationTool/Imgui/imgui_demo.cpp"
+                          },
+                          "region": {
+                            "startLine": 8640,
+                            "startColumn": 28
+                          }
+                        }
+                      },
+                      "importance": "unimportant"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/AnimationTool/Imgui/imgui_demo.cpp"
+                          },
+                          "region": {
+                            "startLine": 8641,
+                            "startColumn": 29
+                          }
+                        }
+                      },
+                      "importance": "unimportant"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/AnimationTool/Imgui/imgui_demo.cpp"
+                          },
+                          "region": {
+                            "startLine": 8643,
+                            "startColumn": 32
+                          }
+                        }
+                      },
+                      "importance": "unimportant"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/AnimationTool/Imgui/imgui_demo.cpp"
+                          },
+                          "region": {
+                            "startLine": 8644,
+                            "startColumn": 32
+                          }
+                        }
+                      },
+                      "importance": "unimportant"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/AnimationTool/Imgui/imgui_demo.cpp"
+                          },
+                          "region": {
+                            "startLine": 8645,
+                            "startColumn": 32
+                          }
+                        }
+                      },
+                      "importance": "unimportant"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/AnimationTool/Imgui/imgui_demo.cpp"
+                          },
+                          "region": {
+                            "startLine": 8646,
+                            "startColumn": 32
+                          }
+                        }
+                      },
+                      "importance": "unimportant"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/AnimationTool/Imgui/imgui_demo.cpp"
+                          },
+                          "region": {
+                            "startLine": 8647,
+                            "startColumn": 32
+                          }
+                        }
+                      },
+                      "importance": "unimportant"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/AnimationTool/Imgui/imgui_demo.cpp"
+                          },
+                          "region": {
+                            "startLine": 8648,
+                            "startColumn": 32
+                          }
+                        }
+                      },
+                      "importance": "unimportant"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/AnimationTool/Imgui/imgui_demo.cpp"
+                          },
+                          "region": {
+                            "startLine": 8649,
+                            "startColumn": 29
+                          }
+                        }
+                      },
+                      "importance": "unimportant"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/AnimationTool/Imgui/imgui_demo.cpp"
+                          },
+                          "region": {
+                            "startLine": 8651,
+                            "startColumn": 32
+                          }
+                        },
+                        "message": {
+                          "text": "'p_open'은(는) NULL일 수 있습니다. (이 분기 시작)"
+                        }
+                      },
+                      "kinds": [
+                        "branch"
+                      ]
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/AnimationTool/Imgui/imgui_demo.cpp"
+                          },
+                          "region": {
+                            "startLine": 8652,
+                            "startColumn": 25
+                          }
+                        },
+                        "message": {
+                          "text": "'p_open'이(가) 역참조되었지만 여전히 NULL일 수 있습니다."
+                        }
+                      },
+                      "kinds": [
+                        "usage"
+                      ],
+                      "importance": "essential"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "ruleId": "C26819",
+          "message": {
+            "text": "스위치 레이블 간에 주석 처리되지 않은 fallthrough입니다(es.78)."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/AnimationTool/Imgui/imstb_truetype.h"
+                },
+                "region": {
+                  "startLine": 2148,
+                  "startColumn": 12
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "stbtt__run_charstring",
+                  "decoratedName": "?stbtt__run_charstring@@YAHPEBUstbtt_fontinfo@@HPEAUstbtt__csctx@@@Z",
+                  "kind": "function"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "tool": {
+        "driver": {
+          "name": "PREfast",
+          "fullName": "PREfast Code Analysis",
+          "version": "14.38.33135.0",
+          "informationUri": "https://aka.ms/cpp/ca"
+        }
+      },
+      "invocations": [
+        {
+          "executionSuccessful": true
+        }
+      ],
+      "artifacts": [
+        {
+          "location": {
+            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/AnimationTool/Imgui/imgui_demo.cpp"
+          },
+          "roles": [
+            "resultFile"
+          ],
+          "hashes": {
+            "sha-256": "61acda9d20978e7fd17d10798e2e5f4fbf4b2d4d3253291d7fb669d74dd4fb76"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/AnimationTool/Imgui/imstb_truetype.h"
+          },
+          "roles": [
+            "resultFile"
+          ],
+          "hashes": {
+            "sha-256": "789e3bf5354b6c5530ac23fc585152f373a24850b615f187e636eb3c329f76cc"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/animationtool/default/x64/release/unity_v70upgazagj20m9w.cpp"
+          },
+          "roles": [
+            "analysisTarget"
+          ],
+          "hashes": {
+            "sha-256": "0d5fee80603dd560617c4b640cb67cca66b706bd27981359fcd9a77269a2db25"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/animationtool/imgui/imgui.h"
+          },
+          "hashes": {
+            "sha-256": "fbc021d8e903dba6c31bfd54c473c8ed9874fd9e0bf4e3c9d19c2dce6f755345"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/animationtool/imgui/imconfig.h"
+          },
+          "hashes": {
+            "sha-256": "07428116edfc8ac1a32ca64ab0f4c04ce831f4b4f7e4b95531d7306dcc4d2323"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/animationtool/imgui/imgui_draw.cpp"
+          },
+          "hashes": {
+            "sha-256": "eb91760a560857d8ebac87bb9e9215b77946e45ccb24496e0b7077533c92bb94"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/animationtool/imgui/imgui_internal.h"
+          },
+          "hashes": {
+            "sha-256": "c390494c36b798858d86913e969b40cc25b0b578df73c4c0bb490f78b31bf9a7"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/animationtool/imgui/imstb_textedit.h"
+          },
+          "hashes": {
+            "sha-256": "6cba69d37c5fb83c4a4a48fcd7bd77f05ad2325de6bc81af59b671b7ee30aa6c"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/animationtool/imgui/imstb_rectpack.h"
+          },
+          "hashes": {
+            "sha-256": "bb53504995e983d54b1ae06ea727f0b39647e5e205b4bf7da01343953974951c"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/animationtool/imgui/imgui_tables.cpp"
+          },
+          "hashes": {
+            "sha-256": "d48a88096d2a22964420c943468ac4dc58082d8e1ce42a9145c48b3c312ea8f8"
+          }
+        }
+      ]
+    }
+  ]
+}

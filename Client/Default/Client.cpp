@@ -92,19 +92,25 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         pGameInstance->Update_TimeDelta(TEXT("Timer_Default"));
 
         fTimeAcc += pGameInstance->Get_TimeDelta(TEXT("Timer_Default"));
-
+#ifdef _DEBUG
         if (!pDebugManager->isLimit() || fTimeAcc > 1.f / 60.0f)
         {
             pGameInstance->Update_TimeDelta(TEXT("Timer_60"));
             pGameInstance->Update_TimeDelta(TEXT("Timer_Player"));
             _float fTimeDelta = pGameInstance->Get_TimeDelta(TEXT("Timer_60"));
-#ifdef _DEBUG
+
             if (pDebugManager->isDebug() && pDebugManager->isTimeStop())
             {
                 fTimeDelta = 0.f;
                 // 디버깅용으로 타임델타 멈출 때 플레이어가 사용하는 타임델타도 멈춤
                 //pGameInstance->Set_TimeSpeed(TEXT("Timer_Player"), 0.f);
             }
+#else
+        if (fTimeAcc > 1.f / 60.0f)
+        {
+            pGameInstance->Update_TimeDelta(TEXT("Timer_60"));
+            pGameInstance->Update_TimeDelta(TEXT("Timer_Player"));
+            _float fTimeDelta = pGameInstance->Get_TimeDelta(TEXT("Timer_60"));
 #endif // _DEBUG
             pMainApp->Tick(fTimeDelta);
             pMainApp->Render();
