@@ -209,7 +209,7 @@ PS_OUT PS_MAIN_NOCOLOR(PS_IN In)
 
     float fWeight = abs(PointPosition.z); //정규화된 z 값을 가져옴(0~1)    
     
-    
+    float2 LifeAlpha = g_lifeAlpha;
 
     vector Tone = g_ToneTexture.Sample(PointSampler, In.vTexcoord);
 
@@ -237,9 +237,12 @@ PS_OUT PS_MAIN_NOCOLOR(PS_IN In)
     
     vector UVSprite = g_UVAnimTexture.Sample(LinearSampler, In.vTexcoord);
     
+    float Alphafactor = frac(In.vLifeTime.y / In.vLifeTime.x);
+    
+    float lerpAlpha = lerp(LifeAlpha.x, LifeAlpha.y, Alphafactor);
   
-   vector FinalColor = vector(Tone.rgb, BaseAlpha );
-
+    vector FinalColor = vector(Tone.rgb, BaseAlpha);
+    FinalColor.a *= lerpAlpha;
 
     // FinalColor = vector(flowUV, flowUV);
 

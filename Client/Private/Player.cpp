@@ -170,6 +170,26 @@ HRESULT CPlayer::Render()
 	int i = 0;
 	for (auto& pMesh : m_pModelCom->Get_Meshes())
 	{
+		if (!strcmp("[l0]jacketw1", pMesh->Get_Name()))
+		{
+			if(m_isRimLight)
+				if (FAILED(m_pShaderCom->Bind_RawValue("g_isRimLight", &m_isRimLight, sizeof(_bool))))
+					return E_FAIL;
+		}
+		else if (!strcmp("[l0]body_naked1", pMesh->Get_Name()))
+		{
+			if (m_isRimLight)
+				if (FAILED(m_pShaderCom->Bind_RawValue("g_isRimLight", &m_isRimLight, sizeof(_bool))))
+					return E_FAIL;
+		}
+		else
+		{
+			_bool isfalse = false;
+			if (FAILED(m_pShaderCom->Bind_RawValue("g_isRimLight", &isfalse, sizeof(_bool))))
+				return E_FAIL;
+		}
+
+
 		m_pModelCom->Bind_BoneMatrices(m_pShaderCom, "g_BoneMatrices", i);
 
 		m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE);
@@ -795,9 +815,7 @@ HRESULT CPlayer::Bind_ResourceData()
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_PROJ))))
 		return E_FAIL;
 
-	if(m_isRimLight)	
-		if (FAILED(m_pShaderCom->Bind_RawValue("g_isRimLight", &m_isRimLight, sizeof(_bool))))
-			return E_FAIL;
+
 
 	return S_OK;
 }

@@ -3,7 +3,7 @@
 
 /* 컨스턴트 테이블(상수테이블) */
 matrix g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
-matrix g_ViewMatrixInv, g_ProjMatrixInv;
+matrix g_WorldMatrixInv, g_ViewMatrixInv, g_ProjMatrixInv;
 matrix g_LightViewMatrix, g_LightProjMatrix;
 
 matrix g_CamProjMatrix, g_CamViewMatrix;

@@ -1524,9 +1524,8 @@ void CRenderer::Render_LuminanceResult()
 
 void CRenderer::Render_RimLight()
 {
-	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_RimLight"))))	
+	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_CopyBackBuffer"), nullptr, false)))
 		return;
-
 	if (FAILED(m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix)))
 		return;
 	if (FAILED(m_pShader->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix)))
@@ -1541,6 +1540,7 @@ void CRenderer::Render_RimLight()
 
 	if (FAILED(m_pShader->Bind_RawValue("g_vCamPosition", m_pGameInstance->Get_CamPosition_Float4(), sizeof(_float4))))
 		return;
+
 	if (FAILED(m_pShader->Bind_RawValue("g_fFar", m_pGameInstance->Get_CamFar(), sizeof(_float))))
 		return;
 	//노멀이 빛이계산 되있음
@@ -1553,9 +1553,22 @@ void CRenderer::Render_RimLight()
 	m_pShader->Begin(19);
 
 	m_pVIBuffer->Render();	
+	/*
+	for (auto& iter : m_RenderObject[RENDER_PRIORITY])
+	{
+		if (nullptr != iter)
+			iter->Render();
+
+		Safe_Release(iter);
+	}
+	m_RenderObject[RENDER_PRIORITY].clear();
+	*/
 
 	if (FAILED(m_pGameInstance->End_MRT()))
 		return;
+
+
+
 
 }
 

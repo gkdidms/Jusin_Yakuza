@@ -45,6 +45,8 @@ HRESULT CImguiManager::Initialize(void* pArg)
 	TextureTags.push_back(TEXT("Prototype_Component_Texture_AuraTone"));
 	TextureTags.push_back(TEXT("Prototype_Component_Texture_HitBase"));
 	TextureTags.push_back(TEXT("Prototype_Component_Texture_SmokeBase"));
+	TextureTags.push_back(TEXT("Prototype_Component_Texture_AuraToneRush"));
+	TextureTags.push_back(TEXT("Prototype_Component_Texture_AuraToneDestroy"));
 
 
 	if (nullptr != pArg)

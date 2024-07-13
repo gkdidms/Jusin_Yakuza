@@ -470,13 +470,15 @@ PS_OUT PS_RIMLIGHT(PS_IN In)
     vector BaseNormal = g_NormalTexture.Sample(LinearSampler, In.vTexcoord);//월드 노멀
     BaseNormal = vector(BaseNormal.xyz * 2.f - 1.f, 0.f);
 
+    vector BackBuffer = g_BackBufferTexture.Sample(LinearSampler, In.vTexcoord);
+    
     vector BaseDepth = g_DepthTexture.Sample(LinearSampler, In.vTexcoord);
 
     vector vCamDir = g_vCamPosition; //월드 카메라
    
     vector RimColor = vector(1.0f, 0.0f, 1.0f, 1.0f);
     
-    float fRimpower = 3.f;
+    float fRimpower =1.f;
     
     vector vWorldPos;
 
@@ -493,14 +495,15 @@ PS_OUT PS_RIMLIGHT(PS_IN In)
 
 	        /* 월드스페이스 상의 위치를 구한다. */
     vWorldPos = mul(vWorldPos, g_ViewMatrixInv);
+       
     
     vector vRim = normalize(vCamDir - vWorldPos);
     
     if(1.f==BaseDepth.z)
     {
         float fRim = saturate(dot(BaseNormal, vRim));
-
-        Out.vColor = float4(pow(1.f - fRim, fRimpower) * RimColor);
+        vector FinColor= float4(pow(1.f - fRim, fRimpower) * RimColor);
+        Out.vColor = FinColor;
     }
     else
     {
@@ -770,7 +773,7 @@ technique11 DefaultTechnique
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_None_Test_None_Write, 0);
-        SetBlendState(BS_Default, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xffffffff);
+        SetBlendState(BS_AlphaBlend, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xffffffff);
 
         VertexShader = compile vs_5_0 VS_MAIN();
         GeometryShader = NULL;
@@ -778,4 +781,6 @@ technique11 DefaultTechnique
         DomainShader = NULL;
         PixelShader = compile ps_5_0 PS_RIMLIGHT();
     }
+
+
 }
