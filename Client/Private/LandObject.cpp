@@ -127,22 +127,54 @@ void CLandObject::Apply_ChracterData()
 			it->second->Off();
 	}
 
-	//auto& pEffects = m_pData->Get_Effets();
-	//for (auto& pEffect : pEffects)
-	//{
-	//	CSocketEffect::SOKET_EFFECT_DESC Desc{};
-	//	Desc.pParentMatrix = m_pTransformCom->Get_WorldFloat4x4();
-	//	Desc.pCombinedTransformationMatrix = m_pModelCom->Get_BoneCombinedTransformationMatrix(pEffect.first.c_str());
-	//	Desc.wstrEffectName = pEffect.second;
+	auto& pEffects = m_pData->Get_Effets();
+	for (auto& pEffect : pEffects)
+	{
+		CSocketEffect::SOKET_EFFECT_DESC Desc{};
+		Desc.pParentMatrix = m_pTransformCom->Get_WorldFloat4x4();
+		Desc.pCombinedTransformationMatrix = m_pModelCom->Get_BoneCombinedTransformationMatrix(pEffect.first.c_str());
+		Desc.wstrEffectName = pEffect.second;
 
-	//	CGameObject* pSoketEffect = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_SoketEffect"), &Desc);
-	//	if (nullptr == pSoketEffect)
-	//		return;
+		CGameObject* pSoketEffect = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_SoketEffect"), &Desc);
+		if (nullptr == pSoketEffect)
+			return;
 
-	//	auto [it, success] = m_pEffects.emplace(pEffect.first, static_cast<CSocketEffect*>(pSoketEffect));
+		auto [it, success] = m_pEffects.emplace(pEffect.first, static_cast<CSocketEffect*>(pSoketEffect));
 
-	//	it->second->On();
-	//}
+		it->second->Off();
+	}
+}
+
+void CLandObject::Animation_Event()
+{
+	auto& pCurEvents = m_pData->Get_CurrentEvents();
+	for (auto& pEvent : pCurEvents)
+	{
+		_double CurPos = *(m_pModelCom->Get_AnimationCurrentPosition());
+		_double Duration = *(m_pModelCom->Get_AnimationDuration());
+
+		if (CurPos >= pEvent.fPlayPosition && CurPos < Duration)
+		{
+			CSocketCollider* pCollider = m_pColliders.at(pEvent.iBoneIndex);
+
+			switch (pEvent.iType)
+			{
+			case 0:
+				pCollider->On();
+				break;
+			case 1:
+				pCollider->Off();
+				break;
+			case 2:
+				cout << "사운드 재생" << endl;
+				break;
+			case 3:
+				cout << "이펙트 재생" << endl;
+				break;
+			}
+		}
+
+	}
 }
 
 HRESULT CLandObject::Add_Components()

@@ -77,9 +77,18 @@ void CAnimModel::Tick(const _float& fTimeDelta)
 
     CModel::ANIMATION_DESC desc{ m_iAnimIndex, true };
 
-    m_pModelCom->Set_AnimationIndex(desc, 7.f);
+    if (m_isMonster)
+    {
+        m_pModelCom->Set_AnimationIndex(m_iAnimIndex, m_pAnimCom->Get_Animations(), 7.f);
+        m_pModelCom->Play_Animation(fTimeDelta, m_pAnimCom, true);
+    }
+    else
+    {
+        m_pModelCom->Set_AnimationIndex(desc, 7.f);
+        m_pModelCom->Play_Animation(fTimeDelta);
+    }
 
-    m_pModelCom->Play_Animation(fTimeDelta);
+    
 
     for (auto& pSphere : m_BoneSpheres)
         pSphere->Tick(fTimeDelta);
@@ -175,8 +184,9 @@ void CAnimModel::Change_Model(wstring strModelName)
     Ready_BoneSphere();
 }
 
-void CAnimModel::Change_Animation(_uint iAnimIndex)
+void CAnimModel::Change_Animation(_uint iAnimIndex, _bool isMonster)
 {
+    m_isMonster = isMonster;
     m_iAnimIndex = iAnimIndex;
 }
 
@@ -267,6 +277,10 @@ HRESULT CAnimModel::Add_Components()
         reinterpret_cast<CComponent**>(&m_pModelCom))))
         return E_FAIL;
 
+    if (FAILED(__super::Add_Component(LEVEL_EDIT, TEXT("Prototype_Component_Anim"),
+        TEXT("Com_Anim"), reinterpret_cast<CComponent**>(&m_pAnimCom))))
+        return E_FAIL;
+
     return S_OK;
 }
 
@@ -345,6 +359,7 @@ void CAnimModel::Free()
         Safe_Release(pBoneSphere);
     m_BoneSpheres.clear();
 
+    Safe_Release(m_pAnimCom);
     Safe_Release(m_pShaderCom);
     Safe_Release(m_pModelCom);
 }
