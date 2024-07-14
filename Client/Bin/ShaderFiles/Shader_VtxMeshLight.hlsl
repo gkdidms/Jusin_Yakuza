@@ -100,6 +100,33 @@ PS_OUT PS_MAIN(PS_IN In)
     return Out;
 }
 
+PS_OUT PS_MAIN_LightMask_Alpha(PS_IN In)
+{
+    // 모양대로 자르는거
+    PS_OUT Out = (PS_OUT) 0;
+
+    vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
+    
+    Out.vDiffuse = vDiffuse;
+    
+    return Out;
+}
+
+PS_OUT PS_MAIN_LightMask(PS_IN In)
+{
+    // 모양대로 자르는거
+    PS_OUT Out = (PS_OUT) 0;
+
+    vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
+    
+    if (vDiffuse.r < 0.4f)
+        discard;
+  
+    Out.vDiffuse = vDiffuse;
+    
+    return Out;
+}
+
 PS_OUT PS_MAIN_Bloom(PS_IN In)
 {
     PS_OUT Out = (PS_OUT) 0;
@@ -117,11 +144,12 @@ PS_OUT PS_MAIN_Bloom(PS_IN In)
 }
 
 
+
 technique11 DefaultTechnique
 {
-    pass DefaultPass //0
+    pass DefaultPass //0 - 그냥 간판
     {
-        SetRasterizerState(RS_Cull_NON_CW);
+        SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_Default, 0);
         SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 
@@ -132,8 +160,34 @@ technique11 DefaultTechnique
         PixelShader = compile ps_5_0 PS_MAIN();
     }
 
+    pass LightMaskAlphaPass //1 - 형광등 자르기(자르기+빛 알파적용)
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 
-    pass DefaultBloomPass //1
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        HullShader = NULL;
+        DomainShader = NULL;
+        PixelShader = compile ps_5_0 PS_MAIN_LightMask_Alpha();
+    }
+
+    pass LightMaskPass //2 - 형광등 자르기(자르기+빛 알파적용x)
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        HullShader = NULL;
+        DomainShader = NULL;
+        PixelShader = compile ps_5_0 PS_MAIN_LightMask();
+    }
+
+
+    pass DefaultBloomPass //3 
     {
         SetRasterizerState(RS_Cull_NON_CW);
         SetDepthStencilState(DSS_Default, 0);

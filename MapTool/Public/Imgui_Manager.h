@@ -21,6 +21,7 @@ public:
 	enum IDWRIE {
 		OBJPLACE,
 		COLLIDER,
+		LIGHT,
 		IDWRITE_END
 	};
 

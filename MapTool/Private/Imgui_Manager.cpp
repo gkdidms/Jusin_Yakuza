@@ -134,6 +134,7 @@ void CImgui_Manager::Tick(_float fTimeDelta)
     if (m_bLightMgr_IMGUI)
     {
         Show_LightTool_IMGUI();
+        m_eWrieID = LIGHT;
     }
 
     if (m_bCameraMgr_IMGUI)

@@ -108,8 +108,16 @@ void CLightConstruction::Tick(const _float& fTimeDelta)
 
 void CLightConstruction::Late_Tick(const _float& fTimeDelta)
 {
-	m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
-	m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONLIGHT, this);
+	if (m_iShaderPassNum == 0 || m_iShaderPassNum == 2)
+	{
+		m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
+		m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONLIGHT, this);
+	}
+	else if(m_iShaderPassNum == 1)
+	{
+		//m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONLIGHT, this);
+		m_pGameInstance->Add_Renderer(CRenderer::RENDER_EFFECT, this);
+	}
 
 	for (auto& iter : m_vDecals)
 		iter->Late_Tick(fTimeDelta);
@@ -276,7 +284,7 @@ HRESULT CLightConstruction::Render_Bloom()
 				return E_FAIL;
 		}
 
-		m_pShaderCom->Begin(1);
+		m_pShaderCom->Begin(2);
 
 		m_pModelCom->Render(i);
 	}

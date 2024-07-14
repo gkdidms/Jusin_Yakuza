@@ -666,16 +666,16 @@ HRESULT CModel::Import_Materials(ifstream& in, _bool isTool)
 			if (nullptr == MeshMaterial.pMaterialTextures[j])
 				return E_FAIL;
 
-			if (j == aiTextureType_EMISSIVE)
-			{
-				/* DECAL */
-				DECAL_DESC		decalDesc;
-				decalDesc.iMaterialNum = i;
+			//if (j == aiTextureType_EMISSIVE)
+			//{
+			//	/* DECAL */
+			//	DECAL_DESC		decalDesc;
+			//	decalDesc.iMaterialNum = i;
 
-				memcpy(&decalDesc.sTextureFullPath, strPath.data(), sizeof(char) * MAX_PATH);
+			//	memcpy(&decalDesc.sTextureFullPath, strPath.data(), sizeof(char) * MAX_PATH);
 
-				//m_vDecalMaterials.push_back(decalDesc);
-			}
+			//	//m_vDecalMaterials.push_back(decalDesc);
+			//}
 		}
 		m_Materials.emplace_back(MeshMaterial);
 	}
