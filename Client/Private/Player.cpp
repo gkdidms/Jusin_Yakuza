@@ -281,7 +281,7 @@ void CPlayer::Take_Damage(_uint iHitColliderType, const _float3& vDir, _float fD
 		_vector vMyLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
 
 		_float fTheta = 0.0f;
-		_float fDot = XMVectorGetX(XMVector3Dot(vAttackedObjectLook, vMyLook));
+		_float fDot = XMVectorGetX(XMVector3Dot(vMyLook, vAttackedObjectLook));
 		fTheta = XMConvertToDegrees(acosf(fDot));
 
 		// F, B, L, R
@@ -295,10 +295,10 @@ void CPlayer::Take_Damage(_uint iHitColliderType, const _float3& vDir, _float fD
 		}
 		else
 		{
-			if (0 <= fTheta && 90 > fTheta) // 坷弗率
-				iDirection = 3;
-			else if (90 <= fTheta && 180 >= fTheta) // 哭率
+			if (0 <= fTheta && 90 > fTheta) // 哭率
 				iDirection = 2;
+			else if (90 <= fTheta && 180 >= fTheta) // 坷弗率
+				iDirection = 3;
 		}
 
 		CKiryu_KRS_Hit::KRS_Hit_DESC Desc{ &vDir, fDamage, pAttackedObject->Get_CurrentAnimationName(), iDirection };
@@ -313,7 +313,7 @@ void CPlayer::Take_Damage(_uint iHitColliderType, const _float3& vDir, _float fD
 		_vector vMyLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
 
 		_float fTheta = 0.0f;
-		_float fDot = XMVectorGetX(XMVector3Dot(vAttackedObjectLook, vMyLook));
+		_float fDot = XMVectorGetX(XMVector3Dot(vMyLook, vAttackedObjectLook));
 		fTheta = XMConvertToDegrees(acosf(fDot));
 
 		// F, B, L, R
@@ -327,10 +327,10 @@ void CPlayer::Take_Damage(_uint iHitColliderType, const _float3& vDir, _float fD
 		}
 		else
 		{
-			if (0 <= fTheta && 90 > fTheta) // 坷弗率
-				iDirection = 3;
-			else if (90 <= fTheta && 180 >= fTheta) // 哭率
+			if (0 <= fTheta && 90 > fTheta) // 哭率
 				iDirection = 2;
+			else if (90 <= fTheta && 180 >= fTheta) // 坷弗率
+				iDirection = 3;
 		}
 
 		CKiryu_KRH_Hit::KRH_Hit_DESC Desc{ &vDir, fDamage, pAttackedObject->Get_CurrentAnimationName(), iDirection };
@@ -345,7 +345,7 @@ void CPlayer::Take_Damage(_uint iHitColliderType, const _float3& vDir, _float fD
 		_vector vMyLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
 
 		_float fTheta = 0.0f;
-		_float fDot = XMVectorGetX(XMVector3Dot(vAttackedObjectLook, vMyLook));
+		_float fDot = XMVectorGetX(XMVector3Dot(vMyLook, vAttackedObjectLook));
 		fTheta = XMConvertToDegrees(acosf(fDot));
 
 		// F, B, L, R
@@ -359,10 +359,10 @@ void CPlayer::Take_Damage(_uint iHitColliderType, const _float3& vDir, _float fD
 		}
 		else
 		{
-			if (0 <= fTheta && 90 > fTheta) // 坷弗率
-				iDirection = 3;
-			else if (90 <= fTheta && 180 >= fTheta) // 哭率
+			if (0 <= fTheta && 90 > fTheta) // 哭率
 				iDirection = 2;
+			else if (90 <= fTheta && 180 >= fTheta) // 坷弗率
+				iDirection = 3;
 		}
 
 		CKiryu_KRC_Hit::KRC_Hit_DESC Desc{ &vDir, fDamage, pAttackedObject->Get_CurrentAnimationName(), iDirection };
@@ -1105,6 +1105,15 @@ CGameObject* CPlayer::Clone(void* pArg)
 void CPlayer::Free()
 {
 	__super::Free();
+
+	for (size_t i = 0; i < BATTLE_STYLE_END; i++)
+	{
+		for (auto& pair : m_AnimationTree[i])
+			Safe_Release(pair.second);
+
+		m_AnimationTree[i].clear();
+	}
+
 	Safe_Release(m_pUIManager);
 	Safe_Release(m_pShaderCom);
 }

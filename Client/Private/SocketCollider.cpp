@@ -96,6 +96,8 @@ void CSocketCollider::Priority_Tick(const _float& fTimeDelta)
 
 void CSocketCollider::Tick(const _float& fTimeDelta)
 {
+	Filtering_Timer(fTimeDelta);
+
 	m_vPrevMovePos = m_vMovePos;
 
 	if(m_pColliderCom)
@@ -128,7 +130,23 @@ HRESULT CSocketCollider::Render()
 
 _bool CSocketCollider::Intersect(CCollider* pTargetObject, _float fDistance)
 {
+	if (m_isFiltered) return false;
+
+	m_isFiltered = true;
 	return pTargetObject->Intersect(m_pColliderCom, fDistance);
+}
+
+void CSocketCollider::Filtering_Timer(_float fTimeDelta)
+{
+	if (!m_isFiltered) return; 
+
+	m_fFilteringTimer += fTimeDelta;
+
+	if (FILTERING_TIME <= m_fFilteringTimer)
+	{
+		m_fFilteringTimer = 0.f;
+		m_isFiltered = false;
+	}
 }
 
 void CSocketCollider::ParentObject_Hit(const _float3& vDir, _float fDamage, CLandObject* pParentObject, _bool isBlowAttack)

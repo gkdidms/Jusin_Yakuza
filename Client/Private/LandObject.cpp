@@ -203,7 +203,6 @@ void CLandObject::Free()
 		Safe_Release(pEffect.second);
 	m_pEffects.clear();
 
-
 	Safe_Release(m_pData);
 	Safe_Release(m_pModelCom);
 	Safe_Release(m_pColliderCom);
