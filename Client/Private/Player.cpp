@@ -745,9 +745,6 @@ void CPlayer::KRH_KeyInput(const _float& fTimeDelta)
 	{
 		if (m_pGameInstance->GetKeyState(DIK_W) == HOLD)
 		{
-			if (m_iCurrentBehavior == (_uint)KRH_BEHAVIOR_STATE::WALK || m_iCurrentBehavior == (_uint)KRH_BEHAVIOR_STATE::RUN)
-				m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Reset();
-
 			_vector vLookPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION) + (m_pTransformCom->Get_State(CTransform::STATE_LOOK) + m_pGameInstance->Get_CamLook());
 			m_pGameInstance->Get_CamLook();
 			m_iCurrentBehavior = isShift ? (_uint)KRH_BEHAVIOR_STATE::WALK : (_uint)KRH_BEHAVIOR_STATE::RUN;
@@ -756,6 +753,9 @@ void CPlayer::KRH_KeyInput(const _float& fTimeDelta)
 			Compute_MoveDirection_FB();
 			m_pTransformCom->LookAt_For_LandObject(vLookPos);
 			isMove = true;
+
+			if (m_iCurrentBehavior == (_uint)KRH_BEHAVIOR_STATE::WALK || m_iCurrentBehavior == (_uint)KRH_BEHAVIOR_STATE::RUN)
+				m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Reset();
 		}
 
 		if (m_pGameInstance->GetKeyState(DIK_S) == HOLD)
