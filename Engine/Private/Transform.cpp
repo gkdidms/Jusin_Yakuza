@@ -181,7 +181,7 @@ void CTransform::LookAt(_fvector vTargetPosition)
 	}
 
 	Set_State(STATE_RIGHT, XMVector4Normalize(vRight) * m_vScale.x);
-	Set_State(STATE_UP, XMVector3NormalizeEst(vUp) * m_vScale.y);
+	Set_State(STATE_UP, XMVector4Normalize(vUp) * m_vScale.y);
 	Set_State(STATE_LOOK, XMVector4Normalize(vLook) * m_vScale.z);
 }
 

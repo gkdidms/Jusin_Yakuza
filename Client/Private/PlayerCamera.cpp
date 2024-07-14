@@ -68,30 +68,14 @@ void CPlayerCamera::Late_Tick(const _float& fTimeDelta)
 {
 	if (m_pSystemManager->Get_Camera() != CAMERA_PLAYER) return;
 
-	_float a = m_WorldMatrix.m[1][0];
-	if (isnan(a))
-		int h = 99;
-
 	m_pColliderCom->Tick(m_pTransformCom->Get_WorldMatrix());
 	_bool isIntersect = m_pCollisionManager->Map_Collision(m_pColliderCom);
-
-	a = m_WorldMatrix.m[1][0];
-	if (isnan(a))
-		int h = 99;
 
 	BoundingSphere* pDesc = static_cast<BoundingSphere*>(m_pColliderCom->Get_Desc());
 	_vector vColliderPosition = XMLoadFloat3(&pDesc->Center);
 
-	a = m_WorldMatrix.m[1][0];
-	if (isnan(a))
-		int h = 99;
-
 	_vector vPlayerPosition;
 	memcpy(&vPlayerPosition, m_pPlayerMatrix->m[CTransform::STATE_POSITION], sizeof(_float4));
-
-	a = m_WorldMatrix.m[1][0];
-	if (isnan(a))
-		int h = 99;
 
 	_float fTempDistnace =
 		isIntersect ? XMVectorGetX(XMVector3Length(vColliderPosition - vPlayerPosition)) : MAX_DISTANCE;
@@ -102,10 +86,6 @@ void CPlayerCamera::Late_Tick(const _float& fTimeDelta)
 	Compute_View(fTimeDelta);
 
 	m_fCamDistance = fTempDistnace;
-
-	a = m_WorldMatrix.m[1][0];
-	if (isnan(a))
-		int h = 99;
 
 	__super::Tick(fTimeDelta);
 
@@ -164,32 +144,15 @@ void CPlayerCamera::Compute_View(const _float& fTimeDelta)
 		1.f
 	);
 
-	a = m_pTransformCom->Get_WorldMatrix().r[1].m128_f32[0];
-	if (isnan(a))
-		int h = 99;
-
 	vCamPosition += XMVectorSet(XMVectorGetX(vPlayerPosition), XMVectorGetY(vPlayerPosition), XMVectorGetZ(vPlayerPosition), 0);
-
-	a = m_pTransformCom->Get_WorldMatrix().r[1].m128_f32[0];
-	if (isnan(a))
-		int h = 99;
 
 	// 이전 카메라 포지션과 새로운 카메라 포지션 사이의 선형보간
 	_vector vLerpedCamPosition = XMVectorLerp(vPrevCamPosition, vCamPosition, fTimeDelta * 5.f);
 	_vector vLookAt = XMVectorSet(XMVectorGetX(vPlayerPosition), XMVectorGetY(vPlayerPosition) + 1.f, XMVectorGetZ(vPlayerPosition), 1);
 
-
-	a = m_pTransformCom->Get_WorldMatrix().r[1].m128_f32[0];
-	if (isnan(a))
-		int h = 99;
-
 	// 카메라가 플레이어를 바라보도록 설정
 	m_pTransformCom->LookAt(vLookAt);
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vLerpedCamPosition);
-
-	a = m_pTransformCom->Get_WorldMatrix().r[1].m128_f32[0];
-	if (isnan(a))
-		int h = 99;
 
 	// 월드 매트릭스 업데이트
 	XMStoreFloat4x4(&m_WorldMatrix, m_pTransformCom->Get_WorldMatrix());

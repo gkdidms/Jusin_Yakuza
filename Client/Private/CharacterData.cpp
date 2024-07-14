@@ -260,14 +260,11 @@ void CCharacterData::Create_Effect(string& strBoneName, string& strEffectName)
 	m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), m_pGameInstance->StringToWstring(strEffectName), TEXT("Layer_Effect"), &Desc);
 }
 
-
 CCharacterData* CCharacterData::Create(CLandObject* pCharacter)
 {
 	CCharacterData* pInstnace = new CCharacterData();
 
 	if (FAILED(pInstnace->Initialize(pCharacter)))
-
-
 	{
 		MSG_BOX("Failed To Created : CCharacterData");
 		Safe_Release(pInstnace);

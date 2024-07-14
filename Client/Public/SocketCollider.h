@@ -15,6 +15,9 @@ BEGIN(Client)
 
 class CSocketCollider final : public CSocketObject
 {
+private:
+	const _float FILTERING_TIME = 0.1f;
+	
 public:
 	enum COLLIDER_ACTION_TYPE
 	{
@@ -48,6 +51,9 @@ public:
 	virtual HRESULT Render() override;
 
 	virtual _bool Intersect(CCollider* pTargetObject, _float fDistance = 1.f);
+
+private:
+	void Filtering_Timer(_float fTimeDelta);
 
 public:
 	void On() {
@@ -103,6 +109,9 @@ private:
 
 	_float3							m_vPrevMovePos, m_vMovePos;
 	_float3							m_vMoveDir;
+
+	_bool							m_isFiltered = { false };
+	_float							m_fFilteringTimer = { 0.f };
 
 public:
 	HRESULT Add_Components(void* pArg);
