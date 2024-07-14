@@ -16,7 +16,6 @@ public:
     virtual void Priority_Tick(const _float& fTimeDelta) override;
     virtual void Tick(const _float& fTimeDelta) override;
     virtual void Late_Tick(const _float& fTimeDelta) override;
-    virtual HRESULT Render() override;
 
 private:
     class CAI_Yoneda* m_pTree = { nullptr };

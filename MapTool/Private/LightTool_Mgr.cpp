@@ -402,8 +402,9 @@ HRESULT CLightTool_Mgr::Export_Bin_Light_Data(LIGHT_DESC_IO* lightObjData, int i
 
 	strcat_s(fullPath, "Light_Data");
 
-	char cLevel[2] = "";
-	_itoa_s(iSaveNum, cLevel, 10);
+	string strNum = to_string(iSaveNum);
+	char cLevel[20];
+	strcpy_s(cLevel, strNum.c_str());
 	strcat_s(fullPath, "_");
 	strcat_s(fullPath, cLevel);
 	strcat_s(fullPath, ".dat");
@@ -764,11 +765,12 @@ void CLightTool_Mgr::Edit_Installed_Light()
 	//	m_bLightAdd = true;
 	//}
 
-	if (ImGui::Button(u8"라이트 수정"))
+	Edit_Light();
+	/*if (ImGui::Button(u8"라이트 수정"))
 	{
 		if (0 < m_LightObjects.size())
 			Edit_Light();
-	}
+	}*/
 
 
 	if (ImGui::Button(u8"라이트 선택 삭제"))

@@ -25,6 +25,14 @@ HRESULT CShakedown::Initialize(void* pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
+	if (nullptr != pArg)
+	{
+		MONSTER_IODESC* gameobjDesc = (MONSTER_IODESC*)pArg;
+		m_pTransformCom->Set_WorldMatrix(gameobjDesc->vStartPos);
+		m_wstrModelName = gameobjDesc->wstrModelName;
+	}
+
+
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
@@ -55,49 +63,6 @@ void CShakedown::Tick(const _float& fTimeDelta)
 void CShakedown::Late_Tick(const _float& fTimeDelta)
 {
 	m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
-}
-
-HRESULT CShakedown::Render()
-{
-	if (FAILED(Bind_ResourceData()))
-		return E_FAIL;
-
-	int i = 0;
-	for (auto& pMesh : m_pModelCom->Get_Meshes())
-	{
-		m_pModelCom->Bind_BoneMatrices(m_pShaderCom, "g_BoneMatrices", i);
-
-		m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE);
-		m_pModelCom->Bind_Material(m_pShaderCom, "g_MultiDiffuseTexture", i, aiTextureType_SHININESS);
-		m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS);
-
-		_bool isRS = true;
-		_bool isRD = true;
-
-		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RSTexture", i, aiTextureType_SPECULAR)))
-			isRS = false;
-		m_pShaderCom->Bind_RawValue("g_isRS", &isRS, sizeof(_bool));
-
-		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RDTexture", i, aiTextureType_OPACITY)))
-			isRD = false;
-
-		m_pShaderCom->Bind_RawValue("g_isRD", &isRD, sizeof(_bool));
-
-		if (pMesh->Get_AlphaApply())
-			m_pShaderCom->Begin(1);     //블랜드
-		else
-			m_pShaderCom->Begin(0);		//디폴트
-
-		m_pModelCom->Render(i);
-
-		i++;
-	}
-
-#ifdef _DEBUG
-	m_pGameInstance->Add_DebugComponent(m_pColliderCom);
-#endif
-
-	return S_OK;
 }
 
 HRESULT CShakedown::Add_Components()

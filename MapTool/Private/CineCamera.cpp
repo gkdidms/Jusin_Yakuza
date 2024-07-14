@@ -135,8 +135,9 @@ HRESULT CCineCamera::Import_Bin_Cam_Data_OnTool(CAMERAOBJ_IO* camData, int iFile
 	strcat_s(fullPath, "Camera_Data");
 	strcat_s(fullPath, "_");
 
-	char cLevel[2] = "";
-	_itoa_s(iFileNum, cLevel, 10);
+	string strNum = to_string(iFileNum);
+	char cLevel[20];
+	strcpy_s(cLevel, strNum.c_str());
 	strcat_s(fullPath, cLevel);
 	strcat_s(fullPath, ".dat");
 

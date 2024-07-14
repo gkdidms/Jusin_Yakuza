@@ -12,6 +12,14 @@ class CMonster abstract:
     public CLandObject
 {
 public:
+    typedef struct tMapMonsterObjDesc : public CGameObject::GAMEOBJECT_DESC
+    {
+        XMMATRIX		vStartPos;
+        wstring			wstrModelName;
+        int				iShaderPass;
+    }MONSTER_IODESC;
+
+public:
     enum MONSTER_STATE
     {
         MONSTER_IDLE,
@@ -69,6 +77,7 @@ public:
     virtual void Tick(const _float& fTimeDelta) override;
     virtual void Late_Tick(const _float& fTimeDelta) override;
     virtual HRESULT Render() override;
+    virtual HRESULT Render_LightDepth() override;
 
     // 충돌함수
     virtual void Take_Damage(_uint iHitColliderType, const _float3& vDir, _float fDamage, CLandObject* pAttackedObject, _bool isBlowAttack = false) override;

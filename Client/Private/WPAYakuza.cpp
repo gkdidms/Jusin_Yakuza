@@ -29,6 +29,13 @@ HRESULT CWPAYakuza::Initialize(void* pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
+	if (nullptr != pArg)
+	{
+		MONSTER_IODESC* gameobjDesc = (MONSTER_IODESC*)pArg;
+		m_pTransformCom->Set_WorldMatrix(gameobjDesc->vStartPos);
+		m_wstrModelName = gameobjDesc->wstrModelName;
+	}
+
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
@@ -65,41 +72,13 @@ void CWPAYakuza::Late_Tick(const _float& fTimeDelta)
 	//m_pCollisionManager->Add_ImpulseResolution(this);
 }
 
-HRESULT CWPAYakuza::Render()
-{
-	if (FAILED(Bind_ResourceData()))
-		return E_FAIL;
-
-	int i = 0;
-	for (auto& pMesh : m_pModelCom->Get_Meshes())
-	{
-		m_pModelCom->Bind_BoneMatrices(m_pShaderCom, "g_BoneMatrices", i);
-
-		m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE);
-
-		if (pMesh->Get_AlphaApply())
-			m_pShaderCom->Begin(1);     //블랜드
-		else
-			m_pShaderCom->Begin(0);		//디폴트
-
-		m_pModelCom->Render(i);
-
-		i++;
-	}
-
-#ifdef _DEBUG
-	m_pGameInstance->Add_DebugComponent(m_pColliderCom);
-#endif
-	return S_OK;
-}
-
 HRESULT CWPAYakuza::Add_Components()
 {
 	if (FAILED(__super::Add_Component(LEVEL_TEST, TEXT("Prototype_Component_Shader_VtxAnim"),
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Component(LEVEL_TEST, TEXT("Prototype_Component_Model_Jimu"),
+	if (FAILED(__super::Add_Component(LEVEL_TEST, m_wstrModelName,
 		TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
 		return E_FAIL;
 
@@ -121,6 +100,7 @@ HRESULT CWPAYakuza::Add_Components()
 	CAI_WPAYakuza::AI_MONSTER_DESC AIDesc{};
 	AIDesc.pState = &m_iState;
 	AIDesc.pAnim = m_pAnimCom;
+	AIDesc.pThis = this;
 
 	m_pTree = dynamic_cast<CAI_WPAYakuza*>(m_pGameInstance->Add_BTNode(LEVEL_TEST, TEXT("Prototype_BTNode_WPAYakuza"), &AIDesc));
 	if (nullptr == m_pTree)
