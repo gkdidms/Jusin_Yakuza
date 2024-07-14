@@ -247,18 +247,6 @@ HRESULT CCharacterData::Load_EffectState(string strFilePath)
 
 	}
 }
-		
-void CCharacterData::Create_Effect(string& strBoneName, string& strEffectName)
-{
-	const _float4x4* pBoneMatrix = { nullptr };
-
-	CModel* pModel = reinterpret_cast<CModel*>(m_pCharacter->Get_Component(TEXT("Com_Model")));
-	pBoneMatrix = pModel->Get_BoneCombinedTransformationMatrix(strBoneName.c_str());
-
-	CEffect::EFFECT_DESC Desc{};
-	Desc.pWorldMatrix = pBoneMatrix;
-	m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), m_pGameInstance->StringToWstring(strEffectName), TEXT("Layer_Effect"), &Desc);
-}
 
 CCharacterData* CCharacterData::Create(CLandObject* pCharacter)
 {
