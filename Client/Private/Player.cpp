@@ -606,41 +606,44 @@ void CPlayer::KRS_KeyInput(const _float& fTimeDelta)
 		isShift = true;
 	}
 
-	if (m_pGameInstance->GetMouseState(DIM_LB) == TAP)
+	if (!m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Stopping())
 	{
-		// 기존 행동을 초기화하고 어택으로 바꿔준다.
-		if(m_iCurrentBehavior != (_uint)KRS_BEHAVIOR_STATE::ATTACK)
-			m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Reset();
+		if (m_pGameInstance->GetMouseState(DIM_LB) == TAP)
+		{
+			// 기존 행동을 초기화하고 어택으로 바꿔준다.
+			if(m_iCurrentBehavior != (_uint)KRS_BEHAVIOR_STATE::ATTACK)
+				m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Reset();
 
-		m_iCurrentBehavior = (_uint)KRS_BEHAVIOR_STATE::ATTACK;
-		m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Change_Animation();
-		m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Combo_Count();
-	}
-	if (m_pGameInstance->GetMouseState(DIM_RB) == TAP)
-	{
-		// 현재 어택상태인지를 구분해서 마무리 액션을 실행시키거나
-		// 그에 맞는 커맨드 액션을 실행시ㅕ켜야 한다.
-
-		// 여기에 스킬트리가 완료되면 스킬을 보유중인지에 대한 조건식을 추가로 잡아야한다
-		if (m_iCurrentBehavior == (_uint)KRS_BEHAVIOR_STATE::RUN)
-		{
-			m_iCurrentBehavior = (_uint)KRS_BEHAVIOR_STATE::SKILL_FLY_KICK;
-		}
-		// 기본 러쉬콤보 진행중일 때에 우클릭이 들어오면 피니시 블로 실행
-		else if(m_iCurrentBehavior == (_uint)KRS_BEHAVIOR_STATE::ATTACK)
-		{
-			m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Combo_Count(true);
-		}
-		// 아무것도 아닌 상태에서 우클릭이 들어온다면 킥콤보를 실행
-		else
-		{
-			m_iCurrentBehavior = (_uint)KRS_BEHAVIOR_STATE::SKILL_KICK_COMBO;
+			m_iCurrentBehavior = (_uint)KRS_BEHAVIOR_STATE::ATTACK;
+			m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Change_Animation();
 			m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Combo_Count();
 		}
+		if (m_pGameInstance->GetMouseState(DIM_RB) == TAP)
+		{
+			// 현재 어택상태인지를 구분해서 마무리 액션을 실행시키거나
+			// 그에 맞는 커맨드 액션을 실행시ㅕ켜야 한다.
 
+			// 여기에 스킬트리가 완료되면 스킬을 보유중인지에 대한 조건식을 추가로 잡아야한다
+			if (m_iCurrentBehavior == (_uint)KRS_BEHAVIOR_STATE::RUN)
+			{
+				m_iCurrentBehavior = (_uint)KRS_BEHAVIOR_STATE::SKILL_FLY_KICK;
+			}
+			// 기본 러쉬콤보 진행중일 때에 우클릭이 들어오면 피니시 블로 실행
+			else if(m_iCurrentBehavior == (_uint)KRS_BEHAVIOR_STATE::ATTACK)
+			{
+				m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Combo_Count(true);
+			}
+			// 아무것도 아닌 상태에서 우클릭이 들어온다면 킥콤보를 실행
+			else
+			{
+				m_iCurrentBehavior = (_uint)KRS_BEHAVIOR_STATE::SKILL_KICK_COMBO;
+				m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Combo_Count();
+			}
+
+		}
 	}
 
-	if (m_iCurrentBehavior < (_uint)KRS_BEHAVIOR_STATE::ATTACK)
+	if (m_iCurrentBehavior < (_uint)KRS_BEHAVIOR_STATE::ATTACK && !m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Stopping())
 	{
 		if (m_pGameInstance->GetKeyState(DIK_W) == HOLD)
 		{
@@ -702,7 +705,6 @@ void CPlayer::KRS_KeyInput(const _float& fTimeDelta)
 		}
 	}
 
-
 	if (!isMove && m_iCurrentBehavior == (_uint)KRS_BEHAVIOR_STATE::RUN || m_iCurrentBehavior == (_uint)KRS_BEHAVIOR_STATE::WALK)
 		m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Stop();
 }
@@ -724,26 +726,30 @@ void CPlayer::KRH_KeyInput(const _float& fTimeDelta)
 		isShift = true;
 	}
 
-	if (m_pGameInstance->GetMouseState(DIM_LB) == TAP)
+	if (!m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Stopping())
 	{
-		// 기존 행동을 초기화하고 어택으로 바꿔준다.
-		if (m_iCurrentBehavior != (_uint)KRH_BEHAVIOR_STATE::ATTACK)
-			m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Reset();
-
-		m_iCurrentBehavior = (_uint)KRH_BEHAVIOR_STATE::ATTACK;
-		m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Change_Animation();
-		m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Combo_Count();
-	}
-	if (m_pGameInstance->GetMouseState(DIM_RB) == TAP)
-	{
-		if (m_iCurrentBehavior == (_uint)KRH_BEHAVIOR_STATE::ATTACK)
+		if (m_pGameInstance->GetMouseState(DIM_LB) == TAP)
 		{
+			// 기존 행동을 초기화하고 어택으로 바꿔준다.
+			if (m_iCurrentBehavior != (_uint)KRH_BEHAVIOR_STATE::ATTACK)
+				m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Reset();
+
+			m_iCurrentBehavior = (_uint)KRH_BEHAVIOR_STATE::ATTACK;
 			m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Change_Animation();
-			m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Combo_Count(true);
+			m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Combo_Count();
+		}
+		if (m_pGameInstance->GetMouseState(DIM_RB) == TAP)
+		{
+			if (m_iCurrentBehavior == (_uint)KRH_BEHAVIOR_STATE::ATTACK)
+			{
+				m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Change_Animation();
+				m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Combo_Count(true);
+			}
 		}
 	}
 
-	if (m_iCurrentBehavior < (_uint)KRH_BEHAVIOR_STATE::ATTACK)
+
+	if (m_iCurrentBehavior < (_uint)KRH_BEHAVIOR_STATE::ATTACK && !m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Stopping())
 	{
 		if (m_pGameInstance->GetKeyState(DIK_W) == HOLD)
 		{
@@ -827,28 +833,31 @@ void CPlayer::KRC_KeyInput(const _float& fTimeDelta)
 		isShift = true;
 	}
 
-	if (m_pGameInstance->GetMouseState(DIM_LB) == TAP)
+	if (!m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Stopping())
 	{
-		// 기존 행동을 초기화하고 어택으로 바꿔준다.
-		if (m_iCurrentBehavior != (_uint)KRC_BEHAVIOR_STATE::ATTACK)
-			m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Reset();
-
-		m_iCurrentBehavior = (_uint)KRC_BEHAVIOR_STATE::ATTACK;
-		m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Change_Animation();
-		m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Combo_Count();
-	}
-	if (m_pGameInstance->GetMouseState(DIM_RB) == TAP)
-	{
-		// 현재 어택상태인지를 구분해서 마무리 액션을 실행시키거나
-		// 그에 맞는 커맨드 액션을 실행시ㅕ켜야 한다.
-
-		if (m_iCurrentBehavior == (_uint)KRC_BEHAVIOR_STATE::ATTACK)
+		if (m_pGameInstance->GetMouseState(DIM_LB) == TAP)
 		{
-			m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Combo_Count(true);
+			// 기존 행동을 초기화하고 어택으로 바꿔준다.
+			if (m_iCurrentBehavior != (_uint)KRC_BEHAVIOR_STATE::ATTACK)
+				m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Reset();
+
+			m_iCurrentBehavior = (_uint)KRC_BEHAVIOR_STATE::ATTACK;
+			m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Change_Animation();
+			m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Combo_Count();
+		}
+		if (m_pGameInstance->GetMouseState(DIM_RB) == TAP)
+		{
+			// 현재 어택상태인지를 구분해서 마무리 액션을 실행시키거나
+			// 그에 맞는 커맨드 액션을 실행시ㅕ켜야 한다.
+
+			if (m_iCurrentBehavior == (_uint)KRC_BEHAVIOR_STATE::ATTACK)
+			{
+				m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Combo_Count(true);
+			}
 		}
 	}
 
-	if (m_iCurrentBehavior < (_uint)KRC_BEHAVIOR_STATE::ATTACK)
+	if (m_iCurrentBehavior < (_uint)KRC_BEHAVIOR_STATE::ATTACK && !m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Stopping())
 	{
 		if (m_pGameInstance->GetKeyState(DIK_W) == HOLD)
 		{

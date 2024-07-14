@@ -23,6 +23,7 @@ public:
 	virtual void Change_Animation() = 0;
 	virtual _bool Get_AnimationEnd() { return false; };
 	virtual void Stop() {};
+	virtual _bool Stopping() { return false; };
 	virtual void Reset() {};
 	virtual void Combo_Count(_bool isFinAction = false) {};
 	virtual void Setting_Value(void* pValue = nullptr) {};
