@@ -25,6 +25,7 @@ public:
 	virtual void Stop() {};
 	virtual void Reset() {};
 	virtual void Combo_Count(_bool isFinAction = false) {};
+	virtual void Setting_Value(void* pValue = nullptr) {};
 
 protected:
 	CGameInstance* m_pGameInstance = { nullptr };

@@ -3,6 +3,7 @@
 #include "GameInstance.h"
 #include "Transform.h"
 #include "Imgui_Manager.h"
+#include "Mesh.h"
 
 CConstruction::CConstruction(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CGameObject{ pDevice, pContext }
@@ -111,11 +112,16 @@ HRESULT CConstruction::Render()
 
 
 	_uint	iNumMeshes = m_pModelCom->Get_NumMeshes();
-
+	vector<CMesh*> Meshes = m_pModelCom->Get_Meshes();
 	for (size_t i = 0; i < iNumMeshes; i++)
 	{
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_Texture", i, aiTextureType_DIFFUSE)))
 			return E_FAIL;
+
+		if (!strcmp(Meshes[i]->Get_Name(), "box4783"))
+		{
+			int a = 10;
+		}
 
 		/*m_pShaderCom->Begin(m_iShaderPassNum);*/
 

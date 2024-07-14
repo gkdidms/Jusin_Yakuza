@@ -1,7 +1,22 @@
 #include "Engine_Shader_Defines.hlsli"
-#include "Shader_Client_Defines.hlsli"
-//vLifeTime.x 종료시간 /vLifeTime.y 현재시간 / vLifeTime.z 누적인덱스
 
+matrix g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
+vector g_vCamPosition;
+
+Texture2D g_ToneTexture;
+Texture2D g_UVAnimTexture;
+Texture2D g_BaseAlphaTexture;
+Texture2D g_FluidTexture;
+
+float g_fProgress;
+float2 g_lifeAlpha;
+float g_iSpriteIndex;
+float2 g_fUVCount;
+float g_fCurTime;
+
+float g_NearZ = 0.01f;
+float g_FarZ = 3000.f;
+//vLifeTime.x 종료시간 /vLifeTime.y 현재시간 / vLifeTime.z 누적인덱스
 struct VS_IN
 {
     //m_pVB
@@ -194,7 +209,7 @@ PS_OUT PS_MAIN_NOCOLOR(PS_IN In)
 
     float fWeight = abs(PointPosition.z); //정규화된 z 값을 가져옴(0~1)    
     
-    
+    float2 LifeAlpha = g_lifeAlpha;
 
     vector Tone = g_ToneTexture.Sample(PointSampler, In.vTexcoord);
 
@@ -222,9 +237,12 @@ PS_OUT PS_MAIN_NOCOLOR(PS_IN In)
     
     vector UVSprite = g_UVAnimTexture.Sample(LinearSampler, In.vTexcoord);
     
+    float Alphafactor = frac(In.vLifeTime.y / In.vLifeTime.x);
+    
+    float lerpAlpha = lerp(LifeAlpha.x, LifeAlpha.y, Alphafactor);
   
-   vector FinalColor = vector(Tone.rgb, BaseAlpha );
-
+    vector FinalColor = vector(Tone.rgb, BaseAlpha);
+    FinalColor.a *= lerpAlpha;
 
     // FinalColor = vector(flowUV, flowUV);
 

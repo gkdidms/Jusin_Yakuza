@@ -29,6 +29,16 @@
 #include "Kiryu_KRH_Sway.h"
 #pragma endregion
 
+#pragma region KRC
+#include "Kiryu_KRC_BattleStart.h"
+#include "Kiryu_KRC_Idle.h"
+#include "Kiryu_KRC_Walk.h"
+#include "Kiryu_KRC_Run.h"
+#include "Kiryu_KRC_Attack.h"
+#include "Kiryu_KRC_Hit.h"
+#include "Kiryu_KRC_Sway.h"
+#pragma endregion
+
 CBehaviorAnimation::CBehaviorAnimation()
 	: m_pGameInstance{CGameInstance::GetInstance()}
 {
@@ -114,6 +124,29 @@ CBehaviorAnimation* CBehaviorAnimation::Create_KRH_Behavior(_uint iBehavior, cla
 
 CBehaviorAnimation* CBehaviorAnimation::Create_KRC_Behavior(_uint iBehavior, class CPlayer* pPlayer)
 {
+	/*
+		BTL_START, IDLE, WALK, RUN, ATTACK, HIT,
+		SWAY, DOWN, KRS_BEHAVIOR_END
+	*/
+	switch (iBehavior)
+	{
+	case 0:			//BTL_START
+		return CKiryu_KRC_BattleStart::Create(pPlayer);
+	case 1:			// IDLE
+		return CKiryu_KRC_Idle::Create(pPlayer);
+	case 2:			// WALK
+		return CKiryu_KRC_Walk::Create(pPlayer);
+	case 3:			// RUN
+		return CKiryu_KRC_Run::Create(pPlayer);
+	case 4:			//ATTACK
+		return CKiryu_KRC_Attack::Create(pPlayer);
+	case 5:			//HIT
+		return CKiryu_KRC_Hit::Create(pPlayer);
+	case 6:			// SWAY
+		return CKiryu_KRC_Sway::Create(pPlayer);
+	case 7:			// DOWN
+		break;
+	}
 	return nullptr;
 }
 

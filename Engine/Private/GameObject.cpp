@@ -46,13 +46,14 @@ HRESULT CGameObject::Initialize(void* pArg)
 	m_Components.emplace(L"Com_Transform", m_pTransformCom);
 	Safe_AddRef(m_pTransformCom);
 
-	m_Casecade = { 0.f, 10.f, 20.f, 50.f };
+	m_Casecade = { 0.f, 6.f, 18.f, 100.f };
 
 	return S_OK;
 }
 
 void CGameObject::Priority_Tick(const _float& fTimeDelta)
 {
+	
 }
 
 void CGameObject::Tick(const _float& fTimeDelta)

@@ -33,16 +33,21 @@ HRESULT CSocketEffect::Initialize(void * pArg)
 
 void CSocketEffect::Priority_Tick(const _float& fTimeDelta)
 {
+	if (m_isOn)
+		m_pEffect->Priority_Tick(fTimeDelta);
 }
 
 void CSocketEffect::Tick(const _float& fTimeDelta)
 {
+	if (m_isOn)
+		m_pEffect->Tick(fTimeDelta);
 }
 
 void CSocketEffect::Late_Tick(const _float& fTimeDelta)
 {
+	if(m_isOn)
+		m_pEffect->Late_Tick(fTimeDelta);
 	__super::Late_Tick(fTimeDelta);
-
 }
 
 HRESULT CSocketEffect::Render()
@@ -60,13 +65,7 @@ HRESULT CSocketEffect::Add_Components(void* pArg)
 		CEffect::EFFECT_DESC Desc{};
 		Desc.pWorldMatrix = &m_WorldMatrix;
 		
-		if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, pDesc->wstrEffectName, TEXT("Layer_Effect"), &Desc)))
-		{
-			auto pLayerObjects = m_pGameInstance->Get_GameObjects(LEVEL_TEST, TEXT("Layer_Effect"));
-			m_pEffect = reinterpret_cast<CEffect*>(m_pGameInstance->Get_GameObject(LEVEL_TEST, TEXT("Layer_Effect"), pLayerObjects.size()));
-
-			Safe_AddRef(m_pEffect);
-		}
+		m_pEffect = reinterpret_cast<CEffect*>(m_pGameInstance->Clone_Object(pDesc->wstrEffectName, &Desc));
 	}
 
 	return S_OK;

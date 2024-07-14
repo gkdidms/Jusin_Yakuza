@@ -122,9 +122,12 @@ PS_OUT_LIGHT PS_MAIN_LIGHT_DIRECTIONAL(PS_IN In)
     
     Out.vShade = g_vLightDiffuse * saturate(max(dot(normalize(g_vLightDir) * -1.f, normalize(vNormal)), 0.f) + vAmbient);
     
-    Out.vSpecularRM = BRDF(In.vPosition, In.vTexcoord, normalize(vNormal), vDepthDesc);
-    Out.vSpecularMulti = vector(BRDF_MULTI(In.vPosition, In.vTexcoord, normalize(vNormal), vDepthDesc), 1.f);
-    Out.vLightMap = g_vLightDiffuse;
+    if (g_isPBR)
+    {
+        Out.vSpecularRM = BRDF(In.vPosition, In.vTexcoord, normalize(vNormal), vDepthDesc);
+        Out.vSpecularMulti = vector(BRDF_MULTI(In.vPosition, In.vTexcoord, normalize(vNormal), vDepthDesc), 1.f);
+        Out.vLightMap = g_vLightDiffuse;
+    }
     
     //Grass
     vector vGlassNormalDesc = g_GlassNormalTexture.Sample(LinearSampler, In.vTexcoord);
@@ -232,7 +235,6 @@ PS_OUT PS_MAIN_COPY_BACKBUFFER_RESULT(PS_IN In)
         vWorldPos.w = 1.f;
 
         vWorldPos = vWorldPos * (vDepthDesc.y * g_fFar);
-        float fProjZ = vWorldPos.z;
 
 	        /* 뷰스페이스 상의 위치를 구한다. */
         vWorldPos = mul(vWorldPos, g_ProjMatrixInv);
@@ -240,29 +242,23 @@ PS_OUT PS_MAIN_COPY_BACKBUFFER_RESULT(PS_IN In)
 	        /* 월드스페이스 상의 위치를 구한다. */
         vWorldPos = mul(vWorldPos, g_ViewMatrixInv);
         
-        //vector vCamPos = Get_CameraProj(vWorldPos);
-        
         for (int i = 0; i < 3; ++i)
         {
-            vector vLightPos = mul(vWorldPos, g_ViewMatrixArray[i]);
-            vLightPos = mul(vLightPos, g_ProjMatrixArray[i]);
+            vector vLightPos = mul(vWorldPos, mul(g_ViewMatrixArray[i], g_ProjMatrixArray[i]));
         
             float2 vTexcoord;
             vTexcoord.x = (vLightPos.x / vLightPos.w) * 0.5f + 0.5f;
             vTexcoord.y = (vLightPos.y / vLightPos.w) * -0.5f + 0.5f;
             
             if (vTexcoord.x < 0 || vTexcoord.x > 1 || vTexcoord.y < 0 || vTexcoord.y > 1)
-            {
                 continue;
-            }
         
             vector vLightDepthDesc = g_LightDepthTextureArray.Sample(ShadowSampler, float3(vTexcoord, i));
             float fLightOldDepth = vLightDepthDesc.x * 1000.f;
             
-            if (fLightOldDepth - 0.001f < vLightPos.w)
+            if (fLightOldDepth - 0.1f < vLightPos.w)
             {
                 Out.vColor = vector(Out.vColor.rgb * 0.5f, 1.f);
-                
                 break;
             }
         }
@@ -363,7 +359,7 @@ PS_OUT PS_OIT_RESULT(PS_IN In)
     vector vAccumColor = g_AccumTexture.Sample(PointSampler, In.vTexcoord);
     float vAccumAlpha = g_AccumAlpha.Sample(PointSampler, In.vTexcoord).r;
     
-    float vResult = g_ResultTexture.Sample(PointSampler, In.vTexcoord).r;
+  //  float vResult = g_ResultTexture.Sample(PointSampler, In.vTexcoord).r;
     
       // 최종 출력 계산(알파*가중치)를 빼주는작업= 모두 함친 색이 나 옴
     //vector FinalColor = float4(vAccumColor.xyz / vAccumColor.a, (1-vAccumAlpha));
@@ -463,6 +459,56 @@ PS_OUT PS_ADD_PUDDLE(PS_IN In)
     return Out;
 }
 
+PS_OUT PS_RIMLIGHT(PS_IN In)
+{
+    PS_OUT Out = (PS_OUT) 0;
+
+    vector BaseNormal = g_NormalTexture.Sample(LinearSampler, In.vTexcoord);//월드 노멀
+    BaseNormal = vector(BaseNormal.xyz * 2.f - 1.f, 0.f);
+
+    vector BackBuffer = g_BackBufferTexture.Sample(LinearSampler, In.vTexcoord);
+    
+    vector BaseDepth = g_DepthTexture.Sample(LinearSampler, In.vTexcoord);
+
+    vector vCamDir = g_vCamPosition; //월드 카메라
+   
+    vector RimColor = vector(1.0f, 0.0f, 1.0f, 1.0f);
+    
+    float fRimpower =1.f;
+    
+    vector vWorldPos;
+
+    vWorldPos.x = In.vTexcoord.x * 2.f - 1.f;
+    vWorldPos.y = In.vTexcoord.y * -2.f + 1.f;
+    vWorldPos.z = BaseDepth.x; /* 0 ~ 1 */
+    vWorldPos.w = 1.f;
+
+    vWorldPos = vWorldPos * (BaseDepth.y * g_fFar);
+    float fProjZ = vWorldPos.z;
+
+	        /* 뷰스페이스 상의 위치를 구한다. */
+    vWorldPos = mul(vWorldPos, g_ProjMatrixInv);
+
+	        /* 월드스페이스 상의 위치를 구한다. */
+    vWorldPos = mul(vWorldPos, g_ViewMatrixInv);
+       
+    
+    vector vRim = normalize(vCamDir - vWorldPos);
+    
+    if(1.f==BaseDepth.z)
+    {
+        float fRim = saturate(dot(BaseNormal, vRim));
+        vector FinColor= float4(pow(1.f - fRim, fRimpower) * RimColor);
+        Out.vColor = FinColor;
+    }
+    else
+    {
+        Out.vColor = vector(0.f, 0.f, 0.f, 0.f);
+    }
+   
+    
+    return Out;
+}
 
 technique11 DefaultTechnique
 {
@@ -718,4 +764,19 @@ technique11 DefaultTechnique
         DomainShader = NULL;
         PixelShader = compile ps_5_0 PS_ADD_PUDDLE();
     }
+
+    pass RimLight //19
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_None_Test_None_Write, 0);
+        SetBlendState(BS_AlphaBlend, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        HullShader = NULL;
+        DomainShader = NULL;
+        PixelShader = compile ps_5_0 PS_RIMLIGHT();
+    }
+
+
 }

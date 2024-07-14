@@ -45,6 +45,8 @@ HRESULT CImguiManager::Initialize(void* pArg)
 	TextureTags.push_back(TEXT("Prototype_Component_Texture_AuraTone"));
 	TextureTags.push_back(TEXT("Prototype_Component_Texture_HitBase"));
 	TextureTags.push_back(TEXT("Prototype_Component_Texture_SmokeBase"));
+	TextureTags.push_back(TEXT("Prototype_Component_Texture_AuraToneRush"));
+	TextureTags.push_back(TEXT("Prototype_Component_Texture_AuraToneDestroy"));
 
 
 	if (nullptr != pArg)
@@ -159,6 +161,7 @@ void CImguiManager::Tick(const _float& fTimeDelta)
 		CreateAura_Tick(fTimeDelta);
 		EditorAura_Tick(fTimeDelta);
 		Guizmo_Tick(fTimeDelta);
+		Timeline_Tick(fTimeDelta);
 		if (!m_EditAura.empty())
 		{
 
@@ -612,7 +615,11 @@ void CImguiManager::EditorAura_Tick(_float fTimeDelta)
 	{
 		bChange = true;
 	}
-
+	ImGui::SameLine();
+	if (ImGui::Checkbox("isLoop", &m_AuraDesc.BufferInstance.isLoop))
+	{
+		bChange = true;
+	}
 
 	if (ImGui::InputScalar("NumInstance", ImGuiDataType_U32, &m_AuraDesc.BufferInstance.iNumInstance))
 	{
@@ -1776,6 +1783,19 @@ void CImguiManager::Reset_Particle()
 		}
 	}
 
+	for (size_t i = 0; i < m_EditAura.size(); i++)
+	{
+
+
+		void* pVoidpDesc = dynamic_cast<CAura*>(m_EditAura[i])->Get_Instance();
+		CVIBuffer_Instance::INSTANCE_DESC* pDesc = static_cast<CVIBuffer_Instance::INSTANCE_DESC*>(pVoidpDesc);
+
+		if (!pDesc->isLoop)
+		{
+			Load_Desc(i);
+			Edit_Particle(i);
+		}
+	}
 //	if(!m_EditParticle.empty())
 		//Load_Desc(m_iCurEditIndex);
 
@@ -1810,29 +1830,69 @@ void CImguiManager::Timeline_Tick(_float fTimeDelta)
 
 	*/
 
-	// 타임라인 아이템 그리기
-	for (int i = 0; i < m_EditParticle.size(); ++i) {
-		CParticle_Point* item = dynamic_cast<CParticle_Point*>(m_EditParticle[i]);	
-		CVIBuffer_Instance::INSTANCE_DESC* pDesc = static_cast<CVIBuffer_Instance::INSTANCE_DESC*>(item->Get_Instance());
+	switch (m_iMode)
+	{
+	case MODE_PARTICLE:
+		{
+		// 타임라인 아이템 그리기
+		for (int i = 0; i < m_EditParticle.size(); ++i) {
+			CParticle_Point* item = dynamic_cast<CParticle_Point*>(m_EditParticle[i]);
+			CVIBuffer_Instance::INSTANCE_DESC* pDesc = static_cast<CVIBuffer_Instance::INSTANCE_DESC*>(item->Get_Instance());
 
-		string itemLabel = m_pGameInstance->WstringToString(item->Get_Tag());
+			string itemLabel = m_pGameInstance->WstringToString(item->Get_Tag());
 
 
-		// 아이템의 시작 및 끝 위치 계산
-		float start_pos_x = canvas_pos.x + (*item->Get_pStartTime() / m_fMaxTime) * canvas_size.x;
-		float end_pos_x = canvas_pos.x + ((pDesc->vLifeTime.y + *item->Get_pStartTime()) / m_fMaxTime) * canvas_size.x;
-		float item_pos_y = canvas_pos.y + i * (item_height + item_spacing);
-		float middle_posx = start_pos_x + (end_pos_x - start_pos_x) * 0.5f;
-		// 아이템 그리기
-		draw_list->AddRectFilled(ImVec2(start_pos_x, item_pos_y), ImVec2(end_pos_x, item_pos_y + item_height), IM_COL32(255, 100, 100, 255));
-		draw_list->AddCircleFilled(ImVec2(start_pos_x, item_pos_y + item_height * 0.5f), 10.0f, IM_COL32(255, 100, 100, 255));
-		draw_list->AddCircleFilled(ImVec2(end_pos_x, item_pos_y + item_height * 0.5f), 10.0f, IM_COL32(255, 100, 100, 255));
-		draw_list->AddText(ImVec2(middle_posx, item_pos_y), IM_COL32(255, 255, 255, 255), itemLabel.c_str());
+			// 아이템의 시작 및 끝 위치 계산
+			float start_pos_x = canvas_pos.x + (*item->Get_pStartTime() / m_fMaxTime) * canvas_size.x;
+			float end_pos_x = canvas_pos.x + ((pDesc->vLifeTime.y + *item->Get_pStartTime()) / m_fMaxTime) * canvas_size.x;
+			float item_pos_y = canvas_pos.y + i * (item_height + item_spacing);
+			float middle_posx = start_pos_x + (end_pos_x - start_pos_x) * 0.5f;
+			// 아이템 그리기
+			draw_list->AddRectFilled(ImVec2(start_pos_x, item_pos_y), ImVec2(end_pos_x, item_pos_y + item_height), IM_COL32(255, 100, 100, 255));
+			draw_list->AddCircleFilled(ImVec2(start_pos_x, item_pos_y + item_height * 0.5f), 10.0f, IM_COL32(255, 100, 100, 255));
+			draw_list->AddCircleFilled(ImVec2(end_pos_x, item_pos_y + item_height * 0.5f), 10.0f, IM_COL32(255, 100, 100, 255));
+			draw_list->AddText(ImVec2(middle_posx, item_pos_y), IM_COL32(255, 255, 255, 255), itemLabel.c_str());
+		}
+
+		// 캔버스의 크기를 조정하여 모든 아이템이 보이도록 함
+		canvas_size.y = m_EditParticle.size() * (item_height + item_spacing);
+		ImGui::Dummy(canvas_size); // 빈 공간을 차지하여 레이아웃 유지
+
+			break;
+		}
+	case MODE_AURA:
+	{
+		// 타임라인 아이템 그리기
+		for (int i = 0; i < m_EditAura.size(); ++i) {
+			CAura* item = dynamic_cast<CAura*>(m_EditAura[i]);
+			CVIBuffer_Instance::INSTANCE_DESC* pDesc = static_cast<CVIBuffer_Instance::INSTANCE_DESC*>(item->Get_Instance());
+
+			string itemLabel = m_pGameInstance->WstringToString(item->Get_Tag());
+
+
+			// 아이템의 시작 및 끝 위치 계산
+			float start_pos_x = canvas_pos.x + (*item->Get_pStartTime() / m_fMaxTime) * canvas_size.x;
+			float end_pos_x = canvas_pos.x + ((pDesc->vLifeTime.y + *item->Get_pStartTime()) / m_fMaxTime) * canvas_size.x;
+			float item_pos_y = canvas_pos.y + i * (item_height + item_spacing);
+			float middle_posx = start_pos_x + (end_pos_x - start_pos_x) * 0.5f;
+			// 아이템 그리기
+			draw_list->AddRectFilled(ImVec2(start_pos_x, item_pos_y), ImVec2(end_pos_x, item_pos_y + item_height), IM_COL32(255, 100, 100, 255));
+			draw_list->AddCircleFilled(ImVec2(start_pos_x, item_pos_y + item_height * 0.5f), 10.0f, IM_COL32(255, 100, 100, 255));
+			draw_list->AddCircleFilled(ImVec2(end_pos_x, item_pos_y + item_height * 0.5f), 10.0f, IM_COL32(255, 100, 100, 255));
+			draw_list->AddText(ImVec2(middle_posx, item_pos_y), IM_COL32(255, 255, 255, 255), itemLabel.c_str());
+		}
+
+		// 캔버스의 크기를 조정하여 모든 아이템이 보이도록 함
+		canvas_size.y = m_EditAura.size() * (item_height + item_spacing);
+		ImGui::Dummy(canvas_size); // 빈 공간을 차지하여 레이아웃 유지
+		break;
+
 	}
-
-	// 캔버스의 크기를 조정하여 모든 아이템이 보이도록 함
-	canvas_size.y = m_EditParticle.size() * (item_height + item_spacing);
-	ImGui::Dummy(canvas_size); // 빈 공간을 차지하여 레이아웃 유지
+			default:
+		
+		break;
+	}
+	
 
 	ImGui::End();
 

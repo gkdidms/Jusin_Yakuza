@@ -3,8 +3,8 @@
 * 키류 애니메이션 어드밴처 아이들
 */
 #pragma once
-#include "Client_Defines.h"
 #include "BehaviorAnimation.h"
+#include "Client_Defines.h"
 
 BEGIN(Client)
 

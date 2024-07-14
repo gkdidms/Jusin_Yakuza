@@ -242,11 +242,25 @@ HRESULT CModel::Export_Bones(ofstream& out)
 {
 	// ReadyBones에서 저장하는 데이터들만 저장한다.
 	_int iNumBones = m_Bones.size();
+
+	// 사용하지 않는 뼈를 제거한다
+	_uint	iCount = { 0 };
+	for (size_t i = 0; i < iNumBones; i++)
+	{
+		if ("" != m_pGameInstance->Extract_String(m_Bones[i]->Get_Name(), '[', ']'))
+			++iCount;
+	}
+
+	iNumBones -= iCount;
+
 	out.write((char*)&iNumBones, sizeof(_uint));
 
 	for (auto& Bone : m_Bones)
 	{
 		string strValue = Bone->Get_Name();
+		if ("" != m_pGameInstance->Extract_String(strValue, '[', ']'))
+			continue;
+		
 		_int iValue = strValue.size();
 		out.write((char*)&iValue, sizeof(_uint));
 		out.write(strValue.c_str(), strValue.size());
@@ -666,16 +680,16 @@ HRESULT CModel::Import_Materials(ifstream& in, _bool isTool)
 			if (nullptr == MeshMaterial.pMaterialTextures[j])
 				return E_FAIL;
 
-			if (j == aiTextureType_EMISSIVE)
-			{
-				/* DECAL */
-				DECAL_DESC		decalDesc;
-				decalDesc.iMaterialNum = i;
+			//if (j == aiTextureType_EMISSIVE)
+			//{
+			//	/* DECAL */
+			//	DECAL_DESC		decalDesc;
+			//	decalDesc.iMaterialNum = i;
+			
+			//	memcpy(&decalDesc.sTextureFullPath, strPath.data(), sizeof(char) * MAX_PATH);
 
-				memcpy(&decalDesc.sTextureFullPath, strPath.data(), sizeof(char) * MAX_PATH);
-
-				//m_vDecalMaterials.push_back(decalDesc);
-			}
+			//	//m_vDecalMaterials.push_back(decalDesc);
+			//}
 		}
 		m_Materials.emplace_back(MeshMaterial);
 	}
@@ -987,14 +1001,20 @@ const _char* CModel::Get_AnimationName(_uint iAnimIndex)
 	return m_Animations[iAnimIndex]->Get_AnimName();
 }
 
-const _double* CModel::Get_AnimationCurrentPosition()
+const _double* CModel::Get_AnimationCurrentPosition(CAnim* pAnim)
 {
-	return m_Animations[m_AnimDesc.iAnimIndex]->Get_CurrentPosition();
+	if (nullptr == pAnim)
+		return m_Animations[m_AnimDesc.iAnimIndex]->Get_CurrentPosition();
+	else
+		return pAnim->Get_AnimPosition();
 }
 
-const _double* CModel::Get_AnimationDuration()
+const _double* CModel::Get_AnimationDuration(CAnim* pAnim)
 {
-	return m_Animations[m_AnimDesc.iAnimIndex]->Get_Duration();
+	if (nullptr == pAnim)
+		return m_Animations[m_AnimDesc.iAnimIndex]->Get_Duration();
+	else
+		return pAnim->Get_AnimDuration();
 }
 
 const _float3* CModel::Get_AnimationCenterMove(CAnim* pAnim)
@@ -1005,9 +1025,12 @@ const _float3* CModel::Get_AnimationCenterMove(CAnim* pAnim)
 		return pAnim->Get_AnimationCenterMove();
 }
 
-const _float4* CModel::Get_AnimationCenterRotation()
+const _float4* CModel::Get_AnimationCenterRotation(CAnim* pAnim)
 {
-	return m_Animations[m_AnimDesc.iAnimIndex]->Get_CenterRotationValue();
+	if (nullptr == pAnim)
+		return m_Animations[m_AnimDesc.iAnimIndex]->Get_CenterRotationValue();
+	else
+		return pAnim->Get_AnimationCenterRotation();
 }
 
 void CModel::Copy_DecalMaterial(vector<DECAL_DESC>* pDecals)

@@ -1,6 +1,14 @@
 #include "Engine_Shader_Defines.hlsli"
-#include "Shader_Client_Defines.hlsli"
 
+matrix g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
+
+Texture2D g_Texture;
+
+float g_fProgress;
+
+
+Texture2D g_AccumColor;
+Texture2D g_AccumAlpha;
 
 struct VS_IN
 {

@@ -606,6 +606,8 @@ void CLightTool_Mgr::Show_Installed_LightsList()
 			ImGui::EndListBox();
 		}
 
+		Click_To_Select_Light(light_current_idx);
+
 		/* 다른 오브젝트 클릭시 */
 		if (m_iCurrentLightIndex != light_current_idx && m_LightObjects.size() > 0)
 		{
@@ -645,6 +647,7 @@ void CLightTool_Mgr::Update_LightsName()
 	{
 		for (int i = 0; i < m_LightObjects.size(); i++)
 		{
+			m_LightObjects[i]->Set_ObjID(i+1);
 			char* szName = new char[MAX_PATH];
 			strcpy(szName, "LightObject");
 			char buff[MAX_PATH];
@@ -778,6 +781,36 @@ void CLightTool_Mgr::Edit_Installed_Light()
 	{
 		if (0 < m_LightObjects.size())
 			Delete_AllLights();
+	}
+}
+
+void CLightTool_Mgr::Click_To_Select_Light(int& iObjectNum)
+{
+	if (HOLD == m_pGameInstance->GetKeyState(DIK_F))
+	{
+		m_bFindObject = true;
+	}
+	else
+	{
+		m_bFindObject = false;
+	}
+
+	if (true == m_bFindObject)
+	{
+		m_bFindObject = false;
+
+		_bool		isPick;
+
+		_float		iIndex = 0;
+		iIndex = m_pGameInstance->FindObjID(&isPick);
+
+		if (iIndex > 0)
+		{
+			/* ID는 1부터 시작하니까 INDEX 받을때는 -1 해주기 */
+			iObjectNum = iIndex - 1;
+
+		}
+
 	}
 }
 

@@ -46,11 +46,6 @@ void CWPAYakuza::Tick(const _float& fTimeDelta)
 {
 	m_pTree->Tick(fTimeDelta);
 
-	if (m_pGameInstance->GetKeyState(DIK_9) == TAP)
-	{
-		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0, 0, 0, 1));
-	}
-
 	Change_Animation(); //애니메이션 변경
 
 	m_pModelCom->Play_Animation(fTimeDelta, m_pAnimCom, m_isAnimLoop);
