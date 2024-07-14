@@ -22,7 +22,7 @@ CMainApp::CMainApp() :
 	m_pSystemManager{ CSystemManager::GetInstance() },
 	m_pFileTotalManager{ CFileTotalMgr::GetInstance() },
 	m_pCollisionManager{ CCollision_Manager::GetInstance() },
-	m_pUIManager{CUIManager::GetInstance()}
+	m_pUIManager{ CUIManager::GetInstance() }
 {
 	Safe_AddRef(m_pGameInstance);
 	Safe_AddRef(m_pSystemManager);
@@ -47,7 +47,10 @@ HRESULT CMainApp::Initialize()
 
 	if (FAILED(m_pGameInstance->Initialize_Engine(LEVEL_END, EngineDesc, &m_pDevice, &m_pContext)))
 		return E_FAIL;
-	m_pUIManager->Initialize();
+
+	if (FAILED(m_pUIManager->Initialize()))
+		return E_FAIL;
+
 	if (FAILED(Ready_Font()))
 		return E_FAIL;
 
@@ -240,7 +243,12 @@ void CMainApp::Free()
 	CDebugManager::Release_Debug();
 #endif // _DEBUG
 
+	/* 레퍼런스 카운트를 0으로만든다. */
+	Safe_Release(m_pGameInstance);
+	CGameInstance::Release_Engine();
+
 	Safe_Release(m_pSystemManager);
+	CSystemManager::DestroyInstance();
 
 	Safe_Release(m_pUIManager);
 	CUIManager::DestroyInstance();
@@ -250,8 +258,4 @@ void CMainApp::Free()
 
 	Safe_Release(m_pCollisionManager);
 	CCollision_Manager::DestroyInstance();
-
-	/* 레퍼런스 카운트를 0으로만든다. */
-	Safe_Release(m_pGameInstance);
-	CGameInstance::Release_Engine();
 }

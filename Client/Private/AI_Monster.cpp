@@ -28,7 +28,7 @@ HRESULT CAI_Monster::Initialize(void* pArg)
 	m_pAnimCom = pDesc->pAnim;
 	m_pThis = pDesc->pThis;
 
-	m_pPlayer = dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject(LEVEL_TEST, TEXT("Layer_Player"), 0));
+	m_pPlayer = dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"), 0));
 
 	return S_OK;
 }

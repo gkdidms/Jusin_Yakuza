@@ -231,7 +231,7 @@ HRESULT CLoader::Loading_For_TestLevel()
 		return E_FAIL;
 
 
-	Add_Particle_On_Path(TEXT("../../Client/Bin/DataFiles/Particle/"));
+	Add_GameObject_Particle_On_Path(TEXT("../../Client/Bin/DataFiles/Particle/"));
 
 
 
@@ -288,7 +288,7 @@ HRESULT CLoader::Loading_For_TestLevel()
 	return S_OK;
 }
 
-HRESULT CLoader::Add_Particle_On_Path(const wstring& strPath)
+HRESULT CLoader::Add_GameObject_Particle_On_Path(const wstring& strPath)
 {
 	vector<wstring> vecDirectorys;
 	m_pGameInstance->Get_DirectoryName(strPath, vecDirectorys);

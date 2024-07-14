@@ -439,7 +439,6 @@ HRESULT CFileTotalMgr::Import_Bin_Collider_Data_OnTool(COLLIDER_IO* ColliderData
     return S_OK;
 }
 
-
 void CFileTotalMgr::Free()
 {
     for (int i = 0; i < m_MapTotalInform.iNumMapObj; i++)

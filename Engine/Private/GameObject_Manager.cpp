@@ -192,4 +192,5 @@ void CGameObject_Manager::Free()
 
 		m_pLayers[i].clear();
 	}
+	m_pLayers->clear();
 }

@@ -70,7 +70,7 @@ HRESULT CLightConstruction::Initialize(void* pArg)
 			ColliderDesc.vCenter = objDesc.vCenter;
 			ColliderDesc.vRotation = objDesc.vQuaternion;
 
-			CCollider* pCollider = dynamic_cast<CCollider*>(m_pGameInstance->Add_Component_Clone(LEVEL_TEST, TEXT("Prototype_Component_Collider"), &ColliderDesc));
+			CCollider* pCollider = dynamic_cast<CCollider*>(m_pGameInstance->Add_Component_Clone(m_iCurrentLevel, TEXT("Prototype_Component_Collider"), &ColliderDesc));
 
 			m_vColliders.push_back(pCollider);
 
@@ -188,12 +188,12 @@ HRESULT CLightConstruction::Add_Components(void* pArg)
 	MAPOBJ_DESC* gameobjDesc = (MAPOBJ_DESC*)pArg;
 
 	/* For.Com_Model */
-	if (FAILED(__super::Add_Component(LEVEL_TEST, gameobjDesc->wstrModelName,
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, gameobjDesc->wstrModelName,
 		TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
 		return E_FAIL;
 
 	/* For.Com_Shader */
-	if (FAILED(__super::Add_Component(LEVEL_TEST, TEXT("Prototype_Component_Shader_VtxMeshLight"),
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Shader_VtxMeshLight"),
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
 		return E_FAIL;
 

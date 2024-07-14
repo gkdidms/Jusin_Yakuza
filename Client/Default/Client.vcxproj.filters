@@ -326,6 +326,18 @@
     <ClCompile Include="..\Private\Kiryu_KRC_Walk.cpp">
       <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRC\Walk</Filter>
     </ClCompile>
+    <ClCompile Include="..\private\Level_OfficeBoss.cpp">
+      <Filter>01.Levels\03.OfficeBoss</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Level_Dogimazo.cpp">
+      <Filter>01.Levels\04.Dogimazo</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Level_DogimazoBoss.cpp">
+      <Filter>01.Levels\06.DogimazoBoss</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Level_DogimazoStairs.cpp">
+      <Filter>01.Levels\05.DogimazoStairs</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\MainApp.h">
@@ -632,9 +644,6 @@
     <ClInclude Include="..\Public\MapColliderObj.h">
       <Filter>02.GameObjects\08. MapCollider\Obj</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\LightConstruction.h">
-      <Filter>02.GameObjects\03.Construction\LightConstruction</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\Kiryu_KRS_KickCombo.h">
       <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\KickCombo</Filter>
     </ClInclude>
@@ -682,6 +691,21 @@
     </ClInclude>
     <ClInclude Include="..\Public\Kiryu_KRC_Walk.h">
       <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRC\Walk</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Level_OfficeBoss.h">
+      <Filter>01.Levels\03.OfficeBoss</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Level_Dogimazo.h">
+      <Filter>01.Levels\04.Dogimazo</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Level_DogimazoBoss.h">
+      <Filter>01.Levels\06.DogimazoBoss</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Level_DogimazoStairs.h">
+      <Filter>01.Levels\05.DogimazoStairs</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\LightConstruction.h">
+      <Filter>02.GameObjects\03.Construction\LightConstruction</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1019,6 +1043,18 @@
     </Filter>
     <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRC\Run">
       <UniqueIdentifier>{05554c49-48f2-436a-81e4-f66627213c96}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Levels\03.OfficeBoss">
+      <UniqueIdentifier>{40398097-918f-4cc8-8582-5b3b7d76ae90}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Levels\04.Dogimazo">
+      <UniqueIdentifier>{da1f6629-4506-47f7-9915-8f4b5f5fa2f9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Levels\06.DogimazoBoss">
+      <UniqueIdentifier>{c3987abd-0a35-468c-b0db-541aa2913f3b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Levels\05.DogimazoStairs">
+      <UniqueIdentifier>{6ad6a7d5-8a3a-4b60-90c6-c60a0fc7b848}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
