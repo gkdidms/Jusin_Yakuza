@@ -208,12 +208,14 @@ PS_OUT PS_MAIN(PS_IN In)
         else
             Out.vDiffuse = vDiffuse;
     }
+    
     float RimIndex = 0.f;
+    
     if(g_isRimLight)
         RimIndex = 1.f;
 
     Out.vNormal = vector(vNormalBTN.xyz * 0.5f + 0.5f, 0.f);
-    Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_fFar, 1.f, 1.f);
+    Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_fFar, RimIndex, 1.f);
 
     
     /*
