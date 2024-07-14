@@ -73,6 +73,96 @@ void CMonster::Late_Tick(const _float& fTimeDelta)
 
 HRESULT CMonster::Render()
 {
+	if (FAILED(Bind_ResourceData()))
+		return E_FAIL;
+
+	int i = 0;
+	for (auto& pMesh : m_pModelCom->Get_Meshes())
+	{
+		if (!strcmp("[l0]jacketw1", pMesh->Get_Name()))
+		{
+			if (m_isRimLight)
+				if (FAILED(m_pShaderCom->Bind_RawValue("g_isRimLight", &m_isRimLight, sizeof(_bool))))
+					return E_FAIL;
+		}
+		else if (!strcmp("[l0]body_naked1", pMesh->Get_Name()))
+		{
+			if (m_isRimLight)
+				if (FAILED(m_pShaderCom->Bind_RawValue("g_isRimLight", &m_isRimLight, sizeof(_bool))))
+					return E_FAIL;
+		}
+		else
+		{
+			_bool isfalse = false;
+			if (FAILED(m_pShaderCom->Bind_RawValue("g_isRimLight", &isfalse, sizeof(_bool))))
+				return E_FAIL;
+		}
+
+
+		m_pModelCom->Bind_BoneMatrices(m_pShaderCom, "g_BoneMatrices", i);
+
+		m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE);
+		m_pModelCom->Bind_Material(m_pShaderCom, "g_MultiDiffuseTexture", i, aiTextureType_SHININESS);
+		m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS);
+
+		_bool isRS = true;
+		_bool isRD = true;
+		if (!strcmp(pMesh->Get_Name(), "[l0]face_kiryu"))
+		{
+			isRS = false;
+			isRD = false;
+		}
+
+		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RSTexture", i, aiTextureType_SPECULAR)))
+			isRS = false;
+		m_pShaderCom->Bind_RawValue("g_isRS", &isRS, sizeof(_bool));
+
+		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RDTexture", i, aiTextureType_OPACITY)))
+			isRD = false;
+
+		m_pShaderCom->Bind_RawValue("g_isRD", &isRD, sizeof(_bool));
+
+		if (pMesh->Get_AlphaApply())
+			m_pShaderCom->Begin(1);     //블랜드
+		else
+			m_pShaderCom->Begin(0);		//디폴트
+
+		m_pModelCom->Render(i);
+
+		i++;
+	}
+
+#ifdef _DEBUG
+	m_pGameInstance->Add_DebugComponent(m_pColliderCom);
+#endif
+
+	return S_OK;
+}
+
+HRESULT CMonster::Render_LightDepth()
+{
+	const _float4x4* ViewMatrixArray = m_pGameInstance->Get_Shadow_Transform_View_Float4x4();
+	const _float4x4* ProjMatrixArray = m_pGameInstance->Get_Shadow_Transform_Proj_Float4x4();
+
+	if (FAILED(m_pShaderCom->Bind_Matrix("g_WorldMatrix", m_pTransformCom->Get_WorldFloat4x4())))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_Matrices("g_ViewMatrixArray", ViewMatrixArray, 3)))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_Matrices("g_ProjMatrixArray", ProjMatrixArray, 3)))
+		return E_FAIL;
+
+	_uint	iNumMeshes = m_pModelCom->Get_NumMeshes();
+
+	for (size_t i = 0; i < iNumMeshes; i++)
+	{
+		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
+			continue;
+
+		m_pShaderCom->Begin(2);
+
+		m_pModelCom->Render(i);
+	}
+
 	return S_OK;
 }
 
