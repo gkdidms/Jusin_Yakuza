@@ -110,6 +110,7 @@ HRESULT CLevel_Office1F::Ready_Player(const wstring& strLayerTag)
 	return S_OK;
 }
 
+ 
 CLevel* CLevel_Office1F::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
 	CLevel_Office1F* pInstance = new CLevel_Office1F{ pDevice, pContext };
