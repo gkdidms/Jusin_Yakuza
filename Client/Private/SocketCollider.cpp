@@ -131,10 +131,10 @@ _bool CSocketCollider::Intersect(CCollider* pTargetObject, _float fDistance)
 	return pTargetObject->Intersect(m_pColliderCom, fDistance);
 }
 
-void CSocketCollider::ParentObject_Hit(const _float3& vDir, _float fDamage, _bool isBlowAttack)
+void CSocketCollider::ParentObject_Hit(const _float3& vDir, _float fDamage, CLandObject* pParentObject, _bool isBlowAttack)
 {
 	// m_eColliderPartType는 본인이 헤드인지, 바디인지, 레그인지를 가지고있다
-	m_pParentObject->Take_Damage(m_eColliderPartType, vDir, fDamage, isBlowAttack);
+	m_pParentObject->Take_Damage(m_eColliderPartType, vDir, fDamage, pParentObject, isBlowAttack);
 }
 
 HRESULT CSocketCollider::Add_Components(void* pArg)

@@ -10,6 +10,9 @@ class CPlayer :
     public CLandObject
 {
 public:
+    const _float PLAYER_HITGAUGE_LEVEL_INTERVAL = 50.f;
+
+public:
     //KRS: 불한당, KRH: 러쉬, KRC: 파괴자
     enum BATTLE_STYLE
     {
@@ -84,7 +87,9 @@ public:
     virtual HRESULT Render_LightDepth() override;
 
     // 충돌함수
-    virtual void Take_Damage(_uint iHitColliderType, const _float3& vDir, _float fDamage, _bool isBlowAttack = false) override;
+    virtual void Take_Damage(_uint iHitColliderType, const _float3& vDir, _float fDamage, CLandObject* pAttackedObject, _bool isBlowAttack = false) override;
+
+    virtual string Get_CurrentAnimationName() override;
 
 public:
     const _bool* Get_MoveDirection() {
@@ -94,7 +99,6 @@ public:
 private:
     void Ready_AnimationTree();
     void Synchronize_Root(const _float& fTimeDelta);
-    void Animation_Event();
 
     //키 입력관련함수들
 private:
@@ -118,6 +122,13 @@ private:
     void Compute_MoveDirection_FB();
     void Compute_MoveDirection_RL();
 
+    void Effect_Control_Aura();
+
+public:
+    void AccHitGauge();
+
+
+
 private:
     CShader*                m_pShaderCom = { nullptr };
 
@@ -138,6 +149,10 @@ private:
     _float4         m_vPrevMove;
     _float4         m_vPrevRotation;
     _float4x4       m_ModelWorldMatrix;
+
+private:
+    _uint           m_iCurrentHitLevel = { 0 };
+    _float          m_fHitGauge = { 0.f };
 
 #ifdef _DEBUG
     _bool m_isAnimStart = { true };

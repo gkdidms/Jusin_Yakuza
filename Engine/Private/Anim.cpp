@@ -33,6 +33,13 @@ _uint CAnim::Get_AnimationIndex(const _char* pName)
 	return -1;
 }
 
+string CAnim::Get_AnimationName(_uint iIndex)
+{
+	if (m_Animations.size() < 0) return string();
+
+	return m_Animations[iIndex]->Get_AnimName();
+}
+
 const _float4* CAnim::Get_AnimationCenterRotation()
 {
 	return m_Animations[m_iCurrentIndex]->Get_CenterRotationValue();
