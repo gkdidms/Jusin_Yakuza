@@ -71,12 +71,12 @@ HRESULT CDecal::Render()
 HRESULT CDecal::Add_Components()
 {
     /* For.Com_VIBuffer */
-    if (FAILED(__super::Add_Component(LEVEL_TEST, TEXT("Prototype_Component_VIBuffer_Cube"),
+    if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_VIBuffer_Cube"),
         TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pVIBufferCubeCom))))
         return E_FAIL;
 
     /* For.Com_Shader */
-    if (FAILED(__super::Add_Component(LEVEL_TEST, TEXT("Prototype_Component_Shader_VtxCube"),
+    if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Shader_VtxCube"),
         TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCubeCom))))
         return E_FAIL;
 

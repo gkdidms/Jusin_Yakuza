@@ -48,6 +48,8 @@ HRESULT CGameObject::Initialize(void* pArg)
 
 	m_Casecade = { 0.f, 6.f, 18.f, 100.f };
 
+	m_iCurrentLevel = m_pGameInstance->Get_CurrentLevel();
+
 	return S_OK;
 }
 

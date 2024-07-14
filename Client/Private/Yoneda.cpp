@@ -64,11 +64,11 @@ void CYoneda::Late_Tick(const _float& fTimeDelta)
 
 HRESULT CYoneda::Add_Components()
 {
-	if (FAILED(__super::Add_Component(LEVEL_TEST, TEXT("Prototype_Component_Shader_VtxAnim"),
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Shader_VtxAnim"),
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Component(LEVEL_TEST, TEXT("Prototype_Component_Model_Jimu"),
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Model_Jimu"),
 		TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
 		return E_FAIL;
 
@@ -79,11 +79,11 @@ HRESULT CYoneda::Add_Components()
 	ColliderDesc.vCenter = _float3(0, 0.f, 0);
 	ColliderDesc.vRotation = _float3(0, 0.f, 0.f);
 
-	if (FAILED(__super::Add_Component(LEVEL_TEST, TEXT("Prototype_Component_Collider"),
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Collider"),
 		TEXT("Com_Collider"), reinterpret_cast<CComponent**>(&m_pColliderCom), &ColliderDesc)))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Component(LEVEL_TEST, TEXT("Prototype_Component_Anim"),
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Anim"),
 		TEXT("Com_Anim"), reinterpret_cast<CComponent**>(&m_pAnimCom))))
 		return E_FAIL;
 
@@ -93,7 +93,7 @@ HRESULT CYoneda::Add_Components()
 	AIDesc.pState = &m_iState;
 	AIDesc.pThis = this;
 
-	m_pTree = dynamic_cast<CAI_Yoneda*>(m_pGameInstance->Add_BTNode(LEVEL_TEST, TEXT(""), &AIDesc));
+	m_pTree = dynamic_cast<CAI_Yoneda*>(m_pGameInstance->Add_BTNode(m_iCurrentLevel, TEXT(""), &AIDesc));
 	if (nullptr == m_pTree)
 		return E_FAIL;
 

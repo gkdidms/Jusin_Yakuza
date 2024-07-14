@@ -1,8 +1,5 @@
 #ifdef _DEBUG
 
-
-
-
 #include "DebugManager.h"
 
 #include "GameInstance.h"
@@ -201,12 +198,19 @@ void CDebugManager::Window_Debug()
             m_pFileTotalMgr->Set_Lights_In_Client(m_iLightPass);
     }
 
-    if (ImGui::CollapsingHeader("Particle / UI"))
+    if (ImGui::CollapsingHeader("Effect  / UI"))
     {
+        ImGui::SeparatorText("RimLight");
+        
+        _bool isRimLight = m_pGameInstance->isRimLight();
+
+        if (ImGui::Checkbox("RimLight ON/OFF", &isRimLight))
+            m_pGameInstance->Set_RimLight(isRimLight);
+
         ImGui::SeparatorText("Particle");
         if (ImGui::Button("pang"))
         {
-            if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_Particle_Point_Hit1_Part0"), TEXT("Layer_Particle"), nullptr)))
+            if (FAILED(m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Hit1_Part0"), TEXT("Layer_Particle"), nullptr)))
                 MSG_BOX("pang!");
         }
 

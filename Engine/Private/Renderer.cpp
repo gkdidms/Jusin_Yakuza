@@ -650,8 +650,9 @@ void CRenderer::Draw()
 	//Render_Puddle();
 
 	Render_DeferredResult(); // 복사한 이미지를 백버퍼에 넣어줌. (Deferred 최종)
-	Render_RimLight();
 
+	if (m_isRimLight)
+		Render_RimLight();
 
 	if (m_isHDR)
 	{
@@ -702,7 +703,9 @@ void CRenderer::Clear()
 #ifdef _DEBUG
 	for (auto& iter : m_DebugComponents)
 		Safe_Release(iter);
+
 	m_DebugComponents.clear();
+
 #endif // _DEBUG
 }
 

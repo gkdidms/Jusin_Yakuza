@@ -30,13 +30,11 @@ HRESULT CDebugCamera::Initialize(void* pArg)
 	if (nullptr != pDesc)
 	{
 		m_fSensor = pDesc->fSensor;
+		m_pPlayerMatrix = pDesc->pPlayerMatrix;
 	}
 
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
-
-	CSystemManager::GetInstance()->Set_Camera(CAMERA_DEBUG);
-	
 
 	return S_OK;
 }

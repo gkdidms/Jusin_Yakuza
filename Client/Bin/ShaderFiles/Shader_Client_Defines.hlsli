@@ -60,6 +60,7 @@ float g_fOut = { 0.5f };
 
 bool g_isRS;
 bool g_isRD;
+
 //림라이트
 bool g_isRimLight;
 

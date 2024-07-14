@@ -50,6 +50,7 @@ protected:
     map<const wstring, class CComponent*> m_Components;
 
 protected:
+    _uint m_iCurrentLevel = { 0 };
     _bool m_isDead = { false };
 
     float   m_fObjID = { 0 };

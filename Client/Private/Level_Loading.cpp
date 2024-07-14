@@ -8,6 +8,10 @@
 #include "Level_Logo.h"
 #include "Level_Office1F.h"
 #include "Level_Office2F.h"
+#include "Level_OfficeBoss.h"
+#include "Level_Dogimazo.h"
+#include "Level_DogimazoStairs.h"
+#include "Level_DogimazoBoss.h"
 #include "Level_Test.h"
 #pragma endregion
 
@@ -40,6 +44,8 @@ void CLevel_Loading::Tick(const _float& fTimeDelta)
 		{
 			CLevel* pNewLevel = { nullptr };
 
+			m_pGameInstance->Set_CurrentLevel(m_eNextLevel);
+
 			switch (m_eNextLevel)
 			{
 			case LEVEL_LOGO:
@@ -50,6 +56,18 @@ void CLevel_Loading::Tick(const _float& fTimeDelta)
 				break;
 			case LEVEL_OFFICE_2F:
 				pNewLevel = CLevel_Office2F::Create(m_pDevice, m_pContext);
+				break;
+			case LEVEL_OFFICE_BOSS:
+				pNewLevel = CLevel_OfficeBoss::Create(m_pDevice, m_pContext);
+				break;
+			case LEVEL_DOGIMAZO:
+				pNewLevel = CLevel_Dogimazo::Create(m_pDevice, m_pContext);
+				break;
+			case LEVEL_DOGIMAZO_STAIRS:
+				pNewLevel = CLevel_DogimazoStairs::Create(m_pDevice, m_pContext);
+				break;
+			case LEVEL_DOGIMAZO_BOSS:
+				pNewLevel = CLevel_DogimazoBoss::Create(m_pDevice, m_pContext);
 				break;
 			case LEVEL_TEST:
 				pNewLevel = CLevel_Test::Create(m_pDevice, m_pContext);

@@ -238,7 +238,7 @@ HRESULT CCharacterData::Load_EffectState(string strFilePath)
 			string strEffectName = "";
 			in >> strEffectName;
 
-			Create_Effect(strBoneName, strEffectName);
+			//Create_Effect(strBoneName, strEffectName);
 
 			m_Effects.emplace(strBoneName, m_pGameInstance->StringToWstring(strEffectName));
 		}
@@ -257,7 +257,7 @@ void CCharacterData::Create_Effect(string& strBoneName, string& strEffectName)
 
 	CEffect::EFFECT_DESC Desc{};
 	Desc.pWorldMatrix = pBoneMatrix;
-	m_pGameInstance->Add_GameObject(LEVEL_TEST, m_pGameInstance->StringToWstring(strEffectName), TEXT("Layer_Effect"), &Desc);
+	m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), m_pGameInstance->StringToWstring(strEffectName), TEXT("Layer_Effect"), &Desc);
 }
 
 
