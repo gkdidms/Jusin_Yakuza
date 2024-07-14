@@ -640,16 +640,22 @@ void CObjPlace_Manager::Edit_Installed_GameObject(int iNumObject)
 			m_tCurrentObjectDesc.iShaderPass = 1;
 		}
 
-		if (ImGui::RadioButton(u8"rm텍스처 적용한거", m_tCurrentObjectDesc.iShaderPass == 2))
+		if (ImGui::RadioButton(u8"rm텍스처 적용한거 - 외부간판", m_tCurrentObjectDesc.iShaderPass == 2))
 		{
 			shaderType = 2;
 			m_tCurrentObjectDesc.iShaderPass = 2;
 		}
 
-		if (ImGui::RadioButton(u8"Bloom", m_tCurrentObjectDesc.iShaderPass == 3))
+		if (ImGui::RadioButton(u8"Lamp", m_tCurrentObjectDesc.iShaderPass == 3))
 		{
 			shaderType = 3;
 			m_tCurrentObjectDesc.iShaderPass = 3;
+		}
+
+		if (ImGui::RadioButton(u8"기타", m_tCurrentObjectDesc.iShaderPass == 4))
+		{
+			shaderType = 4;
+			m_tCurrentObjectDesc.iShaderPass = 4;
 		}
 	}
 	else
@@ -897,9 +903,11 @@ void CObjPlace_Manager::Set_Map_Object()
 		ImGui::NewLine();
 		ImGui::RadioButton(u8"형광등자르기 + 알파", &shaderType, 1);
 		ImGui::NewLine();
-		ImGui::RadioButton(u8"rm 텍스처 적용", &shaderType, 2);
+		ImGui::RadioButton(u8"rm 텍스처 적용 - 외부간판", &shaderType, 2);
 		ImGui::NewLine();
-		ImGui::RadioButton(u8"Bloom", &shaderType, 3);
+		ImGui::RadioButton(u8"Lamp", &shaderType, 3);
+		ImGui::NewLine();
+		ImGui::RadioButton(u8"기타", &shaderType, 4);
 	}
 	else
 	{
@@ -1101,8 +1109,9 @@ HRESULT CObjPlace_Manager::Export_Bin_Map_Data(MAP_TOTALINFORM_DESC* mapObjData)
 
 	strcat_s(fullPath, "MapObject_Data");
 
-	char cLevel[2] = "";
-	_itoa_s(mapObjData->iLevelIndex, cLevel, 10);
+	string strNum = to_string(mapObjData->iLevelIndex);
+	char cLevel[20];
+	strcpy_s(cLevel, strNum.c_str());
 	strcat_s(fullPath, "_");
 	strcat_s(fullPath, cLevel);
 	strcat_s(fullPath, ".dat");

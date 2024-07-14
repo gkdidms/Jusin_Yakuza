@@ -210,8 +210,11 @@ HRESULT CNavigation_Manager::Save_Cells(_uint iIndex)
 
 	strcat_s(fullPath, "Navigation");
 
-	char cIndex[2] = "";
-	_itoa_s(iIndex, cIndex, 10);
+
+	string strNum = to_string(iIndex);
+	char cIndex[20];
+	strcpy_s(cIndex, strNum.c_str());
+
 	strcat_s(fullPath, "_");
 	strcat_s(fullPath, cIndex);
 	strcat_s(fullPath, ".dat");

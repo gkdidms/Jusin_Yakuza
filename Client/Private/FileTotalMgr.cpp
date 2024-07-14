@@ -308,8 +308,9 @@ HRESULT CFileTotalMgr::Import_Bin_Map_Data_OnClient(MAP_TOTALINFORM_DESC* mapObj
     strcat_s(fullPath, "MapObject_Data");
     strcat_s(fullPath, "_");
 
-    char cLevel[2] = "";
-    _itoa_s(iLevel, cLevel, 10);
+    string strNum = to_string(iLevel);
+    char cLevel[20];
+    strcpy_s(cLevel, strNum.c_str());
     strcat_s(fullPath, cLevel);
     strcat_s(fullPath, ".dat");
 
@@ -377,8 +378,11 @@ HRESULT CFileTotalMgr::Import_Bin_Light_Data_OnClient(LIGHT_DESC_IO* lightData, 
     strcat_s(fullPath, "Light_Data");
     strcat_s(fullPath, "_");
 
-    char cLevel[2] = "";
-    _itoa_s(iLevel, cLevel, 10);
+
+    string strNum = to_string(iLevel);
+    char cLevel[20];
+    strcpy_s(cLevel, strNum.c_str());
+
     strcat_s(fullPath, cLevel);
     strcat_s(fullPath, ".dat");
 
@@ -412,8 +416,9 @@ HRESULT CFileTotalMgr::Import_Bin_Collider_Data_OnTool(COLLIDER_IO* ColliderData
     strcat_s(fullPath, "Collider_Data");
     strcat_s(fullPath, "_");
 
-    char cLevel[2] = "";
-    _itoa_s(iLevel, cLevel, 10);
+    string strNum = to_string(iLevel);
+    char cLevel[20];
+    strcpy_s(cLevel, strNum.c_str());
     strcat_s(fullPath, cLevel);
     strcat_s(fullPath, ".dat");
 

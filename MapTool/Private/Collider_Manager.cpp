@@ -391,8 +391,9 @@ HRESULT CCollider_Manager::Export_Bin_Collider_Data(COLLIDER_IO* ColliderData, i
 
 	strcat_s(fullPath, "Collider_Data");
 
-	char cLevel[2] = "";
-	_itoa_s(iSaveNum, cLevel, 10);
+	string strNum = to_string(iSaveNum);
+	char cLevel[20];
+	strcpy_s(cLevel, strNum.c_str());
 	strcat_s(fullPath, "_");
 	strcat_s(fullPath, cLevel);
 	strcat_s(fullPath, ".dat");
