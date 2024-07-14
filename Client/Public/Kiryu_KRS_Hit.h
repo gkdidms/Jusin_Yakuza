@@ -13,9 +13,10 @@ class CKiryu_KRS_Hit : public CBehaviorAnimation
 public:
 	struct KRS_Hit_DESC
 	{
-		const _float3* pDir;
+		const _float3* pDir;			// 때리는 방향(주먹이나 발의 이동방향), 파티클에서 사용
 		_float fDamage;
 		string strAnimationName;		// 상대방의 애니메이션에 따른 히트모션을 실행하기 위함
+		_uint iDirection;				// 때리는 상대방의 방향
 	};
 
 	enum KRS_HIT_TYPE

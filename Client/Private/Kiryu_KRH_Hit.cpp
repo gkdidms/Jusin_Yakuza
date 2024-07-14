@@ -21,12 +21,11 @@ void CKiryu_KRH_Hit::Change_Animation()
 
 _bool CKiryu_KRH_Hit::Get_AnimationEnd()
 {
-	//CModel* pModelCom = static_cast<CModel*>(m_pPlayer->Get_Component(TEXT("Com_Model")));
-	//if (pModelCom->Get_AnimFinished())
-	//{
-	//	m_pGameInstance->Set_TimeSpeed(TEXT("Timer_60"), 1.f);
-	//	return true;
-	//}
+	CModel* pModelCom = static_cast<CModel*>(m_pPlayer->Get_Component(TEXT("Com_Model")));
+	if (pModelCom->Get_AnimFinished())
+	{
+		return true;
+	}
 
 	return false;
 }

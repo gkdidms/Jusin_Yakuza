@@ -13,6 +13,13 @@
 
 #include "UIManager.h"
 
+#pragma region Hit관련 헤더들
+#include "Kiryu_KRC_Hit.h"
+#include "Kiryu_KRH_Hit.h"
+#include "Kiryu_KRS_Hit.h"
+#pragma endregion
+
+
 CPlayer::CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLandObject{ pDevice, pContext }
 {
@@ -270,15 +277,42 @@ void CPlayer::Take_Damage(_uint iHitColliderType, const _float3& vDir, _float fD
 	{
 	case CPlayer::KRS:
 	{
-		/*CKiryu_KRS_Hit::KRS_Hit_DESC Desc{ &vDir, fDamage, pAttackedObject->Get_CurrentAnimationName()};
+		_vector vAttackedObjectLook = pAttackedObject->Get_TransformCom()->Get_State(CTransform::STATE_LOOK);
+		_vector vMyLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
+
+		_float fTheta = 0.0f;
+		_float fDot = XMVectorGetX(XMVector3Dot(vAttackedObjectLook, vMyLook));
+		fTheta = XMConvertToDegrees(acosf(fDot));
+
+		// F, B, L, R
+		_int iDirection = -1;
+		if (fDot >= 0.0f)
+		{
+			if (0 <= fTheta && 90 > fTheta)  // 앞쪽
+				iDirection = 0;
+			else if (90 <= fTheta && 180 >= fTheta) // 뒷쪽
+				iDirection = 1;
+		}
+		else
+		{
+			if (0 <= fTheta && 90 > fTheta) // 오른쪽
+				iDirection = 3;
+			else if (90 <= fTheta && 180 >= fTheta) // 왼쪽
+				iDirection = 2;
+		}
+
+		CKiryu_KRS_Hit::KRS_Hit_DESC Desc{ &vDir, fDamage, pAttackedObject->Get_CurrentAnimationName(), iDirection };
 
 		m_iCurrentBehavior = (_uint)KRS_BEHAVIOR_STATE::HIT;
-		m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Setting_Value((void*) &Desc);*/
+		m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Setting_Value((void*) &Desc);
 		break;
 	}
 	case CPlayer::KRH:
 	{
+		//CKiryu_KRH_Hit::KRH_Hit_DESC Desc{ &vDir, fDamage, pAttackedObject->Get_CurrentAnimationName() };
 
+		//m_iCurrentBehavior = (_uint)KRS_BEHAVIOR_STATE::HIT;
+		//m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Setting_Value((void*)&Desc);
 		break;
 	}
 	case CPlayer::KRC:
