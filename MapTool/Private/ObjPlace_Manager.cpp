@@ -634,19 +634,19 @@ void CObjPlace_Manager::Edit_Installed_GameObject(int iNumObject)
 			m_tCurrentObjectDesc.iShaderPass = 0;
 		}
 
-		if (ImGui::RadioButton(u8"x로 움직이는", m_tCurrentObjectDesc.iShaderPass == 1))
+		if (ImGui::RadioButton(u8"형광등자르기 + 알파o", m_tCurrentObjectDesc.iShaderPass == 1))
 		{
 			shaderType = 1;
 			m_tCurrentObjectDesc.iShaderPass = 1;
 		}
 
-		if (ImGui::RadioButton(u8"물", m_tCurrentObjectDesc.iShaderPass == 2))
+		if (ImGui::RadioButton(u8"rm텍스처 적용한거", m_tCurrentObjectDesc.iShaderPass == 2))
 		{
 			shaderType = 2;
 			m_tCurrentObjectDesc.iShaderPass = 2;
 		}
 
-		if (ImGui::RadioButton(u8"기타", m_tCurrentObjectDesc.iShaderPass == 3))
+		if (ImGui::RadioButton(u8"Bloom", m_tCurrentObjectDesc.iShaderPass == 3))
 		{
 			shaderType = 3;
 			m_tCurrentObjectDesc.iShaderPass = 3;
@@ -672,7 +672,7 @@ void CObjPlace_Manager::Edit_Installed_GameObject(int iNumObject)
 			m_tCurrentObjectDesc.iShaderPass = 2;
 		}
 
-		if (ImGui::RadioButton(u8"기타", m_tCurrentObjectDesc.iShaderPass == 3))
+		if (ImGui::RadioButton(u8"mask", m_tCurrentObjectDesc.iShaderPass == 3))
 		{
 			shaderType = 3;
 			m_tCurrentObjectDesc.iShaderPass = 3;
@@ -895,11 +895,11 @@ void CObjPlace_Manager::Set_Map_Object()
 	{
 		ImGui::RadioButton(u8"그냥간판", &shaderType, 0);
 		ImGui::NewLine();
-		ImGui::RadioButton(u8"움직이는", &shaderType, 1);
+		ImGui::RadioButton(u8"형광등자르기 + 알파", &shaderType, 1);
 		ImGui::NewLine();
-		ImGui::RadioButton(u8"물", &shaderType, 2);
+		ImGui::RadioButton(u8"rm 텍스처 적용", &shaderType, 2);
 		ImGui::NewLine();
-		ImGui::RadioButton(u8"기타", &shaderType, 3);
+		ImGui::RadioButton(u8"Bloom", &shaderType, 3);
 	}
 	else
 	{
@@ -909,7 +909,7 @@ void CObjPlace_Manager::Set_Map_Object()
 		ImGui::NewLine();
 		ImGui::RadioButton(u8"물", &shaderType, 2);
 		ImGui::NewLine();
-		ImGui::RadioButton(u8"기타", &shaderType, 3);
+		ImGui::RadioButton(u8"mask", &shaderType, 3);
 	}
 	
 
@@ -1880,8 +1880,16 @@ void CObjPlace_Manager::Add_ObjectCollider_IMGUI()
 			Update_ColliderList_In_Object();
 			Update_ColliderNameList();
 
-			if (m_ObjectColliders.size() <= collider_current_idx)
+			if (m_ObjectColliders.size() <= collider_current_idx && m_ObjectColliders.size() - 1 >= 0)
+			{
 				collider_current_idx = m_ObjectColliders.size() - 1;
+			}
+			else
+			{
+				collider_current_idx = 0;
+				m_iCurColliderIndex = 0;
+			}
+				
 		}
 
 		ImGui::SameLine();
@@ -1903,6 +1911,7 @@ void CObjPlace_Manager::Add_ObjectCollider_IMGUI()
 			Update_ColliderNameList();
 
 			collider_current_idx = 0;
+			m_iCurColliderIndex = 0;
 		}
 
 

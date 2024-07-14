@@ -118,7 +118,7 @@ void CConstruction::Tick(const _float& fTimeDelta)
 
 void CConstruction::Late_Tick(const _float& fTimeDelta)
 {
-	if (0 == m_iShaderPassNum)
+	if (0 == m_iShaderPassNum || 3 == m_iShaderPassNum)
 	{
 		m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
 	}
@@ -167,7 +167,7 @@ HRESULT CConstruction::Render()
 
 		_bool isRS = true;
 		_bool isRD = true;
-		if (!strcmp(Meshes[i]->Get_Name(), "[l0]face_kiryu"))
+		if (!strcmp(Meshes[i]->Get_Name(), "box4783"))
 		{
 			isRS = false;
 			isRD = false;
@@ -370,7 +370,7 @@ HRESULT CConstruction::Render_LightDepth()
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
 			return E_FAIL;
 
-		m_pShaderCom->Begin(3);
+		m_pShaderCom->Begin(4);
 
 		m_pModelCom->Render(i);
 	}

@@ -49,6 +49,7 @@ private:
 	void							Initialize_Light_Environment();
 	void							Edit_GameObject_Transform(int iNumObject);
 	void							Edit_Installed_Light();
+	void							Click_To_Select_Light(int& iObjectNum);
 
 
 private:
@@ -68,7 +69,7 @@ private:
 
 	bool							m_bLightAdd = { false };
 	bool							m_bRender = { false };
-
+	bool							m_bFindObject = { false };
 
 public:
 	virtual void Free() override;

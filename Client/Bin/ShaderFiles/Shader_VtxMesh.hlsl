@@ -376,6 +376,67 @@ PS_OUT PS_PUDDLE(PS_IN In)
     return Out;
 }
 
+PS_OUT PS_MAIN_Mask(PS_IN In)
+{
+    PS_OUT Out = (PS_OUT) 0;
+
+    vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
+    vector vMultiDiffuce = g_MultiDiffuseTexture.Sample(LinearSampler, In.vTexcoord);
+    
+   //  투명할 경우(0.1보다 작으면 투명하니) 그리지 않음
+    if (vDiffuse.a < 0.4f)
+        discard;
+    
+     //RS + RD
+    vector vRSRD;
+    
+    if (g_isRS)
+    {
+        vector vRSDesc = g_RSTexture.Sample(LinearSampler, In.vTexcoord);
+        Out.vRS = vRSDesc;
+        Out.vDiffuse = lerp(vDiffuse, vRSDesc, vMultiDiffuce.z);
+    }
+    else
+        Out.vDiffuse = vDiffuse;
+    
+    float3 vNormal;
+    if (true == g_bExistNormalTex)
+    {
+        // 매핑되는 texture가 있을때
+        vector vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexcoord);
+        vNormal = vNormalDesc.xyz * 2.f - 1.f;
+    
+        float3x3 WorldMatrix = float3x3(In.vTangent.xyz, In.vBinormal.xyz, In.vNormal.xyz);
+    
+        vNormal = mul(vNormal.xyz, WorldMatrix);
+    }
+    else
+    {
+        float3x3 WorldMatrix = float3x3(In.vTangent.xyz, In.vBinormal.xyz, In.vNormal.xyz);
+        // 텍스처 없을때
+        vNormal = mul(In.vNormal.xyz, WorldMatrix);
+    }
+    
+    Out.vNormal = vector(vNormal.xyz * 0.5f + 0.5f, 0.f);
+    Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_fFar, 0.f, 1.f);
+    Out.vMulti = vMultiDiffuce;
+    
+    
+    // specularTex와 metalic 같은 rm 사용 - bool 값 같이 사용하기
+    if (true == g_bExistRMTex)
+    {
+        Out.vRM = g_RMTexture.Sample(LinearSampler, In.vTexcoord);
+    }
+    
+    if (true == g_bExistRSTex)
+    {
+        Out.vRS = g_RSTexture.Sample(LinearSampler, In.vTexcoord);
+    }
+    
+    
+    return Out;
+}
+
 struct PS_IN_LIGHTDEPTH
 {
     float4 vPosition : SV_POSITION;
@@ -439,9 +500,22 @@ technique11 DefaultTechnique
         DomainShader = NULL;
         PixelShader = compile ps_5_0 PS_PUDDLE();
     }
+
+    pass MaskPass //3
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        HullShader = NULL;
+        DomainShader = NULL;
+        PixelShader = compile ps_5_0 PS_MAIN_Mask();
+    }
     
 
-    pass LightDepth //3 - construction , Construction의 render light depth에서 변경해주기
+    pass LightDepth //4 - construction , Construction의 render light depth에서 변경해주기
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_Default, 0);
