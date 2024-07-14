@@ -1,15 +1,14 @@
 #pragma once
 #include "Level.h"
-
 #include "Client_Defines.h"
 
 BEGIN(Client)
-class CLevel_Office1F :
+class CLevel_OfficeBoss :
     public CLevel
 {
 private:
-    CLevel_Office1F(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-    virtual ~CLevel_Office1F() = default;
+    CLevel_OfficeBoss(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+    virtual ~CLevel_OfficeBoss() = default;
 
 public:
     virtual HRESULT Initialize();
@@ -24,8 +23,7 @@ private:
     HRESULT Ready_Player(const wstring& strLayerTag);
 
 public:
-    static CLevel* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-    virtual void Free() override;
+    static CLevel_OfficeBoss* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+    virtual void Free();
 };
-
 END

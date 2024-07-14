@@ -174,7 +174,7 @@ HRESULT CSocketCollider::Add_Components(void* pArg)
 		ColliderDesc.vExtents = pDesc->ColliderState.vValue;
 		ColliderDesc.vCenter = pDesc->ColliderState.vCenter;
 
-		if (FAILED(__super::Add_Component(LEVEL_TEST, TEXT("Prototype_Component_Collider"),
+		if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Collider"),
 			TEXT("Com_Collider"), reinterpret_cast<CComponent**>(&m_pColliderCom), &ColliderDesc)))
 			return E_FAIL;
 		break;
@@ -188,7 +188,7 @@ HRESULT CSocketCollider::Add_Components(void* pArg)
 		ColliderDesc.vCenter = pDesc->ColliderState.vCenter;
 		ColliderDesc.vRotation = _float3(0.f, 0.f, 0.f);
 
-		if (FAILED(__super::Add_Component(LEVEL_TEST, TEXT("Prototype_Component_Collider"),
+		if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Collider"),
 			TEXT("Com_Collider"), reinterpret_cast<CComponent**>(&m_pColliderCom), &ColliderDesc)))
 			return E_FAIL;
 		break;
@@ -201,7 +201,7 @@ HRESULT CSocketCollider::Add_Components(void* pArg)
 		ColliderDesc.fRadius = pDesc->ColliderState.vValue.x;
 		ColliderDesc.vCenter = pDesc->ColliderState.vCenter;
 
-		if (FAILED(__super::Add_Component(LEVEL_TEST, TEXT("Prototype_Component_Collider"),
+		if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Collider"),
 			TEXT("Com_Collider"), reinterpret_cast<CComponent**>(&m_pColliderCom), &ColliderDesc)))
 			return E_FAIL;
 		break;

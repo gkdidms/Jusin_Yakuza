@@ -41,14 +41,17 @@ private:
 
 private:
 	HRESULT Loading_For_LogoLevel();
-	HRESULT Loading_For_GamePlayLevel();
 	HRESULT Loading_For_Office_1F();
 	HRESULT Loading_For_Office_2F();
+	HRESULT Loading_For_Office_Boss();
+	HRESULT Loading_For_Dogimazo();
+	HRESULT Loading_For_Dogimazo_Stairs();
+	HRESULT Loading_For_Dogimazo_Boss();
 	HRESULT Loading_For_Test();
 
 private:
 	HRESULT Add_Models_On_Path(_uint iLevel, const wstring& strPath, _bool bAnim = true);		// 0627 혜원추가
-	HRESULT Add_Particle_On_Path(const wstring& strPath);
+	HRESULT Add_GameObject_Particle_On_Path(const wstring& strPath);
 	HRESULT Add_Models_On_Path_NonAnim(_uint iLevel, const wstring& strPath);				// 현정추가
 	HRESULT Add_UI_On_Path(const wstring& strPath);
 

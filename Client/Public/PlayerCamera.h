@@ -45,7 +45,9 @@ private:
 private:
     class CSystemManager* m_pSystemManager = { nullptr };
     class CCollision_Manager* m_pCollisionManager = { nullptr };
+    class CUIManager* m_pUIManager = { nullptr };
     CCollider* m_pColliderCom = { nullptr };
+
     _float m_fSensor = { 0.f };
     const _float4x4* m_pPlayerMatrix = { nullptr };
 

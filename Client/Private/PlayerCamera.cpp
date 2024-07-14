@@ -3,23 +3,28 @@
 #include "GameInstance.h"
 #include "SystemManager.h"
 #include "Collision_Manager.h"
+#include "UIManager.h"
 
 CPlayerCamera::CPlayerCamera(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CCamera{ pDevice, pContext },
 	m_pSystemManager{ CSystemManager::GetInstance() },
-	m_pCollisionManager{ CCollision_Manager::GetInstance() }
+	m_pCollisionManager{ CCollision_Manager::GetInstance() },
+	m_pUIManager{ CUIManager::GetInstance() }
 {
 	Safe_AddRef(m_pSystemManager);
 	Safe_AddRef(m_pCollisionManager);
+	Safe_AddRef(m_pUIManager);
 }
 
 CPlayerCamera::CPlayerCamera(const CPlayerCamera& rhs)
 	: CCamera { rhs },
 	m_pSystemManager { rhs.m_pSystemManager },
-	m_pCollisionManager{ rhs.m_pCollisionManager }
+	m_pCollisionManager{ rhs.m_pCollisionManager },
+	m_pUIManager{ rhs.m_pUIManager }
 {
 	Safe_AddRef(m_pSystemManager);
 	Safe_AddRef(m_pCollisionManager);
+	Safe_AddRef(m_pUIManager);
 }
 
 HRESULT CPlayerCamera::Initialize_Prototype()
@@ -101,8 +106,15 @@ HRESULT CPlayerCamera::Render()
 
 void CPlayerCamera::Compute_View(const _float& fTimeDelta)
 {
-	SetCursorPos(g_iWinSizeX * 0.5f, g_iWinSizeY * 0.5f); // 마우스 좌표 적용해주기
-	//ShowCursor(false);
+	_float a = m_pTransformCom->Get_WorldMatrix().r[1].m128_f32[0];
+	if (isnan(a))
+		int h = 99;
+	
+	if (m_pUIManager->isInvenClose())
+	{
+		SetCursorPos(g_iWinSizeX * 0.5f, g_iWinSizeY * 0.5f); // 마우스 좌표 적용해주기
+		ShowCursor(false);
+	}
 
 	// 플레이어 위치 가져오기
 	_vector vPlayerPosition;
@@ -154,7 +166,7 @@ HRESULT CPlayerCamera::Add_Components()
 	ColliderDesc.fRadius = 0.1f;
 	ColliderDesc.vCenter = _float3(0, 0, 0);
 
-	if (FAILED(__super::Add_Component(LEVEL_TEST, TEXT("Prototype_Component_Collider"),
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Collider"),
 		TEXT("Com_Collider"), reinterpret_cast<CComponent**>(&m_pColliderCom), &ColliderDesc)))
 		return E_FAIL;
 
@@ -195,4 +207,5 @@ void CPlayerCamera::Free()
 	Safe_Release(m_pColliderCom);
 	Safe_Release(m_pSystemManager);
 	Safe_Release(m_pCollisionManager);
+	Safe_Release(m_pUIManager);
 }

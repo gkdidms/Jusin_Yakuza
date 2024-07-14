@@ -115,6 +115,8 @@ void CPlayer::Tick(const _float& fTimeDelta)
 #ifdef _DEBUG
 	if (m_isAnimStart)
 		m_pModelCom->Play_Animation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")));
+#else
+	m_pModelCom->Play_Animation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")));
 #endif // _DEBUG
 
 	for (auto& pCollider : m_pColliders)
@@ -915,11 +917,11 @@ void CPlayer::KRC_KeyInput(const _float& fTimeDelta)
 
 HRESULT CPlayer::Add_Components()
 {
-	if (FAILED(__super::Add_Component(LEVEL_TEST, TEXT("Prototype_Component_Shader_VtxAnim"),
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Shader_VtxAnim"),
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Component(LEVEL_TEST, TEXT("Prototype_Component_Model_Kiryu"),
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Model_Kiryu"),
 		TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
 		return E_FAIL;
 
@@ -929,7 +931,7 @@ HRESULT CPlayer::Add_Components()
 	ColliderDesc.vExtents = _float3(0.3, 0.8, 0.3);
 	ColliderDesc.vCenter = _float3(0, ColliderDesc.vExtents.y, 0);
 
-	if (FAILED(__super::Add_Component(LEVEL_TEST, TEXT("Prototype_Component_Collider"),
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Collider"),
 		TEXT("Com_Collider"), reinterpret_cast<CComponent**>(&m_pColliderCom), &ColliderDesc)))
 		return E_FAIL;
 
@@ -1116,4 +1118,12 @@ void CPlayer::Free()
 
 	Safe_Release(m_pUIManager);
 	Safe_Release(m_pShaderCom);
+
+	for (size_t i = 0; i < BATTLE_STYLE_END; i++)
+	{
+		for (auto& pair : m_AnimationTree[i])
+			Safe_Release(pair.second);
+
+		m_AnimationTree[i].clear();
+	}
 }

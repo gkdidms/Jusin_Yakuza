@@ -24,6 +24,8 @@ public:
     _bool Get_Render() { return m_isRender; }
 #endif // _DEBUG
 
+public:
+    _bool isInvenClose() { return m_isClose; }
 
 public:
     //자신이 만들 ui씬은 미리 할당(수동)
@@ -49,6 +51,9 @@ private:
 private:
     _bool m_isRender = { true };
 #endif // _DEBUG
+
+private:
+    _bool m_isClose = { true };
 
 private:
    CUIScene* Find_Scene(wstring strSceneName);      

@@ -93,7 +93,7 @@ HRESULT CMapCollider::Add_Components(void* pArg)
         ColliderDesc.vCenter = collderIOdesc.vCenter;
         ColliderDesc.vRotation = collderIOdesc.vQuaternion;
 
-        m_vCollider.push_back(dynamic_cast<CCollider*>(m_pGameInstance->Add_Component_Clone(LEVEL_TEST, TEXT("Prototype_Component_Collider"), &ColliderDesc)));
+        m_vCollider.push_back(dynamic_cast<CCollider*>(m_pGameInstance->Add_Component_Clone(m_iCurrentLevel, TEXT("Prototype_Component_Collider"), &ColliderDesc)));
         m_pCollisionManager->Add_MapCollider(m_vCollider.back());
 
         // 테스트시에만 생성

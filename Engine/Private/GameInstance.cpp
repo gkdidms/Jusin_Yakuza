@@ -266,6 +266,11 @@ _bool CGameInstance::isShadow()
 	return m_pRenderer->isShadow();
 }
 
+_bool CGameInstance::isRimLight()
+{
+	return m_pRenderer->isRimLight();
+}
+
 void CGameInstance::Set_PBR(_bool isPBR)
 {
 	m_pRenderer->Set_PBR(isPBR);
@@ -314,6 +319,11 @@ void CGameInstance::Set_ShadowViewPos(_vector vPos)
 void CGameInstance::Set_Shadow(_bool isShadow)
 {
 	m_pRenderer->Set_Shadow(isShadow);
+}
+
+void CGameInstance::Set_RimLight(_bool isRimLight)
+{
+	m_pRenderer->Set_RimLight(isRimLight);
 }
 
 #ifdef _DEBUG

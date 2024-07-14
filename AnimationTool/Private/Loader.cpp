@@ -200,7 +200,7 @@ HRESULT CLoader::Loading_For_EditLevel()
 	Add_Models_On_Path(TEXT("../../Client/Bin/Resources/Models/NonAnim/"), false);
 
 #pragma region Effect
-	Add_Particle_On_Path(TEXT("../../Client/Bin/DataFiles/Particle/"));
+	Add_GameObject_Particle_On_Path(TEXT("../../Client/Bin/DataFiles/Particle/"));
 #pragma endregion
 
 	lstrcpy(m_szLoadingText, TEXT("셰이더를(을) 로딩 중 입니다."));
@@ -323,7 +323,7 @@ HRESULT CLoader::Add_Models_On_Path(const wstring& strPath, _bool bAnim)
 	return S_OK;
 }
 
-HRESULT CLoader::Add_Particle_On_Path(const wstring& strPath)
+HRESULT CLoader::Add_GameObject_Particle_On_Path(const wstring& strPath)
 {
 	vector<wstring> vecDirectorys;
 	m_pGameInstance->Get_DirectoryName(strPath, vecDirectorys);
