@@ -12,6 +12,7 @@
 #include "Mesh.h"
 
 #include "UIManager.h"
+#include "RimChecker.h"
 
 CPlayer::CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLandObject{ pDevice, pContext }
@@ -47,6 +48,16 @@ HRESULT CPlayer::Initialize(void* pArg)
 
 	ZeroMemory(&m_MoveDirection, sizeof(_bool) * MOVE_DIRECTION_END);
 	ZeroMemory(&m_InputDirection, sizeof(_bool) * MOVE_DIRECTION_END);
+
+	CRimChecker::RIM_CHECKER_DESC RimDesc{};
+	RimDesc.pParentMatrix = m_pTransformCom->Get_WorldFloat4x4();
+	RimDesc.pNeckMatrix = m_pModelCom->Get_BoneCombinedTransformationMatrix("kubi_c_n");	
+	RimDesc.pLHandMatrix = m_pModelCom->Get_BoneCombinedTransformationMatrix("buki_l_n");
+	RimDesc.pRHandMatrix = m_pModelCom->Get_BoneCombinedTransformationMatrix("buki_r_n");
+	RimDesc.pLFootMatrix = m_pModelCom->Get_BoneCombinedTransformationMatrix("asi4_l_n");
+	RimDesc.pRFootMatrix = m_pModelCom->Get_BoneCombinedTransformationMatrix("asi4_r_n");
+
+	m_RimChecker = dynamic_cast<CRimChecker*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_RimChecker"), &RimDesc));
 
 	return S_OK;
 }
@@ -124,6 +135,8 @@ void CPlayer::Tick(const _float& fTimeDelta)
 	Animation_Event();
 
 	Effect_Control_Aura();
+
+	m_RimChecker->Tick(fTimeDelta);
 }
 
 void CPlayer::Late_Tick(const _float& fTimeDelta)
@@ -163,7 +176,7 @@ void CPlayer::Late_Tick(const _float& fTimeDelta)
 		if (pPair.second->Get_CollierType() == CSocketCollider::HIT && pPair.second->IsOn())
 			m_pCollisionManager->Add_HitCollider(pPair.second, CCollision_Manager::PLAYER);
 	}
-	
+	m_RimChecker->Late_Tick(fTimeDelta);
 }
 
 HRESULT CPlayer::Render()
@@ -174,25 +187,28 @@ HRESULT CPlayer::Render()
 	int i = 0;
 	for (auto& pMesh : m_pModelCom->Get_Meshes())
 	{
-		if (!strcmp("[l0]jacketw1", pMesh->Get_Name()))
-		{
-			if(m_isRimLight)
-				if (FAILED(m_pShaderCom->Bind_RawValue("g_isRimLight", &m_isRimLight, sizeof(_bool))))
-					return E_FAIL;
-		}
-		else if (!strcmp("[l0]body_naked1", pMesh->Get_Name()))
-		{
-			if (m_isRimLight)
-				if (FAILED(m_pShaderCom->Bind_RawValue("g_isRimLight", &m_isRimLight, sizeof(_bool))))
-					return E_FAIL;
-		}
-		else
-		{
-			_bool isfalse = false;
-			if (FAILED(m_pShaderCom->Bind_RawValue("g_isRimLight", &isfalse, sizeof(_bool))))
-				return E_FAIL;
-		}
+		//if (!strcmp("[l0]jacketw1", pMesh->Get_Name()))
+		//{
+		//	if(m_isRimLight)
+		//		if (FAILED(m_pShaderCom->Bind_RawValue("g_isRimLight", &m_isRimLight, sizeof(_bool))))
+		//			return E_FAIL;
+		//}
+		//else if (!strcmp("[l0]body_naked1", pMesh->Get_Name()))
+		//{
+		//	if (m_isRimLight)
+		//		if (FAILED(m_pShaderCom->Bind_RawValue("g_isRimLight", &m_isRimLight, sizeof(_bool))))
+		//			return E_FAIL;
+		//}
+		//else
+		//{
+		//	_bool isfalse = false;
+		//	if (FAILED(m_pShaderCom->Bind_RawValue("g_isRimLight", &isfalse, sizeof(_bool))))
+		//		return E_FAIL;
+		//}
 
+		if(m_isRimLight)
+			if (FAILED(m_pShaderCom->Bind_RawValue("g_isRimLight", &m_isRimLight, sizeof(_bool))))
+					return E_FAIL;
 
 		m_pModelCom->Bind_BoneMatrices(m_pShaderCom, "g_BoneMatrices", i);
 

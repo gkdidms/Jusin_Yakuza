@@ -459,7 +459,7 @@ PS_OUT PS_ADD_PUDDLE(PS_IN In)
     return Out;
 }
 
-PS_OUT PS_RIMLIGHT(PS_IN In)
+PS_OUT PS_RIMLIGHT(PS_IN In)//범위 지정 문해야됨
 {
     PS_OUT Out = (PS_OUT) 0;
 
@@ -497,8 +497,10 @@ PS_OUT PS_RIMLIGHT(PS_IN In)
     
     if(1.f==BaseDepth.z)
     {
+        float RangeAlpha = BaseDepth.w;
         float fRim = saturate(dot(BaseNormal, vRim));
         vector FinColor= float4(pow(1.f - fRim, fRimpower) * RimColor);
+        FinColor.a *= RangeAlpha;
         Out.vColor = FinColor;
     }
     else

@@ -6,9 +6,9 @@
 
 #include "SocketCollider.h"
 #include "SocketEffect.h"
+#include "RimChecker.h"
 
 #include "Mesh.h"
-
 
 CLandObject::CLandObject(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CGameObject{ pDevice, pContext},
@@ -205,6 +205,7 @@ void CLandObject::Free()
 
 
 	Safe_Release(m_pData);
+	Safe_Release(m_RimChecker);
 	Safe_Release(m_pModelCom);
 	Safe_Release(m_pColliderCom);
 	Safe_Release(m_pSystemManager);
