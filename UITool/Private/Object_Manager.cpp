@@ -607,7 +607,7 @@ HRESULT CObject_Manager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* 
 	if (nullptr == m_pVIBufferCom)
 		return E_FAIL;
 
-	m_pShaderCom = CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxPosTex.hlsl"), VTXPOSTEX::Elements, VTXPOSTEX::iNumElements);
+	m_pShaderCom = CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxUI.hlsl"), VTXPOSTEX::Elements, VTXPOSTEX::iNumElements);
 	if (nullptr == m_pShaderCom)
 		return E_FAIL;
 

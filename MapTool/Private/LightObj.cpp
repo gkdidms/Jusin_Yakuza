@@ -1,6 +1,7 @@
 #include "..\Public\LightObj.h"
 
 #include "GameInstance.h"
+#include "Imgui_Manager.h"
 #include "Transform.h"
 
 CLightObj::CLightObj(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -117,9 +118,20 @@ HRESULT CLightObj::Bind_ShaderResources()
 	if (FAILED(m_pShaderCom->Bind_ValueFloat("g_fObjID", m_fObjID)))
 		return E_FAIL;
 
-	bool bWrite = false;
-	if (FAILED(m_pShaderCom->Bind_RawValue("g_bWriteID", &bWrite, sizeof(bool))))
-		return E_FAIL;
+
+	bool	bWrite;
+	if (CImgui_Manager::IDWRIE::LIGHT == CImgui_Manager::GetInstance()->Get_Write())
+	{
+		bWrite = true;
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_bWriteID", &bWrite, sizeof(bool))))
+			return E_FAIL;
+	}
+	else
+	{
+		bWrite = false;
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_bWriteID", &bWrite, sizeof(bool))))
+			return E_FAIL;
+	}
 
 	//if (FAILED(m_pShaderCom->Bind_RawValue("g_vCamPosition", m_pGameInstance->Get_CamPosition_Float4(), sizeof(_float4))))
 	//	return E_FAIL;

@@ -359,7 +359,7 @@ PS_OUT PS_OIT_RESULT(PS_IN In)
     vector vAccumColor = g_AccumTexture.Sample(PointSampler, In.vTexcoord);
     float vAccumAlpha = g_AccumAlpha.Sample(PointSampler, In.vTexcoord).r;
     
-    float vResult = g_ResultTexture.Sample(PointSampler, In.vTexcoord).r;
+  //  float vResult = g_ResultTexture.Sample(PointSampler, In.vTexcoord).r;
     
       // 최종 출력 계산(알파*가중치)를 빼주는작업= 모두 함친 색이 나 옴
     //vector FinalColor = float4(vAccumColor.xyz / vAccumColor.a, (1-vAccumAlpha));
@@ -459,6 +459,56 @@ PS_OUT PS_ADD_PUDDLE(PS_IN In)
     return Out;
 }
 
+PS_OUT PS_RIMLIGHT(PS_IN In)
+{
+    PS_OUT Out = (PS_OUT) 0;
+
+    vector BaseNormal = g_NormalTexture.Sample(LinearSampler, In.vTexcoord);//월드 노멀
+    BaseNormal = vector(BaseNormal.xyz * 2.f - 1.f, 0.f);
+
+    vector BackBuffer = g_BackBufferTexture.Sample(LinearSampler, In.vTexcoord);
+    
+    vector BaseDepth = g_DepthTexture.Sample(LinearSampler, In.vTexcoord);
+
+    vector vCamDir = g_vCamPosition; //월드 카메라
+   
+    vector RimColor = vector(1.0f, 0.0f, 1.0f, 1.0f);
+    
+    float fRimpower =1.f;
+    
+    vector vWorldPos;
+
+    vWorldPos.x = In.vTexcoord.x * 2.f - 1.f;
+    vWorldPos.y = In.vTexcoord.y * -2.f + 1.f;
+    vWorldPos.z = BaseDepth.x; /* 0 ~ 1 */
+    vWorldPos.w = 1.f;
+
+    vWorldPos = vWorldPos * (BaseDepth.y * g_fFar);
+    float fProjZ = vWorldPos.z;
+
+	        /* 뷰스페이스 상의 위치를 구한다. */
+    vWorldPos = mul(vWorldPos, g_ProjMatrixInv);
+
+	        /* 월드스페이스 상의 위치를 구한다. */
+    vWorldPos = mul(vWorldPos, g_ViewMatrixInv);
+       
+    
+    vector vRim = normalize(vCamDir - vWorldPos);
+    
+    if(1.f==BaseDepth.z)
+    {
+        float fRim = saturate(dot(BaseNormal, vRim));
+        vector FinColor= float4(pow(1.f - fRim, fRimpower) * RimColor);
+        Out.vColor = FinColor;
+    }
+    else
+    {
+        Out.vColor = vector(0.f, 0.f, 0.f, 0.f);
+    }
+   
+    
+    return Out;
+}
 
 technique11 DefaultTechnique
 {
@@ -714,4 +764,19 @@ technique11 DefaultTechnique
         DomainShader = NULL;
         PixelShader = compile ps_5_0 PS_ADD_PUDDLE();
     }
+
+    pass RimLight //19
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_None_Test_None_Write, 0);
+        SetBlendState(BS_AlphaBlend, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        HullShader = NULL;
+        DomainShader = NULL;
+        PixelShader = compile ps_5_0 PS_RIMLIGHT();
+    }
+
+
 }

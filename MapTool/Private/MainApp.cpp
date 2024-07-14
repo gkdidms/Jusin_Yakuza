@@ -66,7 +66,7 @@ void CMainApp::Tick(const _float& fTimeDelta)
 	m_pIMGUI_Manager->Late_Tick(fTimeDelta);
 }
 
-HRESULT CMainApp::Render()
+HRESULT CMainApp::Render() 
 {
 	++m_iNumRender;
 

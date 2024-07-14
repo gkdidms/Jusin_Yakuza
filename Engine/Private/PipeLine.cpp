@@ -78,6 +78,7 @@ void CPipeLine::Tick()
 	{
 		XMStoreFloat4x4(&m_TransformStateInverseMatrix[i], XMMatrixInverse(nullptr, Get_Transform_Matrix(D3DTRANSFORMSTATE(i))));
 	}
+
 	memcpy(&m_vCamRight, &m_TransformStateInverseMatrix[D3DTS_VIEW].m[0], sizeof(_float4));
 	memcpy(&m_vCamLook, &m_TransformStateInverseMatrix[D3DTS_VIEW].m[2], sizeof(_float4));
 	memcpy(&m_vCamPosition, &m_TransformStateInverseMatrix[D3DTS_VIEW].m[3], sizeof(_float4));

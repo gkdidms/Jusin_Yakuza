@@ -47,8 +47,9 @@ VS_OUT VS_MAIN(VS_IN In)
     Out.vTexcoord = In.vTexcoord;
     Out.vProjPos = Out.vPosition;
     Out.vLocalPos = float4(In.vPosition, 1.f);
-    Out.vTangent = normalize(mul(vector(In.vTangent.xyz, 0.f), g_WorldMatrix));
-    Out.vBinormal = vector(cross(Out.vNormal.xyz, Out.vTangent.xyz), 0.f);
+    //Out.vTangent = normalize(mul(vector(In.vTangent.xyz, 0.f), g_WorldMatrix));
+    Out.vTangent = normalize(vector(In.vTangent.xyz, 0.f)); //접선
+    Out.vBinormal = vector(cross(Out.vNormal.xyz, Out.vTangent.xyz), 0.f);//바이
     
     return Out;
 }
@@ -156,7 +157,29 @@ PS_OUT PS_MAIN(PS_IN In)
     
     float3x3 WorldMatrix = float3x3(In.vTangent.xyz, vBinormal.xyz, vNormal.xyz);
     vector vNormalBTN = vector(mul(In.vNormal.xyz, WorldMatrix), 0.f);
+
+    //옵젝(물체 기준 좌표계) ->탄젠트 :법선벡터xyz*0.5+0.5=법선맵(0~1)렌더타겟 저장시 이렇게
+    //탄젠트(표면 기준 좌표계) ->옵젝 : 법선맵rgb*2 -1 =법선벡터(-1~1)저장된 렌더타겟에서 꺼내 쓸떄.
     
+   // vector vTangentTexture =vector( vTangentDesc.xyzw * 2.f - 1.f); //탄젠트 노멀(텍스처로 받은 초록색 노멀 값)을 옵젝 노멀로 변경 범위 (-1~1)[접선]
+    //float3 vLocalTangent = float3(vTangentDesc.w, vTangentDesc.y, 1.f); //argb라고 가정하고 순서변경(텍스처는 y,z 교체가 안되서 들어옴)(접선 생성 완료)
+
+    /*
+    float3 vLocalNormal = In.vNormal.xyz; //이건 옵젝 노멀임[법선]
+
+    
+    vector vWorldTangent = normalize(vector(vLocalTangent.xyz, 0.f));
+    vector vWorldNormal = normalize(vector(vLocalNormal.xyz, 0.f));
+    
+    vector vWorlBinormal = vector(cross(vWorldNormal.xyz, vWorldTangent.xyz), 0.f);
+
+    
+  //  float3x3 WorldMatrix = float3x3(vWorlBinormal.xyz, vWorldNormal.xyz, vWorldTangent.xyz);
+    float3x3 WorldMatrix = float3x3(vWorldTangent.xyz, vWorlBinormal.xyz, vWorldNormal.xyz);
+    float3 vFinalNormal = mul(vLocalNormal.xyz, WorldMatrix);
+    
+    vFinalNormal = mul(vector(vWorldNormal.xyz, 0.f), g_WorldMatrix);
+*/
     
     if (vDiffuse.a < 0.1f)
         discard;
@@ -185,10 +208,18 @@ PS_OUT PS_MAIN(PS_IN In)
         else
             Out.vDiffuse = vDiffuse;
     }
+    float RimIndex = 0.f;
+    if(g_isRimLight)
+        RimIndex = 1.f;
 
-    
     Out.vNormal = vector(vNormalBTN.xyz * 0.5f + 0.5f, 0.f);
     Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_fFar, 1.f, 1.f);
+
+    
+    /*
+    Out.vNormal = vector(vFinalNormal.xyz * 0.5f + 0.5f, 0.f);
+    Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_fFar, RimIndex, 1.f);
+*/
     Out.vMulti = vMultiDiffuce;
     
     return Out;
@@ -236,10 +267,12 @@ PS_OUT PS_BLEND(PS_IN In)
         else
             Out.vDiffuse = vDiffuse;
     }
-
+    float RimIndex = 0.f;
+    if (g_isRimLight)
+        RimIndex = 1.f;
     
     Out.vNormal = vector(vNormal.xyz * 0.5f + 0.5f, 0.f);
-    Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_fFar, 1.f, 1.f);
+    Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_fFar, RimIndex, 1.f);
     Out.vMulti = vMultiDiffuce;
     
 
@@ -307,4 +340,5 @@ technique11 DefaultTechnique
         DomainShader = NULL;
         PixelShader = compile ps_5_0 PS_MAIN_LIGHTDEPTH();
     }
+
 }

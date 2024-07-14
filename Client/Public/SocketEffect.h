@@ -39,7 +39,7 @@ public:
 		m_isOn = true;
 	}
 	void Off() {
-		m_isOn = { false };
+		m_isOn = false;
 	}
 
 private:

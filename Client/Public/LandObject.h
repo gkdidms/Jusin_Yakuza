@@ -36,11 +36,13 @@ public:
 
     /* 충돌관련 함수들 */
     virtual void ImpulseResolution(CLandObject* pTargetObject);
-    virtual void Take_Damage(_uint iHitColliderType, const _float3& vDir, _float fDamage, _bool isBlowAttack = false) {};
+    virtual void Take_Damage(_uint iHitColliderType, const _float3& vDir, _float fDamage, CLandObject* pAttackedObject, _bool isBlowAttack = false) {};
 
 protected:
     virtual HRESULT Add_CharacterData();
     virtual void Apply_ChracterData();
+
+    virtual void Animation_Event();
 
 public:
     const wstring& Get_ModelName() {
@@ -57,6 +59,8 @@ public:
 
     virtual _bool Is_BlowAttack() { return false; }             // 재정의 필요
 
+    virtual string Get_CurrentAnimationName() = 0;
+ 
 protected:
     class CSystemManager* m_pSystemManager = { nullptr };
     class CCollision_Manager* m_pCollisionManager = { nullptr };
@@ -79,7 +83,7 @@ protected:
     _bool m_isObjectRender = { true };
 #endif // _DEBUG
 
-
+    _bool m_isRimLight = { true };//
 protected:
     virtual HRESULT Add_Components();
     virtual HRESULT Bind_ResourceData();

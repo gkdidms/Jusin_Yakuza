@@ -83,7 +83,7 @@ public:
 	}
 
 public:
-	void ParentObject_Hit(const _float3& vDir, _float fDamage, _bool isBlowAttack = false);
+	void ParentObject_Hit(const _float3& vDir, _float fDamage, class CLandObject* pParentObject, _bool isBlowAttack = false);
 
 private:
 	COLLIDER_ACTION_TYPE			m_eColliderActionType = { ATTACK };

@@ -189,6 +189,10 @@ HRESULT CLoader::Loading_For_EditLevel()
 		CVIBuffer_Trail::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	/* For.Prototype_Component_Anim */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_EDIT, TEXT("Prototype_Component_Anim"), CAnim::Create(m_pDevice, m_pContext, "../../Client/Bin/DataFiles/AnimationData/Animation.dat", false))))
+		return E_FAIL;
+
 #pragma endregion
 
 	lstrcpy(m_szLoadingText, TEXT("모델를(을) 로딩 중 입니다."));
