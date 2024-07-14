@@ -2,6 +2,7 @@
 #include "LandObject.h"
 #include "SocketCollider.h"
 #include "Component_Manager.h"
+#include "Player.h"
 
 IMPLEMENT_SINGLETON(CCollision_Manager)
 
@@ -134,6 +135,7 @@ void CCollision_Manager::ResolveCollision(BoundingSphere* sphere, BoundingOrient
     sphere->Center.z += push.z;
 }
 
+// 플레이어한테 적이 맞을 때
 void CCollision_Manager::Enemy_Hit_Collision()
 {
     for (auto pPlayerAttackCollider : m_AttackColliders[PLAYER])
@@ -142,13 +144,15 @@ void CCollision_Manager::Enemy_Hit_Collision()
         {
             if (pEnemyHitCollider->Intersect(pPlayerAttackCollider->Get_Collider()))
             {
-                pEnemyHitCollider->ParentObject_Hit(pPlayerAttackCollider->Get_MoveDir(), pPlayerAttackCollider->Get_Damage(), pPlayerAttackCollider->Get_Parent()->Is_BlowAttack());
+                static_cast<CPlayer*>(pPlayerAttackCollider->Get_Parent())->AccHitGauge();
+                pEnemyHitCollider->ParentObject_Hit(pPlayerAttackCollider->Get_MoveDir(), pPlayerAttackCollider->Get_Damage(), pPlayerAttackCollider->Get_Parent(), pPlayerAttackCollider->Get_Parent()->Is_BlowAttack());
             }
 
         }
     }
 }
 
+// 적한테 플레이어가 맞을 때
 void CCollision_Manager::Player_Hit_Collision()
 {
     for (auto pEnemyAttackCollider : m_AttackColliders[ENEMY])
@@ -157,7 +161,7 @@ void CCollision_Manager::Player_Hit_Collision()
         {
             if (pPlayerHitCollider->Intersect(pEnemyAttackCollider->Get_Collider()))
             {
-                pPlayerHitCollider->ParentObject_Hit(pEnemyAttackCollider->Get_MoveDir(), pEnemyAttackCollider->Get_Damage(), pEnemyAttackCollider->Get_Parent()->Is_BlowAttack());
+                pPlayerHitCollider->ParentObject_Hit(pEnemyAttackCollider->Get_MoveDir(), pEnemyAttackCollider->Get_Damage(), pEnemyAttackCollider->Get_Parent(), pEnemyAttackCollider->Get_Parent()->Is_BlowAttack());
             }
         }
     }

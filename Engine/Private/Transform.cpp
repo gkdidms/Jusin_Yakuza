@@ -77,7 +77,9 @@ void CTransform::Go_Straight(const _float& fTimeDelta)
 	_vector vPosition = Get_State(STATE_POSITION);
 	_vector vLook = Get_State(STATE_LOOK);
 
-	vPosition += XMVector3Normalize(vLook) * m_fSpeedPerSec * fTimeDelta;
+	vPosition += XMVector3NormalizeEst(vLook) * m_fSpeedPerSec * fTimeDelta;
+
+	if (isnan(vPosition.m128_f32[0]))	return;
 
 	Set_State(STATE_POSITION, vPosition);
 }
@@ -87,7 +89,9 @@ void CTransform::Go_Straight_CustumSpeed(const _float& fSpeed, const _float& fTi
 	_vector vPosition = Get_State(STATE_POSITION);
 	_vector vLook = Get_State(STATE_LOOK);
 
-	vPosition += XMVector3Normalize(vLook) * fSpeed * fTimeDelta;
+	vPosition += XMVector3NormalizeEst(vLook) * fSpeed * fTimeDelta;
+
+	if (isnan(vPosition.m128_f32[0]))	return;
 
 	Set_State(STATE_POSITION, vPosition);
 }
@@ -95,9 +99,10 @@ void CTransform::Go_Straight_CustumSpeed(const _float& fSpeed, const _float& fTi
 void CTransform::Go_Move_Custum(const _float4& vDir, const _float& fSpeed, const _float& fTimeDelta)
 {
 	_vector vPosition = Get_State(STATE_POSITION);
-	_vector vLook = Get_State(STATE_LOOK);
 
 	vPosition += XMLoadFloat4(&vDir) * fSpeed * fTimeDelta;
+
+	if (isnan(vPosition.m128_f32[0]))	return;
 
 	Set_State(STATE_POSITION, vPosition);
 }
@@ -109,6 +114,8 @@ void CTransform::Go_Backward(const _float& fTimeDelta)
 
 	vPosition -= XMVector3Normalize(vLook) * m_fSpeedPerSec * fTimeDelta;
 
+	if (isnan(vPosition.m128_f32[0]))	return;
+
 	Set_State(STATE_POSITION, vPosition);
 }
 
@@ -118,6 +125,8 @@ void CTransform::Go_Left(const _float& fTimeDelta)
 	_vector vRight = Get_State(STATE_RIGHT);
 
 	vPosition -= XMVector3Normalize(vRight) * m_fSpeedPerSec * fTimeDelta;
+
+	if (isnan(vPosition.m128_f32[0]))	return;
 
 	Set_State(STATE_POSITION, vPosition);
 }
@@ -129,6 +138,8 @@ void CTransform::Go_Right(const _float& fTimeDelta)
 
 	vPosition += XMVector3Normalize(vRight) * m_fSpeedPerSec * fTimeDelta;
 
+	if (isnan(vPosition.m128_f32[0]))	return;
+
 	Set_State(STATE_POSITION, vPosition);
 }
 
@@ -139,6 +150,8 @@ void CTransform::Go_Up(const _float& fTimeDelta)
 
 	vPosition += XMVector3Normalize(vUp) * m_fSpeedPerSec * fTimeDelta;
 
+	if (isnan(vPosition.m128_f32[0]))	return;
+
 	Set_State(STATE_POSITION, vPosition);
 }
 
@@ -148,6 +161,8 @@ void CTransform::Go_Down(const _float& fTimeDelta)
 	_vector vUp = Get_State(STATE_UP);
 
 	vPosition -= XMVector3Normalize(vUp) * m_fSpeedPerSec * fTimeDelta;
+
+	if (isnan(vPosition.m128_f32[0]))	return;
 
 	Set_State(STATE_POSITION, vPosition);
 }
@@ -160,22 +175,32 @@ void CTransform::LookAt(_fvector vTargetPosition)
 	_vector vRight = XMVector3Cross(XMVectorSet(0.f, 1.f, 0.f, 0.f), vLook);
 	_vector vUp = XMVector3Cross(vLook, vRight);
 
+	if (isnan(XMVector4Normalize(vRight).m128_f32[0]) || isnan(XMVector4Normalize(vUp).m128_f32[0]) || isnan(XMVector4Normalize(vLook).m128_f32[0]))
+	{
+		return;
+	}
+
 	Set_State(STATE_RIGHT, XMVector4Normalize(vRight) * m_vScale.x);
-	Set_State(STATE_UP, XMVector4Normalize(vUp) * m_vScale.y);
+	Set_State(STATE_UP, XMVector3NormalizeEst(vUp) * m_vScale.y);
 	Set_State(STATE_LOOK, XMVector4Normalize(vLook) * m_vScale.z);
 }
 
 void CTransform::LookAt_For_LandObject(_fvector vTargetPosition)
 {
-	_vector vLook = XMVector3Normalize(vTargetPosition - Get_State(STATE_POSITION));
+	_vector vPosition = Get_State(STATE_POSITION);
+	_vector vLook = XMVector3Normalize(vTargetPosition - vPosition);
 
-	_vector vRight = XMVector3Cross(XMVectorSet(0.f, 1.f, 0.f, 0.f), vLook);
+	// Y축 벡터 고정
+	_vector vUp = XMVectorSet(0.f, 1.f, 0.f, 0.f);
 
-	// Look, Right 벡터를 구한 뒤, Up은 변환이 불필요하니, 직교를 맞추는 Look을 다시 구한다.
-	vLook = XMVector3Cross(vRight, XMVectorSet(0.f, 1.f, 0.f, 0.f));
+	// Right 벡터 계산
+	_vector vRight = XMVector3Normalize(XMVector3Cross(vUp, vLook));
 
-	Set_State(STATE_RIGHT, XMVector3Normalize(vRight) * Get_Scaled().x);
-	Set_State(STATE_LOOK, XMVector3Normalize(vLook) * Get_Scaled().z);
+	// Look 벡터 재계산
+	vLook = XMVector3Normalize(XMVector3Cross(vRight, vUp));
+
+	Set_State(STATE_RIGHT, vRight * Get_Scaled().x);
+	Set_State(STATE_LOOK, vLook * Get_Scaled().z);
 }
 
 void CTransform::LookForCamera(_fvector vCamLook, _float fRadian)
@@ -210,6 +235,11 @@ void CTransform::Turn(_fvector vAxis, _float fTimeDelta)
 	vUp = XMVector3TransformNormal(vUp, RotationMatrix);
 	vLook = XMVector3TransformNormal(vLook, RotationMatrix);
 
+	if (isnan(vRight.m128_f32[0]) || isnan(vRight.m128_f32[0]) || isnan(vRight.m128_f32[0]))
+	{
+		return;
+	}
+
 	Set_State(STATE_RIGHT, vRight);
 	Set_State(STATE_UP, vUp);
 	Set_State(STATE_LOOK, vLook);
@@ -229,6 +259,13 @@ void CTransform::Rotation(_fvector vAxis, _float fRadian)
 	vUp = XMVector3TransformNormal(vUp, RotationMatrix);
 	vLook = XMVector3TransformNormal(vLook, RotationMatrix);
 
+
+	if (isnan(vRight.m128_f32[0]) || isnan(vRight.m128_f32[0]) || isnan(vRight.m128_f32[0]))
+	{
+		return;
+	}
+
+
 	Set_State(STATE_RIGHT, vRight);
 	Set_State(STATE_UP, vUp);
 	Set_State(STATE_LOOK, vLook);
@@ -245,6 +282,13 @@ void CTransform::Change_Rotation(_fvector vAxis, _float fRadian)
 	vRight = XMVector3TransformNormal(vRight, RotationMatrix);
 	vUp = XMVector3TransformNormal(vUp, RotationMatrix);
 	vLook = XMVector3TransformNormal(vLook, RotationMatrix);
+
+
+	if (isnan(vRight.m128_f32[0]) || isnan(vRight.m128_f32[0]) || isnan(vRight.m128_f32[0]))
+	{
+		return;
+	}
+
 
 	Set_State(STATE_RIGHT, vRight);
 	Set_State(STATE_UP, vUp);
@@ -265,6 +309,13 @@ void CTransform::Change_Rotation_Quaternion(const _float4& vQuaternion)
 	vRight = XMVector3TransformNormal(vRight, rotationMatrix);
 	vUp = XMVector3TransformNormal(vUp, rotationMatrix);
 	vLook = XMVector3TransformNormal(vLook, rotationMatrix);
+
+
+	if (isnan(vRight.m128_f32[0]) || isnan(vRight.m128_f32[0]) || isnan(vRight.m128_f32[0]))
+	{
+		return;
+	}
+
 
 	// 변경된 축 벡터들을 저장한다
 	Set_State(STATE_RIGHT, vRight);

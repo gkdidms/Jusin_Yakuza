@@ -3,7 +3,7 @@
 
 /* 컨스턴트 테이블(상수테이블) */
 matrix g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
-matrix g_ViewMatrixInv, g_ProjMatrixInv;
+matrix g_WorldMatrixInv, g_ViewMatrixInv, g_ProjMatrixInv;
 matrix g_LightViewMatrix, g_LightProjMatrix;
 
 matrix g_CamProjMatrix, g_CamViewMatrix;
@@ -136,4 +136,10 @@ struct PS_OUT_REVERSE
 {
     vector vColor : SV_TARGET0;
     vector vReverseColor : SV_Target1;
+};
+
+struct PS_RIM_OUT
+{
+    vector vColor : SV_TARGET0;
+    vector vAlpha : SV_TARGET1;
 };

@@ -7,6 +7,7 @@
 
 #pragma region "Model"
 #include "Animation.h"
+#include "Anim.h"
 #include "Bone.h"
 #include "Channel.h"
 #include "Mesh.h"
@@ -49,8 +50,6 @@ HRESULT CImguiManager::Initialize(void* pArg)
 
 	ImGui_ImplWin32_Init(g_hWnd);
 	ImGui_ImplDX11_Init(m_pDevice, m_pContext);
-
-
 	return S_OK;
 }
 
@@ -100,7 +99,11 @@ void CImguiManager::Tick(const _float& fTimeDelta)
 				CModel* pModel = static_cast<CModel*>(m_pRenderModel->Get_Model());
 				if (nullptr != pModel)
 				{
-					_double Position = *pModel->Get_AnimationCurrentPosition();
+					_double Position = 0.0;
+					if(m_iModelType == PLAYER)
+						Position = *pModel->Get_AnimationCurrentPosition();
+					else
+						Position = *pModel->Get_AnimationCurrentPosition(m_pRenderModel->Get_AnimComponent());
 
 					if (Value.iType == COLLIDER_ACTIVATION && Value.fAinmPosition < Position)
 					{
@@ -137,7 +140,23 @@ HRESULT CImguiManager::Render()
 
 void CImguiManager::ModelList()
 {
-	//ImGui::DragFloat("drag float", &f1, 0.005f);
+	ImGui::Text(u8"적 체크 시 AnimComponent의 애니메이션 목록으로 설정한다");
+	if (ImGui::RadioButton(u8"플레이어", m_iModelType == PLAYER))
+	{
+		m_iModelType = PLAYER;
+		m_Anims = m_pRenderModel->Get_Animations();
+	}
+	ImGui::SameLine();
+	if (ImGui::RadioButton(u8"적", m_iModelType == ENEMY))
+	{
+		m_iModelType = ENEMY;
+
+		auto pAnimCom = m_pRenderModel->Get_AnimComponent();
+		m_Anims = pAnimCom->Get_Animations();
+	}
+
+	Setting_AnimationList();
+
 	if (ImGui::DragFloat3("Position", m_ModelPosition, 0.1f))
 	{
 		Update_Model_Position();
@@ -185,6 +204,17 @@ void CImguiManager::ModelList()
 	if (ImGui::ListBox("##", &m_iModelSelectedIndex, items.data(), m_ModelNameList.size()))
 	{
 		m_iAnimIndex = 0;
+		m_iSearchAnimIndex = 0;
+		m_iAddedAnimSelectedIndex = 0;
+		m_iBoneSelectedIndex = 0;
+		m_iBoneSelectedIndex = 0;
+		m_iColliderSelectedIndex = 0;
+		m_iEventBoneIndex = 0;
+		m_iChannelSelectedIndex = 0;
+		m_iEventSelectedIndex = 0;
+		m_iMeshSelectedIndex = 0;
+		m_iAddedMeshSelectedIndex = 0;
+
 		m_pRenderModel->Change_Model(m_pGameInstance->StringToWstring(m_ModelNameList[m_iModelSelectedIndex]));
 		//All_Load();
 	}
@@ -205,14 +235,13 @@ void CImguiManager::AnimListWindow()
 	ImGui::Begin("Anim List", &m_isOnToolWindows);
 
 	m_AnimNameList.clear();
-	const vector<CAnimation*> pAnims = m_pRenderModel->Get_Animations();
-	m_AnimNameList.resize(pAnims.size());
+	m_AnimNameList.resize(m_Anims.size());
 
 	_uint i = 0;
 
 	vector<const char*> items;
 
-	for (auto pAnim : pAnims)
+	for (auto pAnim : m_Anims)
 	{
 		string strChannelName = m_pGameInstance->Extract_String(pAnim->Get_AnimName(), '[', ']');
 
@@ -226,7 +255,7 @@ void CImguiManager::AnimListWindow()
 	if (ImGui::ListBox("##", &m_iAnimIndex, items.data(), items.size()))
 	{
 		m_fAnimationPosition = 0.f;
-		m_pRenderModel->Change_Animation(m_iAnimIndex);
+		m_pRenderModel->Change_Animation(m_iAnimIndex, m_iModelType == ENEMY ? true : false);
 		//m_isAnimLoop = m_pRenderModel->Get_AnimLoop(m_iAnimIndex);
 	}
 
@@ -239,7 +268,13 @@ void CImguiManager::AnimListWindow()
 	ImGui::Text("Anim Index: %d", m_iAnimIndex);
 
 	if (ImGui::Button("Add"))
-		m_AddedAnims.emplace(m_iAnimIndex, m_AnimNameList[m_iAnimIndex]);
+	{
+		if (m_AddedAnims.find(m_iAnimIndex) == m_AddedAnims.end())
+		{
+			m_AddedAnims.emplace(m_iAnimIndex, m_AnimNameList[m_iAnimIndex]);
+		}
+
+	}
 
 	vector<const char*> Addeditems;
 	for (auto& AddedAnim : m_AddedAnims)
@@ -296,7 +331,7 @@ void CImguiManager::BoneListWindow()
 		i++;
 	}
 
-	ImGui::InputText("Bone Name", m_szSearchBoneName, sizeof(m_szSearchBoneName) * _MAX_PATH);
+	ImGui::InputText("Bone Name Search", m_szSearchBoneName, sizeof(m_szSearchBoneName) * _MAX_PATH);
 
 	if (ImGui::Button(u8"뼈 이름 검색하기"))
 	{
@@ -572,9 +607,11 @@ void CImguiManager::MeshListWindow()
 
 void CImguiManager::KeyFrameWindow()
 {
+	if (m_Anims.size() < 1) return;
+
 	ImGui::Begin("KeyFrame", NULL);
 
-	auto Anims = m_pRenderModel->Get_Animations();
+	auto Anims = m_Anims;
 
 	_float Duration = (_float)(*(Anims[m_iAnimIndex]->Get_Duration()));
 	_float CurrentPosition = (_float)(*(Anims[m_iAnimIndex]->Get_CurrentPosition()));
@@ -615,7 +652,7 @@ void CImguiManager::KeyFrameWindow()
 	ImGui::Text("Collider Event");
 	if (ImGui::Button("Collider Activation"))
 	{
-		auto Anims = m_pRenderModel->Get_Animations();
+		auto Anims = m_Anims;
 		auto& Channels = Anims[m_iAnimIndex]->Get_Channels();
 
 		if (m_pRenderModel->Created_BoneCollider(Channels[m_iChannelSelectedIndex]->Get_BoneIndex()))
@@ -628,7 +665,7 @@ void CImguiManager::KeyFrameWindow()
 	ImGui::SameLine();
 	if (ImGui::Button("Collider Disable"))
 	{
-		auto Anims = m_pRenderModel->Get_Animations();
+		auto Anims = m_Anims;
 		auto& Channels = Anims[m_iAnimIndex]->Get_Channels();
 
 		if (m_pRenderModel->Created_BoneCollider(Channels[m_iChannelSelectedIndex]->Get_BoneIndex()))
@@ -669,9 +706,10 @@ void CImguiManager::KeyFrameWindow()
 
 void CImguiManager::AnimEventWindow()
 {
+	if (m_AnimNameList.size() < 1) return;
+
 	ImGui::Begin("Animation Events", NULL);
 
-	//추가한 메시 리스트
 	vector<_uint> EventTypes;
 	vector<const char*> items;
 	for (auto& Event : m_AnimationEvents)
@@ -847,7 +885,7 @@ void CImguiManager::DrawTimeline(ImDrawList* draw_list)
 		Animation_Event Value = (*lower_bound_iter).second;
 
 		//vCanvas_Size
-		auto Anims = m_pRenderModel->Get_Animations();
+		auto Anims = m_Anims;
 
 		_float fDuration = _float(*(Anims[m_iAnimIndex]->Get_Duration()));
 
@@ -884,7 +922,7 @@ void CImguiManager::DrawTimeline(ImDrawList* draw_list)
 
 void CImguiManager::DrawChannels()
 {
-	auto Anims = m_pRenderModel->Get_Animations();
+	auto Anims = m_Anims;
 	auto& Channels = Anims[m_iAnimIndex]->Get_Channels();
 
 	m_ChannelNameList.clear();
@@ -907,7 +945,9 @@ void CImguiManager::DrawChannels()
 		i++;
 	}
 
-	if (ImGui::Button(u8"뼈 이름 검색하기"))
+	ImGui::InputText("Channel Name", m_szSearchChannelName, sizeof(m_szSearchChannelName) * _MAX_PATH);
+
+	if (ImGui::Button(u8"채널(=뼈) 이름 검색하기"))
 	{
 		for (size_t i = 0; i < m_ChannelNameList.size(); i++)
 		{
@@ -1258,6 +1298,8 @@ void CImguiManager::All_Load()
 	AnimationEvent_Load(strDirectory);
 	ColliderState_Load(strDirectory);
 	EffectState_Load(strDirectory);
+
+	Setting_AnimationList();
 }
 
 void CImguiManager::AlphaMesh_Load(string strPath)
@@ -1305,11 +1347,29 @@ void CImguiManager::AnimationLoop_Load(string strPath)
 
 	m_AddedAnims.clear();
 
+	m_AnimNameList.clear();
+	m_AnimNameList.resize(m_Anims.size());
+
+	_uint i = 0;
+
+	vector<const char*> items;
+
+	for (auto pAnim : m_Anims)
+	{
+		string strChannelName = m_pGameInstance->Extract_String(pAnim->Get_AnimName(), '[', ']');
+
+		m_AnimNameList[i] = strChannelName;
+		items.push_back(m_AnimNameList[i].c_str());
+
+		i++;
+	}
+
+
 	for (size_t i = 0; i < iAnimMapSize; i++)
 	{
 		_uint iAnimIndex = { 0 };
 		in.read((char*)&iAnimIndex, sizeof(_uint));
-		m_AddedAnims.emplace(i, m_AnimNameList[iAnimIndex]);
+		m_AddedAnims.emplace(iAnimIndex, m_AnimNameList[iAnimIndex]);
 	}
 
 	in.close();
@@ -1355,14 +1415,14 @@ void CImguiManager::ColliderState_Load(string strPath)
 	string strDirectory = strPath;
 	strDirectory += "/" + m_ModelNameList[m_iModelSelectedIndex] + "_Colliders.dat";
 
-	m_AddedColliders.clear();
-
 	ifstream in(strDirectory, ios::binary);
 
 	if (!in.is_open()) {
 		MSG_BOX("Colliders 개방 실패");
 		return;
 	}
+
+	m_AddedColliders.clear();
 
 	_uint iColliderCount = { 0 };
 
@@ -1464,6 +1524,26 @@ void CImguiManager::Gui_Select_Bone(_uint iBoneIndex)
 	Reset_Collider_Value();
 	Setting_Collider_Value(iBoneIndex);
 	m_pRenderModel->Select_Bone(iBoneIndex);
+}
+
+void CImguiManager::Setting_AnimationList()
+{
+	if (nullptr == m_pRenderModel) return;
+
+	switch (m_iModelType)
+	{
+	case PLAYER:
+	{
+		m_Anims = m_Anims;
+		break;
+	}
+	case ENEMY:
+	{
+		auto pAnimCom = m_pRenderModel->Get_AnimComponent();
+		m_Anims = pAnimCom->Get_Animations();
+		break;
+	}
+	}
 }
 
 void CImguiManager::Setting_InitialData()

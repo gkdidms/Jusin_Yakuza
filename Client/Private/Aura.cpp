@@ -66,6 +66,14 @@ void CAura::Tick(const _float& fTimeDelta)
 {
 	__super::Tick(fTimeDelta);
 
+	m_fCurTime += fTimeDelta;
+	if (!m_BufferInstance.isLoop)
+	{
+		_float fTotalTime = m_fStartTime + m_BufferInstance.vLifeTime.y;
+		if (m_fCurTime > fTotalTime)
+			m_isDead = true;
+	}
+
 	if (m_iAction & iAction[ACTION_SPREAD])
 	{
 		m_pVIBufferCom->Spread(fTimeDelta);
@@ -87,7 +95,17 @@ void CAura::Tick(const _float& fTimeDelta)
 
 void CAura::Late_Tick(const _float& fTimeDelta)
 {
-	m_pGameInstance->Add_Renderer(CRenderer::RENDER_EFFECT, this);
+	if (m_BufferInstance.isLoop)
+	{
+		m_pGameInstance->Add_Renderer(CRenderer::RENDER_EFFECT, this);
+	}
+	else
+	{
+		if (m_fCurTime >= m_fStartTime && !m_isDead)
+		{
+			m_pGameInstance->Add_Renderer(CRenderer::RENDER_EFFECT, this);
+		}
+	}
 }
 
 HRESULT CAura::Render()

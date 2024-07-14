@@ -16,6 +16,15 @@ private:
     CUIManager();
     virtual ~CUIManager() = default;
 
+#ifdef _DEBUG
+public:
+    void Set_Render(_bool isRender) { m_isRender = isRender; }
+
+public:
+    _bool Get_Render() { return m_isRender; }
+#endif // _DEBUG
+
+
 public:
     //자신이 만들 ui씬은 미리 할당(수동)
     HRESULT Initialize() ;
@@ -35,6 +44,12 @@ private:
     vector< class CUIScene*> m_PlayScene ;//사용하는 씬만 담아 상호 작용(팝업용)창
     vector<class CUIScene*> m_AlwaysUI;//항상 떠있는 ui (피통 스킬상태 소지품)
     class CInventoryManager* m_pInventory;
+
+#ifdef _DEBUG
+private:
+    _bool m_isRender = { true };
+#endif // _DEBUG
+
 private:
    CUIScene* Find_Scene(wstring strSceneName);      
 

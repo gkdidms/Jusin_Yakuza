@@ -19,6 +19,7 @@ public:
     vector<class CAnimation*> Get_Animations() { return m_Animations; }
     _uint Get_NumAnimation() { return m_iAnimations; }
     _uint Get_AnimationIndex(const _char* pName);
+    string Get_AnimationName(_uint iIndex);
 
 public:
     void Set_CurrentAnimIndex(_uint iIndex) { m_iCurrentIndex = iIndex; }
@@ -36,6 +37,7 @@ public: // 애니메이션 관련
     _bool Get_AnimChanged() const;
     _bool Get_AnimRestart(_bool isLoop) const;
     _bool Get_AnimLerp(_float ChangeInterval) const;
+    _uint Get_CurrentAnimIndex() { return m_iCurrentIndex; }
 
 public:
     virtual HRESULT Initialize_Prototype(const _char* pModelFilePath, _bool isSave);

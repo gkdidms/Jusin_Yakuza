@@ -3,6 +3,7 @@
 #include "GameInstance.h"
 #include "FileTotalMgr.h"
 #include "SystemManager.h"
+#include "UIManager.h"
 
 #include "DebugCamera.h"
 #include "Player.h"
@@ -12,11 +13,13 @@ IMPLEMENT_SINGLETON(CDebugManager)
 CDebugManager::CDebugManager()
     : m_pGameInstance { CGameInstance::GetInstance() },
     m_pFileTotalMgr{ CFileTotalMgr::GetInstance() },
-    m_pSystemManager{ CSystemManager::GetInstance() }
+    m_pSystemManager{ CSystemManager::GetInstance() },
+    m_pUIManager { CUIManager::GetInstance() }
 {
     Safe_AddRef(m_pGameInstance);
     Safe_AddRef(m_pFileTotalMgr);
     Safe_AddRef(m_pSystemManager);
+    Safe_AddRef(m_pUIManager);
 }
 
 HRESULT CDebugManager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -123,16 +126,13 @@ void CDebugManager::Window_Debug()
         if (ImGui::InputFloat("CameraSpeed", &fSpeed))
             pCameraTransform->Set_Speed(fSpeed);
 
-        //그림자 제어
-        ImGui::NewLine();
-        ImGui::SeparatorText("Shadow");
-        _vector vShadowPos = m_pSystemManager->Get_ShadowViewPos();
+        //Camera 제어
+        ImGui::SeparatorText("Render");
 
-        if (ImGui::InputFloat4("ShadowViewPos", (_float*)&vShadowPos))
-        {
-            m_pSystemManager->Set_ShadowViewPos(vShadowPos);
-            m_pGameInstance->Set_ShadowViewPos(vShadowPos);
-        }
+        _bool isRender = pPlayer->Get_ObjectRender();
+        if (ImGui::Checkbox("PlayerRender", &isRender))
+            pPlayer->Set_ObjectRender(isRender);
+
     }
 
     if (ImGui::CollapsingHeader("Deferred Shader"))
@@ -175,6 +175,17 @@ void CDebugManager::Window_Debug()
         _float fBias = m_pGameInstance->Get_SSAOBias();
         if (ImGui::SliderFloat("Bias", &fBias, 0.0001f, 1.f))
             m_pGameInstance->Set_SSAOBias(fBias);
+
+        //그림자 제어
+        ImGui::NewLine();
+        ImGui::SeparatorText("Shadow");
+        _vector vShadowPos = m_pSystemManager->Get_ShadowViewPos();
+
+        if (ImGui::InputFloat4("ShadowViewPos", (_float*)&vShadowPos))
+        {
+            m_pSystemManager->Set_ShadowViewPos(vShadowPos);
+            m_pGameInstance->Set_ShadowViewPos(vShadowPos);
+        }
     }
 
     if (ImGui::CollapsingHeader("Light"))
@@ -184,7 +195,8 @@ void CDebugManager::Window_Debug()
         if (ImGui::InputInt("Light Number", &m_iLightPass, 0))
             m_pFileTotalMgr->Set_Lights_In_Client(m_iLightPass);
     }
-    if (ImGui::CollapsingHeader("Particle"))
+
+    if (ImGui::CollapsingHeader("Particle / UI"))
     {
         ImGui::SeparatorText("Particle");
         if (ImGui::Button("pang"))
@@ -193,6 +205,10 @@ void CDebugManager::Window_Debug()
                 MSG_BOX("pang!");
         }
 
+        ImGui::SeparatorText("UI");
+        _bool isRender = m_pUIManager->Get_Render();
+        if (ImGui::Checkbox("Render ON/OFF", &isRender))
+            m_pUIManager->Set_Render(isRender);
     }
     ImGui::End();
 }
@@ -214,4 +230,6 @@ void CDebugManager::Free()
     Safe_Release(m_pGameInstance);
     Safe_Release(m_pFileTotalMgr);
     Safe_Release(m_pSystemManager);
+
+    Safe_Release(m_pUIManager);
 }
