@@ -15,6 +15,7 @@
 #include "WPAYakuza.h"
 #include "Shakedown.h"
 #include "Kuze.h"
+#include "Yoneda.h"
 #pragma endregion
 
 
@@ -436,19 +437,28 @@ HRESULT CLoader::Loading_For_Test()
 
 #pragma region Monster
 	/* For.Prototype_GameObject_RushYakuza */
-	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_RushYakuza"), CRushYakuza::Create(m_pDevice, m_pContext))))
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_RushYakuza"), 
+		CRushYakuza::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	/* For.Prototype_GameObject_WPAYakuza */
-	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_WPAYakuza"), CWPAYakuza::Create(m_pDevice, m_pContext))))
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_WPAYakuza"), 
+		CWPAYakuza::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	/* For.Prototype_GameObject_Shakedown */
-	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Shakedown"), CShakedown::Create(m_pDevice, m_pContext))))
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Shakedown"), 
+		CShakedown::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	/* For.Prototype_GameObject_Kuze */
-	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Kuze"), CKuze::Create(m_pDevice, m_pContext))))
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Kuze"), 
+		CKuze::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_Yoneda */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Yoneda"),
+		CYoneda::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 #pragma endregion
 

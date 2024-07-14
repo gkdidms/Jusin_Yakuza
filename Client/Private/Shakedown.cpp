@@ -25,6 +25,14 @@ HRESULT CShakedown::Initialize(void* pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
+	if (nullptr != pArg)
+	{
+		MONSTER_IODESC* gameobjDesc = (MONSTER_IODESC*)pArg;
+		m_pTransformCom->Set_WorldMatrix(gameobjDesc->vStartPos);
+		m_wstrModelName = gameobjDesc->wstrModelName;
+	}
+
+
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
