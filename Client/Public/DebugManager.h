@@ -1,4 +1,9 @@
 #pragma once
+
+#ifdef _DEBUG
+
+
+
 #include "Base.h"
 
 #include "Client_Defines.h"
@@ -65,3 +70,5 @@ public:
     virtual void Free() override;
 };
 END
+
+#endif // _DEBUG

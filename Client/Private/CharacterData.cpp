@@ -266,6 +266,8 @@ CCharacterData* CCharacterData::Create(CLandObject* pCharacter)
 	CCharacterData* pInstnace = new CCharacterData();
 
 	if (FAILED(pInstnace->Initialize(pCharacter)))
+
+
 	{
 		MSG_BOX("Failed To Created : CCharacterData");
 		Safe_Release(pInstnace);

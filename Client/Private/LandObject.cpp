@@ -127,7 +127,9 @@ void CLandObject::Apply_ChracterData()
 			it->second->Off();
 	}
 
+	/*auto& pEffects = m_pData->Get_Effets();
 	auto& pEffects = m_pData->Get_Effets();
+
 	for (auto& pEffect : pEffects)
 	{
 		CSocketEffect::SOKET_EFFECT_DESC Desc{};
@@ -141,6 +143,8 @@ void CLandObject::Apply_ChracterData()
 
 		auto [it, success] = m_pEffects.emplace(pEffect.first, static_cast<CSocketEffect*>(pSoketEffect));
 
+		it->second->On();
+	}*/
 		it->second->Off();
 	}
 }

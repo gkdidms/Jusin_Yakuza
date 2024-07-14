@@ -36,7 +36,7 @@ void CLevel_Loading::Tick(const _float& fTimeDelta)
 {
 	if (true == m_pLoader->is_Finished())
 	{
-		if (GetKeyState(VK_RETURN) & 0x8000)
+		if (m_pGameInstance->GetKeyState(DIK_RETURN) == TAP)
 		{
 			CLevel* pNewLevel = { nullptr };
 

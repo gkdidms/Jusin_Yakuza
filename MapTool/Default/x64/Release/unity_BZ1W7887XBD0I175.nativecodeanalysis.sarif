@@ -1,0 +1,1382 @@
+{
+  "version": "2.1.0",
+  "$schema": "https://schemastore.azurewebsites.net/schemas/json/sarif-2.1.0-rtm.5.json",
+  "runs": [
+    {
+      "results": [
+        {
+          "ruleId": "C26495",
+          "message": {
+            "text": "'Engine::LIGHT_DESC::vPosition' 변수가 초기화되지 않았습니다. 항상 멤버 변수를 초기화하세요(type.6)."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/EngineSDK/Inc/Engine_Struct.h"
+                },
+                "region": {
+                  "startLine": 136,
+                  "startColumn": 2
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "Engine::LIGHT_DESC::{ctor}",
+                  "decoratedName": "??0LIGHT_DESC@Engine@@QEAA@XZ",
+                  "kind": "function"
+                }
+              ]
+            }
+          ],
+          "properties": {
+            "targetSymbol": "Engine::LIGHT_DESC::vPosition"
+          }
+        },
+        {
+          "ruleId": "C26495",
+          "message": {
+            "text": "'Engine::LIGHT_DESC::vDiffuse' 변수가 초기화되지 않았습니다. 항상 멤버 변수를 초기화하세요(type.6)."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/EngineSDK/Inc/Engine_Struct.h"
+                },
+                "region": {
+                  "startLine": 136,
+                  "startColumn": 2
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "Engine::LIGHT_DESC::{ctor}",
+                  "decoratedName": "??0LIGHT_DESC@Engine@@QEAA@XZ",
+                  "kind": "function"
+                }
+              ]
+            }
+          ],
+          "properties": {
+            "targetSymbol": "Engine::LIGHT_DESC::vDiffuse"
+          }
+        },
+        {
+          "ruleId": "C26495",
+          "message": {
+            "text": "'Engine::LIGHT_DESC::fRange' 변수가 초기화되지 않았습니다. 항상 멤버 변수를 초기화하세요(type.6)."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/EngineSDK/Inc/Engine_Struct.h"
+                },
+                "region": {
+                  "startLine": 136,
+                  "startColumn": 2
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "Engine::LIGHT_DESC::{ctor}",
+                  "decoratedName": "??0LIGHT_DESC@Engine@@QEAA@XZ",
+                  "kind": "function"
+                }
+              ]
+            }
+          ],
+          "properties": {
+            "targetSymbol": "Engine::LIGHT_DESC::fRange"
+          }
+        },
+        {
+          "ruleId": "C26495",
+          "message": {
+            "text": "'Engine::LIGHT_DESC::vSpecular' 변수가 초기화되지 않았습니다. 항상 멤버 변수를 초기화하세요(type.6)."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/EngineSDK/Inc/Engine_Struct.h"
+                },
+                "region": {
+                  "startLine": 136,
+                  "startColumn": 2
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "Engine::LIGHT_DESC::{ctor}",
+                  "decoratedName": "??0LIGHT_DESC@Engine@@QEAA@XZ",
+                  "kind": "function"
+                }
+              ]
+            }
+          ],
+          "properties": {
+            "targetSymbol": "Engine::LIGHT_DESC::vSpecular"
+          }
+        },
+        {
+          "ruleId": "C26495",
+          "message": {
+            "text": "'Engine::LIGHT_DESC::vAmbient' 변수가 초기화되지 않았습니다. 항상 멤버 변수를 초기화하세요(type.6)."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/EngineSDK/Inc/Engine_Struct.h"
+                },
+                "region": {
+                  "startLine": 136,
+                  "startColumn": 2
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "Engine::LIGHT_DESC::{ctor}",
+                  "decoratedName": "??0LIGHT_DESC@Engine@@QEAA@XZ",
+                  "kind": "function"
+                }
+              ]
+            }
+          ],
+          "properties": {
+            "targetSymbol": "Engine::LIGHT_DESC::vAmbient"
+          }
+        },
+        {
+          "ruleId": "C26495",
+          "message": {
+            "text": "'Engine::LIGHT_DESC::vDirection' 변수가 초기화되지 않았습니다. 항상 멤버 변수를 초기화하세요(type.6)."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/EngineSDK/Inc/Engine_Struct.h"
+                },
+                "region": {
+                  "startLine": 136,
+                  "startColumn": 2
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "Engine::LIGHT_DESC::{ctor}",
+                  "decoratedName": "??0LIGHT_DESC@Engine@@QEAA@XZ",
+                  "kind": "function"
+                }
+              ]
+            }
+          ],
+          "properties": {
+            "targetSymbol": "Engine::LIGHT_DESC::vDirection"
+          }
+        },
+        {
+          "ruleId": "C6386",
+          "message": {
+            "text": "'lightDescIO.pLightDesc'에 쓰는 동안 버퍼 오버런이 발생했습니다."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/MapTool/Private/LightTool_Mgr.cpp"
+                },
+                "region": {
+                  "startLine": 318,
+                  "startColumn": 3,
+                  "endLine": 318,
+                  "endColumn": 73
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "CLightTool_Mgr::Save_Lights_InFile",
+                  "decoratedName": "?Save_Lights_InFile@CLightTool_Mgr@@AEAAXH@Z",
+                  "kind": "function"
+                }
+              ]
+            }
+          ],
+          "codeFlows": [
+            {
+              "threadFlows": [
+                {
+                  "locations": [
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/MapTool/Private/LightTool_Mgr.cpp"
+                          },
+                          "region": {
+                            "startLine": 309,
+                            "startColumn": 17
+                          }
+                        }
+                      },
+                      "importance": "unimportant"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/MapTool/Private/LightTool_Mgr.cpp"
+                          },
+                          "region": {
+                            "startLine": 311,
+                            "startColumn": 25
+                          }
+                        }
+                      },
+                      "importance": "unimportant"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/MapTool/Private/LightTool_Mgr.cpp"
+                          },
+                          "region": {
+                            "startLine": 312,
+                            "startColumn": 25
+                          }
+                        }
+                      },
+                      "importance": "unimportant"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/MapTool/Private/LightTool_Mgr.cpp"
+                          },
+                          "region": {
+                            "startLine": 314,
+                            "startColumn": 6
+                          }
+                        }
+                      },
+                      "importance": "unimportant"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/MapTool/Private/LightTool_Mgr.cpp"
+                          },
+                          "region": {
+                            "startLine": 316,
+                            "startColumn": 20
+                          }
+                        }
+                      },
+                      "importance": "unimportant"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/MapTool/Private/LightTool_Mgr.cpp"
+                          },
+                          "region": {
+                            "startLine": 316,
+                            "startColumn": 13
+                          }
+                        }
+                      },
+                      "importance": "unimportant"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/MapTool/Private/LightTool_Mgr.cpp"
+                          },
+                          "region": {
+                            "startLine": 318,
+                            "startColumn": 34
+                          }
+                        }
+                      },
+                      "importance": "unimportant"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/MapTool/Private/LightTool_Mgr.cpp"
+                          },
+                          "region": {
+                            "startLine": 319,
+                            "startColumn": 9
+                          }
+                        },
+                        "message": {
+                          "text": "'iIndex'이(가) 1과(와) 같을 수 있습니다."
+                        }
+                      },
+                      "kinds": [
+                        "declaration"
+                      ],
+                      "importance": "essential"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/MapTool/Private/LightTool_Mgr.cpp"
+                          },
+                          "region": {
+                            "startLine": 316,
+                            "startColumn": 20
+                          }
+                        }
+                      },
+                      "importance": "unimportant"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/MapTool/Private/LightTool_Mgr.cpp"
+                          },
+                          "region": {
+                            "startLine": 316,
+                            "startColumn": 13
+                          }
+                        }
+                      },
+                      "importance": "unimportant"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/MapTool/Private/LightTool_Mgr.cpp"
+                          },
+                          "region": {
+                            "startLine": 318,
+                            "startColumn": 34
+                          }
+                        },
+                        "message": {
+                          "text": "'iIndex'은(는) 'std::vector<Client::CLightObj *,std::allocator<Client::CLightObj *> >::[]'(c:\\program files\\microsoft visual studio\\2022\\community\\vc\\tools\\msvc\\14.38.33130\\include\\vector:1890에서 선언됨)에 대한 In/Out 인수입니다."
+                        }
+                      },
+                      "kinds": [
+                        "declaration"
+                      ]
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/MapTool/Private/LightTool_Mgr.cpp"
+                          },
+                          "region": {
+                            "startLine": 318,
+                            "startColumn": 34
+                          }
+                        },
+                        "message": {
+                          "text": "'lightDescIO.pLightDesc[1]'에 쓰기가 잘못됨, (쓰기 가능한 범위는 0에서 0 사이임)"
+                        }
+                      },
+                      "kinds": [
+                        "usage"
+                      ],
+                      "importance": "essential"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "ruleId": "C26495",
+          "message": {
+            "text": "'Client::CLightObj::tLightObjDesc::vStartPos' 변수가 초기화되지 않았습니다. 항상 멤버 변수를 초기화하세요(type.6)."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/MapTool/Public/LightObj.h"
+                },
+                "region": {
+                  "startLine": 20,
+                  "startColumn": 2
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "Client::CLightObj::tLightObjDesc::{ctor}",
+                  "decoratedName": "??0tLightObjDesc@CLightObj@Client@@QEAA@XZ",
+                  "kind": "function"
+                }
+              ]
+            }
+          ],
+          "properties": {
+            "targetSymbol": "Client::CLightObj::tLightObjDesc::vStartPos"
+          }
+        },
+        {
+          "ruleId": "C6031",
+          "message": {
+            "text": "반환 값이 무시되었습니다. 'CoInitializeEx'."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/MapTool/private/Loader.cpp"
+                },
+                "region": {
+                  "startLine": 32,
+                  "startColumn": 2,
+                  "endLine": 32,
+                  "endColumn": 20
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "LoadingMain",
+                  "decoratedName": "?LoadingMain@@YAIPEAX@Z",
+                  "kind": "function"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "tool": {
+        "driver": {
+          "name": "PREfast",
+          "fullName": "PREfast Code Analysis",
+          "version": "14.38.33135.0",
+          "informationUri": "https://aka.ms/cpp/ca"
+        }
+      },
+      "invocations": [
+        {
+          "executionSuccessful": true
+        }
+      ],
+      "artifacts": [
+        {
+          "location": {
+            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/EngineSDK/Inc/Engine_Struct.h"
+          },
+          "roles": [
+            "resultFile"
+          ],
+          "hashes": {
+            "sha-256": "351749102aba09b519e738fa0b5090649418eb402c8bcecc84cab0856cb01628"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/MapTool/Private/LightTool_Mgr.cpp"
+          },
+          "roles": [
+            "resultFile"
+          ],
+          "hashes": {
+            "sha-256": "e70b2bb173bd46cfde8084924827bdf858b3783b249680edac0c56255f0eca60"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/MapTool/Public/LightObj.h"
+          },
+          "roles": [
+            "resultFile"
+          ],
+          "hashes": {
+            "sha-256": "213dda0ea7388e181fbf90658c7931a93719f9105535d0ceef903cc7786c7571"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/MapTool/private/Loader.cpp"
+          },
+          "roles": [
+            "resultFile"
+          ],
+          "hashes": {
+            "sha-256": "4092319cb75d85104760ed11587f58b53d7d81cbb0c6c471a1f22b1eb8508540"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/maptool/default/x64/release/unity_bz1w7887xbd0i175.cpp"
+          },
+          "roles": [
+            "analysisTarget"
+          ],
+          "hashes": {
+            "sha-256": "189a7c466d6271eea6ffb662e297fb4b5fd19be837fe3817302ca3e79ad880ce"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/maptool/private/lightobj.cpp"
+          },
+          "hashes": {
+            "sha-256": "acdbceeb1d3e941e5613f44511408c4b5220e00dd7f53fcc7e9862094d2ec5dc"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/enginesdk/inc/gameobject.h"
+          },
+          "hashes": {
+            "sha-256": "f0c0daabf8dab3f8d3a54ebd1b2fda21d73ea7f2cae307eb3aa28ed52e69a2a9"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/enginesdk/inc/transform.h"
+          },
+          "hashes": {
+            "sha-256": "f2d26985690f88669398f70008b27f79f903cb5a9bc0da124183a2b410c5b3ae"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/enginesdk/inc/component.h"
+          },
+          "hashes": {
+            "sha-256": "66a057d4c6bd73d74ba0d94ababc60aa83048bd7d0a7013bf43b016895afd3b6"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/enginesdk/inc/base.h"
+          },
+          "hashes": {
+            "sha-256": "63d072d048f46d2f0d33cdbffec3c435b380882ed0b7b4e24745dfedcc01c900"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/enginesdk/inc/engine_defines.h"
+          },
+          "hashes": {
+            "sha-256": "451424775c679c5f88d57616a731d075b524bdf69c277f94c096fc85b60544d9"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/enginesdk/inc/fx11/d3dx11effect.h"
+          },
+          "hashes": {
+            "sha-256": "7b403b2a8bef283d02d621e76da49d761e61b781ddcb022b219ed02517df5a3a"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/enginesdk/inc/directxtk/ddstextureloader.h"
+          },
+          "hashes": {
+            "sha-256": "2d211ee2d0dcf1d9840f9800bbe228bb0408ad9c07e533dbbab3f19b2e6b1835"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/enginesdk/inc/directxtk/wictextureloader.h"
+          },
+          "hashes": {
+            "sha-256": "4dd36179f790af03684580905c929a33b421d0d2a05a4aad3c1a4c815eeac4a2"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/enginesdk/inc/directxtk/keyboard.h"
+          },
+          "hashes": {
+            "sha-256": "2d01844334e4e8b22e3a5cfa3cebf5026bb79b9c72002b0b2b6821d904846066"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/enginesdk/inc/directxtk/mouse.h"
+          },
+          "hashes": {
+            "sha-256": "2a42c110b5d1c2b3868a17857a9ac209dd237b9c7dae41860206e02a3c2625b6"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/enginesdk/inc/directxtk/screengrab.h"
+          },
+          "hashes": {
+            "sha-256": "7cac6df1daf81aa2a591950d714d38ffaa014aa7bbcfcfdb35e22c4ea4488bb0"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/enginesdk/inc/directxtk/primitivebatch.h"
+          },
+          "hashes": {
+            "sha-256": "449d81bce698ccf1963f29df596754258d1b9084d8023cf0c1f1d096e58af53f"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/enginesdk/inc/directxtk/vertextypes.h"
+          },
+          "hashes": {
+            "sha-256": "91371c43b861b68754c06ff2bbc2330312101230a6b6ac1fc3bfc8dfcaab2b85"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/enginesdk/inc/directxtk/spritebatch.h"
+          },
+          "hashes": {
+            "sha-256": "58e5770649264874f8020e81411034f944cf12790b4e9f20dc6fce6bdb08c0c1"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/enginesdk/inc/directxtk/spritefont.h"
+          },
+          "hashes": {
+            "sha-256": "2cdbd0b86bd23d9a8cf90474a24a700665a3152ce4f5da9a387b7df78d3f13f8"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/enginesdk/inc/directxtk/effects.h"
+          },
+          "hashes": {
+            "sha-256": "54442192cf9b70959fce557db4b1bf72ff1f276cbe6f4493d165ef2daceb8366"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/enginesdk/inc/fmode/inc/fmod.h"
+          },
+          "hashes": {
+            "sha-256": "d9cbe37cca59d3d5f8000bdde295f5fdc8153d3664e661e6f2dbcb6c01d366b7"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/enginesdk/inc/fmode/inc/fmod_common.h"
+          },
+          "hashes": {
+            "sha-256": "fc5648ee040c996345f66423201ec8479b014aaecfcea6c2700321ce06182980"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/enginesdk/inc/fmode/inc/fmod_codec.h"
+          },
+          "hashes": {
+            "sha-256": "89ac4365d492b25b794370a0a35d982badc8e3fbfe262031660cfa44a0ff912f"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/enginesdk/inc/fmode/inc/fmod_dsp.h"
+          },
+          "hashes": {
+            "sha-256": "31be5772841344abf182591006e25fb1bc0eb40bbe49d36d10f5daaa7d59328f"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/enginesdk/inc/fmode/inc/fmod_dsp_effects.h"
+          },
+          "hashes": {
+            "sha-256": "1a428b4934d63e0edb9d075f9092e0c0647976df56d636559cdc38378c5afcd7"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/enginesdk/inc/fmode/inc/fmod_output.h"
+          },
+          "hashes": {
+            "sha-256": "06814adf9571f58975608e0822154e0081ce6df4acf0fbc8b0ff95075d48394d"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/enginesdk/inc/assimp/scene.h"
+          },
+          "hashes": {
+            "sha-256": "14fc4cfc8e89bf20349647613d3f27a0271e395be5bbfea0ce01fc03ae8bb176"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/enginesdk/inc/assimp/types.h"
+          },
+          "hashes": {
+            "sha-256": "5ef945a4de7e0ea886e715e65c6d0078f329fc303ddcc1c80c3f36441c286403"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/enginesdk/inc/assimp/defs.h"
+          },
+          "hashes": {
+            "sha-256": "bcd06f0ed861c98ae16f92d1e92bb67f9cb13c79d75485eeba7115747a1f5825"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/enginesdk/inc/assimp/config.h"
+          },
+          "hashes": {
+            "sha-256": "f4fb64ea4b3f4d0f1276671e34881527d3bec7190c3e1e07f767fd949844293e"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/enginesdk/inc/assimp/vector2.h"
+          },
+          "hashes": {
+            "sha-256": "04cba85b95e1309e20e94f55a55f50d9793351ece69c676f6c5ea635c77fd13d"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/enginesdk/inc/assimp/vector3.h"
+          },
+          "hashes": {
+            "sha-256": "690bfb04f40d80f949be1a8f85cf65d5198d5bedd952a983efe233804c249c61"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/enginesdk/inc/assimp/color4.h"
+          },
+          "hashes": {
+            "sha-256": "f87a273f074d94788c1642787b6f690050aff1b63f6a3c656742299cc346b03e"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/enginesdk/inc/assimp/matrix3x3.h"
+          },
+          "hashes": {
+            "sha-256": "633f105133331cd5e9007a23287d8cf47d6826d8b8702eef38707124523c3255"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/enginesdk/inc/assimp/matrix4x4.h"
+          },
+          "hashes": {
+            "sha-256": "c5087434e26a2d43df04071226eee20e5ba0a5b7befbdb0b8820b603d8526668"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/enginesdk/inc/assimp/quaternion.h"
+          },
+          "hashes": {
+            "sha-256": "78dbbb1b9846841ad7075471e7d3ddc5cf30da18af0250fd2c4fa1ae3c69c3cf"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/enginesdk/inc/assimp/vector2.inl"
+          },
+          "hashes": {
+            "sha-256": "40158a824b57cff0e08f47469c54de9479519a568d021578378c467be5fc21fe"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/enginesdk/inc/assimp/vector3.inl"
+          },
+          "hashes": {
+            "sha-256": "5d11b7548d33b49e880a1b7bf3db8c3c0290815a2653f49cdadf09a2c3bdbeff"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/enginesdk/inc/assimp/color4.inl"
+          },
+          "hashes": {
+            "sha-256": "05c158704bb9768b7be8cd1e2e8740d990a0cae0df071abee0038d457eba86b4"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/enginesdk/inc/assimp/matrix3x3.inl"
+          },
+          "hashes": {
+            "sha-256": "4223b31c875db4562c95720edc22f178abffa5d49c0da4a8c60528273fef12ea"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/enginesdk/inc/assimp/matrix4x4.inl"
+          },
+          "hashes": {
+            "sha-256": "20dff200b242051da60b213017dcfe2b8d1b746ac61e772ffc904633ec165c57"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/enginesdk/inc/assimp/mathfunctions.h"
+          },
+          "hashes": {
+            "sha-256": "3e5540d720d1d67e988fd5595f15d70fe84f08abfdf010a26f3539be465d2f39"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/enginesdk/inc/assimp/quaternion.inl"
+          },
+          "hashes": {
+            "sha-256": "a0252cc4aa1701def100bb7e5020d24c8b88b3b9215f72cca2a937272ae5104f"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/enginesdk/inc/assimp/texture.h"
+          },
+          "hashes": {
+            "sha-256": "a720f1b24ae4ebb297eeb658f420ae1d21dec2fae52865e38feebb6b465ba28b"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/enginesdk/inc/assimp/compiler/pushpack1.h"
+          },
+          "hashes": {
+            "sha-256": "d8df458c394c3afa149403914e03c86dcb6e1dca1af4d366b52541f61d0dd116"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/enginesdk/inc/assimp/compiler/poppack1.h"
+          },
+          "hashes": {
+            "sha-256": "0dccb098bbdd32dfcd67a0029d9f48133a38586b91c314b9045366028721537b"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/enginesdk/inc/assimp/mesh.h"
+          },
+          "hashes": {
+            "sha-256": "64814a6512d5a7bef371e2a73456f457c7cbad2f3f2f19c5cef5f7a99fb89ebc"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/enginesdk/inc/assimp/aabb.h"
+          },
+          "hashes": {
+            "sha-256": "79c49a54e1590396ac311c998dc94632abba9d26da663f3f06646402b5a9348c"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/enginesdk/inc/assimp/light.h"
+          },
+          "hashes": {
+            "sha-256": "e126d01ba693eb2767ba4251f6f761fd56bed84ec8ea911edc26532aef61e4af"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/enginesdk/inc/assimp/camera.h"
+          },
+          "hashes": {
+            "sha-256": "68dd7e58b38af38ab0838536b63f650fa7dbda683770711cfddaf375977e7dfd"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/enginesdk/inc/assimp/material.h"
+          },
+          "hashes": {
+            "sha-256": "67d05bc2b4b2601b5bf6d24ec4f05c29f3d62b3922d750155a446b105e3a9a35"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/enginesdk/inc/assimp/material.inl"
+          },
+          "hashes": {
+            "sha-256": "34d6f184dac9d67e15586a5c89d0b27c3b4e978af1f68e8ca7cccfbbfe9c4fc1"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/enginesdk/inc/assimp/anim.h"
+          },
+          "hashes": {
+            "sha-256": "8bd8fa470b418496640b485e7de1f24918c41f0833daf6c94aa6b6008b2bf3e7"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/enginesdk/inc/assimp/metadata.h"
+          },
+          "hashes": {
+            "sha-256": "164fbb10a1ad49846ea9b7d28bc1deefadad8fcb3b7d8e7b1ae374d7d0e2e4ed"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/enginesdk/inc/assimp/importer.hpp"
+          },
+          "hashes": {
+            "sha-256": "4826f9bdc18f1c59b6663af4643a6345097818261d69e94c8863603d2fb9c508"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/enginesdk/inc/assimp/postprocess.h"
+          },
+          "hashes": {
+            "sha-256": "cc0d3c75d24488f46f55cfefa49441765e179185d330216270d8cf08fd5acdb0"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/enginesdk/inc/engine_typedef.h"
+          },
+          "hashes": {
+            "sha-256": "7f87ac413adaf8f5abf459f02f2b4ec8e97e30f8f72b62e93713c1b0ca23f68a"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/enginesdk/inc/engine_function.h"
+          },
+          "hashes": {
+            "sha-256": "495835734b3b1bd2e47f177f0c1c6d491a3529b9fbc8a935d812942bfea27fbf"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/enginesdk/inc/engine_macro.h"
+          },
+          "hashes": {
+            "sha-256": "4b0b4ff860f15e5173669cd1378420a1bd3818c9440fe7d85a630d5d6e70d10e"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/maptool/public/client_defines.h"
+          },
+          "hashes": {
+            "sha-256": "f1905757e647b68e6f017ab8c581840c062fb1a120d3359b1de2aee251a01120"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/enginesdk/inc/gameinstance.h"
+          },
+          "hashes": {
+            "sha-256": "0fd82087c3fd37b1e4324af2bfa696538a8ba54c3ed3f181c6b492544fe42a90"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/enginesdk/inc/renderer.h"
+          },
+          "hashes": {
+            "sha-256": "3ef79955d29f9d38e3e26c568e3a61581dea6980ac4055ef0456f7bd7ce14dd9"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/enginesdk/inc/component_manager.h"
+          },
+          "hashes": {
+            "sha-256": "2b02d0e34d87a6b68c57469f855c79c9f2aeea7e51295461f772b69be9f178e6"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/enginesdk/inc/vibuffer_rect.h"
+          },
+          "hashes": {
+            "sha-256": "ed55133ee931b221645821e8db0ef023dedd1b331ffae7708417c4f2f6e0d18c"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/enginesdk/inc/vibuffer.h"
+          },
+          "hashes": {
+            "sha-256": "815ca25bf8ce43399953b21f1436c272be456dc078fcbe4049a95c2d9cb8b1a7"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/enginesdk/inc/vibuffer_terrain.h"
+          },
+          "hashes": {
+            "sha-256": "1a5ff7644d273c20678bf6b74b740b668833e227a06526f2c94f7cea4594972c"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/enginesdk/inc/vibuffer_cell.h"
+          },
+          "hashes": {
+            "sha-256": "bdfad41a9d041f9cbb8038158718fa809a4acbeb230b3e7edd0f15d21e803bc2"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/enginesdk/inc/vibuffer_instance.h"
+          },
+          "hashes": {
+            "sha-256": "35b88491ffeed7c59e876b0a825bf4ad45631a7791cba1aa3144fa7d85ffe75e"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/enginesdk/inc/vibuffer_instance_point.h"
+          },
+          "hashes": {
+            "sha-256": "9febcb364055f0efa74db4adcb115e82910f2e6baebf130e27a2da7da310cfc2"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/enginesdk/inc/vibuffer_instance_rect.h"
+          },
+          "hashes": {
+            "sha-256": "c48b8950f9c969c866ddaff6ef57799695eb9d835bb36fff21d198e2f99b7944"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/enginesdk/inc/vibuffer_cube.h"
+          },
+          "hashes": {
+            "sha-256": "e07cb16b673f9cf65a0daf272f9110fc87632604db3b463dff5a276a33b3f3f0"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/enginesdk/inc/vibuffer_trail.h"
+          },
+          "hashes": {
+            "sha-256": "de7f65273dd1cf7b3e1da83327c27eab7c53aa4437efc47ef4e4fc004891bfa7"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/enginesdk/inc/shader.h"
+          },
+          "hashes": {
+            "sha-256": "cacff5db8dd412558c0c3aa3dcf6c9f6724d6d7de67101593b0dc702e76a6c58"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/enginesdk/inc/texture.h"
+          },
+          "hashes": {
+            "sha-256": "599a68846f4126a99b69319760fc8be2398663282b084d42a60f8663a491d4ad"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/enginesdk/inc/model.h"
+          },
+          "hashes": {
+            "sha-256": "35ecf4a230c2d6ec9d21875cf10bb5bc2cd4febd3174d3466293f3e059efa2c1"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/enginesdk/inc/navigation.h"
+          },
+          "hashes": {
+            "sha-256": "be7a2a884b8dd57714412091a27ba3b5456b09373e7c80438df375fc80b12981"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/enginesdk/inc/cell.h"
+          },
+          "hashes": {
+            "sha-256": "51beb256fe433522c651648adc39257cec46b34dbb1b17c601aaaadfe4675598"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/enginesdk/inc/computeshader.h"
+          },
+          "hashes": {
+            "sha-256": "0c008788157277be71a463f3c8efcdfed06ef65501e9ed3dfee115337fca6fa0"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/enginesdk/inc/bounding_aabb.h"
+          },
+          "hashes": {
+            "sha-256": "accf51a0725cd247fd17d23d7881e3040a218539b10fbffbd3af11bf3d56f0e1"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/enginesdk/inc/bounding.h"
+          },
+          "hashes": {
+            "sha-256": "4ff24149c259d86d42b9b7059cc25ebb914fd9fb5963687da078f537959a98be"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/enginesdk/inc/collider.h"
+          },
+          "hashes": {
+            "sha-256": "b935c268e40a1aeb427c26dc2820c0854673d1fad09e0851c57ea766761b9505"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/enginesdk/inc/bounding_obb.h"
+          },
+          "hashes": {
+            "sha-256": "940f582a73ac2245c5007a82b517d987096136d4d9a202b1f883b6a781d1d8f6"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/enginesdk/inc/bounding_sphere.h"
+          },
+          "hashes": {
+            "sha-256": "4305b1a508a38fb833051c6729de8db3f4facd5e16c0c0ae48797683f69693ee"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/enginesdk/inc/anim.h"
+          },
+          "hashes": {
+            "sha-256": "eaa2a234151c5ce5aa03659d7d37c1a6d5a5aad94b4f3aa535e595909b769cfd"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/enginesdk/inc/vibuffer_terrain_flat.h"
+          },
+          "hashes": {
+            "sha-256": "0adcbd7673eef81210d8efd53498053de92fa6cbdb71cc83f05683393d88cde1"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/enginesdk/inc/pipeline.h"
+          },
+          "hashes": {
+            "sha-256": "5bc48ba96582162c36629b1418fe08e2df225e023397c048d0659011269981fd"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/enginesdk/inc/input_device.h"
+          },
+          "hashes": {
+            "sha-256": "eb720be565c0de61b643f4b5d6d8adfffccd44e765218e3807d242a1d8615bda"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/enginesdk/inc/randommanager.h"
+          },
+          "hashes": {
+            "sha-256": "8ac940dcb84e47e27ad64fd1fb6c7c63e064a660e60b0172a36aa016a0a3cab7"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/enginesdk/inc/rendertarget.h"
+          },
+          "hashes": {
+            "sha-256": "b6a745e2e564126280dd4e69812049b91cc49d563651e2f3f8194f93b9f94441"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/maptool/public/lighttool_mgr.h"
+          },
+          "hashes": {
+            "sha-256": "7990d68999af0c130e582f79d9723d47f399f6b5afb6d591bfcc44684a5afdea"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/imgui/background/imgui_impl_win32.h"
+          },
+          "hashes": {
+            "sha-256": "4e7a4c2c7cf9f6be6ad32b187510db6b247c8829ff823e4c438e953387f9f681"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/imgui/imgui/imgui.h"
+          },
+          "hashes": {
+            "sha-256": "4a4958f26e1852c839b6c2f01417d5f013695d639e8535a5769fc55528645102"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/imgui/imgui/imconfig.h"
+          },
+          "hashes": {
+            "sha-256": "07428116edfc8ac1a32ca64ab0f4c04ce831f4b4f7e4b95531d7306dcc4d2323"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/imgui/background/imgui_impl_dx11.h"
+          },
+          "hashes": {
+            "sha-256": "02492a03fd10ae70bb46873b701879498db1e75a8511437bd5c9d3d3600e3166"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/imgui/imguizmo/imguizmo.h"
+          },
+          "hashes": {
+            "sha-256": "996dbb70d0d70540952db3b40131e9d92c1df39758a6b011561819287e4df128"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/imgui/imguizmo/imsequencer.h"
+          },
+          "hashes": {
+            "sha-256": "591121a5c2be535aace9f06313dca36556100b064e7fa6b1a030b1bd9ba87d50"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/maptool/public/loader.h"
+          },
+          "hashes": {
+            "sha-256": "de3143289b12bbec70b08cc3db3e785c663d1dc7de3621532b47657c5caf6d22"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/maptool/public/playercamera.h"
+          },
+          "hashes": {
+            "sha-256": "c9ef1765998bfd2e5718de8c89da8b67d118f88e19f60846d7c350a318a0216b"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/enginesdk/inc/camera.h"
+          },
+          "hashes": {
+            "sha-256": "c07b6846f814a6430ba93c8ec17d62aec624f3b3297b937e2bf7630bd421e75c"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/maptool/public/terrain.h"
+          },
+          "hashes": {
+            "sha-256": "55cafdfb9c5b722dc2d7ae097ba3bcb6a70b9f50ed7dbc5338b63ac3abbe39f7"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/maptool/public/construction.h"
+          },
+          "hashes": {
+            "sha-256": "496725c10071a9e4212e2fd0a35687031115aa607eb056fe45b9d82c56672d0f"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/maptool/public/decal.h"
+          },
+          "hashes": {
+            "sha-256": "a34e7701ec38a20a18c4e409750945492762aa2688e3ce07c6662d1f3e4fb03e"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/maptool/public/cameraobj.h"
+          },
+          "hashes": {
+            "sha-256": "040924fe74951674af906a03b2067b1a233f5224b79b09d92725e616cca1b163"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/maptool/public/camerainstallobj.h"
+          },
+          "hashes": {
+            "sha-256": "135fcb6a42778f84e9a692e5ed56d22d848a38d9de2443729b5c649f3c26644e"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/maptool/public/cinecamera.h"
+          },
+          "hashes": {
+            "sha-256": "6b3720c86ec5675577e927aa85f0bfaab9d7ef4406cdf6be9c54ad19c7c6adff"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/maptool/public/colliderobj.h"
+          },
+          "hashes": {
+            "sha-256": "fef64352fd34d8b02112a5e25a82a595706334cf22458dd34eb86fb8736e34e6"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/maptool/public/rushyakuza.h"
+          },
+          "hashes": {
+            "sha-256": "63d6e0f0b11bd5198911fba7c586b0804677f90dbf94374efe8f94f4e67edff5"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/maptool/public/monster.h"
+          },
+          "hashes": {
+            "sha-256": "245b2a106dc15026f56f4b0ba77b6e1ab3352e647cbf09263c0d095c6076a820"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/maptool/public/landobject.h"
+          },
+          "hashes": {
+            "sha-256": "f63c0c0c4689be173d73832661b66c3dab9fc5302f2e6b81f97cec6a58fda5d4"
+          }
+        }
+      ]
+    }
+  ]
+}

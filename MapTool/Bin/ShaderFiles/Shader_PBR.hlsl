@@ -99,7 +99,7 @@ float4 BRDF(float4 vPosition, float2 vTexcoord, float4 vNormal, float4 vDepthDes
     float fMetalic = vMix.g;
     F0 = lerp(F0, vAlbedo, fMetalic); // vRM.g : Metalic
     
-    vector vLightDir = normalize(vWorldPos - g_vLightPos)  * -1.f;
+    vector vLightDir = reflect(normalize(g_vLightDir), vNormal); //g_vLightDir * -1.f;
     float3 vHalfway = normalize(vLook + vLightDir);
     float3 vRadiance = g_vLightDiffuse;
     

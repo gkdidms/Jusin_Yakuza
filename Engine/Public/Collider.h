@@ -31,8 +31,11 @@ public:
     void Set_Value(void* pDesc);
     void Set_Center(const _float3& vCenter);
     void Set_Rotation(const _float3& vRotation);
+
+#ifdef _DEBUG
     void Set_Color(const _float4& vColor);
     void Reset_Color();
+#endif // _DEBUG
 
 public:
     _bool Intersect(CCollider* pTargetCollider, _float fDistance = 0.5f);

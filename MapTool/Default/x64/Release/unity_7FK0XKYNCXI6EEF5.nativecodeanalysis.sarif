@@ -1,0 +1,1377 @@
+{
+  "version": "2.1.0",
+  "$schema": "https://schemastore.azurewebsites.net/schemas/json/sarif-2.1.0-rtm.5.json",
+  "runs": [
+    {
+      "results": [
+        {
+          "ruleId": "C26819",
+          "message": {
+            "text": "스위치 레이블 간에 주석 처리되지 않은 fallthrough입니다(es.78)."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/Imgui/imgui/imstb_truetype.h"
+                },
+                "region": {
+                  "startLine": 2148,
+                  "startColumn": 12
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "stbtt__run_charstring",
+                  "decoratedName": "?stbtt__run_charstring@@YAHPEBUstbtt_fontinfo@@HPEAUstbtt__csctx@@@Z",
+                  "kind": "function"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "ruleId": "C6011",
+          "message": {
+            "text": "NULL 포인터 'state'을(를) 역참조하고 있습니다. "
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/Imgui/imgui/imgui_widgets.cpp"
+                },
+                "region": {
+                  "startLine": 4341,
+                  "startColumn": 9,
+                  "endLine": 4341,
+                  "endColumn": 43
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "ImGui::InputTextEx",
+                  "decoratedName": "?InputTextEx@ImGui@@YA_NPEBD0PEADHAEBUImVec2@@HP6AHPEAUImGuiInputTextCallbackData@@@ZPEAX@Z",
+                  "kind": "function"
+                }
+              ]
+            }
+          ],
+          "codeFlows": [
+            {
+              "threadFlows": [
+                {
+                  "locations": [
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/Imgui/imgui/imgui_widgets.cpp"
+                          },
+                          "region": {
+                            "startLine": 4088,
+                            "startColumn": 18
+                          }
+                        }
+                      },
+                      "importance": "unimportant"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/Imgui/imgui/imgui_widgets.cpp"
+                          },
+                          "region": {
+                            "startLine": 4089,
+                            "startColumn": 15
+                          }
+                        }
+                      },
+                      "importance": "unimportant"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/Imgui/imgui/imgui_widgets.cpp"
+                          },
+                          "region": {
+                            "startLine": 4096,
+                            "startColumn": 19
+                          }
+                        }
+                      },
+                      "importance": "unimportant"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/Imgui/imgui/imgui_widgets.cpp"
+                          },
+                          "region": {
+                            "startLine": 4097,
+                            "startColumn": 14
+                          }
+                        }
+                      },
+                      "importance": "unimportant"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/Imgui/imgui/imgui_widgets.cpp"
+                          },
+                          "region": {
+                            "startLine": 4098,
+                            "startColumn": 23
+                          }
+                        }
+                      },
+                      "importance": "unimportant"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/Imgui/imgui/imgui_widgets.cpp"
+                          },
+                          "region": {
+                            "startLine": 4100,
+                            "startColumn": 16
+                          }
+                        }
+                      },
+                      "importance": "unimportant"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/Imgui/imgui/imgui_widgets.cpp"
+                          },
+                          "region": {
+                            "startLine": 4101,
+                            "startColumn": 16
+                          }
+                        }
+                      },
+                      "importance": "unimportant"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/Imgui/imgui/imgui_widgets.cpp"
+                          },
+                          "region": {
+                            "startLine": 4103,
+                            "startColumn": 9
+                          }
+                        }
+                      },
+                      "importance": "unimportant"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/Imgui/imgui/imgui_widgets.cpp"
+                          },
+                          "region": {
+                            "startLine": 4105,
+                            "startColumn": 19
+                          }
+                        }
+                      },
+                      "importance": "unimportant"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/Imgui/imgui/imgui_widgets.cpp"
+                          },
+                          "region": {
+                            "startLine": 4106,
+                            "startColumn": 18
+                          }
+                        }
+                      },
+                      "importance": "unimportant"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/Imgui/imgui/imgui_widgets.cpp"
+                          },
+                          "region": {
+                            "startLine": 4107,
+                            "startColumn": 18
+                          }
+                        }
+                      },
+                      "importance": "unimportant"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/Imgui/imgui/imgui_widgets.cpp"
+                          },
+                          "region": {
+                            "startLine": 4108,
+                            "startColumn": 18
+                          }
+                        }
+                      },
+                      "importance": "unimportant"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/Imgui/imgui/imgui_widgets.cpp"
+                          },
+                          "region": {
+                            "startLine": 4110,
+                            "startColumn": 18
+                          }
+                        }
+                      },
+                      "importance": "unimportant"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/Imgui/imgui/imgui_widgets.cpp"
+                          },
+                          "region": {
+                            "startLine": 4111,
+                            "startColumn": 18
+                          }
+                        }
+                      },
+                      "importance": "unimportant"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/Imgui/imgui/imgui_widgets.cpp"
+                          },
+                          "region": {
+                            "startLine": 4113,
+                            "startColumn": 18
+                          }
+                        }
+                      },
+                      "importance": "unimportant"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/Imgui/imgui/imgui_widgets.cpp"
+                          },
+                          "region": {
+                            "startLine": 4114,
+                            "startColumn": 12
+                          }
+                        }
+                      },
+                      "importance": "unimportant"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/Imgui/imgui/imgui_widgets.cpp"
+                          },
+                          "region": {
+                            "startLine": 4115,
+                            "startColumn": 23
+                          }
+                        }
+                      },
+                      "importance": "unimportant"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/Imgui/imgui/imgui_widgets.cpp"
+                          },
+                          "region": {
+                            "startLine": 4116,
+                            "startColumn": 9
+                          }
+                        }
+                      },
+                      "importance": "unimportant"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/Imgui/imgui/imgui_widgets.cpp"
+                          },
+                          "region": {
+                            "startLine": 4160,
+                            "startColumn": 17
+                          }
+                        }
+                      },
+                      "importance": "unimportant"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/Imgui/imgui/imgui_widgets.cpp"
+                          },
+                          "region": {
+                            "startLine": 4161,
+                            "startColumn": 13
+                          }
+                        }
+                      },
+                      "importance": "unimportant"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/Imgui/imgui/imgui_widgets.cpp"
+                          },
+                          "region": {
+                            "startLine": 4165,
+                            "startColumn": 16
+                          }
+                        }
+                      },
+                      "importance": "unimportant"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/Imgui/imgui/imgui_widgets.cpp"
+                          },
+                          "region": {
+                            "startLine": 4166,
+                            "startColumn": 9
+                          }
+                        }
+                      },
+                      "importance": "unimportant"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/Imgui/imgui/imgui_widgets.cpp"
+                          },
+                          "region": {
+                            "startLine": 4170,
+                            "startColumn": 26
+                          }
+                        }
+                      },
+                      "importance": "unimportant"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/Imgui/imgui/imgui_widgets.cpp"
+                          },
+                          "region": {
+                            "startLine": 4172,
+                            "startColumn": 32
+                          }
+                        }
+                      },
+                      "importance": "unimportant"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/Imgui/imgui/imgui_widgets.cpp"
+                          },
+                          "region": {
+                            "startLine": 4174,
+                            "startColumn": 16
+                          }
+                        }
+                      },
+                      "importance": "unimportant"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/Imgui/imgui/imgui_widgets.cpp"
+                          },
+                          "region": {
+                            "startLine": 4175,
+                            "startColumn": 16
+                          }
+                        }
+                      },
+                      "importance": "unimportant"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/Imgui/imgui/imgui_widgets.cpp"
+                          },
+                          "region": {
+                            "startLine": 4176,
+                            "startColumn": 16
+                          }
+                        }
+                      },
+                      "importance": "unimportant"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/Imgui/imgui/imgui_widgets.cpp"
+                          },
+                          "region": {
+                            "startLine": 4177,
+                            "startColumn": 16
+                          }
+                        }
+                      },
+                      "importance": "unimportant"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/Imgui/imgui/imgui_widgets.cpp"
+                          },
+                          "region": {
+                            "startLine": 4178,
+                            "startColumn": 9
+                          }
+                        }
+                      },
+                      "importance": "unimportant"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/Imgui/imgui/imgui_widgets.cpp"
+                          },
+                          "region": {
+                            "startLine": 4181,
+                            "startColumn": 16
+                          }
+                        }
+                      },
+                      "importance": "unimportant"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/Imgui/imgui/imgui_widgets.cpp"
+                          },
+                          "region": {
+                            "startLine": 4183,
+                            "startColumn": 16
+                          }
+                        }
+                      },
+                      "importance": "unimportant"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/Imgui/imgui/imgui_widgets.cpp"
+                          },
+                          "region": {
+                            "startLine": 4184,
+                            "startColumn": 16
+                          }
+                        }
+                      },
+                      "importance": "unimportant"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/Imgui/imgui/imgui_widgets.cpp"
+                          },
+                          "region": {
+                            "startLine": 4185,
+                            "startColumn": 16
+                          }
+                        }
+                      },
+                      "importance": "unimportant"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/Imgui/imgui/imgui_widgets.cpp"
+                          },
+                          "region": {
+                            "startLine": 4186,
+                            "startColumn": 10
+                          }
+                        }
+                      },
+                      "importance": "unimportant"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/Imgui/imgui/imgui_widgets.cpp"
+                          },
+                          "region": {
+                            "startLine": 4187,
+                            "startColumn": 10
+                          }
+                        }
+                      },
+                      "importance": "unimportant"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/Imgui/imgui/imgui_widgets.cpp"
+                          },
+                          "region": {
+                            "startLine": 4189,
+                            "startColumn": 11
+                          }
+                        }
+                      },
+                      "importance": "unimportant"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/Imgui/imgui/imgui_widgets.cpp"
+                          },
+                          "region": {
+                            "startLine": 4191,
+                            "startColumn": 16
+                          }
+                        },
+                        "message": {
+                          "text": "'state'은(는) NULL일 수 있습니다."
+                        }
+                      },
+                      "kinds": [
+                        "declaration"
+                      ],
+                      "importance": "essential"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/Imgui/imgui/imgui_widgets.cpp"
+                          },
+                          "region": {
+                            "startLine": 4192,
+                            "startColumn": 16
+                          }
+                        }
+                      },
+                      "importance": "unimportant"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/Imgui/imgui/imgui_widgets.cpp"
+                          },
+                          "region": {
+                            "startLine": 4193,
+                            "startColumn": 16
+                          }
+                        }
+                      },
+                      "importance": "unimportant"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/Imgui/imgui/imgui_widgets.cpp"
+                          },
+                          "region": {
+                            "startLine": 4194,
+                            "startColumn": 16
+                          }
+                        }
+                      },
+                      "importance": "unimportant"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/Imgui/imgui/imgui_widgets.cpp"
+                          },
+                          "region": {
+                            "startLine": 4195,
+                            "startColumn": 64
+                          }
+                        },
+                        "message": {
+                          "text": "이 분기 건너뛰기, ('<분기 조건>'이(가) false라고 가정)"
+                        }
+                      },
+                      "kinds": [
+                        "branch"
+                      ]
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/Imgui/imgui/imgui_widgets.cpp"
+                          },
+                          "region": {
+                            "startLine": 4261,
+                            "startColumn": 16
+                          }
+                        }
+                      },
+                      "importance": "unimportant"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/Imgui/imgui/imgui_widgets.cpp"
+                          },
+                          "region": {
+                            "startLine": 4262,
+                            "startColumn": 26
+                          }
+                        },
+                        "message": {
+                          "text": "이 분기 건너뛰기, ('<분기 조건>'이(가) false라고 가정)"
+                        }
+                      },
+                      "kinds": [
+                        "branch"
+                      ]
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/Imgui/imgui/imgui_widgets.cpp"
+                          },
+                          "region": {
+                            "startLine": 4269,
+                            "startColumn": 20
+                          }
+                        },
+                        "message": {
+                          "text": "이 분기 시작, ('g.ActiveId==id' 가정)"
+                        }
+                      },
+                      "kinds": [
+                        "branch"
+                      ]
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/Imgui/imgui/imgui_widgets.cpp"
+                          },
+                          "region": {
+                            "startLine": 4272,
+                            "startColumn": 13
+                          }
+                        },
+                        "message": {
+                          "text": "이 분기 건너뛰기, ('user_clicked'이(가) false라고 가정)"
+                        }
+                      },
+                      "kinds": [
+                        "branch"
+                      ]
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/Imgui/imgui/imgui_widgets.cpp"
+                          },
+                          "region": {
+                            "startLine": 4274,
+                            "startColumn": 35
+                          }
+                        }
+                      },
+                      "importance": "unimportant"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/Imgui/imgui/imgui_widgets.cpp"
+                          },
+                          "region": {
+                            "startLine": 4275,
+                            "startColumn": 26
+                          }
+                        },
+                        "message": {
+                          "text": "이 분기 건너뛰기, ('<분기 조건>'이(가) false라고 가정)"
+                        }
+                      },
+                      "kinds": [
+                        "branch"
+                      ]
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/Imgui/imgui/imgui_widgets.cpp"
+                          },
+                          "region": {
+                            "startLine": 4277,
+                            "startColumn": 20
+                          }
+                        }
+                      },
+                      "importance": "unimportant"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/Imgui/imgui/imgui_widgets.cpp"
+                          },
+                          "region": {
+                            "startLine": 4278,
+                            "startColumn": 20
+                          }
+                        }
+                      },
+                      "importance": "unimportant"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/Imgui/imgui/imgui_widgets.cpp"
+                          },
+                          "region": {
+                            "startLine": 4279,
+                            "startColumn": 20
+                          }
+                        }
+                      },
+                      "importance": "unimportant"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/Imgui/imgui/imgui_widgets.cpp"
+                          },
+                          "region": {
+                            "startLine": 4280,
+                            "startColumn": 20
+                          }
+                        }
+                      },
+                      "importance": "unimportant"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/Imgui/imgui/imgui_widgets.cpp"
+                          },
+                          "region": {
+                            "startLine": 4281,
+                            "startColumn": 13
+                          }
+                        },
+                        "message": {
+                          "text": "이 분기 건너뛰기, ('is_multiline'이(가) false라고 가정)"
+                        }
+                      },
+                      "kinds": [
+                        "branch"
+                      ]
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/Imgui/imgui/imgui_widgets.cpp"
+                          },
+                          "region": {
+                            "startLine": 4286,
+                            "startColumn": 13
+                          }
+                        },
+                        "message": {
+                          "text": "이 분기 건너뛰기, ('is_osx'이(가) false라고 가정)"
+                        }
+                      },
+                      "kinds": [
+                        "branch"
+                      ]
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/Imgui/imgui/imgui_widgets.cpp"
+                          },
+                          "region": {
+                            "startLine": 4291,
+                            "startColumn": 26
+                          }
+                        },
+                        "message": {
+                          "text": "이 분기 시작, ('g.ActiveId==id&&state==0' 가정)"
+                        }
+                      },
+                      "kinds": [
+                        "branch"
+                      ]
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/Imgui/imgui/imgui_widgets.cpp"
+                          },
+                          "region": {
+                            "startLine": 4292,
+                            "startColumn": 22
+                          }
+                        }
+                      },
+                      "importance": "unimportant"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/Imgui/imgui/imgui_widgets.cpp"
+                          },
+                          "region": {
+                            "startLine": 4295,
+                            "startColumn": 63
+                          }
+                        },
+                        "message": {
+                          "text": "이 분기 건너뛰기, ('<분기 조건>'이(가) false라고 가정)"
+                        }
+                      },
+                      "kinds": [
+                        "branch"
+                      ]
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/Imgui/imgui/imgui_widgets.cpp"
+                          },
+                          "region": {
+                            "startLine": 4299,
+                            "startColumn": 10
+                          }
+                        }
+                      },
+                      "importance": "unimportant"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/Imgui/imgui/imgui_widgets.cpp"
+                          },
+                          "region": {
+                            "startLine": 4300,
+                            "startColumn": 10
+                          }
+                        }
+                      },
+                      "importance": "unimportant"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/Imgui/imgui/imgui_widgets.cpp"
+                          },
+                          "region": {
+                            "startLine": 4301,
+                            "startColumn": 10
+                          }
+                        }
+                      },
+                      "importance": "unimportant"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/Imgui/imgui/imgui_widgets.cpp"
+                          },
+                          "region": {
+                            "startLine": 4302,
+                            "startColumn": 10
+                          }
+                        }
+                      },
+                      "importance": "unimportant"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/Imgui/imgui/imgui_widgets.cpp"
+                          },
+                          "region": {
+                            "startLine": 4306,
+                            "startColumn": 38
+                          }
+                        },
+                        "message": {
+                          "text": "이 분기 건너뛰기, ('<분기 조건>'이(가) false라고 가정)"
+                        }
+                      },
+                      "kinds": [
+                        "branch"
+                      ]
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/Imgui/imgui/imgui_widgets.cpp"
+                          },
+                          "region": {
+                            "startLine": 4317,
+                            "startColumn": 16
+                          }
+                        }
+                      },
+                      "importance": "unimportant"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/Imgui/imgui/imgui_widgets.cpp"
+                          },
+                          "region": {
+                            "startLine": 4318,
+                            "startColumn": 16
+                          }
+                        }
+                      },
+                      "importance": "unimportant"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/Imgui/imgui/imgui_widgets.cpp"
+                          },
+                          "region": {
+                            "startLine": 4321,
+                            "startColumn": 21
+                          }
+                        },
+                        "message": {
+                          "text": "이 분기 건너뛰기, ('<분기 조건>'이(가) false라고 가정)"
+                        }
+                      },
+                      "kinds": [
+                        "branch"
+                      ]
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/Imgui/imgui/imgui_widgets.cpp"
+                          },
+                          "region": {
+                            "startLine": 4337,
+                            "startColumn": 9
+                          }
+                        }
+                      },
+                      "importance": "unimportant"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/Imgui/imgui/imgui_widgets.cpp"
+                          },
+                          "region": {
+                            "startLine": 4338,
+                            "startColumn": 20
+                          }
+                        },
+                        "message": {
+                          "text": "이 분기 시작, ('g.ActiveId==id' 가정)"
+                        }
+                      },
+                      "kinds": [
+                        "branch"
+                      ]
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/Imgui/imgui/imgui_widgets.cpp"
+                          },
+                          "region": {
+                            "startLine": 4341,
+                            "startColumn": 36
+                          }
+                        },
+                        "message": {
+                          "text": "'state'이(가) 역참조되었지만 여전히 NULL일 수 있습니다."
+                        }
+                      },
+                      "kinds": [
+                        "usage"
+                      ],
+                      "importance": "essential"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "ruleId": "C6011",
+          "message": {
+            "text": "NULL 포인터 'window'을(를) 역참조하고 있습니다. 이 오류가 발생할 수 있는 이전 위치는 줄 7294을(를) 참조하십시오."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/Imgui/imgui/imgui_widgets.cpp"
+                },
+                "region": {
+                  "startLine": 7324,
+                  "startColumn": 5,
+                  "endLine": 7324,
+                  "endColumn": 70
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "ImGui::EndMenuBar",
+                  "decoratedName": "?EndMenuBar@ImGui@@YAXXZ",
+                  "kind": "function"
+                }
+              ]
+            }
+          ],
+          "codeFlows": [
+            {
+              "threadFlows": [
+                {
+                  "locations": [
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/Imgui/imgui/imgui_widgets.cpp"
+                          },
+                          "region": {
+                            "startLine": 7293,
+                            "startColumn": 18
+                          }
+                        }
+                      },
+                      "importance": "unimportant"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/Imgui/imgui/imgui_widgets.cpp"
+                          },
+                          "region": {
+                            "startLine": 7294,
+                            "startColumn": 15
+                          }
+                        }
+                      },
+                      "importance": "unimportant"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/Imgui/imgui/imgui_widgets.cpp"
+                          },
+                          "region": {
+                            "startLine": 7296,
+                            "startColumn": 19
+                          }
+                        }
+                      },
+                      "importance": "unimportant"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/Imgui/imgui/imgui_widgets.cpp"
+                          },
+                          "region": {
+                            "startLine": 7299,
+                            "startColumn": 109
+                          }
+                        }
+                      },
+                      "importance": "unimportant"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/Imgui/imgui/imgui_widgets.cpp"
+                          },
+                          "region": {
+                            "startLine": 7302,
+                            "startColumn": 22
+                          }
+                        }
+                      },
+                      "importance": "unimportant"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/Imgui/imgui/imgui_widgets.cpp"
+                          },
+                          "region": {
+                            "startLine": 7303,
+                            "startColumn": 49
+                          }
+                        }
+                      },
+                      "importance": "unimportant"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/Imgui/imgui/imgui_widgets.cpp"
+                          },
+                          "region": {
+                            "startLine": 7305,
+                            "startColumn": 129
+                          }
+                        },
+                        "message": {
+                          "text": "'window'은(는) NULL일 수 있습니다. (이 분기 건너뛰기)"
+                        }
+                      },
+                      "kinds": [
+                        "branch"
+                      ]
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/Imgui/imgui/imgui_widgets.cpp"
+                          },
+                          "region": {
+                            "startLine": 7322,
+                            "startColumn": 16
+                          }
+                        }
+                      },
+                      "importance": "unimportant"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/Imgui/imgui/imgui_widgets.cpp"
+                          },
+                          "region": {
+                            "startLine": 7323,
+                            "startColumn": 10
+                          }
+                        }
+                      },
+                      "importance": "unimportant"
+                    },
+                    {
+                      "location": {
+                        "physicalLocation": {
+                          "artifactLocation": {
+                            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/Imgui/imgui/imgui_widgets.cpp"
+                          },
+                          "region": {
+                            "startLine": 7324,
+                            "startColumn": 32
+                          }
+                        },
+                        "message": {
+                          "text": "'window'이(가) 역참조되었지만 여전히 NULL일 수 있습니다."
+                        }
+                      },
+                      "kinds": [
+                        "usage"
+                      ],
+                      "importance": "essential"
+                    }
+                  ]
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "tool": {
+        "driver": {
+          "name": "PREfast",
+          "fullName": "PREfast Code Analysis",
+          "version": "14.38.33135.0",
+          "informationUri": "https://aka.ms/cpp/ca"
+        }
+      },
+      "invocations": [
+        {
+          "executionSuccessful": true
+        }
+      ],
+      "artifacts": [
+        {
+          "location": {
+            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/Imgui/imgui/imstb_truetype.h"
+          },
+          "roles": [
+            "resultFile"
+          ],
+          "hashes": {
+            "sha-256": "7b2918e4ca3ee7b1d1dc3d2a45ae5dad926a22ee304e22f09bbc289620636c88"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///C:/Users/yeeun/dev/std/Yakuza/Imgui/imgui/imgui_widgets.cpp"
+          },
+          "roles": [
+            "resultFile"
+          ],
+          "hashes": {
+            "sha-256": "09c14d7de0c6ef501730e8f3ae4c810759a7bc6fdf7c346db261c5946cc205c5"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/maptool/default/x64/release/unity_7fk0xkyncxi6eef5.cpp"
+          },
+          "roles": [
+            "analysisTarget"
+          ],
+          "hashes": {
+            "sha-256": "157118fab539b40a261e31713cf64ced70e1a266a758e65dff16f834e262ec33"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/imgui/imgui/imgui_draw.cpp"
+          },
+          "hashes": {
+            "sha-256": "80e832731dd87c400884d6c266227f8193fb243b2371fce0f26ee3f819c2b731"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/imgui/imgui/imgui.h"
+          },
+          "hashes": {
+            "sha-256": "4a4958f26e1852c839b6c2f01417d5f013695d639e8535a5769fc55528645102"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/imgui/imgui/imconfig.h"
+          },
+          "hashes": {
+            "sha-256": "07428116edfc8ac1a32ca64ab0f4c04ce831f4b4f7e4b95531d7306dcc4d2323"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/imgui/imgui/imgui_internal.h"
+          },
+          "hashes": {
+            "sha-256": "d9142ffc82203d3882e149f4ad9e7a8962c8f0aad42f2d33c0fc847c68053ff8"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/imgui/imgui/imstb_textedit.h"
+          },
+          "hashes": {
+            "sha-256": "7ddff4ecb710e321b8f966417a6dc72f3e2242165f68cc78c5275b5653224bba"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/imgui/imgui/imstb_rectpack.h"
+          },
+          "hashes": {
+            "sha-256": "bb53504995e983d54b1ae06ea727f0b39647e5e205b4bf7da01343953974951c"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///c:/users/yeeun/dev/std/yakuza/imgui/imgui/imgui_tables.cpp"
+          },
+          "hashes": {
+            "sha-256": "3c413e7cdbdb4b340680ce7c84739915ae56670dffc5bf1461d5ac72b3ad3508"
+          }
+        }
+      ]
+    }
+  ]
+}

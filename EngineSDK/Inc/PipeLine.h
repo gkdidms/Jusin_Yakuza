@@ -53,6 +53,9 @@ public:
     HRESULT Initialize();
     void Tick();
 
+private: //Shadow
+    void Ready_ShadowFurstum();
+
 private:
     _float4x4 m_TransformStateMatrix[D3DTS_END];
     _float4x4 m_TransformStateInverseMatrix[D3DTS_END];
