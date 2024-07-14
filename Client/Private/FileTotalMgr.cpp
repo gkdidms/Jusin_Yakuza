@@ -62,6 +62,8 @@ HRESULT CFileTotalMgr::Set_MapObj_In_Client(int iMapLoadingNum, int iStageLevel)
 
     Safe_Delete_Array(m_MapTotalInform.pMapObjDesc);
 
+
+
     Import_Bin_Map_Data_OnClient(&m_MapTotalInform, iMapLoadingNum);
 
     /* terrain ¼öÁ¤*/

@@ -595,7 +595,7 @@ void CObjPlace_Manager::Edit_Installed_GameObject(int iNumObject)
 		m_tCurrentObjectDesc.iObjType = OBJECT_TYPE::ITEM;
 	}
 
-	if (ImGui::RadioButton(u8"몬스터", m_tCurrentObjectDesc.iObjType == 3))
+	if (ImGui::RadioButton(u8"몬스터 - Rush", m_tCurrentObjectDesc.iObjType == 3))
 	{
 		objectType = 3;
 		m_tCurrentObjectDesc.iObjType = OBJECT_TYPE::MONSTER_RUSH;
@@ -675,7 +675,7 @@ void CObjPlace_Manager::Edit_Installed_GameObject(int iNumObject)
 			m_tCurrentObjectDesc.iShaderPass = 3;
 		}
 
-		if (ImGui::RadioButton(u8"기타", m_tCurrentObjectDesc.iShaderPass == 4))
+		if (ImGui::RadioButton(u8"형광등 + 투명", m_tCurrentObjectDesc.iShaderPass == 4))
 		{
 			shaderType = 4;
 			m_tCurrentObjectDesc.iShaderPass = 4;
@@ -910,7 +910,7 @@ void CObjPlace_Manager::Set_Map_Object()
 	ImGui::RadioButton(u8"그냥건물", &objectType, OBJECT_TYPE::CONSTRUCTION);
 	ImGui::RadioButton(u8"도로", &objectType, OBJECT_TYPE::ROAD);
 	ImGui::RadioButton(u8"아이템", &objectType, OBJECT_TYPE::ITEM);
-	ImGui::RadioButton(u8"몬스터", &objectType, OBJECT_TYPE::MONSTER_RUSH);
+	ImGui::RadioButton(u8"몬스터 - Rush", &objectType, OBJECT_TYPE::MONSTER_RUSH);
 	ImGui::RadioButton(u8"플레이어", &objectType, OBJECT_TYPE::PLAYER);
 	ImGui::RadioButton(u8"스카이", &objectType, OBJECT_TYPE::SKY);
 	ImGui::RadioButton(u8"라이트", &objectType, OBJECT_TYPE::LIGHT);
@@ -936,7 +936,7 @@ void CObjPlace_Manager::Set_Map_Object()
 		ImGui::NewLine();
 		ImGui::RadioButton(u8"Lamp", &shaderType, 3);
 		ImGui::NewLine();
-		ImGui::RadioButton(u8"기타", &shaderType, 4);
+		ImGui::RadioButton(u8"형광등 + 투명", &shaderType, 4);
 	}
 	else
 	{

@@ -108,6 +108,11 @@ void CLightConstruction::Tick(const _float& fTimeDelta)
 
 void CLightConstruction::Late_Tick(const _float& fTimeDelta)
 {
+	// 0 : 그냥간판
+	// 1 : 형광등자르기 + 알파
+	// 2 : rm 텍스처 적용 - 외부간판
+	// 3 : Lamp
+	// 4 : 형광등 + 투명
 	if (m_iShaderPassNum == 0 || m_iShaderPassNum == 2)
 	{
 		//m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
@@ -122,6 +127,11 @@ void CLightConstruction::Late_Tick(const _float& fTimeDelta)
 	{
 		m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
 		m_pGameInstance->Add_Renderer(CRenderer::RENDER_EFFECT, this);
+	}
+	else if (m_iShaderPassNum == 4)
+	{
+		//m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
+		m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONLIGHT, this);
 	}
 
 	for (auto& iter : m_vDecals)
@@ -199,7 +209,7 @@ HRESULT CLightConstruction::Render_Bloom()
 				return E_FAIL;
 		}
 
-		m_pShaderCom->Begin(4);
+		m_pShaderCom->Begin(5);
 
 		m_pModelCom->Render(i);
 	}

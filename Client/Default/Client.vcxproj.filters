@@ -921,51 +921,6 @@
     <Filter Include="02.GameObjects\03.Construction\LightConstruction">
       <UniqueIdentifier>{66dcb392-2821-4235-8686-00b40a167705}</UniqueIdentifier>
     </Filter>
-    <Filter Include="95.Utility\05.UIManager">
-      <UniqueIdentifier>{a9202d9c-ebfb-42c2-8f41-ba5c40000cda}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="95.Utility\05.UIManager\UIScene">
-      <UniqueIdentifier>{83ce56e8-0e17-4ffc-b2e5-000528c20f54}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="95.Utility\05.UIManager\UIScene\UIObject">
-      <UniqueIdentifier>{5c86afa3-8050-43e6-be46-c45bd8c73406}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="95.Utility\05.UIManager\UIScene\UIInven">
-      <UniqueIdentifier>{5a2d21e4-6e70-41b2-9ba4-d716f92d65a3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="95.Utility\05.UIManager\UIScene\UILife">
-      <UniqueIdentifier>{252a1ef7-55e9-46cf-a20a-72d190aff5b7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="95.Utility\05.UIManager\UIScene\UIMenu">
-      <UniqueIdentifier>{2f9119e0-9ea5-4bdf-b2af-3e897c0854c0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="95.Utility\05.UIManager\UIScene\UIMoney">
-      <UniqueIdentifier>{7e36ba30-a92e-4595-bba6-d760cf7feefb}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="95.Utility\05.UIManager\InventoryManager">
-      <UniqueIdentifier>{ec9969f6-f3fc-42e1-bb34-c5b79b4087a3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="95.Utility\05.UIManager\InventoryManager\ItemData">
-      <UniqueIdentifier>{1b6edbda-4992-4482-8fe5-f74f11bf2ce4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="95.Utility\05.UIManager\UIScene\UIObject\UITexture">
-      <UniqueIdentifier>{8b20b3a1-e821-47b7-9519-e6bda1f9c855}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="95.Utility\05.UIManager\UIScene\UIObject\UITexture\UI_Effect">
-      <UniqueIdentifier>{7687d4f7-e9b7-4653-9727-d52abd2dc4e5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="95.Utility\05.UIManager\UIScene\UIObject\UITexture\Text">
-      <UniqueIdentifier>{7e154e24-f9cd-44d6-98a0-3740478d46b4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="95.Utility\05.UIManager\UIScene\UIObject\UITexture\Image_Texture">
-      <UniqueIdentifier>{7ba24c26-5011-468c-9922-c8db8eb8224c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="95.Utility\05.UIManager\UIScene\UIObject\UITexture\Btn">
-      <UniqueIdentifier>{76b96514-5b82-403e-858f-16580839fe1e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="95.Utility\05.UIManager\UIScene\UIObject\Group">
-      <UniqueIdentifier>{4978f2c8-2f0c-4e8e-aee4-94423890d362}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\FlyKick">
       <UniqueIdentifier>{5265b649-6ac1-4ac6-bba9-3786b7074296}</UniqueIdentifier>
     </Filter>
@@ -1019,6 +974,51 @@
     </Filter>
     <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRC\Run">
       <UniqueIdentifier>{05554c49-48f2-436a-81e4-f66627213c96}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\05.UIManager">
+      <UniqueIdentifier>{a9202d9c-ebfb-42c2-8f41-ba5c40000cda}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\05.UIManager\UIScene">
+      <UniqueIdentifier>{83ce56e8-0e17-4ffc-b2e5-000528c20f54}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\05.UIManager\UIScene\UIObject">
+      <UniqueIdentifier>{5c86afa3-8050-43e6-be46-c45bd8c73406}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\05.UIManager\UIScene\UIObject\UITexture">
+      <UniqueIdentifier>{8b20b3a1-e821-47b7-9519-e6bda1f9c855}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\05.UIManager\UIScene\UIObject\UITexture\UI_Effect">
+      <UniqueIdentifier>{7687d4f7-e9b7-4653-9727-d52abd2dc4e5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\05.UIManager\UIScene\UIObject\UITexture\Text">
+      <UniqueIdentifier>{7e154e24-f9cd-44d6-98a0-3740478d46b4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\05.UIManager\UIScene\UIObject\UITexture\Image_Texture">
+      <UniqueIdentifier>{7ba24c26-5011-468c-9922-c8db8eb8224c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\05.UIManager\UIScene\UIObject\UITexture\Btn">
+      <UniqueIdentifier>{76b96514-5b82-403e-858f-16580839fe1e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\05.UIManager\UIScene\UIObject\Group">
+      <UniqueIdentifier>{4978f2c8-2f0c-4e8e-aee4-94423890d362}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\05.UIManager\UIScene\UIInven">
+      <UniqueIdentifier>{5a2d21e4-6e70-41b2-9ba4-d716f92d65a3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\05.UIManager\UIScene\UILife">
+      <UniqueIdentifier>{252a1ef7-55e9-46cf-a20a-72d190aff5b7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\05.UIManager\UIScene\UIMenu">
+      <UniqueIdentifier>{2f9119e0-9ea5-4bdf-b2af-3e897c0854c0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\05.UIManager\UIScene\UIMoney">
+      <UniqueIdentifier>{7e36ba30-a92e-4595-bba6-d760cf7feefb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\05.UIManager\InventoryManager">
+      <UniqueIdentifier>{ec9969f6-f3fc-42e1-bb34-c5b79b4087a3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\05.UIManager\InventoryManager\ItemData">
+      <UniqueIdentifier>{1b6edbda-4992-4482-8fe5-f74f11bf2ce4}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

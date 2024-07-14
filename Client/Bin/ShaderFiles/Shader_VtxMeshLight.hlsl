@@ -121,6 +121,17 @@ PS_OUT PS_MAIN_Lamp(PS_IN In)
     return Out;
 }
 
+PS_OUT PS_MAIN_AlphaLamp(PS_IN In)
+{
+    PS_OUT Out = (PS_OUT) 0;
+
+    vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
+    vDiffuse.a = 0.1;
+    Out.vDiffuse = vDiffuse;
+    
+    return Out;
+}
+
 PS_OUT PS_MAIN_Bloom(PS_IN In)
 {
     PS_OUT Out = (PS_OUT) 0;
@@ -195,8 +206,21 @@ technique11 DefaultTechnique
         PixelShader = compile ps_5_0 PS_MAIN_Lamp();
     }
 
+    pass AlphaPass //4
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 
-    pass DefaultBloomPass //4 
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        HullShader = NULL;
+        DomainShader = NULL;
+        PixelShader = compile ps_5_0 PS_MAIN_AlphaLamp();
+    }
+
+
+    pass DefaultBloomPass //5
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_Default, 0);
