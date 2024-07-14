@@ -388,4 +388,14 @@ CComponent* CAnim::Clone(void* pArg)
 void CAnim::Free()
 {
 	__super::Free();
+
+	for (auto& pBone : m_Bones)
+		Safe_Release(pBone);
+	m_Bones.clear();
+
+	for (auto& pAnim : m_Animations)
+		Safe_Release(pAnim);
+	m_Animations.clear();
+
+	m_Importer.FreeScene();
 }

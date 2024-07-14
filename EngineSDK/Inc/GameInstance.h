@@ -90,6 +90,7 @@ public:
     _bool isPBR();
     _bool isBOF();
     _bool isShadow();
+    _bool isRimLight();
 
     void Set_PBR(_bool isPBR);
     void Set_BOF(_bool isBOF);
@@ -103,6 +104,7 @@ public:
     void Set_SSAOBias(_float fBias);
     void Set_ShadowViewPos(_vector vPos);
     void Set_Shadow(_bool isShadow);
+    void Set_RimLight(_bool isRimLight);
 #ifdef _DEBUG
 public:
     HRESULT Add_DebugComponent(class CComponent* pComponent);

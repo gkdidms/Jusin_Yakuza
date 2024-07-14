@@ -96,6 +96,8 @@ void CSocketCollider::Priority_Tick(const _float& fTimeDelta)
 
 void CSocketCollider::Tick(const _float& fTimeDelta)
 {
+	Filtering_Timer(fTimeDelta);
+
 	m_vPrevMovePos = m_vMovePos;
 
 	if(m_pColliderCom)
@@ -128,7 +130,23 @@ HRESULT CSocketCollider::Render()
 
 _bool CSocketCollider::Intersect(CCollider* pTargetObject, _float fDistance)
 {
+	if (m_isFiltered) return false;
+
+	m_isFiltered = true;
 	return pTargetObject->Intersect(m_pColliderCom, fDistance);
+}
+
+void CSocketCollider::Filtering_Timer(_float fTimeDelta)
+{
+	if (!m_isFiltered) return; 
+
+	m_fFilteringTimer += fTimeDelta;
+
+	if (FILTERING_TIME <= m_fFilteringTimer)
+	{
+		m_fFilteringTimer = 0.f;
+		m_isFiltered = false;
+	}
 }
 
 void CSocketCollider::ParentObject_Hit(const _float3& vDir, _float fDamage, CLandObject* pParentObject, _bool isBlowAttack)
@@ -156,7 +174,7 @@ HRESULT CSocketCollider::Add_Components(void* pArg)
 		ColliderDesc.vExtents = pDesc->ColliderState.vValue;
 		ColliderDesc.vCenter = pDesc->ColliderState.vCenter;
 
-		if (FAILED(__super::Add_Component(LEVEL_TEST, TEXT("Prototype_Component_Collider"),
+		if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Collider"),
 			TEXT("Com_Collider"), reinterpret_cast<CComponent**>(&m_pColliderCom), &ColliderDesc)))
 			return E_FAIL;
 		break;
@@ -170,7 +188,7 @@ HRESULT CSocketCollider::Add_Components(void* pArg)
 		ColliderDesc.vCenter = pDesc->ColliderState.vCenter;
 		ColliderDesc.vRotation = _float3(0.f, 0.f, 0.f);
 
-		if (FAILED(__super::Add_Component(LEVEL_TEST, TEXT("Prototype_Component_Collider"),
+		if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Collider"),
 			TEXT("Com_Collider"), reinterpret_cast<CComponent**>(&m_pColliderCom), &ColliderDesc)))
 			return E_FAIL;
 		break;
@@ -183,7 +201,7 @@ HRESULT CSocketCollider::Add_Components(void* pArg)
 		ColliderDesc.fRadius = pDesc->ColliderState.vValue.x;
 		ColliderDesc.vCenter = pDesc->ColliderState.vCenter;
 
-		if (FAILED(__super::Add_Component(LEVEL_TEST, TEXT("Prototype_Component_Collider"),
+		if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Collider"),
 			TEXT("Com_Collider"), reinterpret_cast<CComponent**>(&m_pColliderCom), &ColliderDesc)))
 			return E_FAIL;
 		break;

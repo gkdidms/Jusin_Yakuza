@@ -585,40 +585,63 @@ void CObjPlace_Manager::Edit_Installed_GameObject(int iNumObject)
 
 	if (ImGui::RadioButton(u8"도로", m_tCurrentObjectDesc.iObjType == 1))
 	{
-		objectType = 0;
+		objectType = 1;
 		m_tCurrentObjectDesc.iObjType = OBJECT_TYPE::ROAD;
 	}
 
 	if (ImGui::RadioButton(u8"아이템", m_tCurrentObjectDesc.iObjType == 2))
 	{
-		objectType = 1;
+		objectType = 2;
 		m_tCurrentObjectDesc.iObjType = OBJECT_TYPE::ITEM;
 	}
 
-	if (ImGui::RadioButton(u8"몬스터", m_tCurrentObjectDesc.iObjType == 3))
+	if (ImGui::RadioButton(u8"몬스터 - Rush", m_tCurrentObjectDesc.iObjType == 3))
 	{
-		objectType = 2;
-		m_tCurrentObjectDesc.iObjType = OBJECT_TYPE::MONSTER;
+		objectType = 3;
+		m_tCurrentObjectDesc.iObjType = OBJECT_TYPE::MONSTER_RUSH;
 	}
 
 	if (ImGui::RadioButton(u8"플레이어", m_tCurrentObjectDesc.iObjType == 4))
 	{
-		objectType = 3;
+		objectType = 4;
 		m_tCurrentObjectDesc.iObjType = OBJECT_TYPE::PLAYER;
 	}
 
 	if (ImGui::RadioButton(u8"스카이", m_tCurrentObjectDesc.iObjType == 5))
 	{
-		objectType = 4;
+		objectType = 5;
 		m_tCurrentObjectDesc.iObjType = OBJECT_TYPE::SKY;
 	}
 
 	if (ImGui::RadioButton(u8"라이트", m_tCurrentObjectDesc.iObjType == 6))
 	{
-		objectType = 5;
+		objectType = 6;
 		m_tCurrentObjectDesc.iObjType = OBJECT_TYPE::LIGHT;
 	}
 
+	if (ImGui::RadioButton(u8"몬스터 - WPA ", m_tCurrentObjectDesc.iObjType == 7))
+	{
+		objectType = 7;
+		m_tCurrentObjectDesc.iObjType = OBJECT_TYPE::MONSTER_WPA;
+	}
+
+	if (ImGui::RadioButton(u8"몬스터 - ShakeDown", m_tCurrentObjectDesc.iObjType == 8))
+	{
+		objectType = 8;
+		m_tCurrentObjectDesc.iObjType = OBJECT_TYPE::MONSTER_SHAKEDOWN;
+	}
+
+	if (ImGui::RadioButton(u8"몬스터 - yoneda", m_tCurrentObjectDesc.iObjType == 9))
+	{
+		objectType = 9;
+		m_tCurrentObjectDesc.iObjType = OBJECT_TYPE::MONSTER_YONEDA;
+	}
+
+	if (ImGui::RadioButton(u8"몬스터 - kuze", m_tCurrentObjectDesc.iObjType == 10))
+	{
+		objectType = 10;
+		m_tCurrentObjectDesc.iObjType = OBJECT_TYPE::MONSTER_KUZE;
+	}
 
 	ImGui::NewLine();
 
@@ -626,7 +649,7 @@ void CObjPlace_Manager::Edit_Installed_GameObject(int iNumObject)
 
 	static int shaderType = m_tCurrentObjectDesc.iShaderPass;
 	// Light관련
-	if (objectType == 5)
+	if (objectType == 6)
 	{
 		if (ImGui::RadioButton(u8"그냥 간판", m_tCurrentObjectDesc.iShaderPass == 0))
 		{
@@ -640,16 +663,22 @@ void CObjPlace_Manager::Edit_Installed_GameObject(int iNumObject)
 			m_tCurrentObjectDesc.iShaderPass = 1;
 		}
 
-		if (ImGui::RadioButton(u8"rm텍스처 적용한거", m_tCurrentObjectDesc.iShaderPass == 2))
+		if (ImGui::RadioButton(u8"rm텍스처 적용한거 - 외부간판", m_tCurrentObjectDesc.iShaderPass == 2))
 		{
 			shaderType = 2;
 			m_tCurrentObjectDesc.iShaderPass = 2;
 		}
 
-		if (ImGui::RadioButton(u8"Bloom", m_tCurrentObjectDesc.iShaderPass == 3))
+		if (ImGui::RadioButton(u8"Lamp", m_tCurrentObjectDesc.iShaderPass == 3))
 		{
 			shaderType = 3;
 			m_tCurrentObjectDesc.iShaderPass = 3;
+		}
+
+		if (ImGui::RadioButton(u8"형광등 + 투명", m_tCurrentObjectDesc.iShaderPass == 4))
+		{
+			shaderType = 4;
+			m_tCurrentObjectDesc.iShaderPass = 4;
 		}
 	}
 	else
@@ -881,10 +910,16 @@ void CObjPlace_Manager::Set_Map_Object()
 	ImGui::RadioButton(u8"그냥건물", &objectType, OBJECT_TYPE::CONSTRUCTION);
 	ImGui::RadioButton(u8"도로", &objectType, OBJECT_TYPE::ROAD);
 	ImGui::RadioButton(u8"아이템", &objectType, OBJECT_TYPE::ITEM);
-	ImGui::RadioButton(u8"몬스터", &objectType, OBJECT_TYPE::MONSTER);
+	ImGui::RadioButton(u8"몬스터 - Rush", &objectType, OBJECT_TYPE::MONSTER_RUSH);
 	ImGui::RadioButton(u8"플레이어", &objectType, OBJECT_TYPE::PLAYER);
 	ImGui::RadioButton(u8"스카이", &objectType, OBJECT_TYPE::SKY);
 	ImGui::RadioButton(u8"라이트", &objectType, OBJECT_TYPE::LIGHT);
+	ImGui::RadioButton(u8"몬스터 - WPA", &objectType, OBJECT_TYPE::MONSTER_WPA);
+	ImGui::RadioButton(u8"몬스터 - ShakeDown", &objectType, OBJECT_TYPE::MONSTER_SHAKEDOWN);
+	ImGui::RadioButton(u8"몬스터 - yoneda", &objectType, OBJECT_TYPE::MONSTER_YONEDA);
+	ImGui::RadioButton(u8"몬스터 - kuze", &objectType, OBJECT_TYPE::MONSTER_KUZE);
+
+
 
 	ImGui::NewLine();
 
@@ -897,9 +932,11 @@ void CObjPlace_Manager::Set_Map_Object()
 		ImGui::NewLine();
 		ImGui::RadioButton(u8"형광등자르기 + 알파", &shaderType, 1);
 		ImGui::NewLine();
-		ImGui::RadioButton(u8"rm 텍스처 적용", &shaderType, 2);
+		ImGui::RadioButton(u8"rm 텍스처 적용 - 외부간판", &shaderType, 2);
 		ImGui::NewLine();
-		ImGui::RadioButton(u8"Bloom", &shaderType, 3);
+		ImGui::RadioButton(u8"Lamp", &shaderType, 3);
+		ImGui::NewLine();
+		ImGui::RadioButton(u8"형광등 + 투명", &shaderType, 4);
 	}
 	else
 	{
@@ -1101,8 +1138,9 @@ HRESULT CObjPlace_Manager::Export_Bin_Map_Data(MAP_TOTALINFORM_DESC* mapObjData)
 
 	strcat_s(fullPath, "MapObject_Data");
 
-	char cLevel[2] = "";
-	_itoa_s(mapObjData->iLevelIndex, cLevel, 10);
+	string strNum = to_string(mapObjData->iLevelIndex);
+	char cLevel[20];
+	strcpy_s(cLevel, strNum.c_str());
 	strcat_s(fullPath, "_");
 	strcat_s(fullPath, cLevel);
 	strcat_s(fullPath, ".dat");

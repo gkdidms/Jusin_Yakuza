@@ -14,15 +14,19 @@ class CFileTotalMgr final : public CBase
 	DECLARE_SINGLETON(CFileTotalMgr)
 
 public: 
-	/* MapTool */
+	/* MapTool - 순서 바꾸면 안됨!!!!!!!!!!!!!!!!! */
 	enum OBJECT_TYPE {
 		CONSTRUCTION, /* 그냥 건축물 */
 		ROAD,
 		ITEM,
-		MONSTER,
+		MONSTER_RUSH,
 		PLAYER,
 		SKY,
 		LIGHT,
+		MONSTER_WPA,
+		MONSTER_SHAKEDOWN,
+		MONSTER_YONEDA,
+		MONSTER_KUZE,
 		OBJ_END
 	};
 

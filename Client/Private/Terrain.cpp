@@ -73,22 +73,22 @@ HRESULT CTerrain::Render()
 HRESULT CTerrain::Add_Components()
 {
 	/* For.Com_VIBuffer */
-	if (FAILED(__super::Add_Component(LEVEL_TEST, TEXT("Prototype_Component_VIBuffer_Terrain_Flat"),
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_VIBuffer_Terrain_Flat"),
 		TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pVIBufferCom))))
 		return E_FAIL;
 
 	/* For.Com_Shader */
-	if (FAILED(__super::Add_Component(LEVEL_TEST, TEXT("Prototype_Component_Shader_VtxNorTex"),
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Shader_VtxNorTex"),
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
 		return E_FAIL;
 
 	/* For.Com_Diffuse */
-	if (FAILED(__super::Add_Component(LEVEL_TEST, TEXT("Prototype_Component_Texture_Terrain"),
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Texture_Terrain"),
 		TEXT("Com_Diffuse"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
 		return E_FAIL;
 
 	/* For.Com_Navigation */
-	if (FAILED(__super::Add_Component(LEVEL_TEST, TEXT("Prototype_Component_Navigation"),
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Navigation"),
 		TEXT("Com_Navigation"), reinterpret_cast<CComponent**>(&m_pNavigationCom))))
 		return E_FAIL;
 

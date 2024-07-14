@@ -78,12 +78,12 @@ HRESULT CMapColliderObj::Render()
 HRESULT CMapColliderObj::Add_Components(void* pArg)
 {
     /* For.Com_Model */
-    if (FAILED(__super::Add_Component(LEVEL_TEST, TEXT("Prototype_Component_Model_Bone_Sphere"),
+    if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Model_Bone_Sphere"),
         TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
         return E_FAIL;
 
     /* For.Com_Shader */
-    if (FAILED(__super::Add_Component(LEVEL_TEST, TEXT("Prototype_Component_Shader_VtxMeshSky"),
+    if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Shader_VtxMeshSky"),
         TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
         return E_FAIL;
 

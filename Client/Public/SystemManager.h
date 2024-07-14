@@ -25,7 +25,14 @@ public:
 
 private:
     LEVEL                       m_iCurrentLevel = { LEVEL_END };
-    CAMERA                      m_iCamera = { CAMERA_END };
+
+#ifdef _DEBUG
+    CAMERA                      m_iCamera = { CAMERA_DEBUG };
+#else
+    CAMERA                      m_iCamera = { CAMERA_PLAYER };
+#endif // _DEBUG
+
+
 
     _vector m_vShadowViewPos = { XMVectorSet(-0.6f, -0.7f, 0.1f, 1.f) };
 

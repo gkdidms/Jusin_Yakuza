@@ -34,11 +34,11 @@ HRESULT CLevel_Test::Initialize()
 	if (FAILED(Ready_Map(TEXT("Layer_Map"))))
 		return E_FAIL;
 
-	if (FAILED(Ready_Effect(TEXT("Layer_Effect"))))
-		return E_FAIL;
+	//if (FAILED(Ready_Effect(TEXT("Layer_Effect"))))
+	//	return E_FAIL;
 
 	/* 클라 파싱 */
-	m_pFileTotalManager->Set_MapObj_In_Client(0, LEVEL_TEST);
+	m_pFileTotalManager->Set_MapObj_In_Client(9, LEVEL_TEST);
 	m_pFileTotalManager->Set_Lights_In_Client(2);
 	m_pFileTotalManager->Set_Collider_In_Client(1, LEVEL_TEST);
 
@@ -57,7 +57,8 @@ void CLevel_Test::Tick(const _float& fTimeDelta)
 HRESULT CLevel_Test::Ready_Camera(const wstring& strLayerTag)
 {
 	/* 카메라 추가 시 Debug Camera를 첫번째로 놔두고 추가해주세요 (디버깅 툴에서 사용중)*/
-
+	const _float4x4* pPlayerFloat4x4 = dynamic_cast<CTransform*>(m_pGameInstance->Get_GameObject_Component(LEVEL_TEST, TEXT("Layer_Player"), TEXT("Com_Transform", 0)))->Get_WorldFloat4x4();
+	
 	/* 0. 디버그용 카메라 */
 	CDebugCamera::DEBUG_CAMERA_DESC		CameraDesc{};
 	CameraDesc.fSensor = 0.1f;
@@ -69,6 +70,7 @@ HRESULT CLevel_Test::Ready_Camera(const wstring& strLayerTag)
 	CameraDesc.fFar = 3000.f;
 	CameraDesc.fSpeedPecSec = 10.f;
 	CameraDesc.fRotatePecSec = XMConvertToRadians(90.f);
+	CameraDesc.pPlayerMatrix = pPlayerFloat4x4;
 
 	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_DebugCamera"), strLayerTag, &CameraDesc)))
 		return E_FAIL;
@@ -91,7 +93,7 @@ HRESULT CLevel_Test::Ready_Camera(const wstring& strLayerTag)
 	PlayerCameraDesc.fFar = 3000.f;
 	PlayerCameraDesc.fSpeedPecSec = 20.f;
 	PlayerCameraDesc.fRotatePecSec = XMConvertToRadians(90.f);
-	PlayerCameraDesc.pPlayerMatrix = dynamic_cast<CTransform*>(m_pGameInstance->Get_GameObject_Component(LEVEL_TEST, TEXT("Layer_Player"), TEXT("Com_Transform", 0)))->Get_WorldFloat4x4();
+	PlayerCameraDesc.pPlayerMatrix = pPlayerFloat4x4;
 	
 	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_PlayerCamera"), strLayerTag, &PlayerCameraDesc)))
 		return E_FAIL;
