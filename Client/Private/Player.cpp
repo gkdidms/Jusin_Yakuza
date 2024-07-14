@@ -13,6 +13,13 @@
 
 #include "UIManager.h"
 
+#pragma region Hit包访 庆歹甸
+#include "Kiryu_KRC_Hit.h"
+#include "Kiryu_KRH_Hit.h"
+#include "Kiryu_KRS_Hit.h"
+#pragma endregion
+
+
 CPlayer::CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLandObject{ pDevice, pContext }
 {
@@ -270,20 +277,106 @@ void CPlayer::Take_Damage(_uint iHitColliderType, const _float3& vDir, _float fD
 	{
 	case CPlayer::KRS:
 	{
-		/*CKiryu_KRS_Hit::KRS_Hit_DESC Desc{ &vDir, fDamage, pAttackedObject->Get_CurrentAnimationName()};
+		_vector vAttackedObjectLook = pAttackedObject->Get_TransformCom()->Get_State(CTransform::STATE_LOOK);
+		_vector vMyLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
+
+		_float fTheta = 0.0f;
+		_float fDot = XMVectorGetX(XMVector3Dot(vMyLook, vAttackedObjectLook));
+		fTheta = XMConvertToDegrees(acosf(fDot));
+
+		// F, B, L, R
+		_int iDirection = -1;
+		if (fDot >= 0.0f)
+		{
+			if (0 <= fTheta && 90 > fTheta)  // 菊率
+				iDirection = 0;
+			else if (90 <= fTheta && 180 >= fTheta) // 缔率
+				iDirection = 1;
+		}
+		else
+		{
+			if (0 <= fTheta && 90 > fTheta) // 哭率
+				iDirection = 2;
+			else if (90 <= fTheta && 180 >= fTheta) // 坷弗率
+				iDirection = 3;
+		}
+
+		CKiryu_KRS_Hit::KRS_Hit_DESC Desc{ &vDir, fDamage, pAttackedObject->Get_CurrentAnimationName(), iDirection };
 
 		m_iCurrentBehavior = (_uint)KRS_BEHAVIOR_STATE::HIT;
-		m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Setting_Value((void*) &Desc);*/
+		m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Setting_Value((void*) &Desc);
 		break;
 	}
 	case CPlayer::KRH:
 	{
+		_vector vAttackedObjectLook = pAttackedObject->Get_TransformCom()->Get_State(CTransform::STATE_LOOK);
+		_vector vMyLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
 
+		_float fTheta = 0.0f;
+		_float fDot = XMVectorGetX(XMVector3Dot(vMyLook, vAttackedObjectLook));
+		fTheta = XMConvertToDegrees(acosf(fDot));
+
+		// F, B, L, R
+		_int iDirection = -1;
+		if (fDot >= 0.0f)
+		{
+			if (0 <= fTheta && 90 > fTheta)  // 菊率
+				iDirection = 0;
+			else if (90 <= fTheta && 180 >= fTheta) // 缔率
+				iDirection = 1;
+		}
+		else
+		{
+			if (0 <= fTheta && 90 > fTheta) // 哭率
+				iDirection = 2;
+			else if (90 <= fTheta && 180 >= fTheta) // 坷弗率
+				iDirection = 3;
+		}
+
+		CKiryu_KRH_Hit::KRH_Hit_DESC Desc{ &vDir, fDamage, pAttackedObject->Get_CurrentAnimationName(), iDirection };
+
+		m_iCurrentBehavior = (_uint)KRH_BEHAVIOR_STATE::HIT;
+		m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Setting_Value((void*)&Desc);
 		break;
 	}
 	case CPlayer::KRC:
 	{
+		_vector vAttackedObjectLook = pAttackedObject->Get_TransformCom()->Get_State(CTransform::STATE_LOOK);
+		_vector vMyLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
 
+		_float fTheta = 0.0f;
+		_float fDot = XMVectorGetX(XMVector3Dot(vMyLook, vAttackedObjectLook));
+		fTheta = XMConvertToDegrees(acosf(fDot));
+
+		// F, B, L, R
+		_int iDirection = -1;
+		if (fDot >= 0.0f)
+		{
+			if (0 <= fTheta && 90 > fTheta)  // 菊率
+				iDirection = 0;
+			else if (90 <= fTheta && 180 >= fTheta) // 缔率
+				iDirection = 1;
+		}
+		else
+		{
+			if (0 <= fTheta && 90 > fTheta) // 哭率
+				iDirection = 2;
+			else if (90 <= fTheta && 180 >= fTheta) // 坷弗率
+				iDirection = 3;
+		}
+
+		CKiryu_KRC_Hit::KRC_Hit_DESC Desc{ &vDir, fDamage, pAttackedObject->Get_CurrentAnimationName(), iDirection };
+
+		if (m_iCurrentBehavior == (_uint)KRC_BEHAVIOR_STATE::GAURD)
+		{
+			m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Setting_Value((void*)&Desc);
+		}
+		else
+		{
+			m_iCurrentBehavior = (_uint)KRC_BEHAVIOR_STATE::HIT;
+			m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Setting_Value((void*)&Desc);
+		}
+		
 		break;
 	}
 	}
@@ -652,9 +745,6 @@ void CPlayer::KRH_KeyInput(const _float& fTimeDelta)
 	{
 		if (m_pGameInstance->GetKeyState(DIK_W) == HOLD)
 		{
-			if (m_iCurrentBehavior == (_uint)KRH_BEHAVIOR_STATE::WALK || m_iCurrentBehavior == (_uint)KRH_BEHAVIOR_STATE::RUN)
-				m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Reset();
-
 			_vector vLookPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION) + (m_pTransformCom->Get_State(CTransform::STATE_LOOK) + m_pGameInstance->Get_CamLook());
 			m_pGameInstance->Get_CamLook();
 			m_iCurrentBehavior = isShift ? (_uint)KRH_BEHAVIOR_STATE::WALK : (_uint)KRH_BEHAVIOR_STATE::RUN;
@@ -663,6 +753,9 @@ void CPlayer::KRH_KeyInput(const _float& fTimeDelta)
 			Compute_MoveDirection_FB();
 			m_pTransformCom->LookAt_For_LandObject(vLookPos);
 			isMove = true;
+
+			if (m_iCurrentBehavior == (_uint)KRH_BEHAVIOR_STATE::WALK || m_iCurrentBehavior == (_uint)KRH_BEHAVIOR_STATE::RUN)
+				m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Reset();
 		}
 
 		if (m_pGameInstance->GetKeyState(DIK_S) == HOLD)
@@ -1012,6 +1105,15 @@ CGameObject* CPlayer::Clone(void* pArg)
 void CPlayer::Free()
 {
 	__super::Free();
+
+	for (size_t i = 0; i < BATTLE_STYLE_END; i++)
+	{
+		for (auto& pair : m_AnimationTree[i])
+			Safe_Release(pair.second);
+
+		m_AnimationTree[i].clear();
+	}
+
 	Safe_Release(m_pUIManager);
 	Safe_Release(m_pShaderCom);
 }
