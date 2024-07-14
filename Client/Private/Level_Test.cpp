@@ -21,7 +21,8 @@ CLevel_Test::CLevel_Test(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 
 HRESULT CLevel_Test::Initialize()
 {
-	if (FAILED(Ready_Player(TEXT("Layer_Player"))))
+
+ 	if (FAILED(Ready_Player(TEXT("Layer_Player"))))
 		return E_FAIL;
 
 	/*if (FAILED(Ready_Monster(TEXT("Layer_Monster"))))
@@ -37,8 +38,8 @@ HRESULT CLevel_Test::Initialize()
 		return E_FAIL;
 
 	/* Å¬¶ó ÆÄ½Ì */
-	m_pFileTotalManager->Set_MapObj_In_Client(5, LEVEL_TEST);
-	m_pFileTotalManager->Set_Lights_In_Client(5);
+	m_pFileTotalManager->Set_MapObj_In_Client(0, LEVEL_TEST);
+	m_pFileTotalManager->Set_Lights_In_Client(2);
 	m_pFileTotalManager->Set_Collider_In_Client(1, LEVEL_TEST);
 
 	_uint i = m_pGameInstance->Get_CurrentLevel();

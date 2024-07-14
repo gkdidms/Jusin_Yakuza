@@ -43,10 +43,9 @@ VS_OUT VS_MAIN(VS_IN In)
     matWVP = mul(matWV, g_ProjMatrix);
 
     Out.vPosition = mul(vPosition, matWVP);
-    //Out.vNormal = normalize(mul(vNormal, g_WorldMatrix));
-    Out.vNormal = normalize(vNormal);//법선
+    Out.vNormal = normalize(vNormal);
     Out.vTexcoord = In.vTexcoord;
-    Out.vProjPos = Out.vPosition, 1.f;
+    Out.vProjPos = Out.vPosition;
     Out.vLocalPos = float4(In.vPosition, 1.f);
     //Out.vTangent = normalize(mul(vector(In.vTangent.xyz, 0.f), g_WorldMatrix));
     Out.vTangent = normalize(vector(In.vTangent.xyz, 0.f)); //접선
@@ -76,12 +75,7 @@ VS_OUT_LIGHTDEPTH VS_MAIN_LIGHTDEPTH(VS_IN In)
 
     vector vPosition = mul(float4(In.vPosition, 1.f), TransformMatrix);
 
-    matrix matWV, matWVP;
-
-    matWV = mul(g_WorldMatrix, g_ViewMatrix);
-    matWVP = mul(matWV, g_ProjMatrix);
-
-    Out.vPosition = mul(vPosition, matWVP);
+    Out.vPosition = mul(vPosition, g_WorldMatrix);
     Out.vTexcoord = In.vTexcoord;
     Out.vProjPos = Out.vPosition;
 
@@ -108,17 +102,18 @@ struct GS_OUT
 [maxvertexcount(9)]
 void GS_MAIN_LIGHTDEPTH(triangle GS_IN In[3], inout TriangleStream<GS_OUT> Out)
 {
-    GS_OUT Output[3];
+    GS_OUT Output[3] = (GS_OUT[3])0;
+    
     for (int i = 0; i < 3; i++)
     {
         for (int j = 0; j < 3; j++)
         {
-            float4 vViewPos = mul(In[j].vPosition, g_ViewMatrixArray[i]);
-            vViewPos.z += 2.5f;
-            Output[j].vPosition = mul(vViewPos, g_ProjMatrixArray[i]);
-            Output[j].vProjPos = In[j].vProjPos;
+            float4 vPosition = mul(In[j].vPosition, mul(g_ViewMatrixArray[i], g_ProjMatrixArray[i]));
+            Output[j].vPosition = vPosition;
+            Output[j].vProjPos = vPosition;
             Output[j].vTexcoord = In[j].vTexcoord;
             Output[j].fIndex = i;
+            
             Out.Append(Output[j]);
         }
         Out.RestartStrip();
@@ -153,14 +148,23 @@ PS_OUT PS_MAIN(PS_IN In)
     
     vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
     vector vMultiDiffuce = g_MultiDiffuseTexture.Sample(LinearSampler, In.vTexcoord);
-    vector vTangentDesc = g_NormalTexture.Sample(LinearSampler, In.vTexcoord);
+    vector vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexcoord);
+    vNormalDesc = vNormalDesc * 2.f - 1.f;
+    vector vNormal = mul(vector(vNormalDesc.w, vNormalDesc.y, 1.f, 0.f), g_WorldMatrix);
     
+    vector vTangent = normalize(vector(In.vTangent.xyz, 0.f));
+    vector vBinormal = vector(cross(vNormal.xyz, In.vTangent.xyz), 0.f);
+    
+    float3x3 WorldMatrix = float3x3(In.vTangent.xyz, vBinormal.xyz, vNormal.xyz);
+    vector vNormalBTN = vector(mul(In.vNormal.xyz, WorldMatrix), 0.f);
+
     //옵젝(물체 기준 좌표계) ->탄젠트 :법선벡터xyz*0.5+0.5=법선맵(0~1)렌더타겟 저장시 이렇게
     //탄젠트(표면 기준 좌표계) ->옵젝 : 법선맵rgb*2 -1 =법선벡터(-1~1)저장된 렌더타겟에서 꺼내 쓸떄.
     
    // vector vTangentTexture =vector( vTangentDesc.xyzw * 2.f - 1.f); //탄젠트 노멀(텍스처로 받은 초록색 노멀 값)을 옵젝 노멀로 변경 범위 (-1~1)[접선]
-    float3 vLocalTangent = float3(vTangentDesc.w, vTangentDesc.y, 1.f); //argb라고 가정하고 순서변경(텍스처는 y,z 교체가 안되서 들어옴)(접선 생성 완료)
+    //float3 vLocalTangent = float3(vTangentDesc.w, vTangentDesc.y, 1.f); //argb라고 가정하고 순서변경(텍스처는 y,z 교체가 안되서 들어옴)(접선 생성 완료)
 
+    /*
     float3 vLocalNormal = In.vNormal.xyz; //이건 옵젝 노멀임[법선]
 
     
@@ -175,6 +179,7 @@ PS_OUT PS_MAIN(PS_IN In)
     float3 vFinalNormal = mul(vLocalNormal.xyz, WorldMatrix);
     
     vFinalNormal = mul(vector(vWorldNormal.xyz, 0.f), g_WorldMatrix);
+*/
     
     if (vDiffuse.a < 0.1f)
         discard;
@@ -203,13 +208,20 @@ PS_OUT PS_MAIN(PS_IN In)
         else
             Out.vDiffuse = vDiffuse;
     }
+    
     float RimIndex = 0.f;
+    
     if(g_isRimLight)
         RimIndex = 1.f;
 
+    Out.vNormal = vector(vNormalBTN.xyz * 0.5f + 0.5f, 0.f);
+    Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_fFar, RimIndex, 1.f);
+
     
+    /*
     Out.vNormal = vector(vFinalNormal.xyz * 0.5f + 0.5f, 0.f);
     Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_fFar, RimIndex, 1.f);
+*/
     Out.vMulti = vMultiDiffuce;
     
     return Out;
@@ -320,11 +332,10 @@ technique11 DefaultTechnique
 
     pass LightDepth
     {
-        SetRasterizerState(RS_Cull_NON_CW);
+        SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_Default, 0);
         SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 
-		/* 어떤 셰이덜르 국동할지. 셰이더를 몇 버젼으로 컴파일할지. 진입점함수가 무엇이찌. */
         VertexShader = compile vs_5_0 VS_MAIN_LIGHTDEPTH();
         GeometryShader = compile gs_5_0 GS_MAIN_LIGHTDEPTH();
         HullShader = NULL;

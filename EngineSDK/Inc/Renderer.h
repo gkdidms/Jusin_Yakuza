@@ -136,12 +136,22 @@ private:
     ID3D11DepthStencilView* m_pLightDepthStencilView = { nullptr };
     ID3D11ShaderResourceView* m_pSSAONoiseView = { nullptr };
 
-private:
-    _bool m_isHDR = { false };
-    _bool m_isSSAO = { false };
-    _bool m_isPBR = { false };
-    _bool m_isBOF = { false };
-    _bool m_isShadow = { false };
+#ifdef _DEBUG
+            private:
+                _bool m_isHDR = { false };
+                _bool m_isSSAO = { false };
+                _bool m_isPBR = { false };
+                _bool m_isBOF = { false };
+                _bool m_isShadow = { false };
+
+#else
+            private:
+                _bool m_isHDR = { true };
+                _bool m_isSSAO = { true };
+                _bool m_isPBR = { true };
+                _bool m_isBOF = { true };
+                _bool m_isShadow = { true };
+#endif // DEBUG
 
     _float m_fHDRLight = { 1.f };
     _float m_fSSAORadiuse = { 0.003f };

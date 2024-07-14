@@ -57,31 +57,6 @@ void CKuze::Late_Tick(const _float& fTimeDelta)
 	m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
 }
 
-HRESULT CKuze::Render()
-{
-	if (FAILED(Bind_ResourceData()))
-		return E_FAIL;
-
-	int i = 0;
-	for (auto& pMesh : m_pModelCom->Get_Meshes())
-	{
-		m_pModelCom->Bind_BoneMatrices(m_pShaderCom, "g_BoneMatrices", i);
-
-		m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE);
-
-		if (pMesh->Get_AlphaApply())
-			m_pShaderCom->Begin(1);     //블랜드
-		else
-			m_pShaderCom->Begin(0);		//디폴트
-
-		m_pModelCom->Render(i);
-
-		i++;
-	}
-
-	return S_OK;
-}
-
 HRESULT CKuze::Add_Components()
 {
 	if (FAILED(__super::Add_Component(LEVEL_TEST, TEXT("Prototype_Component_Shader_VtxAnim"),

@@ -74,7 +74,9 @@ HRESULT CCollider::Initialize(void* pArg)
 	if (nullptr == m_pCurrentBounding)
 		return E_FAIL;
 
+#ifdef _DEBUG
 	m_vColor = m_pCurrentBounding->Get_Color();
+#endif // _DEBUG
 
 	return S_OK;
 }
@@ -110,6 +112,7 @@ void CCollider::Set_Rotation(const _float3& vRotation)
 	m_pCurrentBounding->Set_Rotation(vRotation);
 }
 
+#ifdef _DEBUG
 void CCollider::Set_Color(const _float4& vColor)
 {
 	m_pCurrentBounding->Set_Color(vColor);
@@ -119,6 +122,7 @@ void CCollider::Reset_Color()
 {
 	m_pCurrentBounding->Set_Color(m_vColor);
 }
+#endif // _DEBUG
 
 _bool CCollider::Intersect(CCollider* pTargetCollider, _float fDistance)
 {

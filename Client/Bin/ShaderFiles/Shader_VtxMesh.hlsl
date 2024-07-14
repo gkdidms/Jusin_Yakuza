@@ -55,11 +55,6 @@ struct VS_OUT_LIGHTDEPTH
 VS_OUT_LIGHTDEPTH VS_MAIN_LIGHTDEPTH(VS_IN In)
 {
     VS_OUT_LIGHTDEPTH Out = (VS_OUT_LIGHTDEPTH) 0;
-    
-    matrix matWV, matWVP;
-
-    matWV = mul(g_WorldMatrix, g_ViewMatrix);
-    matWVP = mul(matWV, g_ProjMatrix);
 
     Out.vPosition = mul(vector(In.vPosition, 1.f), g_WorldMatrix);
     Out.vTexcoord = In.vTexcoord;
@@ -89,15 +84,15 @@ struct GS_OUT
 [maxvertexcount(9)]
 void GS_MAIN_LIGHTDEPTH(triangle GS_IN In[3], inout TriangleStream<GS_OUT> Out)
 {
-    GS_OUT Output[3];
+    GS_OUT Output[3] = (GS_OUT[3]) 0;
+    
     for (int i = 0; i < 3; i++)
     {
         for (int j = 0; j < 3; j++)
         {
-            float4 vViewPos = mul(In[j].vPosition, g_ViewMatrixArray[i]);
-            vViewPos.z += 2.5f;
-            Output[j].vPosition = mul(vViewPos, g_ProjMatrixArray[i]);
-            Output[j].vProjPos = In[j].vProjPos;
+            float4 vPosition = mul(In[j].vPosition, mul(g_ViewMatrixArray[i], g_ProjMatrixArray[i]));
+            Output[j].vPosition = vPosition;
+            Output[j].vProjPos = vPosition;
             Output[j].vTexcoord = In[j].vTexcoord;
             Output[j].fIndex = i;
             Out.Append(Output[j]);

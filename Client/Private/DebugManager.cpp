@@ -1,3 +1,8 @@
+#ifdef _DEBUG
+
+
+
+
 #include "DebugManager.h"
 
 #include "GameInstance.h"
@@ -233,3 +238,5 @@ void CDebugManager::Free()
 
     Safe_Release(m_pUIManager);
 }
+
+#endif // _DEBUG

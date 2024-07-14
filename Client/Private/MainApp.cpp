@@ -73,14 +73,14 @@ HRESULT CMainApp::Initialize()
 
 void CMainApp::Tick(const _float& fTimeDelta)
 {
-	m_fTimeAcc += fTimeDelta;
-
 	m_pGameInstance->Tick(fTimeDelta);
 	m_pCollisionManager->Tick();
 	m_pUIManager->Tick(fTimeDelta);
 	m_pUIManager->Late_Tick(fTimeDelta);	
 
 #ifdef _DEBUG
+	m_fTimeAcc += fTimeDelta;
+
 	if (m_pGameInstance->GetKeyState(DIK_F6) == TAP)
 	{
 		m_pFileTotalManager->Load_Cinemachine(0, LEVEL_TEST);
@@ -234,8 +234,6 @@ void CMainApp::Free()
 {
 	Safe_Release(m_pContext);
 	Safe_Release(m_pDevice);
-
-
 
 #ifdef _DEBUG
 	Safe_Release(m_pDebugMananger);
