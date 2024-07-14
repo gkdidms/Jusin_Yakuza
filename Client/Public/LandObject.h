@@ -83,7 +83,7 @@ protected:
     _bool m_isObjectRender = { true };
 #endif // _DEBUG
 
-
+    _bool m_isRimLight = { true };//
 protected:
     virtual HRESULT Add_Components();
     virtual HRESULT Bind_ResourceData();
