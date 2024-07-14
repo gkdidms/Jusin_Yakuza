@@ -90,9 +90,9 @@ void GS_MAIN_LIGHTDEPTH(triangle GS_IN In[3], inout TriangleStream<GS_OUT> Out)
     {
         for (int j = 0; j < 3; j++)
         {
-            float4 vViewPos = mul(In[j].vPosition, mul(g_ViewMatrixArray[i], g_ProjMatrixArray[i]));
-            Output[j].vPosition = vViewPos;
-            Output[j].vProjPos = vViewPos;
+            float4 vPosition = mul(In[j].vPosition, mul(g_ViewMatrixArray[i], g_ProjMatrixArray[i]));
+            Output[j].vPosition = vPosition;
+            Output[j].vProjPos = vPosition;
             Output[j].vTexcoord = In[j].vTexcoord;
             Output[j].fIndex = i;
             Out.Append(Output[j]);

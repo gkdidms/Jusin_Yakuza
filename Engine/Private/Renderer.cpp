@@ -1014,22 +1014,6 @@ void CRenderer::Render_CopyBackBuffer()
 	if (FAILED(m_pShader->Bind_RawValue("g_isShadow", &m_isShadow, sizeof(_bool))))
 		return;
 
-	//¿¬»ê
-	vector<_float> CasecadeDistance = { 10.f, 24.f, 40.f };
-	_float4 Casecades[3];
-
-	for (_int i = 0; i < 3; ++i)
-	{
-		_vector vPos = XMVectorSet(0.f, 0.f, CasecadeDistance[i], 1.f);
-		vPos = XMVector3TransformCoord(vPos, m_pGameInstance->Get_Transform_Matrix(CPipeLine::D3DTS_VIEW));
-		vPos = XMVector3TransformCoord(vPos, m_pGameInstance->Get_Transform_Matrix(CPipeLine::D3DTS_PROJ));
-		//vPos.m128_f32[3] = 1.f;
-		XMStoreFloat4(&Casecades[i], vPos);
-	}
-
-	if (FAILED(m_pShader->Bind_Vectors("g_CasecadesZ", Casecades, 3)))
-		return;
-
 	_vector vCamDir = m_pGameInstance->Get_CamLook();
 	if (FAILED(m_pShader->Bind_RawValue("g_vCamDir", &vCamDir, sizeof(_vector))))
 		return;
@@ -1044,7 +1028,7 @@ void CRenderer::Render_CopyBackBuffer()
 		return;
 	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_LightDepth"), m_pShader, "g_LightDepthTextureArray")))
 		return;
-	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Depth"), m_pShader, "g_DepthTexture")))
+	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_NonBlendDepth"), m_pShader, "g_DepthTexture")))
 		return;
 	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Specular"), m_pShader, "g_SpecularTexture")))
 		return;

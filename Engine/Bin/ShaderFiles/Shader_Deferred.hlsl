@@ -235,7 +235,6 @@ PS_OUT PS_MAIN_COPY_BACKBUFFER_RESULT(PS_IN In)
         vWorldPos.w = 1.f;
 
         vWorldPos = vWorldPos * (vDepthDesc.y * g_fFar);
-        float fProjZ = vWorldPos.z;
 
 	        /* 뷰스페이스 상의 위치를 구한다. */
         vWorldPos = mul(vWorldPos, g_ProjMatrixInv);
@@ -243,21 +242,16 @@ PS_OUT PS_MAIN_COPY_BACKBUFFER_RESULT(PS_IN In)
 	        /* 월드스페이스 상의 위치를 구한다. */
         vWorldPos = mul(vWorldPos, g_ViewMatrixInv);
         
-        //vector vCamPos = Get_CameraProj(vWorldPos);
-        
         for (int i = 0; i < 3; ++i)
         {
-            vector vLightPos = mul(vWorldPos, g_ViewMatrixArray[i]);
-            vLightPos = mul(vLightPos, g_ProjMatrixArray[i]);
+            vector vLightPos = mul(vWorldPos, mul(g_ViewMatrixArray[i], g_ProjMatrixArray[i]));
         
             float2 vTexcoord;
             vTexcoord.x = (vLightPos.x / vLightPos.w) * 0.5f + 0.5f;
             vTexcoord.y = (vLightPos.y / vLightPos.w) * -0.5f + 0.5f;
             
             if (vTexcoord.x < 0 || vTexcoord.x > 1 || vTexcoord.y < 0 || vTexcoord.y > 1)
-            {
                 continue;
-            }
         
             vector vLightDepthDesc = g_LightDepthTextureArray.Sample(ShadowSampler, float3(vTexcoord, i));
             float fLightOldDepth = vLightDepthDesc.x * 1000.f;
@@ -265,7 +259,6 @@ PS_OUT PS_MAIN_COPY_BACKBUFFER_RESULT(PS_IN In)
             if (fLightOldDepth - 0.1f < vLightPos.w)
             {
                 Out.vColor = vector(Out.vColor.rgb * 0.5f, 1.f);
-                
                 break;
             }
         }
