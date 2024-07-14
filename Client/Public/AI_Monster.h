@@ -73,7 +73,7 @@ protected:
     _uint m_iSkill = { SKILL_END };
 
 protected:
-    _float m_fDelayAttackDuration = { 10.f };
+    _float m_fDelayAttackDuration = { 2.f };
     _float m_fAttackDelayTime = { 0.f }; // 공격이 끝난 후 지속시간
 
     _float m_fBreakDuration = { 0.f }; // 랜덤으로 부여받는다.

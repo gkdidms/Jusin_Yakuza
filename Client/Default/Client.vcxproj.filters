@@ -305,6 +305,27 @@
     <ClCompile Include="..\Private\Kiryu_KRH_Walk.cpp">
       <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRH\Walk</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\Kiryu_KRC_Attack.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRC\Attack</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Kiryu_KRC_BattleStart.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRC\BattleStart</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Kiryu_KRC_Hit.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRC\Hit</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Kiryu_KRC_Idle.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRC\Idle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Kiryu_KRC_Run.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRC\Run</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Kiryu_KRC_Sway.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRC\Sway</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Kiryu_KRC_Walk.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRC\Walk</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\MainApp.h">
@@ -641,6 +662,27 @@
     <ClInclude Include="..\Public\Kiryu_KRH_Walk.h">
       <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRH\Walk</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Kiryu_KRC_Attack.h">
+      <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRC\Attack</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Kiryu_KRC_BattleStart.h">
+      <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRC\BattleStart</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Kiryu_KRC_Hit.h">
+      <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRC\Hit</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Kiryu_KRC_Idle.h">
+      <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRC\Idle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Kiryu_KRC_Run.h">
+      <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRC\Run</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Kiryu_KRC_Sway.h">
+      <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRC\Sway</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Kiryu_KRC_Walk.h">
+      <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRC\Walk</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -957,6 +999,27 @@
     <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRH\Attack">
       <UniqueIdentifier>{6953a11a-cc95-482b-8336-fe9b43317e6c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRC\Attack">
+      <UniqueIdentifier>{04ed9b66-b8f1-43b7-95bc-9788034fe343}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRC\BattleStart">
+      <UniqueIdentifier>{c97e779b-c5cb-4626-a965-f83263c847ac}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRC\Hit">
+      <UniqueIdentifier>{89f935c2-efbe-4088-9fc1-04a965ba2448}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRC\Idle">
+      <UniqueIdentifier>{417549be-3e74-4941-aafd-0beaf5a30d96}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRC\Sway">
+      <UniqueIdentifier>{758aea8f-a11c-407a-a089-46d20ce44eac}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRC\Walk">
+      <UniqueIdentifier>{2d6ebb7e-09ee-4ed6-8dc7-1555022a0ff6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRC\Run">
+      <UniqueIdentifier>{05554c49-48f2-436a-81e4-f66627213c96}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Client.rc">
@@ -997,5 +1060,10 @@
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxUI.hlsl">
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\Bin\ShaderFiles\Shader_Client_Defines.hlsli">
+      <Filter>97.ShaderFiles</Filter>
+    </None>
   </ItemGroup>
 </Project>

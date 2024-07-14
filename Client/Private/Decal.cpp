@@ -96,7 +96,7 @@ HRESULT CDecal::Bind_ShaderResources()
         return E_FAIL;
     if (FAILED(m_pShaderCubeCom->Bind_Matrix("g_ProjMatrixInv", m_pGameInstance->Get_Transform_Inverse_Float4x4(CPipeLine::D3DTS_PROJ))))
         return E_FAIL;
-    if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCubeCom, "g_Texture2D", 0)))
+    if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCubeCom, "g_Texture", 0)))
         return E_FAIL;
 
 

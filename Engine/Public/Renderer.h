@@ -8,7 +8,6 @@ class ENGINE_DLL CRenderer :
 public:
     enum RENDERER_STATE {
         RENDER_PRIORITY,
-        RENDER_PASSIVE_SHADOW,
         RENDER_SHADOWOBJ,
         RENDER_NONBLENDER,
         RENDER_DECAL,

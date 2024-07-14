@@ -187,6 +187,13 @@
     <ClInclude Include="..\Public\Image_Texture.h" />
     <ClInclude Include="..\Public\InventoryManager.h" />
     <ClInclude Include="..\Public\ItemData.h" />
+    <ClInclude Include="..\Public\Kiryu_KRC_Attack.h" />
+    <ClInclude Include="..\Public\Kiryu_KRC_BattleStart.h" />
+    <ClInclude Include="..\Public\Kiryu_KRC_Hit.h" />
+    <ClInclude Include="..\Public\Kiryu_KRC_Idle.h" />
+    <ClInclude Include="..\Public\Kiryu_KRC_Run.h" />
+    <ClInclude Include="..\Public\Kiryu_KRC_Sway.h" />
+    <ClInclude Include="..\Public\Kiryu_KRC_Walk.h" />
     <ClInclude Include="..\Public\Kiryu_KRH_Attack.h" />
     <ClInclude Include="..\Public\Kiryu_KRH_BattleStart.h" />
     <ClInclude Include="..\Public\Kiryu_KRH_Hit.h" />
@@ -297,6 +304,13 @@
     <ClCompile Include="..\Private\Image_Texture.cpp" />
     <ClCompile Include="..\Private\InventoryManager.cpp" />
     <ClCompile Include="..\Private\ItemData.cpp" />
+    <ClCompile Include="..\Private\Kiryu_KRC_Attack.cpp" />
+    <ClCompile Include="..\Private\Kiryu_KRC_BattleStart.cpp" />
+    <ClCompile Include="..\Private\Kiryu_KRC_Hit.cpp" />
+    <ClCompile Include="..\Private\Kiryu_KRC_Idle.cpp" />
+    <ClCompile Include="..\Private\Kiryu_KRC_Run.cpp" />
+    <ClCompile Include="..\Private\Kiryu_KRC_Sway.cpp" />
+    <ClCompile Include="..\Private\Kiryu_KRC_Walk.cpp" />
     <ClCompile Include="..\Private\Kiryu_KRH_Attack.cpp" />
     <ClCompile Include="..\Private\Kiryu_KRH_BattleStart.cpp" />
     <ClCompile Include="..\Private\Kiryu_KRH_Hit.cpp" />
@@ -393,6 +407,9 @@
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxNorTex.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxPosTex.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxUI.hlsl" />
+  </ItemGroup>
+  <ItemGroup>
+    <None Include="..\Bin\ShaderFiles\Shader_Client_Defines.hlsli" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

@@ -14,10 +14,10 @@ CKiryu_KRS_Attack::CKiryu_KRS_Attack()
 	m_AnimationIndices.push_back(362);	//[362]	p_krs_cmb_04[p_krs_cmb_04]
 
 	/* 4 ~ 7 */
-	m_AnimationIndices.push_back(351);	//+[351]	p_krs_cmb_01_fin[p_krs_cmb_01_fin]
-	m_AnimationIndices.push_back(357);	//+[357]	p_krs_cmb_02_fin[p_krs_cmb_02_fin]
-	m_AnimationIndices.push_back(361);	//+[361]	p_krs_cmb_03_fin[p_krs_cmb_03_fin]
-	m_AnimationIndices.push_back(363);	//+[363]	p_krs_cmb_04_fin[p_krs_cmb_04_fin]
+	m_AnimationIndices.push_back(351);	//[351]	p_krs_cmb_01_fin[p_krs_cmb_01_fin]
+	m_AnimationIndices.push_back(357);	//[357]	p_krs_cmb_02_fin[p_krs_cmb_02_fin]
+	m_AnimationIndices.push_back(361);	//[361]	p_krs_cmb_03_fin[p_krs_cmb_03_fin]
+	m_AnimationIndices.push_back(363);	//[363]	p_krs_cmb_04_fin[p_krs_cmb_04_fin]
 	
 
 	m_AnimationIndices.push_back(390);	//[390]	p_krs_sync_cmb_03_fin[p_krs_sync_cmb_03_fin]

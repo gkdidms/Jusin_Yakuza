@@ -1,16 +1,5 @@
-
 #include "Engine_Shader_Defines.hlsli"
-
-/* 컨스턴트 테이블(상수테이블) */
-matrix g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
-
-Texture2D g_DiffuseTexture;
-
-float g_fFar = { 3000.f };
-float g_fTimeDelta;
-
-vector g_vCamPosition;
-
+#include "Shader_Client_Defines.hlsli"
 
 
 struct VS_IN
