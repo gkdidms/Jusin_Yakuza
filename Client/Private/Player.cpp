@@ -309,15 +309,74 @@ void CPlayer::Take_Damage(_uint iHitColliderType, const _float3& vDir, _float fD
 	}
 	case CPlayer::KRH:
 	{
-		//CKiryu_KRH_Hit::KRH_Hit_DESC Desc{ &vDir, fDamage, pAttackedObject->Get_CurrentAnimationName() };
+		_vector vAttackedObjectLook = pAttackedObject->Get_TransformCom()->Get_State(CTransform::STATE_LOOK);
+		_vector vMyLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
 
-		//m_iCurrentBehavior = (_uint)KRS_BEHAVIOR_STATE::HIT;
-		//m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Setting_Value((void*)&Desc);
+		_float fTheta = 0.0f;
+		_float fDot = XMVectorGetX(XMVector3Dot(vAttackedObjectLook, vMyLook));
+		fTheta = XMConvertToDegrees(acosf(fDot));
+
+		// F, B, L, R
+		_int iDirection = -1;
+		if (fDot >= 0.0f)
+		{
+			if (0 <= fTheta && 90 > fTheta)  // 菊率
+				iDirection = 0;
+			else if (90 <= fTheta && 180 >= fTheta) // 缔率
+				iDirection = 1;
+		}
+		else
+		{
+			if (0 <= fTheta && 90 > fTheta) // 坷弗率
+				iDirection = 3;
+			else if (90 <= fTheta && 180 >= fTheta) // 哭率
+				iDirection = 2;
+		}
+
+		CKiryu_KRH_Hit::KRH_Hit_DESC Desc{ &vDir, fDamage, pAttackedObject->Get_CurrentAnimationName(), iDirection };
+
+		m_iCurrentBehavior = (_uint)KRH_BEHAVIOR_STATE::HIT;
+		m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Setting_Value((void*)&Desc);
 		break;
 	}
 	case CPlayer::KRC:
 	{
+		_vector vAttackedObjectLook = pAttackedObject->Get_TransformCom()->Get_State(CTransform::STATE_LOOK);
+		_vector vMyLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
 
+		_float fTheta = 0.0f;
+		_float fDot = XMVectorGetX(XMVector3Dot(vAttackedObjectLook, vMyLook));
+		fTheta = XMConvertToDegrees(acosf(fDot));
+
+		// F, B, L, R
+		_int iDirection = -1;
+		if (fDot >= 0.0f)
+		{
+			if (0 <= fTheta && 90 > fTheta)  // 菊率
+				iDirection = 0;
+			else if (90 <= fTheta && 180 >= fTheta) // 缔率
+				iDirection = 1;
+		}
+		else
+		{
+			if (0 <= fTheta && 90 > fTheta) // 坷弗率
+				iDirection = 3;
+			else if (90 <= fTheta && 180 >= fTheta) // 哭率
+				iDirection = 2;
+		}
+
+		CKiryu_KRC_Hit::KRC_Hit_DESC Desc{ &vDir, fDamage, pAttackedObject->Get_CurrentAnimationName(), iDirection };
+
+		if (m_iCurrentBehavior == (_uint)KRC_BEHAVIOR_STATE::GAURD)
+		{
+			m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Setting_Value((void*)&Desc);
+		}
+		else
+		{
+			m_iCurrentBehavior = (_uint)KRC_BEHAVIOR_STATE::HIT;
+			m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Setting_Value((void*)&Desc);
+		}
+		
 		break;
 	}
 	}

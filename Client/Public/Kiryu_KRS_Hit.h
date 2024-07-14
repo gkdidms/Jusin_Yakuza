@@ -19,14 +19,6 @@ public:
 		_uint iDirection;				// 때리는 상대방의 방향
 	};
 
-	enum KRS_HIT_TYPE
-	{
-		HEAD,
-		BODY,
-		LEG,
-
-	};
-
 private:
 	CKiryu_KRS_Hit();
 	virtual ~CKiryu_KRS_Hit() = default;

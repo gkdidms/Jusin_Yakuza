@@ -10,6 +10,15 @@ BEGIN(Client)
 
 class CKiryu_KRH_Hit : public CBehaviorAnimation
 {
+public:
+	struct KRH_Hit_DESC
+	{
+		const _float3* pDir;			// 때리는 방향(주먹이나 발의 이동방향), 파티클에서 사용
+		_float fDamage;
+		string strAnimationName;		// 상대방의 애니메이션에 따른 히트모션을 실행하기 위함
+		_uint iDirection;				// 때리는 상대방의 방향
+	};
+
 private:
 	CKiryu_KRH_Hit();
 	virtual ~CKiryu_KRH_Hit() = default;
@@ -18,6 +27,8 @@ public:
 	virtual void Tick(const _float& fTimeDelta) override;
 	virtual void Change_Animation() override;
 	virtual _bool Get_AnimationEnd() override;
+	virtual void Reset();
+	virtual void Setting_Value(void* pValue = nullptr);
 
 public:
 	static CBehaviorAnimation* Create(class CPlayer* pPlayer);

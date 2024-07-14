@@ -406,36 +406,7 @@ void CKiryu_KRS_Hit::Setting_Value(void* pValue)
 	}
 	else if ("e_kta_atk_gurad_run" == strAnimName)
 	{
-		/*
-		* 	m_AnimationIndices.push_back(33);		//[33]	c_dwn_body_b[c_dwn_body_b]				22
-			m_AnimationIndices.push_back(34);		//[34]	c_dwn_body_f[c_dwn_body_f]				23
-			m_AnimationIndices.push_back(35);		//[35]	c_dwn_body_l[c_dwn_body_l]				24
-			m_AnimationIndices.push_back(36);		//[36]	c_dwn_body_r[c_dwn_body_r]				25
-		*/
-
-		switch (pDesc->iDirection)
-		{
-		case CPlayer::F:
-		{
-			m_iCurrentIndex = 23;
-			break;
-		}
-		case CPlayer::B:
-		{
-			m_iCurrentIndex = 22;
-			break;
-		}
-		case CPlayer::L:
-		{
-			m_iCurrentIndex = 24;
-			break;
-		}
-		case CPlayer::R:
-		{
-			m_iCurrentIndex = 25;
-			break;
-		}
-		}
+		// 맞으면 넘어지는 스킬
 	}
 	else if ("e_kta_cmb_a_01" == strAnimName)
 	{
