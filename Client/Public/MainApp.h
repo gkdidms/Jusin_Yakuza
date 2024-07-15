@@ -36,13 +36,14 @@ private:
 #endif // _DEBUG
 
 #ifdef _DEBUG
+
+#endif
 private:
 	_tchar					m_szFPS[MAX_PATH] = TEXT("");
 	_float					m_fTimeAcc = {};
 	_uint					m_iNumRender = {};
 
 	_bool m_isDebug = { false };
-#endif
 
 public:
 	HRESULT Open_Level(LEVEL eLevelID);
