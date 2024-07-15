@@ -1,5 +1,5 @@
 #include "VIBuffer_Instance_Rect.h"
-
+#include "GameInstance.h"
 CVIBuffer_Instance_Rect::CVIBuffer_Instance_Rect(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CVIBuffer_Instance{ pDevice, pContext }
 {
@@ -10,25 +10,42 @@ CVIBuffer_Instance_Rect::CVIBuffer_Instance_Rect(const CVIBuffer_Instance_Rect& 
 {
 }
 
-HRESULT CVIBuffer_Instance_Rect::Initialize_Prototype(const CVIBuffer_Instance::INSTANCE_DESC& InstanceDesc)
+HRESULT CVIBuffer_Instance_Rect::Initialize_Prototype()
 {
-	if (FAILED(__super::Initialize_Prototype()))
-		return E_FAIL;
-	
-	m_InstanceDesc = InstanceDesc;
+	return S_OK;
+}
 
-	m_GIFormat = DXGI_FORMAT_R16_UINT;
-	m_Primitive_Topology = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
-	m_iNumVertexBuffers = 2;
-	m_iNumVertices = 4;
-	m_iVertexStride = sizeof(VTXPOSTEX);
+HRESULT CVIBuffer_Instance_Rect::Initialize(void* pArg)
+{
+	INSTANCE_RECT_DESC* pDesc = static_cast<INSTANCE_RECT_DESC*>(pArg);
+	m_pParentMatrix[0] = pDesc->pNeckMatrix;
+	m_pParentMatrix[1] = pDesc->pLHandMatrix;
+	m_pParentMatrix[2] = pDesc->pRHandMatrix;
+	m_pParentMatrix[3]= pDesc->pLFootMatrix;
+	m_pParentMatrix[4]= pDesc->pRFootMatrix;
 
-	m_iIndexStride = 2;
-	m_iIndexCountPerInstance = 6;
-	m_iNumIndices = m_iIndexCountPerInstance * m_iNumInstance;
 	m_iInstanceStride = sizeof(VTXMATRIX);
 
+
+	m_InstanceDesc = new INSTANCE_DESC();
+	m_InstanceDesc->iNumInstance = pDesc->iNumInstance;
+	m_InstanceDesc->vRectSize = pDesc->vRectSize;
+	m_InstanceDesc->vSize = pDesc->vSize;
+	m_InstanceDesc->WorldMatrix = pDesc->WorldMatrix;
+
+	m_GIFormat = DXGI_FORMAT_R16_UINT;
+	m_Primitive_Topology = D3D_PRIMITIVE_TOPOLOGY_POINTLIST;
+	m_iNumVertexBuffers = 2;
+	m_iNumVertices = 1;
+	m_iVertexStride = sizeof(VTXPOINT);
+
+	m_iIndexStride = 2;
+	m_iIndexCountPerInstance = 1;
+	m_iNumIndices = m_iIndexCountPerInstance * m_InstanceDesc->iNumInstance;
+	//m_iInstanceStride = sizeof(VTXMATRIX);
+
 #pragma region VERTEX_BUFFER
+	ZeroMemory(&m_Buffer_Desc, sizeof(D3D11_BUFFER_DESC));
 	m_Buffer_Desc.ByteWidth = m_iVertexStride * m_iNumVertices;
 	m_Buffer_Desc.Usage = D3D11_USAGE_DEFAULT;
 	m_Buffer_Desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
@@ -36,19 +53,12 @@ HRESULT CVIBuffer_Instance_Rect::Initialize_Prototype(const CVIBuffer_Instance::
 	m_Buffer_Desc.MiscFlags = 0;
 	m_Buffer_Desc.StructureByteStride = m_iVertexStride;
 
-	VTXPOSTEX* pVertexts = new VTXPOSTEX[m_iNumVertices];
+	VTXPOINT* pVertexts = new VTXPOINT[m_iNumVertices];
+	ZeroMemory(pVertexts, sizeof(VTXPOINT) * m_iNumVertices);
 
-	pVertexts[0].vPosition = _float3{ -0.5f, 0.5f, 0.f };
-	pVertexts[0].vTexcoord = _float2{ 0.f, 0.f };
 
-	pVertexts[1].vPosition = _float3{ 0.5f, 0.5f, 0.f };
-	pVertexts[1].vTexcoord = _float2{ 1.f, 0.f };
-
-	pVertexts[2].vPosition = _float3{ 0.5f, -0.5f, 0.f };
-	pVertexts[2].vTexcoord = _float2{ 1.f, 1.f };
-
-	pVertexts[3].vPosition = _float3{ -0.5f, -0.5f, 0.f };
-	pVertexts[3].vTexcoord = _float2{ 0.f, 1.f };
+	pVertexts[0].vPosition = _float3{ 0.f, 0.f, 0.f };
+	pVertexts[0].vPSize = _float2{ m_InstanceDesc->vSize.x, m_InstanceDesc->vSize.y };
 
 	m_InitialData.pSysMem = pVertexts;
 
@@ -70,18 +80,6 @@ HRESULT CVIBuffer_Instance_Rect::Initialize_Prototype(const CVIBuffer_Instance::
 	_ushort* pIndices = new _ushort[m_iNumIndices];
 	ZeroMemory(pIndices, sizeof(_ushort) * m_iNumIndices);
 
-	_uint iNumIndices = { 0 };
-
-	for (size_t i = 0; i < m_iNumInstance; ++i)
-	{
-		pIndices[iNumIndices++] = 0;
-		pIndices[iNumIndices++] = 1;
-		pIndices[iNumIndices++] = 2;
-
-		pIndices[iNumIndices++] = 0;
-		pIndices[iNumIndices++] = 2;
-		pIndices[iNumIndices++] = 3;
-	}
 	m_InitialData.pSysMem = pIndices;
 
 	__super::Create_Buffer(&m_pIB);
@@ -92,48 +90,33 @@ HRESULT CVIBuffer_Instance_Rect::Initialize_Prototype(const CVIBuffer_Instance::
 #pragma region INSTANCE_BUFFER
 	// 파티클들의 월드 좌표를 저장하기 위한 버퍼
 	// 좌표 뿐만 아니라 다양한 정보를 저장하여 사용한다.
-	m_InstanceBufferDesc.ByteWidth = m_iInstanceStride * m_iNumInstance;
+	m_InstanceBufferDesc.ByteWidth = m_iInstanceStride * m_InstanceDesc->iNumInstance;
 	m_InstanceBufferDesc.Usage = D3D11_USAGE_DYNAMIC;
 	m_InstanceBufferDesc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	m_InstanceBufferDesc.CPUAccessFlags = D3D11_CPU_ACCESS_WRITE;
 	m_InstanceBufferDesc.MiscFlags = 0;
 	m_InstanceBufferDesc.StructureByteStride = m_iInstanceStride;
 
-	VTXMATRIX* pInstanceVertices = new VTXMATRIX[m_iNumInstance];
-	ZeroMemory(pInstanceVertices, sizeof(VTXMATRIX) * m_iNumInstance);
+	VTXMATRIX* pInstanceVertices = new VTXMATRIX[m_InstanceDesc->iNumInstance];
+	ZeroMemory(pInstanceVertices, sizeof(VTXMATRIX) * m_InstanceDesc->iNumInstance);
 
-	m_pSpeeds = new _float[m_iNumInstance];
-	ZeroMemory(m_pSpeeds, sizeof(_float) * m_iNumInstance);
+	m_pCurrentWorldMatrix = m_InstanceDesc->WorldMatrix;
 
+	for (size_t i = 0; i < m_InstanceDesc->iNumInstance; i++)
+	{
+		_float	fRectSize = m_pGameInstance->Get_Random(m_InstanceDesc->vRectSize.x, m_InstanceDesc->vRectSize.y);
 
+		// Right, Up, Loop, Pos 순서로 월드 행렬의 좌표를 넣어준다.
+		pInstanceVertices[i].vRight = _float4(1.f, 0.f, 0.f, 0.f);
+		pInstanceVertices[i].vUp = _float4(0.f, 1.f, 0.f, 0.f);
+		pInstanceVertices[i].vLook = _float4(0.f, 0.f, 1.f, 0.f);
 
-	m_pOriginalPositions = new _float3[m_iNumInstance];
-	ZeroMemory(m_pOriginalPositions, sizeof(_float3) * m_iNumInstance);
+		_matrix WorldMatrix = XMLoadFloat4x4(m_pParentMatrix[i]) ;
 
-	uniform_real_distribution<float>	RangeX(InstanceDesc.vPivotPos.x - InstanceDesc.vRange.x * 0.5f, InstanceDesc.vPivotPos.x + InstanceDesc.vRange.x * 0.5f);
-	uniform_real_distribution<float>	RangeY(InstanceDesc.vPivotPos.y - InstanceDesc.vRange.y * 0.5f, InstanceDesc.vPivotPos.y + InstanceDesc.vRange.y * 0.5f);
-	uniform_real_distribution<float>	RangeZ(InstanceDesc.vPivotPos.z - InstanceDesc.vRange.z * 0.5f, InstanceDesc.vPivotPos.z + InstanceDesc.vRange.z * 0.5f);
+		XMStoreFloat4(&pInstanceVertices[i].vTranslation, WorldMatrix.r[3]);
+	//	pInstanceVertices[i].vTranslation = _float4(m_pParentMatrix[i]->_41+ m_pCurrentWorldMatrix->_41, m_pParentMatrix[i]->_42 + m_pCurrentWorldMatrix->_42, m_pParentMatrix[i]->_43 + m_pCurrentWorldMatrix->_43, 1.f);
+	}
 
-	uniform_real_distribution<float>	Size(InstanceDesc.vSize.x, InstanceDesc.vSize.y);
-	uniform_real_distribution<float>	Speed(InstanceDesc.vSpeed.x, InstanceDesc.vSpeed.y);
-	uniform_real_distribution<float>	Power(InstanceDesc.vPower.x, InstanceDesc.vPower.y);
-
-	uniform_real_distribution<float>	LifeTime(InstanceDesc.vLifeTime.x, InstanceDesc.vLifeTime.y);
-
-	//for (size_t i = 0; i < m_iNumInstance; i++)
-	//{
-	//	_float	fSize = Size(m_RandomNumber);
-	//	// Right, Up, Loop, Pos 순서로 월드 행렬의 좌표를 넣어준다.
-	//	pInstanceVertices[i].vRight = _float4(fSize, 0.f, 0.f, 0.f);
-	//	pInstanceVertices[i].vUp = _float4(0.f, fSize, 0.f, 0.f);
-	//	pInstanceVertices[i].vLook = _float4(0.f, 0.f, fSize, 0.f);
-	//	pInstanceVertices[i].vTranslation = _float4(RangeX(m_RandomNumber), RangeY(m_RandomNumber), RangeZ(m_RandomNumber), 1.f);
-	//	m_pOriginalPositions[i] = _float3(pInstanceVertices[i].vTranslation.x, pInstanceVertices[i].vTranslation.y, pInstanceVertices[i].vTranslation.z); // Loop를 위해 저장해준다.
-	//	pInstanceVertices[i].vLifeTime.x = LifeTime(m_RandomNumber); // 파티클이 살아있을 수 있는 시간.
-
-	//	
-	//	m_pSpeeds[i] = Speed(m_RandomNumber);
-	//}
 	m_InitialData.pSysMem = pInstanceVertices;
 
 	if (FAILED(m_pDevice->CreateBuffer(&m_InstanceBufferDesc, &m_InitialData, &m_pVBInstance)))
@@ -146,16 +129,30 @@ HRESULT CVIBuffer_Instance_Rect::Initialize_Prototype(const CVIBuffer_Instance::
 	return S_OK;
 }
 
-HRESULT CVIBuffer_Instance_Rect::Initialize(void* pArg)
+void CVIBuffer_Instance_Rect::Rim_tick(_float fTimeDelta)
 {
-	return S_OK;
+	D3D11_MAPPED_SUBRESOURCE		SubResource{};
+
+	m_pContext->Map(m_pVBInstance, 0, D3D11_MAP_WRITE_NO_OVERWRITE, 0, &SubResource);
+
+	for (size_t i = 0; i < m_InstanceDesc->iNumInstance; i++)
+	{
+		VTXMATRIX* pVertices = (VTXMATRIX*)SubResource.pData;
+		//_matrix World = XMLoadFloat4x4(m_pParentMatrix[i]);
+
+		_matrix WorldMatrix = XMLoadFloat4x4(m_pParentMatrix[i]) ;
+
+		XMStoreFloat4(&pVertices[i].vTranslation, WorldMatrix.r[3]);
+	}
+
+	m_pContext->Unmap(m_pVBInstance, 0);
 }
 
-CVIBuffer_Instance_Rect* CVIBuffer_Instance_Rect::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const CVIBuffer_Instance::INSTANCE_DESC& InstanceDesc)
+CVIBuffer_Instance_Rect* CVIBuffer_Instance_Rect::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
 	CVIBuffer_Instance_Rect* pInstance = new CVIBuffer_Instance_Rect(pDevice, pContext);
 
-	if (FAILED(pInstance->Initialize_Prototype(InstanceDesc)))
+	if (FAILED(pInstance->Initialize_Prototype()))
 	{
 		MSG_BOX("Failed To Created : CVIBuffer_Instance_Rect");
 		Safe_Release(pInstance);

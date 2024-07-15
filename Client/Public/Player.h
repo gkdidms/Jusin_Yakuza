@@ -136,6 +136,11 @@ private:
     map<_uint, class CBehaviorAnimation*> m_AnimationTree[BATTLE_STYLE_END];
     //ui
     class CUIManager* m_pUIManager = { nullptr };
+    
+#ifdef _DEBUG
+    class CDebugManager* m_pDebugManager = { nullptr };
+#endif // _DEBUG
+
 private:
     BATTLE_STYLE    m_eCurrentStyle = { ADVENTURE };
     // 스타일마다 겹치는 행동이 있을 수 있어서 int값으로 저장하고 형변환하여 저장한다.

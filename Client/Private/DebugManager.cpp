@@ -135,6 +135,7 @@ void CDebugManager::Window_Debug()
         if (ImGui::Checkbox("PlayerRender", &isRender))
             pPlayer->Set_ObjectRender(isRender);
 
+        ImGui::SliderFloat2("Texcoord", (_float*)&m_vTexcoord, 0.f, 1.f);
     }
 
     if (ImGui::CollapsingHeader("Deferred Shader"))
