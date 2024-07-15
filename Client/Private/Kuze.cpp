@@ -78,7 +78,7 @@ void CKuze::Late_Tick(const _float& fTimeDelta)
 	for (auto& pPair : m_pColliders)
 	{
 		if (pPair.second->Get_CollierType() == CSocketCollider::ATTACK && pPair.second->IsOn())
-			m_pCollisionManager->Add_AttackCollider(pPair.second, CCollision_Manager::PLAYER);
+			m_pCollisionManager->Add_AttackCollider(pPair.second, CCollision_Manager::ENEMY);
 	}
 
 	// 현재 켜져있는 Hit용 콜라이더 삽입 (아직까지는 Hit용 콜라이더는 항상 켜져있음)

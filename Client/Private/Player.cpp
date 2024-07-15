@@ -399,7 +399,6 @@ void CPlayer::Take_Damage(_uint iHitColliderType, const _float3& vDir, _float fD
 		break;
 	}
 	}
-	pAttackedObject->Get_CurrentAnimationName();
 }
 
 string CPlayer::Get_CurrentAnimationName()
@@ -618,7 +617,7 @@ void CPlayer::KRS_KeyInput(const _float& fTimeDelta)
 
 	if (m_iCurrentBehavior == (_uint)KRS_BEHAVIOR_STATE::SKILL_FLY_KICK) return;
 
-	if (m_pGameInstance->GetKeyState(DIK_LSHIFT) == HOLD)
+	if (m_pGameInstance->GetKeyState(DIK_SPACE) == HOLD)
 	{
 		isShift = true;
 	}
@@ -738,7 +737,7 @@ void CPlayer::KRH_KeyInput(const _float& fTimeDelta)
 	_bool isShift = { false };
 	_bool isMove = { false };
 
-	if (m_pGameInstance->GetKeyState(DIK_LSHIFT) == HOLD)
+	if (m_pGameInstance->GetKeyState(DIK_SPACE) == HOLD)
 	{
 		isShift = true;
 	}
@@ -845,7 +844,7 @@ void CPlayer::KRC_KeyInput(const _float& fTimeDelta)
 	_bool isShift = { false };
 	_bool isMove = { false };
 
-	if (m_pGameInstance->GetKeyState(DIK_LSHIFT) == HOLD)
+	if (m_pGameInstance->GetKeyState(DIK_SPACE) == HOLD)
 	{
 		isShift = true;
 	}
@@ -1082,7 +1081,7 @@ void CPlayer::Effect_Control_Aura()
 
 	for (auto& pair : m_pEffects)
 	{
-		string strKey = pair.first;
+		string strKey = m_pGameInstance->WstringToString(pair.second->Get_EffectName());
 
 		if (string::npos != strKey.find("Aura"))
 			pEffect = pair.second;
@@ -1105,7 +1104,7 @@ void CPlayer::AccHitGauge()
 	if (PLAYER_HITGAUGE_LEVEL_INTERVAL * 3.f < m_fHitGauge)
 		m_fHitGauge = PLAYER_HITGAUGE_LEVEL_INTERVAL * 3.f;
 	else
-		m_fHitGauge += 10.f;
+		m_fHitGauge = 10.f;
 
 	m_iCurrentHitLevel = (m_fHitGauge / PLAYER_HITGAUGE_LEVEL_INTERVAL);
 }
