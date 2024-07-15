@@ -205,6 +205,7 @@ PS_OUT PS_MAIN(PS_IN In)
     
     if (g_isRimLight)
     {
+        //g_fTexcoordX, g_fTexcoordY
         if (In.vTexcoord.y < 0.3f || (In.vTexcoord.y > 0.5f && In.vTexcoord.y < 0.7f))
             RimIndex = 1.f;
     }

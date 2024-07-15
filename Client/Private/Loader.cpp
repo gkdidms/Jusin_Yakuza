@@ -1859,13 +1859,6 @@ HRESULT CLoader::Loading_For_Test()
 		return E_FAIL;
 #pragma endregion
 
-#pragma region EFFECT
-
-
-
-	Add_Particle_On_Path(TEXT("../../Client/Bin/DataFiles/Particle/"));	
-
-#pragma endregion
 #pragma endregion
 
 
