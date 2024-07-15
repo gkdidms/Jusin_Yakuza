@@ -7,8 +7,8 @@
 #include "SocketCollider.h"
 #include "SocketEffect.h"
 
-#include "Mesh.h"
 
+#include "Mesh.h"
 
 CLandObject::CLandObject(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CGameObject{ pDevice, pContext},
@@ -202,7 +202,6 @@ void CLandObject::Free()
 	for (auto& pEffect : m_pEffects)
 		Safe_Release(pEffect.second);
 	m_pEffects.clear();
-
 
 	Safe_Release(m_pData);
 	Safe_Release(m_pModelCom);

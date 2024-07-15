@@ -43,13 +43,12 @@ VS_OUT VS_MAIN(VS_IN In)
     matWVP = mul(matWV, g_ProjMatrix);
 
     Out.vPosition = mul(vPosition, matWVP);
-    Out.vNormal = normalize(vNormal);
+    Out.vNormal = normalize(mul(vNormal, g_WorldMatrix));
     Out.vTexcoord = In.vTexcoord;
     Out.vProjPos = Out.vPosition;
     Out.vLocalPos = float4(In.vPosition, 1.f);
-    //Out.vTangent = normalize(mul(vector(In.vTangent.xyz, 0.f), g_WorldMatrix));
-    Out.vTangent = normalize(vector(In.vTangent.xyz, 0.f)); //접선
-    Out.vBinormal = vector(cross(Out.vNormal.xyz, Out.vTangent.xyz), 0.f);//바이
+    Out.vTangent = normalize(mul(vector(In.vTangent.xyz, 0.f), g_WorldMatrix));
+    Out.vBinormal = vector(cross(Out.vNormal.xyz, Out.vTangent.xyz), 0.f); //바이
     
     return Out;
 }
@@ -148,21 +147,14 @@ PS_OUT PS_MAIN(PS_IN In)
     
     vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
     vector vMultiDiffuce = g_MultiDiffuseTexture.Sample(LinearSampler, In.vTexcoord);
+
+    //노말 벡터 구하기
     vector vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexcoord);
     vNormalDesc = vNormalDesc * 2.f - 1.f;
-    vector vNormal = mul(vector(vNormalDesc.w, vNormalDesc.y, 1.f, 0.f), g_WorldMatrix);
+    vNormalDesc = vector(vNormalDesc.w, vNormalDesc.y, 1.f, 0.f);
     
-    vector vTangent = normalize(vector(In.vTangent.xyz, 0.f));
-    vector vBinormal = vector(cross(vNormal.xyz, In.vTangent.xyz), 0.f);
-    
-    float3x3 WorldMatrix = float3x3(In.vTangent.xyz, vBinormal.xyz, vNormal.xyz);
-    vector vNormalBTN = vector(mul(In.vNormal.xyz, WorldMatrix), 0.f);
-
-    //옵젝(물체 기준 좌표계) ->탄젠트 :법선벡터xyz*0.5+0.5=법선맵(0~1)렌더타겟 저장시 이렇게
-    //탄젠트(표면 기준 좌표계) ->옵젝 : 법선맵rgb*2 -1 =법선벡터(-1~1)저장된 렌더타겟에서 꺼내 쓸떄.
-    
-   // vector vTangentTexture =vector( vTangentDesc.xyzw * 2.f - 1.f); //탄젠트 노멀(텍스처로 받은 초록색 노멀 값)을 옵젝 노멀로 변경 범위 (-1~1)[접선]
-    //float3 vLocalTangent = float3(vTangentDesc.w, vTangentDesc.y, 1.f); //argb라고 가정하고 순서변경(텍스처는 y,z 교체가 안되서 들어옴)(접선 생성 완료)
+    float3x3 WorldMatrix = float3x3(In.vTangent.xyz, In.vBinormal.xyz, In.vNormal.xyz);
+    vector vNormalBTN = vector(mul(vNormalDesc.xyz, WorldMatrix), 0.f);
 
     /*
     float3 vLocalNormal = In.vNormal.xyz; //이건 옵젝 노멀임[법선]
@@ -211,17 +203,16 @@ PS_OUT PS_MAIN(PS_IN In)
     
     float RimIndex = 0.f;
     
-    if(g_isRimLight)
-        RimIndex = 1.f;
+    if (g_isRimLight)
+    {
+        //g_fTexcoordX, g_fTexcoordY
+        if (In.vTexcoord.y < 0.3f || (In.vTexcoord.y > 0.5f && In.vTexcoord.y < 0.7f))
+            RimIndex = 1.f;
+    }
 
     Out.vNormal = vector(vNormalBTN.xyz * 0.5f + 0.5f, 0.f);
-    Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_fFar, RimIndex, 1.f);
-
+    Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_fFar, RimIndex, 0.f);
     
-    /*
-    Out.vNormal = vector(vFinalNormal.xyz * 0.5f + 0.5f, 0.f);
-    Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_fFar, RimIndex, 1.f);
-*/
     Out.vMulti = vMultiDiffuce;
     
     return Out;
@@ -271,7 +262,10 @@ PS_OUT PS_BLEND(PS_IN In)
     }
     float RimIndex = 0.f;
     if (g_isRimLight)
-        RimIndex = 1.f;
+       { 
+        if(In.vTexcoord.x<0.5f)
+            RimIndex = 1.f;
+        }
     
     Out.vNormal = vector(vNormal.xyz * 0.5f + 0.5f, 0.f);
     Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_fFar, RimIndex, 1.f);

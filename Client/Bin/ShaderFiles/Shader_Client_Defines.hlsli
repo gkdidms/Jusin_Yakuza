@@ -60,6 +60,10 @@ float g_fOut = { 0.5f };
 
 bool g_isRS;
 bool g_isRD;
+
+float g_fTexcoordX = { 0.f };
+float g_fTexcoordY = { 0.f };
+
 //림라이트
 bool g_isRimLight;
 

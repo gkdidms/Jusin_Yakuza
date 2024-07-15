@@ -59,12 +59,16 @@ void CUIManager::Open_Scene(const wstring strSceneName)
 
 	m_PlayScene.push_back(pUIScene);
 	m_PlayScene.back()->Show_Scene();
+	m_isClose = false;
 }
 
 void CUIManager::Close_Scene()
 {
-	if(!m_PlayScene.empty())
+	if (!m_PlayScene.empty())
+	{
 		m_PlayScene.back()->Close_Scene();
+		m_isClose = true;
+	}
 }
 
 void CUIManager::Click()
@@ -98,7 +102,11 @@ HRESULT CUIManager::Late_Tick(const _float& fTimeDelta)
 		}
 
 		if (!m_PlayScene.empty())
+		{
 			m_PlayScene.back()->Late_Tick(fTimeDelta);
+			
+		}
+			
 		
 	}
 

@@ -4,6 +4,10 @@
 #include "SystemManager.h"
 #include "Collision_Manager.h"
 
+#ifdef _DEBUG
+#include "DebugManager.h"
+#endif // _DEBUG
+
 #include "CharacterData.h"
 #include "SocketCollider.h"
 #include "SocketEffect.h"
@@ -13,15 +17,35 @@
 
 #include "UIManager.h"
 
+#pragma region Hit包访 庆歹甸
+#include "Kiryu_KRC_Hit.h"
+#include "Kiryu_KRH_Hit.h"
+#include "Kiryu_KRS_Hit.h"
+#pragma endregion
+
 CPlayer::CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-	: CLandObject{ pDevice, pContext }
+	: CLandObject{ pDevice, pContext },
+#ifdef _DEBUG
+	m_pDebugManager{ CDebugManager::GetInstance() },
+#endif // _DEBUG
+	m_pUIManager{ CUIManager::GetInstance() }
 {
+#ifdef _DEBUG
+	Safe_AddRef(m_pDebugManager);
+#endif // _DEBUG
+	Safe_AddRef(m_pUIManager);
 }
 
 CPlayer::CPlayer(const CPlayer& rhs)
 	: CLandObject{ rhs },
-	m_pUIManager{CUIManager::GetInstance()}
+#ifdef _DEBUG
+	m_pDebugManager{ rhs.m_pDebugManager },
+#endif // _DEBUG
+	m_pUIManager{ rhs.m_pUIManager }
 {
+#ifdef _DEBUG
+	Safe_AddRef(m_pDebugManager);
+#endif // _DEBUG
 	Safe_AddRef(m_pUIManager);
 }
 
@@ -108,6 +132,8 @@ void CPlayer::Tick(const _float& fTimeDelta)
 #ifdef _DEBUG
 	if (m_isAnimStart)
 		m_pModelCom->Play_Animation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")));
+#else
+	m_pModelCom->Play_Animation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")));
 #endif // _DEBUG
 
 	for (auto& pCollider : m_pColliders)
@@ -124,6 +150,7 @@ void CPlayer::Tick(const _float& fTimeDelta)
 	Animation_Event();
 
 	Effect_Control_Aura();
+
 }
 
 void CPlayer::Late_Tick(const _float& fTimeDelta)
@@ -163,7 +190,7 @@ void CPlayer::Late_Tick(const _float& fTimeDelta)
 		if (pPair.second->Get_CollierType() == CSocketCollider::HIT && pPair.second->IsOn())
 			m_pCollisionManager->Add_HitCollider(pPair.second, CCollision_Manager::PLAYER);
 	}
-	
+
 }
 
 HRESULT CPlayer::Render()
@@ -174,25 +201,28 @@ HRESULT CPlayer::Render()
 	int i = 0;
 	for (auto& pMesh : m_pModelCom->Get_Meshes())
 	{
-		if (!strcmp("[l0]jacketw1", pMesh->Get_Name()))
-		{
-			if(m_isRimLight)
-				if (FAILED(m_pShaderCom->Bind_RawValue("g_isRimLight", &m_isRimLight, sizeof(_bool))))
-					return E_FAIL;
-		}
-		else if (!strcmp("[l0]body_naked1", pMesh->Get_Name()))
-		{
-			if (m_isRimLight)
-				if (FAILED(m_pShaderCom->Bind_RawValue("g_isRimLight", &m_isRimLight, sizeof(_bool))))
-					return E_FAIL;
-		}
-		else
-		{
-			_bool isfalse = false;
-			if (FAILED(m_pShaderCom->Bind_RawValue("g_isRimLight", &isfalse, sizeof(_bool))))
-				return E_FAIL;
-		}
+		//if (!strcmp("[l0]jacketw1", pMesh->Get_Name()))
+		//{
+		//	if(m_isRimLight)
+		//		if (FAILED(m_pShaderCom->Bind_RawValue("g_isRimLight", &m_isRimLight, sizeof(_bool))))
+		//			return E_FAIL;
+		//}
+		//else if (!strcmp("[l0]body_naked1", pMesh->Get_Name()))
+		//{
+		//	if (m_isRimLight)
+		//		if (FAILED(m_pShaderCom->Bind_RawValue("g_isRimLight", &m_isRimLight, sizeof(_bool))))
+		//			return E_FAIL;
+		//}
+		//else
+		//{
+		//	_bool isfalse = false;
+		//	if (FAILED(m_pShaderCom->Bind_RawValue("g_isRimLight", &isfalse, sizeof(_bool))))
+		//		return E_FAIL;
+		//}
 
+		if(m_isRimLight)
+			if (FAILED(m_pShaderCom->Bind_RawValue("g_isRimLight", &m_isRimLight, sizeof(_bool))))
+					return E_FAIL;
 
 		m_pModelCom->Bind_BoneMatrices(m_pShaderCom, "g_BoneMatrices", i);
 
@@ -270,20 +300,106 @@ void CPlayer::Take_Damage(_uint iHitColliderType, const _float3& vDir, _float fD
 	{
 	case CPlayer::KRS:
 	{
-		/*CKiryu_KRS_Hit::KRS_Hit_DESC Desc{ &vDir, fDamage, pAttackedObject->Get_CurrentAnimationName()};
+		_vector vAttackedObjectLook = pAttackedObject->Get_TransformCom()->Get_State(CTransform::STATE_LOOK);
+		_vector vMyLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
+
+		_float fTheta = 0.0f;
+		_float fDot = XMVectorGetX(XMVector3Dot(vMyLook, vAttackedObjectLook));
+		fTheta = XMConvertToDegrees(acosf(fDot));
+
+		// F, B, L, R
+		_int iDirection = -1;
+		if (fDot >= 0.0f)
+		{
+			if (0 <= fTheta && 90 > fTheta)  // 菊率
+				iDirection = 0;
+			else if (90 <= fTheta && 180 >= fTheta) // 缔率
+				iDirection = 1;
+		}
+		else
+		{
+			if (0 <= fTheta && 90 > fTheta) // 哭率
+				iDirection = 2;
+			else if (90 <= fTheta && 180 >= fTheta) // 坷弗率
+				iDirection = 3;
+		}
+
+		CKiryu_KRS_Hit::KRS_Hit_DESC Desc{ &vDir, fDamage, pAttackedObject->Get_CurrentAnimationName(), iDirection };
 
 		m_iCurrentBehavior = (_uint)KRS_BEHAVIOR_STATE::HIT;
-		m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Setting_Value((void*) &Desc);*/
+		m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Setting_Value((void*) &Desc);
 		break;
 	}
 	case CPlayer::KRH:
 	{
+		_vector vAttackedObjectLook = pAttackedObject->Get_TransformCom()->Get_State(CTransform::STATE_LOOK);
+		_vector vMyLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
 
+		_float fTheta = 0.0f;
+		_float fDot = XMVectorGetX(XMVector3Dot(vMyLook, vAttackedObjectLook));
+		fTheta = XMConvertToDegrees(acosf(fDot));
+
+		// F, B, L, R
+		_int iDirection = -1;
+		if (fDot >= 0.0f)
+		{
+			if (0 <= fTheta && 90 > fTheta)  // 菊率
+				iDirection = 0;
+			else if (90 <= fTheta && 180 >= fTheta) // 缔率
+				iDirection = 1;
+		}
+		else
+		{
+			if (0 <= fTheta && 90 > fTheta) // 哭率
+				iDirection = 2;
+			else if (90 <= fTheta && 180 >= fTheta) // 坷弗率
+				iDirection = 3;
+		}
+
+		CKiryu_KRH_Hit::KRH_Hit_DESC Desc{ &vDir, fDamage, pAttackedObject->Get_CurrentAnimationName(), iDirection };
+
+		m_iCurrentBehavior = (_uint)KRH_BEHAVIOR_STATE::HIT;
+		m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Setting_Value((void*)&Desc);
 		break;
 	}
 	case CPlayer::KRC:
 	{
+		_vector vAttackedObjectLook = pAttackedObject->Get_TransformCom()->Get_State(CTransform::STATE_LOOK);
+		_vector vMyLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
 
+		_float fTheta = 0.0f;
+		_float fDot = XMVectorGetX(XMVector3Dot(vMyLook, vAttackedObjectLook));
+		fTheta = XMConvertToDegrees(acosf(fDot));
+
+		// F, B, L, R
+		_int iDirection = -1;
+		if (fDot >= 0.0f)
+		{
+			if (0 <= fTheta && 90 > fTheta)  // 菊率
+				iDirection = 0;
+			else if (90 <= fTheta && 180 >= fTheta) // 缔率
+				iDirection = 1;
+		}
+		else
+		{
+			if (0 <= fTheta && 90 > fTheta) // 哭率
+				iDirection = 2;
+			else if (90 <= fTheta && 180 >= fTheta) // 坷弗率
+				iDirection = 3;
+		}
+
+		CKiryu_KRC_Hit::KRC_Hit_DESC Desc{ &vDir, fDamage, pAttackedObject->Get_CurrentAnimationName(), iDirection };
+
+		if (m_iCurrentBehavior == (_uint)KRC_BEHAVIOR_STATE::GAURD)
+		{
+			m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Setting_Value((void*)&Desc);
+		}
+		else
+		{
+			m_iCurrentBehavior = (_uint)KRC_BEHAVIOR_STATE::HIT;
+			m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Setting_Value((void*)&Desc);
+		}
+		
 		break;
 	}
 	}
@@ -652,9 +768,6 @@ void CPlayer::KRH_KeyInput(const _float& fTimeDelta)
 	{
 		if (m_pGameInstance->GetKeyState(DIK_W) == HOLD)
 		{
-			if (m_iCurrentBehavior == (_uint)KRH_BEHAVIOR_STATE::WALK || m_iCurrentBehavior == (_uint)KRH_BEHAVIOR_STATE::RUN)
-				m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Reset();
-
 			_vector vLookPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION) + (m_pTransformCom->Get_State(CTransform::STATE_LOOK) + m_pGameInstance->Get_CamLook());
 			m_pGameInstance->Get_CamLook();
 			m_iCurrentBehavior = isShift ? (_uint)KRH_BEHAVIOR_STATE::WALK : (_uint)KRH_BEHAVIOR_STATE::RUN;
@@ -663,6 +776,9 @@ void CPlayer::KRH_KeyInput(const _float& fTimeDelta)
 			Compute_MoveDirection_FB();
 			m_pTransformCom->LookAt_For_LandObject(vLookPos);
 			isMove = true;
+
+			if (m_iCurrentBehavior == (_uint)KRH_BEHAVIOR_STATE::WALK || m_iCurrentBehavior == (_uint)KRH_BEHAVIOR_STATE::RUN)
+				m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Reset();
 		}
 
 		if (m_pGameInstance->GetKeyState(DIK_S) == HOLD)
@@ -822,11 +938,11 @@ void CPlayer::KRC_KeyInput(const _float& fTimeDelta)
 
 HRESULT CPlayer::Add_Components()
 {
-	if (FAILED(__super::Add_Component(LEVEL_TEST, TEXT("Prototype_Component_Shader_VtxAnim"),
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Shader_VtxAnim"),
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Component(LEVEL_TEST, TEXT("Prototype_Component_Model_Kiryu"),
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Model_Kiryu"),
 		TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
 		return E_FAIL;
 
@@ -836,7 +952,7 @@ HRESULT CPlayer::Add_Components()
 	ColliderDesc.vExtents = _float3(0.3, 0.8, 0.3);
 	ColliderDesc.vCenter = _float3(0, ColliderDesc.vExtents.y, 0);
 
-	if (FAILED(__super::Add_Component(LEVEL_TEST, TEXT("Prototype_Component_Collider"),
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Collider"),
 		TEXT("Com_Collider"), reinterpret_cast<CComponent**>(&m_pColliderCom), &ColliderDesc)))
 		return E_FAIL;
 
@@ -858,7 +974,13 @@ HRESULT CPlayer::Bind_ResourceData()
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_fFar", m_pGameInstance->Get_CamFar(), sizeof(_float))))
 		return E_FAIL;
 
-
+#ifdef _DEBUG
+	_float2 vTexcoord = m_pDebugManager->Get_Texcoord();
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_fTexcoordX", &vTexcoord.x, sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_fTexcoordY", &vTexcoord.y, sizeof(_float))))
+		return E_FAIL;
+#endif // _DEBUG
 
 	return S_OK;
 }	
@@ -1012,6 +1134,30 @@ CGameObject* CPlayer::Clone(void* pArg)
 void CPlayer::Free()
 {
 	__super::Free();
+
+	for (size_t i = 0; i < BATTLE_STYLE_END; i++)
+	{
+		for (auto& pair : m_AnimationTree[i])
+			Safe_Release(pair.second);
+
+		m_AnimationTree[i].clear();
+	}
+
+
+	
+
+#ifdef _DEBUG
+	Safe_Release(m_pDebugManager);
+#endif // _DEBUG
+
 	Safe_Release(m_pUIManager);
 	Safe_Release(m_pShaderCom);
+
+	for (size_t i = 0; i < BATTLE_STYLE_END; i++)
+	{
+		for (auto& pair : m_AnimationTree[i])
+			Safe_Release(pair.second);
+
+		m_AnimationTree[i].clear();
+	}
 }
