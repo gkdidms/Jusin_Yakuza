@@ -720,6 +720,12 @@ void CObjPlace_Manager::Edit_Installed_GameObject(int iNumObject)
 			shaderType = 3;
 			m_tCurrentObjectDesc.iShaderPass = 3;
 		}
+
+		if (ImGui::RadioButton(u8"CW PASS", m_tCurrentObjectDesc.iShaderPass == 4))
+		{
+			shaderType = 4;
+			m_tCurrentObjectDesc.iShaderPass = 4;
+		}
 	}
 	
 
@@ -965,6 +971,8 @@ void CObjPlace_Manager::Set_Map_Object()
 		ImGui::RadioButton(u8"¹°", &shaderType, 2);
 		ImGui::NewLine();
 		ImGui::RadioButton(u8"mask", &shaderType, 3);
+		ImGui::NewLine();
+		ImGui::RadioButton(u8"CW PASS", &shaderType, 4);
 	}
 	
 

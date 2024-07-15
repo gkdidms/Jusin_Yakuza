@@ -265,13 +265,7 @@ HRESULT CNavigation_Manager::Load_Cells(_uint iIndex)
 	char fullPath[MAX_PATH];
 	strcpy_s(fullPath, "../../Client/Bin/DataFiles/NaviData/");
 
-	strcat_s(fullPath, "Navigation");
-
-	char cIndex[2] = "";
-	_itoa_s(iIndex, cIndex, 10);
-	strcat_s(fullPath, "_");
-	strcat_s(fullPath, cIndex);
-	strcat_s(fullPath, ".dat");
+	strcat_s(fullPath, m_FileNames[iIndex]);
 
 	string strPath(fullPath);
 
@@ -517,13 +511,13 @@ void CNavigation_Manager::Show_Cells_IMGUI()
 		}
 
 
-		if (ImGui::RadioButton(u8"navi可记1", m_iCurrentOption == 0))
+		if (ImGui::RadioButton(u8"官蹿", m_iCurrentOption == 0))
 		{
 			naviOption = 0;
 			m_iCurrentOption = 0;
 		}
 		ImGui::SameLine();
-		if (ImGui::RadioButton(u8"navi可记2", m_iCurrentOption == 1))
+		if (ImGui::RadioButton(u8"拌窜", m_iCurrentOption == 1))
 		{
 			naviOption = 1;
 			m_iCurrentOption = 1;
