@@ -16,6 +16,7 @@
 #include "Kiryu_KRS_FlyKick.h"
 #include "Kiryu_KRS_KickCombo.h"
 #include "Kiryu_KRS_Hit.h"
+#include "Kiryu_KRS_Down.h"
 #include "Kiryu_KRS_Sway.h"
 #pragma endregion
 
@@ -85,7 +86,7 @@ CBehaviorAnimation* CBehaviorAnimation::Create_KRS_Behavior(_uint iBehavior, cla
 	case 6:			// SWAY
 		return CKiryu_KRS_Sway::Create(pPlayer);
 	case 7:			// DOWN
-		break;
+		return CKiryu_KRS_Down::Create(pPlayer);
 	case 8:			//SKILL_FLY_KICK
 		return CKiryu_KRS_FlyKick::Create(pPlayer);
 	case 9:			// SKILL_KICK_COMBO

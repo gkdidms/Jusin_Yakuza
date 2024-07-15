@@ -338,6 +338,9 @@
     <ClCompile Include="..\Private\AI_Kuze.cpp">
       <Filter>02.GameObjects\02.Character\LandObject\01.Monster\Kuze\AI</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\Kiryu_KRS_Down.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\Down</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\MainApp.h">
@@ -706,6 +709,9 @@
     </ClInclude>
     <ClInclude Include="..\Public\AI_Kuze.h">
       <Filter>02.GameObjects\02.Character\LandObject\01.Monster\Kuze\AI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Kiryu_KRS_Down.h">
+      <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\Down</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

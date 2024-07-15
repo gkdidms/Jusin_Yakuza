@@ -27,6 +27,7 @@ public:
 	virtual void Reset() {};
 	virtual void Combo_Count(_bool isFinAction = false) {};
 	virtual void Setting_Value(void* pValue = nullptr) {};
+	virtual string Get_AnimationName() { return string(); };
 
 protected:
 	CGameInstance* m_pGameInstance = { nullptr };
