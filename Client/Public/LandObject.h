@@ -77,6 +77,9 @@ protected:
     //뼈 이름, 소켓 이펙트
     unordered_map<string, class CSocketEffect*>      m_pEffects;
 
+    //림라이트 범위 지정 객체
+    class CRimChecker* m_RimChecker = { nullptr };
+
     wstring m_wstrModelName = TEXT("");
 
 #ifdef _DEBUG

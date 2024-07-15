@@ -1604,8 +1604,6 @@ HRESULT CLoader::Loading_For_Test()
 #pragma region Model
 	lstrcpy(m_szLoadingText, TEXT("모델를(을) 로딩 중 입니다."));
 	Add_Models_On_Path(LEVEL_TEST, TEXT("../Bin/Resources/Models/Anim/"));
-	
-	
 
 	Add_Models_On_Path_NonAnim(LEVEL_TEST, TEXT("../Bin/Resources/Models/NonAnim/Map/Map0"));
 
@@ -1672,6 +1670,11 @@ HRESULT CLoader::Loading_For_Test()
 	/* For.Prototype_Component_VIBuffer_Instance_Point */
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_VIBuffer_Instance_Point"),
 		CVIBuffer_Instance_Point::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_VIBuffer_Instance_Rect */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_VIBuffer_Instance_Rect"),
+		CVIBuffer_Instance_Rect::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_VIBuffer_Trail */
@@ -1854,6 +1857,14 @@ HRESULT CLoader::Loading_For_Test()
 	//만들어둔 데이터 로딩
 	if (FAILED(Add_UI_On_Path(TEXT("../../Client/Bin/DataFiles/UIData/"))))
 		return E_FAIL;
+#pragma endregion
+
+#pragma region EFFECT
+
+
+
+	Add_Particle_On_Path(TEXT("../../Client/Bin/DataFiles/Particle/"));	
+
 #pragma endregion
 #pragma endregion
 
