@@ -147,6 +147,7 @@ PS_OUT PS_MAIN(PS_IN In)
     
     vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
     vector vMultiDiffuce = g_MultiDiffuseTexture.Sample(LinearSampler, In.vTexcoord);
+
     //노말 벡터 구하기
     vector vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexcoord);
     vNormalDesc = vNormalDesc * 2.f - 1.f;
@@ -155,6 +156,22 @@ PS_OUT PS_MAIN(PS_IN In)
     float3x3 WorldMatrix = float3x3(In.vTangent.xyz, In.vBinormal.xyz, In.vNormal.xyz);
     vector vNormalBTN = vector(mul(vNormalDesc.xyz, WorldMatrix), 0.f);
 
+    /*
+    float3 vLocalNormal = In.vNormal.xyz; //이건 옵젝 노멀임[법선]
+
+    
+    vector vWorldTangent = normalize(vector(vLocalTangent.xyz, 0.f));
+    vector vWorldNormal = normalize(vector(vLocalNormal.xyz, 0.f));
+    
+    vector vWorlBinormal = vector(cross(vWorldNormal.xyz, vWorldTangent.xyz), 0.f);
+
+    
+  //  float3x3 WorldMatrix = float3x3(vWorlBinormal.xyz, vWorldNormal.xyz, vWorldTangent.xyz);
+    float3x3 WorldMatrix = float3x3(vWorldTangent.xyz, vWorlBinormal.xyz, vWorldNormal.xyz);
+    float3 vFinalNormal = mul(vLocalNormal.xyz, WorldMatrix);
+    
+    vFinalNormal = mul(vector(vWorldNormal.xyz, 0.f), g_WorldMatrix);
+*/
     
     if (vDiffuse.a < 0.1f)
         discard;
@@ -194,12 +211,7 @@ PS_OUT PS_MAIN(PS_IN In)
 
     Out.vNormal = vector(vNormalBTN.xyz * 0.5f + 0.5f, 0.f);
     Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_fFar, RimIndex, 0.f);
-
     
-    /*
-    Out.vNormal = vector(vFinalNormal.xyz * 0.5f + 0.5f, 0.f);
-    Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_fFar, RimIndex, 1.f);
-*/
     Out.vMulti = vMultiDiffuce;
     
     return Out;

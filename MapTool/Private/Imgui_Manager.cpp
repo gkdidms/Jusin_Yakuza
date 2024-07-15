@@ -152,6 +152,9 @@ void CImgui_Manager::Tick(_float fTimeDelta)
 
 #pragma endregion
     ImGui::EndFrame();
+
+
+    m_pLightTool_Mgr->Tick(fTimeDelta);
 }
 
 void CImgui_Manager::Late_Tick(_float fTimeDelta)

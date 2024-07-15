@@ -6,14 +6,6 @@ BEGIN(Client)
 class CRushYakuza :
     public CMonster
 {
-public:
-    typedef struct tMapMonsterObjDesc : public CGameObject::GAMEOBJECT_DESC
-    {
-        XMMATRIX		vStartPos;
-        wstring			wstrModelName;
-        int				iShaderPass;
-    }MONSTER_IODESC;
-
 
 private:
     CRushYakuza(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

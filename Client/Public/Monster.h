@@ -12,6 +12,14 @@ class CMonster abstract:
     public CLandObject
 {
 public:
+    typedef struct tMapMonsterObjDesc : public CGameObject::GAMEOBJECT_DESC
+    {
+        XMMATRIX		vStartPos;
+        wstring			wstrModelName;
+        int				iShaderPass;
+    }MONSTER_IODESC;
+
+public:
     enum MONSTER_STATE
     {
         MONSTER_IDLE,

@@ -9,6 +9,10 @@
 #include "SkyDome.h"
 #include "Player.h"
 #include "LightConstruction.h"
+#include "WPAYakuza.h"
+#include "Shakedown.h"
+#include "Yoneda.h"
+#include "Kuze.h"
 
 IMPLEMENT_SINGLETON(CFileTotalMgr)
 
@@ -58,6 +62,8 @@ HRESULT CFileTotalMgr::Set_MapObj_In_Client(int iMapLoadingNum, int iStageLevel)
 
     Safe_Delete_Array(m_MapTotalInform.pMapObjDesc);
 
+
+
     Import_Bin_Map_Data_OnClient(&m_MapTotalInform, iMapLoadingNum);
 
     /* terrain 수정*/
@@ -76,7 +82,7 @@ HRESULT CFileTotalMgr::Set_GameObject_In_Client(int iStageLevel)
 {
     for (int i = 0; i < m_MapTotalInform.iNumMapObj; i++)
     {
-        if (OBJECT_TYPE::MONSTER == m_MapTotalInform.pMapObjDesc[i].iObjType)
+        if (OBJECT_TYPE::MONSTER_RUSH == m_MapTotalInform.pMapObjDesc[i].iObjType)
         {
             CRushYakuza::MONSTER_IODESC		monsterDesc;
             monsterDesc.vStartPos = XMLoadFloat4x4(&m_MapTotalInform.pMapObjDesc[i].vTransform);
@@ -94,6 +100,82 @@ HRESULT CFileTotalMgr::Set_GameObject_In_Client(int iStageLevel)
             monsterDesc.fRotatePecSec = XMConvertToRadians(180.f);
 
             m_pGameInstance->Add_GameObject(iStageLevel, TEXT("Prototype_GameObject_RushYakuza"), m_Layers[iLayer], &monsterDesc);
+        }
+        else if (OBJECT_TYPE::MONSTER_WPA == m_MapTotalInform.pMapObjDesc[i].iObjType)
+        {
+            CWPAYakuza::MONSTER_IODESC		monsterDesc;
+            monsterDesc.vStartPos = XMLoadFloat4x4(&m_MapTotalInform.pMapObjDesc[i].vTransform);
+            int		iLayer = Find_Layers_Index(m_MapTotalInform.pMapObjDesc[i].strLayer);
+
+            /* Layer 정보 안들어옴 */
+            if (iLayer < 0)
+                return S_OK;
+
+            monsterDesc.wstrModelName = m_pGameInstance->StringToWstring(m_MapTotalInform.pMapObjDesc[i].strModelCom);
+            monsterDesc.iShaderPass = m_MapTotalInform.pMapObjDesc[i].iShaderPassNum;
+
+            monsterDesc.fSpeedPecSec = 10.f;
+            monsterDesc.fRotatePecSec = XMConvertToRadians(0.f);
+            monsterDesc.fRotatePecSec = XMConvertToRadians(180.f);
+
+            m_pGameInstance->Add_GameObject(iStageLevel, TEXT("Prototype_GameObject_WPAYakuza"), m_Layers[iLayer], &monsterDesc);
+        }
+        else if (OBJECT_TYPE::MONSTER_SHAKEDOWN == m_MapTotalInform.pMapObjDesc[i].iObjType)
+        {
+            CRushYakuza::MONSTER_IODESC		monsterDesc;
+            monsterDesc.vStartPos = XMLoadFloat4x4(&m_MapTotalInform.pMapObjDesc[i].vTransform);
+            int		iLayer = Find_Layers_Index(m_MapTotalInform.pMapObjDesc[i].strLayer);
+
+            /* Layer 정보 안들어옴 */
+            if (iLayer < 0)
+                return S_OK;
+
+            monsterDesc.wstrModelName = m_pGameInstance->StringToWstring(m_MapTotalInform.pMapObjDesc[i].strModelCom);
+            monsterDesc.iShaderPass = m_MapTotalInform.pMapObjDesc[i].iShaderPassNum;
+
+            monsterDesc.fSpeedPecSec = 10.f;
+            monsterDesc.fRotatePecSec = XMConvertToRadians(0.f);
+            monsterDesc.fRotatePecSec = XMConvertToRadians(180.f);
+
+            m_pGameInstance->Add_GameObject(iStageLevel, TEXT("Prototype_GameObject_Shakedown"), m_Layers[iLayer], &monsterDesc);
+        }
+        else if (OBJECT_TYPE::MONSTER_YONEDA == m_MapTotalInform.pMapObjDesc[i].iObjType)
+        {
+            CRushYakuza::MONSTER_IODESC		monsterDesc;
+            monsterDesc.vStartPos = XMLoadFloat4x4(&m_MapTotalInform.pMapObjDesc[i].vTransform);
+            int		iLayer = Find_Layers_Index(m_MapTotalInform.pMapObjDesc[i].strLayer);
+
+            /* Layer 정보 안들어옴 */
+            if (iLayer < 0)
+                return S_OK;
+
+            monsterDesc.wstrModelName = m_pGameInstance->StringToWstring(m_MapTotalInform.pMapObjDesc[i].strModelCom);
+            monsterDesc.iShaderPass = m_MapTotalInform.pMapObjDesc[i].iShaderPassNum;
+
+            monsterDesc.fSpeedPecSec = 10.f;
+            monsterDesc.fRotatePecSec = XMConvertToRadians(0.f);
+            monsterDesc.fRotatePecSec = XMConvertToRadians(180.f);
+
+            m_pGameInstance->Add_GameObject(iStageLevel, TEXT("Prototype_GameObject_Yoneda"), m_Layers[iLayer], &monsterDesc);
+        }
+        else if (OBJECT_TYPE::MONSTER_KUZE == m_MapTotalInform.pMapObjDesc[i].iObjType)
+        {
+            CRushYakuza::MONSTER_IODESC		monsterDesc;
+            monsterDesc.vStartPos = XMLoadFloat4x4(&m_MapTotalInform.pMapObjDesc[i].vTransform);
+            int		iLayer = Find_Layers_Index(m_MapTotalInform.pMapObjDesc[i].strLayer);
+
+            /* Layer 정보 안들어옴 */
+            if (iLayer < 0)
+                return S_OK;
+
+            monsterDesc.wstrModelName = m_pGameInstance->StringToWstring(m_MapTotalInform.pMapObjDesc[i].strModelCom);
+            monsterDesc.iShaderPass = m_MapTotalInform.pMapObjDesc[i].iShaderPassNum;
+
+            monsterDesc.fSpeedPecSec = 10.f;
+            monsterDesc.fRotatePecSec = XMConvertToRadians(0.f);
+            monsterDesc.fRotatePecSec = XMConvertToRadians(180.f);
+
+            m_pGameInstance->Add_GameObject(iStageLevel, TEXT("Prototype_GameObject_Kuze"), m_Layers[iLayer], &monsterDesc);
         }
         else if (OBJECT_TYPE::PLAYER == m_MapTotalInform.pMapObjDesc[i].iObjType)
         {
@@ -308,8 +390,9 @@ HRESULT CFileTotalMgr::Import_Bin_Map_Data_OnClient(MAP_TOTALINFORM_DESC* mapObj
     strcat_s(fullPath, "MapObject_Data");
     strcat_s(fullPath, "_");
 
-    char cLevel[2] = "";
-    _itoa_s(iLevel, cLevel, 10);
+    string strNum = to_string(iLevel);
+    char cLevel[20];
+    strcpy_s(cLevel, strNum.c_str());
     strcat_s(fullPath, cLevel);
     strcat_s(fullPath, ".dat");
 
@@ -377,8 +460,11 @@ HRESULT CFileTotalMgr::Import_Bin_Light_Data_OnClient(LIGHT_DESC_IO* lightData, 
     strcat_s(fullPath, "Light_Data");
     strcat_s(fullPath, "_");
 
-    char cLevel[2] = "";
-    _itoa_s(iLevel, cLevel, 10);
+
+    string strNum = to_string(iLevel);
+    char cLevel[20];
+    strcpy_s(cLevel, strNum.c_str());
+
     strcat_s(fullPath, cLevel);
     strcat_s(fullPath, ".dat");
 
@@ -412,8 +498,9 @@ HRESULT CFileTotalMgr::Import_Bin_Collider_Data_OnTool(COLLIDER_IO* ColliderData
     strcat_s(fullPath, "Collider_Data");
     strcat_s(fullPath, "_");
 
-    char cLevel[2] = "";
-    _itoa_s(iLevel, cLevel, 10);
+    string strNum = to_string(iLevel);
+    char cLevel[20];
+    strcpy_s(cLevel, strNum.c_str());
     strcat_s(fullPath, cLevel);
     strcat_s(fullPath, ".dat");
 
@@ -438,7 +525,6 @@ HRESULT CFileTotalMgr::Import_Bin_Collider_Data_OnTool(COLLIDER_IO* ColliderData
 
     return S_OK;
 }
-
 
 void CFileTotalMgr::Free()
 {

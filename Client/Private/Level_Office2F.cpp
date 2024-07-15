@@ -1,7 +1,14 @@
 #include "Level_Office2F.h"
 
+#include "GameInstance.h"
 #include "SystemManager.h"
 #include "FileTotalMgr.h"
+
+#include "PlayerCamera.h"
+#include "CineCamera.h"
+#include "DebugCamera.h"
+
+#include "Level_Loading.h"
 
 CLevel_Office2F::CLevel_Office2F(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLevel{ pDevice, pContext},
@@ -14,13 +21,16 @@ CLevel_Office2F::CLevel_Office2F(ID3D11Device* pDevice, ID3D11DeviceContext* pCo
 
 HRESULT CLevel_Office2F::Initialize()
 {
-	if (FAILED(Ready_Light()))
+	if (FAILED(Ready_Player(TEXT("Layer_Player"))))
+		return E_FAIL;
+
+	if (FAILED(Ready_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
 
 	/* 클라 파싱 */
-	m_pFileTotalManager->Set_MapObj_In_Client(1, LEVEL_OFFICE_2F);
-	m_pFileTotalManager->Set_Lights_In_Client(1);
-	m_pFileTotalManager->Set_Collider_In_Client(1, LEVEL_TEST);
+	m_pFileTotalManager->Set_MapObj_In_Client(STAGE_OFFICE_2F, LEVEL_OFFICE_2F);
+	m_pFileTotalManager->Set_Lights_In_Client(STAGE_OFFICE_2F);
+	m_pFileTotalManager->Set_Collider_In_Client(1, LEVEL_OFFICE_2F);
 
 	return S_OK	;
 }
@@ -28,12 +38,73 @@ HRESULT CLevel_Office2F::Initialize()
 void CLevel_Office2F::Tick(const _float& fTimeDelta)
 {
 #ifdef _DEBUG
+	if (m_pGameInstance->GetKeyState(DIK_SPACE) == TAP)
+	{
+		if (FAILED(m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_OFFICE_BOSS))))
+			return;
+	}
+
 	SetWindowText(g_hWnd, TEXT("사무실 2F"));
 #endif
 }
 
-HRESULT CLevel_Office2F::Ready_Light()
+HRESULT CLevel_Office2F::Ready_Camera(const wstring& strLayerTag)
 {
+	/* 카메라 추가 시 Debug Camera를 첫번째로 놔두고 추가해주세요 (디버깅 툴에서 사용중)*/
+	const _float4x4* pPlayerFloat4x4 = dynamic_cast<CTransform*>(m_pGameInstance->Get_GameObject_Component(LEVEL_OFFICE_2F, TEXT("Layer_Player"), TEXT("Com_Transform", 0)))->Get_WorldFloat4x4();
+
+	/* 0. 디버그용 카메라 */
+	CDebugCamera::DEBUG_CAMERA_DESC		CameraDesc{};
+	CameraDesc.fSensor = 0.1f;
+	CameraDesc.vEye = _float4(1.0f, 20.0f, -20.f, 1.f);
+	CameraDesc.vFocus = _float4(0.f, 0.0f, 0.0f, 1.f);
+	CameraDesc.fFovY = XMConvertToRadians(60.0f);
+	CameraDesc.fAspect = g_iWinSizeX / (_float)g_iWinSizeY;
+	CameraDesc.fNear = 0.1f;
+	CameraDesc.fFar = 3000.f;
+	CameraDesc.fSpeedPecSec = 10.f;
+	CameraDesc.fRotatePecSec = XMConvertToRadians(90.f);
+	CameraDesc.pPlayerMatrix = pPlayerFloat4x4;
+
+	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_OFFICE_2F, TEXT("Prototype_GameObject_DebugCamera"), strLayerTag, &CameraDesc)))
+		return E_FAIL;
+
+	/* 초기화 할때는 -1 */
+	/* 1. 씬용 카메라 */
+	CCineCamera::CINE_CAMERA_DESC		cineDesc;
+	cineDesc.iFileNum = -1;
+	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_OFFICE_2F, TEXT("Prototype_GameObject_CCineCamera"), strLayerTag, &cineDesc)))
+		return E_FAIL;
+
+	/* 2. 플레이어 카메라 */
+	CPlayerCamera::PLAYER_CAMERA_DESC		PlayerCameraDesc{};
+	PlayerCameraDesc.fSensor = 5.f;
+	PlayerCameraDesc.vEye = _float4(0.f, 2.0f, -3.f, 1.f);
+	PlayerCameraDesc.vFocus = _float4(0.f, 0.0f, 0.0f, 1.f);
+	PlayerCameraDesc.fFovY = XMConvertToRadians(60.0f);
+	PlayerCameraDesc.fAspect = g_iWinSizeX / (_float)g_iWinSizeY;
+	PlayerCameraDesc.fNear = 0.1f;
+	PlayerCameraDesc.fFar = 3000.f;
+	PlayerCameraDesc.fSpeedPecSec = 20.f;
+	PlayerCameraDesc.fRotatePecSec = XMConvertToRadians(90.f);
+	PlayerCameraDesc.pPlayerMatrix = pPlayerFloat4x4;
+
+	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_OFFICE_2F, TEXT("Prototype_GameObject_PlayerCamera"), strLayerTag, &PlayerCameraDesc)))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CLevel_Office2F::Ready_Player(const wstring& strLayerTag)
+{
+	CGameObject::GAMEOBJECT_DESC Desc{};
+	Desc.fSpeedPecSec = 10.f;
+	//Desc.fRotatePecSec = XMConvertToRadians(0.f);
+	Desc.fRotatePecSec = XMConvertToRadians(180.f);
+
+	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_OFFICE_2F, TEXT("Prototype_GameObject_Player"), strLayerTag, &Desc)))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -51,6 +122,6 @@ void CLevel_Office2F::Free()
 {
 	__super::Free();
 
-	Safe_Release(m_pFileTotalManager);
 	Safe_Release(m_pSystemManager);
+	Safe_Release(m_pFileTotalManager);
 }

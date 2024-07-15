@@ -11,6 +11,7 @@ public:
     typedef struct tDebugCameraDesc : public CAMERA_DESC
     {
         _float fSensor;
+        const _float4x4* pPlayerMatrix;
     } DEBUG_CAMERA_DESC;
 
 private:
@@ -35,6 +36,7 @@ public:
 private:
     class CSystemManager* m_pSystemManager = { nullptr };
 
+    const _float4x4* m_pPlayerMatrix = { nullptr };
     _float m_fSensor = { 0.f };
     _bool m_isMove = { true };
 

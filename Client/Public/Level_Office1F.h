@@ -20,7 +20,8 @@ private:
     class CFileTotalMgr* m_pFileTotalManager = { nullptr };
 
 private:
-    HRESULT Ready_Light();
+    HRESULT Ready_Camera(const wstring& strLayerTag);
+    HRESULT Ready_Player(const wstring& strLayerTag);
 
 public:
     static CLevel* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

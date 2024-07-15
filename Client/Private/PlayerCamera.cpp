@@ -3,23 +3,28 @@
 #include "GameInstance.h"
 #include "SystemManager.h"
 #include "Collision_Manager.h"
+#include "UIManager.h"
 
 CPlayerCamera::CPlayerCamera(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CCamera{ pDevice, pContext },
 	m_pSystemManager{ CSystemManager::GetInstance() },
-	m_pCollisionManager{ CCollision_Manager::GetInstance() }
+	m_pCollisionManager{ CCollision_Manager::GetInstance() },
+	m_pUIManager{ CUIManager::GetInstance() }
 {
 	Safe_AddRef(m_pSystemManager);
 	Safe_AddRef(m_pCollisionManager);
+	Safe_AddRef(m_pUIManager);
 }
 
 CPlayerCamera::CPlayerCamera(const CPlayerCamera& rhs)
 	: CCamera { rhs },
 	m_pSystemManager { rhs.m_pSystemManager },
-	m_pCollisionManager{ rhs.m_pCollisionManager }
+	m_pCollisionManager{ rhs.m_pCollisionManager },
+	m_pUIManager{ rhs.m_pUIManager }
 {
 	Safe_AddRef(m_pSystemManager);
 	Safe_AddRef(m_pCollisionManager);
+	Safe_AddRef(m_pUIManager);
 }
 
 HRESULT CPlayerCamera::Initialize_Prototype()
@@ -63,30 +68,14 @@ void CPlayerCamera::Late_Tick(const _float& fTimeDelta)
 {
 	if (m_pSystemManager->Get_Camera() != CAMERA_PLAYER) return;
 
-	_float a = m_WorldMatrix.m[1][0];
-	if (isnan(a))
-		int h = 99;
-
 	m_pColliderCom->Tick(m_pTransformCom->Get_WorldMatrix());
 	_bool isIntersect = m_pCollisionManager->Map_Collision(m_pColliderCom);
-
-	a = m_WorldMatrix.m[1][0];
-	if (isnan(a))
-		int h = 99;
 
 	BoundingSphere* pDesc = static_cast<BoundingSphere*>(m_pColliderCom->Get_Desc());
 	_vector vColliderPosition = XMLoadFloat3(&pDesc->Center);
 
-	a = m_WorldMatrix.m[1][0];
-	if (isnan(a))
-		int h = 99;
-
 	_vector vPlayerPosition;
 	memcpy(&vPlayerPosition, m_pPlayerMatrix->m[CTransform::STATE_POSITION], sizeof(_float4));
-
-	a = m_WorldMatrix.m[1][0];
-	if (isnan(a))
-		int h = 99;
 
 	_float fTempDistnace =
 		isIntersect ? XMVectorGetX(XMVector3Length(vColliderPosition - vPlayerPosition)) : MAX_DISTANCE;
@@ -97,10 +86,6 @@ void CPlayerCamera::Late_Tick(const _float& fTimeDelta)
 	Compute_View(fTimeDelta);
 
 	m_fCamDistance = fTempDistnace;
-
-	a = m_WorldMatrix.m[1][0];
-	if (isnan(a))
-		int h = 99;
 
 	__super::Tick(fTimeDelta);
 
@@ -124,9 +109,12 @@ void CPlayerCamera::Compute_View(const _float& fTimeDelta)
 	_float a = m_pTransformCom->Get_WorldMatrix().r[1].m128_f32[0];
 	if (isnan(a))
 		int h = 99;
-
-	SetCursorPos(g_iWinSizeX * 0.5f, g_iWinSizeY * 0.5f); // 마우스 좌표 적용해주기
-	//ShowCursor(false);
+	
+	if (m_pUIManager->isInvenClose())
+	{
+		SetCursorPos(g_iWinSizeX * 0.5f, g_iWinSizeY * 0.5f); // 마우스 좌표 적용해주기
+		ShowCursor(false);
+	}
 
 	// 플레이어 위치 가져오기
 	_vector vPlayerPosition;
@@ -156,32 +144,15 @@ void CPlayerCamera::Compute_View(const _float& fTimeDelta)
 		1.f
 	);
 
-	a = m_pTransformCom->Get_WorldMatrix().r[1].m128_f32[0];
-	if (isnan(a))
-		int h = 99;
-
 	vCamPosition += XMVectorSet(XMVectorGetX(vPlayerPosition), XMVectorGetY(vPlayerPosition), XMVectorGetZ(vPlayerPosition), 0);
-
-	a = m_pTransformCom->Get_WorldMatrix().r[1].m128_f32[0];
-	if (isnan(a))
-		int h = 99;
 
 	// 이전 카메라 포지션과 새로운 카메라 포지션 사이의 선형보간
 	_vector vLerpedCamPosition = XMVectorLerp(vPrevCamPosition, vCamPosition, fTimeDelta * 5.f);
 	_vector vLookAt = XMVectorSet(XMVectorGetX(vPlayerPosition), XMVectorGetY(vPlayerPosition) + 1.f, XMVectorGetZ(vPlayerPosition), 1);
 
-
-	a = m_pTransformCom->Get_WorldMatrix().r[1].m128_f32[0];
-	if (isnan(a))
-		int h = 99;
-
 	// 카메라가 플레이어를 바라보도록 설정
 	m_pTransformCom->LookAt(vLookAt);
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vLerpedCamPosition);
-
-	a = m_pTransformCom->Get_WorldMatrix().r[1].m128_f32[0];
-	if (isnan(a))
-		int h = 99;
 
 	// 월드 매트릭스 업데이트
 	XMStoreFloat4x4(&m_WorldMatrix, m_pTransformCom->Get_WorldMatrix());
@@ -195,7 +166,7 @@ HRESULT CPlayerCamera::Add_Components()
 	ColliderDesc.fRadius = 0.1f;
 	ColliderDesc.vCenter = _float3(0, 0, 0);
 
-	if (FAILED(__super::Add_Component(LEVEL_TEST, TEXT("Prototype_Component_Collider"),
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Collider"),
 		TEXT("Com_Collider"), reinterpret_cast<CComponent**>(&m_pColliderCom), &ColliderDesc)))
 		return E_FAIL;
 
@@ -236,4 +207,5 @@ void CPlayerCamera::Free()
 	Safe_Release(m_pColliderCom);
 	Safe_Release(m_pSystemManager);
 	Safe_Release(m_pCollisionManager);
+	Safe_Release(m_pUIManager);
 }

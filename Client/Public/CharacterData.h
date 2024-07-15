@@ -72,9 +72,6 @@ private:
     HRESULT Load_EffectState(string strFilePath);
 
 private:
-    void Create_Effect(string& strBoneName, string& strEffectName);
-    
-private:
     CGameInstance* m_pGameInstance = { nullptr };
     class CLandObject* m_pCharacter = { nullptr };
 

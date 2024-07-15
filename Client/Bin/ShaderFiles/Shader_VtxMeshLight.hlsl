@@ -103,6 +103,35 @@ PS_OUT PS_MAIN_LightMask(PS_IN In)
     return Out;
 }
 
+PS_OUT PS_MAIN_Lamp(PS_IN In)
+{
+    PS_OUT Out = (PS_OUT) 0;
+
+    vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
+    
+    vector emissive = g_RMTexture.Sample(LinearSampler, In.vTexcoord);
+   
+    vector finalColor = saturate(vDiffuse + (emissive.r) * float4(1, 0.5, 0, 1));
+    
+    if(finalColor.r == 1 && finalColor.g == 1 && finalColor.b == 1)
+        finalColor = float4(1, 0.5, 0, 1);
+  
+    Out.vDiffuse = finalColor;
+    
+    return Out;
+}
+
+PS_OUT PS_MAIN_AlphaLamp(PS_IN In)
+{
+    PS_OUT Out = (PS_OUT) 0;
+
+    vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
+    vDiffuse.a = 0.1;
+    Out.vDiffuse = vDiffuse;
+    
+    return Out;
+}
+
 PS_OUT PS_MAIN_Bloom(PS_IN In)
 {
     PS_OUT Out = (PS_OUT) 0;
@@ -118,6 +147,8 @@ PS_OUT PS_MAIN_Bloom(PS_IN In)
     
     return Out;
 }
+
+
 
 
 
@@ -162,10 +193,36 @@ technique11 DefaultTechnique
         PixelShader = compile ps_5_0 PS_MAIN_LightMask();
     }
 
-
-    pass DefaultBloomPass //3 
+    pass LampPass //3 
     {
-        SetRasterizerState(RS_Cull_NON_CW);
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_Screen, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        HullShader = NULL;
+        DomainShader = NULL;
+        PixelShader = compile ps_5_0 PS_MAIN_Lamp();
+    }
+
+    pass AlphaPass //4
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        HullShader = NULL;
+        DomainShader = NULL;
+        PixelShader = compile ps_5_0 PS_MAIN_AlphaLamp();
+    }
+
+
+    pass DefaultBloomPass //5
+    {
+        SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_Default, 0);
         SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 
@@ -175,6 +232,8 @@ technique11 DefaultTechnique
         DomainShader = NULL;
         PixelShader = compile ps_5_0 PS_MAIN_Bloom();
     }
+
+
    
 }
 

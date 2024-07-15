@@ -29,6 +29,13 @@ HRESULT CWPAYakuza::Initialize(void* pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
+	if (nullptr != pArg)
+	{
+		MONSTER_IODESC* gameobjDesc = (MONSTER_IODESC*)pArg;
+		m_pTransformCom->Set_WorldMatrix(gameobjDesc->vStartPos);
+		m_wstrModelName = gameobjDesc->wstrModelName;
+	}
+
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
@@ -71,7 +78,7 @@ HRESULT CWPAYakuza::Add_Components()
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Component(LEVEL_TEST, TEXT("Prototype_Component_Model_Jimu"),
+	if (FAILED(__super::Add_Component(LEVEL_TEST, m_wstrModelName,
 		TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
 		return E_FAIL;
 
@@ -93,6 +100,7 @@ HRESULT CWPAYakuza::Add_Components()
 	CAI_WPAYakuza::AI_MONSTER_DESC AIDesc{};
 	AIDesc.pState = &m_iState;
 	AIDesc.pAnim = m_pAnimCom;
+	AIDesc.pThis = this;
 
 	m_pTree = dynamic_cast<CAI_WPAYakuza*>(m_pGameInstance->Add_BTNode(LEVEL_TEST, TEXT("Prototype_BTNode_WPAYakuza"), &AIDesc));
 	if (nullptr == m_pTree)

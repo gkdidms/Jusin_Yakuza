@@ -25,6 +25,14 @@ HRESULT CKuze::Initialize(void* pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
+	if (nullptr != pArg)
+	{
+		MONSTER_IODESC* gameobjDesc = (MONSTER_IODESC*)pArg;
+		m_pTransformCom->Set_WorldMatrix(gameobjDesc->vStartPos);
+		m_wstrModelName = gameobjDesc->wstrModelName;
+	}
+
+
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
@@ -59,11 +67,11 @@ void CKuze::Late_Tick(const _float& fTimeDelta)
 
 HRESULT CKuze::Add_Components()
 {
-	if (FAILED(__super::Add_Component(LEVEL_TEST, TEXT("Prototype_Component_Shader_VtxAnim"),
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Shader_VtxAnim"),
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Component(LEVEL_TEST, TEXT("Prototype_Component_Model_Jimu"),
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Model_Jimu"),
 		TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
 		return E_FAIL;
 
@@ -74,11 +82,11 @@ HRESULT CKuze::Add_Components()
 	ColliderDesc.vCenter = _float3(0, 0.f, 0);
 	ColliderDesc.vRotation = _float3(0, 0.f, 0.f);
 
-	if (FAILED(__super::Add_Component(LEVEL_TEST, TEXT("Prototype_Component_Collider"),
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Collider"),
 		TEXT("Com_Collider"), reinterpret_cast<CComponent**>(&m_pColliderCom), &ColliderDesc)))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Component(LEVEL_TEST, TEXT("Prototype_Component_Anim"),
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Anim"),
 		TEXT("Com_Anim"), reinterpret_cast<CComponent**>(&m_pAnimCom))))
 		return E_FAIL;
 
@@ -88,7 +96,7 @@ HRESULT CKuze::Add_Components()
 	AIDesc.pState = &m_iState;
 	AIDesc.pThis = this;
 
-	m_pTree = dynamic_cast<CAI_Kuze*>(m_pGameInstance->Add_BTNode(LEVEL_TEST, TEXT("Prototype_BTNode_Kuze"), &AIDesc));
+	m_pTree = dynamic_cast<CAI_Kuze*>(m_pGameInstance->Add_BTNode(m_iCurrentLevel, TEXT("Prototype_BTNode_Kuze"), &AIDesc));
 	if (nullptr == m_pTree)
 		return E_FAIL;
 
