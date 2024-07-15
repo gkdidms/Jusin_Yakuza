@@ -4,6 +4,10 @@
 #include "SystemManager.h"
 #include "Collision_Manager.h"
 
+#ifdef _DEBUG
+#include "DebugManager.h"
+#endif // _DEBUG
+
 #include "CharacterData.h"
 #include "SocketCollider.h"
 #include "SocketEffect.h"
@@ -21,14 +25,24 @@
 
 
 CPlayer::CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-	: CLandObject{ pDevice, pContext }
+	: CLandObject{ pDevice, pContext },
+#ifdef _DEBUG
+	m_pDebugManager{ CDebugManager::GetInstance() },
+#endif // _DEBUG
+	m_pUIManager{ CUIManager::GetInstance() }
 {
+	Safe_AddRef(m_pDebugManager);
+	Safe_AddRef(m_pUIManager);
 }
 
 CPlayer::CPlayer(const CPlayer& rhs)
 	: CLandObject{ rhs },
-	m_pUIManager{CUIManager::GetInstance()}
+#ifdef _DEBUG
+	m_pDebugManager{ rhs.m_pDebugManager },
+#endif // _DEBUG
+	m_pUIManager{ rhs.m_pUIManager }
 {
+	Safe_AddRef(m_pDebugManager);
 	Safe_AddRef(m_pUIManager);
 }
 
@@ -953,7 +967,13 @@ HRESULT CPlayer::Bind_ResourceData()
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_fFar", m_pGameInstance->Get_CamFar(), sizeof(_float))))
 		return E_FAIL;
 
-
+#ifdef _DEBUG
+	_float2 vTexcoord = m_pDebugManager->Get_Texcoord();
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_fTexcoordX", &vTexcoord.x, sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_fTexcoordY", &vTexcoord.y, sizeof(_float))))
+		return E_FAIL;
+#endif // _DEBUG
 
 	return S_OK;
 }	
@@ -1115,6 +1135,13 @@ void CPlayer::Free()
 
 		m_AnimationTree[i].clear();
 	}
+
+
+	
+
+#ifdef _DEBUG
+	Safe_Release(m_pDebugManager);
+#endif // _DEBUG
 
 	Safe_Release(m_pUIManager);
 	Safe_Release(m_pShaderCom);
