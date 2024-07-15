@@ -341,6 +341,12 @@
     <ClCompile Include="..\Private\Kiryu_KRS_Down.cpp">
       <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\Down</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\Kiryu_KRC_Down.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRC\Down</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Kiryu_KRH_Down.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRH\Down</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\MainApp.h">
@@ -712,6 +718,12 @@
     </ClInclude>
     <ClInclude Include="..\Public\Kiryu_KRS_Down.h">
       <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\Down</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Kiryu_KRH_Down.h">
+      <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRH\Down</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Kiryu_KRC_Down.h">
+      <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRC\Down</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1097,6 +1109,9 @@
     </Filter>
     <Filter Include="02.GameObjects\02.Character\PartObject\SocketObject\SocketCollider">
       <UniqueIdentifier>{260596ca-843e-47fe-ae9b-3a65ebc2b9a0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRC\Down">
+      <UniqueIdentifier>{d637aab2-a6a6-48f2-9052-428c77df965b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

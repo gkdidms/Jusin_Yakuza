@@ -393,7 +393,6 @@ void CKiryu_KRS_Hit::Setting_Value(void* pValue)
 		/*24 c_dwn_body_l*/
 		/*25 c_dwn_body_r*/
 
-		// 맞으면 넘어지는 스킬
 		switch (pDesc->iDirection)
 		{
 		case CPlayer::F:

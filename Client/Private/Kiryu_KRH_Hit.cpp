@@ -112,6 +112,7 @@ void CKiryu_KRH_Hit::Setting_Value(void* pValue)
 	string strAnimName = m_pGameInstance->Extract_String(pDesc->strAnimationName, '[', ']');
 
 
+
 	if ("p_krh_cmb_01" == strAnimName)
 	{
 		/*
@@ -241,32 +242,34 @@ void CKiryu_KRH_Hit::Setting_Value(void* pValue)
 		}
 		}
 	}
+
+	// 러쉬 스타일에서 해당 마무리 콤보를 맞으면 쓰러진다
 	else if ("p_krh_cmb_05" == strAnimName)
 	{
 		/*
-		[30]	c_dam_push_head_b[c_dam_push_head_b]	14
-		[31] c_dam_push_head_f[c_dam_push_head_f]		15
+		22	/	m_AnimationNames.push_back("c_dwn_body_b");
+		23	/	m_AnimationNames.push_back("c_dwn_body_f");
 		*/
 		switch (pDesc->iDirection)
 		{
 		case CPlayer::F:
 		{
-			m_iCurrentIndex = 15;
+			m_iCurrentIndex = 23;
 			break;
 		}
 		case CPlayer::B:
 		{
-			m_iCurrentIndex = 14;
+			m_iCurrentIndex = 22;
 			break;
 		}
 		case CPlayer::L:
 		{
-			m_iCurrentIndex = 15;
+			m_iCurrentIndex = 23;
 			break;
 		}
 		case CPlayer::R:
 		{
-			m_iCurrentIndex = 14;
+			m_iCurrentIndex = 22;
 			break;
 		}
 		}
@@ -278,7 +281,35 @@ void CKiryu_KRH_Hit::Setting_Value(void* pValue)
 	}
 	else if ("e_knk_atk_kick" == strAnimName)
 	{
-		// 러쉬 타입에서 이 스킬을 맞으면 넘어지게한다.
+		/*
+		* 	m_AnimationIndices.push_back(2);		//[2] c_dam_body_lv02_b[c_dam_body_lv02_b]	2
+			m_AnimationIndices.push_back(3);		//[3] c_dam_body_lv02_f[c_dam_body_lv02_f]	3
+			m_AnimationIndices.push_back(4);		//[4] c_dam_body_lv02_l[c_dam_body_lv02_l]	4
+			m_AnimationIndices.push_back(5);		//[5] c_dam_body_lv02_r[c_dam_body_lv02_r]	5
+		*/
+		switch (pDesc->iDirection)
+		{
+		case CPlayer::F:
+		{
+			m_iCurrentIndex = 3;
+			break;
+		}
+		case CPlayer::B:
+		{
+			m_iCurrentIndex = 2;
+			break;
+		}
+		case CPlayer::L:
+		{
+			m_iCurrentIndex = 4;
+			break;
+		}
+		case CPlayer::R:
+		{
+			m_iCurrentIndex = 5;
+			break;
+		}
+		}
 	}
 	else if ("e_wpa_cmb_01" == strAnimName)
 	{
@@ -378,7 +409,35 @@ void CKiryu_KRH_Hit::Setting_Value(void* pValue)
 	}
 	else if ("e_kta_atk_gurad_run" == strAnimName)
 	{
-		// 넘어진다
+		/*22 c_dwn_body_b*/
+		/*23 c_dwn_body_f*/
+		/*24 c_dwn_body_l*/
+		/*25 c_dwn_body_r*/
+
+		// 맞으면 넘어지는 스킬
+		switch (pDesc->iDirection)
+		{
+		case CPlayer::F:
+		{
+			m_iCurrentIndex = 23;
+			break;
+		}
+		case CPlayer::B:
+		{
+			m_iCurrentIndex = 22;
+			break;
+		}
+		case CPlayer::L:
+		{
+			m_iCurrentIndex = 24;
+			break;
+		}
+		case CPlayer::R:
+		{
+			m_iCurrentIndex = 25;
+			break;
+		}
+		}
 	}
 	else if ("e_kta_cmb_a_01" == strAnimName)
 	{
@@ -446,61 +505,31 @@ void CKiryu_KRH_Hit::Setting_Value(void* pValue)
 	}
 	else if ("e_kta_cmb_a_03" == strAnimName)
 	{
-		/*
-			[4] c_dam_body_lv02_l[c_dam_body_lv02_l]	4
-			[5] c_dam_body_lv02_r[c_dam_body_lv02_r]	5
-		*/
+		///*30*/m_AnimationNames.push_back("c_dwn_direct_b");
+		///*31*/m_AnimationNames.push_back("c_dwn_direct_f");
+		///*32*/m_AnimationNames.push_back("c_dwn_direct_l");
+		///*33*/m_AnimationNames.push_back("c_dwn_direct_r");
 
 		switch (pDesc->iDirection)
 		{
 		case CPlayer::F:
 		{
-			m_iCurrentIndex = 4;
+			m_iCurrentIndex = 31;
 			break;
 		}
 		case CPlayer::B:
 		{
-			m_iCurrentIndex = 5;
+			m_iCurrentIndex = 30;
 			break;
 		}
 		case CPlayer::L:
 		{
-			m_iCurrentIndex = 4;
+			m_iCurrentIndex = 32;
 			break;
 		}
 		case CPlayer::R:
 		{
-			m_iCurrentIndex = 5;
-			break;
-		}
-		}
-	}
-	else if ("e_kuz_atk_down" == strAnimName)
-	{
-		/*
-		[16]	c_dam_head_lv01_b[c_dam_head_lv01_b]	6
-		[17]	c_dam_head_lv01_f[c_dam_head_lv01_f]	7
-		*/
-		switch (pDesc->iDirection)
-		{
-		case CPlayer::F:
-		{
-			m_iCurrentIndex = 7;
-			break;
-		}
-		case CPlayer::B:
-		{
-			m_iCurrentIndex = 6;
-			break;
-		}
-		case CPlayer::L:
-		{
-			m_iCurrentIndex = 6;
-			break;
-		}
-		case CPlayer::R:
-		{
-			m_iCurrentIndex = 7;
+			m_iCurrentIndex = 33;
 			break;
 		}
 		}
@@ -603,32 +632,31 @@ void CKiryu_KRH_Hit::Setting_Value(void* pValue)
 	}
 	else if ("e_kuz_cmb_a_03" == strAnimName)
 	{
-		/*
-		[20]	c_dam_head_lv02_b[c_dam_head_lv02_b]	10
-		[21]	c_dam_head_lv02_f[c_dam_head_lv02_f]	11
-		[22]	c_dam_head_lv02_l[c_dam_head_lv02_l]	12
-		[23]	c_dam_head_lv02_r[c_dam_head_lv02_r]	13
-		*/
+		/*22 c_dwn_body_b*/
+		/*23 c_dwn_body_f*/
+		/*24 c_dwn_body_l*/
+		/*25 c_dwn_body_r*/
+
 		switch (pDesc->iDirection)
 		{
 		case CPlayer::F:
 		{
-			m_iCurrentIndex = 11;
+			m_iCurrentIndex = 23;
 			break;
 		}
 		case CPlayer::B:
 		{
-			m_iCurrentIndex = 10;
+			m_iCurrentIndex = 22;
 			break;
 		}
 		case CPlayer::L:
 		{
-			m_iCurrentIndex = 12;
+			m_iCurrentIndex = 24;
 			break;
 		}
 		case CPlayer::R:
 		{
-			m_iCurrentIndex = 13;
+			m_iCurrentIndex = 25;
 			break;
 		}
 		}
@@ -699,33 +727,11 @@ void CKiryu_KRH_Hit::Setting_Value(void* pValue)
 	}
 	else if ("e_kuz_cmb_b_03" == strAnimName)
 	{
-		/*
-		[30]	c_dam_push_head_b[c_dam_push_head_b]	14
-		[31] c_dam_push_head_f[c_dam_push_head_f]		15
-		*/
-		switch (pDesc->iDirection)
-		{
-		case CPlayer::F:
-		{
-			m_iCurrentIndex = 15;
-			break;
-		}
-		case CPlayer::B:
-		{
-			m_iCurrentIndex = 14;
-			break;
-		}
-		case CPlayer::L:
-		{
-			m_iCurrentIndex = 15;
-			break;
-		}
-		case CPlayer::R:
-		{
-			m_iCurrentIndex = 14;
-			break;
-		}
-		}
+		/*22 c_dwn_body_b*/
+		/*23 c_dwn_body_f*/
+		/*24 c_dwn_body_l*/
+		/*25 c_dwn_body_r*/
+		m_iCurrentIndex = 25;
 	}
 	else if ("e_kuz_cmb_headbutt_01" == strAnimName)
 	{
@@ -918,7 +924,11 @@ void CKiryu_KRH_Hit::Setting_Value(void* pValue)
 		}
 	}
 
+}
 
+string CKiryu_KRH_Hit::Get_AnimationName()
+{
+	return m_AnimationNames[m_iCurrentIndex];
 }
 
 CBehaviorAnimation* CKiryu_KRH_Hit::Create(CPlayer* pPlayer)

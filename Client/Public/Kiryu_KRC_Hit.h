@@ -29,6 +29,10 @@ public:
 	virtual _bool Get_AnimationEnd() override;
 	virtual void Reset();
 	virtual void Setting_Value(void* pValue = nullptr);
+	virtual string Get_AnimationName();
+
+private:
+	vector<string> m_AnimationNames;
 
 public:
 	static CBehaviorAnimation* Create(class CPlayer* pPlayer);

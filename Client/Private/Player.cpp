@@ -765,9 +765,49 @@ void CPlayer::KRH_KeyInput(const _float& fTimeDelta)
 {
 	if (m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Get_AnimationEnd())
 	{
-		if ((_uint)KRH_BEHAVIOR_STATE::IDLE != m_iCurrentBehavior)
-			m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Reset();
-		m_iCurrentBehavior = (_uint)KRH_BEHAVIOR_STATE::IDLE;
+		if ((_uint)KRH_BEHAVIOR_STATE::HIT == m_iCurrentBehavior)
+		{
+			// HIT상태일 때의 애니메이션이 끝났다면
+			string strAnimName = m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Get_AnimationName();
+			// 다운당한 상태인지를 검사해서
+			if (string::npos != strAnimName.find("dwn"))
+			{
+				// 기존 행동 초기화해주고
+				m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Reset();
+				// 다운 상태로 변경해준다.
+				m_iCurrentBehavior = (_uint)KRH_BEHAVIOR_STATE::DOWN;
+
+				// 아래 문구가 포함된 애니메이션들은 엎어진상태로 이어진다
+				if (string::npos != strAnimName.find("body_l") || (string::npos == strAnimName.find("body") && string::npos != strAnimName.find("_b"))
+					|| string::npos != strAnimName.find("y_b")
+					|| string::npos != strAnimName.find("_guard_") || string::npos != strAnimName.find("_dnf_"))
+				{
+					_bool isFront = false;
+					m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Setting_Value(&isFront);
+				}
+				else if (string::npos != strAnimName.find("body_r") || string::npos != strAnimName.find("_f")
+					|| string::npos != strAnimName.find("_direct_") || string::npos != strAnimName.find("dnb"))
+				{
+					_bool isFront = true;
+					m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Setting_Value(&isFront);
+				}
+
+			}
+			else
+			{
+				// 현재 상태가 아이들이 아니라면 
+				if ((_uint)KRH_BEHAVIOR_STATE::IDLE != m_iCurrentBehavior)
+					m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Reset();
+				m_iCurrentBehavior = (_uint)KRH_BEHAVIOR_STATE::IDLE;
+			}
+		}
+		else
+		{
+			// 현재 상태가 아이들이 아니라면 
+			if ((_uint)KRH_BEHAVIOR_STATE::IDLE != m_iCurrentBehavior)
+				m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Reset();
+			m_iCurrentBehavior = (_uint)KRH_BEHAVIOR_STATE::IDLE;
+		}
 	}
 
 	_bool isShift = { false };
