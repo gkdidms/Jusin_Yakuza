@@ -27,6 +27,7 @@
 #include "Kiryu_KRH_Run.h"
 #include "Kiryu_KRH_Attack.h"
 #include "Kiryu_KRH_Hit.h"
+#include "Kiryu_KRH_Down.h"
 #include "Kiryu_KRH_Sway.h"
 #pragma endregion
 
@@ -37,6 +38,7 @@
 #include "Kiryu_KRC_Run.h"
 #include "Kiryu_KRC_Attack.h"
 #include "Kiryu_KRC_Hit.h"
+#include "Kiryu_KRC_Down.h"
 #include "Kiryu_KRC_Sway.h"
 #pragma endregion
 
@@ -118,7 +120,7 @@ CBehaviorAnimation* CBehaviorAnimation::Create_KRH_Behavior(_uint iBehavior, cla
 	case 6:			// SWAY
 		return CKiryu_KRH_Sway::Create(pPlayer);
 	case 7:			// DOWN
-		break;
+		return CKiryu_KRH_Down::Create(pPlayer);
 	}
 	return nullptr;
 }
@@ -146,7 +148,7 @@ CBehaviorAnimation* CBehaviorAnimation::Create_KRC_Behavior(_uint iBehavior, cla
 	case 6:			// SWAY
 		return CKiryu_KRC_Sway::Create(pPlayer);
 	case 7:			// DOWN
-		break;
+		return CKiryu_KRC_Down::Create(pPlayer);
 	}
 	return nullptr;
 }

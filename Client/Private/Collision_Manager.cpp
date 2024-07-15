@@ -3,11 +3,14 @@
 #include "SocketCollider.h"
 #include "Component_Manager.h"
 #include "Player.h"
+#include "GameInstance.h"
 
 IMPLEMENT_SINGLETON(CCollision_Manager)
 
 CCollision_Manager::CCollision_Manager()
+    : m_pGameInstance{ CGameInstance::GetInstance() }
 {
+    Safe_AddRef(m_pGameInstance);
 }
 
 HRESULT CCollision_Manager::Initialize()
@@ -260,6 +263,8 @@ void CCollision_Manager::Battle_Clear()
 
 void CCollision_Manager::Free()
 {
+    Safe_Release(m_pGameInstance);
+
     Impulse_Clear();
     Battle_Clear();
 

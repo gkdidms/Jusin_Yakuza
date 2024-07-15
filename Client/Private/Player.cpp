@@ -320,6 +320,8 @@ void CPlayer::Take_Damage(_uint iHitColliderType, const _float3& vDir, _float fD
 
 		m_iCurrentBehavior = (_uint)KRS_BEHAVIOR_STATE::HIT;
 		m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Setting_Value((void*) &Desc);
+
+
 		break;
 	}
 	case CPlayer::KRH:

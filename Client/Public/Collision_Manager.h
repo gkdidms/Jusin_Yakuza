@@ -5,6 +5,7 @@
 BEGIN(Engine)
 class CCollider;
 class CGameObject;
+class CGameInstance;
 END
 
 BEGIN(Client)
@@ -70,6 +71,8 @@ private:
 
 
     vector<CCollider*> m_MapColliders;
+
+    CGameInstance* m_pGameInstance = { nullptr };
 
 private:
     void Impulse_Clear();
