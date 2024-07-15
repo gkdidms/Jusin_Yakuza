@@ -84,6 +84,9 @@ void CLevel_Loading::Tick(const _float& fTimeDelta)
 
 #ifdef _DEBUG
 	SetWindowText(g_hWnd, m_pLoader->Get_LoadingText());
+#else
+	// 로딩 화면 만들어지기 전까지 릴리즈 모드에서도 볼 수 있게 해야함
+	SetWindowText(g_hWnd, m_pLoader->Get_LoadingText());
 #endif
 }
 
