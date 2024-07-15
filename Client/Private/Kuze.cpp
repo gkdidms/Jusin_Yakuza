@@ -1,9 +1,11 @@
 #include "Kuze.h"
 
 #include "GameInstance.h"
+#include "Collision_Manager.h"
+#include "AI_Kuze.h"
 #include "Mesh.h"
 
-#include "AI_Kuze.h"
+#include "SocketCollider.h"
 
 CKuze::CKuze(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CMonster { pDevice, pContext }
@@ -36,6 +38,11 @@ HRESULT CKuze::Initialize(void* pArg)
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
+	m_wstrModelName = TEXT("Jimu");
+
+	if (FAILED(Add_CharacterData()))
+		return E_FAIL;
+
 	m_pModelCom->Set_AnimationIndex(1, 0.5);
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(5.f, 0.f, 5.f, 1.f));
@@ -58,11 +65,30 @@ void CKuze::Tick(const _float& fTimeDelta)
 	Synchronize_Root(fTimeDelta);
 
 	m_pColliderCom->Tick(m_pTransformCom->Get_WorldMatrix());
+
+	__super::Tick(fTimeDelta);
 }
 
 void CKuze::Late_Tick(const _float& fTimeDelta)
 {
 	m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
+	m_pCollisionManager->Add_ImpulseResolution(this);
+
+	// 현재 켜져있는 Attack용 콜라이더 삽입
+	for (auto& pPair : m_pColliders)
+	{
+		if (pPair.second->Get_CollierType() == CSocketCollider::ATTACK && pPair.second->IsOn())
+			m_pCollisionManager->Add_AttackCollider(pPair.second, CCollision_Manager::PLAYER);
+	}
+
+	// 현재 켜져있는 Hit용 콜라이더 삽입 (아직까지는 Hit용 콜라이더는 항상 켜져있음)
+	for (auto& pPair : m_pColliders)
+	{
+		if (pPair.second->Get_CollierType() == CSocketCollider::HIT && pPair.second->IsOn())
+			m_pCollisionManager->Add_HitCollider(pPair.second, CCollision_Manager::ENEMY);
+	}
+
+	__super::Late_Tick(fTimeDelta);
 }
 
 HRESULT CKuze::Add_Components()
@@ -75,12 +101,11 @@ HRESULT CKuze::Add_Components()
 		TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
 		return E_FAIL;
 
-	CBounding_OBB::BOUNDING_OBB_DESC		ColliderDesc{};
+	CBounding_AABB::BOUNDING_AABB_DESC		ColliderDesc{};
 
-	ColliderDesc.eType = CCollider::COLLIDER_OBB;
-	ColliderDesc.vExtents = _float3(0.8, 0.8, 0.8);
-	ColliderDesc.vCenter = _float3(0, 0.f, 0);
-	ColliderDesc.vRotation = _float3(0, 0.f, 0.f);
+	ColliderDesc.eType = CCollider::COLLIDER_AABB;
+	ColliderDesc.vExtents = _float3(0.3, 0.8, 0.3);
+	ColliderDesc.vCenter = _float3(0, ColliderDesc.vExtents.y, 0);
 
 	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Collider"),
 		TEXT("Com_Collider"), reinterpret_cast<CComponent**>(&m_pColliderCom), &ColliderDesc)))

@@ -3,9 +3,9 @@
 #include "GameInstance.h"
 #include "Collision_Manager.h"
 #include "AI_RushYakuza.h"
-#include "SocketCollider.h"
-
 #include "Mesh.h"
+
+#include "SocketCollider.h"
 
 CRushYakuza::CRushYakuza(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CMonster{pDevice, pContext}
