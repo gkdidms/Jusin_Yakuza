@@ -4,6 +4,10 @@
 #include "SystemManager.h"
 #include "Collision_Manager.h"
 
+#ifdef _DEBUG
+#include "DebugManager.h"
+#endif // _DEBUG
+
 #include "CharacterData.h"
 #include "SocketCollider.h"
 #include "SocketEffect.h"
@@ -19,16 +23,25 @@
 #include "Kiryu_KRS_Hit.h"
 #pragma endregion
 
-
 CPlayer::CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-	: CLandObject{ pDevice, pContext }
+	: CLandObject{ pDevice, pContext },
+#ifdef _DEBUG
+	m_pDebugManager{ CDebugManager::GetInstance() },
+#endif // _DEBUG
+	m_pUIManager{ CUIManager::GetInstance() }
 {
+	Safe_AddRef(m_pDebugManager);
+	Safe_AddRef(m_pUIManager);
 }
 
 CPlayer::CPlayer(const CPlayer& rhs)
 	: CLandObject{ rhs },
-	m_pUIManager{CUIManager::GetInstance()}
+#ifdef _DEBUG
+	m_pDebugManager{ rhs.m_pDebugManager },
+#endif // _DEBUG
+	m_pUIManager{ rhs.m_pUIManager }
 {
+	Safe_AddRef(m_pDebugManager);
 	Safe_AddRef(m_pUIManager);
 }
 
@@ -133,6 +146,7 @@ void CPlayer::Tick(const _float& fTimeDelta)
 	Animation_Event();
 
 	Effect_Control_Aura();
+
 }
 
 void CPlayer::Late_Tick(const _float& fTimeDelta)
@@ -172,7 +186,7 @@ void CPlayer::Late_Tick(const _float& fTimeDelta)
 		if (pPair.second->Get_CollierType() == CSocketCollider::HIT && pPair.second->IsOn())
 			m_pCollisionManager->Add_HitCollider(pPair.second, CCollision_Manager::PLAYER);
 	}
-	
+
 }
 
 HRESULT CPlayer::Render()
@@ -183,25 +197,28 @@ HRESULT CPlayer::Render()
 	int i = 0;
 	for (auto& pMesh : m_pModelCom->Get_Meshes())
 	{
-		if (!strcmp("[l0]jacketw1", pMesh->Get_Name()))
-		{
-			if(m_isRimLight)
-				if (FAILED(m_pShaderCom->Bind_RawValue("g_isRimLight", &m_isRimLight, sizeof(_bool))))
-					return E_FAIL;
-		}
-		else if (!strcmp("[l0]body_naked1", pMesh->Get_Name()))
-		{
-			if (m_isRimLight)
-				if (FAILED(m_pShaderCom->Bind_RawValue("g_isRimLight", &m_isRimLight, sizeof(_bool))))
-					return E_FAIL;
-		}
-		else
-		{
-			_bool isfalse = false;
-			if (FAILED(m_pShaderCom->Bind_RawValue("g_isRimLight", &isfalse, sizeof(_bool))))
-				return E_FAIL;
-		}
+		//if (!strcmp("[l0]jacketw1", pMesh->Get_Name()))
+		//{
+		//	if(m_isRimLight)
+		//		if (FAILED(m_pShaderCom->Bind_RawValue("g_isRimLight", &m_isRimLight, sizeof(_bool))))
+		//			return E_FAIL;
+		//}
+		//else if (!strcmp("[l0]body_naked1", pMesh->Get_Name()))
+		//{
+		//	if (m_isRimLight)
+		//		if (FAILED(m_pShaderCom->Bind_RawValue("g_isRimLight", &m_isRimLight, sizeof(_bool))))
+		//			return E_FAIL;
+		//}
+		//else
+		//{
+		//	_bool isfalse = false;
+		//	if (FAILED(m_pShaderCom->Bind_RawValue("g_isRimLight", &isfalse, sizeof(_bool))))
+		//		return E_FAIL;
+		//}
 
+		if(m_isRimLight)
+			if (FAILED(m_pShaderCom->Bind_RawValue("g_isRimLight", &m_isRimLight, sizeof(_bool))))
+					return E_FAIL;
 
 		m_pModelCom->Bind_BoneMatrices(m_pShaderCom, "g_BoneMatrices", i);
 
@@ -953,7 +970,13 @@ HRESULT CPlayer::Bind_ResourceData()
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_fFar", m_pGameInstance->Get_CamFar(), sizeof(_float))))
 		return E_FAIL;
 
-
+#ifdef _DEBUG
+	_float2 vTexcoord = m_pDebugManager->Get_Texcoord();
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_fTexcoordX", &vTexcoord.x, sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_fTexcoordY", &vTexcoord.y, sizeof(_float))))
+		return E_FAIL;
+#endif // _DEBUG
 
 	return S_OK;
 }	
@@ -1115,6 +1138,13 @@ void CPlayer::Free()
 
 		m_AnimationTree[i].clear();
 	}
+
+
+	
+
+#ifdef _DEBUG
+	Safe_Release(m_pDebugManager);
+#endif // _DEBUG
 
 	Safe_Release(m_pUIManager);
 	Safe_Release(m_pShaderCom);
