@@ -111,10 +111,8 @@ void GS_DEAFULT(point GS_IN In[1], inout TriangleStream<GS_OUT> Triangles)
         Out[i].vTexcoord = float2(0.f, 0.f);
         Out[i].vLifeTime = float2(0.f, 0.f);
     }
-	
-    float3 vDirection = In[0].vDir.xyz;
-    
-    vector vLook = g_vCamPosition - vector(In[0].vPosition, 1.f);
+
+    vector vLook = g_vCamPosition - vector(In[0].vPosition, 1.f);//받아온건 월드.
     float3 vRight = normalize(cross(float3(0.f, 1.f, 0.f), vLook.xyz)) * In[0].vPSize.x * In[0].vRectSize.x * 0.5f;
     float3 vUp = normalize(cross(vLook.xyz, vRight)) * In[0].vPSize.y * In[0].vRectSize.x* 0.5f;
 
@@ -478,20 +476,18 @@ struct RIM_OUT
 
 RIM_OUT PS_RIM_DEPTH(PS_IN In)
 {
-    
-    
     RIM_OUT Out = (RIM_OUT) 0;
-    Out.vDiffuse = float4(0.f, 0.f, 0.f, 0.f);
-    Out.vNormal = float4(0.f, 0.f, 0.f, 0.f);
-    Out.vDepth = float4(0.f, 0.f, 0.f, 0.f);
-    Out.vRM = float4(0.f, 0.f, 0.f, 0.f);
-    Out.vRS = float4(0.f, 0.f, 0.f, 0.f);
-    Out.vMulti = float4(0.f, 0.f, 0.f, 0.f);
-    Out.vRD = float4(0.f, 0.f, 0.f, 0.f);
+    Out.vDiffuse = vector(0.f, 0.f, 0.f, 0.f);
+    Out.vNormal = vector(0.f, 0.f, 0.f, 0.f);
+    Out.vDepth = vector(0.f, 0.f, 0.f, 0.f);
+    Out.vRM = vector(0.f, 0.f, 0.f, 0.f);
+    Out.vRS = vector(0.f, 0.f, 0.f, 0.f);
+    Out.vMulti = vector(0.f, 0.f, 0.f, 0.f);
+    Out.vRD = vector(0.f, 0.f, 0.f, 0.f);
+    
     float BaseAlpha = g_Texture.Sample(LinearSampler, In.vTexcoord).a;
     Out.vDepth = float4(0.f, 0.f, 0.f, BaseAlpha);
         
-
     return Out;
 }
 
@@ -576,7 +572,7 @@ technique11 DefaultTechnique
         SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
    
 		/* 어떤 셰이덜르 국동할지. 셰이더를 몇 버젼으로 컴파일할지. 진입점함수가 무엇이찌. */
-        VertexShader = compile vs_5_0 VS_LOCAL();
+        VertexShader = compile vs_5_0 VS_MAIN();
         GeometryShader = compile gs_5_0 GS_DEAFULT();
         HullShader = NULL;
         DomainShader = NULL;

@@ -186,8 +186,11 @@ PS_OUT PS_MAIN(PS_IN In)
     
     float RimIndex = 0.f;
     
-    if(g_isRimLight)
-        RimIndex = 1.f;
+    if (g_isRimLight)
+    {
+        if (In.vTexcoord.y < 0.3f || (In.vTexcoord.y > 0.5f && In.vTexcoord.y < 0.7f))
+            RimIndex = 1.f;
+    }
 
     Out.vNormal = vector(vNormalBTN.xyz * 0.5f + 0.5f, 0.f);
     Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_fFar, RimIndex, 0.f);
@@ -246,7 +249,10 @@ PS_OUT PS_BLEND(PS_IN In)
     }
     float RimIndex = 0.f;
     if (g_isRimLight)
-        RimIndex = 1.f;
+       { 
+        if(In.vTexcoord.x<0.5f)
+            RimIndex = 1.f;
+        }
     
     Out.vNormal = vector(vNormal.xyz * 0.5f + 0.5f, 0.f);
     Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_fFar, RimIndex, 1.f);

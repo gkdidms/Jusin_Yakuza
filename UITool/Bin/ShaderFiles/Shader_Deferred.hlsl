@@ -500,7 +500,7 @@ PS_OUT PS_RIMLIGHT(PS_IN In)//범위 지정 문해야됨
         float RangeAlpha = BaseDepth.w;
         float fRim = saturate(dot(BaseNormal, vRim));
         vector FinColor= float4(pow(1.f - fRim, fRimpower) * RimColor);
-        FinColor.a *= RangeAlpha;
+     //FinColor.a *= RangeAlpha;
         Out.vColor = FinColor;
     }
     else

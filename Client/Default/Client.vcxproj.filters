@@ -326,9 +326,6 @@
     <ClCompile Include="..\Private\Kiryu_KRC_Walk.cpp">
       <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRC\Walk</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\RimChecker.cpp">
-      <Filter>02.GameObjects\02.Character\PartObject\RimChecker</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\MainApp.h">
@@ -686,9 +683,6 @@
     <ClInclude Include="..\Public\Kiryu_KRC_Walk.h">
       <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRC\Walk</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\RimChecker.h">
-      <Filter>02.GameObjects\02.Character\PartObject\RimChecker</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -1025,9 +1019,6 @@
     </Filter>
     <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRC\Run">
       <UniqueIdentifier>{05554c49-48f2-436a-81e4-f66627213c96}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\02.Character\PartObject\RimChecker">
-      <UniqueIdentifier>{4acba031-1d9c-45b1-98da-66a0fc0e48b0}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

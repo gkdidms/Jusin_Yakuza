@@ -45,7 +45,6 @@
 #include "Particle_Point.h"
 #include "TRailEffect.h"
 #include "Aura.h"
-#include "RimChecker.h"
 #pragma endregion
 
 #pragma region UI
@@ -524,10 +523,7 @@ HRESULT CLoader::Loading_For_Test()
 
 #pragma region EFFECT
 
-	/* For.Prototype_GameObject_RimChecker */
-	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_RimChecker"),
-		CRimChecker::Create(m_pDevice, m_pContext))))	
-		return E_FAIL;
+
 
 	Add_Particle_On_Path(TEXT("../../Client/Bin/DataFiles/Particle/"));	
 
