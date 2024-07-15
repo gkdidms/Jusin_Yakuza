@@ -156,6 +156,8 @@ HRESULT CAura::Save_Data(const string strDirectory)
 
 	out.write((char*)&m_vStartPos, sizeof(_float4));
 
+	out.write((char*)&m_fLifeAlpha, sizeof(_float2));
+
 	out.write((char*)&m_iAction, sizeof(_uint));
 
 	out.write((char*)&m_fUVCount, sizeof(_float2));
@@ -223,6 +225,8 @@ HRESULT CAura::Load_Data(const string strDirectory)
 
 	in.read((char*)&m_vStartPos, sizeof(_float4));
 
+	in.read((char*)&m_fLifeAlpha, sizeof(_float2));
+	
 	in.read((char*)&m_iAction, sizeof(_uint));
 
 	in.read((char*)&m_fUVCount, sizeof(_float2));
