@@ -30,7 +30,9 @@ CPlayer::CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 #endif // _DEBUG
 	m_pUIManager{ CUIManager::GetInstance() }
 {
+#ifdef _DEBUG
 	Safe_AddRef(m_pDebugManager);
+#endif // _DEBUG	
 	Safe_AddRef(m_pUIManager);
 }
 
@@ -41,7 +43,10 @@ CPlayer::CPlayer(const CPlayer& rhs)
 #endif // _DEBUG
 	m_pUIManager{ rhs.m_pUIManager }
 {
+#ifdef _DEBUG
 	Safe_AddRef(m_pDebugManager);
+#endif // _DEBUG
+	
 	Safe_AddRef(m_pUIManager);
 }
 
