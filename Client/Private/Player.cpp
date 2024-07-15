@@ -1077,25 +1077,67 @@ void CPlayer::Compute_MoveDirection_RL()
 
 void CPlayer::Effect_Control_Aura()
 {
-	CSocketEffect* pEffect = { nullptr };
+	CSocketEffect* pHooligan = { nullptr };
+	CSocketEffect* pRush = { nullptr };
+	CSocketEffect* pDestroyer = { nullptr };
 
 	for (auto& pair : m_pEffects)
 	{
 		string strKey = m_pGameInstance->WstringToString(pair.second->Get_EffectName());
 
-		if (string::npos != strKey.find("Aura"))
-			pEffect = pair.second;
+		if (string::npos != strKey.find("Hooligan"))
+			pHooligan = pair.second;
+		if (string::npos != strKey.find("Rush"))
+			pRush = pair.second;
+		if (string::npos != strKey.find("Destroyer"))
+			pDestroyer = pair.second;
 	}
 
 	if (0 < m_iCurrentHitLevel)
 	{
-		if(nullptr != pEffect)
-			pEffect->On();
+		switch (m_eCurrentStyle)
+		{
+		case Client::CPlayer::KRS:
+			// 기존에 켜져있던 오라를 끈다
+			if (nullptr != pRush)
+				pRush->Off();
+			if (nullptr != pDestroyer)
+				pDestroyer->Off();
+
+			// 현재 스타일에 맞는 오라를 켠다
+			if (nullptr != pHooligan)
+				pHooligan->On();
+			break;
+		case Client::CPlayer::KRH:
+			if (nullptr != pHooligan)
+				pHooligan->Off();
+			if (nullptr != pDestroyer)
+				pDestroyer->Off();
+
+			if (nullptr != pRush)
+				pRush->On();
+			break;
+		case Client::CPlayer::KRC:
+			if (nullptr != pHooligan)
+				pHooligan->Off();
+			if (nullptr != pRush)
+				pRush->Off();
+
+			if (nullptr != pDestroyer)
+				pDestroyer->On();
+			break;
+		default:
+			return;
+		}
 	}
 	else
 	{
-		if (nullptr != pEffect)
-			pEffect->Off();
+		if (nullptr != pHooligan)
+			pHooligan->Off();
+		if (nullptr != pRush)
+			pRush->Off();
+		if (nullptr != pDestroyer)
+			pDestroyer->Off();
 	}
 }
 
@@ -1104,7 +1146,7 @@ void CPlayer::AccHitGauge()
 	if (PLAYER_HITGAUGE_LEVEL_INTERVAL * 3.f < m_fHitGauge)
 		m_fHitGauge = PLAYER_HITGAUGE_LEVEL_INTERVAL * 3.f;
 	else
-		m_fHitGauge = 10.f;
+		m_fHitGauge += 10.f;
 
 	m_iCurrentHitLevel = (m_fHitGauge / PLAYER_HITGAUGE_LEVEL_INTERVAL);
 }
