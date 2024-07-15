@@ -20,8 +20,8 @@ CLandObject::CLandObject(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 }
 CLandObject::CLandObject(const CLandObject& rhs)
 	: CGameObject{ rhs },
-	m_pSystemManager{ CSystemManager::GetInstance()},
-	m_pCollisionManager{ CCollision_Manager::GetInstance()}
+	m_pSystemManager{ rhs.m_pSystemManager },
+	m_pCollisionManager{ rhs.m_pCollisionManager }
 {
 	Safe_AddRef(m_pSystemManager);
 	Safe_AddRef(m_pCollisionManager);

@@ -144,13 +144,14 @@ void CPlayer::Tick(const _float& fTimeDelta)
 	m_pColliderCom->Tick(m_pTransformCom->Get_WorldMatrix());
 
 	Animation_Event();
-
 	Effect_Control_Aura();
-
+	Setting_Target_Enemy();
 }
 
 void CPlayer::Late_Tick(const _float& fTimeDelta)
 {
+	m_pCollisionManager->Add_ImpulseResolution(this);
+
 #ifdef _DEBUG
 	if (m_isObjectRender)
 	{
@@ -161,11 +162,6 @@ void CPlayer::Late_Tick(const _float& fTimeDelta)
 	m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
 	m_pGameInstance->Add_Renderer(CRenderer::RENDER_SHADOWOBJ, this); // Shadow¿ë ·»´õ Ãß°¡
 #endif // _DEBUG
-
-
-	
-	
-	m_pCollisionManager->Add_ImpulseResolution(this);
 
 	for (auto& pCollider : m_pColliders)
 		pCollider.second->Late_Tick(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")));
@@ -1139,6 +1135,13 @@ void CPlayer::Effect_Control_Aura()
 		if (nullptr != pDestroyer)
 			pDestroyer->Off();
 	}
+}
+
+void CPlayer::Setting_Target_Enemy()
+{
+	auto pMonsters = m_pGameInstance->Get_GameObjects(m_iCurrentLevel, TEXT("Layer_Monster"));
+
+	m_pTargetObject = m_pCollisionManager->Get_Near_LandObject(this, pMonsters);
 }
 
 void CPlayer::AccHitGauge()

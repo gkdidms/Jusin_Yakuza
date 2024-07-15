@@ -4,6 +4,7 @@
 
 BEGIN(Engine)
 class CCollider;
+class CGameObject;
 END
 
 BEGIN(Client)
@@ -42,6 +43,8 @@ public:
     void Player_Hit_Collision();
 
     _bool Map_Collision(CCollider* pCollider);
+
+    class CLandObject* Get_Near_LandObject(class CLandObject* pObject, vector<CGameObject*>& pObjects);
 
 private:
     // 캐릭터가 겹치지않고 밀어내는 함수

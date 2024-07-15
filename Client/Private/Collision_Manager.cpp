@@ -213,6 +213,28 @@ _bool CCollision_Manager::Map_Collision(CCollider* pCollider)
     return false;
 }
 
+CLandObject* CCollision_Manager::Get_Near_LandObject(CLandObject* pObject, vector<CGameObject*>& pObjects)
+{
+    _float fDinstance = { 99999999.f };
+    CLandObject* pValue = { nullptr };
+
+    for (auto& pTarget : pObjects)
+    {
+        if (pTarget == pObject) continue;
+
+        _vector vBasePosition = pObject->Get_TransformCom()->Get_State(CTransform::STATE_POSITION);
+        _vector vTargetPosition = pTarget->Get_TransformCom()->Get_State(CTransform::STATE_POSITION);
+
+        if (XMVectorGetX(XMVector3Length(vBasePosition - vTargetPosition)) < fDinstance)
+        {
+            fDinstance = XMVectorGetX(XMVector3Length(vBasePosition - vTargetPosition));
+            pValue = static_cast<CLandObject*>(pTarget);
+        }
+    }
+
+    return pValue;
+}
+
 void CCollision_Manager::Impulse_Clear()
 {
     for (auto& pObject : m_ImpulseResolutionObjects)

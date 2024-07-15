@@ -45,6 +45,7 @@ HRESULT CRushYakuza::Initialize(void* pArg)
 
 	m_pModelCom->Set_AnimationIndex(1, 0.5);
 	//m_pModelCom->Set_AnimLoop(1, true);
+
 	return S_OK;
 }
 

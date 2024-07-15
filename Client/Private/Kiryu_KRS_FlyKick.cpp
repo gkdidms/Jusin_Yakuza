@@ -10,6 +10,10 @@ CKiryu_KRS_FlyKick::CKiryu_KRS_FlyKick()
 
 void CKiryu_KRS_FlyKick::Tick(const _float& fTimeDelta)
 {
+	CLandObject* pTargetObject = m_pPlayer->Get_TargetObject();
+
+	_vector vLookPos = pTargetObject->Get_TransformCom()->Get_State(CTransform::STATE_POSITION);
+	m_pPlayer->Get_TransformCom()->LookAt_For_LandObject(vLookPos);
 }
 
 void CKiryu_KRS_FlyKick::Change_Animation()
