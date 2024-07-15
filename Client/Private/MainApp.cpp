@@ -81,9 +81,10 @@ void CMainApp::Tick(const _float& fTimeDelta)
 	m_pUIManager->Tick(fTimeDelta);
 	m_pUIManager->Late_Tick(fTimeDelta);	
 
-#ifdef _DEBUG
+	//프레임 확인용 나중에 다시 디버그로 넣어야함
 	m_fTimeAcc += fTimeDelta;
 
+#ifdef _DEBUG
 	if (m_pGameInstance->GetKeyState(DIK_F6) == TAP)
 	{
 		m_pFileTotalManager->Load_Cinemachine(0, LEVEL_TEST);
@@ -119,7 +120,7 @@ HRESULT CMainApp::Render()
 
 	m_pGameInstance->Draw();
 
-#ifdef _DEBUG
+	//프레임 확인용.
 	++m_iNumRender;
 
 	if (m_fTimeAcc >= 1.f)
@@ -131,6 +132,8 @@ HRESULT CMainApp::Render()
 	}
 
 	m_pGameInstance->Render_Font(TEXT("Font_Default"), m_szFPS, _float2(0.f, 0.f), XMVectorSet(1.f, 1.f, 0.f, 1.f));
+
+#ifdef _DEBUG
 	m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("!!!테스트용 키는 화면에 모두 작성할것 !!! "), _float2(500.f, 0.f), XMVectorSet(1.f, 0.f, 0.f, 1.f));
 
 	_float fSize = 320.f;
