@@ -9,11 +9,7 @@ xcopy			/y		.\EffectTool\Public\TRailEffect.h				.\Client\Public\TRailEffect.h
 xcopy			/y		.\EffectTool\Public\Particle_Point.h				.\Client\Public\Particle_Point.h	
 xcopy			/y		.\EffectTool\Public\Aura.h					.\Client\Public\Aura.h	
 
-
 xcopy			/y		.\EffectTool\Private\Effect.cpp				.\Client\Private\Effect.cpp	
 xcopy			/y		.\EffectTool\Private\TRailEffect.cpp				.\Client\Private\TRailEffect.cpp	
 xcopy			/y		.\EffectTool\Private\Particle_Point.cpp			.\Client\Private\Particle_Point.cpp
 xcopy			/y		.\EffectTool\Private\Aura.cpp				.\Client\Private\Aura.cpp
-
-
-					

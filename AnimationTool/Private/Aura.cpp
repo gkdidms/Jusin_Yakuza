@@ -31,21 +31,24 @@ HRESULT CAura::Initialize(void* pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
-	EFFECT_DESC* pDesc = static_cast<EFFECT_DESC*>(pArg);
-
-	if (nullptr == pDesc->pWorldMatrix)
+	if (nullptr != pArg)
 	{
-		AURA_DESC* pDesc = static_cast<AURA_DESC*>(pArg);
-		m_BufferInstance = pDesc->BufferInstance;
-		m_fUVCount = pDesc->fUVCount;
-	}
-	else
-	{
-		m_pWorldMatrix = pDesc->pWorldMatrix;
+		EFFECT_DESC* pDesc = static_cast<EFFECT_DESC*>(pArg);
+
+		if (nullptr == pDesc->pWorldMatrix)
+		{
+			AURA_DESC* pDesc = static_cast<AURA_DESC*>(pArg);
+			m_BufferInstance = pDesc->BufferInstance;
+			m_fUVCount = pDesc->fUVCount;
+		}
+		else
+		{
+			m_pWorldMatrix = pDesc->pWorldMatrix;
+			m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(m_pWorldMatrix));
+		}
 	}
 
-
-	m_BufferInstance.WorldMatrix = m_pWorldMatrix;
+	m_BufferInstance.WorldMatrix = m_pTransformCom->Get_WorldFloat4x4();
 
 	//m_fUVCount = _float2(64.f, 1.f);
 
@@ -63,6 +66,14 @@ void CAura::Tick(const _float& fTimeDelta)
 {
 	__super::Tick(fTimeDelta);
 
+	m_fCurTime += fTimeDelta;
+	if (!m_BufferInstance.isLoop)
+	{
+		_float fTotalTime = m_fStartTime + m_BufferInstance.vLifeTime.y;
+		if (m_fCurTime > fTotalTime)
+			m_isDead = true;
+	}
+
 	if (m_iAction & iAction[ACTION_SPREAD])
 	{
 		m_pVIBufferCom->Spread(fTimeDelta);
@@ -79,12 +90,22 @@ void CAura::Tick(const _float& fTimeDelta)
 	{
 		m_pVIBufferCom->SizeDown_Time(fTimeDelta);
 	}
-	
+
 }
 
 void CAura::Late_Tick(const _float& fTimeDelta)
 {
-	m_pGameInstance->Add_Renderer(CRenderer::RENDER_EFFECT, this);
+	if (m_BufferInstance.isLoop)
+	{
+		m_pGameInstance->Add_Renderer(CRenderer::RENDER_EFFECT, this);
+	}
+	else
+	{
+		if (m_fCurTime >= m_fStartTime && !m_isDead)
+		{
+			m_pGameInstance->Add_Renderer(CRenderer::RENDER_EFFECT, this);
+		}
+	}
 }
 
 HRESULT CAura::Render()
@@ -111,7 +132,7 @@ HRESULT CAura::Save_Data(const string strDirectory)
 	string Directory = strDirectory;
 	string ParticleTag = m_pGameInstance->WstringToString(m_ParticleTag);
 	string TextureTag = m_pGameInstance->WstringToString(m_TextureTag);
-	 
+
 	string headTag = "Prototype_GameObject_Particle_Aura_";
 	Directory += "/" + headTag + ParticleTag + ".dat";
 
@@ -226,33 +247,33 @@ HRESULT CAura::Load_Data(const string strDirectory)
 HRESULT CAura::Add_Components()
 {
 	/* For.Com_VIBuffer */
-	if (FAILED(__super::Add_Component(LEVEL_EDIT, TEXT("Prototype_Component_VIBuffer_Instance_Point"),
+	if (FAILED(__super::Add_Component(LEVEL_TEST, TEXT("Prototype_Component_VIBuffer_Instance_Point"),
 		TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pVIBufferCom), &m_BufferInstance)))
 		return E_FAIL;
 
 	/* For.Com_Shader */
-	if (FAILED(__super::Add_Component(LEVEL_EDIT, TEXT("Prototype_Component_Shader_Aura"),
+	if (FAILED(__super::Add_Component(LEVEL_TEST, TEXT("Prototype_Component_Shader_Aura"),
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
 		return E_FAIL;
 
 	//≈Ê≈ÿΩ∫√≥ º±≈√
 	/* For.Com_Texture */
-	if (FAILED(__super::Add_Component(LEVEL_EDIT, m_TextureTag,
+	if (FAILED(__super::Add_Component(LEVEL_TEST, m_TextureTag,
 		TEXT("Com_Texture0"), reinterpret_cast<CComponent**>(&m_pTextureCom[0]))))
 		return E_FAIL;
 
 	//uvæ÷¥‘
-	if (FAILED(__super::Add_Component(LEVEL_EDIT, TEXT("Prototype_Component_Texture_AuraAnim"),
+	if (FAILED(__super::Add_Component(LEVEL_TEST, TEXT("Prototype_Component_Texture_AuraAnim"),
 		TEXT("Com_Texture1"), reinterpret_cast<CComponent**>(&m_pTextureCom[1]))))
 		return E_FAIL;
 
 	//∫£¿ÃΩ∫
-	if (FAILED(__super::Add_Component(LEVEL_EDIT, TEXT("Prototype_Component_Texture_AuraBase"),
+	if (FAILED(__super::Add_Component(LEVEL_TEST, TEXT("Prototype_Component_Texture_AuraBase"),
 		TEXT("Com_Texture2"), reinterpret_cast<CComponent**>(&m_pTextureCom[2]))))
 		return E_FAIL;
 
 	//«√∑ÁµÂ(»Â∏ß)
-	if (FAILED(__super::Add_Component(LEVEL_EDIT, TEXT("Prototype_Component_Texture_AuraFluid"),
+	if (FAILED(__super::Add_Component(LEVEL_TEST, TEXT("Prototype_Component_Texture_AuraFluid"),
 		TEXT("Com_Texture3"), reinterpret_cast<CComponent**>(&m_pTextureCom[3]))))
 		return E_FAIL;
 }

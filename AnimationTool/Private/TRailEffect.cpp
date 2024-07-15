@@ -2,12 +2,12 @@
 #include "GameInstance.h"
 
 CTRailEffect::CTRailEffect(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-	:CEffect{pDevice , pContext}
+	:CEffect{ pDevice , pContext }
 {
 }
 
 CTRailEffect::CTRailEffect(const CTRailEffect& rhs)
-	:CEffect{rhs},
+	:CEffect{ rhs },
 	m_TrailDesc{ rhs.m_TrailDesc }
 {
 }
@@ -30,17 +30,20 @@ HRESULT CTRailEffect::Initialize(void* pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
-	EFFECT_DESC* pDesc = static_cast<EFFECT_DESC*>(pArg);
-
-	if (nullptr == pDesc->pWorldMatrix)
+	if (nullptr != pArg)
 	{
-		TRAIL_DESC* pDesc = static_cast<TRAIL_DESC*>(pArg);
+		EFFECT_DESC* pDesc = static_cast<EFFECT_DESC*>(pArg);
 
-		m_TrailDesc = pDesc -> Trail_Desc;
-	}
-	else
-	{
-		m_pWorldMatrix = pDesc->pWorldMatrix;
+		if (nullptr == pDesc->pWorldMatrix)
+		{
+			TRAIL_DESC* pDesc = static_cast<TRAIL_DESC*>(pArg);
+
+			m_TrailDesc = pDesc->Trail_Desc;
+		}
+		else
+		{
+			m_pWorldMatrix = pDesc->pWorldMatrix;
+		}
 	}
 
 	if (FAILED(Add_Components()))
@@ -179,17 +182,17 @@ HRESULT CTRailEffect::Load_Data(const string strDirectory)
 HRESULT CTRailEffect::Add_Components()
 {
 	/* For.Com_VIBuffer */
-	if (FAILED(__super::Add_Component(LEVEL_EDIT, TEXT("Prototype_Component_VIBuffer_Trail"),
-		TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pVIBufferCom),&m_TrailDesc)))
+	if (FAILED(__super::Add_Component(LEVEL_TEST, TEXT("Prototype_Component_VIBuffer_Trail"),
+		TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pVIBufferCom), &m_TrailDesc)))
 		return E_FAIL;
 
 	/* For.Com_Shader */
-	if (FAILED(__super::Add_Component(LEVEL_EDIT, TEXT("Prototype_Component_Shader_Trail"),
+	if (FAILED(__super::Add_Component(LEVEL_TEST, TEXT("Prototype_Component_Shader_Trail"),
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
 		return E_FAIL;
 
 	/* For.Com_Texture */
-	if (FAILED(__super::Add_Component(LEVEL_EDIT, m_TextureTag,
+	if (FAILED(__super::Add_Component(LEVEL_TEST, m_TextureTag,
 		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
 		return E_FAIL;
 
