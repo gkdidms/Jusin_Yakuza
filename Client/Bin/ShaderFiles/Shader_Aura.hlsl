@@ -63,6 +63,27 @@ VS_OUT VS_LOCAL(VS_IN In)
     return Out;
 }
 
+VS_OUT VS_MAIN(VS_IN In)
+{
+    VS_OUT Out = (VS_OUT) 0;
+
+    vector vPosition = mul(float4(In.vPosition, 1.f), In.TransformMatrix); //로컬이동.
+
+    matrix matWV, matWVP;
+
+    matWV = mul(g_WorldMatrix, g_ViewMatrix);
+    matWVP = mul(matWV, g_ProjMatrix);
+    
+
+    Out.vPosition = mul(vPosition, g_WorldMatrix).xyz; //월드상
+    Out.vPSize = In.vPSize;
+    Out.vDir = normalize(mul(In.vDir, g_WorldMatrix));
+    Out.vLifeTime = In.vLifeTime;
+    Out.vRectSize = In.vRectSize;
+
+    return Out;
+}
+
 struct GS_IN
 {
     float3 vPosition : POSITION;
@@ -117,9 +138,7 @@ void GS_DEAFULT(point GS_IN In[1], inout TriangleStream<GS_OUT> Triangles)
         Out[i].vLifeTime = float2(0.f, 0.f);
         Out[i].LinearZ = float(0.f);
     }
-	
-    float3 vDirection = In[0].vDir.xyz;
-    
+	    
     float3 vLook = g_vCamPosition - vector(In[0].vPosition, 1.f);
     float3 vRight = normalize(cross(float3(0.f, 1.f, 0.f), vLook.xyz)) * In[0].vPSize.x * In[0].vRectSize.x * 0.5f;
     float3 vUp = normalize(cross(vLook.xyz, vRight)) * In[0].vPSize.y * In[0].vRectSize.x * 0.5f;

@@ -83,6 +83,7 @@ protected:
 
 public:
     void Spread(_float fTimeDelta);
+    void Aura(_float fTimeDelta);
     void Drop(_float fTimeDelta);
     void LifeTime_Check();
     void SizeUp_Time(_float fTimeDelta);

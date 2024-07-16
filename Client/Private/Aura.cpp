@@ -76,7 +76,7 @@ void CAura::Tick(const _float& fTimeDelta)
 
 	if (m_iAction & iAction[ACTION_SPREAD])
 	{
-		m_pVIBufferCom->Spread(fTimeDelta);
+		m_pVIBufferCom->Aura(fTimeDelta);
 	}
 	if (m_iAction & iAction[ACTION_DROP])
 	{
