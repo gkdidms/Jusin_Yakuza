@@ -23,9 +23,7 @@ private:
 private:
     virtual HRESULT Add_Components() override;
     virtual HRESULT Bind_ResourceData() override;
-
-private:
-    void Change_Animation();
+    virtual void Change_Animation() override;
 
 public:
     static CWPAYakuza* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
