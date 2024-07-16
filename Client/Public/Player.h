@@ -3,6 +3,7 @@
 
 BEGIN(Engine)
 class CShader;
+class CNavigation;
 END
 
 BEGIN(Client)
@@ -141,7 +142,7 @@ public:
     /* 출력, 행동 관련 포인터 변수들 */
 private:
     CShader*                m_pShaderCom = { nullptr };
-
+    CNavigation* m_pNavigationCom = { nullptr };
     // 이 때, 사용하는 키 값은 행동에 대한 키값을 가진다. (스타일은 배열 인덱스)
     map<_uint, class CBehaviorAnimation*> m_AnimationTree[BATTLE_STYLE_END];
     //ui
@@ -186,6 +187,7 @@ private:
 private:
     virtual HRESULT Add_Components() override;
     virtual HRESULT Bind_ResourceData() override;
+    virtual void Compute_Height() override;
 
 public:
     static CPlayer* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

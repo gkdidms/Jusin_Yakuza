@@ -67,6 +67,14 @@ void CMonster::Tick(const _float& fTimeDelta)
 
 void CMonster::Late_Tick(const _float& fTimeDelta)
 {
+	//높이값 태우기
+	_vector vCurrentPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	float fHeight = m_pNavigationCom->Compute_Height(vCurrentPos);
+
+	vCurrentPos = XMVectorSetY(vCurrentPos, fHeight);
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vCurrentPos);
+
+
 	for (auto& pCollider : m_pColliders)
 		pCollider.second->Late_Tick(fTimeDelta);
 
@@ -262,7 +270,6 @@ void CMonster::Synchronize_Root(const _float& fTimeDelta)
 
 HRESULT CMonster::Add_Components()
 {
-	
 	return S_OK;
 }
 
