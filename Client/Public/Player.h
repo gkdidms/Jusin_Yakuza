@@ -168,10 +168,13 @@ private:
     _float4         m_vPrevRotation;
     _float4x4       m_ModelWorldMatrix;
 
+    _bool          m_isAuraOn = { false };
+
     /* 플레이어 스테이터스 관련 변수들 */
 private:
     _uint           m_iCurrentHitLevel = { 0 };
     _float          m_fHitGauge = { 0.f };
+
 
 
 #ifdef _DEBUG

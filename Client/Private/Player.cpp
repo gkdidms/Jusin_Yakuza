@@ -11,6 +11,7 @@
 #include "CharacterData.h"
 #include "SocketCollider.h"
 #include "SocketEffect.h"
+#include "Effect.h"
 
 #include "BehaviorAnimation.h"
 #include "Mesh.h"
@@ -1087,6 +1088,7 @@ void CPlayer::Change_Animation(_uint iIndex, _float fInterval)
 void CPlayer::Style_Change(BATTLE_STYLE eStyle)
 {
 	// 설정한 스타일의 첫번째 액션을 실행시킨다 (배틀모드들은 무조건 첫번째에 배틀 시작 액션을 둘 예정)
+	m_isAuraOn = false;
 	m_eCurrentStyle = eStyle;
 	m_iCurrentBehavior = 0;
 	m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Reset();
@@ -1189,6 +1191,23 @@ void CPlayer::Effect_Control_Aura()
 			// 현재 스타일에 맞는 오라를 켠다
 			if (nullptr != pHooligan)
 				pHooligan->On();
+
+
+			if (!m_isAuraOn)
+			{
+				CEffect::EFFECT_DESC EffectDesc{};
+
+				_matrix BoneMatrix = XMLoadFloat4x4(m_pModelCom->Get_BoneCombinedTransformationMatrix("kubi_c_n"));
+				_matrix ComputeMatrix = BoneMatrix * m_pTransformCom->Get_WorldMatrix();
+				_float4x4 Matrix;
+				XMStoreFloat4x4(&Matrix, ComputeMatrix);
+
+				EffectDesc.pWorldMatrix = &Matrix;
+				m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Aura_Start_Hooligan"), TEXT("Layer_Particle"), &EffectDesc);
+
+				m_isAuraOn = true;
+			}
+
 			break;
 		case Client::CPlayer::KRH:
 			if (nullptr != pHooligan)
@@ -1198,6 +1217,23 @@ void CPlayer::Effect_Control_Aura()
 
 			if (nullptr != pRush)
 				pRush->On();
+
+			if (!m_isAuraOn)
+			{
+				CEffect::EFFECT_DESC EffectDesc{};
+
+				_matrix BoneMatrix = XMLoadFloat4x4(m_pModelCom->Get_BoneCombinedTransformationMatrix("kubi_c_n"));
+				_matrix ComputeMatrix = BoneMatrix * m_pTransformCom->Get_WorldMatrix();
+				_float4x4 Matrix;
+				XMStoreFloat4x4(&Matrix, ComputeMatrix);
+
+				EffectDesc.pWorldMatrix = &Matrix;
+				m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Aura_Start_Rush"), TEXT("Layer_Particle"), &EffectDesc);
+
+				m_isAuraOn = true;
+			}
+
+
 			break;
 		case Client::CPlayer::KRC:
 			if (nullptr != pHooligan)
@@ -1207,6 +1243,23 @@ void CPlayer::Effect_Control_Aura()
 
 			if (nullptr != pDestroyer)
 				pDestroyer->On();
+
+			if (!m_isAuraOn)
+			{
+				CEffect::EFFECT_DESC EffectDesc{};
+
+				_matrix BoneMatrix = XMLoadFloat4x4(m_pModelCom->Get_BoneCombinedTransformationMatrix("kubi_c_n"));
+				_matrix ComputeMatrix = BoneMatrix * m_pTransformCom->Get_WorldMatrix();
+				_float4x4 Matrix;
+				XMStoreFloat4x4(&Matrix, ComputeMatrix);
+
+				EffectDesc.pWorldMatrix = &Matrix;
+				m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Aura_Start_Destroyer"), TEXT("Layer_Particle"), &EffectDesc);
+
+				m_isAuraOn = true;
+			}
+
+
 			break;
 		default:
 			return;
