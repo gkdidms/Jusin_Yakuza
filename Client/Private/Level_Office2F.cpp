@@ -37,12 +37,13 @@ HRESULT CLevel_Office2F::Initialize()
 
 void CLevel_Office2F::Tick(const _float& fTimeDelta)
 {
-#ifdef _DEBUG
 	if (m_pGameInstance->GetKeyState(DIK_SPACE) == TAP)
 	{
 		if (FAILED(m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_OFFICE_BOSS))))
 			return;
 	}
+
+#ifdef _DEBUG
 
 	SetWindowText(g_hWnd, TEXT("»ç¹«½Ç 2F"));
 #endif

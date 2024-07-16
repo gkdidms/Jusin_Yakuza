@@ -38,12 +38,13 @@ HRESULT CLevel_OfficeBoss::Initialize()
 
 void CLevel_OfficeBoss::Tick(const _float& fTimeDelta)
 {
+	if (m_pGameInstance->GetKeyState(DIK_SPACE) == TAP)
+	{
+		if (FAILED(m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_DOGIMAZO))))
+			return;
+	}
+
 #ifdef _DEBUG
-    if (m_pGameInstance->GetKeyState(DIK_SPACE) == TAP)
-    {
-        if (FAILED(m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_DOGIMAZO))))
-            return;
-    }
 
     SetWindowText(g_hWnd, TEXT("사무실 보스 스테이지"));
 #endif
