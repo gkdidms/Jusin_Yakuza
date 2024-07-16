@@ -56,6 +56,10 @@ void CCollision_Manager::Tick()
 
     Enemy_Hit_Collision();
     Player_Hit_Collision();
+
+    if (m_pGameInstance->GetKeyState(DIK_Z) == TAP)
+        cout << " 버튼 입력!" << endl;
+
     Battle_Clear();
 }
 
@@ -145,7 +149,7 @@ void CCollision_Manager::Enemy_Hit_Collision()
     {
         for (auto& pEnemyHitCollider : m_HitColliders[ENEMY])
         {
-            if (pEnemyHitCollider->Intersect(pPlayerAttackCollider->Get_Collider()))
+            if (pEnemyHitCollider->Intersect(pPlayerAttackCollider->Get_Collider(), 10.f))
             {
                 static_cast<CPlayer*>(pPlayerAttackCollider->Get_Parent())->AccHitGauge();
                 pEnemyHitCollider->ParentObject_Hit(pPlayerAttackCollider->Get_MoveDir(), pPlayerAttackCollider->Get_Damage(), pPlayerAttackCollider->Get_Parent(), pPlayerAttackCollider->Get_Parent()->Is_BlowAttack());
