@@ -13,7 +13,6 @@ CKiryu_KRS_Walk::CKiryu_KRS_Walk()
 	m_AnimationIndices.push_back(378);			// 5 [378]	p_krs_shift_fr[p_krs_shift_fr]
 	m_AnimationIndices.push_back(379);			// 6 [379]	p_krs_shift_l[p_krs_shift_l]
 	m_AnimationIndices.push_back(380);			// 7 [380] p_krs_shift_r[p_krs_shift_r]
-
 }
 
 void CKiryu_KRS_Walk::Tick(const _float& fTimeDelta)
