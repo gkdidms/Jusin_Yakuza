@@ -31,7 +31,7 @@ HRESULT CLevel_OfficeBoss::Initialize()
     /* Å¬¶ó ÆÄ½Ì */
     m_pFileTotalManager->Set_MapObj_In_Client(STAGE_OFFICE_BOSS, LEVEL_OFFICE_BOSS);
     m_pFileTotalManager->Set_Lights_In_Client(STAGE_OFFICE_BOSS);
-    m_pFileTotalManager->Set_Collider_In_Client(1, LEVEL_OFFICE_BOSS);
+    m_pFileTotalManager->Set_Collider_In_Client(STAGE_OFFICE_BOSS, LEVEL_OFFICE_BOSS);
 
     return S_OK;
 }

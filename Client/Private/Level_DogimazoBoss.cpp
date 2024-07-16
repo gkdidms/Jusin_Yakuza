@@ -31,7 +31,7 @@ HRESULT CLevel_DogimazoBoss::Initialize()
     /* Å¬¶ó ÆÄ½Ì */
     m_pFileTotalManager->Set_MapObj_In_Client(STAGE_DOGIMAZO_BOSS, LEVEL_DOGIMAZO_BOSS);
     m_pFileTotalManager->Set_Lights_In_Client(STAGE_DOGIMAZO_BOSS);
-    m_pFileTotalManager->Set_Collider_In_Client(1, LEVEL_DOGIMAZO_BOSS);
+    m_pFileTotalManager->Set_Collider_In_Client(STAGE_DOGIMAZO_BOSS, LEVEL_DOGIMAZO_BOSS);
 
     return S_OK;
 }
