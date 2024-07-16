@@ -167,7 +167,7 @@ void CNavigation_Manager::Make_Point(_vector vPickingPos)
 
 	/* 거리가 너무 멀면 그냥 찍은 점*/
 	/* 맵 크기에 따라 유동적으로 바꾸기 */
-	if (0.5f < minDistance)
+	if (0.3f < minDistance)
 		XMStoreFloat3(&vFinalpickpos, vPickingPos);
 
 	m_vPoints.push_back(vFinalpickpos);
