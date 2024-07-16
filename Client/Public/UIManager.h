@@ -47,6 +47,9 @@ private:
     vector<class CUIScene*> m_AlwaysUI;//항상 떠있는 ui (피통 스킬상태 소지품)
     class CInventoryManager* m_pInventory;
 
+    _bool m_isLoading = { false };
+    
+
 #ifdef _DEBUG
 private:
     _bool m_isRender = { true };

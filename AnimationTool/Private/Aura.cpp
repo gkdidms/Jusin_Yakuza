@@ -31,21 +31,24 @@ HRESULT CAura::Initialize(void* pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
-	EFFECT_DESC* pDesc = static_cast<EFFECT_DESC*>(pArg);
-
-	if (nullptr == pDesc->pWorldMatrix)
+	if (nullptr != pArg)
 	{
-		AURA_DESC* pDesc = static_cast<AURA_DESC*>(pArg);
-		m_BufferInstance = pDesc->BufferInstance;
-		m_fUVCount = pDesc->fUVCount;
-	}
-	else
-	{
-		m_pWorldMatrix = pDesc->pWorldMatrix;
+		EFFECT_DESC* pDesc = static_cast<EFFECT_DESC*>(pArg);
+
+		if (nullptr == pDesc->pWorldMatrix)
+		{
+			AURA_DESC* pDesc = static_cast<AURA_DESC*>(pArg);
+			m_BufferInstance = pDesc->BufferInstance;
+			m_fUVCount = pDesc->fUVCount;
+		}
+		else
+		{
+			m_pWorldMatrix = pDesc->pWorldMatrix;
+			m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(m_pWorldMatrix));
+		}
 	}
 
-
-	m_BufferInstance.WorldMatrix = m_pWorldMatrix;
+	m_BufferInstance.WorldMatrix = m_pTransformCom->Get_WorldFloat4x4();
 
 	//m_fUVCount = _float2(64.f, 1.f);
 
@@ -63,6 +66,14 @@ void CAura::Tick(const _float& fTimeDelta)
 {
 	__super::Tick(fTimeDelta);
 
+	m_fCurTime += fTimeDelta;
+	if (!m_BufferInstance.isLoop)
+	{
+		_float fTotalTime = m_fStartTime + m_BufferInstance.vLifeTime.y;
+		if (m_fCurTime > fTotalTime)
+			m_isDead = true;
+	}
+
 	if (m_iAction & iAction[ACTION_SPREAD])
 	{
 		m_pVIBufferCom->Spread(fTimeDelta);
@@ -79,12 +90,22 @@ void CAura::Tick(const _float& fTimeDelta)
 	{
 		m_pVIBufferCom->SizeDown_Time(fTimeDelta);
 	}
-	
+
 }
 
 void CAura::Late_Tick(const _float& fTimeDelta)
 {
-	m_pGameInstance->Add_Renderer(CRenderer::RENDER_EFFECT, this);
+	if (m_BufferInstance.isLoop)
+	{
+		m_pGameInstance->Add_Renderer(CRenderer::RENDER_EFFECT, this);
+	}
+	else
+	{
+		if (m_fCurTime >= m_fStartTime && !m_isDead)
+		{
+			m_pGameInstance->Add_Renderer(CRenderer::RENDER_EFFECT, this);
+		}
+	}
 }
 
 HRESULT CAura::Render()
@@ -111,7 +132,7 @@ HRESULT CAura::Save_Data(const string strDirectory)
 	string Directory = strDirectory;
 	string ParticleTag = m_pGameInstance->WstringToString(m_ParticleTag);
 	string TextureTag = m_pGameInstance->WstringToString(m_TextureTag);
-	 
+
 	string headTag = "Prototype_GameObject_Particle_Aura_";
 	Directory += "/" + headTag + ParticleTag + ".dat";
 
@@ -134,6 +155,8 @@ HRESULT CAura::Save_Data(const string strDirectory)
 	out.write((char*)&m_fStartTime, sizeof(_float));
 
 	out.write((char*)&m_vStartPos, sizeof(_float4));
+
+	out.write((char*)&m_fLifeAlpha, sizeof(_float2));
 
 	out.write((char*)&m_iAction, sizeof(_uint));
 
@@ -202,6 +225,8 @@ HRESULT CAura::Load_Data(const string strDirectory)
 
 	in.read((char*)&m_vStartPos, sizeof(_float4));
 
+	in.read((char*)&m_fLifeAlpha, sizeof(_float2));
+	
 	in.read((char*)&m_iAction, sizeof(_uint));
 
 	in.read((char*)&m_fUVCount, sizeof(_float2));

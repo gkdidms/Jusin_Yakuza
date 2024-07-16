@@ -30,7 +30,7 @@ HRESULT CLevel_Office1F::Initialize()
 	/* Å¬¶ó ÆÄ½Ì */
 	m_pFileTotalManager->Set_MapObj_In_Client(STAGE_OFFICE_1F, LEVEL_OFFICE_1F);
 	m_pFileTotalManager->Set_Lights_In_Client(STAGE_OFFICE_1F);
-	m_pFileTotalManager->Set_Collider_In_Client(1, LEVEL_OFFICE_1F);
+	m_pFileTotalManager->Set_Collider_In_Client(STAGE_OFFICE_1F, LEVEL_OFFICE_1F);
 
 	return S_OK;
 }

@@ -71,6 +71,9 @@ protected:
     virtual ~CMonster() = default;
 
 public:
+    _bool isColl() { return m_isColl; }
+
+public:
     virtual HRESULT Initialize_Prototype() override;
     virtual HRESULT Initialize(void* pArg) override;
     virtual void Priority_Tick(const _float& fTimeDelta) override;
@@ -97,6 +100,9 @@ protected:
     _float4         m_vPrevMove;
     _float4         m_vPrevRotation;
     _float4x4       m_ModelWorldMatrix;
+
+protected:
+    _bool m_isColl = { false }; // 충돌되었는지 아닌지 체크해야함.
 
 protected:
     void Synchronize_Root(const _float& fTimeDelta);

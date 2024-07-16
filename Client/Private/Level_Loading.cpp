@@ -15,6 +15,7 @@
 #include "Level_Test.h"
 #pragma endregion
 
+#include "UIManager.h"
 CLevel_Loading::CLevel_Loading(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLevel(pDevice, pContext)
 {
@@ -77,6 +78,7 @@ void CLevel_Loading::Tick(const _float& fTimeDelta)
 			if (nullptr == pNewLevel)
 				return;
 
+			CUIManager::GetInstance()->Close_Scene();
 			if (FAILED(m_pGameInstance->Open_Level(m_eNextLevel, pNewLevel)))
 				return;
 		}
@@ -92,8 +94,19 @@ void CLevel_Loading::Tick(const _float& fTimeDelta)
 
 HRESULT CLevel_Loading::Ready_Layer_BackGround(const wstring& strLayerTag)
 {
-	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_LOADING, TEXT("Prototype_GameObject_BackGround"), strLayerTag)))
-		return E_FAIL;
+	//if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_LOADING, TEXT("Prototype_GameObject_BackGround"), strLayerTag)))
+	//	return E_FAIL;
+	static _bool isFirst = false;
+	if(!isFirst)
+	{
+		CUIManager::GetInstance()->Open_Scene(TEXT("Loading"));
+		isFirst = true;
+	}
+	else
+	{
+		CUIManager::GetInstance()->Open_Scene(TEXT("NowLoading"));
+	}
+
 
 	return S_OK;
 }

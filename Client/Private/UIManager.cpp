@@ -3,6 +3,8 @@
 #include "UI_Object.h"
 #include "UIScene.h"
 
+#include"UINowLoading.h"
+#include "UILoading.h"
 #include "UIMenu.h"
 #include "UILife.h"
 #include "UIMoney.h"
@@ -20,12 +22,19 @@ HRESULT CUIManager::Initialize()
 {
 	m_pInventory = CInventoryManager::Create();//¿øº»
 	
-	CUIScene* pScene = CUIMenu::Create();
+	CUIScene* pScene = CUILoading::Create();
+	m_AllScene.emplace(make_pair(TEXT("Loading"), pScene));
+
+	pScene = CUINowLoading::Create();
+	m_AllScene.emplace(make_pair(TEXT("NowLoading"), pScene));
+
+	pScene = CUIMenu::Create();
 	m_AllScene.emplace( make_pair(TEXT("Menu"), pScene) );
 
 	pScene = CUILife::Create();
 	m_AllScene.emplace(make_pair(TEXT("Life"), pScene));
 	m_AlwaysUI.push_back(pScene);
+
 	pScene = CUIMoney::Create();
 	m_AllScene.emplace(make_pair(TEXT("Money"), pScene));
 	m_AlwaysUI.push_back(pScene);
@@ -45,7 +54,6 @@ HRESULT CUIManager::Add_Data(const wstring strSceneName, wstring strProtoName)
 
 	if (nullptr == pScene)	
 		return E_FAIL;
-	
 
 	if (FAILED(pScene->Add_UIData(dynamic_cast<CUI_Object*>(m_pGameInstance->Clone_Object(strProtoName, nullptr)))))
 		return E_FAIL;
@@ -60,6 +68,9 @@ void CUIManager::Open_Scene(const wstring strSceneName)
 	m_PlayScene.push_back(pUIScene);
 	m_PlayScene.back()->Show_Scene();
 	m_isClose = false;
+
+	if (TEXT("Loading") == strSceneName|| TEXT("NowLoading") == strSceneName)
+		m_isLoading = true;
 }
 
 void CUIManager::Close_Scene()
@@ -68,6 +79,8 @@ void CUIManager::Close_Scene()
 	{
 		m_PlayScene.back()->Close_Scene();
 		m_isClose = true;
+		if (m_isLoading)
+			m_isLoading = false;
 	}
 }
 
@@ -79,14 +92,20 @@ void CUIManager::Click()
 
 HRESULT CUIManager::Tick(const _float& fTimeDelta)
 {
+
 	if(!m_PlayScene.empty())
 	{
+		if(m_PlayScene.back())
+
 		m_PlayScene.back()->Tick(fTimeDelta);
 	}
-
-	for (auto& pUIScene : m_AlwaysUI)
+	
+	if(!m_isLoading)
 	{
-		pUIScene->Tick(fTimeDelta);
+		for (auto& pUIScene : m_AlwaysUI)
+		{
+			pUIScene->Tick(fTimeDelta);
+		}
 	}
 
 	return S_OK;
@@ -106,23 +125,27 @@ HRESULT CUIManager::Late_Tick(const _float& fTimeDelta)
 			m_PlayScene.back()->Late_Tick(fTimeDelta);
 			
 		}
-			
-		
 	}
 
 #ifdef _DEBUG
 	if (m_isRender)
 	{
-		for (auto& pUIScene : m_AlwaysUI)
+		if(!m_isLoading)
 		{
-			pUIScene->Late_Tick(fTimeDelta);
+			for (auto& pUIScene : m_AlwaysUI)
+			{
+				pUIScene->Late_Tick(fTimeDelta);
+			}
 		}
 		return S_OK;
 	}
 #else
-	for (auto& pUIScene : m_AlwaysUI)
+	if (!m_isLoading)
 	{
-		pUIScene->Late_Tick(fTimeDelta);
+		for (auto& pUIScene : m_AlwaysUI)
+		{
+			pUIScene->Late_Tick(fTimeDelta);
+		}
 	}
 	return S_OK;
 #endif // _DEBUG

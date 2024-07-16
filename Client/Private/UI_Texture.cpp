@@ -28,7 +28,8 @@ CUI_Texture::CUI_Texture(const CUI_Texture& rhs)
 	m_vStartPos{rhs.m_vStartPos },
 	m_iShaderPass{rhs.m_iShaderPass },
 	m_fControlAlpha{rhs.m_fControlAlpha },
-	m_isReverse{rhs.m_isReverse }
+	m_isReverse{rhs.m_isReverse },
+	m_isAnimLoop{rhs.m_isAnimLoop}
 {
 }
 
@@ -63,7 +64,7 @@ HRESULT CUI_Texture::Initialize(void* pArg)
 		m_fAnimTime = pDesc->fAnimTime;
 		m_vStartPos = pDesc->vStartPos;
 		m_isAnim = pDesc->bAnim;
-
+		m_isAnimLoop = pDesc->isAnimLoop;
 		m_fControlAlpha = pDesc->fControlAlpha;
 		m_isReverse = pDesc->isReverse;
 
@@ -97,10 +98,13 @@ void CUI_Texture::Priority_Tick(const _float& fTimeDelta)
 
 void CUI_Texture::Tick(const _float& fTimeDelta)
 {
-	if (m_isAnim && m_isPlay && !m_isReverse)
-		m_fAnimTime.x += fTimeDelta;
-	else if (m_isAnim && m_isPlay && m_isReverse)
-		m_fAnimTime.x -= fTimeDelta;
+	if (m_isPlay)
+	{
+		if (m_isAnim && !m_isReverse)
+			m_fAnimTime.x += fTimeDelta;
+		else if (m_isAnim && m_isReverse)
+			m_fAnimTime.x -= fTimeDelta;
+	}
 }
 
 void CUI_Texture::Late_Tick(const _float& fTimeDelta)
@@ -110,6 +114,8 @@ void CUI_Texture::Late_Tick(const _float& fTimeDelta)
 		if (m_fAnimTime.x >= m_fAnimTime.y)
 		{
 			m_fAnimTime.x = m_fAnimTime.y;
+			if (m_isAnimLoop)
+				m_isReverse = true;
 		}
 	}
 	else
@@ -117,9 +123,11 @@ void CUI_Texture::Late_Tick(const _float& fTimeDelta)
 		if (0.f >= m_fAnimTime.x)
 		{
 			m_fAnimTime.x = 0.f;
+			if (m_isAnimLoop)
+				m_isReverse = false;
 		}
 	}
-	if(m_isPlay)
+	if (m_isPlay)
 		m_pGameInstance->Add_Renderer(CRenderer::RENDER_UI, this);
 
 
@@ -158,19 +166,26 @@ HRESULT CUI_Texture::Close_UI()
 
 _bool CUI_Texture::Check_AnimFin()
 {
-	if(!m_isReverse)
+	if (m_isAnimLoop)
 	{
-		if (m_fAnimTime.x >= m_fAnimTime.y)
-			return true;
-		else
-			return false;
+		return true;
 	}
 	else
 	{
-		if (m_fAnimTime.x <= 0.f)
-			return true;
+		if (!m_isReverse)
+		{
+			if (m_fAnimTime.x >= m_fAnimTime.y)
+				return true;
+			else
+				return false;
+		}
 		else
-			return false;
+		{
+			if (m_fAnimTime.x <= 0.f)
+				return true;
+			else
+				return false;
+		}
 	}
 }
 

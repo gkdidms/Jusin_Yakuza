@@ -180,7 +180,7 @@ void CDebugManager::Window_Debug()
             m_pGameInstance->Set_SSAOBias(fBias);
 
         //그림자 제어
-        ImGui::NewLine();
+        /*ImGui::NewLine();
         ImGui::SeparatorText("Shadow");
         _vector vShadowPos = m_pSystemManager->Get_ShadowViewPos();
 
@@ -188,7 +188,7 @@ void CDebugManager::Window_Debug()
         {
             m_pSystemManager->Set_ShadowViewPos(vShadowPos);
             m_pGameInstance->Set_ShadowViewPos(vShadowPos);
-        }
+        }*/
     }
 
     if (ImGui::CollapsingHeader("Light"))

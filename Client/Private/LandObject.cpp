@@ -20,8 +20,8 @@ CLandObject::CLandObject(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 }
 CLandObject::CLandObject(const CLandObject& rhs)
 	: CGameObject{ rhs },
-	m_pSystemManager{ CSystemManager::GetInstance()},
-	m_pCollisionManager{ CCollision_Manager::GetInstance()}
+	m_pSystemManager{ rhs.m_pSystemManager },
+	m_pCollisionManager{ rhs.m_pCollisionManager }
 {
 	Safe_AddRef(m_pSystemManager);
 	Safe_AddRef(m_pCollisionManager);
@@ -127,7 +127,6 @@ void CLandObject::Apply_ChracterData()
 			it->second->Off();
 	}
 
-	/*auto& pEffects = m_pData->Get_Effets();
 	auto& pEffects = m_pData->Get_Effets();
 
 	for (auto& pEffect : pEffects)
@@ -141,11 +140,11 @@ void CLandObject::Apply_ChracterData()
 		if (nullptr == pSoketEffect)
 			return;
 
-		auto [it, success] = m_pEffects.emplace(pEffect.first, static_cast<CSocketEffect*>(pSoketEffect));
+		auto it = m_pEffects.emplace(pEffect.first, static_cast<CSocketEffect*>(pSoketEffect));
 
-		it->second->On();
-				it->second->Off();
-	}*/
+		//it->second->On();
+		it->second->Off();
+	}
 
 }
 

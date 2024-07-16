@@ -14,6 +14,13 @@
 #include "Background.h"
 #include "FileTotalMgr.h"
 
+#pragma region UI
+#include "Image_Texture.h"
+#include "Text.h"
+#include "Group.h"
+#include "Btn.h"
+#include "UI_Effect.h"
+#pragma endregion
 CMainApp::CMainApp() :
 #ifdef _DEBUG
 	m_pDebugMananger{ CDebugManager::GetInstance() },
@@ -181,6 +188,36 @@ HRESULT CMainApp::Ready_Prototype_GameObject()
 	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_BackGround"), CBackground::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	/* For.Prototype_GameObject_Image_Texture */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Image_Texture"),
+		CImage_Texture::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_Text */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Text"),
+		CText::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_Group */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Group"),
+		CGroup::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_Btn */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Btn"),
+		CBtn::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_UIEffect */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_UIEffect"),
+		CUI_Effect::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+
+	//만들어둔 데이터 로딩
+	if (FAILED(Add_UI_On_Path(TEXT("../../Client/Bin/DataFiles/UIData/"))))
+		return E_FAIL;
+
     return S_OK;
 }
 
@@ -207,6 +244,117 @@ HRESULT CMainApp::Ready_Prototype_Component()
 		return E_FAIL;
 
     return S_OK;
+}
+
+HRESULT CMainApp::Add_UI_On_Path(const wstring& strPath)
+{
+	vector<wstring> vecDirectorys;
+	m_pGameInstance->Get_DirectoryName(strPath, vecDirectorys);
+
+	CUIManager* m_pUIManager = CUIManager::GetInstance();
+
+	for (auto& strChannelName : vecDirectorys)
+	{
+		wstring strFilePath = strPath + strChannelName + TEXT("/");
+		string strDirectory = m_pGameInstance->WstringToString(strFilePath);
+
+		wstring ProtoFrontName = strChannelName + TEXT("_");
+
+		for (const auto& entry : fs::directory_iterator(strDirectory))
+		{
+
+			string FileName = entry.path().filename().string();
+			string AllPath = strDirectory + FileName;
+
+			string Tag;
+			_int dotPos = FileName.find_last_of(".");
+			Tag = FileName.substr(0, dotPos);
+
+
+			ifstream in(AllPath, ios::binary);
+
+			if (!in.is_open()) {
+				MSG_BOX("개방 실패");
+				return E_FAIL;
+			}
+			_uint Type;
+
+			in.read((char*)&Type, sizeof(_uint));
+
+			switch (Type)
+			{
+			case 0:
+			{
+				/* For.Prototype_GameObject_Image_Texture */
+				if (FAILED(m_pGameInstance->Add_GameObject_Prototype(ProtoFrontName + m_pGameInstance->StringToWstring(Tag),
+					CImage_Texture::Create(m_pDevice, m_pContext, in))))
+					return E_FAIL;
+
+				if (FAILED(m_pUIManager->Add_Data(strChannelName, ProtoFrontName + m_pGameInstance->StringToWstring(Tag))))
+					return E_FAIL;
+			}
+			break;
+
+			case 1:
+			{
+
+				/* For.Prototype_GameObject_Btn */
+				if (FAILED(m_pGameInstance->Add_GameObject_Prototype(ProtoFrontName + m_pGameInstance->StringToWstring(Tag),
+					CBtn::Create(m_pDevice, m_pContext, in))))
+					return E_FAIL;
+
+				if (FAILED(m_pUIManager->Add_Data(strChannelName, ProtoFrontName + m_pGameInstance->StringToWstring(Tag))))
+					return E_FAIL;
+			}
+			break;
+
+			case 2:
+			{
+
+				/* For.Prototype_GameObject_Text */
+				if (FAILED(m_pGameInstance->Add_GameObject_Prototype(ProtoFrontName + m_pGameInstance->StringToWstring(Tag),
+					CText::Create(m_pDevice, m_pContext, in))))
+					return E_FAIL;
+
+				if (FAILED(m_pUIManager->Add_Data(strChannelName, ProtoFrontName + m_pGameInstance->StringToWstring(Tag))))
+					return E_FAIL;
+			}
+			break;
+
+			case 3:
+			{
+
+
+				/* For.Prototype_GameObject_Group */
+				if (FAILED(m_pGameInstance->Add_GameObject_Prototype(ProtoFrontName + m_pGameInstance->StringToWstring(Tag),
+					CGroup::Create(m_pDevice, m_pContext, in))))
+					return E_FAIL;
+
+				if (FAILED(m_pUIManager->Add_Data(strChannelName, ProtoFrontName + m_pGameInstance->StringToWstring(Tag))))
+					return E_FAIL;
+			}
+			break;
+
+			case 4:
+			{
+
+				/* For.Prototype_GameObject_UIEffect */
+				if (FAILED(m_pGameInstance->Add_GameObject_Prototype(ProtoFrontName + m_pGameInstance->StringToWstring(Tag),
+					CUI_Effect::Create(m_pDevice, m_pContext, in))))
+					return E_FAIL;
+
+				if (FAILED(m_pUIManager->Add_Data(strChannelName, ProtoFrontName + m_pGameInstance->StringToWstring(Tag))))
+					return E_FAIL;
+			}
+			break;
+
+			default:
+				break;
+			}
+		}
+	}
+
+	return S_OK;
 }
 
 void CMainApp::Render_Colsole(_bool isOpen)

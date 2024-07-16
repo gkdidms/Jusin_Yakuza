@@ -38,6 +38,7 @@ public:
         _uint iShaderPass;
         _float4x4 WorldMatrix;
 
+        _bool isAnimLoop;
         _bool bAnim;
         _float2 fAnimTime;
         _float3 vStartPos;//최종위치는 worldpos 
@@ -135,6 +136,7 @@ protected:
 
     _uint m_iShaderPass = { 1 };
 
+    _bool m_isAnimLoop;
     _bool m_isAnim;
     _float2 m_fAnimTime;
     _float3 m_vStartPos;

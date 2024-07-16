@@ -148,13 +148,14 @@ void CPlayer::Tick(const _float& fTimeDelta)
 	m_pColliderCom->Tick(m_pTransformCom->Get_WorldMatrix());
 
 	Animation_Event();
-
 	Effect_Control_Aura();
-
+	Setting_Target_Enemy();
 }
 
 void CPlayer::Late_Tick(const _float& fTimeDelta)
 {
+	m_pCollisionManager->Add_ImpulseResolution(this);
+
 #ifdef _DEBUG
 	if (m_isObjectRender)
 	{
@@ -165,11 +166,6 @@ void CPlayer::Late_Tick(const _float& fTimeDelta)
 	m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
 	m_pGameInstance->Add_Renderer(CRenderer::RENDER_SHADOWOBJ, this); // Shadow용 렌더 추가
 #endif // _DEBUG
-
-
-	
-	
-	m_pCollisionManager->Add_ImpulseResolution(this);
 
 	for (auto& pCollider : m_pColliders)
 		pCollider.second->Late_Tick(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")));
@@ -191,6 +187,34 @@ void CPlayer::Late_Tick(const _float& fTimeDelta)
 			m_pCollisionManager->Add_HitCollider(pPair.second, CCollision_Manager::PLAYER);
 	}
 
+	switch (m_eCurrentStyle)
+	{
+	case Client::CPlayer::ADVENTURE:
+	{
+		m_isRimLight = ADVENTURE;
+		break;
+	}
+	case Client::CPlayer::KRS:
+	{
+		m_isRimLight = KRS*0.1f;
+		break;
+	}
+	case Client::CPlayer::KRH:
+	{
+		m_isRimLight = KRH * 0.1f;
+		break;
+	}
+	case Client::CPlayer::KRC:
+	{
+		m_isRimLight = KRC * 0.1f;
+		break;
+	}
+	case Client::CPlayer::BATTLE_STYLE_END:
+		break;
+	default:
+		break;
+	}
+
 }
 
 HRESULT CPlayer::Render()
@@ -201,28 +225,76 @@ HRESULT CPlayer::Render()
 	int i = 0;
 	for (auto& pMesh : m_pModelCom->Get_Meshes())
 	{
-		//if (!strcmp("[l0]jacketw1", pMesh->Get_Name()))
-		//{
-		//	if(m_isRimLight)
-		//		if (FAILED(m_pShaderCom->Bind_RawValue("g_isRimLight", &m_isRimLight, sizeof(_bool))))
-		//			return E_FAIL;
-		//}
-		//else if (!strcmp("[l0]body_naked1", pMesh->Get_Name()))
-		//{
-		//	if (m_isRimLight)
-		//		if (FAILED(m_pShaderCom->Bind_RawValue("g_isRimLight", &m_isRimLight, sizeof(_bool))))
-		//			return E_FAIL;
-		//}
-		//else
-		//{
-		//	_bool isfalse = false;
-		//	if (FAILED(m_pShaderCom->Bind_RawValue("g_isRimLight", &isfalse, sizeof(_bool))))
-		//		return E_FAIL;
-		//}
 
-		if(m_isRimLight)
-			if (FAILED(m_pShaderCom->Bind_RawValue("g_isRimLight", &m_isRimLight, sizeof(_bool))))
+
+		if(ADVENTURE !=m_isRimLight)
+		{
+			if (!strcmp("[l0]jacketw1", pMesh->Get_Name()))
+			{
+				if (FAILED(m_pShaderCom->Bind_RawValue("g_isRimLight", &m_isRimLight, sizeof(_float))))
 					return E_FAIL;
+
+				if (FAILED(m_pShaderCom->Bind_RawValue("g_fRimUV", &m_fRimTopUV, sizeof(_float2))))
+					return E_FAIL;
+
+			}
+
+			switch (m_iCurrentBehavior)
+			{
+			case 4://attack(팔)
+			{
+
+				if (!strcmp("[l0]body_naked1", pMesh->Get_Name()))
+				{
+					if (FAILED(m_pShaderCom->Bind_RawValue("g_isRimLight", &m_isRimLight, sizeof(_bool))))
+						return E_FAIL;
+					if (FAILED(m_pShaderCom->Bind_RawValue("g_fRimUV", &m_fRimPartsUV, sizeof(_float2))))
+						return E_FAIL;
+				}
+				break;
+			}
+			case 6://sway//(전신)
+			{
+				if (FAILED(m_pShaderCom->Bind_RawValue("g_isRimLight", &m_isRimLight, sizeof(_float))))	
+					return E_FAIL;	
+				if (FAILED(m_pShaderCom->Bind_RawValue("g_fRimUV", &m_fRimPartsUV, sizeof(_float2))))
+					return E_FAIL;
+				break;
+			}
+			case 8://fly_kick(다리)
+			{
+				if(KRS==m_eCurrentStyle)
+				{
+					if (!strcmp("[l0]pants3", pMesh->Get_Name()))
+					{
+						if (FAILED(m_pShaderCom->Bind_RawValue("g_isRimLight", &m_isRimLight, sizeof(_float))))
+							return E_FAIL;
+						if (FAILED(m_pShaderCom->Bind_RawValue("g_fRimUV", &m_fRimBotUV, sizeof(_float2))))
+							return E_FAIL;
+					}
+					else if (!strcmp("[l0]shoes_leather1", pMesh->Get_Name()))
+					{
+						if (FAILED(m_pShaderCom->Bind_RawValue("g_isRimLight", &m_isRimLight, sizeof(_float))))
+							return E_FAIL;
+						if (FAILED(m_pShaderCom->Bind_RawValue("g_fRimUV", &m_fRimPartsUV, sizeof(_float2))))
+							return E_FAIL;
+					}
+
+				}
+				break;
+			}
+			default:
+				break;
+
+			}
+		}
+		else
+		{
+
+			if (FAILED(m_pShaderCom->Bind_RawValue("g_isRimLight", &m_isRimLight, sizeof(_float))))
+				return E_FAIL;
+		}
+
 
 		m_pModelCom->Bind_BoneMatrices(m_pShaderCom, "g_BoneMatrices", i);
 
@@ -328,6 +400,8 @@ void CPlayer::Take_Damage(_uint iHitColliderType, const _float3& vDir, _float fD
 
 		m_iCurrentBehavior = (_uint)KRS_BEHAVIOR_STATE::HIT;
 		m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Setting_Value((void*) &Desc);
+
+
 		break;
 	}
 	case CPlayer::KRH:
@@ -403,7 +477,6 @@ void CPlayer::Take_Damage(_uint iHitColliderType, const _float3& vDir, _float fD
 		break;
 	}
 	}
-	pAttackedObject->Get_CurrentAnimationName();
 }
 
 string CPlayer::Get_CurrentAnimationName()
@@ -612,9 +685,49 @@ void CPlayer::KRS_KeyInput(const _float& fTimeDelta)
 {
 	if (m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Get_AnimationEnd())
 	{
-		if((_uint)KRS_BEHAVIOR_STATE::IDLE != m_iCurrentBehavior)
-			m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Reset();
-		m_iCurrentBehavior = (_uint)KRS_BEHAVIOR_STATE::IDLE;
+		if ((_uint)KRS_BEHAVIOR_STATE::HIT == m_iCurrentBehavior)
+		{
+			// HIT상태일 때의 애니메이션이 끝났다면
+			string strAnimName = m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Get_AnimationName();
+			// 다운당한 상태인지를 검사해서
+			if (string::npos != strAnimName.find("dwn"))
+			{
+				// 기존 행동 초기화해주고
+				m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Reset();
+				// 다운 상태로 변경해준다.
+				m_iCurrentBehavior = (_uint)KRS_BEHAVIOR_STATE::DOWN;
+
+				// 아래 문구가 포함된 애니메이션들은 엎어진상태로 이어진다
+				if (string::npos != strAnimName.find("body_l") || (string::npos == strAnimName.find("body") && string::npos != strAnimName.find("_b"))
+					|| string::npos != strAnimName.find("y_b") 
+					|| string::npos != strAnimName.find("_guard_") || string::npos != strAnimName.find("_dnf_"))
+				{
+					_bool isFront = false;
+					m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Setting_Value(&isFront);
+				}
+				else if (string::npos != strAnimName.find("body_r") || string::npos != strAnimName.find("_f")
+					|| string::npos != strAnimName.find("_direct_") || string::npos != strAnimName.find("dnb"))
+				{
+					_bool isFront = true;
+					m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Setting_Value(&isFront);
+				}
+
+			}
+			else
+			{
+				// 현재 상태가 아이들이 아니라면 
+				if ((_uint)KRS_BEHAVIOR_STATE::IDLE != m_iCurrentBehavior)
+					m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Reset();
+				m_iCurrentBehavior = (_uint)KRS_BEHAVIOR_STATE::IDLE;
+			}
+		}
+		else
+		{
+			// 현재 상태가 아이들이 아니라면 
+			if ((_uint)KRS_BEHAVIOR_STATE::IDLE != m_iCurrentBehavior)
+				m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Reset();
+			m_iCurrentBehavior = (_uint)KRS_BEHAVIOR_STATE::IDLE;
+		}
 	}
 
 	_bool isShift = { false };
@@ -622,46 +735,49 @@ void CPlayer::KRS_KeyInput(const _float& fTimeDelta)
 
 	if (m_iCurrentBehavior == (_uint)KRS_BEHAVIOR_STATE::SKILL_FLY_KICK) return;
 
-	if (m_pGameInstance->GetKeyState(DIK_LSHIFT) == HOLD)
+	if (m_pGameInstance->GetKeyState(DIK_SPACE) == HOLD)
 	{
 		isShift = true;
 	}
 
-	if (m_pGameInstance->GetMouseState(DIM_LB) == TAP)
+	if (!m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Stopping())
 	{
-		// 기존 행동을 초기화하고 어택으로 바꿔준다.
-		if(m_iCurrentBehavior != (_uint)KRS_BEHAVIOR_STATE::ATTACK)
-			m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Reset();
+		if (m_pGameInstance->GetMouseState(DIM_LB) == TAP)
+		{
+			// 기존 행동을 초기화하고 어택으로 바꿔준다.
+			if(m_iCurrentBehavior != (_uint)KRS_BEHAVIOR_STATE::ATTACK)
+				m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Reset();
 
-		m_iCurrentBehavior = (_uint)KRS_BEHAVIOR_STATE::ATTACK;
-		m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Change_Animation();
-		m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Combo_Count();
-	}
-	if (m_pGameInstance->GetMouseState(DIM_RB) == TAP)
-	{
-		// 현재 어택상태인지를 구분해서 마무리 액션을 실행시키거나
-		// 그에 맞는 커맨드 액션을 실행시ㅕ켜야 한다.
-
-		// 여기에 스킬트리가 완료되면 스킬을 보유중인지에 대한 조건식을 추가로 잡아야한다
-		if (m_iCurrentBehavior == (_uint)KRS_BEHAVIOR_STATE::RUN)
-		{
-			m_iCurrentBehavior = (_uint)KRS_BEHAVIOR_STATE::SKILL_FLY_KICK;
-		}
-		// 기본 러쉬콤보 진행중일 때에 우클릭이 들어오면 피니시 블로 실행
-		else if(m_iCurrentBehavior == (_uint)KRS_BEHAVIOR_STATE::ATTACK)
-		{
-			m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Combo_Count(true);
-		}
-		// 아무것도 아닌 상태에서 우클릭이 들어온다면 킥콤보를 실행
-		else
-		{
-			m_iCurrentBehavior = (_uint)KRS_BEHAVIOR_STATE::SKILL_KICK_COMBO;
+			m_iCurrentBehavior = (_uint)KRS_BEHAVIOR_STATE::ATTACK;
+			m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Change_Animation();
 			m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Combo_Count();
 		}
+		if (m_pGameInstance->GetMouseState(DIM_RB) == TAP)
+		{
+			// 현재 어택상태인지를 구분해서 마무리 액션을 실행시키거나
+			// 그에 맞는 커맨드 액션을 실행시ㅕ켜야 한다.
 
+			// 여기에 스킬트리가 완료되면 스킬을 보유중인지에 대한 조건식을 추가로 잡아야한다
+			if (m_iCurrentBehavior == (_uint)KRS_BEHAVIOR_STATE::RUN)
+			{
+				m_iCurrentBehavior = (_uint)KRS_BEHAVIOR_STATE::SKILL_FLY_KICK;
+			}
+			// 기본 러쉬콤보 진행중일 때에 우클릭이 들어오면 피니시 블로 실행
+			else if(m_iCurrentBehavior == (_uint)KRS_BEHAVIOR_STATE::ATTACK)
+			{
+				m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Combo_Count(true);
+			}
+			// 아무것도 아닌 상태에서 우클릭이 들어온다면 킥콤보를 실행
+			else
+			{
+				m_iCurrentBehavior = (_uint)KRS_BEHAVIOR_STATE::SKILL_KICK_COMBO;
+				m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Combo_Count();
+			}
+
+		}
 	}
 
-	if (m_iCurrentBehavior < (_uint)KRS_BEHAVIOR_STATE::ATTACK)
+	if (m_iCurrentBehavior < (_uint)KRS_BEHAVIOR_STATE::ATTACK && !m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Stopping())
 	{
 		if (m_pGameInstance->GetKeyState(DIK_W) == HOLD)
 		{
@@ -723,7 +839,6 @@ void CPlayer::KRS_KeyInput(const _float& fTimeDelta)
 		}
 	}
 
-
 	if (!isMove && m_iCurrentBehavior == (_uint)KRS_BEHAVIOR_STATE::RUN || m_iCurrentBehavior == (_uint)KRS_BEHAVIOR_STATE::WALK)
 		m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Stop();
 }
@@ -732,39 +847,83 @@ void CPlayer::KRH_KeyInput(const _float& fTimeDelta)
 {
 	if (m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Get_AnimationEnd())
 	{
-		if ((_uint)KRH_BEHAVIOR_STATE::IDLE != m_iCurrentBehavior)
-			m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Reset();
-		m_iCurrentBehavior = (_uint)KRH_BEHAVIOR_STATE::IDLE;
+		if ((_uint)KRH_BEHAVIOR_STATE::HIT == m_iCurrentBehavior)
+		{
+			// HIT상태일 때의 애니메이션이 끝났다면
+			string strAnimName = m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Get_AnimationName();
+			// 다운당한 상태인지를 검사해서
+			if (string::npos != strAnimName.find("dwn"))
+			{
+				// 기존 행동 초기화해주고
+				m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Reset();
+				// 다운 상태로 변경해준다.
+				m_iCurrentBehavior = (_uint)KRH_BEHAVIOR_STATE::DOWN;
+
+				// 아래 문구가 포함된 애니메이션들은 엎어진상태로 이어진다
+				if (string::npos != strAnimName.find("body_l") || (string::npos == strAnimName.find("body") && string::npos != strAnimName.find("_b"))
+					|| string::npos != strAnimName.find("y_b")
+					|| string::npos != strAnimName.find("_guard_") || string::npos != strAnimName.find("_dnf_"))
+				{
+					_bool isFront = false;
+					m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Setting_Value(&isFront);
+				}
+				else if (string::npos != strAnimName.find("body_r") || string::npos != strAnimName.find("_f")
+					|| string::npos != strAnimName.find("_direct_") || string::npos != strAnimName.find("dnb"))
+				{
+					_bool isFront = true;
+					m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Setting_Value(&isFront);
+				}
+
+			}
+			else
+			{
+				// 현재 상태가 아이들이 아니라면 
+				if ((_uint)KRH_BEHAVIOR_STATE::IDLE != m_iCurrentBehavior)
+					m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Reset();
+				m_iCurrentBehavior = (_uint)KRH_BEHAVIOR_STATE::IDLE;
+			}
+		}
+		else
+		{
+			// 현재 상태가 아이들이 아니라면 
+			if ((_uint)KRH_BEHAVIOR_STATE::IDLE != m_iCurrentBehavior)
+				m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Reset();
+			m_iCurrentBehavior = (_uint)KRH_BEHAVIOR_STATE::IDLE;
+		}
 	}
 
 	_bool isShift = { false };
 	_bool isMove = { false };
 
-	if (m_pGameInstance->GetKeyState(DIK_LSHIFT) == HOLD)
+	if (m_pGameInstance->GetKeyState(DIK_SPACE) == HOLD)
 	{
 		isShift = true;
 	}
 
-	if (m_pGameInstance->GetMouseState(DIM_LB) == TAP)
+	if (!m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Stopping())
 	{
-		// 기존 행동을 초기화하고 어택으로 바꿔준다.
-		if (m_iCurrentBehavior != (_uint)KRH_BEHAVIOR_STATE::ATTACK)
-			m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Reset();
-
-		m_iCurrentBehavior = (_uint)KRH_BEHAVIOR_STATE::ATTACK;
-		m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Change_Animation();
-		m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Combo_Count();
-	}
-	if (m_pGameInstance->GetMouseState(DIM_RB) == TAP)
-	{
-		if (m_iCurrentBehavior == (_uint)KRH_BEHAVIOR_STATE::ATTACK)
+		if (m_pGameInstance->GetMouseState(DIM_LB) == TAP)
 		{
+			// 기존 행동을 초기화하고 어택으로 바꿔준다.
+			if (m_iCurrentBehavior != (_uint)KRH_BEHAVIOR_STATE::ATTACK)
+				m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Reset();
+
+			m_iCurrentBehavior = (_uint)KRH_BEHAVIOR_STATE::ATTACK;
 			m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Change_Animation();
-			m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Combo_Count(true);
+			m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Combo_Count();
+		}
+		if (m_pGameInstance->GetMouseState(DIM_RB) == TAP)
+		{
+			if (m_iCurrentBehavior == (_uint)KRH_BEHAVIOR_STATE::ATTACK)
+			{
+				m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Change_Animation();
+				m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Combo_Count(true);
+			}
 		}
 	}
 
-	if (m_iCurrentBehavior < (_uint)KRH_BEHAVIOR_STATE::ATTACK)
+
+	if (m_iCurrentBehavior < (_uint)KRH_BEHAVIOR_STATE::ATTACK && !m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Stopping())
 	{
 		if (m_pGameInstance->GetKeyState(DIK_W) == HOLD)
 		{
@@ -843,33 +1002,36 @@ void CPlayer::KRC_KeyInput(const _float& fTimeDelta)
 	_bool isShift = { false };
 	_bool isMove = { false };
 
-	if (m_pGameInstance->GetKeyState(DIK_LSHIFT) == HOLD)
+	if (m_pGameInstance->GetKeyState(DIK_SPACE) == HOLD)
 	{
 		isShift = true;
 	}
 
-	if (m_pGameInstance->GetMouseState(DIM_LB) == TAP)
+	if (!m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Stopping())
 	{
-		// 기존 행동을 초기화하고 어택으로 바꿔준다.
-		if (m_iCurrentBehavior != (_uint)KRC_BEHAVIOR_STATE::ATTACK)
-			m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Reset();
-
-		m_iCurrentBehavior = (_uint)KRC_BEHAVIOR_STATE::ATTACK;
-		m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Change_Animation();
-		m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Combo_Count();
-	}
-	if (m_pGameInstance->GetMouseState(DIM_RB) == TAP)
-	{
-		// 현재 어택상태인지를 구분해서 마무리 액션을 실행시키거나
-		// 그에 맞는 커맨드 액션을 실행시ㅕ켜야 한다.
-
-		if (m_iCurrentBehavior == (_uint)KRC_BEHAVIOR_STATE::ATTACK)
+		if (m_pGameInstance->GetMouseState(DIM_LB) == TAP)
 		{
-			m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Combo_Count(true);
+			// 기존 행동을 초기화하고 어택으로 바꿔준다.
+			if (m_iCurrentBehavior != (_uint)KRC_BEHAVIOR_STATE::ATTACK)
+				m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Reset();
+
+			m_iCurrentBehavior = (_uint)KRC_BEHAVIOR_STATE::ATTACK;
+			m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Change_Animation();
+			m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Combo_Count();
+		}
+		if (m_pGameInstance->GetMouseState(DIM_RB) == TAP)
+		{
+			// 현재 어택상태인지를 구분해서 마무리 액션을 실행시키거나
+			// 그에 맞는 커맨드 액션을 실행시ㅕ켜야 한다.
+
+			if (m_iCurrentBehavior == (_uint)KRC_BEHAVIOR_STATE::ATTACK)
+			{
+				m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Combo_Count(true);
+			}
 		}
 	}
 
-	if (m_iCurrentBehavior < (_uint)KRC_BEHAVIOR_STATE::ATTACK)
+	if (m_iCurrentBehavior < (_uint)KRC_BEHAVIOR_STATE::ATTACK && !m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Stopping())
 	{
 		if (m_pGameInstance->GetKeyState(DIK_W) == HOLD)
 		{
@@ -1073,26 +1235,75 @@ void CPlayer::Compute_MoveDirection_RL()
 
 void CPlayer::Effect_Control_Aura()
 {
-	CSocketEffect* pEffect = { nullptr };
+	CSocketEffect* pHooligan = { nullptr };
+	CSocketEffect* pRush = { nullptr };
+	CSocketEffect* pDestroyer = { nullptr };
 
 	for (auto& pair : m_pEffects)
 	{
-		string strKey = pair.first;
+		string strKey = m_pGameInstance->WstringToString(pair.second->Get_EffectName());
 
-		if (string::npos != strKey.find("Aura"))
-			pEffect = pair.second;
+		if (string::npos != strKey.find("Hooligan"))
+			pHooligan = pair.second;
+		if (string::npos != strKey.find("Rush"))
+			pRush = pair.second;
+		if (string::npos != strKey.find("Destroyer"))
+			pDestroyer = pair.second;
 	}
 
 	if (0 < m_iCurrentHitLevel)
 	{
-		if(nullptr != pEffect)
-			pEffect->On();
+		switch (m_eCurrentStyle)
+		{
+		case Client::CPlayer::KRS:
+			// 기존에 켜져있던 오라를 끈다
+			if (nullptr != pRush)
+				pRush->Off();
+			if (nullptr != pDestroyer)
+				pDestroyer->Off();
+
+			// 현재 스타일에 맞는 오라를 켠다
+			if (nullptr != pHooligan)
+				pHooligan->On();
+			break;
+		case Client::CPlayer::KRH:
+			if (nullptr != pHooligan)
+				pHooligan->Off();
+			if (nullptr != pDestroyer)
+				pDestroyer->Off();
+
+			if (nullptr != pRush)
+				pRush->On();
+			break;
+		case Client::CPlayer::KRC:
+			if (nullptr != pHooligan)
+				pHooligan->Off();
+			if (nullptr != pRush)
+				pRush->Off();
+
+			if (nullptr != pDestroyer)
+				pDestroyer->On();
+			break;
+		default:
+			return;
+		}
 	}
 	else
 	{
-		if (nullptr != pEffect)
-			pEffect->Off();
+		if (nullptr != pHooligan)
+			pHooligan->Off();
+		if (nullptr != pRush)
+			pRush->Off();
+		if (nullptr != pDestroyer)
+			pDestroyer->Off();
 	}
+}
+
+void CPlayer::Setting_Target_Enemy()
+{
+	auto pMonsters = m_pGameInstance->Get_GameObjects(m_iCurrentLevel, TEXT("Layer_Monster"));
+
+	m_pTargetObject = m_pCollisionManager->Get_Near_LandObject(this, pMonsters);
 }
 
 void CPlayer::AccHitGauge()

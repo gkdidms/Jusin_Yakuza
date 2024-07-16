@@ -5,8 +5,8 @@
 CKiryu_KRS_Run::CKiryu_KRS_Run()
 	:CBehaviorAnimation{}
 {
-	m_AnimationIndices.push_back(180); //+[180]	p_krc_mov_run_btl[p_krc_mov_run_btl]
-	m_AnimationIndices.push_back(181); // +[181]	p_krc_mov_run_stop_btl[p_krc_mov_run_stop_btl]
+	m_AnimationIndices.push_back(410); //[410]	p_mov_run_kyoro[p_mov_run_kyoro]
+	m_AnimationIndices.push_back(417); //[417]	p_mov_run_stop[p_mov_run_stop]
 }
 
 void CKiryu_KRS_Run::Tick(const _float& fTimeDelta)
@@ -45,6 +45,13 @@ _bool CKiryu_KRS_Run::Get_AnimationEnd()
 void CKiryu_KRS_Run::Stop()
 {
 	m_isStop = true;
+}
+
+_bool CKiryu_KRS_Run::Stopping()
+{
+	if (ANIM_END == m_eAnimState && !Get_AnimationEnd()) return true;
+
+	return false;
 }
 
 CBehaviorAnimation* CKiryu_KRS_Run::Create(CPlayer* pPlayer)
