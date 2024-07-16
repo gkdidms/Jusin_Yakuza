@@ -140,9 +140,6 @@ HRESULT CLevel_Test::Ready_Effect(const wstring& strLayerTag)
 	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_Particle_Point_Hit1_Part0"), strLayerTag, nullptr)))
 		return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_Particle_Aura_asd"), strLayerTag, nullptr)))
-		return E_FAIL;
-
 
 
 	return S_OK;
