@@ -192,7 +192,7 @@ void CPlayer::Late_Tick(const _float& fTimeDelta)
 	{
 	case Client::CPlayer::ADVENTURE:
 	{
-		m_isRimLight = ADVENTURE;
+		m_isRimLight = 0.f;
 		break;
 	}
 	case Client::CPlayer::KRS:
@@ -238,6 +238,15 @@ HRESULT CPlayer::Render()
 				if (FAILED(m_pShaderCom->Bind_RawValue("g_fRimUV", &m_fRimTopUV, sizeof(_float2))))
 					return E_FAIL;
 			}
+			else
+			{
+				_float isfalse = 0.f;
+				if (FAILED(m_pShaderCom->Bind_RawValue("g_isRimLight", &isfalse, sizeof(_float))))
+					return E_FAIL;
+
+				if (FAILED(m_pShaderCom->Bind_RawValue("g_fRimUV", &m_fRimPartsUV, sizeof(_float2))))
+					return E_FAIL;
+			}
 
 			switch (m_iCurrentBehavior)
 			{
@@ -246,7 +255,7 @@ HRESULT CPlayer::Render()
 
 				if (!strcmp("[l0]body_naked1", pMesh->Get_Name()))
 				{
-					if (FAILED(m_pShaderCom->Bind_RawValue("g_isRimLight", &m_isRimLight, sizeof(_bool))))
+					if (FAILED(m_pShaderCom->Bind_RawValue("g_isRimLight", &m_isRimLight, sizeof(_float))))
 						return E_FAIL;
 					if (FAILED(m_pShaderCom->Bind_RawValue("g_fRimUV", &m_fRimPartsUV, sizeof(_float2))))
 						return E_FAIL;
@@ -262,6 +271,7 @@ HRESULT CPlayer::Render()
 				break;
 			}
 			case 8://fly_kick(´Ù¸®)
+			case 9:
 			{
 				if(KRS==m_eCurrentStyle)
 				{
@@ -279,7 +289,6 @@ HRESULT CPlayer::Render()
 						if (FAILED(m_pShaderCom->Bind_RawValue("g_fRimUV", &m_fRimPartsUV, sizeof(_float2))))
 							return E_FAIL;
 					}
-
 				}
 				break;
 			}
@@ -290,8 +299,8 @@ HRESULT CPlayer::Render()
 		}
 		else
 		{
-
-			if (FAILED(m_pShaderCom->Bind_RawValue("g_isRimLight", &m_isRimLight, sizeof(_float))))
+			_float isfale = 0.f;
+			if (FAILED(m_pShaderCom->Bind_RawValue("g_isRimLight", &isfale, sizeof(_float))))
 				return E_FAIL;
 		}
 

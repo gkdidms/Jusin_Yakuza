@@ -11,6 +11,7 @@
 #include "Level_OfficeBoss.h"
 #include "Level_Dogimazo.h"
 #include "Level_DogimazoStairs.h"
+#include "Level_DogimazoLobby.h"
 #include "Level_DogimazoBoss.h"
 #include "Level_Test.h"
 #pragma endregion
@@ -66,6 +67,9 @@ void CLevel_Loading::Tick(const _float& fTimeDelta)
 				break;
 			case LEVEL_DOGIMAZO_STAIRS:
 				pNewLevel = CLevel_DogimazoStairs::Create(m_pDevice, m_pContext);
+				break;
+			case LEVEL_DOGIMAZO_LOBBY:
+				pNewLevel = CLevel_DogimazoLobby::Create(m_pDevice, m_pContext);
 				break;
 			case LEVEL_DOGIMAZO_BOSS:
 				pNewLevel = CLevel_DogimazoBoss::Create(m_pDevice, m_pContext);

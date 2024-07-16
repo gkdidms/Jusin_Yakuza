@@ -144,7 +144,7 @@ private:
                 _bool m_isPBR = { false };
                 _bool m_isBOF = { false };
                 _bool m_isShadow = { false };
-                _bool m_isRimLight = { false };
+                _bool m_isRimLight = { true };
 
 #else
             private:
