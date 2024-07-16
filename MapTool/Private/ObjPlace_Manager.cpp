@@ -680,6 +680,20 @@ void CObjPlace_Manager::Edit_Installed_GameObject(int iNumObject)
 			shaderType = 4;
 			m_tCurrentObjectDesc.iShaderPass = 4;
 		}
+
+		if (ImGui::RadioButton(u8"Emissive - 투명", m_tCurrentObjectDesc.iShaderPass == 5))
+		{
+			shaderType = 5;
+			m_tCurrentObjectDesc.iShaderPass = 5;
+		}
+
+		if (ImGui::RadioButton(u8"Emissive - 투명x", m_tCurrentObjectDesc.iShaderPass == 6))
+		{
+			shaderType = 6;
+			m_tCurrentObjectDesc.iShaderPass = 6;
+		}
+
+
 	}
 	else
 	{
@@ -705,6 +719,12 @@ void CObjPlace_Manager::Edit_Installed_GameObject(int iNumObject)
 		{
 			shaderType = 3;
 			m_tCurrentObjectDesc.iShaderPass = 3;
+		}
+
+		if (ImGui::RadioButton(u8"CW PASS", m_tCurrentObjectDesc.iShaderPass == 4))
+		{
+			shaderType = 4;
+			m_tCurrentObjectDesc.iShaderPass = 4;
 		}
 	}
 	
@@ -937,6 +957,10 @@ void CObjPlace_Manager::Set_Map_Object()
 		ImGui::RadioButton(u8"Lamp", &shaderType, 3);
 		ImGui::NewLine();
 		ImGui::RadioButton(u8"형광등 + 투명", &shaderType, 4);
+		ImGui::NewLine();
+		ImGui::RadioButton(u8"Emissive - 투명o", &shaderType, 5);
+		ImGui::NewLine();
+		ImGui::RadioButton(u8"Emissive - 투명x", &shaderType, 6);
 	}
 	else
 	{
@@ -947,6 +971,8 @@ void CObjPlace_Manager::Set_Map_Object()
 		ImGui::RadioButton(u8"물", &shaderType, 2);
 		ImGui::NewLine();
 		ImGui::RadioButton(u8"mask", &shaderType, 3);
+		ImGui::NewLine();
+		ImGui::RadioButton(u8"CW PASS", &shaderType, 4);
 	}
 	
 

@@ -291,11 +291,6 @@ HRESULT CLoader::Loading_For_Office_1F()
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Collider"), CCollider::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	/* For.Prototype_Component_Navigation */
-	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Navigation"),
-		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/NaviData/Navigation_0.dat")))))
-		return E_FAIL;
-
 	/* For.Prototype_Component_VIBuffer_Instance_Point */
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_VIBuffer_Instance_Point"),
 		CVIBuffer_Instance_Point::Create(m_pDevice, m_pContext))))
@@ -305,6 +300,13 @@ HRESULT CLoader::Loading_For_Office_1F()
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_VIBuffer_Trail"),
 		CVIBuffer_Trail::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+
+
+	/* For.Prototype_Component_Navigation */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Navigation"),
+		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/NaviData/Navigation_0.dat")))))
+		return E_FAIL;
+
 #pragma endregion
 
 #pragma region Shader
@@ -618,11 +620,6 @@ HRESULT CLoader::Loading_For_Office_2F()
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Collider"), CCollider::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	/* For.Prototype_Component_Navigation */
-	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Navigation"),
-		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/NaviData/Navigation_0.dat")))))
-		return E_FAIL;
-
 	/* For.Prototype_Component_VIBuffer_Instance_Point */
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_VIBuffer_Instance_Point"),
 		CVIBuffer_Instance_Point::Create(m_pDevice, m_pContext))))
@@ -631,6 +628,11 @@ HRESULT CLoader::Loading_For_Office_2F()
 	/* For.Prototype_Component_VIBuffer_Trail */
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_VIBuffer_Trail"),
 		CVIBuffer_Trail::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Navigation */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Navigation"),
+		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/NaviData/Navigation_1.dat")))))
 		return E_FAIL;
 #pragma endregion
 
@@ -827,11 +829,6 @@ HRESULT CLoader::Loading_For_Office_Boss()
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Collider"), CCollider::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	/* For.Prototype_Component_Navigation */
-	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Navigation"),
-		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/NaviData/Navigation_0.dat")))))
-		return E_FAIL;
-
 	/* For.Prototype_Component_VIBuffer_Instance_Point */
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_VIBuffer_Instance_Point"),
 		CVIBuffer_Instance_Point::Create(m_pDevice, m_pContext))))
@@ -840,6 +837,11 @@ HRESULT CLoader::Loading_For_Office_Boss()
 	/* For.Prototype_Component_VIBuffer_Trail */
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_VIBuffer_Trail"),
 		CVIBuffer_Trail::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Navigation */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Navigation"),
+		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/NaviData/Navigation_2.dat")))))
 		return E_FAIL;
 #pragma endregion
 
@@ -1035,11 +1037,6 @@ HRESULT CLoader::Loading_For_Dogimazo()
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Collider"), CCollider::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	/* For.Prototype_Component_Navigation */
-	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Navigation"),
-		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/NaviData/Navigation_0.dat")))))
-		return E_FAIL;
-
 	/* For.Prototype_Component_VIBuffer_Instance_Point */
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_VIBuffer_Instance_Point"),
 		CVIBuffer_Instance_Point::Create(m_pDevice, m_pContext))))
@@ -1048,6 +1045,11 @@ HRESULT CLoader::Loading_For_Dogimazo()
 	/* For.Prototype_Component_VIBuffer_Trail */
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_VIBuffer_Trail"),
 		CVIBuffer_Trail::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Navigation */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Navigation"),
+		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/NaviData/Navigation_0.dat")))))
 		return E_FAIL;
 #pragma endregion
 
@@ -1243,11 +1245,6 @@ HRESULT CLoader::Loading_For_Dogimazo_Stairs()
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Collider"), CCollider::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	/* For.Prototype_Component_Navigation */
-	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Navigation"),
-		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/NaviData/Navigation_0.dat")))))
-		return E_FAIL;
-
 	/* For.Prototype_Component_VIBuffer_Instance_Point */
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_VIBuffer_Instance_Point"),
 		CVIBuffer_Instance_Point::Create(m_pDevice, m_pContext))))
@@ -1256,6 +1253,11 @@ HRESULT CLoader::Loading_For_Dogimazo_Stairs()
 	/* For.Prototype_Component_VIBuffer_Trail */
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_VIBuffer_Trail"),
 		CVIBuffer_Trail::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Navigation */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Navigation"),
+		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/NaviData/Navigation_4.dat")))))
 		return E_FAIL;
 #pragma endregion
 
@@ -1451,11 +1453,6 @@ HRESULT CLoader::Loading_For_Dogimazo_Boss()
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Collider"), CCollider::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	/* For.Prototype_Component_Navigation */
-	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Navigation"),
-		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/NaviData/Navigation_0.dat")))))
-		return E_FAIL;
-
 	/* For.Prototype_Component_VIBuffer_Instance_Point */
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_VIBuffer_Instance_Point"),
 		CVIBuffer_Instance_Point::Create(m_pDevice, m_pContext))))
@@ -1464,6 +1461,11 @@ HRESULT CLoader::Loading_For_Dogimazo_Boss()
 	/* For.Prototype_Component_VIBuffer_Trail */
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_VIBuffer_Trail"),
 		CVIBuffer_Trail::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Navigation */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Navigation"),
+		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/NaviData/Navigation_5.dat")))))
 		return E_FAIL;
 #pragma endregion
 
@@ -1508,6 +1510,11 @@ HRESULT CLoader::Loading_For_Dogimazo_Boss()
 	/* For.Prototype_Component_Shader_VtxInstance_Point */
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Shader_VtxInstance_Point"),
 		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxInstance_Point.hlsl"), VTXINSTANCE_POINT::Elements, VTXINSTANCE_POINT::iNumElements))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Navigation */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Navigation"),
+		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/NaviData/Navigation_5.dat")))))
 		return E_FAIL;
 #pragma endregion
 
@@ -1662,11 +1669,6 @@ HRESULT CLoader::Loading_For_Test()
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Collider"), CCollider::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	/* For.Prototype_Component_Navigation */
-	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Navigation"),
-		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/NaviData/Navigation_0.dat")))))
-		return E_FAIL;
-
 	/* For.Prototype_Component_VIBuffer_Instance_Point */
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_VIBuffer_Instance_Point"),
 		CVIBuffer_Instance_Point::Create(m_pDevice, m_pContext))))
@@ -1680,6 +1682,11 @@ HRESULT CLoader::Loading_For_Test()
 	/* For.Prototype_Component_VIBuffer_Trail */
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_VIBuffer_Trail"),
 		CVIBuffer_Trail::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Navigation */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Navigation"),
+		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/NaviData/Navigation_0.dat")))))
 		return E_FAIL;
 #pragma endregion
 
