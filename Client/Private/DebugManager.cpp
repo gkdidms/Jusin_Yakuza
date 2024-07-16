@@ -135,7 +135,19 @@ void CDebugManager::Window_Debug()
         if (ImGui::Checkbox("PlayerRender", &isRender))
             pPlayer->Set_ObjectRender(isRender);
 
-        ImGui::SliderFloat2("Texcoord", (_float*)&m_vTexcoord, 0.f, 1.f);
+       //¸² Á¦¾î
+        _float2 UV = pPlayer->Get_TopUV();
+        if (ImGui::SliderFloat2("TOP", (_float*)&UV, 0.f, 1.f))
+            pPlayer->Set_TopUV(UV);
+
+         UV = pPlayer->Get_BotUV();
+        if (ImGui::SliderFloat2("BOT", (_float*)&UV, 0.f, 1.f))
+            pPlayer->Set_BotUV(UV);
+
+         UV = pPlayer->Get_PartUV();
+        if (ImGui::SliderFloat2("PART", (_float*)&UV, 0.f, 1.f))
+            pPlayer->Set_PartUV(UV);
+
     }
 
     if (ImGui::CollapsingHeader("Deferred Shader"))

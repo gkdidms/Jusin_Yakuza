@@ -153,38 +153,36 @@ void CSocketCollider::Filtering_Timer(_float fTimeDelta)
 
 void CSocketCollider::ParentObject_Hit(const _float3& vDir, _float fDamage, CLandObject* pParentObject, _bool isBlowAttack)
 {
-	//TODO: 파티클 위치 제대로 안잡히는 오류 있어서 주석해둠
-	//// m_eColliderPartType는 본인이 헤드인지, 바디인지, 레그인지를 가지고있다
-	//// TODO: 피격 파티클로 교체가 필요하다.
-	//CEffect::EFFECT_DESC EffectDesc;
+	_matrix ParentMatrix = pParentObject->Get_TransformCom()->Get_WorldMatrix();
+	// m_eColliderPartType는 본인이 헤드인지, 바디인지, 레그인지를 가지고있다
+	// TODO: 피격 파티클로 교체가 필요하다.
+	CEffect::EFFECT_DESC EffectDesc;
 
-	//_matrix WorldMatrix = XMLoadFloat4x4(&m_WorldMatrix) * XMLoadFloat4x4(m_pParentMatrix);
-	////_matrix WorldMatrix = XMMatrixRotationAxis(XMVectorSet(0, 1, 1, 0), 180.f);
-	//
 
-	//// 테스트용으로 Dir을 고정시켜봤으나 파티클 터지는 방향 그대로임
-	////_vector vLook = XMVectorSet(1, 1, 1, 0);
-	//////_vector vLook = XMLoadFloat3(&vDir);
-	////_vector vRight = XMVector3Cross(XMVectorSet(0.f, 1.f, 0.f, 0.f), vLook);
-	////_vector vUp = XMVector3Cross(vLook, vRight);
+	_matrix WorldMatrix = XMLoadFloat4x4(&m_WorldMatrix);
 
-	////WorldMatrix.r[CTransform::STATE_RIGHT] = XMVector4Normalize(vRight);
-	////WorldMatrix.r[CTransform::STATE_UP] = XMVector4Normalize(vUp);
-	////WorldMatrix.r[CTransform::STATE_LOOK] = XMVector4Normalize(vLook);
+	// 테스트용으로 Dir을 고정시켜봤으나 파티클 터지는 방향 그대로임
+	_vector vRight = XMVectorSet(1, 0, 0, 0);
+	_vector vUp = XMVectorSet(0, 1, 0, 0);
+	_vector vLook = XMVectorSet(0, 0, 1, 0);
 
-	//_float4x4 matrix;
-	//XMStoreFloat4x4(&matrix, WorldMatrix);
+	WorldMatrix.r[CTransform::STATE_RIGHT] = XMVector4Normalize(vRight);
+	WorldMatrix.r[CTransform::STATE_UP] = XMVector4Normalize(vUp);
+	WorldMatrix.r[CTransform::STATE_LOOK] = XMVector4Normalize(vLook);
 
-	//EffectDesc.pWorldMatrix = &matrix;
+	_float4x4 matrix;
+	XMStoreFloat4x4(&matrix, ParentMatrix);
 
-	//m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Hit1_Glow0"), TEXT("Layer_Particle"), &EffectDesc);
-	//m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Hit1_Part0"), TEXT("Layer_Particle"), &EffectDesc);
-	//m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Hit1_Part1"), TEXT("Layer_Particle"), &EffectDesc);
-	//m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Hit1_Part2"), TEXT("Layer_Particle"), &EffectDesc);
-	//m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Hit1_Part3"), TEXT("Layer_Particle"), &EffectDesc);
-	//m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Hit1_Part4"), TEXT("Layer_Particle"), &EffectDesc);
+	EffectDesc.pWorldMatrix = &matrix;
 
-	//m_pParentObject->Take_Damage(m_eColliderPartType, vDir, fDamage, pParentObject, isBlowAttack);
+	m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Hit1_Glow0"), TEXT("Layer_Particle"), &EffectDesc);
+	m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Hit1_Part0"), TEXT("Layer_Particle"), &EffectDesc);
+	m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Hit1_Part1"), TEXT("Layer_Particle"), &EffectDesc);
+	m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Hit1_Part2"), TEXT("Layer_Particle"), &EffectDesc);
+	m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Hit1_Part3"), TEXT("Layer_Particle"), &EffectDesc);
+	m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Hit1_Part4"), TEXT("Layer_Particle"), &EffectDesc);
+
+	m_pParentObject->Take_Damage(m_eColliderPartType, vDir, fDamage, pParentObject, isBlowAttack);
 }
 
 HRESULT CSocketCollider::Add_Components(void* pArg)
