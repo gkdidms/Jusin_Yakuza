@@ -253,7 +253,7 @@ void CMonster::Synchronize_Root(const _float& fTimeDelta)
 				m_fPrevSpeed = 0.f;
 
 			m_pTransformCom->Go_Straight_CustumSpeed(m_fPrevSpeed, 1);
-			m_pTransformCom->Go_Move_Custum(fMoveDir, m_fPrevSpeed, 1);
+			m_pTransformCom->Go_Move_Custum(fMoveDir, m_fPrevSpeed, 1, m_pNavigationCom);
 			m_fPrevSpeed = fMoveSpeed;
 
 			XMStoreFloat4(&m_vPrevMove, vFF);
@@ -371,4 +371,5 @@ void CMonster::Free()
 
 	Safe_Release(m_pAnimCom);
 	Safe_Release(m_pShaderCom);
+	Safe_Release(m_pNavigationCom);
 }

@@ -52,7 +52,7 @@ void CLevel_DogimazoLobby::Tick(const _float& fTimeDelta)
 HRESULT CLevel_DogimazoLobby::Ready_Camera(const wstring& strLayerTag)
 {
 	/* 카메라 추가 시 Debug Camera를 첫번째로 놔두고 추가해주세요 (디버깅 툴에서 사용중)*/
-	const _float4x4* pPlayerFloat4x4 = dynamic_cast<CTransform*>(m_pGameInstance->Get_GameObject_Component(LEVEL_DOGIMAZO_BOSS, TEXT("Layer_Player"), TEXT("Com_Transform", 0)))->Get_WorldFloat4x4();
+	const _float4x4* pPlayerFloat4x4 = dynamic_cast<CTransform*>(m_pGameInstance->Get_GameObject_Component(LEVEL_DOGIMAZO_LOBBY, TEXT("Layer_Player"), TEXT("Com_Transform", 0)))->Get_WorldFloat4x4();
 
 	/* 0. 디버그용 카메라 */
 	CDebugCamera::DEBUG_CAMERA_DESC		CameraDesc{};
@@ -67,14 +67,14 @@ HRESULT CLevel_DogimazoLobby::Ready_Camera(const wstring& strLayerTag)
 	CameraDesc.fRotatePecSec = XMConvertToRadians(90.f);
 	CameraDesc.pPlayerMatrix = pPlayerFloat4x4;
 
-	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_DOGIMAZO_BOSS, TEXT("Prototype_GameObject_DebugCamera"), strLayerTag, &CameraDesc)))
+	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_DOGIMAZO_LOBBY, TEXT("Prototype_GameObject_DebugCamera"), strLayerTag, &CameraDesc)))
 		return E_FAIL;
 
 	/* 초기화 할때는 -1 */
 	/* 1. 씬용 카메라 */
 	CCineCamera::CINE_CAMERA_DESC		cineDesc;
 	cineDesc.iFileNum = -1;
-	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_DOGIMAZO_BOSS, TEXT("Prototype_GameObject_CCineCamera"), strLayerTag, &cineDesc)))
+	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_DOGIMAZO_LOBBY, TEXT("Prototype_GameObject_CCineCamera"), strLayerTag, &cineDesc)))
 		return E_FAIL;
 
 	/* 2. 플레이어 카메라 */
@@ -90,7 +90,7 @@ HRESULT CLevel_DogimazoLobby::Ready_Camera(const wstring& strLayerTag)
 	PlayerCameraDesc.fRotatePecSec = XMConvertToRadians(90.f);
 	PlayerCameraDesc.pPlayerMatrix = pPlayerFloat4x4;
 
-	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_DOGIMAZO_BOSS, TEXT("Prototype_GameObject_PlayerCamera"), strLayerTag, &PlayerCameraDesc)))
+	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_DOGIMAZO_LOBBY, TEXT("Prototype_GameObject_PlayerCamera"), strLayerTag, &PlayerCameraDesc)))
 		return E_FAIL;
 
 	return S_OK;
@@ -103,7 +103,7 @@ HRESULT CLevel_DogimazoLobby::Ready_Player(const wstring& strLayerTag)
 	//Desc.fRotatePecSec = XMConvertToRadians(0.f);
 	Desc.fRotatePecSec = XMConvertToRadians(180.f);
 
-	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_DOGIMAZO_BOSS, TEXT("Prototype_GameObject_Player"), strLayerTag, &Desc)))
+	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_DOGIMAZO_LOBBY, TEXT("Prototype_GameObject_Player"), strLayerTag, &Desc)))
 		return E_FAIL;
 
 	return S_OK;

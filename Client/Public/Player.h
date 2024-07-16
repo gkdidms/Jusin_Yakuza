@@ -70,12 +70,14 @@ public:
 
 public:
     void Set_AnimStart(_bool isAnim) { m_isAnimStart = isAnim; }
+
+    _bool isAnimStart() { return m_isAnimStart; }
 #endif // DEBUG
 
     /* Getter */
 public:
     _uint Get_BattleStyle() { return m_eCurrentStyle; }
-    _bool isAnimStart() { return m_isAnimStart; }
+
     _bool isAttack() { return m_iCurrentBehavior == static_cast<_uint>(KRS_BEHAVIOR_STATE::ATTACK); }
     _uint Get_CurrentHitLevel() { return m_iCurrentHitLevel; }
 
