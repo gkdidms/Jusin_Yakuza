@@ -338,6 +338,12 @@
     <ClCompile Include="..\Private\AI_Kuze.cpp">
       <Filter>02.GameObjects\02.Character\LandObject\01.Monster\Kuze\AI</Filter>
     </ClCompile>
+    <ClCompile Include="..\Public\UILoading.cpp">
+      <Filter>95.Utility\05.UIManager\UIScene\UILoading</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UINowLoading.cpp">
+      <Filter>95.Utility\05.UIManager\UIScene\UINowLoading</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\MainApp.h">
@@ -707,6 +713,12 @@
     <ClInclude Include="..\Public\AI_Kuze.h">
       <Filter>02.GameObjects\02.Character\LandObject\01.Monster\Kuze\AI</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\UILoading.h">
+      <Filter>95.Utility\05.UIManager\UIScene\UILoading</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UINowLoading.h">
+      <Filter>95.Utility\05.UIManager\UIScene\UINowLoading</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -800,9 +812,6 @@
     </Filter>
     <Filter Include="02.GameObjects\02.Character\CharacterData">
       <UniqueIdentifier>{d47f23c7-f09f-46fd-a441-f1561bb9a95a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\07.UI">
-      <UniqueIdentifier>{5ee687d4-5dfa-49a3-92da-8f0756f1687f}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObjects\02.Character\PartObject">
       <UniqueIdentifier>{83de469b-7019-4bed-9e97-276b7f63de30}</UniqueIdentifier>
@@ -1091,6 +1100,12 @@
     </Filter>
     <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\Kick">
       <UniqueIdentifier>{a9945f42-cce3-48fc-9eb8-92b573bbc48c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\05.UIManager\UIScene\UILoading">
+      <UniqueIdentifier>{28a57a2e-3ddc-4618-946e-d1f1d605ee62}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\05.UIManager\UIScene\UINowLoading">
+      <UniqueIdentifier>{c4f58730-64e2-429e-a674-89a880b4483f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

@@ -191,6 +191,34 @@ void CPlayer::Late_Tick(const _float& fTimeDelta)
 			m_pCollisionManager->Add_HitCollider(pPair.second, CCollision_Manager::PLAYER);
 	}
 
+	switch (m_eCurrentStyle)
+	{
+	case Client::CPlayer::ADVENTURE:
+	{
+		m_isRimLight = ADVENTURE;
+		break;
+	}
+	case Client::CPlayer::KRS:
+	{
+		m_isRimLight = KRS*0.1f;
+		break;
+	}
+	case Client::CPlayer::KRH:
+	{
+		m_isRimLight = KRH * 0.1f;
+		break;
+	}
+	case Client::CPlayer::KRC:
+	{
+		m_isRimLight = KRC * 0.1f;
+		break;
+	}
+	case Client::CPlayer::BATTLE_STYLE_END:
+		break;
+	default:
+		break;
+	}
+
 }
 
 HRESULT CPlayer::Render()
@@ -201,28 +229,76 @@ HRESULT CPlayer::Render()
 	int i = 0;
 	for (auto& pMesh : m_pModelCom->Get_Meshes())
 	{
-		//if (!strcmp("[l0]jacketw1", pMesh->Get_Name()))
-		//{
-		//	if(m_isRimLight)
-		//		if (FAILED(m_pShaderCom->Bind_RawValue("g_isRimLight", &m_isRimLight, sizeof(_bool))))
-		//			return E_FAIL;
-		//}
-		//else if (!strcmp("[l0]body_naked1", pMesh->Get_Name()))
-		//{
-		//	if (m_isRimLight)
-		//		if (FAILED(m_pShaderCom->Bind_RawValue("g_isRimLight", &m_isRimLight, sizeof(_bool))))
-		//			return E_FAIL;
-		//}
-		//else
-		//{
-		//	_bool isfalse = false;
-		//	if (FAILED(m_pShaderCom->Bind_RawValue("g_isRimLight", &isfalse, sizeof(_bool))))
-		//		return E_FAIL;
-		//}
 
-		if(m_isRimLight)
-			if (FAILED(m_pShaderCom->Bind_RawValue("g_isRimLight", &m_isRimLight, sizeof(_bool))))
+
+		if(ADVENTURE !=m_isRimLight)
+		{
+			if (!strcmp("[l0]jacketw1", pMesh->Get_Name()))
+			{
+				if (FAILED(m_pShaderCom->Bind_RawValue("g_isRimLight", &m_isRimLight, sizeof(_float))))
 					return E_FAIL;
+
+				if (FAILED(m_pShaderCom->Bind_RawValue("g_fRimUV", &m_fRimTopUV, sizeof(_float2))))
+					return E_FAIL;
+
+			}
+
+			switch (m_iCurrentBehavior)
+			{
+			case 4://attack(ÆÈ)
+			{
+
+				if (!strcmp("[l0]body_naked1", pMesh->Get_Name()))
+				{
+					if (FAILED(m_pShaderCom->Bind_RawValue("g_isRimLight", &m_isRimLight, sizeof(_bool))))
+						return E_FAIL;
+					if (FAILED(m_pShaderCom->Bind_RawValue("g_fRimUV", &m_fRimPartsUV, sizeof(_float2))))
+						return E_FAIL;
+				}
+				break;
+			}
+			case 6://sway//(Àü½Å)
+			{
+				if (FAILED(m_pShaderCom->Bind_RawValue("g_isRimLight", &m_isRimLight, sizeof(_float))))	
+					return E_FAIL;	
+				if (FAILED(m_pShaderCom->Bind_RawValue("g_fRimUV", &m_fRimPartsUV, sizeof(_float2))))
+					return E_FAIL;
+				break;
+			}
+			case 8://fly_kick(´Ù¸®)
+			{
+				if(KRS==m_eCurrentStyle)
+				{
+					if (!strcmp("[l0]pants3", pMesh->Get_Name()))
+					{
+						if (FAILED(m_pShaderCom->Bind_RawValue("g_isRimLight", &m_isRimLight, sizeof(_float))))
+							return E_FAIL;
+						if (FAILED(m_pShaderCom->Bind_RawValue("g_fRimUV", &m_fRimBotUV, sizeof(_float2))))
+							return E_FAIL;
+					}
+					else if (!strcmp("[l0]shoes_leather1", pMesh->Get_Name()))
+					{
+						if (FAILED(m_pShaderCom->Bind_RawValue("g_isRimLight", &m_isRimLight, sizeof(_float))))
+							return E_FAIL;
+						if (FAILED(m_pShaderCom->Bind_RawValue("g_fRimUV", &m_fRimPartsUV, sizeof(_float2))))
+							return E_FAIL;
+					}
+
+				}
+				break;
+			}
+			default:
+				break;
+
+			}
+		}
+		else
+		{
+
+			if (FAILED(m_pShaderCom->Bind_RawValue("g_isRimLight", &m_isRimLight, sizeof(_float))))
+				return E_FAIL;
+		}
+
 
 		m_pModelCom->Bind_BoneMatrices(m_pShaderCom, "g_BoneMatrices", i);
 

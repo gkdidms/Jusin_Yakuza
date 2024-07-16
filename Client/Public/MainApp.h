@@ -50,6 +50,7 @@ public:
 	HRESULT Ready_Font();
 	HRESULT Ready_Prototype_GameObject();
 	HRESULT Ready_Prototype_Component();
+	HRESULT Add_UI_On_Path(const wstring& strPath);
 	void Render_Colsole(_bool isOpen);
 
 public:

@@ -244,7 +244,10 @@ void CImguiManager::EditTransform(_float* cameraView, _float* cameraProjection, 
 	
 	//m_EffectDesc.vStartPos = _float4(matrix[12], matrix[13], matrix[14], matrix[15]);
 	//dynamic_cast<CEffect*>(m_EditParticle[m_iCurEditIndex])->Set_StartPos(m_EffectDesc.vStartPos);
-
+	//_float4x4 worldmatrix;
+	//memcpy(&worldmatrix, matrix, sizeof(_float4x4));
+	//m_EditParticle[m_iCurEditIndex]->Get_TransformCom()->Set_WorldMatrix(XMLoadFloat4x4(&worldmatrix));
+	
 	switch (m_iMode)
 	{
 	case MODE_PARTICLE:

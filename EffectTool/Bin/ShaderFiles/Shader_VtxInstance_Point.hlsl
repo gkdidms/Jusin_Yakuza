@@ -54,7 +54,7 @@ VS_OUT VS_MAIN(VS_IN In)
 
     Out.vPosition = mul(vPosition, g_WorldMatrix).xyz;//월드상
     Out.vPSize = In.vPSize;
-    Out.vDir = In.vDir;
+    Out.vDir = normalize(mul(In.vDir, g_WorldMatrix));
     Out.vLifeTime = In.vLifeTime;
     Out.vRectSize = In.vRectSize;
 
@@ -502,7 +502,7 @@ technique11 DefaultTechnique
         SetBlendState(BS_WeightsBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
    
 		/* 어떤 셰이덜르 국동할지. 셰이더를 몇 버젼으로 컴파일할지. 진입점함수가 무엇이찌. */
-        VertexShader = compile vs_5_0 VS_LOCAL();
+        VertexShader = compile vs_5_0 VS_MAIN();
         GeometryShader = compile gs_5_0 GS_DIRSCALE();
         HullShader = NULL;
         DomainShader = NULL;
@@ -516,7 +516,7 @@ technique11 DefaultTechnique
         SetBlendState(BS_WeightsBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
    
 		/* 어떤 셰이덜르 국동할지. 셰이더를 몇 버젼으로 컴파일할지. 진입점함수가 무엇이찌. */
-        VertexShader = compile vs_5_0 VS_LOCAL();
+        VertexShader = compile vs_5_0 VS_MAIN();
         GeometryShader = compile gs_5_0 GS_DIRSCALE();
         HullShader = NULL;
         DomainShader = NULL;
@@ -530,7 +530,7 @@ technique11 DefaultTechnique
         SetBlendState(BS_WeightsBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
    
 		/* 어떤 셰이덜르 국동할지. 셰이더를 몇 버젼으로 컴파일할지. 진입점함수가 무엇이찌. */
-        VertexShader = compile vs_5_0 VS_LOCAL();
+        VertexShader = compile vs_5_0 VS_MAIN();
         GeometryShader = compile gs_5_0 GS_ROTSCALE();
         HullShader = NULL;
         DomainShader = NULL;
@@ -544,7 +544,7 @@ technique11 DefaultTechnique
         SetBlendState(BS_WeightsBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
    
 		/* 어떤 셰이덜르 국동할지. 셰이더를 몇 버젼으로 컴파일할지. 진입점함수가 무엇이찌. */
-        VertexShader = compile vs_5_0 VS_LOCAL();
+        VertexShader = compile vs_5_0 VS_MAIN();
         GeometryShader = compile gs_5_0 GS_ROTSCALE();
         HullShader = NULL;
         DomainShader = NULL;
@@ -557,7 +557,7 @@ technique11 DefaultTechnique
         SetBlendState(BS_WeightsBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
    
 		/* 어떤 셰이덜르 국동할지. 셰이더를 몇 버젼으로 컴파일할지. 진입점함수가 무엇이찌. */
-        VertexShader = compile vs_5_0 VS_LOCAL();
+        VertexShader = compile vs_5_0 VS_MAIN();
         GeometryShader = compile gs_5_0 GS_DIRSCALE();
         HullShader = NULL;
         DomainShader = NULL;
