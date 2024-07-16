@@ -61,6 +61,19 @@ public:
 
     virtual string Get_CurrentAnimationName() = 0;
  
+#ifdef _DEBUG
+    //uv 체크 디버그용
+    _float2 Get_TopUV() { return m_fRimTopUV; }
+    _float2 Get_BotUV() { return m_fRimBotUV; }
+    _float2 Get_PartUV() { return m_fRimPartsUV; }
+
+    void Set_TopUV(_float2 UV) { m_fRimTopUV = UV; }
+    void Set_BotUV(_float2 UV) { m_fRimBotUV = UV; }
+    void Set_PartUV(_float2 UV) { m_fRimPartsUV = UV; }
+#endif // DEBUG
+
+
+
 protected:
     class CSystemManager* m_pSystemManager = { nullptr };
     class CCollision_Manager* m_pCollisionManager = { nullptr };
@@ -87,8 +100,8 @@ protected:
 #endif // _DEBUG
 
     _float m_isRimLight ;//
-    _float2 m_fRimTopUV = { 0.0f , 0.7f };//0~1사이 [시작v,끝v]상의
-    _float2 m_fRimBotUV = { 0.0f, 0.3f };//0~1사이 [시작v,끝v]하의
+    _float2 m_fRimTopUV = { 0.0f , 0.3f };//0~1사이 [시작v,끝v]상의
+    _float2 m_fRimBotUV = { 0.9f, 1.0f };//0~1사이 [시작v,끝v]하의
     _float2 m_fRimPartsUV = { 0.0f, 1.0f };//0~1사이 [시작v,끝v]손,발
 protected:
     virtual HRESULT Add_Components();

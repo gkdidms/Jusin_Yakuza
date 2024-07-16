@@ -1,8 +1,9 @@
-#include "Level_DogimazoStairs.h"
+#include "Level_DogimazoLobby.h"
 
 #include "GameInstance.h"
 #include "SystemManager.h"
 #include "FileTotalMgr.h"
+#include "Collision_Manager.h"
 
 #include "PlayerCamera.h"
 #include "CineCamera.h"
@@ -10,8 +11,8 @@
 
 #include "Level_Loading.h"
 
-CLevel_DogimazoStairs::CLevel_DogimazoStairs(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-	: CLevel{ pDevice, pContext },
+CLevel_DogimazoLobby::CLevel_DogimazoLobby(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+    : CLevel{ pDevice, pContext },
 	m_pSystemManager{ CSystemManager::GetInstance() },
 	m_pFileTotalManager{ CFileTotalMgr::GetInstance() }
 {
@@ -19,38 +20,39 @@ CLevel_DogimazoStairs::CLevel_DogimazoStairs(ID3D11Device* pDevice, ID3D11Device
 	Safe_AddRef(m_pFileTotalManager);
 }
 
-HRESULT CLevel_DogimazoStairs::Initialize()
+HRESULT CLevel_DogimazoLobby::Initialize()
 {
-	if (FAILED(Ready_Player(TEXT("Layer_Player"))))
-		return E_FAIL;
+    if (FAILED(Ready_Player(TEXT("Layer_Player"))))
+        return E_FAIL;
 
-	if (FAILED(Ready_Camera(TEXT("Layer_Camera"))))
-		return E_FAIL;
+    if (FAILED(Ready_Camera(TEXT("Layer_Camera"))))
+        return E_FAIL;
 
-	/* 클라 파싱 */
-	m_pFileTotalManager->Set_MapObj_In_Client(STAGE_DOGIMAZO_STAIRS, LEVEL_DOGIMAZO_STAIRS);
-	m_pFileTotalManager->Set_Lights_In_Client(STAGE_DOGIMAZO_STAIRS);
-	m_pFileTotalManager->Set_Collider_In_Client(STAGE_DOGIMAZO_STAIRS, LEVEL_DOGIMAZO_STAIRS);
+    /* 클라 파싱 */
+    m_pFileTotalManager->Set_MapObj_In_Client(STAGE_DOGIMAZO_LOBBY, LEVEL_DOGIMAZO_LOBBY);
+    m_pFileTotalManager->Set_Lights_In_Client(STAGE_DOGIMAZO_LOBBY);
+    m_pFileTotalManager->Set_Collider_In_Client(STAGE_DOGIMAZO_LOBBY, LEVEL_DOGIMAZO_LOBBY);
 
-	return S_OK;
+    return S_OK;
 }
 
-void CLevel_DogimazoStairs::Tick(const _float& fTimeDelta)
+void CLevel_DogimazoLobby::Tick(const _float& fTimeDelta)
 {
 	if (m_pGameInstance->GetKeyState(DIK_SPACE) == TAP)
 	{
-		if (FAILED(m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_DOGIMAZO_LOBBY))))
+		if (FAILED(m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_DOGIMAZO_BOSS))))
 			return;
 	}
+
 #ifdef _DEBUG
-	SetWindowText(g_hWnd, TEXT("도지마조 계단"));
+    SetWindowText(g_hWnd, TEXT("도지마조 보스 스테이지"));
 #endif
 }
 
-HRESULT CLevel_DogimazoStairs::Ready_Camera(const wstring& strLayerTag)
+HRESULT CLevel_DogimazoLobby::Ready_Camera(const wstring& strLayerTag)
 {
 	/* 카메라 추가 시 Debug Camera를 첫번째로 놔두고 추가해주세요 (디버깅 툴에서 사용중)*/
-	const _float4x4* pPlayerFloat4x4 = dynamic_cast<CTransform*>(m_pGameInstance->Get_GameObject_Component(LEVEL_DOGIMAZO_STAIRS, TEXT("Layer_Player"), TEXT("Com_Transform", 0)))->Get_WorldFloat4x4();
+	const _float4x4* pPlayerFloat4x4 = dynamic_cast<CTransform*>(m_pGameInstance->Get_GameObject_Component(LEVEL_DOGIMAZO_BOSS, TEXT("Layer_Player"), TEXT("Com_Transform", 0)))->Get_WorldFloat4x4();
 
 	/* 0. 디버그용 카메라 */
 	CDebugCamera::DEBUG_CAMERA_DESC		CameraDesc{};
@@ -65,14 +67,14 @@ HRESULT CLevel_DogimazoStairs::Ready_Camera(const wstring& strLayerTag)
 	CameraDesc.fRotatePecSec = XMConvertToRadians(90.f);
 	CameraDesc.pPlayerMatrix = pPlayerFloat4x4;
 
-	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_DOGIMAZO_STAIRS, TEXT("Prototype_GameObject_DebugCamera"), strLayerTag, &CameraDesc)))
+	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_DOGIMAZO_BOSS, TEXT("Prototype_GameObject_DebugCamera"), strLayerTag, &CameraDesc)))
 		return E_FAIL;
 
 	/* 초기화 할때는 -1 */
 	/* 1. 씬용 카메라 */
 	CCineCamera::CINE_CAMERA_DESC		cineDesc;
 	cineDesc.iFileNum = -1;
-	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_DOGIMAZO_STAIRS, TEXT("Prototype_GameObject_CCineCamera"), strLayerTag, &cineDesc)))
+	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_DOGIMAZO_BOSS, TEXT("Prototype_GameObject_CCineCamera"), strLayerTag, &cineDesc)))
 		return E_FAIL;
 
 	/* 2. 플레이어 카메라 */
@@ -88,28 +90,28 @@ HRESULT CLevel_DogimazoStairs::Ready_Camera(const wstring& strLayerTag)
 	PlayerCameraDesc.fRotatePecSec = XMConvertToRadians(90.f);
 	PlayerCameraDesc.pPlayerMatrix = pPlayerFloat4x4;
 
-	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_DOGIMAZO_STAIRS, TEXT("Prototype_GameObject_PlayerCamera"), strLayerTag, &PlayerCameraDesc)))
+	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_DOGIMAZO_BOSS, TEXT("Prototype_GameObject_PlayerCamera"), strLayerTag, &PlayerCameraDesc)))
 		return E_FAIL;
 
 	return S_OK;
 }
 
-HRESULT CLevel_DogimazoStairs::Ready_Player(const wstring& strLayerTag)
+HRESULT CLevel_DogimazoLobby::Ready_Player(const wstring& strLayerTag)
 {
 	CGameObject::GAMEOBJECT_DESC Desc{};
 	Desc.fSpeedPecSec = 10.f;
 	//Desc.fRotatePecSec = XMConvertToRadians(0.f);
 	Desc.fRotatePecSec = XMConvertToRadians(180.f);
 
-	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_DOGIMAZO_STAIRS, TEXT("Prototype_GameObject_Player"), strLayerTag, &Desc)))
+	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_DOGIMAZO_BOSS, TEXT("Prototype_GameObject_Player"), strLayerTag, &Desc)))
 		return E_FAIL;
 
 	return S_OK;
 }
 
-CLevel_DogimazoStairs* CLevel_DogimazoStairs::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+CLevel_DogimazoLobby* CLevel_DogimazoLobby::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
-	CLevel_DogimazoStairs* pInstance = new CLevel_DogimazoStairs(pDevice, pContext);
+	CLevel_DogimazoLobby* pInstance = new CLevel_DogimazoLobby(pDevice, pContext);
 
 	if (FAILED(pInstance->Initialize()))
 		Safe_Release(pInstance);
@@ -117,7 +119,7 @@ CLevel_DogimazoStairs* CLevel_DogimazoStairs::Create(ID3D11Device* pDevice, ID3D
 	return pInstance;
 }
 
-void CLevel_DogimazoStairs::Free()
+void CLevel_DogimazoLobby::Free()
 {
 	__super::Free();
 

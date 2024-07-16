@@ -8,12 +8,12 @@
 #include "SocketCollider.h"
 
 CKuze::CKuze(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-	: CMonster { pDevice, pContext }
+	: CMonster{ pDevice, pContext }
 {
 }
 
 CKuze::CKuze(const CKuze& rhs)
-	: CMonster {rhs }
+	: CMonster{ rhs }
 {
 }
 
@@ -142,158 +142,157 @@ HRESULT CKuze::Bind_ResourceData()
 
 void CKuze::Change_Animation()
 {
-	_uint iAnim = { 0 };
-	m_isAnimLoop = false;
+	__super::Change_Animation();
 
 	switch (m_iState)
 	{
 	case MONSTER_IDLE:
 	{
 		//e_kuz_stand_blend[e_kuz_stand_blend]
-		iAnim = m_pAnimCom->Get_AnimationIndex("e_kuz_stand_blend[e_kuz_stand_blend]");
+		m_strAnimName = "e_kuz_stand_blend[e_kuz_stand_blend]";
 		m_isAnimLoop = true;
 		break;
 	}
 	case MONSTER_SHIFT_F:
 	{
 		//e_kuz_shift_f[e_kuz_shift_f]
-		iAnim = m_pAnimCom->Get_AnimationIndex("e_kuz_shift_f[e_kuz_shift_f]");
+		m_strAnimName = "e_kuz_shift_f[e_kuz_shift_f]";
 		m_isAnimLoop = true;
 		break;
 	}
 	case MONSTER_SHIFT_L:
 	{
 		//e_kuz_shift_l[e_kuz_shift_l]
-		iAnim = m_pAnimCom->Get_AnimationIndex("e_kuz_shift_l[e_kuz_shift_l]");
+		m_strAnimName = "e_kuz_shift_l[e_kuz_shift_l]";
 		m_isAnimLoop = true;
 		break;
 	}
 	case MONSTER_SHIFT_R:
 	{
 		//e_kuz_shift_r[e_kuz_shift_r]
-		iAnim = m_pAnimCom->Get_AnimationIndex("e_kuz_shift_r[e_kuz_shift_r]");
+		m_strAnimName = "e_kuz_shift_r[e_kuz_shift_r]";
 		m_isAnimLoop = true;
 		break;
 	}
 	case MONSTER_SHIFT_B:
 	{
 		//e_kuz_shift_b[e_kuz_shift_b]
-		iAnim = m_pAnimCom->Get_AnimationIndex("e_kuz_shift_b[e_kuz_shift_b]");
+		m_strAnimName = "e_kuz_shift_b[e_kuz_shift_b]";
 		m_isAnimLoop = true;
 		break;
 	}
 	case MONSTER_SWAY_B:
 	{
 		//e_kuz_sway_b[e_kuz_sway_b]
-		iAnim = m_pAnimCom->Get_AnimationIndex("e_kuz_sway_b[e_kuz_sway_b]");
+		m_strAnimName = "e_kuz_sway_b[e_kuz_sway_b]";
 		break;
 	}
 	case MONSTER_SWAY_F:
 	{
 		//e_kuz_sway_f[e_kuz_sway_f]
-		iAnim = m_pAnimCom->Get_AnimationIndex("e_kuz_sway_f[e_kuz_sway_f]");
+		m_strAnimName = "e_kuz_sway_f[e_kuz_sway_f]";
 		break;
 	}
 	case MONSTER_SWAY_L:
 	{
 		//e_kuz_sway_l[e_kuz_sway_l]
-		iAnim = m_pAnimCom->Get_AnimationIndex("e_kuz_sway_l[e_kuz_sway_l]");
+		m_strAnimName = "e_kuz_sway_l[e_kuz_sway_l]";
 		break;
 	}
 	case MONSTER_SWAY_R:
 	{
 		//e_kuz_sway_r[e_kuz_sway_r]
-		iAnim = m_pAnimCom->Get_AnimationIndex("e_kuz_sway_r[e_kuz_sway_r]");
+		m_strAnimName = "e_kuz_sway_r[e_kuz_sway_r]";
 		break;
 	}
 	case MONSTER_ATK_DOWN:
 	{
 		//e_kuz_atk_down[e_kuz_atk_down]
-		iAnim = m_pAnimCom->Get_AnimationIndex("e_kuz_atk_down[e_kuz_atk_down]");
+		m_strAnimName = "e_kuz_atk_down[e_kuz_atk_down]";
 		break;
 	}
 	case MONSTER_JAB:
 	{
 		//e_kuz_atk_jab[e_kuz_atk_jab]
-		iAnim = m_pAnimCom->Get_AnimationIndex("e_kuz_atk_jab[e_kuz_atk_jab]");
+		m_strAnimName = "e_kuz_atk_jab[e_kuz_atk_jab]";
 		break;
 	}
 	case MONSTER_CMD_A_1:
 	{
 		//e_kuz_cmb_a_01[e_kuz_cmb_a_01]
-		iAnim = m_pAnimCom->Get_AnimationIndex("e_kuz_cmb_a_01[e_kuz_cmb_a_01]");
+		m_strAnimName = "e_kuz_cmb_a_01[e_kuz_cmb_a_01]";
 		break;
 	}
 	case MONSTER_CMD_A_2:
 	{
 		//e_kuz_cmb_a_02[e_kuz_cmb_a_02]
-		iAnim = m_pAnimCom->Get_AnimationIndex("e_kuz_cmb_a_02[e_kuz_cmb_a_02]");
+		m_strAnimName = "e_kuz_cmb_a_02[e_kuz_cmb_a_02]";
 		break;
 	}
 	case MONSTER_CMD_A_3:
 	{
 		//e_kuz_cmb_a_03[e_kuz_cmb_a_03]
-		iAnim = m_pAnimCom->Get_AnimationIndex("e_kuz_cmb_a_03[e_kuz_cmb_a_03]");
+		m_strAnimName = "e_kuz_cmb_a_03[e_kuz_cmb_a_03]";
 		break;
 	}
 	case MONSTER_CMD_B_1:
 	{
 		//e_kuz_cmb_b_01[e_kuz_cmb_b_01]
-		iAnim = m_pAnimCom->Get_AnimationIndex("e_kuz_cmb_b_01[e_kuz_cmb_b_01]");
+		m_strAnimName = "e_kuz_cmb_b_01[e_kuz_cmb_b_01]";
 		break;
 	}
 	case MONSTER_CMD_B_2:
 	{
 		//e_kuz_cmb_b_02[e_kuz_cmb_b_02]
-		iAnim = m_pAnimCom->Get_AnimationIndex("e_kuz_cmb_b_02[e_kuz_cmb_b_02]");
+		m_strAnimName = "e_kuz_cmb_b_02[e_kuz_cmb_b_02]";
 		break;
 	}
 	case MONSTER_CMD_B_3:
 	{
 		//e_kuz_cmb_b_03[e_kuz_cmb_b_03]
-		iAnim = m_pAnimCom->Get_AnimationIndex("e_kuz_cmb_b_03[e_kuz_cmb_b_03]");
+		m_strAnimName = "e_kuz_cmb_b_03[e_kuz_cmb_b_03]";
 		break;
 	}
 	case MONSTER_CMD_HEADBUTT_1:
 	{
 		//e_kuz_cmb_headbutt_01[e_kuz_cmb_headbutt_01]
-		iAnim = m_pAnimCom->Get_AnimationIndex("e_kuz_cmb_headbutt_01[e_kuz_cmb_headbutt_01]");
+		m_strAnimName = "e_kuz_cmb_headbutt_01[e_kuz_cmb_headbutt_01]";
 		break;
 	}
 	case MONSTER_CMD_HEADBUTT_2:
 	{
 		//e_kuz_cmb_headbutt_02[e_kuz_cmb_headbutt_02]
-		iAnim = m_pAnimCom->Get_AnimationIndex("e_kuz_cmb_headbutt_02[e_kuz_cmb_headbutt_02]");
+		m_strAnimName = "e_kuz_cmb_headbutt_02[e_kuz_cmb_headbutt_02]";
 		break;
 	}
 	case MONSTER_CMD_RENDA_1:
 	{
 		//e_kuz_cmb_renda_01[e_kuz_cmb_renda_01]
-		iAnim = m_pAnimCom->Get_AnimationIndex("e_kuz_cmb_renda_01[e_kuz_cmb_renda_01]");
+		m_strAnimName = "e_kuz_cmb_renda_01[e_kuz_cmb_renda_01]";
 		break;
 	}
 	case MONSTER_CMD_RENDA_2:
 	{
 		//e_kuz_cmb_renda_02_l[e_kuz_cmb_renda_02_l]
-		iAnim = m_pAnimCom->Get_AnimationIndex("e_kuz_cmb_renda_02_l[e_kuz_cmb_renda_02_l]");
+		m_strAnimName = "e_kuz_cmb_renda_02_l[e_kuz_cmb_renda_02_l]";
 		break;
 	}
 	case MONSTER_CMD_RENDA_3:
 	{
 		//e_kuz_cmb_renda_02_l_fin[e_kuz_cmb_renda_02_l_fin]
-		iAnim = m_pAnimCom->Get_AnimationIndex("e_kuz_cmb_renda_02_l_fin[e_kuz_cmb_renda_02_l_fin]");
+		m_strAnimName = "e_kuz_cmb_renda_02_l_fin[e_kuz_cmb_renda_02_l_fin]";
 		break;
 	}
 	case MONSTER_HEAVY_ATTACK:
 	{
 		//e_kuz_atk_heavy[e_kuz_atk_heavy]
-		iAnim = m_pAnimCom->Get_AnimationIndex("e_kuz_atk_heavy[e_kuz_atk_heavy]");
+		m_strAnimName = "e_kuz_atk_heavy[e_kuz_atk_heavy]";
 		break;
 	}
 	case MONSTER_HIJI_2REN:
 	{
 		//e_kuz_atk_hiji_2ren[e_kuz_atk_hiji_2ren]
-		iAnim = m_pAnimCom->Get_AnimationIndex("e_kuz_atk_hiji_2ren[e_kuz_atk_hiji_2ren]");
+		m_strAnimName = "e_kuz_atk_hiji_2ren[e_kuz_atk_hiji_2ren]";
 		break;
 	}
 	case MONSTER_DEATH:
@@ -304,10 +303,13 @@ void CKuze::Change_Animation()
 		break;
 	}
 
-	if (iAnim == -1)
+	m_iAnim = m_pAnimCom->Get_AnimationIndex(m_strAnimName.c_str());
+
+	if (m_iAnim == -1)
 		return;
 
-	m_pModelCom->Set_AnimationIndex(iAnim, m_pAnimCom->Get_Animations(), m_fChangeInterval);
+	m_pModelCom->Set_AnimationIndex(m_iAnim, m_pAnimCom->Get_Animations(), m_fChangeInterval);
+	m_pData->Set_CurrentAnimation(m_strAnimName);
 }
 
 CKuze* CKuze::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -332,7 +334,7 @@ CGameObject* CKuze::Clone(void* pArg)
 
 void CKuze::Free()
 {
-	__super::Free();  
+	__super::Free();
 
 	Safe_Release(m_pTree);
 }
