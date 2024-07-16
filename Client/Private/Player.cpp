@@ -704,54 +704,57 @@ void CPlayer::KRS_KeyInput(const _float& fTimeDelta)
 
 	if (m_iCurrentBehavior < (_uint)KRS_BEHAVIOR_STATE::ATTACK && !m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Stopping())
 	{
-		if (m_pGameInstance->GetKeyState(DIK_W) == HOLD)
+		if (m_iCurrentBehavior != (_uint)KRS_BEHAVIOR_STATE::WALK)
 		{
-			if (m_iCurrentBehavior == (_uint)KRS_BEHAVIOR_STATE::WALK || m_iCurrentBehavior == (_uint)KRS_BEHAVIOR_STATE::RUN)
-				m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Reset();
+			if (m_pGameInstance->GetKeyState(DIK_W) == HOLD)
+			{
+				if (m_iCurrentBehavior == (_uint)KRS_BEHAVIOR_STATE::WALK || m_iCurrentBehavior == (_uint)KRS_BEHAVIOR_STATE::RUN)
+					m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Reset();
 
-			_vector vLookPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION) + (m_pTransformCom->Get_State(CTransform::STATE_LOOK) + m_pGameInstance->Get_CamLook());
-			m_pGameInstance->Get_CamLook();
-			m_iCurrentBehavior = isShift ? (_uint)KRS_BEHAVIOR_STATE::WALK : (_uint)KRS_BEHAVIOR_STATE::RUN;
+				_vector vLookPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION) + (m_pTransformCom->Get_State(CTransform::STATE_LOOK) + m_pGameInstance->Get_CamLook());
+				m_pGameInstance->Get_CamLook();
+				m_iCurrentBehavior = isShift ? (_uint)KRS_BEHAVIOR_STATE::WALK : (_uint)KRS_BEHAVIOR_STATE::RUN;
 
-			m_InputDirection[F] = true;
-			Compute_MoveDirection_FB();
-			m_pTransformCom->LookAt_For_LandObject(vLookPos);
-			isMove = true;
-		}
+				m_InputDirection[F] = true;
+				Compute_MoveDirection_FB();
+				m_pTransformCom->LookAt_For_LandObject(vLookPos);
+				isMove = true;
+			}
 
-		if (m_pGameInstance->GetKeyState(DIK_S) == HOLD)
-		{
-			if (m_iCurrentBehavior == (_uint)KRS_BEHAVIOR_STATE::WALK || m_iCurrentBehavior == (_uint)KRS_BEHAVIOR_STATE::RUN)
-				m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Reset();
-			_vector vLookPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION) + (m_pTransformCom->Get_State(CTransform::STATE_LOOK) - m_pGameInstance->Get_CamLook());
-			m_iCurrentBehavior = isShift ? (_uint)KRS_BEHAVIOR_STATE::WALK : (_uint)KRS_BEHAVIOR_STATE::RUN;
-			m_InputDirection[B] = true;
-			Compute_MoveDirection_FB();
-			m_pTransformCom->LookAt_For_LandObject(vLookPos);
-			isMove = true;
-		}
-		if (m_pGameInstance->GetKeyState(DIK_A) == HOLD)
-		{
-			if (m_iCurrentBehavior == (_uint)KRS_BEHAVIOR_STATE::WALK || m_iCurrentBehavior == (_uint)KRS_BEHAVIOR_STATE::RUN)
-				m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Reset();
+			if (m_pGameInstance->GetKeyState(DIK_S) == HOLD)
+			{
+				if (m_iCurrentBehavior == (_uint)KRS_BEHAVIOR_STATE::WALK || m_iCurrentBehavior == (_uint)KRS_BEHAVIOR_STATE::RUN)
+					m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Reset();
+				_vector vLookPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION) + (m_pTransformCom->Get_State(CTransform::STATE_LOOK) - m_pGameInstance->Get_CamLook());
+				m_iCurrentBehavior = isShift ? (_uint)KRS_BEHAVIOR_STATE::WALK : (_uint)KRS_BEHAVIOR_STATE::RUN;
+				m_InputDirection[B] = true;
+				Compute_MoveDirection_FB();
+				m_pTransformCom->LookAt_For_LandObject(vLookPos);
+				isMove = true;
+			}
+			if (m_pGameInstance->GetKeyState(DIK_A) == HOLD)
+			{
+				if (m_iCurrentBehavior == (_uint)KRS_BEHAVIOR_STATE::WALK || m_iCurrentBehavior == (_uint)KRS_BEHAVIOR_STATE::RUN)
+					m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Reset();
 
-			_vector vLookPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION) + (m_pTransformCom->Get_State(CTransform::STATE_LOOK) - m_pGameInstance->Get_CamRight());
-			m_iCurrentBehavior = isShift ? (_uint)KRS_BEHAVIOR_STATE::WALK : (_uint)KRS_BEHAVIOR_STATE::RUN;
-			m_InputDirection[L] = true;
-			Compute_MoveDirection_RL();
-			m_pTransformCom->LookAt_For_LandObject(vLookPos);
-			isMove = true;
-		}
-		if (m_pGameInstance->GetKeyState(DIK_D) == HOLD)
-		{
-			if (m_iCurrentBehavior == (_uint)KRS_BEHAVIOR_STATE::WALK || m_iCurrentBehavior == (_uint)KRS_BEHAVIOR_STATE::RUN)
-				m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Reset();
-			_vector vLookPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION) + (m_pTransformCom->Get_State(CTransform::STATE_LOOK) + m_pGameInstance->Get_CamRight());
-			m_iCurrentBehavior = isShift ? (_uint)KRS_BEHAVIOR_STATE::WALK : (_uint)KRS_BEHAVIOR_STATE::RUN;
-			m_InputDirection[R] = true;
-			Compute_MoveDirection_RL();
-			m_pTransformCom->LookAt_For_LandObject(vLookPos);
-			isMove = true;
+				_vector vLookPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION) + (m_pTransformCom->Get_State(CTransform::STATE_LOOK) - m_pGameInstance->Get_CamRight());
+				m_iCurrentBehavior = isShift ? (_uint)KRS_BEHAVIOR_STATE::WALK : (_uint)KRS_BEHAVIOR_STATE::RUN;
+				m_InputDirection[L] = true;
+				Compute_MoveDirection_RL();
+				m_pTransformCom->LookAt_For_LandObject(vLookPos);
+				isMove = true;
+			}
+			if (m_pGameInstance->GetKeyState(DIK_D) == HOLD)
+			{
+				if (m_iCurrentBehavior == (_uint)KRS_BEHAVIOR_STATE::WALK || m_iCurrentBehavior == (_uint)KRS_BEHAVIOR_STATE::RUN)
+					m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Reset();
+				_vector vLookPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION) + (m_pTransformCom->Get_State(CTransform::STATE_LOOK) + m_pGameInstance->Get_CamRight());
+				m_iCurrentBehavior = isShift ? (_uint)KRS_BEHAVIOR_STATE::WALK : (_uint)KRS_BEHAVIOR_STATE::RUN;
+				m_InputDirection[R] = true;
+				Compute_MoveDirection_RL();
+				m_pTransformCom->LookAt_For_LandObject(vLookPos);
+				isMove = true;
+			}
 		}
 
 		if (m_pGameInstance->GetKeyState(DIK_E) == TAP)
@@ -1128,8 +1131,6 @@ void CPlayer::Compute_MoveDirection_FB()
 		else
 			m_MoveDirection[F] = true;
 	}
-
-
 }
 
 void CPlayer::Compute_MoveDirection_RL()
