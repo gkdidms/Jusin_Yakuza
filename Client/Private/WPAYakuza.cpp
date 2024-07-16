@@ -2,10 +2,10 @@
 
 #include "GameInstance.h"
 #include "Collision_Manager.h"
-
+#include "AI_WPAYakuza.h"
 #include "Mesh.h"
 
-#include "AI_WPAYakuza.h"
+#include "SocketCollider.h"
 
 CWPAYakuza::CWPAYakuza(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CMonster { pDevice, pContext}
@@ -24,8 +24,6 @@ HRESULT CWPAYakuza::Initialize_Prototype()
 
 HRESULT CWPAYakuza::Initialize(void* pArg)
 {
-	m_wstrModelName = TEXT("Jimu");
-
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
@@ -38,6 +36,8 @@ HRESULT CWPAYakuza::Initialize(void* pArg)
 
 	if (FAILED(Add_Components()))
 		return E_FAIL;
+
+	m_wstrModelName = TEXT("Jimu");
 
 	if (FAILED(Add_CharacterData()))
 		return E_FAIL;
@@ -67,9 +67,24 @@ void CWPAYakuza::Tick(const _float& fTimeDelta)
 void CWPAYakuza::Late_Tick(const _float& fTimeDelta)
 {
 	m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
+	m_pCollisionManager->Add_ImpulseResolution(this);
+
+	// 현재 켜져있는 Attack용 콜라이더 삽입
+	for (auto& pPair : m_pColliders)
+	{
+		if (pPair.second->Get_CollierType() == CSocketCollider::ATTACK && pPair.second->IsOn())
+			m_pCollisionManager->Add_AttackCollider(pPair.second, CCollision_Manager::ENEMY);
+	}
+
+	// 현재 켜져있는 Hit용 콜라이더 삽입 (아직까지는 Hit용 콜라이더는 항상 켜져있음)
+	for (auto& pPair : m_pColliders)
+	{
+		if (pPair.second->Get_CollierType() == CSocketCollider::HIT && pPair.second->IsOn())
+			m_pCollisionManager->Add_HitCollider(pPair.second, CCollision_Manager::ENEMY);
+	}
+
 
 	__super::Late_Tick(fTimeDelta);
-	//m_pCollisionManager->Add_ImpulseResolution(this);
 }
 
 HRESULT CWPAYakuza::Add_Components()

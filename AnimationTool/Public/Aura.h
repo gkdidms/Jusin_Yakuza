@@ -9,7 +9,7 @@ class CTexture;
 class CVIBuffer_Instance_Point;
 END
 BEGIN(Client)
-class CAura final:
+class CAura final :
     public CEffect
 {
 public:
@@ -41,13 +41,13 @@ public:
 
 private:
     CShader* m_pShaderCom = { nullptr };
-    CTexture* m_pTextureCom[4] = {nullptr};
+    CTexture* m_pTextureCom[4] = { nullptr };
     CVIBuffer_Instance_Point* m_pVIBufferCom = { nullptr };
 
 private:
     CVIBuffer_Instance::INSTANCE_DESC m_BufferInstance;
     _float2     m_fUVCount = { 0.f, 0.f };//uv °¹¼ö
-
+    _float       m_fCurTime = { 0.f };
 private:
     HRESULT Add_Components();
     HRESULT Bind_ShaderResources();

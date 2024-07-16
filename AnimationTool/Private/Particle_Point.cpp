@@ -3,13 +3,13 @@
 
 
 CParticle_Point::CParticle_Point(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-    :CEffect{ pDevice , pContext}
+    :CEffect{ pDevice , pContext }
 {
 }
 
 CParticle_Point::CParticle_Point(const CParticle_Point& rhs)
     :CEffect{ rhs },
-    m_BufferInstance{rhs.m_BufferInstance }
+    m_BufferInstance{ rhs.m_BufferInstance }
 {
 }
 
@@ -32,20 +32,24 @@ HRESULT CParticle_Point::Initialize(void* pArg)
     if (FAILED(__super::Initialize(pArg)))
         return E_FAIL;
 
-    EFFECT_DESC* pDesc = static_cast<EFFECT_DESC*>(pArg);
-
-    if (nullptr == pDesc->pWorldMatrix)
+    if (nullptr != pArg)
     {
-        PARTICLE_POINT_DESC* pDesc = static_cast<PARTICLE_POINT_DESC*>(pArg);
-        m_BufferInstance = pDesc->BufferInstance;
-        m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&pDesc->vStartPos));
-    }
-    else
-    {
-        m_pWorldMatrix = pDesc->pWorldMatrix;
+        EFFECT_DESC* pDesc = static_cast<EFFECT_DESC*>(pArg);
+
+        if (nullptr == pDesc->pWorldMatrix)
+        {
+            PARTICLE_POINT_DESC* pDesc = static_cast<PARTICLE_POINT_DESC*>(pArg);
+            m_BufferInstance = pDesc->BufferInstance;
+            m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&pDesc->vStartPos));
+        }
+        else
+        {
+            m_pWorldMatrix = pDesc->pWorldMatrix;
+            m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(m_pWorldMatrix));
+        }
     }
 
-    m_BufferInstance.WorldMatrix = m_pWorldMatrix;
+    m_BufferInstance.WorldMatrix = m_pTransformCom->Get_WorldFloat4x4();
 
     if (FAILED(Add_Components()))
         return E_FAIL;
@@ -67,7 +71,7 @@ void CParticle_Point::Tick(const _float& fTimeDelta)
             m_isDead = true;
     }
 
-    if(m_fCurTime>= m_fStartTime)
+    if (m_fCurTime >= m_fStartTime)
     {
         if (m_iAction & iAction[ACTION_SPREAD])
         {
@@ -110,7 +114,7 @@ void CParticle_Point::Late_Tick(const _float& fTimeDelta)
             }
         }
     }
-        break;
+    break;
     case Client::CEffect::TYPE_TRAIL:
         break;
     case Client::CEffect::TYPE_GLOW:
@@ -127,7 +131,7 @@ void CParticle_Point::Late_Tick(const _float& fTimeDelta)
             }
         }
     }
-        break;
+    break;
     case Client::CEffect::TYPE_AURA:
     {
         if (m_BufferInstance.isLoop)
@@ -148,7 +152,7 @@ void CParticle_Point::Late_Tick(const _float& fTimeDelta)
     default:
         break;
     }
-   // Compute_ViewZ(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+    // Compute_ViewZ(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 
 
 }
@@ -178,7 +182,7 @@ HRESULT CParticle_Point::Save_Data(const string strDirectory)
     string TextureTag = m_pGameInstance->WstringToString(m_TextureTag);
 
     string headTag = "Prototype_GameObject_Particle_Point_";
-    Directory += "/"+ headTag + ParticleTag + ".dat";
+    Directory += "/" + headTag + ParticleTag + ".dat";
 
     ofstream out(Directory, ios::binary);
 
@@ -203,7 +207,7 @@ HRESULT CParticle_Point::Save_Data(const string strDirectory)
     out.write((char*)&m_fRotate, sizeof(_float));
 
     out.write((char*)&m_fLifeAlpha, sizeof(_float2));
-    
+
     out.write((char*)&m_iAction, sizeof(_uint));
 
     out.write((char*)&m_vStartColor, sizeof(_float4));
@@ -235,7 +239,7 @@ HRESULT CParticle_Point::Load_Data(const string strDirectory)
     string Directory = strDirectory;
 
     ifstream in(Directory, ios::binary);
-    
+
     in.sync_with_stdio(false);
 
     if (!in.is_open()) {
@@ -247,10 +251,10 @@ HRESULT CParticle_Point::Load_Data(const string strDirectory)
 
     in.read((char*)&m_eType, sizeof(_uint));
 
-    _int strlength ;
+    _int strlength;
     char charparticleTag[MAX_PATH] = {};
 
-    in.read((char*)&strlength, sizeof(_int));   
+    in.read((char*)&strlength, sizeof(_int));
 
     in.read(charparticleTag, strlength);
     string tag = charparticleTag;
@@ -271,7 +275,7 @@ HRESULT CParticle_Point::Load_Data(const string strDirectory)
 
     in.read((char*)&m_fStartTime, sizeof(_float));
 
-    in.read((char*)&m_vStartPos, sizeof(_float4));  
+    in.read((char*)&m_vStartPos, sizeof(_float4));
 
     in.read((char*)&m_fRotate, sizeof(_float));
 

@@ -66,17 +66,29 @@ private:
     
 #ifdef _DEBUG
 public:
-    _bool isAnimStart() { return m_isAnimStart; }
 
 public:
     void Set_AnimStart(_bool isAnim) { m_isAnimStart = isAnim; }
 #endif // DEBUG
 
+    /* Getter */
 public:
     _uint Get_BattleStyle() { return m_eCurrentStyle; }
+    _bool isAnimStart() { return m_isAnimStart; }
     _bool isAttack() { return m_iCurrentBehavior == static_cast<_uint>(KRS_BEHAVIOR_STATE::ATTACK); }
+    const _bool* Get_MoveDirection() {
+        return m_MoveDirection;
+    }
+
+    CLandObject* Get_TargetObject() {
+        return m_pTargetObject;
+    }
+
+    /* Setter */
+public:
     void  Set_StartPos(XMMATRIX    vStartPos) { m_pTransformCom->Set_WorldMatrix(vStartPos); }
 
+    /* Virtual Funtion */
 public:
     virtual HRESULT Initialize_Prototype() override;
     virtual HRESULT Initialize(void* pArg) override;
@@ -91,11 +103,7 @@ public:
 
     virtual string Get_CurrentAnimationName() override;
 
-public:
-    const _bool* Get_MoveDirection() {
-        return m_MoveDirection;
-    }
-
+    /* Initial Function */
 private:
     void Ready_AnimationTree();
     void Synchronize_Root(const _float& fTimeDelta);
@@ -123,12 +131,12 @@ private:
     void Compute_MoveDirection_RL();
 
     void Effect_Control_Aura();
+    void Setting_Target_Enemy();
 
 public:
     void AccHitGauge();
-
-
-
+    
+    /* 출력, 행동 관련 포인터 변수들 */
 private:
     CShader*                m_pShaderCom = { nullptr };
 
@@ -141,6 +149,11 @@ private:
     class CDebugManager* m_pDebugManager = { nullptr };
 #endif // _DEBUG
 
+    /* 플레이어 기능 관련 포인터 변수들 */
+private:
+    CLandObject* m_pTargetObject = { nullptr };
+
+    /* 행동, 이동 관련 변수들 */
 private:
     BATTLE_STYLE    m_eCurrentStyle = { ADVENTURE };
     // 스타일마다 겹치는 행동이 있을 수 있어서 int값으로 저장하고 형변환하여 저장한다.
@@ -155,9 +168,11 @@ private:
     _float4         m_vPrevRotation;
     _float4x4       m_ModelWorldMatrix;
 
+    /* 플레이어 스테이터스 관련 변수들 */
 private:
     _uint           m_iCurrentHitLevel = { 0 };
     _float          m_fHitGauge = { 0.f };
+
 
 #ifdef _DEBUG
     _bool m_isAnimStart = { true };

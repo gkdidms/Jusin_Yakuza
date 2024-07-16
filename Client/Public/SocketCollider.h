@@ -16,7 +16,7 @@ BEGIN(Client)
 class CSocketCollider final : public CSocketObject
 {
 private:
-	const _float FILTERING_TIME = 0.1f;
+	const _float FILTERING_TIME = 0.4f;
 	
 public:
 	enum COLLIDER_ACTION_TYPE
