@@ -38,6 +38,14 @@ HRESULT CRushYakuza::Initialize(void* pArg)
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
+	if (nullptr != pArg)
+	{
+		MONSTER_IODESC* gameobjDesc = (MONSTER_IODESC*)pArg;
+
+		m_pNavigationCom->Set_Index(gameobjDesc->iNaviNum);
+
+	}
+
 	m_wstrModelName = TEXT("Jimu");
 
 	if (FAILED(Add_CharacterData()))
@@ -45,6 +53,8 @@ HRESULT CRushYakuza::Initialize(void* pArg)
 
 	m_pModelCom->Set_AnimationIndex(1, 0.5);
 	//m_pModelCom->Set_AnimLoop(1, true);
+
+
 
 	return S_OK;
 }

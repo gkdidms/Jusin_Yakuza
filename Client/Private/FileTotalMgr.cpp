@@ -99,6 +99,16 @@ HRESULT CFileTotalMgr::Set_GameObject_In_Client(int iStageLevel)
             monsterDesc.fRotatePecSec = XMConvertToRadians(0.f);
             monsterDesc.fRotatePecSec = XMConvertToRadians(180.f);
 
+            if (-1 == m_MapTotalInform.pMapObjDesc[i].iNaviNum)
+            {
+                // 抗寇贸府
+                monsterDesc.iNaviNum = 0;
+            }
+            else
+            {
+                monsterDesc.iNaviNum = m_MapTotalInform.pMapObjDesc[i].iNaviNum;
+            }
+
             m_pGameInstance->Add_GameObject(iStageLevel, TEXT("Prototype_GameObject_RushYakuza"), m_Layers[iLayer], &monsterDesc);
         }
         else if (OBJECT_TYPE::MONSTER_WPA == m_MapTotalInform.pMapObjDesc[i].iObjType)
@@ -118,6 +128,16 @@ HRESULT CFileTotalMgr::Set_GameObject_In_Client(int iStageLevel)
             monsterDesc.fRotatePecSec = XMConvertToRadians(0.f);
             monsterDesc.fRotatePecSec = XMConvertToRadians(180.f);
 
+            if (-1 == m_MapTotalInform.pMapObjDesc[i].iNaviNum)
+            {
+                // 抗寇贸府
+                monsterDesc.iNaviNum = 0;
+            }
+            else
+            {
+                monsterDesc.iNaviNum = m_MapTotalInform.pMapObjDesc[i].iNaviNum;
+            }
+
             m_pGameInstance->Add_GameObject(iStageLevel, TEXT("Prototype_GameObject_WPAYakuza"), m_Layers[iLayer], &monsterDesc);
         }
         else if (OBJECT_TYPE::MONSTER_SHAKEDOWN == m_MapTotalInform.pMapObjDesc[i].iObjType)
@@ -136,6 +156,16 @@ HRESULT CFileTotalMgr::Set_GameObject_In_Client(int iStageLevel)
             monsterDesc.fSpeedPecSec = 10.f;
             monsterDesc.fRotatePecSec = XMConvertToRadians(0.f);
             monsterDesc.fRotatePecSec = XMConvertToRadians(180.f);
+            
+            if (-1 == m_MapTotalInform.pMapObjDesc[i].iNaviNum)
+            {
+                // 抗寇贸府
+                monsterDesc.iNaviNum = 0;
+            }
+            else
+            {
+                monsterDesc.iNaviNum = m_MapTotalInform.pMapObjDesc[i].iNaviNum;
+            }
 
             m_pGameInstance->Add_GameObject(iStageLevel, TEXT("Prototype_GameObject_Shakedown"), m_Layers[iLayer], &monsterDesc);
         }
@@ -156,6 +186,16 @@ HRESULT CFileTotalMgr::Set_GameObject_In_Client(int iStageLevel)
             monsterDesc.fRotatePecSec = XMConvertToRadians(0.f);
             monsterDesc.fRotatePecSec = XMConvertToRadians(180.f);
 
+            if (-1 == m_MapTotalInform.pMapObjDesc[i].iNaviNum)
+            {
+                // 抗寇贸府
+                monsterDesc.iNaviNum = 0;
+            }
+            else
+            {
+                monsterDesc.iNaviNum = m_MapTotalInform.pMapObjDesc[i].iNaviNum;
+            }
+
             m_pGameInstance->Add_GameObject(iStageLevel, TEXT("Prototype_GameObject_Yoneda"), m_Layers[iLayer], &monsterDesc);
         }
         else if (OBJECT_TYPE::MONSTER_KUZE == m_MapTotalInform.pMapObjDesc[i].iObjType)
@@ -175,12 +215,33 @@ HRESULT CFileTotalMgr::Set_GameObject_In_Client(int iStageLevel)
             monsterDesc.fRotatePecSec = XMConvertToRadians(0.f);
             monsterDesc.fRotatePecSec = XMConvertToRadians(180.f);
 
+            if (-1 == m_MapTotalInform.pMapObjDesc[i].iNaviNum)
+            {
+                // 抗寇贸府
+                monsterDesc.iNaviNum = 0;
+            }
+            else
+            {
+                monsterDesc.iNaviNum = m_MapTotalInform.pMapObjDesc[i].iNaviNum;
+            }
+
             m_pGameInstance->Add_GameObject(iStageLevel, TEXT("Prototype_GameObject_Kuze"), m_Layers[iLayer], &monsterDesc);
         }
         else if (OBJECT_TYPE::PLAYER == m_MapTotalInform.pMapObjDesc[i].iObjType)
         {
             XMMATRIX vStartPos = XMLoadFloat4x4(&m_MapTotalInform.pMapObjDesc[i].vTransform);
             dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject(iStageLevel, TEXT("Layer_Player"), 0))->Set_StartPos(vStartPos);
+
+            if (-1 == m_MapTotalInform.pMapObjDesc[i].iNaviNum)
+            {
+                // 抗寇贸府
+                dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject(iStageLevel, TEXT("Layer_Player"), 0))->Set_NavigationIndex(0);
+            }
+            else
+            {
+                dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject(iStageLevel, TEXT("Layer_Player"), 0))->Set_NavigationIndex(m_MapTotalInform.pMapObjDesc[i].iNaviNum);
+            }
+
             
         }
         else if (OBJECT_TYPE::SKY == m_MapTotalInform.pMapObjDesc[i].iObjType)
@@ -423,6 +484,7 @@ HRESULT CFileTotalMgr::Import_Bin_Map_Data_OnClient(MAP_TOTALINFORM_DESC* mapObj
         in.read((char*)&pMapObj->iShaderPassNum, sizeof(int));
         in.read((char*)&pMapObj->iObjType, sizeof(int));
         in.read((char*)&pMapObj->iObjPropertyType, sizeof(int));
+        in.read((char*)&pMapObj->iNaviNum, sizeof(int));
 
         in.read((char*)&pMapObj->iDecalNum, sizeof(int));
 
