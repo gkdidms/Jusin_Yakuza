@@ -572,7 +572,7 @@ void CPlayer::Synchronize_Root(const _float& fTimeDelta)
 			if (0.01 > m_fPrevSpeed)
 				m_fPrevSpeed = 0.f;
 
-			m_pTransformCom->Go_Move_Custum(fMoveDir, m_fPrevSpeed, 1);
+			m_pTransformCom->Go_Move_Custum(fMoveDir, m_fPrevSpeed, 1, m_pNavigationCom);
 			m_fPrevSpeed = fMoveSpeed;
 
 			XMStoreFloat4(&m_vPrevMove, vFF);
@@ -1476,6 +1476,7 @@ void CPlayer::Free()
 
 	Safe_Release(m_pUIManager);
 	Safe_Release(m_pShaderCom);
+	Safe_Release(m_pNavigationCom);
 
 	for (size_t i = 0; i < BATTLE_STYLE_END; i++)
 	{
