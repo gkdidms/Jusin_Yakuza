@@ -4,6 +4,8 @@
 
 BEGIN(Engine)
 class CCollider;
+class CGameObject;
+class CGameInstance;
 END
 
 BEGIN(Client)
@@ -43,6 +45,8 @@ public:
 
     _bool Map_Collision(CCollider* pCollider);
 
+    class CLandObject* Get_Near_LandObject(class CLandObject* pObject, vector<CGameObject*>& pObjects);
+
 private:
     // 캐릭터가 겹치지않고 밀어내는 함수
     // AABB끼리만 구현되어있음
@@ -67,6 +71,8 @@ private:
 
 
     vector<CCollider*> m_MapColliders;
+
+    CGameInstance* m_pGameInstance = { nullptr };
 
 private:
     void Impulse_Clear();

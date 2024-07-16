@@ -1,6 +1,8 @@
 #include "SocketCollider.h"
 #include "GameInstance.h"
 
+#include "Effect.h"
+
 #include "LandObject.h"
 
 CSocketCollider::CSocketCollider(ID3D11Device * pDevice, ID3D11DeviceContext * pContext)
@@ -152,6 +154,16 @@ void CSocketCollider::Filtering_Timer(_float fTimeDelta)
 void CSocketCollider::ParentObject_Hit(const _float3& vDir, _float fDamage, CLandObject* pParentObject, _bool isBlowAttack)
 {
 	// m_eColliderPartType는 본인이 헤드인지, 바디인지, 레그인지를 가지고있다
+	CEffect::EFFECT_DESC EffectDesc;
+	EffectDesc.pWorldMatrix = &m_WorldMatrix;
+
+	m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Hit1_Glow0"), TEXT("Layer_Particle"), &EffectDesc);
+	m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Hit1_Part0"), TEXT("Layer_Particle"), &EffectDesc);
+	m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Hit1_Part1"), TEXT("Layer_Particle"), &EffectDesc);
+	m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Hit1_Part2"), TEXT("Layer_Particle"), &EffectDesc);
+	m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Hit1_Part3"), TEXT("Layer_Particle"), &EffectDesc);
+	m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Hit1_Part4"), TEXT("Layer_Particle"), &EffectDesc);
+
 	m_pParentObject->Take_Damage(m_eColliderPartType, vDir, fDamage, pParentObject, isBlowAttack);
 }
 

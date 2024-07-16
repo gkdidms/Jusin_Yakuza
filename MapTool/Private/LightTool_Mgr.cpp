@@ -670,7 +670,7 @@ void CLightTool_Mgr::Edit_Light()
 
 void CLightTool_Mgr::Initialize_Light_Environment()
 {
-	m_pGameInstance->Delete_AllLights();
+	Delete_AllLights();
 }
 
 void CLightTool_Mgr::Edit_GameObject_Transform(int iNumObject)

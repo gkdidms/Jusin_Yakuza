@@ -65,6 +65,7 @@ HRESULT CSocketEffect::Add_Components(void* pArg)
 		CEffect::EFFECT_DESC Desc{};
 		Desc.pWorldMatrix = &m_WorldMatrix;
 		
+		m_wstrEffectName = pDesc->wstrEffectName;
 		m_pEffect = reinterpret_cast<CEffect*>(m_pGameInstance->Clone_Object(pDesc->wstrEffectName, &Desc));
 	}
 

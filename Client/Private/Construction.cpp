@@ -131,7 +131,10 @@ void CConstruction::Late_Tick(const _float& fTimeDelta)
 	{
 		m_pGameInstance->Add_Renderer(CRenderer::RENDER_PUDDLE, this);
 	}
-
+	else
+	{
+		m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
+	}
 
 	if (1 != m_iObjectType)
 	{
@@ -291,7 +294,7 @@ HRESULT CConstruction::Render_LightDepth()
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
 			return E_FAIL;
 
-		m_pShaderCom->Begin(4);
+		m_pShaderCom->Begin(5);
 
 		m_pModelCom->Render(i);
 	}
