@@ -512,16 +512,21 @@ void CPlayer::Ready_AnimationTree()
 // 현재 애니메이션의 y축을 제거하고 사용하는 상태이다 (혹시 애니메이션의 y축 이동도 적용이 필요하다면 로직 수정이 필요함
 void CPlayer::Synchronize_Root(const _float& fTimeDelta)
 {
-	_vector vFF = XMVector3TransformNormal(XMVectorSetZ(XMLoadFloat3(m_pModelCom->Get_AnimationCenterMove()), 0), m_pTransformCom->Get_WorldMatrix());
+	_vector vCenterMove = XMLoadFloat3(m_pModelCom->Get_AnimationCenterMove());
+	_vector vDeleteZ = XMVectorSetZ(vCenterMove, 0);
+
+
+	//_vector vFF = XMVector3TransformNormal(XMVectorSetZ(XMLoadFloat3(m_pModelCom->Get_AnimationCenterMove()), 0), m_pTransformCom->Get_WorldMatrix());
+	_vector vFF = XMVector3TransformNormal(vDeleteZ, m_pTransformCom->Get_WorldMatrix());
 
 	// 월드 행렬
 	_matrix worldMatrix = m_pTransformCom->Get_WorldMatrix();
 	_float4 vQuaternion = *m_pModelCom->Get_AnimationCenterRotation();
 
-	_vector scale, rotation, translation;
-	XMMatrixDecompose(&scale, &rotation, &translation, worldMatrix);
+	//_vector scale, rotation, translation;
+	//XMMatrixDecompose(&scale, &rotation, &translation, worldMatrix);
 
-	_vector resultQuaternionVector = XMQuaternionMultiply(XMLoadFloat4(&vQuaternion), rotation);
+	//_vector resultQuaternionVector = XMQuaternionMultiply(XMLoadFloat4(&vQuaternion), rotation);
 
 	// m_pModelCom->Get_AnimChanged()  선형보간이 끝났는지
 	// m_pModelCom->Get_AnimLerp() 선형보간이 필요한 애니메이션인지
@@ -548,8 +553,10 @@ void CPlayer::Synchronize_Root(const _float& fTimeDelta)
 			_float fMoveSpeed = XMVectorGetX(XMVector3Length(vFF - XMLoadFloat4(&m_vPrevMove)));
 			
 			//Y값 이동을 죽인 방향으로 적용해야한다.
-			_vector vTemp = XMVector3NormalizeEst((vFF - XMLoadFloat4(&m_vPrevMove)));
+			_vector vTemp = XMVector3Normalize((vFF - XMLoadFloat4(&m_vPrevMove)));
+			//Z가 Y처럼 쓰임
 			vTemp = XMVectorSetZ(vTemp, XMVectorGetY(vTemp));
+			vTemp = XMVectorSetX(vTemp, XMVectorGetX(vTemp) * -1.f);
 			XMStoreFloat4(&fMoveDir, XMVector3TransformNormal(XMVectorSetY(vTemp, 0.f), m_pTransformCom->Get_WorldMatrix()));
 
 			if (0.01 > m_fPrevSpeed)
@@ -570,7 +577,7 @@ void CPlayer::Synchronize_Root(const _float& fTimeDelta)
 	
 	XMStoreFloat4x4(&m_ModelWorldMatrix, m_pTransformCom->Get_WorldMatrix());
 	//m_vPrevRotation = vQuaternion;
-	XMStoreFloat4(&m_vPrevRotation, resultQuaternionVector);
+	//XMStoreFloat4(&m_vPrevRotation, resultQuaternionVector);
 }
 
 void CPlayer::KeyInput(const _float& fTimeDelta)
