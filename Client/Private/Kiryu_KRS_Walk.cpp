@@ -5,15 +5,14 @@
 CKiryu_KRS_Walk::CKiryu_KRS_Walk()
 	:CBehaviorAnimation{}
 {
-	m_AnimationIndices.push_back(373);			//[373]	p_krs_shift_b[p_krs_shift_b]
-	m_AnimationIndices.push_back(374);			//[374]	p_krs_shift_bl[p_krs_shift_bl]
-	m_AnimationIndices.push_back(375);			//[375]	p_krs_shift_br[p_krs_shift_br]
-	m_AnimationIndices.push_back(376);			//[376]	p_krs_shift_f[p_krs_shift_f]
-	m_AnimationIndices.push_back(377);			//[377]	p_krs_shift_fl[p_krs_shift_fl]
-	m_AnimationIndices.push_back(378);			//[378]	p_krs_shift_fr[p_krs_shift_fr]
-	m_AnimationIndices.push_back(379);			//[379]	p_krs_shift_l[p_krs_shift_l]
-	m_AnimationIndices.push_back(380);			//[380] p_krs_shift_r[p_krs_shift_r]
-
+	m_AnimationIndices.push_back(373);			// 0 [373]	p_krs_shift_b[p_krs_shift_b]
+	m_AnimationIndices.push_back(374);			// 1 [374]	p_krs_shift_bl[p_krs_shift_bl]
+	m_AnimationIndices.push_back(375);			// 2 [375]	p_krs_shift_br[p_krs_shift_br]
+	m_AnimationIndices.push_back(376);			// 3 [376]	p_krs_shift_f[p_krs_shift_f]
+	m_AnimationIndices.push_back(377);			// 4 [377]	p_krs_shift_fl[p_krs_shift_fl]
+	m_AnimationIndices.push_back(378);			// 5 [378]	p_krs_shift_fr[p_krs_shift_fr]
+	m_AnimationIndices.push_back(379);			// 6 [379]	p_krs_shift_l[p_krs_shift_l]
+	m_AnimationIndices.push_back(380);			// 7 [380] p_krs_shift_r[p_krs_shift_r]
 }
 
 void CKiryu_KRS_Walk::Tick(const _float& fTimeDelta)
@@ -26,42 +25,64 @@ void CKiryu_KRS_Walk::Tick(const _float& fTimeDelta)
 		m_pPlayer->Get_TransformCom()->LookAt_For_LandObject(vLookPos);
 	}
 
-	// F, B, L, R
-	_bool isKeyInput[4];
-	for (size_t i = 0; i < 4; i++)
-		isKeyInput[i] = false;
-
+	_uint direction = 0;
 	if (m_pGameInstance->GetKeyState(DIK_W) == HOLD)
-	{
-		isKeyInput[CPlayer::F] = true;
-	}
+		direction |= CPlayer::F;
 	if (m_pGameInstance->GetKeyState(DIK_S) == HOLD)
-	{
-		isKeyInput[CPlayer::B] = true;
-	}
+		direction |= CPlayer::B;
 	if (m_pGameInstance->GetKeyState(DIK_A) == HOLD)
-	{
-		isKeyInput[CPlayer::L] = true;
-	}
+		direction |= CPlayer::L;
 	if (m_pGameInstance->GetKeyState(DIK_D) == HOLD)
+		direction |= CPlayer::R;
+
+	if (direction == CPlayer::F)
 	{
-		isKeyInput[CPlayer::R] = true;
+		m_iCurrentIndex = 3;  // p_krs_shift_f[p_krs_shift_f]
 	}
+	else if (direction == CPlayer::B)
+	{
+		m_iCurrentIndex = 0;  // p_krs_shift_b[p_krs_shift_b]
+	}
+	else if (direction == CPlayer::L)
+	{
+		m_iCurrentIndex = 6;  // p_krs_shift_l[p_krs_shift_l]
+	}
+	else if (direction == CPlayer::R)
+	{
+		m_iCurrentIndex = 7;  // p_krs_shift_r[p_krs_shift_r]
+	}
+	else if ((direction & (CPlayer::F | CPlayer::L)) == (CPlayer::F | CPlayer::L))
+	{
+		m_iCurrentIndex = 4;  // p_krs_shift_fl[p_krs_shift_fl]
+	}
+	else if ((direction & (CPlayer::F | CPlayer::R)) == (CPlayer::F | CPlayer::R))
+	{
+		m_iCurrentIndex = 5;  // p_krs_shift_fr[p_krs_shift_fr]
+	}
+	else if ((direction & (CPlayer::B | CPlayer::L)) == (CPlayer::B | CPlayer::L))
+	{
+		m_iCurrentIndex = 1;  // p_krs_shift_bl[p_krs_shift_bl]
+	}
+	else if ((direction & (CPlayer::B | CPlayer::R)) == (CPlayer::B | CPlayer::R))
+	{
+		m_iCurrentIndex = 2;  // p_krs_shift_br[p_krs_shift_br]
+	}
+
+	if (0 == direction)
+		m_isStop = true;
 }
 
 void CKiryu_KRS_Walk::Change_Animation()
 {
-	m_pPlayer->Change_Animation(m_AnimationIndices[0]);
+	m_pPlayer->Change_Animation(m_AnimationIndices[m_iCurrentIndex]);
 }
 
 _bool CKiryu_KRS_Walk::Get_AnimationEnd()
 {
-	//CModel* pModelCom = static_cast<CModel*>(m_pPlayer->Get_Component(TEXT("Com_Model")));
-	//if (pModelCom->Get_AnimFinished())
-	//{
-	//	m_pGameInstance->Set_TimeSpeed(TEXT("Timer_60"), 1.f);
-	//	return true;
-	//}
+	if (m_isStop) {
+		m_isStop = false;
+		return true;
+	}
 
 	return false;
 }

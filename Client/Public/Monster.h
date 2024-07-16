@@ -61,6 +61,18 @@ public:
         MONSTER_ANGRY_START,
         MONSTER_ANGRY_CHOP,
         MONSTER_ANGRY_KICK,
+
+        MONSTER_DWN_DNF_BOUND,
+        MONSTER_DWN_DNB_BOUND,
+        MONSTER_DAM_HEAD_LV01_R,
+        MONSTER_DAM_HEAD_LV01_L,
+        MONSTER_DAM_HEAD_LV02_R,
+        MONSTER_DAM_HEAD_LV02_L,
+        MONSTER_DWN_BODY_F,
+        MONSTER_DWN_BODY_F_SP,
+        MONSTER_DWN_EXPLODE_F,
+        MONSTER_STANDUP_DNF_FAST,
+        MONSTER_DED_L, // 죽음
         MONSTER_DEATH,
         MONSTER_STATE_END
     };
@@ -102,9 +114,14 @@ protected:
     _float4x4       m_ModelWorldMatrix;
 
 protected:
+    string m_strAnimName = "";
+    _uint m_iAnim = { 0 };
+
+protected:
     _bool m_isColl = { false }; // 충돌되었는지 아닌지 체크해야함.
 
 protected:
+    virtual void Change_Animation();
     void Synchronize_Root(const _float& fTimeDelta);
 
 private:

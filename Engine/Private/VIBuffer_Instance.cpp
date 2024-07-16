@@ -169,15 +169,16 @@ void CVIBuffer_Instance::Spread(_float fTimeDelta)
 		{
 			if (true == m_InstanceDesc->isLoop)
 			{
-				m_pOriginalOffsets[i] = _float3(m_InstanceDesc->vOffsetPos.x + XMVectorGetX(WorlPosition), m_InstanceDesc->vOffsetPos.y + XMVectorGetY(WorlPosition), m_InstanceDesc->vOffsetPos.z + XMVectorGetZ(WorlPosition)); // Loop를 위해 저장해준다.
+				//m_pOriginalOffsets[i] = _float3(m_InstanceDesc->vOffsetPos.x + XMVectorGetX(WorlPosition), m_InstanceDesc->vOffsetPos.y + XMVectorGetY(WorlPosition), m_InstanceDesc->vOffsetPos.z + XMVectorGetZ(WorlPosition)); // Loop를 위해 저장해준다.
+				m_pOriginalOffsets[i] = _float3(m_InstanceDesc->vOffsetPos.x , m_InstanceDesc->vOffsetPos.y , m_InstanceDesc->vOffsetPos.z ); // Loop를 위해 저장해준다.
 				pVertices[i].vTranslation = _float4(m_pOriginalPositions[i].x, m_pOriginalPositions[i].y, m_pOriginalPositions[i].z, 1.f);
 				pVertices[i].vLifeTime.y = 0.f;
 				_vector			vDir = XMVectorSetW(XMLoadFloat4(&pVertices[i].vTranslation) - XMLoadFloat3(&m_pOriginalOffsets[i]), 0.f);
 				XMStoreFloat4(&pVertices[i].vDirection, vDir);
 
-				pVertices[i].vTranslation.x += XMVectorGetX(WorlPosition);
-				pVertices[i].vTranslation.y += XMVectorGetY(WorlPosition);
-				pVertices[i].vTranslation.z += XMVectorGetZ(WorlPosition);
+				//pVertices[i].vTranslation.x += XMVectorGetX(WorlPosition);
+				//pVertices[i].vTranslation.y += XMVectorGetY(WorlPosition);
+				//pVertices[i].vTranslation.z += XMVectorGetZ(WorlPosition);
 				
 
 

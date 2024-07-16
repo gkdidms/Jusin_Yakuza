@@ -503,7 +503,7 @@ PS_OUT PS_RIMLIGHT(PS_IN In)//범위 지정 문해야됨
     
     vector vRim = normalize(vCamDir - vWorldPos);
     
-    if(1.f==BaseDepth.z)
+    if(0.05f<BaseDepth.z)
     {
         float RangeAlpha = BaseDepth.w;
         float fRim = saturate(dot(BaseNormal, vRim));

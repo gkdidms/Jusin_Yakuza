@@ -30,21 +30,20 @@ HRESULT CLevel_Dogimazo::Initialize()
 
     /* 클라 파싱 */
     m_pFileTotalManager->Set_MapObj_In_Client(STAGE_DOGIMAZO, LEVEL_DOGIMAZO);
-    m_pFileTotalManager->Set_Lights_In_Client(9);
-    m_pFileTotalManager->Set_Collider_In_Client(1, LEVEL_DOGIMAZO);
+    m_pFileTotalManager->Set_Lights_In_Client(STAGE_DOGIMAZO);
+    m_pFileTotalManager->Set_Collider_In_Client(STAGE_DOGIMAZO, LEVEL_DOGIMAZO);
 
     return S_OK;
 }
 
 void CLevel_Dogimazo::Tick(const _float& fTimeDelta)
 {
+	if (m_pGameInstance->GetKeyState(DIK_SPACE) == TAP)
+	{
+		if (FAILED(m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_DOGIMAZO_STAIRS))))
+			return;
+	}
 #ifdef _DEBUG
-    if (m_pGameInstance->GetKeyState(DIK_SPACE) == TAP)
-    {
-        if (FAILED(m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_DOGIMAZO_STAIRS))))
-            return;
-    }
-
     SetWindowText(g_hWnd, TEXT("도지마조"));
 #endif
 }

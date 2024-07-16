@@ -19,6 +19,9 @@ public:
 	virtual void Change_Animation() override;
 	virtual _bool Get_AnimationEnd() override;
 
+private:
+	_bool m_isStop = { false };
+
 public:
 	static CBehaviorAnimation* Create(class CPlayer* pPlayer);
 	virtual void Free() override;
