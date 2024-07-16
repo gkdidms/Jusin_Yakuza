@@ -216,6 +216,8 @@ void CPlayer::Late_Tick(const _float& fTimeDelta)
 		break;
 	}
 
+	Compute_Height();
+
 }
 
 HRESULT CPlayer::Render()
@@ -1164,6 +1166,10 @@ HRESULT CPlayer::Add_Components()
 		TEXT("Com_Collider"), reinterpret_cast<CComponent**>(&m_pColliderCom), &ColliderDesc)))
 		return E_FAIL;
 
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Navigation"),
+		TEXT("Com_Navigation"), reinterpret_cast<CComponent**>(&m_pNavigationCom))))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -1191,7 +1197,17 @@ HRESULT CPlayer::Bind_ResourceData()
 #endif // _DEBUG
 
 	return S_OK;
-}	
+}
+
+void CPlayer::Compute_Height()
+{
+	_vector vCurrentPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	float fHeight = m_pNavigationCom->Compute_Height(vCurrentPos);
+
+	vCurrentPos = XMVectorSetY(vCurrentPos, fHeight);
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vCurrentPos);
+}
+
 
 void CPlayer::Change_Animation(_uint iIndex, _float fInterval)
 {
