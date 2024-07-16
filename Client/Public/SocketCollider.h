@@ -28,6 +28,8 @@ public:
 		HAND_A, FOOT_A, JOINT_A, HEAD_A,
 		HEAD_H = 10, BODY_H, LEG_H
 	};
+	//A -> Attack
+	//H -> Hit
 
 public:
 	struct SOCKET_COLLIDER_DESC : public SOCKETOBJECT_DESC

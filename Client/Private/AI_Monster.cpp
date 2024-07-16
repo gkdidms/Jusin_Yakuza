@@ -76,6 +76,225 @@ void CAI_Monster::LookAtPlayer()
 	m_pThis->Get_TransformCom()->LookAt(vPlayerPos);
 }
 
+_bool CAI_Monster::Find_CurrentAnimationName(string strAnimName)
+{
+	string strPlayerAnimName = m_pPlayer->Get_CurrentAnimationName();
+	_uint iBegin = strPlayerAnimName.find("[");
+
+	strPlayerAnimName = strPlayerAnimName.substr(iBegin, strPlayerAnimName.size() - 1);
+	if (strPlayerAnimName == strAnimName)
+		return true;
+
+	return false;
+}
+
+void CAI_Monster::Check_KRH(_uint iPlayerLv)
+{
+	if (Find_CurrentAnimationName("p_krh_atk_down")) // 다운되었을때
+		*m_pState = iPlayerLv == 1 ? CMonster::MONSTER_ATK_DOWN : CMonster::MONSTER_ATK_DOWN;
+
+	if (Find_CurrentAnimationName("p_krh_atk_heavy_f")) // 
+		*m_pState = iPlayerLv == 1 ? CMonster::MONSTER_ATK_DOWN : CMonster::MONSTER_ATK_DOWN;
+
+	if (Find_CurrentAnimationName("p_krh_atk_punch_b"))  //펀치
+		*m_pState = iPlayerLv == 1 ? CMonster::MONSTER_ATK_DOWN : CMonster::MONSTER_ATK_DOWN;
+
+	if (Find_CurrentAnimationName("p_krh_atk_run_heavy")) // 어퍼컷
+		*m_pState = iPlayerLv == 1 ? CMonster::MONSTER_ATK_DOWN : CMonster::MONSTER_ATK_DOWN;
+
+	if (Find_CurrentAnimationName("p_krh_atk_sp")) //발차기 
+		*m_pState = iPlayerLv == 1 ? CMonster::MONSTER_ATK_DOWN : CMonster::MONSTER_ATK_DOWN;
+
+	if (Find_CurrentAnimationName("p_krh_atk_standup_kick_dnb")) // 다운백
+		*m_pState = iPlayerLv == 1 ? CMonster::MONSTER_ATK_DOWN : CMonster::MONSTER_ATK_DOWN;
+
+	if (Find_CurrentAnimationName("p_krh_atk_standup_kick_dnf")) // 
+		*m_pState = iPlayerLv == 1 ? CMonster::MONSTER_ATK_DOWN : CMonster::MONSTER_ATK_DOWN;
+
+	/*
+	if (Find_CurrentAnimationName("p_krh_atk_sway_b"))
+		*m_pState = iPlayerLv == 1 ? CMonster::MONSTER_ATK_DOWN : CMonster::MONSTER_ATK_DOWN;
+
+	if (Find_CurrentAnimationName("p_krh_atk_sway_f"))
+		*m_pState = iPlayerLv == 1 ? CMonster::MONSTER_ATK_DOWN : CMonster::MONSTER_ATK_DOWN;
+
+	if (Find_CurrentAnimationName("p_krh_atk_sway_l"))
+		*m_pState = iPlayerLv == 1 ? CMonster::MONSTER_ATK_DOWN : CMonster::MONSTER_ATK_DOWN;
+
+	if (Find_CurrentAnimationName("p_krh_atk_sway_r"))
+		*m_pState = iPlayerLv == 1 ? CMonster::MONSTER_ATK_DOWN : CMonster::MONSTER_ATK_DOWN;
+	*/
+	if (Find_CurrentAnimationName("p_krh_cmb_01"))
+		*m_pState = iPlayerLv == 1 ? CMonster::MONSTER_ATK_DOWN : CMonster::MONSTER_ATK_DOWN;
+
+	if (Find_CurrentAnimationName("p_krh_cmb_02"))
+		*m_pState = iPlayerLv == 1 ? CMonster::MONSTER_ATK_DOWN : CMonster::MONSTER_ATK_DOWN;
+
+	if (Find_CurrentAnimationName("p_krh_cmb_03"))
+		*m_pState = iPlayerLv == 1 ? CMonster::MONSTER_ATK_DOWN : CMonster::MONSTER_ATK_DOWN;
+
+	if (Find_CurrentAnimationName("p_krh_cmb_04"))
+		*m_pState = iPlayerLv == 1 ? CMonster::MONSTER_ATK_DOWN : CMonster::MONSTER_ATK_DOWN;
+
+	if (Find_CurrentAnimationName("p_krh_cmb_05"))
+		*m_pState = iPlayerLv == 1 ? CMonster::MONSTER_ATK_DOWN : CMonster::MONSTER_ATK_DOWN;
+
+	if (Find_CurrentAnimationName("p_krh_cmb_06"))
+		*m_pState = iPlayerLv == 1 ? CMonster::MONSTER_ATK_DOWN : CMonster::MONSTER_ATK_DOWN;
+
+	if (Find_CurrentAnimationName("p_krh_cmb_07"))
+		*m_pState = iPlayerLv == 1 ? CMonster::MONSTER_ATK_DOWN : CMonster::MONSTER_ATK_DOWN;
+
+	if (Find_CurrentAnimationName("p_krh_cmb_08"))
+		*m_pState = iPlayerLv == 1 ? CMonster::MONSTER_ATK_DOWN : CMonster::MONSTER_ATK_DOWN;
+
+	if (Find_CurrentAnimationName("p_krh_cmb_01_fin"))
+		*m_pState = iPlayerLv == 1 ? CMonster::MONSTER_ATK_DOWN : CMonster::MONSTER_ATK_DOWN;
+
+	if (Find_CurrentAnimationName("p_krh_cmb_02_fin"))
+		*m_pState = iPlayerLv == 1 ? CMonster::MONSTER_ATK_DOWN : CMonster::MONSTER_ATK_DOWN;
+
+	if (Find_CurrentAnimationName("p_krh_cmb_03_fin"))
+		*m_pState = iPlayerLv == 1 ? CMonster::MONSTER_ATK_DOWN : CMonster::MONSTER_ATK_DOWN;
+
+	if (Find_CurrentAnimationName("p_krh_cmb_04_fin"))
+		*m_pState = iPlayerLv == 1 ? CMonster::MONSTER_ATK_DOWN : CMonster::MONSTER_ATK_DOWN;
+
+	if (Find_CurrentAnimationName("p_krh_cmb_05_fin"))
+		*m_pState = iPlayerLv == 1 ? CMonster::MONSTER_ATK_DOWN : CMonster::MONSTER_ATK_DOWN;
+
+	if (Find_CurrentAnimationName("p_krh_cmb_06_fin"))
+		*m_pState = iPlayerLv == 1 ? CMonster::MONSTER_ATK_DOWN : CMonster::MONSTER_ATK_DOWN;
+
+	if (Find_CurrentAnimationName("p_krh_cmb_07_fin"))
+		*m_pState = iPlayerLv == 1 ? CMonster::MONSTER_ATK_DOWN : CMonster::MONSTER_ATK_DOWN;
+
+	if (Find_CurrentAnimationName("p_krh_cmb_08_fin"))
+		*m_pState = iPlayerLv == 1 ? CMonster::MONSTER_ATK_DOWN : CMonster::MONSTER_ATK_DOWN;
+
+	/*
+	if (Find_CurrentAnimationName("p_krh_cmb_01_tame"))
+		*m_pState = iPlayerLv == 1 ? CMonster::MONSTER_ATK_DOWN : CMonster::MONSTER_ATK_DOWN;
+
+	if (Find_CurrentAnimationName("p_krh_cmb_02_tame"))
+		*m_pState = iPlayerLv == 1 ? CMonster::MONSTER_ATK_DOWN : CMonster::MONSTER_ATK_DOWN;
+
+	if (Find_CurrentAnimationName("p_krh_cmb_03_tame"))
+		*m_pState = iPlayerLv == 1 ? CMonster::MONSTER_ATK_DOWN : CMonster::MONSTER_ATK_DOWN;
+
+	if (Find_CurrentAnimationName("p_krh_cmb_04_tame"))
+		*m_pState = iPlayerLv == 1 ? CMonster::MONSTER_ATK_DOWN : CMonster::MONSTER_ATK_DOWN;
+
+	if (Find_CurrentAnimationName("p_krh_cmb_05_tame"))
+		*m_pState = iPlayerLv == 1 ? CMonster::MONSTER_ATK_DOWN : CMonster::MONSTER_ATK_DOWN;
+
+	if (Find_CurrentAnimationName("p_krh_cmb_06_tame"))
+		*m_pState = iPlayerLv == 1 ? CMonster::MONSTER_ATK_DOWN : CMonster::MONSTER_ATK_DOWN;
+
+	if (Find_CurrentAnimationName("p_krh_cmb_07_tame"))
+		*m_pState = iPlayerLv == 1 ? CMonster::MONSTER_ATK_DOWN : CMonster::MONSTER_ATK_DOWN;
+
+	if (Find_CurrentAnimationName("p_krh_cmb_08_tame"))
+		*m_pState = iPlayerLv == 1 ? CMonster::MONSTER_ATK_DOWN : CMonster::MONSTER_ATK_DOWN;
+	*/
+}
+
+void CAI_Monster::Check_KRS(_uint iPlayerLv)
+{
+	//ATK_Counter 넘어질때 밟음
+	if (Find_CurrentAnimationName("p_krs_atk_down_trample"))
+		*m_pState = iPlayerLv == 1 ? CMonster::MONSTER_ATK_DOWN : CMonster::MONSTER_ATK_DOWN;
+
+	//ATK_Kick_f
+	if (Find_CurrentAnimationName("p_krs_atk_kick_f"))
+		*m_pState = iPlayerLv == 1 ? CMonster::MONSTER_ATK_DOWN : CMonster::MONSTER_ATK_DOWN;
+
+	//ATK_Kick_f_2
+	if (Find_CurrentAnimationName("p_krs_atk_kick_f_02")) 
+		*m_pState = iPlayerLv == 1 ? CMonster::MONSTER_ATK_DOWN : CMonster::MONSTER_ATK_DOWN;
+
+	//ATK_Kick_f_3
+	if (Find_CurrentAnimationName("p_krs_atk_kick_f_03"))
+		*m_pState = iPlayerLv == 1 ? CMonster::MONSTER_ATK_DOWN : CMonster::MONSTER_ATK_DOWN;
+
+	//ATK_Run_Heavy  // 날라차기 
+	if (Find_CurrentAnimationName("p_krs_atk_run_heavy"))
+		*m_pState = iPlayerLv == 1 ? CMonster::MONSTER_ATK_DOWN : CMonster::MONSTER_ATK_DOWN;
+
+	//TAK_Tame_LOOP
+	if (Find_CurrentAnimationName("p_krs_atk_tame_en"))
+		*m_pState = iPlayerLv == 1 ? CMonster::MONSTER_ATK_DOWN : CMonster::MONSTER_ATK_DOWN;
+
+	if (Find_CurrentAnimationName("p_krs_cmb_01"))
+		*m_pState = iPlayerLv == 1 ? CMonster::MONSTER_ATK_DOWN : CMonster::MONSTER_ATK_DOWN;
+
+	if (Find_CurrentAnimationName("p_krs_cmb_02"))
+		*m_pState = iPlayerLv == 1 ? CMonster::MONSTER_ATK_DOWN : CMonster::MONSTER_ATK_DOWN;
+
+	if (Find_CurrentAnimationName("p_krs_cmb_03"))
+		*m_pState = iPlayerLv == 1 ? CMonster::MONSTER_ATK_DOWN : CMonster::MONSTER_ATK_DOWN;
+
+	if (Find_CurrentAnimationName("p_krs_cmb_04"))
+		*m_pState = iPlayerLv == 1 ? CMonster::MONSTER_ATK_DOWN : CMonster::MONSTER_ATK_DOWN;
+
+	if (Find_CurrentAnimationName("p_krs_cmb_01_fin"))
+		*m_pState = iPlayerLv == 1 ? CMonster::MONSTER_ATK_DOWN : CMonster::MONSTER_ATK_DOWN;
+
+	if (Find_CurrentAnimationName("p_krs_cmb_02_fin"))
+		*m_pState = iPlayerLv == 1 ? CMonster::MONSTER_ATK_DOWN : CMonster::MONSTER_ATK_DOWN;
+
+	if (Find_CurrentAnimationName("p_krs_cmb_03_fin"))
+		*m_pState = iPlayerLv == 1 ? CMonster::MONSTER_ATK_DOWN : CMonster::MONSTER_ATK_DOWN;
+
+	if (Find_CurrentAnimationName("p_krs_cmb_04_fin"))
+		*m_pState = iPlayerLv == 1 ? CMonster::MONSTER_ATK_DOWN : CMonster::MONSTER_ATK_DOWN;
+
+	if (Find_CurrentAnimationName("p_krs_sync_cmb_03_fin"))
+		*m_pState = iPlayerLv == 1 ? CMonster::MONSTER_ATK_DOWN : CMonster::MONSTER_ATK_DOWN;
+
+	if (Find_CurrentAnimationName("p_krs_cmb_04_finw"))
+		*m_pState = iPlayerLv == 1 ? CMonster::MONSTER_ATK_DOWN : CMonster::MONSTER_ATK_DOWN;
+
+}
+
+void CAI_Monster::Check_KRC(_uint iPlayerLv)
+{
+	if (Find_CurrentAnimationName("p_krc_atk_down_trample"))
+		*m_pState = iPlayerLv == 1 ? CMonster::MONSTER_ATK_DOWN : CMonster::MONSTER_ATK_DOWN;
+
+	//가드 후 반격
+	if (Find_CurrentAnimationName("p_krc_atk_guard_heavy"))
+		*m_pState = iPlayerLv == 1 ? CMonster::MONSTER_ATK_DOWN : CMonster::MONSTER_ATK_DOWN;
+
+	if (Find_CurrentAnimationName("p_krc_atk_guard_tame"))
+		*m_pState = iPlayerLv == 1 ? CMonster::MONSTER_ATK_DOWN : CMonster::MONSTER_ATK_DOWN;
+
+	if (Find_CurrentAnimationName("p_krc_atk_tackle_f"))
+		*m_pState = iPlayerLv == 1 ? CMonster::MONSTER_ATK_DOWN : CMonster::MONSTER_ATK_DOWN;
+
+	if (Find_CurrentAnimationName("p_krc_atk_tame_tackle_en"))
+		*m_pState = iPlayerLv == 1 ? CMonster::MONSTER_ATK_DOWN : CMonster::MONSTER_ATK_DOWN;
+
+	if (Find_CurrentAnimationName("p_krc_cmb_01"))
+		*m_pState = iPlayerLv == 1 ? CMonster::MONSTER_ATK_DOWN : CMonster::MONSTER_ATK_DOWN;
+
+	if (Find_CurrentAnimationName("p_krc_cmb_02"))
+		*m_pState = iPlayerLv == 1 ? CMonster::MONSTER_ATK_DOWN : CMonster::MONSTER_ATK_DOWN;
+
+	if (Find_CurrentAnimationName("p_krc_cmb_03"))
+		*m_pState = iPlayerLv == 1 ? CMonster::MONSTER_ATK_DOWN : CMonster::MONSTER_ATK_DOWN;
+
+	if (Find_CurrentAnimationName("p_krc_cmb_01_fin"))
+		*m_pState = iPlayerLv == 1 ? CMonster::MONSTER_ATK_DOWN : CMonster::MONSTER_ATK_DOWN;
+
+	if (Find_CurrentAnimationName("p_krc_cmb_02_fin"))
+		*m_pState = iPlayerLv == 1 ? CMonster::MONSTER_ATK_DOWN : CMonster::MONSTER_ATK_DOWN;
+
+	if (Find_CurrentAnimationName("p_krc_cmb_03_fin"))
+		*m_pState = iPlayerLv == 1 ? CMonster::MONSTER_ATK_DOWN : CMonster::MONSTER_ATK_DOWN;
+
+}
+
 CBTNode::NODE_STATE CAI_Monster::Check_Death()
 {
 	if (*m_pState != CMonster::MONSTER_DEATH)
@@ -108,10 +327,9 @@ CBTNode::NODE_STATE CAI_Monster::Chcek_Sync()
 CBTNode::NODE_STATE CAI_Monster::Sync_Neck()
 {
 	// 플레이어가 멱살을 잡는 모션을 할때
-	CPlayer* pPlayer = dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"), 0));
 
 	// 러쉬를 제외한 모든 배틀 스타일이 사용 가능하다.
-	if (pPlayer->Get_BattleStyle() == CPlayer::KRH)
+	if (m_pPlayer->Get_BattleStyle() == CPlayer::KRH)
 		return CBTNode::FAIL;
 
 	return CBTNode::FAIL;
@@ -119,11 +337,11 @@ CBTNode::NODE_STATE CAI_Monster::Sync_Neck()
 
 CBTNode::NODE_STATE CAI_Monster::Check_Hit()
 {
-	//if (m_iSkill != SKILL_HIT)
-	//	return CBTNode::SUCCESS;
+	if (m_iSkill != SKILL_HIT)
+		return CBTNode::SUCCESS;
 
 	// 히트모션을 하고 있는가?
-
+	
 
 	return CBTNode::SUCCESS;
 }
@@ -132,25 +350,35 @@ CBTNode::NODE_STATE CAI_Monster::HitAndGuard()
 {
 	//Hit 체크하고 가드를 할 것인지, Hit할 것인지?
 	//충돌할것인가?
+
+	if (m_pThis->isColl())
+	{
+		//충돌?
+
+
+		return CBTNode::SUCCESS;
+	}
+	
 	return CBTNode::FAIL;
 }
 
 //KRS: 불한당, KRH: 러쉬, KRC: 파괴자
+//Hit 함수를 하나로 합쳐야 함.
 CBTNode::NODE_STATE CAI_Monster::Normal_Hit()
 {
-	CPlayer* pPlayer = dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"), 0));
+	_uint iLevel = m_pPlayer->Get_CurrentHitLevel();
 
-	if (pPlayer->Get_BattleStyle() == CPlayer::KRS)
+	if (m_pPlayer->Get_BattleStyle() == CPlayer::KRS)
 	{
-		//
+		Check_KRS(iLevel);
 	}
-	else if (pPlayer->Get_BattleStyle() == CPlayer::KRH)
+	else if (m_pPlayer->Get_BattleStyle() == CPlayer::KRH)
 	{
-
+		Check_KRH(iLevel);
 	}
-	else if (pPlayer->Get_BattleStyle() == CPlayer::KRC)
+	else if (m_pPlayer->Get_BattleStyle() == CPlayer::KRC)
 	{
-
+		Check_KRC(iLevel);
 	}
 
 	return CBTNode::SUCCESS;

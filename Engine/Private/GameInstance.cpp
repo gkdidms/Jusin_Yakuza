@@ -311,11 +311,6 @@ void CGameInstance::Set_SSAOBias(_float fBias)
 	m_pRenderer->Set_SSAOBias(fBias);
 }
 
-void CGameInstance::Set_ShadowViewPos(_vector vPos)
-{
-	m_pRenderer->Set_ShadowViewPos(vPos);
-}
-
 void CGameInstance::Set_Shadow(_bool isShadow)
 {
 	m_pRenderer->Set_Shadow(isShadow);
