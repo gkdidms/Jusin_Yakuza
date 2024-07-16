@@ -67,8 +67,14 @@ void CAI_RushYakuza::Ready_Tree()
 	CSelector* pRoot = CSelector::Create();
 	
 #pragma region Death
-	CSequance* pDeadSeq = CSequance::Create();
-	pDeadSeq->Add_Children(CLeafNode::Create(bind(&CAI_RushYakuza::Check_Death, this)));
+	CSequance* pDownSeq = CSequance::Create();
+	pDownSeq->Add_Children(CLeafNode::Create(bind(&CAI_RushYakuza::Check_Down, this)));
+	pDownSeq->Add_Children(CLeafNode::Create(bind(&CAI_RushYakuza::StandUpAndDead, this)));
+
+	CSelector* pDownSelector = CSelector::Create();
+	pDownSelector->Add_Children(CLeafNode::Create(bind(&CAI_RushYakuza::StandUp, this)));
+	pDownSelector->Add_Children(CLeafNode::Create(bind(&CAI_RushYakuza::Dead, this)));
+	pDownSeq->Add_Children(pDownSelector);
 #pragma endregion
 
 #pragma region Sway
@@ -88,24 +94,23 @@ void CAI_RushYakuza::Ready_Tree()
 	pHitGuardSeq->Add_Children(CLeafNode::Create(bind(&CAI_RushYakuza::Check_Hit, this)));
 	pHitGuardSeq->Add_Children(CLeafNode::Create(bind(&CAI_RushYakuza::HitAndGuard, this)));
 
-	CSelector* pHitGuard = CSelector::Create();
+	//CSelector* pHitGuard = CSelector::Create();
 	CSelector* pHitSelector = CSelector::Create();
 	pHitSelector->Add_Children(CLeafNode::Create(bind(&CAI_RushYakuza::Normal_Hit, this)));
-	pHitSelector->Add_Children(CLeafNode::Create(bind(&CAI_RushYakuza::Strong_Hit, this)));
 
-	CSelector* pGuardSelector = CSelector::Create();
-	pGuardSelector->Add_Children(CLeafNode::Create(bind(&CAI_RushYakuza::Guard, this)));
+	//CSelector* pGuardSelector = CSelector::Create();
+	//pGuardSelector->Add_Children(CLeafNode::Create(bind(&CAI_Shakedown::Guard, this)));
 
-	pHitGuard->Add_Children(pHitSelector);
-	pHitGuard->Add_Children(pGuardSelector);
+	//pHitGuard->Add_Children(pHitSelector);
+	//pHitGuard->Add_Children(pGuardSelector);
 
-	pHitGuardSeq->Add_Children(pHitGuard);
+	pHitGuardSeq->Add_Children(pHitSelector);
 #pragma endregion
 
 #pragma region Angry
-	CSequance* pAngrySeq = CSequance::Create();
+	/*CSequance* pAngrySeq = CSequance::Create();
 	pAngrySeq->Add_Children(CLeafNode::Create(bind(&CAI_RushYakuza::Check_Angry, this)));
-	pAngrySeq->Add_Children(CLeafNode::Create(bind(&CAI_RushYakuza::Angry, this)));
+	pAngrySeq->Add_Children(CLeafNode::Create(bind(&CAI_RushYakuza::Angry, this)));*/
 #pragma endregion
 
 #pragma region Attack
@@ -136,11 +141,11 @@ void CAI_RushYakuza::Ready_Tree()
 #pragma endregion
 
 #pragma region Root
-	pRoot->Add_Children(pDeadSeq);
+	pRoot->Add_Children(pDownSeq);
 	pRoot->Add_Children(pSwaySeq);
 	pRoot->Add_Children(pSyncSeq);
 	pRoot->Add_Children(pHitGuardSeq);
-	pRoot->Add_Children(pAngrySeq);
+	//pRoot->Add_Children(pAngrySeq);
 	pRoot->Add_Children(pAttackSeq);
 	pRoot->Add_Children(pBreakSeq);
 #pragma endregion

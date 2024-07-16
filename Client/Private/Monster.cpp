@@ -303,6 +303,11 @@ void CMonster::Change_Animation()
 		m_strAnimName = "c_dam_head_lv01_l[c_dam_head_lv01_l]";
 		break;
 	}
+	case MONSTER_DAM_HEAD_LV01_F:
+	{
+		m_strAnimName = "c_dam_head_lv01_f[c_dam_head_lv01_f]";
+		break;
+	}
 	case MONSTER_DAM_HEAD_LV02_R:
 	{
 		m_strAnimName = "c_dam_head_lv02_r[c_dam_head_lv02_r]";
@@ -311,6 +316,11 @@ void CMonster::Change_Animation()
 	case MONSTER_DAM_HEAD_LV02_L:
 	{
 		m_strAnimName = "c_dam_head_lv02_l[c_dam_head_lv02_l]";
+		break;
+	}
+	case MONSTER_DAM_HEAD_LV02_F:
+	{
+		m_strAnimName = "c_dam_head_lv02_f[c_dam_head_lv02_f]";
 		break;
 	}
 	case MONSTER_DWN_BODY_F:

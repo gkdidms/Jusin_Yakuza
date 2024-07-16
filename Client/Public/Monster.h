@@ -66,8 +66,10 @@ public:
         MONSTER_DWN_DNB_BOUND,
         MONSTER_DAM_HEAD_LV01_R,
         MONSTER_DAM_HEAD_LV01_L,
+        MONSTER_DAM_HEAD_LV01_F,
         MONSTER_DAM_HEAD_LV02_R,
         MONSTER_DAM_HEAD_LV02_L,
+        MONSTER_DAM_HEAD_LV02_F,
         MONSTER_DWN_BODY_F,
         MONSTER_DWN_BODY_F_SP,
         MONSTER_DWN_EXPLODE_F,
@@ -84,6 +86,10 @@ protected:
 
 public:
     _bool isColl() { return m_isColl; }
+    _bool isDown() { return m_isDown; }
+
+public:
+    void Set_Down(_bool isDown) { m_isDown = isDown; }
 
 public:
     virtual HRESULT Initialize_Prototype() override;
@@ -120,6 +126,7 @@ protected:
 
 protected:
     _bool m_isColl = { false }; // 충돌되었는지 아닌지 체크해야함.
+    _bool m_isDown = { false }; // 다운되었는가?
 
 protected:
     virtual void Change_Animation();
