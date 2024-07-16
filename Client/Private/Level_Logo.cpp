@@ -16,6 +16,7 @@ HRESULT CLevel_Logo::Initialize()
 
 void CLevel_Logo::Tick(const _float& fTimeDelta)
 {
+#ifdef _DEBUG
 	if (m_pGameInstance->GetKeyState(DIK_SPACE) == TAP)
 	{
 		if (FAILED(m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_TEST))))
@@ -26,6 +27,15 @@ void CLevel_Logo::Tick(const _float& fTimeDelta)
 		if (FAILED(m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_OFFICE_1F))))
 			return;
 	}
+#else	
+	if (m_pGameInstance->GetKeyState(DIK_SPACE) == TAP)
+	{
+		if (FAILED(m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_OFFICE_1F))))
+			return;
+	}
+#endif // _DEBUG
+
+
 
 #ifdef _DEBUG
 	SetWindowText(g_hWnd, TEXT("로고레벨 Space : TEST / F1 : Office 1F"));

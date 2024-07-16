@@ -166,8 +166,18 @@ HRESULT CMonster::Render_LightDepth()
 	return S_OK;
 }
 
+/*
+1인자 : 어디에 맞았는지 전달받을 수 있음 (CSocketCollider::COLLIDER_PART_TYPE) 
+2인자 : 이전 틱과 현재 틱의 방향
+3인자 : 데미지 값
+4인자 : 때리는 상태가 누군가?
+5인자 : 넘어지는 어택인가?
+*/
+
 void CMonster::Take_Damage(_uint iHitColliderType, const _float3& vDir, _float fDamage, CLandObject* pAttackedObject, _bool isBlowAttack)
 {
+	//하는역활 -> 충돌이 일어났을때?
+	m_isColl = true;
 }
 
 void CMonster::Animation_Event()

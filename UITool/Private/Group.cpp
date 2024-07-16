@@ -168,6 +168,7 @@ HRESULT CGroup::Load_Groupbinary(ifstream& in)
 
 			in.read((char*)&pDesc.isEvent, sizeof(_bool));
 			in.read((char*)&pDesc.isScreen, sizeof(_bool));
+			in.read((char*)&pDesc.isAnimLoop, sizeof(_bool));
 			pDesc.isLoad = true;
 			pDesc.pParentMatrix = m_pTransformCom->Get_WorldFloat4x4();
 

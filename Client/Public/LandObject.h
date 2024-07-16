@@ -86,7 +86,10 @@ protected:
     _bool m_isObjectRender = { true };
 #endif // _DEBUG
 
-    _bool m_isRimLight = { true };//
+    _float m_isRimLight ;//
+    _float2 m_fRimTopUV = { 0.0f , 0.7f };//0~1사이 [시작v,끝v]상의
+    _float2 m_fRimBotUV = { 0.0f, 0.3f };//0~1사이 [시작v,끝v]하의
+    _float2 m_fRimPartsUV = { 0.0f, 1.0f };//0~1사이 [시작v,끝v]손,발
 protected:
     virtual HRESULT Add_Components();
     virtual HRESULT Bind_ResourceData();
