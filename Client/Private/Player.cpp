@@ -196,17 +196,17 @@ void CPlayer::Late_Tick(const _float& fTimeDelta)
 	}
 	case Client::CPlayer::KRS:
 	{
-		m_isRimLight = KRS*0.1f;
+		m_isRimLight =0.1f;
 		break;
 	}
 	case Client::CPlayer::KRH:
 	{
-		m_isRimLight = KRH * 0.1f;
+		m_isRimLight = 0.2f;
 		break;
 	}
 	case Client::CPlayer::KRC:
 	{
-		m_isRimLight = KRC * 0.1f;
+		m_isRimLight =  0.3f;
 		break;
 	}
 	case Client::CPlayer::BATTLE_STYLE_END:
@@ -236,7 +236,6 @@ HRESULT CPlayer::Render()
 
 				if (FAILED(m_pShaderCom->Bind_RawValue("g_fRimUV", &m_fRimTopUV, sizeof(_float2))))
 					return E_FAIL;
-
 			}
 
 			switch (m_iCurrentBehavior)
