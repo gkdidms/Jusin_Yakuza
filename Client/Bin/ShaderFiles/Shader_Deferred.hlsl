@@ -474,6 +474,14 @@ PS_OUT PS_RIMLIGHT(PS_IN In)//범위 지정 문해야됨
    
     vector RimColor = vector(1.0f, 0.0f, 1.0f, 1.0f);
     
+    if (0.05f <= BaseDepth.z)
+        RimColor = vector(0.6f, 0.85f, 0.91f, 1.f);
+    if (0.15f <= BaseDepth.z)
+        RimColor = vector(0.92f, 0.05f, 0.90f, 1.f);
+    if (0.25f <= BaseDepth.z)
+        RimColor = vector(0.95f, 0.92f, 0.18, 1.f);
+
+
     float fRimpower =1.f;
     
     vector vWorldPos;

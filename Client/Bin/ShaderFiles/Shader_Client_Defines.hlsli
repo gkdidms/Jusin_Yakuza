@@ -65,8 +65,8 @@ float g_fTexcoordX = { 0.f };
 float g_fTexcoordY = { 0.f };
 
 //림라이트
-bool g_isRimLight;
-
+float g_isRimLight;
+float2 g_fRimUV;
 /* Decal */
 float2 g_RenderResolution = float2(1280, 720);
 

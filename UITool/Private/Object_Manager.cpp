@@ -362,6 +362,7 @@ HRESULT CObject_Manager::Load_binary(const wstring& strObjectTag, const string F
 
 		in.read((char*)&pDesc.isEvent, sizeof(_bool));
 		in.read((char*)&pDesc.isScreen, sizeof(_bool));
+		in.read((char*)&pDesc.isAnimLoop, sizeof(_bool));
 
 		pDesc.isLoad = true;
 		in.close();

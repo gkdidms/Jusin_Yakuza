@@ -278,9 +278,11 @@
     <ClInclude Include="..\Public\TRailEffect.h" />
     <ClInclude Include="..\Public\UIInven.h" />
     <ClInclude Include="..\Public\UILife.h" />
+    <ClInclude Include="..\Public\UILoading.h" />
     <ClInclude Include="..\Public\UIManager.h" />
     <ClInclude Include="..\Public\UIMenu.h" />
     <ClInclude Include="..\Public\UIMoney.h" />
+    <ClInclude Include="..\Public\UINowLoading.h" />
     <ClInclude Include="..\Public\UIScene.h" />
     <ClInclude Include="..\Public\UI_Effect.h" />
     <ClInclude Include="..\Public\UI_Object.h" />
@@ -404,12 +406,14 @@
     <ClCompile Include="..\Private\UIManager.cpp" />
     <ClCompile Include="..\Private\UIMenu.cpp" />
     <ClCompile Include="..\Private\UIMoney.cpp" />
+    <ClCompile Include="..\Private\UINowLoading.cpp" />
     <ClCompile Include="..\Private\UIScene.cpp" />
     <ClCompile Include="..\Private\UI_Effect.cpp" />
     <ClCompile Include="..\Private\UI_Object.cpp" />
     <ClCompile Include="..\Private\UI_Texture.cpp" />
     <ClCompile Include="..\private\WPAYakuza.cpp" />
     <ClCompile Include="..\private\Yoneda.cpp" />
+    <ClCompile Include="..\Public\UILoading.cpp" />
     <ClCompile Include="Client.cpp" />
   </ItemGroup>
   <ItemGroup>
