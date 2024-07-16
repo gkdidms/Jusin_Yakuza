@@ -1010,6 +1010,10 @@ void CPlayer::KRC_KeyInput(const _float& fTimeDelta)
 	{
 		isShift = true;
 	}
+	else if (m_pGameInstance->GetKeyState(DIK_SPACE) == AWAY)
+	{
+		m_iCurrentBehavior = (_uint)KRC_BEHAVIOR_STATE::IDLE;
+	}
 
 	if (!m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Stopping())
 	{
@@ -1355,6 +1359,7 @@ void CPlayer::Effect_Control_Aura()
 
 void CPlayer::Setting_Target_Enemy()
 {
+	if (2 == m_iCurrentBehavior) return; 
 	auto pMonsters = m_pGameInstance->Get_GameObjects(m_iCurrentLevel, TEXT("Layer_Monster"));
 
 	m_pTargetObject = m_pCollisionManager->Get_Near_LandObject(this, pMonsters);
