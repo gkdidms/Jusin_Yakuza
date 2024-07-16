@@ -88,6 +88,11 @@ void CImguiManager::Tick(const _float& fTimeDelta)
 		if (0 < m_AnimNameList.size())
 		{
 			auto lower_bound_iter = m_AnimationEvents.lower_bound(m_AnimNameList[m_iAnimIndex]);
+
+			// 반환된 iter의 키값이 다르다면 맵 내에 해당 키값이 존재하지 않는다는 뜻
+			if (lower_bound_iter != m_AnimationEvents.end() && (*lower_bound_iter).first != m_AnimNameList[m_iAnimIndex])
+				return;
+
 			auto upper_bound_iter = m_AnimationEvents.upper_bound(m_AnimNameList[m_iAnimIndex]);
 
 			auto pBoneSpheres = m_pRenderModel->Get_BoneSpheres();

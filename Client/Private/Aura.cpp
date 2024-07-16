@@ -251,33 +251,33 @@ HRESULT CAura::Load_Data(const string strDirectory)
 HRESULT CAura::Add_Components()
 {
 	/* For.Com_VIBuffer */
-	if (FAILED(__super::Add_Component(LEVEL_TEST, TEXT("Prototype_Component_VIBuffer_Instance_Point"),
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_VIBuffer_Instance_Point"),
 		TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pVIBufferCom), &m_BufferInstance)))
 		return E_FAIL;
 
 	/* For.Com_Shader */
-	if (FAILED(__super::Add_Component(LEVEL_TEST, TEXT("Prototype_Component_Shader_Aura"),
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Shader_Aura"),
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
 		return E_FAIL;
 
 	//≈Ê≈ÿΩ∫√≥ º±≈√
 	/* For.Com_Texture */
-	if (FAILED(__super::Add_Component(LEVEL_TEST, m_TextureTag,
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, m_TextureTag,
 		TEXT("Com_Texture0"), reinterpret_cast<CComponent**>(&m_pTextureCom[0]))))
 		return E_FAIL;
 
 	//uvæ÷¥‘
-	if (FAILED(__super::Add_Component(LEVEL_TEST, TEXT("Prototype_Component_Texture_AuraAnim"),
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Texture_AuraAnim"),
 		TEXT("Com_Texture1"), reinterpret_cast<CComponent**>(&m_pTextureCom[1]))))
 		return E_FAIL;
 
 	//∫£¿ÃΩ∫
-	if (FAILED(__super::Add_Component(LEVEL_TEST, TEXT("Prototype_Component_Texture_AuraBase"),
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Texture_AuraBase"),
 		TEXT("Com_Texture2"), reinterpret_cast<CComponent**>(&m_pTextureCom[2]))))
 		return E_FAIL;
 
 	//«√∑ÁµÂ(»Â∏ß)
-	if (FAILED(__super::Add_Component(LEVEL_TEST, TEXT("Prototype_Component_Texture_AuraFluid"),
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Texture_AuraFluid"),
 		TEXT("Com_Texture3"), reinterpret_cast<CComponent**>(&m_pTextureCom[3]))))
 		return E_FAIL;
 }

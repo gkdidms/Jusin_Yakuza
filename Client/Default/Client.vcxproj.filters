@@ -321,7 +321,7 @@
       <Filter>01.Levels\04.Dogimazo</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Level_DogimazoBoss.cpp">
-      <Filter>01.Levels\06.DogimazoBoss</Filter>
+      <Filter>01.Levels\07.DogimazoBoss</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Level_DogimazoStairs.cpp">
       <Filter>01.Levels\05.DogimazoStairs</Filter>
@@ -705,7 +705,7 @@
       <Filter>01.Levels\04.Dogimazo</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Level_DogimazoBoss.h">
-      <Filter>01.Levels\06.DogimazoBoss</Filter>
+      <Filter>01.Levels\07.DogimazoBoss</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Level_DogimazoStairs.h">
       <Filter>01.Levels\05.DogimazoStairs</Filter>
@@ -927,9 +927,6 @@
     <Filter Include="01.Levels\04.Dogimazo">
       <UniqueIdentifier>{da1f6629-4506-47f7-9915-8f4b5f5fa2f9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01.Levels\06.DogimazoBoss">
-      <UniqueIdentifier>{c3987abd-0a35-468c-b0db-541aa2913f3b}</UniqueIdentifier>
-    </Filter>
     <Filter Include="95.Utility\05.UIManager\UIScene\UIObject\UITexture">
       <UniqueIdentifier>{8b20b3a1-e821-47b7-9519-e6bda1f9c855}</UniqueIdentifier>
     </Filter>
@@ -1136,6 +1133,9 @@
     </Filter>
     <Filter Include="02.GameObjects\07.MapCollider\Obj">
       <UniqueIdentifier>{4e8421d6-5ada-48ec-9fce-0aed349f2f59}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Levels\07.DogimazoBoss">
+      <UniqueIdentifier>{c3987abd-0a35-468c-b0db-541aa2913f3b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
