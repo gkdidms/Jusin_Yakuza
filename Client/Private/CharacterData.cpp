@@ -58,6 +58,11 @@ void CCharacterData::Set_CurrentAnimation(string strAnimName)
 	m_CurrentEvents.clear();
 
 	auto lower_bound_iter = m_AnimationEvents.lower_bound(strAnimName);
+
+	// 반환된 iter의 키값이 다르다면 맵 내에 해당 키값이 존재하지 않는다는 뜻
+	if (lower_bound_iter != m_AnimationEvents.end() && (*lower_bound_iter).first != strAnimName)
+		return;
+
 	auto upper_bound_iter = m_AnimationEvents.upper_bound(strAnimName);
 
 	if (lower_bound_iter == upper_bound_iter && lower_bound_iter != m_AnimationEvents.end())
