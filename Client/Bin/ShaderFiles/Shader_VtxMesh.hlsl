@@ -153,6 +153,7 @@ PS_OUT PS_MAIN(PS_IN In)
         // 매핑되는 texture가 있을때
         vector vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexcoord);
         vNormal = vNormalDesc.xyz * 2.f - 1.f;
+        vNormal = vector(vNormalDesc.w, vNormalDesc.y, 1.f, 0.f);
     
         float3x3 WorldMatrix = float3x3(In.vTangent.xyz, In.vBinormal.xyz, In.vNormal.xyz);
     

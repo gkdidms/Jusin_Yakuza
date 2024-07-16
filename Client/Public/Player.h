@@ -75,6 +75,7 @@ public:
 public:
     _uint Get_BattleStyle() { return m_eCurrentStyle; }
     _bool isAttack() { return m_iCurrentBehavior == static_cast<_uint>(KRS_BEHAVIOR_STATE::ATTACK); }
+    _uint Get_CurrentHitLevel() { return m_iCurrentHitLevel; }
     void  Set_StartPos(XMMATRIX    vStartPos) { m_pTransformCom->Set_WorldMatrix(vStartPos); }
 
 public:

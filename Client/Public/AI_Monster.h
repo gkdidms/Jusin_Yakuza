@@ -33,6 +33,67 @@ public:
         SKILL_DOWN,
         SKILL_ANGRY_CHOP,
         SKILL_ANGRY_KICK,
+
+        SKILL_DAM_BODY_LV01_B,
+        SKILL_DAM_BODY_LV01_F,
+        SKILL_DAM_BODY_LV02_B,
+        SKILL_DAM_BODY_LV02_F,
+        SKILL_DAM_BODY_LV02_L,
+        SKILL_DAM_BODY_LV02_R,
+        SKILL_DAM_DUB_L,
+        SKILL_DAM_DUB_R,
+        SKILL_DAM_DUB_TRAMPLE,
+        SKILL_DAM_DNF_L,
+        SKILL_DAM_DNF_R,
+        SKILL_DAM_DNF_TRAMPLE,
+        SKILL_DAM_HEAD_LV01_B,
+        SKILL_DAM_HEAD_LV01_F,
+        SKILL_DAM_HEAD_LV01_L,
+        SKILL_DAM_HEAD_LV01_R,
+        SKILL_DAM_HEAD_LV02_B,
+        SKILL_DAM_HEAD_LV02_F,
+        SKILL_DAM_HEAD_LV02_L,
+        SKILL_DAM_HEAD_LV02_R,
+        SKILL_DAM_LEG_LV01_B,
+        SKILL_DAM_LEG_LV01_F,
+        SKILL_DAM_LEG_LV01_L,
+        SKILL_DAM_LEG_LV01_R,
+        SKILL_DAM_LEG_LV02_L,
+        SKILL_DAM_LEG_LV02_R,
+
+        SKILL_DED_B_01,
+        SKILL_DED_B_02,
+        SKILL_DED_DND_01,
+        SKILL_DED_DND_02,
+        SKILL_DED_DND_L,
+        SKILL_DED_DND_R,
+        SKILL_DED_DNF_01,
+        SKILL_DED_DNF_02,
+        SKILL_DED_DNF_L,
+        SKILL_DED_DNF_R,
+        SKILL_DED_F_01,
+        SKILL_DED_F_02,
+        SKILL_DED_F_03,
+        SKILL_DED_FALL_B,
+        SKILL_DED_FALL_F,
+        SKILL_DED_L,
+        SKILL_DED_R,
+        SKILL_DED_B,
+        SKILL_DWN_B_PAIN_BODY_EN,
+        SKILL_DWN_B_PAIN_BODY_LP,
+        SKILL_DWN_B_PAIN_BODY_ST,
+        SKILL_DWN_B_PAIN_HEAD_EN,
+        SKILL_DWN_B_PAIN_HEAD_LP,
+        SKILL_DWN_B_PAIN_HEAD_ST,
+        SKILL_DWN_B_PAIN_LEG_EN,
+        SKILL_DWN_B_PAIN_LEG_LP,
+        SKILL_DWN_B_PAIN_LEG_ST,
+        SKILL_DWN_BACK_B,
+        SKILL_DWN_BACK_F,
+        SKILL_DWN_BODY_D,
+        SKILL_DWN_BODY_F,
+        SKILL_DWN_BODY_L,
+        SKILL_DWN_BODY_R,
         SKILL_END
     };
 
@@ -123,6 +184,12 @@ protected:
     _float DistanceFromPlayer();
     _bool isBehine();
     void LookAtPlayer();
+
+protected:
+    _bool Find_CurrentAnimationName(string strAnimName);
+    void Check_KRH(_uint iPlayerLv);
+    void Check_KRS(_uint iPlayerLv);
+    void Check_KRC(_uint iPlayerLv);
 
 public:
     virtual void Free();
