@@ -3,11 +3,14 @@
 #include "SocketCollider.h"
 #include "Component_Manager.h"
 #include "Player.h"
+#include "GameInstance.h"
 
 IMPLEMENT_SINGLETON(CCollision_Manager)
 
 CCollision_Manager::CCollision_Manager()
+    : m_pGameInstance{ CGameInstance::GetInstance() }
 {
+    Safe_AddRef(m_pGameInstance);
 }
 
 HRESULT CCollision_Manager::Initialize()
@@ -213,6 +216,28 @@ _bool CCollision_Manager::Map_Collision(CCollider* pCollider)
     return false;
 }
 
+CLandObject* CCollision_Manager::Get_Near_LandObject(CLandObject* pObject, vector<CGameObject*>& pObjects)
+{
+    _float fDinstance = { 99999999.f };
+    CLandObject* pValue = { nullptr };
+
+    for (auto& pTarget : pObjects)
+    {
+        if (pTarget == pObject) continue;
+
+        _vector vBasePosition = pObject->Get_TransformCom()->Get_State(CTransform::STATE_POSITION);
+        _vector vTargetPosition = pTarget->Get_TransformCom()->Get_State(CTransform::STATE_POSITION);
+
+        if (XMVectorGetX(XMVector3Length(vBasePosition - vTargetPosition)) < fDinstance)
+        {
+            fDinstance = XMVectorGetX(XMVector3Length(vBasePosition - vTargetPosition));
+            pValue = static_cast<CLandObject*>(pTarget);
+        }
+    }
+
+    return pValue;
+}
+
 void CCollision_Manager::Impulse_Clear()
 {
     for (auto& pObject : m_ImpulseResolutionObjects)
@@ -238,6 +263,8 @@ void CCollision_Manager::Battle_Clear()
 
 void CCollision_Manager::Free()
 {
+    Safe_Release(m_pGameInstance);
+
     Impulse_Clear();
     Battle_Clear();
 

@@ -193,6 +193,9 @@
     <ClInclude Include="..\Public\BehaviorAnimation.h" />
     <ClInclude Include="..\Public\Btn.h" />
     <ClInclude Include="..\Public\Collision_Manager.h" />
+    <ClInclude Include="..\Public\Kiryu_KRC_Down.h" />
+    <ClInclude Include="..\Public\Kiryu_KRH_Down.h" />
+    <ClInclude Include="..\Public\Kiryu_KRS_Down.h" />
     <ClInclude Include="..\Public\Level_Dogimazo.h" />
     <ClInclude Include="..\Public\Level_DogimazoBoss.h" />
     <ClInclude Include="..\Public\Level_DogimazoStairs.h" />
@@ -314,6 +317,9 @@
     <ClCompile Include="..\Private\BehaviorAnimation.cpp" />
     <ClCompile Include="..\Private\Btn.cpp" />
     <ClCompile Include="..\Private\Collision_Manager.cpp" />
+    <ClCompile Include="..\Private\Kiryu_KRC_Down.cpp" />
+    <ClCompile Include="..\Private\Kiryu_KRH_Down.cpp" />
+    <ClCompile Include="..\Private\Kiryu_KRS_Down.cpp" />
     <ClCompile Include="..\Private\Level_Dogimazo.cpp" />
     <ClCompile Include="..\Private\Level_DogimazoBoss.cpp" />
     <ClCompile Include="..\Private\Level_DogimazoStairs.cpp" />

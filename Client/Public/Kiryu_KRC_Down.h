@@ -8,7 +8,7 @@
 
 BEGIN(Client)
 
-class CKiryu_KRS_Run : public CBehaviorAnimation
+class CKiryu_KRC_Down : public CBehaviorAnimation
 {
 public:
 	enum BEHAVIOR_STATE
@@ -23,8 +23,8 @@ public:
 
 
 private:
-	CKiryu_KRS_Run();
-	virtual ~CKiryu_KRS_Run() = default;
+	CKiryu_KRC_Down();
+	virtual ~CKiryu_KRC_Down() = default;
 
 public:
 	virtual void Tick(const _float& fTimeDelta) override;
@@ -32,6 +32,8 @@ public:
 	virtual _bool Get_AnimationEnd() override;
 	virtual void Stop() override;
 	virtual _bool Stopping() override;
+	virtual void Reset() override;
+	virtual void Setting_Value(void* pValue) override;
 
 private:
 	ANIM_STATE m_eAnimState = { ANIM_LOOP };
