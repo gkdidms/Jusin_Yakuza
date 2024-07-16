@@ -121,12 +121,49 @@ PS_OUT PS_MAIN_Lamp(PS_IN In)
     return Out;
 }
 
+
 PS_OUT PS_MAIN_AlphaLamp(PS_IN In)
 {
     PS_OUT Out = (PS_OUT) 0;
 
     vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
-    vDiffuse.a = 0.1;
+    vDiffuse.a = 0.2;
+    Out.vDiffuse = vDiffuse;
+    
+    return Out;
+}
+
+PS_OUT PS_MAIN_EMISSIVE_ALPHA(PS_IN In)
+{
+    PS_OUT Out = (PS_OUT) 0;
+
+    vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
+    
+    // 약한발광(0.1 - 0.3)
+    // 보통(0.4 - 0.6)
+    // 강한 (0.7-0.8)
+    vector emissiveColor = vDiffuse * 0.1;
+   
+    vector finalColor = vDiffuse + emissiveColor;
+  
+    Out.vDiffuse = vDiffuse;
+    
+    return Out;
+}
+
+PS_OUT PS_MAIN_EMISSIVE(PS_IN In)
+{
+    PS_OUT Out = (PS_OUT) 0;
+
+    vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
+    
+    // 약한발광(0.1 - 0.3)
+    // 보통(0.4 - 0.6)
+    // 강한 (0.7-0.8)
+    vector emissiveColor = vDiffuse * 0.2;
+   
+    vector finalColor = vDiffuse + emissiveColor;
+  
     Out.vDiffuse = vDiffuse;
     
     return Out;
@@ -220,7 +257,34 @@ technique11 DefaultTechnique
     }
 
 
-    pass DefaultBloomPass //5
+    pass EmissiveAlphaPass //5
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        HullShader = NULL;
+        DomainShader = NULL;
+        PixelShader = compile ps_5_0 PS_MAIN_EMISSIVE_ALPHA();
+    }
+
+    pass EmissivePass //6
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        HullShader = NULL;
+        DomainShader = NULL;
+        PixelShader = compile ps_5_0 PS_MAIN_EMISSIVE();
+    }
+
+
+    pass DefaultBloomPass //7
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_Default, 0);

@@ -47,6 +47,13 @@ void CKiryu_KRC_Run::Stop()
 	m_isStop = true;
 }
 
+_bool CKiryu_KRC_Run::Stopping()
+{
+	if (ANIM_END == m_eAnimState && !Get_AnimationEnd()) return true;
+
+	return false;
+}
+
 CBehaviorAnimation* CKiryu_KRC_Run::Create(CPlayer* pPlayer)
 {
 	CKiryu_KRC_Run* pInstnace = new CKiryu_KRC_Run();

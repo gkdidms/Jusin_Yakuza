@@ -113,6 +113,7 @@ void CLightConstruction::Late_Tick(const _float& fTimeDelta)
 	// 2 : rm 텍스처 적용 - 외부간판
 	// 3 : Lamp
 	// 4 : 형광등 + 투명
+	// 5 : Emissive
 	if (m_iShaderPassNum == 0 || m_iShaderPassNum == 2)
 	{
 		//m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
@@ -132,6 +133,16 @@ void CLightConstruction::Late_Tick(const _float& fTimeDelta)
 	{
 		//m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
 		m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONLIGHT, this);
+	}
+	else if (m_iShaderPassNum == 5)
+	{
+		//m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
+		m_pGameInstance->Add_Renderer(CRenderer::RENDER_EFFECT, this);
+	}
+	else if (m_iShaderPassNum == 6)
+	{
+		m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
+		m_pGameInstance->Add_Renderer(CRenderer::RENDER_EFFECT, this);
 	}
 
 	for (auto& iter : m_vDecals)
