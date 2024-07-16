@@ -35,6 +35,7 @@ public:
 
 public:
     _int Find_Index(POINT ptMouse, _fvector vTargetPos, _float fZ, _fmatrix WorldMatirx, _int* pIndex = nullptr);
+    void Find_Player_Index(_fvector vTargetPos);
     _bool isMove(_fvector vMovePos);
     _float Compute_Height(_fvector vPosition);
 #ifdef _DEBUG

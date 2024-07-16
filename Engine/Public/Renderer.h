@@ -152,7 +152,7 @@ private:
                 _bool m_isSSAO = { true };
                 _bool m_isPBR = { true };
                 _bool m_isBOF = { true };
-                _bool m_isShadow = { true };
+                _bool m_isShadow = { false };
                 _bool m_isRimLight = { false };
 #endif // DEBUG
 

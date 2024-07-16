@@ -5,7 +5,7 @@
 matrix g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
 texture2D g_Texture;
 float   g_fObjID;
-
+bool g_bWriteID;
 
 struct VS_IN
 {

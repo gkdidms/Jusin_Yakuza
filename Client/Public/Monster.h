@@ -3,7 +3,7 @@
 
 BEGIN(Engine)
 class CShader;
-class CCollider;
+class CNavigation;
 class CAnim;
 END
 
@@ -102,6 +102,7 @@ public:
 protected:
     CShader* m_pShaderCom = { nullptr };
     CAnim* m_pAnimCom = { nullptr }; // 애니메이션만 따로 저장하고있는 애니메이션 컴포넌트
+    CNavigation* m_pNavigationCom = { nullptr };
 
 protected:
     _bool m_isAnimLoop = { false };
