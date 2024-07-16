@@ -145,7 +145,10 @@ HRESULT CRushYakuza::Bind_ResourceData()
 
 void CRushYakuza::Change_Animation()
 {
+	m_isAnimLoop = false;
+
 	__super::Change_Animation();
+
 
 	switch (m_iState)
 	{
