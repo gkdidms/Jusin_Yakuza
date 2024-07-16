@@ -42,8 +42,14 @@ public:
 		m_isOn = false;
 	}
 
+	wstring Get_EffectName() {
+		return m_wstrEffectName;
+	}
+
 private:
 	class CEffect*				m_pEffect = { nullptr };
+	wstring						m_wstrEffectName = TEXT("");
+
 	_bool						m_isOn = { true };
 
 public:

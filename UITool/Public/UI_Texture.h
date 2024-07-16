@@ -38,6 +38,7 @@ public:
         _uint iShaderPass;
         _float4x4 WorldMatrix;
 
+        _bool isAnimLoop;
         _bool bAnim;
         _float2 fAnimTime;
         _float3 vStartPos;//최종위치는 worldpos 
@@ -57,6 +58,8 @@ public:
     void Set_StartPos(_float3 vStartPos) { m_vStartPos = vStartPos;}
     void Set_AnimTime(_float2 fAnimTime) { m_fAnimTime = fAnimTime; }
     void Set_isAnim(_bool isAnim) { m_isAnim = isAnim; }
+    void Set_isAnimLoop(_bool isAnimLoop) { m_isAnimLoop = isAnimLoop; }
+
 #ifdef _TOOL
     void Set_isPlay(_bool isPlay) { m_isPlay = isPlay; }
 #endif // _TOOL
@@ -80,6 +83,7 @@ public:
     _float3 Get_StartPos() { return m_vStartPos; }
     _float2 Get_AnimTime() { return m_fAnimTime; }
     _bool Get_isAnim() { return m_isAnim; }
+    _bool Get_isAnimLoop() { return m_isAnimLoop; }
     
 
 
@@ -142,6 +146,7 @@ protected:
     _float2 m_fControlAlpha = { 0.f, 1.f };//시작,종료 알파(애님일경우)]
     _bool m_isReverse = { false };
 
+    _bool m_isAnimLoop = { false };
 public:
     virtual HRESULT Save_binary(const string strDirectory)override; 
     virtual HRESULT Save_Groupbinary( ofstream& out)override;

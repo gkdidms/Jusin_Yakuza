@@ -773,6 +773,10 @@ void CImgui_Manager::Window_Binary()
                         _bool isScreen = dynamic_cast<CUI_Texture*>(BinaryObject[m_iBinaryObjectIndex])->Get_isScreen();
                         if (ImGui::Checkbox("isScreen", &isScreen))
                             dynamic_cast<CUI_Texture*>(BinaryObject[m_iBinaryObjectIndex])->Set_isScreen(isScreen);
+                        ImGui::SameLine();
+                        _bool isLoop = dynamic_cast<CUI_Texture*>(BinaryObject[m_iBinaryObjectIndex])->Get_isAnimLoop();
+                        if (ImGui::Checkbox("isLoop", &isLoop))
+                            dynamic_cast<CUI_Texture*>(BinaryObject[m_iBinaryObjectIndex])->Set_isAnimLoop(isLoop);
 
 
 
@@ -1234,6 +1238,10 @@ void CImgui_Manager::Window_Binary_Group()
             _bool isScreen = dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Get_isScreen();
             if (ImGui::Checkbox("isScreen", &isScreen))
                 dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Set_isScreen(isScreen);
+            ImGui::SameLine();
+            _bool isLoop = dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Get_isAnimLoop();
+            if (ImGui::Checkbox("isLoop", &isLoop))
+                dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Set_isAnimLoop(isLoop);
 
             if (!isAnim && !isColor)
             {

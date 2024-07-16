@@ -12,7 +12,7 @@ CMapCollider::CMapCollider(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 
 CMapCollider::CMapCollider(const CMapCollider& rhs)
     : CGameObject(rhs),
-    m_pCollisionManager{ CCollision_Manager::GetInstance() }
+    m_pCollisionManager{ rhs.m_pCollisionManager }
 {
     Safe_AddRef(m_pCollisionManager);
 }

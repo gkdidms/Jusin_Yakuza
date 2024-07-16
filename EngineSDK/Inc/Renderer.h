@@ -33,7 +33,6 @@ public:
     void Set_SSAOBias(_float fBias) { m_fSSAOBiae = fBias; }
     void Set_PBR(_bool isPBR) { m_isPBR = isPBR; }
     void Set_BOF(_bool isBOF) { m_isBOF = isBOF; }
-    void Set_ShadowViewPos(_vector vPos) { m_vShadowViewPos = vPos; }
     void Set_Shadow(_bool isShadow) { m_isShadow = isShadow; }
     void Set_RimLight(_bool isRimLight) { m_isRimLight = isRimLight; }
 
@@ -158,11 +157,11 @@ private:
 #endif // DEBUG
 
     _float m_fHDRLight = { 1.f };
-    _float m_fSSAORadiuse = { 0.003f };
+
+    _float m_fSSAORadiuse = { 0.032f };
     _float m_fSSAOBlur = { 2.f };
     _float m_fSSAOBiae = { 0.025f };
     _float4* m_vSSAOKernal;
-    _vector m_vShadowViewPos = { XMVectorSet(0.f, 10.f, -10.f, 1.f) };
 
 #ifdef _DEBUG
     _bool m_isDebugView = { true };

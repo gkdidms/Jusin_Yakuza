@@ -238,8 +238,6 @@ HRESULT CCharacterData::Load_EffectState(string strFilePath)
 			string strEffectName = "";
 			in >> strEffectName;
 
-			//Create_Effect(strBoneName, strEffectName);
-
 			m_Effects.emplace(strBoneName, m_pGameInstance->StringToWstring(strEffectName));
 		}
 

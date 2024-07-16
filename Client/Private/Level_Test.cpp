@@ -34,8 +34,8 @@ HRESULT CLevel_Test::Initialize()
 	if (FAILED(Ready_Map(TEXT("Layer_Map"))))
 		return E_FAIL;
 
-	//if (FAILED(Ready_Effect(TEXT("Layer_Effect"))))
-	//	return E_FAIL;
+	if (FAILED(Ready_Effect(TEXT("Layer_Effect"))))
+		return E_FAIL;
 
 	/* Å¬¶ó ÆÄ½Ì */
 	m_pFileTotalManager->Set_MapObj_In_Client(6, LEVEL_TEST);
@@ -142,6 +142,8 @@ HRESULT CLevel_Test::Ready_Effect(const wstring& strLayerTag)
 
 	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_Particle_Aura_asd"), strLayerTag, nullptr)))
 		return E_FAIL;
+
+
 
 	return S_OK;
 }

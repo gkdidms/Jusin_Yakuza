@@ -34,6 +34,11 @@
 4. CMD_B
 5. CMB_HeadButt
 
+
+도발 -> 플레이어가 넘어지면 도발함 ...
+플레이어가 도발 -> 기게이지 
+
+
 총 2페이즈
 마지막 페이즈때는 몸에서 오라가 나온다. (붉은색)
 참고 영상 : https://www.youtube.com/watch?v=Fp63CzT7IBY

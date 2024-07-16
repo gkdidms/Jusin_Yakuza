@@ -48,15 +48,6 @@
 #include "Aura.h"
 #pragma endregion
 
-#pragma region UI
-#include "UIManager.h"
-#include "Image_Texture.h"
-#include "Text.h"
-#include "Group.h"
-#include "Btn.h"
-#include "UI_Effect.h"
-#pragma endregion
-
 CLoader::CLoader(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: m_pDevice{pDevice}, 
 	m_pContext{pContext},
@@ -236,7 +227,7 @@ HRESULT CLoader::Loading_For_Office_1F()
 	lstrcpy(m_szLoadingText, TEXT("모델를(을) 로딩 중 입니다."));
 	Add_Models_On_Path(m_eNextLevel, TEXT("../Bin/Resources/Models/Anim/"));
 
-	Add_Models_On_Path_NonAnim(m_eNextLevel, TEXT("../Bin/Resources/Models/NonAnim/Map"));
+	Add_Models_On_Path_NonAnim(m_eNextLevel, TEXT("../Bin/Resources/Models/NonAnim/Map/Map0"));
 
 	_matrix PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Model_Bone_Sphere"),
@@ -303,7 +294,7 @@ HRESULT CLoader::Loading_For_Office_1F()
 
 
 	/* For.Prototype_Component_Navigation */
-	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Navigation"),
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Navigation"),
 		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/NaviData/Navigation_0.dat")))))
 		return E_FAIL;
 
@@ -314,7 +305,7 @@ HRESULT CLoader::Loading_For_Office_1F()
 	/* For.Prototype_Component_Shader_VtxAnim */
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Shader_VtxAnim"),
 		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxAnimMesh.hlsl"), VTXANIMMESH::Elements, VTXANIMMESH::iNumElements))))
-		return E_FAIL;
+		return E_FAIL; 
 	/* For.Prototype_Component_Shader_Mesh */
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Shader_Mesh"),
 		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxMesh.hlsl"), VTXMESH::Elements, VTXMESH::iNumElements))))
@@ -443,36 +434,6 @@ HRESULT CLoader::Loading_For_Office_1F()
 		return E_FAIL;
 #pragma endregion
 
-#pragma region UI
-	/* For.Prototype_GameObject_Image_Texture */
-	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Image_Texture"),
-		CImage_Texture::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	/* For.Prototype_GameObject_Text */
-	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Text"),
-		CText::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	/* For.Prototype_GameObject_Group */
-	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Group"),
-		CGroup::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	/* For.Prototype_GameObject_Btn */
-	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Btn"),
-		CBtn::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	/* For.Prototype_GameObject_UIEffect */
-	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_UIEffect"),
-		CUI_Effect::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	//만들어둔 데이터 로딩
-	if (FAILED(Add_UI_On_Path(TEXT("../../Client/Bin/DataFiles/UIData/"))))
-		return E_FAIL;
-#pragma endregion
 #pragma endregion
 
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
@@ -565,7 +526,7 @@ HRESULT CLoader::Loading_For_Office_2F()
 	lstrcpy(m_szLoadingText, TEXT("모델를(을) 로딩 중 입니다."));
 	Add_Models_On_Path(m_eNextLevel, TEXT("../Bin/Resources/Models/Anim/"));
 
-	Add_Models_On_Path_NonAnim(m_eNextLevel, TEXT("../Bin/Resources/Models/NonAnim/Map"));
+	Add_Models_On_Path_NonAnim(m_eNextLevel, TEXT("../Bin/Resources/Models/NonAnim/Map/Map0"));
 
 	_matrix PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Model_Bone_Sphere"),
@@ -774,7 +735,7 @@ HRESULT CLoader::Loading_For_Office_Boss()
 	lstrcpy(m_szLoadingText, TEXT("모델를(을) 로딩 중 입니다."));
 	Add_Models_On_Path(m_eNextLevel, TEXT("../Bin/Resources/Models/Anim/"));
 
-	Add_Models_On_Path_NonAnim(m_eNextLevel, TEXT("../Bin/Resources/Models/NonAnim/Map"));
+	Add_Models_On_Path_NonAnim(m_eNextLevel, TEXT("../Bin/Resources/Models/NonAnim/Map/Map0"));
 
 	_matrix PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Model_Bone_Sphere"),
@@ -982,7 +943,7 @@ HRESULT CLoader::Loading_For_Dogimazo()
 	lstrcpy(m_szLoadingText, TEXT("모델를(을) 로딩 중 입니다."));
 	Add_Models_On_Path(m_eNextLevel, TEXT("../Bin/Resources/Models/Anim/"));
 
-	Add_Models_On_Path_NonAnim(m_eNextLevel, TEXT("../Bin/Resources/Models/NonAnim/Map"));
+	Add_Models_On_Path_NonAnim(m_eNextLevel, TEXT("../Bin/Resources/Models/NonAnim/Map/Map1"));
 
 	_matrix PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Model_Bone_Sphere"),
@@ -1190,7 +1151,7 @@ HRESULT CLoader::Loading_For_Dogimazo_Stairs()
 	lstrcpy(m_szLoadingText, TEXT("모델를(을) 로딩 중 입니다."));
 	Add_Models_On_Path(m_eNextLevel, TEXT("../Bin/Resources/Models/Anim/"));
 
-	Add_Models_On_Path_NonAnim(m_eNextLevel, TEXT("../Bin/Resources/Models/NonAnim/Map"));
+	Add_Models_On_Path_NonAnim(m_eNextLevel, TEXT("../Bin/Resources/Models/NonAnim/Map/Map1"));
 
 	_matrix PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Model_Bone_Sphere"),
@@ -1398,7 +1359,7 @@ HRESULT CLoader::Loading_For_Dogimazo_Boss()
 	lstrcpy(m_szLoadingText, TEXT("모델를(을) 로딩 중 입니다."));
 	Add_Models_On_Path(m_eNextLevel, TEXT("../Bin/Resources/Models/Anim/"));
 
-	Add_Models_On_Path_NonAnim(m_eNextLevel, TEXT("../Bin/Resources/Models/NonAnim/Map"));
+	Add_Models_On_Path_NonAnim(m_eNextLevel, TEXT("../Bin/Resources/Models/NonAnim/Map/Map1"));
 
 	_matrix PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Model_Bone_Sphere"),
@@ -1835,37 +1796,6 @@ HRESULT CLoader::Loading_For_Test()
 		return E_FAIL;
 #pragma endregion
 
-#pragma region UI
-	/* For.Prototype_GameObject_Image_Texture */
-	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Image_Texture"),
-		CImage_Texture::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	/* For.Prototype_GameObject_Text */
-	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Text"),
-		CText::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	/* For.Prototype_GameObject_Group */
-	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Group"),
-		CGroup::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	/* For.Prototype_GameObject_Btn */
-	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Btn"),
-		CBtn::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	/* For.Prototype_GameObject_UIEffect */
-	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_UIEffect"),
-		CUI_Effect::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	//만들어둔 데이터 로딩
-	if (FAILED(Add_UI_On_Path(TEXT("../../Client/Bin/DataFiles/UIData/"))))
-		return E_FAIL;
-#pragma endregion
-
 #pragma endregion
 
 
@@ -2141,117 +2071,6 @@ HRESULT CLoader::Add_Models_On_Path_NonAnim(_uint iLevel, const wstring& strPath
 				return E_FAIL;
 		}
 	}
-	return S_OK;
-}
-
-HRESULT CLoader::Add_UI_On_Path(const wstring& strPath)
-{
-	vector<wstring> vecDirectorys;
-	m_pGameInstance->Get_DirectoryName(strPath, vecDirectorys);
-
-	CUIManager* m_pUIManager = CUIManager::GetInstance();
-
-	for (auto& strChannelName : vecDirectorys)
-	{
-		wstring strFilePath = strPath + strChannelName + TEXT("/");
-		string strDirectory = m_pGameInstance->WstringToString(strFilePath);
-
-		wstring ProtoFrontName = strChannelName + TEXT("_");
-
-		for (const auto& entry : fs::directory_iterator(strDirectory))
-		{
-
-			string FileName = entry.path().filename().string();
-			string AllPath = strDirectory + FileName;
-
-			string Tag;
-			_int dotPos = FileName.find_last_of(".");
-			Tag = FileName.substr(0, dotPos);
-
-
-			ifstream in(AllPath, ios::binary);
-
-			if (!in.is_open()) {
-				MSG_BOX("개방 실패");
-				return E_FAIL;
-			}
-			_uint Type;
-
-			in.read((char*)&Type, sizeof(_uint));
-
-			switch (Type)
-			{
-			case 0:
-			{
-				/* For.Prototype_GameObject_Image_Texture */
-				if (FAILED(m_pGameInstance->Add_GameObject_Prototype(ProtoFrontName + m_pGameInstance->StringToWstring(Tag),
-					CImage_Texture::Create(m_pDevice, m_pContext, in))))
-					return E_FAIL;
-
-				if (FAILED(m_pUIManager->Add_Data(strChannelName, ProtoFrontName + m_pGameInstance->StringToWstring(Tag))))
-					return E_FAIL;
-			}
-			break;
-
-			case 1:
-			{
-
-				/* For.Prototype_GameObject_Btn */
-				if (FAILED(m_pGameInstance->Add_GameObject_Prototype(ProtoFrontName + m_pGameInstance->StringToWstring(Tag),
-					CBtn::Create(m_pDevice, m_pContext, in))))
-					return E_FAIL;
-
-				if (FAILED(m_pUIManager->Add_Data(strChannelName, ProtoFrontName + m_pGameInstance->StringToWstring(Tag))))
-					return E_FAIL;
-			}
-			break;
-
-			case 2:
-			{
-
-				/* For.Prototype_GameObject_Text */
-				if (FAILED(m_pGameInstance->Add_GameObject_Prototype(ProtoFrontName + m_pGameInstance->StringToWstring(Tag),
-					CText::Create(m_pDevice, m_pContext, in))))
-					return E_FAIL;
-
-				if (FAILED(m_pUIManager->Add_Data(strChannelName, ProtoFrontName + m_pGameInstance->StringToWstring(Tag))))
-					return E_FAIL;
-			}
-			break;
-
-			case 3:
-			{
-
-
-				/* For.Prototype_GameObject_Group */
-				if (FAILED(m_pGameInstance->Add_GameObject_Prototype(ProtoFrontName + m_pGameInstance->StringToWstring(Tag),
-					CGroup::Create(m_pDevice, m_pContext, in))))
-					return E_FAIL;
-
-				if (FAILED(m_pUIManager->Add_Data(strChannelName, ProtoFrontName + m_pGameInstance->StringToWstring(Tag))))
-					return E_FAIL;
-			}
-			break;
-
-			case 4:
-			{
-
-				/* For.Prototype_GameObject_UIEffect */
-				if (FAILED(m_pGameInstance->Add_GameObject_Prototype(ProtoFrontName + m_pGameInstance->StringToWstring(Tag),
-					CUI_Effect::Create(m_pDevice, m_pContext, in))))
-					return E_FAIL;
-
-				if (FAILED(m_pUIManager->Add_Data(strChannelName, ProtoFrontName + m_pGameInstance->StringToWstring(Tag))))
-					return E_FAIL;
-			}
-			break;
-
-			default:
-				break;
-			}
-		}
-	}
-
 	return S_OK;
 }
 

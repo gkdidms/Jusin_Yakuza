@@ -91,7 +91,7 @@ public:
     _bool isBOF();
     _bool isShadow();
     _bool isRimLight();
-
+    
     void Set_PBR(_bool isPBR);
     void Set_BOF(_bool isBOF);
     _float Get_HDRLight();
@@ -102,7 +102,6 @@ public:
     _float Get_SSAOBlur();
     _float Get_SSAOBias();
     void Set_SSAOBias(_float fBias);
-    void Set_ShadowViewPos(_vector vPos);
     void Set_Shadow(_bool isShadow);
     void Set_RimLight(_bool isRimLight);
 #ifdef _DEBUG

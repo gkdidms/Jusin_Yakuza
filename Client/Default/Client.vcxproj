@@ -193,6 +193,9 @@
     <ClInclude Include="..\Public\BehaviorAnimation.h" />
     <ClInclude Include="..\Public\Btn.h" />
     <ClInclude Include="..\Public\Collision_Manager.h" />
+    <ClInclude Include="..\Public\Kiryu_KRC_Down.h" />
+    <ClInclude Include="..\Public\Kiryu_KRH_Down.h" />
+    <ClInclude Include="..\Public\Kiryu_KRS_Down.h" />
     <ClInclude Include="..\Public\Level_Dogimazo.h" />
     <ClInclude Include="..\Public\Level_DogimazoBoss.h" />
     <ClInclude Include="..\Public\Level_DogimazoStairs.h" />
@@ -275,9 +278,11 @@
     <ClInclude Include="..\Public\TRailEffect.h" />
     <ClInclude Include="..\Public\UIInven.h" />
     <ClInclude Include="..\Public\UILife.h" />
+    <ClInclude Include="..\Public\UILoading.h" />
     <ClInclude Include="..\Public\UIManager.h" />
     <ClInclude Include="..\Public\UIMenu.h" />
     <ClInclude Include="..\Public\UIMoney.h" />
+    <ClInclude Include="..\Public\UINowLoading.h" />
     <ClInclude Include="..\Public\UIScene.h" />
     <ClInclude Include="..\Public\UI_Effect.h" />
     <ClInclude Include="..\Public\UI_Object.h" />
@@ -314,6 +319,9 @@
     <ClCompile Include="..\Private\BehaviorAnimation.cpp" />
     <ClCompile Include="..\Private\Btn.cpp" />
     <ClCompile Include="..\Private\Collision_Manager.cpp" />
+    <ClCompile Include="..\Private\Kiryu_KRC_Down.cpp" />
+    <ClCompile Include="..\Private\Kiryu_KRH_Down.cpp" />
+    <ClCompile Include="..\Private\Kiryu_KRS_Down.cpp" />
     <ClCompile Include="..\Private\Level_Dogimazo.cpp" />
     <ClCompile Include="..\Private\Level_DogimazoBoss.cpp" />
     <ClCompile Include="..\Private\Level_DogimazoStairs.cpp" />
@@ -398,12 +406,14 @@
     <ClCompile Include="..\Private\UIManager.cpp" />
     <ClCompile Include="..\Private\UIMenu.cpp" />
     <ClCompile Include="..\Private\UIMoney.cpp" />
+    <ClCompile Include="..\Private\UINowLoading.cpp" />
     <ClCompile Include="..\Private\UIScene.cpp" />
     <ClCompile Include="..\Private\UI_Effect.cpp" />
     <ClCompile Include="..\Private\UI_Object.cpp" />
     <ClCompile Include="..\Private\UI_Texture.cpp" />
     <ClCompile Include="..\private\WPAYakuza.cpp" />
     <ClCompile Include="..\private\Yoneda.cpp" />
+    <ClCompile Include="..\Public\UILoading.cpp" />
     <ClCompile Include="Client.cpp" />
   </ItemGroup>
   <ItemGroup>

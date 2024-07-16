@@ -221,6 +221,7 @@ HRESULT CImage_Texture::Load_binary(ifstream& in)
 	in.read((char*)&m_isReverse, sizeof(_bool));
 	in.read((char*)&m_isEvent, sizeof(_bool));
 	in.read((char*)&m_isScreen, sizeof(_bool));
+	in.read((char*)&m_isAnimLoop, sizeof(_bool));
 	in.close();
 
 

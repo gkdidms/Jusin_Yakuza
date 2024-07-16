@@ -3,9 +3,9 @@
 #include "GameInstance.h"
 #include "Collision_Manager.h"
 #include "AI_RushYakuza.h"
-#include "SocketCollider.h"
-
 #include "Mesh.h"
+
+#include "SocketCollider.h"
 
 CRushYakuza::CRushYakuza(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CMonster{pDevice, pContext}
@@ -45,6 +45,7 @@ HRESULT CRushYakuza::Initialize(void* pArg)
 
 	m_pModelCom->Set_AnimationIndex(1, 0.5);
 	//m_pModelCom->Set_AnimLoop(1, true);
+
 	return S_OK;
 }
 
@@ -76,7 +77,7 @@ void CRushYakuza::Late_Tick(const _float& fTimeDelta)
 	for (auto& pPair : m_pColliders)
 	{
 		if (pPair.second->Get_CollierType() == CSocketCollider::ATTACK && pPair.second->IsOn())
-			m_pCollisionManager->Add_AttackCollider(pPair.second, CCollision_Manager::PLAYER);
+			m_pCollisionManager->Add_AttackCollider(pPair.second, CCollision_Manager::ENEMY);
 	}
 
 	// 현재 켜져있는 Hit용 콜라이더 삽입 (아직까지는 Hit용 콜라이더는 항상 켜져있음)

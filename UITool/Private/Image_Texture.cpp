@@ -130,6 +130,8 @@ HRESULT CImage_Texture::Save_binary(const string strDirectory)
 
 	out.write((char*)&m_isScreen, sizeof(_bool));
 
+	out.write((char*)&m_isAnimLoop, sizeof(_bool));
+
 	out.close();
 
 	return S_OK;
@@ -187,6 +189,9 @@ HRESULT CImage_Texture::Save_Groupbinary( ofstream& out)
 	out.write((char*)&m_isEvent, sizeof(_bool));
 
 	out.write((char*)&m_isScreen, sizeof(_bool));
+
+	out.write((char*)&m_isAnimLoop, sizeof(_bool));
+
 	return S_OK;
 }
 
@@ -241,6 +246,7 @@ HRESULT CImage_Texture::Load_binary(ifstream& in)
 
 	in.read((char*)&m_isScreen, sizeof(_bool));
 
+	in.read((char*)&m_isAnimLoop, sizeof(_bool));
 	in.close();
 
 

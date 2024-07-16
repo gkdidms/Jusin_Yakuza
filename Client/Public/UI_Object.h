@@ -42,6 +42,7 @@ public:
     _bool Get_isScreen() { return m_isScreen; }
     _int Get_TypeIndex() { return m_iTypeIndex; }
     _bool Get_isPlay() { return m_isPlay; }
+
 public:
     virtual HRESULT Initialize_Prototype() override;
     virtual HRESULT Initialize(void* pArg) override;
