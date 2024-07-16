@@ -470,7 +470,7 @@ void CNavigation_Manager::Show_Cells_IMGUI()
 	ImGui::Text(u8" X 한번 누르고 클릭. 시계방향으로!!!!!!!!! - 점 생성 ");
 	ImGui::Text(u8" 시계방향!!!!!!!!!!! ");
 
-	Find_Cells();
+	//Find_Cells();
 
 	if (0 < m_CellsName.size())
 	{
@@ -500,6 +500,8 @@ void CNavigation_Manager::Show_Cells_IMGUI()
 			ImGui::EndListBox();
 		}
 
+		//Find_Cells();
+
 		ImGui::Text(u8"네비게이션 옵션");
 		static int naviOption = m_Cells[m_iCurrentCellIndex]->Get_Index();
 
@@ -510,6 +512,13 @@ void CNavigation_Manager::Show_Cells_IMGUI()
 			m_iCurrentOption = m_Cells[m_iCurrentCellIndex]->Get_Option();
 		}
 
+		Find_Cells();
+
+		if (m_iCurrentCellIndex != cell_current_idx && m_Cells.size() > 0)
+		{
+			cell_current_idx = m_iCurrentCellIndex;
+			m_iCurrentOption = m_Cells[m_iCurrentCellIndex]->Get_Option();
+		}
 
 		if (ImGui::RadioButton(u8"바닥", m_iCurrentOption == 0))
 		{
