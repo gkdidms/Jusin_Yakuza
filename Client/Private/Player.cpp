@@ -582,7 +582,6 @@ void CPlayer::Synchronize_Root(const _float& fTimeDelta)
 		// 선형보간중일때는 무조건 초기화
 		XMStoreFloat4(&m_vPrevMove, XMVectorZero());
 	}
-
 	
 	XMStoreFloat4x4(&m_ModelWorldMatrix, m_pTransformCom->Get_WorldMatrix());
 	//m_vPrevRotation = vQuaternion;

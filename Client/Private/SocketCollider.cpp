@@ -102,6 +102,8 @@ void CSocketCollider::Tick(const _float& fTimeDelta)
 
 	m_vPrevMovePos = m_vMovePos;
 
+	__super::Tick(fTimeDelta);
+
 	if(m_pColliderCom)
 		m_pColliderCom->Tick(XMLoadFloat4x4(&m_WorldMatrix));
 
@@ -113,11 +115,6 @@ void CSocketCollider::Tick(const _float& fTimeDelta)
 
 void CSocketCollider::Late_Tick(const _float& fTimeDelta)
 {
-	_float4 vParentPosition;
-	memcpy(&vParentPosition, m_pParentMatrix->m[3], sizeof(_float4));
-
-	__super::Late_Tick(fTimeDelta);
-
 	m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
 }
 
@@ -185,12 +182,13 @@ void CSocketCollider::ParentObject_Hit(const _float3& vDir, _float fDamage, CLan
 
 	//m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Hit1_Glow0"), TEXT("Layer_Particle"), &EffectDesc);
 	//m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Hit1_Part0"), TEXT("Layer_Particle"), &EffectDesc);
-	//m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Hit1_Part1"), TEXT("Layer_Particle"), &EffectDesc);
 	//m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Hit1_Part2"), TEXT("Layer_Particle"), &EffectDesc);
 	//m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Hit1_Part3"), TEXT("Layer_Particle"), &EffectDesc);
 	//m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Hit1_Part4"), TEXT("Layer_Particle"), &EffectDesc);
 
-		cout << " 충돌!!!!" << endl;
+#ifdef _DEBUG
+	cout << " 충돌!!!!" << endl;
+#endif // DEBUG
 
 	m_pParentObject->Take_Damage(m_eColliderPartType, vDir, fDamage, pParentObject, isBlowAttack);
 }
