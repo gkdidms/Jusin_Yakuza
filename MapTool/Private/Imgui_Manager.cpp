@@ -311,21 +311,25 @@ void CImgui_Manager::Free()
     ImGui_ImplWin32_Shutdown();
     ImGui::DestroyContext();
 
-    Safe_Release(m_pNavigationMgr);
-    CNavigation_Manager::DestroyInstance();
+
     Safe_Release(m_pObjPlace_Manager);
     CObjPlace_Manager::DestroyInstance();
+
+    Safe_Release(m_pNavigationMgr);
+    CNavigation_Manager::DestroyInstance();
+
     Safe_Release(m_pLightTool_Mgr);
     CLightTool_Mgr::DestroyInstance();
+
     Safe_Release(m_pCameraToolMgr);
     CCamera_Manager::DestroyInstance();
+
     Safe_Release(m_pColliderMgr);
     CCollider_Manager::DestroyInstance();
 
-
-    Safe_Release(m_pGameInstance);
-
     Safe_Release(m_pDevice);
     Safe_Release(m_pContext);
+
+    Safe_Release(m_pGameInstance);
 
 }

@@ -17,6 +17,7 @@ public:
         XMMATRIX		vStartPos;
         wstring			wstrModelName;
         int				iShaderPass;
+        int             iNaviNum;
     }MONSTER_IODESC;
 
 public:
