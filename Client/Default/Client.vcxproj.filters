@@ -1137,6 +1137,9 @@
     <Filter Include="01.Levels\07.DogimazoBoss">
       <UniqueIdentifier>{c3987abd-0a35-468c-b0db-541aa2913f3b}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRC\Gaurd">
+      <UniqueIdentifier>{3f5ad5dc-5e30-4a8e-9db6-f53eb73719fc}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Client.rc">

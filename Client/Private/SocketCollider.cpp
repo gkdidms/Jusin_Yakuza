@@ -102,6 +102,8 @@ void CSocketCollider::Tick(const _float& fTimeDelta)
 
 	m_vPrevMovePos = m_vMovePos;
 
+	__super::Tick(fTimeDelta);
+
 	if(m_pColliderCom)
 		m_pColliderCom->Tick(XMLoadFloat4x4(&m_WorldMatrix));
 
@@ -113,11 +115,6 @@ void CSocketCollider::Tick(const _float& fTimeDelta)
 
 void CSocketCollider::Late_Tick(const _float& fTimeDelta)
 {
-	_float4 vParentPosition;
-	memcpy(&vParentPosition, m_pParentMatrix->m[3], sizeof(_float4));
-
-	__super::Late_Tick(fTimeDelta);
-
 	m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
 }
 

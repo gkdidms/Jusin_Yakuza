@@ -149,7 +149,7 @@ void CCollision_Manager::Enemy_Hit_Collision()
     {
         for (auto& pEnemyHitCollider : m_HitColliders[ENEMY])
         {
-            if (pEnemyHitCollider->Intersect(pPlayerAttackCollider->Get_Collider(), 10.f))
+            if (pEnemyHitCollider->Intersect(pPlayerAttackCollider->Get_Collider()))
             {
                 static_cast<CPlayer*>(pPlayerAttackCollider->Get_Parent())->AccHitGauge();
                 pEnemyHitCollider->ParentObject_Hit(pPlayerAttackCollider->Get_MoveDir(), pPlayerAttackCollider->Get_Damage(), pPlayerAttackCollider->Get_Parent(), pPlayerAttackCollider->Get_Parent()->Is_BlowAttack());
