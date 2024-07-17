@@ -115,7 +115,7 @@ HRESULT CLoader::Loading()
 		hr = Loading_For_Dogimazo_Lobby();
 		break;
 	case LEVEL_DOGIMAZO_BOSS:
-		hr = Loading_For_Dogimazo_Lobby();
+		hr = Loading_For_Dogimazo_Boss();
 		break;
 	case LEVEL_TEST:
 		hr = Loading_For_Test();
@@ -553,6 +553,8 @@ HRESULT CLoader::Loading_For_Dogimazo()
 
 HRESULT CLoader::Loading_For_Dogimazo_Stairs()
 {
+	if (FAILED(Loading_Default()))
+		return E_FAIL;
 
 	/* For.Prototype_Component_Navigation */
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Navigation"),
