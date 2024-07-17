@@ -18,10 +18,11 @@
 
 #include "UIManager.h"
 
-#pragma region Hit관련 헤더들
+#pragma region 행동 관련 헤더들
 #include "Kiryu_KRC_Hit.h"
 #include "Kiryu_KRH_Hit.h"
 #include "Kiryu_KRS_Hit.h"
+#include "Kiryu_KRS_Down.h"
 #pragma endregion
 
 CPlayer::CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -378,11 +379,22 @@ void CPlayer::Take_Damage(_uint iHitColliderType, const _float3& vDir, _float fD
 				iDirection = 3;
 		}
 
-		CKiryu_KRS_Hit::KRS_Hit_DESC Desc{ &vDir, fDamage, pAttackedObject->Get_CurrentAnimationName(), iDirection };
+		if (m_iCurrentBehavior == (_uint)KRS_BEHAVIOR_STATE::DOWN)
+		{
+			string strAnimationName = pAttackedObject->Get_CurrentAnimationName();
 
-		m_iCurrentBehavior = (_uint)KRS_BEHAVIOR_STATE::HIT;
-		m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Setting_Value((void*) &Desc);
+			CKiryu_KRS_Down::KRS_DOWN_DESC Desc{ -1, iDirection, strAnimationName };
+			m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Setting_Value((void*)&Desc);
+		}
+		else
+		{
+			CKiryu_KRS_Hit::KRS_Hit_DESC Desc{ &vDir, fDamage, pAttackedObject->Get_CurrentAnimationName(), iDirection };
 
+			m_iCurrentBehavior = (_uint)KRS_BEHAVIOR_STATE::HIT;
+			m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Setting_Value((void*)&Desc);
+
+
+		}
 
 		break;
 	}
@@ -860,14 +872,14 @@ void CPlayer::KRH_KeyInput(const _float& fTimeDelta)
 					|| string::npos != strAnimName.find("y_b")
 					|| string::npos != strAnimName.find("_guard_") || string::npos != strAnimName.find("_dnf_"))
 				{
-					_bool isFront = false;
-					m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Setting_Value(&isFront);
+					CKiryu_KRS_Down::KRS_DOWN_DESC Desc{ 0, -1, string()};
+					m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Setting_Value(&Desc);
 				}
 				else if (string::npos != strAnimName.find("body_r") || string::npos != strAnimName.find("_f")
 					|| string::npos != strAnimName.find("_direct_") || string::npos != strAnimName.find("dnb"))
 				{
-					_bool isFront = true;
-					m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Setting_Value(&isFront);
+					CKiryu_KRS_Down::KRS_DOWN_DESC Desc{ 1, -1, string() };
+					m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Setting_Value(&Desc);
 				}
 
 			}

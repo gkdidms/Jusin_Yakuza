@@ -5,34 +5,28 @@
 CKiryu_KRS_Down::CKiryu_KRS_Down()
 	:CBehaviorAnimation{}
 {
+	// 루프 모션 0 ~ 1
 	m_AnimationIndices.push_back(32); //[32]	c_dwn_b[c_dwn_b]
 	m_AnimationIndices.push_back(45); //[45]	c_dwn_f[c_dwn_f]
 
+	//일어나는 모션 2 ~ 3
 	m_AnimationIndices.push_back(46); //[46]	c_standup_dnb_fast[c_standup_dnb_fast]
 	m_AnimationIndices.push_back(47); //[47]	c_standup_dnf_fast[c_standup_dnf_fast]
 
-	//// 다운 루프 34 ~ 35
-	///*34*/m_AnimationIndices.push_back(32); m_AnimationNames.push_back("c_dwn_b");
-	///*35*/m_AnimationIndices.push_back(45); m_AnimationNames.push_back("c_dwn_f");
+	// 밟힐때 모션 (팔딱거리는거) 4 ~ 5
+	m_AnimationIndices.push_back(10); //[10]	c_dam_dnb_trample
+	m_AnimationIndices.push_back(13); //[13]	c_dam_dnf_trample
 
-	//// 누운상태에서 차여서 굴러갈때 36 ~ 39
-	///*36*/m_AnimationIndices.push_back(8); m_AnimationNames.push_back("c_dam_dnb_l");
-	///*37*/m_AnimationIndices.push_back(9); m_AnimationNames.push_back("c_dam_dnb_r");
-	///*38*/m_AnimationIndices.push_back(10); m_AnimationNames.push_back("c_dam_dnf_l");
-	///*39*/m_AnimationIndices.push_back(11); m_AnimationNames.push_back("c_dam_dnf_r");
-
-	//// 누운 상태에서 밟힐 때 40 ~ 41
-	///*40*/m_AnimationIndices.push_back(10); m_AnimationNames.push_back("c_dam_dnb_trample");
-	///*41*/m_AnimationIndices.push_back(13); m_AnimationNames.push_back("c_dam_dnf_trample");
-
-	//// 일어나는 모션 42 ~ 43
-	///*42*/m_AnimationIndices.push_back(46); m_AnimationNames.push_back("c_standup_dnb_fast");
-	///*43*/m_AnimationIndices.push_back(47); m_AnimationNames.push_back("c_standup_dnf_fast");
-
+	// 밟힐때 모션 (팔딱거리는거) 6 ~ 9
+	m_AnimationIndices.push_back(8); //[8]	c_dam_dnb_l		//Back->Front
+	m_AnimationIndices.push_back(9); //[9]	c_dam_dnb_r
+	m_AnimationIndices.push_back(11); //[11]	c_dam_dnf_l	// Front->Back
+	m_AnimationIndices.push_back(12); //[12]	c_dam_dnf_r
 }
 
 void CKiryu_KRS_Down::Tick(const _float& fTimeDelta)
 {
+	// 누운 상태에서 키 입력이 있으면 일어나는 모션 실행
 	if (!m_isStop && (m_pGameInstance->GetKeyState(DIK_W) == HOLD || m_pGameInstance->GetKeyState(DIK_S) == HOLD
 		|| m_pGameInstance->GetKeyState(DIK_A) == HOLD || m_pGameInstance->GetKeyState(DIK_D) == HOLD))
 	{
@@ -64,7 +58,20 @@ _bool CKiryu_KRS_Down::Get_AnimationEnd()
 
 	if (pModelCom->Get_AnimFinished())
 	{
-		Reset();
+		if (m_eAnimState == ANIM_ONCE)
+		{
+			if (m_isFront)
+				m_iCurrentIndex = 1;
+			else
+				m_iCurrentIndex = 0;
+
+			m_eAnimState = ANIM_LOOP;
+		}
+		else
+		{
+			Reset();
+		}
+		
 		return true;
 	}
 
@@ -78,13 +85,83 @@ void CKiryu_KRS_Down::Stop()
 
 void CKiryu_KRS_Down::Setting_Value(void* pValue)
 {
-	_bool* pDownState = static_cast<_bool*>(pValue);
+	KRS_DOWN_DESC* pDownState = static_cast<KRS_DOWN_DESC*>(pValue);
 
-	// 넘겨받은 값이 false면 뒤, true면 앞
-	if (*pDownState)
-		m_iCurrentIndex = 1;
-	else
-		m_iCurrentIndex = 0;
+	//iDownState값이 -1이 아니라면 넘어지고 유지되는 것에 대한 처리가 필요
+	if (pDownState->iDownState != -1)
+	{
+		m_eAnimState == ANIM_LOOP;
+
+		// 0 B(뒤), 1 F(앞)
+		if (pDownState->iDownState == 0)
+		{
+			m_isFront = false; //뒤
+			m_iCurrentIndex = 0;
+		}
+		else if(pDownState->iDownState == 0)
+		{
+			m_isFront = true; //앞
+			m_iCurrentIndex = 1;
+		}
+	}
+	// iDownState값이 -1이고 iType나 iDirection가 -1이 아니라면 넘어진 상태에서 히트당했을 때 처리
+	else if (pDownState->iDirection != -1)
+	{
+		m_eAnimState == ANIM_ONCE;
+
+		_bool isTrample = { false };
+		if (pDownState->strAnimationName == "e_kta_atk_down")	// 밟기
+		{
+			isTrample = true;
+		}
+		//else if (pDownState->strAnimationName == "e_kuz_atk_down")	// 차기
+
+		//true: 밟기, false: 차기
+		if (isTrample)
+		{
+			// 앞
+			if (m_isFront)
+			{
+				m_iCurrentIndex = 5;
+			}
+			else if (!m_isFront)
+			{
+				m_iCurrentIndex = 4;
+			}
+		}
+		else
+		{
+			// 상대방이 내 기준 앞이나 오른쪽에서 나를 찼다!
+			// 그럼 왼쪽으로 구르자
+			if (pDownState->iDirection == CPlayer::F || pDownState->iDirection == CPlayer::R)
+			{
+				//그리고 나는 드러누워있는 상태
+				if (m_isFront)
+				{
+					m_iCurrentIndex = 8;
+				}
+				else if (!m_isFront)
+				{
+					m_iCurrentIndex = 6;
+				}				
+			}
+			else if (!m_isFront)
+			{
+				//그리고 나는 드러누워있는 상태
+				if (m_isFront)
+				{
+					m_iCurrentIndex = 9;
+				}
+				else if (!m_isFront)
+				{
+					m_iCurrentIndex = 7;
+				}
+			}
+
+			// 굴러갈때는 앞뒤를 반대로 저장해야한다.
+			m_isFront = !m_isFront;
+		}
+	}
 }
 
 _bool CKiryu_KRS_Down::Stopping()
