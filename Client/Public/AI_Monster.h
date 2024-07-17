@@ -110,7 +110,7 @@ protected:
     virtual CBTNode::NODE_STATE HitAndGuard(); //히트모션을 할 것인지, 가드를 할 것인지
 
     // 플레이어 공격 스킬마다 히트모션 다름.
-    virtual CBTNode::NODE_STATE Normal_Hit(); // 히트 체크를 하면서 죽었는지 죽지 않았는지도 같이 확인해야함.
+    virtual CBTNode::NODE_STATE Hit(); // 히트 체크를 하면서 죽었는지 죽지 않았는지도 같이 확인해야함.
 
     // 가드
     virtual CBTNode::NODE_STATE Guard();
@@ -140,6 +140,14 @@ protected:
     void Check_KRS(_uint iPlayerLv);
     void Check_KRC(_uint iPlayerLv);
     _bool Check_StandUp();
+    
+protected:
+    void Reset_State() {
+        m_isAttack = false;
+        m_isBreak = false;
+        m_isShift = false;
+        m_fAttackDelayTime = 0.f;
+    }
 
 public:
     virtual void Free();

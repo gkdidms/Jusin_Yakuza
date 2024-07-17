@@ -159,7 +159,6 @@ void CRushYakuza::Change_Animation()
 
 	__super::Change_Animation();
 
-
 	switch (m_iState)
 	{
 	case MONSTER_IDLE:
@@ -257,6 +256,11 @@ void CRushYakuza::Change_Animation()
 	case MONSTER_GURAD:
 	{
 		m_strAnimName = "p_krh_guard";
+		break; 
+	}
+	case MONSTER_GURAD_FLOAT:
+	{
+		m_strAnimName = "p_krh_guard_float";
 		break;
 	}
 	case MONSTER_DEATH:
