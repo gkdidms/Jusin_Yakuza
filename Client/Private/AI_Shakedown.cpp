@@ -88,7 +88,7 @@ void CAI_Shakedown::Ready_Tree()
 
 #pragma region Death
 	CSequance* pDeadSeq = CSequance::Create();
-	pDeadSeq->Add_Children(CLeafNode::Create(bind(&CAI_Shakedown::Check_Death, this)));
+	pDeadSeq->Add_Children(CLeafNode::Create(bind(&CAI_Shakedown::Check_Down, this)));
 #pragma endregion
 
 #pragma region Sway
@@ -108,18 +108,17 @@ void CAI_Shakedown::Ready_Tree()
 	pHitGuardSeq->Add_Children(CLeafNode::Create(bind(&CAI_Shakedown::Check_Hit, this)));
 	pHitGuardSeq->Add_Children(CLeafNode::Create(bind(&CAI_Shakedown::HitAndGuard, this)));
 
-	CSelector* pHitGuard = CSelector::Create();
+	//CSelector* pHitGuard = CSelector::Create();
 	CSelector* pHitSelector = CSelector::Create();
 	pHitSelector->Add_Children(CLeafNode::Create(bind(&CAI_Shakedown::Normal_Hit, this)));
-	pHitSelector->Add_Children(CLeafNode::Create(bind(&CAI_Shakedown::Strong_Hit, this)));
 
-	CSelector* pGuardSelector = CSelector::Create();
-	pGuardSelector->Add_Children(CLeafNode::Create(bind(&CAI_Shakedown::Guard, this)));
+	//CSelector* pGuardSelector = CSelector::Create();
+	//pGuardSelector->Add_Children(CLeafNode::Create(bind(&CAI_Shakedown::Guard, this)));
 
-	pHitGuard->Add_Children(pHitSelector);
-	pHitGuard->Add_Children(pGuardSelector);
+	//pHitGuard->Add_Children(pHitSelector);
+	//pHitGuard->Add_Children(pGuardSelector);
 
-	pHitGuardSeq->Add_Children(pHitGuard);
+	pHitGuardSeq->Add_Children(pHitSelector);
 #pragma endregion
 
 #pragma region Attack

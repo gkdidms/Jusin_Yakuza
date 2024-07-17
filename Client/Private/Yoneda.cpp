@@ -37,6 +37,14 @@ HRESULT CYoneda::Initialize(void* pArg)
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
+	if (nullptr != pArg)
+	{
+		MONSTER_IODESC* gameobjDesc = (MONSTER_IODESC*)pArg;
+
+		m_pNavigationCom->Set_Index(gameobjDesc->iNaviNum);
+
+	}
+
 	return S_OK;
 }
 

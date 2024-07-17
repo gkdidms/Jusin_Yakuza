@@ -12,11 +12,19 @@ BEGIN(Client)
 class CLandObject abstract :
     public CGameObject
 {
+private: //오브젝트들의 정보를 저장 
+    typedef struct tLandObjectInfo {
+        _float iMaxHP;
+        _float iHp;
+    } LAND_OBJ_INFO;
+
 protected:
     CLandObject(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
     CLandObject(const CLandObject& rhs);
     virtual ~CLandObject() = default;
-    
+
+public:
+    LAND_OBJ_INFO Get_Info() { return m_Info; } //객체의 정보를 저장하는 구조체 반환
 
 #ifdef _DEBUG
 public:
@@ -73,12 +81,14 @@ public:
 #endif // DEBUG
 
 
-
 protected:
     class CSystemManager* m_pSystemManager = { nullptr };
     class CCollision_Manager* m_pCollisionManager = { nullptr };
     CCollider* m_pColliderCom = { nullptr };
     CModel* m_pModelCom = { nullptr };
+
+    //객체의 정보 구조체 
+    LAND_OBJ_INFO m_Info = {};
 
     // 애니메이션 툴에서 찍은 데이터 파싱해서 들고있는 객체
     class CCharacterData* m_pData = { nullptr };

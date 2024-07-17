@@ -129,7 +129,7 @@ _int CNavigation::Find_Index(POINT ptMouse, _fvector vTargetPos, _float fZ, _fma
 	return -1;
 }
 
-void CNavigation::Find_Player_Index(_fvector vTargetPos)
+int CNavigation::Find_PlayerMonster_Index(_fvector vTargetPos)
 {
     for (int i = 0; i < m_Cells.size(); i++)
     {
@@ -138,11 +138,11 @@ void CNavigation::Find_Player_Index(_fvector vTargetPos)
 
         if (true == m_Cells[i]->isIn(vTargetPos, &iNeighborsIndex))
         {
-            m_iCurrentIndex = i;
-            return;
+            return i;
         }
     }
 
+    return -1;
 }
 
 #ifdef _DEBUG
@@ -320,11 +320,6 @@ _bool CNavigation::isMove(_fvector vMovePos)
 
 _float CNavigation::Compute_Height(_fvector vPosition)
 {
-    if (m_iCurrentIndex == -1)
-    {
-        Find_Player_Index(vPosition);
-    }
-
     return m_Cells[m_iCurrentIndex]->Compute_Height(vPosition);
 }
 

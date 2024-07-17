@@ -42,6 +42,9 @@ public:
 	void					Delete_Cell(_uint iIndex);
 	void					Delete_AllCell();
 
+	int						Get_Player_Monster_NaviIndex(_vector vPosition);
+				
+
 	/* cell 수정하는 부분 */
 	void					Find_Cells();
 
@@ -72,7 +75,6 @@ private:
 private:
 	vector<class CCell*>					m_Cells;
 	static _float4x4						m_WorldMatrix; /* 객체들이 공유할 수 있게끔 static */
-	class CNavigation*						m_pNavigationCom = { nullptr };
 
 private:
 	vector<char*>							m_CellsName;

@@ -3,7 +3,9 @@
 #include "GameInstance.h"
 #include "Transform.h"
 #include "Imgui_Manager.h"
+#include "ObjPlace_Manager.h"
 #include "Mesh.h"
+#include "Navigation_Manager.h"
 
 CConstruction::CConstruction(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CGameObject{ pDevice, pContext }
@@ -174,6 +176,27 @@ int CConstruction::Get_ObjPlaceDesc(OBJECTPLACE_DESC* objplaceDesc)
 	objplaceDesc->iShaderPassNum = m_iShaderPassNum;
 	objplaceDesc->iObjType = m_iObjectType;
 	objplaceDesc->iObjPropertyType = m_iObjectPropertyType;
+
+	if ((int)CObjPlace_Manager::OBJECT_TYPE::PLAYER == m_iObjectType || (int)CObjPlace_Manager::OBJECT_TYPE::MONSTER_KUZE == m_iObjectType
+		|| (int)CObjPlace_Manager::OBJECT_TYPE::MONSTER_RUSH == m_iObjectType || (int)CObjPlace_Manager::OBJECT_TYPE::MONSTER_SHAKEDOWN == m_iObjectType
+		|| (int)CObjPlace_Manager::OBJECT_TYPE::MONSTER_WPA == m_iObjectType || (int)CObjPlace_Manager::OBJECT_TYPE::MONSTER_YONEDA == m_iObjectType)
+	{
+		CNavigation_Manager* pNaviMgr = CNavigation_Manager::GetInstance();
+		Safe_AddRef(pNaviMgr);
+
+		int		iNaviNum = pNaviMgr->Get_Player_Monster_NaviIndex(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+		objplaceDesc->iNaviNum = iNaviNum;
+
+		Safe_Release(pNaviMgr);
+	}
+	else
+	{
+		objplaceDesc->iNaviNum = 0;
+	}
+	
+
+	
+
 
 	/* Decal Ãß°¡ */
 	objplaceDesc->iDecalNum = m_vDecals.size();
