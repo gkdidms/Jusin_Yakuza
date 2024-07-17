@@ -147,18 +147,6 @@ HRESULT CShakedown::Add_Components()
 	return S_OK;
 }
 
-HRESULT CShakedown::Bind_ResourceData()
-{
-	if (FAILED(m_pTransformCom->Bind_ShaderMatrix(m_pShaderCom, "g_WorldMatrix")))
-		return E_FAIL;
-	if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_VIEW))))
-		return E_FAIL;
-	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_PROJ))))
-		return E_FAIL;
-
-	return S_OK;
-}
-
 void CShakedown::Change_Animation()
 {
 	__super::Change_Animation();

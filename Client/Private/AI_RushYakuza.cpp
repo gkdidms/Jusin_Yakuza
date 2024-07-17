@@ -34,27 +34,13 @@ HRESULT CAI_RushYakuza::Initialize(void* pArg)
 
 	//트리 구현
 	Ready_Tree();
-
-	m_iGuardAtk = 2;
 	
 	return S_OK;
 }
 
 void CAI_RushYakuza::Tick(const _float& fTimeDelta)
 {
-	if (m_isAttack == false)
-		m_fAttackDelayTime += fTimeDelta;
-
-	if (m_isBreak)
-	{
-		m_fBreakTime += fTimeDelta;
-
-		if (m_fBreakDuration <= m_fBreakTime)
-		{
-			m_isBreak = false;
-			m_fBreakTime = 0.f;
-		}
-	}
+	__super::Tick(fTimeDelta);
 
 	this->Execute();
 }
@@ -141,7 +127,7 @@ void CAI_RushYakuza::Ready_Tree()
 	pRoot->Add_Children(pSwaySeq);
 	pRoot->Add_Children(pSyncSeq);
 	pRoot->Add_Children(pHitGuardSeq);
-	pRoot->Add_Children(pAngrySeq);
+	//pRoot->Add_Children(pAngrySeq);
 	pRoot->Add_Children(pAttackSeq);
 	pRoot->Add_Children(pBreakSeq);
 #pragma endregion
