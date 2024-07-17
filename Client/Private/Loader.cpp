@@ -266,12 +266,6 @@ HRESULT CLoader::Loading_Default()
 		CVIBuffer_Trail::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-
-	/* For.Prototype_Component_Navigation */
-	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Navigation"),
-		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/NaviData/Navigation_0.dat")))))
-		return E_FAIL;
-
 #pragma endregion
 
 #pragma region Shader
@@ -460,6 +454,11 @@ HRESULT CLoader::Loading_For_Office_2F()
 	if (FAILED(Loading_Default()))
 		return E_FAIL;
 
+	/* For.Prototype_Component_Navigation */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Navigation"),
+		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/NaviData/Navigation_1.dat")))))
+		return E_FAIL;
+
 #pragma region Model
 	lstrcpy(m_szLoadingText, TEXT("모델를(을) 로딩 중 입니다."));
 	Add_Models_On_Path(m_eNextLevel, TEXT("../Bin/Resources/Models/Anim/"));
@@ -486,6 +485,11 @@ HRESULT CLoader::Loading_For_Office_2F()
 HRESULT CLoader::Loading_For_Office_Boss()
 {
 	if (FAILED(Loading_Default()))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Navigation */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Navigation"),
+		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/NaviData/Navigation_2.dat")))))
 		return E_FAIL;
 
 #pragma region Model
@@ -515,6 +519,11 @@ HRESULT CLoader::Loading_For_Dogimazo()
 	if (FAILED(Loading_Default()))
 		return E_FAIL;
 
+	/* For.Prototype_Component_Navigation */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Navigation"),
+		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/NaviData/Navigation_3.dat")))))
+		return E_FAIL;
+
 #pragma region Model
 	lstrcpy(m_szLoadingText, TEXT("모델를(을) 로딩 중 입니다."));
 	Add_Models_On_Path(m_eNextLevel, TEXT("../Bin/Resources/Models/Anim/"));
@@ -539,6 +548,12 @@ HRESULT CLoader::Loading_For_Dogimazo()
 
 HRESULT CLoader::Loading_For_Dogimazo_Stairs()
 {
+
+	/* For.Prototype_Component_Navigation */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Navigation"),
+		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/NaviData/Navigation_4.dat")))))
+		return E_FAIL;
+
 #pragma region Model
 	lstrcpy(m_szLoadingText, TEXT("모델를(을) 로딩 중 입니다."));
 	Add_Models_On_Path(m_eNextLevel, TEXT("../Bin/Resources/Models/Anim/"));
@@ -566,6 +581,11 @@ HRESULT CLoader::Loading_For_Dogimazo_Lobby()
 	if (FAILED(Loading_Default()))
 		return E_FAIL;
 
+	/* For.Prototype_Component_Navigation */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Navigation"),
+		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/NaviData/Navigation_5.dat")))))
+		return E_FAIL;
+
 #pragma region Model
 	lstrcpy(m_szLoadingText, TEXT("모델를(을) 로딩 중 입니다."));
 	Add_Models_On_Path(m_eNextLevel, TEXT("../Bin/Resources/Models/Anim/"));
@@ -591,82 +611,13 @@ HRESULT CLoader::Loading_For_Dogimazo_Lobby()
 
 HRESULT CLoader::Loading_For_Dogimazo_Boss()
 {
-#pragma region Texture
-	lstrcpy(m_szLoadingText, TEXT("텍스쳐를 로딩 중 입니다."));
-
-	/* For.Prototype_Component_Texture_Terrain */
-	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Texture_Terrain"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../Bin/Resources/Textures/T_Sand_06_A.png"), 1))))
+	if (FAILED(Loading_Default()))
 		return E_FAIL;
-#pragma endregion
-
-#pragma region Effect_Texture
-	/* Prototype_Component_Texture_Sphere */
-	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Texture_Sphere"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/lm000.dds"), 1))))
+		
+	/* For.Prototype_Component_Navigation */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Navigation"),
+		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/NaviData/Navigation_6.dat")))))
 		return E_FAIL;
-
-	/* Prototype_Component_Texture_Trail */
-	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Texture_Trail"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/001_trc_n.dds"), 1))))
-		return E_FAIL;
-
-	/* Prototype_Component_Texture_Sky */
-	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Texture_Sky"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/SkyBox/Sky_%d.dds"), 5))))
-		return E_FAIL;
-
-	/* Prototype_Component_Texture_Test */
-	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Texture_Test"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/9923j.png"), 1))))
-		return E_FAIL;
-
-	/* Prototype_Component_Texture_HitSpark */
-	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Texture_HitSpark"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/015_trc_na.dds"), 1))))
-		return E_FAIL;
-
-	/* Prototype_Component_Texture_AuraAnim */
-	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Texture_AuraAnim"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/e_j_0076_aura_g.dds"), 1))))
-		return E_FAIL;
-
-	/* Prototype_Component_Texture_AuraFluid */
-	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Texture_AuraFluid"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/e_j_0309_fluidFlowA01.dds"), 1))))
-		return E_FAIL;
-
-	/* Prototype_Component_Texture_AuraBase */
-	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Texture_AuraBase"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/e_j_0291_smoke_jA8L8.dds"), 1))))
-		return E_FAIL;
-
-	/* Prototype_Component_Texture_AuraTone */
-	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Texture_AuraTone"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/auratone24.dds"), 1))))
-		return E_FAIL;
-
-	/* Prototype_Component_Texture_HitBase */
-	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Texture_HitBase"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/e_j_0233_radialpat_d.dds"), 1))))
-		return E_FAIL;
-
-	/* Prototype_Component_Texture_SmokeBase */
-	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Texture_SmokeBase"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/e_o_2208_smoke_j.dds"), 1))))
-		return E_FAIL;
-
-	/* Prototype_Component_Texture_AuraToneRush */
-	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Texture_AuraToneRush"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/auratone22.dds"), 1))))
-		return E_FAIL;
-
-	/* Prototype_Component_Texture_AuraToneDestroy */
-	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Texture_AuraToneDestroy"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/auratone17.dds"), 1))))
-		return E_FAIL;
-
-#pragma endregion
 
 #pragma region Model
 	lstrcpy(m_szLoadingText, TEXT("모델를(을) 로딩 중 입니다."));
