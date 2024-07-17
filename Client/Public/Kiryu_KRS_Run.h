@@ -34,6 +34,9 @@ public:
 	virtual _bool Stopping() override;
 
 private:
+	_bool Changeable_Combo_Animation();
+
+private:
 	ANIM_STATE m_eAnimState = { ANIM_LOOP };
 	_bool m_isStop = { false };
 
