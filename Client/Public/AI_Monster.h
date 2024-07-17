@@ -34,6 +34,7 @@ public:
         SKILL_ANGRY_CHOP,
         SKILL_ANGRY_KICK,
 
+        SKILL_GUARD,
         SKILL_DEAD,
         SKILL_END
     };
@@ -71,6 +72,7 @@ protected:
     _bool m_isSync = { false };
     _bool m_isShift = { false };
     _bool m_isBreak = { false };
+    _bool m_isGuard = { false };
 
     _uint m_iSkill = { SKILL_END };
 
@@ -83,6 +85,9 @@ protected:
 
     _float m_fCmbNum = { 0.f }; // 스킬 발동시 확률적으로 몇번 공격할것인지 저장.
     _float m_fCmbCount = { 0.f }; // 콥보 누적 카운트
+
+    _float m_iGuardAtk = { 0 }; // 가드 후 몇번 맞으면 가드가 풀릴것인지 지정.
+    _float m_iGuardAtkCount = { 0 };
 
 protected:
     //쓰러졋는가? or 죽었는가? (현재상태 확인)
