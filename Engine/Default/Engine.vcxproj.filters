@@ -449,9 +449,6 @@
     <ClCompile Include="..\Private\Component_Manager.cpp">
       <Filter>01.Utility\03.Component\00.Manager</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Navigation.cpp">
-      <Filter>01.Utility\03.Component\06.Navigation</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\Cell.cpp">
       <Filter>01.Utility\03.Component\06.Navigation\Cell</Filter>
     </ClCompile>
@@ -559,6 +556,9 @@
     </ClCompile>
     <ClCompile Include="..\private\BTNode_Manager.cpp">
       <Filter>01.Utility\11.BTNode\Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Navigation.cpp">
+      <Filter>01.Utility\03.Component\06.Navigation</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
