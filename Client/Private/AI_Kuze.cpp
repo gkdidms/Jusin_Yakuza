@@ -102,9 +102,16 @@ void CAI_Kuze::Ready_Tree()
 {
 	CSelector* pRoot = CSelector::Create();
 
+
 #pragma region Death
-	CSequance* pDeadSeq = CSequance::Create();
-	pDeadSeq->Add_Children(CLeafNode::Create(bind(&CAI_Kuze::Check_Down, this)));
+	CSequance* pDownSeq = CSequance::Create();
+	pDownSeq->Add_Children(CLeafNode::Create(bind(&CAI_Kuze::Check_Down, this)));
+	pDownSeq->Add_Children(CLeafNode::Create(bind(&CAI_Kuze::StandUpAndDead, this)));
+
+	CSelector* pDownSelector = CSelector::Create();
+	pDownSelector->Add_Children(CLeafNode::Create(bind(&CAI_Kuze::StandUp, this)));
+	pDownSelector->Add_Children(CLeafNode::Create(bind(&CAI_Kuze::Dead, this)));
+	pDownSeq->Add_Children(pDownSelector);
 #pragma endregion
 
 #pragma region Sway
@@ -125,17 +132,12 @@ void CAI_Kuze::Ready_Tree()
 	pHitGuardSeq->Add_Children(CLeafNode::Create(bind(&CAI_Kuze::HitAndGuard, this)));
 
 	CSelector* pHitGuard = CSelector::Create();
-	CSelector* pHitSelector = CSelector::Create();
-	pHitSelector->Add_Children(CLeafNode::Create(bind(&CAI_Kuze::Hit, this)));
-
-	CSelector* pGuardSelector = CSelector::Create();
-	pGuardSelector->Add_Children(CLeafNode::Create(bind(&CAI_Kuze::Guard, this)));
-
-	pHitGuard->Add_Children(pHitSelector);
-	pHitGuard->Add_Children(pGuardSelector);
+	pHitGuard->Add_Children(CLeafNode::Create(bind(&CAI_Kuze::Guard, this)));
+	pHitGuard->Add_Children(CLeafNode::Create(bind(&CAI_Kuze::Hit, this)));
 
 	pHitGuardSeq->Add_Children(pHitGuard);
 #pragma endregion
+
 
 #pragma region Attack
 	CSequance* pAttackSeq = CSequance::Create();
@@ -168,7 +170,7 @@ void CAI_Kuze::Ready_Tree()
 #pragma endregion
 
 #pragma region Root
-	pRoot->Add_Children(pDeadSeq);
+	pRoot->Add_Children(pDownSeq);
 	pRoot->Add_Children(pSwaySeq);
 	pRoot->Add_Children(pSyncSeq);
 	pRoot->Add_Children(pHitGuardSeq);

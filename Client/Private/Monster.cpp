@@ -328,6 +328,11 @@ void CMonster::Change_Animation()
 		m_strAnimName = "c_dam_head_lv01_f";
 		break;
 	}
+	case MONSTER_DAM_HEAD_LV01_B:
+	{
+		m_strAnimName = "c_dam_head_lv01_b";
+		break;
+	}
 	case MONSTER_DAM_HEAD_LV02_R:
 	{
 		m_strAnimName = "c_dam_head_lv02_r";
@@ -353,6 +358,11 @@ void CMonster::Change_Animation()
 		m_strAnimName = "c_dam_body_lv01_f";
 		break;
 	}
+	case MONSTER_DAM_BODY_LV01_B:
+	{
+		m_strAnimName = "c_dam_body_lv01_b";
+		break;
+	}
 	case MONSTER_DAM_BODY_LV01_D:
 	{
 		m_strAnimName = "c_dam_body_lv01_b";
@@ -363,14 +373,24 @@ void CMonster::Change_Animation()
 		m_strAnimName = "c_dam_body_lv02_f";
 		break;
 	}
+	case MONSTER_DAM_BODY_LV02_B:
+	{
+		m_strAnimName = "c_dam_body_lv02_b";
+		break;
+	}
 	case MONSTER_DAM_BODY_LV02_D:
 	{
 		m_strAnimName = "c_dam_body_lv02_b";
 		break;
 	}
-	case MONSTER_DWN_DIRECT_D:
+	case MONSTER_DWN_DIRECT_B:
 	{
 		m_strAnimName = "c_dwn_direct_b";
+		break;
+	}
+	case MONSTER_DWN_DIRECT_F:
+	{
+		m_strAnimName = "c_dwn_direct_f";
 		break;
 	}
 	case MONSTER_DWN_BODY_F:
@@ -388,9 +408,29 @@ void CMonster::Change_Animation()
 		m_strAnimName = "c_dwn_explode_f";
 		break;
 	}
+	case MONSTER_DWN_BODY_B:
+	{
+		m_strAnimName = "c_dwn_body_b";
+		break;
+	}
+	case MONSTER_DWN_BODY_B_SP:
+	{
+		m_strAnimName = "c_dwn_body_b_sp";
+		break;
+	}
+	case MONSTER_DWN_EXPLODE_B:
+	{
+		m_strAnimName = "c_dwn_explode_b";
+		break;
+	}
 	case MONSTER_DWN_DIRECT_F_BOUND_G:
 	{
 		m_strAnimName = "c_dwn_direct_f_bound_g";
+		break;
+	}
+	case MONSTER_DWN_DIRECT_B_BOUND_G:
+	{
+		m_strAnimName = "c_dwn_direct_b_bound_g";
 		break;
 	}
 	case MONSTER_STANDUP_DNF_FAST:
