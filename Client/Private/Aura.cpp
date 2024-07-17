@@ -76,7 +76,7 @@ void CAura::Tick(const _float& fTimeDelta)
 
 	if (m_iAction & iAction[ACTION_SPREAD])
 	{
-		m_pVIBufferCom->Aura(fTimeDelta);
+		m_pVIBufferCom->Spread(fTimeDelta);//스타트
 	}
 	if (m_iAction & iAction[ACTION_DROP])
 	{
@@ -89,6 +89,10 @@ void CAura::Tick(const _float& fTimeDelta)
 	if (m_iAction & iAction[ACTION_SIZEDOWN])
 	{
 		m_pVIBufferCom->SizeDown_Time(fTimeDelta);
+	}
+	if (m_iAction & iAction[ACTION_AURA])
+	{
+		m_pVIBufferCom->Aura(fTimeDelta);//아우라
 	}
 
 }
@@ -162,6 +166,8 @@ HRESULT CAura::Save_Data(const string strDirectory)
 
 	out.write((char*)&m_fUVCount, sizeof(_float2));
 
+	out.write((char*)&m_isAura, sizeof(_float2));
+
 	out.write((char*)&m_BufferInstance.iNumInstance, sizeof(_uint));
 	out.write((char*)&m_BufferInstance.vOffsetPos, sizeof(_float3));
 	out.write((char*)&m_BufferInstance.vPivotPos, sizeof(_float3));
@@ -231,6 +237,9 @@ HRESULT CAura::Load_Data(const string strDirectory)
 
 	in.read((char*)&m_fUVCount, sizeof(_float2));
 
+	in.read((char*)&m_isAura, sizeof(_float2));
+	m_isAura = true;
+
 	in.read((char*)&m_BufferInstance.iNumInstance, sizeof(_uint));
 	in.read((char*)&m_BufferInstance.vOffsetPos, sizeof(_float3));
 	in.read((char*)&m_BufferInstance.vPivotPos, sizeof(_float3));
@@ -242,7 +251,7 @@ HRESULT CAura::Load_Data(const string strDirectory)
 	in.read((char*)&m_BufferInstance.vSpeed, sizeof(_float2));
 	in.read((char*)&m_BufferInstance.vLifeTime, sizeof(_float2));
 	in.read((char*)&m_BufferInstance.isLoop, sizeof(_bool));
-
+	m_BufferInstance.isAura = true;
 	in.close();
 
 	return S_OK;

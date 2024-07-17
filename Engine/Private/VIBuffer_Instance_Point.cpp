@@ -134,17 +134,21 @@ HRESULT CVIBuffer_Instance_Point::Initialize(void* pArg)
 			pInstanceVertices[i].vTranslation = _float4(RangeX, RangeY, RangeZ, 1.f);
 
 		_vector WorlPosition= XMLoadFloat4x4(m_pCurrentWorldMatrix).r[3];	
+		if (m_InstanceDesc->isAura)
+			m_pOriginalOffsets[i] = _float3(m_InstanceDesc->vOffsetPos.x+ XMVectorGetX(WorlPosition), m_InstanceDesc->vOffsetPos.y+ XMVectorGetY(WorlPosition), m_InstanceDesc->vOffsetPos.z+ XMVectorGetZ(WorlPosition)); // Loop를 위해 저장해준다.
+		else
+			m_pOriginalOffsets[i] = _float3(m_InstanceDesc->vOffsetPos.x, m_InstanceDesc->vOffsetPos.y, m_InstanceDesc->vOffsetPos.z); // Loop를 위해 저장해준다.
 
 		m_pOriginalPositions[i] = _float3(pInstanceVertices[i].vTranslation.x, pInstanceVertices[i].vTranslation.y, pInstanceVertices[i].vTranslation.z); // Loop를 위해 저장해준다.
-		//m_pOriginalOffsets[i] = _float3(m_InstanceDesc->vOffsetPos.x+ XMVectorGetX(WorlPosition), m_InstanceDesc->vOffsetPos.y+ XMVectorGetY(WorlPosition), m_InstanceDesc->vOffsetPos.z+ XMVectorGetZ(WorlPosition)); // Loop를 위해 저장해준다.
-		m_pOriginalOffsets[i] = _float3(m_InstanceDesc->vOffsetPos.x, m_InstanceDesc->vOffsetPos.y, m_InstanceDesc->vOffsetPos.z); // Loop를 위해 저장해준다.
 		pInstanceVertices[i].vLifeTime.x = LifeTime; // 파티클이 살아있을 수 있는 시간.
 		m_pOriginalSize[i] = pInstanceVertices[i].vRectSize.x = fRectSize;
 		XMStoreFloat4(& pInstanceVertices[i].vDirection, XMVectorSetW(XMLoadFloat4(&pInstanceVertices[i].vTranslation) - XMLoadFloat3(&m_pOriginalOffsets[i]), 0.f));
-
-		//pInstanceVertices[i].vTranslation.x += XMVectorGetX(WorlPosition);
-		//pInstanceVertices[i].vTranslation.y += XMVectorGetY(WorlPosition);
-		//pInstanceVertices[i].vTranslation.z += XMVectorGetZ(WorlPosition);
+		if(m_InstanceDesc->isAura)
+		{
+			pInstanceVertices[i].vTranslation.x += XMVectorGetX(WorlPosition);
+			pInstanceVertices[i].vTranslation.y += XMVectorGetY(WorlPosition);
+			pInstanceVertices[i].vTranslation.z += XMVectorGetZ(WorlPosition);
+		}
 		pInstanceVertices[i].vRectSize.y = m_pGameInstance->Get_Random(0.f, 360.f);
 
 

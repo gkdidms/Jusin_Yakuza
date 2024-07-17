@@ -20,6 +20,7 @@ public:
         _float2 vLifeTime;
         _bool isLoop;
         const _float4x4* WorldMatrix;
+        _bool isAura;
     }INSTANCE_DESC;
 
     //typedef struct tBlendSort
@@ -84,6 +85,7 @@ protected:
 public:
     void Spread(_float fTimeDelta);
     void Aura(_float fTimeDelta);
+
     void Drop(_float fTimeDelta);
     void LifeTime_Check();
     void SizeUp_Time(_float fTimeDelta);
