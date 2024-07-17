@@ -65,6 +65,7 @@ _bool CKiryu_KRC_Guard::Get_AnimationEnd()
 
 	if (pModelCom->Get_AnimFinished())
 	{
+		m_iCurrentIndex = 0;
 		//m_eAnimState = { ANIM_START };
 		//m_isStop = false;
 
