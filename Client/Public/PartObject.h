@@ -32,9 +32,9 @@ public:
 	virtual HRESULT Render() override;
 
 protected:
-	const _float4x4*		m_pParentMatrix = { nullptr };
+	const _float4x4*		m_pParentMatrix = { nullptr };		// 부모로 가지는 객체의 행렬
 
-	_float4x4				m_WorldMatrix;
+	_float4x4				m_WorldMatrix;						// 본인 객체의 행렬
 
 public:	
 	virtual CGameObject* Clone(void* pArg) = 0;
