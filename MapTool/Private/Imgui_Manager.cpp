@@ -110,6 +110,9 @@ void CImgui_Manager::Tick(_float fTimeDelta)
 
     if (ImGui::Button(u8"콜라이더 TOOL"))
         m_bColliderMgr_imgui = true;
+
+    if (ImGui::Button(u8"트리거 TOOL"))
+        m_bTriggerMgr_IMGUI = true;
        
 
     ImGui::End();
@@ -153,6 +156,13 @@ void CImgui_Manager::Tick(_float fTimeDelta)
         m_eWrieID = COLLIDER;
     }
 
+    if (m_bTriggerMgr_IMGUI)
+    {
+        m_pTriggerMgr->Show_FileName();
+        Show_Trigger_IMGUI();
+        m_eWrieID = TRIGGER;
+    }
+
 #pragma endregion
     ImGui::EndFrame();
 
@@ -173,6 +183,8 @@ void CImgui_Manager::Late_Tick(_float fTimeDelta)
     m_pLightTool_Mgr->Late_Tick(fTimeDelta);
 
     m_pCameraToolMgr->Late_Tick(fTimeDelta);
+
+    m_pTriggerMgr->Late_Tick(fTimeDelta);
 }
 
 void CImgui_Manager::Render()
@@ -307,6 +319,18 @@ void CImgui_Manager::Show_Collider_IMGUI()
     ImGui::End();
 }
 
+void CImgui_Manager::Show_Trigger_IMGUI()
+{
+    ImGui::Begin(u8"트리거 파일 선택");
+
+    m_pTriggerMgr->Show_Add_Trigger_IMGUI();
+
+    if (ImGui::Button("Close"))
+        m_bTriggerMgr_IMGUI = false;
+
+    ImGui::End();
+}
+
 
 void CImgui_Manager::Free()
 {
@@ -329,6 +353,9 @@ void CImgui_Manager::Free()
 
     Safe_Release(m_pColliderMgr);
     CCollider_Manager::DestroyInstance();
+
+    Safe_Release(m_pTriggerMgr);
+    CTrigger_Manager::DestroyInstance();
 
     Safe_Release(m_pDevice);
     Safe_Release(m_pContext);

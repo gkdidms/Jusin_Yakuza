@@ -68,18 +68,25 @@ HRESULT CTriggerObj::Render()
 
 		m_pModelCom->Render(i);
 	}
-
-#ifdef _DEBUG
-	m_pGameInstance->Add_DebugComponent(m_pColliderCom);
-#endif
+//
+//#ifdef _DEBUG
+//	m_pGameInstance->Add_DebugComponent(m_pColliderCom);
+//#endif
 
 
 	return S_OK;
 }
 
-void CTriggerObj::Set_TriggerDesc(Trigger_IO triggerDesc)
+void CTriggerObj::Set_TriggerDesc(TRIGGER_DESC triggerDesc)
 {
 	m_tTriggerDesc = triggerDesc;
+}
+
+TRIGGER_DESC CTriggerObj::Get_TriggerDesc()
+{
+	m_tTriggerDesc.vTransform = *m_pTransformCom->Get_WorldFloat4x4();
+
+	return m_tTriggerDesc;
 }
 
 CTriggerObj* CTriggerObj::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -110,6 +117,40 @@ HRESULT CTriggerObj::Add_Components()
 	return S_OK;
 }
 
+HRESULT CTriggerObj::Bind_ShaderResources()
+{
+	if (FAILED(m_pTransformCom->Bind_ShaderMatrix(m_pShaderCom, "g_WorldMatrix")))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_VIEW))))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_PROJ))))
+		return E_FAIL;
+
+	if (FAILED(m_pShaderCom->Bind_ValueFloat("g_fObjID", m_fObjID)))
+		return E_FAIL;
+
+
+	bool	bWrite;
+	if (CImgui_Manager::IDWRIE::TRIGGER == CImgui_Manager::GetInstance()->Get_Write())
+	{
+		bWrite = true;
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_bWriteID", &bWrite, sizeof(bool))))
+			return E_FAIL;
+	}
+	else
+	{
+		bWrite = false;
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_bWriteID", &bWrite, sizeof(bool))))
+			return E_FAIL;
+	}
+
+	//if (FAILED(m_pShaderCom->Bind_RawValue("g_vCamPosition", m_pGameInstance->Get_CamPosition_Float4(), sizeof(_float4))))
+	//	return E_FAIL;
+
+	return S_OK;
+}
+
+
 CGameObject* CTriggerObj::Clone(void* pArg)
 {
 	CTriggerObj* pInstance = new CTriggerObj(*this);
@@ -132,7 +173,3 @@ void CTriggerObj::Free()
 	Safe_Release(m_pColliderCom);
 }
 
-HRESULT CTriggerObj::Bind_ShaderResources()
-{
-	return E_NOTIMPL;
-}

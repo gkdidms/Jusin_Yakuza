@@ -196,6 +196,7 @@
     <ClInclude Include="..\Public\Kiryu_KRC_Down.h" />
     <ClInclude Include="..\Public\Kiryu_KRH_Down.h" />
     <ClInclude Include="..\Public\Kiryu_KRS_Down.h" />
+    <ClInclude Include="..\Public\LevelTrigger.h" />
     <ClInclude Include="..\Public\Level_Dogimazo.h" />
     <ClInclude Include="..\Public\Level_DogimazoBoss.h" />
     <ClInclude Include="..\Public\Level_DogimazoLobby.h" />
@@ -277,6 +278,7 @@
     <ClInclude Include="..\Public\Terrain.h" />
     <ClInclude Include="..\Public\Text.h" />
     <ClInclude Include="..\Public\TRailEffect.h" />
+    <ClInclude Include="..\Public\Trigger.h" />
     <ClInclude Include="..\Public\UIInven.h" />
     <ClInclude Include="..\Public\UILife.h" />
     <ClInclude Include="..\Public\UILoading.h" />
@@ -323,6 +325,7 @@
     <ClCompile Include="..\Private\Kiryu_KRC_Down.cpp" />
     <ClCompile Include="..\Private\Kiryu_KRH_Down.cpp" />
     <ClCompile Include="..\Private\Kiryu_KRS_Down.cpp" />
+    <ClCompile Include="..\Private\LevelTrigger.cpp" />
     <ClCompile Include="..\Private\Level_Dogimazo.cpp" />
     <ClCompile Include="..\Private\Level_DogimazoBoss.cpp" />
     <ClCompile Include="..\Private\Level_DogimazoLobby.cpp" />
@@ -403,6 +406,7 @@
     <ClCompile Include="..\Private\Terrain.cpp" />
     <ClCompile Include="..\Private\Text.cpp" />
     <ClCompile Include="..\Private\TRailEffect.cpp" />
+    <ClCompile Include="..\Private\Trigger.cpp" />
     <ClCompile Include="..\Private\UIInven.cpp" />
     <ClCompile Include="..\Private\UILife.cpp" />
     <ClCompile Include="..\Private\UIManager.cpp" />

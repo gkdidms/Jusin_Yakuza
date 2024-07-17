@@ -13,10 +13,10 @@ END
 class CTriggerObj : public CGameObject
 {
 public:
-	typedef struct tColliderObjDesc : public CGameObject::GAMEOBJECT_DESC
+	typedef struct tTriggerObjDesc : public CGameObject::GAMEOBJECT_DESC
 	{
-		XMMATRIX		vStartPos;
-		Trigger_IO		tTriggerDesc;
+		XMMATRIX			vStartPos;
+		TRIGGER_DESC		tTriggerDesc;
 	}TRIGGEROBJ_DESC;
 
 
@@ -35,8 +35,8 @@ public:
 
 public:
 	CTransform*						Get_Transform() { return m_pTransformCom; }
-	void							Set_TriggerDesc(Trigger_IO triggerDesc);
-	Trigger_IO						Get_TriggerDesc() { return m_tTriggerDesc; }
+	void							Set_TriggerDesc(TRIGGER_DESC triggerDesc);
+	TRIGGER_DESC					Get_TriggerDesc();
 
 
 private:
@@ -44,7 +44,7 @@ private:
 	CModel*							m_pModelCom = { nullptr };
 	CCollider*						m_pColliderCom = { nullptr };
 
-	Trigger_IO						m_tTriggerDesc;
+	TRIGGER_DESC					m_tTriggerDesc;
 
 public:
 	HRESULT							Add_Components();

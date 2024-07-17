@@ -1,8 +1,8 @@
 #pragma once
 
 #include "Base.h"
-#include "imgui.h"
 #include "TriggerObj.h"
+
 #include "Client_Defines.h"
 
 BEGIN(Engine)
@@ -40,12 +40,21 @@ public:
 
 
 private:
+	void								Save_Triggers_InFile(int iSaveNum); /* 현재 map에 놓여진 light 저장*/
+	void								Load_Triggers_File(int iNum); /* light 로드하기 */
+
+	HRESULT								Import_Bin_Triggers_Data_OnTool(TRIGGER_IO* triggerIOData, char* fileName);
+	HRESULT								Export_Bin_Triggers_Data(TRIGGER_IO* triggerIOData, int iSaveNum);
+
+	void								Update_FileName();
 	void								Update_TriggerObjName();
-	void								Edit_Trigger();
 
 	void								Edit_GameObject_Transform(int iNumObject);
 	void								Edit_Installed_Trigger();
 	void								Click_To_Select_Trigger(int& iObjectNum);
+
+	void								Delete_Trigger();
+	void								Delete_AllTrigger();
 
 private:
 	CGameInstance*						m_pGameInstance;
@@ -58,11 +67,11 @@ private:
 private:
 	_int								m_iCurrentTriggerIndex = { 0 };
 	_int								m_iCurrentTriggerFile = { 0 };
-	LIGHT_DESC							m_tCurTriggerDesc;
+	TRIGGER_DESC						m_tCurTriggerDesc;
 
 	bool								m_bRender = { false };
 	bool								m_bAddTrigger = { false };
-
+	bool								m_bFindObject = { false };
 
 public:
 	virtual void Free() override;
