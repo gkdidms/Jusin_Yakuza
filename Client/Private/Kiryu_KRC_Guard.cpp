@@ -56,7 +56,11 @@ void CKiryu_KRC_Guard::Tick(const _float& fTimeDelta)
 
 void CKiryu_KRC_Guard::Change_Animation()
 {
-	m_pPlayer->Change_Animation(m_AnimationIndices[m_eAnimState + m_iCurrentIndex]);
+	if (m_iCurrentIndex > 0) m_eAnimState = ANIM_LOOP;
+	m_iIndex = m_eAnimState + m_iCurrentIndex;
+
+
+	m_pPlayer->Change_Animation(m_AnimationIndices[m_iIndex >= m_AnimationIndices.size() ? 3 : m_iIndex]);
 }
 
 _bool CKiryu_KRC_Guard::Get_AnimationEnd()
@@ -124,6 +128,8 @@ void CKiryu_KRC_Guard::Setting_Value(void* pValue)
 	}
 	}
 
+	// 애니메이션을 초기화하고 다시시작하는 함수를 실행시켜야한다.
+	m_pPlayer->Change_ResetAnimaition(m_AnimationIndices[m_iIndex]);
 }
 
 CBehaviorAnimation* CKiryu_KRC_Guard::Create(CPlayer* pPlayer)

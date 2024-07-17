@@ -941,6 +941,12 @@ void CModel::Reset_Animation(const ANIMATION_DESC& AnimDesc)
 	m_Animations[m_AnimDesc.iAnimIndex]->Reset();
 }
 
+void CModel::Reset_Animation(_uint iAnimIndex)
+{
+	m_Animations[iAnimIndex]->Reset();
+}
+
+
 _bool CModel::Get_AnimFinished() const
 {
 	return m_Animations[m_AnimDesc.iAnimIndex]->Get_Finished();

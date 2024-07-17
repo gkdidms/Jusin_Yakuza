@@ -44,6 +44,7 @@ public:
 	_bool Set_AnimationIndex(_uint iAnimIndex, _double ChangeInterval = 0.0);
 	_bool Set_AnimationIndex(_uint iAnimIndex, vector<class CAnimation*> Animations, _double ChangeInterval = 0.0);
 	void Reset_Animation(const ANIMATION_DESC& AnimDesc);
+	void Reset_Animation(_uint iAnimIndex);
 
 public:
 	_uint Get_NumMeshes() { return m_iNumMeshes; }

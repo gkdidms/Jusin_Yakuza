@@ -188,34 +188,8 @@ void CPlayer::Late_Tick(const _float& fTimeDelta)
 			m_pCollisionManager->Add_HitCollider(pPair.second, CCollision_Manager::PLAYER);
 	}
 
-	switch (m_eCurrentStyle)
-	{
-	case Client::CPlayer::ADVENTURE:
-	{
-		m_isRimLight = 0.f;
-		break;
-	}
-	case Client::CPlayer::KRS:
-	{
-		m_isRimLight =0.1f;
-		break;
-	}
-	case Client::CPlayer::KRH:
-	{
-		m_isRimLight = 0.2f;
-		break;
-	}
-	case Client::CPlayer::KRC:
-	{
-		m_isRimLight =  0.3f;
-		break;
-	}
-	case Client::CPlayer::BATTLE_STYLE_END:
-		break;
-	default:
-		break;
-	}
-
+	
+	Setting_RimLight();
 	Compute_Height();
 
 }
@@ -252,7 +226,6 @@ HRESULT CPlayer::Render()
 			{
 			case 4://attack(팔)
 			{
-
 				if (!strcmp("[l0]body_naked1", pMesh->Get_Name()))
 				{
 					if (FAILED(m_pShaderCom->Bind_RawValue("g_isRimLight", &m_isRimLight, sizeof(_float))))
@@ -273,7 +246,7 @@ HRESULT CPlayer::Render()
 			case 8://fly_kick(다리)
 			case 9:
 			{
-				if(KRS==m_eCurrentStyle)
+				if(KRS == m_eCurrentStyle)
 				{
 					if (!strcmp("[l0]pants3", pMesh->Get_Name()))
 					{
@@ -298,9 +271,9 @@ HRESULT CPlayer::Render()
 			}
 		}
 		else
-		{
-			_float isfale = 0.f;
-			if (FAILED(m_pShaderCom->Bind_RawValue("g_isRimLight", &isfale, sizeof(_float))))
+		{	
+			// 어드벤처일때
+			if (FAILED(Bind_RimLight()))
 				return E_FAIL;
 		}
 
@@ -1247,6 +1220,23 @@ void CPlayer::Change_Animation(_uint iIndex, _float fInterval)
 	m_pData->Set_CurrentAnimation(strAnimName);
 }
 
+void CPlayer::Change_ResetAnimaition(_uint iIndex, _float fInterval)
+{
+	m_pModelCom->Reset_Animation(iIndex);
+
+	if (m_pModelCom->Set_AnimationIndex(iIndex, fInterval))
+	{
+		// 실제로 애니메이션 체인지가 일어났을 때 켜져있던 어택 콜라이더를 전부 끈다
+		Off_Attack_Colliders();
+		XMStoreFloat4(&m_vPrevMove, XMVectorZero());
+		m_fPrevSpeed = 0.f;
+	}
+
+	string strAnimName = string(m_pModelCom->Get_AnimationName(iIndex));
+	strAnimName = m_pGameInstance->Extract_String(strAnimName, '[', ']');
+	m_pData->Set_CurrentAnimation(strAnimName);
+}
+
 void CPlayer::Style_Change(BATTLE_STYLE eStyle)
 {
 	// 설정한 스타일의 첫번째 액션을 실행시킨다 (배틀모드들은 무조건 첫번째에 배틀 시작 액션을 둘 예정)
@@ -1452,6 +1442,46 @@ void CPlayer::AccHitGauge()
 		m_fHitGauge += 10.f;
 
 	m_iCurrentHitLevel = (m_fHitGauge / PLAYER_HITGAUGE_LEVEL_INTERVAL);
+}
+
+void CPlayer::Setting_RimLight()
+{
+	switch (m_eCurrentStyle)
+	{
+	case Client::CPlayer::ADVENTURE:
+	{
+		m_isRimLight = 0.f;
+		break;
+	}
+	case Client::CPlayer::KRS:
+	{
+		m_isRimLight = 0.1f;
+		break;
+	}
+	case Client::CPlayer::KRH:
+	{
+		m_isRimLight = 0.2f;
+		break;
+	}
+	case Client::CPlayer::KRC:
+	{
+		m_isRimLight = 0.3f;
+		break;
+	}
+	case Client::CPlayer::BATTLE_STYLE_END:
+		break;
+	default:
+		break;
+	}
+}
+
+HRESULT CPlayer::Bind_RimLight()
+{
+	_float isfale = 0.f;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_isRimLight", &isfale, sizeof(_float))))
+		return E_FAIL;
+
+	return S_OK;
 }
 
 CPlayer* CPlayer::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

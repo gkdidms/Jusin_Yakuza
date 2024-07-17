@@ -31,6 +31,8 @@ public:
 	virtual void Setting_Value(void* pValue = nullptr) override;
 
 private:
+	_uint m_iIndex = { 0 };
+
 	ANIM_STATE m_eAnimState = { ANIM_START };
 	_bool m_isStop = { false };
 
