@@ -41,6 +41,7 @@ void CSocketEffect::Tick(const _float& fTimeDelta)
 {
 	if (m_isOn)
 		m_pEffect->Tick(fTimeDelta);
+	__super::Tick(fTimeDelta);
 }
 
 void CSocketEffect::Late_Tick(const _float& fTimeDelta)
@@ -54,6 +55,19 @@ HRESULT CSocketEffect::Render()
 {
 
 	return S_OK;
+}
+
+void CSocketEffect::On()
+{
+	if(m_isOn==false)
+	{
+		if (m_pEffect->Get_isAura())
+		{
+			m_pEffect->Reset_Buffer();
+		}
+	}
+	m_isOn = true;
+
 }
 
 HRESULT CSocketEffect::Add_Components(void* pArg)

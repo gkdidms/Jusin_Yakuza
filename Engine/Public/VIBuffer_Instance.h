@@ -20,6 +20,7 @@ public:
         _float2 vLifeTime;
         _bool isLoop;
         const _float4x4* WorldMatrix;
+        _bool isAura;
     }INSTANCE_DESC;
 
     //typedef struct tBlendSort
@@ -81,10 +82,14 @@ protected:
     ID3D11Buffer* m_pRenderBuffer = { nullptr };
     D3D11_BUFFER_DESC m_RenderBufferDesc = {};
 
+    _bool m_isReset = { false };
 public:
     void Spread(_float fTimeDelta);
+    void Aura(_float fTimeDelta);
+    void Reset();
+
     void Drop(_float fTimeDelta);
-    void LifeTime_Check();
+    _bool LifeTime_Check();
     void SizeUp_Time(_float fTimeDelta);
     void SizeDown_Time(_float fTimeDelta);
 
