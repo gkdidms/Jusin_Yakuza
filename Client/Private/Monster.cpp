@@ -283,6 +283,7 @@ HRESULT CMonster::Bind_ResourceData()
 
 void CMonster::Change_Animation()
 {
+	m_isAnimLoop = false;
 	//히트, 데미지 관련 공통 애니메이션
 	switch (m_iState)
 	{
@@ -359,6 +360,11 @@ void CMonster::Change_Animation()
 	case MONSTER_STANDUP_DNF_FAST:
 	{
 		m_strAnimName = "c_standup_dnf_fast";
+		break;
+	}
+	case MONSTER_STANDUP_DNB_FAST:
+	{
+		m_strAnimName = "c_standup_dnb_fast";
 		break;
 	}
 	case MONSTER_DED_L:

@@ -126,7 +126,7 @@ void CAI_Kuze::Ready_Tree()
 
 	CSelector* pHitGuard = CSelector::Create();
 	CSelector* pHitSelector = CSelector::Create();
-	pHitSelector->Add_Children(CLeafNode::Create(bind(&CAI_Kuze::Normal_Hit, this)));
+	pHitSelector->Add_Children(CLeafNode::Create(bind(&CAI_Kuze::Hit, this)));
 
 	CSelector* pGuardSelector = CSelector::Create();
 	pGuardSelector->Add_Children(CLeafNode::Create(bind(&CAI_Kuze::Guard, this)));
