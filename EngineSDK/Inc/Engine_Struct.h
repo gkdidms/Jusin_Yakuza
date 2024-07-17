@@ -3,6 +3,14 @@
 
 namespace Engine
 {
+	struct ENGINE_DLL Trigger_IO
+	{
+		int		iTriggerType; // 트리거 종류
+		bool	bMoveScene; // cinemachine 후 scene 전환되는 경우 true
+		int		iSceneNum; // 다음씬으로 넘어갈 경우 sceneNum 주기
+	};
+
+
 	struct ENGINE_DLL CAMERAOBJ_DESC
 	{
 		_float4 vEye, vFocus;

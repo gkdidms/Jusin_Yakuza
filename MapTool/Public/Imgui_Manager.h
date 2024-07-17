@@ -64,6 +64,8 @@ private:
 	CLightTool_Mgr*				m_pLightTool_Mgr;
 	CCamera_Manager*			m_pCameraToolMgr;
 	CCollider_Manager*			m_pColliderMgr;
+	CTrigger_Manager*			m_pTriggerMgr;
+
 	CGameInstance*				m_pGameInstance;
 
 	/* imgui 창 관련 bool 변수 */

@@ -8,6 +8,7 @@
 #include "ObjPlace_Manager.h"
 #include "Terrain_Manager.h"
 #include "Camera_Manager.h"
+#include "Trigger_Manager.h"
 
 #include "ImGuizmo.h"
 #include "ImSequencer.h"
@@ -23,6 +24,7 @@ CImgui_Manager::CImgui_Manager()
     , m_pLightTool_Mgr { CLightTool_Mgr::GetInstance() }
     , m_pCameraToolMgr { CCamera_Manager::GetInstance() }
     , m_pColliderMgr{ CCollider_Manager::GetInstance() }
+    , m_pTriggerMgr{ CTrigger_Manager::GetInstance() }
 {
     Safe_AddRef(m_pGameInstance);
     Safe_AddRef(m_pNavigationMgr);
@@ -30,6 +32,7 @@ CImgui_Manager::CImgui_Manager()
     Safe_AddRef(m_pLightTool_Mgr);
     Safe_AddRef(m_pCameraToolMgr);
     Safe_AddRef(m_pColliderMgr);
+    Safe_AddRef(m_pTriggerMgr);
 }
 
 HRESULT CImgui_Manager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
