@@ -48,7 +48,12 @@ HRESULT CAura::Initialize(void* pArg)
 		}
 	}
 
+#ifdef _TOOL
+	m_BufferInstance.WorldMatrix = m_pWorldMatrix;
+#else
 	m_BufferInstance.WorldMatrix = m_pTransformCom->Get_WorldFloat4x4();
+#endif // _TOOL
+
 
 	//m_fUVCount = _float2(64.f, 1.f);
 
@@ -128,6 +133,11 @@ HRESULT CAura::Render()
 void* CAura::Get_Instance()
 {
 	return &m_BufferInstance;
+}
+
+void CAura::Reset_Buffer()
+{
+	m_pVIBufferCom->Reset();
 }
 
 HRESULT CAura::Save_Data(const string strDirectory)
@@ -293,8 +303,10 @@ HRESULT CAura::Add_Components()
 
 HRESULT CAura::Bind_ShaderResources()
 {
+
 	if (FAILED(m_pTransformCom->Bind_ShaderMatrix(m_pShaderCom, "g_WorldMatrix")))
 		return E_FAIL;
+
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_VIEW))))
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_PROJ))))

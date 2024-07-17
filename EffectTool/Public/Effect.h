@@ -72,6 +72,7 @@ public:
     _float2 Get_LifeAlpha() { return m_fLifeAlpha; }
     _float Get_Rotate() { return m_fRotate; }
     _bool Get_isAura() { return m_isAura;  }
+    virtual void Reset_Buffer();
 public:
     virtual HRESULT Save_Data(const string strDirectory);
     virtual HRESULT Load_Data(const string strDirectory);

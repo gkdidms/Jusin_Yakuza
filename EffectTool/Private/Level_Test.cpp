@@ -58,7 +58,7 @@ HRESULT CLevel_Test::Ready_Object(const wstring& strLayerTag)
 	CameraDesc.fSensor = 0.1f;
 
 	
-	XMStoreFloat4x4(&CameraDesc.vPrePosition, XMMatrixRotationY(XMConvertToRadians(90.f)) * XMMatrixTranslation(-0.1f, 0.f, 0.f));
+	XMStoreFloat4x4(&CameraDesc.vPrePosition, XMMatrixRotationY(XMConvertToRadians(90.f)) * XMMatrixTranslation(-2.f, 0.f, 0.f));
 
 	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_FreeCamera"), strLayerTag, &CameraDesc)))
 		return E_FAIL;

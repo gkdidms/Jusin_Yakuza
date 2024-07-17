@@ -35,6 +35,7 @@ public:
 
     virtual void* Get_Instance()override;
     _float2  Get_UVCount() { return m_fUVCount; }
+    virtual void Reset_Buffer() override;
 public:
     virtual HRESULT Save_Data(const string strDirectory)override;
     virtual HRESULT Load_Data(const string strDirectory)override;

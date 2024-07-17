@@ -110,6 +110,10 @@ void* CEffect::Get_Instance()
     return nullptr;
 }
 
+void CEffect::Reset_Buffer()
+{
+}
+
 HRESULT CEffect::Save_Data(const string strDirectory)
 {
     return S_OK;

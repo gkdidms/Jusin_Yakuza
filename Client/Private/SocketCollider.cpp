@@ -163,21 +163,12 @@ void CSocketCollider::ParentObject_Hit(const _float3& vDir, _float fDamage, CLan
 	CEffect::EFFECT_DESC EffectDesc;
 
 
-	_matrix WorldMatrix = XMLoadFloat4x4(&m_WorldMatrix);
-
-	// 테스트용으로 Dir을 고정시켜봤으나 파티클 터지는 방향 그대로임
-	_vector vRight = XMVectorSet(1, 0, 0, 0);
-	_vector vUp = XMVectorSet(0, 1, 0, 0);
-	_vector vLook = XMVectorSet(0, 0, 1, 0);
-
-	WorldMatrix.r[CTransform::STATE_RIGHT] = XMVector4Normalize(vRight);
-	WorldMatrix.r[CTransform::STATE_UP] = XMVector4Normalize(vUp);
-	WorldMatrix.r[CTransform::STATE_LOOK] = XMVector4Normalize(vLook);
+	_matrix WorldMatrix = XMLoadFloat4x4(&m_WorldMatrix);//맞는 얘콜라이더
 
 
 	_float4x4 matrix;
-	XMStoreFloat4x4(&matrix, ParentMatrix);
-
+	XMStoreFloat4x4(&matrix, WorldMatrix);	
+		
 	EffectDesc.pWorldMatrix = &matrix;
 
 	m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Hit1_Glow0"), TEXT("Layer_Particle"), &EffectDesc);
