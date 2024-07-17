@@ -216,6 +216,8 @@ void CPlayer::Late_Tick(const _float& fTimeDelta)
 		break;
 	}
 
+	Compute_Height();
+
 }
 
 HRESULT CPlayer::Render()
@@ -523,7 +525,6 @@ void CPlayer::Synchronize_Root(const _float& fTimeDelta)
 	_vector vCenterMove = XMLoadFloat3(m_pModelCom->Get_AnimationCenterMove());
 	_vector vDeleteZ = XMVectorSetZ(vCenterMove, 0);
 
-
 	//_vector vFF = XMVector3TransformNormal(XMVectorSetZ(XMLoadFloat3(m_pModelCom->Get_AnimationCenterMove()), 0), m_pTransformCom->Get_WorldMatrix());
 	_vector vFF = XMVector3TransformNormal(vDeleteZ, m_pTransformCom->Get_WorldMatrix());
 
@@ -570,7 +571,7 @@ void CPlayer::Synchronize_Root(const _float& fTimeDelta)
 			if (0.01 > m_fPrevSpeed)
 				m_fPrevSpeed = 0.f;
 
-			m_pTransformCom->Go_Move_Custum(fMoveDir, m_fPrevSpeed, 1);
+			m_pTransformCom->Go_Move_Custum(fMoveDir, m_fPrevSpeed, 1, m_pNavigationCom);
 			m_fPrevSpeed = fMoveSpeed;
 
 			XMStoreFloat4(&m_vPrevMove, vFF);
@@ -581,7 +582,6 @@ void CPlayer::Synchronize_Root(const _float& fTimeDelta)
 		// 선형보간중일때는 무조건 초기화
 		XMStoreFloat4(&m_vPrevMove, XMVectorZero());
 	}
-
 	
 	XMStoreFloat4x4(&m_ModelWorldMatrix, m_pTransformCom->Get_WorldMatrix());
 	//m_vPrevRotation = vQuaternion;
@@ -1164,6 +1164,10 @@ HRESULT CPlayer::Add_Components()
 		TEXT("Com_Collider"), reinterpret_cast<CComponent**>(&m_pColliderCom), &ColliderDesc)))
 		return E_FAIL;
 
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Navigation"),
+		TEXT("Com_Navigation"), reinterpret_cast<CComponent**>(&m_pNavigationCom))))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -1191,7 +1195,17 @@ HRESULT CPlayer::Bind_ResourceData()
 #endif // _DEBUG
 
 	return S_OK;
-}	
+}
+
+void CPlayer::Compute_Height()
+{
+	_vector vCurrentPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	float fHeight = m_pNavigationCom->Compute_Height(vCurrentPos);
+
+	vCurrentPos = XMVectorSetY(vCurrentPos, fHeight);
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vCurrentPos);
+}
+
 
 void CPlayer::Change_Animation(_uint iIndex, _float fInterval)
 {
@@ -1460,6 +1474,7 @@ void CPlayer::Free()
 
 	Safe_Release(m_pUIManager);
 	Safe_Release(m_pShaderCom);
+	Safe_Release(m_pNavigationCom);
 
 	for (size_t i = 0; i < BATTLE_STYLE_END; i++)
 	{

@@ -8,12 +8,12 @@
 #include "SocketCollider.h"
 
 CShakedown::CShakedown(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-	: CMonster { pDevice, pContext}
+	: CMonster{ pDevice, pContext }
 {
 }
 
 CShakedown::CShakedown(const CShakedown& rhs)
-	: CMonster { rhs }
+	: CMonster{ rhs }
 {
 }
 
@@ -36,6 +36,22 @@ HRESULT CShakedown::Initialize(void* pArg)
 
 	if (FAILED(Add_Components()))
 		return E_FAIL;
+
+	if (nullptr != pArg)
+	{
+		MONSTER_IODESC* gameobjDesc = (MONSTER_IODESC*)pArg;
+
+		m_pNavigationCom->Set_Index(gameobjDesc->iNaviNum);
+
+	}
+
+	if (nullptr != pArg)
+	{
+		MONSTER_IODESC* gameobjDesc = (MONSTER_IODESC*)pArg;
+
+		m_pNavigationCom->Set_Index(gameobjDesc->iNaviNum);
+
+	}
 
 	m_wstrModelName = TEXT("Jimu");
 
@@ -124,6 +140,10 @@ HRESULT CShakedown::Add_Components()
 	if (nullptr == m_pTree)
 		return E_FAIL;
 
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Navigation"),
+		TEXT("Com_Navigation"), reinterpret_cast<CComponent**>(&m_pNavigationCom))))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -141,104 +161,103 @@ HRESULT CShakedown::Bind_ResourceData()
 
 void CShakedown::Change_Animation()
 {
-	_uint iAnim = { 0 };
-	m_isAnimLoop = false;
+	__super::Change_Animation();
 
 	switch (m_iState)
 	{
 	case MONSTER_IDLE:
 	{
 		//e_kta_stand[e_kta_stand]
-		iAnim = m_pAnimCom->Get_AnimationIndex("e_kta_stand[e_kta_stand]");
+		m_strAnimName = "e_kta_stand[e_kta_stand]";
 		m_isAnimLoop = true;
 		break;
 	}
 	case MONSTER_SHIFT_F:
 	{
 		//e_kta_shift_f[e_kta_shift_f]
-		iAnim = m_pAnimCom->Get_AnimationIndex("e_kta_shift_f[e_kta_shift_f]");
+		m_strAnimName = "e_kta_shift_f[e_kta_shift_f]";
 		m_isAnimLoop = true;
 		break;
 	}
 	case MONSTER_SHIFT_L:
 	{
 		//e_kta_shift_l[e_kta_shift_l]
-		iAnim = m_pAnimCom->Get_AnimationIndex("e_kta_shift_l[e_kta_shift_l]");
+		m_strAnimName = "e_kta_shift_l[e_kta_shift_l]";
 		m_isAnimLoop = true;
 		break;
 	}
 	case MONSTER_SHIFT_R:
 	{
 		//e_kta_shift_r[e_kta_shift_r]
-		iAnim = m_pAnimCom->Get_AnimationIndex("e_kta_shift_r[e_kta_shift_r]");
+		m_strAnimName = "e_kta_shift_r[e_kta_shift_r]";
 		m_isAnimLoop = true;
 		break;
 	}
 	case MONSTER_SHIFT_B:
 	{
 		//e_kta_shift_b[e_kta_shift_b]
-		iAnim = m_pAnimCom->Get_AnimationIndex("e_kta_shift_b[e_kta_shift_b]");
+		m_strAnimName = "e_kta_shift_b[e_kta_shift_b]";
 		m_isAnimLoop = true;
 		break;
 	}
 	case MONSTER_SWAY_B:
 	{
 		//e_kta_sway_b[e_kta_sway_b]
-		iAnim = m_pAnimCom->Get_AnimationIndex("e_kta_sway_b[e_kta_sway_b]");
+		m_strAnimName = "e_kta_sway_b[e_kta_sway_b]";
 		break;
 	}
 	case MONSTER_SWAY_F:
 	{
 		//e_kta_sway_f[e_kta_sway_f]
-		iAnim = m_pAnimCom->Get_AnimationIndex("e_kta_sway_f[e_kta_sway_f]");
+		m_strAnimName = "e_kta_sway_f[e_kta_sway_f]";
 		break;
 	}
 	case MONSTER_SWAY_L:
 	{
 		//e_kta_sway_l[e_kta_sway_l]
-		iAnim = m_pAnimCom->Get_AnimationIndex("e_kta_sway_l[e_kta_sway_l]");
+		m_strAnimName = "e_kta_sway_l[e_kta_sway_l]";
 		break;
 	}
 	case MONSTER_SWAY_R:
 	{
 		//e_kta_sway_r[e_kta_sway_r]
-		iAnim = m_pAnimCom->Get_AnimationIndex("e_kta_sway_r[e_kta_sway_r]");
+		m_strAnimName = "e_kta_sway_r[e_kta_sway_r]";
 		break;
 	}
 	case MONSTER_ATK_DOWN:
 	{
 		//e_kta_atk_down[e_kta_atk_down]
-		iAnim = m_pAnimCom->Get_AnimationIndex("e_kta_atk_down[e_kta_atk_down]");
+		m_strAnimName = "e_kta_atk_down[e_kta_atk_down]";
 		break;
 	}
 	case MONSTER_RARIATTO:
 	{
 		//e_kta_atk_rariatto[e_kta_atk_rariatto]
-		iAnim = m_pAnimCom->Get_AnimationIndex("e_kta_atk_rariatto[e_kta_atk_rariatto]");
+		m_strAnimName = "e_kta_atk_rariatto[e_kta_atk_rariatto]";
 		break;
 	}
 	case MONSTER_GUARD_RUN:
 	{
 		//e_kta_atk_gurad_run[e_kta_atk_gurad_run]
-		iAnim = m_pAnimCom->Get_AnimationIndex("e_kta_atk_gurad_run[e_kta_atk_gurad_run]");
+		m_strAnimName = "e_kta_atk_gurad_run[e_kta_atk_gurad_run]";
 		break;
 	}
 	case MONSTER_CMD_1:
 	{
 		//e_kta_cmb_a_01[e_kta_cmb_a_01]
-		iAnim = m_pAnimCom->Get_AnimationIndex("e_kta_cmb_a_01[e_kta_cmb_a_01]");
+		m_strAnimName = "e_kta_cmb_a_01[e_kta_cmb_a_01]";
 		break;
 	}
 	case MONSTER_CMD_2:
 	{
 		//e_kta_cmb_a_02[e_kta_cmb_a_02]
-		iAnim = m_pAnimCom->Get_AnimationIndex("e_kta_cmb_a_02[e_kta_cmb_a_02]");
+		m_strAnimName = "e_kta_cmb_a_02[e_kta_cmb_a_02]";
 		break;
 	}
 	case MONSTER_CMD_3:
 	{
 		//e_kta_cmb_a_03[e_kta_cmb_a_03]
-		iAnim = m_pAnimCom->Get_AnimationIndex("e_kta_cmb_a_03[e_kta_cmb_a_03]");
+		m_strAnimName = "e_kta_cmb_a_03[e_kta_cmb_a_03]";
 		break;
 	}
 	case MONSTER_DEATH:
@@ -249,10 +268,13 @@ void CShakedown::Change_Animation()
 		break;
 	}
 
-	if (iAnim == -1)
+	m_iAnim = m_pAnimCom->Get_AnimationIndex(m_strAnimName.c_str());
+
+	if (m_iAnim == -1)
 		return;
 
-	m_pModelCom->Set_AnimationIndex(iAnim, m_pAnimCom->Get_Animations(), m_fChangeInterval);
+	m_pModelCom->Set_AnimationIndex(m_iAnim, m_pAnimCom->Get_Animations(), m_fChangeInterval);
+	m_pData->Set_CurrentAnimation(m_strAnimName);
 }
 
 CShakedown* CShakedown::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

@@ -3,6 +3,7 @@
 
 BEGIN(Engine)
 class CShader;
+class CNavigation;
 END
 
 BEGIN(Client)
@@ -69,12 +70,14 @@ public:
 
 public:
     void Set_AnimStart(_bool isAnim) { m_isAnimStart = isAnim; }
+
+    _bool isAnimStart() { return m_isAnimStart; }
 #endif // DEBUG
 
     /* Getter */
 public:
     _uint Get_BattleStyle() { return m_eCurrentStyle; }
-    _bool isAnimStart() { return m_isAnimStart; }
+
     _bool isAttack() { return m_iCurrentBehavior == static_cast<_uint>(KRS_BEHAVIOR_STATE::ATTACK); }
     _uint Get_CurrentHitLevel() { return m_iCurrentHitLevel; }
 
@@ -88,7 +91,8 @@ public:
 
     /* Setter */
 public:
-    void  Set_StartPos(XMMATRIX    vStartPos) { m_pTransformCom->Set_WorldMatrix(vStartPos); }
+    void    Set_StartPos(XMMATRIX    vStartPos) { m_pTransformCom->Set_WorldMatrix(vStartPos); }
+    void    Set_NavigationIndex(int iIndex) { m_pNavigationCom->Set_Index(iIndex); }
 
     /* Virtual Funtion */
 public:
@@ -141,7 +145,7 @@ public:
     /* 출력, 행동 관련 포인터 변수들 */
 private:
     CShader*                m_pShaderCom = { nullptr };
-
+    CNavigation* m_pNavigationCom = { nullptr };
     // 이 때, 사용하는 키 값은 행동에 대한 키값을 가진다. (스타일은 배열 인덱스)
     map<_uint, class CBehaviorAnimation*> m_AnimationTree[BATTLE_STYLE_END];
     //ui
@@ -186,6 +190,7 @@ private:
 private:
     virtual HRESULT Add_Components() override;
     virtual HRESULT Bind_ResourceData() override;
+    virtual void Compute_Height() override;
 
 public:
     static CPlayer* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

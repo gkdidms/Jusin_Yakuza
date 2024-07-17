@@ -129,6 +129,22 @@ _int CNavigation::Find_Index(POINT ptMouse, _fvector vTargetPos, _float fZ, _fma
 	return -1;
 }
 
+int CNavigation::Find_PlayerMonster_Index(_fvector vTargetPos)
+{
+    for (int i = 0; i < m_Cells.size(); i++)
+    {
+        /* 그냥 넣어주는거 */
+        int			iNeighborsIndex;
+
+        if (true == m_Cells[i]->isIn(vTargetPos, &iNeighborsIndex))
+        {
+            return i;
+        }
+    }
+
+    return -1;
+}
+
 #ifdef _DEBUG
 HRESULT CNavigation::Render()
 {

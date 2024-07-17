@@ -152,7 +152,7 @@
       <Filter>02.GameObjects\02.Character\LandObject\01.Monster\Yakuza\00.RushYakuza\AI</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\MapCollider.cpp">
-      <Filter>02.GameObjects\08. MapCollider</Filter>
+      <Filter>02.GameObjects\07.MapCollider</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Kiryu_KRS_Attack.cpp">
       <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\Attack</Filter>
@@ -217,7 +217,6 @@
     <ClCompile Include="..\private\AI_Yoneda.cpp">
       <Filter>02.GameObjects\02.Character\LandObject\01.Monster\Yoneda\AI</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\MapColliderObj.cpp" />
     <ClCompile Include="..\Private\UIManager.cpp">
       <Filter>95.Utility\05.UIManager</Filter>
     </ClCompile>
@@ -321,7 +320,7 @@
       <Filter>01.Levels\04.Dogimazo</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Level_DogimazoBoss.cpp">
-      <Filter>01.Levels\06.DogimazoBoss</Filter>
+      <Filter>01.Levels\07.DogimazoBoss</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Level_DogimazoStairs.cpp">
       <Filter>01.Levels\05.DogimazoStairs</Filter>
@@ -343,7 +342,7 @@
     </ClCompile>
     <ClCompile Include="..\Private\UINowLoading.cpp">
       <Filter>95.Utility\05.UIManager\UIScene\UINowLoading</Filter>
-	</ClCompile>
+    </ClCompile>
     <ClCompile Include="..\Private\Kiryu_KRS_Down.cpp">
       <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\Down</Filter>
     </ClCompile>
@@ -352,6 +351,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\Kiryu_KRH_Down.cpp">
       <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRH\Down</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Level_DogimazoLobby.cpp">
+      <Filter>01.Levels\06.DogimazoLobby</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\MapColliderObj.cpp">
+      <Filter>02.GameObjects\07.MapCollider\Obj</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -536,7 +541,7 @@
       <Filter>02.GameObjects\02.Character\LandObject\01.Monster\Yakuza\00.RushYakuza\AI</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\MapCollider.h">
-      <Filter>02.GameObjects\08. MapCollider</Filter>
+      <Filter>02.GameObjects\07.MapCollider</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Kiryu_KRS_Attack.h">
       <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\Attack</Filter>
@@ -601,7 +606,6 @@
     <ClInclude Include="..\public\AI_Yoneda.h">
       <Filter>02.GameObjects\02.Character\LandObject\01.Monster\Yoneda\AI</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\MapColliderObj.h" />
     <ClInclude Include="..\Public\UIManager.h">
       <Filter>95.Utility\05.UIManager</Filter>
     </ClInclude>
@@ -702,7 +706,7 @@
       <Filter>01.Levels\04.Dogimazo</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Level_DogimazoBoss.h">
-      <Filter>01.Levels\06.DogimazoBoss</Filter>
+      <Filter>01.Levels\07.DogimazoBoss</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Level_DogimazoStairs.h">
       <Filter>01.Levels\05.DogimazoStairs</Filter>
@@ -727,7 +731,7 @@
     </ClInclude>
     <ClInclude Include="..\Public\UINowLoading.h">
       <Filter>95.Utility\05.UIManager\UIScene\UINowLoading</Filter>
-	</ClInclude>
+    </ClInclude>
     <ClInclude Include="..\Public\Kiryu_KRS_Down.h">
       <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\Down</Filter>
     </ClInclude>
@@ -736,6 +740,12 @@
     </ClInclude>
     <ClInclude Include="..\Public\Kiryu_KRC_Down.h">
       <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRC\Down</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Level_DogimazoLobby.h">
+      <Filter>01.Levels\06.DogimazoLobby</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\MapColliderObj.h">
+      <Filter>02.GameObjects\07.MapCollider\Obj</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -840,9 +850,6 @@
     <Filter Include="02.GameObjects\06.Effect\Aura">
       <UniqueIdentifier>{e1163822-540f-4bdd-9163-9b24fe1b27c1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\08. MapCollider">
-      <UniqueIdentifier>{28cec43f-865c-488e-83e1-e6b15b632319}</UniqueIdentifier>
-    </Filter>
     <Filter Include="95.Utility\03.BehaviorTree">
       <UniqueIdentifier>{490f9c94-1bca-41c9-a680-f2eb77882221}</UniqueIdentifier>
     </Filter>
@@ -869,9 +876,6 @@
     </Filter>
     <Filter Include="02.GameObjects\04.Sky\Dome">
       <UniqueIdentifier>{81f7471f-237e-45ae-a6af-15b9cf067a60}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\08. MapCollider\Obj">
-      <UniqueIdentifier>{4e8421d6-5ada-48ec-9fce-0aed349f2f59}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObjects\03.Construction\LightConstruction">
       <UniqueIdentifier>{66dcb392-2821-4235-8686-00b40a167705}</UniqueIdentifier>
@@ -926,9 +930,6 @@
     </Filter>
     <Filter Include="01.Levels\04.Dogimazo">
       <UniqueIdentifier>{da1f6629-4506-47f7-9915-8f4b5f5fa2f9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="01.Levels\06.DogimazoBoss">
-      <UniqueIdentifier>{c3987abd-0a35-468c-b0db-541aa2913f3b}</UniqueIdentifier>
     </Filter>
     <Filter Include="95.Utility\05.UIManager\UIScene\UIObject\UITexture">
       <UniqueIdentifier>{8b20b3a1-e821-47b7-9519-e6bda1f9c855}</UniqueIdentifier>
@@ -1118,7 +1119,7 @@
     </Filter>
     <Filter Include="95.Utility\05.UIManager\UIScene\UINowLoading">
       <UniqueIdentifier>{c4f58730-64e2-429e-a674-89a880b4483f}</UniqueIdentifier>
-	</Filter>
+    </Filter>
     <Filter Include="02.GameObjects\02.Character\PartObject\SocketObject\SocketEffect">
       <UniqueIdentifier>{9f450e59-cfd3-4163-ba5b-93f729ea938c}</UniqueIdentifier>
     </Filter>
@@ -1127,6 +1128,21 @@
     </Filter>
     <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRC\Down">
       <UniqueIdentifier>{d637aab2-a6a6-48f2-9052-428c77df965b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Levels\06.DogimazoLobby">
+      <UniqueIdentifier>{25a6b42e-eb92-436c-9649-04df553ee3f1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07.MapCollider">
+      <UniqueIdentifier>{28cec43f-865c-488e-83e1-e6b15b632319}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\07.MapCollider\Obj">
+      <UniqueIdentifier>{4e8421d6-5ada-48ec-9fce-0aed349f2f59}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Levels\07.DogimazoBoss">
+      <UniqueIdentifier>{c3987abd-0a35-468c-b0db-541aa2913f3b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRC\Gaurd">
+      <UniqueIdentifier>{3f5ad5dc-5e30-4a8e-9db6-f53eb73719fc}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

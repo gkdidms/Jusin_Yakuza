@@ -33,10 +33,6 @@ void CSocketObject::Priority_Tick(const _float& fTimeDelta)
 
 void CSocketObject::Tick(const _float& fTimeDelta)
 {
-}
-
-void CSocketObject::Late_Tick(const _float& fTimeDelta)
-{
 	_matrix		SocketMatrix = XMLoadFloat4x4(m_pSocketMatrix);
 
 	for (size_t i = 0; i < 3; i++)
@@ -44,8 +40,12 @@ void CSocketObject::Late_Tick(const _float& fTimeDelta)
 		SocketMatrix.r[i] = XMVector3Normalize(SocketMatrix.r[i]);
 	}
 
-	XMStoreFloat4x4(&m_WorldMatrix, m_pTransformCom->Get_WorldMatrix() * SocketMatrix * XMLoadFloat4x4(m_pParentMatrix));
-	//랜더러그룹에 넣어주는거는 각자 알아서 직접해야한다. (모델마다 필요한 그룹이 다를 수 있기때문)
+	XMStoreFloat4x4(&m_WorldMatrix, /*m_pTransformCom->Get_WorldMatrix() **/ SocketMatrix * XMLoadFloat4x4(m_pParentMatrix));
+	m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(&m_WorldMatrix));
+}
+
+void CSocketObject::Late_Tick(const _float& fTimeDelta)
+{
 }
 
 HRESULT CSocketObject::Render()

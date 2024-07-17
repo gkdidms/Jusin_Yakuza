@@ -34,66 +34,8 @@ public:
         SKILL_ANGRY_CHOP,
         SKILL_ANGRY_KICK,
 
-        SKILL_DAM_BODY_LV01_B,
-        SKILL_DAM_BODY_LV01_F,
-        SKILL_DAM_BODY_LV02_B,
-        SKILL_DAM_BODY_LV02_F,
-        SKILL_DAM_BODY_LV02_L,
-        SKILL_DAM_BODY_LV02_R,
-        SKILL_DAM_DUB_L,
-        SKILL_DAM_DUB_R,
-        SKILL_DAM_DUB_TRAMPLE,
-        SKILL_DAM_DNF_L,
-        SKILL_DAM_DNF_R,
-        SKILL_DAM_DNF_TRAMPLE,
-        SKILL_DAM_HEAD_LV01_B,
-        SKILL_DAM_HEAD_LV01_F,
-        SKILL_DAM_HEAD_LV01_L,
-        SKILL_DAM_HEAD_LV01_R,
-        SKILL_DAM_HEAD_LV02_B,
-        SKILL_DAM_HEAD_LV02_F,
-        SKILL_DAM_HEAD_LV02_L,
-        SKILL_DAM_HEAD_LV02_R,
-        SKILL_DAM_LEG_LV01_B,
-        SKILL_DAM_LEG_LV01_F,
-        SKILL_DAM_LEG_LV01_L,
-        SKILL_DAM_LEG_LV01_R,
-        SKILL_DAM_LEG_LV02_L,
-        SKILL_DAM_LEG_LV02_R,
-
-        SKILL_DED_B_01,
-        SKILL_DED_B_02,
-        SKILL_DED_DND_01,
-        SKILL_DED_DND_02,
-        SKILL_DED_DND_L,
-        SKILL_DED_DND_R,
-        SKILL_DED_DNF_01,
-        SKILL_DED_DNF_02,
-        SKILL_DED_DNF_L,
-        SKILL_DED_DNF_R,
-        SKILL_DED_F_01,
-        SKILL_DED_F_02,
-        SKILL_DED_F_03,
-        SKILL_DED_FALL_B,
-        SKILL_DED_FALL_F,
-        SKILL_DED_L,
-        SKILL_DED_R,
-        SKILL_DED_B,
-        SKILL_DWN_B_PAIN_BODY_EN,
-        SKILL_DWN_B_PAIN_BODY_LP,
-        SKILL_DWN_B_PAIN_BODY_ST,
-        SKILL_DWN_B_PAIN_HEAD_EN,
-        SKILL_DWN_B_PAIN_HEAD_LP,
-        SKILL_DWN_B_PAIN_HEAD_ST,
-        SKILL_DWN_B_PAIN_LEG_EN,
-        SKILL_DWN_B_PAIN_LEG_LP,
-        SKILL_DWN_B_PAIN_LEG_ST,
-        SKILL_DWN_BACK_B,
-        SKILL_DWN_BACK_F,
-        SKILL_DWN_BODY_D,
-        SKILL_DWN_BODY_F,
-        SKILL_DWN_BODY_L,
-        SKILL_DWN_BODY_R,
+        SKILL_GUARD,
+        SKILL_DEAD,
         SKILL_END
     };
 
@@ -130,6 +72,7 @@ protected:
     _bool m_isSync = { false };
     _bool m_isShift = { false };
     _bool m_isBreak = { false };
+    _bool m_isGuard = { false };
 
     _uint m_iSkill = { SKILL_END };
 
@@ -143,9 +86,16 @@ protected:
     _float m_fCmbNum = { 0.f }; // 스킬 발동시 확률적으로 몇번 공격할것인지 저장.
     _float m_fCmbCount = { 0.f }; // 콥보 누적 카운트
 
+    _float m_iGuardAtk = { 0 }; // 가드 후 몇번 맞으면 가드가 풀릴것인지 지정.
+    _float m_iGuardAtkCount = { 0 };
+
 protected:
-    //죽음
-    virtual CBTNode::NODE_STATE Check_Death();
+    //쓰러졋는가? or 죽었는가? (현재상태 확인)
+    virtual CBTNode::NODE_STATE Check_Down();
+    virtual CBTNode::NODE_STATE StandUpAndDead();
+    virtual CBTNode::NODE_STATE StandUp();
+    virtual CBTNode::NODE_STATE Dead();
+
 
     //플레이어 공격 체크
     virtual CBTNode::NODE_STATE Check_Sway();
@@ -161,7 +111,6 @@ protected:
 
     // 플레이어 공격 스킬마다 히트모션 다름.
     virtual CBTNode::NODE_STATE Normal_Hit(); // 히트 체크를 하면서 죽었는지 죽지 않았는지도 같이 확인해야함.
-    virtual CBTNode::NODE_STATE Strong_Hit();
 
     // 가드
     virtual CBTNode::NODE_STATE Guard();
@@ -190,6 +139,7 @@ protected:
     void Check_KRH(_uint iPlayerLv);
     void Check_KRS(_uint iPlayerLv);
     void Check_KRC(_uint iPlayerLv);
+    _bool Check_StandUp();
 
 public:
     virtual void Free();

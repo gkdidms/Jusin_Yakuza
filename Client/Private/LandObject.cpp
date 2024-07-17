@@ -37,6 +37,10 @@ HRESULT CLandObject::Initialize(void* pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
+	//테스트 데이터
+	m_Info.iMaxHP = 100.f;
+	m_Info.iHp = m_Info.iMaxHP;
+
 	return S_OK;
 }
 
@@ -131,19 +135,19 @@ void CLandObject::Apply_ChracterData()
 
 	for (auto& pEffect : pEffects)
 	{
-		CSocketEffect::SOKET_EFFECT_DESC Desc{};
-		Desc.pParentMatrix = m_pTransformCom->Get_WorldFloat4x4();
-		Desc.pCombinedTransformationMatrix = m_pModelCom->Get_BoneCombinedTransformationMatrix(pEffect.first.c_str());
-		Desc.wstrEffectName = pEffect.second;
+		//CSocketEffect::SOKET_EFFECT_DESC Desc{};
+		//Desc.pParentMatrix = m_pTransformCom->Get_WorldFloat4x4();
+		//Desc.pCombinedTransformationMatrix = m_pModelCom->Get_BoneCombinedTransformationMatrix(pEffect.first.c_str());
+		//Desc.wstrEffectName = pEffect.second;
 
-		CGameObject* pSoketEffect = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_SoketEffect"), &Desc);
-		if (nullptr == pSoketEffect)
-			return;
+		//CGameObject* pSoketEffect = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_SoketEffect"), &Desc);
+		//if (nullptr == pSoketEffect)
+		//	return;
 
-		auto it = m_pEffects.emplace(pEffect.first, static_cast<CSocketEffect*>(pSoketEffect));
+		//auto it = m_pEffects.emplace(pEffect.first, static_cast<CSocketEffect*>(pSoketEffect));
 
-		//it->second->On();
-		it->second->Off();
+		////it->second->On();
+		//it->second->Off();
 	}
 
 }
@@ -207,4 +211,8 @@ void CLandObject::Free()
 	Safe_Release(m_pColliderCom);
 	Safe_Release(m_pSystemManager);
 	Safe_Release(m_pCollisionManager);
+}
+
+void CLandObject::Compute_Height()
+{
 }

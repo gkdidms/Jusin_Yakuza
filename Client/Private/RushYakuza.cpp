@@ -8,7 +8,7 @@
 #include "SocketCollider.h"
 
 CRushYakuza::CRushYakuza(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-	: CMonster{pDevice, pContext}
+	: CMonster{ pDevice, pContext }
 {
 }
 
@@ -38,6 +38,14 @@ HRESULT CRushYakuza::Initialize(void* pArg)
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
+	if (nullptr != pArg)
+	{
+		MONSTER_IODESC* gameobjDesc = (MONSTER_IODESC*)pArg;
+
+		m_pNavigationCom->Set_Index(gameobjDesc->iNaviNum);
+
+	}
+
 	m_wstrModelName = TEXT("Jimu");
 
 	if (FAILED(Add_CharacterData()))
@@ -45,6 +53,8 @@ HRESULT CRushYakuza::Initialize(void* pArg)
 
 	m_pModelCom->Set_AnimationIndex(1, 0.5);
 	//m_pModelCom->Set_AnimLoop(1, true);
+
+
 
 	return S_OK;
 }
@@ -124,6 +134,10 @@ HRESULT CRushYakuza::Add_Components()
 	if (nullptr == m_pTree)
 		return E_FAIL;
 
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Navigation"),
+		TEXT("Com_Navigation"), reinterpret_cast<CComponent**>(&m_pNavigationCom))))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -141,138 +155,108 @@ HRESULT CRushYakuza::Bind_ResourceData()
 
 void CRushYakuza::Change_Animation()
 {
-	_uint iAnim = { 0 };
 	m_isAnimLoop = false;
 
-	string strAnimName = "";
+	__super::Change_Animation();
+
 
 	switch (m_iState)
 	{
 	case MONSTER_IDLE:
 	{
-		strAnimName = "e_pnc_stand[e_pnc_stand]";
-		iAnim = m_pAnimCom->Get_AnimationIndex("e_pnc_stand[e_pnc_stand]");
+		m_strAnimName = "e_pnc_stand";
 		m_isAnimLoop = true;
 		break;
 	}
 	case MONSTER_SHIFT_F:
 	{
 		//p_krh_shift_f[p_krh_shift_f]
-		strAnimName = "p_krh_shift_f[p_krh_shift_f]";
-		iAnim = m_pAnimCom->Get_AnimationIndex("p_krh_shift_f[p_krh_shift_f]");
+		m_strAnimName = "p_krh_shift_f";
 		m_isAnimLoop = true;
 		break;
 	}
 	case MONSTER_SHIFT_L:
 	{
 		////p_krh_shift_l[p_krh_shift_l]
-		strAnimName = "p_krh_shift_l[p_krh_shift_l]";
-		iAnim = m_pAnimCom->Get_AnimationIndex("p_krh_shift_l[p_krh_shift_l]");
+		m_strAnimName = "p_krh_shift_l";
 		m_isAnimLoop = true;
 		break;
 	}
 	case MONSTER_SHIFT_R:
 	{
 		//p_krh_shift_r[p_krh_shift_r]
-		strAnimName = "p_krh_shift_r[p_krh_shift_r]";
-		iAnim = m_pAnimCom->Get_AnimationIndex("p_krh_shift_r[p_krh_shift_r]");
+		m_strAnimName = "p_krh_shift_r";
 		m_isAnimLoop = true;
 		break;
 	}
 	case MONSTER_SHIFT_B:
 	{
 		//p_krh_shift_b[p_krh_shift_b]
-		strAnimName = "p_krh_shift_b[p_krh_shift_b]";
-		iAnim = m_pAnimCom->Get_AnimationIndex("p_krh_shift_b[p_krh_shift_b]");
+		m_strAnimName = "p_krh_shift_b";
 		m_isAnimLoop = true;
 		break;
 	}
 	case MONSTER_SHIFT_FR:
 	{
 		//p_krh_shift_fr[p_krh_shift_fr]
-		strAnimName = "p_krh_shift_fr[p_krh_shift_fr]";
-		iAnim = m_pAnimCom->Get_AnimationIndex("p_krh_shift_fr[p_krh_shift_fr]");
+		m_strAnimName = "p_krh_shift_fr";
 		m_isAnimLoop = true;
 		break;
 	}
 	case MONSTER_SHIFT_FL:
 	{
 		//p_krh_shift_fl[p_krh_shift_fl]
-		strAnimName = "p_krh_shift_fl[p_krh_shift_fl]";
-		iAnim = m_pAnimCom->Get_AnimationIndex("p_krh_shift_fl[p_krh_shift_fl]");
+		m_strAnimName = "p_krh_shift_fl";
 		m_isAnimLoop = true;
 		break;
 	}
 	case MONSTER_SHIFT_BR:
 	{
 		//p_krh_shift_br[p_krh_shift_br]
-		strAnimName = "p_krh_shift_br[p_krh_shift_br]";
-		iAnim = m_pAnimCom->Get_AnimationIndex("p_krh_shift_br[p_krh_shift_br]");
+		m_strAnimName = "p_krh_shift_br";
 		m_isAnimLoop = true;
 		break;
 	}
 	case MONSTER_SHIFT_BL:
 	{
 		//p_krh_shift_bl[p_krh_shift_bl]
-		strAnimName = "p_krh_shift_bl[p_krh_shift_bl]";
-		iAnim = m_pAnimCom->Get_AnimationIndex("p_krh_shift_bl[p_krh_shift_bl]");
+		m_strAnimName = "p_krh_shift_bl";
 		m_isAnimLoop = true;
 		break;
 	}
 	case MONSTER_CMD_1:
 	{
 		//p_krh_cmb_01[p_krh_cmb_01]
-		strAnimName = "p_krh_cmb_01[p_krh_cmb_01]";
-		iAnim = m_pAnimCom->Get_AnimationIndex("p_krh_cmb_01[p_krh_cmb_01]");
+		m_strAnimName = "p_krh_cmb_01";
 		break;
 	}
 	case MONSTER_CMD_2:
 	{
 		//p_krh_cmb_02[p_krh_cmb_02]
-		strAnimName = "p_krh_cmb_02[p_krh_cmb_02]";
-		iAnim = m_pAnimCom->Get_AnimationIndex("p_krh_cmb_02[p_krh_cmb_02]");
+		m_strAnimName = "p_krh_cmb_02";
 		break;
 	}
 	case MONSTER_CMD_3:
 	{
 		//p_krh_cmb_03[p_krh_cmb_03]
-		strAnimName = "p_krh_cmb_03[p_krh_cmb_03]";
-		iAnim = m_pAnimCom->Get_AnimationIndex("p_krh_cmb_03[p_krh_cmb_03]");
+		m_strAnimName = "p_krh_cmb_03";
 		break;
 	}
 	case MONSTER_CMD_4:
 	{
 		//p_krh_cmb_04[p_krh_cmb_04]
-		strAnimName = "p_krh_cmb_04[p_krh_cmb_04]";
-		iAnim = m_pAnimCom->Get_AnimationIndex("p_krh_cmb_04[p_krh_cmb_04]");
+		m_strAnimName = "p_krh_cmb_04";
 		break;
 	}
 	case MONSTER_CMD_5:
 	{
 		//p_krh_cmb_05[p_krh_cmb_05]
-		strAnimName = "p_krh_cmb_05[p_krh_cmb_05]";
-		iAnim = m_pAnimCom->Get_AnimationIndex("p_krh_cmb_05[p_krh_cmb_05]");
+		m_strAnimName = "p_krh_cmb_05";
 		break;
 	}
-	case MONSTER_ANGRY_START:
+	case MONSTER_GURAD:
 	{
-		//e_angry_typec[e_angry_typec]
-		strAnimName = "e_angry_typec[e_angry_typec]";
-		iAnim = m_pAnimCom->Get_AnimationIndex("e_angry_typec[e_angry_typec]");
-		break;
-	}
-	case MONSTER_ANGRY_CHOP:
-	{
-		//e_knk_atk_chop[e_knk_atk_chop]
-		strAnimName = "e_knk_atk_chop[e_knk_atk_chop]";
-		iAnim = m_pAnimCom->Get_AnimationIndex("e_knk_atk_chop[e_knk_atk_chop]");
-		break;
-	}
-	case MONSTER_ANGRY_KICK:
-	{
-		//e_knk_atk_kick[e_knk_atk_kick]
-		strAnimName = "e_knk_atk_kick[e_knk_atk_kick]";
-		iAnim = m_pAnimCom->Get_AnimationIndex("e_knk_atk_kick[e_knk_atk_kick]");
+		m_strAnimName = "p_krh_guard";
 		break;
 	}
 	case MONSTER_DEATH:
@@ -283,11 +267,13 @@ void CRushYakuza::Change_Animation()
 		break;
 	}
 
-	if (iAnim == -1)
+	m_iAnim = m_pAnimCom->Get_AnimationIndex(m_strAnimName.c_str());
+
+	if (m_iAnim == -1)
 		return;
 
-	m_pModelCom->Set_AnimationIndex(iAnim, m_pAnimCom->Get_Animations(), m_fChangeInterval);
-	m_pData->Set_CurrentAnimation(strAnimName);
+	m_pModelCom->Set_AnimationIndex(m_iAnim, m_pAnimCom->Get_Animations(), m_fChangeInterval);
+	m_pData->Set_CurrentAnimation(m_strAnimName);
 }
 
 CRushYakuza* CRushYakuza::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

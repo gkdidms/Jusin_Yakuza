@@ -60,8 +60,6 @@ HRESULT CNavigation_Manager::Render()
 		return S_OK;
 
 #ifdef _DEBUG
-	/*if (nullptr != m_pNavigationCom)
-		m_pNavigationCom->Render();*/
 
 	if (0 < m_Cells.size())
 	{
@@ -392,6 +390,22 @@ void CNavigation_Manager::Delete_AllCell()
 
 	/* 인덱스도 같이 초기화 */
 	m_iCurrentCellIndex = 0;
+}
+
+int CNavigation_Manager::Get_Player_Monster_NaviIndex(_vector vPosition)
+{
+	for (int i = 0; i < m_Cells.size(); i++)
+	{
+		/* 그냥 넣어주는거 */
+		int			iNeighborsIndex;
+
+		if (true == m_Cells[i]->isIn(vPosition, &iNeighborsIndex))
+		{
+			return i;
+		}
+	}
+
+	return -1;
 }
 
 void CNavigation_Manager::Find_Cells()

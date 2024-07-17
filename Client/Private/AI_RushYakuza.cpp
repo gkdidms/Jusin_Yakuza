@@ -34,6 +34,8 @@ HRESULT CAI_RushYakuza::Initialize(void* pArg)
 
 	//트리 구현
 	Ready_Tree();
+
+	m_iGuardAtk = 2;
 	
 	return S_OK;
 }
@@ -67,8 +69,14 @@ void CAI_RushYakuza::Ready_Tree()
 	CSelector* pRoot = CSelector::Create();
 	
 #pragma region Death
-	CSequance* pDeadSeq = CSequance::Create();
-	pDeadSeq->Add_Children(CLeafNode::Create(bind(&CAI_RushYakuza::Check_Death, this)));
+	CSequance* pDownSeq = CSequance::Create();
+	pDownSeq->Add_Children(CLeafNode::Create(bind(&CAI_RushYakuza::Check_Down, this)));
+	pDownSeq->Add_Children(CLeafNode::Create(bind(&CAI_RushYakuza::StandUpAndDead, this)));
+
+	CSelector* pDownSelector = CSelector::Create();
+	pDownSelector->Add_Children(CLeafNode::Create(bind(&CAI_RushYakuza::StandUp, this)));
+	pDownSelector->Add_Children(CLeafNode::Create(bind(&CAI_RushYakuza::Dead, this)));
+	pDownSeq->Add_Children(pDownSelector);
 #pragma endregion
 
 #pragma region Sway
@@ -91,21 +99,21 @@ void CAI_RushYakuza::Ready_Tree()
 	CSelector* pHitGuard = CSelector::Create();
 	CSelector* pHitSelector = CSelector::Create();
 	pHitSelector->Add_Children(CLeafNode::Create(bind(&CAI_RushYakuza::Normal_Hit, this)));
-	pHitSelector->Add_Children(CLeafNode::Create(bind(&CAI_RushYakuza::Strong_Hit, this)));
 
 	CSelector* pGuardSelector = CSelector::Create();
 	pGuardSelector->Add_Children(CLeafNode::Create(bind(&CAI_RushYakuza::Guard, this)));
 
-	pHitGuard->Add_Children(pHitSelector);
 	pHitGuard->Add_Children(pGuardSelector);
+	pHitGuard->Add_Children(pHitSelector);
+	
 
 	pHitGuardSeq->Add_Children(pHitGuard);
 #pragma endregion
 
 #pragma region Angry
-	CSequance* pAngrySeq = CSequance::Create();
+	/*CSequance* pAngrySeq = CSequance::Create();
 	pAngrySeq->Add_Children(CLeafNode::Create(bind(&CAI_RushYakuza::Check_Angry, this)));
-	pAngrySeq->Add_Children(CLeafNode::Create(bind(&CAI_RushYakuza::Angry, this)));
+	pAngrySeq->Add_Children(CLeafNode::Create(bind(&CAI_RushYakuza::Angry, this)));*/
 #pragma endregion
 
 #pragma region Attack
@@ -136,11 +144,11 @@ void CAI_RushYakuza::Ready_Tree()
 #pragma endregion
 
 #pragma region Root
-	pRoot->Add_Children(pDeadSeq);
+	pRoot->Add_Children(pDownSeq);
 	pRoot->Add_Children(pSwaySeq);
 	pRoot->Add_Children(pSyncSeq);
 	pRoot->Add_Children(pHitGuardSeq);
-	pRoot->Add_Children(pAngrySeq);
+	//pRoot->Add_Children(pAngrySeq);
 	pRoot->Add_Children(pAttackSeq);
 	pRoot->Add_Children(pBreakSeq);
 #pragma endregion
@@ -158,6 +166,10 @@ CBTNode::NODE_STATE CAI_RushYakuza::Check_Attack()
 		m_fAttackDelayTime = 0.f;
 	}
 
+#ifdef _DEBUG
+	cout << " 몬스터 공격!!!!" << endl;
+#endif // DEBUG
+
 	return CBTNode::SUCCESS;
 }
 
@@ -168,8 +180,6 @@ CBTNode::NODE_STATE CAI_RushYakuza::Attack()
 	LookAtPlayer();
 	//화가 나지 않앗을때 스킬 선택 (임시)
 	static _uint iCount = 0;
-
-	//삥쟁이는 거리가 멀어졌을때, 가까울때 공격 패턴이 다르다.
 
 	if (iCount == 0 || iCount == 1)
 		m_iSkill = SKILL_CMD;

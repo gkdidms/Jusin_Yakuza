@@ -3,7 +3,7 @@
 
 BEGIN(Engine)
 class CShader;
-class CCollider;
+class CNavigation;
 class CAnim;
 END
 
@@ -17,6 +17,7 @@ public:
         XMMATRIX		vStartPos;
         wstring			wstrModelName;
         int				iShaderPass;
+        int             iNaviNum;
     }MONSTER_IODESC;
 
 public:
@@ -61,6 +62,24 @@ public:
         MONSTER_ANGRY_START,
         MONSTER_ANGRY_CHOP,
         MONSTER_ANGRY_KICK,
+        MONSTER_GURAD,
+
+        MONSTER_DWN_DNF_BOUND,
+        MONSTER_DWN_DNB_BOUND,
+        MONSTER_DAM_HEAD_LV01_R,
+        MONSTER_DAM_HEAD_LV01_L,
+        MONSTER_DAM_HEAD_LV01_F,
+        MONSTER_DAM_HEAD_LV02_R,
+        MONSTER_DAM_HEAD_LV02_L,
+        MONSTER_DAM_HEAD_LV02_F,
+        MONSTER_DAM_BODY_LV02_F,
+        MONSTER_DAM_BODY_LV02_D,
+        MONSTER_DWN_DIRECT_D,
+        MONSTER_DWN_BODY_F,
+        MONSTER_DWN_BODY_F_SP,
+        MONSTER_DWN_EXPLODE_F,
+        MONSTER_STANDUP_DNF_FAST,
+        MONSTER_DED_L, // 죽음
         MONSTER_DEATH,
         MONSTER_STATE_END
     };
@@ -72,6 +91,10 @@ protected:
 
 public:
     _bool isColl() { return m_isColl; }
+    _bool isDown() { return m_isDown; }
+
+public:
+    void Set_Down(_bool isDown) { m_isDown = isDown; }
 
 public:
     virtual HRESULT Initialize_Prototype() override;
@@ -90,6 +113,7 @@ public:
 protected:
     CShader* m_pShaderCom = { nullptr };
     CAnim* m_pAnimCom = { nullptr }; // 애니메이션만 따로 저장하고있는 애니메이션 컴포넌트
+    CNavigation* m_pNavigationCom = { nullptr };
 
 protected:
     _bool m_isAnimLoop = { false };
@@ -102,9 +126,15 @@ protected:
     _float4x4       m_ModelWorldMatrix;
 
 protected:
-    _bool m_isColl = { false }; // 충돌되었는지 아닌지 체크해야함.
+    string m_strAnimName = "";
+    _uint m_iAnim = { 0 };
 
 protected:
+    _bool m_isColl = { false }; // 충돌되었는지 아닌지 체크해야함.
+    _bool m_isDown = { false }; // 다운되었는가?
+
+protected:
+    virtual void Change_Animation();
     void Synchronize_Root(const _float& fTimeDelta);
 
 private:

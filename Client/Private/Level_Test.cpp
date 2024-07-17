@@ -21,6 +21,13 @@ CLevel_Test::CLevel_Test(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 
 HRESULT CLevel_Test::Initialize()
 {
+	// 테스트 client 로드 숫자랑 동일하게 설정해주기!!!!!!!!!!!!!!!!!!!!!!!
+	// 네비 다르면 터짐
+	// 테스트 다하면 지워라
+	/* For.Prototype_Component_Navigation */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Navigation"),
+		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/NaviData/Navigation_6.dat")))))
+		return E_FAIL;
 
  	if (FAILED(Ready_Player(TEXT("Layer_Player"))))
 		return E_FAIL;
@@ -38,9 +45,9 @@ HRESULT CLevel_Test::Initialize()
 		return E_FAIL;
 
 	/* 클라 파싱 */
-	m_pFileTotalManager->Set_MapObj_In_Client(9, LEVEL_TEST);
+	m_pFileTotalManager->Set_MapObj_In_Client(6, LEVEL_TEST);
 	m_pFileTotalManager->Set_Lights_In_Client(6);
-	m_pFileTotalManager->Set_Collider_In_Client(1, LEVEL_TEST);
+	m_pFileTotalManager->Set_Collider_In_Client(6, LEVEL_TEST);
 
 	_uint i = m_pGameInstance->Get_CurrentLevel();
 

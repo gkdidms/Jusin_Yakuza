@@ -23,9 +23,10 @@ private:
 private:
     virtual HRESULT Add_Components() override;
     virtual HRESULT Bind_ResourceData() override;
+    virtual void Change_Animation();
 
 private:
-    void Change_Animation();
+    
 
 public:
     static CYoneda* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

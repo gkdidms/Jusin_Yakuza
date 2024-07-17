@@ -9,11 +9,11 @@ END
 
 BEGIN(Client)
 class CLoader :
-    public CBase
+	public CBase
 {
 private:
-    CLoader(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-    virtual ~CLoader() = default;
+	CLoader(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	virtual ~CLoader() = default;
 
 public:
 	const _tchar* Get_LoadingText() const {
@@ -46,6 +46,7 @@ private:
 	HRESULT Loading_For_Office_Boss();
 	HRESULT Loading_For_Dogimazo();
 	HRESULT Loading_For_Dogimazo_Stairs();
+	HRESULT Loading_For_Dogimazo_Lobby();
 	HRESULT Loading_For_Dogimazo_Boss();
 	HRESULT Loading_For_Test();
 
@@ -54,9 +55,12 @@ private:
 	HRESULT Add_GameObject_Particle_On_Path(const wstring& strPath);
 	HRESULT Add_Models_On_Path_NonAnim(_uint iLevel, const wstring& strPath);				// 현정추가
 
+private:
+	HRESULT Loading_Default();
+
 
 public:
-    static CLoader* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, LEVEL eNextLevel);
-    virtual void Free() override;
+	static CLoader* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, LEVEL eNextLevel);
+	virtual void Free() override;
 };
 END

@@ -22,8 +22,6 @@ public:
 private:
     class CAI_RushYakuza* m_pTree = { nullptr };
 
-    _bool m_isAnimLoop = { false };
-
     _float          m_fPrevSpeed = { 0.f };
     _float4         m_vPrevMove;
     _float4         m_vPrevRotation;
@@ -36,9 +34,8 @@ private:
 private:
     virtual HRESULT Add_Components() override;
     virtual HRESULT Bind_ResourceData() override;
+    virtual void Change_Animation();
 
-private:
-    void Change_Animation();
 
 public:
     static CRushYakuza* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

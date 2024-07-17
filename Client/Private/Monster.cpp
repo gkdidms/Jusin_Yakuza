@@ -39,6 +39,9 @@ void CMonster::Priority_Tick(const _float& fTimeDelta)
 
 void CMonster::Tick(const _float& fTimeDelta)
 {
+	//충돌처리 초기화
+	m_isColl = false;
+
 	for (auto& pCollider : m_pColliders)
 		pCollider.second->Tick(fTimeDelta);
 
@@ -64,6 +67,14 @@ void CMonster::Tick(const _float& fTimeDelta)
 
 void CMonster::Late_Tick(const _float& fTimeDelta)
 {
+	//높이값 태우기
+	_vector vCurrentPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	float fHeight = m_pNavigationCom->Compute_Height(vCurrentPos);
+
+	vCurrentPos = XMVectorSetY(vCurrentPos, fHeight);
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vCurrentPos);
+
+
 	for (auto& pCollider : m_pColliders)
 		pCollider.second->Late_Tick(fTimeDelta);
 
@@ -236,13 +247,16 @@ void CMonster::Synchronize_Root(const _float& fTimeDelta)
 			_float fMoveSpeed = XMVectorGetX(XMVector3Length(vFF - XMLoadFloat4(&m_vPrevMove)));
 
 			//Y값 이동을 죽인 방향으로 적용해야한다.
-			XMStoreFloat4(&fMoveDir, XMVectorSetY(XMVector3Normalize(vFF - XMLoadFloat4(&m_vPrevMove)), 0.f));
-			
+			_vector vTemp = XMVector3Normalize((vFF - XMLoadFloat4(&m_vPrevMove)));
+			//Z가 Y처럼 쓰임
+			vTemp = XMVectorSetZ(vTemp, XMVectorGetY(vTemp));
+			vTemp = XMVectorSetX(vTemp, XMVectorGetX(vTemp) * -1.f);
+			XMStoreFloat4(&fMoveDir, XMVector3TransformNormal(XMVectorSetY(vTemp, 0.f), m_pTransformCom->Get_WorldMatrix()));
+
 			if (0.01 > m_fPrevSpeed)
 				m_fPrevSpeed = 0.f;
 
-			m_pTransformCom->Go_Straight_CustumSpeed(m_fPrevSpeed, 1);
-			m_pTransformCom->Go_Move_Custum(fMoveDir, m_fPrevSpeed, 1);
+			m_pTransformCom->Go_Move_Custum(fMoveDir, m_fPrevSpeed, 1, m_pNavigationCom);
 			m_fPrevSpeed = fMoveSpeed;
 
 			XMStoreFloat4(&m_vPrevMove, vFF);
@@ -259,7 +273,6 @@ void CMonster::Synchronize_Root(const _float& fTimeDelta)
 
 HRESULT CMonster::Add_Components()
 {
-	
 	return S_OK;
 }
 
@@ -268,10 +281,123 @@ HRESULT CMonster::Bind_ResourceData()
 	return S_OK;
 }
 
+void CMonster::Change_Animation()
+{
+	//히트, 데미지 관련 공통 애니메이션
+	switch (m_iState)
+	{
+	case MONSTER_DWN_DNF_BOUND:
+	{
+		m_strAnimName = "c_dwn_dnb_bound";
+		break;
+	}
+	case MONSTER_DWN_DNB_BOUND:
+	{
+		m_strAnimName = "c_dwn_dnf_bound";
+		break;
+	}
+	case MONSTER_DAM_HEAD_LV01_R:
+	{
+		m_strAnimName = "c_dam_head_lv01_r";
+		break;
+	}
+	case MONSTER_DAM_HEAD_LV01_L:
+	{
+		m_strAnimName = "c_dam_head_lv01_l";
+		break;
+	}
+	case MONSTER_DAM_HEAD_LV01_F:
+	{
+		m_strAnimName = "c_dam_head_lv01_f";
+		break;
+	}
+	case MONSTER_DAM_HEAD_LV02_R:
+	{
+		m_strAnimName = "c_dam_head_lv02_r";
+		break;
+	}
+	case MONSTER_DAM_HEAD_LV02_L:
+	{
+		m_strAnimName = "c_dam_head_lv02_l";
+		break;
+	}
+	case MONSTER_DAM_HEAD_LV02_F:
+	{
+		m_strAnimName = "c_dam_head_lv02_f";
+		break;
+	}
+	case MONSTER_DAM_BODY_LV02_F:
+	{
+		m_strAnimName = "c_dam_body_lv02_f";
+		break;
+	}
+	case MONSTER_DAM_BODY_LV02_D:
+	{
+		m_strAnimName = "c_dam_body_lv02_b";
+		break;
+	}
+	case MONSTER_DWN_DIRECT_D:
+	{
+		m_strAnimName = "c_dwn_direct_b";
+		break;
+	}
+	case MONSTER_DWN_BODY_F:
+	{
+		m_strAnimName = "c_dwn_body_f";
+		break;
+	}
+	case MONSTER_DWN_BODY_F_SP:
+	{
+		m_strAnimName = "c_dwn_body_f_sp";
+		break;
+	}
+	case MONSTER_DWN_EXPLODE_F:
+	{
+		m_strAnimName = "c_dwn_explode_f";
+		break;
+	}
+	case MONSTER_STANDUP_DNF_FAST:
+	{
+		m_strAnimName = "c_standup_dnf_fast";
+		break;
+	}
+	case MONSTER_DED_L:
+	{
+		m_strAnimName = "c_ded_l";
+		break;
+	}
+
+	case MONSTER_ANGRY_START:
+	{
+		//e_angry_typec[e_angry_typec]
+		m_strAnimName = "e_angry_typec";
+		break;
+	}
+	case MONSTER_ANGRY_CHOP:
+	{
+		//e_knk_atk_chop[e_knk_atk_chop]
+		m_strAnimName = "e_knk_atk_chop";
+		break;
+	}
+	case MONSTER_ANGRY_KICK:
+	{
+		//e_knk_atk_kick[e_knk_atk_kick]
+		m_strAnimName = "e_knk_atk_kick";
+		break;
+	}
+	case MONSTER_DEATH:
+	{
+		break;
+	}
+	}
+
+}
+
 void CMonster::Free()
 {
 	__super::Free();
 
 	Safe_Release(m_pAnimCom);
 	Safe_Release(m_pShaderCom);
+	Safe_Release(m_pNavigationCom);
 }

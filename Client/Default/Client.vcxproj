@@ -198,6 +198,7 @@
     <ClInclude Include="..\Public\Kiryu_KRS_Down.h" />
     <ClInclude Include="..\Public\Level_Dogimazo.h" />
     <ClInclude Include="..\Public\Level_DogimazoBoss.h" />
+    <ClInclude Include="..\Public\Level_DogimazoLobby.h" />
     <ClInclude Include="..\Public\Level_DogimazoStairs.h" />
     <ClInclude Include="..\Public\Group.h" />
     <ClInclude Include="..\Public\Image_Texture.h" />
@@ -324,6 +325,7 @@
     <ClCompile Include="..\Private\Kiryu_KRS_Down.cpp" />
     <ClCompile Include="..\Private\Level_Dogimazo.cpp" />
     <ClCompile Include="..\Private\Level_DogimazoBoss.cpp" />
+    <ClCompile Include="..\Private\Level_DogimazoLobby.cpp" />
     <ClCompile Include="..\Private\Level_DogimazoStairs.cpp" />
     <ClCompile Include="..\Private\Group.cpp" />
     <ClCompile Include="..\Private\Image_Texture.cpp" />

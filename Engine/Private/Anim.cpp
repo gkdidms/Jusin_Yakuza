@@ -21,10 +21,9 @@ CAnim::CAnim(const CAnim& rhs)
 _uint CAnim::Get_AnimationIndex(const _char* pName)
 {
 	_uint iIndex = 0;
-	string strName = "c_cm_t_suitn_mus_armature|" + string(pName);
 	for (auto& pAnim : m_Animations)
 	{
-		if (!strcmp(pAnim->Get_AnimName(), strName.c_str()))
+		if (string(pAnim->Get_AnimName()).find(pName) != string::npos)
 			return iIndex;
 
 		iIndex++;

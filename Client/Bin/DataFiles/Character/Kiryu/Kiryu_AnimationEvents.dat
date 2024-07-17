@@ -1,4 +1,4 @@
-128p_krc_atk_down_trample
+132p_krc_atk_down_trample
 0
 5
 asi4_l_n
@@ -65,7 +65,7 @@ buki_r_n
 146
 p_krc_cmb_01
 1
-16
+13.7
 buki_r_n
 146
 p_krc_cmb_01_fin
@@ -105,7 +105,7 @@ buki_l_n
 182
 p_krc_cmb_02
 1
-17
+16.6
 buki_l_n
 182
 p_krc_cmb_02_fin
@@ -115,7 +115,7 @@ buki_r_n
 146
 p_krc_cmb_02_fin
 1
-20
+19.2
 buki_r_n
 146
 p_krc_cmb_03
@@ -125,7 +125,7 @@ buki_r_n
 146
 p_krc_cmb_03
 1
-8.1
+7.4
 buki_r_n
 146
 p_krc_cmb_03_fin
@@ -150,12 +150,32 @@ buki_r_n
 146
 p_krc_cmb_03_heavy
 0
-31
+32.8
 buki_r_n
 146
 p_krc_cmb_03_heavy
 1
-34
+33.5
+buki_r_n
+146
+p_krc_guard_run_lp
+0
+0
+buki_l_n
+182
+p_krc_guard_run_lp
+1
+15
+buki_l_n
+182
+p_krc_guard_run_lp
+0
+0
+buki_r_n
+146
+p_krc_guard_run_lp
+1
+15
 buki_r_n
 146
 p_krh_atk_down
@@ -305,7 +325,7 @@ buki_l_n
 182
 p_krh_cmb_01
 1
-8.5
+6.5
 buki_l_n
 182
 p_krh_cmb_01_fin
@@ -325,7 +345,7 @@ buki_r_n
 146
 p_krh_cmb_02
 1
-6.6
+4.8
 buki_r_n
 146
 p_krh_cmb_02_fin
@@ -345,7 +365,7 @@ buki_l_n
 182
 p_krh_cmb_03
 1
-5.6
+5.4
 buki_l_n
 182
 p_krh_cmb_03_fin
@@ -365,7 +385,7 @@ buki_r_n
 146
 p_krh_cmb_04
 1
-10.8
+8.1
 buki_r_n
 146
 p_krh_cmb_04_fin
@@ -385,7 +405,7 @@ buki_l_n
 182
 p_krh_cmb_05
 1
-7.3
+6.3
 buki_l_n
 182
 p_krh_cmb_05_fin
@@ -405,7 +425,7 @@ asi4_r_n
 7
 p_krh_cmb_06
 1
-19.5
+13.7
 asi4_r_n
 7
 p_krh_cmb_06_fin
@@ -425,7 +445,7 @@ asi4_l_n
 16
 p_krh_cmb_07
 1
-18.5
+14
 asi4_l_n
 16
 p_krh_cmb_07_fin
@@ -445,7 +465,7 @@ asi4_r_n
 7
 p_krh_cmb_08
 1
-18.8
+17
 asi4_r_n
 7
 p_krh_cmb_08_fin
@@ -495,7 +515,7 @@ buki_l_n
 182
 p_krs_atk_kick_f_02
 1
-22.8
+23
 buki_l_n
 182
 p_krs_atk_kick_f_03
@@ -605,7 +625,7 @@ asi4_l_n
 16
 p_krs_cmb_04
 1
-16.2
+14.2
 asi4_l_n
 16
 p_krs_cmb_04_fin
