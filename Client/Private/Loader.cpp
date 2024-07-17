@@ -338,6 +338,11 @@ HRESULT CLoader::Loading_For_Office_1F()
 	if (FAILED(Loading_Default()))
 		return E_FAIL;
 
+	/* For.Prototype_Component_Navigation */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Navigation"),
+		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/NaviData/Navigation_0.dat")))))
+		return E_FAIL;
+
 #pragma region Model
 	lstrcpy(m_szLoadingText, TEXT("모델를(을) 로딩 중 입니다."));
 	Add_Models_On_Path(m_eNextLevel, TEXT("../Bin/Resources/Models/Anim/"));

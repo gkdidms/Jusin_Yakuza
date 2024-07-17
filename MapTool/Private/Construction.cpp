@@ -39,6 +39,7 @@ HRESULT CConstruction::Initialize(void* pArg)
 		m_iShaderPassNum = gameobjDesc->iShaderPass;
 		m_iObjectType = gameobjDesc->iObjType;
 		m_iObjectPropertyType = gameobjDesc->iObjPropertyType;
+		m_iNaviNum = gameobjDesc->iNaviNum;
 
 		for (int i = 0; i < gameobjDesc->iDecalNum; i++)
 		{
@@ -185,7 +186,14 @@ int CConstruction::Get_ObjPlaceDesc(OBJECTPLACE_DESC* objplaceDesc)
 		Safe_AddRef(pNaviMgr);
 
 		int		iNaviNum = pNaviMgr->Get_Player_Monster_NaviIndex(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-		objplaceDesc->iNaviNum = iNaviNum;
+
+		if (-1 != iNaviNum)
+		{
+			m_iNaviNum = iNaviNum;
+		}
+
+		objplaceDesc->iNaviNum = m_iNaviNum;
+		
 
 		Safe_Release(pNaviMgr);
 	}

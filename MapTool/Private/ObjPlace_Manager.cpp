@@ -485,6 +485,8 @@ void CObjPlace_Manager::Load_GameObject(int iNum)
 		mapDesc.wstrModelName = m_pGameInstance->StringToWstring(mapTotalInform.pMapObjDesc[i].strModelCom);
 		mapDesc.iShaderPass = mapTotalInform.pMapObjDesc[i].iShaderPassNum;
 		mapDesc.iObjType = mapTotalInform.pMapObjDesc[i].iObjType;
+		mapDesc.iNaviNum = mapTotalInform.pMapObjDesc[i].iNaviNum;
+
 		mapDesc.iDecalNum = mapTotalInform.pMapObjDesc[i].iDecalNum;
 
 		if (0 < mapDesc.iDecalNum)
