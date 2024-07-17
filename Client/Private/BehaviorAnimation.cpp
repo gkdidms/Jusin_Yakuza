@@ -16,8 +16,8 @@
 #include "Kiryu_KRS_FlyKick.h"
 #include "Kiryu_KRS_KickCombo.h"
 #include "Kiryu_KRS_Hit.h"
-#include "Kiryu_KRS_Down.h"
 #include "Kiryu_KRS_Sway.h"
+#include "Kiryu_KRS_Down.h"
 #pragma endregion
 
 #pragma region KRH
@@ -27,8 +27,8 @@
 #include "Kiryu_KRH_Run.h"
 #include "Kiryu_KRH_Attack.h"
 #include "Kiryu_KRH_Hit.h"
-#include "Kiryu_KRH_Down.h"
 #include "Kiryu_KRH_Sway.h"
+#include "Kiryu_KRH_Down.h"
 #pragma endregion
 
 #pragma region KRC
@@ -38,8 +38,9 @@
 #include "Kiryu_KRC_Run.h"
 #include "Kiryu_KRC_Attack.h"
 #include "Kiryu_KRC_Hit.h"
-#include "Kiryu_KRC_Down.h"
 #include "Kiryu_KRC_Sway.h"
+#include "Kiryu_KRC_Down.h"
+#include "Kiryu_KRC_Guard.h"
 #pragma endregion
 
 CBehaviorAnimation::CBehaviorAnimation()
@@ -149,6 +150,8 @@ CBehaviorAnimation* CBehaviorAnimation::Create_KRC_Behavior(_uint iBehavior, cla
 		return CKiryu_KRC_Sway::Create(pPlayer);
 	case 7:			// DOWN
 		return CKiryu_KRC_Down::Create(pPlayer);
+	case 8:			// GUARD
+		return CKiryu_KRC_Guard::Create(pPlayer);
 	}
 	return nullptr;
 }

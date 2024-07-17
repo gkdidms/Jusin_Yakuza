@@ -262,9 +262,6 @@
     <ClCompile Include="..\Private\UI_Texture.cpp">
       <Filter>95.Utility\05.UIManager\UIScene\UIObject\UITexture</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\MapColliderObj.cpp">
-      <Filter>02.GameObjects\08. MapCollider\Obj</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\LightConstruction.cpp">
       <Filter>02.GameObjects\03.Construction\LightConstruction</Filter>
     </ClCompile>
@@ -357,6 +354,10 @@
     </ClCompile>
     <ClCompile Include="..\Private\MapColliderObj.cpp">
       <Filter>02.GameObjects\07.MapCollider\Obj</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\MapColliderObj.cpp" />
+    <ClCompile Include="..\Private\Kiryu_KRC_Guard.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRC\Guard</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -651,9 +652,6 @@
     <ClInclude Include="..\Public\UI_Texture.h">
       <Filter>95.Utility\05.UIManager\UIScene\UIObject\UITexture</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\MapColliderObj.h">
-      <Filter>02.GameObjects\08. MapCollider\Obj</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\Kiryu_KRS_KickCombo.h">
       <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\KickCombo</Filter>
     </ClInclude>
@@ -746,6 +744,10 @@
     </ClInclude>
     <ClInclude Include="..\Public\MapColliderObj.h">
       <Filter>02.GameObjects\07.MapCollider\Obj</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\MapColliderObj.h" />
+    <ClInclude Include="..\Public\Kiryu_KRC_Guard.h">
+      <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRC\Guard</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1141,7 +1143,7 @@
     <Filter Include="01.Levels\07.DogimazoBoss">
       <UniqueIdentifier>{c3987abd-0a35-468c-b0db-541aa2913f3b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRC\Gaurd">
+    <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRC\Guard">
       <UniqueIdentifier>{3f5ad5dc-5e30-4a8e-9db6-f53eb73719fc}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
