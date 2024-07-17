@@ -47,16 +47,18 @@ HRESULT CLevel_Test::Ready_Object(const wstring& strLayerTag)
 
 	CFreeCamera::FREE_CAMERA_DESC CameraDesc{};
 
-	CameraDesc.vEye = _float4(0.0f, 5.f, -20.f, 1.f);
+	CameraDesc.vEye = _float4(0.0f, 0.f, -1.f, 1.f);
 	CameraDesc.vFocus = _float4(0.0f, 0.0f, 0.0f, 1.f);
 	CameraDesc.fFovY = XMConvertToRadians(60.0f);
 	CameraDesc.fAspect = (_float)g_iWinSizeX / (_float)g_iWinSizeY;
 	CameraDesc.fNear = 0.01f;
 	CameraDesc.fFar = 3000.f;
 	CameraDesc.fRotatePecSec = XMConvertToRadians(90.f);
-	CameraDesc.fSpeedPecSec = 30.f;
+	CameraDesc.fSpeedPecSec = 2.f;
 	CameraDesc.fSensor = 0.1f;
-	XMStoreFloat4x4(&CameraDesc.vPrePosition, XMMatrixTranslation(0.f, 10.f, 0.f));
+
+	
+	XMStoreFloat4x4(&CameraDesc.vPrePosition, XMMatrixRotationY(XMConvertToRadians(90.f)) * XMMatrixTranslation(-2.f, 0.f, 0.f));
 
 	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_FreeCamera"), strLayerTag, &CameraDesc)))
 		return E_FAIL;

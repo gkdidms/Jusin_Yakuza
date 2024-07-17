@@ -107,6 +107,7 @@ private:
 	_bool m_bDrop = { false };
 	_bool m_bSizeup = { false };
 	_bool m_bSizedown = { false };
+	_bool m_bAura = { false };
 	_bool m_bGuizmo = { false };
 	//생성 파티클 담는 곳
 	vector<CGameObject*> m_EditParticle = {  };

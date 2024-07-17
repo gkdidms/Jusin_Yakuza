@@ -573,7 +573,8 @@ void CImguiManager::EditorAura_Tick(_float fTimeDelta)
 
 	if (ImGui::RadioButton("FLUID", &m_AuraDesc.iShaderPass, PASS_NOCOLOR))
 		bChange = true;
-
+	if (ImGui::RadioButton("Start", &m_AuraDesc.iShaderPass, PASS_COLOR))
+		bChange = true;
 
 	if (ImGui::Checkbox("Spread", &m_bSpread))
 	{
@@ -612,7 +613,14 @@ void CImguiManager::EditorAura_Tick(_float fTimeDelta)
 			pParticle->Edit_Action(CEffect::ACTION_SIZEDOWN);
 		}
 	}
-
+	if (ImGui::Checkbox("Aura", &m_bAura))
+	{
+		if (-1 != m_iCurEditIndex)
+		{
+			CEffect* pParticle = dynamic_cast<CEffect*>(m_EditAura[m_iCurEditIndex]);
+			pParticle->Edit_Action(CEffect::ACTION_AURA);
+		}
+	}
 
 	if (ImGui::Checkbox("useRadius", &m_AuraDesc.BufferInstance.bRadius))
 	{
@@ -969,6 +977,7 @@ HRESULT CImguiManager::Edit_Particle(_uint Index)
 		if (m_bSizedown)
 			dynamic_cast<CEffect*>(m_EditParticle[Index])->Edit_Action(CEffect::ACTION_SIZEDOWN);
 
+
 	}
 		break;
 	case MODE_TRAIL:
@@ -1035,6 +1044,7 @@ HRESULT CImguiManager::Edit_Particle(_uint Index)
 		AuraDesc.iShaderPass = m_AuraDesc.iShaderPass;
 		AuraDesc.TextureTag = m_AuraDesc.TextureTag;
 		AuraDesc.fUVCount = m_AuraDesc.fUVCount;
+		AuraDesc.isAura = true;
 
 
 		m_EditAura[Index] = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Aura"), &AuraDesc);
@@ -1049,7 +1059,8 @@ HRESULT CImguiManager::Edit_Particle(_uint Index)
 			dynamic_cast<CEffect*>(m_EditAura[Index])->Edit_Action(CEffect::ACTION_SIZEUP);
 		if (m_bSizedown)
 			dynamic_cast<CEffect*>(m_EditAura[Index])->Edit_Action(CEffect::ACTION_SIZEDOWN);
-
+		if (m_bAura)
+			dynamic_cast<CEffect*>(m_EditAura[Index])->Edit_Action(CEffect::ACTION_AURA);
 	}
 		break;
 	default:
@@ -1117,6 +1128,7 @@ HRESULT CImguiManager::Load_Desc(_uint Index)
 		else
 			m_bSizedown = false;
 
+
 	}
 		break;
 	case MODE_TRAIL:
@@ -1167,7 +1179,7 @@ HRESULT CImguiManager::Load_Desc(_uint Index)
 		m_AuraDesc.iShaderPass = pAuraEffect->Get_ShaderPass();
 		m_AuraDesc.TextureTag = pAuraEffect->Get_TextureTag();
 		m_AuraDesc.fUVCount = pAuraEffect->Get_UVCount();
-
+		m_AuraDesc.isAura = true;
 		_uint CheckAction = pAuraEffect->Get_Action();
 
 		if (CheckAction & pAuraEffect->iAction[CEffect::ACTION_SPREAD])
@@ -1189,6 +1201,12 @@ HRESULT CImguiManager::Load_Desc(_uint Index)
 			m_bSizedown = true;
 		else
 			m_bSizedown = false;
+
+		if (CheckAction & pAuraEffect->iAction[CEffect::ACTION_AURA])
+			m_bAura = true;
+		else
+			m_bAura = false;
+
 	}
 	break;
 	default:
