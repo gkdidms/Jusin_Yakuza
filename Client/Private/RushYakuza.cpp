@@ -273,7 +273,11 @@ void CRushYakuza::Change_Animation()
 		return;
 
 	m_iAnim = m_pAnimCom->Get_AnimationIndex(m_strAnimName.c_str());
-	m_pModelCom->Set_AnimationIndex(m_iAnim, m_pAnimCom->Get_Animations(), m_fChangeInterval);
+
+	// 실제로 애니메이션 체인지가 일어났을 때 켜져있던 어택 콜라이더를 전부 끈다
+	if(m_pModelCom->Set_AnimationIndex(m_iAnim, m_pAnimCom->Get_Animations(), m_fChangeInterval))
+		Off_Attack_Colliders();
+
 	m_pData->Set_CurrentAnimation(m_strAnimName);
 }
 

@@ -1,4 +1,4 @@
-90e_knk_atk_chop
+92e_knk_atk_chop
 0
 10
 buki_r_n
@@ -448,3 +448,13 @@ p_krh_cmb_04
 7.7
 buki_r_n
 146
+p_krh_cmb_05
+0
+5.55
+buki_l_n
+182
+p_krh_cmb_05
+1
+6.5
+buki_l_n
+182

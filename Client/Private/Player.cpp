@@ -1236,6 +1236,8 @@ void CPlayer::Change_Animation(_uint iIndex, _float fInterval)
 {
 	if (m_pModelCom->Set_AnimationIndex(iIndex, fInterval))
 	{
+		// 실제로 애니메이션 체인지가 일어났을 때 켜져있던 어택 콜라이더를 전부 끈다
+		Off_Attack_Colliders();
 		XMStoreFloat4(&m_vPrevMove, XMVectorZero());
 		m_fPrevSpeed = 0.f;
 	}

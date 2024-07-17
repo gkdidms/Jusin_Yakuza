@@ -21,9 +21,11 @@ public:
 
 public:
     _bool isDead() { return m_isDead; }
+    _bool isObjectDead() { return m_isObjectDead; }
 
 public:
     void        Set_Dead() { m_isDead = true; }
+    void        Set_ObjectDead() { m_isObjectDead = true; }
     float       Get_ObjID() { return m_fObjID; }
     void        Set_ObjID(float fID) { m_fObjID = fID; }
 
@@ -52,6 +54,7 @@ protected:
 protected:
     _uint m_iCurrentLevel = { 0 };
     _bool m_isDead = { false };
+    _bool m_isObjectDead = { false };
 
     float   m_fObjID = { 0 };
 
