@@ -83,11 +83,15 @@ protected:
     _float m_fBreakDuration = { 0.f }; // 랜덤으로 부여받는다.
     _float m_fBreakTime = { 0.f };
 
+    _float m_fGuardDuration = { 4.f }; // 가드 지속시간
+    _float m_fGuardTime = { 0.f };
+
+protected:
     _float m_fCmbNum = { 0.f }; // 스킬 발동시 확률적으로 몇번 공격할것인지 저장.
     _float m_fCmbCount = { 0.f }; // 콥보 누적 카운트
 
-    _float m_iGuardAtk = { 0 }; // 가드 후 몇번 맞으면 가드가 풀릴것인지 지정.
-    _float m_iGuardAtkCount = { 0 };
+    _float m_fGuardBroken = { 20.f };
+    _float m_fGuardAtkAcc = { 0.f };
 
 protected:
     //쓰러졋는가? or 죽었는가? (현재상태 확인)
@@ -109,10 +113,7 @@ protected:
     virtual CBTNode::NODE_STATE Check_Hit();
     virtual CBTNode::NODE_STATE HitAndGuard(); //히트모션을 할 것인지, 가드를 할 것인지
 
-    // 플레이어 공격 스킬마다 히트모션 다름.
-    virtual CBTNode::NODE_STATE Normal_Hit(); // 히트 체크를 하면서 죽었는지 죽지 않았는지도 같이 확인해야함.
-
-    // 가드
+    virtual CBTNode::NODE_STATE Hit();
     virtual CBTNode::NODE_STATE Guard();
 
     //분노
@@ -140,6 +141,16 @@ protected:
     void Check_KRS(_uint iPlayerLv);
     void Check_KRC(_uint iPlayerLv);
     _bool Check_StandUp();
+    
+protected:
+    void Reset_State() {
+        m_isAttack = false;
+        m_isBreak = false;
+        m_isShift = false;
+
+        m_fBreakTime = 0.f;
+        m_fAttackDelayTime = 0.f;
+    }
 
 public:
     virtual void Free();

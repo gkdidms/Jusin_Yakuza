@@ -34,27 +34,13 @@ HRESULT CAI_RushYakuza::Initialize(void* pArg)
 
 	//트리 구현
 	Ready_Tree();
-
-	m_iGuardAtk = 2;
 	
 	return S_OK;
 }
 
 void CAI_RushYakuza::Tick(const _float& fTimeDelta)
 {
-	if (m_isAttack == false)
-		m_fAttackDelayTime += fTimeDelta;
-
-	if (m_isBreak)
-	{
-		m_fBreakTime += fTimeDelta;
-
-		if (m_fBreakDuration <= m_fBreakTime)
-		{
-			m_isBreak = false;
-			m_fBreakTime = 0.f;
-		}
-	}
+	__super::Tick(fTimeDelta);
 
 	this->Execute();
 }
@@ -97,23 +83,16 @@ void CAI_RushYakuza::Ready_Tree()
 	pHitGuardSeq->Add_Children(CLeafNode::Create(bind(&CAI_RushYakuza::HitAndGuard, this)));
 
 	CSelector* pHitGuard = CSelector::Create();
-	CSelector* pHitSelector = CSelector::Create();
-	pHitSelector->Add_Children(CLeafNode::Create(bind(&CAI_RushYakuza::Normal_Hit, this)));
-
-	CSelector* pGuardSelector = CSelector::Create();
-	pGuardSelector->Add_Children(CLeafNode::Create(bind(&CAI_RushYakuza::Guard, this)));
-
-	pHitGuard->Add_Children(pGuardSelector);
-	pHitGuard->Add_Children(pHitSelector);
-	
+	pHitGuard->Add_Children(CLeafNode::Create(bind(&CAI_RushYakuza::Guard, this)));
+	pHitGuard->Add_Children(CLeafNode::Create(bind(&CAI_RushYakuza::Hit, this)));
 
 	pHitGuardSeq->Add_Children(pHitGuard);
 #pragma endregion
 
 #pragma region Angry
-	/*CSequance* pAngrySeq = CSequance::Create();
+	CSequance* pAngrySeq = CSequance::Create();
 	pAngrySeq->Add_Children(CLeafNode::Create(bind(&CAI_RushYakuza::Check_Angry, this)));
-	pAngrySeq->Add_Children(CLeafNode::Create(bind(&CAI_RushYakuza::Angry, this)));*/
+	pAngrySeq->Add_Children(CLeafNode::Create(bind(&CAI_RushYakuza::Angry, this)));
 #pragma endregion
 
 #pragma region Attack

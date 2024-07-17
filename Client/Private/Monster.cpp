@@ -118,11 +118,6 @@ HRESULT CMonster::Render()
 
 		_bool isRS = true;
 		_bool isRD = true;
-		if (!strcmp(pMesh->Get_Name(), "[l0]face_kiryu"))
-		{
-			isRS = false;
-			isRD = false;
-		}
 
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RSTexture", i, aiTextureType_SPECULAR)))
 			isRS = false;
@@ -278,11 +273,23 @@ HRESULT CMonster::Add_Components()
 
 HRESULT CMonster::Bind_ResourceData()
 {
+	if (FAILED(m_pTransformCom->Bind_ShaderMatrix(m_pShaderCom, "g_WorldMatrix")))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_VIEW))))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_PROJ))))
+		return E_FAIL;
+
+	_float isRimLight = { 0.f };
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_isRimLight", &isRimLight, sizeof(_float))))
+		return E_FAIL;
+
 	return S_OK;
 }
 
 void CMonster::Change_Animation()
 {
+	m_isAnimLoop = false;
 	//히트, 데미지 관련 공통 애니메이션
 	switch (m_iState)
 	{
@@ -294,6 +301,16 @@ void CMonster::Change_Animation()
 	case MONSTER_DWN_DNB_BOUND:
 	{
 		m_strAnimName = "c_dwn_dnf_bound";
+		break;
+	}
+	case MONSTER_DWN_DNF_BOUND_G:
+	{
+		m_strAnimName = "c_dwn_dnb_bound_g";
+		break;
+	}
+	case MONSTER_DWN_DNB_BOUND_G:
+	{
+		m_strAnimName = "c_dwn_dnf_bound_g";
 		break;
 	}
 	case MONSTER_DAM_HEAD_LV01_R:
@@ -326,6 +343,21 @@ void CMonster::Change_Animation()
 		m_strAnimName = "c_dam_head_lv02_f";
 		break;
 	}
+	case MONSTER_DAM_HEAD_LV02_B:
+	{
+		m_strAnimName = "c_dam_head_lv02_b";
+		break;
+	}
+	case MONSTER_DAM_BODY_LV01_F:
+	{
+		m_strAnimName = "c_dam_body_lv01_f";
+		break;
+	}
+	case MONSTER_DAM_BODY_LV01_D:
+	{
+		m_strAnimName = "c_dam_body_lv01_b";
+		break;
+	}
 	case MONSTER_DAM_BODY_LV02_F:
 	{
 		m_strAnimName = "c_dam_body_lv02_f";
@@ -356,9 +388,19 @@ void CMonster::Change_Animation()
 		m_strAnimName = "c_dwn_explode_f";
 		break;
 	}
+	case MONSTER_DWN_DIRECT_F_BOUND_G:
+	{
+		m_strAnimName = "c_dwn_direct_f_bound_g";
+		break;
+	}
 	case MONSTER_STANDUP_DNF_FAST:
 	{
 		m_strAnimName = "c_standup_dnf_fast";
+		break;
+	}
+	case MONSTER_STANDUP_DNB_FAST:
+	{
+		m_strAnimName = "c_standup_dnb_fast";
 		break;
 	}
 	case MONSTER_DED_L:

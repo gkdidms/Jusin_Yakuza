@@ -356,11 +356,8 @@
       <Filter>02.GameObjects\07.MapCollider\Obj</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\MapColliderObj.cpp" />
-    <ClCompile Include="..\Private\Trigger.cpp">
-      <Filter>02.GameObjects\08.Trigger</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\LevelTrigger.cpp">
-      <Filter>02.GameObjects\08.Trigger\00.LevelTrigger</Filter>
+    <ClCompile Include="..\Private\Kiryu_KRC_Guard.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRC\Guard</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -749,11 +746,8 @@
       <Filter>02.GameObjects\07.MapCollider\Obj</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\MapColliderObj.h" />
-    <ClInclude Include="..\Public\Trigger.h">
-      <Filter>02.GameObjects\08.Trigger</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\LevelTrigger.h">
-      <Filter>02.GameObjects\08.Trigger\00.LevelTrigger</Filter>
+    <ClInclude Include="..\Public\Kiryu_KRC_Guard.h">
+      <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRC\Guard</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -857,6 +851,18 @@
     </Filter>
     <Filter Include="02.GameObjects\06.Effect\Aura">
       <UniqueIdentifier>{e1163822-540f-4bdd-9163-9b24fe1b27c1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\03.BehaviorTree">
+      <UniqueIdentifier>{490f9c94-1bca-41c9-a680-f2eb77882221}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\03.BehaviorTree\SquanceNode">
+      <UniqueIdentifier>{a2c51b61-3052-4f69-9513-7d8956a5fbfd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\03.BehaviorTree\SelectorNode">
+      <UniqueIdentifier>{9bcb482e-8cd8-46b9-ba50-2f2da538a375}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\03.BehaviorTree\LeafNode">
+      <UniqueIdentifier>{3352b812-faf6-4a67-8b29-1e9df787da34}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObjects\02.Character\PartObject\SocketObject">
       <UniqueIdentifier>{5ecdde66-d1d6-47ad-8170-66d5ccd28aa5}</UniqueIdentifier>
@@ -1137,32 +1143,8 @@
     <Filter Include="01.Levels\07.DogimazoBoss">
       <UniqueIdentifier>{c3987abd-0a35-468c-b0db-541aa2913f3b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRC\Gaurd">
+    <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRC\Guard">
       <UniqueIdentifier>{3f5ad5dc-5e30-4a8e-9db6-f53eb73719fc}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\08.Trigger">
-      <UniqueIdentifier>{156501b6-2a25-4647-b813-5f5a24f708bd}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\08.Trigger\00.LevelTrigger">
-      <UniqueIdentifier>{61f87e49-e070-4484-8996-0b504ef3f0c4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\08.Trigger\01.CineTrigger">
-      <UniqueIdentifier>{f9fcfdf2-d8a5-4afa-9ca3-e3aed7313931}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\08.Trigger\02.YonedaTrigger">
-      <UniqueIdentifier>{a4d5be83-9715-4148-bc1a-a36f4f4aeb40}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="95.Utility\03.BehaviorTree">
-      <UniqueIdentifier>{490f9c94-1bca-41c9-a680-f2eb77882221}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="95.Utility\03.BehaviorTree\SquanceNode">
-      <UniqueIdentifier>{a2c51b61-3052-4f69-9513-7d8956a5fbfd}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="95.Utility\03.BehaviorTree\SelectorNode">
-      <UniqueIdentifier>{9bcb482e-8cd8-46b9-ba50-2f2da538a375}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="95.Utility\03.BehaviorTree\LeafNode">
-      <UniqueIdentifier>{3352b812-faf6-4a67-8b29-1e9df787da34}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

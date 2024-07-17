@@ -58,7 +58,7 @@ HRESULT CMainApp::Initialize()
       freopen_s(nfp + 2, "CONOUT$", "wb", stderr);
       std::ios::sync_with_stdio();
    }
-   m_pGameInstance->Set_DebugView(true);
+   m_pGameInstance->Set_DebugView(false);
 
 #endif // _DEBUG
 	

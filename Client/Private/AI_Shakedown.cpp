@@ -110,7 +110,7 @@ void CAI_Shakedown::Ready_Tree()
 
 	//CSelector* pHitGuard = CSelector::Create();
 	CSelector* pHitSelector = CSelector::Create();
-	pHitSelector->Add_Children(CLeafNode::Create(bind(&CAI_Shakedown::Normal_Hit, this)));
+	pHitSelector->Add_Children(CLeafNode::Create(bind(&CAI_Shakedown::Hit, this)));
 
 	//CSelector* pGuardSelector = CSelector::Create();
 	//pGuardSelector->Add_Children(CLeafNode::Create(bind(&CAI_Shakedown::Guard, this)));
