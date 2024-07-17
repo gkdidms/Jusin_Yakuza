@@ -580,67 +580,67 @@ void CObjPlace_Manager::Edit_Installed_GameObject(int iNumObject)
 	if (ImGui::RadioButton(u8"그냥건물", m_tCurrentObjectDesc.iObjType == 0))
 	{
 		objectType = 0;
-		m_tCurrentObjectDesc.iObjType = OBJECT_TYPE::CONSTRUCTION;
+		m_tCurrentObjectDesc.iObjType = (int)OBJECT_TYPE::CONSTRUCTION;
 	}
 
 	if (ImGui::RadioButton(u8"도로", m_tCurrentObjectDesc.iObjType == 1))
 	{
 		objectType = 1;
-		m_tCurrentObjectDesc.iObjType = OBJECT_TYPE::ROAD;
+		m_tCurrentObjectDesc.iObjType = (int)OBJECT_TYPE::ROAD;
 	}
 
 	if (ImGui::RadioButton(u8"아이템", m_tCurrentObjectDesc.iObjType == 2))
 	{
 		objectType = 2;
-		m_tCurrentObjectDesc.iObjType = OBJECT_TYPE::ITEM;
+		m_tCurrentObjectDesc.iObjType = (int)OBJECT_TYPE::ITEM;
 	}
 
 	if (ImGui::RadioButton(u8"몬스터 - Rush", m_tCurrentObjectDesc.iObjType == 3))
 	{
 		objectType = 3;
-		m_tCurrentObjectDesc.iObjType = OBJECT_TYPE::MONSTER_RUSH;
+		m_tCurrentObjectDesc.iObjType = (int)OBJECT_TYPE::MONSTER_RUSH;
 	}
 
 	if (ImGui::RadioButton(u8"플레이어", m_tCurrentObjectDesc.iObjType == 4))
 	{
 		objectType = 4;
-		m_tCurrentObjectDesc.iObjType = OBJECT_TYPE::PLAYER;
+		m_tCurrentObjectDesc.iObjType = (int)OBJECT_TYPE::PLAYER;
 	}
 
 	if (ImGui::RadioButton(u8"스카이", m_tCurrentObjectDesc.iObjType == 5))
 	{
 		objectType = 5;
-		m_tCurrentObjectDesc.iObjType = OBJECT_TYPE::SKY;
+		m_tCurrentObjectDesc.iObjType = (int)OBJECT_TYPE::SKY;
 	}
 
 	if (ImGui::RadioButton(u8"라이트", m_tCurrentObjectDesc.iObjType == 6))
 	{
 		objectType = 6;
-		m_tCurrentObjectDesc.iObjType = OBJECT_TYPE::LIGHT;
+		m_tCurrentObjectDesc.iObjType = (int)OBJECT_TYPE::LIGHT;
 	}
 
 	if (ImGui::RadioButton(u8"몬스터 - WPA ", m_tCurrentObjectDesc.iObjType == 7))
 	{
 		objectType = 7;
-		m_tCurrentObjectDesc.iObjType = OBJECT_TYPE::MONSTER_WPA;
+		m_tCurrentObjectDesc.iObjType = (int)OBJECT_TYPE::MONSTER_WPA;
 	}
 
 	if (ImGui::RadioButton(u8"몬스터 - ShakeDown", m_tCurrentObjectDesc.iObjType == 8))
 	{
 		objectType = 8;
-		m_tCurrentObjectDesc.iObjType = OBJECT_TYPE::MONSTER_SHAKEDOWN;
+		m_tCurrentObjectDesc.iObjType = (int)OBJECT_TYPE::MONSTER_SHAKEDOWN;
 	}
 
 	if (ImGui::RadioButton(u8"몬스터 - yoneda", m_tCurrentObjectDesc.iObjType == 9))
 	{
 		objectType = 9;
-		m_tCurrentObjectDesc.iObjType = OBJECT_TYPE::MONSTER_YONEDA;
+		m_tCurrentObjectDesc.iObjType = (int)OBJECT_TYPE::MONSTER_YONEDA;
 	}
 
 	if (ImGui::RadioButton(u8"몬스터 - kuze", m_tCurrentObjectDesc.iObjType == 10))
 	{
 		objectType = 10;
-		m_tCurrentObjectDesc.iObjType = OBJECT_TYPE::MONSTER_KUZE;
+		m_tCurrentObjectDesc.iObjType = (int)OBJECT_TYPE::MONSTER_KUZE;
 	}
 
 	ImGui::NewLine();
@@ -794,7 +794,7 @@ bool CObjPlace_Manager::Add_CloneObject_Imgui(MAPTOOL_OBJPLACE_DESC objDesc, _ui
 
 
 		_bool		isPick;
-		_vector		vTargetPos = CGameInstance::GetInstance()->Picking(&isPick);
+		_vector		vTargetPos = m_pGameInstance->Picking(&isPick);
 
 		_matrix			startPos;
 		startPos = XMMatrixIdentity();
@@ -979,7 +979,7 @@ void CObjPlace_Manager::Set_Map_Object()
 
 	ImGui::NewLine();
 
-	ImGui::Text(u8"오브젝트속성유형");
+	ImGui::Text(u8"오브젝트속성유형 - 플레이어와 몬스터는 네비번호로 사용");
 	static int objectPropertyType = 0;
 	ImGui::RadioButton(u8"회복", &objectPropertyType, 0);
 	ImGui::RadioButton(u8"부수기", &objectPropertyType, 1);
@@ -1128,6 +1128,8 @@ HRESULT CObjPlace_Manager::Import_Bin_Map_Data_OnTool(MAP_TOTALINFORM_DESC* mapO
 		in.read((char*)&pMapObj->iObjType, sizeof(int));
 		in.read((char*)&pMapObj->iObjPropertyType, sizeof(int));
 
+		in.read((char*)&pMapObj->iNaviNum, sizeof(int));
+
 		in.read((char*)&pMapObj->iDecalNum, sizeof(int));
 
 		pMapObj->pDecals = new DECAL_DESC_IO[pMapObj->iDecalNum];
@@ -1205,6 +1207,9 @@ HRESULT CObjPlace_Manager::Export_Bin_Map_Data(MAP_TOTALINFORM_DESC* mapObjData)
 		out.write((char*)&PObjPlaceDesc.iShaderPassNum, sizeof(int));
 		out.write((char*)&PObjPlaceDesc.iObjType, sizeof(int));
 		out.write((char*)&PObjPlaceDesc.iObjPropertyType, sizeof(int));
+
+		//추가
+		out.write((char*)&PObjPlaceDesc.iNaviNum, sizeof(int));
 
 		out.write((char*)&PObjPlaceDesc.iDecalNum, sizeof(int));
 

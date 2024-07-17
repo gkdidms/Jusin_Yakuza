@@ -162,6 +162,7 @@ void CSocketCollider::ParentObject_Hit(const _float3& vDir, _float fDamage, CLan
 	_matrix ParentMatrix = pParentObject->Get_TransformCom()->Get_WorldMatrix();
 	// m_eColliderPartType는 본인이 헤드인지, 바디인지, 레그인지를 가지고있다
 	// TODO: 피격 파티클로 교체가 필요하다.
+
 	//CEffect::EFFECT_DESC EffectDesc;
 
 
@@ -175,6 +176,7 @@ void CSocketCollider::ParentObject_Hit(const _float3& vDir, _float fDamage, CLan
 	//WorldMatrix.r[CTransform::STATE_RIGHT] = XMVector4Normalize(vRight);
 	//WorldMatrix.r[CTransform::STATE_UP] = XMVector4Normalize(vUp);
 	//WorldMatrix.r[CTransform::STATE_LOOK] = XMVector4Normalize(vLook);
+
 
 	//_float4x4 matrix;
 	//XMStoreFloat4x4(&matrix, ParentMatrix);

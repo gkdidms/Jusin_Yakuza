@@ -34,7 +34,7 @@ void CAI_WPAYakuza::Ready_Tree()
 
 #pragma region Death
 	CSequance* pDeadSeq = CSequance::Create();
-	pDeadSeq->Add_Children(CLeafNode::Create(bind(&CAI_WPAYakuza::Check_Death, this)));
+	pDeadSeq->Add_Children(CLeafNode::Create(bind(&CAI_WPAYakuza::Check_Down, this)));
 #pragma endregion
 
 #pragma region Sway
@@ -57,7 +57,6 @@ void CAI_WPAYakuza::Ready_Tree()
 	CSelector* pHitGuard = CSelector::Create();
 	CSelector* pHitSelector = CSelector::Create();
 	pHitSelector->Add_Children(CLeafNode::Create(bind(&CAI_WPAYakuza::Normal_Hit, this)));
-	pHitSelector->Add_Children(CLeafNode::Create(bind(&CAI_WPAYakuza::Strong_Hit, this)));
 
 	CSelector* pGuardSelector = CSelector::Create();
 	pGuardSelector->Add_Children(CLeafNode::Create(bind(&CAI_WPAYakuza::Guard, this)));
