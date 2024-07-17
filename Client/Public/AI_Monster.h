@@ -38,6 +38,7 @@ public:
         SKILL_DEAD,
         SKILL_END
     };
+    enum PLAYER_ATK_DIR { F, B, L, R, PLAYER_ATK_DIR_END };
 
     typedef struct tAIMonster {
         class CAnim* pAnim;
@@ -73,6 +74,7 @@ protected:
     _bool m_isShift = { false };
     _bool m_isBreak = { false };
     _bool m_isGuard = { false };
+    _bool m_isSway = { false };
 
     _uint m_iSkill = { SKILL_END };
 
@@ -137,9 +139,9 @@ protected:
 
 protected:
     _bool Find_CurrentAnimationName(string strAnimName);
-    void Check_KRH(_uint iPlayerLv);
-    void Check_KRS(_uint iPlayerLv);
-    void Check_KRC(_uint iPlayerLv);
+    _uint Check_KRH(_uint iPlayerLv, _bool isBehine, _bool isAnimChange = true);
+    _uint Check_KRS(_uint iPlayerLv, _bool isBehine, _bool isAnimChange = true);
+    _uint Check_KRC(_uint iPlayerLv, _bool isBehine, _bool isAnimChange = true);
     _bool Check_StandUp();
     
 protected:
@@ -147,6 +149,7 @@ protected:
         m_isAttack = false;
         m_isBreak = false;
         m_isShift = false;
+        m_isSway = false;
 
         m_fBreakTime = 0.f;
         m_fAttackDelayTime = 0.f;
