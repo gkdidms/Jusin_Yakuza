@@ -219,15 +219,8 @@ void CVIBuffer_Instance::Aura(_float fTimeDelta)
 			if (true == m_InstanceDesc->isLoop)
 			{
 				m_pOriginalOffsets[i] = _float3(m_InstanceDesc->vOffsetPos.x + XMVectorGetX(WorlPosition), m_InstanceDesc->vOffsetPos.y + XMVectorGetY(WorlPosition), m_InstanceDesc->vOffsetPos.z + XMVectorGetZ(WorlPosition)); // Loop를 위해 저장해준다.
-				//m_pOriginalOffsets[i] = _float3(m_InstanceDesc->vOffsetPos.x, m_InstanceDesc->vOffsetPos.y, m_InstanceDesc->vOffsetPos.z); // Loop를 위해 저장해준다.
 				pVertices[i].vTranslation = _float4(m_pOriginalPositions[i].x + XMVectorGetX(WorlPosition), m_pOriginalPositions[i].y + XMVectorGetY(WorlPosition), m_pOriginalPositions[i].z + XMVectorGetZ(WorlPosition), 1.f);
 				pVertices[i].vLifeTime.y = 0.f;
-
-				//pVertices[i].vTranslation.x += XMVectorGetX(WorlPosition);
-				//pVertices[i].vTranslation.y += XMVectorGetY(WorlPosition);
-				//pVertices[i].vTranslation.z += XMVectorGetZ(WorlPosition);
-
-
 
 				pVertices[i].vRectSize.x = m_pGameInstance->Get_Random(m_InstanceDesc->vRectSize.x, m_InstanceDesc->vRectSize.y);	//크기
 				pVertices[i].vRectSize.y = m_pGameInstance->Get_Random(0.f, 360.f);//회전
