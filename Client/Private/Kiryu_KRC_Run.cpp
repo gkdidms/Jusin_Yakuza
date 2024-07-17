@@ -49,7 +49,18 @@ void CKiryu_KRC_Run::Stop()
 
 _bool CKiryu_KRC_Run::Stopping()
 {
-	if (ANIM_END == m_eAnimState && !Get_AnimationEnd()) return true;
+	if (ANIM_END == m_eAnimState && Changeable_Combo_Animation()) return true;
+
+	return false;
+}
+
+_bool CKiryu_KRC_Run::Changeable_Combo_Animation()
+{
+	_float fInterval = 0.7f;
+
+	CModel* pModelCom = static_cast<CModel*>(m_pPlayer->Get_Component(TEXT("Com_Model")));
+	if (fInterval < *pModelCom->Get_AnimationCurrentPosition() / *pModelCom->Get_AnimationDuration())
+		return true;
 
 	return false;
 }

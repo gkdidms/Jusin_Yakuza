@@ -475,7 +475,7 @@ void CPlayer::Take_Damage(_uint iHitColliderType, const _float3& vDir, _float fD
 
 		CKiryu_KRC_Hit::KRC_Hit_DESC Desc{ &vDir, fDamage, pAttackedObject->Get_CurrentAnimationName(), iDirection };
 
-		if (m_iCurrentBehavior == (_uint)KRC_BEHAVIOR_STATE::GAURD)
+		if (m_iCurrentBehavior == (_uint)KRC_BEHAVIOR_STATE::GUARD)
 		{
 			m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Setting_Value((void*)&Desc);
 		}
@@ -925,7 +925,7 @@ void CPlayer::KRH_KeyInput(const _float& fTimeDelta)
 	}
 	else if (m_pGameInstance->GetKeyState(DIK_SPACE) == AWAY)
 	{
-		if (m_iCurrentBehavior == (_uint)KRS_BEHAVIOR_STATE::WALK)
+		if (m_iCurrentBehavior == (_uint)KRH_BEHAVIOR_STATE::WALK)
 			m_iCurrentBehavior = (_uint)KRC_BEHAVIOR_STATE::IDLE;
 	}
 
@@ -955,7 +955,7 @@ void CPlayer::KRH_KeyInput(const _float& fTimeDelta)
 	if (m_iCurrentBehavior < (_uint)KRH_BEHAVIOR_STATE::ATTACK && !m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Stopping())
 	{
 		// 걷기상태일 때에는 애니메이션에서 따로 키입력을 받아서 사용한다
-		if (m_iCurrentBehavior != (_uint)KRS_BEHAVIOR_STATE::WALK)
+		if (m_iCurrentBehavior != (_uint)KRH_BEHAVIOR_STATE::WALK)
 		{
 			if (m_pGameInstance->GetKeyState(DIK_W) == HOLD)
 			{
@@ -1032,9 +1032,21 @@ void CPlayer::KRC_KeyInput(const _float& fTimeDelta)
 {
 	if (m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Get_AnimationEnd())
 	{
-		if ((_uint)KRC_BEHAVIOR_STATE::IDLE != m_iCurrentBehavior)
-			m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Reset();
-		m_iCurrentBehavior = (_uint)KRC_BEHAVIOR_STATE::IDLE;
+		if ((_uint)KRC_BEHAVIOR_STATE::GUARD == m_iCurrentBehavior)
+		{
+			if (m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Stopping())
+			{
+				m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Reset();
+				m_iCurrentBehavior = (_uint)KRC_BEHAVIOR_STATE::IDLE;
+			}
+		}
+		else
+		{
+			if ((_uint)KRC_BEHAVIOR_STATE::IDLE != m_iCurrentBehavior)
+				m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Reset();
+			m_iCurrentBehavior = (_uint)KRC_BEHAVIOR_STATE::IDLE;
+		}
+		
 	}
 
 	_bool isShift = { false };
@@ -1046,100 +1058,114 @@ void CPlayer::KRC_KeyInput(const _float& fTimeDelta)
 	}
 	else if (m_pGameInstance->GetKeyState(DIK_SPACE) == AWAY)
 	{
-		if (m_iCurrentBehavior == (_uint)KRS_BEHAVIOR_STATE::WALK)
+		if (m_iCurrentBehavior == (_uint)KRC_BEHAVIOR_STATE::WALK)
 			m_iCurrentBehavior = (_uint)KRC_BEHAVIOR_STATE::IDLE;
 	}
 
-	if (!m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Stopping())
+	if (m_pGameInstance->GetKeyState(DIK_LSHIFT) == HOLD)
 	{
-		if (m_pGameInstance->GetMouseState(DIM_LB) == TAP)
+		m_iCurrentBehavior = (_uint)KRC_BEHAVIOR_STATE::GUARD;
+	}
+	else if (m_pGameInstance->GetKeyState(DIK_LSHIFT) == AWAY)
+	{
+		if (m_iCurrentBehavior == (_uint)KRC_BEHAVIOR_STATE::GUARD)
 		{
-			// 기존 행동을 초기화하고 어택으로 바꿔준다.
-			if (m_iCurrentBehavior != (_uint)KRC_BEHAVIOR_STATE::ATTACK)
-				m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Reset();
-
-			m_iCurrentBehavior = (_uint)KRC_BEHAVIOR_STATE::ATTACK;
-			m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Change_Animation();
-			m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Combo_Count();
-		}
-		if (m_pGameInstance->GetMouseState(DIM_RB) == TAP)
-		{
-			// 현재 어택상태인지를 구분해서 마무리 액션을 실행시키거나
-			// 그에 맞는 커맨드 액션을 실행시ㅕ켜야 한다.
-
-			if (m_iCurrentBehavior == (_uint)KRC_BEHAVIOR_STATE::ATTACK)
-			{
-				m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Combo_Count(true);
-			}
+			m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Stop();
+			//m_iCurrentBehavior = (_uint)KRC_BEHAVIOR_STATE::IDLE;
 		}
 	}
 
-	if (m_iCurrentBehavior < (_uint)KRC_BEHAVIOR_STATE::ATTACK && !m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Stopping())
+	if (m_iCurrentBehavior != (_uint)KRC_BEHAVIOR_STATE::GUARD)
 	{
-		if (m_iCurrentBehavior != (_uint)KRS_BEHAVIOR_STATE::WALK)
+		if (!m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Stopping())
 		{
-			if (m_pGameInstance->GetKeyState(DIK_W) == HOLD)
+			if (m_pGameInstance->GetMouseState(DIM_LB) == TAP)
 			{
-				if (m_iCurrentBehavior == (_uint)KRC_BEHAVIOR_STATE::WALK || m_iCurrentBehavior == (_uint)KRC_BEHAVIOR_STATE::RUN)
+				// 기존 행동을 초기화하고 어택으로 바꿔준다.
+				if (m_iCurrentBehavior != (_uint)KRC_BEHAVIOR_STATE::ATTACK)
 					m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Reset();
 
-				_vector vLookPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION) + (m_pTransformCom->Get_State(CTransform::STATE_LOOK) + m_pGameInstance->Get_CamLook());
-				m_pGameInstance->Get_CamLook();
-				m_iCurrentBehavior = isShift ? (_uint)KRC_BEHAVIOR_STATE::WALK : (_uint)KRC_BEHAVIOR_STATE::RUN;
-
-				m_InputDirection[F] = true;
-				Compute_MoveDirection_FB();
-				m_pTransformCom->LookAt_For_LandObject(vLookPos);
-				isMove = true;
+				m_iCurrentBehavior = (_uint)KRC_BEHAVIOR_STATE::ATTACK;
+				m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Change_Animation();
+				m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Combo_Count();
 			}
-
-			if (m_pGameInstance->GetKeyState(DIK_S) == HOLD)
+			if (m_pGameInstance->GetMouseState(DIM_RB) == TAP)
 			{
-				if (m_iCurrentBehavior == (_uint)KRC_BEHAVIOR_STATE::WALK || m_iCurrentBehavior == (_uint)KRC_BEHAVIOR_STATE::RUN)
-					m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Reset();
-				_vector vLookPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION) + (m_pTransformCom->Get_State(CTransform::STATE_LOOK) - m_pGameInstance->Get_CamLook());
-				m_iCurrentBehavior = isShift ? (_uint)KRC_BEHAVIOR_STATE::WALK : (_uint)KRC_BEHAVIOR_STATE::RUN;
-				m_InputDirection[B] = true;
-				Compute_MoveDirection_FB();
-				m_pTransformCom->LookAt_For_LandObject(vLookPos);
-				isMove = true;
-			}
-			if (m_pGameInstance->GetKeyState(DIK_A) == HOLD)
-			{
-				if (m_iCurrentBehavior == (_uint)KRC_BEHAVIOR_STATE::WALK || m_iCurrentBehavior == (_uint)KRC_BEHAVIOR_STATE::RUN)
-					m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Reset();
-
-				_vector vLookPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION) + (m_pTransformCom->Get_State(CTransform::STATE_LOOK) - m_pGameInstance->Get_CamRight());
-				m_iCurrentBehavior = isShift ? (_uint)KRC_BEHAVIOR_STATE::WALK : (_uint)KRC_BEHAVIOR_STATE::RUN;
-				m_InputDirection[L] = true;
-				Compute_MoveDirection_RL();
-				m_pTransformCom->LookAt_For_LandObject(vLookPos);
-				isMove = true;
-			}
-			if (m_pGameInstance->GetKeyState(DIK_D) == HOLD)
-			{
-				if (m_iCurrentBehavior == (_uint)KRC_BEHAVIOR_STATE::WALK || m_iCurrentBehavior == (_uint)KRC_BEHAVIOR_STATE::RUN)
-					m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Reset();
-				_vector vLookPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION) + (m_pTransformCom->Get_State(CTransform::STATE_LOOK) + m_pGameInstance->Get_CamRight());
-				m_iCurrentBehavior = isShift ? (_uint)KRC_BEHAVIOR_STATE::WALK : (_uint)KRC_BEHAVIOR_STATE::RUN;
-				m_InputDirection[R] = true;
-				Compute_MoveDirection_RL();
-				m_pTransformCom->LookAt_For_LandObject(vLookPos);
-				isMove = true;
+				// 현재 어택상태인지를 구분해서 마무리 액션을 실행시키거나
+				// 그에 맞는 커맨드 액션을 실행시켜야 한다.
+				if (m_iCurrentBehavior == (_uint)KRC_BEHAVIOR_STATE::ATTACK)
+				{
+					m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Combo_Count(true);
+				}
 			}
 		}
 
-		if (m_pGameInstance->GetKeyState(DIK_E) == TAP)
+		if (m_iCurrentBehavior < (_uint)KRC_BEHAVIOR_STATE::ATTACK && !m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Stopping())
 		{
-			// 움직임 관련 키 입력이 없을 때에는 무조건 Back방향으로 이동해야하기 때문에 키입력여부 체크해서 방향 초기화
-			if (!isMove)
-				Reset_MoveDirection();
+			if (m_iCurrentBehavior != (_uint)KRC_BEHAVIOR_STATE::WALK)
+			{
+				if (m_pGameInstance->GetKeyState(DIK_W) == HOLD)
+				{
+					if (m_iCurrentBehavior == (_uint)KRC_BEHAVIOR_STATE::WALK || m_iCurrentBehavior == (_uint)KRC_BEHAVIOR_STATE::RUN)
+						m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Reset();
 
-			m_iCurrentBehavior = (_uint)KRC_BEHAVIOR_STATE::SWAY;
+					_vector vLookPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION) + (m_pTransformCom->Get_State(CTransform::STATE_LOOK) + m_pGameInstance->Get_CamLook());
+					m_pGameInstance->Get_CamLook();
+					m_iCurrentBehavior = isShift ? (_uint)KRC_BEHAVIOR_STATE::WALK : (_uint)KRC_BEHAVIOR_STATE::RUN;
+
+					m_InputDirection[F] = true;
+					Compute_MoveDirection_FB();
+					m_pTransformCom->LookAt_For_LandObject(vLookPos);
+					isMove = true;
+				}
+
+				if (m_pGameInstance->GetKeyState(DIK_S) == HOLD)
+				{
+					if (m_iCurrentBehavior == (_uint)KRC_BEHAVIOR_STATE::WALK || m_iCurrentBehavior == (_uint)KRC_BEHAVIOR_STATE::RUN)
+						m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Reset();
+					_vector vLookPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION) + (m_pTransformCom->Get_State(CTransform::STATE_LOOK) - m_pGameInstance->Get_CamLook());
+					m_iCurrentBehavior = isShift ? (_uint)KRC_BEHAVIOR_STATE::WALK : (_uint)KRC_BEHAVIOR_STATE::RUN;
+					m_InputDirection[B] = true;
+					Compute_MoveDirection_FB();
+					m_pTransformCom->LookAt_For_LandObject(vLookPos);
+					isMove = true;
+				}
+				if (m_pGameInstance->GetKeyState(DIK_A) == HOLD)
+				{
+					if (m_iCurrentBehavior == (_uint)KRC_BEHAVIOR_STATE::WALK || m_iCurrentBehavior == (_uint)KRC_BEHAVIOR_STATE::RUN)
+						m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Reset();
+
+					_vector vLookPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION) + (m_pTransformCom->Get_State(CTransform::STATE_LOOK) - m_pGameInstance->Get_CamRight());
+					m_iCurrentBehavior = isShift ? (_uint)KRC_BEHAVIOR_STATE::WALK : (_uint)KRC_BEHAVIOR_STATE::RUN;
+					m_InputDirection[L] = true;
+					Compute_MoveDirection_RL();
+					m_pTransformCom->LookAt_For_LandObject(vLookPos);
+					isMove = true;
+				}
+				if (m_pGameInstance->GetKeyState(DIK_D) == HOLD)
+				{
+					if (m_iCurrentBehavior == (_uint)KRC_BEHAVIOR_STATE::WALK || m_iCurrentBehavior == (_uint)KRC_BEHAVIOR_STATE::RUN)
+						m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Reset();
+					_vector vLookPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION) + (m_pTransformCom->Get_State(CTransform::STATE_LOOK) + m_pGameInstance->Get_CamRight());
+					m_iCurrentBehavior = isShift ? (_uint)KRC_BEHAVIOR_STATE::WALK : (_uint)KRC_BEHAVIOR_STATE::RUN;
+					m_InputDirection[R] = true;
+					Compute_MoveDirection_RL();
+					m_pTransformCom->LookAt_For_LandObject(vLookPos);
+					isMove = true;
+				}
+			}
+
+			if (m_pGameInstance->GetKeyState(DIK_E) == TAP)
+			{
+				// 움직임 관련 키 입력이 없을 때에는 무조건 Back방향으로 이동해야하기 때문에 키입력여부 체크해서 방향 초기화
+				if (!isMove)
+					Reset_MoveDirection();
+
+				m_iCurrentBehavior = (_uint)KRC_BEHAVIOR_STATE::SWAY;
+			}
 		}
 	}
-
-
+	
 	if (!isMove && m_iCurrentBehavior == (_uint)KRC_BEHAVIOR_STATE::RUN || m_iCurrentBehavior == (_uint)KRC_BEHAVIOR_STATE::WALK)
 		m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Stop();
 }
