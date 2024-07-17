@@ -26,7 +26,7 @@ public:
 	virtual HRESULT Render() override;
 
 protected:
-	const _float4x4* m_pSocketMatrix = { nullptr };
+	const _float4x4* m_pSocketMatrix = { nullptr };		// 뼈의 컴바인드 행렬
 
 public:
 	virtual CGameObject* Clone(void* pArg) = 0;

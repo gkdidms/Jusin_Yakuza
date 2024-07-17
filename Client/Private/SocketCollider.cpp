@@ -113,10 +113,10 @@ void CSocketCollider::Tick(const _float& fTimeDelta)
 
 void CSocketCollider::Late_Tick(const _float& fTimeDelta)
 {
-	__super::Late_Tick(fTimeDelta);
-
 	_float4 vParentPosition;
 	memcpy(&vParentPosition, m_pParentMatrix->m[3], sizeof(_float4));
+
+	__super::Late_Tick(fTimeDelta);
 
 	m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
 }
@@ -132,10 +132,16 @@ HRESULT CSocketCollider::Render()
 
 _bool CSocketCollider::Intersect(CCollider* pTargetObject, _float fDistance)
 {
-	if (m_isFiltered) return false;
-
-	m_isFiltered = true;
-	return pTargetObject->Intersect(m_pColliderCom, fDistance);
+	if (pTargetObject->Intersect(m_pColliderCom, fDistance))
+	{
+		if (!m_isFiltered)
+		{
+			m_isFiltered = true;
+			return true;
+		}
+	}
+		
+	return false;
 }
 
 void CSocketCollider::Filtering_Timer(_float fTimeDelta)
@@ -153,9 +159,10 @@ void CSocketCollider::Filtering_Timer(_float fTimeDelta)
 
 void CSocketCollider::ParentObject_Hit(const _float3& vDir, _float fDamage, CLandObject* pParentObject, _bool isBlowAttack)
 {
-	//_matrix ParentMatrix = pParentObject->Get_TransformCom()->Get_WorldMatrix();
-	//// m_eColliderPartType는 본인이 헤드인지, 바디인지, 레그인지를 가지고있다
-	//// TODO: 피격 파티클로 교체가 필요하다.
+	_matrix ParentMatrix = pParentObject->Get_TransformCom()->Get_WorldMatrix();
+	// m_eColliderPartType는 본인이 헤드인지, 바디인지, 레그인지를 가지고있다
+	// TODO: 피격 파티클로 교체가 필요하다.
+
 	//CEffect::EFFECT_DESC EffectDesc;
 
 
@@ -168,7 +175,8 @@ void CSocketCollider::ParentObject_Hit(const _float3& vDir, _float fDamage, CLan
 
 	//WorldMatrix.r[CTransform::STATE_RIGHT] = XMVector4Normalize(vRight);
 	//WorldMatrix.r[CTransform::STATE_UP] = XMVector4Normalize(vUp);
-	//WorldMatrix.r[CTransform::STATE_LOOK] = XMVector4Normalize(vLook	);
+	//WorldMatrix.r[CTransform::STATE_LOOK] = XMVector4Normalize(vLook);
+
 
 	//_float4x4 matrix;
 	//XMStoreFloat4x4(&matrix, ParentMatrix);
@@ -181,6 +189,8 @@ void CSocketCollider::ParentObject_Hit(const _float3& vDir, _float fDamage, CLan
 	//m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Hit1_Part2"), TEXT("Layer_Particle"), &EffectDesc);
 	//m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Hit1_Part3"), TEXT("Layer_Particle"), &EffectDesc);
 	//m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Hit1_Part4"), TEXT("Layer_Particle"), &EffectDesc);
+
+		cout << " 충돌!!!!" << endl;
 
 	m_pParentObject->Take_Damage(m_eColliderPartType, vDir, fDamage, pParentObject, isBlowAttack);
 }
