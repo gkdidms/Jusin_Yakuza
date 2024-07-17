@@ -55,7 +55,6 @@ HRESULT CRushYakuza::Initialize(void* pArg)
 	//m_pModelCom->Set_AnimLoop(1, true);
 
 
-
 	return S_OK;
 }
 
@@ -136,18 +135,6 @@ HRESULT CRushYakuza::Add_Components()
 
 	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Navigation"),
 		TEXT("Com_Navigation"), reinterpret_cast<CComponent**>(&m_pNavigationCom))))
-		return E_FAIL;
-
-	return S_OK;
-}
-
-HRESULT CRushYakuza::Bind_ResourceData()
-{
-	if (FAILED(m_pTransformCom->Bind_ShaderMatrix(m_pShaderCom, "g_WorldMatrix")))
-		return E_FAIL;
-	if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_VIEW))))
-		return E_FAIL;
-	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_PROJ))))
 		return E_FAIL;
 
 	return S_OK;
@@ -253,10 +240,21 @@ void CRushYakuza::Change_Animation()
 		m_strAnimName = "p_krh_cmb_05";
 		break;
 	}
-	case MONSTER_GURAD:
+	case MONSTER_GURAD_START:
 	{
 		m_strAnimName = "p_krh_guard";
 		break; 
+	}
+	case MONSTER_GURAD_LOOP:
+	{
+		m_strAnimName = "p_krh_guard_lp";
+		m_isAnimLoop = true;
+		break;
+	}
+	case MONSTER_GURAD_END:
+	{
+		m_strAnimName = "p_krh_guard_en";
+		break;
 	}
 	case MONSTER_GURAD_FLOAT:
 	{
@@ -270,12 +268,11 @@ void CRushYakuza::Change_Animation()
 	default:
 		break;
 	}
-
-	m_iAnim = m_pAnimCom->Get_AnimationIndex(m_strAnimName.c_str());
-
+	
 	if (m_iAnim == -1)
 		return;
 
+	m_iAnim = m_pAnimCom->Get_AnimationIndex(m_strAnimName.c_str());
 	m_pModelCom->Set_AnimationIndex(m_iAnim, m_pAnimCom->Get_Animations(), m_fChangeInterval);
 	m_pData->Set_CurrentAnimation(m_strAnimName);
 }
