@@ -287,8 +287,28 @@ void CTrigger_Manager::Show_Add_Trigger_IMGUI()
 
 	ImGui::NewLine();
 
+	/*static int			ilevelNum = 0;
+	ImGui::InputInt(u8"레벨 번호", &ilevelNum);*/
+
 	static int			ilevelNum = 0;
-	ImGui::InputInt(u8"레벨 번호", &ilevelNum);
+	if (ImGui::BeginListBox(u8"이동 레벨"))
+	{
+		for (int n = 0; n < m_Levels.size(); n++)
+		{
+			/*const bool is_selected = (cell_current_idx == n);*/
+			const bool is_selected = (ilevelNum == n);
+			if (ImGui::Selectable(m_Levels[n], is_selected))
+			{
+				/*cell_current_idx = n;
+				m_iCurrentCellIndex = trigger_current_idx;*/
+				ilevelNum = n;
+			}
+
+			if (is_selected)
+				ImGui::SetItemDefaultFocus();
+		}
+		ImGui::EndListBox();
+	}
 
 	static int			iCineNum = 0;
 	ImGui::InputInt(u8"시네머신 번호", &iCineNum);
@@ -524,6 +544,7 @@ void CTrigger_Manager::Edit_GameObject_Transform(int iNumObject)
 
 void CTrigger_Manager::Edit_Installed_Trigger()
 {
+	m_tCurTriggerDesc = m_TriggerObjects[m_iCurrentTriggerIndex]->Get_TriggerDesc();
 
 	ImGui::Text(u8"트리거 종류");
 	static int triggerType = m_tCurTriggerDesc.iTriggerType;
@@ -556,8 +577,28 @@ void CTrigger_Manager::Edit_Installed_Trigger()
 
 	ImGui::NewLine();
 
-	static int iNextLevel = m_tCurTriggerDesc.iLevelNum;
-	ImGui::InputInt(u8"이동levelnum", &m_tCurTriggerDesc.iLevelNum);
+	//static int iNextLevel = m_tCurTriggerDesc.iLevelNum;
+	//ImGui::InputInt(u8"이동levelnum", &m_tCurTriggerDesc.iLevelNum);
+
+	static int			ilevelNum = m_tCurTriggerDesc.iLevelNum;
+	if (ImGui::BeginListBox(u8"이동 레벨"))
+	{
+		for (int n = 0; n < m_Levels.size(); n++)
+		{
+			/*const bool is_selected = (cell_current_idx == n);*/
+			const bool is_selected = (m_tCurTriggerDesc.iLevelNum == n);
+			if (ImGui::Selectable(m_Levels[n], is_selected))
+			{
+				/*cell_current_idx = n;
+				m_iCurrentCellIndex = trigger_current_idx;*/
+				m_tCurTriggerDesc.iLevelNum = n;
+			}
+
+			if (is_selected)
+				ImGui::SetItemDefaultFocus();
+		}
+		ImGui::EndListBox();
+	}
 
 
 	ImGui::NewLine();
@@ -663,6 +704,8 @@ void CTrigger_Manager::Free()
 	for (auto& iter : m_TriggerNames)
 		Safe_Delete(iter);
 	m_TriggerNames.clear();
+
+	m_Levels.clear();
 
 	Safe_Release(m_pGameInstance);
 }
