@@ -141,7 +141,7 @@ void CAI_RushYakuza::Ready_Tree()
 	pRoot->Add_Children(pSwaySeq);
 	pRoot->Add_Children(pSyncSeq);
 	pRoot->Add_Children(pHitGuardSeq);
-	pRoot->Add_Children(pAngrySeq);
+	//pRoot->Add_Children(pAngrySeq);
 	pRoot->Add_Children(pAttackSeq);
 	pRoot->Add_Children(pBreakSeq);
 #pragma endregion
