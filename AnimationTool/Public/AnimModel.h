@@ -22,6 +22,12 @@ public:
 		_matrix matWorldMatrix;
 	};
 
+	struct Trail_Desc
+	{
+		class CEffect* pTrail;
+		_bool isOn = { false };
+	};
+
 private:
 	CAnimModel(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CAnimModel(const CAnimModel& rhs);
@@ -41,6 +47,8 @@ public:
 	void Set_Position(_fvector vPosition);
 	void Set_Scaled(_float x, _float y, _float z);
 	void Set_Rotation(_uint iAxis, _float vRadian, _float fTimeDelta);
+
+	void Trail_On(string& strBoneName, _bool isOn);
 
 public:
 	const vector<CAnimation*>& Get_Animations();
@@ -69,9 +77,14 @@ public:
 	}
 
 	void Create_BoneCollider(_uint iType, _uint iIndex, const _float3& vCenter, void* pDesc);
+	void Create_Trail(string& strBoneName, CGameObject* pEffect);
 
 	void Set_Collider_Center(_uint iIndex, const _float3& vCenter);
 	void Set_Collider_Value(_uint iIndex, void* pDesc);
+
+	void Set_RimMeshName(string strMeshName) {
+		m_strRimMeshName = strMeshName;
+	}
 
 public:
 	_bool Created_BoneCollider(_uint iIndex);
@@ -99,6 +112,18 @@ private:
 
 	_float4     m_vPrevMove;
 	_float4x4   m_ModelWorldMatrix;
+
+	// 잘 안보여서 그냥 러쉬색상으로함
+	_float m_isRimLight = 0.2f;// 0.f 꺼짐, 0.1 불한당, 0.2 러쉬, 0.3 파괴자
+
+	_float2 m_fRimTopUV = { 0.0f , 0.3f };//0~1사이 [시작v,끝v]상의
+	_float2 m_fRimBotUV = { 0.9f, 1.0f };//0~1사이 [시작v,끝v]하의
+	_float2 m_fRimPartsUV = { 0.0f, 1.0f }; //0~1사이 [시작v,끝v]손,발
+
+	string m_strRimMeshName = "";
+
+	// first: 뼈 이름, second: 이펙트
+	map<string, Trail_Desc>		m_TrailEffects;
 
 public:
 	static CAnimModel* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

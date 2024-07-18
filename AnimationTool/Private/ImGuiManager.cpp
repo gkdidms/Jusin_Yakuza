@@ -80,6 +80,10 @@ void CImguiManager::Tick(const _float& fTimeDelta)
 			EffectListWindow();
 		if (m_isSoundListWindow)
 			SoundListWindow();
+		if (m_isRimLightWindow)
+			RimLightWindow();
+		if (m_isTrailWindow)
+			TrailWindow();
 	}
 
 	// 애니메이션 이벤트가 있는 콜라이더의 색상을 시안색으로 바꿔주는 기능
@@ -698,6 +702,21 @@ void CImguiManager::KeyFrameWindow()
 	}
 #pragma endregion
 
+#pragma region 림라이트 이벤트 버튼
+	ImGui::Text("RimLight Event");
+	if (ImGui::Button("RimLight Op"))
+	{
+		m_isRimLightWindow = true;
+	}
+#pragma endregion
+
+#pragma region 트레일 이벤트 버튼
+	ImGui::Text("Trail Event");
+	if (ImGui::Button("Trail Op"))
+	{
+		m_isTrailWindow = true;
+	}
+#pragma endregion
 
 	if (ImGui::Button(u8"애니메이션 이벤트 저장"))
 	{
@@ -794,6 +813,27 @@ void CImguiManager::EffectListWindow()
 {
 	ImGui::Begin("Effect List", &m_isEffectListWindow);
 
+	if (ImGui::Checkbox(u8"이펙트 끄기", &m_isEffectOff))
+	{
+		if (m_isEffectOff)
+		{
+			auto pGameObjects = m_pGameInstance->Get_GameObjects(LEVEL_EDIT, TEXT("Layer_Effect"));
+			for (auto& pObject : pGameObjects)
+			{
+				static_cast<CEffect*>(pObject)->Set_Off(true);
+			}
+		}
+		else
+		{
+			auto pGameObjects = m_pGameInstance->Get_GameObjects(LEVEL_EDIT, TEXT("Layer_Effect"));
+			for (auto& pObject : pGameObjects)
+			{
+				static_cast<CEffect*>(pObject)->Set_Off(false);
+			}
+		}
+
+	}
+
 	for (size_t i = 0; i < m_EffectTypeList.size(); i++)
 	{
 		ImGui::SameLine();
@@ -814,11 +854,11 @@ void CImguiManager::EffectListWindow()
 	}
 
 	ImGui::ListBox("##", &m_iEffectSelectedIndex, items.data(), items.size());
+	m_SelectedEffectName = m_pGameInstance->Get_FileName(items[m_iEffectSelectedIndex]);
 
 	if (ImGui::Button(u8"이펙트 생성"))
 	{
-		string strSelectedEffectName = m_pGameInstance->Get_FileName(items[m_iEffectSelectedIndex]);
-		Create_Effect(m_BoneNameList[m_iBoneSelectedIndex], strSelectedEffectName);
+		Create_Effect(m_BoneNameList[m_iBoneSelectedIndex], m_SelectedEffectName);
 	}
 
 
@@ -852,6 +892,170 @@ void CImguiManager::EffectListWindow()
 
 		EffectState_Save(strDirectory);
 	}
+
+	ImGui::End();
+}
+
+void CImguiManager::RimLightWindow()
+{
+	ImGui::Begin(u8"림라이트 설정 창", &m_isRimLightWindow);
+
+	ImGui::Text(u8"선택된 애니메이션: %s", m_AnimNameList[m_iAnimIndex].c_str());
+	ImGui::Text(u8"선택된 메시: %s", m_MeshNameList[m_iMeshSelectedIndex].c_str());
+
+	ImGui::Text(u8"현재 입력된 애니메이션 포지션: %f", m_fAnimationPosition);
+
+	if (ImGui::Button(u8"림라이트 On"))
+	{
+		Animation_RimLightState RimLightState{};
+		RimLightState.iType = 0;					
+		RimLightState.fAinmPosition = m_fAnimationPosition;
+		RimLightState.strMeshName = m_MeshNameList[m_iMeshSelectedIndex];
+
+		m_RimLightEvents.emplace(m_AnimNameList[m_iAnimIndex], RimLightState);
+	}
+
+	if (ImGui::Button(u8"림라이트 Off"))
+	{
+		Animation_RimLightState RimLightState{};
+		RimLightState.iType = 1;
+		RimLightState.fAinmPosition = m_fAnimationPosition;
+		RimLightState.strMeshName = m_MeshNameList[m_iMeshSelectedIndex];
+
+		m_RimLightEvents.emplace(m_AnimNameList[m_iAnimIndex], RimLightState);
+	}
+
+	//림라이트 이벤트 리스트
+	auto lower_bound_iter = m_RimLightEvents.lower_bound(m_AnimNameList[m_iAnimIndex]);
+	auto upper_bound_iter = m_RimLightEvents.upper_bound(m_AnimNameList[m_iAnimIndex]);
+
+	ImGui::Text(u8"림라이트 이벤트 리스트");
+	vector<const char*> items;
+	for (; lower_bound_iter != upper_bound_iter; ++lower_bound_iter)
+	{
+		items.push_back((*lower_bound_iter).second.strMeshName.c_str());
+	}
+
+	ImGui::ListBox("##", &m_iRimLightEventIndex, items.data(), items.size());
+
+	auto lower_iter = m_RimLightEvents.lower_bound(m_AnimNameList[m_iAnimIndex]);
+
+	for (size_t i = 0; i < m_iRimLightEventIndex; i++)
+	{
+		lower_iter++;
+	}
+
+	if (lower_iter != upper_bound_iter && lower_iter != m_RimLightEvents.end())
+	{
+		if ((*lower_iter).second.iType == 0)
+		{
+			ImGui::Text(u8"On 이벤트");
+
+			ImGui::Text(u8"저장된 애니메이션: %s", m_AnimNameList[m_iAnimIndex].c_str());
+			ImGui::Text(u8"저장된 메시: %s", (*lower_iter).second.strMeshName.c_str());
+
+			ImGui::Text(u8"저장된 애니메이션 포지션: %f", (*lower_iter).second.fAinmPosition);
+		}
+		else
+		{
+			ImGui::Text(u8"Off 이벤트");
+
+			ImGui::Text(u8"저장된 애니메이션: %s", m_AnimNameList[m_iAnimIndex].c_str());
+			ImGui::Text(u8"저장된 메시: %s", (*lower_iter).second.strMeshName.c_str());
+
+			ImGui::Text(u8"저장된 애니메이션 포지션: %f", (*lower_iter).second.fAinmPosition);
+		}
+	}
+
+	// 림라이트 적용할 메시 이름 갱신하는 함수
+	Setting_RimLight();
+
+	ImGui::End();
+}
+
+void CImguiManager::TrailWindow()
+{
+	ImGui::Begin(u8"트레일 설정 창", &m_isTrailWindow);
+
+	ImGui::Text(u8"선택된 애니메이션: %s", m_AnimNameList[m_iAnimIndex].c_str());
+	ImGui::Text(u8"선택된 본(채널리스트에서 선택한 값): %s", m_ChannelNameList[m_iChannelSelectedIndex].c_str());
+
+	ImGui::Text(u8"현재 입력된 애니메이션 포지션: %f", m_fAnimationPosition);
+
+	if (ImGui::Button(u8"트레일 On"))
+	{
+		Animation_TrailState TrailState{};
+		TrailState.iType = 0;
+		TrailState.fAinmPosition = m_fAnimationPosition;
+		TrailState.strBonelName = m_ChannelNameList[m_iChannelSelectedIndex];
+
+		auto& Channels = m_Anims[m_iAnimIndex]->Get_Channels();
+		TrailState.iBoneIndex = Channels[m_iChannelSelectedIndex]->Get_BoneIndex();
+
+		m_TrailEvents.emplace(m_AnimNameList[m_iAnimIndex], TrailState);
+
+		Create_Effect(m_BoneNameList[m_iBoneSelectedIndex], m_SelectedEffectName, TEXT("Layer_Trail"));
+	}
+
+	if (ImGui::Button(u8"트레일 Off"))
+	{
+		Animation_TrailState TrailState{};
+		TrailState.iType = 1;
+		TrailState.fAinmPosition = m_fAnimationPosition;
+		TrailState.strBonelName = m_ChannelNameList[m_iChannelSelectedIndex];
+
+		auto& Channels = m_Anims[m_iAnimIndex]->Get_Channels();
+		TrailState.iBoneIndex = Channels[m_iChannelSelectedIndex]->Get_BoneIndex();
+
+		m_TrailEvents.emplace(m_AnimNameList[m_iAnimIndex], TrailState);
+	}
+
+	//림라이트 이벤트 리스트
+	auto lower_bound_iter = m_TrailEvents.lower_bound(m_AnimNameList[m_iAnimIndex]);
+	auto upper_bound_iter = m_TrailEvents.upper_bound(m_AnimNameList[m_iAnimIndex]);
+
+	ImGui::Text(u8"트레일 이벤트 리스트");
+	vector<const char*> items;
+	for (; lower_bound_iter != upper_bound_iter; ++lower_bound_iter)
+	{
+		items.push_back((*lower_bound_iter).second.strBonelName.c_str());
+	}
+
+	ImGui::ListBox("##", &m_iTrailEventIndex, items.data(), items.size());
+
+	auto lower_iter = m_TrailEvents.lower_bound(m_AnimNameList[m_iAnimIndex]);
+
+	for (size_t i = 0; i < m_iTrailEventIndex; i++)
+	{
+		lower_iter++;
+	}
+
+	if (lower_iter != upper_bound_iter && lower_iter != m_TrailEvents.end())
+	{
+		if ((*lower_iter).second.iType == 0)
+		{
+			ImGui::Text(u8"On 이벤트");
+
+			ImGui::Text(u8"저장된 애니메이션: %s", m_AnimNameList[m_iAnimIndex].c_str());
+			ImGui::Text(u8"저장된 뼈 이름: %s", (*lower_iter).second.strBonelName.c_str());
+			ImGui::Text(u8"저장된 뼈 인덱스: %i", (*lower_iter).second.iBoneIndex);
+
+			ImGui::Text(u8"저장된 애니메이션 포지션: %f", (*lower_iter).second.fAinmPosition);
+		}
+		else
+		{
+			ImGui::Text(u8"Off 이벤트");
+
+			ImGui::Text(u8"저장된 애니메이션: %s", m_AnimNameList[m_iAnimIndex].c_str());
+			ImGui::Text(u8"저장된 뼈 이름: %s", (*lower_iter).second.strBonelName.c_str());
+			ImGui::Text(u8"저장된 뼈 인덱스: %i", (*lower_iter).second.iBoneIndex);
+
+			ImGui::Text(u8"저장된 애니메이션 포지션: %f", (*lower_iter).second.fAinmPosition);
+		}
+	}
+
+	// 트레일 온/오프 갱신 함수
+	Setting_Trail();
 
 	ImGui::End();
 }
@@ -1030,7 +1234,7 @@ void CImguiManager::Clear_EffectStateMap()
 	m_EffectState.clear();
 }
 
-void CImguiManager::Create_Effect(string& strBoneName, string& strEffectName)
+void CImguiManager::Create_Effect(string& strBoneName, string& strEffectName, wstring wstrLayer)
 {
 	auto& pBones = m_pRenderModel->Get_Bones();
 
@@ -1044,7 +1248,13 @@ void CImguiManager::Create_Effect(string& strBoneName, string& strEffectName)
 
 	CEffect::EFFECT_DESC Desc{};
 	Desc.pWorldMatrix = pBoneMatrix;
-	m_pGameInstance->Add_GameObject(LEVEL_EDIT, m_pGameInstance->StringToWstring(strEffectName), TEXT("Layer_Effect"), &Desc);
+
+	if(wstrLayer == TEXT("Layer_Effect"))
+		m_pGameInstance->Add_GameObject(LEVEL_EDIT, m_pGameInstance->StringToWstring(strEffectName), wstrLayer, &Desc);
+	else if (wstrLayer == TEXT("Layer_Trail"))
+	{
+		m_pRenderModel->Create_Trail(strBoneName, m_pGameInstance->Clone_Object(m_pGameInstance->StringToWstring(strEffectName), &Desc));
+	}
 
 	m_EffectState.emplace(strBoneName, strEffectName);
 }
@@ -1288,6 +1498,28 @@ void CImguiManager::EffectState_Save(string strPath)
 	out.close();
 }
 
+void CImguiManager::RimEvent_Save(string strPath)
+{
+	string strDirectory = strPath;
+	strDirectory += "/" + m_ModelNameList[m_iModelSelectedIndex] + "_RimEvents.dat";
+
+	ofstream out(strDirectory, ios::binary);
+
+	_uint iNumRimEvents = m_RimLightEvents.size();
+	// 총 몇개의 이펙트를 읽어올 것인지 작성한다
+	out << iNumRimEvents;
+
+	for (auto& pair : m_RimLightEvents)
+	{
+		out << pair.first << endl;
+		out << pair.second.iType << endl;
+		out << pair.second.strMeshName << endl;
+		out << pair.second.fAinmPosition << endl;
+	}
+
+	out.close();
+}
+
 void CImguiManager::All_Load()
 {
 	if (!m_isOnToolWindows)
@@ -1524,6 +1756,40 @@ void CImguiManager::EffectState_Load(string strPath)
 	in.close();
 }
 
+void CImguiManager::RimEvent_Load(string strPath)
+{
+	string strDirectory = strPath;
+	strDirectory += "/" + m_ModelNameList[m_iModelSelectedIndex] + "_RimEvents.dat";
+
+	ifstream in(strDirectory, ios::binary);
+
+	if (!in.is_open()) {
+		MSG_BOX("RimEvents 파일 개방 실패");
+		return;
+	}
+
+	m_RimLightEvents.clear();
+
+	_uint iNumRimEvents{ 0 };
+	// 총 몇개의 이펙트를 읽어올 것인지 작성한다
+	in >> iNumRimEvents;
+
+	Animation_RimLightState RimEvent{};
+	string key;
+
+	for (size_t i = 0; i < iNumRimEvents; i++)
+	{
+		in >> key;
+		in >> RimEvent.iType;
+		in >> RimEvent.strMeshName;
+		in >> RimEvent.fAinmPosition;
+
+		m_RimLightEvents.emplace(key, RimEvent);
+	}
+
+	in.close();
+}
+
 void CImguiManager::Gui_Select_Bone(_uint iBoneIndex)
 {
 	Reset_Collider_Value();
@@ -1548,6 +1814,54 @@ void CImguiManager::Setting_AnimationList()
 		m_Anims = pAnimCom->Get_Animations();
 		break;
 	}
+	}
+}
+
+void CImguiManager::Setting_RimLight()
+{
+	auto lower_bound_iter = m_RimLightEvents.lower_bound(m_AnimNameList[m_iAnimIndex]);
+	auto upper_bound_iter = m_RimLightEvents.upper_bound(m_AnimNameList[m_iAnimIndex]);
+
+	// 반환된 iter의 키값이 다르다면 맵 내에 해당 키값이 존재하지 않는다는 뜻
+	if (lower_bound_iter != m_RimLightEvents.end() && (*lower_bound_iter).first != m_AnimNameList[m_iAnimIndex])
+		return;
+
+	auto Anims = m_Anims;
+	_float CurrentPosition = (_float)(*(Anims[m_iAnimIndex]->Get_CurrentPosition()));
+
+	for (; lower_bound_iter != upper_bound_iter; ++lower_bound_iter)
+	{
+		if ((*lower_bound_iter).second.fAinmPosition < CurrentPosition)
+		{
+			if ((*lower_bound_iter).second.iType == 0)
+				m_pRenderModel->Set_RimMeshName((*lower_bound_iter).second.strMeshName);
+			else
+				m_pRenderModel->Set_RimMeshName("");
+		}
+	}
+}
+
+void CImguiManager::Setting_Trail()
+{
+	auto lower_bound_iter = m_TrailEvents.lower_bound(m_AnimNameList[m_iAnimIndex]);
+	auto upper_bound_iter = m_TrailEvents.upper_bound(m_AnimNameList[m_iAnimIndex]);
+
+	// 반환된 iter의 키값이 다르다면 맵 내에 해당 키값이 존재하지 않는다는 뜻
+	if (lower_bound_iter != m_TrailEvents.end() && (*lower_bound_iter).first != m_AnimNameList[m_iAnimIndex])
+		return;
+
+	auto Anims = m_Anims;
+	_float CurrentPosition = (_float)(*(Anims[m_iAnimIndex]->Get_CurrentPosition()));
+
+	for (; lower_bound_iter != upper_bound_iter; ++lower_bound_iter)
+	{
+		if ((*lower_bound_iter).second.fAinmPosition < CurrentPosition)
+		{
+			if ((*lower_bound_iter).second.iType == 0)
+				m_pRenderModel->Trail_On((*lower_bound_iter).second.strBonelName, true);
+			else
+				m_pRenderModel->Trail_On((*lower_bound_iter).second.strBonelName, false);
+		}
 	}
 }
 

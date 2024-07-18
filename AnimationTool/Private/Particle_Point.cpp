@@ -97,7 +97,7 @@ void CParticle_Point::Tick(const _float& fTimeDelta)
 
 void CParticle_Point::Late_Tick(const _float& fTimeDelta)
 {
-
+    if (m_isOff) return;
     switch (m_eType)
     {
     case Client::CEffect::TYPE_POINT:
@@ -307,17 +307,17 @@ HRESULT CParticle_Point::Load_Data(const string strDirectory)
 HRESULT CParticle_Point::Add_Components()
 {
     /* For.Com_VIBuffer */
-    if (FAILED(__super::Add_Component(LEVEL_EDIT, TEXT("Prototype_Component_VIBuffer_Instance_Point"),
+    if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_VIBuffer_Instance_Point"),
         TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pVIBufferCom), &m_BufferInstance)))
         return E_FAIL;
 
     /* For.Com_Shader */
-    if (FAILED(__super::Add_Component(LEVEL_EDIT, TEXT("Prototype_Component_Shader_VtxInstance_Point"),
+    if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Shader_VtxInstance_Point"),
         TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
         return E_FAIL;
 
     /* For.Com_Texture */
-    if (FAILED(__super::Add_Component(LEVEL_EDIT, m_TextureTag,
+    if (FAILED(__super::Add_Component(m_iCurrentLevel, m_TextureTag,
         TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
         return E_FAIL;
 

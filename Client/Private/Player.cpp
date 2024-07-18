@@ -1480,8 +1480,6 @@ void CPlayer::Setting_RimLight()
 		m_isRimLight = 0.3f;
 		break;
 	}
-	case Client::CPlayer::BATTLE_STYLE_END:
-		break;
 	default:
 		break;
 	}
