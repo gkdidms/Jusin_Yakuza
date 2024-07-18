@@ -1025,12 +1025,12 @@ CBTNode::NODE_STATE CAI_Monster::ShiftAndIdle()
 	static _uint iCount = 0;
 
 	iCount++;
-	if (iCount == 5)
+	if (iCount == 4)
 		m_iSkill = SKILL_SHIFT;
 	else 
 		m_iSkill = SKILL_IDLE;
 	
-	if (iCount <= 10)
+	if (iCount >= 10)
 		iCount = 0;
 
 	m_fBreakDuration = m_pGameInstance->Get_Random(2.f, 4.f);

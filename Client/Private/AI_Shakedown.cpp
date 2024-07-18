@@ -199,15 +199,23 @@ CBTNode::NODE_STATE CAI_Shakedown::Attack()
 CBTNode::NODE_STATE CAI_Shakedown::Check_PlayerDown()
 {
 	if (!m_pPlayer->isDown())
+	{
 		m_isPlayerDownAtk = false;
+
+		if (m_iSkill == SKILL_DOWN)
+			m_isAttack = false;
+		return CBTNode::FAIL;
+	}
+		
 
 	if (m_pPlayer->isDown() || m_iSkill == SKILL_DOWN)
 	{
-		if (DistanceFromPlayer() > 3.f || m_isPlayerDownAtk)
+		if (DistanceFromPlayer() > 2.f || m_isPlayerDownAtk)
 			return CBTNode::FAIL;
 
 		//플레이어가 다운되어있으면 최우선적으로 공격을 한다.
 		m_iSkill = SKILL_DOWN;
+		Reset_State();
 
 		return CBTNode::SUCCESS;
 	}
