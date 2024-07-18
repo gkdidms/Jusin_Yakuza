@@ -171,20 +171,19 @@ float3 BRDF_MULTI(float4 vPosition, float2 vTexcoord, float4 vNormal, float4 vDe
     float3 vRadiance = g_vLightDiffuse;
     
     //BRDF
-    //float vRoughness = vMulti.r;
+    float vRoughness = vMulti.b;
     //float D = NormalDistributionGGXTR(vNormal.xyz, vHalfway, vRoughness); //g : Roughness
     //float G = GeometrySmith(vNormal.xyz, vLook, vLightDir, vRoughness);
-    float3 F = FresnelSchlick(max(dot(vHalfway, vLook), 0.f), F0);
+    float3 F = FresnelSchlickRoughness(max(dot(vHalfway, vLook), 0.f), F0, vRoughness);
     
-    /*
-    float3 nominator = D * G * F;
+   // float3 nominator = D * G * F;
     
-    float WoDotN = saturate(dot(vLook, vNormal.xyz));
-    float WiDotN = saturate(dot(vLightDir, vNormal.xyz));
-    float denominator = (4 * WoDotN * WiDotN);
+    //float WoDotN = saturate(dot(vLook, vNormal.xyz));
+    //float WiDotN = saturate(dot(vLightDir, vNormal.xyz));
+    //float denominator = (4 * WoDotN * WiDotN);
     
-    float3 vSpecular = (nominator / (denominator + 0.0001f));
-    */
+    //float3 vSpecular = (nominator / (denominator + 0.0001f));
+
     //  Energy Conservation
     float3 kS = F; //  reflection energy
     float3 kD = 1.0f - kS; //  refraction energy
@@ -194,8 +193,9 @@ float3 BRDF_MULTI(float4 vPosition, float2 vTexcoord, float4 vNormal, float4 vDe
     //float3 vResult = (kD * vAlbedo);
     //LinearToGamma(vResult);
     
-    if (kD.r < 0.01f)
-        kD = 1.f;
+    
+    
+    kD = lerp(float3(1.f, 1.f, 1.f), kD, vMulti.r);
     
     return kD;
 }

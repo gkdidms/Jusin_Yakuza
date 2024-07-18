@@ -109,6 +109,14 @@ HRESULT CMonster::Render()
 				return E_FAIL;
 		}
 
+		_bool isCloth = true;
+		string strMeshName = string(pMesh->Get_Name());
+		if (strMeshName.find("hair") != string::npos || strMeshName.find("face") != string::npos ||
+			strMeshName.find("foot") != string::npos || strMeshName.find("body") != string::npos ||
+			strMeshName.find("eye") != string::npos)
+			isCloth = false;
+
+		m_pShaderCom->Bind_RawValue("g_isCloth", &isCloth, sizeof(_bool));
 
 		m_pModelCom->Bind_BoneMatrices(m_pShaderCom, "g_BoneMatrices", i);
 

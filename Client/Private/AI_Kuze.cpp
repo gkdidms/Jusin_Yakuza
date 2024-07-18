@@ -477,7 +477,7 @@ CBTNode::NODE_STATE CAI_Kuze::ATK_HeadButt()
 
 CBTNode::NODE_STATE CAI_Kuze::ATK_Renda()
 {
-	if (m_iSkill == SKILL_RENDA && m_isAttack)
+	if (m_iSkill == SKILL_CMD_RENDA && m_isAttack)
 	{
 		if (*m_pState == CMonster::MONSTER_CMD_RENDA_1 && m_pAnimCom->Get_AnimFinished())
 			*m_pState = CMonster::MONSTER_CMD_RENDA_2;
@@ -493,7 +493,7 @@ CBTNode::NODE_STATE CAI_Kuze::ATK_Renda()
 		return CBTNode::RUNNING;
 	}
 
-	if (m_iSkill == SKILL_RENDA)
+	if (m_iSkill == SKILL_CMD_RENDA)
 	{
 		m_isAttack = true;
 		*m_pState = CMonster::MONSTER_CMD_RENDA_1;
