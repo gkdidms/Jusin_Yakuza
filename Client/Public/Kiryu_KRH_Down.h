@@ -11,14 +11,16 @@ BEGIN(Client)
 class CKiryu_KRH_Down : public CBehaviorAnimation
 {
 public:
-	enum BEHAVIOR_STATE
+	struct KRH_DOWN_DESC
 	{
-		TURN, WALK, RUN, BUMP, BEHAVIOR_STATE_END
+		_int iDownState;		// -1 안쓰겠다, 0 B(뒤), 1 F(앞)
+		_int iDirection;		// 대상의 위치가 어디인지 (존재하는 반대로 굴러야함), -1 값이라면 히트용이 아니다
+		string strAnimationName;
 	};
 
 	enum ANIM_STATE
 	{
-		ANIM_LOOP, ANIM_END
+		ANIM_LOOP, ANIM_END, ANIM_ONCE
 	};
 
 
@@ -38,6 +40,7 @@ public:
 private:
 	ANIM_STATE m_eAnimState = { ANIM_LOOP };
 	_bool m_isStop = { false };
+	_bool m_isFront = { false };
 
 public:
 	static CBehaviorAnimation* Create(class CPlayer* pPlayer);
