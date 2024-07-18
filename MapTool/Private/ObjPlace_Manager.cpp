@@ -645,6 +645,12 @@ void CObjPlace_Manager::Edit_Installed_GameObject(int iNumObject)
 		m_tCurrentObjectDesc.iObjType = (int)OBJECT_TYPE::MONSTER_KUZE;
 	}
 
+	if (ImGui::RadioButton(u8"통 건물", m_tCurrentObjectDesc.iObjType == 11))
+	{
+		objectType = 11;
+		m_tCurrentObjectDesc.iObjType = (int)OBJECT_TYPE::LARGE_CONSTRUCTION;
+	}
+
 	ImGui::NewLine();
 
 	ImGui::Text(u8"쉐이더");
@@ -940,7 +946,7 @@ void CObjPlace_Manager::Set_Map_Object()
 	ImGui::RadioButton(u8"몬스터 - ShakeDown", &objectType, OBJECT_TYPE::MONSTER_SHAKEDOWN);
 	ImGui::RadioButton(u8"몬스터 - yoneda", &objectType, OBJECT_TYPE::MONSTER_YONEDA);
 	ImGui::RadioButton(u8"몬스터 - kuze", &objectType, OBJECT_TYPE::MONSTER_KUZE);
-
+	ImGui::RadioButton(u8"통건물", &objectType, OBJECT_TYPE::LARGE_CONSTRUCTION);
 
 
 	ImGui::NewLine();

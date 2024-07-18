@@ -62,10 +62,6 @@ void CLevel_OfficeBoss::Tick(const _float& fTimeDelta)
 		}
 	}
 
-	
-
-	
-
 
 
 #ifdef _DEBUG

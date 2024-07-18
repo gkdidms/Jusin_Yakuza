@@ -42,6 +42,7 @@ private:
     // 파이프라인에 뷰행렬 적용은 Late_Tick에서 한번만 해주어야함
     void Compute_View(const _float& fTimeDelta);
 
+
 private:
     class CSystemManager* m_pSystemManager = { nullptr };
     class CCollision_Manager* m_pCollisionManager = { nullptr };
@@ -55,6 +56,14 @@ private:
 
     _float m_fCamAngleX = 45.f;
     _float m_fCamAngleY = -90.f;
+
+    XMVECTOR    m_vCamCollisionPos = { 0,0,0,1 };
+    
+    bool        m_bCamCollision = { false };
+    bool        m_bBlock = { false };
+
+    float       m_fTimer = { 0 };
+
 
 private:
     HRESULT Add_Components();
