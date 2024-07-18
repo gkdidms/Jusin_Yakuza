@@ -52,7 +52,7 @@ private:
     _float m_fSensor = { 0.f };
     const _float4x4* m_pPlayerMatrix = { nullptr };
 
-    _float m_fCamDistance = { 4.f };            //해당 값을 변경하면 카메라의 거리를 조절할 수 있음.
+    _float m_fCamDistance = { 4.f };            // 해당 값을 변경하면 카메라의 거리를 조절할 수 있음.
 
     _float m_fCamAngleX = 45.f;
     _float m_fCamAngleY = -90.f;
@@ -61,6 +61,7 @@ private:
     
     bool        m_bCamCollision = { false };
     bool        m_bBlock = { false };
+    bool        m_bFirstCollision = { false }; // first collision check 
 
     float       m_fTimer = { 0 };
 

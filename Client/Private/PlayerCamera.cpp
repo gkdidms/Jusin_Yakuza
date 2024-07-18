@@ -82,7 +82,7 @@ void CPlayerCamera::Late_Tick(const _float& fTimeDelta)
 	m_pColliderCom->Tick(m_pTransformCom->Get_WorldMatrix());
 
 	
-	Compute_View(fTimeDelta);
+
 
 	m_bCamCollision = m_pCollisionManager->Map_Collision(m_pColliderCom);
 
@@ -93,12 +93,16 @@ void CPlayerCamera::Late_Tick(const _float& fTimeDelta)
 
 	if (false == m_bBlock && true == m_bCamCollision)
 	{
+		// Block 되기전엔 Lerp로 선형보간 진행
 		m_vCamCollisionPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 		m_fCamDistance = XMVectorGetX(XMVector3Length(m_vCamCollisionPos - vPlayerPosition));
+		m_bFirstCollision = true;
 	}
 	else if (false == m_bCamCollision)
 	{
+		// 충돌안할때는 원래 max_distance로 천천히 돌아가기
 		m_bBlock = false;
+		m_bFirstCollision = false;
 		if (MAX_DISTANCE > m_fCamDistance)
 			m_fCamDistance += 0.01;
 		else
@@ -107,6 +111,8 @@ void CPlayerCamera::Late_Tick(const _float& fTimeDelta)
 
 	if (m_fCamDistance > MAX_DISTANCE)
 		m_fCamDistance = MAX_DISTANCE;
+
+	Compute_View(fTimeDelta);
 
 
 	__super::Tick(fTimeDelta);
@@ -144,6 +150,7 @@ void CPlayerCamera::Compute_View(const _float& fTimeDelta)
 
 	if (2.5f < m_fCamDistance && false == m_bBlock && true == m_bCamCollision)
 	{
+		//계속 줄여주기
 		m_fCamDistance -= 0.001;
 	}
 	else if (2.5f >= m_fCamDistance && true == m_bCamCollision)
@@ -165,32 +172,48 @@ void CPlayerCamera::Compute_View(const _float& fTimeDelta)
 			m_fCamAngleX = 80.0f;
 		if (m_fCamAngleX < 20) // 카메라가 수직 아래로 향하지 않도록 최소 각도를 -89도로 제한
 			m_fCamAngleX = 20;
+
+		// 이전 카메라 포지션 저장
+		_vector vPrevCamPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+
+		// 카메라 포지션 계산
+		_vector vCamPosition = XMVectorSet(
+			m_fCamDistance * cosf(XMConvertToRadians(m_fCamAngleY)) * cosf(XMConvertToRadians(m_fCamAngleX)),
+			m_fCamDistance * sinf(XMConvertToRadians(m_fCamAngleX)),
+			m_fCamDistance * sinf(XMConvertToRadians(m_fCamAngleY)) * cosf(XMConvertToRadians(m_fCamAngleX)),
+			1.f
+		);
+
+
+		vCamPosition += XMVectorSet(XMVectorGetX(vPlayerPosition), XMVectorGetY(vPlayerPosition), XMVectorGetZ(vPlayerPosition), 0);
+
+		// 이전 카메라 포지션과 새로운 카메라 포지션 사이의 선형보간
+		_vector vLerpedCamPosition = XMVectorLerp(vPrevCamPosition, vCamPosition, fTimeDelta * 5.f);
+
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, vLerpedCamPosition);
+	}
+	else
+	{
+		// Block 됐을때
+		_vector vPlayerPosition;
+		memcpy(&vPlayerPosition, m_pPlayerMatrix->m[CTransform::STATE_POSITION], sizeof(_float4));
+
+		if (2.5f <= XMVectorGetX(XMVector3Length(m_pTransformCom->Get_State(CTransform::STATE_POSITION) - vPlayerPosition)))
+		{
+			m_bBlock = false;
+		}
 	}
 
 
-	// 이전 카메라 포지션 저장
-	_vector vPrevCamPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-
-	// 카메라 포지션 계산
-	_vector vCamPosition = XMVectorSet(
-		m_fCamDistance * cosf(XMConvertToRadians(m_fCamAngleY)) * cosf(XMConvertToRadians(m_fCamAngleX)),
-		m_fCamDistance * sinf(XMConvertToRadians(m_fCamAngleX)),
-		m_fCamDistance * sinf(XMConvertToRadians(m_fCamAngleY)) * cosf(XMConvertToRadians(m_fCamAngleX)),
-		1.f
-	);
 
 
-	vCamPosition += XMVectorSet(XMVectorGetX(vPlayerPosition), XMVectorGetY(vPlayerPosition), XMVectorGetZ(vPlayerPosition), 0);
-
-	// 이전 카메라 포지션과 새로운 카메라 포지션 사이의 선형보간
-	_vector vLerpedCamPosition = XMVectorLerp(vPrevCamPosition, vCamPosition, fTimeDelta * 5.f);
 
 
 	_vector vLookAt = XMVectorSet(XMVectorGetX(vPlayerPosition), XMVectorGetY(vPlayerPosition) + 1.f, XMVectorGetZ(vPlayerPosition), 1);
 
 	// 카메라가 플레이어를 바라보도록 설정
 	m_pTransformCom->LookAt(vLookAt);
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vLerpedCamPosition);
+
 
 	// 월드 매트릭스 업데이트
 	XMStoreFloat4x4(&m_WorldMatrix, m_pTransformCom->Get_WorldMatrix());
