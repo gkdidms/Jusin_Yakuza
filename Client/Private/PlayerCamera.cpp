@@ -124,23 +124,23 @@ void CPlayerCamera::Compute_View(const _float& fTimeDelta)
 	_long MouseMoveX = m_pGameInstance->Get_DIMouseMove(DIMS_X);
 	_long MouseMoveY = m_pGameInstance->Get_DIMouseMove(DIMS_Y);
 
-	fCamAngleY -= fTimeDelta * m_fSensor * MouseMoveX;
-	fCamAngleX += fTimeDelta * m_fSensor * MouseMoveY;
+	m_fCamAngleY -= fTimeDelta * m_fSensor * MouseMoveX;
+	m_fCamAngleX += fTimeDelta * m_fSensor * MouseMoveY;
 
 	// 카메라 각도 제한 (수직 각도 제한)
-	if (fCamAngleX > 80.0f)  // 캐릭터를 아래서 보지 않도록 최대 각도를 45도로 제한
-		fCamAngleX = 80.0f;
-	if (fCamAngleX < 20) // 카메라가 수직 아래로 향하지 않도록 최소 각도를 -89도로 제한
-		fCamAngleX = 20;
+	if (m_fCamAngleX > 80.0f)  // 캐릭터를 아래서 보지 않도록 최대 각도를 45도로 제한
+		m_fCamAngleX = 80.0f;
+	if (m_fCamAngleX < 20) // 카메라가 수직 아래로 향하지 않도록 최소 각도를 -89도로 제한
+		m_fCamAngleX = 20;
 
 	// 이전 카메라 포지션 저장
 	_vector vPrevCamPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 
 	// 카메라 포지션 계산
 	_vector vCamPosition = XMVectorSet(
-		m_fCamDistance * cosf(XMConvertToRadians(fCamAngleY)) * cosf(XMConvertToRadians(fCamAngleX)),
-		m_fCamDistance * sinf(XMConvertToRadians(fCamAngleX)),
-		m_fCamDistance * sinf(XMConvertToRadians(fCamAngleY)) * cosf(XMConvertToRadians(fCamAngleX)),
+		m_fCamDistance * cosf(XMConvertToRadians(m_fCamAngleY)) * cosf(XMConvertToRadians(m_fCamAngleX)),
+		m_fCamDistance * sinf(XMConvertToRadians(m_fCamAngleX)),
+		m_fCamDistance * sinf(XMConvertToRadians(m_fCamAngleY)) * cosf(XMConvertToRadians(m_fCamAngleX)),
 		1.f
 	);
 
