@@ -51,6 +51,8 @@ protected:
     virtual void Apply_ChracterData();
 
     virtual void Animation_Event();
+    virtual void RimLight_Event();
+    virtual void Trail_Event();
 
 public:
     const wstring& Get_ModelName() {
@@ -103,6 +105,7 @@ protected:
     multimap<string, class CSocketEffect*>      m_pEffects;
 
     wstring m_wstrModelName = TEXT("");
+    string m_strRimMeshName = "";
 
 #ifdef _DEBUG
     _bool m_isObjectRender = { true };

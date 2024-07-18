@@ -995,6 +995,7 @@ void CImguiManager::TrailWindow()
 		TrailState.iType = 0;
 		TrailState.fAinmPosition = m_fAnimationPosition;
 		TrailState.strBonelName = m_ChannelNameList[m_iChannelSelectedIndex];
+		TrailState.strTrailProtoName = m_SelectedEffectName;
 
 		auto& Channels = m_Anims[m_iAnimIndex]->Get_Channels();
 		TrailState.iBoneIndex = Channels[m_iChannelSelectedIndex]->Get_BoneIndex();
@@ -1010,6 +1011,7 @@ void CImguiManager::TrailWindow()
 		TrailState.iType = 1;
 		TrailState.fAinmPosition = m_fAnimationPosition;
 		TrailState.strBonelName = m_ChannelNameList[m_iChannelSelectedIndex];
+		TrailState.strTrailProtoName = m_SelectedEffectName;
 
 		auto& Channels = m_Anims[m_iAnimIndex]->Get_Channels();
 		TrailState.iBoneIndex = Channels[m_iChannelSelectedIndex]->Get_BoneIndex();
@@ -1555,6 +1557,7 @@ void CImguiManager::TrailEvent_Save(string strPath)
 		out << pair.first << endl;
 		out << pair.second.iType << endl;
 		out << pair.second.strBonelName << endl;
+		out << pair.second.strTrailProtoName << endl;
 		out << pair.second.iBoneIndex << endl;
 		out << pair.second.fAinmPosition << endl;
 	}
@@ -1860,6 +1863,7 @@ void CImguiManager::TrailEvent_Load(string strPath)
 		in >> key;
 		in >> TrailEvent.iType;
 		in >> TrailEvent.strBonelName;
+		in >> TrailEvent.strTrailProtoName;
 		in >> TrailEvent.iBoneIndex;
 		in >> TrailEvent.fAinmPosition;
 		

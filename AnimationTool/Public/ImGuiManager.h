@@ -75,6 +75,7 @@ public:
 		_uint iType;					//0번이 on 1번이 off
 		_float fAinmPosition;
 		string strBonelName;
+		string strTrailProtoName;
 		_uint iBoneIndex;
 	};
 
