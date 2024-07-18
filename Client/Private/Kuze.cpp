@@ -57,6 +57,9 @@ HRESULT CKuze::Initialize(void* pArg)
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(5.f, 0.f, 5.f, 1.f));
 
+	//m_Info.iMaxHP = 300.f;
+	//m_Info.iHp = m_Info.iMaxHP;
+
 	return S_OK;
 }
 
@@ -66,7 +69,7 @@ void CKuze::Priority_Tick(const _float& fTimeDelta)
 
 void CKuze::Tick(const _float& fTimeDelta)
 {
-	//m_pTree->Tick(fTimeDelta);
+	m_pTree->Tick(fTimeDelta);
 
 	Change_Animation(); //애니메이션 변경
 
@@ -107,7 +110,7 @@ HRESULT CKuze::Add_Components()
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Model_Jimu"),
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Model_Kuze_Fight"),
 		TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
 		return E_FAIL;
 
@@ -151,154 +154,174 @@ void CKuze::Change_Animation()
 	case MONSTER_IDLE:
 	{
 		//e_kuz_stand_blend[e_kuz_stand_blend]
-		m_strAnimName = "e_kuz_stand_blend[e_kuz_stand_blend]";
+		m_strAnimName = "e_kuz_stand_blend";
 		m_isAnimLoop = true;
 		break;
 	}
 	case MONSTER_SHIFT_F:
 	{
 		//e_kuz_shift_f[e_kuz_shift_f]
-		m_strAnimName = "e_kuz_shift_f[e_kuz_shift_f]";
+		m_strAnimName = "e_kuz_shift_f";
 		m_isAnimLoop = true;
 		break;
 	}
 	case MONSTER_SHIFT_L:
 	{
 		//e_kuz_shift_l[e_kuz_shift_l]
-		m_strAnimName = "e_kuz_shift_l[e_kuz_shift_l]";
+		m_strAnimName = "e_kuz_shift_l";
 		m_isAnimLoop = true;
 		break;
 	}
 	case MONSTER_SHIFT_R:
 	{
 		//e_kuz_shift_r[e_kuz_shift_r]
-		m_strAnimName = "e_kuz_shift_r[e_kuz_shift_r]";
+		m_strAnimName = "e_kuz_shift_r";
 		m_isAnimLoop = true;
 		break;
 	}
 	case MONSTER_SHIFT_B:
 	{
 		//e_kuz_shift_b[e_kuz_shift_b]
-		m_strAnimName = "e_kuz_shift_b[e_kuz_shift_b]";
+		m_strAnimName = "e_kuz_shift_b";
 		m_isAnimLoop = true;
 		break;
 	}
 	case MONSTER_SWAY_B:
 	{
 		//e_kuz_sway_b[e_kuz_sway_b]
-		m_strAnimName = "e_kuz_sway_b[e_kuz_sway_b]";
+		m_strAnimName = "e_kuz_sway_b";
 		break;
 	}
 	case MONSTER_SWAY_F:
 	{
 		//e_kuz_sway_f[e_kuz_sway_f]
-		m_strAnimName = "e_kuz_sway_f[e_kuz_sway_f]";
+		m_strAnimName = "e_kuz_sway_f";
 		break;
 	}
 	case MONSTER_SWAY_L:
 	{
 		//e_kuz_sway_l[e_kuz_sway_l]
-		m_strAnimName = "e_kuz_sway_l[e_kuz_sway_l]";
+		m_strAnimName = "e_kuz_sway_l";
 		break;
 	}
 	case MONSTER_SWAY_R:
 	{
 		//e_kuz_sway_r[e_kuz_sway_r]
-		m_strAnimName = "e_kuz_sway_r[e_kuz_sway_r]";
+		m_strAnimName = "e_kuz_sway_r";
 		break;
 	}
 	case MONSTER_ATK_DOWN:
 	{
 		//e_kuz_atk_down[e_kuz_atk_down]
-		m_strAnimName = "e_kuz_atk_down[e_kuz_atk_down]";
+		m_strAnimName = "e_kuz_atk_down";
 		break;
 	}
 	case MONSTER_JAB:
 	{
 		//e_kuz_atk_jab[e_kuz_atk_jab]
-		m_strAnimName = "e_kuz_atk_jab[e_kuz_atk_jab]";
+		m_strAnimName = "e_kuz_atk_jab";
 		break;
 	}
 	case MONSTER_CMD_A_1:
 	{
 		//e_kuz_cmb_a_01[e_kuz_cmb_a_01]
-		m_strAnimName = "e_kuz_cmb_a_01[e_kuz_cmb_a_01]";
+		m_strAnimName = "e_kuz_cmb_a_01";
 		break;
 	}
 	case MONSTER_CMD_A_2:
 	{
 		//e_kuz_cmb_a_02[e_kuz_cmb_a_02]
-		m_strAnimName = "e_kuz_cmb_a_02[e_kuz_cmb_a_02]";
+		m_strAnimName = "e_kuz_cmb_a_02";
 		break;
 	}
 	case MONSTER_CMD_A_3:
 	{
 		//e_kuz_cmb_a_03[e_kuz_cmb_a_03]
-		m_strAnimName = "e_kuz_cmb_a_03[e_kuz_cmb_a_03]";
+		m_strAnimName = "e_kuz_cmb_a_03";
 		break;
 	}
 	case MONSTER_CMD_B_1:
 	{
 		//e_kuz_cmb_b_01[e_kuz_cmb_b_01]
-		m_strAnimName = "e_kuz_cmb_b_01[e_kuz_cmb_b_01]";
+		m_strAnimName = "e_kuz_cmb_b_01";
 		break;
 	}
 	case MONSTER_CMD_B_2:
 	{
 		//e_kuz_cmb_b_02[e_kuz_cmb_b_02]
-		m_strAnimName = "e_kuz_cmb_b_02[e_kuz_cmb_b_02]";
+		m_strAnimName = "e_kuz_cmb_b_02";
 		break;
 	}
 	case MONSTER_CMD_B_3:
 	{
 		//e_kuz_cmb_b_03[e_kuz_cmb_b_03]
-		m_strAnimName = "e_kuz_cmb_b_03[e_kuz_cmb_b_03]";
+		m_strAnimName = "e_kuz_cmb_b_03";
 		break;
 	}
 	case MONSTER_CMD_HEADBUTT_1:
 	{
 		//e_kuz_cmb_headbutt_01[e_kuz_cmb_headbutt_01]
-		m_strAnimName = "e_kuz_cmb_headbutt_01[e_kuz_cmb_headbutt_01]";
+		m_strAnimName = "e_kuz_cmb_headbutt_01";
 		break;
 	}
 	case MONSTER_CMD_HEADBUTT_2:
 	{
 		//e_kuz_cmb_headbutt_02[e_kuz_cmb_headbutt_02]
-		m_strAnimName = "e_kuz_cmb_headbutt_02[e_kuz_cmb_headbutt_02]";
+		m_strAnimName = "e_kuz_cmb_headbutt_02";
 		break;
 	}
 	case MONSTER_CMD_RENDA_1:
 	{
 		//e_kuz_cmb_renda_01[e_kuz_cmb_renda_01]
-		m_strAnimName = "e_kuz_cmb_renda_01[e_kuz_cmb_renda_01]";
+		m_strAnimName = "e_kuz_cmb_renda_01";
 		break;
 	}
 	case MONSTER_CMD_RENDA_2:
 	{
 		//e_kuz_cmb_renda_02_l[e_kuz_cmb_renda_02_l]
-		m_strAnimName = "e_kuz_cmb_renda_02_l[e_kuz_cmb_renda_02_l]";
+		m_strAnimName = "e_kuz_cmb_renda_02_l";
 		break;
 	}
 	case MONSTER_CMD_RENDA_3:
 	{
 		//e_kuz_cmb_renda_02_l_fin[e_kuz_cmb_renda_02_l_fin]
-		m_strAnimName = "e_kuz_cmb_renda_02_l_fin[e_kuz_cmb_renda_02_l_fin]";
+		m_strAnimName = "e_kuz_cmb_renda_02_l_fin";
 		break;
 	}
 	case MONSTER_HEAVY_ATTACK:
 	{
 		//e_kuz_atk_heavy[e_kuz_atk_heavy]
-		m_strAnimName = "e_kuz_atk_heavy[e_kuz_atk_heavy]";
+		m_strAnimName = "e_kuz_atk_heavy";
 		break;
 	}
 	case MONSTER_HIJI_2REN:
 	{
 		//e_kuz_atk_hiji_2ren[e_kuz_atk_hiji_2ren]
-		m_strAnimName = "e_kuz_atk_hiji_2ren[e_kuz_atk_hiji_2ren]";
+		m_strAnimName = "e_kuz_atk_hiji_2ren";
 		break;
 	}
-	case MONSTER_DEATH:
+	case MONSTER_STEP_B:
 	{
+		m_strAnimName = "e_kuz_step_b";
+		m_isAnimLoop = true;
+		break;
+	}
+	case MONSTER_STEP_L:
+	{
+		m_strAnimName = "e_kuz_step_l";
+		m_isAnimLoop = true;
+		break;
+	}
+	case MONSTER_STEP_R:
+	{
+		m_strAnimName = "e_kuz_step_r";
+		m_isAnimLoop = true;
+		break;
+	}
+	case MONSTER_STEP_F:
+	{
+		m_strAnimName = "e_kuz_step_f";
+		m_isAnimLoop = true;
 		break;
 	}
 	default:

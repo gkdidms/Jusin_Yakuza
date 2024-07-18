@@ -132,6 +132,8 @@ CBTNode::NODE_STATE CAI_WPAYakuza::Attack()
 
 	//화가 나지 않앗을때 스킬 선택 (임시)
 	LookAtPlayer();
+	Reset_State();
+
 	static _uint iCount = 0;
 
 	if (iCount == 0 || iCount == 2)
@@ -152,6 +154,8 @@ CBTNode::NODE_STATE CAI_WPAYakuza::Angry_Attack()
 
 	//화낫을때 스킬 선택 (임시)
 	LookAtPlayer();
+	Reset_State();
+
 	static _uint iCount = 0;
 
 	if (iCount == 0 || iCount == 1)

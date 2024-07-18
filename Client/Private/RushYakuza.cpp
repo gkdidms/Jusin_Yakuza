@@ -230,6 +230,11 @@ void CRushYakuza::Change_Animation()
 		m_isAnimLoop = true;
 		break;
 	}
+	case MONSTER_PUNCH:
+	{
+		m_strAnimName = "p_krh_atk_punch_b";
+		break;
+	}
 	case MONSTER_CMD_1:
 	{
 		//p_krh_cmb_01[p_krh_cmb_01]
@@ -279,10 +284,6 @@ void CRushYakuza::Change_Animation()
 	case MONSTER_GURAD_FLOAT:
 	{
 		m_strAnimName = "p_krh_guard_float";
-		break;
-	}
-	case MONSTER_DEATH:
-	{
 		break;
 	}
 	default:
