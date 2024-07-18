@@ -410,12 +410,12 @@ buki_l_n
 182
 p_krh_cmb_05_fin
 0
-8.9
+10.1
 buki_r_n
 146
 p_krh_cmb_05_fin
 1
-10.9
+11.2
 buki_r_n
 146
 p_krh_cmb_06
@@ -425,7 +425,7 @@ asi4_r_n
 7
 p_krh_cmb_06
 1
-13.7
+14.17
 asi4_r_n
 7
 p_krh_cmb_06_fin
@@ -435,7 +435,7 @@ asi4_l_n
 16
 p_krh_cmb_06_fin
 1
-14
+10.1
 asi4_l_n
 16
 p_krh_cmb_07
@@ -455,7 +455,7 @@ asi4_l_n
 16
 p_krh_cmb_07_fin
 1
-15.6
+12.2
 asi4_l_n
 16
 p_krh_cmb_08
@@ -600,12 +600,12 @@ buki_r_n
 146
 p_krs_cmb_03
 0
-12.9
+12.8
 buki_r_n
 146
 p_krs_cmb_03
 1
-14.17
+13.7
 buki_r_n
 146
 p_krs_cmb_03_fin
@@ -625,7 +625,7 @@ asi4_l_n
 16
 p_krs_cmb_04
 1
-14.2
+15.7
 asi4_l_n
 16
 p_krs_cmb_04_fin

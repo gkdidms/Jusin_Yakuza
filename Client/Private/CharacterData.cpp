@@ -49,31 +49,88 @@ HRESULT CCharacterData::Initialize(CLandObject* pCharacter)
 	strFileFullPath = strFilePath + strFileName;
 	if (FAILED(Load_EffectState(strFileFullPath)))
 		return E_FAIL;
+
+	// 이펙트 정보는 레이어와 오브젝트가 전부 생성된 뒤에 뼈 정보를 꺼내와서 넘겨줘야한다.
+	strFileName = m_pGameInstance->WstringToString(m_pCharacter->Get_ModelName()) + "_RimEvents.dat";
+	strFileFullPath = strFilePath + strFileName;
+	if (FAILED(Load_RimLightEvent(strFileFullPath)))
+		return E_FAIL;
+
+	// 이펙트 정보는 레이어와 오브젝트가 전부 생성된 뒤에 뼈 정보를 꺼내와서 넘겨줘야한다.
+	strFileName = m_pGameInstance->WstringToString(m_pCharacter->Get_ModelName()) + "_TrailEvents.dat";
+	strFileFullPath = strFilePath + strFileName;
+	if (FAILED(Load_TrailEvent(strFileFullPath)))
+		return E_FAIL;
 	
 	return S_OK;
 }
 
 void CCharacterData::Set_CurrentAnimation(string strAnimName)
 {
+	// 일반 애니메이션 이벤트 설정해주기
 	m_CurrentEvents.clear();
-
 	auto lower_bound_iter = m_AnimationEvents.lower_bound(strAnimName);
 
 	// 반환된 iter의 키값이 다르다면 맵 내에 해당 키값이 존재하지 않는다는 뜻
-	if (lower_bound_iter != m_AnimationEvents.end() && (*lower_bound_iter).first != strAnimName)
-		return;
-
-	auto upper_bound_iter = m_AnimationEvents.upper_bound(strAnimName);
-
-	if (lower_bound_iter == upper_bound_iter && lower_bound_iter != m_AnimationEvents.end())
+	if (!(lower_bound_iter != m_AnimationEvents.end() && (*lower_bound_iter).first != strAnimName))
 	{
-		m_CurrentEvents.push_back((*lower_bound_iter).second);
-	}
-	else
-	{
-		for (; lower_bound_iter != upper_bound_iter; ++lower_bound_iter)
+		auto upper_bound_iter = m_AnimationEvents.upper_bound(strAnimName);
+
+		if (lower_bound_iter == upper_bound_iter && lower_bound_iter != m_AnimationEvents.end())
 		{
 			m_CurrentEvents.push_back((*lower_bound_iter).second);
+		}
+		else
+		{
+			for (; lower_bound_iter != upper_bound_iter; ++lower_bound_iter)
+			{
+				m_CurrentEvents.push_back((*lower_bound_iter).second);
+			}
+		}
+	}
+
+
+	//림라이트 이벤트 설정해주기
+	m_CurrentRimEvents.clear();
+	auto rim_lower_bound_iter = m_RimLightEvents.lower_bound(strAnimName);
+
+	// 반환된 iter의 키값이 다르다면 맵 내에 해당 키값이 존재하지 않는다는 뜻
+	if (!(rim_lower_bound_iter != m_RimLightEvents.end() && (*rim_lower_bound_iter).first != strAnimName))
+	{
+		auto rim_upper_bound_iter = m_RimLightEvents.upper_bound(strAnimName);
+
+		if (rim_lower_bound_iter == rim_upper_bound_iter && rim_lower_bound_iter != m_RimLightEvents.end())
+		{
+			m_CurrentRimEvents.push_back((*rim_lower_bound_iter).second);
+		}
+		else
+		{
+			for (; rim_lower_bound_iter != rim_upper_bound_iter; ++rim_lower_bound_iter)
+			{
+				m_CurrentRimEvents.push_back((*rim_lower_bound_iter).second);
+			}
+		}
+	}
+
+	//트레일 이벤트 설정해주기
+	m_CurrentTrailEvents.clear();
+	auto trail_lower_bound_iter = m_TrailEvents.lower_bound(strAnimName);
+
+	// 반환된 iter의 키값이 다르다면 맵 내에 해당 키값이 존재하지 않는다는 뜻
+	if (!(trail_lower_bound_iter != m_TrailEvents.end() && (*trail_lower_bound_iter).first != strAnimName))
+	{
+		auto trail_upper_bound_iter = m_TrailEvents.upper_bound(strAnimName);
+
+		if (trail_lower_bound_iter == trail_upper_bound_iter && trail_lower_bound_iter != m_TrailEvents.end())
+		{
+			m_CurrentTrailEvents.push_back((*trail_lower_bound_iter).second);
+		}
+		else
+		{
+			for (; trail_lower_bound_iter != trail_upper_bound_iter; ++trail_lower_bound_iter)
+			{
+				m_CurrentTrailEvents.push_back((*trail_lower_bound_iter).second);
+			}
 		}
 	}
 
@@ -104,10 +161,10 @@ HRESULT CCharacterData::Load_AlphaMeshes(string strFilePath)
 
 			m_AlphaMeshes.push_back(iMeshIndex);
 		}
-
 		in.close();
-
 	}
+
+	return S_OK;
 }
 
 HRESULT CCharacterData::Load_LoopAnimations(string strFilePath)
@@ -138,6 +195,8 @@ HRESULT CCharacterData::Load_LoopAnimations(string strFilePath)
 
 		in.close();
 	}
+
+	return S_OK;
 }
 
 HRESULT CCharacterData::Load_AnimationEvents(string strFilePath)
@@ -172,8 +231,9 @@ HRESULT CCharacterData::Load_AnimationEvents(string strFilePath)
 		}
 
 		in.close();
-
 	}
+
+	return S_OK;
 }
 
 HRESULT CCharacterData::Load_Colliders(string strFilePath)
@@ -217,6 +277,8 @@ HRESULT CCharacterData::Load_Colliders(string strFilePath)
 
 		in.close();
 	}
+
+	return S_OK;
 }
 
 HRESULT CCharacterData::Load_EffectState(string strFilePath)
@@ -247,8 +309,96 @@ HRESULT CCharacterData::Load_EffectState(string strFilePath)
 		}
 
 		in.close();
-
 	}
+
+	return S_OK;
+}
+
+HRESULT CCharacterData::Load_RimLightEvent(string strFilePath)
+{
+	/*
+		in >> key;
+		in >> RimEvent.iType;
+		in >> RimEvent.strMeshName;
+		in >> RimEvent.fAinmPosition;
+	*/
+	if (fs::exists(strFilePath))
+	{
+		cout << "_RimLightEvent Yes!!" << endl;
+
+		ifstream in(strFilePath, ios::binary);
+
+		if (!in.is_open()) {
+			MSG_BOX("RimLightEvent 개방 실패");
+			return E_FAIL;
+		}
+
+		_uint iNumRimLightEvent = { 0 };
+		in >> iNumRimLightEvent;
+
+		for (size_t i = 0; i < iNumRimLightEvent; i++)
+		{
+			string strAnimName = "";
+			in >> strAnimName;				//Key값으로 쓰일 애니메이션 이름
+
+			ANIMATION_RIMLIGHTSTATE Desc{};
+
+			in >> Desc.iType;
+			in >> Desc.strMeshName;
+			in >> Desc.fAinmPosition;
+
+			m_RimLightEvents.emplace(strAnimName, Desc);
+		}
+
+		in.close();
+	}
+
+	return S_OK;
+}
+
+HRESULT CCharacterData::Load_TrailEvent(string strFilePath)
+{
+	// 트레일 생섣해야함
+	/*
+		in >> key;
+		in >> TrailEvent.iType;
+		in >> TrailEvent.strBonelName;
+		in >> TrailEvent.iBoneIndex;
+		in >> TrailEvent.fAinmPosition;
+	*/
+	if (fs::exists(strFilePath))
+	{
+		cout << "_RimLightEvent Yes!!" << endl;
+
+		ifstream in(strFilePath, ios::binary);
+
+		if (!in.is_open()) {
+			MSG_BOX("RimLightEvent 개방 실패");
+			return E_FAIL;
+		}
+
+		_uint iNumRimLightEvent = { 0 };
+		in >> iNumRimLightEvent;
+
+		for (size_t i = 0; i < iNumRimLightEvent; i++)
+		{
+			string strAnimName = "";
+			in >> strAnimName;				//Key값으로 쓰일 애니메이션 이름
+
+			ANIMATION_TRAILSTATE Desc{};
+
+			in >> Desc.iType;
+			in >> Desc.strBonelName;
+			in >> Desc.strTrailProtoName;
+			in >> Desc.iBoneIndex;
+			in >> Desc.fAinmPosition;
+
+			m_TrailEvents.emplace(strAnimName, Desc);
+		}
+
+		in.close();
+	}
+	return S_OK;
 }
 
 CCharacterData* CCharacterData::Create(CLandObject* pCharacter)
