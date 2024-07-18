@@ -163,7 +163,7 @@ void CLandObject::Apply_ChracterData()
 		if (nullptr == pSoketEffect)
 			return;
 
-		auto it = m_pEffects.emplace(pTrailEvent.first, static_cast<CSocketEffect*>(pSoketEffect));
+		auto it = m_pEffects.emplace(pTrailEvent.second.strBonelName, static_cast<CSocketEffect*>(pSoketEffect));
 
 		//it->second->On();
 		it->second->Off();
@@ -229,13 +229,34 @@ void CLandObject::Trail_Event()
 		_double CurPos = *(m_pModelCom->Get_AnimationCurrentPosition());
 		_double Duration = *(m_pModelCom->Get_AnimationDuration());
 
-		//if (CurPos >= pEvent.fAinmPosition && CurPos < Duration)
-		//{
-		//	if (pEvent.iType == 0)
-		//		m_strRimMeshName = pEvent.strMeshName;
-		//	else
-		//		m_strRimMeshName = "";
-		//}
+		if (CurPos >= pEvent.fAinmPosition && CurPos < Duration)
+		{
+			if (pEvent.iType == 0)		// 트레일 켜주기
+			{
+				auto lower_bound_iter = m_pEffects.lower_bound(pEvent.strBonelName);
+				if (lower_bound_iter != m_pEffects.end() && (*lower_bound_iter).first != pEvent.strBonelName)
+					return;
+				auto upper_bound_iter = m_pEffects.upper_bound(pEvent.strBonelName);
+
+				for (; lower_bound_iter != upper_bound_iter; lower_bound_iter++)
+				{
+					(*lower_bound_iter).second->On();
+				}
+			}
+			else
+			{
+				auto lower_bound_iter = m_pEffects.lower_bound(pEvent.strBonelName);
+				if (lower_bound_iter != m_pEffects.end() && (*lower_bound_iter).first != pEvent.strBonelName)
+					return;
+				auto upper_bound_iter = m_pEffects.upper_bound(pEvent.strBonelName);
+
+				for (; lower_bound_iter != upper_bound_iter; lower_bound_iter++)
+				{
+					(*lower_bound_iter).second->Off();
+				}
+			}
+				
+		}
 	}
 }
 

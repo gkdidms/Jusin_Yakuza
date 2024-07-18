@@ -72,20 +72,20 @@ void CCharacterData::Set_CurrentAnimation(string strAnimName)
 	auto lower_bound_iter = m_AnimationEvents.lower_bound(strAnimName);
 
 	// 반환된 iter의 키값이 다르다면 맵 내에 해당 키값이 존재하지 않는다는 뜻
-	if (lower_bound_iter != m_AnimationEvents.end() && (*lower_bound_iter).first != strAnimName)
-		return;
-
-	auto upper_bound_iter = m_AnimationEvents.upper_bound(strAnimName);
-
-	if (lower_bound_iter == upper_bound_iter && lower_bound_iter != m_AnimationEvents.end())
+	if (!(lower_bound_iter != m_AnimationEvents.end() && (*lower_bound_iter).first != strAnimName))
 	{
-		m_CurrentEvents.push_back((*lower_bound_iter).second);
-	}
-	else
-	{
-		for (; lower_bound_iter != upper_bound_iter; ++lower_bound_iter)
+		auto upper_bound_iter = m_AnimationEvents.upper_bound(strAnimName);
+
+		if (lower_bound_iter == upper_bound_iter && lower_bound_iter != m_AnimationEvents.end())
 		{
 			m_CurrentEvents.push_back((*lower_bound_iter).second);
+		}
+		else
+		{
+			for (; lower_bound_iter != upper_bound_iter; ++lower_bound_iter)
+			{
+				m_CurrentEvents.push_back((*lower_bound_iter).second);
+			}
 		}
 	}
 
@@ -95,44 +95,42 @@ void CCharacterData::Set_CurrentAnimation(string strAnimName)
 	auto rim_lower_bound_iter = m_RimLightEvents.lower_bound(strAnimName);
 
 	// 반환된 iter의 키값이 다르다면 맵 내에 해당 키값이 존재하지 않는다는 뜻
-	if (rim_lower_bound_iter != m_RimLightEvents.end() && (*rim_lower_bound_iter).first != strAnimName)
-		return;
-
-	auto rim_upper_bound_iter = m_RimLightEvents.upper_bound(strAnimName);
-
-	if (rim_lower_bound_iter == rim_upper_bound_iter && rim_lower_bound_iter != m_RimLightEvents.end())
+	if (!(rim_lower_bound_iter != m_RimLightEvents.end() && (*rim_lower_bound_iter).first != strAnimName))
 	{
-		m_CurrentRimEvents.push_back((*rim_lower_bound_iter).second);
-	}
-	else
-	{
-		for (; rim_lower_bound_iter != rim_upper_bound_iter; ++rim_lower_bound_iter)
+		auto rim_upper_bound_iter = m_RimLightEvents.upper_bound(strAnimName);
+
+		if (rim_lower_bound_iter == rim_upper_bound_iter && rim_lower_bound_iter != m_RimLightEvents.end())
 		{
 			m_CurrentRimEvents.push_back((*rim_lower_bound_iter).second);
 		}
+		else
+		{
+			for (; rim_lower_bound_iter != rim_upper_bound_iter; ++rim_lower_bound_iter)
+			{
+				m_CurrentRimEvents.push_back((*rim_lower_bound_iter).second);
+			}
+		}
 	}
-
-
 
 	//트레일 이벤트 설정해주기
 	m_CurrentTrailEvents.clear();
 	auto trail_lower_bound_iter = m_TrailEvents.lower_bound(strAnimName);
 
 	// 반환된 iter의 키값이 다르다면 맵 내에 해당 키값이 존재하지 않는다는 뜻
-	if (trail_lower_bound_iter != m_TrailEvents.end() && (*trail_lower_bound_iter).first != strAnimName)
-		return;
-
-	auto trail_upper_bound_iter = m_TrailEvents.upper_bound(strAnimName);
-
-	if (trail_lower_bound_iter == trail_upper_bound_iter && trail_lower_bound_iter != m_TrailEvents.end())
+	if (!(trail_lower_bound_iter != m_TrailEvents.end() && (*trail_lower_bound_iter).first != strAnimName))
 	{
-		m_CurrentTrailEvents.push_back((*trail_lower_bound_iter).second);
-	}
-	else
-	{
-		for (; trail_lower_bound_iter != trail_upper_bound_iter; ++trail_lower_bound_iter)
+		auto trail_upper_bound_iter = m_TrailEvents.upper_bound(strAnimName);
+
+		if (trail_lower_bound_iter == trail_upper_bound_iter && trail_lower_bound_iter != m_TrailEvents.end())
 		{
 			m_CurrentTrailEvents.push_back((*trail_lower_bound_iter).second);
+		}
+		else
+		{
+			for (; trail_lower_bound_iter != trail_upper_bound_iter; ++trail_lower_bound_iter)
+			{
+				m_CurrentTrailEvents.push_back((*trail_lower_bound_iter).second);
+			}
 		}
 	}
 

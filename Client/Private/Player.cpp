@@ -207,7 +207,16 @@ HRESULT CPlayer::Render()
 	{
 		if(ADVENTURE != m_isRimLight)
 		{
-			if (m_strRimMeshName == pMesh->Get_Name())
+			// 전신일 때 임의로 Full을 저장해주고 사용한다.
+			if (m_strRimMeshName == "Full")
+			{
+				if (FAILED(m_pShaderCom->Bind_RawValue("g_isRimLight", &m_isRimLight, sizeof(_float))))
+					return E_FAIL;
+
+				if (FAILED(m_pShaderCom->Bind_RawValue("g_fRimUV", &m_fRimPartsUV, sizeof(_float2))))
+					return E_FAIL;
+			}
+			else if (m_strRimMeshName == pMesh->Get_Name())
 			{
 				_float2 fUV = m_fRimPartsUV;		// 기본적으로 파츠uv를 넣고
 				if ("[l0]jacketw1" == m_strRimMeshName)

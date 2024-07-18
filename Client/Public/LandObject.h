@@ -84,6 +84,9 @@ public:
     void Set_PartUV(_float2 UV) { m_fRimPartsUV = UV; }
 #endif // DEBUG
 
+    void Set_RimMeshName(string strMeshName) {
+        m_strRimMeshName = strMeshName;
+    }
 
 protected:
     class CSystemManager* m_pSystemManager = { nullptr };
