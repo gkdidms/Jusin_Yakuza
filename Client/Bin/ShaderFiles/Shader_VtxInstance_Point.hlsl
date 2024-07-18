@@ -15,6 +15,7 @@ float2 g_lifeAlpha;
 float g_fRadian;
 float g_NearZ = 0.01f;
 float g_FarZ = 3000.f;
+float g_fDistortionWeight;
 
 struct VS_IN
 {
@@ -319,45 +320,8 @@ struct PS_OUT
 {
     vector vColor : SV_TARGET0;
     vector vAlpha : SV_TARGET1;
+    vector vDistortion : SV_TARGET2;
 };
-
-PS_OUT PS_MAIN(PS_IN In)
-{
-    PS_OUT Out = (PS_OUT) 0;
-
-    Out.vColor = g_Texture.Sample(LinearSampler, In.vTexcoord);
-    if (Out.vColor.a < 0.1f)
-        discard;
-
-    Out.vColor.a = (In.vLifeTime.x - In.vLifeTime.y) / In.vLifeTime.x;
-
-    Out.vColor.rgb = float3(1.f, 1.f, 1.f);
-
-    return Out;
-}
-
-PS_OUT PS_MAIN_SPREAD(PS_IN In)
-{
-    PS_OUT Out = (PS_OUT) 0;
-
-    vector Color = g_Texture.Sample(LinearSampler, In.vTexcoord);
-    
-    if (Color.a < 0.1f)
-        discard;
-    
-    Out.vColor = Color;
-    
-    
-	/*if (Out.vColor.a < 0.1f || 
-		In.vLifeTime.y > In.vLifeTime.x)
-		discard;*/
-    //Out.vColor.a *= In.vLifeTime.x - In.vLifeTime.y;
-
-    //Out.vColor.rgb = float3(1.f, 1.f, 1.f);
-
-
-    return Out;
-}
 
 //지오메트리 어차피 그리는 순서나 픽셀이나 똑같다
 PS_OUT PS_MAIN_NOCOLOR(PS_IN In)
@@ -379,7 +343,7 @@ PS_OUT PS_MAIN_NOCOLOR(PS_IN In)
     Out.vColor = float4(ColorN.rgb * AlphaN, AlphaN) * fWeight;
     
     Out.vAlpha = float4(AlphaN, AlphaN, AlphaN, AlphaN);
-        
+    Out.vDistortion = float4(0.0f, 0.0f, 0.0f, 0.0f);
     return Out;
 }
 
@@ -404,7 +368,8 @@ PS_OUT PS_MAIN_COLOR(PS_IN In)
     Out.vColor = float4(ColorN.rgb * AlphaN, AlphaN) * fWeight;
     
     Out.vAlpha = float4(AlphaN, AlphaN, AlphaN, AlphaN);
-        
+    
+    Out.vDistortion = float4(0.0f, 0.0f, 0.0f, 0.0f);
     return Out;
 }
 
@@ -429,7 +394,7 @@ PS_OUT PS_ROTANIM_COLOR(PS_IN In)
     Out.vColor = float4(ColorN.rgb * AlphaN, AlphaN) * fWeight;
     
     Out.vAlpha = float4(AlphaN, AlphaN, AlphaN, AlphaN);
-        
+    Out.vDistortion = float4(0.0f, 0.0f, 0.0f, 0.0f);
     return Out;
 
 }
@@ -457,11 +422,28 @@ PS_OUT PS_ANIM_COLOR(PS_IN In)
     Out.vColor = float4(ColorN.rgb * AlphaN, AlphaN) * fWeight;
     
     Out.vAlpha = float4(AlphaN, AlphaN, AlphaN, AlphaN);
-        
+    Out.vDistortion = float4(0.0f, 0.0f, 0.0f, 0.0f);
     return Out;
 
 }
 
+PS_OUT PS_DISTORTION(PS_IN In)
+{
+    PS_OUT Out = (PS_OUT) 0;
+
+    vector vParticle = g_Texture.Sample(LinearSampler, In.vTexcoord);
+    
+    vParticle.g *= lerp(g_lifeAlpha.x, g_lifeAlpha.y, In.vLifeTime.y / In.vLifeTime.x); 
+    
+    Out.vColor = float4(0.0f, 0.0f, 0.0f, 0.0f);
+    
+    Out.vAlpha = float4(0.0f, 0.0f, 0.0f, 0.0f);
+   
+    Out.vDistortion = float4(0.0f, 0.0f, g_fDistortionWeight, vParticle.g);
+    
+    return Out;
+
+}
 
 struct RIM_OUT
 {
@@ -481,7 +463,8 @@ RIM_OUT PS_RIM_DEPTH(PS_IN In)
     Out.vNormal = vector(0.f, 0.f, 0.f, 0.f);
     Out.vDepth = vector(0.f, 0.f, 0.f, 0.f);
     Out.vRM = vector(0.f, 0.f, 0.f, 0.f);
-    Out.vRS = vector(0.f, 0.f, 0.f, 0.f);
+    Out.vRS = vector(0.f, 0.f, 0.f, 0.f);//스펙영향이 초기화 값을 영향 받을수도.?
+    
     Out.vMulti = vector(0.f, 0.f, 0.f, 0.f);
     Out.vRD = vector(0.f, 0.f, 0.f, 0.f);
     
@@ -578,5 +561,20 @@ technique11 DefaultTechnique
         DomainShader = NULL;
         PixelShader = compile ps_5_0 PS_RIM_DEPTH();
     }
+
+    pass Distortion //6
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_None_Test_None_Write, 0);
+        SetBlendState(BS_Blend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+   
+		/* 어떤 셰이덜르 국동할지. 셰이더를 몇 버젼으로 컴파일할지. 진입점함수가 무엇이찌. */
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = compile gs_5_0 GS_DEAFULT();
+        HullShader = NULL;
+        DomainShader = NULL;
+        PixelShader = compile ps_5_0 PS_DISTORTION();
+    }
+
 }
 

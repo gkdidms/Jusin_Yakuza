@@ -28,7 +28,8 @@ CEffect::CEffect(const CEffect& rhs)
     m_iAction{ rhs.m_iAction },
     m_vStartColor{ rhs.m_vStartColor },
     m_vEndColor{ rhs.m_vEndColor },
-    m_isAura{ rhs.m_isAura }
+    m_isAura{ rhs.m_isAura },
+    m_fDistortion{rhs.m_fDistortion}
 {
 }
 
@@ -61,6 +62,7 @@ HRESULT CEffect::Initialize(void* pArg)
             m_fLifeAlpha = pDesc->fLifeAlpha;
             m_fRotate = pDesc->fRotate;
             m_isAura = pDesc->isAura;
+            m_fDistortion = pDesc->fDistortion;
         }
         else
         {
