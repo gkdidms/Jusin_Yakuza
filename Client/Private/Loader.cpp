@@ -212,6 +212,14 @@ HRESULT CLoader::Loading_Default()
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/auratone17.dds"), 1))))
 		return E_FAIL;
 
+	/* Prototype_Component_Texture_GuardParticle */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Texture_GuardParticle"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/001_trc_na.dds"), 1))))
+		return E_FAIL;
+	/* Prototype_Component_Texture_GuardSmoke */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Texture_GuardSmoke"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/e_j_0351_2d_moya.dds"), 1))))
+		return E_FAIL;
 #pragma endregion
 
 #pragma region BTNode

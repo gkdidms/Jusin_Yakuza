@@ -146,8 +146,8 @@ void CLandObject::Apply_ChracterData()
 
 		auto it = m_pEffects.emplace(pEffect.first, static_cast<CSocketEffect*>(pSoketEffect));
 
-		//it->second->On();
-		it->second->Off();
+		it->second->On();
+		//it->second->Off();
 	}
 
 }

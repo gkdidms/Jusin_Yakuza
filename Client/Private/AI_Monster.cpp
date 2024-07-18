@@ -808,7 +808,17 @@ CBTNode::NODE_STATE CAI_Monster::HitAndGuard()
 		if (m_pThis->isColl())
 		{
 			//가드 상태에서 충돌을 했다면 데미지 누적
+			CEffect::EFFECT_DESC EffectDesc;
+
+			EffectDesc.pWorldMatrix = m_pThis->Get_TransformCom()->Get_WorldFloat4x4();
+
+			m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_GuardBlink"), TEXT("Layer_Particle"), &EffectDesc);
+			m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_GuardParticle"), TEXT("Layer_Particle"), &EffectDesc);
+			m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_GuardSmoke"), TEXT("Layer_Particle"), &EffectDesc);
+			m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Hit1_Part0"), TEXT("Layer_Particle"), &EffectDesc);
+
 			m_fGuardAtkAcc += m_pThis->Get_HitDamage();
+
 		}
 
 		return CBTNode::SUCCESS;
