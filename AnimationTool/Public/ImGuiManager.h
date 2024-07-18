@@ -63,6 +63,23 @@ public:
 		_bool	isAlways;
 	};
 
+	struct Animation_RimLightState
+	{
+		_uint iType;					//0번이 on 1번이 off
+		_float fAinmPosition;
+		string strMeshName;
+	};
+
+	struct Animation_TrailState
+	{
+		_uint iType;					//0번이 on 1번이 off
+		_float fAinmPosition;
+		string strBonelName;
+		string strTrailProtoName;
+		_uint iBoneIndex;
+	};
+
+
 private:
 	CImguiManager(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual ~CImguiManager() = default;
@@ -86,6 +103,8 @@ private:
 
 	/* 키프레임 윈도우에서 애니메이션 이벤트에 이펙트, 사운드 추가하는 창 */
 	void EffectListWindow();
+	void RimLightWindow();
+	void TrailWindow();
 	void SoundListWindow();
 
 	void DrawTimeline(ImDrawList* d);
@@ -108,7 +127,7 @@ private:
 	void Clear_EffectStateMap();
 
 private:
-	void Create_Effect(string& strBoneName, string& strEffectName);
+	void Create_Effect(string& strBoneName, string& strEffectName, wstring wstrLayer = TEXT("Layer_Effect"));
 
 
 private:
@@ -119,6 +138,8 @@ private:
 	void AnimationEvent_Save(string strPath);
 	void ColliderState_Save(string strPath);
 	void EffectState_Save(string strPath);
+	void RimEvent_Save(string strPath);
+	void TrailEvent_Save(string strPath);
 
 	/* Load */
 	void All_Load();
@@ -127,12 +148,15 @@ private:
 	void AnimationEvent_Load(string strPath);
 	void ColliderState_Load(string strPath);
 	void EffectState_Load(string strPath);
+	void RimEvent_Load(string strPath);
+	void TrailEvent_Load(string strPath);
 
 	/* Functional*/
 private:
 	void Gui_Select_Bone(_uint iBoneIndex);
 	void Setting_AnimationList();			//플레이어,적 선택한 값에 따라 애니메이션 컴포넌트를 읽어온다
-
+	void Setting_RimLight();				// 림라이트 매시 이름 적용하기
+	void Setting_Trail();				// 트레일 온오프 적용하기
 
 private:
 	ImGuiIO* io;
@@ -182,9 +206,11 @@ private:
 private:
 	vector<CAnimation*>			m_Anims;
 
-
+	/* 이펙트 윈도우 */
 private:
 	_bool						m_isEffectListWindow = { false };
+
+	_bool						m_isEffectOff = { false };
 
 	_uint						m_iEffectType = { 0 };
 	int							m_iEffectSelectedIndex = { 0 };
@@ -192,6 +218,26 @@ private:
 
 	vector<string>				m_EffectTypeList;
 	multimap<_uint, string>		m_EffectFiles;
+	string						m_SelectedEffectName = "Prototype_GameObject_Particle_Trail_asd";			// 트레일 조절 창에서 사용하려고 저장함
+
+	/* 림라이트 윈도우 */
+private:
+	_bool						m_isRimLightWindow = { false };
+
+	int							m_iRimLightEventIndex = { 0 };
+
+	// first: 애니메이션 이름, second: 림라이트 이벤트정보
+	multimap<string, Animation_RimLightState>		m_RimLightEvents;
+
+	/* 트레일 윈도우 */
+private:
+	_bool						m_isTrailWindow = { false };
+
+	int							m_iTrailEventIndex = { 0 };
+
+	// first: 애니메이션 이름, second: 트레일 이벤트정보
+	multimap<string, Animation_TrailState>		m_TrailEvents;
+
 
 private:
 	_bool						m_isSoundListWindow = { false };

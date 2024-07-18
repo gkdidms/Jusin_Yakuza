@@ -150,6 +150,25 @@ void CLandObject::Apply_ChracterData()
 		it->second->Off();
 	}
 
+	auto& pTrailEvents = m_pData->Get_TrailEvents();
+
+	for (auto& pTrailEvent : pTrailEvents)
+	{
+		CSocketEffect::SOKET_EFFECT_DESC Desc{};
+		Desc.pParentMatrix = m_pTransformCom->Get_WorldFloat4x4();
+		Desc.pCombinedTransformationMatrix = m_pModelCom->Get_BoneCombinedTransformationMatrix(pTrailEvent.second.strBonelName.c_str());
+		Desc.wstrEffectName = m_pGameInstance->StringToWstring(pTrailEvent.second.strTrailProtoName);
+
+		CGameObject* pSoketEffect = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_SoketEffect"), &Desc);
+		if (nullptr == pSoketEffect)
+			return;
+
+		auto it = m_pEffects.emplace(pTrailEvent.second.strBonelName, static_cast<CSocketEffect*>(pSoketEffect));
+
+		//it->second->On();
+		it->second->Off();
+	}
+
 }
 
 void CLandObject::Animation_Event()
@@ -181,6 +200,63 @@ void CLandObject::Animation_Event()
 			}
 		}
 
+	}
+}
+
+void CLandObject::RimLight_Event()
+{
+	auto& pCurEvents = m_pData->Get_Current_Rim_Events();
+	for (auto& pEvent : pCurEvents)
+	{
+		_double CurPos = *(m_pModelCom->Get_AnimationCurrentPosition());
+		_double Duration = *(m_pModelCom->Get_AnimationDuration());
+
+		if (CurPos >= pEvent.fAinmPosition && CurPos < Duration)
+		{
+			if (pEvent.iType == 0)
+				m_strRimMeshName = pEvent.strMeshName;
+			else
+				m_strRimMeshName = "";
+		}
+	}
+}
+
+void CLandObject::Trail_Event()
+{
+	auto& pCurEvents = m_pData->Get_Current_Trail_Events();
+	for (auto& pEvent : pCurEvents)
+	{
+		_double CurPos = *(m_pModelCom->Get_AnimationCurrentPosition());
+		_double Duration = *(m_pModelCom->Get_AnimationDuration());
+
+		if (CurPos >= pEvent.fAinmPosition && CurPos < Duration)
+		{
+			if (pEvent.iType == 0)		// 트레일 켜주기
+			{
+				auto lower_bound_iter = m_pEffects.lower_bound(pEvent.strBonelName);
+				if (lower_bound_iter != m_pEffects.end() && (*lower_bound_iter).first != pEvent.strBonelName)
+					return;
+				auto upper_bound_iter = m_pEffects.upper_bound(pEvent.strBonelName);
+
+				for (; lower_bound_iter != upper_bound_iter; lower_bound_iter++)
+				{
+					(*lower_bound_iter).second->On();
+				}
+			}
+			else
+			{
+				auto lower_bound_iter = m_pEffects.lower_bound(pEvent.strBonelName);
+				if (lower_bound_iter != m_pEffects.end() && (*lower_bound_iter).first != pEvent.strBonelName)
+					return;
+				auto upper_bound_iter = m_pEffects.upper_bound(pEvent.strBonelName);
+
+				for (; lower_bound_iter != upper_bound_iter; lower_bound_iter++)
+				{
+					(*lower_bound_iter).second->Off();
+				}
+			}
+				
+		}
 	}
 }
 
