@@ -25,14 +25,14 @@ public:
         _float4 vStartColor;
         _float4 vEndColor;
         _float2 fLifeAlpha;
-
+        _bool isAura;
         _int iShaderPass;
 
         const _float4x4* pWorldMatrix = { nullptr };
     }EFFECT_DESC;
 
     enum TYPE { TYPE_POINT, TYPE_TRAIL, TYPE_GLOW, TYPE_AURA, TYPE_END };
-    enum ACTION { ACTION_SPREAD, ACTION_DROP, ACTION_SIZEUP, ACTION_SIZEDOWN, ACTION_END };
+    enum ACTION { ACTION_SPREAD, ACTION_DROP, ACTION_SIZEUP, ACTION_SIZEDOWN, ACTION_AURA, ACTION_END };
     static const _uint iAction[ACTION_END];
 
 protected:
@@ -58,6 +58,11 @@ public:
     void Set_StartPos(_float4 Pos) {
         m_vStartPos = Pos;
     }
+    void Set_Off(_bool isOff) {
+        m_isOff = isOff;
+    }
+
+
     _uint Get_Type() const { return m_eType; }
     wstring Get_Tag() { return m_ParticleTag; }
     _float* Get_pStartTime() { return &m_fStartTime; }
@@ -69,11 +74,14 @@ public:
     wstring Get_TextureTag() { return m_TextureTag; }
     _float2 Get_LifeAlpha() { return m_fLifeAlpha; }
     _float Get_Rotate() { return m_fRotate; }
+    _bool Get_isAura() { return m_isAura;  }
+    virtual void Reset_Buffer();
 public:
     virtual HRESULT Save_Data(const string strDirectory);
     virtual HRESULT Load_Data(const string strDirectory);
 
 protected:
+    _bool       m_isOff = { false };
 
     _uint          m_eType = { TYPE_END };
     wstring     m_ParticleTag = { TEXT("") };
@@ -87,6 +95,7 @@ protected:
     _uint			m_iAction = { 0 };
     _float4     m_vStartColor = { 0.f , 0.f , 0.f , 0.f };
     _float4     m_vEndColor = { 0.f , 0.f , 0.f , 0.f };
+    _bool       m_isAura = { false };
 
     const _float4x4* m_pWorldMatrix = { nullptr };
 

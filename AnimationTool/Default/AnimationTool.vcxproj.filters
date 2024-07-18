@@ -264,4 +264,9 @@
       <Filter>98.Default</Filter>
     </ResourceCompile>
   </ItemGroup>
+  <ItemGroup>
+    <None Include="..\Bin\ShaderFiles\Shader_Client_Defines.hlsli">
+      <Filter>97.ShaderFiles</Filter>
+    </None>
+  </ItemGroup>
 </Project>

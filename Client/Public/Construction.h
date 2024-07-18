@@ -14,14 +14,23 @@ BEGIN(Client)
 
 class CConstruction final : public CGameObject
 {
-//public:
-//	enum OBJECT_TYPE {
-//		INTERACT_OBJ,
-//		NONINTERACT_OBJ,
-//		MONSTER,
-//		OBJ_END
-//	};
-//
+public:
+	enum OBJECT_TYPE {
+		CONSTRUCTION, /* 그냥 건축물 */
+		ROAD,
+		ITEM,
+		MONSTER_RUSH,
+		PLAYER,
+		SKY,
+		LIGHT,
+		MONSTER_WPA,
+		MONSTER_SHAKEDOWN,
+		MONSTER_YONEDA,
+		MONSTER_KUZE,
+		LARGE_CONSTRUCTION,
+		OBJ_END
+	};
+
 public:
 	typedef struct tMapObjDesc : public CGameObject::GAMEOBJECT_DESC
 	{	

@@ -48,7 +48,12 @@ HRESULT CAura::Initialize(void* pArg)
 		}
 	}
 
+#ifdef _TOOL
+	m_BufferInstance.WorldMatrix = m_pWorldMatrix;
+#else
 	m_BufferInstance.WorldMatrix = m_pTransformCom->Get_WorldFloat4x4();
+#endif // _TOOL
+
 
 	//m_fUVCount = _float2(64.f, 1.f);
 
@@ -76,7 +81,7 @@ void CAura::Tick(const _float& fTimeDelta)
 
 	if (m_iAction & iAction[ACTION_SPREAD])
 	{
-		m_pVIBufferCom->Spread(fTimeDelta);
+		m_pVIBufferCom->Spread(fTimeDelta);//스타트
 	}
 	if (m_iAction & iAction[ACTION_DROP])
 	{
@@ -90,11 +95,16 @@ void CAura::Tick(const _float& fTimeDelta)
 	{
 		m_pVIBufferCom->SizeDown_Time(fTimeDelta);
 	}
+	if (m_iAction & iAction[ACTION_AURA])
+	{
+		m_pVIBufferCom->Aura(fTimeDelta);//아우라
+	}
 
 }
 
 void CAura::Late_Tick(const _float& fTimeDelta)
 {
+	if (m_isOff) return;
 	if (m_BufferInstance.isLoop)
 	{
 		m_pGameInstance->Add_Renderer(CRenderer::RENDER_EFFECT, this);
@@ -124,6 +134,11 @@ HRESULT CAura::Render()
 void* CAura::Get_Instance()
 {
 	return &m_BufferInstance;
+}
+
+void CAura::Reset_Buffer()
+{
+	m_pVIBufferCom->Reset();
 }
 
 HRESULT CAura::Save_Data(const string strDirectory)
@@ -161,6 +176,8 @@ HRESULT CAura::Save_Data(const string strDirectory)
 	out.write((char*)&m_iAction, sizeof(_uint));
 
 	out.write((char*)&m_fUVCount, sizeof(_float2));
+
+	out.write((char*)&m_isAura, sizeof(_float2));
 
 	out.write((char*)&m_BufferInstance.iNumInstance, sizeof(_uint));
 	out.write((char*)&m_BufferInstance.vOffsetPos, sizeof(_float3));
@@ -231,6 +248,9 @@ HRESULT CAura::Load_Data(const string strDirectory)
 
 	in.read((char*)&m_fUVCount, sizeof(_float2));
 
+	in.read((char*)&m_isAura, sizeof(_float2));
+	m_isAura = true;
+
 	in.read((char*)&m_BufferInstance.iNumInstance, sizeof(_uint));
 	in.read((char*)&m_BufferInstance.vOffsetPos, sizeof(_float3));
 	in.read((char*)&m_BufferInstance.vPivotPos, sizeof(_float3));
@@ -242,7 +262,7 @@ HRESULT CAura::Load_Data(const string strDirectory)
 	in.read((char*)&m_BufferInstance.vSpeed, sizeof(_float2));
 	in.read((char*)&m_BufferInstance.vLifeTime, sizeof(_float2));
 	in.read((char*)&m_BufferInstance.isLoop, sizeof(_bool));
-
+	m_BufferInstance.isAura = true;
 	in.close();
 
 	return S_OK;
@@ -251,41 +271,43 @@ HRESULT CAura::Load_Data(const string strDirectory)
 HRESULT CAura::Add_Components()
 {
 	/* For.Com_VIBuffer */
-	if (FAILED(__super::Add_Component(LEVEL_EDIT, TEXT("Prototype_Component_VIBuffer_Instance_Point"),
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_VIBuffer_Instance_Point"),
 		TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pVIBufferCom), &m_BufferInstance)))
 		return E_FAIL;
 
 	/* For.Com_Shader */
-	if (FAILED(__super::Add_Component(LEVEL_EDIT, TEXT("Prototype_Component_Shader_Aura"),
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Shader_Aura"),
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
 		return E_FAIL;
 
 	//톤텍스처 선택
 	/* For.Com_Texture */
-	if (FAILED(__super::Add_Component(LEVEL_EDIT, m_TextureTag,
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, m_TextureTag,
 		TEXT("Com_Texture0"), reinterpret_cast<CComponent**>(&m_pTextureCom[0]))))
 		return E_FAIL;
 
 	//uv애님
-	if (FAILED(__super::Add_Component(LEVEL_EDIT, TEXT("Prototype_Component_Texture_AuraAnim"),
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Texture_AuraAnim"),
 		TEXT("Com_Texture1"), reinterpret_cast<CComponent**>(&m_pTextureCom[1]))))
 		return E_FAIL;
 
 	//베이스
-	if (FAILED(__super::Add_Component(LEVEL_EDIT, TEXT("Prototype_Component_Texture_AuraBase"),
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Texture_AuraBase"),
 		TEXT("Com_Texture2"), reinterpret_cast<CComponent**>(&m_pTextureCom[2]))))
 		return E_FAIL;
 
 	//플루드(흐름)
-	if (FAILED(__super::Add_Component(LEVEL_EDIT, TEXT("Prototype_Component_Texture_AuraFluid"),
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Texture_AuraFluid"),
 		TEXT("Com_Texture3"), reinterpret_cast<CComponent**>(&m_pTextureCom[3]))))
 		return E_FAIL;
 }
 
 HRESULT CAura::Bind_ShaderResources()
 {
+
 	if (FAILED(m_pTransformCom->Bind_ShaderMatrix(m_pShaderCom, "g_WorldMatrix")))
 		return E_FAIL;
+
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_VIEW))))
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_PROJ))))

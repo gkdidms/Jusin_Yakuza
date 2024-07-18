@@ -51,6 +51,8 @@ protected:
     virtual void Apply_ChracterData();
 
     virtual void Animation_Event();
+    virtual void RimLight_Event();
+    virtual void Trail_Event();
 
 public:
     const wstring& Get_ModelName() {
@@ -82,6 +84,9 @@ public:
     void Set_PartUV(_float2 UV) { m_fRimPartsUV = UV; }
 #endif // DEBUG
 
+    void Set_RimMeshName(string strMeshName) {
+        m_strRimMeshName = strMeshName;
+    }
 
 protected:
     class CSystemManager* m_pSystemManager = { nullptr };
@@ -103,6 +108,7 @@ protected:
     multimap<string, class CSocketEffect*>      m_pEffects;
 
     wstring m_wstrModelName = TEXT("");
+    string m_strRimMeshName = "";
 
 #ifdef _DEBUG
     _bool m_isObjectRender = { true };

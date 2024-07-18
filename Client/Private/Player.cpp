@@ -150,6 +150,8 @@ void CPlayer::Tick(const _float& fTimeDelta)
 	m_pColliderCom->Tick(m_pTransformCom->Get_WorldMatrix());
 
 	Animation_Event();
+	RimLight_Event();
+	Trail_Event();
 	Effect_Control_Aura();
 	Setting_Target_Enemy();
 }
@@ -205,12 +207,27 @@ HRESULT CPlayer::Render()
 	{
 		if(ADVENTURE != m_isRimLight)
 		{
-			if (!strcmp("[l0]jacketw1", pMesh->Get_Name()))
+			// 전신일 때 임의로 Full을 저장해주고 사용한다.
+			if (m_strRimMeshName == "Full")
 			{
 				if (FAILED(m_pShaderCom->Bind_RawValue("g_isRimLight", &m_isRimLight, sizeof(_float))))
 					return E_FAIL;
 
-				if (FAILED(m_pShaderCom->Bind_RawValue("g_fRimUV", &m_fRimTopUV, sizeof(_float2))))
+				if (FAILED(m_pShaderCom->Bind_RawValue("g_fRimUV", &m_fRimPartsUV, sizeof(_float2))))
+					return E_FAIL;
+			}
+			else if (m_strRimMeshName == pMesh->Get_Name())
+			{
+				_float2 fUV = m_fRimPartsUV;		// 기본적으로 파츠uv를 넣고
+				if ("[l0]jacketw1" == m_strRimMeshName)
+					fUV = m_fRimTopUV;				// 상체일 때 탑을 넣어준다.
+				if("[l0]pants3" == m_strRimMeshName)
+					fUV = m_fRimBotUV;				// 바지일 때 바텀을 넣어준다.
+
+				if (FAILED(m_pShaderCom->Bind_RawValue("g_isRimLight", &m_isRimLight, sizeof(_float))))
+					return E_FAIL;
+
+				if (FAILED(m_pShaderCom->Bind_RawValue("g_fRimUV", &fUV, sizeof(_float2))))
 					return E_FAIL;
 			}
 			else
@@ -221,54 +238,6 @@ HRESULT CPlayer::Render()
 
 				if (FAILED(m_pShaderCom->Bind_RawValue("g_fRimUV", &m_fRimPartsUV, sizeof(_float2))))
 					return E_FAIL;
-			}
-
-			switch (m_iCurrentBehavior)
-			{
-			case 4://attack(팔)
-			{
-				if (!strcmp("[l0]body_naked1", pMesh->Get_Name()))
-				{
-					if (FAILED(m_pShaderCom->Bind_RawValue("g_isRimLight", &m_isRimLight, sizeof(_float))))
-						return E_FAIL;
-					if (FAILED(m_pShaderCom->Bind_RawValue("g_fRimUV", &m_fRimPartsUV, sizeof(_float2))))
-						return E_FAIL;
-				}
-				break;
-			}
-			case 6://sway//(전신)
-			{
-				if (FAILED(m_pShaderCom->Bind_RawValue("g_isRimLight", &m_isRimLight, sizeof(_float))))	
-					return E_FAIL;	
-				if (FAILED(m_pShaderCom->Bind_RawValue("g_fRimUV", &m_fRimPartsUV, sizeof(_float2))))
-					return E_FAIL;
-				break;
-			}
-			case 8://fly_kick(다리)
-			case 9:
-			{
-				if(KRS == m_eCurrentStyle)
-				{
-					if (!strcmp("[l0]pants3", pMesh->Get_Name()))
-					{
-						if (FAILED(m_pShaderCom->Bind_RawValue("g_isRimLight", &m_isRimLight, sizeof(_float))))
-							return E_FAIL;
-						if (FAILED(m_pShaderCom->Bind_RawValue("g_fRimUV", &m_fRimBotUV, sizeof(_float2))))
-							return E_FAIL;
-					}
-					else if (!strcmp("[l0]shoes_leather1", pMesh->Get_Name()))
-					{
-						if (FAILED(m_pShaderCom->Bind_RawValue("g_isRimLight", &m_isRimLight, sizeof(_float))))
-							return E_FAIL;
-						if (FAILED(m_pShaderCom->Bind_RawValue("g_fRimUV", &m_fRimPartsUV, sizeof(_float2))))
-							return E_FAIL;
-					}
-				}
-				break;
-			}
-			default:
-				break;
-
 			}
 		}
 		else
@@ -1490,8 +1459,6 @@ void CPlayer::Setting_RimLight()
 		m_isRimLight = 0.3f;
 		break;
 	}
-	case Client::CPlayer::BATTLE_STYLE_END:
-		break;
 	default:
 		break;
 	}
