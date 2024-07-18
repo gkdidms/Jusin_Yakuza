@@ -58,8 +58,6 @@ void CPlayerCamera::Priority_Tick(const _float& fTimeDelta)
 void CPlayerCamera::Tick(const _float& fTimeDelta)
 {
 
-	m_fTimer += fTimeDelta;
-
 	if (m_pSystemManager->Get_Camera() != CAMERA_PLAYER) return;
 
 	//Compute_View(fTimeDelta);
@@ -95,7 +93,6 @@ void CPlayerCamera::Late_Tick(const _float& fTimeDelta)
 
 	if (false == m_bBlock && true == m_bCamCollision)
 	{
-		m_bBlock = true;
 		m_vCamCollisionPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 		m_fCamDistance = XMVectorGetX(XMVector3Length(m_vCamCollisionPos - vPlayerPosition));
 	}
@@ -150,6 +147,15 @@ void CPlayerCamera::Compute_View(const _float& fTimeDelta)
 	_vector vPlayerPosition;
 	memcpy(&vPlayerPosition, m_pPlayerMatrix->m[CTransform::STATE_POSITION], sizeof(_float4));
 
+	if (2.5f < m_fCamDistance && false == m_bBlock && true == m_bCamCollision)
+	{
+		m_fCamDistance -= 0.01;
+	}
+	else if (2.5f >= m_fCamDistance && true == m_bCamCollision)
+	{
+		m_bBlock = true;
+	}
+
 	if (false == m_bBlock)
 	{
 		// 마우스 입력을 이용한 카메라 회전
@@ -164,13 +170,6 @@ void CPlayerCamera::Compute_View(const _float& fTimeDelta)
 			m_fCamAngleX = 80.0f;
 		if (m_fCamAngleX < 20) // 카메라가 수직 아래로 향하지 않도록 최소 각도를 -89도로 제한
 			m_fCamAngleX = 20;
-	}
-	else
-	{
-		if (3.5f < m_fCamDistance)
-		{
-			m_fCamDistance -= 0.01;
-		}
 	}
 
 
