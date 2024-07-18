@@ -419,29 +419,6 @@ void CKiryu_KRS_Hit::Setting_Value(void* pValue)
 	}
 	else if ("e_kta_cmb_a_01" == strAnimName)
 	{
-		switch (pDesc->iDirection)
-		{
-		case CPlayer::F:
-		{
-			m_iCurrentIndex = 23;
-			break;
-		}
-		case CPlayer::B:
-		{
-			m_iCurrentIndex = 22;
-			break;
-		}
-		case CPlayer::L:
-		{
-			m_iCurrentIndex = 24;
-			break;
-		}
-		case CPlayer::R:
-		{
-			m_iCurrentIndex = 25;
-			break;
-		}
-		}
 		/*
 		* 	[20]	c_dam_head_lv02_b[c_dam_head_lv02_b]	10
 			[21]	c_dam_head_lv02_f[c_dam_head_lv02_f]	11
@@ -449,29 +426,29 @@ void CKiryu_KRS_Hit::Setting_Value(void* pValue)
 			[23]	c_dam_head_lv02_r[c_dam_head_lv02_r]	13
 		*/
 
-		//switch (pDesc->iDirection)
-		//{
-		//case CPlayer::F:
-		//{
-		//	m_iCurrentIndex = 11;
-		//	break;
-		//}
-		//case CPlayer::B:
-		//{
-		//	m_iCurrentIndex = 10;
-		//	break;
-		//}
-		//case CPlayer::L:
-		//{
-		//	m_iCurrentIndex = 12;
-		//	break;
-		//}
-		//case CPlayer::R:
-		//{
-		//	m_iCurrentIndex = 13;
-		//	break;
-		//}
-		//}
+		switch (pDesc->iDirection)
+		{
+		case CPlayer::F:
+		{
+			m_iCurrentIndex = 11;
+			break;
+		}
+		case CPlayer::B:
+		{
+			m_iCurrentIndex = 10;
+			break;
+		}
+		case CPlayer::L:
+		{
+			m_iCurrentIndex = 12;
+			break;
+		}
+		case CPlayer::R:
+		{
+			m_iCurrentIndex = 13;
+			break;
+		}
+		}
 	}
 	else if ("e_kta_cmb_a_02" == strAnimName)
 	{
