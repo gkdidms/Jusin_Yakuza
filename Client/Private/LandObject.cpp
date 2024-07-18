@@ -131,24 +131,24 @@ void CLandObject::Apply_ChracterData()
 			it->second->Off();
 	}
 
-	//auto& pEffects = m_pData->Get_Effets();
+	auto& pEffects = m_pData->Get_Effets();
 
-	//for (auto& pEffect : pEffects)
-	//{
-	//	CSocketEffect::SOKET_EFFECT_DESC Desc{};
-	//	Desc.pParentMatrix = m_pTransformCom->Get_WorldFloat4x4();
-	//	Desc.pCombinedTransformationMatrix = m_pModelCom->Get_BoneCombinedTransformationMatrix(pEffect.first.c_str());
-	//	Desc.wstrEffectName = pEffect.second;
+	for (auto& pEffect : pEffects)
+	{
+		CSocketEffect::SOKET_EFFECT_DESC Desc{};
+		Desc.pParentMatrix = m_pTransformCom->Get_WorldFloat4x4();
+		Desc.pCombinedTransformationMatrix = m_pModelCom->Get_BoneCombinedTransformationMatrix(pEffect.first.c_str());
+		Desc.wstrEffectName = pEffect.second;
 
-	//	CGameObject* pSoketEffect = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_SoketEffect"), &Desc);
-	//	if (nullptr == pSoketEffect)
-	//		return;
+		CGameObject* pSoketEffect = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_SoketEffect"), &Desc);
+		if (nullptr == pSoketEffect)
+			return;
 
-	//	auto it = m_pEffects.emplace(pEffect.first, static_cast<CSocketEffect*>(pSoketEffect));
+		auto it = m_pEffects.emplace(pEffect.first, static_cast<CSocketEffect*>(pSoketEffect));
 
-	//	it->second->On();
-	//	//it->second->Off();
-	//}
+		//it->second->On();
+		it->second->Off();
+	}
 
 	auto& pTrailEvents = m_pData->Get_TrailEvents();
 
@@ -163,10 +163,12 @@ void CLandObject::Apply_ChracterData()
 		if (nullptr == pSoketEffect)
 			return;
 
-		auto it = m_pEffects.emplace(pTrailEvent.second.strBonelName, static_cast<CSocketEffect*>(pSoketEffect));
+		auto it = m_pTrailEffects.emplace(pTrailEvent.second.strBonelName, static_cast<CSocketEffect*>(pSoketEffect));
 
-		//it->second->On();
-		it->second->Off();
+		if (it.second)
+			it.first->second->Off();
+		else
+			Safe_Release(pSoketEffect);
 	}
 
 }
@@ -233,27 +235,13 @@ void CLandObject::Trail_Event()
 		{
 			if (pEvent.iType == 0)		// 트레일 켜주기
 			{
-				auto lower_bound_iter = m_pEffects.lower_bound(pEvent.strBonelName);
-				if (lower_bound_iter != m_pEffects.end() && (*lower_bound_iter).first != pEvent.strBonelName)
-					return;
-				auto upper_bound_iter = m_pEffects.upper_bound(pEvent.strBonelName);
-
-				for (; lower_bound_iter != upper_bound_iter; lower_bound_iter++)
-				{
-					(*lower_bound_iter).second->On();
-				}
+				auto iter = m_pTrailEffects.find(pEvent.strBonelName);
+				iter->second->On();
 			}
 			else
 			{
-				auto lower_bound_iter = m_pEffects.lower_bound(pEvent.strBonelName);
-				if (lower_bound_iter != m_pEffects.end() && (*lower_bound_iter).first != pEvent.strBonelName)
-					return;
-				auto upper_bound_iter = m_pEffects.upper_bound(pEvent.strBonelName);
-
-				for (; lower_bound_iter != upper_bound_iter; lower_bound_iter++)
-				{
-					(*lower_bound_iter).second->Off();
-				}
+				auto iter = m_pTrailEffects.find(pEvent.strBonelName);
+				iter->second->Off();
 			}
 				
 		}
@@ -290,6 +278,10 @@ void CLandObject::Free()
 	for (auto& pEffect : m_pEffects)
 		Safe_Release(pEffect.second);
 	m_pEffects.clear();
+
+	for (auto& pEffect : m_pTrailEffects)
+		Safe_Release(pEffect.second);
+	m_pTrailEffects.clear();
 
 	Safe_Release(m_pData);
 	Safe_Release(m_pModelCom);

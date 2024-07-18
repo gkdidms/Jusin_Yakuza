@@ -149,6 +149,9 @@ void CPlayer::Tick(const _float& fTimeDelta)
 	for (auto& pEffect : m_pEffects)
 		pEffect.second->Tick(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")));
 
+	for (auto& pEffect : m_pTrailEffects)
+		pEffect.second->Tick(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")));
+
 
 	KeyInput(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")));
 
@@ -180,6 +183,9 @@ void CPlayer::Late_Tick(const _float& fTimeDelta)
 		pCollider.second->Late_Tick(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")));
 
 	for (auto& pEffect : m_pEffects)
+		pEffect.second->Late_Tick(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")));
+
+	for (auto& pEffect : m_pTrailEffects)
 		pEffect.second->Late_Tick(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")));
 
 	// 현재 켜져있는 Attack용 콜라이더 삽입
@@ -1449,7 +1455,7 @@ void CPlayer::AccHitGauge()
 	if (PLAYER_HITGAUGE_LEVEL_INTERVAL * 3.f < m_fHitGauge)
 		m_fHitGauge = PLAYER_HITGAUGE_LEVEL_INTERVAL * 3.f;
 	else
-		m_fHitGauge += 10.f;
+		m_fHitGauge += 5.f;
 
 	m_iCurrentHitLevel = (m_fHitGauge / PLAYER_HITGAUGE_LEVEL_INTERVAL);
 }
