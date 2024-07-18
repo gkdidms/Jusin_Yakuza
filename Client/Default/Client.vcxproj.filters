@@ -356,8 +356,14 @@
       <Filter>02.GameObjects\07.MapCollider\Obj</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\MapColliderObj.cpp" />
+    <ClCompile Include="..\Private\Trigger.cpp">
+      <Filter>02.GameObjects\08.Trigger</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\LevelTrigger.cpp">
+      <Filter>02.GameObjects\08.Trigger\00.LevelTrigger</Filter>
+    </ClCompile>
     <ClCompile Include="..\Private\Kiryu_KRC_Guard.cpp">
-      <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRC\Guard</Filter>
+      <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRC\Gaurd</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -746,8 +752,14 @@
       <Filter>02.GameObjects\07.MapCollider\Obj</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\MapColliderObj.h" />
+    <ClInclude Include="..\Public\Trigger.h">
+      <Filter>02.GameObjects\08.Trigger</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\LevelTrigger.h">
+      <Filter>02.GameObjects\08.Trigger\00.LevelTrigger</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\Kiryu_KRC_Guard.h">
-      <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRC\Guard</Filter>
+      <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRC\Gaurd</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1143,8 +1155,20 @@
     <Filter Include="01.Levels\07.DogimazoBoss">
       <UniqueIdentifier>{c3987abd-0a35-468c-b0db-541aa2913f3b}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRC\Guard">
+    <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRC\Gaurd">
       <UniqueIdentifier>{3f5ad5dc-5e30-4a8e-9db6-f53eb73719fc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\08.Trigger">
+      <UniqueIdentifier>{5e413a4a-e72f-49f2-a5ef-97b426f638b5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\08.Trigger\00.LevelTrigger">
+      <UniqueIdentifier>{835e72e8-1619-411a-b7e0-d0d01d39c3ed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\08.Trigger\01.CineTrigger">
+      <UniqueIdentifier>{cae0d787-995c-4814-9000-134f1f4a389d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\08.Trigger\02.YonedaTrigger">
+      <UniqueIdentifier>{cd20dace-6e28-432e-8fd8-98fbb338d7d3}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

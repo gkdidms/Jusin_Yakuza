@@ -14,6 +14,8 @@
 #include "Yoneda.h"
 #include "Kuze.h"
 
+#include "Trigger.h"
+
 IMPLEMENT_SINGLETON(CFileTotalMgr)
 
 
@@ -390,6 +392,36 @@ HRESULT CFileTotalMgr::Set_Collider_In_Client(int iColliderLoadingNum, int iStag
     return S_OK;
 }
 
+HRESULT CFileTotalMgr::Set_Trigger_In_Client(int iTriggerLoadingNum, int iStageLevel)
+{
+    Safe_Delete_Array(m_Trigger.pTriggers);
+
+    if (FAILED(Import_Bin_Trigger_Data_OnTool(&m_Trigger, iTriggerLoadingNum)))
+        return E_FAIL;
+
+    for (int i = 0; i < m_Trigger.iTriggerNum ; i++)
+    {
+        if (TRIGGER_MOVE_LEVEL == m_Trigger.pTriggers[i].iTriggerType)
+        {
+            CTrigger::TRIGGEROBJ_DESC       triggerObjDesc;
+            triggerObjDesc.tTriggerDesc = m_Trigger.pTriggers[i];
+
+            m_pGameInstance->Add_GameObject(iStageLevel, TEXT("Prototype_GameObject_LevelTrigger"), TEXT("Layer_Trigger"), &triggerObjDesc);
+        }
+        else if (TRIGGER_CINEMACHINE == m_Trigger.pTriggers[i].iTriggerType)
+        {
+
+        }
+        else if (TRIGGER_CINEMACHINE == m_Trigger.pTriggers[i].iTriggerType)
+        {
+
+        }
+
+    }
+
+    return S_OK;
+}
+
 void CFileTotalMgr::Load_Cinemachine(int iCineNum, int iStageLevel)
 {
     if (nullptr == m_pCinemachineCam)
@@ -584,6 +616,39 @@ HRESULT CFileTotalMgr::Import_Bin_Collider_Data_OnTool(COLLIDER_IO* ColliderData
     }
 
     in.close();
+
+    return S_OK;
+}
+
+HRESULT CFileTotalMgr::Import_Bin_Trigger_Data_OnTool(TRIGGER_IO* TriggerData, int iLevel)
+{
+    char fullPath[MAX_PATH];
+    strcpy_s(fullPath, "../Bin/DataFiles/TriggerData/");
+
+    strcat_s(fullPath, "Trigger_Data");
+    strcat_s(fullPath, "_");
+
+    string strNum = to_string(iLevel);
+    char cLevel[20];
+    strcpy_s(cLevel, strNum.c_str());
+    strcat_s(fullPath, cLevel);
+    strcat_s(fullPath, ".dat");
+
+    ifstream in(fullPath, ios::binary);
+
+    if (!in.is_open()) {
+        MSG_BOX("파일 개방 실패");
+        return E_FAIL;
+    }
+
+    in.read((char*)&TriggerData->iTriggerNum, sizeof(int));
+
+    TriggerData->pTriggers = new TRIGGER_DESC[TriggerData->iTriggerNum];
+
+    for (int i = 0; i < TriggerData->iTriggerNum; i++)
+    {
+        in.read((char*)&TriggerData->pTriggers[i], sizeof(TRIGGER_DESC));
+    }
 
     return S_OK;
 }

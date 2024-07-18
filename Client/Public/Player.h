@@ -89,6 +89,10 @@ public:
         return m_pTargetObject;
     }
 
+    CCollider* Get_PlayerCollider() {
+        return m_pColliderCom;
+    }
+
     /* Setter */
 public:
     void    Set_StartPos(XMMATRIX    vStartPos) { m_pTransformCom->Set_WorldMatrix(vStartPos); }
