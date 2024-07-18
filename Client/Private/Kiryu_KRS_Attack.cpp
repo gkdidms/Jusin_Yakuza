@@ -112,7 +112,7 @@ _bool CKiryu_KRS_Attack::Changeable_Combo_Animation()
 		fInterval = 0.27f;
 
 	if (m_iComboCount == 7)			// p_krs_cmb_04_fin가 끝날 위치를 지정한다
-		fInterval = 0.35f;			
+		fInterval = 0.3f;			
 
 	CModel* pModelCom = static_cast<CModel*>(m_pPlayer->Get_Component(TEXT("Com_Model")));
 	if (fInterval < *pModelCom->Get_AnimationCurrentPosition() / *pModelCom->Get_AnimationDuration())

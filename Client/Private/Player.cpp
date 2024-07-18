@@ -91,6 +91,11 @@ void CPlayer::Tick(const _float& fTimeDelta)
 	m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Change_Animation();
 	m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Tick(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")));
 
+	// 배틀 시작 애니메이션 아닐 경우 타임델타를 1로 고정시켜준다.
+	// TODO: 다른곳에서 시간조절이 필요하다면 수정해야한다
+	if (m_iCurrentBehavior != (_uint)KRS_BEHAVIOR_STATE::BTL_START)
+		m_pGameInstance->Set_TimeSpeed(TEXT("Timer_60"), 1.f);
+
 	if (m_pGameInstance->GetKeyState(DIK_0) == TAP)
 	{
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0, 0, 0, 1));
@@ -180,8 +185,13 @@ void CPlayer::Late_Tick(const _float& fTimeDelta)
 	// 현재 켜져있는 Attack용 콜라이더 삽입
 	for (auto& pPair : m_pColliders)
 	{
-		if(pPair.second->Get_CollierType() == CSocketCollider::ATTACK && pPair.second->IsOn())
+		if (pPair.second->Get_CollierType() == CSocketCollider::ATTACK && pPair.second->IsOn())
+		{
+			if (pPair.second->Get_CollierPartType() == 1)
+				int a = 0;
+
 			m_pCollisionManager->Add_AttackCollider(pPair.second, CCollision_Manager::PLAYER);
+		}
 	}
 
 	// 현재 켜져있는 Hit용 콜라이더 삽입 (아직까지는 Hit용 콜라이더는 항상 켜져있음)
