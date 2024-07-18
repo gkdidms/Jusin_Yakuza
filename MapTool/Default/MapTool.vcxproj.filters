@@ -121,6 +121,12 @@
     <ClCompile Include="..\Private\LandObject.cpp">
       <Filter>02.GameObjects\09.RushYakuza\LandObject</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\Trigger_Manager.cpp">
+      <Filter>03.Managers\07.Trigger_Manager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\TriggerObj.cpp">
+      <Filter>02.GameObjects\10.TriggerObj</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\MainApp.h">
@@ -261,6 +267,12 @@
     <ClInclude Include="..\Public\LandObject.h">
       <Filter>02.GameObjects\09.RushYakuza\LandObject</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Trigger_Manager.h">
+      <Filter>03.Managers\07.Trigger_Manager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\TriggerObj.h">
+      <Filter>02.GameObjects\10.TriggerObj</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="MapTool.ico">
@@ -378,6 +390,12 @@
     </Filter>
     <Filter Include="02.GameObjects\09.RushYakuza\LandObject">
       <UniqueIdentifier>{ff1b610f-8f2b-41f1-b054-fca8dddb7287}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.Managers\07.Trigger_Manager">
+      <UniqueIdentifier>{e11f05ae-b56c-444c-a7f6-c3801ba4c8bb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\10.TriggerObj">
+      <UniqueIdentifier>{84ea9df5-4944-433b-80e4-793a6a67d44c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

@@ -38,6 +38,9 @@ HRESULT CLevel_DogimazoBoss::Initialize()
 
 void CLevel_DogimazoBoss::Tick(const _float& fTimeDelta)
 {
+
+
+
 #ifdef _DEBUG
     SetWindowText(g_hWnd, TEXT("도지마조 보스 스테이지"));
 #endif

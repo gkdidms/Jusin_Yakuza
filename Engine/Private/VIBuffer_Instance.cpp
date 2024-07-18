@@ -234,7 +234,7 @@ void CVIBuffer_Instance::Aura(_float fTimeDelta)
 
 	m_pContext->Unmap(m_pVBInstance, 0);
 
-	if (m_isReset && LifeTime_Check())
+	if (!m_InstanceDesc->isLoop&&m_isReset && LifeTime_Check())
 		m_isReset = false;
 }
 
