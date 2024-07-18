@@ -247,6 +247,16 @@ HRESULT CPlayer::Render()
 				return E_FAIL;
 		}
 
+		//¿Ê ¼ÎÀÌ´õ ±¸ºÐ¿ë
+		_bool isCloth = true;
+		string strMeshName = string(pMesh->Get_Name());
+		if (strMeshName.find("hair") != string::npos || strMeshName.find("face") != string::npos ||
+			strMeshName.find("foot") != string::npos || strMeshName.find("body") != string::npos ||
+			strMeshName.find("eye") != string::npos)
+			isCloth = false;
+
+		m_pShaderCom->Bind_RawValue("g_isCloth", &isCloth, sizeof(_bool));
+
 
 		m_pModelCom->Bind_BoneMatrices(m_pShaderCom, "g_BoneMatrices", i);
 
@@ -256,11 +266,11 @@ HRESULT CPlayer::Render()
 
 		_bool isRS = true;
 		_bool isRD = true;
-		if (!strcmp(pMesh->Get_Name(), "[l0]face_kiryu"))
-		{
-			isRS = false;
-			isRD = false;
-		}
+		//if (!strcmp(pMesh->Get_Name(), "[l0]face_kiryu"))
+		//{
+		//	isRS = false;
+		//	isRD = false;
+		//}
 
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RSTexture", i, aiTextureType_SPECULAR)))
 			isRS = false;

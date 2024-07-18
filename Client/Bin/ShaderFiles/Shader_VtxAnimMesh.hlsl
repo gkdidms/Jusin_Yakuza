@@ -141,6 +141,7 @@ struct PS_OUT
     vector vRD : SV_Target6;
 };
 
+bool g_isCloth;
 PS_OUT PS_MAIN(PS_IN In)
 {
     PS_OUT Out = (PS_OUT) 0;
@@ -177,6 +178,19 @@ PS_OUT PS_MAIN(PS_IN In)
         discard;
     
     //RS + RD
+    /*
+    vector vRDDesc = g_isRD ? g_RDTexture.Sample(LinearSampler, In.vTexcoord * 50.f) : vector(0.5f, 0.5f, 0.5f, 1.f);
+    vector vRSDesc = g_isRS ? g_RSTexture.Sample(LinearSampler, In.vTexcoord * 20.f) : vector(0.5f, 0.5f, 0.5f, 1.f);
+   
+    Out.vRD = vRDDesc;
+    Out.vRS = vRSDesc;
+    
+    vector vRSRD = lerp(vRSDesc, vRDDesc, 0.3f);
+    vRSRD = lerp(vRSRD, vector(1.f, 1.f, 1.f, 1.f), 0.2f);
+    
+    Out.vDiffuse = lerp(vDiffuse, vRSRD, g_isCloth ? vMultiDiffuce.z : 0.f);
+    */
+    
     vector vRSRD;
     vector vRDDesc;
     if (g_isRD)
@@ -189,19 +203,18 @@ PS_OUT PS_MAIN(PS_IN In)
     {
         vector vRSDesc = g_RSTexture.Sample(LinearSampler, In.vTexcoord * 20.f);
         Out.vRS = vRSDesc;
-        vRSDesc = lerp(vRSDesc, vRDDesc, 0.7f);
-        Out.vDiffuse = lerp(vDiffuse, vRSDesc, vMultiDiffuce.z);
+        vRSDesc = lerp(vRSDesc, vRDDesc, 0.3f);
+        Out.vDiffuse = lerp(vDiffuse, vRSDesc, g_isCloth ? vMultiDiffuce.z : 0.f);
         
     }
     else
     {
         if (g_isRD)
-            Out.vDiffuse = lerp(vRDDesc, vDiffuse, vMultiDiffuce.z);
+            Out.vDiffuse = lerp(vDiffuse, vRDDesc, g_isCloth ? vMultiDiffuce.z : 0.f);
         else
             Out.vDiffuse = vDiffuse;
     }
     
-
     float RimIndex = 0.f;
     if (0.05f < g_isRimLight)
     {
