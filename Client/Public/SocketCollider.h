@@ -74,6 +74,10 @@ public:
 		return static_cast<_uint>(m_eColliderActionType);
 	}
 
+	_uint Get_CollierPartType() {
+		return static_cast<_uint>(m_eColliderPartType);
+	}
+
 	CCollider* Get_Collider()	{
 		return m_pColliderCom;
 	}

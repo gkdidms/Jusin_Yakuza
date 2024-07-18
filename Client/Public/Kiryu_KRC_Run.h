@@ -31,6 +31,7 @@ public:
 	virtual void Change_Animation() override;
 	virtual _bool Get_AnimationEnd() override;
 	virtual void Stop() override;
+	virtual void Reset() override;
 	virtual _bool Stopping() override;
 
 private:
