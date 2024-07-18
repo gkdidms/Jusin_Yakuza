@@ -150,10 +150,10 @@ void CAI_Kuze::Ready_Tree()
 	pAttackSeq->Add_Children(pAttackSelector);
 #pragma endregion
 
-#pragma region Step
+#pragma region Run
 	CSequance* pStepSeq = CSequance::Create();
 	pStepSeq->Add_Children(CLeafNode::Create(bind(&CAI_Kuze::Check_Distance, this)));
-	pStepSeq->Add_Children(CLeafNode::Create(bind(&CAI_Kuze::Step, this)));
+	pStepSeq->Add_Children(CLeafNode::Create(bind(&CAI_Kuze::Run, this)));
 #pragma endregion
 
 
@@ -176,7 +176,7 @@ void CAI_Kuze::Ready_Tree()
 	pRoot->Add_Children(pSyncSeq);
 	pRoot->Add_Children(pHitGuardSeq);
 	pRoot->Add_Children(pAttackSeq);
-	//pRoot->Add_Children(pStepSeq);
+	pRoot->Add_Children(pStepSeq);
 	pRoot->Add_Children(pBreakSeq);
 #pragma endregion
 
@@ -282,11 +282,18 @@ CBTNode::NODE_STATE CAI_Kuze::Attack()
 CBTNode::NODE_STATE CAI_Kuze::Check_PlayerDown()
 {
 	if (!m_pPlayer->isDown())
+	{
 		m_isPlayerDownAtk = false;
+
+		if (m_iSkill == SKILL_DOWN)
+			m_isAttack = false;
+
+		return CBTNode::FAIL;
+	}
 
 	if (m_pPlayer->isDown() || m_iSkill == SKILL_DOWN)
 	{
-		if (DistanceFromPlayer() > 3.f || m_isPlayerDownAtk)
+		if (DistanceFromPlayer() > 2.f || m_isPlayerDownAtk)
 			return CBTNode::FAIL;
 
 		m_iSkill == SKILL_DOWN;
@@ -506,18 +513,31 @@ CBTNode::NODE_STATE CAI_Kuze::ATK_Renda()
 
 CBTNode::NODE_STATE CAI_Kuze::Check_Distance()
 {
+	if (m_isBreak)
+		return CBTNode::FAIL;
+
 	_float fDistance = DistanceFromPlayer();
 	if (fDistance > 2.f)
-	{
-		return CBTNode::SUCCESS;
+	{	
+		if (m_iSkill == SKILL_RUN)
+			return CBTNode::SUCCESS;
+
+		_uint iRandom = m_pGameInstance->Get_Random(0, 100);
+		
+		if (iRandom == 84 || iRandom == 34)
+			return CBTNode::SUCCESS;
 	}
 
 	return CBTNode::FAIL;
 }
 
-CBTNode::NODE_STATE CAI_Kuze::Step()
+CBTNode::NODE_STATE CAI_Kuze::Run()
 {
-	*m_pState = CMonster::MONSTER_STEP_F;
+	LookAtPlayer();
+
+	m_isBreak = false;
+	m_iSkill = SKILL_RUN;
+	*m_pState = CMonster::MONSTER_RUN;
 
 	return CBTNode::SUCCESS;
 }
