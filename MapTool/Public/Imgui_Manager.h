@@ -7,6 +7,7 @@
 #include "LightTool_Mgr.h"
 #include "Camera_Manager.h"
 #include "Collider_Manager.h"
+#include "Trigger_Manager.h"
 #include "Client_Defines.h"
 
 BEGIN(Engine)
@@ -22,6 +23,7 @@ public:
 		OBJPLACE,
 		COLLIDER,
 		LIGHT,
+		TRIGGER,
 		IDWRITE_END
 	};
 
@@ -56,6 +58,7 @@ private:
 	void	Show_LightTool_IMGUI();
 	void	Show_CameraTool_IMGUI();
 	void	Show_Collider_IMGUI();
+	void	Show_Trigger_IMGUI();
 
 
 private:
@@ -64,6 +67,8 @@ private:
 	CLightTool_Mgr*				m_pLightTool_Mgr;
 	CCamera_Manager*			m_pCameraToolMgr;
 	CCollider_Manager*			m_pColliderMgr;
+	CTrigger_Manager*			m_pTriggerMgr;
+
 	CGameInstance*				m_pGameInstance;
 
 	/* imgui 창 관련 bool 변수 */
@@ -75,6 +80,7 @@ private:
 	_bool						m_bLightMgr_IMGUI = { false };
 	_bool						m_bCameraMgr_IMGUI = { false };
 	_bool						m_bColliderMgr_imgui = { false };
+	_bool						m_bTriggerMgr_IMGUI = { false };
 
 	IDWRIE						m_eWrieID = { IDWRITE_END };
 

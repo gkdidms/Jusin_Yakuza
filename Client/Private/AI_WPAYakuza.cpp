@@ -227,19 +227,7 @@ CBTNode::NODE_STATE CAI_WPAYakuza::ATK_CMD()
 
 void CAI_WPAYakuza::Tick(const _float& fTimeDelta)
 {
-	if (m_isAttack == false)
-		m_fAttackDelayTime += fTimeDelta;
-
-	if (m_isBreak)
-	{
-		m_fBreakTime += fTimeDelta;
-
-		if (m_fBreakDuration <= m_fBreakTime)
-		{
-			m_isBreak = false;
-			m_fBreakTime = 0.f;
-		}
-	}
+	__super::Tick(fTimeDelta);
 
 	this->Execute();
 }

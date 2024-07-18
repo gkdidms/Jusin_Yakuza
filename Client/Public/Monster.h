@@ -138,7 +138,7 @@ protected:
     _uint m_iState = { 0 };
     _float m_fChangeInterval = { 4.f };
 
-
+    _float m_fPrevSpeed;
     _float4         m_vPrevMove;
     _float4         m_vPrevRotation;
     _float4x4       m_ModelWorldMatrix;
