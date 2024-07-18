@@ -121,6 +121,7 @@ CBTNode::NODE_STATE CAI_WPAYakuza::HitAndGuard()
 	{
 		//충돌되면 플레이어 공격인지 아닌지 체크가 풀림
 		Reset_State();
+		m_iSkill = SKILL_HIT;
 
 		return CBTNode::SUCCESS;
 	}
