@@ -60,19 +60,7 @@ HRESULT CAI_Shakedown::Initialize(void* pArg)
 
 void CAI_Shakedown::Tick(const _float& fTimeDelta)
 {
-	if (!m_isAttack)
-		m_fAttackDelayTime += fTimeDelta;
-
-	if (m_isBreak)
-	{
-		m_fBreakTime += fTimeDelta;
-
-		if (m_fBreakDuration <= m_fBreakTime)
-		{
-			m_isBreak = false;
-			m_fBreakTime = 0.f;
-		}
-	}
+	__super::Tick(fTimeDelta);
 
 	this->Execute();
 }
