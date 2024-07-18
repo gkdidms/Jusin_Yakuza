@@ -98,7 +98,7 @@ void CKiryu_KRS_Down::Setting_Value(void* pValue)
 			m_isFront = false; //µÚ
 			m_iCurrentIndex = 0;
 		}
-		else if(pDownState->iDownState == 0)
+		else if(pDownState->iDownState == 1)
 		{
 			m_isFront = true; //¾Õ
 			m_iCurrentIndex = 1;

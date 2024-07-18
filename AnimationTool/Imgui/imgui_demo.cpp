@@ -4767,7 +4767,7 @@ static void ShowDemoWindowTables()
             // Demonstrate using clipper for large vertical lists
             ImGuiListClipper clipper;
             clipper.Begin(1000);
-            while (clipper.Step())
+            while (clipper.Run())
             {
                 for (int row = clipper.DisplayStart; row < clipper.DisplayEnd; row++)
                 {
@@ -5708,7 +5708,7 @@ static void ShowDemoWindowTables()
             // Demonstrate using clipper for large vertical lists
             ImGuiListClipper clipper;
             clipper.Begin(items.Size);
-            while (clipper.Step())
+            while (clipper.Run())
                 for (int row_n = clipper.DisplayStart; row_n < clipper.DisplayEnd; row_n++)
                 {
                     // Display a data item
@@ -5946,7 +5946,7 @@ static void ShowDemoWindowTables()
             // Demonstrate using clipper for large vertical lists
             ImGuiListClipper clipper;
             clipper.Begin(items.Size);
-            while (clipper.Step())
+            while (clipper.Run())
             {
                 for (int row_n = clipper.DisplayStart; row_n < clipper.DisplayEnd; row_n++)
 #else
@@ -6210,7 +6210,7 @@ static void ShowDemoWindowColumns()
         int ITEMS_COUNT = 2000;
         ImGuiListClipper clipper;
         clipper.Begin(ITEMS_COUNT);
-        while (clipper.Step())
+        while (clipper.Run())
         {
             for (int i = clipper.DisplayStart; i < clipper.DisplayEnd; i++)
                 for (int j = 0; j < 10; j++)
@@ -7702,7 +7702,7 @@ struct ExampleAppLog
                 // it possible (and would be recommended if you want to search through tens of thousands of entries).
                 ImGuiListClipper clipper;
                 clipper.Begin(LineOffsets.Size);
-                while (clipper.Step())
+                while (clipper.Run())
                 {
                     for (int line_no = clipper.DisplayStart; line_no < clipper.DisplayEnd; line_no++)
                     {
@@ -7953,7 +7953,7 @@ static void ShowExampleAppLongText(bool* p_open)
             ImGui::PushStyleVar(ImGuiStyleVar_ItemSpacing, ImVec2(0, 0));
             ImGuiListClipper clipper;
             clipper.Begin(lines);
-            while (clipper.Step())
+            while (clipper.Run())
                 for (int i = clipper.DisplayStart; i < clipper.DisplayEnd; i++)
                     ImGui::Text("%i The quick brown fox jumps over the lazy dog", i);
             ImGui::PopStyleVar();
@@ -8018,7 +8018,7 @@ static void ShowExampleAppConstrainedResize(bool* p_open)
         {
             data->DesiredSize.x = data->DesiredSize.y = IM_MAX(data->DesiredSize.x, data->DesiredSize.y);
         }
-        static void Step(ImGuiSizeCallbackData* data)
+        static void Run(ImGuiSizeCallbackData* data)
         {
             float step = *(float*)data->UserData;
             data->DesiredSize = ImVec2((int)(data->DesiredSize.x / step + 0.5f) * step, (int)(data->DesiredSize.y / step + 0.5f) * step);
@@ -8055,7 +8055,7 @@ static void ShowExampleAppConstrainedResize(bool* p_open)
     if (type == 5) ImGui::SetNextWindowSizeConstraints(ImVec2(-1, 400),  ImVec2(-1, FLT_MAX));      // Height at least 400
     if (type == 6) ImGui::SetNextWindowSizeConstraints(ImVec2(0, 0),     ImVec2(FLT_MAX, FLT_MAX), CustomConstraints::AspectRatio, (void*)&aspect_ratio);   // Aspect ratio
     if (type == 7) ImGui::SetNextWindowSizeConstraints(ImVec2(0, 0),     ImVec2(FLT_MAX, FLT_MAX), CustomConstraints::Square);                              // Always Square
-    if (type == 8) ImGui::SetNextWindowSizeConstraints(ImVec2(0, 0),     ImVec2(FLT_MAX, FLT_MAX), CustomConstraints::Step, (void*)&fixed_step);            // Fixed Step
+    if (type == 8) ImGui::SetNextWindowSizeConstraints(ImVec2(0, 0),     ImVec2(FLT_MAX, FLT_MAX), CustomConstraints::Run, (void*)&fixed_step);            // Fixed Step
 
     // Submit window
     if (!window_padding)

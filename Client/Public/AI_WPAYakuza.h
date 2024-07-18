@@ -20,6 +20,7 @@ private:
     virtual void Ready_Tree();
 
 private:
+    virtual CBTNode::NODE_STATE HitAndGuard() override;
     //공격 상속받아서 진행
     CBTNode::NODE_STATE Check_Attack(); // 공격 가능한 상태인지 체크
 

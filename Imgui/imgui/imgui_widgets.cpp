@@ -6971,7 +6971,7 @@ bool ImGui::ListBox(const char* label, int* current_item, const char* (*getter)(
     bool value_changed = false;
     ImGuiListClipper clipper;
     clipper.Begin(items_count, GetTextLineHeightWithSpacing()); // We know exactly our line height here so we pass it as a minor optimization, but generally you don't need to.
-    while (clipper.Step())
+    while (clipper.Run())
         for (int i = clipper.DisplayStart; i < clipper.DisplayEnd; i++)
         {
             const char* item_text = getter(user_data, i);

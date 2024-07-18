@@ -25,6 +25,8 @@ HRESULT CAI_WPAYakuza::Initialize(void* pArg)
 
 	Ready_Tree();
 
+	m_fDelayAttackDuration = m_pGameInstance->Get_Random(6, 9);
+
 	return S_OK;
 }
 
@@ -61,7 +63,7 @@ void CAI_WPAYakuza::Ready_Tree()
 	pHitGuardSeq->Add_Children(CLeafNode::Create(bind(&CAI_WPAYakuza::HitAndGuard, this)));
 
 	CSelector* pHitGuard = CSelector::Create();
-	pHitGuard->Add_Children(CLeafNode::Create(bind(&CAI_WPAYakuza::Guard, this)));
+	//pHitGuard->Add_Children(CLeafNode::Create(bind(&CAI_WPAYakuza::Guard, this)));
 	pHitGuard->Add_Children(CLeafNode::Create(bind(&CAI_WPAYakuza::Hit, this)));
 
 	pHitGuardSeq->Add_Children(pHitGuard);
@@ -113,6 +115,25 @@ void CAI_WPAYakuza::Ready_Tree()
 	m_pRootNode = pRoot;
 }
 
+CBTNode::NODE_STATE CAI_WPAYakuza::HitAndGuard()
+{
+	if (m_pThis->isColl())
+	{
+		//충돌되면 플레이어 공격인지 아닌지 체크가 풀림
+		Reset_State();
+
+		return CBTNode::SUCCESS;
+	}
+	else
+	{
+		//충돌하지 않은 상태에서 히트 모션이 끝나면?
+		if (m_iSkill == SKILL_HIT && !m_pAnimCom->Get_AnimFinished())
+			return CBTNode::RUNNING;
+	}
+
+	return CBTNode::FAIL;
+}
+
 CBTNode::NODE_STATE CAI_WPAYakuza::Check_Attack()
 {
 	if (!m_isAttack)
@@ -134,7 +155,7 @@ CBTNode::NODE_STATE CAI_WPAYakuza::Attack()
 	LookAtPlayer();
 	Reset_State();
 
-	static _uint iCount = 0;
+	static _uint iCount = rand() % 3;
 
 	if (iCount == 0 || iCount == 2)
 		m_iSkill = SKILL_CMD;

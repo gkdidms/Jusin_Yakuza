@@ -3162,7 +3162,7 @@ static bool ImGuiListClipper_StepInternal(ImGuiListClipper* clipper)
     return false;
 }
 
-bool ImGuiListClipper::Step()
+bool ImGuiListClipper::Run()
 {
     ImGuiContext& g = *Ctx;
     bool need_items_height = (ItemsHeight <= 0.0f);
@@ -21128,7 +21128,7 @@ void ImGui::DebugNodeDrawList(ImGuiWindow* window, ImGuiViewportP* viewport, con
         // Display individual triangles/vertices. Hover on to get the corresponding triangle highlighted.
         ImGuiListClipper clipper;
         clipper.Begin(pcmd->ElemCount / 3); // Manually coarse clip our print out of individual vertices to save CPU, only items that may be visible.
-        while (clipper.Step())
+        while (clipper.Run())
             for (int prim = clipper.DisplayStart, idx_i = pcmd->IdxOffset + clipper.DisplayStart * 3; prim < clipper.DisplayEnd; prim++)
             {
                 char* buf_p = buf, * buf_end = buf + IM_ARRAYSIZE(buf);
@@ -21582,7 +21582,7 @@ void ImGui::ShowDebugLogWindow(bool* p_open)
 
     ImGuiListClipper clipper;
     clipper.Begin(g.DebugLogIndex.size());
-    while (clipper.Step())
+    while (clipper.Run())
         for (int line_no = clipper.DisplayStart; line_no < clipper.DisplayEnd; line_no++)
             DebugTextUnformattedWithLocateItem(g.DebugLogIndex.get_line_begin(g.DebugLogBuf.c_str(), line_no), g.DebugLogIndex.get_line_end(g.DebugLogBuf.c_str(), line_no));
     g.DebugLogFlags = backup_log_flags;
