@@ -691,14 +691,14 @@ void CPlayer::KRS_KeyInput(const _float& fTimeDelta)
 					|| string::npos != strAnimName.find("y_b") 
 					|| string::npos != strAnimName.find("_guard_") || string::npos != strAnimName.find("_dnf_"))
 				{
-					_bool isFront = false;
-					m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Setting_Value(&isFront);
+					CKiryu_KRS_Down::KRS_DOWN_DESC Desc{ 0, -1, string() };
+					m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Setting_Value(&Desc);
 				}
 				else if (string::npos != strAnimName.find("body_r") || string::npos != strAnimName.find("_f")
 					|| string::npos != strAnimName.find("_direct_") || string::npos != strAnimName.find("dnb"))
 				{
-					_bool isFront = true;
-					m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Setting_Value(&isFront);
+					CKiryu_KRS_Down::KRS_DOWN_DESC Desc{ 1, -1, string() };
+					m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Setting_Value(&Desc);
 				}
 
 			}
@@ -835,6 +835,9 @@ void CPlayer::KRS_KeyInput(const _float& fTimeDelta)
 			m_iCurrentBehavior = (_uint)KRS_BEHAVIOR_STATE::SWAY;
 		}
 	}
+
+	if(isMove)
+		m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Reset();
 
 	if (!isMove && m_iCurrentBehavior == (_uint)KRS_BEHAVIOR_STATE::RUN || m_iCurrentBehavior == (_uint)KRS_BEHAVIOR_STATE::WALK)
 		m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Stop();
@@ -997,6 +1000,9 @@ void CPlayer::KRH_KeyInput(const _float& fTimeDelta)
 		m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Combo_Count();
 	}
 
+	if (isMove)
+		m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Reset();
+
 	if (!isMove && m_iCurrentBehavior == (_uint)KRH_BEHAVIOR_STATE::RUN || m_iCurrentBehavior == (_uint)KRH_BEHAVIOR_STATE::WALK)
 		m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Stop();
 }
@@ -1138,6 +1144,9 @@ void CPlayer::KRC_KeyInput(const _float& fTimeDelta)
 			}
 		}
 	}
+
+	if (isMove)
+		m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Reset();
 	
 	if (!isMove && m_iCurrentBehavior == (_uint)KRC_BEHAVIOR_STATE::RUN || m_iCurrentBehavior == (_uint)KRC_BEHAVIOR_STATE::WALK)
 		m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Stop();
