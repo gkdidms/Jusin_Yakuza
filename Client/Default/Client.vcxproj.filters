@@ -352,9 +352,6 @@
     <ClCompile Include="..\Private\Level_DogimazoLobby.cpp">
       <Filter>01.Levels\06.DogimazoLobby</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\MapColliderObj.cpp">
-      <Filter>02.GameObjects\07.MapCollider\Obj</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\MapColliderObj.cpp" />
     <ClCompile Include="..\Private\Trigger.cpp">
       <Filter>02.GameObjects\08.Trigger</Filter>
@@ -364,6 +361,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Kiryu_KRC_Guard.cpp">
       <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRC\Gaurd</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\MapColliderObj.cpp">
+      <Filter>02.GameObjects\07.MapCollider\Obj</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -748,9 +748,6 @@
     <ClInclude Include="..\Public\Level_DogimazoLobby.h">
       <Filter>01.Levels\06.DogimazoLobby</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\MapColliderObj.h">
-      <Filter>02.GameObjects\07.MapCollider\Obj</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\MapColliderObj.h" />
     <ClInclude Include="..\Public\Trigger.h">
       <Filter>02.GameObjects\08.Trigger</Filter>
@@ -760,6 +757,9 @@
     </ClInclude>
     <ClInclude Include="..\Public\Kiryu_KRC_Guard.h">
       <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRC\Gaurd</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\MapColliderObj.h">
+      <Filter>02.GameObjects\07.MapCollider\Obj</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

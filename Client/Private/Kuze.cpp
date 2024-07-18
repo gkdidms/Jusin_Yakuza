@@ -55,8 +55,6 @@ HRESULT CKuze::Initialize(void* pArg)
 
 	m_pModelCom->Set_AnimationIndex(1, 0.5);
 
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(5.f, 0.f, 5.f, 1.f));
-
 	//m_Info.iMaxHP = 300.f;
 	//m_Info.iHp = m_Info.iMaxHP;
 

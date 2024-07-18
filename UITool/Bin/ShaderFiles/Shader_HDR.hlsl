@@ -76,6 +76,7 @@ float3 ToneMap(float3 x)
     return ((x * (A * x + C * B) + D * E) / (x * (A * x + B) + D * F)) - (E / F);
 
 }
+
 PS_OUT PS_MAIN_TONEMAPPING(PS_IN In) // 감마 콜렉션 & ACES 톤매핑
 {
     PS_OUT Out = (PS_OUT) 0;
