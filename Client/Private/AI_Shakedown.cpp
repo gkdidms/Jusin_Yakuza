@@ -7,6 +7,7 @@
 #include "LeafNode.h"
 
 #include "Monster.h"
+#include "Player.h"
 
 /*
 뺑쟁이는 분노모드가 없음.
@@ -85,6 +86,13 @@ void CAI_Shakedown::Ready_Tree()
 	pDownSeq->Add_Children(pDownSelector);
 #pragma endregion
 
+#pragma region PlayerDown
+	CSequance* pPlayerDownSeq = CSequance::Create();
+	pPlayerDownSeq->Add_Children(CLeafNode::Create(bind(&CAI_Shakedown::Check_PlayerDown, this)));
+	pPlayerDownSeq->Add_Children(CLeafNode::Create(bind(&CAI_Shakedown::ATK_Down, this)));
+#pragma endregion
+
+
 #pragma region Sway
 	CSequance* pSwaySeq = CSequance::Create();
 	pSwaySeq->Add_Children(CLeafNode::Create(bind(&CAI_Shakedown::Check_Sway, this)));
@@ -115,7 +123,6 @@ void CAI_Shakedown::Ready_Tree()
 	pAttackSeq->Add_Children(CLeafNode::Create(bind(&CAI_Shakedown::Attack, this)));
 
 	CSelector* pAttackSelector = CSelector::Create();
-	pAttackSelector->Add_Children(CLeafNode::Create(bind(&CAI_Shakedown::ATK_Down, this)));
 	pAttackSelector->Add_Children(CLeafNode::Create(bind(&CAI_Shakedown::ATK_GuardRun, this)));
 	pAttackSelector->Add_Children(CLeafNode::Create(bind(&CAI_Shakedown::ATK_Rariatto, this)));
 	pAttackSelector->Add_Children(CLeafNode::Create(bind(&CAI_Shakedown::ATK_CMD, this)));
@@ -137,6 +144,7 @@ void CAI_Shakedown::Ready_Tree()
 
 #pragma region Root
 	pRoot->Add_Children(pDownSeq);
+	pRoot->Add_Children(pPlayerDownSeq);
 	pRoot->Add_Children(pSwaySeq);
 	pRoot->Add_Children(pSyncSeq);
 	pRoot->Add_Children(pHitGuardSeq);
@@ -174,21 +182,37 @@ CBTNode::NODE_STATE CAI_Shakedown::Attack()
 		//거리가 가깝다면
 		//1. 래리어트
 		//2. 콤보
-		//3. 플레이어가 다운되었을때, 다운공격 진행함
 		_float fRariattoRamdom = m_pGameInstance->Get_Random(0.f, 100.f);
-		if (fRariattoRamdom >= 80.f)
+		if (fRariattoRamdom > 90.f)
 		{
-			//20% 확률로 래리어트가 나옴
 			m_iSkill = SKILL_RARIATTO;
 		}
 		else
 		{
-			//플레이어가 다운된 것을 어떻게 판단할것인지 확인 필요.
 			m_iSkill = SKILL_CMD;
 		}
 	}
 
 	return CBTNode::SUCCESS;
+}
+
+CBTNode::NODE_STATE CAI_Shakedown::Check_PlayerDown()
+{
+	if (!m_pPlayer->isDown())
+		m_isPlayerDownAtk = false;
+
+	if (m_pPlayer->isDown() || m_iSkill == SKILL_DOWN)
+	{
+		if (DistanceFromPlayer() > 3.f || m_isPlayerDownAtk)
+			return CBTNode::FAIL;
+
+		//플레이어가 다운되어있으면 최우선적으로 공격을 한다.
+		m_iSkill = SKILL_DOWN;
+
+		return CBTNode::SUCCESS;
+	}
+
+	return CBTNode::FAIL;
 }
 
 CBTNode::NODE_STATE CAI_Shakedown::ATK_Down()
@@ -198,22 +222,18 @@ CBTNode::NODE_STATE CAI_Shakedown::ATK_Down()
 		if (*m_pState == CMonster::MONSTER_ATK_DOWN && m_pAnimCom->Get_AnimFinished())
 		{
 			m_isAttack = false;
-			
+			m_isPlayerDownAtk = true;
+
 			return CBTNode::SUCCESS;
 		}
 
 		return CBTNode::RUNNING;
 	}
 
-	if (m_iSkill == SKILL_DOWN)
-	{
-		m_isAttack = true;
-		*m_pState = CMonster::MONSTER_ATK_DOWN;
+	m_isAttack = true;
+	*m_pState = CMonster::MONSTER_ATK_DOWN;
 
-		return CBTNode::SUCCESS;
-	}
-
-	return CBTNode::FAIL;
+	return CBTNode::SUCCESS;
 }
 
 CBTNode::NODE_STATE CAI_Shakedown::ATK_CMD()
@@ -239,7 +259,7 @@ CBTNode::NODE_STATE CAI_Shakedown::ATK_CMD()
 			*m_pState = CMonster::MONSTER_CMD_2;
 			m_fCmbCount++;
 		}
-		else if (*m_pState == CMonster::MONSTER_CMD_2 && *(m_pAnimCom->Get_AnimPosition()) >= 32.0)
+		else if (*m_pState == CMonster::MONSTER_CMD_2 && *(m_pAnimCom->Get_AnimPosition()) >= 31.0)
 		{
 			LookAtPlayer();
 			*m_pState = CMonster::MONSTER_CMD_3;

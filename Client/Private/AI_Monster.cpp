@@ -628,15 +628,24 @@ _bool CAI_Monster::Check_StandUp()
 
 CBTNode::NODE_STATE CAI_Monster::Check_Down()
 {
-	//다운되어있는 상태인지도 체크해야함.
-	if (m_iSkill != SKILL_DEAD || m_pThis->isDown())
+	//객체가 죽었는가? 
+	//다운상태인가?
+	if (m_iSkill == SKILL_DEAD)
+	{
+		return CBTNode::RUNNING;
+	}
+	
+	if (m_pThis->isObjectDead() || m_pThis->isDown())
 		return CBTNode::SUCCESS;
 
-	return CBTNode::RUNNING;
+	return CBTNode::FAIL;
 }
 
 CBTNode::NODE_STATE CAI_Monster::StandUpAndDead()
 {
+	if (m_pThis->isObjectDead())
+		return CBTNode::SUCCESS;
+
 	if (m_pThis->isDown())
 	{
 		//다운되어있는 애니메이션 상태인가?
@@ -646,20 +655,12 @@ CBTNode::NODE_STATE CAI_Monster::StandUpAndDead()
 		return CBTNode::SUCCESS;
 	}
 
-	if (m_pThis->Get_Info().iHp < 0.f)
-	{
-		//죽음
-		m_iSkill = SKILL_DEAD;
-
-		return CBTNode::SUCCESS;
-	}
-
-	return CBTNode::FAIL;
+	return CBTNode::SUCCESS;
 }
 
 CBTNode::NODE_STATE CAI_Monster::StandUp()
 {
-	if (m_iSkill == SKILL_DEAD)
+	if (m_pThis->isObjectDead())
 		return CBTNode::FAIL;
 
 	if (Check_StandUp() == true)
@@ -670,7 +671,33 @@ CBTNode::NODE_STATE CAI_Monster::StandUp()
 
 CBTNode::NODE_STATE CAI_Monster::Dead()
 {
-	*m_pState = CMonster::MONSTER_DEATH;
+	_uint iDir = { PLAYER_ATK_DIR_END };
+	_uint iPlayerLevel = m_pPlayer->Get_CurrentHitLevel();
+	_bool isBehine = this->isBehine();
+
+	m_iSkill = SKILL_DEAD;
+
+	if (m_pPlayer->Get_BattleStyle() == CPlayer::KRH)
+		iDir = Check_KRH(iPlayerLevel, isBehine);
+	else if (m_pPlayer->Get_BattleStyle() == CPlayer::KRS)
+		iDir = Check_KRS(iPlayerLevel, isBehine);
+	if (m_pPlayer->Get_BattleStyle() == CPlayer::KRC)
+		iDir = Check_KRC(iPlayerLevel, isBehine);
+
+	if (iDir == PLAYER_ATK_DIR_END)
+		return CBTNode::FAIL;
+
+	if (!m_pThis->isDown())
+	{
+		if (iDir == F)
+			*m_pState = CMonster::MONSTER_DED_F_2;
+		else if (iDir == B)
+			*m_pState = CMonster::MONSTER_DED_B_2;
+		else if (iDir == L)
+			*m_pState = CMonster::MONSTER_DED_L;
+		else if (iDir == R)
+			*m_pState = CMonster::MONSTER_DED_R;
+	} 
 
 	return CBTNode::SUCCESS;
 }
@@ -678,6 +705,9 @@ CBTNode::NODE_STATE CAI_Monster::Dead()
 //플레이어가 공격중일때 피할 수 있도록 
 CBTNode::NODE_STATE CAI_Monster::Check_Sway()
 {
+	if (m_isGuard && m_iSkill == SKILL_HIT)
+		return CBTNode::FAIL;
+
 	if (m_isSway)
 	{
 		if (m_pAnimCom->Get_AnimFinished())
@@ -695,6 +725,7 @@ CBTNode::NODE_STATE CAI_Monster::Check_Sway()
 		//플레이어와의 거리가 어느정도 있는 상태여야만 함
 		if (DistanceFromPlayer() >= 2.f && DistanceFromPlayer() <= 2.4f)
 		{
+			Reset_State();
 			return CBTNode::SUCCESS;		
 		}
 	}
@@ -722,6 +753,8 @@ CBTNode::NODE_STATE CAI_Monster::Sway()
 		return CBTNode::FAIL;
 
 	m_isSway = true;
+
+	Reset_State();
 
 	//스웨이 모션 넣기
 	//F
@@ -775,6 +808,17 @@ CBTNode::NODE_STATE CAI_Monster::HitAndGuard()
 		if (m_pThis->isColl())
 		{
 			//가드 상태에서 충돌을 했다면 데미지 누적
+			CEffect::EFFECT_DESC EffectDesc;
+
+			EffectDesc.pWorldMatrix = m_pThis->Get_TransformCom()->Get_WorldFloat4x4();
+
+			m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_GuardBlink"), TEXT("Layer_Particle"), &EffectDesc);
+			m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_GuardParticle"), TEXT("Layer_Particle"), &EffectDesc);
+			m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_GuardSmoke"), TEXT("Layer_Particle"), &EffectDesc);
+			m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Hit1_Part0"), TEXT("Layer_Particle"), &EffectDesc);
+
+			m_fGuardAtkAcc += m_pThis->Get_HitDamage();
+
 		}
 
 		return CBTNode::SUCCESS;
@@ -801,7 +845,6 @@ CBTNode::NODE_STATE CAI_Monster::HitAndGuard()
 	}
 	else
 	{
-
 		//충돌하지 않은 상태에서 히트 모션이 끝나면?
 		if (m_iSkill == SKILL_HIT && !m_pAnimCom->Get_AnimFinished())
 			return CBTNode::RUNNING;
@@ -817,10 +860,6 @@ CBTNode::NODE_STATE CAI_Monster::Hit()
 		return CBTNode::FAIL;
 
 	_uint iLevel = m_pPlayer->Get_CurrentHitLevel();
-
-#ifdef _DEBUG
-	cout << " 히트!!!!" << endl;
-#endif // DEBUG
 
 	_bool isBehine = this->isBehine();
 	if (m_pPlayer->Get_BattleStyle() == CPlayer::KRS)
@@ -842,11 +881,9 @@ CBTNode::NODE_STATE CAI_Monster::Hit()
 CBTNode::NODE_STATE CAI_Monster::Guard()
 {
 	if (m_iSkill != SKILL_GUARD)
+	{
 		return CBTNode::FAIL;
-
-#ifdef _DEBUG
-	cout << "가드!!!!" << endl;
-#endif // DEBUG
+	}
 
 	if (m_isGuard)
 	{

@@ -79,6 +79,7 @@ public:
     _uint Get_BattleStyle() { return m_eCurrentStyle; }
 
     _bool isAttack() { return m_iCurrentBehavior == static_cast<_uint>(KRS_BEHAVIOR_STATE::ATTACK); }
+    _bool isDown() { return m_iCurrentBehavior == static_cast<_uint>(KRS_BEHAVIOR_STATE::DOWN); }
     _uint Get_CurrentHitLevel() { return m_iCurrentHitLevel; }
 
     const _bool* Get_MoveDirection() {
