@@ -39,55 +39,29 @@ HRESULT CSocketCollider::Initialize(void * pArg)
 		{
 		case 0:
 		{
-			m_fDamage = 10.f;
+			m_fDamage = 2.f;
 
 			break;
 		}
 		case 1:
 		{
-			m_fDamage = 30.f;
+			m_fDamage = 4.f;
 
 			break;
 		}
 		case 2:
 		{
-			m_fDamage = 20.f;
+			m_fDamage = 3.f;
 
 			break;
 		}
 		case 3:
 		{
-			m_fDamage = 20.f;
+			m_fDamage = 3.f;
 			break;
 		}
 		}
 	}
-	else if (pDesc->ColliderState.iActionType == 1)
-	{
-		// 히트용 콜라이더라면 부위별로 딜 받는 수치를 m_fDamage에 저장해두자 (사용할지는 모르겟음)
-		// 사용할거라면 머리를 히트당했다면 기존 데미지보다 2배 딜들어오게 몸은 1배 다리는 0.7배 이런식으로 사용예정
-		// HEAD_H = 10, BODY_H, LEG_H
-		switch (pDesc->ColliderState.iPartType)
-		{
-		case 10:
-		{
-			m_fDamage = 2.f;
-			break;
-		}
-		case 11:
-		{
-			m_fDamage = 1.f;
-			break;
-		}
-		case 12:
-		{
-			m_fDamage = 0.8f;
-			break;
-		}
-		}
-	}
-
-
 
 	return S_OK;
 }
