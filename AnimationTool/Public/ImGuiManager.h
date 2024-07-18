@@ -138,6 +138,7 @@ private:
 	void ColliderState_Save(string strPath);
 	void EffectState_Save(string strPath);
 	void RimEvent_Save(string strPath);
+	void TrailEvent_Save(string strPath);
 
 	/* Load */
 	void All_Load();
@@ -147,6 +148,7 @@ private:
 	void ColliderState_Load(string strPath);
 	void EffectState_Load(string strPath);
 	void RimEvent_Load(string strPath);
+	void TrailEvent_Load(string strPath);
 
 	/* Functional*/
 private:

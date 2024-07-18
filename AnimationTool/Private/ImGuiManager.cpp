@@ -970,6 +970,13 @@ void CImguiManager::RimLightWindow()
 	// 림라이트 적용할 메시 이름 갱신하는 함수
 	Setting_RimLight();
 
+	if (ImGui::Button(u8"저장"))
+	{
+		string strDirectory = "../../Client/Bin/DataFiles/Character/" + m_ModelNameList[m_iModelSelectedIndex];
+		RimEvent_Save(strDirectory);
+	}
+		
+
 	ImGui::End();
 }
 
@@ -1056,6 +1063,12 @@ void CImguiManager::TrailWindow()
 
 	// 트레일 온/오프 갱신 함수
 	Setting_Trail();
+
+	if (ImGui::Button(u8"저장"))
+	{
+		string strDirectory = "../../Client/Bin/DataFiles/Character/" + m_ModelNameList[m_iModelSelectedIndex];
+		TrailEvent_Save(strDirectory);
+	}
 
 	ImGui::End();
 }
@@ -1320,6 +1333,12 @@ void CImguiManager::All_Save()
 
 	/* 이펙트 생성 정보 저장하기 */
 	EffectState_Save(strDirectory);
+
+	/* 림라이트 이벤트 정보 저장하기 */
+	RimEvent_Save(strDirectory);
+
+	/* 트레일 이벤트 저장하기 */
+	TrailEvent_Save(strDirectory);
 }
 
 void CImguiManager::AlphaMesh_Save(string strPath)
@@ -1520,6 +1539,29 @@ void CImguiManager::RimEvent_Save(string strPath)
 	out.close();
 }
 
+void CImguiManager::TrailEvent_Save(string strPath)
+{
+	string strDirectory = strPath;
+	strDirectory += "/" + m_ModelNameList[m_iModelSelectedIndex] + "_TrailEvents.dat";
+
+	ofstream out(strDirectory, ios::binary);
+
+	_uint iNumTrailEvents = m_TrailEvents.size();
+	// 총 몇개의 이펙트를 읽어올 것인지 작성한다
+	out << iNumTrailEvents;
+
+	for (auto& pair : m_TrailEvents)
+	{
+		out << pair.first << endl;
+		out << pair.second.iType << endl;
+		out << pair.second.strBonelName << endl;
+		out << pair.second.iBoneIndex << endl;
+		out << pair.second.fAinmPosition << endl;
+	}
+
+	out.close();
+}
+
 void CImguiManager::All_Load()
 {
 	if (!m_isOnToolWindows)
@@ -1535,6 +1577,8 @@ void CImguiManager::All_Load()
 	AnimationEvent_Load(strDirectory);
 	ColliderState_Load(strDirectory);
 	EffectState_Load(strDirectory);
+	RimEvent_Load(strDirectory);
+	TrailEvent_Load(strDirectory);
 
 	Setting_AnimationList();
 }
@@ -1785,6 +1829,41 @@ void CImguiManager::RimEvent_Load(string strPath)
 		in >> RimEvent.fAinmPosition;
 
 		m_RimLightEvents.emplace(key, RimEvent);
+	}
+
+	in.close();
+}
+
+void CImguiManager::TrailEvent_Load(string strPath)
+{
+	string strDirectory = strPath;
+	strDirectory += "/" + m_ModelNameList[m_iModelSelectedIndex] + "_TrailEvents.dat";
+
+	ifstream in(strDirectory, ios::binary);
+
+	if (!in.is_open()) {
+		MSG_BOX("TrailEvents 파일 개방 실패");
+		return;
+	}
+
+	m_TrailEvents.clear();
+
+	_uint iNumTrailEvents{ 0 };
+	// 총 몇개의 이펙트를 읽어올 것인지 작성한다
+	in >> iNumTrailEvents;
+
+	Animation_TrailState TrailEvent{};
+	string key;
+
+	for (size_t i = 0; i < iNumTrailEvents; i++)
+	{
+		in >> key;
+		in >> TrailEvent.iType;
+		in >> TrailEvent.strBonelName;
+		in >> TrailEvent.iBoneIndex;
+		in >> TrailEvent.fAinmPosition;
+		
+		m_TrailEvents.emplace(key, TrailEvent);
 	}
 
 	in.close();
