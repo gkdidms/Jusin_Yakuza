@@ -184,6 +184,15 @@ void CMonster::Take_Damage(_uint iHitColliderType, const _float3& vDir, _float f
 {
 	//하는역활 -> 충돌이 일어났을때?
 	m_isColl = true;
+	m_fHitDamage = fDamage;
+
+	//데미지 처리하기
+	if (!m_isObjectDead)
+	{
+		m_Info.iHp -= fDamage;
+		if (m_Info.iHp <= 0.f)
+			m_isObjectDead = true;
+	}
 }
 
 void CMonster::Animation_Event()
@@ -293,184 +302,209 @@ void CMonster::Change_Animation()
 	//히트, 데미지 관련 공통 애니메이션
 	switch (m_iState)
 	{
-	case MONSTER_DWN_DNF_BOUND:
-	{
-		m_strAnimName = "c_dwn_dnb_bound";
-		break;
-	}
-	case MONSTER_DWN_DNB_BOUND:
-	{
-		m_strAnimName = "c_dwn_dnf_bound";
-		break;
-	}
-	case MONSTER_DWN_DNF_BOUND_G:
-	{
-		m_strAnimName = "c_dwn_dnb_bound_g";
-		break;
-	}
-	case MONSTER_DWN_DNB_BOUND_G:
-	{
-		m_strAnimName = "c_dwn_dnf_bound_g";
-		break;
-	}
-	case MONSTER_DAM_HEAD_LV01_R:
-	{
-		m_strAnimName = "c_dam_head_lv01_r";
-		break;
-	}
-	case MONSTER_DAM_HEAD_LV01_L:
-	{
-		m_strAnimName = "c_dam_head_lv01_l";
-		break;
-	}
-	case MONSTER_DAM_HEAD_LV01_F:
-	{
-		m_strAnimName = "c_dam_head_lv01_f";
-		break;
-	}
-	case MONSTER_DAM_HEAD_LV01_B:
-	{
-		m_strAnimName = "c_dam_head_lv01_b";
-		break;
-	}
-	case MONSTER_DAM_HEAD_LV02_R:
-	{
-		m_strAnimName = "c_dam_head_lv02_r";
-		break;
-	}
-	case MONSTER_DAM_HEAD_LV02_L:
-	{
-		m_strAnimName = "c_dam_head_lv02_l";
-		break;
-	}
-	case MONSTER_DAM_HEAD_LV02_F:
-	{
-		m_strAnimName = "c_dam_head_lv02_f";
-		break;
-	}
-	case MONSTER_DAM_HEAD_LV02_B:
-	{
-		m_strAnimName = "c_dam_head_lv02_b";
-		break;
-	}
-	case MONSTER_DAM_BODY_LV01_F:
-	{
-		m_strAnimName = "c_dam_body_lv01_f";
-		break;
-	}
-	case MONSTER_DAM_BODY_LV01_B:
-	{
-		m_strAnimName = "c_dam_body_lv01_b";
-		break;
-	}
-	case MONSTER_DAM_BODY_LV01_D:
-	{
-		m_strAnimName = "c_dam_body_lv01_b";
-		break;
-	}
-	case MONSTER_DAM_BODY_LV02_F:
-	{
-		m_strAnimName = "c_dam_body_lv02_f";
-		break;
-	}
-	case MONSTER_DAM_BODY_LV02_B:
-	{
-		m_strAnimName = "c_dam_body_lv02_b";
-		break;
-	}
-	case MONSTER_DAM_BODY_LV02_D:
-	{
-		m_strAnimName = "c_dam_body_lv02_b";
-		break;
-	}
-	case MONSTER_DWN_DIRECT_B:
-	{
-		m_strAnimName = "c_dwn_direct_b";
-		break;
-	}
-	case MONSTER_DWN_DIRECT_F:
-	{
-		m_strAnimName = "c_dwn_direct_f";
-		break;
-	}
-	case MONSTER_DWN_BODY_F:
-	{
-		m_strAnimName = "c_dwn_body_f";
-		break;
-	}
-	case MONSTER_DWN_BODY_F_SP:
-	{
-		m_strAnimName = "c_dwn_body_f_sp";
-		break;
-	}
-	case MONSTER_DWN_EXPLODE_F:
-	{
-		m_strAnimName = "c_dwn_explode_f";
-		break;
-	}
-	case MONSTER_DWN_BODY_B:
-	{
-		m_strAnimName = "c_dwn_body_b";
-		break;
-	}
-	case MONSTER_DWN_BODY_B_SP:
-	{
-		m_strAnimName = "c_dwn_body_b_sp";
-		break;
-	}
-	case MONSTER_DWN_EXPLODE_B:
-	{
-		m_strAnimName = "c_dwn_explode_b";
-		break;
-	}
-	case MONSTER_DWN_DIRECT_F_BOUND_G:
-	{
-		m_strAnimName = "c_dwn_direct_f_bound_g";
-		break;
-	}
-	case MONSTER_DWN_DIRECT_B_BOUND_G:
-	{
-		m_strAnimName = "c_dwn_direct_b_bound_g";
-		break;
-	}
-	case MONSTER_STANDUP_DNF_FAST:
-	{
-		m_strAnimName = "c_standup_dnf_fast";
-		break;
-	}
-	case MONSTER_STANDUP_DNB_FAST:
-	{
-		m_strAnimName = "c_standup_dnb_fast";
-		break;
-	}
-	case MONSTER_DED_L:
-	{
-		m_strAnimName = "c_ded_l";
-		break;
-	}
-
-	case MONSTER_ANGRY_START:
-	{
-		//e_angry_typec[e_angry_typec]
-		m_strAnimName = "e_angry_typec";
-		break;
-	}
-	case MONSTER_ANGRY_CHOP:
-	{
-		//e_knk_atk_chop[e_knk_atk_chop]
-		m_strAnimName = "e_knk_atk_chop";
-		break;
-	}
-	case MONSTER_ANGRY_KICK:
-	{
-		//e_knk_atk_kick[e_knk_atk_kick]
-		m_strAnimName = "e_knk_atk_kick";
-		break;
-	}
-	case MONSTER_DEATH:
-	{
-		break;
-	}
+		case MONSTER_DWN_DNF_BOUND:
+		{
+			m_strAnimName = "c_dwn_dnb_bound";
+			break;
+		}
+		case MONSTER_DWN_DNB_BOUND:
+		{
+			m_strAnimName = "c_dwn_dnf_bound";
+			break;
+		}
+		case MONSTER_DWN_DNF_BOUND_G:
+		{
+			m_strAnimName = "c_dwn_dnb_bound_g";
+			break;
+		}
+		case MONSTER_DWN_DNB_BOUND_G:
+		{
+			m_strAnimName = "c_dwn_dnf_bound_g";
+			break;
+		}
+		case MONSTER_DAM_HEAD_LV01_R:
+		{
+			m_strAnimName = "c_dam_head_lv01_r";
+			break;
+		}
+		case MONSTER_DAM_HEAD_LV01_L:
+		{
+			m_strAnimName = "c_dam_head_lv01_l";
+			break;
+		}
+		case MONSTER_DAM_HEAD_LV01_F:
+		{
+			m_strAnimName = "c_dam_head_lv01_f";
+			break;
+		}
+		case MONSTER_DAM_HEAD_LV01_B:
+		{
+			m_strAnimName = "c_dam_head_lv01_b";
+			break;
+		}
+		case MONSTER_DAM_HEAD_LV02_R:
+		{
+			m_strAnimName = "c_dam_head_lv02_r";
+			break;
+		}
+		case MONSTER_DAM_HEAD_LV02_L:
+		{
+			m_strAnimName = "c_dam_head_lv02_l";
+			break;
+		}
+		case MONSTER_DAM_HEAD_LV02_F:
+		{
+			m_strAnimName = "c_dam_head_lv02_f";
+			break;
+		}
+		case MONSTER_DAM_HEAD_LV02_B:
+		{
+			m_strAnimName = "c_dam_head_lv02_b";
+			break;
+		}
+		case MONSTER_DAM_BODY_LV01_F:
+		{
+			m_strAnimName = "c_dam_body_lv01_f";
+			break;
+		}
+		case MONSTER_DAM_BODY_LV01_B:
+		{
+			m_strAnimName = "c_dam_body_lv01_b";
+			break;
+		}
+		case MONSTER_DAM_BODY_LV01_D:
+		{
+			m_strAnimName = "c_dam_body_lv01_b";
+			break;
+		}
+		case MONSTER_DAM_BODY_LV02_F:
+		{
+			m_strAnimName = "c_dam_body_lv02_f";
+			break;
+		}
+		case MONSTER_DAM_BODY_LV02_B:
+		{
+			m_strAnimName = "c_dam_body_lv02_b";
+			break;
+		}
+		case MONSTER_DAM_BODY_LV02_D:
+		{
+			m_strAnimName = "c_dam_body_lv02_b";
+			break;
+		}
+		case MONSTER_DWN_DIRECT_B:
+		{
+			m_strAnimName = "c_dwn_direct_b";
+			break;
+		}
+		case MONSTER_DWN_DIRECT_F:
+		{
+			m_strAnimName = "c_dwn_direct_f";
+			break;
+		}
+		case MONSTER_DWN_BODY_F:
+		{
+			m_strAnimName = "c_dwn_body_f";
+			break;
+		}
+		case MONSTER_DWN_BODY_F_SP:
+		{
+			m_strAnimName = "c_dwn_body_f_sp";
+			break;
+		}
+		case MONSTER_DWN_EXPLODE_F:
+		{
+			m_strAnimName = "c_dwn_explode_f";
+			break;
+		}
+		case MONSTER_DWN_BODY_B:
+		{
+			m_strAnimName = "c_dwn_body_b";
+			break;
+		}
+		case MONSTER_DWN_BODY_B_SP:
+		{
+			m_strAnimName = "c_dwn_body_b_sp";
+			break;
+		}
+		case MONSTER_DWN_EXPLODE_B:
+		{
+			m_strAnimName = "c_dwn_explode_b";
+			break;
+		}
+		case MONSTER_DWN_DIRECT_F_BOUND_G:
+		{
+			m_strAnimName = "c_dwn_direct_f_bound_g";
+			break;
+		}
+		case MONSTER_DWN_DIRECT_B_BOUND_G:
+		{
+			m_strAnimName = "c_dwn_direct_b_bound_g";
+			break;
+		}
+		case MONSTER_STANDUP_DNF_FAST:
+		{
+			m_strAnimName = "c_standup_dnf_fast";
+			break;
+		}
+		case MONSTER_STANDUP_DNB_FAST:
+		{
+			m_strAnimName = "c_standup_dnb_fast";
+			break;
+		}
+		case MONSTER_ANGRY_START:
+		{
+			//e_angry_typec[e_angry_typec]
+			m_strAnimName = "e_angry_typec";
+			break;
+		}
+		case MONSTER_ANGRY_CHOP:
+		{
+			//e_knk_atk_chop[e_knk_atk_chop]
+			m_strAnimName = "e_knk_atk_chop";
+			break;
+		}
+		case MONSTER_ANGRY_KICK:
+		{
+			//e_knk_atk_kick[e_knk_atk_kick]
+			m_strAnimName = "e_knk_atk_kick";
+			break;
+		}
+		case MONSTER_DED_L:
+		{
+			m_strAnimName = "c_ded_l";
+			break;
+		}
+		case MONSTER_DED_R:
+		{
+			m_strAnimName = "c_ded_r";
+			break;
+		}
+		case MONSTER_DED_F_1:
+		{
+			m_strAnimName = "c_ded_f_01";
+			break;
+		}
+		case MONSTER_DED_F_2:
+		{
+			m_strAnimName = "c_ded_f_02";
+			break;
+		}
+		case MONSTER_DED_F_3:
+		{
+			m_strAnimName = "c_ded_f_03";
+			break;
+		}
+		case MONSTER_DED_B_1:
+		{
+			m_strAnimName = "c_ded_b_01";
+			break;
+		}
+		case MONSTER_DED_B_2:
+		{
+			m_strAnimName = "c_ded_b_02";
+			break;
+		}
 	}
 
 }

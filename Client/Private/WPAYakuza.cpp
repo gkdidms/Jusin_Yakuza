@@ -144,75 +144,79 @@ void CWPAYakuza::Change_Animation()
 	{
 	case MONSTER_IDLE:
 	{
-		m_strAnimName = "e_wpa_stand_btl[e_wpa_stand_btl]";
+		m_strAnimName = "e_wpa_stand_btl";
 		m_isAnimLoop = true;
 		break;
 	}
 	case MONSTER_SHIFT_F:
 	{
 		//e_wpa_shift_f[e_wpa_shift_f]
-		m_strAnimName = "e_wpa_shift_f[e_wpa_shift_f]";
+		m_strAnimName = "e_wpa_shift_f";
 		m_isAnimLoop = true;
 		break;
 	}
 	case MONSTER_SHIFT_L:
 	{
 		//e_wpa_shift_l[e_wpa_shift_l]
-		m_strAnimName = "e_wpa_shift_l[e_wpa_shift_l]";
+		m_strAnimName = "e_wpa_shift_l";
 		m_isAnimLoop = true;
 		break;
 	}
 	case MONSTER_SHIFT_R:
 	{
 		//e_wpa_shift_r[e_wpa_shift_r]
-		m_strAnimName = "e_wpa_shift_r[e_wpa_shift_r]";
+		m_strAnimName = "e_wpa_shift_r";
 		m_isAnimLoop = true;
 		break;
 	}
 	case MONSTER_SHIFT_B:
 	{
 		//e_wpa_shift_b[e_wpa_shift_b]
-		m_strAnimName = "e_wpa_shift_b[e_wpa_shift_b]";
+		m_strAnimName = "e_wpa_shift_b";
 		m_isAnimLoop = true;
 		break;
 	}
 	case MONSTER_SWAY_B:
 	{
 		//e_wpa_sway_b[e_wpa_sway_b]
-		m_strAnimName = "e_wpa_sway_b[e_wpa_sway_b]";
+		m_strAnimName = "e_wpa_sway_b";
 		break;
 	}
 	case MONSTER_SWAY_F:
 	{
 		//e_wpa_sway_f[e_wpa_sway_f]
-		m_strAnimName = "e_wpa_sway_f[e_wpa_sway_f]";
+		m_strAnimName = "e_wpa_sway_f";
 		break;
 	}
 	case MONSTER_SWAY_R:
 	{
 		//e_wpa_sway_r[e_wpa_sway_r]
-		m_strAnimName = "e_wpa_sway_r[e_wpa_sway_r]";
+		m_strAnimName = "e_wpa_sway_r";
 		break;
 	}
 	case MONSTER_SWAY_L:
 	{
 		//e_wpa_sway_l[e_wpa_sway_l]
-		m_strAnimName = "e_wpa_sway_l[e_wpa_sway_l]";
+		m_strAnimName = "e_wpa_sway_l";
 		break;
 	}
 	case MONSTER_CMD_1:
 	{
 		//e_wpa_cmb_01[e_wpa_cmb_01]
-		m_strAnimName = "e_wpa_cmb_01[e_wpa_cmb_01]";
+		m_strAnimName = "e_wpa_cmb_01";
 		break;
 	}
 	case MONSTER_CMD_2:
 	{
 		//e_wpa_cmb_02[e_wpa_cmb_02]
-		m_strAnimName = "e_wpa_cmb_02[e_wpa_cmb_02]";
+		m_strAnimName = "e_wpa_cmb_02";
 		break;
 	}
-
+	case MONSTER_HEAVY_ATTACK:
+	{
+		m_strAnimName = "e_wpa_atk_heavy";
+		break;
+	}
 	default:
 		break;
 	}

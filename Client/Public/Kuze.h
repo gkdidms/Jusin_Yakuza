@@ -29,7 +29,7 @@ public:
 private:
     class CAI_Kuze* m_pTree = { nullptr };
 
-    _uint m_iPage = { PAGE_END };
+    _uint m_iPage = { ONE };
 
 private:
     virtual HRESULT Add_Components() override;
