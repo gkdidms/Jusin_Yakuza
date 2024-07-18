@@ -42,6 +42,11 @@
 #include "LightConstruction.h"
 #pragma endregion
 
+#pragma region MyRegion
+#include "LevelTrigger.h"
+#pragma endregion
+
+
 #pragma region Effect
 #include "Particle_Point.h"
 #include "TRailEffect.h"
@@ -207,6 +212,14 @@ HRESULT CLoader::Loading_Default()
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/auratone17.dds"), 1))))
 		return E_FAIL;
 
+	/* Prototype_Component_Texture_GuardParticle */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Texture_GuardParticle"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/001_trc_na.dds"), 1))))
+		return E_FAIL;
+	/* Prototype_Component_Texture_GuardSmoke */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Texture_GuardSmoke"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/e_j_0351_2d_moya.dds"), 1))))
+		return E_FAIL;
 #pragma endregion
 
 #pragma region BTNode
@@ -311,6 +324,7 @@ HRESULT CLoader::Loading_Default()
 		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxInstance_Point.hlsl"), VTXINSTANCE_POINT::Elements, VTXINSTANCE_POINT::iNumElements))))
 		return E_FAIL;
 #pragma endregion
+
 
 	return S_OK;
 }
@@ -443,6 +457,13 @@ HRESULT CLoader::Loading_For_Office_1F()
 	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_LightConstruction"),
 		CLightConstruction::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+
+
+	/* For.Prototype_GameObject_LevelTrigger */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_LevelTrigger"),
+		CLevelTrigger::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 #pragma endregion
 
 #pragma endregion
@@ -764,6 +785,11 @@ HRESULT CLoader::Loading_For_Test()
 	/* For.Prototype_GameObject_LightConstruction */
 	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_LightConstruction"),
 		CLightConstruction::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_LevelTrigger */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_LevelTrigger"),
+		CLevelTrigger::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 #pragma endregion
 

@@ -210,7 +210,7 @@ void CCollider_Manager::Show_FileName()
 	}
 
 	/* 저장 번호 */
-	static int iSaveNum;
+	static int iSaveNum = 70;
 	ImGui::InputInt(u8"저장번호 : ", &iSaveNum);
 
 	if (ImGui::Button(u8"콜라이더 저장"))

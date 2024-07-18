@@ -7,6 +7,7 @@
 #include "LeafNode.h"
 
 #include "Monster.h"
+#include "Player.h"
 #include "Kuze.h"
 
 
@@ -76,19 +77,7 @@ HRESULT CAI_Kuze::Initialize(void* pArg)
 
 void CAI_Kuze::Tick(const _float& fTimeDelta)
 {
-	if (!m_isAttack)
-		m_fAttackDelayTime += fTimeDelta;
-
-	if (m_isBreak)
-	{
-		m_fBreakTime += fTimeDelta;
-
-		if (m_fBreakDuration <= m_fBreakTime)
-		{
-			m_isBreak = false;
-			m_fBreakTime = 0.f;
-		}
-	}
+	__super::Tick(fTimeDelta);
 
 	this->Execute();
 }
@@ -102,7 +91,6 @@ void CAI_Kuze::Ready_Tree()
 {
 	CSelector* pRoot = CSelector::Create();
 
-
 #pragma region Death
 	CSequance* pDownSeq = CSequance::Create();
 	pDownSeq->Add_Children(CLeafNode::Create(bind(&CAI_Kuze::Check_Down, this)));
@@ -113,6 +101,13 @@ void CAI_Kuze::Ready_Tree()
 	pDownSelector->Add_Children(CLeafNode::Create(bind(&CAI_Kuze::Dead, this)));
 	pDownSeq->Add_Children(pDownSelector);
 #pragma endregion
+
+#pragma region PlayerDown
+	CSequance* pPlayerDownSeq = CSequance::Create();
+	pPlayerDownSeq->Add_Children(CLeafNode::Create(bind(&CAI_Kuze::Check_PlayerDown, this)));
+	pPlayerDownSeq->Add_Children(CLeafNode::Create(bind(&CAI_Kuze::ATK_Down, this)));
+#pragma endregion
+
 
 #pragma region Sway
 	CSequance* pSwaySeq = CSequance::Create();
@@ -138,14 +133,12 @@ void CAI_Kuze::Ready_Tree()
 	pHitGuardSeq->Add_Children(pHitGuard);
 #pragma endregion
 
-
 #pragma region Attack
 	CSequance* pAttackSeq = CSequance::Create();
 	pAttackSeq->Add_Children(CLeafNode::Create(bind(&CAI_Kuze::Check_Attack, this)));
 	pAttackSeq->Add_Children(CLeafNode::Create(bind(&CAI_Kuze::Attack, this)));
 
 	CSelector* pAttackSelector = CSelector::Create();
-	pAttackSelector->Add_Children(CLeafNode::Create(bind(&CAI_Kuze::ATK_Down, this)));
 	pAttackSelector->Add_Children(CLeafNode::Create(bind(&CAI_Kuze::ATK_Heavy, this)));
 	pAttackSelector->Add_Children(CLeafNode::Create(bind(&CAI_Kuze::ATK_Hiji_2Ren, this)));
 	pAttackSelector->Add_Children(CLeafNode::Create(bind(&CAI_Kuze::ATK_Jab, this)));
@@ -156,6 +149,13 @@ void CAI_Kuze::Ready_Tree()
 
 	pAttackSeq->Add_Children(pAttackSelector);
 #pragma endregion
+
+#pragma region Step
+	CSequance* pStepSeq = CSequance::Create();
+	pStepSeq->Add_Children(CLeafNode::Create(bind(&CAI_Kuze::Check_Distance, this)));
+	pStepSeq->Add_Children(CLeafNode::Create(bind(&CAI_Kuze::Step, this)));
+#pragma endregion
+
 
 #pragma region Shift/Idle
 	CSequance* pBreakSeq = CSequance::Create();
@@ -171,10 +171,12 @@ void CAI_Kuze::Ready_Tree()
 
 #pragma region Root
 	pRoot->Add_Children(pDownSeq);
+	pRoot->Add_Children(pPlayerDownSeq);
 	pRoot->Add_Children(pSwaySeq);
 	pRoot->Add_Children(pSyncSeq);
 	pRoot->Add_Children(pHitGuardSeq);
 	pRoot->Add_Children(pAttackSeq);
+	//pRoot->Add_Children(pStepSeq);
 	pRoot->Add_Children(pBreakSeq);
 #pragma endregion
 
@@ -188,7 +190,7 @@ CBTNode::NODE_STATE CAI_Kuze::Check_Attack()
 		if (m_fDelayAttackDuration > m_fAttackDelayTime)
 			return CBTNode::FAIL;
 
-		m_fAttackDelayTime = 0.f;
+		Reset_State();
 	}
 
 	return CBTNode::SUCCESS;
@@ -196,8 +198,13 @@ CBTNode::NODE_STATE CAI_Kuze::Check_Attack()
 
 CBTNode::NODE_STATE CAI_Kuze::Attack()
 {
+	if (m_isAttack)
+		return CBTNode::SUCCESS;
+
+	LookAtPlayer();
+
 	//어택 정하기
-	if (DistanceFromPlayer() > 3.f)
+	if (DistanceFromPlayer() > 4.f)
 	{
 		//근접이 아니라면 공격하지않고 대기 상태로 있게 된다.
 
@@ -216,19 +223,22 @@ CBTNode::NODE_STATE CAI_Kuze::Attack()
 			m_iSkill = SKILL_JAB;
 			break;
 		case 1:
+		case 2:
+		case 3:
 			m_iSkill = SKILL_CMD_A;
 			break;
-		case 2:
+		case 4:
+		case 5:
 			m_iSkill = SKILL_CMD_B;
 			break;
-		case 3:
+		case 6:
 			m_iSkill = SKILL_CMD_RENDA;
 			break;
 		default:
 			break;
 		}
 
-		if (iOneCount >= 3)
+		if (iOneCount >= 6)
 			iOneCount = 0.f;
 		else
 			iOneCount++;
@@ -247,24 +257,44 @@ CBTNode::NODE_STATE CAI_Kuze::Attack()
 			m_iSkill = SKILL_HIJI_2REN;
 			break;
 		case 2:
+		case 3:
+		case 4:
 			m_iSkill = SKILL_CMD_A;
 			break;
-		case 3:
+		case 5:
+		case 6:
 			m_iSkill = SKILL_CMD_B;
 			break;
-		case 4:
+		case 7:
 			m_iSkill = SKILL_CMD_HEADBUTT;
 			break;
 		}
 
-		if (iTwoCount <= 4)
+		if (iTwoCount <= 7)
 			iTwoCount = 0;
 		else
 			iTwoCount++;
-
 	}
 
 	return CBTNode::SUCCESS;
+}
+
+CBTNode::NODE_STATE CAI_Kuze::Check_PlayerDown()
+{
+	if (!m_pPlayer->isDown())
+		m_isPlayerDownAtk = false;
+
+	if (m_pPlayer->isDown() || m_iSkill == SKILL_DOWN)
+	{
+		if (DistanceFromPlayer() > 3.f || m_isPlayerDownAtk)
+			return CBTNode::FAIL;
+
+		m_iSkill == SKILL_DOWN;
+	
+		return CBTNode::SUCCESS;
+	}
+
+	return CBTNode::FAIL;
 }
 
 CBTNode::NODE_STATE CAI_Kuze::ATK_Down()
@@ -274,22 +304,17 @@ CBTNode::NODE_STATE CAI_Kuze::ATK_Down()
 		if (*m_pState == CMonster::MONSTER_ATK_DOWN && m_pAnimCom->Get_AnimFinished())
 		{
 			m_isAttack = false;
-
+			m_isPlayerDownAtk = true;
 			return CBTNode::SUCCESS;
 		}
 
 		return CBTNode::RUNNING;
 	}
 
-	if (m_iSkill == SKILL_DOWN)
-	{
-		m_isAttack = true;
-		*m_pState = CMonster::MONSTER_ATK_DOWN;
+	m_isAttack = true;
+	*m_pState = CMonster::MONSTER_ATK_DOWN;
 
-		return CBTNode::SUCCESS;
-	}
-
-	return CBTNode::FAIL;
+	return CBTNode::SUCCESS;
 }
 
 CBTNode::NODE_STATE CAI_Kuze::ATK_Heavy()
@@ -477,6 +502,24 @@ CBTNode::NODE_STATE CAI_Kuze::ATK_Renda()
 	}
 
 	return CBTNode::FAIL;
+}
+
+CBTNode::NODE_STATE CAI_Kuze::Check_Distance()
+{
+	_float fDistance = DistanceFromPlayer();
+	if (fDistance > 2.f)
+	{
+		return CBTNode::SUCCESS;
+	}
+
+	return CBTNode::FAIL;
+}
+
+CBTNode::NODE_STATE CAI_Kuze::Step()
+{
+	*m_pState = CMonster::MONSTER_STEP_F;
+
+	return CBTNode::SUCCESS;
 }
 
 CAI_Kuze* CAI_Kuze::Create()

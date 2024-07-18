@@ -132,6 +132,8 @@ CBTNode::NODE_STATE CAI_WPAYakuza::Attack()
 
 	//화가 나지 않앗을때 스킬 선택 (임시)
 	LookAtPlayer();
+	Reset_State();
+
 	static _uint iCount = 0;
 
 	if (iCount == 0 || iCount == 2)
@@ -152,6 +154,8 @@ CBTNode::NODE_STATE CAI_WPAYakuza::Angry_Attack()
 
 	//화낫을때 스킬 선택 (임시)
 	LookAtPlayer();
+	Reset_State();
+
 	static _uint iCount = 0;
 
 	if (iCount == 0 || iCount == 1)
@@ -227,19 +231,7 @@ CBTNode::NODE_STATE CAI_WPAYakuza::ATK_CMD()
 
 void CAI_WPAYakuza::Tick(const _float& fTimeDelta)
 {
-	if (m_isAttack == false)
-		m_fAttackDelayTime += fTimeDelta;
-
-	if (m_isBreak)
-	{
-		m_fBreakTime += fTimeDelta;
-
-		if (m_fBreakDuration <= m_fBreakTime)
-		{
-			m_isBreak = false;
-			m_fBreakTime = 0.f;
-		}
-	}
+	__super::Tick(fTimeDelta);
 
 	this->Execute();
 }

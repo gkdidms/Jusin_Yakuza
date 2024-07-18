@@ -19,6 +19,9 @@ protected:
     ID3D11DeviceContext* m_pContext = { nullptr };
     class CGameInstance* m_pGameInstance = { nullptr };
 
+protected:
+    bool                m_bSceneChange = { false };
+
 public:
     virtual void Free() override;
 };

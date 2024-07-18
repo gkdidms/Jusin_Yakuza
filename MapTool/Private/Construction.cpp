@@ -187,6 +187,8 @@ int CConstruction::Get_ObjPlaceDesc(OBJECTPLACE_DESC* objplaceDesc)
 
 		int		iNaviNum = pNaviMgr->Get_Player_Monster_NaviIndex(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 
+		m_iNaviNum = 0;
+
 		if (-1 != iNaviNum)
 		{
 			m_iNaviNum = iNaviNum;

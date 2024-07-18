@@ -20,11 +20,14 @@ private:
     void Ready_Tree();
 
 private:
+    //플레이어 다운 시 공격
+    CBTNode::NODE_STATE Check_PlayerDown();
+    CBTNode::NODE_STATE ATK_Down();
+
     //공격
     CBTNode::NODE_STATE Check_Attack(); // 공격 가능한 상태인지 체크
 
     CBTNode::NODE_STATE Attack(); //공격 가능할때 공격 선택
-    CBTNode::NODE_STATE ATK_Down();
     CBTNode::NODE_STATE ATK_CMD();
     CBTNode::NODE_STATE ATK_GuardRun(); 
     CBTNode::NODE_STATE ATK_Rariatto();

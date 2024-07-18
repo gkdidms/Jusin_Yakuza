@@ -20,10 +20,11 @@ private:
     void Ready_Tree();
 
 private:
-    CBTNode::NODE_STATE Check_Attack(); // 공격 가능한 상태인지 체크
-
-    CBTNode::NODE_STATE Attack(); //공격 가능할때 공격 선택
+    CBTNode::NODE_STATE Check_PlayerDown();
     CBTNode::NODE_STATE ATK_Down();
+
+    CBTNode::NODE_STATE Check_Attack(); // 공격 가능한 상태인지 체크
+    CBTNode::NODE_STATE Attack(); //공격 가능할때 공격 선택
     CBTNode::NODE_STATE ATK_Heavy();
     CBTNode::NODE_STATE ATK_Hiji_2Ren();
     CBTNode::NODE_STATE ATK_Jab();
@@ -31,6 +32,9 @@ private:
     CBTNode::NODE_STATE ATK_CMD_B();
     CBTNode::NODE_STATE ATK_HeadButt();
     CBTNode::NODE_STATE ATK_Renda();
+
+    CBTNode::NODE_STATE Check_Distance();
+    CBTNode::NODE_STATE Step();
 
 
 public:

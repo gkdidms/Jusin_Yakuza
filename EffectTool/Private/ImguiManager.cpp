@@ -47,6 +47,8 @@ HRESULT CImguiManager::Initialize(void* pArg)
 	TextureTags.push_back(TEXT("Prototype_Component_Texture_SmokeBase"));
 	TextureTags.push_back(TEXT("Prototype_Component_Texture_AuraToneRush"));
 	TextureTags.push_back(TEXT("Prototype_Component_Texture_AuraToneDestroy"));
+	TextureTags.push_back(TEXT("Prototype_Component_Texture_GuardParticle"));
+	TextureTags.push_back(TEXT("Prototype_Component_Texture_GuardSmoke"));
 
 
 	if (nullptr != pArg)
@@ -1106,6 +1108,15 @@ HRESULT CImguiManager::Load_Desc(_uint Index)
 		m_EffectDesc.iShaderPass = pEffect->Get_ShaderPass();
 		m_EffectDesc.TextureTag = pEffect->Get_TextureTag();
 
+		for (size_t i = 0; i < TextureTags.size(); i++)
+		{
+			if (m_EffectDesc.TextureTag == TextureTags[i])
+			{
+				m_iCurTexture = i;
+				break;
+			}
+		}
+
 		_uint CheckAction = pEffect->Get_Action();
 
 		if (CheckAction & pEffect->iAction[CEffect::ACTION_SPREAD])
@@ -1148,6 +1159,17 @@ HRESULT CImguiManager::Load_Desc(_uint Index)
 		m_TrailDesc.Trail_Desc.iMaxTrail = pDesc->iMaxTrail;
 		m_TrailDesc.Trail_Desc.vInitPosA = pDesc->vInitPosA;
 		m_TrailDesc.Trail_Desc.vInitPosB = pDesc->vInitPosB;
+
+		for (size_t i = 0; i < TextureTags.size(); i++)
+		{
+			if (m_TrailDesc.TextureTag == TextureTags[i])
+			{
+				m_iCurTexture = i;
+				break;
+			}
+		}
+
+
 	}
 		break;
 	case MODE_AURA:
@@ -1181,6 +1203,17 @@ HRESULT CImguiManager::Load_Desc(_uint Index)
 		m_AuraDesc.fUVCount = pAuraEffect->Get_UVCount();
 		m_AuraDesc.isAura = true;
 		_uint CheckAction = pAuraEffect->Get_Action();
+
+
+		for (size_t i = 0; i < TextureTags.size(); i++)
+		{
+			if (m_AuraDesc.TextureTag == TextureTags[i])
+			{
+				m_iCurTexture = i;
+				break;
+			}
+		}
+
 
 		if (CheckAction & pAuraEffect->iAction[CEffect::ACTION_SPREAD])
 			m_bSpread = true;

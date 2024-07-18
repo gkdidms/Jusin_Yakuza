@@ -8,6 +8,7 @@
 #include "ObjPlace_Manager.h"
 #include "Terrain_Manager.h"
 #include "Camera_Manager.h"
+#include "Trigger_Manager.h"
 
 #include "ImGuizmo.h"
 #include "ImSequencer.h"
@@ -23,6 +24,7 @@ CImgui_Manager::CImgui_Manager()
     , m_pLightTool_Mgr { CLightTool_Mgr::GetInstance() }
     , m_pCameraToolMgr { CCamera_Manager::GetInstance() }
     , m_pColliderMgr{ CCollider_Manager::GetInstance() }
+    , m_pTriggerMgr{ CTrigger_Manager::GetInstance() }
 {
     Safe_AddRef(m_pGameInstance);
     Safe_AddRef(m_pNavigationMgr);
@@ -30,6 +32,7 @@ CImgui_Manager::CImgui_Manager()
     Safe_AddRef(m_pLightTool_Mgr);
     Safe_AddRef(m_pCameraToolMgr);
     Safe_AddRef(m_pColliderMgr);
+    Safe_AddRef(m_pTriggerMgr);
 }
 
 HRESULT CImgui_Manager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -107,6 +110,9 @@ void CImgui_Manager::Tick(_float fTimeDelta)
 
     if (ImGui::Button(u8"콜라이더 TOOL"))
         m_bColliderMgr_imgui = true;
+
+    if (ImGui::Button(u8"트리거 TOOL"))
+        m_bTriggerMgr_IMGUI = true;
        
 
     ImGui::End();
@@ -150,6 +156,13 @@ void CImgui_Manager::Tick(_float fTimeDelta)
         m_eWrieID = COLLIDER;
     }
 
+    if (m_bTriggerMgr_IMGUI)
+    {
+        m_pTriggerMgr->Show_FileName();
+        Show_Trigger_IMGUI();
+        m_eWrieID = TRIGGER;
+    }
+
 #pragma endregion
     ImGui::EndFrame();
 
@@ -170,6 +183,8 @@ void CImgui_Manager::Late_Tick(_float fTimeDelta)
     m_pLightTool_Mgr->Late_Tick(fTimeDelta);
 
     m_pCameraToolMgr->Late_Tick(fTimeDelta);
+
+    m_pTriggerMgr->Late_Tick(fTimeDelta);
 }
 
 void CImgui_Manager::Render()
@@ -304,6 +319,18 @@ void CImgui_Manager::Show_Collider_IMGUI()
     ImGui::End();
 }
 
+void CImgui_Manager::Show_Trigger_IMGUI()
+{
+    ImGui::Begin(u8"트리거 파일 선택");
+
+    m_pTriggerMgr->Show_Add_Trigger_IMGUI();
+
+    if (ImGui::Button("Close"))
+        m_bTriggerMgr_IMGUI = false;
+
+    ImGui::End();
+}
+
 
 void CImgui_Manager::Free()
 {
@@ -326,6 +353,9 @@ void CImgui_Manager::Free()
 
     Safe_Release(m_pColliderMgr);
     CCollider_Manager::DestroyInstance();
+
+    Safe_Release(m_pTriggerMgr);
+    CTrigger_Manager::DestroyInstance();
 
     Safe_Release(m_pDevice);
     Safe_Release(m_pContext);

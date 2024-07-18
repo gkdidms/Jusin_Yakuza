@@ -9,6 +9,7 @@
 #include "DebugCamera.h"
 
 #include "Level_Loading.h"
+#include "Trigger.h"
 
 CLevel_DogimazoStairs::CLevel_DogimazoStairs(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLevel{ pDevice, pContext },
@@ -31,17 +32,39 @@ HRESULT CLevel_DogimazoStairs::Initialize()
 	m_pFileTotalManager->Set_MapObj_In_Client(STAGE_DOGIMAZO_STAIRS, LEVEL_DOGIMAZO_STAIRS);
 	m_pFileTotalManager->Set_Lights_In_Client(STAGE_DOGIMAZO_STAIRS);
 	m_pFileTotalManager->Set_Collider_In_Client(STAGE_DOGIMAZO_STAIRS, LEVEL_DOGIMAZO_STAIRS);
+	m_pFileTotalManager->Set_Trigger_In_Client(STAGE_DOGIMAZO_STAIRS, LEVEL_DOGIMAZO_STAIRS);
 
 	return S_OK;
 }
 
 void CLevel_DogimazoStairs::Tick(const _float& fTimeDelta)
 {
-	if (m_pGameInstance->GetKeyState(DIK_SPACE) == TAP)
+
+
+	// 트리거 체크 - 씬 이동
+	vector<CGameObject*> pTriggers = m_pGameInstance->Get_GameObjects(LEVEL_DOGIMAZO_STAIRS, TEXT("Layer_Trigger"));
+
+	for (int i = 0; i < pTriggers.size(); i++)
 	{
-		if (FAILED(m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_DOGIMAZO_LOBBY))))
-			return;
+		int		iLevelNum;
+		if (true == dynamic_cast<CTrigger*>(pTriggers[i])->Move_Scene(iLevelNum))
+		{
+			m_bSceneChange = true;
+			m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, (LEVEL)iLevelNum));
+		}
 	}
+
+	if (false == m_bSceneChange)
+	{
+		if (m_pGameInstance->GetKeyState(DIK_SPACE) == TAP)
+		{
+			if (FAILED(m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_DOGIMAZO_LOBBY))))
+				return;
+		}
+	}
+
+	
+
 #ifdef _DEBUG
 	SetWindowText(g_hWnd, TEXT("도지마조 계단"));
 #endif
