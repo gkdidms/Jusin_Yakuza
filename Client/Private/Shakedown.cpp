@@ -151,7 +151,7 @@ void CShakedown::Change_Animation()
 {
 	__super::Change_Animation();
 
-	switch (m_iState)
+ 	switch (m_iState)
 	{
 	case MONSTER_IDLE:
 	{
@@ -246,6 +246,27 @@ void CShakedown::Change_Animation()
 	{
 		//e_kta_cmb_a_03[e_kta_cmb_a_03]
 		m_strAnimName = "e_kta_cmb_a_03";
+		break;
+	}
+	case MONSTER_GURAD_START:
+	{
+		m_strAnimName = "e_kta_guard_st";
+		break;
+	}
+	case MONSTER_GURAD_LOOP:
+	{
+		m_strAnimName = "e_kta_guard_lp";
+		m_isAnimLoop = true;
+		break;
+	}
+	case MONSTER_GURAD_END:
+	{
+		m_strAnimName = "e_kta_guard_en";
+		break;
+	}
+	case MONSTER_GURAD_FLOAT:
+	{
+		m_strAnimName = "e_kta_guard";
 		break;
 	}
 	default:

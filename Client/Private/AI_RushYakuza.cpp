@@ -34,6 +34,8 @@ HRESULT CAI_RushYakuza::Initialize(void* pArg)
 
 	//트리 구현
 	Ready_Tree();
+
+	m_fDelayAttackDuration = m_pGameInstance->Get_Random(6, 9);
 	
 	return S_OK;
 }
@@ -159,7 +161,7 @@ CBTNode::NODE_STATE CAI_RushYakuza::Attack()
 
 	LookAtPlayer();
 	//화가 나지 않앗을때 스킬 선택 (임시)
-	static _uint iCount = 0;
+	static _uint iCount = rand() % 3;
 
 	if (iCount == 0 || iCount == 1)
 		m_iSkill = SKILL_CMD;

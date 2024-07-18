@@ -34,7 +34,6 @@ HRESULT CKuze::Initialize(void* pArg)
 		m_wstrModelName = gameobjDesc->wstrModelName;
 	}
 
-
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
@@ -44,9 +43,7 @@ HRESULT CKuze::Initialize(void* pArg)
 		MONSTER_IODESC* gameobjDesc = (MONSTER_IODESC*)pArg;
 
 		m_pNavigationCom->Set_Index(gameobjDesc->iNaviNum);
-
 	}
-
 
 	m_wstrModelName = TEXT("Jimu");
 
@@ -320,6 +317,33 @@ void CKuze::Change_Animation()
 	{
 		m_strAnimName = "e_kuz_step_f";
 		m_isAnimLoop = true;
+		break;
+	}
+	case MONSTER_RUN:
+	{
+		m_strAnimName = "e_kuz_run";
+		m_isAnimLoop = true;
+		break;
+	}
+	case MONSTER_GURAD_START:
+	{
+		m_strAnimName = "e_kuz_guard_st";
+		break;
+	}
+	case MONSTER_GURAD_LOOP:
+	{
+		m_strAnimName = "e_kuz_guard_lp";
+		m_isAnimLoop = true;
+		break;
+	}
+	case MONSTER_GURAD_END:
+	{
+		m_strAnimName = "e_kuz_guard_en";
+		break;
+	}
+	case MONSTER_GURAD_FLOAT:
+	{
+		m_strAnimName = "e_kuz_guard";
 		break;
 	}
 	default:

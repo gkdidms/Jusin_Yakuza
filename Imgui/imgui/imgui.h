@@ -2472,7 +2472,7 @@ struct ImGuiListClipper
     IMGUI_API ~ImGuiListClipper();
     IMGUI_API void  Begin(int items_count, float items_height = -1.0f);
     IMGUI_API void  End();             // Automatically called on the last call of Step() that returns false.
-    IMGUI_API bool  Step();            // Call until it returns false. The DisplayStart/DisplayEnd fields will be set and you can process/draw those items.
+    IMGUI_API bool  Run();            // Call until it returns false. The DisplayStart/DisplayEnd fields will be set and you can process/draw those items.
 
     // Call IncludeItemByIndex() or IncludeItemsByIndex() *BEFORE* first call to Step() if you need a range of items to not be clipped, regardless of their visibility.
     // (Due to alignment / padding of certain items it is possible that an extra item may be included on either end of the display range).
