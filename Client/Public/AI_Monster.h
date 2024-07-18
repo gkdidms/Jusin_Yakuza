@@ -75,6 +75,7 @@ protected:
     _bool m_isBreak = { false };
     _bool m_isGuard = { false };
     _bool m_isSway = { false };
+    _bool m_isPlayerDownAtk = { false };
 
     _uint m_iSkill = { SKILL_END };
 

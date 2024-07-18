@@ -143,6 +143,7 @@ CBTNode::NODE_STATE CAI_RushYakuza::Check_Attack()
 			return CBTNode::FAIL;
 
 		m_fAttackDelayTime = 0.f;
+		Reset_State();
 	}
 
 #ifdef _DEBUG

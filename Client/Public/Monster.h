@@ -32,6 +32,10 @@ public:
         MONSTER_SHIFT_FL,
         MONSTER_SHIFT_BR,
         MONSTER_SHIFT_BL,
+        MONSTER_STEP_B,
+        MONSTER_STEP_L,
+        MONSTER_STEP_R,
+        MONSTER_STEP_F,
         MONSTER_SWAY_F,
         MONSTER_SWAY_L,
         MONSTER_SWAY_R,
@@ -98,7 +102,12 @@ public:
         MONSTER_STANDUP_DNF_FAST,
         MONSTER_STANDUP_DNB_FAST,
         MONSTER_DED_L, // 죽음
-        MONSTER_DEATH,
+        MONSTER_DED_R,
+        MONSTER_DED_F_1,
+        MONSTER_DED_F_2,
+        MONSTER_DED_F_3,
+        MONSTER_DED_B_1,
+        MONSTER_DED_B_2,
         MONSTER_STATE_END
     };
 
@@ -113,6 +122,9 @@ public:
 
 public:
     void Set_Down(_bool isDown) { m_isDown = isDown; }
+    
+public:
+    _float Get_HitDamage() { return m_fHitDamage; }
 
 public:
     virtual HRESULT Initialize_Prototype() override;
@@ -148,6 +160,7 @@ protected:
     _uint m_iAnim = { 0 };
 
 protected:
+    _float m_fHitDamage = { 0.f };
     _bool m_isColl = { false }; // 충돌되었는지 아닌지 체크해야함.
     _bool m_isDown = { false }; // 다운되었는가?
 
