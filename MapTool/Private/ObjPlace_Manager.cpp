@@ -256,7 +256,7 @@ void CObjPlace_Manager::Show_Installed_GameObjectsList()
 	}
 
 	ImGui::PushItemWidth(200.0f); 
-	static int iLevel;
+	static int iLevel = 70;
 	ImGui::InputInt(u8"저장번호", &iLevel);
 	ImGui::PopItemWidth();
 	ImGui::SameLine();
