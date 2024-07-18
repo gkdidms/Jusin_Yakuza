@@ -135,19 +135,19 @@ void CLandObject::Apply_ChracterData()
 
 	for (auto& pEffect : pEffects)
 	{
-		//CSocketEffect::SOKET_EFFECT_DESC Desc{};
-		//Desc.pParentMatrix = m_pTransformCom->Get_WorldFloat4x4();
-		//Desc.pCombinedTransformationMatrix = m_pModelCom->Get_BoneCombinedTransformationMatrix(pEffect.first.c_str());
-		//Desc.wstrEffectName = pEffect.second;
+		CSocketEffect::SOKET_EFFECT_DESC Desc{};
+		Desc.pParentMatrix = m_pTransformCom->Get_WorldFloat4x4();
+		Desc.pCombinedTransformationMatrix = m_pModelCom->Get_BoneCombinedTransformationMatrix(pEffect.first.c_str());
+		Desc.wstrEffectName = pEffect.second;
 
-		//CGameObject* pSoketEffect = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_SoketEffect"), &Desc);
-		//if (nullptr == pSoketEffect)
-		//	return;
+		CGameObject* pSoketEffect = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_SoketEffect"), &Desc);
+		if (nullptr == pSoketEffect)
+			return;
 
-		//auto it = m_pEffects.emplace(pEffect.first, static_cast<CSocketEffect*>(pSoketEffect));
+		auto it = m_pEffects.emplace(pEffect.first, static_cast<CSocketEffect*>(pSoketEffect));
 
-		////it->second->On();
-		//it->second->Off();
+		//it->second->On();
+		it->second->Off();
 	}
 
 }

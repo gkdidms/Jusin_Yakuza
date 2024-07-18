@@ -35,9 +35,7 @@ public:
 	virtual HRESULT Render() override;
 
 public:
-	void On() {
-		m_isOn = true;
-	}
+	void On();
 	void Off() {
 		m_isOn = false;
 	}

@@ -134,31 +134,22 @@ void CSocketCollider::ParentObject_Hit(const _float3& vDir, _float fDamage, CLan
 	// m_eColliderPartType는 본인이 헤드인지, 바디인지, 레그인지를 가지고있다
 	// TODO: 피격 파티클로 교체가 필요하다.
 
-	//CEffect::EFFECT_DESC EffectDesc;
+	CEffect::EFFECT_DESC EffectDesc;
 
 
-	//_matrix WorldMatrix = XMLoadFloat4x4(&m_WorldMatrix);
-
-	//// 테스트용으로 Dir을 고정시켜봤으나 파티클 터지는 방향 그대로임
-	//_vector vRight = XMVectorSet(1, 0, 0, 0);
-	//_vector vUp = XMVectorSet(0, 1, 0, 0);
-	//_vector vLook = XMVectorSet(0, 0, 1, 0);
-
-	//WorldMatrix.r[CTransform::STATE_RIGHT] = XMVector4Normalize(vRight);
-	//WorldMatrix.r[CTransform::STATE_UP] = XMVector4Normalize(vUp);
-	//WorldMatrix.r[CTransform::STATE_LOOK] = XMVector4Normalize(vLook);
+	_matrix WorldMatrix = XMLoadFloat4x4(&m_WorldMatrix);//맞는 얘콜라이더
 
 
-	//_float4x4 matrix;
-	//XMStoreFloat4x4(&matrix, ParentMatrix);
+	_float4x4 matrix;
+	XMStoreFloat4x4(&matrix, WorldMatrix);	
+		
+	EffectDesc.pWorldMatrix = &matrix;
 
-	//EffectDesc.pWorldMatrix = &matrix;
-
-	//m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Hit1_Glow0"), TEXT("Layer_Particle"), &EffectDesc);
-	//m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Hit1_Part0"), TEXT("Layer_Particle"), &EffectDesc);
-	//m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Hit1_Part2"), TEXT("Layer_Particle"), &EffectDesc);
-	//m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Hit1_Part3"), TEXT("Layer_Particle"), &EffectDesc);
-	//m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Hit1_Part4"), TEXT("Layer_Particle"), &EffectDesc);
+	m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Hit1_Glow0"), TEXT("Layer_Particle"), &EffectDesc);
+	m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Hit1_Part0"), TEXT("Layer_Particle"), &EffectDesc);
+	m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Hit1_Part2"), TEXT("Layer_Particle"), &EffectDesc);
+	m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Hit1_Part3"), TEXT("Layer_Particle"), &EffectDesc);
+	m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Hit1_Part4"), TEXT("Layer_Particle"), &EffectDesc);
 
 #ifdef _DEBUG
 	cout << " 충돌!!!!" << endl;

@@ -27,7 +27,7 @@ HRESULT CFreeCamera::Initialize(void* pArg)
         FREE_CAMERA_DESC* pDesc = (FREE_CAMERA_DESC*)pArg;
 
         m_fSensor = pDesc->fSensor;
-    //    m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(&pDesc->vPrePosition));
+        m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(&pDesc->vPrePosition));
     }
   
     return S_OK;
