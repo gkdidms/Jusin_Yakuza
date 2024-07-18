@@ -30,6 +30,20 @@ public:
 		OBJ_END
 	};
 
+
+	enum TRIGGER_TYPE {
+		TRIGGER_MOVE_LEVEL,
+		TRIGGER_CINEMACHINE,
+		TRIGGER_YONEDA,
+		TRIGGER_END
+	};
+
+	enum TRIGGER_CINEMACHINE_TYPE {
+
+		TRIGGER_CINEMACHINE_END
+	};
+
+
 private:
 	CFileTotalMgr();
 	virtual ~CFileTotalMgr() = default;
@@ -45,6 +59,7 @@ public:
 	HRESULT									Set_GameObject_In_Client(int iStageLevel);
 	HRESULT									Set_Lights_In_Client(int iLightLoadingNum);
 	HRESULT									Set_Collider_In_Client(int iColliderLoadingNum, int iStageLevel);
+	HRESULT									Set_Trigger_In_Client(int iTriggerLoadingNum, int iStageLevel);
 
 	void									Load_Cinemachine(int iCineNum, int iStageLevel);
 
@@ -59,6 +74,7 @@ private:
 	MAP_TOTALINFORM_DESC					m_MapTotalInform{};
 	LIGHT_DESC_IO							m_LightTotalInform{};
 	COLLIDER_IO								m_MapCollider{};
+	TRIGGER_IO								m_Trigger{};
 
 	vector<wstring>							m_Layers = { TEXT("Layer_GameObjects"), TEXT("Layer_Monster"), TEXT("Layer_Player") };
 
@@ -68,9 +84,8 @@ private:
 
 	HRESULT									Import_Bin_Map_Data_OnClient(MAP_TOTALINFORM_DESC* mapObjData, int iLevel);
 	HRESULT									Import_Bin_Light_Data_OnClient(LIGHT_DESC_IO* lightData, int iLevel);
-
 	HRESULT									Import_Bin_Collider_Data_OnTool(COLLIDER_IO* ColliderData, int iLevel);
-
+	HRESULT									Import_Bin_Trigger_Data_OnTool(TRIGGER_IO* TriggerData, int iLevel);
 
 public:
 	virtual void							Free() override;

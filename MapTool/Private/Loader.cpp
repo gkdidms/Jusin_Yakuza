@@ -14,6 +14,7 @@
 #include "Decal.h"
 #include "ColliderObj.h"
 #include "RushYakuza.h"
+#include "TriggerObj.h"
 #pragma endregion
 
 
@@ -241,11 +242,15 @@ HRESULT CLoader::Loading_For_RunMapLevel(int iLevel)
 		CDecal::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	/* For.Prototype_GameObject_Decal */
+	/* For.Prototype_GameObject_ColliderObj */
 	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_ColliderObj"),
 		CColliderObj::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	/* For.Prototype_GameObject_TriggerObj */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_TriggerObj"),
+		CTriggerObj::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 
 
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));

@@ -42,6 +42,11 @@
 #include "LightConstruction.h"
 #pragma endregion
 
+#pragma region MyRegion
+#include "LevelTrigger.h"
+#pragma endregion
+
+
 #pragma region Effect
 #include "Particle_Point.h"
 #include "TRailEffect.h"
@@ -320,6 +325,7 @@ HRESULT CLoader::Loading_Default()
 		return E_FAIL;
 #pragma endregion
 
+
 	return S_OK;
 }
 
@@ -451,6 +457,13 @@ HRESULT CLoader::Loading_For_Office_1F()
 	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_LightConstruction"),
 		CLightConstruction::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+
+
+	/* For.Prototype_GameObject_LevelTrigger */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_LevelTrigger"),
+		CLevelTrigger::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 #pragma endregion
 
 #pragma endregion
@@ -772,6 +785,11 @@ HRESULT CLoader::Loading_For_Test()
 	/* For.Prototype_GameObject_LightConstruction */
 	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_LightConstruction"),
 		CLightConstruction::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_LevelTrigger */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_LevelTrigger"),
+		CLevelTrigger::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 #pragma endregion
 
