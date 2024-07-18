@@ -184,6 +184,15 @@ void CLandObject::Animation_Event()
 	}
 }
 
+void CLandObject::Off_Attack_Colliders()
+{
+	for (auto& pSocketCollider : m_pColliders)
+	{
+		if(pSocketCollider.second->Get_CollierType() == CSocketCollider::ATTACK)
+			pSocketCollider.second->Off();
+	}
+}
+
 HRESULT CLandObject::Add_Components()
 {
 	return S_OK;

@@ -31,11 +31,6 @@ void CKiryu_KRC_Attack::Tick(const _float& fTimeDelta)
 		_vector vLookPos = pTargetObject->Get_TransformCom()->Get_State(CTransform::STATE_POSITION);
 		m_pPlayer->Get_TransformCom()->LookAt_For_LandObject(vLookPos);
 	}
-
-	//if (m_pGameInstance->GetKeyState(DIK_LSHIFT) == TAP)
-	//{
-	//	m_isFinished = true;
-	//}
 }
 
 void CKiryu_KRC_Attack::Change_Animation()
