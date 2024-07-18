@@ -74,19 +74,27 @@ public:
         MONSTER_DAM_HEAD_LV01_R,
         MONSTER_DAM_HEAD_LV01_L,
         MONSTER_DAM_HEAD_LV01_F,
+        MONSTER_DAM_HEAD_LV01_B,
         MONSTER_DAM_HEAD_LV02_R,
         MONSTER_DAM_HEAD_LV02_L,
         MONSTER_DAM_HEAD_LV02_F,
         MONSTER_DAM_HEAD_LV02_B,
         MONSTER_DAM_BODY_LV01_F,
+        MONSTER_DAM_BODY_LV01_B,
         MONSTER_DAM_BODY_LV01_D,
         MONSTER_DAM_BODY_LV02_F,
+        MONSTER_DAM_BODY_LV02_B,
         MONSTER_DAM_BODY_LV02_D,
         MONSTER_DWN_DIRECT_F_BOUND_G,
-        MONSTER_DWN_DIRECT_D,
+        MONSTER_DWN_DIRECT_B_BOUND_G,
+        MONSTER_DWN_DIRECT_B,
+        MONSTER_DWN_DIRECT_F,
         MONSTER_DWN_BODY_F,
         MONSTER_DWN_BODY_F_SP,
         MONSTER_DWN_EXPLODE_F,
+        MONSTER_DWN_BODY_B,
+        MONSTER_DWN_BODY_B_SP,
+        MONSTER_DWN_EXPLODE_B,
         MONSTER_STANDUP_DNF_FAST,
         MONSTER_STANDUP_DNB_FAST,
         MONSTER_DED_L, // Á×À½
@@ -130,7 +138,7 @@ protected:
     _uint m_iState = { 0 };
     _float m_fChangeInterval = { 4.f };
 
-    _float          m_fPrevSpeed = { 0.f };
+
     _float4         m_vPrevMove;
     _float4         m_vPrevRotation;
     _float4x4       m_ModelWorldMatrix;

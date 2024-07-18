@@ -68,6 +68,8 @@ public:
     virtual _bool Is_BlowAttack() { return false; }             // 재정의 필요
 
     virtual string Get_CurrentAnimationName() = 0;
+
+    virtual void Off_Attack_Colliders();                               // 어택 콜라이더만 전부 끄는 기능
  
 #ifdef _DEBUG
     //uv 체크 디버그용
@@ -99,9 +101,6 @@ protected:
 
     //뼈 이름, 소켓 이펙트
     multimap<string, class CSocketEffect*>      m_pEffects;
-
-    //림라이트 범위 지정 객체
-    class CRimChecker* m_RimChecker = { nullptr };
 
     wstring m_wstrModelName = TEXT("");
 

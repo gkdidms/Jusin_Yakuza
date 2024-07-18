@@ -921,25 +921,31 @@ _bool CModel::Set_AnimationIndex(_uint iAnimIndex, _double ChangeInterval)
 	return true;
 }
 
-void CModel::Set_AnimationIndex(_uint iAnimIndex, vector<class CAnimation*> Animations, _double ChangeInterval)
+_bool CModel::Set_AnimationIndex(_uint iAnimIndex, vector<class CAnimation*> Animations, _double ChangeInterval)
 {
-	if (iAnimIndex >= Animations.size()) return;
+	if (iAnimIndex >= Animations.size()) return false;
 
 	if (m_AnimDesc.iAnimIndex == iAnimIndex)
-		return;
+		return false;
 
 	m_iPrevAnimIndex = m_AnimDesc.iAnimIndex;
 	m_AnimDesc = { iAnimIndex, false };
 	m_ChangeInterval = ChangeInterval;
 	Animations[m_AnimDesc.iAnimIndex]->Reset();
 
-	return;
+	return true;
 }
 
 void CModel::Reset_Animation(const ANIMATION_DESC& AnimDesc)
 {
 	m_Animations[m_AnimDesc.iAnimIndex]->Reset();
 }
+
+void CModel::Reset_Animation(_uint iAnimIndex)
+{
+	m_Animations[iAnimIndex]->Reset();
+}
+
 
 _bool CModel::Get_AnimFinished() const
 {

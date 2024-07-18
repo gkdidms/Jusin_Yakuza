@@ -16,6 +16,11 @@ public:
 		ANIM_START, ANIM_LOOP, ANIM_END
 	};
 
+	enum STATE_TYPE
+	{
+		GUARD, HIT, COUNTER_ATTACK
+	};
+
 
 private:
 	CKiryu_KRC_Guard();
@@ -31,6 +36,9 @@ public:
 	virtual void Setting_Value(void* pValue = nullptr) override;
 
 private:
+	_uint m_iIndex = { 0 };
+	STATE_TYPE m_eCurrentType = GUARD;
+
 	ANIM_STATE m_eAnimState = { ANIM_START };
 	_bool m_isStop = { false };
 

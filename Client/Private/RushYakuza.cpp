@@ -154,6 +154,26 @@ void CRushYakuza::Change_Animation()
 		m_isAnimLoop = true;
 		break;
 	}
+	case MONSTER_SWAY_F:
+	{
+		m_strAnimName = "p_krh_sway_f";
+		break;
+	}
+	case MONSTER_SWAY_B:
+	{
+		m_strAnimName = "p_krh_sway_b";
+		break;
+	}
+	case MONSTER_SWAY_L:
+	{
+		m_strAnimName = "p_krh_sway_l";
+		break;
+	}
+	case MONSTER_SWAY_R:
+	{
+		m_strAnimName = "p_krh_sway_r";
+		break;
+	}
 	case MONSTER_SHIFT_F:
 	{
 		//p_krh_shift_f[p_krh_shift_f]
@@ -273,7 +293,11 @@ void CRushYakuza::Change_Animation()
 		return;
 
 	m_iAnim = m_pAnimCom->Get_AnimationIndex(m_strAnimName.c_str());
-	m_pModelCom->Set_AnimationIndex(m_iAnim, m_pAnimCom->Get_Animations(), m_fChangeInterval);
+
+	// 실제로 애니메이션 체인지가 일어났을 때 켜져있던 어택 콜라이더를 전부 끈다
+	if(m_pModelCom->Set_AnimationIndex(m_iAnim, m_pAnimCom->Get_Animations(), m_fChangeInterval))
+		Off_Attack_Colliders();
+
 	m_pData->Set_CurrentAnimation(m_strAnimName);
 }
 

@@ -133,6 +133,7 @@ private:
 
 public:
     void Change_Animation(_uint iAnimIndex, _float fInterval = 4.f);
+    void Change_ResetAnimaition(_uint iAnimIndex, _float fInterval = 4.f);
     void Style_Change(BATTLE_STYLE eStyle);
     void Reset_MoveDirection();
 
@@ -143,8 +144,15 @@ private:
     void Effect_Control_Aura();
     void Setting_Target_Enemy();
 
+    /* 캐릭터 스테이터스 관련 함수 */ 
 public:
     void AccHitGauge();
+
+    /* 쉐이더 바인딩 관련 함수 */
+public:
+    void Setting_RimLight();
+    HRESULT Bind_RimLight();
+
     
     /* 출력, 행동 관련 포인터 변수들 */
 private:
@@ -182,8 +190,8 @@ private:
 
     /* 플레이어 스테이터스 관련 변수들 */
 private:
-    _uint           m_iCurrentHitLevel = { 0 };
-    _float          m_fHitGauge = { 0.f };
+    _uint           m_iCurrentHitLevel = { 1 };
+    _float          m_fHitGauge = { 100.f };
 
 
 

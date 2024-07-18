@@ -22,18 +22,27 @@ CKiryu_KRC_Guard::CKiryu_KRC_Guard()
 		[168]	p_krc_guard_en[p_krc_guard_en]
 		[171]	p_krc_guard_lp[p_krc_guard_lp]
 		[175]	p_krc_guard_st[p_krc_guard_st]
+
+		//가드 반격기들
+		[149]	p_krc_atk_guard_tame[p_krc_atk_guard_tame]		//점프해서 내려찍음 (우클)
+		[148]	p_krc_atk_guard_heavy[p_krc_atk_guard_heavy]	// 돌면서 주먹 휘두름 (좌클)
+
 	*/
 
-	/* 0 ~ 3 */
+	/* 0 ~ 2 */
 	m_AnimationIndices.push_back(175); // [175]	p_krc_guard_st[p_krc_guard_st]
 	m_AnimationIndices.push_back(171); // [171]	p_krc_guard_lp[p_krc_guard_lp]
 	m_AnimationIndices.push_back(168); // [168]	p_krc_guard_en[p_krc_guard_en]
 
-	/* 4 ~ 7 */
+	/* 3 ~ 6 */
 	m_AnimationIndices.push_back(166);	//[166]	p_krc_guard_body_b[p_krc_guard_body_b]
 	m_AnimationIndices.push_back(167);	//[167]	p_krc_guard_body_f[p_krc_guard_body_f]
 	m_AnimationIndices.push_back(169);	//[169]	p_krc_guard_head_l[p_krc_guard_head_l]
 	m_AnimationIndices.push_back(170);	//[170]	p_krc_guard_head_r[p_krc_guard_head_r]
+
+	/* 7 ~ 8 */
+	m_AnimationIndices.push_back(148);	//[148]	p_krc_atk_guard_heavy[p_krc_atk_guard_heavy]
+	m_AnimationIndices.push_back(149);	//[149]	p_krc_atk_guard_tame[p_krc_atk_guard_tame]
 }
 
 void CKiryu_KRC_Guard::Tick(const _float& fTimeDelta)
@@ -52,11 +61,44 @@ void CKiryu_KRC_Guard::Tick(const _float& fTimeDelta)
 		break;
 	}
 
+
+	if (m_eCurrentType == HIT)
+	{
+		if (m_pGameInstance->GetMouseState(DIM_LB) == TAP)
+		{
+			m_eCurrentType = COUNTER_ATTACK;
+			m_iIndex = 7;
+		}
+
+		if (m_pGameInstance->GetMouseState(DIM_RB) == TAP)
+		{
+			m_eCurrentType = COUNTER_ATTACK;
+			m_iIndex = 8;
+
+		}
+	}
+	else if (m_eCurrentType == COUNTER_ATTACK)
+	{
+		CLandObject* pTargetObject = m_pPlayer->Get_TargetObject();
+
+		if (nullptr != pTargetObject)
+		{
+			_vector vLookPos = pTargetObject->Get_TransformCom()->Get_State(CTransform::STATE_POSITION);
+			m_pPlayer->Get_TransformCom()->LookAt_For_LandObject(vLookPos);
+		}
+	}
+
 }
 
 void CKiryu_KRC_Guard::Change_Animation()
 {
-	m_pPlayer->Change_Animation(m_AnimationIndices[m_eAnimState + m_iCurrentIndex]);
+	if (m_iCurrentIndex > 0) m_eAnimState = ANIM_LOOP;
+
+	if(m_eCurrentType != COUNTER_ATTACK)
+		m_iIndex = m_eAnimState + m_iCurrentIndex;
+
+
+	m_pPlayer->Change_Animation(m_AnimationIndices[m_iIndex >= m_AnimationIndices.size() ? 3 : m_iIndex]);
 }
 
 _bool CKiryu_KRC_Guard::Get_AnimationEnd()
@@ -65,8 +107,14 @@ _bool CKiryu_KRC_Guard::Get_AnimationEnd()
 
 	if (pModelCom->Get_AnimFinished())
 	{
-		//m_eAnimState = { ANIM_START };
-		//m_isStop = false;
+		if (m_eCurrentType == COUNTER_ATTACK)
+		{
+			m_eAnimState = ANIM_LOOP;
+			m_eCurrentType = GUARD;
+		}
+		
+		m_iCurrentIndex = 0;
+		m_iIndex = 0;
 
 		return true;
 	}
@@ -90,39 +138,46 @@ _bool CKiryu_KRC_Guard::Stopping()
 void CKiryu_KRC_Guard::Reset()
 {
 	m_eAnimState = ANIM_START;
+	m_eCurrentType = GUARD;
 	m_iCurrentIndex = 0;
 	m_isStop = false;
 }
 
 void CKiryu_KRC_Guard::Setting_Value(void* pValue)
 {
-	CKiryu_KRC_Hit::KRC_Hit_DESC* pDesc = static_cast<CKiryu_KRC_Hit::KRC_Hit_DESC*>(pValue);
+	if (m_eCurrentType != COUNTER_ATTACK)
+	{
+		CKiryu_KRC_Hit::KRC_Hit_DESC* pDesc = static_cast<CKiryu_KRC_Hit::KRC_Hit_DESC*>(pValue);
 
-	// m_eAnimState 에 합해서 쓸려고 그냥 2 뺀 값으로 세팅해줌 
-	switch (pDesc->iDirection)
-	{
-	case CPlayer::F:
-	{
-		m_iCurrentIndex = 3;
-		break;
-	}
-	case CPlayer::B:
-	{
-		m_iCurrentIndex = 2;
-		break;
-	}
-	case CPlayer::L:
-	{
-		m_iCurrentIndex = 4;
-		break;
-	}
-	case CPlayer::R:
-	{
-		m_iCurrentIndex = 5;
-		break;
-	}
-	}
+		// m_eAnimState 에 합해서 쓸려고 그냥 2 뺀 값으로 세팅해줌 
+		switch (pDesc->iDirection)
+		{
+		case CPlayer::F:
+		{
+			m_iCurrentIndex = 3;
+			break;
+		}
+		case CPlayer::B:
+		{
+			m_iCurrentIndex = 2;
+			break;
+		}
+		case CPlayer::L:
+		{
+			m_iCurrentIndex = 4;
+			break;
+		}
+		case CPlayer::R:
+		{
+			m_iCurrentIndex = 5;
+			break;
+		}
+		}
+		m_eCurrentType = HIT;
 
+		// 애니메이션을 초기화하고 다시시작하는 함수를 실행시켜야한다.
+		m_pPlayer->Change_ResetAnimaition(m_AnimationIndices[m_iIndex]);
+	}
 }
 
 CBehaviorAnimation* CKiryu_KRC_Guard::Create(CPlayer* pPlayer)

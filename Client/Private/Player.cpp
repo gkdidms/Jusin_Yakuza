@@ -18,10 +18,11 @@
 
 #include "UIManager.h"
 
-#pragma region Hit관련 헤더들
+#pragma region 행동 관련 헤더들
 #include "Kiryu_KRC_Hit.h"
 #include "Kiryu_KRH_Hit.h"
 #include "Kiryu_KRS_Hit.h"
+#include "Kiryu_KRS_Down.h"
 #pragma endregion
 
 CPlayer::CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -188,34 +189,8 @@ void CPlayer::Late_Tick(const _float& fTimeDelta)
 			m_pCollisionManager->Add_HitCollider(pPair.second, CCollision_Manager::PLAYER);
 	}
 
-	switch (m_eCurrentStyle)
-	{
-	case Client::CPlayer::ADVENTURE:
-	{
-		m_isRimLight = 0.f;
-		break;
-	}
-	case Client::CPlayer::KRS:
-	{
-		m_isRimLight =0.1f;
-		break;
-	}
-	case Client::CPlayer::KRH:
-	{
-		m_isRimLight = 0.2f;
-		break;
-	}
-	case Client::CPlayer::KRC:
-	{
-		m_isRimLight =  0.3f;
-		break;
-	}
-	case Client::CPlayer::BATTLE_STYLE_END:
-		break;
-	default:
-		break;
-	}
-
+	
+	Setting_RimLight();
 	Compute_Height();
 
 }
@@ -228,9 +203,7 @@ HRESULT CPlayer::Render()
 	int i = 0;
 	for (auto& pMesh : m_pModelCom->Get_Meshes())
 	{
-
-
-		if(ADVENTURE !=m_isRimLight)
+		if(ADVENTURE != m_isRimLight)
 		{
 			if (!strcmp("[l0]jacketw1", pMesh->Get_Name()))
 			{
@@ -254,7 +227,6 @@ HRESULT CPlayer::Render()
 			{
 			case 4://attack(팔)
 			{
-
 				if (!strcmp("[l0]body_naked1", pMesh->Get_Name()))
 				{
 					if (FAILED(m_pShaderCom->Bind_RawValue("g_isRimLight", &m_isRimLight, sizeof(_float))))
@@ -275,7 +247,7 @@ HRESULT CPlayer::Render()
 			case 8://fly_kick(다리)
 			case 9:
 			{
-				if(KRS==m_eCurrentStyle)
+				if(KRS == m_eCurrentStyle)
 				{
 					if (!strcmp("[l0]pants3", pMesh->Get_Name()))
 					{
@@ -300,9 +272,9 @@ HRESULT CPlayer::Render()
 			}
 		}
 		else
-		{
-			_float isfale = 0.f;
-			if (FAILED(m_pShaderCom->Bind_RawValue("g_isRimLight", &isfale, sizeof(_float))))
+		{	
+			// 어드벤처일때
+			if (FAILED(Bind_RimLight()))
 				return E_FAIL;
 		}
 
@@ -407,11 +379,22 @@ void CPlayer::Take_Damage(_uint iHitColliderType, const _float3& vDir, _float fD
 				iDirection = 3;
 		}
 
-		CKiryu_KRS_Hit::KRS_Hit_DESC Desc{ &vDir, fDamage, pAttackedObject->Get_CurrentAnimationName(), iDirection };
+		if (m_iCurrentBehavior == (_uint)KRS_BEHAVIOR_STATE::DOWN)
+		{
+			string strAnimationName = pAttackedObject->Get_CurrentAnimationName();
 
-		m_iCurrentBehavior = (_uint)KRS_BEHAVIOR_STATE::HIT;
-		m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Setting_Value((void*) &Desc);
+			CKiryu_KRS_Down::KRS_DOWN_DESC Desc{ -1, iDirection, strAnimationName };
+			m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Setting_Value((void*)&Desc);
+		}
+		else
+		{
+			CKiryu_KRS_Hit::KRS_Hit_DESC Desc{ &vDir, fDamage, pAttackedObject->Get_CurrentAnimationName(), iDirection };
 
+			m_iCurrentBehavior = (_uint)KRS_BEHAVIOR_STATE::HIT;
+			m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Setting_Value((void*)&Desc);
+
+
+		}
 
 		break;
 	}
@@ -524,9 +507,10 @@ void CPlayer::Synchronize_Root(const _float& fTimeDelta)
 {
 	_vector vCenterMove = XMLoadFloat3(m_pModelCom->Get_AnimationCenterMove());
 	_vector vDeleteZ = XMVectorSetZ(vCenterMove, 0);
+	_vector vDeleteX = XMVectorSetX(vDeleteZ, 0);
 
 	//_vector vFF = XMVector3TransformNormal(XMVectorSetZ(XMLoadFloat3(m_pModelCom->Get_AnimationCenterMove()), 0), m_pTransformCom->Get_WorldMatrix());
-	_vector vFF = XMVector3TransformNormal(vDeleteZ, m_pTransformCom->Get_WorldMatrix());
+	_vector vFF = XMVector3TransformNormal(vDeleteX, m_pTransformCom->Get_WorldMatrix());
 
 	// 월드 행렬
 	_matrix worldMatrix = m_pTransformCom->Get_WorldMatrix();
@@ -888,14 +872,14 @@ void CPlayer::KRH_KeyInput(const _float& fTimeDelta)
 					|| string::npos != strAnimName.find("y_b")
 					|| string::npos != strAnimName.find("_guard_") || string::npos != strAnimName.find("_dnf_"))
 				{
-					_bool isFront = false;
-					m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Setting_Value(&isFront);
+					CKiryu_KRS_Down::KRS_DOWN_DESC Desc{ 0, -1, string()};
+					m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Setting_Value(&Desc);
 				}
 				else if (string::npos != strAnimName.find("body_r") || string::npos != strAnimName.find("_f")
 					|| string::npos != strAnimName.find("_direct_") || string::npos != strAnimName.find("dnb"))
 				{
-					_bool isFront = true;
-					m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Setting_Value(&isFront);
+					CKiryu_KRS_Down::KRS_DOWN_DESC Desc{ 1, -1, string() };
+					m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Setting_Value(&Desc);
 				}
 
 			}
@@ -1237,10 +1221,29 @@ void CPlayer::Change_Animation(_uint iIndex, _float fInterval)
 {
 	if (m_pModelCom->Set_AnimationIndex(iIndex, fInterval))
 	{
+		// 실제로 애니메이션 체인지가 일어났을 때 켜져있던 어택 콜라이더를 전부 끈다
+		Off_Attack_Colliders();
 		XMStoreFloat4(&m_vPrevMove, XMVectorZero());
 		m_fPrevSpeed = 0.f;
 	}
 	
+	string strAnimName = string(m_pModelCom->Get_AnimationName(iIndex));
+	strAnimName = m_pGameInstance->Extract_String(strAnimName, '[', ']');
+	m_pData->Set_CurrentAnimation(strAnimName);
+}
+
+void CPlayer::Change_ResetAnimaition(_uint iIndex, _float fInterval)
+{
+	m_pModelCom->Reset_Animation(iIndex);
+
+	if (m_pModelCom->Set_AnimationIndex(iIndex, fInterval))
+	{
+		// 실제로 애니메이션 체인지가 일어났을 때 켜져있던 어택 콜라이더를 전부 끈다
+		Off_Attack_Colliders();
+		XMStoreFloat4(&m_vPrevMove, XMVectorZero());
+		m_fPrevSpeed = 0.f;
+	}
+
 	string strAnimName = string(m_pModelCom->Get_AnimationName(iIndex));
 	strAnimName = m_pGameInstance->Extract_String(strAnimName, '[', ']');
 	m_pData->Set_CurrentAnimation(strAnimName);
@@ -1451,6 +1454,46 @@ void CPlayer::AccHitGauge()
 		m_fHitGauge += 10.f;
 
 	m_iCurrentHitLevel = (m_fHitGauge / PLAYER_HITGAUGE_LEVEL_INTERVAL);
+}
+
+void CPlayer::Setting_RimLight()
+{
+	switch (m_eCurrentStyle)
+	{
+	case Client::CPlayer::ADVENTURE:
+	{
+		m_isRimLight = 0.f;
+		break;
+	}
+	case Client::CPlayer::KRS:
+	{
+		m_isRimLight = 0.1f;
+		break;
+	}
+	case Client::CPlayer::KRH:
+	{
+		m_isRimLight = 0.2f;
+		break;
+	}
+	case Client::CPlayer::KRC:
+	{
+		m_isRimLight = 0.3f;
+		break;
+	}
+	case Client::CPlayer::BATTLE_STYLE_END:
+		break;
+	default:
+		break;
+	}
+}
+
+HRESULT CPlayer::Bind_RimLight()
+{
+	_float isfale = 0.f;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_isRimLight", &isfale, sizeof(_float))))
+		return E_FAIL;
+
+	return S_OK;
 }
 
 CPlayer* CPlayer::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
