@@ -555,7 +555,7 @@ void CNavigation_Manager::Show_Cells_IMGUI()
 
 	}
 
-	static int iNavIndex;
+	static int iNavIndex = 70;
 	ImGui::InputInt(u8"네비게이션 저장 index : ", &iNavIndex);
 
 	if (ImGui::Button(u8"네비게이션 저장"))

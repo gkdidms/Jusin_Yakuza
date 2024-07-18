@@ -562,7 +562,7 @@ void CLightTool_Mgr::Show_Installed_LightsList()
 	ImGui::NewLine();
 
 	/* 저장 번호 */
-	static int iSaveNum;
+	static int iSaveNum = 70;
 	ImGui::InputInt(u8"저장번호 : ", &iSaveNum);
 
 	if (ImGui::Button(u8"라이트 저장"))

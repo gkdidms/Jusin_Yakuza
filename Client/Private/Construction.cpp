@@ -119,34 +119,70 @@ void CConstruction::Tick(const _float& fTimeDelta)
 
 void CConstruction::Late_Tick(const _float& fTimeDelta)
 {
-	if (0 == m_iShaderPassNum || 3 == m_iShaderPassNum)
+	if (true == m_pGameInstance->isIn_WorldFrustum(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 3.f) && OBJECT_TYPE::LARGE_CONSTRUCTION != m_iObjectType)
 	{
-		m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
-	}
-	else if (1 == m_iShaderPassNum)
-	{
-		m_pGameInstance->Add_Renderer(CRenderer::RENDER_GLASS, this);
-	}
-	else if (2 == m_iShaderPassNum)
-	{
-		m_pGameInstance->Add_Renderer(CRenderer::RENDER_PUDDLE, this);
-	}
-	else
-	{
-		m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
-	}
-
-	if (1 != m_iObjectType)
-	{
-		if (m_pGameInstance->isShadow())
+		if (0 == m_iShaderPassNum || 3 == m_iShaderPassNum)
 		{
-			// 처음 렌더를 돌 때만 그림자를 그려준다.
-			m_pGameInstance->Add_Renderer(CRenderer::RENDER_SHADOWOBJ, this);
+			m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
 		}
-	}
+		else if (1 == m_iShaderPassNum)
+		{
+			m_pGameInstance->Add_Renderer(CRenderer::RENDER_GLASS, this);
+		}
+		else if (2 == m_iShaderPassNum)
+		{
+			m_pGameInstance->Add_Renderer(CRenderer::RENDER_PUDDLE, this);
+		}
+		else
+		{
+			m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
+		}
 
-	for (auto& iter : m_vDecals)
-		iter->Late_Tick(fTimeDelta);	
+		if (1 != m_iObjectType)
+		{
+			if (m_pGameInstance->isShadow())
+			{
+				// 처음 렌더를 돌 때만 그림자를 그려준다.
+				m_pGameInstance->Add_Renderer(CRenderer::RENDER_SHADOWOBJ, this);
+			}
+		}
+
+		for (auto& iter : m_vDecals)
+			iter->Late_Tick(fTimeDelta);
+	}
+	else if(OBJECT_TYPE::LARGE_CONSTRUCTION == m_iObjectType)
+	{
+		// 컬링x
+		if (0 == m_iShaderPassNum || 3 == m_iShaderPassNum)
+		{
+			m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
+		}
+		else if (1 == m_iShaderPassNum)
+		{
+			m_pGameInstance->Add_Renderer(CRenderer::RENDER_GLASS, this);
+		}
+		else if (2 == m_iShaderPassNum)
+		{
+			m_pGameInstance->Add_Renderer(CRenderer::RENDER_PUDDLE, this);
+		}
+		else
+		{
+			m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
+		}
+
+		if (1 != m_iObjectType)
+		{
+			if (m_pGameInstance->isShadow())
+			{
+				// 처음 렌더를 돌 때만 그림자를 그려준다.
+				m_pGameInstance->Add_Renderer(CRenderer::RENDER_SHADOWOBJ, this);
+			}
+		}
+
+		for (auto& iter : m_vDecals)
+			iter->Late_Tick(fTimeDelta);
+	}
+	
 }
 
 HRESULT CConstruction::Render()

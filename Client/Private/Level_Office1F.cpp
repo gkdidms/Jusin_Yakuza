@@ -47,17 +47,19 @@ void CLevel_Office1F::Tick(const _float& fTimeDelta)
 		int		iLevelNum;
 		if (true == dynamic_cast<CTrigger*>(pTriggers[i])->Move_Scene(iLevelNum))
 		{
+			m_bSceneChange = true;
 			m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, (LEVEL)iLevelNum));
 		}
 	}
 
-
-	if (m_pGameInstance->GetKeyState(DIK_SPACE) == TAP)
+	if (false == m_bSceneChange)
 	{
-		if (FAILED(m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_OFFICE_2F))))
-			return;
+		if (m_pGameInstance->GetKeyState(DIK_SPACE) == TAP)
+		{
+			if (FAILED(m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_OFFICE_2F))))
+				return;
+		}
 	}
-
 
 
 
