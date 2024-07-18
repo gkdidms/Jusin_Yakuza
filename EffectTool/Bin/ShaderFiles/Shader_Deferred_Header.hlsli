@@ -80,7 +80,7 @@ float fDelta = { 0.0001f };
 bool g_isFinished = { false };
 float g_fLumVar;
 //float A = { 2.51f }, B = { 0.03f }, C = { 2.43f }, D = { 0.59f }, E = { 0.14f };
-float A = { 0.15f }, B = { 0.50f }, C = { 0.10f }, D = { 0.20f }, E = { 0.02f }, F = { 0.3f }, w = { 1.2f };
+float A = { 0.15f }, B = { 0.50f }, C = { 0.10f }, D = { 0.20f }, E = { 0.02f }, F = { 0.3f }, w = { 0.8f };
 
 /*블룸(가우시안) */
 float g_fTexW = 1280.0f;

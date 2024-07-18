@@ -60,8 +60,7 @@ void CPlayerCamera::Tick(const _float& fTimeDelta)
 
 	if (m_pSystemManager->Get_Camera() != CAMERA_PLAYER) return;
 
-	//Compute_View(fTimeDelta);
-
+	// 테스트용
 	if (m_pGameInstance->GetKeyState(DIK_T) == HOLD)
 	{
 		if (true == m_pCollisionManager->Map_Collision(m_pColliderCom))
@@ -71,6 +70,7 @@ void CPlayerCamera::Tick(const _float& fTimeDelta)
 
 	}
 	
+	m_bCamCollision = m_pCollisionManager->Map_Collision(m_pColliderCom);
 	
 	__super::Tick(fTimeDelta);
 }
@@ -108,11 +108,6 @@ void CPlayerCamera::Late_Tick(const _float& fTimeDelta)
 	if (m_fCamDistance > MAX_DISTANCE)
 		m_fCamDistance = MAX_DISTANCE;
 
-	if (1 > m_fCamDistance)
-	{
-		m_fCamDistance = 1;
-	}
-
 
 	__super::Tick(fTimeDelta);
 
@@ -149,7 +144,7 @@ void CPlayerCamera::Compute_View(const _float& fTimeDelta)
 
 	if (2.5f < m_fCamDistance && false == m_bBlock && true == m_bCamCollision)
 	{
-		m_fCamDistance -= 0.01;
+		m_fCamDistance -= 0.001;
 	}
 	else if (2.5f >= m_fCamDistance && true == m_bCamCollision)
 	{
