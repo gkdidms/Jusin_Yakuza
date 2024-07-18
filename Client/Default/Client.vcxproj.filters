@@ -1164,6 +1164,12 @@
     <Filter Include="02.GameObjects\08.Trigger\00.LevelTrigger">
       <UniqueIdentifier>{835e72e8-1619-411a-b7e0-d0d01d39c3ed}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\08.Trigger\01.CineTrigger">
+      <UniqueIdentifier>{cae0d787-995c-4814-9000-134f1f4a389d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\08.Trigger\02.YonedaTrigger">
+      <UniqueIdentifier>{cd20dace-6e28-432e-8fd8-98fbb338d7d3}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Client.rc">

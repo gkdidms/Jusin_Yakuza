@@ -1,6 +1,7 @@
 #pragma once
 
 #include "GameObject.h"
+#include "GameInstance.h"
 #include "Client_Defines.h"
 
 BEGIN(Engine)

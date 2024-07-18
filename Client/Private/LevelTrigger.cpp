@@ -39,7 +39,6 @@ void CLevelTrigger::Tick(const _float& fTimeDelta)
 	m_pColliderCom->Tick(m_WorldMatrix);
 
 
-
 	__super::Tick(fTimeDelta);
 }
 
@@ -51,7 +50,18 @@ void CLevelTrigger::Late_Tick(const _float& fTimeDelta)
 	// 조건 충족
 	if (m_pColliderCom->Intersect(dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject(m_iCurrentLevel, TEXT("Layer_Player"), 0))->Get_PlayerCollider()))
 	{
-		m_bMoveScene = true;
+		vector<CGameObject*> pMonsters = m_pGameInstance->Get_GameObjects(m_iCurrentLevel, TEXT("Layer_Monster"));
+		
+		bool		bDeadCheck = true;
+		for (int i = 0; i < pMonsters.size(); i++)
+		{
+			if (false == pMonsters[i]->isObjectDead())
+			{
+				bDeadCheck = false;
+			}
+		}
+
+		m_bMoveScene = bDeadCheck;
 	}
 
 }

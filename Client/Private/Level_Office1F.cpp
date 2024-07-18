@@ -32,19 +32,14 @@ HRESULT CLevel_Office1F::Initialize()
 	m_pFileTotalManager->Set_MapObj_In_Client(STAGE_OFFICE_1F, LEVEL_OFFICE_1F);
 	m_pFileTotalManager->Set_Lights_In_Client(STAGE_OFFICE_1F);
 	m_pFileTotalManager->Set_Collider_In_Client(STAGE_OFFICE_1F, LEVEL_OFFICE_1F);
-	m_pFileTotalManager->Set_Trigger_In_Client(0, LEVEL_OFFICE_1F);
+	m_pFileTotalManager->Set_Trigger_In_Client(STAGE_OFFICE_1F, LEVEL_OFFICE_1F);
 
 	return S_OK;
 }
 
 void CLevel_Office1F::Tick(const _float& fTimeDelta)
 {
-	if (m_pGameInstance->GetKeyState(DIK_SPACE) == TAP)
-	{
-		if (FAILED(m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_OFFICE_2F))))
-			return;
-	}
-
+	// 트리거 체크 - 씬 이동
 	vector<CGameObject*> pTriggers = m_pGameInstance->Get_GameObjects(LEVEL_OFFICE_1F, TEXT("Layer_Trigger"));
 
 	for (int i = 0; i < pTriggers.size(); i++)
@@ -52,9 +47,18 @@ void CLevel_Office1F::Tick(const _float& fTimeDelta)
 		int		iLevelNum;
 		if (true == dynamic_cast<CTrigger*>(pTriggers[i])->Move_Scene(iLevelNum))
 		{
-			m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_OFFICE_2F));
+			m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, (LEVEL)iLevelNum));
 		}
 	}
+
+
+	if (m_pGameInstance->GetKeyState(DIK_SPACE) == TAP)
+	{
+		if (FAILED(m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_OFFICE_2F))))
+			return;
+	}
+
+
 
 
 #ifdef _DEBUG

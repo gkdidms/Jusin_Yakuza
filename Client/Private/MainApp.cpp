@@ -394,9 +394,7 @@ void CMainApp::Free()
 	CDebugManager::Release_Debug();
 #endif // _DEBUG
 
-	/* 레퍼런스 카운트를 0으로만든다. */
-	Safe_Release(m_pGameInstance);
-	CGameInstance::Release_Engine();
+
 
 	Safe_Release(m_pSystemManager);
 	CSystemManager::DestroyInstance();
@@ -409,4 +407,8 @@ void CMainApp::Free()
 
 	Safe_Release(m_pCollisionManager);
 	CCollision_Manager::DestroyInstance();
+
+	/* 레퍼런스 카운트를 0으로만든다. */
+	Safe_Release(m_pGameInstance);
+	CGameInstance::Release_Engine();
 }
