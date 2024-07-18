@@ -1864,6 +1864,12 @@ void CImguiManager::TrailEvent_Load(string strPath)
 		in >> TrailEvent.fAinmPosition;
 		
 		m_TrailEvents.emplace(key, TrailEvent);
+
+		if (TrailEvent.iType == 0)
+		{
+			Create_Effect(TrailEvent.strBonelName, m_SelectedEffectName, TEXT("Layer_Trail"));
+		}
+
 	}
 
 	in.close();
