@@ -100,6 +100,7 @@ private:
     void Render_Blender();//기존 논블렌드 렌더
     void Render_Effect();// 파티클렌더 
     void Render_FinlaOIT();// 파티클 최종병합
+    void Render_Distortion();//디스토션 파티클
 
     void Render_UI();
 

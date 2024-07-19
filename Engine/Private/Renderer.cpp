@@ -143,6 +143,8 @@ HRESULT CRenderer::Initialize()
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_AccumAlpha"), 750.f, 150.f, 100.f, 100.f)))
 		return E_FAIL;
+	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_Distortion"), 850.f, 50.f, 100.f, 100.f)))
+		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_RimLight"), 650.f, 50.f, 100.f, 100.f)))
 		return E_FAIL;
@@ -325,7 +327,9 @@ HRESULT CRenderer::Ready_Targets()
 #pragma region MRT_OIT
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_AccumColor"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(0.f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
-	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_AccumAlpha"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(1.f, 1.f, 1.f, 1.f))))
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_AccumAlpha"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(0.f, 0.f, 0.f, 0.f))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Distortion"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(0.f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
 #pragma endregion
 	
@@ -493,6 +497,8 @@ HRESULT CRenderer::Ready_MRTs()
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_Accum"), TEXT("Target_AccumColor"))))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_Accum"), TEXT("Target_AccumAlpha"))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_Accum"), TEXT("Target_Distortion"))))
 		return E_FAIL;
 
 	/*MRT_RimLight*/
@@ -682,7 +688,7 @@ void CRenderer::Draw()
 	Render_Blender();
 	Render_Effect();
 	Render_FinlaOIT();
-
+	Render_Distortion();
 	Render_UI();
 
 #ifdef _DEBUG
@@ -1109,7 +1115,7 @@ void CRenderer::Render_DeferredResult() // 백버퍼에 Diffuse와 Shade를 더해서 그�
 	if (FAILED(m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
 		return;
 
-	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(m_isBOF ? TEXT("Target_BOF") : m_isHDR ? TEXT("Target_ToneMapping") : TEXT("Target_BackBuffer"), m_pShader, "g_BackBufferTexture")))
+	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_BackBuffer"), m_pShader, "g_BackBufferTexture")))
 		return;
 
 	m_pShader->Begin(4);
@@ -1517,6 +1523,7 @@ void CRenderer::Render_RimLight()
 {
 	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_CopyBackBuffer"), nullptr, false)))
 		return;
+
 	if (FAILED(m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix)))
 		return;
 	if (FAILED(m_pShader->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix)))
@@ -1544,23 +1551,9 @@ void CRenderer::Render_RimLight()
 	m_pShader->Begin(19);
 
 	m_pVIBuffer->Render();	
-	/*
-	for (auto& iter : m_RenderObject[RENDER_PRIORITY])
-	{
-		if (nullptr != iter)
-			iter->Render();
-
-		Safe_Release(iter);
-	}
-	m_RenderObject[RENDER_PRIORITY].clear();
-	*/
 
 	if (FAILED(m_pGameInstance->End_MRT()))
 		return;
-
-
-
-
 }
 
 void CRenderer::Render_NonLight()
@@ -1618,6 +1611,17 @@ void CRenderer::Render_Bloom()
 
 void CRenderer::Render_FinalEffectBlend()
 {
+	if (m_isBOF)
+	{
+		if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MTR_BOF"), nullptr, false)))
+			return;
+	}
+	else
+	{
+		if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_CopyBackBuffer"), nullptr, false)))
+			return;
+	}
+
 	if (FAILED(m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix)))
 		return;
 	if (FAILED(m_pShader->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix)))
@@ -1637,6 +1641,10 @@ void CRenderer::Render_FinalEffectBlend()
 	m_pShader->Begin(13);
 
 	m_pVIBuffer->Render();
+
+	if (FAILED(m_pGameInstance->End_MRT()))
+		return;
+
 }
 
 void CRenderer::Render_Blender()
@@ -1676,23 +1684,57 @@ void CRenderer::Render_Effect()// 새로운 타겟에 파티클 그리기
 
 void CRenderer::Render_FinlaOIT() //파티클 그린 타겟 병합
 {
+	
+	if (m_isBOF)
+	{
+		if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MTR_BOF"),nullptr,false)))
+			return;
+	}
+	else
+	{
+		if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_CopyBackBuffer"), nullptr, false)))
+			return;
+	}
+
+	if (FAILED(m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix)))
+		return;
+	if (FAILED(m_pShader->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix)))
+		return;
+	if (FAILED(m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
+		return;
+
 	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_AccumColor"), m_pShader, "g_AccumTexture")))//이펙트 텍스처 원본
 		return;
 	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_AccumAlpha"), m_pShader, "g_AccumAlpha")))//이펙트 텍스처 원본
 		return;
 
-	if (m_isHDR)
-	{
-		if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_BOF"), m_pShader, "g_ResultTexture")))//이펙트 텍스처 원본
-			return;
-	}
-	else
-	{
-		if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_BackBuffer"), m_pShader, "g_ResultTexture")))//이펙트 텍스처 원본
-			return;
-	}
 
 	m_pShader->Begin(15);
+
+	m_pVIBuffer->Render();
+
+
+	if (FAILED(m_pGameInstance->End_MRT()))
+		return;
+
+}
+
+void CRenderer::Render_Distortion()
+{
+	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Distortion"), m_pShader, "g_Distortion")))//이펙트 텍스처 원본
+		return;
+
+	if (FAILED(m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix)))
+		return;
+	if (FAILED(m_pShader->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix)))
+		return;
+	if (FAILED(m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
+		return;
+
+	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(m_isBOF ? TEXT("Target_BOF") : TEXT("Target_BackBuffer"), m_pShader, "g_ResultTexture")))//원본 최종
+		return;
+
+	m_pShader->Begin(20);//디스토션 제작
 
 	m_pVIBuffer->Render();
 }

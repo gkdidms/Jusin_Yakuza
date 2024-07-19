@@ -49,6 +49,7 @@ HRESULT CImguiManager::Initialize(void* pArg)
 	TextureTags.push_back(TEXT("Prototype_Component_Texture_AuraToneDestroy"));
 	TextureTags.push_back(TEXT("Prototype_Component_Texture_GuardParticle"));
 	TextureTags.push_back(TEXT("Prototype_Component_Texture_GuardSmoke"));
+	TextureTags.push_back(TEXT("Prototype_Component_Texture_GuardDist"));
 
 
 	if (nullptr != pArg)
@@ -762,6 +763,7 @@ void CImguiManager::EditorTrail_Tick(_float fTimeDelta)
 			if (ImGui::Selectable(Label, isSelected))
 			{
 				m_iCurEditIndex = i; // 선택된 아이템 업데이트	
+				m_TrailDesc.ParticleTag = dynamic_cast<CEffect*>(m_EditTrail[i])->Get_Tag();
 			}
 
 			// 선택된 아이템이 보이도록 스크롤
@@ -781,7 +783,17 @@ void CImguiManager::EditorTrail_Tick(_float fTimeDelta)
 	_bool bChange = false;
 	ImGui::Text(to_string(m_iCurEditIndex).c_str());	
 
-	
+	static char strReName[MAX_PATH]{};
+
+	ImGui::InputText("ParticleTag", strReName, MAX_PATH);
+	if (ImGui::Button(u8"변경하기"))
+	{
+		bChange = true;
+		string tag = strReName;
+		m_TrailDesc.ParticleTag = m_pGameInstance->StringToWstring(tag);
+	}
+
+
 	_int* Temp = (_int*)&m_TrailDesc.Trail_Desc.iMaxTrail;
 	if (ImGui::InputInt("MaxTrail", Temp))
 	{
@@ -965,6 +977,7 @@ HRESULT CImguiManager::Edit_Particle(_uint Index)
 		EffectDesc.vEndColor = m_EffectDesc.vEndColor;
 		EffectDesc.iShaderPass = m_EffectDesc.iShaderPass;
 		EffectDesc.TextureTag = m_EffectDesc.TextureTag;
+		EffectDesc.fDistortion = m_EffectDesc.fDistortion;
 
 		m_EditParticle[Index] = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Particle_Point"), &EffectDesc);
 		if (nullptr == m_EditParticle[Index])
@@ -1001,7 +1014,7 @@ HRESULT CImguiManager::Edit_Particle(_uint Index)
 
 		TrailDesc.vStartPos = m_TrailDesc.vStartPos;
 		TrailDesc.eType = CEffect::TYPE_TRAIL;	
-		TrailDesc.ParticleTag = m_pGameInstance->StringToWstring(m_TrailTag);
+		TrailDesc.ParticleTag = m_TrailDesc.ParticleTag;
 		TrailDesc.iShaderPass = m_TrailDesc.iShaderPass;
 		TrailDesc.TextureTag = m_TrailDesc.TextureTag;
 
@@ -1107,6 +1120,7 @@ HRESULT CImguiManager::Load_Desc(_uint Index)
 		m_EffectDesc.vEndColor = pEffect->Get_EColor();
 		m_EffectDesc.iShaderPass = pEffect->Get_ShaderPass();
 		m_EffectDesc.TextureTag = pEffect->Get_TextureTag();
+		m_EffectDesc.fDistortion = pEffect->Get_fDistortion();
 
 		for (size_t i = 0; i < TextureTags.size(); i++)
 		{
@@ -1525,6 +1539,9 @@ void CImguiManager::Editor_Tick(_float fTimeDelta)
 	ImGui::SameLine();
 	if (ImGui::RadioButton("ANIM", &m_EffectDesc.iShaderPass, PASS_ANIM))
 		bChange = true;
+	ImGui::SameLine();
+	if (ImGui::RadioButton("DISTORTION", &m_EffectDesc.iShaderPass, PASS_DISTORTION))
+		bChange = true;
 
 	if (ImGui::Checkbox("Spread", &m_bSpread))
 	{
@@ -1575,6 +1592,15 @@ void CImguiManager::Editor_Tick(_float fTimeDelta)
 	if (ImGui::Checkbox("useRadius", &m_EffectDesc.BufferInstance.bRadius))
 	{
 		bChange = true;
+	}
+	static char strReName[MAX_PATH]{};
+
+	ImGui::InputText("ParticleTag", strReName, MAX_PATH);
+	if (ImGui::Button(u8"변경하기"))	
+	{
+		bChange = true;
+		string tag = strReName;
+		m_EffectDesc.ParticleTag = m_pGameInstance->StringToWstring(tag);
 	}
 
 
@@ -1701,6 +1727,25 @@ void CImguiManager::Editor_Tick(_float fTimeDelta)
 		}
 	}
 	break;
+
+	case PASS_DISTORTION:
+	{
+		_float* Temp = (_float*)&m_EffectDesc.fDistortion;
+		if (ImGui::InputFloat("DistortionWeight", Temp))
+		{
+			memcpy(&m_EffectDesc.fDistortion, Temp, sizeof(_float));
+			bChange = true;
+		}
+
+
+		Temp = (_float*)&m_EffectDesc.fLifeAlpha;
+		if (ImGui::InputFloat2("LifeAlpha", Temp))
+		{
+			memcpy(&m_EffectDesc.fLifeAlpha, Temp, sizeof(_float2));
+			bChange = true;
+		}
+		break;
+	}
 	case PASS_ANIM:
 	{
 		Color_Palette();

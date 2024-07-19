@@ -345,7 +345,7 @@ PS_OUT PS_MAIN_RESULT(PS_IN In)
     
     vector vEffect = g_EffectTexture.Sample(LinearSampler, In.vTexcoord);
     
-    Out.vColor = vResult + vBlur + vEffect;
+    Out.vColor = vBlur   +vEffect;
     
     return Out;
 }
@@ -465,8 +465,6 @@ PS_OUT PS_RIMLIGHT(PS_IN In)//범위 지정 문해야됨
 
     vector BaseNormal = g_NormalTexture.Sample(LinearSampler, In.vTexcoord);//월드 노멀
     BaseNormal = vector(BaseNormal.xyz * 2.f - 1.f, 0.f);
-
-    vector BackBuffer = g_BackBufferTexture.Sample(LinearSampler, In.vTexcoord);
     
     vector BaseDepth = g_DepthTexture.Sample(LinearSampler, In.vTexcoord);
 
@@ -516,6 +514,25 @@ PS_OUT PS_RIMLIGHT(PS_IN In)//범위 지정 문해야됨
         Out.vColor = vector(0.f, 0.f, 0.f, 0.f);
     }
    
+    
+    return Out;
+}
+
+PS_OUT PS_DISTORTION(PS_IN In)//범위 지정 문해야됨
+{
+    PS_OUT Out = (PS_OUT) 0;
+    
+    vector vDist = g_Distortion.Sample(PointSampler, In.vTexcoord);
+    
+    float Weight = vDist.a * vDist.b; //가중치
+
+        
+    float2 Texcoord = float2(In.vTexcoord.x + Weight, In.vTexcoord.y + Weight);
+
+    vector BackBuffer = g_ResultTexture.Sample(LinearSampler, Texcoord);
+
+    
+    Out.vColor = BackBuffer;
     
     return Out;
 }
@@ -699,7 +716,7 @@ technique11 DefaultTechnique
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_None_Test_None_Write, 0);
-        SetBlendState(BS_Default, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xffffffff);
+        SetBlendState(BS_AlphaBlend, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xffffffff);
 
         VertexShader = compile vs_5_0 VS_MAIN();
         GeometryShader = NULL;
@@ -786,6 +803,19 @@ technique11 DefaultTechnique
         HullShader = NULL;
         DomainShader = NULL;
         PixelShader = compile ps_5_0 PS_RIMLIGHT();
+    }
+
+    pass Distortion //20
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_None_Test_None_Write, 0);
+        SetBlendState(BS_Default, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        HullShader = NULL;
+        DomainShader = NULL;
+        PixelShader = compile ps_5_0 PS_DISTORTION();
     }
 
 

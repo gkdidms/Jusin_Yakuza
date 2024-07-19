@@ -66,6 +66,7 @@ Texture2D g_BlurTexture;
 Texture2D g_ResultTexture;
 Texture2D g_AccumTexture;
 Texture2D g_AccumAlpha;
+Texture2D g_Distortion;
 
 Texture2D g_GlassDiffuseTexture;
 Texture2D g_GlassNormalTexture;

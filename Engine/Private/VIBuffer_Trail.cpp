@@ -150,6 +150,8 @@ void CVIBuffer_Trail::Add_Trail(const _float& fTimeDelta, const _matrix WorldMat
 	_float vTexcoordX = m_TrailInfos.size() * 2;
 	for (size_t i = 0; i < m_TrailInfos.size() * 2;)
 	{
+
+
 		vResult[i].vPosition = (*tTrailInfo).vPos[0];
 		vResult[i].vTexcoord = _float2(1.f-(i / (vTexcoordX - 2.f)), 0.f);
 		++i;
