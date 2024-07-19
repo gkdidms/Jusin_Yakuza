@@ -256,6 +256,19 @@ HRESULT CPlayer::Render()
 				if (FAILED(m_pShaderCom->Bind_RawValue("g_fRimUV", &m_fRimPartsUV, sizeof(_float2))))
 					return E_FAIL;
 			}
+
+			// 기게이지가 켜져있는 상태라면 상반신 림라이트를 켠다
+			if (0 < m_iCurrentHitLevel)
+			{
+				if (!strcmp(pMesh->Get_Name(), "[l0]jacketw1"))
+				{
+					if (FAILED(m_pShaderCom->Bind_RawValue("g_isRimLight", &m_isRimLight, sizeof(_float))))
+						return E_FAIL;
+
+					if (FAILED(m_pShaderCom->Bind_RawValue("g_fRimUV", &m_fRimPartsUV, sizeof(_float2))))
+						return E_FAIL;
+				}
+			}
 		}
 		else
 		{	
