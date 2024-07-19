@@ -44,6 +44,8 @@ HRESULT CCollision_Manager::Add_HitCollider(CSocketCollider* pCollider, COLLIDER
 
 HRESULT CCollision_Manager::Add_MapCollider(CCollider* pCollider)
 {
+    m_fIntersectDistance = 0;
+
     Safe_AddRef(pCollider);
     m_MapColliders.push_back(pCollider);
 
@@ -181,7 +183,7 @@ _bool CCollision_Manager::Map_Collision(CCollider* pCollider)
 
     for (auto& pMapCollider : m_MapColliders)
     {
-        if (pMapCollider->Intersect(pCollider, 100.f))
+        if (pMapCollider->Intersect(pCollider, 500.f))
         {
             switch (pMapCollider->Get_Type())
             {
