@@ -910,7 +910,11 @@ CBTNode::NODE_STATE CAI_Monster::Sway()
 
 	//플레이어가 몬스터의 뒤에 있을때 스웨이를 하지 않는다.
 	if (isBehine())
+	{
+		m_isSway = false;
 		return CBTNode::FAIL;
+	}
+		
 
 	if (m_pPlayer->Get_BattleStyle() == CPlayer::KRS)
 		iPlayerAtkDir = Check_KRS(iPlayerLv, false);
