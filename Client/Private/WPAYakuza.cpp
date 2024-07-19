@@ -138,6 +138,7 @@ HRESULT CWPAYakuza::Add_Components()
 
 void CWPAYakuza::Change_Animation()
 {
+
 	__super::Change_Animation();
 
  	switch (m_iState)
@@ -146,6 +147,7 @@ void CWPAYakuza::Change_Animation()
 	{
 		m_strAnimName = "e_wpa_stand_btl";
 		m_isAnimLoop = true;
+		m_isDown = false;
 		break;
 	}
 	case MONSTER_SHIFT_F:

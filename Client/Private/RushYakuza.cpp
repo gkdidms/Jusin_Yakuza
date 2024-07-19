@@ -152,6 +152,7 @@ void CRushYakuza::Change_Animation()
 	{
 		m_strAnimName = "e_pnc_stand";
 		m_isAnimLoop = true;
+		m_isDown = false;
 		break;
 	}
 	case MONSTER_SWAY_F:

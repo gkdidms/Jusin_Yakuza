@@ -768,7 +768,7 @@ _bool CAI_Monster::Check_StandUp()
 		|| *m_pState == CMonster::MONSTER_DWN_DIRECT_F_BOUND_G
 		|| *m_pState == CMonster::MONSTER_DWN_DIRECT_F)
 	{
-		
+		m_pThis->Set_Down(false);
 		*m_pState = CMonster::MONSTER_STANDUP_DNF_FAST;
 		return false;
 	}
@@ -778,6 +778,7 @@ _bool CAI_Monster::Check_StandUp()
 		|| *m_pState == CMonster::MONSTER_DWN_BODY_B
 		|| *m_pState == CMonster::MONSTER_DWN_BODY_B_SP)
 	{
+		m_pThis->Set_Down(false);
 		*m_pState = CMonster::MONSTER_STANDUP_DNB_FAST;
 		return false;
 	}
@@ -893,7 +894,7 @@ CBTNode::NODE_STATE CAI_Monster::Check_Sway()
 	if (m_pPlayer->isAttack() && !m_pThis->isColl())
 	{
 		//플레이어와의 거리가 어느정도 있는 상태여야만 함
-		if (DistanceFromPlayer() >= 1.5f && DistanceFromPlayer() < 1.8f)
+		if (DistanceFromPlayer() >= 1.5f && DistanceFromPlayer() < 1.7f)
 		{
 			Reset_State();
 			return CBTNode::SUCCESS;		
