@@ -56,7 +56,7 @@ void CLevel_Office1F::Tick(const _float& fTimeDelta)
 
 	if (false == m_bSceneChange)
 	{
-		if (m_pGameInstance->GetKeyState(DIK_SPACE) == TAP)
+		if (m_pGameInstance->GetKeyState(DIK_RETURN) == TAP)
 		{
 			if (FAILED(m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_OFFICE_2F))))
 				return;

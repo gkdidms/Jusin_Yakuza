@@ -91,7 +91,7 @@ void CAI_Monster::LookAtPlayer()
 {
 	_vector vPlayerPos = m_pPlayer->Get_TransformCom()->Get_State(CTransform::STATE_POSITION);
 
-	m_pThis->Get_TransformCom()->LookAt(vPlayerPos);
+	m_pThis->Get_TransformCom()->LookAt_For_LandObject(vPlayerPos);
 }
 
 _bool CAI_Monster::Find_CurrentAnimationName(string strAnimName)
