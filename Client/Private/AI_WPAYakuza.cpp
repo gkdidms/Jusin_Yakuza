@@ -26,6 +26,7 @@ HRESULT CAI_WPAYakuza::Initialize(void* pArg)
 	Ready_Tree();
 
 	m_fDelayAttackDuration = m_pGameInstance->Get_Random(6, 9);
+	m_iMonsterType = CAI_Monster::WPA;
 
 	return S_OK;
 }
