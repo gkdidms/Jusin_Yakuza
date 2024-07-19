@@ -269,7 +269,7 @@ CBTNode::NODE_STATE CAI_Shakedown::ATK_CMD()
 			*m_pState = CMonster::MONSTER_CMD_2;
 			m_fCmbCount++;
 		}
-		else if (*m_pState == CMonster::MONSTER_CMD_2 && *(m_pAnimCom->Get_AnimPosition()) >= 31.0)
+		else if (*m_pState == CMonster::MONSTER_CMD_2 && *(m_pAnimCom->Get_AnimPosition()) >= 29.0)
 		{
 			LookAtPlayer();
 			*m_pState = CMonster::MONSTER_CMD_3;
