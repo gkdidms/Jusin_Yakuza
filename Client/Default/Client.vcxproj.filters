@@ -64,9 +64,6 @@
     <ClCompile Include="..\..\Imgui\imgui\imgui_widgets.cpp">
       <Filter>96.ImGui</Filter>
     </ClCompile>
-    <ClCompile Include="..\..\Imgui\ImGuiFileDialog\ImGuiFileDialog.cpp">
-      <Filter>96.ImGui</Filter>
-    </ClCompile>
     <ClCompile Include="..\..\Imgui\imGuizmo\GraphEditor.cpp">
       <Filter>96.ImGui</Filter>
     </ClCompile>
@@ -440,12 +437,6 @@
       <Filter>96.ImGui</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Imgui\ImGuiFileDialog\dirent\dirent.h">
-      <Filter>96.ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Imgui\ImGuiFileDialog\ImGuiFileDialog.h">
-      <Filter>96.ImGui</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\Imgui\ImGuiFileDialog\ImGuiFileDialogConfig.h">
       <Filter>96.ImGui</Filter>
     </ClInclude>
     <ClInclude Include="..\..\Imgui\ImGuiFileDialog\stb\stb_image.h">

@@ -56,6 +56,8 @@ HRESULT CAI_Shakedown::Initialize(void* pArg)
 
 	m_fDelayAttackDuration = 3.f;
 
+	m_iMonsterType = CAI_Monster::SHAKDDOWN;
+
 	return S_OK;
 }
 

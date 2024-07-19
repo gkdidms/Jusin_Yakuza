@@ -1,14 +1,10 @@
 #include "ImguiManager.h"
 #include "GameInstance.h"
 
-
-
 #pragma region "°´Ã¼ ¿øÇü"
 #include "Particle_Point.h"
 #include "TRailEffect.h"
 #pragma endregion
-
-
 
 static ImGuizmo::OPERATION mCurrentGizmoOperation(ImGuizmo::TRANSLATE);
 bool useWindow = false;
