@@ -16,6 +16,7 @@ public:
 		TRIGGER_MOVE_LEVEL,
 		TRIGGER_CINEMACHINE,
 		TRIGGER_YONEDA,
+		TRIGGER_MONSTER,
 		TRIGGER_END
 	};
 
@@ -61,6 +62,7 @@ private:
 
 private:
 	vector<const char*>					m_Levels = { "LEVEL_STATIC", "LEVEL_LOADING", "LEVEL_LOGO", "LEVEL_OFFICE_1F", "LEVEL_OFFICE_2F", "LEVEL_OFFICE_BOSS", "LEVEL_DOGIMAZO", "LEVEL_DOGIMAZO_STAIRS", "LEVEL_DOGIMAZO_LOBBY", "LEVEL_DOGIMAZO_BOSS", "LEVEL_TEST", "LEVEL_END" };
+	vector<const char*>					m_TriggerLevel = { "MONSTER_TRIGGER_0", "MONSTER_TRIGGER_1", "MONSTER_TRIGGER_END" };
 	vector<char*>						m_FileNames;
 	vector<char*>						m_TriggerNames;
 	vector<CTriggerObj*>				m_TriggerObjects;

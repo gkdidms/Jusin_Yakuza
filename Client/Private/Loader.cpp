@@ -422,6 +422,8 @@ HRESULT CLoader::Loading_For_Office_1F()
 		return E_FAIL;
 #pragma endregion
 
+
+
 #pragma region Map
 	/* For.Prototype_GameObject_Terrain */
 	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Terrain"),

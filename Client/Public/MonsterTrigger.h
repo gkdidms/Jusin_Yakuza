@@ -1,6 +1,7 @@
 #pragma once
 
 #include "Trigger.h"
+#include "FileTotalMgr.h"
 
 class CMonsterTrigger : public CTrigger
 {
@@ -19,6 +20,9 @@ public:
 
 public:
     virtual bool				Move_Scene(int& iLevelNum);
+
+private:
+    CFileTotalMgr*              m_pFileMgr = { nullptr };
 
 private:
     virtual HRESULT Add_Components(void* pArg) override;

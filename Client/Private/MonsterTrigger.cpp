@@ -4,12 +4,16 @@
 
 CMonsterTrigger::CMonsterTrigger(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CTrigger{ pDevice, pContext }
+	, m_pFileMgr {CFileTotalMgr::GetInstance()}
 {
+	Safe_AddRef(m_pFileMgr);
 }
 
 CMonsterTrigger::CMonsterTrigger(const CMonsterTrigger& rhs)
 	: CTrigger{ rhs }
+	, m_pFileMgr{ rhs.m_pFileMgr }
 {
+	Safe_AddRef(m_pFileMgr);
 }
 
 HRESULT CMonsterTrigger::Initialize_Prototype()
@@ -61,7 +65,11 @@ void CMonsterTrigger::Late_Tick(const _float& fTimeDelta)
 			}
 		}
 
-		m_bMoveScene = bDeadCheck;
+		if (true == bDeadCheck)
+		{
+			m_pFileMgr->Set_MapObj_In_Client_Trigger(m_tTriggerDesc.iLevelNum, m_iCurrentLevel);
+		}
+
 	}
 
 }
@@ -133,4 +141,6 @@ CGameObject* CMonsterTrigger::Clone(void* pArg)
 void CMonsterTrigger::Free()
 {
 	__super::Free();
+
+	Safe_Release(m_pFileMgr);
 }

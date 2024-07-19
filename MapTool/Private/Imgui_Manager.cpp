@@ -25,6 +25,7 @@ CImgui_Manager::CImgui_Manager()
     , m_pCameraToolMgr { CCamera_Manager::GetInstance() }
     , m_pColliderMgr{ CCollider_Manager::GetInstance() }
     , m_pTriggerMgr{ CTrigger_Manager::GetInstance() }
+    , m_pTriggerObjMgr { CTriggerObj_Manager::GetInstance() }
 {
     Safe_AddRef(m_pGameInstance);
     Safe_AddRef(m_pNavigationMgr);
@@ -33,6 +34,7 @@ CImgui_Manager::CImgui_Manager()
     Safe_AddRef(m_pCameraToolMgr);
     Safe_AddRef(m_pColliderMgr);
     Safe_AddRef(m_pTriggerMgr);
+    Safe_AddRef(m_pTriggerObjMgr);
 }
 
 HRESULT CImgui_Manager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -56,6 +58,7 @@ HRESULT CImgui_Manager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* p
     m_pNavigationMgr->Initialize(m_pDevice, m_pContext);
     m_pObjPlace_Manager->Initialize();
     m_pLightTool_Mgr->Initialize();
+    m_pTriggerObjMgr->Initialize();
 
     return S_OK;
 }
@@ -71,6 +74,7 @@ void CImgui_Manager::Tick(_float fTimeDelta)
     m_pNavigationMgr->Tick(fTimeDelta);
     m_pCameraToolMgr->Tick(fTimeDelta);
     m_pColliderMgr->Tick(fTimeDelta);
+    m_pTriggerObjMgr->Tick(fTimeDelta);
 
     bool show_demo_window = true;
     bool show_another_window = false;
@@ -113,6 +117,9 @@ void CImgui_Manager::Tick(_float fTimeDelta)
 
     if (ImGui::Button(u8"트리거 TOOL"))
         m_bTriggerMgr_IMGUI = true;
+
+    if (ImGui::Button(u8"트리거 오브젝트배치 TOOL"))
+        m_bTriggerObjMgr_IMGUI = true;
        
 
     ImGui::End();
@@ -163,6 +170,14 @@ void CImgui_Manager::Tick(_float fTimeDelta)
         m_eWrieID = TRIGGER;
     }
 
+    if (m_bTriggerObjMgr_IMGUI)
+    {
+        Show_TriggerMapObj_Place_IMGUI();
+        m_pTriggerObjMgr->Show_Installed_GameObjectsList();
+        m_pTriggerObjMgr->Add_ObjectCollider_IMGUI();
+        m_eWrieID = TRIGGEROBJ;
+    }
+
 #pragma endregion
     ImGui::EndFrame();
 
@@ -185,6 +200,8 @@ void CImgui_Manager::Late_Tick(_float fTimeDelta)
     m_pCameraToolMgr->Late_Tick(fTimeDelta);
 
     m_pTriggerMgr->Late_Tick(fTimeDelta);
+
+    m_pTriggerObjMgr->Late_Tick(fTimeDelta);
 }
 
 void CImgui_Manager::Render()
@@ -219,7 +236,7 @@ void CImgui_Manager::Set_Terrain_IMGUI()
 
 void CImgui_Manager::Show_Object_List()
 {
-    CObjPlace_Manager::GetInstance()->Show_Installed_GameObjectsList();
+    m_pObjPlace_Manager->Show_Installed_GameObjectsList();
 }
 
 void CImgui_Manager::Set_NaviTool_IMGUI()
@@ -331,6 +348,20 @@ void CImgui_Manager::Show_Trigger_IMGUI()
     ImGui::End();
 }
 
+void CImgui_Manager::Show_TriggerMapObj_Place_IMGUI()
+{
+    ImGui::Begin(u8"레이어 선택");
+
+    m_pTriggerObjMgr->Set_Map_Object();
+
+    if (ImGui::Button("Close"))
+    {
+        m_bTriggerObjMgr_IMGUI = false;
+    }
+
+    ImGui::End();
+}
+
 
 void CImgui_Manager::Free()
 {
@@ -356,6 +387,9 @@ void CImgui_Manager::Free()
 
     Safe_Release(m_pTriggerMgr);
     CTrigger_Manager::DestroyInstance();
+
+    Safe_Release(m_pTriggerObjMgr);
+    CTriggerObj_Manager::DestroyInstance();
 
     Safe_Release(m_pDevice);
     Safe_Release(m_pContext);
