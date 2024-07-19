@@ -97,11 +97,11 @@ void CWPAYakuza::Late_Tick(const _float& fTimeDelta)
 
 HRESULT CWPAYakuza::Add_Components()
 {
-	if (FAILED(__super::Add_Component(LEVEL_TEST, TEXT("Prototype_Component_Shader_VtxAnim"),
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Shader_VtxAnim"),
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Component(LEVEL_TEST, m_wstrModelName,
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, m_wstrModelName,
 		TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
 		return E_FAIL;
 
@@ -111,11 +111,11 @@ HRESULT CWPAYakuza::Add_Components()
 	ColliderDesc.vExtents = _float3(0.3, 0.8, 0.3);
 	ColliderDesc.vCenter = _float3(0, ColliderDesc.vExtents.y, 0);
 
-	if (FAILED(__super::Add_Component(LEVEL_TEST, TEXT("Prototype_Component_Collider"),
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Collider"),
 		TEXT("Com_Collider"), reinterpret_cast<CComponent**>(&m_pColliderCom), &ColliderDesc)))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Component(LEVEL_TEST, TEXT("Prototype_Component_Anim"),
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Anim"),
 		TEXT("Com_Anim"), reinterpret_cast<CComponent**>(&m_pAnimCom))))
 		return E_FAIL;
 
@@ -125,7 +125,7 @@ HRESULT CWPAYakuza::Add_Components()
 	AIDesc.pAnim = m_pAnimCom;
 	AIDesc.pThis = this;
 
-	m_pTree = dynamic_cast<CAI_WPAYakuza*>(m_pGameInstance->Add_BTNode(LEVEL_TEST, TEXT("Prototype_BTNode_WPAYakuza"), &AIDesc));
+	m_pTree = dynamic_cast<CAI_WPAYakuza*>(m_pGameInstance->Add_BTNode(m_iCurrentLevel, TEXT("Prototype_BTNode_WPAYakuza"), &AIDesc));
 	if (nullptr == m_pTree)
 		return E_FAIL;
 
@@ -140,7 +140,7 @@ void CWPAYakuza::Change_Animation()
 {
 	__super::Change_Animation();
 
-	switch (m_iState)
+ 	switch (m_iState)
 	{
 	case MONSTER_IDLE:
 	{
