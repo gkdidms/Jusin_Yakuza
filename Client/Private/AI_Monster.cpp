@@ -705,8 +705,9 @@ CBTNode::NODE_STATE CAI_Monster::Dead()
 //플레이어가 공격중일때 피할 수 있도록 
 CBTNode::NODE_STATE CAI_Monster::Check_Sway()
 {
-	if (m_isGuard || m_iSkill == SKILL_HIT)
+	if (m_isGuard || m_iSkill == SKILL_HIT || m_isAttack)
 		return CBTNode::FAIL;
+		
 
 	if (m_isSway)
 	{
@@ -740,7 +741,11 @@ CBTNode::NODE_STATE CAI_Monster::Sway()
 
 	//플레이어가 몬스터의 뒤에 있을때 스웨이를 하지 않는다.
 	if (isBehine())
+	{
+		m_isSway = false;
 		return CBTNode::FAIL;
+	}
+		
 
 	if (m_pPlayer->Get_BattleStyle() == CPlayer::KRS)
 		iPlayerAtkDir = Check_KRS(iPlayerLv, false);
