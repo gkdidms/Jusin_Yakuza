@@ -21,6 +21,7 @@
 #include "Btn.h"
 #include "UI_Effect.h"
 #pragma endregion
+
 CMainApp::CMainApp() :
 #ifdef _DEBUG
 	m_pDebugMananger{ CDebugManager::GetInstance() },
