@@ -4,6 +4,8 @@
 
 #include "Level_Loading.h"
 
+#include "UIManager.h"
+
 CLevel_Logo::CLevel_Logo(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLevel{ pDevice, pContext }
 {
@@ -11,6 +13,8 @@ CLevel_Logo::CLevel_Logo(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 
 HRESULT CLevel_Logo::Initialize()
 {
+	CUIManager::GetInstance()->Open_Scene(TEXT("Logo"));
+
 	return S_OK;
 }
 
@@ -19,11 +23,13 @@ void CLevel_Logo::Tick(const _float& fTimeDelta)
 #ifdef _DEBUG
 	if (m_pGameInstance->GetKeyState(DIK_SPACE) == TAP)
 	{
+
 		if (FAILED(m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_TEST))))
 			return;
 	}
 	else if (m_pGameInstance->GetKeyState(DIK_F1) == TAP)
 	{
+
 		if (FAILED(m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_OFFICE_1F))))
 			return;
 	}
