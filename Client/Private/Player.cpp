@@ -91,6 +91,11 @@ void CPlayer::Tick(const _float& fTimeDelta)
 	m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Change_Animation();
 	m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Tick(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")));
 
+	// 배틀 시작 애니메이션 아닐 경우 타임델타를 1로 고정시켜준다.
+	// TODO: 다른곳에서 시간조절이 필요하다면 수정해야한다
+	if (m_iCurrentBehavior != (_uint)KRS_BEHAVIOR_STATE::BTL_START)
+		m_pGameInstance->Set_TimeSpeed(TEXT("Timer_60"), 1.f);
+
 	if (m_pGameInstance->GetKeyState(DIK_0) == TAP)
 	{
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0, 0, 0, 1));
@@ -150,6 +155,8 @@ void CPlayer::Tick(const _float& fTimeDelta)
 	m_pColliderCom->Tick(m_pTransformCom->Get_WorldMatrix());
 
 	Animation_Event();
+	RimLight_Event();
+	Trail_Event();
 	Effect_Control_Aura();
 	Setting_Target_Enemy();
 }
@@ -178,8 +185,13 @@ void CPlayer::Late_Tick(const _float& fTimeDelta)
 	// 현재 켜져있는 Attack용 콜라이더 삽입
 	for (auto& pPair : m_pColliders)
 	{
-		if(pPair.second->Get_CollierType() == CSocketCollider::ATTACK && pPair.second->IsOn())
+		if (pPair.second->Get_CollierType() == CSocketCollider::ATTACK && pPair.second->IsOn())
+		{
+			if (pPair.second->Get_CollierPartType() == 1)
+				int a = 0;
+
 			m_pCollisionManager->Add_AttackCollider(pPair.second, CCollision_Manager::PLAYER);
+		}
 	}
 
 	// 현재 켜져있는 Hit용 콜라이더 삽입 (아직까지는 Hit용 콜라이더는 항상 켜져있음)
@@ -205,12 +217,27 @@ HRESULT CPlayer::Render()
 	{
 		if(ADVENTURE != m_isRimLight)
 		{
-			if (!strcmp("[l0]jacketw1", pMesh->Get_Name()))
+			// 전신일 때 임의로 Full을 저장해주고 사용한다.
+			if (m_strRimMeshName == "Full")
 			{
 				if (FAILED(m_pShaderCom->Bind_RawValue("g_isRimLight", &m_isRimLight, sizeof(_float))))
 					return E_FAIL;
 
-				if (FAILED(m_pShaderCom->Bind_RawValue("g_fRimUV", &m_fRimTopUV, sizeof(_float2))))
+				if (FAILED(m_pShaderCom->Bind_RawValue("g_fRimUV", &m_fRimPartsUV, sizeof(_float2))))
+					return E_FAIL;
+			}
+			else if (m_strRimMeshName == pMesh->Get_Name())
+			{
+				_float2 fUV = m_fRimPartsUV;		// 기본적으로 파츠uv를 넣고
+				if ("[l0]jacketw1" == m_strRimMeshName)
+					fUV = m_fRimTopUV;				// 상체일 때 탑을 넣어준다.
+				if("[l0]pants3" == m_strRimMeshName)
+					fUV = m_fRimBotUV;				// 바지일 때 바텀을 넣어준다.
+
+				if (FAILED(m_pShaderCom->Bind_RawValue("g_isRimLight", &m_isRimLight, sizeof(_float))))
+					return E_FAIL;
+
+				if (FAILED(m_pShaderCom->Bind_RawValue("g_fRimUV", &fUV, sizeof(_float2))))
 					return E_FAIL;
 			}
 			else
@@ -222,54 +249,6 @@ HRESULT CPlayer::Render()
 				if (FAILED(m_pShaderCom->Bind_RawValue("g_fRimUV", &m_fRimPartsUV, sizeof(_float2))))
 					return E_FAIL;
 			}
-
-			switch (m_iCurrentBehavior)
-			{
-			case 4://attack(팔)
-			{
-				if (!strcmp("[l0]body_naked1", pMesh->Get_Name()))
-				{
-					if (FAILED(m_pShaderCom->Bind_RawValue("g_isRimLight", &m_isRimLight, sizeof(_float))))
-						return E_FAIL;
-					if (FAILED(m_pShaderCom->Bind_RawValue("g_fRimUV", &m_fRimPartsUV, sizeof(_float2))))
-						return E_FAIL;
-				}
-				break;
-			}
-			case 6://sway//(전신)
-			{
-				if (FAILED(m_pShaderCom->Bind_RawValue("g_isRimLight", &m_isRimLight, sizeof(_float))))	
-					return E_FAIL;	
-				if (FAILED(m_pShaderCom->Bind_RawValue("g_fRimUV", &m_fRimPartsUV, sizeof(_float2))))
-					return E_FAIL;
-				break;
-			}
-			case 8://fly_kick(다리)
-			case 9:
-			{
-				if(KRS == m_eCurrentStyle)
-				{
-					if (!strcmp("[l0]pants3", pMesh->Get_Name()))
-					{
-						if (FAILED(m_pShaderCom->Bind_RawValue("g_isRimLight", &m_isRimLight, sizeof(_float))))
-							return E_FAIL;
-						if (FAILED(m_pShaderCom->Bind_RawValue("g_fRimUV", &m_fRimBotUV, sizeof(_float2))))
-							return E_FAIL;
-					}
-					else if (!strcmp("[l0]shoes_leather1", pMesh->Get_Name()))
-					{
-						if (FAILED(m_pShaderCom->Bind_RawValue("g_isRimLight", &m_isRimLight, sizeof(_float))))
-							return E_FAIL;
-						if (FAILED(m_pShaderCom->Bind_RawValue("g_fRimUV", &m_fRimPartsUV, sizeof(_float2))))
-							return E_FAIL;
-					}
-				}
-				break;
-			}
-			default:
-				break;
-
-			}
 		}
 		else
 		{	
@@ -277,6 +256,16 @@ HRESULT CPlayer::Render()
 			if (FAILED(Bind_RimLight()))
 				return E_FAIL;
 		}
+
+		//옷 셰이더 구분용
+		_bool isCloth = true;
+		string strMeshName = string(pMesh->Get_Name());
+		if (strMeshName.find("hair") != string::npos || strMeshName.find("face") != string::npos ||
+			strMeshName.find("foot") != string::npos || strMeshName.find("body") != string::npos ||
+			strMeshName.find("eye") != string::npos)
+			isCloth = false;
+
+		m_pShaderCom->Bind_RawValue("g_isCloth", &isCloth, sizeof(_bool));
 
 
 		m_pModelCom->Bind_BoneMatrices(m_pShaderCom, "g_BoneMatrices", i);
@@ -287,11 +276,11 @@ HRESULT CPlayer::Render()
 
 		_bool isRS = true;
 		_bool isRD = true;
-		if (!strcmp(pMesh->Get_Name(), "[l0]face_kiryu"))
-		{
-			isRS = false;
-			isRD = false;
-		}
+		//if (!strcmp(pMesh->Get_Name(), "[l0]face_kiryu"))
+		//{
+		//	isRS = false;
+		//	isRD = false;
+		//}
 
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RSTexture", i, aiTextureType_SPECULAR)))
 			isRS = false;
@@ -702,14 +691,14 @@ void CPlayer::KRS_KeyInput(const _float& fTimeDelta)
 					|| string::npos != strAnimName.find("y_b") 
 					|| string::npos != strAnimName.find("_guard_") || string::npos != strAnimName.find("_dnf_"))
 				{
-					_bool isFront = false;
-					m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Setting_Value(&isFront);
+					CKiryu_KRS_Down::KRS_DOWN_DESC Desc{ 0, -1, string() };
+					m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Setting_Value(&Desc);
 				}
 				else if (string::npos != strAnimName.find("body_r") || string::npos != strAnimName.find("_f")
 					|| string::npos != strAnimName.find("_direct_") || string::npos != strAnimName.find("dnb"))
 				{
-					_bool isFront = true;
-					m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Setting_Value(&isFront);
+					CKiryu_KRS_Down::KRS_DOWN_DESC Desc{ 1, -1, string() };
+					m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Setting_Value(&Desc);
 				}
 
 			}
@@ -846,6 +835,9 @@ void CPlayer::KRS_KeyInput(const _float& fTimeDelta)
 			m_iCurrentBehavior = (_uint)KRS_BEHAVIOR_STATE::SWAY;
 		}
 	}
+
+	if(isMove)
+		m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Reset();
 
 	if (!isMove && m_iCurrentBehavior == (_uint)KRS_BEHAVIOR_STATE::RUN || m_iCurrentBehavior == (_uint)KRS_BEHAVIOR_STATE::WALK)
 		m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Stop();
@@ -1008,6 +1000,9 @@ void CPlayer::KRH_KeyInput(const _float& fTimeDelta)
 		m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Combo_Count();
 	}
 
+	if (isMove)
+		m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Reset();
+
 	if (!isMove && m_iCurrentBehavior == (_uint)KRH_BEHAVIOR_STATE::RUN || m_iCurrentBehavior == (_uint)KRH_BEHAVIOR_STATE::WALK)
 		m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Stop();
 }
@@ -1149,6 +1144,9 @@ void CPlayer::KRC_KeyInput(const _float& fTimeDelta)
 			}
 		}
 	}
+
+	if (isMove)
+		m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Reset();
 	
 	if (!isMove && m_iCurrentBehavior == (_uint)KRC_BEHAVIOR_STATE::RUN || m_iCurrentBehavior == (_uint)KRC_BEHAVIOR_STATE::WALK)
 		m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Stop();
@@ -1480,8 +1478,6 @@ void CPlayer::Setting_RimLight()
 		m_isRimLight = 0.3f;
 		break;
 	}
-	case Client::CPlayer::BATTLE_STYLE_END:
-		break;
 	default:
 		break;
 	}

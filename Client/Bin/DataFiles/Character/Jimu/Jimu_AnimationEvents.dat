@@ -1,4 +1,4 @@
-96e_knk_atk_chop
+98e_knk_atk_chop
 0
 10
 buki_r_n
@@ -378,6 +378,16 @@ e_kuz_cmb_renda_02_r_fin
 9.6
 asi4_l_n
 16
+e_wpa_atk_heavy
+0
+19.1
+buki_r_n
+146
+e_wpa_atk_heavy
+1
+19.9
+buki_r_n
+146
 e_wpa_cmb_01
 0
 18.4

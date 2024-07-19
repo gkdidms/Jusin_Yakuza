@@ -4,6 +4,7 @@
 #include "ModelBoneSphere.h"
 #include "Bone.h"
 #include "Mesh.h"
+#include "Effect.h"
 
 
 CAnimModel::CAnimModel(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -71,8 +72,10 @@ void CAnimModel::Tick(const _float& fTimeDelta)
 {
     if (m_pGameInstance->GetKeyState(DIK_TAB) == TAP)
     {
-        m_iPassIndex++;
-        m_iPassIndex = m_iPassIndex % 2;
+        if (m_iPassIndex == 0)
+            m_iPassIndex = 4;
+        else if (m_iPassIndex == 4)
+            m_iPassIndex = 0;
     }
 
     CModel::ANIMATION_DESC desc{ m_iAnimIndex, true };
@@ -92,6 +95,12 @@ void CAnimModel::Tick(const _float& fTimeDelta)
 
     for (auto& pSphere : m_BoneSpheres)
         pSphere->Tick(fTimeDelta);
+
+    for (auto& pair : m_TrailEffects)
+    {
+        if(pair.second.isOn)
+            pair.second.pTrail->Tick(fTimeDelta);
+    }
 }
 
 void CAnimModel::Late_Tick(const _float& fTimeDelta)
@@ -100,6 +109,12 @@ void CAnimModel::Late_Tick(const _float& fTimeDelta)
 
     for (auto& pSphere : m_BoneSpheres)
         pSphere->Late_Tick(fTimeDelta);
+
+    for (auto& pair : m_TrailEffects)
+    {
+        if (pair.second.isOn)
+            pair.second.pTrail->Late_Tick(fTimeDelta);
+    }
 }
 
 HRESULT CAnimModel::Render()
@@ -108,21 +123,37 @@ HRESULT CAnimModel::Render()
         return E_FAIL;
 
     int i = 0;
-
     for (auto& pMesh : m_pModelCom->Get_Meshes())
     {
         m_pModelCom->Bind_BoneMatrices(m_pShaderCom, "g_BoneMatrices", i);
 
-        m_pModelCom->Bind_Material(m_pShaderCom, "g_Texture", i, aiTextureType_DIFFUSE);
+        m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE);
+
+        if (m_strRimMeshName == pMesh->Get_Name())
+        {
+            if (FAILED(m_pShaderCom->Bind_RawValue("g_isRimLight", &m_isRimLight, sizeof(_float))))
+                return E_FAIL;
+            if (FAILED(m_pShaderCom->Bind_RawValue("g_fRimUV", &m_fRimPartsUV, sizeof(_float2))))
+                return E_FAIL;
+        }
+        else
+        {
+            _float fNone = 0.f;
+            if (FAILED(m_pShaderCom->Bind_RawValue("g_isRimLight", &fNone, sizeof(_float))))
+                return E_FAIL;
+            if (FAILED(m_pShaderCom->Bind_RawValue("g_fRimUV", &m_fRimPartsUV, sizeof(_float2))))
+                return E_FAIL;
+        }
+
 
         if (m_iSelectedMeshIndex == i)
         {
-            m_pShaderCom->Begin(2);     //마젠타
+            m_pShaderCom->Begin(3);     //마젠타
         }
         else
         {
             if (pMesh->Get_AlphaApply())
-                m_pShaderCom->Begin(3);     //블랜드
+                m_pShaderCom->Begin(1);     //블랜드
             else
                 m_pShaderCom->Begin(m_iPassIndex);
         }
@@ -148,6 +179,12 @@ void CAnimModel::Set_Scaled(_float x, _float y, _float z)
 void CAnimModel::Set_Rotation(_uint iAxis, _float vRadian, _float fTimeDelta)
 {
     m_pTransformCom->Turn(m_pTransformCom->Get_State((CTransform::STATE)iAxis), vRadian * fTimeDelta);
+}
+
+void CAnimModel::Trail_On(string& strBoneName, _bool isOn)
+{
+    if (m_TrailEffects.find(strBoneName) == m_TrailEffects.end()) return;
+    (*m_TrailEffects.find(strBoneName)).second.isOn = isOn;
 }
 
 const vector<class CAnimation*>& CAnimModel::Get_Animations()
@@ -243,6 +280,14 @@ void CAnimModel::Create_BoneCollider(_uint iType, _uint iIndex, const _float3& v
     default:
         break;
     }
+}
+
+void CAnimModel::Create_Trail(string& strBoneName, CGameObject* pEffect)
+{
+    Trail_Desc Desc{};
+    Desc.pTrail = reinterpret_cast<CEffect*>(pEffect);
+
+    m_TrailEffects.emplace(strBoneName, Desc);
 }
 
 void CAnimModel::Set_Collider_Center(_uint iIndex, const _float3& vCenter)

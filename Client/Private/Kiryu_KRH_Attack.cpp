@@ -123,7 +123,7 @@ _bool CKiryu_KRH_Attack::Changeable_Combo_Animation()
 		fInterval = 0.27f;
 
 	if (m_iComboCount == 6)			// 7타 발차기 (스킬 찍어야 쓸 수 있음)
-		fInterval = 0.27f;
+		fInterval = 0.34f;
 
 	if (m_iComboCount == 7)			// 8타 발차기 (스킬 찍어야 쓸 수 있음)
 		fInterval = 0.5f;			

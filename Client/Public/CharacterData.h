@@ -32,6 +32,24 @@ public:
         _float3 vValue;        // Sphere라면 x에만 값을 저장하자.
     };
 
+
+    struct ANIMATION_RIMLIGHTSTATE
+    {
+        _uint iType;					//0번이 on 1번이 off
+        _float fAinmPosition;
+        string strMeshName;
+    };
+
+    struct ANIMATION_TRAILSTATE
+    {
+        _uint iType;					//0번이 on 1번이 off
+        _float fAinmPosition;
+        string strBonelName;
+        string strTrailProtoName;
+        _uint iBoneIndex;
+    };
+
+
 private:
     CCharacterData();
     virtual ~CCharacterData() = default;
@@ -57,8 +75,20 @@ public:
         return m_Effects;
     }
 
+    const multimap<string, ANIMATION_TRAILSTATE>& Get_TrailEvents() const {
+        return m_TrailEvents;
+    }
+
     const vector<ANIMATION_EVENT>& Get_CurrentEvents() const {
         return m_CurrentEvents;
+    }
+
+    const vector<ANIMATION_RIMLIGHTSTATE>& Get_Current_Rim_Events() const {
+        return m_CurrentRimEvents;
+    }
+
+    const vector<ANIMATION_TRAILSTATE>& Get_Current_Trail_Events() const {
+        return m_CurrentTrailEvents;
     }
 
 public:
@@ -70,6 +100,8 @@ private:
     HRESULT Load_AnimationEvents(string strFilePath);
     HRESULT Load_Colliders(string strFilePath);
     HRESULT Load_EffectState(string strFilePath);
+    HRESULT Load_RimLightEvent(string strFilePath);
+    HRESULT Load_TrailEvent(string strFilePath);
 
 private:
     CGameInstance* m_pGameInstance = { nullptr };
@@ -80,13 +112,21 @@ private:
     vector<_uint> m_LoopAnimations;
 
     // first: 애니메이션 이름
-    multimap<string, ANIMATION_EVENT> m_AnimationEvents;            
+    multimap<string, ANIMATION_EVENT>           m_AnimationEvents;            
     // first: 뼈인덱스
-    unordered_map<_uint, COLLIDER_STATE> m_Colliders;
+    unordered_map<_uint, COLLIDER_STATE>        m_Colliders;
     // first 뼈 이름, second 이펙트 파일 이름 (.dat 제거한 이름)
-    multimap<string, wstring> m_Effects;
+    multimap<string, wstring>                   m_Effects;
+       
+    // first: 애니메이션 이름, second: 림라이트 이벤트정보
+    multimap<string, ANIMATION_RIMLIGHTSTATE>	m_RimLightEvents;
+
+    // first: 애니메이션 이름, second: 트레일 이벤트정보
+    multimap<string, ANIMATION_TRAILSTATE>		m_TrailEvents;
 
     vector<ANIMATION_EVENT> m_CurrentEvents; 
+    vector<ANIMATION_RIMLIGHTSTATE> m_CurrentRimEvents;
+    vector<ANIMATION_TRAILSTATE> m_CurrentTrailEvents;
 
 public:
     static CCharacterData* Create(class CLandObject* pCharacter);

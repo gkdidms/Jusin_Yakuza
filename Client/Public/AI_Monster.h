@@ -15,6 +15,7 @@ public:
     //스킬 리스트
     enum SKILL {
         SKILL_IDLE,
+        SKILL_RUN,
         SKILL_SHIFT,
         SKILL_SWAY,
         SKILL_HIT, 

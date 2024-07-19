@@ -34,7 +34,6 @@ HRESULT CKuze::Initialize(void* pArg)
 		m_wstrModelName = gameobjDesc->wstrModelName;
 	}
 
-
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
@@ -44,9 +43,7 @@ HRESULT CKuze::Initialize(void* pArg)
 		MONSTER_IODESC* gameobjDesc = (MONSTER_IODESC*)pArg;
 
 		m_pNavigationCom->Set_Index(gameobjDesc->iNaviNum);
-
 	}
-
 
 	m_wstrModelName = TEXT("Jimu");
 
@@ -55,10 +52,8 @@ HRESULT CKuze::Initialize(void* pArg)
 
 	m_pModelCom->Set_AnimationIndex(1, 0.5);
 
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(5.f, 0.f, 5.f, 1.f));
-
-	//m_Info.iMaxHP = 300.f;
-	//m_Info.iHp = m_Info.iMaxHP;
+	m_Info.iMaxHP = 500.f;
+	m_Info.iHp = m_Info.iMaxHP;
 
 	return S_OK;
 }
@@ -102,6 +97,28 @@ void CKuze::Late_Tick(const _float& fTimeDelta)
 	}
 
 	__super::Late_Tick(fTimeDelta);
+}
+
+void CKuze::Take_Damage(_uint iHitColliderType, const _float3& vDir, _float fDamage, CLandObject* pAttackedObject, _bool isBlowAttack)
+{
+	//하는역활 -> 충돌이 일어났을때?
+	m_isColl = true;
+	m_fHitDamage = fDamage;
+
+	//데미지 처리하기
+	if (!m_isObjectDead)
+	{
+		m_Info.iHp -= fDamage;
+
+		//무지성이라 변경해야함.
+		if (m_iPage == ONE && m_Info.iHp <= 250)
+		{
+			m_iPage = TWO;
+		}
+
+		if (m_Info.iHp <= 0.f)
+			m_isObjectDead = true;
+	}
 }
 
 HRESULT CKuze::Add_Components()
@@ -322,6 +339,33 @@ void CKuze::Change_Animation()
 	{
 		m_strAnimName = "e_kuz_step_f";
 		m_isAnimLoop = true;
+		break;
+	}
+	case MONSTER_RUN:
+	{
+		m_strAnimName = "e_kuz_run";
+		m_isAnimLoop = true;
+		break;
+	}
+	case MONSTER_GURAD_START:
+	{
+		m_strAnimName = "e_kuz_guard_st";
+		break;
+	}
+	case MONSTER_GURAD_LOOP:
+	{
+		m_strAnimName = "e_kuz_guard_lp";
+		m_isAnimLoop = true;
+		break;
+	}
+	case MONSTER_GURAD_END:
+	{
+		m_strAnimName = "e_kuz_guard_en";
+		break;
+	}
+	case MONSTER_GURAD_FLOAT:
+	{
+		m_strAnimName = "e_kuz_guard";
 		break;
 	}
 	default:

@@ -202,7 +202,7 @@ HRESULT CFileTotalMgr::Set_GameObject_In_Client(int iStageLevel)
         }
         else if (OBJECT_TYPE::MONSTER_KUZE == m_MapTotalInform.pMapObjDesc[i].iObjType)
         {
-            CRushYakuza::MONSTER_IODESC		monsterDesc;
+            CKuze::MONSTER_IODESC		monsterDesc;
             monsterDesc.vStartPos = XMLoadFloat4x4(&m_MapTotalInform.pMapObjDesc[i].vTransform);
             int		iLayer = Find_Layers_Index(m_MapTotalInform.pMapObjDesc[i].strLayer);
 

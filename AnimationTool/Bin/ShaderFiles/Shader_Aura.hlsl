@@ -48,12 +48,6 @@ VS_OUT VS_LOCAL(VS_IN In)
 
     vector vPosition = mul(float4(In.vPosition, 1.f), In.TransformMatrix);
 
-    //matrix matWV, matWVP;
-
-  //  matWV = mul(g_WorldMatrix, g_ViewMatrix);
-  //  matWVP = mul(matWV, g_ProjMatrix);
-    
-
     Out.vPosition = vPosition.xyz;
     Out.vPSize = In.vPSize;
     Out.vDir = In.vDir;
@@ -62,6 +56,28 @@ VS_OUT VS_LOCAL(VS_IN In)
 
     return Out;
 }
+
+VS_OUT VS_MAIN(VS_IN In)
+{
+    VS_OUT Out = (VS_OUT) 0;
+
+    vector vPosition = mul(float4(In.vPosition, 1.f), In.TransformMatrix); //로컬이동.
+
+    matrix matWV, matWVP;
+
+    matWV = mul(g_WorldMatrix, g_ViewMatrix);
+    matWVP = mul(matWV, g_ProjMatrix);
+    
+
+    Out.vPosition = mul(vPosition, g_WorldMatrix).xyz; //월드상
+    Out.vPSize = In.vPSize;
+    Out.vDir = normalize(mul(In.vDir, g_WorldMatrix));
+    Out.vLifeTime = In.vLifeTime;
+    Out.vRectSize = In.vRectSize;
+
+    return Out;
+}
+
 
 struct GS_IN
 {
@@ -80,7 +96,7 @@ struct GS_OUT
     float2 vAlphaTex : TEXCOORD1;
     
     float2 vLifeTime : COLOR0;
-    float LinearZ : COLOR1;
+
 };
 
 float4x4 RotationMatrix(float3 axis, float angle)
@@ -115,11 +131,8 @@ void GS_DEAFULT(point GS_IN In[1], inout TriangleStream<GS_OUT> Triangles)
         Out[i].vPosition = float4(0.f, 0.f, 0.f, 0.f);
         Out[i].vTexcoord = float2(0.f, 0.f);
         Out[i].vLifeTime = float2(0.f, 0.f);
-        Out[i].LinearZ = float(0.f);
     }
-	
-    float3 vDirection = In[0].vDir.xyz;
-    
+	    
     float3 vLook = g_vCamPosition - vector(In[0].vPosition, 1.f);
     float3 vRight = normalize(cross(float3(0.f, 1.f, 0.f), vLook.xyz)) * In[0].vPSize.x * In[0].vRectSize.x * 0.5f;
     float3 vUp = normalize(cross(vLook.xyz, vRight)) * In[0].vPSize.y * In[0].vRectSize.x * 0.5f;
@@ -139,8 +152,7 @@ void GS_DEAFULT(point GS_IN In[1], inout TriangleStream<GS_OUT> Triangles)
     
     float4 PointPosition = float4(In[0].vPosition, 1.f); //월드좌표
         //-1~1 x,y,z
-    vector CamPos = mul(PointPosition, g_ViewMatrix); //뷰좌표(위치)
-    Out[0].LinearZ = CamPos.z; //정규화된 z 값을 가져옴(0~1)
+
     
     float2 uvWeight = float2(1 / g_fUVCount.x, 1 / g_fUVCount.y);
     
@@ -191,7 +203,7 @@ struct PS_IN
     float2 vTexcoord : TEXCOORD0;
     float2 vAlphaTex : TEXCOORD1;
     float2 vLifeTime : COLOR0;
-    float LinearZ : COLOR1;
+
 };
 
 struct PS_OUT
@@ -270,6 +282,20 @@ technique11 DefaultTechnique
    
 		/* 어떤 셰이덜르 국동할지. 셰이더를 몇 버젼으로 컴파일할지. 진입점함수가 무엇이찌. */
         VertexShader = compile vs_5_0 VS_LOCAL();
+        GeometryShader = compile gs_5_0 GS_DEAFULT();
+        HullShader = NULL;
+        DomainShader = NULL;
+        PixelShader = compile ps_5_0 PS_MAIN_NOCOLOR();
+    }
+
+    pass StartAuraFluid //0
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_None_Test_None_Write, 0);
+        SetBlendState(BS_WeightsBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+   
+		/* 어떤 셰이덜르 국동할지. 셰이더를 몇 버젼으로 컴파일할지. 진입점함수가 무엇이찌. */
+        VertexShader = compile vs_5_0 VS_MAIN();
         GeometryShader = compile gs_5_0 GS_DEAFULT();
         HullShader = NULL;
         DomainShader = NULL;

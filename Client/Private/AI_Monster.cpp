@@ -705,7 +705,7 @@ CBTNode::NODE_STATE CAI_Monster::Dead()
 //플레이어가 공격중일때 피할 수 있도록 
 CBTNode::NODE_STATE CAI_Monster::Check_Sway()
 {
-	if (m_isGuard && m_iSkill == SKILL_HIT)
+	if (m_isGuard || m_iSkill == SKILL_HIT)
 		return CBTNode::FAIL;
 
 	if (m_isSway)
@@ -723,7 +723,7 @@ CBTNode::NODE_STATE CAI_Monster::Check_Sway()
 	if (m_pPlayer->isAttack() && !m_pThis->isColl())
 	{
 		//플레이어와의 거리가 어느정도 있는 상태여야만 함
-		if (DistanceFromPlayer() >= 2.f && DistanceFromPlayer() <= 2.4f)
+		if (DistanceFromPlayer() >= 1.5f && DistanceFromPlayer() < 1.8f)
 		{
 			Reset_State();
 			return CBTNode::SUCCESS;		
@@ -761,17 +761,17 @@ CBTNode::NODE_STATE CAI_Monster::Sway()
 	if (iPlayerAtkDir == F)
 		*m_pState = CMonster::MONSTER_SWAY_B;
 	//B
-	if (iPlayerAtkDir == B)
-		*m_pState = CMonster::MONSTER_SWAY_F;
-	//L
-	if (iPlayerAtkDir == L)
-		*m_pState = CMonster::MONSTER_SWAY_R;
-	//R
-	if (iPlayerAtkDir == R)
-		*m_pState = CMonster::MONSTER_SWAY_L;
+		if (iPlayerAtkDir == B)
+			*m_pState = CMonster::MONSTER_SWAY_F;
+		//L
+		if (iPlayerAtkDir == L)
+			*m_pState = CMonster::MONSTER_SWAY_R;
+		//R
+		if (iPlayerAtkDir == R)
+			*m_pState = CMonster::MONSTER_SWAY_L;
 
-	return CBTNode::SUCCESS;
-}
+		return CBTNode::SUCCESS;
+	}
 
 CBTNode::NODE_STATE CAI_Monster::Chcek_Sync()
 {
@@ -857,9 +857,6 @@ CBTNode::NODE_STATE CAI_Monster::HitAndGuard()
 //KRS: 불한당, KRH: 러쉬, KRC: 파괴자
 CBTNode::NODE_STATE CAI_Monster::Hit()
 {
-	if (m_iSkill != SKILL_HIT)
-		return CBTNode::FAIL;
-
 	_uint iLevel = m_pPlayer->Get_CurrentHitLevel();
 
 	_bool isBehine = this->isBehine();
@@ -882,9 +879,7 @@ CBTNode::NODE_STATE CAI_Monster::Hit()
 CBTNode::NODE_STATE CAI_Monster::Guard()
 {
 	if (m_iSkill != SKILL_GUARD)
-	{
 		return CBTNode::FAIL;
-	}
 
 	if (m_isGuard)
 	{
@@ -1031,12 +1026,12 @@ CBTNode::NODE_STATE CAI_Monster::ShiftAndIdle()
 	static _uint iCount = 0;
 
 	iCount++;
-	if (iCount == 5)
+	if (iCount == 4)
 		m_iSkill = SKILL_SHIFT;
 	else 
 		m_iSkill = SKILL_IDLE;
 	
-	if (iCount <= 10)
+	if (iCount >= 10)
 		iCount = 0;
 
 	m_fBreakDuration = m_pGameInstance->Get_Random(2.f, 4.f);
