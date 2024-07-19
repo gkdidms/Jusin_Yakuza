@@ -29,8 +29,11 @@ HRESULT CAI_Monster::Initialize(void* pArg)
 	m_pState = pDesc->pState;
 	m_pAnimCom = pDesc->pAnim;
 	m_pThis = pDesc->pThis;
+	Safe_AddRef(m_pThis);
+	Safe_AddRef(m_pAnimCom);
 
 	m_pPlayer = dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"), 0));
+	Safe_AddRef(m_pPlayer);
 
 	return S_OK;
 }
@@ -993,7 +996,7 @@ CBTNode::NODE_STATE CAI_Monster::HitAndGuard()
 			m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_GuardBlink"), TEXT("Layer_Particle"), &EffectDesc);
 			m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_GuardParticle"), TEXT("Layer_Particle"), &EffectDesc);
 			m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_GuardSmoke"), TEXT("Layer_Particle"), &EffectDesc);
-			m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Hit1_Part0"), TEXT("Layer_Particle"), &EffectDesc);
+			//m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Hit1_Part0"), TEXT("Layer_Particle"), &EffectDesc);
 			m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Guard1_Distortion0"), TEXT("Layer_Particle"), &EffectDesc);
 
 			m_fGuardAtkAcc += m_pThis->Get_HitDamage();
@@ -1266,4 +1269,7 @@ void CAI_Monster::Free()
 	Safe_Release(m_pGameInstance);
 
 	Safe_Release(m_pRootNode);
+	Safe_Release(m_pThis);
+	Safe_Release(m_pAnimCom);
+	Safe_Release(m_pPlayer);
 }

@@ -93,9 +93,11 @@ void CWPAYakuza::Late_Tick(const _float& fTimeDelta)
 		{
 			if (pPair.second->Get_CollierType() == CSocketCollider::HIT && pPair.second->IsOn())
 				m_pCollisionManager->Add_HitCollider(pPair.second, CCollision_Manager::ENEMY);
+
 		}
 	}
 
+	
 	__super::Late_Tick(fTimeDelta);
 }
 
