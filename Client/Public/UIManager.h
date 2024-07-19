@@ -40,6 +40,7 @@ public:
     HRESULT Tick(const _float& fTimeDelta);
     HRESULT Late_Tick(const _float& fTimeDelta);
 
+
 private:
     class CGameInstance* m_pGameInstance; 
     map <wstring ,class CUIScene*> m_AllScene;//모든 씬데이터 보관(폴더이름 ,파일)
