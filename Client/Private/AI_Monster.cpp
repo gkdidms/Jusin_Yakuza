@@ -874,6 +874,8 @@ CBTNode::NODE_STATE CAI_Monster::Dead()
 //플레이어가 공격중일때 피할 수 있도록 
 CBTNode::NODE_STATE CAI_Monster::Check_Sway()
 {
+	m_pThis->Set_Down(false);
+
 	if (m_isGuard || m_iSkill == SKILL_HIT || m_isAttack)
 	{
 		if (!m_isSway)
@@ -1200,20 +1202,21 @@ CBTNode::NODE_STATE CAI_Monster::ShiftAndIdle()
 {
 	static _uint iCount = rand() % 8;
 
-	if (DistanceFromPlayer() > 4.f)
+	if (DistanceFromPlayer() > 7.f)
 	{
 		m_iSkill = SKILL_SHIFT;
 	}
 	else
 	{
 		iCount++;
+
 		if (iCount == 4 || iCount == 7)
 			m_iSkill = SKILL_SHIFT;
 		else
 			m_iSkill = SKILL_IDLE;
 
 		if (iCount >= 10)
-			iCount = 0;
+			iCount = 0;	
 	}
 
 	m_fBreakDuration = m_pGameInstance->Get_Random(4.f, 6.f);
@@ -1226,23 +1229,24 @@ CBTNode::NODE_STATE CAI_Monster::Shift()
 	if (m_iSkill != SKILL_SHIFT)
 		return CBTNode::FAIL;
 
-	if (DistanceFromPlayer() > 4.f)
+	if (DistanceFromPlayer() > 3.f)
 	{
 		*m_pState = CMonster::MONSTER_SHIFT_F;
 	}
 	else {
 		_uint iIndex = m_pGameInstance->Get_Random(0, 3);
-		if (iIndex == 0)
-			*m_pState = CMonster::MONSTER_SHIFT_F;
-		else if (iIndex == 1)
-			*m_pState = CMonster::MONSTER_SHIFT_B;
-		else if (iIndex == 2)
-			*m_pState = CMonster::MONSTER_SHIFT_L;
-		else if (iIndex == 3)
-			*m_pState = CMonster::MONSTER_SHIFT_R;
-	}
 
-	m_isBreak = true;
+		if (iIndex == 0)
+			*m_pState = CMonster::MONSTER_SHIFT_B;
+		else if (iIndex == 1)
+			*m_pState = CMonster::MONSTER_SHIFT_L;
+		else if (iIndex == 2)
+			*m_pState = CMonster::MONSTER_SHIFT_R;
+		else // 예외처리
+			*m_pState = CMonster::MONSTER_SHIFT_L;
+
+		m_isBreak = true;
+	}
 
 	return CBTNode::SUCCESS;
 }
