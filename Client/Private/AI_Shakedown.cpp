@@ -209,6 +209,8 @@ CBTNode::NODE_STATE CAI_Shakedown::Check_PlayerDown()
 		return CBTNode::FAIL;
 	}
 		
+	if (m_isPlayerDownAtk)
+		return CBTNode::FAIL;
 
 	if (m_pPlayer->isDown() || m_iSkill == SKILL_DOWN)
 	{
