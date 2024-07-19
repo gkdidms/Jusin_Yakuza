@@ -40,6 +40,7 @@ HRESULT CPlayerCamera::Initialize(void* pArg)
 	{
 		m_fSensor = pDesc->fSensor;
 		m_pPlayerMatrix = pDesc->pPlayerMatrix;
+		m_iCurLevel = pDesc->iCurLevel;
 	}
 
 	if (FAILED(__super::Initialize(pArg)))
@@ -47,6 +48,24 @@ HRESULT CPlayerCamera::Initialize(void* pArg)
 
 	if (FAILED(Add_Components()))
 		return E_FAIL;
+
+	Set_StartPos();
+
+	// 시작점 조정
+	_vector vPlayerPosition;
+	memcpy(&vPlayerPosition, m_pPlayerMatrix->m[CTransform::STATE_POSITION], sizeof(_float4));
+
+	_vector vCamPosition = XMVectorSet(
+		m_fCamDistance * cosf(XMConvertToRadians(m_fCamAngleY)) * cosf(XMConvertToRadians(m_fCamAngleX)),
+		m_fCamDistance * sinf(XMConvertToRadians(m_fCamAngleX)),
+		m_fCamDistance * sinf(XMConvertToRadians(m_fCamAngleY)) * cosf(XMConvertToRadians(m_fCamAngleX)),
+		1.f
+	);
+
+
+	vCamPosition += XMVectorSet(XMVectorGetX(vPlayerPosition), XMVectorGetY(vPlayerPosition), XMVectorGetZ(vPlayerPosition), 0);
+
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vCamPosition);
 
 	return S_OK;
 }
@@ -215,6 +234,40 @@ void CPlayerCamera::Compute_View(const _float& fTimeDelta)
 
 	// 월드 매트릭스 업데이트
 	XMStoreFloat4x4(&m_WorldMatrix, m_pTransformCom->Get_WorldMatrix());
+}
+
+void CPlayerCamera::Set_StartPos()
+{
+	if (LEVEL::LEVEL_OFFICE_1F == m_iCurrentLevel)
+	{
+		//m_fCamAngleX = -180;
+	}
+	else if (LEVEL::LEVEL_OFFICE_2F == m_iCurrentLevel)
+	{
+		m_fCamAngleX = -10;
+		m_fCamAngleY = 45;
+	}
+	else if (LEVEL::LEVEL_OFFICE_BOSS == m_iCurrentLevel)
+	{
+		m_fCamAngleX = 45.f;
+		m_fCamAngleY = 45;
+	}
+	else if (LEVEL::LEVEL_DOGIMAZO == m_iCurrentLevel)
+	{
+	}
+	else if (LEVEL::LEVEL_DOGIMAZO_STAIRS == m_iCurrentLevel)
+	{
+		m_fCamAngleX = -10;
+		m_fCamAngleY = 60;
+	}
+	else if (LEVEL::LEVEL_DOGIMAZO_LOBBY == m_iCurrentLevel)
+	{
+		m_fCamAngleY = 60;
+	}
+	else if (LEVEL::LEVEL_DOGIMAZO_BOSS == m_iCurrentLevel)
+	{
+		m_fCamAngleX = 0;
+	}
 }
 
 HRESULT CPlayerCamera::Add_Components()

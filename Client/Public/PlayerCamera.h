@@ -18,7 +18,8 @@ private:
 public:
     typedef struct tPlayerCameraDesc : public CAMERA_DESC
     {
-        _float fSensor;
+        _float      fSensor;
+        int         iCurLevel;
         const _float4x4* pPlayerMatrix;
     } PLAYER_CAMERA_DESC;
 
@@ -40,8 +41,11 @@ private:
     // 각각 한번씩 (총 2번) 해주어야 카메라가 안밀림
     // 따라서 그 연산을 수행하는 함수이다.
     // 파이프라인에 뷰행렬 적용은 Late_Tick에서 한번만 해주어야함
-    void Compute_View(const _float& fTimeDelta);
+    void    Compute_View(const _float& fTimeDelta);
 
+
+    //처음 시작할때 설정
+    void    Set_StartPos();
 
 private:
     class CSystemManager* m_pSystemManager = { nullptr };
@@ -65,6 +69,7 @@ private:
 
     float       m_fTimer = { 0 };
 
+    int         m_iCurLevel = { -1 };
 
 private:
     HRESULT Add_Components();
