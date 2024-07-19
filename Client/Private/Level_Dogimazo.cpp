@@ -26,14 +26,16 @@ HRESULT CLevel_Dogimazo::Initialize()
 	if (FAILED(Ready_Player(TEXT("Layer_Player"))))
 		return E_FAIL;
 
-	if (FAILED(Ready_Camera(TEXT("Layer_Camera"))))
-		return E_FAIL;
-
     /* Å¬¶ó ÆÄ½Ì */
     m_pFileTotalManager->Set_MapObj_In_Client(STAGE_DOGIMAZO, LEVEL_DOGIMAZO);
     m_pFileTotalManager->Set_Lights_In_Client(STAGE_DOGIMAZO);
     m_pFileTotalManager->Set_Collider_In_Client(STAGE_DOGIMAZO, LEVEL_DOGIMAZO);
 	m_pFileTotalManager->Set_Trigger_In_Client(STAGE_DOGIMAZO, LEVEL_DOGIMAZO);
+
+
+	if (FAILED(Ready_Camera(TEXT("Layer_Camera"))))
+		return E_FAIL;
+
 
     return S_OK;
 }
@@ -111,6 +113,7 @@ HRESULT CLevel_Dogimazo::Ready_Camera(const wstring& strLayerTag)
 	PlayerCameraDesc.fSpeedPecSec = 20.f;
 	PlayerCameraDesc.fRotatePecSec = XMConvertToRadians(90.f);
 	PlayerCameraDesc.pPlayerMatrix = pPlayerFloat4x4;
+	PlayerCameraDesc.iCurLevel = LEVEL_DOGIMAZO;
 
 	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_DOGIMAZO, TEXT("Prototype_GameObject_PlayerCamera"), strLayerTag, &PlayerCameraDesc)))
 		return E_FAIL;

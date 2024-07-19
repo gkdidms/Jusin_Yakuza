@@ -780,6 +780,7 @@ _bool CAI_Monster::Check_StandUp()
 	{
 		m_pThis->Set_Down(false);
 		*m_pState = CMonster::MONSTER_STANDUP_DNB_FAST;
+		m_pThis->Set_Down(false);
 		return false;
 	}
 

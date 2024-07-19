@@ -362,6 +362,9 @@
     <ClCompile Include="..\Private\MapColliderObj.cpp">
       <Filter>02.GameObjects\07.MapCollider\Obj</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\MonsterTrigger.cpp">
+      <Filter>02.GameObjects\08.Trigger\03.MonsterTrigger</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\MainApp.h">
@@ -751,6 +754,9 @@
     </ClInclude>
     <ClInclude Include="..\Public\MapColliderObj.h">
       <Filter>02.GameObjects\07.MapCollider\Obj</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\MonsterTrigger.h">
+      <Filter>02.GameObjects\08.Trigger\03.MonsterTrigger</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1160,6 +1166,9 @@
     </Filter>
     <Filter Include="02.GameObjects\08.Trigger\02.YonedaTrigger">
       <UniqueIdentifier>{cd20dace-6e28-432e-8fd8-98fbb338d7d3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\08.Trigger\03.MonsterTrigger">
+      <UniqueIdentifier>{2f3289df-1818-4e53-8abd-71e5f39e8890}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

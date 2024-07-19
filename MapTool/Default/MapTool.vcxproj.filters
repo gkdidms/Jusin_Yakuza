@@ -127,6 +127,9 @@
     <ClCompile Include="..\Private\TriggerObj.cpp">
       <Filter>02.GameObjects\10.TriggerObj</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\TriggerObj_Manager.cpp">
+      <Filter>03.Managers\08.TriggerObj_Manager</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\MainApp.h">
@@ -273,6 +276,9 @@
     <ClInclude Include="..\Public\TriggerObj.h">
       <Filter>02.GameObjects\10.TriggerObj</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\TriggerObj_Manager.h">
+      <Filter>03.Managers\08.TriggerObj_Manager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="MapTool.ico">
@@ -396,6 +402,9 @@
     </Filter>
     <Filter Include="02.GameObjects\10.TriggerObj">
       <UniqueIdentifier>{84ea9df5-4944-433b-80e4-793a6a67d44c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.Managers\08.TriggerObj_Manager">
+      <UniqueIdentifier>{5049aa18-0aed-43a7-8839-485cf7919437}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

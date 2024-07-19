@@ -43,6 +43,7 @@ protected:
 	TRIGGER_DESC					m_tTriggerDesc;
 
 	bool							m_bMoveScene = { false };
+	bool							m_bTriggerDead = { false };
 
 protected:
 	virtual HRESULT Add_Components(void* pArg);

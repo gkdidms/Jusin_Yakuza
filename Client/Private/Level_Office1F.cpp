@@ -25,14 +25,16 @@ HRESULT CLevel_Office1F::Initialize()
 	if (FAILED(Ready_Player(TEXT("Layer_Player"))))
 		return E_FAIL;
 
-	if (FAILED(Ready_Camera(TEXT("Layer_Camera"))))
-		return E_FAIL;
-
+	// 맵 정보 load 하고 카메라 생성해야함!!!!!!!!!!!!
+	// 플레이어 위치 받아서 player 위치 설정 후 카메라 위치 설정해줘야하기 때문
 	/* 클라 파싱 */
 	m_pFileTotalManager->Set_MapObj_In_Client(STAGE_OFFICE_1F, LEVEL_OFFICE_1F);
 	m_pFileTotalManager->Set_Lights_In_Client(STAGE_OFFICE_1F);
 	m_pFileTotalManager->Set_Collider_In_Client(STAGE_OFFICE_1F, LEVEL_OFFICE_1F);
 	m_pFileTotalManager->Set_Trigger_In_Client(STAGE_OFFICE_1F, LEVEL_OFFICE_1F);
+
+	if (FAILED(Ready_Camera(TEXT("Layer_Camera"))))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -110,6 +112,7 @@ HRESULT CLevel_Office1F::Ready_Camera(const wstring& strLayerTag)
 	PlayerCameraDesc.fSpeedPecSec = 20.f;
 	PlayerCameraDesc.fRotatePecSec = XMConvertToRadians(90.f);
 	PlayerCameraDesc.pPlayerMatrix = pPlayerFloat4x4;
+	PlayerCameraDesc.iCurLevel = LEVEL_OFFICE_1F;
 
 	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_OFFICE_1F, TEXT("Prototype_GameObject_PlayerCamera"), strLayerTag, &PlayerCameraDesc)))
 		return E_FAIL;

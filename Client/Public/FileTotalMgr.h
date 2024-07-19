@@ -35,6 +35,7 @@ public:
 		TRIGGER_MOVE_LEVEL,
 		TRIGGER_CINEMACHINE,
 		TRIGGER_YONEDA,
+		TRIGGER_MONSTER,
 		TRIGGER_END
 	};
 
@@ -61,6 +62,12 @@ public:
 	HRESULT									Set_Collider_In_Client(int iColliderLoadingNum, int iStageLevel);
 	HRESULT									Set_Trigger_In_Client(int iTriggerLoadingNum, int iStageLevel);
 
+
+	HRESULT									Set_MapObj_In_Client_Trigger(int iMapLoadingNum, int iStageLevel);
+	HRESULT									Set_GameObject_In_Client_Trigger(int iStageLevel);
+
+
+
 	void									Load_Cinemachine(int iCineNum, int iStageLevel);
 
 	/* LEVEL 바뀌면 초기화 시키기 */
@@ -75,6 +82,7 @@ private:
 	LIGHT_DESC_IO							m_LightTotalInform{};
 	COLLIDER_IO								m_MapCollider{};
 	TRIGGER_IO								m_Trigger{};
+	MAP_TOTALINFORM_DESC					m_MapTriggerInform{}; //Trigger로 불러오는 object
 
 	vector<wstring>							m_Layers = { TEXT("Layer_GameObjects"), TEXT("Layer_Monster"), TEXT("Layer_Player") };
 
@@ -86,6 +94,8 @@ private:
 	HRESULT									Import_Bin_Light_Data_OnClient(LIGHT_DESC_IO* lightData, int iLevel);
 	HRESULT									Import_Bin_Collider_Data_OnTool(COLLIDER_IO* ColliderData, int iLevel);
 	HRESULT									Import_Bin_Trigger_Data_OnTool(TRIGGER_IO* TriggerData, int iLevel);
+	HRESULT									Import_Bin_TriggerMap_Data_OnClient(MAP_TOTALINFORM_DESC* mapObjData, int iLevel);
+
 
 public:
 	virtual void							Free() override;

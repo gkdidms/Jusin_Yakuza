@@ -44,6 +44,7 @@
 
 #pragma region MyRegion
 #include "LevelTrigger.h"
+#include "MonsterTrigger.h"
 #pragma endregion
 
 
@@ -203,7 +204,7 @@ HRESULT CLoader::Loading_Default()
 		return E_FAIL;
 
 	/* Prototype_Component_Texture_GuardDist */
-	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Texture_GuardDist"),
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Texture_GuardDist"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/e_j_0238_radialPtnG.dds"), 1))))
 		return E_FAIL;
 
@@ -427,6 +428,8 @@ HRESULT CLoader::Loading_For_Office_1F()
 		return E_FAIL;
 #pragma endregion
 
+
+
 #pragma region Map
 	/* For.Prototype_GameObject_Terrain */
 	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Terrain"),
@@ -467,6 +470,11 @@ HRESULT CLoader::Loading_For_Office_1F()
 	/* For.Prototype_GameObject_LevelTrigger */
 	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_LevelTrigger"),
 		CLevelTrigger::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_LevelTrigger */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_MonsterTrigger"),
+		CMonsterTrigger::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 #pragma endregion
@@ -796,6 +804,11 @@ HRESULT CLoader::Loading_For_Test()
 	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_LevelTrigger"),
 		CLevelTrigger::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+
+	/* For.Prototype_GameObject_MonsterTrigger */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_MonsterTrigger"),
+		CMonsterTrigger::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 #pragma endregion
 
 #pragma endregion
@@ -1067,7 +1080,7 @@ HRESULT CLoader::Add_Models_On_Path_NonAnim(_uint iLevel, const wstring& strPath
 		{
 			wstring strComponentName = TEXT("Prototype_Component_Model_") + m_pGameInstance->StringToWstring(fbxNames);
 
-			NonAnimPreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
+			NonAnimPreTransformMatrix = XMMatrixScaling(0.01002f, 0.01002f, 0.01002f);
 			if (FAILED(m_pGameInstance->Add_Component_Prototype(iLevel, strComponentName,
 				CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, strBinPath.c_str(), NonAnimPreTransformMatrix, true))))
 				return E_FAIL;
