@@ -240,7 +240,7 @@ void CPlayerCamera::Set_StartPos()
 {
 	if (LEVEL::LEVEL_OFFICE_1F == m_iCurrentLevel)
 	{
-		//m_fCamAngleX = -180;
+		m_fCamAngleY = -270;
 	}
 	else if (LEVEL::LEVEL_OFFICE_2F == m_iCurrentLevel)
 	{

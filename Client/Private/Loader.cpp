@@ -1080,7 +1080,7 @@ HRESULT CLoader::Add_Models_On_Path_NonAnim(_uint iLevel, const wstring& strPath
 		{
 			wstring strComponentName = TEXT("Prototype_Component_Model_") + m_pGameInstance->StringToWstring(fbxNames);
 
-			NonAnimPreTransformMatrix = XMMatrixScaling(0.01002f, 0.01002f, 0.01002f);
+			NonAnimPreTransformMatrix = XMMatrixScaling(0.01004f, 0.01004f, 0.01004f);
 			if (FAILED(m_pGameInstance->Add_Component_Prototype(iLevel, strComponentName,
 				CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, strBinPath.c_str(), NonAnimPreTransformMatrix, true))))
 				return E_FAIL;

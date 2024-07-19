@@ -1200,9 +1200,9 @@ CBTNode::NODE_STATE CAI_Monster::Check_Break()
 
 CBTNode::NODE_STATE CAI_Monster::ShiftAndIdle()
 {
-	static _uint iCount = rand() % 8;
+	static _uint iCount = rand() % 7 + 2;
 
-	if (DistanceFromPlayer() > 7.f)
+	if (DistanceFromPlayer() > 3.f)
 	{
 		m_iSkill = SKILL_SHIFT;
 	}
@@ -1210,16 +1210,16 @@ CBTNode::NODE_STATE CAI_Monster::ShiftAndIdle()
 	{
 		iCount++;
 
-		if (iCount == 4 || iCount == 7)
+		if (iCount == 12)
 			m_iSkill = SKILL_SHIFT;
 		else
 			m_iSkill = SKILL_IDLE;
 
-		if (iCount >= 10)
+		if (iCount >= 20)
 			iCount = 0;	
 	}
 
-	m_fBreakDuration = m_pGameInstance->Get_Random(4.f, 6.f);
+	m_fBreakDuration = m_pGameInstance->Get_Random(2.f, 4.f);
 
 	return CBTNode::SUCCESS;
 }
@@ -1229,7 +1229,7 @@ CBTNode::NODE_STATE CAI_Monster::Shift()
 	if (m_iSkill != SKILL_SHIFT)
 		return CBTNode::FAIL;
 
-	if (DistanceFromPlayer() > 3.f)
+	if (DistanceFromPlayer() > 2.f)
 	{
 		*m_pState = CMonster::MONSTER_SHIFT_F;
 	}

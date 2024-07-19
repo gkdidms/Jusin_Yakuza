@@ -60,7 +60,7 @@ HRESULT CShakedown::Initialize(void* pArg)
 
 	m_pModelCom->Set_AnimationIndex(1, 0.5);
 
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(5.f, 0.f, 5.f, 1.f));
+
 	m_pTransformCom->Set_Scale(1.2f, 1.2f, 1.2f);
 
 
