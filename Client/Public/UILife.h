@@ -4,7 +4,7 @@ BEGIN(Client)
 class CUILife :
     public CUIScene
 {
-private:
+protected:
     CUILife();
     CUILife(const CUILife& rhs);
     virtual ~CUILife() = default;
