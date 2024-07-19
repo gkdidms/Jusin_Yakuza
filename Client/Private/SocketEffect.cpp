@@ -61,10 +61,9 @@ void CSocketEffect::On()
 {
 	if(m_isOn==false)
 	{
-		if (m_pEffect->Get_isAura())
-		{
-			m_pEffect->Reset_Buffer();
-		}
+
+		m_pEffect->Reset_Buffer();
+
 	}
 	m_isOn = true;
 
