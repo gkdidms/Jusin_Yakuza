@@ -269,6 +269,15 @@ HRESULT CPlayer::Render()
 						return E_FAIL;
 				}
 			}
+
+			if ((_uint)KRS_BEHAVIOR_STATE::SWAY == m_iCurrentBehavior)
+			{
+				if (FAILED(m_pShaderCom->Bind_RawValue("g_isRimLight", &m_isRimLight, sizeof(_float))))
+					return E_FAIL;
+
+				if (FAILED(m_pShaderCom->Bind_RawValue("g_fRimUV", &m_fRimPartsUV, sizeof(_float2))))
+					return E_FAIL;
+			}
 		}
 		else
 		{	
