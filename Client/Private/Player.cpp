@@ -256,6 +256,19 @@ HRESULT CPlayer::Render()
 				if (FAILED(m_pShaderCom->Bind_RawValue("g_fRimUV", &m_fRimPartsUV, sizeof(_float2))))
 					return E_FAIL;
 			}
+
+			// 기게이지가 켜져있는 상태라면 상반신 림라이트를 켠다
+			if (0 < m_iCurrentHitLevel)
+			{
+				if (!strcmp(pMesh->Get_Name(), "[l0]jacketw1"))
+				{
+					if (FAILED(m_pShaderCom->Bind_RawValue("g_isRimLight", &m_isRimLight, sizeof(_float))))
+						return E_FAIL;
+
+					if (FAILED(m_pShaderCom->Bind_RawValue("g_fRimUV", &m_fRimPartsUV, sizeof(_float2))))
+						return E_FAIL;
+				}
+			}
 		}
 		else
 		{	
@@ -351,8 +364,8 @@ void CPlayer::Take_Damage(_uint iHitColliderType, const _float3& vDir, _float fD
 	{
 	case CPlayer::KRS:
 	{
-		_vector vAttackedObjectLook = pAttackedObject->Get_TransformCom()->Get_State(CTransform::STATE_LOOK);
-		_vector vMyLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
+		_vector vAttackedObjectLook = XMVector3Normalize(pAttackedObject->Get_TransformCom()->Get_State(CTransform::STATE_LOOK));
+		_vector vMyLook = XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK));
 
 		_float fTheta = 0.0f;
 		_float fDot = XMVectorGetX(XMVector3Dot(vMyLook, vAttackedObjectLook));
@@ -382,7 +395,7 @@ void CPlayer::Take_Damage(_uint iHitColliderType, const _float3& vDir, _float fD
 			CKiryu_KRS_Down::KRS_DOWN_DESC Desc{ -1, iDirection, strAnimationName };
 			m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Setting_Value((void*)&Desc);
 		}
-		else
+		else if(m_iCurrentBehavior != (_uint)KRS_BEHAVIOR_STATE::SKILL_FLY_KICK)						// 슈퍼아머 적용할 행동 타입들을 예외처리해주어야한다.
 		{
 			CKiryu_KRS_Hit::KRS_Hit_DESC Desc{ &vDir, fDamage, pAttackedObject->Get_CurrentAnimationName(), iDirection };
 
@@ -394,8 +407,8 @@ void CPlayer::Take_Damage(_uint iHitColliderType, const _float3& vDir, _float fD
 	}
 	case CPlayer::KRH:
 	{
-		_vector vAttackedObjectLook = pAttackedObject->Get_TransformCom()->Get_State(CTransform::STATE_LOOK);
-		_vector vMyLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
+		_vector vAttackedObjectLook = XMVector3Normalize(pAttackedObject->Get_TransformCom()->Get_State(CTransform::STATE_LOOK));
+		_vector vMyLook = XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK));
 
 		_float fTheta = 0.0f;
 		_float fDot = XMVectorGetX(XMVector3Dot(vMyLook, vAttackedObjectLook));
@@ -437,8 +450,8 @@ void CPlayer::Take_Damage(_uint iHitColliderType, const _float3& vDir, _float fD
 	}
 	case CPlayer::KRC:
 	{
-		_vector vAttackedObjectLook = pAttackedObject->Get_TransformCom()->Get_State(CTransform::STATE_LOOK);
-		_vector vMyLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
+		_vector vAttackedObjectLook = XMVector3Normalize(pAttackedObject->Get_TransformCom()->Get_State(CTransform::STATE_LOOK));
+		_vector vMyLook = XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK));
 
 		_float fTheta = 0.0f;
 		_float fDot = XMVectorGetX(XMVector3Dot(vMyLook, vAttackedObjectLook));
@@ -891,7 +904,7 @@ void CPlayer::KRH_KeyInput(const _float& fTimeDelta)
 				}
 
 			}
-			else
+			else if (m_iCurrentBehavior != (_uint)KRH_BEHAVIOR_STATE::DOWN)
 			{
 				// 현재 상태가 아이들이 아니라면 
 				if ((_uint)KRH_BEHAVIOR_STATE::IDLE != m_iCurrentBehavior)
@@ -921,7 +934,7 @@ void CPlayer::KRH_KeyInput(const _float& fTimeDelta)
 			m_iCurrentBehavior = (_uint)KRC_BEHAVIOR_STATE::IDLE;
 	}
 
-	if (!m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Stopping())
+	if (!m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Stopping() && m_iCurrentBehavior != (_uint)KRH_BEHAVIOR_STATE::DOWN)
 	{
 		if (m_pGameInstance->GetMouseState(DIM_LB) == TAP)
 		{

@@ -355,34 +355,38 @@ void CKiryu_KRH_Hit::Setting_Value(void* pValue)
 		}
 		}
 	}
+	else if ("e_wpa_atk_heavy" == strAnimName)
+	{
+		// [30]	c_dam_push_head_b[c_dam_push_head_b]	14;
+		m_iCurrentIndex = 14;
+	}
 	else if ("e_kta_atk_rariatto" == strAnimName)
 	{
-		/*
-		[20]	c_dam_head_lv02_b[c_dam_head_lv02_b]	10
-		[21]	c_dam_head_lv02_f[c_dam_head_lv02_f]	11
-		[22]	c_dam_head_lv02_l[c_dam_head_lv02_l]	12
-		[23]	c_dam_head_lv02_r[c_dam_head_lv02_r]	13
-		*/
+		///*30*/m_AnimationNames.push_back("c_dwn_direct_b");
+		///*31*/m_AnimationNames.push_back("c_dwn_direct_f");
+		///*32*/m_AnimationNames.push_back("c_dwn_direct_l");
+		///*33*/m_AnimationNames.push_back("c_dwn_direct_r");
+
 		switch (pDesc->iDirection)
 		{
 		case CPlayer::F:
 		{
-			m_iCurrentIndex = 11;
+			m_iCurrentIndex = 31;
 			break;
 		}
 		case CPlayer::B:
 		{
-			m_iCurrentIndex = 10;
+			m_iCurrentIndex = 30;
 			break;
 		}
 		case CPlayer::L:
 		{
-			m_iCurrentIndex = 12;
+			m_iCurrentIndex = 33;
 			break;
 		}
 		case CPlayer::R:
 		{
-			m_iCurrentIndex = 13;
+			m_iCurrentIndex = 32;
 			break;
 		}
 		}
@@ -409,12 +413,12 @@ void CKiryu_KRH_Hit::Setting_Value(void* pValue)
 		}
 		case CPlayer::L:
 		{
-			m_iCurrentIndex = 24;
+			m_iCurrentIndex = 25;
 			break;
 		}
 		case CPlayer::R:
 		{
-			m_iCurrentIndex = 25;
+			m_iCurrentIndex = 24;
 			break;
 		}
 		}
@@ -504,14 +508,17 @@ void CKiryu_KRH_Hit::Setting_Value(void* pValue)
 		}
 		case CPlayer::L:
 		{
-			m_iCurrentIndex = 32;
+			m_iCurrentIndex = 33;
 			break;
 		}
 		case CPlayer::R:
 		{
-			m_iCurrentIndex = 33;
+			m_iCurrentIndex = 32;
 			break;
 		}
+		default:
+			m_iCurrentIndex = 31;
+			break;
 		}
 	}
 	else if ("e_kuz_atk_jab" == strAnimName)

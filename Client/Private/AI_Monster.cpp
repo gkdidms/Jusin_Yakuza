@@ -778,6 +778,7 @@ _bool CAI_Monster::Check_StandUp()
 		|| *m_pState == CMonster::MONSTER_DWN_BODY_B
 		|| *m_pState == CMonster::MONSTER_DWN_BODY_B_SP)
 	{
+		m_pThis->Set_Down(false);
 		*m_pState = CMonster::MONSTER_STANDUP_DNB_FAST;
 		m_pThis->Set_Down(false);
 		return false;
@@ -894,7 +895,7 @@ CBTNode::NODE_STATE CAI_Monster::Check_Sway()
 	if (m_pPlayer->isAttack() && !m_pThis->isColl())
 	{
 		//플레이어와의 거리가 어느정도 있는 상태여야만 함
-		if (DistanceFromPlayer() >= 1.5f && DistanceFromPlayer() < 1.8f)
+		if (DistanceFromPlayer() >= 1.5f && DistanceFromPlayer() < 1.7f)
 		{
 			Reset_State();
 			return CBTNode::SUCCESS;		
@@ -911,7 +912,11 @@ CBTNode::NODE_STATE CAI_Monster::Sway()
 
 	//플레이어가 몬스터의 뒤에 있을때 스웨이를 하지 않는다.
 	if (isBehine())
+	{
+		m_isSway = false;
 		return CBTNode::FAIL;
+	}
+		
 
 	if (m_pPlayer->Get_BattleStyle() == CPlayer::KRS)
 		iPlayerAtkDir = Check_KRS(iPlayerLv, false);
@@ -1058,7 +1063,6 @@ CBTNode::NODE_STATE CAI_Monster::Guard()
 
 	if (m_isGuard)
 	{
-
 		if (*m_pState == CMonster::MONSTER_GURAD_START && m_pAnimCom->Get_AnimFinished())
 		{
 			//가드 지속시간 끝
@@ -1198,19 +1202,26 @@ CBTNode::NODE_STATE CAI_Monster::Check_Break()
 
 CBTNode::NODE_STATE CAI_Monster::ShiftAndIdle()
 {
-	static _uint iCount = 0;
+	static _uint iCount = rand() % 8;
 
-	iCount++;
-	if (iCount == 4)
+	if (DistanceFromPlayer() > 4.f)
+	{
 		m_iSkill = SKILL_SHIFT;
-	else 
-		m_iSkill = SKILL_IDLE;
-	
-	if (iCount >= 10)
-		iCount = 0;
+	}
+	else
+	{
+		iCount++;
+		if (iCount == 4 || iCount == 7)
+			m_iSkill = SKILL_SHIFT;
+		else
+			m_iSkill = SKILL_IDLE;
 
-	m_fBreakDuration = m_pGameInstance->Get_Random(2.f, 4.f);
-	
+		if (iCount >= 10)
+			iCount = 0;
+	}
+
+	m_fBreakDuration = m_pGameInstance->Get_Random(4.f, 6.f);
+
 	return CBTNode::SUCCESS;
 }
 
@@ -1219,15 +1230,21 @@ CBTNode::NODE_STATE CAI_Monster::Shift()
 	if (m_iSkill != SKILL_SHIFT)
 		return CBTNode::FAIL;
 
-	_uint iIndex = m_pGameInstance->Get_Random(0, 3);
-	if (iIndex == 0)
+	if (DistanceFromPlayer() > 4.f)
+	{
 		*m_pState = CMonster::MONSTER_SHIFT_F;
-	else if (iIndex == 1)
-		*m_pState = CMonster::MONSTER_SHIFT_B;
-	else if (iIndex == 2)
-		*m_pState = CMonster::MONSTER_SHIFT_L;
-	else if (iIndex == 3)
-		*m_pState = CMonster::MONSTER_SHIFT_R;
+	}
+	else {
+		_uint iIndex = m_pGameInstance->Get_Random(0, 3);
+		if (iIndex == 0)
+			*m_pState = CMonster::MONSTER_SHIFT_F;
+		else if (iIndex == 1)
+			*m_pState = CMonster::MONSTER_SHIFT_B;
+		else if (iIndex == 2)
+			*m_pState = CMonster::MONSTER_SHIFT_L;
+		else if (iIndex == 3)
+			*m_pState = CMonster::MONSTER_SHIFT_R;
+	}
 
 	m_isBreak = true;
 
