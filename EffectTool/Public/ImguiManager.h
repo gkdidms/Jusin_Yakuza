@@ -40,6 +40,7 @@ public:
 		PASS_ROTATE,
 		PASS_ROTANIM,
 		PASS_ANIM,
+		PASS_DISTORTION=6,
 		PASS_END};
 private:
 	CImguiManager(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
