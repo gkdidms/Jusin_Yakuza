@@ -277,6 +277,11 @@ void CTrigger_Manager::Show_Add_Trigger_IMGUI()
 	{
 		triggerType = TRIGGER_TYPE::TRIGGER_YONEDA;
 	}
+	ImGui::NewLine();
+	if (ImGui::RadioButton(u8"monster trigger", triggerType == TRIGGER_TYPE::TRIGGER_MONSTER))
+	{
+		triggerType = TRIGGER_TYPE::TRIGGER_MONSTER;
+	}
 
 	ImGui::NewLine();
 
@@ -287,28 +292,44 @@ void CTrigger_Manager::Show_Add_Trigger_IMGUI()
 
 	ImGui::NewLine();
 
-	/*static int			ilevelNum = 0;
-	ImGui::InputInt(u8"레벨 번호", &ilevelNum);*/
-
 	static int			ilevelNum = 0;
-	if (ImGui::BeginListBox(u8"이동 레벨"))
+	if (TRIGGER_TYPE::TRIGGER_MONSTER != triggerType)
 	{
-		for (int n = 0; n < m_Levels.size(); n++)
+		if (ImGui::BeginListBox(u8"이동 레벨"))
 		{
-			/*const bool is_selected = (cell_current_idx == n);*/
-			const bool is_selected = (ilevelNum == n);
-			if (ImGui::Selectable(m_Levels[n], is_selected))
+			for (int n = 0; n < m_Levels.size(); n++)
 			{
-				/*cell_current_idx = n;
-				m_iCurrentCellIndex = trigger_current_idx;*/
-				ilevelNum = n;
-			}
+				const bool is_selected = (ilevelNum == n);
+				if (ImGui::Selectable(m_Levels[n], is_selected))
+				{
+					ilevelNum = n;
+				}
 
-			if (is_selected)
-				ImGui::SetItemDefaultFocus();
+				if (is_selected)
+					ImGui::SetItemDefaultFocus();
+			}
+			ImGui::EndListBox();
 		}
-		ImGui::EndListBox();
 	}
+	else
+	{
+		if (ImGui::BeginListBox(u8"몬스터 트리거"))
+		{
+			for (int n = 0; n < m_TriggerLevel.size(); n++)
+			{
+				const bool is_selected = (ilevelNum == n);
+				if (ImGui::Selectable(m_TriggerLevel[n], is_selected))
+				{
+					ilevelNum = n;
+				}
+
+				if (is_selected)
+					ImGui::SetItemDefaultFocus();
+			}
+			ImGui::EndListBox();
+		}
+	}
+	
 
 	static int			iCineNum = 0;
 	ImGui::InputInt(u8"시네머신 번호", &iCineNum);
@@ -565,7 +586,12 @@ void CTrigger_Manager::Edit_Installed_Trigger()
 		triggerType = TRIGGER_TYPE::TRIGGER_YONEDA;
 		m_tCurTriggerDesc.iTriggerType = TRIGGER_TYPE::TRIGGER_YONEDA;
 	}
-
+	ImGui::NewLine();
+	if (ImGui::RadioButton(u8"trigger - MONSTER ", m_tCurTriggerDesc.iTriggerType == TRIGGER_TYPE::TRIGGER_MONSTER))
+	{
+		triggerType = TRIGGER_TYPE::TRIGGER_MONSTER;
+		m_tCurTriggerDesc.iTriggerType = TRIGGER_TYPE::TRIGGER_MONSTER;
+	}
 
 
 	ImGui::NewLine();
@@ -577,27 +603,47 @@ void CTrigger_Manager::Edit_Installed_Trigger()
 
 	ImGui::NewLine();
 
-	//static int iNextLevel = m_tCurTriggerDesc.iLevelNum;
-	//ImGui::InputInt(u8"이동levelnum", &m_tCurTriggerDesc.iLevelNum);
 
 	static int			ilevelNum = m_tCurTriggerDesc.iLevelNum;
-	if (ImGui::BeginListBox(u8"이동 레벨"))
-	{
-		for (int n = 0; n < m_Levels.size(); n++)
-		{
-			/*const bool is_selected = (cell_current_idx == n);*/
-			const bool is_selected = (m_tCurTriggerDesc.iLevelNum == n);
-			if (ImGui::Selectable(m_Levels[n], is_selected))
-			{
-				/*cell_current_idx = n;
-				m_iCurrentCellIndex = trigger_current_idx;*/
-				m_tCurTriggerDesc.iLevelNum = n;
-			}
 
-			if (is_selected)
-				ImGui::SetItemDefaultFocus();
+	if (TRIGGER_TYPE::TRIGGER_MONSTER != m_tCurTriggerDesc.iTriggerType)
+	{
+		if (ImGui::BeginListBox(u8"이동 레벨"))
+		{
+			for (int n = 0; n < m_Levels.size(); n++)
+			{
+				/*const bool is_selected = (cell_current_idx == n);*/
+				const bool is_selected = (m_tCurTriggerDesc.iLevelNum == n);
+				if (ImGui::Selectable(m_Levels[n], is_selected))
+				{
+					/*cell_current_idx = n;
+					m_iCurrentCellIndex = trigger_current_idx;*/
+					m_tCurTriggerDesc.iLevelNum = n;
+				}
+
+				if (is_selected)
+					ImGui::SetItemDefaultFocus();
+			}
+			ImGui::EndListBox();
 		}
-		ImGui::EndListBox();
+	}
+	else
+	{
+		if (ImGui::BeginListBox(u8"몬스터 트리거"))
+		{
+			for (int n = 0; n < m_TriggerLevel.size(); n++)
+			{
+				const bool is_selected = (ilevelNum == n);
+				if (ImGui::Selectable(m_TriggerLevel[n], is_selected))
+				{
+					ilevelNum = n;
+				}
+
+				if (is_selected)
+					ImGui::SetItemDefaultFocus();
+			}
+			ImGui::EndListBox();
+		}
 	}
 
 
@@ -706,6 +752,7 @@ void CTrigger_Manager::Free()
 	m_TriggerNames.clear();
 
 	m_Levels.clear();
+	m_TriggerLevel.clear();
 
 	Safe_Release(m_pGameInstance);
 }

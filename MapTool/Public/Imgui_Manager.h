@@ -8,6 +8,7 @@
 #include "Camera_Manager.h"
 #include "Collider_Manager.h"
 #include "Trigger_Manager.h"
+#include "TriggerObj_Manager.h"
 #include "Client_Defines.h"
 
 BEGIN(Engine)
@@ -24,6 +25,7 @@ public:
 		COLLIDER,
 		LIGHT,
 		TRIGGER,
+		TRIGGEROBJ,
 		IDWRITE_END
 	};
 
@@ -59,7 +61,7 @@ private:
 	void	Show_CameraTool_IMGUI();
 	void	Show_Collider_IMGUI();
 	void	Show_Trigger_IMGUI();
-
+	void	Show_TriggerMapObj_Place_IMGUI();
 
 private:
 	CNavigation_Manager*		m_pNavigationMgr;
@@ -68,6 +70,7 @@ private:
 	CCamera_Manager*			m_pCameraToolMgr;
 	CCollider_Manager*			m_pColliderMgr;
 	CTrigger_Manager*			m_pTriggerMgr;
+	CTriggerObj_Manager*		m_pTriggerObjMgr;
 
 	CGameInstance*				m_pGameInstance;
 
@@ -81,6 +84,7 @@ private:
 	_bool						m_bCameraMgr_IMGUI = { false };
 	_bool						m_bColliderMgr_imgui = { false };
 	_bool						m_bTriggerMgr_IMGUI = { false };
+	_bool						m_bTriggerObjMgr_IMGUI = { false };
 
 	IDWRIE						m_eWrieID = { IDWRITE_END };
 

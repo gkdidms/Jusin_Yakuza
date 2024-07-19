@@ -25,15 +25,14 @@ HRESULT CLevel_Office2F::Initialize()
 	if (FAILED(Ready_Player(TEXT("Layer_Player"))))
 		return E_FAIL;
 
-	if (FAILED(Ready_Camera(TEXT("Layer_Camera"))))
-		return E_FAIL;
-
 	/* Å¬¶ó ÆÄ½Ì */
 	m_pFileTotalManager->Set_MapObj_In_Client(STAGE_OFFICE_2F, LEVEL_OFFICE_2F);
 	m_pFileTotalManager->Set_Lights_In_Client(STAGE_OFFICE_2F);
 	m_pFileTotalManager->Set_Collider_In_Client(STAGE_OFFICE_2F, LEVEL_OFFICE_2F);
 	m_pFileTotalManager->Set_Trigger_In_Client(STAGE_OFFICE_2F, LEVEL_OFFICE_2F);
 
+	if (FAILED(Ready_Camera(TEXT("Layer_Camera"))))
+		return E_FAIL;
 
 	return S_OK	;
 }
@@ -109,6 +108,7 @@ HRESULT CLevel_Office2F::Ready_Camera(const wstring& strLayerTag)
 	PlayerCameraDesc.fSpeedPecSec = 20.f;
 	PlayerCameraDesc.fRotatePecSec = XMConvertToRadians(90.f);
 	PlayerCameraDesc.pPlayerMatrix = pPlayerFloat4x4;
+	PlayerCameraDesc.iCurLevel = LEVEL_OFFICE_2F;
 
 	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_OFFICE_2F, TEXT("Prototype_GameObject_PlayerCamera"), strLayerTag, &PlayerCameraDesc)))
 		return E_FAIL;

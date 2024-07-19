@@ -74,6 +74,9 @@ private:
 
     CGameInstance* m_pGameInstance = { nullptr };
 
+
+    float           m_fIntersectDistance = { 0 };
+
 private:
     void Impulse_Clear();
     void Battle_Clear();

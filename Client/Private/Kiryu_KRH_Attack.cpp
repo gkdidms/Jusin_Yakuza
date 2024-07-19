@@ -1,6 +1,7 @@
 #include "GameInstance.h"
 #include "Kiryu_KRH_Attack.h"
 #include "Player.h"
+#include "Monster.h"
 
 CKiryu_KRH_Attack::CKiryu_KRH_Attack()
 	:CBehaviorAnimation{}
@@ -36,6 +37,9 @@ CKiryu_KRH_Attack::CKiryu_KRH_Attack()
 	m_AnimationIndices.push_back(284);	//[284]	p_krh_cmb_06_tame[p_krh_cmb_06_tame]
 	m_AnimationIndices.push_back(287);	//[287]	p_krh_cmb_07_tame[p_krh_cmb_07_tame]
 	m_AnimationIndices.push_back(290);	//[290]	p_krh_cmb_08_tame[p_krh_cmb_08_tame]
+
+	/* 24 */
+	m_AnimationIndices.push_back(252);	//[252]	p_krh_atk_down[p_krh_atk_down]
 
 	/*
 		[265]	p_krh_cmb_01_sway_b[p_krh_cmb_01_sway_b]
@@ -104,6 +108,11 @@ void CKiryu_KRH_Attack::Combo_Count(_bool isFinAction)
 		}
 	}
 	
+
+	CLandObject* pTargetObject = m_pPlayer->Get_TargetObject();
+	if (static_cast<CMonster*>(pTargetObject)->isDown())
+		m_iComboCount = 24;
+
 }		
 
 _bool CKiryu_KRH_Attack::Changeable_Combo_Animation()

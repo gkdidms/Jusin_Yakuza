@@ -25,13 +25,13 @@ HRESULT CLevel_DogimazoBoss::Initialize()
     if (FAILED(Ready_Player(TEXT("Layer_Player"))))
         return E_FAIL;
 
-    if (FAILED(Ready_Camera(TEXT("Layer_Camera"))))
-        return E_FAIL;
-
     /* Å¬¶ó ÆÄ½Ì */
     m_pFileTotalManager->Set_MapObj_In_Client(STAGE_DOGIMAZO_BOSS, LEVEL_DOGIMAZO_BOSS);
     m_pFileTotalManager->Set_Lights_In_Client(STAGE_DOGIMAZO_BOSS);
     m_pFileTotalManager->Set_Collider_In_Client(STAGE_DOGIMAZO_BOSS, LEVEL_DOGIMAZO_BOSS);
+
+	if (FAILED(Ready_Camera(TEXT("Layer_Camera"))))
+		return E_FAIL;
 
     return S_OK;
 }
@@ -86,6 +86,7 @@ HRESULT CLevel_DogimazoBoss::Ready_Camera(const wstring& strLayerTag)
 	PlayerCameraDesc.fSpeedPecSec = 20.f;
 	PlayerCameraDesc.fRotatePecSec = XMConvertToRadians(90.f);
 	PlayerCameraDesc.pPlayerMatrix = pPlayerFloat4x4;
+	PlayerCameraDesc.iCurLevel = LEVEL_DOGIMAZO_BOSS;
 
 	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_DOGIMAZO_BOSS, TEXT("Prototype_GameObject_PlayerCamera"), strLayerTag, &PlayerCameraDesc)))
 		return E_FAIL;

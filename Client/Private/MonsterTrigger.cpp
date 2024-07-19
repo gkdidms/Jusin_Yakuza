@@ -1,23 +1,27 @@
-#include "LevelTrigger.h"
+#include "MonsterTrigger.h"
 #include "Player.h"
 #include "Level_Loading.h"
 
-CLevelTrigger::CLevelTrigger(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-	: CTrigger { pDevice, pContext }
+CMonsterTrigger::CMonsterTrigger(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+	: CTrigger{ pDevice, pContext }
+	, m_pFileMgr {CFileTotalMgr::GetInstance()}
 {
+	Safe_AddRef(m_pFileMgr);
 }
 
-CLevelTrigger::CLevelTrigger(const CLevelTrigger& rhs)
+CMonsterTrigger::CMonsterTrigger(const CMonsterTrigger& rhs)
 	: CTrigger{ rhs }
+	, m_pFileMgr{ rhs.m_pFileMgr }
 {
+	Safe_AddRef(m_pFileMgr);
 }
 
-HRESULT CLevelTrigger::Initialize_Prototype()
+HRESULT CMonsterTrigger::Initialize_Prototype()
 {
 	return S_OK;
 }
 
-HRESULT CLevelTrigger::Initialize(void* pArg)
+HRESULT CMonsterTrigger::Initialize(void* pArg)
 {
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
@@ -28,13 +32,13 @@ HRESULT CLevelTrigger::Initialize(void* pArg)
 	return S_OK;
 }
 
-void CLevelTrigger::Priority_Tick(const _float& fTimeDelta)
+void CMonsterTrigger::Priority_Tick(const _float& fTimeDelta)
 {
 
 
 }
 
-void CLevelTrigger::Tick(const _float& fTimeDelta)
+void CMonsterTrigger::Tick(const _float& fTimeDelta)
 {
 	m_pColliderCom->Tick(m_WorldMatrix);
 
@@ -42,7 +46,7 @@ void CLevelTrigger::Tick(const _float& fTimeDelta)
 	__super::Tick(fTimeDelta);
 }
 
-void CLevelTrigger::Late_Tick(const _float& fTimeDelta)
+void CMonsterTrigger::Late_Tick(const _float& fTimeDelta)
 {
 
 	__super::Late_Tick(fTimeDelta);
@@ -63,17 +67,19 @@ void CLevelTrigger::Late_Tick(const _float& fTimeDelta)
 				}
 			}
 
-			m_bMoveScene = bDeadCheck;
-
-			if(true == m_bMoveScene)
+			if (true == bDeadCheck)
+			{
+				m_pFileMgr->Set_MapObj_In_Client_Trigger(m_tTriggerDesc.iLevelNum, m_iCurrentLevel);
 				m_bTriggerDead = true;
+			}
+
 		}
+
 	}
 	
-
 }
 
-HRESULT CLevelTrigger::Render()
+HRESULT CMonsterTrigger::Render()
 {
 #ifdef _DEBUG
 	m_pGameInstance->Add_DebugComponent(m_pColliderCom);
@@ -82,7 +88,7 @@ HRESULT CLevelTrigger::Render()
 	return S_OK;
 }
 
-bool CLevelTrigger::Move_Scene(int& iLevelNum)
+bool CMonsterTrigger::Move_Scene(int& iLevelNum)
 {
 	// 넘어갈 레벨
 	iLevelNum = m_tTriggerDesc.iLevelNum;
@@ -90,7 +96,7 @@ bool CLevelTrigger::Move_Scene(int& iLevelNum)
 	return m_bMoveScene;
 }
 
-HRESULT CLevelTrigger::Add_Components(void* pArg)
+HRESULT CMonsterTrigger::Add_Components(void* pArg)
 {
 
 	TRIGGEROBJ_DESC* triggerDesc = (TRIGGEROBJ_DESC*)pArg;
@@ -111,9 +117,9 @@ HRESULT CLevelTrigger::Add_Components(void* pArg)
 	return S_OK;
 }
 
-CLevelTrigger* CLevelTrigger::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+CMonsterTrigger* CMonsterTrigger::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
-	CLevelTrigger* pInstance = new CLevelTrigger(pDevice, pContext);
+	CMonsterTrigger* pInstance = new CMonsterTrigger(pDevice, pContext);
 
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
@@ -124,9 +130,9 @@ CLevelTrigger* CLevelTrigger::Create(ID3D11Device* pDevice, ID3D11DeviceContext*
 	return pInstance;
 }
 
-CGameObject* CLevelTrigger::Clone(void* pArg)
+CGameObject* CMonsterTrigger::Clone(void* pArg)
 {
-	CLevelTrigger* pInstance = new CLevelTrigger(*this);
+	CMonsterTrigger* pInstance = new CMonsterTrigger(*this);
 
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
@@ -137,7 +143,9 @@ CGameObject* CLevelTrigger::Clone(void* pArg)
 	return pInstance;
 }
 
-void CLevelTrigger::Free()
+void CMonsterTrigger::Free()
 {
 	__super::Free();
+
+	Safe_Release(m_pFileMgr);
 }
