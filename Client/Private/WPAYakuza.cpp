@@ -138,6 +138,7 @@ HRESULT CWPAYakuza::Add_Components()
 
 void CWPAYakuza::Change_Animation()
 {
+	m_isAnimLoop = false;
 
 	__super::Change_Animation();
 
