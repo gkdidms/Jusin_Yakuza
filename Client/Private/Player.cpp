@@ -382,7 +382,7 @@ void CPlayer::Take_Damage(_uint iHitColliderType, const _float3& vDir, _float fD
 			CKiryu_KRS_Down::KRS_DOWN_DESC Desc{ -1, iDirection, strAnimationName };
 			m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Setting_Value((void*)&Desc);
 		}
-		else
+		else if(m_iCurrentBehavior != (_uint)KRS_BEHAVIOR_STATE::SKILL_FLY_KICK)						// 슈퍼아머 적용할 행동 타입들을 예외처리해주어야한다.
 		{
 			CKiryu_KRS_Hit::KRS_Hit_DESC Desc{ &vDir, fDamage, pAttackedObject->Get_CurrentAnimationName(), iDirection };
 
