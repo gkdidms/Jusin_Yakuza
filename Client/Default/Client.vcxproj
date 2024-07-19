@@ -289,6 +289,7 @@
     <ClInclude Include="..\Public\UIInven.h" />
     <ClInclude Include="..\Public\UILife.h" />
     <ClInclude Include="..\Public\UILoading.h" />
+    <ClInclude Include="..\Public\UILogo.h" />
     <ClInclude Include="..\Public\UIManager.h" />
     <ClInclude Include="..\Public\UIMenu.h" />
     <ClInclude Include="..\Public\UIMoney.h" />
@@ -423,6 +424,7 @@
     </ClCompile>
     <ClCompile Include="..\Private\UIInven.cpp" />
     <ClCompile Include="..\Private\UILife.cpp" />
+    <ClCompile Include="..\Private\UILogo.cpp" />
     <ClCompile Include="..\Private\UIManager.cpp" />
     <ClCompile Include="..\Private\UIMenu.cpp" />
     <ClCompile Include="..\Private\UIMoney.cpp" />

@@ -365,6 +365,9 @@
     <ClCompile Include="..\Private\MapColliderObj.cpp">
       <Filter>02.GameObjects\07.MapCollider\Obj</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\UILogo.cpp">
+      <Filter>95.Utility\05.UIManager\UIScene\UILogo</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\MainApp.h">
@@ -760,6 +763,9 @@
     </ClInclude>
     <ClInclude Include="..\Public\MapColliderObj.h">
       <Filter>02.GameObjects\07.MapCollider\Obj</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UILogo.h">
+      <Filter>95.Utility\05.UIManager\UIScene\UILogo</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1169,6 +1175,9 @@
     </Filter>
     <Filter Include="02.GameObjects\08.Trigger\02.YonedaTrigger">
       <UniqueIdentifier>{cd20dace-6e28-432e-8fd8-98fbb338d7d3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\05.UIManager\UIScene\UILogo">
+      <UniqueIdentifier>{86b835cc-494d-426c-b317-d8a696d3f973}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
