@@ -52,7 +52,7 @@ void CKiryu_KRS_Down::Change_Animation()
 
 _bool CKiryu_KRS_Down::Get_AnimationEnd()
 {
-	if (m_eAnimState != ANIM_END) return false;
+	if (m_eAnimState == ANIM_LOOP) return false;
 
 	CModel* pModelCom = static_cast<CModel*>(m_pPlayer->Get_Component(TEXT("Com_Model")));
 
@@ -66,12 +66,13 @@ _bool CKiryu_KRS_Down::Get_AnimationEnd()
 				m_iCurrentIndex = 0;
 
 			m_eAnimState = ANIM_LOOP;
+
+			return false;
 		}
 		else
 		{
 			Reset();
 		}
-		
 		return true;
 	}
 
@@ -90,7 +91,7 @@ void CKiryu_KRS_Down::Setting_Value(void* pValue)
 	//iDownState값이 -1이 아니라면 넘어지고 유지되는 것에 대한 처리가 필요
 	if (pDownState->iDownState != -1)
 	{
-		m_eAnimState == ANIM_LOOP;
+		m_eAnimState = ANIM_LOOP;
 
 		// 0 B(뒤), 1 F(앞)
 		if (pDownState->iDownState == 0)
@@ -107,12 +108,12 @@ void CKiryu_KRS_Down::Setting_Value(void* pValue)
 	// iDownState값이 -1이고 iType나 iDirection가 -1이 아니라면 넘어진 상태에서 히트당했을 때 처리
 	else if (pDownState->iDirection != -1)
 	{
-		m_eAnimState == ANIM_ONCE;
+		m_eAnimState = ANIM_ONCE;
 
 		_bool isTrample = { false };
-		if (pDownState->strAnimationName == "e_kta_atk_down")	// 밟기
+		if (m_pGameInstance->Extract_String(pDownState->strAnimationName, '[', ']') == "e_kta_atk_down")	// 밟기
 		{
-			isTrample = true;
+			isTrample = true;	
 		}
 		//else if (pDownState->strAnimationName == "e_kuz_atk_down")	// 차기
 

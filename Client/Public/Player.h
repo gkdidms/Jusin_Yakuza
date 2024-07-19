@@ -28,6 +28,8 @@ public:
     {
         IDLE, WALK, RUN, ADVENTURE_BEHAVIOR_END
     };    
+
+    // ½´¾Æ: SKILL_FLY_KICK
     enum class KRS_BEHAVIOR_STATE
     {
         BTL_START, IDLE, WALK, RUN, ATTACK, HIT, 
@@ -36,6 +38,7 @@ public:
         KRS_BEHAVIOR_END
     };
 
+    // ½´¾Æ: -
     enum class KRH_BEHAVIOR_STATE
     {
         BTL_START, IDLE, WALK, RUN, ATTACK, HIT,
@@ -43,13 +46,13 @@ public:
         KRH_BEHAVIOR_END
     };
 
+    // ½´¾Æ: GUARD
     enum class KRC_BEHAVIOR_STATE
     {
         BTL_START, IDLE, WALK, RUN, ATTACK, HIT,
         SWAY, DOWN, GUARD,
         KRC_BEHAVIOR_END
     };
-
 
     enum MOVE_DIRECTION
     {

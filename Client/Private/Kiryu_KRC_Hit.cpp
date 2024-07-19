@@ -353,6 +353,11 @@ void CKiryu_KRC_Hit::Setting_Value(void* pValue)
 		}
 		}
 	}
+	else if ("e_wpa_atk_heavy" == strAnimName)
+	{
+		// [30]	c_dam_push_head_b[c_dam_push_head_b]	14;
+		m_iCurrentIndex = 14;
+	}
 	else if ("e_kta_atk_rariatto" == strAnimName)
 	{
 		/*
