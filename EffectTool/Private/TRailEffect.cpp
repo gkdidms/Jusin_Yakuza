@@ -96,6 +96,11 @@ void* CTRailEffect::Get_Instance()
 	return &m_TrailDesc;
 }
 
+void CTRailEffect::Reset_Buffer()
+{
+	m_pVIBufferCom->Reset_Trail();
+}
+
 HRESULT CTRailEffect::Save_Data(const string strDirectory)
 {
 	string Directory = strDirectory;

@@ -168,6 +168,34 @@ void CVIBuffer_Trail::Add_Trail(const _float& fTimeDelta, const _matrix WorldMat
 	m_iCurrentIndices = (m_TrailInfos.size() - 1) * 2 * 3;
 }
 
+void CVIBuffer_Trail::Reset_Trail()
+{
+	m_TrailInfos.clear();
+
+	VTXPOSTEX* pVertex;
+	_float3 vNewPos[2];
+
+	D3D11_MAPPED_SUBRESOURCE SubResource{};
+	m_pContext->Map(m_pVB, 0, D3D11_MAP_WRITE_NO_OVERWRITE, 0, &SubResource);
+
+	VTXPOSTEX* vResult = ((VTXPOSTEX*)SubResource.pData);
+
+	for (size_t i = 0; i < m_TrailInfos.size() * 2;)
+	{
+		vResult[i].vPosition = _float3{ 0.f, 0.f, 0.f };
+		vResult[i].vTexcoord = _float2(0.f, 0.f);
+		++i;
+
+		vResult[i].vPosition = _float3{ 0.f, 0.f, 0.f };
+		vResult[i].vTexcoord = _float2(0.f, 0.f);
+		++i;
+	}
+
+	m_pContext->Unmap(m_pVB, 0);
+
+	m_iCurrentIndices =0;
+}
+
 CVIBuffer_Trail* CVIBuffer_Trail::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
 	CVIBuffer_Trail* pInstance = new CVIBuffer_Trail(pDevice, pContext);
