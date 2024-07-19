@@ -29,11 +29,8 @@ HRESULT CAI_Monster::Initialize(void* pArg)
 	m_pState = pDesc->pState;
 	m_pAnimCom = pDesc->pAnim;
 	m_pThis = pDesc->pThis;
-	Safe_AddRef(m_pThis);
-	Safe_AddRef(m_pAnimCom);
 
 	m_pPlayer = dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"), 0));
-	Safe_AddRef(m_pPlayer);
 
 	return S_OK;
 }
@@ -1205,9 +1202,13 @@ CBTNode::NODE_STATE CAI_Monster::ShiftAndIdle()
 {
 	static _uint iCount = rand() % 7 + 2;
 
-	if (DistanceFromPlayer() > 3.f)
+	if (DistanceFromPlayer() > 3.f && DistanceFromPlayer() <= 6.f)
 	{
 		m_iSkill = SKILL_SHIFT;
+	}
+	else if (DistanceFromPlayer() > 6.f)
+	{
+		m_iSkill = SKILL_IDLE;
 	}
 	else
 	{
@@ -1269,7 +1270,4 @@ void CAI_Monster::Free()
 	Safe_Release(m_pGameInstance);
 
 	Safe_Release(m_pRootNode);
-	Safe_Release(m_pThis);
-	Safe_Release(m_pAnimCom);
-	Safe_Release(m_pPlayer);
 }
