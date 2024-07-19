@@ -80,7 +80,9 @@ void CCollision_Manager::ImpulseResolution()
 
             // 각 객체간의 거리가 1 미만인 경우에만 밀어내기 함수 실행
             _vector vDistance = vPosition_Object_I - vPosition_Object_J;
-            if (0.5f > XMVectorGetX(XMVector3Length(vDistance)))
+
+            _float fDistance = XMVectorGetX(XMVector3Length(vDistance));
+            if (0.5f > fDistance)
                 m_ImpulseResolutionObjects[i]->ImpulseResolution(m_ImpulseResolutionObjects[j]);
         }
     }

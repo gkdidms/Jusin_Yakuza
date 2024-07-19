@@ -5,7 +5,7 @@ BEGIN(Client)
 class CUIMoney :
     public CUIScene
 {
-private:
+protected:
     CUIMoney();
     CUIMoney(const CUIMoney& rhs);
     virtual ~CUIMoney() = default;

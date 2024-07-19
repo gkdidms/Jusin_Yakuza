@@ -21,6 +21,9 @@ CKiryu_KRC_Attack::CKiryu_KRC_Attack()
 	/* 6 */
 	m_AnimationIndices.push_back(147);	//[147]	p_krc_atk_down_trample[p_krc_atk_down_trample]
 
+	/* 7 */
+	m_AnimationIndices.push_back(154);	//[154]	p_krc_atk_tackle_f[p_krc_atk_tackle_f]
+
 	/*
 		[162]	p_krc_cmb_02_fin_hit[p_krc_cmb_02_fin_hit]
 		[165]	p_krc_cmb_03_heavy[p_krc_cmb_03_heavy]
@@ -36,6 +39,9 @@ void CKiryu_KRC_Attack::Tick(const _float& fTimeDelta)
 		_vector vLookPos = pTargetObject->Get_TransformCom()->Get_State(CTransform::STATE_POSITION);
 		m_pPlayer->Get_TransformCom()->LookAt_For_LandObject(vLookPos);
 	}
+
+	if (m_isBut)
+		m_iComboCount = 7;
 }
 
 void CKiryu_KRC_Attack::Change_Animation()
@@ -62,10 +68,14 @@ _bool CKiryu_KRC_Attack::Get_AnimationEnd()
 void CKiryu_KRC_Attack::Reset()
 {
 	m_iComboCount = 0;
+	m_isBut = false;
 }
 
 void CKiryu_KRC_Attack::Combo_Count(_bool isFinAction)
 {
+	// 단독 우클 펀치면 카운트하지않는다
+	if (7 == m_iComboCount) return;
+
 	if (isFinAction)
 	{
 		if (m_iComboCount < 3)
@@ -83,9 +93,19 @@ void CKiryu_KRC_Attack::Combo_Count(_bool isFinAction)
 	}
 	
 	CLandObject* pTargetObject = m_pPlayer->Get_TargetObject();
-	if (static_cast<CMonster*>(pTargetObject)->isDown())
-		m_iComboCount = 6;
-}		
+	if (nullptr != pTargetObject)
+	{
+		if (static_cast<CMonster*>(pTargetObject)->isDown())
+			m_iComboCount = 6;
+	}
+	
+}
+
+void CKiryu_KRC_Attack::Setting_Value(void* pValue)
+{
+	_bool* pIsBut = static_cast<_bool*>(pValue);
+	m_isBut = *pIsBut;
+}
 
 _bool CKiryu_KRC_Attack::Changeable_Combo_Animation()
 {

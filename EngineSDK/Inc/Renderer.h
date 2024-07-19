@@ -154,7 +154,7 @@ private:
                 _bool m_isPBR = { true };
                 _bool m_isBOF = { true };
                 _bool m_isShadow = { false };
-                _bool m_isRimLight = { false };
+                _bool m_isRimLight = { true };
 #endif // DEBUG
 
     _float m_fHDRLight = { 1.f };
