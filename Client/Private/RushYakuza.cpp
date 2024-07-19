@@ -53,7 +53,7 @@ HRESULT CRushYakuza::Initialize(void* pArg)
 
 	m_pModelCom->Set_AnimationIndex(1, 0.5);
 	//m_pModelCom->Set_AnimLoop(1, true);
-
+	m_pTransformCom->Set_Scale(0.95f, 0.95f, 0.95f);
 
 	return S_OK;
 }
@@ -79,21 +79,24 @@ void CRushYakuza::Tick(const _float& fTimeDelta)
 
 void CRushYakuza::Late_Tick(const _float& fTimeDelta)
 {
-	m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
-	m_pCollisionManager->Add_ImpulseResolution(this);
-
-	// 현재 켜져있는 Attack용 콜라이더 삽입
-	for (auto& pPair : m_pColliders)
+	if (m_pGameInstance->isIn_WorldFrustum(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 1.5f))
 	{
-		if (pPair.second->Get_CollierType() == CSocketCollider::ATTACK && pPair.second->IsOn())
-			m_pCollisionManager->Add_AttackCollider(pPair.second, CCollision_Manager::ENEMY);
-	}
+		m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
+		m_pCollisionManager->Add_ImpulseResolution(this);
 
-	// 현재 켜져있는 Hit용 콜라이더 삽입 (아직까지는 Hit용 콜라이더는 항상 켜져있음)
-	for (auto& pPair : m_pColliders)
-	{
-		if (pPair.second->Get_CollierType() == CSocketCollider::HIT && pPair.second->IsOn())
-			m_pCollisionManager->Add_HitCollider(pPair.second, CCollision_Manager::ENEMY);
+		// 현재 켜져있는 Attack용 콜라이더 삽입
+		for (auto& pPair : m_pColliders)
+		{
+			if (pPair.second->Get_CollierType() == CSocketCollider::ATTACK && pPair.second->IsOn())
+				m_pCollisionManager->Add_AttackCollider(pPair.second, CCollision_Manager::ENEMY);
+		}
+
+		// 현재 켜져있는 Hit용 콜라이더 삽입 (아직까지는 Hit용 콜라이더는 항상 켜져있음)
+		for (auto& pPair : m_pColliders)
+		{
+			if (pPair.second->Get_CollierType() == CSocketCollider::HIT && pPair.second->IsOn())
+				m_pCollisionManager->Add_HitCollider(pPair.second, CCollision_Manager::ENEMY);
+		}
 	}
 
 	__super::Late_Tick(fTimeDelta);

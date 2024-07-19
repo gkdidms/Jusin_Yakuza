@@ -51,6 +51,7 @@ HRESULT CKuze::Initialize(void* pArg)
 		return E_FAIL;
 
 	m_pModelCom->Set_AnimationIndex(1, 0.5);
+	m_pTransformCom->Set_Scale(0.95f, 0.95f, 0.95f);
 
 	m_Info.iMaxHP = 500.f;
 	m_Info.iHp = m_Info.iMaxHP;
