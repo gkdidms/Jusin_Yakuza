@@ -40,6 +40,7 @@ public:
         SKILL_END
     };
     enum PLAYER_ATK_DIR { F, B, L, R, PLAYER_ATK_DIR_END };
+    enum MONSTER_TYPE { RUSH, WPA, SHAKDDOWN, KUZE, MONSTER_TYPE_END };
 
     typedef struct tAIMonster {
         class CAnim* pAnim;
@@ -68,17 +69,18 @@ protected:
 
     _uint* m_pState = { nullptr };
 
-protected:
+protected: //배열로 변경하기
     _bool m_isAttack = { false };
     _bool m_isAngry = { false };
-    _bool m_isSync = { false };
-    _bool m_isShift = { false };
+    _bool m_isSync = { false }; 
     _bool m_isBreak = { false };
     _bool m_isGuard = { false };
     _bool m_isSway = { false };
+
     _bool m_isPlayerDownAtk = { false };
 
     _uint m_iSkill = { SKILL_END };
+    _uint m_iMonsterType = { MONSTER_TYPE_END };
 
 protected:
     _float m_fDelayAttackDuration = { 2.f };
@@ -103,7 +105,6 @@ protected:
     virtual CBTNode::NODE_STATE StandUpAndDead();
     virtual CBTNode::NODE_STATE StandUp();
     virtual CBTNode::NODE_STATE Dead();
-
 
     //플레이어 공격 체크
     virtual CBTNode::NODE_STATE Check_Sway();
@@ -150,7 +151,6 @@ protected:
     void Reset_State() {
         m_isAttack = false;
         m_isBreak = false;
-        m_isShift = false;
         m_isSway = false;
 
         m_fBreakTime = 0.f;

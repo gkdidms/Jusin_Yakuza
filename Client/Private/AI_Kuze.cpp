@@ -71,6 +71,7 @@ HRESULT CAI_Kuze::Initialize(void* pArg)
 	Ready_Tree();
 
 	m_fDelayAttackDuration = 5.f;
+	m_iMonsterType = CAI_Monster::KUZE;
 
 	return S_OK;
 }
