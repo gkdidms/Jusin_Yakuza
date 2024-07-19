@@ -106,6 +106,7 @@ protected:
 
     //ª¿ ¿Ã∏ß, º“ƒœ ¿Ã∆Â∆Æ
     multimap<string, class CSocketEffect*>      m_pEffects;
+    map<string, class CSocketEffect*>           m_pTrailEffects;
 
     wstring m_wstrModelName = TEXT("");
     string m_strRimMeshName = "";
