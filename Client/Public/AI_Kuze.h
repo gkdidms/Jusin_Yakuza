@@ -33,8 +33,8 @@ private:
     CBTNode::NODE_STATE ATK_HeadButt();
     CBTNode::NODE_STATE ATK_Renda();
 
-    CBTNode::NODE_STATE Check_Distance();
-    CBTNode::NODE_STATE Run();
+    virtual CBTNode::NODE_STATE Check_Distance();
+    virtual CBTNode::NODE_STATE Run();
 
 
 public:

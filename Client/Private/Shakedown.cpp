@@ -162,6 +162,7 @@ void CShakedown::Change_Animation()
 		//e_kta_stand[e_kta_stand]
 		m_strAnimName = "e_kta_stand";
 		m_isAnimLoop = true;
+		m_isDown = false;
 		break;
 	}
 	case MONSTER_SHIFT_F:
