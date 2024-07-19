@@ -140,7 +140,7 @@ void CWPAYakuza::Change_Animation()
 {
 	__super::Change_Animation();
 
-	switch (m_iState)
+ 	switch (m_iState)
 	{
 	case MONSTER_IDLE:
 	{

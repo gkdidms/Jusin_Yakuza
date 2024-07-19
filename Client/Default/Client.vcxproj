@@ -142,7 +142,7 @@
       <SDLCheck>true</SDLCheck>
       <PreprocessorDefinitions>NOMINMAX;_CLIENT;NDEBUG;_WINDOWS;%(PreprocessorDefinitions)</PreprocessorDefinitions>
       <ConformanceMode>true</ConformanceMode>
-      <AdditionalIncludeDirectories>../../EngineSDK/Inc/;../Public/;../../Imgui/background/;../../Imgui/imgui/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+      <AdditionalIncludeDirectories>../../EngineSDK/Inc/;../Public/;../../Imgui/background/;../../Imgui/imgui/;../../Imgui/ImGuiFileDialog/;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
       <LanguageStandard>stdcpp20</LanguageStandard>
       <MultiProcessorCompilation>true</MultiProcessorCompilation>
       <RuntimeLibrary>MultiThreadedDLL</RuntimeLibrary>
@@ -166,8 +166,6 @@
     <ClInclude Include="..\..\Imgui\background\imgui_impl_dx11.h" />
     <ClInclude Include="..\..\Imgui\background\imgui_impl_win32.h" />
     <ClInclude Include="..\..\Imgui\ImGuiFileDialog\dirent\dirent.h" />
-    <ClInclude Include="..\..\Imgui\ImGuiFileDialog\ImGuiFileDialog.h" />
-    <ClInclude Include="..\..\Imgui\ImGuiFileDialog\ImGuiFileDialogConfig.h" />
     <ClInclude Include="..\..\Imgui\ImGuiFileDialog\stb\stb_image.h" />
     <ClInclude Include="..\..\Imgui\ImGuiFileDialog\stb\stb_image_resize2.h" />
     <ClInclude Include="..\..\Imgui\imGuizmo\GraphEditor.h" />
@@ -308,7 +306,6 @@
   <ItemGroup>
     <ClCompile Include="..\..\Imgui\background\imgui_impl_dx11.cpp" />
     <ClCompile Include="..\..\Imgui\background\imgui_impl_win32.cpp" />
-    <ClCompile Include="..\..\Imgui\ImGuiFileDialog\ImGuiFileDialog.cpp" />
     <ClCompile Include="..\..\Imgui\imGuizmo\GraphEditor.cpp" />
     <ClCompile Include="..\..\Imgui\imGuizmo\ImCurveEdit.cpp" />
     <ClCompile Include="..\..\Imgui\imGuizmo\ImGradient.cpp" />
