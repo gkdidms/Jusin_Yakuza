@@ -292,6 +292,9 @@ CBTNode::NODE_STATE CAI_Kuze::Check_PlayerDown()
 		return CBTNode::FAIL;
 	}
 
+	if (m_isPlayerDownAtk)
+		return CBTNode::FAIL;
+
 	if (m_pPlayer->isDown() || m_iSkill == SKILL_DOWN)
 	{
 		if (DistanceFromPlayer() > 2.f || m_isPlayerDownAtk)

@@ -1058,7 +1058,6 @@ CBTNode::NODE_STATE CAI_Monster::Guard()
 
 	if (m_isGuard)
 	{
-
 		if (*m_pState == CMonster::MONSTER_GURAD_START && m_pAnimCom->Get_AnimFinished())
 		{
 			//가드 지속시간 끝
