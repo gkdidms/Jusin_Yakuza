@@ -351,8 +351,8 @@ void CPlayer::Take_Damage(_uint iHitColliderType, const _float3& vDir, _float fD
 	{
 	case CPlayer::KRS:
 	{
-		_vector vAttackedObjectLook = pAttackedObject->Get_TransformCom()->Get_State(CTransform::STATE_LOOK);
-		_vector vMyLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
+		_vector vAttackedObjectLook = XMVector3Normalize(pAttackedObject->Get_TransformCom()->Get_State(CTransform::STATE_LOOK));
+		_vector vMyLook = XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK));
 
 		_float fTheta = 0.0f;
 		_float fDot = XMVectorGetX(XMVector3Dot(vMyLook, vAttackedObjectLook));
@@ -394,8 +394,8 @@ void CPlayer::Take_Damage(_uint iHitColliderType, const _float3& vDir, _float fD
 	}
 	case CPlayer::KRH:
 	{
-		_vector vAttackedObjectLook = pAttackedObject->Get_TransformCom()->Get_State(CTransform::STATE_LOOK);
-		_vector vMyLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
+		_vector vAttackedObjectLook = XMVector3Normalize(pAttackedObject->Get_TransformCom()->Get_State(CTransform::STATE_LOOK));
+		_vector vMyLook = XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK));
 
 		_float fTheta = 0.0f;
 		_float fDot = XMVectorGetX(XMVector3Dot(vMyLook, vAttackedObjectLook));
@@ -437,8 +437,8 @@ void CPlayer::Take_Damage(_uint iHitColliderType, const _float3& vDir, _float fD
 	}
 	case CPlayer::KRC:
 	{
-		_vector vAttackedObjectLook = pAttackedObject->Get_TransformCom()->Get_State(CTransform::STATE_LOOK);
-		_vector vMyLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
+		_vector vAttackedObjectLook = XMVector3Normalize(pAttackedObject->Get_TransformCom()->Get_State(CTransform::STATE_LOOK));
+		_vector vMyLook = XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK));
 
 		_float fTheta = 0.0f;
 		_float fDot = XMVectorGetX(XMVector3Dot(vMyLook, vAttackedObjectLook));
@@ -891,7 +891,7 @@ void CPlayer::KRH_KeyInput(const _float& fTimeDelta)
 				}
 
 			}
-			else
+			else if (m_iCurrentBehavior != (_uint)KRH_BEHAVIOR_STATE::DOWN)
 			{
 				// 현재 상태가 아이들이 아니라면 
 				if ((_uint)KRH_BEHAVIOR_STATE::IDLE != m_iCurrentBehavior)
@@ -921,7 +921,7 @@ void CPlayer::KRH_KeyInput(const _float& fTimeDelta)
 			m_iCurrentBehavior = (_uint)KRC_BEHAVIOR_STATE::IDLE;
 	}
 
-	if (!m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Stopping())
+	if (!m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Stopping() && m_iCurrentBehavior != (_uint)KRH_BEHAVIOR_STATE::DOWN)
 	{
 		if (m_pGameInstance->GetMouseState(DIM_LB) == TAP)
 		{
