@@ -27,7 +27,7 @@ public:
     virtual HRESULT Render();
 
     void Add_Trail(const _float& fTimeDelta, const _matrix WorldMatrix);
-
+    void Reset_Trail();
 private:
     _float m_fCurrentTime = { 0.f };
     _float m_fTimeAcc = { 0.f };
