@@ -47,22 +47,29 @@ void CLevelTrigger::Late_Tick(const _float& fTimeDelta)
 
 	__super::Late_Tick(fTimeDelta);
 
-	// 조건 충족
-	if (m_pColliderCom->Intersect(dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject(m_iCurrentLevel, TEXT("Layer_Player"), 0))->Get_PlayerCollider(),3))
+	if (false == m_bTriggerDead)
 	{
-		vector<CGameObject*> pMonsters = m_pGameInstance->Get_GameObjects(m_iCurrentLevel, TEXT("Layer_Monster"));
-		
-		bool		bDeadCheck = true;
-		for (int i = 0; i < pMonsters.size(); i++)
+		// 조건 충족
+		if (m_pColliderCom->Intersect(dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject(m_iCurrentLevel, TEXT("Layer_Player"), 0))->Get_PlayerCollider(), 3))
 		{
-			if (false == pMonsters[i]->isObjectDead())
-			{
-				bDeadCheck = false;
-			}
-		}
+			vector<CGameObject*> pMonsters = m_pGameInstance->Get_GameObjects(m_iCurrentLevel, TEXT("Layer_Monster"));
 
-		m_bMoveScene = bDeadCheck;
+			bool		bDeadCheck = true;
+			for (int i = 0; i < pMonsters.size(); i++)
+			{
+				if (false == pMonsters[i]->isObjectDead())
+				{
+					bDeadCheck = false;
+				}
+			}
+
+			m_bMoveScene = bDeadCheck;
+
+			if(true == m_bMoveScene)
+				m_bTriggerDead = true;
+		}
 	}
+	
 
 }
 

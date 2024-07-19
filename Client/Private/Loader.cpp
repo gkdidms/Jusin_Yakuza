@@ -44,6 +44,7 @@
 
 #pragma region MyRegion
 #include "LevelTrigger.h"
+#include "MonsterTrigger.h"
 #pragma endregion
 
 
@@ -471,6 +472,11 @@ HRESULT CLoader::Loading_For_Office_1F()
 		CLevelTrigger::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	/* For.Prototype_GameObject_LevelTrigger */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_MonsterTrigger"),
+		CMonsterTrigger::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 #pragma endregion
 
 #pragma endregion
@@ -797,6 +803,11 @@ HRESULT CLoader::Loading_For_Test()
 	/* For.Prototype_GameObject_LevelTrigger */
 	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_LevelTrigger"),
 		CLevelTrigger::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_MonsterTrigger */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_MonsterTrigger"),
+		CMonsterTrigger::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 #pragma endregion
 

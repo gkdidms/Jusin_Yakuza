@@ -768,7 +768,7 @@ _bool CAI_Monster::Check_StandUp()
 		|| *m_pState == CMonster::MONSTER_DWN_DIRECT_F_BOUND_G
 		|| *m_pState == CMonster::MONSTER_DWN_DIRECT_F)
 	{
-		
+		m_pThis->Set_Down(false);
 		*m_pState = CMonster::MONSTER_STANDUP_DNF_FAST;
 		return false;
 	}
@@ -779,6 +779,7 @@ _bool CAI_Monster::Check_StandUp()
 		|| *m_pState == CMonster::MONSTER_DWN_BODY_B_SP)
 	{
 		*m_pState = CMonster::MONSTER_STANDUP_DNB_FAST;
+		m_pThis->Set_Down(false);
 		return false;
 	}
 

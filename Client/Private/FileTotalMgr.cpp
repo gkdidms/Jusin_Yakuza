@@ -416,7 +416,13 @@ HRESULT CFileTotalMgr::Set_Trigger_In_Client(int iTriggerLoadingNum, int iStageL
         {
 
         }
+        else if (TRIGGER_MONSTER == m_Trigger.pTriggers[i].iTriggerType)
+        {
+            CTrigger::TRIGGEROBJ_DESC       triggerObjDesc;
+            triggerObjDesc.tTriggerDesc = m_Trigger.pTriggers[i];
 
+            m_pGameInstance->Add_GameObject(iStageLevel, TEXT("Prototype_GameObject_MonsterTrigger"), TEXT("Layer_Trigger"), &triggerObjDesc);
+        }
     }
 
     return S_OK;
