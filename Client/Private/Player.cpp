@@ -962,6 +962,14 @@ void CPlayer::KRH_KeyInput(const _float& fTimeDelta)
 				m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Change_Animation();
 				m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Combo_Count(true);
 			}
+			else
+			{
+				m_iCurrentBehavior = (_uint)KRH_BEHAVIOR_STATE::ATTACK;
+
+				_bool isPunch = true;
+				m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Setting_Value(&isPunch);
+				m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Change_Animation();
+			}
 		}
 	}
 
@@ -1113,6 +1121,14 @@ void CPlayer::KRC_KeyInput(const _float& fTimeDelta)
 				if (m_iCurrentBehavior == (_uint)KRC_BEHAVIOR_STATE::ATTACK)
 				{
 					m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Combo_Count(true);
+				}
+				else
+				{
+					m_iCurrentBehavior = (_uint)KRC_BEHAVIOR_STATE::ATTACK;
+
+					_bool isBut = true;
+					m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Setting_Value(&isBut);
+					m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Change_Animation();
 				}
 			}
 		}
