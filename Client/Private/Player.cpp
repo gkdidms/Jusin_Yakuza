@@ -537,7 +537,7 @@ void CPlayer::Synchronize_Root(const _float& fTimeDelta)
 	_vector vDeleteX = XMVectorSetX(vDeleteZ, 0);
 
 	//_vector vFF = XMVector3TransformNormal(XMVectorSetZ(XMLoadFloat3(m_pModelCom->Get_AnimationCenterMove()), 0), m_pTransformCom->Get_WorldMatrix());
-	_vector vFF = XMVector3TransformNormal(vDeleteX, m_pTransformCom->Get_WorldMatrix());
+	_vector vFF = XMVector3TransformNormal(vDeleteZ, m_pTransformCom->Get_WorldMatrix());
 
 	// 월드 행렬
 	_matrix worldMatrix = m_pTransformCom->Get_WorldMatrix();
