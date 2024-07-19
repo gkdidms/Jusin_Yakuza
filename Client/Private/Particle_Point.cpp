@@ -226,6 +226,10 @@ HRESULT CParticle_Point::Save_Data(const string strDirectory)
     out.write((char*)&m_BufferInstance.vLifeTime, sizeof(_float2));
     out.write((char*)&m_BufferInstance.isLoop, sizeof(_bool));
 
+    if(6==m_iShaderPass)
+     out.write((char*)&m_fDistortion, sizeof(_float));
+
+
     out.flush();
 
     out.close();
@@ -299,6 +303,9 @@ HRESULT CParticle_Point::Load_Data(const string strDirectory)
     in.read((char*)&m_BufferInstance.vLifeTime, sizeof(_float2));
     in.read((char*)&m_BufferInstance.isLoop, sizeof(_bool));
 
+    if (6 == m_iShaderPass)
+        in.read((char*)&m_fDistortion, sizeof(_float));
+
     in.close();
 
     return S_OK;
@@ -350,6 +357,11 @@ HRESULT CParticle_Point::Bind_ShaderResources()
     if (FAILED(m_pShaderCom->Bind_RawValue("g_fRadian", &Radian, sizeof(_float))))
         return E_FAIL;
 
+    if (6 == m_iShaderPass)
+    {
+        if (FAILED(m_pShaderCom->Bind_RawValue("g_fDistortionWeight", &m_fDistortion, sizeof(_float))))
+            return E_FAIL;
+    }
     return S_OK;
 }
 

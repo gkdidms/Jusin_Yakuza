@@ -23,6 +23,7 @@
 #include "Kiryu_KRH_Hit.h"
 #include "Kiryu_KRS_Hit.h"
 #include "Kiryu_KRS_Down.h"
+#include "Kiryu_KRH_Down.h"
 #pragma endregion
 
 CPlayer::CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -91,6 +92,11 @@ void CPlayer::Tick(const _float& fTimeDelta)
 	m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Change_Animation();
 	m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Tick(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")));
 
+	// 배틀 시작 애니메이션 아닐 경우 타임델타를 1로 고정시켜준다.
+	// TODO: 다른곳에서 시간조절이 필요하다면 수정해야한다
+	if (m_iCurrentBehavior != (_uint)KRS_BEHAVIOR_STATE::BTL_START)
+		m_pGameInstance->Set_TimeSpeed(TEXT("Timer_60"), 1.f);
+
 	if (m_pGameInstance->GetKeyState(DIK_0) == TAP)
 	{
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0, 0, 0, 1));
@@ -144,6 +150,9 @@ void CPlayer::Tick(const _float& fTimeDelta)
 	for (auto& pEffect : m_pEffects)
 		pEffect.second->Tick(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")));
 
+	for (auto& pEffect : m_pTrailEffects)
+		pEffect.second->Tick(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")));
+
 
 	KeyInput(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")));
 
@@ -177,11 +186,19 @@ void CPlayer::Late_Tick(const _float& fTimeDelta)
 	for (auto& pEffect : m_pEffects)
 		pEffect.second->Late_Tick(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")));
 
+	for (auto& pEffect : m_pTrailEffects)
+		pEffect.second->Late_Tick(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")));
+
 	// 현재 켜져있는 Attack용 콜라이더 삽입
 	for (auto& pPair : m_pColliders)
 	{
-		if(pPair.second->Get_CollierType() == CSocketCollider::ATTACK && pPair.second->IsOn())
+		if (pPair.second->Get_CollierType() == CSocketCollider::ATTACK && pPair.second->IsOn())
+		{
+			if (pPair.second->Get_CollierPartType() == 1)
+				int a = 0;
+
 			m_pCollisionManager->Add_AttackCollider(pPair.second, CCollision_Manager::PLAYER);
+		}
 	}
 
 	// 현재 켜져있는 Hit용 콜라이더 삽입 (아직까지는 Hit용 콜라이더는 항상 켜져있음)
@@ -371,8 +388,6 @@ void CPlayer::Take_Damage(_uint iHitColliderType, const _float3& vDir, _float fD
 
 			m_iCurrentBehavior = (_uint)KRS_BEHAVIOR_STATE::HIT;
 			m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Setting_Value((void*)&Desc);
-
-
 		}
 
 		break;
@@ -403,10 +418,21 @@ void CPlayer::Take_Damage(_uint iHitColliderType, const _float3& vDir, _float fD
 				iDirection = 3;
 		}
 
-		CKiryu_KRH_Hit::KRH_Hit_DESC Desc{ &vDir, fDamage, pAttackedObject->Get_CurrentAnimationName(), iDirection };
+		if (m_iCurrentBehavior == (_uint)KRH_BEHAVIOR_STATE::DOWN)
+		{
+			string strAnimationName = pAttackedObject->Get_CurrentAnimationName();
 
-		m_iCurrentBehavior = (_uint)KRH_BEHAVIOR_STATE::HIT;
-		m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Setting_Value((void*)&Desc);
+			CKiryu_KRH_Down::KRH_DOWN_DESC Desc{ -1, iDirection, strAnimationName };
+			m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Setting_Value((void*)&Desc);
+		}
+		else
+		{
+			CKiryu_KRH_Hit::KRH_Hit_DESC Desc{ &vDir, fDamage, pAttackedObject->Get_CurrentAnimationName(), iDirection };
+
+			m_iCurrentBehavior = (_uint)KRH_BEHAVIOR_STATE::HIT;
+			m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Setting_Value((void*)&Desc);
+		}
+
 		break;
 	}
 	case CPlayer::KRC:
@@ -681,14 +707,14 @@ void CPlayer::KRS_KeyInput(const _float& fTimeDelta)
 					|| string::npos != strAnimName.find("y_b") 
 					|| string::npos != strAnimName.find("_guard_") || string::npos != strAnimName.find("_dnf_"))
 				{
-					_bool isFront = false;
-					m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Setting_Value(&isFront);
+					CKiryu_KRS_Down::KRS_DOWN_DESC Desc{ 0, -1, string() };
+					m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Setting_Value(&Desc);
 				}
 				else if (string::npos != strAnimName.find("body_r") || string::npos != strAnimName.find("_f")
 					|| string::npos != strAnimName.find("_direct_") || string::npos != strAnimName.find("dnb"))
 				{
-					_bool isFront = true;
-					m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Setting_Value(&isFront);
+					CKiryu_KRS_Down::KRS_DOWN_DESC Desc{ 1, -1, string() };
+					m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Setting_Value(&Desc);
 				}
 
 			}
@@ -825,6 +851,9 @@ void CPlayer::KRS_KeyInput(const _float& fTimeDelta)
 			m_iCurrentBehavior = (_uint)KRS_BEHAVIOR_STATE::SWAY;
 		}
 	}
+
+	if(isMove)
+		m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Reset();
 
 	if (!isMove && m_iCurrentBehavior == (_uint)KRS_BEHAVIOR_STATE::RUN || m_iCurrentBehavior == (_uint)KRS_BEHAVIOR_STATE::WALK)
 		m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Stop();
@@ -987,6 +1016,9 @@ void CPlayer::KRH_KeyInput(const _float& fTimeDelta)
 		m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Combo_Count();
 	}
 
+	if (isMove)
+		m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Reset();
+
 	if (!isMove && m_iCurrentBehavior == (_uint)KRH_BEHAVIOR_STATE::RUN || m_iCurrentBehavior == (_uint)KRH_BEHAVIOR_STATE::WALK)
 		m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Stop();
 }
@@ -1128,6 +1160,9 @@ void CPlayer::KRC_KeyInput(const _float& fTimeDelta)
 			}
 		}
 	}
+
+	if (isMove)
+		m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Reset();
 	
 	if (!isMove && m_iCurrentBehavior == (_uint)KRC_BEHAVIOR_STATE::RUN || m_iCurrentBehavior == (_uint)KRC_BEHAVIOR_STATE::WALK)
 		m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Stop();
@@ -1430,7 +1465,7 @@ void CPlayer::AccHitGauge()
 	if (PLAYER_HITGAUGE_LEVEL_INTERVAL * 3.f < m_fHitGauge)
 		m_fHitGauge = PLAYER_HITGAUGE_LEVEL_INTERVAL * 3.f;
 	else
-		m_fHitGauge += 10.f;
+		m_fHitGauge += 5.f;
 
 	m_iCurrentHitLevel = (m_fHitGauge / PLAYER_HITGAUGE_LEVEL_INTERVAL);
 }
@@ -1510,8 +1545,6 @@ void CPlayer::Free()
 
 		m_AnimationTree[i].clear();
 	}
-
-
 	
 
 #ifdef _DEBUG

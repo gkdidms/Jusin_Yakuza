@@ -816,6 +816,7 @@ CBTNode::NODE_STATE CAI_Monster::HitAndGuard()
 			m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_GuardParticle"), TEXT("Layer_Particle"), &EffectDesc);
 			m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_GuardSmoke"), TEXT("Layer_Particle"), &EffectDesc);
 			m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Hit1_Part0"), TEXT("Layer_Particle"), &EffectDesc);
+			m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Guard1_Distortion0"), TEXT("Layer_Particle"), &EffectDesc);
 
 			m_fGuardAtkAcc += m_pThis->Get_HitDamage();
 
@@ -1025,12 +1026,12 @@ CBTNode::NODE_STATE CAI_Monster::ShiftAndIdle()
 	static _uint iCount = 0;
 
 	iCount++;
-	if (iCount == 5)
+	if (iCount == 4)
 		m_iSkill = SKILL_SHIFT;
 	else 
 		m_iSkill = SKILL_IDLE;
 	
-	if (iCount <= 10)
+	if (iCount >= 10)
 		iCount = 0;
 
 	m_fBreakDuration = m_pGameInstance->Get_Random(2.f, 4.f);

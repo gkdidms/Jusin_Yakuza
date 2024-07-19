@@ -34,7 +34,7 @@ private:
     CBTNode::NODE_STATE ATK_Renda();
 
     CBTNode::NODE_STATE Check_Distance();
-    CBTNode::NODE_STATE Step();
+    CBTNode::NODE_STATE Run();
 
 
 public:

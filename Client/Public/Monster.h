@@ -24,6 +24,7 @@ public:
     enum MONSTER_STATE
     {
         MONSTER_IDLE,
+        MONSTER_RUN,
         MONSTER_SHIFT_F,
         MONSTER_SHIFT_L,
         MONSTER_SHIFT_R,

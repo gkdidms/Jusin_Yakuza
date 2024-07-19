@@ -33,9 +33,7 @@ _bool CKiryu_KRS_Run::Get_AnimationEnd()
 
 	if (pModelCom->Get_AnimFinished())
 	{
-		m_eAnimState = { ANIM_LOOP};
-		m_isStop = false;
-
+		Reset();
 		return true;
 	}
 
@@ -45,6 +43,12 @@ _bool CKiryu_KRS_Run::Get_AnimationEnd()
 void CKiryu_KRS_Run::Stop()
 {
 	m_isStop = true;
+}
+
+void CKiryu_KRS_Run::Reset()
+{
+	m_eAnimState = { ANIM_LOOP };
+	m_isStop = false;
 }
 
 _bool CKiryu_KRS_Run::Stopping()

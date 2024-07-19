@@ -28,6 +28,8 @@ public:
         _bool isAura;
         _int iShaderPass;
 
+        _float fDistortion;
+
         const _float4x4* pWorldMatrix = { nullptr };
     }EFFECT_DESC;
 
@@ -72,6 +74,7 @@ public:
     _float2 Get_LifeAlpha() { return m_fLifeAlpha; }
     _float Get_Rotate() { return m_fRotate; }
     _bool Get_isAura() { return m_isAura;  }
+    _float Get_fDistortion() { return m_fDistortion; }
     virtual void Reset_Buffer();
 public:
     virtual HRESULT Save_Data(const string strDirectory);
@@ -92,6 +95,7 @@ protected:
     _float4     m_vStartColor = { 0.f , 0.f , 0.f , 0.f };
     _float4     m_vEndColor = { 0.f , 0.f , 0.f , 0.f };
     _bool       m_isAura = { false };
+    _float      m_fDistortion = { 0.f };
 
     const _float4x4* m_pWorldMatrix = { nullptr };
 

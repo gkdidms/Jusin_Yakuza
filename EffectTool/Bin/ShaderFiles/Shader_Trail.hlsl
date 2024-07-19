@@ -46,6 +46,7 @@ struct PS_OUT
 {
     vector vColor : SV_Target0;
     vector vAlpha : SV_TARGET1;
+    vector vDistortion : SV_TARGET2;
 };
 
 PS_OUT PS_MAIN(PS_IN In)
@@ -70,7 +71,7 @@ PS_OUT PS_MAIN(PS_IN In)
     Out.vColor = float4(ColorN.rgb * AlphaN, AlphaN) * fWeight;
     
     Out.vAlpha = float4(AlphaN, AlphaN, AlphaN, AlphaN);
-        
+    Out.vDistortion = float4(0.0f, 0.0f, 0.0f, 0.0f);
     return Out;
 }
 

@@ -970,6 +970,17 @@ void CImguiManager::RimLightWindow()
 	// 림라이트 적용할 메시 이름 갱신하는 함수
 	Setting_RimLight();
 
+	if (ImGui::Button(u8"삭제"))
+	{
+		auto iterator = m_RimLightEvents.lower_bound(m_AnimNameList[m_iAnimIndex]);
+
+		for (size_t i = 0; i < m_iTrailEventIndex; i++)
+		{
+			iterator++;
+		}
+		m_RimLightEvents.erase(iterator);
+	}
+
 	if (ImGui::Button(u8"저장"))
 	{
 		string strDirectory = "../../Client/Bin/DataFiles/Character/" + m_ModelNameList[m_iModelSelectedIndex];
@@ -1021,55 +1032,71 @@ void CImguiManager::TrailWindow()
 
 	//림라이트 이벤트 리스트
 	auto lower_bound_iter = m_TrailEvents.lower_bound(m_AnimNameList[m_iAnimIndex]);
-	auto upper_bound_iter = m_TrailEvents.upper_bound(m_AnimNameList[m_iAnimIndex]);
 
-	ImGui::Text(u8"트레일 이벤트 리스트");
-	vector<const char*> items;
-	for (; lower_bound_iter != upper_bound_iter; ++lower_bound_iter)
+	// 반환된 iter의 키값이 다르다면 맵 내에 해당 키값이 존재하지 않는다는 뜻
+	if (!(lower_bound_iter != m_TrailEvents.end() && (*lower_bound_iter).first != m_AnimNameList[m_iAnimIndex]))
 	{
-		items.push_back((*lower_bound_iter).second.strBonelName.c_str());
-	}
+		auto upper_bound_iter = m_TrailEvents.upper_bound(m_AnimNameList[m_iAnimIndex]);
 
-	ImGui::ListBox("##", &m_iTrailEventIndex, items.data(), items.size());
-
-	auto lower_iter = m_TrailEvents.lower_bound(m_AnimNameList[m_iAnimIndex]);
-
-	for (size_t i = 0; i < m_iTrailEventIndex; i++)
-	{
-		lower_iter++;
-	}
-
-	if (lower_iter != upper_bound_iter && lower_iter != m_TrailEvents.end())
-	{
-		if ((*lower_iter).second.iType == 0)
+		ImGui::Text(u8"트레일 이벤트 리스트");
+		vector<const char*> items;
+		for (; lower_bound_iter != upper_bound_iter; ++lower_bound_iter)
 		{
-			ImGui::Text(u8"On 이벤트");
-
-			ImGui::Text(u8"저장된 애니메이션: %s", m_AnimNameList[m_iAnimIndex].c_str());
-			ImGui::Text(u8"저장된 뼈 이름: %s", (*lower_iter).second.strBonelName.c_str());
-			ImGui::Text(u8"저장된 뼈 인덱스: %i", (*lower_iter).second.iBoneIndex);
-
-			ImGui::Text(u8"저장된 애니메이션 포지션: %f", (*lower_iter).second.fAinmPosition);
+			items.push_back((*lower_bound_iter).second.strBonelName.c_str());
 		}
-		else
+
+		ImGui::ListBox("##", &m_iTrailEventIndex, items.data(), items.size());
+
+		auto lower_iter = m_TrailEvents.lower_bound(m_AnimNameList[m_iAnimIndex]);
+
+		for (size_t i = 0; i < m_iTrailEventIndex; i++)
 		{
-			ImGui::Text(u8"Off 이벤트");
-
-			ImGui::Text(u8"저장된 애니메이션: %s", m_AnimNameList[m_iAnimIndex].c_str());
-			ImGui::Text(u8"저장된 뼈 이름: %s", (*lower_iter).second.strBonelName.c_str());
-			ImGui::Text(u8"저장된 뼈 인덱스: %i", (*lower_iter).second.iBoneIndex);
-
-			ImGui::Text(u8"저장된 애니메이션 포지션: %f", (*lower_iter).second.fAinmPosition);
+			lower_iter++;
 		}
-	}
 
-	// 트레일 온/오프 갱신 함수
-	Setting_Trail();
+		if (lower_iter != upper_bound_iter && lower_iter != m_TrailEvents.end())
+		{
+			if ((*lower_iter).second.iType == 0)
+			{
+				ImGui::Text(u8"On 이벤트");
 
-	if (ImGui::Button(u8"저장"))
-	{
-		string strDirectory = "../../Client/Bin/DataFiles/Character/" + m_ModelNameList[m_iModelSelectedIndex];
-		TrailEvent_Save(strDirectory);
+				ImGui::Text(u8"저장된 애니메이션: %s", m_AnimNameList[m_iAnimIndex].c_str());
+				ImGui::Text(u8"저장된 뼈 이름: %s", (*lower_iter).second.strBonelName.c_str());
+				ImGui::Text(u8"저장된 뼈 인덱스: %i", (*lower_iter).second.iBoneIndex);
+
+				ImGui::Text(u8"저장된 애니메이션 포지션: %f", (*lower_iter).second.fAinmPosition);
+			}
+			else
+			{
+				ImGui::Text(u8"Off 이벤트");
+
+				ImGui::Text(u8"저장된 애니메이션: %s", m_AnimNameList[m_iAnimIndex].c_str());
+				ImGui::Text(u8"저장된 뼈 이름: %s", (*lower_iter).second.strBonelName.c_str());
+				ImGui::Text(u8"저장된 뼈 인덱스: %i", (*lower_iter).second.iBoneIndex);
+
+				ImGui::Text(u8"저장된 애니메이션 포지션: %f", (*lower_iter).second.fAinmPosition);
+			}
+		}
+
+		// 트레일 온/오프 갱신 함수
+		Setting_Trail();
+
+		if (ImGui::Button(u8"삭제"))
+		{
+			auto iterator = m_TrailEvents.lower_bound(m_AnimNameList[m_iAnimIndex]);
+
+			for (size_t i = 0; i < m_iTrailEventIndex; i++)
+			{
+				iterator++;
+			}
+			m_TrailEvents.erase(iterator);
+		}
+
+		if (ImGui::Button(u8"저장"))
+		{
+			string strDirectory = "../../Client/Bin/DataFiles/Character/" + m_ModelNameList[m_iModelSelectedIndex];
+			TrailEvent_Save(strDirectory);
+		}
 	}
 
 	ImGui::End();
