@@ -117,7 +117,6 @@ _uint CAI_Monster::Check_KRH(_uint iPlayerLv, _bool isBehine, _bool isAnimChange
 		iDir = F;
 	}
 
-
 	if (Find_CurrentAnimationName("p_krh_atk_heavy_f")) // °­°ø°Ý ?
 	{
 		if (isAnimChange)

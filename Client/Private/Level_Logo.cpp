@@ -47,8 +47,6 @@ void CLevel_Logo::Tick(const _float& fTimeDelta)
 	}
 #endif // _DEBUG
 
-
-
 #ifdef _DEBUG
 	SetWindowText(g_hWnd, TEXT("로고레벨 Space : TEST / F1 : Office 1F"));
 #endif
