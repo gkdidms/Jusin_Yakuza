@@ -31,7 +31,7 @@ HRESULT CLevel_Office1F::Initialize()
 	m_pFileTotalManager->Set_MapObj_In_Client(STAGE_OFFICE_1F, LEVEL_OFFICE_1F);
 	m_pFileTotalManager->Set_Lights_In_Client(STAGE_OFFICE_1F);
 	m_pFileTotalManager->Set_Collider_In_Client(STAGE_OFFICE_1F, LEVEL_OFFICE_1F);
-	m_pFileTotalManager->Set_Trigger_In_Client(STAGE_OFFICE_1F, LEVEL_OFFICE_1F);
+	//m_pFileTotalManager->Set_Trigger_In_Client(STAGE_OFFICE_1F, LEVEL_OFFICE_1F);
 
 	if (FAILED(Ready_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
@@ -56,7 +56,7 @@ void CLevel_Office1F::Tick(const _float& fTimeDelta)
 
 	if (false == m_bSceneChange)
 	{
-		if (m_pGameInstance->GetKeyState(DIK_SPACE) == TAP)
+		if (m_pGameInstance->GetKeyState(DIK_RETURN) == TAP)
 		{
 			if (FAILED(m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_OFFICE_2F))))
 				return;

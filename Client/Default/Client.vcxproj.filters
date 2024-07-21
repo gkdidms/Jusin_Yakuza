@@ -365,6 +365,12 @@
     <ClCompile Include="..\Private\MonsterTrigger.cpp">
       <Filter>02.GameObjects\08.Trigger\03.MonsterTrigger</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\Imgui\ImGuiFileDialog\ImGuiFileDialog.cpp">
+      <Filter>96.ImGui</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UILogo.cpp">
+      <Filter>95.Utility\05.UIManager\UIScene\UILogo</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\MainApp.h">
@@ -757,6 +763,15 @@
     </ClInclude>
     <ClInclude Include="..\Public\MonsterTrigger.h">
       <Filter>02.GameObjects\08.Trigger\03.MonsterTrigger</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Imgui\ImGuiFileDialog\ImGuiFileDialog.h">
+      <Filter>96.ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Imgui\ImGuiFileDialog\ImGuiFileDialogConfig.h">
+      <Filter>96.ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UILogo.h">
+      <Filter>95.Utility\05.UIManager\UIScene\UILogo</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1169,6 +1184,9 @@
     </Filter>
     <Filter Include="02.GameObjects\08.Trigger\03.MonsterTrigger">
       <UniqueIdentifier>{2f3289df-1818-4e53-8abd-71e5f39e8890}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\05.UIManager\UIScene\UILogo">
+      <UniqueIdentifier>{f5907b5b-7eff-4b99-92c0-1c84f75e1aa6}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

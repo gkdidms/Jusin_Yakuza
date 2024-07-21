@@ -49,6 +49,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
     MSG msg;
 
+    //_CrtSetBreakAlloc(1704); // 추가
+
     CMainApp* pMainApp = CMainApp::Create();
     if (nullptr == pMainApp)
         return FALSE;
@@ -66,6 +68,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         return FALSE;
 
 #ifdef _DEBUG
+    
     CDebugManager* pDebugManager = CDebugManager::GetInstance();
     if (nullptr == pDebugManager)
         return FALSE;
@@ -115,12 +118,13 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
             pMainApp->Tick(fTimeDelta);
             pMainApp->Render();
 
-           // _CrtSetBreakAlloc(4080645); // 추가
+           
 
             fTimeAcc = 0.f;
         }
     }
 
+     
 #ifdef _DEBUG
     Safe_Release(pDebugManager);
 #endif // _DEBUG

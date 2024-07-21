@@ -1,5 +1,6 @@
 #pragma once
 #include "LandObject.h"
+#include "Navigation.h"
 
 BEGIN(Engine)
 class CShader;
@@ -178,9 +179,9 @@ private:
 
     /* 행동, 이동 관련 변수들 */
 private:
-    BATTLE_STYLE    m_eCurrentStyle = { ADVENTURE };
+    BATTLE_STYLE    m_eCurrentStyle = { KRS };
     // 스타일마다 겹치는 행동이 있을 수 있어서 int값으로 저장하고 형변환하여 저장한다.
-    _uint           m_iCurrentBehavior = static_cast<_uint>(ADVENTURE_BEHAVIOR_STATE::IDLE);
+    _uint           m_iCurrentBehavior = static_cast<_uint>(KRS_BEHAVIOR_STATE::BTL_START);
 
     // 스웨이용 키입력 디렉션 (카메라 기준으로 처리하기 위함)
     _bool           m_InputDirection[MOVE_DIRECTION_END];

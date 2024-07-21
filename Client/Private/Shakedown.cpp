@@ -63,6 +63,9 @@ HRESULT CShakedown::Initialize(void* pArg)
 
 	m_pTransformCom->Set_Scale(1.2f, 1.2f, 1.2f);
 
+	m_Info.iMaxHP = 30.f;
+	m_Info.iHp = m_Info.iMaxHP;
+
 
 	return S_OK;
 }
