@@ -20,6 +20,7 @@ public:
 	virtual _bool Get_AnimationEnd() override;
 	virtual void Reset();
 	virtual void Combo_Count(_bool isFinAction = false) override;
+	virtual void Setting_Value(void* pValue = nullptr) override;
 
 private:
 	_bool Changeable_Combo_Animation();
@@ -29,7 +30,8 @@ public:
 	virtual void Free() override;
 
 private:
-	_int m_iComboCount = { -1 };
+	_int	m_iComboCount = { -1 };
 	_bool	m_isFinished = { false };
+	_bool	m_isBut = { false };
 };
 END

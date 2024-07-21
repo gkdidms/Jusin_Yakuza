@@ -40,7 +40,7 @@ private:
     _float3 m_vInitPosB;
 
 private:
-    list<TRAIL_INFO> m_TrailInfos;
+    vector<TRAIL_INFO> m_TrailInfos;
 
 public:
     static CVIBuffer_Trail* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

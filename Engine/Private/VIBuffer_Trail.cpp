@@ -138,7 +138,7 @@ void CVIBuffer_Trail::Add_Trail(const _float& fTimeDelta, const _matrix WorldMat
 	XMStoreFloat3(&vNewPos[1], XMVector3TransformCoord(XMLoadFloat3(&m_vInitPosB), WorldMatrix));
 
 	if (m_iNumVertices <= m_TrailInfos.size() * 2)
-		m_TrailInfos.pop_front();
+		m_TrailInfos.erase(m_TrailInfos.begin());
 
 	TRAIL_INFO Desc{};
 	Desc.vPos[0] = vNewPos[0];
@@ -150,15 +150,18 @@ void CVIBuffer_Trail::Add_Trail(const _float& fTimeDelta, const _matrix WorldMat
 	_float vTexcoordX = m_TrailInfos.size() * 2;
 	for (size_t i = 0; i < m_TrailInfos.size() * 2;)
 	{
+		_uint index = i * 2 + (m_iMaxTrail * 2) - 2;	//점인덱스
+		_float fWeight = _float(i) / (m_TrailInfos.size() * 2);//트레일 웨이트 [점2개 마다 보간]
+		
 
+			vResult[i].vPosition = (*tTrailInfo).vPos[0];
+			vResult[i].vTexcoord = _float2(1.f - (i / (vTexcoordX - 2.f)), 0.f);
+			++i;
 
-		vResult[i].vPosition = (*tTrailInfo).vPos[0];
-		vResult[i].vTexcoord = _float2(1.f-(i / (vTexcoordX - 2.f)), 0.f);
-		++i;
+			vResult[i].vPosition = (*tTrailInfo).vPos[1];
+			vResult[i].vTexcoord = _float2(1.f - ((i - 1) / (vTexcoordX - 2.f)), 1.f);
+			++i;
 
-		vResult[i].vPosition = (*tTrailInfo).vPos[1];
-		vResult[i].vTexcoord = _float2(1.f-((i - 1) / (vTexcoordX - 2.f)), 1.f);
-		++i;
 
 		++tTrailInfo;
 	}
@@ -170,11 +173,6 @@ void CVIBuffer_Trail::Add_Trail(const _float& fTimeDelta, const _matrix WorldMat
 
 void CVIBuffer_Trail::Reset_Trail()
 {
-	m_TrailInfos.clear();
-
-	VTXPOSTEX* pVertex;
-	_float3 vNewPos[2];
-
 	D3D11_MAPPED_SUBRESOURCE SubResource{};
 	m_pContext->Map(m_pVB, 0, D3D11_MAP_WRITE_NO_OVERWRITE, 0, &SubResource);
 
@@ -192,6 +190,8 @@ void CVIBuffer_Trail::Reset_Trail()
 	}
 
 	m_pContext->Unmap(m_pVB, 0);
+
+	m_TrailInfos.clear();
 
 	m_iCurrentIndices =0;
 }

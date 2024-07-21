@@ -87,7 +87,7 @@ void CMainApp::Tick(const _float& fTimeDelta)
 	m_pGameInstance->Tick(fTimeDelta);
 	m_pCollisionManager->Tick();
 	m_pUIManager->Tick(fTimeDelta);
-	m_pUIManager->Late_Tick(fTimeDelta);	
+	m_pUIManager->Late_Tick(fTimeDelta);
 
 	//프레임 확인용 나중에 다시 디버그로 넣어야함
 	m_fTimeAcc += fTimeDelta;
@@ -128,6 +128,7 @@ HRESULT CMainApp::Render()
 
 	m_pGameInstance->Draw();
 
+#ifdef _DEBUG
 	//프레임 확인용.
 	++m_iNumRender;
 
@@ -141,7 +142,6 @@ HRESULT CMainApp::Render()
 
 	m_pGameInstance->Render_Font(TEXT("Font_Default"), m_szFPS, _float2(0.f, 0.f), XMVectorSet(1.f, 1.f, 0.f, 1.f));
 
-#ifdef _DEBUG
 	m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("!!!테스트용 키는 화면에 모두 작성할것 !!! "), _float2(500.f, 0.f), XMVectorSet(1.f, 0.f, 0.f, 1.f));
 
 	_float fSize = 320.f;
@@ -391,12 +391,14 @@ void CMainApp::Free()
 	Safe_Release(m_pContext);
 	Safe_Release(m_pDevice);
 
+	/* 레퍼런스 카운트를 0으로만든다. */
+	Safe_Release(m_pGameInstance);
+	CGameInstance::Release_Engine();
+
 #ifdef _DEBUG
 	Safe_Release(m_pDebugMananger);
 	CDebugManager::Release_Debug();
 #endif // _DEBUG
-
-
 
 	Safe_Release(m_pSystemManager);
 	CSystemManager::DestroyInstance();
@@ -410,7 +412,4 @@ void CMainApp::Free()
 	Safe_Release(m_pCollisionManager);
 	CCollision_Manager::DestroyInstance();
 
-	/* 레퍼런스 카운트를 0으로만든다. */
-	Safe_Release(m_pGameInstance);
-	CGameInstance::Release_Engine();
 }

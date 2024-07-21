@@ -226,6 +226,8 @@ HRESULT CLoader::Loading_Default()
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Texture_GuardSmoke"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/e_j_0351_2d_moya.dds"), 1))))
 		return E_FAIL;
+
+
 #pragma endregion
 
 #pragma region BTNode
@@ -654,7 +656,7 @@ HRESULT CLoader::Loading_For_Dogimazo_Boss()
 {
 	if (FAILED(Loading_Default()))
 		return E_FAIL;
-		
+
 	/* For.Prototype_Component_Navigation */
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Navigation"),
 		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/NaviData/Navigation_6.dat")))))

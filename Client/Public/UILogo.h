@@ -1,23 +1,25 @@
 #pragma once
 #include "UIScene.h"
+#include "Client_Defines.h"
 BEGIN(Client)
-class CUILife :
+class CUILogo :
     public CUIScene
 {
 protected:
-    CUILife();
-    CUILife(const CUILife& rhs);
-    virtual ~CUILife() = default;
-
+    CUILogo();
+    CUILogo(const CUILogo& rhs);
+    virtual ~CUILogo() = default;
 public:
+
 
     virtual HRESULT Initialize(void* pArg) override;
     virtual HRESULT Tick(const _float& fTimeDelta) override;
     virtual HRESULT Late_Tick(const _float& fTimeDelta) override;
-private:
-    _uint m_iBts = { 0 };
+    virtual void Action() override;
+    virtual void OverAction() override;
+
 public:
-    static CUILife* Create(void* pArg=nullptr);
+    static CUILogo* Create(void* pArg = nullptr);
     virtual void Free();
 };
 END

@@ -40,12 +40,13 @@ public:
     HRESULT Tick(const _float& fTimeDelta);
     HRESULT Late_Tick(const _float& fTimeDelta);
 
+
 private:
     class CGameInstance* m_pGameInstance; 
     map <wstring ,class CUIScene*> m_AllScene;//모든 씬데이터 보관(폴더이름 ,파일)
     vector< class CUIScene*> m_PlayScene ;//사용하는 씬만 담아 상호 작용(팝업용)창
     vector<class CUIScene*> m_AlwaysUI;//항상 떠있는 ui (피통 스킬상태 소지품)
-    class CInventoryManager* m_pInventory;
+    class CInventoryManager* m_pInventory = {nullptr};
 
     _bool m_isLoading = { false };
     

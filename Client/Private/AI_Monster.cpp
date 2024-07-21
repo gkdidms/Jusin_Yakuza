@@ -16,6 +16,7 @@ CAI_Monster::CAI_Monster(const CAI_Monster& rhs)
 	: m_pGameInstance { rhs.m_pGameInstance}
 {
 	Safe_AddRef(m_pGameInstance);
+	m_isClone = true;
 }
 
 HRESULT CAI_Monster::Initialize_Prototype()
@@ -28,9 +29,13 @@ HRESULT CAI_Monster::Initialize(void* pArg)
 	AI_MONSTER_DESC* pDesc = static_cast<AI_MONSTER_DESC*>(pArg);
 	m_pState = pDesc->pState;
 	m_pAnimCom = pDesc->pAnim;
+	Safe_AddRef(m_pAnimCom);
+
 	m_pThis = pDesc->pThis;
+	Safe_AddRef(m_pThis);
 
 	m_pPlayer = dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"), 0));
+	Safe_AddRef(m_pPlayer);
 
 	return S_OK;
 }
@@ -91,7 +96,7 @@ void CAI_Monster::LookAtPlayer()
 {
 	_vector vPlayerPos = m_pPlayer->Get_TransformCom()->Get_State(CTransform::STATE_POSITION);
 
-	m_pThis->Get_TransformCom()->LookAt(vPlayerPos);
+	m_pThis->Get_TransformCom()->LookAt_For_LandObject(vPlayerPos);
 }
 
 _bool CAI_Monster::Find_CurrentAnimationName(string strAnimName)
@@ -993,7 +998,7 @@ CBTNode::NODE_STATE CAI_Monster::HitAndGuard()
 			m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_GuardBlink"), TEXT("Layer_Particle"), &EffectDesc);
 			m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_GuardParticle"), TEXT("Layer_Particle"), &EffectDesc);
 			m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_GuardSmoke"), TEXT("Layer_Particle"), &EffectDesc);
-			m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Hit1_Part0"), TEXT("Layer_Particle"), &EffectDesc);
+			//m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Hit1_Part0"), TEXT("Layer_Particle"), &EffectDesc);
 			m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Guard1_Distortion0"), TEXT("Layer_Particle"), &EffectDesc);
 
 			m_fGuardAtkAcc += m_pThis->Get_HitDamage();
@@ -1202,9 +1207,13 @@ CBTNode::NODE_STATE CAI_Monster::ShiftAndIdle()
 {
 	static _uint iCount = rand() % 7 + 2;
 
-	if (DistanceFromPlayer() > 3.f)
+	if (DistanceFromPlayer() > 3.f && DistanceFromPlayer() <= 6.f)
 	{
 		m_iSkill = SKILL_SHIFT;
+	}
+	else if (DistanceFromPlayer() > 6.f)
+	{
+		m_iSkill = SKILL_IDLE;
 	}
 	else
 	{
@@ -1266,4 +1275,11 @@ void CAI_Monster::Free()
 	Safe_Release(m_pGameInstance);
 
 	Safe_Release(m_pRootNode);
+
+	if (m_isClone)
+	{
+		Safe_Release(m_pThis);
+		Safe_Release(m_pAnimCom);
+		Safe_Release(m_pPlayer);
+	}
 }

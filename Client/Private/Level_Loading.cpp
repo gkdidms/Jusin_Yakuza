@@ -47,7 +47,7 @@ void CLevel_Loading::Tick(const _float& fTimeDelta)
 			CLevel* pNewLevel = { nullptr };
 
 			m_pGameInstance->Set_CurrentLevel(m_eNextLevel);
-
+			CUIManager::GetInstance()->Close_Scene();
 			switch (m_eNextLevel)
 			{
 			case LEVEL_LOGO:
@@ -82,7 +82,7 @@ void CLevel_Loading::Tick(const _float& fTimeDelta)
 			if (nullptr == pNewLevel)
 				return;
 
-			CUIManager::GetInstance()->Close_Scene();
+
 			if (FAILED(m_pGameInstance->Open_Level(m_eNextLevel, pNewLevel)))
 				return;
 		}

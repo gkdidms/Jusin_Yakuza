@@ -166,6 +166,8 @@
     <ClInclude Include="..\..\Imgui\background\imgui_impl_dx11.h" />
     <ClInclude Include="..\..\Imgui\background\imgui_impl_win32.h" />
     <ClInclude Include="..\..\Imgui\ImGuiFileDialog\dirent\dirent.h" />
+    <ClInclude Include="..\..\Imgui\ImGuiFileDialog\ImGuiFileDialog.h" />
+    <ClInclude Include="..\..\Imgui\ImGuiFileDialog\ImGuiFileDialogConfig.h" />
     <ClInclude Include="..\..\Imgui\ImGuiFileDialog\stb\stb_image.h" />
     <ClInclude Include="..\..\Imgui\ImGuiFileDialog\stb\stb_image_resize2.h" />
     <ClInclude Include="..\..\Imgui\imGuizmo\GraphEditor.h" />
@@ -288,6 +290,7 @@
     <ClInclude Include="..\Public\UIInven.h" />
     <ClInclude Include="..\Public\UILife.h" />
     <ClInclude Include="..\Public\UILoading.h" />
+    <ClInclude Include="..\Public\UILogo.h" />
     <ClInclude Include="..\Public\UIManager.h" />
     <ClInclude Include="..\Public\UIMenu.h" />
     <ClInclude Include="..\Public\UIMoney.h" />
@@ -306,6 +309,7 @@
   <ItemGroup>
     <ClCompile Include="..\..\Imgui\background\imgui_impl_dx11.cpp" />
     <ClCompile Include="..\..\Imgui\background\imgui_impl_win32.cpp" />
+    <ClCompile Include="..\..\Imgui\ImGuiFileDialog\ImGuiFileDialog.cpp" />
     <ClCompile Include="..\..\Imgui\imGuizmo\GraphEditor.cpp" />
     <ClCompile Include="..\..\Imgui\imGuizmo\ImCurveEdit.cpp" />
     <ClCompile Include="..\..\Imgui\imGuizmo\ImGradient.cpp" />
@@ -422,6 +426,7 @@
     </ClCompile>
     <ClCompile Include="..\Private\UIInven.cpp" />
     <ClCompile Include="..\Private\UILife.cpp" />
+    <ClCompile Include="..\Private\UILogo.cpp" />
     <ClCompile Include="..\Private\UIManager.cpp" />
     <ClCompile Include="..\Private\UIMenu.cpp" />
     <ClCompile Include="..\Private\UIMoney.cpp" />

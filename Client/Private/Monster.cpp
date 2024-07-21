@@ -30,6 +30,10 @@ HRESULT CMonster::Initialize(void* pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
+	//테스트 데이터
+	m_Info.iMaxHP = 20.f;
+	m_Info.iHp = m_Info.iMaxHP;
+
 	return S_OK;
 }
 
@@ -522,7 +526,7 @@ void CMonster::Free()
 {
 	__super::Free();
 
-	Safe_Release(m_pAnimCom);
 	Safe_Release(m_pShaderCom);
+	Safe_Release(m_pAnimCom);
 	Safe_Release(m_pNavigationCom);
 }
