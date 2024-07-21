@@ -28,12 +28,12 @@ HRESULT CUIInven::Add_UIData(CUI_Object* pUIObject)
 	{
 		if(m_Toggle.size() < 3)
 		{
-			Safe_AddRef(pUIObject);
+			//Safe_AddRef(pUIObject);
 			m_Toggle.push_back(dynamic_cast<CBtn*>(pUIObject));
 		}
 		else
 		{
-			Safe_AddRef(pUIObject);
+			//Safe_AddRef(pUIObject);
 			m_Button.push_back(dynamic_cast<CBtn*>(pUIObject));
 		}
 	}

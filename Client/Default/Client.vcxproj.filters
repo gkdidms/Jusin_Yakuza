@@ -365,6 +365,10 @@
     <ClCompile Include="..\Private\MonsterTrigger.cpp">
       <Filter>02.GameObjects\08.Trigger\03.MonsterTrigger</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\UILogo.cpp" />
+    <ClCompile Include="..\..\Imgui\ImGuiFileDialog\ImGuiFileDialog.cpp">
+      <Filter>96.ImGui</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\MainApp.h">
@@ -757,6 +761,13 @@
     </ClInclude>
     <ClInclude Include="..\Public\MonsterTrigger.h">
       <Filter>02.GameObjects\08.Trigger\03.MonsterTrigger</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UILogo.h" />
+    <ClInclude Include="..\..\Imgui\ImGuiFileDialog\ImGuiFileDialog.h">
+      <Filter>96.ImGui</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Imgui\ImGuiFileDialog\ImGuiFileDialogConfig.h">
+      <Filter>96.ImGui</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
