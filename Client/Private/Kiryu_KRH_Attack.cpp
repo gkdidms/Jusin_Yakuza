@@ -94,10 +94,18 @@ void CKiryu_KRH_Attack::Reset()
 void CKiryu_KRH_Attack::Combo_Count(_bool isFinAction)
 {
 	// 단독 우클 펀치면 카운트하지않는다
-	if (25 == m_iComboCount) return;
+	if (25 == m_iComboCount)
+	{
+		m_pPlayer->Set_DamageAmplify(1.5f);
+		return;
+	}
+
+	// 러쉬기본공격은 기본적으로 0.7배함
+	m_pPlayer->Set_DamageAmplify(0.7f);
 
 	if (isFinAction)
 	{
+		m_pPlayer->Set_DamageAmplify(1.2f);
 		//if (m_iComboCount == 7)
 		//{
 		//	if (Changeable_Combo_Animation())

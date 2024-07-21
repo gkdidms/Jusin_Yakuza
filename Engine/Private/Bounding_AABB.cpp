@@ -103,18 +103,12 @@ _bool CBounding_AABB::Intersect(CCollider::TYPE eTargetType, CBounding* pTargetB
 }
 
 #pragma optimize("", off)
-const _float3& CBounding_AABB::ImpulseResolution(CCollider::TYPE eTargetType, CBounding* pTargetBounding)
+const _float3& CBounding_AABB::ImpulseResolution(CCollider::TYPE eTargetType, CBounding* pTargetBounding, _float fDistance)
 {
 	static _float3 vResultPosition(0.f, 0.f, 0.f);
 
 	// 밀어내기 기능은 AABB에서만 할 것
-	if (!Intersect(eTargetType, pTargetBounding))
-	{
-		vResultPosition = _float3(0.f, 0.f, 0.f);
-		return vResultPosition;
-	}
-
-	if (eTargetType != Engine::CCollider::COLLIDER_AABB)
+	if (!Intersect(eTargetType, pTargetBounding, fDistance) || eTargetType != Engine::CCollider::COLLIDER_AABB)
 	{
 		vResultPosition = _float3(0.f, 0.f, 0.f);
 		return vResultPosition;
@@ -129,16 +123,16 @@ const _float3& CBounding_AABB::ImpulseResolution(CCollider::TYPE eTargetType, CB
 		return vResultPosition;
 	}
 
-	_vector vBox1Min = XMVectorSubtract(XMLoadFloat3(&m_pBoundingBox->Center), XMLoadFloat3(&m_pBoundingBox->Extents));
-	_vector vBox1Max = XMVectorAdd(XMLoadFloat3(&m_pBoundingBox->Center), XMLoadFloat3(&m_pBoundingBox->Extents));
+	XMVECTOR vBox1Min = XMVectorSubtract(XMLoadFloat3(&m_pBoundingBox->Center), XMLoadFloat3(&m_pBoundingBox->Extents));
+	XMVECTOR vBox1Max = XMVectorAdd(XMLoadFloat3(&m_pBoundingBox->Center), XMLoadFloat3(&m_pBoundingBox->Extents));
 
-	_vector vBox2Min = XMVectorSubtract(XMLoadFloat3(&pDesc->Center), XMLoadFloat3(&pDesc->Extents));
-	_vector vBox2Max = XMVectorAdd(XMLoadFloat3(&pDesc->Center), XMLoadFloat3(&pDesc->Extents));
+	XMVECTOR vBox2Min = XMVectorSubtract(XMLoadFloat3(&pDesc->Center), XMLoadFloat3(&pDesc->Extents));
+	XMVECTOR vBox2Max = XMVectorAdd(XMLoadFloat3(&pDesc->Center), XMLoadFloat3(&pDesc->Extents));
 
-	_vector vIntersectMin = XMVectorMax(vBox1Min, vBox2Min);
-	_vector vIntersectMax = XMVectorMin(vBox1Max, vBox2Max);
+	XMVECTOR vIntersectMin = XMVectorMax(vBox1Min, vBox2Min);
+	XMVECTOR vIntersectMax = XMVectorMin(vBox1Max, vBox2Max);
 
-	_vector vIntersectSize = XMVectorSubtract(vIntersectMax, vIntersectMin);
+	XMVECTOR vIntersectSize = XMVectorSubtract(vIntersectMax, vIntersectMin);
 
 	float fIntersectWidth = XMVectorGetX(vIntersectSize);
 	float fIntersectHeight = XMVectorGetY(vIntersectSize);

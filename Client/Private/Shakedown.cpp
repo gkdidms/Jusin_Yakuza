@@ -121,7 +121,7 @@ HRESULT CShakedown::Add_Components()
 	CBounding_AABB::BOUNDING_AABB_DESC		ColliderDesc{};
 
 	ColliderDesc.eType = CCollider::COLLIDER_AABB;
-	ColliderDesc.vExtents = _float3(0.3, 0.8, 0.3);
+	ColliderDesc.vExtents = _float3(0.5, 0.8, 0.5);
 	ColliderDesc.vCenter = _float3(0, ColliderDesc.vExtents.y, 0);
 
 	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Collider"),

@@ -73,11 +73,20 @@ void CKiryu_KRC_Attack::Reset()
 
 void CKiryu_KRC_Attack::Combo_Count(_bool isFinAction)
 {
-	// 단독 우클 펀치면 카운트하지않는다
-	if (7 == m_iComboCount) return;
+	// 단독 강공격 (몸통박치기)
+	if (7 == m_iComboCount) 
+	{
+		m_pPlayer->Set_DamageAmplify(3.f);
+		return;
+	}
+
+	// 파괴자 스타일은 기본적으로 1.5배해둔다
+	m_pPlayer->Set_DamageAmplify(1.5f);
 
 	if (isFinAction)
 	{
+		m_pPlayer->Set_DamageAmplify(3.f);
+
 		if (m_iComboCount < 3)
 			m_iComboCount += 3;
 	}
