@@ -90,7 +90,7 @@ void CCollision_Manager::ImpulseResolution()
     Impulse_Clear();
 }
 
-void CCollision_Manager::ResolveCollision(BoundingSphere* sphere, BoundingOrientedBox* box)
+void CCollision_Manager::ResolveCollision(BoundingSphere* sphere, BoundingOrientedBox* box, CTransform* pTransform)
 {
     // Box의 각 축별 회전 벡터를 구합니다.
     XMVECTOR boxCenter = XMLoadFloat3(&box->Center);
@@ -142,9 +142,17 @@ void CCollision_Manager::ResolveCollision(BoundingSphere* sphere, BoundingOrient
     XMFLOAT3 push;
     XMStoreFloat3(&push, pushVector);
 
-    sphere->Center.x += push.x;
-    sphere->Center.y += push.y;
-    sphere->Center.z += push.z;
+    //sphere->Center.x += push.x;
+    //sphere->Center.y += push.y;
+    //sphere->Center.z += push.z;
+
+    _vector vSpherePos = pTransform->Get_State(CTransform::STATE_POSITION);
+    vSpherePos.m128_f32[0] += push.x;
+    vSpherePos.m128_f32[1] += push.y;
+    vSpherePos.m128_f32[2] += push.z;
+    vSpherePos.m128_f32[3] = 1;
+
+    pTransform->Set_State(CTransform::STATE_POSITION, vSpherePos);
 }
 
 // 플레이어한테 적이 맞을 때
@@ -212,7 +220,7 @@ void CCollision_Manager::Player_Hit_Collision()
     }
 }
 
-_bool CCollision_Manager::Map_Collision(CCollider* pCollider)
+_bool CCollision_Manager::Map_Collision_Move(CCollider* pCollider, CTransform* pTransform)
 {
     _float3 vCenter;
     XMStoreFloat3(&vCenter, XMVectorZero());
@@ -237,7 +245,51 @@ _bool CCollision_Manager::Map_Collision(CCollider* pCollider)
                 BoundingOrientedBox* pDesc = static_cast<BoundingOrientedBox*>(pMapCollider->Get_Desc());
                 vCenter = pDesc->Center;
 
-                ResolveCollision(static_cast<BoundingSphere*>(pCollider->Get_Desc()), pDesc);
+                ResolveCollision(static_cast<BoundingSphere*>(pCollider->Get_Desc()), pDesc, pTransform);
+
+                return true;
+            }
+
+
+            case CCollider::COLLIDER_SPHERE:
+            {
+                BoundingSphere* pDesc = static_cast<BoundingSphere*>(pMapCollider->Get_Desc());
+                vCenter = pDesc->Center;
+
+                break;
+            }
+
+            }
+        }
+    }
+
+    return false;
+}
+
+_bool CCollision_Manager::Check_Map_Collision(CCollider* pCollider)
+{
+    _float3 vCenter;
+    XMStoreFloat3(&vCenter, XMVectorZero());
+
+    for (auto& pMapCollider : m_MapColliders)
+    {
+        if (pMapCollider->Intersect(pCollider, 500.f))
+        {
+            switch (pMapCollider->Get_Type())
+            {
+            case CCollider::COLLIDER_AABB:
+            {
+                BoundingBox* pDesc = static_cast<BoundingBox*>(pMapCollider->Get_Desc());
+                vCenter = pDesc->Center;
+
+                break;
+            }
+
+
+            case CCollider::COLLIDER_OBB:
+            {
+                BoundingOrientedBox* pDesc = static_cast<BoundingOrientedBox*>(pMapCollider->Get_Desc());
+                vCenter = pDesc->Center;
 
                 return true;
             }
