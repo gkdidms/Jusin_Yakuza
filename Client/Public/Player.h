@@ -1,5 +1,6 @@
 #pragma once
 #include "LandObject.h"
+#include "Navigation.h"
 
 BEGIN(Engine)
 class CShader;

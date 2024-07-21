@@ -86,12 +86,12 @@ HRESULT CMapCollider::Add_Components(void* pArg)
     {
         COLLIDER_DESC       collderIOdesc = colliderDescIO->pColliderDesc[i];
         // Ω√¿€
-        CBounding_OBB::BOUNDING_OBB_DESC		ColliderDesc{};
+        CBounding_AABB::BOUNDING_AABB_DESC		ColliderDesc{};
 
         ColliderDesc.eType = CCollider::COLLIDER_OBB;
         ColliderDesc.vExtents = collderIOdesc.vExtents;
         ColliderDesc.vCenter = collderIOdesc.vCenter;
-        ColliderDesc.vRotation = collderIOdesc.vQuaternion;
+        //ColliderDesc.vRotation = collderIOdesc.vQuaternion;
 
         m_vCollider.push_back(dynamic_cast<CCollider*>(m_pGameInstance->Add_Component_Clone(m_iCurrentLevel, TEXT("Prototype_Component_Collider"), &ColliderDesc)));
         m_pCollisionManager->Add_MapCollider(m_vCollider.back());

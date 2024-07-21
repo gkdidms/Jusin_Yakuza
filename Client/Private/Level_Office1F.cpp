@@ -31,7 +31,7 @@ HRESULT CLevel_Office1F::Initialize()
 	m_pFileTotalManager->Set_MapObj_In_Client(STAGE_OFFICE_1F, LEVEL_OFFICE_1F);
 	m_pFileTotalManager->Set_Lights_In_Client(STAGE_OFFICE_1F);
 	m_pFileTotalManager->Set_Collider_In_Client(STAGE_OFFICE_1F, LEVEL_OFFICE_1F);
-	m_pFileTotalManager->Set_Trigger_In_Client(STAGE_OFFICE_1F, LEVEL_OFFICE_1F);
+	//m_pFileTotalManager->Set_Trigger_In_Client(STAGE_OFFICE_1F, LEVEL_OFFICE_1F);
 
 	if (FAILED(Ready_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
