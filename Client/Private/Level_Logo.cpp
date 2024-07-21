@@ -13,7 +13,7 @@ CLevel_Logo::CLevel_Logo(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 
 HRESULT CLevel_Logo::Initialize()
 {
-	CUIManager::GetInstance()->Open_Scene(TEXT("Logo"));
+ 	CUIManager::GetInstance()->Open_Scene(TEXT("Logo"));
 
 	return S_OK;
 }

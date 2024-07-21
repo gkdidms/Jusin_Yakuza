@@ -11,6 +11,7 @@
 #include "UIInven.h"
 #include "UILogo.h"
 #include "InventoryManager.h"
+
 IMPLEMENT_SINGLETON(CUIManager)
 
 CUIManager::CUIManager()
