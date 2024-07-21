@@ -212,6 +212,53 @@ void CPlayer::Late_Tick(const _float& fTimeDelta)
 	Setting_RimLight();
 	Compute_Height();
 
+	if (m_pModelCom->Get_AnimFinished())
+	{
+		// 애니메이셔ㅑㄴ이 끝났을 때 기존 애니메이션에서 회전한 값 만큼 회전시켜준다.
+
+		//_float3 vScaled = m_pTransformCom->Get_Scaled();
+		//_vector vScale = XMLoadFloat3(&vScaled);
+		//_vector vOriginRot = XMVectorSet(0.f, 0.f, 0.f, 1.f);
+		//_vector vRot = XMLoadFloat4(&m_vPrevRotation);
+		//_vector vTranslation = XMVectorSet(0.f, 0.f, 0.f, 1.f);
+
+		//_matrix CenterRotationMatrix = XMMatrixTranspose(XMMatrixAffineTransformation(vScale, vOriginRot, vRot, vTranslation));
+
+		//// 저장하고 있는 쿼터니언의 회전값은 Y축 양의 방향을 Forward로 사용중인 회전값이므로,
+		//// Z축 양의 방향을 forward로 가지게 변환해주어야 한다.
+		////_matrix yFlipMatrix = XMMatrixRotationX(XMConvertToRadians(-90.0f));
+
+		////// 쿼터니언 회전과 Y축 회전을 적용한 새로운 회전 행렬 생성
+		////_matrix newRotationMatrix = XMMatrixMultiply(yFlipMatrix, CenterRotationMatrix);
+
+		//// 기존의 월드 행렬에 새로운 회전 행렬을 적용
+		//_matrix WorldMatrix = XMMatrixMultiply(CenterRotationMatrix, m_pTransformCom->Get_WorldMatrix());
+
+		//XMVECTOR y90DegreeRotation = XMQuaternionRotationAxis(XMVectorSet(0.0f, 1.0f, 0.0f, 0.0f), XMConvertToRadians(90.0f));
+		//XMVECTOR transformedQuat = XMQuaternionMultiply(y90DegreeRotation, XMLoadFloat4(&m_vPrevRotation));
+
+		//XMFLOAT3 euler;
+		//XMFLOAT4 q;
+		//XMStoreFloat4(&q, transformedQuat);
+
+		//// 오일러 각도 계산 (Yaw, Pitch, Roll)
+		//euler.y = atan2(2.0f * (q.x * q.w + q.y * q.z), 1.0f - 2.0f * (q.y * q.y + q.z * q.z)); // Yaw
+		//euler.x = asin(2.0f * (q.x * q.z - q.w * q.y)); // Pitch
+		//euler.z = atan2(2.0f * (q.x * q.y + q.z * q.w), 1.0f - 2.0f * (q.x * q.x + q.z * q.z)); // Roll
+
+		//_matrix RotMatrixX = XMMatrixRotationY(euler.x);
+		//_matrix RotMatrixZ = XMMatrixRotationY(euler.z);
+
+		//_matrix WorldMatrix = XMMatrixMultiply(RotMatrixZ, m_pTransformCom->Get_WorldMatrix());
+		////_matrix WorldMatrix = XMMatrixMultiply(XMMatrixRotationRollPitchYaw(euler.x, euler.y, euler.z), m_pTransformCom->Get_WorldMatrix());
+
+
+
+		//m_pTransformCom->Set_WorldMatrix(WorldMatrix);
+		//_vector vLookPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION) + WorldMatrix.r[CTransform::STATE_LOOK];
+
+		//m_pTransformCom->LookAt_For_LandObject(vLookPos);
+	}
 }
 
 HRESULT CPlayer::Render()
@@ -548,15 +595,6 @@ void CPlayer::Synchronize_Root(const _float& fTimeDelta)
 	//_vector vFF = XMVector3TransformNormal(vCenterMove, m_pTransformCom->Get_WorldMatrix());
 	_vector vFF = vCenterMove;
 
-	// 월드 행렬
-	_matrix worldMatrix = m_pTransformCom->Get_WorldMatrix();
-	_float4 vQuaternion = *m_pModelCom->Get_AnimationCenterRotation();
-
-	//_vector scale, rotation, translation;
-	//XMMatrixDecompose(&scale, &rotation, &translation, worldMatrix);
-
-	//_vector resultQuaternionVector = XMQuaternionMultiply(XMLoadFloat4(&vQuaternion), rotation);
-
 	// m_pModelCom->Get_AnimChanged()  선형보간이 끝났는지
 	// m_pModelCom->Get_AnimLerp() 선형보간이 필요한 애니메이션인지
 	if (m_pModelCom->Get_AnimChanged() || !m_pModelCom->Get_AnimLerp())
@@ -568,16 +606,6 @@ void CPlayer::Synchronize_Root(const _float& fTimeDelta)
 		}
 		else
 		{
-			// 쿼터니언 회전값 적용은 중단 (추후 마저 진행예정)
-			//_float4 v;
-			//_vector diffQuaternionVector = XMQuaternionMultiply(resultQuaternionVector, XMQuaternionConjugate(XMLoadFloat4(&m_vPrevRotation)));
-			//XMStoreFloat4(&v, diffQuaternionVector);
-			//m_pTransformCom->Change_Rotation_Quaternion(v);
-
-			//_float4 vb;
-			//XMStoreFloat4(&vb, vFF - XMLoadFloat4(&m_vPrevMove));
-			//m_pTransformCom->Go_Straight_CustumDir(vb, fTimeDelta);
-
 			_float4 fMoveDir;
 			_float fMoveSpeed = XMVectorGetX(XMVector3Length(vFF - XMLoadFloat4(&m_vPrevMove)));
 			
@@ -592,10 +620,9 @@ void CPlayer::Synchronize_Root(const _float& fTimeDelta)
 			if (0.01 > m_fPrevSpeed)
 				m_fPrevSpeed = 0.f;
 
-			m_pTransformCom->Go_Move_Custum(fMoveDir, fMoveSpeed, 1, m_pNavigationCom);
+			m_pTransformCom->Go_Move_Custum(fMoveDir, m_fPrevSpeed, 1, m_pNavigationCom);
 			m_fPrevSpeed = fMoveSpeed;
-
-			//if()
+			
 			XMStoreFloat4(&m_vPrevMove, vFF);
 		}
 	}
@@ -604,10 +631,9 @@ void CPlayer::Synchronize_Root(const _float& fTimeDelta)
 		// 선형보간중일때는 무조건 초기화
 		XMStoreFloat4(&m_vPrevMove, XMVectorZero());
 	}
-	
+
+	m_vPrevRotation = *(m_pModelCom->Get_AnimationCenterRotation());
 	XMStoreFloat4x4(&m_ModelWorldMatrix, m_pTransformCom->Get_WorldMatrix());
-	//m_vPrevRotation = vQuaternion;
-	//XMStoreFloat4(&m_vPrevRotation, resultQuaternionVector);
 }
 
 void CPlayer::KeyInput(const _float& fTimeDelta)
