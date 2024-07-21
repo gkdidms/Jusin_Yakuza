@@ -91,7 +91,7 @@ void CAI_Monster::LookAtPlayer()
 {
 	_vector vPlayerPos = m_pPlayer->Get_TransformCom()->Get_State(CTransform::STATE_POSITION);
 
-	m_pThis->Get_TransformCom()->LookAt(vPlayerPos);
+	m_pThis->Get_TransformCom()->LookAt_For_LandObject(vPlayerPos);
 }
 
 _bool CAI_Monster::Find_CurrentAnimationName(string strAnimName)
@@ -993,6 +993,7 @@ CBTNode::NODE_STATE CAI_Monster::HitAndGuard()
 			m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_GuardBlink"), TEXT("Layer_Particle"), &EffectDesc);
 			m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_GuardParticle"), TEXT("Layer_Particle"), &EffectDesc);
 			m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_GuardSmoke"), TEXT("Layer_Particle"), &EffectDesc);
+			//m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Hit1_Part0"), TEXT("Layer_Particle"), &EffectDesc);
 			m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Guard1_Distortion0"), TEXT("Layer_Particle"), &EffectDesc);
 
 			m_fGuardAtkAcc += m_pThis->Get_HitDamage();
@@ -1201,9 +1202,13 @@ CBTNode::NODE_STATE CAI_Monster::ShiftAndIdle()
 {
 	static _uint iCount = rand() % 7 + 2;
 
-	if (DistanceFromPlayer() > 3.f)
+	if (DistanceFromPlayer() > 3.f && DistanceFromPlayer() <= 6.f)
 	{
 		m_iSkill = SKILL_SHIFT;
+	}
+	else if (DistanceFromPlayer() > 6.f)
+	{
+		m_iSkill = SKILL_IDLE;
 	}
 	else
 	{

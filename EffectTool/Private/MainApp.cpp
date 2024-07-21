@@ -52,7 +52,11 @@ HRESULT CMainApp::Initialize()
 
 void CMainApp::Tick(const _float& fTimeDelta)
 {
+#ifdef _DEBUG
 	m_fTimeAcc += fTimeDelta;
+#endif // _DEBUG
+
+
 
 	m_pGameInstance->Tick(fTimeDelta);
 	m_pGuimanager->Tick(fTimeDelta);
@@ -60,6 +64,7 @@ void CMainApp::Tick(const _float& fTimeDelta)
 
 HRESULT CMainApp::Render()
 {
+#ifdef _DEBUG
 	++m_iNumRender;
 
 	if (m_fTimeAcc >= 1.f)
@@ -69,7 +74,7 @@ HRESULT CMainApp::Render()
 		m_fTimeAcc = 0.f;
 		m_iNumRender = 0;
 	}
-
+#endif // _DEBUG
 
 
 	/* ±×¸°´Ù. */
@@ -82,8 +87,9 @@ HRESULT CMainApp::Render()
 	m_pGuimanager->Render();
 
 	ImGui_ImplDX11_RenderDrawData(ImGui::GetDrawData());
-
+#ifdef _DEBUG
 	m_pGameInstance->Render_Font(TEXT("Font_Default"), m_szFPS, _float2(0.f, 0.f), XMVectorSet(1.f, 1.f, 0.f, 1.f));
+#endif // _DEBUG
 
 	m_pGameInstance->Present();
 
