@@ -628,9 +628,12 @@ HRESULT CObject_Manager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* 
 	CRenderTarget* pCopyBackBuffer = CRenderTarget::Create(m_pDevice, m_pContext, 1280.f, 720.f, DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(0.f, 0.f, 0.f, 0.f));
 	if (nullptr == pCopyBackBuffer)
 		return E_FAIL;
+#ifdef DEBUG
 
 	pCopyBackBuffer->Ready_Debug(g_iWinSizeX - 100.f, 100.f, 200.f, 200.f);
 	m_CopyBackTexture2Ds.emplace_back(pCopyBackBuffer);
+#endif // DEBUG
+
 
 	return S_OK;
 }
@@ -1234,8 +1237,12 @@ HRESULT CObject_Manager::Create_Texture2D()
 		return E_FAIL;
 
 	m_Texture2Ds.emplace_back(pRenderTarget);
-	
+
+
+#ifdef _DEBUG
 	pRenderTarget->Ready_Debug(m_fDebugStart + ( 100 * m_iTextureWidthCount), m_fDebugStart + (100 * m_iTextureHeightCount), 100.f, 100.f);
+#endif // _DEBUG
+
 	
 	m_iTextureHeightCount++;
 	if (m_fDebugStart * m_iTextureHeightCount >= 450.f)

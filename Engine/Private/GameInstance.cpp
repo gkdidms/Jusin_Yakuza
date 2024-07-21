@@ -747,6 +747,7 @@ void CGameInstance::Release_Engine()
 void CGameInstance::Free()
 {
 	Safe_Release(m_pLevel_Manager);
+	Safe_Release(m_pSound_Manager);
 	Safe_Release(m_pGameObject_Manager);
 	Safe_Release(m_pComponent_Manager);
 	Safe_Release(m_pBTNode_Manager);
