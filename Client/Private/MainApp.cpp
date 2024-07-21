@@ -21,6 +21,7 @@
 #include "Btn.h"
 #include "UI_Effect.h"
 #pragma endregion
+
 CMainApp::CMainApp() :
 #ifdef _DEBUG
 	m_pDebugMananger{ CDebugManager::GetInstance() },
@@ -86,7 +87,7 @@ void CMainApp::Tick(const _float& fTimeDelta)
 	m_pGameInstance->Tick(fTimeDelta);
 	m_pCollisionManager->Tick();
 	m_pUIManager->Tick(fTimeDelta);
-	m_pUIManager->Late_Tick(fTimeDelta);	
+	m_pUIManager->Late_Tick(fTimeDelta);
 
 	//프레임 확인용 나중에 다시 디버그로 넣어야함
 	m_fTimeAcc += fTimeDelta;
@@ -390,12 +391,14 @@ void CMainApp::Free()
 	Safe_Release(m_pContext);
 	Safe_Release(m_pDevice);
 
+	/* 레퍼런스 카운트를 0으로만든다. */
+	Safe_Release(m_pGameInstance);
+	CGameInstance::Release_Engine();
+
 #ifdef _DEBUG
 	Safe_Release(m_pDebugMananger);
 	CDebugManager::Release_Debug();
 #endif // _DEBUG
-
-
 
 	Safe_Release(m_pSystemManager);
 	CSystemManager::DestroyInstance();
@@ -409,7 +412,4 @@ void CMainApp::Free()
 	Safe_Release(m_pCollisionManager);
 	CCollision_Manager::DestroyInstance();
 
-	/* 레퍼런스 카운트를 0으로만든다. */
-	Safe_Release(m_pGameInstance);
-	CGameInstance::Release_Engine();
 }

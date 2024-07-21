@@ -16,6 +16,7 @@ CAI_Monster::CAI_Monster(const CAI_Monster& rhs)
 	: m_pGameInstance { rhs.m_pGameInstance}
 {
 	Safe_AddRef(m_pGameInstance);
+	m_isClone = true;
 }
 
 HRESULT CAI_Monster::Initialize_Prototype()
@@ -28,9 +29,13 @@ HRESULT CAI_Monster::Initialize(void* pArg)
 	AI_MONSTER_DESC* pDesc = static_cast<AI_MONSTER_DESC*>(pArg);
 	m_pState = pDesc->pState;
 	m_pAnimCom = pDesc->pAnim;
+	Safe_AddRef(m_pAnimCom);
+
 	m_pThis = pDesc->pThis;
+	Safe_AddRef(m_pThis);
 
 	m_pPlayer = dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"), 0));
+	Safe_AddRef(m_pPlayer);
 
 	return S_OK;
 }
@@ -1270,4 +1275,11 @@ void CAI_Monster::Free()
 	Safe_Release(m_pGameInstance);
 
 	Safe_Release(m_pRootNode);
+
+	if (m_isClone)
+	{
+		Safe_Release(m_pThis);
+		Safe_Release(m_pAnimCom);
+		Safe_Release(m_pPlayer);
+	}
 }
