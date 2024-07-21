@@ -897,7 +897,7 @@ CBTNode::NODE_STATE CAI_Monster::Check_Sway()
 	if (m_pPlayer->isAttack() && !m_pThis->isColl())
 	{
 		//플레이어와의 거리가 어느정도 있는 상태여야만 함
-		if (DistanceFromPlayer() >= 1.5f && DistanceFromPlayer() < 1.7f)
+		if (DistanceFromPlayer() >= 2.0f && DistanceFromPlayer() < 2.3f)
 		{
 			Reset_State();
 			return CBTNode::SUCCESS;		
@@ -1014,7 +1014,7 @@ CBTNode::NODE_STATE CAI_Monster::HitAndGuard()
 			//랜덤으로 처리하기 (3 확률로 가드)
 			_uint iRandom = m_pGameInstance->Get_Random(0, 100);
 
-			if (iRandom == 95 || iRandom == 40 || iRandom == 67)
+			if (iRandom == 95 || iRandom == 40 || iRandom == 68)
 				m_iSkill = SKILL_GUARD;
 			else
 				m_iSkill = SKILL_HIT;

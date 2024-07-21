@@ -185,7 +185,7 @@
       <Filter>02.GameObjects\02.Character\LandObject\01.Monster\Yakuza\01.WPAYakuza\AI</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Level_Office1F.cpp">
-      <Filter>01.Levels\01.Office1F</Filter>
+      <Filter>01.Levels\00.Logo\01.Office1F</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Level_Office2F.cpp">
       <Filter>01.Levels\02.Office2F</Filter>
@@ -578,7 +578,7 @@
       <Filter>02.GameObjects\02.Character\LandObject\01.Monster\Yakuza\01.WPAYakuza\AI</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Level_Office1F.h">
-      <Filter>01.Levels\01.Office1F</Filter>
+      <Filter>01.Levels\00.Logo\01.Office1F</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Level_Office2F.h">
       <Filter>01.Levels\02.Office2F</Filter>
@@ -876,9 +876,6 @@
     <Filter Include="02.GameObjects\02.Character\PartObject\SocketObject">
       <UniqueIdentifier>{5ecdde66-d1d6-47ad-8170-66d5ccd28aa5}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01.Levels\01.Office1F">
-      <UniqueIdentifier>{93e0ad20-97d5-4c82-8681-669fe5987803}</UniqueIdentifier>
-    </Filter>
     <Filter Include="01.Levels\02.Office2F">
       <UniqueIdentifier>{1248b5da-70c7-4199-9597-40c53e064f0a}</UniqueIdentifier>
     </Filter>
@@ -1169,6 +1166,9 @@
     </Filter>
     <Filter Include="02.GameObjects\08.Trigger\03.MonsterTrigger">
       <UniqueIdentifier>{2f3289df-1818-4e53-8abd-71e5f39e8890}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Levels\00.Logo\01.Office1F">
+      <UniqueIdentifier>{93e0ad20-97d5-4c82-8681-669fe5987803}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
