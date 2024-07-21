@@ -9,6 +9,7 @@
 #include "UILife.h"
 #include "UIMoney.h"
 #include "UIInven.h"
+#include "UILogo.h"
 #include "InventoryManager.h"
 IMPLEMENT_SINGLETON(CUIManager)
 
@@ -25,6 +26,9 @@ HRESULT CUIManager::Initialize()
 	CUIScene* pScene = CUILoading::Create();
 	m_AllScene.emplace(make_pair(TEXT("Loading"), pScene));
 
+	 pScene = CUILogo::Create();
+	m_AllScene.emplace(make_pair(TEXT("Logo"), pScene));
+
 	pScene = CUINowLoading::Create();
 	m_AllScene.emplace(make_pair(TEXT("NowLoading"), pScene));
 
@@ -33,10 +37,12 @@ HRESULT CUIManager::Initialize()
 
 	pScene = CUILife::Create();
 	m_AllScene.emplace(make_pair(TEXT("Life"), pScene));
+	Safe_AddRef(pScene);
 	m_AlwaysUI.push_back(pScene);
 
 	pScene = CUIMoney::Create();
 	m_AllScene.emplace(make_pair(TEXT("Money"), pScene));
+	Safe_AddRef(pScene);
 	m_AlwaysUI.push_back(pScene);
 
 	CUIInven::IVENSCENE_DESC Desc{};
@@ -65,12 +71,17 @@ void CUIManager::Open_Scene(const wstring strSceneName)
 {
 	CUIScene* pUIScene = Find_Scene(strSceneName);	
 
+
+	if (TEXT("Logo") == strSceneName || TEXT("Loading") == strSceneName || TEXT("NowLoading") == strSceneName)
+	{
+		m_isLoading = true;
+		if(!m_PlayScene.empty())
+		m_PlayScene.pop_back();
+	}
 	m_PlayScene.push_back(pUIScene);
 	m_PlayScene.back()->Show_Scene();
 	m_isClose = false;
 
-	if (TEXT("Loading") == strSceneName|| TEXT("NowLoading") == strSceneName)
-		m_isLoading = true;
 }
 
 void CUIManager::Close_Scene()
@@ -115,6 +126,7 @@ HRESULT CUIManager::Late_Tick(const _float& fTimeDelta)
 {
 	if (!m_PlayScene.empty())
 	{
+
 		if (m_PlayScene.back()->Get_isClose()&& m_PlayScene.back()->Get_isAnimFinish())
 		{
 			m_PlayScene.pop_back();
@@ -169,11 +181,11 @@ void CUIManager::Free()
 	{
 		Safe_Release(iter);
 	}
-
-	for (auto iter : m_PlayScene)
-	{
-		Safe_Release(iter);
-	}
+	//m_PlayScene.clear();
+	//for (auto iter : m_PlayScene)
+	//{
+	//	Safe_Release(iter);
+	//}
 	for (auto iter : m_AllScene)
 	{
 		Safe_Release(iter.second);

@@ -53,7 +53,7 @@ HRESULT CKuze::Initialize(void* pArg)
 	m_pModelCom->Set_AnimationIndex(1, 0.5);
 	m_pTransformCom->Set_Scale(0.95f, 0.95f, 0.95f);
 
-	m_Info.iMaxHP = 500.f;
+	m_Info.iMaxHP = 100.f;
 	m_Info.iHp = m_Info.iMaxHP;
 
 	return S_OK;
@@ -112,7 +112,7 @@ void CKuze::Take_Damage(_uint iHitColliderType, const _float3& vDir, _float fDam
 		m_Info.iHp -= fDamage;
 
 		//무지성이라 변경해야함.
-		if (m_iPage == ONE && m_Info.iHp <= 250)
+		if (m_iPage == ONE && m_Info.iHp <= 50)
 		{
 			m_iPage = TWO;
 		}

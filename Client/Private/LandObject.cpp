@@ -37,9 +37,7 @@ HRESULT CLandObject::Initialize(void* pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
-	//테스트 데이터
-	m_Info.iMaxHP = 100.f;
-	m_Info.iHp = m_Info.iMaxHP;
+
 
 	return S_OK;
 }
@@ -67,9 +65,11 @@ void CLandObject::ImpulseResolution(CLandObject* pTargetObject)
 
 	_float3 vDir = m_pColliderCom->ImpulseResolution(pTargetObject->Get_Collider());
 
-	if (!XMVector3Equal(XMLoadFloat3(&vDir), XMVectorZero()))
+	if (!XMVector3Equal(XMVector3Normalize(XMLoadFloat3(&vDir)), XMVectorZero()))
 	{
-		m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_pTransformCom->Get_State(CTransform::STATE_POSITION) + XMLoadFloat3(&vDir));
+		_vector vMovePos = m_pTransformCom->Get_State(CTransform::STATE_POSITION) + XMLoadFloat3(&vDir);
+
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, vMovePos);
 	}
 }
 
