@@ -534,10 +534,19 @@ void CPlayer::Synchronize_Root(const _float& fTimeDelta)
 {
 	_vector vCenterMove = XMLoadFloat3(m_pModelCom->Get_AnimationCenterMove());
 	_vector vDeleteZ = XMVectorSetZ(vCenterMove, 0);
-	_vector vDeleteX = XMVectorSetX(vDeleteZ, 0);
+
+	if (m_iCurrentBehavior != 2)
+	{
+		vCenterMove = XMVectorSetX(vDeleteZ, 0);
+	}
+	else
+	{
+		vCenterMove = vDeleteZ;
+	}
 
 	//_vector vFF = XMVector3TransformNormal(XMVectorSetZ(XMLoadFloat3(m_pModelCom->Get_AnimationCenterMove()), 0), m_pTransformCom->Get_WorldMatrix());
-	_vector vFF = XMVector3TransformNormal(vDeleteX, m_pTransformCom->Get_WorldMatrix());
+	//_vector vFF = XMVector3TransformNormal(vCenterMove, m_pTransformCom->Get_WorldMatrix());
+	_vector vFF = vCenterMove;
 
 	// 월드 행렬
 	_matrix worldMatrix = m_pTransformCom->Get_WorldMatrix();
@@ -576,15 +585,17 @@ void CPlayer::Synchronize_Root(const _float& fTimeDelta)
 			_vector vTemp = XMVector3Normalize((vFF - XMLoadFloat4(&m_vPrevMove)));
 			//Z가 Y처럼 쓰임
 			vTemp = XMVectorSetZ(vTemp, XMVectorGetY(vTemp));
-			vTemp = XMVectorSetX(vTemp, XMVectorGetX(vTemp) * -1.f);
+			//vTemp = XMVectorSetX(vTemp, XMVectorGetX(vTemp) * -1.f);
+
 			XMStoreFloat4(&fMoveDir, XMVector3TransformNormal(XMVectorSetY(vTemp, 0.f), m_pTransformCom->Get_WorldMatrix()));
 
 			if (0.01 > m_fPrevSpeed)
 				m_fPrevSpeed = 0.f;
 
-			m_pTransformCom->Go_Move_Custum(fMoveDir, m_fPrevSpeed, 1, m_pNavigationCom);
+			m_pTransformCom->Go_Move_Custum(fMoveDir, fMoveSpeed, 1, m_pNavigationCom);
 			m_fPrevSpeed = fMoveSpeed;
 
+			//if()
 			XMStoreFloat4(&m_vPrevMove, vFF);
 		}
 	}
@@ -1472,10 +1483,14 @@ void CPlayer::Effect_Control_Aura()
 
 				m_isAuraOn = true;
 			}
-
-
 			break;
 		default:
+			if (nullptr != pHooligan)
+				pHooligan->Off();
+			if (nullptr != pRush)
+				pRush->Off();
+			if (nullptr != pDestroyer)
+				pDestroyer->Off();
 			return;
 		}
 	}
@@ -1575,6 +1590,8 @@ CGameObject* CPlayer::Clone(void* pArg)
 void CPlayer::Free()
 {
 	__super::Free();
+
+	Safe_Release(m_pTargetObject);
 
 	for (size_t i = 0; i < BATTLE_STYLE_END; i++)
 	{
