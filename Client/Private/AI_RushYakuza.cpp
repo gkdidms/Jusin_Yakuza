@@ -142,6 +142,9 @@ CBTNode::NODE_STATE CAI_RushYakuza::Check_Attack()
 {
 	if (!m_isAttack)
 	{
+		if (DistanceFromPlayer() > 6.f)
+			return CBTNode::FAIL;
+
 		if (m_fDelayAttackDuration > m_fAttackDelayTime)
 			return CBTNode::FAIL;
 
