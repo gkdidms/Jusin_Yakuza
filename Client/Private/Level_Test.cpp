@@ -29,8 +29,8 @@ HRESULT CLevel_Test::Initialize()
 		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/NaviData/Navigation_99.dat")))))
 		return E_FAIL;
 
- 	if (FAILED(Ready_Player(TEXT("Layer_Player"))))
-		return E_FAIL;
+ 	//if (FAILED(Ready_Player(TEXT("Layer_Player"))))
+		//return E_FAIL;
 
 	/*if (FAILED(Ready_Monster(TEXT("Layer_Monster"))))
 		return E_FAIL;*/
@@ -46,9 +46,9 @@ HRESULT CLevel_Test::Initialize()
 
 	/* 클라 파싱 */
 	m_pFileTotalManager->Set_MapObj_In_Client(90, LEVEL_TEST);
-	m_pFileTotalManager->Set_Lights_In_Client(6);
-	m_pFileTotalManager->Set_Collider_In_Client(6, LEVEL_TEST);
-	m_pFileTotalManager->Set_Trigger_In_Client(70, LEVEL_TEST);
+	//m_pFileTotalManager->Set_Lights_In_Client(6);
+	//m_pFileTotalManager->Set_Collider_In_Client(6, LEVEL_TEST);
+	//m_pFileTotalManager->Set_Trigger_In_Client(70, LEVEL_TEST);
 
 	_uint i = m_pGameInstance->Get_CurrentLevel();
 
@@ -92,21 +92,21 @@ HRESULT CLevel_Test::Ready_Camera(const wstring& strLayerTag)
 	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_CCineCamera"), strLayerTag, &cineDesc)))
 		return E_FAIL;
 
-	/* 2. 플레이어 카메라 */
-	CPlayerCamera::PLAYER_CAMERA_DESC		PlayerCameraDesc{};
-	PlayerCameraDesc.fSensor = 5.f;
-	PlayerCameraDesc.vEye = _float4(0.f, 2.0f, -3.f, 1.f);
-	PlayerCameraDesc.vFocus = _float4(0.f, 0.0f, 0.0f, 1.f);
-	PlayerCameraDesc.fFovY = XMConvertToRadians(60.0f);
-	PlayerCameraDesc.fAspect = g_iWinSizeX / (_float)g_iWinSizeY;
-	PlayerCameraDesc.fNear = 0.1f;
-	PlayerCameraDesc.fFar = 3000.f;
-	PlayerCameraDesc.fSpeedPecSec = 20.f;
-	PlayerCameraDesc.fRotatePecSec = XMConvertToRadians(90.f);
-	PlayerCameraDesc.pPlayerMatrix = dynamic_cast<CTransform*>(m_pGameInstance->Get_GameObject_Component(LEVEL_TEST, TEXT("Layer_Player"), TEXT("Com_Transform", 0)))->Get_WorldFloat4x4();
-	
-	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_PlayerCamera"), strLayerTag, &PlayerCameraDesc)))
-		return E_FAIL;
+	///* 2. 플레이어 카메라 */
+	//CPlayerCamera::PLAYER_CAMERA_DESC		PlayerCameraDesc{};
+	//PlayerCameraDesc.fSensor = 5.f;
+	//PlayerCameraDesc.vEye = _float4(0.f, 2.0f, -3.f, 1.f);
+	//PlayerCameraDesc.vFocus = _float4(0.f, 0.0f, 0.0f, 1.f);
+	//PlayerCameraDesc.fFovY = XMConvertToRadians(60.0f);
+	//PlayerCameraDesc.fAspect = g_iWinSizeX / (_float)g_iWinSizeY;
+	//PlayerCameraDesc.fNear = 0.1f;
+	//PlayerCameraDesc.fFar = 3000.f;
+	//PlayerCameraDesc.fSpeedPecSec = 20.f;
+	//PlayerCameraDesc.fRotatePecSec = XMConvertToRadians(90.f);
+	//PlayerCameraDesc.pPlayerMatrix = dynamic_cast<CTransform*>(m_pGameInstance->Get_GameObject_Component(LEVEL_TEST, TEXT("Layer_Player"), TEXT("Com_Transform", 0)))->Get_WorldFloat4x4();
+	//
+	//if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_PlayerCamera"), strLayerTag, &PlayerCameraDesc)))
+	//	return E_FAIL;
 
 	
 

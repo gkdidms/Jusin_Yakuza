@@ -43,7 +43,8 @@ public:
     void Enemy_Hit_Collision();
     void Player_Hit_Collision();
 
-    _bool Map_Collision(CCollider* pCollider);
+    _bool Map_Collision_Move(CCollider* pCollider, CTransform* pTransform); // 충돌 후 position 다시 나두기
+    _bool Check_Map_Collision(CCollider* pCollider); // 충돌 확인용
 
     class CLandObject* Get_Near_LandObject(class CLandObject* pObject, vector<CGameObject*>& pObjects);
 
@@ -52,7 +53,7 @@ private:
     // AABB끼리만 구현되어있음
     void ImpulseResolution();           // 따로 모아둔 벡터에서 서로 밀어내는 작업을 한다 (Tick에서 돌림)
 
-    void ResolveCollision(BoundingSphere* sphere, BoundingOrientedBox* box);
+    void ResolveCollision(BoundingSphere* sphere, BoundingOrientedBox* box, CTransform* pTransform);
 
 private:
     vector<class CLandObject*> m_ImpulseResolutionObjects;
