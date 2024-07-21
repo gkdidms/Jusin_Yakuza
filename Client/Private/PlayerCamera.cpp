@@ -88,7 +88,7 @@ void CPlayerCamera::Late_Tick(const _float& fTimeDelta)
 {
 	if (m_pSystemManager->Get_Camera() != CAMERA_PLAYER) return;
 
-	//m_bCamCollision = m_pCollisionManager->Map_Collision_Move(m_pColliderCom, m_pTransformCom);
+	m_bCamCollision = m_pCollisionManager->Map_Collision_Move(m_pColliderCom, m_pTransformCom);
 
 	//_vector vPlayerPosition;
 	//memcpy(&vPlayerPosition, m_pPlayerMatrix->m[CTransform::STATE_POSITION], sizeof(_float4));
@@ -303,7 +303,7 @@ HRESULT CPlayerCamera::Add_Components()
 	CBounding_Sphere::BOUNDING_SPHERE_DESC		ColliderDesc{};
 
 	ColliderDesc.eType = CCollider::COLLIDER_SPHERE;
-	ColliderDesc.fRadius = 0.005f;
+	ColliderDesc.fRadius = 0.001f;
 	ColliderDesc.vCenter = _float3(0, 0, 0);
 
 	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Collider"),
