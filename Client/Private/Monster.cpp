@@ -31,7 +31,7 @@ HRESULT CMonster::Initialize(void* pArg)
 		return E_FAIL;
 
 	//테스트 데이터
-	m_Info.iMaxHP = 20.f;
+	m_Info.iMaxHP = 100.f;
 	m_Info.iHp = m_Info.iMaxHP;
 
 	return S_OK;
