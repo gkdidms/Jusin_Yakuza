@@ -18,7 +18,7 @@ public:
         SKILL_RUN,
         SKILL_SHIFT,
         SKILL_SWAY,
-        SKILL_HIT, 
+        SKILL_HIT,
         SKILL_CMD,
         SKILL_CMD_A,
         SKILL_CMD_B,
@@ -30,7 +30,7 @@ public:
         SKILL_PUNCH,
         SKILL_HEAVY,
         SKILL_GUARD_RUN,
-        SKILL_RARIATTO, 
+        SKILL_RARIATTO,
         SKILL_DOWN,
         SKILL_ANGRY_CHOP,
         SKILL_ANGRY_KICK,
@@ -74,7 +74,7 @@ protected:
 protected:
     _bool m_isAttack = { false };
     _bool m_isAngry = { false };
-    _bool m_isSync = { false }; 
+    _bool m_isSync = { false };
     _bool m_isBreak = { false };
     _bool m_isGuard = { false };
     _bool m_isSway = { false };
@@ -105,7 +105,6 @@ protected:
     _float2 m_fSwayDistance = {};
 
 protected:
-    //쓰러졋는가? or 죽었는가? (현재상태 확인)
     virtual CBTNode::NODE_STATE Check_Down();
     virtual CBTNode::NODE_STATE StandUpAndDead();
     virtual CBTNode::NODE_STATE StandUp();
@@ -151,7 +150,7 @@ protected:
     _uint Check_KRS(_uint iPlayerLv, _bool isBehine, _bool isAnimChange = true);
     _uint Check_KRC(_uint iPlayerLv, _bool isBehine, _bool isAnimChange = true);
     _bool Check_StandUp();
-    
+
 protected:
     void Reset_State() {
         m_isAttack = false;

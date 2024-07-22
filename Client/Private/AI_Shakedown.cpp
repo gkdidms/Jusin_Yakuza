@@ -168,7 +168,7 @@ CBTNode::NODE_STATE CAI_Shakedown::Check_Attack()
 
 		m_fAttackDelayTime = 0.f;
 	}
-	
+
 	return CBTNode::SUCCESS;
 }
 
@@ -210,7 +210,7 @@ CBTNode::NODE_STATE CAI_Shakedown::Check_PlayerDown()
 			m_isAttack = false;
 		return CBTNode::FAIL;
 	}
-		
+
 	if (m_isPlayerDownAtk)
 		return CBTNode::FAIL;
 
