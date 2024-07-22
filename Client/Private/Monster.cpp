@@ -201,9 +201,9 @@ void CMonster::Take_Damage(_uint iHitColliderType, const _float3& vDir, _float f
 	if (m_pTree->isSway())
 		return;
 
-	//test
+	//카메라 쉐이킹
 	CCamera* pCamera = dynamic_cast<CCamera*>(m_pGameInstance->Get_GameObject(m_iCurrentLevel, TEXT("Layer_Camera"), CAMERA_PLAYER));
-	pCamera->Set_Shaking(true);
+	pCamera->Set_Shaking(true, vDir);
 
 	//하는역활 -> 충돌이 일어났을때?
 	m_isColl = true;
