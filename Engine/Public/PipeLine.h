@@ -68,6 +68,10 @@ private:
     _float4x4 m_ShadowTransformViewMatrix[3];
     _float4x4 m_ShadowTransformProjMatrix[3];
 
+private:
+    _float4x4 m_OldWorldMatrix = {};
+    _float4x4 m_OldViewMatrix = {};
+
 public:
     static CPipeLine* Create();
     virtual void Free();

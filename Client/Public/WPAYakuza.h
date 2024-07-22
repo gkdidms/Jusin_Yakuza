@@ -18,9 +18,6 @@ public:
     virtual void Late_Tick(const _float& fTimeDelta) override;
 
 private:
-    class CAI_WPAYakuza* m_pTree = { nullptr };
-
-private:
     virtual HRESULT Add_Components() override;
     virtual void Change_Animation() override;
 

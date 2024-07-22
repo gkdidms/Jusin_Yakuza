@@ -48,6 +48,9 @@ public:
         _uint* pState;
     } AI_MONSTER_DESC;
 
+public:
+    _bool isSway() { return m_isSway; }
+
 protected:
     CAI_Monster();
     CAI_Monster(const CAI_Monster& rhs);

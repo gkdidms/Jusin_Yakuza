@@ -313,7 +313,6 @@ HRESULT CPlayerCamera::Add_Components()
 	return S_OK;
 }
 
-
 CPlayerCamera* CPlayerCamera::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
 	CPlayerCamera* pInstance = new CPlayerCamera(pDevice, pContext);

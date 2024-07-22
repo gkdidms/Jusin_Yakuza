@@ -20,8 +20,6 @@ public:
     virtual void Late_Tick(const _float& fTimeDelta) override;
 
 private:
-    class CAI_RushYakuza* m_pTree = { nullptr };
-
     _float          m_fPrevSpeed = { 0.f };
     _float4         m_vPrevMove;
     _float4         m_vPrevRotation;
