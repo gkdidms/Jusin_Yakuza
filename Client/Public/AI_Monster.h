@@ -69,6 +69,8 @@ protected:
 
     _uint* m_pState = { nullptr };
 
+    _bool m_isClone = { false };
+
 protected: //배열로 변경하기
     _bool m_isAttack = { false };
     _bool m_isAngry = { false };

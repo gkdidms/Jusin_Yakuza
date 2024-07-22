@@ -524,4 +524,8 @@ void CMonster::Change_Animation()
 void CMonster::Free()
 {
 	__super::Free();
+
+	Safe_Release(m_pShaderCom);
+	Safe_Release(m_pAnimCom);
+	Safe_Release(m_pNavigationCom);
 }
