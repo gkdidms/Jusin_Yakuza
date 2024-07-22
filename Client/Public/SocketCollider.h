@@ -95,7 +95,7 @@ public:
 	}
 
 public:
-	void ParentObject_Hit(CSocketCollider* pAttackedCollider, _bool isBlowAttack = false);
+	void ParentObject_Hit(CSocketCollider* pAttackedCollider);
 
 private:
 	COLLIDER_ACTION_TYPE			m_eColliderActionType = { ATTACK };

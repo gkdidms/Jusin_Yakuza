@@ -48,8 +48,8 @@ public:
 
 public:
     void Go_Straight(const _float& fTimeDelta);
-    void Go_Straight_CustumSpeed(const _float& fSpeed, const _float& fTimeDelta);
-    void Go_Move_Custum(const _float4& vDir, const _float& fSpeed, const _float& fTimeDelta, class CNavigation* pNavi);
+    void Go_Straight_CustumSpeed(const _float& fSpeed, const _float& fTimeDelta, class CNavigation* pNavi = nullptr);
+    void Go_Move_Custum(const _float4& vDir, const _float& fSpeed, const _float& fTimeDelta, class CNavigation* pNavi = nullptr);
     void Go_Backward(const _float& fTimeDelta);
     void Go_Left(const _float& fTimeDelta);
     void Go_Right(const _float& fTimeDelta);

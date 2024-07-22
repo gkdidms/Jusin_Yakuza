@@ -59,13 +59,13 @@ HRESULT CLandObject::Render()
 	return S_OK;
 }
 
-void CLandObject::ImpulseResolution(CLandObject* pTargetObject)
+void CLandObject::ImpulseResolution(CLandObject* pTargetObject, _float fDistance)
 {
 	if (nullptr == m_pColliderCom) return;
 
-	_float3 vDir = m_pColliderCom->ImpulseResolution(pTargetObject->Get_Collider());
+	_float3 vDir = m_pColliderCom->ImpulseResolution(pTargetObject->Get_Collider(), fDistance);
 
-	if (!XMVector3Equal(XMVector3Normalize(XMLoadFloat3(&vDir)), XMVectorZero()))
+	if (!XMVector3Equal(XMLoadFloat3(&vDir), XMVectorZero()))
 	{
 		_vector vMovePos = m_pTransformCom->Get_State(CTransform::STATE_POSITION) + XMLoadFloat3(&vDir);
 
