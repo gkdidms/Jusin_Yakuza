@@ -177,6 +177,7 @@ void CKuze::Change_Animation()
 		m_strAnimName = "e_kuz_stand_blend";
 		m_isAnimLoop = true;
 		m_isDown = false;
+
 		break;
 	}
 	case MONSTER_SHIFT_F:
