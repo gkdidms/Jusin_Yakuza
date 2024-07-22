@@ -182,11 +182,11 @@ void CUIManager::Free()
 	{
 		Safe_Release(iter);
 	}
-	m_PlayScene.clear();
+	/*m_PlayScene.clear();
 	for (auto iter : m_PlayScene)
 	{
 		Safe_Release(iter);
-	}
+	}*/
 	for (auto iter : m_AllScene)
 	{
 		Safe_Release(iter.second);

@@ -84,12 +84,18 @@ void CTransform::Go_Straight(const _float& fTimeDelta)
 	Set_State(STATE_POSITION, vPosition);
 }
 
-void CTransform::Go_Straight_CustumSpeed(const _float& fSpeed, const _float& fTimeDelta)
+void CTransform::Go_Straight_CustumSpeed(const _float& fSpeed, const _float& fTimeDelta, CNavigation* pNavi)
 {
 	_vector vPosition = Get_State(STATE_POSITION);
 	_vector vLook = Get_State(STATE_LOOK);
 
 	vPosition += XMVector3NormalizeEst(vLook) * fSpeed * fTimeDelta;
+
+	if (nullptr != pNavi)
+	{
+		if (!pNavi->isMove(vPosition))
+			return;
+	}
 
 	if (isnan(vPosition.m128_f32[0]))	return;
 
@@ -101,8 +107,11 @@ void CTransform::Go_Move_Custum(const _float4& vDir, const _float& fSpeed, const
 	_vector vPosition = Get_State(STATE_POSITION);
 	vPosition += XMLoadFloat4(&vDir) * fSpeed * fTimeDelta;
 
-	if (!pNavi->isMove(vPosition))
-		return;
+	if (nullptr != pNavi)
+	{
+		if (!pNavi->isMove(vPosition))
+			return;
+	}
 
 	if (isnan(vPosition.m128_f32[0]))	return;
 

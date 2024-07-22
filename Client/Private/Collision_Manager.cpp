@@ -82,8 +82,8 @@ void CCollision_Manager::ImpulseResolution()
             _vector vDistance = vPosition_Object_I - vPosition_Object_J;
 
             _float fDistance = XMVectorGetX(XMVector3Length(vDistance));
-            if (0.5f > fDistance)
-                m_ImpulseResolutionObjects[i]->ImpulseResolution(m_ImpulseResolutionObjects[j]);
+            if (2.f > fDistance)
+                m_ImpulseResolutionObjects[i]->ImpulseResolution(m_ImpulseResolutionObjects[j], 2.f);
         }
     }
 
@@ -188,7 +188,7 @@ void CCollision_Manager::Enemy_Hit_Collision()
                 m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Hit1_Part3"), TEXT("Layer_Particle"), &EffectDesc);
                 m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Hit1_Part4"), TEXT("Layer_Particle"), &EffectDesc);
 
-                pEnemyHitCollider->ParentObject_Hit(pPlayerAttackCollider, pPlayerAttackCollider->Get_Parent()->Is_BlowAttack());
+                pEnemyHitCollider->ParentObject_Hit(pPlayerAttackCollider);
             }
 
         }
@@ -220,7 +220,7 @@ void CCollision_Manager::Player_Hit_Collision()
                 m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Damage1_Part3"), TEXT("Layer_Particle"), &EffectDesc);
                 m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Damage1_Glow0"), TEXT("Layer_Particle"), &EffectDesc);
 
-                pPlayerHitCollider->ParentObject_Hit(pEnemyAttackCollider, pEnemyAttackCollider->Get_Parent()->Is_BlowAttack());
+                pPlayerHitCollider->ParentObject_Hit(pEnemyAttackCollider);
             }
         }
     }
