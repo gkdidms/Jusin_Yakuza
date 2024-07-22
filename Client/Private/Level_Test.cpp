@@ -38,11 +38,11 @@ HRESULT CLevel_Test::Initialize()
 	if (FAILED(Ready_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
 
-	if (FAILED(Ready_Map(TEXT("Layer_Map"))))
-		return E_FAIL;
+	//if (FAILED(Ready_Map(TEXT("Layer_Map"))))
+	//	return E_FAIL;
 
-	if (FAILED(Ready_Effect(TEXT("Layer_Effect"))))
-		return E_FAIL;
+	//if (FAILED(Ready_Effect(TEXT("Layer_Effect"))))
+	//	return E_FAIL;
 
 	/* Å¬¶ó ÆÄ½Ì */
 	m_pFileTotalManager->Set_MapObj_In_Client(3, LEVEL_TEST);
