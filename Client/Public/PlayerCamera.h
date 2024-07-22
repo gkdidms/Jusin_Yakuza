@@ -13,7 +13,7 @@ class CPlayerCamera :
 {
 private:
     const _float MAX_DISTANCE = 3.5f;
-    const _float MIN_DISTANCE = 3.f;
+    const _float MIN_DISTANCE = 3.0f;
 
 public:
     typedef struct tPlayerCameraDesc : public CAMERA_DESC
@@ -61,8 +61,12 @@ private:
     _float m_fCamAngleX = 45.f;
     _float m_fCamAngleY = -90.f;
 
+    _float m_fPrevCamAngleY; // 이전 각도 값 저장
+    _float m_fPrevCamAngleX;
+
     XMVECTOR    m_vCamCollisionPos = { 0,0,0,1 };
     
+    bool        m_bPreCamCollision = { false };
     bool        m_bCamCollision = { false };
     bool        m_bBlock = { false };
     bool        m_bFirstCollision = { false }; // first collision check 
