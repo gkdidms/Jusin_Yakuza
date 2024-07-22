@@ -16,6 +16,7 @@ CAI_Monster::CAI_Monster(const CAI_Monster& rhs)
 	: m_pGameInstance { rhs.m_pGameInstance}
 {
 	Safe_AddRef(m_pGameInstance);
+	m_isClone = true;
 }
 
 HRESULT CAI_Monster::Initialize_Prototype()
@@ -28,9 +29,15 @@ HRESULT CAI_Monster::Initialize(void* pArg)
 	AI_MONSTER_DESC* pDesc = static_cast<AI_MONSTER_DESC*>(pArg);
 	m_pState = pDesc->pState;
 	m_pAnimCom = pDesc->pAnim;
+	//Safe_AddRef(m_pAnimCom);
+
 	m_pThis = pDesc->pThis;
+	//Safe_AddRef(m_pThis);
 
 	m_pPlayer = dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"), 0));
+	//Safe_AddRef(m_pPlayer);
+
+	m_fSwayDistance = _float2(2.f, 2.2f);
 
 	return S_OK;
 }
@@ -617,6 +624,7 @@ _uint CAI_Monster::Check_KRC(_uint iPlayerLv, _bool isBehine, _bool isAnimChange
 	{
 		if (isAnimChange)
 			*m_pState = CMonster::MONSTER_DWN_DNF_BOUND_G;
+		m_pThis->Set_Down(true);
 			
 		iDir = F;
 	}
@@ -639,8 +647,9 @@ _uint CAI_Monster::Check_KRC(_uint iPlayerLv, _bool isBehine, _bool isAnimChange
 					*m_pState = CMonster::MONSTER_DWN_DIRECT_F_BOUND_G;
 				else
 					*m_pState = CMonster::MONSTER_DWN_DIRECT_B_BOUND_G;
-			}
 
+				m_pThis->Set_Down(true);
+			}
 		}
 
 		iDir = F;
@@ -663,6 +672,8 @@ _uint CAI_Monster::Check_KRC(_uint iPlayerLv, _bool isBehine, _bool isAnimChange
 					*m_pState = CMonster::MONSTER_DWN_DIRECT_F_BOUND_G;
 				else
 					*m_pState = CMonster::MONSTER_DWN_DIRECT_B_BOUND_G;
+
+				m_pThis->Set_Down(true);
 			}
 		}
 
@@ -686,6 +697,8 @@ _uint CAI_Monster::Check_KRC(_uint iPlayerLv, _bool isBehine, _bool isAnimChange
 					*m_pState = CMonster::MONSTER_DWN_DIRECT_F_BOUND_G;
 				else
 					*m_pState = CMonster::MONSTER_DWN_DIRECT_B_BOUND_G;
+
+				m_pThis->Set_Down(true);
 			}
 		}
 
@@ -751,6 +764,8 @@ _uint CAI_Monster::Check_KRC(_uint iPlayerLv, _bool isBehine, _bool isAnimChange
 					*m_pState = CMonster::MONSTER_DWN_BODY_F_SP;
 				else
 					*m_pState = CMonster::MONSTER_DWN_BODY_B_SP;
+
+				m_pThis->Set_Down(true);
 			}
 		}
 
@@ -766,7 +781,8 @@ _bool CAI_Monster::Check_StandUp()
 		|| *m_pState == CMonster::MONSTER_DWN_BODY_F
 		|| *m_pState == CMonster::MONSTER_DWN_BODY_F_SP
 		|| *m_pState == CMonster::MONSTER_DWN_DIRECT_F_BOUND_G
-		|| *m_pState == CMonster::MONSTER_DWN_DIRECT_F)
+		|| *m_pState == CMonster::MONSTER_DWN_DIRECT_F
+		|| *m_pState == CMonster::MONSTER_DWN_DNF_BOUND_G)
 	{
 		m_pThis->Set_Down(false);
 		*m_pState = CMonster::MONSTER_STANDUP_DNF_FAST;
@@ -776,7 +792,8 @@ _bool CAI_Monster::Check_StandUp()
 	if (*m_pState == CMonster::MONSTER_DWN_DIRECT_B
 		|| *m_pState == CMonster::MONSTER_DWN_DIRECT_B_BOUND_G
 		|| *m_pState == CMonster::MONSTER_DWN_BODY_B
-		|| *m_pState == CMonster::MONSTER_DWN_BODY_B_SP)
+		|| *m_pState == CMonster::MONSTER_DWN_BODY_B_SP
+		|| *m_pState == CMonster::MONSTER_DWN_DNB_BOUND_G)
 	{
 		m_pThis->Set_Down(false);
 		*m_pState = CMonster::MONSTER_STANDUP_DNB_FAST;
@@ -794,18 +811,14 @@ _bool CAI_Monster::Check_StandUp()
 
 CBTNode::NODE_STATE CAI_Monster::Check_Down()
 {
-	if (m_isSway)
-		return CBTNode::FAIL;
-
-	//객체가 죽었는가? 
-	//다운상태인가?
 	if (m_iSkill == SKILL_DEAD)
-	{
 		return CBTNode::RUNNING;
-	}
 	
 	if (m_pThis->isObjectDead() || m_pThis->isDown())
+	{
+		Reset_State();
 		return CBTNode::SUCCESS;
+	}
 
 	return CBTNode::FAIL;
 }
@@ -824,7 +837,7 @@ CBTNode::NODE_STATE CAI_Monster::StandUpAndDead()
 		return CBTNode::SUCCESS;
 	}
 
-	return CBTNode::SUCCESS;
+	return CBTNode::FAIL;
 }
 
 CBTNode::NODE_STATE CAI_Monster::StandUp()
@@ -897,7 +910,7 @@ CBTNode::NODE_STATE CAI_Monster::Check_Sway()
 	if (m_pPlayer->isAttack() && !m_pThis->isColl())
 	{
 		//플레이어와의 거리가 어느정도 있는 상태여야만 함
-		if (DistanceFromPlayer() >= 1.5f && DistanceFromPlayer() < 1.7f)
+		if (DistanceFromPlayer() >= m_fSwayDistance.x && DistanceFromPlayer() < m_fSwayDistance.y)
 		{
 			Reset_State();
 			return CBTNode::SUCCESS;		
@@ -923,6 +936,7 @@ CBTNode::NODE_STATE CAI_Monster::Sway()
 	else if (m_pPlayer->Get_BattleStyle() == CPlayer::KRC)
 		iPlayerAtkDir = Check_KRC(iPlayerLv, false);
 
+	//예외처리
 	if (iPlayerAtkDir == PLAYER_ATK_DIR_END)
 		return CBTNode::FAIL;
 
@@ -1008,17 +1022,13 @@ CBTNode::NODE_STATE CAI_Monster::HitAndGuard()
 		//충돌되면 플레이어 공격인지 아닌지 체크가 풀림
 		Reset_State();
 
-		if (!m_isGuard)
-		{
-			//Hit 체크하고 가드를 할 것인지, Hit할 것인지?
-			//랜덤으로 처리하기 (3 확률로 가드)
-			_uint iRandom = m_pGameInstance->Get_Random(0, 100);
+		//랜덤으로 처리하기 (3 확률로 가드)
+		_uint iRandom = m_pGameInstance->Get_Random(0, 100);
 
-			if (iRandom == 95 || iRandom == 40 || iRandom == 67)
-				m_iSkill = SKILL_GUARD;
-			else
-				m_iSkill = SKILL_HIT;
-		}
+		if (iRandom == 95 || iRandom == 40 || iRandom == 67)
+			m_iSkill = SKILL_GUARD;
+		else
+			m_iSkill = SKILL_HIT;
 
 		return CBTNode::SUCCESS;
 	}
@@ -1191,9 +1201,9 @@ CBTNode::NODE_STATE CAI_Monster::ATK_Angry_Kick()
 
 CBTNode::NODE_STATE CAI_Monster::Check_Break()
 {
-	if (m_isBreak == false) return CBTNode::SUCCESS;
-
 	LookAtPlayer();
+
+	if (m_isBreak == false) return CBTNode::SUCCESS;
 
 	return CBTNode::RUNNING;
 }
@@ -1270,4 +1280,11 @@ void CAI_Monster::Free()
 	Safe_Release(m_pGameInstance);
 
 	Safe_Release(m_pRootNode);
+
+	//if (m_isClone)
+	//{
+	//	Safe_Release(m_pThis);
+	//	Safe_Release(m_pAnimCom);
+	//	Safe_Release(m_pPlayer);
+	//}
 }

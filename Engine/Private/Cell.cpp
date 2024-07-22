@@ -87,6 +87,7 @@ _bool CCell::isIn(_fvector vPosition, _int* pNeighborsIndex)
             return false;
         }
     }
+
     return true;
 }
 
