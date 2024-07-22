@@ -40,6 +40,13 @@ public:
     HRESULT Tick(const _float& fTimeDelta);
     HRESULT Late_Tick(const _float& fTimeDelta);
 
+    /* Setter */
+public:
+    void Set_Player(class CPlayer* pPlayer)
+    {
+        m_pPlayer = pPlayer;
+    }
+
 
 private:
     class CGameInstance* m_pGameInstance; 
@@ -49,6 +56,9 @@ private:
     class CInventoryManager* m_pInventory = {nullptr};
 
     _bool m_isLoading = { false };
+
+private:
+    class CPlayer* m_pPlayer = { nullptr };
     
 
 #ifdef _DEBUG

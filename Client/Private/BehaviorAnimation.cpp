@@ -1,6 +1,8 @@
 #include "BehaviorAnimation.h"
 #include "GameInstance.h"
 
+#include "Player.h"
+
 #pragma region Adventure
 #include "Kiryu_Adventure_Idle.h"
 #include "Kiryu_Adventure_Walk.h"
@@ -154,6 +156,15 @@ CBehaviorAnimation* CBehaviorAnimation::Create_KRC_Behavior(_uint iBehavior, cla
 		return CKiryu_KRC_Guard::Create(pPlayer);
 	}
 	return nullptr;
+}
+
+_bool CBehaviorAnimation::Checked_Animation_Ratio(_float fRatio)
+{
+	CModel* pModelCom = static_cast<CModel*>(m_pPlayer->Get_Component(TEXT("Com_Model")));
+	if (fRatio < *pModelCom->Get_AnimationCurrentPosition() / *pModelCom->Get_AnimationDuration())
+		return true;
+
+	return false;
 }
 
 CBehaviorAnimation* CBehaviorAnimation::Create(_uint iStyle, _uint iBehavior, class CPlayer* pPlayer)

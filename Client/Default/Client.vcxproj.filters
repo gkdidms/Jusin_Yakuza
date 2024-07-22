@@ -2,7 +2,7 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="..\private\MainApp.cpp">
-      <Filter>00.MainApp</Filter>
+      <Filter>01.Levels\00.MainApp</Filter>
     </ClCompile>
     <ClCompile Include="Client.cpp">
       <Filter>98.Default</Filter>
@@ -374,7 +374,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\MainApp.h">
-      <Filter>00.MainApp</Filter>
+      <Filter>01.Levels\00.MainApp</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Client_Defines.h">
       <Filter>99.Header</Filter>
@@ -783,9 +783,6 @@
     </Image>
   </ItemGroup>
   <ItemGroup>
-    <Filter Include="00.MainApp">
-      <UniqueIdentifier>{556d0fda-c211-44a2-8eb0-f1fedf692025}</UniqueIdentifier>
-    </Filter>
     <Filter Include="01.Levels">
       <UniqueIdentifier>{8762df37-1df7-49b9-bc92-aa62eb512607}</UniqueIdentifier>
     </Filter>
@@ -1187,6 +1184,9 @@
     </Filter>
     <Filter Include="95.Utility\05.UIManager\UIScene\UILogo">
       <UniqueIdentifier>{f5907b5b-7eff-4b99-92c0-1c84f75e1aa6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Levels\00.MainApp">
+      <UniqueIdentifier>{556d0fda-c211-44a2-8eb0-f1fedf692025}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

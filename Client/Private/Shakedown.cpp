@@ -224,12 +224,14 @@ void CShakedown::Change_Animation()
 	{
 		//e_kta_atk_down[e_kta_atk_down]
 		m_strAnimName = "e_kta_atk_down";
+		Shaking(0.3, 0.2, 0.2);
 		break;
 	}
 	case MONSTER_RARIATTO:
 	{
 		//e_kta_atk_rariatto[e_kta_atk_rariatto]
 		m_strAnimName = "e_kta_atk_rariatto";
+		Shaking(0.3, 0.5, 0.2);
 		break;
 	}
 	case MONSTER_GUARD_RUN:
@@ -254,6 +256,7 @@ void CShakedown::Change_Animation()
 	{
 		//e_kta_cmb_a_03[e_kta_cmb_a_03]
 		m_strAnimName = "e_kta_cmb_a_03";
+		Shaking(0.55, 0.3, 0.2);
 		break;
 	}
 	case MONSTER_GURAD_START:
@@ -288,7 +291,11 @@ void CShakedown::Change_Animation()
 
 	// 실제로 애니메이션 체인지가 일어났을 때 켜져있던 어택 콜라이더를 전부 끈다
 	if (m_pModelCom->Set_AnimationIndex(m_iAnim, m_pAnimCom->Get_Animations(), m_fChangeInterval))
+	{
+		m_isShaked = false;
 		Off_Attack_Colliders();
+	}
+
 	m_pData->Set_CurrentAnimation(m_strAnimName);
 }
 
