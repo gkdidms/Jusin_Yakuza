@@ -7,13 +7,13 @@
 #include "Effect.h"
 
 CAI_Monster::CAI_Monster()
-	: m_pGameInstance { CGameInstance::GetInstance()}
+	: m_pGameInstance{ CGameInstance::GetInstance() }
 {
 	Safe_AddRef(m_pGameInstance);
 }
 
 CAI_Monster::CAI_Monster(const CAI_Monster& rhs)
-	: m_pGameInstance { rhs.m_pGameInstance}
+	: m_pGameInstance{ rhs.m_pGameInstance }
 {
 	Safe_AddRef(m_pGameInstance);
 	m_isClone = true;
@@ -29,13 +29,15 @@ HRESULT CAI_Monster::Initialize(void* pArg)
 	AI_MONSTER_DESC* pDesc = static_cast<AI_MONSTER_DESC*>(pArg);
 	m_pState = pDesc->pState;
 	m_pAnimCom = pDesc->pAnim;
-	Safe_AddRef(m_pAnimCom);
+	//Safe_AddRef(m_pAnimCom);
 
 	m_pThis = pDesc->pThis;
-	Safe_AddRef(m_pThis);
+	//Safe_AddRef(m_pThis);
 
 	m_pPlayer = dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"), 0));
-	Safe_AddRef(m_pPlayer);
+	//Safe_AddRef(m_pPlayer);
+
+	m_fSwayDistance = _float2(2.f, 2.2f);
 
 	return S_OK;
 }
@@ -83,10 +85,10 @@ _bool CAI_Monster::isBehine()
 	_vector vPlayerPos = m_pPlayer->Get_TransformCom()->Get_State(CTransform::STATE_POSITION);
 
 	_vector vToPlayer = XMVector3Normalize(vPlayerPos - vThisPos);
-	
+
 	_float fDot = XMVector3Dot(vThisLook, vToPlayer).m128_f32[0];
 	_float fAngle = acos(fDot);
-	
+
 	//플레이어의 시야각을 180도로 두고 계산한다.
 	//뒤에 있는지 없는지 체크.
 	return  fAngle > (XMConvertToRadians(180.f) * 0.5f);
@@ -142,7 +144,7 @@ _uint CAI_Monster::Check_KRH(_uint iPlayerLv, _bool isBehine, _bool isAnimChange
 					*m_pState = iPlayerLv == 0 ? CMonster::MONSTER_DWN_BODY_B_SP : CMonster::MONSTER_DWN_BODY_B_SP;
 			}
 		}
-			
+
 		iDir = F;
 	}
 
@@ -191,7 +193,7 @@ _uint CAI_Monster::Check_KRH(_uint iPlayerLv, _bool isBehine, _bool isAnimChange
 					*m_pState = iPlayerLv == 0 ? CMonster::MONSTER_DWN_BODY_B : CMonster::MONSTER_DWN_BODY_B_SP;
 			}
 		}
-			
+
 		iDir = F;
 	}
 
@@ -214,7 +216,7 @@ _uint CAI_Monster::Check_KRH(_uint iPlayerLv, _bool isBehine, _bool isAnimChange
 					*m_pState = iPlayerLv == 0 ? CMonster::MONSTER_DWN_BODY_B : CMonster::MONSTER_DWN_BODY_B_SP;
 			}
 		}
-			
+
 
 		iDir = F;
 	}
@@ -238,7 +240,7 @@ _uint CAI_Monster::Check_KRH(_uint iPlayerLv, _bool isBehine, _bool isAnimChange
 					*m_pState = iPlayerLv == 0 ? CMonster::MONSTER_DWN_BODY_B : CMonster::MONSTER_DWN_BODY_B_SP;
 			}
 		}
-			
+
 		iDir = F;
 	}
 
@@ -264,7 +266,7 @@ _uint CAI_Monster::Check_KRH(_uint iPlayerLv, _bool isBehine, _bool isAnimChange
 			else
 				*m_pState = iPlayerLv == 0 ? CMonster::MONSTER_DAM_HEAD_LV01_B : CMonster::MONSTER_DAM_HEAD_LV02_B;
 		}
-			
+
 		iDir = L;
 	}
 
@@ -277,11 +279,11 @@ _uint CAI_Monster::Check_KRH(_uint iPlayerLv, _bool isBehine, _bool isAnimChange
 			else
 				*m_pState = iPlayerLv == 0 ? CMonster::MONSTER_DAM_HEAD_LV01_B : CMonster::MONSTER_DAM_HEAD_LV02_B;
 		}
-			
-		
+
+
 		iDir = R;
 	}
-		
+
 	if (Find_CurrentAnimationName("p_krh_cmb_04"))
 	{
 		if (isAnimChange)
@@ -291,7 +293,7 @@ _uint CAI_Monster::Check_KRH(_uint iPlayerLv, _bool isBehine, _bool isAnimChange
 			else
 				*m_pState = iPlayerLv == 0 ? CMonster::MONSTER_DAM_BODY_LV01_B : CMonster::MONSTER_DAM_BODY_LV02_B;
 		}
-			
+
 		iDir = F;
 	}
 
@@ -304,24 +306,24 @@ _uint CAI_Monster::Check_KRH(_uint iPlayerLv, _bool isBehine, _bool isAnimChange
 			else
 				*m_pState = iPlayerLv == 0 ? CMonster::MONSTER_DAM_HEAD_LV01_B : CMonster::MONSTER_DAM_HEAD_LV02_B;
 		}
-			
+
 
 		iDir = F;
 	}
-	
+
 	if (Find_CurrentAnimationName("p_krh_cmb_06"))
 	{
 		if (isAnimChange)
 		{
 			if (!isBehine)
 				*m_pState = iPlayerLv == 0 ? CMonster::MONSTER_DAM_BODY_LV01_D : CMonster::MONSTER_DAM_BODY_LV02_D;
-			else 
+			else
 				*m_pState = iPlayerLv == 0 ? CMonster::MONSTER_DAM_BODY_LV01_B : CMonster::MONSTER_DAM_BODY_LV02_B;
 		}
-			
+
 		iDir = F;
 	}
-		
+
 	if (Find_CurrentAnimationName("p_krh_cmb_07"))
 	{
 		if (isAnimChange)
@@ -344,7 +346,7 @@ _uint CAI_Monster::Check_KRH(_uint iPlayerLv, _bool isBehine, _bool isAnimChange
 		}
 
 		iDir = F;
-	}	
+	}
 
 	if (Find_CurrentAnimationName("p_krh_cmb_08"))
 	{
@@ -401,7 +403,7 @@ _uint CAI_Monster::Check_KRH(_uint iPlayerLv, _bool isBehine, _bool isAnimChange
 
 		iDir = F;
 	}
-		
+
 	return iDir;
 }
 
@@ -413,10 +415,10 @@ _uint CAI_Monster::Check_KRS(_uint iPlayerLv, _bool isBehine, _bool isAnimChange
 	{
 		if (isAnimChange)
 			*m_pState = iPlayerLv == 0 ? CMonster::MONSTER_DWN_DNF_BOUND : CMonster::MONSTER_DWN_DNF_BOUND_G;
-			
+
 		iDir = F;
 	}
-		
+
 	//ATK_Kick_f
 	if (Find_CurrentAnimationName("p_krs_atk_kick_f"))
 	{
@@ -427,7 +429,7 @@ _uint CAI_Monster::Check_KRS(_uint iPlayerLv, _bool isBehine, _bool isAnimChange
 			else
 				*m_pState = iPlayerLv == 0 ? CMonster::MONSTER_DAM_HEAD_LV01_B : CMonster::MONSTER_DAM_HEAD_LV01_B;
 		}
-			
+
 		iDir = F;
 	}
 
@@ -441,10 +443,10 @@ _uint CAI_Monster::Check_KRS(_uint iPlayerLv, _bool isBehine, _bool isAnimChange
 			else
 				*m_pState = iPlayerLv == 0 ? CMonster::MONSTER_DAM_HEAD_LV01_B : CMonster::MONSTER_DAM_HEAD_LV02_B;
 		}
-			
+
 		iDir = F;
 	}
-		
+
 	//ATK_Kick_f_3
 	if (Find_CurrentAnimationName("p_krs_atk_kick_f_03"))
 	{
@@ -468,7 +470,7 @@ _uint CAI_Monster::Check_KRS(_uint iPlayerLv, _bool isBehine, _bool isAnimChange
 
 		iDir = F;
 	}
-				
+
 	//ATK_Run_Heavy  // 기합의 날라차기
 	if (Find_CurrentAnimationName("p_krs_atk_run_heavy"))
 	{
@@ -489,9 +491,9 @@ _uint CAI_Monster::Check_KRS(_uint iPlayerLv, _bool isBehine, _bool isAnimChange
 					*m_pState = iPlayerLv == 0 ? CMonster::MONSTER_DWN_EXPLODE_B : CMonster::MONSTER_DWN_EXPLODE_B;
 			}
 		}
-			
+
 		iDir = F;
-	}	
+	}
 
 	//TAK_Tame_LOOP
 	//if (Find_CurrentAnimationName("p_krs_atk_tame_en"))
@@ -506,10 +508,10 @@ _uint CAI_Monster::Check_KRS(_uint iPlayerLv, _bool isBehine, _bool isAnimChange
 			else
 				*m_pState = iPlayerLv == 0 ? CMonster::MONSTER_DAM_HEAD_LV01_B : CMonster::MONSTER_DAM_HEAD_LV02_B;
 		}
-			
+
 		iDir = L;
 	}
-		
+
 	if (Find_CurrentAnimationName("p_krs_cmb_02"))
 	{
 		if (isAnimChange)
@@ -522,7 +524,7 @@ _uint CAI_Monster::Check_KRS(_uint iPlayerLv, _bool isBehine, _bool isAnimChange
 
 		iDir = R;
 	}
-		
+
 	if (Find_CurrentAnimationName("p_krs_cmb_03"))
 	{
 		if (isAnimChange)
@@ -534,7 +536,7 @@ _uint CAI_Monster::Check_KRS(_uint iPlayerLv, _bool isBehine, _bool isAnimChange
 		}
 
 		iDir = L;
-	}	
+	}
 
 	if (Find_CurrentAnimationName("p_krs_cmb_04"))
 	{
@@ -545,10 +547,10 @@ _uint CAI_Monster::Check_KRS(_uint iPlayerLv, _bool isBehine, _bool isAnimChange
 			else
 				*m_pState = iPlayerLv == 0 ? CMonster::MONSTER_DAM_HEAD_LV01_B : CMonster::MONSTER_DAM_HEAD_LV02_B;
 		}
-			
+
 		iDir = R;
 	}
-	
+
 	if (Find_CurrentAnimationName("p_krs_cmb_01_fin")
 		|| Find_CurrentAnimationName("p_krs_cmb_02_fin")
 		|| Find_CurrentAnimationName("p_krs_cmb_03_fin")
@@ -572,7 +574,7 @@ _uint CAI_Monster::Check_KRS(_uint iPlayerLv, _bool isBehine, _bool isAnimChange
 					*m_pState = iPlayerLv == 0 ? CMonster::MONSTER_DWN_BODY_B : CMonster::MONSTER_DWN_BODY_B;
 			}
 		}
-			
+
 		iDir = F;
 	}
 
@@ -596,20 +598,20 @@ _uint CAI_Monster::Check_KRS(_uint iPlayerLv, _bool isBehine, _bool isAnimChange
 					*m_pState = iPlayerLv == 0 ? CMonster::MONSTER_DWN_BODY_B_SP : CMonster::MONSTER_DWN_BODY_B_SP;
 			}
 		}
-			
+
 		iDir = F;
 	}
 
-	if 
+	if
 		(*m_pState == CMonster::MONSTER_DWN_BODY_F ||
-		*m_pState == CMonster::MONSTER_DWN_BODY_B ||
-		*m_pState == CMonster::MONSTER_DWN_BODY_F_SP ||
-		*m_pState == CMonster::MONSTER_DWN_BODY_B_SP ||
-		*m_pState == CMonster::MONSTER_DWN_EXPLODE_F)
+			*m_pState == CMonster::MONSTER_DWN_BODY_B ||
+			*m_pState == CMonster::MONSTER_DWN_BODY_F_SP ||
+			*m_pState == CMonster::MONSTER_DWN_BODY_B_SP ||
+			*m_pState == CMonster::MONSTER_DWN_EXPLODE_F)
 	{
 		m_pThis->Set_Down(true);
 	}
-		
+
 
 	return iDir;
 }
@@ -622,7 +624,8 @@ _uint CAI_Monster::Check_KRC(_uint iPlayerLv, _bool isBehine, _bool isAnimChange
 	{
 		if (isAnimChange)
 			*m_pState = CMonster::MONSTER_DWN_DNF_BOUND_G;
-			
+		m_pThis->Set_Down(true);
+
 		iDir = F;
 	}
 
@@ -644,8 +647,9 @@ _uint CAI_Monster::Check_KRC(_uint iPlayerLv, _bool isBehine, _bool isAnimChange
 					*m_pState = CMonster::MONSTER_DWN_DIRECT_F_BOUND_G;
 				else
 					*m_pState = CMonster::MONSTER_DWN_DIRECT_B_BOUND_G;
-			}
 
+				m_pThis->Set_Down(true);
+			}
 		}
 
 		iDir = F;
@@ -668,11 +672,13 @@ _uint CAI_Monster::Check_KRC(_uint iPlayerLv, _bool isBehine, _bool isAnimChange
 					*m_pState = CMonster::MONSTER_DWN_DIRECT_F_BOUND_G;
 				else
 					*m_pState = CMonster::MONSTER_DWN_DIRECT_B_BOUND_G;
+
+				m_pThis->Set_Down(true);
 			}
 		}
 
 		iDir = F;
-	}	
+	}
 
 	if (Find_CurrentAnimationName("p_krc_atk_tackle_f"))
 	{
@@ -691,6 +697,8 @@ _uint CAI_Monster::Check_KRC(_uint iPlayerLv, _bool isBehine, _bool isAnimChange
 					*m_pState = CMonster::MONSTER_DWN_DIRECT_F_BOUND_G;
 				else
 					*m_pState = CMonster::MONSTER_DWN_DIRECT_B_BOUND_G;
+
+				m_pThis->Set_Down(true);
 			}
 		}
 
@@ -756,12 +764,14 @@ _uint CAI_Monster::Check_KRC(_uint iPlayerLv, _bool isBehine, _bool isAnimChange
 					*m_pState = CMonster::MONSTER_DWN_BODY_F_SP;
 				else
 					*m_pState = CMonster::MONSTER_DWN_BODY_B_SP;
+
+				m_pThis->Set_Down(true);
 			}
 		}
 
 		iDir = F;
 	}
-	
+
 	return iDir;
 }
 
@@ -771,7 +781,8 @@ _bool CAI_Monster::Check_StandUp()
 		|| *m_pState == CMonster::MONSTER_DWN_BODY_F
 		|| *m_pState == CMonster::MONSTER_DWN_BODY_F_SP
 		|| *m_pState == CMonster::MONSTER_DWN_DIRECT_F_BOUND_G
-		|| *m_pState == CMonster::MONSTER_DWN_DIRECT_F)
+		|| *m_pState == CMonster::MONSTER_DWN_DIRECT_F
+		|| *m_pState == CMonster::MONSTER_DWN_DNF_BOUND_G)
 	{
 		m_pThis->Set_Down(false);
 		*m_pState = CMonster::MONSTER_STANDUP_DNF_FAST;
@@ -781,7 +792,8 @@ _bool CAI_Monster::Check_StandUp()
 	if (*m_pState == CMonster::MONSTER_DWN_DIRECT_B
 		|| *m_pState == CMonster::MONSTER_DWN_DIRECT_B_BOUND_G
 		|| *m_pState == CMonster::MONSTER_DWN_BODY_B
-		|| *m_pState == CMonster::MONSTER_DWN_BODY_B_SP)
+		|| *m_pState == CMonster::MONSTER_DWN_BODY_B_SP
+		|| *m_pState == CMonster::MONSTER_DWN_DNB_BOUND_G)
 	{
 		m_pThis->Set_Down(false);
 		*m_pState = CMonster::MONSTER_STANDUP_DNB_FAST;
@@ -793,24 +805,20 @@ _bool CAI_Monster::Check_StandUp()
 	if (*m_pState == CMonster::MONSTER_STANDUP_DNF_FAST
 		|| *m_pState == CMonster::MONSTER_STANDUP_DNB_FAST)
 		m_pThis->Set_Down(false);
-		
+
 	return true;
 }
 
 CBTNode::NODE_STATE CAI_Monster::Check_Down()
 {
-	if (m_isSway)
-		return CBTNode::FAIL;
-
-	//객체가 죽었는가? 
-	//다운상태인가?
 	if (m_iSkill == SKILL_DEAD)
-	{
 		return CBTNode::RUNNING;
-	}
-	
+
 	if (m_pThis->isObjectDead() || m_pThis->isDown())
+	{
+		Reset_State();
 		return CBTNode::SUCCESS;
+	}
 
 	return CBTNode::FAIL;
 }
@@ -829,7 +837,7 @@ CBTNode::NODE_STATE CAI_Monster::StandUpAndDead()
 		return CBTNode::SUCCESS;
 	}
 
-	return CBTNode::SUCCESS;
+	return CBTNode::FAIL;
 }
 
 CBTNode::NODE_STATE CAI_Monster::StandUp()
@@ -839,7 +847,7 @@ CBTNode::NODE_STATE CAI_Monster::StandUp()
 
 	if (Check_StandUp() == true)
 		return CBTNode::SUCCESS;
-	
+
 	return CBTNode::RUNNING;
 }
 
@@ -871,7 +879,7 @@ CBTNode::NODE_STATE CAI_Monster::Dead()
 			*m_pState = CMonster::MONSTER_DED_L;
 		else if (iDir == R)
 			*m_pState = CMonster::MONSTER_DED_R;
-	} 
+	}
 
 	return CBTNode::SUCCESS;
 }
@@ -886,7 +894,7 @@ CBTNode::NODE_STATE CAI_Monster::Check_Sway()
 		if (!m_isSway)
 			return CBTNode::FAIL;
 	}
-	
+
 	if (m_isSway)
 	{
 		if (m_pAnimCom->Get_AnimFinished())
@@ -902,13 +910,13 @@ CBTNode::NODE_STATE CAI_Monster::Check_Sway()
 	if (m_pPlayer->isAttack() && !m_pThis->isColl())
 	{
 		//플레이어와의 거리가 어느정도 있는 상태여야만 함
-		if (DistanceFromPlayer() >= 1.5f && DistanceFromPlayer() < 1.7f)
+		if (DistanceFromPlayer() >= m_fSwayDistance.x && DistanceFromPlayer() < m_fSwayDistance.y)
 		{
 			Reset_State();
-			return CBTNode::SUCCESS;		
+			return CBTNode::SUCCESS;
 		}
 	}
-		
+
 	return CBTNode::FAIL;
 }
 
@@ -928,6 +936,7 @@ CBTNode::NODE_STATE CAI_Monster::Sway()
 	else if (m_pPlayer->Get_BattleStyle() == CPlayer::KRC)
 		iPlayerAtkDir = Check_KRC(iPlayerLv, false);
 
+	//예외처리
 	if (iPlayerAtkDir == PLAYER_ATK_DIR_END)
 		return CBTNode::FAIL;
 
@@ -1013,17 +1022,13 @@ CBTNode::NODE_STATE CAI_Monster::HitAndGuard()
 		//충돌되면 플레이어 공격인지 아닌지 체크가 풀림
 		Reset_State();
 
-		if (!m_isGuard)
-		{
-			//Hit 체크하고 가드를 할 것인지, Hit할 것인지?
-			//랜덤으로 처리하기 (3 확률로 가드)
-			_uint iRandom = m_pGameInstance->Get_Random(0, 100);
+		//랜덤으로 처리하기 (3 확률로 가드)
+		_uint iRandom = m_pGameInstance->Get_Random(0, 100);
 
-			if (iRandom == 95 || iRandom == 40 || iRandom == 67)
-				m_iSkill = SKILL_GUARD;
-			else
-				m_iSkill = SKILL_HIT;
-		}
+		if (iRandom == 95 || iRandom == 40 || iRandom == 67)
+			m_iSkill = SKILL_GUARD;
+		else
+			m_iSkill = SKILL_HIT;
 
 		return CBTNode::SUCCESS;
 	}
@@ -1033,7 +1038,7 @@ CBTNode::NODE_STATE CAI_Monster::HitAndGuard()
 		if (m_iSkill == SKILL_HIT && !m_pAnimCom->Get_AnimFinished())
 			return CBTNode::RUNNING;
 	}
-	
+
 	return CBTNode::FAIL;
 }
 
@@ -1085,11 +1090,11 @@ CBTNode::NODE_STATE CAI_Monster::Guard()
 		}
 
 		//최종 가드 마무리
-		if ((*m_pState == CMonster::MONSTER_GURAD_END 
+		if ((*m_pState == CMonster::MONSTER_GURAD_END
 			|| *m_pState == CMonster::MONSTER_GURAD_FLOAT)
 			&& m_pAnimCom->Get_AnimFinished())
 		{
-			m_isGuard = false; 
+			m_isGuard = false;
 			m_fGuardTime = 0.f;
 			m_fGuardAtkAcc = 0.f;
 
@@ -1196,9 +1201,9 @@ CBTNode::NODE_STATE CAI_Monster::ATK_Angry_Kick()
 
 CBTNode::NODE_STATE CAI_Monster::Check_Break()
 {
-	if (m_isBreak == false) return CBTNode::SUCCESS;
-
 	LookAtPlayer();
+
+	if (m_isBreak == false) return CBTNode::SUCCESS;
 
 	return CBTNode::RUNNING;
 }
@@ -1225,7 +1230,7 @@ CBTNode::NODE_STATE CAI_Monster::ShiftAndIdle()
 			m_iSkill = SKILL_IDLE;
 
 		if (iCount >= 20)
-			iCount = 0;	
+			iCount = 0;
 	}
 
 	m_fBreakDuration = m_pGameInstance->Get_Random(2.f, 4.f);
@@ -1276,10 +1281,10 @@ void CAI_Monster::Free()
 
 	Safe_Release(m_pRootNode);
 
-	if (m_isClone)
-	{
-		Safe_Release(m_pThis);
-		Safe_Release(m_pAnimCom);
-		Safe_Release(m_pPlayer);
-	}
+	//if (m_isClone)
+	//{
+	//	Safe_Release(m_pThis);
+	//	Safe_Release(m_pAnimCom);
+	//	Safe_Release(m_pPlayer);
+	//}
 }

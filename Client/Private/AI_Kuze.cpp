@@ -37,7 +37,7 @@
 
 
 도발 -> 플레이어가 넘어지면 도발함 ...
-플레이어가 도발 -> 기게이지 
+플레이어가 도발 -> 기게이지
 
 
 총 2페이즈
@@ -72,6 +72,8 @@ HRESULT CAI_Kuze::Initialize(void* pArg)
 
 	m_fDelayAttackDuration = 5.f;
 	m_iMonsterType = CAI_Monster::KUZE;
+
+	m_fSwayDistance = _float2(1.6f, 1.9f);
 
 	return S_OK;
 }
@@ -248,7 +250,7 @@ CBTNode::NODE_STATE CAI_Kuze::Attack()
 	{
 		//2페이즈
 		static _uint iTwoCount = 0;
-		
+
 		switch (iTwoCount)
 		{
 		case 0:
@@ -301,7 +303,7 @@ CBTNode::NODE_STATE CAI_Kuze::Check_PlayerDown()
 			return CBTNode::FAIL;
 
 		m_iSkill == SKILL_DOWN;
-	
+
 		return CBTNode::SUCCESS;
 	}
 
@@ -522,13 +524,13 @@ CBTNode::NODE_STATE CAI_Kuze::Check_Distance()
 
 	_float fDistance = DistanceFromPlayer();
 	if (fDistance > 2.f)
-	{	
+	{
 		if (m_iSkill == SKILL_RUN)
 			return CBTNode::SUCCESS;
 
 		_uint iRandom = m_pGameInstance->Get_Random(0, 100);
-		
-		if (iRandom == 84 || iRandom == 34)
+
+		if (iRandom == 84 || iRandom == 34 || iRandom == 67)
 			return CBTNode::SUCCESS;
 	}
 

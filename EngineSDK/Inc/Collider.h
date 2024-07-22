@@ -39,7 +39,7 @@ public:
 
 public:
     _bool Intersect(CCollider* pTargetCollider, _float fDistance = 0.5f);
-    const _float3& ImpulseResolution(CCollider* pTargetCollider);
+    const _float3& ImpulseResolution(CCollider* pTargetCollider, _float fDistance = 0.5f);
 
 #ifdef _DEBUG
 public:
