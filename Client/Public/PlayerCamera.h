@@ -63,16 +63,17 @@ private:
 
     XMVECTOR    m_vCamCollisionPos = { 0,0,0,1 };
     
-    bool        m_bCamCollision = { false };
-    bool        m_bBlock = { false };
-    bool        m_bFirstCollision = { false }; // first collision check 
+    _bool        m_bCamCollision = { false };
+    _bool        m_bBlock = { false };
+    _bool        m_bFirstCollision = { false }; // first collision check 
 
-    float       m_fTimer = { 0 };
+    _float       m_fTimer = { 0 };
 
-    int         m_iCurLevel = { -1 };
+    _int         m_iCurLevel = { -1 };
 
 private:
     HRESULT Add_Components();
+
 
 public:
     static CPlayerCamera* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
