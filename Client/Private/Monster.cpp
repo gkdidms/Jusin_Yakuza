@@ -1,13 +1,16 @@
 #include "Monster.h"
 
 #include "GameInstance.h"
+#include "SystemManager.h"
+
+#include "Camera.h"
+#include "Mesh.h"
+#include "AI_Monster.h";
 
 #include "CharacterData.h"
 #include "SocketCollider.h"
 #include "SocketEffect.h"
 #include "Collision_Manager.h"
-
-#include "Mesh.h"
 
 
 CMonster::CMonster(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -31,7 +34,7 @@ HRESULT CMonster::Initialize(void* pArg)
 		return E_FAIL;
 
 	//테스트 데이터
-	m_Info.iMaxHP = 20.f;
+	m_Info.iMaxHP = 100.f;
 	m_Info.iHp = m_Info.iMaxHP;
 
 	return S_OK;
@@ -194,6 +197,14 @@ HRESULT CMonster::Render_LightDepth()
 
 void CMonster::Take_Damage(_uint iHitColliderType, const _float3& vDir, _float fDamage, CLandObject* pAttackedObject, _bool isBlowAttack)
 {
+	//스웨이를 사용하고 있을 경우 충돌 x
+	if (m_pTree->isSway())
+		return;
+
+	//카메라 쉐이킹
+	CCamera* pCamera = dynamic_cast<CCamera*>(m_pGameInstance->Get_GameObject(m_iCurrentLevel, TEXT("Layer_Camera"), CAMERA_PLAYER));
+	pCamera->Set_Shaking(true, vDir);
+
 	//하는역활 -> 충돌이 일어났을때?
 	m_isColl = true;
 	m_fHitDamage = fDamage;
@@ -264,6 +275,7 @@ void CMonster::Synchronize_Root(const _float& fTimeDelta)
 
 			//Y값 이동을 죽인 방향으로 적용해야한다.
 			_vector vTemp = XMVector3Normalize((vFF - XMLoadFloat4(&m_vPrevMove)));
+
 			//Z가 Y처럼 쓰임
 			vTemp = XMVectorSetZ(vTemp, XMVectorGetY(vTemp));
 			XMStoreFloat4(&fMoveDir, XMVector3TransformNormal(XMVectorSetY(vTemp, 0.f), m_pTransformCom->Get_WorldMatrix()));

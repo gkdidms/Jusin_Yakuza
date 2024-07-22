@@ -18,7 +18,7 @@ public:
         SKILL_RUN,
         SKILL_SHIFT,
         SKILL_SWAY,
-        SKILL_HIT, 
+        SKILL_HIT,
         SKILL_CMD,
         SKILL_CMD_A,
         SKILL_CMD_B,
@@ -30,7 +30,7 @@ public:
         SKILL_PUNCH,
         SKILL_HEAVY,
         SKILL_GUARD_RUN,
-        SKILL_RARIATTO, 
+        SKILL_RARIATTO,
         SKILL_DOWN,
         SKILL_ANGRY_CHOP,
         SKILL_ANGRY_KICK,
@@ -47,6 +47,9 @@ public:
         class CMonster* pThis;
         _uint* pState;
     } AI_MONSTER_DESC;
+
+public:
+    _bool isSway() { return m_isSway; }
 
 protected:
     CAI_Monster();
@@ -71,15 +74,15 @@ protected:
 
     _bool m_isClone = { false };
 
-protected: //배열로 변경하기
+protected:
     _bool m_isAttack = { false };
     _bool m_isAngry = { false };
-    _bool m_isSync = { false }; 
+    _bool m_isSync = { false };
     _bool m_isBreak = { false };
     _bool m_isGuard = { false };
     _bool m_isSway = { false };
 
-    _bool m_isPlayerDownAtk = { false };
+    _bool m_isPlayerDownAtk = { false }; // 플레이어에게 다운 어택을 한번 사용했는가를 체크
 
     _uint m_iSkill = { SKILL_END };
     _uint m_iMonsterType = { MONSTER_TYPE_END };
@@ -96,19 +99,21 @@ protected:
 
 protected:
     _float m_fCmbNum = { 0.f }; // 스킬 발동시 확률적으로 몇번 공격할것인지 저장.
-    _float m_fCmbCount = { 0.f }; // 콥보 누적 카운트
+    _float m_fCmbCount = { 0.f }; // 콤보 누적 카운트
 
     _float m_fGuardBroken = { 20.f };
     _float m_fGuardAtkAcc = { 0.f };
 
 protected:
-    //쓰러졋는가? or 죽었는가? (현재상태 확인)
+    _float2 m_fSwayDistance = {};
+
+protected:
     virtual CBTNode::NODE_STATE Check_Down();
     virtual CBTNode::NODE_STATE StandUpAndDead();
     virtual CBTNode::NODE_STATE StandUp();
     virtual CBTNode::NODE_STATE Dead();
 
-    //플레이어 공격 체크
+    //스웨이
     virtual CBTNode::NODE_STATE Check_Sway();
     virtual CBTNode::NODE_STATE Sway();
 
@@ -148,12 +153,13 @@ protected:
     _uint Check_KRS(_uint iPlayerLv, _bool isBehine, _bool isAnimChange = true);
     _uint Check_KRC(_uint iPlayerLv, _bool isBehine, _bool isAnimChange = true);
     _bool Check_StandUp();
-    
+
 protected:
     void Reset_State() {
         m_isAttack = false;
         m_isBreak = false;
         m_isSway = false;
+        m_isGuard = false;
 
         m_fBreakTime = 0.f;
         m_fAttackDelayTime = 0.f;

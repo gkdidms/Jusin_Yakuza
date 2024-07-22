@@ -329,6 +329,4 @@ CGameObject* CRushYakuza::Clone(void* pArg)
 void CRushYakuza::Free()
 {
 	__super::Free();
-
-	Safe_Release(m_pTree);
 }

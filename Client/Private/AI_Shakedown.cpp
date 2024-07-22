@@ -58,6 +58,8 @@ HRESULT CAI_Shakedown::Initialize(void* pArg)
 
 	m_iMonsterType = CAI_Monster::SHAKDDOWN;
 
+	m_fSwayDistance = _float2(1.8f, 2.f);
+
 	return S_OK;
 }
 
@@ -166,7 +168,7 @@ CBTNode::NODE_STATE CAI_Shakedown::Check_Attack()
 
 		m_fAttackDelayTime = 0.f;
 	}
-	
+
 	return CBTNode::SUCCESS;
 }
 
@@ -208,7 +210,7 @@ CBTNode::NODE_STATE CAI_Shakedown::Check_PlayerDown()
 			m_isAttack = false;
 		return CBTNode::FAIL;
 	}
-		
+
 	if (m_isPlayerDownAtk)
 		return CBTNode::FAIL;
 

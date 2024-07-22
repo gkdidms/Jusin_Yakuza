@@ -265,6 +265,4 @@ CGameObject* CWPAYakuza::Clone(void* pArg)
 void CWPAYakuza::Free()
 {
 	__super::Free();
-
-	Safe_Release(m_pTree);
 }

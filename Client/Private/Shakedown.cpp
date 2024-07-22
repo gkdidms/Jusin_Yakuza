@@ -315,6 +315,4 @@ CGameObject* CShakedown::Clone(void* pArg)
 void CShakedown::Free()
 {
 	__super::Free();
-
-	Safe_Release(m_pTree);
 }
