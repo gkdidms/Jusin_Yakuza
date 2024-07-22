@@ -13,6 +13,18 @@ public:
 
     }CAMERA_DESC;
 
+public:
+    _bool isShaking() { return m_isShaking; }
+
+public:
+    void Set_Shaking(_bool isShaking, _float4 vShakeDir = { 1.f, 1.f, 0.f, 0.f }, _float fShakeDuration = 0.3f, _float fShakeMagnitude = 0.3f)
+    { 
+        m_isShaking = isShaking; 
+        m_fShakeDuration = fShakeDuration;
+        m_fShakeMagnitude = fShakeMagnitude;
+        XMStoreFloat4(&m_vShakeDir, XMVector3Normalize(XMLoadFloat4(&vShakeDir)));
+    }
+
 protected:
     CCamera(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
     CCamera(const CCamera& rhs);
@@ -30,6 +42,7 @@ protected:
     virtual void Turn(_float4x4* OrbitMatrix, _fvector vAxis, const _float& fTimeDelta);
     virtual void Rotation(_float4x4* OrbitMatrix, _fvector vAxis, _float fRadian);
     virtual void Zoom(const _float& fTimeDelta);
+    void Shaking(_float fTimeDelta);
 
 protected:
     _float m_fFovY;
@@ -38,6 +51,14 @@ protected:
     _float m_fFar;
 
     _float4x4 m_WorldMatrix;
+
+protected:
+    _bool m_isShaking = { false };
+
+    _float m_fShakeTime = { 0.f };
+    _float m_fShakeDuration = {}; //지속시간
+    _float m_fShakeMagnitude = {}; //강도
+    _float4 m_vShakeDir = {}; //방향
 
 public:
     virtual CGameObject* Clone(void* pArg) = 0;

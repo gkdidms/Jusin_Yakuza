@@ -42,6 +42,8 @@ void CCamera::Priority_Tick(const _float& fTimeDelta)
 
 void CCamera::Tick(const _float& fTimeDelta, _bool isAuto)
 {
+	Shaking(fTimeDelta);
+
 	if (isAuto)
 		m_WorldMatrix = *m_pTransformCom->Get_WorldFloat4x4();
 
@@ -135,6 +137,34 @@ void CCamera::Zoom(const _float& fTimeDelta)
 		m_fFovY = 2.f;
 	else if (m_fFovY < 0.03f)
 		m_fFovY = 0.03f;
+}
+
+void CCamera::Shaking(_float fTimeDelta)
+{
+	if (!m_isShaking)
+		return;
+
+	m_fShakeTime += fTimeDelta;
+
+	if (m_fShakeTime <= m_fShakeDuration)
+	{
+		_float4 vPos;
+		XMStoreFloat4(&vPos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+
+		_float fOffset = ((rand() % 100) / 100.f - 0.5f) * m_fShakeMagnitude;
+		_vector vShakeOffset = XMVectorSet(fOffset, fOffset, 0.f, 0.f);
+		//vShakeOffset = XMVector3Normalize(vShakeOffset);
+
+		vPos.x += vShakeOffset.m128_f32[0] * m_vShakeDir.x;
+		vPos.y += vShakeOffset.m128_f32[1] * m_vShakeDir.y;
+
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&vPos));
+	}
+	else
+	{
+		m_fShakeTime = 0.f;
+		m_isShaking = false;
+	}
 }
 
 HRESULT CCamera::Render()
