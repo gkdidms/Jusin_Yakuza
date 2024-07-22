@@ -103,6 +103,10 @@ void CKuze::Late_Tick(const _float& fTimeDelta)
 
 void CKuze::Take_Damage(_uint iHitColliderType, const _float3& vDir, _float fDamage, CLandObject* pAttackedObject, _bool isBlowAttack)
 {
+	//스웨이를 사용하고 있을 경우 충돌 x
+	if (m_pTree->isSway())
+		return;
+
 	CCamera* pCamera = dynamic_cast<CCamera*>(m_pGameInstance->Get_GameObject(m_iCurrentLevel, TEXT("Layer_Camera"), CAMERA_PLAYER));
 	pCamera->Set_Shaking(true);
 
@@ -415,6 +419,4 @@ CGameObject* CKuze::Clone(void* pArg)
 void CKuze::Free()
 {
 	__super::Free();
-
-	Safe_Release(m_pTree);
 }

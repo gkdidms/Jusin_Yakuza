@@ -891,8 +891,7 @@ CBTNode::NODE_STATE CAI_Monster::Check_Sway()
 
 	if (m_isGuard || m_iSkill == SKILL_HIT || m_isAttack)
 	{
-		if (!m_isSway)
-			return CBTNode::FAIL;
+		return CBTNode::FAIL;	
 	}
 
 	if (m_isSway)

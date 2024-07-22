@@ -27,8 +27,6 @@ public:
     virtual void Late_Tick(const _float& fTimeDelta) override;
 
 private:
-    class CAI_Kuze* m_pTree = { nullptr };
-
     _uint m_iPage = { ONE };
 
 private:
