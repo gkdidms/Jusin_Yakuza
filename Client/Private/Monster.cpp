@@ -31,7 +31,7 @@ HRESULT CMonster::Initialize(void* pArg)
 		return E_FAIL;
 
 	//테스트 데이터
-	m_Info.iMaxHP = 20.f;
+	m_Info.iMaxHP = 100.f;
 	m_Info.iHp = m_Info.iMaxHP;
 
 	return S_OK;
@@ -246,7 +246,7 @@ string CMonster::Get_CurrentAnimationName()
 
 void CMonster::Synchronize_Root(const _float& fTimeDelta)
 {
-	_vector vFF = XMVector3TransformNormal(XMVectorSetZ(XMLoadFloat3(m_pModelCom->Get_AnimationCenterMove(m_pAnimCom)), 0), m_pTransformCom->Get_WorldMatrix());
+	_vector vFF = XMVectorSetZ(XMLoadFloat3(m_pModelCom->Get_AnimationCenterMove(m_pAnimCom)), 0);
 
 	// m_pModelCom->Get_AnimChanged()  선형보간이 끝났는지
 	// m_pModelCom->Get_AnimLerp() 선형보간이 필요한 애니메이션인지
@@ -264,9 +264,9 @@ void CMonster::Synchronize_Root(const _float& fTimeDelta)
 
 			//Y값 이동을 죽인 방향으로 적용해야한다.
 			_vector vTemp = XMVector3Normalize((vFF - XMLoadFloat4(&m_vPrevMove)));
+
 			//Z가 Y처럼 쓰임
 			vTemp = XMVectorSetZ(vTemp, XMVectorGetY(vTemp));
-			vTemp = XMVectorSetX(vTemp, XMVectorGetX(vTemp) * -1.f);
 			XMStoreFloat4(&fMoveDir, XMVector3TransformNormal(XMVectorSetY(vTemp, 0.f), m_pTransformCom->Get_WorldMatrix()));
 
 			if (0.01 > m_fPrevSpeed)
@@ -524,4 +524,8 @@ void CMonster::Change_Animation()
 void CMonster::Free()
 {
 	__super::Free();
+
+	Safe_Release(m_pShaderCom);
+	Safe_Release(m_pAnimCom);
+	Safe_Release(m_pNavigationCom);
 }

@@ -75,12 +75,22 @@ void CKiryu_KRS_Attack::Reset()
 
 void CKiryu_KRS_Attack::Combo_Count(_bool isFinAction)
 {
+	// 데미지 배율을 기본적으로 1배로 세팅해준다
+	m_pPlayer->Set_DamageAmplify(1.f);
+
 	if (isFinAction)
 	{
+		// 강공격에는 데미지 1.5배
+		m_pPlayer->Set_DamageAmplify(1.5f);
+
 		if (m_iComboCount == 7)
 		{
 			if (Changeable_Combo_Animation())
+			{
+				// 마무리 스킬에는 데미지 2배
+				m_pPlayer->Set_DamageAmplify(2.f);
 				m_iComboCount = 9;
+			}
 		}
 
 		if (m_iComboCount < 4)
@@ -118,7 +128,7 @@ _bool CKiryu_KRS_Attack::Changeable_Combo_Animation()
 	if (m_iComboCount > 3)			// 그 이상은 피니시 블로우기때문에 중간이 끊지않는다
 		fInterval = 1.f;			// 1로 해두면 비율 연산 결과가 1이 넘을일이 없기때문에 아예 안끊김
 
-	if (m_iComboCount == 6)			// p_krs_cmb_04_fin가 끝날 위치를 지정한다
+	if (m_iComboCount == 6)			// p_krs_cmb_03_fin가 끝날 위치를 지정한다
 		fInterval = 0.27f;
 
 	if (m_iComboCount == 7)			// p_krs_cmb_04_fin가 끝날 위치를 지정한다

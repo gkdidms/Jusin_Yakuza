@@ -26,7 +26,7 @@ public:
     virtual HRESULT Initialize(const void* pArg);
     virtual void Tick(_fmatrix WorldMatrix) override;
     virtual _bool Intersect(CCollider::TYPE eTargetType, CBounding* pTargetBounding, _float fDistance = 0.5f) override;
-    virtual const _float3& ImpulseResolution(CCollider::TYPE eTargetType, CBounding* pTargetBounding) override;
+    virtual const _float3& ImpulseResolution(CCollider::TYPE eTargetType, CBounding* pTargetBounding, _float fDistance = 0.5f) override;
 
 #ifdef _DEBUG
     virtual HRESULT Render(PrimitiveBatch<VertexPositionColor>* pBatch) override;

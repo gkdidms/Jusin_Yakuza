@@ -82,24 +82,29 @@ void CCollision_Manager::ImpulseResolution()
             _vector vDistance = vPosition_Object_I - vPosition_Object_J;
 
             _float fDistance = XMVectorGetX(XMVector3Length(vDistance));
-            if (0.5f > fDistance)
-                m_ImpulseResolutionObjects[i]->ImpulseResolution(m_ImpulseResolutionObjects[j]);
+            if (2.f > fDistance)
+                m_ImpulseResolutionObjects[i]->ImpulseResolution(m_ImpulseResolutionObjects[j], 2.f);
         }
     }
 
     Impulse_Clear();
 }
 
-void CCollision_Manager::ResolveCollision(BoundingSphere* sphere, BoundingOrientedBox* box)
+void CCollision_Manager::ResolveCollision(BoundingSphere* sphere, BoundingBox* box, CTransform* pTransform)
 {
     // Box의 각 축별 회전 벡터를 구합니다.
     XMVECTOR boxCenter = XMLoadFloat3(&box->Center);
     XMVECTOR boxExtents = XMLoadFloat3(&box->Extents);
-    XMVECTOR boxOrientation = XMLoadFloat4(&box->Orientation);
+    //XMVECTOR boxOrientation = XMLoadFloat4(&box->Orientation);
 
-    XMVECTOR boxAxisX = XMVector3Rotate(XMVectorSet(1, 0, 0, 0), boxOrientation);
-    XMVECTOR boxAxisY = XMVector3Rotate(XMVectorSet(0, 1, 0, 0), boxOrientation);
-    XMVECTOR boxAxisZ = XMVector3Rotate(XMVectorSet(0, 0, 1, 0), boxOrientation);
+    //XMVECTOR boxAxisX = XMVector3Rotate(XMVectorSet(1, 0, 0, 0), boxOrientation);
+    //XMVECTOR boxAxisY = XMVector3Rotate(XMVectorSet(0, 1, 0, 0), boxOrientation);
+    //XMVECTOR boxAxisZ = XMVector3Rotate(XMVectorSet(0, 0, 1, 0), boxOrientation);
+
+    // AABB의 각 축을 구합니다.
+    XMVECTOR boxAxisX = XMVectorSet(1, 0, 0, 0);
+    XMVECTOR boxAxisY = XMVectorSet(0, 1, 0, 0);
+    XMVECTOR boxAxisZ = XMVectorSet(0, 0, 1, 0);
 
     // Sphere와 Box의 중심 간 벡터를 구합니다.
     XMVECTOR sphereCenter = XMLoadFloat3(&sphere->Center);
@@ -140,11 +145,20 @@ void CCollision_Manager::ResolveCollision(BoundingSphere* sphere, BoundingOrient
 
     // 충돌 해소: Sphere의 위치를 밀어냅니다.
     XMFLOAT3 push;
+    XMStoreFloat3(&push, XMVectorZero());
     XMStoreFloat3(&push, pushVector);
 
-    sphere->Center.x += push.x;
-    sphere->Center.y += push.y;
-    sphere->Center.z += push.z;
+    //sphere->Center.x += push.x;
+    //sphere->Center.y += push.y;
+    //sphere->Center.z += push.z;
+
+    _vector vSpherePos = pTransform->Get_State(CTransform::STATE_POSITION);
+    vSpherePos.m128_f32[0] += push.x;
+    vSpherePos.m128_f32[1] += push.y;
+    vSpherePos.m128_f32[2] += push.z;
+    vSpherePos.m128_f32[3] = 1;
+
+    pTransform->Set_State(CTransform::STATE_POSITION, vSpherePos);
 }
 
 // 플레이어한테 적이 맞을 때
@@ -174,7 +188,7 @@ void CCollision_Manager::Enemy_Hit_Collision()
                 m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Hit1_Part3"), TEXT("Layer_Particle"), &EffectDesc);
                 m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Hit1_Part4"), TEXT("Layer_Particle"), &EffectDesc);
 
-                pEnemyHitCollider->ParentObject_Hit(pPlayerAttackCollider, pPlayerAttackCollider->Get_Parent()->Is_BlowAttack());
+                pEnemyHitCollider->ParentObject_Hit(pPlayerAttackCollider);
             }
 
         }
@@ -206,13 +220,61 @@ void CCollision_Manager::Player_Hit_Collision()
                 m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Damage1_Part3"), TEXT("Layer_Particle"), &EffectDesc);
                 m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Damage1_Glow0"), TEXT("Layer_Particle"), &EffectDesc);
 
-                pPlayerHitCollider->ParentObject_Hit(pEnemyAttackCollider, pEnemyAttackCollider->Get_Parent()->Is_BlowAttack());
+                pPlayerHitCollider->ParentObject_Hit(pEnemyAttackCollider);
             }
         }
     }
 }
 
-_bool CCollision_Manager::Map_Collision(CCollider* pCollider)
+_bool CCollision_Manager::Map_Collision_Move(CCollider* pCollider, CTransform* pTransform)
+{
+    _float3 vCenter;
+    XMStoreFloat3(&vCenter, XMVectorZero());
+
+    for (auto& pMapCollider : m_MapColliders)
+    {
+        if (pMapCollider->Intersect(pCollider, 500.f))
+        {
+            switch (pMapCollider->Get_Type())
+            {
+            case CCollider::COLLIDER_AABB:
+            {
+                BoundingBox* pDesc = static_cast<BoundingBox*>(pMapCollider->Get_Desc());
+                vCenter = pDesc->Center;
+
+                ResolveCollision(static_cast<BoundingSphere*>(pCollider->Get_Desc()), pDesc, pTransform);
+
+                break;
+            }
+
+
+            case CCollider::COLLIDER_OBB:
+            {
+                BoundingOrientedBox* pDesc = static_cast<BoundingOrientedBox*>(pMapCollider->Get_Desc());
+                vCenter = pDesc->Center;
+
+                //ResolveCollision(static_cast<BoundingSphere*>(pCollider->Get_Desc()), pDesc, pTransform);
+
+                return true;
+            }
+
+
+            case CCollider::COLLIDER_SPHERE:
+            {
+                BoundingSphere* pDesc = static_cast<BoundingSphere*>(pMapCollider->Get_Desc());
+                vCenter = pDesc->Center;
+
+                break;
+            }
+
+            }
+        }
+    }
+
+    return false;
+}
+
+_bool CCollision_Manager::Check_Map_Collision(CCollider* pCollider)
 {
     _float3 vCenter;
     XMStoreFloat3(&vCenter, XMVectorZero());
@@ -236,8 +298,6 @@ _bool CCollision_Manager::Map_Collision(CCollider* pCollider)
             {
                 BoundingOrientedBox* pDesc = static_cast<BoundingOrientedBox*>(pMapCollider->Get_Desc());
                 vCenter = pDesc->Center;
-
-                ResolveCollision(static_cast<BoundingSphere*>(pCollider->Get_Desc()), pDesc);
 
                 return true;
             }
