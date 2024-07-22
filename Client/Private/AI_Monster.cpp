@@ -900,7 +900,7 @@ CBTNode::NODE_STATE CAI_Monster::Check_Sway()
 		if (m_pAnimCom->Get_AnimFinished())
 		{
 			m_isSway = false;
-			return CBTNode::SUCCESS;
+			return CBTNode::FAIL;
 		}
 
 		return CBTNode::RUNNING;
