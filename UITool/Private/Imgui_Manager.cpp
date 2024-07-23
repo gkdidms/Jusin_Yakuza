@@ -660,6 +660,7 @@ void CImgui_Manager::Window_Binary()
                         {
                             m_ClickStartUV= dynamic_cast<CBtn*>(BinaryObject[n])->Get_ClickStartUV();
                             m_ClickEndUV = dynamic_cast<CBtn*>(BinaryObject[n])->Get_ClickEndUV();
+                            m_ClickColor = dynamic_cast<CBtn*>(BinaryObject[n])->Get_ClickColor();
                         }
                     }
                     if (is_selected)
@@ -859,8 +860,25 @@ void CImgui_Manager::Window_Binary()
 
                         if (CObject_Manager::BTN == dynamic_cast<CUI_Texture*>(BinaryObject[m_iBinaryObjectIndex])->Get_TypeIndex())
                         {
+                            if (dynamic_cast<CUI_Texture*>(BinaryObject[m_iBinaryObjectIndex])->Get_isColor())
+                            {
+                                _float4 vColor = dynamic_cast<CBtn*>(BinaryObject[m_iBinaryObjectIndex])->Get_ClickColor(); 
+                                static bool alpha_preview = true;
+                                static bool alpha_half_preview = false;
+                                static bool drag_and_drop = true;
+                                static bool options_menu = true;
+                                static bool hdr = false;
+                                ImGuiColorEditFlags misc_flags = (hdr ? ImGuiColorEditFlags_HDR : 0) | (drag_and_drop ? 0 : ImGuiColorEditFlags_NoDragDrop) | (alpha_half_preview ? ImGuiColorEditFlags_AlphaPreviewHalf : (alpha_preview ? ImGuiColorEditFlags_AlphaPreview : 0)) | (options_menu ? 0 : ImGuiColorEditFlags_NoOptions);
+
+                                if (ImGui::ColorEdit4("MyColor##3f", (float*)&vColor, ImGuiColorEditFlags_Float | misc_flags))
+                                {
+                                    dynamic_cast<CBtn*>(BinaryObject[m_iBinaryObjectIndex])->Set_ClickColor(vColor);    
+                                }
+                            }
+
                             ImGui::DragFloat2("ClickStartUV", (float*)&m_ClickStartUV, 0.001f, 0.0f, 1.f);
                             ImGui::DragFloat2("ClickEndUV", (float*)&m_ClickEndUV, 0.001f, 0.0f, 1.f);
+
 
                             if (FAILED(dynamic_cast<CBtn*>(BinaryObject[m_iBinaryObjectIndex])->Chage_ClickUV(m_ClickStartUV, m_ClickEndUV)))
                                 MSG_BOX("ClickUV 변경 실패");
@@ -870,6 +888,8 @@ void CImgui_Manager::Window_Binary()
                             {
                                 dynamic_cast<CBtn*>(BinaryObject[m_iBinaryObjectIndex])->Set_Click(Click);
                             }
+
+
 
                         }
 
@@ -1347,9 +1367,9 @@ void CImgui_Manager::Window_Binary_Group()
             if (ImGui::Checkbox("isPlay", &isPlay))
                 dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Set_isPlay(isPlay);
             ImGui::SameLine();
-            _bool isAnim = dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Get_isAnim();
-            if (ImGui::Checkbox("isAnim", &isAnim))
-                dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Set_isAnim(isAnim);
+            _bool isLoop = dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Get_isAnimLoop();
+            if (ImGui::Checkbox("isLoop", &isLoop))
+                dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Set_isAnimLoop(isLoop);
 
             _float2 fControlAlpha = dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Get_ControlAlpha();
             if (ImGui::DragFloat2("ControlAlpha", (float*)&fControlAlpha, 0.001f, 0.0f, 1.0f))
@@ -1391,6 +1411,10 @@ void CImgui_Manager::Window_Binary_Group()
 
             if (FAILED(dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Change_UV(m_StartUV, m_EndUV)))
                 MSG_BOX("UV 변경 실패");
+
+            _bool isUVAnim = dynamic_cast<CUI_Effect*>(Objects[m_iBinaryGroupObjectIndex])->Get_isUVAnim();
+            if (ImGui::Checkbox("UVAnim", &isUVAnim))
+                dynamic_cast<CUI_Effect*>(Objects[m_iBinaryGroupObjectIndex])->Set_isUVAnim(isUVAnim);
 
          }
 }

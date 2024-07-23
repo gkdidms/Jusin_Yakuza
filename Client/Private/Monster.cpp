@@ -201,10 +201,6 @@ void CMonster::Take_Damage(_uint iHitColliderType, const _float3& vDir, _float f
 	if (m_pTree->isSway())
 		return;
 
-	//카메라 쉐이킹
-	CCamera* pCamera = dynamic_cast<CCamera*>(m_pGameInstance->Get_GameObject(m_iCurrentLevel, TEXT("Layer_Camera"), CAMERA_PLAYER));
-	pCamera->Set_Shaking(true, vDir);
-
 	//하는역활 -> 충돌이 일어났을때?
 	m_isColl = true;
 	m_fHitDamage = fDamage;
@@ -254,6 +250,24 @@ void CMonster::Animation_Event()
 string CMonster::Get_CurrentAnimationName()
 {
 	return m_pAnimCom->Get_AnimationName(m_pAnimCom->Get_CurrentAnimIndex());
+}
+
+void CMonster::Shaking(_float fRatio, _float fShakeDuration, _float fShakeMagnitude)
+{
+	if (!m_isShaked && Checked_Animation_Ratio(fRatio))
+	{
+		m_isShaked = true;
+		CCamera* pCamera = dynamic_cast<CCamera*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Camera"), CAMERA_PLAYER));
+		pCamera->Set_Shaking(true, { 1.f, 1.f, 0.f }, fShakeDuration, fShakeMagnitude);
+	}
+}
+
+_bool CMonster::Checked_Animation_Ratio(_float fRatio)
+{
+	if (fRatio < *m_pModelCom->Get_AnimationCurrentPosition(m_pAnimCom) / *m_pModelCom->Get_AnimationDuration(m_pAnimCom))
+		return true;
+
+	return false;
 }
 
 void CMonster::Synchronize_Root(const _float& fTimeDelta)
@@ -486,12 +500,14 @@ void CMonster::Change_Animation()
 		{
 			//e_knk_atk_chop[e_knk_atk_chop]
 			m_strAnimName = "e_knk_atk_chop";
+			Shaking(0.3, 0.2, 0.3);
 			break;
 		}
 		case MONSTER_ANGRY_KICK:
 		{
 			//e_knk_atk_kick[e_knk_atk_kick]
 			m_strAnimName = "e_knk_atk_kick";
+			Shaking(0.3, 0.2, 0.3);
 			break;
 		}
 		case MONSTER_DED_L:

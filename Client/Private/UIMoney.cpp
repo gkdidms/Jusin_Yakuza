@@ -10,8 +10,10 @@ CUIMoney::CUIMoney(const CUIMoney& rhs)
 {
 }
 
-HRESULT CUIMoney::Initialize(void* pArg)
+HRESULT CUIMoney::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg)
 {
+	if (FAILED(__super::Initialize(pDevice, pContext, pArg)))
+		return E_FAIL;
 	return S_OK;
 }
 
@@ -27,10 +29,10 @@ HRESULT CUIMoney::Late_Tick(const _float& fTimeDelta)
 	return S_OK;
 }
 
-CUIMoney* CUIMoney::Create(void* pArg)
+CUIMoney* CUIMoney::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg)
 {
 	CUIMoney* pInstance = new CUIMoney();
-	if (FAILED(pInstance->Initialize(pArg)))
+	if (FAILED(pInstance->Initialize(pDevice , pContext, pArg)))
 	{
 		Safe_Release(pInstance);
 		return nullptr;

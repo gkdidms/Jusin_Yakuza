@@ -12,6 +12,7 @@ class CUIScene :
 {
 public:
     typedef struct tSceneDesc {
+        _bool isLoading;
 
     }SCENE_DESC;
 protected:
@@ -27,7 +28,7 @@ public:
     virtual HRESULT Show_Scene();//ui 애님 준비(초기화/열때 정방향 진행)
     virtual HRESULT Close_Scene();//ui 애님 준비(초기화/닫을떄 반대로진행)
 
-    virtual HRESULT Initialize(void* pArg);
+    virtual HRESULT Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,void* pArg);
     virtual HRESULT Tick(const _float& fTimeDelta);
     virtual HRESULT Late_Tick(const _float& fTimeDelta);
 
@@ -41,13 +42,14 @@ public:
 public:
     _bool Get_isAnimFinish() { return m_isAnimFin; }
     _bool Get_isClose() { return m_isClose; }
-
+    _bool Get_isLoading() { return m_isLoading; }
     virtual void Reset() {
         m_isClose = false;  
     }
 protected:
     class CGameInstance* m_pGameInstance = { nullptr };
-
+    ID3D11Device* m_pDevice = { nullptr };
+    ID3D11DeviceContext* m_pContext = { nullptr };
 
     vector<class CUI_Object*> m_UI;//이벤트 제외한 ui를 받는곳(상시 떠있을 ui)
     vector<class CUI_Object*> m_EventUI;//이벤트 ui를 받는곳(특정 상황에 쓸 ui)ex.클릭,오버
@@ -60,6 +62,8 @@ protected:
     _bool m_isAnimFin = { false };
     _bool m_isClose = { false };
 
+
+    _bool m_isLoading = { false };
 public:
     virtual void Free();
 };

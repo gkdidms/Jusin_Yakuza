@@ -139,9 +139,9 @@ protected:
     _bool m_isAnim;
     _float2 m_fAnimTime;
     _float3 m_vStartPos;
-#ifdef _TOOL
-    _bool m_isPlay = { true };
-#endif // _TOOL
+
+    _bool m_isPlay = { true };//버튼 만 over시에 사용
+
     //시작하면 0-1 사라질땐 반대로
     _float2 m_fControlAlpha = { 0.f, 1.f };//시작,종료 알파(애님일경우)]
     _bool m_isReverse = { false };

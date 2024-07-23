@@ -435,6 +435,7 @@ HRESULT CObject_Manager::Load_binary(const wstring& strObjectTag, const string F
 
 		in.read((char*)&pDesc.ClickStartUV, sizeof(_float2));
 		in.read((char*)&pDesc.ClickEndUV, sizeof(_float2));
+		in.read((char*)&pDesc.vClickColor, sizeof(_float4));
 
 		pDesc.isLoad = true;
 
@@ -573,6 +574,7 @@ HRESULT CObject_Manager::Load_binary(const wstring& strObjectTag, const string F
 
 		in.read((char*)&pDesc.vLifeTime, sizeof(_float3));	
 		in.read((char*)&pDesc.fSpeed, sizeof(_float));
+		in.read((char*)&pDesc.isUVAnim, sizeof(_bool));
 
 		pDesc.isLoad = true;
 		in.close();
@@ -628,11 +630,11 @@ HRESULT CObject_Manager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* 
 	CRenderTarget* pCopyBackBuffer = CRenderTarget::Create(m_pDevice, m_pContext, 1280.f, 720.f, DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(0.f, 0.f, 0.f, 0.f));
 	if (nullptr == pCopyBackBuffer)
 		return E_FAIL;
-#ifdef DEBUG
+#ifdef _DEBUG
 
 	pCopyBackBuffer->Ready_Debug(g_iWinSizeX - 100.f, 100.f, 200.f, 200.f);
 	m_CopyBackTexture2Ds.emplace_back(pCopyBackBuffer);
-#endif // DEBUG
+#endif // _DEBUG
 
 
 	return S_OK;
@@ -978,6 +980,7 @@ HRESULT CObject_Manager::Add_BinaryObject(const wstring& strObjectTag, void* pAr
 		BtnDesc.strClickFilePath = pDesc->strBtnClickFilePath;
 		BtnDesc.strName = pDesc->strName;
 		BtnDesc.iTypeIndex = pDesc->iTextureType;
+
 
 		CBtn* pBtn	= dynamic_cast<CBtn*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Btn"), &BtnDesc));
 		if (nullptr == pBtn)
