@@ -126,13 +126,14 @@ public:
     _vector Get_CamRight();
     const _float* Get_CamFar();
     const _float4x4* Get_ReflectViewMatrix();
+    _float4 Get_ShadowLightDir();
 
     void Set_Transform(CPipeLine::D3DTRANSFORMSTATE eState, _fmatrix matTransform);
     void Set_CamFar(_float fFar);
     void Set_ReflectViewMatrix(_fmatrix matTransform);
     void Set_ShadowTransformViewMatrix(_float4x4* ViewMatrixArray);
     void Set_ShadowTransformProjMatrix(_float4x4* ProjMatrixArray);
-
+    void Set_ShadowLightDir(_float4 vLightDir);
     /* Font_Manager */
 public:
     HRESULT Add_Font(const wstring& strFontTag, const wstring& strFontFilePath);

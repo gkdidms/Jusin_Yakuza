@@ -72,8 +72,17 @@ HRESULT CPlayer::Initialize(void* pArg)
 	if (FAILED(Add_CharacterData()))
 		return E_FAIL;
 
+	// 기본 몬스터: 20
+	// 삥쟁이: 30
+	// 쿠제: 100
+	m_Info.iMaxHP = 100.f;
+	m_Info.iHp = m_Info.iMaxHP;
+
 	ZeroMemory(&m_MoveDirection, sizeof(_bool) * MOVE_DIRECTION_END);
 	ZeroMemory(&m_InputDirection, sizeof(_bool) * MOVE_DIRECTION_END);
+
+	// 새로 생성할 때 마다 UI매니저에 본인을 Set해준다.
+	m_pUIManager->Set_Player(this);
 
 	return S_OK;
 }
@@ -384,36 +393,12 @@ HRESULT CPlayer::Render()
 	return S_OK;
 }
 
-HRESULT CPlayer::Render_LightDepth()
-{
-	const _float4x4* ViewMatrixArray = m_pGameInstance->Get_Shadow_Transform_View_Float4x4();
-	const _float4x4* ProjMatrixArray = m_pGameInstance->Get_Shadow_Transform_Proj_Float4x4();
-
-	if (FAILED(m_pShaderCom->Bind_Matrix("g_WorldMatrix", m_pTransformCom->Get_WorldFloat4x4())))
-		return E_FAIL;
-	if (FAILED(m_pShaderCom->Bind_Matrices("g_ViewMatrixArray", ViewMatrixArray, 3)))
-		return E_FAIL;
-	if (FAILED(m_pShaderCom->Bind_Matrices("g_ProjMatrixArray", ProjMatrixArray, 3)))
-		return E_FAIL;
-
-	_uint	iNumMeshes = m_pModelCom->Get_NumMeshes();
-
-	for (size_t i = 0; i < iNumMeshes; i++)
-	{
-		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
-			continue;
-
-		m_pShaderCom->Begin(2);
-
-		m_pModelCom->Render(i);
-	}
-
-	return S_OK;
-}
-
 void CPlayer::Take_Damage(_uint iHitColliderType, const _float3& vDir, _float fDamage, CLandObject* pAttackedObject, _bool isBlowAttack)
 {
 	// iHitColliderType 는 충돌한 HIT타입 콜라이더가 헤드, 바디, 레그인지를 갖고있다.
+
+	// 데미지 감소율 설정 (파괴자 가드 시에는 딜을 평소보다 0.2배만큼만 받는다 (==딜감80퍼))
+	_float fDamageDownScale = 1.f;
 
 	// 때린 상대의 현재 애니메이션 네임을 가져온다.
 	switch (m_eCurrentStyle)
@@ -535,6 +520,7 @@ void CPlayer::Take_Damage(_uint iHitColliderType, const _float3& vDir, _float fD
 		if (m_iCurrentBehavior == (_uint)KRC_BEHAVIOR_STATE::GUARD)
 		{
 			m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Setting_Value((void*)&Desc);
+			fDamageDownScale = 0.2f;
 		}
 		else
 		{
@@ -544,6 +530,14 @@ void CPlayer::Take_Damage(_uint iHitColliderType, const _float3& vDir, _float fD
 		
 		break;
 	}
+	}
+
+	//데미지 처리하기
+	if (!m_isObjectDead)
+	{
+		m_Info.iHp -= (fDamage * fDamageDownScale);
+		if (m_Info.iHp <= 0.f)
+			m_isObjectDead = true;
 	}
 }
 

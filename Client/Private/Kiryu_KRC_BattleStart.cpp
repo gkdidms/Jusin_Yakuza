@@ -1,6 +1,7 @@
 #include "GameInstance.h"
 #include "Kiryu_KRC_BattleStart.h"
 #include "Player.h"
+#include "Camera.h"
 
 CKiryu_KRC_BattleStart::CKiryu_KRC_BattleStart()
 	:CBehaviorAnimation{}
@@ -14,6 +15,8 @@ CKiryu_KRC_BattleStart::CKiryu_KRC_BattleStart()
 void CKiryu_KRC_BattleStart::Tick(const _float& fTimeDelta)
 {
 	Off_Battle(fTimeDelta);
+
+	Shaking();
 }
 
 void CKiryu_KRC_BattleStart::Change_Animation()
@@ -44,6 +47,7 @@ void CKiryu_KRC_BattleStart::Reset()
 {
 	m_eAnimState = ANIM_START;
 	m_fOffBattleTimer = 0.f;
+	m_isShaked = false;
 }
 
 void CKiryu_KRC_BattleStart::Off_Battle(const _float& fTimeDelta)
@@ -57,6 +61,25 @@ void CKiryu_KRC_BattleStart::Off_Battle(const _float& fTimeDelta)
 		m_fOffBattleTimer = { 0.f };
 
 		m_eAnimState = ANIM_END;
+	}
+}
+
+void CKiryu_KRC_BattleStart::Shaking()
+{
+	if (m_isShaked) return;
+
+	_float fInterval = 0.6f;
+
+	CModel* pModelCom = static_cast<CModel*>(m_pPlayer->Get_Component(TEXT("Com_Model")));
+	if (fInterval < *pModelCom->Get_AnimationCurrentPosition() / *pModelCom->Get_AnimationDuration())
+	{
+		m_isShaked = true;
+
+		_float3 vLook;
+		XMStoreFloat3(&vLook, m_pPlayer->Get_TransformCom()->Get_State(CTransform::STATE_LOOK));
+		//카메라 쉐이킹
+		CCamera* pCamera = dynamic_cast<CCamera*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Camera"), CAMERA_PLAYER));
+		pCamera->Set_Shaking(true, { 1.f, 1.f, 1.f }, 0.1, 0.1);
 	}
 }
 

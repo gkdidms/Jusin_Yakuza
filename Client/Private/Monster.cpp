@@ -160,33 +160,6 @@ HRESULT CMonster::Render()
 	return S_OK;
 }
 
-HRESULT CMonster::Render_LightDepth()
-{
-	const _float4x4* ViewMatrixArray = m_pGameInstance->Get_Shadow_Transform_View_Float4x4();
-	const _float4x4* ProjMatrixArray = m_pGameInstance->Get_Shadow_Transform_Proj_Float4x4();
-
-	if (FAILED(m_pShaderCom->Bind_Matrix("g_WorldMatrix", m_pTransformCom->Get_WorldFloat4x4())))
-		return E_FAIL;
-	if (FAILED(m_pShaderCom->Bind_Matrices("g_ViewMatrixArray", ViewMatrixArray, 3)))
-		return E_FAIL;
-	if (FAILED(m_pShaderCom->Bind_Matrices("g_ProjMatrixArray", ProjMatrixArray, 3)))
-		return E_FAIL;
-
-	_uint	iNumMeshes = m_pModelCom->Get_NumMeshes();
-
-	for (size_t i = 0; i < iNumMeshes; i++)
-	{
-		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
-			continue;
-
-		m_pShaderCom->Begin(2);
-
-		m_pModelCom->Render(i);
-	}
-
-	return S_OK;
-}
-
 /*
 1인자 : 어디에 맞았는지 전달받을 수 있음 (CSocketCollider::COLLIDER_PART_TYPE) 
 2인자 : 이전 틱과 현재 틱의 방향
@@ -201,16 +174,13 @@ void CMonster::Take_Damage(_uint iHitColliderType, const _float3& vDir, _float f
 	if (m_pTree->isSway())
 		return;
 
-	//카메라 쉐이킹
-	CCamera* pCamera = dynamic_cast<CCamera*>(m_pGameInstance->Get_GameObject(m_iCurrentLevel, TEXT("Layer_Camera"), CAMERA_PLAYER));
-	pCamera->Set_Shaking(true, vDir);
-
 	//하는역활 -> 충돌이 일어났을때?
 	m_isColl = true;
 	m_fHitDamage = fDamage;
 
-	//데미지 처리하기
-	if (!m_isObjectDead)
+	
+	//데미지 처리하기 (가드사용하고있지 않을때)
+	if (!m_isObjectDead && !m_pTree->isGuard())
 	{
 		m_Info.iHp -= fDamage;
 		if (m_Info.iHp <= 0.f)
@@ -253,6 +223,24 @@ void CMonster::Animation_Event()
 string CMonster::Get_CurrentAnimationName()
 {
 	return m_pAnimCom->Get_AnimationName(m_pAnimCom->Get_CurrentAnimIndex());
+}
+
+void CMonster::Shaking(_float fRatio, _float fShakeDuration, _float fShakeMagnitude)
+{
+	if (!m_isShaked && Checked_Animation_Ratio(fRatio))
+	{
+		m_isShaked = true;
+		CCamera* pCamera = dynamic_cast<CCamera*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Camera"), CAMERA_PLAYER));
+		pCamera->Set_Shaking(true, { 1.f, 1.f, 0.f }, fShakeDuration, fShakeMagnitude);
+	}
+}
+
+_bool CMonster::Checked_Animation_Ratio(_float fRatio)
+{
+	if (fRatio < *m_pModelCom->Get_AnimationCurrentPosition(m_pAnimCom) / *m_pModelCom->Get_AnimationDuration(m_pAnimCom))
+		return true;
+
+	return false;
 }
 
 void CMonster::Synchronize_Root(const _float& fTimeDelta)
@@ -485,12 +473,14 @@ void CMonster::Change_Animation()
 		{
 			//e_knk_atk_chop[e_knk_atk_chop]
 			m_strAnimName = "e_knk_atk_chop";
+			Shaking(0.3, 0.2, 0.3);
 			break;
 		}
 		case MONSTER_ANGRY_KICK:
 		{
 			//e_knk_atk_kick[e_knk_atk_kick]
 			m_strAnimName = "e_knk_atk_kick";
+			Shaking(0.3, 0.2, 0.3);
 			break;
 		}
 		case MONSTER_DED_L:

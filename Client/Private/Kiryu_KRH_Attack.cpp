@@ -2,6 +2,7 @@
 #include "Kiryu_KRH_Attack.h"
 #include "Player.h"
 #include "Monster.h"
+#include "Camera.h"
 
 CKiryu_KRH_Attack::CKiryu_KRH_Attack()
 	:CBehaviorAnimation{}
@@ -64,6 +65,8 @@ void CKiryu_KRH_Attack::Tick(const _float& fTimeDelta)
 
 	if (m_isPunch)
 		m_iComboCount = 25;
+
+	Shaking();
 }
 
 void CKiryu_KRH_Attack::Change_Animation()
@@ -89,6 +92,7 @@ void CKiryu_KRH_Attack::Reset()
 {
 	m_iComboCount = 0;
 	m_isPunch = false;
+	m_isShaked = false;
 }
 
 void CKiryu_KRH_Attack::Combo_Count(_bool isFinAction)
@@ -112,8 +116,11 @@ void CKiryu_KRH_Attack::Combo_Count(_bool isFinAction)
 		//		m_iComboCount = 9;
 		//}
 
-		if (m_iComboCount < 8)
-			m_iComboCount += 8;
+		if (Changeable_Combo_Animation())
+		{
+			if (m_iComboCount < 8)
+				m_iComboCount += 8;
+		}
 	}
 	else
 	{
@@ -163,11 +170,27 @@ _bool CKiryu_KRH_Attack::Changeable_Combo_Animation()
 	if (m_iComboCount == 7)			// 8타 발차기 (스킬 찍어야 쓸 수 있음)
 		fInterval = 0.5f;			
 
-	CModel* pModelCom = static_cast<CModel*>(m_pPlayer->Get_Component(TEXT("Com_Model")));
-	if (fInterval < *pModelCom->Get_AnimationCurrentPosition() / *pModelCom->Get_AnimationDuration())
+	if (Checked_Animation_Ratio(fInterval))
+	{
+		m_isShaked = false;
 		return true;
+	}
 
 	return false;
+}
+
+void CKiryu_KRH_Attack::Shaking()
+{
+	if (m_iComboCount > 6)
+	{
+		if (!m_isShaked && Checked_Animation_Ratio(0.3))
+		{
+			m_isShaked = true;
+			//카메라 쉐이킹
+			CCamera* pCamera = dynamic_cast<CCamera*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Camera"), CAMERA_PLAYER));
+			pCamera->Set_Shaking(true, { 1.f, 1.f, 0.f }, 0.2, 0.2);
+		}
+	}
 }
 
 CBehaviorAnimation* CKiryu_KRH_Attack::Create(CPlayer* pPlayer)

@@ -16,8 +16,10 @@ CUILogo::CUILogo(const CUILogo& rhs)
 }
 
 
-HRESULT CUILogo::Initialize(void* pArg)
+HRESULT CUILogo::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg)
 {
+	if (FAILED(__super::Initialize(pDevice , pContext , pArg)))	
+		return E_FAIL;
 	return S_OK;
 }
 
@@ -37,7 +39,10 @@ HRESULT CUILogo::Late_Tick(const _float& fTimeDelta)
 
 	__super::Late_Tick(fTimeDelta);
 
-
+	if (m_pGameInstance->GetKeyState(DIK_SPACE) == TAP)
+	{
+		CUIManager::GetInstance()->Open_Scene(TEXT("MainMenu"));
+	}
 	//등장 애니메이션 끝난뒤 모든 행동 코드
 
 	if (!m_isAnimFin)
@@ -54,10 +59,10 @@ void CUILogo::OverAction()
 {
 }
 
-CUILogo* CUILogo::Create(void* pArg)
+CUILogo* CUILogo::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,void* pArg)
 {
 	CUILogo* pInstance = new CUILogo();
-	if (FAILED(pInstance->Initialize(pArg)))
+	if (FAILED(pInstance->Initialize(pDevice ,pContext ,pArg)))
 	{
 		Safe_Release(pInstance);
 		return nullptr;

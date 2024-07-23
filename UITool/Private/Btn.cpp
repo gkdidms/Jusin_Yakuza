@@ -12,7 +12,8 @@ CBtn::CBtn(const CBtn& rhs)
 	m_strClickFilePath{rhs.m_strClickFilePath },
 	m_StrClickFileName{rhs.m_StrClickFileName },
 	m_ClickStartUV{rhs.m_ClickStartUV },
-	m_ClickEndUV{rhs.m_ClickEndUV }
+	m_ClickEndUV{rhs.m_ClickEndUV },
+	m_vClickColor{rhs.m_vClickColor}
 {
 }
 
@@ -46,6 +47,7 @@ HRESULT CBtn::Initialize(void* pArg)
 		m_StrClickFileName = pDesc->strClickFileName;
 		m_ClickStartUV = pDesc->ClickStartUV;
 		m_ClickEndUV = pDesc->ClickEndUV;
+		m_vClickColor = pDesc->vClickColor;
 	}
 
 
@@ -77,6 +79,8 @@ HRESULT CBtn::Render()
 {
 	if (FAILED(Bind_ResourceData()))
 		return E_FAIL;
+
+
 
 	m_pShaderCom->Begin(m_iShaderPass);
 
@@ -174,6 +178,9 @@ HRESULT CBtn::Save_binary(const string strDirectory)
 
 	out.write((char*)&m_ClickEndUV, sizeof(_float2));
 
+	out.write((char*)&m_vClickColor, sizeof(_float4));//20240722持失
+
+
 	out.close();
 
 
@@ -250,6 +257,8 @@ HRESULT CBtn::Save_Groupbinary(ofstream& out)
 
 	out.write((char*)&m_ClickEndUV, sizeof(_float2));
 
+	out.write((char*)&m_vClickColor, sizeof(_float4));//20240722持失
+
 	return S_OK;
 }
 
@@ -320,6 +329,7 @@ HRESULT CBtn::Load_binary(ifstream& in)
 	in.read((char*)&m_ClickStartUV, sizeof(_float2));
 	in.read((char*)&m_ClickEndUV, sizeof(_float2));
 
+	in.read((char*)&m_vClickColor, sizeof(_float4));
 
 	in.close();
 
@@ -377,11 +387,7 @@ HRESULT CBtn::Bind_ResourceData()
 
 	}
 
-	if (m_isColor)
-	{
-		if (FAILED(m_pShaderCom->Bind_RawValue("g_vColor", &m_vColor, sizeof(_float4))))
-			return E_FAIL;
-	}
+
 
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix)))
 		return E_FAIL;
@@ -392,11 +398,21 @@ HRESULT CBtn::Bind_ResourceData()
 	{
 		if (FAILED(m_pClickTextureCom->Bind_ShaderResource(m_pShaderCom, "g_Texture", 0)))
 			return E_FAIL;
+		if (m_isColor)
+		{
+			if (FAILED(m_pShaderCom->Bind_RawValue("g_vColor", &m_vClickColor, sizeof(_float4))))
+				return E_FAIL;
+		}
 	}
 	else
 	{
 		if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_Texture", 0)))
 			return E_FAIL;
+		if (m_isColor)
+		{
+			if (FAILED(m_pShaderCom->Bind_RawValue("g_vColor", &m_vColor, sizeof(_float4))))
+				return E_FAIL;
+		}
 	}
 
 	return S_OK;

@@ -34,7 +34,7 @@ public:
     enum class KRS_BEHAVIOR_STATE
     {
         BTL_START, IDLE, WALK, RUN, ATTACK, HIT, 
-        SWAY, DOWN, 
+        SWAY, DOWN, GRAB,
         SKILL_FLY_KICK, SKILL_KICK_COMBO,
         KRS_BEHAVIOR_END
     };
@@ -51,7 +51,7 @@ public:
     enum class KRC_BEHAVIOR_STATE
     {
         BTL_START, IDLE, WALK, RUN, ATTACK, HIT,
-        SWAY, DOWN, 
+        SWAY, DOWN, GRAB,
         GUARD,
         KRC_BEHAVIOR_END
     };
@@ -112,7 +112,6 @@ public:
     virtual void Tick(const _float& fTimeDelta) override;
     virtual void Late_Tick(const _float& fTimeDelta) override;
     virtual HRESULT Render() override;
-    virtual HRESULT Render_LightDepth() override;
 
     // 충돌함수
     virtual void Take_Damage(_uint iHitColliderType, const _float3& vDir, _float fDamage, CLandObject* pAttackedObject, _bool isBlowAttack = false) override;

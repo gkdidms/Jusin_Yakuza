@@ -14,8 +14,11 @@ CUINowLoading::CUINowLoading(const CUINowLoading& rhs)
 {
 }
 
-HRESULT CUINowLoading::Initialize(void* pArg)
+HRESULT CUINowLoading::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg)
 {
+	if (FAILED(__super::Initialize(pDevice, pContext,pArg)))
+		return E_FAIL;
+
 
     return S_OK;
 }
@@ -62,10 +65,10 @@ void CUINowLoading::OverAction()
 {
 }
 
-CUINowLoading* CUINowLoading::Create(void* pArg)
+CUINowLoading* CUINowLoading::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg)
 {
 	CUINowLoading* pInstance = new CUINowLoading();
-	if (FAILED(pInstance->Initialize(pArg)))
+	if (FAILED(pInstance->Initialize(pDevice, pContext, pArg)))
 	{
 		Safe_Release(pInstance);
 		return nullptr;

@@ -434,6 +434,11 @@ const _float4x4* CGameInstance::Get_ReflectViewMatrix()
 	return m_pPipeLine->Get_ReflectViewMatrix();
 }
 
+_float4 CGameInstance::Get_ShadowLightDir()
+{
+	return m_pPipeLine->Get_ShadowLightDir();
+}
+
 void CGameInstance::Set_ReflectViewMatrix(_fmatrix matTransform)
 {
 	m_pPipeLine->Set_ReflectViewMatrix(matTransform);
@@ -447,6 +452,11 @@ void CGameInstance::Set_ShadowTransformViewMatrix(_float4x4* ViewMatrixArray)
 void CGameInstance::Set_ShadowTransformProjMatrix(_float4x4* ProjMatrixArray)
 {
 	m_pPipeLine->Set_ShadowTransformProjMatrix(ProjMatrixArray);
+}
+
+void CGameInstance::Set_ShadowLightDir(_float4 vLightDir)
+{
+	m_pPipeLine->Set_ShadowLightDir(vLightDir);
 }
 
 _float CGameInstance::Get_TimeDelta(const _tchar* pTimerTag)

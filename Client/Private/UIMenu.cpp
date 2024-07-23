@@ -15,9 +15,10 @@ CUIMenu::CUIMenu(const CUIMenu& rhs)
 {
 }
 
-HRESULT CUIMenu::Initialize(void* pArg)
+HRESULT CUIMenu::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg)
 {
-
+	if (FAILED(__super::Initialize(pDevice, pContext,pArg)))
+		return E_FAIL;
 	return S_OK;
 }
 
@@ -156,10 +157,10 @@ void CUIMenu::OverAction()
 	}
 }
 
-CUIMenu* CUIMenu::Create(void* pArg)
+CUIMenu* CUIMenu::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg)
 {
 	CUIMenu* pInstance = new CUIMenu();
-	if(FAILED(pInstance->Initialize(pArg)))
+	if(FAILED(pInstance->Initialize(pDevice , pContext, pArg)))
 	{
 		Safe_Release(pInstance);
 		return nullptr;

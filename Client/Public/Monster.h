@@ -134,12 +134,26 @@ public:
     virtual void Tick(const _float& fTimeDelta) override;
     virtual void Late_Tick(const _float& fTimeDelta) override;
     virtual HRESULT Render() override;
-    virtual HRESULT Render_LightDepth() override;
 
     // 충돌함수
     virtual void Take_Damage(_uint iHitColliderType, const _float3& vDir, _float fDamage, CLandObject* pAttackedObject, _bool isBlowAttack = false) override;
     virtual void Animation_Event() override;
     virtual string Get_CurrentAnimationName() override;
+
+    // 사용: Change_Animation함수 실행 중 필요한 애니메이션 세팅해주는 부분에 실행하고,
+    // Change_Animation 함수 내에서 실제 애니메이션 변경여부를 확인하는
+    // m_pModelCom->Set_AnimationIndex 함수 실행 부분 내에 m_isShaked를 false로 초기화해주면 됨
+    // 1인자: 해당 애니메이션에서 쉐이킹을 실행시킬 위치 비율
+    // 2인자: 쉐이킹 길이
+    // 3인자: 쉐이킹 범위
+    virtual void Shaking(_float fRatio, _float fShakeDuration = 0.3f, _float fShakeMagnitude = 0.3f);
+    void Reset_Shaking_Variable()
+    {
+        m_isShaked = { false };
+        m_iShakedCount = { 0 };
+    };
+
+    _bool Checked_Animation_Ratio(_float fRatio);
 
 protected:
     CShader* m_pShaderCom = { nullptr };
@@ -152,7 +166,7 @@ protected:
     _uint m_iState = { 0 };
     _float m_fChangeInterval = { 4.f };
 
-    _float m_fPrevSpeed;
+    _float          m_fPrevSpeed;
     _float4         m_vPrevMove;
     _float4         m_vPrevRotation;
     _float4x4       m_ModelWorldMatrix;
@@ -165,6 +179,10 @@ protected:
     _float m_fHitDamage = { 0.f };
     _bool m_isColl = { false }; // 충돌되었는지 아닌지 체크해야함.
     _bool m_isDown = { false }; // 다운되었는가?
+
+    /* 쉐이킹 관련 정보들 */
+    _bool m_isShaked = { false };       // 쉐이킹이 실행되었는지?
+    _uint m_iShakedCount = { 0 };       // 몇번 째 실행되었는지? (한 애니메이션 내에 여러번 실행되어야할 경우 사용)
 
 protected:
     virtual void Change_Animation();
