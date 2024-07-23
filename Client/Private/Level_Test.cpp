@@ -32,10 +32,7 @@ HRESULT CLevel_Test::Initialize()
  	if (FAILED(Ready_Player(TEXT("Layer_Player"))))
 		return E_FAIL;
 
-	/*if (FAILED(Ready_Monster(TEXT("Layer_Monster"))))
-		return E_FAIL;*/
-
-	if (FAILED(Ready_Camera(TEXT("Layer_Camera"))))
+	if (FAILED(Ready_Monster(TEXT("Layer_Monster"))))
 		return E_FAIL;
 
 	//if (FAILED(Ready_Map(TEXT("Layer_Map"))))
@@ -44,7 +41,9 @@ HRESULT CLevel_Test::Initialize()
 	//if (FAILED(Ready_Effect(TEXT("Layer_Effect"))))
 	//	return E_FAIL;
 
-	/* 클라 파싱 */
+	if (FAILED(Ready_Camera(TEXT("Layer_Camera"))))
+		return E_FAIL;
+
 	m_pFileTotalManager->Set_MapObj_In_Client(99, LEVEL_TEST);
 	m_pFileTotalManager->Set_Lights_In_Client(6);
 	m_pFileTotalManager->Set_Collider_In_Client(6, LEVEL_TEST);
@@ -58,10 +57,6 @@ HRESULT CLevel_Test::Initialize()
 
 void CLevel_Test::Tick(const _float& fTimeDelta)
 {
-
-
-
-
 #ifdef _DEBUG
 	SetWindowText(g_hWnd, TEXT("테스트 레벨"));
 #endif
@@ -134,8 +129,8 @@ HRESULT CLevel_Test::Ready_Monster(const wstring& strLayerTag)
 	//Desc.fRotatePecSec = XMConvertToRadians(0.f);
 	Desc.fRotatePecSec = XMConvertToRadians(180.f);
 
-	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_Kuze"), strLayerTag, &Desc)))
-		return E_FAIL;
+	//if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_Kuze"), strLayerTag, &Desc)))
+	//	return E_FAIL;
 
 	return S_OK;
 }

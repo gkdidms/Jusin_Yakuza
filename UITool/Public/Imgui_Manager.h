@@ -52,6 +52,7 @@ private:
 	_float2 m_EndUV = {};	
 	_float2 m_ClickStartUV = {};
 	_float2 m_ClickEndUV = {};
+	_float4 m_ClickColor = {};
 
 	_float4x4						m_ViewMatrix, m_ProjMatrix;
 

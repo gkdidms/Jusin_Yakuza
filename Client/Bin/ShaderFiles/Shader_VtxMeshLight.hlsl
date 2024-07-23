@@ -176,9 +176,14 @@ PS_OUT PS_MAIN_Bloom(PS_IN In)
     vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
     
     vector emissive = g_RMTexture.Sample(LinearSampler, In.vTexcoord);
+    
+    // 약한발광(0.1 - 0.3)
+    // 보통(0.4 - 0.6)
+    // 강한 (0.7-0.8)
+    vector emissiveColor = vDiffuse * 0.3;
    
     // Combine base color and emissive color
-    float4 finalColor = vDiffuse - (1 - emissive.r);
+    float4 finalColor = vDiffuse + emissiveColor - (1 - emissive.r);
   
     Out.vDiffuse = finalColor;
     
@@ -191,7 +196,7 @@ PS_OUT PS_MAIN_Bloom(PS_IN In)
 
 technique11 DefaultTechnique
 {
-    pass DefaultPass //0 - 그냥 간판
+    pass DefaultPass //0 - 형광등
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_Default, 0);
@@ -284,7 +289,7 @@ technique11 DefaultTechnique
     }
 
 
-    pass DefaultBloomPass //7
+    pass DefaultBloomPass //7 - rm 적용한 외부간판
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_Default, 0);

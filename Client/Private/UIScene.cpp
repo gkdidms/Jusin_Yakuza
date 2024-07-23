@@ -66,8 +66,20 @@ HRESULT CUIScene::Close_Scene()
 	return S_OK;
 }
 
-HRESULT CUIScene::Initialize(void* pArg)
+HRESULT CUIScene::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg)
 {
+	m_pDevice = pDevice;
+	m_pContext = pContext;
+	Safe_AddRef(m_pDevice);
+	Safe_AddRef(m_pContext);
+
+	if (nullptr != pArg)
+	{
+		SCENE_DESC* pDesc = static_cast<SCENE_DESC*>(pArg);
+		m_isLoading = pDesc->isLoading;
+
+	}
+
 	return S_OK;
 }
 
@@ -160,5 +172,7 @@ void CUIScene::Free()
 	m_EventUI.clear();
 
 
+	Safe_Release(m_pContext);
+	Safe_Release(m_pDevice);
 	Safe_Release(m_pGameInstance);
 }

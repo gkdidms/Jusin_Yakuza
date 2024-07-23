@@ -13,7 +13,9 @@ float3 g_vLifeTime;
 float3 g_vStartPos;
 float2 g_fAnimTime;
 float2 g_fControlAlpha;
-
+bool g_isUVAnim;
+float2 g_StartUV;
+float2 g_EndUV;
 
 struct VS_IN
 {
@@ -146,33 +148,58 @@ PS_OUT PS_COLOR_ALPHABLEND_EFFECT(PS_IN In)
 {
     PS_OUT Out = (PS_OUT) 0;
     
-    vector BaseColor = g_Texture.Sample(LinearSampler, In.vTexcoord);
-    vector BaseAlpha = 0.f;
-    vector MergeColor = g_vColor;
-    vector FinalColor = vector(0.f, 0.f, 0.f, 0.f);
-    
     if (g_vLifeTime.x < g_vLifeTime.y || g_vLifeTime.x > g_vLifeTime.z)
         discard;
     else
     {
-        FinalColor = BaseColor * MergeColor;
-        float MiddleTime = (g_vLifeTime.z - g_vLifeTime.y) / 2.f;
-        float CurrentTime = (g_vLifeTime.x - g_vLifeTime.y);
+      
+        vector BaseColor = 0;
         
-        if (MiddleTime > CurrentTime)
-        {
-            BaseAlpha = saturate(CurrentTime / MiddleTime);
-            FinalColor.a *= BaseAlpha;
+        if (g_isUVAnim)
+            {
+            float Move = frac(g_vLifeTime.x - g_vLifeTime.y);   
+            
+            float TexX = frac(In.vTexcoord.x + Move);
+            
+            if (TexX > g_EndUV.x || TexX <= g_StartUV.x)
+                TexX += g_StartUV.x+(1.f - g_EndUV.x);
+
+                
+            
+            
+            
+            float2 Texcoord = float2(frac(TexX), In.vTexcoord.y);
+            
+            BaseColor = g_Texture.Sample(LinearSampler, Texcoord);
         }
         else
-        {
-            BaseAlpha = saturate((CurrentTime - MiddleTime) / MiddleTime);
-            FinalColor.a *= 1.f - BaseAlpha;
-        }
+            BaseColor = g_Texture.Sample(LinearSampler, In.vTexcoord);
+        
+        vector BaseAlpha = 0.f;
+        vector MergeColor = g_vColor;
+        vector FinalColor = vector(0.f, 0.f, 0.f, 0.f);
+        
+
+
+
+            FinalColor = BaseColor * MergeColor;
+            float MiddleTime = (g_vLifeTime.z - g_vLifeTime.y) / 2.f;
+            float CurrentTime = (g_vLifeTime.x - g_vLifeTime.y);
+            
+            if (MiddleTime > CurrentTime)
+            {
+                BaseAlpha = saturate(CurrentTime / MiddleTime);
+                FinalColor.a *= BaseAlpha;
+            }
+            else
+            {
+                BaseAlpha = saturate((CurrentTime - MiddleTime) / MiddleTime);
+                FinalColor.a *= 1.f - BaseAlpha;
+            }
+
+        
+        Out.vColor = FinalColor;
     }
-    
-    Out.vColor = FinalColor;
-    
     
     return Out;
 }
@@ -243,7 +270,6 @@ PS_OUT PS_BACKBUFFER(PS_IN In)
     PS_OUT Out = (PS_OUT) 0;
     
     Out.vColor = g_Texture.Sample(LinearSampler, In.vTexcoord);
-
     
     return Out;
 }

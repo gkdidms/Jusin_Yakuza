@@ -14,8 +14,10 @@ CUILoading::CUILoading(const CUILoading& rhs)
 {
 }
 
-HRESULT CUILoading::Initialize(void* pArg)
+HRESULT CUILoading::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg)
 {
+	if (FAILED(__super::Initialize(pDevice , pContext , pArg)))
+		return E_FAIL;
     return S_OK;
 }
 
@@ -68,10 +70,10 @@ void CUILoading::OverAction()
 {
 }
 
-CUILoading* CUILoading::Create(void* pArg)
+CUILoading* CUILoading::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg)
 {
 	CUILoading* pInstance = new CUILoading();
-	if (FAILED(pInstance->Initialize(pArg)))
+	if (FAILED(pInstance->Initialize(pDevice , pContext ,pArg)))
 	{
 		Safe_Release(pInstance);
 		return nullptr;

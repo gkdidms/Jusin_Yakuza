@@ -88,7 +88,7 @@ void CPipeLine::Tick()
 
 void CPipeLine::Ready_ShadowFurstum()
 {
-	vector<_float> m_Casecade = { 0.f, 5.f, 18.f, 40.f };
+	vector<_float> m_Casecade = { 0.f, 7.f, 25.f, 40.f };
 	//케스케이드 그림자맵을 위한 절두체
 	_float3 vFrustum[]{
 		{-1.f, 1.f, 0.f},
@@ -111,12 +111,11 @@ void CPipeLine::Ready_ShadowFurstum()
 	_float4x4 ProjMatrixArray[3] = {};
 
 	for (size_t i = 0; i < 8; i++)
-	{
 		XMStoreFloat4(&vPoints[i], XMVector3TransformCoord(XMLoadFloat3(&vFrustum[i]), ProjMatrixInverse));
-	}
+
 	for (size_t i = 0; i < 8; i++)
 		XMStoreFloat3(&vFrustum[i], XMVector3Transform(XMLoadFloat4(&vPoints[i]), ViewMatrixInverse));
-
+	
 	for (size_t i = 0; i < m_Casecade.size() - 1; ++i)
 	{
 		//큐브의 정점을 시야절두체 구간으로 변경
@@ -148,24 +147,40 @@ void CPipeLine::Ready_ShadowFurstum()
 		}
 
 		vCenter = vCenter / 8.f;
-		vCenter.m128_f32[3] = 1.f;
+		vCenter = XMVectorSetW(vCenter, 1.f);
 
 		//바운딩구의 반지름을 계산
 		_float fRadius = 0;
 		for (auto& v : Frustum)
-			fRadius = max(fRadius, XMVector3Length(XMLoadFloat3(&v) - vCenter).m128_f32[0]);
+			fRadius = max(fRadius, XMVectorGetX(XMVector3Length(XMLoadFloat3(&v) - vCenter)));
 
 		fRadius = ceil(fRadius * 16.f) / 16.f;
 
 		/* 광원 기준의 뷰 변환행렬. */
 		_float4x4		ViewMatrix, ProjMatrix;
 
-		_vector vLightDir = XMVectorSet(-0.6, -0.7, 0.1, 0.f);
+		_vector vLightDir = XMVector3Normalize(XMLoadFloat4(&m_vLightDir));
+		//_vector vLightDir = XMVector3Normalize(XMVectorSet(0.f, 1.f, -1.f, 0.f));
 		_vector  shadowLightPos = vCenter + (vLightDir * -fRadius);
-		shadowLightPos.m128_f32[3] = 1.f;
+		shadowLightPos = XMVectorSetW(shadowLightPos, 1.f);
 
 		XMStoreFloat4x4(&ViewMatrix, XMMatrixLookAtLH(shadowLightPos, vCenter, XMVectorSet(0.f, 1.f, 0.f, 0.f)));
-		XMStoreFloat4x4(&ProjMatrix, XMMatrixOrthographicLH(fRadius * 2, fRadius * 2, 0.f, 1000.f));
+		XMStoreFloat4x4(&ProjMatrix, XMMatrixOrthographicLH(fRadius * 2, fRadius * 2, 0.1f, 1000.f));
+
+
+
+		_vector vShadowOrigin = XMVectorSet(0.f, 0.f, 0.f, 1.f);
+		vShadowOrigin = XMVector3TransformCoord(vShadowOrigin, XMLoadFloat4x4(&ViewMatrix) * XMLoadFloat4x4(&ProjMatrix));
+		vShadowOrigin = vShadowOrigin * (1280.f / 2.f);
+
+		_vector vRoundedOrigin = XMVectorRound(vShadowOrigin);
+		_vector vRoundOffset = vRoundedOrigin - vShadowOrigin;
+
+		vRoundOffset = vRoundOffset * 2.f / 1280.f;
+		vRoundOffset = XMVectorSetZ(vRoundOffset, 0.f);
+		vRoundOffset = XMVectorSetW(vRoundOffset, 0.f);
+
+		XMStoreFloat4((_float4*)ProjMatrix.m[3], XMLoadFloat4((_float4*)&ProjMatrix.m[3]) + vRoundOffset);
 
 		ViewMatrixArray[i] = ViewMatrix;
 		ProjMatrixArray[i] = ProjMatrix;

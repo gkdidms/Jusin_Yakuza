@@ -31,12 +31,14 @@ public:
 private:
 	void Off_Battle(const _float& fTimeDelta);
 
+	void Shaking();
+
 public:
 	static CBehaviorAnimation* Create(class CPlayer* pPlayer);
 	virtual void Free() override;
 
 	ANIM_STATE m_eAnimState = { ANIM_START };
-	_bool m_isStop = { false };
+	_bool m_isShaked = { false };
 	_float m_fOffBattleTimer = { 0.f };
 };
 END

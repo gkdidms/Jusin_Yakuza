@@ -671,7 +671,7 @@ void CObjPlace_Manager::Edit_Installed_GameObject(int iNumObject)
 			m_tCurrentObjectDesc.iShaderPass = 1;
 		}
 
-		if (ImGui::RadioButton(u8"rm텍스처 적용한거 - 외부간판", m_tCurrentObjectDesc.iShaderPass == 2))
+		if (ImGui::RadioButton(u8"형광등자르기 + 알파 고려x", m_tCurrentObjectDesc.iShaderPass == 2))
 		{
 			shaderType = 2;
 			m_tCurrentObjectDesc.iShaderPass = 2;
@@ -699,6 +699,12 @@ void CObjPlace_Manager::Edit_Installed_GameObject(int iNumObject)
 		{
 			shaderType = 6;
 			m_tCurrentObjectDesc.iShaderPass = 6;
+		}
+
+		if (ImGui::RadioButton(u8"rm 적용한 외부간판", m_tCurrentObjectDesc.iShaderPass == 7))
+		{
+			shaderType = 7;
+			m_tCurrentObjectDesc.iShaderPass = 7;
 		}
 
 
@@ -956,11 +962,11 @@ void CObjPlace_Manager::Set_Map_Object()
 
 	if (objectType == (int)OBJECT_TYPE::LIGHT)
 	{
-		ImGui::RadioButton(u8"그냥간판", &shaderType, 0);
+		ImGui::RadioButton(u8"형광등", &shaderType, 0);
 		ImGui::NewLine();
 		ImGui::RadioButton(u8"형광등자르기 + 알파", &shaderType, 1);
 		ImGui::NewLine();
-		ImGui::RadioButton(u8"rm 텍스처 적용 - 외부간판", &shaderType, 2);
+		ImGui::RadioButton(u8"형광등자르기 + 알파 적용x", &shaderType, 2);
 		ImGui::NewLine();
 		ImGui::RadioButton(u8"Lamp", &shaderType, 3);
 		ImGui::NewLine();
@@ -969,6 +975,8 @@ void CObjPlace_Manager::Set_Map_Object()
 		ImGui::RadioButton(u8"Emissive - 투명o", &shaderType, 5);
 		ImGui::NewLine();
 		ImGui::RadioButton(u8"Emissive - 투명x", &shaderType, 6);
+		ImGui::NewLine();
+		ImGui::RadioButton(u8"rm 텍스처 적용 - 외부간판", &shaderType, 7);
 	}
 	else
 	{
@@ -1080,17 +1088,17 @@ void CObjPlace_Manager::Load_ModelName()
 
 	vObjectNames.clear();
 
-	/* 몬스터 모델 로드*/
-	//m_pGameInstance->Get_FileNames("../../Client/Bin/Resources/Models/NonAnim/Map/Map2/Bin", vObjectNames);
+	/* map2 모델 로드*/
+	m_pGameInstance->Get_FileNames("../../Client/Bin/Resources/Models/NonAnim/Map/Map2/Bin", vObjectNames);
 
-	//for (int i = 0; i < vObjectNames.size(); i++)
-	//{
-	//	string modifiedString = modifyString(vObjectNames[i]);
+	for (int i = 0; i < vObjectNames.size(); i++)
+	{
+		string modifiedString = modifyString(vObjectNames[i]);
 
-	//	char* cfilename = new char[MAX_PATH];
-	//	strcpy(cfilename, StringToCharDIY(modifiedString));
-	//	m_ObjectNames_Map2.push_back(cfilename);
-	//}
+		char* cfilename = new char[MAX_PATH];
+		strcpy(cfilename, StringToCharDIY(modifiedString));
+		m_ObjectNames_Map2.push_back(cfilename);
+	}
 
 }
 

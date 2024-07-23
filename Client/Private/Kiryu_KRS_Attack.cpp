@@ -2,6 +2,7 @@
 #include "Kiryu_KRS_Attack.h"
 #include "Player.h"
 #include "Monster.h"
+#include "Camera.h"
 
 CKiryu_KRS_Attack::CKiryu_KRS_Attack()
 	:CBehaviorAnimation{}
@@ -46,7 +47,8 @@ void CKiryu_KRS_Attack::Tick(const _float& fTimeDelta)
 				m_iComboCount = 8;
 		}
 	}
-		
+
+	Shaking();
 }
 
 void CKiryu_KRS_Attack::Change_Animation()
@@ -71,6 +73,7 @@ _bool CKiryu_KRS_Attack::Get_AnimationEnd()
 void CKiryu_KRS_Attack::Reset()
 {
 	m_iComboCount = 0;
+	m_isShaked = false;
 }
 
 void CKiryu_KRS_Attack::Combo_Count(_bool isFinAction)
@@ -93,8 +96,11 @@ void CKiryu_KRS_Attack::Combo_Count(_bool isFinAction)
 			}
 		}
 
-		if (m_iComboCount < 4)
-			m_iComboCount += 4;
+		if (Changeable_Combo_Animation())
+		{
+			if (m_iComboCount < 4)
+				m_iComboCount += 4;
+		}
 	}
 	else
 	{
@@ -134,11 +140,27 @@ _bool CKiryu_KRS_Attack::Changeable_Combo_Animation()
 	if (m_iComboCount == 7)			// p_krs_cmb_04_fin가 끝날 위치를 지정한다
 		fInterval = 0.3f;			
 
-	CModel* pModelCom = static_cast<CModel*>(m_pPlayer->Get_Component(TEXT("Com_Model")));
-	if (fInterval < *pModelCom->Get_AnimationCurrentPosition() / *pModelCom->Get_AnimationDuration())
+	if (Checked_Animation_Ratio(fInterval))
+	{
+		m_isShaked = false;
 		return true;
-
+	}
+	
 	return false;
+}
+
+void CKiryu_KRS_Attack::Shaking()
+{
+	if (m_iComboCount > 3)
+	{
+		if (!m_isShaked && Checked_Animation_Ratio(0.3))
+		{
+			m_isShaked = true;
+			//카메라 쉐이킹
+			CCamera* pCamera = dynamic_cast<CCamera*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Camera"), CAMERA_PLAYER));
+			pCamera->Set_Shaking(true, { 1.f, 1.f, 0.f }, 0.2, 0.2);
+		}
+	}
 }
 
 CBehaviorAnimation* CKiryu_KRS_Attack::Create(CPlayer* pPlayer)

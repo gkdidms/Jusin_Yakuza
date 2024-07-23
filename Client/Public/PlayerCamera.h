@@ -12,8 +12,8 @@ class CPlayerCamera :
     public CCamera
 {
 private:
-    const _float MAX_DISTANCE = 3.5f;
-    const _float MIN_DISTANCE = 3.f;
+    const _float MAX_DISTANCE = 3.7f;
+    const _float MIN_DISTANCE = 3.0f;
 
 public:
     typedef struct tPlayerCameraDesc : public CAMERA_DESC
@@ -46,6 +46,7 @@ private:
 
     //처음 시작할때 설정
     void    Set_StartPos();
+    void    Adjust_Camera_Angle();
 
 private:
     class CSystemManager* m_pSystemManager = { nullptr };
@@ -61,11 +62,15 @@ private:
     _float m_fCamAngleX = 45.f;
     _float m_fCamAngleY = -90.f;
 
+    _float m_fPreMouseMoveY; // 이전 각도 값 저장
+    _float m_fPreMouseMoveX;
+
     XMVECTOR    m_vCamCollisionPos = { 0,0,0,1 };
     
-    _bool        m_bCamCollision = { false };
-    _bool        m_bBlock = { false };
-    _bool        m_bFirstCollision = { false }; // first collision check 
+    bool        m_bPreCamCollision = { false };
+    bool        m_bCamCollision = { false };
+    bool        m_bBlock = { false };
+    bool        m_bFirstCollision = { false }; // first collision check 
 
     _float       m_fTimer = { 0 };
 

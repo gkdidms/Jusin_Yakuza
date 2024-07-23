@@ -2,6 +2,7 @@
 #include "Kiryu_KRC_Attack.h"
 #include "Player.h"
 #include "Monster.h"
+#include "Camera.h"
 
 CKiryu_KRC_Attack::CKiryu_KRC_Attack()
 	:CBehaviorAnimation{}
@@ -42,6 +43,8 @@ void CKiryu_KRC_Attack::Tick(const _float& fTimeDelta)
 
 	if (m_isBut)
 		m_iComboCount = 7;
+
+	Shaking();
 }
 
 void CKiryu_KRC_Attack::Change_Animation()
@@ -69,6 +72,7 @@ void CKiryu_KRC_Attack::Reset()
 {
 	m_iComboCount = 0;
 	m_isBut = false;
+	m_isShaked = false;
 }
 
 void CKiryu_KRC_Attack::Combo_Count(_bool isFinAction)
@@ -87,8 +91,11 @@ void CKiryu_KRC_Attack::Combo_Count(_bool isFinAction)
 	{
 		m_pPlayer->Set_DamageAmplify(3.f);
 
-		if (m_iComboCount < 3)
-			m_iComboCount += 3;
+		if (Changeable_Combo_Animation())
+		{
+			if (m_iComboCount < 3)
+				m_iComboCount += 3;
+		}
 	}
 	else
 	{
@@ -120,14 +127,28 @@ _bool CKiryu_KRC_Attack::Changeable_Combo_Animation()
 {
 	_float fInterval = 0.4f;
 
-	if (m_iComboCount > 1)			// 그 이상은 피니시 블로우기때문에 중간이 끊지않는다
-		fInterval = 1.f;			// 1로 해두면 비율 연산 결과가 1이 넘을일이 없기때문에 아예 안끊김		
-
-	CModel* pModelCom = static_cast<CModel*>(m_pPlayer->Get_Component(TEXT("Com_Model")));
-	if (fInterval < *pModelCom->Get_AnimationCurrentPosition() / *pModelCom->Get_AnimationDuration())
+	if (Checked_Animation_Ratio(fInterval))
+	{
+		m_isShaked = false;
 		return true;
+	}
 
 	return false;
+}
+
+void CKiryu_KRC_Attack::Shaking()
+{
+	if (!m_isShaked && Checked_Animation_Ratio(0.2))
+	{
+		m_isShaked = true;
+		//카메라 쉐이킹
+		CCamera* pCamera = dynamic_cast<CCamera*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Camera"), CAMERA_PLAYER));
+
+		if(m_iComboCount < 2)
+			pCamera->Set_Shaking(true, { 1.f, 1.f, 0.f }, 0.2, 0.2);
+		else
+			pCamera->Set_Shaking(true, { 1.f, 1.f, 0.f }, 0.3, 0.3);
+	}
 }
 
 CBehaviorAnimation* CKiryu_KRC_Attack::Create(CPlayer* pPlayer)

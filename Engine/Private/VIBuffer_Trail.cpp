@@ -126,7 +126,8 @@ HRESULT CVIBuffer_Trail::Render()
 
 void CVIBuffer_Trail::Add_Trail(const _float& fTimeDelta, const _matrix WorldMatrix)
 {
-	VTXPOSTEX* pVertex;
+
+		/*VTXPOSTEX* pVertex;
 	_float3 vNewPos[2];
 
 	D3D11_MAPPED_SUBRESOURCE SubResource{};
@@ -150,20 +151,72 @@ void CVIBuffer_Trail::Add_Trail(const _float& fTimeDelta, const _matrix WorldMat
 	_float vTexcoordX = m_TrailInfos.size() * 2;
 	for (size_t i = 0; i < m_TrailInfos.size() * 2;)
 	{
-		_uint index = i * 2 + (m_iMaxTrail * 2) - 2;	//점인덱스
-		_float fWeight = _float(i) / (m_TrailInfos.size() * 2);//트레일 웨이트 [점2개 마다 보간]
-		
 
 			vResult[i].vPosition = (*tTrailInfo).vPos[0];
 			vResult[i].vTexcoord = _float2(1.f - (i / (vTexcoordX - 2.f)), 0.f);
 			++i;
 
 			vResult[i].vPosition = (*tTrailInfo).vPos[1];
-			vResult[i].vTexcoord = _float2(1.f - ((i - 1) / (vTexcoordX - 2.f)), 1.f);
+			vResult[i].vTexcoord = _float2(1.f - ((i ) / (vTexcoordX - 2.f)), 1.f);
 			++i;
 
 
 		++tTrailInfo;
+	}
+
+	m_pContext->Unmap(m_pVB, 0);
+
+	m_iCurrentIndices = (m_TrailInfos.size() - 1) * 2 * 3;
+*/
+
+	VTXPOSTEX* pVertex;
+	_float3 vNewPos[2];
+
+	D3D11_MAPPED_SUBRESOURCE SubResource{};
+	m_pContext->Map(m_pVB, 0, D3D11_MAP_WRITE_NO_OVERWRITE, 0, &SubResource);
+
+	VTXPOSTEX* vResult = ((VTXPOSTEX*)SubResource.pData);
+
+	XMStoreFloat3(&vNewPos[0], XMVector3TransformCoord(XMLoadFloat3(&m_vInitPosA), WorldMatrix));
+	XMStoreFloat3(&vNewPos[1], XMVector3TransformCoord(XMLoadFloat3(&m_vInitPosB), WorldMatrix));
+
+	if (m_iNumVertices <= m_TrailInfos.size() * 2)
+		m_TrailInfos.erase(m_TrailInfos.begin());
+
+	TRAIL_INFO Desc{};
+	Desc.vPos[0] = vNewPos[0];
+	Desc.vPos[1] = vNewPos[1];
+	m_TrailInfos.push_back(Desc);
+
+	auto tTrailInfo = m_TrailInfos.begin();
+
+	_float vTexcoordX = m_TrailInfos.size();
+
+	_uint trailIndex = 0;
+	for (size_t i = 0; i < m_TrailInfos.size()*2;)	
+	{
+
+			_float fWeight = _float(trailIndex) / m_TrailInfos.size();//트레일 웨이트 [점2개 마다 보간]
+
+			_float3 p0 = (trailIndex == 0) ? m_TrailInfos[trailIndex].vPos[0] : m_TrailInfos[trailIndex - 1].vPos[0];
+			_float3 p1 = m_TrailInfos[trailIndex].vPos[0];
+			_float3 p2 = (trailIndex + 1 < m_TrailInfos.size()) ? m_TrailInfos[trailIndex + 1].vPos[0] : m_TrailInfos[trailIndex].vPos[0];
+			_float3 p3 = (trailIndex + 2 < m_TrailInfos.size()) ? m_TrailInfos[trailIndex + 2].vPos[0] : (trailIndex + 1 < m_TrailInfos.size()) ? m_TrailInfos[trailIndex + 1].vPos[0] : m_TrailInfos[trailIndex].vPos[0];
+
+			XMStoreFloat3(&vResult[i].vPosition, XMVectorCatmullRom(XMLoadFloat3(&p0), XMLoadFloat3(&p1), XMLoadFloat3(&p2), XMLoadFloat3(&p3), fWeight));
+			vResult[i].vTexcoord = _float2(1.f== vTexcoordX ? 0.f :1.f - (trailIndex / (vTexcoordX - 1.f)), 0.f);
+
+
+
+			p0 = (trailIndex == 0) ? m_TrailInfos[trailIndex].vPos[1] : m_TrailInfos[trailIndex - 1].vPos[1];
+			p1 = m_TrailInfos[trailIndex].vPos[1];
+			p2 = (trailIndex + 1 < m_TrailInfos.size()) ? m_TrailInfos[trailIndex + 1].vPos[1] : m_TrailInfos[trailIndex].vPos[1];
+			p3 = (trailIndex + 2 < m_TrailInfos.size()) ? m_TrailInfos[trailIndex + 2].vPos[1] : (trailIndex + 1 < m_TrailInfos.size()) ? m_TrailInfos[trailIndex + 1].vPos[1] : m_TrailInfos[trailIndex].vPos[1];
+
+			XMStoreFloat3(&vResult[i + 1].vPosition, XMVectorCatmullRom(XMLoadFloat3(&p0), XMLoadFloat3(&p1), XMLoadFloat3(&p2), XMLoadFloat3(&p3), fWeight));
+			vResult[i+1].vTexcoord = _float2(1.f == vTexcoordX ? 0.f : 1.f - ((trailIndex + 1) / (vTexcoordX - 1.f)), 1.f);
+			i += 2;
+			++trailIndex;
 	}
 
 	m_pContext->Unmap(m_pVB, 0);
@@ -178,9 +231,9 @@ void CVIBuffer_Trail::Reset_Trail()
 
 	VTXPOSTEX* vResult = ((VTXPOSTEX*)SubResource.pData);
 
-	for (size_t i = 0; i < m_TrailInfos.size() * 2;)
+	for (size_t i = 0; i < m_iNumVertices;)
 	{
-		vResult[i].vPosition = _float3{ 0.f, 0.f, 0.f };
+  		vResult[i].vPosition = _float3{ 0.f, 0.f, 0.f };
 		vResult[i].vTexcoord = _float2(0.f, 0.f);
 		++i;
 

@@ -234,7 +234,7 @@ HRESULT CRenderer::Ready_Targets()
 		return E_FAIL;
 
 	/* Target_LightDepth */
-	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_LightDepth"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(1.f, 1.f, 1.f, 1.f), 3)))
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_LightDepth"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R32_FLOAT, _float4(1.f, 1.f, 1.f, 1.f), 3)))
 		return E_FAIL;
 
 	/* Target_LightMap */
@@ -513,7 +513,7 @@ HRESULT CRenderer::Ready_LightDepth()
 	if (nullptr == m_pDevice)
 		return E_FAIL;
 
-	ID3D11Texture2D* pDepthStencilTexture = nullptr;
+	ID3D11Texture2D* pLightTextureView = nullptr;
 
 	D3D11_TEXTURE2D_DESC	TextureDesc;
 	ZeroMemory(&TextureDesc, sizeof(D3D11_TEXTURE2D_DESC));
@@ -532,19 +532,17 @@ HRESULT CRenderer::Ready_LightDepth()
 	TextureDesc.CPUAccessFlags = 0;
 	TextureDesc.MiscFlags = 0;
 
-	if (FAILED(m_pDevice->CreateTexture2D(&TextureDesc, nullptr, &pDepthStencilTexture)))
+	if (FAILED(m_pDevice->CreateTexture2D(&TextureDesc, nullptr, &pLightTextureView)))
 		return E_FAIL;
 
 	D3D11_DEPTH_STENCIL_VIEW_DESC DepthDesc{ DXGI_FORMAT_D24_UNORM_S8_UINT, D3D11_DSV_DIMENSION_TEXTURE2DARRAY, 0 };
 	DepthDesc.Texture2DArray.ArraySize = 3;
 	DepthDesc.Texture2DArray.FirstArraySlice = 0;
 	DepthDesc.Texture2DArray.MipSlice = 0;
-	if (FAILED(m_pDevice->CreateDepthStencilView(pDepthStencilTexture, &DepthDesc, &m_pLightDepthStencilView)))
-		return E_FAIL;
-	if (FAILED(m_pDevice->CreateDepthStencilView(pDepthStencilTexture, nullptr, &m_pPassiveLightDepthStencilView))) // 고정용 그림자 파일
+	if (FAILED(m_pDevice->CreateDepthStencilView(pLightTextureView, &DepthDesc, &m_pLightDepthStencilView)))
 		return E_FAIL;
 
-	Safe_Release(pDepthStencilTexture);
+	Safe_Release(pLightTextureView);
 
 	return S_OK;
 }
@@ -1014,11 +1012,6 @@ void CRenderer::Render_CopyBackBuffer()
 	if (FAILED(m_pShader->Bind_Matrix("g_ProjMatrixInv", m_pGameInstance->Get_Transform_Inverse_Float4x4(CPipeLine::D3DTS_PROJ))))
 		return;
 
-	if (FAILED(m_pShader->Bind_Matrix("g_CamViewMatrix", m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_VIEW))))
-		return;
-	if (FAILED(m_pShader->Bind_Matrix("g_CamProjMatrix", m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_PROJ))))
-		return;
-
 	const _float4x4* ViewMatrix;
 	const _float4x4* ProjMatrix;
 
@@ -1051,7 +1044,7 @@ void CRenderer::Render_CopyBackBuffer()
 		return;
 	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_LightDepth"), m_pShader, "g_LightDepthTextureArray")))
 		return;
-	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_NonBlendDepth"), m_pShader, "g_DepthTexture")))
+	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Depth"), m_pShader, "g_DepthTexture")))
 		return;
 	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Specular"), m_pShader, "g_SpecularTexture")))
 		return;
@@ -1868,7 +1861,6 @@ void CRenderer::Free()
 	Safe_Delete_Array(m_vSSAOKernal);
 
 	Safe_Release(m_pLightDepthStencilView);
-	Safe_Release(m_pPassiveLightDepthStencilView);
 	Safe_Release(m_pSSAONoiseView);
 
 	Safe_Release(m_pShader);
