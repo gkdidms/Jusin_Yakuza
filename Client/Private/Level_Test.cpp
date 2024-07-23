@@ -44,7 +44,6 @@ HRESULT CLevel_Test::Initialize()
 	//if (FAILED(Ready_Effect(TEXT("Layer_Effect"))))
 	//	return E_FAIL;
 
-
 	m_pFileTotalManager->Set_MapObj_In_Client(99, LEVEL_TEST);
 	m_pFileTotalManager->Set_Lights_In_Client(6);
 	m_pFileTotalManager->Set_Collider_In_Client(6, LEVEL_TEST);

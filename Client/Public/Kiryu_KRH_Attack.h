@@ -24,6 +24,7 @@ public:
 
 private:
 	_bool Changeable_Combo_Animation();
+	void Shaking();
 
 public:
 	static CBehaviorAnimation* Create(class CPlayer* pPlayer);
@@ -32,5 +33,6 @@ public:
 private:
 	_int m_iComboCount = { -1 };
 	_bool m_isPunch = { false };
+	_bool m_isShaked = { false };
 };
 END

@@ -197,6 +197,7 @@
     <ClInclude Include="..\Public\Kiryu_KRC_Guard.h" />
     <ClInclude Include="..\Public\Kiryu_KRH_Down.h" />
     <ClInclude Include="..\Public\Kiryu_KRS_Down.h" />
+    <ClInclude Include="..\Public\Kiryu_KRS_Grab.h" />
     <ClInclude Include="..\Public\LevelTrigger.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
@@ -336,6 +337,7 @@
     <ClCompile Include="..\Private\Kiryu_KRC_Guard.cpp" />
     <ClCompile Include="..\Private\Kiryu_KRH_Down.cpp" />
     <ClCompile Include="..\Private\Kiryu_KRS_Down.cpp" />
+    <ClCompile Include="..\Private\Kiryu_KRS_Grab.cpp" />
     <ClCompile Include="..\Private\LevelTrigger.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>

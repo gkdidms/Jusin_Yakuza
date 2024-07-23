@@ -1,9 +1,9 @@
 #include "GameInstance.h"
-#include "Kiryu_KRS_KickCombo.h"
+#include "Kiryu_KRS_Grab.h"
 #include "Player.h"
 #include "Camera.h"
 
-CKiryu_KRS_KickCombo::CKiryu_KRS_KickCombo()
+CKiryu_KRS_Grab::CKiryu_KRS_Grab()
 	:CBehaviorAnimation{}
 {
 	m_AnimationIndices.push_back(333);	//+[333]	p_krs_atk_kick_f[p_krs_atk_kick_f]
@@ -11,7 +11,7 @@ CKiryu_KRS_KickCombo::CKiryu_KRS_KickCombo()
 	m_AnimationIndices.push_back(335);	//+[335]	p_krs_atk_kick_f_03[p_krs_atk_kick_f_03]
 }
 
-void CKiryu_KRS_KickCombo::Tick(const _float& fTimeDelta)
+void CKiryu_KRS_Grab::Tick(const _float& fTimeDelta)
 {
 	CLandObject* pTargetObject = m_pPlayer->Get_TargetObject();
 
@@ -24,14 +24,14 @@ void CKiryu_KRS_KickCombo::Tick(const _float& fTimeDelta)
 	Shaking();
 }
 
-void CKiryu_KRS_KickCombo::Change_Animation()
+void CKiryu_KRS_Grab::Change_Animation()
 {
 	if (0 > m_iComboCount) return;
 
 	m_pPlayer->Change_Animation(m_AnimationIndices[m_iComboCount]);
 }
 
-_bool CKiryu_KRS_KickCombo::Get_AnimationEnd()
+_bool CKiryu_KRS_Grab::Get_AnimationEnd()
 {
 	CModel* pModelCom = static_cast<CModel*>(m_pPlayer->Get_Component(TEXT("Com_Model")));
 	if (pModelCom->Get_AnimFinished())
@@ -43,13 +43,13 @@ _bool CKiryu_KRS_KickCombo::Get_AnimationEnd()
 	return false;
 }
 
-void CKiryu_KRS_KickCombo::Reset()
+void CKiryu_KRS_Grab::Reset()
 {
 	m_iComboCount = 0;
 	m_isShaked = false;
 }
 
-void CKiryu_KRS_KickCombo::Combo_Count(_bool isFinAction)
+void CKiryu_KRS_Grab::Combo_Count(_bool isFinAction)
 {
 	if (Changeable_Combo_Animation())
 	{
@@ -60,7 +60,7 @@ void CKiryu_KRS_KickCombo::Combo_Count(_bool isFinAction)
 	}
 }
 
-_bool CKiryu_KRS_KickCombo::Changeable_Combo_Animation()
+_bool CKiryu_KRS_Grab::Changeable_Combo_Animation()
 {
 	_float fInterval = 0.18f;
 
@@ -79,7 +79,7 @@ _bool CKiryu_KRS_KickCombo::Changeable_Combo_Animation()
 	return false;
 }
 
-void CKiryu_KRS_KickCombo::Shaking()
+void CKiryu_KRS_Grab::Shaking()
 {
 	// Å±ÄÞº¸ Ã¹Å¸¿¡´Â ½¦ÀÌÅ· Á¦¿Ü
 	if (m_iComboCount > 0)
@@ -94,9 +94,9 @@ void CKiryu_KRS_KickCombo::Shaking()
 	}
 }
 
-CBehaviorAnimation* CKiryu_KRS_KickCombo::Create(CPlayer* pPlayer)
+CBehaviorAnimation* CKiryu_KRS_Grab::Create(CPlayer* pPlayer)
 {
-	CKiryu_KRS_KickCombo* pInstnace = new CKiryu_KRS_KickCombo();
+	CKiryu_KRS_Grab* pInstnace = new CKiryu_KRS_Grab();
 
 	if (nullptr == pInstnace) 
 	{
@@ -110,7 +110,7 @@ CBehaviorAnimation* CKiryu_KRS_KickCombo::Create(CPlayer* pPlayer)
 	return pInstnace;
 }
 
-void CKiryu_KRS_KickCombo::Free()
+void CKiryu_KRS_Grab::Free()
 {
 	__super::Free();
 }

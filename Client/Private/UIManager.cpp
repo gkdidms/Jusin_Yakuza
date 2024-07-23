@@ -13,6 +13,8 @@
 #include "UIMainMenu.h"
 #include "InventoryManager.h"
 
+#include "Player.h"
+
 IMPLEMENT_SINGLETON(CUIManager)
 
 CUIManager::CUIManager()
@@ -87,7 +89,6 @@ void CUIManager::Open_Scene(const wstring strSceneName)
 {
 	CUIScene* pUIScene = Find_Scene(strSceneName);	
 
-	
 	if (pUIScene->Get_isLoading())
 	{
 		if(!m_PlayScene.empty())

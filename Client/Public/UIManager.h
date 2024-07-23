@@ -40,6 +40,13 @@ public:
     HRESULT Tick(const _float& fTimeDelta);
     HRESULT Late_Tick(const _float& fTimeDelta);
 
+    /* Setter */
+public:
+    void Set_Player(class CPlayer* pPlayer)
+    {
+        m_pPlayer = pPlayer;
+    }
+
 
 private:
 
@@ -51,7 +58,7 @@ private:
     vector< class CUIScene*> m_PlayScene ;//사용하는 씬만 담아 상호 작용(팝업용)창
     vector<class CUIScene*> m_AlwaysUI;//항상 떠있는 ui (피통 스킬상태 소지품)
     class CInventoryManager* m_pInventory = {nullptr};
-    
+
 
 #ifdef _DEBUG
 private:
