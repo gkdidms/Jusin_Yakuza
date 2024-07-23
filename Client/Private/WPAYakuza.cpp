@@ -213,17 +213,20 @@ void CWPAYakuza::Change_Animation()
 	{
 		//e_wpa_cmb_01[e_wpa_cmb_01]
 		m_strAnimName = "e_wpa_cmb_01";
+		Shaking(0.3, 0.2, 0.2);
 		break;
 	}
 	case MONSTER_CMD_2:
 	{
 		//e_wpa_cmb_02[e_wpa_cmb_02]
 		m_strAnimName = "e_wpa_cmb_02";
+		Shaking(0.3, 0.2, 0.2);
 		break;
 	}
 	case MONSTER_HEAVY_ATTACK:
 	{
 		m_strAnimName = "e_wpa_atk_heavy";
+		Shaking(0.3, 0.3, 0.3);
 		break;
 	}
 	default:
@@ -237,7 +240,10 @@ void CWPAYakuza::Change_Animation()
 
 	// 실제로 애니메이션 체인지가 일어났을 때 켜져있던 어택 콜라이더를 전부 끈다
 	if (m_pModelCom->Set_AnimationIndex(m_iAnim, m_pAnimCom->Get_Animations(), m_fChangeInterval))
+	{
 		Off_Attack_Colliders();
+		Reset_Shaking_Variable();
+	}
 
 	m_pData->Set_CurrentAnimation(m_strAnimName);
 }

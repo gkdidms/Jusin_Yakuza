@@ -499,12 +499,14 @@ void CMonster::Change_Animation()
 		{
 			//e_knk_atk_chop[e_knk_atk_chop]
 			m_strAnimName = "e_knk_atk_chop";
+			Shaking(0.3, 0.2, 0.3);
 			break;
 		}
 		case MONSTER_ANGRY_KICK:
 		{
 			//e_knk_atk_kick[e_knk_atk_kick]
 			m_strAnimName = "e_knk_atk_kick";
+			Shaking(0.3, 0.2, 0.3);
 			break;
 		}
 		case MONSTER_DED_L:

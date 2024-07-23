@@ -148,6 +148,12 @@ public:
     // 2인자: 쉐이킹 길이
     // 3인자: 쉐이킹 범위
     virtual void Shaking(_float fRatio, _float fShakeDuration = 0.3f, _float fShakeMagnitude = 0.3f);
+    void Reset_Shaking_Variable()
+    {
+        m_isShaked = { false };
+        m_iShakedCount = { 0 };
+    };
+
     _bool Checked_Animation_Ratio(_float fRatio);
 
 protected:
@@ -175,7 +181,9 @@ protected:
     _bool m_isColl = { false }; // 충돌되었는지 아닌지 체크해야함.
     _bool m_isDown = { false }; // 다운되었는가?
 
+    /* 쉐이킹 관련 정보들 */
     _bool m_isShaked = { false };       // 쉐이킹이 실행되었는지?
+    _uint m_iShakedCount = { 0 };       // 몇번 째 실행되었는지? (한 애니메이션 내에 여러번 실행되어야할 경우 사용)
 
 protected:
     virtual void Change_Animation();
