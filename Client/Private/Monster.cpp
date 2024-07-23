@@ -209,8 +209,9 @@ void CMonster::Take_Damage(_uint iHitColliderType, const _float3& vDir, _float f
 	m_isColl = true;
 	m_fHitDamage = fDamage;
 
-	//데미지 처리하기
-	if (!m_isObjectDead)
+	
+	//데미지 처리하기 (가드사용하고있지 않을때)
+	if (!m_isObjectDead && !m_pTree->isGuard())
 	{
 		m_Info.iHp -= fDamage;
 		if (m_Info.iHp <= 0.f)
