@@ -12,8 +12,8 @@ class CPlayerCamera :
     public CCamera
 {
 private:
-    const _float MAX_DISTANCE = 3.0f;
-    const _float MIN_DISTANCE = 2.8f;
+    const _float MAX_DISTANCE = 3.7f;
+    const _float MIN_DISTANCE = 3.0f;
 
 public:
     typedef struct tPlayerCameraDesc : public CAMERA_DESC

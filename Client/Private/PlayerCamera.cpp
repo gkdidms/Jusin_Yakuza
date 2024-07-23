@@ -91,50 +91,25 @@ void CPlayerCamera::Late_Tick(const _float& fTimeDelta)
 	_vector vPlayerPosition;
 	memcpy(&vPlayerPosition, m_pPlayerMatrix->m[CTransform::STATE_POSITION], sizeof(_float4));
 
-	float	fDistance = XMVectorGetX(XMVector3Length(m_pTransformCom->Get_State(CTransform::STATE_POSITION) - vPlayerPosition));
+	m_bCamCollision = m_pCollisionManager->Map_Collision_Move(m_pColliderCom, m_pTransformCom);
 
-	bool bCollision = false;
-
-	if (fDistance <= MIN_DISTANCE)
-	{
-		// 움직이게 하지 않기
-		/*bCollision = m_pCollisionManager->Check_Map_Collision(m_pColliderCom);*/
-		bCollision = m_pCollisionManager->Map_Collision_Move(m_pColliderCom, m_pTransformCom);
-		m_bBlock = true;
-	}
-	else
-	{
-		// bool 값 받기 + 벽 밖으로 위치시키기
-		bCollision = m_pCollisionManager->Map_Collision_Move(m_pColliderCom, m_pTransformCom);
-		m_bBlock = false;
-	}
-
-	m_fCamDistance = fDistance;
+	m_fCamDistance = XMVectorGetX(XMVector3Length(m_pTransformCom->Get_State(CTransform::STATE_POSITION) - vPlayerPosition));
 
 	if (MAX_DISTANCE < m_fCamDistance)
 		m_fCamDistance = MAX_DISTANCE;
 	else if (MIN_DISTANCE > m_fCamDistance)
 		m_fCamDistance = MIN_DISTANCE;
 
-
-
 	// 충돌 후 거리 및 각도 조정
-	if (bCollision)
+	if (m_bCamCollision)
 	{
 		Adjust_Camera_Angle();
 	}
 
-
-
 	Compute_View(fTimeDelta);
 
-
-	float	fDistancechk = XMVectorGetX(XMVector3Length(m_pTransformCom->Get_State(CTransform::STATE_POSITION) - vPlayerPosition));
-	printf("%f", fDistancechk);
-
-
 	// 충돌시 -> check_map_collision으로 이미 이동시켜놓음. 그래서 충돌 안생기는거처럼 보일뿐
-	if (false == bCollision && m_fCamDistance < MAX_DISTANCE)
+	if (false == m_bCamCollision && m_fCamDistance < MAX_DISTANCE)
 	{
 		m_fCamDistance += 0.01;
 		if (MAX_DISTANCE < m_fCamDistance)
@@ -209,7 +184,7 @@ void CPlayerCamera::Compute_View(const _float& fTimeDelta)
 	vCamPosition += XMVectorSet(XMVectorGetX(vPlayerPosition), XMVectorGetY(vPlayerPosition), XMVectorGetZ(vPlayerPosition), 0);
 
 	// 이전 카메라 포지션과 새로운 카메라 포지션 사이의 선형보간
-	_vector vLerpedCamPosition = XMVectorLerp(vPrevCamPosition, vCamPosition, fTimeDelta * 30);
+	_vector vLerpedCamPosition = XMVectorLerp(vPrevCamPosition, vCamPosition, fTimeDelta * 15);
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vLerpedCamPosition);
 
