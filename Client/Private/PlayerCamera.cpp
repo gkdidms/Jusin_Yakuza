@@ -88,33 +88,47 @@ void CPlayerCamera::Late_Tick(const _float& fTimeDelta)
 {
 	if (m_pSystemManager->Get_Camera() != CAMERA_PLAYER) return;
 
+	_vector vPlayerPosition;
+	memcpy(&vPlayerPosition, m_pPlayerMatrix->m[CTransform::STATE_POSITION], sizeof(_float4));
+
 	m_bCamCollision = m_pCollisionManager->Map_Collision_Move(m_pColliderCom, m_pTransformCom);
 
-	//_vector vPlayerPosition;
-	//memcpy(&vPlayerPosition, m_pPlayerMatrix->m[CTransform::STATE_POSITION], sizeof(_float4));
+	m_fCamDistance = XMVectorGetX(XMVector3Length(m_pTransformCom->Get_State(CTransform::STATE_POSITION) - vPlayerPosition));
 
-	//if (false == m_bFirstCollision && true == m_bCamCollision)
-	//{
-	//	// Block 되기전엔 Lerp로 선형보간 진행
-	//	m_vCamCollisionPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-	//	m_fCamDistance = XMVectorGetX(XMVector3Length(m_vCamCollisionPos - vPlayerPosition));
-	//	m_bFirstCollision = true;
-	//}
+	if (MAX_DISTANCE < m_fCamDistance)
+		m_fCamDistance = MAX_DISTANCE;
+	else if (MIN_DISTANCE > m_fCamDistance)
+		m_fCamDistance = MIN_DISTANCE;
 
-
-	//if (m_fCamDistance > MAX_DISTANCE)
-	//	m_fCamDistance = MAX_DISTANCE;
+	// 충돌 후 거리 및 각도 조정
+	if (m_bCamCollision)
+	{
+		Adjust_Camera_Angle();
+	}
 
 	Compute_View(fTimeDelta);
+
+	// 충돌시 -> check_map_collision으로 이미 이동시켜놓음. 그래서 충돌 안생기는거처럼 보일뿐
+	if (false == m_bCamCollision && m_fCamDistance < MAX_DISTANCE)
+	{
+		m_fCamDistance += 0.01;
+		if (MAX_DISTANCE < m_fCamDistance)
+			m_fCamDistance = MAX_DISTANCE;
+	}
+
+	if (MIN_DISTANCE >= m_fCamDistance)
+	{
+		m_fCamDistance = MIN_DISTANCE;
+	}
 
 
 	__super::Tick(fTimeDelta);
 
 
-#ifdef _DEBUG
-	// 테스트용으로 추가함
-	m_pGameInstance->Add_Renderer(CRenderer::RENDER_PRIORITY, this);
-#endif
+//#ifdef _DEBUG
+//	// 테스트용으로 추가함
+//	m_pGameInstance->Add_Renderer(CRenderer::RENDER_PRIORITY, this);
+//#endif
 }
 
 HRESULT CPlayerCamera::Render()
@@ -145,35 +159,14 @@ void CPlayerCamera::Compute_View(const _float& fTimeDelta)
 	_long MouseMoveX = m_pGameInstance->Get_DIMouseMove(DIMS_X);
 	_long MouseMoveY = m_pGameInstance->Get_DIMouseMove(DIMS_Y);
 
-	if (MIN_DISTANCE < m_fCamDistance && false == m_bBlock && true == m_bCamCollision)
-	{
-		//계속 줄여주기
-		m_fCamDistance -= 0.01;
-	}
-	else if (MIN_DISTANCE >= m_fCamDistance && true == m_bCamCollision)
-	{
-		m_bBlock = true;
-	}
-	else if (false == m_bCamCollision && (0 != MouseMoveX || 0 != MouseMoveY) && false == m_bBlock)
-	{
-		// 충돌안할때는 원래 max_distance로 천천히 돌아가기
-		m_bBlock = false;
-		m_bFirstCollision = false;
-		if (MAX_DISTANCE > m_fCamDistance)
-			m_fCamDistance += 0.01;
-		else
-			m_fCamDistance = MAX_DISTANCE;
-	}
-
-
 	m_fCamAngleY -= fTimeDelta * m_fSensor * MouseMoveX;
 	m_fCamAngleX += fTimeDelta * m_fSensor * MouseMoveY;
 
 	// 카메라 각도 제한 (수직 각도 제한)
-	if (m_fCamAngleX > 80.0f)  // 캐릭터를 아래서 보지 않도록 최대 각도를 45도로 제한
-		m_fCamAngleX = 80.0f;
-	if (m_fCamAngleX < 20) // 카메라가 수직 아래로 향하지 않도록 최소 각도를 -89도로 제한
-		m_fCamAngleX = 20;
+	if (m_fCamAngleX > 70.0f)  // 캐릭터를 아래서 보지 않도록 최대 각도를 45도로 제한
+		m_fCamAngleX = 70.0f;
+	if (m_fCamAngleX < 30) // 카메라가 수직 아래로 향하지 않도록 최소 각도를 -89도로 제한
+		m_fCamAngleX = 30;
 
 	// 이전 카메라 포지션 저장
 	_vector vPrevCamPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
@@ -190,75 +183,14 @@ void CPlayerCamera::Compute_View(const _float& fTimeDelta)
 	vCamPosition += XMVectorSet(XMVectorGetX(vPlayerPosition), XMVectorGetY(vPlayerPosition), XMVectorGetZ(vPlayerPosition), 0);
 
 	// 이전 카메라 포지션과 새로운 카메라 포지션 사이의 선형보간
-	_vector vLerpedCamPosition = XMVectorLerp(vPrevCamPosition, vCamPosition, fTimeDelta * 5.f);
+	_vector vLerpedCamPosition = XMVectorLerp(vPrevCamPosition, vCamPosition, fTimeDelta * 15);
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vLerpedCamPosition);
-
-	//if (false == m_bBlock)
-	//{
-	//	m_fCamAngleY -= fTimeDelta * m_fSensor * MouseMoveX;
-	//	m_fCamAngleX += fTimeDelta * m_fSensor * MouseMoveY;
-
-	//	// 카메라 각도 제한 (수직 각도 제한)
-	//	if (m_fCamAngleX > 80.0f)  // 캐릭터를 아래서 보지 않도록 최대 각도를 45도로 제한
-	//		m_fCamAngleX = 80.0f;
-	//	if (m_fCamAngleX < 20) // 카메라가 수직 아래로 향하지 않도록 최소 각도를 -89도로 제한
-	//		m_fCamAngleX = 20;
-
-	//	// 이전 카메라 포지션 저장
-	//	_vector vPrevCamPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-
-	//	// 카메라 포지션 계산
-	//	_vector vCamPosition = XMVectorSet(
-	//		m_fCamDistance * cosf(XMConvertToRadians(m_fCamAngleY)) * cosf(XMConvertToRadians(m_fCamAngleX)),
-	//		m_fCamDistance * sinf(XMConvertToRadians(m_fCamAngleX)),
-	//		m_fCamDistance * sinf(XMConvertToRadians(m_fCamAngleY)) * cosf(XMConvertToRadians(m_fCamAngleX)),
-	//		1.f
-	//	);
-
-
-	//	vCamPosition += XMVectorSet(XMVectorGetX(vPlayerPosition), XMVectorGetY(vPlayerPosition), XMVectorGetZ(vPlayerPosition), 0);
-
-	//	// 이전 카메라 포지션과 새로운 카메라 포지션 사이의 선형보간
-	//	_vector vLerpedCamPosition = XMVectorLerp(vPrevCamPosition, vCamPosition, fTimeDelta * 5.f);
-
-	//	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vLerpedCamPosition);
-	//}
-	//else
-	//{
-	//	m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_vCamCollisionPos);
-
-	//	m_fCamAngleX += 1;
-
-	//	//카메라 각도 제한 (수직 각도 제한)
-	//	if (m_fCamAngleX > 80.0f)  // 캐릭터를 아래서 보지 않도록 최대 각도를 45도로 제한
-	//		m_fCamAngleX = 80.0f;
-	//	if (m_fCamAngleX < 20) // 카메라가 수직 아래로 향하지 않도록 최소 각도를 -89도로 제한
-	//		m_fCamAngleX = 20;
-
-	//	_vector vCamPosition = XMVectorSet(
-	//		m_fCamDistance * cosf(XMConvertToRadians(m_fCamAngleY)) * cosf(XMConvertToRadians(m_fCamAngleX)),
-	//		m_fCamDistance * sinf(XMConvertToRadians(m_fCamAngleX)),
-	//		m_fCamDistance * sinf(XMConvertToRadians(m_fCamAngleY)) * cosf(XMConvertToRadians(m_fCamAngleX)),
-	//		1.f
-	//	);
-
-	//	vCamPosition += XMVectorSet(XMVectorGetX(vPlayerPosition), XMVectorGetY(vPlayerPosition), XMVectorGetZ(vPlayerPosition), 0);
-
-	//	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vCamPosition);
-
-	//	float fDistance = XMVectorGetX(XMVector3Length(m_pTransformCom->Get_State(CTransform::STATE_POSITION) - vPlayerPosition));
-
-	//	if (MAX_DISTANCE <= fDistance)
-	//		m_bBlock = false;
-	//}
-
 
 	_vector vLookAt = XMVectorSet(XMVectorGetX(vPlayerPosition), XMVectorGetY(vPlayerPosition) + 1.f, XMVectorGetZ(vPlayerPosition), 1);
 
 	// 카메라가 플레이어를 바라보도록 설정
 	m_pTransformCom->LookAt(vLookAt);
-
 
 	// 월드 매트릭스 업데이트
 	XMStoreFloat4x4(&m_WorldMatrix, m_pTransformCom->Get_WorldMatrix());
@@ -268,7 +200,7 @@ void CPlayerCamera::Set_StartPos()
 {
 	if (LEVEL::LEVEL_OFFICE_1F == m_iCurrentLevel)
 	{
-		m_fCamAngleY = -45;
+		m_fCamAngleY = -90;
 	}
 	else if (LEVEL::LEVEL_OFFICE_2F == m_iCurrentLevel)
 	{
@@ -297,6 +229,25 @@ void CPlayerCamera::Set_StartPos()
 		m_fCamAngleX = 0;
 	}
 }
+
+void CPlayerCamera::Adjust_Camera_Angle()
+{
+	_vector vPlayerPosition;
+	memcpy(&vPlayerPosition, m_pPlayerMatrix->m[CTransform::STATE_POSITION], sizeof(_float4));
+
+	_vector vCamDirection = XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_POSITION) - vPlayerPosition);
+
+	// 새로운 각도 계산
+	m_fCamAngleY = XMConvertToDegrees(atan2f(XMVectorGetZ(vCamDirection), XMVectorGetX(vCamDirection)));
+	m_fCamAngleX = XMConvertToDegrees(asinf(XMVectorGetY(vCamDirection) / m_fCamDistance));
+
+	// 각도 제한 적용
+	if (m_fCamAngleX > 70.0f)
+		m_fCamAngleX = 70.0f;
+	if (m_fCamAngleX < 30.0f)
+		m_fCamAngleX = 30.0f;
+}
+
 
 HRESULT CPlayerCamera::Add_Components()
 {

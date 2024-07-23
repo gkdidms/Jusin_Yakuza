@@ -320,6 +320,10 @@ _bool CNavigation::isMove(_fvector vMovePos)
 
 _float CNavigation::Compute_Height(_fvector vPosition)
 {
+    // 예외처리
+    if (-1 == m_iCurrentIndex)
+        m_iCurrentIndex = 0;
+
     return m_Cells[m_iCurrentIndex]->Compute_Height(vPosition);
 }
 

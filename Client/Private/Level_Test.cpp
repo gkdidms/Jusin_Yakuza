@@ -35,14 +35,14 @@ HRESULT CLevel_Test::Initialize()
 	if (FAILED(Ready_Monster(TEXT("Layer_Monster"))))
 		return E_FAIL;
 
-	if (FAILED(Ready_Camera(TEXT("Layer_Camera"))))
-		return E_FAIL;
-
 	//if (FAILED(Ready_Map(TEXT("Layer_Map"))))
 	//	return E_FAIL;
 
 	//if (FAILED(Ready_Effect(TEXT("Layer_Effect"))))
 	//	return E_FAIL;
+
+	if (FAILED(Ready_Camera(TEXT("Layer_Camera"))))
+		return E_FAIL;
 
 	m_pFileTotalManager->Set_MapObj_In_Client(99, LEVEL_TEST);
 	m_pFileTotalManager->Set_Lights_In_Client(6);
@@ -57,10 +57,6 @@ HRESULT CLevel_Test::Initialize()
 
 void CLevel_Test::Tick(const _float& fTimeDelta)
 {
-
-
-
-
 #ifdef _DEBUG
 	SetWindowText(g_hWnd, TEXT("테스트 레벨"));
 #endif

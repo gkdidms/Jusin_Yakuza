@@ -244,7 +244,7 @@ _bool CCollision_Manager::Map_Collision_Move(CCollider* pCollider, CTransform* p
 
                 ResolveCollision(static_cast<BoundingSphere*>(pCollider->Get_Desc()), pDesc, pTransform);
 
-                break;
+                return true;
             }
 
 
@@ -264,7 +264,7 @@ _bool CCollision_Manager::Map_Collision_Move(CCollider* pCollider, CTransform* p
                 BoundingSphere* pDesc = static_cast<BoundingSphere*>(pMapCollider->Get_Desc());
                 vCenter = pDesc->Center;
 
-                break;
+                return true;
             }
 
             }
@@ -290,7 +290,7 @@ _bool CCollision_Manager::Check_Map_Collision(CCollider* pCollider)
                 BoundingBox* pDesc = static_cast<BoundingBox*>(pMapCollider->Get_Desc());
                 vCenter = pDesc->Center;
 
-                break;
+                return true;
             }
 
 
@@ -308,7 +308,7 @@ _bool CCollision_Manager::Check_Map_Collision(CCollider* pCollider)
                 BoundingSphere* pDesc = static_cast<BoundingSphere*>(pMapCollider->Get_Desc());
                 vCenter = pDesc->Center;
 
-                break;
+                return true;
             }
 
             }
