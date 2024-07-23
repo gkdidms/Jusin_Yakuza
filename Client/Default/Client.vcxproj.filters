@@ -371,6 +371,9 @@
     <ClCompile Include="..\Private\UILogo.cpp">
       <Filter>95.Utility\05.UIManager\UIScene\UILogo</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\Kiryu_KRS_Grab.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\Grab</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\MainApp.h">
@@ -772,6 +775,9 @@
     </ClInclude>
     <ClInclude Include="..\Public\UILogo.h">
       <Filter>95.Utility\05.UIManager\UIScene\UILogo</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Kiryu_KRS_Grab.h">
+      <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\Grab</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1187,6 +1193,9 @@
     </Filter>
     <Filter Include="01.Levels\00.MainApp">
       <UniqueIdentifier>{556d0fda-c211-44a2-8eb0-f1fedf692025}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\Grab">
+      <UniqueIdentifier>{361ce6c0-0d0d-4b6e-a702-8485478db768}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

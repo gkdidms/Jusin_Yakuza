@@ -18,7 +18,7 @@ public:
 
 	enum STATE_TYPE
 	{
-		GUARD, HIT, COUNTER_ATTACK
+		GUARD, HIT, COUNTER_ATTACK, RUSH,
 	};
 
 

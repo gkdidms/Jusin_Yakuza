@@ -34,7 +34,7 @@ public:
     enum class KRS_BEHAVIOR_STATE
     {
         BTL_START, IDLE, WALK, RUN, ATTACK, HIT, 
-        SWAY, DOWN, 
+        SWAY, DOWN, GRAB,
         SKILL_FLY_KICK, SKILL_KICK_COMBO,
         KRS_BEHAVIOR_END
     };
@@ -51,7 +51,7 @@ public:
     enum class KRC_BEHAVIOR_STATE
     {
         BTL_START, IDLE, WALK, RUN, ATTACK, HIT,
-        SWAY, DOWN, 
+        SWAY, DOWN, GRAB,
         GUARD,
         KRC_BEHAVIOR_END
     };
