@@ -18,7 +18,7 @@ public:
 
     virtual HRESULT Add_UIData(class CUI_Object* pUIObject) override;
 
-    virtual HRESULT Initialize(void* pArg) override;
+    virtual HRESULT Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg) override;
     virtual HRESULT Tick(const _float& fTimeDelta) override;
     virtual HRESULT Late_Tick(const _float& fTimeDelta) override;
 
@@ -32,7 +32,7 @@ private:
     vector <class CBtn*> m_Toggle;
     _uint m_iToggle = {0};
 public:
-    static CUIInven* Create(void* pArg=nullptr);    
+    static CUIInven* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg=nullptr);
     virtual void Free();
 };
 END

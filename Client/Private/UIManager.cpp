@@ -10,6 +10,7 @@
 #include "UIMoney.h"
 #include "UIInven.h"
 #include "UILogo.h"
+#include "UIMainMenu.h"
 #include "InventoryManager.h"
 
 IMPLEMENT_SINGLETON(CUIManager)
@@ -20,36 +21,50 @@ CUIManager::CUIManager()
 	Safe_AddRef(m_pGameInstance);
 }
 
-HRESULT CUIManager::Initialize()
+HRESULT CUIManager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
+	m_pDevice = pDevice;
+	m_pContext = pContext;
+	Safe_AddRef(m_pDevice);
+	Safe_AddRef(m_pContext);
+
 	m_pInventory = CInventoryManager::Create();//¿øº»
 	
-	CUIScene* pScene = CUILoading::Create();
+	CUIScene::SCENE_DESC Desc{};
+	Desc.isLoading = true;
+
+	CUIScene* pScene = CUILoading::Create(m_pDevice ,m_pContext ,&Desc);
 	m_AllScene.emplace(make_pair(TEXT("Loading"), pScene));
 
-	 pScene = CUILogo::Create();
+	 pScene = CUILogo::Create(m_pDevice, m_pContext, &Desc);
 	m_AllScene.emplace(make_pair(TEXT("Logo"), pScene));
 
-	pScene = CUINowLoading::Create();
+	pScene = CUINowLoading::Create(m_pDevice, m_pContext, &Desc);
 	m_AllScene.emplace(make_pair(TEXT("NowLoading"), pScene));
 
-	pScene = CUIMenu::Create();
+	pScene = CUIMainMenu::Create(m_pDevice, m_pContext, &Desc);
+	m_AllScene.emplace(make_pair(TEXT("MainMenu"), pScene));
+
+	pScene = CUIMenu::Create(m_pDevice, m_pContext);
 	m_AllScene.emplace( make_pair(TEXT("Menu"), pScene) );
 
-	pScene = CUILife::Create();
+	pScene = CUILife::Create(m_pDevice, m_pContext);
 	m_AllScene.emplace(make_pair(TEXT("Life"), pScene));
 	Safe_AddRef(pScene);
 	m_AlwaysUI.push_back(pScene);
 
-	pScene = CUIMoney::Create();
+	pScene = CUIMoney::Create(m_pDevice, m_pContext);
 	m_AllScene.emplace(make_pair(TEXT("Money"), pScene));
 	Safe_AddRef(pScene);
 	m_AlwaysUI.push_back(pScene);
 
-	CUIInven::IVENSCENE_DESC Desc{};
-	Desc.pInventory = m_pInventory;
 
-	pScene = CUIInven::Create(&Desc);
+
+	CUIInven::IVENSCENE_DESC InvenDesc{};
+
+	InvenDesc.pInventory = m_pInventory;
+
+	pScene = CUIInven::Create(m_pDevice, m_pContext ,&InvenDesc);
 	m_AllScene.emplace(make_pair(TEXT("Inven"), pScene));
 
 	return S_OK;
@@ -72,10 +87,9 @@ void CUIManager::Open_Scene(const wstring strSceneName)
 {
 	CUIScene* pUIScene = Find_Scene(strSceneName);	
 
-
-	if (TEXT("Logo") == strSceneName || TEXT("Loading") == strSceneName || TEXT("NowLoading") == strSceneName)
+	
+	if (pUIScene->Get_isLoading())
 	{
-		m_isLoading = true;
 		if(!m_PlayScene.empty())
 		m_PlayScene.pop_back();
 	}
@@ -91,8 +105,6 @@ void CUIManager::Close_Scene()
 	{
 		m_PlayScene.back()->Close_Scene();
 		m_isClose = true;
-		if (m_isLoading)
-			m_isLoading = false;
 	}
 }
 
@@ -107,18 +119,28 @@ HRESULT CUIManager::Tick(const _float& fTimeDelta)
 
 	if(!m_PlayScene.empty())
 	{
-		if(m_PlayScene.back())
-
 		m_PlayScene.back()->Tick(fTimeDelta);
+
 	}
-	
-	if(!m_isLoading)
+
+	if (!m_PlayScene.empty() )
+	{
+		if(!m_PlayScene.back()->Get_isLoading())
+		{
+			for (auto& pUIScene : m_AlwaysUI)
+			{
+				pUIScene->Tick(fTimeDelta);
+			}
+		}
+	}
+	else
 	{
 		for (auto& pUIScene : m_AlwaysUI)
 		{
 			pUIScene->Tick(fTimeDelta);
 		}
 	}
+
 
 	return S_OK;
 }
@@ -140,28 +162,49 @@ HRESULT CUIManager::Late_Tick(const _float& fTimeDelta)
 		}
 	}
 
+
 #ifdef _DEBUG
 	if (m_isRender)
 	{
-		if(!m_isLoading)
+		if (!m_PlayScene.empty())
+		{
+			if (!m_PlayScene.back()->Get_isLoading())
+			{
+				for (auto& pUIScene : m_AlwaysUI)
+				{
+					pUIScene->Late_Tick(fTimeDelta);
+				}
+			}
+		}
+		else
 		{
 			for (auto& pUIScene : m_AlwaysUI)
 			{
 				pUIScene->Late_Tick(fTimeDelta);
 			}
 		}
-		return S_OK;
 	}
 #else
-	if (!m_isLoading)
+	if (!m_PlayScene.empty())
+	{
+		if (!m_PlayScene.back()->Get_isLoading())
+		{
+			for (auto& pUIScene : m_AlwaysUI)
+			{
+				pUIScene->Late_Tick(fTimeDelta);
+			}
+		}
+	}
+	else
 	{
 		for (auto& pUIScene : m_AlwaysUI)
 		{
 			pUIScene->Late_Tick(fTimeDelta);
 		}
 	}
-	return S_OK;
 #endif // _DEBUG
+
+	return S_OK;
 }
 
 
@@ -192,5 +235,7 @@ void CUIManager::Free()
 	m_AllScene.clear();
 
 	Safe_Release(m_pInventory);
+	Safe_Release(m_pDevice);
+	Safe_Release(m_pContext);
 	Safe_Release(m_pGameInstance);
 }

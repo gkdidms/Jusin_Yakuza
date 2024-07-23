@@ -56,7 +56,7 @@ HRESULT CMainApp::Initialize()
 	if (FAILED(m_pGameInstance->Initialize_Engine(LEVEL_END, EngineDesc, &m_pDevice, &m_pContext)))
 		return E_FAIL;
 
-	if (FAILED(m_pUIManager->Initialize()))
+	if (FAILED(m_pUIManager->Initialize(m_pDevice, m_pContext)))
 		return E_FAIL;
 
 	if (FAILED(Ready_Font()))
@@ -143,6 +143,7 @@ HRESULT CMainApp::Render()
 	m_pGameInstance->Render_Font(TEXT("Font_Default"), m_szFPS, _float2(0.f, 0.f), XMVectorSet(1.f, 1.f, 0.f, 1.f));
 
 	m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("!!!테스트용 키는 화면에 모두 작성할것 !!! "), _float2(500.f, 0.f), XMVectorSet(1.f, 0.f, 0.f, 1.f));
+	m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("!!!처음부터->TEST , 이어하기 ->OFFICE_1F!!! "), _float2(500.f, 20.f), XMVectorSet(1.f, 0.f, 0.f, 1.f));
 
 	_float fSize = 320.f;
 	m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("!!!카메라 단축키"), _float2(1000.f, fSize + 120.f), XMVectorSet(0.f, 0.f, 1.f, 1.f));

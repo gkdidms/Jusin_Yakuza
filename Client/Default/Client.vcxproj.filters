@@ -371,6 +371,9 @@
     <ClCompile Include="..\Private\UILogo.cpp">
       <Filter>95.Utility\05.UIManager\UIScene\UILogo</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\UIMainMenu.cpp">
+      <Filter>95.Utility\05.UIManager\UIScene\UIMainMenu</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\MainApp.h">
@@ -772,6 +775,9 @@
     </ClInclude>
     <ClInclude Include="..\Public\UILogo.h">
       <Filter>95.Utility\05.UIManager\UIScene\UILogo</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIMainMenu.h">
+      <Filter>95.Utility\05.UIManager\UIScene\UIMainMenu</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1187,6 +1193,9 @@
     </Filter>
     <Filter Include="95.Utility\05.UIManager\UIScene\UILogo">
       <UniqueIdentifier>{f5907b5b-7eff-4b99-92c0-1c84f75e1aa6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\05.UIManager\UIScene\UIMainMenu">
+      <UniqueIdentifier>{cc133ece-de19-4795-8445-46223b7c17db}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

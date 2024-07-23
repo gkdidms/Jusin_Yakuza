@@ -18,7 +18,6 @@ CUIInven::CUIInven(const CUIInven& rhs)
 
 HRESULT CUIInven::Add_UIData(CUI_Object* pUIObject)
 {
-
 	if (pUIObject->Get_Event())
 	{
 		m_EventUI.push_back(pUIObject);
@@ -26,14 +25,12 @@ HRESULT CUIInven::Add_UIData(CUI_Object* pUIObject)
 	}
 	else if(CUI_Object::TYPE_BTN == pUIObject->Get_TypeIndex())
 	{
-		if(m_Toggle.size() < 3)
+		if(m_Toggle.size() <1)
 		{
-			//Safe_AddRef(pUIObject);
 			m_Toggle.push_back(dynamic_cast<CBtn*>(pUIObject));
 		}
 		else
 		{
-			//Safe_AddRef(pUIObject);
 			m_Button.push_back(dynamic_cast<CBtn*>(pUIObject));
 		}
 	}
@@ -41,12 +38,13 @@ HRESULT CUIInven::Add_UIData(CUI_Object* pUIObject)
 	{
 		m_UI.push_back(pUIObject);
 	}
-
 	return S_OK;
 }
 
-HRESULT CUIInven::Initialize(void* pArg)
+HRESULT CUIInven::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg)
 {
+	if (FAILED(__super::Initialize(pDevice , pContext , pArg)))
+		return E_FAIL;
 	if (nullptr != pArg)
 	{
 		IVENSCENE_DESC* pDesc = static_cast<IVENSCENE_DESC*>(pArg);
@@ -268,10 +266,10 @@ void CUIInven::OverAction()
 	}
 }
 
-CUIInven* CUIInven::Create(void* pArg)	
+CUIInven* CUIInven::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg)
 {
 	CUIInven* pInstance = new CUIInven();
-	if (FAILED(pInstance->Initialize(pArg)))
+	if (FAILED(pInstance->Initialize(pDevice, pContext, pArg)))
 	{
 		Safe_Release(pInstance);
 		return nullptr;

@@ -338,6 +338,7 @@ HRESULT CGroup::Load_Groupbinary(ifstream& in)
 			in.read((char*)&pDesc.WorldMatrix, sizeof(_float4x4));
 
 			in.read((char*)&pDesc.bAnim, sizeof(_bool));
+			in.read((char*)&pDesc.isAnimLoop, sizeof(_bool));
 			in.read((char*)&pDesc.fAnimTime, sizeof(_float2));
 			in.read((char*)&pDesc.vStartPos, sizeof(_float3));
 			in.read((char*)&pDesc.fControlAlpha, sizeof(_float2));
@@ -349,6 +350,7 @@ HRESULT CGroup::Load_Groupbinary(ifstream& in)
 
 			in.read((char*)&pDesc.vLifeTime, sizeof(_float3));
 			in.read((char*)&pDesc.fSpeed, sizeof(_float));
+			in.read((char*)&pDesc.isUVAnim, sizeof(_bool));
 
 			pDesc.isLoad = true;
 			pDesc.pParentMatrix = m_pTransformCom->Get_WorldFloat4x4();

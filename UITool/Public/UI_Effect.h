@@ -13,6 +13,7 @@ public:
     typedef struct tUIEffectDesc :public UI_TEXTURE_DESC {
         _float3 vLifeTime;
         _float  fSpeed;
+        _bool isUVAnim;
 
     }UI_EFFECT_DESC;
 
@@ -33,16 +34,19 @@ public:
 public:
     void Set_Speed(_float fSpeed) { m_fSpeed = fSpeed; }
     void Set_LifeTime(_float3 vLifeTime) { m_vLifeTime = vLifeTime; }
+    void Set_isUVAnim(_bool isUVAnim) { m_isUVAnim = isUVAnim; }
 
     _float Get_Speed() { return m_fSpeed; }
     _float3 Get_LifeTime() { return m_vLifeTime; }
+    _bool Get_isUVAnim() { return m_isUVAnim; }
+
 private:
     //이펙트시가 시작되면 시작시간 부터 끝시간까지만 렌더 되는 구조
     //끝나면 자동소멸
     //
     _float3 m_vLifeTime = { 0.f, 0.f, 1.f };//현재 시간 ,시작시간, 종료시간
     _float m_fSpeed = { 1.f };//이펙트 진행 속도
-
+    _bool m_isUVAnim = { false };
 private:
     virtual HRESULT Bind_ResourceData() override;
 public:

@@ -15,8 +15,10 @@ CUILife::CUILife(const CUILife& rhs)
 {
 }
 
-HRESULT CUILife::Initialize(void* pArg)
+HRESULT CUILife::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg)
 {
+	if (FAILED(__super::Initialize(pDevice , pContext , pArg)))
+		return E_FAIL;
 	return S_OK;
 }
 
@@ -38,10 +40,10 @@ HRESULT CUILife::Late_Tick(const _float& fTimeDelta)
 	return S_OK;
 }
 
-CUILife* CUILife::Create(void* pArg)
+CUILife* CUILife::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,void* pArg)
 {
 	CUILife* pInstance = new CUILife();
-	if (FAILED(pInstance->Initialize(pArg)))
+	if (FAILED(pInstance->Initialize(pDevice, pContext ,pArg)))
 	{
 		Safe_Release(pInstance);
 		return nullptr;
