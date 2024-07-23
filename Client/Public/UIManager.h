@@ -69,6 +69,9 @@ private:
     _bool m_isClose = { true };
 
 private:
+    class CPlayer* m_pPlayer = { nullptr };
+
+private:
    CUIScene* Find_Scene(wstring strSceneName);      
 
 public:
