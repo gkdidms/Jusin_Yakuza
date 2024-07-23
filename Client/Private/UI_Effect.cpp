@@ -8,7 +8,8 @@ CUI_Effect::CUI_Effect(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 CUI_Effect::CUI_Effect(const CUI_Effect& rhs)
 	: CUI_Texture{ rhs },
 	m_vLifeTime{rhs.m_vLifeTime},
-	m_fSpeed{rhs.m_fSpeed}
+	m_fSpeed{rhs.m_fSpeed},
+	m_isUVAnim{ rhs.m_isUVAnim }
 {
 }
 
@@ -19,14 +20,10 @@ HRESULT CUI_Effect::Initialize_Prototype()
 
 HRESULT CUI_Effect::Initialize_Prototype(ifstream& in)
 {
-	//if (FAILED(__super::Initialize(nullptr)))
-	//	return E_FAIL;
 
 	if (FAILED(Load_binary(in)))
 		return E_FAIL;
 
-	//if (FAILED(Add_Components()))
-	//	return E_FAIL;
 
 	return S_OK;
 }
@@ -41,6 +38,7 @@ HRESULT CUI_Effect::Initialize(void* pArg)
 		UI_EFFECT_DESC* pDesc = static_cast<UI_EFFECT_DESC*>(pArg);
 		m_vLifeTime = pDesc->vLifeTime;
 		m_fSpeed = pDesc->fSpeed;
+		m_isUVAnim = pDesc->isUVAnim;
 	}
 
 
@@ -63,8 +61,16 @@ void CUI_Effect::Tick(const _float& fTimeDelta)
 void CUI_Effect::Late_Tick(const _float& fTimeDelta)
 {
 	//Á¾·á½Ã°£ ³ÑÀ¸¸é ¸ØÃã
-	if (m_vLifeTime.x >= m_vLifeTime.z)
-		m_isPlay = false;
+	if (!m_isAnimLoop)
+	{
+		if (m_vLifeTime.x >= m_vLifeTime.y + m_vLifeTime.z)
+			m_isPlay = false;
+	}
+	else
+	{
+		if (m_vLifeTime.x >= m_vLifeTime.y + m_vLifeTime.z)
+			m_vLifeTime.x = 0.f;
+	}
 
 	if(m_isPlay)
 		m_pGameInstance->Add_Renderer(CRenderer::RENDER_UI, this);
@@ -131,7 +137,13 @@ HRESULT CUI_Effect::Bind_ResourceData()
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_vColor", &m_vColor, sizeof(_float4))))
 		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_StartUV", &m_fStartUV, sizeof(_float2))))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_EndUV", &m_fEndUV, sizeof(_float2))))
+		return E_FAIL;
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_vLifeTime", &m_vLifeTime, sizeof(_float3))))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_isUVAnim", &m_isUVAnim, sizeof(_bool))))
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_vStartPos", &m_vStartPos, sizeof(_float3))))
 		return E_FAIL;
@@ -183,6 +195,7 @@ HRESULT CUI_Effect::Save_binary(const string strDirectory)
 
 
 	out.write((char*)&m_isAnim, sizeof(_bool));
+	out.write((char*)&m_isAnimLoop, sizeof(_bool));
 
 	_float2 AnimTime = { 0.f , m_fAnimTime.y };
 	out.write((char*)&AnimTime, sizeof(_float2));
@@ -202,6 +215,7 @@ HRESULT CUI_Effect::Save_binary(const string strDirectory)
 
 	out.write((char*)&m_fSpeed, sizeof(_float));
 
+	out.write((char*)&m_isUVAnim, sizeof(_bool));
 	out.close();
 
 	return S_OK;
@@ -248,6 +262,7 @@ HRESULT CUI_Effect::Save_Groupbinary(ofstream& out)
 
 
 	out.write((char*)&m_isAnim, sizeof(_bool));
+	out.write((char*)&m_isAnimLoop, sizeof(_bool));
 
 	_float2 AnimTime = { 0.f , m_fAnimTime.y };
 	out.write((char*)&AnimTime, sizeof(_float2));
@@ -266,6 +281,7 @@ HRESULT CUI_Effect::Save_Groupbinary(ofstream& out)
 
 	out.write((char*)&m_fSpeed, sizeof(_float));
 
+	out.write((char*)&m_isUVAnim, sizeof(_bool));
 	return S_OK;
 }
 
@@ -310,6 +326,7 @@ HRESULT CUI_Effect::Load_binary(ifstream& in)
 
 
 	in.read((char*)&m_isAnim, sizeof(_bool));
+	in.read((char*)&m_isAnimLoop, sizeof(_bool));
 	in.read((char*)&m_fAnimTime, sizeof(_float2));
 	in.read((char*)&m_vStartPos, sizeof(_float3));
 
@@ -323,7 +340,7 @@ HRESULT CUI_Effect::Load_binary(ifstream& in)
 
 	in.read((char*)&m_vLifeTime, sizeof(_float3));
 	in.read((char*)&m_fSpeed, sizeof(_float));
-
+	in.read((char*)&m_isUVAnim, sizeof(_bool));
 	in.close();
 
 	return S_OK;

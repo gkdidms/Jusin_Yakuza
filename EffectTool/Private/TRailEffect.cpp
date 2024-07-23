@@ -60,10 +60,6 @@ void CTRailEffect::Priority_Tick(const _float& fTimeDelta)
 
 void CTRailEffect::Tick(const _float& fTimeDelta)
 {
-	if (m_pGameInstance->GetKeyState(DIK_W))
-		m_pTransformCom->Go_Straight(fTimeDelta);
-
-
 	__super::Tick(fTimeDelta);
 
 	_float4x4 TrailMatrix = *m_pTransformCom->Get_WorldFloat4x4();

@@ -23,6 +23,7 @@ public:
         wstring strClickFileName;
         _float2 ClickStartUV;
         _float2 ClickEndUV = { 1.f,1.f };
+        _float4 vClickColor;
     }BTN_DESC;
 private:
     CBtn(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -70,7 +71,7 @@ private:
     _bool m_isOverlap = { false };
     _float2 m_ClickStartUV = { 0.f ,0.f };
     _float2 m_ClickEndUV = { 1.f, 1.f };
-
+    _float4 m_vClickColor;
 
 private:
     virtual HRESULT Add_Components() override;

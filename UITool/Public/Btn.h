@@ -23,6 +23,7 @@ public:
         wstring strClickFileName;
         _float2 ClickStartUV;
         _float2 ClickEndUV = { 1.f,1.f };
+        _float4 vClickColor;
     }BTN_DESC;
 private:
     CBtn(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -50,6 +51,9 @@ public:
     void Set_Click(_bool Click) { m_isClick = Click; }
     _bool Get_Click() { return m_isClick; }
 
+
+    void Set_ClickColor(_float4 ClickColor) { m_vClickColor = ClickColor; }
+    _float4 Get_ClickColor() { return m_vClickColor; }
 public:
     virtual HRESULT Save_binary(const string strDirectory)override;
     virtual HRESULT Save_Groupbinary(ofstream& out)override;
@@ -65,6 +69,8 @@ private:
     _bool m_isClick = { false };
     _float2 m_ClickStartUV = { 0.f ,0.f };
     _float2 m_ClickEndUV = { 1.f, 1.f };
+    _float4 m_vClickColor;
+
 
 private:
     virtual HRESULT Add_Components() override;
