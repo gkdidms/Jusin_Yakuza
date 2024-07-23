@@ -42,6 +42,7 @@ public:
     virtual void Tick(const _float& fTimeDelta) override;
     virtual void Late_Tick(const _float& fTimeDelta) override;
     virtual HRESULT Render() override;
+    virtual HRESULT Render_LightDepth() override;
 
     /* 충돌관련 함수들 */
     virtual void ImpulseResolution(CLandObject* pTargetObject, _float fDistance = 0.5f);
@@ -107,6 +108,7 @@ protected:
     class CCollision_Manager* m_pCollisionManager = { nullptr };
     CCollider* m_pColliderCom = { nullptr };
     CModel* m_pModelCom = { nullptr };
+    CShader* m_pShaderCom = { nullptr };
 
     // 애니메이션 툴에서 찍은 데이터 파싱해서 들고있는 객체
     class CCharacterData* m_pData = { nullptr };

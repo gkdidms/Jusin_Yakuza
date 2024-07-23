@@ -59,6 +59,32 @@ HRESULT CLandObject::Render()
 	return S_OK;
 }
 
+HRESULT CLandObject::Render_LightDepth()
+{
+	const _float4x4* ViewMatrixArray = m_pGameInstance->Get_Shadow_Transform_View_Float4x4();
+	const _float4x4* ProjMatrixArray = m_pGameInstance->Get_Shadow_Transform_Proj_Float4x4();
+
+	if (FAILED(m_pShaderCom->Bind_Matrix("g_WorldMatrix", m_pTransformCom->Get_WorldFloat4x4())))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_Matrices("g_ViewMatrixArray", ViewMatrixArray, 3)))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_Matrices("g_ProjMatrixArray", ProjMatrixArray, 3)))
+		return E_FAIL;
+
+	_uint	iNumMeshes = m_pModelCom->Get_NumMeshes();
+
+	for (size_t i = 0; i < iNumMeshes; i++)
+	{
+		m_pModelCom->Bind_BoneMatrices(m_pShaderCom, "g_BoneMatrices", i);
+
+		m_pShaderCom->Begin(2);
+
+		m_pModelCom->Render(i);
+	}
+
+	return S_OK;
+}
+
 void CLandObject::ImpulseResolution(CLandObject* pTargetObject, _float fDistance)
 {
 	if (nullptr == m_pColliderCom) return;
