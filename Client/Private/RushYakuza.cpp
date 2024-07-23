@@ -267,6 +267,7 @@ void CRushYakuza::Change_Animation()
 	{
 		//p_krh_cmb_05[p_krh_cmb_05]
 		m_strAnimName = "p_krh_cmb_05";
+		Shaking(0.3, 0.2, 0.2);
 		break;
 	}
 	case MONSTER_GURAD_START:
@@ -300,8 +301,11 @@ void CRushYakuza::Change_Animation()
 	m_iAnim = m_pAnimCom->Get_AnimationIndex(m_strAnimName.c_str());
 
 	// 실제로 애니메이션 체인지가 일어났을 때 켜져있던 어택 콜라이더를 전부 끈다
-	if(m_pModelCom->Set_AnimationIndex(m_iAnim, m_pAnimCom->Get_Animations(), m_fChangeInterval))
+	if (m_pModelCom->Set_AnimationIndex(m_iAnim, m_pAnimCom->Get_Animations(), m_fChangeInterval))
+	{
 		Off_Attack_Colliders();
+		Reset_Shaking_Variable();
+	}
 
 	m_pData->Set_CurrentAnimation(m_strAnimName);
 }

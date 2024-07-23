@@ -12,6 +12,8 @@
 #include "UILogo.h"
 #include "InventoryManager.h"
 
+#include "Player.h"
+
 IMPLEMENT_SINGLETON(CUIManager)
 
 CUIManager::CUIManager()
@@ -71,7 +73,6 @@ HRESULT CUIManager::Add_Data(const wstring strSceneName, wstring strProtoName)
 void CUIManager::Open_Scene(const wstring strSceneName)
 {
 	CUIScene* pUIScene = Find_Scene(strSceneName);	
-
 
 	if (TEXT("Logo") == strSceneName || TEXT("Loading") == strSceneName || TEXT("NowLoading") == strSceneName)
 	{

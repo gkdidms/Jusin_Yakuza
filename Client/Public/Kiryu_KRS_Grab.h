@@ -1,6 +1,6 @@
 /*
 * 24.07.02 혜원 추가
-* 키류 불한당 애니메이션 시작 모션
+* 키류 불한당 애니메이션 아이들
 */
 #pragma once
 #include "Client_Defines.h"
@@ -8,37 +8,29 @@
 
 BEGIN(Client)
 
-class CKiryu_KRC_BattleStart : public CBehaviorAnimation
+class CKiryu_KRS_Grab : public CBehaviorAnimation
 {
-	enum ANIM_STATE
-	{
-		ANIM_START, ANIM_LOOP, ANIM_END
-	};
-
 private:
-	const _float ANIM_CHANGE_TIME = 4.f;		// 몇 초 이상 움직이거나, 공격하지않으면 손을 내린다
-
-private:
-	CKiryu_KRC_BattleStart();
-	virtual ~CKiryu_KRC_BattleStart() = default;
+	CKiryu_KRS_Grab();
+	virtual ~CKiryu_KRS_Grab() = default;
 
 public:
 	virtual void Tick(const _float& fTimeDelta) override;
 	virtual void Change_Animation() override;
 	virtual _bool Get_AnimationEnd() override;
 	virtual void Reset();
+	virtual void Combo_Count(_bool isFinAction = false) override;
 
 private:
-	void Off_Battle(const _float& fTimeDelta);
-
+	_bool Changeable_Combo_Animation();
 	void Shaking();
 
 public:
 	static CBehaviorAnimation* Create(class CPlayer* pPlayer);
 	virtual void Free() override;
 
-	ANIM_STATE m_eAnimState = { ANIM_START };
+private:
+	_int m_iComboCount = { -1 };
 	_bool m_isShaked = { false };
-	_float m_fOffBattleTimer = { 0.f };
 };
 END
