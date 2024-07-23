@@ -110,7 +110,7 @@ void CKuze::Take_Damage(_uint iHitColliderType, const _float3& vDir, _float fDam
 	CCamera* pCamera = dynamic_cast<CCamera*>(m_pGameInstance->Get_GameObject(m_iCurrentLevel, TEXT("Layer_Camera"), CAMERA_PLAYER));
 	pCamera->Set_Shaking(true, vDir);
 
-	//하는역활 -> 충돌이 일어났을때?
+	//충돌이 일어났을때?
 	m_isColl = true;
 	m_fHitDamage = fDamage;
 

@@ -134,7 +134,6 @@ private:
     _float4x4 m_ViewMatrix;
     _float4x4 m_ProjMatrix;
 
-    ID3D11DepthStencilView* m_pPassiveLightDepthStencilView = { nullptr };
     ID3D11DepthStencilView* m_pLightDepthStencilView = { nullptr };
     ID3D11ShaderResourceView* m_pSSAONoiseView = { nullptr };
 
