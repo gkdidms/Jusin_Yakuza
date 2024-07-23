@@ -54,25 +54,6 @@ HRESULT CAdventure::Render()
 	int i = 0;
 	for (auto& pMesh : m_pModelCom->Get_Meshes())
 	{
-		if (!strcmp("[l0]jacketw1", pMesh->Get_Name()))
-		{
-			if (m_isRimLight)
-				if (FAILED(m_pShaderCom->Bind_RawValue("g_isRimLight", &m_isRimLight, sizeof(_bool))))
-					return E_FAIL;
-		}
-		else if (!strcmp("[l0]body_naked1", pMesh->Get_Name()))
-		{
-			if (m_isRimLight)
-				if (FAILED(m_pShaderCom->Bind_RawValue("g_isRimLight", &m_isRimLight, sizeof(_bool))))
-					return E_FAIL;
-		}
-		else
-		{
-			_bool isfalse = false;
-			if (FAILED(m_pShaderCom->Bind_RawValue("g_isRimLight", &isfalse, sizeof(_bool))))
-				return E_FAIL;
-		}
-
 		_bool isCloth = true;
 		string strMeshName = string(pMesh->Get_Name());
 		if (strMeshName.find("hair") != string::npos || strMeshName.find("face") != string::npos ||
@@ -142,10 +123,14 @@ void CAdventure::Animation_Event()
 				pCollider->Off();
 				break;
 			case 2:
+#ifdef _DEBUG
 				cout << "사운드 재생" << endl;
+#endif // DEBUG
 				break;
 			case 3:
+#ifdef _DEBUG
 				cout << "이펙트 재생" << endl;
+#endif // _DEBUG
 				break;
 			}
 		}
@@ -215,6 +200,32 @@ void CAdventure::Synchronize_Root(const _float& fTimeDelta)
 
 HRESULT CAdventure::Add_Components()
 {
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Shader_VtxAnim"),
+		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
+		return E_FAIL;
+
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, m_wstrModelName,
+		TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
+		return E_FAIL;
+
+	CBounding_AABB::BOUNDING_AABB_DESC		ColliderDesc{};
+
+	ColliderDesc.eType = CCollider::COLLIDER_AABB;
+	ColliderDesc.vExtents = _float3(0.5, 0.8, 0.5);
+	ColliderDesc.vCenter = _float3(0, ColliderDesc.vExtents.y, 0);
+
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Collider"),
+		TEXT("Com_Collider"), reinterpret_cast<CComponent**>(&m_pColliderCom), &ColliderDesc)))
+		return E_FAIL;
+
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Anim"),
+		TEXT("Com_Anim"), reinterpret_cast<CComponent**>(&m_pAnimCom))))
+		return E_FAIL;
+
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Navigation"),
+		TEXT("Com_Navigation"), reinterpret_cast<CComponent**>(&m_pNavigationCom))))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -233,4 +244,9 @@ HRESULT CAdventure::Bind_ResourceData()
 void CAdventure::Free()
 {
 	__super::Free();
+
+	Safe_Release(m_pAnimCom);
+	Safe_Release(m_pNavigationCom);
+	Safe_Release(m_pTree);
+	Safe_Release(m_pShaderCom);
 }

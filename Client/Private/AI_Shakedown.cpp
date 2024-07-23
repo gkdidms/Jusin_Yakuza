@@ -300,7 +300,7 @@ CBTNode::NODE_STATE CAI_Shakedown::ATK_CMD()
 
 	if (m_iSkill == SKILL_CMD)
 	{
-		m_fCmbNum = m_pGameInstance->Get_Random(0, 3); // 0 ~ 2 사이값이 나온다.
+		m_fCmbNum = m_pGameInstance->Get_Random(0.f, 3.f); // 0 ~ 2 사이값이 나온다.
 		m_fCmbCount = 0.f;
 
 		m_isAttack = true;

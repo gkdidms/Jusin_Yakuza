@@ -65,7 +65,7 @@ protected:
     virtual void Change_Animation();
     void Synchronize_Root(const _float& fTimeDelta);
 
-private:
+protected:
     virtual HRESULT Add_Components() override;
     virtual HRESULT Bind_ResourceData() override;
 
