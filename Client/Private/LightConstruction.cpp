@@ -146,6 +146,11 @@ void CLightConstruction::Late_Tick(const _float& fTimeDelta)
 			m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
 			m_pGameInstance->Add_Renderer(CRenderer::RENDER_EFFECT, this);
 		}
+		else if (m_iShaderPassNum == 7)
+		{
+			m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
+			m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONLIGHT, this);
+		}
 
 		for (auto& iter : m_vDecals)
 			iter->Late_Tick(fTimeDelta);
@@ -171,8 +176,9 @@ HRESULT CLightConstruction::Render()
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
 			return E_FAIL;
 
-		// Lamp 일떄
-		if (3 == m_iShaderPassNum)
+		// Lamp 일떄 - 3
+		// rm 외부간판 - 7
+		if (3 == m_iShaderPassNum || 7 == m_iShaderPassNum)
 		{
 			bool	bRMExist = m_pModelCom->Check_Exist_Material(i, aiTextureType_METALNESS);
 			// Normal texture가 있을 경우
