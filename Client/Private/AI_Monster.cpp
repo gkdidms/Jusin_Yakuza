@@ -889,7 +889,7 @@ CBTNode::NODE_STATE CAI_Monster::Check_Sway()
 {
 	m_pThis->Set_Down(false);
 
-	if (m_isGuard || m_iSkill == SKILL_HIT || m_isAttack)
+	if (m_isGuard || m_iSkill == SKILL_HIT || m_isAttack || m_isPlayerDownAtk)
 	{
 		return CBTNode::FAIL;	
 	}
@@ -988,7 +988,6 @@ CBTNode::NODE_STATE CAI_Monster::Sync_Neck()
 
 CBTNode::NODE_STATE CAI_Monster::Check_Hit()
 {
-
 	return CBTNode::SUCCESS;
 }
 
