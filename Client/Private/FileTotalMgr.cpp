@@ -13,6 +13,8 @@
 #include "Shakedown.h"
 #include "Yoneda.h"
 #include "Kuze.h"
+#include "Adv_Suit.h"
+#include "Adventure.h"
 
 #include "Trigger.h"
 
@@ -304,6 +306,35 @@ HRESULT CFileTotalMgr::Set_GameObject_In_Client(int iStageLevel)
             }
 
             m_pGameInstance->Add_GameObject(iStageLevel, TEXT("Prototype_GameObject_LightConstruction"), m_Layers[iLayer], &mapDesc);
+        }
+        else if (OBJECT_TYPE::ADTENTURE_SUIT == m_MapTotalInform.pMapObjDesc[i].iObjType)
+        {
+            CAdventure::ADVENTURE_IODESC		monsterDesc;
+            monsterDesc.vStartPos = XMLoadFloat4x4(&m_MapTotalInform.pMapObjDesc[i].vTransform);
+            int		iLayer = Find_Layers_Index(m_MapTotalInform.pMapObjDesc[i].strLayer);
+
+            /* Layer 정보 안들어옴 */
+            if (iLayer < 0)
+                return S_OK;
+
+            monsterDesc.wstrModelName = m_pGameInstance->StringToWstring(m_MapTotalInform.pMapObjDesc[i].strModelCom);
+            monsterDesc.iShaderPass = m_MapTotalInform.pMapObjDesc[i].iShaderPassNum;
+
+            monsterDesc.fSpeedPecSec = 10.f;
+            monsterDesc.fRotatePecSec = XMConvertToRadians(0.f);
+            monsterDesc.fRotatePecSec = XMConvertToRadians(180.f);
+
+            if (-1 == m_MapTotalInform.pMapObjDesc[i].iNaviNum)
+            {
+                // 예외처리
+                monsterDesc.iNaviNum = 0;
+            }
+            else
+            {
+                monsterDesc.iNaviNum = m_MapTotalInform.pMapObjDesc[i].iNaviNum;
+            }
+
+            m_pGameInstance->Add_GameObject(iStageLevel, TEXT("Prototype_GameObject_AdvSuit"), m_Layers[iLayer], &monsterDesc);
         }
         else 
         {

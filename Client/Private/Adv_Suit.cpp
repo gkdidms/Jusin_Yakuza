@@ -22,6 +22,24 @@ HRESULT CAdv_Suit::Initialize(void* pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
+
+	if (nullptr != pArg)
+	{
+		ADVENTURE_IODESC* gameobjDesc = (ADVENTURE_IODESC*)pArg;
+		m_pTransformCom->Set_WorldMatrix(gameobjDesc->vStartPos);
+		m_wstrModelName = gameobjDesc->wstrModelName;
+	}
+
+	if (FAILED(Add_Components()))
+		return E_FAIL;
+
+	if (nullptr != pArg)
+	{
+		ADVENTURE_IODESC* gameobjDesc = (ADVENTURE_IODESC*)pArg;
+
+		m_pNavigationCom->Set_Index(gameobjDesc->iNaviNum);
+	}
+
 	return S_OK;
 }
 
@@ -62,6 +80,10 @@ HRESULT CAdv_Suit::Add_Components()
 
 	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Anim"),
 		TEXT("Com_Anim"), reinterpret_cast<CComponent**>(&m_pAnimCom))))
+		return E_FAIL;
+
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Navigation"),
+		TEXT("Com_Navigation"), reinterpret_cast<CComponent**>(&m_pNavigationCom))))
 		return E_FAIL;
 
 	return S_OK;
