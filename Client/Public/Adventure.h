@@ -11,6 +11,16 @@ BEGIN(Client)
 class CAdventure abstract :
     public CLandObject
 {
+public:
+    typedef struct tMapMonsterObjDesc : public CGameObject::GAMEOBJECT_DESC
+    {
+        XMMATRIX		vStartPos;
+        wstring			wstrModelName;
+        int				iShaderPass;
+        int             iNaviNum;
+    }ADVENTURE_IODESC;
+
+
 protected:
     CAdventure(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
     CAdventure(const CAdventure& rhs);
@@ -55,7 +65,7 @@ protected:
     virtual void Change_Animation();
     void Synchronize_Root(const _float& fTimeDelta);
 
-private:
+protected:
     virtual HRESULT Add_Components() override;
     virtual HRESULT Bind_ResourceData() override;
 

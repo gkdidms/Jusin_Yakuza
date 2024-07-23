@@ -22,6 +22,19 @@ HRESULT CAdv_Suit::Initialize(void* pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
+	if (nullptr == pArg)
+		return E_FAIL;
+
+	ADVENTURE_IODESC* gameobjDesc = static_cast<ADVENTURE_IODESC*>(pArg);
+	m_pTransformCom->Set_WorldMatrix(gameobjDesc->vStartPos);
+	m_wstrModelName = gameobjDesc->wstrModelName;
+
+	if (FAILED(Add_Components()))
+		return E_FAIL;
+
+	m_pNavigationCom->Set_Index(gameobjDesc->iNaviNum);
+	m_pModelCom->Set_AnimationIndex(0);
+
 	return S_OK;
 }
 
@@ -31,6 +44,7 @@ void CAdv_Suit::Priority_Tick(const _float& fTimeDelta)
 
 void CAdv_Suit::Tick(const _float& fTimeDelta)
 {
+	m_pModelCom->Play_Animation(fTimeDelta, m_pAnimCom);
 }
 
 void CAdv_Suit::Late_Tick(const _float& fTimeDelta)
@@ -38,6 +52,14 @@ void CAdv_Suit::Late_Tick(const _float& fTimeDelta)
 	m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
 
 	__super::Late_Tick(fTimeDelta);
+}
+
+HRESULT CAdv_Suit::Add_Components()
+{
+	if (FAILED(__super::Add_Components()))
+		return E_FAIL;
+
+	return S_OK;
 }
 
 CAdv_Suit* CAdv_Suit::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

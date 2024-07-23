@@ -209,10 +209,14 @@ void CMonster::Animation_Event()
 				pCollider->Off();
 				break;
 			case 2:
+#ifdef _DEBUG
 				cout << "사운드 재생" << endl;
+#endif // _DEBUG
 				break;
 			case 3:
+#ifdef _DEBUG
 				cout << "이펙트 재생" << endl;
+#endif // _DEBUG
 				break;
 			}
 		}

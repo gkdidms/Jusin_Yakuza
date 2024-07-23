@@ -61,7 +61,9 @@ void CCollision_Manager::Tick()
     Player_Hit_Collision();
 
     if (m_pGameInstance->GetKeyState(DIK_Z) == TAP)
+#ifdef _DEBUG
         cout << " 버튼 입력!" << endl;
+#endif // _DEBUG        
 
     Battle_Clear();
 }
