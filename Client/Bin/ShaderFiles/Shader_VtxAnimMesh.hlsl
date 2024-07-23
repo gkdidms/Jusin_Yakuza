@@ -76,7 +76,7 @@ VS_OUT_LIGHTDEPTH VS_MAIN_LIGHTDEPTH(VS_IN In)
 
     Out.vPosition = mul(vPosition, g_WorldMatrix);
     Out.vTexcoord = In.vTexcoord;
-    Out.vProjPos = Out.vPosition;
+    Out.vProjPos = vPosition;
 
     return Out;
 }
@@ -302,7 +302,7 @@ PS_OUT_LIGHTDEPTH PS_MAIN_LIGHTDEPTH(PS_IN_LIGHTDEPTH In)
 {
     PS_OUT_LIGHTDEPTH Out = (PS_OUT_LIGHTDEPTH) 0;
 	
-    Out.vLightDepth = vector(In.vProjPos.w / 1000.f, 0.0f, 0.f, 0.f);
+    Out.vLightDepth = vector(In.vProjPos.z / In.vProjPos.w, 0.f, 0.f, 0.f);
 
     return Out;
 }

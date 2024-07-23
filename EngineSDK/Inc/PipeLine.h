@@ -26,6 +26,7 @@ public:
     _vector Get_CamRight();
     const _float* Get_CamFar() { return &m_fFar; }
     const _float4x4* Get_ReflectViewMatrix() { return &m_ReflectMatrix; }
+    _float4 Get_ShadowLightDir() { return m_vLightDir; }
 
 
 public:
@@ -48,6 +49,8 @@ public:
     void Set_ShadowTransformProjMatrix(_float4x4* ProjMatrixArray) {
         memcpy(m_ShadowTransformProjMatrix, ProjMatrixArray, sizeof(_float4x4) * 3);
     }
+    
+    void Set_ShadowLightDir(_float4 vLightDir) { m_vLightDir = vLightDir; }
 
 public:
     HRESULT Initialize();
@@ -71,6 +74,8 @@ private:
 private:
     _float4x4 m_OldWorldMatrix = {};
     _float4x4 m_OldViewMatrix = {};
+
+    _float4 m_vLightDir = { -0.6f, -0.7f, 0.1f, 0.f };
 
 public:
     static CPipeLine* Create();

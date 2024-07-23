@@ -161,6 +161,10 @@ void CAI_Shakedown::Ready_Tree()
 
 CBTNode::NODE_STATE CAI_Shakedown::Check_Attack()
 {
+	//플레이어가 다운상태면 공격하지 않음
+	if (m_pPlayer->isDown())
+		return CBTNode::FAIL;
+
 	if (!m_isAttack)
 	{
 		if (m_fDelayAttackDuration > m_fAttackDelayTime)
@@ -202,26 +206,28 @@ CBTNode::NODE_STATE CAI_Shakedown::Attack()
 
 CBTNode::NODE_STATE CAI_Shakedown::Check_PlayerDown()
 {
-	if (!m_pPlayer->isDown())
+	if (m_isPlayerDownAtk && !m_pPlayer->isDown())
 	{
 		m_isPlayerDownAtk = false;
 
 		if (m_iSkill == SKILL_DOWN)
 			m_isAttack = false;
+
+		Reset_State();
+
 		return CBTNode::FAIL;
 	}
-
-	if (m_isPlayerDownAtk)
-		return CBTNode::FAIL;
-
-	if (m_pPlayer->isDown() || m_iSkill == SKILL_DOWN)
+	else if (m_pPlayer->isDown())
 	{
+		// 플레이어가 다운되어있다면 
 		if (DistanceFromPlayer() > 2.f || m_isPlayerDownAtk)
 			return CBTNode::FAIL;
 
-		//플레이어가 다운되어있으면 최우선적으로 공격을 한다.
+		//플레이어가 다운되어있으면 최우선적으로 공격을 한다.	
+		if (m_iSkill != SKILL_DOWN)
+			Reset_State();
+
 		m_iSkill = SKILL_DOWN;
-		Reset_State();
 
 		return CBTNode::SUCCESS;
 	}
@@ -246,7 +252,7 @@ CBTNode::NODE_STATE CAI_Shakedown::ATK_Down()
 
 	m_isAttack = true;
 	*m_pState = CMonster::MONSTER_ATK_DOWN;
-
+	
 	return CBTNode::SUCCESS;
 }
 

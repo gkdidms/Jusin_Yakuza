@@ -1,6 +1,8 @@
 #include "BehaviorAnimation.h"
 #include "GameInstance.h"
 
+#include "Player.h"
+
 #pragma region Adventure
 #include "Kiryu_Adventure_Idle.h"
 #include "Kiryu_Adventure_Walk.h"
@@ -18,6 +20,7 @@
 #include "Kiryu_KRS_Hit.h"
 #include "Kiryu_KRS_Sway.h"
 #include "Kiryu_KRS_Down.h"
+#include "Kiryu_KRS_Grab.h"
 #pragma endregion
 
 #pragma region KRH
@@ -40,6 +43,7 @@
 #include "Kiryu_KRC_Hit.h"
 #include "Kiryu_KRC_Sway.h"
 #include "Kiryu_KRC_Down.h"
+#include "Kiryu_KRC_Grab.h"
 #include "Kiryu_KRC_Guard.h"
 #pragma endregion
 
@@ -72,29 +76,34 @@ CBehaviorAnimation* CBehaviorAnimation::Create_KRS_Behavior(_uint iBehavior, cla
         SWAY, DOWN, 
 		SKILL_FLY_KICK, SKILL_KICK_COMBO,
 */
-	switch (iBehavior)
+	CPlayer::KRS_BEHAVIOR_STATE eBehavior = static_cast<CPlayer::KRS_BEHAVIOR_STATE>(iBehavior);
+
+	switch (eBehavior)
 	{
-	case 0:			//BTL_START
+	case CPlayer::KRS_BEHAVIOR_STATE::BTL_START:
 		return CKiryu_KRS_BattleStart::Create(pPlayer);
-	case 1:			// IDLE
+	case CPlayer::KRS_BEHAVIOR_STATE::IDLE:
 		return CKiryu_KRS_Idle::Create(pPlayer);
-	case 2:			// WALK
+	case CPlayer::KRS_BEHAVIOR_STATE::WALK:
 		return CKiryu_KRS_Walk::Create(pPlayer);
-	case 3:			// RUN
+	case CPlayer::KRS_BEHAVIOR_STATE::RUN:
 		return CKiryu_KRS_Run::Create(pPlayer);
-	case 4:			//ATTACK
+	case CPlayer::KRS_BEHAVIOR_STATE::ATTACK:
 		return CKiryu_KRS_Attack::Create(pPlayer);
-	case 5:			//HIT
+	case CPlayer::KRS_BEHAVIOR_STATE::HIT:
 		return CKiryu_KRS_Hit::Create(pPlayer);
-	case 6:			// SWAY
+	case CPlayer::KRS_BEHAVIOR_STATE::SWAY:
 		return CKiryu_KRS_Sway::Create(pPlayer);
-	case 7:			// DOWN
+	case CPlayer::KRS_BEHAVIOR_STATE::DOWN:
 		return CKiryu_KRS_Down::Create(pPlayer);
-	case 8:			//SKILL_FLY_KICK
+	case CPlayer::KRS_BEHAVIOR_STATE::GRAB:
+		return CKiryu_KRS_Grab::Create(pPlayer);
+	case CPlayer::KRS_BEHAVIOR_STATE::SKILL_FLY_KICK:
 		return CKiryu_KRS_FlyKick::Create(pPlayer);
-	case 9:			// SKILL_KICK_COMBO
+	case CPlayer::KRS_BEHAVIOR_STATE::SKILL_KICK_COMBO:
 		return CKiryu_KRS_KickCombo::Create(pPlayer);
 	}
+
 	return nullptr;
 }
 
@@ -104,25 +113,29 @@ CBehaviorAnimation* CBehaviorAnimation::Create_KRH_Behavior(_uint iBehavior, cla
 		BTL_START, IDLE, WALK, RUN, ATTACK, HIT,
 		SWAY, DOWN, KRS_BEHAVIOR_END
 	*/
-	switch (iBehavior)
+
+	CPlayer::KRH_BEHAVIOR_STATE eBehavior = static_cast<CPlayer::KRH_BEHAVIOR_STATE>(iBehavior);
+
+	switch (eBehavior)
 	{
-	case 0:			//BTL_START
+	case CPlayer::KRH_BEHAVIOR_STATE::BTL_START:
 		return CKiryu_KRH_BattleStart::Create(pPlayer);
-	case 1:			// IDLE
+	case CPlayer::KRH_BEHAVIOR_STATE::IDLE:
 		return CKiryu_KRH_Idle::Create(pPlayer);
-	case 2:			// WALK
+	case CPlayer::KRH_BEHAVIOR_STATE::WALK:
 		return CKiryu_KRH_Walk::Create(pPlayer);
-	case 3:			// RUN
+	case CPlayer::KRH_BEHAVIOR_STATE::RUN:
 		return CKiryu_KRH_Run::Create(pPlayer);
-	case 4:			//ATTACK
+	case CPlayer::KRH_BEHAVIOR_STATE::ATTACK:
 		return CKiryu_KRH_Attack::Create(pPlayer);
-	case 5:			//HIT
+	case CPlayer::KRH_BEHAVIOR_STATE::HIT:
 		return CKiryu_KRH_Hit::Create(pPlayer);
-	case 6:			// SWAY
+	case CPlayer::KRH_BEHAVIOR_STATE::SWAY:
 		return CKiryu_KRH_Sway::Create(pPlayer);
-	case 7:			// DOWN
+	case CPlayer::KRH_BEHAVIOR_STATE::DOWN:
 		return CKiryu_KRH_Down::Create(pPlayer);
 	}
+	
 	return nullptr;
 }
 
@@ -132,28 +145,43 @@ CBehaviorAnimation* CBehaviorAnimation::Create_KRC_Behavior(_uint iBehavior, cla
 		BTL_START, IDLE, WALK, RUN, ATTACK, HIT,
 		SWAY, DOWN, KRS_BEHAVIOR_END
 	*/
-	switch (iBehavior)
+
+	CPlayer::KRC_BEHAVIOR_STATE eBehavior = static_cast<CPlayer::KRC_BEHAVIOR_STATE>(iBehavior);
+
+	switch (eBehavior)
 	{
-	case 0:			//BTL_START
+	case CPlayer::KRC_BEHAVIOR_STATE::BTL_START:
 		return CKiryu_KRC_BattleStart::Create(pPlayer);
-	case 1:			// IDLE
+	case CPlayer::KRC_BEHAVIOR_STATE::IDLE:
 		return CKiryu_KRC_Idle::Create(pPlayer);
-	case 2:			// WALK
+	case CPlayer::KRC_BEHAVIOR_STATE::WALK:
 		return CKiryu_KRC_Walk::Create(pPlayer);
-	case 3:			// RUN
+	case CPlayer::KRC_BEHAVIOR_STATE::RUN:
 		return CKiryu_KRC_Run::Create(pPlayer);
-	case 4:			//ATTACK
+	case CPlayer::KRC_BEHAVIOR_STATE::ATTACK:
 		return CKiryu_KRC_Attack::Create(pPlayer);
-	case 5:			//HIT
+	case CPlayer::KRC_BEHAVIOR_STATE::HIT:
 		return CKiryu_KRC_Hit::Create(pPlayer);
-	case 6:			// SWAY
+	case CPlayer::KRC_BEHAVIOR_STATE::SWAY:
 		return CKiryu_KRC_Sway::Create(pPlayer);
-	case 7:			// DOWN
+	case CPlayer::KRC_BEHAVIOR_STATE::DOWN:
 		return CKiryu_KRC_Down::Create(pPlayer);
-	case 8:			// GUARD
+	case CPlayer::KRC_BEHAVIOR_STATE::GRAB:
+		return CKiryu_KRC_Grab::Create(pPlayer);
+	case CPlayer::KRC_BEHAVIOR_STATE::GUARD:
 		return CKiryu_KRC_Guard::Create(pPlayer);
 	}
+
 	return nullptr;
+}
+
+_bool CBehaviorAnimation::Checked_Animation_Ratio(_float fRatio)
+{
+	CModel* pModelCom = static_cast<CModel*>(m_pPlayer->Get_Component(TEXT("Com_Model")));
+	if (fRatio < *pModelCom->Get_AnimationCurrentPosition() / *pModelCom->Get_AnimationDuration())
+		return true;
+
+	return false;
 }
 
 CBehaviorAnimation* CBehaviorAnimation::Create(_uint iStyle, _uint iBehavior, class CPlayer* pPlayer)

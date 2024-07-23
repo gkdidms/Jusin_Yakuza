@@ -29,7 +29,9 @@ float3 g_vStartPos;
 
 float2 g_fAnimTime;
 float2 g_fControlAlpha;
-
+bool g_isUVAnim;
+float2 g_StartUV;
+float2 g_EndUV;
 vector g_vCamPosition;
 
 /* Aura */

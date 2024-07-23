@@ -50,6 +50,7 @@ public:
 
 public:
     _bool isSway() { return m_isSway; }
+    _bool isGuard() { return m_isGuard; }
 
 protected:
     CAI_Monster();
