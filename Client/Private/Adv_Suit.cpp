@@ -40,6 +40,33 @@ void CAdv_Suit::Late_Tick(const _float& fTimeDelta)
 	__super::Late_Tick(fTimeDelta);
 }
 
+HRESULT CAdv_Suit::Add_Components()
+{
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Shader_VtxAnim"),
+		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
+		return E_FAIL;
+
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, m_wstrModelName,
+		TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
+		return E_FAIL;
+
+	CBounding_AABB::BOUNDING_AABB_DESC		ColliderDesc{};
+
+	ColliderDesc.eType = CCollider::COLLIDER_AABB;
+	ColliderDesc.vExtents = _float3(0.5, 0.8, 0.5);
+	ColliderDesc.vCenter = _float3(0, ColliderDesc.vExtents.y, 0);
+
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Collider"),
+		TEXT("Com_Collider"), reinterpret_cast<CComponent**>(&m_pColliderCom), &ColliderDesc)))
+		return E_FAIL;
+
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Anim"),
+		TEXT("Com_Anim"), reinterpret_cast<CComponent**>(&m_pAnimCom))))
+		return E_FAIL;
+
+	return S_OK;
+}
+
 CAdv_Suit* CAdv_Suit::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
 	CAdv_Suit* pInstance = new CAdv_Suit(pDevice, pContext);

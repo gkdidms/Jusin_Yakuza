@@ -16,6 +16,9 @@ public:
     virtual void Priority_Tick(const _float& fTimeDelta) override;
     virtual void Tick(const _float& fTimeDelta) override;
     virtual void Late_Tick(const _float& fTimeDelta) override;
+
+private:
+    HRESULT Add_Components();
     
 public:
     static CAdv_Suit* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

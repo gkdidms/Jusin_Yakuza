@@ -178,6 +178,9 @@ CBTNode::NODE_STATE CAI_Shakedown::Check_Attack()
 
 CBTNode::NODE_STATE CAI_Shakedown::Attack()
 {
+	if (m_isAttack)
+		return CBTNode::SUCCESS;
+
 	LookAtPlayer();
 
 	_float fDistance = DistanceFromPlayer();
@@ -312,7 +315,7 @@ CBTNode::NODE_STATE CAI_Shakedown::ATK_GuardRun()
 {
 	if (m_iSkill == SKILL_GUARD_RUN && m_isAttack)
 	{
-		if (m_pAnimCom->Get_AnimFinished())
+		if (*m_pState == CMonster::MONSTER_GUARD_RUN && m_pAnimCom->Get_AnimFinished())
 		{
 			m_isAttack = false;
 			return CBTNode::SUCCESS;
