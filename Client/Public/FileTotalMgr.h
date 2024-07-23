@@ -27,6 +27,8 @@ public:
 		MONSTER_SHAKEDOWN,
 		MONSTER_YONEDA,
 		MONSTER_KUZE,
+		LARGE_CONSTRUCTION,
+		ADTENTURE_SUIT,
 		OBJ_END
 	};
 
@@ -84,7 +86,7 @@ private:
 	TRIGGER_IO								m_Trigger{};
 	MAP_TOTALINFORM_DESC					m_MapTriggerInform{}; //Trigger로 불러오는 object
 
-	vector<wstring>							m_Layers = { TEXT("Layer_GameObjects"), TEXT("Layer_Monster"), TEXT("Layer_Player") };
+	vector<wstring>							m_Layers = { TEXT("Layer_GameObjects"), TEXT("Layer_Monster"), TEXT("Layer_Player"), TEXT("Layer_NPC")};
 
 private:
 	HRESULT									Set_Terrain_Size(int iStageLevel);
