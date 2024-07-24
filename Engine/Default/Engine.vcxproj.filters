@@ -189,9 +189,12 @@
     </Filter>
     <Filter Include="01.Utility\03.Component\02.GameObject\Camera">
       <UniqueIdentifier>{e59c98b4-d124-4e00-bc17-75aa0d04497d}</UniqueIdentifier>
-	</Filter>
+    </Filter>
     <Filter Include="01.Utility\03.Component\10.AStart">
       <UniqueIdentifier>{3034f1c8-6ec5-464d-aad9-15c21d938877}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\03.Component\01.VIBuffer\Line">
+      <UniqueIdentifier>{ac611a59-fed6-4615-b648-94f631930a49}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -387,6 +390,9 @@
     <ClInclude Include="..\public\AStart.h">
       <Filter>01.Utility\03.Component\10.AStart</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\VIBuffer_Line.h">
+      <Filter>01.Utility\03.Component\01.VIBuffer\Line</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\Base.cpp">
@@ -569,6 +575,9 @@
     <ClCompile Include="..\private\AStart.cpp">
       <Filter>01.Utility\03.Component\10.AStart</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\VIBuffer_Line.cpp">
+      <Filter>01.Utility\03.Component\01.VIBuffer\Line</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Cell.hlsl">
@@ -590,6 +599,9 @@
       <Filter>98.Shader</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Effect.hlsl">
+      <Filter>98.Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_Line.hlsl">
       <Filter>98.Shader</Filter>
     </FxCompile>
   </ItemGroup>

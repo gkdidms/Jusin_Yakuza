@@ -15,7 +15,7 @@ public:
     virtual HRESULT Initialize(void* pArg) override;
 
 public:
-    static CVIBuffer_Cell* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext ,const _float3* pPoints);
+    static CVIBuffer_Cell* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext , const _float3* pPoints);
     virtual CComponent* Clone(void* pArg);
     virtual void Free() override;
 };

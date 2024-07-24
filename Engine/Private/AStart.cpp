@@ -12,6 +12,22 @@ CAStart::CAStart(const CAStart& rhs)
 {
 }
 
+HRESULT CAStart::Initialize_Prototype()
+{
+	return S_OK;
+}
+
+HRESULT CAStart::Initialize(void* pArg)
+{
+#ifdef _DEBUG
+	m_pShaderCom = CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_Line.hlsl"), VTXPOS::Elements, VTXPOS::iNumElements);
+	if (nullptr == m_pShaderCom)
+		return E_FAIL;
+#endif // _DEBUG
+
+	return S_OK;
+}
+
 void CAStart::Start_Root(CNavigation* pNavi, _fvector vGoalPos)
 {
 	_int iStartIndex = pNavi->Get_Index();
@@ -20,12 +36,45 @@ void CAStart::Start_Root(CNavigation* pNavi, _fvector vGoalPos)
 		return;
 
 	Data_Release();
+#ifdef _DEBUG
+	Safe_Release(m_pVIBufferCom);
+#endif // _DEBUG
 
 	vector<CCell*> Cells = pNavi->Get_Cells();
 
 	if (Make_Route(iStartIndex, iGoalIndex, Cells))
+	{
 		Make_BastList(iStartIndex, iGoalIndex, Cells);
+		
+#ifdef _DEBUG
+		m_pVIBufferCom = CVIBuffer_Line::Create(m_pDevice, m_pContext, m_BestList);
+		if (nullptr == m_pVIBufferCom)
+			MSG_BOX("VIBuffer_Lint 생성 불가");
+#endif // _DEBUG
+	}
 }
+
+#ifdef _DEBUG
+HRESULT CAStart::Render()
+{
+	if (nullptr == m_pVIBufferCom)
+		return E_FAIL;
+
+	XMStoreFloat4x4(&m_WorldMatrix, XMMatrixIdentity());
+	m_WorldMatrix.m[3][1] += 0.2f;
+	m_pShaderCom->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix);
+	m_pShaderCom->Bind_Matrix("g_ViewMatrix", m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_VIEW));
+	m_pShaderCom->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_PROJ));
+
+	_vector vColor = { 1.f, 0.f, 0.f, 1.f };
+	m_pShaderCom->Bind_RawValue("g_vColor", &vColor, sizeof(_vector));
+
+	m_pShaderCom->Begin(0);
+	m_pVIBufferCom->Render();
+
+	return S_OK;
+}
+#endif // _DEBUG
 
 //인접한 셀의 코스트 구하기
 _bool CAStart::Make_Route(_uint iStartIndex, _uint iGoalIndex, vector<class CCell*> Cells)
@@ -78,7 +127,7 @@ _bool CAStart::Make_Route(_uint iStartIndex, _uint iGoalIndex, vector<class CCel
 			_float fCost2 = XMVectorGetX(XMVector3Length(vPCost2)) + XMVectorGetX(XMVector3Length(vGCost2));
 
 			return fCost1 < fCost2;
-			});
+		});
 
 		iStartIdx = m_OpenList.front();
 	}
@@ -86,7 +135,6 @@ _bool CAStart::Make_Route(_uint iStartIndex, _uint iGoalIndex, vector<class CCel
 
 void CAStart::Make_BastList(_uint iStartIndex, _uint iGoalIndex, vector<class CCell*> Cells)
 {
-
 	m_BestList.push_front(Cells[iGoalIndex]);
 
 	_uint iRouteIndex = Cells[iGoalIndex]->Get_ParentIndex();
@@ -153,4 +201,9 @@ CComponent* CAStart::Clone(void* pArg)
 void CAStart::Free()
 {
 	__super::Free();
+
+#ifdef _DEBUG
+	Safe_Release(m_pVIBufferCom);
+	Safe_Release(m_pShaderCom);
+#endif // _DEBUG
 }

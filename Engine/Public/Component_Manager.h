@@ -6,6 +6,7 @@
 #include "VIBuffer_Rect.h"
 #include "VIBuffer_Terrain.h"
 #include "VIBuffer_Cell.h"
+#include "VIBuffer_Line.h"
 #include "VIBuffer_Instance.h"
 #include "VIBuffer_Instance_Point.h"
 #include "VIBuffer_Instance_Rect.h"
