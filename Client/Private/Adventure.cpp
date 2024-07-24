@@ -4,6 +4,7 @@
 #include "Mesh.h"
 
 #include "SocketCollider.h"
+#include "AI_Monster.h"
 
 CAdventure::CAdventure(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CLandObject { pDevice, pContext }
