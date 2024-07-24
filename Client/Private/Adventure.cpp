@@ -4,6 +4,9 @@
 #include "Mesh.h"
 
 #include "SocketCollider.h"
+#include "AI_Monster.h"
+
+#include "AI_Passersby.h"
 
 CAdventure::CAdventure(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CLandObject { pDevice, pContext }
@@ -34,6 +37,26 @@ void CAdventure::Priority_Tick(const _float& fTimeDelta)
 
 void CAdventure::Tick(const _float& fTimeDelta)
 {
+	m_pTree->Tick(fTimeDelta);
+
+	Change_Animation();
+
+	//길찾기 알고리즘
+	
+	
+	if (m_pGameInstance->GetMouseState(DIM_LB) == TAP)
+	{
+		_bool isPicking = false;
+		_vector vGoalPos = m_pGameInstance->Picking(&isPicking);
+		if (isPicking)
+			m_pAStartCom->Start_Root(m_pNavigationCom, vGoalPos);
+	}
+	
+	Move_AStart();
+
+	m_pModelCom->Play_Animation(fTimeDelta, m_pAnimCom, m_isAnimLoop);
+
+	Synchronize_Root(fTimeDelta);
 }
 
 void CAdventure::Late_Tick(const _float& fTimeDelta)
@@ -100,6 +123,7 @@ HRESULT CAdventure::Render()
 
 void CAdventure::Take_Damage(_uint iHitColliderType, const _float3& vDir, _float fDamage, CLandObject* pAttackedObject, _bool isBlowAttack)
 {
+	m_isColl = true;
 }
 
 void CAdventure::Animation_Event()
@@ -153,6 +177,52 @@ _bool CAdventure::Checked_Animation_Ratio(_float fRatio)
 
 void CAdventure::Change_Animation()
 {
+	m_isAnimLoop = false;
+
+	switch (m_iState)
+	{
+	case ADVENTURE_IDLE:
+	{
+		m_strAnimName = "m_nml_tlk_stand_kamae";
+		m_isAnimLoop = true;
+		break;
+	}
+	case ADVENTURE_WALK:
+	{
+		m_strAnimName = "p_mov_walk";
+		m_isAnimLoop = true;
+		break;
+	}
+	case ADVENTURE_WALK_S:
+	{
+		m_strAnimName = "p_mov_walk_s";
+		break;
+	}
+	case ADVENTURE_WALK_EN:
+	{
+		m_strAnimName = "p_mov_walk_en";
+		break;
+	}
+	case ADVENTURE_HIT_L:
+	{
+		m_strAnimName = "m_hml_act_walk_hit_l";
+		break;
+	}
+	case ADVENTURE_HIT_R:
+	{
+		m_strAnimName = "m_hml_act_walk_hit_r";
+		break;
+	}
+	default:
+		break;
+	}
+
+	m_iAnim = m_pAnimCom->Get_AnimationIndex(m_strAnimName.c_str());
+	
+	if (m_iAnim == -1)
+		return;
+
+	m_pModelCom->Set_AnimationIndex(m_iAnim, m_pAnimCom->Get_Animations(), m_fChangeInterval);
 }
 
 void CAdventure::Synchronize_Root(const _float& fTimeDelta)
@@ -198,6 +268,22 @@ void CAdventure::Synchronize_Root(const _float& fTimeDelta)
 	XMStoreFloat4x4(&m_ModelWorldMatrix, m_pTransformCom->Get_WorldMatrix());
 }
 
+void CAdventure::Move_AStart()
+{
+	list<CCell*>& BestCells = m_pAStartCom->Get_BestList();
+
+	if (BestCells.empty())
+		return;
+
+	_vector	vDir = BestCells.front()->Get_WayPoint() - m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	_float fDist = XMVectorGetX(XMVector3Length(vDir));
+	
+	m_pTransformCom->LookAt_For_LandObject(BestCells.front()->Get_WayPoint());
+	
+	if (1.f >= fDist)
+		BestCells.pop_front();
+}
+
 HRESULT CAdventure::Add_Components()
 {
 	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Shader_VtxAnim"),
@@ -218,12 +304,16 @@ HRESULT CAdventure::Add_Components()
 		TEXT("Com_Collider"), reinterpret_cast<CComponent**>(&m_pColliderCom), &ColliderDesc)))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Anim"),
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Anim_NPC"),
 		TEXT("Com_Anim"), reinterpret_cast<CComponent**>(&m_pAnimCom))))
 		return E_FAIL;
 
 	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Navigation"),
 		TEXT("Com_Navigation"), reinterpret_cast<CComponent**>(&m_pNavigationCom))))
+		return E_FAIL;
+
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_AStart"),
+		TEXT("Com_AStart"), reinterpret_cast<CComponent**>(&m_pAStartCom))))
 		return E_FAIL;
 
 	return S_OK;
@@ -248,5 +338,5 @@ void CAdventure::Free()
 	Safe_Release(m_pAnimCom);
 	Safe_Release(m_pNavigationCom);
 	Safe_Release(m_pTree);
-	Safe_Release(m_pShaderCom);
+	Safe_Release(m_pAStartCom);
 }

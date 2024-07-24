@@ -25,7 +25,7 @@ HRESULT CAI_WPAYakuza::Initialize(void* pArg)
 
 	Ready_Tree();
 
-	m_fDelayAttackDuration = m_pGameInstance->Get_Random(6, 9);
+	m_fDelayAttackDuration = m_pGameInstance->Get_Random(6.f, 9.f);
 	m_iMonsterType = CAI_Monster::WPA;
 
 	return S_OK;
@@ -134,22 +134,6 @@ CBTNode::NODE_STATE CAI_WPAYakuza::HitAndGuard()
 	}
 
 	return CBTNode::FAIL;
-}
-
-CBTNode::NODE_STATE CAI_WPAYakuza::Check_Attack()
-{
-	if (!m_isAttack)
-	{
-		if (DistanceFromPlayer() > 6.f)
-			return CBTNode::FAIL;
-
-		if (m_fDelayAttackDuration > m_fAttackDelayTime)
-			return CBTNode::FAIL;
-
-		m_fAttackDelayTime = 0.f;
-	}
-
-	return CBTNode::SUCCESS;
 }
 
 CBTNode::NODE_STATE CAI_WPAYakuza::Attack()

@@ -1581,7 +1581,8 @@ void CRenderer::Render_Bloom()
 	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Effect"), m_pShader, "g_EffectTexture")))
 		return;
 
-	m_pShader->Begin(11);
+	// Blur_X_SIGN
+	m_pShader->Begin(21);
 
 	m_pVIBuffer->Render();
 
@@ -1594,7 +1595,7 @@ void CRenderer::Render_Bloom()
 	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Blur_X"), m_pShader, "g_EffectTexture")))
 		return;
 
-	m_pShader->Begin(12);
+	m_pShader->Begin(22);
 
 	m_pVIBuffer->Render();
 

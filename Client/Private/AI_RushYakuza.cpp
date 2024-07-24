@@ -138,27 +138,6 @@ void CAI_RushYakuza::Ready_Tree()
 	m_pRootNode = pRoot;
 }
 
-CBTNode::NODE_STATE CAI_RushYakuza::Check_Attack()
-{
-	if (!m_isAttack)
-	{
-		if (DistanceFromPlayer() > 6.f)
-			return CBTNode::FAIL;
-
-		if (m_fDelayAttackDuration > m_fAttackDelayTime)
-			return CBTNode::FAIL;
-
-		m_fAttackDelayTime = 0.f;
-		Reset_State();
-	}
-
-#ifdef _DEBUG
-	cout << " 몬스터 공격!!!!" << endl;
-#endif // DEBUG
-
-	return CBTNode::SUCCESS;
-}
-
 CBTNode::NODE_STATE CAI_RushYakuza::Attack()
 {
 	if (m_isAngry || m_isAttack) return CBTNode::SUCCESS;

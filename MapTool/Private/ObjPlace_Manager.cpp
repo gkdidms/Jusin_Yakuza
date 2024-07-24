@@ -719,6 +719,11 @@ void CObjPlace_Manager::Edit_Installed_GameObject(int iNumObject)
 			m_tCurrentObjectDesc.iShaderPass = 7;
 		}
 
+		if (ImGui::RadioButton(u8"rm 적용한 외부간판 - 빛나는", m_tCurrentObjectDesc.iShaderPass == 8))
+		{
+			shaderType = 8;
+			m_tCurrentObjectDesc.iShaderPass = 8;
+		}
 
 	}
 	else
@@ -991,6 +996,8 @@ void CObjPlace_Manager::Set_Map_Object()
 		ImGui::RadioButton(u8"Emissive - 투명x", &shaderType, 6);
 		ImGui::NewLine();
 		ImGui::RadioButton(u8"rm 텍스처 적용 - 외부간판", &shaderType, 7);
+		ImGui::NewLine();
+		ImGui::RadioButton(u8"rm 텍스처 적용 - 외부간판 - 빛남", &shaderType, 8);
 	}
 	else
 	{
