@@ -34,9 +34,6 @@
     <Filter Include="01.Utility\01.Level">
       <UniqueIdentifier>{b1729c2f-0265-4e60-918d-db0b992ca264}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01.Utility\02.GameObject">
-      <UniqueIdentifier>{75d4de9b-07dc-4dbc-af27-e4f86b637251}</UniqueIdentifier>
-    </Filter>
     <Filter Include="01.Utility\03.Component">
       <UniqueIdentifier>{e75b0548-ca72-4056-a0fc-ec306fd0f081}</UniqueIdentifier>
     </Filter>
@@ -61,20 +58,8 @@
     <Filter Include="01.Utility\98.Renderer">
       <UniqueIdentifier>{a3decb58-57c2-4994-97a3-59a060572406}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01.Utility\02.GameObject\Manager">
-      <UniqueIdentifier>{cbf47f5f-3c2b-4fe7-b960-2fc50684cd36}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="01.Utility\02.GameObject\Manager\Layer">
-      <UniqueIdentifier>{cfe7261e-f4be-4c46-8a37-1b5dc2cb279a}</UniqueIdentifier>
-    </Filter>
     <Filter Include="01.Utility\01.Level\Manager">
       <UniqueIdentifier>{29cda5c3-11ff-4f72-9a09-93aaf0a4a1a5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="01.Utility\02.GameObject\BlendObject">
-      <UniqueIdentifier>{c6f47ef3-5da5-454b-9d15-3588409b814f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="01.Utility\02.GameObject\Camera">
-      <UniqueIdentifier>{e59c98b4-d124-4e00-bc17-75aa0d04497d}</UniqueIdentifier>
     </Filter>
     <Filter Include="01.Utility\06.RenderTarget\Manager">
       <UniqueIdentifier>{954a0ca8-dbf9-4e18-bc5b-124c1246b4ec}</UniqueIdentifier>
@@ -190,6 +175,21 @@
     <Filter Include="01.Utility\11.BTNode\Manager">
       <UniqueIdentifier>{3bdfb931-41b4-4b0f-b653-8b9c0f754f16}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Utility\03.Component\02.GameObject">
+      <UniqueIdentifier>{75d4de9b-07dc-4dbc-af27-e4f86b637251}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\03.Component\02.GameObject\Manager">
+      <UniqueIdentifier>{cbf47f5f-3c2b-4fe7-b960-2fc50684cd36}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\03.Component\02.GameObject\Manager\Layer">
+      <UniqueIdentifier>{cfe7261e-f4be-4c46-8a37-1b5dc2cb279a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\03.Component\02.GameObject\BlendObject">
+      <UniqueIdentifier>{c6f47ef3-5da5-454b-9d15-3588409b814f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\03.Component\02.GameObject\Camera">
+      <UniqueIdentifier>{e59c98b4-d124-4e00-bc17-75aa0d04497d}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\Base.h">
@@ -226,13 +226,13 @@
       <Filter>01.Utility\00.GameInstance</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\GameObject.h">
-      <Filter>01.Utility\02.GameObject</Filter>
+      <Filter>01.Utility\03.Component\02.GameObject</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\GameObject_Manager.h">
-      <Filter>01.Utility\02.GameObject\Manager</Filter>
+      <Filter>01.Utility\03.Component\02.GameObject\Manager</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Layer.h">
-      <Filter>01.Utility\02.GameObject\Manager\Layer</Filter>
+      <Filter>01.Utility\03.Component\02.GameObject\Manager\Layer</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Level.h">
       <Filter>01.Utility\01.Level</Filter>
@@ -241,10 +241,10 @@
       <Filter>01.Utility\01.Level\Manager</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Camera.h">
-      <Filter>01.Utility\02.GameObject\Camera</Filter>
+      <Filter>01.Utility\03.Component\02.GameObject\Camera</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\BlendObject.h">
-      <Filter>01.Utility\02.GameObject\BlendObject</Filter>
+      <Filter>01.Utility\03.Component\02.GameObject\BlendObject</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\DebugDraw.h">
       <Filter>01.Utility\03.Component\07.Collider\DebugDraw</Filter>
@@ -405,13 +405,13 @@
       <Filter>01.Utility\00.GameInstance</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\GameObject.cpp">
-      <Filter>01.Utility\02.GameObject</Filter>
+      <Filter>01.Utility\03.Component\02.GameObject</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\GameObject_Manager.cpp">
-      <Filter>01.Utility\02.GameObject\Manager</Filter>
+      <Filter>01.Utility\03.Component\02.GameObject\Manager</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Layer.cpp">
-      <Filter>01.Utility\02.GameObject\Manager\Layer</Filter>
+      <Filter>01.Utility\03.Component\02.GameObject\Manager\Layer</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Level.cpp">
       <Filter>01.Utility\01.Level</Filter>
@@ -420,10 +420,10 @@
       <Filter>01.Utility\01.Level\Manager</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Camera.cpp">
-      <Filter>01.Utility\02.GameObject\Camera</Filter>
+      <Filter>01.Utility\03.Component\02.GameObject\Camera</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\BlendObject.cpp">
-      <Filter>01.Utility\02.GameObject\BlendObject</Filter>
+      <Filter>01.Utility\03.Component\02.GameObject\BlendObject</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\DebugDraw.cpp">
       <Filter>01.Utility\03.Component\07.Collider\DebugDraw</Filter>

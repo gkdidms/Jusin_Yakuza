@@ -108,18 +108,7 @@ void CPlayerCamera::Late_Tick(const _float& fTimeDelta)
 
 	Compute_View(fTimeDelta);
 
-	// 충돌시 -> check_map_collision으로 이미 이동시켜놓음. 그래서 충돌 안생기는거처럼 보일뿐
-	if (false == m_bCamCollision && m_fCamDistance < MAX_DISTANCE)
-	{
-		m_fCamDistance += 0.01;
-		if (MAX_DISTANCE < m_fCamDistance)
-			m_fCamDistance = MAX_DISTANCE;
-	}
 
-	if (MIN_DISTANCE >= m_fCamDistance)
-	{
-		m_fCamDistance = MIN_DISTANCE;
-	}
 
 
 	__super::Tick(fTimeDelta);

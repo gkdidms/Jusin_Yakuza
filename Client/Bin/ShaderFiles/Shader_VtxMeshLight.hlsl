@@ -157,14 +157,15 @@ PS_OUT PS_MAIN_EMISSIVE(PS_IN In)
 
     vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
     
-    // 약한발광(0.1 - 0.3)
-    // 보통(0.4 - 0.6)
-    // 강한 (0.7-0.8)
-    vector emissiveColor = vDiffuse * 0.2;
-   
-    vector finalColor = vDiffuse + emissiveColor;
-  
-    Out.vDiffuse = vDiffuse;
+    vector emissiveColor = vDiffuse * 0.3;
+    
+    vector finalColor = float4(0, 0, 0, 0);
+    
+    finalColor = vDiffuse + emissiveColor;
+    
+     
+    
+    Out.vDiffuse = finalColor;
     
     return Out;
 }
@@ -180,17 +181,58 @@ PS_OUT PS_MAIN_Bloom(PS_IN In)
     // 약한발광(0.1 - 0.3)
     // 보통(0.4 - 0.6)
     // 강한 (0.7-0.8)
+    //vector emissiveColor = vDiffuse * 0.3;
+    //vector finalColor = float4(0, 0, 0, 0);
+    //if (vDiffuse.r < 0.5 && vDiffuse.g < 0.5 && vDiffuse.b < 0.5)
+    //{
+    //    finalColor = vDiffuse * 0.3;
+    //}
+    //else
+    //{
+    //    finalColor = vDiffuse + emissiveColor;
+    //}
+    
+    
+    
+    // 약한발광(0.1 - 0.3)
+    // 보통(0.4 - 0.6)
+    // 강한 (0.7-0.8)
     vector emissiveColor = vDiffuse * 0.3;
+    
+    float fMinColor = 1;
+    
+    if(vDiffuse.r < vDiffuse.g)
+    {
+        fMinColor = vDiffuse.r;
+    }
+    else
+    {
+        fMinColor = vDiffuse.g;
+    }
    
+    if (fMinColor > vDiffuse.b)
+    {
+        fMinColor = vDiffuse.b;
+    }
+
+    
     // Combine base color and emissive color
-    float4 finalColor = vDiffuse + emissiveColor - (1 - emissive.r);
+    float4 finalColor;
+    
+    if (vDiffuse.r < 0.4 && vDiffuse.g < 0.4 && vDiffuse.b < 0.4)
+    {
+        finalColor = vDiffuse;
+    }
+    else
+    {
+        finalColor = vDiffuse + emissiveColor;
+    }
   
     Out.vDiffuse = finalColor;
+    Out.vDiffuse.a = 0.3;
     
     return Out;
 }
-
-
 
 
 
@@ -303,6 +345,5 @@ technique11 DefaultTechnique
     }
 
 
-   
 }
 
