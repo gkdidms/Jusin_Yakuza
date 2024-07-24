@@ -35,7 +35,7 @@ HRESULT CAI_RushYakuza::Initialize(void* pArg)
 	//트리 구현
 	Ready_Tree();
 
-	m_fDelayAttackDuration = m_pGameInstance->Get_Random(6, 9);
+	m_fDelayAttackDuration = m_pGameInstance->Get_Random(6.f, 9.f);
 	m_iMonsterType = CAI_Monster::RUSH;
 	
 	return S_OK;

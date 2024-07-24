@@ -383,6 +383,9 @@
     <ClCompile Include="..\private\Adv_Suit.cpp">
       <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\00.Suit</Filter>
     </ClCompile>
+    <ClCompile Include="..\private\AI_Adventure.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\AI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\MainApp.h">
@@ -796,6 +799,9 @@
     </ClInclude>
     <ClInclude Include="..\public\Adv_Suit.h">
       <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\00.Suit</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\AI_Adventure.h">
+      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\AI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1223,6 +1229,9 @@
     </Filter>
     <Filter Include="02.GameObjects\02.Character\LandObject\02.Adventure\00.Suit">
       <UniqueIdentifier>{32d0da74-6f1f-48e1-b18f-c96b8d5b2377}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\02.Adventure\AI">
+      <UniqueIdentifier>{118e6329-be46-4fd0-8074-1988d055f79a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

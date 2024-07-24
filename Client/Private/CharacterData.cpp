@@ -140,7 +140,9 @@ HRESULT CCharacterData::Load_AlphaMeshes(string strFilePath)
 {
 	if (fs::exists(strFilePath))
 	{
+#ifdef _DEBUG
 		cout << "_AlphaMeshes Yes!!" << endl;
+#endif // _DEBUG
 
 		ifstream in(strFilePath, ios::binary);
 
@@ -171,7 +173,9 @@ HRESULT CCharacterData::Load_LoopAnimations(string strFilePath)
 {
 	if (fs::exists(strFilePath))
 	{
+#ifdef _DEBUG
 		cout << "_LoopAnimations Yes!!" << endl;
+#endif // _DEBUG
 
 		ifstream in(strFilePath, ios::binary);
 
@@ -203,7 +207,9 @@ HRESULT CCharacterData::Load_AnimationEvents(string strFilePath)
 {
 	if (fs::exists(strFilePath))
 	{
+#ifdef _DEBUG
 		cout << "_AnimationEvents Yes!!" << endl;
+#endif // _DEBUG
 
 		ifstream in(strFilePath, ios::binary);
 
@@ -240,7 +246,9 @@ HRESULT CCharacterData::Load_Colliders(string strFilePath)
 {
 	if (fs::exists(strFilePath))
 	{
+#ifdef _DEBUG
 		cout << "_Colliders Yes!!" << endl;
+#endif // _DEBUG
 
 		ifstream in(strFilePath, ios::binary);
 
@@ -285,7 +293,9 @@ HRESULT CCharacterData::Load_EffectState(string strFilePath)
 {
 	if (fs::exists(strFilePath))
 	{
+#ifdef _DEBUG
 		cout << "_EffectState Yes!!" << endl;
+#endif // _DEBUG
 
 		ifstream in(strFilePath, ios::binary);
 
@@ -324,7 +334,9 @@ HRESULT CCharacterData::Load_RimLightEvent(string strFilePath)
 	*/
 	if (fs::exists(strFilePath))
 	{
+#ifdef _DEBUG
 		cout << "_RimLightEvent Yes!!" << endl;
+#endif // _DEBUG
 
 		ifstream in(strFilePath, ios::binary);
 
@@ -368,7 +380,9 @@ HRESULT CCharacterData::Load_TrailEvent(string strFilePath)
 	*/
 	if (fs::exists(strFilePath))
 	{
+#ifdef _DEBUG
 		cout << "_RimLightEvent Yes!!" << endl;
+#endif // _DEBUG
 
 		ifstream in(strFilePath, ios::binary);
 
