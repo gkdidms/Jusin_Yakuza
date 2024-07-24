@@ -70,7 +70,7 @@ private:
     bool        m_bPreCamCollision = { false };
     bool        m_bCamCollision = { false };
     bool        m_bBlock = { false };
-    bool        m_bFirstCollision = { false }; // first collision check 
+    int         m_iCollisionNum = { 0 }; // first collision check 
 
     _float       m_fTimer = { 0 };
 

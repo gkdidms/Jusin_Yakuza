@@ -4,6 +4,7 @@
 #include "Mesh.h"
 
 #include "SocketCollider.h"
+#include "AI_Monster.h"
 
 #include "AI_Passersby.h"
 
