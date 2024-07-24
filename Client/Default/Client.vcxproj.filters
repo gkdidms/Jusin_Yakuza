@@ -380,11 +380,14 @@
     <ClCompile Include="..\private\Adventure.cpp">
       <Filter>02.GameObjects\02.Character\LandObject\02.Adventure</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\Adv_Suit.cpp">
+    <ClCompile Include="..\private\Adv_Passersby.cpp">
       <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\00.Suit</Filter>
     </ClCompile>
     <ClCompile Include="..\private\AI_Adventure.cpp">
       <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\AI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\AI_Passersby.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\00.Suit\AI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -797,11 +800,14 @@
     <ClInclude Include="..\public\Adventure.h">
       <Filter>02.GameObjects\02.Character\LandObject\02.Adventure</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\Adv_Suit.h">
+    <ClInclude Include="..\public\Adv_Passersby.h">
       <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\00.Suit</Filter>
     </ClInclude>
     <ClInclude Include="..\public\AI_Adventure.h">
       <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\AI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\AI_Passersby.h">
+      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\00.Suit\AI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1232,6 +1238,9 @@
     </Filter>
     <Filter Include="02.GameObjects\02.Character\LandObject\02.Adventure\AI">
       <UniqueIdentifier>{118e6329-be46-4fd0-8074-1988d055f79a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\02.Adventure\00.Suit\AI">
+      <UniqueIdentifier>{826ca722-05bb-4d95-acd5-42aa425e1c6f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

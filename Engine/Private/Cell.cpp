@@ -18,6 +18,10 @@ HRESULT CCell::Initialize(const _float3* pPoints, _int iIndex, OPTION OptionType
 
     m_OptionType = OptionType;
 
+    m_vWayPoint.x = (m_vPoints[POINT_A].x + m_vPoints[POINT_B].x + m_vPoints[POINT_C].x) / 3.f;
+    m_vWayPoint.y = (m_vPoints[POINT_A].y + m_vPoints[POINT_B].y + m_vPoints[POINT_C].y) / 3.f;
+    m_vWayPoint.z = (m_vPoints[POINT_A].z + m_vPoints[POINT_B].z + m_vPoints[POINT_C].z) / 3.f;
+
 #ifdef _DEBUG
     m_pVIBufferCom = CVIBuffer_Cell::Create(m_pDevice, m_pContext, pPoints);
     if (nullptr == m_pVIBufferCom)

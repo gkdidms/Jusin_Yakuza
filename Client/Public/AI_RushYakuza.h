@@ -28,9 +28,6 @@ private:
     void Ready_Tree();
 
 private:
-    //공격
-    CBTNode::NODE_STATE Check_Attack(); // 공격 가능한 상태인지 체크
-    
     CBTNode::NODE_STATE Attack(); //공격 가능한 상태일때 공격 선택
     CBTNode::NODE_STATE Angry_Attack(); // 화가 난 상태일때 공격 선택
 

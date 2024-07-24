@@ -23,7 +23,13 @@ public:
     _vector Get_Point(TYPE eType) { return XMLoadFloat3(&m_vPoints[eType]); }
     _int Get_Index() { return m_iIndex; }
     OPTION Get_Option() { return m_OptionType; }
+    _int Get_NeighborIndex(_uint eType) { return m_iNeighborIndices[eType]; }
+    _int Get_ParentIndex() { return m_iParentIndex; }
+    _vector Get_WayPoint() const { return XMLoadFloat3(&m_vWayPoint); }
+
+public:
     void    Set_Option(CCell::OPTION  iOption) {m_OptionType = iOption;}
+    void Set_ParentIndex(_uint iIndex) { m_iParentIndex = iIndex; }
 
 public:
     HRESULT Initialize(const _float3* pPoints, _int iIndex, OPTION OptionType);
@@ -50,6 +56,9 @@ private:
     _int m_iIndex = { -1 };
     OPTION m_OptionType = { OPTION_END }; // 셀의 옵션을 저장
 
+private:
+    _float3 m_vWayPoint = {};
+    _int m_iParentIndex = { -1 };
 #ifdef _DEBUG
 private:
     class CVIBuffer_Cell* m_pVIBufferCom = { nullptr };
