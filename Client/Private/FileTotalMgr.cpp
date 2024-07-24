@@ -13,7 +13,7 @@
 #include "Shakedown.h"
 #include "Yoneda.h"
 #include "Kuze.h"
-#include "Adv_Suit.h"
+#include "Adv_Passersby.h"
 #include "Adventure.h"
 
 #include "Trigger.h"
@@ -334,7 +334,7 @@ HRESULT CFileTotalMgr::Set_GameObject_In_Client(int iStageLevel)
                 monsterDesc.iNaviNum = m_MapTotalInform.pMapObjDesc[i].iNaviNum;
             }
 
-            m_pGameInstance->Add_GameObject(iStageLevel, TEXT("Prototype_GameObject_AdvSuit"), m_Layers[iLayer], &monsterDesc);
+            m_pGameInstance->Add_GameObject(iStageLevel, TEXT("Prototype_GameObject_AdvPassersby"), m_Layers[iLayer], &monsterDesc);
         }
         else 
         {

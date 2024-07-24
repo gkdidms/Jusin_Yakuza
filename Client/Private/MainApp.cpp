@@ -93,6 +93,44 @@ void CMainApp::Tick(const _float& fTimeDelta)
 	m_fTimeAcc += fTimeDelta;
 
 #ifdef _DEBUG
+	if (m_pGameInstance->Get_CurrentLevel() > 2)
+	{
+		if (m_pGameInstance->GetKeyState(DIK_1) == TAP)
+		{
+			if (FAILED(m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_OFFICE_1F))))
+				return;
+		}
+		if (m_pGameInstance->GetKeyState(DIK_2) == TAP)
+		{
+			if (FAILED(m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_OFFICE_2F))))
+				return;
+		}
+		if (m_pGameInstance->GetKeyState(DIK_3) == TAP)
+		{
+			if (FAILED(m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_OFFICE_BOSS))))
+				return;
+		}
+		if (m_pGameInstance->GetKeyState(DIK_4) == TAP)
+		{
+			if (FAILED(m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_DOGIMAZO))))
+				return;
+		}
+		if (m_pGameInstance->GetKeyState(DIK_5) == TAP)
+		{
+			if (FAILED(m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_DOGIMAZO_STAIRS))))
+				return;
+		}
+		if (m_pGameInstance->GetKeyState(DIK_6) == TAP)
+		{
+			if (FAILED(m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_DOGIMAZO_LOBBY))))
+				return;
+		}
+		if (m_pGameInstance->GetKeyState(DIK_7) == TAP)
+		{
+			if (FAILED(m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_DOGIMAZO_BOSS))))
+				return;
+		}
+	}
 	if (m_pGameInstance->GetKeyState(DIK_F6) == TAP)
 	{
 		m_pFileTotalManager->Load_Cinemachine(0, LEVEL_TEST);
@@ -144,7 +182,7 @@ HRESULT CMainApp::Render()
 
 	m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("!!!테스트용 키는 화면에 모두 작성할것 !!! "), _float2(500.f, 0.f), XMVectorSet(1.f, 0.f, 0.f, 1.f));
 	m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("!!!처음부터->TEST , 이어하기 ->OFFICE_1F!!! "), _float2(500.f, 20.f), XMVectorSet(1.f, 0.f, 0.f, 1.f));
-
+	m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("!!!1~7 Office 1층 ~ 보스룸 // 무조건 test level이나 office1층 들어가야 함"), _float2(500.f, 40.f), XMVectorSet(1.f, 0.f, 0.f, 1.f));
 	_float fSize = 320.f;
 	m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("!!!카메라 단축키"), _float2(1000.f, fSize + 120.f), XMVectorSet(0.f, 0.f, 1.f, 1.f));
 	m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("F6 : Scene Camera Test"), _float2(1000.f, fSize + 140.f), XMVectorSet(1.f, 1.f, 0.f, 1.f));

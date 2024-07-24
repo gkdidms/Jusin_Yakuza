@@ -73,8 +73,6 @@ protected:
 
     _uint* m_pState = { nullptr };
 
-    _bool m_isClone = { false };
-
 protected:
     _bool m_isAttack = { false };
     _bool m_isAngry = { false };
@@ -109,10 +107,15 @@ protected:
     _float2 m_fSwayDistance = {};
 
 protected:
+    //다운상태
     virtual CBTNode::NODE_STATE Check_Down();
     virtual CBTNode::NODE_STATE StandUpAndDead();
     virtual CBTNode::NODE_STATE StandUp();
     virtual CBTNode::NODE_STATE Dead();
+
+    //플레이어 다운 시 (다운어택)
+    CBTNode::NODE_STATE Check_PlayerDown();
+    CBTNode::NODE_STATE ATK_Down();
 
     //스웨이
     virtual CBTNode::NODE_STATE Check_Sway();
@@ -135,6 +138,9 @@ protected:
 
     virtual CBTNode::NODE_STATE ATK_Angry_Punch(); // 화가 난 상태일때 펀치
     virtual CBTNode::NODE_STATE ATK_Angry_Kick(); // 화가 난 상태일때 발차기
+
+    //공격
+    CBTNode::NODE_STATE Check_Attack(); // 공격 가능한 상태인지 체크
 
     //Break
     virtual CBTNode::NODE_STATE Check_Break(); // 쉬는 타임인가?

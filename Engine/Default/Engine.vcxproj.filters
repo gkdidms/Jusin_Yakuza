@@ -190,6 +190,9 @@
     <Filter Include="01.Utility\11.BTNode\Manager">
       <UniqueIdentifier>{3bdfb931-41b4-4b0f-b653-8b9c0f754f16}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Utility\03.Component\10.AStart">
+      <UniqueIdentifier>{3034f1c8-6ec5-464d-aad9-15c21d938877}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\Base.h">
@@ -381,6 +384,9 @@
     <ClInclude Include="..\public\BTNode_Manager.h">
       <Filter>01.Utility\11.BTNode\Manager</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\AStart.h">
+      <Filter>01.Utility\03.Component\10.AStart</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\Base.cpp">
@@ -559,6 +565,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Navigation.cpp">
       <Filter>01.Utility\03.Component\06.Navigation</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\AStart.cpp">
+      <Filter>01.Utility\03.Component\10.AStart</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

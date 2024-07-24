@@ -1627,7 +1627,6 @@ void CPlayer::Free()
 #endif // _DEBUG
 
 	Safe_Release(m_pUIManager);
-	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pNavigationCom);
 
 	for (size_t i = 0; i < BATTLE_STYLE_END; i++)
