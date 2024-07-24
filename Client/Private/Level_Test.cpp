@@ -59,10 +59,6 @@ HRESULT CLevel_Test::Initialize()
 
 void CLevel_Test::Tick(const _float& fTimeDelta)
 {
-
-
-
-
 #ifdef _DEBUG
 	SetWindowText(g_hWnd, TEXT("테스트 레벨"));
 #endif

@@ -116,6 +116,7 @@ HRESULT CAdventure::Render()
 
 #ifdef _DEBUG
 	m_pGameInstance->Add_DebugComponent(m_pColliderCom);
+	m_pGameInstance->Add_DebugComponent(m_pAStartCom);
 #endif
 
 	return S_OK;
