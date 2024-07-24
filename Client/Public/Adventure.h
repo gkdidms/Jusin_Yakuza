@@ -5,6 +5,7 @@ BEGIN(Engine)
 class CShader;
 class CAnim;
 class CNavigation;
+class CAStart;
 END
 
 BEGIN(Client)
@@ -12,7 +13,7 @@ class CAdventure abstract :
     public CLandObject
 {
 public:
-    typedef struct tMapMonsterObjDesc : public CGameObject::GAMEOBJECT_DESC
+    typedef struct tMapAdventureObjDesc : public CGameObject::GAMEOBJECT_DESC
     {
         XMMATRIX		vStartPos;
         wstring			wstrModelName;
@@ -20,11 +21,25 @@ public:
         int             iNaviNum;
     }ADVENTURE_IODESC;
 
+    enum ADVENTURE_STATE
+    {
+        ADVENTURE_IDLE,
+        ADVENTURE_WALK,
+        ADVENTURE_WALK_S,
+        ADVENTURE_WALK_EN,
+        ADVENTURE_HIT_L,
+        ADVENTURE_HIT_R,
+        ADVENTURE_TURN,
+    };
+
 
 protected:
     CAdventure(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
     CAdventure(const CAdventure& rhs);
     virtual ~CAdventure() = default;
+
+public:
+    _bool isColl() { return m_isColl; }
 
 public:
     virtual HRESULT Initialize_Prototype() override;
@@ -45,7 +60,9 @@ public:
 protected:
     CAnim* m_pAnimCom = { nullptr }; // 애니메이션만 따로 저장하고있는 애니메이션 컴포넌트
     CNavigation* m_pNavigationCom = { nullptr };
-    class CAI_Monster* m_pTree = { nullptr };    
+    CAStart* m_pAStartCom = { nullptr };
+    class CAI_Adventure* m_pTree = { nullptr };    
+    
 
 protected:
     _bool m_isAnimLoop = { false };
@@ -61,9 +78,12 @@ protected:
     string m_strAnimName = "";
     _uint m_iAnim = { 0 };
 
+    _bool m_isColl = { false };
+
 protected:
     virtual void Change_Animation();
     void Synchronize_Root(const _float& fTimeDelta);
+    void Move_AStart();
 
 protected:
     virtual HRESULT Add_Components() override;

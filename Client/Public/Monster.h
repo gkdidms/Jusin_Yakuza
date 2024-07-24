@@ -156,7 +156,6 @@ public:
     _bool Checked_Animation_Ratio(_float fRatio);
 
 protected:
-    CShader* m_pShaderCom = { nullptr };
     CAnim* m_pAnimCom = { nullptr }; // 애니메이션만 따로 저장하고있는 애니메이션 컴포넌트
     CNavigation* m_pNavigationCom = { nullptr };
     class CAI_Monster* m_pTree = { nullptr };

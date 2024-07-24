@@ -63,8 +63,6 @@ void CLevel_Office1F::Tick(const _float& fTimeDelta)
 		}
 	}
 
-
-
 #ifdef _DEBUG
 
 
