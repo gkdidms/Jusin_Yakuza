@@ -14,12 +14,28 @@ public:
     list<CCell*>& Get_BestList() { return m_BestList; }
 
 public:
+    virtual HRESULT Initialize_Prototype();
+    virtual HRESULT Initialize(void* pArg);
     void Start_Root(class CNavigation* pNavi, _fvector vGoalPos);
+    
+#ifdef _DEBUG
+public:
+    virtual HRESULT Render() override;
+#endif // _DEBUG
 
 private:
     list<_uint> m_OpenList;
     list<_uint> m_CloseList;
     list<CCell*> m_BestList;
+
+#ifdef _DEBUG
+private:
+    class CShader* m_pShaderCom = { nullptr };
+    class CVIBuffer_Line* m_pVIBufferCom = { nullptr };
+
+private:
+    _float4x4 m_WorldMatrix = {};
+#endif // _DEBUG
 
 private:
     _bool Make_Route(_uint iStartIndex, _uint iGoalIndex, vector<class CCell*> Cells);
