@@ -296,6 +296,27 @@ void CAdventure::Move_AStart()
 void CAdventure::Check_Separation()
 {
 	//내 범위 안에 들어온 NPC를 보고 피한다. 
+	//Layer_NPC
+
+	_float fRange = 1.f;
+	vector<CGameObject*> NPCs = m_pGameInstance->Get_GameObjects(m_iCurrentLevel, TEXT("Layer_NPC"));
+	
+	_vector vMoveDir = {};
+	for (auto& pObj : NPCs)
+	{
+		_vector vDir = m_pTransformCom->Get_State(CTransform::STATE_POSITION) - pObj->Get_TransformCom()->Get_State(CTransform::STATE_POSITION);
+		_float fDistance = XMVectorGetX(XMVector3Length(vDir));
+
+		if (fDistance < fRange)
+		{
+			vMoveDir += vDir;
+		}
+	}
+
+	vMoveDir = XMVector3Normalize(vMoveDir);
+
+	//NPC별 충돌 시 피하는 방향 벡터 -> vMoveDir;
+
 }
 
 HRESULT CAdventure::Add_Components()
