@@ -151,6 +151,40 @@ void CNavigation_Manager::Load_Cell_IMGUI()
 		Load_Cells(layer_current_idx);
 	}
 
+	if (ImGui::Button(u8"Root 만들기"))
+	{
+		m_bMakeRoute_IMGUI = true;
+	}
+
+	/* Route File 로드 */
+	if (m_RouteFileNames.empty())
+	{
+		Update_RouteFileName();
+	}
+
+	static int route_layer_current_idx = 0;
+	if (ImGui::BeginListBox(u8"루트파일"))
+	{
+		for (int n = 0; n < m_RouteFileNames.size(); n++)
+		{
+			const bool is_selected = (route_layer_current_idx == n);
+			if (ImGui::Selectable(m_RouteFileNames[n], is_selected))
+				route_layer_current_idx = n;
+
+			if (is_selected)
+				ImGui::SetItemDefaultFocus();
+		}
+		ImGui::EndListBox();
+	}
+
+	if (m_iCurrentFileRoute != route_layer_current_idx)
+	{
+		m_iCurrentFileRoute = route_layer_current_idx;
+		Load_Cells(m_iCurrentFileRoute);
+	}
+
+
+
 	ImGui::End();
 }
 
@@ -306,6 +340,59 @@ HRESULT CNavigation_Manager::Load_Cells(_uint iIndex)
 	Update_CellsName();
 }
 
+HRESULT CNavigation_Manager::Save_Route(_uint iIndex)
+{
+	return E_NOTIMPL;
+}
+
+HRESULT CNavigation_Manager::Load_Route(_uint iIndex)
+{
+
+	m_Route_CellIndexes.clear();
+
+	/* 새로 로드할 때는 index 다시 0으로 되돌리기*/
+	m_iCurrentRouteCellIndex = 0;
+
+	_ulong		dwByte = {};
+	char fullPath[MAX_PATH];
+	strcpy_s(fullPath, "../../Client/Bin/DataFiles/RouteData/");
+
+	strcat_s(fullPath, m_RouteFileNames[iIndex]);
+
+	string strPath(fullPath);
+
+	ifstream in(fullPath, ios::binary);
+
+	if (!in.is_open()) {
+		MSG_BOX("파일 개방 실패");
+		return E_FAIL;
+	}
+
+	_uint NumCells = { 0 };
+	in.read((_char*)&NumCells, sizeof(_uint));
+
+	for (size_t i = 0; i < NumCells; ++i)
+	{
+		/* point 로드 */
+		_float3* vPoint = new _float3[3];
+		in.read((_char*)vPoint, sizeof(_float3) * 3);
+
+		/* 옵션 로드 */
+		_int iOption = { 0 };
+		in.read((_char*)&iOption, sizeof(_int));
+
+		CCell* pCell = CCell::Create(m_pDevice, m_pContext, vPoint, i, CCell::OPTION(iOption));
+
+		m_Cells.emplace_back(pCell);
+		Safe_Delete(vPoint);
+	}
+
+	in.close();
+
+
+	Update_IndexesName();
+}
+
 void CNavigation_Manager::Show_FileName()
 {
 	ImGui::Text(u8" 네비게이션 리스트 ");
@@ -329,6 +416,8 @@ void CNavigation_Manager::Show_FileName()
 		}
 		ImGui::EndListBox();
 	}
+
+
 }
 
 void CNavigation_Manager::Update_FileName()
@@ -349,6 +438,28 @@ void CNavigation_Manager::Update_FileName()
 		char* cfilename = new char[MAX_PATH];
 		strcpy(cfilename, fd.name);
 		m_FileNames.push_back(cfilename);
+	} while (_findnext(handle, &fd) == 0);
+	_findclose(handle);
+}
+
+void CNavigation_Manager::Update_RouteFileName()
+{
+	for (auto& iter : m_RouteFileNames)
+		Safe_Delete(iter);
+
+	m_RouteFileNames.clear();
+	string path = "../../Client/Bin/DataFiles/RouteData/*.dat";
+
+	struct _finddata_t fd;
+	intptr_t handle;
+
+	if ((handle = _findfirst(path.c_str(), &fd)) == -1L)
+		return; // 파일없을때
+	do
+	{
+		char* cfilename = new char[MAX_PATH];
+		strcpy(cfilename, fd.name);
+		m_RouteFileNames.push_back(cfilename);
 	} while (_findnext(handle, &fd) == 0);
 	_findclose(handle);
 }
@@ -392,6 +503,41 @@ void CNavigation_Manager::Delete_AllCell()
 	m_iCurrentCellIndex = 0;
 }
 
+void CNavigation_Manager::Delete_RouteCell(_int& iIndex)
+{
+	vector<int>::iterator	iter = m_Route_CellIndexes.begin();
+
+	for (int i = 0; i < iIndex; i++)
+	{
+		iter++;
+	}
+
+	m_Route_CellIndexes.erase(iter);
+
+	/* 인덱스 옮겨주기 */
+	if (0 > m_iCurrentRouteCellIndex - 1)
+	{
+		m_iCurrentRouteCellIndex = 0;
+	}
+	else
+	{
+		m_iCurrentRouteCellIndex -= 1;
+	}
+
+	Update_IndexesName();
+}
+
+void CNavigation_Manager::Delete_AllRouteCell(_int& iIndex)
+{
+
+	m_Route_CellIndexes.clear();
+
+	Update_IndexesName();
+
+	/* 인덱스도 같이 초기화 */
+	iIndex = 0;
+}
+
 int CNavigation_Manager::Get_Player_Monster_NaviIndex(_vector vPosition)
 {
 	for (int i = 0; i < m_Cells.size(); i++)
@@ -433,6 +579,71 @@ void CNavigation_Manager::Find_Cells()
 			}
 		}
 	}
+}
+
+void CNavigation_Manager::Make_Route()
+{
+	if (true == m_bMakeRoute_IMGUI)
+	{
+		ImGui::Begin(u8" Route Num ");
+		ImGui::Text(u8" 1. Cell 찾기 - F 누르고 클릭 - 각도를 위에서 바라보게끔 ");
+		ImGui::Text(u8" 2. 원하는 cell이 선택됐으면 cell - route에 추가 버튼 누르기 ");
+		ImGui::NewLine();
+
+		static int index_current_idx;
+
+		if (index_current_idx != m_iCurrentRouteCellIndex)
+		{
+			index_current_idx = m_iCurrentRouteCellIndex;
+		}
+
+		if (ImGui::BeginListBox("listbox 1"))
+		{
+			for (int n = 0; n < m_IndexesName.size(); n++)
+			{
+				const bool is_selected = (index_current_idx == n);
+				if (ImGui::Selectable(m_IndexesName[n], is_selected))
+					index_current_idx = n;
+
+				if (is_selected)
+					ImGui::SetItemDefaultFocus();
+			}
+			ImGui::EndListBox();
+		}
+
+		if (m_iCurrentRouteCellIndex != index_current_idx)
+		{
+			m_iCurrentRouteCellIndex = index_current_idx;
+		}
+
+
+		if (ImGui::Button(u8"cell - route에 추가 "))
+		{
+			m_Route_CellIndexes.push_back(m_iCurrentCellIndex);
+			// route 안의 index update
+			Update_IndexesName();
+		}
+
+		if (ImGui::Button(u8" cell Index 삭제 "))
+		{
+			Delete_RouteCell(m_iCurrentRouteCellIndex);
+		}
+
+		if (ImGui::Button(u8" cell Index 전체삭제 "))
+		{
+			Delete_AllRouteCell(m_iCurrentRouteCellIndex);
+		}
+
+		//Update_IndexesName();
+
+		if (ImGui::Button(u8" 취소 "))
+		{
+			m_bMakeRoute_IMGUI = false;
+		}
+
+		ImGui::End();
+	}
+	
 }
 
 
@@ -600,6 +811,31 @@ void CNavigation_Manager::Update_CellsName()
 	}
 }
 
+void CNavigation_Manager::Update_IndexesName()
+{
+	if (0 < m_IndexesName.size())
+	{
+		for (auto& iter : m_IndexesName)
+			Safe_Delete(iter);
+
+		m_IndexesName.clear();
+	}
+
+	if (0 < m_Route_CellIndexes.size())
+	{
+
+		for (int i = 0; i < m_Route_CellIndexes.size(); i++)
+		{
+			char* szName = new char[MAX_PATH];
+			strcpy(szName, "Index");
+			char buff[MAX_PATH];
+			sprintf(buff, "%d", m_Route_CellIndexes[i]);
+			strcat(szName, buff);
+			m_IndexesName.push_back(szName);
+		}
+	}
+}
+
 
 void CNavigation_Manager::Free()
 {
@@ -616,12 +852,18 @@ void CNavigation_Manager::Free()
 		Safe_Delete(iter);
 	m_CellsName.clear();
 
+	for (auto& iter : m_IndexesName)
+		Safe_Delete(iter);
+	m_IndexesName.clear();
+
 	for (auto& iter : m_FileNames)
 		Safe_Delete(iter);
 	m_FileNames.clear();
 
 
 	m_Cells.clear();
+
+	m_Route_CellIndexes.clear();
 
 	Safe_Release(m_pGameInstance);
 }

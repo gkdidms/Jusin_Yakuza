@@ -864,6 +864,7 @@ HRESULT CFileTotalMgr::Import_Bin_Map_Data_OnClient(MAP_TOTALINFORM_DESC* mapObj
         in.read((char*)&pMapObj->iObjType, sizeof(int));
         in.read((char*)&pMapObj->iObjPropertyType, sizeof(int));
         in.read((char*)&pMapObj->iNaviNum, sizeof(int));
+        in.read((char*)&pMapObj->iNaviRoute, sizeof(int));
 
         in.read((char*)&pMapObj->iDecalNum, sizeof(int));
 
