@@ -102,6 +102,7 @@ HRESULT CFileTotalMgr::Set_GameObject_In_Client(int iStageLevel)
             monsterDesc.fSpeedPecSec = 10.f;
             monsterDesc.fRotatePecSec = XMConvertToRadians(0.f);
             monsterDesc.fRotatePecSec = XMConvertToRadians(180.f);
+            monsterDesc.iNaviRouteNum = m_MapTotalInform.pMapObjDesc[i].iNaviRoute;
 
             if (-1 == m_MapTotalInform.pMapObjDesc[i].iNaviNum)
             {
@@ -131,6 +132,7 @@ HRESULT CFileTotalMgr::Set_GameObject_In_Client(int iStageLevel)
             monsterDesc.fSpeedPecSec = 10.f;
             monsterDesc.fRotatePecSec = XMConvertToRadians(0.f);
             monsterDesc.fRotatePecSec = XMConvertToRadians(180.f);
+            monsterDesc.iNaviRouteNum = m_MapTotalInform.pMapObjDesc[i].iNaviRoute;
 
             if (-1 == m_MapTotalInform.pMapObjDesc[i].iNaviNum)
             {
@@ -160,6 +162,7 @@ HRESULT CFileTotalMgr::Set_GameObject_In_Client(int iStageLevel)
             monsterDesc.fSpeedPecSec = 10.f;
             monsterDesc.fRotatePecSec = XMConvertToRadians(0.f);
             monsterDesc.fRotatePecSec = XMConvertToRadians(180.f);
+            monsterDesc.iNaviRouteNum = m_MapTotalInform.pMapObjDesc[i].iNaviRoute;
             
             if (-1 == m_MapTotalInform.pMapObjDesc[i].iNaviNum)
             {
@@ -189,6 +192,7 @@ HRESULT CFileTotalMgr::Set_GameObject_In_Client(int iStageLevel)
             monsterDesc.fSpeedPecSec = 10.f;
             monsterDesc.fRotatePecSec = XMConvertToRadians(0.f);
             monsterDesc.fRotatePecSec = XMConvertToRadians(180.f);
+            monsterDesc.iNaviRouteNum = m_MapTotalInform.pMapObjDesc[i].iNaviRoute;
 
             if (-1 == m_MapTotalInform.pMapObjDesc[i].iNaviNum)
             {
@@ -218,6 +222,7 @@ HRESULT CFileTotalMgr::Set_GameObject_In_Client(int iStageLevel)
             monsterDesc.fSpeedPecSec = 10.f;
             monsterDesc.fRotatePecSec = XMConvertToRadians(0.f);
             monsterDesc.fRotatePecSec = XMConvertToRadians(180.f);
+            monsterDesc.iNaviRouteNum = m_MapTotalInform.pMapObjDesc[i].iNaviRoute;
 
             if (-1 == m_MapTotalInform.pMapObjDesc[i].iNaviNum)
             {
@@ -235,6 +240,8 @@ HRESULT CFileTotalMgr::Set_GameObject_In_Client(int iStageLevel)
         {
             XMMATRIX vStartPos = XMLoadFloat4x4(&m_MapTotalInform.pMapObjDesc[i].vTransform);
             dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject(iStageLevel, TEXT("Layer_Player"), 0))->Set_StartPos(vStartPos);
+
+            // 네비 루트 세팅
             dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject(iStageLevel, TEXT("Layer_Player"), 0))->Set_NaviRouteIndex(m_MapTotalInform.pMapObjDesc[i].iNaviRoute);
 
             if (-1 == m_MapTotalInform.pMapObjDesc[i].iNaviNum)
@@ -500,198 +507,206 @@ HRESULT CFileTotalMgr::Set_GameObject_In_Client_Trigger(int iStageLevel)
 {
     for (int i = 0; i < m_MapTriggerInform.iNumMapObj; i++)
     {
-        if (OBJECT_TYPE::MONSTER_RUSH == m_MapTriggerInform.pMapObjDesc[i].iObjType)
+        if (OBJECT_TYPE::MONSTER_RUSH == m_MapTotalInform.pMapObjDesc[i].iObjType)
         {
             CRushYakuza::MONSTER_IODESC		monsterDesc;
-            monsterDesc.vStartPos = XMLoadFloat4x4(&m_MapTriggerInform.pMapObjDesc[i].vTransform);
-            int		iLayer = Find_Layers_Index(m_MapTriggerInform.pMapObjDesc[i].strLayer);
+            monsterDesc.vStartPos = XMLoadFloat4x4(&m_MapTotalInform.pMapObjDesc[i].vTransform);
+            int		iLayer = Find_Layers_Index(m_MapTotalInform.pMapObjDesc[i].strLayer);
 
             /* Layer 정보 안들어옴 */
             if (iLayer < 0)
                 return S_OK;
 
-            monsterDesc.wstrModelName = m_pGameInstance->StringToWstring(m_MapTriggerInform.pMapObjDesc[i].strModelCom);
-            monsterDesc.iShaderPass = m_MapTriggerInform.pMapObjDesc[i].iShaderPassNum;
+            monsterDesc.wstrModelName = m_pGameInstance->StringToWstring(m_MapTotalInform.pMapObjDesc[i].strModelCom);
+            monsterDesc.iShaderPass = m_MapTotalInform.pMapObjDesc[i].iShaderPassNum;
 
             monsterDesc.fSpeedPecSec = 10.f;
             monsterDesc.fRotatePecSec = XMConvertToRadians(0.f);
             monsterDesc.fRotatePecSec = XMConvertToRadians(180.f);
+            monsterDesc.iNaviRouteNum = m_MapTotalInform.pMapObjDesc[i].iNaviRoute;
 
-            if (-1 == m_MapTriggerInform.pMapObjDesc[i].iNaviNum)
+            if (-1 == m_MapTotalInform.pMapObjDesc[i].iNaviNum)
             {
                 // 예외처리
                 monsterDesc.iNaviNum = 0;
             }
             else
             {
-                monsterDesc.iNaviNum = m_MapTriggerInform.pMapObjDesc[i].iNaviNum;
+                monsterDesc.iNaviNum = m_MapTotalInform.pMapObjDesc[i].iNaviNum;
             }
 
             m_pGameInstance->Add_GameObject(iStageLevel, TEXT("Prototype_GameObject_RushYakuza"), m_Layers[iLayer], &monsterDesc);
         }
-        else if (OBJECT_TYPE::MONSTER_WPA == m_MapTriggerInform.pMapObjDesc[i].iObjType)
+        else if (OBJECT_TYPE::MONSTER_WPA == m_MapTotalInform.pMapObjDesc[i].iObjType)
         {
             CWPAYakuza::MONSTER_IODESC		monsterDesc;
-            monsterDesc.vStartPos = XMLoadFloat4x4(&m_MapTriggerInform.pMapObjDesc[i].vTransform);
-            int		iLayer = Find_Layers_Index(m_MapTriggerInform.pMapObjDesc[i].strLayer);
+            monsterDesc.vStartPos = XMLoadFloat4x4(&m_MapTotalInform.pMapObjDesc[i].vTransform);
+            int		iLayer = Find_Layers_Index(m_MapTotalInform.pMapObjDesc[i].strLayer);
 
             /* Layer 정보 안들어옴 */
             if (iLayer < 0)
                 return S_OK;
 
-            monsterDesc.wstrModelName = m_pGameInstance->StringToWstring(m_MapTriggerInform.pMapObjDesc[i].strModelCom);
-            monsterDesc.iShaderPass = m_MapTriggerInform.pMapObjDesc[i].iShaderPassNum;
+            monsterDesc.wstrModelName = m_pGameInstance->StringToWstring(m_MapTotalInform.pMapObjDesc[i].strModelCom);
+            monsterDesc.iShaderPass = m_MapTotalInform.pMapObjDesc[i].iShaderPassNum;
 
             monsterDesc.fSpeedPecSec = 10.f;
             monsterDesc.fRotatePecSec = XMConvertToRadians(0.f);
             monsterDesc.fRotatePecSec = XMConvertToRadians(180.f);
+            monsterDesc.iNaviRouteNum = m_MapTotalInform.pMapObjDesc[i].iNaviRoute;
 
-            if (-1 == m_MapTriggerInform.pMapObjDesc[i].iNaviNum)
+            if (-1 == m_MapTotalInform.pMapObjDesc[i].iNaviNum)
             {
                 // 예외처리
                 monsterDesc.iNaviNum = 0;
             }
             else
             {
-                monsterDesc.iNaviNum = m_MapTriggerInform.pMapObjDesc[i].iNaviNum;
+                monsterDesc.iNaviNum = m_MapTotalInform.pMapObjDesc[i].iNaviNum;
             }
 
             m_pGameInstance->Add_GameObject(iStageLevel, TEXT("Prototype_GameObject_WPAYakuza"), m_Layers[iLayer], &monsterDesc);
         }
-        else if (OBJECT_TYPE::MONSTER_SHAKEDOWN == m_MapTriggerInform.pMapObjDesc[i].iObjType)
+        else if (OBJECT_TYPE::MONSTER_SHAKEDOWN == m_MapTotalInform.pMapObjDesc[i].iObjType)
         {
             CRushYakuza::MONSTER_IODESC		monsterDesc;
-            monsterDesc.vStartPos = XMLoadFloat4x4(&m_MapTriggerInform.pMapObjDesc[i].vTransform);
-            int		iLayer = Find_Layers_Index(m_MapTriggerInform.pMapObjDesc[i].strLayer);
+            monsterDesc.vStartPos = XMLoadFloat4x4(&m_MapTotalInform.pMapObjDesc[i].vTransform);
+            int		iLayer = Find_Layers_Index(m_MapTotalInform.pMapObjDesc[i].strLayer);
 
             /* Layer 정보 안들어옴 */
             if (iLayer < 0)
                 return S_OK;
 
-            monsterDesc.wstrModelName = m_pGameInstance->StringToWstring(m_MapTriggerInform.pMapObjDesc[i].strModelCom);
-            monsterDesc.iShaderPass = m_MapTriggerInform.pMapObjDesc[i].iShaderPassNum;
+            monsterDesc.wstrModelName = m_pGameInstance->StringToWstring(m_MapTotalInform.pMapObjDesc[i].strModelCom);
+            monsterDesc.iShaderPass = m_MapTotalInform.pMapObjDesc[i].iShaderPassNum;
 
             monsterDesc.fSpeedPecSec = 10.f;
             monsterDesc.fRotatePecSec = XMConvertToRadians(0.f);
             monsterDesc.fRotatePecSec = XMConvertToRadians(180.f);
+            monsterDesc.iNaviRouteNum = m_MapTotalInform.pMapObjDesc[i].iNaviRoute;
 
-            if (-1 == m_MapTriggerInform.pMapObjDesc[i].iNaviNum)
+            if (-1 == m_MapTotalInform.pMapObjDesc[i].iNaviNum)
             {
                 // 예외처리
                 monsterDesc.iNaviNum = 0;
             }
             else
             {
-                monsterDesc.iNaviNum = m_MapTriggerInform.pMapObjDesc[i].iNaviNum;
+                monsterDesc.iNaviNum = m_MapTotalInform.pMapObjDesc[i].iNaviNum;
             }
 
             m_pGameInstance->Add_GameObject(iStageLevel, TEXT("Prototype_GameObject_Shakedown"), m_Layers[iLayer], &monsterDesc);
         }
-        else if (OBJECT_TYPE::MONSTER_YONEDA == m_MapTriggerInform.pMapObjDesc[i].iObjType)
+        else if (OBJECT_TYPE::MONSTER_YONEDA == m_MapTotalInform.pMapObjDesc[i].iObjType)
         {
             CRushYakuza::MONSTER_IODESC		monsterDesc;
-            monsterDesc.vStartPos = XMLoadFloat4x4(&m_MapTriggerInform.pMapObjDesc[i].vTransform);
-            int		iLayer = Find_Layers_Index(m_MapTriggerInform.pMapObjDesc[i].strLayer);
+            monsterDesc.vStartPos = XMLoadFloat4x4(&m_MapTotalInform.pMapObjDesc[i].vTransform);
+            int		iLayer = Find_Layers_Index(m_MapTotalInform.pMapObjDesc[i].strLayer);
 
             /* Layer 정보 안들어옴 */
             if (iLayer < 0)
                 return S_OK;
 
-            monsterDesc.wstrModelName = m_pGameInstance->StringToWstring(m_MapTriggerInform.pMapObjDesc[i].strModelCom);
-            monsterDesc.iShaderPass = m_MapTriggerInform.pMapObjDesc[i].iShaderPassNum;
+            monsterDesc.wstrModelName = m_pGameInstance->StringToWstring(m_MapTotalInform.pMapObjDesc[i].strModelCom);
+            monsterDesc.iShaderPass = m_MapTotalInform.pMapObjDesc[i].iShaderPassNum;
 
             monsterDesc.fSpeedPecSec = 10.f;
             monsterDesc.fRotatePecSec = XMConvertToRadians(0.f);
             monsterDesc.fRotatePecSec = XMConvertToRadians(180.f);
+            monsterDesc.iNaviRouteNum = m_MapTotalInform.pMapObjDesc[i].iNaviRoute;
 
-            if (-1 == m_MapTriggerInform.pMapObjDesc[i].iNaviNum)
+            if (-1 == m_MapTotalInform.pMapObjDesc[i].iNaviNum)
             {
                 // 예외처리
                 monsterDesc.iNaviNum = 0;
             }
             else
             {
-                monsterDesc.iNaviNum = m_MapTriggerInform.pMapObjDesc[i].iNaviNum;
+                monsterDesc.iNaviNum = m_MapTotalInform.pMapObjDesc[i].iNaviNum;
             }
 
             m_pGameInstance->Add_GameObject(iStageLevel, TEXT("Prototype_GameObject_Yoneda"), m_Layers[iLayer], &monsterDesc);
         }
-        else if (OBJECT_TYPE::MONSTER_KUZE == m_MapTriggerInform.pMapObjDesc[i].iObjType)
+        else if (OBJECT_TYPE::MONSTER_KUZE == m_MapTotalInform.pMapObjDesc[i].iObjType)
         {
             CKuze::MONSTER_IODESC		monsterDesc;
-            monsterDesc.vStartPos = XMLoadFloat4x4(&m_MapTriggerInform.pMapObjDesc[i].vTransform);
-            int		iLayer = Find_Layers_Index(m_MapTriggerInform.pMapObjDesc[i].strLayer);
+            monsterDesc.vStartPos = XMLoadFloat4x4(&m_MapTotalInform.pMapObjDesc[i].vTransform);
+            int		iLayer = Find_Layers_Index(m_MapTotalInform.pMapObjDesc[i].strLayer);
 
             /* Layer 정보 안들어옴 */
             if (iLayer < 0)
                 return S_OK;
 
-            monsterDesc.wstrModelName = m_pGameInstance->StringToWstring(m_MapTriggerInform.pMapObjDesc[i].strModelCom);
-            monsterDesc.iShaderPass = m_MapTriggerInform.pMapObjDesc[i].iShaderPassNum;
+            monsterDesc.wstrModelName = m_pGameInstance->StringToWstring(m_MapTotalInform.pMapObjDesc[i].strModelCom);
+            monsterDesc.iShaderPass = m_MapTotalInform.pMapObjDesc[i].iShaderPassNum;
 
             monsterDesc.fSpeedPecSec = 10.f;
             monsterDesc.fRotatePecSec = XMConvertToRadians(0.f);
             monsterDesc.fRotatePecSec = XMConvertToRadians(180.f);
+            monsterDesc.iNaviRouteNum = m_MapTotalInform.pMapObjDesc[i].iNaviRoute;
 
-            if (-1 == m_MapTriggerInform.pMapObjDesc[i].iNaviNum)
+            if (-1 == m_MapTotalInform.pMapObjDesc[i].iNaviNum)
             {
                 // 예외처리
                 monsterDesc.iNaviNum = 0;
             }
             else
             {
-                monsterDesc.iNaviNum = m_MapTriggerInform.pMapObjDesc[i].iNaviNum;
+                monsterDesc.iNaviNum = m_MapTotalInform.pMapObjDesc[i].iNaviNum;
             }
 
             m_pGameInstance->Add_GameObject(iStageLevel, TEXT("Prototype_GameObject_Kuze"), m_Layers[iLayer], &monsterDesc);
         }
-        else if (OBJECT_TYPE::PLAYER == m_MapTriggerInform.pMapObjDesc[i].iObjType)
+        else if (OBJECT_TYPE::PLAYER == m_MapTotalInform.pMapObjDesc[i].iObjType)
         {
-            XMMATRIX vStartPos = XMLoadFloat4x4(&m_MapTriggerInform.pMapObjDesc[i].vTransform);
+            XMMATRIX vStartPos = XMLoadFloat4x4(&m_MapTotalInform.pMapObjDesc[i].vTransform);
             dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject(iStageLevel, TEXT("Layer_Player"), 0))->Set_StartPos(vStartPos);
 
-            if (-1 == m_MapTriggerInform.pMapObjDesc[i].iNaviNum)
+            // 네비 루트 세팅
+            dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject(iStageLevel, TEXT("Layer_Player"), 0))->Set_NaviRouteIndex(m_MapTotalInform.pMapObjDesc[i].iNaviRoute);
+
+            if (-1 == m_MapTotalInform.pMapObjDesc[i].iNaviNum)
             {
                 // 예외처리
                 dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject(iStageLevel, TEXT("Layer_Player"), 0))->Set_NavigationIndex(0);
             }
             else
             {
-                dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject(iStageLevel, TEXT("Layer_Player"), 0))->Set_NavigationIndex(m_MapTriggerInform.pMapObjDesc[i].iNaviNum);
+                dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject(iStageLevel, TEXT("Layer_Player"), 0))->Set_NavigationIndex(m_MapTotalInform.pMapObjDesc[i].iNaviNum);
             }
 
 
         }
-        else if (OBJECT_TYPE::SKY == m_MapTriggerInform.pMapObjDesc[i].iObjType)
+        else if (OBJECT_TYPE::SKY == m_MapTotalInform.pMapObjDesc[i].iObjType)
         {
             CSkyDome::SkyObj_Desc		skyDesc;
-            skyDesc.vStartPos = XMLoadFloat4x4(&m_MapTriggerInform.pMapObjDesc[i].vTransform);
-            int		iLayer = Find_Layers_Index(m_MapTriggerInform.pMapObjDesc[i].strLayer);
+            skyDesc.vStartPos = XMLoadFloat4x4(&m_MapTotalInform.pMapObjDesc[i].vTransform);
+            int		iLayer = Find_Layers_Index(m_MapTotalInform.pMapObjDesc[i].strLayer);
 
             /* Layer 정보 안들어옴 */
             if (iLayer < 0)
                 return S_OK;
 
-            skyDesc.wstrModelName = m_pGameInstance->StringToWstring(m_MapTriggerInform.pMapObjDesc[i].strModelCom);
+            skyDesc.wstrModelName = m_pGameInstance->StringToWstring(m_MapTotalInform.pMapObjDesc[i].strModelCom);
 
 
             m_pGameInstance->Add_GameObject(iStageLevel, TEXT("Prototype_GameObject_SkyDome"), m_Layers[iLayer], &skyDesc);
         }
-        else if (OBJECT_TYPE::LIGHT == m_MapTriggerInform.pMapObjDesc[i].iObjType)
+        else if (OBJECT_TYPE::LIGHT == m_MapTotalInform.pMapObjDesc[i].iObjType)
         {
             CLightConstruction::MAPOBJ_DESC		mapDesc;
-            mapDesc.vStartPos = XMLoadFloat4x4(&m_MapTriggerInform.pMapObjDesc[i].vTransform);
-            int		iLayer = Find_Layers_Index(m_MapTriggerInform.pMapObjDesc[i].strLayer);
+            mapDesc.vStartPos = XMLoadFloat4x4(&m_MapTotalInform.pMapObjDesc[i].vTransform);
+            int		iLayer = Find_Layers_Index(m_MapTotalInform.pMapObjDesc[i].strLayer);
 
             /* Layer 정보 안들어옴 */
             if (iLayer < 0)
                 return S_OK;
 
             mapDesc.iLayer = iLayer;
-            mapDesc.wstrModelName = m_pGameInstance->StringToWstring(m_MapTriggerInform.pMapObjDesc[i].strModelCom);
-            mapDesc.iShaderPass = m_MapTriggerInform.pMapObjDesc[i].iShaderPassNum;
-            mapDesc.iObjType = m_MapTriggerInform.pMapObjDesc[i].iObjType;
-            mapDesc.iDecalNum = m_MapTriggerInform.pMapObjDesc[i].iDecalNum;
+            mapDesc.wstrModelName = m_pGameInstance->StringToWstring(m_MapTotalInform.pMapObjDesc[i].strModelCom);
+            mapDesc.iShaderPass = m_MapTotalInform.pMapObjDesc[i].iShaderPassNum;
+            mapDesc.iObjType = m_MapTotalInform.pMapObjDesc[i].iObjType;
+            mapDesc.iDecalNum = m_MapTotalInform.pMapObjDesc[i].iDecalNum;
 
             if (0 < mapDesc.iDecalNum)
             {
@@ -699,12 +714,12 @@ HRESULT CFileTotalMgr::Set_GameObject_In_Client_Trigger(int iStageLevel)
 
                 for (int j = 0; j < mapDesc.iDecalNum; j++)
                 {
-                    mapDesc.pDecal[j].iMaterialNum = m_MapTriggerInform.pMapObjDesc[i].pDecals[j].iMaterialNum;
-                    mapDesc.pDecal[j].vTransform = m_MapTriggerInform.pMapObjDesc[i].pDecals[j].vTransform;
+                    mapDesc.pDecal[j].iMaterialNum = m_MapTotalInform.pMapObjDesc[i].pDecals[j].iMaterialNum;
+                    mapDesc.pDecal[j].vTransform = m_MapTotalInform.pMapObjDesc[i].pDecals[j].vTransform;
                 }
             }
 
-            mapDesc.iColliderNum = m_MapTriggerInform.pMapObjDesc[i].iColliderNum;
+            mapDesc.iColliderNum = m_MapTotalInform.pMapObjDesc[i].iColliderNum;
 
             if (0 < mapDesc.iColliderNum)
             {
@@ -712,30 +727,60 @@ HRESULT CFileTotalMgr::Set_GameObject_In_Client_Trigger(int iStageLevel)
 
                 for (int j = 0; j < mapDesc.iColliderNum; j++)
                 {
-                    mapDesc.pColliderDesc[j].iColliderType = m_MapTriggerInform.pMapObjDesc[i].pObjColliders[j].iColliderType;
-                    mapDesc.pColliderDesc[j].vCenter = m_MapTriggerInform.pMapObjDesc[i].pObjColliders[j].vCenter;
-                    mapDesc.pColliderDesc[j].vExtents = m_MapTriggerInform.pMapObjDesc[i].pObjColliders[j].vExtents;
-                    mapDesc.pColliderDesc[j].vQuaternion = m_MapTriggerInform.pMapObjDesc[i].pObjColliders[j].vQuaternion;
+                    mapDesc.pColliderDesc[j].iColliderType = m_MapTotalInform.pMapObjDesc[i].pObjColliders[j].iColliderType;
+                    mapDesc.pColliderDesc[j].vCenter = m_MapTotalInform.pMapObjDesc[i].pObjColliders[j].vCenter;
+                    mapDesc.pColliderDesc[j].vExtents = m_MapTotalInform.pMapObjDesc[i].pObjColliders[j].vExtents;
+                    mapDesc.pColliderDesc[j].vQuaternion = m_MapTotalInform.pMapObjDesc[i].pObjColliders[j].vQuaternion;
                 }
             }
 
             m_pGameInstance->Add_GameObject(iStageLevel, TEXT("Prototype_GameObject_LightConstruction"), m_Layers[iLayer], &mapDesc);
         }
+        else if (OBJECT_TYPE::ADTENTURE_SUIT == m_MapTotalInform.pMapObjDesc[i].iObjType)
+        {
+            CAdventure::ADVENTURE_IODESC		monsterDesc;
+            monsterDesc.vStartPos = XMLoadFloat4x4(&m_MapTotalInform.pMapObjDesc[i].vTransform);
+            int		iLayer = Find_Layers_Index(m_MapTotalInform.pMapObjDesc[i].strLayer);
+
+            /* Layer 정보 안들어옴 */
+            if (iLayer < 0)
+                return S_OK;
+
+            monsterDesc.wstrModelName = m_pGameInstance->StringToWstring(m_MapTotalInform.pMapObjDesc[i].strModelCom);
+            monsterDesc.iShaderPass = m_MapTotalInform.pMapObjDesc[i].iShaderPassNum;
+
+            monsterDesc.fSpeedPecSec = 10.f;
+            monsterDesc.fRotatePecSec = XMConvertToRadians(0.f);
+            monsterDesc.fRotatePecSec = XMConvertToRadians(180.f);
+            monsterDesc.iNaviRouteNum = m_MapTotalInform.pMapObjDesc[i].iNaviRoute;
+
+            if (-1 == m_MapTotalInform.pMapObjDesc[i].iNaviNum)
+            {
+                // 예외처리
+                monsterDesc.iNaviNum = 0;
+            }
+            else
+            {
+                monsterDesc.iNaviNum = m_MapTotalInform.pMapObjDesc[i].iNaviNum;
+            }
+
+            m_pGameInstance->Add_GameObject(iStageLevel, TEXT("Prototype_GameObject_AdvPassersby"), m_Layers[iLayer], &monsterDesc);
+        }
         else
         {
             CConstruction::MAPOBJ_DESC		mapDesc;
-            mapDesc.vStartPos = XMLoadFloat4x4(&m_MapTriggerInform.pMapObjDesc[i].vTransform);
-            int		iLayer = Find_Layers_Index(m_MapTriggerInform.pMapObjDesc[i].strLayer);
+            mapDesc.vStartPos = XMLoadFloat4x4(&m_MapTotalInform.pMapObjDesc[i].vTransform);
+            int		iLayer = Find_Layers_Index(m_MapTotalInform.pMapObjDesc[i].strLayer);
 
             /* Layer 정보 안들어옴 */
             if (iLayer < 0)
                 return S_OK;
 
             mapDesc.iLayer = iLayer;
-            mapDesc.wstrModelName = m_pGameInstance->StringToWstring(m_MapTriggerInform.pMapObjDesc[i].strModelCom);
-            mapDesc.iShaderPass = m_MapTriggerInform.pMapObjDesc[i].iShaderPassNum;
-            mapDesc.iObjType = m_MapTriggerInform.pMapObjDesc[i].iObjType;
-            mapDesc.iDecalNum = m_MapTriggerInform.pMapObjDesc[i].iDecalNum;
+            mapDesc.wstrModelName = m_pGameInstance->StringToWstring(m_MapTotalInform.pMapObjDesc[i].strModelCom);
+            mapDesc.iShaderPass = m_MapTotalInform.pMapObjDesc[i].iShaderPassNum;
+            mapDesc.iObjType = m_MapTotalInform.pMapObjDesc[i].iObjType;
+            mapDesc.iDecalNum = m_MapTotalInform.pMapObjDesc[i].iDecalNum;
 
             if (0 < mapDesc.iDecalNum)
             {
@@ -743,12 +788,12 @@ HRESULT CFileTotalMgr::Set_GameObject_In_Client_Trigger(int iStageLevel)
 
                 for (int j = 0; j < mapDesc.iDecalNum; j++)
                 {
-                    mapDesc.pDecal[j].iMaterialNum = m_MapTriggerInform.pMapObjDesc[i].pDecals[j].iMaterialNum;
-                    mapDesc.pDecal[j].vTransform = m_MapTriggerInform.pMapObjDesc[i].pDecals[j].vTransform;
+                    mapDesc.pDecal[j].iMaterialNum = m_MapTotalInform.pMapObjDesc[i].pDecals[j].iMaterialNum;
+                    mapDesc.pDecal[j].vTransform = m_MapTotalInform.pMapObjDesc[i].pDecals[j].vTransform;
                 }
             }
 
-            mapDesc.iColliderNum = m_MapTriggerInform.pMapObjDesc[i].iColliderNum;
+            mapDesc.iColliderNum = m_MapTotalInform.pMapObjDesc[i].iColliderNum;
 
             if (0 < mapDesc.iColliderNum)
             {
@@ -756,16 +801,15 @@ HRESULT CFileTotalMgr::Set_GameObject_In_Client_Trigger(int iStageLevel)
 
                 for (int j = 0; j < mapDesc.iColliderNum; j++)
                 {
-                    mapDesc.pColliderDesc[j].iColliderType = m_MapTriggerInform.pMapObjDesc[i].pObjColliders[j].iColliderType;
-                    mapDesc.pColliderDesc[j].vCenter = m_MapTriggerInform.pMapObjDesc[i].pObjColliders[j].vCenter;
-                    mapDesc.pColliderDesc[j].vExtents = m_MapTriggerInform.pMapObjDesc[i].pObjColliders[j].vExtents;
-                    mapDesc.pColliderDesc[j].vQuaternion = m_MapTriggerInform.pMapObjDesc[i].pObjColliders[j].vQuaternion;
+                    mapDesc.pColliderDesc[j].iColliderType = m_MapTotalInform.pMapObjDesc[i].pObjColliders[j].iColliderType;
+                    mapDesc.pColliderDesc[j].vCenter = m_MapTotalInform.pMapObjDesc[i].pObjColliders[j].vCenter;
+                    mapDesc.pColliderDesc[j].vExtents = m_MapTotalInform.pMapObjDesc[i].pObjColliders[j].vExtents;
+                    mapDesc.pColliderDesc[j].vQuaternion = m_MapTotalInform.pMapObjDesc[i].pObjColliders[j].vQuaternion;
                 }
             }
 
             m_pGameInstance->Add_GameObject(iStageLevel, TEXT("Prototype_GameObject_Construction"), m_Layers[iLayer], &mapDesc);
         }
-
 
     }
     return S_OK;
