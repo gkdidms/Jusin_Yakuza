@@ -46,6 +46,8 @@ HRESULT CImguiManager::Initialize(void* pArg)
 	TextureTags.push_back(TEXT("Prototype_Component_Texture_GuardParticle"));
 	TextureTags.push_back(TEXT("Prototype_Component_Texture_GuardSmoke"));
 	TextureTags.push_back(TEXT("Prototype_Component_Texture_GuardDist"));
+	TextureTags.push_back(TEXT("Prototype_Component_Texture_Money"));
+	TextureTags.push_back(TEXT("Prototype_Component_Texture_Coin"));
 
 
 	if (nullptr != pArg)
@@ -175,9 +177,6 @@ void CImguiManager::Tick(const _float& fTimeDelta)
 	default:
 		break;
 	}
-
-
-
 
 }
 
@@ -962,6 +961,13 @@ HRESULT CImguiManager::Edit_Particle(_uint Index)
 		EffectDesc.BufferInstance.vRectSize = m_EffectDesc.BufferInstance.vRectSize;
 		EffectDesc.BufferInstance.fRadius = m_EffectDesc.BufferInstance.fRadius;
 		EffectDesc.BufferInstance.bRadius = m_EffectDesc.BufferInstance.bRadius;
+		EffectDesc.BufferInstance.LowStartRot = m_EffectDesc.BufferInstance.LowStartRot;
+		EffectDesc.BufferInstance.HighStartRot = m_EffectDesc.BufferInstance.HighStartRot;
+		EffectDesc.BufferInstance.LowAngleVelocity = m_EffectDesc.BufferInstance.LowAngleVelocity;
+		EffectDesc.BufferInstance.HighAngleVelocity = m_EffectDesc.BufferInstance.HighAngleVelocity;
+		EffectDesc.BufferInstance.GravityScale = m_EffectDesc.BufferInstance.GravityScale;
+		EffectDesc.BufferInstance.isBillboard = m_EffectDesc.BufferInstance.isBillboard;
+		EffectDesc.BufferInstance.CrossArea = m_EffectDesc.BufferInstance.CrossArea;
 
 		EffectDesc.vStartPos = m_EffectDesc.vStartPos;
 		EffectDesc.fRotate = m_EffectDesc.fRotate;
@@ -987,8 +993,9 @@ HRESULT CImguiManager::Edit_Particle(_uint Index)
 			dynamic_cast<CEffect*>(m_EditParticle[Index])->Edit_Action(CEffect::ACTION_SIZEUP);
 		if (m_bSizedown)
 			dynamic_cast<CEffect*>(m_EditParticle[Index])->Edit_Action(CEffect::ACTION_SIZEDOWN);
-
-
+		if (m_bNobillboard)
+			dynamic_cast<CEffect*>(m_EditParticle[Index])->Edit_Action(CEffect::ACTION_NOBILLBOARD);
+		
 	}
 		break;
 	case MODE_TRAIL:
@@ -1105,6 +1112,13 @@ HRESULT CImguiManager::Load_Desc(_uint Index)
 		m_EffectDesc.BufferInstance.vRectSize = pDesc->vRectSize;
 		m_EffectDesc.BufferInstance.fRadius = pDesc->fRadius;
 		m_EffectDesc.BufferInstance.bRadius = pDesc->bRadius;
+		m_EffectDesc.BufferInstance.LowStartRot = pDesc->LowStartRot;
+		m_EffectDesc.BufferInstance.HighStartRot = pDesc->HighStartRot;
+		m_EffectDesc.BufferInstance.LowAngleVelocity = pDesc->LowAngleVelocity;
+		m_EffectDesc.BufferInstance.HighAngleVelocity = pDesc->HighAngleVelocity;
+		m_EffectDesc.BufferInstance.GravityScale = pDesc->GravityScale;
+		m_EffectDesc.BufferInstance.isBillboard = pDesc->isBillboard;
+		m_EffectDesc.BufferInstance.CrossArea = pDesc->CrossArea;
 
 		m_EffectDesc.eType = pEffect->Get_Type();
 		m_EffectDesc.vStartPos = pEffect->Get_StartPos();
@@ -1149,7 +1163,10 @@ HRESULT CImguiManager::Load_Desc(_uint Index)
 		else
 			m_bSizedown = false;
 
-
+		if (CheckAction & pEffect->iAction[CEffect::ACTION_NOBILLBOARD])
+			m_bNobillboard = true;
+		else
+			m_bNobillboard = false;
 	}
 		break;
 	case MODE_TRAIL:
@@ -1523,30 +1540,132 @@ void CImguiManager::Editor_Tick(_float fTimeDelta)
 
 
 	if (ImGui::RadioButton("NOCOLOR", &m_EffectDesc.iShaderPass, PASS_NOCOLOR))
+	{
+		if (m_bNobillboard)
+		{
+			if (-1 != m_iCurEditIndex)
+			{
+				CEffect* pParticle = dynamic_cast<CEffect*>(m_EditParticle[m_iCurEditIndex]);
+				pParticle->Edit_Action(CEffect::ACTION_NOBILLBOARD);
+				m_EffectDesc.BufferInstance.isBillboard = false;
+			}
+			m_bNobillboard = false;
+		}
 		bChange = true;
+	}
 	ImGui::SameLine();
 	if (ImGui::RadioButton("COLOR", &m_EffectDesc.iShaderPass, PASS_COLOR))
+	{
+		if (m_bNobillboard)
+		{
+			if (-1 != m_iCurEditIndex)
+			{
+				CEffect* pParticle = dynamic_cast<CEffect*>(m_EditParticle[m_iCurEditIndex]);
+				pParticle->Edit_Action(CEffect::ACTION_NOBILLBOARD);
+				m_EffectDesc.BufferInstance.isBillboard = false;
+			}
+			m_bNobillboard = false;
+		}
 		bChange = true;
+	}
 	ImGui::SameLine();
 	if (ImGui::RadioButton("ROTATE", &m_EffectDesc.iShaderPass, PASS_ROTATE))
+	{
+		if (m_bNobillboard)
+		{
+			if (-1 != m_iCurEditIndex)
+			{
+				CEffect* pParticle = dynamic_cast<CEffect*>(m_EditParticle[m_iCurEditIndex]);
+				pParticle->Edit_Action(CEffect::ACTION_NOBILLBOARD);
+				m_EffectDesc.BufferInstance.isBillboard = false;
+			}
+			m_bNobillboard = false;
+		}
 		bChange = true;
+	}
 	if (ImGui::RadioButton("ROTANIM", &m_EffectDesc.iShaderPass, PASS_ROTANIM))
+	{
+		if (m_bNobillboard)
+		{
+			if (-1 != m_iCurEditIndex)
+			{
+				CEffect* pParticle = dynamic_cast<CEffect*>(m_EditParticle[m_iCurEditIndex]);
+				pParticle->Edit_Action(CEffect::ACTION_NOBILLBOARD);
+				m_EffectDesc.BufferInstance.isBillboard = false;
+			}
+			m_bNobillboard = false;
+		}
 		bChange = true;
+	}
 	ImGui::SameLine();
 	if (ImGui::RadioButton("ANIM", &m_EffectDesc.iShaderPass, PASS_ANIM))
+	{
+		if (m_bNobillboard)
+		{
+			if (-1 != m_iCurEditIndex)
+			{
+				CEffect* pParticle = dynamic_cast<CEffect*>(m_EditParticle[m_iCurEditIndex]);
+				pParticle->Edit_Action(CEffect::ACTION_NOBILLBOARD);
+				m_EffectDesc.BufferInstance.isBillboard = false;
+			}
+			m_bNobillboard = false;
+		}
 		bChange = true;
+	}
 	ImGui::SameLine();
 	if (ImGui::RadioButton("DISTORTION", &m_EffectDesc.iShaderPass, PASS_DISTORTION))
-		bChange = true;
-
-	if (ImGui::Checkbox("Spread", &m_bSpread))
 	{
-		if(-1 != m_iCurEditIndex)
+		if (m_bNobillboard)
 		{
-			CEffect* pParticle = dynamic_cast<CEffect*>(m_EditParticle[m_iCurEditIndex]);
-			pParticle->Edit_Action(CEffect::ACTION_SPREAD);
+			if (-1 != m_iCurEditIndex)
+			{
+				CEffect* pParticle = dynamic_cast<CEffect*>(m_EditParticle[m_iCurEditIndex]);
+				pParticle->Edit_Action(CEffect::ACTION_NOBILLBOARD);
+				m_EffectDesc.BufferInstance.isBillboard = false;
+			}
+			m_bNobillboard = false;
+		}
+		bChange = true;
+	}
+	ImGui::SameLine();
+	if (ImGui::RadioButton("NOBILLBOARD", &m_EffectDesc.iShaderPass, PASS_NOBILLBOARD))
+	{
+		if (m_bSpread)
+		{
+			if (-1 != m_iCurEditIndex)
+			{
+				CEffect* pParticle = dynamic_cast<CEffect*>(m_EditParticle[m_iCurEditIndex]);
+				pParticle->Edit_Action(CEffect::ACTION_SPREAD);
+				m_EffectDesc.BufferInstance.isBillboard = true;
+			}
+			m_bSpread = false;
+		}
+		bChange = true;
+	}
+
+	if (PASS_NOBILLBOARD == m_EffectDesc.iShaderPass)
+	{
+		if (ImGui::Checkbox("NoBillboard", &m_bNobillboard))
+		{
+			if (-1 != m_iCurEditIndex)
+			{
+				CEffect* pParticle = dynamic_cast<CEffect*>(m_EditParticle[m_iCurEditIndex]);
+				pParticle->Edit_Action(CEffect::ACTION_NOBILLBOARD);
+			}
 		}
 	}
+	else
+	{
+		if (ImGui::Checkbox("Spread", &m_bSpread))
+		{
+			if (-1 != m_iCurEditIndex)
+			{
+				CEffect* pParticle = dynamic_cast<CEffect*>(m_EditParticle[m_iCurEditIndex]);
+				pParticle->Edit_Action(CEffect::ACTION_SPREAD);
+			}
+		}
+	}
+
 	ImGui::SameLine();
 
 	if (ImGui::Checkbox("Drop", &m_bDrop))
@@ -1747,6 +1866,54 @@ void CImguiManager::Editor_Tick(_float fTimeDelta)
 		Color_Palette();
 	}
 	break;
+	case PASS_NOBILLBOARD:
+	{
+		Temp = (_float*)&m_EffectDesc.fLifeAlpha;
+		if (ImGui::InputFloat2("LifeAlpha", Temp))
+		{
+			memcpy(&m_EffectDesc.fLifeAlpha, Temp, sizeof(_float2));
+			bChange = true;
+		}
+
+		Temp = (_float*)&m_EffectDesc.BufferInstance.LowStartRot;
+		if (ImGui::InputFloat3("LowStartRot", Temp))
+		{
+			memcpy(&m_EffectDesc.BufferInstance.LowStartRot, Temp, sizeof(_float3));
+			bChange = true;
+		}
+
+		Temp = (_float*)&m_EffectDesc.BufferInstance.HighStartRot;
+		if (ImGui::InputFloat3("HighStartRot", Temp))
+		{
+			memcpy(&m_EffectDesc.BufferInstance.HighStartRot, Temp, sizeof(_float3));
+			bChange = true;
+		}
+		Temp = (_float*)&m_EffectDesc.BufferInstance.LowAngleVelocity;
+		if (ImGui::InputFloat3("LowAngleVelocity", Temp))
+		{
+			memcpy(&m_EffectDesc.BufferInstance.LowAngleVelocity, Temp, sizeof(_float3));
+			bChange = true;
+		}
+		Temp = (_float*)&m_EffectDesc.BufferInstance.HighAngleVelocity;
+		if (ImGui::InputFloat3("HighAngleVelocity", Temp))
+		{
+			memcpy(&m_EffectDesc.BufferInstance.HighAngleVelocity, Temp, sizeof(_float3));
+			bChange = true;
+		}
+		Temp = (_float*)&m_EffectDesc.BufferInstance.GravityScale;
+		if (ImGui::InputFloat("GravityScale", Temp))
+		{
+			memcpy(&m_EffectDesc.BufferInstance.GravityScale, Temp, sizeof(_float));
+			bChange = true;
+		}
+		Temp = (_float*)&m_EffectDesc.BufferInstance.CrossArea;
+		if (ImGui::InputFloat("CrossArea", Temp))
+		{
+			memcpy(&m_EffectDesc.BufferInstance.CrossArea, Temp, sizeof(_float));
+			bChange = true;
+		}
+		break;
+	}
 	default:
 		break;
 	}
