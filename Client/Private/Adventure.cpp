@@ -49,7 +49,9 @@ void CAdventure::Tick(const _float& fTimeDelta)
 		_bool isPicking = false;
 		_vector vGoalPos = m_pGameInstance->Picking(&isPicking);
 		if (isPicking)
+		{
 			m_pAStartCom->Start_Root(m_pNavigationCom, vGoalPos);
+		}
 	}
 	
 	Move_AStart();
@@ -271,18 +273,50 @@ void CAdventure::Synchronize_Root(const _float& fTimeDelta)
 
 void CAdventure::Move_AStart()
 {
-	list<CCell*>& BestCells = m_pAStartCom->Get_BestList();
+	list<CCell*>& FunnelList = m_pAStartCom->Get_FunnelList();
 
-	if (BestCells.empty())
+	if (FunnelList.empty())
 		return;
-
-	_vector	vDir = BestCells.front()->Get_WayPoint() - m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	
+	//웨이포인트가 아닌 선분의 중점을 기준으로 다가간다.
+	_vector vCellCheckPoint = (FunnelList.front()->Get_Point(CCell::POINT_B) + FunnelList.front()->Get_Point(CCell::POINT_C)) * 0.5f;
+	_vector	vDir = vCellCheckPoint - m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 	_float fDist = XMVectorGetX(XMVector3Length(vDir));
+
+	m_pTransformCom->LookAt_For_LandObject(vCellCheckPoint);
 	
-	m_pTransformCom->LookAt_For_LandObject(BestCells.front()->Get_WayPoint());
+	//거의 근접하게 다가갈경우 제거한다.
+	if (0.1f >= fDist)
+	{
+		Safe_Release(FunnelList.front());
+		FunnelList.pop_front();
+	}
+}
+
+void CAdventure::Check_Separation()
+{
+	//내 범위 안에 들어온 NPC를 보고 피한다. 
+	//Layer_NPC
+
+	_float fRange = 1.f;
+	vector<CGameObject*> NPCs = m_pGameInstance->Get_GameObjects(m_iCurrentLevel, TEXT("Layer_NPC"));
 	
-	if (1.f >= fDist)
-		BestCells.pop_front();
+	_vector vMoveDir = {};
+	for (auto& pObj : NPCs)
+	{
+		_vector vDir = m_pTransformCom->Get_State(CTransform::STATE_POSITION) - pObj->Get_TransformCom()->Get_State(CTransform::STATE_POSITION);
+		_float fDistance = XMVectorGetX(XMVector3Length(vDir));
+
+		if (fDistance < fRange)
+		{
+			vMoveDir += vDir;
+		}
+	}
+
+	vMoveDir = XMVector3Normalize(vMoveDir);
+
+	//NPC별 충돌 시 피하는 방향 벡터 -> vMoveDir;
+
 }
 
 HRESULT CAdventure::Add_Components()
