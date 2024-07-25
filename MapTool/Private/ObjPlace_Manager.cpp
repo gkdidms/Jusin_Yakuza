@@ -574,6 +574,12 @@ void CObjPlace_Manager::Edit_Installed_GameObject(int iNumObject)
 		m_tCurrentObjectDesc.iLayer = 2;
 	}
 
+	if (ImGui::RadioButton(m_Layers[3], m_tCurrentObjectDesc.iLayer == 3))
+	{
+		LayerType = 3;
+		m_tCurrentObjectDesc.iLayer = 3;
+	}
+
 
 	ImGui::NewLine();
 
@@ -651,6 +657,12 @@ void CObjPlace_Manager::Edit_Installed_GameObject(int iNumObject)
 		m_tCurrentObjectDesc.iObjType = (int)OBJECT_TYPE::LARGE_CONSTRUCTION;
 	}
 
+	if (ImGui::RadioButton(u8"MONSTER - SUIT", m_tCurrentObjectDesc.iObjType == 12))
+	{
+		objectType = 12;
+		m_tCurrentObjectDesc.iObjType = (int)OBJECT_TYPE::ADTENTURE_SUIT;
+	}
+
 	ImGui::NewLine();
 
 	ImGui::Text(u8"쉐이더");
@@ -707,6 +719,11 @@ void CObjPlace_Manager::Edit_Installed_GameObject(int iNumObject)
 			m_tCurrentObjectDesc.iShaderPass = 7;
 		}
 
+		if (ImGui::RadioButton(u8"rm 적용한 외부간판 - 빛나는", m_tCurrentObjectDesc.iShaderPass == 8))
+		{
+			shaderType = 8;
+			m_tCurrentObjectDesc.iShaderPass = 8;
+		}
 
 	}
 	else
@@ -935,6 +952,7 @@ void CObjPlace_Manager::Set_Map_Object()
 	ImGui::RadioButton(m_Layers[0], &LayerType, 0);
 	ImGui::RadioButton(m_Layers[1], &LayerType, 1);
 	ImGui::RadioButton(m_Layers[2], &LayerType, 2);
+	ImGui::RadioButton(m_Layers[3], &LayerType, 3);
 
 	/* 데이터 추가할때마다 수정 */
 	ImGui::NewLine();
@@ -953,6 +971,7 @@ void CObjPlace_Manager::Set_Map_Object()
 	ImGui::RadioButton(u8"몬스터 - yoneda", &objectType, OBJECT_TYPE::MONSTER_YONEDA);
 	ImGui::RadioButton(u8"몬스터 - kuze", &objectType, OBJECT_TYPE::MONSTER_KUZE);
 	ImGui::RadioButton(u8"통건물", &objectType, OBJECT_TYPE::LARGE_CONSTRUCTION);
+	ImGui::RadioButton(u8"몬스터 - SUIT", &objectType, OBJECT_TYPE::ADTENTURE_SUIT);
 
 
 	ImGui::NewLine();
@@ -977,6 +996,8 @@ void CObjPlace_Manager::Set_Map_Object()
 		ImGui::RadioButton(u8"Emissive - 투명x", &shaderType, 6);
 		ImGui::NewLine();
 		ImGui::RadioButton(u8"rm 텍스처 적용 - 외부간판", &shaderType, 7);
+		ImGui::NewLine();
+		ImGui::RadioButton(u8"rm 텍스처 적용 - 외부간판 - 빛남", &shaderType, 8);
 	}
 	else
 	{

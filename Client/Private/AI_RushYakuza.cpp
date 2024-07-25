@@ -35,7 +35,7 @@ HRESULT CAI_RushYakuza::Initialize(void* pArg)
 	//트리 구현
 	Ready_Tree();
 
-	m_fDelayAttackDuration = m_pGameInstance->Get_Random(6, 9);
+	m_fDelayAttackDuration = m_pGameInstance->Get_Random(6.f, 9.f);
 	m_iMonsterType = CAI_Monster::RUSH;
 	
 	return S_OK;
@@ -136,27 +136,6 @@ void CAI_RushYakuza::Ready_Tree()
 #pragma endregion
 
 	m_pRootNode = pRoot;
-}
-
-CBTNode::NODE_STATE CAI_RushYakuza::Check_Attack()
-{
-	if (!m_isAttack)
-	{
-		if (DistanceFromPlayer() > 6.f)
-			return CBTNode::FAIL;
-
-		if (m_fDelayAttackDuration > m_fAttackDelayTime)
-			return CBTNode::FAIL;
-
-		m_fAttackDelayTime = 0.f;
-		Reset_State();
-	}
-
-#ifdef _DEBUG
-	cout << " 몬스터 공격!!!!" << endl;
-#endif // DEBUG
-
-	return CBTNode::SUCCESS;
 }
 
 CBTNode::NODE_STATE CAI_RushYakuza::Attack()

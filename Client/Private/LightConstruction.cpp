@@ -144,13 +144,15 @@ void CLightConstruction::Late_Tick(const _float& fTimeDelta)
 		else if (m_iShaderPassNum == 6)
 		{
 			m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
-			m_pGameInstance->Add_Renderer(CRenderer::RENDER_EFFECT, this);
+			m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONLIGHT, this);
 		}
 		else if (m_iShaderPassNum == 7)
 		{
 			m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
-			m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONLIGHT, this);
+			m_pGameInstance->Add_Renderer(CRenderer::RENDER_EFFECT, this);
 		}
+
+
 
 		for (auto& iter : m_vDecals)
 			iter->Late_Tick(fTimeDelta);

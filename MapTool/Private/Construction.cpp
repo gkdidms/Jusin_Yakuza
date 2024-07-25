@@ -180,7 +180,8 @@ int CConstruction::Get_ObjPlaceDesc(OBJECTPLACE_DESC* objplaceDesc)
 
 	if ((int)CObjPlace_Manager::OBJECT_TYPE::PLAYER == m_iObjectType || (int)CObjPlace_Manager::OBJECT_TYPE::MONSTER_KUZE == m_iObjectType
 		|| (int)CObjPlace_Manager::OBJECT_TYPE::MONSTER_RUSH == m_iObjectType || (int)CObjPlace_Manager::OBJECT_TYPE::MONSTER_SHAKEDOWN == m_iObjectType
-		|| (int)CObjPlace_Manager::OBJECT_TYPE::MONSTER_WPA == m_iObjectType || (int)CObjPlace_Manager::OBJECT_TYPE::MONSTER_YONEDA == m_iObjectType)
+		|| (int)CObjPlace_Manager::OBJECT_TYPE::MONSTER_WPA == m_iObjectType || (int)CObjPlace_Manager::OBJECT_TYPE::MONSTER_YONEDA == m_iObjectType
+		|| (int)CObjPlace_Manager::OBJECT_TYPE::ADTENTURE_SUIT == m_iObjectType)
 	{
 		CNavigation_Manager* pNaviMgr = CNavigation_Manager::GetInstance();
 		Safe_AddRef(pNaviMgr);

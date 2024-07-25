@@ -18,12 +18,17 @@
 #include "Yoneda.h"
 #pragma endregion
 
+#pragma region Adventure
+#include "Adv_Passersby.h"
+#pragma endregion
 
 #pragma region BTNode
 #include "AI_RushYakuza.h"
 #include "AI_WPAYakuza.h"
 #include "AI_Shakedown.h"
 #include "AI_Kuze.h"
+
+#include "AI_Passersby.h"
 #pragma endregion
 
 #pragma region Camera
@@ -259,6 +264,11 @@ HRESULT CLoader::Loading_Default()
 	if (FAILED(m_pGameInstance->Add_BTNode_Prototype(m_eNextLevel, TEXT("Prototype_BTNode_Kuze"),
 		CAI_Kuze::Create())))
 		return E_FAIL;
+
+	/* For.Prototype_BTNode_Passersby*/
+	if (FAILED(m_pGameInstance->Add_BTNode_Prototype(m_eNextLevel, TEXT("Prototype_BTNode_Passersby"),
+		CAI_Passersby::Create())))
+		return E_FAIL;
 #pragma endregion
 
 #pragma region Component
@@ -278,7 +288,13 @@ HRESULT CLoader::Loading_Default()
 	/* For.Prototype_Component_Anim */
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Anim"), CAnim::Create(m_pDevice, m_pContext, "../Bin/DataFiles/AnimationData/Animation.dat", false))))
 		return E_FAIL;
-	/*if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Anim"), CAnim::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Anim/Animation.fbx", true))))
+	/*if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Anim"), CAnim::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Anim/Animation.fbx", true))))
+		return E_FAIL;*/
+
+	/* For.Prototype_Component_Anim_NPC */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Anim_NPC"), CAnim::Create(m_pDevice, m_pContext, "../Bin/DataFiles/AnimationData/Animation_NPC.dat", false))))
+		return E_FAIL;
+	/*if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Anim_NPC"), CAnim::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Anim/Animation_NPC.fbx", true))))
 		return E_FAIL;*/
 
 		/* For.Prototype_Component_Collider */
@@ -293,6 +309,11 @@ HRESULT CLoader::Loading_Default()
 	/* For.Prototype_Component_VIBuffer_Trail */
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_VIBuffer_Trail"),
 		CVIBuffer_Trail::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_AStart */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_AStart"),
+		CAStart::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 #pragma endregion
@@ -485,6 +506,11 @@ HRESULT CLoader::Loading_For_Office_1F()
 	/* For.Prototype_GameObject_LevelTrigger */
 	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_MonsterTrigger"),
 		CMonsterTrigger::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_AdvSuit */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_AdvPassersby"),
+		CAdv_Passersby::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 #pragma endregion
@@ -820,6 +846,11 @@ HRESULT CLoader::Loading_For_Test()
 	/* For.Prototype_GameObject_MonsterTrigger */
 	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_MonsterTrigger"),
 		CMonsterTrigger::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_AdvPassersby */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_AdvPassersby"),
+		CAdv_Passersby::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 #pragma endregion
 

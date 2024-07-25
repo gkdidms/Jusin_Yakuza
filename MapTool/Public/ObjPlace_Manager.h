@@ -30,6 +30,7 @@ public:
 		MONSTER_YONEDA,
 		MONSTER_KUZE,
 		LARGE_CONSTRUCTION,
+		ADTENTURE_SUIT,
 		OBJ_END
 	};
 
@@ -122,7 +123,7 @@ private:
 
 
 private:
-	vector<const char*>							m_Layers = { "Layer_GameObjects", "Layer_Monster", "Layer_Player" };
+	vector<const char*>							m_Layers = { "Layer_GameObjects", "Layer_Monster", "Layer_Player", "Layer_NPC" };
 	/* object이름, cgameobject */
 	multimap<wstring, CGameObject*>				m_GameObjects; /* 추가한 오브젝트 저장 */
 	vector<char*>								m_ObjectNames_Map0; /* 추가한 오브젝트 이름들 */

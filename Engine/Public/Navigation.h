@@ -26,6 +26,7 @@ public:
     _uint Get_Index() {
         return m_iCurrentIndex;
     }
+    vector<CCell*> Get_Cells() { return m_Cells; }
 
 public:
     virtual HRESULT Initialize_Prototype(); // Tool¿ë
@@ -34,7 +35,6 @@ public:
     virtual void Tick() override;
 
 public:
-    _int Find_Index(POINT ptMouse, _fvector vTargetPos, _float fZ, _fmatrix WorldMatirx, _int* pIndex = nullptr);
     int Find_PlayerMonster_Index(_fvector vTargetPos);
     _bool isMove(_fvector vMovePos);
     _float Compute_Height(_fvector vPosition);

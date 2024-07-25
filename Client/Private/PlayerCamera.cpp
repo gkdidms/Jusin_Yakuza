@@ -108,27 +108,12 @@ void CPlayerCamera::Late_Tick(const _float& fTimeDelta)
 
 	Compute_View(fTimeDelta);
 
-	// 충돌시 -> check_map_collision으로 이미 이동시켜놓음. 그래서 충돌 안생기는거처럼 보일뿐
-	if (false == m_bCamCollision && m_fCamDistance < MAX_DISTANCE)
-	{
-		m_fCamDistance += 0.01;
-		if (MAX_DISTANCE < m_fCamDistance)
-			m_fCamDistance = MAX_DISTANCE;
-	}
 
-	if (MIN_DISTANCE >= m_fCamDistance)
-	{
-		m_fCamDistance = MIN_DISTANCE;
-	}
 
 
 	__super::Tick(fTimeDelta);
 
 
-//#ifdef _DEBUG
-//	// 테스트용으로 추가함
-//	m_pGameInstance->Add_Renderer(CRenderer::RENDER_PRIORITY, this);
-//#endif
 }
 
 HRESULT CPlayerCamera::Render()
@@ -183,9 +168,21 @@ void CPlayerCamera::Compute_View(const _float& fTimeDelta)
 	vCamPosition += XMVectorSet(XMVectorGetX(vPlayerPosition), XMVectorGetY(vPlayerPosition), XMVectorGetZ(vPlayerPosition), 0);
 
 	// 이전 카메라 포지션과 새로운 카메라 포지션 사이의 선형보간
-	_vector vLerpedCamPosition = XMVectorLerp(vPrevCamPosition, vCamPosition, fTimeDelta * 15);
+	_vector vLerpedCamPosition;
 
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vLerpedCamPosition);
+	if (m_bCamCollision == true)
+	{
+		vLerpedCamPosition = vCamPosition;
+	}
+	else
+	{
+#ifdef _DEBUG
+		printf("%f", fTimeDelta * 5);
+#endif // _DEBUG
+		vLerpedCamPosition = XMVectorLerp(vPrevCamPosition, vCamPosition, fTimeDelta * 5);
+	}
+
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vCamPosition);
 
 	_vector vLookAt = XMVectorSet(XMVectorGetX(vPlayerPosition), XMVectorGetY(vPlayerPosition) + 1.f, XMVectorGetZ(vPlayerPosition), 1);
 

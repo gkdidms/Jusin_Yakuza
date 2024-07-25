@@ -159,25 +159,11 @@ void CAI_Shakedown::Ready_Tree()
 	m_pRootNode = pRoot;
 }
 
-CBTNode::NODE_STATE CAI_Shakedown::Check_Attack()
-{
-	//플레이어가 다운상태면 공격하지 않음
-	if (m_pPlayer->isDown())
-		return CBTNode::FAIL;
-
-	if (!m_isAttack)
-	{
-		if (m_fDelayAttackDuration > m_fAttackDelayTime)
-			return CBTNode::FAIL;
-
-		m_fAttackDelayTime = 0.f;
-	}
-
-	return CBTNode::SUCCESS;
-}
-
 CBTNode::NODE_STATE CAI_Shakedown::Attack()
 {
+	if (m_isAttack)
+		return CBTNode::SUCCESS;
+
 	LookAtPlayer();
 
 	_float fDistance = DistanceFromPlayer();
@@ -201,58 +187,6 @@ CBTNode::NODE_STATE CAI_Shakedown::Attack()
 		}
 	}
 
-	return CBTNode::SUCCESS;
-}
-
-CBTNode::NODE_STATE CAI_Shakedown::Check_PlayerDown()
-{
-	if (m_isPlayerDownAtk && !m_pPlayer->isDown())
-	{
-		m_isPlayerDownAtk = false;
-
-		if (m_iSkill == SKILL_DOWN)
-			m_isAttack = false;
-
-		Reset_State();
-
-		return CBTNode::FAIL;
-	}
-	else if (m_pPlayer->isDown())
-	{
-		// 플레이어가 다운되어있다면 
-		if (DistanceFromPlayer() > 2.f || m_isPlayerDownAtk)
-			return CBTNode::FAIL;
-
-		//플레이어가 다운되어있으면 최우선적으로 공격을 한다.	
-		if (m_iSkill != SKILL_DOWN)
-			Reset_State();
-
-		m_iSkill = SKILL_DOWN;
-
-		return CBTNode::SUCCESS;
-	}
-
-	return CBTNode::FAIL;
-}
-
-CBTNode::NODE_STATE CAI_Shakedown::ATK_Down()
-{
-	if (m_iSkill == SKILL_DOWN && m_isAttack)
-	{
-		if (*m_pState == CMonster::MONSTER_ATK_DOWN && m_pAnimCom->Get_AnimFinished())
-		{
-			m_isAttack = false;
-			m_isPlayerDownAtk = true;
-
-			return CBTNode::SUCCESS;
-		}
-
-		return CBTNode::RUNNING;
-	}
-
-	m_isAttack = true;
-	*m_pState = CMonster::MONSTER_ATK_DOWN;
-	
 	return CBTNode::SUCCESS;
 }
 
@@ -297,7 +231,7 @@ CBTNode::NODE_STATE CAI_Shakedown::ATK_CMD()
 
 	if (m_iSkill == SKILL_CMD)
 	{
-		m_fCmbNum = m_pGameInstance->Get_Random(0, 3); // 0 ~ 2 사이값이 나온다.
+		m_fCmbNum = m_pGameInstance->Get_Random(0.f, 3.f); // 0 ~ 2 사이값이 나온다.
 		m_fCmbCount = 0.f;
 
 		m_isAttack = true;
@@ -312,7 +246,7 @@ CBTNode::NODE_STATE CAI_Shakedown::ATK_GuardRun()
 {
 	if (m_iSkill == SKILL_GUARD_RUN && m_isAttack)
 	{
-		if (m_pAnimCom->Get_AnimFinished())
+		if (*m_pState == CMonster::MONSTER_GUARD_RUN && m_pAnimCom->Get_AnimFinished())
 		{
 			m_isAttack = false;
 			return CBTNode::SUCCESS;
