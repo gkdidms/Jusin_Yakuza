@@ -11,7 +11,8 @@ CNavigation::CNavigation(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 CNavigation::CNavigation(const CNavigation& rhs)
     : CComponent{ rhs },
     m_pShaderCom{ rhs.m_pShaderCom },
-    m_Cells{ rhs.m_Cells }
+    m_Cells{ rhs.m_Cells },
+    m_Routes { rhs.m_Routes }
 {
     Safe_AddRef(m_pShaderCom);
 
@@ -26,6 +27,11 @@ void CNavigation::Set_Points(const _float3* vPoints, _int OptionType)
         return;
 
     m_Cells.emplace_back(pCell);
+}
+
+vector<_int> CNavigation::Get_RouteIndexs(_int iIndex)
+{
+    return m_Routes.find(iIndex)->second;
 }
 
 HRESULT CNavigation::Initialize_Prototype()

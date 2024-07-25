@@ -27,7 +27,8 @@ public:
         return m_iCurrentIndex;
     }
     vector<CCell*> Get_Cells() { return m_Cells; }
-
+    vector<_int> Get_RouteIndexs(_int iIndex);
+    
 public:
     virtual HRESULT Initialize_Prototype(); // Tool용
     virtual HRESULT Initialize_Prototype(const wstring strFilePath);
@@ -47,7 +48,7 @@ public:
 private:
     class CShader* m_pShaderCom = { nullptr };
     vector<CCell*> m_Cells; // 삼각형들의 집합 저장
-    map<int, vector<int>>					m_Routes;  
+    map<_int, vector<_int>>					m_Routes;
 
     _uint m_iIndexCount = { 0 };
 

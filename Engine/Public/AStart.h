@@ -17,7 +17,7 @@ public:
 public:
     virtual HRESULT Initialize_Prototype();
     virtual HRESULT Initialize(void* pArg);
-    void Start_Root(class CNavigation* pNavi, _fvector vGoalPos);
+    void Start_Root(class CNavigation* pNavi, _int vGoalIndex);
     void Make_FunnelList(_uint iStartIndex, _uint iGoalIndex, list<CCell*>::iterator iter,vector<class CCell*> Cells);
     
 
