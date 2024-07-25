@@ -37,10 +37,10 @@ HRESULT CSceneModel_Test::Initialize(void* pArg)
 	if (FAILED(Add_Components(pArg)))
 		return E_FAIL;
 
-	CModel::ANIMATION_DESC Desc{1, true};
+	CModel::ANIMATION_DESC Desc{19, true};
 
 	m_pModelCom->Set_AnimationIndex(Desc);
-	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(30, 0, 30, 1));
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(30, 30, 30, 1));
 
 	return S_OK;
 }
@@ -51,29 +51,73 @@ void CSceneModel_Test::Priority_Tick(const _float& fTimeDelta)
 		m_pTransformCom->Go_Straight(fTimeDelta);
 	if (m_pGameInstance->GetKeyState(DIK_PGDN))
 		m_pTransformCom->Turn(m_pTransformCom->Get_State(CTransform::STATE_UP), fTimeDelta);
+
+	if (m_pGameInstance->GetKeyState(DIK_O))
+		fTestY += 1.f;
+	if (m_pGameInstance->GetKeyState(DIK_P))
+		fTestY -= 1.f;
+
+	if (m_pGameInstance->GetKeyState(DIK_N))
+		fTestZ += 1.f;
+	if (m_pGameInstance->GetKeyState(DIK_M))
+		fTestZ -= 1.f;
+
+	if (m_pGameInstance->GetKeyState(DIK_K))
+		fTestX += 1.f;
+	if (m_pGameInstance->GetKeyState(DIK_L))
+		fTestX -= 1.f;
 }
 
 void CSceneModel_Test::Tick(const _float& fTimeDelta)
 {
-	if (CAMERA_DEBUG == m_pSystemManager->Get_Camera())
+	if (m_pGameInstance->GetKeyState(DIK_SPACE) == TAP)
 	{
-		_matrix matBoneMatrix = XMLoadFloat4x4(m_pModelCom->Get_BoneCombinedTransformationMatrix_AtIndex(209));
-		_matrix matVectorBone = XMLoadFloat4x4(m_pModelCom->Get_BoneCombinedTransformationMatrix("vector_c_n"));
+		test = !test;
+	}
 
+	if(test)
+		m_pGameInstance->Set_TimeSpeed(TEXT("Timer_Player"), 0.f);
+	else
+		m_pGameInstance->Set_TimeSpeed(TEXT("Timer_Player"), 1.f);
+
+	m_pModelCom->Play_Animation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")));
+
+	if (CAMERA_CINEMACHINE == m_pSystemManager->Get_Camera())
+	{
 		CPlayer* pPlayer = static_cast<CPlayer*>(m_pGameInstance->Get_GameObject(LEVEL_TEST, TEXT("Layer_SceneModel_Test"), 0));
 		//CCamera* pCamera = dynamic_cast<CCamera*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Camera"), CAMERA_PLAYER));
+		// Blender에서 얻은 본의 변환 행렬
+		_matrix matBoneMatrix = XMLoadFloat4x4(m_pModelCom->Get_BoneCombinedTransformationMatrix("Camera"));
 
-		_matrix finalMat = matBoneMatrix * matVectorBone * pPlayer->Get_TransformCom()->Get_WorldMatrix();
-		
-		m_pGameInstance->Set_Transform(CPipeLine::D3DTS_VIEW, finalMat);
+		// 플레이어의 월드 변환 행렬
+		//_matrix matPlayerWorld = pPlayer->Get_TransformCom()->Get_WorldMatrix();
+		_matrix matPlayerWorld = m_pTransformCom->Get_WorldMatrix();
+		_matrix matVectorBoneWorld = XMLoadFloat4x4(m_pModelCom->Get_BoneCombinedTransformationMatrix("pattern_c_n"));
+
+		// Blender의 좌표계를 DirectX의 좌표계로 변환하기 위한 회전 행렬
+		_matrix rotationMatrixX = XMMatrixRotationX(XMConvertToRadians(fTestX));
+		_matrix rotationMatrixY = XMMatrixRotationY(XMConvertToRadians(fTestY));
+		_matrix rotationMatrixZ = XMMatrixRotationZ(XMConvertToRadians(fTestZ));
+
+		// Blender의 본 변환 행렬과 플레이어의 월드 변환 행렬을 결합하고 좌표계 변환을 적용
+		_matrix finalMat = rotationMatrixX* rotationMatrixY * rotationMatrixZ * matVectorBoneWorld * matBoneMatrix * matPlayerWorld;
+
+		// 최종 뷰 행렬을 계산
+		_matrix viewMatrix = XMMatrixInverse(nullptr, finalMat);
+
+		// 뷰 행렬을 파이프라인에 설정
+		m_pGameInstance->Set_Transform(CPipeLine::D3DTS_VIEW, viewMatrix);
 	}
-	m_pModelCom->Play_Animation(fTimeDelta);
+	
+	
+	CModel::ANIMATION_DESC Desc{ 40, true };
+	m_pModelCom->Play_Animation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")), Desc);
 }
 
 void CSceneModel_Test::Late_Tick(const _float& fTimeDelta)
 {
-	//m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
-	//m_pGameInstance->Add_Renderer(CRenderer::RENDER_SHADOWOBJ, this); // Shadow용 렌더 추가
+	m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
+	m_pGameInstance->Add_Renderer(CRenderer::RENDER_SHADOWOBJ, this); // Shadow용 렌더 추가
 }
 
 HRESULT CSceneModel_Test::Render()
@@ -182,7 +226,7 @@ HRESULT CSceneModel_Test::Render_LightDepth()
 HRESULT CSceneModel_Test::Add_Components(void* pArg)
 {
 	/* For.Com_Model */
-	if (FAILED(__super::Add_Component(LEVEL_TEST, TEXT("Prototype_Component_Model_Kiryu_Cam"),
+	if (FAILED(__super::Add_Component(LEVEL_TEST, TEXT("Prototype_Component_Model_Kiryu_CamAction"),
 		TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
 		return E_FAIL;
 

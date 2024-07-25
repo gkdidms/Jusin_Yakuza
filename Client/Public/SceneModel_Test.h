@@ -36,13 +36,13 @@ private:
 
 private:
 	_bool m_isFirst = { true };
-	vector<CDecal*>			m_vDecals;
-	vector<CCollider*>		m_vColliders;
-	int						m_iLayerNum;
 	wstring					m_wstrModelName;
-	int						m_iShaderPassNum = { 0 };
-	int						m_iObjectType = { 0 };
-	float					m_fWaterDeltaTime = { 0 };
+
+	_float fTestX = { 90.f };
+	_float fTestY = { -180 };
+	_float fTestZ = { 90 };
+
+	_bool test = { false };
 
 public:
 	HRESULT Add_Components(void* pArg);

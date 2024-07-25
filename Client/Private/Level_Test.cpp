@@ -42,7 +42,7 @@ HRESULT CLevel_Test::Initialize()
 	//	return E_FAIL;
 
 	/* Å¬¶ó ÆÄ½Ì */
-	m_pFileTotalManager->Set_MapObj_In_Client(99, LEVEL_TEST);
+	m_pFileTotalManager->Set_MapObj_In_Client(90, LEVEL_TEST);
 	m_pFileTotalManager->Set_Lights_In_Client(99);
 	m_pFileTotalManager->Set_Collider_In_Client(3, LEVEL_TEST);
 	m_pFileTotalManager->Set_Trigger_In_Client(3, LEVEL_TEST);
@@ -53,12 +53,6 @@ HRESULT CLevel_Test::Initialize()
 
 	if (FAILED(Ready_Test_SceneModel(TEXT("Layer_SceneModel_Test"))))
 		return E_FAIL;
-
-	m_pFileTotalManager->Set_MapObj_In_Client(99, LEVEL_TEST);
-	m_pFileTotalManager->Set_Lights_In_Client(6);
-	m_pFileTotalManager->Set_Collider_In_Client(6, LEVEL_TEST);
-	m_pFileTotalManager->Set_Trigger_In_Client(70, LEVEL_TEST);
-
 
 	_uint i = m_pGameInstance->Get_CurrentLevel();
 
