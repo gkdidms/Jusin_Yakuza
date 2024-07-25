@@ -19,15 +19,20 @@ public:
         _float2 vSpeed;
         _float2 vLifeTime;
         _bool isLoop;
-        const _float4x4* WorldMatrix;
+        const _float4x4* WorldMatrix;//뼈+부모(위치 기록후 따라오지 않게 하기 위해 생성)
+        
+        //돈파티클(동전,지폐)
+        _float3 LowStartRot;
+        _float3 HighStartRot;
+        _float3 LowAngleVelocity;
+        _float3 HighAngleVelocity;
+        _float GravityScale;
+        _float CrossArea;//단면적가로저항
+        _bool isBillboard;
+        //아우라
         _bool isAura;
     }INSTANCE_DESC;
 
-    //typedef struct tBlendSort
-    //{
-    //    VTXMATRIX vMatrix;
-    //    _float ViewZ;
-    //}BlendSort;
 protected:
     CVIBuffer_Instance(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
     CVIBuffer_Instance(const CVIBuffer_Instance& rhs);
@@ -53,16 +58,12 @@ protected:
     _float3* m_pOriginalPositions = { nullptr };
     _float* m_pOriginalSize = { nullptr };
     _float3* m_pOriginalOffsets = { nullptr };
-
+    _float3* m_pOriginalAngleVelocity = { nullptr };
 
     const _float4x4* m_pCurrentWorldMatrix = { nullptr };
 
-
-
     //기존 cpu 블렌드 소트용
     VTXMATRIX* m_pTempVertices;
-
-
 
     //컴퓨트 셰이더(인스턴스로 생성하면 모두 정령 필요.)
     class CComputeShader* m_pComputeShader = { nullptr };
@@ -83,8 +84,10 @@ protected:
     D3D11_BUFFER_DESC m_RenderBufferDesc = {};
 
     _bool m_isReset = { false };
+
 public:
     void Spread(_float fTimeDelta);
+    void RotSpread(_float fTimeDelta);
     void Aura(_float fTimeDelta);
     void Reset();
 

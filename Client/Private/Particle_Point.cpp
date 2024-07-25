@@ -75,7 +75,7 @@ void CParticle_Point::Tick(const _float& fTimeDelta)
     {
         if (m_iAction & iAction[ACTION_SPREAD])
         {
-            m_pVIBufferCom->Spread(fTimeDelta);
+           m_pVIBufferCom->Spread(fTimeDelta); 
         }
         if (m_iAction & iAction[ACTION_DROP])
         {
@@ -88,6 +88,10 @@ void CParticle_Point::Tick(const _float& fTimeDelta)
         if (m_iAction & iAction[ACTION_SIZEDOWN])
         {
             m_pVIBufferCom->SizeDown_Time(fTimeDelta);
+        }
+        if (m_iAction & iAction[ACTION_NOBILLBOARD])    
+        {
+            m_pVIBufferCom->RotSpread(fTimeDelta);
         }
     }
 
@@ -104,13 +108,19 @@ void CParticle_Point::Late_Tick(const _float& fTimeDelta)
     {
         if (m_BufferInstance.isLoop)
         {
-            m_pGameInstance->Add_Renderer(CRenderer::RENDER_EFFECT, this);
+            if (7 == m_iShaderPass)
+                m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
+            else
+                m_pGameInstance->Add_Renderer(CRenderer::RENDER_EFFECT, this);
         }
         else
         {
             if (m_fCurTime >= m_fStartTime && !m_isDead)
             {
-                m_pGameInstance->Add_Renderer(CRenderer::RENDER_EFFECT, this);
+                if (7 == m_iShaderPass)
+                    m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
+                else
+                   m_pGameInstance->Add_Renderer(CRenderer::RENDER_EFFECT, this);
             }
         }
     }
@@ -226,6 +236,17 @@ HRESULT CParticle_Point::Save_Data(const string strDirectory)
     out.write((char*)&m_BufferInstance.vLifeTime, sizeof(_float2));
     out.write((char*)&m_BufferInstance.isLoop, sizeof(_bool));
 
+    if(7==m_iShaderPass)
+    {
+        out.write((char*)&m_BufferInstance.LowStartRot, sizeof(_float3));
+        out.write((char*)&m_BufferInstance.HighStartRot, sizeof(_float3));
+        out.write((char*)&m_BufferInstance.LowAngleVelocity, sizeof(_float3));
+        out.write((char*)&m_BufferInstance.HighAngleVelocity, sizeof(_float3));
+        out.write((char*)&m_BufferInstance.GravityScale, sizeof(_float));
+        out.write((char*)&m_BufferInstance.CrossArea, sizeof(_float));
+    }
+
+
     if(6==m_iShaderPass)
      out.write((char*)&m_fDistortion, sizeof(_float));
 
@@ -302,6 +323,18 @@ HRESULT CParticle_Point::Load_Data(const string strDirectory)
     in.read((char*)&m_BufferInstance.vSpeed, sizeof(_float2));
     in.read((char*)&m_BufferInstance.vLifeTime, sizeof(_float2));
     in.read((char*)&m_BufferInstance.isLoop, sizeof(_bool));
+
+    if (7 == m_iShaderPass)
+    {
+        in.read((char*)&m_BufferInstance.LowStartRot, sizeof(_float3));
+        in.read((char*)&m_BufferInstance.HighStartRot, sizeof(_float3));
+        in.read((char*)&m_BufferInstance.LowAngleVelocity, sizeof(_float3));
+        in.read((char*)&m_BufferInstance.HighAngleVelocity, sizeof(_float3));
+        in.read((char*)&m_BufferInstance.GravityScale, sizeof(_float));
+        in.read((char*)&m_BufferInstance.CrossArea, sizeof(_float));
+        m_BufferInstance.isBillboard = true;
+    }
+
 
     if (6 == m_iShaderPass)
         in.read((char*)&m_fDistortion, sizeof(_float));
