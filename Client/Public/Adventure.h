@@ -6,6 +6,7 @@ class CShader;
 class CAnim;
 class CNavigation;
 class CAStart;
+class CCell;
 END
 
 BEGIN(Client)
@@ -63,7 +64,6 @@ protected:
     CAStart* m_pAStartCom = { nullptr };
     class CAI_Adventure* m_pTree = { nullptr };    
     
-
 protected:
     _bool m_isAnimLoop = { false };
     _uint m_iState = { 0 };
@@ -84,6 +84,7 @@ protected:
     virtual void Change_Animation();
     void Synchronize_Root(const _float& fTimeDelta);
     void Move_AStart();
+    void Check_Separation();
 
 protected:
     virtual HRESULT Add_Components() override;

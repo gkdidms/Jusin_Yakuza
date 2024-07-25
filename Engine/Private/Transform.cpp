@@ -196,10 +196,16 @@ void CTransform::LookAt(_fvector vTargetPosition)
 	Set_State(STATE_LOOK, XMVector4Normalize(vLook) * m_vScale.z);
 }
 
-void CTransform::LookAt_For_LandObject(_fvector vTargetPosition)
+
+/*
+<예은 추가>
+isDir이 true일 경우 
+1번째 인자인 vTargetPosition이 방향벡터로 들어온다. 
+*/
+void CTransform::LookAt_For_LandObject(_fvector vTargetPosition, _bool isDir)
 {
 	_vector vPosition = Get_State(STATE_POSITION);
-	_vector vLook = XMVector3Normalize(vTargetPosition - vPosition);
+	_vector vLook = isDir ? XMVector3Normalize(vTargetPosition) : XMVector3Normalize(vTargetPosition - vPosition);
 
 	// Y축 벡터 고정
 	_vector vUp = XMVectorSet(0.f, 1.f, 0.f, 0.f);
@@ -269,7 +275,7 @@ void CTransform::Rotation(_fvector vAxis, _float fRadian)
 	vRight = XMVector3TransformNormal(vRight, RotationMatrix);
 	vUp = XMVector3TransformNormal(vUp, RotationMatrix);
 	vLook = XMVector3TransformNormal(vLook, RotationMatrix);
-
+	 
 
 	if (isnan(vRight.m128_f32[0]) || isnan(vRight.m128_f32[0]) || isnan(vRight.m128_f32[0]))
 	{
