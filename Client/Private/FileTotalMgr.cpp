@@ -235,6 +235,7 @@ HRESULT CFileTotalMgr::Set_GameObject_In_Client(int iStageLevel)
         {
             XMMATRIX vStartPos = XMLoadFloat4x4(&m_MapTotalInform.pMapObjDesc[i].vTransform);
             dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject(iStageLevel, TEXT("Layer_Player"), 0))->Set_StartPos(vStartPos);
+            dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject(iStageLevel, TEXT("Layer_Player"), 0))->Set_NaviRouteIndex(m_MapTotalInform.pMapObjDesc[i].iNaviRoute);
 
             if (-1 == m_MapTotalInform.pMapObjDesc[i].iNaviNum)
             {
@@ -323,6 +324,7 @@ HRESULT CFileTotalMgr::Set_GameObject_In_Client(int iStageLevel)
             monsterDesc.fSpeedPecSec = 10.f;
             monsterDesc.fRotatePecSec = XMConvertToRadians(0.f);
             monsterDesc.fRotatePecSec = XMConvertToRadians(180.f);
+            monsterDesc.iNaviRouteNum = m_MapTotalInform.pMapObjDesc[i].iNaviRoute;
 
             if (-1 == m_MapTotalInform.pMapObjDesc[i].iNaviNum)
             {
