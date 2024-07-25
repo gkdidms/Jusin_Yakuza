@@ -59,6 +59,7 @@ public:
 		int				iShaderPass;
 		int				iObjType;
 		int				iObjPropertyType;
+		int				iNaviRouteNum;
 	}MAPTOOL_OBJPLACE_DESC;
 
 

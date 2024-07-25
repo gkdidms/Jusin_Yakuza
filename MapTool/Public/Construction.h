@@ -31,6 +31,7 @@ public:
 		int					iObjType;
 		int					iObjPropertyType;
 		int					iNaviNum;
+		int					iRouteNum;
 
 		int					iDecalNum;
 		DECAL_DESC_IO*		pDecal;
@@ -100,7 +101,7 @@ private:
 	int												m_iObjectType = { 0 };
 	int												m_iObjectPropertyType = { 0 };
 	int												m_iNaviNum = { -1 };
-
+	int												m_iRouteNum = { 0 };
 
 	int*											m_pDecalMeshIndex = { 0 };
 	int												m_iDecalMeshCnt = { 0 };

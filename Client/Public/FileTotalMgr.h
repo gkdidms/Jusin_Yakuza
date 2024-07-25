@@ -68,7 +68,7 @@ public:
 	HRESULT									Set_MapObj_In_Client_Trigger(int iMapLoadingNum, int iStageLevel);
 	HRESULT									Set_GameObject_In_Client_Trigger(int iStageLevel);
 
-
+	HRESULT									Set_NaviRoute_In_Client(int iRouteNum);
 
 	void									Load_Cinemachine(int iCineNum, int iStageLevel);
 
