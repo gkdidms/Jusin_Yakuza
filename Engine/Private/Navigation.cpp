@@ -160,6 +160,31 @@ HRESULT CNavigation::Load_File(const wstring strFilePath)
         Safe_Delete(vPoint);
     }
 
+    // 루트 개수 읽어오기
+    _uint		iRouteCnt = 0;
+    ifs.read((_char*)&iRouteCnt, sizeof(_uint));
+
+    for (int i = 0; i < iRouteCnt; i++)
+    {
+        _uint		iCellCnt = 0;
+
+        ifs.read((_char*)&iCellCnt, sizeof(_uint));
+
+        int* arr = new int[iCellCnt];
+        ifs.read(reinterpret_cast<char*>(arr), iCellCnt * sizeof(int));
+
+        vector<int>		routeCells;
+
+        for (int j = 0; j < iCellCnt; j++)
+        {
+            routeCells.push_back(arr[j]);
+        }
+
+        m_Routes.emplace(i, routeCells);
+
+        Safe_Delete(arr);
+    }
+
     ifs.close();
 
     return S_OK;
@@ -271,6 +296,11 @@ void CNavigation::Free()
     __super::Free();
 
     Safe_Release(m_pShaderCom);
+
+
+    for (auto& Pair : m_Routes)
+        Pair.second.clear();
+    m_Routes.clear();
 
     for (auto& pCell : m_Cells)
         Safe_Release(pCell);

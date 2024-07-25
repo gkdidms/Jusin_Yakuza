@@ -769,6 +769,41 @@ HRESULT CFileTotalMgr::Set_GameObject_In_Client_Trigger(int iStageLevel)
     return S_OK;
 }
 
+HRESULT CFileTotalMgr::Set_NaviRoute_In_Client(int iRouteNum)
+{
+    _ulong		dwByte = {};
+    char fullPath[MAX_PATH];
+    strcpy_s(fullPath, ".../Bin/DataFiles/RouteData/");
+
+    strcat_s(fullPath, "Route");
+    strcat_s(fullPath, "_");
+
+    string strNum = to_string(iRouteNum);
+    char cLevel[20];
+    strcpy_s(cLevel, strNum.c_str());
+    strcat_s(fullPath, cLevel);
+    strcat_s(fullPath, ".dat");
+
+    ifstream in(fullPath, ios::binary);
+
+    if (!in.is_open()) {
+        MSG_BOX("파일 개방 실패");
+        return E_FAIL;
+    }
+
+
+    _uint NumCells = { 0 };
+    in.read((_char*)&NumCells, sizeof(_uint));
+
+    int* arr = new int[NumCells];
+    in.read(reinterpret_cast<char*>(arr), sizeof(arr));
+
+
+    in.close();
+
+    return S_OK;
+}
+
 void CFileTotalMgr::Load_Cinemachine(int iCineNum, int iStageLevel)
 {
     if (nullptr == m_pCinemachineCam)
@@ -864,6 +899,7 @@ HRESULT CFileTotalMgr::Import_Bin_Map_Data_OnClient(MAP_TOTALINFORM_DESC* mapObj
         in.read((char*)&pMapObj->iObjType, sizeof(int));
         in.read((char*)&pMapObj->iObjPropertyType, sizeof(int));
         in.read((char*)&pMapObj->iNaviNum, sizeof(int));
+        in.read((char*)&pMapObj->iNaviRoute, sizeof(int));
 
         in.read((char*)&pMapObj->iDecalNum, sizeof(int));
 

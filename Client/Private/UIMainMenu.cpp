@@ -126,7 +126,13 @@ void CUIMainMenu::OverAction()
 
 		break;
 	}
+	case 2:
+	{
+		m_EventUI[0]->Show_UI();	
+		m_EventUI[0]->Get_TransformCom()->Set_WorldMatrix(ButtonWorld);	
 
+		break;
+	}
 	default:
 		break;
 	}

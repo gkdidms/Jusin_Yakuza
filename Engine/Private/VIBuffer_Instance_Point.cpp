@@ -20,6 +20,13 @@ HRESULT CVIBuffer_Instance_Point::Initialize(void* pArg)
 {
 
 	m_iInstanceStride = sizeof(VTXMATRIX);
+
+	if (nullptr != pArg)
+	{
+		INSTANCE_POINT_DESC* pDesc = static_cast<INSTANCE_POINT_DESC*>(pArg);
+
+	}
+
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
@@ -102,6 +109,10 @@ HRESULT CVIBuffer_Instance_Point::Initialize(void* pArg)
 	m_pOriginalOffsets = new _float3[m_InstanceDesc->iNumInstance];
 	ZeroMemory(m_pOriginalOffsets, sizeof(_float3) * m_InstanceDesc->iNumInstance);
 
+	//돈 용 제작
+	m_pOriginalAngleVelocity = new _float3[m_InstanceDesc->iNumInstance];
+	ZeroMemory(m_pOriginalAngleVelocity, sizeof(_float3) * m_InstanceDesc->iNumInstance);
+
 
 	m_pCurrentWorldMatrix = m_InstanceDesc->WorldMatrix;
 
@@ -123,36 +134,74 @@ HRESULT CVIBuffer_Instance_Point::Initialize(void* pArg)
 	_float LifeTime = m_pGameInstance->Get_Random(m_InstanceDesc->vLifeTime.x, m_InstanceDesc->vLifeTime.y);
 
 	
-		// Right, Up, Loop, Pos 순서로 월드 행렬의 좌표를 넣어준다.
-		pInstanceVertices[i].vRight = _float4(1.f, 0.f, 0.f, 0.f);
-		pInstanceVertices[i].vUp = _float4(0.f, 1.f, 0.f, 0.f);
-		pInstanceVertices[i].vLook = _float4(0.f, 0.f, 1.f, 0.f);
+		_vector WorlPosition= XMLoadFloat4x4(m_pCurrentWorldMatrix).r[3];		
 
-		if(m_InstanceDesc->bRadius)
-			pInstanceVertices[i].vTranslation = _float4(RadiusX, RadiusY, RadiusZ, 1.f);		
-		else
-			pInstanceVertices[i].vTranslation = _float4(RangeX, RangeY, RangeZ, 1.f);
+		if(m_InstanceDesc->isBillboard)
+		{
+			if (m_InstanceDesc->bRadius)
+				pInstanceVertices[i].vTranslation = _float4(RadiusX, RadiusY, RadiusZ, 1.f);
+			else
+				pInstanceVertices[i].vTranslation = _float4(RangeX, RangeY, RangeZ, 1.f);
 
-		_vector WorlPosition= XMLoadFloat4x4(m_pCurrentWorldMatrix).r[3];	
-		if (m_InstanceDesc->isAura)
-			m_pOriginalOffsets[i] = _float3(m_InstanceDesc->vOffsetPos.x+ XMVectorGetX(WorlPosition), m_InstanceDesc->vOffsetPos.y+ XMVectorGetY(WorlPosition), m_InstanceDesc->vOffsetPos.z+ XMVectorGetZ(WorlPosition)); // Loop를 위해 저장해준다.
-		else
+			_float StartRotX = XMConvertToRadians(m_pGameInstance->Get_Random(m_InstanceDesc->LowStartRot.x, m_InstanceDesc->HighStartRot.x));
+			_float StartRotY = XMConvertToRadians(m_pGameInstance->Get_Random(m_InstanceDesc->LowStartRot.y, m_InstanceDesc->HighStartRot.y));
+			_float StartRotZ = XMConvertToRadians(m_pGameInstance->Get_Random(m_InstanceDesc->LowStartRot.z, m_InstanceDesc->HighStartRot.z));
+
+			_matrix StartRot = XMMatrixRotationX(StartRotX) * XMMatrixRotationY(StartRotY) * XMMatrixRotationZ(StartRotZ);
+
+			XMStoreFloat4(&pInstanceVertices[i].vRight, XMVector4Normalize(StartRot.r[0]));
+			XMStoreFloat4(&pInstanceVertices[i].vUp, XMVector4Normalize(StartRot.r[1]));
+			XMStoreFloat4(&pInstanceVertices[i].vLook, XMVector4Normalize(StartRot.r[2]));
+
 			m_pOriginalOffsets[i] = _float3(m_InstanceDesc->vOffsetPos.x, m_InstanceDesc->vOffsetPos.y, m_InstanceDesc->vOffsetPos.z); // Loop를 위해 저장해준다.
 
-		m_pOriginalPositions[i] = _float3(pInstanceVertices[i].vTranslation.x, pInstanceVertices[i].vTranslation.y, pInstanceVertices[i].vTranslation.z); // Loop를 위해 저장해준다.
-		pInstanceVertices[i].vLifeTime.x = LifeTime; // 파티클이 살아있을 수 있는 시간.
-		m_pOriginalSize[i] = pInstanceVertices[i].vRectSize.x = fRectSize;
-		XMStoreFloat4(& pInstanceVertices[i].vDirection, XMVectorSetW(XMLoadFloat4(&pInstanceVertices[i].vTranslation) - XMLoadFloat3(&m_pOriginalOffsets[i]), 0.f));
-		if(m_InstanceDesc->isAura)
-		{
-			pInstanceVertices[i].vTranslation.x += XMVectorGetX(WorlPosition);
-			pInstanceVertices[i].vTranslation.y += XMVectorGetY(WorlPosition);
-			pInstanceVertices[i].vTranslation.z += XMVectorGetZ(WorlPosition);
+			m_pOriginalPositions[i] = _float3(pInstanceVertices[i].vTranslation.x, pInstanceVertices[i].vTranslation.y, pInstanceVertices[i].vTranslation.z); // Loop를 위해 저장해준다.
+			pInstanceVertices[i].vLifeTime.x = LifeTime; // 파티클이 살아있을 수 있는 시간.
+
+			m_pOriginalSize[i] = pInstanceVertices[i].vRectSize.x = fRectSize;
+
+			XMStoreFloat4(&pInstanceVertices[i].vDirection, XMVectorSetW(XMLoadFloat4(&pInstanceVertices[i].vTranslation) - XMLoadFloat3(&m_pOriginalOffsets[i]), 0.f));
+			
+			_float AngleVelocityX = XMConvertToRadians(m_pGameInstance->Get_Random(m_InstanceDesc->LowAngleVelocity.x, m_InstanceDesc->HighAngleVelocity.x));
+			_float AngleVelocityY = XMConvertToRadians(m_pGameInstance->Get_Random(m_InstanceDesc->LowAngleVelocity.y, m_InstanceDesc->HighAngleVelocity.y));
+			_float AngleVelocityZ = XMConvertToRadians(m_pGameInstance->Get_Random(m_InstanceDesc->LowAngleVelocity.z, m_InstanceDesc->HighAngleVelocity.z));
+
+			m_pOriginalAngleVelocity[i] = _float3(AngleVelocityX, AngleVelocityY, AngleVelocityZ);
+
+			m_pSpeeds[i] = m_pGameInstance->Get_Random(m_InstanceDesc->vSpeed.x, m_InstanceDesc->vSpeed.y);
 		}
-		pInstanceVertices[i].vRectSize.y = m_pGameInstance->Get_Random(0.f, 360.f);
+		else
+		{
+			// Look을 랜덤으로 잡아주면 나머지 계산해주기(hlsl에서)
+			pInstanceVertices[i].vRight = _float4(1.f, 0.f, 0.f, 0.f);
+			pInstanceVertices[i].vUp = _float4(0.f, 1.f, 0.f, 0.f);
+			pInstanceVertices[i].vLook = _float4(0.f, 0.f, 1.f, 0.f);
+
+			if (m_InstanceDesc->bRadius)
+				pInstanceVertices[i].vTranslation = _float4(RadiusX, RadiusY, RadiusZ, 1.f);
+			else
+				pInstanceVertices[i].vTranslation = _float4(RangeX, RangeY, RangeZ, 1.f);
+
+			if (m_InstanceDesc->isAura)
+				m_pOriginalOffsets[i] = _float3(m_InstanceDesc->vOffsetPos.x + XMVectorGetX(WorlPosition), m_InstanceDesc->vOffsetPos.y + XMVectorGetY(WorlPosition), m_InstanceDesc->vOffsetPos.z + XMVectorGetZ(WorlPosition)); // Loop를 위해 저장해준다.
+			else
+				m_pOriginalOffsets[i] = _float3(m_InstanceDesc->vOffsetPos.x, m_InstanceDesc->vOffsetPos.y, m_InstanceDesc->vOffsetPos.z); // Loop를 위해 저장해준다.
+
+			m_pOriginalPositions[i] = _float3(pInstanceVertices[i].vTranslation.x, pInstanceVertices[i].vTranslation.y, pInstanceVertices[i].vTranslation.z); // Loop를 위해 저장해준다.
+			pInstanceVertices[i].vLifeTime.x = LifeTime; // 파티클이 살아있을 수 있는 시간.
+			m_pOriginalSize[i] = pInstanceVertices[i].vRectSize.x = fRectSize;
+			XMStoreFloat4(&pInstanceVertices[i].vDirection, XMVectorSetW(XMLoadFloat4(&pInstanceVertices[i].vTranslation) - XMLoadFloat3(&m_pOriginalOffsets[i]), 0.f));
+			if (m_InstanceDesc->isAura)
+			{
+				pInstanceVertices[i].vTranslation.x += XMVectorGetX(WorlPosition);
+				pInstanceVertices[i].vTranslation.y += XMVectorGetY(WorlPosition);
+				pInstanceVertices[i].vTranslation.z += XMVectorGetZ(WorlPosition);
+			}
+			pInstanceVertices[i].vRectSize.y = m_pGameInstance->Get_Random(0.f, 360.f);
 
 
-		m_pSpeeds[i] = Speed;	
+			m_pSpeeds[i] = Speed;
+		}
 
 	}
 	

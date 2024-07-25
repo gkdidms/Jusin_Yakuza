@@ -247,6 +247,8 @@ void CImgui_Manager::Set_NaviTool_IMGUI()
 
     m_pNavigationMgr->Show_Cells_IMGUI();
 
+    m_pNavigationMgr->Make_Route();
+
     static bool    bCanAdd;
 
     

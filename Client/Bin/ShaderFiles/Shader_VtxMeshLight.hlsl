@@ -219,17 +219,10 @@ PS_OUT PS_MAIN_Bloom(PS_IN In)
     // Combine base color and emissive color
     float4 finalColor;
     
-    if (vDiffuse.r < 0.4 && vDiffuse.g < 0.4 && vDiffuse.b < 0.4)
-    {
-        finalColor = vDiffuse;
-    }
-    else
-    {
-        finalColor = vDiffuse + emissiveColor;
-    }
+    finalColor = vDiffuse;
+  
   
     Out.vDiffuse = finalColor;
-    Out.vDiffuse.a = 0.3;
     
     return Out;
 }

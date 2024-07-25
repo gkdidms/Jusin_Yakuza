@@ -189,6 +189,17 @@ void CCollision_Manager::Enemy_Hit_Collision()
                 m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Hit1_Part2"), TEXT("Layer_Particle"), &EffectDesc);
                 m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Hit1_Part3"), TEXT("Layer_Particle"), &EffectDesc);
                 m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Hit1_Part4"), TEXT("Layer_Particle"), &EffectDesc);
+               
+ 
+                WorldMatrix = XMMatrixIdentity();
+                WorldMatrix.r[3] = pPlayerAttackCollider->Get_TransformCom()->Get_State(CTransform::STATE_POSITION);
+
+                XMStoreFloat4x4(&matrix, WorldMatrix);
+
+                EffectDesc.pWorldMatrix = &matrix;
+                //µ·Ã¼Å©
+                m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Money"), TEXT("Layer_Particle"), &EffectDesc);
+                m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Coin"), TEXT("Layer_Particle"), &EffectDesc);
 
                 pEnemyHitCollider->ParentObject_Hit(pPlayerAttackCollider);
             }

@@ -47,6 +47,7 @@ public:
 private:
     class CShader* m_pShaderCom = { nullptr };
     vector<CCell*> m_Cells; // 삼각형들의 집합 저장
+    map<int, vector<int>>					m_Routes;  
 
     _uint m_iIndexCount = { 0 };
 

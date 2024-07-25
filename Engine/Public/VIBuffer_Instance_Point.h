@@ -9,6 +9,7 @@ public:
     typedef struct tINSTANCE_POINT_DESC :public CVIBuffer_Instance::INSTANCE_DESC
     {
 
+
     }INSTANCE_POINT_DESC;
 private:
     CVIBuffer_Instance_Point(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

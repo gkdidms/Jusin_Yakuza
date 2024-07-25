@@ -35,6 +35,11 @@ namespace Engine
 		TRIGGER_DESC*	pTriggers;
 	};
 
+	struct ENGINE_DLL ROUTE_IO
+	{
+		int				iCellNums;
+		int*			pNums;
+	};
 
 
 	struct ENGINE_DLL DECAL_DESC_IO
@@ -77,6 +82,7 @@ namespace Engine
 		int					iObjType; /* object 종류 관련 - construction, item 등.. */
 		int					iObjPropertyType; /* object 별 특징 */
 		int					iNaviNum;
+		int					iNaviRoute;
 
 		int					iDecalNum;
 		DECAL_DESC_IO*		pDecals;
