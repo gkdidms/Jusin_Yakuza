@@ -35,6 +35,11 @@ namespace Engine
 		TRIGGER_DESC*	pTriggers;
 	};
 
+	struct ENGINE_DLL ROUTE_IO
+	{
+		int				iCellNums;
+		int*			pNums;
+	};
 
 
 	struct ENGINE_DLL DECAL_DESC_IO

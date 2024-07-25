@@ -37,6 +37,12 @@ HRESULT CNavigation_Manager::Initialize(ID3D11Device* pDevice, ID3D11DeviceConte
 	if (nullptr == m_pShader)
 		return E_FAIL;
 
+
+	m_pShaderLineCom = CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_Line.hlsl"), VTXPOS::Elements, VTXPOS::iNumElements);
+	if (nullptr == m_pShaderLineCom)
+		return E_FAIL;
+
+
 	return S_OK;
 }
 
@@ -99,6 +105,23 @@ HRESULT CNavigation_Manager::Render()
 
 #endif
 
+	if (nullptr != m_pVIBufferCom)
+	{
+		XMStoreFloat4x4(&m_WorldMatrix, XMMatrixIdentity());
+		m_WorldMatrix.m[3][1] += 0.2f;
+		m_pShaderLineCom->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix);
+		m_pShaderLineCom->Bind_Matrix("g_ViewMatrix", m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_VIEW));
+		m_pShaderLineCom->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_PROJ));
+
+		_vector vColor = { 0.f, 0.f, 1.f, 1.f };
+		m_pShaderLineCom->Bind_RawValue("g_vColor", &vColor, sizeof(_vector));
+
+		m_pShaderLineCom->Begin(0);
+		m_pVIBufferCom->Render();
+	}
+
+	
+
 	return S_OK;
 }
 
@@ -151,24 +174,24 @@ void CNavigation_Manager::Load_Cell_IMGUI()
 		Load_Cells(layer_current_idx);
 	}
 
-	if (ImGui::Button(u8"Root 만들기"))
+	ImGui::NewLine();
+	ImGui::Text(u8"Route 만들기 버튼 - route 설정하는 창 나옴");
+
+	if (ImGui::Button(u8"Route 만들기"))
 	{
 		m_bMakeRoute_IMGUI = true;
 	}
 
 	/* Route File 로드 */
-	if (m_RouteFileNames.empty())
-	{
-		Update_RouteFileName();
-	}
 
 	static int route_layer_current_idx = 0;
-	if (ImGui::BeginListBox(u8"루트파일"))
+
+	if (ImGui::BeginListBox(u8"루트"))
 	{
-		for (int n = 0; n < m_RouteFileNames.size(); n++)
+		for (int n = 0; n < m_RouteName.size(); n++)
 		{
 			const bool is_selected = (route_layer_current_idx == n);
-			if (ImGui::Selectable(m_RouteFileNames[n], is_selected))
+			if (ImGui::Selectable(m_RouteName[n], is_selected))
 				route_layer_current_idx = n;
 
 			if (is_selected)
@@ -180,10 +203,21 @@ void CNavigation_Manager::Load_Cell_IMGUI()
 	if (m_iCurrentFileRoute != route_layer_current_idx)
 	{
 		m_iCurrentFileRoute = route_layer_current_idx;
-		Load_Cells(m_iCurrentFileRoute);
+		Load_Route(m_iCurrentFileRoute);
 	}
 
 
+	if (ImGui::Button(u8"Route 삭제 "))
+	{
+		Delete_Route(route_layer_current_idx);
+	}
+
+
+	ImGui::Text(u8"옆 route index의 cell 값들 수정");
+	if (ImGui::Button(u8" route cell 수정 "))
+	{
+		m_Routes[route_layer_current_idx] = m_Route_CellIndexes;
+	}
 
 	ImGui::End();
 }
@@ -279,6 +313,30 @@ HRESULT CNavigation_Manager::Save_Cells(_uint iIndex)
 		out.write((_char*)&iOption, sizeof(_int));
 	}
 
+	// 루트 개수 저장
+	_uint		iRouteCnt = m_Routes.size();
+	out.write((_char*)&iRouteCnt, sizeof(_uint));
+
+	for (int i = 0; i < iRouteCnt; i++)
+	{
+		_uint		iCellCnt = m_Routes.find(i)->second.size();
+
+		out.write((_char*)&iCellCnt, sizeof(_uint));
+
+		int* arr = new int[iCellCnt];
+
+		for (int j = 0; j < iCellCnt; j++)
+		{
+			arr[j] = m_Routes.find(i)->second[j];
+		}
+
+		out.write(reinterpret_cast<char*>(arr), iCellCnt * sizeof(int));
+
+		Safe_Delete(arr);
+	}
+
+
+
 	out.close();
 
 	Update_FileName();
@@ -290,8 +348,31 @@ HRESULT CNavigation_Manager::Load_Cells(_uint iIndex)
 		Safe_Release(iter);
 	m_Cells.clear();
 
+	for (auto& cell : m_RouteCells)
+		Safe_Release(cell);
+	m_RouteCells.clear();
+
+	for (auto& iter : m_IndexesName)
+		Safe_Delete(iter);
+	m_IndexesName.clear();
+
+	for (auto& iter : m_RouteName)
+		Safe_Delete(iter);
+	m_RouteName.clear();
+
+	Safe_Release(m_pVIBufferCom);
+
+	m_Route_CellIndexes.clear();
+
+	for (auto& Pair : m_Routes)
+		Pair.second.clear();
+	m_Routes.clear();
+
+
 	/* 새로 로드할 때는 index 다시 0으로 되돌리기*/
 	m_iCurrentCellIndex = 0;
+	m_iCurrentRouteCellIndex = 0;
+	m_iCurrentFileRoute = 0;
 
 	_ulong		dwByte = {};
 	char fullPath[MAX_PATH];
@@ -327,6 +408,34 @@ HRESULT CNavigation_Manager::Load_Cells(_uint iIndex)
 		Safe_Delete(vPoint);
 	}
 
+
+
+	// 루트 개수 읽어오기
+	_uint		iRouteCnt = 0;
+	in.read((_char*)&iRouteCnt, sizeof(_uint));
+
+	for (int i = 0; i < iRouteCnt; i++)
+	{
+		_uint		iCellCnt = 0;
+
+		in.read((_char*)&iCellCnt, sizeof(_uint));
+
+		int* arr = new int[iCellCnt];
+		in.read(reinterpret_cast<char*>(arr), iCellCnt * sizeof(int));
+
+		vector<int>		routeCells;
+
+		for (int j = 0; j < iCellCnt; j++)
+		{
+			routeCells.push_back(arr[j]);
+		}
+
+		m_Routes.emplace(i, routeCells);
+
+		Safe_Delete(arr);
+	}
+
+
 	in.close();
 
 	/* option 설정 현재 셀에 맞게 */
@@ -336,61 +445,57 @@ HRESULT CNavigation_Manager::Load_Cells(_uint iIndex)
 		m_iCurrentOption = m_Cells[m_iCurrentCellIndex]->Get_Option();
 	}
 	
-
+	
 	Update_CellsName();
+	Update_RouteName();
+	Update_IndexesName();
+	Load_Route(m_iCurrentFileRoute);
 }
 
-HRESULT CNavigation_Manager::Save_Route(_uint iIndex)
-{
-	return E_NOTIMPL;
-}
 
 HRESULT CNavigation_Manager::Load_Route(_uint iIndex)
 {
 
-	m_Route_CellIndexes.clear();
-
-	/* 새로 로드할 때는 index 다시 0으로 되돌리기*/
-	m_iCurrentRouteCellIndex = 0;
-
-	_ulong		dwByte = {};
-	char fullPath[MAX_PATH];
-	strcpy_s(fullPath, "../../Client/Bin/DataFiles/RouteData/");
-
-	strcat_s(fullPath, m_RouteFileNames[iIndex]);
-
-	string strPath(fullPath);
-
-	ifstream in(fullPath, ios::binary);
-
-	if (!in.is_open()) {
-		MSG_BOX("파일 개방 실패");
-		return E_FAIL;
-	}
-
-	_uint NumCells = { 0 };
-	in.read((_char*)&NumCells, sizeof(_uint));
-
-	for (size_t i = 0; i < NumCells; ++i)
+	if (iIndex < m_Routes.size())
 	{
-		/* point 로드 */
-		_float3* vPoint = new _float3[3];
-		in.read((_char*)vPoint, sizeof(_float3) * 3);
+		m_Route_CellIndexes.clear();
 
-		/* 옵션 로드 */
-		_int iOption = { 0 };
-		in.read((_char*)&iOption, sizeof(_int));
+		int iNums = m_Routes.find(iIndex)->second.size();
 
-		CCell* pCell = CCell::Create(m_pDevice, m_pContext, vPoint, i, CCell::OPTION(iOption));
+		for (int i = 0; i < iNums; i++)
+		{
+			m_Route_CellIndexes.push_back(m_Routes.find(iIndex)->second[i]);
+		}
 
-		m_Cells.emplace_back(pCell);
-		Safe_Delete(vPoint);
+		for (auto& cell : m_RouteCells)
+			Safe_Release(cell);
+		m_RouteCells.clear();
+
+
+
+		for (size_t i = 0; i < iNums; ++i)
+		{
+			if (m_Cells.size() > 0)
+			{
+				m_RouteCells.push_back(m_Cells[m_Route_CellIndexes[i]]);
+				Safe_AddRef(m_Cells[m_Route_CellIndexes[i]]);
+			}
+		}
+
+		if (0 < m_RouteCells.size())
+		{
+			Safe_Release(m_pVIBufferCom);
+
+			m_pVIBufferCom = CVIBuffer_Line::Create(m_pDevice, m_pContext, m_RouteCells);
+			if (nullptr == m_pVIBufferCom)
+				MSG_BOX("VIBuffer_Lint 생성 불가");
+		}
+
+		Update_IndexesName();
 	}
+	
 
-	in.close();
-
-
-	Update_IndexesName();
+	return S_OK;
 }
 
 void CNavigation_Manager::Show_FileName()
@@ -466,7 +571,6 @@ void CNavigation_Manager::Update_RouteFileName()
 
 void CNavigation_Manager::Delete_Cell(_uint iIndex)
 {
-
 	vector<class CCell*>::iterator	iter = m_Cells.begin();
 
 	for (int i = 0; i < iIndex; i++)
@@ -506,13 +610,18 @@ void CNavigation_Manager::Delete_AllCell()
 void CNavigation_Manager::Delete_RouteCell(_int& iIndex)
 {
 	vector<int>::iterator	iter = m_Route_CellIndexes.begin();
+	list<CCell*>::iterator	cellIter = m_RouteCells.begin();
 
 	for (int i = 0; i < iIndex; i++)
 	{
 		iter++;
+		cellIter++;
 	}
 
 	m_Route_CellIndexes.erase(iter);
+
+	Safe_Release(*cellIter);
+	m_RouteCells.erase(cellIter);
 
 	/* 인덱스 옮겨주기 */
 	if (0 > m_iCurrentRouteCellIndex - 1)
@@ -531,6 +640,10 @@ void CNavigation_Manager::Delete_AllRouteCell(_int& iIndex)
 {
 
 	m_Route_CellIndexes.clear();
+
+	for (auto& cell : m_RouteCells)
+		Safe_Release(cell);
+	m_RouteCells.clear();
 
 	Update_IndexesName();
 
@@ -620,23 +733,57 @@ void CNavigation_Manager::Make_Route()
 		if (ImGui::Button(u8"cell - route에 추가 "))
 		{
 			m_Route_CellIndexes.push_back(m_iCurrentCellIndex);
+			m_RouteCells.push_back(m_Cells[m_iCurrentCellIndex]);
+			Safe_AddRef(m_Cells[m_iCurrentCellIndex]);
+
 			// route 안의 index update
 			Update_IndexesName();
+
+			if (2 <= m_Route_CellIndexes.size())
+			{
+				Safe_Release(m_pVIBufferCom);
+
+				m_pVIBufferCom = CVIBuffer_Line::Create(m_pDevice, m_pContext, m_RouteCells);
+				if (nullptr == m_pVIBufferCom)
+					MSG_BOX("VIBuffer_Lint 생성 불가");
+			}
 		}
 
 		if (ImGui::Button(u8" cell Index 삭제 "))
 		{
 			Delete_RouteCell(m_iCurrentRouteCellIndex);
 		}
+		
+		ImGui::SameLine();
 
 		if (ImGui::Button(u8" cell Index 전체삭제 "))
 		{
 			Delete_AllRouteCell(m_iCurrentRouteCellIndex);
+
+			Safe_Release(m_pVIBufferCom);
 		}
 
-		//Update_IndexesName();
+		if (ImGui::Button(u8"네비에 루트추가"))
+		{
+			Add_Route_In_Navi();
+			Update_RouteName();
+		}
 
-		if (ImGui::Button(u8" 취소 "))
+		ImGui::NewLine();
+
+
+
+		//static int iRouteFileNum = 70;
+		//ImGui::InputInt(u8"루트 저장 index : ", &iRouteFileNum);
+
+		//if (ImGui::Button(u8"루트 저장"))
+		//{
+		//	Save_Route(iRouteFileNum);
+		//}
+
+		ImGui::NewLine();
+
+		if (ImGui::Button(u8" 창 닫기 "))
 		{
 			m_bMakeRoute_IMGUI = false;
 		}
@@ -644,6 +791,18 @@ void CNavigation_Manager::Make_Route()
 		ImGui::End();
 	}
 	
+}
+
+void CNavigation_Manager::Add_Route_In_Navi()
+{
+	vector<int>		routes;
+	
+	for (int i = 0; i < m_Route_CellIndexes.size(); i++)
+	{
+		routes.push_back(m_Route_CellIndexes[i]);
+	}
+
+	m_Routes.emplace(m_Routes.size(), routes);
 }
 
 
@@ -684,10 +843,7 @@ _float3 CNavigation_Manager::Find_ClosestPoint(_vector pickPos, _float* pMinDist
 	return resultPos;
 }
 
-_float3 CNavigation_Manager::Find_ClosestCells(_vector pickPos, _float* pMinDistance)
-{
-	return _float3();
-}
+
 
 void CNavigation_Manager::Show_Cells_IMGUI()
 {
@@ -811,6 +967,30 @@ void CNavigation_Manager::Update_CellsName()
 	}
 }
 
+void CNavigation_Manager::Update_RouteName()
+{
+	if (0 < m_RouteName.size())
+	{
+		for (auto& iter : m_RouteName)
+			Safe_Delete(iter);
+
+		m_RouteName.clear();
+	}
+
+	if (0 < m_Routes.size())
+	{
+		for (int i = 0; i < m_Routes.size(); i++)
+		{
+			char* szName = new char[MAX_PATH];
+			strcpy(szName, "Route");
+			char buff[MAX_PATH];
+			sprintf(buff, "%d", i);
+			strcat(szName, buff);
+			m_RouteName.push_back(szName);
+		}
+	}
+}
+
 void CNavigation_Manager::Update_IndexesName()
 {
 	if (0 < m_IndexesName.size())
@@ -823,7 +1003,6 @@ void CNavigation_Manager::Update_IndexesName()
 
 	if (0 < m_Route_CellIndexes.size())
 	{
-
 		for (int i = 0; i < m_Route_CellIndexes.size(); i++)
 		{
 			char* szName = new char[MAX_PATH];
@@ -836,6 +1015,48 @@ void CNavigation_Manager::Update_IndexesName()
 	}
 }
 
+void CNavigation_Manager::Update_Routes()
+{
+	map<int, vector<int>> new_m_Routes;
+	int new_key = 0;
+	for (const auto& pair : m_Routes) {
+		new_m_Routes[new_key] = pair.second;
+		new_key++;
+	}
+
+	m_Routes = move(new_m_Routes);
+
+}
+
+void CNavigation_Manager::Delete_Route(_int& iIndex)
+{
+	map<int, vector<int>>::iterator iter = m_Routes.begin();
+
+	for (int i = 0; i < iIndex; i++)
+	{
+		iter++;
+	}
+
+	iter->second.clear();
+	m_Routes.erase(iIndex);
+
+	/* 인덱스 옮겨주기 */
+	if (0 > iIndex - 1)
+	{
+		iIndex = 0;
+	}
+	else
+	{
+		iIndex -= 1;
+	}
+
+	Update_Routes();
+	Update_RouteName();
+	Update_IndexesName();
+
+	Load_Route(iIndex);
+}
+
 
 void CNavigation_Manager::Free()
 {
@@ -843,10 +1064,15 @@ void CNavigation_Manager::Free()
 	Safe_Release(m_pContext);
 
 	Safe_Release(m_pShader);
+	Safe_Release(m_pShaderLineCom);
 
 	for (auto& cell : m_Cells)
 		Safe_Release(cell);
 	m_Cells.clear();
+
+	for (auto& cell : m_RouteCells)
+		Safe_Release(cell);
+	m_RouteCells.clear();
 
 	for (auto& iter : m_CellsName)
 		Safe_Delete(iter);
@@ -856,14 +1082,26 @@ void CNavigation_Manager::Free()
 		Safe_Delete(iter);
 	m_IndexesName.clear();
 
+	for (auto& iter : m_RouteName)
+		Safe_Delete(iter);
+	m_RouteName.clear();
+
+
 	for (auto& iter : m_FileNames)
 		Safe_Delete(iter);
 	m_FileNames.clear();
 
+	Safe_Release(m_pVIBufferCom);
 
-	m_Cells.clear();
 
 	m_Route_CellIndexes.clear();
+
+
+
+	for (auto& Pair : m_Routes)
+		Pair.second.clear();
+	m_Routes.clear();
+
 
 	Safe_Release(m_pGameInstance);
 }

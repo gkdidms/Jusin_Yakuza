@@ -5,9 +5,11 @@
 #include "Navigation.h"
 #include "Shader.h"
 #include "Client_Defines.h"
+#include "VIBuffer_Line.h"
 
 BEGIN(Engine)
 class CGameInstance;
+class CVIBuffer_Line;
 END
 
 class CNavigation_Manager final : public CBase
@@ -36,8 +38,7 @@ public:
 	HRESULT					Save_Cells(_uint iIndex);
 	HRESULT					Load_Cells(_uint iIndex);
 
-	HRESULT					Save_Route(_uint iIndex);
-	HRESULT					Load_Route(_uint iIndex);
+	HRESULT					Load_Route(_uint iIndex); // route안의 cell 목록을 update
 
 	void					Show_FileName();
 	void					Update_FileName();
@@ -55,25 +56,36 @@ public:
 	void					Find_Cells();
 
 	void					Make_Route();
-
-
-private:
-	_float3					Find_ClosestPoint(_vector pickPos, _float* pMinDistance);
-	_float3					Find_ClosestCells(_vector pickPos, _float* pMinDistance);
+	void					Add_Route_In_Navi();
 
 	/* For IMGUI_MANAGER */
 public:
 	void					Show_Cells_IMGUI();
 
 private:
+	_float3					Find_ClosestPoint(_vector pickPos, _float* pMinDistance);
+
+
+
+private:
 	void					Update_CellsName();
+	void					Update_RouteName();
 	void					Update_IndexesName();
+
+
+	void					Update_Routes(); // map 수정
+
+
+	void					Delete_Route(_int& iIndex);
 
 
 private:
 	ID3D11Device* m_pDevice = { nullptr };
 	ID3D11DeviceContext* m_pContext = { nullptr };
 	class CShader* m_pShader = nullptr;
+	class CShader* m_pShaderLineCom = nullptr;
+
+	class CVIBuffer_Line* m_pVIBufferCom = { nullptr };
 
 	class CGameInstance* m_pGameInstance = { nullptr };
 
@@ -83,12 +95,20 @@ private:
 
 private:
 	vector<class CCell*>					m_Cells;
-	vector<int>								m_Route_CellIndexes;
+
+	vector<int>								m_Route_CellIndexes; //현재 수정중이거나 만들고 있는 cell 번호
+
+	map<int, vector<int>>					m_Routes; // 현재 네비가 가지고 있는 루트와 그에 대한 cell index
+
 	static _float4x4						m_WorldMatrix; /* 객체들이 공유할 수 있게끔 static */
+
+
+	list<class CCell*>						m_RouteCells; // 루트에서 line 그리기 위한 cell
 
 private:
 	vector<char*>							m_CellsName;
-	vector<char*>							m_IndexesName;
+	vector<char*>							m_RouteName; // 네비가 가지고 있는 루트들의 이름
+	vector<char*>							m_IndexesName; // 루트 안에 있는 cell index 이름들
 
 private:
 	vector<_float3>							m_vPoints;
@@ -100,7 +120,7 @@ private:
 	_int									m_iCurrentOption = { 0 };
 
 	_int									m_iCurrentRouteCellIndex = { 0 };
-	_int									m_iCurrentFileRoute = { 0 };
+	_int									m_iCurrentFileRoute = { 0 }; // route의 번호
 
 	bool									m_bMakeRoute_IMGUI = { false };
 
