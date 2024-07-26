@@ -56,7 +56,7 @@ public:
 public:
 	HRESULT Initialize(const aiAnimation* pAnimation, const vector<class CBone*>& Bones);
 	HRESULT Initialize(const BAiAnimation* pAnimation, const vector<class CBone*>& Bones);
-	void Update_TransformationMatrix(_float fTimeDelta, const vector<class CBone*>& Bones, _bool isLoop);
+	void Update_TransformationMatrix(_float fTimeDelta, const vector<class CBone*>& Bones, _bool isLoop, string strExcludeBoneName = "");
 	void Update_Change_Animation(_float fTimeDelta, const vector<class CBone*>& Bones, CAnimation* pPrevAnimation, _double ChangeInterval);
 	void Reset();
 

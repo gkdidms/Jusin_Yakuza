@@ -104,7 +104,7 @@ HRESULT CChannel::Initialize(const BAiNodeAnim* pAIChannel, const vector<class C
 }
 
 // 일반 키프레임간 선형보간 함수
-void CChannel::Update_TransformationMatrix(_double CurrentPosition, const vector<class CBone*>& Bones, _uint* pCurrentKeyFrameIndex, _float3* fCenterMoveValue, _float4* fCenterRotationValue)
+void CChannel::Update_TransformationMatrix(_double CurrentPosition, const vector<class CBone*>& Bones, _uint* pCurrentKeyFrameIndex, _float3* fCenterMoveValue, _float4* fCenterRotationValue, string strExcludeBoneName)
 {
 	if (0.0 == CurrentPosition)
 		*pCurrentKeyFrameIndex = 0;
@@ -155,6 +155,12 @@ void CChannel::Update_TransformationMatrix(_double CurrentPosition, const vector
 		{
 			vRotation = XMQuaternionSlerp(XMLoadFloat4(&m_KeyFrames[*pCurrentKeyFrameIndex].vRotation), XMLoadFloat4(&m_KeyFrames[*pCurrentKeyFrameIndex + 1].vRotation), fRatio);
 			vTranslation = XMVectorLerp(XMVectorSetW(XMLoadFloat3(&m_KeyFrames[*pCurrentKeyFrameIndex].vPosition), 1.f), XMVectorSetW(XMLoadFloat3(&m_KeyFrames[*pCurrentKeyFrameIndex + 1].vPosition), 1.f), fRatio);
+		}
+		// 애니메이션 선형보간 자체를 제거하고 현재 키프레임값 그대로
+		else if (strExcludeBoneName != "" && !Bones[m_iBoneIndex]->Compare_Name(strExcludeBoneName.c_str()))
+		{
+			vRotation = XMLoadFloat4(&m_KeyFrames[*pCurrentKeyFrameIndex].vRotation);
+			vTranslation = XMVectorSetW(XMLoadFloat3(&m_KeyFrames[*pCurrentKeyFrameIndex].vPosition), 1.f);
 		}
 		else
 		{
