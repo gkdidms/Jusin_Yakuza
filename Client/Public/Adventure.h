@@ -20,6 +20,7 @@ public:
         wstring			wstrModelName;
         int				iShaderPass;
         int             iNaviNum;
+        int             iNaviRouteNum;
     }ADVENTURE_IODESC;
 
     enum ADVENTURE_STATE
@@ -77,10 +78,12 @@ protected:
     _float4x4       m_ModelWorldMatrix;
 
 protected:
-    string m_strAnimName = "";
-    _uint m_iAnim = { 0 };
+    string  m_strAnimName = "";
+    _uint   m_iAnim = { 0 };
 
-    _bool m_isColl = { false };
+    _bool   m_isColl = { false };
+
+    int     m_iNaviRouteNum = { 0 };
 
 protected:
     virtual void Change_Animation();

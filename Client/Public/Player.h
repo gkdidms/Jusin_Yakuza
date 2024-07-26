@@ -103,6 +103,7 @@ public:
 public:
     void    Set_StartPos(XMMATRIX    vStartPos) { m_pTransformCom->Set_WorldMatrix(vStartPos); }
     void    Set_NavigationIndex(int iIndex) { m_pNavigationCom->Set_Index(iIndex); }
+    void    Set_NaviRouteIndex(int iIndex) { m_iNaviRouteNum = iIndex; }
 
     /* Virtual Funtion */
 public:
@@ -197,6 +198,7 @@ private:
     _uint           m_iCurrentHitLevel = { 0 };
     _float          m_fHitGauge = { 0.f };
 
+    int             m_iNaviRouteNum = { 0 }; //∑Á∆Æ
 
 
 #ifdef _DEBUG

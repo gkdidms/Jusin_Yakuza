@@ -216,7 +216,6 @@ void CPlayer::Late_Tick(const _float& fTimeDelta)
 		if (pPair.second->Get_CollierType() == CSocketCollider::HIT && pPair.second->IsOn())
 			m_pCollisionManager->Add_HitCollider(pPair.second, CCollision_Manager::PLAYER);
 	}
-
 	
 	Setting_RimLight();
 	Compute_Height();
@@ -837,6 +836,12 @@ void CPlayer::KRS_KeyInput(const _float& fTimeDelta)
 				m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Combo_Count();
 			}
 
+		}
+
+		// ±×·¦
+		if (m_pGameInstance->GetKeyState(DIK_Q) == TAP)
+		{
+			m_iCurrentBehavior = (_uint)KRS_BEHAVIOR_STATE::GRAB;
 		}
 	}
 

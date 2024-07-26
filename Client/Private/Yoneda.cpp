@@ -31,6 +31,7 @@ HRESULT CYoneda::Initialize(void* pArg)
 		MONSTER_IODESC* gameobjDesc = (MONSTER_IODESC*)pArg;
 		m_pTransformCom->Set_WorldMatrix(gameobjDesc->vStartPos);
 		m_wstrModelName = gameobjDesc->wstrModelName;
+		m_iNaviRouteNum = gameobjDesc->iNaviRouteNum;
 	}
 
 
