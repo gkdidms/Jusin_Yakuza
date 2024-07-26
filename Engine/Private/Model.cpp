@@ -893,6 +893,25 @@ void CModel::Play_Animation(_float fTimeDelta, CAnim* pAnim, _bool isLoop)
 		pBone->Update_CombinedTransformationMatrix(m_Bones, XMLoadFloat4x4(&m_PreTransformMatrix));
 }
 
+void CModel::Play_Animation(_float fTimeDelta, const ANIMATION_DESC& AnimDesc)
+{
+	if (1 > m_Animations.size()) return;
+
+	if (0.0 == m_ChangeInterval)
+		m_Animations[AnimDesc.iAnimIndex]->Update_TransformationMatrix(fTimeDelta, m_Bones, AnimDesc.isLoop);
+	else
+	{
+		if (m_Animations[AnimDesc.iAnimIndex]->Get_Changed())
+			m_Animations[AnimDesc.iAnimIndex]->Update_TransformationMatrix(fTimeDelta, m_Bones, AnimDesc.isLoop);
+		else
+			m_Animations[AnimDesc.iAnimIndex]->Update_Change_Animation(fTimeDelta, m_Bones, m_Animations[m_iPrevAnimIndex], m_ChangeInterval);
+	}
+
+	/* 전체뼈를 순회하면서 모든 뼈의 CombinedTransformationMatrix를 갱신한다. */
+	for (auto& pBone : m_Bones)
+		pBone->Update_CombinedTransformationMatrix(m_Bones, XMLoadFloat4x4(&m_PreTransformMatrix));
+}
+
 void CModel::Set_AnimationIndex(const ANIMATION_DESC& AnimDesc, _double ChangeInterval)
 {
 	if (AnimDesc.iAnimIndex >= m_Animations.size()) return;

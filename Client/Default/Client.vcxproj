@@ -238,6 +238,7 @@
     <ClInclude Include="..\Public\MapColliderObj.h" />
     <ClInclude Include="..\public\Level_OfficeBoss.h" />
     <ClInclude Include="..\Public\MonsterTrigger.h" />
+    <ClInclude Include="..\Public\SceneModel_Test.h" />
     <ClInclude Include="..\Public\Sequance.h" />
     <ClInclude Include="..\Public\Selector.h" />
     <ClInclude Include="..\Public\CharacterData.h" />
@@ -382,6 +383,7 @@
     <ClCompile Include="..\Private\MapColliderObj.cpp" />
     <ClCompile Include="..\private\Level_OfficeBoss.cpp" />
     <ClCompile Include="..\Private\MonsterTrigger.cpp" />
+    <ClCompile Include="..\Private\SceneModel_Test.cpp" />
     <ClCompile Include="..\Private\Sequance.cpp" />
     <ClCompile Include="..\Private\Selector.cpp" />
     <ClCompile Include="..\Private\CharacterData.cpp" />

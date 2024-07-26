@@ -8,7 +8,7 @@ class ENGINE_DLL CNavigation :
     public CComponent
 {
 public:
-    typedef struct tNavigationDesc{
+    typedef struct tNavigationDesc {
         _int iIndex;
     }NAVIGATION_DESC;
 
@@ -27,6 +27,7 @@ public:
         return m_iCurrentIndex;
     }
     vector<CCell*> Get_Cells() { return m_Cells; }
+    vector<_int> Get_RouteIndexs(_int iIndex);
 
 public:
     virtual HRESULT Initialize_Prototype(); // Tool용
@@ -47,7 +48,7 @@ public:
 private:
     class CShader* m_pShaderCom = { nullptr };
     vector<CCell*> m_Cells; // 삼각형들의 집합 저장
-    map<int, vector<int>>					m_Routes;  
+    map<_int, vector<_int>>					m_Routes;
 
     _uint m_iIndexCount = { 0 };
 

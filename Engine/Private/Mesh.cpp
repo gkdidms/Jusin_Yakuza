@@ -371,6 +371,7 @@ HRESULT CMesh::Ready_Vertices_For_AnimMesh(const BAiMesh* pAIMesh, const vector<
 				return false;
 			});
 
+
 		m_BoneIndices.emplace_back(iBoneIndex);
 
 		for (size_t j = 0; j < pAIBone->mNumWeights; j++)
@@ -421,6 +422,7 @@ HRESULT CMesh::Ready_Vertices_For_AnimMesh(const BAiMesh* pAIMesh, const vector<
 
 				return false;
 			});
+
 
 		m_BoneIndices.emplace_back(iBoneIndex);
 
