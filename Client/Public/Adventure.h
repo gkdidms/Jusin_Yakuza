@@ -34,6 +34,8 @@ public:
         ADVENTURE_TURN,
     };
 
+public:
+    void Start_Root(_int iGoalIndex);
 
 protected:
     CAdventure(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -86,7 +88,6 @@ protected:
 protected:
     virtual void Change_Animation();
     void Synchronize_Root(const _float& fTimeDelta);
-    void Move_AStart();
     void Check_Separation();
 
 protected:

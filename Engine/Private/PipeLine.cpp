@@ -88,7 +88,7 @@ void CPipeLine::Tick()
 
 void CPipeLine::Ready_ShadowFurstum()
 {
-	vector<_float> m_Casecade = { 0.f, 7.f, 25.f, 40.f };
+	vector<_float> m_Casecade = { 0.f, 20.f, 50.f, 80.f };
 	//케스케이드 그림자맵을 위한 절두체
 	_float3 vFrustum[]{
 		{-1.f, 1.f, 0.f},
