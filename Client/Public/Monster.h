@@ -18,6 +18,7 @@ public:
         wstring			wstrModelName;
         int				iShaderPass;
         int             iNaviNum;
+        int             iNaviRouteNum;
     }MONSTER_IODESC;
 
 public:
@@ -182,6 +183,8 @@ protected:
     /* 쉐이킹 관련 정보들 */
     _bool m_isShaked = { false };       // 쉐이킹이 실행되었는지?
     _uint m_iShakedCount = { 0 };       // 몇번 째 실행되었는지? (한 애니메이션 내에 여러번 실행되어야할 경우 사용)
+
+    int     m_iNaviRouteNum = { 0 };
 
 protected:
     virtual void Change_Animation();

@@ -30,6 +30,7 @@ HRESULT CAdv_Passersby::Initialize(void* pArg)
 	ADVENTURE_IODESC* gameobjDesc = static_cast<ADVENTURE_IODESC*>(pArg);
 	m_pTransformCom->Set_WorldMatrix(gameobjDesc->vStartPos);
 	m_wstrModelName = gameobjDesc->wstrModelName;
+	m_iNaviRouteNum = gameobjDesc->iNaviRouteNum;
 
 	if (FAILED(Add_Components()))
 		return E_FAIL;

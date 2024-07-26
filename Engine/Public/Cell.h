@@ -26,6 +26,15 @@ public:
     _int Get_NeighborIndex(_uint eType) { return m_iNeighborIndices[eType]; }
     _int Get_ParentIndex() { return m_iParentIndex; }
     _vector Get_WayPoint() const { return XMLoadFloat3(&m_vWayPoint); }
+    _uint Get_NeighborLine(_uint iNeighborIndex) {
+        for (size_t i = 0; i < LINE_END; ++i)
+        {
+            if (iNeighborIndex == m_iNeighborIndices[i])
+                return i;
+        }
+
+        return LINE_END;
+    }
 
 public:
     void    Set_Option(CCell::OPTION  iOption) {m_OptionType = iOption;}

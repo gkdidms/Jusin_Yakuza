@@ -195,6 +195,123 @@ void CVIBuffer_Instance::Spread(_float fTimeDelta)
 		
 }
 
+void CVIBuffer_Instance::RotSpread(_float fTimeDelta)
+{
+	D3D11_MAPPED_SUBRESOURCE		SubResource{};
+
+	m_pContext->Map(m_pVBInstance, 0, D3D11_MAP_WRITE_NO_OVERWRITE, 0, &SubResource);
+
+	for (size_t i = 0; i < m_InstanceDesc->iNumInstance; i++)
+	{
+		VTXMATRIX* pVertices = (VTXMATRIX*)SubResource.pData;
+
+		pVertices[i].vLifeTime.y += fTimeDelta;
+		//x가 최종,y 가 current
+		_vector WorlPosition = XMLoadFloat4x4(m_pCurrentWorldMatrix).r[3];
+
+		_vector			vDir = XMLoadFloat4(&pVertices[i].vDirection);
+
+		_vector Hor = XMVectorSetY(vDir, 0.f);
+		//수평가속도 = -1/2 × 수평 속도²(크기는 1 고정)
+		_vector HorAcc = -0.5f *m_InstanceDesc->CrossArea* XMVectorMultiply(Hor, Hor);
+
+		_vector HorVel = Hor * m_pSpeeds[i] + HorAcc * pVertices[i].vLifeTime.y;	
+		if (XMVectorGetX(vDir) > 0.f)
+		{
+			if (XMVectorGetX(HorVel) < 0.f)
+				HorVel = XMVectorSetX(HorVel, 0.f);
+		}
+		else
+		{
+			if (XMVectorGetX(HorVel) >= 0.f)
+				HorVel = XMVectorSetX(HorVel, 0.f);
+		}
+		if(XMVectorGetZ(vDir)>0.f)
+		{
+			if (XMVectorGetZ(HorVel) < 0.f)
+				HorVel = XMVectorSetZ(HorVel, 0.f);
+		}
+		else
+		{
+			if (XMVectorGetZ(HorVel) >= 0.f)
+				HorVel = XMVectorSetZ(HorVel, 0.f);
+		}
+		
+		//수평 운동 거리 = 초기 수평 속도 × 시간 + 1 / 2 × 가속도 × 시간²
+		_vector HorDistance = HorVel * pVertices[i].vLifeTime.y;	
+
+		_vector Ver = XMVectorSet(0.f, XMVectorGetY(vDir), 0.f, 0.f);
+		//수직가속도 = 중력 - 공기 저항 = 9.81 - 1/2 × 수직 속도²
+		_vector Gravity = XMVectorSet(0.f, -9.81f, 0.f, 0.f) ;
+		_vector VerAcc = Gravity  - (-0.5f * XMVectorMultiply(Ver, Ver));
+		//if (VerVel.m128_f32[1] < 0.f)
+		//	VerVel = XMVectorSet(0.f, 0.f, 0.f, 0.f);
+		//수직 운동 거리 = 초기 수직 속도 × 시간 + 1 / 2 × 가속도 × 시간²
+		_vector VerVel = Ver * m_pSpeeds[i] + VerAcc * m_InstanceDesc->GravityScale * pVertices[i].vLifeTime.y;
+		_vector VerDistance = VerVel * pVertices[i].vLifeTime.y;
+
+		//전체 운동 거리 = (수평 운동 거리 + 수직 운동 거리) / 2
+		_vector FinDistance = (HorDistance + VerDistance);
+
+		//XMStoreFloat4(&pVertices[i].vDirection, vDir);		
+
+		_vector OriginPosition = XMVectorSet(m_pOriginalPositions[i].x, m_pOriginalPositions[i].y, m_pOriginalPositions[i].z, 1.f);
+		XMStoreFloat4(&pVertices[i].vTranslation, OriginPosition + FinDistance);	
+
+		//회전. 준비
+		_vector vRight = XMLoadFloat4(&pVertices[i].vRight);
+		_vector vUp = XMLoadFloat4(&pVertices[i].vUp);
+		_vector vLook= XMLoadFloat4(&pVertices[i].vLook);
+
+		_matrix		RotationXMatrix = XMMatrixRotationAxis(XMVectorSet(0.f, 1.f ,0.f , 0.f), m_pOriginalAngleVelocity[i].x *fTimeDelta);
+		_matrix		RotationYMatrix = XMMatrixRotationAxis(XMVectorSet(0.f, 0.f ,1.f , 0.f), m_pOriginalAngleVelocity[i].y * fTimeDelta);
+		_matrix		RotationZMatrix = XMMatrixRotationAxis(XMVectorSet(1.f, 0.f ,0.f , 0.f), m_pOriginalAngleVelocity[i].z * fTimeDelta);
+
+		vRight = XMVector3TransformNormal(vRight, RotationXMatrix);
+		vUp = XMVector3TransformNormal(vUp, RotationYMatrix);
+		vLook = XMVector3TransformNormal(vLook, RotationZMatrix);
+
+		XMStoreFloat4(&pVertices[i].vRight, XMVector4Normalize(vRight));
+		XMStoreFloat4(&pVertices[i].vUp, XMVector4Normalize(vUp));
+		XMStoreFloat4(&pVertices[i].vLook, XMVector4Normalize(vLook));
+
+
+		if (pVertices[i].vLifeTime.y >= pVertices[i].vLifeTime.x)
+		{
+			if (true == m_InstanceDesc->isLoop)
+			{
+				//m_pOriginalOffsets[i] = _float3(m_InstanceDesc->vOffsetPos.x, m_InstanceDesc->vOffsetPos.y, m_InstanceDesc->vOffsetPos.z); // Loop를 위해 저장해준다.
+				pVertices[i].vTranslation = _float4(m_pOriginalPositions[i].x, m_pOriginalPositions[i].y, m_pOriginalPositions[i].z, 1.f);
+				pVertices[i].vLifeTime.y = 0.f;
+				_vector			vDir = XMVectorSetW(XMLoadFloat4(&pVertices[i].vTranslation) - XMLoadFloat3(&m_pOriginalOffsets[i]), 0.f);
+				XMStoreFloat4(&pVertices[i].vDirection, vDir);
+
+				_float StartRotX =XMConvertToRadians (m_pGameInstance->Get_Random(m_InstanceDesc->LowStartRot.x, m_InstanceDesc->HighStartRot.x));
+				_float StartRotY = XMConvertToRadians( m_pGameInstance->Get_Random(m_InstanceDesc->LowStartRot.y, m_InstanceDesc->HighStartRot.y));
+				_float StartRotZ = XMConvertToRadians(m_pGameInstance->Get_Random(m_InstanceDesc->LowStartRot.z, m_InstanceDesc->HighStartRot.z));
+
+				_matrix StartRot = XMMatrixRotationX(StartRotX)* XMMatrixRotationY(StartRotY)* XMMatrixRotationZ(StartRotZ);
+
+				XMStoreFloat4(&pVertices[i].vRight, XMVector4Normalize(StartRot.r[0]));
+				XMStoreFloat4(&pVertices[i].vUp, XMVector4Normalize(StartRot.r[1]));
+				XMStoreFloat4(&pVertices[i].vLook, XMVector4Normalize(StartRot.r[2]));
+
+				_float AngleVelocityX = XMConvertToRadians(m_pGameInstance->Get_Random(m_InstanceDesc->LowAngleVelocity.x, m_InstanceDesc->HighAngleVelocity.x));
+				_float AngleVelocityY = XMConvertToRadians(m_pGameInstance->Get_Random(m_InstanceDesc->LowAngleVelocity.y, m_InstanceDesc->HighAngleVelocity.y));
+				_float AngleVelocityZ = XMConvertToRadians(m_pGameInstance->Get_Random(m_InstanceDesc->LowAngleVelocity.z, m_InstanceDesc->HighAngleVelocity.z));
+
+				m_pOriginalAngleVelocity[i] = _float3(AngleVelocityX, AngleVelocityY, AngleVelocityZ);
+
+				m_pSpeeds[i] = m_pGameInstance->Get_Random(m_InstanceDesc->vSpeed.x, m_InstanceDesc->vSpeed.y);
+			}
+		}
+	}
+
+	m_pContext->Unmap(m_pVBInstance, 0);
+
+
+}
+
 
 void CVIBuffer_Instance::Aura(_float fTimeDelta)
 {
@@ -250,19 +367,10 @@ void CVIBuffer_Instance::Reset()
 
 		//x가 최종,y 가 current
 		_vector WorlPosition = XMLoadFloat4x4(m_pCurrentWorldMatrix).r[3];
-	//	m_pOriginalOffsets[i] = _float3(m_InstanceDesc->vOffsetPos.x + XMVectorGetX(WorlPosition), m_InstanceDesc->vOffsetPos.y + XMVectorGetY(WorlPosition), m_InstanceDesc->vOffsetPos.z + XMVectorGetZ(WorlPosition)); // Loop를 위해 저장해준다.
-	//	pVertices[i].vTranslation = _float4(m_pOriginalPositions[i].x + XMVectorGetX(WorlPosition), m_pOriginalPositions[i].y + XMVectorGetY(WorlPosition), m_pOriginalPositions[i].z + XMVectorGetZ(WorlPosition), 1.f);
-		//pVertices[i].vLifeTime.y = pVertices[i].vLifeTime.x;
-
-
-	//	_vector			vDir = XMVectorSetW(XMLoadFloat4(&pVertices[i].vTranslation) - XMLoadFloat3(&m_pOriginalOffsets[i]), 0.f);
-
-	//	XMStoreFloat4(&pVertices[i].vDirection, vDir);
 		m_pOriginalOffsets[i] = _float3(m_InstanceDesc->vOffsetPos.x + XMVectorGetX(WorlPosition), m_InstanceDesc->vOffsetPos.y + XMVectorGetY(WorlPosition), m_InstanceDesc->vOffsetPos.z + XMVectorGetZ(WorlPosition)); // Loop를 위해 저장해준다.
 		pVertices[i].vTranslation = _float4(m_pOriginalPositions[i].x + XMVectorGetX(WorlPosition), m_pOriginalPositions[i].y + XMVectorGetY(WorlPosition), m_pOriginalPositions[i].z + XMVectorGetZ(WorlPosition), 1.f);
 
 		pVertices[i].vRectSize.x = 0.f;	//크기
-	//	pVertices[i].vRectSize.y = m_pGameInstance->Get_Random(0.f, 360.f);//회전
 
 	}
 	m_isReset = true;
@@ -438,6 +546,7 @@ void CVIBuffer_Instance::Free()
 		Safe_Delete_Array(m_pOriginalPositions);
 		Safe_Delete_Array(m_pOriginalOffsets);
 		Safe_Delete_Array(m_pOriginalSize);
+		Safe_Delete_Array(m_pOriginalAngleVelocity);
 	}
 
 	Safe_Release(m_pComputeShader);

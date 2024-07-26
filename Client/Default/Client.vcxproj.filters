@@ -379,6 +379,18 @@
     </ClCompile>
     <ClCompile Include="..\Private\SceneModel_Test.cpp">
       <Filter>02.GameObjects\02.Character\LandObject\00.Player\SceneModel_Test</Filter>
+	</ClCompile>
+    <ClCompile Include="..\private\Adventure.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Adv_Passersby.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\AI_Adventure.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\AI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\AI_Passersby.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby\AI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -790,6 +802,18 @@
     </ClInclude>
     <ClInclude Include="..\Public\SceneModel_Test.h">
       <Filter>02.GameObjects\02.Character\LandObject\00.Player\SceneModel_Test</Filter>
+	</ClInclude>
+    <ClInclude Include="..\public\Adventure.h">
+      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Adv_Passersby.h">
+      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\AI_Adventure.h">
+      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\AI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\AI_Passersby.h">
+      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby\AI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1214,6 +1238,18 @@
     </Filter>
     <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\SceneModel_Test">
       <UniqueIdentifier>{efc86914-e7e6-4299-862f-db0472caa178}</UniqueIdentifier>
+	</Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\02.Adventure">
+      <UniqueIdentifier>{e953efb4-bf89-4f41-8ac1-a70274d77017}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\02.Adventure\AI">
+      <UniqueIdentifier>{118e6329-be46-4fd0-8074-1988d055f79a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby">
+      <UniqueIdentifier>{32d0da74-6f1f-48e1-b18f-c96b8d5b2377}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby\AI">
+      <UniqueIdentifier>{826ca722-05bb-4d95-acd5-42aa425e1c6f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

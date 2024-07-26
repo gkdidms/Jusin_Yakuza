@@ -6,6 +6,7 @@ class CShader;
 class CAnim;
 class CNavigation;
 class CAStart;
+class CCell;
 END
 
 BEGIN(Client)
@@ -19,6 +20,7 @@ public:
         wstring			wstrModelName;
         int				iShaderPass;
         int             iNaviNum;
+        int             iNaviRouteNum;
     }ADVENTURE_IODESC;
 
     enum ADVENTURE_STATE
@@ -63,7 +65,6 @@ protected:
     CAStart* m_pAStartCom = { nullptr };
     class CAI_Adventure* m_pTree = { nullptr };    
     
-
 protected:
     _bool m_isAnimLoop = { false };
     _uint m_iState = { 0 };
@@ -75,15 +76,18 @@ protected:
     _float4x4       m_ModelWorldMatrix;
 
 protected:
-    string m_strAnimName = "";
-    _uint m_iAnim = { 0 };
+    string  m_strAnimName = "";
+    _uint   m_iAnim = { 0 };
 
-    _bool m_isColl = { false };
+    _bool   m_isColl = { false };
+
+    int     m_iNaviRouteNum = { 0 };
 
 protected:
     virtual void Change_Animation();
     void Synchronize_Root(const _float& fTimeDelta);
     void Move_AStart();
+    void Check_Separation();
 
 protected:
     virtual HRESULT Add_Components() override;

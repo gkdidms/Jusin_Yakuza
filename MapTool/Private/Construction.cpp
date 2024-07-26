@@ -40,6 +40,7 @@ HRESULT CConstruction::Initialize(void* pArg)
 		m_iObjectType = gameobjDesc->iObjType;
 		m_iObjectPropertyType = gameobjDesc->iObjPropertyType;
 		m_iNaviNum = gameobjDesc->iNaviNum;
+		m_iRouteNum = gameobjDesc->iRouteNum;
 
 		for (int i = 0; i < gameobjDesc->iDecalNum; i++)
 		{
@@ -178,6 +179,7 @@ int CConstruction::Get_ObjPlaceDesc(OBJECTPLACE_DESC* objplaceDesc)
 	objplaceDesc->iObjType = m_iObjectType;
 	objplaceDesc->iObjPropertyType = m_iObjectPropertyType;
 
+
 	if ((int)CObjPlace_Manager::OBJECT_TYPE::PLAYER == m_iObjectType || (int)CObjPlace_Manager::OBJECT_TYPE::MONSTER_KUZE == m_iObjectType
 		|| (int)CObjPlace_Manager::OBJECT_TYPE::MONSTER_RUSH == m_iObjectType || (int)CObjPlace_Manager::OBJECT_TYPE::MONSTER_SHAKEDOWN == m_iObjectType
 		|| (int)CObjPlace_Manager::OBJECT_TYPE::MONSTER_WPA == m_iObjectType || (int)CObjPlace_Manager::OBJECT_TYPE::MONSTER_YONEDA == m_iObjectType
@@ -205,7 +207,7 @@ int CConstruction::Get_ObjPlaceDesc(OBJECTPLACE_DESC* objplaceDesc)
 		objplaceDesc->iNaviNum = 0;
 	}
 	
-
+	objplaceDesc->iNaviRoute = m_iRouteNum;
 	
 
 
@@ -255,6 +257,7 @@ void CConstruction::Edit_GameObject_Information(CConstruction::MAPOBJ_DESC mapDe
 	m_iShaderPassNum = mapDesc.iShaderPass;
 	m_iObjectType = mapDesc.iObjType;
 	m_iObjectPropertyType = mapDesc.iObjPropertyType;
+	m_iRouteNum = mapDesc.iRouteNum;
 }
 
 CConstruction::MAPOBJ_DESC CConstruction::Send_GameObject_Information()
@@ -265,6 +268,7 @@ CConstruction::MAPOBJ_DESC CConstruction::Send_GameObject_Information()
 	mapObjDesc.iShaderPass = m_iShaderPassNum;
 	mapObjDesc.iObjType = m_iObjectType;
 	mapObjDesc.iObjPropertyType = m_iObjectPropertyType;
+	mapObjDesc.iRouteNum = m_iRouteNum;
 
 	return mapObjDesc;
 }

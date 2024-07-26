@@ -486,6 +486,7 @@ void CObjPlace_Manager::Load_GameObject(int iNum)
 		mapDesc.iShaderPass = mapTotalInform.pMapObjDesc[i].iShaderPassNum;
 		mapDesc.iObjType = mapTotalInform.pMapObjDesc[i].iObjType;
 		mapDesc.iNaviNum = mapTotalInform.pMapObjDesc[i].iNaviNum;
+		mapDesc.iRouteNum = mapTotalInform.pMapObjDesc[i].iNaviRoute;
 
 		mapDesc.iDecalNum = mapTotalInform.pMapObjDesc[i].iDecalNum;
 
@@ -760,6 +761,9 @@ void CObjPlace_Manager::Edit_Installed_GameObject(int iNumObject)
 	}
 	
 
+	static int iRouteNum = m_tCurrentObjectDesc.iRouteNum;
+	ImGui::InputInt(u8"루트번호", &m_tCurrentObjectDesc.iRouteNum);
+
 }
 
 
@@ -845,6 +849,7 @@ bool CObjPlace_Manager::Add_CloneObject_Imgui(MAPTOOL_OBJPLACE_DESC objDesc, _ui
 		mapDesc.iDecalNum = 0;
 		mapDesc.pDecal = nullptr;
 		mapDesc.iColliderNum = 0;
+		mapDesc.iRouteNum = objDesc.iNaviRouteNum;
 
 		m_GameObjects.emplace(wstr, CGameInstance::GetInstance()->Clone_Object(TEXT("Prototype_GameObject_Construction"), &mapDesc));
 
@@ -1022,6 +1027,10 @@ void CObjPlace_Manager::Set_Map_Object()
 	ImGui::RadioButton(u8"부수기", &objectPropertyType, 1);
 
 
+	static int iRouteNum = 0;
+	ImGui::InputInt(u8"루트번호", &iRouteNum);
+
+
 
 	ImGui::NewLine();
 
@@ -1041,6 +1050,7 @@ void CObjPlace_Manager::Set_Map_Object()
 	objDesc.iObjType = objectType;
 	objDesc.iShaderPass = shaderType;
 	objDesc.iObjPropertyType = objectPropertyType;
+	objDesc.iNaviRouteNum = iRouteNum;
 
 	Show_ExampleModel(objDesc, folder_current_idx, object_current_idx);
 
@@ -1166,6 +1176,7 @@ HRESULT CObjPlace_Manager::Import_Bin_Map_Data_OnTool(MAP_TOTALINFORM_DESC* mapO
 		in.read((char*)&pMapObj->iObjPropertyType, sizeof(int));
 
 		in.read((char*)&pMapObj->iNaviNum, sizeof(int));
+		in.read((char*)&pMapObj->iNaviRoute, sizeof(int));
 
 		in.read((char*)&pMapObj->iDecalNum, sizeof(int));
 
@@ -1247,6 +1258,7 @@ HRESULT CObjPlace_Manager::Export_Bin_Map_Data(MAP_TOTALINFORM_DESC* mapObjData)
 
 		//추가
 		out.write((char*)&PObjPlaceDesc.iNaviNum, sizeof(int));
+		out.write((char*)&PObjPlaceDesc.iNaviRoute , sizeof(int));
 
 		out.write((char*)&PObjPlaceDesc.iDecalNum, sizeof(int));
 
@@ -1343,6 +1355,7 @@ void CObjPlace_Manager::Show_ExampleModel(MAPTOOL_OBJPLACE_DESC objDesc, _uint i
 				mapDesc.iObjType = objDesc.iObjType;
 				mapDesc.iShaderPass = objDesc.iShaderPass;
 				mapDesc.iObjPropertyType = objDesc.iObjPropertyType;
+				mapDesc.iRouteNum = objDesc.iNaviRouteNum;
 				mapDesc.iDecalNum = 0;
 				mapDesc.pDecal = nullptr;
 				mapDesc.iColliderNum = 0;
