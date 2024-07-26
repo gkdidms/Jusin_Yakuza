@@ -207,20 +207,13 @@ float4 Blur_Y_SIGN(float2 vTexCoord)
     {
         float4 fColor = g_EffectTexture.Sample(ClampSampler, vUV);
         
-        if (fColor.r == 1 && fColor.g < 0.5 && fColor.b < 0.5)
-        {
-            vUV = vTexCoord + float2(0, 1.f / g_fTexH * i);
-            vOut += g_fWeight[6 + i] * g_EffectTexture.Sample(ClampSampler, vUV);
-        }
+        
+        vUV = vTexCoord + float2(0, 1.f / g_fTexH * i);
+        vOut += g_fWeight[6 + i] * g_EffectTexture.Sample(ClampSampler, vUV);
+        
         
     }
-    
-    //float4 fColor = g_EffectTexture.Sample(ClampSampler, vUV);
-    //if (fColor.r < 0.5 && fColor.g < 0.5 && fColor.b < 0.5)
-    //{
-    //    vOut.rgb = fColor * 0.5; // 어두운 부분을 더 어둡게 (조정 가능)
-    //}
-    
+   
 
     vOut /= g_fTotal;
 

@@ -1816,12 +1816,12 @@ void CRenderer::Render_Debug()
 			return;
 	}
 
-	//	if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_Effect"), m_pShader, m_pVIBuffer)))
-	//		return;
+		if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_Effect"), m_pShader, m_pVIBuffer)))
+			return;
 	//	if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_Blur_X"), m_pShader, m_pVIBuffer)))
 	//		return;
-	//	if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_Blur_Y"), m_pShader, m_pVIBuffer)))
-	//		return;
+		if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_Blur_Y"), m_pShader, m_pVIBuffer)))
+			return;
 	if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_Accum"), m_pShader, m_pVIBuffer)))
 		return;
 	if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_RimLight"), m_pShader, m_pVIBuffer)))
