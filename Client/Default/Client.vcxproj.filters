@@ -393,7 +393,10 @@
       <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby\AI</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Map.cpp">
-      <Filter>02.GameObjects\09. Map</Filter>
+      <Filter>02.GameObjects\09.Map</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Item.cpp">
+      <Filter>02.GameObjects\10.Item</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -819,7 +822,10 @@
       <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby\AI</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Map.h">
-      <Filter>02.GameObjects\09. Map</Filter>
+      <Filter>02.GameObjects\09.Map</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Item.h">
+      <Filter>02.GameObjects\10.Item</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1257,7 +1263,10 @@
     <Filter Include="02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby\AI">
       <UniqueIdentifier>{826ca722-05bb-4d95-acd5-42aa425e1c6f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\09. Map">
+    <Filter Include="02.GameObjects\10.Item">
+      <UniqueIdentifier>{1eb617d4-17fa-4f20-ad9a-1e90a63a97a7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\09.Map">
       <UniqueIdentifier>{d191dc0c-e0ce-4195-bf99-baeb92d8cded}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
@@ -1298,6 +1307,9 @@
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxUI.hlsl">
+      <Filter>97.ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxMeshItem.hlsl">
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
   </ItemGroup>

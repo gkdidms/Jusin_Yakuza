@@ -487,6 +487,7 @@ void CObjPlace_Manager::Load_GameObject(int iNum)
 		mapDesc.iObjType = mapTotalInform.pMapObjDesc[i].iObjType;
 		mapDesc.iNaviNum = mapTotalInform.pMapObjDesc[i].iNaviNum;
 		mapDesc.iRouteNum = mapTotalInform.pMapObjDesc[i].iNaviRoute;
+		mapDesc.vOffsetMatrix = mapTotalInform.pMapObjDesc[i].vOffsetTransform;
 
 		mapDesc.iDecalNum = mapTotalInform.pMapObjDesc[i].iDecalNum;
 
@@ -579,6 +580,12 @@ void CObjPlace_Manager::Edit_Installed_GameObject(int iNumObject)
 	{
 		LayerType = 3;
 		m_tCurrentObjectDesc.iLayer = 3;
+	}
+
+	if (ImGui::RadioButton(m_Layers[4], m_tCurrentObjectDesc.iLayer == 4))
+	{
+		LayerType = 4;
+		m_tCurrentObjectDesc.iLayer = 4;
 	}
 
 
@@ -770,6 +777,81 @@ void CObjPlace_Manager::Edit_Installed_GameObject(int iNumObject)
 	static int iRouteNum = m_tCurrentObjectDesc.iRouteNum;
 	ImGui::InputInt(u8"루트번호", &m_tCurrentObjectDesc.iRouteNum);
 
+
+
+
+
+
+	XMFLOAT4X4 myMatrix = { 1.0f, 0.0f, 0.0f, 0.0f,
+					   0.0f, 1.0f, 0.0f, 0.0f,
+					   0.0f, 0.0f, 1.0f, 0.0f,
+					   0.0f, 0.0f, 0.0f, 1.0f };
+
+	ImGui::Text("offsetmatrix");
+
+	ImGui::BeginGroup();
+	ImGui::SetNextItemWidth(50);
+	ImGui::InputFloat("M00", &m_tCurrentObjectDesc.vOffsetMatrix.m[0][0]);
+	ImGui::SameLine();
+	ImGui::SetNextItemWidth(50);
+	ImGui::InputFloat("M01", &m_tCurrentObjectDesc.vOffsetMatrix.m[0][1]);
+	ImGui::SameLine();
+	ImGui::SetNextItemWidth(50);
+	ImGui::InputFloat("M02", &m_tCurrentObjectDesc.vOffsetMatrix.m[0][2]);
+	ImGui::SameLine();
+	ImGui::SetNextItemWidth(50);
+	ImGui::InputFloat("M02", &m_tCurrentObjectDesc.vOffsetMatrix.m[0][3]);
+	ImGui::EndGroup();
+
+	ImGui::NewLine();
+
+	ImGui::BeginGroup();
+	ImGui::SetNextItemWidth(50);
+	ImGui::InputFloat("M10", &m_tCurrentObjectDesc.vOffsetMatrix.m[1][0]);
+	ImGui::SameLine();
+	ImGui::SetNextItemWidth(50);
+	ImGui::InputFloat("M11", &m_tCurrentObjectDesc.vOffsetMatrix.m[1][1]);
+	ImGui::SameLine();
+	ImGui::SetNextItemWidth(50);
+	ImGui::InputFloat("M12", &m_tCurrentObjectDesc.vOffsetMatrix.m[1][2]);
+	ImGui::SameLine();
+	ImGui::SetNextItemWidth(50);
+	ImGui::InputFloat("M02", &m_tCurrentObjectDesc.vOffsetMatrix.m[1][3]);
+
+	ImGui::EndGroup();
+
+	ImGui::NewLine();
+
+	ImGui::BeginGroup();
+	ImGui::SetNextItemWidth(50);
+	ImGui::InputFloat("M20", &m_tCurrentObjectDesc.vOffsetMatrix.m[2][0]);
+	ImGui::SameLine();
+	ImGui::SetNextItemWidth(50);
+	ImGui::InputFloat("M21", &m_tCurrentObjectDesc.vOffsetMatrix.m[2][1]);
+	ImGui::SameLine();
+	ImGui::SetNextItemWidth(50);
+	ImGui::InputFloat("M22", &m_tCurrentObjectDesc.vOffsetMatrix.m[2][2]);
+	ImGui::SameLine();
+	ImGui::SetNextItemWidth(50);
+	ImGui::InputFloat("M02", &m_tCurrentObjectDesc.vOffsetMatrix.m[2][3]);
+	ImGui::EndGroup();
+
+	ImGui::NewLine();
+
+	ImGui::BeginGroup();
+	ImGui::SetNextItemWidth(50);
+	ImGui::InputFloat("M30", &m_tCurrentObjectDesc.vOffsetMatrix.m[3][0]);
+	ImGui::SameLine();
+	ImGui::SetNextItemWidth(50);
+	ImGui::InputFloat("M31", &m_tCurrentObjectDesc.vOffsetMatrix.m[3][1]);
+	ImGui::SameLine();
+	ImGui::SetNextItemWidth(50);
+	ImGui::InputFloat("M32", &m_tCurrentObjectDesc.vOffsetMatrix.m[3][2]);
+	ImGui::SameLine();
+	ImGui::SetNextItemWidth(50);
+	ImGui::InputFloat("M02", &m_tCurrentObjectDesc.vOffsetMatrix.m[3][3]);
+	ImGui::EndGroup();
+
 }
 
 
@@ -856,6 +938,7 @@ bool CObjPlace_Manager::Add_CloneObject_Imgui(MAPTOOL_OBJPLACE_DESC objDesc, _ui
 		mapDesc.pDecal = nullptr;
 		mapDesc.iColliderNum = 0;
 		mapDesc.iRouteNum = objDesc.iNaviRouteNum;
+		mapDesc.vOffsetMatrix = objDesc.vOffsetMatrix;
 
 		m_GameObjects.emplace(wstr, CGameInstance::GetInstance()->Clone_Object(TEXT("Prototype_GameObject_Construction"), &mapDesc));
 
@@ -964,6 +1047,7 @@ void CObjPlace_Manager::Set_Map_Object()
 	ImGui::RadioButton(m_Layers[1], &LayerType, 1);
 	ImGui::RadioButton(m_Layers[2], &LayerType, 2);
 	ImGui::RadioButton(m_Layers[3], &LayerType, 3);
+	ImGui::RadioButton(m_Layers[4], &LayerType, 4);
 
 	/* 데이터 추가할때마다 수정 */
 	ImGui::NewLine();
@@ -1037,6 +1121,65 @@ void CObjPlace_Manager::Set_Map_Object()
 	ImGui::InputInt(u8"루트번호", &iRouteNum);
 
 
+	XMFLOAT4X4 myMatrix = { 1.0f, 0.0f, 0.0f, 0.0f,
+						   0.0f, 1.0f, 0.0f, 0.0f,
+						   0.0f, 0.0f, 1.0f, 0.0f,
+						   0.0f, 0.0f, 0.0f, 1.0f };
+
+	ImGui::Text("Enter Matrix Elements:");
+
+	ImGui::BeginGroup();
+	ImGui::SetNextItemWidth(50);
+	ImGui::InputFloat("M00", &myMatrix.m[0][0]);
+	ImGui::SameLine();
+	ImGui::SetNextItemWidth(50);
+	ImGui::InputFloat("M01", &myMatrix.m[0][1]);
+	ImGui::SameLine();
+	ImGui::SetNextItemWidth(50);
+	ImGui::InputFloat("M02", &myMatrix.m[0][2]);
+	ImGui::EndGroup();
+
+	ImGui::NewLine();
+
+	ImGui::BeginGroup();
+	ImGui::SetNextItemWidth(50);
+	ImGui::InputFloat("M10", &myMatrix.m[1][0]);
+	ImGui::SameLine();
+	ImGui::SetNextItemWidth(50);
+	ImGui::InputFloat("M11", &myMatrix.m[1][1]);
+	ImGui::SameLine();
+	ImGui::SetNextItemWidth(50);
+	ImGui::InputFloat("M12", &myMatrix.m[1][2]);
+	ImGui::SameLine();
+	ImGui::EndGroup();
+
+	ImGui::NewLine();
+
+	ImGui::BeginGroup();
+	ImGui::SetNextItemWidth(50);
+	ImGui::InputFloat("M20", &myMatrix.m[2][0]);
+	ImGui::SameLine();
+	ImGui::SetNextItemWidth(50);
+	ImGui::InputFloat("M21", &myMatrix.m[2][1]);
+	ImGui::SameLine();
+	ImGui::SetNextItemWidth(50);
+	ImGui::InputFloat("M22", &myMatrix.m[2][2]);
+	ImGui::EndGroup();
+
+	ImGui::NewLine();
+
+	ImGui::BeginGroup();
+	ImGui::SetNextItemWidth(50);
+	ImGui::InputFloat("M30", &myMatrix.m[3][0]);
+	ImGui::SameLine();
+	ImGui::SetNextItemWidth(50);
+	ImGui::InputFloat("M31", &myMatrix.m[3][1]);
+	ImGui::SameLine();
+	ImGui::SetNextItemWidth(50);
+	ImGui::InputFloat("M32", &myMatrix.m[3][2]);
+	ImGui::EndGroup();
+
+
 
 	ImGui::NewLine();
 
@@ -1057,6 +1200,7 @@ void CObjPlace_Manager::Set_Map_Object()
 	objDesc.iShaderPass = shaderType;
 	objDesc.iObjPropertyType = objectPropertyType;
 	objDesc.iNaviRouteNum = iRouteNum;
+	objDesc.vOffsetMatrix = myMatrix;
 
 	Show_ExampleModel(objDesc, folder_current_idx, object_current_idx);
 
@@ -1175,6 +1319,7 @@ HRESULT CObjPlace_Manager::Import_Bin_Map_Data_OnTool(MAP_TOTALINFORM_DESC* mapO
 		OBJECTPLACE_DESC* pMapObj = &mapObjData->pMapObjDesc[i];
 
 		in.read((char*)&pMapObj->vTransform, sizeof(XMFLOAT4X4));
+		in.read((char*)&pMapObj->vOffsetTransform, sizeof(XMFLOAT4X4));
 		in.read((char*)&pMapObj->strLayer, sizeof(char) * MAX_PATH);
 		in.read((char*)&pMapObj->strModelCom, sizeof(char) * MAX_PATH);
 		in.read((char*)&pMapObj->iShaderPassNum, sizeof(int));
@@ -1256,6 +1401,8 @@ HRESULT CObjPlace_Manager::Export_Bin_Map_Data(MAP_TOTALINFORM_DESC* mapObjData)
 		/*out.write((char*)&PObjPlaceDesc, sizeof(OBJECTPLACE_DESC));*/
 
 		out.write((char*)&PObjPlaceDesc.vTransform, sizeof(XMFLOAT4X4));
+		out.write((char*)&PObjPlaceDesc.vOffsetTransform, sizeof(XMFLOAT4X4));
+
 		out.write((char*)&PObjPlaceDesc.strLayer, sizeof(char) * MAX_PATH);
 		out.write((char*)&PObjPlaceDesc.strModelCom, sizeof(char) * MAX_PATH);
 		out.write((char*)&PObjPlaceDesc.iShaderPassNum, sizeof(int));
@@ -1336,6 +1483,7 @@ void CObjPlace_Manager::Show_ExampleModel(MAPTOOL_OBJPLACE_DESC objDesc, _uint i
 			mapDesc.iObjPropertyType = objDesc.iObjPropertyType;
 			mapDesc.iDecalNum = 0;
 			mapDesc.pDecal = nullptr;
+			mapDesc.vOffsetMatrix = objDesc.vOffsetMatrix;
 			m_pShownObject = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Construction"), &mapDesc);
 
 
@@ -1365,6 +1513,7 @@ void CObjPlace_Manager::Show_ExampleModel(MAPTOOL_OBJPLACE_DESC objDesc, _uint i
 				mapDesc.iDecalNum = 0;
 				mapDesc.pDecal = nullptr;
 				mapDesc.iColliderNum = 0;
+				mapDesc.vOffsetMatrix = objDesc.vOffsetMatrix;
 
 				m_GameObjects.emplace(wstr, CGameInstance::GetInstance()->Clone_Object(TEXT("Prototype_GameObject_Construction"), &mapDesc));
 

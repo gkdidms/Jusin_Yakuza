@@ -197,6 +197,7 @@
     <ClInclude Include="..\Public\BehaviorAnimation.h" />
     <ClInclude Include="..\Public\Btn.h" />
     <ClInclude Include="..\Public\Collision_Manager.h" />
+    <ClInclude Include="..\Public\Item.h" />
     <ClInclude Include="..\Public\Kiryu_KRC_Down.h" />
     <ClInclude Include="..\Public\Kiryu_KRC_Guard.h" />
     <ClInclude Include="..\Public\Kiryu_KRH_Down.h" />
@@ -343,6 +344,7 @@
     <ClCompile Include="..\Private\BehaviorAnimation.cpp" />
     <ClCompile Include="..\Private\Btn.cpp" />
     <ClCompile Include="..\Private\Collision_Manager.cpp" />
+    <ClCompile Include="..\Private\Item.cpp" />
     <ClCompile Include="..\Private\Kiryu_KRC_Down.cpp" />
     <ClCompile Include="..\Private\Kiryu_KRC_Guard.cpp" />
     <ClCompile Include="..\Private\Kiryu_KRH_Down.cpp" />
@@ -470,6 +472,7 @@
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxCube.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxInstance_Point.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxMesh.hlsl" />
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxMeshItem.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxMeshLight.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxMeshSky.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxNorTex.hlsl" />

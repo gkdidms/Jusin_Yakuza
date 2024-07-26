@@ -16,6 +16,7 @@
 #include "Adv_Passersby.h"
 #include "Adventure.h"
 #include "Map.h"
+#include "Item.h"
 
 #include "Trigger.h"
 
@@ -390,6 +391,54 @@ HRESULT CFileTotalMgr::Set_GameObject_In_Client(int iStageLevel)
 
             m_pGameInstance->Add_GameObject(iStageLevel, TEXT("Prototype_GameObject_Map"), m_Layers[iLayer], &mapDesc);
         }
+        else if (OBJECT_TYPE::ITEM == m_MapTotalInform.pMapObjDesc[i].iObjType)
+        {
+            CItem::MAPOBJ_DESC		mapDesc;
+            mapDesc.vStartPos = XMLoadFloat4x4(&m_MapTotalInform.pMapObjDesc[i].vTransform);
+            int		iLayer = Find_Layers_Index(m_MapTotalInform.pMapObjDesc[i].strLayer);
+
+            /* Layer 정보 안들어옴 */
+            if (iLayer < 0)
+                return S_OK;
+
+            mapDesc.iLayer = iLayer;
+            mapDesc.wstrModelName = m_pGameInstance->StringToWstring(m_MapTotalInform.pMapObjDesc[i].strModelCom);
+            mapDesc.iShaderPass = m_MapTotalInform.pMapObjDesc[i].iShaderPassNum;
+            mapDesc.iObjType = m_MapTotalInform.pMapObjDesc[i].iObjType;
+            mapDesc.iDecalNum = m_MapTotalInform.pMapObjDesc[i].iDecalNum;
+
+            if (0 < mapDesc.iDecalNum)
+            {
+                mapDesc.pDecal = new DECAL_DESC_IO[mapDesc.iDecalNum];
+
+                for (int j = 0; j < mapDesc.iDecalNum; j++)
+                {
+                    mapDesc.pDecal[j].iMaterialNum = m_MapTotalInform.pMapObjDesc[i].pDecals[j].iMaterialNum;
+                    mapDesc.pDecal[j].vTransform = m_MapTotalInform.pMapObjDesc[i].pDecals[j].vTransform;
+                }
+            }
+
+            mapDesc.iColliderNum = m_MapTotalInform.pMapObjDesc[i].iColliderNum;
+
+            if (0 < mapDesc.iColliderNum)
+            {
+                mapDesc.pColliderDesc = new OBJCOLLIDER_DESC[mapDesc.iColliderNum];
+
+                for (int j = 0; j < mapDesc.iColliderNum; j++)
+                {
+                    mapDesc.pColliderDesc[j].iColliderType = m_MapTotalInform.pMapObjDesc[i].pObjColliders[j].iColliderType;
+                    mapDesc.pColliderDesc[j].vCenter = m_MapTotalInform.pMapObjDesc[i].pObjColliders[j].vCenter;
+                    mapDesc.pColliderDesc[j].vExtents = m_MapTotalInform.pMapObjDesc[i].pObjColliders[j].vExtents;
+                    mapDesc.pColliderDesc[j].vQuaternion = m_MapTotalInform.pMapObjDesc[i].pObjColliders[j].vQuaternion;
+                }
+            }
+
+            mapDesc.vPlayerMatrix = dynamic_cast<CTransform*>(m_pGameInstance->Get_GameObject_Component(iStageLevel, TEXT("Layer_Player"), TEXT("Com_Transform", 0)))->Get_WorldFloat4x4();
+
+            mapDesc.vOffsetMatrix = m_MapTotalInform.pMapObjDesc[i].vOffsetTransform;
+
+            m_pGameInstance->Add_GameObject(iStageLevel, TEXT("Prototype_GameObject_Item"), m_Layers[iLayer], &mapDesc);
+            }
         else 
         {
             CConstruction::MAPOBJ_DESC		mapDesc;
@@ -984,6 +1033,7 @@ HRESULT CFileTotalMgr::Import_Bin_Map_Data_OnClient(MAP_TOTALINFORM_DESC* mapObj
         OBJECTPLACE_DESC* pMapObj = &mapObjData->pMapObjDesc[i];
 
         in.read((char*)&pMapObj->vTransform, sizeof(XMFLOAT4X4));
+        in.read((char*)&pMapObj->vOffsetTransform, sizeof(XMFLOAT4X4));
         in.read((char*)&pMapObj->strLayer, sizeof(char) * MAX_PATH);
         in.read((char*)&pMapObj->strModelCom, sizeof(char) * MAX_PATH);
         in.read((char*)&pMapObj->iShaderPassNum, sizeof(int));
@@ -1163,6 +1213,7 @@ HRESULT CFileTotalMgr::Import_Bin_TriggerMap_Data_OnClient(MAP_TOTALINFORM_DESC*
         OBJECTPLACE_DESC* pMapObj = &mapObjData->pMapObjDesc[i];
 
         in.read((char*)&pMapObj->vTransform, sizeof(XMFLOAT4X4));
+        in.read((char*)&pMapObj->vOffsetTransform, sizeof(XMFLOAT4X4));
         in.read((char*)&pMapObj->strLayer, sizeof(char) * MAX_PATH);
         in.read((char*)&pMapObj->strModelCom, sizeof(char) * MAX_PATH);
         in.read((char*)&pMapObj->iShaderPassNum, sizeof(int));

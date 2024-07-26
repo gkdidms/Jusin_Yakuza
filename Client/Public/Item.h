@@ -1,0 +1,138 @@
+#pragma once
+
+#include "GameObject.h"
+#include "Client_Defines.h"
+#include "Decal.h"
+
+BEGIN(Engine)
+class CShader;
+class CModel;
+END
+
+BEGIN(Client)
+
+//Item : 플레이어가 잡고 상호작용하는 것들
+
+class CItem final : public CGameObject
+{
+private:
+	const _float BRIGHT_DISTANCE = 8.f;
+
+public:
+	enum OBJECT_TYPE {
+		CONSTRUCTION, /* 그냥 건축물 */
+		ROAD,
+		ITEM,
+		MONSTER_RUSH,
+		PLAYER,
+		SKY,
+		LIGHT,
+		MONSTER_WPA,
+		MONSTER_SHAKEDOWN,
+		MONSTER_YONEDA,
+		MONSTER_KUZE,
+		LARGE_CONSTRUCTION,
+		OBJ_END
+	};
+
+	enum ITEM_MODE
+	{
+		ITEM_IDLE, // 그냥 평범
+		ITEM_BRIGHT,
+		ITEM_GRAB, // 잡았을때
+		ITEM_DEAD, 
+		ITEM_END
+	};
+
+public:
+	typedef struct tMapObjDesc : public CGameObject::GAMEOBJECT_DESC
+	{
+		XMMATRIX			vStartPos;
+		int					iLayer;
+		wstring				wstrModelName;
+		int					iShaderPass;
+		int					iObjType;
+
+		int					iDecalNum;
+		DECAL_DESC_IO*		pDecal;
+
+		int					iColliderNum;
+		OBJCOLLIDER_DESC*	pColliderDesc;
+
+		const _float4x4*	vPlayerMatrix;
+		_float4x4			vOffsetMatrix;
+	}MAPOBJ_DESC;
+
+
+private:
+	CItem(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	CItem(const CItem& rhs);
+	virtual ~CItem() = default;
+
+public:
+	virtual HRESULT Initialize_Prototype() override;
+	virtual HRESULT Initialize(void* pArg) override;
+	virtual void Priority_Tick(const _float& fTimeDelta) override;
+	virtual void Tick(const _float& fTimeDelta) override;
+	virtual void Late_Tick(const _float& fTimeDelta) override;
+	virtual HRESULT Render() override;
+	virtual HRESULT Render_LightDepth() override;
+
+public:
+	CTransform* Get_Transform() { return m_pTransformCom; }
+
+	// 붙이고 싶은 뼈의 행렬을 받아오는 함수
+	void		Set_ParentMatrix(const _float4x4* vParentMatrix) { m_vParentMatrix = vParentMatrix;  }
+
+	CCollider* Get_Collider();
+
+	ITEM_MODE			Get_ItemMode() { return m_eItemMode; }
+	void				Set_ItemMode(CItem::ITEM_MODE mode) { m_eItemMode = mode; }
+	void				Set_Grab(bool bGrab) { m_bCurGrab = bGrab; }
+
+private:
+	void						Set_Item_Mode();
+
+private:
+	CShader* m_pShaderCom = { nullptr };
+	CModel* m_pModelCom = { nullptr };
+	class CSystemManager* m_pSystemManager = { nullptr };
+
+private:
+	_bool m_isFirst = { true };
+	vector<CDecal*>			m_vDecals;
+	vector<CCollider*>		m_vColliders;
+	int						m_iLayerNum;
+	wstring					m_wstrModelName;
+	int						m_iShaderPassNum = { 0 };
+	int						m_iObjectType = { 0 };
+
+	float					m_fBrightTime = { 0 };
+	bool					m_bBright = { false };
+
+	//bool					m_bRimLight;
+	//_float2					m_fRimPartsUV;
+	//float					m_isRimLight; // 0.f 꺼짐, 0.1 불한당, 0.2 러쉬, 0.3 파괴자 0.4 흰색 => 흰색 사용
+	//int						m_iRimLightTime;
+
+	_float4x4				m_vOffsetMatrix; // 위치 조정값
+	const _float4x4*		m_vParentMatrix; // 부모
+	const _float4x4*		m_pPlayerMatrix; // 플레이어 위치
+
+	_float4x4				m_WorldMatrix;
+
+	ITEM_MODE				m_eItemMode;
+
+	bool					m_bCurGrab = { false }; // 현재 잡고있는지
+
+public:
+	HRESULT Add_Components(void* pArg);
+	HRESULT Bind_ShaderResources();
+
+public:
+	static CItem* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+	virtual CGameObject* Clone(void* pArg) override;
+	virtual void Free() override;
+};
+
+END

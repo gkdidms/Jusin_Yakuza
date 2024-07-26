@@ -76,6 +76,7 @@ namespace Engine
 	struct ENGINE_DLL OBJECTPLACE_DESC
 	{
 		XMFLOAT4X4			vTransform;
+		XMFLOAT4X4			vOffsetTransform;
 		char				strLayer[MAX_PATH];
 		char				strModelCom[MAX_PATH]; /* model 이름 */
 		int					iShaderPassNum; /* shader pass 번호 */

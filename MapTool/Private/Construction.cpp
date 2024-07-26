@@ -41,6 +41,7 @@ HRESULT CConstruction::Initialize(void* pArg)
 		m_iObjectPropertyType = gameobjDesc->iObjPropertyType;
 		m_iNaviNum = gameobjDesc->iNaviNum;
 		m_iRouteNum = gameobjDesc->iRouteNum;
+		m_vOffsetMatrix = gameobjDesc->vOffsetMatrix;
 
 		for (int i = 0; i < gameobjDesc->iDecalNum; i++)
 		{
@@ -208,8 +209,8 @@ int CConstruction::Get_ObjPlaceDesc(OBJECTPLACE_DESC* objplaceDesc)
 	}
 	
 	objplaceDesc->iNaviRoute = m_iRouteNum;
+	objplaceDesc->vOffsetTransform = m_vOffsetMatrix;
 	
-
 
 	/* Decal Ãß°¡ */
 	objplaceDesc->iDecalNum = m_vDecals.size();
@@ -247,6 +248,7 @@ CConstruction::MAPOBJ_DESC CConstruction::Get_MapObjDesc_For_AddList()
 	mapobjDesc.vStartPos = m_pTransformCom->Get_WorldMatrix();
 	mapobjDesc.wstrModelName = m_wstrModelName;
 	mapobjDesc.iShaderPass = m_iShaderPassNum;
+	mapobjDesc.vOffsetMatrix = m_vOffsetMatrix;
 
 	return mapobjDesc;
 }
@@ -258,6 +260,7 @@ void CConstruction::Edit_GameObject_Information(CConstruction::MAPOBJ_DESC mapDe
 	m_iObjectType = mapDesc.iObjType;
 	m_iObjectPropertyType = mapDesc.iObjPropertyType;
 	m_iRouteNum = mapDesc.iRouteNum;
+	m_vOffsetMatrix = mapDesc.vOffsetMatrix;
 }
 
 CConstruction::MAPOBJ_DESC CConstruction::Send_GameObject_Information()
@@ -269,6 +272,7 @@ CConstruction::MAPOBJ_DESC CConstruction::Send_GameObject_Information()
 	mapObjDesc.iObjType = m_iObjectType;
 	mapObjDesc.iObjPropertyType = m_iObjectPropertyType;
 	mapObjDesc.iRouteNum = m_iRouteNum;
+	mapObjDesc.vOffsetMatrix = m_vOffsetMatrix;
 
 	return mapObjDesc;
 }

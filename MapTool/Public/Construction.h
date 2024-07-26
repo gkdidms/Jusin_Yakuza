@@ -38,6 +38,8 @@ public:
 
 		int					iColliderNum;
 		OBJCOLLIDER_DESC*	pColliderDesc;
+
+		XMFLOAT4X4			vOffsetMatrix;
 	}MAPOBJ_DESC;
 
 
@@ -102,6 +104,8 @@ private:
 	int												m_iObjectPropertyType = { 0 };
 	int												m_iNaviNum = { -1 };
 	int												m_iRouteNum = { 0 };
+
+	XMFLOAT4X4										m_vOffsetMatrix;
 
 	int*											m_pDecalMeshIndex = { 0 };
 	int												m_iDecalMeshCnt = { 0 };

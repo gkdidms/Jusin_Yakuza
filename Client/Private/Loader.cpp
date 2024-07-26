@@ -46,6 +46,7 @@
 #include "Decal.h"
 #include "LightConstruction.h"
 #include "Map.h"
+#include "Item.h"
 #pragma endregion
 
 #pragma region MyRegion
@@ -331,6 +332,10 @@ HRESULT CLoader::Loading_Default()
 	/* For.Prototype_Component_Shader_Mesh */
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Shader_Mesh"),
 		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxMesh.hlsl"), VTXMESH::Elements, VTXMESH::iNumElements))))
+		return E_FAIL;
+	/* For.Prototype_Component_Shader_MeshItem */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Shader_MeshItem"),
+		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxMeshItem.hlsl"), VTXMESH::Elements, VTXMESH::iNumElements))))
 		return E_FAIL;
 	/* For.Prototype_Component_Shader_VtxMeshSky */
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Shader_VtxMeshSky"),
@@ -870,6 +875,11 @@ HRESULT CLoader::Loading_For_Test()
 	/* For.Prototype_GameObject_Map */
 	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Map"),
 		CMap::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_Item */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Item"),
+		CItem::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 #pragma endregion
 
