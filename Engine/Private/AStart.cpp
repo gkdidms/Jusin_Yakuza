@@ -32,10 +32,10 @@ HRESULT CAStart::Initialize(void* pArg)
 	return S_OK;
 }
 
-void CAStart::Start_Root(CNavigation* pNavi, _fvector vGoalPos)
+void CAStart::Start_Root(CNavigation* pNavi, _int iGoalIndex)
 {
 	_int iStartIndex = pNavi->Get_Index();
-	_int iGoalIndex = pNavi->Find_PlayerMonster_Index(vGoalPos);
+
 	if (iGoalIndex == -1)
 		return;
 

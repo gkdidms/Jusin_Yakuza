@@ -7,7 +7,6 @@
 #include "SocketCollider.h"
 #include "SocketEffect.h"
 
-
 #include "Mesh.h"
 
 CLandObject::CLandObject(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

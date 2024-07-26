@@ -30,6 +30,7 @@ HRESULT CAdv_Passersby::Initialize(void* pArg)
 	ADVENTURE_IODESC* gameobjDesc = static_cast<ADVENTURE_IODESC*>(pArg);
 	m_pTransformCom->Set_WorldMatrix(gameobjDesc->vStartPos);
 	m_wstrModelName = gameobjDesc->wstrModelName;
+	m_iNaviRouteNum = gameobjDesc->iNaviRouteNum;
 
 	if (FAILED(Add_Components()))
 		return E_FAIL;
@@ -66,6 +67,7 @@ HRESULT CAdv_Passersby::Add_Components()
 	AIDesc.pAnimCom= m_pAnimCom;
 	AIDesc.pState = &m_iState;
 	AIDesc.pThis = this;
+	AIDesc.pAStartCom = m_pAStartCom;
 
 	m_pTree = dynamic_cast<CAI_Passersby*>(m_pGameInstance->Add_BTNode(m_iCurrentLevel, TEXT("Prototype_BTNode_Passersby"), &AIDesc));
 	if (nullptr == m_pTree)
