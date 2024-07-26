@@ -23,6 +23,7 @@ public:
     enum SKILL {
         SKILL_IDLE,
         SKILL_WALK,
+        SKILL_TURN,
         SKILL_END
     };
 
@@ -59,6 +60,7 @@ protected:
     virtual CBTNode::NODE_STATE Coll();
     //걷기
     virtual CBTNode::NODE_STATE Check_Walk(); 
+    virtual CBTNode::NODE_STATE Turn();
     virtual CBTNode::NODE_STATE Walk(); // 정해진 루트로 걷는다.
 
 public:
