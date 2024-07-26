@@ -379,7 +379,7 @@
     </ClCompile>
     <ClCompile Include="..\Private\SceneModel_Test.cpp">
       <Filter>02.GameObjects\02.Character\LandObject\00.Player\SceneModel_Test</Filter>
-	</ClCompile>
+    </ClCompile>
     <ClCompile Include="..\private\Adventure.cpp">
       <Filter>02.GameObjects\02.Character\LandObject\02.Adventure</Filter>
     </ClCompile>
@@ -391,6 +391,9 @@
     </ClCompile>
     <ClCompile Include="..\private\AI_Passersby.cpp">
       <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby\AI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Map.cpp">
+      <Filter>02.GameObjects\09. Map</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -802,7 +805,7 @@
     </ClInclude>
     <ClInclude Include="..\Public\SceneModel_Test.h">
       <Filter>02.GameObjects\02.Character\LandObject\00.Player\SceneModel_Test</Filter>
-	</ClInclude>
+    </ClInclude>
     <ClInclude Include="..\public\Adventure.h">
       <Filter>02.GameObjects\02.Character\LandObject\02.Adventure</Filter>
     </ClInclude>
@@ -814,6 +817,9 @@
     </ClInclude>
     <ClInclude Include="..\public\AI_Passersby.h">
       <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby\AI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Map.h">
+      <Filter>02.GameObjects\09. Map</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1238,7 +1244,7 @@
     </Filter>
     <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\SceneModel_Test">
       <UniqueIdentifier>{efc86914-e7e6-4299-862f-db0472caa178}</UniqueIdentifier>
-	</Filter>
+    </Filter>
     <Filter Include="02.GameObjects\02.Character\LandObject\02.Adventure">
       <UniqueIdentifier>{e953efb4-bf89-4f41-8ac1-a70274d77017}</UniqueIdentifier>
     </Filter>
@@ -1250,6 +1256,9 @@
     </Filter>
     <Filter Include="02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby\AI">
       <UniqueIdentifier>{826ca722-05bb-4d95-acd5-42aa425e1c6f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\09. Map">
+      <UniqueIdentifier>{d191dc0c-e0ce-4195-bf99-baeb92d8cded}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

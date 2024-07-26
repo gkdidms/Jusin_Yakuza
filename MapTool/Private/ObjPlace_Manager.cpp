@@ -664,6 +664,12 @@ void CObjPlace_Manager::Edit_Installed_GameObject(int iNumObject)
 		m_tCurrentObjectDesc.iObjType = (int)OBJECT_TYPE::ADTENTURE_SUIT;
 	}
 
+	if (ImGui::RadioButton(u8"Map", m_tCurrentObjectDesc.iObjType == 13))
+	{
+		objectType = 13;
+		m_tCurrentObjectDesc.iObjType = (int)OBJECT_TYPE::MAP;
+	}
+
 	ImGui::NewLine();
 
 	ImGui::Text(u8"쉐이더");
@@ -977,7 +983,7 @@ void CObjPlace_Manager::Set_Map_Object()
 	ImGui::RadioButton(u8"몬스터 - kuze", &objectType, OBJECT_TYPE::MONSTER_KUZE);
 	ImGui::RadioButton(u8"통건물", &objectType, OBJECT_TYPE::LARGE_CONSTRUCTION);
 	ImGui::RadioButton(u8"몬스터 - SUIT", &objectType, OBJECT_TYPE::ADTENTURE_SUIT);
-
+	ImGui::RadioButton(u8"맵", &objectType, OBJECT_TYPE::MAP);
 
 	ImGui::NewLine();
 

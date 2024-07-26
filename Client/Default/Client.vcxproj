@@ -234,6 +234,7 @@
     <ClInclude Include="..\public\Level_Office1F.h" />
     <ClInclude Include="..\public\Level_Office2F.h" />
     <ClInclude Include="..\Public\LightConstruction.h" />
+    <ClInclude Include="..\Public\Map.h" />
     <ClInclude Include="..\Public\MapCollider.h" />
     <ClInclude Include="..\Public\MapColliderObj.h" />
     <ClInclude Include="..\public\Level_OfficeBoss.h" />
@@ -379,6 +380,7 @@
     <ClCompile Include="..\private\Level_Office1F.cpp" />
     <ClCompile Include="..\private\Level_Office2F.cpp" />
     <ClCompile Include="..\Private\LightConstruction.cpp" />
+    <ClCompile Include="..\Private\Map.cpp" />
     <ClCompile Include="..\Private\MapCollider.cpp" />
     <ClCompile Include="..\Private\MapColliderObj.cpp" />
     <ClCompile Include="..\private\Level_OfficeBoss.cpp" />

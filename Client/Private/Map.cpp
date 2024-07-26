@@ -1,4 +1,4 @@
-#include "..\Public\Construction.h"
+#include "..\Public\Map.h"
 
 #include "GameInstance.h"
 #include "SystemManager.h"
@@ -6,27 +6,27 @@
 
 #include "Mesh.h"
 
-CConstruction::CConstruction(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+CMap::CMap(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CGameObject{ pDevice, pContext },
-	m_pSystemManager { CSystemManager::GetInstance() }
+	m_pSystemManager{ CSystemManager::GetInstance() }
 {
 	Safe_AddRef(m_pSystemManager);
 }
 
-CConstruction::CConstruction(const CConstruction& rhs)
+CMap::CMap(const CMap& rhs)
 	: CGameObject{ rhs },
-	m_pSystemManager{ rhs.m_pSystemManager}
+	m_pSystemManager{ rhs.m_pSystemManager }
 {
 	Safe_AddRef(m_pSystemManager);
 }
 
-HRESULT CConstruction::Initialize_Prototype()
+HRESULT CMap::Initialize_Prototype()
 {
 	return S_OK;
 }
 
 
-HRESULT CConstruction::Initialize(void* pArg)
+HRESULT CMap::Initialize(void* pArg)
 {
 
 	if (FAILED(__super::Initialize(pArg)))
@@ -34,7 +34,7 @@ HRESULT CConstruction::Initialize(void* pArg)
 
 	if (FAILED(Add_Components(pArg)))
 		return E_FAIL;
-	
+
 	if (nullptr != pArg)
 	{
 		MAPOBJ_DESC* gameobjDesc = (MAPOBJ_DESC*)pArg;
@@ -80,31 +80,23 @@ HRESULT CConstruction::Initialize(void* pArg)
 
 	m_Casecade = { 0.f, 10.f, 24.f, 40.f };
 
-	// 물웅덩이 noiseTexture
-	//if (2 == m_iShaderPassNum)
-	//{
-	//	/* For.Com_Shader */
-	//	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Texture_NoiseTexture"),
-	//		TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTexture))))
-	//		return E_FAIL;
-	//}
 
 
 	return S_OK;
 }
 
-void CConstruction::Priority_Tick(const _float& fTimeDelta)
+void CMap::Priority_Tick(const _float& fTimeDelta)
 {
 }
 
-void CConstruction::Tick(const _float& fTimeDelta)
+void CMap::Tick(const _float& fTimeDelta)
 {
 	for (auto& iter : m_vDecals)
 		iter->Tick(fTimeDelta);
 
 	if (2 == m_iShaderPassNum)
 	{
-		m_fWaterDeltaTime += fTimeDelta*0.07;
+		m_fWaterDeltaTime += fTimeDelta * 0.07;
 
 		if (m_fWaterDeltaTime > 1)
 			m_fWaterDeltaTime = 0;
@@ -117,75 +109,24 @@ void CConstruction::Tick(const _float& fTimeDelta)
 #endif
 }
 
-void CConstruction::Late_Tick(const _float& fTimeDelta)
+void CMap::Late_Tick(const _float& fTimeDelta)
 {
-	if (true == m_pGameInstance->isIn_WorldFrustum(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 0.f) && OBJECT_TYPE::LARGE_CONSTRUCTION != m_iObjectType)
-	{
-		if (0 == m_iShaderPassNum || 3 == m_iShaderPassNum)
-		{
-			m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
-		}
-		else if (1 == m_iShaderPassNum)
-		{
-			m_pGameInstance->Add_Renderer(CRenderer::RENDER_GLASS, this);
-		}
-		else if (2 == m_iShaderPassNum)
-		{
-			m_pGameInstance->Add_Renderer(CRenderer::RENDER_PUDDLE, this);
-		}
-		else
-		{
-			m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
-		}
+	XMMATRIX invWorldMat = XMMatrixInverse(nullptr, m_pTransformCom->Get_WorldMatrix());
 
-		if (1 != m_iObjectType)
-		{
-			if (m_pGameInstance->isShadow())
-			{
-				// 처음 렌더를 돌 때만 그림자를 그려준다.
-				m_pGameInstance->Add_Renderer(CRenderer::RENDER_SHADOWOBJ, this);
-			}
-		}
+	// 월드 위치를 로컬 위치로 변환
+	XMVECTOR localPosition = XMVector3TransformCoord(m_pTransformCom->Get_State(CTransform::STATE_POSITION), invWorldMat);
+
+	if (true == m_pGameInstance->isIn_LocalFrustum(localPosition, 4.f))
+	{
+		m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
 
 		for (auto& iter : m_vDecals)
 			iter->Late_Tick(fTimeDelta);
 	}
-	else if(OBJECT_TYPE::LARGE_CONSTRUCTION == m_iObjectType)
-	{
-		// 컬링x
-		if (0 == m_iShaderPassNum || 3 == m_iShaderPassNum)
-		{
-			m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
-		}
-		else if (1 == m_iShaderPassNum)
-		{
-			m_pGameInstance->Add_Renderer(CRenderer::RENDER_GLASS, this);
-		}
-		else if (2 == m_iShaderPassNum)
-		{
-			m_pGameInstance->Add_Renderer(CRenderer::RENDER_PUDDLE, this);
-		}
-		else
-		{
-			m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
-		}
 
-		if (1 != m_iObjectType)
-		{
-			if (m_pGameInstance->isShadow())
-			{
-				// 처음 렌더를 돌 때만 그림자를 그려준다.
-				m_pGameInstance->Add_Renderer(CRenderer::RENDER_SHADOWOBJ, this);
-			}
-		}
-
-		for (auto& iter : m_vDecals)
-			iter->Late_Tick(fTimeDelta);
-	}
-	
 }
 
-HRESULT CConstruction::Render()
+HRESULT CMap::Render()
 {
 #ifdef _DEBUG
 	for (auto& iter : m_vColliders)
@@ -301,7 +242,7 @@ HRESULT CConstruction::Render()
 
 		}
 
-		
+
 
 		m_pShaderCom->Begin(m_iShaderPassNum);
 
@@ -311,7 +252,7 @@ HRESULT CConstruction::Render()
 	return S_OK;
 }
 
-HRESULT CConstruction::Render_LightDepth()
+HRESULT CMap::Render_LightDepth()
 {
 	const _float4x4* ViewMatrixArray = m_pGameInstance->Get_Shadow_Transform_View_Float4x4();
 	const _float4x4* ProjMatrixArray = m_pGameInstance->Get_Shadow_Transform_Proj_Float4x4();
@@ -335,7 +276,7 @@ HRESULT CConstruction::Render_LightDepth()
 	return S_OK;
 }
 
-int CConstruction::Get_ObjPlaceDesc(OBJECTPLACE_DESC* objplaceDesc)
+int CMap::Get_ObjPlaceDesc(OBJECTPLACE_DESC* objplaceDesc)
 {
 	/* 바이너리화하기 위한 데이터 제공 */
 
@@ -353,9 +294,9 @@ int CConstruction::Get_ObjPlaceDesc(OBJECTPLACE_DESC* objplaceDesc)
 	return m_iLayerNum;
 }
 
-CConstruction::MAPOBJ_DESC CConstruction::Get_MapObjDesc_For_AddList()
+CMap::MAPOBJ_DESC CMap::Get_MapObjDesc_For_AddList()
 {
-	CConstruction::MAPOBJ_DESC		mapobjDesc;
+	CMap::MAPOBJ_DESC		mapobjDesc;
 	mapobjDesc.vStartPos = m_pTransformCom->Get_WorldMatrix();
 	mapobjDesc.wstrModelName = m_wstrModelName;
 	mapobjDesc.iShaderPass = m_iShaderPassNum;
@@ -363,19 +304,19 @@ CConstruction::MAPOBJ_DESC CConstruction::Get_MapObjDesc_For_AddList()
 	return mapobjDesc;
 }
 
-void CConstruction::Edit_GameObject_Information(MAPOBJ_DESC mapDesc)
+void CMap::Edit_GameObject_Information(MAPOBJ_DESC mapDesc)
 {
 	m_iLayerNum = mapDesc.iLayer;
 	m_iShaderPassNum = mapDesc.iShaderPass;
 	m_iObjectType = mapDesc.iObjType;
 }
 
-CConstruction::MAPOBJ_DESC CConstruction::Send_GameObject_Information()
+CMap::MAPOBJ_DESC CMap::Send_GameObject_Information()
 {
 	return MAPOBJ_DESC();
 }
 
-HRESULT CConstruction::Add_Components(void* pArg)
+HRESULT CMap::Add_Components(void* pArg)
 {
 	MAPOBJ_DESC* gameobjDesc = (MAPOBJ_DESC*)pArg;
 
@@ -394,7 +335,7 @@ HRESULT CConstruction::Add_Components(void* pArg)
 	return S_OK;
 }
 
-HRESULT CConstruction::Bind_ShaderResources()
+HRESULT CMap::Bind_ShaderResources()
 {
 	if (FAILED(m_pTransformCom->Bind_ShaderMatrix(m_pShaderCom, "g_WorldMatrix")))
 		return E_FAIL;
@@ -409,9 +350,9 @@ HRESULT CConstruction::Bind_ShaderResources()
 	return S_OK;
 }
 
-CConstruction* CConstruction::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+CMap* CMap::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
-	CConstruction* pInstance = new CConstruction(pDevice, pContext);
+	CMap* pInstance = new CMap(pDevice, pContext);
 
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
@@ -422,9 +363,9 @@ CConstruction* CConstruction::Create(ID3D11Device* pDevice, ID3D11DeviceContext*
 	return pInstance;
 }
 
-CGameObject* CConstruction::Clone(void* pArg)
+CGameObject* CMap::Clone(void* pArg)
 {
-	CConstruction* pInstance = new CConstruction(*this);
+	CMap* pInstance = new CMap(*this);
 
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
@@ -435,7 +376,7 @@ CGameObject* CConstruction::Clone(void* pArg)
 	return pInstance;
 }
 
-void CConstruction::Free()
+void CMap::Free()
 {
 	__super::Free();
 

@@ -45,6 +45,7 @@
 #include "MapColliderObj.h"
 #include "Decal.h"
 #include "LightConstruction.h"
+#include "Map.h"
 #pragma endregion
 
 #pragma region MyRegion
@@ -516,6 +517,11 @@ HRESULT CLoader::Loading_For_Office_1F()
 		CAdv_Passersby::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	/* For.Prototype_GameObject_Map */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Map"),
+		CMap::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 #pragma endregion
 
 #pragma endregion
@@ -859,6 +865,11 @@ HRESULT CLoader::Loading_For_Test()
 	/* For.Prototype_GameObject_AdvPassersby */
 	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_AdvPassersby"),
 		CAdv_Passersby::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_Map */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Map"),
+		CMap::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 #pragma endregion
 

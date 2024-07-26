@@ -176,9 +176,6 @@ void CPlayerCamera::Compute_View(const _float& fTimeDelta)
 	}
 	else
 	{
-#ifdef _DEBUG
-		printf("%f", fTimeDelta * 5);
-#endif // _DEBUG
 		vLerpedCamPosition = XMVectorLerp(vPrevCamPosition, vCamPosition, fTimeDelta * 5);
 	}
 

@@ -31,6 +31,7 @@ public:
 		MONSTER_KUZE,
 		LARGE_CONSTRUCTION,
 		ADTENTURE_SUIT,
+		MAP, /* µµ·Î ¸Ê ¾ÈÀÇ Å« ¸Ê */
 		OBJ_END
 	};
 
