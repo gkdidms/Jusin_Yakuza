@@ -25,6 +25,7 @@ private:
     HRESULT Ready_Monster(const wstring& strLayerTag);
     HRESULT Ready_Map(const wstring& strLayerTag);
     HRESULT Ready_Effect(const wstring& strLayerTag);
+    HRESULT Ready_Test_SceneModel(const wstring& strLayerTag);
 
 public:
     static CLevel_Test* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

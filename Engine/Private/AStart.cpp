@@ -32,10 +32,10 @@ HRESULT CAStart::Initialize(void* pArg)
 	return S_OK;
 }
 
-void CAStart::Start_Root(CNavigation* pNavi, _int vGoalIndex)
+void CAStart::Start_Root(CNavigation* pNavi, _int iGoalIndex)
 {
 	_int iStartIndex = pNavi->Get_Index();
-	_int iGoalIndex = vGoalIndex;
+
 	if (iGoalIndex == -1)
 		return;
 

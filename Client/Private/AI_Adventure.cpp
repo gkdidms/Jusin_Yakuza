@@ -99,8 +99,22 @@ CBTNode::NODE_STATE CAI_Adventure::Check_Walk()
 	}
 
 	m_isWayPointFinish = isRouteMoveFinish();
-
+	/*
+	_bool isTurn = isRouteMoveFinish();
+	m_iSkill = isTurn ? SKILL_TURN : SKILL_WALK;
+	*/
 	return CBTNode::SUCCESS;
+}
+
+CBTNode::NODE_STATE CAI_Adventure::Turn()
+{
+	if (m_iSkill == SKILL_TURN)
+	{
+		// 현재 look 방향에서 현재 이동 좌표의 각도를 구한다.
+		
+	}
+
+	return CBTNode::FAIL;
 }
 
 CBTNode::NODE_STATE CAI_Adventure::Walk()

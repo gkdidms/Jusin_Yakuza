@@ -51,6 +51,8 @@ HRESULT CLevel_Test::Initialize()
 	if (FAILED(Ready_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
 
+	if (FAILED(Ready_Test_SceneModel(TEXT("Layer_SceneModel_Test"))))
+		return E_FAIL;
 
 	_uint i = m_pGameInstance->Get_CurrentLevel();
 
@@ -154,6 +156,19 @@ HRESULT CLevel_Test::Ready_Effect(const wstring& strLayerTag)
 	//	return E_FAIL;
 
 	//m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Aura_Start_Rush"), TEXT("Layer_Particle"), nullptr);
+
+	return S_OK;
+}
+
+HRESULT CLevel_Test::Ready_Test_SceneModel(const wstring& strLayerTag)
+{
+	CGameObject::GAMEOBJECT_DESC Desc{};
+	Desc.fSpeedPecSec = 10.f;
+	//Desc.fRotatePecSec = XMConvertToRadians(0.f);
+	Desc.fRotatePecSec = XMConvertToRadians(180.f);
+
+	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_SceneModel_Test"), strLayerTag, &Desc)))
+		return E_FAIL;
 
 	return S_OK;
 }

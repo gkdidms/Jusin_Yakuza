@@ -8,7 +8,7 @@ class ENGINE_DLL CNavigation :
     public CComponent
 {
 public:
-    typedef struct tNavigationDesc{
+    typedef struct tNavigationDesc {
         _int iIndex;
     }NAVIGATION_DESC;
 
@@ -28,7 +28,7 @@ public:
     }
     vector<CCell*> Get_Cells() { return m_Cells; }
     vector<_int> Get_RouteIndexs(_int iIndex);
-    
+
 public:
     virtual HRESULT Initialize_Prototype(); // Tool¿ë
     virtual HRESULT Initialize_Prototype(const wstring strFilePath);
