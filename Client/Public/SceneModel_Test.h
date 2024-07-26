@@ -38,9 +38,9 @@ private:
 	_bool m_isFirst = { true };
 	wstring					m_wstrModelName;
 
-	_float fTestX = { 90.f };
-	_float fTestY = { -180 };
-	_float fTestZ = { 90 };
+	_float fTestX = { 90.f };		//90
+	_float fTestY = { -180 };		//-180
+	_float fTestZ = { 90 };			//90
 
 	_bool test = { false };
 

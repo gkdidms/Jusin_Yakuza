@@ -37,10 +37,10 @@ HRESULT CSceneModel_Test::Initialize(void* pArg)
 	if (FAILED(Add_Components(pArg)))
 		return E_FAIL;
 
-	CModel::ANIMATION_DESC Desc{19, true};
+	CModel::ANIMATION_DESC Desc{12, true};
 
 	m_pModelCom->Set_AnimationIndex(Desc);
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(30, 30, 30, 1));
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(30, 0, 30, 1));
 
 	return S_OK;
 }
@@ -92,7 +92,7 @@ void CSceneModel_Test::Tick(const _float& fTimeDelta)
 		// 플레이어의 월드 변환 행렬
 		//_matrix matPlayerWorld = pPlayer->Get_TransformCom()->Get_WorldMatrix();
 		_matrix matPlayerWorld = m_pTransformCom->Get_WorldMatrix();
-		_matrix matVectorBoneWorld = XMLoadFloat4x4(m_pModelCom->Get_BoneCombinedTransformationMatrix("pattern_c_n"));
+		_matrix matVectorBoneWorld = XMLoadFloat4x4(m_pModelCom->Get_BoneCombinedTransformationMatrix("vector_c_n"));
 
 		// Blender의 좌표계를 DirectX의 좌표계로 변환하기 위한 회전 행렬
 		_matrix rotationMatrixX = XMMatrixRotationX(XMConvertToRadians(fTestX));
@@ -110,8 +110,8 @@ void CSceneModel_Test::Tick(const _float& fTimeDelta)
 	}
 	
 	
-	CModel::ANIMATION_DESC Desc{ 40, true };
-	m_pModelCom->Play_Animation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")), Desc);
+	CModel::ANIMATION_DESC Desc{ 32, true };
+	m_pModelCom->Play_Animation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")), Desc, "Camera");
 }
 
 void CSceneModel_Test::Late_Tick(const _float& fTimeDelta)

@@ -79,7 +79,7 @@ HRESULT CAnimation::Initialize(const BAiAnimation* pAnimation, const vector<clas
 	return S_OK;
 }
 
-void CAnimation::Update_TransformationMatrix(_float fTimeDelta, const vector<class CBone*>& Bones, _bool isLoop)
+void CAnimation::Update_TransformationMatrix(_float fTimeDelta, const vector<class CBone*>& Bones, _bool isLoop, string strExcludeBoneName)
 {
 	m_CurrentPosition += m_TickPerSecond * fTimeDelta;
 	m_isRestart = false;
