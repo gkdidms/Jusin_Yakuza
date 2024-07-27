@@ -5,30 +5,11 @@
 CKiryu_KRC_Down::CKiryu_KRC_Down()
 	:CBehaviorAnimation{}
 {
-	m_AnimationIndices.push_back(32); //[32]	c_dwn_b[c_dwn_b]
-	m_AnimationIndices.push_back(45); //[45]	c_dwn_f[c_dwn_f]
+	m_AnimationIndices.push_back(74); //[74]	c_dwn_b[c_dwn_b]
+	m_AnimationIndices.push_back(115); //[115]	c_dwn_f[c_dwn_f]
 
-	m_AnimationIndices.push_back(46); //[46]	c_standup_dnb_fast[c_standup_dnb_fast]
-	m_AnimationIndices.push_back(47); //[47]	c_standup_dnf_fast[c_standup_dnf_fast]
-
-	//// 다운 루프 34 ~ 35
-	///*34*/m_AnimationIndices.push_back(32); m_AnimationNames.push_back("c_dwn_b");
-	///*35*/m_AnimationIndices.push_back(45); m_AnimationNames.push_back("c_dwn_f");
-
-	//// 누운상태에서 차여서 굴러갈때 36 ~ 39
-	///*36*/m_AnimationIndices.push_back(8); m_AnimationNames.push_back("c_dam_dnb_l");
-	///*37*/m_AnimationIndices.push_back(9); m_AnimationNames.push_back("c_dam_dnb_r");
-	///*38*/m_AnimationIndices.push_back(10); m_AnimationNames.push_back("c_dam_dnf_l");
-	///*39*/m_AnimationIndices.push_back(11); m_AnimationNames.push_back("c_dam_dnf_r");
-
-	//// 누운 상태에서 밟힐 때 40 ~ 41
-	///*40*/m_AnimationIndices.push_back(10); m_AnimationNames.push_back("c_dam_dnb_trample");
-	///*41*/m_AnimationIndices.push_back(13); m_AnimationNames.push_back("c_dam_dnf_trample");
-
-	//// 일어나는 모션 42 ~ 43
-	///*42*/m_AnimationIndices.push_back(46); m_AnimationNames.push_back("c_standup_dnb_fast");
-	///*43*/m_AnimationIndices.push_back(47); m_AnimationNames.push_back("c_standup_dnf_fast");
-
+	m_AnimationIndices.push_back(216); //[216]	c_standup_dnb_fast[c_standup_dnb_fast]
+	m_AnimationIndices.push_back(218); //[218]	c_standup_dnf_fast[c_standup_dnf_fast]
 }
 
 void CKiryu_KRC_Down::Tick(const _float& fTimeDelta)

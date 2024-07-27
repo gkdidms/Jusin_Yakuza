@@ -10,23 +10,23 @@ CKiryu_KRS_Attack::CKiryu_KRS_Attack()
 	// 전투 중 아이들 모션은 어드벤처와 동일하다
 	
 	/* 0 ~ 3 */
-	m_AnimationIndices.push_back(344);	//[344]	p_krs_cmb_01[p_krs_cmb_01]
-	m_AnimationIndices.push_back(353);	//[353]	p_krs_cmb_02[p_krs_cmb_02]
-	m_AnimationIndices.push_back(358);	//[358]	p_krs_cmb_03[p_krs_cmb_03]
-	m_AnimationIndices.push_back(362);	//[362]	p_krs_cmb_04[p_krs_cmb_04]
+	m_AnimationIndices.push_back(519);	//[519]	p_krs_cmb_01[p_krs_cmb_01]
+	m_AnimationIndices.push_back(528);	//[528]	p_krs_cmb_02[p_krs_cmb_02]
+	m_AnimationIndices.push_back(533);	//[533]	p_krs_cmb_03[p_krs_cmb_03]
+	m_AnimationIndices.push_back(537);	//[537]	p_krs_cmb_04[p_krs_cmb_04]
 
 	/* 4 ~ 7 */
-	m_AnimationIndices.push_back(351);	//[351]	p_krs_cmb_01_fin[p_krs_cmb_01_fin]
-	m_AnimationIndices.push_back(357);	//[357]	p_krs_cmb_02_fin[p_krs_cmb_02_fin]
-	m_AnimationIndices.push_back(361);	//[361]	p_krs_cmb_03_fin[p_krs_cmb_03_fin]
-	m_AnimationIndices.push_back(363);	//[363]	p_krs_cmb_04_fin[p_krs_cmb_04_fin]
+	m_AnimationIndices.push_back(526);	//[526]	p_krs_cmb_01_fin[p_krs_cmb_01_fin]
+	m_AnimationIndices.push_back(532);	//[532]	p_krs_cmb_02_fin[p_krs_cmb_02_fin]
+	m_AnimationIndices.push_back(536);	//[536]	p_krs_cmb_03_fin[p_krs_cmb_03_fin]
+	m_AnimationIndices.push_back(538);	//[538]	p_krs_cmb_04_fin[p_krs_cmb_04_fin]
 	
 	/* 8 ~ 9 */
-	m_AnimationIndices.push_back(390);	//[390]	p_krs_sync_cmb_03_fin[p_krs_sync_cmb_03_fin]
-	m_AnimationIndices.push_back(364);	//[364]	p_krs_cmb_04_finw[p_krs_cmb_04_finw]
+	m_AnimationIndices.push_back(573);	//[573]	p_krs_sync_cmb_03_fin[p_krs_sync_cmb_03_fin]
+	m_AnimationIndices.push_back(539);	//[539]	p_krs_cmb_04_finw[p_krs_cmb_04_finw]
 
 	/* 10 */
-	m_AnimationIndices.push_back(330);	//[330]	p_krs_atk_down_trample[p_krs_atk_down_trample]
+	m_AnimationIndices.push_back(505);	//[505]	p_krs_atk_down_trample[p_krs_atk_down_trample]
 }
 
 void CKiryu_KRS_Attack::Tick(const _float& fTimeDelta)

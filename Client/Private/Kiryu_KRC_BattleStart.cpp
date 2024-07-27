@@ -6,10 +6,10 @@
 CKiryu_KRC_BattleStart::CKiryu_KRC_BattleStart()
 	:CBehaviorAnimation{}
 {
-	m_AnimationIndices.push_back(194);	// [194]	p_krc_style_st[p_krc_style_st]
-	m_AnimationIndices.push_back(192);	// [192]	p_krc_stand_btl_lp[p_krc_stand_btl_lp]
-	//m_AnimationIndices.push_back(308);	//[193]	p_krc_stand_btl_st[p_krc_stand_btl_st]
-	m_AnimationIndices.push_back(191);	// [191]	p_krc_stand_btl_en[p_krc_stand_btl_en]
+	m_AnimationIndices.push_back(320);	// [320]	p_krc_style_st[p_krc_style_st]
+	m_AnimationIndices.push_back(318);	// [318]	p_krc_stand_btl_lp[p_krc_stand_btl_lp]
+	//m_AnimationIndices.push_back(319);	//[319]	p_krc_stand_btl_st[p_krc_stand_btl_st]
+	m_AnimationIndices.push_back(317);	// [317]	p_krc_stand_btl_en[p_krc_stand_btl_en]
 }
 
 void CKiryu_KRC_BattleStart::Tick(const _float& fTimeDelta)

@@ -5,14 +5,14 @@
 CKiryu_KRC_Walk::CKiryu_KRC_Walk()
 	:CBehaviorAnimation{}
 {
-	m_AnimationIndices.push_back(184);			// 0 [184]	p_krc_shift_b[p_krc_shift_b]
-	m_AnimationIndices.push_back(185);			// 1 [185]	p_krc_shift_br[p_krc_shift_br]		// bl 애니메이션ㅇ ㅣ없다!!!!!!! 으아름ㅇ나ㅣ르ㅏㅇ닉ㄹ
-	m_AnimationIndices.push_back(185);			// 2 [185]	p_krc_shift_br[p_krc_shift_br]
-	m_AnimationIndices.push_back(186);			// 3 [186]	p_krc_shift_f[p_krc_shift_f]
-	m_AnimationIndices.push_back(187);			// 4 [187]	p_krc_shift_fl[p_krc_shift_fl]
-	m_AnimationIndices.push_back(188);			// 5 [188]	p_krc_shift_fr[p_krc_shift_fr]
-	m_AnimationIndices.push_back(189);			// 6 [189]	p_krc_shift_l[p_krc_shift_l]
-	m_AnimationIndices.push_back(190);			// 7 [190]	p_krc_shift_r[p_krc_shift_r]
+	m_AnimationIndices.push_back(301);			// 0 [301]	p_krc_shift_b[p_krc_shift_b]
+	m_AnimationIndices.push_back(303);			// 1 [303]	[p_krc_shift_bl]
+	m_AnimationIndices.push_back(305);			// 2 [305]	p_krc_shift_br[p_krc_shift_br]
+	m_AnimationIndices.push_back(307);			// 3 [307]	p_krc_shift_f[p_krc_shift_f]
+	m_AnimationIndices.push_back(309);			// 4 [309]	p_krc_shift_fl[p_krc_shift_fl]
+	m_AnimationIndices.push_back(311);			// 5 [311]	p_krc_shift_fr[p_krc_shift_fr]
+	m_AnimationIndices.push_back(313);			// 6 [313]	p_krc_shift_l[p_krc_shift_l]
+	m_AnimationIndices.push_back(315);			// 7 [315]	p_krc_shift_r[p_krc_shift_r]
 }
 
 void CKiryu_KRC_Walk::Tick(const _float& fTimeDelta)
