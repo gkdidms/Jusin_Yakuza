@@ -334,6 +334,7 @@ CLandObject* CCollision_Manager::Get_Near_LandObject(CLandObject* pObject, vecto
     for (auto& pTarget : pObjects)
     {
         if (pTarget == pObject) continue;
+        if (pTarget->isObjectDead()) continue;
 
         _vector vBasePosition = pObject->Get_TransformCom()->Get_State(CTransform::STATE_POSITION);
         _vector vTargetPosition = pTarget->Get_TransformCom()->Get_State(CTransform::STATE_POSITION);

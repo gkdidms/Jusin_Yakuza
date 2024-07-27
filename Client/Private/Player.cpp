@@ -76,7 +76,7 @@ HRESULT CPlayer::Initialize(void* pArg)
 	// 기본 몬스터: 20
 	// 삥쟁이: 30
 	// 쿠제: 100
-	m_Info.iMaxHP = 100.f;
+	m_Info.iMaxHP = 150.f;
 	m_Info.iHp = m_Info.iMaxHP;
 
 	ZeroMemory(&m_MoveDirection, sizeof(_bool) * MOVE_DIRECTION_END);
@@ -1606,8 +1606,18 @@ void CPlayer::Setting_Target_Enemy()
 {
 	if (2 == m_iCurrentBehavior) return; 
 	auto pMonsters = m_pGameInstance->Get_GameObjects(m_iCurrentLevel, TEXT("Layer_Monster"));
-
-	m_pTargetObject = m_pCollisionManager->Get_Near_LandObject(this, pMonsters);
+	
+	if (nullptr != m_pTargetObject)
+	{
+		_float vDistance = XMVectorGetX(XMVector3Length(m_pTransformCom->Get_State(CTransform::STATE_POSITION) - m_pTargetObject->Get_TransformCom()->Get_State(CTransform::STATE_POSITION)));
+		
+		// 기존 타겟중이던 친구의 거리가 3.f 이상 멀어지면 그때 다시 타겟팅한다.
+		if(3.f < vDistance)
+			m_pTargetObject = m_pCollisionManager->Get_Near_LandObject(this, pMonsters);
+	}
+	else
+		m_pTargetObject = m_pCollisionManager->Get_Near_LandObject(this, pMonsters);
+	
 }
 
 void CPlayer::AccHitGauge()
