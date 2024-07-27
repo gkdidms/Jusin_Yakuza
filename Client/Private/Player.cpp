@@ -17,6 +17,7 @@
 #include "Mesh.h"
 
 #include "UIManager.h"
+#include "Camera.h"
 
 #pragma region 행동 관련 헤더들
 #include "Kiryu_KRC_Hit.h"
@@ -144,13 +145,34 @@ void CPlayer::Tick(const _float& fTimeDelta)
 		m_pUIManager->Click();
 	}
 
+	if (m_pGameInstance->GetKeyState(DIK_Z) == TAP)
+	{
+		m_eAnimComType = (m_eAnimComType == DEFAULT_ANIMAITION ? CUTSCENE_ANIMAITION : DEFAULT_ANIMAITION);
+		m_pSystemManager->Set_Camera(CAMERA_CUTSCENE == m_pSystemManager->Get_Camera() ? CAMERA_PLAYER : CAMERA_CUTSCENE);
+	}
+
 	Synchronize_Root(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")));
 
 #ifdef _DEBUG
 	if (m_isAnimStart)
-		m_pModelCom->Play_Animation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")));
+	{
+		if (DEFAULT_ANIMAITION == m_eAnimComType)
+			m_pModelCom->Play_Animation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")));
+		else
+		{
+
+			m_pModelCom->Play_Animation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")), m_pAnimCom, true, 12, false);
+		}
+	}
 #else
-	m_pModelCom->Play_Animation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")));
+	if (DEFAULT_ANIMAITION == m_eAnimComType)
+		m_pModelCom->Play_Animation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")));
+	else
+	{
+		m_pModelCom->Play_Animation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")), m_pAnimCom);
+		// 카메라 본 애니메이션 실행
+		m_pModelCom->Play_Animation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")), m_pAnimCom, false, "Camera");
+	}
 #endif // _DEBUG
 
 	for (auto& pCollider : m_pColliders)
@@ -172,6 +194,48 @@ void CPlayer::Tick(const _float& fTimeDelta)
 	Trail_Event();
 	Effect_Control_Aura();
 	Setting_Target_Enemy();
+
+
+	if (CAMERA_CUTSCENE == m_pSystemManager->Get_Camera())
+	{
+		CPlayer* pPlayer = this;
+		CCamera* pCamera = dynamic_cast<CCamera*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Camera"), CAMERA_CUTSCENE));
+		// Blender에서 얻은 본의 변환 행렬
+		_matrix matBoneMatrix = XMLoadFloat4x4(m_pCameraModel->Get_BoneCombinedTransformationMatrix("Camera"));
+
+		// 플레이어의 월드 변환 행렬
+		//_matrix matPlayerWorld = pPlayer->Get_TransformCom()->Get_WorldMatrix();
+		_matrix matPlayerWorld = m_pTransformCom->Get_WorldMatrix();
+		_matrix matVectorBoneWorld = XMLoadFloat4x4(m_pModelCom->Get_BoneCombinedTransformationMatrix("vector_c_n"));
+
+		// Blender의 좌표계를 DirectX의 좌표계로 변환하기 위한 회전 행렬
+		_matrix rotationMatrixX = XMMatrixRotationX(XMConvertToRadians(90));
+		_matrix rotationMatrixY = XMMatrixRotationY(XMConvertToRadians(-180));
+		_matrix rotationMatrixZ = XMMatrixRotationZ(XMConvertToRadians(90));
+
+		// Blender의 본 변환 행렬과 플레이어의 월드 변환 행렬을 결합하고 좌표계 변환을 적용
+		_matrix finalMat = rotationMatrixX * rotationMatrixY * rotationMatrixZ * matVectorBoneWorld * matBoneMatrix * matPlayerWorld;
+
+		//finalMat.r[CTransform::STATE_POSITION] -= finalMat.r[CTransform::STATE_LOOK];
+
+		// 최종 뷰 행렬을 계산
+		_matrix viewMatrix = XMMatrixInverse(nullptr, finalMat);
+
+		// 뷰 행렬을 파이프라인에 설정
+		m_pGameInstance->Set_Transform(CPipeLine::D3DTS_VIEW, viewMatrix);
+
+		auto KeyFrames = m_pCameraModel->Get_CurrentKeyFrameIndices(32);
+		_uint iKeyFrameIndex = KeyFrames->front();
+
+
+		pCamera->Set_FoV(m_pCameraModel->Get_FoV(m_pCameraModel->Get_AnimationName(32), iKeyFrameIndex));
+
+		CModel::ANIMATION_DESC Desc{ 32, true };
+		m_pCameraModel->Set_AnimationIndex(Desc);
+
+		// 카메라 본 애니메이션 실행
+		m_pCameraModel->Play_Animation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")), Desc, false, "Camera");
+	}
 }
 
 void CPlayer::Late_Tick(const _float& fTimeDelta)
@@ -1252,6 +1316,10 @@ HRESULT CPlayer::Add_Components()
 		TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
 		return E_FAIL;
 
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Model_Kiryu_CamAction"),
+		TEXT("Com_Model_Cam"), reinterpret_cast<CComponent**>(&m_pCameraModel))))
+		return E_FAIL;
+
 	CBounding_AABB::BOUNDING_AABB_DESC		ColliderDesc{};
 
 	ColliderDesc.eType = CCollider::COLLIDER_AABB;
@@ -1264,6 +1332,10 @@ HRESULT CPlayer::Add_Components()
 
 	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Navigation"),
 		TEXT("Com_Navigation"), reinterpret_cast<CComponent**>(&m_pNavigationCom))))
+		return E_FAIL;
+
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_CutSceneAnim_ForPlayer"),
+		TEXT("Com_Anim"), reinterpret_cast<CComponent**>(&m_pAnimCom))))
 		return E_FAIL;
 
 	return S_OK;
@@ -1633,6 +1705,8 @@ void CPlayer::Free()
 
 	Safe_Release(m_pUIManager);
 	Safe_Release(m_pNavigationCom);
+	Safe_Release(m_pAnimCom);
+	Safe_Release(m_pCameraModel);
 
 	for (size_t i = 0; i < BATTLE_STYLE_END; i++)
 	{

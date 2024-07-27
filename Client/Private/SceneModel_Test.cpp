@@ -47,71 +47,79 @@ HRESULT CSceneModel_Test::Initialize(void* pArg)
 
 void CSceneModel_Test::Priority_Tick(const _float& fTimeDelta)
 {
-	if (m_pGameInstance->GetKeyState(DIK_PGUP))
-		m_pTransformCom->Go_Straight(fTimeDelta);
-	if (m_pGameInstance->GetKeyState(DIK_PGDN))
-		m_pTransformCom->Turn(m_pTransformCom->Get_State(CTransform::STATE_UP), fTimeDelta);
+	//if (m_pGameInstance->GetKeyState(DIK_PGUP))
+	//	m_pTransformCom->Go_Straight(fTimeDelta);
+	//if (m_pGameInstance->GetKeyState(DIK_PGDN))
+	//	m_pTransformCom->Turn(m_pTransformCom->Get_State(CTransform::STATE_UP), fTimeDelta);
 
-	if (m_pGameInstance->GetKeyState(DIK_O))
-		fTestY += 1.f;
-	if (m_pGameInstance->GetKeyState(DIK_P))
-		fTestY -= 1.f;
+	//if (m_pGameInstance->GetKeyState(DIK_O))
+	//	fTestY += 1.f;
+	//if (m_pGameInstance->GetKeyState(DIK_P))
+	//	fTestY -= 1.f;
 
-	if (m_pGameInstance->GetKeyState(DIK_N))
-		fTestZ += 1.f;
-	if (m_pGameInstance->GetKeyState(DIK_M))
-		fTestZ -= 1.f;
+	//if (m_pGameInstance->GetKeyState(DIK_N))
+	//	fTestZ += 1.f;
+	//if (m_pGameInstance->GetKeyState(DIK_M))
+	//	fTestZ -= 1.f;
 
-	if (m_pGameInstance->GetKeyState(DIK_K))
-		fTestX += 1.f;
-	if (m_pGameInstance->GetKeyState(DIK_L))
-		fTestX -= 1.f;
+	//if (m_pGameInstance->GetKeyState(DIK_K))
+	//	fTestX += 1.f;
+	//if (m_pGameInstance->GetKeyState(DIK_L))
+	//	fTestX -= 1.f;
 }
 
 void CSceneModel_Test::Tick(const _float& fTimeDelta)
 {
-	if (m_pGameInstance->GetKeyState(DIK_SPACE) == TAP)
-	{
-		test = !test;
-	}
+	//if (m_pGameInstance->GetKeyState(DIK_SPACE) == TAP)
+	//{
+	//	test = !test;
+	//}
 
 	if(test)
 		m_pGameInstance->Set_TimeSpeed(TEXT("Timer_Player"), 0.f);
 	else
 		m_pGameInstance->Set_TimeSpeed(TEXT("Timer_Player"), 1.f);
 
-	m_pModelCom->Play_Animation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")));
+	m_pModelCom->Play_Animation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")), false);
 
-	if (CAMERA_CINEMACHINE == m_pSystemManager->Get_Camera())
+	if (CAMERA_CUTSCENE == m_pSystemManager->Get_Camera())
 	{
-		CPlayer* pPlayer = static_cast<CPlayer*>(m_pGameInstance->Get_GameObject(LEVEL_TEST, TEXT("Layer_SceneModel_Test"), 0));
-		//CCamera* pCamera = dynamic_cast<CCamera*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Camera"), CAMERA_PLAYER));
-		// Blender에서 얻은 본의 변환 행렬
-		_matrix matBoneMatrix = XMLoadFloat4x4(m_pModelCom->Get_BoneCombinedTransformationMatrix("Camera"));
+		//CPlayer* pPlayer = static_cast<CPlayer*>(m_pGameInstance->Get_GameObject(LEVEL_TEST, TEXT("Layer_SceneModel_Test"), 0));
+		//CCamera* pCamera = dynamic_cast<CCamera*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Camera"), CAMERA_CUTSCENE));
+		//// Blender에서 얻은 본의 변환 행렬
+		//_matrix matBoneMatrix = XMLoadFloat4x4(m_pModelCom->Get_BoneCombinedTransformationMatrix("Camera"));
 
-		// 플레이어의 월드 변환 행렬
-		//_matrix matPlayerWorld = pPlayer->Get_TransformCom()->Get_WorldMatrix();
-		_matrix matPlayerWorld = m_pTransformCom->Get_WorldMatrix();
-		_matrix matVectorBoneWorld = XMLoadFloat4x4(m_pModelCom->Get_BoneCombinedTransformationMatrix("vector_c_n"));
+		//// 플레이어의 월드 변환 행렬
+		////_matrix matPlayerWorld = pPlayer->Get_TransformCom()->Get_WorldMatrix();
+		//_matrix matPlayerWorld = m_pTransformCom->Get_WorldMatrix();
+		//_matrix matVectorBoneWorld = XMLoadFloat4x4(m_pModelCom->Get_BoneCombinedTransformationMatrix("vector_c_n"));
 
-		// Blender의 좌표계를 DirectX의 좌표계로 변환하기 위한 회전 행렬
-		_matrix rotationMatrixX = XMMatrixRotationX(XMConvertToRadians(fTestX));
-		_matrix rotationMatrixY = XMMatrixRotationY(XMConvertToRadians(fTestY));
-		_matrix rotationMatrixZ = XMMatrixRotationZ(XMConvertToRadians(fTestZ));
+		//// Blender의 좌표계를 DirectX의 좌표계로 변환하기 위한 회전 행렬
+		//_matrix rotationMatrixX = XMMatrixRotationX(XMConvertToRadians(fTestX));
+		//_matrix rotationMatrixY = XMMatrixRotationY(XMConvertToRadians(fTestY));
+		//_matrix rotationMatrixZ = XMMatrixRotationZ(XMConvertToRadians(fTestZ));
 
-		// Blender의 본 변환 행렬과 플레이어의 월드 변환 행렬을 결합하고 좌표계 변환을 적용
-		_matrix finalMat = rotationMatrixX* rotationMatrixY * rotationMatrixZ * matVectorBoneWorld * matBoneMatrix * matPlayerWorld;
+		//// Blender의 본 변환 행렬과 플레이어의 월드 변환 행렬을 결합하고 좌표계 변환을 적용
+		//_matrix finalMat = rotationMatrixX * rotationMatrixY * rotationMatrixZ * matVectorBoneWorld * matBoneMatrix * matPlayerWorld;
 
-		// 최종 뷰 행렬을 계산
-		_matrix viewMatrix = XMMatrixInverse(nullptr, finalMat);
+		////finalMat.r[CTransform::STATE_POSITION] -= finalMat.r[CTransform::STATE_LOOK];
 
-		// 뷰 행렬을 파이프라인에 설정
-		m_pGameInstance->Set_Transform(CPipeLine::D3DTS_VIEW, viewMatrix);
+		//// 최종 뷰 행렬을 계산
+		//_matrix viewMatrix = XMMatrixInverse(nullptr, finalMat);
+
+		//// 뷰 행렬을 파이프라인에 설정
+		//m_pGameInstance->Set_Transform(CPipeLine::D3DTS_VIEW, viewMatrix);
+
+		//auto KeyFrames = m_pModelCom->Get_CurrentKeyFrameIndices(32);
+		//_uint iKeyFrameIndex = KeyFrames->front();
+
+
+		//pCamera->Set_FoV(m_pModelCom->Get_FoV(m_pModelCom->Get_AnimationName(32), iKeyFrameIndex));
 	}
 	
 	
 	CModel::ANIMATION_DESC Desc{ 32, true };
-	m_pModelCom->Play_Animation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")), Desc, "Camera");
+	m_pModelCom->Play_Animation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")), Desc, false, "Camera");
 }
 
 void CSceneModel_Test::Late_Tick(const _float& fTimeDelta)

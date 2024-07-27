@@ -5,6 +5,7 @@
 BEGIN(Engine)
 class CShader;
 class CNavigation;
+class CAnim;
 END
 
 BEGIN(Client)
@@ -163,6 +164,10 @@ public:
     /* 출력, 행동 관련 포인터 변수들 */
 private:
     CNavigation* m_pNavigationCom = { nullptr };
+
+    CAnim* m_pAnimCom = { nullptr }; // 애니메이션만 따로 저장하고있는 애니메이션 컴포넌트
+    CModel* m_pCameraModel = { nullptr };
+
     // 이 때, 사용하는 키 값은 행동에 대한 키값을 가진다. (스타일은 배열 인덱스)
     map<_uint, class CBehaviorAnimation*> m_AnimationTree[BATTLE_STYLE_END];
     //ui
@@ -183,15 +188,17 @@ private:
     _uint           m_iCurrentBehavior = static_cast<_uint>(KRS_BEHAVIOR_STATE::BTL_START);
 
     // 스웨이용 키입력 디렉션 (카메라 기준으로 처리하기 위함)
-    _bool           m_InputDirection[MOVE_DIRECTION_END];
-    _bool           m_MoveDirection[MOVE_DIRECTION_END];
+    _bool                       m_InputDirection[MOVE_DIRECTION_END];
+    _bool                       m_MoveDirection[MOVE_DIRECTION_END];
 
-    _float          m_fPrevSpeed = { 0.f };
-    _float4         m_vPrevMove;
-    _float4         m_vPrevRotation;
-    _float4x4       m_ModelWorldMatrix;
+    _float                      m_fPrevSpeed = { 0.f };
+    _float4                     m_vPrevMove;
+    _float4                     m_vPrevRotation;
+    _float4x4                   m_ModelWorldMatrix;
 
-    _bool          m_isAuraOn = { false };
+    _bool                       m_isAuraOn = { false };
+
+    ANIMATION_COMPONENT_TYPE    m_eAnimComType = { DEFAULT_ANIMAITION };
 
     /* 플레이어 스테이터스 관련 변수들 */
 private:
@@ -199,6 +206,7 @@ private:
     _float          m_fHitGauge = { 0.f };
 
     int             m_iNaviRouteNum = { 0 }; //루트
+
 
 
 #ifdef _DEBUG

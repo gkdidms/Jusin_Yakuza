@@ -46,9 +46,9 @@ public:
 	HRESULT Bind_BoneMatrices(class CShader* pShader, const _char* pConstantName, _uint iNumMeshIndex);
 	bool	Check_Exist_Material(_uint iNumMeshIndex, aiTextureType eTextureType);
 
-	void Play_Animation(_float fTimeDelta, string strExcludeBoneName = "");
-	void Play_Animation(_float fTimeDelta, class CAnim* pAnim, _bool isLoop = false, string strExcludeBoneName = "");
-	void Play_Animation(_float fTimeDelta, const ANIMATION_DESC& AnimDesc, string strExcludeBoneName = "");
+	void Play_Animation(_float fTimeDelta, _bool isRoot = true, string strExcludeBoneName = "");
+	void Play_Animation(_float fTimeDelta, class CAnim* pAnim, _bool isLoop = false, _int iAnimIndex = -1, _bool isRoot = true, string strExcludeBoneName = "");
+	void Play_Animation(_float fTimeDelta, const ANIMATION_DESC& AnimDesc, _bool isRoot = true, string strExcludeBoneName = "");
 
 	void Set_AnimationIndex(const ANIMATION_DESC& AnimDesc, _double ChangeInterval = 0.0);
 	_bool Set_AnimationIndex(_uint iAnimIndex, _double ChangeInterval = 0.0);
@@ -62,6 +62,10 @@ public:
 	_uint Get_NumAnimations() { return m_iAnimations; }
 	_uint Get_NumBones() { return m_iNumBones; }
 	_uint Get_CurrentAnimationIndex() { return m_AnimDesc.iAnimIndex; }
+	const vector<_uint>* Get_CurrentKeyFrameIndices(string strAnimationName = "");
+	const vector<_uint>* Get_CurrentKeyFrameIndices(_uint iAnimIndex);
+
+	_float Get_FoV(string strAnimationName, _uint iKeyFrameIndex);
 
 	_bool Get_AnimFinished() const;
 	_bool Get_AnimChanged() const;
@@ -153,11 +157,9 @@ private:
 	_uint						m_iCameras = { 0 };
 	vector<FOV_ANIMATION>		m_FovAnimation;
 
-
 	_bool						m_isAnimChange = { false };
 	_float						m_fAnimRatio = { 0.2f };
 	_double						m_ChangeInterval = { 0.2 };
-
 
 	vector<DECAL_DESC>			m_vDecalMaterials;
 	bool						m_bOrigin = { false };

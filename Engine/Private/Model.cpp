@@ -923,18 +923,18 @@ bool CModel::Check_Exist_Material(_uint iNumMeshIndex, aiTextureType eTextureTyp
 	return true;
 }
 
-void CModel::Play_Animation(_float fTimeDelta, string strExcludeBoneName)
+void CModel::Play_Animation(_float fTimeDelta, _bool isRoot, string strExcludeBoneName)
 {
 	if (1 > m_Animations.size()) return;
 
 	if(0.0 == m_ChangeInterval)
-		m_Animations[m_AnimDesc.iAnimIndex]->Update_TransformationMatrix(fTimeDelta, m_Bones, m_AnimDesc.isLoop);
+		m_Animations[m_AnimDesc.iAnimIndex]->Update_TransformationMatrix(fTimeDelta, m_Bones, m_AnimDesc.isLoop, isRoot, strExcludeBoneName);
 	else
 	{
 		if (m_Animations[m_AnimDesc.iAnimIndex]->Get_Changed())
-			m_Animations[m_AnimDesc.iAnimIndex]->Update_TransformationMatrix(fTimeDelta, m_Bones, m_AnimDesc.isLoop, strExcludeBoneName);
+			m_Animations[m_AnimDesc.iAnimIndex]->Update_TransformationMatrix(fTimeDelta, m_Bones, m_AnimDesc.isLoop, isRoot, strExcludeBoneName);
 		else
-			m_Animations[m_AnimDesc.iAnimIndex]->Update_Change_Animation(fTimeDelta, m_Bones, m_Animations[m_iPrevAnimIndex], m_ChangeInterval);
+			m_Animations[m_AnimDesc.iAnimIndex]->Update_Change_Animation(fTimeDelta, m_Bones, m_Animations[m_iPrevAnimIndex], m_ChangeInterval, isRoot);
 	}
 
 	/* 전체뼈를 순회하면서 모든 뼈의 CombinedTransformationMatrix를 갱신한다. */
@@ -942,24 +942,45 @@ void CModel::Play_Animation(_float fTimeDelta, string strExcludeBoneName)
 		pBone->Update_CombinedTransformationMatrix(m_Bones, XMLoadFloat4x4(&m_PreTransformMatrix));
 }
 
-void CModel::Play_Animation(_float fTimeDelta, CAnim* pAnim, _bool isLoop, string strExcludeBoneName)
+void CModel::Play_Animation(_float fTimeDelta, CAnim* pAnim, _bool isLoop, _int iAnimIndex, _bool isRoot, string strExcludeBoneName)
 {
 	//애니메이션 목록 전달하기 
 	vector<CAnimation*> Animations = pAnim->Get_Animations();
 
 	if (1 > Animations.size()) return;
 
-	pAnim->Set_CurrentAnimIndex(m_AnimDesc.iAnimIndex);
-
-	if(0.0 == m_ChangeInterval)
-		Animations[m_AnimDesc.iAnimIndex]->Update_TransformationMatrix(fTimeDelta, m_Bones, isLoop, strExcludeBoneName);
-	else
+	// 넘겨받은 iAnimIndex이 -1 이라면 기존대로 실행하고
+	if (0 > iAnimIndex)
 	{
-		if (Animations[m_AnimDesc.iAnimIndex]->Get_Changed())
-			Animations[m_AnimDesc.iAnimIndex]->Update_TransformationMatrix(fTimeDelta, m_Bones, isLoop, strExcludeBoneName);
+		pAnim->Set_CurrentAnimIndex(m_AnimDesc.iAnimIndex);
+
+		if (0.0 == m_ChangeInterval)
+			Animations[m_AnimDesc.iAnimIndex]->Update_TransformationMatrix(fTimeDelta, m_Bones, isLoop, isRoot, strExcludeBoneName);
 		else
 		{
-			Animations[m_AnimDesc.iAnimIndex]->Update_Change_Animation(fTimeDelta, m_Bones, Animations[m_iPrevAnimIndex], m_ChangeInterval);
+			if (Animations[m_AnimDesc.iAnimIndex]->Get_Changed())
+				Animations[m_AnimDesc.iAnimIndex]->Update_TransformationMatrix(fTimeDelta, m_Bones, isLoop, isRoot, strExcludeBoneName);
+			else
+			{
+				Animations[m_AnimDesc.iAnimIndex]->Update_Change_Animation(fTimeDelta, m_Bones, Animations[m_iPrevAnimIndex], m_ChangeInterval, isRoot);
+			}
+		}
+	}
+	// -1이 아니라면 넘겨받은 인덱스를 실행시킨다.
+	else
+	{
+		pAnim->Set_CurrentAnimIndex(iAnimIndex);
+
+		if (0.0 == m_ChangeInterval)
+			Animations[iAnimIndex]->Update_TransformationMatrix(fTimeDelta, m_Bones, isLoop, isRoot, strExcludeBoneName);
+		else
+		{
+			if (Animations[iAnimIndex]->Get_Changed())
+				Animations[iAnimIndex]->Update_TransformationMatrix(fTimeDelta, m_Bones, isLoop, isRoot, strExcludeBoneName);
+			else
+			{
+				Animations[iAnimIndex]->Update_Change_Animation(fTimeDelta, m_Bones, Animations[m_iPrevAnimIndex], m_ChangeInterval, isRoot);
+			}
 		}
 	}
 
@@ -968,18 +989,18 @@ void CModel::Play_Animation(_float fTimeDelta, CAnim* pAnim, _bool isLoop, strin
 		pBone->Update_CombinedTransformationMatrix(m_Bones, XMLoadFloat4x4(&m_PreTransformMatrix));
 }
 
-void CModel::Play_Animation(_float fTimeDelta, const ANIMATION_DESC& AnimDesc, string strExcludeBoneName)
+void CModel::Play_Animation(_float fTimeDelta, const ANIMATION_DESC& AnimDesc, _bool isRoot, string strExcludeBoneName)
 {
 	if (1 > m_Animations.size()) return;
 
 	if (0.0 == m_ChangeInterval)
-		m_Animations[AnimDesc.iAnimIndex]->Update_TransformationMatrix(fTimeDelta, m_Bones, AnimDesc.isLoop);
+		m_Animations[AnimDesc.iAnimIndex]->Update_TransformationMatrix(fTimeDelta, m_Bones, AnimDesc.isLoop, isRoot, strExcludeBoneName);
 	else
 	{
 		if (m_Animations[AnimDesc.iAnimIndex]->Get_Changed())
-			m_Animations[AnimDesc.iAnimIndex]->Update_TransformationMatrix(fTimeDelta, m_Bones, AnimDesc.isLoop, strExcludeBoneName);
+			m_Animations[AnimDesc.iAnimIndex]->Update_TransformationMatrix(fTimeDelta, m_Bones, AnimDesc.isLoop,  isRoot, strExcludeBoneName);
 		else
-			m_Animations[AnimDesc.iAnimIndex]->Update_Change_Animation(fTimeDelta, m_Bones, m_Animations[m_iPrevAnimIndex], m_ChangeInterval);
+			m_Animations[AnimDesc.iAnimIndex]->Update_Change_Animation(fTimeDelta, m_Bones, m_Animations[m_iPrevAnimIndex], m_ChangeInterval, isRoot);
 	}
 
 	/* 전체뼈를 순회하면서 모든 뼈의 CombinedTransformationMatrix를 갱신한다. */
@@ -1040,6 +1061,51 @@ void CModel::Reset_Animation(_uint iAnimIndex)
 	m_Animations[iAnimIndex]->Reset();
 }
 
+
+const vector<_uint>* CModel::Get_CurrentKeyFrameIndices(string strAnimationName)
+{
+	if(strAnimationName == "")
+		return m_Animations[m_AnimDesc.iAnimIndex]->Get_CurrentKeyFrameIndices();
+	else
+	{
+		for (auto& pAnimation : m_Animations)
+		{
+			if ((pAnimation->Get_AnimName() == strAnimationName))
+			{
+				return pAnimation->Get_CurrentKeyFrameIndices();
+			}
+		}
+		
+	}
+}
+
+const vector<_uint>* CModel::Get_CurrentKeyFrameIndices(_uint iAnimIndex)
+{
+	return m_Animations[iAnimIndex]->Get_CurrentKeyFrameIndices();
+}
+
+_float CModel::Get_FoV(string strAnimationName, _uint iKeyFrameIndex)
+{
+	for (auto& Fov : m_FovAnimation)
+	{
+		std::string originalString = strAnimationName;
+		std::string toRemove = "Camera|";
+
+		// 문자열에서 특정 패턴 제거
+		size_t pos = originalString.find(toRemove);
+		if (pos != std::string::npos) {
+			originalString.erase(pos, toRemove.length());
+		}
+
+		if (Fov.iKeyFrameIndex == iKeyFrameIndex && Fov.strAnimationName == originalString)
+		{
+			return Fov.fFov;
+		}
+	}
+
+	// 따로 값이 없다면 기존에 사용하던 기본값 리턴
+	return XMConvertToRadians(60.0f);
+}
 
 _bool CModel::Get_AnimFinished() const
 {
