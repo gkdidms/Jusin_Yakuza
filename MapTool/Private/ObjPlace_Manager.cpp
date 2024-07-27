@@ -432,6 +432,7 @@ void CObjPlace_Manager::Save_GameObject(int iLevel)
 
 		/* iLayer -> construction에서 layer에 대한 정보를 읽어와서 이에 대해 저장 */
 		XMStoreFloat4x4(&pMapTotalInform.pMapObjDesc[iIndex].vTransform, iter.second->Get_TransformCom()->Get_WorldMatrix());
+		//XMStoreFloat4x4(&pMapTotalInform.pMapObjDesc[iIndex].vTransform, XMMatrixIdentity());
 		//string strlayer = m_pGameInstance->WstringToString(m_Layers[iLayer]);
 		strcpy(pMapTotalInform.pMapObjDesc[iIndex].strLayer, m_Layers[iLayer]);
 
@@ -921,10 +922,10 @@ bool CObjPlace_Manager::Add_CloneObject_Imgui(MAPTOOL_OBJPLACE_DESC objDesc, _ui
 
 		_matrix			startPos;
 		startPos = XMMatrixIdentity();
-		startPos.r[3].m128_f32[0] = vTargetPos.m128_f32[0];
-		startPos.r[3].m128_f32[1] = vTargetPos.m128_f32[1];
-		startPos.r[3].m128_f32[2] = vTargetPos.m128_f32[2];
-		startPos.r[3].m128_f32[3] = vTargetPos.m128_f32[3];
+		//startPos.r[3].m128_f32[0] = vTargetPos.m128_f32[0];
+		//startPos.r[3].m128_f32[1] = vTargetPos.m128_f32[1];
+		//startPos.r[3].m128_f32[2] = vTargetPos.m128_f32[2];
+		//startPos.r[3].m128_f32[3] = vTargetPos.m128_f32[3];
 
 
 		CConstruction::MAPOBJ_DESC		mapDesc;
@@ -1204,7 +1205,7 @@ void CObjPlace_Manager::Set_Map_Object()
 
 	Show_ExampleModel(objDesc, folder_current_idx, object_current_idx);
 
-
+	ImGui::Text(u8"오브젝트 추가 버튼 누르면 그냥 원점에 생성");
 	if (ImGui::Button(u8"Object 추가"))
 	{
 		m_bDoing_Place_Object = true;

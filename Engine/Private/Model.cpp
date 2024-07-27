@@ -1058,6 +1058,22 @@ const _float4* CModel::Get_AnimationCenterRotation(CAnim* pAnim)
 		return pAnim->Get_AnimationCenterRotation();
 }
 
+_float4x4 CModel::Get_LocalMatrix()
+{
+	if (0 == m_Meshes.size())
+	{
+		//예외처리
+		_float4x4	localMatrix;
+		XMStoreFloat4x4(&localMatrix, XMMatrixIdentity());
+		return localMatrix;
+	}
+	else
+	{
+		return m_Meshes[0]->Get_LocalMatrix();
+	}
+	
+}
+
 void CModel::Copy_DecalMaterial(vector<DECAL_DESC>* pDecals)
 {
 	for (int i = 0; i < m_vDecalMaterials.size(); i++)

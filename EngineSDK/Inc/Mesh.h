@@ -34,6 +34,8 @@ public:
 		return m_isAlphaApply;
 	}
 
+	_float4x4 Get_LocalMatrix() { return m_localMatrix; }
+
 public:
 	void Set_AlphaApply(_bool isValue) { m_isAlphaApply = isValue; }
 
@@ -48,6 +50,8 @@ private:
 
 	vector<_uint>		m_BoneIndices;
 	vector<_float4x4>	m_OffsetMatrices;
+
+	_float4x4			m_localMatrix;
 
 public:
 	static CMesh* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CModel::MODELTYPE eModelType, const aiMesh* pAIMesh, _fmatrix PreTransformMatrix, const vector<class CBone*>& Bones);

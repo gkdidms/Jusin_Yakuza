@@ -104,10 +104,43 @@ void CConstruction::Tick(const _float& fTimeDelta)
 
 void CConstruction::Late_Tick(const _float& fTimeDelta)
 {
-	m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
+	bool bRender = false;
+	vector<CMesh*> Meshes = m_pModelCom->Get_Meshes();
+	_uint	iNumMeshes = m_pModelCom->Get_NumMeshes();
 
-	for (auto& iter : m_vDecals)
-		iter->Late_Tick(fTimeDelta);
+
+	for (size_t i = 0; i < iNumMeshes; i++)
+	{
+		_float4x4 vLocalMatrix = Meshes[i]->Get_LocalMatrix();
+
+		XMVECTOR localPosition = XMVectorSet(vLocalMatrix._41, vLocalMatrix._42, vLocalMatrix._43, 1);
+
+		if (true == m_pGameInstance->isIn_LocalFrustum(localPosition, 3.f))
+		{
+			m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
+
+			for (auto& iter : m_vDecals)
+				iter->Late_Tick(fTimeDelta);
+			return;
+		}
+
+	}
+
+
+
+	// 로컬 위치로 변환
+	//_float4x4 vLocalMatrix = m_pModelCom->Get_LocalMatrix();
+
+	//XMVECTOR localPosition = XMVectorSet(vLocalMatrix._41, vLocalMatrix._42, vLocalMatrix._43, 1);
+
+	//if (true == m_pGameInstance->isIn_LocalFrustum(localPosition, 10.f))
+	//{
+	//	m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
+	//}
+	
+
+
+
 }
 
 HRESULT CConstruction::Render()

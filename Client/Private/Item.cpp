@@ -140,7 +140,15 @@ void CItem::Late_Tick(const _float& fTimeDelta)
 {
 	if (true == m_pGameInstance->isIn_WorldFrustum(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 3.f))
 	{
-		m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
+		if (ITEM_BRIGHT == m_eItemMode)
+		{
+			m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
+			m_pGameInstance->Add_Renderer(CRenderer::RENDER_EFFECT, this);
+		}
+		else
+		{
+			m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
+		}
 
 		for (auto& iter : m_vDecals)
 			iter->Late_Tick(fTimeDelta);

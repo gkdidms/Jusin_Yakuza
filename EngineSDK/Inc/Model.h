@@ -89,6 +89,9 @@ public:
 	const _float3* Get_AnimationCenterMove(class CAnim* pAnim = nullptr);
 	const _float4* Get_AnimationCenterRotation(class CAnim* pAnim = nullptr);
 
+	// 로컬 절두체를 위한
+	_float4x4		Get_LocalMatrix();
+
 public:
 	void Set_AnimLoop(_uint iAnimIndex, _bool isLoop)
 	{
@@ -143,6 +146,9 @@ private:
 
 	vector<DECAL_DESC>			m_vDecalMaterials;
 	bool						m_bOrigin = { false };
+
+
+	_float4x4					m_ModelLocalMatrix;
 
 public:
 	static CModel* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, MODELTYPE eModelType, const _char* pModelFilePath, _fmatrix PreTransformMatrix, _bool isExported, _bool isTool = false);

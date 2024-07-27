@@ -143,13 +143,14 @@ PS_OUT PS_MAIN(PS_IN In)
     if(true == g_bBright)
     {
         float minBrightness = 0;
-        float maxBrightness = 0.7;
+        float maxBrightness = 0.3;
     
         float brightness = 0.5 * (1 + sin(g_fBrightTime)); // 밝기를 0.5에서 1 사이로 변하도록 조정
         brightness = lerp(minBrightness, maxBrightness, brightness);
 
         // 완전히 흰색으로 깜빡이기 위한 색상 혼합
         float4 albedo = float4(1, 1, 1, 1); // 흰색 알베도
+        vDiffuse.a = 0;
         vDiffuse = lerp(vDiffuse, albedo, brightness); // 밝기를 알베도 색상과 혼합
     }
     

@@ -111,10 +111,11 @@ void CMap::Tick(const _float& fTimeDelta)
 
 void CMap::Late_Tick(const _float& fTimeDelta)
 {
-	XMMATRIX invWorldMat = XMMatrixInverse(nullptr, m_pTransformCom->Get_WorldMatrix());
 
-	// 월드 위치를 로컬 위치로 변환
-	XMVECTOR localPosition = XMVector3TransformCoord(m_pTransformCom->Get_State(CTransform::STATE_POSITION), invWorldMat);
+	// 로컬 위치로 변환
+	_float4x4 vLocalMatrix = m_pModelCom->Get_LocalMatrix();
+
+	XMVECTOR localPosition = XMVectorSet(vLocalMatrix._41, vLocalMatrix._42, vLocalMatrix._43, 1);
 
 	if (true == m_pGameInstance->isIn_LocalFrustum(localPosition, 4.f))
 	{
