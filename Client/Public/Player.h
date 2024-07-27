@@ -62,6 +62,35 @@ public:
         F, B, L, R, MOVE_DIRECTION_END
     };
 
+    enum CUTSCENE_ANIMATION_TYPE
+    {
+        /* 불한당 히트액션 */
+        FINISHBLOW,                 //H23320 피니시 블로의 극
+        GOUGEKI_C,                  // H20021 잡기 후 히트액션 (주먹으로 얼굴때리고 박치기)
+        HAIHEKI_KICK,               //H23070 벽 등지고 무릎치는 스킬
+
+        /* 러쉬 */
+        KOBUSHIKUDAKI,              //H10111 팔꿈치로 공격막는 스킬
+        HAIHEKI_PUNCH,              //H23060 벽 등지고 나오는 스킬
+        OI_TRAMPLE_AO,              //H1500 다운된 상대 얼굴 밟기 (누워있는 상태), 러쉬
+        OI_KICKOVER_UTU_C,          //H1511 다운된 상대 얼굴 차기 (엎드려있는 상태), 러쉬
+
+        /* 파괴자 */
+        KIRYU_GSWING,               //H1010 다리잡고 돌려서 스플릿 공격
+        DORYU_MIN,                  //H11285 멱살잡고 돌려서 스플릿 공격
+        NAGE_OIUCHI_NECK,           //H1540 들어서 바닥에 내던짐
+        POLE_KNOCK_LAPEL,           //H2040 근처에 기둥이 있다면 기둥에 박게하고 밟음
+        DORAMUKAN_88,               //H3261 큰 무기 (간판)을 들고 벽에 밀고 내려침
+        MONZETSU,                   //H11250 들어다가 무릎으로 똥꼬찍음 (뒤에서 잡기했을때 사용)
+
+        /* 기본 히트액션 */
+        WALL_KNOCK_NECK_C,          //H2011 벽에 머리박게하고 밟음 (아마 잡기 이후 히트액션했을 때 근처에 벽이있다면)
+        KABE_AIRON,                 //H23000 벽으로 밀치고 때림
+        OI_KICK,                    //H23010 머리채 잡고 들어서 발로참 (엎드린 상태)
+        OI_UPPER,                   //H23020 머리채잡고 들어서 주먹으로 침 (누워있는 상태)
+
+        CUTSCENE_ANIMATION_END
+    };
 
 private:
     const _float ANIM_INTERVAL = 4.f;
@@ -123,6 +152,7 @@ public:
     /* Initial Function */
 private:
     void Ready_AnimationTree();
+    void Ready_CutSceneAnimation();
     void Synchronize_Root(const _float& fTimeDelta);
 
     //키 입력관련함수들
@@ -143,6 +173,10 @@ public:
     void Change_ResetAnimaition(_uint iAnimIndex, _float fInterval = 4.f);
     void Style_Change(BATTLE_STYLE eStyle);
     void Reset_MoveDirection();
+
+    void Set_CutSceneAnim(CUTSCENE_ANIMATION_TYPE eType);
+    void Play_CutScene();
+    void Reset_CutSceneEvent();
 
 private:
     void Compute_MoveDirection_FB();
@@ -198,7 +232,12 @@ private:
 
     _bool                       m_isAuraOn = { false };
 
+    /* 애니메이션 관련 */
+private:
     ANIMATION_COMPONENT_TYPE    m_eAnimComType = { DEFAULT_ANIMAITION };
+    map<CUTSCENE_ANIMATION_TYPE, string> m_CutSceneAnimation;
+    _uint                       m_iCutSceneAnimIndex = { 0 };
+    _uint                       m_iCutSceneCamAnimIndex = { 0 };
 
     /* 플레이어 스테이터스 관련 변수들 */
 private:

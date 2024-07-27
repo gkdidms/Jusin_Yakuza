@@ -202,7 +202,6 @@ HRESULT CMainApp::Render()
 	m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("F9 : Console"), _float2(1000.f, fSize + 100.f + (++iIntervalCount * iInterval)), XMVectorSet(1.f, 1.f, 0.f, 1.f));
 	m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("F10 : Debug Tool"), _float2(1000.f, fSize + 100.f + (++iIntervalCount * iInterval)), XMVectorSet(1.f, 1.f, 0.f, 1.f));
 	m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("TAP : Camera Pos Fix"), _float2(1000.f, fSize + 100.f + (++iIntervalCount * iInterval)), XMVectorSet(1.f, 1.f, 0.f, 1.f));
-	m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("Z : Player CutScene Test"), _float2(1000.f, fSize + 100.f + (++iIntervalCount * iInterval)), XMVectorSet(1.f, 1.f, 0.f, 1.f));
 
 
 	/* 플레이어/ 몬스터 용 테스트 키 작성 */

@@ -15,6 +15,7 @@
 
 #include "BehaviorAnimation.h"
 #include "Mesh.h"
+#include "Animation.h"
 
 #include "UIManager.h"
 #include "Camera.h"
@@ -69,6 +70,7 @@ HRESULT CPlayer::Initialize(void* pArg)
 		return E_FAIL;
 
 	Ready_AnimationTree();
+	Ready_CutSceneAnimation();
 
 	if (FAILED(Add_CharacterData()))
 		return E_FAIL;
@@ -145,12 +147,6 @@ void CPlayer::Tick(const _float& fTimeDelta)
 		m_pUIManager->Click();
 	}
 
-	if (m_pGameInstance->GetKeyState(DIK_Z) == TAP)
-	{
-		m_eAnimComType = (m_eAnimComType == DEFAULT_ANIMAITION ? CUTSCENE_ANIMAITION : DEFAULT_ANIMAITION);
-		m_pSystemManager->Set_Camera(CAMERA_CUTSCENE == m_pSystemManager->Get_Camera() ? CAMERA_PLAYER : CAMERA_CUTSCENE);
-	}
-
 	Synchronize_Root(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")));
 
 #ifdef _DEBUG
@@ -160,8 +156,7 @@ void CPlayer::Tick(const _float& fTimeDelta)
 			m_pModelCom->Play_Animation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")));
 		else
 		{
-
-			m_pModelCom->Play_Animation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")), m_pAnimCom, true, 12, false);
+			Play_CutScene();
 		}
 	}
 #else
@@ -169,9 +164,7 @@ void CPlayer::Tick(const _float& fTimeDelta)
 		m_pModelCom->Play_Animation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")));
 	else
 	{
-		m_pModelCom->Play_Animation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")), m_pAnimCom);
-		// 카메라 본 애니메이션 실행
-		m_pModelCom->Play_Animation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")), m_pAnimCom, false, "Camera");
+		Play_CutScene();
 	}
 #endif // _DEBUG
 
@@ -194,48 +187,6 @@ void CPlayer::Tick(const _float& fTimeDelta)
 	Trail_Event();
 	Effect_Control_Aura();
 	Setting_Target_Enemy();
-
-
-	if (CAMERA_CUTSCENE == m_pSystemManager->Get_Camera())
-	{
-		CPlayer* pPlayer = this;
-		CCamera* pCamera = dynamic_cast<CCamera*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Camera"), CAMERA_CUTSCENE));
-		// Blender에서 얻은 본의 변환 행렬
-		_matrix matBoneMatrix = XMLoadFloat4x4(m_pCameraModel->Get_BoneCombinedTransformationMatrix("Camera"));
-
-		// 플레이어의 월드 변환 행렬
-		//_matrix matPlayerWorld = pPlayer->Get_TransformCom()->Get_WorldMatrix();
-		_matrix matPlayerWorld = m_pTransformCom->Get_WorldMatrix();
-		_matrix matVectorBoneWorld = XMLoadFloat4x4(m_pModelCom->Get_BoneCombinedTransformationMatrix("vector_c_n"));
-
-		// Blender의 좌표계를 DirectX의 좌표계로 변환하기 위한 회전 행렬
-		_matrix rotationMatrixX = XMMatrixRotationX(XMConvertToRadians(90));
-		_matrix rotationMatrixY = XMMatrixRotationY(XMConvertToRadians(-180));
-		_matrix rotationMatrixZ = XMMatrixRotationZ(XMConvertToRadians(90));
-
-		// Blender의 본 변환 행렬과 플레이어의 월드 변환 행렬을 결합하고 좌표계 변환을 적용
-		_matrix finalMat = rotationMatrixX * rotationMatrixY * rotationMatrixZ * matVectorBoneWorld * matBoneMatrix * matPlayerWorld;
-
-		//finalMat.r[CTransform::STATE_POSITION] -= finalMat.r[CTransform::STATE_LOOK];
-
-		// 최종 뷰 행렬을 계산
-		_matrix viewMatrix = XMMatrixInverse(nullptr, finalMat);
-
-		// 뷰 행렬을 파이프라인에 설정
-		m_pGameInstance->Set_Transform(CPipeLine::D3DTS_VIEW, viewMatrix);
-
-		auto KeyFrames = m_pCameraModel->Get_CurrentKeyFrameIndices(32);
-		_uint iKeyFrameIndex = KeyFrames->front();
-
-
-		pCamera->Set_FoV(m_pCameraModel->Get_FoV(m_pCameraModel->Get_AnimationName(32), iKeyFrameIndex));
-
-		CModel::ANIMATION_DESC Desc{ 32, true };
-		m_pCameraModel->Set_AnimationIndex(Desc);
-
-		// 카메라 본 애니메이션 실행
-		m_pCameraModel->Play_Animation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")), Desc, false, "Camera");
-	}
 }
 
 void CPlayer::Late_Tick(const _float& fTimeDelta)
@@ -631,6 +582,56 @@ void CPlayer::Ready_AnimationTree()
 		m_AnimationTree[KRC].emplace(i, CBehaviorAnimation::Create(KRC, i, this));
 	}
 
+}
+
+void CPlayer::Ready_CutSceneAnimation()
+{
+	/*
+		FINISHBLOW,                 //h23320 피니시 블로의 극
+		GOUGEKI_C,                  // h20021 잡기 후 히트액션 (주먹으로 얼굴때리고 박치기)
+		HAIHEKI_KICK,               //h23070 벽 등지고 무릎치는 스킬
+
+		KOBUSHIKUDAKI,              //h10111 팔꿈치로 공격막는 스킬
+		HAIHEKI_PUNCH,              //h23060 벽 등지고 나오는 스킬
+		OI_TRAMPLE_AO,              //h1500 다운된 상대 얼굴 밟기 (누워있는 상태), 러쉬
+		OI_KICKOVER_UTU_C,          //h1511 다운된 상대 얼굴 차기 (엎드려있는 상태), 러쉬
+
+		KIRYU_GSWING,               //h1010 다리잡고 돌려서 스플릿 공격
+		DORYU_MIN,                  //h11285 멱살잡고 돌려서 스플릿 공격
+		NAGE_OIUCHI_NECK,           //h1540 들어서 바닥에 내던짐
+		POLE_KNOCK_LAPEL,           //h2040 근처에 기둥이 있다면 기둥에 박게하고 밟음
+		DORAMUKAN_88,               //h3261 큰 무기 (간판)을 들고 벽에 밀고 내려침
+		MONZETSU,                   //h11250 들어다가 무릎으로 똥꼬찍음 (뒤에서 잡기했을때 사용)
+
+		WALL_KNOCK_NECK_C,          //h2011 벽에 머리박게하고 밟음 (아마 잡기 이후 히트액션했을 때 근처에 벽이있다면)
+		KABE_AIRON,                 //h23000 벽으로 밀치고 때림
+		OI_KICK,                    //h23010 머리채 잡고 들어서 발로참 (엎드린 상태)
+		OI_UPPER,                   //h23020 머리채잡고 들어서 주먹으로 침 (누워있는 상태)
+	*/
+	/* 불한당 */
+	m_CutSceneAnimation.emplace(FINISHBLOW, "h23320");
+	m_CutSceneAnimation.emplace(GOUGEKI_C, "h20021");
+	m_CutSceneAnimation.emplace(HAIHEKI_KICK, "h23070");
+
+	/* 러쉬 */
+	m_CutSceneAnimation.emplace(KOBUSHIKUDAKI, "h10111");
+	m_CutSceneAnimation.emplace(HAIHEKI_PUNCH, "h23060");
+	m_CutSceneAnimation.emplace(OI_TRAMPLE_AO, "h1500");
+	m_CutSceneAnimation.emplace(OI_KICKOVER_UTU_C, "h1511");
+
+	/* 파괴자 */
+	m_CutSceneAnimation.emplace(KIRYU_GSWING, "h1010");
+	m_CutSceneAnimation.emplace(DORYU_MIN, "h11285");
+	m_CutSceneAnimation.emplace(NAGE_OIUCHI_NECK, "h1540");
+	m_CutSceneAnimation.emplace(POLE_KNOCK_LAPEL, "h2040");
+	m_CutSceneAnimation.emplace(DORAMUKAN_88, "h3261");
+	m_CutSceneAnimation.emplace(MONZETSU, "h11250");
+
+	/* 공통 */
+	m_CutSceneAnimation.emplace(WALL_KNOCK_NECK_C, "h2011");
+	m_CutSceneAnimation.emplace(KABE_AIRON, "h23000");
+	m_CutSceneAnimation.emplace(OI_KICK, "h23010");
+	m_CutSceneAnimation.emplace(OI_UPPER, "h23020");
 }
 
 // 현재 애니메이션의 y축을 제거하고 사용하는 상태이다 (혹시 애니메이션의 y축 이동도 적용이 필요하다면 로직 수정이 필요함
@@ -1423,6 +1424,117 @@ void CPlayer::Reset_MoveDirection()
 {
 	ZeroMemory(m_MoveDirection, sizeof(_bool) * MOVE_DIRECTION_END);
 	ZeroMemory(m_InputDirection, sizeof(_bool) * MOVE_DIRECTION_END);
+}
+
+void CPlayer::Set_CutSceneAnim(CUTSCENE_ANIMATION_TYPE eType)
+{
+	// 없으면 종료
+	auto iter = m_CutSceneAnimation.find(eType);
+	if (m_CutSceneAnimation.end() == iter) return;
+
+	string AnimName = (*iter).second;
+
+	_uint i = 0;
+	auto AnimList = m_pAnimCom->Get_Animations();
+	for (auto& pAnimation : AnimList)
+	{
+		string ExtractName = m_pGameInstance->Extract_String(pAnimation->Get_AnimName(), '[', ']');
+
+		// 문자열 포함중이라면 인덱스 저장 후 반복문 종료
+		if (ExtractName.find(AnimName) != std::string::npos)
+		{
+			m_iCutSceneAnimIndex = i;
+			break;
+		}
+
+		i++;;
+	}
+
+	_uint j = 0;
+	auto CameraAnimList = m_pCameraModel->Get_Animations();
+	for (auto& pAnimation : CameraAnimList)
+	{
+		string CameraAnimName = pAnimation->Get_AnimName();
+
+		// 애니메이션 이름에 .cmt가 포함된 경우만 카메라 애니S메이션이다.
+		if (CameraAnimName.find(".cmt") != std::string::npos && CameraAnimName.find(AnimName) != std::string::npos)
+		{
+			m_iCutSceneCamAnimIndex = j;
+			break;
+		}
+		j++;
+	}
+
+	Reset_CutSceneEvent();
+}
+
+void CPlayer::Play_CutScene()
+{
+	if (CAMERA_CUTSCENE == m_pSystemManager->Get_Camera())
+	{
+		// 카메라 모델의 애니메이션이 종료되면 똑같이 플레이어의 애니메이션도 종료된 것이기 때문에 기존상태로 되돌린다.
+		if (m_pCameraModel->Get_AnimFinished())
+		{
+			m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Reset();
+
+			m_iCurrentBehavior = 1;				// Idle상태로 되돌려둔다
+			Reset_CutSceneEvent();
+
+			return;
+		}
+
+		m_pModelCom->Play_Animation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")), m_pAnimCom, false, m_iCutSceneAnimIndex, false);
+
+		CPlayer* pPlayer = this;
+		CCamera* pCamera = dynamic_cast<CCamera*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Camera"), CAMERA_CUTSCENE));
+		// Blender에서 얻은 본의 변환 행렬
+		_matrix matBoneMatrix = XMLoadFloat4x4(m_pCameraModel->Get_BoneCombinedTransformationMatrix("Camera"));
+
+		// 플레이어의 월드 변환 행렬
+		//_matrix matPlayerWorld = pPlayer->Get_TransformCom()->Get_WorldMatrix();
+		_matrix matPlayerWorld = m_pTransformCom->Get_WorldMatrix();
+		_matrix matVectorBoneWorld = XMLoadFloat4x4(m_pModelCom->Get_BoneCombinedTransformationMatrix("vector_c_n"));
+
+		// Blender의 좌표계를 DirectX의 좌표계로 변환하기 위한 회전 행렬
+		_matrix rotationMatrixX = XMMatrixRotationX(XMConvertToRadians(90));
+		_matrix rotationMatrixY = XMMatrixRotationY(XMConvertToRadians(-180));
+		_matrix rotationMatrixZ = XMMatrixRotationZ(XMConvertToRadians(90));
+
+		// Blender의 본 변환 행렬과 플레이어의 월드 변환 행렬을 결합하고 좌표계 변환을 적용
+		_matrix finalMat = rotationMatrixX * rotationMatrixY * rotationMatrixZ * matVectorBoneWorld * matBoneMatrix * matPlayerWorld;
+
+		//finalMat.r[CTransform::STATE_POSITION] -= finalMat.r[CTransform::STATE_LOOK];
+
+		// 최종 뷰 행렬을 계산
+		_matrix viewMatrix = XMMatrixInverse(nullptr, finalMat);
+
+		// 뷰 행렬을 파이프라인에 설정
+		m_pGameInstance->Set_Transform(CPipeLine::D3DTS_VIEW, viewMatrix);
+
+		auto KeyFrames = m_pCameraModel->Get_CurrentKeyFrameIndices(m_iCutSceneCamAnimIndex);
+		_uint iKeyFrameIndex = KeyFrames->front();
+
+
+		pCamera->Set_FoV(m_pCameraModel->Get_FoV(m_pCameraModel->Get_AnimationName(m_iCutSceneCamAnimIndex), iKeyFrameIndex));
+
+		CModel::ANIMATION_DESC Desc{ m_iCutSceneCamAnimIndex, false };
+		m_pCameraModel->Set_AnimationIndex(Desc);
+
+		// 카메라 본 애니메이션 실행
+		m_pCameraModel->Play_Animation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")), Desc, false, "Camera");
+	}
+}
+
+void CPlayer::Reset_CutSceneEvent()
+{
+	// 이 때 실행하는 애니메이션들은 선형보간을 하지 않는 애니메이션이므로 선형보간 간격을 0으로 꼭!! 초기화해야한다.
+	m_pModelCom->Set_ChangeInterval(0.0);
+	m_pCameraModel->Set_ChangeInterval(0.0);
+	m_pAnimCom->Reset_Animation(m_iCutSceneAnimIndex);
+	m_pCameraModel->Reset_Animation(m_iCutSceneCamAnimIndex);
+
+	m_eAnimComType = (m_eAnimComType == DEFAULT_ANIMAITION ? CUTSCENE_ANIMATION : DEFAULT_ANIMAITION);
+	m_pSystemManager->Set_Camera(CAMERA_CUTSCENE == m_pSystemManager->Get_Camera() ? CAMERA_PLAYER : CAMERA_CUTSCENE);
 }
 
 void CPlayer::Compute_MoveDirection_FB()

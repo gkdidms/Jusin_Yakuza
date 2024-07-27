@@ -15,7 +15,7 @@ class CLandObject abstract :
 public:
     enum ANIMATION_COMPONENT_TYPE {
         DEFAULT_ANIMAITION,
-        CUTSCENE_ANIMAITION,
+        CUTSCENE_ANIMATION,
         ANIMATION_COMPONENT_TYPE_END
     };
 

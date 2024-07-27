@@ -328,7 +328,8 @@ _bool CCollision_Manager::Check_Map_Collision(CCollider* pCollider)
 
 CLandObject* CCollision_Manager::Get_Near_LandObject(CLandObject* pObject, vector<CGameObject*>& pObjects)
 {
-    _float fDinstance = { 99999999.f };
+    // 5거리 이내에 있는 애들만 검색한다.
+    _float fDinstance = { 5.f };
     CLandObject* pValue = { nullptr };
 
     for (auto& pTarget : pObjects)

@@ -37,6 +37,22 @@ void CKiryu_KRS_Attack::Tick(const _float& fTimeDelta)
 	{
 		_vector vLookPos = pTargetObject->Get_TransformCom()->Get_State(CTransform::STATE_POSITION);
 		m_pPlayer->Get_TransformCom()->LookAt_For_LandObject(vLookPos);
+
+		if (m_pGameInstance->GetMouseState(DIM_RB) == TAP)
+		{
+			if (m_iComboCount == 6)
+			{
+				// 다운상태인지 가져와서 다운 상태라면 히트액션 실행
+				if (static_cast<CMonster*>(pTargetObject)->isDown())
+				{
+					// 히트액션을 실행시킬 함수를 호출해야한다.
+					// 근데 지금 AnimCom에 저장하공 있는 애니메이션 값들을 string으로 처리해야하는데, 어떤식으로 처리할지에 대한 고민중이었음
+					m_pPlayer->Set_CutSceneAnim(CPlayer::FINISHBLOW);
+
+					m_iComboCount = 99;
+				}
+			}
+		}
 	}
 
 	if (m_pGameInstance->GetKeyState(DIK_Q) == TAP)
@@ -55,7 +71,8 @@ void CKiryu_KRS_Attack::Change_Animation()
 {
 	if (0 > m_iComboCount) return;
 
-	m_pPlayer->Change_Animation(m_AnimationIndices[m_iComboCount]);
+	if(m_iComboCount != 99)
+		m_pPlayer->Change_Animation(m_AnimationIndices[m_iComboCount]);
 }
 
 _bool CKiryu_KRS_Attack::Get_AnimationEnd()
@@ -78,6 +95,9 @@ void CKiryu_KRS_Attack::Reset()
 
 void CKiryu_KRS_Attack::Combo_Count(_bool isFinAction)
 {
+	// 피니시 블로의 극 사용 중에는 콤보카운트 하지않는다
+	if (m_iComboCount == 99) return;
+
 	// 데미지 배율을 기본적으로 1배로 세팅해준다
 	m_pPlayer->Set_DamageAmplify(1.f);
 

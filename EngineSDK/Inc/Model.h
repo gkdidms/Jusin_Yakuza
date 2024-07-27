@@ -53,6 +53,9 @@ public:
 	void Set_AnimationIndex(const ANIMATION_DESC& AnimDesc, _double ChangeInterval = 0.0);
 	_bool Set_AnimationIndex(_uint iAnimIndex, _double ChangeInterval = 0.0);
 	_bool Set_AnimationIndex(_uint iAnimIndex, vector<class CAnimation*> Animations, _double ChangeInterval = 0.0);
+	void Set_ChangeInterval(_double ChangeInterval) {
+		m_ChangeInterval = ChangeInterval;
+	};
 
 	void Reset_Animation(const ANIMATION_DESC& AnimDesc);
 	void Reset_Animation(_uint iAnimIndex);

@@ -75,6 +75,11 @@ void CAnim::Reset_Animation()
 	m_Animations[m_iCurrentIndex]->Reset();
 }
 
+void CAnim::Reset_Animation(_uint iAnimIndex)
+{
+	m_Animations[iAnimIndex]->Reset();
+}
+
 _bool CAnim::Get_AnimFinished()
 {
 	return m_Animations[m_iCurrentIndex]->Get_Finished();
