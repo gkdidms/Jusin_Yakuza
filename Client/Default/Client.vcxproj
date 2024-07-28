@@ -197,6 +197,7 @@
     <ClInclude Include="..\Public\BehaviorAnimation.h" />
     <ClInclude Include="..\Public\Btn.h" />
     <ClInclude Include="..\Public\Collision_Manager.h" />
+    <ClInclude Include="..\Public\CutSceneCamera.h" />
     <ClInclude Include="..\Public\KillQuest.h" />
     <ClInclude Include="..\Public\Kiryu_KRC_Down.h" />
     <ClInclude Include="..\Public\Kiryu_KRC_Guard.h" />
@@ -234,6 +235,7 @@
     <ClInclude Include="..\public\Kuze.h" />
     <ClInclude Include="..\public\Level_Office1F.h" />
     <ClInclude Include="..\public\Level_Office2F.h" />
+    <ClInclude Include="..\Public\Level_Street.h" />
     <ClInclude Include="..\Public\LightConstruction.h" />
     <ClInclude Include="..\Public\MapCollider.h" />
     <ClInclude Include="..\Public\MapColliderObj.h" />
@@ -347,6 +349,7 @@
     <ClCompile Include="..\Private\BehaviorAnimation.cpp" />
     <ClCompile Include="..\Private\Btn.cpp" />
     <ClCompile Include="..\Private\Collision_Manager.cpp" />
+    <ClCompile Include="..\Private\CutSceneCamera.cpp" />
     <ClCompile Include="..\Private\KillQuest.cpp" />
     <ClCompile Include="..\Private\Kiryu_KRC_Down.cpp" />
     <ClCompile Include="..\Private\Kiryu_KRC_Guard.cpp" />
@@ -384,6 +387,7 @@
     <ClCompile Include="..\private\Kuze.cpp" />
     <ClCompile Include="..\private\Level_Office1F.cpp" />
     <ClCompile Include="..\private\Level_Office2F.cpp" />
+    <ClCompile Include="..\Private\Level_Street.cpp" />
     <ClCompile Include="..\Private\LightConstruction.cpp" />
     <ClCompile Include="..\Private\MapCollider.cpp" />
     <ClCompile Include="..\Private\MapColliderObj.cpp" />
