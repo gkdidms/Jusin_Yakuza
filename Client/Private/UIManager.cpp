@@ -13,6 +13,7 @@
 #include "UIMainMenu.h"
 #include "UITutorial.h"
 #include "UITalk.h"
+#include "UISkillMenu.h"
 
 #include "InventoryManager.h"
 #include "Player.h"
@@ -76,6 +77,9 @@ HRESULT CUIManager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 
 	pScene = CUITalk::Create(m_pDevice, m_pContext);
 	m_AllScene.emplace(make_pair(TEXT("Talk"), pScene));
+
+	pScene = CUISkillMenu::Create(m_pDevice, m_pContext);
+	m_AllScene.emplace(make_pair(TEXT("SkillMenu"), pScene));
 
 
 	return S_OK;

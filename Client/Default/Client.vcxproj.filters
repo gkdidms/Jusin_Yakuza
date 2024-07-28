@@ -391,7 +391,7 @@
     </ClCompile>
     <ClCompile Include="..\Private\UITutorial.cpp">
       <Filter>95.Utility\05.UIManager\UIScene\UITutorial</Filter>
-	</ClCompile>
+    </ClCompile>
     <ClCompile Include="..\Private\QuestManager.cpp">
       <Filter>03.QuestManager</Filter>
     </ClCompile>
@@ -436,6 +436,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\UITalk.cpp">
       <Filter>95.Utility\05.UIManager\UIScene\UITalk</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UISkillMenu.cpp">
+      <Filter>95.Utility\05.UIManager\UIScene\UISkillMenu</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -859,7 +862,7 @@
     </ClInclude>
     <ClInclude Include="..\Public\UITutorial.h">
       <Filter>95.Utility\05.UIManager\UIScene\UITutorial</Filter>
-	</ClInclude>
+    </ClInclude>
     <ClInclude Include="..\Public\QuestManager.h">
       <Filter>03.QuestManager</Filter>
     </ClInclude>
@@ -904,6 +907,9 @@
     </ClInclude>
     <ClInclude Include="..\Public\UITalk.h">
       <Filter>95.Utility\05.UIManager\UIScene\UITalk</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UISkillMenu.h">
+      <Filter>95.Utility\05.UIManager\UIScene\UISkillMenu</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1340,7 +1346,7 @@
     </Filter>
     <Filter Include="95.Utility\05.UIManager\UIScene\UITutorial">
       <UniqueIdentifier>{39820b06-aaf0-40df-8bc1-4fb5f0dd4a47}</UniqueIdentifier>
-	</Filter>
+    </Filter>
     <Filter Include="03.QuestManager">
       <UniqueIdentifier>{99d22282-0f87-45bb-9816-932e5bb6ed7f}</UniqueIdentifier>
     </Filter>
@@ -1385,6 +1391,9 @@
     </Filter>
     <Filter Include="95.Utility\05.UIManager\UIScene\UITalk">
       <UniqueIdentifier>{67923609-fa00-4887-b22f-1a67293fb0e8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\05.UIManager\UIScene\UISkillMenu">
+      <UniqueIdentifier>{0ab17753-4bbc-4a85-bd25-2aadad5a276c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
