@@ -1512,6 +1512,7 @@ void CPlayer::Play_CutScene()
 		auto KeyFrames = m_pCameraModel->Get_CurrentKeyFrameIndices(m_iCutSceneCamAnimIndex);
 		_uint iKeyFrameIndex = KeyFrames->front();
 
+
 		pCamera->Set_FoV(m_pCameraModel->Get_FoV(m_pCameraModel->Get_AnimationName(m_iCutSceneCamAnimIndex), iKeyFrameIndex));
 
 		CModel::ANIMATION_DESC Desc{ m_iCutSceneCamAnimIndex, false };

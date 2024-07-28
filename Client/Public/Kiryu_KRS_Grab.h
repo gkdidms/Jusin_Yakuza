@@ -39,6 +39,8 @@ private:
 	_bool Changeable_Combo_Animation();
 	void Shaking();
 
+	void Move_KeyInput(const _float& fTimeDelta);
+
 public:
 	static CBehaviorAnimation* Create(class CPlayer* pPlayer);
 	virtual void Free() override;

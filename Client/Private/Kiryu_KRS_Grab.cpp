@@ -91,6 +91,7 @@ void CKiryu_KRS_Grab::Tick(const _float& fTimeDelta)
 				}
 				case ANIM_LOOP:
 					// 여기에 키인풋
+					Move_KeyInput(fTimeDelta);
 
 					if (m_isStop)
 						m_eAnimState = ANIM_END;
@@ -245,6 +246,10 @@ void CKiryu_KRS_Grab::Shaking()
 			pCamera->Set_Shaking(true, { 1.f, 1.f, 0.f }, 0.2, 0.25);
 		}
 	}
+}
+
+void CKiryu_KRS_Grab::Move_KeyInput(const _float& fTimeDelta)
+{
 }
 
 CBehaviorAnimation* CKiryu_KRS_Grab::Create(CPlayer* pPlayer)
