@@ -2,6 +2,7 @@
 #include "GameInstance.h"
 
 #include "Mesh.h"
+#include "Channel.h"
 #include "Bone.h"
 
 #include "Texture.h"
@@ -26,6 +27,8 @@ CModel::CModel(const CModel& rhs)
 	, m_AnimDesc{ rhs.m_AnimDesc }
 	, m_AnimLoops{ rhs.m_AnimLoops }
 	, m_vDecalMaterials { rhs.m_vDecalMaterials }
+	, m_iCameras{ rhs.m_iCameras }
+	, m_FovAnimation{ rhs.m_FovAnimation }
 {
 	for (auto& pPrototypeAnimation : rhs.m_Animations)
 		m_Animations.emplace_back(pPrototypeAnimation->Clone());
@@ -88,6 +91,14 @@ HRESULT CModel::Initialize_Prototype(MODELTYPE eModelType, const _char* pModelFi
 	{
 		string str = pModelFilePath;
 		if (FAILED(Import_Model(str, isTool)))
+			return E_FAIL;
+	}
+
+	if (TYPE_NONANIM != eModelType)
+	{
+		string pCameraFovFilePath = "../Bin/DataFiles/CameraFoVAnimationData/" + m_pGameInstance->Get_FileName(pModelFilePath) + "_camera_fov.csv";
+
+		if (FAILED(Ready_CameraAnimations(pCameraFovFilePath)))
 			return E_FAIL;
 	}
 
@@ -207,6 +218,46 @@ HRESULT CModel::Ready_Animations()
 	return S_OK;
 }
 
+HRESULT CModel::Ready_CameraAnimations(string& pBinFilePath)
+{
+	// 카메라가 없는 경우라면 그냥 함수 종료
+	if (1 > m_iCameras) return S_OK;
+
+	ifstream in(pBinFilePath, ios::binary);
+
+	if (!in.is_open()) {
+		MSG_BOX("Camera FoV 파일 개방 실패 (툴에선 실패떠도 됨 걱정 ㄴㄴ)");
+		return E_FAIL;
+	}
+
+	string line;
+	// 헤더를 건너뜁니다.
+	getline(in, line);
+
+	while (getline(in, line)) {
+		istringstream lineStream(line);
+		string cell;
+
+		FOV_ANIMATION Data{};
+
+		// 애니메이션 이름
+		getline(lineStream, cell, ',');
+		Data.strAnimationName = cell;
+
+		// 프레임 번호
+		getline(lineStream, cell, ',');
+		Data.iKeyFrameIndex = stoi(cell);
+
+		// FoV 값
+		getline(lineStream, cell, ',');
+		Data.fFov = stof(cell);
+
+		m_FovAnimation.push_back(Data);
+	}
+	
+	return S_OK;
+}
+
 HRESULT CModel::Export_Model(string& pBinFilePath, const _char* pModelFilePath)
 {
 	CGameInstance* pGameInstance = CGameInstance::GetInstance();
@@ -229,7 +280,11 @@ HRESULT CModel::Export_Model(string& pBinFilePath, const _char* pModelFilePath)
 	// 메테리얼 정보 저장하기
 	Export_Materials(out, pModelFilePath, pBinFilePath);
 
+	// 애니메이션 정보 저장하기
 	Export_Animations(out);
+
+	// 카메라 갯수 저장하기
+	Export_CamNums(out);
 	
 	out.close();
 
@@ -473,6 +528,15 @@ HRESULT CModel::Export_Animations(ofstream& out)
 	return S_OK;
 }
 
+HRESULT CModel::Export_CamNums(ofstream& out)
+{
+	m_iCameras = m_pAIScene->mNumCameras;
+
+	out.write((char*)&m_iCameras, sizeof(_uint));
+
+	return S_OK;
+}
+
 HRESULT CModel::Import_Model(string& pBinFilePath, _bool isTool)
 {
 	ifstream in(pBinFilePath, ios::binary);
@@ -499,6 +563,10 @@ HRESULT CModel::Import_Model(string& pBinFilePath, _bool isTool)
 
 	// 애니메이션 읽어오기
 	if (FAILED(Import_Animations(in)))
+		return E_FAIL;
+
+	// 카메라 갯수 읽어오기
+	if (FAILED(Import_CamNums(in)))
 		return E_FAIL;
 
 	in.close();
@@ -777,6 +845,13 @@ HRESULT CModel::Import_Animations(ifstream& in)
 	return S_OK;
 }
 
+HRESULT CModel::Import_CamNums(ifstream& in)
+{
+	in.read((char*)&m_iCameras, sizeof(_uint));
+
+	return S_OK;
+}
+
 void CModel::Find_Mesh_Using_DECAL()
 {
 	/* DECAL 쓰는 MESH NUMBER 저장해두기 */
@@ -848,18 +923,18 @@ bool CModel::Check_Exist_Material(_uint iNumMeshIndex, aiTextureType eTextureTyp
 	return true;
 }
 
-void CModel::Play_Animation(_float fTimeDelta)
+void CModel::Play_Animation(_float fTimeDelta, _bool isRoot, string strExcludeBoneName)
 {
 	if (1 > m_Animations.size()) return;
 
 	if(0.0 == m_ChangeInterval)
-		m_Animations[m_AnimDesc.iAnimIndex]->Update_TransformationMatrix(fTimeDelta, m_Bones, m_AnimDesc.isLoop);
+		m_Animations[m_AnimDesc.iAnimIndex]->Update_TransformationMatrix(fTimeDelta, m_Bones, m_AnimDesc.isLoop, isRoot, strExcludeBoneName);
 	else
 	{
 		if (m_Animations[m_AnimDesc.iAnimIndex]->Get_Changed())
-			m_Animations[m_AnimDesc.iAnimIndex]->Update_TransformationMatrix(fTimeDelta, m_Bones, m_AnimDesc.isLoop);
+			m_Animations[m_AnimDesc.iAnimIndex]->Update_TransformationMatrix(fTimeDelta, m_Bones, m_AnimDesc.isLoop, isRoot, strExcludeBoneName);
 		else
-			m_Animations[m_AnimDesc.iAnimIndex]->Update_Change_Animation(fTimeDelta, m_Bones, m_Animations[m_iPrevAnimIndex], m_ChangeInterval);
+			m_Animations[m_AnimDesc.iAnimIndex]->Update_Change_Animation(fTimeDelta, m_Bones, m_Animations[m_iPrevAnimIndex], m_ChangeInterval, isRoot);
 	}
 
 	/* 전체뼈를 순회하면서 모든 뼈의 CombinedTransformationMatrix를 갱신한다. */
@@ -867,24 +942,45 @@ void CModel::Play_Animation(_float fTimeDelta)
 		pBone->Update_CombinedTransformationMatrix(m_Bones, XMLoadFloat4x4(&m_PreTransformMatrix));
 }
 
-void CModel::Play_Animation(_float fTimeDelta, CAnim* pAnim, _bool isLoop)
+void CModel::Play_Animation(_float fTimeDelta, CAnim* pAnim, _bool isLoop, _int iAnimIndex, _bool isRoot, string strExcludeBoneName)
 {
 	//애니메이션 목록 전달하기 
 	vector<CAnimation*> Animations = pAnim->Get_Animations();
 
 	if (1 > Animations.size()) return;
 
-	pAnim->Set_CurrentAnimIndex(m_AnimDesc.iAnimIndex);
-
-	if(0.0 == m_ChangeInterval)
-		Animations[m_AnimDesc.iAnimIndex]->Update_TransformationMatrix(fTimeDelta, m_Bones, isLoop);
-	else
+	// 넘겨받은 iAnimIndex이 -1 이라면 기존대로 실행하고
+	if (0 > iAnimIndex)
 	{
-		if (Animations[m_AnimDesc.iAnimIndex]->Get_Changed())
-			Animations[m_AnimDesc.iAnimIndex]->Update_TransformationMatrix(fTimeDelta, m_Bones, isLoop);
+		pAnim->Set_CurrentAnimIndex(m_AnimDesc.iAnimIndex);
+
+		if (0.0 == m_ChangeInterval)
+			Animations[m_AnimDesc.iAnimIndex]->Update_TransformationMatrix(fTimeDelta, m_Bones, isLoop, isRoot, strExcludeBoneName);
 		else
 		{
-			Animations[m_AnimDesc.iAnimIndex]->Update_Change_Animation(fTimeDelta, m_Bones, Animations[m_iPrevAnimIndex], m_ChangeInterval);
+			if (Animations[m_AnimDesc.iAnimIndex]->Get_Changed())
+				Animations[m_AnimDesc.iAnimIndex]->Update_TransformationMatrix(fTimeDelta, m_Bones, isLoop, isRoot, strExcludeBoneName);
+			else
+			{
+				Animations[m_AnimDesc.iAnimIndex]->Update_Change_Animation(fTimeDelta, m_Bones, Animations[m_iPrevAnimIndex], m_ChangeInterval, isRoot);
+			}
+		}
+	}
+	// -1이 아니라면 넘겨받은 인덱스를 실행시킨다.
+	else
+	{
+		pAnim->Set_CurrentAnimIndex(iAnimIndex);
+
+		if (0.0 == m_ChangeInterval)
+			Animations[iAnimIndex]->Update_TransformationMatrix(fTimeDelta, m_Bones, isLoop, isRoot, strExcludeBoneName);
+		else
+		{
+			if (Animations[iAnimIndex]->Get_Changed())
+				Animations[iAnimIndex]->Update_TransformationMatrix(fTimeDelta, m_Bones, isLoop, isRoot, strExcludeBoneName);
+			else
+			{
+				Animations[iAnimIndex]->Update_Change_Animation(fTimeDelta, m_Bones, Animations[m_iPrevAnimIndex], m_ChangeInterval, isRoot);
+			}
 		}
 	}
 
@@ -893,18 +989,18 @@ void CModel::Play_Animation(_float fTimeDelta, CAnim* pAnim, _bool isLoop)
 		pBone->Update_CombinedTransformationMatrix(m_Bones, XMLoadFloat4x4(&m_PreTransformMatrix));
 }
 
-void CModel::Play_Animation(_float fTimeDelta, const ANIMATION_DESC& AnimDesc)
+void CModel::Play_Animation(_float fTimeDelta, const ANIMATION_DESC& AnimDesc, _bool isRoot, string strExcludeBoneName)
 {
 	if (1 > m_Animations.size()) return;
 
 	if (0.0 == m_ChangeInterval)
-		m_Animations[AnimDesc.iAnimIndex]->Update_TransformationMatrix(fTimeDelta, m_Bones, AnimDesc.isLoop);
+		m_Animations[AnimDesc.iAnimIndex]->Update_TransformationMatrix(fTimeDelta, m_Bones, AnimDesc.isLoop, isRoot, strExcludeBoneName);
 	else
 	{
 		if (m_Animations[AnimDesc.iAnimIndex]->Get_Changed())
-			m_Animations[AnimDesc.iAnimIndex]->Update_TransformationMatrix(fTimeDelta, m_Bones, AnimDesc.isLoop);
+			m_Animations[AnimDesc.iAnimIndex]->Update_TransformationMatrix(fTimeDelta, m_Bones, AnimDesc.isLoop,  isRoot, strExcludeBoneName);
 		else
-			m_Animations[AnimDesc.iAnimIndex]->Update_Change_Animation(fTimeDelta, m_Bones, m_Animations[m_iPrevAnimIndex], m_ChangeInterval);
+			m_Animations[AnimDesc.iAnimIndex]->Update_Change_Animation(fTimeDelta, m_Bones, m_Animations[m_iPrevAnimIndex], m_ChangeInterval, isRoot);
 	}
 
 	/* 전체뼈를 순회하면서 모든 뼈의 CombinedTransformationMatrix를 갱신한다. */
@@ -965,6 +1061,51 @@ void CModel::Reset_Animation(_uint iAnimIndex)
 	m_Animations[iAnimIndex]->Reset();
 }
 
+
+const vector<_uint>* CModel::Get_CurrentKeyFrameIndices(string strAnimationName)
+{
+	if(strAnimationName == "")
+		return m_Animations[m_AnimDesc.iAnimIndex]->Get_CurrentKeyFrameIndices();
+	else
+	{
+		for (auto& pAnimation : m_Animations)
+		{
+			if ((pAnimation->Get_AnimName() == strAnimationName))
+			{
+				return pAnimation->Get_CurrentKeyFrameIndices();
+			}
+		}
+		
+	}
+}
+
+const vector<_uint>* CModel::Get_CurrentKeyFrameIndices(_uint iAnimIndex)
+{
+	return m_Animations[iAnimIndex]->Get_CurrentKeyFrameIndices();
+}
+
+_float CModel::Get_FoV(string strAnimationName, _uint iKeyFrameIndex)
+{
+	for (auto& Fov : m_FovAnimation)
+	{
+		std::string originalString = strAnimationName;
+		std::string toRemove = "Camera|";
+
+		// 문자열에서 특정 패턴 제거
+		size_t pos = originalString.find(toRemove);
+		if (pos != std::string::npos) {
+			originalString.erase(pos, toRemove.length());
+		}
+
+		if (Fov.iKeyFrameIndex == iKeyFrameIndex && Fov.strAnimationName == originalString)
+		{
+			return Fov.fFov;
+		}
+	}
+
+	// 따로 값이 없다면 기존에 사용하던 기본값 리턴
+	return XMConvertToRadians(60.0f);
+}
 
 _bool CModel::Get_AnimFinished() const
 {

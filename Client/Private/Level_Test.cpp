@@ -9,6 +9,7 @@
 #include "PlayerCamera.h"
 #include "DebugCamera.h"
 #include "CineCamera.h"
+#include "CutSceneCamera.h"
 
 CLevel_Test::CLevel_Test(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLevel{ pDevice, pContext },
@@ -42,17 +43,16 @@ HRESULT CLevel_Test::Initialize()
 	//	return E_FAIL;
 
 	/* Å¬¶ó ÆÄ½Ì */
-	m_pFileTotalManager->Set_MapObj_In_Client(99, LEVEL_TEST);
+	m_pFileTotalManager->Set_MapObj_In_Client(90, LEVEL_TEST);
 	m_pFileTotalManager->Set_Lights_In_Client(99);
 	m_pFileTotalManager->Set_Collider_In_Client(3, LEVEL_TEST);
 	m_pFileTotalManager->Set_Trigger_In_Client(3, LEVEL_TEST);
 
-
 	if (FAILED(Ready_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
 
-	if (FAILED(Ready_Test_SceneModel(TEXT("Layer_SceneModel_Test"))))
-		return E_FAIL;
+	//if (FAILED(Ready_Test_SceneModel(TEXT("Layer_SceneModel_Test"))))
+	//	return E_FAIL;
 
 	_uint i = m_pGameInstance->Get_CurrentLevel();
 
@@ -106,6 +106,20 @@ HRESULT CLevel_Test::Ready_Camera(const wstring& strLayerTag)
 	PlayerCameraDesc.pPlayerMatrix = dynamic_cast<CTransform*>(m_pGameInstance->Get_GameObject_Component(LEVEL_TEST, TEXT("Layer_Player"), TEXT("Com_Transform", 0)))->Get_WorldFloat4x4();
 	
 	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_PlayerCamera"), strLayerTag, &PlayerCameraDesc)))
+		return E_FAIL;
+
+	/* 3. ÄÆ½Å¿ë Ä«¸Þ¶ó */
+	CCamera::CAMERA_DESC		CutSceneCameraDesc{};
+	CutSceneCameraDesc.vEye = _float4(1.0f, 20.0f, -20.f, 1.f);
+	CutSceneCameraDesc.vFocus = _float4(0.f, 0.0f, 0.0f, 1.f);
+	CutSceneCameraDesc.fFovY = XMConvertToRadians(60.0f);
+	CutSceneCameraDesc.fAspect = g_iWinSizeX / (_float)g_iWinSizeY;
+	CutSceneCameraDesc.fNear = 0.1f;
+	CutSceneCameraDesc.fFar = 3000.f;
+	CutSceneCameraDesc.fSpeedPecSec = 10.f;
+	CutSceneCameraDesc.fRotatePecSec = XMConvertToRadians(90.f);
+
+	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_CutSceneCamera"), strLayerTag, &CutSceneCameraDesc)))
 		return E_FAIL;
 
 	

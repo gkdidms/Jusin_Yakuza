@@ -48,6 +48,10 @@ public:
 		return m_Channels;
 	}
 
+	const vector<_uint>* Get_CurrentKeyFrameIndices() const {
+		return &m_CurrentKeyFrameIndices;
+	}
+
 public:
 	void Set_CurrentPosition(_double Position)	{
 		m_CurrentPosition = Position;
@@ -56,8 +60,8 @@ public:
 public:
 	HRESULT Initialize(const aiAnimation* pAnimation, const vector<class CBone*>& Bones);
 	HRESULT Initialize(const BAiAnimation* pAnimation, const vector<class CBone*>& Bones);
-	void Update_TransformationMatrix(_float fTimeDelta, const vector<class CBone*>& Bones, _bool isLoop);
-	void Update_Change_Animation(_float fTimeDelta, const vector<class CBone*>& Bones, CAnimation* pPrevAnimation, _double ChangeInterval);
+	void Update_TransformationMatrix(_float fTimeDelta, const vector<class CBone*>& Bones, _bool isLoop, _bool isRoot = true, string strExcludeBoneName = "");
+	void Update_Change_Animation(_float fTimeDelta, const vector<class CBone*>& Bones, CAnimation* pPrevAnimation, _double ChangeInterval, _bool isRoot = true);
 	void Reset();
 
 	void Update_KeyframeIndex();

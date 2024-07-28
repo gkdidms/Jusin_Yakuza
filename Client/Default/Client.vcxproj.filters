@@ -409,6 +409,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\ScriptManager.cpp">
       <Filter>95.Utility\06.Script</Filter>
+	</ClCompile>
+    <ClCompile Include="..\Private\CutSceneCamera.cpp">
+      <Filter>02.GameObjects\99.Camera\02.CutSceneCamera</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -850,6 +853,9 @@
     </ClInclude>
     <ClInclude Include="..\Public\ScriptManager.h">
       <Filter>95.Utility\06.Script</Filter>
+	</ClInclude>
+    <ClInclude Include="..\Public\CutSceneCamera.h">
+      <Filter>02.GameObjects\99.Camera\02.CutSceneCamera</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1304,6 +1310,9 @@
     </Filter>
     <Filter Include="95.Utility\06.Script">
       <UniqueIdentifier>{8f2c42e2-6806-4ca7-8c34-f094134ea57f}</UniqueIdentifier>
+	</Filter>
+    <Filter Include="02.GameObjects\99.Camera\02.CutSceneCamera">
+      <UniqueIdentifier>{c2e83612-82aa-4ea8-acef-b6fd1976a302}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

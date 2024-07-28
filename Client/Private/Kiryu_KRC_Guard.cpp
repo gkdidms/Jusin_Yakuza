@@ -30,19 +30,19 @@ CKiryu_KRC_Guard::CKiryu_KRC_Guard()
 	*/
 
 	/* 0 ~ 2 */
-	m_AnimationIndices.push_back(175); // [175]	p_krc_guard_st[p_krc_guard_st]
-	m_AnimationIndices.push_back(171); // [171]	p_krc_guard_lp[p_krc_guard_lp]
-	m_AnimationIndices.push_back(168); // [168]	p_krc_guard_en[p_krc_guard_en]
+	m_AnimationIndices.push_back(292); // [292]	p_krc_guard_st[p_krc_guard_st]
+	m_AnimationIndices.push_back(288); // [288]	p_krc_guard_lp[p_krc_guard_lp]
+	m_AnimationIndices.push_back(285); // [285]	p_krc_guard_en[p_krc_guard_en]
 
 	/* 3 ~ 6 */
-	m_AnimationIndices.push_back(166);	//[166]	p_krc_guard_body_b[p_krc_guard_body_b]
-	m_AnimationIndices.push_back(167);	//[167]	p_krc_guard_body_f[p_krc_guard_body_f]
-	m_AnimationIndices.push_back(169);	//[169]	p_krc_guard_head_l[p_krc_guard_head_l]
-	m_AnimationIndices.push_back(170);	//[170]	p_krc_guard_head_r[p_krc_guard_head_r]
+	m_AnimationIndices.push_back(283);	//[283]	p_krc_guard_body_b[p_krc_guard_body_b]
+	m_AnimationIndices.push_back(284);	//[284]	p_krc_guard_body_f[p_krc_guard_body_f]
+	m_AnimationIndices.push_back(286);	//[286]	p_krc_guard_head_l[p_krc_guard_head_l]
+	m_AnimationIndices.push_back(287);	//[287]	p_krc_guard_head_r[p_krc_guard_head_r]
 
 	/* 7 ~ 8 */
-	m_AnimationIndices.push_back(148);	//[148]	p_krc_atk_guard_heavy[p_krc_atk_guard_heavy]
-	m_AnimationIndices.push_back(149);	//[149]	p_krc_atk_guard_tame[p_krc_atk_guard_tame]
+	m_AnimationIndices.push_back(265);	//[265]	p_krc_atk_guard_heavy[p_krc_atk_guard_heavy]
+	m_AnimationIndices.push_back(266);	//[266]	p_krc_atk_guard_tame[p_krc_atk_guard_tame]
 }
 
 void CKiryu_KRC_Guard::Tick(const _float& fTimeDelta)

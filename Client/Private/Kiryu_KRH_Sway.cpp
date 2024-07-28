@@ -10,22 +10,22 @@ CKiryu_KRH_Sway::CKiryu_KRH_Sway()
 	// 출력되는 애니메이션은 캐릭터의 Look을 기준으로 나온다.
 
 	/* 0 ~ 3 */
-	m_AnimationIndices.push_back(320);	//[320]	p_krh_sway_f[p_krh_sway_f]
-	m_AnimationIndices.push_back(319);	//[319]	p_krh_sway_b[p_krh_sway_b]
-	m_AnimationIndices.push_back(321);	//[321]	p_krh_sway_l[p_krh_sway_l]
-	m_AnimationIndices.push_back(322);	//[322]	p_krh_sway_r[p_krh_sway_r]
+	m_AnimationIndices.push_back(487);	//[487]	p_krh_sway_f[p_krh_sway_f]
+	m_AnimationIndices.push_back(486);	//[486]	p_krh_sway_b[p_krh_sway_b]
+	m_AnimationIndices.push_back(488);	//[488]	p_krh_sway_l[p_krh_sway_l]
+	m_AnimationIndices.push_back(489);	//[489]	p_krh_sway_r[p_krh_sway_r]
 
 	/* 4 ~ 7 */
-	m_AnimationIndices.push_back(312);	//[312]	p_krh_sway_02_f[p_krh_sway_02_f]
-	m_AnimationIndices.push_back(311);	//[311]	p_krh_sway_02_b[p_krh_sway_02_b]
-	m_AnimationIndices.push_back(313);	//[313]	p_krh_sway_02_l[p_krh_sway_02_l]
-	m_AnimationIndices.push_back(314);	//[314]	p_krh_sway_02_r[p_krh_sway_02_r]
+	m_AnimationIndices.push_back(479);	//[479]	p_krh_sway_02_f[p_krh_sway_02_f]
+	m_AnimationIndices.push_back(478);	//[478]	p_krh_sway_02_b[p_krh_sway_02_b]
+	m_AnimationIndices.push_back(480);	//[480]	p_krh_sway_02_l[p_krh_sway_02_l]
+	m_AnimationIndices.push_back(481);	//[481]	p_krh_sway_02_r[p_krh_sway_02_r]
 
 	/* 8 ~ 11 */
-	m_AnimationIndices.push_back(316);	//[316]	p_krh_sway_03_f[p_krh_sway_03_f]
-	m_AnimationIndices.push_back(315);	//[315]	p_krh_sway_03_b[p_krh_sway_03_b]
-	m_AnimationIndices.push_back(317);	//[317]	p_krh_sway_03_l[p_krh_sway_03_l]
-	m_AnimationIndices.push_back(318);	//[318]	p_krh_sway_03_r[p_krh_sway_03_r]
+	m_AnimationIndices.push_back(483);	//[483]	p_krh_sway_03_f[p_krh_sway_03_f]
+	m_AnimationIndices.push_back(482);	//[482]	p_krh_sway_03_b[p_krh_sway_03_b]
+	m_AnimationIndices.push_back(484);	//[484]	p_krh_sway_03_l[p_krh_sway_03_l]
+	m_AnimationIndices.push_back(485);	//[485]	p_krh_sway_03_r[p_krh_sway_03_r]
 }
 
 void CKiryu_KRH_Sway::Tick(const _float& fTimeDelta)
