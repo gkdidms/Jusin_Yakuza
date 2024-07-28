@@ -18,6 +18,13 @@ public:
 		_bool isLoop = { false };
 	};
 
+	struct FOV_ANIMATION
+	{
+		string strAnimationName;
+		_uint iKeyFrameIndex;
+		_float fFov;
+	};
+
 private:
 	CModel(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CModel(const CModel& rhs);
@@ -31,6 +38,7 @@ public:
 	HRESULT	Ready_Materials(const _char* pModelFilePath);
 	HRESULT	Ready_Bones(const aiNode* pAINode, _int iParentIndex);
 	HRESULT	Ready_Animations();
+	HRESULT	Ready_CameraAnimations(string& pBinFilePath);
 
 	HRESULT Render(_uint iMeshIndex);
 
@@ -38,11 +46,17 @@ public:
 	HRESULT Bind_BoneMatrices(class CShader* pShader, const _char* pConstantName, _uint iNumMeshIndex);
 	bool	Check_Exist_Material(_uint iNumMeshIndex, aiTextureType eTextureType);
 
-	void Play_Animation(_float fTimeDelta);
-	void Play_Animation(_float fTimeDelta, class CAnim* pAnim, _bool isLoop = false);
+	void Play_Animation(_float fTimeDelta, _bool isRoot = true, string strExcludeBoneName = "");
+	void Play_Animation(_float fTimeDelta, class CAnim* pAnim, _bool isLoop = false, _int iAnimIndex = -1, _bool isRoot = true, string strExcludeBoneName = "");
+	void Play_Animation(_float fTimeDelta, const ANIMATION_DESC& AnimDesc, _bool isRoot = true, string strExcludeBoneName = "");
+
 	void Set_AnimationIndex(const ANIMATION_DESC& AnimDesc, _double ChangeInterval = 0.0);
 	_bool Set_AnimationIndex(_uint iAnimIndex, _double ChangeInterval = 0.0);
 	_bool Set_AnimationIndex(_uint iAnimIndex, vector<class CAnimation*> Animations, _double ChangeInterval = 0.0);
+	void Set_ChangeInterval(_double ChangeInterval) {
+		m_ChangeInterval = ChangeInterval;
+	};
+
 	void Reset_Animation(const ANIMATION_DESC& AnimDesc);
 	void Reset_Animation(_uint iAnimIndex);
 
@@ -51,6 +65,10 @@ public:
 	_uint Get_NumAnimations() { return m_iAnimations; }
 	_uint Get_NumBones() { return m_iNumBones; }
 	_uint Get_CurrentAnimationIndex() { return m_AnimDesc.iAnimIndex; }
+	const vector<_uint>* Get_CurrentKeyFrameIndices(string strAnimationName = "");
+	const vector<_uint>* Get_CurrentKeyFrameIndices(_uint iAnimIndex);
+
+	_float Get_FoV(string strAnimationName, _uint iKeyFrameIndex);
 
 	_bool Get_AnimFinished() const;
 	_bool Get_AnimChanged() const;
@@ -79,14 +97,15 @@ public:
 	const _float4x4* Get_BoneCombinedTransformationMatrix_AtIndex(_uint iBoneIndex) const;
 	const _float4x4* Get_BoneTransformationMatrix(const _char* pBoneName) const;
 
-	void	Copy_DecalMaterial(vector<DECAL_DESC>* pDecals); /* Decal 정보 얻어오기 */
-	CTexture* Copy_DecalTexture(int	iMaterialNum); /* Decal 텍스처 얻어오기 */
-
 	const _char* Get_AnimationName(_uint iAnimIndex);
 	const _double* Get_AnimationCurrentPosition(class CAnim* pAnim = nullptr);
 	const _double* Get_AnimationDuration(class CAnim* pAnim = nullptr);
 	const _float3* Get_AnimationCenterMove(class CAnim* pAnim = nullptr);
 	const _float4* Get_AnimationCenterRotation(class CAnim* pAnim = nullptr);
+
+public:
+	void	Copy_DecalMaterial(vector<DECAL_DESC>* pDecals); /* Decal 정보 얻어오기 */
+	CTexture* Copy_DecalTexture(int	iMaterialNum); /* Decal 텍스처 얻어오기 */
 
 public:
 	void Set_AnimLoop(_uint iAnimIndex, _bool isLoop)
@@ -102,13 +121,16 @@ private:
 	HRESULT Export_Meshes(ofstream& out, const string& strOutDirectory);
 	HRESULT Export_Materials(ofstream& out, const _char* pModelFilePath, const string& strOutDirectory);
 	HRESULT Export_Animations(ofstream& out);
+	HRESULT Export_CamNums(ofstream& out);
 
 	HRESULT Import_Model(string& pBinFilePath, _bool isTool);
 	HRESULT Import_Bones(ifstream& in);
 	HRESULT Import_Meshes(ifstream& in);
 	HRESULT Import_Materials(ifstream& in, _bool isTool);
 	HRESULT Import_Animations(ifstream& in);
+	HRESULT Import_CamNums(ifstream& in);
 
+private:
 	void	Find_Mesh_Using_DECAL();
 
 private:
@@ -135,10 +157,12 @@ private:
 	_uint						m_iPrevAnimIndex = { 0 };
 	vector<class CAnimation*>	m_Animations;
 
+	_uint						m_iCameras = { 0 };
+	vector<FOV_ANIMATION>		m_FovAnimation;
+
 	_bool						m_isAnimChange = { false };
 	_float						m_fAnimRatio = { 0.2f };
 	_double						m_ChangeInterval = { 0.2 };
-
 
 	vector<DECAL_DESC>			m_vDecalMaterials;
 	bool						m_bOrigin = { false };

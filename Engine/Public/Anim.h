@@ -26,6 +26,7 @@ public:
     
 public: // 애니메이션 관련
     void Reset_Animation();
+    void Reset_Animation(_uint iAnimIndex);
     _bool Get_AnimFinished();
     _bool Get_LoopAnimFinished();
     const _double* Get_AnimDuration();

@@ -9,6 +9,7 @@
 #include "PlayerCamera.h"
 #include "DebugCamera.h"
 #include "CineCamera.h"
+#include "CutSceneCamera.h"
 
 CLevel_Test::CLevel_Test(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLevel{ pDevice, pContext },
@@ -42,15 +43,16 @@ HRESULT CLevel_Test::Initialize()
 	//	return E_FAIL;
 
 	/* Å¬¶ó ÆÄ½Ì */
-	m_pFileTotalManager->Set_MapObj_In_Client(99, LEVEL_TEST);
+	m_pFileTotalManager->Set_MapObj_In_Client(90, LEVEL_TEST);
 	m_pFileTotalManager->Set_Lights_In_Client(99);
 	m_pFileTotalManager->Set_Collider_In_Client(3, LEVEL_TEST);
 	m_pFileTotalManager->Set_Trigger_In_Client(3, LEVEL_TEST);
 
-
 	if (FAILED(Ready_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
 
+	//if (FAILED(Ready_Test_SceneModel(TEXT("Layer_SceneModel_Test"))))
+	//	return E_FAIL;
 
 	_uint i = m_pGameInstance->Get_CurrentLevel();
 
@@ -106,6 +108,20 @@ HRESULT CLevel_Test::Ready_Camera(const wstring& strLayerTag)
 	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_PlayerCamera"), strLayerTag, &PlayerCameraDesc)))
 		return E_FAIL;
 
+	/* 3. ÄÆ½Å¿ë Ä«¸Þ¶ó */
+	CCamera::CAMERA_DESC		CutSceneCameraDesc{};
+	CutSceneCameraDesc.vEye = _float4(1.0f, 20.0f, -20.f, 1.f);
+	CutSceneCameraDesc.vFocus = _float4(0.f, 0.0f, 0.0f, 1.f);
+	CutSceneCameraDesc.fFovY = XMConvertToRadians(60.0f);
+	CutSceneCameraDesc.fAspect = g_iWinSizeX / (_float)g_iWinSizeY;
+	CutSceneCameraDesc.fNear = 0.1f;
+	CutSceneCameraDesc.fFar = 3000.f;
+	CutSceneCameraDesc.fSpeedPecSec = 10.f;
+	CutSceneCameraDesc.fRotatePecSec = XMConvertToRadians(90.f);
+
+	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_CutSceneCamera"), strLayerTag, &CutSceneCameraDesc)))
+		return E_FAIL;
+
 	
 
 	return S_OK;
@@ -154,6 +170,19 @@ HRESULT CLevel_Test::Ready_Effect(const wstring& strLayerTag)
 	//	return E_FAIL;
 
 	//m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Aura_Start_Rush"), TEXT("Layer_Particle"), nullptr);
+
+	return S_OK;
+}
+
+HRESULT CLevel_Test::Ready_Test_SceneModel(const wstring& strLayerTag)
+{
+	CGameObject::GAMEOBJECT_DESC Desc{};
+	Desc.fSpeedPecSec = 10.f;
+	//Desc.fRotatePecSec = XMConvertToRadians(0.f);
+	Desc.fRotatePecSec = XMConvertToRadians(180.f);
+
+	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_SceneModel_Test"), strLayerTag, &Desc)))
+		return E_FAIL;
 
 	return S_OK;
 }

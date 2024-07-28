@@ -18,6 +18,11 @@ CAdventure::CAdventure(const CAdventure& rhs)
 {
 }
 
+void CAdventure::Start_Root(_int iGoalIndex)
+{
+	m_pAStartCom->Start_Root(m_pNavigationCom, iGoalIndex);
+}
+
 HRESULT CAdventure::Initialize_Prototype()
 {
 	return S_OK;
@@ -44,17 +49,17 @@ void CAdventure::Tick(const _float& fTimeDelta)
 	//길찾기 알고리즘
 	
 	
+	
 	if (m_pGameInstance->GetMouseState(DIM_LB) == TAP)
 	{
 		_bool isPicking = false;
 		_vector vGoalPos = m_pGameInstance->Picking(&isPicking);
 		if (isPicking)
 		{
-			m_pAStartCom->Start_Root(m_pNavigationCom, vGoalPos);
+			
 		}
 	}
 	
-	Move_AStart();
 
 	m_pModelCom->Play_Animation(fTimeDelta, m_pAnimCom, m_isAnimLoop);
 
@@ -271,28 +276,6 @@ void CAdventure::Synchronize_Root(const _float& fTimeDelta)
 	XMStoreFloat4x4(&m_ModelWorldMatrix, m_pTransformCom->Get_WorldMatrix());
 }
 
-void CAdventure::Move_AStart()
-{
-	list<CCell*>& FunnelList = m_pAStartCom->Get_FunnelList();
-
-	if (FunnelList.empty())
-		return;
-	
-	//웨이포인트가 아닌 선분의 중점을 기준으로 다가간다.
-	_vector vCellCheckPoint = (FunnelList.front()->Get_Point(CCell::POINT_B) + FunnelList.front()->Get_Point(CCell::POINT_C)) * 0.5f;
-	_vector	vDir = vCellCheckPoint - m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-	_float fDist = XMVectorGetX(XMVector3Length(vDir));
-
-	m_pTransformCom->LookAt_For_LandObject(vCellCheckPoint);
-	
-	//거의 근접하게 다가갈경우 제거한다.
-	if (0.1f >= fDist)
-	{
-		Safe_Release(FunnelList.front());
-		FunnelList.pop_front();
-	}
-}
-
 void CAdventure::Check_Separation()
 {
 	//내 범위 안에 들어온 NPC를 보고 피한다. 
@@ -316,7 +299,6 @@ void CAdventure::Check_Separation()
 	vMoveDir = XMVector3Normalize(vMoveDir);
 
 	//NPC별 충돌 시 피하는 방향 벡터 -> vMoveDir;
-
 }
 
 HRESULT CAdventure::Add_Components()

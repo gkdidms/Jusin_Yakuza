@@ -40,7 +40,7 @@ public:
         SKILL_END
     };
     enum PLAYER_ATK_DIR { F, B, L, R, PLAYER_ATK_DIR_END };
-    enum MONSTER_TYPE { RUSH, WPA, SHAKDDOWN, KUZE, MONSTER_TYPE_END };
+    enum MONSTER_TYPE { RUSH, WPA, WPH, DEFAULT, SHAKDDOWN, KUZE, MONSTER_TYPE_END };
 
     typedef struct tAIMonster {
         class CAnim* pAnim;
@@ -123,6 +123,7 @@ protected:
 
     //플레이어에게 잡혀있는가?
     virtual CBTNode::NODE_STATE Chcek_Sync(); // 싱크 모션을 해야하는가?
+    virtual CBTNode::NODE_STATE Sync();
     virtual CBTNode::NODE_STATE Sync_Neck(); // 싱크모션 : 멱살
 
     //데미지 DMD
@@ -155,7 +156,7 @@ protected:
     void LookAtPlayer();
 
 protected:
-    _bool Find_CurrentAnimationName(string strAnimName);
+    _bool Find_PlayerCurrentAnimationName(string strAnimName);
     _uint Check_KRH(_uint iPlayerLv, _bool isBehine, _bool isAnimChange = true);
     _uint Check_KRS(_uint iPlayerLv, _bool isBehine, _bool isAnimChange = true);
     _uint Check_KRC(_uint iPlayerLv, _bool isBehine, _bool isAnimChange = true);
