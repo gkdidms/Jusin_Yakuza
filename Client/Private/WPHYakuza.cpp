@@ -1,55 +1,56 @@
-#include "RushYakuza.h"
+#include "WPHYakuza.h"
 
 #include "GameInstance.h"
-#include "Collision_Manager.h"
-#include "AI_RushYakuza.h"
 #include "Mesh.h"
 
 #include "SocketCollider.h"
+#include "Collision_Manager.h"
 
-CRushYakuza::CRushYakuza(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-	: CMonster{ pDevice, pContext }
+#include "AI_WPHYakuza.h"
+
+CWPHYakuza::CWPHYakuza(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+    : CMonster { pDevice, pContext }
 {
 }
 
-CRushYakuza::CRushYakuza(const CRushYakuza& rhs)
-	: CMonster{ rhs }
+CWPHYakuza::CWPHYakuza(const CWPHYakuza& rhs)
+    : CMonster { rhs }
 {
 }
 
-HRESULT CRushYakuza::Initialize_Prototype()
+HRESULT CWPHYakuza::Initialize_Prototype()
 {
-	return S_OK;
+    return S_OK;
 }
 
-HRESULT CRushYakuza::Initialize(void* pArg)
+HRESULT CWPHYakuza::Initialize(void* pArg)
 {
-	if (FAILED(__super::Initialize(pArg)))
-		return E_FAIL;
+    if (FAILED(__super::Initialize(pArg)))
+        return E_FAIL;
 
-	m_wstrModelName = TEXT("Jimu");
+    m_wstrModelName = TEXT("Jimu");
 
-	if (FAILED(Add_CharacterData()))
-		return E_FAIL;
+    if (FAILED(Add_CharacterData()))
+        return E_FAIL;
 
-	return S_OK;
+    return S_OK;
 }
 
-void CRushYakuza::Priority_Tick(const _float& fTimeDelta)
+void CWPHYakuza::Priority_Tick(const _float& fTimeDelta)
 {
 }
 
-void CRushYakuza::Tick(const _float& fTimeDelta)
+void CWPHYakuza::Tick(const _float& fTimeDelta)
 {
 	__super::Tick(fTimeDelta);
 }
 
-void CRushYakuza::Late_Tick(const _float& fTimeDelta)
+void CWPHYakuza::Late_Tick(const _float& fTimeDelta)
 {
 	__super::Late_Tick(fTimeDelta);
 }
 
-HRESULT CRushYakuza::Add_Components()
+HRESULT CWPHYakuza::Add_Components()
 {
 	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Shader_VtxAnim"),
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
@@ -74,12 +75,12 @@ HRESULT CRushYakuza::Add_Components()
 		return E_FAIL;
 
 	//행동트리 저장
-	CAI_RushYakuza::AI_MONSTER_DESC Desc{};
-	Desc.pState = &m_iState;
-	Desc.pAnim = m_pAnimCom;
-	Desc.pThis = this;
+	CAI_WPHYakuza::AI_MONSTER_DESC AIDesc{};
+	AIDesc.pState = &m_iState;
+	AIDesc.pAnim = m_pAnimCom;
+	AIDesc.pThis = this;
 
-	m_pTree = dynamic_cast<CAI_RushYakuza*>(m_pGameInstance->Add_BTNode(m_iCurrentLevel, TEXT("Prototype_BTNode_RushYakuza"), &Desc));
+	m_pTree = dynamic_cast<CAI_WPHYakuza*>(m_pGameInstance->Add_BTNode(m_iCurrentLevel, TEXT("Prototype_BTNode_WPHYakuza"), &AIDesc));
 	if (nullptr == m_pTree)
 		return E_FAIL;
 
@@ -90,7 +91,7 @@ HRESULT CRushYakuza::Add_Components()
 	return S_OK;
 }
 
-void CRushYakuza::Change_Animation()
+void CWPHYakuza::Change_Animation()
 {
 	m_isAnimLoop = false;
 
@@ -220,7 +221,7 @@ void CRushYakuza::Change_Animation()
 	case MONSTER_GURAD_START:
 	{
 		m_strAnimName = "p_krh_guard";
-		break; 
+		break;
 	}
 	case MONSTER_GURAD_LOOP:
 	{
@@ -241,32 +242,32 @@ void CRushYakuza::Change_Animation()
 	default:
 		break;
 	}
-	
+
 	if (FAILED(Setup_Animation()))
 		return;
 }
 
-CRushYakuza* CRushYakuza::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+CWPHYakuza* CWPHYakuza::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
-	CRushYakuza* pInstance = new CRushYakuza(pDevice, pContext);
+    CWPHYakuza* pInstance = new CWPHYakuza(pDevice, pContext);
 
-	if (FAILED(pInstance->Initialize_Prototype()))
-		Safe_Release(pInstance);
+    if (FAILED(pInstance->Initialize_Prototype()))
+        Safe_Release(pInstance);
 
-	return pInstance;
+    return pInstance;
 }
 
-CGameObject* CRushYakuza::Clone(void* pArg)
+CGameObject* CWPHYakuza::Clone(void* pArg)
 {
-	CRushYakuza* pInstance = new CRushYakuza(*this);
+    CWPHYakuza* pInstance = new CWPHYakuza(*this);
 
-	if (FAILED(pInstance->Initialize(pArg)))
-		Safe_Release(pInstance);
+    if (FAILED(pInstance->Initialize(pArg)))
+        Safe_Release(pInstance);
 
-	return pInstance;
+    return pInstance;
 }
 
-void CRushYakuza::Free()
+void CWPHYakuza::Free()
 {
-	__super::Free();
+    __super::Free();
 }

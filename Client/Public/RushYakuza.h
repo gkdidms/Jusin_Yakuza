@@ -25,9 +25,6 @@ private:
     _float4         m_vPrevRotation;
     _float4x4       m_ModelWorldMatrix;
 
-    // map 배치 관련
-    int						m_iShaderPassNum = { 0 };
-
 
 private:
     virtual HRESULT Add_Components() override;
