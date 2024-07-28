@@ -810,7 +810,9 @@ _bool CAI_Monster::Check_StandUp()
 		|| *m_pState == CMonster::MONSTER_KRC_SYNC1_KAIHI_NAGE_F
 		|| *m_pState == CMonster::MONSTER_KRC_SYNC1_NECK_ATK_PUNCH
 		|| *m_pState == CMonster::MONSTER_KRC_SYNC1_NECK_NAGE
-		|| *m_pState == CMonster::MONSTER_KRS_SYNC1_CMB_03_FIN_B)
+		|| *m_pState == CMonster::MONSTER_KRS_SYNC1_CMB_03_FIN_B
+		|| *m_pState == CMonster::MONSTER_SYNC1_LEG_ATK_KICK
+		|| *m_pState == CMonster::MONSTER_SYNC1_LEG_NAGE)
 	{
 		m_pThis->Set_Down(false);
 		*m_pState = CMonster::MONSTER_STANDUP_DNB_FAST;
@@ -828,16 +830,12 @@ _bool CAI_Monster::Check_StandUp()
 
 CBTNode::NODE_STATE CAI_Monster::Chcek_Sync()
 {
-	//스웨이 함수를 지나면 스웨이 false;
-
 	if (!m_isSync)
 		return CBTNode::FAIL;
 
-	*m_pCurrentAnimType = CMonster::SYNC_ANIM;
-
 	if (m_pAnimCom[*m_pCurrentAnimType]->Get_AnimFinished())
 	{
-		m_isSync == false;
+		m_isSync = false;
 		return CBTNode::SUCCESS;
 	}
 

@@ -48,6 +48,7 @@ public:
 
 	void Play_Animation(_float fTimeDelta, _bool isRoot = true, string strExcludeBoneName = "");
 	void Play_Animation(_float fTimeDelta, class CAnim* pAnim, _bool isLoop = false, _int iAnimIndex = -1, _bool isRoot = true, string strExcludeBoneName = "");
+	void Play_Animation_Monster(_float fTimeDelta, class CAnim* pAnim, _bool isLoop);
 	void Play_Animation(_float fTimeDelta, const ANIMATION_DESC& AnimDesc, _bool isRoot = true, string strExcludeBoneName = "");
 
 	void Set_AnimationIndex(const ANIMATION_DESC& AnimDesc, _double ChangeInterval = 0.0);
@@ -59,6 +60,8 @@ public:
 
 	void Reset_Animation(const ANIMATION_DESC& AnimDesc);
 	void Reset_Animation(_uint iAnimIndex);
+
+	void Set_PreAnimations(vector<class CAnimation*> PreAnimation) { m_PreAnimations = PreAnimation; }
 
 public:
 	_uint Get_NumMeshes() { return m_iNumMeshes; }
@@ -156,7 +159,8 @@ private:
 	ANIMATION_DESC				m_AnimDesc{ 0, false };
 	_uint						m_iPrevAnimIndex = { 0 };
 	vector<class CAnimation*>	m_Animations;
-
+	vector<class CAnimation*>	m_PreAnimations;
+	
 	_uint						m_iCameras = { 0 };
 	vector<FOV_ANIMATION>		m_FovAnimation;
 
