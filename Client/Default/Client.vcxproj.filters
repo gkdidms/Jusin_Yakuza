@@ -407,9 +407,6 @@
     <ClCompile Include="..\Private\ScriptManager.cpp">
       <Filter>95.Utility\06.Script</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\CutSceneCamera.cpp">
-      <Filter>02.GameObjects\99.Camera\02.CutSceneCamera</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\MainApp.h">
@@ -847,9 +844,6 @@
     </ClInclude>
     <ClInclude Include="..\Public\ScriptManager.h">
       <Filter>95.Utility\06.Script</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\CutSceneCamera.h">
-      <Filter>02.GameObjects\99.Camera\02.CutSceneCamera</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
