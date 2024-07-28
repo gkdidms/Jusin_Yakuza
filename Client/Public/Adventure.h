@@ -46,9 +46,6 @@ public:
     _bool isColl() { return m_isColl; }
 
 public:
-    void Start_Root(_uint iGoalIndex);
-
-public:
     virtual HRESULT Initialize_Prototype() override;
     virtual HRESULT Initialize(void* pArg) override;
     virtual void Priority_Tick(const _float& fTimeDelta) override;

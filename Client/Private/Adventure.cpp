@@ -18,7 +18,7 @@ CAdventure::CAdventure(const CAdventure& rhs)
 {
 }
 
-void CAdventure::Start_Root(_uint iGoalIndex)
+void CAdventure::Start_Root(_int iGoalIndex)
 {
 	m_pAStartCom->Start_Root(m_pNavigationCom, iGoalIndex);
 }
