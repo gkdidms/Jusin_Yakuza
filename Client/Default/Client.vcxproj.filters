@@ -2,7 +2,7 @@
 <Project ToolsVersion="4.0" xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
   <ItemGroup>
     <ClCompile Include="..\private\MainApp.cpp">
-      <Filter>00.MainApp</Filter>
+      <Filter>01.Levels\00.MainApp</Filter>
     </ClCompile>
     <ClCompile Include="Client.cpp">
       <Filter>98.Default</Filter>
@@ -410,13 +410,10 @@
     <ClCompile Include="..\Private\CutSceneCamera.cpp">
       <Filter>02.GameObjects\99.Camera\02.CutSceneCamera</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Level_Street.cpp">
-      <Filter>01.Levels\08.Street</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\MainApp.h">
-      <Filter>00.MainApp</Filter>
+      <Filter>01.Levels\00.MainApp</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Client_Defines.h">
       <Filter>99.Header</Filter>
@@ -854,9 +851,6 @@
     <ClInclude Include="..\Public\CutSceneCamera.h">
       <Filter>02.GameObjects\99.Camera\02.CutSceneCamera</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Level_Street.h">
-      <Filter>01.Levels\08.Street</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -1272,6 +1266,9 @@
     <Filter Include="95.Utility\05.UIManager\UIScene\UIMainMenu">
       <UniqueIdentifier>{cc133ece-de19-4795-8445-46223b7c17db}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Levels\00.MainApp">
+      <UniqueIdentifier>{556d0fda-c211-44a2-8eb0-f1fedf692025}</UniqueIdentifier>
+    </Filter>
     <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\Grab">
       <UniqueIdentifier>{361ce6c0-0d0d-4b6e-a702-8485478db768}</UniqueIdentifier>
     </Filter>
@@ -1307,12 +1304,6 @@
     </Filter>
     <Filter Include="02.GameObjects\99.Camera\02.CutSceneCamera">
       <UniqueIdentifier>{c2e83612-82aa-4ea8-acef-b6fd1976a302}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="00.MainApp">
-      <UniqueIdentifier>{556d0fda-c211-44a2-8eb0-f1fedf692025}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="01.Levels\08.Street">
-      <UniqueIdentifier>{56c1a787-d1dd-4f9d-bc3a-e9e5354b29b2}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

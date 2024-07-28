@@ -164,7 +164,7 @@ private:
     _float4* m_vSSAOKernal;
 
 #ifdef _DEBUG
-    _bool m_isDebugView = { true };
+    _bool m_isDebugView = { false };
 #endif // _DEBUG
 
 

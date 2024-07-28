@@ -104,7 +104,7 @@ HRESULT CChannel::Initialize(const BAiNodeAnim* pAIChannel, const vector<class C
 }
 
 // 일반 키프레임간 선형보간 함수
-void CChannel::Update_TransformationMatrix(_double CurrentPosition, const vector<class CBone*>& Bones, _uint* pCurrentKeyFrameIndex, _float3* fCenterMoveValue, _float4* fCenterRotationValue)
+void CChannel::Update_TransformationMatrix(_double CurrentPosition, const vector<class CBone*>& Bones, _uint* pCurrentKeyFrameIndex, _float3* fCenterMoveValue, _float4* fCenterRotationValue, _bool isRoot, string strExcludeBoneName)
 {
 	if (0.0 == CurrentPosition)
 		*pCurrentKeyFrameIndex = 0;
@@ -132,8 +132,12 @@ void CChannel::Update_TransformationMatrix(_double CurrentPosition, const vector
 		{
 			//vRotation = XMVectorZero();
 			vRotation = XMLoadFloat4(&LastKeyFrame.vRotation);
-			vTranslation = XMVectorSet(0, 0, XMVectorGetZ(XMLoadFloat3(&LastKeyFrame.vPosition)), 1);
-			//vTranslation = XMVectorSetW(XMLoadFloat3(&LastKeyFrame.vPosition), 1.f);
+
+			// 루트애니메이션을 쓸건지
+			if(isRoot)
+				vTranslation = XMVectorSet(0, 0, XMVectorGetZ(XMLoadFloat3(&LastKeyFrame.vPosition)), 1);
+			else
+				vTranslation = XMVectorSetW(XMLoadFloat3(&LastKeyFrame.vPosition), 1.f);
 
 			XMStoreFloat3(fCenterMoveValue, XMVectorSetW(XMLoadFloat3(&LastKeyFrame.vPosition), 1.f));
 			XMStoreFloat4(fCenterRotationValue, XMLoadFloat4(&LastKeyFrame.vRotation));
@@ -150,8 +154,13 @@ void CChannel::Update_TransformationMatrix(_double CurrentPosition, const vector
 
 		vScale = XMVectorLerp(XMLoadFloat3(&m_KeyFrames[*pCurrentKeyFrameIndex].vScale), XMLoadFloat3(&m_KeyFrames[*pCurrentKeyFrameIndex + 1].vScale), fRatio);
 		
-
-		if (!Bones[m_iBoneIndex]->Compare_Name("center_c_n"))
+		// 애니메이션 선형보간 자체를 제거하고 현재 키프레임값 그대로
+		if (strExcludeBoneName != "" && Bones[m_iBoneIndex]->Compare_Name(strExcludeBoneName.c_str()))
+		{
+			vRotation = XMLoadFloat4(&m_KeyFrames[*pCurrentKeyFrameIndex].vRotation);
+			vTranslation = XMVectorSetW(XMLoadFloat3(&m_KeyFrames[*pCurrentKeyFrameIndex].vPosition), 1.f);
+		}
+		else if (!Bones[m_iBoneIndex]->Compare_Name("center_c_n"))
 		{
 			vRotation = XMQuaternionSlerp(XMLoadFloat4(&m_KeyFrames[*pCurrentKeyFrameIndex].vRotation), XMLoadFloat4(&m_KeyFrames[*pCurrentKeyFrameIndex + 1].vRotation), fRatio);
 			vTranslation = XMVectorLerp(XMVectorSetW(XMLoadFloat3(&m_KeyFrames[*pCurrentKeyFrameIndex].vPosition), 1.f), XMVectorSetW(XMLoadFloat3(&m_KeyFrames[*pCurrentKeyFrameIndex + 1].vPosition), 1.f), fRatio);
@@ -160,8 +169,11 @@ void CChannel::Update_TransformationMatrix(_double CurrentPosition, const vector
 		{
 			//vRotation = XMVectorZero();
 			vRotation = XMQuaternionSlerp(XMLoadFloat4(&m_KeyFrames[*pCurrentKeyFrameIndex].vRotation), XMLoadFloat4(&m_KeyFrames[*pCurrentKeyFrameIndex + 1].vRotation), fRatio);
-			vTranslation = XMVectorSet(0, 0, XMVectorGetZ(XMVectorLerp(XMVectorSetW(XMLoadFloat3(&m_KeyFrames[*pCurrentKeyFrameIndex].vPosition), 1.f), XMVectorSetW(XMLoadFloat3(&m_KeyFrames[*pCurrentKeyFrameIndex + 1].vPosition), 1.f), fRatio)), 1);
-			//vTranslation = XMVectorLerp(XMVectorSetW(XMLoadFloat3(&m_KeyFrames[*pCurrentKeyFrameIndex].vPosition), 1.f), XMVectorSetW(XMLoadFloat3(&m_KeyFrames[*pCurrentKeyFrameIndex + 1].vPosition), 1.f), fRatio);
+
+			if (isRoot)
+				vTranslation = XMVectorSet(0, 0, XMVectorGetZ(XMVectorLerp(XMVectorSetW(XMLoadFloat3(&m_KeyFrames[*pCurrentKeyFrameIndex].vPosition), 1.f), XMVectorSetW(XMLoadFloat3(&m_KeyFrames[*pCurrentKeyFrameIndex + 1].vPosition), 1.f), fRatio)), 1);
+			else
+				vTranslation = XMVectorLerp(XMVectorSetW(XMLoadFloat3(&m_KeyFrames[*pCurrentKeyFrameIndex].vPosition), 1.f), XMVectorSetW(XMLoadFloat3(&m_KeyFrames[*pCurrentKeyFrameIndex + 1].vPosition), 1.f), fRatio);
 
 			XMStoreFloat4(fCenterRotationValue, XMQuaternionSlerp(XMLoadFloat4(&m_KeyFrames[*pCurrentKeyFrameIndex].vRotation), XMLoadFloat4(&m_KeyFrames[*pCurrentKeyFrameIndex + 1].vRotation), fRatio));
 			XMStoreFloat3(fCenterMoveValue, XMVectorLerp(XMVectorSetW(XMLoadFloat3(&m_KeyFrames[*pCurrentKeyFrameIndex].vPosition), 1.f), XMVectorSetW(XMLoadFloat3(&m_KeyFrames[*pCurrentKeyFrameIndex + 1].vPosition), 1.f), fRatio));
@@ -178,7 +190,7 @@ void CChannel::Update_TransformationMatrix(_double CurrentPosition, const vector
 }
 
 // 애니메이션간 선형보간하는 함수
-void CChannel::Update_TransformationMatrix(_double CurrentPosition, const vector<class CBone*>& Bones, CChannel* pSrcChannel, _uint PrevKeyFrameIndex, _double ChangeInterval, _bool isFinished, _float3* fCenterMoveValue, _float4* fCenterRotationValue)
+void CChannel::Update_TransformationMatrix(_double CurrentPosition, const vector<class CBone*>& Bones, CChannel* pSrcChannel, _uint PrevKeyFrameIndex, _double ChangeInterval, _bool isFinished, _float3* fCenterMoveValue, _float4* fCenterRotationValue, _bool isRoot)
 {
 	_vector			vScale, vRotation, vTranslation;
 
@@ -210,8 +222,10 @@ void CChannel::Update_TransformationMatrix(_double CurrentPosition, const vector
 		// center_c_n 뼈라면 회전값 죽이기
 		//vRotation = XMVectorZero();
 		vRotation = XMQuaternionSlerp(XMLoadFloat4(&m_KeyFrames.front().vRotation), XMLoadFloat4(&KeyFrame.vRotation), fRatio);
-		vTranslation = XMVectorSet(0, 0, XMVectorGetZ(XMVectorLerp(XMVectorSetW(XMLoadFloat3(&m_KeyFrames.front().vPosition), 1.f), XMVectorSetW(XMLoadFloat3(&KeyFrame.vPosition), 1.f), fRatio)), 1);
-		//vTranslation = XMVectorLerp(XMVectorSetW(XMLoadFloat3(&m_KeyFrames.front().vPosition), 1.f), XMVectorSetW(XMLoadFloat3(&KeyFrame.vPosition), 1.f), fRatio);
+		if (isRoot)
+			vTranslation = XMVectorSet(0, 0, XMVectorGetZ(XMVectorLerp(XMVectorSetW(XMLoadFloat3(&m_KeyFrames.front().vPosition), 1.f), XMVectorSetW(XMLoadFloat3(&KeyFrame.vPosition), 1.f), fRatio)), 1);
+		else
+			vTranslation = XMVectorLerp(XMVectorSetW(XMLoadFloat3(&m_KeyFrames.front().vPosition), 1.f), XMVectorSetW(XMLoadFloat3(&KeyFrame.vPosition), 1.f), fRatio);
 
 		XMStoreFloat3(fCenterMoveValue, XMVectorLerp(XMVectorSetW(XMLoadFloat3(&m_KeyFrames.front().vPosition), 1.f), XMVectorSetW(XMLoadFloat3(&KeyFrame.vPosition), 1.f), fRatio));
 		XMStoreFloat4(fCenterRotationValue, XMQuaternionSlerp(XMLoadFloat4(&m_KeyFrames.front().vRotation), XMLoadFloat4(&KeyFrame.vRotation), fRatio));

@@ -60,11 +60,6 @@ void CCollision_Manager::Tick()
     Enemy_Hit_Collision();
     Player_Hit_Collision();
 
-    if (m_pGameInstance->GetKeyState(DIK_Z) == TAP)
-#ifdef _DEBUG
-        cout << " 버튼 입력!" << endl;
-#endif // _DEBUG        
-
     Battle_Clear();
 }
 
@@ -333,12 +328,14 @@ _bool CCollision_Manager::Check_Map_Collision(CCollider* pCollider)
 
 CLandObject* CCollision_Manager::Get_Near_LandObject(CLandObject* pObject, vector<CGameObject*>& pObjects)
 {
-    _float fDinstance = { 99999999.f };
+    // 5거리 이내에 있는 애들만 검색한다.
+    _float fDinstance = { 5.f };
     CLandObject* pValue = { nullptr };
 
     for (auto& pTarget : pObjects)
     {
         if (pTarget == pObject) continue;
+        if (pTarget->isObjectDead()) continue;
 
         _vector vBasePosition = pObject->Get_TransformCom()->Get_State(CTransform::STATE_POSITION);
         _vector vTargetPosition = pTarget->Get_TransformCom()->Get_State(CTransform::STATE_POSITION);
