@@ -67,6 +67,14 @@ HRESULT CUIScene::Close_Scene()
 	{
 		iter->Close_UI();
 	}
+	
+	for (auto& iter : m_EventUI)
+	{
+		if (CUI_Object::TYPE_BTN != iter->Get_TypeIndex())
+			iter->Close_UI();
+		else
+			iter->Show_UI();
+	}
 	m_isAnimFin = false;
 	m_isClose = true;
 	m_iCurButton = -1;

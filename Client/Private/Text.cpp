@@ -9,7 +9,9 @@ CText::CText(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 
 CText::CText(const CText& rhs)
 	: CUI_Texture{ rhs },
-	m_strText{ rhs.m_strText }
+	m_strText{ rhs.m_strText },
+	m_iAlign{rhs.m_iAlign},
+	m_Font{rhs.m_Font}
 {
 }
 
@@ -238,9 +240,7 @@ HRESULT CText::Load_binary(ifstream& in)
 	in.read((char*)&m_isColor, sizeof(_bool));
 	in.read((char*)&m_iShaderPass, sizeof(_uint));
 
-	_float4x4 World{};
-	in.read((char*)&World, sizeof(_float4x4));
-	m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(&World));
+	in.read((char*)&m_WorldMatrix, sizeof(_float4x4));
 
 	in.read((char*)&m_isAnim, sizeof(_bool));
 	in.read((char*)&m_fAnimTime, sizeof(_float2));
