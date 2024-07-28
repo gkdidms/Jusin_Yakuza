@@ -9,7 +9,9 @@ CText::CText(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 
 CText::CText(const CText& rhs)
 	: CUI_Texture{ rhs },
-	m_strText{rhs.m_strText}
+	m_strText{rhs.m_strText},
+	m_iAlign{ rhs.m_iAlign },
+	m_Font{ rhs.m_Font }
 {
 }
 

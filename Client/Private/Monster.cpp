@@ -513,7 +513,7 @@ void CMonster::Animation_Event()
 
 string CMonster::Get_CurrentAnimationName()
 {
-	return m_pAnimCom[m_iCurrentAnimType]->Get_AnimationName(m_pAnimCom[m_iCurrentAnimType]->Get_CurrentAnimIndex());
+	return m_strAnimName;
 }
 
 void CMonster::Shaking(_float fRatio, _float fShakeDuration, _float fShakeMagnitude)

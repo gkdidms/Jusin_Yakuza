@@ -12,6 +12,7 @@
 #include "UILogo.h"
 #include "UIMainMenu.h"
 #include "UITutorial.h"
+#include "UITalk.h"
 
 #include "InventoryManager.h"
 #include "Player.h"
@@ -73,6 +74,8 @@ HRESULT CUIManager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 	pScene = CUITutorial::Create(m_pDevice, m_pContext);
 	m_AllScene.emplace(make_pair(TEXT("Tutorial"), pScene));
 
+	pScene = CUITalk::Create(m_pDevice, m_pContext);
+	m_AllScene.emplace(make_pair(TEXT("Talk"), pScene));
 
 
 	return S_OK;
@@ -245,4 +248,12 @@ void CUIManager::Free()
 	Safe_Release(m_pDevice);
 	Safe_Release(m_pContext);
 	Safe_Release(m_pGameInstance);
+}
+
+void CUIManager::Set_TalkData(wstring Name, wstring TalkData)
+{
+	if (!m_PlayScene.empty())
+	{
+		dynamic_cast<CUITalk*>(m_PlayScene.back())->Set_TalkData(Name, TalkData);
+	}
 }

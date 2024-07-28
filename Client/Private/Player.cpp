@@ -26,6 +26,7 @@
 #include "Kiryu_KRS_Hit.h"
 #include "Kiryu_KRS_Down.h"
 #include "Kiryu_KRH_Down.h"
+#include "Kiryu_KRS_Grab.h"
 #pragma endregion
 
 CPlayer::CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -52,6 +53,12 @@ CPlayer::CPlayer(const CPlayer& rhs)
 	Safe_AddRef(m_pDebugManager);
 #endif // _DEBUG
 	Safe_AddRef(m_pUIManager);
+}
+
+void CPlayer::Set_SeizeOff(_bool isOff)
+{
+	//8번 Grab 공통
+	m_AnimationTree[m_eCurrentStyle].at(8)->Event(&isOff);
 }
 
 HRESULT CPlayer::Initialize_Prototype()
@@ -150,10 +157,23 @@ void CPlayer::Tick(const _float& fTimeDelta)
 	{
 		m_pUIManager->Open_Scene(TEXT("Tutorial"));
 	}
+	if (m_pGameInstance->GetKeyState(DIK_Y) == TAP)
+	{
+		m_pUIManager->Open_Scene(TEXT("Talk"));
+		m_pUIManager->Set_TalkData(TEXT("키류"), TEXT("뿡밥바아아야아앙바아빠ㅃ우 \\뿡뿡뿡 \\빠아앙"));
+		
+	}
+
 
 	Synchronize_Root(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")));
 
 #ifdef _DEBUG
+	if (m_pGameInstance->GetKeyState(DIK_Z) == TAP)
+	{
+		//TODO: 여기에서 enum값을 필요한 애니메이션으로 바꾸면 해당하는 컷신이 실행된당
+		Set_CutSceneAnim(HAIHEKI_KICK);
+	}
+
 	if (m_isAnimStart)
 	{
 		if (DEFAULT_ANIMAITION == m_eAnimComType)
@@ -411,6 +431,35 @@ HRESULT CPlayer::Render()
 	return S_OK;
 }
 
+// 내 공격 콜라이더와 충돌했을 때
+void CPlayer::Attack_Event(CLandObject* pHitObject)
+{
+	switch (m_eCurrentStyle)
+	{
+	case CPlayer::KRS:
+	{
+
+		if (m_iCurrentBehavior == (_uint)KRS_BEHAVIOR_STATE::GRAB)
+		{
+			CKiryu_KRS_Grab::KRS_Grab_DESC Desc{ true, Compute_Target_Direction(pHitObject) };
+			m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Setting_Value(&Desc);
+		}
+
+		break;
+	}
+	case CPlayer::KRH:
+	{
+
+		break;
+	}
+	case CPlayer::KRC:
+	{
+
+		break;
+	}
+	}
+}
+
 void CPlayer::Take_Damage(_uint iHitColliderType, const _float3& vDir, _float fDamage, CLandObject* pAttackedObject, _bool isBlowAttack)
 {
 	// iHitColliderType 는 충돌한 HIT타입 콜라이더가 헤드, 바디, 레그인지를 갖고있다.
@@ -418,34 +467,11 @@ void CPlayer::Take_Damage(_uint iHitColliderType, const _float3& vDir, _float fD
 	// 데미지 감소율 설정 (파괴자 가드 시에는 딜을 평소보다 0.2배만큼만 받는다 (==딜감80퍼))
 	_float fDamageDownScale = 1.f;
 
-	// 때린 상대의 현재 애니메이션 네임을 가져온다.
 	switch (m_eCurrentStyle)
 	{
 	case CPlayer::KRS:
 	{
-		_vector vAttackedObjectLook = XMVector3Normalize(pAttackedObject->Get_TransformCom()->Get_State(CTransform::STATE_LOOK));
-		_vector vMyLook = XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK));
-
-		_float fTheta = 0.0f;
-		_float fDot = XMVectorGetX(XMVector3Dot(vMyLook, vAttackedObjectLook));
-		fTheta = XMConvertToDegrees(acosf(fDot));
-
-		// F, B, L, R
-		_int iDirection = -1;
-		if (fDot >= 0.0f)
-		{
-			if (0 <= fTheta && 90 > fTheta)  // 앞쪽
-				iDirection = 0;
-			else if (90 <= fTheta && 180 >= fTheta) // 뒷쪽
-				iDirection = 1;
-		}
-		else
-		{
-			if (0 <= fTheta && 90 > fTheta) // 왼쪽
-				iDirection = 2;
-			else if (90 <= fTheta && 180 >= fTheta) // 오른쪽
-				iDirection = 3;
-		}
+		_int iDirection = Compute_Target_Direction(pAttackedObject);
 
 		if (m_iCurrentBehavior == (_uint)KRS_BEHAVIOR_STATE::DOWN)
 		{
@@ -466,29 +492,7 @@ void CPlayer::Take_Damage(_uint iHitColliderType, const _float3& vDir, _float fD
 	}
 	case CPlayer::KRH:
 	{
-		_vector vAttackedObjectLook = XMVector3Normalize(pAttackedObject->Get_TransformCom()->Get_State(CTransform::STATE_LOOK));
-		_vector vMyLook = XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK));
-
-		_float fTheta = 0.0f;
-		_float fDot = XMVectorGetX(XMVector3Dot(vMyLook, vAttackedObjectLook));
-		fTheta = XMConvertToDegrees(acosf(fDot));
-
-		// F, B, L, R
-		_int iDirection = -1;
-		if (fDot >= 0.0f)
-		{
-			if (0 <= fTheta && 90 > fTheta)  // 앞쪽
-				iDirection = 0;
-			else if (90 <= fTheta && 180 >= fTheta) // 뒷쪽
-				iDirection = 1;
-		}
-		else
-		{
-			if (0 <= fTheta && 90 > fTheta) // 왼쪽
-				iDirection = 2;
-			else if (90 <= fTheta && 180 >= fTheta) // 오른쪽
-				iDirection = 3;
-		}
+		_int iDirection = Compute_Target_Direction(pAttackedObject);
 
 		if (m_iCurrentBehavior == (_uint)KRH_BEHAVIOR_STATE::DOWN)
 		{
@@ -509,29 +513,8 @@ void CPlayer::Take_Damage(_uint iHitColliderType, const _float3& vDir, _float fD
 	}
 	case CPlayer::KRC:
 	{
-		_vector vAttackedObjectLook = XMVector3Normalize(pAttackedObject->Get_TransformCom()->Get_State(CTransform::STATE_LOOK));
-		_vector vMyLook = XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK));
-
-		_float fTheta = 0.0f;
-		_float fDot = XMVectorGetX(XMVector3Dot(vMyLook, vAttackedObjectLook));
-		fTheta = XMConvertToDegrees(acosf(fDot));
-
-		// F, B, L, R
-		_int iDirection = -1;
-		if (fDot >= 0.0f)
-		{
-			if (0 <= fTheta && 90 > fTheta)  // 앞쪽
-				iDirection = 0;
-			else if (90 <= fTheta && 180 >= fTheta) // 뒷쪽
-				iDirection = 1;
-		}
-		else
-		{
-			if (0 <= fTheta && 90 > fTheta) // 왼쪽
-				iDirection = 2;
-			else if (90 <= fTheta && 180 >= fTheta) // 오른쪽
-				iDirection = 3;
-		}
+		
+		_int iDirection = Compute_Target_Direction(pAttackedObject);
 
 		CKiryu_KRC_Hit::KRC_Hit_DESC Desc{ &vDir, fDamage, pAttackedObject->Get_CurrentAnimationName(), iDirection };
 
@@ -696,6 +679,36 @@ void CPlayer::Synchronize_Root(const _float& fTimeDelta)
 
 	m_vPrevRotation = *(m_pModelCom->Get_AnimationCenterRotation());
 	XMStoreFloat4x4(&m_ModelWorldMatrix, m_pTransformCom->Get_WorldMatrix());
+}
+
+_int CPlayer::Compute_Target_Direction(CLandObject* pAttackedObject)
+{
+	// F, B, L, R
+	_int iDirection = -1;
+
+	_vector vAttackedObjectLook = XMVector3Normalize(pAttackedObject->Get_TransformCom()->Get_State(CTransform::STATE_LOOK));
+	_vector vMyLook = XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK));
+
+	_float fTheta = 0.0f;
+	_float fDot = XMVectorGetX(XMVector3Dot(vMyLook, vAttackedObjectLook));
+	fTheta = XMConvertToDegrees(acosf(fDot));
+
+	if (fDot >= 0.0f)
+	{
+		if (fTheta < 90)  // 앞쪽
+			iDirection = 0;
+		else // 뒷쪽
+			iDirection = 1;
+	}
+	else
+	{
+		if (fTheta < 90) // 왼쪽
+			iDirection = 2;
+		else // 오른쪽
+			iDirection = 3;
+	}
+
+	return iDirection;
 }
 
 void CPlayer::KeyInput(const _float& fTimeDelta)
@@ -907,16 +920,17 @@ void CPlayer::KRS_KeyInput(const _float& fTimeDelta)
 
 		}
 
-		// 잡기, 어택중이 아닐때에만 Q입력을 받는다
-		if (m_iCurrentBehavior != (_uint)KRS_BEHAVIOR_STATE::ATTACK && m_pGameInstance->GetKeyState(DIK_Q) == TAP)
+		// 어택중이 아닐때에만 Q입력을 받는다
+		if (m_iCurrentBehavior != (_uint)KRS_BEHAVIOR_STATE::ATTACK && m_iCurrentBehavior != (_uint)KRS_BEHAVIOR_STATE::GRAB && m_pGameInstance->GetKeyState(DIK_Q) == TAP)
 		{
 			m_iCurrentBehavior = (_uint)KRS_BEHAVIOR_STATE::GRAB;
+			m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Reset();
 		}
 	}
 
 	if (m_iCurrentBehavior < (_uint)KRS_BEHAVIOR_STATE::ATTACK && !m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Stopping())
 	{
-		if (m_iCurrentBehavior != (_uint)KRS_BEHAVIOR_STATE::WALK)
+		if (m_iCurrentBehavior != (_uint)KRS_BEHAVIOR_STATE::WALK && m_iCurrentBehavior != (_uint)KRS_BEHAVIOR_STATE::GRAB)
 		{
 			if (m_pGameInstance->GetKeyState(DIK_W) == HOLD)
 			{
@@ -1517,6 +1531,7 @@ void CPlayer::Play_CutScene()
 
 		auto KeyFrames = m_pCameraModel->Get_CurrentKeyFrameIndices(m_iCutSceneCamAnimIndex);
 		_uint iKeyFrameIndex = KeyFrames->front();
+
 
 		pCamera->Set_FoV(m_pCameraModel->Get_FoV(m_pCameraModel->Get_AnimationName(m_iCutSceneCamAnimIndex), iKeyFrameIndex));
 

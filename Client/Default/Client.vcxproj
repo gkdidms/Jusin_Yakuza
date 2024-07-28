@@ -315,6 +315,7 @@
     <ClInclude Include="..\Public\UIMoney.h" />
     <ClInclude Include="..\Public\UINowLoading.h" />
     <ClInclude Include="..\Public\UIScene.h" />
+    <ClInclude Include="..\Public\UITalk.h" />
     <ClInclude Include="..\Public\UITutorial.h" />
     <ClInclude Include="..\Public\UI_Effect.h" />
     <ClInclude Include="..\Public\UI_Object.h" />
@@ -472,6 +473,7 @@
     <ClCompile Include="..\Private\UIMoney.cpp" />
     <ClCompile Include="..\Private\UINowLoading.cpp" />
     <ClCompile Include="..\Private\UIScene.cpp" />
+    <ClCompile Include="..\Private\UITalk.cpp" />
     <ClCompile Include="..\Private\UITutorial.cpp" />
     <ClCompile Include="..\Private\UI_Effect.cpp" />
     <ClCompile Include="..\Private\UI_Object.cpp" />

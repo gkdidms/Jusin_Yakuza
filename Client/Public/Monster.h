@@ -23,6 +23,7 @@ public:
 
 public:
     enum ANIM_TYPE { ATK_ANIM, SYNC_ANIM, ANIM_END };
+
     enum MONSTER_STATE
     {
         MONSTER_IDLE,
@@ -294,6 +295,7 @@ protected:
     _float m_fHitDamage = { 0.f };
     _bool m_isColl = { false }; // 충돌되었는지 아닌지 체크해야함.
     _bool m_isDown = { false }; // 다운되었는가?
+    
 
     /* 쉐이킹 관련 정보들 */
     _bool m_isShaked = { false };       // 쉐이킹이 실행되었는지?
