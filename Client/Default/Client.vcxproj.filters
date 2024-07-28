@@ -392,6 +392,9 @@
     <ClCompile Include="..\Private\UITutorial.cpp">
       <Filter>95.Utility\05.UIManager\UIScene\UITutorial</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\UITalk.cpp">
+      <Filter>95.Utility\05.UIManager\UIScene\UITalk</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\MainApp.h">
@@ -814,6 +817,9 @@
     </ClInclude>
     <ClInclude Include="..\Public\UITutorial.h">
       <Filter>95.Utility\05.UIManager\UIScene\UITutorial</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UITalk.h">
+      <Filter>95.Utility\05.UIManager\UIScene\UITalk</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1250,6 +1256,9 @@
     </Filter>
     <Filter Include="95.Utility\05.UIManager\UIScene\UITutorial">
       <UniqueIdentifier>{39820b06-aaf0-40df-8bc1-4fb5f0dd4a47}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\05.UIManager\UIScene\UITalk">
+      <UniqueIdentifier>{67923609-fa00-4887-b22f-1a67293fb0e8}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
