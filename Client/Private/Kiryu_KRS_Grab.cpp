@@ -2,6 +2,7 @@
 #include "Kiryu_KRS_Grab.h"
 #include "Player.h"
 #include "Camera.h"
+#include "Monster.h"
 
 CKiryu_KRS_Grab::CKiryu_KRS_Grab()
 	:CBehaviorAnimation{}
@@ -31,34 +32,34 @@ CKiryu_KRS_Grab::CKiryu_KRS_Grab()
 	m_AnimationIndices.push_back(590);	// 14 [590] [p_kru_sync_neck_lp]
 	m_AnimationIndices.push_back(597);	// 15 [597] [p_kru_sync_neck_walk]
 
-	m_AnimationIndices.push_back(592);	//[592] [p_kru_sync_neck_off]
-	m_AnimationIndices.push_back(593);	//[593] [p_kru_sync_neck_off_uraken]	//잡고있다 끌려가면서 놓침
-	m_AnimationIndices.push_back(594);	//[594] [p_kru_sync_neck_press]			// 잡고있다가 놓치고 넘어짐
+	m_AnimationIndices.push_back(592);	// 16 [592] [p_kru_sync_neck_off]
+	m_AnimationIndices.push_back(593);	// 17 [593] [p_kru_sync_neck_off_uraken]	//잡고있다 끌려가면서 놓침
+	m_AnimationIndices.push_back(594);	// 18 [594] [p_kru_sync_neck_press]			// 잡고있다가 놓치고 넘어짐
 	
-	m_AnimationIndices.push_back(595);	//[595] [p_kru_sync_neck_resist]
+	m_AnimationIndices.push_back(595);	// 19 [595] [p_kru_sync_neck_resist]
 
-	m_AnimationIndices.push_back(586);	//[586] [p_kru_sync_neck_atk_kick]
-	m_AnimationIndices.push_back(587);	//[587] [p_kru_sync_neck_cmb_01]
-	m_AnimationIndices.push_back(588);	//[588] [p_kru_sync_neck_cmb_02]
-	m_AnimationIndices.push_back(589);	//[589] [p_kru_sync_neck_cmb_03]
+	m_AnimationIndices.push_back(586);	// 20 [586] [p_kru_sync_neck_atk_kick]
+	m_AnimationIndices.push_back(587);	// 21 [587] [p_kru_sync_neck_cmb_01]
+	m_AnimationIndices.push_back(588);	// 22 [588] [p_kru_sync_neck_cmb_02]
+	m_AnimationIndices.push_back(589);	// 23 [589] [p_kru_sync_neck_cmb_03]
 	
-	m_AnimationIndices.push_back(591);	//[591] [p_kru_sync_neck_nage]
+	m_AnimationIndices.push_back(591);	// 24 [591] [p_kru_sync_neck_nage]
 
 	/* leg */
-	m_AnimationIndices.push_back(700);	//[700]	[p_sync_leg_st_b]
-	m_AnimationIndices.push_back(701);	//[701]	[p_sync_leg_st_f]
-	m_AnimationIndices.push_back(697);	//[697]	[p_sync_leg_lp]
-	m_AnimationIndices.push_back(702);	//[702]	[p_sync_leg_walk]
+	m_AnimationIndices.push_back(700);	// 25 [700]	[p_sync_leg_st_b]
+	m_AnimationIndices.push_back(701);	// 26 [701]	[p_sync_leg_st_f]
+	m_AnimationIndices.push_back(697);	// 27 [697]	[p_sync_leg_lp]
+	m_AnimationIndices.push_back(702);	// 28 [702]	[p_sync_leg_walk]
 
-	m_AnimationIndices.push_back(699);	//[699]	[p_sync_leg_off]
+	m_AnimationIndices.push_back(699);	// 29 [699]	[p_sync_leg_off]
 
-	m_AnimationIndices.push_back(698);	//[698]	[p_sync_leg_nage]
+	m_AnimationIndices.push_back(698);	// 30 [698]	[p_sync_leg_nage]
 
 	/* etc */
-	m_AnimationIndices.push_back(695);	//[695]	[p_sync_lapel_to_neck]
+	m_AnimationIndices.push_back(695);	// 31 [695]	[p_sync_lapel_to_neck]
 	
-	m_AnimationIndices.push_back(693);	//[693]	[p_sync_head_b]			// 일으켜 세우는거, 누워있는 상대의 머리쪽에서 잡기키 한번 더 누르면 실행된다.
-	m_AnimationIndices.push_back(694);	//[694]	[p_sync_head_f]
+	m_AnimationIndices.push_back(693);	// 32 [693]	[p_sync_head_b]			// 일으켜 세우는거, 누워있는 상대의 머리쪽에서 잡기키 한번 더 누르면 실행된다.
+	m_AnimationIndices.push_back(694);	// 33 [694]	[p_sync_head_f]
 }
 
 void CKiryu_KRS_Grab::Tick(const _float& fTimeDelta)
@@ -73,38 +74,14 @@ void CKiryu_KRS_Grab::Tick(const _float& fTimeDelta)
 
 	if (m_isGrabed)
 	{
-		if (Changeable_Combo_Animation())
-		{
 			switch (m_iDirection)
 			{
-			// lapel (정면)
+				// lapel (정면)
 			case CPlayer::F:
 			{
-				switch (m_eAnimState)
-				{
-				case ANIM_START:
-				{
-					if (Get_AnimationEnd())
-						m_iCurrentIndex = 2;
-
-					break;
-				}
-				case ANIM_LOOP:
-					// 여기에 키인풋
-					Move_KeyInput(fTimeDelta);
-
-					if (m_isStop)
-						m_eAnimState = ANIM_END;
-
-					break;
-				case ANIM_END:
-					// 놓치는게 end (p_kru_sync_neck_off)
-					break;
-				default:
-					break;
-				}
-
 				
+
+
 				break;
 			}
 			//neck
@@ -116,7 +93,39 @@ void CKiryu_KRS_Grab::Tick(const _float& fTimeDelta)
 			// lapel (정면)
 			case CPlayer::R:
 			{
-				m_iCurrentIndex = 2;
+				switch (m_eAnimState)
+				{
+				case SEIZE_TRY:
+				{
+					if (Changeable_Combo_Animation())
+					{
+						m_eAnimState = ANIM_START;
+						m_iCurrentIndex = 1;
+					}
+
+					break;
+				}
+				case ANIM_START:
+				{
+					if (Changeable_Combo_Animation())
+					{
+						m_eAnimState = ANIM_LOOP;
+						m_iCurrentIndex = 2;
+					}
+
+					break;
+				}
+				case ANIM_LOOP:
+					// 여기에 키인풋
+					Move_KeyInput(fTimeDelta);
+
+					break;
+				case ANIM_END:
+					// 놓치는게 end (p_kru_sync_neck_off)
+					break;
+				default:
+					break;
+				}
 				break;
 			}
 			//neck
@@ -126,23 +135,9 @@ void CKiryu_KRS_Grab::Tick(const _float& fTimeDelta)
 				break;
 			}
 			}
-		}
 	}
 
-
-	switch (m_eAnimState)
-	{
-	case CKiryu_KRS_Grab::ANIM_LOOP:
-	{
-
-		break;
-	}
-	case CKiryu_KRS_Grab::ANIM_END:
-	{
-
-		break;
-	}
-	}
+	Shaking();
 }
 
 void CKiryu_KRS_Grab::Change_Animation()
@@ -155,6 +150,7 @@ void CKiryu_KRS_Grab::Change_Animation()
 _bool CKiryu_KRS_Grab::Get_AnimationEnd()
 {
 	CModel* pModelCom = static_cast<CModel*>(m_pPlayer->Get_Component(TEXT("Com_Model")));
+
 	if (pModelCom->Get_AnimFinished())
 	{
 		// 잡지못했을 때에는 애니메이션 스테이트 관계없이 종료를 반환한다.
@@ -164,10 +160,26 @@ _bool CKiryu_KRS_Grab::Get_AnimationEnd()
 			return true;
 		}
 
+		// (ANIM_START == m_eAnimState는 그랩 시작 모션이라는 뜻
 		if (ANIM_START == m_eAnimState)
 		{
 			m_eAnimState = ANIM_LOOP;
 		}
+		// 그랩 시도 모션이고 그랩에 성공했다면 그랩 시작모션으로 인덱스를 세팅해준다.
+		if (SEIZE_TRY == m_eAnimState)
+		{
+			m_eAnimState = ANIM_START;
+		}
+
+		if (ANIM_ONCE == m_eAnimState)
+		{
+			if(m_isStop)
+				m_eAnimState = ANIM_END;
+			else
+				m_eAnimState = ANIM_LOOP;
+				
+		}
+
 		else if (ANIM_END == m_eAnimState)
 		{
 			Reset();
@@ -182,9 +194,10 @@ void CKiryu_KRS_Grab::Reset()
 {
 	m_iComboCount = 0;
 	m_iDirection = -1;
-	m_eAnimState = ANIM_START;
+	m_eAnimState = SEIZE_TRY;
 	m_isGrabed = false;
 	m_isShaked = false;
+	m_isStop = false;
 	m_iCurrentIndex = 0;
 }
 
@@ -211,13 +224,14 @@ void CKiryu_KRS_Grab::Setting_Value(void* pValue)
 	m_isGrabed = pDesc->isGrabed;
 	m_iDirection = pDesc->iDirection;
 
+	//static_cast<CMonster*>(m_pPlayer->Get_TargetObject())->Set_Sync("p_kru_sync_lapel_lp");
 	// 여기서부터 이어서 하면 됨
 	// 넘겨받는 값을 가지고 뒤에서 잡을지 앞에서 잡을지 구분하고, 애니메이션 인덱스 설정해주는거 하려고했엇음
 }
 
 _bool CKiryu_KRS_Grab::Changeable_Combo_Animation()
 {
-	_float fInterval = 1.f;
+	_float fInterval = 0.8f;
 
 	if (0 == m_iCurrentIndex)
 	{
@@ -235,21 +249,37 @@ _bool CKiryu_KRS_Grab::Changeable_Combo_Animation()
 
 void CKiryu_KRS_Grab::Shaking()
 {
-	// 킥콤보 첫타에는 쉐이킹 제외
-	if (m_iComboCount > 0)
+	if (m_iCurrentIndex == 24)						// 잡고 바닥에 내려찍는 애니메이션
 	{
-		if (!m_isShaked && Checked_Animation_Ratio(0.3))
+		if (!m_isShaked && Checked_Animation_Ratio(0.4))
 		{
 			m_isShaked = true;
 			//카메라 쉐이킹
 			CCamera* pCamera = dynamic_cast<CCamera*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Camera"), CAMERA_PLAYER));
-			pCamera->Set_Shaking(true, { 1.f, 1.f, 0.f }, 0.2, 0.25);
+			pCamera->Set_Shaking(true, { 1.f, 1.f, 0.f }, 0.3, 0.4);
 		}
 	}
 }
 
 void CKiryu_KRS_Grab::Move_KeyInput(const _float& fTimeDelta)
 {
+	if (m_pGameInstance->GetMouseState(DIM_LB) == TAP)
+	{
+		Combo_Count();
+	}
+	if (m_pGameInstance->GetMouseState(DIM_RB) == TAP)
+	{
+		if (2 < m_pPlayer->Get_CurrentHitLevel())	// 히트게이지가 3단까지 풀이라면
+		{
+			m_pPlayer->Set_CutSceneAnim(CPlayer::GOUGEKI_C);
+		}
+	}
+	if (m_pGameInstance->GetKeyState(DIK_Q) == TAP)
+	{
+		m_iCurrentIndex = 24;
+		m_eAnimState = ANIM_ONCE;
+		m_isStop = true;
+	}
 }
 
 CBehaviorAnimation* CKiryu_KRS_Grab::Create(CPlayer* pPlayer)

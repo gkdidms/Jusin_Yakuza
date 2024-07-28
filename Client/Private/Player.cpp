@@ -419,10 +419,10 @@ void CPlayer::Attack_Event(CLandObject* pHitObject)
 	{
 	case CPlayer::KRS:
 	{
-		CKiryu_KRS_Grab::KRS_Grab_DESC Desc{ true, Compute_Target_Direction(pHitObject) };
 
 		if (m_iCurrentBehavior == (_uint)KRS_BEHAVIOR_STATE::GRAB)
 		{
+			CKiryu_KRS_Grab::KRS_Grab_DESC Desc{ true, Compute_Target_Direction(pHitObject) };
 			m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Setting_Value(&Desc);
 		}
 
@@ -676,16 +676,16 @@ _int CPlayer::Compute_Target_Direction(CLandObject* pAttackedObject)
 
 	if (fDot >= 0.0f)
 	{
-		if (0 <= fTheta && 90 > fTheta)  // 앞쪽
+		if (fTheta < 90)  // 앞쪽
 			iDirection = 0;
-		else if (90 <= fTheta && 180 >= fTheta) // 뒷쪽
+		else // 뒷쪽
 			iDirection = 1;
 	}
 	else
 	{
-		if (0 <= fTheta && 90 > fTheta) // 왼쪽
+		if (fTheta < 90) // 왼쪽
 			iDirection = 2;
-		else if (90 <= fTheta && 180 >= fTheta) // 오른쪽
+		else // 오른쪽
 			iDirection = 3;
 	}
 
@@ -902,9 +902,10 @@ void CPlayer::KRS_KeyInput(const _float& fTimeDelta)
 		}
 
 		// 어택중이 아닐때에만 Q입력을 받는다
-		if (m_iCurrentBehavior != (_uint)KRS_BEHAVIOR_STATE::ATTACK && m_pGameInstance->GetKeyState(DIK_Q) == TAP)
+		if (m_iCurrentBehavior != (_uint)KRS_BEHAVIOR_STATE::ATTACK && m_iCurrentBehavior != (_uint)KRS_BEHAVIOR_STATE::GRAB && m_pGameInstance->GetKeyState(DIK_Q) == TAP)
 		{
 			m_iCurrentBehavior = (_uint)KRS_BEHAVIOR_STATE::GRAB;
+			m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Reset();
 		}
 	}
 

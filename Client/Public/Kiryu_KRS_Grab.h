@@ -19,7 +19,7 @@ public:
 
 	enum ANIM_STATE
 	{
-		ANIM_START, ANIM_LOOP, ANIM_END
+		SEIZE_TRY, ANIM_START, ANIM_LOOP, ANIM_ONCE, ANIM_END
 	};
 
 private:
@@ -46,7 +46,7 @@ public:
 	virtual void Free() override;
 
 private:
-	ANIM_STATE	m_eAnimState = { ANIM_START };
+	ANIM_STATE	m_eAnimState = { SEIZE_TRY };
 	_bool		m_isStop = { false };
 
 	_int		m_iComboCount = { -1 };
