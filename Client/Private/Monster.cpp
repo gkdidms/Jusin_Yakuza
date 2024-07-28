@@ -198,51 +198,51 @@ void CMonster::Set_Sync(string strPlayerAnim)
 		
 
 	//ÄÆ ¾×¼Ç
-	else if (m_strAnimName == "h11250_000_1")
+	else if (m_strAnimName == "h11250")
 		m_iState = MONSTER_H11250_000_1;
-	else if (m_strAnimName == "h20021_000_2")
+	else if (m_strAnimName == "h20021")
 		m_iState = MONSTER_H20021_000_2;
-	else if (m_strAnimName == "h23000_000_6")
+	else if (m_strAnimName == "h23000")
 		m_iState = MONSTER_H23000_000_6;
-	else if (m_strAnimName == "a60300_000_2")
+	else if (m_strAnimName == "a60300")
 		m_iState = MONSTER_A60300_000_2;
-	else if (m_strAnimName == "a60320_000_4")
+	else if (m_strAnimName == "a60320")
 		m_iState = MONSTER_A60320_000_4;
-	else if (m_strAnimName == "a60330_000_2")
+	else if (m_strAnimName == "a60330")
 		m_iState = MONSTER_A60330_000_2;
-	else if (m_strAnimName == "a60350_000_2")
+	else if (m_strAnimName == "a60350")
 		m_iState = MONSTER_A60350_000_2;
-	else if (m_strAnimName == "h1010_000_1")
+	else if (m_strAnimName == "h1010")
 		m_iState = MONSTER_H1010_000_1;
-	else if (m_strAnimName == "h10111_000_1")
+	else if (m_strAnimName == "h10111")
 		m_iState = MONSTER_H10111_000_1;
-	else if (m_strAnimName == "h11285_000_1")
+	else if (m_strAnimName == "h11285")
 		m_iState = MONSTER_H11285_000_1;
-	else if (m_strAnimName == "h1511_000_4")
+	else if (m_strAnimName == "h1511")
 		m_iState = MONSTER_H1511_000_4;
-	else if (m_strAnimName == "h1540_000_1")
+	else if (m_strAnimName == "h1540")
 		m_iState = MONSTER_H1540_000_1;
-	else if (m_strAnimName == "h1620_000_1")
+	else if (m_strAnimName == "h1620")
 		m_iState = MONSTER_H1620_000_1;
-	else if (m_strAnimName == "h2011_000_1")
+	else if (m_strAnimName == "h2011")
 		m_iState = MONSTER_H2011_000_1;
-	else if (m_strAnimName == "h2040_000_1")
+	else if (m_strAnimName == "h2040")
 		m_iState = MONSTER_H2040_000_1;
-	else if (m_strAnimName == "h23010_000_4")
+	else if (m_strAnimName == "h23010")
 		m_iState = MONSTER_H23010_000_4;
-	else if (m_strAnimName == "h23020_000_4")
+	else if (m_strAnimName == "h23020")
 		m_iState = MONSTER_H23020_000_4;
-	else if (m_strAnimName == "h23060_000_4")
+	else if (m_strAnimName == "h23060")
 		m_iState = MONSTER_H23060_000_4;
-	else if (m_strAnimName == "h23070_000_4")
+	else if (m_strAnimName == "h23070")
 		m_iState = MONSTER_H23070_000_4;
-	else if (m_strAnimName == "h23250_000_2")
+	else if (m_strAnimName == "h23250")
 		m_iState = MONSTER_H23250_000_2;
-	else if (m_strAnimName == "h23320_000_4")
+	else if (m_strAnimName == "h23320")
 		m_iState = MONSTER_H23320_000_4;
-	else if (m_strAnimName == "h3261_000_4")
+	else if (m_strAnimName == "h3261")
 		m_iState = MONSTER_H3261_000_4;
-	else if (m_strAnimName == "h1500_000_1")
+	else if (m_strAnimName == "h1500")
 		m_iState = MONSTER_H1500_000_1;
 
 	m_iCurrentAnimType = CMonster::SYNC_ANIM;
