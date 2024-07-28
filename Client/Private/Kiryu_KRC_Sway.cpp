@@ -6,10 +6,10 @@ CKiryu_KRC_Sway::CKiryu_KRC_Sway()
 	:CBehaviorAnimation{}
 {
 	/* 0 ~ 3 */
-	m_AnimationIndices.push_back(177);	//[177]	p_krc_kaihi_f[p_krc_kaihi_f]
-	m_AnimationIndices.push_back(176);	//[176]	p_krc_kaihi_b[p_krc_kaihi_b]
-	m_AnimationIndices.push_back(178);	//[178]	p_krc_kaihi_l[p_krc_kaihi_l]
-	m_AnimationIndices.push_back(179);	//[179]	p_krc_kaihi_r[p_krc_kaihi_r]
+	m_AnimationIndices.push_back(294);	//[294]	p_krc_kaihi_f[p_krc_kaihi_f]
+	m_AnimationIndices.push_back(293);	//[293]	p_krc_kaihi_b[p_krc_kaihi_b]
+	m_AnimationIndices.push_back(295);	//[295]	p_krc_kaihi_l[p_krc_kaihi_l]
+	m_AnimationIndices.push_back(296);	//[296]	p_krc_kaihi_r[p_krc_kaihi_r]
 }
 
 void CKiryu_KRC_Sway::Tick(const _float& fTimeDelta)

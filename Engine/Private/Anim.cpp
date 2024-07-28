@@ -75,6 +75,11 @@ void CAnim::Reset_Animation()
 	m_Animations[m_iCurrentIndex]->Reset();
 }
 
+void CAnim::Reset_Animation(_uint iAnimIndex)
+{
+	m_Animations[iAnimIndex]->Reset();
+}
+
 _bool CAnim::Get_AnimFinished()
 {
 	return m_Animations[m_iCurrentIndex]->Get_Finished();
@@ -175,11 +180,25 @@ HRESULT CAnim::Save_File(const _char* pModelFilePath, vector<CBone*> Bones)
 	// 본 저장
 	// ReadyBones에서 저장하는 데이터들만 저장한다.
 	_int iNumBones = Bones.size();
+
+	// 사용하지 않는 뼈를 제거한다
+	_uint	iCount = { 0 };
+	for (size_t i = 0; i < iNumBones; i++)
+	{
+		if ("" != m_pGameInstance->Extract_String(m_Bones[i]->Get_Name(), '[', ']'))
+			++iCount;
+	}
+
+	iNumBones -= iCount;
+
 	out.write((char*)&iNumBones, sizeof(_uint));
 
-	for (auto& Bone : Bones)
+	for (auto& Bone : m_Bones)
 	{
 		string strValue = Bone->Get_Name();
+		if ("" != m_pGameInstance->Extract_String(strValue, '[', ']'))
+			continue;
+
 		_int iValue = strValue.size();
 		out.write((char*)&iValue, sizeof(_uint));
 		out.write(strValue.c_str(), strValue.size());
@@ -190,6 +209,7 @@ HRESULT CAnim::Save_File(const _char* pModelFilePath, vector<CBone*> Bones)
 		_float4x4 TransformationMatrix = *(Bone->Get_TransformationMatrix());
 		out.write((char*)&TransformationMatrix, sizeof(_float4x4));
 	}
+
 
 	//애니메이션 저장
 	out.write((char*)&m_iAnimations, sizeof(_uint));

@@ -35,6 +35,7 @@
 #include "PlayerCamera.h"
 #include "DebugCamera.h"
 #include "CineCamera.h"
+#include "CutSceneCamera.h"
 #pragma endregion
 
 #pragma region Map
@@ -294,6 +295,22 @@ HRESULT CLoader::Loading_Default()
 	/*if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Anim"), CAnim::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Anim/Animation.fbx", true))))
 		return E_FAIL;*/
 
+	///* For.Prototype_Component_CutSceneAnim_ForPlayer */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_CutSceneAnim_ForPlayer"), CAnim::Create(m_pDevice, m_pContext, "../Bin/DataFiles/AnimationData/Animation_CutScene_ForPlayer.dat", false))))
+		return E_FAIL;
+	//if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_CutSceneAnim_ForPlayer"), CAnim::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Anim/Kiryu_CamAction.fbx", true))))
+	//	return E_FAIL;
+
+
+	///* For.Prototype_Component_Anim_ForPlayer */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Anim_ForPlayer"), CAnim::Create(m_pDevice, m_pContext, "../Bin/DataFiles/AnimationData/Animation_ForKiryu.dat", false))))
+		return E_FAIL;
+	//if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Anim_ForPlayer"), CAnim::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Anim/Animation_ForKiryu.fbx", true))))
+	//	return E_FAIL;
+
+
+
+
 	/* For.Prototype_Component_Anim_NPC */
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Anim_NPC"), CAnim::Create(m_pDevice, m_pContext, "../Bin/DataFiles/AnimationData/Animation_NPC.dat", false))))
 		return E_FAIL;
@@ -425,6 +442,10 @@ HRESULT CLoader::Loading_For_Office_1F()
 
 	/* For.Prototype_GameObject_CCineCamera */
 	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_CCineCamera"), CCineCamera::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_CutSceneCamera */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_CutSceneCamera"), CCutSceneCamera::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 #pragma endregion
 
@@ -759,6 +780,10 @@ HRESULT CLoader::Loading_For_Test()
 
 	/* For.Prototype_GameObject_CCineCamera */
 	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_CCineCamera"), CCineCamera::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_CutSceneCamera */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_CutSceneCamera"), CCutSceneCamera::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 #pragma endregion
 

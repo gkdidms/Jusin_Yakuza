@@ -6,26 +6,26 @@ CKiryu_KRH_Down::CKiryu_KRH_Down()
 	:CBehaviorAnimation{}
 {
 	// ·çÇÁ ¸ð¼Ç 0 ~ 1
-	m_AnimationIndices.push_back(32); //[32]	c_dwn_b[c_dwn_b]
-	m_AnimationIndices.push_back(45); //[45]	c_dwn_f[c_dwn_f]
+	m_AnimationIndices.push_back(74); //[74]	c_dwn_b[c_dwn_b]
+	m_AnimationIndices.push_back(115); //[115]	c_dwn_f[c_dwn_f]
 
 	//ÀÏ¾î³ª´Â ¸ð¼Ç 2 ~ 3
-	m_AnimationIndices.push_back(46); //[46]	c_standup_dnb_fast[c_standup_dnb_fast]
-	m_AnimationIndices.push_back(47); //[47]	c_standup_dnf_fast[c_standup_dnf_fast]
+	m_AnimationIndices.push_back(216); //[216]	c_standup_dnb_fast[c_standup_dnb_fast]
+	m_AnimationIndices.push_back(218); //[218]	c_standup_dnf_fast[c_standup_dnf_fast]
 
 	// ¹âÈú¶§ ¸ð¼Ç (ÆÈµü°Å¸®´Â°Å) 4 ~ 5
-	m_AnimationIndices.push_back(10); //[10]	c_dam_dnb_trample
-	m_AnimationIndices.push_back(13); //[13]	c_dam_dnf_trample
+	m_AnimationIndices.push_back(24); //[24]	c_dam_dnb_trample
+	m_AnimationIndices.push_back(27); //[27]	c_dam_dnf_trample
 
 	// ¹âÈú¶§ ¸ð¼Ç (ÆÈµü°Å¸®´Â°Å) 6 ~ 9
-	m_AnimationIndices.push_back(8); //[8]	c_dam_dnb_l		//Back->Front
-	m_AnimationIndices.push_back(9); //[9]	c_dam_dnb_r
-	m_AnimationIndices.push_back(11); //[11]	c_dam_dnf_l	// Front->Back
-	m_AnimationIndices.push_back(12); //[12]	c_dam_dnf_r
+	m_AnimationIndices.push_back(22); //[22]	c_dam_dnb_l		//Back->Front
+	m_AnimationIndices.push_back(23); //[23]	c_dam_dnb_r
+	m_AnimationIndices.push_back(25); //[25]	c_dam_dnf_l	// Front->Back
+	m_AnimationIndices.push_back(26); //[26]	c_dam_dnf_r
 
 	//±â»ó °ø°Ý 10~11
-	m_AnimationIndices.push_back(257);	//[257]	p_krh_atk_standup_kick_dnb[p_krh_atk_standup_kick_dnb]
-	m_AnimationIndices.push_back(258);	//[258]	p_krh_atk_standup_kick_dnf[p_krh_atk_standup_kick_dnf]
+	m_AnimationIndices.push_back(416);	//[416]	p_krh_atk_standup_kick_dnb[p_krh_atk_standup_kick_dnb]
+	m_AnimationIndices.push_back(417);	//[417]	p_krh_atk_standup_kick_dnf[p_krh_atk_standup_kick_dnf]
 }
 
 void CKiryu_KRH_Down::Tick(const _float& fTimeDelta)
