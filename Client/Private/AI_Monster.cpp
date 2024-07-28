@@ -1028,18 +1028,6 @@ CBTNode::NODE_STATE CAI_Monster::Chcek_Sync()
 
 CBTNode::NODE_STATE CAI_Monster::Sync()
 {
-	//플레이어와 충돌
-	if (m_pThis->isColl())
-	{
-		//플레이어 불한당
-		if (Find_PlayerCurrentAnimationName("p_sync_lapel_cmb_01") || 
-			Find_PlayerCurrentAnimationName("p_sync_lapel_cmb_02") ||
-			Find_PlayerCurrentAnimationName("p_sync_lapel_cmb_03"))
-			*m_pState = CMonster::MONSTER_CMD_1;
-
-		if (Find_PlayerCurrentAnimationName("p_krc_sync_lapel_atk_heavy") ||
-			Find_PlayerCurrentAnimationName("p_kru_sync_neck_nage"))
-	}
 
 	return CBTNode::FAIL;
 }

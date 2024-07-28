@@ -183,7 +183,6 @@ public:
         MONSTER_KRU_SYNC1_NECK_PRESS,//p_kru_sync1_neck_press
         MONSTER_KRU_SYNC1_NECK_RESIST,//p_kru_sync1_neck_resist
         MONSTER_KRU_SYNC1_NECK_ST,//p_kru_sync1_neck_st
-        MONSTER_KTA_SYNC1_ATK_TO_MOUNT_ST,////e_kta_sync1_atk_to_mount_st
         MONSTER_SYNC1_CMB_01_FIN,//p_sync1_cmb_01_fin
         MONSTER_SYNC1_CMB_01_FIN_B,//p_sync1_cmb_01_fin_b
         MONSTER_SYNC1_CMB_02_FIN,//p_sync1_cmb_02_fin
