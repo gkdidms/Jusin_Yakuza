@@ -41,6 +41,11 @@ void CAI_WPAYakuza::Ready_Tree()
 {
 	CSelector* pRoot = CSelector::Create();
 
+#pragma region Sync
+	CSequance* pSyncSeq = CSequance::Create();
+	pSyncSeq->Add_Children(CLeafNode::Create(bind(&CAI_WPAYakuza::Chcek_Sync, this)));
+#pragma endregion
+
 #pragma region Death
 	CSequance* pDownSeq = CSequance::Create();
 	pDownSeq->Add_Children(CLeafNode::Create(bind(&CAI_WPAYakuza::Check_Down, this)));
@@ -56,12 +61,6 @@ void CAI_WPAYakuza::Ready_Tree()
 	CSequance* pSwaySeq = CSequance::Create();
 	pSwaySeq->Add_Children(CLeafNode::Create(bind(&CAI_WPAYakuza::Check_Sway, this)));
 	pSwaySeq->Add_Children(CLeafNode::Create(bind(&CAI_WPAYakuza::Sway, this)));
-#pragma endregion
-
-#pragma region Sync
-	CSequance* pSyncSeq = CSequance::Create();
-	pSyncSeq->Add_Children(CLeafNode::Create(bind(&CAI_WPAYakuza::Chcek_Sync, this)));
-	pSyncSeq->Add_Children(CLeafNode::Create(bind(&CAI_WPAYakuza::Sync_Neck, this)));
 #pragma endregion
 
 #pragma region HIT/GUARD
@@ -110,9 +109,9 @@ void CAI_WPAYakuza::Ready_Tree()
 #pragma endregion
 
 #pragma region Root
+	pRoot->Add_Children(pSyncSeq);
 	pRoot->Add_Children(pDownSeq);
 	pRoot->Add_Children(pSwaySeq);
-	pRoot->Add_Children(pSyncSeq);
 	pRoot->Add_Children(pHitGuardSeq);
 	//pRoot->Add_Children(pAngrySeq);
 	pRoot->Add_Children(pAttackSeq);
@@ -135,7 +134,7 @@ CBTNode::NODE_STATE CAI_WPAYakuza::HitAndGuard()
 	else
 	{
 		//충돌하지 않은 상태에서 히트 모션이 끝나면?
-		if (m_iSkill == SKILL_HIT && !m_pAnimCom->Get_AnimFinished())
+		if (m_iSkill == SKILL_HIT && !m_pAnimCom[*m_pCurrentAnimType]->Get_AnimFinished())
 			return CBTNode::RUNNING;
 	}
 
@@ -192,7 +191,7 @@ CBTNode::NODE_STATE CAI_WPAYakuza::ATK_Heavy()
 {
 	if (m_iSkill == SKILL_HEAVY && m_isAttack)
 	{
-		if (*m_pState == CMonster::MONSTER_HEAVY_ATTACK && m_pAnimCom->Get_AnimFinished())
+		if (*m_pState == CMonster::MONSTER_HEAVY_ATTACK && m_pAnimCom[*m_pCurrentAnimType]->Get_AnimFinished())
 		{
 			m_isAttack = false;
 
@@ -218,11 +217,11 @@ CBTNode::NODE_STATE CAI_WPAYakuza::ATK_CMD()
 {
 	if (m_iSkill == SKILL_CMD && m_isAttack)
 	{
-		if (*m_pState == CMonster::MONSTER_CMD_1 && *(m_pAnimCom->Get_AnimPosition()) >= 22.0)
+		if (*m_pState == CMonster::MONSTER_CMD_1 && *(m_pAnimCom[*m_pCurrentAnimType]->Get_AnimPosition()) >= 22.0)
 		{
 			*m_pState = CMonster::MONSTER_CMD_2;
 		}
-		else if (*m_pState == CMonster::MONSTER_CMD_2 && m_pAnimCom->Get_AnimFinished())
+		else if (*m_pState == CMonster::MONSTER_CMD_2 && m_pAnimCom[*m_pCurrentAnimType]->Get_AnimFinished())
 		{
 			//콤보 끝.
 			m_isAttack = false;

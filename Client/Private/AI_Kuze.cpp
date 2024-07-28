@@ -94,6 +94,11 @@ void CAI_Kuze::Ready_Tree()
 {
 	CSelector* pRoot = CSelector::Create();
 
+#pragma region Sync
+	CSequance* pSyncSeq = CSequance::Create();
+	pSyncSeq->Add_Children(CLeafNode::Create(bind(&CAI_Kuze::Chcek_Sync, this)));
+#pragma endregion
+
 #pragma region Death
 	CSequance* pDownSeq = CSequance::Create();
 	pDownSeq->Add_Children(CLeafNode::Create(bind(&CAI_Kuze::Check_Down, this)));
@@ -111,17 +116,10 @@ void CAI_Kuze::Ready_Tree()
 	pPlayerDownSeq->Add_Children(CLeafNode::Create(bind(&CAI_Kuze::ATK_Down, this)));
 #pragma endregion
 
-
 #pragma region Sway
 	CSequance* pSwaySeq = CSequance::Create();
 	pSwaySeq->Add_Children(CLeafNode::Create(bind(&CAI_Kuze::Check_Sway, this)));
 	pSwaySeq->Add_Children(CLeafNode::Create(bind(&CAI_Kuze::Sway, this)));
-#pragma endregion
-
-#pragma region Sync
-	CSequance* pSyncSeq = CSequance::Create();
-	pSyncSeq->Add_Children(CLeafNode::Create(bind(&CAI_Kuze::Chcek_Sync, this)));
-	pSyncSeq->Add_Children(CLeafNode::Create(bind(&CAI_Kuze::Sync_Neck, this)));
 #pragma endregion
 
 #pragma region HIT/GUARD
@@ -173,10 +171,10 @@ void CAI_Kuze::Ready_Tree()
 #pragma endregion
 
 #pragma region Root
+	pRoot->Add_Children(pSyncSeq);
 	pRoot->Add_Children(pDownSeq);
 	pRoot->Add_Children(pPlayerDownSeq);
 	pRoot->Add_Children(pSwaySeq);
-	pRoot->Add_Children(pSyncSeq);
 	pRoot->Add_Children(pHitGuardSeq);
 	pRoot->Add_Children(pAttackSeq);
 	pRoot->Add_Children(pStepSeq);
@@ -273,7 +271,7 @@ CBTNode::NODE_STATE CAI_Kuze::ATK_Heavy()
 {
 	if (m_iSkill == SKILL_HEAVY && m_isAttack)
 	{
-		if (*m_pState == CMonster::MONSTER_HEAVY_ATTACK && m_pAnimCom->Get_AnimFinished())
+		if (*m_pState == CMonster::MONSTER_HEAVY_ATTACK && m_pAnimCom[*m_pCurrentAnimType]->Get_AnimFinished())
 		{
 			m_isAttack = false;
 
@@ -298,7 +296,7 @@ CBTNode::NODE_STATE CAI_Kuze::ATK_Hiji_2Ren()
 {
 	if (m_iSkill == SKILL_HIJI_2REN && m_isAttack)
 	{
-		if (*m_pState == CMonster::MONSTER_HIJI_2REN && m_pAnimCom->Get_AnimFinished())
+		if (*m_pState == CMonster::MONSTER_HIJI_2REN && m_pAnimCom[*m_pCurrentAnimType]->Get_AnimFinished())
 		{
 			m_isAttack = false;
 
@@ -323,7 +321,7 @@ CBTNode::NODE_STATE CAI_Kuze::ATK_Jab()
 {
 	if (m_iSkill == SKILL_JAB && m_isAttack)
 	{
-		if (*m_pState == CMonster::MONSTER_JAB && m_pAnimCom->Get_AnimFinished())
+		if (*m_pState == CMonster::MONSTER_JAB && m_pAnimCom[*m_pCurrentAnimType]->Get_AnimFinished())
 		{
 			m_isAttack = false;
 
@@ -348,11 +346,11 @@ CBTNode::NODE_STATE CAI_Kuze::ATK_CMD_A()
 {
 	if (m_iSkill == SKILL_CMD_A && m_isAttack)
 	{
-		if (*m_pState == CMonster::MONSTER_CMD_A_1 && *(m_pAnimCom->Get_AnimPosition()) >= 20.0)
+		if (*m_pState == CMonster::MONSTER_CMD_A_1 && *(m_pAnimCom[*m_pCurrentAnimType]->Get_AnimPosition()) >= 20.0)
 		{
 			*m_pState = CMonster::MONSTER_CMD_A_2;
 		}
-		else if (*m_pState == CMonster::MONSTER_CMD_A_2 && m_pAnimCom->Get_AnimFinished())
+		else if (*m_pState == CMonster::MONSTER_CMD_A_2 && m_pAnimCom[*m_pCurrentAnimType]->Get_AnimFinished())
 		{
 			m_isAttack = false;
 
@@ -377,9 +375,9 @@ CBTNode::NODE_STATE CAI_Kuze::ATK_CMD_B()
 {
 	if (m_iSkill == SKILL_CMD_B && m_isAttack)
 	{
-		if (*m_pState == CMonster::MONSTER_CMD_B_1 && *(m_pAnimCom->Get_AnimPosition()) >= 20.0)
+		if (*m_pState == CMonster::MONSTER_CMD_B_1 && *(m_pAnimCom[*m_pCurrentAnimType]->Get_AnimPosition()) >= 20.0)
 			*m_pState = CMonster::MONSTER_CMD_B_2;
-		else if (*m_pState == CMonster::MONSTER_CMD_B_2 && m_pAnimCom->Get_AnimFinished())
+		else if (*m_pState == CMonster::MONSTER_CMD_B_2 && m_pAnimCom[*m_pCurrentAnimType]->Get_AnimFinished())
 		{
 			m_isAttack = false;
 
@@ -404,9 +402,9 @@ CBTNode::NODE_STATE CAI_Kuze::ATK_HeadButt()
 {
 	if (m_iSkill == SKILL_CMD_HEADBUTT && m_isAttack)
 	{
-		if (*m_pState == CMonster::MONSTER_CMD_HEADBUTT_1 && *(m_pAnimCom->Get_AnimPosition()) >= 13.f)
+		if (*m_pState == CMonster::MONSTER_CMD_HEADBUTT_1 && *(m_pAnimCom[*m_pCurrentAnimType]->Get_AnimPosition()) >= 13.f)
 			*m_pState = CMonster::MONSTER_CMD_HEADBUTT_2;
-		else if (*m_pState == CMonster::MONSTER_CMD_HEADBUTT_2 && m_pAnimCom->Get_AnimFinished())
+		else if (*m_pState == CMonster::MONSTER_CMD_HEADBUTT_2 && m_pAnimCom[*m_pCurrentAnimType]->Get_AnimFinished())
 		{
 			m_isAttack = false;
 
@@ -431,11 +429,11 @@ CBTNode::NODE_STATE CAI_Kuze::ATK_Renda()
 {
 	if (m_iSkill == SKILL_CMD_RENDA && m_isAttack)
 	{
-		if (*m_pState == CMonster::MONSTER_CMD_RENDA_1 && m_pAnimCom->Get_AnimFinished())
+		if (*m_pState == CMonster::MONSTER_CMD_RENDA_1 && m_pAnimCom[*m_pCurrentAnimType]->Get_AnimFinished())
 			*m_pState = CMonster::MONSTER_CMD_RENDA_2;
-		else if (*m_pState == CMonster::MONSTER_CMD_RENDA_2 && m_pAnimCom->Get_AnimFinished())
+		else if (*m_pState == CMonster::MONSTER_CMD_RENDA_2 && m_pAnimCom[*m_pCurrentAnimType]->Get_AnimFinished())
 			*m_pState = CMonster::MONSTER_CMD_RENDA_3;
-		else if (*m_pState == CMonster::MONSTER_CMD_RENDA_3 && m_pAnimCom->Get_AnimFinished())
+		else if (*m_pState == CMonster::MONSTER_CMD_RENDA_3 && m_pAnimCom[*m_pCurrentAnimType]->Get_AnimFinished())
 		{
 			m_isAttack = false;
 
