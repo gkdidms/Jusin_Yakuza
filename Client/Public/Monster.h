@@ -278,6 +278,7 @@ protected:
     _bool m_isAnimLoop = { false };
     _uint m_iState = { 0 };
     _uint m_iCurrentAnimType = { ANIM_END };
+    _uint m_iPreAnimType = { ANIM_END };
     _float m_fChangeInterval = { 4.f };
 
     _float          m_fPrevSpeed;
