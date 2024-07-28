@@ -15,6 +15,7 @@
 #include "SoundMgr.h"
 #include "Frustum.h"
 #include "Convert_Manager.h"
+#include "Calculator.h"
 
 IMPLEMENT_SINGLETON(CGameInstance)
 
@@ -91,6 +92,11 @@ HRESULT CGameInstance::Initialize_Engine(_uint iMaxLevelIndex, const ENGINE_DESC
 	m_pConvert_Manager = CConvert_Manager::Create();
 	if (nullptr == m_pConvert_Manager)
 		return E_FAIL;
+
+	m_pCalculator = CCalculator::Create();
+	if (nullptr == m_pCalculator)
+		return E_FAIL;
+
 
 	return S_OK;
 }
@@ -494,6 +500,11 @@ HRESULT CGameInstance::Render_Font(const wstring& strFontTag, const wstring& str
 	return m_pFont_Manager->Render_Font(strFontTag, strText, vPosition, vColor);
 }
 
+HRESULT CGameInstance::AlignRender_Font(const wstring& strFontTag, const wstring& strText, const _float2& vPosition, _fvector vColor, _uint iAlignment)
+{
+	return m_pFont_Manager->AlignRender_Font(strFontTag, strText, vPosition, vColor, iAlignment);
+}
+
 HRESULT CGameInstance::Perspective_Render(const wstring& strFontTag, const wstring& strText, const _float2& vPosition, _fvector vColor, _float fScale, const _float& fTimeDelta)
 {
 	return m_pFont_Manager->Perspective_Render(strFontTag, strText, vPosition, vColor, fScale, fTimeDelta);
@@ -722,6 +733,11 @@ string CGameInstance::Extract_String(const string& str, char cHead, char cTail)
 	return  m_pConvert_Manager->Extract_String(str, cHead, cTail);
 }
 
+_float CGameInstance::Lerp(_float Start, _float End, _float Factor)
+{
+	return m_pCalculator->Lerp(Start, End, Factor);
+}
+
 HRESULT CGameInstance::Add_Light(const LIGHT_DESC& LightDesc)
 {
 	return m_pLight_Manager->Add_Light(LightDesc);
@@ -776,4 +792,5 @@ void CGameInstance::Free()
 	Safe_Release(m_pPipeLine);
 	Safe_Release(m_pPicking);
 	Safe_Release(m_pFrustum);
+	Safe_Release(m_pCalculator);
 }

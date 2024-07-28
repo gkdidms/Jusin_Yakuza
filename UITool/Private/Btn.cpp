@@ -345,7 +345,8 @@ HRESULT CBtn::Add_Components()
 
 	Desc.fStartUV = m_ClickStartUV;
 	Desc.fEndUV = m_ClickEndUV;
-
+	Desc.vUpPoint = m_fUpPoint;
+	Desc.vDownPoint = m_fDownPoint;
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Rect"),
 		TEXT("Com_ClickVIBuffer"), reinterpret_cast<CComponent**>(&m_pClickVIBufferCom),&Desc)))
 		return E_FAIL;
@@ -402,6 +403,8 @@ HRESULT CBtn::Bind_ResourceData()
 		{
 			if (FAILED(m_pShaderCom->Bind_RawValue("g_vColor", &m_vClickColor, sizeof(_float4))))
 				return E_FAIL;
+			if (FAILED(m_pShaderCom->Bind_RawValue("g_vEndColor", &m_vEndColor, sizeof(_float4))))
+				return E_FAIL;
 		}
 	}
 	else
@@ -411,6 +414,8 @@ HRESULT CBtn::Bind_ResourceData()
 		if (m_isColor)
 		{
 			if (FAILED(m_pShaderCom->Bind_RawValue("g_vColor", &m_vColor, sizeof(_float4))))
+				return E_FAIL;
+			if (FAILED(m_pShaderCom->Bind_RawValue("g_vEndColor", &m_vEndColor, sizeof(_float4))))
 				return E_FAIL;
 		}
 	}

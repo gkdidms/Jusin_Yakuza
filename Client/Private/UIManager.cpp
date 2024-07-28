@@ -11,8 +11,9 @@
 #include "UIInven.h"
 #include "UILogo.h"
 #include "UIMainMenu.h"
-#include "InventoryManager.h"
+#include "UITutorial.h"
 
+#include "InventoryManager.h"
 #include "Player.h"
 
 IMPLEMENT_SINGLETON(CUIManager)
@@ -68,6 +69,11 @@ HRESULT CUIManager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 
 	pScene = CUIInven::Create(m_pDevice, m_pContext ,&InvenDesc);
 	m_AllScene.emplace(make_pair(TEXT("Inven"), pScene));
+
+	pScene = CUITutorial::Create(m_pDevice, m_pContext);
+	m_AllScene.emplace(make_pair(TEXT("Tutorial"), pScene));
+
+
 
 	return S_OK;
 }
