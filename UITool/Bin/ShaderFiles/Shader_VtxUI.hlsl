@@ -16,6 +16,7 @@ float2 g_fControlAlpha;
 bool g_isUVAnim;
 float2 g_StartUV;
 float2 g_EndUV;
+float4 g_vEndColor;
 
 struct VS_IN
 {
@@ -211,19 +212,22 @@ PS_OUT PS_COLOR_ALPHABLEND_ANIM(PS_IN In)
     vector BaseColor = g_Texture.Sample(LinearSampler, In.vTexcoord);
     
     vector MergeColor = g_vColor;
-    BaseColor.rgb = MergeColor.rgb;
-    BaseColor.a *= MergeColor.a;
+    vector EndMergeColor = g_vEndColor;
+    vector StartColor = BaseColor * MergeColor;
+    vector EndColor = BaseColor * EndMergeColor;
+
     
     float factor = g_fAnimTime.x / g_fAnimTime.y;
     
     float2 ControlAlpha = g_fControlAlpha;
     
-    BaseColor.a *= lerp(ControlAlpha.x, ControlAlpha.y, factor); //20240706
-    
-    Out.vColor = BaseColor;
+    vector FinColor = lerp(StartColor, EndColor, factor);
+
+    Out.vColor = FinColor;
     
     return Out;
 }
+
 
 PS_OUT PS_COLOR_SCREEN_ANIM(PS_IN In)
 {
@@ -232,16 +236,19 @@ PS_OUT PS_COLOR_SCREEN_ANIM(PS_IN In)
     vector BaseColor = g_Texture.Sample(LinearSampler, In.vTexcoord);
     
     vector MergeColor = g_vColor;
-    BaseColor.rgb = MergeColor.rgb;
-
-    BaseColor.a *= MergeColor.a;
+    vector EndMergeColor = g_vEndColor;
+    vector StartColor = BaseColor * MergeColor;
+    vector EndColor = BaseColor * EndMergeColor;
+    
     float factor = g_fAnimTime.x / g_fAnimTime.y;
     
     float2 ControlAlpha = g_fControlAlpha;
     
-    BaseColor.a *= lerp(ControlAlpha.x, ControlAlpha.y, factor);
+    float Alpha = lerp(ControlAlpha.x, ControlAlpha.y, factor);
     
-    Out.vColor = BaseColor;
+    
+    vector FinColor = lerp(StartColor, EndColor, factor);
+    Out.vColor = vector(FinColor.rgb, FinColor.a * Alpha);
     
     return Out;
 }

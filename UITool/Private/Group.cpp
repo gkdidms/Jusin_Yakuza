@@ -169,6 +169,20 @@ HRESULT CGroup::Load_Groupbinary(ifstream& in)
 			in.read((char*)&pDesc.isEvent, sizeof(_bool));
 			in.read((char*)&pDesc.isScreen, sizeof(_bool));
 			in.read((char*)&pDesc.isAnimLoop, sizeof(_bool));
+
+			in.read((char*)&pDesc.vUpPoint, sizeof(_float4));
+			if (isnan(pDesc.vUpPoint.x)|| isnan(pDesc.vUpPoint.y)|| isnan(pDesc.vUpPoint.z)|| isnan(pDesc.vUpPoint.w))
+				pDesc.vUpPoint = _float4(0.f, 0.f, 0.f, 0.f);
+
+			in.read((char*)&pDesc.vDownPoint, sizeof(_float4));
+			if (isnan(pDesc.vDownPoint.x) || isnan(pDesc.vDownPoint.y) || isnan(pDesc.vDownPoint.z) || isnan(pDesc.vDownPoint.w))
+				pDesc.vDownPoint = _float4(0.f, 0.f, 0.f, 0.f);
+
+			in.read((char*)&pDesc.vEndColor, sizeof(_float4));
+			if (isnan(pDesc.vEndColor.x) || isnan(pDesc.vEndColor.y) || isnan(pDesc.vEndColor.z) || isnan(pDesc.vEndColor.w))
+				pDesc.vEndColor = _float4(1.f, 1.f, 1.f, 1.f);
+
+
 			pDesc.isLoad = true;
 			pDesc.pParentMatrix = m_pTransformCom->Get_WorldFloat4x4();
 
@@ -283,12 +297,20 @@ HRESULT CGroup::Load_Groupbinary(ifstream& in)
 
 			in.read((char*)&pDesc.isEvent, sizeof(_bool));
 			in.read((char*)&pDesc.isScreen, sizeof(_bool));
+			in.read((char*)&pDesc.vEndColor, sizeof(_float4));
 
 			ZeroMemory(charBox, MAX_PATH);
 			in.read((char*)&strTexturelength, sizeof(_int));
 			in.read((char*)&charBox, strTexturelength);
 			path = charBox;
 			pDesc.strText = m_pGameInstance->StringToWstring(path);
+			in.read((char*)&pDesc.iAlign, sizeof(_uint));
+
+			ZeroMemory(charBox, MAX_PATH);
+			in.read((char*)&strTexturelength, sizeof(_int));
+			in.read((char*)&charBox, strTexturelength);
+			path = charBox;
+			pDesc.Font = m_pGameInstance->StringToWstring(path);
 
 			pDesc.isLoad = true;
 			pDesc.pParentMatrix = m_pTransformCom->Get_WorldFloat4x4();

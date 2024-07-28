@@ -7,6 +7,8 @@ class ENGINE_DLL CVIBuffer_Rect :
 {
 public:
     typedef struct tRect_Desc {
+        _float4 vUpPoint;
+        _float4 vDownPoint;
         _float2 fStartUV;
         _float2 fEndUV;
     }RECT_DESC;
@@ -22,6 +24,7 @@ public:
     
 public:
     HRESULT EditUV(_float2 fStartUV, _float2 fEndUV);
+    HRESULT Edit_Point(_float4 vUpPoint, _float4 vDownPoint);
 public:
     static CVIBuffer_Rect* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
     virtual CComponent* Clone(void* pArg) override;

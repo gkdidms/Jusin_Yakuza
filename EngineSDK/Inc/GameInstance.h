@@ -138,6 +138,7 @@ public:
 public:
     HRESULT Add_Font(const wstring& strFontTag, const wstring& strFontFilePath);
     HRESULT Render_Font(const wstring& strFontTag, const wstring& strText, const _float2& vPosition, _fvector vColor);
+    HRESULT AlignRender_Font(const wstring& strFontTag, const wstring& strText, const _float2& vPosition, _fvector vColor, _uint iAlignment);
     HRESULT Perspective_Render(const wstring& strFontTag, const wstring& strText, const _float2& vPosition, _fvector vColor, _float fScale, const _float& fTimeDelta);
     HRESULT Blend_Render(const wstring& strFontTag, const wstring& strText, const _float2& vPosition, _fvector vColor);
 
@@ -213,6 +214,9 @@ public:
     template<typename T>
     T Get_Random(T Min, T Max);
 
+    /* Calculator */
+    public:
+        _float Lerp(_float Start, _float End, _float Factor);
 private:
     class CGraphic_Device* m_pGraphic_Device = { nullptr };
     class CSoundMgr* m_pSound_Manager = { nullptr };
@@ -234,7 +238,7 @@ private:
     class CPipeLine* m_pPipeLine = { nullptr };
     class CPicking* m_pPicking = { nullptr };
     class CFrustum* m_pFrustum = { nullptr };
-
+    class CCalculator* m_pCalculator = { nullptr };
 public:
     static void Release_Engine();
     virtual void Free() override;

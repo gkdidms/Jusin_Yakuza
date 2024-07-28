@@ -18,6 +18,7 @@ class CImgui_Manager final : public CBase
 	DECLARE_SINGLETON(CImgui_Manager);
 public:
 	enum WORLD_TYPE { RENDER_TARGET, BINARY_OBJECT, GROUP_OBJECT, WORLD_END };
+	enum FONT{NANUM24,NANUM28,NANUM30,NANUM36,FONT_END};
 private:
 	CImgui_Manager();
 	virtual ~CImgui_Manager() = default;
@@ -53,6 +54,9 @@ private:
 	_float2 m_ClickStartUV = {};
 	_float2 m_ClickEndUV = {};
 	_float4 m_ClickColor = {};
+	_float4 m_UpPoint = {};
+	_float4 m_DownPoint = {};
+
 
 	_float4x4						m_ViewMatrix, m_ProjMatrix;
 
@@ -103,6 +107,9 @@ private:
 	_float4 m_vColor = {};
 	_uint m_iBinaryPick = { WORLD_END };
 
+
+	vector<wstring> m_Font;
+	_int m_FontIndex = { 0 };
 	//파일경로
 	filesystem::path m_RootDir;
 public:

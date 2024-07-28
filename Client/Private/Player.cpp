@@ -143,6 +143,10 @@ void CPlayer::Tick(const _float& fTimeDelta)
 	{
 		m_pUIManager->Click();
 	}
+	if (m_pGameInstance->GetKeyState(DIK_T) == TAP)
+	{
+		m_pUIManager->Open_Scene(TEXT("Tutorial"));
+	}
 
 	Synchronize_Root(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")));
 

@@ -132,6 +132,12 @@ HRESULT CImage_Texture::Save_binary(const string strDirectory)
 
 	out.write((char*)&m_isAnimLoop, sizeof(_bool));
 
+	out.write((char*)&m_fUpPoint, sizeof(_float4));
+
+	out.write((char*)&m_fDownPoint, sizeof(_float4));
+
+	out.write((char*)&m_vEndColor, sizeof(_float4));
+
 	out.close();
 
 	return S_OK;
@@ -192,6 +198,12 @@ HRESULT CImage_Texture::Save_Groupbinary( ofstream& out)
 
 	out.write((char*)&m_isAnimLoop, sizeof(_bool));
 
+	out.write((char*)&m_fUpPoint, sizeof(_float4));
+
+	out.write((char*)&m_fDownPoint, sizeof(_float4));
+
+	out.write((char*)&m_vEndColor, sizeof(_float4));
+
 	return S_OK;
 }
 
@@ -247,6 +259,20 @@ HRESULT CImage_Texture::Load_binary(ifstream& in)
 	in.read((char*)&m_isScreen, sizeof(_bool));
 
 	in.read((char*)&m_isAnimLoop, sizeof(_bool));
+
+	in.read((char*)&m_fUpPoint, sizeof(_float4));
+	if (isnan(m_fUpPoint.x))
+		m_fUpPoint = _float4(0.f, 0.f, 0.f, 0.f);
+
+	in.read((char*)&m_fDownPoint, sizeof(_float4));
+	if (isnan(m_fDownPoint.x))
+		m_fDownPoint = _float4(0.f, 0.f, 0.f, 0.f);
+
+	in.read((char*)&m_vEndColor, sizeof(_float4));
+	if (isnan(m_vEndColor.x)|| isnan(m_vEndColor.y)|| isnan(m_vEndColor.z)|| isnan(m_vEndColor.w))
+		m_vEndColor = _float4(1.f, 1.f, 1.f, 1.f);
+
+
 	in.close();
 
 
