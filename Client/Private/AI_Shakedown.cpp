@@ -79,6 +79,11 @@ void CAI_Shakedown::Ready_Tree()
 {
 	CSelector* pRoot = CSelector::Create();
 
+#pragma region Sync
+	CSequance* pSyncSeq = CSequance::Create();
+	pSyncSeq->Add_Children(CLeafNode::Create(bind(&CAI_Shakedown::Chcek_Sync, this)));
+#pragma endregion
+
 #pragma region Death
 	CSequance* pDownSeq = CSequance::Create();
 	pDownSeq->Add_Children(CLeafNode::Create(bind(&CAI_Shakedown::Check_Down, this)));
@@ -101,12 +106,6 @@ void CAI_Shakedown::Ready_Tree()
 	CSequance* pSwaySeq = CSequance::Create();
 	pSwaySeq->Add_Children(CLeafNode::Create(bind(&CAI_Shakedown::Check_Sway, this)));
 	pSwaySeq->Add_Children(CLeafNode::Create(bind(&CAI_Shakedown::Sway, this)));
-#pragma endregion
-
-#pragma region Sync
-	CSequance* pSyncSeq = CSequance::Create();
-	pSyncSeq->Add_Children(CLeafNode::Create(bind(&CAI_Shakedown::Chcek_Sync, this)));
-	pSyncSeq->Add_Children(CLeafNode::Create(bind(&CAI_Shakedown::Sync_Neck, this)));
 #pragma endregion
 
 #pragma region HIT/GUARD
@@ -147,10 +146,10 @@ void CAI_Shakedown::Ready_Tree()
 #pragma endregion
 
 #pragma region Root
+	pRoot->Add_Children(pSyncSeq);
 	pRoot->Add_Children(pDownSeq);
 	pRoot->Add_Children(pPlayerDownSeq);
 	pRoot->Add_Children(pSwaySeq);
-	pRoot->Add_Children(pSyncSeq);
 	pRoot->Add_Children(pHitGuardSeq);
 	pRoot->Add_Children(pAttackSeq);
 	pRoot->Add_Children(pBreakSeq);
@@ -197,7 +196,7 @@ CBTNode::NODE_STATE CAI_Shakedown::ATK_CMD()
 		if (m_fCmbNum <= m_fCmbCount)
 		{
 			//ÄÞº¸ ³¡
-			if (m_pAnimCom->Get_AnimFinished())
+			if (m_pAnimCom[*m_pCurrentAnimType]->Get_AnimFinished())
 			{
 				m_isAttack = false;
 
@@ -207,19 +206,19 @@ CBTNode::NODE_STATE CAI_Shakedown::ATK_CMD()
 			return CBTNode::RUNNING;
 		}
 
-		if (*m_pState == CMonster::MONSTER_CMD_1 && *(m_pAnimCom->Get_AnimPosition()) >= 24.0)
+		if (*m_pState == CMonster::MONSTER_CMD_1 && *(m_pAnimCom[*m_pCurrentAnimType]->Get_AnimPosition()) >= 24.0)
 		{
 			LookAtPlayer();
 			*m_pState = CMonster::MONSTER_CMD_2;
 			m_fCmbCount++;
 		}
-		else if (*m_pState == CMonster::MONSTER_CMD_2 && *(m_pAnimCom->Get_AnimPosition()) >= 29.0)
+		else if (*m_pState == CMonster::MONSTER_CMD_2 && *(m_pAnimCom[*m_pCurrentAnimType]->Get_AnimPosition()) >= 29.0)
 		{
 			LookAtPlayer();
 			*m_pState = CMonster::MONSTER_CMD_3;
 			m_fCmbCount++;
 		}
-		else if (*m_pState == CMonster::MONSTER_CMD_3 && m_pAnimCom->Get_AnimFinished())
+		else if (*m_pState == CMonster::MONSTER_CMD_3 && m_pAnimCom[*m_pCurrentAnimType]->Get_AnimFinished())
 		{
 			m_isAttack = false;
 
@@ -246,7 +245,7 @@ CBTNode::NODE_STATE CAI_Shakedown::ATK_GuardRun()
 {
 	if (m_iSkill == SKILL_GUARD_RUN && m_isAttack)
 	{
-		if (*m_pState == CMonster::MONSTER_GUARD_RUN && m_pAnimCom->Get_AnimFinished())
+		if (*m_pState == CMonster::MONSTER_GUARD_RUN && m_pAnimCom[*m_pCurrentAnimType]->Get_AnimFinished())
 		{
 			m_isAttack = false;
 			return CBTNode::SUCCESS;
@@ -270,7 +269,7 @@ CBTNode::NODE_STATE CAI_Shakedown::ATK_Rariatto()
 {
 	if (m_iSkill == SKILL_RARIATTO && m_isAttack)
 	{
-		if (*m_pState == CMonster::MONSTER_RARIATTO && m_pAnimCom->Get_AnimFinished())
+		if (*m_pState == CMonster::MONSTER_RARIATTO && m_pAnimCom[*m_pCurrentAnimType]->Get_AnimFinished())
 		{
 			m_isAttack = false;
 			return CBTNode::SUCCESS;

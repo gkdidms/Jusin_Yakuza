@@ -43,14 +43,11 @@ public:
     enum MONSTER_TYPE { RUSH, WPA, WPH, DEFAULT, SHAKDDOWN, KUZE, MONSTER_TYPE_END };
 
     typedef struct tAIMonster {
-        class CAnim* pAnim;
+        class CAnim* pAnim[2];
         class CMonster* pThis;
         _uint* pState;
+        _uint* pCurrentAnimType;
     } AI_MONSTER_DESC;
-
-public:
-    _bool isSway() { return m_isSway; }
-    _bool isGuard() { return m_isGuard; }
 
 protected:
     CAI_Monster();
@@ -58,20 +55,30 @@ protected:
     virtual ~CAI_Monster() = default;
 
 public:
+    _bool isSway() { return m_isSway; }
+    _bool isGuard() { return m_isGuard; }
+
+public:
+    void Set_Sync(_bool isSync) { m_isSync = isSync; }
+
+public:
     virtual HRESULT Initialize_Prototype();
     virtual HRESULT Initialize(void* pArg);
     virtual void Tick(const _float& fTimeDelta);
     virtual NODE_STATE Execute() = 0;
 
+    _bool Find_PlayerCurrentAnimationName(string strAnimName);
+
 protected:
     CBTNode* m_pRootNode = { nullptr };
     CGameInstance* m_pGameInstance = { nullptr };
-    CAnim* m_pAnimCom = { nullptr };
+    CAnim* m_pAnimCom[2] = {nullptr};
 
     class CPlayer* m_pPlayer = { nullptr }; // 플레이어의 주소를 가지고 있도록 한다.
     class CMonster* m_pThis = { nullptr }; // 자기 자신의 주소를 가지고 있도록 한다.
 
     _uint* m_pState = { nullptr };
+    _uint* m_pCurrentAnimType = { nullptr };
 
 protected:
     _bool m_isAttack = { false };
@@ -107,6 +114,9 @@ protected:
     _float2 m_fSwayDistance = {};
 
 protected:
+    //플레이어에게 잡혀있는가?
+    virtual CBTNode::NODE_STATE Chcek_Sync(); // 싱크 모션을 해야하는가?
+
     //다운상태
     virtual CBTNode::NODE_STATE Check_Down();
     virtual CBTNode::NODE_STATE StandUpAndDead();
@@ -120,11 +130,6 @@ protected:
     //스웨이
     virtual CBTNode::NODE_STATE Check_Sway();
     virtual CBTNode::NODE_STATE Sway();
-
-    //플레이어에게 잡혀있는가?
-    virtual CBTNode::NODE_STATE Chcek_Sync(); // 싱크 모션을 해야하는가?
-    virtual CBTNode::NODE_STATE Sync();
-    virtual CBTNode::NODE_STATE Sync_Neck(); // 싱크모션 : 멱살
 
     //데미지 DMD
     virtual CBTNode::NODE_STATE Check_Hit();
@@ -156,7 +161,6 @@ protected:
     void LookAtPlayer();
 
 protected:
-    _bool Find_PlayerCurrentAnimationName(string strAnimName);
     _uint Check_KRH(_uint iPlayerLv, _bool isBehine, _bool isAnimChange = true);
     _uint Check_KRS(_uint iPlayerLv, _bool isBehine, _bool isAnimChange = true);
     _uint Check_KRC(_uint iPlayerLv, _bool isBehine, _bool isAnimChange = true);

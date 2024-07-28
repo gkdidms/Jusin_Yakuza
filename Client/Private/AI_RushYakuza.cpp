@@ -56,6 +56,11 @@ CBTNode::NODE_STATE CAI_RushYakuza::Execute()
 void CAI_RushYakuza::Ready_Tree()
 {
 	CSelector* pRoot = CSelector::Create();
+
+#pragma region Sync
+	CSequance* pSyncSeq = CSequance::Create();
+	pSyncSeq->Add_Children(CLeafNode::Create(bind(&CAI_RushYakuza::Chcek_Sync, this)));
+#pragma endregion
 	
 #pragma region Death
 	CSequance* pDownSeq = CSequance::Create();
@@ -72,12 +77,6 @@ void CAI_RushYakuza::Ready_Tree()
 	CSequance* pSwaySeq = CSequance::Create();
 	pSwaySeq->Add_Children(CLeafNode::Create(bind(&CAI_RushYakuza::Check_Sway, this)));
 	pSwaySeq->Add_Children(CLeafNode::Create(bind(&CAI_RushYakuza::Sway, this)));
-#pragma endregion
-
-#pragma region Sync
-	CSequance* pSyncSeq = CSequance::Create();
-	pSyncSeq->Add_Children(CLeafNode::Create(bind(&CAI_RushYakuza::Chcek_Sync, this)));
-	pSyncSeq->Add_Children(CLeafNode::Create(bind(&CAI_RushYakuza::Sync_Neck, this)));
 #pragma endregion
 
 #pragma region HIT/GUARD
@@ -126,9 +125,9 @@ void CAI_RushYakuza::Ready_Tree()
 #pragma endregion
 
 #pragma region Root
+	pRoot->Add_Children(pSyncSeq);
 	pRoot->Add_Children(pDownSeq);
 	pRoot->Add_Children(pSwaySeq);
-	pRoot->Add_Children(pSyncSeq);
 	pRoot->Add_Children(pHitGuardSeq);
 	//pRoot->Add_Children(pAngrySeq);
 	pRoot->Add_Children(pAttackSeq);
@@ -183,7 +182,7 @@ CBTNode::NODE_STATE CAI_RushYakuza::ATK_Punch()
 {
 	if (m_iSkill == SKILL_PUNCH && m_isAttack)
 	{
-		if (*m_pState == CMonster::MONSTER_PUNCH && m_pAnimCom->Get_AnimFinished())
+		if (*m_pState == CMonster::MONSTER_PUNCH && m_pAnimCom[*m_pCurrentAnimType]->Get_AnimFinished())
 		{
 			m_isAttack = false;
 
@@ -208,23 +207,23 @@ CBTNode::NODE_STATE CAI_RushYakuza::ATK_CMD()
 {
 	if (m_iSkill == SKILL_CMD && m_isAttack)
 	{
-		if (*m_pState == CMonster::MONSTER_CMD_1 && *(m_pAnimCom->Get_AnimPosition()) >= 10.0)
+		if (*m_pState == CMonster::MONSTER_CMD_1 && *(m_pAnimCom[*m_pCurrentAnimType]->Get_AnimPosition()) >= 10.0)
 		{
 			*m_pState = CMonster::MONSTER_CMD_2;
 		}
-		else if (*m_pState == CMonster::MONSTER_CMD_2 && *(m_pAnimCom->Get_AnimPosition()) >= 10.0)
+		else if (*m_pState == CMonster::MONSTER_CMD_2 && *(m_pAnimCom[*m_pCurrentAnimType]->Get_AnimPosition()) >= 10.0)
 		{
 			*m_pState = CMonster::MONSTER_CMD_3;
 		}
-		else if (*m_pState == CMonster::MONSTER_CMD_3 && *(m_pAnimCom->Get_AnimPosition()) >= 10.0)
+		else if (*m_pState == CMonster::MONSTER_CMD_3 && *(m_pAnimCom[*m_pCurrentAnimType]->Get_AnimPosition()) >= 10.0)
 		{
 			*m_pState = CMonster::MONSTER_CMD_4;
 		}
-		else if (*m_pState == CMonster::MONSTER_CMD_4 && *(m_pAnimCom->Get_AnimPosition()) >= 10.0)
+		else if (*m_pState == CMonster::MONSTER_CMD_4 && *(m_pAnimCom[*m_pCurrentAnimType]->Get_AnimPosition()) >= 10.0)
 		{
 			*m_pState = CMonster::MONSTER_CMD_5;
 		}
-		else if (*m_pState == CMonster::MONSTER_CMD_5 && m_pAnimCom->Get_AnimFinished())
+		else if (*m_pState == CMonster::MONSTER_CMD_5 && m_pAnimCom[*m_pCurrentAnimType]->Get_AnimFinished())
 		{
 			//ÄÞº¸ ³¡.
 			m_isAttack = false;

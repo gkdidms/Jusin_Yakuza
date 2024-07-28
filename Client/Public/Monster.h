@@ -22,6 +22,7 @@ public:
     }MONSTER_IODESC;
 
 public:
+    enum ANIM_TYPE { ATK_ANIM, SYNC_ANIM, ANIM_END };
     enum MONSTER_STATE
     {
         MONSTER_IDLE,
@@ -152,12 +153,12 @@ public:
         MONSTER_KRC_SYNC1_KAIHI_NAGE_B,//p_krc_sync1_kaihi_nage_b
         MONSTER_KRC_SYNC1_KAIHI_NAGE_F,//p_krc_sync1_kaihi_nage_f
         MONSTER_KRC_SYNC1_LAPEL_ATK_HEAVY,//p_krc_sync1_lapel_atk_heavy
-        MONSTER_KRC_SYNC1_LAPEL_ATK_PUNCh,//p_krc_sync1_lapel_atk_punch
-        MONSTER_KRC_SYNC1_LAPEL_ATK_NAGE,//p_krc_sync1_lapel_nage
+        MONSTER_KRC_SYNC1_LAPEL_ATK_PUNCH,//p_krc_sync1_lapel_atk_punch
+        MONSTER_KRC_SYNC1_LAPEL_NAGE,//p_krc_sync1_lapel_nage
         MONSTER_KRC_SYNC1_NECK_ATK_HEAVY,//p_krc_sync1_neck_atk_heavy
         MONSTER_KRC_SYNC1_NECK_ATK_PUNCH,//p_krc_sync1_neck_atk_punch
         MONSTER_KRC_SYNC1_NECK_NAGE,//p_krc_sync1_neck_nage
-        MONSTER_KRC_SYNC1_GUARD_SABAKI,//p_krh_sync1_guard_sabaki
+        MONSTER_KRH_SYNC1_GUARD_SABAKI,//p_krh_sync1_guard_sabaki
         MONSTER_KRS_SYNC1_CMB_03_FIN,//p_krs_sync1_cmb_03_fin
         MONSTER_KRS_SYNC1_CMB_03_FIN_B,//p_krs_sync1_cmb_03_fin_b
         MONSTER_KRU_SYNC1_LAPEL_ATK_PUNCH,//p_kru_sync1_lapel_atk_punch
@@ -183,14 +184,7 @@ public:
         MONSTER_KRU_SYNC1_NECK_PRESS,//p_kru_sync1_neck_press
         MONSTER_KRU_SYNC1_NECK_RESIST,//p_kru_sync1_neck_resist
         MONSTER_KRU_SYNC1_NECK_ST,//p_kru_sync1_neck_st
-        MONSTER_SYNC1_CMB_01_FIN,//p_sync1_cmb_01_fin
-        MONSTER_SYNC1_CMB_01_FIN_B,//p_sync1_cmb_01_fin_b
-        MONSTER_SYNC1_CMB_02_FIN,//p_sync1_cmb_02_fin
-        MONSTER_SYNC1_CMB_02_FIN_B,//p_sync1_cmb_02_fin_b
-        MONSTER_SYNC1_CMB_03_FIN,//p_sync1_cmb_03_fin
-        MONSTER_SYNC1_CMB_03_FIN_B,//p_sync1_cmb_03_fin_b
-        MONSTER_SYNC1_CMB_04_FIN,//p_sync1_cmb_04_fin
-        MONSTER_SYNC1_CMB_04_FIN_B,//p_sync1_cmb_04_fin_b
+        MONSTER_KRU_SYNC1_NECK_WALK, //p_kru_sync_neck_walk
         MONSTER_SYNC1_COUNTER_F,//p_sync1_counter_f
         MONSTER_SYNC1_HEAD_B,//p_sync1_head_b
         MONSTER_SYNC1_HEAD_F,//p_sync1_head_f
@@ -203,6 +197,31 @@ public:
         MONSTER_SYNC1_LEG_ST_F,//p_sync1_leg_st_f
         MONSTER_SYNC1_LEG_WALK,//p_sync1_leg_walk
         MONSTER_SYNC1_NECK_TO_LAPEL,//p_sync1_neck_to_lapel
+
+        //컷 액션
+        MONSTER_H11250_000_1,
+        MONSTER_H20021_000_2,
+        MONSTER_H23000_000_6,
+        MONSTER_A60300_000_2,
+        MONSTER_A60320_000_4,
+        MONSTER_A60330_000_2,
+        MONSTER_A60350_000_2,
+        MONSTER_H1010_000_1,
+        MONSTER_H10111_000_1,
+        MONSTER_H11285_000_1,
+        MONSTER_H1511_000_4,
+        MONSTER_H1540_000_1,
+        MONSTER_H1620_000_1,
+        MONSTER_H2011_000_1,
+        MONSTER_H2040_000_1,
+        MONSTER_H23010_000_4,
+        MONSTER_H23020_000_4,
+        MONSTER_H23060_000_4,
+        MONSTER_H23070_000_4,
+        MONSTER_H23250_000_2,
+        MONSTER_H23320_000_4,
+        MONSTER_H3261_000_4,
+        MONSTER_H1500_000_1,
         MONSTER_STATE_END
     };
 
@@ -217,6 +236,7 @@ public:
 
 public:
     void Set_Down(_bool isDown) { m_isDown = isDown; }
+    void Set_Sync(string strPlayerAnim);
     
 public:
     _float Get_HitDamage() { return m_fHitDamage; }
@@ -250,13 +270,14 @@ public:
     _bool Checked_Animation_Ratio(_float fRatio);
 
 protected:
-    CAnim* m_pAnimCom = { nullptr }; // 애니메이션만 따로 저장하고있는 애니메이션 컴포넌트
+    CAnim* m_pAnimCom[ANIM_END] = {nullptr}; // 애니메이션만 따로 저장하고있는 애니메이션 컴포넌트
     CNavigation* m_pNavigationCom = { nullptr };
     class CAI_Monster* m_pTree = { nullptr };
 
 protected:
     _bool m_isAnimLoop = { false };
     _uint m_iState = { 0 };
+    _uint m_iCurrentAnimType = { ANIM_END };
     _float m_fChangeInterval = { 4.f };
 
     _float          m_fPrevSpeed;
