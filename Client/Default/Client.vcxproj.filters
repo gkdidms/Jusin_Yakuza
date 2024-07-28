@@ -377,9 +377,6 @@
     <ClCompile Include="..\Private\Kiryu_KRS_Grab.cpp">
       <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\Grab</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\SceneModel_Test.cpp">
-      <Filter>02.GameObjects\02.Character\LandObject\00.Player\SceneModel_Test</Filter>
-    </ClCompile>
     <ClCompile Include="..\private\Adventure.cpp">
       <Filter>02.GameObjects\02.Character\LandObject\02.Adventure</Filter>
     </ClCompile>
@@ -409,6 +406,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\ScriptManager.cpp">
       <Filter>95.Utility\06.Script</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CutSceneCamera.cpp">
+      <Filter>02.GameObjects\99.Camera\02.CutSceneCamera</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Level_Street.cpp">
+      <Filter>01.Levels\08.Street</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -851,6 +854,9 @@
     <ClInclude Include="..\Public\ScriptManager.h">
       <Filter>95.Utility\06.Script</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\CutSceneCamera.h">
+      <Filter>02.GameObjects\99.Camera\02.CutSceneCamera</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -1272,9 +1278,6 @@
     <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\Grab">
       <UniqueIdentifier>{361ce6c0-0d0d-4b6e-a702-8485478db768}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\SceneModel_Test">
-      <UniqueIdentifier>{efc86914-e7e6-4299-862f-db0472caa178}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObjects\02.Character\LandObject\02.Adventure">
       <UniqueIdentifier>{e953efb4-bf89-4f41-8ac1-a70274d77017}</UniqueIdentifier>
     </Filter>
@@ -1304,6 +1307,12 @@
     </Filter>
     <Filter Include="95.Utility\06.Script">
       <UniqueIdentifier>{8f2c42e2-6806-4ca7-8c34-f094134ea57f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.Camera\02.CutSceneCamera">
+      <UniqueIdentifier>{c2e83612-82aa-4ea8-acef-b6fd1976a302}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Levels\08.Street">
+      <UniqueIdentifier>{d7cbc8aa-09f5-4df6-bcf8-c9b365f61db2}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
