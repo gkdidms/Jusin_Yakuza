@@ -60,9 +60,6 @@
 #include "Aura.h"
 #pragma endregion
 
-//Test
-#include "SceneModel_Test.h"
-
 CLoader::CLoader(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: m_pDevice{ pDevice },
 	m_pContext{ pContext },
@@ -829,11 +826,6 @@ HRESULT CLoader::Loading_For_Test()
 		CYoneda::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 #pragma endregion
-	
-	//TODO: 테스트 끝나면 지워야함
-	/* For.Prototype_GameObject_SceneModel_Test */
-	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_SceneModel_Test"), CSceneModel_Test::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
 
 #pragma region Map
 	/* For.Prototype_GameObject_Terrain */
