@@ -1,4 +1,4 @@
-#include "Level_Street.h"
+#include "Level_Roadway.h"
 
 #include "GameInstance.h"
 #include "SystemManager.h"
@@ -11,7 +11,7 @@
 
 #include "Level_Loading.h"
 
-CLevel_Street::CLevel_Street(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+CLevel_Roadway::CLevel_Roadway(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     : CLevel { pDevice, pContext },
     m_pSystemManager{ CSystemManager::GetInstance() },
     m_pFileTotalManager{ CFileTotalMgr::GetInstance() }
@@ -20,15 +20,15 @@ CLevel_Street::CLevel_Street(ID3D11Device* pDevice, ID3D11DeviceContext* pContex
     Safe_AddRef(m_pFileTotalManager);
 }
 
-HRESULT CLevel_Street::Initialize()
+HRESULT CLevel_Roadway::Initialize()
 {
     if (FAILED(Ready_Player(TEXT("Layer_Player"))))
         return E_FAIL;
 
     /* 클라 파싱 */
-    m_pFileTotalManager->Set_MapObj_In_Client(STAGE_STREET, LEVEL_STREET);
-    m_pFileTotalManager->Set_Lights_In_Client(STAGE_STREET);
-    m_pFileTotalManager->Set_Collider_In_Client(STAGE_STREET, LEVEL_STREET);
+    m_pFileTotalManager->Set_MapObj_In_Client(STAGE_ROADWAY, LEVEL_ROADWAY);
+    m_pFileTotalManager->Set_Lights_In_Client(STAGE_ROADWAY);
+    m_pFileTotalManager->Set_Collider_In_Client(STAGE_ROADWAY, LEVEL_ROADWAY);
 
 	if (FAILED(Ready_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
@@ -36,20 +36,18 @@ HRESULT CLevel_Street::Initialize()
     return S_OK;
 }
 
-void CLevel_Street::Tick(const _float& fTimeDelta)
+void CLevel_Roadway::Tick(const _float& fTimeDelta)
 {
 
-
-
 #ifdef _DEBUG
-    SetWindowText(g_hWnd, TEXT("길거리 맵"));
+    SetWindowText(g_hWnd, TEXT("총격전 맵"));
 #endif
 }
 
-HRESULT CLevel_Street::Ready_Camera(const wstring& strLayerTag)
+HRESULT CLevel_Roadway::Ready_Camera(const wstring& strLayerTag)
 {
 	/* 카메라 추가 시 Debug Camera를 첫번째로 놔두고 추가해주세요 (디버깅 툴에서 사용중)*/
-	const _float4x4* pPlayerFloat4x4 = dynamic_cast<CTransform*>(m_pGameInstance->Get_GameObject_Component(LEVEL_STREET, TEXT("Layer_Player"), TEXT("Com_Transform", 0)))->Get_WorldFloat4x4();
+	const _float4x4* pPlayerFloat4x4 = dynamic_cast<CTransform*>(m_pGameInstance->Get_GameObject_Component(LEVEL_ROADWAY, TEXT("Layer_Player"), TEXT("Com_Transform", 0)))->Get_WorldFloat4x4();
 
 	/* 0. 디버그용 카메라 */
 	CDebugCamera::DEBUG_CAMERA_DESC		CameraDesc{};
@@ -64,14 +62,14 @@ HRESULT CLevel_Street::Ready_Camera(const wstring& strLayerTag)
 	CameraDesc.fRotatePecSec = XMConvertToRadians(90.f);
 	CameraDesc.pPlayerMatrix = pPlayerFloat4x4;
 
-	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_STREET, TEXT("Prototype_GameObject_DebugCamera"), strLayerTag, &CameraDesc)))
+	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_ROADWAY, TEXT("Prototype_GameObject_DebugCamera"), strLayerTag, &CameraDesc)))
 		return E_FAIL;
 
 	/* 초기화 할때는 -1 */
 	/* 1. 씬용 카메라 */
 	CCineCamera::CINE_CAMERA_DESC		cineDesc;
 	cineDesc.iFileNum = -1;
-	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_STREET, TEXT("Prototype_GameObject_CCineCamera"), strLayerTag, &cineDesc)))
+	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_ROADWAY, TEXT("Prototype_GameObject_CCineCamera"), strLayerTag, &cineDesc)))
 		return E_FAIL;
 
 	/* 2. 플레이어 카메라 */
@@ -86,30 +84,30 @@ HRESULT CLevel_Street::Ready_Camera(const wstring& strLayerTag)
 	PlayerCameraDesc.fSpeedPecSec = 20.f;
 	PlayerCameraDesc.fRotatePecSec = XMConvertToRadians(90.f);
 	PlayerCameraDesc.pPlayerMatrix = pPlayerFloat4x4;
-	PlayerCameraDesc.iCurLevel = LEVEL_STREET;
+	PlayerCameraDesc.iCurLevel = LEVEL_ROADWAY;
 
-	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_STREET, TEXT("Prototype_GameObject_PlayerCamera"), strLayerTag, &PlayerCameraDesc)))
+	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_ROADWAY, TEXT("Prototype_GameObject_PlayerCamera"), strLayerTag, &PlayerCameraDesc)))
 		return E_FAIL;
 
 	return S_OK;
 }
 
-HRESULT CLevel_Street::Ready_Player(const wstring& strLayerTag)
+HRESULT CLevel_Roadway::Ready_Player(const wstring& strLayerTag)
 {
 	CGameObject::GAMEOBJECT_DESC Desc{};
 	Desc.fSpeedPecSec = 10.f;
 	//Desc.fRotatePecSec = XMConvertToRadians(0.f);
 	Desc.fRotatePecSec = XMConvertToRadians(180.f);
 
-	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_STREET, TEXT("Prototype_GameObject_Player"), strLayerTag, &Desc)))
+	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_ROADWAY, TEXT("Prototype_GameObject_Player"), strLayerTag, &Desc)))
 		return E_FAIL;
 
 	return S_OK;
 }
 
-CLevel_Street* CLevel_Street::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+CLevel_Roadway* CLevel_Roadway::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
-    CLevel_Street* pInstance = new CLevel_Street(pDevice, pContext);
+    CLevel_Roadway* pInstance = new CLevel_Roadway(pDevice, pContext);
 
     if (FAILED(pInstance->Initialize()))
         Safe_Release(pInstance);
@@ -117,7 +115,7 @@ CLevel_Street* CLevel_Street::Create(ID3D11Device* pDevice, ID3D11DeviceContext*
     return pInstance;
 }
 
-void CLevel_Street::Free()
+void CLevel_Roadway::Free()
 {
     __super::Free();
 

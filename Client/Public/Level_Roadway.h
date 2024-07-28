@@ -3,12 +3,12 @@
 #include "Client_Defines.h"
 
 BEGIN(Client)
-class CLevel_Street :
+class CLevel_Roadway :
     public CLevel
 {
 private:
-    CLevel_Street(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-    virtual ~CLevel_Street() = default;
+    CLevel_Roadway(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+    virtual ~CLevel_Roadway() = default;
 
 public:
     virtual HRESULT Initialize();
@@ -23,7 +23,7 @@ private:
     HRESULT Ready_Player(const wstring& strLayerTag);
 
 public:
-    static CLevel_Street* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+    static CLevel_Roadway* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
     virtual void Free();
 };
 END

@@ -3,12 +3,12 @@
 #include "Client_Defines.h"
 
 BEGIN(Client)
-class CLevel_Street :
+class CLevel_Karaoke :
     public CLevel
 {
 private:
-    CLevel_Street(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-    virtual ~CLevel_Street() = default;
+    CLevel_Karaoke(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+    virtual ~CLevel_Karaoke() = default;
 
 public:
     virtual HRESULT Initialize();
@@ -23,7 +23,7 @@ private:
     HRESULT Ready_Player(const wstring& strLayerTag);
 
 public:
-    static CLevel_Street* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+    static CLevel_Karaoke* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
     virtual void Free();
 };
 END

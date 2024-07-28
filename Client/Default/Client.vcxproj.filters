@@ -410,6 +410,15 @@
     <ClCompile Include="..\Private\CutSceneCamera.cpp">
       <Filter>02.GameObjects\99.Camera\02.CutSceneCamera</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\Level_Street.cpp">
+      <Filter>01.Levels\08.Street</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Level_Karaoke.cpp">
+      <Filter>01.Levels\09.Karaoke</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Level_Roadway.cpp">
+      <Filter>01.Levels\10.Roadway</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\MainApp.h">
@@ -850,6 +859,15 @@
     </ClInclude>
     <ClInclude Include="..\Public\CutSceneCamera.h">
       <Filter>02.GameObjects\99.Camera\02.CutSceneCamera</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Level_Street.h">
+      <Filter>01.Levels\08.Street</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Level_Karaoke.h">
+      <Filter>01.Levels\09.Karaoke</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Level_Roadway.h">
+      <Filter>01.Levels\10.Roadway</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1304,6 +1322,15 @@
     </Filter>
     <Filter Include="02.GameObjects\99.Camera\02.CutSceneCamera">
       <UniqueIdentifier>{c2e83612-82aa-4ea8-acef-b6fd1976a302}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Levels\08.Street">
+      <UniqueIdentifier>{09ec77ac-537d-4622-88ef-58812619eb82}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Levels\09.Karaoke">
+      <UniqueIdentifier>{fbb6370c-86d4-46e5-add1-a457a8c37bc1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Levels\10.Roadway">
+      <UniqueIdentifier>{87725d6a-6f60-470c-8c92-bd83c479e2c0}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

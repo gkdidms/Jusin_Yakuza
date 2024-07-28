@@ -233,8 +233,10 @@
     <ClInclude Include="..\Public\Kiryu_KRS_FlyKick.h" />
     <ClInclude Include="..\Public\Kiryu_KRS_KickCombo.h" />
     <ClInclude Include="..\public\Kuze.h" />
+    <ClInclude Include="..\Public\Level_Karaoke.h" />
     <ClInclude Include="..\public\Level_Office1F.h" />
     <ClInclude Include="..\public\Level_Office2F.h" />
+    <ClInclude Include="..\Public\Level_Roadway.h" />
     <ClInclude Include="..\Public\Level_Street.h" />
     <ClInclude Include="..\Public\LightConstruction.h" />
     <ClInclude Include="..\Public\MapCollider.h" />
@@ -385,8 +387,10 @@
     <ClCompile Include="..\Private\Kiryu_KRS_FlyKick.cpp" />
     <ClCompile Include="..\Private\Kiryu_KRS_KickCombo.cpp" />
     <ClCompile Include="..\private\Kuze.cpp" />
+    <ClCompile Include="..\Private\Level_Karaoke.cpp" />
     <ClCompile Include="..\private\Level_Office1F.cpp" />
     <ClCompile Include="..\private\Level_Office2F.cpp" />
+    <ClCompile Include="..\Private\Level_Roadway.cpp" />
     <ClCompile Include="..\Private\Level_Street.cpp" />
     <ClCompile Include="..\Private\LightConstruction.cpp" />
     <ClCompile Include="..\Private\MapCollider.cpp" />
