@@ -157,6 +157,13 @@ void CPlayer::Tick(const _float& fTimeDelta)
 	{
 		m_pUIManager->Open_Scene(TEXT("Tutorial"));
 	}
+	if (m_pGameInstance->GetKeyState(DIK_Y) == TAP)
+	{
+		m_pUIManager->Open_Scene(TEXT("Talk"));
+		m_pUIManager->Set_TalkData(TEXT("Å°·ù"), TEXT("»×¹ä¹Ù¾Æ¾Æ¾ß¾Æ¾Ó¹Ù¾Æºü¤³¿ì \\»×»×»× \\ºü¾Æ¾Ó"));
+		
+	}
+
 
 	Synchronize_Root(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")));
 

@@ -103,6 +103,9 @@ protected:
     _float m_fGuardDuration = { 4.f }; // 가드 지속시간
     _float m_fGuardTime = { 0.f };
 
+    _float m_fSyncDuration = { 3.f }; // 싱크액션 지속시간
+    _float m_fSyncTime = { 0.f };
+
 protected:
     _float m_fCmbNum = { 0.f }; // 스킬 발동시 확률적으로 몇번 공격할것인지 저장.
     _float m_fCmbCount = { 0.f }; // 콤보 누적 카운트
