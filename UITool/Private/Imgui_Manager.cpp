@@ -55,6 +55,11 @@ HRESULT CImgui_Manager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* p
     filesystem::path ParentDir = projectRootDir.parent_path();
     m_RootDir = ParentDir.parent_path();
 
+    m_Font.push_back(TEXT("Font_nanum24"));
+    m_Font.push_back(TEXT("Font_Default"));
+    m_Font.push_back(TEXT("Font_nanum30"));
+    m_Font.push_back(TEXT("Font_nanum36"));
+
     return S_OK;
 }
 
@@ -655,6 +660,8 @@ void CImgui_Manager::Window_Binary()
                         {
                             m_StartUV = dynamic_cast<CUI_Texture*>(BinaryObject[n])->Get_StartUV();
                             m_EndUV = dynamic_cast<CUI_Texture*>(BinaryObject[n])->Get_EndUV();
+                            m_UpPoint = dynamic_cast<CUI_Texture*>(BinaryObject[n])->Get_UpPoint();
+                            m_DownPoint = dynamic_cast<CUI_Texture*>(BinaryObject[n])->Get_DownPoint();
                         }
                         if (CObject_Manager::BTN == BinaryObject[m_iBinaryObjectIndex]->Get_TypeIndex())
                         {
@@ -802,6 +809,8 @@ void CImgui_Manager::Window_Binary()
                             dynamic_cast<CUI_Texture*>(BinaryObject[m_iBinaryObjectIndex])->Set_ShaderPass(6);
                         }
 
+
+
                         if (isAnim)
                         {
 
@@ -846,16 +855,86 @@ void CImgui_Manager::Window_Binary()
                                     dynamic_cast<CUI_Texture*>(BinaryObject[m_iBinaryObjectIndex])->Set_Color(vColor);
                                 }
                             }
+                            if (dynamic_cast<CUI_Texture*>(BinaryObject[m_iBinaryObjectIndex])->Get_isColor())
+                            {
+                                _float4 vColor = dynamic_cast<CUI_Texture*>(BinaryObject[m_iBinaryObjectIndex])->Get_EndColor();
+                                static bool alpha_preview = true;
+                                static bool alpha_half_preview = false;
+                                static bool drag_and_drop = true;
+                                static bool options_menu = true;
+                                static bool hdr = false;
+                                ImGuiColorEditFlags misc_flags = (hdr ? ImGuiColorEditFlags_HDR : 0) | (drag_and_drop ? 0 : ImGuiColorEditFlags_NoDragDrop) | (alpha_half_preview ? ImGuiColorEditFlags_AlphaPreviewHalf : (alpha_preview ? ImGuiColorEditFlags_AlphaPreview : 0)) | (options_menu ? 0 : ImGuiColorEditFlags_NoOptions);
+
+                                if (ImGui::ColorEdit4("MyEndColor##2f", (float*)&vColor, ImGuiColorEditFlags_Float | misc_flags))
+                                {
+                                    dynamic_cast<CUI_Texture*>(BinaryObject[m_iBinaryObjectIndex])->Set_EndColor(vColor);
+                                }
+                            }
                         }
 
 
                         if (CObject_Manager::TEXT != dynamic_cast<CUI_Texture*>(BinaryObject[m_iBinaryObjectIndex])->Get_TypeIndex())
                         {
+                            _float4 vUpPoint = dynamic_cast<CUI_Texture*>(BinaryObject[m_iBinaryObjectIndex])->Get_UpPoint();
+                            if (ImGui::DragFloat4("UpPoint", (float*)&vUpPoint, 0.001f, -10.f, 10.f))
+                            {
+                                m_UpPoint = vUpPoint;
+                                if (FAILED(dynamic_cast<CUI_Texture*>(BinaryObject[m_iBinaryObjectIndex])->Change_Point(m_UpPoint, m_DownPoint)))
+                                    MSG_BOX("Point 변경 실패");
+                            }
+                            _float4 vDownPoint = dynamic_cast<CUI_Texture*>(BinaryObject[m_iBinaryObjectIndex])->Get_DownPoint();
+                            if (ImGui::DragFloat4("DownPoint", (float*)&vDownPoint, 0.001f, -10.f, 10.f))
+                            {
+                                m_DownPoint = vDownPoint;
+                                if (FAILED(dynamic_cast<CUI_Texture*>(BinaryObject[m_iBinaryObjectIndex])->Change_Point(m_UpPoint, m_DownPoint)))
+                                    MSG_BOX("Point 변경 실패");
+                            }
                             ImGui::DragFloat2("StartUV", (float*)&m_StartUV, 0.001f, 0.0f, 1.f);
                             ImGui::DragFloat2("EndUV", (float*)&m_EndUV, 0.001f, 0.0f, 1.f);
 
                             if (FAILED(dynamic_cast<CUI_Texture*>(BinaryObject[m_iBinaryObjectIndex])->Change_UV(m_StartUV, m_EndUV)))
                                 MSG_BOX("UV 변경 실패");
+                        }
+                        else
+                        {
+                            _int Align = dynamic_cast<CText*>(BinaryObject[m_iBinaryObjectIndex])->Get_Align();    
+                            if (ImGui::RadioButton(u8"가운데", &Align, 0))
+                                dynamic_cast<CText*>(BinaryObject[m_iBinaryObjectIndex])->Set_Align(static_cast<_uint>(Align));
+                            ImGui::SameLine();
+                            if(ImGui::RadioButton(u8"우측", &Align, 1))
+                                dynamic_cast<CText*>(BinaryObject[m_iBinaryObjectIndex])->Set_Align(static_cast<_uint>(Align));
+                            ImGui::SameLine();
+                            if(ImGui::RadioButton(u8"좌측", &Align, 2))
+                                dynamic_cast<CText*>(BinaryObject[m_iBinaryObjectIndex])->Set_Align(static_cast<_uint>(Align));
+
+                            for (size_t i = 0; i < m_Font.size(); i++)
+                            {
+                                if (m_Font[i] == dynamic_cast<CText*>(BinaryObject[m_iBinaryObjectIndex])->Get_Font())
+                                {
+                                    m_FontIndex = i;
+                                    break;
+                                }
+                            }
+
+
+                            if (ImGui::BeginListBox("Font"))
+                            {
+                                for (int n = 0; n < m_Font.size(); n++)
+                                {
+                                    const bool is_selected = (m_FontIndex == n);
+                                    string strName = m_pGameInstance->WstringToString(m_Font[n]);
+
+                                    if (ImGui::Selectable(strName.c_str(), is_selected))
+                                    {
+                                        m_FontIndex = n;
+                                        dynamic_cast<CText*>(BinaryObject[m_iBinaryObjectIndex])->Set_Font(m_Font[m_FontIndex]);
+                                    }
+                                    if (is_selected)
+                                        ImGui::SetItemDefaultFocus();
+                                }
+                                ImGui::EndListBox();
+
+                            }
                         }
 
                         if (CObject_Manager::BTN == dynamic_cast<CUI_Texture*>(BinaryObject[m_iBinaryObjectIndex])->Get_TypeIndex())
@@ -1156,6 +1235,10 @@ void CImgui_Manager::Window_Binary_Group()
                  m_WorldMatirx = *Objects[n]->Get_TransformCom()->Get_WorldFloat4x4();
                  m_StartUV = dynamic_cast<CUI_Texture*>(Objects[n])->Get_StartUV();
                  m_EndUV = dynamic_cast<CUI_Texture*>(Objects[n])->Get_EndUV();
+                 m_UpPoint = dynamic_cast<CUI_Texture*>(Objects[n])->Get_UpPoint();
+                 m_DownPoint = dynamic_cast<CUI_Texture*>(Objects[n])->Get_DownPoint();
+
+
                  if (CObject_Manager::BTN == Objects[n]->Get_TypeIndex())
                  {
                      m_ClickStartUV = dynamic_cast<CBtn*>(Objects[n])->Get_ClickStartUV();
@@ -1284,6 +1367,9 @@ void CImgui_Manager::Window_Binary_Group()
                 dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Set_ShaderPass(6);
             }
 
+
+
+
             if (isAnim)
             {
 
@@ -1326,16 +1412,99 @@ void CImgui_Manager::Window_Binary_Group()
                         dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Set_Color(vColor);
                     }
                 }
+
+                if (dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Get_isColor())
+                {
+                    _float4 vColor = dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Get_EndColor();
+                    static bool alpha_preview = true;
+                    static bool alpha_half_preview = false;
+                    static bool drag_and_drop = true;
+                    static bool options_menu = true;
+                    static bool hdr = false;
+                    ImGuiColorEditFlags misc_flags = (hdr ? ImGuiColorEditFlags_HDR : 0) | (drag_and_drop ? 0 : ImGuiColorEditFlags_NoDragDrop) | (alpha_half_preview ? ImGuiColorEditFlags_AlphaPreviewHalf : (alpha_preview ? ImGuiColorEditFlags_AlphaPreview : 0)) | (options_menu ? 0 : ImGuiColorEditFlags_NoOptions);
+
+                    if (ImGui::ColorEdit4("MyEndColor##2f", (float*)&vColor, ImGuiColorEditFlags_Float | misc_flags))
+                    {
+                        dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Set_EndColor(vColor);
+                    }
+                }
             }
 
 
             if (CObject_Manager::TEXT != dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Get_TypeIndex())
             {
+
+                _float4 vUpPoint = dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Get_UpPoint();
+                if (ImGui::DragFloat4("UpPoint", (float*)&vUpPoint, 0.001f, -10.f, 10.f))
+                {
+                    m_UpPoint = vUpPoint;
+                    if (FAILED(dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Change_Point(m_UpPoint, m_DownPoint)))
+                        MSG_BOX("Point 변경 실패");
+                }
+                _float4 vDownPoint = dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Get_DownPoint();
+                if (ImGui::DragFloat4("DownPoint", (float*)&vDownPoint, 0.001f, -10.f, 10.f))
+                {
+                    m_DownPoint = vDownPoint;
+                    if (FAILED(dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Change_Point(m_UpPoint, m_DownPoint)))
+                        MSG_BOX("Point 변경 실패");
+                }
+
+
                 ImGui::DragFloat2("StartUV", (float*)&m_StartUV, 0.001f, 0.0f, 1.f);
                 ImGui::DragFloat2("EndUV", (float*)&m_EndUV, 0.001f, 0.0f, 1.f);
 
                 if (FAILED(dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Change_UV(m_StartUV, m_EndUV)))
                     MSG_BOX("UV 변경 실패");
+            }
+            else
+            {
+                _int Align = dynamic_cast<CText*>(Objects[m_iBinaryGroupObjectIndex])->Get_Align();
+                if (ImGui::RadioButton(u8"가운데", &Align, 0))
+                    dynamic_cast<CText*>(Objects[m_iBinaryGroupObjectIndex])->Set_Align(static_cast<_uint>(Align));
+                ImGui::SameLine();
+                if (ImGui::RadioButton(u8"우측", &Align, 1))
+                    dynamic_cast<CText*>(Objects[m_iBinaryGroupObjectIndex])->Set_Align(static_cast<_uint>(Align));
+                ImGui::SameLine();
+                if (ImGui::RadioButton(u8"좌측", &Align, 2))
+                    dynamic_cast<CText*>(Objects[m_iBinaryGroupObjectIndex])->Set_Align(static_cast<_uint>(Align));
+
+                static char szGroupObText[MAX_PATH];
+                ImGui::InputText(u8"내용 변경 ", szGroupObText, MAX_PATH);
+                if (ImGui::Button(u8"내용변경하기"))
+                {
+                    string Text = szGroupObText;
+                    dynamic_cast<CText*>(Objects[m_iBinaryGroupObjectIndex])->Set_Text(m_pGameInstance->StringToWstring(Text));
+                }
+
+
+                for (size_t i = 0; i < m_Font.size(); i++)
+                {
+                    if (m_Font[i] == dynamic_cast<CText*>(Objects[m_iBinaryGroupObjectIndex])->Get_Font())
+                    {
+                        m_FontIndex = i;
+                        break;
+                    }
+                }
+
+
+                if (ImGui::BeginListBox("Font"))
+                {
+                    for (int n = 0; n < m_Font.size(); n++)
+                    {
+                        const bool is_selected = (m_FontIndex == n);
+                        string strName = m_pGameInstance->WstringToString(m_Font[n]);
+
+                        if (ImGui::Selectable(strName.c_str(), is_selected))
+                        {
+                            m_FontIndex = n;
+                            dynamic_cast<CText*>(Objects[m_iBinaryGroupObjectIndex])->Set_Font(m_Font[m_FontIndex]);
+                        }
+                        if (is_selected)
+                            ImGui::SetItemDefaultFocus();
+                    }
+                    ImGui::EndListBox();
+
+                }
             }
 
 

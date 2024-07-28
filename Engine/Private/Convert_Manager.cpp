@@ -236,10 +236,17 @@ _bool CConvert_Manager::IsExists_Path(const string& strPath)
 
 wstring CConvert_Manager::StringToWstring(const string& str)
 {
-	wstring strWidePath;
-	strWidePath.assign(str.begin(), str.end());
+	//wstring strWidePath;
+	//strWidePath.assign(str.begin(), str.end());
 
-	return strWidePath;
+	//return strWidePath;
+
+	int size_needed = MultiByteToWideChar(CP_UTF8, 0, str.c_str(), (int)str.size(), NULL, 0);
+	std::wstring wstr(size_needed, 0);
+
+	// 실제 변환
+	MultiByteToWideChar(CP_UTF8, 0, str.c_str(), (int)str.size(), &wstr[0], size_needed);
+	return wstr;
 }
 
 string CConvert_Manager::WstringToString(const wstring& str)

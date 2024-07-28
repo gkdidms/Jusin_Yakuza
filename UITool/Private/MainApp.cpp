@@ -117,7 +117,13 @@ HRESULT CMainApp::Open_Level(LEVEL eLevelID)
 
 HRESULT CMainApp::Ready_Font()
 {
-	if (FAILED(m_pGameInstance->Add_Font(TEXT("Font_Default"), TEXT("../Bin/Resources/Fonts/nanum28.spritefont"))))
+	if (FAILED(m_pGameInstance->Add_Font(TEXT("Font_nanum24"), TEXT("../../Client/Bin/Resources/Fonts/nanum24.spritefont"))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Font(TEXT("Font_Default"), TEXT("../../Client/Bin/Resources/Fonts/nanum28.spritefont"))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Font(TEXT("Font_nanum30"), TEXT("../../Client/Bin/Resources/Fonts/nanum30.spritefont"))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Font(TEXT("Font_nanum36"), TEXT("../../Client/Bin/Resources/Fonts/nanum36.spritefont"))))
 		return E_FAIL;
 
     return S_OK;

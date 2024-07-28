@@ -61,7 +61,7 @@ HRESULT CModel::Initialize_Prototype(MODELTYPE eModelType, const _char* pModelFi
 		_uint		iFlag = aiProcess_ConvertToLeftHanded;
 
 		if (TYPE_NONANIM == eModelType)
-			iFlag |= aiProcess_PreTransformVertices | aiProcessPreset_TargetRealtime_Fast;
+			iFlag |= aiProcess_PreTransformVertices | aiProcess_GenNormals |  aiProcess_GenUVCoords| aiProcess_CalcTangentSpace;// aiProcessPreset_TargetRealtime_Fast;
 		else
 			iFlag |= aiProcess_CalcTangentSpace | aiProcess_GenNormals | aiProcess_Triangulate | aiProcess_GenUVCoords | aiProcess_SortByPType;
 

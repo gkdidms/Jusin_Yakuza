@@ -136,7 +136,7 @@ HRESULT CLoader::Loading_For_RunMapLevel(int iLevel)
 	Add_Models_On_Path(iLevel, TEXT("../../Client/Bin/Resources/Models/Anim/"));
 
 
-	Add_Models_On_Path_NonAnim(iLevel, TEXT("../../Client/Bin/Resources/Models/NonAnim/Map"));
+	Add_Models_On_Path_NonAnim(iLevel, TEXT("../../Client/Bin/Resources/Models/NonAnim/Map/Map3"));
 
 	/* For.Prototype_Component_VIBuffer_Terrain */
 
@@ -326,87 +326,140 @@ HRESULT CLoader::Add_Models_On_Path(_uint iLevel, const wstring& strPath, _bool 
 	return S_OK;
 }
 
+//HRESULT CLoader::Add_Models_On_Path_NonAnim(_uint iLevel, const wstring& strPath)
+//{
+//	vector<wstring> vecDirectorys;
+//	m_pGameInstance->Get_DirectoryName(strPath, vecDirectorys);
+//
+//	for (int i = 0; i < vecDirectorys.size(); i++)
+//	{
+//		wstring original = vecDirectorys[i];
+//		wstring to_remove = L"\\";
+//		int pos = original.find(to_remove);
+//
+//		if (pos != wstring::npos) {
+//			original.erase(pos, to_remove.length());
+//		}
+//
+//		vecDirectorys[i] = original;
+//	}
+//
+//	_matrix		NonAnimPreTransformMatrix;
+//
+//	for (auto& strDirlName : vecDirectorys)
+//	{
+//
+//		vector<string> fbxFilesName;
+//		wstring		wstrFullPath = strPath + L"/" + strDirlName;
+//
+//		// fbx 제외하고 fbx 파일 이름들 저장
+//		for (const auto& entry : fs::directory_iterator(wstrFullPath)) {
+//			if (entry.is_regular_file() && entry.path().extension() == L".fbx") {
+//
+//				string strFileName = entry.path().filename().string();
+//
+//				size_t lastDot = entry.path().filename().string().find_last_of(".");
+//				
+//				strFileName = entry.path().filename().string().substr(0, lastDot);
+//
+//				fbxFilesName.push_back(strFileName);
+//			}
+//		}
+//
+//		for (const auto& fbxNames : fbxFilesName)
+//		{
+//			wstring strFilePath = strPath + TEXT("/") + strDirlName + TEXT("/");
+//
+//			string strDirectory = m_pGameInstance->WstringToString(strFilePath);
+//			string strBinPath = strDirectory + "Bin/" + fbxNames +".dat";
+//
+//			if (!fs::exists(strBinPath))
+//			{
+//				wstring strFbxName = m_pGameInstance->StringToWstring(fbxNames);
+//				wstring strComponentName = TEXT("Prototype_Component_Model_") + strFbxName;
+//				wstring strFbxPath = strFilePath + strFbxName + TEXT(".fbx");
+//				string strTransPath = m_pGameInstance->WstringToString(strFbxPath);
+//
+//				
+//				NonAnimPreTransformMatrix = XMMatrixIdentity();
+//				if (FAILED(m_pGameInstance->Add_Component_Prototype(iLevel, strComponentName,
+//					CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, strTransPath.c_str(), NonAnimPreTransformMatrix, false, true))))
+//					return E_FAIL;
+//				
+//			}
+//			else
+//			{
+//
+//				wstring strComponentName = TEXT("Prototype_Component_Model_") + m_pGameInstance->StringToWstring(fbxNames);
+//
+//				NonAnimPreTransformMatrix = XMMatrixScaling(0.01004f, 0.01004f, 0.01004f);
+//				if (FAILED(m_pGameInstance->Add_Component_Prototype(iLevel, strComponentName,
+//					CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, strBinPath.c_str(), NonAnimPreTransformMatrix, true, true))))
+//					return E_FAIL;
+//					
+//
+//				
+//			}
+//		}
+//
+//	}
+//
+//	vecDirectorys.clear();
+//
+//	return E_NOTIMPL;
+//}
+
 HRESULT CLoader::Add_Models_On_Path_NonAnim(_uint iLevel, const wstring& strPath)
 {
-	vector<wstring> vecDirectorys;
-	m_pGameInstance->Get_DirectoryName(strPath, vecDirectorys);
-
-	for (int i = 0; i < vecDirectorys.size(); i++)
-	{
-		wstring original = vecDirectorys[i];
-		wstring to_remove = L"\\";
-		int pos = original.find(to_remove);
-
-		if (pos != wstring::npos) {
-			original.erase(pos, to_remove.length());
-		}
-
-		vecDirectorys[i] = original;
-	}
-
+	vector<string> fbxFilesName;
+	wstring		wstrFullPath = strPath;
 	_matrix		NonAnimPreTransformMatrix;
 
-	for (auto& strDirlName : vecDirectorys)
-	{
+	// fbx 제외하고 fbx 파일 이름들 저장
+	for (const auto& entry : fs::directory_iterator(wstrFullPath)) {
+		if (entry.is_regular_file() && entry.path().extension() == L".fbx") {
 
-		vector<string> fbxFilesName;
-		wstring		wstrFullPath = strPath + L"/" + strDirlName;
+			string strFileName = entry.path().filename().string();
 
-		// fbx 제외하고 fbx 파일 이름들 저장
-		for (const auto& entry : fs::directory_iterator(wstrFullPath)) {
-			if (entry.is_regular_file() && entry.path().extension() == L".fbx") {
+			size_t lastDot = entry.path().filename().string().find_last_of(".");
 
-				string strFileName = entry.path().filename().string();
+			strFileName = entry.path().filename().string().substr(0, lastDot);
 
-				size_t lastDot = entry.path().filename().string().find_last_of(".");
-				
-				strFileName = entry.path().filename().string().substr(0, lastDot);
-
-				fbxFilesName.push_back(strFileName);
-			}
+			fbxFilesName.push_back(strFileName);
 		}
-
-		for (const auto& fbxNames : fbxFilesName)
-		{
-			wstring strFilePath = strPath + TEXT("/") + strDirlName + TEXT("/");
-
-			string strDirectory = m_pGameInstance->WstringToString(strFilePath);
-			string strBinPath = strDirectory + "Bin/" + fbxNames +".dat";
-
-			if (!fs::exists(strBinPath))
-			{
-				wstring strFbxName = m_pGameInstance->StringToWstring(fbxNames);
-				wstring strComponentName = TEXT("Prototype_Component_Model_") + strFbxName;
-				wstring strFbxPath = strFilePath + strFbxName + TEXT(".fbx");
-				string strTransPath = m_pGameInstance->WstringToString(strFbxPath);
-
-				
-				NonAnimPreTransformMatrix = XMMatrixIdentity();
-				if (FAILED(m_pGameInstance->Add_Component_Prototype(iLevel, strComponentName,
-					CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, strTransPath.c_str(), NonAnimPreTransformMatrix, false, true))))
-					return E_FAIL;
-				
-			}
-			else
-			{
-
-				wstring strComponentName = TEXT("Prototype_Component_Model_") + m_pGameInstance->StringToWstring(fbxNames);
-
-				NonAnimPreTransformMatrix = XMMatrixScaling(0.01004f, 0.01004f, 0.01004f);
-				if (FAILED(m_pGameInstance->Add_Component_Prototype(iLevel, strComponentName,
-					CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, strBinPath.c_str(), NonAnimPreTransformMatrix, true, true))))
-					return E_FAIL;
-					
-
-				
-			}
-		}
-
 	}
 
-	vecDirectorys.clear();
+	for (const auto& fbxNames : fbxFilesName)
+	{
+		wstring strFilePath = strPath + TEXT("/");
 
-	return E_NOTIMPL;
+		string strDirectory = m_pGameInstance->WstringToString(strFilePath);
+		string strBinPath = strDirectory + "Bin/" + fbxNames + ".dat";
+
+		if (!fs::exists(strBinPath))
+		{
+			wstring strFbxName = m_pGameInstance->StringToWstring(fbxNames);
+			wstring strComponentName = TEXT("Prototype_Component_Model_") + strFbxName;
+			wstring strFbxPath = strFilePath + strFbxName + TEXT(".fbx");
+			string strTransPath = m_pGameInstance->WstringToString(strFbxPath);
+
+
+			NonAnimPreTransformMatrix = XMMatrixIdentity();
+			if (FAILED(m_pGameInstance->Add_Component_Prototype(iLevel, strComponentName,
+				CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, strTransPath.c_str(), NonAnimPreTransformMatrix, false, true))))
+				return E_FAIL;
+		}
+		else
+		{
+			wstring strComponentName = TEXT("Prototype_Component_Model_") + m_pGameInstance->StringToWstring(fbxNames);
+
+			NonAnimPreTransformMatrix = XMMatrixScaling(0.01004f, 0.01004f, 0.01004f);
+			if (FAILED(m_pGameInstance->Add_Component_Prototype(iLevel, strComponentName,
+				CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, strBinPath.c_str(), NonAnimPreTransformMatrix, true, true))))
+				return E_FAIL;
+		}
+	}
+	return S_OK;
 }
 
 CLoader* CLoader::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, LEVEL eNextLevel)

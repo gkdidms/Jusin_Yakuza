@@ -389,6 +389,9 @@
     <ClCompile Include="..\private\AI_Passersby.cpp">
       <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby\AI</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\UITutorial.cpp">
+      <Filter>95.Utility\05.UIManager\UIScene\UITutorial</Filter>
+	</ClCompile>
     <ClCompile Include="..\Private\QuestManager.cpp">
       <Filter>03.QuestManager</Filter>
     </ClCompile>
@@ -851,6 +854,9 @@
     <ClInclude Include="..\public\AI_Passersby.h">
       <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby\AI</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\UITutorial.h">
+      <Filter>95.Utility\05.UIManager\UIScene\UITutorial</Filter>
+	</ClInclude>
     <ClInclude Include="..\Public\QuestManager.h">
       <Filter>03.QuestManager</Filter>
     </ClInclude>
@@ -1326,6 +1332,9 @@
     <Filter Include="02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby\AI">
       <UniqueIdentifier>{826ca722-05bb-4d95-acd5-42aa425e1c6f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="95.Utility\05.UIManager\UIScene\UITutorial">
+      <UniqueIdentifier>{39820b06-aaf0-40df-8bc1-4fb5f0dd4a47}</UniqueIdentifier>
+	</Filter>
     <Filter Include="03.QuestManager">
       <UniqueIdentifier>{99d22282-0f87-45bb-9816-932e5bb6ed7f}</UniqueIdentifier>
     </Filter>
