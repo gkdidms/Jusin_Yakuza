@@ -7,6 +7,7 @@
 #include <DirectXCollision.h>
 
 #include <random>
+#include <regex>
 
 #include <string>
 #include "fx11\d3dx11effect.h"

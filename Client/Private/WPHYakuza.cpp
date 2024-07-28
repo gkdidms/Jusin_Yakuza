@@ -71,13 +71,18 @@ HRESULT CWPHYakuza::Add_Components()
 		return E_FAIL;
 
 	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Anim"),
-		TEXT("Com_Anim"), reinterpret_cast<CComponent**>(&m_pAnimCom))))
+		TEXT("Com_Anim"), reinterpret_cast<CComponent**>(&m_pAnimCom[ATK_ANIM]))))
+		return E_FAIL;
+
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_SyncAnim"),
+		TEXT("Com_SyncAnim"), reinterpret_cast<CComponent**>(&m_pAnimCom[SYNC_ANIM]))))
 		return E_FAIL;
 
 	//행동트리 저장
 	CAI_WPHYakuza::AI_MONSTER_DESC AIDesc{};
 	AIDesc.pState = &m_iState;
-	AIDesc.pAnim = m_pAnimCom;
+	memcpy(AIDesc.pAnim, m_pAnimCom, sizeof(CAnim*) * ANIM_END);
+	AIDesc.pCurrentAnimType = &m_iCurrentAnimType;
 	AIDesc.pThis = this;
 
 	m_pTree = dynamic_cast<CAI_WPHYakuza*>(m_pGameInstance->Add_BTNode(m_iCurrentLevel, TEXT("Prototype_BTNode_WPHYakuza"), &AIDesc));

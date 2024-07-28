@@ -27,7 +27,8 @@ HRESULT CAI_Monster::Initialize(void* pArg)
 {
 	AI_MONSTER_DESC* pDesc = static_cast<AI_MONSTER_DESC*>(pArg);
 	m_pState = pDesc->pState;
-	m_pAnimCom = pDesc->pAnim;
+	m_pCurrentAnimType = pDesc->pCurrentAnimType;
+	memcpy(m_pAnimCom, pDesc->pAnim, sizeof(CAnim*) * 2);
 	//Safe_AddRef(m_pAnimCom);
 
 	m_pThis = pDesc->pThis;
@@ -776,23 +777,40 @@ _uint CAI_Monster::Check_KRC(_uint iPlayerLv, _bool isBehine, _bool isAnimChange
 
 _bool CAI_Monster::Check_StandUp()
 {
+	//앞을 바라봄
 	if (*m_pState == CMonster::MONSTER_DWN_EXPLODE_F
 		|| *m_pState == CMonster::MONSTER_DWN_BODY_F
 		|| *m_pState == CMonster::MONSTER_DWN_BODY_F_SP
 		|| *m_pState == CMonster::MONSTER_DWN_DIRECT_F_BOUND_G
 		|| *m_pState == CMonster::MONSTER_DWN_DIRECT_F
-		|| *m_pState == CMonster::MONSTER_DWN_DNF_BOUND_G)
+		|| *m_pState == CMonster::MONSTER_DWN_DNF_BOUND_G
+		|| *m_pState == CMonster::MONSTER_KRC_SYNC1_GUARD_COUNTER_F
+		|| *m_pState == CMonster::MONSTER_KRC_SYNC1_KAIHI_NAGE_B
+		|| *m_pState == CMonster::MONSTER_KRC_SYNC1_LAPEL_ATK_HEAVY
+		|| *m_pState == CMonster::MONSTER_KRC_SYNC1_LAPEL_ATK_PUNCH
+		|| *m_pState == CMonster::MONSTER_KRC_SYNC1_LAPEL_NAGE
+		|| *m_pState == CMonster::MONSTER_KRC_SYNC1_NECK_ATK_HEAVY
+		|| *m_pState == CMonster::MONSTER_KRC_SYNC1_NECK_ATK_PUNCH
+		|| *m_pState == CMonster::MONSTER_KRS_SYNC1_CMB_03_FIN
+		|| *m_pState == CMonster::MONSTER_KRU_SYNC1_LAPEL_CMB_03
+		|| *m_pState == CMonster::MONSTER_KRU_SYNC1_LAPEL_NAGE
+		)
 	{
 		m_pThis->Set_Down(false);
 		*m_pState = CMonster::MONSTER_STANDUP_DNF_FAST;
 		return false;
 	}
 
+	//엎어져잇음
 	if (*m_pState == CMonster::MONSTER_DWN_DIRECT_B
 		|| *m_pState == CMonster::MONSTER_DWN_DIRECT_B_BOUND_G
 		|| *m_pState == CMonster::MONSTER_DWN_BODY_B
 		|| *m_pState == CMonster::MONSTER_DWN_BODY_B_SP
-		|| *m_pState == CMonster::MONSTER_DWN_DNB_BOUND_G)
+		|| *m_pState == CMonster::MONSTER_DWN_DNB_BOUND_G
+		|| *m_pState == CMonster::MONSTER_KRC_SYNC1_KAIHI_NAGE_F
+		|| *m_pState == CMonster::MONSTER_KRC_SYNC1_NECK_ATK_PUNCH
+		|| *m_pState == CMonster::MONSTER_KRC_SYNC1_NECK_NAGE
+		|| *m_pState == CMonster::MONSTER_KRS_SYNC1_CMB_03_FIN_B)
 	{
 		m_pThis->Set_Down(false);
 		*m_pState = CMonster::MONSTER_STANDUP_DNB_FAST;
@@ -808,8 +826,28 @@ _bool CAI_Monster::Check_StandUp()
 	return true;
 }
 
+CBTNode::NODE_STATE CAI_Monster::Chcek_Sync()
+{
+	//스웨이 함수를 지나면 스웨이 false;
+
+	if (!m_isSync)
+		return CBTNode::FAIL;
+
+	*m_pCurrentAnimType = CMonster::SYNC_ANIM;
+
+	if (m_pAnimCom[*m_pCurrentAnimType]->Get_AnimFinished())
+	{
+		m_isSync == false;
+		return CBTNode::SUCCESS;
+	}
+
+	return CBTNode::RUNNING;
+}
+
 CBTNode::NODE_STATE CAI_Monster::Check_Down()
 {
+	*m_pCurrentAnimType = CMonster::ATK_ANIM;
+
 	if (m_iSkill == SKILL_DEAD)
 		return CBTNode::RUNNING;
 
@@ -830,7 +868,7 @@ CBTNode::NODE_STATE CAI_Monster::StandUpAndDead()
 	if (m_pThis->isDown())
 	{
 		//다운되어있는 애니메이션 상태인가?
-		if (!m_pAnimCom->Get_AnimFinished())
+		if (!m_pAnimCom[*m_pCurrentAnimType]->Get_AnimFinished())
 			return CBTNode::RUNNING;
 
 		return CBTNode::SUCCESS;
@@ -918,7 +956,7 @@ CBTNode::NODE_STATE CAI_Monster::ATK_Down()
 {
 	if (m_iSkill == SKILL_DOWN && m_isAttack)
 	{
-		if (*m_pState == CMonster::MONSTER_ATK_DOWN && m_pAnimCom->Get_AnimFinished())
+		if (*m_pState == CMonster::MONSTER_ATK_DOWN && m_pAnimCom[*m_pCurrentAnimType]->Get_AnimFinished())
 		{
 			m_isAttack = false;
 			m_isPlayerDownAtk = true;
@@ -947,7 +985,7 @@ CBTNode::NODE_STATE CAI_Monster::Check_Sway()
 
 	if (m_isSway)
 	{
-		if (m_pAnimCom->Get_AnimFinished())
+		if (m_pAnimCom[*m_pCurrentAnimType]->Get_AnimFinished())
 		{
 			m_isSway = false;
 			return CBTNode::FAIL;
@@ -1012,39 +1050,10 @@ CBTNode::NODE_STATE CAI_Monster::Sway()
 	return CBTNode::SUCCESS;
 }
 
-CBTNode::NODE_STATE CAI_Monster::Chcek_Sync()
-{
-	//스웨이 함수를 지나면 스웨이 false;
-	m_isSway = false;
-
-	if (!m_isSync)
-		return CBTNode::SUCCESS;
-
-	if (m_pAnimCom->Get_AnimFinished())
-		return CBTNode::SUCCESS;
-
-	return CBTNode::RUNNING;
-}
-
-CBTNode::NODE_STATE CAI_Monster::Sync()
-{
-
-	return CBTNode::FAIL;
-}
-
-CBTNode::NODE_STATE CAI_Monster::Sync_Neck()
-{
-	// 플레이어가 멱살을 잡는 모션을 할때
-
-	// 러쉬를 제외한 모든 배틀 스타일이 사용 가능하다.
-	if (m_pPlayer->Get_BattleStyle() == CPlayer::KRH)
-		return CBTNode::FAIL;
-
-	return CBTNode::FAIL;
-}
-
 CBTNode::NODE_STATE CAI_Monster::Check_Hit()
 {
+	m_isSway = false;
+
 	return CBTNode::SUCCESS;
 }
 
@@ -1090,7 +1099,7 @@ CBTNode::NODE_STATE CAI_Monster::HitAndGuard()
 	else
 	{
 		//충돌하지 않은 상태에서 히트 모션이 끝나면?
-		if (m_iSkill == SKILL_HIT && !m_pAnimCom->Get_AnimFinished())
+		if (m_iSkill == SKILL_HIT && !m_pAnimCom[*m_pCurrentAnimType]->Get_AnimFinished())
 			return CBTNode::RUNNING;
 	}
 
@@ -1126,7 +1135,7 @@ CBTNode::NODE_STATE CAI_Monster::Guard()
 
 	if (m_isGuard)
 	{
-		if (*m_pState == CMonster::MONSTER_GURAD_START && m_pAnimCom->Get_AnimFinished())
+		if (*m_pState == CMonster::MONSTER_GURAD_START && m_pAnimCom[*m_pCurrentAnimType]->Get_AnimFinished())
 		{
 			//가드 지속시간 끝
 			*m_pState = CMonster::MONSTER_GURAD_LOOP;
@@ -1147,7 +1156,7 @@ CBTNode::NODE_STATE CAI_Monster::Guard()
 		//최종 가드 마무리
 		if ((*m_pState == CMonster::MONSTER_GURAD_END
 			|| *m_pState == CMonster::MONSTER_GURAD_FLOAT)
-			&& m_pAnimCom->Get_AnimFinished())
+			&& m_pAnimCom[*m_pCurrentAnimType]->Get_AnimFinished())
 		{
 			m_isGuard = false;
 			m_fGuardTime = 0.f;
@@ -1188,7 +1197,7 @@ CBTNode::NODE_STATE CAI_Monster::Check_Angry()
 	}
 
 	//화가 나있는 상태에서 애니메이션이 진행중인가?
-	if (*m_pState == CMonster::MONSTER_ANGRY_START && m_pAnimCom->Get_AnimFinished())
+	if (*m_pState == CMonster::MONSTER_ANGRY_START && m_pAnimCom[*m_pCurrentAnimType]->Get_AnimFinished())
 		return CBTNode::FAIL;
 	else if (*m_pState == CMonster::MONSTER_ANGRY_START) return CBTNode::RUNNING;
 
@@ -1208,7 +1217,7 @@ CBTNode::NODE_STATE CAI_Monster::ATK_Angry_Punch()
 {
 	if (m_iSkill == SKILL_ANGRY_CHOP && m_isAttack)
 	{
-		if (*m_pState == CMonster::MONSTER_ANGRY_CHOP && m_pAnimCom->Get_AnimFinished())
+		if (*m_pState == CMonster::MONSTER_ANGRY_CHOP && m_pAnimCom[*m_pCurrentAnimType]->Get_AnimFinished())
 		{
 			m_isAttack = false;
 
@@ -1233,7 +1242,7 @@ CBTNode::NODE_STATE CAI_Monster::ATK_Angry_Kick()
 {
 	if (m_iSkill == SKILL_ANGRY_KICK && m_isAttack)
 	{
-		if (*m_pState == CMonster::MONSTER_ANGRY_KICK && m_pAnimCom->Get_AnimFinished())
+		if (*m_pState == CMonster::MONSTER_ANGRY_KICK && m_pAnimCom[*m_pCurrentAnimType]->Get_AnimFinished())
 		{
 			m_isAttack = false;
 
