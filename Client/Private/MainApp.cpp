@@ -225,9 +225,14 @@ HRESULT CMainApp::Open_Level(LEVEL eLevelID)
 
 HRESULT CMainApp::Ready_Font()
 {
-	if (FAILED(m_pGameInstance->Add_Font(TEXT("Font_Default"), TEXT("../Bin/Resources/Fonts/nanum28.spritefont"))))
+	if (FAILED(m_pGameInstance->Add_Font(TEXT("Font_nanum24"), TEXT("../../Client/Bin/Resources/Fonts/nanum24.spritefont"))))
 		return E_FAIL;
-
+	if (FAILED(m_pGameInstance->Add_Font(TEXT("Font_Default"), TEXT("../../Client/Bin/Resources/Fonts/nanum28.spritefont"))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Font(TEXT("Font_nanum30"), TEXT("../../Client/Bin/Resources/Fonts/nanum30.spritefont"))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Font(TEXT("Font_nanum36"), TEXT("../../Client/Bin/Resources/Fonts/nanum36.spritefont"))))
+		return E_FAIL;
     return S_OK;
 }
 
@@ -307,8 +312,11 @@ HRESULT CMainApp::Add_UI_On_Path(const wstring& strPath)
 		wstring strFilePath = strPath + strChannelName + TEXT("/");
 		string strDirectory = m_pGameInstance->WstringToString(strFilePath);
 
+
 		wstring ProtoFrontName = strChannelName + TEXT("_");
 
+		if (ProtoFrontName[0] == TEXT('1'))
+			continue;
 		for (const auto& entry : fs::directory_iterator(strDirectory))
 		{
 

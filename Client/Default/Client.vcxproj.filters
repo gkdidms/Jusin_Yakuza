@@ -389,6 +389,9 @@
     <ClCompile Include="..\private\AI_Passersby.cpp">
       <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby\AI</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\UITutorial.cpp">
+      <Filter>95.Utility\05.UIManager\UIScene\UITutorial</Filter>
+	</ClCompile>
     <ClCompile Include="..\Private\QuestManager.cpp">
       <Filter>03.QuestManager</Filter>
     </ClCompile>
@@ -409,6 +412,27 @@
     </ClCompile>
     <ClCompile Include="..\Private\CutSceneCamera.cpp">
       <Filter>02.GameObjects\99.Camera\02.CutSceneCamera</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Level_Street.cpp">
+      <Filter>01.Levels\08.Street</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Level_Karaoke.cpp">
+      <Filter>01.Levels\09.Karaoke</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Level_Roadway.cpp">
+      <Filter>01.Levels\10.Roadway</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\WPHYakuza.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\Yakuza\02.WPHYakuza</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\DefaultYakuza.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\Yakuza\03.DefaultYakuza</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\AI_WPHYakuza.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\Yakuza\02.WPHYakuza\AI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\AI_DefaultYakuza.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\Yakuza\03.DefaultYakuza\AI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -830,6 +854,9 @@
     <ClInclude Include="..\public\AI_Passersby.h">
       <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby\AI</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\UITutorial.h">
+      <Filter>95.Utility\05.UIManager\UIScene\UITutorial</Filter>
+	</ClInclude>
     <ClInclude Include="..\Public\QuestManager.h">
       <Filter>03.QuestManager</Filter>
     </ClInclude>
@@ -850,6 +877,27 @@
     </ClInclude>
     <ClInclude Include="..\Public\CutSceneCamera.h">
       <Filter>02.GameObjects\99.Camera\02.CutSceneCamera</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Level_Street.h">
+      <Filter>01.Levels\08.Street</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Level_Karaoke.h">
+      <Filter>01.Levels\09.Karaoke</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Level_Roadway.h">
+      <Filter>01.Levels\10.Roadway</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\WPHYakuza.h">
+      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\Yakuza\02.WPHYakuza</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\DefaultYakuza.h">
+      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\Yakuza\03.DefaultYakuza</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\AI_WPHYakuza.h">
+      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\Yakuza\02.WPHYakuza\AI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\AI_DefaultYakuza.h">
+      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\Yakuza\03.DefaultYakuza\AI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1284,6 +1332,9 @@
     <Filter Include="02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby\AI">
       <UniqueIdentifier>{826ca722-05bb-4d95-acd5-42aa425e1c6f}</UniqueIdentifier>
     </Filter>
+    <Filter Include="95.Utility\05.UIManager\UIScene\UITutorial">
+      <UniqueIdentifier>{39820b06-aaf0-40df-8bc1-4fb5f0dd4a47}</UniqueIdentifier>
+	</Filter>
     <Filter Include="03.QuestManager">
       <UniqueIdentifier>{99d22282-0f87-45bb-9816-932e5bb6ed7f}</UniqueIdentifier>
     </Filter>
@@ -1304,6 +1355,27 @@
     </Filter>
     <Filter Include="02.GameObjects\99.Camera\02.CutSceneCamera">
       <UniqueIdentifier>{c2e83612-82aa-4ea8-acef-b6fd1976a302}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Levels\08.Street">
+      <UniqueIdentifier>{09ec77ac-537d-4622-88ef-58812619eb82}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Levels\09.Karaoke">
+      <UniqueIdentifier>{fbb6370c-86d4-46e5-add1-a457a8c37bc1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Levels\10.Roadway">
+      <UniqueIdentifier>{87725d6a-6f60-470c-8c92-bd83c479e2c0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\01.Monster\Yakuza\02.WPHYakuza">
+      <UniqueIdentifier>{39e2e213-19e1-4a42-b139-db03e97d7189}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\01.Monster\Yakuza\03.DefaultYakuza">
+      <UniqueIdentifier>{a44b2f0a-6c25-4832-a556-4b9c0b5736b8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\01.Monster\Yakuza\02.WPHYakuza\AI">
+      <UniqueIdentifier>{218d1525-6f6d-4a53-97fd-737e8fcc5e55}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\01.Monster\Yakuza\03.DefaultYakuza\AI">
+      <UniqueIdentifier>{54441ce8-45c7-47fc-af40-bd50c65961c6}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

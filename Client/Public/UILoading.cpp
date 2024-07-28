@@ -18,6 +18,7 @@ HRESULT CUILoading::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 {
 	if (FAILED(__super::Initialize(pDevice , pContext , pArg)))
 		return E_FAIL;
+
     return S_OK;
 }
 

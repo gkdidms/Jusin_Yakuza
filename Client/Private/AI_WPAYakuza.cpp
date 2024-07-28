@@ -10,6 +10,12 @@
 
 
 CAI_WPAYakuza::CAI_WPAYakuza()
+	: CAI_Monster{}
+{
+}
+
+CAI_WPAYakuza::CAI_WPAYakuza(const CAI_WPAYakuza& rhs)
+	: CAI_Monster{ rhs }
 {
 }
 

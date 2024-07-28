@@ -114,16 +114,16 @@ HRESULT CVIBuffer_Rect::Initialize(void* pArg)
 
 		VTXPOSTEX* pVertexts = new VTXPOSTEX[m_iNumVertices];
 
-		pVertexts[0].vPosition = _float3{ -0.5f, 0.5f, 0.f };
+		pVertexts[0].vPosition = _float3{ -0.5f+pDesc->vUpPoint.x, 0.5f + pDesc->vUpPoint.y, 0.f };
 		pVertexts[0].vTexcoord = { fX,fY };
 
-		pVertexts[1].vPosition = _float3{ 0.5f, 0.5f, 0.f };
+		pVertexts[1].vPosition = _float3{ 0.5f + pDesc->vUpPoint.z, 0.5f + pDesc->vUpPoint.w, 0.f };
 		pVertexts[1].vTexcoord = { fX + fWeightX,fY };
 
-		pVertexts[2].vPosition = _float3{ 0.5f, -0.5f, 0.f };
+		pVertexts[2].vPosition = _float3{ 0.5f + pDesc->vDownPoint.x, -0.5f + pDesc->vDownPoint.y, 0.f };
 		pVertexts[2].vTexcoord = { fX + fWeightX,fY + fWeightY };
 
-		pVertexts[3].vPosition = _float3{ -0.5f, -0.5f, 0.f };
+		pVertexts[3].vPosition = _float3{ -0.5f + pDesc->vDownPoint.z, -0.5f + pDesc->vDownPoint.x, 0.f };
 		pVertexts[3].vTexcoord = { fX,fY + fWeightY };
 
 		m_InitialData.pSysMem = pVertexts;
@@ -180,6 +180,27 @@ HRESULT CVIBuffer_Rect::EditUV(_float2 fStartUV, _float2 fEndUV)
 	pVertices[1].vTexcoord = {fX+fWeightX,fY};
 	pVertices[2].vTexcoord = {fX+fWeightX,fY+fWeightY};
 	pVertices[3].vTexcoord = {fX,fY+fWeightY};
+
+	m_pContext->Unmap(m_pVB, 0);
+
+	return S_OK;
+}
+
+HRESULT CVIBuffer_Rect::Edit_Point(_float4 vUpPoint, _float4 vDownPoint)
+{
+	D3D11_MAPPED_SUBRESOURCE		SubResource{};
+
+	m_pContext->Map(m_pVB, 0, D3D11_MAP_WRITE_NO_OVERWRITE, 0, &SubResource);
+
+	VTXPOSTEX* pVertices = (VTXPOSTEX*)SubResource.pData;
+
+	pVertices[0].vPosition = _float3{ -0.5f + vUpPoint.x, 0.5f + vUpPoint.y, 0.f };
+
+	pVertices[1].vPosition = _float3{ 0.5f + vUpPoint.z, 0.5f + vUpPoint.w, 0.f };
+
+	pVertices[2].vPosition = _float3{ 0.5f +vDownPoint.x, -0.5f +vDownPoint.y, 0.f };
+
+	pVertices[3].vPosition = _float3{ -0.5f +vDownPoint.z, -0.5f +vDownPoint.x, 0.f };
 
 	m_pContext->Unmap(m_pVB, 0);
 

@@ -30,6 +30,15 @@ HRESULT CFont_Manager::Render_Font(const wstring& strFontTag, const wstring& str
     return pFont->Render(strText, vPosition, vColor);
 }
 
+HRESULT CFont_Manager::AlignRender_Font(const wstring& strFontTag, const wstring& strText, const _float2& vPosition, _fvector vColor, _uint iAlignment)
+{
+    CCustomFont* pFont = Find_Font(strFontTag);
+    if (nullptr == pFont)
+        return E_FAIL;
+
+    return pFont->Align_Render(strText, vPosition, vColor, iAlignment);
+}
+
 HRESULT CFont_Manager::Perspective_Render(const wstring& strFontTag, const wstring& strText, const _float2& vPosition, _fvector vColor, _float fScale, const _float& fTimeDelta)
 {
     CCustomFont* pFont = Find_Font(strFontTag);
