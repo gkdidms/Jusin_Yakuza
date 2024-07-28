@@ -185,12 +185,14 @@
     <ClInclude Include="..\public\Adventure.h" />
     <ClInclude Include="..\public\Adv_Passersby.h" />
     <ClInclude Include="..\public\AI_Adventure.h" />
+    <ClInclude Include="..\public\AI_DefaultYakuza.h" />
     <ClInclude Include="..\Public\AI_Kuze.h" />
     <ClInclude Include="..\public\AI_Monster.h" />
     <ClInclude Include="..\public\AI_RushYakuza.h" />
     <ClInclude Include="..\public\AI_Shakedown.h" />
     <ClInclude Include="..\public\AI_Passersby.h" />
     <ClInclude Include="..\public\AI_WPAYakuza.h" />
+    <ClInclude Include="..\public\AI_WPHYakuza.h" />
     <ClInclude Include="..\public\AI_Yoneda.h" />
     <ClInclude Include="..\Public\Aura.h" />
     <ClInclude Include="..\public\Background.h" />
@@ -198,6 +200,7 @@
     <ClInclude Include="..\Public\Btn.h" />
     <ClInclude Include="..\Public\Collision_Manager.h" />
     <ClInclude Include="..\Public\CutSceneCamera.h" />
+    <ClInclude Include="..\public\DefaultYakuza.h" />
     <ClInclude Include="..\Public\KillQuest.h" />
     <ClInclude Include="..\Public\Kiryu_KRC_Down.h" />
     <ClInclude Include="..\Public\Kiryu_KRC_Guard.h" />
@@ -316,6 +319,7 @@
     <ClInclude Include="..\Public\UI_Object.h" />
     <ClInclude Include="..\Public\UI_Texture.h" />
     <ClInclude Include="..\public\WPAYakuza.h" />
+    <ClInclude Include="..\public\WPHYakuza.h" />
     <ClInclude Include="..\public\Yoneda.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="framework.h" />
@@ -339,12 +343,14 @@
     <ClCompile Include="..\private\Adventure.cpp" />
     <ClCompile Include="..\private\Adv_Passersby.cpp" />
     <ClCompile Include="..\private\AI_Adventure.cpp" />
+    <ClCompile Include="..\private\AI_DefaultYakuza.cpp" />
     <ClCompile Include="..\Private\AI_Kuze.cpp" />
     <ClCompile Include="..\private\AI_Monster.cpp" />
     <ClCompile Include="..\private\AI_RushYakuza.cpp" />
     <ClCompile Include="..\private\AI_Shakedown.cpp" />
     <ClCompile Include="..\private\AI_Passersby.cpp" />
     <ClCompile Include="..\private\AI_WPAYakuza.cpp" />
+    <ClCompile Include="..\private\AI_WPHYakuza.cpp" />
     <ClCompile Include="..\private\AI_Yoneda.cpp" />
     <ClCompile Include="..\Private\Aura.cpp" />
     <ClCompile Include="..\private\Background.cpp" />
@@ -352,6 +358,7 @@
     <ClCompile Include="..\Private\Btn.cpp" />
     <ClCompile Include="..\Private\Collision_Manager.cpp" />
     <ClCompile Include="..\Private\CutSceneCamera.cpp" />
+    <ClCompile Include="..\private\DefaultYakuza.cpp" />
     <ClCompile Include="..\Private\KillQuest.cpp" />
     <ClCompile Include="..\Private\Kiryu_KRC_Down.cpp" />
     <ClCompile Include="..\Private\Kiryu_KRC_Guard.cpp" />
@@ -468,6 +475,7 @@
     <ClCompile Include="..\Private\UI_Object.cpp" />
     <ClCompile Include="..\Private\UI_Texture.cpp" />
     <ClCompile Include="..\private\WPAYakuza.cpp" />
+    <ClCompile Include="..\private\WPHYakuza.cpp" />
     <ClCompile Include="..\private\Yoneda.cpp" />
     <ClCompile Include="..\Public\UILoading.cpp" />
     <ClCompile Include="Client.cpp" />

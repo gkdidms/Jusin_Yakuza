@@ -30,8 +30,23 @@ HRESULT CMonster::Initialize_Prototype()
 
 HRESULT CMonster::Initialize(void* pArg)
 {
+	if (nullptr == pArg)
+		return E_FAIL;
+
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
+
+	MONSTER_IODESC* gameobjDesc = (MONSTER_IODESC*)pArg;
+	m_pTransformCom->Set_WorldMatrix(gameobjDesc->vStartPos);
+	m_wstrModelName = gameobjDesc->wstrModelName;
+	m_iNaviRouteNum = gameobjDesc->iNaviRouteNum;
+
+	if (FAILED(Add_Components()))
+		return E_FAIL;
+
+	m_pNavigationCom->Set_Index(gameobjDesc->iNaviNum);
+
+	m_pTransformCom->Set_Scale(0.95f, 0.95f, 0.95f);
 
 	//테스트 데이터
 	m_Info.iMaxHP = 100.f;
@@ -46,6 +61,16 @@ void CMonster::Priority_Tick(const _float& fTimeDelta)
 
 void CMonster::Tick(const _float& fTimeDelta)
 {
+	m_pTree->Tick(fTimeDelta);
+
+	Change_Animation(); //애니메이션 변경
+
+	m_pModelCom->Play_Animation(fTimeDelta, m_pAnimCom, m_isAnimLoop);
+
+	Synchronize_Root(fTimeDelta);
+
+	m_pColliderCom->Tick(m_pTransformCom->Get_WorldMatrix());
+
 	//충돌처리 초기화
 	m_isColl = false;
 
@@ -74,6 +99,29 @@ void CMonster::Tick(const _float& fTimeDelta)
 
 void CMonster::Late_Tick(const _float& fTimeDelta)
 {
+	//컬링
+	if (m_pGameInstance->isIn_WorldFrustum(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 1.5f))
+	{
+		m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
+
+		m_pCollisionManager->Add_ImpulseResolution(this);
+
+		// 현재 켜져있는 Attack용 콜라이더 삽입
+		for (auto& pPair : m_pColliders)
+		{
+			if (pPair.second->Get_CollierType() == CSocketCollider::ATTACK && pPair.second->IsOn())
+				m_pCollisionManager->Add_AttackCollider(pPair.second, CCollision_Manager::ENEMY);
+		}
+
+		// 현재 켜져있는 Hit용 콜라이더 삽입 (아직까지는 Hit용 콜라이더는 항상 켜져있음)
+		for (auto& pPair : m_pColliders)
+		{
+			if (pPair.second->Get_CollierType() == CSocketCollider::HIT && pPair.second->IsOn())
+				m_pCollisionManager->Add_HitCollider(pPair.second, CCollision_Manager::ENEMY);
+
+		}
+	}
+
 	//높이값 태우기
 	_vector vCurrentPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 	float fHeight = m_pNavigationCom->Compute_Height(vCurrentPos);
@@ -87,6 +135,7 @@ void CMonster::Late_Tick(const _float& fTimeDelta)
 
 	for (auto& pEffect : m_pEffects)
 		pEffect.second->Late_Tick(fTimeDelta);
+
 }
 
 HRESULT CMonster::Render()
@@ -524,6 +573,25 @@ void CMonster::Change_Animation()
 		}
 	}
 
+}
+
+HRESULT CMonster::Setup_Animation()
+{
+	m_iAnim = m_pAnimCom->Get_AnimationIndex(m_strAnimName.c_str());
+
+	if (m_iAnim == -1)
+		return E_FAIL;
+
+	// 실제로 애니메이션 체인지가 일어났을 때 켜져있던 어택 콜라이더를 전부 끈다
+	if (m_pModelCom->Set_AnimationIndex(m_iAnim, m_pAnimCom->Get_Animations(), m_fChangeInterval))
+	{
+		Off_Attack_Colliders();
+		Reset_Shaking_Variable();
+	}
+
+	m_pData->Set_CurrentAnimation(m_strAnimName);
+
+	return S_OK;
 }
 
 void CMonster::Free()

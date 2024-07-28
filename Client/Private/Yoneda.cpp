@@ -26,26 +26,6 @@ HRESULT CYoneda::Initialize(void* pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
-	if (nullptr != pArg)
-	{
-		MONSTER_IODESC* gameobjDesc = (MONSTER_IODESC*)pArg;
-		m_pTransformCom->Set_WorldMatrix(gameobjDesc->vStartPos);
-		m_wstrModelName = gameobjDesc->wstrModelName;
-		m_iNaviRouteNum = gameobjDesc->iNaviRouteNum;
-	}
-
-
-	if (FAILED(Add_Components()))
-		return E_FAIL;
-
-	if (nullptr != pArg)
-	{
-		MONSTER_IODESC* gameobjDesc = (MONSTER_IODESC*)pArg;
-
-		m_pNavigationCom->Set_Index(gameobjDesc->iNaviNum);
-
-	}
-
 	return S_OK;
 }
 
@@ -55,20 +35,12 @@ void CYoneda::Priority_Tick(const _float& fTimeDelta)
 
 void CYoneda::Tick(const _float& fTimeDelta)
 {
-	m_pTree->Tick(fTimeDelta);
-
-	Change_Animation(); //애니메이션 변경
-
-	m_pModelCom->Play_Animation(fTimeDelta, m_pAnimCom, m_isAnimLoop);
-
-	Synchronize_Root(fTimeDelta);
-
-	m_pColliderCom->Tick(m_pTransformCom->Get_WorldMatrix());
+	__super::Tick(fTimeDelta);
 }
 
 void CYoneda::Late_Tick(const _float& fTimeDelta)
 {
-	m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
+	__super::Late_Tick(fTimeDelta);
 }
 
 HRESULT CYoneda::Add_Components()
@@ -104,18 +76,6 @@ HRESULT CYoneda::Add_Components()
 
 	m_pTree = dynamic_cast<CAI_Yoneda*>(m_pGameInstance->Add_BTNode(m_iCurrentLevel, TEXT(""), &AIDesc));
 	if (nullptr == m_pTree)
-		return E_FAIL;
-
-	return S_OK;
-}
-
-HRESULT CYoneda::Bind_ResourceData()
-{
-	if (FAILED(m_pTransformCom->Bind_ShaderMatrix(m_pShaderCom, "g_WorldMatrix")))
-		return E_FAIL;
-	if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_VIEW))))
-		return E_FAIL;
-	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_PROJ))))
 		return E_FAIL;
 
 	return S_OK;

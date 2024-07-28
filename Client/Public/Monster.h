@@ -110,6 +110,100 @@ public:
         MONSTER_DED_F_3,
         MONSTER_DED_B_1,
         MONSTER_DED_B_2,
+
+        //½ÌÅ©¾×¼Ç
+        MONSTER_KTA_SYNC1_ATK_TO_MOUNT_ST,//e_kta_sync1_atk_to_mount_st
+        MONSTER_KTA_SYNC1_GURAD_REVERSE_EN, //e_kta_sync1_gurad_reverse_en
+        MONSTER_KTA_SYNC1_GURAD_REVERSE_LP, //e_kta_sync1_gurad_reverse_lp
+        MONSTER_KTA_SYNC1_GURAD_REVERSE_ST, // e_kta_sync1_gurad_reverse_st
+        MONSTER_KTA_SYNC1_LAPEL_RESIST, //e_kta_sync1_lapel_resist
+        MONSTER_KTA_SYNC1_LEG_NAGE_B, //e_kta_sync1_leg_nage_b
+        MONSTER_KTA_SYNC1_LEG_NAGE_F, //e_kta_sync1_leg_nage_f 
+        MONSTER_KTA_SYNC1_NECK_RESIST, //e_kta_sync1_neck_resist
+        MONSTER_KUZ_PIPE_SYNC1_ANTI_SWAY,//e_kuz_pipe_sync1_anti_sway
+        MONSTER_KUZ_SYNC1_ANTI_SWAY,//e_kuz_sync1_anti_sway
+        MONSTER_NSK_SYNC1_ANTIWPN_NAGE,//e_nsk_sync1_antiwpn_nage
+        MONSTER_NSK_SYNC1_LAPEL_YA_NAGE,//e_nsk_sync1_lapel_ya_nage
+        MONSTER_NSK_SYNC1_RUNTACKLE_NAGE,//e_nsk_sync1_runtackle_nage
+        MONSTER_SAE_SYNC1_AIR_HEAD_B, //e_sae_sync1_air_head_b
+        MONSTER_SAE_SYNC1_AIR_HEAD_F, //e_sae_sync1_air_head_f
+        MONSTER_SAE_SYNC1_AIR_LEG_B, //e_sae_sync1_air_leg_b
+        MONSTER_SAE_SYNC1_AIR_LEF_F, //e_sae_sync1_air_leg_f
+        MONSTER_SAE_SYNC1_LAPEL_ATK_EN, //e_sae_sync1_lapel_atk_en
+        MONSTER_SAE_SYNC1_LAPEL_ATK_TAME_EN, // e_sae_sync1_lapel_atk_tame_en
+        MONSTER_SAE_SYNC1_LAPEL_ATK_TAME_ST, //e_sae_sync1_lapel_atk_tame_st
+        MONSTER_SAE_SYNC1_LAPEL_CMB_3, //e_sae_sync1_lapel_cmb_03
+        MONSTER_SAE_SYNC1_LAPEL_NAGE, //e_sae_sync1_lapel_nage
+        MONSTER_SAE_SYNC1_LEG_ATK_EN, //e_sae_sync1_leg_atk_en
+        MONSTER_SAE_SYNC1_LEG_ATK_TAME_EN,//e_sae_sync1_leg_atk_tame_en
+        MONSTER_SAE_SYNC1_LEG_ATK_TAME_ST, //e_sae_sync1_leg_atk_tame_st
+        MONSTER_SAE_SYNC1_LEG_CMB_01,//e_sae_sync1_leg_cmb_01
+        MONSTER_SAE_SYNC1_LEG_CMB_02,//e_sae_sync1_leg_cmb_02
+        MONSTER_SAE_SYNC1_LEG_CMB_03, //e_sae_sync1_leg_cmb_03
+        MONSTER_SAE_SYNC1_LEG_NAGE, //e_sae_sync1_leg_nage
+        MONSTER_SAE_SYNC1_NECK_ATK_EN, // e_sae_sync1_neck_atk_en
+        MONSTER_SAE_SYNC1_NECK_ATK_TAME_EN, //e_sae_sync1_neck_atk_tame_en
+        MONSTER_SAE_SYNC1_NECK_ATK_TAME_ST,//e_sae_sync1_neck_atk_tame_st
+        MONSTER_SAE_SYNC1_NECK_CMB_03,//e_sae_sync1_neck_cmb_03
+        MONSTER_SAE_SYNC1_NECK_NAGE,//e_sae_sync1_neck_nage
+        MONSTER_SAE_SYNC1_RUN_B,//e_sae_sync1_run_b
+        MONSTER_SAE_SYNC1_RUN_F,//e_sae_sync1_run_f
+        MONSTER_KRC_SYNC1_GUARD_COUNTER_F,//p_krc_sync1_guard_counter_f
+        MONSTER_KRC_SYNC1_KAIHI_NAGE_B,//p_krc_sync1_kaihi_nage_b
+        MONSTER_KRC_SYNC1_KAIHI_NAGE_F,//p_krc_sync1_kaihi_nage_f
+        MONSTER_KRC_SYNC1_LAPEL_ATK_HEAVY,//p_krc_sync1_lapel_atk_heavy
+        MONSTER_KRC_SYNC1_LAPEL_ATK_PUNCh,//p_krc_sync1_lapel_atk_punch
+        MONSTER_KRC_SYNC1_LAPEL_ATK_NAGE,//p_krc_sync1_lapel_nage
+        MONSTER_KRC_SYNC1_NECK_ATK_HEAVY,//p_krc_sync1_neck_atk_heavy
+        MONSTER_KRC_SYNC1_NECK_ATK_PUNCH,//p_krc_sync1_neck_atk_punch
+        MONSTER_KRC_SYNC1_NECK_NAGE,//p_krc_sync1_neck_nage
+        MONSTER_KRC_SYNC1_GUARD_SABAKI,//p_krh_sync1_guard_sabaki
+        MONSTER_KRS_SYNC1_CMB_03_FIN,//p_krs_sync1_cmb_03_fin
+        MONSTER_KRS_SYNC1_CMB_03_FIN_B,//p_krs_sync1_cmb_03_fin_b
+        MONSTER_KRU_SYNC1_LAPEL_ATK_PUNCH,//p_kru_sync1_lapel_atk_punch
+        MONSTER_KRU_SYNC1_LAPEL_CMB_01,//p_kru_sync1_lapel_cmb_01
+        MONSTER_KRU_SYNC1_LAPEL_CMB_02,//p_kru_sync1_lapel_cmb_02
+        MONSTER_KRU_SYNC1_LAPEL_CMB_03,//p_kru_sync1_lapel_cmb_03
+        MONSTER_KRU_SYNC1_LAPEL_LP,//p_kru_sync1_lapel_lp
+        MONSTER_KRU_SYNC1_LAPEL_NAGE,//p_kru_sync1_lapel_nage
+        MONSTER_KRU_SYNC1_LAPEL_OFF,//p_kru_sync1_lapel_off
+        MONSTER_KRU_SYNC1_LAPEL_OFF_HIZA,//p_kru_sync1_lapel_off_hiza
+        MONSTER_KRU_SYNC1_LAPEL_PRESS,//p_kru_sync1_lapel_press
+        MONSTER_KRU_SYNC1_LAPEL_RESIST,//p_kru_sync1_lapel_resist
+        MONSTER_KRU_SYNC1_LAPEL_ST,//p_kru_sync1_lapel_st
+        MONSTER_KRU_SYNC1_LAPEL_WALK,//p_kru_sync1_lapel_walk
+        MONSTER_KRU_SYNC1_NECK_ATK_KICK,//p_kru_sync1_neck_atk_kick
+        MONSTER_KRU_SYNC1_NECK_CMB_01,//p_kru_sync1_neck_cmb_01
+        MONSTER_KRU_SYNC1_NECK_CMB_02,//p_kru_sync1_neck_cmb_02
+        MONSTER_KRU_SYNC1_NECK_CMB_03,//p_kru_sync1_neck_cmb_03
+        MONSTER_KRU_SYNC1_NECK_LP,//p_kru_sync1_neck_lp
+        MONSTER_KRU_SYNC1_NECK_NAGE,//p_kru_sync1_neck_nage
+        MONSTER_KRU_SYNC1_NECK_OFF,//p_kru_sync1_neck_off
+        MONSTER_KRU_SYNC1_NECK_OFF_URAKEN,//p_kru_sync1_neck_off_uraken
+        MONSTER_KRU_SYNC1_NECK_PRESS,//p_kru_sync1_neck_press
+        MONSTER_KRU_SYNC1_NECK_RESIST,//p_kru_sync1_neck_resist
+        MONSTER_KRU_SYNC1_NECK_ST,//p_kru_sync1_neck_st
+        MONSTER_KTA_SYNC1_ATK_TO_MOUNT_ST,////e_kta_sync1_atk_to_mount_st
+        MONSTER_SYNC1_CMB_01_FIN,//p_sync1_cmb_01_fin
+        MONSTER_SYNC1_CMB_01_FIN_B,//p_sync1_cmb_01_fin_b
+        MONSTER_SYNC1_CMB_02_FIN,//p_sync1_cmb_02_fin
+        MONSTER_SYNC1_CMB_02_FIN_B,//p_sync1_cmb_02_fin_b
+        MONSTER_SYNC1_CMB_03_FIN,//p_sync1_cmb_03_fin
+        MONSTER_SYNC1_CMB_03_FIN_B,//p_sync1_cmb_03_fin_b
+        MONSTER_SYNC1_CMB_04_FIN,//p_sync1_cmb_04_fin
+        MONSTER_SYNC1_CMB_04_FIN_B,//p_sync1_cmb_04_fin_b
+        MONSTER_SYNC1_COUNTER_F,//p_sync1_counter_f
+        MONSTER_SYNC1_HEAD_B,//p_sync1_head_b
+        MONSTER_SYNC1_HEAD_F,//p_sync1_head_f
+        MONSTER_SYNC1_LAPEL_TO_NECK,//p_sync1_lapel_to_neck
+        MONSTER_SYNC1_LEG_ATK_KICK,//p_sync1_leg_atk_kick
+        MONSTER_SYNC1_LEG_LP,//p_sync1_leg_lp
+        MONSTER_SYNC1_LEG_NAGE,//p_sync1_leg_nage
+        MONSTER_SYNC1_LEG_OFF,//p_sync1_leg_off
+        MONSTER_SYNC1_LEG_ST_B,//p_sync1_leg_st_b
+        MONSTER_SYNC1_LEG_ST_F,//p_sync1_leg_st_f
+        MONSTER_SYNC1_LEG_WALK,//p_sync1_leg_walk
+        MONSTER_SYNC1_NECK_TO_LAPEL,//p_sync1_neck_to_lapel
         MONSTER_STATE_END
     };
 
@@ -188,6 +282,7 @@ protected:
 
 protected:
     virtual void Change_Animation();
+    HRESULT Setup_Animation();
     void Synchronize_Root(const _float& fTimeDelta);
 
 private:

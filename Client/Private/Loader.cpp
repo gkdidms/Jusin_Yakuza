@@ -27,6 +27,8 @@
 #include "AI_WPAYakuza.h"
 #include "AI_Shakedown.h"
 #include "AI_Kuze.h"
+#include "AI_WPHYakuza.h"
+#include "AI_DefaultYakuza.h"
 
 #include "AI_Passersby.h"
 #pragma endregion
@@ -270,6 +272,16 @@ HRESULT CLoader::Loading_Default()
 	if (FAILED(m_pGameInstance->Add_BTNode_Prototype(m_eNextLevel, TEXT("Prototype_BTNode_Passersby"),
 		CAI_Passersby::Create())))
 		return E_FAIL;
+
+	/* For.Prototype_BTNode_WPHYakuza*/
+	if (FAILED(m_pGameInstance->Add_BTNode_Prototype(m_eNextLevel, TEXT("Prototype_BTNode_WPHYakuza"),
+		CAI_WPHYakuza::Create())))
+		return E_FAIL;
+
+	/* For.Prototype_BTNode_DefaultYakuza*/
+	if (FAILED(m_pGameInstance->Add_BTNode_Prototype(m_eNextLevel, TEXT("Prototype_BTNode_DefaultYakuza"),
+		CAI_DefaultYakuza::Create())))
+		return E_FAIL;
 #pragma endregion
 
 #pragma region Component
@@ -287,10 +299,10 @@ HRESULT CLoader::Loading_Default()
 		return E_FAIL;
 
 	/* For.Prototype_Component_Anim */
-	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Anim"), CAnim::Create(m_pDevice, m_pContext, "../Bin/DataFiles/AnimationData/Animation.dat", false))))
-		return E_FAIL;
-	/*if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Anim"), CAnim::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Anim/Animation.fbx", true))))
+	/*if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Anim"), CAnim::Create(m_pDevice, m_pContext, "../Bin/DataFiles/AnimationData/Animation.dat", false))))
 		return E_FAIL;*/
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Anim"), CAnim::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Anim/Animation.fbx", true))))
+		return E_FAIL;
 
 	///* For.Prototype_Component_CutSceneAnim_ForPlayer */
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_CutSceneAnim_ForPlayer"), CAnim::Create(m_pDevice, m_pContext, "../Bin/DataFiles/AnimationData/Animation_CutScene_ForPlayer.dat", false))))

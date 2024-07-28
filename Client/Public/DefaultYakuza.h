@@ -2,17 +2,18 @@
 #include "Monster.h"
 
 /*
-* WPB : 나이프
+* 특정 스킬을 사용하는 몬스터가 아님
+* 기본적인 몬스터 스킬을 사용하는 몬스터
 */
 BEGIN(Client)
-class CYoneda :
+class CDefaultYakuza :
     public CMonster
 {
 private:
-    CYoneda(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-    CYoneda(const CYoneda& rhs);
-    virtual ~CYoneda() = default;
-    
+    CDefaultYakuza(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+    CDefaultYakuza(const CDefaultYakuza& rhs);
+    virtual ~CDefaultYakuza() = default;
+
 public:
     virtual HRESULT Initialize_Prototype() override;
     virtual HRESULT Initialize(void* pArg) override;
@@ -21,18 +22,12 @@ public:
     virtual void Late_Tick(const _float& fTimeDelta) override;
 
 private:
-    class CAI_Yoneda* m_pTree = { nullptr };
-
-private:
     virtual HRESULT Add_Components() override;
-    virtual void Change_Animation();
-
-private:
-    
+    virtual void Change_Animation() override;
 
 public:
-    static CYoneda* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+    static CDefaultYakuza* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
     virtual CGameObject* Clone(void* pArg);
-    virtual void Free() override;
+    virtual void Free();
 };
 END

@@ -59,6 +59,7 @@ void CKiryu_KRS_Attack::Tick(const _float& fTimeDelta)
 	{
 		if (m_iComboCount == 6)
 		{
+			//TODO: Å×½ºÆ®
 			if (Changeable_Combo_Animation())
 				m_iComboCount = 8;
 		}

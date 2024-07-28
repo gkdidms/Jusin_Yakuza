@@ -39,8 +39,6 @@ HRESULT CLevel_Karaoke::Initialize()
 void CLevel_Karaoke::Tick(const _float& fTimeDelta)
 {
 
-
-
 #ifdef _DEBUG
     SetWindowText(g_hWnd, TEXT("가라오케 맵"));
 #endif
