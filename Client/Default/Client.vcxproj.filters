@@ -410,9 +410,6 @@
     <ClCompile Include="..\Private\CutSceneCamera.cpp">
       <Filter>02.GameObjects\99.Camera\02.CutSceneCamera</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Level_Street.cpp">
-      <Filter>01.Levels\08.Street</Filter>
-    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\MainApp.h">
@@ -820,9 +817,6 @@
     </ClInclude>
     <ClInclude Include="..\Public\Kiryu_KRS_Grab.h">
       <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\Grab</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Public\SceneModel_Test.h">
-      <Filter>02.GameObjects\02.Character\LandObject\00.Player\SceneModel_Test</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Adventure.h">
       <Filter>02.GameObjects\02.Character\LandObject\02.Adventure</Filter>
@@ -1310,9 +1304,6 @@
     </Filter>
     <Filter Include="02.GameObjects\99.Camera\02.CutSceneCamera">
       <UniqueIdentifier>{c2e83612-82aa-4ea8-acef-b6fd1976a302}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="01.Levels\08.Street">
-      <UniqueIdentifier>{d7cbc8aa-09f5-4df6-bcf8-c9b365f61db2}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
