@@ -5,7 +5,7 @@
 CKiryu_KRS_FlyKick::CKiryu_KRS_FlyKick()
 	:CBehaviorAnimation{}
 {
-	m_AnimationIndices.push_back(336);		//+[336]	p_krs_atk_run_heavy[p_krs_atk_run_heavy]
+	m_AnimationIndices.push_back(511);		//+[511]	p_krs_atk_run_heavy[p_krs_atk_run_heavy]
 }
 
 void CKiryu_KRS_FlyKick::Tick(const _float& fTimeDelta)

@@ -197,6 +197,8 @@
     <ClInclude Include="..\Public\BehaviorAnimation.h" />
     <ClInclude Include="..\Public\Btn.h" />
     <ClInclude Include="..\Public\Collision_Manager.h" />
+    <ClInclude Include="..\Public\CutSceneCamera.h" />
+    <ClInclude Include="..\Public\KillQuest.h" />
     <ClInclude Include="..\Public\Kiryu_KRC_Down.h" />
     <ClInclude Include="..\Public\Kiryu_KRC_Guard.h" />
     <ClInclude Include="..\Public\Kiryu_KRH_Down.h" />
@@ -238,7 +240,10 @@
     <ClInclude Include="..\Public\MapColliderObj.h" />
     <ClInclude Include="..\public\Level_OfficeBoss.h" />
     <ClInclude Include="..\Public\MonsterTrigger.h" />
-    <ClInclude Include="..\Public\SceneModel_Test.h" />
+    <ClInclude Include="..\Public\MoveQuest.h" />
+    <ClInclude Include="..\Public\Quest.h" />
+    <ClInclude Include="..\Public\QuestManager.h" />
+    <ClInclude Include="..\Public\ScriptManager.h" />
     <ClInclude Include="..\Public\Sequance.h" />
     <ClInclude Include="..\Public\Selector.h" />
     <ClInclude Include="..\Public\CharacterData.h" />
@@ -286,6 +291,7 @@
     <ClInclude Include="..\Public\SocketEffect.h" />
     <ClInclude Include="..\Public\SocketObject.h" />
     <ClInclude Include="..\public\SystemManager.h" />
+    <ClInclude Include="..\Public\TalkQuest.h" />
     <ClInclude Include="..\Public\Terrain.h" />
     <ClInclude Include="..\Public\Text.h" />
     <ClInclude Include="..\Public\TRailEffect.h" />
@@ -342,6 +348,8 @@
     <ClCompile Include="..\Private\BehaviorAnimation.cpp" />
     <ClCompile Include="..\Private\Btn.cpp" />
     <ClCompile Include="..\Private\Collision_Manager.cpp" />
+    <ClCompile Include="..\Private\CutSceneCamera.cpp" />
+    <ClCompile Include="..\Private\KillQuest.cpp" />
     <ClCompile Include="..\Private\Kiryu_KRC_Down.cpp" />
     <ClCompile Include="..\Private\Kiryu_KRC_Guard.cpp" />
     <ClCompile Include="..\Private\Kiryu_KRH_Down.cpp" />
@@ -383,7 +391,10 @@
     <ClCompile Include="..\Private\MapColliderObj.cpp" />
     <ClCompile Include="..\private\Level_OfficeBoss.cpp" />
     <ClCompile Include="..\Private\MonsterTrigger.cpp" />
-    <ClCompile Include="..\Private\SceneModel_Test.cpp" />
+    <ClCompile Include="..\Private\MoveQuest.cpp" />
+    <ClCompile Include="..\Private\Quest.cpp" />
+    <ClCompile Include="..\Private\QuestManager.cpp" />
+    <ClCompile Include="..\Private\ScriptManager.cpp" />
     <ClCompile Include="..\Private\Sequance.cpp" />
     <ClCompile Include="..\Private\Selector.cpp" />
     <ClCompile Include="..\Private\CharacterData.cpp" />
@@ -430,6 +441,7 @@
     <ClCompile Include="..\Private\SocketEffect.cpp" />
     <ClCompile Include="..\Private\SocketObject.cpp" />
     <ClCompile Include="..\private\SystemManager.cpp" />
+    <ClCompile Include="..\Private\TalkQuest.cpp" />
     <ClCompile Include="..\Private\Terrain.cpp" />
     <ClCompile Include="..\Private\Text.cpp" />
     <ClCompile Include="..\Private\TRailEffect.cpp" />

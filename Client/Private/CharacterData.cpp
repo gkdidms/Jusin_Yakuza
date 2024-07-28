@@ -184,15 +184,23 @@ HRESULT CCharacterData::Load_LoopAnimations(string strFilePath)
 			return E_FAIL;
 		}
 
-		_uint iNumAnimations = { 0 };
-		in.read((char*)&iNumAnimations, sizeof(_uint));
+		_uint iNumAnimations;
+		in.read(reinterpret_cast<char*>(&iNumAnimations), sizeof(iNumAnimations));
 
 		m_LoopAnimations.reserve(iNumAnimations);
 
 		for (size_t i = 0; i < iNumAnimations; i++)
 		{
-			_uint iAnimationIndex = { 0 };
-			in.read((char*)&iAnimationIndex, sizeof(_uint));
+			// 키를 이진 형식으로 읽어옴
+			_uint iAnimationIndex = 0;
+			in.read(reinterpret_cast<char*>(&iAnimationIndex), sizeof(iAnimationIndex));
+
+			// 문자열 길이와 문자열을 이진 형식으로 읽어옴
+			_uint length = 0;
+			in.read(reinterpret_cast<char*>(&length), sizeof(length));
+
+			string strAnimName(length, ' ');
+			in.read(&strAnimName[0], length);
 
 			m_LoopAnimations.push_back(iAnimationIndex);
 		}

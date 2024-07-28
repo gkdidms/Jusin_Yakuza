@@ -10,40 +10,40 @@ CKiryu_KRH_Attack::CKiryu_KRH_Attack()
 	// 전투 중 아이들 모션은 어드벤처와 동일하다
 	
 	/* 0 ~ 7 */
-	m_AnimationIndices.push_back(263);	//[263]	p_krh_cmb_01[p_krh_cmb_01]
-	m_AnimationIndices.push_back(270);	//[270]	p_krh_cmb_02[p_krh_cmb_02]
-	m_AnimationIndices.push_back(273);	//[273]	p_krh_cmb_03[p_krh_cmb_03]
-	m_AnimationIndices.push_back(276);	//[276]	p_krh_cmb_04[p_krh_cmb_04]
-	m_AnimationIndices.push_back(279);	//[279]	p_krh_cmb_05[p_krh_cmb_05]
-	m_AnimationIndices.push_back(282);	//[282]	p_krh_cmb_06[p_krh_cmb_06]
-	m_AnimationIndices.push_back(285);	//[285]	p_krh_cmb_07[p_krh_cmb_07]
-	m_AnimationIndices.push_back(288);	//[288]	p_krh_cmb_08[p_krh_cmb_08]
+	m_AnimationIndices.push_back(422);	//[422]	p_krh_cmb_01[p_krh_cmb_01]
+	m_AnimationIndices.push_back(429);	//[429]	p_krh_cmb_02[p_krh_cmb_02]
+	m_AnimationIndices.push_back(432);	//[432]	p_krh_cmb_03[p_krh_cmb_03]
+	m_AnimationIndices.push_back(435);	//[435]	p_krh_cmb_04[p_krh_cmb_04]
+	m_AnimationIndices.push_back(438);	//[438]	p_krh_cmb_05[p_krh_cmb_05]
+	m_AnimationIndices.push_back(441);	//[441]	p_krh_cmb_06[p_krh_cmb_06]
+	m_AnimationIndices.push_back(444);	//[444]	p_krh_cmb_07[p_krh_cmb_07]
+	m_AnimationIndices.push_back(447);	//[447]	p_krh_cmb_08[p_krh_cmb_08]
 
 	/* 8 ~ 15 */
-	m_AnimationIndices.push_back(264);	//[264]	p_krh_cmb_01_fin[p_krh_cmb_01_fin]
-	m_AnimationIndices.push_back(271);	//[271]	p_krh_cmb_02_fin[p_krh_cmb_02_fin]
-	m_AnimationIndices.push_back(274);	//[274]	p_krh_cmb_03_fin[p_krh_cmb_03_fin]
-	m_AnimationIndices.push_back(277);	//[277]	p_krh_cmb_04_fin[p_krh_cmb_04_fin]
-	m_AnimationIndices.push_back(280);	//[280]	p_krh_cmb_05_fin[p_krh_cmb_05_fin]
-	m_AnimationIndices.push_back(283);	//[283]	p_krh_cmb_06_fin[p_krh_cmb_06_fin]
-	m_AnimationIndices.push_back(286);	//[286]	p_krh_cmb_07_fin[p_krh_cmb_07_fin]
-	m_AnimationIndices.push_back(289);	//[289]	p_krh_cmb_08_fin[p_krh_cmb_08_fin]
+	m_AnimationIndices.push_back(423);	//[423]	p_krh_cmb_01_fin[p_krh_cmb_01_fin]
+	m_AnimationIndices.push_back(430);	//[430]	p_krh_cmb_02_fin[p_krh_cmb_02_fin]
+	m_AnimationIndices.push_back(433);	//[433]	p_krh_cmb_03_fin[p_krh_cmb_03_fin]
+	m_AnimationIndices.push_back(436);	//[436]	p_krh_cmb_04_fin[p_krh_cmb_04_fin]
+	m_AnimationIndices.push_back(439);	//[439]	p_krh_cmb_05_fin[p_krh_cmb_05_fin]
+	m_AnimationIndices.push_back(442);	//[442]	p_krh_cmb_06_fin[p_krh_cmb_06_fin]
+	m_AnimationIndices.push_back(445);	//[445]	p_krh_cmb_07_fin[p_krh_cmb_07_fin]
+	m_AnimationIndices.push_back(448);	//[448]	p_krh_cmb_08_fin[p_krh_cmb_08_fin]
 
 	/* 16 ~ 23 */
-	m_AnimationIndices.push_back(269);	//[269]	p_krh_cmb_01_tame[p_krh_cmb_01_tame]
-	m_AnimationIndices.push_back(272);	//[272]	p_krh_cmb_02_tame[p_krh_cmb_02_tame]
-	m_AnimationIndices.push_back(275);	//[275]	p_krh_cmb_03_tame[p_krh_cmb_03_tame]
-	m_AnimationIndices.push_back(278);	//[278]	p_krh_cmb_04_tame[p_krh_cmb_04_tame]
-	m_AnimationIndices.push_back(281);	//[281]	p_krh_cmb_05_tame[p_krh_cmb_05_tame]
-	m_AnimationIndices.push_back(284);	//[284]	p_krh_cmb_06_tame[p_krh_cmb_06_tame]
-	m_AnimationIndices.push_back(287);	//[287]	p_krh_cmb_07_tame[p_krh_cmb_07_tame]
-	m_AnimationIndices.push_back(290);	//[290]	p_krh_cmb_08_tame[p_krh_cmb_08_tame]
+	m_AnimationIndices.push_back(428);	//[428]	p_krh_cmb_01_tame[p_krh_cmb_01_tame]
+	m_AnimationIndices.push_back(431);	//[431]	p_krh_cmb_02_tame[p_krh_cmb_02_tame]
+	m_AnimationIndices.push_back(434);	//[434]	p_krh_cmb_03_tame[p_krh_cmb_03_tame]
+	m_AnimationIndices.push_back(437);	//[437]	p_krh_cmb_04_tame[p_krh_cmb_04_tame]
+	m_AnimationIndices.push_back(440);	//[440]	p_krh_cmb_05_tame[p_krh_cmb_05_tame]
+	m_AnimationIndices.push_back(443);	//[443]	p_krh_cmb_06_tame[p_krh_cmb_06_tame]
+	m_AnimationIndices.push_back(446);	//[446]	p_krh_cmb_07_tame[p_krh_cmb_07_tame]
+	m_AnimationIndices.push_back(449);	//[449]	p_krh_cmb_08_tame[p_krh_cmb_08_tame]
 
 	/* 24 */
-	m_AnimationIndices.push_back(252);	//[252]	p_krh_atk_down[p_krh_atk_down]
+	m_AnimationIndices.push_back(411);	//[411]	p_krh_atk_down[p_krh_atk_down]
 
 	/* 25 */
-	m_AnimationIndices.push_back(253);	//[253]	p_krh_atk_heavy_f[p_krh_atk_heavy_f]
+	m_AnimationIndices.push_back(412);	//[412]	p_krh_atk_heavy_f[p_krh_atk_heavy_f]
 
 	/*
 		[265]	p_krh_cmb_01_sway_b[p_krh_cmb_01_sway_b]

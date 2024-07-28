@@ -12,6 +12,13 @@ BEGIN(Client)
 class CLandObject abstract :
     public CGameObject
 {
+public:
+    enum ANIMATION_COMPONENT_TYPE {
+        DEFAULT_ANIMAITION,
+        CUTSCENE_ANIMATION,
+        ANIMATION_COMPONENT_TYPE_END
+    };
+
 private: //오브젝트들의 정보를 저장 
     typedef struct tLandObjectInfo {
         _float iMaxHP;

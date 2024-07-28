@@ -79,7 +79,7 @@ HRESULT CAnimation::Initialize(const BAiAnimation* pAnimation, const vector<clas
 	return S_OK;
 }
 
-void CAnimation::Update_TransformationMatrix(_float fTimeDelta, const vector<class CBone*>& Bones, _bool isLoop, string strExcludeBoneName)
+void CAnimation::Update_TransformationMatrix(_float fTimeDelta, const vector<class CBone*>& Bones, _bool isLoop, _bool isRoot, string strExcludeBoneName)
 {
 	m_CurrentPosition += m_TickPerSecond * fTimeDelta;
 	m_isRestart = false;
@@ -99,13 +99,13 @@ void CAnimation::Update_TransformationMatrix(_float fTimeDelta, const vector<cla
 
 		for (auto& pChannel : m_Channels)
 		{
-			pChannel->Update_TransformationMatrix(m_CurrentPosition, Bones, &m_CurrentKeyFrameIndices[iChannelIndex++], &m_vCenterMoveValue, &m_vCenterRotationValue);
+			pChannel->Update_TransformationMatrix(m_CurrentPosition, Bones, &m_CurrentKeyFrameIndices[iChannelIndex++], &m_vCenterMoveValue, &m_vCenterRotationValue, isRoot, strExcludeBoneName);
 		}
 	}
 }
 
 // 새로 입력받은 애니메이션에서 실행시킬 것이다
-void CAnimation::Update_Change_Animation(_float fTimeDelta, const vector<class CBone*>& Bones, CAnimation* pPrevAnimation, _double ChangeInterval)
+void CAnimation::Update_Change_Animation(_float fTimeDelta, const vector<class CBone*>& Bones, CAnimation* pPrevAnimation, _double ChangeInterval, _bool isRoot)
 {
 	m_CurrentChangePosition += m_TickPerSecond * fTimeDelta;
 
@@ -128,7 +128,7 @@ void CAnimation::Update_Change_Animation(_float fTimeDelta, const vector<class C
 			// 선형보간이 필요한 상황이다.
 			if (pDstChannel->Get_BoneIndex() == pSrcChannel->Get_BoneIndex())
 			{
-				pDstChannel->Update_TransformationMatrix(m_CurrentChangePosition, Bones, pSrcChannel, pPrevAnimation->m_CurrentKeyFrameIndices[iChannelIndex++], ChangeInterval, pPrevAnimation->Get_Finished(), &m_vCenterMoveValue, &m_vCenterRotationValue);
+				pDstChannel->Update_TransformationMatrix(m_CurrentChangePosition, Bones, pSrcChannel, pPrevAnimation->m_CurrentKeyFrameIndices[iChannelIndex++], ChangeInterval, pPrevAnimation->Get_Finished(), &m_vCenterMoveValue, &m_vCenterRotationValue, isRoot);
 			}
 		}
 	}
