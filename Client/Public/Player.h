@@ -145,6 +145,7 @@ public:
     virtual HRESULT Render() override;
 
     // 충돌함수
+    virtual void Attack_Event(CLandObject* pHitObject) override;
     virtual void Take_Damage(_uint iHitColliderType, const _float3& vDir, _float fDamage, CLandObject* pAttackedObject, _bool isBlowAttack = false) override;
 
     virtual string Get_CurrentAnimationName() override;
@@ -153,7 +154,11 @@ public:
 private:
     void Ready_AnimationTree();
     void Ready_CutSceneAnimation();
+
+    /* Compute Function */
+private:
     void Synchronize_Root(const _float& fTimeDelta);
+    _int Compute_Target_Direction(CLandObject* pAttackedObject);
 
     //키 입력관련함수들
 private:

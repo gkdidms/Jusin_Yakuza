@@ -282,7 +282,6 @@ void CImguiManager::AnimListWindow()
 		{
 			m_AddedAnims.emplace(m_iAnimIndex, m_AnimNameList[m_iAnimIndex]);
 		}
-
 	}
 
 	vector<const char*> Addeditems;
