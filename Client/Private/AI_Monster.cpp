@@ -60,6 +60,9 @@ void CAI_Monster::Tick(const _float& fTimeDelta)
 
 	if (m_isGuard)
 		m_fGuardTime += fTimeDelta;
+
+	if (m_isSync)
+		m_fSyncTime += fTimeDelta;
 }
 
 void CAI_Monster::Ready_Tree()
@@ -831,7 +834,36 @@ _bool CAI_Monster::Check_StandUp()
 CBTNode::NODE_STATE CAI_Monster::Chcek_Sync()
 {
 	if (!m_isSync)
+	{
+		m_fSyncTime = 0.f;
 		return CBTNode::FAIL;
+	}
+		
+
+	if (*m_pState == CMonster::MONSTER_SYNC1_LEG_LP ||
+		*m_pState == CMonster::MONSTER_SYNC1_LEG_NAGE ||
+		*m_pState == CMonster::MONSTER_SYNC1_LEG_ST_B ||
+		*m_pState == CMonster::MONSTER_SYNC1_LEG_ST_F ||
+		*m_pState == CMonster::MONSTER_SYNC1_LEG_WALK)
+	{
+		if (m_fSyncDuration <= m_fSyncTime)
+		{
+			//Leg에 대한 처리
+		}
+	}
+
+	if (*m_pState == CMonster::MONSTER_KRU_SYNC1_NECK_CMB_01 || 
+		*m_pState == CMonster::MONSTER_KRU_SYNC1_NECK_CMB_02 ||
+		*m_pState == CMonster::MONSTER_KRU_SYNC1_NECK_LP ||
+		*m_pState == CMonster::MONSTER_KRU_SYNC1_NECK_RESIST ||
+		*m_pState == CMonster::MONSTER_KRU_SYNC1_NECK_ST ||
+		*m_pState == CMonster::MONSTER_KRU_SYNC1_NECK_WALK)
+	{
+		if (m_fSyncDuration <= m_fSyncTime)
+		{
+			//KRU_SYNC1_NECK에 대한 처리
+		}
+	}
 
 	if (m_pAnimCom[*m_pCurrentAnimType]->Get_AnimFinished())
 	{
