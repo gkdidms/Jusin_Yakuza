@@ -229,6 +229,14 @@ void CKiryu_KRS_Grab::Setting_Value(void* pValue)
 	// 넘겨받는 값을 가지고 뒤에서 잡을지 앞에서 잡을지 구분하고, 애니메이션 인덱스 설정해주는거 하려고했엇음
 }
 
+void CKiryu_KRS_Grab::Event(void* pValue)
+{
+	_bool* pIsOff = static_cast<_bool*>(pValue);
+
+	if (pIsOff)
+		Play_Off();
+}
+
 _bool CKiryu_KRS_Grab::Changeable_Combo_Animation()
 {
 	_float fInterval = 0.8f;
@@ -259,6 +267,10 @@ void CKiryu_KRS_Grab::Shaking()
 			pCamera->Set_Shaking(true, { 1.f, 1.f, 0.f }, 0.3, 0.4);
 		}
 	}
+}
+
+void CKiryu_KRS_Grab::Play_Off()
+{
 }
 
 void CKiryu_KRS_Grab::Move_KeyInput(const _float& fTimeDelta)

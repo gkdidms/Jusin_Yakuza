@@ -55,6 +55,12 @@ CPlayer::CPlayer(const CPlayer& rhs)
 	Safe_AddRef(m_pUIManager);
 }
 
+void CPlayer::Set_SeizeOff(_bool isOff)
+{
+	//8번 Grab 공통
+	m_AnimationTree[m_eCurrentStyle].at(8)->Event(&isOff);
+}
+
 HRESULT CPlayer::Initialize_Prototype()
 {
 	return S_OK;
@@ -155,6 +161,12 @@ void CPlayer::Tick(const _float& fTimeDelta)
 	Synchronize_Root(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")));
 
 #ifdef _DEBUG
+	if (m_pGameInstance->GetKeyState(DIK_Z) == TAP)
+	{
+		//TODO: 여기에서 enum값을 필요한 애니메이션으로 바꾸면 해당하는 컷신이 실행된당
+		Set_CutSceneAnim(HAIHEKI_KICK);
+	}
+
 	if (m_isAnimStart)
 	{
 		if (DEFAULT_ANIMAITION == m_eAnimComType)

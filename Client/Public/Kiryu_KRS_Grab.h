@@ -34,10 +34,13 @@ public:
 	virtual void Combo_Count(_bool isFinAction = false) override;
 	virtual void Stop() override;
 	virtual void Setting_Value(void* pValue = nullptr) override;
+	virtual void Event(void* pValue = nullptr) override;
+
 
 private:
 	_bool Changeable_Combo_Animation();
 	void Shaking();
+	void Play_Off();
 
 	void Move_KeyInput(const _float& fTimeDelta);
 
