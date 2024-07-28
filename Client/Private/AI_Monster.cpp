@@ -844,8 +844,6 @@ CBTNode::NODE_STATE CAI_Monster::Chcek_Sync()
 
 CBTNode::NODE_STATE CAI_Monster::Check_Down()
 {
-	*m_pCurrentAnimType = CMonster::ATK_ANIM;
-
 	if (m_iSkill == SKILL_DEAD)
 		return CBTNode::RUNNING;
 
@@ -877,6 +875,8 @@ CBTNode::NODE_STATE CAI_Monster::StandUpAndDead()
 
 CBTNode::NODE_STATE CAI_Monster::StandUp()
 {
+	*m_pCurrentAnimType = CMonster::ATK_ANIM;
+
 	if (m_pThis->isObjectDead())
 		return CBTNode::FAIL;
 
@@ -888,6 +888,8 @@ CBTNode::NODE_STATE CAI_Monster::StandUp()
 
 CBTNode::NODE_STATE CAI_Monster::Dead()
 {
+	*m_pCurrentAnimType = CMonster::ATK_ANIM;
+
 	_uint iDir = { PLAYER_ATK_DIR_END };
 	_uint iPlayerLevel = m_pPlayer->Get_CurrentHitLevel();
 	_bool isBehine = this->isBehine();
@@ -921,6 +923,8 @@ CBTNode::NODE_STATE CAI_Monster::Dead()
 
 CBTNode::NODE_STATE CAI_Monster::Check_PlayerDown()
 {
+	*m_pCurrentAnimType = CMonster::ATK_ANIM;
+
 	if (m_isPlayerDownAtk && !m_pPlayer->isDown())
 	{
 		m_isPlayerDownAtk = false;
@@ -978,6 +982,7 @@ CBTNode::NODE_STATE CAI_Monster::Check_Sway()
 
 	if (m_isGuard || m_iSkill == SKILL_HIT || m_isAttack || m_isPlayerDownAtk)
 	{
+		m_isSway = false;
 		return CBTNode::FAIL;	
 	}
 
@@ -1002,6 +1007,8 @@ CBTNode::NODE_STATE CAI_Monster::Check_Sway()
 			return CBTNode::SUCCESS;
 		}
 	}
+
+	m_isSway = false;
 
 	return CBTNode::FAIL;
 }
@@ -1050,7 +1057,6 @@ CBTNode::NODE_STATE CAI_Monster::Sway()
 
 CBTNode::NODE_STATE CAI_Monster::Check_Hit()
 {
-	m_isSway = false;
 
 	return CBTNode::SUCCESS;
 }

@@ -298,7 +298,9 @@ void CMonster::Tick(const _float& fTimeDelta)
 
 	Change_Animation(); //애니메이션 변경
 
-	m_pModelCom->Play_Animation_Monster(fTimeDelta, m_pAnimCom[m_iCurrentAnimType], m_isAnimLoop);
+	_bool isRoot = m_iCurrentAnimType != SYNC_ANIM;
+
+	m_pModelCom->Play_Animation_Monster(fTimeDelta, m_pAnimCom[m_iCurrentAnimType], m_isAnimLoop, isRoot);
 
 	Synchronize_Root(fTimeDelta);
 
