@@ -27,6 +27,7 @@
 #include "Kiryu_KRS_Down.h"
 #include "Kiryu_KRH_Down.h"
 #include "Kiryu_KRS_Grab.h"
+#include <Monster.h>
 #pragma endregion
 
 CPlayer::CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -172,6 +173,7 @@ void CPlayer::Tick(const _float& fTimeDelta)
 	{
 		//TODO: 여기에서 enum값을 필요한 애니메이션으로 바꾸면 해당하는 컷신이 실행된당
 		Set_CutSceneAnim(HAIHEKI_KICK);
+		static_cast<CMonster*>(Get_TargetObject())->Set_Sync(m_CutSceneAnimation[HAIHEKI_KICK]);
 	}
 
 	if (m_isAnimStart)
