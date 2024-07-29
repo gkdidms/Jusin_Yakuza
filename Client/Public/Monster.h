@@ -234,6 +234,7 @@ protected:
 public:
     _bool isColl() { return m_isColl; }
     _bool isDown() { return m_isDown; }
+    _bool isSynchronizing() { return m_isSynchronizing; }
 
 public:
     void Set_Down(_bool isDown) { m_isDown = isDown; }
@@ -300,6 +301,8 @@ protected:
     /* 쉐이킹 관련 정보들 */
     _bool m_isShaked = { false };       // 쉐이킹이 실행되었는지?
     _uint m_iShakedCount = { 0 };       // 몇번 째 실행되었는지? (한 애니메이션 내에 여러번 실행되어야할 경우 사용)
+
+    _bool m_isSynchronizing = { false };            // 싱크애니메이션중인지?
 
     int     m_iNaviRouteNum = { 0 };
 
