@@ -106,19 +106,6 @@ void CAI_Monster::LookAtPlayer()
 
 _bool CAI_Monster::Find_PlayerCurrentAnimationName(string strAnimName)
 {
-	/*
-	* 정규화로 변경하기 
-	std::string input = "cm_kiryu_1_c001[h23010_000_4]";
-	std::regex pattern(R"(\[(.*?)\])"); // 대괄호 사이의 텍스트를 찾기 위한 정규 표현식
-	std::smatch matches;
-
-	if (std::regex_search(input, matches, pattern)) {
-		std::cout << "찾은 텍스쳐: " << matches[1].str() << std::endl; // 첫 번째 캡처 그룹
-	}
-	else {
-		std::cout << "대괄호 사이의 텍스쳐를 찾을 수 없습니다." << std::endl;
-	}
-	*/
 	string strPlayerAnimName = m_pPlayer->Get_CurrentAnimationName();
 	if (strPlayerAnimName.find(strAnimName) == string::npos)
 		return false;

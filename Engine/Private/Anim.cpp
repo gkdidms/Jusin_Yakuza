@@ -31,7 +31,7 @@ _uint CAnim::Get_AnimationIndex(const _char* pName)
 			string strName = string(pAnim->Get_AnimName());
 			regex_search(strName, matches, pattern);
 
-			if (matches[1].str() == string(pName))
+			if (string_view(matches[1].str()) == string_view(pName))
 				return iIndex;
 		}
 

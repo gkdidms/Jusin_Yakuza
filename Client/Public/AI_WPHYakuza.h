@@ -4,6 +4,7 @@
 /*
 * 도지마조에서 의자들고 있는 몬스터
 */
+
 BEGIN(Client)
 class CAI_WPHYakuza :
     public CAI_Monster

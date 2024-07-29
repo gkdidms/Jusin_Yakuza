@@ -20,6 +20,10 @@
 #include "DefaultYakuza.h"
 #pragma endregion
 
+#pragma region Highway
+#include "Highway_Van.h"
+#pragma endregion
+
 #pragma region Adventure
 #include "Adv_Passersby.h"
 #pragma endregion
@@ -404,6 +408,26 @@ HRESULT CLoader::Loading_Default()
 	return S_OK;
 }
 
+HRESULT CLoader::Loading_Highway()
+{
+#pragma region Component
+	/* For.Prototype_Component_HighwayAnim */
+	//if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_ReactorHighwayAnim"), CAnim::Create(m_pDevice, m_pContext, "../Bin/DataFiles/AnimationData/Animation_Reactor_Highway.dat", false))))
+	//	return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_ReactorHighwayAnim"), CAnim::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Anim/Animation_Reactor_Highway.fbx", true))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_CarChaseAnim */
+//if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_CarChaseAnim"), CAnim::Create(m_pDevice, m_pContext, "../Bin/DataFiles/AnimationData/Animation_CarChase.dat", false))))
+//	return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_CarChaseAnim"), CAnim::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Anim/Animation_CarChase.fbx", true))))
+		return E_FAIL;
+#pragma endregion
+
+
+	return S_OK;
+}
+
 HRESULT CLoader::Loading_For_LogoLevel()
 {
 	lstrcpy(m_szLoadingText, TEXT("텍스쳐를 로딩 중 입니다."));
@@ -500,6 +524,7 @@ HRESULT CLoader::Loading_For_Office_1F()
 	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Kuze"), CKuze::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 #pragma endregion
+
 
 
 
@@ -857,6 +882,14 @@ HRESULT CLoader::Loading_For_Test()
 		CDefaultYakuza::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 #pragma endregion
+
+#pragma region Highway
+	/* For.Prototype_GameObject_Van */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Van"),
+		CHighway_Van::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+#pragma endregion
+
 
 #pragma region Map
 	/* For.Prototype_GameObject_Terrain */

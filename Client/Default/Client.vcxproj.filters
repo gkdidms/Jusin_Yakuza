@@ -446,6 +446,30 @@
     <ClCompile Include="..\private\Level_Tutorial.cpp">
       <Filter>01.Levels\11.Tutorial</Filter>
     </ClCompile>
+    <ClCompile Include="..\private\Highway.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\03.Highway</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Highway_Van.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\03.Highway\00.Van</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\CarChase_Monster.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\CarChase</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\CarChase_Van.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\CarChase\00.Van</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CarChase_Sedan.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\CarChase\01.Sedan</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CarChase_Bike.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\CarChase\02.Bike</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\CarChase_Heli.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\CarChase\03.Heli</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\AI_CarChase.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\CarChase\AI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\MainApp.h">
@@ -923,6 +947,30 @@
     <ClInclude Include="..\public\Level_Tutorial.h">
       <Filter>01.Levels\11.Tutorial</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\Highway.h">
+      <Filter>02.GameObjects\02.Character\LandObject\03.Highway</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Highway_Van.h">
+      <Filter>02.GameObjects\02.Character\LandObject\03.Highway\00.Van</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\CarChase_Monster.h">
+      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\CarChase</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\CarChase_Van.h">
+      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\CarChase\00.Van</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CarChase_Sedan.h">
+      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\CarChase\01.Sedan</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CarChase_Bike.h">
+      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\CarChase\02.Bike</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\CarChase_Heli.h">
+      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\CarChase\03.Heli</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\AI_CarChase.h">
+      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\CarChase\AI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -1248,42 +1296,6 @@
     <Filter Include="02.GameObjects\02.Character\LandObject\01.Monster">
       <UniqueIdentifier>{45d3ed81-5372-4412-bf1f-89cbd1f74552}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\02.Character\LandObject\01.Monster\AI">
-      <UniqueIdentifier>{7c984c39-25b1-4b6b-b10a-cd7e33117ecd}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\02.Character\LandObject\01.Monster\Yakuza">
-      <UniqueIdentifier>{24b27e4b-f104-4dd9-b8b0-a0eeb1f91357}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\02.Character\LandObject\01.Monster\Yakuza\00.RushYakuza">
-      <UniqueIdentifier>{58dcf1b7-f012-4f21-92c4-d4317d03352d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\02.Character\LandObject\01.Monster\Yakuza\00.RushYakuza\AI">
-      <UniqueIdentifier>{9e849697-ae77-4632-b243-cfb720c7f930}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\02.Character\LandObject\01.Monster\Yakuza\01.WPAYakuza">
-      <UniqueIdentifier>{3704e0ba-7ed6-4e63-8e8b-f61177bd0faf}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\02.Character\LandObject\01.Monster\Yakuza\01.WPAYakuza\AI">
-      <UniqueIdentifier>{ef0c8a11-98f3-45df-981d-12a77f36e84a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\02.Character\LandObject\01.Monster\Kuze">
-      <UniqueIdentifier>{a9b58fce-7d6f-4a11-b6d9-392394cb6b6b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\02.Character\LandObject\01.Monster\Kuze\AI">
-      <UniqueIdentifier>{7a5d0ae0-e2c2-40be-bcf3-91e5079f1854}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\02.Character\LandObject\01.Monster\Shakedown">
-      <UniqueIdentifier>{5e40b008-37a1-4a45-8157-605b1207b571}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\02.Character\LandObject\01.Monster\Shakedown\AI">
-      <UniqueIdentifier>{b1020963-a080-4a4f-aae3-e4c2b01b1a01}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\02.Character\LandObject\01.Monster\Yoneda">
-      <UniqueIdentifier>{88d812e2-894f-4605-8fca-4c8e35857e46}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\02.Character\LandObject\01.Monster\Yoneda\AI">
-      <UniqueIdentifier>{ce943862-3c8c-4c61-af0a-695062dd5489}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\Kick">
       <UniqueIdentifier>{a9945f42-cce3-48fc-9eb8-92b573bbc48c}</UniqueIdentifier>
     </Filter>
@@ -1386,18 +1398,6 @@
     <Filter Include="01.Levels\10.Roadway">
       <UniqueIdentifier>{87725d6a-6f60-470c-8c92-bd83c479e2c0}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\02.Character\LandObject\01.Monster\Yakuza\02.WPHYakuza">
-      <UniqueIdentifier>{39e2e213-19e1-4a42-b139-db03e97d7189}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\02.Character\LandObject\01.Monster\Yakuza\03.DefaultYakuza">
-      <UniqueIdentifier>{a44b2f0a-6c25-4832-a556-4b9c0b5736b8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\02.Character\LandObject\01.Monster\Yakuza\02.WPHYakuza\AI">
-      <UniqueIdentifier>{218d1525-6f6d-4a53-97fd-737e8fcc5e55}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\02.Character\LandObject\01.Monster\Yakuza\03.DefaultYakuza\AI">
-      <UniqueIdentifier>{54441ce8-45c7-47fc-af40-bd50c65961c6}</UniqueIdentifier>
-    </Filter>
     <Filter Include="95.Utility\05.UIManager\UIScene\UITalk">
       <UniqueIdentifier>{67923609-fa00-4887-b22f-1a67293fb0e8}</UniqueIdentifier>
     </Filter>
@@ -1412,6 +1412,87 @@
     </Filter>
     <Filter Include="01.Levels\11.Tutorial">
       <UniqueIdentifier>{09b93e95-8641-4f86-aceb-8d96cd45c75e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\03.Highway">
+      <UniqueIdentifier>{5c299c28-69e6-4612-a808-f559d8352e9d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\03.Highway\00.Van">
+      <UniqueIdentifier>{355357f7-ed1a-4982-8e76-dd1cd27e8021}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\03.Highway\01.Sedan">
+      <UniqueIdentifier>{cd2a9c3e-82ef-44e2-a86f-7a252c85db14}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\03.Highway\02.Bike">
+      <UniqueIdentifier>{b8bf80a5-ef27-4fc2-b1fa-01936ccfc529}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\03.Highway\03.Heli">
+      <UniqueIdentifier>{1c4d10f5-23ed-49c5-82a2-615314583caf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\01.Monster\AI">
+      <UniqueIdentifier>{7c984c39-25b1-4b6b-b10a-cd7e33117ecd}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\01.Monster\Kuze">
+      <UniqueIdentifier>{a9b58fce-7d6f-4a11-b6d9-392394cb6b6b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\01.Monster\Kuze\AI">
+      <UniqueIdentifier>{7a5d0ae0-e2c2-40be-bcf3-91e5079f1854}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\01.Monster\Shakedown">
+      <UniqueIdentifier>{5e40b008-37a1-4a45-8157-605b1207b571}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\01.Monster\Shakedown\AI">
+      <UniqueIdentifier>{b1020963-a080-4a4f-aae3-e4c2b01b1a01}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\01.Monster\Yakuza">
+      <UniqueIdentifier>{24b27e4b-f104-4dd9-b8b0-a0eeb1f91357}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\01.Monster\Yakuza\00.RushYakuza">
+      <UniqueIdentifier>{58dcf1b7-f012-4f21-92c4-d4317d03352d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\01.Monster\Yakuza\00.RushYakuza\AI">
+      <UniqueIdentifier>{9e849697-ae77-4632-b243-cfb720c7f930}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\01.Monster\Yakuza\01.WPAYakuza">
+      <UniqueIdentifier>{3704e0ba-7ed6-4e63-8e8b-f61177bd0faf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\01.Monster\Yakuza\01.WPAYakuza\AI">
+      <UniqueIdentifier>{ef0c8a11-98f3-45df-981d-12a77f36e84a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\01.Monster\Yakuza\02.WPHYakuza">
+      <UniqueIdentifier>{39e2e213-19e1-4a42-b139-db03e97d7189}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\01.Monster\Yakuza\02.WPHYakuza\AI">
+      <UniqueIdentifier>{218d1525-6f6d-4a53-97fd-737e8fcc5e55}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\01.Monster\Yakuza\03.DefaultYakuza">
+      <UniqueIdentifier>{a44b2f0a-6c25-4832-a556-4b9c0b5736b8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\01.Monster\Yakuza\03.DefaultYakuza\AI">
+      <UniqueIdentifier>{54441ce8-45c7-47fc-af40-bd50c65961c6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\01.Monster\Yoneda">
+      <UniqueIdentifier>{88d812e2-894f-4605-8fca-4c8e35857e46}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\01.Monster\Yoneda\AI">
+      <UniqueIdentifier>{ce943862-3c8c-4c61-af0a-695062dd5489}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\01.Monster\CarChase">
+      <UniqueIdentifier>{ba7b5d54-d38c-4a61-a058-4019de228d4e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\01.Monster\CarChase\00.Van">
+      <UniqueIdentifier>{f12cbf91-6f9d-4e42-b239-726a53c4cbc4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\01.Monster\CarChase\01.Sedan">
+      <UniqueIdentifier>{998a36e7-c76f-411d-b88d-b70b65ba85e7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\01.Monster\CarChase\02.Bike">
+      <UniqueIdentifier>{8fe3393b-936e-4ed0-9e7d-49da5b00a861}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\01.Monster\CarChase\03.Heli">
+      <UniqueIdentifier>{a93d07bc-b9d2-40b6-b646-d43ef43d4154}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\01.Monster\CarChase\AI">
+      <UniqueIdentifier>{8fa27eed-db8e-461f-9d6b-fb07e3a771d3}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

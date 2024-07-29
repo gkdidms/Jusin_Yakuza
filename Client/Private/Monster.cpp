@@ -25,172 +25,173 @@ CMonster::CMonster(const CMonster& rhs)
 
 void CMonster::Set_Sync(string strPlayerAnim)
 {
-	m_strAnimName = strPlayerAnim;
+	string_view strAnim = strPlayerAnim;
+
 	m_isDown = true;
 	//教农 咀记
-	if (m_strAnimName == "p_krc_sync_guard_counter_f")
+	if (strAnim == string_view("p_krc_sync_guard_counter_f"))
 		m_iState = MONSTER_KRC_SYNC1_GUARD_COUNTER_F;
-	else if (m_strAnimName == "p_krc_sync_kaihi_nage_b")
+	else if (strAnim == string_view("p_krc_sync_kaihi_nage_b"))
 		m_iState = MONSTER_KRC_SYNC1_KAIHI_NAGE_B;
-	else if (m_strAnimName == "p_krc_sync_kaihi_nage_f")
+	else if (strAnim == string_view("p_krc_sync_kaihi_nage_f"))
 		m_iState = MONSTER_KRC_SYNC1_KAIHI_NAGE_F;
-	else if (m_strAnimName == "p_krc_sync_lapel_atk_heavy")
+	else if (strAnim == string_view("p_krc_sync_lapel_atk_heavy"))
 		m_iState = MONSTER_KRC_SYNC1_LAPEL_ATK_HEAVY;
-	else if (m_strAnimName == "p_krc_sync_lapel_atk_punch")
+	else if (strAnim == string_view("p_krc_sync_lapel_atk_punch"))
 		m_iState = MONSTER_KRC_SYNC1_LAPEL_ATK_PUNCH;
-	else if (m_strAnimName == "p_krc_sync_lapel_nage")
+	else if (strAnim == string_view("p_krc_sync_lapel_nage"))
 		m_iState = MONSTER_KRC_SYNC1_LAPEL_NAGE;
-	else if (m_strAnimName == "p_krc_sync_neck_atk_heavy")
+	else if (strAnim == string_view("p_krc_sync_neck_atk_heavy"))
 		m_iState = MONSTER_KRC_SYNC1_NECK_ATK_HEAVY;
-	else if (m_strAnimName == "p_krc_sync_neck_atk_punch")
+	else if (strAnim == string_view("p_krc_sync_neck_atk_punch"))
 		m_iState = MONSTER_KRC_SYNC1_NECK_ATK_PUNCH;
-	else if (m_strAnimName == "p_krc_sync_neck_nage")
+	else if (strAnim == string_view("p_krc_sync_neck_nage"))
 		m_iState = MONSTER_KRC_SYNC1_NECK_NAGE;
-	else if (m_strAnimName == "p_krh_sync_guard_sabaki")
+	else if (strAnim == string_view("p_krh_sync_guard_sabaki"))
 	{
 		m_iState = MONSTER_KRH_SYNC1_GUARD_SABAKI;
 		m_isDown = false;
 	}
-	else if (m_strAnimName == "p_krs_sync_cmb_03_fin")
+	else if (strAnim == string_view("p_krs_sync_cmb_03_fin"))
 		m_iState = MONSTER_KRS_SYNC1_CMB_03_FIN;
-	else if (m_strAnimName == "p_kru_sync_lapel_atk_punch")
+	else if (strAnim == string_view("p_kru_sync_lapel_atk_punch"))
 		m_iState = MONSTER_KRU_SYNC1_LAPEL_ATK_PUNCH;
-	else if (m_strAnimName == "p_kru_sync_lapel_cmb_01")
+	else if (strAnim == string_view("p_kru_sync_lapel_cmb_01"))
 	{
 		m_iState = MONSTER_KRU_SYNC1_LAPEL_CMB_01;
 		m_isDown = false;
 	}
-	else if (m_strAnimName == "p_kru_sync_lapel_cmb_02")
+	else if (strAnim == string_view("p_kru_sync_lapel_cmb_02"))
 	{
 		m_iState = MONSTER_KRU_SYNC1_LAPEL_CMB_02;
 		m_isDown = false;
 	}
-	else if (m_strAnimName == "p_kru_sync_lapel_cmb_03")
+	else if (strAnim == string_view("p_kru_sync_lapel_cmb_03"))
 		m_iState = MONSTER_KRU_SYNC1_LAPEL_CMB_03;
-	else if (m_strAnimName == "p_kru_sync_lapel_lp")
+	else if (strAnim == string_view("p_kru_sync_lapel_lp"))
 	{
 		m_iState = MONSTER_KRU_SYNC1_LAPEL_LP;
 		m_isDown = false;
 	}	
-	else if (m_strAnimName == "p_kru_sync_lapel_nage")
+	else if (strAnim == string_view("p_kru_sync_lapel_nage"))
 		m_iState = MONSTER_KRU_SYNC1_LAPEL_NAGE;
-	else if (m_strAnimName == "p_kru_sync_lapel_off")
+	else if (strAnim == string_view("p_kru_sync_lapel_off"))
 	{
 		m_iState = MONSTER_KRU_SYNC1_LAPEL_OFF;
 		m_isDown = false;
 	}
-	else if (m_strAnimName == "p_kru_sync_lapel_off_hiza")
+	else if (strAnim == string_view("p_kru_sync_lapel_off_hiza"))
 	{
 		m_iState = MONSTER_KRU_SYNC1_LAPEL_OFF_HIZA;
 		m_isDown = false;
 	}
-	else if (m_strAnimName == "p_kru_sync_lapel_press")
+	else if (strAnim == string_view("p_kru_sync_lapel_press"))
 	{
 		m_iState = MONSTER_KRU_SYNC1_LAPEL_PRESS;
 		m_isDown = false;
 	}
-	else if (m_strAnimName == "p_kru_sync_lapel_resist")
+	else if (strAnim == string_view("p_kru_sync_lapel_resist"))
 	{
 		m_iState = MONSTER_KRU_SYNC1_LAPEL_RESIST;
 		m_isDown = false;
 	}
-	else if (m_strAnimName == "p_kru_sync_lapel_st")
+	else if (strAnim == string_view("p_kru_sync_lapel_st"))
 	{
 		m_iState = MONSTER_KRU_SYNC1_LAPEL_ST;
 		m_isDown = false;
 	}
-	else if (m_strAnimName == "p_kru_sync_lapel_walk")
+	else if (strAnim == string_view("p_kru_sync_lapel_walk"))
 	{
 		m_iState = MONSTER_KRU_SYNC1_LAPEL_WALK;
 		m_isDown = false;
 	}
-	else if (m_strAnimName == "p_kru_sync_neck_atk_kick")
+	else if (strAnim == string_view("p_kru_sync_neck_atk_kick"))
 		m_iState = MONSTER_KRU_SYNC1_NECK_ATK_KICK;
-	else if (m_strAnimName == "p_kru_sync_neck_cmb_01")
+	else if (strAnim == string_view("p_kru_sync_neck_cmb_01"))
 	{
 		m_iState = MONSTER_KRU_SYNC1_NECK_CMB_01;
 		m_isDown = false;
 	}
-	else if (m_strAnimName == "p_kru_sync_neck_cmb_02")
+	else if (strAnim == string_view("p_kru_sync_neck_cmb_02"))
 	{
 		m_iState = MONSTER_KRU_SYNC1_NECK_CMB_02;
 		m_isDown = false;
 	}
-	else if (m_strAnimName == "p_kru_sync_neck_cmb_03")
+	else if (strAnim == string_view("p_kru_sync_neck_cmb_03"))
 		m_iState = MONSTER_KRU_SYNC1_NECK_CMB_03;
-	else if (m_strAnimName == "p_kru_sync_neck_lp")
+	else if (strAnim == string_view("p_kru_sync_neck_lp"))
 	{
 		m_iState = MONSTER_KRU_SYNC1_NECK_LP;
 		m_isDown = false;
 	}
-	else if (m_strAnimName == "p_kru_sync_neck_nage")
+	else if (strAnim == string_view("p_kru_sync_neck_nage"))
 		m_iState = MONSTER_KRU_SYNC1_NECK_NAGE;
-	else if (m_strAnimName == "p_kru_sync_neck_off")
+	else if (strAnim == string_view("p_kru_sync_neck_off"))
 	{
 		m_iState = MONSTER_KRU_SYNC1_NECK_OFF;
 		m_isDown = false;
 	}
-	else if (m_strAnimName == "p_kru_sync_neck_off_uraken")
+	else if (strAnim == string_view("p_kru_sync_neck_off_uraken"))
 	{
 		m_iState = MONSTER_KRU_SYNC1_NECK_OFF_URAKEN;
 		m_isDown = false;
 	}
-	else if (m_strAnimName == "p_kru_sync_neck_press")
+	else if (strAnim == string_view("p_kru_sync_neck_press"))
 	{
 		m_iState = MONSTER_KRU_SYNC1_NECK_PRESS;
 		m_isDown = false;
 	}
-	else if (m_strAnimName == "p_kru_sync_neck_resist")
+	else if (strAnim == string_view("p_kru_sync_neck_resist"))
 	{
 		m_iState = MONSTER_KRU_SYNC1_NECK_RESIST;
 		m_isDown = false;
 	}
-	else if (m_strAnimName == "p_kru_sync_neck_st")
+	else if (strAnim == string_view("p_kru_sync_neck_st"))
 	{
 		m_iState = MONSTER_KRU_SYNC1_NECK_ST;
 		m_isDown = false;
 	}
-	else if (m_strAnimName == "p_kru_sync_neck_walk")
+	else if (strAnim == string_view("p_kru_sync_neck_walk"))
 	{
 		m_iState = MONSTER_KRU_SYNC1_NECK_WALK;
 		m_isDown = false;
 	}
-	else if (m_strAnimName == "p_sync_counter_f")
+	else if (strAnim == string_view("p_sync_counter_f"))
 	{
 		m_iState = MONSTER_SYNC1_COUNTER_F;
 		m_isDown = false;
 	}
 		
-	else if (m_strAnimName == "p_sync_head_b")
+	else if (strAnim == string_view("p_sync_head_b"))
 	{
 		m_iState = MONSTER_SYNC1_HEAD_B;
 		m_isDown = false;
 	}
-	else if (m_strAnimName == "p_sync_head_f")
+	else if (strAnim == string_view("p_sync_head_f"))
 	{
 		m_iState = MONSTER_SYNC1_HEAD_F;
 		m_isDown = false;
 	}
-	else if (m_strAnimName == "p_sync_lapel_to_neck")
+	else if (strAnim == string_view("p_sync_lapel_to_neck"))
 	{
 		m_iState = MONSTER_SYNC1_LAPEL_TO_NECK;
 		m_isDown = false;
 	}
-	else if (m_strAnimName == "p_sync_leg_atk_kick")
+	else if (strAnim == string_view("p_sync_leg_atk_kick"))
 		m_iState = MONSTER_SYNC1_LEG_ATK_KICK;
-	else if (m_strAnimName == "p_sync_leg_lp")
+	else if (strAnim == string_view("p_sync_leg_lp"))
 		m_iState = MONSTER_SYNC1_LEG_LP;
-	else if (m_strAnimName == "p_sync_leg_nage")
+	else if (strAnim == string_view("p_sync_leg_nage"))
 		m_iState = MONSTER_SYNC1_LEG_NAGE;
-	else if (m_strAnimName == "p_sync_leg_off")
+	else if (strAnim == string_view("p_sync_leg_off"))
 		m_iState = MONSTER_SYNC1_LEG_OFF;
-	else if (m_strAnimName == "p_sync_leg_st_b")
+	else if (strAnim == string_view("p_sync_leg_st_b"))
 		m_iState = MONSTER_SYNC1_LEG_ST_B;
-	else if (m_strAnimName == "p_sync_leg_st_f")
+	else if (strAnim == string_view("p_sync_leg_st_f"))
 		m_iState = MONSTER_SYNC1_LEG_ST_F;
-	else if (m_strAnimName == "p_sync_leg_walk")
+	else if (strAnim == string_view("p_sync_leg_walk"))
 		m_iState = MONSTER_SYNC1_LEG_WALK;
-	else if (m_strAnimName == "p_sync_neck_to_lapel")
+	else if (strAnim == string_view("p_sync_neck_to_lapel"))
 	{
 		m_iState = MONSTER_SYNC1_NECK_TO_LAPEL;
 		m_isDown = false;
@@ -198,53 +199,54 @@ void CMonster::Set_Sync(string strPlayerAnim)
 		
 
 	//钠 咀记
-	else if (m_strAnimName == "h11250")
+	else if (strAnim == string_view("h11250"))
 		m_iState = MONSTER_H11250_000_1;
-	else if (m_strAnimName == "h20021")
+	else if (strAnim == string_view("h20021"))
 		m_iState = MONSTER_H20021_000_2;
-	else if (m_strAnimName == "h23000")
+	else if (strAnim == string_view("h23000"))
 		m_iState = MONSTER_H23000_000_6;
-	else if (m_strAnimName == "a60300")
+	else if (strAnim == string_view("a60300"))
 		m_iState = MONSTER_A60300_000_2;
-	else if (m_strAnimName == "a60320")
+	else if (strAnim == string_view("a60320"))
 		m_iState = MONSTER_A60320_000_4;
-	else if (m_strAnimName == "a60330")
+	else if (strAnim == string_view("a60330"))
 		m_iState = MONSTER_A60330_000_2;
-	else if (m_strAnimName == "a60350")
+	else if (strAnim == string_view("a60350"))
 		m_iState = MONSTER_A60350_000_2;
-	else if (m_strAnimName == "h1010")
+	else if (strAnim == string_view("h1010"))
 		m_iState = MONSTER_H1010_000_1;
-	else if (m_strAnimName == "h10111")
+	else if (strAnim == string_view("h10111"))
 		m_iState = MONSTER_H10111_000_1;
-	else if (m_strAnimName == "h11285")
+	else if (strAnim == string_view("h11285"))
 		m_iState = MONSTER_H11285_000_1;
-	else if (m_strAnimName == "h1511")
+	else if (strAnim == string_view("h1511"))
 		m_iState = MONSTER_H1511_000_4;
-	else if (m_strAnimName == "h1540")
+	else if (strAnim == string_view("h1540"))
 		m_iState = MONSTER_H1540_000_1;
-	else if (m_strAnimName == "h1620")
+	else if (strAnim == string_view("h1620"))
 		m_iState = MONSTER_H1620_000_1;
-	else if (m_strAnimName == "h2011")
+	else if (strAnim == string_view("h2011"))
 		m_iState = MONSTER_H2011_000_1;
-	else if (m_strAnimName == "h2040")
+	else if (strAnim == string_view("h2040"))
 		m_iState = MONSTER_H2040_000_1;
-	else if (m_strAnimName == "h23010")
+	else if (strAnim == string_view("h23010"))
 		m_iState = MONSTER_H23010_000_4;
-	else if (m_strAnimName == "h23020")
+	else if (strAnim == string_view("h23020"))
 		m_iState = MONSTER_H23020_000_4;
-	else if (m_strAnimName == "h23060")
+	else if (strAnim == string_view("h23060"))
 		m_iState = MONSTER_H23060_000_4;
-	else if (m_strAnimName == "h23070")
+	else if (strAnim == string_view("h23070"))
 		m_iState = MONSTER_H23070_000_4;
-	else if (m_strAnimName == "h23250")
+	else if (strAnim == string_view("h23250"))
 		m_iState = MONSTER_H23250_000_2;
-	else if (m_strAnimName == "h23320")
+	else if (strAnim == string_view("h23320"))
 		m_iState = MONSTER_H23320_000_4;
-	else if (m_strAnimName == "h3261")
+	else if (strAnim == string_view("h3261"))
 		m_iState = MONSTER_H3261_000_4;
-	else if (m_strAnimName == "h1500")
+	else if (strAnim == string_view("h1500"))
 		m_iState = MONSTER_H1500_000_1;
 
+	m_strAnimName = strPlayerAnim;
 	m_iCurrentAnimType = CMonster::CUTSCENE_ANIMATION;
 
 	m_pTree->Set_Sync(true);
