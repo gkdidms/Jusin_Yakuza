@@ -16,12 +16,6 @@ public:
         _int iObjectIndex;
     } TALK_QUEST_DESC;
 
-public:
-    void Set_Coll(_uint iObjectIndex, _bool isColl) { 
-        if (iObjectIndex == m_iObjectIndex)
-            m_isColl = isColl; 
-    }
-
 private:
     CTalkQuest();
     virtual ~CTalkQuest() = default;

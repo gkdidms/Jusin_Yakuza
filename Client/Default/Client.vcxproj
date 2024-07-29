@@ -249,6 +249,7 @@
     <ClInclude Include="..\Public\MoveQuest.h" />
     <ClInclude Include="..\Public\Quest.h" />
     <ClInclude Include="..\Public\QuestManager.h" />
+    <ClInclude Include="..\Public\QuestTrigger.h" />
     <ClInclude Include="..\Public\ScriptManager.h" />
     <ClInclude Include="..\Public\Sequance.h" />
     <ClInclude Include="..\Public\Selector.h" />
@@ -409,6 +410,7 @@
     <ClCompile Include="..\Private\MoveQuest.cpp" />
     <ClCompile Include="..\Private\Quest.cpp" />
     <ClCompile Include="..\Private\QuestManager.cpp" />
+    <ClCompile Include="..\Private\QuestTrigger.cpp" />
     <ClCompile Include="..\Private\ScriptManager.cpp" />
     <ClCompile Include="..\Private\Sequance.cpp" />
     <ClCompile Include="..\Private\Selector.cpp" />

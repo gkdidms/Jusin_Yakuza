@@ -106,6 +106,19 @@ void CAI_Monster::LookAtPlayer()
 
 _bool CAI_Monster::Find_PlayerCurrentAnimationName(string strAnimName)
 {
+	/*
+	* 정규화로 변경하기 
+	std::string input = "cm_kiryu_1_c001[h23010_000_4]";
+	std::regex pattern(R"(\[(.*?)\])"); // 대괄호 사이의 텍스트를 찾기 위한 정규 표현식
+	std::smatch matches;
+
+	if (std::regex_search(input, matches, pattern)) {
+		std::cout << "찾은 텍스쳐: " << matches[1].str() << std::endl; // 첫 번째 캡처 그룹
+	}
+	else {
+		std::cout << "대괄호 사이의 텍스쳐를 찾을 수 없습니다." << std::endl;
+	}
+	*/
 	string strPlayerAnimName = m_pPlayer->Get_CurrentAnimationName();
 	if (strPlayerAnimName.find(strAnimName) == string::npos)
 		return false;
@@ -113,7 +126,6 @@ _bool CAI_Monster::Find_PlayerCurrentAnimationName(string strAnimName)
 	return true;
 }
 
-/* 정리 할 예정임 (건들이지마셈) */
 //러쉬
 _uint CAI_Monster::Check_KRH(_uint iPlayerLv, _bool isBehine, _bool isAnimChange)
 {
@@ -819,7 +831,6 @@ _bool CAI_Monster::Check_StandUp()
 	{
 		m_pThis->Set_Down(false);
 		*m_pState = CMonster::MONSTER_STANDUP_DNB_FAST;
-		m_pThis->Set_Down(false);
 		return false;
 	}
 
@@ -907,7 +918,7 @@ CBTNode::NODE_STATE CAI_Monster::StandUpAndDead()
 
 CBTNode::NODE_STATE CAI_Monster::StandUp()
 {
-	*m_pCurrentAnimType = CMonster::ATK_ANIM;
+	*m_pCurrentAnimType = CMonster::DEFAULT_ANIMAITION;
 
 	if (m_pThis->isObjectDead())
 		return CBTNode::FAIL;
@@ -920,7 +931,7 @@ CBTNode::NODE_STATE CAI_Monster::StandUp()
 
 CBTNode::NODE_STATE CAI_Monster::Dead()
 {
-	*m_pCurrentAnimType = CMonster::ATK_ANIM;
+	*m_pCurrentAnimType = CMonster::DEFAULT_ANIMAITION;
 
 	_uint iDir = { PLAYER_ATK_DIR_END };
 	_uint iPlayerLevel = m_pPlayer->Get_CurrentHitLevel();
@@ -955,7 +966,7 @@ CBTNode::NODE_STATE CAI_Monster::Dead()
 
 CBTNode::NODE_STATE CAI_Monster::Check_PlayerDown()
 {
-	*m_pCurrentAnimType = CMonster::ATK_ANIM;
+	*m_pCurrentAnimType = CMonster::DEFAULT_ANIMAITION;
 
 	if (m_isPlayerDownAtk && !m_pPlayer->isDown())
 	{

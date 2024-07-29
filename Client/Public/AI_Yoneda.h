@@ -19,6 +19,9 @@ public:
 private:
     void Ready_Tree();
 
+private:
+    
+
 public:
     static CAI_Yoneda* Create();
     virtual CBTNode* Clone(void* pArg);

@@ -245,7 +245,7 @@ void CMonster::Set_Sync(string strPlayerAnim)
 	else if (m_strAnimName == "h1500")
 		m_iState = MONSTER_H1500_000_1;
 
-	m_iCurrentAnimType = CMonster::SYNC_ANIM;
+	m_iCurrentAnimType = CMonster::CUTSCENE_ANIMATION;
 
 	m_pTree->Set_Sync(true);
 	Change_Animation();
@@ -280,8 +280,8 @@ HRESULT CMonster::Initialize(void* pArg)
 	m_Info.iMaxHP = 100.f;
 	m_Info.iHp = m_Info.iMaxHP;
 
-	m_iCurrentAnimType = ATK_ANIM;
-	m_iPreAnimType = ATK_ANIM;
+	m_iCurrentAnimType = DEFAULT_ANIMAITION;
+	m_iPreAnimType = DEFAULT_ANIMAITION;
 
 	m_pModelCom->Set_PreAnimations(m_pAnimCom[m_iPreAnimType]->Get_Animations());
 
@@ -298,7 +298,7 @@ void CMonster::Tick(const _float& fTimeDelta)
 
 	Change_Animation(); //애니메이션 변경
 
-	_bool isRoot = m_iCurrentAnimType != SYNC_ANIM;
+	_bool isRoot = m_iCurrentAnimType != CUTSCENE_ANIMATION;
 
 	m_pModelCom->Play_Animation_Monster(fTimeDelta, m_pAnimCom[m_iCurrentAnimType], m_isAnimLoop, isRoot);
 
@@ -1358,6 +1358,7 @@ HRESULT CMonster::Setup_Animation()
 	if (m_pModelCom->Set_AnimationIndex(m_iAnim, m_pAnimCom[m_iCurrentAnimType]->Get_Animations(), m_fChangeInterval))
 	{
 		m_pModelCom->Set_PreAnimations(m_pAnimCom[m_iPreAnimType]->Get_Animations());
+
 		Off_Attack_Colliders();
 		Reset_Shaking_Variable();
 	}

@@ -1150,17 +1150,17 @@ void CObjPlace_Manager::Load_ModelName()
 
 	vObjectNames.clear();
 
-	m_pGameInstance->Get_FileNames("../../Client/Bin/Resources/Models/NonAnim/Map/Map3/Bin", vObjectNames);
+	//m_pGameInstance->Get_FileNames("../../Client/Bin/Resources/Models/NonAnim/Map/Map3/Bin", vObjectNames);
 
-	for (int i = 0; i < vObjectNames.size(); i++)
-	{
-		string modifiedString = modifyString(vObjectNames[i]);
+	//for (int i = 0; i < vObjectNames.size(); i++)
+	//{
+	//	string modifiedString = modifyString(vObjectNames[i]);
 
-		char* cfilename = new char[MAX_PATH];
-		strcpy(cfilename, StringToCharDIY(modifiedString));
-		m_ObjectNames_Map3.push_back(cfilename);
-	}
-	vObjectNames.clear();
+	//	char* cfilename = new char[MAX_PATH];
+	//	strcpy(cfilename, StringToCharDIY(modifiedString));
+	//	m_ObjectNames_Map3.push_back(cfilename);
+	//}
+	//vObjectNames.clear();
 }
 
 HRESULT CObjPlace_Manager::Import_Bin_Map_Data_OnTool(MAP_TOTALINFORM_DESC* mapObjData, char* fileName)
