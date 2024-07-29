@@ -59,9 +59,15 @@ void CKiryu_KRS_Attack::Tick(const _float& fTimeDelta)
 	{
 		if (m_iComboCount == 6)
 		{
-			//TODO: 테스트
-			if (Changeable_Combo_Animation())
-				m_iComboCount = 8;
+			if (static_cast<CMonster*>(pTargetObject)->isDown())
+			{
+				//TODO: 테스트
+				if (Changeable_Combo_Animation())
+				{
+					//static_cast<CMonster*>(m_pPlayer->Get_TargetObject())->Set_Sync("p_krs_sync_cmb_03_fin");
+					m_iComboCount = 8;
+				}
+			}
 		}
 	}
 

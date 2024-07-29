@@ -134,6 +134,7 @@ public:
     void    Set_StartPos(XMMATRIX    vStartPos) { m_pTransformCom->Set_WorldMatrix(vStartPos); }
     void    Set_NavigationIndex(int iIndex) { m_pNavigationCom->Set_Index(iIndex); }
     void    Set_NaviRouteIndex(int iIndex) { m_iNaviRouteNum = iIndex; }
+    void    Set_SeizeOff(_bool isOff = true);                       //TODO: 잡힌 상태에서 off 시킬 때 부를 함수
 
     /* Virtual Funtion */
 public:
@@ -145,6 +146,7 @@ public:
     virtual HRESULT Render() override;
 
     // 충돌함수
+    virtual void Attack_Event(CLandObject* pHitObject) override;
     virtual void Take_Damage(_uint iHitColliderType, const _float3& vDir, _float fDamage, CLandObject* pAttackedObject, _bool isBlowAttack = false) override;
 
     virtual string Get_CurrentAnimationName() override;
@@ -153,7 +155,11 @@ public:
 private:
     void Ready_AnimationTree();
     void Ready_CutSceneAnimation();
+
+    /* Compute Function */
+private:
     void Synchronize_Root(const _float& fTimeDelta);
+    _int Compute_Target_Direction(CLandObject* pAttackedObject);
 
     //키 입력관련함수들
 private:
@@ -245,8 +251,6 @@ private:
     _float          m_fHitGauge = { 0.f };
 
     int             m_iNaviRouteNum = { 0 }; //루트
-
-
 
 #ifdef _DEBUG
     _bool m_isAnimStart = { true };

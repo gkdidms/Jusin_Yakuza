@@ -29,6 +29,7 @@ public:
 	virtual void Setting_Value(void* pValue = nullptr) {};
 	virtual string Get_AnimationName() { return string(); };
 	virtual _bool Checked_Animation_Ratio(_float fRatio);
+	virtual void Event(void* pValue = nullptr) {}
 
 protected:
 	CGameInstance* m_pGameInstance = { nullptr };

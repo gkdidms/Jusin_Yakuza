@@ -60,6 +60,9 @@ void CAI_Monster::Tick(const _float& fTimeDelta)
 
 	if (m_isGuard)
 		m_fGuardTime += fTimeDelta;
+
+	if (m_isSync)
+		m_fSyncTime += fTimeDelta;
 }
 
 void CAI_Monster::Ready_Tree()
@@ -810,7 +813,9 @@ _bool CAI_Monster::Check_StandUp()
 		|| *m_pState == CMonster::MONSTER_KRC_SYNC1_KAIHI_NAGE_F
 		|| *m_pState == CMonster::MONSTER_KRC_SYNC1_NECK_ATK_PUNCH
 		|| *m_pState == CMonster::MONSTER_KRC_SYNC1_NECK_NAGE
-		|| *m_pState == CMonster::MONSTER_KRS_SYNC1_CMB_03_FIN_B)
+		|| *m_pState == CMonster::MONSTER_KRS_SYNC1_CMB_03_FIN_B
+		|| *m_pState == CMonster::MONSTER_SYNC1_LEG_ATK_KICK
+		|| *m_pState == CMonster::MONSTER_SYNC1_LEG_NAGE)
 	{
 		m_pThis->Set_Down(false);
 		*m_pState = CMonster::MONSTER_STANDUP_DNB_FAST;
@@ -828,16 +833,41 @@ _bool CAI_Monster::Check_StandUp()
 
 CBTNode::NODE_STATE CAI_Monster::Chcek_Sync()
 {
-	//스웨이 함수를 지나면 스웨이 false;
-
 	if (!m_isSync)
+	{
+		m_fSyncTime = 0.f;
 		return CBTNode::FAIL;
+	}
+		
 
-	*m_pCurrentAnimType = CMonster::SYNC_ANIM;
+	if (*m_pState == CMonster::MONSTER_SYNC1_LEG_LP ||
+		*m_pState == CMonster::MONSTER_SYNC1_LEG_NAGE ||
+		*m_pState == CMonster::MONSTER_SYNC1_LEG_ST_B ||
+		*m_pState == CMonster::MONSTER_SYNC1_LEG_ST_F ||
+		*m_pState == CMonster::MONSTER_SYNC1_LEG_WALK)
+	{
+		if (m_fSyncDuration <= m_fSyncTime)
+		{
+			//Leg에 대한 처리
+		}
+	}
+
+	if (*m_pState == CMonster::MONSTER_KRU_SYNC1_NECK_CMB_01 || 
+		*m_pState == CMonster::MONSTER_KRU_SYNC1_NECK_CMB_02 ||
+		*m_pState == CMonster::MONSTER_KRU_SYNC1_NECK_LP ||
+		*m_pState == CMonster::MONSTER_KRU_SYNC1_NECK_RESIST ||
+		*m_pState == CMonster::MONSTER_KRU_SYNC1_NECK_ST ||
+		*m_pState == CMonster::MONSTER_KRU_SYNC1_NECK_WALK)
+	{
+		if (m_fSyncDuration <= m_fSyncTime)
+		{
+			//KRU_SYNC1_NECK에 대한 처리
+		}
+	}
 
 	if (m_pAnimCom[*m_pCurrentAnimType]->Get_AnimFinished())
 	{
-		m_isSync == false;
+		m_isSync = false;
 		return CBTNode::SUCCESS;
 	}
 
@@ -846,8 +876,6 @@ CBTNode::NODE_STATE CAI_Monster::Chcek_Sync()
 
 CBTNode::NODE_STATE CAI_Monster::Check_Down()
 {
-	*m_pCurrentAnimType = CMonster::ATK_ANIM;
-
 	if (m_iSkill == SKILL_DEAD)
 		return CBTNode::RUNNING;
 
@@ -879,6 +907,8 @@ CBTNode::NODE_STATE CAI_Monster::StandUpAndDead()
 
 CBTNode::NODE_STATE CAI_Monster::StandUp()
 {
+	*m_pCurrentAnimType = CMonster::ATK_ANIM;
+
 	if (m_pThis->isObjectDead())
 		return CBTNode::FAIL;
 
@@ -890,6 +920,8 @@ CBTNode::NODE_STATE CAI_Monster::StandUp()
 
 CBTNode::NODE_STATE CAI_Monster::Dead()
 {
+	*m_pCurrentAnimType = CMonster::ATK_ANIM;
+
 	_uint iDir = { PLAYER_ATK_DIR_END };
 	_uint iPlayerLevel = m_pPlayer->Get_CurrentHitLevel();
 	_bool isBehine = this->isBehine();
@@ -923,6 +955,8 @@ CBTNode::NODE_STATE CAI_Monster::Dead()
 
 CBTNode::NODE_STATE CAI_Monster::Check_PlayerDown()
 {
+	*m_pCurrentAnimType = CMonster::ATK_ANIM;
+
 	if (m_isPlayerDownAtk && !m_pPlayer->isDown())
 	{
 		m_isPlayerDownAtk = false;
@@ -980,6 +1014,7 @@ CBTNode::NODE_STATE CAI_Monster::Check_Sway()
 
 	if (m_isGuard || m_iSkill == SKILL_HIT || m_isAttack || m_isPlayerDownAtk)
 	{
+		m_isSway = false;
 		return CBTNode::FAIL;	
 	}
 
@@ -1004,6 +1039,8 @@ CBTNode::NODE_STATE CAI_Monster::Check_Sway()
 			return CBTNode::SUCCESS;
 		}
 	}
+
+	m_isSway = false;
 
 	return CBTNode::FAIL;
 }
@@ -1052,7 +1089,6 @@ CBTNode::NODE_STATE CAI_Monster::Sway()
 
 CBTNode::NODE_STATE CAI_Monster::Check_Hit()
 {
-	m_isSway = false;
 
 	return CBTNode::SUCCESS;
 }

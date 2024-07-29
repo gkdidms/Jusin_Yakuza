@@ -1,4 +1,4 @@
-132p_krc_atk_down_trample
+134p_krc_atk_down_trample
 0
 5
 asi4_l_n
@@ -658,3 +658,13 @@ p_krs_cmb_04_finw
 21
 asi4_r_n
 7
+p_seize_miss
+0
+5
+buki_l_n
+182
+p_seize_miss
+1
+9
+buki_l_n
+182
