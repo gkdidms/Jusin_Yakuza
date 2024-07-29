@@ -22,10 +22,9 @@ public:
     }MONSTER_IODESC;
 
 public:
-    enum ANIM_TYPE { ATK_ANIM, SYNC_ANIM, ANIM_END };
-
     enum MONSTER_STATE
     {
+        //공격 모션
         MONSTER_IDLE,
         MONSTER_RUN,
         MONSTER_SHIFT_F,
@@ -63,10 +62,13 @@ public:
         MONSTER_PUNCH,
         MONSTER_JAB,
         MONSTER_HEAVY_ATTACK,
+        MONSTER_HEAVY_RENDA,
         MONSTER_ATK_DOWN,
         MONSTER_GUARD_RUN,
         MONSTER_RARIATTO,
         MONSTER_HIJI_2REN,
+        MONSTER_KICK,
+        MONSTER_RUN_ATK,
         MONSTER_ANGRY_START,
         MONSTER_ANGRY_CHOP,
         MONSTER_ANGRY_KICK,
@@ -75,6 +77,7 @@ public:
         MONSTER_GURAD_END,
         MONSTER_GURAD_FLOAT,
 
+        //맞는 모션
         MONSTER_DWN_DNF_BOUND,
         MONSTER_DWN_DNB_BOUND,
         MONSTER_DWN_DNF_BOUND_G,
@@ -238,6 +241,7 @@ public:
 public:
     void Set_Down(_bool isDown) { m_isDown = isDown; }
     void Set_Sync(string strPlayerAnim);
+    void Set_RimLight(_float isRimLight) { m_isRimLight = isRimLight; }
     
 public:
     _float Get_HitDamage() { return m_fHitDamage; }
@@ -271,15 +275,15 @@ public:
     _bool Checked_Animation_Ratio(_float fRatio);
 
 protected:
-    CAnim* m_pAnimCom[ANIM_END] = {nullptr}; // 애니메이션만 따로 저장하고있는 애니메이션 컴포넌트
+    CAnim* m_pAnimCom[ANIMATION_COMPONENT_TYPE_END] = {nullptr}; // 애니메이션만 따로 저장하고있는 애니메이션 컴포넌트
     CNavigation* m_pNavigationCom = { nullptr };
     class CAI_Monster* m_pTree = { nullptr };
 
 protected:
     _bool m_isAnimLoop = { false };
     _uint m_iState = { 0 };
-    _uint m_iCurrentAnimType = { ANIM_END };
-    _uint m_iPreAnimType = { ANIM_END };
+    _uint m_iCurrentAnimType = { ANIMATION_COMPONENT_TYPE_END };
+    _uint m_iPreAnimType = { ANIMATION_COMPONENT_TYPE_END };
     _float m_fChangeInterval = { 4.f };
 
     _float          m_fPrevSpeed;
@@ -308,7 +312,7 @@ protected:
     HRESULT Setup_Animation();
     void Synchronize_Root(const _float& fTimeDelta);
 
-private:
+protected:
     virtual HRESULT Add_Components() override;
     virtual HRESULT Bind_ResourceData() override;
 

@@ -1,6 +1,7 @@
 #include "TalkQuest.h"
 
 CTalkQuest::CTalkQuest()
+    : CQuest {}
 {
 }
 

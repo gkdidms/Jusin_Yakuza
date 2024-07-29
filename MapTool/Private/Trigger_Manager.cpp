@@ -282,6 +282,11 @@ void CTrigger_Manager::Show_Add_Trigger_IMGUI()
 	{
 		triggerType = TRIGGER_TYPE::TRIGGER_MONSTER;
 	}
+	ImGui::NewLine();
+	if (ImGui::RadioButton(u8"Quest trigger", triggerType == TRIGGER_TYPE::TRIGGER_QUEST))
+	{
+		triggerType = TRIGGER_TYPE::TRIGGER_QUEST;
+	}
 
 	ImGui::NewLine();
 
@@ -591,6 +596,12 @@ void CTrigger_Manager::Edit_Installed_Trigger()
 	{
 		triggerType = TRIGGER_TYPE::TRIGGER_MONSTER;
 		m_tCurTriggerDesc.iTriggerType = TRIGGER_TYPE::TRIGGER_MONSTER;
+	}
+	ImGui::NewLine();
+	if (ImGui::RadioButton(u8"trigger - Quest ", m_tCurTriggerDesc.iTriggerType == TRIGGER_TYPE::TRIGGER_QUEST))
+	{
+		triggerType = TRIGGER_TYPE::TRIGGER_QUEST;
+		m_tCurTriggerDesc.iTriggerType = TRIGGER_TYPE::TRIGGER_QUEST;
 	}
 
 

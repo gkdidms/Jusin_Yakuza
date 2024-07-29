@@ -5,6 +5,7 @@
 #include "GameInstance.h"
 #include "SystemManager.h"
 #include "Collision_Manager.h"
+#include "QuestManager.h"
 
 #ifdef _DEBUG
 #include "DebugManager.h"
@@ -30,13 +31,15 @@ CMainApp::CMainApp() :
 	m_pSystemManager{ CSystemManager::GetInstance() },
 	m_pFileTotalManager{ CFileTotalMgr::GetInstance() },
 	m_pCollisionManager{ CCollision_Manager::GetInstance() },
-	m_pUIManager{ CUIManager::GetInstance() }
+	m_pUIManager{ CUIManager::GetInstance() },
+	m_pQuestManager { CQuestManager::GetInstance() }
 {
 	Safe_AddRef(m_pGameInstance);
 	Safe_AddRef(m_pSystemManager);
 	Safe_AddRef(m_pFileTotalManager);
 	Safe_AddRef(m_pCollisionManager);
 	Safe_AddRef(m_pUIManager);
+	Safe_AddRef(m_pQuestManager);
 
 #ifdef _DEBUG
 	Safe_AddRef(m_pDebugMananger);
@@ -57,6 +60,9 @@ HRESULT CMainApp::Initialize()
 		return E_FAIL;
 
 	if (FAILED(m_pUIManager->Initialize(m_pDevice, m_pContext)))
+		return E_FAIL;
+
+	if (FAILED(m_pQuestManager->Initialize()))
 		return E_FAIL;
 
 	if (FAILED(Ready_Font()))
@@ -88,6 +94,8 @@ void CMainApp::Tick(const _float& fTimeDelta)
 	m_pCollisionManager->Tick();
 	m_pUIManager->Tick(fTimeDelta);
 	m_pUIManager->Late_Tick(fTimeDelta);
+	//퀘스트 성공 여부 확인 
+	m_pQuestManager->Execute();
 
 	//프레임 확인용 나중에 다시 디버그로 넣어야함
 	m_fTimeAcc += fTimeDelta;
@@ -459,9 +467,12 @@ void CMainApp::Free()
 	Safe_Release(m_pSystemManager);
 	CSystemManager::DestroyInstance();
 
+	Safe_Release(m_pQuestManager);
+	CQuestManager::DestroyInstance();
+
 	Safe_Release(m_pUIManager);
 	CUIManager::DestroyInstance();
-
+	
 	Safe_Release(m_pFileTotalManager);
 	CFileTotalMgr::DestroyInstance();
 

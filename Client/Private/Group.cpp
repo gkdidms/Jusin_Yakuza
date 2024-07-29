@@ -448,6 +448,11 @@ _bool CGroup::Check_AnimFin()
 	return true;
 }
 
+_bool CGroup::Click_Intersect(_int Index)
+{
+	return m_PartObjects[Index]->Click_Intersect();
+}
+
 
 
 CGroup* CGroup::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

@@ -89,15 +89,14 @@ void CSocketCollider::Tick(const _float& fTimeDelta)
 
 void CSocketCollider::Late_Tick(const _float& fTimeDelta)
 {
-	m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
+#ifdef _DEBUG
+	if (m_pColliderCom && m_isOn)
+		m_pGameInstance->Add_DebugComponent(m_pColliderCom);
+#endif
 }
 
 HRESULT CSocketCollider::Render()
-{
-#ifdef _DEBUG
-	if(m_pColliderCom && m_isOn)
-		m_pGameInstance->Add_DebugComponent(m_pColliderCom);
-#endif
+{	
 	return S_OK;
 }
 

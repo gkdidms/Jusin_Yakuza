@@ -70,17 +70,17 @@ HRESULT CRushYakuza::Add_Components()
 		return E_FAIL;
 
 	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Anim"),
-		TEXT("Com_Anim"), reinterpret_cast<CComponent**>(&m_pAnimCom[ATK_ANIM]))))
+		TEXT("Com_Anim"), reinterpret_cast<CComponent**>(&m_pAnimCom[DEFAULT_ANIMAITION]))))
 		return E_FAIL;
 
 	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_SyncAnim"),
-		TEXT("Com_SyncAnim"), reinterpret_cast<CComponent**>(&m_pAnimCom[SYNC_ANIM]))))
+		TEXT("Com_SyncAnim"), reinterpret_cast<CComponent**>(&m_pAnimCom[CUTSCENE_ANIMATION]))))
 		return E_FAIL;
 
 	//행동트리 저장
 	CAI_RushYakuza::AI_MONSTER_DESC Desc{};
 	Desc.pState = &m_iState;
-	memcpy(Desc.pAnim, m_pAnimCom, sizeof(CAnim*) * ANIM_END);
+	memcpy(Desc.pAnim, m_pAnimCom, sizeof(CAnim*) * ANIMATION_COMPONENT_TYPE_END);
 	Desc.pCurrentAnimType = &m_iCurrentAnimType;
 	Desc.pThis = this;
 

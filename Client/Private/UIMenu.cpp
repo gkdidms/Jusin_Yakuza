@@ -75,26 +75,22 @@ void CUIMenu::Action()
 {
 	switch (m_iCurButton)
 	{
-	case 0://뒤로
+	case 0://인벤
 	{
 		CUIManager::GetInstance()->Open_Scene(TEXT("Inven"));
 		break;
 	}
-	case 1://소지품
+	case 1://스킬
 	{
-		//m_pUIManager->Open_Scene(TEXT("Invectory"));
+		CUIManager::GetInstance()->Open_Scene(TEXT("SkillMenu"));
 		break;
 	}
-	case 2://스킬
+	case 2://설정
 	{
-		//m_pUIManager->Open_Scene(TEXT("SkillSelect"));
+
 		break;
 	}
-	case 3://설정
-	{
-		//m_pUIManager->Open_Scene(TEXT("Setting"));
-		break;
-	}
+
 	default:
 		break;
 	}

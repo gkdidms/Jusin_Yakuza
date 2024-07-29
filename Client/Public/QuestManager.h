@@ -29,19 +29,14 @@ private:
 
 public:
     const CScriptManager::SCRIPT_INFO Get_ScriptInfo(_int iScriptCount);
+    _uint Get_CurrentQuestType();
 
 public:
     HRESULT Initialize();
     _bool Execute();
 
-public:
-    HRESULT Add_KillQuest(_int iQuestIndex, _int iNextQuestIndex, _int iTargetIndex, _int iScriptIndex);
-    HRESULT Add_MoveQuest(_int iQuestIndex, _int iNextQuestIndex, _int iTriggerIndex, _int iScriptIndex);
-    HRESULT Add_TalkQuest(_int iQuestIndex, _int iNextQuestIndex, _int iObjectIndex, _int iScriptIndex);
-
 private:
     CScriptManager* m_pScriptManager = { nullptr };
-
     class CQuest* m_pCurrentQuest = { nullptr };
 
     vector<QUEST_INFO> m_QuestInfo;
@@ -49,6 +44,11 @@ private:
 
 private:
     HRESULT Ready_Quest();
+    HRESULT Add_KillQuest(_int iQuestIndex, _int iNextQuestIndex, _int iTargetIndex, _int iScriptIndex);
+    HRESULT Add_MoveQuest(_int iQuestIndex, _int iNextQuestIndex, _int iTriggerIndex, _int iScriptIndex);
+    HRESULT Add_TalkQuest(_int iQuestIndex, _int iNextQuestIndex, _int iObjectIndex, _int iScriptIndex);
+
+
 
 public:
     virtual void Free();
