@@ -14,6 +14,9 @@
 #include "UITutorial.h"
 #include "UITalk.h"
 #include "UISkillMenu.h"
+#include "UISkillHolligan.h"
+#include"UISkillRush.h"
+#include"UISkillDestroyer.h"
 
 #include "InventoryManager.h"
 #include "Player.h"
@@ -80,6 +83,15 @@ HRESULT CUIManager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 
 	pScene = CUISkillMenu::Create(m_pDevice, m_pContext);
 	m_AllScene.emplace(make_pair(TEXT("SkillMenu"), pScene));
+
+	pScene = CUISkillHolligan::Create(m_pDevice, m_pContext);
+	m_AllScene.emplace(make_pair(TEXT("SkillHolligan"), pScene));
+
+	pScene = CUISkillRush::Create(m_pDevice, m_pContext);
+	m_AllScene.emplace(make_pair(TEXT("SkillRush"), pScene));
+
+	pScene = CUISkillDestroyer::Create(m_pDevice, m_pContext);
+	m_AllScene.emplace(make_pair(TEXT("SkillDestroyer"), pScene));
 
 
 	return S_OK;

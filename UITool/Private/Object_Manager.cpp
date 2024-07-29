@@ -77,6 +77,8 @@ HRESULT CObject_Manager::Copy_Group(const wstring& strTag)
 			Desc.iTypeIndex = pUI->Get_TypeIndex();
 			Desc.vUpPoint = pUI->Get_UpPoint();
 			Desc.vDownPoint = pUI->Get_DownPoint();
+			Desc.isScreen = pUI->Get_isScreen();
+			Desc.vEndColor = pUI->Get_EndColor();
 
 			CUI_Texture* pImage = dynamic_cast<CUI_Texture*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Image_Texture"), &Desc));
 			if (nullptr == pImage)
@@ -1096,7 +1098,8 @@ HRESULT CObject_Manager::Copy_BinaryObject(const wstring& strObjectTag, _uint iI
 
 		TextureDesc.vUpPoint = dynamic_cast<CUI_Texture*>((*pObjects)[iIndex])->Get_UpPoint();
 		TextureDesc.vDownPoint = dynamic_cast<CUI_Texture*>((*pObjects)[iIndex])->Get_DownPoint();
-
+		TextureDesc.vEndColor = dynamic_cast<CUI_Texture*>((*pObjects)[iIndex])->Get_EndColor();
+		TextureDesc.isScreen = dynamic_cast<CUI_Texture*>((*pObjects)[iIndex])->Get_isScreen();
 		CUI_Texture* pImage = dynamic_cast<CUI_Texture*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Image_Texture"), &TextureDesc));
 		if (nullptr == pImage)
 			return E_FAIL;

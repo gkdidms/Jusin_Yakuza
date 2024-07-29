@@ -440,6 +440,15 @@
     <ClCompile Include="..\Private\UISkillMenu.cpp">
       <Filter>95.Utility\05.UIManager\UIScene\UISkillMenu</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\UISkillHolligan.cpp">
+      <Filter>95.Utility\05.UIManager\UIScene\UISkillHolligan</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UISkillRush.cpp">
+      <Filter>95.Utility\05.UIManager\UIScene\UISkillRush</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UISkillDestroyer.cpp">
+      <Filter>95.Utility\05.UIManager\UIScene\UISkillDestroyer</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\MainApp.h">
@@ -910,6 +919,15 @@
     </ClInclude>
     <ClInclude Include="..\Public\UISkillMenu.h">
       <Filter>95.Utility\05.UIManager\UIScene\UISkillMenu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UISkillHolligan.h">
+      <Filter>95.Utility\05.UIManager\UIScene\UISkillHolligan</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UISkillRush.h">
+      <Filter>95.Utility\05.UIManager\UIScene\UISkillRush</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UISkillDestroyer.h">
+      <Filter>95.Utility\05.UIManager\UIScene\UISkillDestroyer</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1394,6 +1412,15 @@
     </Filter>
     <Filter Include="95.Utility\05.UIManager\UIScene\UISkillMenu">
       <UniqueIdentifier>{0ab17753-4bbc-4a85-bd25-2aadad5a276c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\05.UIManager\UIScene\UISkillHolligan">
+      <UniqueIdentifier>{de8a5743-5598-4e2f-87cb-fcb88da43132}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\05.UIManager\UIScene\UISkillRush">
+      <UniqueIdentifier>{84f15fef-0b71-4a83-8280-465dff0a9170}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\05.UIManager\UIScene\UISkillDestroyer">
+      <UniqueIdentifier>{fd65e228-ee0b-4ff4-ba2b-248b93e87aa2}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

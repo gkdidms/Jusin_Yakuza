@@ -32,6 +32,7 @@ HRESULT CUISkillMenu::Show_Scene()
 		m_EventUI[i * 2 + 1]->Close_UI();
 		m_EventUI[i * 2 + 1]->Get_TransformCom()->Set_WorldMatrix(ButtonWorld);
 	}
+	
 
 	return S_OK;
 }
@@ -54,11 +55,15 @@ HRESULT CUISkillMenu::Tick(const _float& fTimeDelta)
 {
 	__super::Tick(fTimeDelta);
 
-	for (auto& iter : m_EventUI)
+	for (size_t i = 0; i < 6; i++)
 	{
-		iter->Tick(fTimeDelta);
+		m_EventUI[i]->Tick(fTimeDelta);
 	}
 
+	if (-1 != m_iCurButton)
+	{
+		m_EventUI[m_iCurButton + 6]->Tick(fTimeDelta);
+	}
 	return S_OK;
 }
 
@@ -66,9 +71,14 @@ HRESULT CUISkillMenu::Late_Tick(const _float& fTimeDelta)
 {
 	__super::Late_Tick(fTimeDelta);
 
-	for (auto& iter : m_EventUI)
+	for (size_t i = 0; i < 6; i++)
 	{
-		iter->Late_Tick(fTimeDelta);
+		m_EventUI[i]->Late_Tick(fTimeDelta);
+	}
+
+	if (-1 != m_iCurButton)
+	{
+		m_EventUI[m_iCurButton + 6]->Late_Tick(fTimeDelta);
 	}
 
 	if (!m_isAnimFin)
@@ -89,11 +99,13 @@ void CUISkillMenu::Action()
 	switch (m_iCurButton)
 	{
 	case 0 ://불한당스킬창
-		CUIManager::GetInstance()->Close_Scene();
+		CUIManager::GetInstance()->Open_Scene(TEXT("SkillHolligan"));
 		break;
 	case 1://러쉬 스킬창
+		CUIManager::GetInstance()->Open_Scene(TEXT("SkillRush"));
 		break;
 	case 2://파괴자 스킬창
+		CUIManager::GetInstance()->Open_Scene(TEXT("SkillDestroyer"));
 		break;
 	default:
 		break;

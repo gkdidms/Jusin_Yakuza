@@ -60,7 +60,7 @@ public:
     virtual HRESULT Show_UI();
     virtual HRESULT Close_UI();
     virtual _bool Check_AnimFin();
-
+    virtual _bool Click_Intersect(_int Index=0);
 protected:
     string m_strName = { "" }; // 저장될 이름
     _uint m_iTypeIndex = { 0 }; // 오브젝트 타입
