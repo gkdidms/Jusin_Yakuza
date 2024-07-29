@@ -48,6 +48,7 @@ public:
 
 	void Play_Animation(_float fTimeDelta, _bool isRoot = true, string strExcludeBoneName = "");
 	void Play_Animation(_float fTimeDelta, class CAnim* pAnim, _bool isLoop = false, _int iAnimIndex = -1, _bool isRoot = true, string strExcludeBoneName = "");
+	void Play_Animation_CutScene(_float fTimeDelta, class CAnim* pAnim = nullptr, _bool isLoop = false, _int iAnimIndex = -1, _bool isRoot = true, string strExcludeBoneName = "");
 	void Play_Animation_Monster(_float fTimeDelta, class CAnim* pAnim, _bool isLoop, _bool isRoot = true);
 	void Play_Animation(_float fTimeDelta, const ANIMATION_DESC& AnimDesc, _bool isRoot = true, string strExcludeBoneName = "");
 

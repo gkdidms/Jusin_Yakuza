@@ -172,8 +172,12 @@ void CPlayer::Tick(const _float& fTimeDelta)
 	if (m_pGameInstance->GetKeyState(DIK_Z) == TAP)
 	{
 		//TODO: 여기에서 enum값을 필요한 애니메이션으로 바꾸면 해당하는 컷신이 실행된당
-		Set_CutSceneAnim(HAIHEKI_KICK);
-		static_cast<CMonster*>(Get_TargetObject())->Set_Sync(m_CutSceneAnimation[HAIHEKI_KICK]);
+		if (m_pTargetObject)
+		{
+			Set_CutSceneAnim(HAIHEKI_KICK);
+			static_cast<CMonster*>(Get_TargetObject())->Set_Sync(m_CutSceneAnimation[HAIHEKI_KICK]);
+		}
+		
 	}
 
 	if (m_isAnimStart)
@@ -1503,7 +1507,7 @@ void CPlayer::Play_CutScene()
 			return;
 		}
 
-		m_pModelCom->Play_Animation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")), m_pAnimCom, false, m_iCutSceneAnimIndex, false);
+		m_pModelCom->Play_Animation_CutScene(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")), m_pAnimCom, false, m_iCutSceneAnimIndex, false);
 
 		CPlayer* pPlayer = this;
 		CCamera* pCamera = dynamic_cast<CCamera*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Camera"), CAMERA_CUTSCENE));
@@ -1541,7 +1545,7 @@ void CPlayer::Play_CutScene()
 		m_pCameraModel->Set_AnimationIndex(Desc);
 
 		// 카메라 본 애니메이션 실행
-		m_pCameraModel->Play_Animation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")), Desc, false, "Camera");
+		m_pCameraModel->Play_Animation_CutScene(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")), nullptr, false, m_iCutSceneCamAnimIndex, false, "Camera");
 	}
 }
 

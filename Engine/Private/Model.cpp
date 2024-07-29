@@ -989,6 +989,92 @@ void CModel::Play_Animation(_float fTimeDelta, CAnim* pAnim, _bool isLoop, _int 
 		pBone->Update_CombinedTransformationMatrix(m_Bones, XMLoadFloat4x4(&m_PreTransformMatrix));
 }
 
+void CModel::Play_Animation_CutScene(_float fTimeDelta, CAnim* pAnim, _bool isLoop, _int iAnimIndex, _bool isRoot, string strExcludeBoneName)
+{
+	//애니메이션 목록 전달하기 
+	if (nullptr == pAnim)
+	{
+		if (1 > m_Animations.size()) return;
+
+		m_ChangeInterval = 0.0;
+
+		// 넘겨받은 iAnimIndex이 -1 이라면 기존대로 실행하고
+		if (0 > iAnimIndex)
+		{
+			if (0.0 == m_ChangeInterval)
+				m_Animations[m_AnimDesc.iAnimIndex]->Update_TransformationMatrix(fTimeDelta, m_Bones, m_AnimDesc.isLoop, isRoot, strExcludeBoneName);
+			else
+			{
+				if (m_Animations[m_AnimDesc.iAnimIndex]->Get_Changed())
+					m_Animations[m_AnimDesc.iAnimIndex]->Update_TransformationMatrix(fTimeDelta, m_Bones, m_AnimDesc.isLoop, isRoot, strExcludeBoneName);
+				else
+					m_Animations[m_AnimDesc.iAnimIndex]->Update_Change_Animation(fTimeDelta, m_Bones, m_Animations[m_iPrevAnimIndex], m_ChangeInterval, isRoot);
+			}
+		}
+		// -1이 아니라면 넘겨받은 인덱스를 실행시킨다.
+		else
+		{
+			if (0.0 == m_ChangeInterval)
+				m_Animations[m_AnimDesc.iAnimIndex]->Update_TransformationMatrix(fTimeDelta, m_Bones, m_AnimDesc.isLoop, isRoot, strExcludeBoneName);
+			else
+			{
+				if (m_Animations[m_AnimDesc.iAnimIndex]->Get_Changed())
+					m_Animations[m_AnimDesc.iAnimIndex]->Update_TransformationMatrix(fTimeDelta, m_Bones, m_AnimDesc.isLoop, isRoot, strExcludeBoneName);
+				else
+					m_Animations[m_AnimDesc.iAnimIndex]->Update_Change_Animation(fTimeDelta, m_Bones, m_Animations[m_iPrevAnimIndex], m_ChangeInterval, isRoot);
+			}
+		}
+
+	}
+	else
+	{
+		vector<CAnimation*> Animations = pAnim->Get_Animations();
+
+		if (1 > Animations.size()) return;
+
+		m_ChangeInterval = 0.0;
+
+		// 넘겨받은 iAnimIndex이 -1 이라면 기존대로 실행하고
+		if (0 > iAnimIndex)
+		{
+			pAnim->Set_CurrentAnimIndex(m_AnimDesc.iAnimIndex);
+
+			if (0.0 == m_ChangeInterval)
+				Animations[m_AnimDesc.iAnimIndex]->Update_TransformationMatrix(fTimeDelta, m_Bones, isLoop, isRoot, strExcludeBoneName);
+			else
+			{
+				if (Animations[m_AnimDesc.iAnimIndex]->Get_Changed())
+					Animations[m_AnimDesc.iAnimIndex]->Update_TransformationMatrix(fTimeDelta, m_Bones, isLoop, isRoot, strExcludeBoneName);
+				else
+				{
+					Animations[m_AnimDesc.iAnimIndex]->Update_Change_Animation(fTimeDelta, m_Bones, Animations[m_iPrevAnimIndex], m_ChangeInterval, isRoot);
+				}
+			}
+		}
+		// -1이 아니라면 넘겨받은 인덱스를 실행시킨다.
+		else
+		{
+			pAnim->Set_CurrentAnimIndex(iAnimIndex);
+
+			if (0.0 == m_ChangeInterval)
+				Animations[iAnimIndex]->Update_TransformationMatrix(fTimeDelta, m_Bones, isLoop, isRoot, strExcludeBoneName);
+			else
+			{
+				if (Animations[iAnimIndex]->Get_Changed())
+					Animations[iAnimIndex]->Update_TransformationMatrix(fTimeDelta, m_Bones, isLoop, isRoot, strExcludeBoneName);
+				else
+				{
+					Animations[iAnimIndex]->Update_Change_Animation(fTimeDelta, m_Bones, Animations[m_iPrevAnimIndex], m_ChangeInterval, isRoot);
+				}
+			}
+		}
+	}
+
+	/* 전체뼈를 순회하면서 모든 뼈의 CombinedTransformationMatrix를 갱신한다. */
+	for (auto& pBone : m_Bones)
+		pBone->Update_CombinedTransformationMatrix(m_Bones, XMLoadFloat4x4(&m_PreTransformMatrix));
+}
+
 void CModel::Play_Animation_Monster(_float fTimeDelta, class CAnim* pAnim, _bool isLoop, _bool isRoot)
 {
 	//애니메이션 목록 전달하기 ;
