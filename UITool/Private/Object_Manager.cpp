@@ -77,6 +77,8 @@ HRESULT CObject_Manager::Copy_Group(const wstring& strTag)
 			Desc.iTypeIndex = pUI->Get_TypeIndex();
 			Desc.vUpPoint = pUI->Get_UpPoint();
 			Desc.vDownPoint = pUI->Get_DownPoint();
+			Desc.isScreen = pUI->Get_isScreen();
+			Desc.vEndColor = pUI->Get_EndColor();
 
 			CUI_Texture* pImage = dynamic_cast<CUI_Texture*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Image_Texture"), &Desc));
 			if (nullptr == pImage)
@@ -1096,7 +1098,8 @@ HRESULT CObject_Manager::Copy_BinaryObject(const wstring& strObjectTag, _uint iI
 
 		TextureDesc.vUpPoint = dynamic_cast<CUI_Texture*>((*pObjects)[iIndex])->Get_UpPoint();
 		TextureDesc.vDownPoint = dynamic_cast<CUI_Texture*>((*pObjects)[iIndex])->Get_DownPoint();
-
+		TextureDesc.vEndColor = dynamic_cast<CUI_Texture*>((*pObjects)[iIndex])->Get_EndColor();
+		TextureDesc.isScreen = dynamic_cast<CUI_Texture*>((*pObjects)[iIndex])->Get_isScreen();
 		CUI_Texture* pImage = dynamic_cast<CUI_Texture*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Image_Texture"), &TextureDesc));
 		if (nullptr == pImage)
 			return E_FAIL;
@@ -1200,6 +1203,46 @@ HRESULT CObject_Manager::Copy_BinaryGroupObject(const wstring& strObjectTag, con
 		pImage->Change_UV(dynamic_cast<CUI_Texture*>((*pFineGroupObjects)[iIndex])->Get_StartUV(), dynamic_cast<CUI_Texture*>((*pFineGroupObjects)[iIndex])->Get_EndUV());
 		pImage->Get_TransformCom()->Set_WorldMatrix(dynamic_cast<CUI_Texture*>((*pFineGroupObjects)[iIndex])->Get_TransformCom()->Get_WorldMatrix());
 
+
+		pFineGroupObjects->emplace_back(pImage);
+	}
+	else if (TEXT == Type)
+	{
+		CText::TEXT_DESC TextDesc = {};
+		TextDesc.strTextureFileName = dynamic_cast<CUI_Texture*>((*pFineGroupObjects)[iIndex])->Get_FileName();
+		TextDesc.strTextureFilePath = dynamic_cast<CUI_Texture*>((*pFineGroupObjects)[iIndex])->Get_FilePath();
+		TextDesc.iTypeIndex = dynamic_cast<CUI_Texture*>((*pFineGroupObjects)[iIndex])->Get_TypeIndex();
+		TextDesc.strName = dynamic_cast<CUI_Texture*>((*pFineGroupObjects)[iIndex])->Get_Name() + "%d";
+		char buffer[MAX_PATH] = { "" };
+		sprintf(buffer, TextDesc.strName.c_str(), Index);
+		string result(buffer);
+		TextDesc.strName = result;
+
+		TextDesc.bAnim = dynamic_cast<CUI_Texture*>((*pFineGroupObjects)[iIndex])->Get_isAnim();
+		TextDesc.vStartPos = dynamic_cast<CUI_Texture*>((*pFineGroupObjects)[iIndex])->Get_StartPos();
+		TextDesc.fAnimTime = dynamic_cast<CUI_Texture*>((*pFineGroupObjects)[iIndex])->Get_AnimTime();
+		TextDesc.isColor = dynamic_cast<CUI_Texture*>((*pFineGroupObjects)[iIndex])->Get_isColor();
+		TextDesc.vColor = dynamic_cast<CUI_Texture*>((*pFineGroupObjects)[iIndex])->Get_Color();
+		TextDesc.vEndColor = dynamic_cast<CUI_Texture*>((*pFineGroupObjects)[iIndex])->Get_EndColor();
+		TextDesc.fControlAlpha = dynamic_cast<CUI_Texture*>((*pFineGroupObjects)[iIndex])->Get_ControlAlpha();
+		TextDesc.isParent = true;
+		TextDesc.pParentMatrix = (*pFineObjects)[ibinaryIndex]->Get_TransformCom()->Get_WorldFloat4x4();
+
+		TextDesc.isScreen = (*pFineGroupObjects)[iIndex]->Get_isScreen();
+		TextDesc.isEvent = (*pFineGroupObjects)[iIndex]->Get_Event();
+
+		TextDesc.vUpPoint = dynamic_cast<CUI_Texture*>((*pFineGroupObjects)[iIndex])->Get_UpPoint();
+		TextDesc.vDownPoint = dynamic_cast<CUI_Texture*>((*pFineGroupObjects)[iIndex])->Get_DownPoint();
+
+		TextDesc.iAlign = dynamic_cast<CText*>((*pFineGroupObjects)[iIndex])->Get_Align();
+		TextDesc.strText = dynamic_cast<CText*>((*pFineGroupObjects)[iIndex])->Get_Text();
+		TextDesc.Font = dynamic_cast<CText*>((*pFineGroupObjects)[iIndex])->Get_Font();
+		CUI_Texture* pImage = dynamic_cast<CUI_Texture*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Text"), &TextDesc));
+		if (nullptr == pImage)
+			return E_FAIL;		
+
+		pImage->Set_ShaderPass(dynamic_cast<CUI_Texture*>((*pFineGroupObjects)[iIndex])->Get_ShaderPass());
+		pImage->Get_TransformCom()->Set_WorldMatrix(dynamic_cast<CUI_Texture*>((*pFineGroupObjects)[iIndex])->Get_TransformCom()->Get_WorldMatrix());
 
 		pFineGroupObjects->emplace_back(pImage);
 	}
