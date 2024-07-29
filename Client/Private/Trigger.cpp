@@ -38,7 +38,9 @@ void CTrigger::Tick(const _float& fTimeDelta)
 
 void CTrigger::Late_Tick(const _float& fTimeDelta)
 {
-    m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
+#ifdef _DEBUG
+    m_pGameInstance->Add_DebugComponent(m_pColliderCom);
+#endif
 }
 
 HRESULT CTrigger::Render()

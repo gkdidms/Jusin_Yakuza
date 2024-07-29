@@ -1,27 +1,35 @@
 #include "UITalk.h"
 
+#include"GameInstance.h"
+
+#include "QuestManager.h"
+#include "ScriptManager.h"
+
 #include "UIManager.h"
 #include "UI_Object.h"
 #include "Group.h"
 #include "Btn.h"
 #include "Text.h"
-#include"GameInstance.h"
+
 CUITalk::CUITalk()
-    :CUIScene{}
+    :CUIScene{},
+	m_pQuestManager { CQuestManager::GetInstance() }
 {
+	Safe_AddRef(m_pQuestManager);
 }
 
 CUITalk::CUITalk(const CUITalk& rhs)
-    :CUIScene{ rhs }
+    :CUIScene{ rhs },
+	m_pQuestManager { rhs.m_pQuestManager }
 {
+	Safe_AddRef(m_pQuestManager);
 }
-
-
 
 HRESULT CUITalk::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg)
 {
     if (FAILED(__super::Initialize(pDevice, pContext, pArg)))
         return E_FAIL;
+
     return S_OK;
 }
 
@@ -32,7 +40,7 @@ HRESULT CUITalk::Tick(const _float& fTimeDelta)
 
 	if(!m_TalkFin)
 	{
-		if(m_PlayTime>1.f)
+		if(m_PlayTime > 0.07f)
 		{
 			m_PlayTime = 0.f;
 			Talk_Effect(fTimeDelta);
@@ -43,6 +51,10 @@ HRESULT CUITalk::Tick(const _float& fTimeDelta)
 		if(m_pGameInstance->GetKeyState(DIK_E) == TAP)
 		{
 			//E누르면 다음대화[다른곳에서 해도됨]
+			Ready_Talk();
+			
+			if (false == Read_Script())
+				Close_Scene();
 		}
 	}
 
@@ -50,7 +62,9 @@ HRESULT CUITalk::Tick(const _float& fTimeDelta)
 	{
 		m_EventUI[i]->Tick(fTimeDelta);
 	}
+
 	m_EventUI[NAME]->Tick(fTimeDelta);
+
     return S_OK;
 }
 
@@ -58,12 +72,13 @@ HRESULT CUITalk::Late_Tick(const _float& fTimeDelta)
 {
 	__super::Late_Tick(fTimeDelta);
 
-
 	for (size_t i = 0; i < m_LineIndex + 1; i++)
 	{
 		m_EventUI[i]->Late_Tick(fTimeDelta);
 	}
+
 	m_EventUI[NAME]->Late_Tick(fTimeDelta);
+
 	if (!m_isAnimFin)
 		Check_AimFin();
 
@@ -78,19 +93,39 @@ void CUITalk::OverAction()
 {
 }
 
-void CUITalk::Set_TalkData(wstring Name, wstring TalkData)
+void CUITalk::Start_Talk()
 {
-	StartTalk();
-	dynamic_cast<CText*>(m_EventUI[NAME])->Set_Text(Name);
-	m_TalkData = TalkData; 
+	m_iQuestIndex = 0;
+
+	Ready_Talk();
+	Read_Script();
 }
 
-void CUITalk::StartTalk()
+_bool CUITalk::Read_Script()
+{
+	CScriptManager::SCRIPT_INFO Script = m_pQuestManager->Get_ScriptInfo(m_iQuestIndex);
+
+	if (Script.strName == TEXT("끝"))
+		return false;
+
+	dynamic_cast<CText*>(m_EventUI[NAME])->Set_Text(Script.strName);
+	m_TalkData = Script.strLine;
+
+	m_iQuestIndex++;
+
+	return true;
+}
+
+void CUITalk::Ready_Talk()
 {
 	m_TalkFin = false;
 	m_PlayTime = 0.f;
 	m_LineIndex = 0;
 	m_iIndex = 0;
+	for (auto& Text : m_EffectText)
+		Text = TEXT("");
+
+	//퀘스트 카운트 인덱스 초기화
 	for (auto& iter : m_EventUI)
 	{
 		dynamic_cast<CText*>(iter)->Set_Text(TEXT(""));
@@ -137,4 +172,6 @@ CUITalk* CUITalk::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, v
 void CUITalk::Free()
 {
 	__super::Free();
+
+	Safe_Release(m_pQuestManager);
 }
