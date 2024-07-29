@@ -114,6 +114,18 @@ void CDebugManager::Window_Debug()
             }
         }
 
+        ImGui::Text("Player Hit Action");
+
+        auto& Anims = pPlayer->Get_CutSceneAnims();
+
+        for (size_t i = 0; i < CPlayer::CUTSCENE_ANIMATION_END; i++)
+        {
+            if (ImGui::RadioButton(Anims.at((CPlayer::CUTSCENE_ANIMATION_TYPE)i).c_str(), m_iCutSceneAnimIndex == i))
+                m_iCutSceneAnimIndex = i;
+        }
+
+        pPlayer->Set_CutSceneIndex((CPlayer::CUTSCENE_ANIMATION_TYPE)m_iCutSceneAnimIndex);
+        
         //Camera Á¦¾î
         ImGui::SeparatorText("Camera");
 

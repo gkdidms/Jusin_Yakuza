@@ -35,8 +35,11 @@ void CKiryu_KRS_Attack::Tick(const _float& fTimeDelta)
 
 	if (nullptr != pTargetObject)
 	{
-		_vector vLookPos = pTargetObject->Get_TransformCom()->Get_State(CTransform::STATE_POSITION);
-		m_pPlayer->Get_TransformCom()->LookAt_For_LandObject(vLookPos);
+		if (8 != m_iComboCount)
+		{
+			_vector vLookPos = pTargetObject->Get_TransformCom()->Get_State(CTransform::STATE_POSITION);
+			m_pPlayer->Get_TransformCom()->LookAt_For_LandObject(vLookPos);
+		}
 
 		if (m_pGameInstance->GetMouseState(DIM_RB) == TAP)
 		{

@@ -174,8 +174,8 @@ void CPlayer::Tick(const _float& fTimeDelta)
 		//TODO: 여기에서 enum값을 필요한 애니메이션으로 바꾸면 해당하는 컷신이 실행된당
 		if (m_pTargetObject)
 		{
-			Set_CutSceneAnim(HAIHEKI_KICK);
-			static_cast<CMonster*>(Get_TargetObject())->Set_Sync(m_CutSceneAnimation[HAIHEKI_KICK]);
+			Set_CutSceneAnim(m_eCutSceneType);
+			static_cast<CMonster*>(Get_TargetObject())->Set_Sync(m_CutSceneAnimation[m_eCutSceneType]);
 		}
 		
 	}
@@ -1480,7 +1480,7 @@ void CPlayer::Set_CutSceneAnim(CUTSCENE_ANIMATION_TYPE eType)
 	{
 		string CameraAnimName = pAnimation->Get_AnimName();
 
-		// 애니메이션 이름에 .cmt가 포함된 경우만 카메라 애니S메이션이다.
+		// 애니메이션 이름에 .cmt가 포함된 경우만 카메라 애니메이션이다.
 		if (CameraAnimName.find(".cmt") != std::string::npos && CameraAnimName.find(AnimName) != std::string::npos)
 		{
 			m_iCutSceneCamAnimIndex = j;
@@ -1494,7 +1494,7 @@ void CPlayer::Set_CutSceneAnim(CUTSCENE_ANIMATION_TYPE eType)
 
 void CPlayer::Play_CutScene()
 {
-	if (CAMERA_CUTSCENE == m_pSystemManager->Get_Camera())
+	if (CUTSCENE_ANIMATION == m_eAnimComType)
 	{
 		// 카메라 모델의 애니메이션이 종료되면 똑같이 플레이어의 애니메이션도 종료된 것이기 때문에 기존상태로 되돌린다.
 		if (m_pCameraModel->Get_AnimFinished())
@@ -1526,8 +1526,6 @@ void CPlayer::Play_CutScene()
 
 		// Blender의 본 변환 행렬과 플레이어의 월드 변환 행렬을 결합하고 좌표계 변환을 적용
 		_matrix finalMat = rotationMatrixX * rotationMatrixY * rotationMatrixZ * matVectorBoneWorld * matBoneMatrix * matPlayerWorld;
-
-		//finalMat.r[CTransform::STATE_POSITION] -= finalMat.r[CTransform::STATE_LOOK];
 
 		// 최종 뷰 행렬을 계산
 		_matrix viewMatrix = XMMatrixInverse(nullptr, finalMat);

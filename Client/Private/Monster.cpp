@@ -28,6 +28,8 @@ void CMonster::Set_Sync(string strPlayerAnim)
 	string_view strAnim = strPlayerAnim;
 
 	m_isDown = true;
+	m_isSynchronizing = true;
+
 	//싱크 액션
 	if (strAnim == string_view("p_krc_sync_guard_counter_f"))
 		m_iState = MONSTER_KRC_SYNC1_GUARD_COUNTER_F;
@@ -296,6 +298,15 @@ void CMonster::Priority_Tick(const _float& fTimeDelta)
 
 void CMonster::Tick(const _float& fTimeDelta)
 {
+	// 싱크액션 맞추는중에는 플레이어의 0.0에 맞춰줘야해서 그거 맞춰주는 코드
+	if (m_isSynchronizing)
+	{
+		CTransform* pTrasnform = dynamic_cast<CTransform*>(m_pGameInstance->Get_GameObject_Component(m_iCurrentLevel, TEXT("Layer_Player"), TEXT("Com_Transform"), 0));
+		m_pTransformCom->Set_WorldMatrix(pTrasnform->Get_WorldMatrix());
+
+		if (m_pAnimCom[m_iCurrentAnimType]->Get_AnimFinished())
+			m_isSynchronizing = false;
+	}
 	m_pTree->Tick(fTimeDelta);
 
 	Change_Animation(); //애니메이션 변경
@@ -344,7 +355,8 @@ void CMonster::Late_Tick(const _float& fTimeDelta)
 	{
 		m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
 
-		m_pCollisionManager->Add_ImpulseResolution(this);
+		if (!m_isSynchronizing)
+			m_pCollisionManager->Add_ImpulseResolution(this);
 
 		// 현재 켜져있는 Attack용 콜라이더 삽입
 		for (auto& pPair : m_pColliders)

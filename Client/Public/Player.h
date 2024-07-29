@@ -107,6 +107,18 @@ public:
     void Set_AnimStart(_bool isAnim) { m_isAnimStart = isAnim; }
 
     _bool isAnimStart() { return m_isAnimStart; }
+
+    const map<CUTSCENE_ANIMATION_TYPE, string>& Get_CutSceneAnims() const
+    {
+        return m_CutSceneAnimation;
+    }
+
+    void Set_CutSceneIndex(CUTSCENE_ANIMATION_TYPE eAnim)
+    {
+        m_eCutSceneType = eAnim;
+    }
+
+
 #endif // DEBUG
 
     /* Getter */
@@ -128,6 +140,8 @@ public:
     CCollider* Get_PlayerCollider() {
         return m_pColliderCom;
     }
+    
+
 
     /* Setter */
 public:
@@ -254,6 +268,7 @@ private:
 
 #ifdef _DEBUG
     _bool m_isAnimStart = { true };
+    CUTSCENE_ANIMATION_TYPE m_eCutSceneType = { OI_UPPER };
 #endif // _DEBUG
 
 private:
