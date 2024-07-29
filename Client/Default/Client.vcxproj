@@ -241,6 +241,7 @@
     <ClInclude Include="..\public\Level_Office2F.h" />
     <ClInclude Include="..\Public\Level_Roadway.h" />
     <ClInclude Include="..\Public\Level_Street.h" />
+    <ClInclude Include="..\public\Level_Tutorial.h" />
     <ClInclude Include="..\Public\LightConstruction.h" />
     <ClInclude Include="..\Public\MapCollider.h" />
     <ClInclude Include="..\Public\MapColliderObj.h" />
@@ -306,6 +307,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </ClInclude>
+    <ClInclude Include="..\public\TutorialManager.h" />
     <ClInclude Include="..\Public\UIInven.h" />
     <ClInclude Include="..\Public\UILife.h" />
     <ClInclude Include="..\Public\UILoading.h" />
@@ -402,6 +404,7 @@
     <ClCompile Include="..\private\Level_Office2F.cpp" />
     <ClCompile Include="..\Private\Level_Roadway.cpp" />
     <ClCompile Include="..\Private\Level_Street.cpp" />
+    <ClCompile Include="..\private\Level_Tutorial.cpp" />
     <ClCompile Include="..\Private\LightConstruction.cpp" />
     <ClCompile Include="..\Private\MapCollider.cpp" />
     <ClCompile Include="..\Private\MapColliderObj.cpp" />
@@ -466,6 +469,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\private\TutorialManager.cpp" />
     <ClCompile Include="..\Private\UIInven.cpp" />
     <ClCompile Include="..\Private\UILife.cpp" />
     <ClCompile Include="..\Private\UILogo.cpp" />

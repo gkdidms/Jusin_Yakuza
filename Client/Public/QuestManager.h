@@ -35,14 +35,8 @@ public:
     HRESULT Initialize();
     _bool Execute();
 
-public:
-    void Start_Script();
-
-
-
 private:
     CScriptManager* m_pScriptManager = { nullptr };
-    class CUIManager* m_pUIManager = { nullptr };
     class CQuest* m_pCurrentQuest = { nullptr };
 
     vector<QUEST_INFO> m_QuestInfo;

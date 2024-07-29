@@ -40,7 +40,7 @@ HRESULT CUITalk::Tick(const _float& fTimeDelta)
 
 	if(!m_TalkFin)
 	{
-		if(m_PlayTime>1.f)
+		if(m_PlayTime > 0.07f)
 		{
 			m_PlayTime = 0.f;
 			Talk_Effect(fTimeDelta);
@@ -51,6 +51,8 @@ HRESULT CUITalk::Tick(const _float& fTimeDelta)
 		if(m_pGameInstance->GetKeyState(DIK_E) == TAP)
 		{
 			//E누르면 다음대화[다른곳에서 해도됨]
+			Ready_Talk();
+			
 			if (false == Read_Script())
 				Close_Scene();
 		}
@@ -93,6 +95,8 @@ void CUITalk::OverAction()
 
 void CUITalk::Start_Talk()
 {
+	m_iQuestIndex = 0;
+
 	Ready_Talk();
 	Read_Script();
 }
@@ -108,6 +112,7 @@ _bool CUITalk::Read_Script()
 	m_TalkData = Script.strLine;
 
 	m_iQuestIndex++;
+
 	return true;
 }
 
@@ -117,10 +122,10 @@ void CUITalk::Ready_Talk()
 	m_PlayTime = 0.f;
 	m_LineIndex = 0;
 	m_iIndex = 0;
+	for (auto& Text : m_EffectText)
+		Text = TEXT("");
 
 	//퀘스트 카운트 인덱스 초기화
-	m_iQuestIndex = 0;
-
 	for (auto& iter : m_EventUI)
 	{
 		dynamic_cast<CText*>(iter)->Set_Text(TEXT(""));
@@ -168,5 +173,5 @@ void CUITalk::Free()
 {
 	__super::Free();
 
-	Safe_AddRef(m_pQuestManager);
+	Safe_Release(m_pQuestManager);
 }

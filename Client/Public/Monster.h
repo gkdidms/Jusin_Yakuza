@@ -62,10 +62,13 @@ public:
         MONSTER_PUNCH,
         MONSTER_JAB,
         MONSTER_HEAVY_ATTACK,
+        MONSTER_HEAVY_RENDA,
         MONSTER_ATK_DOWN,
         MONSTER_GUARD_RUN,
         MONSTER_RARIATTO,
         MONSTER_HIJI_2REN,
+        MONSTER_KICK,
+        MONSTER_RUN_ATK,
         MONSTER_ANGRY_START,
         MONSTER_ANGRY_CHOP,
         MONSTER_ANGRY_KICK,
@@ -238,6 +241,7 @@ public:
 public:
     void Set_Down(_bool isDown) { m_isDown = isDown; }
     void Set_Sync(string strPlayerAnim);
+    void Set_RimLight(_float isRimLight) { m_isRimLight = isRimLight; }
     
 public:
     _float Get_HitDamage() { return m_fHitDamage; }
@@ -308,7 +312,7 @@ protected:
     HRESULT Setup_Animation();
     void Synchronize_Root(const _float& fTimeDelta);
 
-private:
+protected:
     virtual HRESULT Add_Components() override;
     virtual HRESULT Bind_ResourceData() override;
 

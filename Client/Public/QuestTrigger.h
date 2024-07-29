@@ -23,6 +23,7 @@ public:
 
 private:
     class CQuestManager* m_pQuestManager = { nullptr };
+    class CUIManager* m_pUIManager = { nullptr };
 
 private:
     virtual HRESULT Add_Components(void* pArg) override;

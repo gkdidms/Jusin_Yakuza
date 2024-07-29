@@ -16,6 +16,8 @@
 #include "Shakedown.h"
 #include "Kuze.h"
 #include "Yoneda.h"
+#include "WPHYakuza.h"
+#include "DefaultYakuza.h"
 #pragma endregion
 
 #pragma region Adventure
@@ -53,6 +55,7 @@
 #pragma region MyRegion
 #include "LevelTrigger.h"
 #include "MonsterTrigger.h"
+#include "QuestTrigger.h"
 #pragma endregion
 
 
@@ -843,6 +846,16 @@ HRESULT CLoader::Loading_For_Test()
 	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Yoneda"),
 		CYoneda::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+
+	/* For.Prototype_GameObject_WPH */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_WPH"),
+		CWPHYakuza::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_Default */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Default"),
+		CDefaultYakuza::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 #pragma endregion
 
 #pragma region Map
@@ -889,6 +902,11 @@ HRESULT CLoader::Loading_For_Test()
 	/* For.Prototype_GameObject_MonsterTrigger */
 	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_MonsterTrigger"),
 		CMonsterTrigger::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_QuestTrigger */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_QuestTrigger"),
+		CQuestTrigger::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	/* For.Prototype_GameObject_AdvPassersby */

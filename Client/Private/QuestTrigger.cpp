@@ -4,20 +4,25 @@
 #include "Level_Loading.h"
 
 #include "QuestManager.h"
+#include "UIManager.h"
 
 
 CQuestTrigger::CQuestTrigger(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CTrigger { pDevice, pContext },
-	m_pQuestManager {CQuestManager::GetInstance()}
+	m_pQuestManager { CQuestManager::GetInstance() },
+	m_pUIManager { CUIManager::GetInstance() }
 {
 	Safe_AddRef(m_pQuestManager);
+	Safe_AddRef(m_pUIManager);
 }
 
 CQuestTrigger::CQuestTrigger(const CQuestTrigger& rhs)
 	: CTrigger{ rhs },
-	m_pQuestManager{rhs.m_pQuestManager}
+	m_pQuestManager{ rhs.m_pQuestManager },
+	m_pUIManager{ rhs.m_pUIManager }
 {
 	Safe_AddRef(m_pQuestManager);
+	Safe_AddRef(m_pUIManager);
 }
 
 HRESULT CQuestTrigger::Initialize_Prototype()
@@ -52,7 +57,6 @@ void CQuestTrigger::Tick(const _float& fTimeDelta)
 
 void CQuestTrigger::Late_Tick(const _float& fTimeDelta)
 {
-
 	__super::Late_Tick(fTimeDelta);
 
 	if (false == m_bTriggerDead)
@@ -64,21 +68,16 @@ void CQuestTrigger::Late_Tick(const _float& fTimeDelta)
 			{
 				if (m_pQuestManager->Get_CurrentQuestType() == CQuestManager::QUEST_TALK)
 				{
-					
+					m_pUIManager->Open_Scene(TEXT("Talk"));
+					m_pUIManager->Start_Talk();
 				}
 			}
 		}
 	}
-	
-
 }
 
 HRESULT CQuestTrigger::Render()
 {
-#ifdef _DEBUG
-	m_pGameInstance->Add_DebugComponent(m_pColliderCom);
-#endif
-
 	return S_OK;
 }
 
@@ -142,4 +141,5 @@ void CQuestTrigger::Free()
 	__super::Free();
 
 	Safe_Release(m_pQuestManager);
+	Safe_Release(m_pUIManager);
 }

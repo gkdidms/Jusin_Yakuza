@@ -29,9 +29,7 @@
 IMPLEMENT_SINGLETON(CQuestManager)
 
 CQuestManager::CQuestManager()
-    : m_pUIManager { CUIManager::GetInstance() }
 {
-    Safe_AddRef(m_pUIManager);
 }
 
 /*
@@ -53,6 +51,9 @@ HRESULT CQuestManager::Initialize()
     if (nullptr == m_pScriptManager)
         return E_FAIL;
 
+    if (FAILED(Ready_Quest()))
+        return E_FAIL;
+
     m_iCurrentQuestIndex = 0;
     
     return S_OK;
@@ -60,7 +61,7 @@ HRESULT CQuestManager::Initialize()
 
 HRESULT CQuestManager::Ready_Quest()
 {
-    _int iScriptIndex = 1;
+    //_int iScriptIndex = 1;
 
     //_uint iType;
     //_uint iScriptIndex;
@@ -83,6 +84,7 @@ HRESULT CQuestManager::Ready_Quest()
         )
     };
 
+    Add_TalkQuest(m_QuestInfo[0].iQuestIndex, m_QuestInfo[0].iNextQuestIndex, m_QuestInfo[0].iObjectIndex, m_QuestInfo[0].iScriptIndex);
     
     return S_OK;
 }
@@ -103,7 +105,7 @@ _bool CQuestManager::Execute()
         else if (Info.iType == QUEST_MOVE)
             Add_MoveQuest(Info.iQuestIndex, Info.iNextQuestIndex, Info.iTriggerIndex, Info.iScriptIndex);
         else if (Info.iType == QUEST_TALK)
-            Add_MoveQuest(Info.iQuestIndex, Info.iNextQuestIndex, Info.iObjectIndex, Info.iScriptIndex);
+            Add_TalkQuest(Info.iQuestIndex, Info.iNextQuestIndex, Info.iObjectIndex, Info.iScriptIndex);
         else
             return false;
 
@@ -111,13 +113,6 @@ _bool CQuestManager::Execute()
     }
 
     return false;
-}
-
-void CQuestManager::Start_Script()
-{
-    //스크립트 UI 생성 후 띄워주기
-    m_pUIManager->Open_Scene(TEXT("Talk"));
-    m_pUIManager->Start_Talk();
 }
 
 /* Kill Quest 생성 함수*/
@@ -177,7 +172,5 @@ HRESULT CQuestManager::Add_TalkQuest(_int iQuestIndex, _int iNextQuestIndex, _in
 void CQuestManager::Free()
 {
     Safe_Release(m_pScriptManager);
-
-    Safe_Release(m_pUIManager);
     Safe_Release(m_pCurrentQuest);
 }

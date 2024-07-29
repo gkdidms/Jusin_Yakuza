@@ -591,8 +591,7 @@ HRESULT CMonster::Bind_ResourceData()
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_PROJ))))
 		return E_FAIL;
 
-	_float isRimLight = { 0.f };
-	if (FAILED(m_pShaderCom->Bind_RawValue("g_isRimLight", &isRimLight, sizeof(_float))))
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_isRimLight", &m_isRimLight, sizeof(_float))))
 		return E_FAIL;
 
 	return S_OK;
