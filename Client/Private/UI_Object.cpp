@@ -83,6 +83,11 @@ _bool CUI_Object::Check_AnimFin()
 	return _bool();
 }
 
+_bool CUI_Object::Click_Intersect(_int Index)
+{
+	return _bool();
+}
+
 
 void CUI_Object::Free()
 {

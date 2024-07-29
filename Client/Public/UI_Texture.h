@@ -124,7 +124,7 @@ public:
     virtual HRESULT Show_UI() override;
     virtual HRESULT Close_UI() override;
     virtual _bool Check_AnimFin() override;
-
+    virtual _bool Click_Intersect(_int Index=0)override;
 protected:
     _float							m_fX, m_fY, m_fSizeX, m_fSizeY;
     _float4x4						m_WorldMatrix, m_ViewMatrix, m_ProjMatrix;

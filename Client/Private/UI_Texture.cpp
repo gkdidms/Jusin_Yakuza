@@ -208,6 +208,11 @@ _bool CUI_Texture::Check_AnimFin()
 	}
 }
 
+_bool CUI_Texture::Click_Intersect(_int Index)
+{
+	return m_pGameInstance->Picking_UI(m_pTransformCom);
+}
+
 HRESULT CUI_Texture::Save_binary(const string strDirectory)
 {
 	return E_FAIL;

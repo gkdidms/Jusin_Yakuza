@@ -326,6 +326,10 @@
     <ClInclude Include="..\Public\UIMoney.h" />
     <ClInclude Include="..\Public\UINowLoading.h" />
     <ClInclude Include="..\Public\UIScene.h" />
+    <ClInclude Include="..\Public\UISkillDestroyer.h" />
+    <ClInclude Include="..\Public\UISkillHolligan.h" />
+    <ClInclude Include="..\Public\UISkillMenu.h" />
+    <ClInclude Include="..\Public\UISkillRush.h" />
     <ClInclude Include="..\Public\UITalk.h" />
     <ClInclude Include="..\Public\UITutorial.h" />
     <ClInclude Include="..\Public\UI_Effect.h" />
@@ -495,6 +499,10 @@
     <ClCompile Include="..\Private\UIMoney.cpp" />
     <ClCompile Include="..\Private\UINowLoading.cpp" />
     <ClCompile Include="..\Private\UIScene.cpp" />
+    <ClCompile Include="..\Private\UISkillDestroyer.cpp" />
+    <ClCompile Include="..\Private\UISkillHolligan.cpp" />
+    <ClCompile Include="..\Private\UISkillMenu.cpp" />
+    <ClCompile Include="..\Private\UISkillRush.cpp" />
     <ClCompile Include="..\Private\UITalk.cpp" />
     <ClCompile Include="..\Private\UITutorial.cpp" />
     <ClCompile Include="..\Private\UI_Effect.cpp" />

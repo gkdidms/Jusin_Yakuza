@@ -56,7 +56,7 @@ public:
     virtual HRESULT Save_Groupbinary(ofstream& out)override;
     virtual HRESULT Load_binary(ifstream& in)override;
 
-    _bool Click_Intersect();
+    virtual _bool Click_Intersect(_int Index=0) override;
     virtual HRESULT Show_UI() override;
     virtual HRESULT Close_UI() override;
 private:

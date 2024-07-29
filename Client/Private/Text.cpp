@@ -67,7 +67,15 @@ void CText::Late_Tick(const _float& fTimeDelta)
 HRESULT CText::Render()
 {
 	_float4 vPos;
-	XMStoreFloat4(&vPos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+	if (m_isParent)
+	{
+		XMStoreFloat4(&vPos, (XMLoadFloat4x4(&m_WorldMatrix) * XMLoadFloat4x4(m_pParentMatrix)).r[3]);
+	}
+	else
+	{
+		XMStoreFloat4(&vPos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+	}
+
 	_float2 vFontPos = _float2(vPos.x + g_iWinSizeX * 0.5f, -vPos.y + g_iWinSizeY * 0.5f);
 	//0醞除 , 1 辦難 ,2 謝難
 
