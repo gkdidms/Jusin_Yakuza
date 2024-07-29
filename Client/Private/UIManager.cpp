@@ -250,10 +250,10 @@ void CUIManager::Free()
 	Safe_Release(m_pGameInstance);
 }
 
-void CUIManager::Set_TalkData(wstring Name, wstring TalkData)
+void CUIManager::Start_Talk()
 {
 	if (!m_PlayScene.empty())
 	{
-		dynamic_cast<CUITalk*>(m_PlayScene.back())->Set_TalkData(Name, TalkData);
+		dynamic_cast<CUITalk*>(m_PlayScene.back())->Start_Talk();
 	}
 }

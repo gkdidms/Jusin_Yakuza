@@ -113,7 +113,6 @@ _bool CAI_Monster::Find_PlayerCurrentAnimationName(string strAnimName)
 	return true;
 }
 
-/* 정리 할 예정임 (건들이지마셈) */
 //러쉬
 _uint CAI_Monster::Check_KRH(_uint iPlayerLv, _bool isBehine, _bool isAnimChange)
 {
@@ -819,7 +818,6 @@ _bool CAI_Monster::Check_StandUp()
 	{
 		m_pThis->Set_Down(false);
 		*m_pState = CMonster::MONSTER_STANDUP_DNB_FAST;
-		m_pThis->Set_Down(false);
 		return false;
 	}
 
@@ -907,7 +905,7 @@ CBTNode::NODE_STATE CAI_Monster::StandUpAndDead()
 
 CBTNode::NODE_STATE CAI_Monster::StandUp()
 {
-	*m_pCurrentAnimType = CMonster::ATK_ANIM;
+	*m_pCurrentAnimType = CMonster::DEFAULT_ANIMAITION;
 
 	if (m_pThis->isObjectDead())
 		return CBTNode::FAIL;
@@ -920,7 +918,7 @@ CBTNode::NODE_STATE CAI_Monster::StandUp()
 
 CBTNode::NODE_STATE CAI_Monster::Dead()
 {
-	*m_pCurrentAnimType = CMonster::ATK_ANIM;
+	*m_pCurrentAnimType = CMonster::DEFAULT_ANIMAITION;
 
 	_uint iDir = { PLAYER_ATK_DIR_END };
 	_uint iPlayerLevel = m_pPlayer->Get_CurrentHitLevel();
@@ -955,7 +953,7 @@ CBTNode::NODE_STATE CAI_Monster::Dead()
 
 CBTNode::NODE_STATE CAI_Monster::Check_PlayerDown()
 {
-	*m_pCurrentAnimType = CMonster::ATK_ANIM;
+	*m_pCurrentAnimType = CMonster::DEFAULT_ANIMAITION;
 
 	if (m_isPlayerDownAtk && !m_pPlayer->isDown())
 	{

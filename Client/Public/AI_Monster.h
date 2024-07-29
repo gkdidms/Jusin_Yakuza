@@ -30,6 +30,8 @@ public:
         SKILL_PUNCH,
         SKILL_HEAVY,
         SKILL_GUARD_RUN,
+        SKILL_RUN_ATK,
+        SKILL_KICK,
         SKILL_RARIATTO,
         SKILL_DOWN,
         SKILL_ANGRY_CHOP,

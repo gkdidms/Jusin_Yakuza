@@ -664,6 +664,18 @@ void CObjPlace_Manager::Edit_Installed_GameObject(int iNumObject)
 		m_tCurrentObjectDesc.iObjType = (int)OBJECT_TYPE::ADTENTURE_SUIT;
 	}
 
+	if (ImGui::RadioButton(u8"MONSTER - WPH", m_tCurrentObjectDesc.iObjType == 13))
+	{
+		objectType = 13;
+		m_tCurrentObjectDesc.iObjType = (int)OBJECT_TYPE::MONSTER_WPH;
+	}
+
+	if (ImGui::RadioButton(u8"MONSTER - DEFAULT", m_tCurrentObjectDesc.iObjType == 14))
+	{
+		objectType = 14;
+		m_tCurrentObjectDesc.iObjType = (int)OBJECT_TYPE::MONSTER_DEFAULT;
+	}
+
 	ImGui::NewLine();
 
 	ImGui::Text(u8"쉐이더");
@@ -994,6 +1006,8 @@ void CObjPlace_Manager::Set_Map_Object()
 	ImGui::RadioButton(u8"몬스터 - kuze", &objectType, OBJECT_TYPE::MONSTER_KUZE);
 	ImGui::RadioButton(u8"통건물", &objectType, OBJECT_TYPE::LARGE_CONSTRUCTION);
 	ImGui::RadioButton(u8"몬스터 - SUIT", &objectType, OBJECT_TYPE::ADTENTURE_SUIT);
+	ImGui::RadioButton(u8"몬스터 - WPH", &objectType, OBJECT_TYPE::MONSTER_WPH);
+	ImGui::RadioButton(u8"몬스터 - Default", &objectType, OBJECT_TYPE::MONSTER_DEFAULT);
 
 
 	ImGui::NewLine();
@@ -1150,17 +1164,17 @@ void CObjPlace_Manager::Load_ModelName()
 
 	vObjectNames.clear();
 
-	m_pGameInstance->Get_FileNames("../../Client/Bin/Resources/Models/NonAnim/Map/Map3/Bin", vObjectNames);
+	//m_pGameInstance->Get_FileNames("../../Client/Bin/Resources/Models/NonAnim/Map/Map3/Bin", vObjectNames);
 
-	for (int i = 0; i < vObjectNames.size(); i++)
-	{
-		string modifiedString = modifyString(vObjectNames[i]);
+	//for (int i = 0; i < vObjectNames.size(); i++)
+	//{
+	//	string modifiedString = modifyString(vObjectNames[i]);
 
-		char* cfilename = new char[MAX_PATH];
-		strcpy(cfilename, StringToCharDIY(modifiedString));
-		m_ObjectNames_Map3.push_back(cfilename);
-	}
-	vObjectNames.clear();
+	//	char* cfilename = new char[MAX_PATH];
+	//	strcpy(cfilename, StringToCharDIY(modifiedString));
+	//	m_ObjectNames_Map3.push_back(cfilename);
+	//}
+	//vObjectNames.clear();
 }
 
 HRESULT CObjPlace_Manager::Import_Bin_Map_Data_OnTool(MAP_TOTALINFORM_DESC* mapObjData, char* fileName)

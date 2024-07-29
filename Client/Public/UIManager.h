@@ -49,7 +49,7 @@ public:
 
     //임시 토크매니저 확인용 제작
 public:
-    void Set_TalkData(wstring Name, wstring TalkData);
+    void Start_Talk();
 
 
 private:
