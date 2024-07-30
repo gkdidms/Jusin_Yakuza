@@ -13,6 +13,10 @@
 #include "UIMainMenu.h"
 #include "UITutorial.h"
 #include "UITalk.h"
+#include "UISkillMenu.h"
+#include "UISkillHolligan.h"
+#include"UISkillRush.h"
+#include"UISkillDestroyer.h"
 
 #include "InventoryManager.h"
 #include "Player.h"
@@ -76,6 +80,18 @@ HRESULT CUIManager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 
 	pScene = CUITalk::Create(m_pDevice, m_pContext);
 	m_AllScene.emplace(make_pair(TEXT("Talk"), pScene));
+
+	pScene = CUISkillMenu::Create(m_pDevice, m_pContext);
+	m_AllScene.emplace(make_pair(TEXT("SkillMenu"), pScene));
+
+	pScene = CUISkillHolligan::Create(m_pDevice, m_pContext);
+	m_AllScene.emplace(make_pair(TEXT("SkillHolligan"), pScene));
+
+	pScene = CUISkillRush::Create(m_pDevice, m_pContext);
+	m_AllScene.emplace(make_pair(TEXT("SkillRush"), pScene));
+
+	pScene = CUISkillDestroyer::Create(m_pDevice, m_pContext);
+	m_AllScene.emplace(make_pair(TEXT("SkillDestroyer"), pScene));
 
 
 	return S_OK;
@@ -250,10 +266,10 @@ void CUIManager::Free()
 	Safe_Release(m_pGameInstance);
 }
 
-void CUIManager::Set_TalkData(wstring Name, wstring TalkData)
+void CUIManager::Start_Talk()
 {
 	if (!m_PlayScene.empty())
 	{
-		dynamic_cast<CUITalk*>(m_PlayScene.back())->Set_TalkData(Name, TalkData);
+		dynamic_cast<CUITalk*>(m_PlayScene.back())->Start_Talk();
 	}
 }

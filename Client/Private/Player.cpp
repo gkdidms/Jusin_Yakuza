@@ -160,8 +160,8 @@ void CPlayer::Tick(const _float& fTimeDelta)
 	}
 	if (m_pGameInstance->GetKeyState(DIK_Y) == TAP)
 	{
-		m_pUIManager->Open_Scene(TEXT("Talk"));
-		m_pUIManager->Set_TalkData(TEXT("키류"), TEXT("뿡밥바아아야아앙바아빠ㅃ우 \\뿡뿡뿡 \\빠아앙"));
+		//m_pUIManager->Open_Scene(TEXT("Talk"));
+		//m_pUIManager->Start_Talk(TEXT("키류"), TEXT("뿡밥바아아야아앙바아빠ㅃ우 \\뿡뿡뿡 \\빠아앙"));
 		
 	}
 
@@ -226,7 +226,7 @@ void CPlayer::Late_Tick(const _float& fTimeDelta)
 #ifdef _DEBUG
 	if (m_isObjectRender)
 	{
-		m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
+		//m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
 		m_pGameInstance->Add_Renderer(CRenderer::RENDER_SHADOWOBJ, this); // Shadow용 렌더 추가
 	}
 #else
@@ -325,7 +325,7 @@ HRESULT CPlayer::Render()
 		if(ADVENTURE != m_isRimLight)
 		{
 			// 전신일 때 임의로 Full을 저장해주고 사용한다.
-			if (m_strRimMeshName == "Full")
+			if (string_view(m_strRimMeshName) == string_view("Full"))
 			{
 				if (FAILED(m_pShaderCom->Bind_RawValue("g_isRimLight", &m_isRimLight, sizeof(_float))))
 					return E_FAIL;
@@ -333,7 +333,7 @@ HRESULT CPlayer::Render()
 				if (FAILED(m_pShaderCom->Bind_RawValue("g_fRimUV", &m_fRimPartsUV, sizeof(_float2))))
 					return E_FAIL;
 			}
-			else if (m_strRimMeshName == pMesh->Get_Name())
+			else if (string_view(m_strRimMeshName) == string_view(pMesh->Get_Name()))
 			{
 				_float2 fUV = m_fRimPartsUV;		// 기본적으로 파츠uv를 넣고
 				if ("[l0]jacketw1" == m_strRimMeshName)

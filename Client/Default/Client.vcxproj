@@ -185,6 +185,7 @@
     <ClInclude Include="..\public\Adventure.h" />
     <ClInclude Include="..\public\Adv_Passersby.h" />
     <ClInclude Include="..\public\AI_Adventure.h" />
+    <ClInclude Include="..\public\AI_CarChase.h" />
     <ClInclude Include="..\public\AI_DefaultYakuza.h" />
     <ClInclude Include="..\Public\AI_Kuze.h" />
     <ClInclude Include="..\public\AI_Monster.h" />
@@ -198,9 +199,16 @@
     <ClInclude Include="..\public\Background.h" />
     <ClInclude Include="..\Public\BehaviorAnimation.h" />
     <ClInclude Include="..\Public\Btn.h" />
+    <ClInclude Include="..\Public\CarChase_Bike.h" />
+    <ClInclude Include="..\Public\CarChase_Heli.h" />
+    <ClInclude Include="..\Public\CarChase_Sedan.h" />
+    <ClInclude Include="..\public\CarChase_Van.h" />
     <ClInclude Include="..\Public\Collision_Manager.h" />
     <ClInclude Include="..\Public\CutSceneCamera.h" />
     <ClInclude Include="..\public\DefaultYakuza.h" />
+    <ClInclude Include="..\public\Highway.h" />
+    <ClInclude Include="..\public\CarChase_Monster.h" />
+    <ClInclude Include="..\public\Highway_Van.h" />
     <ClInclude Include="..\Public\KillQuest.h" />
     <ClInclude Include="..\Public\Kiryu_KRC_Down.h" />
     <ClInclude Include="..\Public\Kiryu_KRC_Guard.h" />
@@ -241,6 +249,7 @@
     <ClInclude Include="..\public\Level_Office2F.h" />
     <ClInclude Include="..\Public\Level_Roadway.h" />
     <ClInclude Include="..\Public\Level_Street.h" />
+    <ClInclude Include="..\public\Level_Tutorial.h" />
     <ClInclude Include="..\Public\LightConstruction.h" />
     <ClInclude Include="..\Public\MapCollider.h" />
     <ClInclude Include="..\Public\MapColliderObj.h" />
@@ -249,6 +258,7 @@
     <ClInclude Include="..\Public\MoveQuest.h" />
     <ClInclude Include="..\Public\Quest.h" />
     <ClInclude Include="..\Public\QuestManager.h" />
+    <ClInclude Include="..\Public\QuestTrigger.h" />
     <ClInclude Include="..\Public\ScriptManager.h" />
     <ClInclude Include="..\Public\Sequance.h" />
     <ClInclude Include="..\Public\Selector.h" />
@@ -305,6 +315,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </ClInclude>
+    <ClInclude Include="..\public\TutorialManager.h" />
     <ClInclude Include="..\Public\UIInven.h" />
     <ClInclude Include="..\Public\UILife.h" />
     <ClInclude Include="..\Public\UILoading.h" />
@@ -315,6 +326,10 @@
     <ClInclude Include="..\Public\UIMoney.h" />
     <ClInclude Include="..\Public\UINowLoading.h" />
     <ClInclude Include="..\Public\UIScene.h" />
+    <ClInclude Include="..\Public\UISkillDestroyer.h" />
+    <ClInclude Include="..\Public\UISkillHolligan.h" />
+    <ClInclude Include="..\Public\UISkillMenu.h" />
+    <ClInclude Include="..\Public\UISkillRush.h" />
     <ClInclude Include="..\Public\UITalk.h" />
     <ClInclude Include="..\Public\UITutorial.h" />
     <ClInclude Include="..\Public\UI_Effect.h" />
@@ -345,6 +360,7 @@
     <ClCompile Include="..\private\Adventure.cpp" />
     <ClCompile Include="..\private\Adv_Passersby.cpp" />
     <ClCompile Include="..\private\AI_Adventure.cpp" />
+    <ClCompile Include="..\private\AI_CarChase.cpp" />
     <ClCompile Include="..\private\AI_DefaultYakuza.cpp" />
     <ClCompile Include="..\Private\AI_Kuze.cpp" />
     <ClCompile Include="..\private\AI_Monster.cpp" />
@@ -358,9 +374,16 @@
     <ClCompile Include="..\private\Background.cpp" />
     <ClCompile Include="..\Private\BehaviorAnimation.cpp" />
     <ClCompile Include="..\Private\Btn.cpp" />
+    <ClCompile Include="..\Private\CarChase_Bike.cpp" />
+    <ClCompile Include="..\Private\CarChase_Heli.cpp" />
+    <ClCompile Include="..\Private\CarChase_Sedan.cpp" />
+    <ClCompile Include="..\private\CarChase_Van.cpp" />
     <ClCompile Include="..\Private\Collision_Manager.cpp" />
     <ClCompile Include="..\Private\CutSceneCamera.cpp" />
     <ClCompile Include="..\private\DefaultYakuza.cpp" />
+    <ClCompile Include="..\private\Highway.cpp" />
+    <ClCompile Include="..\private\CarChase_Monster.cpp" />
+    <ClCompile Include="..\private\Highway_Van.cpp" />
     <ClCompile Include="..\Private\KillQuest.cpp" />
     <ClCompile Include="..\Private\Kiryu_KRC_Down.cpp" />
     <ClCompile Include="..\Private\Kiryu_KRC_Guard.cpp" />
@@ -401,6 +424,7 @@
     <ClCompile Include="..\private\Level_Office2F.cpp" />
     <ClCompile Include="..\Private\Level_Roadway.cpp" />
     <ClCompile Include="..\Private\Level_Street.cpp" />
+    <ClCompile Include="..\private\Level_Tutorial.cpp" />
     <ClCompile Include="..\Private\LightConstruction.cpp" />
     <ClCompile Include="..\Private\MapCollider.cpp" />
     <ClCompile Include="..\Private\MapColliderObj.cpp" />
@@ -409,6 +433,7 @@
     <ClCompile Include="..\Private\MoveQuest.cpp" />
     <ClCompile Include="..\Private\Quest.cpp" />
     <ClCompile Include="..\Private\QuestManager.cpp" />
+    <ClCompile Include="..\Private\QuestTrigger.cpp" />
     <ClCompile Include="..\Private\ScriptManager.cpp" />
     <ClCompile Include="..\Private\Sequance.cpp" />
     <ClCompile Include="..\Private\Selector.cpp" />
@@ -464,6 +489,7 @@
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
     </ClCompile>
+    <ClCompile Include="..\private\TutorialManager.cpp" />
     <ClCompile Include="..\Private\UIInven.cpp" />
     <ClCompile Include="..\Private\UILife.cpp" />
     <ClCompile Include="..\Private\UILogo.cpp" />
@@ -473,6 +499,10 @@
     <ClCompile Include="..\Private\UIMoney.cpp" />
     <ClCompile Include="..\Private\UINowLoading.cpp" />
     <ClCompile Include="..\Private\UIScene.cpp" />
+    <ClCompile Include="..\Private\UISkillDestroyer.cpp" />
+    <ClCompile Include="..\Private\UISkillHolligan.cpp" />
+    <ClCompile Include="..\Private\UISkillMenu.cpp" />
+    <ClCompile Include="..\Private\UISkillRush.cpp" />
     <ClCompile Include="..\Private\UITalk.cpp" />
     <ClCompile Include="..\Private\UITutorial.cpp" />
     <ClCompile Include="..\Private\UI_Effect.cpp" />
