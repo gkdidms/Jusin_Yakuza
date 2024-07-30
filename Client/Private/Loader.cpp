@@ -21,6 +21,7 @@
 #pragma endregion
 
 #pragma region Highway
+#include "Highway_Taxi.h"
 #include "Highway_Van.h"
 #pragma endregion
 
@@ -888,6 +889,11 @@ HRESULT CLoader::Loading_For_Test()
 #pragma endregion
 
 #pragma region Highway
+	/* For.Prototype_GameObject_Taxi (For.Player) */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Taxi"),
+		CHighway_Taxi::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 	/* For.Prototype_GameObject_Van */
 	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Van"),
 		CHighway_Van::Create(m_pDevice, m_pContext))))

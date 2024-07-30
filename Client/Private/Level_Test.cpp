@@ -55,8 +55,8 @@ HRESULT CLevel_Test::Initialize()
 	if (FAILED(Ready_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
 
-	//if (FAILED(Ready_Test_SceneModel(TEXT("Layer_SceneModel_Test"))))
-	//	return E_FAIL;
+	if (FAILED(Ready_Test_SceneModel(TEXT("Layer_SceneModel_Test"))))
+		return E_FAIL;
 
 	_uint i = m_pGameInstance->Get_CurrentLevel();
 
@@ -185,7 +185,7 @@ HRESULT CLevel_Test::Ready_Test_SceneModel(const wstring& strLayerTag)
 	//Desc.fRotatePecSec = XMConvertToRadians(0.f);
 	Desc.fRotatePecSec = XMConvertToRadians(180.f);
 
-	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_SceneModel_Test"), strLayerTag, &Desc)))
+	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_Taxi"), strLayerTag, &Desc)))
 		return E_FAIL;
 
 	return S_OK;

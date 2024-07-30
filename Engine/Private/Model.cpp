@@ -303,18 +303,29 @@ HRESULT CModel::Export_Bones(ofstream& out)
 	for (size_t i = 0; i < iNumBones; i++)
 	{
 		if ("" != m_pGameInstance->Extract_String(m_Bones[i]->Get_Name(), '[', ']'))
-			++iCount;
+		{
+			// decal이란 이름은 실제 사용하는 뼈인듯해서 제거하면안된다.
+			regex Regex("decal");
+			if(!regex_search(m_Bones[i]->Get_Name(), Regex))
+				++iCount;
+		}
 	}
 
 	iNumBones -= iCount;
 
 	out.write((char*)&iNumBones, sizeof(_uint));
 
+	_uint i = 0;
 	for (auto& Bone : m_Bones)
 	{
 		string strValue = Bone->Get_Name();
-		if ("" != m_pGameInstance->Extract_String(strValue, '[', ']'))
-			continue;
+		if ("" != m_pGameInstance->Extract_String(m_Bones[i]->Get_Name(), '[', ']'))
+		{
+			// decal이란 이름은 실제 사용하는 뼈인듯해서 제거하면안된다.
+			regex Regex("decal");
+			if (!regex_search(m_Bones[i]->Get_Name(), Regex))
+				continue;
+		}
 		
 		_int iValue = strValue.size();
 		out.write((char*)&iValue, sizeof(_uint));
@@ -325,6 +336,7 @@ HRESULT CModel::Export_Bones(ofstream& out)
 
 		_float4x4 TransformationMatrix = *(Bone->Get_TransformationMatrix());
 		out.write((char*)&TransformationMatrix, sizeof(_float4x4));
+		i++;
 	}
 	return S_OK;
 }
