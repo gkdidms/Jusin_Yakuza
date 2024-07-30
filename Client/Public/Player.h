@@ -240,7 +240,7 @@ private:
 
     /* 애니메이션 관련 */
 private:
-    ANIMATION_COMPONENT_TYPE    m_eAnimComType = { DEFAULT_ANIMAITION };
+    ANIMATION_COMPONENT_TYPE    m_eAnimComType = { DEFAULT };
     map<CUTSCENE_ANIMATION_TYPE, string> m_CutSceneAnimation;
     _uint                       m_iCutSceneAnimIndex = { 0 };
     _uint                       m_iCutSceneCamAnimIndex = { 0 };

@@ -905,7 +905,7 @@ CBTNode::NODE_STATE CAI_Monster::StandUpAndDead()
 
 CBTNode::NODE_STATE CAI_Monster::StandUp()
 {
-	*m_pCurrentAnimType = CMonster::DEFAULT_ANIMAITION;
+	*m_pCurrentAnimType = CMonster::DEFAULT;
 
 	if (m_pThis->isObjectDead())
 		return CBTNode::FAIL;
@@ -918,7 +918,7 @@ CBTNode::NODE_STATE CAI_Monster::StandUp()
 
 CBTNode::NODE_STATE CAI_Monster::Dead()
 {
-	*m_pCurrentAnimType = CMonster::DEFAULT_ANIMAITION;
+	*m_pCurrentAnimType = CMonster::DEFAULT;
 
 	_uint iDir = { PLAYER_ATK_DIR_END };
 	_uint iPlayerLevel = m_pPlayer->Get_CurrentHitLevel();
@@ -953,7 +953,7 @@ CBTNode::NODE_STATE CAI_Monster::Dead()
 
 CBTNode::NODE_STATE CAI_Monster::Check_PlayerDown()
 {
-	*m_pCurrentAnimType = CMonster::DEFAULT_ANIMAITION;
+	*m_pCurrentAnimType = CMonster::DEFAULT;
 
 	if (m_isPlayerDownAtk && !m_pPlayer->isDown())
 	{

@@ -30,8 +30,12 @@ HRESULT CAI_CarChase::Initialize(void* pArg)
         return E_FAIL;
 
     AI_CARCHASE_DESC* pDesc = static_cast<AI_CARCHASE_DESC*>(pArg);
-    m_pAnimCom = pDesc->pAnim;
+	memcpy(m_pAnimCom, pDesc->pAnim, sizeof(CAnim*) * 2);
     m_pThis = pDesc->pThis;
+	m_pState = pDesc->pState;
+	m_pDir = pDesc->pDir;
+	m_pCurrentAnimType = pDesc->pCurrentAnimType;
+	m_pWeaponType = pDesc->pWeaponType;
 
     m_pPlayer = dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"), 0));
 
@@ -40,6 +44,11 @@ HRESULT CAI_CarChase::Initialize(void* pArg)
 
 void CAI_CarChase::Tick(const _float& fTimeDelta)
 {
+	if (!m_isAttack)
+		m_fAttackDelayTime += fTimeDelta;
+
+	m_fSitUpTime += fTimeDelta;
+
     this->Execute();
 }
 
@@ -86,8 +95,53 @@ _bool CAI_CarChase::Find_PlayerCurrentAnimationName(string strAnimName)
 	return true;
 }
 
+CBTNode::NODE_STATE CAI_CarChase::Check_Down()
+{
+	if (m_iSkill == SKILL_DEAD)
+		return CBTNode::RUNNING;
+
+	if (m_pThis->isObjectDead())
+		return CBTNode::SUCCESS;
+
+	return CBTNode::FAIL;
+}
+
+CBTNode::NODE_STATE CAI_CarChase::Dead()
+{
+	m_iSkill = SKILL_DEAD;
+
+	return CBTNode::SUCCESS;
+}
+
+CBTNode::NODE_STATE CAI_CarChase::Check_Hit()
+{
+	if (m_pThis->isColl() || m_iSkill == SKILL_HIT)
+		return CBTNode::SUCCESS;
+
+	return CBTNode::FAIL;
+}
+
+CBTNode::NODE_STATE CAI_CarChase::Hit()
+{
+	return CBTNode::NODE_STATE();
+}
+
+CBTNode::NODE_STATE CAI_CarChase::Check_Sync()
+{
+
+	return CBTNode::NODE_STATE();
+}
+
+CBTNode::NODE_STATE CAI_CarChase::Sync()
+{
+	return CBTNode::NODE_STATE();
+}
+
 void CAI_CarChase::Free()
 {
+	__super::Free();
+
     Safe_Release(m_pGameInstance);
-    Safe_Release(m_pRoot);
+    Safe_Release(m_pRootNode);
 }
+

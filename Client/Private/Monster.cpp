@@ -247,7 +247,7 @@ void CMonster::Set_Sync(string strPlayerAnim)
 		m_iState = MONSTER_H1500_000_1;
 
 	m_strAnimName = strPlayerAnim;
-	m_iCurrentAnimType = CMonster::CUTSCENE_ANIMATION;
+	m_iCurrentAnimType = CMonster::CUTSCENE;
 
 	m_pTree->Set_Sync(true);
 	Change_Animation();
@@ -274,7 +274,9 @@ HRESULT CMonster::Initialize(void* pArg)
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
-	m_pNavigationCom->Set_Index(gameobjDesc->iNaviNum);
+
+	if (nullptr != m_pNavigationCom)
+		m_pNavigationCom->Set_Index(gameobjDesc->iNaviNum);
 
 	m_pTransformCom->Set_Scale(0.95f, 0.95f, 0.95f);
 
@@ -282,8 +284,8 @@ HRESULT CMonster::Initialize(void* pArg)
 	m_Info.iMaxHP = 100.f;
 	m_Info.iHp = m_Info.iMaxHP;
 
-	m_iCurrentAnimType = DEFAULT_ANIMAITION;
-	m_iPreAnimType = DEFAULT_ANIMAITION;
+	m_iCurrentAnimType = DEFAULT;
+	m_iPreAnimType = DEFAULT;
 
 	m_pModelCom->Set_PreAnimations(m_pAnimCom[m_iPreAnimType]->Get_Animations());
 
@@ -300,7 +302,7 @@ void CMonster::Tick(const _float& fTimeDelta)
 
 	Change_Animation(); //애니메이션 변경
 
-	_bool isRoot = m_iCurrentAnimType != CUTSCENE_ANIMATION;
+	_bool isRoot = m_iCurrentAnimType != CUTSCENE;
 
 	m_pModelCom->Play_Animation_Monster(fTimeDelta, m_pAnimCom[m_iCurrentAnimType], m_isAnimLoop, isRoot);
 
@@ -364,11 +366,12 @@ void CMonster::Late_Tick(const _float& fTimeDelta)
 
 	//높이값 태우기
 	_vector vCurrentPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-	float fHeight = m_pNavigationCom->Compute_Height(vCurrentPos);
-
-	vCurrentPos = XMVectorSetY(vCurrentPos, fHeight);
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vCurrentPos);
-
+	if (nullptr != m_pNavigationCom)
+	{
+		float fHeight = m_pNavigationCom->Compute_Height(vCurrentPos);
+		vCurrentPos = XMVectorSetY(vCurrentPos, fHeight);
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, vCurrentPos);
+	}
 
 	for (auto& pCollider : m_pColliders)
 		pCollider.second->Late_Tick(fTimeDelta);
@@ -1364,7 +1367,8 @@ HRESULT CMonster::Setup_Animation()
 		Reset_Shaking_Variable();
 	}
 	
-	m_pData->Set_CurrentAnimation(m_strAnimName);
+	if (nullptr != m_pData)
+		m_pData->Set_CurrentAnimation(m_strAnimName);
 
 	return S_OK;
 }

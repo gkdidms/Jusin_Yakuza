@@ -15,6 +15,7 @@
 #include "Kuze.h"
 #include "Adv_Passersby.h"
 #include "Adventure.h"
+#include "CarChase_Reactor.h"
 
 #include "Trigger.h"
 
@@ -377,7 +378,7 @@ HRESULT CFileTotalMgr::Set_GameObject_In_Client(int iStageLevel)
         }
         else if (OBJECT_TYPE::MONSTER_WPH == m_MapTotalInform.pMapObjDesc[i].iObjType)
         {
-            CAdventure::ADVENTURE_IODESC		monsterDesc;
+            CCarChase_Reactor::HIGHWAY_IODESC monsterDesc;
             monsterDesc.vStartPos = XMLoadFloat4x4(&m_MapTotalInform.pMapObjDesc[i].vTransform);
             int		iLayer = Find_Layers_Index(m_MapTotalInform.pMapObjDesc[i].strLayer);
 
@@ -403,7 +404,7 @@ HRESULT CFileTotalMgr::Set_GameObject_In_Client(int iStageLevel)
                 monsterDesc.iNaviNum = m_MapTotalInform.pMapObjDesc[i].iNaviNum;
             }
 
-            m_pGameInstance->Add_GameObject(iStageLevel, TEXT("Prototype_GameObject_WPH"), m_Layers[iLayer], &monsterDesc);
+            m_pGameInstance->Add_GameObject(iStageLevel, TEXT("Prototype_GameObject_ReactorVan"), m_Layers[iLayer], &monsterDesc);
         }
         else 
         {

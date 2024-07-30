@@ -14,9 +14,9 @@ class CLandObject abstract :
 {
 public:
     enum ANIMATION_COMPONENT_TYPE {
-        DEFAULT_ANIMAITION,
-        CUTSCENE_ANIMATION,
-        ANIMATION_COMPONENT_TYPE_END
+        DEFAULT,
+        CUTSCENE,
+        ANIM_TYPE_END
     };
 
 private: //오브젝트들의 정보를 저장 

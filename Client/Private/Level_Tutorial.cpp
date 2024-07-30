@@ -15,20 +15,20 @@
 CLevel_Tutorial::CLevel_Tutorial(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLevel{ pDevice, pContext },
 	m_pSystemManager{ CSystemManager::GetInstance() },
-	m_pFileTotalManager{ CFileTotalMgr::GetInstance() },
-	m_pTutorialManager{ CTutorialManager::GetInstance() }
+	m_pFileTotalManager{ CFileTotalMgr::GetInstance() }
 {
 	Safe_AddRef(m_pSystemManager);
 	Safe_AddRef(m_pFileTotalManager);
-	Safe_AddRef(m_pTutorialManager);
 }
 
 HRESULT CLevel_Tutorial::Initialize()
 {
-	if (FAILED(Ready_Player(TEXT("Layer_Player"))))
+	m_pTutorialManager = CTutorialManager::Create();
+	if (nullptr == m_pTutorialManager)
 		return E_FAIL;
 
-	m_pTutorialManager->Initialize();
+	if (FAILED(Ready_Player(TEXT("Layer_Player"))))
+		return E_FAIL;
 
 	/* Å¬¶ó ÆÄ½Ì */
 	m_pFileTotalManager->Set_MapObj_In_Client(STAGE_TUTORIAL, LEVEL_TUTORIAL);

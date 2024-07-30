@@ -7,12 +7,14 @@ class CCarChase_Monster abstract:
 {
 public:
     typedef struct tCarChaseMonsterDesc : public CMonster::MONSTER_IODESC {
+        _uint iWeaponType;
         const _float4x4* pParentMatrix;
     } CARCHASE_MONSTER_DESC;
 
 public:
     enum WEAPON_TYPE { DRV, RKT, GUN, WPJ, WPR, GAT, WEAPON_END };
-
+    enum REACTOR_TYPE { REACTOR_VAN, REACTOR_SEDAN, REACTOR_BIKE, REACTOR_HELI, REACTOR_TYPE_END };
+    enum CAR_DIR { CAR_F, CAR_L, CAR_R, CAR_B, CAR_END };
     enum CARCHASE_STATE {
         CARCHASE_CURVA_L,
         CARCHASE_CURVA_R,
@@ -108,14 +110,19 @@ public:
 
 protected:
     _uint m_iWeaponType = { WEAPON_END };
+    _uint m_iDir = { CAR_END };
+    _uint m_iCurrentAnimType = { CLandObject::ANIM_TYPE_END };
+
+protected:
+    class CAI_CarChase* m_pTree = { nullptr };
+    const _float4x4* m_pParentMatrix = { nullptr };
 
 protected:
     virtual void Change_Animation();
-    virtual HRESULT Add_Components() override;
 
-private:
-    CAnim* m_pAnimCom = { nullptr };
-    const _float4x4* m_pParentMatrix = { nullptr };
+protected:
+    virtual HRESULT Add_Components() override;
+    virtual HRESULT Bind_ResourceData() override;
 
 public:
     virtual void Free();

@@ -1,5 +1,9 @@
 #include "CarChase_Van.h"
 
+#include "GameInstance.h"
+
+#include "AI_Van.h"
+
 CCarChase_Van::CCarChase_Van(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CCarChase_Monster{ pDevice, pContext }
 {
@@ -19,6 +23,8 @@ HRESULT CCarChase_Van::Initialize(void* pArg)
 {
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
+
+	m_iState = CCarChase_Monster::CARCHASE_AIM_EN;
 
 	return S_OK;
 }
@@ -59,12 +65,15 @@ void CCarChase_Van::Change_Animation()
 	{
 		if (m_iWeaponType == DRV)
 			m_strAnimName = "mngcar_e_van_drv_sit_dwn";
+
 		break;
 	}
 	case CARCHASE_SIT_LP:
 	{
 		if (m_iWeaponType == DRV)
 			m_strAnimName = "mngcar_e_van_drv_sit_lp";
+
+		m_isAnimLoop = { true };
 		break;
 	}
 	case CARCHASE_AIM_EN:
@@ -77,6 +86,8 @@ void CCarChase_Van::Change_Animation()
 	{
 		if (m_iWeaponType == WPR)
 			m_strAnimName = "mngcar_e_van_wpr_aim_l_lp";
+
+		m_isAnimLoop = { true };
 		break;
 	}
 	case CARCHASE_AIM_LP:
@@ -86,12 +97,15 @@ void CCarChase_Van::Change_Animation()
 		else if (m_iWeaponType == WPR)
 			m_strAnimName = "mngcar_e_van_wpr_aim_lp";
 
+		m_isAnimLoop = { true };
 		break;
 	}
 	case CARCHASE_AIM_R_LP:
 	{
 		if (m_iWeaponType == WPR)
 			m_strAnimName = "mngcar_e_van_wpr_aim_r_lp";
+
+		m_isAnimLoop = { true };
 
 		break;
 	}
@@ -139,18 +153,24 @@ void CCarChase_Van::Change_Animation()
 	{
 		if (m_iWeaponType == WPR)
 			m_strAnimName = "mngcar_e_van_wpr_shot_l_lp";
+
+		m_isAnimLoop = { true };
 		break;
 	}
 	case CARCHASE_SHOT_LP:
 	{
 		if (m_iWeaponType == WPR)
 			m_strAnimName = "mngcar_e_van_wpr_shot_lp";
+
+		m_isAnimLoop = { true };
 		break;
 	}
 	case CARCHASE_SHOT_R_LP:
 	{
 		if (m_iWeaponType == WPR)
 			m_strAnimName = "mngcar_e_van_wpr_shot_r_lp";
+
+		m_isAnimLoop = { true };
 		break;
 	}
 	case CARCHASE_SHOT_ST:
@@ -174,6 +194,18 @@ HRESULT CCarChase_Van::Add_Components()
 
 	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Model_Shakedown"),
 		TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
+		return E_FAIL;
+
+	CAI_Van::AI_CARCHASE_DESC Desc{};
+	memcpy(Desc.pAnim, m_pAnimCom, sizeof(CAnim*) * ANIM_TYPE_END);
+	Desc.pCurrentAnimType = &m_iCurrentAnimType;
+	Desc.pDir = &m_iDir;
+	Desc.pState = &m_iState;
+	Desc.pThis = this;
+	Desc.pWeaponType = &m_iWeaponType;
+
+	m_pTree = dynamic_cast<CAI_Van*>(m_pGameInstance->Add_BTNode(m_iCurrentLevel, TEXT("Prototype_BTNode_Van"), &Desc));
+	if (nullptr == m_pTree)
 		return E_FAIL;
 
 	return S_OK;

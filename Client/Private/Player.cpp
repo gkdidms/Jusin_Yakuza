@@ -178,7 +178,7 @@ void CPlayer::Tick(const _float& fTimeDelta)
 
 	if (m_isAnimStart)
 	{
-		if (DEFAULT_ANIMAITION == m_eAnimComType)
+		if (DEFAULT == m_eAnimComType)
 			m_pModelCom->Play_Animation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")));
 		else
 		{
@@ -186,7 +186,7 @@ void CPlayer::Tick(const _float& fTimeDelta)
 		}
 	}
 #else
-	if (DEFAULT_ANIMAITION == m_eAnimComType)
+	if (DEFAULT == m_eAnimComType)
 		m_pModelCom->Play_Animation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")));
 	else
 	{
@@ -222,7 +222,7 @@ void CPlayer::Late_Tick(const _float& fTimeDelta)
 #ifdef _DEBUG
 	if (m_isObjectRender)
 	{
-		//m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
+		m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
 		m_pGameInstance->Add_Renderer(CRenderer::RENDER_SHADOWOBJ, this); // Shadow¿ë ·»´õ Ãß°¡
 	}
 #else
@@ -1553,7 +1553,7 @@ void CPlayer::Reset_CutSceneEvent()
 	m_pAnimCom->Reset_Animation(m_iCutSceneAnimIndex);
 	m_pCameraModel->Reset_Animation(m_iCutSceneCamAnimIndex);
 
-	m_eAnimComType = (m_eAnimComType == DEFAULT_ANIMAITION ? CUTSCENE_ANIMATION : DEFAULT_ANIMAITION);
+	m_eAnimComType = (m_eAnimComType == DEFAULT ? CUTSCENE : DEFAULT);
 	m_pSystemManager->Set_Camera(CAMERA_CUTSCENE == m_pSystemManager->Get_Camera() ? CAMERA_PLAYER : CAMERA_CUTSCENE);
 }
 
