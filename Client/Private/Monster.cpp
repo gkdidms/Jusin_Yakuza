@@ -23,6 +23,236 @@ CMonster::CMonster(const CMonster& rhs)
 {
 }
 
+void CMonster::Set_Sync(string strPlayerAnim)
+{
+	string_view strAnim = strPlayerAnim;
+
+	m_isDown = true;
+	//싱크 액션
+	if (strAnim == string_view("p_krc_sync_guard_counter_f"))
+		m_iState = MONSTER_KRC_SYNC1_GUARD_COUNTER_F;
+	else if (strAnim == string_view("p_krc_sync_kaihi_nage_b"))
+		m_iState = MONSTER_KRC_SYNC1_KAIHI_NAGE_B;
+	else if (strAnim == string_view("p_krc_sync_kaihi_nage_f"))
+		m_iState = MONSTER_KRC_SYNC1_KAIHI_NAGE_F;
+	else if (strAnim == string_view("p_krc_sync_lapel_atk_heavy"))
+		m_iState = MONSTER_KRC_SYNC1_LAPEL_ATK_HEAVY;
+	else if (strAnim == string_view("p_krc_sync_lapel_atk_punch"))
+		m_iState = MONSTER_KRC_SYNC1_LAPEL_ATK_PUNCH;
+	else if (strAnim == string_view("p_krc_sync_lapel_nage"))
+		m_iState = MONSTER_KRC_SYNC1_LAPEL_NAGE;
+	else if (strAnim == string_view("p_krc_sync_neck_atk_heavy"))
+		m_iState = MONSTER_KRC_SYNC1_NECK_ATK_HEAVY;
+	else if (strAnim == string_view("p_krc_sync_neck_atk_punch"))
+		m_iState = MONSTER_KRC_SYNC1_NECK_ATK_PUNCH;
+	else if (strAnim == string_view("p_krc_sync_neck_nage"))
+		m_iState = MONSTER_KRC_SYNC1_NECK_NAGE;
+	else if (strAnim == string_view("p_krh_sync_guard_sabaki"))
+	{
+		m_iState = MONSTER_KRH_SYNC1_GUARD_SABAKI;
+		m_isDown = false;
+	}
+	else if (strAnim == string_view("p_krs_sync_cmb_03_fin"))
+		m_iState = MONSTER_KRS_SYNC1_CMB_03_FIN;
+	else if (strAnim == string_view("p_kru_sync_lapel_atk_punch"))
+		m_iState = MONSTER_KRU_SYNC1_LAPEL_ATK_PUNCH;
+	else if (strAnim == string_view("p_kru_sync_lapel_cmb_01"))
+	{
+		m_iState = MONSTER_KRU_SYNC1_LAPEL_CMB_01;
+		m_isDown = false;
+	}
+	else if (strAnim == string_view("p_kru_sync_lapel_cmb_02"))
+	{
+		m_iState = MONSTER_KRU_SYNC1_LAPEL_CMB_02;
+		m_isDown = false;
+	}
+	else if (strAnim == string_view("p_kru_sync_lapel_cmb_03"))
+		m_iState = MONSTER_KRU_SYNC1_LAPEL_CMB_03;
+	else if (strAnim == string_view("p_kru_sync_lapel_lp"))
+	{
+		m_iState = MONSTER_KRU_SYNC1_LAPEL_LP;
+		m_isDown = false;
+	}	
+	else if (strAnim == string_view("p_kru_sync_lapel_nage"))
+		m_iState = MONSTER_KRU_SYNC1_LAPEL_NAGE;
+	else if (strAnim == string_view("p_kru_sync_lapel_off"))
+	{
+		m_iState = MONSTER_KRU_SYNC1_LAPEL_OFF;
+		m_isDown = false;
+	}
+	else if (strAnim == string_view("p_kru_sync_lapel_off_hiza"))
+	{
+		m_iState = MONSTER_KRU_SYNC1_LAPEL_OFF_HIZA;
+		m_isDown = false;
+	}
+	else if (strAnim == string_view("p_kru_sync_lapel_press"))
+	{
+		m_iState = MONSTER_KRU_SYNC1_LAPEL_PRESS;
+		m_isDown = false;
+	}
+	else if (strAnim == string_view("p_kru_sync_lapel_resist"))
+	{
+		m_iState = MONSTER_KRU_SYNC1_LAPEL_RESIST;
+		m_isDown = false;
+	}
+	else if (strAnim == string_view("p_kru_sync_lapel_st"))
+	{
+		m_iState = MONSTER_KRU_SYNC1_LAPEL_ST;
+		m_isDown = false;
+	}
+	else if (strAnim == string_view("p_kru_sync_lapel_walk"))
+	{
+		m_iState = MONSTER_KRU_SYNC1_LAPEL_WALK;
+		m_isDown = false;
+	}
+	else if (strAnim == string_view("p_kru_sync_neck_atk_kick"))
+		m_iState = MONSTER_KRU_SYNC1_NECK_ATK_KICK;
+	else if (strAnim == string_view("p_kru_sync_neck_cmb_01"))
+	{
+		m_iState = MONSTER_KRU_SYNC1_NECK_CMB_01;
+		m_isDown = false;
+	}
+	else if (strAnim == string_view("p_kru_sync_neck_cmb_02"))
+	{
+		m_iState = MONSTER_KRU_SYNC1_NECK_CMB_02;
+		m_isDown = false;
+	}
+	else if (strAnim == string_view("p_kru_sync_neck_cmb_03"))
+		m_iState = MONSTER_KRU_SYNC1_NECK_CMB_03;
+	else if (strAnim == string_view("p_kru_sync_neck_lp"))
+	{
+		m_iState = MONSTER_KRU_SYNC1_NECK_LP;
+		m_isDown = false;
+	}
+	else if (strAnim == string_view("p_kru_sync_neck_nage"))
+		m_iState = MONSTER_KRU_SYNC1_NECK_NAGE;
+	else if (strAnim == string_view("p_kru_sync_neck_off"))
+	{
+		m_iState = MONSTER_KRU_SYNC1_NECK_OFF;
+		m_isDown = false;
+	}
+	else if (strAnim == string_view("p_kru_sync_neck_off_uraken"))
+	{
+		m_iState = MONSTER_KRU_SYNC1_NECK_OFF_URAKEN;
+		m_isDown = false;
+	}
+	else if (strAnim == string_view("p_kru_sync_neck_press"))
+	{
+		m_iState = MONSTER_KRU_SYNC1_NECK_PRESS;
+		m_isDown = false;
+	}
+	else if (strAnim == string_view("p_kru_sync_neck_resist"))
+	{
+		m_iState = MONSTER_KRU_SYNC1_NECK_RESIST;
+		m_isDown = false;
+	}
+	else if (strAnim == string_view("p_kru_sync_neck_st"))
+	{
+		m_iState = MONSTER_KRU_SYNC1_NECK_ST;
+		m_isDown = false;
+	}
+	else if (strAnim == string_view("p_kru_sync_neck_walk"))
+	{
+		m_iState = MONSTER_KRU_SYNC1_NECK_WALK;
+		m_isDown = false;
+	}
+	else if (strAnim == string_view("p_sync_counter_f"))
+	{
+		m_iState = MONSTER_SYNC1_COUNTER_F;
+		m_isDown = false;
+	}
+		
+	else if (strAnim == string_view("p_sync_head_b"))
+	{
+		m_iState = MONSTER_SYNC1_HEAD_B;
+		m_isDown = false;
+	}
+	else if (strAnim == string_view("p_sync_head_f"))
+	{
+		m_iState = MONSTER_SYNC1_HEAD_F;
+		m_isDown = false;
+	}
+	else if (strAnim == string_view("p_sync_lapel_to_neck"))
+	{
+		m_iState = MONSTER_SYNC1_LAPEL_TO_NECK;
+		m_isDown = false;
+	}
+	else if (strAnim == string_view("p_sync_leg_atk_kick"))
+		m_iState = MONSTER_SYNC1_LEG_ATK_KICK;
+	else if (strAnim == string_view("p_sync_leg_lp"))
+		m_iState = MONSTER_SYNC1_LEG_LP;
+	else if (strAnim == string_view("p_sync_leg_nage"))
+		m_iState = MONSTER_SYNC1_LEG_NAGE;
+	else if (strAnim == string_view("p_sync_leg_off"))
+		m_iState = MONSTER_SYNC1_LEG_OFF;
+	else if (strAnim == string_view("p_sync_leg_st_b"))
+		m_iState = MONSTER_SYNC1_LEG_ST_B;
+	else if (strAnim == string_view("p_sync_leg_st_f"))
+		m_iState = MONSTER_SYNC1_LEG_ST_F;
+	else if (strAnim == string_view("p_sync_leg_walk"))
+		m_iState = MONSTER_SYNC1_LEG_WALK;
+	else if (strAnim == string_view("p_sync_neck_to_lapel"))
+	{
+		m_iState = MONSTER_SYNC1_NECK_TO_LAPEL;
+		m_isDown = false;
+	}
+		
+
+	//컷 액션
+	else if (strAnim == string_view("h11250"))
+		m_iState = MONSTER_H11250_000_1;
+	else if (strAnim == string_view("h20021"))
+		m_iState = MONSTER_H20021_000_2;
+	else if (strAnim == string_view("h23000"))
+		m_iState = MONSTER_H23000_000_6;
+	else if (strAnim == string_view("a60300"))
+		m_iState = MONSTER_A60300_000_2;
+	else if (strAnim == string_view("a60320"))
+		m_iState = MONSTER_A60320_000_4;
+	else if (strAnim == string_view("a60330"))
+		m_iState = MONSTER_A60330_000_2;
+	else if (strAnim == string_view("a60350"))
+		m_iState = MONSTER_A60350_000_2;
+	else if (strAnim == string_view("h1010"))
+		m_iState = MONSTER_H1010_000_1;
+	else if (strAnim == string_view("h10111"))
+		m_iState = MONSTER_H10111_000_1;
+	else if (strAnim == string_view("h11285"))
+		m_iState = MONSTER_H11285_000_1;
+	else if (strAnim == string_view("h1511"))
+		m_iState = MONSTER_H1511_000_4;
+	else if (strAnim == string_view("h1540"))
+		m_iState = MONSTER_H1540_000_1;
+	else if (strAnim == string_view("h1620"))
+		m_iState = MONSTER_H1620_000_1;
+	else if (strAnim == string_view("h2011"))
+		m_iState = MONSTER_H2011_000_1;
+	else if (strAnim == string_view("h2040"))
+		m_iState = MONSTER_H2040_000_1;
+	else if (strAnim == string_view("h23010"))
+		m_iState = MONSTER_H23010_000_4;
+	else if (strAnim == string_view("h23020"))
+		m_iState = MONSTER_H23020_000_4;
+	else if (strAnim == string_view("h23060"))
+		m_iState = MONSTER_H23060_000_4;
+	else if (strAnim == string_view("h23070"))
+		m_iState = MONSTER_H23070_000_4;
+	else if (strAnim == string_view("h23250"))
+		m_iState = MONSTER_H23250_000_2;
+	else if (strAnim == string_view("h23320"))
+		m_iState = MONSTER_H23320_000_4;
+	else if (strAnim == string_view("h3261"))
+		m_iState = MONSTER_H3261_000_4;
+	else if (strAnim == string_view("h1500"))
+		m_iState = MONSTER_H1500_000_1;
+
+	m_strAnimName = strPlayerAnim;
+	m_iCurrentAnimType = CMonster::CUTSCENE_ANIMATION;
+
+	m_pTree->Set_Sync(true);
+	Change_Animation();
+}
+
 HRESULT CMonster::Initialize_Prototype()
 {
 	return S_OK;
@@ -30,12 +260,32 @@ HRESULT CMonster::Initialize_Prototype()
 
 HRESULT CMonster::Initialize(void* pArg)
 {
+	if (nullptr == pArg)
+		return E_FAIL;
+
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
+
+	MONSTER_IODESC* gameobjDesc = (MONSTER_IODESC*)pArg;
+	m_pTransformCom->Set_WorldMatrix(gameobjDesc->vStartPos);
+	m_wstrModelName = gameobjDesc->wstrModelName;
+	m_iNaviRouteNum = gameobjDesc->iNaviRouteNum;
+
+	if (FAILED(Add_Components()))
+		return E_FAIL;
+
+	m_pNavigationCom->Set_Index(gameobjDesc->iNaviNum);
+
+	m_pTransformCom->Set_Scale(0.95f, 0.95f, 0.95f);
 
 	//테스트 데이터
 	m_Info.iMaxHP = 100.f;
 	m_Info.iHp = m_Info.iMaxHP;
+
+	m_iCurrentAnimType = DEFAULT_ANIMAITION;
+	m_iPreAnimType = DEFAULT_ANIMAITION;
+
+	m_pModelCom->Set_PreAnimations(m_pAnimCom[m_iPreAnimType]->Get_Animations());
 
 	return S_OK;
 }
@@ -46,6 +296,18 @@ void CMonster::Priority_Tick(const _float& fTimeDelta)
 
 void CMonster::Tick(const _float& fTimeDelta)
 {
+	m_pTree->Tick(fTimeDelta);
+
+	Change_Animation(); //애니메이션 변경
+
+	_bool isRoot = m_iCurrentAnimType != CUTSCENE_ANIMATION;
+
+	m_pModelCom->Play_Animation_Monster(fTimeDelta, m_pAnimCom[m_iCurrentAnimType], m_isAnimLoop, isRoot);
+
+	Synchronize_Root(fTimeDelta);
+
+	m_pColliderCom->Tick(m_pTransformCom->Get_WorldMatrix());
+
 	//충돌처리 초기화
 	m_isColl = false;
 
@@ -74,6 +336,32 @@ void CMonster::Tick(const _float& fTimeDelta)
 
 void CMonster::Late_Tick(const _float& fTimeDelta)
 {
+	if (m_iPreAnimType == m_iCurrentAnimType)
+		m_iPreAnimType = m_iCurrentAnimType;
+
+	//컬링
+	if (m_pGameInstance->isIn_WorldFrustum(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 1.5f))
+	{
+		m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
+
+		m_pCollisionManager->Add_ImpulseResolution(this);
+
+		// 현재 켜져있는 Attack용 콜라이더 삽입
+		for (auto& pPair : m_pColliders)
+		{
+			if (pPair.second->Get_CollierType() == CSocketCollider::ATTACK && pPair.second->IsOn())
+				m_pCollisionManager->Add_AttackCollider(pPair.second, CCollision_Manager::ENEMY);
+		}
+
+		// 현재 켜져있는 Hit용 콜라이더 삽입 (아직까지는 Hit용 콜라이더는 항상 켜져있음)
+		for (auto& pPair : m_pColliders)
+		{
+			if (pPair.second->Get_CollierType() == CSocketCollider::HIT && pPair.second->IsOn())
+				m_pCollisionManager->Add_HitCollider(pPair.second, CCollision_Manager::ENEMY);
+
+		}
+	}
+
 	//높이값 태우기
 	_vector vCurrentPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 	float fHeight = m_pNavigationCom->Compute_Height(vCurrentPos);
@@ -87,6 +375,7 @@ void CMonster::Late_Tick(const _float& fTimeDelta)
 
 	for (auto& pEffect : m_pEffects)
 		pEffect.second->Late_Tick(fTimeDelta);
+
 }
 
 HRESULT CMonster::Render()
@@ -161,11 +450,11 @@ HRESULT CMonster::Render()
 }
 
 /*
-1인자 : 어디에 맞았는지 전달받을 수 있음 (CSocketCollider::COLLIDER_PART_TYPE) 
-2인자 : 이전 틱과 현재 틱의 방향
-3인자 : 데미지 값
-4인자 : 때리는 상태가 누군가?
-5인자 : 넘어지는 어택인가?
+	1인자 : 어디에 맞았는지 전달받을 수 있음 (CSocketCollider::COLLIDER_PART_TYPE) 
+	2인자 : 이전 틱과 현재 틱의 방향
+	3인자 : 데미지 값
+	4인자 : 때리는 상태가 누군가?
+	5인자 : 넘어지는 어택인가?
 */
 
 void CMonster::Take_Damage(_uint iHitColliderType, const _float3& vDir, _float fDamage, CLandObject* pAttackedObject, _bool isBlowAttack)
@@ -193,8 +482,8 @@ void CMonster::Animation_Event()
 	auto& pCurEvents = m_pData->Get_CurrentEvents();
 	for (auto& pEvent : pCurEvents)
 	{
-		_double CurPos = *(m_pAnimCom->Get_AnimPosition());
-		_double Duration = *(m_pAnimCom->Get_AnimDuration());
+		_double CurPos = *(m_pAnimCom[m_iCurrentAnimType]->Get_AnimPosition());
+		_double Duration = *(m_pAnimCom[m_iCurrentAnimType]->Get_AnimDuration());
 
 		if (CurPos >= pEvent.fPlayPosition && CurPos < Duration)
 		{
@@ -226,7 +515,7 @@ void CMonster::Animation_Event()
 
 string CMonster::Get_CurrentAnimationName()
 {
-	return m_pAnimCom->Get_AnimationName(m_pAnimCom->Get_CurrentAnimIndex());
+	return m_strAnimName;
 }
 
 void CMonster::Shaking(_float fRatio, _float fShakeDuration, _float fShakeMagnitude)
@@ -241,7 +530,7 @@ void CMonster::Shaking(_float fRatio, _float fShakeDuration, _float fShakeMagnit
 
 _bool CMonster::Checked_Animation_Ratio(_float fRatio)
 {
-	if (fRatio < *m_pModelCom->Get_AnimationCurrentPosition(m_pAnimCom) / *m_pModelCom->Get_AnimationDuration(m_pAnimCom))
+	if (fRatio < *m_pModelCom->Get_AnimationCurrentPosition(m_pAnimCom[m_iCurrentAnimType]) / *m_pModelCom->Get_AnimationDuration(m_pAnimCom[m_iCurrentAnimType]))
 		return true;
 
 	return false;
@@ -249,13 +538,13 @@ _bool CMonster::Checked_Animation_Ratio(_float fRatio)
 
 void CMonster::Synchronize_Root(const _float& fTimeDelta)
 {
-	_vector vFF = XMVectorSetZ(XMLoadFloat3(m_pModelCom->Get_AnimationCenterMove(m_pAnimCom)), 0);
+	_vector vFF = XMVectorSetZ(XMLoadFloat3(m_pModelCom->Get_AnimationCenterMove(m_pAnimCom[m_iCurrentAnimType])), 0);
 
 	// m_pModelCom->Get_AnimChanged()  선형보간이 끝났는지
 	// m_pModelCom->Get_AnimLerp() 선형보간이 필요한 애니메이션인지
-	if (m_pAnimCom->Get_AnimChanged() || !m_pAnimCom->Get_AnimLerp(m_fChangeInterval))
+	if (m_pAnimCom[m_iCurrentAnimType]->Get_AnimChanged() || !m_pAnimCom[m_iCurrentAnimType]->Get_AnimLerp(m_fChangeInterval))
 	{
-		if (m_pAnimCom->Get_AnimRestart(m_isAnimLoop))
+		if (m_pAnimCom[m_iCurrentAnimType]->Get_AnimRestart(m_isAnimLoop))
 		{
 			XMStoreFloat4(&m_vPrevMove, XMVectorZero());
 			m_fPrevSpeed = 0.f;
@@ -304,8 +593,7 @@ HRESULT CMonster::Bind_ResourceData()
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_PROJ))))
 		return E_FAIL;
 
-	_float isRimLight = { 0.f };
-	if (FAILED(m_pShaderCom->Bind_RawValue("g_isRimLight", &isRimLight, sizeof(_float))))
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_isRimLight", &m_isRimLight, sizeof(_float))))
 		return E_FAIL;
 
 	return S_OK;
@@ -522,14 +810,571 @@ void CMonster::Change_Animation()
 			m_strAnimName = "c_ded_b_02";
 			break;
 		}
+		case MONSTER_KTA_SYNC1_ATK_TO_MOUNT_ST:
+		{
+			m_strAnimName = "e_kta_sync1_atk_to_mount_st";
+			break;
+		}
+		case MONSTER_KTA_SYNC1_GURAD_REVERSE_EN:
+		{
+			m_strAnimName = "e_kta_sync1_gurad_reverse_en";
+			break;
+		}
+		case MONSTER_KTA_SYNC1_GURAD_REVERSE_LP:
+		{
+			m_strAnimName = "e_kta_sync1_gurad_reverse_lp";
+			break;
+		}
+		case MONSTER_KTA_SYNC1_GURAD_REVERSE_ST:
+		{
+			m_strAnimName = "e_kta_sync1_gurad_reverse_st";
+			break;
+		}
+		case MONSTER_KTA_SYNC1_LAPEL_RESIST:
+		{
+			m_strAnimName = "e_kta_sync1_lapel_resist";
+			break;
+		}
+		case MONSTER_KTA_SYNC1_LEG_NAGE_B:
+		{
+			m_strAnimName = "e_kta_sync1_leg_nage_b";
+			break;
+		}
+		case MONSTER_KTA_SYNC1_LEG_NAGE_F:
+		{
+			m_strAnimName = "e_kta_sync1_leg_nage_f";
+			break;
+		}
+		case MONSTER_KTA_SYNC1_NECK_RESIST:
+		{
+			m_strAnimName = "e_kta_sync1_neck_resist";
+			break;
+		}
+		case MONSTER_KUZ_PIPE_SYNC1_ANTI_SWAY:
+		{
+			m_strAnimName = "e_kuz_pipe_sync1_anti_sway";
+			break;
+		}
+		case MONSTER_KUZ_SYNC1_ANTI_SWAY:
+		{
+			m_strAnimName = "e_kuz_sync1_anti_sway";
+			break;
+		}
+		case MONSTER_NSK_SYNC1_ANTIWPN_NAGE:
+		{
+			m_strAnimName = "e_nsk_sync1_antiwpn_nage";
+			break;
+		}
+		case MONSTER_NSK_SYNC1_LAPEL_YA_NAGE:
+		{
+			m_strAnimName = "e_nsk_sync1_lapel_ya_nage";
+			break;
+		}
+		case MONSTER_NSK_SYNC1_RUNTACKLE_NAGE:
+		{
+			m_strAnimName = "e_nsk_sync1_runtackle_nage";
+			break;
+		}
+		case MONSTER_SAE_SYNC1_AIR_HEAD_B:
+		{
+			m_strAnimName = "e_sae_sync1_air_head_b";
+			break;
+		}
+		case MONSTER_SAE_SYNC1_AIR_HEAD_F:
+		{
+			m_strAnimName = "e_sae_sync1_air_head_f";
+			break;
+		}
+		case MONSTER_SAE_SYNC1_AIR_LEG_B:
+		{
+			m_strAnimName = "e_sae_sync1_air_leg_b";
+			break;
+		}
+		case MONSTER_SAE_SYNC1_AIR_LEF_F:
+		{
+			m_strAnimName = "e_sae_sync1_air_leg_f";
+			break;
+		}
+		case MONSTER_SAE_SYNC1_LAPEL_ATK_EN:
+		{
+			m_strAnimName = "e_sae_sync1_lapel_atk_en";
+			break;
+		}
+		case MONSTER_SAE_SYNC1_LAPEL_ATK_TAME_EN:
+		{
+			m_strAnimName = "e_sae_sync1_lapel_atk_tame_en";
+			break;
+		}
+		case MONSTER_SAE_SYNC1_LAPEL_ATK_TAME_ST:
+		{
+			m_strAnimName = "e_sae_sync1_lapel_atk_tame_st";
+			break;
+		}
+		case MONSTER_SAE_SYNC1_LAPEL_CMB_3:
+		{
+			m_strAnimName = "e_sae_sync1_lapel_cmb_03";
+			break;
+		}
+		case MONSTER_SAE_SYNC1_LAPEL_NAGE:
+		{
+			m_strAnimName = "e_sae_sync1_lapel_nage";
+			break;
+		}
+		case MONSTER_SAE_SYNC1_LEG_ATK_EN:
+		{
+			m_strAnimName = "e_sae_sync1_leg_atk_en";
+			break;
+		}
+		case MONSTER_SAE_SYNC1_LEG_ATK_TAME_EN:
+		{
+			m_strAnimName = "e_sae_sync1_leg_atk_tame_en";
+			break;
+		}
+		case MONSTER_SAE_SYNC1_LEG_ATK_TAME_ST:
+		{
+			m_strAnimName = "e_sae_sync1_leg_atk_tame_st";
+			break;
+		}
+		case MONSTER_SAE_SYNC1_LEG_CMB_01:
+		{
+			m_strAnimName = "e_sae_sync1_leg_cmb_01";
+			break;
+		}
+		case MONSTER_SAE_SYNC1_LEG_CMB_02:
+		{
+			m_strAnimName = "e_sae_sync1_leg_cmb_02";
+			break;
+		}
+		case MONSTER_SAE_SYNC1_LEG_CMB_03:
+		{
+			m_strAnimName = "e_sae_sync1_leg_cmb_03";
+			break;
+		}
+		case MONSTER_SAE_SYNC1_LEG_NAGE:
+		{
+			m_strAnimName = "e_sae_sync1_leg_nage";
+			break;
+		}
+		case MONSTER_SAE_SYNC1_NECK_ATK_EN:
+		{
+			m_strAnimName = "e_sae_sync1_neck_atk_en";
+			break;
+		}
+		case MONSTER_SAE_SYNC1_NECK_ATK_TAME_EN:
+		{
+			m_strAnimName = "e_sae_sync1_neck_atk_tame_en";
+			break;
+		}
+		case MONSTER_SAE_SYNC1_NECK_ATK_TAME_ST:
+		{
+			m_strAnimName = "e_sae_sync1_neck_atk_tame_st";
+			break;
+		}
+		case MONSTER_SAE_SYNC1_NECK_CMB_03:
+		{
+			m_strAnimName = "e_sae_sync1_neck_cmb_03";
+			break;
+		}
+		case MONSTER_SAE_SYNC1_NECK_NAGE:
+		{
+			m_strAnimName = "e_sae_sync1_neck_nage";
+			break;
+		}
+		case MONSTER_SAE_SYNC1_RUN_B:
+		{
+			m_strAnimName = "e_sae_sync1_run_b";
+			break;
+		}
+		case MONSTER_SAE_SYNC1_RUN_F:
+		{
+			m_strAnimName = "e_sae_sync1_run_f";
+			break;
+		}
+		case MONSTER_KRC_SYNC1_GUARD_COUNTER_F:
+		{
+			m_strAnimName = "p_krc_sync1_guard_counter_f";
+			break;
+		}
+		case MONSTER_KRC_SYNC1_KAIHI_NAGE_B:
+		{
+			m_strAnimName = "p_krc_sync1_kaihi_nage_b";
+			break;
+		}
+		case MONSTER_KRC_SYNC1_KAIHI_NAGE_F:
+		{
+			m_strAnimName = "p_krc_sync1_kaihi_nage_f";
+			break;
+		}
+		case MONSTER_KRC_SYNC1_LAPEL_ATK_HEAVY:
+		{
+			m_strAnimName = "p_krc_sync1_lapel_atk_heavy";
+			break;
+		}
+		case MONSTER_KRC_SYNC1_LAPEL_ATK_PUNCH:
+		{
+			m_strAnimName = "p_krc_sync1_lapel_atk_punch";
+			break;
+		}
+		case MONSTER_KRC_SYNC1_LAPEL_NAGE:
+		{
+			m_strAnimName = "p_krc_sync1_lapel_nage";
+			break;
+		}
+		case MONSTER_KRC_SYNC1_NECK_ATK_HEAVY:
+		{
+			m_strAnimName = "p_krc_sync1_neck_atk_heavy";
+			break;
+		}
+		case MONSTER_KRC_SYNC1_NECK_ATK_PUNCH:
+		{
+			m_strAnimName = "p_krc_sync1_neck_atk_punch";
+			break;
+		}
+		case MONSTER_KRC_SYNC1_NECK_NAGE:
+		{
+			m_strAnimName = "p_krc_sync1_neck_nage";
+			break;
+		}
+		case MONSTER_KRH_SYNC1_GUARD_SABAKI:
+		{
+			m_strAnimName = "p_krh_sync1_guard_sabaki";
+			break;
+		}
+		case MONSTER_KRS_SYNC1_CMB_03_FIN:
+		{
+			m_strAnimName = "p_krs_sync1_cmb_03_fin";
+			break;
+		}
+		case MONSTER_KRS_SYNC1_CMB_03_FIN_B:
+		{
+			m_strAnimName = "p_krs_sync1_cmb_03_fin_b";
+			break;
+		}
+		case MONSTER_KRU_SYNC1_LAPEL_ATK_PUNCH:
+		{
+			m_strAnimName = "p_kru_sync1_lapel_atk_punch";
+			break;
+		}
+		case MONSTER_KRU_SYNC1_LAPEL_CMB_01:
+		{
+			m_strAnimName = "p_kru_sync1_lapel_cmb_01";
+			break;
+		}
+		case MONSTER_KRU_SYNC1_LAPEL_CMB_02:
+		{
+			m_strAnimName = "p_kru_sync1_lapel_cmb_02";
+			break;
+		}
+		case MONSTER_KRU_SYNC1_LAPEL_CMB_03:
+		{
+			m_strAnimName = "p_kru_sync1_lapel_cmb_03";
+			break;
+		}
+		case MONSTER_KRU_SYNC1_LAPEL_LP:
+		{
+			m_strAnimName = "p_kru_sync1_lapel_lp";
+			break;
+		}
+		case MONSTER_KRU_SYNC1_LAPEL_NAGE:
+		{
+			m_strAnimName = "p_kru_sync1_lapel_nage";
+			break;
+		}
+		case MONSTER_KRU_SYNC1_LAPEL_OFF:
+		{
+			m_strAnimName = "p_kru_sync1_lapel_off";
+			break;
+		}
+		case MONSTER_KRU_SYNC1_LAPEL_OFF_HIZA:
+		{
+			m_strAnimName = "p_kru_sync1_lapel_off_hiza";
+			break;
+		}
+		case MONSTER_KRU_SYNC1_LAPEL_PRESS:
+		{
+			m_strAnimName = "p_kru_sync1_lapel_press";
+			break;
+		}
+		case MONSTER_KRU_SYNC1_LAPEL_RESIST:
+		{
+			m_strAnimName = "p_kru_sync1_lapel_resist";
+			break;
+		}
+		case MONSTER_KRU_SYNC1_LAPEL_ST:
+		{
+			m_strAnimName = "p_kru_sync1_lapel_st";
+			break;
+		}
+		case MONSTER_KRU_SYNC1_LAPEL_WALK:
+		{
+			m_strAnimName = "p_kru_sync1_lapel_walk";
+			break;
+		}
+		case MONSTER_KRU_SYNC1_NECK_ATK_KICK:
+		{
+			m_strAnimName = "p_kru_sync1_neck_atk_kick";
+			break;
+		}
+		case MONSTER_KRU_SYNC1_NECK_CMB_01:
+		{
+			m_strAnimName = "p_kru_sync1_neck_cmb_01";
+			break;
+		}
+		case MONSTER_KRU_SYNC1_NECK_CMB_02:
+		{
+			m_strAnimName = "p_kru_sync1_neck_cmb_02";
+			break;
+		}
+		case MONSTER_KRU_SYNC1_NECK_CMB_03:
+		{
+			m_strAnimName = "p_kru_sync1_neck_cmb_03";
+			break;
+		}
+		case MONSTER_KRU_SYNC1_NECK_LP:
+		{
+			m_strAnimName = "p_kru_sync1_neck_lp";
+			break;
+		}
+		case MONSTER_KRU_SYNC1_NECK_NAGE:
+		{
+			m_strAnimName = "p_kru_sync1_neck_nage";
+			break;
+		}
+		case MONSTER_KRU_SYNC1_NECK_OFF:
+		{
+			m_strAnimName = "p_kru_sync1_neck_off";
+			break;
+		}
+		case MONSTER_KRU_SYNC1_NECK_OFF_URAKEN:
+		{
+			m_strAnimName = "p_kru_sync1_neck_off_uraken";
+			break;
+		}
+		case MONSTER_KRU_SYNC1_NECK_PRESS:
+		{
+			m_strAnimName = "p_kru_sync1_neck_press";
+			break;
+		}
+		case MONSTER_KRU_SYNC1_NECK_RESIST:
+		{
+			m_strAnimName = "p_kru_sync1_neck_resist";
+			break;
+		}
+		case MONSTER_KRU_SYNC1_NECK_ST:
+		{
+			m_strAnimName = "p_kru_sync1_neck_st";
+			break;
+		}
+		case MONSTER_KRU_SYNC1_NECK_WALK:
+		{
+			m_strAnimName = "p_kru_sync_neck_walk";
+			break;
+		}
+		case MONSTER_SYNC1_COUNTER_F:
+		{
+			m_strAnimName = "p_sync1_counter_f";
+			break;
+		}
+		case MONSTER_SYNC1_HEAD_B:
+		{
+			m_strAnimName = "p_sync1_head_b";
+			break;
+		}
+		case MONSTER_SYNC1_HEAD_F:
+		{
+			m_strAnimName = "p_sync1_head_f";
+			break;
+		}
+		case MONSTER_SYNC1_LAPEL_TO_NECK:
+		{
+			m_strAnimName = "p_sync1_lapel_to_neck";
+			break;
+		}
+		case MONSTER_SYNC1_LEG_ATK_KICK:
+		{
+			m_strAnimName = "p_sync1_leg_atk_kick";
+			break;
+		}
+		case MONSTER_SYNC1_LEG_LP:
+		{
+			m_strAnimName = "p_sync1_leg_lp";
+			break;
+		}
+		case MONSTER_SYNC1_LEG_NAGE:
+		{
+			m_strAnimName = "p_sync1_leg_nage";
+			break;
+		}
+		case MONSTER_SYNC1_LEG_OFF:
+		{
+			m_strAnimName = "p_sync1_leg_off";
+			break;
+		}
+		case MONSTER_SYNC1_LEG_ST_B:
+		{
+			m_strAnimName = "p_sync1_leg_st_b";
+			break;
+		}
+		case MONSTER_SYNC1_LEG_ST_F:
+		{
+			m_strAnimName = "p_sync1_leg_st_f";
+			break;
+		}
+		case MONSTER_SYNC1_LEG_WALK:
+		{
+			m_strAnimName = "p_sync1_leg_walk";
+			break;
+		}
+		case MONSTER_SYNC1_NECK_TO_LAPEL:
+		{
+			m_strAnimName = "p_sync1_neck_to_lapel";
+			break;
+		}
+		case MONSTER_H11250_000_1:
+		{
+			m_strAnimName = "h11250_000_3";
+			break;
+		}
+		case MONSTER_H20021_000_2:
+		{
+			m_strAnimName = "h20021_000_4";
+			break;
+		}
+		case MONSTER_H23000_000_6:
+		{
+			m_strAnimName = "h23000_000_4";
+			break;
+		}
+		case MONSTER_A60300_000_2:
+		{
+			m_strAnimName = "a60300_000_4";
+			break;
+		}
+		case MONSTER_A60320_000_4:
+		{
+			m_strAnimName = "a60320_000_6";
+			break;
+		}
+		case MONSTER_A60330_000_2:
+		{
+			m_strAnimName = "a60330_000_4";
+			break;
+		}
+		case MONSTER_A60350_000_2:
+		{
+			m_strAnimName = "a60350_000_4";
+			break;
+		}
+		case MONSTER_H1010_000_1:
+		{
+			m_strAnimName = "h1010_000_3";
+			break;
+		}
+		case MONSTER_H10111_000_1:
+		{
+			m_strAnimName = "h10111_000_3";
+			break;
+		}
+		case MONSTER_H11285_000_1:
+		{
+			m_strAnimName = "h11285_000_3";
+			break;
+		}
+		case MONSTER_H1511_000_4:
+		{
+			m_strAnimName = "h1511_000_6";
+			break;
+		}
+		case MONSTER_H1540_000_1:
+		{
+			m_strAnimName = "h1540_000_3";
+			break;
+		}
+		case MONSTER_H1620_000_1:
+		{
+			m_strAnimName = "h1620_000_3";
+			break;
+		}
+		case MONSTER_H2011_000_1:
+		{
+			m_strAnimName = "h2011_000_3";
+			break;
+		}
+		case MONSTER_H2040_000_1:
+		{
+			m_strAnimName = "h2040_000_3";
+			break;
+		}
+		case MONSTER_H23010_000_4:
+		{
+			m_strAnimName = "h23010_000_6";
+			break;
+		}
+		case MONSTER_H23020_000_4:
+		{
+			m_strAnimName = "h23020_000_6";
+			break;
+		}
+		case MONSTER_H23060_000_4:
+		{
+			m_strAnimName = "h23060_000_6";
+			break;
+		}
+		case MONSTER_H23070_000_4:
+		{
+			m_strAnimName = "h23070_000_6";
+			break;
+		}
+		case MONSTER_H23250_000_2:
+		{
+			m_strAnimName = "h23250_000_4";
+			break;
+		}
+		case MONSTER_H23320_000_4:
+		{
+			m_strAnimName = "h23320_000_6";
+			break;
+		}
+		case MONSTER_H3261_000_4:
+		{
+			m_strAnimName = "h3261_000_6";
+			break;
+		}
+		case MONSTER_H1500_000_1:
+		{
+			m_strAnimName = "h1500_000_3";
+			break;
+		}
 	}
+}
 
+HRESULT CMonster::Setup_Animation()
+{
+	m_iAnim = m_pAnimCom[m_iCurrentAnimType]->Get_AnimationIndex(m_strAnimName.c_str());
+
+	if (m_iAnim == -1)
+		return E_FAIL;
+
+	// 실제로 애니메이션 체인지가 일어났을 때 켜져있던 어택 콜라이더를 전부 끈다
+	if (m_pModelCom->Set_AnimationIndex(m_iAnim, m_pAnimCom[m_iCurrentAnimType]->Get_Animations(), m_fChangeInterval))
+	{
+		m_pModelCom->Set_PreAnimations(m_pAnimCom[m_iPreAnimType]->Get_Animations());
+
+		Off_Attack_Colliders();
+		Reset_Shaking_Variable();
+	}
+	
+	m_pData->Set_CurrentAnimation(m_strAnimName);
+
+	return S_OK;
 }
 
 void CMonster::Free()
 {
 	__super::Free();
 
-	Safe_Release(m_pAnimCom);
+	for (auto& pAnim : m_pAnimCom)
+		Safe_Release(pAnim);
+
 	Safe_Release(m_pNavigationCom);
 }

@@ -205,6 +205,7 @@ void CCollision_Manager::Enemy_Hit_Collision()
                 m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Money"), TEXT("Layer_Particle"), &EffectDesc);
                 m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Coin"), TEXT("Layer_Particle"), &EffectDesc);
 
+                pPlayerAttackCollider->ParentObject_Attack(pEnemyHitCollider);
                 pEnemyHitCollider->ParentObject_Hit(pPlayerAttackCollider);
             }
 
@@ -237,6 +238,7 @@ void CCollision_Manager::Player_Hit_Collision()
                 m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Damage1_Part3"), TEXT("Layer_Particle"), &EffectDesc);
                 m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Damage1_Glow0"), TEXT("Layer_Particle"), &EffectDesc);
 
+                pEnemyAttackCollider->ParentObject_Attack(pPlayerHitCollider);
                 pPlayerHitCollider->ParentObject_Hit(pEnemyAttackCollider);
             }
         }
@@ -362,12 +364,14 @@ _bool CCollision_Manager::Check_Map_Collision(CCollider* pCollider)
 
 CLandObject* CCollision_Manager::Get_Near_LandObject(CLandObject* pObject, vector<CGameObject*>& pObjects)
 {
-    _float fDinstance = { 99999999.f };
+    // 5거리 이내에 있는 애들만 검색한다.
+    _float fDinstance = { 5.f };
     CLandObject* pValue = { nullptr };
 
     for (auto& pTarget : pObjects)
     {
         if (pTarget == pObject) continue;
+        if (pTarget->isObjectDead()) continue;
 
         _vector vBasePosition = pObject->Get_TransformCom()->Get_State(CTransform::STATE_POSITION);
         _vector vTargetPosition = pTarget->Get_TransformCom()->Get_State(CTransform::STATE_POSITION);

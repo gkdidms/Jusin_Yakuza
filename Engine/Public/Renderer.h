@@ -171,7 +171,7 @@ private:
     int      m_iRenderState = { RENDER_END };
 
 #ifdef _DEBUG
-    _bool m_isDebugView = { true };
+    _bool m_isDebugView = { false };
 #endif // _DEBUG
 
 

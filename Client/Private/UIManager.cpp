@@ -11,8 +11,14 @@
 #include "UIInven.h"
 #include "UILogo.h"
 #include "UIMainMenu.h"
-#include "InventoryManager.h"
+#include "UITutorial.h"
+#include "UITalk.h"
+#include "UISkillMenu.h"
+#include "UISkillHolligan.h"
+#include"UISkillRush.h"
+#include"UISkillDestroyer.h"
 
+#include "InventoryManager.h"
 #include "Player.h"
 
 IMPLEMENT_SINGLETON(CUIManager)
@@ -68,6 +74,25 @@ HRESULT CUIManager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 
 	pScene = CUIInven::Create(m_pDevice, m_pContext ,&InvenDesc);
 	m_AllScene.emplace(make_pair(TEXT("Inven"), pScene));
+
+	pScene = CUITutorial::Create(m_pDevice, m_pContext);
+	m_AllScene.emplace(make_pair(TEXT("Tutorial"), pScene));
+
+	pScene = CUITalk::Create(m_pDevice, m_pContext);
+	m_AllScene.emplace(make_pair(TEXT("Talk"), pScene));
+
+	pScene = CUISkillMenu::Create(m_pDevice, m_pContext);
+	m_AllScene.emplace(make_pair(TEXT("SkillMenu"), pScene));
+
+	pScene = CUISkillHolligan::Create(m_pDevice, m_pContext);
+	m_AllScene.emplace(make_pair(TEXT("SkillHolligan"), pScene));
+
+	pScene = CUISkillRush::Create(m_pDevice, m_pContext);
+	m_AllScene.emplace(make_pair(TEXT("SkillRush"), pScene));
+
+	pScene = CUISkillDestroyer::Create(m_pDevice, m_pContext);
+	m_AllScene.emplace(make_pair(TEXT("SkillDestroyer"), pScene));
+
 
 	return S_OK;
 }
@@ -239,4 +264,12 @@ void CUIManager::Free()
 	Safe_Release(m_pDevice);
 	Safe_Release(m_pContext);
 	Safe_Release(m_pGameInstance);
+}
+
+void CUIManager::Start_Talk()
+{
+	if (!m_PlayScene.empty())
+	{
+		dynamic_cast<CUITalk*>(m_PlayScene.back())->Start_Talk();
+	}
 }

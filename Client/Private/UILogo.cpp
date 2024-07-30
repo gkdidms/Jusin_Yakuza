@@ -64,6 +64,7 @@ CUILogo* CUILogo::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext,vo
 	CUILogo* pInstance = new CUILogo();
 	if (FAILED(pInstance->Initialize(pDevice ,pContext ,pArg)))
 	{
+		MSG_BOX("Make Failed :CUILogo");
 		Safe_Release(pInstance);
 		return nullptr;
 	}

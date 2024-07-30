@@ -44,6 +44,11 @@ protected:
     virtual void Zoom(const _float& fTimeDelta);
     void Shaking(_float fTimeDelta);
 
+public:
+    void Set_FoV(_float fFov) {
+        m_fFovY = fFov;
+    }
+
 protected:
     _float m_fFovY;
     _float m_fAspect;

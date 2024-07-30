@@ -5,8 +5,8 @@
 CKiryu_KRS_Run::CKiryu_KRS_Run()
 	:CBehaviorAnimation{}
 {
-	m_AnimationIndices.push_back(410); //[410]	p_mov_run_kyoro[p_mov_run_kyoro]
-	m_AnimationIndices.push_back(417); //[417]	p_mov_run_stop[p_mov_run_stop]
+	m_AnimationIndices.push_back(624); //[624]	p_mov_run_kyoro[p_mov_run_kyoro]
+	m_AnimationIndices.push_back(633); //[633]	p_mov_run_stop[p_mov_run_stop]
 }
 
 void CKiryu_KRS_Run::Tick(const _float& fTimeDelta)

@@ -34,6 +34,7 @@ public:
         _float2 fEndUV = { 1.f , 1.f };
         _bool isColor;
         _float4 vColor;
+        _float4 vEndColor;
         string strParentName;
         _uint iShaderPass;
         _float4x4 WorldMatrix;
@@ -44,6 +45,10 @@ public:
         _float3 vStartPos;//최종위치는 worldpos 
         _float2 fControlAlpha;
         _bool isReverse;
+
+
+        _float4 vUpPoint;
+        _float4 vDownPoint;
 
     } UI_TEXTURE_DESC;
 
@@ -63,6 +68,9 @@ public:
 
     void Set_ControlAlpha(_float2 ControlAlpha) { m_fControlAlpha = ControlAlpha; }
     void Set_isReverse(_bool isReverse) { m_isReverse = isReverse; }
+
+    void Set_UpPoint(_float4 UpPoint) { m_fUpPoint = UpPoint; }
+    void Set_DownPoint(_float4 DownPoint) { m_fDownPoint = DownPoint; }
 
 public:
     _float Get_SizeX() { return m_fSizeX; }
@@ -91,6 +99,10 @@ public:
     _float2 Get_ControlAlpha() { return m_fControlAlpha; }
     _bool Get_isReverse() { return m_isReverse; }
 
+    _float4 Get_UpPoint() { return m_fUpPoint; }
+    _float4 Get_DownPoint() { return m_fDownPoint; }
+
+
 protected:
     CUI_Texture(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
     CUI_Texture(const CUI_Texture& rhs);
@@ -107,12 +119,12 @@ public:
 
 public:
      HRESULT Change_UV(_float2 fStartUV, _float2 fEndUV);
-
+     HRESULT Change_Point(_float4 vUpPoint, _float4 vDownPotint);
 public:
     virtual HRESULT Show_UI() override;
     virtual HRESULT Close_UI() override;
     virtual _bool Check_AnimFin() override;
-
+    virtual _bool Click_Intersect(_int Index=0)override;
 protected:
     _float							m_fX, m_fY, m_fSizeX, m_fSizeY;
     _float4x4						m_WorldMatrix, m_ViewMatrix, m_ProjMatrix;
@@ -131,7 +143,8 @@ protected:
     wstring m_strTextureName = { L"" };
 
     _float2                         m_fStartUV = { 0.f, 0.f }, m_fEndUV = { 1.f, 1.f };
-    _float4                         m_vColor = { 1.f, 1.f, 1.f, 1.f };
+    _float4                         m_fUpPoint = { 0.f,0.f, 0.f, 0.f }, m_fDownPoint = { 0.f,0.f, 0.f, 0.f };
+    _float4                         m_vColor = { 1.f, 1.f, 1.f, 1.f }, m_vEndColor = { 1.f, 1.f, 1.f, 1.f };
     _bool                           m_isColor = { false };
 
     _uint m_iShaderPass = { 1 };
@@ -140,8 +153,6 @@ protected:
     _bool m_isAnim;
     _float2 m_fAnimTime;
     _float3 m_vStartPos;
-
-
 
     //시작하면 0-1 사라질땐 반대로
     _float2 m_fControlAlpha = { 0.f, 1.f };//시작,종료 알파(애님일경우)]

@@ -27,27 +27,7 @@ HRESULT CWPAYakuza::Initialize(void* pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
-	if (nullptr != pArg)
-	{
-		MONSTER_IODESC* gameobjDesc = (MONSTER_IODESC*)pArg;
-		m_pTransformCom->Set_WorldMatrix(gameobjDesc->vStartPos);
-		m_wstrModelName = gameobjDesc->wstrModelName;
-		m_iNaviRouteNum = gameobjDesc->iNaviRouteNum;
-	}
-
-	if (FAILED(Add_Components()))
-		return E_FAIL;
-
-	if (nullptr != pArg)
-	{
-		MONSTER_IODESC* gameobjDesc = (MONSTER_IODESC*)pArg;
-
-		m_pNavigationCom->Set_Index(gameobjDesc->iNaviNum);
-
-	}
-
 	m_wstrModelName = TEXT("Jimu");
-	m_pTransformCom->Set_Scale(0.95f, 0.95f, 0.95f);
 
 	if (FAILED(Add_CharacterData()))
 		return E_FAIL;
@@ -61,44 +41,11 @@ void CWPAYakuza::Priority_Tick(const _float& fTimeDelta)
 
 void CWPAYakuza::Tick(const _float& fTimeDelta)
 {
-	m_pTree->Tick(fTimeDelta);
-
-	Change_Animation(); //애니메이션 변경
-
-	m_pModelCom->Play_Animation(fTimeDelta, m_pAnimCom, m_isAnimLoop);
-
-	Synchronize_Root(fTimeDelta);
-
-	m_pColliderCom->Tick(m_pTransformCom->Get_WorldMatrix());
-
 	__super::Tick(fTimeDelta);
 }
 
 void CWPAYakuza::Late_Tick(const _float& fTimeDelta)
 {
-	if (m_pGameInstance->isIn_WorldFrustum(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 1.5f))
-	{
-		m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
-
-		m_pCollisionManager->Add_ImpulseResolution(this);
-
-		// 현재 켜져있는 Attack용 콜라이더 삽입
-		for (auto& pPair : m_pColliders)
-		{
-			if (pPair.second->Get_CollierType() == CSocketCollider::ATTACK && pPair.second->IsOn())
-				m_pCollisionManager->Add_AttackCollider(pPair.second, CCollision_Manager::ENEMY);
-		}
-
-		// 현재 켜져있는 Hit용 콜라이더 삽입 (아직까지는 Hit용 콜라이더는 항상 켜져있음)
-		for (auto& pPair : m_pColliders)
-		{
-			if (pPair.second->Get_CollierType() == CSocketCollider::HIT && pPair.second->IsOn())
-				m_pCollisionManager->Add_HitCollider(pPair.second, CCollision_Manager::ENEMY);
-
-		}
-	}
-
-	
 	__super::Late_Tick(fTimeDelta);
 }
 
@@ -123,13 +70,18 @@ HRESULT CWPAYakuza::Add_Components()
 		return E_FAIL;
 
 	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Anim"),
-		TEXT("Com_Anim"), reinterpret_cast<CComponent**>(&m_pAnimCom))))
+		TEXT("Com_Anim"), reinterpret_cast<CComponent**>(&m_pAnimCom[DEFAULT_ANIMAITION]))))
+		return E_FAIL;
+
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_SyncAnim"),
+		TEXT("Com_SyncAnim"), reinterpret_cast<CComponent**>(&m_pAnimCom[CUTSCENE_ANIMATION]))))
 		return E_FAIL;
 
 	//행동트리 저장
 	CAI_WPAYakuza::AI_MONSTER_DESC AIDesc{};
 	AIDesc.pState = &m_iState;
-	AIDesc.pAnim = m_pAnimCom;
+	memcpy(AIDesc.pAnim, m_pAnimCom, sizeof(CAnim*) * ANIMATION_COMPONENT_TYPE_END);
+	AIDesc.pCurrentAnimType = &m_iCurrentAnimType;
 	AIDesc.pThis = this;
 
 	m_pTree = dynamic_cast<CAI_WPAYakuza*>(m_pGameInstance->Add_BTNode(m_iCurrentLevel, TEXT("Prototype_BTNode_WPAYakuza"), &AIDesc));
@@ -234,19 +186,8 @@ void CWPAYakuza::Change_Animation()
 		break;
 	}
 
-	m_iAnim = m_pAnimCom->Get_AnimationIndex(m_strAnimName.c_str());
-
-	if (m_iAnim == -1)
+	if (FAILED(Setup_Animation()))
 		return;
-
-	// 실제로 애니메이션 체인지가 일어났을 때 켜져있던 어택 콜라이더를 전부 끈다
-	if (m_pModelCom->Set_AnimationIndex(m_iAnim, m_pAnimCom->Get_Animations(), m_fChangeInterval))
-	{
-		Off_Attack_Colliders();
-		Reset_Shaking_Variable();
-	}
-
-	m_pData->Set_CurrentAnimation(m_strAnimName);
 }
 
 CWPAYakuza* CWPAYakuza::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

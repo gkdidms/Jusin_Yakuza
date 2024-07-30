@@ -57,7 +57,7 @@ public:
     virtual HRESULT Show_UI()override;
     virtual HRESULT Close_UI()override;
     virtual _bool Check_AnimFin() override;
-
+    virtual _bool Click_Intersect(_int Index = 0) override;
 public:
     static CGroup* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
     static CGroup* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, ifstream& in);

@@ -46,6 +46,14 @@ HRESULT CUIScene::Show_Scene()
 		else
 			iter->Close_UI();
 	}
+
+	for (auto& iter : m_EventUI)
+	{
+		if (CUI_Object::TYPE_BTN != iter->Get_TypeIndex())
+			iter->Show_UI();
+		else
+			iter->Close_UI();
+	}
 	m_isAnimFin = false;
 	m_isClose = false;
 
@@ -58,6 +66,14 @@ HRESULT CUIScene::Close_Scene()
 	for (auto& iter : m_UI)
 	{
 		iter->Close_UI();
+	}
+	
+	for (auto& iter : m_EventUI)
+	{
+		if (CUI_Object::TYPE_BTN != iter->Get_TypeIndex())
+			iter->Close_UI();
+		else
+			iter->Show_UI();
 	}
 	m_isAnimFin = false;
 	m_isClose = true;

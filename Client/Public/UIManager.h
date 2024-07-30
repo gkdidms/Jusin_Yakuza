@@ -47,6 +47,10 @@ public:
         m_pPlayer = pPlayer;
     }
 
+    //임시 토크매니저 확인용 제작
+public:
+    void Start_Talk();
+
 
 private:
 

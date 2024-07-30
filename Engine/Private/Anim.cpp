@@ -20,11 +20,20 @@ CAnim::CAnim(const CAnim& rhs)
 
 _uint CAnim::Get_AnimationIndex(const _char* pName)
 {
+	regex pattern(R"(\[(.*?)\])"); // 대괄호 사이의 텍스트를 찾기 위한 정규 표현식
+	smatch matches;
+
 	_uint iIndex = 0;
 	for (auto& pAnim : m_Animations)
 	{
 		if (string(pAnim->Get_AnimName()).find(pName) != string::npos)
-			return iIndex;
+		{
+			string strName = string(pAnim->Get_AnimName());
+			regex_search(strName, matches, pattern);
+
+			if (string_view(matches[1].str()) == string_view(pName))
+				return iIndex;
+		}
 
 		iIndex++;
 	}
@@ -73,6 +82,11 @@ _bool CAnim::Get_AnimLerp(_float ChangeInterval) const
 void CAnim::Reset_Animation()
 {
 	m_Animations[m_iCurrentIndex]->Reset();
+}
+
+void CAnim::Reset_Animation(_uint iAnimIndex)
+{
+	m_Animations[iAnimIndex]->Reset();
 }
 
 _bool CAnim::Get_AnimFinished()
@@ -175,11 +189,25 @@ HRESULT CAnim::Save_File(const _char* pModelFilePath, vector<CBone*> Bones)
 	// 본 저장
 	// ReadyBones에서 저장하는 데이터들만 저장한다.
 	_int iNumBones = Bones.size();
+
+	// 사용하지 않는 뼈를 제거한다
+	_uint	iCount = { 0 };
+	for (size_t i = 0; i < iNumBones; i++)
+	{
+		if ("" != m_pGameInstance->Extract_String(m_Bones[i]->Get_Name(), '[', ']'))
+			++iCount;
+	}
+
+	iNumBones -= iCount;
+
 	out.write((char*)&iNumBones, sizeof(_uint));
 
-	for (auto& Bone : Bones)
+	for (auto& Bone : m_Bones)
 	{
 		string strValue = Bone->Get_Name();
+		if ("" != m_pGameInstance->Extract_String(strValue, '[', ']'))
+			continue;
+
 		_int iValue = strValue.size();
 		out.write((char*)&iValue, sizeof(_uint));
 		out.write(strValue.c_str(), strValue.size());
@@ -190,6 +218,7 @@ HRESULT CAnim::Save_File(const _char* pModelFilePath, vector<CBone*> Bones)
 		_float4x4 TransformationMatrix = *(Bone->Get_TransformationMatrix());
 		out.write((char*)&TransformationMatrix, sizeof(_float4x4));
 	}
+
 
 	//애니메이션 저장
 	out.write((char*)&m_iAnimations, sizeof(_uint));

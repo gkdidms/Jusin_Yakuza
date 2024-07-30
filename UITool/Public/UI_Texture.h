@@ -34,6 +34,7 @@ public:
         _float2 fEndUV = { 1.f , 1.f };
         _bool isColor;
         _float4 vColor;
+        _float4 vEndColor;
         string strParentName;
         _uint iShaderPass;
         _float4x4 WorldMatrix;
@@ -45,6 +46,8 @@ public:
         _float2 fControlAlpha;
         _bool isReverse;
 
+        _float4 vUpPoint;
+        _float4 vDownPoint;
     } UI_TEXTURE_DESC;
 
 public:
@@ -53,6 +56,7 @@ public:
     void Set_ShaderPass(_uint iPass) { m_iShaderPass = iPass; }
     void Set_isColor(_bool isColor) { m_isColor = isColor; }
     void Set_Color(_float4 vColor) { m_vColor = vColor; }
+    void Set_EndColor(_float4 vEndColor) { m_vEndColor = vEndColor; }
     void Set_WorldMatrix(_float4x4 World) { m_WorldMatrix = World; }
 
     void Set_StartPos(_float3 vStartPos) { m_vStartPos = vStartPos;}
@@ -65,6 +69,9 @@ public:
 #endif // _TOOL
     void Set_ControlAlpha(_float2 ControlAlpha) { m_fControlAlpha = ControlAlpha; }
     void Set_isReverse(_bool isReverse) { m_isReverse = isReverse; }
+
+    void Set_UpPoint(_float4 UpPoint) { m_fUpPoint = UpPoint; }
+    void Set_DownPoint(_float4 DownPoint) { m_fDownPoint = DownPoint; }
 
 public:
     _float Get_SizeX() { return m_fSizeX; }
@@ -79,13 +86,15 @@ public:
 
     _bool Get_isColor(){ return m_isColor; }
     _float4 Get_Color() { return m_vColor; }
+    _float4 Get_EndColor() { return m_vEndColor; }
 
     _float3 Get_StartPos() { return m_vStartPos; }
     _float2 Get_AnimTime() { return m_fAnimTime; }
     _bool Get_isAnim() { return m_isAnim; }
     _bool Get_isAnimLoop() { return m_isAnimLoop; }
     
-
+    _float4 Get_UpPoint() { return m_fUpPoint; }
+    _float4 Get_DownPoint() { return m_fDownPoint; }
 
 #ifdef _TOOL
     _bool Get_isPlay() { return m_isPlay; }
@@ -109,6 +118,7 @@ public:
 
 public:
      HRESULT Change_UV(_float2 fStartUV, _float2 fEndUV);
+     HRESULT Change_Point(_float4 vUpPoint, _float4 vDownPotint);
 
 public:
     virtual HRESULT Show_UI() override;
@@ -131,7 +141,8 @@ protected:
     wstring m_strTextureName = { L"" };
 
     _float2                         m_fStartUV = { 0.f, 0.f }, m_fEndUV = { 1.f, 1.f };
-    _float4                         m_vColor = { 1.f, 1.f, 1.f, 1.f };
+    _float4                         m_fUpPoint = { 0.f,0.f, 0.f, 0.f }, m_fDownPoint = { 0.f,0.f, 0.f, 0.f };
+    _float4                         m_vColor = { 1.f, 1.f, 1.f, 1.f }, m_vEndColor = { 1.f, 1.f, 1.f, 1.f };
     _bool                           m_isColor = { false };
 
     _uint m_iShaderPass = { 1 };

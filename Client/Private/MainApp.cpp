@@ -5,6 +5,7 @@
 #include "GameInstance.h"
 #include "SystemManager.h"
 #include "Collision_Manager.h"
+#include "QuestManager.h"
 
 #ifdef _DEBUG
 #include "DebugManager.h"
@@ -30,13 +31,15 @@ CMainApp::CMainApp() :
 	m_pSystemManager{ CSystemManager::GetInstance() },
 	m_pFileTotalManager{ CFileTotalMgr::GetInstance() },
 	m_pCollisionManager{ CCollision_Manager::GetInstance() },
-	m_pUIManager{ CUIManager::GetInstance() }
+	m_pUIManager{ CUIManager::GetInstance() },
+	m_pQuestManager { CQuestManager::GetInstance() }
 {
 	Safe_AddRef(m_pGameInstance);
 	Safe_AddRef(m_pSystemManager);
 	Safe_AddRef(m_pFileTotalManager);
 	Safe_AddRef(m_pCollisionManager);
 	Safe_AddRef(m_pUIManager);
+	Safe_AddRef(m_pQuestManager);
 
 #ifdef _DEBUG
 	Safe_AddRef(m_pDebugMananger);
@@ -57,6 +60,9 @@ HRESULT CMainApp::Initialize()
 		return E_FAIL;
 
 	if (FAILED(m_pUIManager->Initialize(m_pDevice, m_pContext)))
+		return E_FAIL;
+
+	if (FAILED(m_pQuestManager->Initialize()))
 		return E_FAIL;
 
 	if (FAILED(Ready_Font()))
@@ -88,6 +94,8 @@ void CMainApp::Tick(const _float& fTimeDelta)
 	m_pCollisionManager->Tick();
 	m_pUIManager->Tick(fTimeDelta);
 	m_pUIManager->Late_Tick(fTimeDelta);
+	//퀘스트 성공 여부 확인 
+	m_pQuestManager->Execute();
 
 	//프레임 확인용 나중에 다시 디버그로 넣어야함
 	m_fTimeAcc += fTimeDelta;
@@ -130,6 +138,10 @@ void CMainApp::Tick(const _float& fTimeDelta)
 			if (FAILED(m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_DOGIMAZO_BOSS))))
 				return;
 		}
+	}
+	if (m_pGameInstance->GetKeyState(DIK_F4) == TAP)
+	{
+		m_pSystemManager->Set_Camera(m_pSystemManager->Get_Camera() == CAMERA_DEBUG ? CAMERA_CUTSCENE : CAMERA_DEBUG);
 	}
 	if (m_pGameInstance->GetKeyState(DIK_F6) == TAP)
 	{
@@ -184,16 +196,21 @@ HRESULT CMainApp::Render()
 	m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("!!!처음부터->TEST , 이어하기 ->OFFICE_1F!!! "), _float2(500.f, 20.f), XMVectorSet(1.f, 0.f, 0.f, 1.f));
 	m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("!!!1~7 Office 1층 ~ 보스룸 // 무조건 test level이나 office1층 들어가야 함"), _float2(500.f, 40.f), XMVectorSet(1.f, 0.f, 0.f, 1.f));
 	_float fSize = 320.f;
-	m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("!!!카메라 단축키"), _float2(1000.f, fSize + 120.f), XMVectorSet(0.f, 0.f, 1.f, 1.f));
-	m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("F6 : Scene Camera Test"), _float2(1000.f, fSize + 140.f), XMVectorSet(1.f, 1.f, 0.f, 1.f));
-	m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("F7 : Camera Change"), _float2(1000.f, fSize + 160.f), XMVectorSet(1.f, 1.f, 0.f, 1.f));
 
-	m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("!!!그 외"), _float2(1000.f, fSize + 180.f), XMVectorSet(0.f, 0.f, 1.f, 1.f));
-	m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("F8 : DebugView On/Off"), _float2(1000.f, fSize + 200.f), XMVectorSet(1.f, 1.f, 0.f, 1.f));
-	m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("F9 : Console"), _float2(1000.f, fSize + 220.f), XMVectorSet(1.f, 1.f, 0.f, 1.f));
-	m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("F10 : Debug Tool"), _float2(1000.f, fSize + 240.f), XMVectorSet(1.f, 1.f, 0.f, 1.f));
-	m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("TAP : Camera Pos Fix"), _float2(1000.f, fSize + 260.f), XMVectorSet(1.f, 1.f, 0.f, 1.f));
-	m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("Z : Collision Mgr Console Debug"), _float2(1000.f, fSize + 280.f), XMVectorSet(1.f, 1.f, 0.f, 1.f));
+	_uint iInterval = 20.f;
+	_uint iIntervalCount = 0.f;
+
+	m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("!!!카메라 단축키"), _float2(1000.f, fSize + 100.f + (++iIntervalCount * iInterval)), XMVectorSet(0.f, 0.f, 1.f, 1.f));
+	m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("F4 : CutScene Camera"), _float2(1000.f, fSize + 100.f + (++iIntervalCount * iInterval)), XMVectorSet(1.f, 1.f, 0.f, 1.f));
+	m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("F6 : Scene Camera Test"), _float2(1000.f, fSize + 100.f + (++iIntervalCount * iInterval)), XMVectorSet(1.f, 1.f, 0.f, 1.f));
+	m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("F7 : Camera Change"), _float2(1000.f, fSize + 100.f + (++iIntervalCount * iInterval)), XMVectorSet(1.f, 1.f, 0.f, 1.f));
+
+	m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("!!!그 외"), _float2(1000.f, fSize + 100.f + (++iIntervalCount * iInterval)), XMVectorSet(0.f, 0.f, 1.f, 1.f));
+	m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("F8 : DebugView On/Off"), _float2(1000.f, fSize + 100.f + (++iIntervalCount * iInterval)), XMVectorSet(1.f, 1.f, 0.f, 1.f));
+	m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("F9 : Console"), _float2(1000.f, fSize + 100.f + (++iIntervalCount * iInterval)), XMVectorSet(1.f, 1.f, 0.f, 1.f));
+	m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("F10 : Debug Tool"), _float2(1000.f, fSize + 100.f + (++iIntervalCount * iInterval)), XMVectorSet(1.f, 1.f, 0.f, 1.f));
+	m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("TAP : Camera Pos Fix"), _float2(1000.f, fSize + 100.f + (++iIntervalCount * iInterval)), XMVectorSet(1.f, 1.f, 0.f, 1.f));
+	m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("Z : SyncAction Test"), _float2(1000.f, fSize + 100.f + (++iIntervalCount * iInterval)), XMVectorSet(1.f, 1.f, 0.f, 1.f));
 
 
 	/* 플레이어/ 몬스터 용 테스트 키 작성 */
@@ -217,9 +234,14 @@ HRESULT CMainApp::Open_Level(LEVEL eLevelID)
 
 HRESULT CMainApp::Ready_Font()
 {
-	if (FAILED(m_pGameInstance->Add_Font(TEXT("Font_Default"), TEXT("../Bin/Resources/Fonts/nanum28.spritefont"))))
+	if (FAILED(m_pGameInstance->Add_Font(TEXT("Font_nanum24"), TEXT("../../Client/Bin/Resources/Fonts/nanum24.spritefont"))))
 		return E_FAIL;
-
+	if (FAILED(m_pGameInstance->Add_Font(TEXT("Font_Default"), TEXT("../../Client/Bin/Resources/Fonts/nanum28.spritefont"))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Font(TEXT("Font_nanum30"), TEXT("../../Client/Bin/Resources/Fonts/nanum30.spritefont"))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Font(TEXT("Font_nanum36"), TEXT("../../Client/Bin/Resources/Fonts/nanum36.spritefont"))))
+		return E_FAIL;
     return S_OK;
 }
 
@@ -299,8 +321,11 @@ HRESULT CMainApp::Add_UI_On_Path(const wstring& strPath)
 		wstring strFilePath = strPath + strChannelName + TEXT("/");
 		string strDirectory = m_pGameInstance->WstringToString(strFilePath);
 
+
 		wstring ProtoFrontName = strChannelName + TEXT("_");
 
+		if (ProtoFrontName[0] == TEXT('1'))
+			continue;
 		for (const auto& entry : fs::directory_iterator(strDirectory))
 		{
 
@@ -442,9 +467,12 @@ void CMainApp::Free()
 	Safe_Release(m_pSystemManager);
 	CSystemManager::DestroyInstance();
 
+	Safe_Release(m_pQuestManager);
+	CQuestManager::DestroyInstance();
+
 	Safe_Release(m_pUIManager);
 	CUIManager::DestroyInstance();
-
+	
 	Safe_Release(m_pFileTotalManager);
 	CFileTotalMgr::DestroyInstance();
 

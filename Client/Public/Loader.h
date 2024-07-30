@@ -57,6 +57,7 @@ private:
 
 private:
 	HRESULT Loading_Default();
+	HRESULT Loading_Highway();
 
 
 public:

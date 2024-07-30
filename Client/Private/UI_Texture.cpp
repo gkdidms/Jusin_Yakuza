@@ -29,7 +29,10 @@ CUI_Texture::CUI_Texture(const CUI_Texture& rhs)
 	m_iShaderPass{rhs.m_iShaderPass },
 	m_fControlAlpha{rhs.m_fControlAlpha },
 	m_isReverse{rhs.m_isReverse },
-	m_isAnimLoop{rhs.m_isAnimLoop}
+	m_isAnimLoop{rhs.m_isAnimLoop},
+	m_fUpPoint{ rhs.m_fUpPoint },
+	m_fDownPoint{ rhs.m_fDownPoint },
+	m_vEndColor{ rhs.m_vEndColor }
 {
 }
 
@@ -67,6 +70,10 @@ HRESULT CUI_Texture::Initialize(void* pArg)
 		m_isAnimLoop = pDesc->isAnimLoop;
 		m_fControlAlpha = pDesc->fControlAlpha;
 		m_isReverse = pDesc->isReverse;
+
+		m_fUpPoint = pDesc->vUpPoint;
+		m_fDownPoint = pDesc->vDownPoint;
+		m_vEndColor = pDesc->vEndColor;
 
 		m_WorldMatrix = pDesc->WorldMatrix;
 
@@ -150,6 +157,18 @@ HRESULT CUI_Texture::Change_UV(_float2 fStartUV, _float2 fEndUV)
 	return S_OK;
 }
 
+HRESULT CUI_Texture::Change_Point(_float4 vUpPoint, _float4 vDownPotint)
+{
+
+	m_fUpPoint = vUpPoint;
+	m_fDownPoint = vDownPotint;
+
+	if (FAILED(m_pVIBufferCom->Edit_Point(m_fUpPoint, m_fDownPoint)))
+		return E_FAIL;
+
+	return S_OK;
+}
+
 HRESULT CUI_Texture::Show_UI()
 {
 	m_fAnimTime.x = 0.f;
@@ -189,6 +208,11 @@ _bool CUI_Texture::Check_AnimFin()
 	}
 }
 
+_bool CUI_Texture::Click_Intersect(_int Index)
+{
+	return m_pGameInstance->Picking_UI(m_pTransformCom);
+}
+
 HRESULT CUI_Texture::Save_binary(const string strDirectory)
 {
 	return E_FAIL;
@@ -210,6 +234,8 @@ HRESULT CUI_Texture::Add_Components()
 
 	Desc.fStartUV = m_fStartUV;
 	Desc.fEndUV = m_fEndUV;
+	Desc.vUpPoint = m_fUpPoint;
+	Desc.vDownPoint = m_fDownPoint;
 
 	if (FAILED(__super::Add_Component(LEVEL_STATIC, TEXT("Prototype_Component_VIBuffer_Rect"),
 		TEXT("Com_VIBuffer"), reinterpret_cast<CComponent**>(&m_pVIBufferCom),&Desc)))
@@ -259,6 +285,8 @@ HRESULT CUI_Texture::Bind_ResourceData()
 	if(m_isColor)
 	{
 		if (FAILED(m_pShaderCom->Bind_RawValue("g_vColor", &m_vColor, sizeof(_float4))))
+			return E_FAIL;
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_vEndColor", &m_vEndColor, sizeof(_float4))))
 			return E_FAIL;
 	}
 

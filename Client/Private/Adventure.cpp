@@ -8,7 +8,6 @@
 
 #include "AI_Passersby.h"
 
-
 CAdventure::CAdventure(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CLandObject { pDevice, pContext }
 {
@@ -23,7 +22,6 @@ void CAdventure::Start_Root(_int iGoalIndex)
 {
 	m_pAStartCom->Start_Root(m_pNavigationCom, iGoalIndex);
 }
-
 
 HRESULT CAdventure::Initialize_Prototype()
 {
@@ -49,6 +47,19 @@ void CAdventure::Tick(const _float& fTimeDelta)
 	Change_Animation();
 
 	//길찾기 알고리즘
+	
+	
+	
+	if (m_pGameInstance->GetMouseState(DIM_LB) == TAP)
+	{
+		_bool isPicking = false;
+		_vector vGoalPos = m_pGameInstance->Picking(&isPicking);
+		if (isPicking)
+		{
+			
+		}
+	}
+	
 
 	m_pModelCom->Play_Animation(fTimeDelta, m_pAnimCom, m_isAnimLoop);
 
@@ -288,7 +299,6 @@ void CAdventure::Check_Separation()
 	vMoveDir = XMVector3Normalize(vMoveDir);
 
 	//NPC별 충돌 시 피하는 방향 벡터 -> vMoveDir;
-
 }
 
 HRESULT CAdventure::Add_Components()

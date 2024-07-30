@@ -5,14 +5,14 @@
 CKiryu_KRS_Walk::CKiryu_KRS_Walk()
 	:CBehaviorAnimation{}
 {
-	m_AnimationIndices.push_back(373);			// 0 [373]	p_krs_shift_b[p_krs_shift_b]
-	m_AnimationIndices.push_back(374);			// 1 [374]	p_krs_shift_bl[p_krs_shift_bl]
-	m_AnimationIndices.push_back(375);			// 2 [375]	p_krs_shift_br[p_krs_shift_br]
-	m_AnimationIndices.push_back(376);			// 3 [376]	p_krs_shift_f[p_krs_shift_f]
-	m_AnimationIndices.push_back(377);			// 4 [377]	p_krs_shift_fl[p_krs_shift_fl]
-	m_AnimationIndices.push_back(378);			// 5 [378]	p_krs_shift_fr[p_krs_shift_fr]
-	m_AnimationIndices.push_back(379);			// 6 [379]	p_krs_shift_l[p_krs_shift_l]
-	m_AnimationIndices.push_back(380);			// 7 [380] p_krs_shift_r[p_krs_shift_r]
+	m_AnimationIndices.push_back(548);			// 0 [548]	p_krs_shift_b[p_krs_shift_b]
+	m_AnimationIndices.push_back(550);			// 1 [550]	p_krs_shift_bl[p_krs_shift_bl]
+	m_AnimationIndices.push_back(552);			// 2 [552]	p_krs_shift_br[p_krs_shift_br]
+	m_AnimationIndices.push_back(554);			// 3 [554]	p_krs_shift_f[p_krs_shift_f]
+	m_AnimationIndices.push_back(556);			// 4 [556]	p_krs_shift_fl[p_krs_shift_fl]
+	m_AnimationIndices.push_back(558);			// 5 [558]	p_krs_shift_fr[p_krs_shift_fr]
+	m_AnimationIndices.push_back(560);			// 6 [560]	p_krs_shift_l[p_krs_shift_l]
+	m_AnimationIndices.push_back(562);			// 7 [562] p_krs_shift_r[p_krs_shift_r]
 }
 
 void CKiryu_KRS_Walk::Tick(const _float& fTimeDelta)

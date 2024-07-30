@@ -282,7 +282,6 @@ void CImguiManager::AnimListWindow()
 		{
 			m_AddedAnims.emplace(m_iAnimIndex, m_AnimNameList[m_iAnimIndex]);
 		}
-
 	}
 
 	vector<const char*> Addeditems;
@@ -1400,13 +1399,72 @@ void CImguiManager::AnimationLoop_Save(string strPath)
 
 	ofstream out(strDirectory, ios::binary);
 
-	_uint iAnimMapSize = m_AddedAnims.size();
+	_uint iMapSize = m_AddedAnims.size();
 
-	out.write((char*)&iAnimMapSize, sizeof(_uint));
-
-	for (auto& iter : m_AddedAnims)
+	// 추후 코드 수정 필요
+	for (const auto& iter : m_AddedAnims)
 	{
-		out.write((char*)&(iter.first), sizeof(_uint));
+		_uint iAnimIndex = iter.first;
+
+		auto Anims = m_pRenderModel->Get_Animations();
+
+
+		// 이름이 같은 애니메이션을 찾아서 key값으로 저장해준다.
+		_uint i = 0;
+		for (auto& pAnim : Anims)
+		{
+			string animationName = m_pGameInstance->Extract_String(pAnim->Get_AnimName(), '[', ']');
+
+			if (animationName == iter.second)
+			{
+				iAnimIndex = i;
+				break;
+			}
+
+			i++;
+		}
+
+		// 현재 애니메이션에 없는건 제거하는 코드 (그만큼 갯수줄임)
+		if (i >= Anims.size())
+			iMapSize--;
+	}
+
+	// iMapSize를 이진 형식으로 저장
+	out.write(reinterpret_cast<const char*>(&iMapSize), sizeof(iMapSize));
+
+	for (const auto& iter : m_AddedAnims)
+	{
+		// 키를 이진 형식으로 저장
+		_uint iAnimIndex = iter.first;
+
+		auto Anims = m_pRenderModel->Get_Animations();
+
+
+		// 이름이 같은 애니메이션을 찾아서 key값으로 저장해준다.
+		_uint i = 0;
+		for (auto& pAnim : Anims)
+		{
+			string animationName = m_pGameInstance->Extract_String(pAnim->Get_AnimName(), '[', ']');
+
+			if (animationName == iter.second)
+			{
+				iAnimIndex = i;
+				break;
+			}
+
+			i++;
+		}
+
+		if (i >= Anims.size()) continue;
+		
+
+		out.write(reinterpret_cast<const char*>(&iAnimIndex), sizeof(iAnimIndex));
+
+		// 문자열 길이와 문자열을 이진 형식으로 저장
+		const string& strAnimName = iter.second;
+		_uint length = strAnimName.size();
+		out.write(reinterpret_cast<const char*>(&length), sizeof(length));
+		out.write(strAnimName.c_str(), length);
 	}
 
 	out.close();
@@ -1652,35 +1710,28 @@ void CImguiManager::AnimationLoop_Load(string strPath)
 		return;
 	}
 
-	_uint iAnimMapSize;
-
-	in.read((char*)&iAnimMapSize, sizeof(_uint));
-
 	m_AddedAnims.clear();
 
 	m_AnimNameList.clear();
 	m_AnimNameList.resize(m_Anims.size());
 
-	_uint i = 0;
-
-	vector<const char*> items;
-
-	for (auto pAnim : m_Anims)
+	_uint iAnimMapSize;
+	in.read(reinterpret_cast<char*>(&iAnimMapSize), sizeof(iAnimMapSize));
+	
+	for (size_t i = 0; i < iAnimMapSize; ++i)
 	{
-		string strChannelName = m_pGameInstance->Extract_String(pAnim->Get_AnimName(), '[', ']');
+		// 키를 이진 형식으로 읽어옴
+		_uint iAnimIndex = 0;
+		in.read(reinterpret_cast<char*>(&iAnimIndex), sizeof(iAnimIndex));
 
-		m_AnimNameList[i] = strChannelName;
-		items.push_back(m_AnimNameList[i].c_str());
+		// 문자열 길이와 문자열을 이진 형식으로 읽어옴
+		_uint length = 0;
+		in.read(reinterpret_cast<char*>(&length), sizeof(length));
 
-		i++;
-	}
+		string strAnimName(length, ' ');
+		in.read(&strAnimName[0], length);
 
-
-	for (size_t i = 0; i < iAnimMapSize; i++)
-	{
-		_uint iAnimIndex = { 0 };
-		in.read((char*)&iAnimIndex, sizeof(_uint));
-		m_AddedAnims.emplace(iAnimIndex, m_AnimNameList[iAnimIndex]);
+		m_AddedAnims.emplace(iAnimIndex, strAnimName);
 	}
 
 	in.close();

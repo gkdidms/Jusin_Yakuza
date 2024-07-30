@@ -89,15 +89,14 @@ void CSocketCollider::Tick(const _float& fTimeDelta)
 
 void CSocketCollider::Late_Tick(const _float& fTimeDelta)
 {
-	m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
+#ifdef _DEBUG
+	if (m_pColliderCom && m_isOn)
+		m_pGameInstance->Add_DebugComponent(m_pColliderCom);
+#endif
 }
 
 HRESULT CSocketCollider::Render()
-{
-#ifdef _DEBUG
-	if(m_pColliderCom && m_isOn)
-		m_pGameInstance->Add_DebugComponent(m_pColliderCom);
-#endif
+{	
 	return S_OK;
 }
 
@@ -126,6 +125,12 @@ void CSocketCollider::Filtering_Timer(_float fTimeDelta)
 		m_fFilteringTimer = 0.f;
 		m_isFiltered = false;
 	}
+}
+
+void CSocketCollider::ParentObject_Attack(CSocketCollider* pHitCollider)
+{
+	// 어택했을 때 공격한 콜라이더에서 실행할 이벤트
+	m_pParentObject->Attack_Event(pHitCollider->Get_Parent());
 }
 
 void CSocketCollider::ParentObject_Hit(CSocketCollider* pAttackedCollider)

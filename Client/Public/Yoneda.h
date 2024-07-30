@@ -1,6 +1,9 @@
 #pragma once
 #include "Monster.h"
 
+/*
+* WPB : ³ªÀÌÇÁ
+*/
 BEGIN(Client)
 class CYoneda :
     public CMonster
@@ -22,7 +25,6 @@ private:
 
 private:
     virtual HRESULT Add_Components() override;
-    virtual HRESULT Bind_ResourceData() override;
     virtual void Change_Animation();
 
 private:
