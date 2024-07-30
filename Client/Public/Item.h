@@ -16,7 +16,7 @@ BEGIN(Client)
 class CItem final : public CGameObject
 {
 private:
-	const _float BRIGHT_DISTANCE = 8.f;
+	const _float BRIGHT_DISTANCE = 5.f;
 
 public:
 	enum OBJECT_TYPE {
@@ -88,7 +88,7 @@ public:
 
 	ITEM_MODE			Get_ItemMode() { return m_eItemMode; }
 	void				Set_ItemMode(CItem::ITEM_MODE mode) { m_eItemMode = mode; }
-	void				Set_Grab(bool bGrab) { m_bCurGrab = bGrab; }
+	void				Set_Grab(bool bGrab) { m_bCurGrab = bGrab;  m_eItemMode = ITEM_GRAB; }
 
 private:
 	void						Set_Item_Mode();

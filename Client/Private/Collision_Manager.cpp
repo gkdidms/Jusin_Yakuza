@@ -261,7 +261,6 @@ void CCollision_Manager::ItemCollision()
             {
                 // 잡았을때 처리 함수 
                 dynamic_cast<CItem*>(item)->Set_Grab(true);
-                dynamic_cast<CItem*>(item)->Set_ItemMode(CItem::ITEM_GRAB);
             }
         }
         

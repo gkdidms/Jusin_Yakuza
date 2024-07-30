@@ -955,7 +955,7 @@ void CObjPlace_Manager::Set_Map_Object()
 {
 	ImGui::Text(u8"LayerTag 이름");
 
-	const char* pLayerArray[] = { "Map0", "Map1", "Character", "Map2"};
+	const char* pLayerArray[] = { "Map0", "Map1", "Character", "Map2", "Map3"};
 	static int folder_current_idx = 0;
 	if (ImGui::BeginListBox("listbox 1"))
 	{
@@ -1025,12 +1025,29 @@ void CObjPlace_Manager::Set_Map_Object()
 	if (3 == folder_current_idx)
 	{
 
-		if (ImGui::BeginListBox(u8"도지마조-2f"))
+		if (ImGui::BeginListBox(u8"도지마조"))
 		{
 			for (int n = 0; n < m_ObjectNames_Map2.size(); n++)
 			{
 				const bool is_selected = (object_current_idx == n);
 				if (ImGui::Selectable(m_ObjectNames_Map2[n], is_selected))
+					object_current_idx = n;
+
+				if (is_selected)
+					ImGui::SetItemDefaultFocus();
+			}
+			ImGui::EndListBox();
+		}
+	}
+	if (4 == folder_current_idx)
+	{
+
+		if (ImGui::BeginListBox(u8"고속도로"))
+		{
+			for (int n = 0; n < m_ObjectNames_Map3.size(); n++)
+			{
+				const bool is_selected = (object_current_idx == n);
+				if (ImGui::Selectable(m_ObjectNames_Map3[n], is_selected))
 					object_current_idx = n;
 
 				if (is_selected)
@@ -1280,6 +1297,20 @@ void CObjPlace_Manager::Load_ModelName()
 		char* cfilename = new char[MAX_PATH];
 		strcpy(cfilename, StringToCharDIY(modifiedString));
 		m_ObjectNames_Map2.push_back(cfilename);
+	}
+
+	vObjectNames.clear();
+
+	/* map2 모델 로드*/
+	m_pGameInstance->Get_FileNames("../../Client/Bin/Resources/Models/NonAnim/Map/Map3/Bin", vObjectNames);
+
+	for (int i = 0; i < vObjectNames.size(); i++)
+	{
+		string modifiedString = modifyString(vObjectNames[i]);
+
+		char* cfilename = new char[MAX_PATH];
+		strcpy(cfilename, StringToCharDIY(modifiedString));
+		m_ObjectNames_Map3.push_back(cfilename);
 	}
 
 }
@@ -1552,6 +1583,10 @@ string CObjPlace_Manager::Find_ModelName(_uint iFolderNum, _uint iObjectIndex)
 	else if (3 == iFolderNum)
 	{
 		strResult = m_ObjectNames_Map2[iObjectIndex];
+	}
+	else if (4 == iFolderNum)
+	{
+		strResult = m_ObjectNames_Map3[iObjectIndex];
 	}
 	return strResult;
 }
@@ -2155,7 +2190,7 @@ void CObjPlace_Manager::Add_ObjectCollider_IMGUI()
 			Update_ColliderList_In_Object();
 			Update_ColliderNameList();
 
-			if (m_ObjectColliders.size() <= collider_current_idx && m_ObjectColliders.size() - 1 >= 0)
+			if (m_ObjectColliders.size() - 1 <= collider_current_idx && m_ObjectColliders.size() - 1 > 0)
 			{
 				collider_current_idx = m_ObjectColliders.size() - 1;
 			}
@@ -2324,6 +2359,10 @@ void CObjPlace_Manager::Free()
 	for (auto& iter : m_ObjectNames_Map2)
 		Safe_Delete(iter);
 	m_ObjectNames_Map2.clear();
+
+	for (auto& iter : m_ObjectNames_Map3)
+		Safe_Delete(iter);
+	m_ObjectNames_Map3.clear();
 
 	for (auto& iter : m_MonsterNames)
 		Safe_Delete(iter);

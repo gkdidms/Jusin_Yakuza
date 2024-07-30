@@ -104,6 +104,7 @@ public:
     void Set_SSAOBias(_float fBias);
     void Set_Shadow(_bool isShadow);
     void Set_RimLight(_bool isRimLight);
+    int Get_RenderState();
 #ifdef _DEBUG
 public:
     HRESULT Add_DebugComponent(class CComponent* pComponent);

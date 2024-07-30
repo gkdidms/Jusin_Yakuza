@@ -337,6 +337,10 @@ HRESULT CLoader::Loading_Default()
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Shader_MeshItem"),
 		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxMeshItem.hlsl"), VTXMESH::Elements, VTXMESH::iNumElements))))
 		return E_FAIL;
+	/* For.Prototype_Component_Shader_MeshMap */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Shader_MeshMap"),
+		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxMeshMap.hlsl"), VTXMESH::Elements, VTXMESH::iNumElements))))
+		return E_FAIL;
 	/* For.Prototype_Component_Shader_VtxMeshSky */
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Shader_VtxMeshSky"),
 		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxMeshSky.hlsl"), VTXMESH::Elements, VTXMESH::iNumElements))))

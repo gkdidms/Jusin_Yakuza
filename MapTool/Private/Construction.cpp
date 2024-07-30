@@ -108,6 +108,8 @@ void CConstruction::Late_Tick(const _float& fTimeDelta)
 	vector<CMesh*> Meshes = m_pModelCom->Get_Meshes();
 	_uint	iNumMeshes = m_pModelCom->Get_NumMeshes();
 
+	// vector 비워주고 시작
+	m_vRenderMeshIndexes.clear();
 
 	for (size_t i = 0; i < iNumMeshes; i++)
 	{
@@ -115,31 +117,17 @@ void CConstruction::Late_Tick(const _float& fTimeDelta)
 
 		XMVECTOR localPosition = XMVectorSet(vLocalMatrix._41, vLocalMatrix._42, vLocalMatrix._43, 1);
 
-		if (true == m_pGameInstance->isIn_LocalFrustum(localPosition, 3.f))
+		if (true == m_pGameInstance->isIn_LocalFrustum(localPosition, 5.f))
 		{
-			m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
-
-			for (auto& iter : m_vDecals)
-				iter->Late_Tick(fTimeDelta);
-			return;
+			m_vRenderMeshIndexes.push_back(i);
 		}
 
 	}
 
+	/*for (auto& iter : m_vDecals)
+		iter->Late_Tick(fTimeDelta);*/
 
-
-	// 로컬 위치로 변환
-	//_float4x4 vLocalMatrix = m_pModelCom->Get_LocalMatrix();
-
-	//XMVECTOR localPosition = XMVectorSet(vLocalMatrix._41, vLocalMatrix._42, vLocalMatrix._43, 1);
-
-	//if (true == m_pGameInstance->isIn_LocalFrustum(localPosition, 10.f))
-	//{
-	//	m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
-	//}
-	
-
-
+	m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
 
 }
 
@@ -147,7 +135,6 @@ HRESULT CConstruction::Render()
 {
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
-
 
 	_uint	iNumMeshes = m_pModelCom->Get_NumMeshes();
 	vector<CMesh*> Meshes = m_pModelCom->Get_Meshes();
@@ -190,7 +177,53 @@ HRESULT CConstruction::Render()
 		m_pModelCom->Render(i);
 	}
 
+
+	//vector<CMesh*> Meshes = m_pModelCom->Get_Meshes();
+
+	//for (size_t i = 0; i < m_vRenderMeshIndexes.size(); i++)
+	//{
+	//	int		iMeshIndex = m_vRenderMeshIndexes[i];
+
+	//	if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_Texture", iMeshIndex, aiTextureType_DIFFUSE)))
+	//		return E_FAIL;
+
+	//	if (!strcmp(Meshes[iMeshIndex]->Get_Name(), "box4783"))
+	//	{
+	//		int a = 10;
+	//	}
+
+	//	/*m_pShaderCom->Begin(m_iShaderPassNum);*/
+
+	//	bool	bFindDecal = false;
+
+	//	if (true == m_bFindDecalMesh)
+	//	{
+	//		for (int j = 0; j < m_iDecalMeshCnt; j++)
+	//		{
+	//			if (m_pDecalMeshIndex[j] == iMeshIndex)
+	//			{
+	//				bFindDecal = true;
+	//			}
+	//		}
+	//	}
+
+	//	if (true == bFindDecal)
+	//	{
+
+	//		/* decal이 포함된 메쉬는 빨강색으로 */
+	//		m_pShaderCom->Begin(1);
+	//	}
+	//	else
+	//	{
+	//		m_pShaderCom->Begin(0);
+	//	}
+
+	//	m_pModelCom->Render(iMeshIndex);
+	//}
+
+
 #ifdef _DEBUG
+
 	for (auto& iter : m_vColliders)
 		m_pGameInstance->Add_DebugComponent(iter);
 #endif
@@ -458,6 +491,9 @@ HRESULT CConstruction::Bind_ShaderResources()
 	if (FAILED(m_pShaderCom->Bind_ValueFloat("g_fObjID", m_fObjID)))
 		return E_FAIL;
 
+	if (FAILED(m_pShaderCom->Bind_ValueFloat("g_fFar", *m_pGameInstance->Get_CamFar())))
+		return E_FAIL;
+
 	bool	bWrite;
 	if (CImgui_Manager::IDWRIE::OBJPLACE == CImgui_Manager::GetInstance()->Get_Write())
 	{
@@ -519,4 +555,6 @@ void CConstruction::Free()
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pModelCom);
 
+
+	m_vRenderMeshIndexes.clear();
 }

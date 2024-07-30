@@ -13,6 +13,7 @@ public:
         RENDER_DECAL,
         RENDER_GLASS,
         RENDER_PUDDLE,
+        RENDER_NONLIGHT_NONBLUR,
         RENDER_NONLIGHT,
         RENDER_BLENDER,
         RENDER_EFFECT,
@@ -47,6 +48,7 @@ public:
     _float Get_SSAORadiuse() { return m_fSSAORadiuse; }
     _float Get_SSAOBlur() { return m_fSSAOBlur; }
     _float Get_SSAOBias() { return m_fSSAOBiae; }
+    int     Get_RenderState() { return m_iRenderState; }
 
 public:
     HRESULT Initialize();
@@ -91,6 +93,9 @@ private:
     void Render_CopyLuminance();
     void Render_AvgLuminance();
     void Render_LuminanceResult();
+
+    /* NonLight인데 blur 안 들어감 */
+    void Render_NonLight_NonBlur();
 
     /* Effect */
     void Render_RimLight();
@@ -162,6 +167,8 @@ private:
     _float m_fSSAOBlur = { 2.f };
     _float m_fSSAOBiae = { 0.025f };
     _float4* m_vSSAOKernal;
+
+    int      m_iRenderState = { RENDER_END };
 
 #ifdef _DEBUG
     _bool m_isDebugView = { true };

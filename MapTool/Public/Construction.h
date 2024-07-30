@@ -97,6 +97,9 @@ private:
 	vector<CCollider*>								m_vColliders;
 	vector<OBJCOLLIDER_DESC>						m_vColliderDesc;
 
+
+	vector<int>										m_vRenderMeshIndexes;
+
 	int												m_iLayerNum = { 0 };
 	wstring											m_wstrModelName;
 	int												m_iShaderPassNum = { 0 };

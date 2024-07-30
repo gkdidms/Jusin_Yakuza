@@ -321,6 +321,11 @@ void CGameInstance::Set_RimLight(_bool isRimLight)
 	m_pRenderer->Set_RimLight(isRimLight);
 }
 
+int CGameInstance::Get_RenderState()
+{
+	return m_pRenderer->Get_RenderState();
+}
+
 #ifdef _DEBUG
 HRESULT CGameInstance::Add_DebugComponent(CComponent* pComponent)
 {

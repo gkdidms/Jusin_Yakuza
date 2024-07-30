@@ -301,7 +301,6 @@ HRESULT CConstruction::Render()
 
 		}
 
-		
 
 		m_pShaderCom->Begin(m_iShaderPassNum);
 

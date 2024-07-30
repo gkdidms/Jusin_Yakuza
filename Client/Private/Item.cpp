@@ -102,9 +102,53 @@ void CItem::Tick(const _float& fTimeDelta)
 	for (auto& iter : m_vDecals)
 		iter->Tick(fTimeDelta);
 
-
 	// 잡을 수 있을때와 아닐때를 구별
 	Set_Item_Mode();
+
+	// Bright 처리
+	bool		bBright = m_bBright;
+
+	if (0 != m_fBrightTime && ITEM_BRIGHT != m_eItemMode)
+	{
+		// bright 모드 아닌데 아직 깜빡거림이 안끝났을때
+		m_bBright = true;
+
+		m_fBrightTime += 0.04;
+
+		if (4 < m_fBrightTime)
+		{
+			m_fBrightTime = 0;
+			m_bBright = false;
+		}
+	}
+	else if (ITEM_BRIGHT == m_eItemMode)
+	{
+		// bright 모드 
+		m_bBright = true;
+
+		m_fBrightTime += 0.04;
+
+		if (4 < m_fBrightTime)
+		{
+			m_fBrightTime = 0;
+		}
+	}
+	else if (0 == m_fBrightTime && ITEM_BRIGHT != m_eItemMode)
+	{
+		// bright 모드 아님
+		m_bBright = false;
+	}
+	else if (true == m_bCurGrab)
+	{
+		// grab이면 바로 꺼짐
+		m_bBright = false;
+		m_fBrightTime = 0;
+	}
+
+
+
+
+
 
 	if (ITEM_GRAB == m_eItemMode)
 	{
@@ -125,6 +169,10 @@ void CItem::Tick(const _float& fTimeDelta)
 	{
 		XMStoreFloat4x4(&m_WorldMatrix, m_pTransformCom->Get_WorldMatrix());
 	}
+
+
+
+
 	
 
 	_matrix		worldMatrix = XMLoadFloat4x4(&m_WorldMatrix);
@@ -140,7 +188,7 @@ void CItem::Late_Tick(const _float& fTimeDelta)
 {
 	if (true == m_pGameInstance->isIn_WorldFrustum(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 3.f))
 	{
-		if (ITEM_BRIGHT == m_eItemMode)
+		if (true == m_bBright)
 		{
 			m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
 			m_pGameInstance->Add_Renderer(CRenderer::RENDER_EFFECT, this);
@@ -149,6 +197,7 @@ void CItem::Late_Tick(const _float& fTimeDelta)
 		{
 			m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
 		}
+
 
 		for (auto& iter : m_vDecals)
 			iter->Late_Tick(fTimeDelta);
@@ -236,11 +285,9 @@ HRESULT CItem::Render()
 				return E_FAIL;
 		}
 
-		// RimLight 할지말지
 		if (FAILED(m_pShaderCom->Bind_RawValue("g_fBrightTime", &m_fBrightTime, sizeof(_float))))
 			return E_FAIL;
 
-		// RimLight 할지말지
 		if (FAILED(m_pShaderCom->Bind_RawValue("g_bBright", &m_bBright, sizeof(_bool))))
 			return E_FAIL;
 
@@ -296,9 +343,7 @@ void CItem::Set_Item_Mode()
 	{	
 		m_bBright = true;
 		
-		m_eItemMode = ITEM_BRIGHT;
-
-		m_fBrightTime += 0.04;
+		m_eItemMode = ITEM_BRIGHT;			
 	}
 	else if (false == m_bCurGrab)
 	{

@@ -198,6 +198,7 @@ HRESULT CLightConstruction::Render()
 			}
 		}
 
+
 		m_pShaderCom->Begin(m_iShaderPassNum);
 
 		m_pModelCom->Render(i);

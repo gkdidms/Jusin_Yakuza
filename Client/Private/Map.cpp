@@ -111,19 +111,79 @@ void CMap::Tick(const _float& fTimeDelta)
 
 void CMap::Late_Tick(const _float& fTimeDelta)
 {
+	// Renderer에 추가되는 mesh index 비워주고 시작
+	m_vRenderDefaulMeshIndex.clear();
+	m_vRenderGlassMeshIndex.clear();
+	m_vDecalMeshIndex.clear();
+	m_vDecalLightMeshIndex.clear();
+	m_vSignMeshIndex.clear();
+	m_vLampMeshIndex.clear();
+	m_vDecalBlendMeshIndex.clear();
 
-	// 로컬 위치로 변환
-	_float4x4 vLocalMatrix = m_pModelCom->Get_LocalMatrix();
+	vector<CMesh*> Meshes = m_pModelCom->Get_Meshes();
+	_uint	iNumMeshes = m_pModelCom->Get_NumMeshes();
 
-	XMVECTOR localPosition = XMVectorSet(vLocalMatrix._41, vLocalMatrix._42, vLocalMatrix._43, 1);
-
-	if (true == m_pGameInstance->isIn_LocalFrustum(localPosition, 4.f))
+	for (size_t i = 0; i < iNumMeshes; i++)
 	{
+		_float4x4 vLocalMatrix = Meshes[i]->Get_LocalMatrix();
+
+		XMVECTOR localPos = XMVectorSet(vLocalMatrix._41, vLocalMatrix._42, vLocalMatrix._43, 1);
+		XMVECTOR worldPos = XMVectorZero();
+		worldPos = XMVector3Transform(localPos, m_pTransformCom->Get_WorldMatrix());
+
+		if (true == m_pGameInstance->isIn_WorldFrustum(worldPos, 10.f))
+		{
+			if (0 == strcmp(Meshes[i]->Get_Name(), "DEFAULTMESH"))
+			{
+				m_vRenderDefaulMeshIndex.push_back(i);
+			}
+			else if (0 == strcmp(Meshes[i]->Get_Name(), "GLASSMESH"))
+			{
+				m_vRenderGlassMeshIndex.push_back(i);
+			}
+			else if (0 == strcmp(Meshes[i]->Get_Name(), "DECALMESH"))
+			{
+				m_vDecalMeshIndex.push_back(i);
+			}
+			else if (0 == strcmp(Meshes[i]->Get_Name(), "DECALLIGHTMESH"))
+			{
+				m_vDecalLightMeshIndex.push_back(i);
+			}
+			else if (0 == strcmp(Meshes[i]->Get_Name(), "SIGNMESH"))
+			{
+				m_vSignMeshIndex.push_back(i);
+			}
+			else if (0 == strcmp(Meshes[i]->Get_Name(), "LAMPMESH"))
+			{
+				// Nonblend + effect 둘 다 호출
+				m_vLampMeshIndex.push_back(i);
+			}
+			else if (0 == strcmp(Meshes[i]->Get_Name(), "DECALBLENDMESH"))
+			{
+				m_vDecalBlendMeshIndex.push_back(i);
+			}
+		}
+
+	}
+
+	// RENDER_NONBLEND 돼야하는 그룹
+	if(0 < m_vRenderDefaulMeshIndex.size()  || 0 < m_vSignMeshIndex.size() || 0 < m_vLampMeshIndex.size() || 0 < m_vDecalMeshIndex.size())
 		m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
 
-		for (auto& iter : m_vDecals)
-			iter->Late_Tick(fTimeDelta);
-	}
+	// RENDER_GLASS 돼야하는 그룹
+	if (0 < m_vRenderGlassMeshIndex.size())
+		m_pGameInstance->Add_Renderer(CRenderer::RENDER_GLASS, this);
+
+	// RENDER_EFFECT 돼야하는 그룹
+	if (0 < m_vDecalLightMeshIndex.size() || 0 < m_vLampMeshIndex.size())
+		m_pGameInstance->Add_Renderer(CRenderer::RENDER_EFFECT, this);
+
+	if (0 < m_vDecalBlendMeshIndex.size())
+		m_pGameInstance->Add_Renderer(CRenderer::RENDER_DECAL, this);
+
+
+	for (auto& iter : m_vDecals)
+		iter->Late_Tick(fTimeDelta);
 
 }
 
@@ -138,117 +198,497 @@ HRESULT CMap::Render()
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
 
+#pragma region mesh컬링전Render
+	//_uint	iNumMeshes = m_pModelCom->Get_NumMeshes();
+	//vector<CMesh*> Meshes = m_pModelCom->Get_Meshes();
+	//for (size_t i = 0; i < iNumMeshes; i++)
+	//{
+	//	if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
+	//		return E_FAIL;
 
-	_uint	iNumMeshes = m_pModelCom->Get_NumMeshes();
+	//	_bool isRS = true;
+	//	_bool isRD = true;
+	//	if (!strcmp(Meshes[i]->Get_Name(), "box4783"))
+	//	{
+	//		isRS = false;
+	//		isRD = false;
+	//	}
+
+	//	if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RSTexture", i, aiTextureType_SPECULAR)))
+	//		isRS = false;
+	//	m_pShaderCom->Bind_RawValue("g_isRS", &isRS, sizeof(_bool));
+
+	//	if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RDTexture", i, aiTextureType_OPACITY)))
+	//		isRD = false;
+
+	//	m_pShaderCom->Bind_RawValue("g_isRD", &isRD, sizeof(_bool));
+
+	//	bool	bNormalExist = m_pModelCom->Check_Exist_Material(i, aiTextureType_NORMALS);
+	//	// Normal texture가 있을 경우
+	//	if (true == bNormalExist)
+	//	{
+	//		m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS);
+
+	//		if (FAILED(m_pShaderCom->Bind_RawValue("g_bExistNormalTex", &bNormalExist, sizeof(bool))))
+	//			return E_FAIL;
+	//	}
+	//	else
+	//	{
+	//		if (FAILED(m_pShaderCom->Bind_RawValue("g_bExistNormalTex", &bNormalExist, sizeof(bool))))
+	//			return E_FAIL;
+	//	}
+
+	//	bool	bRMExist = m_pModelCom->Check_Exist_Material(i, aiTextureType_METALNESS);
+	//	if (true == bRMExist)
+	//	{
+	//		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RMTexture", i, aiTextureType_METALNESS)))
+	//			return E_FAIL;
+
+	//		if (FAILED(m_pShaderCom->Bind_RawValue("g_bExistRMTex", &bRMExist, sizeof(bool))))
+	//			return E_FAIL;
+	//	}
+	//	else
+	//	{
+	//		if (FAILED(m_pShaderCom->Bind_RawValue("g_bExistRMTex", &bRMExist, sizeof(bool))))
+	//			return E_FAIL;
+	//	}
+
+	//	bool	bRSExist = m_pModelCom->Check_Exist_Material(i, aiTextureType_SPECULAR);
+	//	if (true == bRSExist)
+	//	{
+	//		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RSTexture", i, aiTextureType_SPECULAR)))
+	//			return E_FAIL;
+
+	//		if (FAILED(m_pShaderCom->Bind_RawValue("g_bExistRSTex", &bRSExist, sizeof(bool))))
+	//			return E_FAIL;
+	//	}
+	//	else
+	//	{
+	//		if (FAILED(m_pShaderCom->Bind_RawValue("g_bExistRSTex", &bRSExist, sizeof(bool))))
+	//			return E_FAIL;
+	//	}
+
+	//	if (1 == m_iShaderPassNum)
+	//	{
+	//		// 유리문 처리
+	//		if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_NonBlendDiffuse"), m_pShaderCom, "g_RefractionTexture")))
+	//			return E_FAIL;
+	//	}
+	//	else if (2 == m_iShaderPassNum)
+	//	{
+	//		//m_pTexture->Bind_ShaderResource(m_pShaderCom, "g_NoiseTexture", 0);
+
+	//		// 웅덩이
+	//		if (FAILED(m_pShaderCom->Bind_RawValue("g_fTimeDelta", &m_fWaterDeltaTime, sizeof(float))))
+	//			return E_FAIL;
+
+	//		if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_NonBlendDiffuse"), m_pShaderCom, "g_RefractionTexture")))
+	//			return E_FAIL;
+
+	//		if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_NonBlendDepth"), m_pShaderCom, "g_DepthTexture")))
+	//			return E_FAIL;
+
+	//		if (FAILED(m_pShaderCom->Bind_RawValue("g_vCamPosition", m_pGameInstance->Get_CamPosition_Float4(), sizeof(_float4))))
+	//			return E_FAIL;
+
+	//		if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrixInv", m_pGameInstance->Get_Transform_Inverse_Float4x4(CPipeLine::D3DTS_VIEW))))
+	//			return E_FAIL;
+	//		if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrixInv", m_pGameInstance->Get_Transform_Inverse_Float4x4(CPipeLine::D3DTS_PROJ))))
+	//			return E_FAIL;
+	//		if (FAILED(m_pShaderCom->Bind_Matrix("g_ReflectViewMatrix", m_pGameInstance->Get_ReflectViewMatrix())))
+	//			return E_FAIL;
+
+	//		if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_BackBlurReverse"), m_pShaderCom, "g_BlurReverseTexture")))
+	//			return E_FAIL;
+
+	//	}
+
+	//	const char* defaultMesh = "DEFAULTMESH";
+	//	const char* glassMesh = "GLASSMESH";
+	//	const char* decalMesh = "DECALMESH";
+	//	const char* signMesh = "SIGNMESH";
+
+	//	if (0 == strcmp(Meshes[i]->Get_Name(), defaultMesh))
+	//	{
+	//		m_pShaderCom->Begin(SHADER_DEFAULT_MAP);
+	//	}
+	//	else if (0 == strcmp(Meshes[i]->Get_Name(), glassMesh))
+	//	{
+	//		m_pShaderCom->Begin(SHADER_GLASS);
+	//	}
+	//	else if (0 == strcmp(Meshes[i]->Get_Name(), decalMesh))
+	//	{
+	//		m_pShaderCom->Begin(SHADER_DECAL);
+	//	}
+	//	else if (0 == strcmp(Meshes[i]->Get_Name(), signMesh))
+	//	{
+	//		m_pShaderCom->Begin(SHADER_SIGN);
+	//	}
+
+
+
+	//	m_pModelCom->Render(i);
+	//}
+#pragma endregion
+
 	vector<CMesh*> Meshes = m_pModelCom->Get_Meshes();
-	for (size_t i = 0; i < iNumMeshes; i++)
+
+	int		iRenderState = m_pGameInstance->Get_RenderState();
+
+#pragma region Render_DefaultMeshGroup
+	if (iRenderState == CRenderer::RENDER_NONBLENDER)
 	{
-		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
-			return E_FAIL;
-
-		_bool isRS = true;
-		_bool isRD = true;
-		if (!strcmp(Meshes[i]->Get_Name(), "box4783"))
+		// VtxMesh - Defulat_Pass - 0번
+		for (size_t k = 0; k < m_vRenderDefaulMeshIndex.size(); k++)
 		{
-			isRS = false;
-			isRD = false;
-		}
+			int		i = m_vRenderDefaulMeshIndex[k];
 
-		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RSTexture", i, aiTextureType_SPECULAR)))
-			isRS = false;
-		m_pShaderCom->Bind_RawValue("g_isRS", &isRS, sizeof(_bool));
-
-		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RDTexture", i, aiTextureType_OPACITY)))
-			isRD = false;
-
-		m_pShaderCom->Bind_RawValue("g_isRD", &isRD, sizeof(_bool));
-
-		bool	bNormalExist = m_pModelCom->Check_Exist_Material(i, aiTextureType_NORMALS);
-		// Normal texture가 있을 경우
-		if (true == bNormalExist)
-		{
-			m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS);
-
-			if (FAILED(m_pShaderCom->Bind_RawValue("g_bExistNormalTex", &bNormalExist, sizeof(bool))))
-				return E_FAIL;
-		}
-		else
-		{
-			if (FAILED(m_pShaderCom->Bind_RawValue("g_bExistNormalTex", &bNormalExist, sizeof(bool))))
-				return E_FAIL;
-		}
-
-		bool	bRMExist = m_pModelCom->Check_Exist_Material(i, aiTextureType_METALNESS);
-		if (true == bRMExist)
-		{
-			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RMTexture", i, aiTextureType_METALNESS)))
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
 				return E_FAIL;
 
-			if (FAILED(m_pShaderCom->Bind_RawValue("g_bExistRMTex", &bRMExist, sizeof(bool))))
-				return E_FAIL;
-		}
-		else
-		{
-			if (FAILED(m_pShaderCom->Bind_RawValue("g_bExistRMTex", &bRMExist, sizeof(bool))))
-				return E_FAIL;
-		}
+			_bool isRS = true;
+			_bool isRD = true;
+			if (!strcmp(Meshes[i]->Get_Name(), "box4783"))
+			{
+				isRS = false;
+				isRD = false;
+			}
 
-		bool	bRSExist = m_pModelCom->Check_Exist_Material(i, aiTextureType_SPECULAR);
-		if (true == bRSExist)
-		{
 			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RSTexture", i, aiTextureType_SPECULAR)))
-				return E_FAIL;
+				isRS = false;
+			m_pShaderCom->Bind_RawValue("g_isRS", &isRS, sizeof(_bool));
 
-			if (FAILED(m_pShaderCom->Bind_RawValue("g_bExistRSTex", &bRSExist, sizeof(bool))))
-				return E_FAIL;
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RDTexture", i, aiTextureType_OPACITY)))
+				isRD = false;
+
+			m_pShaderCom->Bind_RawValue("g_isRD", &isRD, sizeof(_bool));
+
+			bool	bNormalExist = m_pModelCom->Check_Exist_Material(i, aiTextureType_NORMALS);
+			// Normal texture가 있을 경우
+			if (true == bNormalExist)
+			{
+				m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS);
+
+				if (FAILED(m_pShaderCom->Bind_RawValue("g_bExistNormalTex", &bNormalExist, sizeof(bool))))
+					return E_FAIL;
+			}
+			else
+			{
+				if (FAILED(m_pShaderCom->Bind_RawValue("g_bExistNormalTex", &bNormalExist, sizeof(bool))))
+					return E_FAIL;
+			}
+
+			bool	bRMExist = m_pModelCom->Check_Exist_Material(i, aiTextureType_METALNESS);
+			if (true == bRMExist)
+			{
+				if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RMTexture", i, aiTextureType_METALNESS)))
+					return E_FAIL;
+
+				if (FAILED(m_pShaderCom->Bind_RawValue("g_bExistRMTex", &bRMExist, sizeof(bool))))
+					return E_FAIL;
+			}
+			else
+			{
+				if (FAILED(m_pShaderCom->Bind_RawValue("g_bExistRMTex", &bRMExist, sizeof(bool))))
+					return E_FAIL;
+			}
+
+			bool	bRSExist = m_pModelCom->Check_Exist_Material(i, aiTextureType_SPECULAR);
+			if (true == bRSExist)
+			{
+				if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RSTexture", i, aiTextureType_SPECULAR)))
+					return E_FAIL;
+
+				if (FAILED(m_pShaderCom->Bind_RawValue("g_bExistRSTex", &bRSExist, sizeof(bool))))
+					return E_FAIL;
+			}
+			else
+			{
+				if (FAILED(m_pShaderCom->Bind_RawValue("g_bExistRSTex", &bRSExist, sizeof(bool))))
+					return E_FAIL;
+			}
+
+			m_pShaderCom->Begin(SHADER_DEFAULT_MAP);
+
+			m_pModelCom->Render(i);
 		}
-		else
+
+		// VtxMesh - Defulat_Pass - 0번
+		for (size_t k = 0; k < m_vSignMeshIndex.size(); k++)
 		{
-			if (FAILED(m_pShaderCom->Bind_RawValue("g_bExistRSTex", &bRSExist, sizeof(bool))))
+			int		i = m_vSignMeshIndex[k];
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
 				return E_FAIL;
+
+			_bool isRS = true;
+			_bool isRD = true;
+			if (!strcmp(Meshes[i]->Get_Name(), "box4783"))
+			{
+				isRS = false;
+				isRD = false;
+			}
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RSTexture", i, aiTextureType_SPECULAR)))
+				isRS = false;
+			m_pShaderCom->Bind_RawValue("g_isRS", &isRS, sizeof(_bool));
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RDTexture", i, aiTextureType_OPACITY)))
+				isRD = false;
+
+			m_pShaderCom->Bind_RawValue("g_isRD", &isRD, sizeof(_bool));
+
+			bool	bNormalExist = m_pModelCom->Check_Exist_Material(i, aiTextureType_NORMALS);
+			// Normal texture가 있을 경우
+			if (true == bNormalExist)
+			{
+				m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS);
+
+				if (FAILED(m_pShaderCom->Bind_RawValue("g_bExistNormalTex", &bNormalExist, sizeof(bool))))
+					return E_FAIL;
+			}
+			else
+			{
+				if (FAILED(m_pShaderCom->Bind_RawValue("g_bExistNormalTex", &bNormalExist, sizeof(bool))))
+					return E_FAIL;
+			}
+
+			bool	bRMExist = m_pModelCom->Check_Exist_Material(i, aiTextureType_METALNESS);
+			if (true == bRMExist)
+			{
+				if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RMTexture", i, aiTextureType_METALNESS)))
+					return E_FAIL;
+
+				if (FAILED(m_pShaderCom->Bind_RawValue("g_bExistRMTex", &bRMExist, sizeof(bool))))
+					return E_FAIL;
+			}
+			else
+			{
+				if (FAILED(m_pShaderCom->Bind_RawValue("g_bExistRMTex", &bRMExist, sizeof(bool))))
+					return E_FAIL;
+			}
+
+			bool	bRSExist = m_pModelCom->Check_Exist_Material(i, aiTextureType_SPECULAR);
+			if (true == bRSExist)
+			{
+				if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RSTexture", i, aiTextureType_SPECULAR)))
+					return E_FAIL;
+
+				if (FAILED(m_pShaderCom->Bind_RawValue("g_bExistRSTex", &bRSExist, sizeof(bool))))
+					return E_FAIL;
+			}
+			else
+			{
+				if (FAILED(m_pShaderCom->Bind_RawValue("g_bExistRSTex", &bRSExist, sizeof(bool))))
+					return E_FAIL;
+			}
+
+			m_pShaderCom->Begin(SHADER_SIGN);
+
+			m_pModelCom->Render(i);
 		}
 
-		if (1 == m_iShaderPassNum)
+
+		for (size_t k = 0; k < m_vLampMeshIndex.size(); k++)
 		{
-			// 유리문 처리
-			if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_NonBlendDiffuse"), m_pShaderCom, "g_RefractionTexture")))
+			int		i = m_vLampMeshIndex[k];
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
 				return E_FAIL;
+
+			bool	bRMExist = m_pModelCom->Check_Exist_Material(i, aiTextureType_METALNESS);
+
+			// Normal texture가 있을 경우
+			if (true == bRMExist)
+			{
+				m_pModelCom->Bind_Material(m_pShaderCom, "g_RMTexture", i, aiTextureType_METALNESS);
+
+				if (FAILED(m_pShaderCom->Bind_RawValue("g_bExistRMTex", &bRMExist, sizeof(bool))))
+					return E_FAIL;
+			}
+			else
+			{
+				if (FAILED(m_pShaderCom->Bind_RawValue("g_bExistRMTex", &bRMExist, sizeof(bool))))
+					return E_FAIL;
+			}
+
+			m_pShaderCom->Begin(SHADER_DEFAULT_MAP);
+
+			m_pModelCom->Render(i);
 		}
-		else if (2 == m_iShaderPassNum)
+
+		// 일반 마스크
+		// VtxMesh - Defulat_Pass - 2번
+		for (size_t k = 0; k < m_vDecalMeshIndex.size(); k++)
 		{
-			//m_pTexture->Bind_ShaderResource(m_pShaderCom, "g_NoiseTexture", 0);
+			int		i = m_vDecalMeshIndex[k];
 
-			// 웅덩이
-			if (FAILED(m_pShaderCom->Bind_RawValue("g_fTimeDelta", &m_fWaterDeltaTime, sizeof(float))))
-				return E_FAIL;
-
-			if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_NonBlendDiffuse"), m_pShaderCom, "g_RefractionTexture")))
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
 				return E_FAIL;
 
-			if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_NonBlendDepth"), m_pShaderCom, "g_DepthTexture")))
-				return E_FAIL;
 
-			if (FAILED(m_pShaderCom->Bind_RawValue("g_vCamPosition", m_pGameInstance->Get_CamPosition_Float4(), sizeof(_float4))))
-				return E_FAIL;
 
-			if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrixInv", m_pGameInstance->Get_Transform_Inverse_Float4x4(CPipeLine::D3DTS_VIEW))))
-				return E_FAIL;
-			if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrixInv", m_pGameInstance->Get_Transform_Inverse_Float4x4(CPipeLine::D3DTS_PROJ))))
-				return E_FAIL;
-			if (FAILED(m_pShaderCom->Bind_Matrix("g_ReflectViewMatrix", m_pGameInstance->Get_ReflectViewMatrix())))
-				return E_FAIL;
+			m_pShaderCom->Begin(SHADER_DECAL_MASK);
 
-			if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_BackBlurReverse"), m_pShaderCom, "g_BlurReverseTexture")))
-				return E_FAIL;
-
+			m_pModelCom->Render(i);
 		}
-
-
-
-		m_pShaderCom->Begin(m_iShaderPassNum);
-
-		m_pModelCom->Render(i);
 	}
+#pragma endregion
+
+#pragma region Render_GlassMeshGroup
+	if (iRenderState == CRenderer::RENDER_GLASS)
+	{
+		for (size_t k = 0; k < m_vRenderGlassMeshIndex.size(); k++)
+		{
+			int		i = m_vRenderGlassMeshIndex[k];
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
+				return E_FAIL;
+
+			_bool isRS = true;
+			_bool isRD = true;
+			if (!strcmp(Meshes[i]->Get_Name(), "box4783"))
+			{
+				isRS = false;
+				isRD = false;
+			}
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RSTexture", i, aiTextureType_SPECULAR)))
+				isRS = false;
+			m_pShaderCom->Bind_RawValue("g_isRS", &isRS, sizeof(_bool));
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RDTexture", i, aiTextureType_OPACITY)))
+				isRD = false;
+
+			m_pShaderCom->Bind_RawValue("g_isRD", &isRD, sizeof(_bool));
+
+			bool	bNormalExist = m_pModelCom->Check_Exist_Material(i, aiTextureType_NORMALS);
+			// Normal texture가 있을 경우
+			if (true == bNormalExist)
+			{
+				m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS);
+
+				if (FAILED(m_pShaderCom->Bind_RawValue("g_bExistNormalTex", &bNormalExist, sizeof(bool))))
+					return E_FAIL;
+			}
+			else
+			{
+				if (FAILED(m_pShaderCom->Bind_RawValue("g_bExistNormalTex", &bNormalExist, sizeof(bool))))
+					return E_FAIL;
+			}
+
+			bool	bRMExist = m_pModelCom->Check_Exist_Material(i, aiTextureType_METALNESS);
+			if (true == bRMExist)
+			{
+				if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RMTexture", i, aiTextureType_METALNESS)))
+					return E_FAIL;
+
+				if (FAILED(m_pShaderCom->Bind_RawValue("g_bExistRMTex", &bRMExist, sizeof(bool))))
+					return E_FAIL;
+			}
+			else
+			{
+				if (FAILED(m_pShaderCom->Bind_RawValue("g_bExistRMTex", &bRMExist, sizeof(bool))))
+					return E_FAIL;
+			}
+
+			bool	bRSExist = m_pModelCom->Check_Exist_Material(i, aiTextureType_SPECULAR);
+			if (true == bRSExist)
+			{
+				if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RSTexture", i, aiTextureType_SPECULAR)))
+					return E_FAIL;
+
+				if (FAILED(m_pShaderCom->Bind_RawValue("g_bExistRSTex", &bRSExist, sizeof(bool))))
+					return E_FAIL;
+			}
+			else
+			{
+				if (FAILED(m_pShaderCom->Bind_RawValue("g_bExistRSTex", &bRSExist, sizeof(bool))))
+					return E_FAIL;
+			}
+
+			if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_NonBlendDiffuse"), m_pShaderCom, "g_RefractionTexture")))
+				return E_FAIL;
+
+			m_pShaderCom->Begin(SHADER_GLASS);
+
+			m_pModelCom->Render(i);
+		}
+
+	}
+
+#pragma endregion
+
+#pragma region Render_EffectMeshGroup
+	if (iRenderState == CRenderer::RENDER_EFFECT)
+	{
+		for (size_t k = 0; k < m_vDecalLightMeshIndex.size(); k++)
+		{
+			int		i = m_vDecalLightMeshIndex[k];
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
+				return E_FAIL;
+
+			m_pShaderCom->Begin(SHADER_DECAL_LIGHT);
+
+			m_pModelCom->Render(i);
+		}
+
+
+		for (size_t k = 0; k < m_vLampMeshIndex.size(); k++)
+		{
+			int		i = m_vLampMeshIndex[k];
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
+				return E_FAIL;
+
+			bool	bRMExist = m_pModelCom->Check_Exist_Material(i, aiTextureType_METALNESS);
+			// Normal texture가 있을 경우
+			if (true == bRMExist)
+			{
+				m_pModelCom->Bind_Material(m_pShaderCom, "g_RMTexture", i, aiTextureType_METALNESS);
+
+				if (FAILED(m_pShaderCom->Bind_RawValue("g_bExistRMTex", &bRMExist, sizeof(bool))))
+					return E_FAIL;
+			}
+			else
+			{
+				if (FAILED(m_pShaderCom->Bind_RawValue("g_bExistRMTex", &bRMExist, sizeof(bool))))
+					return E_FAIL;
+			}
+
+			m_pShaderCom->Begin(SHADER_LAMP);
+
+			m_pModelCom->Render(i);
+		}
+
+	}
+#pragma endregion
+
+#pragma region Render_DecalMesh
+
+	if (iRenderState == CRenderer::RENDER_DECAL)
+	{
+		// 일반 마스크
+		// VtxMesh - Defulat_Pass - 2번
+		for (size_t k = 0; k < m_vDecalBlendMeshIndex.size(); k++)
+		{
+			int		i = m_vDecalBlendMeshIndex[k];
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
+				return E_FAIL;
+
+			
+
+			m_pShaderCom->Begin(SHADER_DECAL_BLEND);
+
+			m_pModelCom->Render(i);
+		}
+	}
+	
+#pragma endregion
+
+
 
 	return S_OK;
 }
@@ -269,7 +709,7 @@ HRESULT CMap::Render_LightDepth()
 
 	for (size_t i = 0; i < iNumMeshes; i++)
 	{
-		m_pShaderCom->Begin(5);
+		m_pShaderCom->Begin(SHADER_LIGHTDEPTH);
 
 		m_pModelCom->Render(i);
 	}
@@ -327,11 +767,9 @@ HRESULT CMap::Add_Components(void* pArg)
 		return E_FAIL;
 
 	/* For.Com_Shader */
-	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Shader_Mesh"),
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Shader_MeshMap"),
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
 		return E_FAIL;
-
-
 
 	return S_OK;
 }
@@ -388,6 +826,14 @@ void CMap::Free()
 	for (auto& iter : m_vColliders)
 		Safe_Release(iter);
 	m_vColliders.clear();
+
+	m_vRenderDefaulMeshIndex.clear();
+	m_vRenderGlassMeshIndex.clear();
+	m_vDecalMeshIndex.clear();
+	m_vDecalLightMeshIndex.clear();
+	m_vSignMeshIndex.clear();
+	m_vLampMeshIndex.clear();
+	m_vDecalBlendMeshIndex.clear();
 
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pModelCom);

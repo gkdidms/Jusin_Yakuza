@@ -247,141 +247,44 @@ PS_OUT PS_GLASSDOOR(PS_IN In)
     return Out;
 }
 
-PS_OUT PS_PUDDLE(PS_IN In)
+
+
+PS_OUT PS_MAIN_AlphaMask(PS_IN In)
 {
     PS_OUT Out = (PS_OUT) 0;
-    
-    // 물 웅덩이 모양 잡기
-    vector vMaskTexture = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
-    
-    if (0.3 > vMaskTexture.r)
-        discard;
-    
-    
-    float2 vRefractTexCoord;
-    vRefractTexCoord.x = In.vProjPos.x / In.vProjPos.w / 2.0f + 0.5f;
-    vRefractTexCoord.y = -In.vProjPos.y / In.vProjPos.w / 2.0f + 0.5f;
-    
-    // 물 움직이는거
-    float2 vTexUV = float2(In.vTexcoord.x + g_fTimeDelta * g_fSpeed, In.vTexcoord.y);
-    vector normal = g_NormalTexture.Sample(LinearSampler, vTexUV);
-    // 물 표현(물 밑 투영)
-    vector vRefractionColor = g_RefractionTexture.Sample(LinearSampler, vRefractTexCoord + 0.02 * normal.xy);
 
-    
-    float2 vScreenPos = In.vPosition.xy / g_RenderResolution;
-    float4 vViewDepth = g_DepthTexture.Sample(LinearSampler, vScreenPos.xy);
-    
-    vector vWorldPos;
-    vWorldPos.x = vScreenPos.x * 2.f - 1.f;
-    vWorldPos.y = vScreenPos.y * -2.f + 1.f;
-    vWorldPos.z = vViewDepth.x; /* 0 ~ 1 */
-    vWorldPos.w = 1.f;
-    
-    vWorldPos = vWorldPos * (vViewDepth.y * g_fFar);
-    
-    vWorldPos = mul(vWorldPos, g_ProjMatrixInv);
-    vWorldPos = mul(vWorldPos, g_ViewMatrixInv); // world
-    
-    float3 viewDir = normalize(vWorldPos.xyz - g_vCamPosition.xyz);
-
-    float3 reflectedDir = normalize(reflect(viewDir, In.vNormal.xyz));
-    
-    float fLength = length(g_vCamPosition.xyz - vWorldPos.xyz);
-    
-    float4 vReflectPos = vWorldPos + float4(reflectedDir.xyz, 0) * 1;
-    vReflectPos = float4(vReflectPos.xyz, 1);
-    vReflectPos.y -= 1;
-    
-    float bReflect = true;
-    
-    float4 vReflectScreenPos = mul(vReflectPos, g_ViewMatrix);
-    vReflectScreenPos = mul(vReflectScreenPos, g_ProjMatrix);
-    vReflectScreenPos /= vReflectScreenPos.w;
-    vReflectScreenPos.x = vReflectScreenPos.x * 0.5 + 0.5;
-    vReflectScreenPos.y = vReflectScreenPos.y * -0.5 + 0.5;
-    
-    vector vDepth = g_DepthTexture.Sample(LinearSampler, vReflectScreenPos.xy);
-    
-    vector vCalculateWorld = 0;
-    vCalculateWorld.x = vReflectScreenPos.x * 2.f - 1.f;
-    vCalculateWorld.y = vReflectScreenPos.y * -2.f + 1.f;
-    vCalculateWorld.z = vDepth.x; /* 0 ~ 1 */
-    vCalculateWorld.w = 1.f;
-    
-    vCalculateWorld = vCalculateWorld * (vDepth.y * g_fFar);
-    
-    vCalculateWorld = mul(vCalculateWorld, g_ProjMatrixInv);
-
-	/* 월드스페이스 상의 위치를 구한다. */
-    vCalculateWorld = mul(vCalculateWorld, g_ViewMatrixInv);
-    
-    float fDistance = length(g_vCamPosition.xyz - vCalculateWorld.xyz);
-    if (fDistance > 10)
-    {
-        bReflect = false;
-    }
-
-    if (true == bReflect)
-    {
-        vector reflectColor = g_BlurReverseTexture.Sample(PointSampler, vReflectScreenPos.xy + 0.02 * normal.xy);
-
-        Out.vDiffuse = reflectColor;
-    }
-    else
-    {
-        Out.vDiffuse = vRefractionColor;
-    }
+    vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
     
 
-	
-    // 투명할 경우(0.1보다 작으면 투명하니) 그리지 않음
-    if (Out.vDiffuse.a < 0.1f)
-        discard;
-    
-    float3 vNormal;
-    if (true == g_bExistNormalTex)
-    {
-        // 매핑되는 texture가 있을때
-        vector vNormalDesc = g_NormalTexture.Sample(LinearSampler, vTexUV);
-        vNormal = vNormalDesc.xyz * 2.f - 1.f;
-    
-        float3x3 WorldMatrix = float3x3(In.vTangent.xyz, In.vBinormal.xyz, In.vNormal.xyz);
-    
-        vNormal = mul(vNormal.xyz, WorldMatrix);
-    }
-    else
-    {
-        float3x3 WorldMatrix = float3x3(In.vTangent.xyz, In.vBinormal.xyz, In.vNormal.xyz);
-        // 텍스처 없을때
-        vNormal = mul(In.vNormal.xyz, WorldMatrix);
-    }
-    
-    // 반사에서 제외
-    //Out.vNormal = vector(vNormal.xyz * 0.5f + 0.5f, 0.f);
-    Out.vNormal = 0;
-    Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_fFar, 0.f, 1.f);
-    
-    // specularTex와 metalic 같은 rm 사용 - bool 값 같이 사용하기
-    if (true == g_bExistRMTex)
-    {
-        Out.vRM = g_RMTexture.Sample(LinearSampler, In.vTexcoord);
-    }
+    Out.vDiffuse = vDiffuse;
     
     
     return Out;
 }
 
-PS_OUT PS_MAIN_Mask(PS_IN In)
+PS_OUT PS_MAIN_LightMask_Alpha(PS_IN In)
+{
+    // 모양대로 자르는거
+    PS_OUT Out = (PS_OUT) 0;
+
+    vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
+    
+    Out.vDiffuse = vDiffuse;
+    
+    return Out;
+}
+
+
+PS_OUT DEFAULT_SIGN_PASS(PS_IN In)
 {
     PS_OUT Out = (PS_OUT) 0;
 
     vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
     vector vMultiDiffuce = g_MultiDiffuseTexture.Sample(LinearSampler, In.vTexcoord);
     
-   //  투명할 경우(0.1보다 작으면 투명하니) 그리지 않음
-    if (vDiffuse.a < 0.4f)
-        discard;
+    vector emissiveColor = vDiffuse * 0.4;
+   
+    vDiffuse += emissiveColor;
     
      //RS + RD
     vector vRSRD;
@@ -401,6 +304,7 @@ PS_OUT PS_MAIN_Mask(PS_IN In)
         // 매핑되는 texture가 있을때
         vector vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexcoord);
         vNormal = vNormalDesc.xyz * 2.f - 1.f;
+        vNormal = vector(vNormalDesc.w, vNormalDesc.y, 1.f, 0.f);
     
         float3x3 WorldMatrix = float3x3(In.vTangent.xyz, In.vBinormal.xyz, In.vNormal.xyz);
     
@@ -433,6 +337,46 @@ PS_OUT PS_MAIN_Mask(PS_IN In)
     return Out;
 }
 
+PS_OUT PS_MAIN_Lamp(PS_IN In)
+{
+    PS_OUT Out = (PS_OUT) 0;
+ 
+    vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
+    
+    vector emissive;
+    if (true == g_bExistRMTex)
+    {
+        emissive = g_RMTexture.Sample(LinearSampler, In.vTexcoord);
+    }
+    else
+    {
+        emissive = vDiffuse.r;
+    }
+   
+    vector finalColor = saturate(vDiffuse + (emissive.r) * float4(1, 0.5, 0, 1) * 0.5);
+    
+    if (finalColor.r == 1 && finalColor.g == 1 && finalColor.b == 1)
+        finalColor = float4(1, 0.5, 0, 1);
+    
+  
+    Out.vDiffuse = vDiffuse;
+    
+    return Out;
+}
+
+PS_OUT PS_DECAL(PS_IN In)
+{
+    PS_OUT Out = (PS_OUT) 0;
+ 
+    vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
+  
+    Out.vDiffuse = vDiffuse;
+    
+    return Out;
+}
+
+
+
 struct PS_IN_LIGHTDEPTH
 {
     float4 vPosition : SV_POSITION;
@@ -453,6 +397,8 @@ PS_OUT_LIGHTDEPTH PS_MAIN_LIGHTDEPTH(PS_IN_LIGHTDEPTH In)
     
     return Out;
 }
+
+
 
 
 technique11 DefaultTechnique
@@ -483,8 +429,34 @@ technique11 DefaultTechnique
         PixelShader = compile ps_5_0 PS_GLASSDOOR();
     }
 
+    pass BlackMaskPass //2
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 
-    pass PuddlePass //2
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        HullShader = NULL;
+        DomainShader = NULL;
+        PixelShader = compile ps_5_0 PS_MAIN_AlphaMask();
+    }
+
+
+    pass ALPHALightMaskPass //3
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        HullShader = NULL;
+        DomainShader = NULL;
+        PixelShader = compile ps_5_0 PS_MAIN_LightMask_Alpha();
+    }
+
+    pass SIGNPASS //4
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_Default, 0);
@@ -494,10 +466,10 @@ technique11 DefaultTechnique
         GeometryShader = NULL;
         HullShader = NULL;
         DomainShader = NULL;
-        PixelShader = compile ps_5_0 PS_PUDDLE();
+        PixelShader = compile ps_5_0 DEFAULT_SIGN_PASS();
     }
 
-    pass MaskPass //3
+    pass LampPass //5
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_Default, 0);
@@ -507,12 +479,12 @@ technique11 DefaultTechnique
         GeometryShader = NULL;
         HullShader = NULL;
         DomainShader = NULL;
-        PixelShader = compile ps_5_0 PS_MAIN_Mask();
+        PixelShader = compile ps_5_0 PS_MAIN_Lamp();
     }
 
-    pass CWPass //4
+    pass DECALPASS //5
     {
-        SetRasterizerState(RS_Cull_NON_CW);
+        SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_Default, 0);
         SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 
@@ -520,11 +492,12 @@ technique11 DefaultTechnique
         GeometryShader = NULL;
         HullShader = NULL;
         DomainShader = NULL;
-        PixelShader = compile ps_5_0 PS_MAIN();
+        PixelShader = compile ps_5_0 PS_DECAL();
     }
-    
 
-    pass LightDepth //5 - construction , Construction의 render light depth에서 변경해주기
+
+   
+    pass LightDepth // - construction , Construction의 render light depth에서 변경해주기
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_Default, 0);

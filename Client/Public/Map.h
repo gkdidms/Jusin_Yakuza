@@ -33,6 +33,18 @@ public:
 		OBJ_END
 	};
 
+	enum SHADER_NUM {
+		SHADER_DEFAULT_MAP,
+		SHADER_GLASS,
+		SHADER_DECAL_MASK,
+		SHADER_DECAL_LIGHT,
+		SHADER_SIGN,
+		SHADER_LAMP,
+		SHADER_DECAL_BLEND,
+		SHADER_LIGHTDEPTH,
+		SHADER_END
+	};
+
 public:
 	typedef struct tMapObjDesc : public CGameObject::GAMEOBJECT_DESC
 	{
@@ -65,14 +77,14 @@ public:
 	virtual HRESULT Render_LightDepth() override;
 
 public:
-	CTransform* Get_Transform() { return m_pTransformCom; }
+	CTransform*					Get_Transform() { return m_pTransformCom; }
 
 public:
 	int							Get_ObjPlaceDesc(OBJECTPLACE_DESC* objplaceDesc);
 	MAPOBJ_DESC					Get_MapObjDesc_For_AddList();
 
 	void						Edit_GameObject_Information(MAPOBJ_DESC	mapDesc);
-	CMap::MAPOBJ_DESC	Send_GameObject_Information();
+	CMap::MAPOBJ_DESC			Send_GameObject_Information();
 
 private:
 	CShader* m_pShaderCom = { nullptr };
@@ -83,6 +95,16 @@ private:
 	_bool m_isFirst = { true };
 	vector<CDecal*>			m_vDecals;
 	vector<CCollider*>		m_vColliders;
+
+	// 따로 랜더그룹을 다르게
+	vector<int>				m_vRenderDefaulMeshIndex; // RENDER_NONBLEND -> 일반 건물 + sign 포함. sign은 shaderpass를 다르게 두기
+	vector<int>				m_vRenderGlassMeshIndex; // RENDER_GLASS
+	vector<int>				m_vDecalMeshIndex; // RENDER_NONBLEND + mask
+	vector<int>				m_vDecalLightMeshIndex; // RENDER_EFFECT + mask
+	vector<int>				m_vSignMeshIndex; // 그냥 환한 전등
+	vector<int>				m_vLampMeshIndex; // 그냥 환한 전등
+	vector<int>				m_vDecalBlendMeshIndex; // 그냥 환한 전등
+
 	int						m_iLayerNum;
 	wstring					m_wstrModelName;
 	int						m_iShaderPassNum = { 0 };
