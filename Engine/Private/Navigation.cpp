@@ -29,7 +29,7 @@ void CNavigation::Set_Points(const _float3* vPoints, _int OptionType)
     m_Cells.emplace_back(pCell);
 }
 
-vector<_int> CNavigation::Get_RouteIndexs(_int iIndex)
+vector<ROUTE_IO> CNavigation::Get_RouteIndexs(_int iIndex)
 {
     return m_Routes.find(iIndex)->second;
 }
@@ -176,10 +176,10 @@ HRESULT CNavigation::Load_File(const wstring strFilePath)
 
         ifs.read((_char*)&iCellCnt, sizeof(_uint));
 
-        int* arr = new int[iCellCnt];
-        ifs.read(reinterpret_cast<char*>(arr), iCellCnt * sizeof(int));
+        ROUTE_IO* arr = new ROUTE_IO[iCellCnt];
+        ifs.read(reinterpret_cast<char*>(arr), iCellCnt * sizeof(ROUTE_IO));
 
-        vector<int>		routeCells;
+        vector<ROUTE_IO>		routeCells;
 
         for (int j = 0; j < iCellCnt; j++)
         {

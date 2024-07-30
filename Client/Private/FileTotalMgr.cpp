@@ -407,8 +407,6 @@ HRESULT CFileTotalMgr::Set_GameObject_In_Client(int iStageLevel)
 
             m_pGameInstance->Add_GameObject(iStageLevel, TEXT("Prototype_GameObject_WPH"), m_Layers[iLayer], &monsterDesc);
         }
-        else 
-        {
         else if(OBJECT_TYPE::MAP == m_MapTotalInform.pMapObjDesc[i].iObjType)
         {
             CMap::MAPOBJ_DESC		mapDesc;
@@ -500,7 +498,7 @@ HRESULT CFileTotalMgr::Set_GameObject_In_Client(int iStageLevel)
             mapDesc.vOffsetMatrix = m_MapTotalInform.pMapObjDesc[i].vOffsetTransform;
 
             m_pGameInstance->Add_GameObject(iStageLevel, TEXT("Prototype_GameObject_Item"), m_Layers[iLayer], &mapDesc);
-            }
+        }
         else 
         {
             CConstruction::MAPOBJ_DESC		mapDesc;

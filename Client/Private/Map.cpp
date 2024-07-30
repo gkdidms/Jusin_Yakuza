@@ -119,6 +119,8 @@ void CMap::Late_Tick(const _float& fTimeDelta)
 	m_vSignMeshIndex.clear();
 	m_vLampMeshIndex.clear();
 	m_vDecalBlendMeshIndex.clear();
+	m_vBloomIndex.clear();
+	m_vMaskSignIndex.clear();
 
 	vector<CMesh*> Meshes = m_pModelCom->Get_Meshes();
 	_uint	iNumMeshes = m_pModelCom->Get_NumMeshes();
@@ -131,43 +133,58 @@ void CMap::Late_Tick(const _float& fTimeDelta)
 		XMVECTOR worldPos = XMVectorZero();
 		worldPos = XMVector3Transform(localPos, m_pTransformCom->Get_WorldMatrix());
 
-		if (true == m_pGameInstance->isIn_WorldFrustum(worldPos, 10.f))
+		if (true == m_pGameInstance->isIn_WorldFrustum(worldPos, 20.f))
 		{
-			if (0 == strcmp(Meshes[i]->Get_Name(), "DEFAULTMESH"))
-			{
-				m_vRenderDefaulMeshIndex.push_back(i);
-			}
-			else if (0 == strcmp(Meshes[i]->Get_Name(), "GLASSMESH"))
-			{
-				m_vRenderGlassMeshIndex.push_back(i);
-			}
-			else if (0 == strcmp(Meshes[i]->Get_Name(), "DECALMESH"))
-			{
-				m_vDecalMeshIndex.push_back(i);
-			}
-			else if (0 == strcmp(Meshes[i]->Get_Name(), "DECALLIGHTMESH"))
-			{
-				m_vDecalLightMeshIndex.push_back(i);
-			}
-			else if (0 == strcmp(Meshes[i]->Get_Name(), "SIGNMESH"))
-			{
-				m_vSignMeshIndex.push_back(i);
-			}
-			else if (0 == strcmp(Meshes[i]->Get_Name(), "LAMPMESH"))
-			{
-				// Nonblend + effect 둘 다 호출
-				m_vLampMeshIndex.push_back(i);
-			}
-			else if (0 == strcmp(Meshes[i]->Get_Name(), "DECALBLENDMESH"))
-			{
-				m_vDecalBlendMeshIndex.push_back(i);
-			}
+		
+		}
+
+		if (0 == strcmp(Meshes[i]->Get_Name(), "DEFAULTMESH"))
+		{
+			m_vRenderDefaulMeshIndex.push_back(i);
+		}
+		else if (0 == strcmp(Meshes[i]->Get_Name(), "GLASSMESH"))
+		{
+			m_vRenderGlassMeshIndex.push_back(i);
+		}
+		else if (0 == strcmp(Meshes[i]->Get_Name(), "DECALMESH"))
+		{
+			m_vDecalMeshIndex.push_back(i);
+		}
+		else if (0 == strcmp(Meshes[i]->Get_Name(), "DECALLIGHTMESH"))
+		{
+			m_vDecalLightMeshIndex.push_back(i);
+		}
+		else if (0 == strcmp(Meshes[i]->Get_Name(), "SIGNMESH"))
+		{
+			m_vSignMeshIndex.push_back(i);
+		}
+		else if (0 == strcmp(Meshes[i]->Get_Name(), "LAMPMESH"))
+		{
+			// Nonblend + effect 둘 다 호출
+			m_vLampMeshIndex.push_back(i);
+		}
+		else if (0 == strcmp(Meshes[i]->Get_Name(), "DECALBLENDMESH"))
+		{
+			m_vDecalBlendMeshIndex.push_back(i);
+		}
+		else if (0 == strcmp(Meshes[i]->Get_Name(), "BLOOMMESH"))
+		{
+			m_vBloomIndex.push_back(i);
+		}
+		else if (0 == strcmp(Meshes[i]->Get_Name(), "MASKSIGNMESH"))
+		{
+			m_vMaskSignIndex.push_back(i);
+		}
+		else
+		{
+			// mesh 안합쳐놓으면 그냥 default로 처리
+			m_vRenderDefaulMeshIndex.push_back(i);
 		}
 
 	}
 
 	// RENDER_NONBLEND 돼야하는 그룹
-	if(0 < m_vRenderDefaulMeshIndex.size()  || 0 < m_vSignMeshIndex.size() || 0 < m_vLampMeshIndex.size() || 0 < m_vDecalMeshIndex.size())
+	if(0 < m_vRenderDefaulMeshIndex.size()  || 0 < m_vSignMeshIndex.size() || 0 < m_vLampMeshIndex.size()  || 0 < m_vBloomIndex.size())
 		m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
 
 	// RENDER_GLASS 돼야하는 그룹
@@ -178,8 +195,16 @@ void CMap::Late_Tick(const _float& fTimeDelta)
 	if (0 < m_vDecalLightMeshIndex.size() || 0 < m_vLampMeshIndex.size())
 		m_pGameInstance->Add_Renderer(CRenderer::RENDER_EFFECT, this);
 
-	if (0 < m_vDecalBlendMeshIndex.size())
+	if (0 < m_vDecalBlendMeshIndex.size() || 0 < m_vDecalMeshIndex.size())
 		m_pGameInstance->Add_Renderer(CRenderer::RENDER_DECAL, this);
+
+	// 빛 영향 안받고 원색값 유지
+	if (0 < m_vSignMeshIndex.size() || 0 < m_vMaskSignIndex.size())
+		m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONLIGHT_NONBLUR, this);
+
+	//Bloom
+	if (0 < m_vBloomIndex.size() || 0 < m_vSignMeshIndex.size() || 0 < m_vLampMeshIndex.size())
+		m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONLIGHT, this);
 
 
 	for (auto& iter : m_vDecals)
@@ -517,17 +542,29 @@ HRESULT CMap::Render()
 			m_pModelCom->Render(i);
 		}
 
-		// 일반 마스크
-		// VtxMesh - Defulat_Pass - 2번
-		for (size_t k = 0; k < m_vDecalMeshIndex.size(); k++)
+
+
+
+		for (size_t k = 0; k < m_vBloomIndex.size(); k++)
 		{
-			int		i = m_vDecalMeshIndex[k];
+			int		i = m_vBloomIndex[k];
 
 			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
 				return E_FAIL;
 
+			m_pShaderCom->Begin(SHADER_DEFAULT_MAP);
 
-			m_pShaderCom->Begin(SHADER_DECAL_MASK);
+			m_pModelCom->Render(i);
+		}
+
+		for (size_t k = 0; k < m_vMaskSignIndex.size(); k++)
+		{
+			int		i = m_vMaskSignIndex[k];
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
+				return E_FAIL;
+
+			m_pShaderCom->Begin(SHADER_SIGN_MASK);
 
 			m_pModelCom->Render(i);
 		}
@@ -633,6 +670,76 @@ HRESULT CMap::Render()
 			m_pModelCom->Render(i);
 		}
 
+	}
+#pragma endregion
+
+#pragma region Render_DecalMesh
+
+	if (iRenderState == CRenderer::RENDER_DECAL)
+	{
+		// 일반 마스크
+		// VtxMesh - Defulat_Pass - 2번
+		for (size_t k = 0; k < m_vDecalBlendMeshIndex.size(); k++)
+		{
+			int		i = m_vDecalBlendMeshIndex[k];
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
+				return E_FAIL;
+
+			m_pShaderCom->Begin(SHADER_DECAL_BLEND);
+
+			m_pModelCom->Render(i);
+		}
+
+		// 일반 마스크
+		// VtxMesh - Defulat_Pass - 2번
+		for (size_t k = 0; k < m_vDecalMeshIndex.size(); k++)
+		{
+			int		i = m_vDecalMeshIndex[k];
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
+				return E_FAIL;
+
+
+			m_pShaderCom->Begin(SHADER_DECAL_MASK);
+
+			m_pModelCom->Render(i);
+		}
+	}
+	
+#pragma endregion
+
+#pragma region Render_Bloom
+	if (iRenderState == CRenderer::RENDER_NONLIGHT)
+	{
+		// 일반 마스크
+		// VtxMesh - Defulat_Pass - 2번
+		for (size_t k = 0; k < m_vBloomIndex.size(); k++)
+		{
+			int		i = m_vBloomIndex[k];
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
+				return E_FAIL;
+
+			//White 부분만 되게끔
+			m_pShaderCom->Begin(SHADER_BLOOM_WHITE);
+
+			m_pModelCom->Render(i);
+		}
+
+		for (size_t k = 0; k < m_vSignMeshIndex.size(); k++)
+		{
+			int		i = m_vSignMeshIndex[k];
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
+				return E_FAIL;
+
+			//White 부분만 되게끔
+			m_pShaderCom->Begin(SHADER_BLOOM_WHITE);
+
+			m_pModelCom->Render(i);
+		}
+
 
 		for (size_t k = 0; k < m_vLampMeshIndex.size(); k++)
 		{
@@ -661,28 +768,42 @@ HRESULT CMap::Render()
 			m_pModelCom->Render(i);
 		}
 
+
+
 	}
 #pragma endregion
 
-#pragma region Render_DecalMesh
 
-	if (iRenderState == CRenderer::RENDER_DECAL)
+#pragma region Render_NonLightNonBlur
+	if (iRenderState == CRenderer::RENDER_NONLIGHT_NONBLUR)
 	{
 		// 일반 마스크
 		// VtxMesh - Defulat_Pass - 2번
-		for (size_t k = 0; k < m_vDecalBlendMeshIndex.size(); k++)
+		for (size_t k = 0; k < m_vSignMeshIndex.size(); k++)
 		{
-			int		i = m_vDecalBlendMeshIndex[k];
+			int		i = m_vSignMeshIndex[k];
 
 			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
 				return E_FAIL;
 
-			m_pShaderCom->Begin(SHADER_DECAL_BLEND);
+			m_pShaderCom->Begin(SHADER_SIGN);
+
+			m_pModelCom->Render(i);
+		}
+
+
+		for (size_t k = 0; k < m_vMaskSignIndex.size(); k++)
+		{
+			int		i = m_vMaskSignIndex[k];
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
+				return E_FAIL;
+
+			m_pShaderCom->Begin(SHADER_SIGN_MASK);
 
 			m_pModelCom->Render(i);
 		}
 	}
-	
 #pragma endregion
 
 
@@ -831,6 +952,8 @@ void CMap::Free()
 	m_vSignMeshIndex.clear();
 	m_vLampMeshIndex.clear();
 	m_vDecalBlendMeshIndex.clear();
+	m_vBloomIndex.clear();
+	m_vMaskSignIndex.clear();
 
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pModelCom);

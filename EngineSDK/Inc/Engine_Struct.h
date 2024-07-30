@@ -38,7 +38,7 @@ namespace Engine
 	struct ENGINE_DLL ROUTE_IO
 	{
 		int				iCellNums;
-		int*			pNums;
+		_float4			vPosition;
 	};
 
 

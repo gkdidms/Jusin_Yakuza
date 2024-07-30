@@ -678,15 +678,15 @@ void CObjPlace_Manager::Edit_Installed_GameObject(int iNumObject)
 		m_tCurrentObjectDesc.iObjType = (int)OBJECT_TYPE::MAP;
 	}
 
-	if (ImGui::RadioButton(u8"MONSTER - WPH", m_tCurrentObjectDesc.iObjType == 13))
+	if (ImGui::RadioButton(u8"MONSTER - WPH", m_tCurrentObjectDesc.iObjType == 14))
 	{
-		objectType = 13;
+		objectType = 14;
 		m_tCurrentObjectDesc.iObjType = (int)OBJECT_TYPE::MONSTER_WPH;
 	}
 
-	if (ImGui::RadioButton(u8"MONSTER - DEFAULT", m_tCurrentObjectDesc.iObjType == 14))
+	if (ImGui::RadioButton(u8"MONSTER - DEFAULT", m_tCurrentObjectDesc.iObjType == 15))
 	{
-		objectType = 14;
+		objectType = 15;
 		m_tCurrentObjectDesc.iObjType = (int)OBJECT_TYPE::MONSTER_DEFAULT;
 	}
 

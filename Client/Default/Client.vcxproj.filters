@@ -469,7 +469,7 @@
     </ClCompile>
     <ClCompile Include="..\private\AI_CarChase.cpp">
       <Filter>02.GameObjects\02.Character\LandObject\01.Monster\CarChase\AI</Filter>
-	</ClCompile>
+    </ClCompile>
     <ClCompile Include="..\Private\UISkillMenu.cpp">
       <Filter>95.Utility\05.UIManager\UIScene\UISkillMenu</Filter>
     </ClCompile>
@@ -481,6 +481,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\UISkillDestroyer.cpp">
       <Filter>95.Utility\05.UIManager\UIScene\UISkillDestroyer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Map.cpp">
+      <Filter>02.GameObjects\09.Map</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Item.cpp">
+      <Filter>02.GameObjects\10.Item</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -982,7 +988,7 @@
     </ClInclude>
     <ClInclude Include="..\public\AI_CarChase.h">
       <Filter>02.GameObjects\02.Character\LandObject\01.Monster\CarChase\AI</Filter>
-	</ClInclude>
+    </ClInclude>
     <ClInclude Include="..\Public\UISkillMenu.h">
       <Filter>95.Utility\05.UIManager\UIScene\UISkillMenu</Filter>
     </ClInclude>
@@ -994,6 +1000,12 @@
     </ClInclude>
     <ClInclude Include="..\Public\UISkillDestroyer.h">
       <Filter>95.Utility\05.UIManager\UIScene\UISkillDestroyer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Map.h">
+      <Filter>02.GameObjects\09.Map</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Item.h">
+      <Filter>02.GameObjects\10.Item</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1530,6 +1542,12 @@
     <Filter Include="95.Utility\05.UIManager\UIScene\UISkillDestroyer">
       <UniqueIdentifier>{fd65e228-ee0b-4ff4-ba2b-248b93e87aa2}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\09.Map">
+      <UniqueIdentifier>{496fa44a-4681-459c-b144-eb9fc5553389}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\10.Item">
+      <UniqueIdentifier>{dd3a40b8-36dc-4a84-9d0d-1d9478345039}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Client.rc">
@@ -1568,6 +1586,9 @@
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxUI.hlsl">
+      <Filter>97.ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxMeshMap.hlsl">
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
   </ItemGroup>

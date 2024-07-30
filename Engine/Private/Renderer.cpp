@@ -514,9 +514,9 @@ HRESULT CRenderer::Ready_MRTs()
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_RimLight"), TEXT("Target_RimLight"))))
 		return E_FAIL;
 
-	///* MRT_NonLightNonBlur */
-	//if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_NonLightNonBlur"), TEXT("Target_NonLightNonBlur"))))
-	//	return E_FAIL;
+	/* MRT_NonLightNonBlur */
+	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_NonLightNonBlur"), TEXT("Target_NonLightNonBlur"))))
+		return E_FAIL;
 
 	/* MRT_Decals */
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_Decals"), TEXT("Target_Decal"))))
@@ -702,8 +702,9 @@ void CRenderer::Draw()
 
 
 	// 간판을 위해 임의로 남겨두기
-	/*Render_NonLight_NonBlur();*/
+	Render_NonLight_NonBlur();
 
+	// NonLight랑 Bloom은 같이 붙어있어야함
 	Render_NonLight();
 	Render_Bloom();
 	Render_FinalEffectBlend();
@@ -1595,9 +1596,6 @@ void CRenderer::Render_NonLight_NonBlur()
 		return;
 
 	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_NonLightNonBlur"), m_pShader, "g_NonLightNonBlurTexture")))//최종블러텍스처
-		return;
-
-	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(m_isBOF ? TEXT("Target_BOF") : TEXT("Target_BackBuffer"), m_pShader, "g_ResultTexture")))//원본 최종
 		return;
 
 	m_pShader->Begin(21);

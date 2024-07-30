@@ -256,6 +256,7 @@ PS_OUT PS_MAIN_AlphaMask(PS_IN In)
     vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
     
 
+
     Out.vDiffuse = vDiffuse;
     
     
@@ -285,53 +286,54 @@ PS_OUT DEFAULT_SIGN_PASS(PS_IN In)
     vector emissiveColor = vDiffuse * 0.4;
    
     vDiffuse += emissiveColor;
+    Out.vDiffuse = vDiffuse;
     
-     //RS + RD
-    vector vRSRD;
+    // //RS + RD
+    //vector vRSRD;
     
-    if (g_isRS)
-    {
-        vector vRSDesc = g_RSTexture.Sample(LinearSampler, In.vTexcoord);
-        Out.vRS = vRSDesc;
-        Out.vDiffuse = lerp(vDiffuse, vRSDesc, vMultiDiffuce.z);
-    }
-    else
-        Out.vDiffuse = vDiffuse;
+    //if (g_isRS)
+    //{
+    //    vector vRSDesc = g_RSTexture.Sample(LinearSampler, In.vTexcoord);
+    //    Out.vRS = vRSDesc;
+    //     = lerp(vDiffuse, vRSDesc, vMultiDiffuce.z);
+    //}
+    //else
+    //    Out.vDiffuse = vDiffuse;
     
-    float3 vNormal;
-    if (true == g_bExistNormalTex)
-    {
-        // 매핑되는 texture가 있을때
-        vector vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexcoord);
-        vNormal = vNormalDesc.xyz * 2.f - 1.f;
-        vNormal = vector(vNormalDesc.w, vNormalDesc.y, 1.f, 0.f);
+    //float3 vNormal;
+    //if (true == g_bExistNormalTex)
+    //{
+    //    // 매핑되는 texture가 있을때
+    //    vector vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexcoord);
+    //    vNormal = vNormalDesc.xyz * 2.f - 1.f;
+    //    vNormal = vector(vNormalDesc.w, vNormalDesc.y, 1.f, 0.f);
     
-        float3x3 WorldMatrix = float3x3(In.vTangent.xyz, In.vBinormal.xyz, In.vNormal.xyz);
+    //    float3x3 WorldMatrix = float3x3(In.vTangent.xyz, In.vBinormal.xyz, In.vNormal.xyz);
     
-        vNormal = mul(vNormal.xyz, WorldMatrix);
-    }
-    else
-    {
-        float3x3 WorldMatrix = float3x3(In.vTangent.xyz, In.vBinormal.xyz, In.vNormal.xyz);
-        // 텍스처 없을때
-        vNormal = mul(In.vNormal.xyz, WorldMatrix);
-    }
+    //    vNormal = mul(vNormal.xyz, WorldMatrix);
+    //}
+    //else
+    //{
+    //    float3x3 WorldMatrix = float3x3(In.vTangent.xyz, In.vBinormal.xyz, In.vNormal.xyz);
+    //    // 텍스처 없을때
+    //    vNormal = mul(In.vNormal.xyz, WorldMatrix);
+    //}
     
-    Out.vNormal = vector(vNormal.xyz * 0.5f + 0.5f, 0.f);
-    Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_fFar, 0.f, 1.f);
-    Out.vMulti = vMultiDiffuce;
+    //Out.vNormal = vector(vNormal.xyz * 0.5f + 0.5f, 0.f);
+    //Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_fFar, 0.f, 1.f);
+    //Out.vMulti = vMultiDiffuce;
     
     
-    // specularTex와 metalic 같은 rm 사용 - bool 값 같이 사용하기
-    if (true == g_bExistRMTex)
-    {
-        Out.vRM = g_RMTexture.Sample(LinearSampler, In.vTexcoord);
-    }
+    //// specularTex와 metalic 같은 rm 사용 - bool 값 같이 사용하기
+    //if (true == g_bExistRMTex)
+    //{
+    //    Out.vRM = g_RMTexture.Sample(LinearSampler, In.vTexcoord);
+    //}
     
-    if (true == g_bExistRSTex)
-    {
-        Out.vRS = g_RSTexture.Sample(LinearSampler, In.vTexcoord);
-    }
+    //if (true == g_bExistRSTex)
+    //{
+    //    Out.vRS = g_RSTexture.Sample(LinearSampler, In.vTexcoord);
+    //}
     
     
     return Out;
@@ -370,7 +372,54 @@ PS_OUT PS_DECAL(PS_IN In)
  
     vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);  
    
+    if(vDiffuse.a < 0.3)
+        discard;
+    
     Out.vDiffuse = vDiffuse;
+    
+    return Out;
+}
+
+PS_OUT PS_BloomWhite(PS_IN In)
+{
+    PS_OUT Out = (PS_OUT) 0;
+ 
+    vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
+    
+    
+   
+    if (vDiffuse.r + vDiffuse.g + vDiffuse.b > 1.8)
+    {
+        // 약간만 bloom 되게끔
+        Out.vDiffuse = vDiffuse * 0.5;
+    }
+    else
+    {
+        discard;
+    }
+    
+    return Out;
+  
+
+}
+
+
+PS_OUT PS_MaskEmissive(PS_IN In)
+{
+    PS_OUT Out = (PS_OUT) 0;
+ 
+    vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
+    
+    vector emissiveColor;
+    
+    emissiveColor.rgb = vDiffuse.rgb * 0.4;
+    
+    emissiveColor.a = vDiffuse.a;
+    
+    if (vDiffuse.r < 0.3 && vDiffuse.g < 0.3 && vDiffuse.b < 0.3 && vDiffuse.a < 0.3)
+        discard;
+    
+    Out.vDiffuse = vDiffuse + emissiveColor;
     
     return Out;
   
@@ -435,7 +484,7 @@ technique11 DefaultTechnique
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_Default, 0);
-        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+        SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 
         VertexShader = compile vs_5_0 VS_MAIN();
         GeometryShader = NULL;
@@ -497,6 +546,31 @@ technique11 DefaultTechnique
         PixelShader = compile ps_5_0 PS_DECAL();
     }
 
+    pass BloomWhite //7
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        HullShader = NULL;
+        DomainShader = NULL;
+        PixelShader = compile ps_5_0 PS_BloomWhite();
+    }
+
+    pass maskEmissive //8
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        HullShader = NULL;
+        DomainShader = NULL;
+        PixelShader = compile ps_5_0 PS_MaskEmissive();
+    }
 
    
     pass LightDepth // - construction , Construction의 render light depth에서 변경해주기

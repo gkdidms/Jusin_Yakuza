@@ -209,6 +209,7 @@
     <ClInclude Include="..\public\Highway.h" />
     <ClInclude Include="..\public\CarChase_Monster.h" />
     <ClInclude Include="..\public\Highway_Van.h" />
+    <ClInclude Include="..\Public\Item.h" />
     <ClInclude Include="..\Public\KillQuest.h" />
     <ClInclude Include="..\Public\Kiryu_KRC_Down.h" />
     <ClInclude Include="..\Public\Kiryu_KRC_Guard.h" />
@@ -251,6 +252,7 @@
     <ClInclude Include="..\Public\Level_Street.h" />
     <ClInclude Include="..\public\Level_Tutorial.h" />
     <ClInclude Include="..\Public\LightConstruction.h" />
+    <ClInclude Include="..\Public\Map.h" />
     <ClInclude Include="..\Public\MapCollider.h" />
     <ClInclude Include="..\Public\MapColliderObj.h" />
     <ClInclude Include="..\public\Level_OfficeBoss.h" />
@@ -384,6 +386,7 @@
     <ClCompile Include="..\private\Highway.cpp" />
     <ClCompile Include="..\private\CarChase_Monster.cpp" />
     <ClCompile Include="..\private\Highway_Van.cpp" />
+    <ClCompile Include="..\Private\Item.cpp" />
     <ClCompile Include="..\Private\KillQuest.cpp" />
     <ClCompile Include="..\Private\Kiryu_KRC_Down.cpp" />
     <ClCompile Include="..\Private\Kiryu_KRC_Guard.cpp" />
@@ -426,6 +429,7 @@
     <ClCompile Include="..\Private\Level_Street.cpp" />
     <ClCompile Include="..\private\Level_Tutorial.cpp" />
     <ClCompile Include="..\Private\LightConstruction.cpp" />
+    <ClCompile Include="..\Private\Map.cpp" />
     <ClCompile Include="..\Private\MapCollider.cpp" />
     <ClCompile Include="..\Private\MapColliderObj.cpp" />
     <ClCompile Include="..\private\Level_OfficeBoss.cpp" />
@@ -529,6 +533,7 @@
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxInstance_Point.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxMesh.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxMeshLight.hlsl" />
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxMeshMap.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxMeshSky.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxNorTex.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxPosTex.hlsl" />

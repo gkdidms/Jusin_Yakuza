@@ -41,6 +41,8 @@ public:
 		SHADER_SIGN,
 		SHADER_LAMP,
 		SHADER_DECAL_BLEND,
+		SHADER_BLOOM_WHITE,
+		SHADER_SIGN_MASK,
 		SHADER_LIGHTDEPTH,
 		SHADER_END
 	};
@@ -104,6 +106,8 @@ private:
 	vector<int>				m_vSignMeshIndex; // 그냥 환한 전등
 	vector<int>				m_vLampMeshIndex; // 그냥 환한 전등
 	vector<int>				m_vDecalBlendMeshIndex; // 그냥 환한 전등
+	vector<int>				m_vBloomIndex; // 그냥 환한 전등
+	vector<int>				m_vMaskSignIndex;
 
 	int						m_iLayerNum;
 	wstring					m_wstrModelName;

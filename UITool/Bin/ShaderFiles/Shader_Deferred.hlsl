@@ -311,8 +311,11 @@ PS_OUT_GAMEOBJECT PS_INCLUDE_GLASS(PS_IN In)
     
     vector vDecal = g_DecalTexture.Sample(LinearSampler, In.vTexcoord);
     
-    if (vDecal.r != 0 || vDecal.g != 0 || vDecal.b != 0)
-        vDiffuseColor = lerp(vDiffuseColor, vDecal, 0.2);
+    if (vDecal.r != 0 && vDecal.g != 0 && vDecal.b != 0)
+    {
+        vDiffuseColor = lerp(vDiffuseColor, vDecal, vDecal.a);
+    }
+        
     
     
     if (vNonBlendDepth.r < vGlassDepth.r)
@@ -388,21 +391,19 @@ PS_OUT PS_MAIN_NonBlurNonLight_Final(PS_IN In)
     // NonLightNonBlur와 뒷배경 합치기
     PS_OUT Out = (PS_OUT) 0;
     
-    vector vResult = g_ResultTexture.Sample(LinearSampler, In.vTexcoord);
-    
     vector vNonLightNonBlur = g_NonLightNonBlurTexture.Sample(LinearSampler, In.vTexcoord);
     
-    vector vFinal = 0;
+    vector vFinal;
     
     if (0 != vNonLightNonBlur.r || 0 != vNonLightNonBlur.g || 0 != vNonLightNonBlur.b)
     {
-        vFinal = vResult;
+        vFinal = vNonLightNonBlur;
     }
     else
     {
-        vFinal = vNonLightNonBlur;
+        discard;
     }
-   
+    
     Out.vColor = vFinal;
 
     return Out;

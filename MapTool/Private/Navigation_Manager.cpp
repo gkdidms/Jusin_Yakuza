@@ -323,14 +323,14 @@ HRESULT CNavigation_Manager::Save_Cells(_uint iIndex)
 
 		out.write((_char*)&iCellCnt, sizeof(_uint));
 
-		int* arr = new int[iCellCnt];
+		ROUTE_IO* arr = new ROUTE_IO[iCellCnt];
 
 		for (int j = 0; j < iCellCnt; j++)
 		{
 			arr[j] = m_Routes.find(i)->second[j];
 		}
 
-		out.write(reinterpret_cast<char*>(arr), iCellCnt * sizeof(int));
+		out.write(reinterpret_cast<char*>(arr), iCellCnt * sizeof(ROUTE_IO));
 
 		Safe_Delete(arr);
 	}
@@ -420,10 +420,10 @@ HRESULT CNavigation_Manager::Load_Cells(_uint iIndex)
 
 		in.read((_char*)&iCellCnt, sizeof(_uint));
 
-		int* arr = new int[iCellCnt];
-		in.read(reinterpret_cast<char*>(arr), iCellCnt * sizeof(int));
+		ROUTE_IO* arr = new ROUTE_IO[iCellCnt];
+		in.read(reinterpret_cast<char*>(arr), iCellCnt * sizeof(ROUTE_IO));
 
-		vector<int>		routeCells;
+		vector<ROUTE_IO>		routeCells;
 
 		for (int j = 0; j < iCellCnt; j++)
 		{
@@ -477,8 +477,8 @@ HRESULT CNavigation_Manager::Load_Route(_uint iIndex)
 		{
 			if (m_Cells.size() > 0)
 			{
-				m_RouteCells.push_back(m_Cells[m_Route_CellIndexes[i]]);
-				Safe_AddRef(m_Cells[m_Route_CellIndexes[i]]);
+				m_RouteCells.push_back(m_Cells[m_Route_CellIndexes[i].iCellNums]);
+				Safe_AddRef(m_Cells[m_Route_CellIndexes[i].iCellNums]);
 			}
 		}
 
@@ -486,7 +486,7 @@ HRESULT CNavigation_Manager::Load_Route(_uint iIndex)
 		{
 			Safe_Release(m_pVIBufferCom);
 
-			m_pVIBufferCom = CVIBuffer_Line::Create(m_pDevice, m_pContext, m_RouteCells);
+			m_pVIBufferCom = CVIBuffer_Line::Create(m_pDevice, m_pContext, m_Route_CellIndexes);
 			if (nullptr == m_pVIBufferCom)
 				MSG_BOX("VIBuffer_Lint 생성 불가");
 		}
@@ -609,7 +609,7 @@ void CNavigation_Manager::Delete_AllCell()
 
 void CNavigation_Manager::Delete_RouteCell(_int& iIndex)
 {
-	vector<int>::iterator	iter = m_Route_CellIndexes.begin();
+	vector<ROUTE_IO>::iterator	iter = m_Route_CellIndexes.begin();
 	list<CCell*>::iterator	cellIter = m_RouteCells.begin();
 
 	for (int i = 0; i < iIndex; i++)
@@ -729,10 +729,30 @@ void CNavigation_Manager::Make_Route()
 			m_iCurrentRouteCellIndex = index_current_idx;
 		}
 
-
-		if (ImGui::Button(u8"cell - route에 추가 "))
+		ImGui::Text(u8"버튼 클릭 후 피킹하면 추가됨");
+		
+		if (m_bMakeRoute_Picking == true && m_pGameInstance->GetMouseState(DIM_LB) == AWAY)
 		{
-			m_Route_CellIndexes.push_back(m_iCurrentCellIndex);
+			m_bMakeRoute_Picking = false;
+
+			_bool		isPick;
+			_vector		vTargetPos = m_pGameInstance->Picking(&isPick);
+
+			for (int i = 0; i < m_Cells.size(); i++)
+			{
+				/* 그냥 넣어주는거 */
+				int			iNeighborsIndex;
+
+				if (true == m_Cells[i]->isIn(vTargetPos, &iNeighborsIndex))
+				{
+					m_iCurrentCellIndex = i;
+				}
+			}
+
+			ROUTE_IO		routeIO;
+			routeIO.iCellNums = m_iCurrentCellIndex;
+			XMStoreFloat4(&routeIO.vPosition, vTargetPos);
+			m_Route_CellIndexes.push_back(routeIO);
 			m_RouteCells.push_back(m_Cells[m_iCurrentCellIndex]);
 			Safe_AddRef(m_Cells[m_iCurrentCellIndex]);
 
@@ -743,10 +763,17 @@ void CNavigation_Manager::Make_Route()
 			{
 				Safe_Release(m_pVIBufferCom);
 
-				m_pVIBufferCom = CVIBuffer_Line::Create(m_pDevice, m_pContext, m_RouteCells);
+				m_pVIBufferCom = CVIBuffer_Line::Create(m_pDevice, m_pContext, m_Route_CellIndexes);
 				if (nullptr == m_pVIBufferCom)
 					MSG_BOX("VIBuffer_Lint 생성 불가");
 			}
+			
+		}
+
+		if (ImGui::Button(u8"cell - route에 추가 "))
+		{
+			m_bMakeRoute_Picking = true;
+
 		}
 
 		if (ImGui::Button(u8" cell Index 삭제 "))
@@ -795,7 +822,7 @@ void CNavigation_Manager::Make_Route()
 
 void CNavigation_Manager::Add_Route_In_Navi()
 {
-	vector<int>		routes;
+	vector<ROUTE_IO>		routes;
 	
 	for (int i = 0; i < m_Route_CellIndexes.size(); i++)
 	{
@@ -1008,8 +1035,9 @@ void CNavigation_Manager::Update_IndexesName()
 			char* szName = new char[MAX_PATH];
 			strcpy(szName, "Index");
 			char buff[MAX_PATH];
-			sprintf(buff, "%d", m_Route_CellIndexes[i]);
+			sprintf(buff, "%d", m_Route_CellIndexes[i].iCellNums);
 			strcat(szName, buff);
+
 			m_IndexesName.push_back(szName);
 		}
 	}
@@ -1017,7 +1045,7 @@ void CNavigation_Manager::Update_IndexesName()
 
 void CNavigation_Manager::Update_Routes()
 {
-	map<int, vector<int>> new_m_Routes;
+	map<int, vector<ROUTE_IO>> new_m_Routes;
 	int new_key = 0;
 	for (const auto& pair : m_Routes) {
 		new_m_Routes[new_key] = pair.second;
@@ -1030,31 +1058,35 @@ void CNavigation_Manager::Update_Routes()
 
 void CNavigation_Manager::Delete_Route(_int& iIndex)
 {
-	map<int, vector<int>>::iterator iter = m_Routes.begin();
-
-	for (int i = 0; i < iIndex; i++)
+	if (0 < m_RouteCells.size())
 	{
-		iter++;
+		map<int, vector<ROUTE_IO>>::iterator iter = m_Routes.begin();
+
+		for (int i = 0; i < iIndex; i++)
+		{
+			iter++;
+		}
+
+		iter->second.clear();
+		m_Routes.erase(iIndex);
+
+		/* 인덱스 옮겨주기 */
+		if (0 > iIndex - 1)
+		{
+			iIndex = 0;
+		}
+		else
+		{
+			iIndex -= 1;
+		}
+
+		Update_Routes();
+		Update_RouteName();
+		Update_IndexesName();
+
+		Load_Route(iIndex);
 	}
-
-	iter->second.clear();
-	m_Routes.erase(iIndex);
-
-	/* 인덱스 옮겨주기 */
-	if (0 > iIndex - 1)
-	{
-		iIndex = 0;
-	}
-	else
-	{
-		iIndex -= 1;
-	}
-
-	Update_Routes();
-	Update_RouteName();
-	Update_IndexesName();
-
-	Load_Route(iIndex);
+	
 }
 
 
