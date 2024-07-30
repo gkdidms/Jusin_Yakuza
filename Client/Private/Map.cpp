@@ -527,7 +527,6 @@ HRESULT CMap::Render()
 				return E_FAIL;
 
 
-
 			m_pShaderCom->Begin(SHADER_DECAL_MASK);
 
 			m_pModelCom->Render(i);
@@ -677,8 +676,6 @@ HRESULT CMap::Render()
 
 			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
 				return E_FAIL;
-
-			
 
 			m_pShaderCom->Begin(SHADER_DECAL_BLEND);
 

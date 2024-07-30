@@ -368,11 +368,13 @@ PS_OUT PS_DECAL(PS_IN In)
 {
     PS_OUT Out = (PS_OUT) 0;
  
-    vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
-  
+    vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);  
+   
     Out.vDiffuse = vDiffuse;
     
     return Out;
+  
+
 }
 
 
@@ -482,7 +484,7 @@ technique11 DefaultTechnique
         PixelShader = compile ps_5_0 PS_MAIN_Lamp();
     }
 
-    pass DECALPASS //5
+    pass DECALPASS //6
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_Default, 0);
