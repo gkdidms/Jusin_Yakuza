@@ -81,10 +81,6 @@ void CMonsterTrigger::Late_Tick(const _float& fTimeDelta)
 
 HRESULT CMonsterTrigger::Render()
 {
-#ifdef _DEBUG
-	m_pGameInstance->Add_DebugComponent(m_pColliderCom);
-#endif
-
 	return S_OK;
 }
 

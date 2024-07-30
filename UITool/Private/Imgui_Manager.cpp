@@ -916,6 +916,13 @@ void CImgui_Manager::Window_Binary()
                                 }
                             }
 
+                            static char szObText[MAX_PATH];
+                            ImGui::InputText(u8"내용 변경 ", szObText, MAX_PATH);
+                            if (ImGui::Button(u8"내용변경하기"))
+                            {
+                                string Text = szObText;
+                                dynamic_cast<CText*>(BinaryObject[m_iBinaryObjectIndex])->Set_Text(m_pGameInstance->StringToWstring(Text));
+                            }
 
                             if (ImGui::BeginListBox("Font"))
                             {

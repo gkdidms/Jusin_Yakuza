@@ -5,6 +5,8 @@
 #include "MoveQuest.h"
 #include "TalkQuest.h"
 
+#include "UIManager.h"
+
 /*
 [스토리라인]
 
@@ -38,10 +40,18 @@ const CScriptManager::SCRIPT_INFO CQuestManager::Get_ScriptInfo(_int iScriptCoun
     return m_pScriptManager->Get_Script(m_QuestInfo[m_iCurrentQuestIndex].iScriptIndex, iScriptCount);
 }
 
+_uint CQuestManager::Get_CurrentQuestType()
+{
+    return m_pCurrentQuest->Get_Type();
+}
+
 HRESULT CQuestManager::Initialize()
 {
     m_pScriptManager = CScriptManager::Create();
     if (nullptr == m_pScriptManager)
+        return E_FAIL;
+
+    if (FAILED(Ready_Quest()))
         return E_FAIL;
 
     m_iCurrentQuestIndex = 0;
@@ -51,8 +61,30 @@ HRESULT CQuestManager::Initialize()
 
 HRESULT CQuestManager::Ready_Quest()
 {
-    _int iScriptIndex = 1;
+    //_int iScriptIndex = 1;
 
+    //_uint iType;
+    //_uint iScriptIndex;
+
+    //_int iQuestIndex;
+    //_int iNextQuestIndex;
+    //_int iTargetIndex; //Kill
+    //_int iTriggerIndex; //Move
+    //_int iObjectIndex; // Talk
+    m_QuestInfo = {
+        QUEST_INFO(
+            QUEST_TALK,
+            0,
+
+            0,
+            1,
+            -1,
+            -1,
+            0
+        )
+    };
+
+    Add_TalkQuest(m_QuestInfo[0].iQuestIndex, m_QuestInfo[0].iNextQuestIndex, m_QuestInfo[0].iObjectIndex, m_QuestInfo[0].iScriptIndex);
     
     return S_OK;
 }
@@ -73,7 +105,7 @@ _bool CQuestManager::Execute()
         else if (Info.iType == QUEST_MOVE)
             Add_MoveQuest(Info.iQuestIndex, Info.iNextQuestIndex, Info.iTriggerIndex, Info.iScriptIndex);
         else if (Info.iType == QUEST_TALK)
-            Add_MoveQuest(Info.iQuestIndex, Info.iNextQuestIndex, Info.iObjectIndex, Info.iScriptIndex);
+            Add_TalkQuest(Info.iQuestIndex, Info.iNextQuestIndex, Info.iObjectIndex, Info.iScriptIndex);
         else
             return false;
 
@@ -140,6 +172,5 @@ HRESULT CQuestManager::Add_TalkQuest(_int iQuestIndex, _int iNextQuestIndex, _in
 void CQuestManager::Free()
 {
     Safe_Release(m_pScriptManager);
-
     Safe_Release(m_pCurrentQuest);
 }
