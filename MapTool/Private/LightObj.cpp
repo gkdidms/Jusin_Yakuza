@@ -118,6 +118,9 @@ HRESULT CLightObj::Bind_ShaderResources()
 	if (FAILED(m_pShaderCom->Bind_ValueFloat("g_fObjID", m_fObjID)))
 		return E_FAIL;
 
+	if (FAILED(m_pShaderCom->Bind_ValueFloat("g_fFar", *m_pGameInstance->Get_CamFar())))
+		return E_FAIL;
+
 
 	bool	bWrite;
 	if (CImgui_Manager::IDWRIE::LIGHT == CImgui_Manager::GetInstance()->Get_Write())

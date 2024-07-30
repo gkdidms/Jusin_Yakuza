@@ -192,36 +192,24 @@ PS_OUT PS_MAIN_Bloom(PS_IN In)
     //    finalColor = vDiffuse + emissiveColor;
     //}
     
-    
-    
+   
     // 약한발광(0.1 - 0.3)
     // 보통(0.4 - 0.6)
     // 강한 (0.7-0.8)
-    vector emissiveColor = vDiffuse * 0.3;
+    vector emissiveColor = vDiffuse * 0.4;
+   
+
+    float4 finalColor;
     
-    float fMinColor = 1;
-    
-    if(vDiffuse.r < vDiffuse.g)
+    if (vDiffuse.r < 0.5 && vDiffuse.g < 0.5 && vDiffuse.b < 0.5)
     {
-        fMinColor = vDiffuse.r;
+        finalColor = vDiffuse;
     }
     else
     {
-        fMinColor = vDiffuse.g;
-    }
-   
-    if (fMinColor > vDiffuse.b)
-    {
-        fMinColor = vDiffuse.b;
+        finalColor = vDiffuse + emissiveColor;
     }
 
-    
-    // Combine base color and emissive color
-    float4 finalColor;
-    
-    finalColor = vDiffuse;
-  
-  
     Out.vDiffuse = finalColor;
     
     return Out;
