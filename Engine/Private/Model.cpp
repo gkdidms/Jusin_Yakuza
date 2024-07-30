@@ -226,7 +226,7 @@ HRESULT CModel::Ready_CameraAnimations(string& pBinFilePath)
 	ifstream in(pBinFilePath, ios::binary);
 
 	if (!in.is_open()) {
-		MSG_BOX("Camera FoV 파일 개방 실패 (툴에선 실패떠도 됨 걱정 ㄴㄴ)");
+		MSG_BOX("Camera FoV 파일 개방 실패 (카메라 애니메이션이 없는 경우는 무시해도됨)");
 		return E_FAIL;
 	}
 
