@@ -20,6 +20,8 @@
 #include "UIManager.h"
 #include "Camera.h"
 
+#include "Monster.h"
+
 #pragma region 행동 관련 헤더들
 #include "Kiryu_KRC_Hit.h"
 #include "Kiryu_KRH_Hit.h"
@@ -27,7 +29,6 @@
 #include "Kiryu_KRS_Down.h"
 #include "Kiryu_KRH_Down.h"
 #include "Kiryu_KRS_Grab.h"
-#include <Monster.h>
 #pragma endregion
 
 CPlayer::CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -180,10 +181,23 @@ void CPlayer::Tick(const _float& fTimeDelta)
 		
 	}
 
+	// 뼈 분리 테스트
+	if (m_pGameInstance->GetKeyState(DIK_X) == TAP)
+	{
+		m_pModelCom->Set_SeparationBone("ude3_l_n", (_int)HAND_COM);
+		m_pModelCom->Set_SeparationBone("ude3_r_n", (_int)HAND_COM);
+
+		m_pModelCom->Set_SeparationBone("_jaw_c_n", (_int)FACE_COM);
+	}
+
 	if (m_isAnimStart)
 	{
 		if (DEFAULT_ANIMAITION == m_eAnimComType)
+		{
+			m_pModelCom->Play_Animation_Separation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")), 9, m_PartAnimations[HAND_COM], false, (_int)HAND_COM);
+			m_pModelCom->Play_Animation_Separation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")), 9, m_PartAnimations[FACE_COM], false, (_int)FACE_COM);
 			m_pModelCom->Play_Animation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")));
+		}
 		else
 		{
 			Play_CutScene();
@@ -226,7 +240,7 @@ void CPlayer::Late_Tick(const _float& fTimeDelta)
 #ifdef _DEBUG
 	if (m_isObjectRender)
 	{
-		//m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
+		m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
 		m_pGameInstance->Add_Renderer(CRenderer::RENDER_SHADOWOBJ, this); // Shadow용 렌더 추가
 	}
 #else
@@ -1363,6 +1377,20 @@ HRESULT CPlayer::Add_Components()
 		TEXT("Com_Anim"), reinterpret_cast<CComponent**>(&m_pAnimCom))))
 		return E_FAIL;
 
+	//Prototype_Component_Anim_KiryuFace
+	CAnim* pAnimCom = { nullptr };
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Anim_KiryuFace"),
+		TEXT("Com_Anim_Face"), reinterpret_cast<CComponent**>(&pAnimCom))))
+		return E_FAIL;
+	m_PartAnimations.push_back(pAnimCom);
+
+	//Prototype_Component_Anim_Hand
+	pAnimCom = { nullptr };
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Anim_Hand"),
+		TEXT("Com_Anim_Hand"), reinterpret_cast<CComponent**>(&pAnimCom))))
+		return E_FAIL;
+	m_PartAnimations.push_back(pAnimCom);
+
 	return S_OK;
 }
 
@@ -1859,4 +1887,10 @@ void CPlayer::Free()
 
 		m_AnimationTree[i].clear();
 	}
+
+	for (auto pAnimCom : m_PartAnimations)
+	{
+		Safe_Release(pAnimCom);
+	}
+	m_PartAnimations.clear();
 }

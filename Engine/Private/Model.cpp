@@ -888,6 +888,18 @@ void CModel::Find_Mesh_Using_DECAL()
 
 }
 
+void CModel::Check_Separation_Parents(CBone* pBone, _int iAnimType)
+{
+	if (pBone->Get_ParentBoneIndex() != -1)
+	{
+		if (m_Bones[pBone->Get_ParentBoneIndex()]->Get_Separation() == iAnimType)
+		{
+			pBone->Set_Separation(iAnimType);
+			Check_Separation_Parents(m_Bones[pBone->Get_ParentBoneIndex()], iAnimType);
+		}
+	}
+}
+
 HRESULT CModel::Render(_uint iMeshIndex)
 {
 	//m_Meshes[iMeshIndex]->Bind_Buffers();
@@ -989,6 +1001,7 @@ void CModel::Play_Animation(_float fTimeDelta, CAnim* pAnim, _bool isLoop, _int 
 		pBone->Update_CombinedTransformationMatrix(m_Bones, XMLoadFloat4x4(&m_PreTransformMatrix));
 }
 
+// 컷신 실행용
 void CModel::Play_Animation_CutScene(_float fTimeDelta, CAnim* pAnim, _bool isLoop, _int iAnimIndex, _bool isRoot, string strExcludeBoneName)
 {
 	//애니메이션 목록 전달하기 
@@ -1120,6 +1133,33 @@ void CModel::Play_Animation(_float fTimeDelta, const ANIMATION_DESC& AnimDesc, _
 		pBone->Update_CombinedTransformationMatrix(m_Bones, XMLoadFloat4x4(&m_PreTransformMatrix));
 }
 
+void CModel::Play_Animation_Separation(_float fTimeDelta, _uint iAnimIndex, CAnim* pAnim, _bool isLoop, _int iAnimType)
+{
+		//애니메이션 목록 전달하기 ;
+	vector<CAnimation*> Animations = pAnim->Get_Animations();
+
+	if (1 > Animations.size()) return;
+
+	pAnim->Set_PrevAnimIndex(pAnim->Get_CurrentAnimIndex());
+	pAnim->Set_CurrentAnimIndex(iAnimIndex);
+
+	if (0.0 == m_ChangeInterval)
+		Animations[iAnimIndex]->Update_TransformationMatrix_Separation(fTimeDelta, m_Bones, isLoop, iAnimType);
+	else
+	{
+		if (Animations[iAnimIndex]->Get_Changed())
+			Animations[iAnimIndex]->Update_TransformationMatrix_Separation(fTimeDelta, m_Bones, isLoop, iAnimType);
+		else
+		{
+			Animations[iAnimIndex]->Update_Change_Animation_Separation(fTimeDelta, m_Bones, m_PreAnimations[pAnim->Get_PrevAnimIndex()], m_ChangeInterval, iAnimType);
+		}
+	}
+
+	/* 전체뼈를 순회하면서 모든 뼈의 CombinedTransformationMatrix를 갱신한다. */
+	for (auto& pBone : m_Bones)
+		pBone->Update_CombinedTransformationMatrix(m_Bones, XMLoadFloat4x4(&m_PreTransformMatrix));
+}
+
 void CModel::Set_AnimationIndex(const ANIMATION_DESC& AnimDesc, _double ChangeInterval)
 {
 	if (AnimDesc.iAnimIndex >= m_Animations.size()) return;
@@ -1173,6 +1213,27 @@ void CModel::Reset_Animation(_uint iAnimIndex)
 	m_Animations[iAnimIndex]->Reset();
 }
 
+void CModel::Set_SeparationBone(string strBoneName, _int iAnimType)
+{
+	for (auto& pBone : m_Bones)
+	{
+		if (pBone->Compare_Name(strBoneName.c_str()))
+			pBone->Set_Separation(iAnimType);
+
+		// 부모뼈가 -1이라면 건너뛰기
+		if (pBone->Get_ParentBoneIndex() == -1)
+			continue; 
+
+		// 현재 뼈의 부모뼈를 구해서, 그 부모뼈가 제외된 뼌지 확인한다.
+		// 부모가 제외되었다면 본인도 제외한다.
+		// 부모의 부모뼈도 다 봐야한다!! 재귀함수 필요
+		Check_Separation_Parents(pBone, iAnimType);
+		//if (m_Bones[pBone->Get_ParentBoneIndex()]->Get_Separation() == iAnimType)
+		//{
+		//	pBone->Set_Separation(iAnimType);
+		//}
+	}
+}
 
 const vector<_uint>* CModel::Get_CurrentKeyFrameIndices(string strAnimationName)
 {
