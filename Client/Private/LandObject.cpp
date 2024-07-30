@@ -92,7 +92,7 @@ void CLandObject::ImpulseResolution(CLandObject* pTargetObject, _float fDistance
 
 	if (!XMVector3Equal(XMLoadFloat3(&vDir), XMVectorZero()))
 	{
-		_vector vMovePos = m_pTransformCom->Get_State(CTransform::STATE_POSITION) + XMLoadFloat3(&vDir);
+		_vector vMovePos = m_pTransformCom->Get_State(CTransform::STATE_POSITION) + (XMLoadFloat3(&vDir) * 0.3f);
 
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, vMovePos);
 	}

@@ -79,7 +79,7 @@ void CCollision_Manager::ImpulseResolution()
             _vector vDistance = vPosition_Object_I - vPosition_Object_J;
 
             _float fDistance = XMVectorGetX(XMVector3Length(vDistance));
-            if (2.f > fDistance)
+            if (0.5f > fDistance)
                 m_ImpulseResolutionObjects[i]->ImpulseResolution(m_ImpulseResolutionObjects[j], 2.f);
         }
     }
