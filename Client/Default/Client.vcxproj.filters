@@ -469,7 +469,7 @@
     </ClCompile>
     <ClCompile Include="..\private\AI_CarChase.cpp">
       <Filter>02.GameObjects\02.Character\LandObject\01.Monster\CarChase\AI</Filter>
-	</ClCompile>
+    </ClCompile>
     <ClCompile Include="..\Private\UISkillMenu.cpp">
       <Filter>95.Utility\05.UIManager\UIScene\UISkillMenu</Filter>
     </ClCompile>
@@ -481,6 +481,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\UISkillDestroyer.cpp">
       <Filter>95.Utility\05.UIManager\UIScene\UISkillDestroyer</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Highway_Taxi.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\03.Highway\04.Taxi</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -982,7 +985,7 @@
     </ClInclude>
     <ClInclude Include="..\public\AI_CarChase.h">
       <Filter>02.GameObjects\02.Character\LandObject\01.Monster\CarChase\AI</Filter>
-	</ClInclude>
+    </ClInclude>
     <ClInclude Include="..\Public\UISkillMenu.h">
       <Filter>95.Utility\05.UIManager\UIScene\UISkillMenu</Filter>
     </ClInclude>
@@ -994,6 +997,9 @@
     </ClInclude>
     <ClInclude Include="..\Public\UISkillDestroyer.h">
       <Filter>95.Utility\05.UIManager\UIScene\UISkillDestroyer</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Highway_Taxi.h">
+      <Filter>02.GameObjects\02.Character\LandObject\03.Highway\04.Taxi</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1529,6 +1535,9 @@
     </Filter>
     <Filter Include="95.Utility\05.UIManager\UIScene\UISkillDestroyer">
       <UniqueIdentifier>{fd65e228-ee0b-4ff4-ba2b-248b93e87aa2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\03.Highway\04.Taxi">
+      <UniqueIdentifier>{eae66a81-9be8-4e33-ab79-2ff998391627}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

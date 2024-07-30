@@ -23,6 +23,7 @@ public:
 
 public:
     void Set_CurrentAnimIndex(_uint iIndex) { m_iCurrentIndex = iIndex; }
+    void Set_PrevAnimIndex(_uint iIndex) { m_iPrevIndex = iIndex; }
     
 public: // 애니메이션 관련
     void Reset_Animation();
@@ -39,6 +40,7 @@ public: // 애니메이션 관련
     _bool Get_AnimRestart(_bool isLoop) const;
     _bool Get_AnimLerp(_float ChangeInterval) const;
     _uint Get_CurrentAnimIndex() { return m_iCurrentIndex; }
+    _uint Get_PrevAnimIndex() { return m_iPrevIndex; }
 
 public:
     virtual HRESULT Initialize_Prototype(const _char* pModelFilePath, _bool isSave);
@@ -57,6 +59,7 @@ private:
     vector<class CAnimation*> m_Animations;
 
     _uint m_iCurrentIndex = { 0 };
+    _uint m_iPrevIndex = { 0 };
 
 private:
     HRESULT Save_File(const _char* pModelFilePath, vector<class CBone*> Bones);

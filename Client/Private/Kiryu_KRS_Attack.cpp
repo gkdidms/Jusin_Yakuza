@@ -35,8 +35,11 @@ void CKiryu_KRS_Attack::Tick(const _float& fTimeDelta)
 
 	if (nullptr != pTargetObject)
 	{
-		_vector vLookPos = pTargetObject->Get_TransformCom()->Get_State(CTransform::STATE_POSITION);
-		m_pPlayer->Get_TransformCom()->LookAt_For_LandObject(vLookPos);
+		if (8 != m_iComboCount)
+		{
+			_vector vLookPos = pTargetObject->Get_TransformCom()->Get_State(CTransform::STATE_POSITION);
+			m_pPlayer->Get_TransformCom()->LookAt_For_LandObject(vLookPos);
+		}
 
 		if (m_pGameInstance->GetMouseState(DIM_RB) == TAP)
 		{
@@ -47,8 +50,7 @@ void CKiryu_KRS_Attack::Tick(const _float& fTimeDelta)
 				{
 					// 히트액션을 실행시킬 함수를 호출해야한다.
 					// 근데 지금 AnimCom에 저장하공 있는 애니메이션 값들을 string으로 처리해야하는데, 어떤식으로 처리할지에 대한 고민중이었음
-					m_pPlayer->Set_CutSceneAnim(CPlayer::FINISHBLOW);
-
+					m_pPlayer->Set_CutSceneAnim(CPlayer::FINISHBLOW, 8); // [8] f209_special_09[f_kiryu] 크게 화낼 때
 					m_iComboCount = 99;
 				}
 			}
@@ -64,7 +66,7 @@ void CKiryu_KRS_Attack::Tick(const _float& fTimeDelta)
 				//TODO: 테스트
 				if (Changeable_Combo_Animation())
 				{
-					//static_cast<CMonster*>(m_pPlayer->Get_TargetObject())->Set_Sync("p_krs_sync_cmb_03_fin");
+					static_cast<CMonster*>(m_pPlayer->Get_TargetObject())->Set_Sync("p_krs_sync_cmb_03_fin");
 					m_iComboCount = 8;
 				}
 			}
