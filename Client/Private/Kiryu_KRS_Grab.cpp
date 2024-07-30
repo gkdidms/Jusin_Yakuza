@@ -74,67 +74,64 @@ void CKiryu_KRS_Grab::Tick(const _float& fTimeDelta)
 
 	if (m_isGrabed)
 	{
-			switch (m_iDirection)
+		switch (m_iDirection)
+		{
+		// lapel (정면)
+		case CPlayer::F:
+		{
+			break;
+		}
+		//neck
+		case CPlayer::B:
+		{
+			m_iCurrentIndex = 14;
+			break;
+		}
+		// lapel (정면)
+		case CPlayer::R:
+		{
+			switch (m_eAnimState)
 			{
-				// lapel (정면)
-			case CPlayer::F:
+			case SEIZE_TRY:
 			{
-				
-
-
-				break;
-			}
-			//neck
-			case CPlayer::B:
-			{
-				m_iCurrentIndex = 14;
-				break;
-			}
-			// lapel (정면)
-			case CPlayer::R:
-			{
-				switch (m_eAnimState)
+				if (Changeable_Combo_Animation())
 				{
-				case SEIZE_TRY:
-				{
-					if (Changeable_Combo_Animation())
-					{
-						m_eAnimState = ANIM_START;
-						m_iCurrentIndex = 1;
-					}
-
-					break;
+					m_eAnimState = ANIM_START;
+					m_iCurrentIndex = 1;
 				}
-				case ANIM_START:
-				{
-					if (Changeable_Combo_Animation())
-					{
-						m_eAnimState = ANIM_LOOP;
-						m_iCurrentIndex = 2;
-					}
 
-					break;
-				}
-				case ANIM_LOOP:
-					// 여기에 키인풋
-					Move_KeyInput(fTimeDelta);
-
-					break;
-				case ANIM_END:
-					// 놓치는게 end (p_kru_sync_neck_off)
-					break;
-				default:
-					break;
-				}
 				break;
 			}
-			//neck
-			case CPlayer::L:
+			case ANIM_START:
 			{
-				m_iCurrentIndex = 14;
+				if (Changeable_Combo_Animation())
+				{
+					m_eAnimState = ANIM_LOOP;
+					m_iCurrentIndex = 2;
+				}
+
 				break;
 			}
+			case ANIM_LOOP:
+				// 여기에 키인풋
+				Move_KeyInput(fTimeDelta);
+
+				break;
+			case ANIM_END:
+				// 놓치는게 end (p_kru_sync_neck_off)
+				break;
+			default:
+				break;
 			}
+			break;
+		}
+		//neck
+		case CPlayer::L:
+		{
+			m_iCurrentIndex = 14;
+			break;
+		}
+		}
 	}
 
 	Shaking();
@@ -283,7 +280,7 @@ void CKiryu_KRS_Grab::Move_KeyInput(const _float& fTimeDelta)
 	{
 		if (2 < m_pPlayer->Get_CurrentHitLevel())	// 히트게이지가 3단까지 풀이라면
 		{
-			m_pPlayer->Set_CutSceneAnim(CPlayer::GOUGEKI_C);
+			m_pPlayer->Set_CutSceneAnim(CPlayer::GOUGEKI_C, 1);
 		}
 	}
 	if (m_pGameInstance->GetKeyState(DIK_Q) == TAP)

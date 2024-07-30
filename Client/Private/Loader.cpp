@@ -22,9 +22,18 @@
 #pragma endregion
 
 #pragma region CarChase
-#include "CarChase_Van.h"
+#pragma region Player
+#include "Highway_Taxi.h"
+#pragma endregion
 
+#pragma region Monster
+#include "CarChase_Van.h"
+#pragma endregion
+
+#pragma region Reactor
 #include "Reactor_Van.h"
+#pragma endregion
+
 #pragma endregion
 
 #pragma region Adventure
@@ -61,6 +70,8 @@
 #include "MapColliderObj.h"
 #include "Decal.h"
 #include "LightConstruction.h"
+#include "Map.h"
+#include "Item.h"
 #pragma endregion
 
 #pragma region MyRegion
@@ -330,13 +341,17 @@ HRESULT CLoader::Loading_Default()
 	//if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_CutSceneAnim_ForPlayer"), CAnim::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Anim/Kiryu_CamAction.fbx", true))))
 	//	return E_FAIL;
 
-
-	///* For.Prototype_Component_Anim_ForPlayer */
-	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Anim_ForPlayer"), CAnim::Create(m_pDevice, m_pContext, "../Bin/DataFiles/AnimationData/Animation_ForKiryu.dat", false))))
-		return E_FAIL;
-	//if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Anim_ForPlayer"), CAnim::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Anim/Animation_ForKiryu.fbx", true))))
+	///* For.Prototype_Component_Anim_KiryuFace */
+	//if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Anim_KiryuFace"), CAnim::Create(m_pDevice, m_pContext, "../Bin/DataFiles/AnimationData/Animation_Kiryu_Face.dat", false))))
 	//	return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Anim_KiryuFace"), CAnim::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Anim/Animation_Kiryu_Face.fbx", true))))
+		return E_FAIL;
 
+	///* For.Prototype_Component_Anim_Hand */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Anim_Hand"), CAnim::Create(m_pDevice, m_pContext, "../Bin/DataFiles/AnimationData/Animation_Hand.dat", false))))
+		return E_FAIL;
+	//if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Anim_Hand"), CAnim::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Anim/Animation_Hand.fbx", true))))
+	//	return E_FAIL;
 
 
 
@@ -376,6 +391,14 @@ HRESULT CLoader::Loading_Default()
 	/* For.Prototype_Component_Shader_Mesh */
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Shader_Mesh"),
 		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxMesh.hlsl"), VTXMESH::Elements, VTXMESH::iNumElements))))
+		return E_FAIL;
+	/* For.Prototype_Component_Shader_MeshItem */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Shader_MeshItem"),
+		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxMeshItem.hlsl"), VTXMESH::Elements, VTXMESH::iNumElements))))
+		return E_FAIL;
+	/* For.Prototype_Component_Shader_MeshMap */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Shader_MeshMap"),
+		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxMeshMap.hlsl"), VTXMESH::Elements, VTXMESH::iNumElements))))
 		return E_FAIL;
 	/* For.Prototype_Component_Shader_VtxMeshSky */
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Shader_VtxMeshSky"),
@@ -615,6 +638,11 @@ HRESULT CLoader::Loading_For_Office_1F()
 		CAdv_Passersby::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	/* For.Prototype_GameObject_Map */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Map"),
+		CMap::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 #pragma endregion
 
 #pragma endregion
@@ -836,6 +864,8 @@ HRESULT CLoader::Loading_For_Test()
 
 	Add_Models_On_Path_NonAnim(LEVEL_TEST, TEXT("../Bin/Resources/Models/NonAnim/Map/Map2"));
 
+	Add_Models_On_Path_NonAnim(LEVEL_TEST, TEXT("../Bin/Resources/Models/NonAnim/Map/Map3"));
+
 	_matrix PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Model_Bone_Sphere"),
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/NonAnim/Bone_Sphere/Bin/Square.dat", PreTransformMatrix, true))))
@@ -923,6 +953,11 @@ HRESULT CLoader::Loading_For_Test()
 #pragma endregion
 
 #pragma region Highway
+	/* For.Prototype_GameObject_Taxi (For.Player) */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Taxi"),
+		CHighway_Taxi::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 	/* For.Prototype_GameObject_Van */
 	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Van"),
 		CReactor_Van::Create(m_pDevice, m_pContext))))
@@ -984,6 +1019,16 @@ HRESULT CLoader::Loading_For_Test()
 	/* For.Prototype_GameObject_AdvPassersby */
 	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_AdvPassersby"),
 		CAdv_Passersby::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_Map */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Map"),
+		CMap::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_Item */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Item"),
+		CItem::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 #pragma endregion
 

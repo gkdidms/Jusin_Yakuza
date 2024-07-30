@@ -226,7 +226,7 @@ HRESULT CModel::Ready_CameraAnimations(string& pBinFilePath)
 	ifstream in(pBinFilePath, ios::binary);
 
 	if (!in.is_open()) {
-		MSG_BOX("Camera FoV 파일 개방 실패 (툴에선 실패떠도 됨 걱정 ㄴㄴ)");
+		MSG_BOX("Camera FoV 파일 개방 실패 (카메라 애니메이션이 없는 경우는 무시해도됨)");
 		return E_FAIL;
 	}
 
@@ -303,18 +303,29 @@ HRESULT CModel::Export_Bones(ofstream& out)
 	for (size_t i = 0; i < iNumBones; i++)
 	{
 		if ("" != m_pGameInstance->Extract_String(m_Bones[i]->Get_Name(), '[', ']'))
-			++iCount;
+		{
+			// decal이란 이름은 실제 사용하는 뼈인듯해서 제거하면안된다.
+			regex Regex("decal");
+			if(!regex_search(m_Bones[i]->Get_Name(), Regex))
+				++iCount;
+		}
 	}
 
 	iNumBones -= iCount;
 
 	out.write((char*)&iNumBones, sizeof(_uint));
 
+	_uint i = 0;
 	for (auto& Bone : m_Bones)
 	{
 		string strValue = Bone->Get_Name();
-		if ("" != m_pGameInstance->Extract_String(strValue, '[', ']'))
-			continue;
+		if ("" != m_pGameInstance->Extract_String(m_Bones[i]->Get_Name(), '[', ']'))
+		{
+			// decal이란 이름은 실제 사용하는 뼈인듯해서 제거하면안된다.
+			regex Regex("decal");
+			if (!regex_search(m_Bones[i]->Get_Name(), Regex))
+				continue;
+		}
 		
 		_int iValue = strValue.size();
 		out.write((char*)&iValue, sizeof(_uint));
@@ -325,6 +336,7 @@ HRESULT CModel::Export_Bones(ofstream& out)
 
 		_float4x4 TransformationMatrix = *(Bone->Get_TransformationMatrix());
 		out.write((char*)&TransformationMatrix, sizeof(_float4x4));
+		i++;
 	}
 	return S_OK;
 }
@@ -888,6 +900,18 @@ void CModel::Find_Mesh_Using_DECAL()
 
 }
 
+void CModel::Check_Separation_Parents(CBone* pBone, _int iAnimType)
+{
+	if (pBone->Get_ParentBoneIndex() != -1)
+	{
+		if (m_Bones[pBone->Get_ParentBoneIndex()]->Get_Separation() == iAnimType)
+		{
+			pBone->Set_Separation(iAnimType);
+			Check_Separation_Parents(m_Bones[pBone->Get_ParentBoneIndex()], iAnimType);
+		}
+	}
+}
+
 HRESULT CModel::Render(_uint iMeshIndex)
 {
 	//m_Meshes[iMeshIndex]->Bind_Buffers();
@@ -989,6 +1013,93 @@ void CModel::Play_Animation(_float fTimeDelta, CAnim* pAnim, _bool isLoop, _int 
 		pBone->Update_CombinedTransformationMatrix(m_Bones, XMLoadFloat4x4(&m_PreTransformMatrix));
 }
 
+// 컷신 실행용
+void CModel::Play_Animation_CutScene(_float fTimeDelta, CAnim* pAnim, _bool isLoop, _int iAnimIndex, _bool isRoot, string strExcludeBoneName)
+{
+	//애니메이션 목록 전달하기 
+	if (nullptr == pAnim)
+	{
+		if (1 > m_Animations.size()) return;
+
+		m_ChangeInterval = 0.0;
+
+		// 넘겨받은 iAnimIndex이 -1 이라면 기존대로 실행하고
+		if (0 > iAnimIndex)
+		{
+			if (0.0 == m_ChangeInterval)
+				m_Animations[m_AnimDesc.iAnimIndex]->Update_TransformationMatrix(fTimeDelta, m_Bones, m_AnimDesc.isLoop, isRoot, strExcludeBoneName);
+			else
+			{
+				if (m_Animations[m_AnimDesc.iAnimIndex]->Get_Changed())
+					m_Animations[m_AnimDesc.iAnimIndex]->Update_TransformationMatrix(fTimeDelta, m_Bones, m_AnimDesc.isLoop, isRoot, strExcludeBoneName);
+				else
+					m_Animations[m_AnimDesc.iAnimIndex]->Update_Change_Animation(fTimeDelta, m_Bones, m_Animations[m_iPrevAnimIndex], m_ChangeInterval, isRoot);
+			}
+		}
+		// -1이 아니라면 넘겨받은 인덱스를 실행시킨다.
+		else
+		{
+			if (0.0 == m_ChangeInterval)
+				m_Animations[m_AnimDesc.iAnimIndex]->Update_TransformationMatrix(fTimeDelta, m_Bones, m_AnimDesc.isLoop, isRoot, strExcludeBoneName);
+			else
+			{
+				if (m_Animations[m_AnimDesc.iAnimIndex]->Get_Changed())
+					m_Animations[m_AnimDesc.iAnimIndex]->Update_TransformationMatrix(fTimeDelta, m_Bones, m_AnimDesc.isLoop, isRoot, strExcludeBoneName);
+				else
+					m_Animations[m_AnimDesc.iAnimIndex]->Update_Change_Animation(fTimeDelta, m_Bones, m_Animations[m_iPrevAnimIndex], m_ChangeInterval, isRoot);
+			}
+		}
+
+	}
+	else
+	{
+		vector<CAnimation*> Animations = pAnim->Get_Animations();
+
+		if (1 > Animations.size()) return;
+
+		m_ChangeInterval = 0.0;
+
+		// 넘겨받은 iAnimIndex이 -1 이라면 기존대로 실행하고
+		if (0 > iAnimIndex)
+		{
+			pAnim->Set_CurrentAnimIndex(m_AnimDesc.iAnimIndex);
+
+			if (0.0 == m_ChangeInterval)
+				Animations[m_AnimDesc.iAnimIndex]->Update_TransformationMatrix(fTimeDelta, m_Bones, isLoop, isRoot, strExcludeBoneName);
+			else
+			{
+				if (Animations[m_AnimDesc.iAnimIndex]->Get_Changed())
+					Animations[m_AnimDesc.iAnimIndex]->Update_TransformationMatrix(fTimeDelta, m_Bones, isLoop, isRoot, strExcludeBoneName);
+				else
+				{
+					Animations[m_AnimDesc.iAnimIndex]->Update_Change_Animation(fTimeDelta, m_Bones, Animations[m_iPrevAnimIndex], m_ChangeInterval, isRoot);
+				}
+			}
+		}
+		// -1이 아니라면 넘겨받은 인덱스를 실행시킨다.
+		else
+		{
+			pAnim->Set_CurrentAnimIndex(iAnimIndex);
+
+			if (0.0 == m_ChangeInterval)
+				Animations[iAnimIndex]->Update_TransformationMatrix(fTimeDelta, m_Bones, isLoop, isRoot, strExcludeBoneName);
+			else
+			{
+				if (Animations[iAnimIndex]->Get_Changed())
+					Animations[iAnimIndex]->Update_TransformationMatrix(fTimeDelta, m_Bones, isLoop, isRoot, strExcludeBoneName);
+				else
+				{
+					Animations[iAnimIndex]->Update_Change_Animation(fTimeDelta, m_Bones, Animations[m_iPrevAnimIndex], m_ChangeInterval, isRoot);
+				}
+			}
+		}
+	}
+
+	/* 전체뼈를 순회하면서 모든 뼈의 CombinedTransformationMatrix를 갱신한다. */
+	for (auto& pBone : m_Bones)
+		pBone->Update_CombinedTransformationMatrix(m_Bones, XMLoadFloat4x4(&m_PreTransformMatrix));
+}
+
 void CModel::Play_Animation_Monster(_float fTimeDelta, class CAnim* pAnim, _bool isLoop, _bool isRoot)
 {
 	//애니메이션 목록 전달하기 ;
@@ -1027,6 +1138,33 @@ void CModel::Play_Animation(_float fTimeDelta, const ANIMATION_DESC& AnimDesc, _
 			m_Animations[AnimDesc.iAnimIndex]->Update_TransformationMatrix(fTimeDelta, m_Bones, AnimDesc.isLoop,  isRoot, strExcludeBoneName);
 		else
 			m_Animations[AnimDesc.iAnimIndex]->Update_Change_Animation(fTimeDelta, m_Bones, m_Animations[m_iPrevAnimIndex], m_ChangeInterval, isRoot);
+	}
+
+	/* 전체뼈를 순회하면서 모든 뼈의 CombinedTransformationMatrix를 갱신한다. */
+	for (auto& pBone : m_Bones)
+		pBone->Update_CombinedTransformationMatrix(m_Bones, XMLoadFloat4x4(&m_PreTransformMatrix));
+}
+
+void CModel::Play_Animation_Separation(_float fTimeDelta, _uint iAnimIndex, CAnim* pAnim, _bool isLoop, _int iAnimType)
+{
+		//애니메이션 목록 전달하기 ;
+	vector<CAnimation*> Animations = pAnim->Get_Animations();
+
+	if (1 > Animations.size()) return;
+
+	pAnim->Set_PrevAnimIndex(pAnim->Get_CurrentAnimIndex());
+	pAnim->Set_CurrentAnimIndex(iAnimIndex);
+
+	if (0.0 == m_ChangeInterval)
+		Animations[iAnimIndex]->Update_TransformationMatrix_Separation(fTimeDelta, m_Bones, isLoop, iAnimType);
+	else
+	{
+		if (Animations[iAnimIndex]->Get_Changed())
+			Animations[iAnimIndex]->Update_TransformationMatrix_Separation(fTimeDelta, m_Bones, isLoop, iAnimType);
+		else
+		{
+			Animations[iAnimIndex]->Update_Change_Animation_Separation(fTimeDelta, m_Bones, m_PreAnimations[pAnim->Get_PrevAnimIndex()], m_ChangeInterval, iAnimType);
+		}
 	}
 
 	/* 전체뼈를 순회하면서 모든 뼈의 CombinedTransformationMatrix를 갱신한다. */
@@ -1087,6 +1225,36 @@ void CModel::Reset_Animation(_uint iAnimIndex)
 	m_Animations[iAnimIndex]->Reset();
 }
 
+void CModel::Set_Separation_ParentBone(string strBoneName, _int iAnimType)
+{
+	for (auto& pBone : m_Bones)
+	{
+		if (pBone->Compare_Name(strBoneName.c_str()))
+		{
+			pBone->Set_Separation(iAnimType);
+		}
+
+		// 부모뼈가 -1이라면 건너뛰기
+		if (pBone->Get_ParentBoneIndex() == -1)
+			continue; 
+
+		// 현재 뼈의 부모뼈를 구해서, 그 부모뼈가 제외된 뼌지 확인한다.
+		// 부모가 제외되었다면 본인도 제외한다.
+		// 부모의 부모뼈도 다 봐야한다!! 재귀함수임
+		Check_Separation_Parents(pBone, iAnimType);
+	}
+}
+
+void CModel::Set_Separation_SingleBone(string strBoneName, _int iAnimType)
+{
+	for (auto& pBone : m_Bones)
+	{
+		if (pBone->Compare_Name(strBoneName.c_str()))
+		{
+			pBone->Set_Separation(iAnimType);
+		}
+	}
+}
 
 const vector<_uint>* CModel::Get_CurrentKeyFrameIndices(string strAnimationName)
 {
@@ -1223,6 +1391,22 @@ const _float4* CModel::Get_AnimationCenterRotation(CAnim* pAnim)
 		return m_Animations[m_AnimDesc.iAnimIndex]->Get_CenterRotationValue();
 	else
 		return pAnim->Get_AnimationCenterRotation();
+}
+
+_float4x4 CModel::Get_LocalMatrix()
+{
+	if (0 == m_Meshes.size())
+	{
+		//예외처리
+		_float4x4	localMatrix;
+		XMStoreFloat4x4(&localMatrix, XMMatrixIdentity());
+		return localMatrix;
+	}
+	else
+	{
+		return m_Meshes[0]->Get_LocalMatrix();
+	}
+	
 }
 
 void CModel::Copy_DecalMaterial(vector<DECAL_DESC>* pDecals)

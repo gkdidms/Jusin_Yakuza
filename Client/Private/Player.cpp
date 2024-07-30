@@ -20,6 +20,8 @@
 #include "UIManager.h"
 #include "Camera.h"
 
+#include "Monster.h"
+
 #pragma region 행동 관련 헤더들
 #include "Kiryu_KRC_Hit.h"
 #include "Kiryu_KRH_Hit.h"
@@ -27,7 +29,6 @@
 #include "Kiryu_KRS_Down.h"
 #include "Kiryu_KRH_Down.h"
 #include "Kiryu_KRS_Grab.h"
-#include <Monster.h>
 #pragma endregion
 
 CPlayer::CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -117,11 +118,6 @@ void CPlayer::Tick(const _float& fTimeDelta)
 	if (m_iCurrentBehavior != (_uint)KRS_BEHAVIOR_STATE::BTL_START)
 		m_pGameInstance->Set_TimeSpeed(TEXT("Timer_60"), 1.f);
 
-	if (m_pGameInstance->GetKeyState(DIK_0) == TAP)
-	{
-		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0, 0, 0, 1));
-	}
-
 	if (m_pGameInstance->GetKeyState(DIK_UP) == TAP)
 	{
 		Style_Change(KRS);
@@ -172,21 +168,53 @@ void CPlayer::Tick(const _float& fTimeDelta)
 	if (m_pGameInstance->GetKeyState(DIK_Z) == TAP)
 	{
 		//TODO: 여기에서 enum값을 필요한 애니메이션으로 바꾸면 해당하는 컷신이 실행된당
-		Set_CutSceneAnim(HAIHEKI_KICK);
-		static_cast<CMonster*>(Get_TargetObject())->Set_Sync(m_CutSceneAnimation[HAIHEKI_KICK]);
+		if (m_pTargetObject)
+		{
+			Set_CutSceneAnim(m_eCutSceneType, 1);
+			static_cast<CMonster*>(Get_TargetObject())->Set_Sync(m_CutSceneAnimation[m_eCutSceneType]);
+		}
+		
+	}
+
+	// 뼈 분리 테스트
+	if (m_pGameInstance->GetKeyState(DIK_N) == TAP)
+		m_iFaceAnimIndex--;
+	if (m_pGameInstance->GetKeyState(DIK_M) == TAP)
+		m_iFaceAnimIndex++;
+
+	if (m_pGameInstance->GetKeyState(DIK_C) == TAP)
+	{
+		m_pModelCom->Set_Separation_ParentBone("ude3_l_n", -1);
+		m_pModelCom->Set_Separation_ParentBone("ude3_r_n", -1);
+
+		m_pModelCom->Set_Separation_ParentBone("face_c_n", -1);
+	}
+	if (m_pGameInstance->GetKeyState(DIK_X) == TAP)
+	{
+		m_pModelCom->Set_Separation_ParentBone("ude3_l_n", (_int)HAND_COM);
+		m_pModelCom->Set_Separation_ParentBone("ude3_r_n", (_int)HAND_COM);
+
+		m_pModelCom->Set_Separation_ParentBone("face_c_n", (_int)FACE_COM);
+		m_pModelCom->Set_Separation_SingleBone("face_c_n", -1);
 	}
 
 	if (m_isAnimStart)
 	{
-		if (DEFAULT == m_eAnimComType)
+		if (DEFAULT_ANIMAITION == m_eAnimComType)
+		{
+			m_pModelCom->Play_Animation_Separation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")), 9, m_SeparationAnimComs[HAND_COM], false, (_int)HAND_COM);
+			m_pModelCom->Play_Animation_Separation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")), m_iFaceAnimIndex, m_SeparationAnimComs[FACE_COM], false, (_int)FACE_COM);
 			m_pModelCom->Play_Animation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")));
+		}
 		else
 		{
+			m_pModelCom->Play_Animation_Separation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")), 9, m_SeparationAnimComs[HAND_COM], false, (_int)HAND_COM);
+			m_pModelCom->Play_Animation_Separation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")), m_iFaceAnimIndex, m_SeparationAnimComs[FACE_COM], false, (_int)FACE_COM);
 			Play_CutScene();
 		}
 	}
 #else
-	if (DEFAULT == m_eAnimComType)
+	if (DEFAULT_ANIMAITION == m_eAnimComType)
 		m_pModelCom->Play_Animation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")));
 	else
 	{
@@ -222,7 +250,7 @@ void CPlayer::Late_Tick(const _float& fTimeDelta)
 #ifdef _DEBUG
 	if (m_isObjectRender)
 	{
-		m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
+		//m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
 		m_pGameInstance->Add_Renderer(CRenderer::RENDER_SHADOWOBJ, this); // Shadow용 렌더 추가
 	}
 #else
@@ -1359,6 +1387,20 @@ HRESULT CPlayer::Add_Components()
 		TEXT("Com_Anim"), reinterpret_cast<CComponent**>(&m_pAnimCom))))
 		return E_FAIL;
 
+	//Prototype_Component_Anim_KiryuFace
+	CAnim* pAnimCom = { nullptr };
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Anim_KiryuFace"),
+		TEXT("Com_Anim_Face"), reinterpret_cast<CComponent**>(&pAnimCom))))
+		return E_FAIL;
+	m_SeparationAnimComs.push_back(pAnimCom);
+
+	//Prototype_Component_Anim_Hand
+	pAnimCom = { nullptr };
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Anim_Hand"),
+		TEXT("Com_Anim_Hand"), reinterpret_cast<CComponent**>(&pAnimCom))))
+		return E_FAIL;
+	m_SeparationAnimComs.push_back(pAnimCom);
+
 	return S_OK;
 }
 
@@ -1446,11 +1488,15 @@ void CPlayer::Reset_MoveDirection()
 	ZeroMemory(m_InputDirection, sizeof(_bool) * MOVE_DIRECTION_END);
 }
 
-void CPlayer::Set_CutSceneAnim(CUTSCENE_ANIMATION_TYPE eType)
+void CPlayer::Set_CutSceneAnim(CUTSCENE_ANIMATION_TYPE eType, _uint iFaceAnimIndex)
 {
 	// 없으면 종료
 	auto iter = m_CutSceneAnimation.find(eType);
 	if (m_CutSceneAnimation.end() == iter) return;
+
+	m_iFaceAnimIndex = iFaceAnimIndex;
+
+	On_Separation_Face();
 
 	string AnimName = (*iter).second;
 
@@ -1476,7 +1522,7 @@ void CPlayer::Set_CutSceneAnim(CUTSCENE_ANIMATION_TYPE eType)
 	{
 		string CameraAnimName = pAnimation->Get_AnimName();
 
-		// 애니메이션 이름에 .cmt가 포함된 경우만 카메라 애니S메이션이다.
+		// 애니메이션 이름에 .cmt가 포함된 경우만 카메라 애니메이션이다.
 		if (CameraAnimName.find(".cmt") != std::string::npos && CameraAnimName.find(AnimName) != std::string::npos)
 		{
 			m_iCutSceneCamAnimIndex = j;
@@ -1490,7 +1536,7 @@ void CPlayer::Set_CutSceneAnim(CUTSCENE_ANIMATION_TYPE eType)
 
 void CPlayer::Play_CutScene()
 {
-	if (CAMERA_CUTSCENE == m_pSystemManager->Get_Camera())
+	if (CUTSCENE_ANIMATION == m_eAnimComType)
 	{
 		// 카메라 모델의 애니메이션이 종료되면 똑같이 플레이어의 애니메이션도 종료된 것이기 때문에 기존상태로 되돌린다.
 		if (m_pCameraModel->Get_AnimFinished())
@@ -1500,10 +1546,12 @@ void CPlayer::Play_CutScene()
 			m_iCurrentBehavior = 1;				// Idle상태로 되돌려둔다
 			Reset_CutSceneEvent();
 
+			Off_Separation_Face();
+
 			return;
 		}
 
-		m_pModelCom->Play_Animation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")), m_pAnimCom, false, m_iCutSceneAnimIndex, false);
+		m_pModelCom->Play_Animation_CutScene(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")), m_pAnimCom, false, m_iCutSceneAnimIndex, false);
 
 		CPlayer* pPlayer = this;
 		CCamera* pCamera = dynamic_cast<CCamera*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Camera"), CAMERA_CUTSCENE));
@@ -1523,8 +1571,6 @@ void CPlayer::Play_CutScene()
 		// Blender의 본 변환 행렬과 플레이어의 월드 변환 행렬을 결합하고 좌표계 변환을 적용
 		_matrix finalMat = rotationMatrixX * rotationMatrixY * rotationMatrixZ * matVectorBoneWorld * matBoneMatrix * matPlayerWorld;
 
-		//finalMat.r[CTransform::STATE_POSITION] -= finalMat.r[CTransform::STATE_LOOK];
-
 		// 최종 뷰 행렬을 계산
 		_matrix viewMatrix = XMMatrixInverse(nullptr, finalMat);
 
@@ -1541,7 +1587,7 @@ void CPlayer::Play_CutScene()
 		m_pCameraModel->Set_AnimationIndex(Desc);
 
 		// 카메라 본 애니메이션 실행
-		m_pCameraModel->Play_Animation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")), Desc, false, "Camera");
+		m_pCameraModel->Play_Animation_CutScene(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")), nullptr, false, m_iCutSceneCamAnimIndex, false, "Camera");
 	}
 }
 
@@ -1553,8 +1599,54 @@ void CPlayer::Reset_CutSceneEvent()
 	m_pAnimCom->Reset_Animation(m_iCutSceneAnimIndex);
 	m_pCameraModel->Reset_Animation(m_iCutSceneCamAnimIndex);
 
-	m_eAnimComType = (m_eAnimComType == DEFAULT ? CUTSCENE : DEFAULT);
+	m_eAnimComType = (m_eAnimComType == DEFAULT_ANIMAITION ? CUTSCENE_ANIMATION : DEFAULT_ANIMAITION);
 	m_pSystemManager->Set_Camera(CAMERA_CUTSCENE == m_pSystemManager->Get_Camera() ? CAMERA_PLAYER : CAMERA_CUTSCENE);
+}
+
+// iHandType: 0 양손, 1 왼손, 2 오른손
+void CPlayer::On_Separation_Hand(_uint iHandType)
+{
+	switch (iHandType)
+	{
+	case 0:		//양손
+		m_pModelCom->Set_Separation_ParentBone("ude3_r_n", (_int)HAND_COM);
+		m_pModelCom->Set_Separation_ParentBone("ude3_l_n", (_int)HAND_COM);
+		break;
+	case 1:		//왼손
+		m_pModelCom->Set_Separation_ParentBone("ude3_l_n", (_int)HAND_COM);
+		break;
+	case 2:		//오른손
+		m_pModelCom->Set_Separation_ParentBone("ude3_r_n", (_int)HAND_COM);
+		break;
+	}
+}
+
+void CPlayer::Off_Separation_Hand(_uint iHandType)
+{
+	switch (iHandType)
+	{
+	case 0:		//양손
+		m_pModelCom->Set_Separation_ParentBone("ude3_r_n", -1);
+		m_pModelCom->Set_Separation_ParentBone("ude3_l_n", -1);
+		break;
+	case 1:		//왼손
+		m_pModelCom->Set_Separation_ParentBone("ude3_l_n", -1);
+		break;
+	case 2:		//오른손
+		m_pModelCom->Set_Separation_ParentBone("ude3_r_n", -1);
+		break;
+	}
+}
+
+void CPlayer::On_Separation_Face()
+{
+	m_pModelCom->Set_Separation_ParentBone("face_c_n", (_int)FACE_COM);
+	m_pModelCom->Set_Separation_SingleBone("face_c_n", -1);
+}
+
+void CPlayer::Off_Separation_Face()
+{
+	m_pModelCom->Set_Separation_ParentBone("face_c_n", -1);
 }
 
 void CPlayer::Compute_MoveDirection_FB()

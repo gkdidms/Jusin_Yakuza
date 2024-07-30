@@ -67,6 +67,9 @@ private://렌더러 제어
     _float m_fHDRLight = { 1.f };
     _int m_iLightPass = { 0 };
 
+private://플레이어 ㅈ[어
+    _uint m_iCutSceneAnimIndex = { 0 };
+
 private:
     void Window_Debug();
 

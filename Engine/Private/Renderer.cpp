@@ -148,6 +148,9 @@ HRESULT CRenderer::Initialize()
 
 	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_RimLight"), 650.f, 50.f, 100.f, 100.f)))
 		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_Decal"), 950.f, 150.f, 100.f, 100.f)))
+		return E_FAIL;
 #endif // _DEBUG
 
 
@@ -336,6 +339,14 @@ HRESULT CRenderer::Ready_Targets()
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_RimLight"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(1.f, 1.f, 1.f, 1.f))))
 		return E_FAIL;
 
+	/*Target_NonLightNonBlur*/
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_NonLightNonBlur"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
+		return E_FAIL;
+
+	/*Target_Decal*/
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Decal"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -357,9 +368,7 @@ HRESULT CRenderer::Ready_MRTs()
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_NonBlend"), TEXT("Target_NonBlendRD"))))
 		return E_FAIL;
 
-	/* MRT_Decals */
-	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_Decals"), TEXT("Target_NonBlendDiffuse"))))
-		return E_FAIL;
+
 
 	/* MRT_Glass - 덮어쓰기 */
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_Glass"), TEXT("Target_GlassDiffuse"))))
@@ -505,6 +514,14 @@ HRESULT CRenderer::Ready_MRTs()
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_RimLight"), TEXT("Target_RimLight"))))
 		return E_FAIL;
 
+	/* MRT_NonLightNonBlur */
+	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_NonLightNonBlur"), TEXT("Target_NonLightNonBlur"))))
+		return E_FAIL;
+
+	/* MRT_Decals */
+	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_Decals"), TEXT("Target_Decal"))))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -629,6 +646,7 @@ void CRenderer::Add_Renderer(RENDERER_STATE eRenderState, CGameObject* pGameObje
 void CRenderer::Draw()
 {
 	Render_Priority();
+
 	if (m_isShadow)
 	{
 		Render_ShadowObjects();
@@ -637,6 +655,7 @@ void CRenderer::Draw()
 	Render_NonBlender();
 
 	Render_Decal();
+
 	Render_Glass();
 
 
@@ -654,6 +673,8 @@ void CRenderer::Draw()
 	//Render_Puddle();
 
 	Render_DeferredResult(); // 복사한 이미지를 백버퍼에 넣어줌. (Deferred 최종)
+
+	
 
 	if (m_isRimLight)
 		Render_RimLight();
@@ -679,10 +700,16 @@ void CRenderer::Draw()
 		Render_BOF();
 	}
 
+
+	// 간판을 위해 임의로 남겨두기
+	Render_NonLight_NonBlur();
+
+	// NonLight랑 Bloom은 같이 붙어있어야함
 	Render_NonLight();
 	Render_Bloom();
 	Render_FinalEffectBlend();
 
+	
 	Render_Blender();
 	Render_Effect();
 	Render_FinlaOIT();
@@ -726,6 +753,8 @@ HRESULT CRenderer::Add_DebugComponent(CComponent* pComponent)
 
 void CRenderer::Render_Priority()
 {
+	m_iRenderState = RENDER_PRIORITY;
+
 	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_CopyBackBuffer"))))
 		return;
 
@@ -744,6 +773,8 @@ void CRenderer::Render_Priority()
 
 void CRenderer::Render_ShadowObjects()
 {
+	m_iRenderState = RENDER_SHADOWOBJ;
+
 	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_ShadowObjects"), m_pLightDepthStencilView)))
 		return;
 
@@ -762,6 +793,8 @@ void CRenderer::Render_ShadowObjects()
 
 void CRenderer::Render_NonBlender()
 {
+	m_iRenderState = RENDER_NONBLENDER;
+
 	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_NonBlend"))))
 		return;
 
@@ -779,7 +812,9 @@ void CRenderer::Render_NonBlender()
 
 void CRenderer::Render_Decal()
 {
-	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_Decals"), nullptr, false)))
+	m_iRenderState = RENDER_DECAL;
+
+	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_Decals"))))
 		return;
 
 	for (auto& iter : m_RenderObject[RENDER_DECAL])
@@ -795,8 +830,11 @@ void CRenderer::Render_Decal()
 
 }
 
+
 void CRenderer::Render_Glass()
 {
+	m_iRenderState = RENDER_GLASS;
+
 	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_Glass"))))
 		return;
 
@@ -820,6 +858,10 @@ void CRenderer::Render_Glass()
 	if (FAILED(m_pShader->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix)))
 		return;
 	if (FAILED(m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
+		return;
+
+	// decal도 diffuse에 합산 같이 해줌
+	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Decal"), m_pShader, "g_DecalTexture")))
 		return;
 
 	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_GlassDiffuse"), m_pShader, "g_GlassDiffuseTexture")))
@@ -1062,6 +1104,8 @@ void CRenderer::Render_CopyBackBuffer()
 
 void CRenderer::Render_Puddle()
 {
+	m_iRenderState = RENDER_PUDDLE;
+
 	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_Puddle"))))
 		return;
 
@@ -1098,6 +1142,9 @@ void CRenderer::Render_Puddle()
 	if (FAILED(m_pGameInstance->End_MRT()))
 		return;
 }
+
+
+
 
 void CRenderer::Render_DeferredResult() // 백버퍼에 Diffuse와 Shade를 더해서 그려줌
 {
@@ -1512,6 +1559,53 @@ void CRenderer::Render_LuminanceResult()
 	m_pVIBuffer->Render();
 }
 
+void CRenderer::Render_NonLight_NonBlur()
+{
+	m_iRenderState = RENDER_NONLIGHT_NONBLUR;
+
+	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_NonLightNonBlur"))))
+		return;
+
+	for (auto& iter : m_RenderObject[RENDER_NONLIGHT_NONBLUR])
+	{
+		iter->Render();
+
+		Safe_Release(iter);
+	}
+	m_RenderObject[RENDER_NONLIGHT_NONBLUR].clear();
+
+	if (FAILED(m_pGameInstance->End_MRT()))
+		return;
+
+	if (m_isBOF)
+	{
+		if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MTR_BOF"), nullptr, false)))
+			return;
+	}
+	else
+	{
+		if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_CopyBackBuffer"), nullptr, false)))
+			return;
+	}
+
+	if (FAILED(m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix)))
+		return;
+	if (FAILED(m_pShader->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix)))
+		return;
+	if (FAILED(m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
+		return;
+
+	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_NonLightNonBlur"), m_pShader, "g_NonLightNonBlurTexture")))//최종블러텍스처
+		return;
+
+	m_pShader->Begin(21);
+
+	m_pVIBuffer->Render();
+
+	if (FAILED(m_pGameInstance->End_MRT()))
+		return;
+}
+
 void CRenderer::Render_RimLight()
 {
 	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_CopyBackBuffer"), nullptr, false)))
@@ -1551,6 +1645,8 @@ void CRenderer::Render_RimLight()
 
 void CRenderer::Render_NonLight()
 {
+	m_iRenderState = RENDER_NONLIGHT;
+
 	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_Effect"))))
 		return;
 
@@ -1581,8 +1677,7 @@ void CRenderer::Render_Bloom()
 	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Effect"), m_pShader, "g_EffectTexture")))
 		return;
 
-	// Blur_X_SIGN
-	m_pShader->Begin(21);
+	m_pShader->Begin(11);
 
 	m_pVIBuffer->Render();
 
@@ -1595,7 +1690,7 @@ void CRenderer::Render_Bloom()
 	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Blur_X"), m_pShader, "g_EffectTexture")))
 		return;
 
-	m_pShader->Begin(22);
+	m_pShader->Begin(12);
 
 	m_pVIBuffer->Render();
 
@@ -1643,6 +1738,8 @@ void CRenderer::Render_FinalEffectBlend()
 
 void CRenderer::Render_Blender()
 {
+	m_iRenderState = RENDER_BLENDER;
+
 	m_RenderObject[RENDER_BLENDER].sort([](CGameObject* pSour, CGameObject* pDest)->_bool
 		{
 			return dynamic_cast<CBlendObject*>(pSour)->Get_ViewZ() > dynamic_cast<CBlendObject*>(pDest)->Get_ViewZ();
@@ -1661,6 +1758,8 @@ void CRenderer::Render_Blender()
 
 void CRenderer::Render_Effect()// 새로운 타겟에 파티클 그리기
 {
+	m_iRenderState = RENDER_EFFECT;
+
 	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_Accum"))))
 		return;
 
@@ -1816,16 +1915,24 @@ void CRenderer::Render_Debug()
 			return;
 	}
 
-	//	if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_Effect"), m_pShader, m_pVIBuffer)))
-	//		return;
+		if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_Effect"), m_pShader, m_pVIBuffer)))
+			return;
 	//	if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_Blur_X"), m_pShader, m_pVIBuffer)))
 	//		return;
-	//	if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_Blur_Y"), m_pShader, m_pVIBuffer)))
-	//		return;
+		if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_Blur_Y"), m_pShader, m_pVIBuffer)))
+			return;
 	if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_Accum"), m_pShader, m_pVIBuffer)))
 		return;
 	if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_RimLight"), m_pShader, m_pVIBuffer)))
 		return;
+
+	if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_RimLight"), m_pShader, m_pVIBuffer)))
+		return;
+
+	if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_Decals"), m_pShader, m_pVIBuffer)))
+		return;
+
+	
 }
 #endif // DEBUG
 

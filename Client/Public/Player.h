@@ -15,6 +15,7 @@ class CPlayer :
 public:
     const _float PLAYER_HITGAUGE_LEVEL_INTERVAL = 50.f;
 
+#pragma region 이넘값들
 public:
     //KRS: 불한당, KRH: 러쉬, KRC: 파괴자
     enum BATTLE_STYLE
@@ -92,6 +93,21 @@ public:
         CUTSCENE_ANIMATION_END
     };
 
+    // 표정 애니메이션
+    // [0] f201_special_01[f_kiryu]             // 총격전에서 로켓 격파하는 컷신에서 쓰임
+    // [1] f202_special_02[f_kiryu]             // 인상씀(화난)
+    // [2] f203_special_03[f_kiryu]             // 인상씀(뭐야저건 이런표정) 황당해하는듯
+    // [3] f204_special_04[f_kiryu]             // 인상쓰고있는데 오묘하게 웃음
+    // [4] f205_special_05[f_kiryu]             // 뭔지모르겠는 오묘한 표정
+    // [5] f206_special_06[f_kiryu]             // 미심쩍게 웃음
+    // [6] f207_special_07[f_kiryu]             // 아파할 때 쓰일듯?
+    // [7] f208_special_08[f_kiryu]             // 뭔가 안쓰럽게보는거같아보임
+    // [8] f209_special_09[f_kiryu]             // 크게 화낼 때
+    // [9] f210_special_10[f_kiryu]             // 눈 부릅뜨는
+    // [10] f211_special_11[f_kiryu]            // 인상쓰고 실눈뜨고봄
+    // [11] f212_special_12[f_kiryu]            // 눈 크게뜸 (놀란듯)
+#pragma endregion
+
 private:
     const _float ANIM_INTERVAL = 4.f;
     
@@ -107,6 +123,18 @@ public:
     void Set_AnimStart(_bool isAnim) { m_isAnimStart = isAnim; }
 
     _bool isAnimStart() { return m_isAnimStart; }
+
+    const map<CUTSCENE_ANIMATION_TYPE, string>& Get_CutSceneAnims() const
+    {
+        return m_CutSceneAnimation;
+    }
+
+    void Set_CutSceneIndex(CUTSCENE_ANIMATION_TYPE eAnim)
+    {
+        m_eCutSceneType = eAnim;
+    }
+
+
 #endif // DEBUG
 
     /* Getter */
@@ -128,6 +156,8 @@ public:
     CCollider* Get_PlayerCollider() {
         return m_pColliderCom;
     }
+    
+
 
     /* Setter */
 public:
@@ -135,6 +165,8 @@ public:
     void    Set_NavigationIndex(int iIndex) { m_pNavigationCom->Set_Index(iIndex); }
     void    Set_NaviRouteIndex(int iIndex) { m_iNaviRouteNum = iIndex; }
     void    Set_SeizeOff(_bool isOff = true);                       //TODO: 잡힌 상태에서 off 시킬 때 부를 함수
+    
+    void    Set_FaceAnimIndex(_uint iFaceAnimIndex) { m_iFaceAnimIndex = iFaceAnimIndex; }
 
     /* Virtual Funtion */
 public:
@@ -174,15 +206,22 @@ private:
     // 파괴자 모드 키입력
     void KRC_KeyInput(const _float& fTimeDelta);
 
+    /* 애니메이션 관련 함수들 */
 public:
     void Change_Animation(_uint iAnimIndex, _float fInterval = 4.f);
     void Change_ResetAnimaition(_uint iAnimIndex, _float fInterval = 4.f);
     void Style_Change(BATTLE_STYLE eStyle);
     void Reset_MoveDirection();
 
-    void Set_CutSceneAnim(CUTSCENE_ANIMATION_TYPE eType);
+    void Set_CutSceneAnim(CUTSCENE_ANIMATION_TYPE eType, _uint iFaceAnimIndex);
     void Play_CutScene();
     void Reset_CutSceneEvent();
+
+    // iHandType: 0양손, 1 왼손, 2 오른손
+    void On_Separation_Hand(_uint iHandType = 0);
+    void Off_Separation_Hand(_uint iHandType = 0);
+    void On_Separation_Face();
+    void Off_Separation_Face();
 
 private:
     void Compute_MoveDirection_FB();
@@ -242,6 +281,7 @@ private:
 private:
     ANIMATION_COMPONENT_TYPE    m_eAnimComType = { DEFAULT };
     map<CUTSCENE_ANIMATION_TYPE, string> m_CutSceneAnimation;
+
     _uint                       m_iCutSceneAnimIndex = { 0 };
     _uint                       m_iCutSceneCamAnimIndex = { 0 };
 
@@ -252,8 +292,11 @@ private:
 
     int             m_iNaviRouteNum = { 0 }; //루트
 
+    _uint           m_iFaceAnimIndex = { 0 };
+
 #ifdef _DEBUG
     _bool m_isAnimStart = { true };
+    CUTSCENE_ANIMATION_TYPE m_eCutSceneType = { OI_UPPER };
 #endif // _DEBUG
 
 private:

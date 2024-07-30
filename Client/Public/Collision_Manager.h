@@ -42,6 +42,7 @@ public:
     */
     void Enemy_Hit_Collision();
     void Player_Hit_Collision();
+    void ItemCollision();
 
     _bool Map_Collision_Move(CCollider* pCollider, CTransform* pTransform); // 충돌 후 position 다시 나두기
     _bool Check_Map_Collision(CCollider* pCollider); // 충돌 확인용
@@ -54,6 +55,8 @@ private:
     void ImpulseResolution();           // 따로 모아둔 벡터에서 서로 밀어내는 작업을 한다 (Tick에서 돌림)
 
     void ResolveCollision(BoundingSphere* sphere, BoundingBox* box, CTransform* pTransform);
+
+    
 
 private:
     vector<class CLandObject*> m_ImpulseResolutionObjects;
@@ -72,6 +75,7 @@ private:
 
 
     vector<CCollider*> m_MapColliders;
+    vector<CCollider*> m_ItemColliders;
 
     CGameInstance* m_pGameInstance = { nullptr };
 
