@@ -65,7 +65,11 @@ public:
 
 	void Set_PreAnimations(vector<class CAnimation*> PreAnimation) { m_PreAnimations = PreAnimation; }
 
-	void Set_SeparationBone(string strBoneName, _int iAnimType);
+	// iAnimType값으로 -1을 준다면, 분리하지 않겠다
+	// isParentException 값이 true로 준다면 부모로 사용하는 뼈의 자식들에만 분리를 적용
+	void Set_Separation_ParentBone(string strBoneName, _int iAnimType);
+	// 특정 본에만 애니메이션 따로 적용
+	void Set_Separation_SingleBone(string strBoneName, _int iAnimType);
 
 public:
 	_uint Get_NumMeshes() { return m_iNumMeshes; }

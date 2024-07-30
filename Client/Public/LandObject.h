@@ -6,6 +6,7 @@
 BEGIN(Engine)
 class CCollider;
 class CModel;
+class CAnim;
 END
 
 BEGIN(Client)
@@ -17,6 +18,29 @@ public:
         DEFAULT_ANIMAITION,
         CUTSCENE_ANIMATION,
         ANIMATION_COMPONENT_TYPE_END
+    };
+
+    // 분할된 애니메이션 컴포넌트 종류 (필요 시 늘어날 예정)
+    enum SEPARATION_ANIMATION_COM_TYPE
+    {
+        FACE_COM, HAND_COM, PART_ANIMATION_COM_TYPE_END
+    };
+
+    /* 
+    * 원형 이름: Prototype_Component_Anim_Hand 
+    * 컴포넌트 이름: Com_Anim_Hand
+    */
+    // HandAnim 데이터의 인덱스를 enum으로 정의해둠
+    enum HAND_ANIMATION_TYPE {
+        HAND_NEUTRAL,               //[0] [hand_parts_0_neutral] 평소 편하게 펴고있는 상태
+        HAND_CHOP = 8,              //[8] [hand_parts_17_chop]  촙!!! 스킬 쓸 때 손 날로 치기 때문에 손을 편 상태의 모양이다
+        HAND_GU,                    //[9] [hand_parts_1_gu] 주먹 쥐는거
+        HAND_HAKO,                  //[10] [hand_parts_3_hako] 큰 물체 쥘 때 펼쳐진 손
+        HAND_TAIKEN,                //[11] [hand_parts_4_taiken] 두꺼운 한손 물체 쥔 손
+        HAND_BOU,                   //[12] [hand_parts_5_bou] 일반 봉같은거 쥔 손
+        HAND_GUN = 14,              //[14] [hand_parts_7_gun] 권총 쥔 손
+        HAND_TONFA,                 //[15] [hand_parts_8_tonfa] 봉같은거 쥔 손 (얇은버전)
+        HAND_MAX                    //[16] [hand_parts_9_hand_max] 전부 핀 손
     };
 
 private: //오브젝트들의 정보를 저장 
@@ -142,6 +166,10 @@ protected:
     //뼈 이름, 소켓 이펙트
     multimap<string, class CSocketEffect*>      m_pEffects;
     map<string, class CSocketEffect*>           m_pTrailEffects;
+
+    // 분할한 애니메이션을 실행할 애님 컴포넌트를 들고있을 배열
+    vector<CAnim*>        m_SeparationAnimComs;
+
 
 
 #ifdef _DEBUG
