@@ -208,6 +208,7 @@
     <ClInclude Include="..\public\DefaultYakuza.h" />
     <ClInclude Include="..\public\Highway.h" />
     <ClInclude Include="..\public\CarChase_Monster.h" />
+    <ClInclude Include="..\Public\Highway_Taxi.h" />
     <ClInclude Include="..\public\Highway_Van.h" />
     <ClInclude Include="..\Public\Item.h" />
     <ClInclude Include="..\Public\KillQuest.h" />
@@ -385,6 +386,7 @@
     <ClCompile Include="..\private\DefaultYakuza.cpp" />
     <ClCompile Include="..\private\Highway.cpp" />
     <ClCompile Include="..\private\CarChase_Monster.cpp" />
+    <ClCompile Include="..\Private\Highway_Taxi.cpp" />
     <ClCompile Include="..\private\Highway_Van.cpp" />
     <ClCompile Include="..\Private\Item.cpp" />
     <ClCompile Include="..\Private\KillQuest.cpp" />

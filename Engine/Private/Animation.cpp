@@ -99,8 +99,36 @@ void CAnimation::Update_TransformationMatrix(_float fTimeDelta, const vector<cla
 
 		for (auto& pChannel : m_Channels)
 		{
-			pChannel->Update_TransformationMatrix(m_CurrentPosition, Bones, &m_CurrentKeyFrameIndices[iChannelIndex++], &m_vCenterMoveValue, &m_vCenterRotationValue, isRoot, strExcludeBoneName);
+			if(Bones[pChannel->Get_BoneIndex()]->Get_Separation() == -1)
+				pChannel->Update_TransformationMatrix(m_CurrentPosition, Bones, &m_CurrentKeyFrameIndices[iChannelIndex], &m_vCenterMoveValue, &m_vCenterRotationValue, isRoot, strExcludeBoneName);
+
+			iChannelIndex++;
 		}
+	}
+}
+
+void CAnimation::Update_TransformationMatrix_Separation(_float fTimeDelta, const vector<class CBone*>& Bones, _bool isLoop, _int iAnimType)
+{
+	m_CurrentPosition += m_TickPerSecond * fTimeDelta;
+	m_isRestart = false;
+
+	if (m_CurrentPosition >= m_Duration && !m_isFinished)
+	{
+		m_CurrentPosition = 0.0;
+		m_isRestart = true;
+
+		if (false == isLoop)
+			m_isFinished = true;
+	}
+
+	_uint		iChannelIndex = { 0 };
+
+	for (auto& pChannel : m_Channels)
+	{
+		if (Bones[pChannel->Get_BoneIndex()]->Get_Separation() == iAnimType)
+			pChannel->Update_TransformationMatrix(m_CurrentPosition, Bones, &m_CurrentKeyFrameIndices[iChannelIndex], &m_vCenterMoveValue, &m_vCenterRotationValue);
+
+		iChannelIndex++;
 	}
 }
 
@@ -128,7 +156,43 @@ void CAnimation::Update_Change_Animation(_float fTimeDelta, const vector<class C
 			// 선형보간이 필요한 상황이다.
 			if (pDstChannel->Get_BoneIndex() == pSrcChannel->Get_BoneIndex())
 			{
-				pDstChannel->Update_TransformationMatrix(m_CurrentChangePosition, Bones, pSrcChannel, pPrevAnimation->m_CurrentKeyFrameIndices[iChannelIndex++], ChangeInterval, pPrevAnimation->Get_Finished(), &m_vCenterMoveValue, &m_vCenterRotationValue, isRoot);
+				// 새로 실행할 애님의 채널에서 부모를 꺼내와서 
+				if (Bones[pDstChannel->Get_BoneIndex()]->Get_Separation() == -1)
+					pDstChannel->Update_TransformationMatrix(m_CurrentChangePosition, Bones, pSrcChannel, pPrevAnimation->m_CurrentKeyFrameIndices[iChannelIndex], ChangeInterval, pPrevAnimation->Get_Finished(), &m_vCenterMoveValue, &m_vCenterRotationValue, isRoot);
+
+				iChannelIndex++;
+			}
+		}
+	}
+}
+
+void CAnimation::Update_Change_Animation_Separation(_float fTimeDelta, const vector<class CBone*>& Bones, CAnimation* pPrevAnimation, _double ChangeInterval, _int iAnimType)
+{
+	m_CurrentChangePosition += m_TickPerSecond * fTimeDelta;
+
+	if (ChangeInterval <= m_CurrentChangePosition)
+	{
+		m_isChanged = true;
+		XMStoreFloat3(&m_vCenterMoveValue, XMVectorZero());
+		XMStoreFloat4(&m_vCenterRotationValue, XMVectorZero());
+		return;
+	}
+
+	_uint		iChannelIndex = { 0 };
+
+	for (auto& pDstChannel : m_Channels)
+	{
+		//pSrcChannel가 기존에 실행하고 있던 애니메이션이다
+		for (auto& pSrcChannel : pPrevAnimation->m_Channels)
+		{
+			// 새로 실행할 애니메이션과 기존에 실행하고 있던 애니메이션의 뼈 인덱스가 같은 채널이 있다면
+			// 선형보간이 필요한 상황이다.
+			if (pDstChannel->Get_BoneIndex() == pSrcChannel->Get_BoneIndex())
+			{
+				// 새로 실행할 애님의 채널에서 부모를 꺼내와서 
+				if (Bones[pDstChannel->Get_BoneIndex()]->Get_Separation() == iAnimType)
+					pDstChannel->Update_TransformationMatrix(m_CurrentChangePosition, Bones, pSrcChannel, pPrevAnimation->m_CurrentKeyFrameIndices[iChannelIndex], ChangeInterval, pPrevAnimation->Get_Finished(), &m_vCenterMoveValue, &m_vCenterRotationValue);
+				iChannelIndex++;
 			}
 		}
 	}
