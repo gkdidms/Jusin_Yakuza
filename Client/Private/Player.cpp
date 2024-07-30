@@ -118,11 +118,6 @@ void CPlayer::Tick(const _float& fTimeDelta)
 	if (m_iCurrentBehavior != (_uint)KRS_BEHAVIOR_STATE::BTL_START)
 		m_pGameInstance->Set_TimeSpeed(TEXT("Timer_60"), 1.f);
 
-	if (m_pGameInstance->GetKeyState(DIK_0) == TAP)
-	{
-		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0, 0, 0, 1));
-	}
-
 	if (m_pGameInstance->GetKeyState(DIK_UP) == TAP)
 	{
 		Style_Change(KRS);
@@ -175,31 +170,46 @@ void CPlayer::Tick(const _float& fTimeDelta)
 		//TODO: 여기에서 enum값을 필요한 애니메이션으로 바꾸면 해당하는 컷신이 실행된당
 		if (m_pTargetObject)
 		{
-			Set_CutSceneAnim(m_eCutSceneType);
+			Set_CutSceneAnim(m_eCutSceneType, 1);
 			static_cast<CMonster*>(Get_TargetObject())->Set_Sync(m_CutSceneAnimation[m_eCutSceneType]);
 		}
 		
 	}
 
 	// 뼈 분리 테스트
+	if (m_pGameInstance->GetKeyState(DIK_N) == TAP)
+		m_iFaceAnimIndex--;
+	if (m_pGameInstance->GetKeyState(DIK_M) == TAP)
+		m_iFaceAnimIndex++;
+
+	if (m_pGameInstance->GetKeyState(DIK_C) == TAP)
+	{
+		m_pModelCom->Set_Separation_ParentBone("ude3_l_n", -1);
+		m_pModelCom->Set_Separation_ParentBone("ude3_r_n", -1);
+
+		m_pModelCom->Set_Separation_ParentBone("face_c_n", -1);
+	}
 	if (m_pGameInstance->GetKeyState(DIK_X) == TAP)
 	{
-		m_pModelCom->Set_SeparationBone("ude3_l_n", (_int)HAND_COM);
-		m_pModelCom->Set_SeparationBone("ude3_r_n", (_int)HAND_COM);
+		m_pModelCom->Set_Separation_ParentBone("ude3_l_n", (_int)HAND_COM);
+		m_pModelCom->Set_Separation_ParentBone("ude3_r_n", (_int)HAND_COM);
 
-		m_pModelCom->Set_SeparationBone("_jaw_c_n", (_int)FACE_COM);
+		m_pModelCom->Set_Separation_ParentBone("face_c_n", (_int)FACE_COM);
+		m_pModelCom->Set_Separation_SingleBone("face_c_n", -1);
 	}
 
 	if (m_isAnimStart)
 	{
 		if (DEFAULT_ANIMAITION == m_eAnimComType)
 		{
-			m_pModelCom->Play_Animation_Separation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")), 9, m_PartAnimations[HAND_COM], false, (_int)HAND_COM);
-			m_pModelCom->Play_Animation_Separation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")), 9, m_PartAnimations[FACE_COM], false, (_int)FACE_COM);
+			m_pModelCom->Play_Animation_Separation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")), 9, m_SeparationAnimComs[HAND_COM], false, (_int)HAND_COM);
+			m_pModelCom->Play_Animation_Separation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")), m_iFaceAnimIndex, m_SeparationAnimComs[FACE_COM], false, (_int)FACE_COM);
 			m_pModelCom->Play_Animation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")));
 		}
 		else
 		{
+			m_pModelCom->Play_Animation_Separation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")), 9, m_SeparationAnimComs[HAND_COM], false, (_int)HAND_COM);
+			m_pModelCom->Play_Animation_Separation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")), m_iFaceAnimIndex, m_SeparationAnimComs[FACE_COM], false, (_int)FACE_COM);
 			Play_CutScene();
 		}
 	}
@@ -1382,14 +1392,14 @@ HRESULT CPlayer::Add_Components()
 	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Anim_KiryuFace"),
 		TEXT("Com_Anim_Face"), reinterpret_cast<CComponent**>(&pAnimCom))))
 		return E_FAIL;
-	m_PartAnimations.push_back(pAnimCom);
+	m_SeparationAnimComs.push_back(pAnimCom);
 
 	//Prototype_Component_Anim_Hand
 	pAnimCom = { nullptr };
 	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Anim_Hand"),
 		TEXT("Com_Anim_Hand"), reinterpret_cast<CComponent**>(&pAnimCom))))
 		return E_FAIL;
-	m_PartAnimations.push_back(pAnimCom);
+	m_SeparationAnimComs.push_back(pAnimCom);
 
 	return S_OK;
 }
@@ -1478,11 +1488,15 @@ void CPlayer::Reset_MoveDirection()
 	ZeroMemory(m_InputDirection, sizeof(_bool) * MOVE_DIRECTION_END);
 }
 
-void CPlayer::Set_CutSceneAnim(CUTSCENE_ANIMATION_TYPE eType)
+void CPlayer::Set_CutSceneAnim(CUTSCENE_ANIMATION_TYPE eType, _uint iFaceAnimIndex)
 {
 	// 없으면 종료
 	auto iter = m_CutSceneAnimation.find(eType);
 	if (m_CutSceneAnimation.end() == iter) return;
+
+	m_iFaceAnimIndex = iFaceAnimIndex;
+
+	On_Separation_Face();
 
 	string AnimName = (*iter).second;
 
@@ -1531,6 +1545,8 @@ void CPlayer::Play_CutScene()
 
 			m_iCurrentBehavior = 1;				// Idle상태로 되돌려둔다
 			Reset_CutSceneEvent();
+
+			Off_Separation_Face();
 
 			return;
 		}
@@ -1585,6 +1601,52 @@ void CPlayer::Reset_CutSceneEvent()
 
 	m_eAnimComType = (m_eAnimComType == DEFAULT_ANIMAITION ? CUTSCENE_ANIMATION : DEFAULT_ANIMAITION);
 	m_pSystemManager->Set_Camera(CAMERA_CUTSCENE == m_pSystemManager->Get_Camera() ? CAMERA_PLAYER : CAMERA_CUTSCENE);
+}
+
+// iHandType: 0 양손, 1 왼손, 2 오른손
+void CPlayer::On_Separation_Hand(_uint iHandType)
+{
+	switch (iHandType)
+	{
+	case 0:		//양손
+		m_pModelCom->Set_Separation_ParentBone("ude3_r_n", (_int)HAND_COM);
+		m_pModelCom->Set_Separation_ParentBone("ude3_l_n", (_int)HAND_COM);
+		break;
+	case 1:		//왼손
+		m_pModelCom->Set_Separation_ParentBone("ude3_l_n", (_int)HAND_COM);
+		break;
+	case 2:		//오른손
+		m_pModelCom->Set_Separation_ParentBone("ude3_r_n", (_int)HAND_COM);
+		break;
+	}
+}
+
+void CPlayer::Off_Separation_Hand(_uint iHandType)
+{
+	switch (iHandType)
+	{
+	case 0:		//양손
+		m_pModelCom->Set_Separation_ParentBone("ude3_r_n", -1);
+		m_pModelCom->Set_Separation_ParentBone("ude3_l_n", -1);
+		break;
+	case 1:		//왼손
+		m_pModelCom->Set_Separation_ParentBone("ude3_l_n", -1);
+		break;
+	case 2:		//오른손
+		m_pModelCom->Set_Separation_ParentBone("ude3_r_n", -1);
+		break;
+	}
+}
+
+void CPlayer::On_Separation_Face()
+{
+	m_pModelCom->Set_Separation_ParentBone("face_c_n", (_int)FACE_COM);
+	m_pModelCom->Set_Separation_SingleBone("face_c_n", -1);
+}
+
+void CPlayer::Off_Separation_Face()
+{
+	m_pModelCom->Set_Separation_ParentBone("face_c_n", -1);
 }
 
 void CPlayer::Compute_MoveDirection_FB()
@@ -1887,10 +1949,4 @@ void CPlayer::Free()
 
 		m_AnimationTree[i].clear();
 	}
-
-	for (auto pAnimCom : m_PartAnimations)
-	{
-		Safe_Release(pAnimCom);
-	}
-	m_PartAnimations.clear();
 }

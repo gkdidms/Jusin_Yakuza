@@ -50,8 +50,7 @@ void CKiryu_KRS_Attack::Tick(const _float& fTimeDelta)
 				{
 					// 히트액션을 실행시킬 함수를 호출해야한다.
 					// 근데 지금 AnimCom에 저장하공 있는 애니메이션 값들을 string으로 처리해야하는데, 어떤식으로 처리할지에 대한 고민중이었음
-					m_pPlayer->Set_CutSceneAnim(CPlayer::FINISHBLOW);
-
+					m_pPlayer->Set_CutSceneAnim(CPlayer::FINISHBLOW, 8); // [8] f209_special_09[f_kiryu] 크게 화낼 때
 					m_iComboCount = 99;
 				}
 			}

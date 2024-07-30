@@ -1225,12 +1225,14 @@ void CModel::Reset_Animation(_uint iAnimIndex)
 	m_Animations[iAnimIndex]->Reset();
 }
 
-void CModel::Set_SeparationBone(string strBoneName, _int iAnimType)
+void CModel::Set_Separation_ParentBone(string strBoneName, _int iAnimType)
 {
 	for (auto& pBone : m_Bones)
 	{
 		if (pBone->Compare_Name(strBoneName.c_str()))
+		{
 			pBone->Set_Separation(iAnimType);
+		}
 
 		// 부모뼈가 -1이라면 건너뛰기
 		if (pBone->Get_ParentBoneIndex() == -1)
@@ -1238,12 +1240,19 @@ void CModel::Set_SeparationBone(string strBoneName, _int iAnimType)
 
 		// 현재 뼈의 부모뼈를 구해서, 그 부모뼈가 제외된 뼌지 확인한다.
 		// 부모가 제외되었다면 본인도 제외한다.
-		// 부모의 부모뼈도 다 봐야한다!! 재귀함수 필요
+		// 부모의 부모뼈도 다 봐야한다!! 재귀함수임
 		Check_Separation_Parents(pBone, iAnimType);
-		//if (m_Bones[pBone->Get_ParentBoneIndex()]->Get_Separation() == iAnimType)
-		//{
-		//	pBone->Set_Separation(iAnimType);
-		//}
+	}
+}
+
+void CModel::Set_Separation_SingleBone(string strBoneName, _int iAnimType)
+{
+	for (auto& pBone : m_Bones)
+	{
+		if (pBone->Compare_Name(strBoneName.c_str()))
+		{
+			pBone->Set_Separation(iAnimType);
+		}
 	}
 }
 

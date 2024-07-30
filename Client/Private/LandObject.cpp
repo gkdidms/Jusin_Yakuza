@@ -312,6 +312,12 @@ void CLandObject::Free()
 		Safe_Release(pEffect.second);
 	m_pTrailEffects.clear();
 
+	for (auto pAnimCom : m_SeparationAnimComs)
+	{
+		Safe_Release(pAnimCom);
+	}
+	m_SeparationAnimComs.clear();
+
 	Safe_Release(m_pData);
 	Safe_Release(m_pModelCom);
 	Safe_Release(m_pShaderCom);
