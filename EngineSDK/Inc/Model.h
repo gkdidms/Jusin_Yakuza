@@ -51,6 +51,7 @@ public:
 	void Play_Animation_CutScene(_float fTimeDelta, class CAnim* pAnim = nullptr, _bool isLoop = false, _int iAnimIndex = -1, _bool isRoot = true, string strExcludeBoneName = "");
 	void Play_Animation_Monster(_float fTimeDelta, class CAnim* pAnim, _bool isLoop, _bool isRoot = true);
 	void Play_Animation(_float fTimeDelta, const ANIMATION_DESC& AnimDesc, _bool isRoot = true, string strExcludeBoneName = "");
+	void Play_Animation_Separation(_float fTimeDelta, _uint iAnimIndex, class CAnim* pAnim, _bool isLoop, _int iAnimType);
 
 	void Set_AnimationIndex(const ANIMATION_DESC& AnimDesc, _double ChangeInterval = 0.0);
 	_bool Set_AnimationIndex(_uint iAnimIndex, _double ChangeInterval = 0.0);
@@ -63,6 +64,8 @@ public:
 	void Reset_Animation(_uint iAnimIndex);
 
 	void Set_PreAnimations(vector<class CAnimation*> PreAnimation) { m_PreAnimations = PreAnimation; }
+
+	void Set_SeparationBone(string strBoneName, _int iAnimType);
 
 public:
 	_uint Get_NumMeshes() { return m_iNumMeshes; }
@@ -136,6 +139,7 @@ private:
 
 private:
 	void	Find_Mesh_Using_DECAL();
+	void	Check_Separation_Parents(CBone* pBone, _int iAnimType);
 
 private:
 	MODELTYPE					m_eModelType = { TYPE_END };
@@ -161,7 +165,7 @@ private:
 	_uint						m_iPrevAnimIndex = { 0 };
 	vector<class CAnimation*>	m_Animations;
 	vector<class CAnimation*>	m_PreAnimations;
-	
+
 	_uint						m_iCameras = { 0 };
 	vector<FOV_ANIMATION>		m_FovAnimation;
 

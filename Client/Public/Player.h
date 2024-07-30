@@ -92,6 +92,11 @@ public:
         CUTSCENE_ANIMATION_END
     };
 
+    enum PART_ANIMATION_COM
+    {
+        FACE_COM, HAND_COM, PART_ANIMATION_COM_END
+    };
+
 private:
     const _float ANIM_INTERVAL = 4.f;
     
@@ -256,6 +261,8 @@ private:
 private:
     ANIMATION_COMPONENT_TYPE    m_eAnimComType = { DEFAULT_ANIMAITION };
     map<CUTSCENE_ANIMATION_TYPE, string> m_CutSceneAnimation;
+    vector<class CAnim*>        m_PartAnimations;
+
     _uint                       m_iCutSceneAnimIndex = { 0 };
     _uint                       m_iCutSceneCamAnimIndex = { 0 };
 
