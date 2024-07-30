@@ -48,8 +48,10 @@ public:
 
 	void Play_Animation(_float fTimeDelta, _bool isRoot = true, string strExcludeBoneName = "");
 	void Play_Animation(_float fTimeDelta, class CAnim* pAnim, _bool isLoop = false, _int iAnimIndex = -1, _bool isRoot = true, string strExcludeBoneName = "");
+	void Play_Animation_CutScene(_float fTimeDelta, class CAnim* pAnim = nullptr, _bool isLoop = false, _int iAnimIndex = -1, _bool isRoot = true, string strExcludeBoneName = "");
 	void Play_Animation_Monster(_float fTimeDelta, class CAnim* pAnim, _bool isLoop, _bool isRoot = true);
 	void Play_Animation(_float fTimeDelta, const ANIMATION_DESC& AnimDesc, _bool isRoot = true, string strExcludeBoneName = "");
+	void Play_Animation_Separation(_float fTimeDelta, _uint iAnimIndex, class CAnim* pAnim, _bool isLoop, _int iAnimType);
 
 	void Set_AnimationIndex(const ANIMATION_DESC& AnimDesc, _double ChangeInterval = 0.0);
 	_bool Set_AnimationIndex(_uint iAnimIndex, _double ChangeInterval = 0.0);
@@ -62,6 +64,12 @@ public:
 	void Reset_Animation(_uint iAnimIndex);
 
 	void Set_PreAnimations(vector<class CAnimation*> PreAnimation) { m_PreAnimations = PreAnimation; }
+
+	// iAnimType값으로 -1을 준다면, 분리하지 않겠다
+	// isParentException 값이 true로 준다면 부모로 사용하는 뼈의 자식들에만 분리를 적용
+	void Set_Separation_ParentBone(string strBoneName, _int iAnimType);
+	// 특정 본에만 애니메이션 따로 적용
+	void Set_Separation_SingleBone(string strBoneName, _int iAnimType);
 
 public:
 	_uint Get_NumMeshes() { return m_iNumMeshes; }
@@ -106,6 +114,9 @@ public:
 	const _float3* Get_AnimationCenterMove(class CAnim* pAnim = nullptr);
 	const _float4* Get_AnimationCenterRotation(class CAnim* pAnim = nullptr);
 
+	// 로컬 절두체를 위한
+	_float4x4		Get_LocalMatrix();
+
 public:
 	void	Copy_DecalMaterial(vector<DECAL_DESC>* pDecals); /* Decal 정보 얻어오기 */
 	CTexture* Copy_DecalTexture(int	iMaterialNum); /* Decal 텍스처 얻어오기 */
@@ -135,6 +146,7 @@ private:
 
 private:
 	void	Find_Mesh_Using_DECAL();
+	void	Check_Separation_Parents(CBone* pBone, _int iAnimType);
 
 private:
 	MODELTYPE					m_eModelType = { TYPE_END };
@@ -160,7 +172,7 @@ private:
 	_uint						m_iPrevAnimIndex = { 0 };
 	vector<class CAnimation*>	m_Animations;
 	vector<class CAnimation*>	m_PreAnimations;
-	
+
 	_uint						m_iCameras = { 0 };
 	vector<FOV_ANIMATION>		m_FovAnimation;
 
@@ -170,6 +182,9 @@ private:
 
 	vector<DECAL_DESC>			m_vDecalMaterials;
 	bool						m_bOrigin = { false };
+
+
+	_float4x4					m_ModelLocalMatrix;
 
 public:
 	static CModel* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, MODELTYPE eModelType, const _char* pModelFilePath, _fmatrix PreTransformMatrix, _bool isExported, _bool isTool = false);

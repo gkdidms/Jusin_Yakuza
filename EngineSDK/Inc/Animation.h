@@ -61,7 +61,9 @@ public:
 	HRESULT Initialize(const aiAnimation* pAnimation, const vector<class CBone*>& Bones);
 	HRESULT Initialize(const BAiAnimation* pAnimation, const vector<class CBone*>& Bones);
 	void Update_TransformationMatrix(_float fTimeDelta, const vector<class CBone*>& Bones, _bool isLoop, _bool isRoot = true, string strExcludeBoneName = "");
+	void Update_TransformationMatrix_Separation(_float fTimeDelta, const vector<class CBone*>& Bones, _bool isLoop, _int iAnimType);
 	void Update_Change_Animation(_float fTimeDelta, const vector<class CBone*>& Bones, CAnimation* pPrevAnimation, _double ChangeInterval, _bool isRoot = true);
+	void Update_Change_Animation_Separation(_float fTimeDelta, const vector<class CBone*>& Bones, CAnimation* pPrevAnimation, _double ChangeInterval, _int iAnimType);
 	void Reset();
 
 	void Update_KeyframeIndex();

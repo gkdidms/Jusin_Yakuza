@@ -38,6 +38,8 @@ public:
 
 		int					iColliderNum;
 		OBJCOLLIDER_DESC*	pColliderDesc;
+
+		XMFLOAT4X4			vOffsetMatrix;
 	}MAPOBJ_DESC;
 
 
@@ -95,6 +97,9 @@ private:
 	vector<CCollider*>								m_vColliders;
 	vector<OBJCOLLIDER_DESC>						m_vColliderDesc;
 
+
+	vector<int>										m_vRenderMeshIndexes;
+
 	int												m_iLayerNum = { 0 };
 	wstring											m_wstrModelName;
 	int												m_iShaderPassNum = { 0 };
@@ -102,6 +107,8 @@ private:
 	int												m_iObjectPropertyType = { 0 };
 	int												m_iNaviNum = { -1 };
 	int												m_iRouteNum = { 0 };
+
+	XMFLOAT4X4										m_vOffsetMatrix;
 
 	int*											m_pDecalMeshIndex = { 0 };
 	int												m_iDecalMeshCnt = { 0 };

@@ -6,6 +6,8 @@ matrix g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
 texture2D g_Texture;
 float   g_fObjID;
 bool g_bWriteID = false;
+float g_fFar;
+
 
 
 struct VS_IN
@@ -87,9 +89,9 @@ PS_OUT PS_MAIN(PS_IN In)
     Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
     
     if (true == g_bWriteID)
-        Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 3000.f, g_fObjID, 1.f);
+        Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_fFar, g_fObjID, 1.f);
     else
-        Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 3000.f, 0, 1.f);
+        Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_fFar, 0, 1.f);
     
     
     return Out;
@@ -108,9 +110,9 @@ PS_OUT PS_MAIN_FIND_MESH(PS_IN In)
     Out.vDiffuse = float4(1, 0, 0, 1);
     Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
     if (true == g_bWriteID)
-        Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 3000.f, g_fObjID, 1.f);
+        Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_fFar, g_fObjID, 1.f);
     else
-        Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 3000.f, 0, 1.f);
+        Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_fFar, 0, 1.f);
     
     return Out;
 }
@@ -129,9 +131,9 @@ PS_OUT PS_MAIN_RED(PS_IN In)
     Out.vDiffuse = float4(1, 0, 0, 1);
     Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
     if (true == g_bWriteID)
-        Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 3000.f, g_fObjID, 1.f);
+        Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_fFar, g_fObjID, 1.f);
     else
-        Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 3000.f, 0, 1.f);
+        Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_fFar, 0, 1.f);
     
     return Out;
 }

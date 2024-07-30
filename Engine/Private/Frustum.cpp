@@ -66,7 +66,12 @@ _bool CFrustum::isIn_LocalFrustum(_fvector vPosition, _float fRange)
 {
 	for (size_t i = 0; i < 6; i++)
 	{
-		if (fRange < XMVectorGetX(XMPlaneDotCoord(XMLoadFloat4(&m_vLocalPlanes[i]), vPosition)))
+		/*if (fRange < XMVectorGetX(XMPlaneDotCoord(XMLoadFloat4(&m_vWorldPlanes[i]), vPosition)))
+			return false;*/
+
+		_vector	vResult = XMPlaneDotCoord(XMLoadFloat4(&m_vWorldPlanes[i]), vPosition);
+		_float	fResult = XMVectorGetX(vResult);
+		if (fRange < fResult)
 			return false;
 	}
 	return true;

@@ -110,15 +110,15 @@ void CLightConstruction::Late_Tick(const _float& fTimeDelta)
 {
 	if (true == m_pGameInstance->isIn_WorldFrustum(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 2.f))
 	{
-		// 0 : 그냥간판
-	// 1 : 형광등자르기 + 알파
-	// 2 : rm 텍스처 적용 - 외부간판
-	// 3 : Lamp
-	// 4 : 형광등 + 투명
-	// 5 : Emissive
+		// 0 : 그냥간판 - 형광등같은
+		// 1 : 형광등자르기 + 알파
+		// 2 : rm 텍스처 적용 - 외부간판
+		// 3 : Lamp
+		// 4 : 형광등 + 투명
+		// 5 : Emissive + 알파
+		// 6 : Emissive + 알파x
 		if (m_iShaderPassNum == 0 || m_iShaderPassNum == 2)
 		{
-			//m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
 			m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONLIGHT, this);
 		}
 		else if (m_iShaderPassNum == 1)
@@ -149,7 +149,7 @@ void CLightConstruction::Late_Tick(const _float& fTimeDelta)
 		else if (m_iShaderPassNum == 7)
 		{
 			m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
-			m_pGameInstance->Add_Renderer(CRenderer::RENDER_EFFECT, this);
+			m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONLIGHT, this);
 		}
 
 
@@ -198,6 +198,7 @@ HRESULT CLightConstruction::Render()
 			}
 		}
 
+
 		m_pShaderCom->Begin(m_iShaderPassNum);
 
 		m_pModelCom->Render(i);
@@ -232,7 +233,10 @@ HRESULT CLightConstruction::Render_Bloom()
 				return E_FAIL;
 		}
 
-		m_pShaderCom->Begin(5);
+		if(m_iShaderPassNum != 7)
+			m_pShaderCom->Begin(m_iShaderPassNum);
+		else
+			m_pShaderCom->Begin(8);
 
 		m_pModelCom->Render(i);
 	}
