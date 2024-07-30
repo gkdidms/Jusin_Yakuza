@@ -15,9 +15,9 @@ class CLandObject abstract :
 {
 public:
     enum ANIMATION_COMPONENT_TYPE {
-        DEFAULT_ANIMAITION,
-        CUTSCENE_ANIMATION,
-        ANIMATION_COMPONENT_TYPE_END
+        DEFAULT,
+        CUTSCENE,
+        ANIM_TYPE_END
     };
 
     // 분할된 애니메이션 컴포넌트 종류 (필요 시 늘어날 예정)

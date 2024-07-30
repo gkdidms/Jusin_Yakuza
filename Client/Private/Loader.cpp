@@ -18,11 +18,22 @@
 #include "Yoneda.h"
 #include "WPHYakuza.h"
 #include "DefaultYakuza.h"
+
 #pragma endregion
 
-#pragma region Highway
+#pragma region CarChase
+#pragma region Player
 #include "Highway_Taxi.h"
-#include "Highway_Van.h"
+#pragma endregion
+
+#pragma region Monster
+#include "CarChase_Van.h"
+#pragma endregion
+
+#pragma region Reactor
+#include "Reactor_Van.h"
+#pragma endregion
+
 #pragma endregion
 
 #pragma region Adventure
@@ -38,6 +49,9 @@
 #include "AI_DefaultYakuza.h"
 
 #include "AI_Passersby.h"
+
+#include "AI_Van.h"
+
 #pragma endregion
 
 #pragma region Camera
@@ -45,6 +59,7 @@
 #include "DebugCamera.h"
 #include "CineCamera.h"
 #include "CutSceneCamera.h"
+#include "CarChaseCamera.h"
 #pragma endregion
 
 #pragma region Map
@@ -427,18 +442,46 @@ HRESULT CLoader::Loading_Highway()
 {
 #pragma region Component
 	/* For.Prototype_Component_HighwayAnim */
-	//if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_ReactorHighwayAnim"), CAnim::Create(m_pDevice, m_pContext, "../Bin/DataFiles/AnimationData/Animation_Reactor_Highway.dat", false))))
-	//	return E_FAIL;
-	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_ReactorHighwayAnim"), CAnim::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Anim/Animation_Reactor_Highway.fbx", true))))
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_ReactorHighwayAnim"), CAnim::Create(m_pDevice, m_pContext, "../Bin/DataFiles/AnimationData/Animation_Reactor_Highway.dat", false))))
 		return E_FAIL;
+	//if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_ReactorHighwayAnim"), CAnim::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Anim/Animation_Reactor_Highway.fbx", true))))
+	//	return E_FAIL;
 
 	/* For.Prototype_Component_CarChaseAnim */
-//if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_CarChaseAnim"), CAnim::Create(m_pDevice, m_pContext, "../Bin/DataFiles/AnimationData/Animation_CarChase.dat", false))))
-//	return E_FAIL;
-	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_CarChaseAnim"), CAnim::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Anim/Animation_CarChase.fbx", true))))
+if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_CarChaseAnim"), CAnim::Create(m_pDevice, m_pContext, "../Bin/DataFiles/AnimationData/Animation_CarChase.dat", false))))
+	return E_FAIL;
+	//if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_CarChaseAnim"), CAnim::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Anim/Animation_CarChase.fbx", true))))
+	//	return E_FAIL;
+#pragma endregion
+
+#pragma region BTNode
+	/* For.Prototype_BTNode_Van*/
+	if (FAILED(m_pGameInstance->Add_BTNode_Prototype(LEVEL_TEST, TEXT("Prototype_BTNode_Van"),
+		CAI_Van::Create())))
 		return E_FAIL;
 #pragma endregion
 
+#pragma region GameObject
+	/* For.Prototype_GameObject_ReactorVan */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_ReactorVan"),
+		CReactor_Van::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_ReactorSedan */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_ReactorSedan"),
+		CReactor_Van::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_ReactorBike */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_ReactorBike"),
+		CReactor_Van::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_CarChaseVan*/
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_CarChaseVan"),
+		CCarChase_Van::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+#pragma endregion
 
 	return S_OK;
 }
@@ -850,6 +893,10 @@ HRESULT CLoader::Loading_For_Test()
 	/* For.Prototype_GameObject_CutSceneCamera */
 	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_CutSceneCamera"), CCutSceneCamera::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+
+	/* For.Prototype_GameObject_CarChaseCamera */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_CarChaseCamera"), CCarChaseCamera::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 #pragma endregion
 
 #pragma region Player
@@ -913,7 +960,7 @@ HRESULT CLoader::Loading_For_Test()
 
 	/* For.Prototype_GameObject_Van */
 	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Van"),
-		CHighway_Van::Create(m_pDevice, m_pContext))))
+		CReactor_Van::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 #pragma endregion
 
@@ -987,6 +1034,7 @@ HRESULT CLoader::Loading_For_Test()
 
 #pragma endregion
 
+	Loading_Highway();
 
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
 
