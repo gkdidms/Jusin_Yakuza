@@ -143,6 +143,10 @@ void CMainApp::Tick(const _float& fTimeDelta)
 	{
 		m_pSystemManager->Set_Camera(m_pSystemManager->Get_Camera() == CAMERA_DEBUG ? CAMERA_CUTSCENE : CAMERA_DEBUG);
 	}
+	if (m_pGameInstance->GetKeyState(DIK_F5) == TAP)
+	{
+		m_pSystemManager->Set_Camera(m_pSystemManager->Get_Camera() == CAMERA_DEBUG ? CAMERA_CARCHASE : CAMERA_DEBUG);
+	}
 	if (m_pGameInstance->GetKeyState(DIK_F6) == TAP)
 	{
 		m_pFileTotalManager->Load_Cinemachine(0, LEVEL_TEST);
