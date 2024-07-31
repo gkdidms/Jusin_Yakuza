@@ -63,13 +63,13 @@ void CHighway_Taxi::Late_Tick(const _float& fTimeDelta)
 	m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
 
 	//높이값 태우기
-	/*_vector vCurrentPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	_vector vCurrentPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 	if (nullptr != m_pNavigationCom)
 	{
 		float fHeight = m_pNavigationCom->Compute_Height(vCurrentPos);
 		vCurrentPos = XMVectorSetY(vCurrentPos, fHeight);
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, vCurrentPos);
-	}*/
+	}
 }
 
 HRESULT CHighway_Taxi::Render()
@@ -107,7 +107,9 @@ void CHighway_Taxi::Move_Waypoint(const _float& fTimeDelta)
 	_vector vDir = m_pNavigationCom->Compute_WayPointDir(vPosition, fTimeDelta);
 	m_pTransformCom->LookAt_For_LandObject(vDir, true);
 
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&vMovePos));
+	_float fSpeed = 40.f;
+	m_pTransformCom->Go_Straight_CustumSpeed(fSpeed, fTimeDelta, m_pNavigationCom);
+	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&vMovePos));
 }
 
 HRESULT CHighway_Taxi::Add_Components()

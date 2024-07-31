@@ -42,6 +42,7 @@ protected:
     virtual void Turn(_float4x4* OrbitMatrix, _fvector vAxis, const _float& fTimeDelta);
     virtual void Rotation(_float4x4* OrbitMatrix, _fvector vAxis, _float fRadian);
     virtual void Zoom(const _float& fTimeDelta);
+    virtual void LookAt(_float4x4* OrbitMatrix, _fvector vTargetPos, _fvector vPosition);
     void Shaking(_float fTimeDelta);
 
 public:

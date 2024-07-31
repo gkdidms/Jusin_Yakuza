@@ -206,6 +206,7 @@ HRESULT CMainApp::Render()
 
 	m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("!!!카메라 단축키"), _float2(1000.f, fSize + 100.f + (++iIntervalCount * iInterval)), XMVectorSet(0.f, 0.f, 1.f, 1.f));
 	m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("F4 : CutScene Camera"), _float2(1000.f, fSize + 100.f + (++iIntervalCount * iInterval)), XMVectorSet(1.f, 1.f, 0.f, 1.f));
+	m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("F5 : Scene Camera Test"), _float2(1000.f, fSize + 100.f + (++iIntervalCount * iInterval)), XMVectorSet(1.f, 1.f, 0.f, 1.f));
 	m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("F6 : Scene Camera Test"), _float2(1000.f, fSize + 100.f + (++iIntervalCount * iInterval)), XMVectorSet(1.f, 1.f, 0.f, 1.f));
 	m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("F7 : Camera Change"), _float2(1000.f, fSize + 100.f + (++iIntervalCount * iInterval)), XMVectorSet(1.f, 1.f, 0.f, 1.f));
 
