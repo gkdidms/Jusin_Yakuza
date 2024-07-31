@@ -5,6 +5,8 @@
 #include "CarChase_Monster.h"
 #include "CarChase_Reactor.h"
 
+#include "Highway_Taxi.h"
+
 CCarChase::CCarChase()
 	: m_pGameInstance{ CGameInstance::GetInstance() }
 {
@@ -51,7 +53,7 @@ _bool CCarChase::Start()
 		CCarChase_Reactor::HIGHWAY_IODESC Desc{};
 		Desc.fRotatePecSec = XMConvertToRadians(180.f);
 		Desc.fSpeedPecSec = 10.f;
-		Desc.iNaviNum = 0.f;
+		Desc.iNaviNum = 0;
 		Desc.iObjectIndex = iter.iObjectIndex;
 		Desc.iNaviRouteNum = iter.iMonsterLine;
 		memcpy(Desc.iMonsterWeaponType, iter.iWeaponType, sizeof(_int) * 2);
@@ -68,6 +70,9 @@ _bool CCarChase::Start()
 		if (FAILED(m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), strGameObject, TEXT("Layer_Reactor"), &Desc)))
 			return false;
 	}
+
+	CHighway_Taxi* pPlayer = dynamic_cast<CHighway_Taxi*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Texi"), 0));
+	pPlayer->Set_NavigationRouteIndex(m_Info.iPlayerLine);
 
 	return true;
 }
@@ -101,6 +106,7 @@ _bool CCarChase::Running()
 _bool CCarChase::End()
 {
 	m_iState = STAGE_END;
+
 	//플레이어 줄 이동이 있다면 이동 후 스테이지를 종료한다.
 	if (m_Info.iPlayerLine != m_Info.iPlayerNextLine)
 	{

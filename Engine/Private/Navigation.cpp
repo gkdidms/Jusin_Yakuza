@@ -64,7 +64,8 @@ HRESULT CNavigation::Initialize(void* pArg)
     if (nullptr != pArg)
     {
         NAVIGATION_DESC* pDesc = static_cast<NAVIGATION_DESC*>(pArg);
-        m_iCurrentIndex = pDesc->iIndex;
+        m_iCurrentLine = pDesc->iCurrentLine;
+        Find_WayPointIndex(pDesc->vPosition);
     }
 
     return S_OK;
@@ -219,6 +220,28 @@ HRESULT CNavigation::SetUp_Neighbors()
     return S_OK;
 }
 
+void CNavigation::Find_WayPointIndex(_vector vPosition)
+{
+    //포지션으로 웨이포인트 인덱스 만들기
+    _float fMinDistance = 0.f;
+    _uint iIndex = 0;
+    for (auto& vWayPoint : m_Routes[m_iCurrentLine])
+    {
+        _float fDistance = XMVectorGetX(XMVector3Length(XMLoadFloat4(&vWayPoint.vPosition) - vPosition));
+
+        if (fMinDistance != 0.f || fMinDistance >= fDistance)
+        {
+            if (iIndex >= m_Routes[m_iCurrentLine].size())
+                iIndex = 0;
+
+            m_iCurrentWayPointIndex = iIndex;
+            fMinDistance = fDistance;
+        }
+            
+        ++iIndex;
+    }
+}
+
 CNavigation* CNavigation::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring strFilePath)
 {
     CNavigation* pInstance = new CNavigation(pDevice, pContext);
@@ -286,6 +309,28 @@ _bool CNavigation::isMove(_fvector vMovePos)
         else
             return false;
     }
+}
+
+_vector CNavigation::Compute_WayPointDir(_vector vPosition)
+{
+    //현재 플레이어의 위치에서 다음 웨이포인트까지의 방향벡터를 구한다.
+    _vector vWayPoint = XMLoadFloat4(&m_Routes[m_iCurrentLine][m_iCurrentWayPointIndex].vPosition);
+    
+    _vector vDir = vWayPoint - vPosition;
+
+    _float fDistance = XMVectorGetX(XMVector3Length(vDir));
+
+    //특정 거리보다 작다면 다음 웨이포인트로 이동한다.
+    if (fDistance <= m_fMaxDistance)
+    {
+        m_iCurrentWayPointIndex++;
+
+        // 인덱스가 배열의 길이보다 크다면 다시 초기값으로 돌아간다.
+        if (m_iCurrentWayPointIndex >= m_Routes[m_iCurrentLine].size())
+            m_iCurrentWayPointIndex = 0;
+    }
+
+    return XMVector3Normalize(vDir);
 }
 
 _float CNavigation::Compute_Height(_fvector vPosition)
