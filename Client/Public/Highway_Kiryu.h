@@ -78,6 +78,7 @@ private:
 
 private:
     const _float4x4* pTaxiMatrix = { nullptr };
+    _float4x4 m_ModelMatrix;
 
     _float m_fHP = { 300.f };
     _float m_fHitEye = { 100.f };
@@ -87,6 +88,10 @@ private:
     BATTLE_DIRECTION m_eBattleDirection = { LEFT };
     BEHAVIOR_TYPE   m_eCurrentBehavior = { AIMING };
     _bool           m_isStarted = { false };
+
+
+    _bool m_bTest = { false };
+    _float m_fTest = 0.f;
 
 public:
     static CHighway_Kiryu* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
