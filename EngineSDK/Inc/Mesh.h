@@ -34,11 +34,11 @@ public:
 		return m_isAlphaApply;
 	}
 
-	_float4x4 Get_LocalMatrix() { return m_localMatrix; }
+	_float4x4	Get_LocalMatrix() { return m_localMatrix; }
+	_float		Get_MeshScale() { return m_fScale; }
 
 public:
 	void Set_AlphaApply(_bool isValue) { m_isAlphaApply = isValue; }
-
 
 private:
 	_char				m_szName[MAX_PATH] = "";
@@ -52,6 +52,7 @@ private:
 	vector<_float4x4>	m_OffsetMatrices;
 
 	_float4x4			m_localMatrix;
+	_float				m_fScale;
 
 public:
 	static CMesh* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CModel::MODELTYPE eModelType, const aiMesh* pAIMesh, _fmatrix PreTransformMatrix, const vector<class CBone*>& Bones);

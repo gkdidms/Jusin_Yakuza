@@ -118,7 +118,7 @@ private:
 	_int					m_iObjectType = { 0 };
 	_float					m_fWaterDeltaTime = { 0 };
 	_bool					m_bCull = { false };
-	_bool					m_bLocalCull = { false };
+	_bool					m_bLocalCull = { false }; // 도로mesh 전용
 
 public:
 	HRESULT Add_Components(void* pArg);

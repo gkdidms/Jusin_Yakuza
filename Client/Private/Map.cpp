@@ -183,8 +183,13 @@ void CMap::Late_Tick(const _float& fTimeDelta)
 		}
 		else if(false == m_bLocalCull)
 		{
+			float		fScale = Meshes[i]->Get_MeshScale() * 0.5;
+
+			if (fScale <= 0)
+				fScale = 10;
+
 			// 컬링
-			if (true == m_pGameInstance->isIn_WorldFrustum(worldPos, 25.f))
+			if (true == m_pGameInstance->isIn_WorldFrustum(worldPos, fScale))
 			{
 				// 컬링안함
 				if (0 == strcmp(Meshes[i]->Get_Name(), "DEFAULTMESH"))
@@ -230,6 +235,21 @@ void CMap::Late_Tick(const _float& fTimeDelta)
 					m_vRenderDefaulMeshIndex.push_back(i);
 				}
 			}
+		}
+		else
+		{
+			float		fScale = Meshes[i]->Get_MeshScale() * 0.5;
+
+			if (fScale <= 0)
+				fScale = 10;
+
+			if (true == m_pGameInstance->isIn_WorldFrustum(worldPos, fScale))
+			{
+				
+				m_vDecalMeshIndex.push_back(i);
+				
+			}
+				
 		}
 
 
