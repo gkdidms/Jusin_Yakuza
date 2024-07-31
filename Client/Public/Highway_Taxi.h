@@ -40,6 +40,7 @@ protected:
     class CNavigation* m_pNavigationCom = { nullptr };
 
 protected:
+    class CHighway_Kiryu* m_pKiryu = { nullptr };
     _int     m_iNaviRouteNum = { 0 };
 
 protected:
@@ -48,6 +49,7 @@ protected:
 
 protected:
     virtual HRESULT Add_Components() override;
+    HRESULT Add_Objects();
     virtual HRESULT Bind_ResourceData() override;
 
 public:
