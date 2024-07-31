@@ -237,9 +237,12 @@ void CNavigation::Find_WayPointIndex(_vector vPosition)
                 iIndex = 0;
 
             m_iCurrentWayPointIndex = iIndex;
+            m_iPreWayPointIndex = iIndex == 0 ? m_Routes[m_iCurrentLine].size() - 1 : iIndex - 1;
             fMinDistance = fDistance;
         }
     }
+
+    m_vNextDir = XMVector3Normalize(XMLoadFloat4(&m_Routes[m_iCurrentLine][m_iCurrentWayPointIndex].vPosition) - vPosition);
 }
 
 CNavigation* CNavigation::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring strFilePath)
@@ -311,14 +314,26 @@ _bool CNavigation::isMove(_fvector vMovePos)
     }
 }
 
-_vector CNavigation::Compute_WayPointDir(_vector vPosition)
+_vector CNavigation::Compute_WayPointDir(_vector vPosition, const _float& fTimeDelta)
 {
     //현재 플레이어의 위치에서 다음 웨이포인트까지의 방향벡터를 구한다.
-    _vector vWayPoint = XMLoadFloat4(&m_Routes[m_iCurrentLine][m_iCurrentWayPointIndex].vPosition);
-    
-    _vector vDir = vWayPoint - vPosition;
+    _vector vCurrentWayPoint = XMLoadFloat4(&m_Routes[m_iCurrentLine][m_iCurrentWayPointIndex].vPosition);
 
+    //XMStoreFloat4(vMovePos, XMVectorLerp(vPosition, vCurrentWayPoint, fTimeDelta * 20.f));
+    
+    _vector vDir = vCurrentWayPoint - vPosition;
     _float fDistance = XMVectorGetX(XMVector3Length(vDir));
+
+    _vector vResultDir;
+    if (m_vPreDir.m128_f32[0] == 0.f)
+    {
+        vResultDir = XMVector3Normalize(vDir);
+    }
+    else
+    {
+        m_fTime += fTimeDelta * 6.f;
+        vResultDir = XMVectorLerp(m_vPreDir, m_vNextDir, m_fTime >= 1.f ? 1.f : m_fTime);
+    }
 
     //특정 거리보다 작다면 다음 웨이포인트로 이동한다.
     if (fDistance <= m_fMaxDistance)
@@ -327,10 +342,16 @@ _vector CNavigation::Compute_WayPointDir(_vector vPosition)
 
         // 인덱스가 배열의 길이보다 크다면 다시 초기값으로 돌아간다.
         if (m_iCurrentWayPointIndex >= m_Routes[m_iCurrentLine].size())
-            m_iCurrentWayPointIndex = 0;
+            m_iCurrentWayPointIndex = 0.f;
+
+        m_vPreDir = XMVector3Normalize(vDir);
+        m_vNextDir = XMVector3Normalize(XMLoadFloat4(&m_Routes[m_iCurrentLine][m_iCurrentWayPointIndex].vPosition) - XMLoadFloat4(&m_Routes[m_iCurrentLine][m_iPreWayPointIndex].vPosition));
+        m_fTime = 0.f;
+
+        m_iPreWayPointIndex = m_iCurrentWayPointIndex;
     }
 
-    return XMVector3Normalize(vDir);
+    return vResultDir;
 }
 
 _float CNavigation::Compute_Height(_fvector vPosition)
