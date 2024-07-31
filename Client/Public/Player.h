@@ -165,8 +165,6 @@ public:
     void    Set_NavigationIndex(int iIndex) { m_pNavigationCom->Set_Index(iIndex); }
     void    Set_NaviRouteIndex(int iIndex) { m_iNaviRouteNum = iIndex; }
     void    Set_SeizeOff(_bool isOff = true);                       //TODO: 잡힌 상태에서 off 시킬 때 부를 함수
-    
-    void    Set_FaceAnimIndex(_uint iFaceAnimIndex) { m_iFaceAnimIndex = iFaceAnimIndex; }
 
     /* Virtual Funtion */
 public:
@@ -218,10 +216,10 @@ public:
     void Reset_CutSceneEvent();
 
     // iHandType: 0양손, 1 왼손, 2 오른손
-    void On_Separation_Hand(_uint iHandType = 0);
-    void Off_Separation_Hand(_uint iHandType = 0);
-    void On_Separation_Face();
-    void Off_Separation_Face();
+    virtual void On_Separation_Hand(_uint iHandType = 0) override;
+    virtual void Off_Separation_Hand(_uint iHandType = 0) override;
+    virtual void On_Separation_Face() override;
+    virtual void Off_Separation_Face() override;
 
 private:
     void Compute_MoveDirection_FB();
@@ -291,9 +289,6 @@ private:
     _float          m_fHitGauge = { 0.f };
 
     int             m_iNaviRouteNum = { 0 }; //루트
-
-    _uint           m_iHandAnimIndex = { 0 };
-    _uint           m_iFaceAnimIndex = { 0 };
 
 #ifdef _DEBUG
     _bool m_isAnimStart = { true };

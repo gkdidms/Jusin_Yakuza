@@ -94,6 +94,7 @@ void CKiryu_KRS_Grab::Tick(const _float& fTimeDelta)
 			{
 			case SEIZE_TRY:
 			{
+				m_pPlayer->Off_Separation_Hand();
 				if (Changeable_Combo_Animation())
 				{
 					m_eAnimState = ANIM_START;
@@ -104,6 +105,8 @@ void CKiryu_KRS_Grab::Tick(const _float& fTimeDelta)
 			}
 			case ANIM_START:
 			{
+				m_pPlayer->Set_HandAnimIndex(CPlayer::HAND_GU);
+				m_pPlayer->On_Separation_Hand();
 				if (Changeable_Combo_Animation())
 				{
 					m_eAnimState = ANIM_LOOP;
@@ -113,6 +116,8 @@ void CKiryu_KRS_Grab::Tick(const _float& fTimeDelta)
 				break;
 			}
 			case ANIM_LOOP:
+				m_pPlayer->Set_HandAnimIndex(CPlayer::HAND_GU);
+				m_pPlayer->On_Separation_Hand();
 				// 여기에 키인풋
 				Move_KeyInput(fTimeDelta);
 
@@ -141,6 +146,7 @@ void CKiryu_KRS_Grab::Change_Animation()
 {
 	if (0 > m_iCurrentIndex) return;
 
+	m_pPlayer->Off_Separation_Hand();
 	m_pPlayer->Change_Animation(m_AnimationIndices[m_iCurrentIndex]);
 }
 
