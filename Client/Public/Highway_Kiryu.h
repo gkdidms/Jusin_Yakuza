@@ -78,6 +78,7 @@ private:
 
 private:
     const _float4x4* pTaxiMatrix = { nullptr };
+    _float4x4 m_ModelMatrix;
 
     _float m_fHP = { 300.f };
     _float m_fHitEye = { 100.f };

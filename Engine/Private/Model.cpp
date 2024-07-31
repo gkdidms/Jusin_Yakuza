@@ -1224,6 +1224,7 @@ void CModel::Play_Animation_Rotation_SeparationBone(_float fTimeDelta, string st
 			_matrix RotationMatrix = XMMatrixRotationAxis(vBoneDir, fRadian);
 
 			pBone->Set_TransformationMatrix(XMLoadFloat4x4(pBone->Get_TransformationMatrix()) * RotationMatrix);
+			pBone->Set_CustomRotationMatrix(RotationMatrix);
 		}
 
 		// 컴바인드행렬을 애니메이션대로 우선 갱신 시키고

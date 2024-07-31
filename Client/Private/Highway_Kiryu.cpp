@@ -2,6 +2,7 @@
 
 #include "GameInstance.h"
 #include "Mesh.h"
+#include "Bone.h"
 
 CHighway_Kiryu::CHighway_Kiryu(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLandObject{ pDevice, pContext }
@@ -53,6 +54,8 @@ void CHighway_Kiryu::Tick(const _float& fTimeDelta)
 	m_pModelCom->Play_Animation_Separation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")), m_iHandAnimIndex, m_SeparationAnimComs[HAND_COM], false, (_int)HAND_COM);
 	m_pModelCom->Play_Animation_Separation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")), m_iFaceAnimIndex, m_SeparationAnimComs[FACE_COM], false, (_int)FACE_COM);
 	Play_CurrentAnimation(fTimeDelta);
+
+	m_ModelMatrix = *pTaxiMatrix;
 }
 
 void CHighway_Kiryu::Late_Tick(const _float& fTimeDelta)
@@ -174,8 +177,23 @@ void CHighway_Kiryu::Play_CurrentAnimation(_float fTimeDelta)
 	}
 	}
 
-	if(m_bTest)
-		m_pModelCom->Play_Animation_Rotation_SeparationBone(fTimeDelta, "ketu_c_n", 2, m_fTest, false);
+	if (m_bTest)
+	{
+		m_pModelCom->Play_Animation_Rotation_SeparationBone(fTimeDelta, "kosi_c_n", 2, m_fTest, false);
+		auto& pBones = m_pModelCom->Get_Bones();
+
+		_matrix mat = XMMatrixIdentity();
+		for (auto& pBone : pBones)
+		{
+			if (!strcmp(pBone->Get_Name(), "kosi_c_n"))
+				mat = XMLoadFloat4x4(pBone->Get_CustomRotationMatrix());
+		}
+		mat = XMMatrixInverse(nullptr, mat);
+
+		_matrix modelMat = XMLoadFloat4x4(pTaxiMatrix) * mat;
+
+		XMStoreFloat4x4(&m_ModelMatrix, modelMat);
+	}
 	else
 		m_pModelCom->Play_Animation(fTimeDelta, false);
 }
@@ -270,8 +288,11 @@ HRESULT CHighway_Kiryu::Bind_ResourceData()
 	//if (FAILED(m_pTransformCom->Bind_ShaderMatrix(m_pShaderCom, "g_WorldMatrix")))
 	//	return E_FAIL;
 
-	if (FAILED(m_pShaderCom->Bind_Matrix("g_WorldMatrix", pTaxiMatrix)))
+	if (FAILED(m_pShaderCom->Bind_Matrix("g_WorldMatrix", &m_ModelMatrix)))
 		return E_FAIL;
+	/*
+	if (FAILED(m_pShaderCom->Bind_Matrix("g_WorldMatrix", pTaxiMatrix)))
+		return E_FAIL;*/
 
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_VIEW))))
 		return E_FAIL;
