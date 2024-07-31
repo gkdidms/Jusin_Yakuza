@@ -44,6 +44,8 @@ HRESULT CCarChase_Reactor::Initialize(void* pArg)
 	if (FAILED(Ready_Monster(gameobjDesc->iMonsterWeaponType)))
 		return E_FAIL;
 
+	m_pTransformCom->Set_WorldMatrix(XMMatrixIdentity());
+
 	return S_OK;
 }
 
@@ -58,6 +60,7 @@ void CCarChase_Reactor::Tick(const _float& fTimeDelta)
 	if (m_iAnim != -1)
 		m_pModelCom->Play_Animation(fTimeDelta, m_pAnimCom, m_isAnimLoop);
 
+	Move_Waypoint(fTimeDelta);
 	//m_pColliderCom->Tick(m_pTransformCom->Get_WorldMatrix());
 }
 
@@ -77,6 +80,7 @@ void CCarChase_Reactor::Late_Tick(const _float& fTimeDelta)
 		vCurrentPos = XMVectorSetY(vCurrentPos, fHeight);
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, vCurrentPos);
 	}
+
 }
 
 HRESULT CCarChase_Reactor::Render()
@@ -111,10 +115,6 @@ HRESULT CCarChase_Reactor::Render()
 		i++;
 	}
 
-//#ifdef _DEBUG
-//	m_pGameInstance->Add_DebugComponent(m_pColliderCom);
-//#endif
-
 	return S_OK;
 }
 
@@ -142,6 +142,17 @@ HRESULT CCarChase_Reactor::Setup_Animation()
 	return S_OK;
 }
 
+void CCarChase_Reactor::Move_Waypoint(const _float& fTimeDelta)
+{
+	_vector vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	//웨이포인트 
+	_vector vDir = m_pNavigationCom->Compute_WayPointDir(vPosition);
+	m_pTransformCom->LookAt_For_LandObject(vDir, true);
+	
+	_float fSpeed = 20.f;
+	m_pTransformCom->Go_Straight_CustumSpeed(fSpeed, fTimeDelta, m_pNavigationCom);
+}
+
 HRESULT CCarChase_Reactor::Add_Components()
 {
 	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Shader_VtxAnim"),
@@ -152,8 +163,11 @@ HRESULT CCarChase_Reactor::Add_Components()
 		TEXT("Com_Anim"), reinterpret_cast<CComponent**>(&m_pAnimCom))))
 		return E_FAIL;
 
+	CNavigation::NAVIGATION_DESC Desc{};
+	Desc.iCurrentLine = m_iNaviRouteNum;
+	Desc.vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Navigation"),
-		TEXT("Com_Navigation"), reinterpret_cast<CComponent**>(&m_pNavigationCom))))
+		TEXT("Com_Navigation"), reinterpret_cast<CComponent**>(&m_pNavigationCom), &Desc)))
 		return E_FAIL;
 
 	return S_OK;

@@ -292,6 +292,7 @@ private:
 
     int             m_iNaviRouteNum = { 0 }; //∑Á∆Æ
 
+    _uint           m_iHandAnimIndex = { 0 };
     _uint           m_iFaceAnimIndex = { 0 };
 
 #ifdef _DEBUG

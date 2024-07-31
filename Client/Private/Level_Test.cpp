@@ -11,6 +11,7 @@
 #include "DebugCamera.h"
 #include "CineCamera.h"
 #include "CutSceneCamera.h"
+#include "CarChaseCamera.h"
 
 CLevel_Test::CLevel_Test(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLevel{ pDevice, pContext },
@@ -23,10 +24,6 @@ CLevel_Test::CLevel_Test(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 
 HRESULT CLevel_Test::Initialize()
 {
-	m_pCarChaseManager = CCarChaseManager::Create(m_pDevice, m_pContext);
-	if (nullptr == m_pCarChaseManager)
-		return E_FAIL;
-
 	// 테스트 client 로드 숫자랑 동일하게 설정해주기!!!!!!!!!!!!!!!!!!!!!!!
 	// 네비 다르면 터짐
 	// 테스트 다하면 지워라
@@ -34,6 +31,13 @@ HRESULT CLevel_Test::Initialize()
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Navigation"),
 		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/NaviData/Navigation_11.dat")))))
 		return E_FAIL;
+
+	m_pCarChaseManager = CCarChaseManager::Create(m_pDevice, m_pContext);
+	if (nullptr == m_pCarChaseManager)
+		return E_FAIL;
+	//if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Navigation"),
+	//	CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/NaviData/Navigation_99.dat")))))
+	//	return E_FAIL;
 
  	if (FAILED(Ready_Player(TEXT("Layer_Player"))))
 		return E_FAIL;
@@ -56,8 +60,8 @@ HRESULT CLevel_Test::Initialize()
 	if (FAILED(Ready_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
 
-	//if (FAILED(Ready_Test_SceneModel(TEXT("Layer_SceneModel_Test"))))
-	//	return E_FAIL;
+	if (FAILED(Ready_Test_SceneModel(TEXT("Layer_SceneModel_Test"))))
+		return E_FAIL;
 
 	_uint i = m_pGameInstance->Get_CurrentLevel();
 
@@ -66,6 +70,7 @@ HRESULT CLevel_Test::Initialize()
 
 void CLevel_Test::Tick(const _float& fTimeDelta)
 {
+	m_pCarChaseManager->Tick();
 #ifdef _DEBUG
 	SetWindowText(g_hWnd, TEXT("테스트 레벨"));
 #endif
@@ -128,7 +133,7 @@ HRESULT CLevel_Test::Ready_Camera(const wstring& strLayerTag)
 		return E_FAIL;
 
 	/* 4. 추격전용 카메라 */
-	CCamera::CAMERA_DESC		CarChaseCameraDesc{};
+	CCarChaseCamera::CARCHASE_CAMERA_DESC		CarChaseCameraDesc{};
 	CarChaseCameraDesc.vEye = _float4(0.f, 2.0f, -3.f, 1.f);
 	CarChaseCameraDesc.vFocus = _float4(0.f, 0.0f, 0.0f, 1.f);
 	CarChaseCameraDesc.fFovY = XMConvertToRadians(60.0f);
@@ -137,6 +142,7 @@ HRESULT CLevel_Test::Ready_Camera(const wstring& strLayerTag)
 	CarChaseCameraDesc.fFar = 3000.f;
 	CarChaseCameraDesc.fSpeedPecSec = 10.f;
 	CarChaseCameraDesc.fRotatePecSec = XMConvertToRadians(90.f);
+	CarChaseCameraDesc.pPlayerMatrix = dynamic_cast<CTransform*>(m_pGameInstance->Get_GameObject_Component(LEVEL_TEST, TEXT("Layer_Texi"), TEXT("Com_Transform", 0)))->Get_WorldFloat4x4();
 
 	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_CarChaseCamera"), strLayerTag, &CarChaseCameraDesc)))
 		return E_FAIL;
@@ -198,7 +204,7 @@ HRESULT CLevel_Test::Ready_Test_SceneModel(const wstring& strLayerTag)
 	//Desc.fRotatePecSec = XMConvertToRadians(0.f);
 	Desc.fRotatePecSec = XMConvertToRadians(180.f);
 
-	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_SceneModel_Test"), strLayerTag, &Desc)))
+	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_Taxi"), strLayerTag, &Desc)))
 		return E_FAIL;
 
 	return S_OK;

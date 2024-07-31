@@ -17,6 +17,7 @@ CLandObject::CLandObject(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	Safe_AddRef(m_pSystemManager);
 	Safe_AddRef(m_pCollisionManager);
 }
+
 CLandObject::CLandObject(const CLandObject& rhs)
 	: CGameObject{ rhs },
 	m_pSystemManager{ rhs.m_pSystemManager },
@@ -35,8 +36,6 @@ HRESULT CLandObject::Initialize(void* pArg)
 {
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
-
-
 
 	return S_OK;
 }
