@@ -136,7 +136,13 @@ HRESULT CLoader::Loading_For_RunMapLevel(int iLevel)
 	Add_Models_On_Path(iLevel, TEXT("../../Client/Bin/Resources/Models/Anim/"));
 
 
-	//Add_Models_On_Path_NonAnim(iLevel, TEXT("../../Client/Bin/Resources/Models/NonAnim/Map/Map3"));
+	Add_Models_On_Path_NonAnim(iLevel, TEXT("../../Client/Bin/Resources/Models/NonAnim/Map/Map0"));
+
+	Add_Models_On_Path_NonAnim(iLevel, TEXT("../../Client/Bin/Resources/Models/NonAnim/Map/Map1"));
+
+	Add_Models_On_Path_NonAnim(iLevel, TEXT("../../Client/Bin/Resources/Models/NonAnim/Map/Map2"));
+
+	Add_Models_On_Path_NonAnim(iLevel, TEXT("../../Client/Bin/Resources/Models/NonAnim/Map/Map3"));
 
 	/* For.Prototype_Component_VIBuffer_Terrain */
 

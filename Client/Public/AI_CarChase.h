@@ -14,16 +14,24 @@ class CAI_CarChase abstract:
 {
 public:
     typedef struct tAICarChaseDesc {
-        CAnim* pAnim;
+        CAnim* pAnim[2];
 
+        _uint* pState;
+        _uint* pDir;
+        _uint* pCurrentAnimType;
+        const _uint* pWeaponType;
         class CCarChase_Monster* pThis;
     } AI_CARCHASE_DESC;
 
     enum SKILL {
+        SKILL_HIT,
+        SKILL_AIM,
+        SKILL_SHOT,
+        SKILL_DEAD,
         SKILL_END
     };
 
-private:
+protected:
     CAI_CarChase();
     CAI_CarChase(const CAI_CarChase& rhs);
     virtual ~CAI_CarChase() = default;
@@ -43,28 +51,41 @@ protected:
     void LookAtPlayer();
 
 protected:
+    CBTNode* m_pRootNode = { nullptr };
     CGameInstance* m_pGameInstance = { nullptr };
-    CAnim* m_pAnimCom = { nullptr };
+
+    CAnim* m_pAnimCom[2] = {nullptr};
     class CPlayer* m_pPlayer = { nullptr };
     class CCarChase_Monster* m_pThis = { nullptr };
 
-    CBTNode* m_pRoot = { nullptr };
+    _uint* m_pState = { nullptr };
+    _uint* m_pDir = { nullptr };
+    _uint* m_pCurrentAnimType = { nullptr };
+    const _uint* m_pWeaponType = { nullptr };
 
 protected:
     _uint m_iSkill = { SKILL_END };
 
-private:
-    CBTNode::NODE_STATE Check_Down();
-    CBTNode::NODE_STATE Down();
+    _bool m_isAttack = { false };
+    _bool m_isSit = { true };
 
-    CBTNode::NODE_STATE Check_Hit();
-    CBTNode::NODE_STATE Hit();
+protected:
+    _float m_fDelayAttackDuration = { 2.f };
+    _float m_fAttackDelayTime = { 0.f }; // 공격이 끝난 후 지속시간
 
-    CBTNode::NODE_STATE Check_Sync();
-    CBTNode::NODE_STATE Sync();
+    _float m_fSitDuration = { 7.f };
+    _float m_fUpDuration = { 3.f };
+    _float m_fSitUpTime = { 0.f };
 
-    CBTNode::NODE_STATE Check_Attck();
-    
+protected:
+    virtual CBTNode::NODE_STATE Check_Down();
+    virtual CBTNode::NODE_STATE Dead();
+
+    virtual CBTNode::NODE_STATE Check_Hit();
+    virtual CBTNode::NODE_STATE Hit();
+
+    virtual CBTNode::NODE_STATE Check_Sync();
+    virtual CBTNode::NODE_STATE Sync();
 
 public:
     virtual void Free();

@@ -5,6 +5,7 @@
 #include "Player.h"
 #include "Effect.h"
 #include "GameInstance.h"
+#include "Item.h"
 
 IMPLEMENT_SINGLETON(CCollision_Manager)
 
@@ -53,12 +54,20 @@ HRESULT CCollision_Manager::Add_MapCollider(CCollider* pCollider)
     return S_OK;
 }
 
+
 void CCollision_Manager::Tick()
 {
     ImpulseResolution();
 
     Enemy_Hit_Collision();
     Player_Hit_Collision();
+
+    ItemCollision(); // 아이템 충돌 체크
+
+    if (m_pGameInstance->GetKeyState(DIK_Z) == TAP)
+#ifdef _DEBUG
+        cout << " 버튼 입력!" << endl;
+#endif // _DEBUG        
 
     Battle_Clear();
 }
@@ -236,6 +245,31 @@ void CCollision_Manager::Player_Hit_Collision()
     }
 }
 
+void CCollision_Manager::ItemCollision()
+{
+    int iCurLevel = m_pGameInstance->Get_CurrentLevel();
+    vector<CGameObject*>  vItems = m_pGameInstance->Get_GameObjects(iCurLevel, TEXT("Layer_Item"));
+
+    for (auto& item : vItems)
+    {
+        CItem::ITEM_MODE itemMode = dynamic_cast<CItem*>(item)->Get_ItemMode();
+
+        if (itemMode == CItem::ITEM_BRIGHT)
+        {
+            CCollider* pItemCollider = dynamic_cast<CItem*>(item)->Get_Collider();
+            CCollider* playerCollider = dynamic_cast<CCollider*>(m_pGameInstance->Get_GameObject(iCurLevel, TEXT("Layer_Player"), 0)->Get_Component(TEXT("Com_Collider")));
+
+            if (pItemCollider->Intersect(playerCollider))
+            {
+                // 잡았을때 처리 함수 
+                dynamic_cast<CItem*>(item)->Set_Grab(true);
+            }
+        }
+        
+    }
+
+}
+
 _bool CCollision_Manager::Map_Collision_Move(CCollider* pCollider, CTransform* pTransform)
 {
     _float3 vCenter;
@@ -387,4 +421,11 @@ void CCollision_Manager::Free()
         Safe_Release(pCollider);
     }
     m_MapColliders.clear();
+
+
+    for (auto& pCollider : m_ItemColliders)
+    {
+        Safe_Release(pCollider);
+    }
+    m_ItemColliders.clear();
 }

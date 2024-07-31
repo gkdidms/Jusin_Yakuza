@@ -108,19 +108,11 @@ void CPlayerCamera::Late_Tick(const _float& fTimeDelta)
 
 	Compute_View(fTimeDelta);
 
-
-
-
 	__super::Tick(fTimeDelta);
-
-
 }
 
 HRESULT CPlayerCamera::Render()
 {
-#ifdef _DEBUG
-	m_pGameInstance->Add_DebugComponent(m_pColliderCom);
-#endif
 	return S_OK;
 }
 
@@ -176,9 +168,6 @@ void CPlayerCamera::Compute_View(const _float& fTimeDelta)
 	}
 	else
 	{
-#ifdef _DEBUG
-		printf("%f", fTimeDelta * 5);
-#endif // _DEBUG
 		vLerpedCamPosition = XMVectorLerp(vPrevCamPosition, vCamPosition, fTimeDelta * 5);
 	}
 

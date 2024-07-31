@@ -276,15 +276,15 @@ public:
     _bool Checked_Animation_Ratio(_float fRatio);
 
 protected:
-    CAnim* m_pAnimCom[ANIMATION_COMPONENT_TYPE_END] = {nullptr}; // 애니메이션만 따로 저장하고있는 애니메이션 컴포넌트
+    CAnim* m_pAnimCom[ANIM_TYPE_END] = {nullptr}; // 애니메이션만 따로 저장하고있는 애니메이션 컴포넌트
     CNavigation* m_pNavigationCom = { nullptr };
     class CAI_Monster* m_pTree = { nullptr };
 
 protected:
     _bool m_isAnimLoop = { false };
     _uint m_iState = { 0 };
-    _uint m_iCurrentAnimType = { ANIMATION_COMPONENT_TYPE_END };
-    _uint m_iPreAnimType = { ANIMATION_COMPONENT_TYPE_END };
+    _uint m_iCurrentAnimType = { ANIM_TYPE_END };
+    _uint m_iPreAnimType = { ANIM_TYPE_END };
     _float m_fChangeInterval = { 4.f };
 
     _float          m_fPrevSpeed;
@@ -313,7 +313,7 @@ protected:
 protected:
     virtual void Change_Animation();
     HRESULT Setup_Animation();
-    void Synchronize_Root(const _float& fTimeDelta);
+    virtual void Synchronize_Root(const _float& fTimeDelta);
 
 protected:
     virtual HRESULT Add_Components() override;

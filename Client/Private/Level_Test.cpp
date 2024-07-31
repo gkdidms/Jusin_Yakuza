@@ -5,6 +5,7 @@
 #include "SystemManager.h"
 #include "DebugManager.h"
 #include "FileTotalMgr.h"
+#include "CarChaseManager.h"
 
 #include "PlayerCamera.h"
 #include "DebugCamera.h"
@@ -22,6 +23,10 @@ CLevel_Test::CLevel_Test(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 
 HRESULT CLevel_Test::Initialize()
 {
+	m_pCarChaseManager = CCarChaseManager::Create(m_pDevice, m_pContext);
+	if (nullptr == m_pCarChaseManager)
+		return E_FAIL;
+
 	// 테스트 client 로드 숫자랑 동일하게 설정해주기!!!!!!!!!!!!!!!!!!!!!!!
 	// 네비 다르면 터짐
 	// 테스트 다하면 지워라
@@ -46,10 +51,9 @@ HRESULT CLevel_Test::Initialize()
 	//	return E_FAIL;
 
 	/* 클라 파싱 */
-	//m_pFileTotalManager->Set_MapObj_In_Client(99, LEVEL_TEST);
-	m_pFileTotalManager->Set_MapObj_In_Client(90, LEVEL_TEST);
-	m_pFileTotalManager->Set_Lights_In_Client(99);
-	m_pFileTotalManager->Set_Collider_In_Client(99, LEVEL_TEST);
+	m_pFileTotalManager->Set_MapObj_In_Client(60, LEVEL_TEST);
+	m_pFileTotalManager->Set_Lights_In_Client(90);
+	m_pFileTotalManager->Set_Collider_In_Client(3, LEVEL_TEST);
 	m_pFileTotalManager->Set_Trigger_In_Client(99, LEVEL_TEST);
 
 	if (FAILED(Ready_Camera(TEXT("Layer_Camera"))))
@@ -126,7 +130,19 @@ HRESULT CLevel_Test::Ready_Camera(const wstring& strLayerTag)
 	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_CutSceneCamera"), strLayerTag, &CutSceneCameraDesc)))
 		return E_FAIL;
 
-	
+	/* 4. 추격전용 카메라 */
+	CCamera::CAMERA_DESC		CarChaseCameraDesc{};
+	CarChaseCameraDesc.vEye = _float4(0.f, 2.0f, -3.f, 1.f);
+	CarChaseCameraDesc.vFocus = _float4(0.f, 0.0f, 0.0f, 1.f);
+	CarChaseCameraDesc.fFovY = XMConvertToRadians(60.0f);
+	CarChaseCameraDesc.fAspect = g_iWinSizeX / (_float)g_iWinSizeY;
+	CarChaseCameraDesc.fNear = 0.1f;
+	CarChaseCameraDesc.fFar = 3000.f;
+	CarChaseCameraDesc.fSpeedPecSec = 10.f;
+	CarChaseCameraDesc.fRotatePecSec = XMConvertToRadians(90.f);
+
+	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_CarChaseCamera"), strLayerTag, &CarChaseCameraDesc)))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -210,4 +226,5 @@ void CLevel_Test::Free()
 
 	Safe_Release(m_pSystemManager);
 	Safe_Release(m_pFileTotalManager);
+	Safe_Release(m_pCarChaseManager);
 }

@@ -200,15 +200,17 @@ void CPlayer::Tick(const _float& fTimeDelta)
 
 	if (m_isAnimStart)
 	{
-		if (DEFAULT_ANIMAITION == m_eAnimComType)
+		if (DEFAULT == m_eAnimComType)
 		{
 			m_pModelCom->Play_Animation_Separation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")), m_iHandAnimIndex, m_SeparationAnimComs[HAND_COM], false, (_int)HAND_COM);
+
 			m_pModelCom->Play_Animation_Separation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")), m_iFaceAnimIndex, m_SeparationAnimComs[FACE_COM], false, (_int)FACE_COM);
 			m_pModelCom->Play_Animation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")));
 		}
 		else
 		{
 			m_pModelCom->Play_Animation_Separation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")), m_iHandAnimIndex, m_SeparationAnimComs[HAND_COM], false, (_int)HAND_COM);
+
 			m_pModelCom->Play_Animation_Separation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")), m_iFaceAnimIndex, m_SeparationAnimComs[FACE_COM], false, (_int)FACE_COM);
 			Play_CutScene();
 		}
@@ -1536,7 +1538,7 @@ void CPlayer::Set_CutSceneAnim(CUTSCENE_ANIMATION_TYPE eType, _uint iFaceAnimInd
 
 void CPlayer::Play_CutScene()
 {
-	if (CUTSCENE_ANIMATION == m_eAnimComType)
+	if (CUTSCENE == m_eAnimComType)
 	{
 		// 카메라 모델의 애니메이션이 종료되면 똑같이 플레이어의 애니메이션도 종료된 것이기 때문에 기존상태로 되돌린다.
 		if (m_pCameraModel->Get_AnimFinished())
@@ -1599,7 +1601,7 @@ void CPlayer::Reset_CutSceneEvent()
 	m_pAnimCom->Reset_Animation(m_iCutSceneAnimIndex);
 	m_pCameraModel->Reset_Animation(m_iCutSceneCamAnimIndex);
 
-	m_eAnimComType = (m_eAnimComType == DEFAULT_ANIMAITION ? CUTSCENE_ANIMATION : DEFAULT_ANIMAITION);
+	m_eAnimComType = (m_eAnimComType == DEFAULT ? CUTSCENE : DEFAULT);
 	m_pSystemManager->Set_Camera(CAMERA_CUTSCENE == m_pSystemManager->Get_Camera() ? CAMERA_PLAYER : CAMERA_CUTSCENE);
 }
 
