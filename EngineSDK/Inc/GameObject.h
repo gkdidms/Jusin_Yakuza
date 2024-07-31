@@ -9,6 +9,7 @@ class ENGINE_DLL CGameObject abstract :
 public:
     typedef struct tGameObjectDesc: public CTransform::TRANSFORM_DESC
     {
+        _uint iObjectIndex;
     } GAMEOBJECT_DESC;
 
 protected:
@@ -26,8 +27,8 @@ public:
 public:
     void        Set_Dead() { m_isDead = true; }
     void        Set_ObjectDead() { m_isObjectDead = true; }
-    float       Get_ObjID() { return m_fObjID; }
-    void        Set_ObjID(float fID) { m_fObjID = fID; }
+    float       Get_ObjID() { return m_iObjectIndex; }
+    void        Set_ObjID(float fID) { m_iObjectIndex = fID; }
 
 public:
     virtual HRESULT Initialize_Prototype();
@@ -56,7 +57,7 @@ protected:
     _bool m_isDead = { false };
     _bool m_isObjectDead = { false };
 
-    float   m_fObjID = { 0 };
+    _uint   m_iObjectIndex = { 0 };
 
 protected:
     vector<_float> m_Casecade;

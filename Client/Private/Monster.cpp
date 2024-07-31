@@ -28,6 +28,8 @@ void CMonster::Set_Sync(string strPlayerAnim)
 	string_view strAnim = strPlayerAnim;
 
 	m_isDown = true;
+	m_isSynchronizing = true;
+
 	//싱크 액션
 	if (strAnim == string_view("p_krc_sync_guard_counter_f"))
 		m_iState = MONSTER_KRC_SYNC1_GUARD_COUNTER_F;
@@ -247,7 +249,7 @@ void CMonster::Set_Sync(string strPlayerAnim)
 		m_iState = MONSTER_H1500_000_1;
 
 	m_strAnimName = strPlayerAnim;
-	m_iCurrentAnimType = CMonster::CUTSCENE_ANIMATION;
+	m_iCurrentAnimType = CMonster::CUTSCENE;
 
 	m_pTree->Set_Sync(true);
 	Change_Animation();
@@ -274,7 +276,9 @@ HRESULT CMonster::Initialize(void* pArg)
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
-	m_pNavigationCom->Set_Index(gameobjDesc->iNaviNum);
+
+	if (nullptr != m_pNavigationCom)
+		m_pNavigationCom->Set_Index(gameobjDesc->iNaviNum);
 
 	m_pTransformCom->Set_Scale(0.95f, 0.95f, 0.95f);
 
@@ -282,8 +286,8 @@ HRESULT CMonster::Initialize(void* pArg)
 	m_Info.iMaxHP = 100.f;
 	m_Info.iHp = m_Info.iMaxHP;
 
-	m_iCurrentAnimType = DEFAULT_ANIMAITION;
-	m_iPreAnimType = DEFAULT_ANIMAITION;
+	m_iCurrentAnimType = DEFAULT;
+	m_iPreAnimType = DEFAULT;
 
 	m_pModelCom->Set_PreAnimations(m_pAnimCom[m_iPreAnimType]->Get_Animations());
 
@@ -296,11 +300,20 @@ void CMonster::Priority_Tick(const _float& fTimeDelta)
 
 void CMonster::Tick(const _float& fTimeDelta)
 {
+	// 싱크액션 맞추는중에는 플레이어의 0.0에 맞춰줘야해서 그거 맞춰주는 코드
+	if (m_isSynchronizing)
+	{
+		CTransform* pTrasnform = dynamic_cast<CTransform*>(m_pGameInstance->Get_GameObject_Component(m_iCurrentLevel, TEXT("Layer_Player"), TEXT("Com_Transform"), 0));
+		m_pTransformCom->Set_WorldMatrix(pTrasnform->Get_WorldMatrix());
+
+		if (m_pAnimCom[m_iCurrentAnimType]->Get_AnimFinished())
+			m_isSynchronizing = false;
+	}
 	m_pTree->Tick(fTimeDelta);
 
 	Change_Animation(); //애니메이션 변경
 
-	_bool isRoot = m_iCurrentAnimType != CUTSCENE_ANIMATION;
+	_bool isRoot = m_iCurrentAnimType != CUTSCENE;
 
 	m_pModelCom->Play_Animation_Monster(fTimeDelta, m_pAnimCom[m_iCurrentAnimType], m_isAnimLoop, isRoot);
 
@@ -344,7 +357,8 @@ void CMonster::Late_Tick(const _float& fTimeDelta)
 	{
 		m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
 
-		m_pCollisionManager->Add_ImpulseResolution(this);
+		if (!m_isSynchronizing)
+			m_pCollisionManager->Add_ImpulseResolution(this);
 
 		// 현재 켜져있는 Attack용 콜라이더 삽입
 		for (auto& pPair : m_pColliders)
@@ -364,11 +378,12 @@ void CMonster::Late_Tick(const _float& fTimeDelta)
 
 	//높이값 태우기
 	_vector vCurrentPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-	float fHeight = m_pNavigationCom->Compute_Height(vCurrentPos);
-
-	vCurrentPos = XMVectorSetY(vCurrentPos, fHeight);
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vCurrentPos);
-
+	if (nullptr != m_pNavigationCom)
+	{
+		float fHeight = m_pNavigationCom->Compute_Height(vCurrentPos);
+		vCurrentPos = XMVectorSetY(vCurrentPos, fHeight);
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, vCurrentPos);
+	}
 
 	for (auto& pCollider : m_pColliders)
 		pCollider.second->Late_Tick(fTimeDelta);
@@ -1364,7 +1379,8 @@ HRESULT CMonster::Setup_Animation()
 		Reset_Shaking_Variable();
 	}
 	
-	m_pData->Set_CurrentAnimation(m_strAnimName);
+	if (nullptr != m_pData)
+		m_pData->Set_CurrentAnimation(m_strAnimName);
 
 	return S_OK;
 }

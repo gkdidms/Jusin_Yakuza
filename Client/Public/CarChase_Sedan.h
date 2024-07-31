@@ -6,7 +6,7 @@ class CCarChase_Sedan :
     public CCarChase_Monster
 {
 public:
-    enum CAR_DIR { CAR_F, CAR_L, CAR_R, CAR_B, CAR_END };
+
 
 private:
     CCarChase_Sedan(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -20,8 +20,7 @@ public:
     virtual void Tick(const _float& fTimeDelta) override;
     virtual void Late_Tick(const _float& fTimeDelta) override;
 
-private:
-    _uint m_iDir = { CAR_END };
+
 
 private:
     virtual void Change_Animation();
