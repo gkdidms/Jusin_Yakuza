@@ -67,10 +67,7 @@ void CCarChase_Reactor::Tick(const _float& fTimeDelta)
 void CCarChase_Reactor::Late_Tick(const _float& fTimeDelta)
 {
 	//컬링
-	if (m_pGameInstance->isIn_WorldFrustum(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 1.5f))
-	{
-		m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
-	}
+	m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
 
 	//높이값 태우기
 	_vector vCurrentPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
@@ -146,11 +143,12 @@ void CCarChase_Reactor::Move_Waypoint(const _float& fTimeDelta)
 {
 	_vector vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 	//웨이포인트 
-	_vector vDir = m_pNavigationCom->Compute_WayPointDir(vPosition);
+	_float4 vMovePos;
+	_vector vDir = m_pNavigationCom->Compute_WayPointDir(vPosition, fTimeDelta);
 	m_pTransformCom->LookAt_For_LandObject(vDir, true);
 	
-	_float fSpeed = 20.f;
-	m_pTransformCom->Go_Straight_CustumSpeed(fSpeed, fTimeDelta, m_pNavigationCom);
+	m_pTransformCom->Go_Straight_CustumSpeed(20.f, fTimeDelta, m_pNavigationCom);
+	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&vMovePos));
 }
 
 HRESULT CCarChase_Reactor::Add_Components()

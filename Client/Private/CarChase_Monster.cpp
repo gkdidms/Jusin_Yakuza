@@ -48,9 +48,9 @@ void CCarChase_Monster::Tick(const _float& fTimeDelta)
 
 	Change_Animation(); //애니메이션 변경
 
-	//_bool isRoot = m_iCurrentAnimType != CUTSCENE;
 	m_pModelCom->Play_Animation_Monster(fTimeDelta, m_pAnimCom[m_iCurrentAnimType], m_isAnimLoop, false);
 	XMStoreFloat4x4(&m_ModelWorldMatrix, m_pTransformCom->Get_WorldMatrix() * XMLoadFloat4x4(m_pParentMatrix));
+
 	//충돌처리 초기화
 	m_isColl = false;
 
@@ -59,9 +59,6 @@ void CCarChase_Monster::Tick(const _float& fTimeDelta)
 
 void CCarChase_Monster::Late_Tick(const _float& fTimeDelta)
 {
-	if (m_iPreAnimType == m_iCurrentAnimType)
-		m_iPreAnimType = m_iCurrentAnimType;
-
 	//컬링
 	m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
 }

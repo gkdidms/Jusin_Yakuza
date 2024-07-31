@@ -29,15 +29,12 @@ HRESULT CLevel_Test::Initialize()
 	// 테스트 다하면 지워라
 	/* For.Prototype_Component_Navigation */
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Navigation"),
-		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/NaviData/Navigation_14.dat")))))
+		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/NaviData/Navigation_11.dat")))))
 		return E_FAIL;
 
-	//m_pCarChaseManager = CCarChaseManager::Create(m_pDevice, m_pContext);
-	//if (nullptr == m_pCarChaseManager)
-	//	return E_FAIL;
-	//if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Navigation"),
-	//	CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/NaviData/Navigation_99.dat")))))
-	//	return E_FAIL;
+	m_pCarChaseManager = CCarChaseManager::Create(m_pDevice, m_pContext);
+	if (nullptr == m_pCarChaseManager)
+		return E_FAIL;
 
  	if (FAILED(Ready_Player(TEXT("Layer_Player"))))
 		return E_FAIL;
@@ -52,7 +49,7 @@ HRESULT CLevel_Test::Initialize()
 	//	return E_FAIL;
 
 	/* 클라 파싱 */
-	m_pFileTotalManager->Set_MapObj_In_Client(14, LEVEL_TEST);
+	m_pFileTotalManager->Set_MapObj_In_Client(11, LEVEL_TEST);
 	m_pFileTotalManager->Set_Lights_In_Client(90);
 	m_pFileTotalManager->Set_Collider_In_Client(3, LEVEL_TEST);
 	m_pFileTotalManager->Set_Trigger_In_Client(99, LEVEL_TEST);
@@ -60,7 +57,8 @@ HRESULT CLevel_Test::Initialize()
 	if (FAILED(Ready_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
 
-
+	//if (FAILED(Ready_Test_SceneModel(TEXT("Layer_SceneModel_Test"))))
+	//	return E_FAIL;
 
 	_uint i = m_pGameInstance->Get_CurrentLevel();
 
@@ -69,7 +67,7 @@ HRESULT CLevel_Test::Initialize()
 
 void CLevel_Test::Tick(const _float& fTimeDelta)
 {
-	//m_pCarChaseManager->Tick();
+	m_pCarChaseManager->Tick();
 #ifdef _DEBUG
 	SetWindowText(g_hWnd, TEXT("테스트 레벨"));
 #endif
@@ -131,9 +129,9 @@ HRESULT CLevel_Test::Ready_Camera(const wstring& strLayerTag)
 	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_CutSceneCamera"), strLayerTag, &CutSceneCameraDesc)))
 		return E_FAIL;
 
-	/* 4. 추격전용 카메라 */
+	///* 4. 추격전용 카메라 */
 	CCarChaseCamera::CARCHASE_CAMERA_DESC		CarChaseCameraDesc{};
-	CarChaseCameraDesc.vEye = _float4(0.f, 2.0f, -3.f, 1.f);
+	CarChaseCameraDesc.vEye = _float4(3.f, 2.f, 0.f, 1.f);
 	CarChaseCameraDesc.vFocus = _float4(0.f, 0.0f, 0.0f, 1.f);
 	CarChaseCameraDesc.fFovY = XMConvertToRadians(60.0f);
 	CarChaseCameraDesc.fAspect = g_iWinSizeX / (_float)g_iWinSizeY;

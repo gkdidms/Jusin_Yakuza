@@ -33,6 +33,9 @@ private:
 
     _float m_fSensor = { 0.f };
 
+private:
+    void Targeting();
+
 public:
     static CCarChaseCamera* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
     virtual CGameObject* Clone(void* pArg);

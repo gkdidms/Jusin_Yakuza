@@ -40,7 +40,7 @@ public:
 public:
     int Find_PlayerMonster_Index(_fvector vTargetPos);
     _bool isMove(_fvector vMovePos);
-    _vector Compute_WayPointDir(_vector vPosition);
+    _vector Compute_WayPointDir(_vector vPosition, const _float& fTimeDelta);
     _float Compute_Height(_fvector vPosition);
 
 #ifdef _DEBUG
@@ -66,7 +66,12 @@ private:
     _uint m_iCurrentLine = { 0 };
     _uint m_iCurrentWayPointIndex = { 0 };
     _uint m_iPreWayPointIndex = { 0 };
-    _float m_fMaxDistance = { 1.f };
+    _float m_fMaxDistance = { 3.f };
+
+    _vector m_vPreDir = {};
+    _vector m_vNextDir = {};
+
+    _float m_fTime = {0.f};
 
 private:
     HRESULT Load_File(const wstring strFilePath);
