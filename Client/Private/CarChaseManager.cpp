@@ -20,15 +20,15 @@ HRESULT CCarChaseManager::Initialize()
 {
 	Ready_Stage();
 
-	//임시로 플레이어를 생성한다.
-	CHighway_Taxi::HIGHWAY_TEXI_DESC Desc{};
-	Desc.fRotatePecSec = XMConvertToRadians(180.f);
-	Desc.fSpeedPecSec = 10.f;
-	Desc.iNaviNum = 0;
-	Desc.iNaviRouteNum = 0;
-	Desc.iObjectIndex = 999999;
-	if (FAILED(m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Taxi"), TEXT("Layer_Texi"), &Desc)))
-		return E_FAIL;
+	////임시로 플레이어를 생성한다.
+	//CHighway_Taxi::HIGHWAY_TEXI_DESC Desc{};
+	//Desc.fRotatePecSec = XMConvertToRadians(180.f);
+	//Desc.fSpeedPecSec = 10.f;
+	//Desc.iNaviNum = 0;
+	//Desc.iNaviRouteNum = 0;
+	//Desc.iObjectIndex = 999999;
+	//if (FAILED(m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Taxi"), TEXT("Layer_Texi"), &Desc)))
+	//	return E_FAIL;
 
 	return S_OK;
 }

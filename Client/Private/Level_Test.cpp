@@ -35,9 +35,6 @@ HRESULT CLevel_Test::Initialize()
 	m_pCarChaseManager = CCarChaseManager::Create(m_pDevice, m_pContext);
 	if (nullptr == m_pCarChaseManager)
 		return E_FAIL;
-	//if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Navigation"),
-	//	CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/NaviData/Navigation_99.dat")))))
-	//	return E_FAIL;
 
  	if (FAILED(Ready_Player(TEXT("Layer_Player"))))
 		return E_FAIL;
@@ -60,8 +57,8 @@ HRESULT CLevel_Test::Initialize()
 	if (FAILED(Ready_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
 
-	if (FAILED(Ready_Test_SceneModel(TEXT("Layer_SceneModel_Test"))))
-		return E_FAIL;
+	//if (FAILED(Ready_Test_SceneModel(TEXT("Layer_SceneModel_Test"))))
+	//	return E_FAIL;
 
 	_uint i = m_pGameInstance->Get_CurrentLevel();
 
@@ -132,20 +129,20 @@ HRESULT CLevel_Test::Ready_Camera(const wstring& strLayerTag)
 	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_CutSceneCamera"), strLayerTag, &CutSceneCameraDesc)))
 		return E_FAIL;
 
-	/* 4. 추격전용 카메라 */
-	CCarChaseCamera::CARCHASE_CAMERA_DESC		CarChaseCameraDesc{};
-	CarChaseCameraDesc.vEye = _float4(0.f, 2.0f, -3.f, 1.f);
-	CarChaseCameraDesc.vFocus = _float4(0.f, 0.0f, 0.0f, 1.f);
-	CarChaseCameraDesc.fFovY = XMConvertToRadians(60.0f);
-	CarChaseCameraDesc.fAspect = g_iWinSizeX / (_float)g_iWinSizeY;
-	CarChaseCameraDesc.fNear = 0.1f;
-	CarChaseCameraDesc.fFar = 3000.f;
-	CarChaseCameraDesc.fSpeedPecSec = 10.f;
-	CarChaseCameraDesc.fRotatePecSec = XMConvertToRadians(90.f);
-	CarChaseCameraDesc.pPlayerMatrix = dynamic_cast<CTransform*>(m_pGameInstance->Get_GameObject_Component(LEVEL_TEST, TEXT("Layer_Texi"), TEXT("Com_Transform", 0)))->Get_WorldFloat4x4();
+	///* 4. 추격전용 카메라 */
+	//CCarChaseCamera::CARCHASE_CAMERA_DESC		CarChaseCameraDesc{};
+	//CarChaseCameraDesc.vEye = _float4(0.f, 2.0f, -3.f, 1.f);
+	//CarChaseCameraDesc.vFocus = _float4(0.f, 0.0f, 0.0f, 1.f);
+	//CarChaseCameraDesc.fFovY = XMConvertToRadians(60.0f);
+	//CarChaseCameraDesc.fAspect = g_iWinSizeX / (_float)g_iWinSizeY;
+	//CarChaseCameraDesc.fNear = 0.1f;
+	//CarChaseCameraDesc.fFar = 3000.f;
+	//CarChaseCameraDesc.fSpeedPecSec = 10.f;
+	//CarChaseCameraDesc.fRotatePecSec = XMConvertToRadians(90.f);
+	//CarChaseCameraDesc.pPlayerMatrix = dynamic_cast<CTransform*>(m_pGameInstance->Get_GameObject_Component(LEVEL_TEST, TEXT("Layer_Texi"), TEXT("Com_Transform", 0)))->Get_WorldFloat4x4();
 
-	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_CarChaseCamera"), strLayerTag, &CarChaseCameraDesc)))
-		return E_FAIL;
+	//if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_CarChaseCamera"), strLayerTag, &CarChaseCameraDesc)))
+	//	return E_FAIL;
 
 	return S_OK;
 }

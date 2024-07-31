@@ -45,6 +45,9 @@ HRESULT CReactor_Van::Ready_Monster(_int* pMonsterTypes)
 {
 	for (size_t i = 0; i < 3; ++i)
 	{
+		if (i > 0 && pMonsterTypes[i - 1] == -1)
+			break;
+
 		CCarChase_Van::CARCHASE_MONSTER_DESC Desc{};
 		Desc.iWeaponType = i == 0 ? CCarChase_Monster::DRV : pMonsterTypes[i - 1];
 		Desc.pParentMatrix = m_pTransformCom->Get_WorldFloat4x4();
@@ -52,6 +55,8 @@ HRESULT CReactor_Van::Ready_Monster(_int* pMonsterTypes)
 		if (FAILED(m_pGameInstance->Add_GameObject(m_iCurrentLevel, TEXT("Prototype_GameObject_CarChaseVan"), TEXT("Layer_Monster"), &Desc)))
 			return E_FAIL;
 	}
+
+	return S_OK;
 }
 
 void CReactor_Van::Change_Animation()
