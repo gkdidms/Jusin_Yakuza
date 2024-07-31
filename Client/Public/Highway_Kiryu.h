@@ -88,6 +88,10 @@ private:
     BEHAVIOR_TYPE   m_eCurrentBehavior = { AIMING };
     _bool           m_isStarted = { false };
 
+
+    _bool m_bTest = { false };
+    _float m_fTest = 0.f;
+
 public:
     static CHighway_Kiryu* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
     virtual CGameObject* Clone(void* pArg);

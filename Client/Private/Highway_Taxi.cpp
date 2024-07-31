@@ -52,8 +52,8 @@ void CHighway_Taxi::Priority_Tick(const _float& fTimeDelta)
 {
 	m_pKiryu->Priority_Tick(fTimeDelta);
 
-	if (m_pGameInstance->GetKeyState(DIK_N) == HOLD)
-		m_pTransformCom->Go_Straight(fTimeDelta);
+	//if (m_pGameInstance->GetKeyState(DIK_N) == HOLD)
+	//	m_pTransformCom->Go_Straight(fTimeDelta);
 }
 
 void CHighway_Taxi::Tick(const _float& fTimeDelta)

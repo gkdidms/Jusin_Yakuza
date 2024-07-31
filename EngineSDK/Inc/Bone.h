@@ -35,6 +35,10 @@ public:
 		XMStoreFloat4x4(&m_TransformationMatrix, TransformationMatrix);
 	}
 
+	void Set_CombinedTransformationMatrix(_fmatrix CombinedTransformationMatrix) {
+		XMStoreFloat4x4(&m_CombinedTransformationMatrix, CombinedTransformationMatrix);
+	}
+
 	void Set_Separation(_int iSeparation) {
 		m_iSeparation = iSeparation;
 	}

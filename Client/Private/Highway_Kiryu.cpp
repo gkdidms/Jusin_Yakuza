@@ -112,6 +112,20 @@ void CHighway_Kiryu::Key_Input()
 	{
 	}
 
+	if (m_pGameInstance->GetKeyState(DIK_X) == HOLD)
+	{
+		m_bTest = !m_bTest;
+	}
+
+	if (m_pGameInstance->GetKeyState(DIK_M) == HOLD)
+	{
+		m_fTest -= 1.f;
+	}
+	if (m_pGameInstance->GetKeyState(DIK_N) == HOLD)
+	{
+		m_fTest += 1.f;
+	}
+
 	// น฿ป็
 	if (m_pGameInstance->GetMouseState(DIM_LB) == TAP)
 	{
@@ -160,7 +174,10 @@ void CHighway_Kiryu::Play_CurrentAnimation(_float fTimeDelta)
 	}
 	}
 
-	m_pModelCom->Play_Animation(fTimeDelta, false);
+	if(m_bTest)
+		m_pModelCom->Play_Animation_Rotation_SeparationBone(fTimeDelta, "ketu_c_n", 2, m_fTest, false);
+	else
+		m_pModelCom->Play_Animation(fTimeDelta, false);
 }
 
 void CHighway_Kiryu::Play_Animing(_float fTimeDelta)
