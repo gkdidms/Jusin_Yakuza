@@ -46,7 +46,7 @@ void CCarChase_Monster::Tick(const _float& fTimeDelta)
 {
 	m_pTree->Tick(fTimeDelta);
 
-	//Change_Animation(); //애니메이션 변경
+	Change_Animation(); //애니메이션 변경
 
 	m_pModelCom->Play_Animation_Monster(fTimeDelta, m_pAnimCom[m_iCurrentAnimType], m_isAnimLoop, false);
 	XMStoreFloat4x4(&m_ModelWorldMatrix, m_pTransformCom->Get_WorldMatrix() * XMLoadFloat4x4(m_pParentMatrix));

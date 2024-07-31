@@ -20,20 +20,19 @@ CAnim::CAnim(const CAnim& rhs)
 
 _uint CAnim::Get_AnimationIndex(const _char* pName)
 {
-	regex pattern(R"(\[(.*?)\])"); // 대괄호 사이의 텍스트를 찾기 위한 정규 표현식
-	smatch matches;
+	if (string(pName).size() <= 0)
+		return -1;
 
 	_uint iIndex = 0;
 	for (auto& pAnim : m_Animations)
 	{
-		if (string(pAnim->Get_AnimName()).find(pName) != string::npos)
-		{
-			string strName = string(pAnim->Get_AnimName());
-			regex_search(strName, matches, pattern);
-
-			if (string_view(matches[1].str()) == string_view(pName))
-				return iIndex;
-		}
+		string strName;
+		istringstream Name(pAnim->Get_AnimName());
+		getline(Name, strName, '[');
+		
+		strName = strName.substr(0, strName.size() - 1);
+		if (string_view(strName) == string_view(pName))
+			return iIndex;
 
 		iIndex++;
 	}
