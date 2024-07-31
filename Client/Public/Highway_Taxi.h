@@ -1,14 +1,28 @@
 #pragma once
 #include "LandObject.h"
 
+BEGIN(Engine)
+class CNavigation;
+END
+
 BEGIN(Client)
 class CHighway_Taxi :
     public CLandObject
 {
+public:
+    typedef struct tHighWayTaxiDesc : public CLandObject::GAMEOBJECT_DESC {
+        XMMATRIX		vStartPos;
+        _int             iNaviNum;
+        _int             iNaviRouteNum;
+    } HIGHWAY_TEXI_DESC;
+
 private:
     CHighway_Taxi(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
     CHighway_Taxi(const CHighway_Taxi& rhs);
     virtual ~CHighway_Taxi() = default;
+
+public:
+    void Set_NavigationRouteIndex(_uint iLine);
 
 public:
     virtual HRESULT Initialize_Prototype() override;
@@ -23,7 +37,14 @@ public:
     string Get_CurrentAnimationName() override;
 
 protected:
+    class CNavigation* m_pNavigationCom = { nullptr };
+
+protected:
+    _int     m_iNaviRouteNum = { 0 };
+
+protected:
     virtual void Change_Animation();
+    void Move_Waypoint(const _float& fTimeDelta);
 
 protected:
     virtual HRESULT Add_Components() override;

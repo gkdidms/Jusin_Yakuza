@@ -9,7 +9,8 @@ class ENGINE_DLL CNavigation :
 {
 public:
     typedef struct tNavigationDesc {
-        _int iIndex;
+        _int iCurrentLine = { -1 };
+        _vector vPosition;
     }NAVIGATION_DESC;
 
 private:
@@ -20,6 +21,7 @@ private:
 public:
     void Set_Points(const _float3* vPoints, _int OptionType);
     void Set_Index(_uint iIndex) { m_iCurrentIndex = iIndex; }
+    void Set_NavigationRouteIndex(_uint iIndex) { m_iCurrentLine = iIndex; }
 
 public:
     CCell::OPTION Get_OptionType() { return m_Cells[m_iCurrentIndex]->Get_Option(); }
@@ -38,7 +40,9 @@ public:
 public:
     int Find_PlayerMonster_Index(_fvector vTargetPos);
     _bool isMove(_fvector vMovePos);
+    _vector Compute_WayPointDir(_vector vPosition);
     _float Compute_Height(_fvector vPosition);
+
 #ifdef _DEBUG
 public:
     HRESULT Render();
@@ -57,9 +61,17 @@ private:
 private:
     _int m_iCurrentIndex = { -1 };
 
+    //ÃÑ°ÝÀü¿ë
+private:
+    _uint m_iCurrentLine = { 0 };
+    _uint m_iCurrentWayPointIndex = { 0 };
+    _uint m_iPreWayPointIndex = { 0 };
+    _float m_fMaxDistance = { 1.f };
+
 private:
     HRESULT Load_File(const wstring strFilePath);
     HRESULT SetUp_Neighbors();
+    void Find_WayPointIndex(_vector vPosition);
 
 public:
     static CNavigation* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring strFilePath);

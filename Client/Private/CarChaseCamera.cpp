@@ -10,8 +10,10 @@ CCarChaseCamera::CCarChaseCamera(ID3D11Device* pDevice, ID3D11DeviceContext* pCo
 }
 
 CCarChaseCamera::CCarChaseCamera(const CCarChaseCamera& rhs)
-	: CCamera { rhs }
+	: CCamera { rhs },
+	m_pSystemManager{ rhs.m_pSystemManager}
 {
+	Safe_AddRef(m_pSystemManager);
 }
 
 HRESULT CCarChaseCamera::Initialize_Prototype()
@@ -37,7 +39,7 @@ void CCarChaseCamera::Priority_Tick(const _float& fTimeDelta)
 
 void CCarChaseCamera::Tick(const _float& fTimeDelta)
 {
-	if (m_pSystemManager->Get_Camera() != CAMERA_PLAYER) return;
+	if (m_pSystemManager->Get_Camera() != CAMERA_CARCHASE) return;
 	
 	m_pTransformCom->LookAt(XMLoadFloat4((_float4*)& m_pPlayerMatrix->m[3]));
 	XMStoreFloat4x4(&m_WorldMatrix, m_pTransformCom->Get_WorldMatrix() * XMLoadFloat4x4(m_pPlayerMatrix));
