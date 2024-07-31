@@ -61,6 +61,9 @@ public:
 
 		int					iColliderNum;
 		OBJCOLLIDER_DESC* pColliderDesc;
+
+		bool				bCull;
+		bool				bLocalCull;
 	}MAPOBJ_DESC;
 
 
@@ -109,11 +112,13 @@ private:
 	vector<int>				m_vBloomIndex; // 그냥 환한 전등
 	vector<int>				m_vMaskSignIndex;
 
-	int						m_iLayerNum;
+	_int					m_iLayerNum;
 	wstring					m_wstrModelName;
-	int						m_iShaderPassNum = { 0 };
-	int						m_iObjectType = { 0 };
-	float					m_fWaterDeltaTime = { 0 };
+	_int					m_iShaderPassNum = { 0 };
+	_int					m_iObjectType = { 0 };
+	_float					m_fWaterDeltaTime = { 0 };
+	_bool					m_bCull = { false };
+	_bool					m_bLocalCull = { false };
 
 public:
 	HRESULT Add_Components(void* pArg);
