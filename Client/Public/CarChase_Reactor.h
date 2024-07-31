@@ -15,10 +15,10 @@ public:
     {
         XMMATRIX		vStartPos;
         wstring			wstrModelName;
-        int				iShaderPass;
-        int             iNaviNum;
-        int             iNaviRouteNum;
-
+        _int				iShaderPass;
+        _int             iNaviNum;
+        _int             iNaviRouteNum;
+        
         _int iMonsterWeaponType[2];
     }HIGHWAY_IODESC;
 
@@ -47,23 +47,22 @@ protected:
     _uint m_iState = { 0 };
     _float m_fChangeInterval = { 4.f };
 
-    _float          m_fPrevSpeed;
-    _float4         m_vPrevMove;
-    _float4         m_vPrevRotation;
-    _float4x4       m_ModelWorldMatrix;
-
 protected:
     string  m_strAnimName = "";
     _uint   m_iAnim = { 0 };
+    
 
     _bool   m_isColl = { false };
 
-    int     m_iNaviRouteNum = { 0 };
+    _int     m_iNaviRouteNum = { 0 };
 
 protected:
     virtual HRESULT Ready_Monster(_int* pMonsterTypes) = 0;
     virtual void Change_Animation();
     HRESULT Setup_Animation();
+
+protected:
+    void Move_Waypoint(const _float& fTimeDelta);
 
 protected:
     virtual HRESULT Add_Components() override;

@@ -3,6 +3,10 @@
 
 #include "Client_Defines.h"
 
+BEGIN(Engine)
+class CGameInstance;
+END
+
 BEGIN(Client)
 class CCarChaseManager :
     public CBase
@@ -20,6 +24,7 @@ public:
     void Tick();
 
 private:
+    CGameInstance* m_pGameInstance = { nullptr };
     ID3D11Device* m_pDevice = { nullptr };
     ID3D11DeviceContext* m_pContext = { nullptr };
 

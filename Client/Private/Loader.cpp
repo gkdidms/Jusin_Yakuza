@@ -954,11 +954,6 @@ HRESULT CLoader::Loading_For_Test()
 	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Taxi"),
 		CHighway_Taxi::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
-
-	/* For.Prototype_GameObject_Van */
-	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Van"),
-		CReactor_Van::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
 #pragma endregion
 
 

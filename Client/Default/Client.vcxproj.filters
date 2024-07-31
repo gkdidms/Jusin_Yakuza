@@ -500,7 +500,6 @@
     <ClCompile Include="..\private\Tutorial.cpp">
       <Filter>04.TutorialManager\Tutorial</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\AI_CarChase.cpp" />
     <ClCompile Include="..\Private\Map.cpp">
       <Filter>02.GameObjects\09.Map</Filter>
     </ClCompile>
@@ -509,6 +508,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Highway_Taxi.cpp">
       <Filter>02.GameObjects\02.Character\LandObject\03.CarChase\02.Taxi</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\AI_CarChase.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\03.CarChase\01.Monster\AI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1041,7 +1043,6 @@
     <ClInclude Include="..\public\Tutorial.h">
       <Filter>04.TutorialManager\Tutorial</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\AI_CarChase.h" />
     <ClInclude Include="..\Public\Map.h">
       <Filter>02.GameObjects\09.Map</Filter>
     </ClInclude>
@@ -1050,6 +1051,9 @@
     </ClInclude>
     <ClInclude Include="..\Public\Highway_Taxi.h">
       <Filter>02.GameObjects\02.Character\LandObject\03.CarChase\02.Taxi</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\AI_CarChase.h">
+      <Filter>02.GameObjects\02.Character\LandObject\03.CarChase\01.Monster\AI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
