@@ -55,6 +55,7 @@ protected:
     _bool   m_isColl = { false };
 
     _int     m_iNaviRouteNum = { 0 };
+    _float m_fSpeed = { 40.f };
 
 protected:
     virtual HRESULT Ready_Monster(_int* pMonsterTypes) = 0;

@@ -125,6 +125,22 @@ void CCamera::Zoom(const _float& fTimeDelta)
 		m_fFovY = 0.03f;
 }
 
+void CCamera::LookAt(_float4x4* OrbitMatrix, _fvector vTargetPos, _fvector vPosition)
+{
+	_vector vLook = vTargetPos - vPosition;
+	_vector vRight = XMVector3Cross(XMVectorSet(0.f, 1.f, 0.f, 0.f), vLook);
+	_vector vUp = XMVector3Cross(vLook, vRight);
+
+	if (isnan(XMVector4Normalize(vRight).m128_f32[0]) || isnan(XMVector4Normalize(vUp).m128_f32[0]) || isnan(XMVector4Normalize(vLook).m128_f32[0]))
+	{
+		return;
+	}
+
+	XMStoreFloat4((_float4*)&OrbitMatrix->m[0], XMVector4Normalize(vRight));
+	XMStoreFloat4((_float4*)&OrbitMatrix->m[1], XMVector4Normalize(vUp));
+	XMStoreFloat4((_float4*)&OrbitMatrix->m[2], XMVector4Normalize(vLook));
+}
+
 void CCamera::Shaking(_float fTimeDelta)
 {
 	if (!m_isShaking)
