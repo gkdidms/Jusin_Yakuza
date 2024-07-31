@@ -215,12 +215,6 @@ public:
     void Play_CutScene();
     void Reset_CutSceneEvent();
 
-    // iHandType: 0양손, 1 왼손, 2 오른손
-    virtual void On_Separation_Hand(_uint iHandType = 0) override;
-    virtual void Off_Separation_Hand(_uint iHandType = 0) override;
-    virtual void On_Separation_Face() override;
-    virtual void Off_Separation_Face() override;
-
 private:
     void Compute_MoveDirection_FB();
     void Compute_MoveDirection_RL();

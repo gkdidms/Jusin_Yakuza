@@ -34,6 +34,9 @@ HRESULT CHighway_Kiryu::Initialize(void* pArg)
 	if (FAILED(Add_CharacterData()))
 		return E_FAIL;
 
+	Set_HandAnimIndex(HAND_GUN);
+	On_Separation_Hand();
+
 	return S_OK;
 }
 
@@ -45,8 +48,11 @@ void CHighway_Kiryu::Tick(const _float& fTimeDelta)
 {
 	__super::Tick(fTimeDelta);
 
-	m_pModelCom->Set_AnimationIndex(0);
-	m_pModelCom->Play_Animation(fTimeDelta, false);
+	Key_Input();
+
+	m_pModelCom->Play_Animation_Separation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")), m_iHandAnimIndex, m_SeparationAnimComs[HAND_COM], false, (_int)HAND_COM);
+	m_pModelCom->Play_Animation_Separation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")), m_iFaceAnimIndex, m_SeparationAnimComs[FACE_COM], false, (_int)FACE_COM);
+	Play_CurrentAnimation(fTimeDelta);
 }
 
 void CHighway_Kiryu::Late_Tick(const _float& fTimeDelta)
@@ -87,6 +93,125 @@ void CHighway_Kiryu::Change_Animation()
 {
 }
 
+void CHighway_Kiryu::Key_Input()
+{
+	/* 에임 위치 조정하는 키 인풋 */
+	if (m_pGameInstance->GetKeyState(DIK_W) == HOLD)
+	{
+
+	}
+	if (m_pGameInstance->GetKeyState(DIK_A) == HOLD)
+	{
+
+	}
+	if (m_pGameInstance->GetKeyState(DIK_S) == HOLD)
+	{
+
+	}
+	if (m_pGameInstance->GetKeyState(DIK_D) == HOLD)
+	{
+	}
+
+	// 발사
+	if (m_pGameInstance->GetMouseState(DIM_LB) == TAP)
+	{
+		Change_Behavior(SHOT);
+	}
+
+	// 장전/숨기
+	if (m_pGameInstance->GetKeyState(DIK_E) == HOLD)
+	{
+		Change_Behavior(HIDE);
+	}
+	else if (m_pGameInstance->GetKeyState(DIK_E) == AWAY)
+	{
+		Change_Behavior(AIMING);
+	}
+}
+
+void CHighway_Kiryu::Play_CurrentAnimation(_float fTimeDelta)
+{
+	switch (m_eCurrentBehavior)
+	{
+	case CHighway_Kiryu::AIMING:
+	{
+		Play_Animing(fTimeDelta);
+		break;
+	}
+	case CHighway_Kiryu::HIDE:
+	{
+		Play_HideReload(fTimeDelta);
+		break;
+	}
+	case CHighway_Kiryu::HIT:
+	{
+		Play_Hit(fTimeDelta);
+		break;
+	}
+	case CHighway_Kiryu::SHOT:
+	{
+		Play_Shot(fTimeDelta);
+		break;
+	}
+	case CHighway_Kiryu::SWAP:
+	{
+		Play_Swap(fTimeDelta);
+		break;
+	}
+	}
+
+	m_pModelCom->Play_Animation(fTimeDelta, false);
+}
+
+void CHighway_Kiryu::Play_Animing(_float fTimeDelta)
+{
+	// 시작 모션 (차에서 일어서는 것)
+	// [71] [mngcar_c_car_gun_sitl_en]
+	// [74] [mngcar_c_car_gun_sitr_en]
+	// [29] [mngcar_c_car_gun_aiml_l_lp]
+	// [64] [mngcar_c_car_gun_aimr_r_lp]
+	if (m_isStarted)
+		m_pModelCom->Set_AnimationIndex((m_eBattleDirection == LEFT ? 71 : 74), 4.0f);
+	else
+		m_pModelCom->Set_AnimationIndex((m_eBattleDirection == LEFT ? 29 : 64), 4.0f);
+
+	if (m_pModelCom->Get_AnimFinished())
+		m_isStarted = true;
+}
+
+void CHighway_Kiryu::Play_HideReload(_float fTimeDelta)
+{
+	// 시작 모션 (차에 들어가는 것)
+	// [73] [mngcar_c_car_gun_sitl_st]
+	// [76] [mngcar_c_car_gun_sitr_st]
+	// [72] [mngcar_c_car_gun_sitl_lp]
+	// [75] [mngcar_c_car_gun_sitr_lp]
+	if (m_isStarted)
+		m_pModelCom->Set_AnimationIndex((m_eBattleDirection == LEFT ? 73 : 76), 4.0f);
+	else
+		m_pModelCom->Set_AnimationIndex((m_eBattleDirection == LEFT ? 72 : 75), 4.0f);
+
+	if (m_pModelCom->Get_AnimFinished())
+		m_isStarted = true;
+}
+
+void CHighway_Kiryu::Play_Hit(_float fTimeDelta)
+{
+}
+
+void CHighway_Kiryu::Play_Shot(_float fTimeDelta)
+{
+}
+
+void CHighway_Kiryu::Play_Swap(_float fTimeDelta)
+{
+}
+
+void CHighway_Kiryu::HideReload()
+{
+
+}
+
 HRESULT CHighway_Kiryu::Add_Components()
 {
 	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Shader_VtxAnim"),
@@ -96,6 +221,20 @@ HRESULT CHighway_Kiryu::Add_Components()
 	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Model_Kiryu_CarChase"),
 		TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
 		return E_FAIL;
+
+	//Prototype_Component_Anim_KiryuFace
+	CAnim* pAnimCom = { nullptr };
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Anim_KiryuFace"),
+		TEXT("Com_Anim_Face"), reinterpret_cast<CComponent**>(&pAnimCom))))
+		return E_FAIL;
+	m_SeparationAnimComs.push_back(pAnimCom);
+
+	//Prototype_Component_Anim_Hand
+	pAnimCom = { nullptr };
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Anim_Hand"),
+		TEXT("Com_Anim_Hand"), reinterpret_cast<CComponent**>(&pAnimCom))))
+		return E_FAIL;
+	m_SeparationAnimComs.push_back(pAnimCom);
 
 	return S_OK;
 }
