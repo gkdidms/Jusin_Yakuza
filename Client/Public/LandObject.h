@@ -15,9 +15,9 @@ class CLandObject abstract :
 {
 public:
     enum ANIMATION_COMPONENT_TYPE {
-        DEFAULT_ANIMAITION,
-        CUTSCENE_ANIMATION,
-        ANIMATION_COMPONENT_TYPE_END
+        DEFAULT,
+        CUTSCENE,
+        ANIM_TYPE_END
     };
 
     // 분할된 애니메이션 컴포넌트 종류 (필요 시 늘어날 예정)
@@ -33,6 +33,8 @@ public:
     // HandAnim 데이터의 인덱스를 enum으로 정의해둠
     enum HAND_ANIMATION_TYPE {
         HAND_NEUTRAL,               //[0] [hand_parts_0_neutral] 평소 편하게 펴고있는 상태
+        HAND_MIDDLE,                //[1] [hand_parts_10_hand_middle] 
+        HAND_MIDDLE2,               //[2] [hand_parts_11_hand_middle2]
         HAND_CHOP = 8,              //[8] [hand_parts_17_chop]  촙!!! 스킬 쓸 때 손 날로 치기 때문에 손을 편 상태의 모양이다
         HAND_GU,                    //[9] [hand_parts_1_gu] 주먹 쥐는거
         HAND_HAKO,                  //[10] [hand_parts_3_hako] 큰 물체 쥘 때 펼쳐진 손
@@ -42,6 +44,7 @@ public:
         HAND_TONFA,                 //[15] [hand_parts_8_tonfa] 봉같은거 쥔 손 (얇은버전)
         HAND_MAX                    //[16] [hand_parts_9_hand_max] 전부 핀 손
     };
+
 
 private: //오브젝트들의 정보를 저장 
     typedef struct tLandObjectInfo {
@@ -89,6 +92,12 @@ protected:
     virtual void RimLight_Event();
     virtual void Trail_Event();
 
+    // iHandType: 0양손, 1 왼손, 2 오른손
+    virtual void On_Separation_Hand(_uint iHandType = 0) {};
+    virtual void Off_Separation_Hand(_uint iHandType = 0) {};
+    virtual void On_Separation_Face() {};
+    virtual void Off_Separation_Face() {};
+
     /* Fublic Virtual Funtion */
 public:
     virtual string Get_CurrentAnimationName() = 0;
@@ -121,6 +130,14 @@ public:
 
     void Set_DamageAmplify(_float fAmplify) {
         m_fDamageAmplify = fAmplify;
+    }
+
+    void    Set_FaceAnimIndex(_uint iFaceAnimIndex) { 
+        m_iFaceAnimIndex = iFaceAnimIndex; 
+    }
+
+    void    Set_HandAnimIndex(_uint iHandAnimIndex) { 
+        m_iHandAnimIndex = iHandAnimIndex;
     }
 
 #ifdef _DEBUG
@@ -169,7 +186,8 @@ protected:
 
     // 분할한 애니메이션을 실행할 애님 컴포넌트를 들고있을 배열
     vector<CAnim*>        m_SeparationAnimComs;
-
+    _uint           m_iHandAnimIndex = HAND_MIDDLE;
+    _uint           m_iFaceAnimIndex = { 0 };
 
 
 #ifdef _DEBUG

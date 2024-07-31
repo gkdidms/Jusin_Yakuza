@@ -55,7 +55,7 @@ protected:
     _uint m_iSkill = { SKILL_END };
     _bool m_isWayPointFinish = { true };
 
-    vector<_int> m_Routes = {};
+    vector<ROUTE_IO> m_Routes = {};
 
 protected:
     virtual void Ready_Root() = 0;

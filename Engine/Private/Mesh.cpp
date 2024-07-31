@@ -12,6 +12,7 @@ CMesh::CMesh(const CMesh& rhs)
 	, m_OffsetMatrices{ rhs.m_OffsetMatrices }
 	, m_isAlphaApply{ rhs.m_isAlphaApply }
 	, m_iNumBones{ rhs.m_iNumBones }
+	, m_localMatrix {rhs.m_localMatrix}
 {
 }
 
@@ -138,6 +139,9 @@ HRESULT CMesh::Ready_Vertices_For_NonAnimMesh(const aiMesh* pAIMesh, _fmatrix Pr
 	VTXMESH* pVertices = new VTXMESH[m_iNumVertices];
 	ZeroMemory(pVertices, sizeof(VTXMESH) * m_iNumVertices);
 
+	_float3		vSumPosition = _float3(0, 0, 0);
+
+
 	for (size_t i = 0; i < m_iNumVertices; i++)
 	{
 		memcpy(&pVertices[i].vPosition, &pAIMesh->mVertices[i], sizeof(_float3));
@@ -150,7 +154,18 @@ HRESULT CMesh::Ready_Vertices_For_NonAnimMesh(const aiMesh* pAIMesh, _fmatrix Pr
 
 		memcpy(&pVertices[i].vTexcoord, &pAIMesh->mTextureCoords[0][i], sizeof(_float2));		//몇번째의 텍스처의 위치정보를 저장할것인지!
 		memcpy(&pVertices[i].vTangent, &pAIMesh->mTangents[i], sizeof(_float3));
+
+		vSumPosition.x += pVertices[i].vPosition.x;
+		vSumPosition.y += pVertices[i].vPosition.y;
+		vSumPosition.z += pVertices[i].vPosition.z;	
 	}
+
+	vSumPosition.x /= m_iNumVertices;
+	vSumPosition.y /= m_iNumVertices;
+	vSumPosition.z /= m_iNumVertices;
+
+	XMStoreFloat4x4(&m_localMatrix, XMMatrixTranslation(vSumPosition.x, vSumPosition.y, vSumPosition.z));
+
 
 	m_InitialData.pSysMem = pVertices;
 
@@ -176,6 +191,8 @@ HRESULT CMesh::Ready_Vertices_For_NonAnimMesh(const BAiMesh* pAIMesh, _fmatrix P
 	VTXMESH* pVertices = new VTXMESH[m_iNumVertices];
 	ZeroMemory(pVertices, sizeof(VTXMESH) * m_iNumVertices);
 
+	_float3		vSumPosition = _float3(0, 0, 0);
+
 	for (size_t i = 0; i < m_iNumVertices; i++)
 	{
 		memcpy(&pVertices[i].vPosition, &pAIMesh->mVertices[i], sizeof(_float3));
@@ -188,7 +205,20 @@ HRESULT CMesh::Ready_Vertices_For_NonAnimMesh(const BAiMesh* pAIMesh, _fmatrix P
 
 		memcpy(&pVertices[i].vTexcoord, &pAIMesh->mTextureCoords[0][i], sizeof(_float2));		//몇번째의 텍스처의 위치정보를 저장할것인지!
 		memcpy(&pVertices[i].vTangent, &pAIMesh->mTangents[i], sizeof(_float3));
+
+		XMStoreFloat4x4(&m_localMatrix, XMMatrixTranslation(pVertices[i].vPosition.x, pVertices[i].vPosition.y, pVertices[i].vPosition.z));
+
+		vSumPosition.x += pVertices[i].vPosition.x;
+		vSumPosition.y += pVertices[i].vPosition.y;
+		vSumPosition.z += pVertices[i].vPosition.z;
 	}
+
+	vSumPosition.x /= m_iNumVertices;
+	vSumPosition.y /= m_iNumVertices;
+	vSumPosition.z /= m_iNumVertices;
+
+	XMStoreFloat4x4(&m_localMatrix, XMMatrixTranslation(vSumPosition.x, vSumPosition.y, vSumPosition.z));
+
 
 	m_InitialData.pSysMem = pVertices;
 

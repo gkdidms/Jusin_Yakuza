@@ -41,6 +41,7 @@ HRESULT CConstruction::Initialize(void* pArg)
 		m_iObjectPropertyType = gameobjDesc->iObjPropertyType;
 		m_iNaviNum = gameobjDesc->iNaviNum;
 		m_iRouteNum = gameobjDesc->iRouteNum;
+		m_vOffsetMatrix = gameobjDesc->vOffsetMatrix;
 
 		for (int i = 0; i < gameobjDesc->iDecalNum; i++)
 		{
@@ -103,17 +104,37 @@ void CConstruction::Tick(const _float& fTimeDelta)
 
 void CConstruction::Late_Tick(const _float& fTimeDelta)
 {
+	bool bRender = false;
+	vector<CMesh*> Meshes = m_pModelCom->Get_Meshes();
+	_uint	iNumMeshes = m_pModelCom->Get_NumMeshes();
+
+	// vector 비워주고 시작
+	m_vRenderMeshIndexes.clear();
+
+	for (size_t i = 0; i < iNumMeshes; i++)
+	{
+		_float4x4 vLocalMatrix = Meshes[i]->Get_LocalMatrix();
+
+		XMVECTOR localPosition = XMVectorSet(vLocalMatrix._41, vLocalMatrix._42, vLocalMatrix._43, 1);
+
+		if (true == m_pGameInstance->isIn_LocalFrustum(localPosition, 5.f))
+		{
+			m_vRenderMeshIndexes.push_back(i);
+		}
+
+	}
+
+	/*for (auto& iter : m_vDecals)
+		iter->Late_Tick(fTimeDelta);*/
+
 	m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
 
-	for (auto& iter : m_vDecals)
-		iter->Late_Tick(fTimeDelta);
 }
 
 HRESULT CConstruction::Render()
 {
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
-
 
 	_uint	iNumMeshes = m_pModelCom->Get_NumMeshes();
 	vector<CMesh*> Meshes = m_pModelCom->Get_Meshes();
@@ -156,7 +177,53 @@ HRESULT CConstruction::Render()
 		m_pModelCom->Render(i);
 	}
 
+
+	//vector<CMesh*> Meshes = m_pModelCom->Get_Meshes();
+
+	//for (size_t i = 0; i < m_vRenderMeshIndexes.size(); i++)
+	//{
+	//	int		iMeshIndex = m_vRenderMeshIndexes[i];
+
+	//	if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_Texture", iMeshIndex, aiTextureType_DIFFUSE)))
+	//		return E_FAIL;
+
+	//	if (!strcmp(Meshes[iMeshIndex]->Get_Name(), "box4783"))
+	//	{
+	//		int a = 10;
+	//	}
+
+	//	/*m_pShaderCom->Begin(m_iShaderPassNum);*/
+
+	//	bool	bFindDecal = false;
+
+	//	if (true == m_bFindDecalMesh)
+	//	{
+	//		for (int j = 0; j < m_iDecalMeshCnt; j++)
+	//		{
+	//			if (m_pDecalMeshIndex[j] == iMeshIndex)
+	//			{
+	//				bFindDecal = true;
+	//			}
+	//		}
+	//	}
+
+	//	if (true == bFindDecal)
+	//	{
+
+	//		/* decal이 포함된 메쉬는 빨강색으로 */
+	//		m_pShaderCom->Begin(1);
+	//	}
+	//	else
+	//	{
+	//		m_pShaderCom->Begin(0);
+	//	}
+
+	//	m_pModelCom->Render(iMeshIndex);
+	//}
+
+
 #ifdef _DEBUG
+
 	for (auto& iter : m_vColliders)
 		m_pGameInstance->Add_DebugComponent(iter);
 #endif
@@ -208,8 +275,8 @@ int CConstruction::Get_ObjPlaceDesc(OBJECTPLACE_DESC* objplaceDesc)
 	}
 	
 	objplaceDesc->iNaviRoute = m_iRouteNum;
+	objplaceDesc->vOffsetTransform = m_vOffsetMatrix;
 	
-
 
 	/* Decal 추가 */
 	objplaceDesc->iDecalNum = m_vDecals.size();
@@ -247,6 +314,7 @@ CConstruction::MAPOBJ_DESC CConstruction::Get_MapObjDesc_For_AddList()
 	mapobjDesc.vStartPos = m_pTransformCom->Get_WorldMatrix();
 	mapobjDesc.wstrModelName = m_wstrModelName;
 	mapobjDesc.iShaderPass = m_iShaderPassNum;
+	mapobjDesc.vOffsetMatrix = m_vOffsetMatrix;
 
 	return mapobjDesc;
 }
@@ -258,6 +326,7 @@ void CConstruction::Edit_GameObject_Information(CConstruction::MAPOBJ_DESC mapDe
 	m_iObjectType = mapDesc.iObjType;
 	m_iObjectPropertyType = mapDesc.iObjPropertyType;
 	m_iRouteNum = mapDesc.iRouteNum;
+	m_vOffsetMatrix = mapDesc.vOffsetMatrix;
 }
 
 CConstruction::MAPOBJ_DESC CConstruction::Send_GameObject_Information()
@@ -269,6 +338,7 @@ CConstruction::MAPOBJ_DESC CConstruction::Send_GameObject_Information()
 	mapObjDesc.iObjType = m_iObjectType;
 	mapObjDesc.iObjPropertyType = m_iObjectPropertyType;
 	mapObjDesc.iRouteNum = m_iRouteNum;
+	mapObjDesc.vOffsetMatrix = m_vOffsetMatrix;
 
 	return mapObjDesc;
 }
@@ -418,7 +488,10 @@ HRESULT CConstruction::Bind_ShaderResources()
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_PROJ))))
 		return E_FAIL;
 
-	if (FAILED(m_pShaderCom->Bind_ValueFloat("g_fObjID", m_fObjID)))
+	if (FAILED(m_pShaderCom->Bind_ValueFloat("g_fObjID", m_iObjectIndex)))
+		return E_FAIL;
+
+	if (FAILED(m_pShaderCom->Bind_ValueFloat("g_fFar", *m_pGameInstance->Get_CamFar())))
 		return E_FAIL;
 
 	bool	bWrite;
@@ -482,4 +555,6 @@ void CConstruction::Free()
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pModelCom);
 
+
+	m_vRenderMeshIndexes.clear();
 }

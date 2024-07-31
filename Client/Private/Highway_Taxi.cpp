@@ -12,6 +12,11 @@ CHighway_Taxi::CHighway_Taxi(const CHighway_Taxi& rhs)
 {
 }
 
+void CHighway_Taxi::Set_NavigationRouteIndex(_uint iLine)
+{
+	m_pNavigationCom->Set_NavigationRouteIndex(iLine);
+}
+
 HRESULT CHighway_Taxi::Initialize_Prototype()
 {
 	return S_OK;
@@ -19,11 +24,22 @@ HRESULT CHighway_Taxi::Initialize_Prototype()
 
 HRESULT CHighway_Taxi::Initialize(void* pArg)
 {
+	if (nullptr == pArg)
+		return E_FAIL;
+
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
+	HIGHWAY_TEXI_DESC* gameobjDesc = (HIGHWAY_TEXI_DESC*)pArg;
+	m_pTransformCom->Set_WorldMatrix(gameobjDesc->vStartPos);
+	m_iNaviRouteNum = gameobjDesc->iNaviRouteNum;
+
 	if (FAILED(Add_Components()))
 		return E_FAIL;
+
+	m_pNavigationCom->Set_Index(gameobjDesc->iNaviNum);
+
+	m_pTransformCom->Set_WorldMatrix(XMMatrixIdentity());
 
 	return S_OK;
 }
@@ -36,7 +52,10 @@ void CHighway_Taxi::Tick(const _float& fTimeDelta)
 {
 	__super::Tick(fTimeDelta);
 
-	m_pModelCom->Play_Animation(fTimeDelta);
+	if (m_isObjectDead)
+		m_pModelCom->Play_Animation(fTimeDelta);
+
+	Move_Waypoint(fTimeDelta);
 }
 
 void CHighway_Taxi::Late_Tick(const _float& fTimeDelta)
@@ -73,6 +92,17 @@ void CHighway_Taxi::Change_Animation()
 {
 }
 
+void CHighway_Taxi::Move_Waypoint(const _float& fTimeDelta)
+{
+	_vector vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	//웨이포인트 
+	//_vector vDir = m_pNavigationCom->Compute_WayPointDir(vPosition);
+	//m_pTransformCom->LookAt_For_LandObject(vDir, true);
+
+	//_float fSpeed = 20.f;
+	//m_pTransformCom->Go_Straight_CustumSpeed(fSpeed, fTimeDelta, m_pNavigationCom);
+}
+
 HRESULT CHighway_Taxi::Add_Components()
 {
 	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Shader_VtxAnim"),
@@ -81,6 +111,13 @@ HRESULT CHighway_Taxi::Add_Components()
 
 	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Model_Taxi"),
 		TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
+		return E_FAIL;
+
+	CNavigation::NAVIGATION_DESC Desc{};
+	Desc.iCurrentLine = m_iNaviRouteNum;
+	Desc.vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Navigation"),
+		TEXT("Com_Navigation"), reinterpret_cast<CComponent**>(&m_pNavigationCom), &Desc)))
 		return E_FAIL;
 
 	return S_OK;
@@ -125,6 +162,8 @@ CGameObject* CHighway_Taxi::Clone(void* pArg)
 void CHighway_Taxi::Free()
 {
 	__super::Free();
+
+	Safe_Release(m_pNavigationCom);
 }
 
 string CHighway_Taxi::Get_CurrentAnimationName()

@@ -38,9 +38,6 @@ HRESULT CLevel_Street::Initialize()
 
 void CLevel_Street::Tick(const _float& fTimeDelta)
 {
-
-
-
 #ifdef _DEBUG
     SetWindowText(g_hWnd, TEXT("±æ°Å¸® ¸Ê"));
 #endif

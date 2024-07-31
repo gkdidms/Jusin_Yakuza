@@ -96,9 +96,9 @@ private:
 private:
 	vector<class CCell*>					m_Cells;
 
-	vector<int>								m_Route_CellIndexes; //현재 수정중이거나 만들고 있는 cell 번호
+	vector<ROUTE_IO>						m_Route_CellIndexes; // 루트관련 index
 
-	map<int, vector<int>>					m_Routes; // 현재 네비가 가지고 있는 루트와 그에 대한 cell index
+	map<int, vector<ROUTE_IO>>					m_Routes; // 현재 네비가 가지고 있는 루트와 그에 대한 cell index
 
 	static _float4x4						m_WorldMatrix; /* 객체들이 공유할 수 있게끔 static */
 
@@ -123,7 +123,7 @@ private:
 	_int									m_iCurrentFileRoute = { 0 }; // route의 번호
 
 	bool									m_bMakeRoute_IMGUI = { false };
-
+	bool									m_bMakeRoute_Picking = { false };
 
 public:
 	virtual void Free() override;

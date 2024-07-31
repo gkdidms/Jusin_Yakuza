@@ -96,6 +96,8 @@ HRESULT CPlayer::Initialize(void* pArg)
 	// 새로 생성할 때 마다 UI매니저에 본인을 Set해준다.
 	m_pUIManager->Set_Player(this);
 
+	On_Separation_Hand(0);			// 양손 분리 켜둠
+
 	return S_OK;
 }
 
@@ -176,12 +178,6 @@ void CPlayer::Tick(const _float& fTimeDelta)
 		
 	}
 
-	// 뼈 분리 테스트
-	if (m_pGameInstance->GetKeyState(DIK_N) == TAP)
-		m_iFaceAnimIndex--;
-	if (m_pGameInstance->GetKeyState(DIK_M) == TAP)
-		m_iFaceAnimIndex++;
-
 	if (m_pGameInstance->GetKeyState(DIK_C) == TAP)
 	{
 		m_pModelCom->Set_Separation_ParentBone("ude3_l_n", -1);
@@ -200,24 +196,32 @@ void CPlayer::Tick(const _float& fTimeDelta)
 
 	if (m_isAnimStart)
 	{
-		if (DEFAULT_ANIMAITION == m_eAnimComType)
+		if (DEFAULT == m_eAnimComType)
 		{
-			m_pModelCom->Play_Animation_Separation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")), 9, m_SeparationAnimComs[HAND_COM], false, (_int)HAND_COM);
+			m_pModelCom->Play_Animation_Separation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")), m_iHandAnimIndex, m_SeparationAnimComs[HAND_COM], false, (_int)HAND_COM);
+
 			m_pModelCom->Play_Animation_Separation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")), m_iFaceAnimIndex, m_SeparationAnimComs[FACE_COM], false, (_int)FACE_COM);
 			m_pModelCom->Play_Animation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")));
 		}
 		else
 		{
-			m_pModelCom->Play_Animation_Separation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")), 9, m_SeparationAnimComs[HAND_COM], false, (_int)HAND_COM);
+			m_pModelCom->Play_Animation_Separation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")), m_iHandAnimIndex, m_SeparationAnimComs[HAND_COM], false, (_int)HAND_COM);
+
 			m_pModelCom->Play_Animation_Separation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")), m_iFaceAnimIndex, m_SeparationAnimComs[FACE_COM], false, (_int)FACE_COM);
 			Play_CutScene();
 		}
 	}
 #else
 	if (DEFAULT_ANIMAITION == m_eAnimComType)
+	{
+		m_pModelCom->Play_Animation_Separation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")), m_iHandAnimIndex, m_SeparationAnimComs[HAND_COM], false, (_int)HAND_COM);
+		m_pModelCom->Play_Animation_Separation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")), m_iFaceAnimIndex, m_SeparationAnimComs[FACE_COM], false, (_int)FACE_COM);
 		m_pModelCom->Play_Animation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")));
+	}
 	else
 	{
+		m_pModelCom->Play_Animation_Separation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")), m_iHandAnimIndex, m_SeparationAnimComs[HAND_COM], false, (_int)HAND_COM);
+		m_pModelCom->Play_Animation_Separation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")), m_iFaceAnimIndex, m_SeparationAnimComs[FACE_COM], false, (_int)FACE_COM);
 		Play_CutScene();
 	}
 #endif // _DEBUG
@@ -251,7 +255,7 @@ void CPlayer::Late_Tick(const _float& fTimeDelta)
 	if (m_isObjectRender)
 	{
 		//m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
-		m_pGameInstance->Add_Renderer(CRenderer::RENDER_SHADOWOBJ, this); // Shadow용 렌더 추가
+		//m_pGameInstance->Add_Renderer(CRenderer::RENDER_SHADOWOBJ, this); // Shadow용 렌더 추가
 	}
 #else
 	m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
@@ -1496,7 +1500,8 @@ void CPlayer::Set_CutSceneAnim(CUTSCENE_ANIMATION_TYPE eType, _uint iFaceAnimInd
 
 	m_iFaceAnimIndex = iFaceAnimIndex;
 
-	On_Separation_Face();
+	On_Separation_Face();			// 얼굴 애니메이션 켜기
+	Off_Separation_Hand();			// 손 분리 애니메이션 끄기
 
 	string AnimName = (*iter).second;
 
@@ -1536,7 +1541,7 @@ void CPlayer::Set_CutSceneAnim(CUTSCENE_ANIMATION_TYPE eType, _uint iFaceAnimInd
 
 void CPlayer::Play_CutScene()
 {
-	if (CUTSCENE_ANIMATION == m_eAnimComType)
+	if (CUTSCENE == m_eAnimComType)
 	{
 		// 카메라 모델의 애니메이션이 종료되면 똑같이 플레이어의 애니메이션도 종료된 것이기 때문에 기존상태로 되돌린다.
 		if (m_pCameraModel->Get_AnimFinished())
@@ -1546,7 +1551,8 @@ void CPlayer::Play_CutScene()
 			m_iCurrentBehavior = 1;				// Idle상태로 되돌려둔다
 			Reset_CutSceneEvent();
 
-			Off_Separation_Face();
+			Off_Separation_Face();				// 컷신 종료 후 얼굴 애니메이션 종료
+			On_Separation_Hand();				// 컷신 종료 후 손 애니메이션 켜기
 
 			return;
 		}
@@ -1599,7 +1605,7 @@ void CPlayer::Reset_CutSceneEvent()
 	m_pAnimCom->Reset_Animation(m_iCutSceneAnimIndex);
 	m_pCameraModel->Reset_Animation(m_iCutSceneCamAnimIndex);
 
-	m_eAnimComType = (m_eAnimComType == DEFAULT_ANIMAITION ? CUTSCENE_ANIMATION : DEFAULT_ANIMAITION);
+	m_eAnimComType = (m_eAnimComType == DEFAULT ? CUTSCENE : DEFAULT);
 	m_pSystemManager->Set_Camera(CAMERA_CUTSCENE == m_pSystemManager->Get_Camera() ? CAMERA_PLAYER : CAMERA_CUTSCENE);
 }
 
@@ -1611,12 +1617,16 @@ void CPlayer::On_Separation_Hand(_uint iHandType)
 	case 0:		//양손
 		m_pModelCom->Set_Separation_ParentBone("ude3_r_n", (_int)HAND_COM);
 		m_pModelCom->Set_Separation_ParentBone("ude3_l_n", (_int)HAND_COM);
+		m_pModelCom->Set_Separation_SingleBone("ude3_r_n", -1);
+		m_pModelCom->Set_Separation_SingleBone("ude3_l_n", -1);
 		break;
 	case 1:		//왼손
 		m_pModelCom->Set_Separation_ParentBone("ude3_l_n", (_int)HAND_COM);
+		m_pModelCom->Set_Separation_SingleBone("ude3_l_n", -1);
 		break;
 	case 2:		//오른손
 		m_pModelCom->Set_Separation_ParentBone("ude3_r_n", (_int)HAND_COM);
+		m_pModelCom->Set_Separation_SingleBone("ude3_r_n", -1);
 		break;
 	}
 }

@@ -17,8 +17,11 @@ void CKiryu_KRS_BattleStart::Tick(const _float& fTimeDelta)
 
 void CKiryu_KRS_BattleStart::Change_Animation()
 {
-	if(ANIM_START == m_eAnimState)
+	if (ANIM_START == m_eAnimState)
+	{
 		m_pGameInstance->Set_TimeSpeed(TEXT("Timer_60"), 0.3f);
+		m_pPlayer->Off_Separation_Hand();
+	}
 	m_pPlayer->Change_Animation(m_AnimationIndices[m_eAnimState]);
 }
 

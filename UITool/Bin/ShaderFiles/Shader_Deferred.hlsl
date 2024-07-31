@@ -283,7 +283,7 @@ PS_OUT PS_MAIN_DEFERRED_RESULT(PS_IN In)
     PS_OUT Out = (PS_OUT) 0;
     
     vector vDiffuse = g_BackBufferTexture.Sample(LinearSampler, In.vTexcoord);
-   
+    
     Out.vColor = vDiffuse;
 
     return Out;
@@ -308,6 +308,14 @@ PS_OUT_GAMEOBJECT PS_INCLUDE_GLASS(PS_IN In)
     
     vector vNonBlendRS = g_RSTexture.Sample(LinearSampler, In.vTexcoord);
     vector vGlassRS = g_GlassRSTexture.Sample(LinearSampler, In.vTexcoord);
+    
+    vector vDecal = g_DecalTexture.Sample(LinearSampler, In.vTexcoord);
+    
+    if (vDecal.r != 0 && vDecal.g != 0 && vDecal.b != 0)
+    {
+        vDiffuseColor = lerp(vDiffuseColor, vDecal, vDecal.a);
+    }
+        
     
     
     if (vNonBlendDepth.r < vGlassDepth.r)
@@ -377,6 +385,29 @@ PS_OUT PS_ADD_PUDDLE(PS_IN In)
     return Out;
 }
 
+
+PS_OUT PS_MAIN_NonBlurNonLight_Final(PS_IN In)
+{
+    // NonLightNonBlur와 뒷배경 합치기
+    PS_OUT Out = (PS_OUT) 0;
+    
+    vector vNonLightNonBlur = g_NonLightNonBlurTexture.Sample(LinearSampler, In.vTexcoord);
+    
+    vector vFinal;
+    
+    if (0 != vNonLightNonBlur.r || 0 != vNonLightNonBlur.g || 0 != vNonLightNonBlur.b)
+    {
+        vFinal = vNonLightNonBlur;
+    }
+    else
+    {
+        discard;
+    }
+    
+    Out.vColor = vFinal;
+
+    return Out;
+}
 
 technique11 DefaultTechnique
 {
@@ -659,7 +690,8 @@ technique11 DefaultTechnique
         PixelShader = compile ps_5_0 PS_DISTORTION();
     }
 
-    pass Blur_X_SIGN //21
+
+    pass NonLightNonBlurFinal //21
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_None_Test_None_Write, 0);
@@ -669,19 +701,8 @@ technique11 DefaultTechnique
         GeometryShader = NULL;
         HullShader = NULL;
         DomainShader = NULL;
-        PixelShader = compile ps_5_0 PS_MAIN_BLUR_X_SIGN();
+        PixelShader = compile ps_5_0 PS_MAIN_NonBlurNonLight_Final();
     }
 
-    pass Blur_Y_SIGN //22
-    {
-        SetRasterizerState(RS_Default);
-        SetDepthStencilState(DSS_None_Test_None_Write, 0);
-        SetBlendState(BS_Default, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xffffffff);
 
-        VertexShader = compile vs_5_0 VS_MAIN_REVERSE();
-        GeometryShader = NULL;
-        HullShader = NULL;
-        DomainShader = NULL;
-        PixelShader = compile ps_5_0 PS_MAIN_BLUR_Y_SIGN();
-    }
 }
