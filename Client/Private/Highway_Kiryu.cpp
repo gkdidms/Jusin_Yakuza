@@ -197,10 +197,19 @@ void CHighway_Kiryu::Play_HideReload(_float fTimeDelta)
 
 void CHighway_Kiryu::Play_Hit(_float fTimeDelta)
 {
+
+
 }
 
 void CHighway_Kiryu::Play_Shot(_float fTimeDelta)
 {
+	// [31] [mngcar_c_car_gun_aiml_l_shot]
+	// [66] [mngcar_c_car_gun_aimr_r_shot]
+
+	m_pModelCom->Set_AnimationIndex((m_eBattleDirection == LEFT ? 31 : 66), 4.0f);
+
+	if (m_pModelCom->Get_AnimFinished())
+		m_eCurrentBehavior = AIMING;
 }
 
 void CHighway_Kiryu::Play_Swap(_float fTimeDelta)
