@@ -446,29 +446,23 @@
     <ClCompile Include="..\private\Level_Tutorial.cpp">
       <Filter>01.Levels\11.Tutorial</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\Highway.cpp">
-      <Filter>02.GameObjects\02.Character\LandObject\03.Highway</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\Highway_Van.cpp">
-      <Filter>02.GameObjects\02.Character\LandObject\03.Highway\00.Van</Filter>
+    <ClCompile Include="..\private\Reactor_Van.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\03.CarChase\00.Reactor\00.Van</Filter>
     </ClCompile>
     <ClCompile Include="..\private\CarChase_Monster.cpp">
-      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\CarChase</Filter>
+      <Filter>02.GameObjects\02.Character\LandObject\03.CarChase\01.Monster</Filter>
     </ClCompile>
     <ClCompile Include="..\private\CarChase_Van.cpp">
-      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\CarChase\00.Van</Filter>
+      <Filter>02.GameObjects\02.Character\LandObject\03.CarChase\01.Monster\00.Van</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\CarChase_Sedan.cpp">
-      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\CarChase\01.Sedan</Filter>
+      <Filter>02.GameObjects\02.Character\LandObject\03.CarChase\01.Monster\01.Sedan</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\CarChase_Bike.cpp">
-      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\CarChase\02.Bike</Filter>
+      <Filter>02.GameObjects\02.Character\LandObject\03.CarChase\01.Monster\02.Bike</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\CarChase_Heli.cpp">
-      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\CarChase\03.Heli</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\AI_CarChase.cpp">
-      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\CarChase\AI</Filter>
+      <Filter>02.GameObjects\02.Character\LandObject\03.CarChase\01.Monster\03.Heli</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\UISkillMenu.cpp">
       <Filter>95.Utility\05.UIManager\UIScene\UISkillMenu</Filter>
@@ -482,11 +476,8 @@
     <ClCompile Include="..\Private\UISkillDestroyer.cpp">
       <Filter>95.Utility\05.UIManager\UIScene\UISkillDestroyer</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Highway_Taxi.cpp">
-      <Filter>02.GameObjects\02.Character\LandObject\03.Highway\99.Highway_Player\Taxi</Filter>
-    </ClCompile>
-    <ClCompile Include="..\Private\Highway_Kiryu.cpp">
-      <Filter>02.GameObjects\02.Character\LandObject\03.Highway\99.Highway_Player\Kiryu</Filter>
+    <ClCompile Include="..\private\AI_Van.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\03.CarChase\01.Monster\00.Van\AI</Filter>
     </ClCompile>
     <ClCompile Include="..\private\CarChase_Reactor.cpp">
       <Filter>02.GameObjects\02.Character\LandObject\03.CarChase\00.Reactor</Filter>
@@ -503,7 +494,6 @@
     <ClCompile Include="..\private\Tutorial.cpp">
       <Filter>04.TutorialManager\Tutorial</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\AI_CarChase.cpp" />
     <ClCompile Include="..\Private\Map.cpp">
       <Filter>02.GameObjects\09.Map</Filter>
     </ClCompile>
@@ -512,6 +502,14 @@
     </ClCompile>
     <ClCompile Include="..\Private\Highway_Taxi.cpp">
       <Filter>02.GameObjects\02.Character\LandObject\03.CarChase\02.Taxi</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\AI_CarChase.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\03.CarChase\01.Monster\AI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\AI_CarChase.cpp" />
+    <ClCompile Include="..\Private\Highway_Taxi.cpp" />
+    <ClCompile Include="..\Private\Highway_Kiryu.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\03.CarChase\02.Taxi\Kiryu</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -990,29 +988,23 @@
     <ClInclude Include="..\public\Level_Tutorial.h">
       <Filter>01.Levels\11.Tutorial</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\Highway.h">
-      <Filter>02.GameObjects\02.Character\LandObject\03.Highway</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\Highway_Van.h">
-      <Filter>02.GameObjects\02.Character\LandObject\03.Highway\00.Van</Filter>
+    <ClInclude Include="..\public\Reactor_Van.h">
+      <Filter>02.GameObjects\02.Character\LandObject\03.CarChase\00.Reactor\00.Van</Filter>
     </ClInclude>
     <ClInclude Include="..\public\CarChase_Monster.h">
-      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\CarChase</Filter>
+      <Filter>02.GameObjects\02.Character\LandObject\03.CarChase\01.Monster</Filter>
     </ClInclude>
     <ClInclude Include="..\public\CarChase_Van.h">
-      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\CarChase\00.Van</Filter>
+      <Filter>02.GameObjects\02.Character\LandObject\03.CarChase\01.Monster\00.Van</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\CarChase_Sedan.h">
-      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\CarChase\01.Sedan</Filter>
+      <Filter>02.GameObjects\02.Character\LandObject\03.CarChase\01.Monster\01.Sedan</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\CarChase_Bike.h">
-      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\CarChase\02.Bike</Filter>
+      <Filter>02.GameObjects\02.Character\LandObject\03.CarChase\01.Monster\02.Bike</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\CarChase_Heli.h">
-      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\CarChase\03.Heli</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\AI_CarChase.h">
-      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\CarChase\AI</Filter>
+      <Filter>02.GameObjects\02.Character\LandObject\03.CarChase\01.Monster\03.Heli</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\UISkillMenu.h">
       <Filter>95.Utility\05.UIManager\UIScene\UISkillMenu</Filter>
@@ -1026,9 +1018,6 @@
     <ClInclude Include="..\Public\UISkillDestroyer.h">
       <Filter>95.Utility\05.UIManager\UIScene\UISkillDestroyer</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Highway_Taxi.h">
-      <Filter>02.GameObjects\02.Character\LandObject\03.Highway\04.Taxi</Filter>
-	</ClInclude>
     <ClInclude Include="..\public\AI_Van.h">
       <Filter>02.GameObjects\02.Character\LandObject\03.CarChase\01.Monster\00.Van\AI</Filter>
     </ClInclude>
@@ -1047,7 +1036,6 @@
     <ClInclude Include="..\public\Tutorial.h">
       <Filter>04.TutorialManager\Tutorial</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\AI_CarChase.h" />
     <ClInclude Include="..\Public\Map.h">
       <Filter>02.GameObjects\09.Map</Filter>
     </ClInclude>
@@ -1056,6 +1044,14 @@
     </ClInclude>
     <ClInclude Include="..\Public\Highway_Taxi.h">
       <Filter>02.GameObjects\02.Character\LandObject\03.CarChase\02.Taxi</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\AI_CarChase.h">
+      <Filter>02.GameObjects\02.Character\LandObject\03.CarChase\01.Monster\AI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\AI_CarChase.h" />
+    <ClInclude Include="..\Public\Highway_Taxi.h" />
+    <ClInclude Include="..\Public\Highway_Kiryu.h">
+      <Filter>02.GameObjects\02.Character\LandObject\03.CarChase\02.Taxi\Kiryu</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1499,21 +1495,6 @@
     <Filter Include="01.Levels\11.Tutorial">
       <UniqueIdentifier>{09b93e95-8641-4f86-aceb-8d96cd45c75e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\02.Character\LandObject\03.Highway">
-      <UniqueIdentifier>{5c299c28-69e6-4612-a808-f559d8352e9d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\02.Character\LandObject\03.Highway\00.Van">
-      <UniqueIdentifier>{355357f7-ed1a-4982-8e76-dd1cd27e8021}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\02.Character\LandObject\03.Highway\01.Sedan">
-      <UniqueIdentifier>{cd2a9c3e-82ef-44e2-a86f-7a252c85db14}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\02.Character\LandObject\03.Highway\02.Bike">
-      <UniqueIdentifier>{b8bf80a5-ef27-4fc2-b1fa-01936ccfc529}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\02.Character\LandObject\03.Highway\03.Heli">
-      <UniqueIdentifier>{1c4d10f5-23ed-49c5-82a2-615314583caf}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObjects\02.Character\LandObject\01.Monster\AI">
       <UniqueIdentifier>{7c984c39-25b1-4b6b-b10a-cd7e33117ecd}</UniqueIdentifier>
     </Filter>
@@ -1562,24 +1543,6 @@
     <Filter Include="02.GameObjects\02.Character\LandObject\01.Monster\Yoneda\AI">
       <UniqueIdentifier>{ce943862-3c8c-4c61-af0a-695062dd5489}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\02.Character\LandObject\01.Monster\CarChase">
-      <UniqueIdentifier>{ba7b5d54-d38c-4a61-a058-4019de228d4e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\02.Character\LandObject\01.Monster\CarChase\00.Van">
-      <UniqueIdentifier>{f12cbf91-6f9d-4e42-b239-726a53c4cbc4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\02.Character\LandObject\01.Monster\CarChase\01.Sedan">
-      <UniqueIdentifier>{998a36e7-c76f-411d-b88d-b70b65ba85e7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\02.Character\LandObject\01.Monster\CarChase\02.Bike">
-      <UniqueIdentifier>{8fe3393b-936e-4ed0-9e7d-49da5b00a861}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\02.Character\LandObject\01.Monster\CarChase\03.Heli">
-      <UniqueIdentifier>{a93d07bc-b9d2-40b6-b646-d43ef43d4154}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\02.Character\LandObject\01.Monster\CarChase\AI">
-      <UniqueIdentifier>{8fa27eed-db8e-461f-9d6b-fb07e3a771d3}</UniqueIdentifier>
-    </Filter>
     <Filter Include="95.Utility\05.UIManager\UIScene\UISkillMenu">
       <UniqueIdentifier>{0ab17753-4bbc-4a85-bd25-2aadad5a276c}</UniqueIdentifier>
     </Filter>
@@ -1592,14 +1555,68 @@
     <Filter Include="95.Utility\05.UIManager\UIScene\UISkillDestroyer">
       <UniqueIdentifier>{fd65e228-ee0b-4ff4-ba2b-248b93e87aa2}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\02.Character\LandObject\03.Highway\99.Highway_Player">
-      <UniqueIdentifier>{63f446de-7647-4829-8120-1135ce7b8f02}</UniqueIdentifier>
+    <Filter Include="05.CarChaseManager">
+      <UniqueIdentifier>{fcea56b4-7172-49b8-87b8-180ce5856b11}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\02.Character\LandObject\03.Highway\99.Highway_Player\Taxi">
+    <Filter Include="05.CarChaseManager\CarChase">
+      <UniqueIdentifier>{a353c1ee-691f-4f56-9f2c-1d1c1a238879}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.Camera\03.CarChaseCamera">
+      <UniqueIdentifier>{bff01ef7-0f0f-4e43-95f0-363f4db71b0e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04.TutorialManager\Tutorial">
+      <UniqueIdentifier>{6c80e3f7-9417-4acb-93c2-c3ede27f4567}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\09.Map">
+      <UniqueIdentifier>{496fa44a-4681-459c-b144-eb9fc5553389}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\10.Item">
+      <UniqueIdentifier>{dd3a40b8-36dc-4a84-9d0d-1d9478345039}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\03.CarChase">
+      <UniqueIdentifier>{5c299c28-69e6-4612-a808-f559d8352e9d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\03.CarChase\01.Monster">
+      <UniqueIdentifier>{ba7b5d54-d38c-4a61-a058-4019de228d4e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\03.CarChase\01.Monster\00.Van">
+      <UniqueIdentifier>{f12cbf91-6f9d-4e42-b239-726a53c4cbc4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\03.CarChase\01.Monster\00.Van\AI">
+      <UniqueIdentifier>{eb3f330d-77d2-4b95-a824-c5881a03170d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\03.CarChase\01.Monster\01.Sedan">
+      <UniqueIdentifier>{998a36e7-c76f-411d-b88d-b70b65ba85e7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\03.CarChase\01.Monster\02.Bike">
+      <UniqueIdentifier>{8fe3393b-936e-4ed0-9e7d-49da5b00a861}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\03.CarChase\01.Monster\03.Heli">
+      <UniqueIdentifier>{a93d07bc-b9d2-40b6-b646-d43ef43d4154}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\03.CarChase\01.Monster\AI">
+      <UniqueIdentifier>{8fa27eed-db8e-461f-9d6b-fb07e3a771d3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\03.CarChase\00.Reactor">
+      <UniqueIdentifier>{c1f4a0f8-02ee-484c-8f34-10bc0d936f5b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\03.CarChase\00.Reactor\03.Heli">
+      <UniqueIdentifier>{1c4d10f5-23ed-49c5-82a2-615314583caf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\03.CarChase\00.Reactor\00.Van">
+      <UniqueIdentifier>{355357f7-ed1a-4982-8e76-dd1cd27e8021}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\03.CarChase\00.Reactor\01.Sedan">
+      <UniqueIdentifier>{cd2a9c3e-82ef-44e2-a86f-7a252c85db14}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\03.CarChase\00.Reactor\02.Bike">
+      <UniqueIdentifier>{b8bf80a5-ef27-4fc2-b1fa-01936ccfc529}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\03.CarChase\02.Taxi">
       <UniqueIdentifier>{eae66a81-9be8-4e33-ab79-2ff998391627}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\02.Character\LandObject\03.Highway\99.Highway_Player\Kiryu">
-      <UniqueIdentifier>{95ff6aa6-d7b3-424d-933d-13220360e208}</UniqueIdentifier>
+    <Filter Include="02.GameObjects\02.Character\LandObject\03.CarChase\02.Taxi\Kiryu">
+      <UniqueIdentifier>{914ed9ac-0d7a-4cc1-9dac-4ababdfced3a}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
