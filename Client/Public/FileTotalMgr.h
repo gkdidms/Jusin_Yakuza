@@ -32,6 +32,8 @@ public:
 		MAP,
 		MONSTER_WPH,
 		MONSTER_DEFAULT,
+		MAP_NONCULL, // MAP이랑 같은 클래스지만 컬링 안들어감(통MESH)
+		MAP_LOCALCULL,
 		OBJ_END
 	};
 

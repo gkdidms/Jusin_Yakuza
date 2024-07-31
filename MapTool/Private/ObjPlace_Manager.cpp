@@ -690,6 +690,18 @@ void CObjPlace_Manager::Edit_Installed_GameObject(int iNumObject)
 		m_tCurrentObjectDesc.iObjType = (int)OBJECT_TYPE::MONSTER_DEFAULT;
 	}
 
+	if (ImGui::RadioButton(u8"MAP_NONCULL", m_tCurrentObjectDesc.iObjType == 16))
+	{
+		objectType = 16;
+		m_tCurrentObjectDesc.iObjType = (int)OBJECT_TYPE::MAP_NONCULL;
+	}
+
+	if (ImGui::RadioButton(u8"MAP_LOCALCULL", m_tCurrentObjectDesc.iObjType == 17))
+	{
+		objectType = 17;
+		m_tCurrentObjectDesc.iObjType = (int)OBJECT_TYPE::MAP_LOCALCULL;
+	}
+
 	ImGui::NewLine();
 
 	ImGui::Text(u8"Ω¶¿Ã¥ı");
@@ -967,7 +979,7 @@ void CObjPlace_Manager::Set_Map_Object()
 {
 	ImGui::Text(u8"LayerTag ¿Ã∏ß");
 
-	const char* pLayerArray[] = { "Map0", "Map1", "Character", "Map2", "Map3"};
+	const char* pLayerArray[] = { "Map0", "Map1", "Character", "Map2", "Map3", "Karaoke" };
 	static int folder_current_idx = 0;
 	if (ImGui::BeginListBox("listbox 1"))
 	{
@@ -1068,6 +1080,23 @@ void CObjPlace_Manager::Set_Map_Object()
 			ImGui::EndListBox();
 		}
 	}
+	if (5 == folder_current_idx)
+	{
+
+		if (ImGui::BeginListBox(u8"∞°∂Ûø¿ƒ…"))
+		{
+			for (int n = 0; n < m_ObjectNames_MapKaraoke.size(); n++)
+			{
+				const bool is_selected = (object_current_idx == n);
+				if (ImGui::Selectable(m_ObjectNames_MapKaraoke[n], is_selected))
+					object_current_idx = n;
+
+				if (is_selected)
+					ImGui::SetItemDefaultFocus();
+			}
+			ImGui::EndListBox();
+		}
+	}
 
 	ImGui::NewLine();
 
@@ -1100,6 +1129,8 @@ void CObjPlace_Manager::Set_Map_Object()
 	ImGui::RadioButton(u8"∏ ", &objectType, OBJECT_TYPE::MAP);
 	ImGui::RadioButton(u8"∏ÛΩ∫≈Õ - WPH", &objectType, OBJECT_TYPE::MONSTER_WPH);
 	ImGui::RadioButton(u8"∏ÛΩ∫≈Õ - Default", &objectType, OBJECT_TYPE::MONSTER_DEFAULT);
+	ImGui::RadioButton(u8"∏  - NONCULL", &objectType, OBJECT_TYPE::MAP_NONCULL);
+	ImGui::RadioButton(u8"∏  - LOCALCULL", &objectType, OBJECT_TYPE::MAP_LOCALCULL);
 
 	ImGui::NewLine();
 
@@ -1325,6 +1356,20 @@ void CObjPlace_Manager::Load_ModelName()
 		char* cfilename = new char[MAX_PATH];
 		strcpy(cfilename, StringToCharDIY(modifiedString));
 		m_ObjectNames_Map3.push_back(cfilename);
+	}
+
+	vObjectNames.clear();
+
+	/* map2 ∏µ® ∑ŒµÂ*/
+	m_pGameInstance->Get_FileNames("../../Client/Bin/Resources/Models/NonAnim/Map/KaraokeMap/Bin", vObjectNames);
+
+	for (int i = 0; i < vObjectNames.size(); i++)
+	{
+		string modifiedString = modifyString(vObjectNames[i]);
+
+		char* cfilename = new char[MAX_PATH];
+		strcpy(cfilename, StringToCharDIY(modifiedString));
+		m_ObjectNames_MapKaraoke.push_back(cfilename);
 	}
 
 }
@@ -1601,6 +1646,10 @@ string CObjPlace_Manager::Find_ModelName(_uint iFolderNum, _uint iObjectIndex)
 	else if (4 == iFolderNum)
 	{
 		strResult = m_ObjectNames_Map3[iObjectIndex];
+	}
+	else if (5 == iFolderNum)
+	{
+		strResult = m_ObjectNames_MapKaraoke[iObjectIndex];
 	}
 	return strResult;
 }
@@ -2377,6 +2426,10 @@ void CObjPlace_Manager::Free()
 	for (auto& iter : m_ObjectNames_Map3)
 		Safe_Delete(iter);
 	m_ObjectNames_Map3.clear();
+
+	for (auto& iter : m_ObjectNames_MapKaraoke)
+		Safe_Delete(iter);
+	m_ObjectNames_MapKaraoke.clear();
 
 	for (auto& iter : m_MonsterNames)
 		Safe_Delete(iter);
