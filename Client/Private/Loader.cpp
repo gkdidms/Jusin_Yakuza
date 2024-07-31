@@ -24,6 +24,7 @@
 #pragma region CarChase
 #pragma region Player
 #include "Highway_Taxi.h"
+#include "Highway_Kiryu.h"
 #pragma endregion
 
 #pragma region Monster
@@ -955,6 +956,11 @@ HRESULT CLoader::Loading_For_Test()
 	/* For.Prototype_GameObject_Taxi (For.Player) */
 	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Taxi"),
 		CHighway_Taxi::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_CarChase_Kiryu (For.Player) */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_CarChase_Kiryu"),
+		CHighway_Kiryu::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 #pragma endregion
 
