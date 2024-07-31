@@ -229,7 +229,9 @@ void CNavigation::Find_WayPointIndex(_vector vPosition)
     {
         _float fDistance = XMVectorGetX(XMVector3Length(XMLoadFloat4(&vWayPoint.vPosition) - vPosition));
 
-        if (fMinDistance != 0.f || fMinDistance >= fDistance)
+        ++iIndex;
+
+        if (fMinDistance == 0.f || fMinDistance >= fDistance)
         {
             if (iIndex >= m_Routes[m_iCurrentLine].size())
                 iIndex = 0;
@@ -237,8 +239,6 @@ void CNavigation::Find_WayPointIndex(_vector vPosition)
             m_iCurrentWayPointIndex = iIndex;
             fMinDistance = fDistance;
         }
-            
-        ++iIndex;
     }
 }
 

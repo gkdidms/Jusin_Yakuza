@@ -43,6 +43,8 @@ HRESULT CMap::Initialize(void* pArg)
 		m_wstrModelName = gameobjDesc->wstrModelName;
 		m_iShaderPassNum = gameobjDesc->iShaderPass;
 		m_iObjectType = gameobjDesc->iObjType;
+		m_bCull = gameobjDesc->bCull;
+		m_bLocalCull = gameobjDesc->bLocalCull;
 
 		for (int i = 0; i < gameobjDesc->iDecalNum; i++)
 		{
@@ -133,53 +135,103 @@ void CMap::Late_Tick(const _float& fTimeDelta)
 		XMVECTOR worldPos = XMVectorZero();
 		worldPos = XMVector3Transform(localPos, m_pTransformCom->Get_WorldMatrix());
 
-		if (true == m_pGameInstance->isIn_WorldFrustum(worldPos, 20.f))
+		if (false == m_bCull && false == m_bLocalCull)
 		{
-		
+			// 컬링안함
+			if (0 == strcmp(Meshes[i]->Get_Name(), "DEFAULTMESH"))
+			{
+				m_vRenderDefaulMeshIndex.push_back(i);
+			}
+			else if (0 == strcmp(Meshes[i]->Get_Name(), "GLASSMESH"))
+			{
+				m_vRenderGlassMeshIndex.push_back(i);
+			}
+			else if (0 == strcmp(Meshes[i]->Get_Name(), "DECALMESH"))
+			{
+				m_vDecalMeshIndex.push_back(i);
+			}
+			else if (0 == strcmp(Meshes[i]->Get_Name(), "DECALLIGHTMESH"))
+			{
+				m_vDecalLightMeshIndex.push_back(i);
+			}
+			else if (0 == strcmp(Meshes[i]->Get_Name(), "SIGNMESH"))
+			{
+				m_vSignMeshIndex.push_back(i);
+			}
+			else if (0 == strcmp(Meshes[i]->Get_Name(), "LAMPMESH"))
+			{
+				// Nonblend + effect 둘 다 호출
+				m_vLampMeshIndex.push_back(i);
+			}
+			else if (0 == strcmp(Meshes[i]->Get_Name(), "DECALBLENDMESH"))
+			{
+				m_vDecalBlendMeshIndex.push_back(i);
+			}
+			else if (0 == strcmp(Meshes[i]->Get_Name(), "BLOOMMESH"))
+			{
+				m_vBloomIndex.push_back(i);
+			}
+			else if (0 == strcmp(Meshes[i]->Get_Name(), "MASKSIGNMESH"))
+			{
+				m_vMaskSignIndex.push_back(i);
+			}
+			else
+			{
+				// mesh 안합쳐놓으면 그냥 default로 처리
+				m_vRenderDefaulMeshIndex.push_back(i);
+			}
+		}
+		else if(false == m_bLocalCull)
+		{
+			// 컬링
+			if (true == m_pGameInstance->isIn_WorldFrustum(worldPos, 25.f))
+			{
+				// 컬링안함
+				if (0 == strcmp(Meshes[i]->Get_Name(), "DEFAULTMESH"))
+				{
+					m_vRenderDefaulMeshIndex.push_back(i);
+				}
+				else if (0 == strcmp(Meshes[i]->Get_Name(), "GLASSMESH"))
+				{
+					m_vRenderGlassMeshIndex.push_back(i);
+				}
+				else if (0 == strcmp(Meshes[i]->Get_Name(), "DECALMESH"))
+				{
+					m_vDecalMeshIndex.push_back(i);
+				}
+				else if (0 == strcmp(Meshes[i]->Get_Name(), "DECALLIGHTMESH"))
+				{
+					m_vDecalLightMeshIndex.push_back(i);
+				}
+				else if (0 == strcmp(Meshes[i]->Get_Name(), "SIGNMESH"))
+				{
+					m_vSignMeshIndex.push_back(i);
+				}
+				else if (0 == strcmp(Meshes[i]->Get_Name(), "LAMPMESH"))
+				{
+					// Nonblend + effect 둘 다 호출
+					m_vLampMeshIndex.push_back(i);
+				}
+				else if (0 == strcmp(Meshes[i]->Get_Name(), "DECALBLENDMESH"))
+				{
+					m_vDecalBlendMeshIndex.push_back(i);
+				}
+				else if (0 == strcmp(Meshes[i]->Get_Name(), "BLOOMMESH"))
+				{
+					m_vBloomIndex.push_back(i);
+				}
+				else if (0 == strcmp(Meshes[i]->Get_Name(), "MASKSIGNMESH"))
+				{
+					m_vMaskSignIndex.push_back(i);
+				}
+				else
+				{
+					// mesh 안합쳐놓으면 그냥 default로 처리
+					m_vRenderDefaulMeshIndex.push_back(i);
+				}
+			}
 		}
 
-		if (0 == strcmp(Meshes[i]->Get_Name(), "DEFAULTMESH"))
-		{
-			m_vRenderDefaulMeshIndex.push_back(i);
-		}
-		else if (0 == strcmp(Meshes[i]->Get_Name(), "GLASSMESH"))
-		{
-			m_vRenderGlassMeshIndex.push_back(i);
-		}
-		else if (0 == strcmp(Meshes[i]->Get_Name(), "DECALMESH"))
-		{
-			m_vDecalMeshIndex.push_back(i);
-		}
-		else if (0 == strcmp(Meshes[i]->Get_Name(), "DECALLIGHTMESH"))
-		{
-			m_vDecalLightMeshIndex.push_back(i);
-		}
-		else if (0 == strcmp(Meshes[i]->Get_Name(), "SIGNMESH"))
-		{
-			m_vSignMeshIndex.push_back(i);
-		}
-		else if (0 == strcmp(Meshes[i]->Get_Name(), "LAMPMESH"))
-		{
-			// Nonblend + effect 둘 다 호출
-			m_vLampMeshIndex.push_back(i);
-		}
-		else if (0 == strcmp(Meshes[i]->Get_Name(), "DECALBLENDMESH"))
-		{
-			m_vDecalBlendMeshIndex.push_back(i);
-		}
-		else if (0 == strcmp(Meshes[i]->Get_Name(), "BLOOMMESH"))
-		{
-			m_vBloomIndex.push_back(i);
-		}
-		else if (0 == strcmp(Meshes[i]->Get_Name(), "MASKSIGNMESH"))
-		{
-			m_vMaskSignIndex.push_back(i);
-		}
-		else
-		{
-			// mesh 안합쳐놓으면 그냥 default로 처리
-			m_vRenderDefaulMeshIndex.push_back(i);
-		}
 
 	}
 

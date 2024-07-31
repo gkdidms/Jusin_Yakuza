@@ -725,7 +725,7 @@ void CRenderer::Clear()
 {
 	for (size_t i = 0; i < RENDER_END; i++)
 	{
-		for (auto& pGameObject : m_RenderObject[i])
+  		for (auto& pGameObject : m_RenderObject[i])
 			Safe_Release(pGameObject);
 
 		m_RenderObject[i].clear();

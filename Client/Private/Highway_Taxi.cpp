@@ -96,11 +96,11 @@ void CHighway_Taxi::Move_Waypoint(const _float& fTimeDelta)
 {
 	_vector vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 	//웨이포인트 
-	_vector vDir = m_pNavigationCom->Compute_WayPointDir(vPosition);
-	m_pTransformCom->LookAt_For_LandObject(vDir, true);
+	//_vector vDir = m_pNavigationCom->Compute_WayPointDir(vPosition);
+	//m_pTransformCom->LookAt_For_LandObject(vDir, true);
 
-	_float fSpeed = 20.f;
-	m_pTransformCom->Go_Straight_CustumSpeed(fSpeed, fTimeDelta, m_pNavigationCom);
+	//_float fSpeed = 20.f;
+	//m_pTransformCom->Go_Straight_CustumSpeed(fSpeed, fTimeDelta, m_pNavigationCom);
 }
 
 HRESULT CHighway_Taxi::Add_Components()
