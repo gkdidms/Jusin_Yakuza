@@ -44,7 +44,11 @@ public:
 		SHADER_BLOOM_WHITE, //7
 		SHADER_SIGN_MASK, //8
 		SHADER_STRONGBLOOM, //9
-		SHADER_LIGHTDEPTH, //10
+		SHADER_COMPULSORY_DECALBLEND, //10
+
+
+		// 무조건 제일 아래
+		SHADER_LIGHTDEPTH, //11
 		SHADER_END
 	};
 
@@ -114,6 +118,7 @@ private:
 	vector<int>				m_vMaskSignIndex;
 	vector<int>				m_vDynamicSignIndex;
 	vector<int>				m_vStrongBloomIndex;
+	vector<int>				m_vCompulsoryDecalBlendMeshIndex;
 
 	_int					m_iLayerNum;
 	wstring					m_wstrModelName;

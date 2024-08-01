@@ -125,6 +125,7 @@ void CMap::Late_Tick(const _float& fTimeDelta)
 	m_vMaskSignIndex.clear();
 	m_vDynamicSignIndex.clear();
 	m_vStrongBloomIndex.clear();
+	m_vCompulsoryDecalBlendMeshIndex.clear();
 
 	vector<CMesh*> Meshes = m_pModelCom->Get_Meshes();
 	_uint	iNumMeshes = m_pModelCom->Get_NumMeshes();
@@ -137,51 +138,65 @@ void CMap::Late_Tick(const _float& fTimeDelta)
 		XMVECTOR worldPos = XMVectorZero();
 		worldPos = XMVector3Transform(localPos, m_pTransformCom->Get_WorldMatrix());
 
+		string meshName = Meshes[i]->Get_Name();
+
+		// 점 위치 찾기
+		size_t dotPos = meshName.find('.');
+
+		// 점이 있으면 점 이전 부분을 추출하고, 없으면 전체 문자열을 사용
+		string baseName = (dotPos != string::npos) ? meshName.substr(0, dotPos) : meshName;
+
+		const char* baseNameCStr = baseName.c_str();
+
 		if (false == m_bCull && false == m_bLocalCull)
 		{
 			// 컬링안함
-			if (0 == strcmp(Meshes[i]->Get_Name(), "DEFAULTMESH"))
+			if (0 == strcmp(baseNameCStr, "DEFAULTMESH"))
 			{
 				m_vRenderDefaulMeshIndex.push_back(i);
 			}
-			else if (0 == strcmp(Meshes[i]->Get_Name(), "GLASSMESH"))
+			else if (0 == strcmp(baseNameCStr, "GLASSMESH"))
 			{
 				m_vRenderGlassMeshIndex.push_back(i);
 			}
-			else if (0 == strcmp(Meshes[i]->Get_Name(), "DECALMESH"))
+			else if (0 == strcmp(baseNameCStr, "DECALMESH"))
 			{
 				m_vDecalMeshIndex.push_back(i);
 			}
-			else if (0 == strcmp(Meshes[i]->Get_Name(), "DECALLIGHTMESH"))
+			else if (0 == strcmp(baseNameCStr, "DECALLIGHTMESH"))
 			{
 				m_vDecalLightMeshIndex.push_back(i);
 			}
-			else if (0 == strcmp(Meshes[i]->Get_Name(), "SIGNMESH"))
+			else if (0 == strcmp(baseNameCStr, "SIGNMESH"))
 			{
 				m_vSignMeshIndex.push_back(i);
 			}
-			else if (0 == strcmp(Meshes[i]->Get_Name(), "LAMPMESH"))
+			else if (0 == strcmp(baseNameCStr, "LAMPMESH"))
 			{
 				// Nonblend + effect 둘 다 호출
 				m_vLampMeshIndex.push_back(i);
 			}
-			else if (0 == strcmp(Meshes[i]->Get_Name(), "DECALBLENDMESH"))
+			else if (0 == strcmp(baseNameCStr, "DECALBLENDMESH"))
 			{
 				m_vDecalBlendMeshIndex.push_back(i);
 			}
-			else if (0 == strcmp(Meshes[i]->Get_Name(), "BLOOMMESH"))
+			else if (0 == strcmp(baseNameCStr, "BLOOMMESH"))
 			{
 				m_vBloomIndex.push_back(i);
 			}
-			else if (0 == strcmp(Meshes[i]->Get_Name(), "MASKSIGNMESH"))
+			else if (0 == strcmp(baseNameCStr, "MASKSIGNMESH"))
 			{
 				m_vMaskSignIndex.push_back(i);
 			}
-			else if (0 == strcmp(Meshes[i]->Get_Name(), "STRONGBLOOM"))
+			else if (0 == strcmp(baseNameCStr, "STRONGBLOOM"))
 			{
 				m_vStrongBloomIndex.push_back(i);
 			}
-			else if (strstr(Meshes[i]->Get_Name(), "DYNAMICSIGN") != nullptr)
+			else if (0 == strcmp(baseNameCStr, "COMBLENDDECAL"))
+			{
+				m_vCompulsoryDecalBlendMeshIndex.push_back(i);
+			}
+			else if (strstr(baseNameCStr, "DYNAMICSIGN") != nullptr)
 			{
 				m_vDynamicSignIndex.push_back(i);
 			}
@@ -202,48 +217,52 @@ void CMap::Late_Tick(const _float& fTimeDelta)
 			if (true == m_pGameInstance->isIn_WorldFrustum(worldPos, fScale))
 			{
 				// 컬링안함
-				if (0 == strcmp(Meshes[i]->Get_Name(), "DEFAULTMESH"))
+				if (0 == strcmp(baseNameCStr, "DEFAULTMESH"))
 				{
 					m_vRenderDefaulMeshIndex.push_back(i);
 				}
-				else if (0 == strcmp(Meshes[i]->Get_Name(), "GLASSMESH"))
+				else if (0 == strcmp(baseNameCStr, "GLASSMESH"))
 				{
 					m_vRenderGlassMeshIndex.push_back(i);
 				}
-				else if (0 == strcmp(Meshes[i]->Get_Name(), "DECALMESH"))
+				else if (0 == strcmp(baseNameCStr, "DECALMESH"))
 				{
 					m_vDecalMeshIndex.push_back(i);
 				}
-				else if (0 == strcmp(Meshes[i]->Get_Name(), "DECALLIGHTMESH"))
+				else if (0 == strcmp(baseNameCStr, "DECALLIGHTMESH"))
 				{
 					m_vDecalLightMeshIndex.push_back(i);
 				}
-				else if (0 == strcmp(Meshes[i]->Get_Name(), "SIGNMESH"))
+				else if (0 == strcmp(baseNameCStr, "SIGNMESH"))
 				{
 					m_vSignMeshIndex.push_back(i);
 				}
-				else if (0 == strcmp(Meshes[i]->Get_Name(), "LAMPMESH"))
+				else if (0 == strcmp(baseNameCStr, "LAMPMESH"))
 				{
 					// Nonblend + effect 둘 다 호출
 					m_vLampMeshIndex.push_back(i);
 				}
-				else if (0 == strcmp(Meshes[i]->Get_Name(), "DECALBLENDMESH"))
+				else if (0 == strcmp(baseNameCStr, "DECALBLENDMESH"))
 				{
 					m_vDecalBlendMeshIndex.push_back(i);
 				}
-				else if (0 == strcmp(Meshes[i]->Get_Name(), "BLOOMMESH"))
+				else if (0 == strcmp(baseNameCStr, "BLOOMMESH"))
 				{
 					m_vBloomIndex.push_back(i);
 				}
-				else if (0 == strcmp(Meshes[i]->Get_Name(), "MASKSIGNMESH"))
+				else if (0 == strcmp(baseNameCStr, "MASKSIGNMESH"))
 				{
 					m_vMaskSignIndex.push_back(i);
 				}
-				else if (0 == strcmp(Meshes[i]->Get_Name(), "STRONGBLOOM"))
+				else if (0 == strcmp(baseNameCStr, "STRONGBLOOM"))
 				{
 					m_vStrongBloomIndex.push_back(i);
 				}
-				else if (strstr(Meshes[i]->Get_Name(), "DYNAMICSIGN") != nullptr)
+				else if (0 == strcmp(baseNameCStr, "COMBLENDDECAL"))
+				{
+					m_vCompulsoryDecalBlendMeshIndex.push_back(i);
+				}
+				else if (strstr(baseNameCStr, "DYNAMICSIGN") != nullptr)
 				{
 					m_vDynamicSignIndex.push_back(i);
 				}
@@ -286,7 +305,7 @@ void CMap::Late_Tick(const _float& fTimeDelta)
 	if (0 < m_vDecalLightMeshIndex.size() || 0 < m_vLampMeshIndex.size())
 		m_pGameInstance->Add_Renderer(CRenderer::RENDER_EFFECT, this);
 
-	if (0 < m_vDecalBlendMeshIndex.size() || 0 < m_vDecalMeshIndex.size())
+	if (0 < m_vDecalBlendMeshIndex.size() || 0 < m_vDecalMeshIndex.size() || 0 < m_vCompulsoryDecalBlendMeshIndex.size())
 		m_pGameInstance->Add_Renderer(CRenderer::RENDER_DECAL, this);
 
 	// 빛 영향 안받고 원색값 유지
@@ -806,6 +825,18 @@ HRESULT CMap::Render()
 
 			m_pModelCom->Render(i);
 		}
+
+		for (size_t k = 0; k < m_vCompulsoryDecalBlendMeshIndex.size(); k++)
+		{
+			int		i = m_vCompulsoryDecalBlendMeshIndex[k];
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
+				return E_FAIL;
+
+			m_pShaderCom->Begin(SHADER_COMPULSORY_DECALBLEND);
+
+			m_pModelCom->Render(i);
+		}
 	}
 	
 #pragma endregion
@@ -1067,6 +1098,7 @@ void CMap::Free()
 	m_vMaskSignIndex.clear();
 	m_vDynamicSignIndex.clear();
 	m_vStrongBloomIndex.clear();
+	m_vCompulsoryDecalBlendMeshIndex.clear();
 
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pModelCom);
