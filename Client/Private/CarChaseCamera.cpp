@@ -1,5 +1,6 @@
 #include "CarChaseCamera.h"
 
+#include "GameInstance.h"
 #include "SystemManager.h"
 
 CCarChaseCamera::CCarChaseCamera(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -29,7 +30,10 @@ HRESULT CCarChaseCamera::Initialize(void* pArg)
 	CARCHASE_CAMERA_DESC* pDesc = static_cast<CARCHASE_CAMERA_DESC*>(pArg);
 	m_fSensor = pDesc->fSensor;
 	m_pPlayerMatrix = pDesc->pPlayerMatrix;
-	
+
+	XMStoreFloat4x4(&m_OrbitMatrix, XMMatrixIdentity());
+	XMStoreFloat4x4(&m_LookMatrix, XMMatrixIdentity());
+
 	return S_OK;
 }
 
@@ -41,19 +45,57 @@ void CCarChaseCamera::Tick(const _float& fTimeDelta)
 {
 	if (m_pSystemManager->Get_Camera() != CAMERA_CARCHASE) return;
 	
-	m_pTransformCom->LookAt(XMLoadFloat4((_float4*)& m_pPlayerMatrix->m[3]));
-	XMStoreFloat4x4(&m_WorldMatrix, m_pTransformCom->Get_WorldMatrix() * XMLoadFloat4x4(m_pPlayerMatrix));
+	_vector vPlayerPos = XMLoadFloat4x4(m_pPlayerMatrix).r[3];
 
-	__super::Tick(fTimeDelta, false);
+	//Adjust_Camera_Angle();
+
+	_float4 vCameraPosition;
+	vCameraPosition.x = XMVectorGetX(vPlayerPos) + cosf(XMConvertToRadians(m_fCamAngleY)) * cosf(XMConvertToRadians(m_fCamAngleX)) * m_fCamDistance,
+	vCameraPosition.y = XMVectorGetY(vPlayerPos) + m_fCamDistance * sinf(XMConvertToRadians(m_fCamAngleX)) + 2.f;
+	vCameraPosition.z = XMVectorGetZ(vPlayerPos) + sinf(XMConvertToRadians(m_fCamAngleY)) * cosf(XMConvertToRadians(m_fCamAngleX)),
+	vCameraPosition.w = 1.f;
+
+	_vector vLerpedCamPosition = XMVectorLerp(m_vPrevCamPosition, XMLoadFloat4(&vCameraPosition), fTimeDelta * 3);
+
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&vCameraPosition));
+
+	Targeting();
+
+	__super::Tick(fTimeDelta);
 }
 
 void CCarChaseCamera::Late_Tick(const _float& fTimeDelta)
 {
+	m_vPrevCamPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 }
 
 HRESULT CCarChaseCamera::Render()
 {
 	return S_OK;
+}
+
+void CCarChaseCamera::Targeting()
+{
+	vector<CGameObject*> Reactors = m_pGameInstance->Get_GameObjects(m_iCurrentLevel, TEXT("Layer_Reactor"));
+
+	_vector vTargetingPos;
+	if (Reactors.empty())
+	{
+		vTargetingPos = XMLoadFloat4((_float4*)&m_pPlayerMatrix->m[3]);
+		m_pTransformCom->LookAt(vTargetingPos);
+		return;
+	}
+	else {
+		vTargetingPos = Reactors[0]->Get_TransformCom()->Get_State(CTransform::STATE_POSITION);
+	}
+
+	_vector vCamDirection = XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_POSITION) - vTargetingPos);
+
+	// 새로운 각도 계산
+	m_fCamAngleY = XMConvertToDegrees(atan2f(XMVectorGetZ(vCamDirection), XMVectorGetX(vCamDirection)));
+	m_fCamAngleX = XMConvertToDegrees(asinf(XMVectorGetY(vCamDirection) / m_fCamDistance));
+
+	m_pTransformCom->LookAt(vTargetingPos);
 }
 
 CCarChaseCamera* CCarChaseCamera::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

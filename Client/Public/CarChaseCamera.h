@@ -30,8 +30,18 @@ public:
 private:
     class CSystemManager* m_pSystemManager = { nullptr };
     const _float4x4* m_pPlayerMatrix = { nullptr };
+    _vector m_vPrevCamPosition = {};
+
+    _float4x4 m_OrbitMatrix = {};
+    _float4x4 m_LookMatrix = {};
 
     _float m_fSensor = { 0.f };
+    _float m_fCamAngleY = { 0.f };
+    _float m_fCamAngleX = { 0.f };
+    _float m_fCamDistance = { 3.f };
+
+private:
+    void Targeting();
 
 public:
     static CCarChaseCamera* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

@@ -3,6 +3,8 @@
 #include "GameInstance.h"
 #include "CharacterData.h"
 
+#include "Player.h"
+
 CCarChase_Reactor::CCarChase_Reactor(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLandObject{ pDevice, pContext }
 {
@@ -143,11 +145,17 @@ void CCarChase_Reactor::Move_Waypoint(const _float& fTimeDelta)
 {
 	_vector vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 	//웨이포인트 
-	_vector vDir = m_pNavigationCom->Compute_WayPointDir(vPosition);
-	//m_pTransformCom->LookAt_For_LandObject(vDir, true);
-	
-	_float fSpeed = 20.f;
-	m_pTransformCom->Go_Straight_CustumSpeed(fSpeed, fTimeDelta, m_pNavigationCom);
+	_float4 vMovePos;
+	_vector vDir = m_pNavigationCom->Compute_WayPointDir(vPosition, fTimeDelta);
+	m_pTransformCom->LookAt_For_LandObject(vDir, true);
+
+	//플레이어와 멀다면
+	CGameObject* pPlayer = m_pGameInstance->Get_GameObject(m_iCurrentLevel, TEXT("Layer_Texi"), 0);
+	_float fDistance = XMVectorGetX(XMVector3Length(pPlayer->Get_TransformCom()->Get_State(CTransform::STATE_POSITION) - vPosition));
+
+	m_fSpeed = fDistance <= 7.f ? 40.f : 45.f;
+
+	m_pTransformCom->Go_Straight_CustumSpeed(m_fSpeed, fTimeDelta, m_pNavigationCom);
 }
 
 HRESULT CCarChase_Reactor::Add_Components()
