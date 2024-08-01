@@ -94,6 +94,10 @@ bool g_bExistRMTex;
 bool g_bExistRSTex;
 bool g_bReflExist;
 
+/* Item */
+float g_fBrightTime;
+bool g_bBright;
+
 
 int g_iCount = { 0 };
 const int g_iMaxCasCade = { 3 };

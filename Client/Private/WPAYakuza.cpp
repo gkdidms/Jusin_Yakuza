@@ -70,17 +70,17 @@ HRESULT CWPAYakuza::Add_Components()
 		return E_FAIL;
 
 	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Anim"),
-		TEXT("Com_Anim"), reinterpret_cast<CComponent**>(&m_pAnimCom[DEFAULT_ANIMAITION]))))
+		TEXT("Com_Anim"), reinterpret_cast<CComponent**>(&m_pAnimCom[DEFAULT]))))
 		return E_FAIL;
 
 	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_SyncAnim"),
-		TEXT("Com_SyncAnim"), reinterpret_cast<CComponent**>(&m_pAnimCom[CUTSCENE_ANIMATION]))))
+		TEXT("Com_SyncAnim"), reinterpret_cast<CComponent**>(&m_pAnimCom[CUTSCENE]))))
 		return E_FAIL;
 
 	//행동트리 저장
 	CAI_WPAYakuza::AI_MONSTER_DESC AIDesc{};
 	AIDesc.pState = &m_iState;
-	memcpy(AIDesc.pAnim, m_pAnimCom, sizeof(CAnim*) * ANIMATION_COMPONENT_TYPE_END);
+	memcpy(AIDesc.pAnim, m_pAnimCom, sizeof(CAnim*) * ANIM_TYPE_END);
 	AIDesc.pCurrentAnimType = &m_iCurrentAnimType;
 	AIDesc.pThis = this;
 

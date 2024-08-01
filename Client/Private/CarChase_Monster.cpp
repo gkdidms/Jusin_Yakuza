@@ -2,6 +2,8 @@
 
 #include "GameInstance.h"
 
+#include "AI_CarChase.h"
+
 CCarChase_Monster::CCarChase_Monster(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CMonster { pDevice, pContext }
 {
@@ -19,11 +21,19 @@ HRESULT CCarChase_Monster::Initialize_Prototype()
 
 HRESULT CCarChase_Monster::Initialize(void* pArg)
 {
+	if (nullptr == pArg)
+		return E_FAIL;
+
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
 	CARCHASE_MONSTER_DESC* pDesc = static_cast<CARCHASE_MONSTER_DESC*>(pArg);
 	m_pParentMatrix = pDesc->pParentMatrix;
+	m_iWeaponType = pDesc->iWeaponType;
+
+	m_iCurrentAnimType = CLandObject::DEFAULT;
+
+	m_pTransformCom->Set_WorldMatrix(XMMatrixIdentity());
 
 	return S_OK;
 }
@@ -34,12 +44,23 @@ void CCarChase_Monster::Priority_Tick(const _float& fTimeDelta)
 
 void CCarChase_Monster::Tick(const _float& fTimeDelta)
 {
-	__super::Tick(fTimeDelta);
+	m_pTree->Tick(fTimeDelta);
+
+	Change_Animation(); //애니메이션 변경
+
+	m_pModelCom->Play_Animation_Monster(fTimeDelta, m_pAnimCom[m_iCurrentAnimType], m_isAnimLoop, false);
+	XMStoreFloat4x4(&m_ModelWorldMatrix, m_pTransformCom->Get_WorldMatrix() * XMLoadFloat4x4(m_pParentMatrix));
+
+	//충돌처리 초기화
+	m_isColl = false;
+
+	m_pColliderCom->Tick(XMLoadFloat4x4(&m_ModelWorldMatrix));
 }
 
 void CCarChase_Monster::Late_Tick(const _float& fTimeDelta)
 {
-	__super::Late_Tick(fTimeDelta);
+	//컬링
+	m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
 }
 
 void CCarChase_Monster::Change_Animation()
@@ -63,11 +84,25 @@ HRESULT CCarChase_Monster::Add_Components()
 		return E_FAIL;
 
 	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_CarChaseAnim"),
-		TEXT("Com_Anim"), reinterpret_cast<CComponent**>(&m_pAnimCom))))
+		TEXT("Com_Anim"), reinterpret_cast<CComponent**>(&m_pAnimCom[CLandObject::DEFAULT]))))
+		return E_FAIL;
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_SyncAnim"),
+		TEXT("Com_SyncAnim"), reinterpret_cast<CComponent**>(&m_pAnimCom[CLandObject::CUTSCENE]))))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Navigation"),
-		TEXT("Com_Navigation"), reinterpret_cast<CComponent**>(&m_pNavigationCom))))
+	return S_OK;
+}
+
+HRESULT CCarChase_Monster::Bind_ResourceData()
+{
+	if (FAILED(m_pShaderCom->Bind_Matrix("g_WorldMatrix", &m_ModelWorldMatrix)))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_VIEW))))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_PROJ))))
+		return E_FAIL;
+
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_isRimLight", &m_isRimLight, sizeof(_float))))
 		return E_FAIL;
 
 	return S_OK;
@@ -76,4 +111,6 @@ HRESULT CCarChase_Monster::Add_Components()
 void CCarChase_Monster::Free()
 {
 	__super::Free();
+
+	Safe_Release(m_pTree);
 }

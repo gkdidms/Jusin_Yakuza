@@ -47,38 +47,24 @@ void CCamera::Tick(const _float& fTimeDelta, _bool isAuto)
 	if (isAuto)
 		m_WorldMatrix = *m_pTransformCom->Get_WorldFloat4x4();
 
-	XMFLOAT4	vUp, vPosition, vLookAt;
-	vUp.x = 0;
-	vUp.y = 1;
-	vUp.z = 0;
-	vUp.w = 0;
-	XMVECTOR upVector = XMLoadFloat4(&vUp);
-
-	vPosition.x = m_WorldMatrix._41;
-	vPosition.y = -7;
-	vPosition.z = m_WorldMatrix._43;
-	vPosition.w = 1;
-	XMVECTOR positionVec = XMLoadFloat4(&vPosition);
-
-	vLookAt.x = m_WorldMatrix._41;
-	vLookAt.y = 0;
-	vLookAt.z = m_WorldMatrix._43;
-	vLookAt.w = 1;
-	
-	XMVECTOR lookAtVec = XMLoadFloat4(&vLookAt);
-
-	XMMATRIX viewReflect = XMMatrixLookAtLH(positionVec, lookAtVec, upVector);
-	m_pGameInstance->Set_ReflectViewMatrix(viewReflect);
-
 	m_pGameInstance->Set_Transform(CPipeLine::D3DTS_VIEW, XMMatrixInverse(nullptr, XMLoadFloat4x4(&m_WorldMatrix)));
 	m_pGameInstance->Set_Transform(CPipeLine::D3DTS_PROJ, XMMatrixPerspectiveFovLH(m_fFovY, m_fAspect, m_fNear, m_fFar));
 	m_pGameInstance->Set_CamFar(m_fFar);
+
+	/* 반사벡터를 위한 뷰, 투영 행렬을 구함. */ 
+	_vector vPos = XMLoadFloat4((_float4*)&m_WorldMatrix.m[3]);
+	_vector	vPosition, vLookAt;
+
+	vPosition = XMVectorSetY(vPos, -7.f);
+	vLookAt = XMVectorSetY(vPos, 0.f);
+
+	_matrix viewReflect = XMMatrixLookAtLH(vPosition, vLookAt, XMVectorSet(0.f, 1.f, 0.f, 0.f));
+	m_pGameInstance->Set_ReflectViewMatrix(viewReflect);
 }
 
 void CCamera::Late_Tick(const _float& fTimeDelta)
 {
 }
-
 
 void CCamera::Turn(_float4x4* OrbitMatrix, _fvector vAxis, const _float& fTimeDelta)
 {
@@ -137,6 +123,22 @@ void CCamera::Zoom(const _float& fTimeDelta)
 		m_fFovY = 2.f;
 	else if (m_fFovY < 0.03f)
 		m_fFovY = 0.03f;
+}
+
+void CCamera::LookAt(_float4x4* OrbitMatrix, _fvector vTargetPos, _fvector vPosition)
+{
+	_vector vLook = vTargetPos - vPosition;
+	_vector vRight = XMVector3Cross(XMVectorSet(0.f, 1.f, 0.f, 0.f), vLook);
+	_vector vUp = XMVector3Cross(vLook, vRight);
+
+	if (isnan(XMVector4Normalize(vRight).m128_f32[0]) || isnan(XMVector4Normalize(vUp).m128_f32[0]) || isnan(XMVector4Normalize(vLook).m128_f32[0]))
+	{
+		return;
+	}
+
+	XMStoreFloat4((_float4*)&OrbitMatrix->m[0], XMVector4Normalize(vRight));
+	XMStoreFloat4((_float4*)&OrbitMatrix->m[1], XMVector4Normalize(vUp));
+	XMStoreFloat4((_float4*)&OrbitMatrix->m[2], XMVector4Normalize(vLook));
 }
 
 void CCamera::Shaking(_float fTimeDelta)

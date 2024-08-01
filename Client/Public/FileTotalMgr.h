@@ -29,8 +29,11 @@ public:
 		MONSTER_KUZE,
 		LARGE_CONSTRUCTION,
 		ADTENTURE_SUIT,
+		MAP,
 		MONSTER_WPH,
 		MONSTER_DEFAULT,
+		MAP_NONCULL, // MAP이랑 같은 클래스지만 컬링 안들어감(통MESH)
+		MAP_LOCALCULL,
 		OBJ_END
 	};
 
@@ -89,7 +92,7 @@ private:
 	TRIGGER_IO								m_Trigger{};
 	MAP_TOTALINFORM_DESC					m_MapTriggerInform{}; //Trigger로 불러오는 object
 
-	vector<wstring>							m_Layers = { TEXT("Layer_GameObjects"), TEXT("Layer_Monster"), TEXT("Layer_Player"), TEXT("Layer_NPC")};
+	vector<wstring>							m_Layers = { TEXT("Layer_GameObjects"), TEXT("Layer_Monster"), TEXT("Layer_Player"), TEXT("Layer_NPC"), TEXT("Layer_Item") };
 
 private:
 	HRESULT									Set_Terrain_Size(int iStageLevel);

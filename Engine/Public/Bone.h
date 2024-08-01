@@ -26,9 +26,17 @@ public:
 		return &m_CombinedTransformationMatrix;
 	}
 
+	_int Get_Separation() {
+		return m_iSeparation;
+	}
+
 public:
 	void Set_TransformationMatrix(_fmatrix TransformationMatrix) {
 		XMStoreFloat4x4(&m_TransformationMatrix, TransformationMatrix);
+	}
+
+	void Set_Separation(_int iSeparation) {
+		m_iSeparation = iSeparation;
 	}
 
 	_bool Compare_Name(const _char* pName) {
@@ -44,6 +52,8 @@ private:
 	_char				m_szName[MAX_PATH] = "";
 	_int				m_iParentBoneIndex = { 0 };
 	_float4x4			m_TransformationMatrix, m_CombinedTransformationMatrix;
+
+	_int				m_iSeparation = -1;				// 분리 대상 뼈인지?
 
 public:
 	static CBone* Create(const aiNode* pBoneNode, _int iParentIndex);

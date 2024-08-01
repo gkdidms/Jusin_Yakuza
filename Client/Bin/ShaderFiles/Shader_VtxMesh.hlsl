@@ -278,7 +278,7 @@ PS_OUT PS_PUDDLE(PS_IN In)
     vWorldPos.z = vViewDepth.x; /* 0 ~ 1 */
     vWorldPos.w = 1.f;
     
-    vWorldPos = vWorldPos * (vViewDepth.y * 3000.f);
+    vWorldPos = vWorldPos * (vViewDepth.y * g_fFar);
     
     vWorldPos = mul(vWorldPos, g_ProjMatrixInv);
     vWorldPos = mul(vWorldPos, g_ViewMatrixInv); // world
@@ -309,7 +309,7 @@ PS_OUT PS_PUDDLE(PS_IN In)
     vCalculateWorld.z = vDepth.x; /* 0 ~ 1 */
     vCalculateWorld.w = 1.f;
     
-    vCalculateWorld = vCalculateWorld * (vDepth.y * 3000.f);
+    vCalculateWorld = vCalculateWorld * (vDepth.y * g_fFar);
     
     vCalculateWorld = mul(vCalculateWorld, g_ProjMatrixInv);
 

@@ -17,6 +17,7 @@ CLandObject::CLandObject(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	Safe_AddRef(m_pSystemManager);
 	Safe_AddRef(m_pCollisionManager);
 }
+
 CLandObject::CLandObject(const CLandObject& rhs)
 	: CGameObject{ rhs },
 	m_pSystemManager{ rhs.m_pSystemManager },
@@ -35,8 +36,6 @@ HRESULT CLandObject::Initialize(void* pArg)
 {
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
-
-
 
 	return S_OK;
 }
@@ -92,7 +91,7 @@ void CLandObject::ImpulseResolution(CLandObject* pTargetObject, _float fDistance
 
 	if (!XMVector3Equal(XMLoadFloat3(&vDir), XMVectorZero()))
 	{
-		_vector vMovePos = m_pTransformCom->Get_State(CTransform::STATE_POSITION) + XMLoadFloat3(&vDir);
+		_vector vMovePos = m_pTransformCom->Get_State(CTransform::STATE_POSITION) + (XMLoadFloat3(&vDir) * 0.3f);
 
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, vMovePos);
 	}
@@ -311,6 +310,12 @@ void CLandObject::Free()
 	for (auto& pEffect : m_pTrailEffects)
 		Safe_Release(pEffect.second);
 	m_pTrailEffects.clear();
+
+	for (auto pAnimCom : m_SeparationAnimComs)
+	{
+		Safe_Release(pAnimCom);
+	}
+	m_SeparationAnimComs.clear();
 
 	Safe_Release(m_pData);
 	Safe_Release(m_pModelCom);

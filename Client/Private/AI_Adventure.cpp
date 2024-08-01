@@ -94,7 +94,7 @@ CBTNode::NODE_STATE CAI_Adventure::Check_Walk()
 		if (m_Routes.empty())
 			m_Routes = dynamic_cast<CNavigation*>(m_pThis->Get_Component(TEXT("Com_Navigation")))->Get_RouteIndexs(0);
 
-		m_pThis->Start_Root(m_Routes.front());
+		m_pThis->Start_Root(m_Routes.front().iCellNums);
 		m_Routes.erase(m_Routes.begin());
 	}
 
