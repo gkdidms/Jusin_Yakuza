@@ -25,6 +25,10 @@ public:
     HRESULT Intialize(void* pArg);
     _bool Execute();
 
+    _bool Start();
+    _bool Running();
+    _bool End();
+
 private:
     class CGameInstance* m_pGameInstance = { nullptr };
     class CPlayer* m_pPlayer = { nullptr };

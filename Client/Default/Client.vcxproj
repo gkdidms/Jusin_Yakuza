@@ -555,6 +555,7 @@
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxInstance_Point.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxMesh.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxMeshLight.hlsl" />
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxMeshMap.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxMeshSky.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxNorTex.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxPosTex.hlsl" />

@@ -144,6 +144,9 @@ HRESULT CLoader::Loading_For_RunMapLevel(int iLevel)
 
 	Add_Models_On_Path_NonAnim(iLevel, TEXT("../../Client/Bin/Resources/Models/NonAnim/Map/Map3"));
 
+
+	Add_Models_On_Path_NonAnim(iLevel, TEXT("../../Client/Bin/Resources/Models/NonAnim/Map/KaraokeMap"));
+
 	/* For.Prototype_Component_VIBuffer_Terrain */
 
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(iLevel, TEXT("Prototype_Component_VIBuffer_Terrain_Flat"),

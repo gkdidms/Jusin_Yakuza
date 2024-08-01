@@ -140,6 +140,7 @@ HRESULT CMesh::Ready_Vertices_For_NonAnimMesh(const aiMesh* pAIMesh, _fmatrix Pr
 	ZeroMemory(pVertices, sizeof(VTXMESH) * m_iNumVertices);
 
 	_float3		vSumPosition = _float3(0, 0, 0);
+	_float3		vMinScale, vMaxScale;
 
 
 	for (size_t i = 0; i < m_iNumVertices; i++)
@@ -158,7 +159,49 @@ HRESULT CMesh::Ready_Vertices_For_NonAnimMesh(const aiMesh* pAIMesh, _fmatrix Pr
 		vSumPosition.x += pVertices[i].vPosition.x;
 		vSumPosition.y += pVertices[i].vPosition.y;
 		vSumPosition.z += pVertices[i].vPosition.z;	
+
+
+		if (0 == i)
+		{
+			vMinScale = pVertices[i].vPosition;
+			vMaxScale = pVertices[i].vPosition;
+		}
+		else
+		{
+			if (vMinScale.x > pVertices[i].vPosition.x)
+				vMinScale.x = pVertices[i].vPosition.x;
+			if (vMinScale.y > pVertices[i].vPosition.y)
+				vMinScale.y = pVertices[i].vPosition.y;
+			if (vMinScale.z > pVertices[i].vPosition.z)
+				vMinScale.z = pVertices[i].vPosition.z;
+
+
+			if (vMaxScale.x < pVertices[i].vPosition.x)
+				vMaxScale.x = pVertices[i].vPosition.x;
+			if (vMaxScale.y < pVertices[i].vPosition.y)
+				vMaxScale.y = pVertices[i].vPosition.y;
+			if (vMaxScale.z < pVertices[i].vPosition.z)
+				vMaxScale.z = pVertices[i].vPosition.z;
+		}
 	}
+
+	_float3			vMeshScale = _float3(0,0,0);
+
+	vMeshScale.x = abs(-vMinScale.x + vMaxScale.x);
+	vMeshScale.y = abs(-vMinScale.y + vMaxScale.y);
+	vMeshScale.z = abs(-vMinScale.z + vMaxScale.z);
+
+	float		fMaxScale = 0;
+	if (vMeshScale.x > vMeshScale.y)
+		fMaxScale = vMeshScale.x;
+	else
+		fMaxScale = vMeshScale.y;
+
+	if (vMeshScale.z > fMaxScale)
+		fMaxScale = vMeshScale.z;
+
+	m_fScale = fMaxScale;
+
 
 	vSumPosition.x /= m_iNumVertices;
 	vSumPosition.y /= m_iNumVertices;
@@ -192,6 +235,7 @@ HRESULT CMesh::Ready_Vertices_For_NonAnimMesh(const BAiMesh* pAIMesh, _fmatrix P
 	ZeroMemory(pVertices, sizeof(VTXMESH) * m_iNumVertices);
 
 	_float3		vSumPosition = _float3(0, 0, 0);
+	_float3		vMinScale, vMaxScale;
 
 	for (size_t i = 0; i < m_iNumVertices; i++)
 	{
@@ -211,7 +255,47 @@ HRESULT CMesh::Ready_Vertices_For_NonAnimMesh(const BAiMesh* pAIMesh, _fmatrix P
 		vSumPosition.x += pVertices[i].vPosition.x;
 		vSumPosition.y += pVertices[i].vPosition.y;
 		vSumPosition.z += pVertices[i].vPosition.z;
+
+		if (0 == i)
+		{
+			vMinScale = pVertices[i].vPosition;
+			vMaxScale = pVertices[i].vPosition;
+		}
+		else
+		{
+			if (vMinScale.x > pVertices[i].vPosition.x)
+				vMinScale.x = pVertices[i].vPosition.x;
+			if (vMinScale.y > pVertices[i].vPosition.y)
+				vMinScale.y = pVertices[i].vPosition.y;
+			if (vMinScale.z > pVertices[i].vPosition.z)
+				vMinScale.z = pVertices[i].vPosition.z;
+
+
+			if (vMaxScale.x < pVertices[i].vPosition.x)
+				vMaxScale.x = pVertices[i].vPosition.x;
+			if (vMaxScale.y < pVertices[i].vPosition.y)
+				vMaxScale.y = pVertices[i].vPosition.y;
+			if (vMaxScale.z < pVertices[i].vPosition.z)
+				vMaxScale.z = pVertices[i].vPosition.z;
+		}
 	}
+
+	_float3			vMeshScale = _float3(0, 0, 0);
+
+	vMeshScale.x = abs(-vMinScale.x + vMaxScale.x);
+	vMeshScale.y = abs(-vMinScale.y + vMaxScale.y);
+	vMeshScale.z = abs(-vMinScale.z + vMaxScale.z);
+
+	float		fMaxScale = 0;
+	if (vMeshScale.x > vMeshScale.y)
+		fMaxScale = vMeshScale.x;
+	else
+		fMaxScale = vMeshScale.y;
+
+	if (vMeshScale.z > fMaxScale)
+		fMaxScale = vMeshScale.z;
+
+	m_fScale = fMaxScale;
 
 	vSumPosition.x /= m_iNumVertices;
 	vSumPosition.y /= m_iNumVertices;
