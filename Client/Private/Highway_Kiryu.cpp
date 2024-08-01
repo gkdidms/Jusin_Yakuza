@@ -256,6 +256,7 @@ void CHighway_Kiryu::Play_Animing(_float fTimeDelta)
 	// [53] [mngcar_c_car_gun_aimr_f_r45]
 	// [52] [mngcar_c_car_gun_aimr_f_lp]
 
+	// 몬스터에 에임띄운거 나오고 나서 각도조절기능 추가예정
 	_uint iAnimIndex = 29;
 	switch (m_iStageDir)
 	{
