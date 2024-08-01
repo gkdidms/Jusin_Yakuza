@@ -51,6 +51,7 @@ HRESULT CReactor_Van::Ready_Monster(_int* pMonsterTypes)
 		CCarChase_Van::CARCHASE_MONSTER_DESC Desc{};
 		Desc.iWeaponType = i == 0 ? CCarChase_Monster::DRV : pMonsterTypes[i - 1];
 		Desc.pParentMatrix = m_pTransformCom->Get_WorldFloat4x4();
+		Desc.iLineDir = m_iLineDir;
 
 		if (FAILED(m_pGameInstance->Add_GameObject(m_iCurrentLevel, TEXT("Prototype_GameObject_CarChaseVan"), TEXT("Layer_Monster"), &Desc)))
 			return E_FAIL;

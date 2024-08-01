@@ -110,6 +110,9 @@ void CKiryu_KRS_Attack::Combo_Count(_bool isFinAction)
 	// 데미지 배율을 기본적으로 1배로 세팅해준다
 	m_pPlayer->Set_DamageAmplify(1.f);
 
+	// 어택할 때에는 뼈 분리 해제
+	m_pPlayer->Off_Separation_Hand();
+
 	if (isFinAction)
 	{
 		// 강공격에는 데미지 1.5배

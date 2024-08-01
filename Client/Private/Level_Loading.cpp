@@ -4,6 +4,7 @@
 
 #pragma region LEVEL_HEADER
 #include "Loader.h"
+#include "MultiLoader.h"
 #include "Level_Loading.h"
 #include "Level_Logo.h"
 #include "Level_Office1F.h"
@@ -31,65 +32,101 @@ HRESULT CLevel_Loading::Initialize(LEVEL eNextLevel)
 		return E_FAIL;
 
 	/* eNextLevel을 위한 자원을 로드한다.(추가적으로 생성한 스레드) */
-	m_pLoader = CLoader::Create(m_pDevice, m_pContext, eNextLevel);
-	if (nullptr == m_pLoader)
-		return E_FAIL;
+	if (m_eNextLevel == LEVEL_TEST)
+	{
+		m_pMultiLoader = CMultiLoader::Create(m_pDevice, m_pContext, eNextLevel);
+		if (nullptr == m_pMultiLoader)
+			return E_FAIL;
+	}
+	else
+	{
+		m_pLoader = CLoader::Create(m_pDevice, m_pContext, eNextLevel);
+		if (nullptr == m_pLoader)
+			return E_FAIL;
+	}
 
 	return S_OK;
 }
 
 void CLevel_Loading::Tick(const _float& fTimeDelta)
 {
-	if (true == m_pLoader->is_Finished())
+	if (m_eNextLevel == LEVEL_TEST)
 	{
-		if (m_pGameInstance->GetKeyState(DIK_RETURN) == TAP)
+		if (true == m_pMultiLoader->is_Finished())
 		{
-			CLevel* pNewLevel = { nullptr };
-
-			m_pGameInstance->Set_CurrentLevel(m_eNextLevel);
-			CUIManager::GetInstance()->Close_Scene();
-			switch (m_eNextLevel)
+			if (m_pGameInstance->GetKeyState(DIK_RETURN) == TAP)
 			{
-			case LEVEL_LOGO:
-				pNewLevel = CLevel_Logo::Create(m_pDevice, m_pContext);
-				break;
-			case LEVEL_OFFICE_1F:
-				pNewLevel = CLevel_Office1F::Create(m_pDevice, m_pContext);
-				break;
-			case LEVEL_OFFICE_2F:
-				pNewLevel = CLevel_Office2F::Create(m_pDevice, m_pContext);
-				break;
-			case LEVEL_OFFICE_BOSS:
-				pNewLevel = CLevel_OfficeBoss::Create(m_pDevice, m_pContext);
-				break;
-			case LEVEL_DOGIMAZO:
-				pNewLevel = CLevel_Dogimazo::Create(m_pDevice, m_pContext);
-				break;
-			case LEVEL_DOGIMAZO_STAIRS:
-				pNewLevel = CLevel_DogimazoStairs::Create(m_pDevice, m_pContext);
-				break;
-			case LEVEL_DOGIMAZO_LOBBY:
-				pNewLevel = CLevel_DogimazoLobby::Create(m_pDevice, m_pContext);
-				break;
-			case LEVEL_DOGIMAZO_BOSS:
-				pNewLevel = CLevel_DogimazoBoss::Create(m_pDevice, m_pContext);
-				break;
-			case LEVEL_TEST:
+				CLevel* pNewLevel = { nullptr };
+
+				m_pGameInstance->Set_CurrentLevel(m_eNextLevel);
+				CUIManager::GetInstance()->Close_Scene();
+
 				pNewLevel = CLevel_Test::Create(m_pDevice, m_pContext);
-				break;
+
+				if (nullptr == pNewLevel)
+					return;
+
+				if (FAILED(m_pGameInstance->Open_Level(m_eNextLevel, pNewLevel)))
+					return;
 			}
+		}
+	}
+	else
+	{
+		if (true == m_pLoader->is_Finished())
+		{
+			if (m_pGameInstance->GetKeyState(DIK_RETURN) == TAP)
+			{
+				CLevel* pNewLevel = { nullptr };
 
-			if (nullptr == pNewLevel)
-				return;
+				m_pGameInstance->Set_CurrentLevel(m_eNextLevel);
+				CUIManager::GetInstance()->Close_Scene();
+				switch (m_eNextLevel)
+				{
+				case LEVEL_LOGO:
+					pNewLevel = CLevel_Logo::Create(m_pDevice, m_pContext);
+					break;
+				case LEVEL_OFFICE_1F:
+					pNewLevel = CLevel_Office1F::Create(m_pDevice, m_pContext);
+					break;
+				case LEVEL_OFFICE_2F:
+					pNewLevel = CLevel_Office2F::Create(m_pDevice, m_pContext);
+					break;
+				case LEVEL_OFFICE_BOSS:
+					pNewLevel = CLevel_OfficeBoss::Create(m_pDevice, m_pContext);
+					break;
+				case LEVEL_DOGIMAZO:
+					pNewLevel = CLevel_Dogimazo::Create(m_pDevice, m_pContext);
+					break;
+				case LEVEL_DOGIMAZO_STAIRS:
+					pNewLevel = CLevel_DogimazoStairs::Create(m_pDevice, m_pContext);
+					break;
+				case LEVEL_DOGIMAZO_LOBBY:
+					pNewLevel = CLevel_DogimazoLobby::Create(m_pDevice, m_pContext);
+					break;
+				case LEVEL_DOGIMAZO_BOSS:
+					pNewLevel = CLevel_DogimazoBoss::Create(m_pDevice, m_pContext);
+					break;
+				case LEVEL_TEST:
+					pNewLevel = CLevel_Test::Create(m_pDevice, m_pContext);
+					break;
+				}
+
+				if (nullptr == pNewLevel)
+					return;
 
 
-			if (FAILED(m_pGameInstance->Open_Level(m_eNextLevel, pNewLevel)))
-				return;
+				if (FAILED(m_pGameInstance->Open_Level(m_eNextLevel, pNewLevel)))
+					return;
+			}
 		}
 	}
 
 #ifdef _DEBUG
-	SetWindowText(g_hWnd, m_pLoader->Get_LoadingText());
+	if (m_eNextLevel == LEVEL_TEST)
+		SetWindowText(g_hWnd, m_pMultiLoader->Get_LoadingText());
+	else
+		SetWindowText(g_hWnd, m_pLoader->Get_LoadingText());
 #else
 	// 로딩 화면 만들어지기 전까지 릴리즈 모드에서도 볼 수 있게 해야함
 	SetWindowText(g_hWnd, m_pLoader->Get_LoadingText());
@@ -133,4 +170,5 @@ void CLevel_Loading::Free()
 	__super::Free();
 
 	Safe_Release(m_pLoader);
+	Safe_Release(m_pMultiLoader);
 }

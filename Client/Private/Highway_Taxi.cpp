@@ -1,6 +1,7 @@
 #include "Highway_Taxi.h"
 
 #include "GameInstance.h"
+#include "Highway_Kiryu.h"
 
 CHighway_Taxi::CHighway_Taxi(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLandObject{ pDevice, pContext }
@@ -37,6 +38,9 @@ HRESULT CHighway_Taxi::Initialize(void* pArg)
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
+	if (FAILED(Add_Objects()))
+		return E_FAIL;
+
 	m_pNavigationCom->Set_Index(gameobjDesc->iNaviNum);
 
 	m_pTransformCom->Set_WorldMatrix(XMMatrixIdentity());
@@ -46,6 +50,10 @@ HRESULT CHighway_Taxi::Initialize(void* pArg)
 
 void CHighway_Taxi::Priority_Tick(const _float& fTimeDelta)
 {
+	m_pKiryu->Priority_Tick(fTimeDelta);
+
+	//if (m_pGameInstance->GetKeyState(DIK_N) == HOLD)
+	//	m_pTransformCom->Go_Straight(fTimeDelta);
 }
 
 void CHighway_Taxi::Tick(const _float& fTimeDelta)
@@ -55,7 +63,15 @@ void CHighway_Taxi::Tick(const _float& fTimeDelta)
 	if (m_isObjectDead)
 		m_pModelCom->Play_Animation(fTimeDelta);
 
-	Move_Waypoint(fTimeDelta);
+#ifdef _DEBUG
+	if (m_pGameInstance->GetKeyState(DIK_LSHIFT) == TAP)
+		m_isStop = !m_isStop;
+#endif // _DEBUG
+
+	if (!m_isStop)
+		Move_Waypoint(fTimeDelta);
+
+	m_pKiryu->Tick(fTimeDelta);
 }
 
 void CHighway_Taxi::Late_Tick(const _float& fTimeDelta)
@@ -70,6 +86,8 @@ void CHighway_Taxi::Late_Tick(const _float& fTimeDelta)
 		vCurrentPos = XMVectorSetY(vCurrentPos, fHeight);
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, vCurrentPos);
 	}
+	m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
+	m_pKiryu->Late_Tick(fTimeDelta);
 }
 
 HRESULT CHighway_Taxi::Render()
@@ -95,6 +113,11 @@ HRESULT CHighway_Taxi::Render()
 	return S_OK;
 }
 
+string CHighway_Taxi::Get_CurrentAnimationName()
+{
+	return m_pModelCom->Get_AnimationName(m_pModelCom->Get_CurrentAnimationIndex());
+}
+
 void CHighway_Taxi::Change_Animation()
 {
 }
@@ -108,8 +131,7 @@ void CHighway_Taxi::Move_Waypoint(const _float& fTimeDelta)
 	m_pTransformCom->LookAt_For_LandObject(vDir, true);
 
 	_float fSpeed = 40.f;
-	m_pTransformCom->Go_Straight_CustumSpeed(40.f, fTimeDelta, m_pNavigationCom);
-	//m_pTransformCom->Go_Straight(fTimeDelta);
+	m_pTransformCom->Go_Straight_CustumSpeed(fSpeed, fTimeDelta, m_pNavigationCom);
 	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&vMovePos));
 }
 
@@ -128,6 +150,16 @@ HRESULT CHighway_Taxi::Add_Components()
 	Desc.vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Navigation"),
 		TEXT("Com_Navigation"), reinterpret_cast<CComponent**>(&m_pNavigationCom), &Desc)))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CHighway_Taxi::Add_Objects()
+{
+	CHighway_Kiryu::CARCHASE_KIRYU_DESC Desc{ const_cast<_float4x4*>(m_pTransformCom->Get_WorldFloat4x4()) };
+	m_pKiryu = dynamic_cast<CHighway_Kiryu*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_CarChase_Kiryu"), &Desc));
+	if (nullptr == m_pKiryu)
 		return E_FAIL;
 
 	return S_OK;
@@ -173,10 +205,6 @@ void CHighway_Taxi::Free()
 {
 	__super::Free();
 
+	Safe_Release(m_pKiryu);
 	Safe_Release(m_pNavigationCom);
-}
-
-string CHighway_Taxi::Get_CurrentAnimationName()
-{
-	return string();
 }

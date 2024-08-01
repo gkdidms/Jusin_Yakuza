@@ -31,6 +31,9 @@ HRESULT CCarChaseCamera::Initialize(void* pArg)
 	m_fSensor = pDesc->fSensor;
 	m_pPlayerMatrix = pDesc->pPlayerMatrix;
 
+	XMStoreFloat4x4(&m_OrbitMatrix, XMMatrixIdentity());
+	XMStoreFloat4x4(&m_LookMatrix, XMMatrixIdentity());
+
 	return S_OK;
 }
 
@@ -42,29 +45,28 @@ void CCarChaseCamera::Tick(const _float& fTimeDelta)
 {
 	if (m_pSystemManager->Get_Camera() != CAMERA_CARCHASE) return;
 	
-	//_float MouseMove = { 0.f };
-	//if (MouseMove = m_pGameInstance->Get_DIMouseMove(DIMS_X))
-	//	Turn(&m_OrbitMatrix, XMVectorSet(0.f, 1.f, 0.f, 0.f), fTimeDelta * MouseMove * m_fSensor);
-	//if (MouseMove = m_pGameInstance->Get_DIMouseMove(DIMS_Z))
-	//	Zoom(fTimeDelta * MouseMove * m_fSensor);
-
-	//카메라가 플레이어를 바라보다가 타겟을 바라봄
-	//Targeting();
-
 	_vector vPlayerPos = XMLoadFloat4x4(m_pPlayerMatrix).r[3];
-	//vPlayerPos = XMVectorSetY(vPlayerPos, XMVectorGetY(vPlayerPos));
-	//m_pTransformCom->LookAt(vPlayerPos);
 
-	_matrix vParentMatrix = XMMatrixIdentity();
-	vParentMatrix.r[3] = vPlayerPos;
+	//Adjust_Camera_Angle();
 
-	XMStoreFloat4x4(&m_WorldMatrix, m_pTransformCom->Get_WorldMatrix() * vParentMatrix);
+	_float4 vCameraPosition;
+	vCameraPosition.x = XMVectorGetX(vPlayerPos) + cosf(XMConvertToRadians(m_fCamAngleY)) * cosf(XMConvertToRadians(m_fCamAngleX)) * m_fCamDistance,
+	vCameraPosition.y = XMVectorGetY(vPlayerPos) + m_fCamDistance * sinf(XMConvertToRadians(m_fCamAngleX)) + 2.f;
+	vCameraPosition.z = XMVectorGetZ(vPlayerPos) + sinf(XMConvertToRadians(m_fCamAngleY)) * cosf(XMConvertToRadians(m_fCamAngleX)),
+	vCameraPosition.w = 1.f;
 
-	__super::Tick(fTimeDelta, false);
+	_vector vLerpedCamPosition = XMVectorLerp(m_vPrevCamPosition, XMLoadFloat4(&vCameraPosition), fTimeDelta * 3);
+
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&vCameraPosition));
+
+	Targeting();
+
+	__super::Tick(fTimeDelta);
 }
 
 void CCarChaseCamera::Late_Tick(const _float& fTimeDelta)
 {
+	m_vPrevCamPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 }
 
 HRESULT CCarChaseCamera::Render()
@@ -76,14 +78,22 @@ void CCarChaseCamera::Targeting()
 {
 	vector<CGameObject*> Reactors = m_pGameInstance->Get_GameObjects(m_iCurrentLevel, TEXT("Layer_Reactor"));
 
+	_vector vTargetingPos;
 	if (Reactors.empty())
 	{
-		m_pTransformCom->LookAt(XMLoadFloat4((_float4*)&m_pPlayerMatrix->m[3]));
+		vTargetingPos = XMLoadFloat4((_float4*)&m_pPlayerMatrix->m[3]);
+		m_pTransformCom->LookAt(vTargetingPos);
 		return;
 	}
-	
-	// 몬스터 타겟팅
-	_vector vTargetingPos = Reactors[0]->Get_TransformCom()->Get_State(CTransform::STATE_POSITION);
+	else {
+		vTargetingPos = Reactors[0]->Get_TransformCom()->Get_State(CTransform::STATE_POSITION);
+	}
+
+	_vector vCamDirection = XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_POSITION) - vTargetingPos);
+
+	// 새로운 각도 계산
+	m_fCamAngleY = XMConvertToDegrees(atan2f(XMVectorGetZ(vCamDirection), XMVectorGetX(vCamDirection)));
+	m_fCamAngleX = XMConvertToDegrees(asinf(XMVectorGetY(vCamDirection) / m_fCamDistance));
 
 	m_pTransformCom->LookAt(vTargetingPos);
 }

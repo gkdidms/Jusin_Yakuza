@@ -48,31 +48,39 @@ _bool CCarChase::Start()
 {
 	vector<STAGE_MONSTER_INFO> MonsterInfo = m_Info.MonsterInfo;
 
-	//for (auto& iter : MonsterInfo)
-	//{
-	//	CCarChase_Reactor::HIGHWAY_IODESC Desc{};
-	//	Desc.fRotatePecSec = XMConvertToRadians(180.f);
-	//	Desc.fSpeedPecSec = 10.f;
-	//	Desc.iNaviNum = 0;
-	//	Desc.iObjectIndex = iter.iObjectIndex;
-	//	Desc.iNaviRouteNum = iter.iMonsterLine;
-	//	memcpy(Desc.iMonsterWeaponType, iter.iWeaponType, sizeof(_int) * 2);
+	for (auto& iter : MonsterInfo)
+	{
+		CCarChase_Reactor::HIGHWAY_IODESC Desc{};
+		Desc.fRotatePecSec = XMConvertToRadians(180.f);
+		Desc.fSpeedPecSec = 10.f;
+		Desc.iNaviNum = 0;
+		Desc.iStageDir = m_Info.iStageDir; // 스테이지 등장 방향
+		Desc.iLineDir = iter.iMonsterDir; // 몬스터 앞, 옆, 뒤 방향
+		Desc.iObjectIndex = iter.iObjectIndex;
+		Desc.iNaviRouteNum = iter.iMonsterLine;
+		memcpy(Desc.iMonsterWeaponType, iter.iWeaponType, sizeof(_int) * 2);
 
-	//	wstring strGameObject = TEXT("");
+		wstring strGameObject = TEXT("");
 
-	//	if (iter.iReactorType == CCarChase_Monster::REACTOR_VAN)
-	//		strGameObject = TEXT("Prototype_GameObject_ReactorVan");
-	//	else if (iter.iReactorType == CCarChase_Monster::REACTOR_SEDAN)
-	//		strGameObject = TEXT("Prototype_GameObject_ReactorSedan");
-	//	else if (iter.iReactorType == CCarChase_Monster::REACTOR_BIKE)
-	//		strGameObject = TEXT("Prototype_GameObject_ReactorBike");
+		if (iter.iReactorType == CCarChase_Monster::REACTOR_VAN)
+			strGameObject = TEXT("Prototype_GameObject_ReactorVan");
+		else if (iter.iReactorType == CCarChase_Monster::REACTOR_SEDAN)
+			strGameObject = TEXT("Prototype_GameObject_ReactorSedan");
+		else if (iter.iReactorType == CCarChase_Monster::REACTOR_BIKE)
+			strGameObject = TEXT("Prototype_GameObject_ReactorBike");
 
-	//	if (FAILED(m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), strGameObject, TEXT("Layer_Reactor"), &Desc)))
-	//		return false;
-	//}
+		if (FAILED(m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), strGameObject, TEXT("Layer_Reactor"), &Desc)))
+			return false;
+	}
 
-	CHighway_Taxi* pPlayer = dynamic_cast<CHighway_Taxi*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Texi"), 0));
-	pPlayer->Set_NavigationRouteIndex(m_Info.iPlayerLine);
+	if (m_Info.iPlayerLine != m_Info.iPrePlayerLine)
+	{
+		CHighway_Taxi* pPlayer = dynamic_cast<CHighway_Taxi*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Texi"), 0));
+		pPlayer->Set_NavigationRouteIndex(m_Info.iPlayerLine);
+		pPlayer->Set_Dir(m_Info.iStageDir);
+
+		return false;
+	}
 
 	return true;
 }
@@ -105,15 +113,6 @@ _bool CCarChase::Running()
 
 _bool CCarChase::End()
 {
-	m_iState = STAGE_END;
-
-	//플레이어 줄 이동이 있다면 이동 후 스테이지를 종료한다.
-	if (m_Info.iPlayerLine != m_Info.iPlayerNextLine)
-	{
-		
-
-		return false;
-	}
 
 	return true;
 }

@@ -17,6 +17,7 @@ bool g_isUVAnim;
 float2 g_StartUV;
 float2 g_EndUV;
 float4 g_vEndColor;
+float2 g_AnimScale;
 
 struct VS_IN
 {
@@ -57,9 +58,18 @@ VS_OUT VS_ANIM(VS_IN In)
     
     float3 EndPos = World._41_42_43;
     float3 StartPos = EndPos.xyz + g_vStartPos.xyz;
-    float factor = g_fAnimTime.x / g_fAnimTime.y;
     
+    float XScale = g_AnimScale.x;
+    float YScale = g_AnimScale.y;
+    
+    
+    float factor = g_fAnimTime.x / g_fAnimTime.y;
+    float XScalefactor = lerp(1.f, XScale, factor);
+    float YScalefactor = lerp(1.f, YScale, factor);
     World._41_42_43 = lerp(StartPos, EndPos, float3(factor, factor, factor));
+    World._11 *= XScalefactor;
+    World._22 *= YScalefactor;
+    
     
     float4 WorldPos = mul(float4(In.vPosition, 1.f), World);
     
@@ -84,8 +94,16 @@ VS_OUT VS_EFFECTANIM(VS_IN In)
     float3 StartPos = EndPos.xyz + g_vStartPos.xyz;
     float factor = saturate((g_vLifeTime.x - g_vLifeTime.y) / (g_vLifeTime.z - g_vLifeTime.y));
     
-    World._41_42_43 = lerp(StartPos, EndPos, float3(factor, factor, factor));
+    float XScale = g_AnimScale.x;
+    float YScale = g_AnimScale.y;
     
+    float XScalefactor = lerp(1.f ,XScale, factor);
+    float YScalefactor = lerp(1.f , YScale, factor);
+    World._41_42_43 = lerp(StartPos, EndPos, float3(factor, factor, factor));
+    World._11 *= XScalefactor;
+    World._22 *= YScalefactor;
+    
+
     float4 WorldPos = mul(float4(In.vPosition, 1.f), World);
     
     Out.vPosition = mul(WorldPos, matVP);
@@ -205,6 +223,65 @@ PS_OUT PS_COLOR_ALPHABLEND_EFFECT(PS_IN In)
     return Out;
 }
 
+PS_OUT PS_COLOR_REPEAT_EFFECT(PS_IN In)
+{
+    PS_OUT Out = (PS_OUT) 0;
+    
+    if (g_vLifeTime.x < g_vLifeTime.y || g_vLifeTime.x > g_vLifeTime.z)
+        discard;
+    else
+    {
+      
+        vector BaseColor = 0;
+        
+        if (g_isUVAnim)
+        {
+            float Move = frac(g_vLifeTime.x - g_vLifeTime.y);
+            
+            float TexX = frac(In.vTexcoord.x + Move);
+            
+            if (TexX > g_EndUV.x || TexX <= g_StartUV.x)
+                TexX += g_StartUV.x + (1.f - g_EndUV.x);
+
+                
+            
+            
+            
+            float2 Texcoord = float2(frac(TexX), In.vTexcoord.y);
+            
+            BaseColor = g_Texture.Sample(LinearSampler, Texcoord);
+        }
+        else
+            BaseColor = g_Texture.Sample(LinearSampler, In.vTexcoord);
+        
+        vector BaseAlpha = 0.f;
+        vector MergeColor = g_vColor;
+        vector FinalColor = vector(0.f, 0.f, 0.f, 0.f);
+        
+
+
+
+        FinalColor = BaseColor * MergeColor;
+        float MiddleTime = (g_vLifeTime.z - g_vLifeTime.y) / 2.f;
+        float CurrentTime = (g_vLifeTime.x - g_vLifeTime.y);
+            
+        if (MiddleTime > CurrentTime)
+        {
+            BaseAlpha = saturate(CurrentTime / MiddleTime);
+            FinalColor.a *= BaseAlpha;
+        }
+        else
+        {
+            BaseAlpha = saturate((CurrentTime - MiddleTime) / MiddleTime);
+            FinalColor.a *= 1.f - BaseAlpha;
+        }
+
+        
+        Out.vColor = FinalColor;
+    }
+    
+    return Out;
+}
 PS_OUT PS_COLOR_ALPHABLEND_ANIM(PS_IN In)
 {
     PS_OUT Out = (PS_OUT) 0;
@@ -249,6 +326,20 @@ PS_OUT PS_COLOR_SCREEN_ANIM(PS_IN In)
     
     vector FinColor = lerp(StartColor, EndColor, factor);
     Out.vColor = vector(FinColor.rgb, FinColor.a * Alpha);
+    
+    return Out;
+}
+
+PS_OUT PS_COLOR_SCREEN(PS_IN In)
+{
+    PS_OUT Out = (PS_OUT) 0;
+    
+    vector BaseColor = g_Texture.Sample(LinearSampler, In.vTexcoord);
+    
+    vector MergeColor = g_vColor;
+    vector FinColor = BaseColor * MergeColor;
+
+    Out.vColor = FinColor;
     
     return Out;
 }
@@ -373,6 +464,31 @@ technique11 DefaultTechnique
         HullShader = NULL;
         DomainShader = NULL;
         PixelShader = compile ps_5_0 PS_COLOR_SCREEN_ANIM();
+    }
+    pass Color_Screen_Texture //7
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_Screen, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_ANIM();
+        GeometryShader = NULL;
+        HullShader = NULL;
+        DomainShader = NULL;
+        PixelShader = compile ps_5_0 PS_COLOR_SCREEN();
+    }
+
+    pass Color_Repeat_Effect_Texture //8 처음부터 끝까지 반복
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_EFFECTANIM();
+        GeometryShader = NULL;
+        HullShader = NULL;
+        DomainShader = NULL;
+        PixelShader = compile ps_5_0 PS_COLOR_REPEAT_EFFECT();
     }
 
 }

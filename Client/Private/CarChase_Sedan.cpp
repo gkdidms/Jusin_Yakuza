@@ -72,13 +72,13 @@ void CCarChase_Sedan::Change_Animation()
 	{
 		if (m_iWeaponType == GUN)
 		{
-			if (m_iDir == CAR_B)
+			if (m_iDir == DIR_B)
 				m_strAnimName = "mngcar_c_car_gun_aiml_b_curvel";
-			else if (m_iDir == CAR_F)
+			else if (m_iDir == DIR_F)
 				m_strAnimName = "mngcar_c_car_gun_aiml_f_curvel";
-			else if (m_iDir == CAR_L)
+			else if (m_iDir == DIR_L)
 				m_strAnimName = "mngcar_c_car_gun_aiml_l_curvel";
-			else if (m_iDir == CAR_R)
+			else if (m_iDir == DIR_R)
 				m_strAnimName = "mngcar_c_car_gun_aiml_r_curvel";
 		}
 			
@@ -88,13 +88,13 @@ void CCarChase_Sedan::Change_Animation()
 	{
 		if (m_iWeaponType == GUN)
 		{
-			if (m_iDir == CAR_B)
+			if (m_iDir == DIR_B)
 				m_strAnimName = "mngcar_c_car_gun_aiml_b_curver";
-			else if (m_iDir == CAR_F)
+			else if (m_iDir == DIR_F)
 				m_strAnimName = "mngcar_c_car_gun_aiml_f_curver";
-			else if (m_iDir == CAR_L)
+			else if (m_iDir == DIR_L)
 				m_strAnimName = "mngcar_c_car_gun_aiml_l_curver";
-			else if (m_iDir == CAR_R)
+			else if (m_iDir == DIR_R)
 				m_strAnimName = "mngcar_c_car_gun_aiml_r_curver";
 		}
 			
@@ -104,13 +104,13 @@ void CCarChase_Sedan::Change_Animation()
 	{
 		if (m_iWeaponType == GUN)
 		{
-			if (m_iDir == CAR_B)
+			if (m_iDir == DIR_B)
 				m_strAnimName = "mngcar_c_car_gun_aiml_b_dam";
-			else if (m_iDir == CAR_F)
+			else if (m_iDir == DIR_F)
 				m_strAnimName = "mngcar_c_car_gun_aiml_b_dam";
-			else if (m_iDir == CAR_L)
+			else if (m_iDir == DIR_L)
 				m_strAnimName = "mngcar_c_car_gun_aiml_l_dam";
-			else if (m_iDir == CAR_R)
+			else if (m_iDir == DIR_R)
 				m_strAnimName = "mngcar_c_car_gun_aiml_r_dam";
 		}
 			
@@ -120,13 +120,13 @@ void CCarChase_Sedan::Change_Animation()
 	{
 		if (m_iWeaponType == GUN)
 		{
-			if (m_iDir == CAR_B)
+			if (m_iDir == DIR_B)
 				m_strAnimName = "mngcar_c_car_gun_aiml_b_ded";
-			else if (m_iDir == CAR_F)
+			else if (m_iDir == DIR_F)
 				m_strAnimName = "mngcar_c_car_gun_aiml_f_ded";
-			else if (m_iDir == CAR_L)
+			else if (m_iDir == DIR_L)
 				m_strAnimName = "mngcar_c_car_gun_aiml_l_ded";
-			else if (m_iDir == CAR_R)
+			else if (m_iDir == DIR_R)
 				m_strAnimName = "mngcar_c_car_gun_aiml_r_ded";
 		}
 			
@@ -136,13 +136,13 @@ void CCarChase_Sedan::Change_Animation()
 	{
 		if (m_iWeaponType == GUN)
 		{
-			if (m_iDir == CAR_B)
+			if (m_iDir == DIR_B)
 				m_strAnimName = "mngcar_c_car_gun_aiml_b_dwn";
-			else if (m_iDir == CAR_F)
+			else if (m_iDir == DIR_F)
 				m_strAnimName = "mngcar_c_car_gun_aiml_f_dwn";
-			else if (m_iDir == CAR_L)
+			else if (m_iDir == DIR_L)
 				m_strAnimName = "mngcar_c_car_gun_aiml_l_dwn";
-			else if (m_iDir == CAR_R)
+			else if (m_iDir == DIR_R)
 				m_strAnimName = "mngcar_c_car_gun_aiml_r_dwn";
 		}
 			
@@ -152,13 +152,13 @@ void CCarChase_Sedan::Change_Animation()
 	{
 		if (m_iWeaponType == GUN)
 		{
-			if (m_iDir == CAR_B)
+			if (m_iDir == DIR_B)
 				m_strAnimName = "mngcar_c_car_gun_aiml_b_hi";
-			else if (m_iDir == CAR_F)
+			else if (m_iDir == DIR_F)
 				m_strAnimName = "mngcar_c_car_gun_aiml_f_hi";
-			else if (m_iDir == CAR_L)
+			else if (m_iDir == DIR_L)
 				m_strAnimName = "mngcar_c_car_gun_aiml_l_hi";
-			else if (m_iDir == CAR_R)
+			else if (m_iDir == DIR_R)
 				m_strAnimName = "mngcar_c_car_gun_aiml_r_hi";
 		}
 			
@@ -168,13 +168,13 @@ void CCarChase_Sedan::Change_Animation()
 	{
 		if (m_iWeaponType == GUN)
 		{
-			if (m_iDir == CAR_B)
+			if (m_iDir == DIR_B)
 				m_strAnimName = "mngcar_c_car_gun_aiml_b_l45";
-			else if (m_iDir == CAR_F)
+			else if (m_iDir == DIR_F)
 				m_strAnimName = "mngcar_c_car_gun_aiml_f_l45";
-			else if (m_iDir == CAR_L)
+			else if (m_iDir == DIR_L)
 				m_strAnimName = "mngcar_c_car_gun_aiml_l_l45";
-			else if (m_iDir == CAR_R)
+			else if (m_iDir == DIR_R)
 				m_strAnimName = "mngcar_c_car_gun_aiml_r_l45";
 		}
 			
@@ -184,13 +184,13 @@ void CCarChase_Sedan::Change_Animation()
 	{
 		if (m_iWeaponType == GUN)
 		{
-			if (m_iDir == CAR_B)
+			if (m_iDir == DIR_B)
 				m_strAnimName = "mngcar_c_car_gun_aiml_b_lp";
-			else if (m_iDir == CAR_F)
+			else if (m_iDir == DIR_F)
 				m_strAnimName = "mngcar_c_car_gun_aiml_f_lp";
-			else if (m_iDir == CAR_L)
+			else if (m_iDir == DIR_L)
 				m_strAnimName = "mngcar_c_car_gun_aiml_l_lp";
-			else if (m_iDir == CAR_R)
+			else if (m_iDir == DIR_R)
 				m_strAnimName = "mngcar_c_car_gun_aiml_r_lp";
 		}
 			
@@ -200,13 +200,13 @@ void CCarChase_Sedan::Change_Animation()
 	{
 		if (m_iWeaponType == GUN)
 		{
-			if (m_iDir == CAR_B)
+			if (m_iDir == DIR_B)
 				m_strAnimName = "mngcar_c_car_gun_aiml_b_shot";
-			else if (m_iDir == CAR_F)
+			else if (m_iDir == DIR_F)
 				m_strAnimName = "mngcar_c_car_gun_aiml_f_shot";
-			else if (m_iDir == CAR_L)
+			else if (m_iDir == DIR_L)
 				m_strAnimName = "mngcar_c_car_gun_aiml_l_shot";
-			else if (m_iDir == CAR_R)
+			else if (m_iDir == DIR_R)
 				m_strAnimName = "mngcar_c_car_gun_aiml_r_shot";
 		}
 			
@@ -216,13 +216,13 @@ void CCarChase_Sedan::Change_Animation()
 	{
 		if (m_iWeaponType == GUN)
 		{
-			if (m_iDir == CAR_B)
+			if (m_iDir == DIR_B)
 				m_strAnimName = "mngcar_c_car_gun_aiml_b_std_lp";
-			else if (m_iDir == CAR_F)
+			else if (m_iDir == DIR_F)
 				m_strAnimName = "mngcar_c_car_gun_aiml_f_std_lp";
-			else if (m_iDir == CAR_L)
+			else if (m_iDir == DIR_L)
 				m_strAnimName = "mngcar_c_car_gun_aiml_l_std_lp";
-			else if (m_iDir == CAR_R)
+			else if (m_iDir == DIR_R)
 				m_strAnimName = "mngcar_c_car_gun_aiml_r_std_lp";
 		}
 			
@@ -257,13 +257,13 @@ void CCarChase_Sedan::Change_Animation()
 	{
 		if (m_iWeaponType == GUN)
 		{
-			if (m_iDir == CAR_B)
+			if (m_iDir == DIR_B)
 				m_strAnimName = "mngcar_c_car_gun_aimr_b_curvel";
-			else if (m_iDir == CAR_F)				 
+			else if (m_iDir == DIR_F)				 
 				m_strAnimName = "mngcar_c_car_gun_aimr_f_curvel";
-			else if (m_iDir == CAR_L)				 
+			else if (m_iDir == DIR_L)				 
 				m_strAnimName = "mngcar_c_car_gun_aimr_l_curvel";
-			else if (m_iDir == CAR_R)				 
+			else if (m_iDir == DIR_R)				 
 				m_strAnimName = "mngcar_c_car_gun_aimr_r_curvel";
 		}
 
@@ -273,13 +273,13 @@ void CCarChase_Sedan::Change_Animation()
 	{
 		if (m_iWeaponType == GUN)
 		{
-			if (m_iDir == CAR_B)
+			if (m_iDir == DIR_B)
 				m_strAnimName = "mngcar_c_car_gun_aimr_b_curver";
-			else if (m_iDir == CAR_F)				 
+			else if (m_iDir == DIR_F)				 
 				m_strAnimName = "mngcar_c_car_gun_aimr_f_curver";
-			else if (m_iDir == CAR_L)				 
+			else if (m_iDir == DIR_L)				 
 				m_strAnimName = "mngcar_c_car_gun_aimr_l_curver";
-			else if (m_iDir == CAR_R)				 
+			else if (m_iDir == DIR_R)				 
 				m_strAnimName = "mngcar_c_car_gun_aimr_r_curver";
 		}
 
@@ -289,13 +289,13 @@ void CCarChase_Sedan::Change_Animation()
 	{
 		if (m_iWeaponType == GUN)
 		{
-			if (m_iDir == CAR_B)
+			if (m_iDir == DIR_B)
 				m_strAnimName = "mngcar_c_car_gun_aimr_b_dam";
-			else if (m_iDir == CAR_F)				 
+			else if (m_iDir == DIR_F)				 
 				m_strAnimName = "mngcar_c_car_gun_aimr_b_dam";
-			else if (m_iDir == CAR_L)				 
+			else if (m_iDir == DIR_L)				 
 				m_strAnimName = "mngcar_c_car_gun_aimr_l_dam";
-			else if (m_iDir == CAR_R)				 
+			else if (m_iDir == DIR_R)				 
 				m_strAnimName = "mngcar_c_car_gun_aimr_r_dam";
 		}
 
@@ -305,13 +305,13 @@ void CCarChase_Sedan::Change_Animation()
 	{
 		if (m_iWeaponType == GUN)
 		{
-			if (m_iDir == CAR_B)
+			if (m_iDir == DIR_B)
 				m_strAnimName = "mngcar_c_car_gun_aimr_b_ded";
-			else if (m_iDir == CAR_F)				 
+			else if (m_iDir == DIR_F)
 				m_strAnimName = "mngcar_c_car_gun_aimr_f_ded";
-			else if (m_iDir == CAR_L)				 
+			else if (m_iDir == DIR_L)
 				m_strAnimName = "mngcar_c_car_gun_aimr_l_ded";
-			else if (m_iDir == CAR_R)				 
+			else if (m_iDir == DIR_R)
 				m_strAnimName = "mngcar_c_car_gun_aimr_r_ded";
 		}
 
@@ -321,13 +321,13 @@ void CCarChase_Sedan::Change_Animation()
 	{
 		if (m_iWeaponType == GUN)
 		{
-			if (m_iDir == CAR_B)
+			if (m_iDir == DIR_B)
 				m_strAnimName = "mngcar_c_car_gun_aimr_b_dwn";
-			else if (m_iDir == CAR_F)				 
+			else if (m_iDir == DIR_F)				 
 				m_strAnimName = "mngcar_c_car_gun_aimr_f_dwn";
-			else if (m_iDir == CAR_L)				 
+			else if (m_iDir == DIR_L)				 
 				m_strAnimName = "mngcar_c_car_gun_aimr_l_dwn";
-			else if (m_iDir == CAR_R)				 
+			else if (m_iDir == DIR_R)
 				m_strAnimName = "mngcar_c_car_gun_aimr_r_dwn";
 		}
 
@@ -337,13 +337,13 @@ void CCarChase_Sedan::Change_Animation()
 	{
 		if (m_iWeaponType == GUN)
 		{
-			if (m_iDir == CAR_B)
+			if (m_iDir == DIR_B)
 				m_strAnimName = "mngcar_c_car_gun_aimr_b_hi";
-			else if (m_iDir == CAR_F)				 
+			else if (m_iDir == DIR_F)				 
 				m_strAnimName = "mngcar_c_car_gun_aimr_f_hi";
-			else if (m_iDir == CAR_L)				 
+			else if (m_iDir == DIR_L)				 
 				m_strAnimName = "mngcar_c_car_gun_aimr_l_hi";
-			else if (m_iDir == CAR_R)				 
+			else if (m_iDir == DIR_R)				 
 				m_strAnimName = "mngcar_c_car_gun_aimr_r_hi";
 		}
 
@@ -353,13 +353,13 @@ void CCarChase_Sedan::Change_Animation()
 	{
 		if (m_iWeaponType == GUN)
 		{
-			if (m_iDir == CAR_B)
+			if (m_iDir == DIR_B)
 				m_strAnimName = "mngcar_c_car_gun_aimr_b_l45";
-			else if (m_iDir == CAR_F)				 
+			else if (m_iDir == DIR_F)				 
 				m_strAnimName = "mngcar_c_car_gun_aimr_f_l45";
-			else if (m_iDir == CAR_L)				 
+			else if (m_iDir == DIR_L)				 
 				m_strAnimName = "mngcar_c_car_gun_aimr_l_l45";
-			else if (m_iDir == CAR_R)				 
+			else if (m_iDir == DIR_R)				 
 				m_strAnimName = "mngcar_c_car_gun_aimr_r_l45";
 		}
 
@@ -369,13 +369,13 @@ void CCarChase_Sedan::Change_Animation()
 	{
 		if (m_iWeaponType == GUN)
 		{
-			if (m_iDir == CAR_B)
+			if (m_iDir == DIR_B)
 				m_strAnimName = "mngcar_c_car_gun_aimr_b_lp";
-			else if (m_iDir == CAR_F)				 
+			else if (m_iDir == DIR_F)				 
 				m_strAnimName = "mngcar_c_car_gun_aimr_f_lp";
-			else if (m_iDir == CAR_L)				 
+			else if (m_iDir == DIR_L)				 
 				m_strAnimName = "mngcar_c_car_gun_aimr_l_lp";
-			else if (m_iDir == CAR_R)				 
+			else if (m_iDir == DIR_R)				 
 				m_strAnimName = "mngcar_c_car_gun_aimr_r_lp";
 		}
 
@@ -385,13 +385,13 @@ void CCarChase_Sedan::Change_Animation()
 	{
 		if (m_iWeaponType == GUN)
 		{
-			if (m_iDir == CAR_B)
+			if (m_iDir == DIR_B)
 				m_strAnimName = "mngcar_c_car_gun_aimr_b_shot";
-			else if (m_iDir == CAR_F)				 
+			else if (m_iDir == DIR_F)				 
 				m_strAnimName = "mngcar_c_car_gun_aimr_f_shot";
-			else if (m_iDir == CAR_L)				 
+			else if (m_iDir == DIR_L)				 
 				m_strAnimName = "mngcar_c_car_gun_aimr_l_shot";
-			else if (m_iDir == CAR_R)				 
+			else if (m_iDir == DIR_R)				 
 				m_strAnimName = "mngcar_c_car_gun_aimr_r_shot";
 		}
 
@@ -401,13 +401,13 @@ void CCarChase_Sedan::Change_Animation()
 	{
 		if (m_iWeaponType == GUN)
 		{
-			if (m_iDir == CAR_B)
+			if (m_iDir == DIR_B)
 				m_strAnimName = "mngcar_c_car_gun_aimr_b_std_lp";
-			else if (m_iDir == CAR_F)				 
+			else if (m_iDir == DIR_F)				 
 				m_strAnimName = "mngcar_c_car_gun_aimr_f_std_lp";
-			else if (m_iDir == CAR_L)				 
+			else if (m_iDir == DIR_L)				 
 				m_strAnimName = "mngcar_c_car_gun_aimr_l_std_lp";
-			else if (m_iDir == CAR_R)				 
+			else if (m_iDir == DIR_R)				 
 				m_strAnimName = "mngcar_c_car_gun_aimr_r_std_lp";
 		}
 
