@@ -516,6 +516,12 @@
     <ClCompile Include="..\Private\Highway_Taxi.cpp">
       <Filter>02.GameObjects\02.Character\LandObject\03.CarChase\02.Taxi</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\Gun_Cz75.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\03.CarChase\00.Reactor\04.Gun_Cz75</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\SocketModel.cpp">
+      <Filter>02.GameObjects\02.Character\PartObject\SocketObject\SocketModel</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\MainApp.h">
@@ -1062,6 +1068,12 @@
     <ClInclude Include="..\Public\Highway_Taxi.h" />
     <ClInclude Include="..\Public\Highway_Taxi.h">
       <Filter>02.GameObjects\02.Character\LandObject\03.CarChase\02.Taxi</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Gun_Cz75.h">
+      <Filter>02.GameObjects\02.Character\LandObject\03.CarChase\00.Reactor\04.Gun_Cz75</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\SocketModel.h">
+      <Filter>02.GameObjects\02.Character\PartObject\SocketObject\SocketModel</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1633,6 +1645,12 @@
     </Filter>
     <Filter Include="02.GameObjects\02.Character\LandObject\03.CarChase\02.Taxi\Kiryu">
       <UniqueIdentifier>{20572d64-5160-43d4-8e4b-17be5773ca5e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\03.CarChase\00.Reactor\04.Gun_Cz75">
+      <UniqueIdentifier>{343d5e2c-2c2b-42ed-b328-2a7fafa004bc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\PartObject\SocketObject\SocketModel">
+      <UniqueIdentifier>{7aa45944-45f0-493c-ac7b-d43e8dfcf78b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
