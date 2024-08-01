@@ -24,6 +24,11 @@ CLevel_Test::CLevel_Test(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 
 HRESULT CLevel_Test::Initialize()
 {
+	// 9 : 길거리
+	// 14 : 가라오케
+	// 11 : 도로
+	
+
 	// 테스트 client 로드 숫자랑 동일하게 설정해주기!!!!!!!!!!!!!!!!!!!!!!!
 	// 네비 다르면 터짐
 	// 테스트 다하면 지워라

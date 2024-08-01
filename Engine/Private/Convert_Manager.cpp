@@ -36,7 +36,7 @@ void CConvert_Manager::Get_FileNames(const string& strPath, vector<string>& vecO
 	vector<string> vecDirectoryNames;
 
 	for (const fs::directory_entry& entry :
-		fs::directory_iterator(strPath))
+			fs::directory_iterator(strPath))
 	{
 		string strFileName = entry.path().filename().string();
 
