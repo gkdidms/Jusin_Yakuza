@@ -147,6 +147,8 @@ HRESULT CUI_Effect::Bind_ResourceData()
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_vStartPos", &m_vStartPos, sizeof(_float3))))
 		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_AnimScale", &m_vAnimScale, sizeof(_float2))))
+		return E_FAIL;
 	return S_OK;
 }
 

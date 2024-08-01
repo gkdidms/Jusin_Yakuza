@@ -301,6 +301,8 @@ HRESULT CBtn::Load_binary(ifstream& in)
 
 	in.read((char*)&m_isEvent, sizeof(_bool));
 	in.read((char*)&m_isScreen, sizeof(_bool));
+	in.read((char*)&m_vEndColor, sizeof(_float4));
+	in.read((char*)&m_vAnimScale, sizeof(_float2));
 
 	//°³º°
 	ZeroMemory(charBox, MAX_PATH);
@@ -390,6 +392,9 @@ HRESULT CBtn::Bind_ResourceData()
 	if (m_isAnim)
 	{
 		if (FAILED(m_pShaderCom->Bind_RawValue("g_vStartPos", &m_vStartPos, sizeof(_float3))))
+			return E_FAIL;
+
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_AnimScale", &m_vAnimScale, sizeof(_float2))))
 			return E_FAIL;
 
 		if (FAILED(m_pShaderCom->Bind_RawValue("g_fAnimTime", &m_fAnimTime, sizeof(_float2))))

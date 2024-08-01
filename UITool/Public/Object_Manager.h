@@ -16,7 +16,7 @@ class CObject_Manager :
     DECLARE_SINGLETON(CObject_Manager)
 
 public:
-    enum TEXTURE_TYPE { IMG, BTN, TEXT,  GROUP, EFFECT, TEXTURE_TYPE_END };
+    enum TEXTURE_TYPE { IMG, BTN, TEXT,  GROUP, EFFECT,  TEXTURE_TYPE_END };
     enum MOVE_TYPE { UP, DOWN, MOVE_END };
     typedef struct {
         _uint iTextureType;
