@@ -23,6 +23,7 @@ private:
 
 public:
     HRESULT Intialize(void* pArg);
+    _bool Start();
     _bool Execute();
 
 private:
