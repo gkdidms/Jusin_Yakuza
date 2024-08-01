@@ -1,6 +1,10 @@
 #pragma once
 #include "LandObject.h"
 
+BEGIN(Engine)
+class CAnim;
+END
+
 BEGIN(Client)
 class CHighway_Kiryu :
     public CLandObject
@@ -9,11 +13,6 @@ public:
     struct CARCHASE_KIRYU_DESC
     {
         _float4x4* pTaxiWorldMatrix;
-    };
-
-    enum BATTLE_DIRECTION
-    {
-        LEFT, RIGHT,
     };
 
     enum BEHAVIOR_TYPE
@@ -66,10 +65,7 @@ private:
 
 
 private:
-    void Change_Behavior(BEHAVIOR_TYPE eType) {
-        m_eCurrentBehavior = eType;
-        m_isStarted = false;
-    }
+    void Change_Behavior(BEHAVIOR_TYPE eType);
     void HideReload();
 
 private:
@@ -80,12 +76,14 @@ private:
     const _float4x4* pTaxiMatrix = { nullptr };
     _float4x4 m_ModelMatrix;
 
+    CAnim* m_pAnimCom = { nullptr };
+
     _float m_fHP = { 300.f };
     _float m_fHitEye = { 100.f };
 
     _uint m_iCurrentAmmo = { MAX_AMMO };
 
-    BATTLE_DIRECTION m_eBattleDirection = { LEFT };
+    _bool           m_isLeft = { true };
     BEHAVIOR_TYPE   m_eCurrentBehavior = { AIMING };
     _bool           m_isStarted = { false };
 
@@ -93,6 +91,7 @@ private:
     _bool m_bTest = { false };
     _float m_fTest = 0.f;
 
+    _float m_fKetuRadian = XMConvertToRadians(-90.f);
 public:
     static CHighway_Kiryu* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
     virtual CGameObject* Clone(void* pArg);

@@ -351,6 +351,12 @@ HRESULT CLoader::Loading_Default()
 	//if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Anim_Hand"), CAnim::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Anim/Animation_Hand.fbx", true))))
 	//	return E_FAIL;
 
+	///* For.Prototype_Component_Kiryu_CarChase */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Kiryu_CarChase"), CAnim::Create(m_pDevice, m_pContext, "../Bin/DataFiles/AnimationData/Animation_Kiryu_CarChase.dat", false))))
+		return E_FAIL;
+	//if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Kiryu_CarChase"), CAnim::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Anim/Animation_Kiryu_CarChase.fbx", true))))
+	//	return E_FAIL;
+
 
 
 	/* For.Prototype_Component_Anim_NPC */

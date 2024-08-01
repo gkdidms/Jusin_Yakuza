@@ -1213,7 +1213,7 @@ void CModel::Play_Animation_Rotation_SeparationBone(_float fTimeDelta, string st
 	for (auto& pBone : m_Bones)
 	{
 		// 만약 지금뼈가 넘겨받은 뼈 이름이랑 같다면, 계산된 컴바인드 상태에서 한번 더 회전행렬을 적용시킨다.
-		if (pBone->Get_Name() == strBoneName)
+		if (!strcmp(pBone->Get_Name(), strBoneName.c_str()))
 		{
 			auto& vTemp = pBone->Get_TransformationMatrix()->m[iDir][0];
 			_vector vBoneDir;
