@@ -37,7 +37,6 @@ HRESULT CHighway_Kiryu::Initialize(void* pArg)
 		return E_FAIL;
 
 	Set_HandAnimIndex(HAND_GUN);
-	On_Separation_Hand();
 
 	return S_OK;
 }
@@ -193,6 +192,7 @@ void CHighway_Kiryu::Play_CurrentAnimation(_float fTimeDelta)
 
 	// 애니메이션이 이상해서, 하반신만 Shot 애님으로 따로 돌려야한다.
 	m_pModelCom->Play_Animation_Separation(fTimeDelta, (m_isLeft ? 31 : 66), m_pAnimCom, true, 3);
+	m_pModelCom->Play_Animation_Separation(fTimeDelta, (m_isLeft ? 34 : 70), m_pAnimCom, true, 4);
 }
 
 void CHighway_Kiryu::Play_Animing(_float fTimeDelta)
@@ -203,9 +203,9 @@ void CHighway_Kiryu::Play_Animing(_float fTimeDelta)
 	// [29] [mngcar_c_car_gun_aiml_l_lp]		// 이 모션만 뭔가 잘못된건지 허리가 비틀려있음
 	// [64] [mngcar_c_car_gun_aimr_r_lp]
 	if (!m_isStarted)
-		m_pModelCom->Set_AnimationIndex((m_isLeft ? 71 : 74), 0.0f);
+		m_pModelCom->Set_AnimationIndex((m_isLeft ? 71 : 74), 4.f);
 	else
-		m_pModelCom->Set_AnimationIndex((m_isLeft ? 29 : 64), 0.0f);
+		m_pModelCom->Set_AnimationIndex((m_isLeft ? 29 : 64), 4.f);
 
 	if (m_pModelCom->Get_AnimFinished())
 		m_isStarted = true;
@@ -219,9 +219,9 @@ void CHighway_Kiryu::Play_HideReload(_float fTimeDelta)
 	// [72] [mngcar_c_car_gun_sitl_lp]
 	// [75] [mngcar_c_car_gun_sitr_lp]
 	if (!m_isStarted)
-		m_pModelCom->Set_AnimationIndex((m_isLeft ? 73 : 76), 0.0f);
+		m_pModelCom->Set_AnimationIndex((m_isLeft ? 73 : 76), 4.f);
 	else
-		m_pModelCom->Set_AnimationIndex((m_isLeft ? 72 : 75), 0.0f);
+		m_pModelCom->Set_AnimationIndex((m_isLeft ? 72 : 75), 4.f);
 
 	if (m_pModelCom->Get_AnimFinished())
 		m_isStarted = true;
@@ -238,7 +238,7 @@ void CHighway_Kiryu::Play_Shot(_float fTimeDelta)
 	// [31] [mngcar_c_car_gun_aiml_l_shot]
 	// [66] [mngcar_c_car_gun_aimr_r_shot]
 
-	m_pModelCom->Set_AnimationIndex((m_isLeft ? 31 : 66),0.0f);
+	m_pModelCom->Set_AnimationIndex((m_isLeft ? 31 : 66), 4.f);
 
 	if (m_pModelCom->Get_AnimFinished())
 		Change_Behavior(AIMING);
@@ -251,9 +251,9 @@ void CHighway_Kiryu::Play_Swap(_float fTimeDelta)
 		[78] [mngcar_c_car_gun_sync_aimrtol]
 	*/
 	if (!m_isStarted)
-		m_pModelCom->Set_AnimationIndex((m_isLeft ? 73 : 76), 0.0f);
+		m_pModelCom->Set_AnimationIndex((m_isLeft ? 73 : 76), 4.f);
 	else
-		m_pModelCom->Set_AnimationIndex((m_isLeft ? 77 : 78), 0.0f);
+		m_pModelCom->Set_AnimationIndex((m_isLeft ? 77 : 78), 4.f);
 
 	if (m_isStarted && m_pModelCom->Get_AnimFinished())
 	{
@@ -269,6 +269,10 @@ void CHighway_Kiryu::Play_Swap(_float fTimeDelta)
 
 void CHighway_Kiryu::Change_Behavior(BEHAVIOR_TYPE eType)
 {
+	// 양손 다 해제 후 필요한 손만 다시 설정
+	Off_Separation_Hand();
+	m_pModelCom->Set_Separation_ParentBone(m_isLeft ? "ude1_r_n" : "ude1_l_n", -1);
+
 	switch (eType)
 	{
 	case CHighway_Kiryu::AIMING:
@@ -296,6 +300,10 @@ void CHighway_Kiryu::Change_Behavior(BEHAVIOR_TYPE eType)
 	{
 		m_isStarted = true;
 		m_pModelCom->Set_Separation_ParentBone("ketu_c_n", 3);
+
+		
+		m_pModelCom->Set_Separation_ParentBone(m_isLeft ? "ude1_r_n" : "ude1_l_n", 4);
+		m_pModelCom->Set_Separation_SingleBone(m_isLeft ? "ude1_r_n" : "ude1_l_n", -1);
 		break;
 	}
 	case CHighway_Kiryu::SWAP:
@@ -308,9 +316,7 @@ void CHighway_Kiryu::Change_Behavior(BEHAVIOR_TYPE eType)
 
 	m_eCurrentBehavior = eType;
 
-
-	// 혹시 해제되는 것을 대비해서 다시 한번 실행시킨다
-	On_Separation_Hand();
+	On_Separation_Hand(m_isLeft ? 1 : 2);
 }
 
 void CHighway_Kiryu::HideReload()
