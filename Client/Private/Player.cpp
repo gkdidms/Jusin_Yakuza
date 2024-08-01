@@ -235,7 +235,7 @@ void CPlayer::Late_Tick(const _float& fTimeDelta)
 #ifdef _DEBUG
 	if (m_isObjectRender)
 	{
-		//m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
+		m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
 		//m_pGameInstance->Add_Renderer(CRenderer::RENDER_SHADOWOBJ, this); // Shadow¿ë ·»´õ Ãß°¡
 	}
 #else
@@ -902,7 +902,7 @@ void CPlayer::KRS_KeyInput(const _float& fTimeDelta)
 			m_iCurrentBehavior = (_uint)KRC_BEHAVIOR_STATE::IDLE;
 	}
 
-	if (!m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Stopping())
+	if (!m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Stopping() && m_iCurrentBehavior != (_uint)KRS_BEHAVIOR_STATE::GRAB)
 	{
 		if (m_pGameInstance->GetMouseState(DIM_LB) == TAP)
 		{

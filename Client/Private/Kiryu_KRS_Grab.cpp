@@ -74,68 +74,43 @@ void CKiryu_KRS_Grab::Tick(const _float& fTimeDelta)
 
 	if (m_isGrabed)
 	{
-		switch (m_iDirection)
+		switch (m_eAnimState)
 		{
-		// lapel (정면)
-		case CPlayer::F:
+		case SEIZE_TRY:
 		{
-			break;
-		}
-		//neck
-		case CPlayer::B:
-		{
-			m_iCurrentIndex = 14;
-			break;
-		}
-		// lapel (정면)
-		case CPlayer::R:
-		{
-			switch (m_eAnimState)
+			m_pPlayer->Off_Separation_Hand();
+			if (Changeable_Combo_Animation())
 			{
-			case SEIZE_TRY:
-			{
-				m_pPlayer->Off_Separation_Hand();
-				if (Changeable_Combo_Animation())
-				{
-					m_eAnimState = ANIM_START;
-					m_iCurrentIndex = 1;
-				}
-
-				break;
+				m_eAnimState = ANIM_START;
+				m_iCurrentIndex = 1;
 			}
-			case ANIM_START:
-			{
-				m_pPlayer->Set_HandAnimIndex(CPlayer::HAND_GU);
-				m_pPlayer->On_Separation_Hand();
-				if (Changeable_Combo_Animation())
-				{
-					m_eAnimState = ANIM_LOOP;
-					m_iCurrentIndex = 2;
-				}
 
-				break;
-			}
-			case ANIM_LOOP:
-				m_pPlayer->Set_HandAnimIndex(CPlayer::HAND_GU);
-				m_pPlayer->On_Separation_Hand();
-				// 여기에 키인풋
-				Move_KeyInput(fTimeDelta);
-
-				break;
-			case ANIM_END:
-				// 놓치는게 end (p_kru_sync_neck_off)
-				break;
-			default:
-				break;
-			}
 			break;
 		}
-		//neck
-		case CPlayer::L:
+		case ANIM_START:
 		{
-			m_iCurrentIndex = 14;
+			m_pPlayer->Set_HandAnimIndex(CPlayer::HAND_GU);
+			m_pPlayer->On_Separation_Hand();
+			if (Changeable_Combo_Animation())
+			{
+				m_eAnimState = ANIM_LOOP;
+				m_iCurrentIndex = 2;
+			}
+
 			break;
 		}
+		case ANIM_LOOP:
+			m_pPlayer->Set_HandAnimIndex(CPlayer::HAND_GU);
+			m_pPlayer->On_Separation_Hand();
+			// 여기에 키인풋
+			Move_KeyInput(fTimeDelta);
+
+			break;
+		case ANIM_END:
+			// 놓치는게 end (p_kru_sync_neck_off)
+			break;
+		default:
+			break;
 		}
 	}
 
