@@ -202,7 +202,7 @@ HRESULT CLevel_Test::Ready_Test_SceneModel(const wstring& strLayerTag)
 	//Desc.fRotatePecSec = XMConvertToRadians(0.f);
 	Desc.fRotatePecSec = XMConvertToRadians(180.f);
 
-	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_Taxi"), strLayerTag, &Desc)))
+	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_Gun_Cz75"), strLayerTag, &Desc)))
 		return E_FAIL;
 
 	return S_OK;

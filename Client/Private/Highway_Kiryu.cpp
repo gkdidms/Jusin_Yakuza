@@ -5,6 +5,9 @@
 #include "Mesh.h"
 #include "Bone.h"
 
+#include "SocketModel.h"
+#include "Gun_Cz75.h"
+
 CHighway_Kiryu::CHighway_Kiryu(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLandObject{ pDevice, pContext }
 {
@@ -36,6 +39,9 @@ HRESULT CHighway_Kiryu::Initialize(void* pArg)
 	if (FAILED(Add_CharacterData()))
 		return E_FAIL;
 
+	if (FAILED(Add_Objects()))
+		return E_FAIL;
+
 	Set_HandAnimIndex(HAND_GUN);
 
 	return S_OK;
@@ -43,6 +49,7 @@ HRESULT CHighway_Kiryu::Initialize(void* pArg)
 
 void CHighway_Kiryu::Priority_Tick(const _float& fTimeDelta)
 {
+	m_pGun->Priority_Tick(fTimeDelta);
 }
 
 void CHighway_Kiryu::Tick(const _float& fTimeDelta)
@@ -56,12 +63,15 @@ void CHighway_Kiryu::Tick(const _float& fTimeDelta)
 	Play_CurrentAnimation(fTimeDelta);
 
 	m_ModelMatrix = *pTaxiMatrix;
+
+	m_pGun->Tick(fTimeDelta);
 }
 
 void CHighway_Kiryu::Late_Tick(const _float& fTimeDelta)
 {
 	__super::Late_Tick(fTimeDelta);
 
+	m_pGun->Late_Tick(fTimeDelta);
 	m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
 }
 
@@ -357,6 +367,17 @@ HRESULT CHighway_Kiryu::Add_Components()
 	return S_OK;
 }
 
+HRESULT CHighway_Kiryu::Add_Objects()
+{
+	CSocketObject::SOCKETOBJECT_DESC Desc{};
+	Desc.pParentMatrix = pTaxiMatrix;
+	Desc.pCombinedTransformationMatrix = m_pModelCom->Get_BoneCombinedTransformationMatrix("buki_l_n");
+
+	m_pGun = dynamic_cast<CGun_Cz75*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Gun_Cz75"), &Desc));
+
+	return S_OK;
+}
+
 HRESULT CHighway_Kiryu::Bind_ResourceData()
 {
 	//if (FAILED(m_pTransformCom->Bind_ShaderMatrix(m_pShaderCom, "g_WorldMatrix")))
@@ -403,6 +424,7 @@ void CHighway_Kiryu::Free()
 {
 	__super::Free();
 
+	Safe_Release(m_pGun);
 	Safe_Release(m_pAnimCom);
 }
 

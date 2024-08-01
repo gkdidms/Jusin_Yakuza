@@ -70,6 +70,7 @@ private:
 
 private:
     virtual HRESULT Add_Components() override;
+    HRESULT Add_Objects();
     virtual HRESULT Bind_ResourceData() override;
 
 private:
@@ -77,6 +78,7 @@ private:
     _float4x4 m_ModelMatrix;
 
     CAnim* m_pAnimCom = { nullptr };
+    class CGun_Cz75* m_pGun = { nullptr };
 
     _float m_fHP = { 300.f };
     _float m_fHitEye = { 100.f };

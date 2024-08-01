@@ -173,7 +173,7 @@ protected:
     // 림라이트를 적용해줄 메시의 이름 (필요할 때마다 바뀌는 값)
     string m_strRimMeshName = "";
 
-    // 데미지 증폭 값 (기본은 1배, 스킬 사용 시 마다 변경해준다.)
+    // 데미지 증감 값 (기본은 1배, 스킬 사용 시 마다 변경해준다.)
     _float m_fDamageAmplify = { 1.f };
 
 protected:
