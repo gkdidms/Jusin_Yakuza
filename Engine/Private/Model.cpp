@@ -87,6 +87,7 @@ HRESULT CModel::Initialize_Prototype(MODELTYPE eModelType, const _char* pModelFi
 	}
 	else
 	{
+
 		string str = pModelFilePath;
 		if (FAILED(Import_Model(str, isTool)))
 			return E_FAIL;
