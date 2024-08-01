@@ -182,6 +182,9 @@ HRESULT CGroup::Load_Groupbinary(ifstream& in)
 			if (isnan(pDesc.vEndColor.x) || isnan(pDesc.vEndColor.y) || isnan(pDesc.vEndColor.z) || isnan(pDesc.vEndColor.w))
 				pDesc.vEndColor = _float4(1.f, 1.f, 1.f, 1.f);
 
+			in.read((char*)&pDesc.vAnimScale, sizeof(_float2));
+			if (isnan(pDesc.vAnimScale.x) || isnan(pDesc.vAnimScale.y))
+				pDesc.vAnimScale = _float2(1.f, 1.f);
 
 			pDesc.isLoad = true;
 			pDesc.pParentMatrix = m_pTransformCom->Get_WorldFloat4x4();
@@ -238,6 +241,11 @@ HRESULT CGroup::Load_Groupbinary(ifstream& in)
 
 			in.read((char*)&pDesc.isEvent, sizeof(_bool));
 			in.read((char*)&pDesc.isScreen, sizeof(_bool));
+
+			in.read((char*)&pDesc.vEndColor, sizeof(_float4));
+			in.read((char*)&pDesc.vAnimScale, sizeof(_float2));
+			//if (pDesc.bAnim)
+			//	pDesc.vAnimScale=_float2(1.f, 1.f);
 
 			ZeroMemory(charBox, MAX_PATH);
 			in.read((char*)&strTexturelength, sizeof(_int));
@@ -369,6 +377,9 @@ HRESULT CGroup::Load_Groupbinary(ifstream& in)
 
 			in.read((char*)&pDesc.isEvent, sizeof(_bool));
 			in.read((char*)&pDesc.isScreen, sizeof(_bool));
+
+			in.read((char*)&pDesc.vAnimScale, sizeof(_float2));
+			//pDesc.vAnimScale = _float2(1.f, 1.f);
 
 			in.read((char*)&pDesc.vLifeTime, sizeof(_float3));
 			in.read((char*)&pDesc.fSpeed, sizeof(_float));

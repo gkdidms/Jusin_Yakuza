@@ -12,6 +12,7 @@ public:
     HRESULT Initialize();
 public:
     _float Lerp(_float Start, _float End, _float Factor);
+    _uint Lerp(_uint Start, _uint End, _float Factor);
 public:
     static CCalculator* Create();
     virtual void Free() override;

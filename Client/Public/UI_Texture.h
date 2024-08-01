@@ -43,6 +43,7 @@ public:
         _bool bAnim;
         _float2 fAnimTime;
         _float3 vStartPos;//최종위치는 worldpos 
+        _float2 vAnimScale;//최종크기는 world
         _float2 fControlAlpha;
         _bool isReverse;
 
@@ -61,6 +62,7 @@ public:
 
     void Set_pParentWorld(const _float4x4* pWorld) { m_pParentMatrix = pWorld; }
     void Set_StartPos(_float3 vStartPos) { m_vStartPos = vStartPos;}
+    void Set_AnimScale(_float2 vAnimScale) { m_vAnimScale = vAnimScale; }
     void Set_AnimTime(_float2 fAnimTime) { m_fAnimTime = fAnimTime; }
     void Set_isAnim(_bool isAnim) { m_isAnim = isAnim; }
 
@@ -87,6 +89,7 @@ public:
     _float4 Get_Color() { return m_vColor; }
 
     _float3 Get_StartPos() { return m_vStartPos; }
+    _float2 Get_AnimScale() { return m_vAnimScale; }
     _float2 Get_AnimTime() { return m_fAnimTime; }
     _bool Get_isAnim() { return m_isAnim; }
     
@@ -153,7 +156,7 @@ protected:
     _bool m_isAnim;
     _float2 m_fAnimTime;
     _float3 m_vStartPos;
-
+    _float2 m_vAnimScale = { 1.f, 1.f };//x스타트,y엔드
     //시작하면 0-1 사라질땐 반대로
     _float2 m_fControlAlpha = { 0.f, 1.f };//시작,종료 알파(애님일경우)]
     _bool m_isReverse = { false };
