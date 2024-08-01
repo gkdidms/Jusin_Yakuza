@@ -4,6 +4,7 @@
 
 #include "CarChase.h"
 #include "CarChase_Monster.h"
+#include "CarChase_Reactor.h"
 #include "Highway_Taxi.h"
 
 CCarChaseManager::CCarChaseManager(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -20,12 +21,12 @@ HRESULT CCarChaseManager::Initialize()
 {
 	Ready_Stage();
 
-	////임시로 플레이어를 생성한다.
+	//임시로 플레이어를 생성한다.
 	CHighway_Taxi::HIGHWAY_TEXI_DESC Desc{};
 	Desc.fRotatePecSec = XMConvertToRadians(180.f);
 	Desc.fSpeedPecSec = 10.f;
 	Desc.iNaviNum = 0;
-	Desc.iNaviRouteNum = 0;
+	Desc.iNaviRouteNum = LINE_A;
 	Desc.iObjectIndex = 999999;
 	if (FAILED(m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Taxi"), TEXT("Layer_Texi"), &Desc)))
 		return E_FAIL;
@@ -49,6 +50,7 @@ HRESULT CCarChaseManager::Ready_Stage()
 		CCarChase::STAGE_MONSTER_INFO{
 			100000,
 			LINE_B,
+			DIR_F,
 			CCarChase_Monster::REACTOR_VAN,
 			{ CCarChase_Monster::WPR, -1}
 		},
@@ -56,7 +58,8 @@ HRESULT CCarChaseManager::Ready_Stage()
 
 	CCarChase::STAGE_INFO StageInfo_1 = CCarChase::STAGE_INFO{
 		LINE_A,
-		LINE_C,
+		LINE_A,
+		DIR_B,
 		MonsterInfo_1
 	};
 
@@ -87,7 +90,7 @@ HRESULT CCarChaseManager::Ready_Stage()
 
 	//CCarChase::STAGE_INFO StageInfo_2 = CCarChase::STAGE_INFO{
 	//	LINE_C,
-	//	LINE_D,
+	//	LINE_A,
 	//	MonsterInfo_2
 	//};
 
@@ -116,7 +119,7 @@ HRESULT CCarChaseManager::Ready_Stage()
 
 	//CCarChase::STAGE_INFO StageInfo_3 = CCarChase::STAGE_INFO{
 	//	LINE_D,
-	//	LINE_END,
+	//	LINE_C,
 	//	MonsterInfo_3
 	//};
 

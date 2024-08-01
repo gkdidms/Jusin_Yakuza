@@ -788,15 +788,15 @@ void CImgui_Manager::Window_Binary()
 
 
 
-                        if (!isAnim && !isColor)
+                        if (!isAnim && !isColor && !isScreen)
                         {
                             dynamic_cast<CUI_Texture*>(BinaryObject[m_iBinaryObjectIndex])->Set_ShaderPass(1);
                         }
-                        else if (isAnim && !isColor)
+                        else if (isAnim && !isColor && !isScreen)
                         {
                             dynamic_cast<CUI_Texture*>(BinaryObject[m_iBinaryObjectIndex])->Set_ShaderPass(4);
                         }
-                        else if (!isAnim && isColor)
+                        else if (!isAnim && isColor && !isScreen)
                         {
                             dynamic_cast<CUI_Texture*>(BinaryObject[m_iBinaryObjectIndex])->Set_ShaderPass(2);
                         }
@@ -808,7 +808,14 @@ void CImgui_Manager::Window_Binary()
                         {
                             dynamic_cast<CUI_Texture*>(BinaryObject[m_iBinaryObjectIndex])->Set_ShaderPass(6);
                         }
-
+                        else if (!isAnim && isColor && isScreen)
+                        {
+                            dynamic_cast<CUI_Texture*>(BinaryObject[m_iBinaryObjectIndex])->Set_ShaderPass(7);
+                        }
+                        else if (!isAnim && isColor && isScreen)
+                        {
+                            dynamic_cast<CUI_Texture*>(BinaryObject[m_iBinaryObjectIndex])->Set_ShaderPass(7);
+                        }
 
 
                         if (isAnim)
@@ -830,6 +837,11 @@ void CImgui_Manager::Window_Binary()
                             _float3 vStartPos = dynamic_cast<CUI_Texture*>(BinaryObject[m_iBinaryObjectIndex])->Get_StartPos();
                             if (ImGui::DragFloat3("StartPos", (float*)&vStartPos, 0.001f))
                                 dynamic_cast<CUI_Texture*>(BinaryObject[m_iBinaryObjectIndex])->Set_StartPos(vStartPos);
+
+                            _float2 vAnimScale = dynamic_cast<CUI_Texture*>(BinaryObject[m_iBinaryObjectIndex])->Get_AnimScale();
+                            if (ImGui::DragFloat2("AnimScale", (float*)&vAnimScale, 0.001f))
+                                dynamic_cast<CUI_Texture*>(BinaryObject[m_iBinaryObjectIndex])->Set_AnimScale(vAnimScale);
+
 
                             _float2 fControlAlpha = dynamic_cast<CUI_Texture*>(BinaryObject[m_iBinaryObjectIndex])->Get_ControlAlpha();
                             if (ImGui::DragFloat2("ControlAlpha", (float*)&fControlAlpha, 0.001f, 0.0f, 1.0f))
@@ -1353,19 +1365,19 @@ void CImgui_Manager::Window_Binary_Group()
             if (ImGui::Checkbox("isLoop", &isLoop))
                 dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Set_isAnimLoop(isLoop);
 
-            if (!isAnim && !isColor)
+            if (!isAnim && !isColor && !isScreen)
             {
                 dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Set_ShaderPass(1);
             }
-            else if (isAnim && !isColor)
+            else if (isAnim && !isColor && !isScreen)
             {
                 dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Set_ShaderPass(4);
             }
-            else if (!isAnim && isColor)
+            else if (!isAnim && isColor && !isScreen)
             {
                 dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Set_ShaderPass(2);
             }
-            else if (isAnim && isColor &&!isScreen)
+            else  if (isAnim && isColor &&!isScreen)
             {
                 dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Set_ShaderPass(5);
             }
@@ -1373,7 +1385,10 @@ void CImgui_Manager::Window_Binary_Group()
             {
                 dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Set_ShaderPass(6);
             }
-
+            else if (!isAnim && isColor && isScreen)
+            {
+                dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Set_ShaderPass(7);
+            }
 
 
 
@@ -1396,6 +1411,11 @@ void CImgui_Manager::Window_Binary_Group()
                 _float3 vStartPos = dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Get_StartPos();
                 if (ImGui::DragFloat3("StartPos", (float*)&vStartPos, 0.001f))
                     dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Set_StartPos(vStartPos);
+
+                _float2 vAnimScale = dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Get_AnimScale();
+                if (ImGui::DragFloat2("AnimScale", (float*)&vAnimScale, 0.001f))
+                    dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Set_AnimScale(vAnimScale);
+
 
                 _float2 fControlAlpha = dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Get_ControlAlpha();
                 if (ImGui::DragFloat2("ControlAlpha", (float*)&fControlAlpha, 0.001f, 0.0f, 1.0f))
@@ -1554,6 +1574,10 @@ void CImgui_Manager::Window_Binary_Group()
             _float3 vStartPos = dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Get_StartPos();
             if (ImGui::DragFloat3("StartPos", (float*)&vStartPos, 0.001f))
                 dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Set_StartPos(vStartPos);
+
+            _float2 vAnimScale = dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Get_AnimScale();
+            if (ImGui::DragFloat2("AnimScale", (float*)&vAnimScale, 0.001f))
+                dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Set_AnimScale(vAnimScale);
 
             _float4 vColor = dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Get_Color();
             static bool alpha_preview = true;

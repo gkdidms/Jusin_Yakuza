@@ -162,6 +162,9 @@ HRESULT CBtn::Save_binary(const string strDirectory)
 
 	out.write((char*)&m_isScreen, sizeof(_bool));
 
+	out.write((char*)&m_vEndColor, sizeof(_float4));
+
+	out.write((char*)&m_vAnimScale, sizeof(_float2));
 	//개별 저장
 
 	string ClickFilePath = m_pGameInstance->WstringToString(m_strClickFilePath);
@@ -241,6 +244,10 @@ HRESULT CBtn::Save_Groupbinary(ofstream& out)
 
 	out.write((char*)&m_isScreen, sizeof(_bool));
 
+	out.write((char*)&m_vEndColor, sizeof(_float4));
+
+	out.write((char*)&m_vAnimScale, sizeof(_float2));
+	
 	//개별 저장
 
 	string ClickFilePath = m_pGameInstance->WstringToString(m_strClickFilePath);
@@ -312,6 +319,8 @@ HRESULT CBtn::Load_binary(ifstream& in)
 
 	in.read((char*)&m_isEvent, sizeof(_bool));
 	in.read((char*)&m_isScreen, sizeof(_bool));
+	in.read((char*)&m_vEndColor, sizeof(_float4));
+	in.read((char*)&m_vAnimScale, sizeof(_float2));
 
 	//개별
 	ZeroMemory(charBox, MAX_PATH);
@@ -386,6 +395,8 @@ HRESULT CBtn::Bind_ResourceData()
 		if (FAILED(m_pShaderCom->Bind_RawValue("g_fControlAlpha", &m_fControlAlpha, sizeof(_float2))))
 			return E_FAIL;
 
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_AnimScale", &m_vAnimScale, sizeof(_float2))))
+			return E_FAIL;
 	}
 
 

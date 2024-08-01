@@ -43,6 +43,7 @@ public:
         _bool bAnim;
         _float2 fAnimTime;
         _float3 vStartPos;//최종위치는 worldpos 
+        _float2 vAnimScale;//최종크기는 world
         _float2 fControlAlpha;
         _bool isReverse;
 
@@ -60,6 +61,7 @@ public:
     void Set_WorldMatrix(_float4x4 World) { m_WorldMatrix = World; }
 
     void Set_StartPos(_float3 vStartPos) { m_vStartPos = vStartPos;}
+    void Set_AnimScale(_float2 vAnimScale) { m_vAnimScale = vAnimScale;}
     void Set_AnimTime(_float2 fAnimTime) { m_fAnimTime = fAnimTime; }
     void Set_isAnim(_bool isAnim) { m_isAnim = isAnim; }
     void Set_isAnimLoop(_bool isAnimLoop) { m_isAnimLoop = isAnimLoop; }
@@ -89,6 +91,7 @@ public:
     _float4 Get_EndColor() { return m_vEndColor; }
 
     _float3 Get_StartPos() { return m_vStartPos; }
+    _float2 Get_AnimScale() { return m_vAnimScale; }
     _float2 Get_AnimTime() { return m_fAnimTime; }
     _bool Get_isAnim() { return m_isAnim; }
     _bool Get_isAnimLoop() { return m_isAnimLoop; }
@@ -150,6 +153,7 @@ protected:
     _bool m_isAnim;
     _float2 m_fAnimTime;
     _float3 m_vStartPos;
+    _float2 m_vAnimScale = { 1.f, 1.f };//x스타트,y엔드
 
     _bool m_isPlay = { true };//버튼 만 over시에 사용
 
@@ -158,6 +162,7 @@ protected:
     _bool m_isReverse = { false };
 
     _bool m_isAnimLoop = { false };
+
 public:
     virtual HRESULT Save_binary(const string strDirectory)override; 
     virtual HRESULT Save_Groupbinary( ofstream& out)override;

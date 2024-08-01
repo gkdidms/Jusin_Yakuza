@@ -14,6 +14,11 @@ _float CCalculator::Lerp(_float Start, _float End, _float Factor)
 	return Start + (End - Start) * Factor;
 }
 
+_uint CCalculator::Lerp(_uint Start, _uint End, _float Factor)
+{
+	return Start + (End - Start) * Factor;
+}
+
 CCalculator* CCalculator::Create()
 {
 	CCalculator* pInstance = new CCalculator();

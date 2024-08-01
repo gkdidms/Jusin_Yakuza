@@ -63,6 +63,7 @@ HRESULT CUIScene::Show_Scene()
 
 HRESULT CUIScene::Close_Scene()
 {
+
 	for (auto& iter : m_UI)
 	{
 		iter->Close_UI();

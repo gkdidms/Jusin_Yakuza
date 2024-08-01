@@ -26,6 +26,7 @@ CUI_Texture::CUI_Texture(const CUI_Texture& rhs)
 	m_isAnim{rhs.m_isAnim},
 	m_fAnimTime{rhs.m_fAnimTime },
 	m_vStartPos{rhs.m_vStartPos },
+	m_vAnimScale{ rhs.m_vAnimScale },
 	m_iShaderPass{rhs.m_iShaderPass },
 	m_fControlAlpha{rhs.m_fControlAlpha },
 	m_isReverse{rhs.m_isReverse },
@@ -74,6 +75,8 @@ HRESULT CUI_Texture::Initialize(void* pArg)
 		m_fUpPoint = pDesc->vUpPoint;
 		m_fDownPoint = pDesc->vDownPoint;
 		m_vEndColor = pDesc->vEndColor;
+
+		m_vAnimScale = pDesc->vAnimScale;
 
 		m_WorldMatrix = pDesc->WorldMatrix;
 
@@ -272,6 +275,9 @@ HRESULT CUI_Texture::Bind_ResourceData()
 	if (m_isAnim)
 	{
 		if (FAILED(m_pShaderCom->Bind_RawValue("g_vStartPos", &m_vStartPos, sizeof(_float3))))
+			return E_FAIL;
+
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_AnimScale", &m_vAnimScale, sizeof(_float2))))
 			return E_FAIL;
 
 		if (FAILED(m_pShaderCom->Bind_RawValue("g_fAnimTime", &m_fAnimTime, sizeof(_float2))))
