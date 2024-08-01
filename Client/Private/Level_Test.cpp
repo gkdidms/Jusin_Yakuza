@@ -24,6 +24,11 @@ CLevel_Test::CLevel_Test(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 
 HRESULT CLevel_Test::Initialize()
 {
+	// 9 : 길거리
+	// 14 : 가라오케
+	// 11 : 도로
+	
+
 	// 테스트 client 로드 숫자랑 동일하게 설정해주기!!!!!!!!!!!!!!!!!!!!!!!
 	// 네비 다르면 터짐
 	// 테스트 다하면 지워라
@@ -49,7 +54,7 @@ HRESULT CLevel_Test::Initialize()
 	//	return E_FAIL;
 
 	/* 클라 파싱 */
-	m_pFileTotalManager->Set_MapObj_In_Client(11, LEVEL_TEST);
+	m_pFileTotalManager->Set_MapObj_In_Client(9, LEVEL_TEST);
 	m_pFileTotalManager->Set_Lights_In_Client(90);
 	m_pFileTotalManager->Set_Collider_In_Client(3, LEVEL_TEST);
 	m_pFileTotalManager->Set_Trigger_In_Client(99, LEVEL_TEST);

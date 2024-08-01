@@ -464,9 +464,6 @@
     <ClCompile Include="..\Private\CarChase_Heli.cpp">
       <Filter>02.GameObjects\02.Character\LandObject\03.CarChase\01.Monster\03.Heli</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\AI_CarChase.cpp">
-      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\CarChase\AI</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\UISkillMenu.cpp">
       <Filter>95.Utility\05.UIManager\UIScene\UISkillMenu</Filter>
     </ClCompile>
@@ -479,9 +476,6 @@
     <ClCompile Include="..\Private\UISkillDestroyer.cpp">
       <Filter>95.Utility\05.UIManager\UIScene\UISkillDestroyer</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Highway_Taxi.cpp">
-      <Filter>02.GameObjects\02.Character\LandObject\03.Highway\04.Taxi</Filter>
-	</ClCompile>
     <ClCompile Include="..\private\AI_Van.cpp">
       <Filter>02.GameObjects\02.Character\LandObject\03.CarChase\01.Monster\00.Van\AI</Filter>
     </ClCompile>
@@ -512,6 +506,8 @@
     <ClCompile Include="..\private\AI_CarChase.cpp">
       <Filter>02.GameObjects\02.Character\LandObject\03.CarChase\01.Monster\AI</Filter>
     </ClCompile>
+    <ClCompile Include="..\private\AI_CarChase.cpp" />
+    <ClCompile Include="..\Private\Highway_Taxi.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\MainApp.h">
@@ -1007,9 +1003,6 @@
     <ClInclude Include="..\Public\CarChase_Heli.h">
       <Filter>02.GameObjects\02.Character\LandObject\03.CarChase\01.Monster\03.Heli</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\AI_CarChase.h">
-      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\CarChase\AI</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\UISkillMenu.h">
       <Filter>95.Utility\05.UIManager\UIScene\UISkillMenu</Filter>
     </ClInclude>
@@ -1022,9 +1015,6 @@
     <ClInclude Include="..\Public\UISkillDestroyer.h">
       <Filter>95.Utility\05.UIManager\UIScene\UISkillDestroyer</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Highway_Taxi.h">
-      <Filter>02.GameObjects\02.Character\LandObject\03.Highway\04.Taxi</Filter>
-	</ClInclude>
     <ClInclude Include="..\public\AI_Van.h">
       <Filter>02.GameObjects\02.Character\LandObject\03.CarChase\01.Monster\00.Van\AI</Filter>
     </ClInclude>
@@ -1055,6 +1045,8 @@
     <ClInclude Include="..\public\AI_CarChase.h">
       <Filter>02.GameObjects\02.Character\LandObject\03.CarChase\01.Monster\AI</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\AI_CarChase.h" />
+    <ClInclude Include="..\Public\Highway_Taxi.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -1557,8 +1549,6 @@
     <Filter Include="95.Utility\05.UIManager\UIScene\UISkillDestroyer">
       <UniqueIdentifier>{fd65e228-ee0b-4ff4-ba2b-248b93e87aa2}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\02.Character\LandObject\03.Highway\04.Taxi">
-	</Filter>
     <Filter Include="05.CarChaseManager">
       <UniqueIdentifier>{fcea56b4-7172-49b8-87b8-180ce5856b11}</UniqueIdentifier>
     </Filter>
@@ -1657,6 +1647,9 @@
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxUI.hlsl">
+      <Filter>97.ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxMeshMap.hlsl">
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
   </ItemGroup>

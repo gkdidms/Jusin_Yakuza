@@ -123,6 +123,8 @@ void CMap::Late_Tick(const _float& fTimeDelta)
 	m_vDecalBlendMeshIndex.clear();
 	m_vBloomIndex.clear();
 	m_vMaskSignIndex.clear();
+	m_vDynamicSignIndex.clear();
+	m_vStrongBloomIndex.clear();
 
 	vector<CMesh*> Meshes = m_pModelCom->Get_Meshes();
 	_uint	iNumMeshes = m_pModelCom->Get_NumMeshes();
@@ -175,6 +177,14 @@ void CMap::Late_Tick(const _float& fTimeDelta)
 			{
 				m_vMaskSignIndex.push_back(i);
 			}
+			else if (0 == strcmp(Meshes[i]->Get_Name(), "STRONGBLOOM"))
+			{
+				m_vStrongBloomIndex.push_back(i);
+			}
+			else if (strstr(Meshes[i]->Get_Name(), "DYNAMICSIGN") != nullptr)
+			{
+				m_vDynamicSignIndex.push_back(i);
+			}
 			else
 			{
 				// mesh 안합쳐놓으면 그냥 default로 처리
@@ -183,7 +193,7 @@ void CMap::Late_Tick(const _float& fTimeDelta)
 		}
 		else if(false == m_bLocalCull)
 		{
-			float		fScale = Meshes[i]->Get_MeshScale() * 0.5;
+			float		fScale = Meshes[i]->Get_MeshScale();
 
 			if (fScale <= 0)
 				fScale = 10;
@@ -229,6 +239,14 @@ void CMap::Late_Tick(const _float& fTimeDelta)
 				{
 					m_vMaskSignIndex.push_back(i);
 				}
+				else if (0 == strcmp(Meshes[i]->Get_Name(), "STRONGBLOOM"))
+				{
+					m_vStrongBloomIndex.push_back(i);
+				}
+				else if (strstr(Meshes[i]->Get_Name(), "DYNAMICSIGN") != nullptr)
+				{
+					m_vDynamicSignIndex.push_back(i);
+				}
 				else
 				{
 					// mesh 안합쳐놓으면 그냥 default로 처리
@@ -238,6 +256,7 @@ void CMap::Late_Tick(const _float& fTimeDelta)
 		}
 		else
 		{
+			// 도로씬에서 다 DECAL 처리
 			float		fScale = Meshes[i]->Get_MeshScale() * 0.5;
 
 			if (fScale <= 0)
@@ -275,7 +294,7 @@ void CMap::Late_Tick(const _float& fTimeDelta)
 		m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONLIGHT_NONBLUR, this);
 
 	//Bloom
-	if (0 < m_vBloomIndex.size() || 0 < m_vSignMeshIndex.size() || 0 < m_vLampMeshIndex.size())
+	if (0 < m_vBloomIndex.size() || 0 < m_vSignMeshIndex.size() || 0 < m_vLampMeshIndex.size() || 0 < m_vStrongBloomIndex.size())
 		m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONLIGHT, this);
 
 
@@ -614,9 +633,6 @@ HRESULT CMap::Render()
 			m_pModelCom->Render(i);
 		}
 
-
-
-
 		for (size_t k = 0; k < m_vBloomIndex.size(); k++)
 		{
 			int		i = m_vBloomIndex[k];
@@ -637,6 +653,19 @@ HRESULT CMap::Render()
 				return E_FAIL;
 
 			m_pShaderCom->Begin(SHADER_SIGN_MASK);
+
+			m_pModelCom->Render(i);
+		}
+
+
+		for (size_t k = 0; k < m_vStrongBloomIndex.size(); k++)
+		{
+			int		i = m_vStrongBloomIndex[k];
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
+				return E_FAIL;
+
+			m_pShaderCom->Begin(SHADER_DEFAULT_MAP);
 
 			m_pModelCom->Render(i);
 		}
@@ -840,7 +869,17 @@ HRESULT CMap::Render()
 			m_pModelCom->Render(i);
 		}
 
+		for (size_t k = 0; k < m_vStrongBloomIndex.size(); k++)
+		{
+			int		i = m_vStrongBloomIndex[k];
 
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
+				return E_FAIL;
+
+			m_pShaderCom->Begin(SHADER_STRONGBLOOM);
+
+			m_pModelCom->Render(i);
+		}
 
 	}
 #pragma endregion
@@ -1026,6 +1065,8 @@ void CMap::Free()
 	m_vDecalBlendMeshIndex.clear();
 	m_vBloomIndex.clear();
 	m_vMaskSignIndex.clear();
+	m_vDynamicSignIndex.clear();
+	m_vStrongBloomIndex.clear();
 
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pModelCom);
