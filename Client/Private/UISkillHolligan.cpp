@@ -45,11 +45,20 @@ HRESULT CUISkillHolligan::Show_Scene()
 {
 	__super::Show_Scene();
 
-	for (auto& iter : m_pBall)
-		iter->Close_UI();
+
+	for (size_t i = 0; i < m_pBall.size(); i++)
+	{
+		if (m_isSkill[i])
+			m_pBall[i]->Show_UI();
+		else
+			m_pBall[i]->Close_UI();
+	}
 
 	for (auto& iter : m_EventUI)
 		iter->Close_UI();
+
+
+
 	return S_OK;
 }
 
@@ -158,7 +167,7 @@ void CUISkillHolligan::Action()
 
 	m_isSkill[m_iCurButton] = true;	
 	m_pBall[m_iCurButton]->Show_UI();	
-	
+
 }
 
 void CUISkillHolligan::OverAction()

@@ -235,6 +235,10 @@ HRESULT CImage_Texture::Load_binary(ifstream& in)
 	if (isnan(m_vEndColor.x) || isnan(m_vEndColor.y) || isnan(m_vEndColor.z) || isnan(m_vEndColor.w))
 		m_vEndColor = _float4(1.f, 1.f, 1.f, 1.f);
 
+	in.read((char*)&m_vAnimScale, sizeof(_float2));
+	if (isnan(m_vAnimScale.x) || isnan(m_vAnimScale.y))
+		m_vAnimScale = _float2(1.f, 1.f);
+
 	in.close();
 
 

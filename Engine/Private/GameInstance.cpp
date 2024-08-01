@@ -738,6 +738,11 @@ _float CGameInstance::Lerp(_float Start, _float End, _float Factor)
 	return m_pCalculator->Lerp(Start, End, Factor);
 }
 
+_uint CGameInstance::Lerp(_uint Start, _uint End, _float Factor)
+{
+	return m_pCalculator->Lerp(Start, End, Factor);
+}
+
 HRESULT CGameInstance::Add_Light(const LIGHT_DESC& LightDesc)
 {
 	return m_pLight_Manager->Add_Light(LightDesc);

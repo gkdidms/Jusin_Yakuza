@@ -198,9 +198,9 @@ HRESULT CVIBuffer_Rect::Edit_Point(_float4 vUpPoint, _float4 vDownPoint)
 
 	pVertices[1].vPosition = _float3{ 0.5f + vUpPoint.z, 0.5f + vUpPoint.w, 0.f };
 
-	pVertices[2].vPosition = _float3{ 0.5f +vDownPoint.x, -0.5f +vDownPoint.y, 0.f };
+	pVertices[2].vPosition = _float3{ 0.5f +vDownPoint.z, -0.5f +vDownPoint.w, 0.f };
 
-	pVertices[3].vPosition = _float3{ -0.5f +vDownPoint.z, -0.5f +vDownPoint.x, 0.f };
+	pVertices[3].vPosition = _float3{ -0.5f +vDownPoint.x, -0.5f +vDownPoint.y, 0.f };
 
 	m_pContext->Unmap(m_pVB, 0);
 

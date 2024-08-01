@@ -321,7 +321,6 @@ HRESULT CMainApp::Add_UI_On_Path(const wstring& strPath)
 		wstring strFilePath = strPath + strChannelName + TEXT("/");
 		string strDirectory = m_pGameInstance->WstringToString(strFilePath);
 
-
 		wstring ProtoFrontName = strChannelName + TEXT("_");
 
 		if (ProtoFrontName[0] == TEXT('1'))

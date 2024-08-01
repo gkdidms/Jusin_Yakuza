@@ -26,6 +26,7 @@ float4 g_vColor;
 
 float3 g_vLifeTime;
 float3 g_vStartPos;
+float2 g_AnimScale;
 
 float2 g_fAnimTime;
 float2 g_fControlAlpha;

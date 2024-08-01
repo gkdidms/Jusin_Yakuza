@@ -217,6 +217,7 @@ public:
     /* Calculator */
     public:
         _float Lerp(_float Start, _float End, _float Factor);
+        _uint Lerp(_uint Start, _uint End, _float Factor);
 private:
     class CGraphic_Device* m_pGraphic_Device = { nullptr };
     class CSoundMgr* m_pSound_Manager = { nullptr };
