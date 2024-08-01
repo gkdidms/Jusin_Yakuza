@@ -78,7 +78,8 @@ private:
     _float4x4 m_ModelMatrix;
 
     CAnim* m_pAnimCom = { nullptr };
-    class CGun_Cz75* m_pGun = { nullptr };
+    class CGun_Cz75* m_pGun_R = { nullptr };
+    class CGun_Cz75* m_pGun_L = { nullptr };
 
     _float m_fHP = { 300.f };
     _float m_fHitEye = { 100.f };

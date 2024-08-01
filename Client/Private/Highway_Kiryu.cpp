@@ -49,7 +49,10 @@ HRESULT CHighway_Kiryu::Initialize(void* pArg)
 
 void CHighway_Kiryu::Priority_Tick(const _float& fTimeDelta)
 {
-	m_pGun->Priority_Tick(fTimeDelta);
+	if(m_isLeft)
+		m_pGun_L->Priority_Tick(fTimeDelta);
+	else
+		m_pGun_R->Priority_Tick(fTimeDelta);
 }
 
 void CHighway_Kiryu::Tick(const _float& fTimeDelta)
@@ -64,14 +67,20 @@ void CHighway_Kiryu::Tick(const _float& fTimeDelta)
 
 	m_ModelMatrix = *pTaxiMatrix;
 
-	m_pGun->Tick(fTimeDelta);
+	if(m_isLeft)
+		m_pGun_L->Tick(fTimeDelta);
+	else
+		m_pGun_R->Tick(fTimeDelta);
 }
 
 void CHighway_Kiryu::Late_Tick(const _float& fTimeDelta)
 {
 	__super::Late_Tick(fTimeDelta);
 
-	m_pGun->Late_Tick(fTimeDelta);
+	if(m_isLeft)
+		m_pGun_L->Late_Tick(fTimeDelta);
+	else
+		m_pGun_R->Late_Tick(fTimeDelta);
 	m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
 }
 
@@ -371,9 +380,14 @@ HRESULT CHighway_Kiryu::Add_Objects()
 {
 	CSocketObject::SOCKETOBJECT_DESC Desc{};
 	Desc.pParentMatrix = pTaxiMatrix;
-	Desc.pCombinedTransformationMatrix = m_pModelCom->Get_BoneCombinedTransformationMatrix("buki_l_n");
+	Desc.pCombinedTransformationMatrix = m_pModelCom->Get_BoneCombinedTransformationMatrix("buki_r_n");
+	Desc.fRotatePecSec = XMConvertToRadians(90.f);
+	Desc.fSpeedPecSec = 1.f;
 
-	m_pGun = dynamic_cast<CGun_Cz75*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Gun_Cz75"), &Desc));
+	m_pGun_R = dynamic_cast<CGun_Cz75*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Gun_Cz75"), &Desc));
+
+	Desc.pCombinedTransformationMatrix = m_pModelCom->Get_BoneCombinedTransformationMatrix("buki_l_n");
+	m_pGun_L = dynamic_cast<CGun_Cz75*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Gun_Cz75"), &Desc));
 
 	return S_OK;
 }
@@ -424,7 +438,8 @@ void CHighway_Kiryu::Free()
 {
 	__super::Free();
 
-	Safe_Release(m_pGun);
+	Safe_Release(m_pGun_R);
+	Safe_Release(m_pGun_L);
 	Safe_Release(m_pAnimCom);
 }
 
