@@ -450,11 +450,13 @@ HRESULT CPlayer::Render()
 // 내 공격 콜라이더와 충돌했을 때
 void CPlayer::Attack_Event(CLandObject* pHitObject)
 {
+	if (m_iCurrentLevel == LEVEL_TEST)
+		m_isCollAttack = true;
+
 	switch (m_eCurrentStyle)
 	{
 	case CPlayer::KRS:
 	{
-
 		if (m_iCurrentBehavior == (_uint)KRS_BEHAVIOR_STATE::GRAB)
 		{
 			CKiryu_KRS_Grab::KRS_Grab_DESC Desc{ true, Compute_Target_Direction(pHitObject) };
