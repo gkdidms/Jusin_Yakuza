@@ -30,6 +30,7 @@ public:
 
 private:
     const _uint MAX_AMMO = 15;
+    const _float HITEYE_DECREASE_SPEED = 20.f;
 
 private:
     CHighway_Kiryu(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -43,6 +44,11 @@ public:
     virtual void Tick(const _float& fTimeDelta) override;
     virtual void Late_Tick(const _float& fTimeDelta) override;
     virtual HRESULT Render() override;
+
+public:
+    void Set_StageDir(_uint iStageDir) {
+        m_iStageDir = iStageDir;
+    }
 
 public:
     // CLandObject을(를) 통해 상속됨
@@ -86,15 +92,12 @@ private:
 
     _uint m_iCurrentAmmo = { MAX_AMMO };
 
-    _bool           m_isLeft = { true };
+    _bool           m_isLeft = { false };           // 시작 시 오른쪽부터 시작한다
     BEHAVIOR_TYPE   m_eCurrentBehavior = { AIMING };
+    _uint           m_iStageDir = { DIR_END };
     _bool           m_isStarted = { false };
+    _bool           m_isHitEyeCharging = { true };
 
-
-    _bool m_bTest = { false };
-    _float m_fTest = 0.f;
-
-    _float m_fKetuRadian = XMConvertToRadians(-90.f);
 public:
     static CHighway_Kiryu* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
     virtual CGameObject* Clone(void* pArg);

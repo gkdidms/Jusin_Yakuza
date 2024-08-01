@@ -59,7 +59,7 @@ HRESULT CCarChaseManager::Ready_Stage()
 	CCarChase::STAGE_INFO StageInfo_1 = CCarChase::STAGE_INFO{
 		LINE_A,
 		LINE_A,
-		DIR_B,
+		DIR_L,
 		MonsterInfo_1
 	};
 

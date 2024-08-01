@@ -39,14 +39,6 @@ void CGun_Cz75::Priority_Tick(const _float& fTimeDelta)
 
 void CGun_Cz75::Tick(const _float& fTimeDelta)
 {
-	if (m_pGameInstance->GetKeyState(DIK_K) == HOLD)
-		m_pTransformCom->Turn(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), fTimeDelta);
-	if (m_pGameInstance->GetKeyState(DIK_L) == HOLD)
-		m_pTransformCom->Turn(m_pTransformCom->Get_State(CTransform::STATE_UP), fTimeDelta);
-	if (m_pGameInstance->GetKeyState(DIK_SEMICOLON) == HOLD)
-		m_pTransformCom->Turn(m_pTransformCom->Get_State(CTransform::STATE_LOOK), fTimeDelta);
-
-
 	__super::Tick(fTimeDelta);
 }
 
@@ -95,7 +87,6 @@ HRESULT CGun_Cz75::Bind_ResourceData()
 {
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix)))
 		return E_FAIL;
-
 	//if (FAILED(m_pTransformCom->Bind_ShaderMatrix(m_pShaderCom, "g_WorldMatrix")))
 	//	return E_FAIL;
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_VIEW))))
