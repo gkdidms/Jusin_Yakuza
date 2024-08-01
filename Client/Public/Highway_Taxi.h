@@ -47,6 +47,8 @@ protected:
     _int     m_iNaviRouteNum = { 0 }; // 몬스터가 이동하는 네비게이션 위치
     _uint m_iStageDir = { DIR_END }; // 스테이지 위치 (앞, 뒤, 왼, 오)
 
+    _bool m_isStop = { false };
+
 protected:
     virtual void Change_Animation();
     void Move_Waypoint(const _float& fTimeDelta);

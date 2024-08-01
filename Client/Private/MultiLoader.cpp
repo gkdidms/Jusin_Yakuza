@@ -24,6 +24,7 @@
 #pragma region CarChase
 #pragma region Player
 #include "Highway_Taxi.h"
+#include "Highway_Kiryu.h"
 #pragma endregion
 
 #pragma region Monster
@@ -340,13 +341,13 @@ HRESULT CMultiLoader::Loading_Default()
 	/*if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Anim"), CAnim::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Anim/Animation.fbx", true))))
 		return E_FAIL;*/
 
-	/* For.Prototype_Component_SyncAnim */
+		/* For.Prototype_Component_SyncAnim */
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_SyncAnim"), CAnim::Create(m_pDevice, m_pContext, "../Bin/DataFiles/AnimationData/Animation_Sync.dat", false))))
 		return E_FAIL;
 	/*if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_SyncAnim"), CAnim::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Anim/Animation_Sync.fbx", true))))
 		return E_FAIL;*/
 
-	///* For.Prototype_Component_CutSceneAnim_ForPlayer */
+		///* For.Prototype_Component_CutSceneAnim_ForPlayer */
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_CutSceneAnim_ForPlayer"), CAnim::Create(m_pDevice, m_pContext, "../Bin/DataFiles/AnimationData/Animation_CutScene_ForPlayer.dat", false))))
 		return E_FAIL;
 	//if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_CutSceneAnim_ForPlayer"), CAnim::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Anim/Kiryu_CamAction.fbx", true))))
@@ -361,6 +362,12 @@ HRESULT CMultiLoader::Loading_Default()
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Anim_Hand"), CAnim::Create(m_pDevice, m_pContext, "../Bin/DataFiles/AnimationData/Animation_Hand.dat", false))))
 		return E_FAIL;
 	//if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Anim_Hand"), CAnim::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Anim/Animation_Hand.fbx", true))))
+	//	return E_FAIL;
+
+	///* For.Prototype_Component_Kiryu_CarChase */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Kiryu_CarChase"), CAnim::Create(m_pDevice, m_pContext, "../Bin/DataFiles/AnimationData/Animation_Kiryu_CarChase.dat", false))))
+		return E_FAIL;
+	//if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Kiryu_CarChase"), CAnim::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Anim/Animation_Kiryu_CarChase.fbx", true))))
 	//	return E_FAIL;
 
 
@@ -515,6 +522,8 @@ HRESULT CMultiLoader::Loading_For_Anim()
 	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_SoketEffect"),
 		CSocketEffect::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+
+
 #pragma endregion
 #pragma region Monster
 	/* For.Prototype_GameObject_RushYakuza */
@@ -553,6 +562,11 @@ HRESULT CMultiLoader::Loading_For_Anim()
 		return E_FAIL;
 #pragma endregion
 #pragma region Highway
+	/* For.Prototype_GameObject_CarChase_Kiryu (For.Player) */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_CarChase_Kiryu"),
+		CHighway_Kiryu::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 	/* For.Prototype_GameObject_Taxi (For.Player) */
 	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Taxi"),
 		CHighway_Taxi::Create(m_pDevice, m_pContext))))

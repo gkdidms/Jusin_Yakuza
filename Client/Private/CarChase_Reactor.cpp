@@ -64,7 +64,12 @@ void CCarChase_Reactor::Tick(const _float& fTimeDelta)
 	if (m_iAnim != -1)
 		m_pModelCom->Play_Animation(fTimeDelta, m_pAnimCom, m_isAnimLoop);
 
-	Move_Waypoint(fTimeDelta);
+#ifdef _DEBUG
+	if (m_pGameInstance->GetKeyState(DIK_LSHIFT) == TAP)
+		m_isStop = !m_isStop;
+#endif // _DEBUG
+	if (!m_isStop)
+		Move_Waypoint(fTimeDelta);
 	//m_pColliderCom->Tick(m_pTransformCom->Get_WorldMatrix());
 }
 

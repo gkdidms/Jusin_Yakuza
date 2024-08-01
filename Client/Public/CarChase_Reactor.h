@@ -46,6 +46,7 @@ protected:
 
 protected:
     _bool m_isAnimLoop = { false };
+    _bool m_isStop = { false };
     _uint m_iState = { 0 };
     _float m_fChangeInterval = { 4.f };
 
