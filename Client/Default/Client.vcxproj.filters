@@ -500,9 +500,6 @@
     <ClCompile Include="..\Private\Item.cpp">
       <Filter>02.GameObjects\10.Item</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Highway_Taxi.cpp">
-      <Filter>02.GameObjects\02.Character\LandObject\03.CarChase\02.Taxi</Filter>
-    </ClCompile>
     <ClCompile Include="..\private\AI_CarChase.cpp">
       <Filter>02.GameObjects\02.Character\LandObject\03.CarChase\01.Monster\AI</Filter>
     </ClCompile>
@@ -516,6 +513,9 @@
       <Filter>02.GameObjects\02.Character\LandObject\03.CarChase\02.Taxi\Kiryu</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Highway_Taxi.cpp" />
+    <ClCompile Include="..\Private\Highway_Taxi.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\03.CarChase\02.Taxi</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\MainApp.h">
@@ -1050,9 +1050,6 @@
     <ClInclude Include="..\Public\Item.h">
       <Filter>02.GameObjects\10.Item</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Highway_Taxi.h">
-      <Filter>02.GameObjects\02.Character\LandObject\03.CarChase\02.Taxi</Filter>
-    </ClInclude>
     <ClInclude Include="..\public\AI_CarChase.h">
       <Filter>02.GameObjects\02.Character\LandObject\03.CarChase\01.Monster\AI</Filter>
     </ClInclude>
@@ -1063,6 +1060,9 @@
       <Filter>02.GameObjects\02.Character\LandObject\03.CarChase\02.Taxi\Kiryu</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Highway_Taxi.h" />
+    <ClInclude Include="..\Public\Highway_Taxi.h">
+      <Filter>02.GameObjects\02.Character\LandObject\03.CarChase\02.Taxi</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">

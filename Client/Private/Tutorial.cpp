@@ -28,6 +28,8 @@ HRESULT CTutorial::Intialize(void* pArg)
 
 _bool CTutorial::Start()
 {
+	
+
 	return false;
 }
 
