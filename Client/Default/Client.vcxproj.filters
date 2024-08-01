@@ -22,9 +22,6 @@
     <ClCompile Include="..\Private\Terrain.cpp">
       <Filter>02.GameObjects\01.Terrain</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\Level_Test.cpp">
-      <Filter>01.Levels\98.Test</Filter>
-    </ClCompile>
     <ClCompile Include="..\private\Player.cpp">
       <Filter>02.GameObjects\02.Character\LandObject\00.Player</Filter>
     </ClCompile>
@@ -512,6 +509,12 @@
     <ClCompile Include="..\private\AI_CarChase.cpp">
       <Filter>02.GameObjects\02.Character\LandObject\03.CarChase\01.Monster\AI</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\MultiLoader.cpp">
+      <Filter>01.Levels\99.Loading\Loader\Multi</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Level_Test.cpp">
+      <Filter>01.Levels\98.Test</Filter>
+	</ClCompile>
     <ClCompile Include="..\Private\Highway_Kiryu.cpp">
       <Filter>02.GameObjects\02.Character\LandObject\03.CarChase\02.Taxi\Kiryu</Filter>
     </ClCompile>
@@ -1019,9 +1022,9 @@
     <ClInclude Include="..\Public\UISkillRush.h">
       <Filter>95.Utility\05.UIManager\UIScene\UISkillRush</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\UISkillDestroyer.h">
-      <Filter>95.Utility\05.UIManager\UIScene\UISkillDestroyer</Filter>
-    </ClInclude>
+	  <ClInclude Include="..\Public\UISkillDestroyer.h">
+		  <Filter>95.Utility\05.UIManager\UIScene\UISkillDestroyer</Filter>
+	  </ClInclude>
     <ClInclude Include="..\Public\UISkillGet.h">
       <Filter>95.Utility\05.UIManager\UIScene\UISkillGet</Filter>
 	</ClInclude>
@@ -1058,6 +1061,9 @@
     <ClInclude Include="..\public\AI_CarChase.h">
       <Filter>02.GameObjects\02.Character\LandObject\03.CarChase\01.Monster\AI</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\MultiLoader.h">
+      <Filter>01.Levels\99.Loading\Loader\Multi</Filter>
+	</ClInclude>
     <ClInclude Include="..\Public\Highway_Kiryu.h">
       <Filter>02.GameObjects\02.Character\LandObject\03.CarChase\02.Taxi\Kiryu</Filter>
     </ClInclude>
@@ -1626,6 +1632,9 @@
     <Filter Include="02.GameObjects\02.Character\LandObject\03.CarChase\02.Taxi">
       <UniqueIdentifier>{eae66a81-9be8-4e33-ab79-2ff998391627}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Levels\99.Loading\Loader\Multi">
+      <UniqueIdentifier>{14084344-ff5f-4f23-a39e-50e4aa861e1e}</UniqueIdentifier>
+	</Filter>
     <Filter Include="02.GameObjects\02.Character\LandObject\03.CarChase\02.Taxi\Kiryu">
       <UniqueIdentifier>{20572d64-5160-43d4-8e4b-17be5773ca5e}</UniqueIdentifier>
     </Filter>

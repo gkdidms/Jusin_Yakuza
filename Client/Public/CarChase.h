@@ -17,13 +17,15 @@ public:
     typedef struct tMonsterInfo {
         _uint iObjectIndex;
         _uint iMonsterLine;
+        _uint iMonsterDir;
         _uint iReactorType;
         _int iWeaponType[2];
     }STAGE_MONSTER_INFO;
 
     typedef struct tStageInfo {
         _uint iPlayerLine;
-        _uint iPlayerNextLine;
+        _uint iPrePlayerLine;
+        _uint iStageDir;
         vector<STAGE_MONSTER_INFO> MonsterInfo;
     } STAGE_INFO;
 

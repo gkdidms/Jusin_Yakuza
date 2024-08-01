@@ -18,6 +18,8 @@ public:
         _int				iShaderPass;
         _int             iNaviNum;
         _int             iNaviRouteNum;
+        _uint iStageDir;
+        _uint iLineDir;
         
         _int iMonsterWeaponType[2];
     }HIGHWAY_IODESC;
@@ -47,15 +49,18 @@ protected:
     _uint m_iState = { 0 };
     _float m_fChangeInterval = { 4.f };
 
-protected:
     string  m_strAnimName = "";
     _uint   m_iAnim = { 0 };
-    
 
     _bool   m_isColl = { false };
+    
+protected:
+    _uint m_iStageDir = { DIR_END };
+    _uint m_iLineDir = { DIR_END };
 
     _int     m_iNaviRouteNum = { 0 };
     _float m_fSpeed = { 40.f };
+
 
 protected:
     virtual HRESULT Ready_Monster(_int* pMonsterTypes) = 0;
