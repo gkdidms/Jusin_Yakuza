@@ -5,10 +5,10 @@
 CKiryu_Adventure_Walk::CKiryu_Adventure_Walk()
 	:CBehaviorAnimation{}
 {
-	m_AnimationIndices.push_back(423);		//[423]p_mov_walk_st[p_mov_walk_st]
-	m_AnimationIndices.push_back(422);		//[422]p_mov_walk_fast[p_mov_walk_fast]
-	m_AnimationIndices.push_back(420);		//[420]p_mov_walk_en[p_mov_walk_en]
-	m_AnimationIndices.push_back(421);		//[421]p_mov_walk_en_mir[p_mov_walk_en_mir]
+	m_AnimationIndices.push_back(644);		//[644]	[p_mov_walk_st]
+	m_AnimationIndices.push_back(642);		//[642]	[p_mov_walk_fast]
+	m_AnimationIndices.push_back(640);		//[640]	[p_mov_walk_en]
+	m_AnimationIndices.push_back(641);		//[641]	[p_mov_walk_en_mir]
 }
 
 void CKiryu_Adventure_Walk::Tick(const _float& fTimeDelta)

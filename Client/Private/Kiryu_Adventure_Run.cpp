@@ -7,45 +7,42 @@ CKiryu_Adventure_Run::CKiryu_Adventure_Run()
 	:CBehaviorAnimation{}
 {
 	// 시작 애니메이션들
-	m_AnimationIndices.push_back(413);	//	+[413]	p_mov_run_start_l180[p_mov_run_start_l180]
-	m_AnimationIndices.push_back(414);	//	+[414]	p_mov_run_start_l90[p_mov_run_start_l90]
-	m_AnimationIndices.push_back(415);	//	+[415]	p_mov_run_start_r180[p_mov_run_start_r180]
-	m_AnimationIndices.push_back(416);	//	+[416]	p_mov_run_start_r90[p_mov_run_start_r90]
+	m_AnimationIndices.push_back(629);	//	[629]	[p_mov_run_start_l180]
+	m_AnimationIndices.push_back(630);	//	[630]	[p_mov_run_start_l90]
+	m_AnimationIndices.push_back(631);	//	[631]	[p_mov_run_start_r180]
+	m_AnimationIndices.push_back(632);	//	[632]	[p_mov_run_start_r90]
 
 	// 달리는 루프 애니메이션들
-	m_AnimationIndices.push_back(410); 	//	+[410]	p_mov_run_kyoro[p_mov_run_kyoro]
-	m_AnimationIndices.push_back(411); 	//	+[411]	p_mov_run_l[p_mov_run_l]
-	m_AnimationIndices.push_back(412); 	//	+[412]	p_mov_run_l[p_mov_run_r]
+	m_AnimationIndices.push_back(624); 	//	[624]	[p_mov_run_kyoro]
+	m_AnimationIndices.push_back(625); 	//	[625]	[p_mov_run_l]
+	m_AnimationIndices.push_back(626); 	//	[626]	[p_mov_run_r]
 
 	// 끝날 때 애니메이션
-	m_AnimationIndices.push_back(417);	//	+[417]	p_mov_run_stop[p_mov_run_stop]
-	m_AnimationIndices.push_back(408);	//+[408]	p_mov_run_dash_tired_stop_l[p_mov_run_dash_tired_stop_l]
-	m_AnimationIndices.push_back(409);	//+[409]	p_mov_run_dash_tired_stop_s[p_mov_run_dash_tired_stop_s]
+	m_AnimationIndices.push_back(633);	//	[633]	[p_mov_run_stop]
+	m_AnimationIndices.push_back(622);	//	[622]	[p_mov_run_dash_tired_stop_l]
+	m_AnimationIndices.push_back(623);	//	[623]	[p_mov_run_dash_tired_stop_s]
 
 	// 대시 (어따쓰는진 모르겟음)
-	m_AnimationIndices.push_back(406);	// +[406]	p_mov_run_dash[p_mov_run_dash]
-	m_AnimationIndices.push_back(407);	// +[407]	p_mov_run_dash_tired[p_mov_run_dash_tired]
-	m_AnimationIndices.push_back(408);	// +[408]	p_mov_run_dash_tired_stop_l[p_mov_run_dash_tired_stop_l]
-	m_AnimationIndices.push_back(409);	// +[409]	p_mov_run_dash_tired_stop_s[p_mov_run_dash_tired_stop_s]
+	m_AnimationIndices.push_back(620);	// [620]	[p_mov_run_dash]
+	m_AnimationIndices.push_back(621);	// [621]	[p_mov_run_dash_tired]
 
 	// 범프 (부딪힐때)
-	
-	m_AnimationIndices.push_back(391); //+[391]	p_mov_bump_car_f[p_mov_bump_car_f]
-	m_AnimationIndices.push_back(392); //+[392]	p_mov_bump_car_l[p_mov_bump_car_l]
-	m_AnimationIndices.push_back(393); //+[393]	p_mov_bump_car_r[p_mov_bump_car_r]
-	m_AnimationIndices.push_back(395); //+[395]	p_mov_bump_f[p_mov_bump_f]
-	m_AnimationIndices.push_back(396); //+[396]	p_mov_bump_l[p_mov_bump_l]
-	m_AnimationIndices.push_back(397); //+[397]	p_mov_bump_r[p_mov_bump_r]
-	m_AnimationIndices.push_back(398); //+[398]	p_mov_bump_wall_l[p_mov_bump_wall_l]
-	m_AnimationIndices.push_back(399); //+[399]	p_mov_bump_wall_r[p_mov_bump_wall_r]
+	m_AnimationIndices.push_back(601); //[601]	[p_mov_bump_car_f]
+	m_AnimationIndices.push_back(602); //[602]	[p_mov_bump_car_l]
+	m_AnimationIndices.push_back(603); //[603]	[p_mov_bump_car_r]
+	m_AnimationIndices.push_back(604); //[604]	[p_mov_bump_f]
+	m_AnimationIndices.push_back(605); //[605]	[p_mov_bump_l]
+	m_AnimationIndices.push_back(606); //[606]	[p_mov_bump_r]
+	m_AnimationIndices.push_back(607); //[607]	[p_mov_bump_wall_l]
+	m_AnimationIndices.push_back(608); //[608]	[p_mov_bump_wall_r]
 
 
 	//데미지 입은 상태일 때																 
-	m_AnimationIndices.push_back(400); //+[400]	p_mov_dam_lp[p_mov_dam_lp]
-	m_AnimationIndices.push_back(401); //+[401]	p_mov_dam_run[p_mov_dam_run]
-	m_AnimationIndices.push_back(402); //+[402]	p_mov_dam_walk[p_mov_dam_walk]
-	m_AnimationIndices.push_back(403); //+[403]	p_mov_dam_walk_turnl[p_mov_dam_walk_turnl]
-	m_AnimationIndices.push_back(404); //+[404]	p_mov_dam_walk_turnr[p_mov_dam_walk_turnr]
+	m_AnimationIndices.push_back(610); //[610]	[p_mov_dam_lp]
+	m_AnimationIndices.push_back(611); //[611]	[p_mov_dam_run]
+	m_AnimationIndices.push_back(613); //[613]	[p_mov_dam_walk]
+	m_AnimationIndices.push_back(614); //[614]	[p_mov_dam_walk_turnl]
+	m_AnimationIndices.push_back(615); //[615]	[p_mov_dam_walk_turnr]
 
 	m_iCurrentIndex = 0;
 }
