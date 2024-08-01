@@ -24,6 +24,7 @@ CUI_Texture::CUI_Texture(const CUI_Texture& rhs)
 	m_isAnim{rhs.m_isAnim},
 	m_fAnimTime{rhs.m_fAnimTime },
 	m_vStartPos{rhs.m_vStartPos },
+	m_vAnimScale{rhs.m_vAnimScale},
 	m_iShaderPass{rhs.m_iShaderPass },
 	m_fControlAlpha{rhs.m_fControlAlpha },
 	m_isReverse{rhs.m_isReverse },
@@ -76,6 +77,8 @@ HRESULT CUI_Texture::Initialize(void* pArg)
 		m_fDownPoint = pDesc->vDownPoint;
 		m_vEndColor = pDesc->vEndColor;
 
+		m_vAnimScale = pDesc->vAnimScale;
+
 		m_fSizeX = g_iWinSizeX;
 		m_fSizeY = g_iWinSizeY;
 		m_fX = g_iWinSizeX >> 1;
@@ -123,6 +126,13 @@ void CUI_Texture::Tick(const _float& fTimeDelta)
 	}
 
 #endif // _TOOL
+
+	//if (m_isAnim)
+	//{
+	//	_float factor = m_fAnimTime.x / m_fAnimTime.y;
+	//	m_pGameInstance->
+	//}
+
 }
 
 void CUI_Texture::Late_Tick(const _float& fTimeDelta)
@@ -245,6 +255,8 @@ HRESULT CUI_Texture::Add_Components()
 
 HRESULT CUI_Texture::Bind_ResourceData()
 {
+	
+
 	if (m_isParent)
 	{
 		_float4x4 ResultWorld;
@@ -262,6 +274,9 @@ HRESULT CUI_Texture::Bind_ResourceData()
 	if (m_isAnim)
 	{
 		if (FAILED(m_pShaderCom->Bind_RawValue("g_vStartPos", &m_vStartPos, sizeof(_float3))))
+			return E_FAIL;
+
+		if (FAILED(m_pShaderCom->Bind_RawValue("g_AnimScale", &m_vAnimScale, sizeof(_float2))))
 			return E_FAIL;
 
 		if (FAILED(m_pShaderCom->Bind_RawValue("g_fAnimTime", &m_fAnimTime, sizeof(_float2))))

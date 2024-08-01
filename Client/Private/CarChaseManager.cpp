@@ -21,7 +21,7 @@ HRESULT CCarChaseManager::Initialize()
 {
 	Ready_Stage();
 
-	////임시로 플레이어를 생성한다.
+	//임시로 플레이어를 생성한다.
 	CHighway_Taxi::HIGHWAY_TEXI_DESC Desc{};
 	Desc.fRotatePecSec = XMConvertToRadians(180.f);
 	Desc.fSpeedPecSec = 10.f;

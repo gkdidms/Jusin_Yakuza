@@ -80,6 +80,7 @@ HRESULT CObject_Manager::Copy_Group(const wstring& strTag)
 			Desc.isScreen = pUI->Get_isScreen();
 			Desc.vEndColor = pUI->Get_EndColor();
 
+
 			CUI_Texture* pImage = dynamic_cast<CUI_Texture*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Image_Texture"), &Desc));
 			if (nullptr == pImage)
 				return E_FAIL;
@@ -381,7 +382,9 @@ HRESULT CObject_Manager::Load_binary(const wstring& strObjectTag, const string F
 		if (isnan(pDesc.vEndColor.x) || isnan(pDesc.vEndColor.y) || isnan(pDesc.vEndColor.z) || isnan(pDesc.vEndColor.w))
 			pDesc.vEndColor = _float4(1.f, 1.f, 1.f, 1.f);
 
-
+		in.read((char*)&pDesc.vAnimScale, sizeof(_float2));
+		if (0==(pDesc.vAnimScale.x) && 0==(pDesc.vAnimScale.y))
+			pDesc.vAnimScale = _float2(1.f, 1.f);
 
 		pDesc.isLoad = true;
 		in.close();
@@ -439,6 +442,18 @@ HRESULT CObject_Manager::Load_binary(const wstring& strObjectTag, const string F
 
 		in.read((char*)&pDesc.isEvent, sizeof(_bool));
 		in.read((char*)&pDesc.isScreen, sizeof(_bool));
+
+
+		in.read((char*)&pDesc.vEndColor, sizeof(_float4));
+		in.read((char*)&pDesc.vAnimScale, sizeof(_float2));
+
+		if (pDesc.bAnim)
+		{
+		//	pDesc.vEndColor = pDesc.vColor;
+			//pDesc.vAnimScale = _float2(1.f, 1.f);
+		}
+
+
 		//개별
 		ZeroMemory(charBox, MAX_PATH);	
 		in.read((char*)&strTexturelength, sizeof(_int));	
@@ -599,6 +614,9 @@ HRESULT CObject_Manager::Load_binary(const wstring& strObjectTag, const string F
 
 		in.read((char*)&pDesc.isEvent, sizeof(_bool));
 		in.read((char*)&pDesc.isScreen, sizeof(_bool));
+
+		//in.read((char*)&pDesc.vAnimScale, sizeof(_float2));
+		pDesc.vAnimScale = _float2(1.f, 1.f);
 		//개별
 
 		in.read((char*)&pDesc.vLifeTime, sizeof(_float3));	
@@ -1100,6 +1118,7 @@ HRESULT CObject_Manager::Copy_BinaryObject(const wstring& strObjectTag, _uint iI
 		TextureDesc.vDownPoint = dynamic_cast<CUI_Texture*>((*pObjects)[iIndex])->Get_DownPoint();
 		TextureDesc.vEndColor = dynamic_cast<CUI_Texture*>((*pObjects)[iIndex])->Get_EndColor();
 		TextureDesc.isScreen = dynamic_cast<CUI_Texture*>((*pObjects)[iIndex])->Get_isScreen();
+		TextureDesc.vAnimScale = dynamic_cast<CUI_Texture*>((*pObjects)[iIndex])->Get_AnimScale();
 		CUI_Texture* pImage = dynamic_cast<CUI_Texture*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Image_Texture"), &TextureDesc));
 		if (nullptr == pImage)
 			return E_FAIL;
@@ -1190,6 +1209,7 @@ HRESULT CObject_Manager::Copy_BinaryGroupObject(const wstring& strObjectTag, con
 
 		TextureDesc.vUpPoint = dynamic_cast<CUI_Texture*>((*pFineGroupObjects)[iIndex])->Get_UpPoint();
 		TextureDesc.vDownPoint = dynamic_cast<CUI_Texture*>((*pFineGroupObjects)[iIndex])->Get_DownPoint();
+		TextureDesc.vAnimScale = dynamic_cast<CUI_Texture*>((*pFineGroupObjects)[iIndex])->Get_AnimScale();
 
 
 		CUI_Texture* pImage = dynamic_cast<CUI_Texture*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Image_Texture"), &TextureDesc));

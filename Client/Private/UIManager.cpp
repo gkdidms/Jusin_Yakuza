@@ -17,6 +17,7 @@
 #include "UISkillHolligan.h"
 #include"UISkillRush.h"
 #include"UISkillDestroyer.h"
+#include "UISkillGet.h"
 
 #include "InventoryManager.h"
 #include "Player.h"
@@ -93,6 +94,8 @@ HRESULT CUIManager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 	pScene = CUISkillDestroyer::Create(m_pDevice, m_pContext);
 	m_AllScene.emplace(make_pair(TEXT("SkillDestroyer"), pScene));
 
+	pScene = CUISkillGet::Create(m_pDevice, m_pContext);
+	m_AllScene.emplace(make_pair(TEXT("SkillGet"), pScene));
 
 	return S_OK;
 }
@@ -145,6 +148,7 @@ HRESULT CUIManager::Tick(const _float& fTimeDelta)
 
 	if(!m_PlayScene.empty())
 	{
+
 		m_PlayScene.back()->Tick(fTimeDelta);
 
 	}
@@ -183,8 +187,8 @@ HRESULT CUIManager::Late_Tick(const _float& fTimeDelta)
 
 		if (!m_PlayScene.empty())
 		{
-			m_PlayScene.back()->Late_Tick(fTimeDelta);
-			
+
+				m_PlayScene.back()->Late_Tick(fTimeDelta);
 		}
 	}
 

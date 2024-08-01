@@ -25,6 +25,9 @@ public:
 	const _float4x4* Get_CombinedTransformationMatrix() const {
 		return &m_CombinedTransformationMatrix;
 	}
+	const _float4x4* Get_CustomRotationMatrix() const {
+		return &m_CustomRotationMatrix;
+	}
 
 	_int Get_Separation() {
 		return m_iSeparation;
@@ -33,6 +36,14 @@ public:
 public:
 	void Set_TransformationMatrix(_fmatrix TransformationMatrix) {
 		XMStoreFloat4x4(&m_TransformationMatrix, TransformationMatrix);
+	}
+
+	void Set_CombinedTransformationMatrix(_fmatrix CombinedTransformationMatrix) {
+		XMStoreFloat4x4(&m_CombinedTransformationMatrix, CombinedTransformationMatrix);
+	}
+
+	void Set_CustomRotationMatrix(_fmatrix CustomRotationMatrix) {
+		XMStoreFloat4x4(&m_CustomRotationMatrix, CustomRotationMatrix);
 	}
 
 	void Set_Separation(_int iSeparation) {
@@ -52,6 +63,7 @@ private:
 	_char				m_szName[MAX_PATH] = "";
 	_int				m_iParentBoneIndex = { 0 };
 	_float4x4			m_TransformationMatrix, m_CombinedTransformationMatrix;
+	_float4x4			m_CustomRotationMatrix;			// 추가적으로 회전시킨 매트릭스를 저장한다.
 
 	_int				m_iSeparation = -1;				// 분리 대상 뼈인지?
 

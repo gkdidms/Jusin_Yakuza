@@ -212,6 +212,7 @@
     <ClInclude Include="..\public\DefaultYakuza.h" />
     <ClInclude Include="..\public\CarChase_Reactor.h" />
     <ClInclude Include="..\public\CarChase_Monster.h" />
+    <ClInclude Include="..\Public\Highway_Kiryu.h" />
     <ClInclude Include="..\Public\Highway_Taxi.h" />
     <ClInclude Include="..\Public\Item.h" />
     <ClInclude Include="..\Public\Map.h" />
@@ -336,6 +337,7 @@
     <ClInclude Include="..\Public\UINowLoading.h" />
     <ClInclude Include="..\Public\UIScene.h" />
     <ClInclude Include="..\Public\UISkillDestroyer.h" />
+    <ClInclude Include="..\Public\UISkillGet.h" />
     <ClInclude Include="..\Public\UISkillHolligan.h" />
     <ClInclude Include="..\Public\UISkillMenu.h" />
     <ClInclude Include="..\Public\UISkillRush.h" />
@@ -396,6 +398,7 @@
     <ClCompile Include="..\private\DefaultYakuza.cpp" />
     <ClCompile Include="..\private\CarChase_Reactor.cpp" />
     <ClCompile Include="..\private\CarChase_Monster.cpp" />
+    <ClCompile Include="..\Private\Highway_Kiryu.cpp" />
     <ClCompile Include="..\Private\Highway_Taxi.cpp" />
     <ClCompile Include="..\Private\Item.cpp" />
     <ClCompile Include="..\Private\Map.cpp" />
@@ -518,6 +521,7 @@
     <ClCompile Include="..\Private\UINowLoading.cpp" />
     <ClCompile Include="..\Private\UIScene.cpp" />
     <ClCompile Include="..\Private\UISkillDestroyer.cpp" />
+    <ClCompile Include="..\Private\UISkillGet.cpp" />
     <ClCompile Include="..\Private\UISkillHolligan.cpp" />
     <ClCompile Include="..\Private\UISkillMenu.cpp" />
     <ClCompile Include="..\Private\UISkillRush.cpp" />

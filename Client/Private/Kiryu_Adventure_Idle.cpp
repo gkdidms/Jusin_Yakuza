@@ -5,8 +5,8 @@
 CKiryu_Adventure_Idle::CKiryu_Adventure_Idle()
 	:CBehaviorAnimation{}
 {
-	m_AnimationIndices.push_back(428);		//+[428]	p_stand_nml[p_stand_nml]
-	m_AnimationIndices.push_back(427);		//+[427]	p_stand_idle_lookaround[p_stand_idle_lookaround]
+	m_AnimationIndices.push_back(682);		// [682]	[p_stand_nml]
+	m_AnimationIndices.push_back(681);		// [681]	[p_stand_idle_lookaround]
 }
 
 void CKiryu_Adventure_Idle::Tick(const _float& fTimeDelta)
