@@ -30,6 +30,7 @@ HRESULT CCarChase_Monster::Initialize(void* pArg)
 	CARCHASE_MONSTER_DESC* pDesc = static_cast<CARCHASE_MONSTER_DESC*>(pArg);
 	m_pParentMatrix = pDesc->pParentMatrix;
 	m_iWeaponType = pDesc->iWeaponType;
+	m_iLineDir = pDesc->iLineDir;
 
 	m_iCurrentAnimType = CLandObject::DEFAULT;
 
@@ -50,7 +51,7 @@ void CCarChase_Monster::Tick(const _float& fTimeDelta)
 
 	m_pModelCom->Play_Animation_Monster(fTimeDelta, m_pAnimCom[m_iCurrentAnimType], m_isAnimLoop, false);
 	XMStoreFloat4x4(&m_ModelWorldMatrix, m_pTransformCom->Get_WorldMatrix() * XMLoadFloat4x4(m_pParentMatrix));
-
+	
 	//충돌처리 초기화
 	m_isColl = false;
 
