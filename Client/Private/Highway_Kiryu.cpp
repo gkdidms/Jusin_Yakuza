@@ -468,7 +468,6 @@ HRESULT CHighway_Kiryu::Add_Objects()
 	Desc.pCombinedTransformationMatrix = m_pModelCom->Get_BoneCombinedTransformationMatrix("buki_r_n");
 	Desc.fRotatePecSec = XMConvertToRadians(90.f);
 	Desc.fSpeedPecSec = 1.f;
-
 	m_pGun_R = dynamic_cast<CGun_Cz75*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Gun_Cz75"), &Desc));
 
 	Desc.pCombinedTransformationMatrix = m_pModelCom->Get_BoneCombinedTransformationMatrix("buki_l_n");
