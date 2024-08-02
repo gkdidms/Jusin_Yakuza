@@ -476,12 +476,6 @@
     <ClCompile Include="..\Private\UISkillDestroyer.cpp">
       <Filter>95.Utility\05.UIManager\UIScene\UISkillDestroyer</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\UISkillGet.cpp">
-      <Filter>95.Utility\05.UIManager\UIScene\UISkillGet</Filter>
-	</ClCompile>
-    <ClCompile Include="..\Private\Highway_Taxi.cpp">
-      <Filter>02.GameObjects\02.Character\LandObject\03.Highway\04.Taxi</Filter>
-	</ClCompile>
     <ClCompile Include="..\private\AI_Van.cpp">
       <Filter>02.GameObjects\02.Character\LandObject\03.CarChase\01.Monster\00.Van\AI</Filter>
     </ClCompile>
@@ -514,6 +508,10 @@
     </ClCompile>
     <ClCompile Include="..\Private\Highway_Kiryu.cpp">
       <Filter>02.GameObjects\02.Character\LandObject\03.CarChase\02.Taxi\Kiryu</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Highway_Taxi.cpp" />
+    <ClCompile Include="..\Private\UICarchase.cpp">
+      <Filter>95.Utility\05.UIManager\UIScene\UICarchase</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1022,12 +1020,6 @@
     <ClInclude Include="..\Public\UISkillDestroyer.h">
       <Filter>95.Utility\05.UIManager\UIScene\UISkillDestroyer</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\UISkillGet.h">
-      <Filter>95.Utility\05.UIManager\UIScene\UISkillGet</Filter>
-	</ClInclude>
-    <ClInclude Include="..\Public\Highway_Taxi.h">
-      <Filter>02.GameObjects\02.Character\LandObject\03.Highway\04.Taxi</Filter>
-	</ClInclude>
     <ClInclude Include="..\public\AI_Van.h">
       <Filter>02.GameObjects\02.Character\LandObject\03.CarChase\01.Monster\00.Van\AI</Filter>
     </ClInclude>
@@ -1060,6 +1052,10 @@
     </ClInclude>
     <ClInclude Include="..\Public\Highway_Kiryu.h">
       <Filter>02.GameObjects\02.Character\LandObject\03.CarChase\02.Taxi\Kiryu</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Highway_Taxi.h" />
+    <ClInclude Include="..\Public\UICarchase.h">
+      <Filter>95.Utility\05.UIManager\UIScene\UICarchase</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1565,7 +1561,7 @@
     </Filter>
     <Filter Include="95.Utility\05.UIManager\UIScene\UISkillGet">
       <UniqueIdentifier>{e932afff-247c-4f4a-a2b1-267cf2499e83}</UniqueIdentifier>
-	</Filter>
+    </Filter>
     <Filter Include="05.CarChaseManager">
       <UniqueIdentifier>{fcea56b4-7172-49b8-87b8-180ce5856b11}</UniqueIdentifier>
     </Filter>
@@ -1628,6 +1624,9 @@
     </Filter>
     <Filter Include="02.GameObjects\02.Character\LandObject\03.CarChase\02.Taxi\Kiryu">
       <UniqueIdentifier>{20572d64-5160-43d4-8e4b-17be5773ca5e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\05.UIManager\UIScene\UICarchase">
+      <UniqueIdentifier>{dd84ef19-b970-4985-9a13-c399eec4f605}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
