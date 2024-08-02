@@ -26,11 +26,15 @@ _uint CAnim::Get_AnimationIndex(const _char* pName)
 	_uint iIndex = 0;
 	for (auto& pAnim : m_Animations)
 	{
-		string strName;
-		istringstream Name(pAnim->Get_AnimName());
-		getline(Name, strName, '[');
-		
-		strName = strName.substr(0, strName.size() - 1);
+		string strName = pAnim->Get_AnimName();
+		size_t start = strName.find('[');
+		size_t end = strName.find(']', start);
+
+		if (start != std::string::npos && end != std::string::npos && end > start) {
+			// 대괄호가 존재하면, 그 사이의 문자열 추출
+			strName = strName.substr(start + 1, end - start - 1);
+		}
+
 		if (string_view(strName) == string_view(pName))
 			return iIndex;
 
