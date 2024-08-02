@@ -37,6 +37,8 @@ public:
 	_float4x4	Get_LocalMatrix() { return m_localMatrix; }
 	_float		Get_MeshScale() { return m_fScale; }
 
+	_bool isCloth();
+
 public:
 	void Set_AlphaApply(_bool isValue) { m_isAlphaApply = isValue; }
 
