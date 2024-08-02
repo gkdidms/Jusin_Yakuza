@@ -180,7 +180,7 @@ void CCollision_Manager::Enemy_Hit_Collision()
 
                 CEffect::EFFECT_DESC EffectDesc;
 
-                _matrix WorldMatrix = pPlayerAttackCollider->Get_TransformCom()->Get_WorldMatrix();
+                _matrix WorldMatrix = XMLoadFloat4x4(pPlayerAttackCollider->Get_PartWorldMatrix());
                 
                 _float4x4 matrix;
                 XMStoreFloat4x4(&matrix, WorldMatrix);
@@ -195,10 +195,10 @@ void CCollision_Manager::Enemy_Hit_Collision()
                 m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Hit1_Part4"), TEXT("Layer_Particle"), &EffectDesc);
                
  
-                WorldMatrix = XMMatrixIdentity();
-                WorldMatrix.r[3] = pPlayerAttackCollider->Get_TransformCom()->Get_State(CTransform::STATE_POSITION);
+                _matrix MoneyMatrix = XMMatrixIdentity();
+                MoneyMatrix.r[3] = WorldMatrix.r[3];
 
-                XMStoreFloat4x4(&matrix, WorldMatrix);
+                XMStoreFloat4x4(&matrix, MoneyMatrix);
 
                 EffectDesc.pWorldMatrix = &matrix;
                 //돈체크
@@ -224,7 +224,7 @@ void CCollision_Manager::Player_Hit_Collision()
             {
                 CEffect::EFFECT_DESC EffectDesc;
 
-                _matrix WorldMatrix = pEnemyAttackCollider->Get_TransformCom()->Get_WorldMatrix(); //맞는 얘콜라이더
+                _matrix WorldMatrix = XMLoadFloat4x4(pEnemyAttackCollider->Get_PartWorldMatrix()); //맞는 얘콜라이더
 
                 _float4x4 matrix;
                 XMStoreFloat4x4(&matrix, WorldMatrix);
