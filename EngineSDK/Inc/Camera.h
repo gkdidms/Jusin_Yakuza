@@ -46,11 +46,30 @@ protected:
     void Shaking(_float fTimeDelta);
 
 public:
+    const _float4x4* Get_WorldMatrix() const
+    {
+        return &m_WorldMatrix;
+    }
+
+    _float Get_Fov()
+    {
+        return m_fFovY;
+    }
+
     void Set_FoV(_float fFov) {
         m_fFovY = fFov;
     }
 
+    void Set_WorldMatrix(_fmatrix WorldMatrix)
+    {
+        XMStoreFloat4x4(&m_WorldMatrix, WorldMatrix);
+    }
+
 protected:
+    _float m_fDefaultFovY;
+    _float m_fDefaultNear;
+    _float m_fDefaultFar;
+
     _float m_fFovY;
     _float m_fAspect;
     _float m_fNear;

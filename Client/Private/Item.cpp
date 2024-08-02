@@ -159,8 +159,10 @@ void CItem::Tick(const _float& fTimeDelta)
 		offsetMatrix.r[1] = XMVector3Normalize(offsetMatrix.r[1]);
 		offsetMatrix.r[2] = XMVector3Normalize(offsetMatrix.r[2]);
 
-
-		XMStoreFloat4x4(&m_WorldMatrix, offsetMatrix * XMLoadFloat4x4(m_pPlayerMatrix));
+		if (nullptr != m_vParentMatrix)
+			XMStoreFloat4x4(&m_WorldMatrix, offsetMatrix * XMLoadFloat4x4(m_vParentMatrix) * XMLoadFloat4x4(m_pPlayerMatrix));
+		else
+			XMStoreFloat4x4(&m_WorldMatrix, offsetMatrix * XMLoadFloat4x4(m_pPlayerMatrix));
 
 		XMMATRIX worldMatrix = XMLoadFloat4x4(&m_WorldMatrix);
 		m_pTransformCom->Set_WorldMatrix(worldMatrix);

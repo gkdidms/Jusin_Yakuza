@@ -65,7 +65,7 @@ void CCarChase_Reactor::Tick(const _float& fTimeDelta)
 		m_pModelCom->Play_Animation(fTimeDelta, m_pAnimCom, m_isAnimLoop);
 
 #ifdef _DEBUG
-	if (m_pGameInstance->GetKeyState(DIK_LSHIFT) == TAP)
+	if (m_pGameInstance->GetKeyState(DIK_LCONTROL) == TAP)
 		m_isStop = !m_isStop;
 #endif // _DEBUG
 	if (!m_isStop)

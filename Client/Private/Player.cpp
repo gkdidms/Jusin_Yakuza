@@ -19,8 +19,11 @@
 
 #include "UIManager.h"
 #include "Camera.h"
+#include "PlayerCamera.h"
+#include "CutSceneCamera.h"
 
 #include "Monster.h"
+#include "Item.h"
 
 #pragma region 행동 관련 헤더들
 #include "Kiryu_KRC_Hit.h"
@@ -29,6 +32,7 @@
 #include "Kiryu_KRS_Down.h"
 #include "Kiryu_KRH_Down.h"
 #include "Kiryu_KRS_Grab.h"
+#include "Kiryu_KRC_Grab.h"
 #pragma endregion
 
 CPlayer::CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -59,6 +63,9 @@ CPlayer::CPlayer(const CPlayer& rhs)
 
 void CPlayer::Set_SeizeOff(_bool isOff)
 {
+	// 러쉬는 잡기 기능이 없다
+	if (KRH == m_eCurrentStyle) return;
+
 	//8번 Grab 공통
 	m_AnimationTree[m_eCurrentStyle].at(8)->Event(&isOff);
 }
@@ -214,8 +221,9 @@ void CPlayer::Tick(const _float& fTimeDelta)
 	for (auto& pEffect : m_pTrailEffects)
 		pEffect.second->Tick(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")));
 
-
-	KeyInput(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")));
+	// TODO: 튜토리얼 UI 정리된 이후 켜야함
+	//if(!m_pUIManager->IsOpend())
+		KeyInput(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")));
 
 	m_pColliderCom->Tick(m_pTransformCom->Get_WorldMatrix());
 
@@ -439,31 +447,63 @@ HRESULT CPlayer::Render()
 }
 
 // 내 공격 콜라이더와 충돌했을 때
-void CPlayer::Attack_Event(CLandObject* pHitObject)
+void CPlayer::Attack_Event(CGameObject* pHitObject, _bool isItem)
 {
-	switch (m_eCurrentStyle)
+	if (!isItem)
 	{
-	case CPlayer::KRS:
-	{
-		if (m_iCurrentBehavior == (_uint)KRS_BEHAVIOR_STATE::GRAB)
+		CLandObject* pLandObject = static_cast<CLandObject*>(pHitObject);
+
+		switch (m_eCurrentStyle)
 		{
-			CKiryu_KRS_Grab::KRS_Grab_DESC Desc{ true, Compute_Target_Direction(pHitObject) };
-			m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Setting_Value(&Desc);
+		case CPlayer::KRS:
+		{
+			if (m_iCurrentBehavior == (_uint)KRS_BEHAVIOR_STATE::GRAB)
+			{
+				CKiryu_KRS_Grab::KRS_Grab_DESC Desc{ true, Compute_Target_Direction(pLandObject) };
+				m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Setting_Value(&Desc);
+			}
+
+			break;
+		}
+		case CPlayer::KRC:
+		{
+			if (m_iCurrentBehavior == (_uint)KRC_BEHAVIOR_STATE::GRAB)
+			{
+				CKiryu_KRC_Grab::KRC_Grab_DESC Desc{ true, Compute_Target_Direction(pLandObject) };
+				m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Setting_Value(&Desc);
+			}
+
+			break;
+		}
+		}
+	}
+	else
+	{
+		CItem* pItem = static_cast<CItem*>(pHitObject);
+
+		// 충돌한 상대 객체가 아이템이라면 KRS일 때에는 현재 그랩한 경우에만 주워지지만, KRC일 때에는 그냥 주워진다.
+		switch (m_eCurrentStyle)
+		{
+		case CPlayer::KRS:
+		{
+			if (m_iCurrentBehavior == (_uint)KRS_BEHAVIOR_STATE::GRAB)
+			{
+				// 여기에 주웠을때에 대한 처리
+
+			}
+
+			break;
+		}
+		case CPlayer::KRC:
+		{
+			//여기에 주웠을 때에 대한 처리
+
+			break;
+		}
 		}
 
-		break;
 	}
-	case CPlayer::KRH:
-	{
-
-		break;
-	}
-	case CPlayer::KRC:
-	{
-
-		break;
-	}
-	}
+	
 }
 
 void CPlayer::Take_Damage(_uint iHitColliderType, const _float3& vDir, _float fDamage, CLandObject* pAttackedObject, _bool isBlowAttack)
@@ -591,7 +631,8 @@ void CPlayer::Ready_CutSceneAnimation()
 
 		KIRYU_GSWING,               //h1010 다리잡고 돌려서 스플릿 공격
 		DORYU_MIN,                  //h11285 멱살잡고 돌려서 스플릿 공격
-		NAGE_OIUCHI_NECK,           //h1540 들어서 바닥에 내던짐
+		LAPEL_OIUCHI_NECK,           //h1540 들어서 바닥에 내던짐 (앞잡)
+		NAGE_OIUCHI_NECK,           //h1540 들어서 바닥에 내던짐 (뒤잡)
 		POLE_KNOCK_LAPEL,           //h2040 근처에 기둥이 있다면 기둥에 박게하고 밟음
 		DORAMUKAN_88,               //h3261 큰 무기 (간판)을 들고 벽에 밀고 내려침
 		MONZETSU,                   //h11250 들어다가 무릎으로 똥꼬찍음 (뒤에서 잡기했을때 사용)
@@ -615,6 +656,7 @@ void CPlayer::Ready_CutSceneAnimation()
 	/* 파괴자 */
 	m_CutSceneAnimation.emplace(KIRYU_GSWING, "h1010");
 	m_CutSceneAnimation.emplace(DORYU_MIN, "h11285");
+	m_CutSceneAnimation.emplace(LAPEL_OIUCHI_NECK, "h1530");
 	m_CutSceneAnimation.emplace(NAGE_OIUCHI_NECK, "h1540");
 	m_CutSceneAnimation.emplace(POLE_KNOCK_LAPEL, "h2040");
 	m_CutSceneAnimation.emplace(DORAMUKAN_88, "h3261");
@@ -890,7 +932,7 @@ void CPlayer::KRS_KeyInput(const _float& fTimeDelta)
 			m_iCurrentBehavior = (_uint)KRC_BEHAVIOR_STATE::IDLE;
 	}
 
-	if (!m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Stopping())
+	if (!m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Stopping() && m_iCurrentBehavior != (_uint)KRS_BEHAVIOR_STATE::GRAB)
 	{
 		if (m_pGameInstance->GetMouseState(DIM_LB) == TAP)
 		{
@@ -1227,7 +1269,7 @@ void CPlayer::KRC_KeyInput(const _float& fTimeDelta)
 
 	if (m_iCurrentBehavior != (_uint)KRC_BEHAVIOR_STATE::GUARD)
 	{
-		if (!m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Stopping())
+		if (!m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Stopping() && m_iCurrentBehavior != (_uint)KRC_BEHAVIOR_STATE::GRAB)
 		{
 			if (m_pGameInstance->GetMouseState(DIM_LB) == TAP)
 			{
@@ -1255,6 +1297,13 @@ void CPlayer::KRC_KeyInput(const _float& fTimeDelta)
 					m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Setting_Value(&isBut);
 					m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Change_Animation();
 				}
+			}
+
+			// 어택중이 아닐때에만 Q입력을 받는다
+			if (m_iCurrentBehavior != (_uint)KRC_BEHAVIOR_STATE::ATTACK && m_iCurrentBehavior != (_uint)KRC_BEHAVIOR_STATE::GRAB && m_pGameInstance->GetKeyState(DIK_Q) == TAP)
+			{
+				m_iCurrentBehavior = (_uint)KRC_BEHAVIOR_STATE::GRAB;
+				m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Reset();
 			}
 		}
 
@@ -1484,7 +1533,7 @@ void CPlayer::Set_CutSceneAnim(CUTSCENE_ANIMATION_TYPE eType, _uint iFaceAnimInd
 		string ExtractName = m_pGameInstance->Extract_String(pAnimation->Get_AnimName(), '[', ']');
 
 		// 문자열 포함중이라면 인덱스 저장 후 반복문 종료
-		if (ExtractName.find(AnimName) != std::string::npos)
+		if (ExtractName.find(AnimName) != string::npos)
 		{
 			m_iCutSceneAnimIndex = i;
 			break;
@@ -1578,6 +1627,37 @@ void CPlayer::Reset_CutSceneEvent()
 	m_pCameraModel->Reset_Animation(m_iCutSceneCamAnimIndex);
 
 	m_eAnimComType = (m_eAnimComType == DEFAULT ? CUTSCENE : DEFAULT);
+
+	CAMERA eCurrentCam = m_pSystemManager->Get_Camera();
+
+	switch (eCurrentCam)
+	{
+		// 현재 플레이어 카메라이며, 컷신으로 돌리는 상황
+	case Client::CAMERA_PLAYER:
+	{
+		CPlayerCamera* pCamera = dynamic_cast<CPlayerCamera*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Camera"), CAMERA_PLAYER));
+		// 플레이어 카메라의 현재 상태를 저장한다.
+		pCamera->Store_PrevMatrix();
+		break;
+	}
+
+	// 현재 컷신 카메라이며, 플레이어 카메라로 돌리는 상황
+	case Client::CAMERA_CUTSCENE:
+		// 현재 컷신카메라의 마지막 행렬과 Fov를 받아와서
+		CCutSceneCamera* pCutSceneCamera = dynamic_cast<CCutSceneCamera*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Camera"), CAMERA_CUTSCENE));
+		_matrix LastMatrix = XMLoadFloat4x4(pCutSceneCamera->Get_WorldMatrix());
+		_float fLastFov = pCutSceneCamera->Get_Fov();
+
+		// 플레이어 카메라에 해당 정보를 모두 저장해준다.
+		CPlayerCamera* pCamera = dynamic_cast<CPlayerCamera*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Camera"), CAMERA_PLAYER));
+		pCamera->Store_StartMatrix(LastMatrix);
+		pCamera->Set_StartFov(fLastFov);		//선형보간할 때 시작값 fov 설정
+		pCamera->Set_FoV(fLastFov);				//현재 fov설정
+		pCamera->On_Return();
+		break;
+	}
+
+	// 그리고 체인지
 	m_pSystemManager->Set_Camera(CAMERA_CUTSCENE == m_pSystemManager->Get_Camera() ? CAMERA_PLAYER : CAMERA_CUTSCENE);
 }
 
@@ -1782,12 +1862,12 @@ void CPlayer::Setting_Target_Enemy()
 
 void CPlayer::AccHitGauge()
 {
-	if (PLAYER_HITGAUGE_LEVEL_INTERVAL * 3.f < m_fHitGauge)
-		m_fHitGauge = PLAYER_HITGAUGE_LEVEL_INTERVAL * 3.f;
-	else
-		m_fHitGauge += 5.f;
+	//if (PLAYER_HITGAUGE_LEVEL_INTERVAL * 3.f < m_fHitGauge)
+	//	m_fHitGauge = PLAYER_HITGAUGE_LEVEL_INTERVAL * 3.f;
+	//else
+	//	m_fHitGauge += 5.f;
 
-	m_iCurrentHitLevel = (m_fHitGauge / PLAYER_HITGAUGE_LEVEL_INTERVAL);
+	//m_iCurrentHitLevel = (m_fHitGauge / PLAYER_HITGAUGE_LEVEL_INTERVAL);
 }
 
 void CPlayer::Setting_RimLight()
