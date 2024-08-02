@@ -43,6 +43,10 @@ public:
     HRESULT Tick(const _float& fTimeDelta);
     HRESULT Late_Tick(const _float& fTimeDelta);
 
+    _bool IsOpend() {
+        return (0 < m_PlayScene.size());
+    }
+
     /* Setter */
 public:
     void Set_Player(class CPlayer* pPlayer)

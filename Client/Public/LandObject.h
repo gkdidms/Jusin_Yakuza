@@ -80,7 +80,7 @@ public:
 
     /* 충돌관련 함수들 */
     virtual void ImpulseResolution(CLandObject* pTargetObject, _float fDistance = 0.5f);
-    virtual void Attack_Event(CLandObject* pHitObject) {};
+    virtual void Attack_Event(CGameObject* pHitObject, _bool isItem = false) {};
     virtual void Take_Damage(_uint iHitColliderType, const _float3& vDir, _float fDamage, CLandObject* pAttackedObject, _bool isBlowAttack = false) {};
 
     /* Virtual Funtion */

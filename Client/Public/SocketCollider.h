@@ -95,7 +95,7 @@ public:
 	}
 
 public:
-	void ParentObject_Attack(CSocketCollider* pHitCollider);											// 콜라이더 충돌시, 어택했을 때 부를 함수
+	void ParentObject_Attack(CGameObject* pHitObejct, _bool isItem = false);											// 콜라이더 충돌시, 어택했을 때 부를 함수
 	void ParentObject_Hit(CSocketCollider* pAttackedCollider);			// 콜라이더 충돌시, 히트했을 때 부를 함수
 
 private:

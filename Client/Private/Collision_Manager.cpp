@@ -252,20 +252,27 @@ void CCollision_Manager::ItemCollision()
 
     for (auto& item : vItems)
     {
-        CItem::ITEM_MODE itemMode = dynamic_cast<CItem*>(item)->Get_ItemMode();
-
-        if (itemMode == CItem::ITEM_BRIGHT)
+        for (auto pPlayerAttackCollider : m_AttackColliders[PLAYER])
         {
-            CCollider* pItemCollider = dynamic_cast<CItem*>(item)->Get_Collider();
-            CCollider* playerCollider = dynamic_cast<CCollider*>(m_pGameInstance->Get_GameObject(iCurLevel, TEXT("Layer_Player"), 0)->Get_Component(TEXT("Com_Collider")));
+            CItem::ITEM_MODE itemMode = dynamic_cast<CItem*>(item)->Get_ItemMode();
 
-            if (pItemCollider->Intersect(playerCollider))
+            if (itemMode == CItem::ITEM_BRIGHT)
             {
-                // 잡았을때 처리 함수 
-                dynamic_cast<CItem*>(item)->Set_Grab(true);
+                CCollider* pItemCollider = dynamic_cast<CItem*>(item)->Get_Collider();
+
+                if (pItemCollider->Intersect(pPlayerAttackCollider->Get_Collider()))
+                {
+                    // 잡았을때 처리 함수 
+                    CPlayer* pPlayer = dynamic_cast<CPlayer*>(pPlayerAttackCollider->Get_Parent());
+                    CModel* pModel = dynamic_cast<CModel*>(pPlayer->Get_Component(TEXT("Com_Model")));
+
+                    dynamic_cast<CItem*>(item)->Set_ParentMatrix(pModel->Get_BoneCombinedTransformationMatrix("buki_r_n"));
+                    dynamic_cast<CItem*>(item)->Set_Grab(true);
+
+                    pPlayerAttackCollider->ParentObject_Attack(item, true);
+                }
             }
         }
-        
     }
 
 }

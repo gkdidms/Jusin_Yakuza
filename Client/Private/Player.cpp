@@ -23,6 +23,7 @@
 #include "CutSceneCamera.h"
 
 #include "Monster.h"
+#include "Item.h"
 
 #pragma region 행동 관련 헤더들
 #include "Kiryu_KRC_Hit.h"
@@ -220,8 +221,9 @@ void CPlayer::Tick(const _float& fTimeDelta)
 	for (auto& pEffect : m_pTrailEffects)
 		pEffect.second->Tick(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")));
 
-
-	KeyInput(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")));
+	// TODO: 튜토리얼 UI 정리된 이후 켜야함
+	//if(!m_pUIManager->IsOpend())
+		KeyInput(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")));
 
 	m_pColliderCom->Tick(m_pTransformCom->Get_WorldMatrix());
 
@@ -452,36 +454,63 @@ HRESULT CPlayer::Render()
 }
 
 // 내 공격 콜라이더와 충돌했을 때
-void CPlayer::Attack_Event(CLandObject* pHitObject)
+void CPlayer::Attack_Event(CGameObject* pHitObject, _bool isItem)
 {
-	switch (m_eCurrentStyle)
+	if (!isItem)
 	{
-	case CPlayer::KRS:
-	{
-		if (m_iCurrentBehavior == (_uint)KRS_BEHAVIOR_STATE::GRAB)
+		CLandObject* pLandObject = static_cast<CLandObject*>(pHitObject);
+
+		switch (m_eCurrentStyle)
 		{
-			CKiryu_KRS_Grab::KRS_Grab_DESC Desc{ true, Compute_Target_Direction(pHitObject) };
-			m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Setting_Value(&Desc);
+		case CPlayer::KRS:
+		{
+			if (m_iCurrentBehavior == (_uint)KRS_BEHAVIOR_STATE::GRAB)
+			{
+				CKiryu_KRS_Grab::KRS_Grab_DESC Desc{ true, Compute_Target_Direction(pLandObject) };
+				m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Setting_Value(&Desc);
+			}
+
+			break;
+		}
+		case CPlayer::KRC:
+		{
+			if (m_iCurrentBehavior == (_uint)KRC_BEHAVIOR_STATE::GRAB)
+			{
+				CKiryu_KRC_Grab::KRC_Grab_DESC Desc{ true, Compute_Target_Direction(pLandObject) };
+				m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Setting_Value(&Desc);
+			}
+
+			break;
+		}
+		}
+	}
+	else
+	{
+		CItem* pItem = static_cast<CItem*>(pHitObject);
+
+		// 충돌한 상대 객체가 아이템이라면 KRS일 때에는 현재 그랩한 경우에만 주워지지만, KRC일 때에는 그냥 주워진다.
+		switch (m_eCurrentStyle)
+		{
+		case CPlayer::KRS:
+		{
+			if (m_iCurrentBehavior == (_uint)KRS_BEHAVIOR_STATE::GRAB)
+			{
+				// 여기에 주웠을때에 대한 처리
+
+			}
+
+			break;
+		}
+		case CPlayer::KRC:
+		{
+			//여기에 주웠을 때에 대한 처리
+
+			break;
+		}
 		}
 
-		break;
 	}
-	case CPlayer::KRH:
-	{
-
-		break;
-	}
-	case CPlayer::KRC:
-	{
-		if (m_iCurrentBehavior == (_uint)KRC_BEHAVIOR_STATE::GRAB)
-		{
-			CKiryu_KRC_Grab::KRC_Grab_DESC Desc{ true, Compute_Target_Direction(pHitObject) };
-			m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Setting_Value(&Desc);
-		}
-
-		break;
-	}
-	}
+	
 }
 
 void CPlayer::Take_Damage(_uint iHitColliderType, const _float3& vDir, _float fDamage, CLandObject* pAttackedObject, _bool isBlowAttack)

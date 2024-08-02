@@ -175,7 +175,7 @@ public:
     virtual HRESULT Render() override;
 
     // 충돌함수
-    virtual void Attack_Event(CLandObject* pHitObject) override;
+    virtual void Attack_Event(CGameObject* pHitObject, _bool isItem = false) override;
     virtual void Take_Damage(_uint iHitColliderType, const _float3& vDir, _float fDamage, CLandObject* pAttackedObject, _bool isBlowAttack = false) override;
 
     virtual string Get_CurrentAnimationName() override;
