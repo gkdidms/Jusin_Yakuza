@@ -33,6 +33,8 @@ public:
     // HandAnim 데이터의 인덱스를 enum으로 정의해둠
     enum HAND_ANIMATION_TYPE {
         HAND_NEUTRAL,               //[0] [hand_parts_0_neutral] 평소 편하게 펴고있는 상태
+        HAND_MIDDLE,                //[1] [hand_parts_10_hand_middle] 
+        HAND_MIDDLE2,               //[2] [hand_parts_11_hand_middle2]
         HAND_CHOP = 8,              //[8] [hand_parts_17_chop]  촙!!! 스킬 쓸 때 손 날로 치기 때문에 손을 편 상태의 모양이다
         HAND_GU,                    //[9] [hand_parts_1_gu] 주먹 쥐는거
         HAND_HAKO,                  //[10] [hand_parts_3_hako] 큰 물체 쥘 때 펼쳐진 손
@@ -90,6 +92,13 @@ protected:
     virtual void RimLight_Event();
     virtual void Trail_Event();
 
+public:
+    // iHandType: 0양손, 1 왼손, 2 오른손
+    virtual void On_Separation_Hand(_uint iHandType = 0);           // 뼈 이름이 다르면 재정의해서 사용해야한다
+    virtual void Off_Separation_Hand(_uint iHandType = 0);
+    virtual void On_Separation_Face();
+    virtual void Off_Separation_Face();
+
     /* Fublic Virtual Funtion */
 public:
     virtual string Get_CurrentAnimationName() = 0;
@@ -122,6 +131,14 @@ public:
 
     void Set_DamageAmplify(_float fAmplify) {
         m_fDamageAmplify = fAmplify;
+    }
+
+    void    Set_FaceAnimIndex(_uint iFaceAnimIndex) { 
+        m_iFaceAnimIndex = iFaceAnimIndex; 
+    }
+
+    void    Set_HandAnimIndex(_uint iHandAnimIndex) { 
+        m_iHandAnimIndex = iHandAnimIndex;
     }
 
 #ifdef _DEBUG
@@ -170,7 +187,8 @@ protected:
 
     // 분할한 애니메이션을 실행할 애님 컴포넌트를 들고있을 배열
     vector<CAnim*>        m_SeparationAnimComs;
-
+    _uint           m_iHandAnimIndex = HAND_MIDDLE;
+    _uint           m_iFaceAnimIndex = { 0 };
 
 
 #ifdef _DEBUG

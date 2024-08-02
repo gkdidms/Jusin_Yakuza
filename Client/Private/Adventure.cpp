@@ -86,10 +86,11 @@ HRESULT CAdventure::Render()
 	{
 		_bool isCloth = true;
 		string strMeshName = string(pMesh->Get_Name());
-		if (strMeshName.find("hair") != string::npos || strMeshName.find("face") != string::npos ||
-			strMeshName.find("foot") != string::npos || strMeshName.find("body") != string::npos ||
-			strMeshName.find("eye") != string::npos)
+
+		regex pattern(".*(hair|face|foot|body|eye).*");
+		if (std::regex_search(strMeshName, pattern)) {
 			isCloth = false;
+		}
 
 		m_pShaderCom->Bind_RawValue("g_isCloth", &isCloth, sizeof(_bool));
 

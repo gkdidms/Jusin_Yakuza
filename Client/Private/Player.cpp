@@ -96,6 +96,8 @@ HRESULT CPlayer::Initialize(void* pArg)
 	// 새로 생성할 때 마다 UI매니저에 본인을 Set해준다.
 	m_pUIManager->Set_Player(this);
 
+	On_Separation_Hand(0);			// 양손 분리 켜둠
+
 	return S_OK;
 }
 
@@ -171,29 +173,6 @@ void CPlayer::Tick(const _float& fTimeDelta)
 			Set_CutSceneAnim(m_eCutSceneType, 1);
 			static_cast<CMonster*>(Get_TargetObject())->Set_Sync(m_CutSceneAnimation[m_eCutSceneType]);
 		}
-		
-	}
-
-	// 뼈 분리 테스트
-	if (m_pGameInstance->GetKeyState(DIK_N) == TAP)
-		m_iFaceAnimIndex--;
-	if (m_pGameInstance->GetKeyState(DIK_M) == TAP)
-		m_iFaceAnimIndex++;
-
-	if (m_pGameInstance->GetKeyState(DIK_C) == TAP)
-	{
-		m_pModelCom->Set_Separation_ParentBone("ude3_l_n", -1);
-		m_pModelCom->Set_Separation_ParentBone("ude3_r_n", -1);
-
-		m_pModelCom->Set_Separation_ParentBone("face_c_n", -1);
-	}
-	if (m_pGameInstance->GetKeyState(DIK_X) == TAP)
-	{
-		m_pModelCom->Set_Separation_ParentBone("ude3_l_n", (_int)HAND_COM);
-		m_pModelCom->Set_Separation_ParentBone("ude3_r_n", (_int)HAND_COM);
-
-		m_pModelCom->Set_Separation_ParentBone("face_c_n", (_int)FACE_COM);
-		m_pModelCom->Set_Separation_SingleBone("face_c_n", -1);
 	}
 
 	if (m_isAnimStart)
@@ -201,23 +180,27 @@ void CPlayer::Tick(const _float& fTimeDelta)
 		if (DEFAULT == m_eAnimComType)
 		{
 			m_pModelCom->Play_Animation_Separation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")), m_iHandAnimIndex, m_SeparationAnimComs[HAND_COM], false, (_int)HAND_COM);
-
 			m_pModelCom->Play_Animation_Separation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")), m_iFaceAnimIndex, m_SeparationAnimComs[FACE_COM], false, (_int)FACE_COM);
 			m_pModelCom->Play_Animation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")));
 		}
 		else
 		{
 			m_pModelCom->Play_Animation_Separation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")), m_iHandAnimIndex, m_SeparationAnimComs[HAND_COM], false, (_int)HAND_COM);
-
 			m_pModelCom->Play_Animation_Separation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")), m_iFaceAnimIndex, m_SeparationAnimComs[FACE_COM], false, (_int)FACE_COM);
 			Play_CutScene();
 		}
 	}
 #else
 	if (DEFAULT_ANIMAITION == m_eAnimComType)
+	{
+		m_pModelCom->Play_Animation_Separation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")), m_iHandAnimIndex, m_SeparationAnimComs[HAND_COM], false, (_int)HAND_COM);
+		m_pModelCom->Play_Animation_Separation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")), m_iFaceAnimIndex, m_SeparationAnimComs[FACE_COM], false, (_int)FACE_COM);
 		m_pModelCom->Play_Animation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")));
+	}
 	else
 	{
+		m_pModelCom->Play_Animation_Separation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")), m_iHandAnimIndex, m_SeparationAnimComs[HAND_COM], false, (_int)HAND_COM);
+		m_pModelCom->Play_Animation_Separation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")), m_iFaceAnimIndex, m_SeparationAnimComs[FACE_COM], false, (_int)FACE_COM);
 		Play_CutScene();
 	}
 #endif // _DEBUG
@@ -413,10 +396,11 @@ HRESULT CPlayer::Render()
 		//옷 셰이더 구분용
 		_bool isCloth = true;
 		string strMeshName = string(pMesh->Get_Name());
-		if (strMeshName.find("hair") != string::npos || strMeshName.find("face") != string::npos ||
-			strMeshName.find("foot") != string::npos || strMeshName.find("body") != string::npos ||
-			strMeshName.find("eye") != string::npos)
+		regex pattern(".*(hair|face|foot|body|eye).*");
+
+		if (regex_search(strMeshName, pattern)) {
 			isCloth = false;
+		}
 
 		m_pShaderCom->Bind_RawValue("g_isCloth", &isCloth, sizeof(_bool));
 
@@ -1496,7 +1480,8 @@ void CPlayer::Set_CutSceneAnim(CUTSCENE_ANIMATION_TYPE eType, _uint iFaceAnimInd
 
 	m_iFaceAnimIndex = iFaceAnimIndex;
 
-	On_Separation_Face();
+	On_Separation_Face();			// 얼굴 애니메이션 켜기
+	Off_Separation_Hand();			// 손 분리 애니메이션 끄기
 
 	string AnimName = (*iter).second;
 
@@ -1546,7 +1531,8 @@ void CPlayer::Play_CutScene()
 			m_iCurrentBehavior = 1;				// Idle상태로 되돌려둔다
 			Reset_CutSceneEvent();
 
-			Off_Separation_Face();
+			Off_Separation_Face();				// 컷신 종료 후 얼굴 애니메이션 종료
+			On_Separation_Hand();				// 컷신 종료 후 손 애니메이션 켜기
 
 			return;
 		}
@@ -1601,52 +1587,6 @@ void CPlayer::Reset_CutSceneEvent()
 
 	m_eAnimComType = (m_eAnimComType == DEFAULT ? CUTSCENE : DEFAULT);
 	m_pSystemManager->Set_Camera(CAMERA_CUTSCENE == m_pSystemManager->Get_Camera() ? CAMERA_PLAYER : CAMERA_CUTSCENE);
-}
-
-// iHandType: 0 양손, 1 왼손, 2 오른손
-void CPlayer::On_Separation_Hand(_uint iHandType)
-{
-	switch (iHandType)
-	{
-	case 0:		//양손
-		m_pModelCom->Set_Separation_ParentBone("ude3_r_n", (_int)HAND_COM);
-		m_pModelCom->Set_Separation_ParentBone("ude3_l_n", (_int)HAND_COM);
-		break;
-	case 1:		//왼손
-		m_pModelCom->Set_Separation_ParentBone("ude3_l_n", (_int)HAND_COM);
-		break;
-	case 2:		//오른손
-		m_pModelCom->Set_Separation_ParentBone("ude3_r_n", (_int)HAND_COM);
-		break;
-	}
-}
-
-void CPlayer::Off_Separation_Hand(_uint iHandType)
-{
-	switch (iHandType)
-	{
-	case 0:		//양손
-		m_pModelCom->Set_Separation_ParentBone("ude3_r_n", -1);
-		m_pModelCom->Set_Separation_ParentBone("ude3_l_n", -1);
-		break;
-	case 1:		//왼손
-		m_pModelCom->Set_Separation_ParentBone("ude3_l_n", -1);
-		break;
-	case 2:		//오른손
-		m_pModelCom->Set_Separation_ParentBone("ude3_r_n", -1);
-		break;
-	}
-}
-
-void CPlayer::On_Separation_Face()
-{
-	m_pModelCom->Set_Separation_ParentBone("face_c_n", (_int)FACE_COM);
-	m_pModelCom->Set_Separation_SingleBone("face_c_n", -1);
-}
-
-void CPlayer::Off_Separation_Face()
-{
-	m_pModelCom->Set_Separation_ParentBone("face_c_n", -1);
 }
 
 void CPlayer::Compute_MoveDirection_FB()
@@ -1715,11 +1655,15 @@ void CPlayer::Effect_Control_Aura()
 	{
 		string strKey = m_pGameInstance->WstringToString(pair.second->Get_EffectName());
 
-		if (string::npos != strKey.find("Hooligan"))
+		regex hooliganPattern("Hooligan");
+		regex rushPattern("Rush");
+		regex destroyerPattern("Destroyer");
+
+		if (regex_search(strKey, hooliganPattern))
 			pHooligan = pair.second;
-		if (string::npos != strKey.find("Rush"))
+		if (regex_search(strKey, rushPattern))
 			pRush = pair.second;
-		if (string::npos != strKey.find("Destroyer"))
+		if (regex_search(strKey, destroyerPattern))
 			pDestroyer = pair.second;
 	}
 
