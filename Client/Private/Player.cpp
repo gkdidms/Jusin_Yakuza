@@ -29,6 +29,7 @@
 #include "Kiryu_KRS_Down.h"
 #include "Kiryu_KRH_Down.h"
 #include "Kiryu_KRS_Grab.h"
+#include "Kiryu_KRC_Grab.h"
 #pragma endregion
 
 CPlayer::CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -59,6 +60,9 @@ CPlayer::CPlayer(const CPlayer& rhs)
 
 void CPlayer::Set_SeizeOff(_bool isOff)
 {
+	// 러쉬는 잡기 기능이 없다
+	if (KRH == m_eCurrentStyle) return;
+
 	//8번 Grab 공통
 	m_AnimationTree[m_eCurrentStyle].at(8)->Event(&isOff);
 }
@@ -472,6 +476,11 @@ void CPlayer::Attack_Event(CLandObject* pHitObject)
 	}
 	case CPlayer::KRC:
 	{
+		if (m_iCurrentBehavior == (_uint)KRC_BEHAVIOR_STATE::GRAB)
+		{
+			CKiryu_KRC_Grab::KRC_Grab_DESC Desc{ true, Compute_Target_Direction(pHitObject) };
+			m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Setting_Value(&Desc);
+		}
 
 		break;
 	}
@@ -603,7 +612,8 @@ void CPlayer::Ready_CutSceneAnimation()
 
 		KIRYU_GSWING,               //h1010 다리잡고 돌려서 스플릿 공격
 		DORYU_MIN,                  //h11285 멱살잡고 돌려서 스플릿 공격
-		NAGE_OIUCHI_NECK,           //h1540 들어서 바닥에 내던짐
+		LAPEL_OIUCHI_NECK,           //h1540 들어서 바닥에 내던짐 (앞잡)
+		NAGE_OIUCHI_NECK,           //h1540 들어서 바닥에 내던짐 (뒤잡)
 		POLE_KNOCK_LAPEL,           //h2040 근처에 기둥이 있다면 기둥에 박게하고 밟음
 		DORAMUKAN_88,               //h3261 큰 무기 (간판)을 들고 벽에 밀고 내려침
 		MONZETSU,                   //h11250 들어다가 무릎으로 똥꼬찍음 (뒤에서 잡기했을때 사용)
@@ -627,6 +637,7 @@ void CPlayer::Ready_CutSceneAnimation()
 	/* 파괴자 */
 	m_CutSceneAnimation.emplace(KIRYU_GSWING, "h1010");
 	m_CutSceneAnimation.emplace(DORYU_MIN, "h11285");
+	m_CutSceneAnimation.emplace(LAPEL_OIUCHI_NECK, "h1530");
 	m_CutSceneAnimation.emplace(NAGE_OIUCHI_NECK, "h1540");
 	m_CutSceneAnimation.emplace(POLE_KNOCK_LAPEL, "h2040");
 	m_CutSceneAnimation.emplace(DORAMUKAN_88, "h3261");
@@ -1239,7 +1250,7 @@ void CPlayer::KRC_KeyInput(const _float& fTimeDelta)
 
 	if (m_iCurrentBehavior != (_uint)KRC_BEHAVIOR_STATE::GUARD)
 	{
-		if (!m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Stopping())
+		if (!m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Stopping() && m_iCurrentBehavior != (_uint)KRC_BEHAVIOR_STATE::GRAB)
 		{
 			if (m_pGameInstance->GetMouseState(DIM_LB) == TAP)
 			{
@@ -1267,6 +1278,13 @@ void CPlayer::KRC_KeyInput(const _float& fTimeDelta)
 					m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Setting_Value(&isBut);
 					m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Change_Animation();
 				}
+			}
+
+			// 어택중이 아닐때에만 Q입력을 받는다
+			if (m_iCurrentBehavior != (_uint)KRC_BEHAVIOR_STATE::ATTACK && m_iCurrentBehavior != (_uint)KRC_BEHAVIOR_STATE::GRAB && m_pGameInstance->GetKeyState(DIK_Q) == TAP)
+			{
+				m_iCurrentBehavior = (_uint)KRC_BEHAVIOR_STATE::GRAB;
+				m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Reset();
 			}
 		}
 
@@ -1496,7 +1514,7 @@ void CPlayer::Set_CutSceneAnim(CUTSCENE_ANIMATION_TYPE eType, _uint iFaceAnimInd
 		string ExtractName = m_pGameInstance->Extract_String(pAnimation->Get_AnimName(), '[', ']');
 
 		// 문자열 포함중이라면 인덱스 저장 후 반복문 종료
-		if (ExtractName.find(AnimName) != std::string::npos)
+		if (ExtractName.find(AnimName) != string::npos)
 		{
 			m_iCutSceneAnimIndex = i;
 			break;
@@ -1794,12 +1812,12 @@ void CPlayer::Setting_Target_Enemy()
 
 void CPlayer::AccHitGauge()
 {
-	if (PLAYER_HITGAUGE_LEVEL_INTERVAL * 3.f < m_fHitGauge)
-		m_fHitGauge = PLAYER_HITGAUGE_LEVEL_INTERVAL * 3.f;
-	else
-		m_fHitGauge += 5.f;
+	//if (PLAYER_HITGAUGE_LEVEL_INTERVAL * 3.f < m_fHitGauge)
+	//	m_fHitGauge = PLAYER_HITGAUGE_LEVEL_INTERVAL * 3.f;
+	//else
+	//	m_fHitGauge += 5.f;
 
-	m_iCurrentHitLevel = (m_fHitGauge / PLAYER_HITGAUGE_LEVEL_INTERVAL);
+	//m_iCurrentHitLevel = (m_fHitGauge / PLAYER_HITGAUGE_LEVEL_INTERVAL);
 }
 
 void CPlayer::Setting_RimLight()

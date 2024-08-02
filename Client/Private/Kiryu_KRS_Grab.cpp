@@ -253,10 +253,6 @@ void CKiryu_KRS_Grab::Play_Off()
 
 void CKiryu_KRS_Grab::Move_KeyInput(const _float& fTimeDelta)
 {
-	if (m_pGameInstance->GetMouseState(DIM_LB) == TAP)
-	{
-		Combo_Count();
-	}
 	if (m_pGameInstance->GetMouseState(DIM_RB) == TAP)
 	{
 		if (2 < m_pPlayer->Get_CurrentHitLevel())	// 히트게이지가 3단까지 풀이라면

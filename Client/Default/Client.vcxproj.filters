@@ -522,6 +522,9 @@
     <ClCompile Include="..\Private\SocketModel.cpp">
       <Filter>02.GameObjects\02.Character\PartObject\SocketObject\SocketModel</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\Kiryu_KRC_Grab.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRC\Grab</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\MainApp.h">
@@ -1074,6 +1077,9 @@
     </ClInclude>
     <ClInclude Include="..\Public\SocketModel.h">
       <Filter>02.GameObjects\02.Character\PartObject\SocketObject\SocketModel</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Kiryu_KRC_Grab.h">
+      <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRC\Grab</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1651,6 +1657,9 @@
     </Filter>
     <Filter Include="02.GameObjects\02.Character\PartObject\SocketObject\SocketModel">
       <UniqueIdentifier>{7aa45944-45f0-493c-ac7b-d43e8dfcf78b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRC\Grab">
+      <UniqueIdentifier>{3cccb886-eb1e-4f6b-b501-ba0dff9b67d7}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
