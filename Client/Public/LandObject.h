@@ -206,6 +206,7 @@ protected:
     virtual HRESULT Add_Components();
     virtual HRESULT Bind_ResourceData();
     virtual void Compute_Height();
+    string ExtractString(string strName);
 
 public:
     virtual void Free() override;

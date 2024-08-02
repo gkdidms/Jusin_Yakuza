@@ -19,6 +19,7 @@ private:
     class CSystemManager* m_pSystemManager = { nullptr };
     class CFileTotalMgr* m_pFileTotalManager = { nullptr };
     class CCarChaseManager* m_pCarChaseManager = { nullptr };
+    class CTutorialManager* m_pTutorialManager = { nullptr };
 
 private:
     HRESULT Ready_Camera(const wstring& strLayerTag);

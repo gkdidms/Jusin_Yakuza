@@ -378,3 +378,16 @@ void CLandObject::Free()
 void CLandObject::Compute_Height()
 {
 }
+
+string CLandObject::ExtractString(string strName)
+{
+	size_t start = strName.find('[');
+	size_t end = strName.find(']', start);
+
+	if (start != std::string::npos && end != std::string::npos && end > start) {
+		// 대괄호가 존재하면, 그 사이의 문자열 추출
+		return strName.substr(start + 1, end - start - 1);
+	}
+
+	return "";
+}

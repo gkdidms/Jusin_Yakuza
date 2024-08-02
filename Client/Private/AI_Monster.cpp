@@ -107,10 +107,10 @@ void CAI_Monster::LookAtPlayer()
 _bool CAI_Monster::Find_PlayerCurrentAnimationName(string strAnimName)
 {
 	string strPlayerAnimName = m_pPlayer->Get_CurrentAnimationName();
-	if (strPlayerAnimName.find(strAnimName) == string::npos)
-		return false;
+	if (string_view(strPlayerAnimName) == string_view(strAnimName))
+		return true;
 
-	return true;
+	return false;
 }
 
 //·¯½¬

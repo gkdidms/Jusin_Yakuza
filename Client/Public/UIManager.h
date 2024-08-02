@@ -26,6 +26,9 @@ public:
 
 public:
     _bool isInvenClose() { return m_isClose; }
+    _bool isShowTutorialUI(_uint iUIType);
+    _bool isCloseTutorialUIAnim();
+    void Set_TutorialText(wstring strText);
 
 public:
     //자신이 만들 ui씬은 미리 할당(수동)
@@ -50,6 +53,7 @@ public:
     //임시 토크매니저 확인용 제작
 public:
     void Start_Talk();
+    void Change_TutorialUI(_uint iUIType);
 
 
 private:

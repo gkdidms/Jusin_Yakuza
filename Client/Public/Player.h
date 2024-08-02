@@ -157,16 +157,6 @@ public:
         return m_pColliderCom;
     }
 
-    _bool isTutorialAttack() {
-        _bool isResult = m_isCollAttack;
-
-        m_isCollAttack = false;
-
-        return isResult;
-    }
-    
-
-
     /* Setter */
 public:
     void    Set_StartPos(XMMATRIX    vStartPos) { m_pTransformCom->Set_WorldMatrix(vStartPos); }
@@ -296,10 +286,6 @@ private:
     _bool m_isAnimStart = { true };
     CUTSCENE_ANIMATION_TYPE m_eCutSceneType = { OI_UPPER };
 #endif // _DEBUG
-
-    //튜토리얼 용 함수
-private:
-    _bool m_isCollAttack = { false };
 
 private:
     virtual HRESULT Add_Components() override;
