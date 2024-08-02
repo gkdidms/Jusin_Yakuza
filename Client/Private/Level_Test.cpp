@@ -37,9 +37,9 @@ HRESULT CLevel_Test::Initialize()
 		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/NaviData/Navigation_11.dat")))))
 		return E_FAIL;
 
-	m_pCarChaseManager = CCarChaseManager::Create(m_pDevice, m_pContext);
-	if (nullptr == m_pCarChaseManager)
-		return E_FAIL;
+	//m_pCarChaseManager = CCarChaseManager::Create(m_pDevice, m_pContext);
+	//if (nullptr == m_pCarChaseManager)
+	//	return E_FAIL;
 
  	if (FAILED(Ready_Player(TEXT("Layer_Player"))))
 		return E_FAIL;
@@ -72,7 +72,7 @@ HRESULT CLevel_Test::Initialize()
 
 void CLevel_Test::Tick(const _float& fTimeDelta)
 {
-	m_pCarChaseManager->Tick();
+//	m_pCarChaseManager->Tick();
 #ifdef _DEBUG
 	SetWindowText(g_hWnd, TEXT("테스트 레벨"));
 #endif

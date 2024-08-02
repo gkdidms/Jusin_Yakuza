@@ -1565,9 +1565,6 @@
     <Filter Include="95.Utility\05.UIManager\UIScene\UISkillDestroyer">
       <UniqueIdentifier>{fd65e228-ee0b-4ff4-ba2b-248b93e87aa2}</UniqueIdentifier>
     </Filter>
-    <Filter Include="95.Utility\05.UIManager\UIScene\UISkillGet">
-      <UniqueIdentifier>{e932afff-247c-4f4a-a2b1-267cf2499e83}</UniqueIdentifier>
-    </Filter>
     <Filter Include="05.CarChaseManager">
       <UniqueIdentifier>{fcea56b4-7172-49b8-87b8-180ce5856b11}</UniqueIdentifier>
     </Filter>
