@@ -32,6 +32,9 @@ HRESULT CCamera::Initialize(void* pArg)
 	m_fNear = pCameraDesc->fNear;
 	m_fFar = pCameraDesc->fFar;
 
+	m_fDefaultFovY = m_fFovY;
+	m_fDefaultNear = m_fNear;
+	m_fDefaultFar = m_fFar;
 
 	return S_OK;
 }

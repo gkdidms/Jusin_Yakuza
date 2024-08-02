@@ -19,6 +19,8 @@
 
 #include "UIManager.h"
 #include "Camera.h"
+#include "PlayerCamera.h"
+#include "CutSceneCamera.h"
 
 #include "Monster.h"
 
@@ -1608,6 +1610,37 @@ void CPlayer::Reset_CutSceneEvent()
 	m_pCameraModel->Reset_Animation(m_iCutSceneCamAnimIndex);
 
 	m_eAnimComType = (m_eAnimComType == DEFAULT ? CUTSCENE : DEFAULT);
+
+	CAMERA eCurrentCam = m_pSystemManager->Get_Camera();
+
+	switch (eCurrentCam)
+	{
+		// 현재 플레이어 카메라이며, 컷신으로 돌리는 상황
+	case Client::CAMERA_PLAYER:
+	{
+		CPlayerCamera* pCamera = dynamic_cast<CPlayerCamera*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Camera"), CAMERA_PLAYER));
+		// 플레이어 카메라의 현재 상태를 저장한다.
+		pCamera->Store_PrevMatrix();
+		break;
+	}
+
+	// 현재 컷신 카메라이며, 플레이어 카메라로 돌리는 상황
+	case Client::CAMERA_CUTSCENE:
+		// 현재 컷신카메라의 마지막 행렬과 Fov를 받아와서
+		CCutSceneCamera* pCutSceneCamera = dynamic_cast<CCutSceneCamera*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Camera"), CAMERA_CUTSCENE));
+		_matrix LastMatrix = XMLoadFloat4x4(pCutSceneCamera->Get_WorldMatrix());
+		_float fLastFov = pCutSceneCamera->Get_Fov();
+
+		// 플레이어 카메라에 해당 정보를 모두 저장해준다.
+		CPlayerCamera* pCamera = dynamic_cast<CPlayerCamera*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Camera"), CAMERA_PLAYER));
+		pCamera->Store_StartMatrix(LastMatrix);
+		pCamera->Set_StartFov(fLastFov);		//선형보간할 때 시작값 fov 설정
+		pCamera->Set_FoV(fLastFov);				//현재 fov설정
+		pCamera->On_Return();
+		break;
+	}
+
+	// 그리고 체인지
 	m_pSystemManager->Set_Camera(CAMERA_CUTSCENE == m_pSystemManager->Get_Camera() ? CAMERA_PLAYER : CAMERA_CUTSCENE);
 }
 
