@@ -451,6 +451,8 @@ HRESULT CFileTotalMgr::Set_GameObject_In_Client(int iStageLevel)
                 }
             }
 
+            mapDesc.vPlayerMatrix = dynamic_cast<CTransform*>(m_pGameInstance->Get_GameObject_Component(iStageLevel, TEXT("Layer_Player"), TEXT("Com_Transform", 0)))->Get_WorldFloat4x4();
+
             m_pGameInstance->Add_GameObject(iStageLevel, TEXT("Prototype_GameObject_Map"), m_Layers[iLayer], &mapDesc);
         }
         else if (OBJECT_TYPE::MAP_NONCULL == m_MapTotalInform.pMapObjDesc[i].iObjType)

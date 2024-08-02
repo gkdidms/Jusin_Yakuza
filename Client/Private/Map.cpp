@@ -78,6 +78,8 @@ HRESULT CMap::Initialize(void* pArg)
 			m_vColliders.push_back(pCollider);
 
 		}
+
+		m_pPlayerMatrix = gameobjDesc->vPlayerMatrix;
 	}
 
 	m_Casecade = { 0.f, 10.f, 24.f, 40.f };
@@ -127,198 +129,18 @@ void CMap::Late_Tick(const _float& fTimeDelta)
 	m_vStrongBloomIndex.clear();
 	m_vCompulsoryDecalBlendMeshIndex.clear();
 
-	vector<CMesh*> Meshes = m_pModelCom->Get_Meshes();
-	_uint	iNumMeshes = m_pModelCom->Get_NumMeshes();
+	_vector vPlayerPosition;
+	memcpy(&vPlayerPosition, m_pPlayerMatrix->m[CTransform::STATE_POSITION], sizeof(_float4));
 
-	for (size_t i = 0; i < iNumMeshes; i++)
+	float fDistance = XMVectorGetX(XMVector3Length(m_pTransformCom->Get_State(CTransform::STATE_POSITION) - vPlayerPosition));
+
+
+	if (fDistance < 100)
 	{
-		_float4x4 vLocalMatrix = Meshes[i]->Get_LocalMatrix();
-
-		XMVECTOR localPos = XMVectorSet(vLocalMatrix._41, vLocalMatrix._42, vLocalMatrix._43, 1);
-		XMVECTOR worldPos = XMVectorZero();
-		worldPos = XMVector3Transform(localPos, m_pTransformCom->Get_WorldMatrix());
-
-		string meshName = Meshes[i]->Get_Name();
-
-		// 점 위치 찾기
-		size_t dotPos = meshName.find('.');
-
-		// 점이 있으면 점 이전 부분을 추출하고, 없으면 전체 문자열을 사용
-		string baseName = (dotPos != string::npos) ? meshName.substr(0, dotPos) : meshName;
-
-		const char* baseNameCStr = baseName.c_str();
-
-		if (false == m_bCull && false == m_bLocalCull)
-		{
-			// 컬링안함
-			if (0 == strcmp(baseNameCStr, "DEFAULTMESH"))
-			{
-				m_vRenderDefaulMeshIndex.push_back(i);
-			}
-			else if (0 == strcmp(baseNameCStr, "GLASSMESH"))
-			{
-				m_vRenderGlassMeshIndex.push_back(i);
-			}
-			else if (0 == strcmp(baseNameCStr, "DECALMESH"))
-			{
-				m_vDecalMeshIndex.push_back(i);
-			}
-			else if (0 == strcmp(baseNameCStr, "DECALLIGHTMESH"))
-			{
-				m_vDecalLightMeshIndex.push_back(i);
-			}
-			else if (0 == strcmp(baseNameCStr, "SIGNMESH"))
-			{
-				m_vSignMeshIndex.push_back(i);
-			}
-			else if (0 == strcmp(baseNameCStr, "LAMPMESH"))
-			{
-				// Nonblend + effect 둘 다 호출
-				m_vLampMeshIndex.push_back(i);
-			}
-			else if (0 == strcmp(baseNameCStr, "DECALBLENDMESH"))
-			{
-				m_vDecalBlendMeshIndex.push_back(i);
-			}
-			else if (0 == strcmp(baseNameCStr, "BLOOMMESH"))
-			{
-				m_vBloomIndex.push_back(i);
-			}
-			else if (0 == strcmp(baseNameCStr, "MASKSIGNMESH"))
-			{
-				m_vMaskSignIndex.push_back(i);
-			}
-			else if (0 == strcmp(baseNameCStr, "STRONGBLOOM"))
-			{
-				m_vStrongBloomIndex.push_back(i);
-			}
-			else if (0 == strcmp(baseNameCStr, "COMBLENDDECAL"))
-			{
-				m_vCompulsoryDecalBlendMeshIndex.push_back(i);
-			}
-			else if (strstr(baseNameCStr, "DYNAMICSIGN") != nullptr)
-			{
-				m_vDynamicSignIndex.push_back(i);
-			}
-			else
-			{
-				// mesh 안합쳐놓으면 그냥 default로 처리
-				m_vRenderDefaulMeshIndex.push_back(i);
-			}
-		}
-		else if(false == m_bLocalCull)
-		{
-			float		fScale = Meshes[i]->Get_MeshScale();
-
-			if (fScale <= 0)
-				fScale = 10;
-
-			// 컬링
-			if (true == m_pGameInstance->isIn_WorldFrustum(worldPos, fScale))
-			{
-				// 컬링안함
-				if (0 == strcmp(baseNameCStr, "DEFAULTMESH"))
-				{
-					m_vRenderDefaulMeshIndex.push_back(i);
-				}
-				else if (0 == strcmp(baseNameCStr, "GLASSMESH"))
-				{
-					m_vRenderGlassMeshIndex.push_back(i);
-				}
-				else if (0 == strcmp(baseNameCStr, "DECALMESH"))
-				{
-					m_vDecalMeshIndex.push_back(i);
-				}
-				else if (0 == strcmp(baseNameCStr, "DECALLIGHTMESH"))
-				{
-					m_vDecalLightMeshIndex.push_back(i);
-				}
-				else if (0 == strcmp(baseNameCStr, "SIGNMESH"))
-				{
-					m_vSignMeshIndex.push_back(i);
-				}
-				else if (0 == strcmp(baseNameCStr, "LAMPMESH"))
-				{
-					// Nonblend + effect 둘 다 호출
-					m_vLampMeshIndex.push_back(i);
-				}
-				else if (0 == strcmp(baseNameCStr, "DECALBLENDMESH"))
-				{
-					m_vDecalBlendMeshIndex.push_back(i);
-				}
-				else if (0 == strcmp(baseNameCStr, "BLOOMMESH"))
-				{
-					m_vBloomIndex.push_back(i);
-				}
-				else if (0 == strcmp(baseNameCStr, "MASKSIGNMESH"))
-				{
-					m_vMaskSignIndex.push_back(i);
-				}
-				else if (0 == strcmp(baseNameCStr, "STRONGBLOOM"))
-				{
-					m_vStrongBloomIndex.push_back(i);
-				}
-				else if (0 == strcmp(baseNameCStr, "COMBLENDDECAL"))
-				{
-					m_vCompulsoryDecalBlendMeshIndex.push_back(i);
-				}
-				else if (strstr(baseNameCStr, "DYNAMICSIGN") != nullptr)
-				{
-					m_vDynamicSignIndex.push_back(i);
-				}
-				else
-				{
-					// mesh 안합쳐놓으면 그냥 default로 처리
-					m_vRenderDefaulMeshIndex.push_back(i);
-				}
-			}
-		}
-		else
-		{
-			// 도로씬에서 다 DECAL 처리
-			float		fScale = Meshes[i]->Get_MeshScale() * 0.5;
-
-			if (fScale <= 0)
-				fScale = 10;
-
-			if (true == m_pGameInstance->isIn_WorldFrustum(worldPos, fScale))
-			{
-				
-				m_vDecalMeshIndex.push_back(i);
-				
-			}
-				
-		}
-
-
+		// Renderer 추가 및 벡터에 추가
+		Add_Renderer(fTimeDelta);
 	}
-
-	// RENDER_NONBLEND 돼야하는 그룹
-	if(0 < m_vRenderDefaulMeshIndex.size()  || 0 < m_vSignMeshIndex.size() || 0 < m_vLampMeshIndex.size()  || 0 < m_vBloomIndex.size())
-		m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
-
-	// RENDER_GLASS 돼야하는 그룹
-	if (0 < m_vRenderGlassMeshIndex.size())
-		m_pGameInstance->Add_Renderer(CRenderer::RENDER_GLASS, this);
-
-	// RENDER_EFFECT 돼야하는 그룹
-	if (0 < m_vDecalLightMeshIndex.size() || 0 < m_vLampMeshIndex.size())
-		m_pGameInstance->Add_Renderer(CRenderer::RENDER_EFFECT, this);
-
-	if (0 < m_vDecalBlendMeshIndex.size() || 0 < m_vDecalMeshIndex.size() || 0 < m_vCompulsoryDecalBlendMeshIndex.size())
-		m_pGameInstance->Add_Renderer(CRenderer::RENDER_DECAL, this);
-
-	// 빛 영향 안받고 원색값 유지
-	if (0 < m_vSignMeshIndex.size() || 0 < m_vMaskSignIndex.size())
-		m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONLIGHT_NONBLUR, this);
-
-	//Bloom
-	if (0 < m_vBloomIndex.size() || 0 < m_vSignMeshIndex.size() || 0 < m_vLampMeshIndex.size() || 0 < m_vStrongBloomIndex.size())
-		m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONLIGHT, this);
-
-
-	for (auto& iter : m_vDecals)
-		iter->Late_Tick(fTimeDelta);
+	
 
 }
 
@@ -1015,6 +837,199 @@ void CMap::Edit_GameObject_Information(MAPOBJ_DESC mapDesc)
 CMap::MAPOBJ_DESC CMap::Send_GameObject_Information()
 {
 	return MAPOBJ_DESC();
+}
+
+void CMap::Add_Renderer(const _float& fTimeDelta)
+{
+
+	vector<CMesh*> Meshes = m_pModelCom->Get_Meshes();
+	_uint	iNumMeshes = m_pModelCom->Get_NumMeshes();
+
+	for (size_t i = 0; i < iNumMeshes; i++)
+	{
+		_float4x4 vLocalMatrix = Meshes[i]->Get_LocalMatrix();
+
+		XMVECTOR localPos = XMVectorSet(vLocalMatrix._41, vLocalMatrix._42, vLocalMatrix._43, 1);
+		XMVECTOR worldPos = XMVectorZero();
+		worldPos = XMVector3Transform(localPos, m_pTransformCom->Get_WorldMatrix());
+
+		string meshName = Meshes[i]->Get_Name();
+
+		// 점 위치 찾기
+		size_t dotPos = meshName.find('.');
+
+		// 점이 있으면 점 이전 부분을 추출하고, 없으면 전체 문자열을 사용
+		string baseName = (dotPos != string::npos) ? meshName.substr(0, dotPos) : meshName;
+
+		const char* baseNameCStr = baseName.c_str();
+
+		if (false == m_bCull && false == m_bLocalCull)
+		{
+			// 컬링안함
+			if (0 == strcmp(baseNameCStr, "DEFAULTMESH"))
+			{
+				m_vRenderDefaulMeshIndex.push_back(i);
+			}
+			else if (0 == strcmp(baseNameCStr, "GLASSMESH"))
+			{
+				m_vRenderGlassMeshIndex.push_back(i);
+			}
+			else if (0 == strcmp(baseNameCStr, "DECALMESH"))
+			{
+				m_vDecalMeshIndex.push_back(i);
+			}
+			else if (0 == strcmp(baseNameCStr, "DECALLIGHTMESH"))
+			{
+				m_vDecalLightMeshIndex.push_back(i);
+			}
+			else if (0 == strcmp(baseNameCStr, "SIGNMESH"))
+			{
+				m_vSignMeshIndex.push_back(i);
+			}
+			else if (0 == strcmp(baseNameCStr, "LAMPMESH"))
+			{
+				// Nonblend + effect 둘 다 호출
+				m_vLampMeshIndex.push_back(i);
+			}
+			else if (0 == strcmp(baseNameCStr, "DECALBLENDMESH"))
+			{
+				m_vDecalBlendMeshIndex.push_back(i);
+			}
+			else if (0 == strcmp(baseNameCStr, "BLOOMMESH"))
+			{
+				m_vBloomIndex.push_back(i);
+			}
+			else if (0 == strcmp(baseNameCStr, "MASKSIGNMESH"))
+			{
+				m_vMaskSignIndex.push_back(i);
+			}
+			else if (0 == strcmp(baseNameCStr, "STRONGBLOOM"))
+			{
+				m_vStrongBloomIndex.push_back(i);
+			}
+			else if (0 == strcmp(baseNameCStr, "COMBLENDDECAL"))
+			{
+				m_vCompulsoryDecalBlendMeshIndex.push_back(i);
+			}
+			else if (strstr(baseNameCStr, "DYNAMICSIGN") != nullptr)
+			{
+				m_vDynamicSignIndex.push_back(i);
+			}
+			else
+			{
+				// mesh 안합쳐놓으면 그냥 default로 처리
+				m_vRenderDefaulMeshIndex.push_back(i);
+			}
+		}
+		else if (false == m_bLocalCull)
+		{
+			float		fScale = Meshes[i]->Get_MeshScale();
+
+			if (fScale <= 0)
+				fScale = 10;
+
+			// 컬링
+			if (true == m_pGameInstance->isIn_WorldFrustum(worldPos, fScale))
+			{
+				// 컬링안함
+				if (0 == strcmp(baseNameCStr, "DEFAULTMESH"))
+				{
+					m_vRenderDefaulMeshIndex.push_back(i);
+				}
+				else if (0 == strcmp(baseNameCStr, "GLASSMESH"))
+				{
+					m_vRenderGlassMeshIndex.push_back(i);
+				}
+				else if (0 == strcmp(baseNameCStr, "DECALMESH"))
+				{
+					m_vDecalMeshIndex.push_back(i);
+				}
+				else if (0 == strcmp(baseNameCStr, "DECALLIGHTMESH"))
+				{
+					m_vDecalLightMeshIndex.push_back(i);
+				}
+				else if (0 == strcmp(baseNameCStr, "SIGNMESH"))
+				{
+					m_vSignMeshIndex.push_back(i);
+				}
+				else if (0 == strcmp(baseNameCStr, "LAMPMESH"))
+				{
+					// Nonblend + effect 둘 다 호출
+					m_vLampMeshIndex.push_back(i);
+				}
+				else if (0 == strcmp(baseNameCStr, "DECALBLENDMESH"))
+				{
+					m_vDecalBlendMeshIndex.push_back(i);
+				}
+				else if (0 == strcmp(baseNameCStr, "BLOOMMESH"))
+				{
+					m_vBloomIndex.push_back(i);
+				}
+				else if (0 == strcmp(baseNameCStr, "MASKSIGNMESH"))
+				{
+					m_vMaskSignIndex.push_back(i);
+				}
+				else if (0 == strcmp(baseNameCStr, "STRONGBLOOM"))
+				{
+					m_vStrongBloomIndex.push_back(i);
+				}
+				else if (0 == strcmp(baseNameCStr, "COMBLENDDECAL"))
+				{
+					m_vCompulsoryDecalBlendMeshIndex.push_back(i);
+				}
+				else if (strstr(baseNameCStr, "DYNAMICSIGN") != nullptr)
+				{
+					m_vDynamicSignIndex.push_back(i);
+				}
+				else
+				{
+					// mesh 안합쳐놓으면 그냥 default로 처리
+					m_vRenderDefaulMeshIndex.push_back(i);
+				}
+			}
+		}
+		else
+		{
+			// 도로씬에서 다 DECAL 처리
+			float		fScale = Meshes[i]->Get_MeshScale() * 0.5;
+
+			if (fScale <= 0)
+				fScale = 10;
+
+			if (true == m_pGameInstance->isIn_WorldFrustum(worldPos, fScale))
+			{
+				m_vDecalMeshIndex.push_back(i);
+			}
+		}
+	}
+
+	// RENDER_NONBLEND 돼야하는 그룹
+	if (0 < m_vRenderDefaulMeshIndex.size() || 0 < m_vSignMeshIndex.size() || 0 < m_vLampMeshIndex.size() || 0 < m_vBloomIndex.size())
+		m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
+
+	// RENDER_GLASS 돼야하는 그룹
+	if (0 < m_vRenderGlassMeshIndex.size())
+		m_pGameInstance->Add_Renderer(CRenderer::RENDER_GLASS, this);
+
+	// RENDER_EFFECT 돼야하는 그룹
+	if (0 < m_vDecalLightMeshIndex.size() || 0 < m_vLampMeshIndex.size())
+		m_pGameInstance->Add_Renderer(CRenderer::RENDER_EFFECT, this);
+
+	if (0 < m_vDecalBlendMeshIndex.size() || 0 < m_vDecalMeshIndex.size() || 0 < m_vCompulsoryDecalBlendMeshIndex.size())
+		m_pGameInstance->Add_Renderer(CRenderer::RENDER_DECAL, this);
+
+	// 빛 영향 안받고 원색값 유지
+	if (0 < m_vSignMeshIndex.size() || 0 < m_vMaskSignIndex.size())
+		m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONLIGHT_NONBLUR, this);
+
+	//Bloom
+	if (0 < m_vBloomIndex.size() || 0 < m_vSignMeshIndex.size() || 0 < m_vLampMeshIndex.size() || 0 < m_vStrongBloomIndex.size())
+		m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONLIGHT, this);
+
+
+	for (auto& iter : m_vDecals)
+		iter->Late_Tick(fTimeDelta);
+
 }
 
 HRESULT CMap::Add_Components(void* pArg)
