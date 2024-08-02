@@ -24,7 +24,6 @@ CLevel_Test::CLevel_Test(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 
 HRESULT CLevel_Test::Initialize()
 {
-	// 9 : 길거리
 	// 14 : 가라오케
 	// 11 : 도로
 	
