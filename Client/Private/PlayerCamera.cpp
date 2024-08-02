@@ -81,6 +81,8 @@ void CPlayerCamera::Tick(const _float& fTimeDelta)
 
 	m_pColliderCom->Tick(m_pTransformCom->Get_WorldMatrix());
 
+	Return_PrevWorld(fTimeDelta);
+
 	__super::Tick(fTimeDelta);
 }
 
@@ -234,6 +236,58 @@ void CPlayerCamera::Adjust_Camera_Angle()
 		m_fCamAngleX = 30.0f;
 }
 
+void CPlayerCamera::Return_PrevWorld(const _float& fTimeDelta)
+{
+	if (!m_isReturn) return;
+
+	// 경과 시간 업데이트
+	m_fElapsedTime += fTimeDelta;
+	m_fLerpRatio = m_fElapsedTime / m_fTotalLerpTime;
+
+	// 보간 비율이 1을 초과하지 않도록 제한
+	if (m_fLerpRatio >= 1.0f)
+	{
+		m_fLerpRatio = 1.0f;
+		m_isReturn = false; // 보간 완료
+	}
+
+	// 이전 행렬과 시작 행렬을 분해해서 저장
+	_matrix PrevMat = XMLoadFloat4x4(&m_PrevMatrix);
+	_vector vPrevScale, vPrevRot, vPrevPos;
+	XMMatrixDecompose(&vPrevScale, &vPrevRot, &vPrevPos, PrevMat);
+
+	_matrix StartMat = XMLoadFloat4x4(&m_StartMatrix);
+	_vector vStartScale, vStartRot, vStartPos;
+	XMMatrixDecompose(&vStartScale, &vStartRot, &vStartPos, StartMat);
+
+	// 각 성분에 대해 선형 보간
+	_vector vScaleLerp = XMVectorLerp(vPrevScale, vStartScale, m_fLerpRatio);
+	_vector vTransLerp = XMVectorLerp(vPrevPos, vStartPos, m_fLerpRatio);
+	_vector vRotLerp = XMQuaternionSlerp(vPrevRot, vStartRot, m_fLerpRatio); // 회전은 구면 선형 보간(Slerp)을 사용
+
+	// 보간된 값을 결합해 행렬 생성
+	_matrix M = XMMatrixScalingFromVector(vScaleLerp) *
+		XMMatrixRotationQuaternion(vRotLerp) *
+		XMMatrixTranslationFromVector(vTransLerp);
+
+	XMStoreFloat4x4(&m_WorldMatrix, M);
+	m_fFovY = LerpFloat(m_fStartFov, m_fDefaultFovY, m_fLerpRatio);
+
+	// 여기서 false가 나온다는것은, 완료 이후라는 것으로 초기화해줘야한다.
+	if (!m_isReturn)
+	{
+		Reset_RetureVariables();
+	}
+}
+
+void CPlayerCamera::Reset_RetureVariables()
+{
+	m_isReturn = { false };
+	m_fLerpRatio = { 0.f };    // 보간 비율
+	m_fElapsedTime = 0.0f; // 경과 시간
+	m_fTotalLerpTime = 0.5f; // 보간에 걸리는 총 시간 (초 단위)
+	m_fStartFov = 0.0f; // 보간에 걸리는 총 시간 (초 단위)
+}
 
 HRESULT CPlayerCamera::Add_Components()
 {

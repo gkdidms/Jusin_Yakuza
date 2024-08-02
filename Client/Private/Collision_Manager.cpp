@@ -180,7 +180,7 @@ void CCollision_Manager::Enemy_Hit_Collision()
 
                 CEffect::EFFECT_DESC EffectDesc;
 
-                _matrix WorldMatrix = pPlayerAttackCollider->Get_TransformCom()->Get_WorldMatrix();
+                _matrix WorldMatrix = XMLoadFloat4x4(pPlayerAttackCollider->Get_PartWorldMatrix());
                 
                 _float4x4 matrix;
                 XMStoreFloat4x4(&matrix, WorldMatrix);
@@ -196,10 +196,10 @@ void CCollision_Manager::Enemy_Hit_Collision()
                 m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Hit1_Distortion0"), TEXT("Layer_Particle"), &EffectDesc);
                
  
-                WorldMatrix = XMMatrixIdentity();
-                WorldMatrix.r[3] = pPlayerAttackCollider->Get_TransformCom()->Get_State(CTransform::STATE_POSITION);
+                _matrix MoneyMatrix = XMMatrixIdentity();
+                MoneyMatrix.r[3] = WorldMatrix.r[3];
 
-                XMStoreFloat4x4(&matrix, WorldMatrix);
+                XMStoreFloat4x4(&matrix, MoneyMatrix);
 
                 EffectDesc.pWorldMatrix = &matrix;
                 //돈체크
@@ -225,7 +225,7 @@ void CCollision_Manager::Player_Hit_Collision()
             {
                 CEffect::EFFECT_DESC EffectDesc;
 
-                _matrix WorldMatrix = pEnemyAttackCollider->Get_TransformCom()->Get_WorldMatrix(); //맞는 얘콜라이더
+                _matrix WorldMatrix = XMLoadFloat4x4(pEnemyAttackCollider->Get_PartWorldMatrix()); //맞는 얘콜라이더
 
                 _float4x4 matrix;
                 XMStoreFloat4x4(&matrix, WorldMatrix);
@@ -253,20 +253,27 @@ void CCollision_Manager::ItemCollision()
 
     for (auto& item : vItems)
     {
-        CItem::ITEM_MODE itemMode = dynamic_cast<CItem*>(item)->Get_ItemMode();
-
-        if (itemMode == CItem::ITEM_BRIGHT)
+        for (auto pPlayerAttackCollider : m_AttackColliders[PLAYER])
         {
-            CCollider* pItemCollider = dynamic_cast<CItem*>(item)->Get_Collider();
-            CCollider* playerCollider = dynamic_cast<CCollider*>(m_pGameInstance->Get_GameObject(iCurLevel, TEXT("Layer_Player"), 0)->Get_Component(TEXT("Com_Collider")));
+            CItem::ITEM_MODE itemMode = dynamic_cast<CItem*>(item)->Get_ItemMode();
 
-            if (pItemCollider->Intersect(playerCollider))
+            if (itemMode == CItem::ITEM_BRIGHT)
             {
-                // 잡았을때 처리 함수 
-                dynamic_cast<CItem*>(item)->Set_Grab(true);
+                CCollider* pItemCollider = dynamic_cast<CItem*>(item)->Get_Collider();
+
+                if (pItemCollider->Intersect(pPlayerAttackCollider->Get_Collider()))
+                {
+                    // 잡았을때 처리 함수 
+                    CPlayer* pPlayer = dynamic_cast<CPlayer*>(pPlayerAttackCollider->Get_Parent());
+                    CModel* pModel = dynamic_cast<CModel*>(pPlayer->Get_Component(TEXT("Com_Model")));
+
+                    dynamic_cast<CItem*>(item)->Set_ParentMatrix(pModel->Get_BoneCombinedTransformationMatrix("buki_r_n"));
+                    dynamic_cast<CItem*>(item)->Set_Grab(true);
+
+                    pPlayerAttackCollider->ParentObject_Attack(item, true);
+                }
             }
         }
-        
     }
 
 }

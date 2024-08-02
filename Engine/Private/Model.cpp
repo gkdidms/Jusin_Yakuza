@@ -933,7 +933,7 @@ HRESULT CModel::Bind_BoneMatrices(CShader* pShader, const _char* pConstantName, 
 
 	m_Meshes[iNumMeshIndex]->Fill_Matrices(m_Bones, m_MeshBoneMatrices);
 
-	return pShader->Bind_Matrices(pConstantName, m_MeshBoneMatrices, 512);;
+	return pShader->Bind_Matrices(pConstantName, m_MeshBoneMatrices, 512);
 }
 
 bool CModel::Check_Exist_Material(_uint iNumMeshIndex, aiTextureType eTextureType)

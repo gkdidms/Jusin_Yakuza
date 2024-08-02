@@ -4,10 +4,12 @@
 #include "SystemManager.h"
 #include "FileTotalMgr.h"
 #include "Collision_Manager.h"
+#include "CarChaseManager.h"
 
 #include "PlayerCamera.h"
 #include "CineCamera.h"
 #include "DebugCamera.h"
+#include "CarChaseCamera.h"
 
 #include "Level_Loading.h"
 
@@ -22,13 +24,17 @@ CLevel_Roadway::CLevel_Roadway(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 
 HRESULT CLevel_Roadway::Initialize()
 {
+	m_pCarChaseManager = CCarChaseManager::Create(m_pDevice, m_pContext);
+	if (nullptr == m_pCarChaseManager)
+		return E_FAIL;
+
     if (FAILED(Ready_Player(TEXT("Layer_Player"))))
         return E_FAIL;
 
     /* Å¬¶ó ÆÄ½Ì */
     m_pFileTotalManager->Set_MapObj_In_Client(STAGE_ROADWAY, LEVEL_ROADWAY);
-    m_pFileTotalManager->Set_Lights_In_Client(STAGE_ROADWAY);
-    m_pFileTotalManager->Set_Collider_In_Client(STAGE_ROADWAY, LEVEL_ROADWAY);
+    m_pFileTotalManager->Set_Lights_In_Client(90);
+    //m_pFileTotalManager->Set_Collider_In_Client(STAGE_ROADWAY, LEVEL_ROADWAY);
 
 	if (FAILED(Ready_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
@@ -38,7 +44,7 @@ HRESULT CLevel_Roadway::Initialize()
 
 void CLevel_Roadway::Tick(const _float& fTimeDelta)
 {
-
+	m_pCarChaseManager->Tick();
 #ifdef _DEBUG
     SetWindowText(g_hWnd, TEXT("ÃÑ°ÝÀü ¸Ê"));
 #endif
@@ -89,6 +95,36 @@ HRESULT CLevel_Roadway::Ready_Camera(const wstring& strLayerTag)
 	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_ROADWAY, TEXT("Prototype_GameObject_PlayerCamera"), strLayerTag, &PlayerCameraDesc)))
 		return E_FAIL;
 
+	/* 3. ÄÆ½Å¿ë Ä«¸Þ¶ó */
+	CCamera::CAMERA_DESC		CutSceneCameraDesc{};
+	CutSceneCameraDesc.vEye = _float4(1.0f, 20.0f, -20.f, 1.f);
+	CutSceneCameraDesc.vFocus = _float4(0.f, 0.0f, 0.0f, 1.f);
+	CutSceneCameraDesc.fFovY = XMConvertToRadians(60.0f);
+	CutSceneCameraDesc.fAspect = g_iWinSizeX / (_float)g_iWinSizeY;
+	CutSceneCameraDesc.fNear = 0.1f;
+	CutSceneCameraDesc.fFar = 3000.f;
+	CutSceneCameraDesc.fSpeedPecSec = 10.f;
+	CutSceneCameraDesc.fRotatePecSec = XMConvertToRadians(90.f);
+
+	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_ROADWAY, TEXT("Prototype_GameObject_CutSceneCamera"), strLayerTag, &CutSceneCameraDesc)))
+		return E_FAIL;
+
+	///* 4. Ãß°ÝÀü¿ë Ä«¸Þ¶ó */
+	CCarChaseCamera::CARCHASE_CAMERA_DESC		CarChaseCameraDesc{};
+	CarChaseCameraDesc.vEye = _float4(3.f, 2.f, 0.f, 1.f);
+	CarChaseCameraDesc.vFocus = _float4(0.f, 0.0f, 0.0f, 1.f);
+	CarChaseCameraDesc.fFovY = XMConvertToRadians(60.0f);
+	CarChaseCameraDesc.fAspect = g_iWinSizeX / (_float)g_iWinSizeY;
+	CarChaseCameraDesc.fNear = 0.1f;
+	CarChaseCameraDesc.fFar = 3000.f;
+	CarChaseCameraDesc.fSpeedPecSec = 10.f;
+	CarChaseCameraDesc.fRotatePecSec = XMConvertToRadians(90.f);
+	CarChaseCameraDesc.fSensor = 0.1f;
+	CarChaseCameraDesc.pPlayerMatrix = dynamic_cast<CTransform*>(m_pGameInstance->Get_GameObject_Component(LEVEL_ROADWAY, TEXT("Layer_Texi"), TEXT("Com_Transform", 0)))->Get_WorldFloat4x4();
+
+	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_ROADWAY, TEXT("Prototype_GameObject_CarChaseCamera"), strLayerTag, &CarChaseCameraDesc)))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -121,4 +157,5 @@ void CLevel_Roadway::Free()
 
     Safe_Release(m_pSystemManager);
     Safe_Release(m_pFileTotalManager);
+	Safe_Release(m_pCarChaseManager);
 }

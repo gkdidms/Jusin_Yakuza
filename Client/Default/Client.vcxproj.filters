@@ -516,6 +516,15 @@
     <ClCompile Include="..\Private\UICarchase.cpp">
       <Filter>95.Utility\05.UIManager\UIScene\UICarchase</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\SocketModel.cpp">
+      <Filter>02.GameObjects\02.Character\PartObject\SocketObject\SocketModel</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Kiryu_KRC_Grab.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRC\Grab</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Gun_Cz75.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\03.CarChase\00.Reactor\04.Gun_Cz75</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\MainApp.h">
@@ -1062,6 +1071,15 @@
     </ClInclude>
     <ClInclude Include="..\Public\UICarchase.h">
       <Filter>95.Utility\05.UIManager\UIScene\UICarchase</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\SocketModel.h">
+      <Filter>02.GameObjects\02.Character\PartObject\SocketObject\SocketModel</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Kiryu_KRC_Grab.h">
+      <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRC\Grab</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Gun_Cz75.h">
+      <Filter>02.GameObjects\02.Character\LandObject\03.CarChase\00.Reactor\04.Gun_Cz75</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1633,6 +1651,18 @@
     </Filter>
     <Filter Include="95.Utility\05.UIManager\UIScene\UICarchase">
       <UniqueIdentifier>{4b94c748-b126-437b-ad3d-610dbe526ea2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\PartObject\SocketObject\SocketModel">
+      <UniqueIdentifier>{6f1aed31-e44d-41d3-8392-90366bbbca74}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRC\Grab">
+      <UniqueIdentifier>{d3efaff5-4225-4b36-991c-46c5d2a29f60}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\03.CarChase\00.Reactor\04.Gun_Cz75">
+      <UniqueIdentifier>{863a5ddf-d4bd-41f1-9986-caf74f4a90c6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\PickupItem">
+      <UniqueIdentifier>{afa11f52-5f1d-4322-886d-68e4094d377c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

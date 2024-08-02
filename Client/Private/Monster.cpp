@@ -355,7 +355,7 @@ void CMonster::Late_Tick(const _float& fTimeDelta)
 	//ÄÃ¸µ
 	if (m_pGameInstance->isIn_WorldFrustum(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 1.5f))
 	{
-		m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
+		//m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
 
 		if (!m_isSynchronizing)
 			m_pCollisionManager->Add_ImpulseResolution(this);
@@ -420,12 +420,8 @@ HRESULT CMonster::Render()
 				return E_FAIL;
 		}
 
-		_bool isCloth = true;
-		string strMeshName = string(pMesh->Get_Name());
-		if (strMeshName.find("hair") != string::npos || strMeshName.find("face") != string::npos ||
-			strMeshName.find("foot") != string::npos || strMeshName.find("body") != string::npos ||
-			strMeshName.find("eye") != string::npos)
-			isCloth = false;
+		
+		_bool isCloth = pMesh->isCloth();
 
 		m_pShaderCom->Bind_RawValue("g_isCloth", &isCloth, sizeof(_bool));
 
