@@ -18,6 +18,12 @@ void CHighway_Taxi::Set_NavigationRouteIndex(_uint iLine)
 	m_pNavigationCom->Set_NavigationRouteIndex(iLine);
 }
 
+void CHighway_Taxi::Set_Dir(_uint iStageDir)
+{
+	m_iStageDir = iStageDir;
+	m_pKiryu->Set_StageDir(iStageDir);
+}
+
 HRESULT CHighway_Taxi::Initialize_Prototype()
 {
 	return S_OK;
@@ -64,7 +70,7 @@ void CHighway_Taxi::Tick(const _float& fTimeDelta)
 		m_pModelCom->Play_Animation(fTimeDelta);
 
 #ifdef _DEBUG
-	if (m_pGameInstance->GetKeyState(DIK_LSHIFT) == TAP)
+	if (m_pGameInstance->GetKeyState(DIK_LCONTROL) == TAP)
 		m_isStop = !m_isStop;
 #endif // _DEBUG
 

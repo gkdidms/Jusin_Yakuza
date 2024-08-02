@@ -127,10 +127,13 @@ void CSocketCollider::Filtering_Timer(_float fTimeDelta)
 	}
 }
 
-void CSocketCollider::ParentObject_Attack(CSocketCollider* pHitCollider)
+void CSocketCollider::ParentObject_Attack(CGameObject* pHitObejct, _bool isItem)
 {
 	// 어택했을 때 공격한 콜라이더에서 실행할 이벤트
-	m_pParentObject->Attack_Event(pHitCollider->Get_Parent());
+	if(!isItem)
+		m_pParentObject->Attack_Event(static_cast<CSocketCollider*>(pHitObejct)->Get_Parent(), isItem);
+	else
+		m_pParentObject->Attack_Event(pHitObejct, isItem);
 }
 
 void CSocketCollider::ParentObject_Hit(CSocketCollider* pAttackedCollider)

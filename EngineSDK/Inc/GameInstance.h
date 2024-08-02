@@ -216,9 +216,11 @@ public:
     T Get_Random(T Min, T Max);
 
     /* Calculator */
-    public:
-        _float Lerp(_float Start, _float End, _float Factor);
-        _uint Lerp(_uint Start, _uint End, _float Factor);
+public:
+    _float Lerp(_float Start, _float End, _float Factor);
+    _uint Lerp(_uint Start, _uint End, _float Factor);
+    _bool Find_String(const string& text, const string& pattern);
+
 private:
     class CGraphic_Device* m_pGraphic_Device = { nullptr };
     class CSoundMgr* m_pSound_Manager = { nullptr };
@@ -241,6 +243,7 @@ private:
     class CPicking* m_pPicking = { nullptr };
     class CFrustum* m_pFrustum = { nullptr };
     class CCalculator* m_pCalculator = { nullptr };
+
 public:
     static void Release_Engine();
     virtual void Free() override;

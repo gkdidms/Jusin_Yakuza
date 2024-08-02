@@ -66,29 +66,30 @@ public:
     enum CUTSCENE_ANIMATION_TYPE
     {
         /* 불한당 히트액션 */
-        FINISHBLOW,                 //H23320 피니시 블로의 극
-        GOUGEKI_C,                  // H20021 잡기 후 히트액션 (주먹으로 얼굴때리고 박치기)
-        HAIHEKI_KICK,               //H23070 벽 등지고 무릎치는 스킬
+        FINISHBLOW,                 //h23320 피니시 블로의 극
+        GOUGEKI_C,                  //h20021 잡기 후 히트액션 (주먹으로 얼굴때리고 박치기)
+        HAIHEKI_KICK,               //h23070 벽 등지고 무릎치는 스킬
 
         /* 러쉬 */
-        KOBUSHIKUDAKI,              //H10111 팔꿈치로 공격막는 스킬
-        HAIHEKI_PUNCH,              //H23060 벽 등지고 나오는 스킬
-        OI_TRAMPLE_AO,              //H1500 다운된 상대 얼굴 밟기 (누워있는 상태), 러쉬
-        OI_KICKOVER_UTU_C,          //H1511 다운된 상대 얼굴 차기 (엎드려있는 상태), 러쉬
+        KOBUSHIKUDAKI,              //h10111 팔꿈치로 공격막는 스킬
+        HAIHEKI_PUNCH,              //h23060 벽 등지고 나오는 스킬
+        OI_TRAMPLE_AO,              //h1500 다운된 상대 얼굴 밟기 (누워있는 상태), 러쉬
+        OI_KICKOVER_UTU_C,          //h1511 다운된 상대 얼굴 차기 (엎드려있는 상태), 러쉬
 
         /* 파괴자 */
-        KIRYU_GSWING,               //H1010 다리잡고 돌려서 스플릿 공격
-        DORYU_MIN,                  //H11285 멱살잡고 돌려서 스플릿 공격
-        NAGE_OIUCHI_NECK,           //H1540 들어서 바닥에 내던짐
-        POLE_KNOCK_LAPEL,           //H2040 근처에 기둥이 있다면 기둥에 박게하고 밟음
-        DORAMUKAN_88,               //H3261 큰 무기 (간판)을 들고 벽에 밀고 내려침
-        MONZETSU,                   //H11250 들어다가 무릎으로 똥꼬찍음 (뒤에서 잡기했을때 사용)
+        KIRYU_GSWING,               //h1010 다리잡고 돌려서 스플릿 공격
+        DORYU_MIN,                  //h11285 멱살잡고 돌려서 스플릿 공격
+        LAPEL_OIUCHI_NECK,          //h1530 들어서 바닥에 내던짐(앞잡)
+        NAGE_OIUCHI_NECK,           //h1540 들어서 바닥에 내던짐(뒤잡)
+        POLE_KNOCK_LAPEL,           //h2040 근처에 기둥이 있다면 기둥에 박게하고 밟음
+        DORAMUKAN_88,               //h3261 큰 무기 (간판)을 들고 벽에 밀고 내려침
+        MONZETSU,                   //h11250 들어다가 무릎으로 똥꼬찍음 (뒤에서 잡기했을때 사용)
 
         /* 기본 히트액션 */
-        WALL_KNOCK_NECK_C,          //H2011 벽에 머리박게하고 밟음 (아마 잡기 이후 히트액션했을 때 근처에 벽이있다면)
-        KABE_AIRON,                 //H23000 벽으로 밀치고 때림
-        OI_KICK,                    //H23010 머리채 잡고 들어서 발로참 (엎드린 상태)
-        OI_UPPER,                   //H23020 머리채잡고 들어서 주먹으로 침 (누워있는 상태)
+        WALL_KNOCK_NECK_C,          //h2011 벽에 머리박게하고 밟음 (아마 잡기 이후 히트액션했을 때 근처에 벽이있다면)
+        KABE_AIRON,                 //h23000 벽으로 밀치고 때림
+        OI_KICK,                    //h23010 머리채 잡고 들어서 발로참 (엎드린 상태)
+        OI_UPPER,                   //h23020 머리채잡고 들어서 주먹으로 침 (누워있는 상태)
 
         CUTSCENE_ANIMATION_END
     };
@@ -174,7 +175,7 @@ public:
     virtual HRESULT Render() override;
 
     // 충돌함수
-    virtual void Attack_Event(CLandObject* pHitObject) override;
+    virtual void Attack_Event(CGameObject* pHitObject, _bool isItem = false) override;
     virtual void Take_Damage(_uint iHitColliderType, const _float3& vDir, _float fDamage, CLandObject* pAttackedObject, _bool isBlowAttack = false) override;
 
     virtual string Get_CurrentAnimationName() override;
@@ -277,7 +278,7 @@ private:
 
     /* 플레이어 스테이터스 관련 변수들 */
 private:
-    _uint           m_iCurrentHitLevel = { 0 };
+    _uint           m_iCurrentHitLevel = { 3 };
     _float          m_fHitGauge = { 0.f };
 
     int             m_iNaviRouteNum = { 0 }; //루트

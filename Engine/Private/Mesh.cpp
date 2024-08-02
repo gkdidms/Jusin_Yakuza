@@ -1,6 +1,8 @@
 #include "Mesh.h"
 #include "Bone.h"
 
+#include "GameInstance.h"
+
 CMesh::CMesh(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     :CVIBuffer{pDevice, pContext}
 {
@@ -561,6 +563,26 @@ void CMesh::Fill_Matrices(vector<class CBone*>& Bones, _float4x4* pMeshBoneMatri
 {
 	for (size_t i = 0; i < m_iNumBones; i++)
 		XMStoreFloat4x4(&pMeshBoneMatrices[i], XMLoadFloat4x4(&m_OffsetMatrices[i]) * XMLoadFloat4x4(Bones[m_BoneIndices[i]]->Get_CombinedTransformationMatrix()));
+}
+
+_bool CMesh::isCloth()
+{
+	string strName = string(m_szName);
+	if (m_pGameInstance->Find_String(strName, "hair") || 
+		m_pGameInstance->Find_String(strName, "face") || 
+		m_pGameInstance->Find_String(strName, "foot") || 
+		m_pGameInstance->Find_String(strName, "body") || 
+		m_pGameInstance->Find_String(strName, "eye"))
+		return false;
+		
+	//if (strName.find("hair") == string::npos ||
+	//	strName.find("face") == string::npos ||
+	//	strName.find("foot") == string::npos ||
+	//	strName.find("body") == string::npos ||
+	//	strName.find("eye") == string::npos)
+	//	return true;
+
+	return false;
 }
 
 CMesh* CMesh::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CModel::MODELTYPE eModelType, const aiMesh* pAIMesh, _fmatrix PreTransformMatrix, const vector<class CBone*>& Bones)
