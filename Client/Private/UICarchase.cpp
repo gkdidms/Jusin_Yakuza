@@ -25,7 +25,7 @@ HRESULT CUICarchase::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pCon
 
 HRESULT CUICarchase::Tick(const _float& fTimeDelta)
 {
-  //  __super::Tick(fTimeDelta);
+    __super::Tick(fTimeDelta);
 
     for (auto& iter : m_EventUI)
         iter->Tick(fTimeDelta);
@@ -36,7 +36,7 @@ HRESULT CUICarchase::Tick(const _float& fTimeDelta)
 
 HRESULT CUICarchase::Late_Tick(const _float& fTimeDelta)
 {
-   // __super::Late_Tick(fTimeDelta);
+    __super::Late_Tick(fTimeDelta);
 
     for (auto& iter : m_EventUI)
         iter->Late_Tick(fTimeDelta);
