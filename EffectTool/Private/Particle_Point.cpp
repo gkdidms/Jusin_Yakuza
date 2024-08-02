@@ -247,7 +247,7 @@ HRESULT CParticle_Point::Save_Data(const string strDirectory)
     }
 
 
-    if(6==m_iShaderPass)
+    if(6==m_iShaderPass|| 8 == m_iShaderPass)
      out.write((char*)&m_fDistortion, sizeof(_float));
 
 
@@ -390,7 +390,7 @@ HRESULT CParticle_Point::Bind_ShaderResources()
     if (FAILED(m_pShaderCom->Bind_RawValue("g_fRadian", &Radian, sizeof(_float))))
         return E_FAIL;
 
-    if (6 == m_iShaderPass)
+    if (6 == m_iShaderPass|| 8 == m_iShaderPass)
     {
         if (FAILED(m_pShaderCom->Bind_RawValue("g_fDistortionWeight", &m_fDistortion, sizeof(_float))))
             return E_FAIL;
