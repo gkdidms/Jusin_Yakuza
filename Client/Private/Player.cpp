@@ -233,7 +233,7 @@ void CPlayer::Late_Tick(const _float& fTimeDelta)
 #ifdef _DEBUG
 	if (m_isObjectRender)
 	{
-		//m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
+		m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
 		//m_pGameInstance->Add_Renderer(CRenderer::RENDER_SHADOWOBJ, this); // Shadow용 렌더 추가
 	}
 #else
@@ -448,9 +448,6 @@ HRESULT CPlayer::Render()
 // 내 공격 콜라이더와 충돌했을 때
 void CPlayer::Attack_Event(CLandObject* pHitObject)
 {
-	if (m_iCurrentLevel == LEVEL_TEST)
-		m_isCollAttack = true;
-
 	switch (m_eCurrentStyle)
 	{
 	case CPlayer::KRS:
@@ -560,7 +557,7 @@ void CPlayer::Take_Damage(_uint iHitColliderType, const _float3& vDir, _float fD
 
 string CPlayer::Get_CurrentAnimationName()
 {
-	return m_pModelCom->Get_AnimationName(m_pModelCom->Get_CurrentAnimationIndex());
+	return ExtractString(m_pModelCom->Get_AnimationName(m_pModelCom->Get_CurrentAnimationIndex()));
 }
 
 void CPlayer::Ready_AnimationTree()

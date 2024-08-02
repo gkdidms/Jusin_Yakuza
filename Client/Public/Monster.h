@@ -238,6 +238,12 @@ public:
     _bool isColl() { return m_isColl; }
     _bool isDown() { return m_isDown; }
     _bool isSynchronizing() { return m_isSynchronizing; }
+    _bool isTutorialAttack() {
+        _bool isResult = m_isTutorialAttack;
+        m_isTutorialAttack = false;
+
+        return isResult;
+    }
 
 public:
     void Set_Down(_bool isDown) { m_isDown = isDown; }
@@ -280,6 +286,8 @@ protected:
     CNavigation* m_pNavigationCom = { nullptr };
     class CAI_Monster* m_pTree = { nullptr };
 
+    class CTutorialManager* m_pTutorialManager = { nullptr };
+
 protected:
     _bool m_isAnimLoop = { false };
     _uint m_iState = { 0 };
@@ -300,7 +308,7 @@ protected:
     _float m_fHitDamage = { 0.f };
     _bool m_isColl = { false }; // 충돌되었는지 아닌지 체크해야함.
     _bool m_isDown = { false }; // 다운되었는가?
-    
+    _bool m_isTutorialAttack = { false }; // 충돌 되었는지 체크함 (튜토리얼 용)    
 
     /* 쉐이킹 관련 정보들 */
     _bool m_isShaked = { false };       // 쉐이킹이 실행되었는지?
