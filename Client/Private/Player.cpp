@@ -337,81 +337,74 @@ HRESULT CPlayer::Render()
 	int i = 0;
 	for (auto& pMesh : m_pModelCom->Get_Meshes())
 	{
-		if(ADVENTURE != m_isRimLight)
-		{
-			// 전신일 때 임의로 Full을 저장해주고 사용한다.
-			if (string_view(m_strRimMeshName) == string_view("Full"))
-			{
-				if (FAILED(m_pShaderCom->Bind_RawValue("g_isRimLight", &m_isRimLight, sizeof(_float))))
-					return E_FAIL;
+		//if(ADVENTURE != m_isRimLight)
+		//{
+		//	// 전신일 때 임의로 Full을 저장해주고 사용한다.
+		//	if (string_view(m_strRimMeshName) == string_view("Full"))
+		//	{
+		//		if (FAILED(m_pShaderCom->Bind_RawValue("g_isRimLight", &m_isRimLight, sizeof(_float))))
+		//			return E_FAIL;
 
-				if (FAILED(m_pShaderCom->Bind_RawValue("g_fRimUV", &m_fRimPartsUV, sizeof(_float2))))
-					return E_FAIL;
-			}
-			else if (string_view(m_strRimMeshName) == string_view(pMesh->Get_Name()))
-			{
-				_float2 fUV = m_fRimPartsUV;		// 기본적으로 파츠uv를 넣고
-				if ("[l0]jacketw1" == m_strRimMeshName)
-					fUV = m_fRimTopUV;				// 상체일 때 탑을 넣어준다.
-				if("[l0]pants3" == m_strRimMeshName)
-					fUV = m_fRimBotUV;				// 바지일 때 바텀을 넣어준다.
+		//		if (FAILED(m_pShaderCom->Bind_RawValue("g_fRimUV", &m_fRimPartsUV, sizeof(_float2))))
+		//			return E_FAIL;
+		//	}
+		//	else if (string_view(m_strRimMeshName) == string_view(pMesh->Get_Name()))
+		//	{
+		//		_float2 fUV = m_fRimPartsUV;		// 기본적으로 파츠uv를 넣고
+		//		if (string_view("[l0]jacketw1") == string_view(m_strRimMeshName))
+		//			fUV = m_fRimTopUV;				// 상체일 때 탑을 넣어준다.
+		//		if(string_view("[l0]pants3") == string_view(m_strRimMeshName))
+		//			fUV = m_fRimBotUV;				// 바지일 때 바텀을 넣어준다.
 
-				if (FAILED(m_pShaderCom->Bind_RawValue("g_isRimLight", &m_isRimLight, sizeof(_float))))
-					return E_FAIL;
+		//		if (FAILED(m_pShaderCom->Bind_RawValue("g_isRimLight", &m_isRimLight, sizeof(_float))))
+		//			return E_FAIL;
 
-				if (FAILED(m_pShaderCom->Bind_RawValue("g_fRimUV", &fUV, sizeof(_float2))))
-					return E_FAIL;
-			}
-			else
-			{
-				_float isfalse = 0.f;
-				if (FAILED(m_pShaderCom->Bind_RawValue("g_isRimLight", &isfalse, sizeof(_float))))
-					return E_FAIL;
+		//		if (FAILED(m_pShaderCom->Bind_RawValue("g_fRimUV", &fUV, sizeof(_float2))))
+		//			return E_FAIL;
+		//	}
+		//	else
+		//	{
+		//		_float isfalse = 0.f;
+		//		if (FAILED(m_pShaderCom->Bind_RawValue("g_isRimLight", &isfalse, sizeof(_float))))
+		//			return E_FAIL;
 
-				if (FAILED(m_pShaderCom->Bind_RawValue("g_fRimUV", &m_fRimPartsUV, sizeof(_float2))))
-					return E_FAIL;
-			}
+		//		if (FAILED(m_pShaderCom->Bind_RawValue("g_fRimUV", &m_fRimPartsUV, sizeof(_float2))))
+		//			return E_FAIL;
+		//	}
 
-			// 기게이지가 켜져있는 상태라면 상반신 림라이트를 켠다
-			if (0 < m_iCurrentHitLevel)
-			{
-				if (!strcmp(pMesh->Get_Name(), "[l0]jacketw1"))
-				{
-					if (FAILED(m_pShaderCom->Bind_RawValue("g_isRimLight", &m_isRimLight, sizeof(_float))))
-						return E_FAIL;
+		//	// 기게이지가 켜져있는 상태라면 상반신 림라이트를 켠다
+		//	if (0 < m_iCurrentHitLevel)
+		//	{
+		//		if (!strcmp(pMesh->Get_Name(), "[l0]jacketw1"))
+		//		{
+		//			if (FAILED(m_pShaderCom->Bind_RawValue("g_isRimLight", &m_isRimLight, sizeof(_float))))
+		//				return E_FAIL;
 
-					if (FAILED(m_pShaderCom->Bind_RawValue("g_fRimUV", &m_fRimPartsUV, sizeof(_float2))))
-						return E_FAIL;
-				}
-			}
+		//			if (FAILED(m_pShaderCom->Bind_RawValue("g_fRimUV", &m_fRimPartsUV, sizeof(_float2))))
+		//				return E_FAIL;
+		//		}
+		//	}
 
-			if ((_uint)KRS_BEHAVIOR_STATE::SWAY == m_iCurrentBehavior)
-			{
-				if (FAILED(m_pShaderCom->Bind_RawValue("g_isRimLight", &m_isRimLight, sizeof(_float))))
-					return E_FAIL;
+		//	if ((_uint)KRS_BEHAVIOR_STATE::SWAY == m_iCurrentBehavior)
+		//	{
+		//		if (FAILED(m_pShaderCom->Bind_RawValue("g_isRimLight", &m_isRimLight, sizeof(_float))))
+		//			return E_FAIL;
 
-				if (FAILED(m_pShaderCom->Bind_RawValue("g_fRimUV", &m_fRimPartsUV, sizeof(_float2))))
-					return E_FAIL;
-			}
-		}
-		else
-		{	
-			// 어드벤처일때
-			if (FAILED(Bind_RimLight()))
-				return E_FAIL;
-		}
+		//		if (FAILED(m_pShaderCom->Bind_RawValue("g_fRimUV", &m_fRimPartsUV, sizeof(_float2))))
+		//			return E_FAIL;
+		//	}
+		//}
+		//else
+		//{	
+		//	// 어드벤처일때
+		//	if (FAILED(Bind_RimLight()))
+		//		return E_FAIL;
+		//}
 
 		//옷 셰이더 구분용
-		_bool isCloth = true;
-		string strMeshName = string(pMesh->Get_Name());
-		regex pattern(".*(hair|face|foot|body|eye).*");
+		//_bool isCloth = pMesh->isCloth();
 
-		if (regex_search(strMeshName, pattern)) {
-			isCloth = false;
-		}
-
-		m_pShaderCom->Bind_RawValue("g_isCloth", &isCloth, sizeof(_bool));
-
+		//m_pShaderCom->Bind_RawValue("g_isCloth", &isCloth, sizeof(_bool));
 
 		m_pModelCom->Bind_BoneMatrices(m_pShaderCom, "g_BoneMatrices", i);
 
@@ -427,14 +420,14 @@ HRESULT CPlayer::Render()
 		//	isRD = false;
 		//}
 
-		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RSTexture", i, aiTextureType_SPECULAR)))
-			isRS = false;
-		m_pShaderCom->Bind_RawValue("g_isRS", &isRS, sizeof(_bool));
+		//if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RSTexture", i, aiTextureType_SPECULAR)))
+		//	isRS = false;
+		//m_pShaderCom->Bind_RawValue("g_isRS", &isRS, sizeof(_bool));
 
-		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RDTexture", i, aiTextureType_OPACITY)))
-			isRD = false;
+		//if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RDTexture", i, aiTextureType_OPACITY)))
+		//	isRD = false;
 
-		m_pShaderCom->Bind_RawValue("g_isRD", &isRD, sizeof(_bool));
+		//m_pShaderCom->Bind_RawValue("g_isRD", &isRD, sizeof(_bool));
 
 		if (pMesh->Get_AlphaApply())
 			m_pShaderCom->Begin(1);     //블랜드

@@ -18,7 +18,6 @@ struct VS_OUT
     float4 vNormal : NORMAL;
     float2 vTexcoord : TEXCOORD0;
     float4 vProjPos : TEXCOORD1;
-    float4 vLocalPos : TEXCOORD2;
     float4 vTangent : TANGENT;
     float4 vBinormal : BINORMAL;
 };
@@ -46,9 +45,8 @@ VS_OUT VS_MAIN(VS_IN In)
     Out.vNormal = normalize(mul(vNormal, g_WorldMatrix));
     Out.vTexcoord = In.vTexcoord;
     Out.vProjPos = Out.vPosition;
-    Out.vLocalPos = float4(In.vPosition, 1.f);
     Out.vTangent = normalize(mul(vector(In.vTangent.xyz, 0.f), g_WorldMatrix));
-    Out.vBinormal = vector(cross(Out.vNormal.xyz, Out.vTangent.xyz), 0.f); //바이
+    Out.vBinormal = vector(cross(Out.vNormal.xyz, Out.vTangent.xyz), 0.f);
     
     return Out;
 }
@@ -125,7 +123,6 @@ struct PS_IN
     float4 vNormal : NORMAL;
     float2 vTexcoord : TEXCOORD0;
     float4 vProjPos : TEXCOORD1;
-    float4 vLocalPos : TEXCOORD2;
     float4 vTangent : TANGENT;
     float4 vBinormal : BINORMAL;
 };
@@ -151,48 +148,20 @@ PS_OUT PS_MAIN(PS_IN In)
 
     //노말 벡터 구하기
     vector vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexcoord);
+
     vNormalDesc = vNormalDesc * 2.f - 1.f;
     vNormalDesc = vector(vNormalDesc.w, vNormalDesc.y, 1.f, 0.f);
     
     float3x3 WorldMatrix = float3x3(In.vTangent.xyz, In.vBinormal.xyz, In.vNormal.xyz);
     vector vNormalBTN = vector(mul(vNormalDesc.xyz, WorldMatrix), 0.f);
 
-    /*
-    float3 vLocalNormal = In.vNormal.xyz; //이건 옵젝 노멀임[법선]
-
-    
-    vector vWorldTangent = normalize(vector(vLocalTangent.xyz, 0.f));
-    vector vWorldNormal = normalize(vector(vLocalNormal.xyz, 0.f));
-    
-    vector vWorlBinormal = vector(cross(vWorldNormal.xyz, vWorldTangent.xyz), 0.f);
-
-    
-  //  float3x3 WorldMatrix = float3x3(vWorlBinormal.xyz, vWorldNormal.xyz, vWorldTangent.xyz);
-    float3x3 WorldMatrix = float3x3(vWorldTangent.xyz, vWorlBinormal.xyz, vWorldNormal.xyz);
-    float3 vFinalNormal = mul(vLocalNormal.xyz, WorldMatrix);
-    
-    vFinalNormal = mul(vector(vWorldNormal.xyz, 0.f), g_WorldMatrix);
-*/
-    
+  
     if (vDiffuse.a < 0.1f)
         discard;
-    
-    //RS + RD
-    /*
-    vector vRDDesc = g_isRD ? g_RDTexture.Sample(LinearSampler, In.vTexcoord * 50.f) : vector(0.5f, 0.5f, 0.5f, 1.f);
-    vector vRSDesc = g_isRS ? g_RSTexture.Sample(LinearSampler, In.vTexcoord * 20.f) : vector(0.5f, 0.5f, 0.5f, 1.f);
-   
-    Out.vRD = vRDDesc;
-    Out.vRS = vRSDesc;
-    
-    vector vRSRD = lerp(vRSDesc, vRDDesc, 0.3f);
-    vRSRD = lerp(vRSRD, vector(1.f, 1.f, 1.f, 1.f), 0.2f);
-    
-    Out.vDiffuse = lerp(vDiffuse, vRSRD, g_isCloth ? vMultiDiffuce.z : 0.f);
-    */
-    
+
     vector vRSRD;
     vector vRDDesc;
+
     if (g_isRD)
     {
         vRDDesc = g_RDTexture.Sample(LinearSampler, In.vTexcoord * 50.f);
@@ -214,7 +183,7 @@ PS_OUT PS_MAIN(PS_IN In)
         else
             Out.vDiffuse = vDiffuse;
     }
-    
+
     float RimIndex = 0.f;
     if (0.05f < g_isRimLight)
     {

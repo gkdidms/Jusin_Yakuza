@@ -44,9 +44,9 @@ HRESULT CLevel_Test::Initialize()
  	if (FAILED(Ready_Player(TEXT("Layer_Player"))))
 		return E_FAIL;
 
-	m_pTutorialManager = CTutorialManager::Create();
-	if (nullptr == m_pTutorialManager)
-		return E_FAIL;
+	//m_pTutorialManager = CTutorialManager::Create();
+	//if (nullptr == m_pTutorialManager)
+	//	return E_FAIL;
 
 	/*if (FAILED(Ready_Monster(TEXT("Layer_Monster"))))
 		return E_FAIL;*/
@@ -77,7 +77,7 @@ HRESULT CLevel_Test::Initialize()
 void CLevel_Test::Tick(const _float& fTimeDelta)
 {
 	//m_pCarChaseManager->Tick();
-	m_pTutorialManager->Tick();
+	//m_pTutorialManager->Tick();
 #ifdef _DEBUG
 	SetWindowText(g_hWnd, TEXT("테스트 레벨"));
 #endif
