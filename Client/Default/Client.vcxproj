@@ -216,6 +216,7 @@
     <ClInclude Include="..\Public\Highway_Taxi.h" />
     <ClInclude Include="..\Public\Item.h" />
     <ClInclude Include="..\Public\Map.h" />
+    <ClInclude Include="..\Public\MultiLoader.h" />
     <ClInclude Include="..\public\Reactor_Van.h" />
     <ClInclude Include="..\Public\KillQuest.h" />
     <ClInclude Include="..\Public\Kiryu_KRC_Down.h" />
@@ -402,6 +403,7 @@
     <ClCompile Include="..\Private\Highway_Taxi.cpp" />
     <ClCompile Include="..\Private\Item.cpp" />
     <ClCompile Include="..\Private\Map.cpp" />
+    <ClCompile Include="..\Private\MultiLoader.cpp" />
     <ClCompile Include="..\private\Reactor_Van.cpp" />
     <ClCompile Include="..\Private\KillQuest.cpp" />
     <ClCompile Include="..\Private\Kiryu_KRC_Down.cpp" />
@@ -549,6 +551,7 @@
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxInstance_Point.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxMesh.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxMeshLight.hlsl" />
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxMeshMap.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxMeshSky.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxNorTex.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxPosTex.hlsl" />

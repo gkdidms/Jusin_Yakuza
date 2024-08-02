@@ -34,16 +34,21 @@ public:
 	};
 
 	enum SHADER_NUM {
-		SHADER_DEFAULT_MAP,
-		SHADER_GLASS,
-		SHADER_DECAL_MASK,
-		SHADER_DECAL_LIGHT,
-		SHADER_SIGN,
-		SHADER_LAMP,
-		SHADER_DECAL_BLEND,
-		SHADER_BLOOM_WHITE,
-		SHADER_SIGN_MASK,
-		SHADER_LIGHTDEPTH,
+		SHADER_DEFAULT_MAP, //0
+		SHADER_GLASS, //1
+		SHADER_DECAL_MASK, //2
+		SHADER_DECAL_LIGHT, //3
+		SHADER_SIGN, //4
+		SHADER_LAMP, //5
+		SHADER_DECAL_BLEND, //6
+		SHADER_BLOOM_WHITE, //7
+		SHADER_SIGN_MASK, //8
+		SHADER_STRONGBLOOM, //9
+		SHADER_COMPULSORY_DECALBLEND, //10
+
+
+		// 무조건 제일 아래
+		SHADER_LIGHTDEPTH, //11
 		SHADER_END
 	};
 
@@ -111,6 +116,9 @@ private:
 	vector<int>				m_vDecalBlendMeshIndex; // 그냥 환한 전등
 	vector<int>				m_vBloomIndex; // 그냥 환한 전등
 	vector<int>				m_vMaskSignIndex;
+	vector<int>				m_vDynamicSignIndex;
+	vector<int>				m_vStrongBloomIndex;
+	vector<int>				m_vCompulsoryDecalBlendMeshIndex;
 
 	_int					m_iLayerNum;
 	wstring					m_wstrModelName;
@@ -118,7 +126,7 @@ private:
 	_int					m_iObjectType = { 0 };
 	_float					m_fWaterDeltaTime = { 0 };
 	_bool					m_bCull = { false };
-	_bool					m_bLocalCull = { false };
+	_bool					m_bLocalCull = { false }; // 도로mesh 전용
 
 public:
 	HRESULT Add_Components(void* pArg);

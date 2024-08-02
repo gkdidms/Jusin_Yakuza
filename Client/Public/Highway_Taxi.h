@@ -23,6 +23,9 @@ private:
 
 public:
     void Set_NavigationRouteIndex(_uint iLine);
+    void Set_Dir(_uint iStageDir) { 
+        m_iStageDir = iStageDir;
+    }
 
 public:
     virtual HRESULT Initialize_Prototype() override;
@@ -41,7 +44,10 @@ protected:
 
 protected:
     class CHighway_Kiryu* m_pKiryu = { nullptr };
-    _int     m_iNaviRouteNum = { 0 };
+    _int     m_iNaviRouteNum = { 0 }; // 몬스터가 이동하는 네비게이션 위치
+    _uint m_iStageDir = { DIR_END }; // 스테이지 위치 (앞, 뒤, 왼, 오)
+
+    _bool m_isStop = { false };
 
 protected:
     virtual void Change_Animation();
@@ -56,7 +62,5 @@ public:
     static CHighway_Taxi* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
     virtual CGameObject* Clone(void* pArg);
     virtual void Free();
-
-
 };
 END

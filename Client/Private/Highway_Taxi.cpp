@@ -63,7 +63,13 @@ void CHighway_Taxi::Tick(const _float& fTimeDelta)
 	if (m_isObjectDead)
 		m_pModelCom->Play_Animation(fTimeDelta);
 
-	Move_Waypoint(fTimeDelta);
+#ifdef _DEBUG
+	if (m_pGameInstance->GetKeyState(DIK_LSHIFT) == TAP)
+		m_isStop = !m_isStop;
+#endif // _DEBUG
+
+	if (!m_isStop)
+		Move_Waypoint(fTimeDelta);
 
 	m_pKiryu->Tick(fTimeDelta);
 }
@@ -153,6 +159,8 @@ HRESULT CHighway_Taxi::Add_Objects()
 {
 	CHighway_Kiryu::CARCHASE_KIRYU_DESC Desc{ const_cast<_float4x4*>(m_pTransformCom->Get_WorldFloat4x4()) };
 	m_pKiryu = dynamic_cast<CHighway_Kiryu*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_CarChase_Kiryu"), &Desc));
+	if (nullptr == m_pKiryu)
+		return E_FAIL;
 
 	return S_OK;
 }

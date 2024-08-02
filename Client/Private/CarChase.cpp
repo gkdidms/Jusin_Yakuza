@@ -43,7 +43,7 @@ _bool CCarChase::Tick()
 	return false;
 }
 
-//몬스터 생성
+//몬스터 생성 & 플레이어 자리 이동
 _bool CCarChase::Start()
 {
 	vector<STAGE_MONSTER_INFO> MonsterInfo = m_Info.MonsterInfo;
@@ -54,6 +54,8 @@ _bool CCarChase::Start()
 		Desc.fRotatePecSec = XMConvertToRadians(180.f);
 		Desc.fSpeedPecSec = 10.f;
 		Desc.iNaviNum = 0;
+		Desc.iStageDir = m_Info.iStageDir; // 스테이지 등장 방향
+		Desc.iLineDir = iter.iMonsterDir; // 몬스터 앞, 옆, 뒤 방향
 		Desc.iObjectIndex = iter.iObjectIndex;
 		Desc.iNaviRouteNum = iter.iMonsterLine;
 		memcpy(Desc.iMonsterWeaponType, iter.iWeaponType, sizeof(_int) * 2);
@@ -72,7 +74,11 @@ _bool CCarChase::Start()
 	}
 
 	CHighway_Taxi* pPlayer = dynamic_cast<CHighway_Taxi*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Texi"), 0));
-	pPlayer->Set_NavigationRouteIndex(m_Info.iPlayerLine);
+	
+	pPlayer->Set_Dir(m_Info.iStageDir);
+
+	if (m_Info.iPlayerLine != m_Info.iPrePlayerLine)
+		pPlayer->Set_NavigationRouteIndex(m_Info.iPlayerLine);
 
 	return true;
 }
@@ -105,15 +111,6 @@ _bool CCarChase::Running()
 
 _bool CCarChase::End()
 {
-	m_iState = STAGE_END;
-
-	//플레이어 줄 이동이 있다면 이동 후 스테이지를 종료한다.
-	if (m_Info.iPlayerLine != m_Info.iPlayerNextLine)
-	{
-		
-
-		return false;
-	}
 
 	return true;
 }
