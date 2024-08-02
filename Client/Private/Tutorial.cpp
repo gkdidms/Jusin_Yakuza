@@ -26,10 +26,20 @@ HRESULT CTutorial::Intialize(void* pArg)
 	return S_OK;
 }
 
+_bool CTutorial::Start()
+{
+	
+
+	return false;
+}
+
 _bool CTutorial::Execute()
 {
 	if (string_view(m_pPlayer->Get_CurrentAnimationName()) == string_view(m_strPlayerSkillName))
-		m_iCount++;
+	{
+		if (m_pPlayer->isTutorialAttack())
+			++m_iCount;
+	}
 
 	if (m_iCoustance <= m_iCount)
 		return true;
