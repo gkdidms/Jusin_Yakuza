@@ -6,6 +6,7 @@
 #include "DebugManager.h"
 #include "FileTotalMgr.h"
 #include "CarChaseManager.h"
+#include "TutorialManager.h"
 
 #include "PlayerCamera.h"
 #include "DebugCamera.h"
@@ -27,21 +28,24 @@ HRESULT CLevel_Test::Initialize()
 	// 9 : 길거리
 	// 14 : 가라오케
 	// 11 : 도로
-	
 
 	// 테스트 client 로드 숫자랑 동일하게 설정해주기!!!!!!!!!!!!!!!!!!!!!!!
 	// 네비 다르면 터짐
 	// 테스트 다하면 지워라
 	/* For.Prototype_Component_Navigation */
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Navigation"),
-		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/NaviData/Navigation_11.dat")))))
+		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/NaviData/Navigation_7.dat")))))
 		return E_FAIL;
 
-	m_pCarChaseManager = CCarChaseManager::Create(m_pDevice, m_pContext);
-	if (nullptr == m_pCarChaseManager)
-		return E_FAIL;
+	//m_pCarChaseManager = CCarChaseManager::Create(m_pDevice, m_pContext);
+	//if (nullptr == m_pCarChaseManager)
+	//	return E_FAIL;
 
  	if (FAILED(Ready_Player(TEXT("Layer_Player"))))
+		return E_FAIL;
+
+	m_pTutorialManager = CTutorialManager::Create();
+	if (nullptr == m_pTutorialManager)
 		return E_FAIL;
 
 	/*if (FAILED(Ready_Monster(TEXT("Layer_Monster"))))
@@ -54,7 +58,7 @@ HRESULT CLevel_Test::Initialize()
 	//	return E_FAIL;
 
 	/* 클라 파싱 */
-	m_pFileTotalManager->Set_MapObj_In_Client(11, LEVEL_TEST);
+	m_pFileTotalManager->Set_MapObj_In_Client(7, LEVEL_TEST);
 	m_pFileTotalManager->Set_Lights_In_Client(90);
 	m_pFileTotalManager->Set_Collider_In_Client(3, LEVEL_TEST);
 	m_pFileTotalManager->Set_Trigger_In_Client(99, LEVEL_TEST);
@@ -72,7 +76,8 @@ HRESULT CLevel_Test::Initialize()
 
 void CLevel_Test::Tick(const _float& fTimeDelta)
 {
-	m_pCarChaseManager->Tick();
+	//m_pCarChaseManager->Tick();
+	m_pTutorialManager->Tick();
 #ifdef _DEBUG
 	SetWindowText(g_hWnd, TEXT("테스트 레벨"));
 #endif
@@ -233,4 +238,5 @@ void CLevel_Test::Free()
 	Safe_Release(m_pSystemManager);
 	Safe_Release(m_pFileTotalManager);
 	Safe_Release(m_pCarChaseManager);
+	Safe_Release(m_pTutorialManager);
 }
