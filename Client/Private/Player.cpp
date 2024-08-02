@@ -158,9 +158,7 @@ void CPlayer::Tick(const _float& fTimeDelta)
 	}
 	if (m_pGameInstance->GetKeyState(DIK_Y) == TAP)
 	{
-		//m_pUIManager->Open_Scene(TEXT("Talk"));
-		//m_pUIManager->Start_Talk(TEXT("Å°·ù"), TEXT("»×¹ä¹Ù¾Æ¾Æ¾ß¾Æ¾Ó¹Ù¾Æºü¤³¿ì \\»×»×»× \\ºü¾Æ¾Ó"));
-		
+		m_pUIManager->Open_Scene(TEXT("Carchase"));
 	}
 
 
@@ -235,7 +233,7 @@ void CPlayer::Late_Tick(const _float& fTimeDelta)
 #ifdef _DEBUG
 	if (m_isObjectRender)
 	{
-		//m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
+		m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
 		//m_pGameInstance->Add_Renderer(CRenderer::RENDER_SHADOWOBJ, this); // Shadow¿ë ·»´õ Ãß°¡
 	}
 #else
@@ -450,9 +448,6 @@ HRESULT CPlayer::Render()
 // ³» °ø°Ý ÄÝ¶óÀÌ´õ¿Í Ãæµ¹ÇßÀ» ¶§
 void CPlayer::Attack_Event(CLandObject* pHitObject)
 {
-	if (m_iCurrentLevel == LEVEL_TEST)
-		m_isCollAttack = true;
-
 	switch (m_eCurrentStyle)
 	{
 	case CPlayer::KRS:
@@ -562,7 +557,7 @@ void CPlayer::Take_Damage(_uint iHitColliderType, const _float3& vDir, _float fD
 
 string CPlayer::Get_CurrentAnimationName()
 {
-	return m_pModelCom->Get_AnimationName(m_pModelCom->Get_CurrentAnimationIndex());
+	return ExtractString(m_pModelCom->Get_AnimationName(m_pModelCom->Get_CurrentAnimationIndex()));
 }
 
 void CPlayer::Ready_AnimationTree()

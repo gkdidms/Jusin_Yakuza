@@ -24,12 +24,26 @@ public:
     virtual void OverAction() override;
 
 
-public:
-    void Set_Skill(_int Index);
-
+private:
+    void Set_Money(const _float& fTimeDelta);
 private:
     vector < CUI_Object*> m_pBall;
+    vector <CUI_Object*> m_pGetter;
     _bool m_isSkill[6] = { false, };
+    _uint m_iPrice[6] = { 400000,3000000000,2000000,400000000 ,400000000 ,100000000 };
+    _bool m_isGet = { false };
+
+    _float m_fGetTime = { 0.f };
+    _float m_fEndTime = { 2.f };
+    _bool m_isFinMoney = { false };
+    _uint m_iCurMoney = { 0 };
+
+    _float2 m_ImageNumber[10] = { _float2(0.075,0.124),_float2(0.13,0.18),_float2(0.184,0.233),_float2(0.239,0.288),_float2(0.296,0.342)
+                                            ,_float2(0.35,0.396),_float2(0.403,0.451),_float2(0.458,0.507),_float2(0.512,0.56),_float2(0.568,0.614) };
+
+    _float m_fCurFinMoney = { 0.f };
+    _bool m_fCurFinAnim = { false };
+
 public:
     static CUISkillRush* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg = nullptr);
     virtual void Free();
