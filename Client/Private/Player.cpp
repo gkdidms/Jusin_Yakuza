@@ -156,9 +156,7 @@ void CPlayer::Tick(const _float& fTimeDelta)
 	}
 	if (m_pGameInstance->GetKeyState(DIK_Y) == TAP)
 	{
-		//m_pUIManager->Open_Scene(TEXT("Talk"));
-		//m_pUIManager->Start_Talk(TEXT("Å°·ù"), TEXT("»×¹ä¹Ù¾Æ¾Æ¾ß¾Æ¾Ó¹Ù¾Æºü¤³¿ì \\»×»×»× \\ºü¾Æ¾Ó"));
-		
+		m_pUIManager->Open_Scene(TEXT("Carchase"));
 	}
 
 
