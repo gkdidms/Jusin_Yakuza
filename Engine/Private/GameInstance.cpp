@@ -748,6 +748,11 @@ _uint CGameInstance::Lerp(_uint Start, _uint End, _float Factor)
 	return m_pCalculator->Lerp(Start, End, Factor);
 }
 
+_bool CGameInstance::Find_String(const string& text, const string& pattern)
+{
+	return m_pCalculator->Find_String(text, pattern);
+}
+
 HRESULT CGameInstance::Add_Light(const LIGHT_DESC& LightDesc)
 {
 	return m_pLight_Manager->Add_Light(LightDesc);
