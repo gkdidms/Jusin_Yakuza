@@ -17,7 +17,8 @@
 #include "UISkillHolligan.h"
 #include"UISkillRush.h"
 #include"UISkillDestroyer.h"
-#include "UISkillGet.h"
+#include "UICarchase.h"
+
 
 #include "InventoryManager.h"
 #include "Player.h"
@@ -115,8 +116,8 @@ HRESULT CUIManager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 	pScene = CUISkillDestroyer::Create(m_pDevice, m_pContext);
 	m_AllScene.emplace(make_pair(TEXT("SkillDestroyer"), pScene));
 
-	pScene = CUISkillGet::Create(m_pDevice, m_pContext);
-	m_AllScene.emplace(make_pair(TEXT("SkillGet"), pScene));
+	pScene = CUICarchase::Create(m_pDevice, m_pContext);
+	m_AllScene.emplace(make_pair(TEXT("Carchase"), pScene));
 
 	return S_OK;
 }
