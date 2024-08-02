@@ -329,6 +329,7 @@
     </ClInclude>
     <ClInclude Include="..\public\Tutorial.h" />
     <ClInclude Include="..\public\TutorialManager.h" />
+    <ClInclude Include="..\Public\UICarchase.h" />
     <ClInclude Include="..\Public\UIInven.h" />
     <ClInclude Include="..\Public\UILife.h" />
     <ClInclude Include="..\Public\UILoading.h" />
@@ -340,7 +341,6 @@
     <ClInclude Include="..\Public\UINowLoading.h" />
     <ClInclude Include="..\Public\UIScene.h" />
     <ClInclude Include="..\Public\UISkillDestroyer.h" />
-    <ClInclude Include="..\Public\UISkillGet.h" />
     <ClInclude Include="..\Public\UISkillHolligan.h" />
     <ClInclude Include="..\Public\UISkillMenu.h" />
     <ClInclude Include="..\Public\UISkillRush.h" />
@@ -397,6 +397,7 @@
     <ClCompile Include="..\Private\CarChase_Sedan.cpp" />
     <ClCompile Include="..\private\CarChase_Van.cpp" />
     <ClCompile Include="..\Private\Collision_Manager.cpp" />
+    <ClCompile Include="..\Private\UICarchase.cpp" />
     <ClCompile Include="..\Private\CutSceneCamera.cpp" />
     <ClCompile Include="..\private\DefaultYakuza.cpp" />
     <ClCompile Include="..\private\CarChase_Reactor.cpp" />
@@ -527,7 +528,6 @@
     <ClCompile Include="..\Private\UINowLoading.cpp" />
     <ClCompile Include="..\Private\UIScene.cpp" />
     <ClCompile Include="..\Private\UISkillDestroyer.cpp" />
-    <ClCompile Include="..\Private\UISkillGet.cpp" />
     <ClCompile Include="..\Private\UISkillHolligan.cpp" />
     <ClCompile Include="..\Private\UISkillMenu.cpp" />
     <ClCompile Include="..\Private\UISkillRush.cpp" />

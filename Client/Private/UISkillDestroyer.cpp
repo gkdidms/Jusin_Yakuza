@@ -56,6 +56,7 @@ HRESULT CUISkillDestroyer::Show_Scene()
 		else
 			m_pBall[i]->Close_UI();
 	}
+
 	for (auto& iter : m_EventUI)
 		iter->Close_UI();
 

@@ -17,7 +17,8 @@
 #include "UISkillHolligan.h"
 #include"UISkillRush.h"
 #include"UISkillDestroyer.h"
-#include "UISkillGet.h"
+#include "UICarchase.h"
+
 
 #include "InventoryManager.h"
 #include "Player.h"
@@ -28,6 +29,27 @@ CUIManager::CUIManager()
 	:m_pGameInstance{CGameInstance::GetInstance()}
 {
 	Safe_AddRef(m_pGameInstance);
+}
+
+_bool CUIManager::isShowTutorialUI(_uint iUIType)
+{
+	CUITutorial* pScene = dynamic_cast<CUITutorial*>(Find_Scene(TEXT("Tutorial")));
+
+	return pScene->isShow(iUIType);
+}
+
+_bool CUIManager::isCloseTutorialUIAnim()
+{
+	CUITutorial* pScene = dynamic_cast<CUITutorial*>(Find_Scene(TEXT("Tutorial")));
+
+	return pScene->isCloseCurrentUIAnim();
+}
+
+void CUIManager::Set_TutorialText(wstring strText)
+{
+	CUITutorial* pScene = dynamic_cast<CUITutorial*>(Find_Scene(TEXT("Tutorial")));
+
+	pScene->Set_Text(strText);
 }
 
 HRESULT CUIManager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -94,8 +116,8 @@ HRESULT CUIManager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 	pScene = CUISkillDestroyer::Create(m_pDevice, m_pContext);
 	m_AllScene.emplace(make_pair(TEXT("SkillDestroyer"), pScene));
 
-	pScene = CUISkillGet::Create(m_pDevice, m_pContext);
-	m_AllScene.emplace(make_pair(TEXT("SkillGet"), pScene));
+	pScene = CUICarchase::Create(m_pDevice, m_pContext);
+	m_AllScene.emplace(make_pair(TEXT("Carchase"), pScene));
 
 	return S_OK;
 }
@@ -132,6 +154,11 @@ void CUIManager::Close_Scene()
 {
 	if (!m_PlayScene.empty())
 	{
+		if (m_PlayScene.back()->Get_isLoading())
+		{
+			m_PlayScene.pop_back();
+			return;
+		}
 		m_PlayScene.back()->Close_Scene();
 		m_isClose = true;
 	}
@@ -276,4 +303,9 @@ void CUIManager::Start_Talk()
 	{
 		dynamic_cast<CUITalk*>(m_PlayScene.back())->Start_Talk();
 	}
+}
+
+void CUIManager::Change_TutorialUI(_uint iUIType)
+{
+	dynamic_cast<CUITutorial*>(m_PlayScene.back())->Set_State(iUIType);
 }
