@@ -43,7 +43,7 @@
 #include "Kiryu_KRC_Hit.h"
 #include "Kiryu_KRC_Sway.h"
 #include "Kiryu_KRC_Down.h"
-//#include "Kiryu_KRC_Grab.h"
+#include "Kiryu_KRC_Grab.h"
 #include "Kiryu_KRC_Guard.h"
 #pragma endregion
 
@@ -166,8 +166,8 @@ CBehaviorAnimation* CBehaviorAnimation::Create_KRC_Behavior(_uint iBehavior, cla
 		return CKiryu_KRC_Sway::Create(pPlayer);
 	case CPlayer::KRC_BEHAVIOR_STATE::DOWN:
 		return CKiryu_KRC_Down::Create(pPlayer);
-	//case CPlayer::KRC_BEHAVIOR_STATE::GRAB:
-	//	return CKiryu_KRC_Grab::Create(pPlayer);
+	case CPlayer::KRC_BEHAVIOR_STATE::GRAB:
+		return CKiryu_KRC_Grab::Create(pPlayer);
 	case CPlayer::KRC_BEHAVIOR_STATE::GUARD:
 		return CKiryu_KRC_Guard::Create(pPlayer);
 	}

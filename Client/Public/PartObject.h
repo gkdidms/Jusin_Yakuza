@@ -31,6 +31,11 @@ public:
 	virtual void Late_Tick(const _float& fTimeDelta) override;
 	virtual HRESULT Render() override;
 
+public:
+	const _float4x4* Get_PartWorldMatrix() const {
+		return &m_WorldMatrix;
+	}
+
 protected:
 	const _float4x4*		m_pParentMatrix = { nullptr };		// 부모로 가지는 객체의 행렬
 

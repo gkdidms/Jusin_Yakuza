@@ -34,7 +34,7 @@ HRESULT CLevel_Test::Initialize()
 	// 테스트 다하면 지워라
 	/* For.Prototype_Component_Navigation */
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Navigation"),
-		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/NaviData/Navigation_7.dat")))))
+		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/NaviData/Navigation_3.dat")))))
 		return E_FAIL;
 
 	//m_pCarChaseManager = CCarChaseManager::Create(m_pDevice, m_pContext);
@@ -44,9 +44,9 @@ HRESULT CLevel_Test::Initialize()
  	if (FAILED(Ready_Player(TEXT("Layer_Player"))))
 		return E_FAIL;
 
-	m_pTutorialManager = CTutorialManager::Create();
-	if (nullptr == m_pTutorialManager)
-		return E_FAIL;
+	//m_pTutorialManager = CTutorialManager::Create();
+	//if (nullptr == m_pTutorialManager)
+	//	return E_FAIL;
 
 	/*if (FAILED(Ready_Monster(TEXT("Layer_Monster"))))
 		return E_FAIL;*/
@@ -58,10 +58,10 @@ HRESULT CLevel_Test::Initialize()
 	//	return E_FAIL;
 
 	/* 클라 파싱 */
-	m_pFileTotalManager->Set_MapObj_In_Client(7, LEVEL_TEST);
-	m_pFileTotalManager->Set_Lights_In_Client(90);
+	m_pFileTotalManager->Set_MapObj_In_Client(3, LEVEL_TEST);
+	m_pFileTotalManager->Set_Lights_In_Client(3);
 	m_pFileTotalManager->Set_Collider_In_Client(3, LEVEL_TEST);
-	m_pFileTotalManager->Set_Trigger_In_Client(99, LEVEL_TEST);
+	m_pFileTotalManager->Set_Trigger_In_Client(3, LEVEL_TEST);
 
 	if (FAILED(Ready_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
@@ -77,7 +77,7 @@ HRESULT CLevel_Test::Initialize()
 void CLevel_Test::Tick(const _float& fTimeDelta)
 {
 	//m_pCarChaseManager->Tick();
-	m_pTutorialManager->Tick();
+	//m_pTutorialManager->Tick();
 #ifdef _DEBUG
 	SetWindowText(g_hWnd, TEXT("테스트 레벨"));
 #endif
@@ -212,7 +212,7 @@ HRESULT CLevel_Test::Ready_Test_SceneModel(const wstring& strLayerTag)
 	//Desc.fRotatePecSec = XMConvertToRadians(0.f);
 	Desc.fRotatePecSec = XMConvertToRadians(180.f);
 
-	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_Taxi"), strLayerTag, &Desc)))
+	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_Gun_Cz75"), strLayerTag, &Desc)))
 		return E_FAIL;
 
 	return S_OK;

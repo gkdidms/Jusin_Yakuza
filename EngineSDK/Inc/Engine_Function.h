@@ -54,8 +54,11 @@ namespace Engine
 		return iRefCnt;
 	}
 
-
-
+	template<typename T>
+	float LerpFloat(T a, T b, T t)
+	{
+		return (1 - t) * a + t * b;
+	}
 	
 }
 

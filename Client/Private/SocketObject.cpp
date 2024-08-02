@@ -40,8 +40,8 @@ void CSocketObject::Tick(const _float& fTimeDelta)
 		SocketMatrix.r[i] = XMVector3Normalize(SocketMatrix.r[i]);
 	}
 
-	XMStoreFloat4x4(&m_WorldMatrix, /*m_pTransformCom->Get_WorldMatrix() **/ SocketMatrix * XMLoadFloat4x4(m_pParentMatrix));
-	m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(&m_WorldMatrix));
+	XMStoreFloat4x4(&m_WorldMatrix, m_pTransformCom->Get_WorldMatrix() * SocketMatrix * XMLoadFloat4x4(m_pParentMatrix));
+	//m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(&m_WorldMatrix));
 }
 
 void CSocketObject::Late_Tick(const _float& fTimeDelta)
