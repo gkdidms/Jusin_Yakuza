@@ -283,8 +283,8 @@ HRESULT CMonster::Initialize(void* pArg)
 	m_pTransformCom->Set_Scale(0.95f, 0.95f, 0.95f);
 
 	//테스트 데이터
-	m_Info.iMaxHP = 100.f;
-	m_Info.iHp = m_Info.iMaxHP;
+	m_Info.fMaxHP = 100.f;
+	m_Info.fHp = m_Info.fMaxHP;
 
 	m_iCurrentAnimType = DEFAULT;
 	m_iPreAnimType = DEFAULT;
@@ -486,8 +486,8 @@ void CMonster::Take_Damage(_uint iHitColliderType, const _float3& vDir, _float f
 	//데미지 처리하기 (가드사용하고있지 않을때)
 	if (!m_isObjectDead && !m_pTree->isGuard())
 	{
-		m_Info.iHp -= fDamage;
-		if (m_Info.iHp <= 0.f)
+		m_Info.fHp -= fDamage;
+		if (m_Info.fHp <= 0.f)
 			m_isObjectDead = true;
 	}
 }

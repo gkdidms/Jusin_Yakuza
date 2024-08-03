@@ -27,7 +27,6 @@ HRESULT CLevel_Test::Initialize()
 {
 	// 14 : 가라오케
 	// 11 : 도로
-	
 
 	// 테스트 client 로드 숫자랑 동일하게 설정해주기!!!!!!!!!!!!!!!!!!!!!!!
 	// 네비 다르면 터짐
@@ -44,9 +43,9 @@ HRESULT CLevel_Test::Initialize()
  	if (FAILED(Ready_Player(TEXT("Layer_Player"))))
 		return E_FAIL;
 
-	m_pTutorialManager = CTutorialManager::Create();
-	if (nullptr == m_pTutorialManager)
-		return E_FAIL;
+	//m_pTutorialManager = CTutorialManager::Create();
+	//if (nullptr == m_pTutorialManager)
+	//	return E_FAIL;
 	/*if (FAILED(Ready_Monster(TEXT("Layer_Monster"))))
 		return E_FAIL;*/
 
@@ -61,14 +60,12 @@ HRESULT CLevel_Test::Initialize()
 	m_pFileTotalManager->Set_Lights_In_Client(90);
 	m_pFileTotalManager->Set_Collider_In_Client(3, LEVEL_TEST);
 	m_pFileTotalManager->Set_Trigger_In_Client(99, LEVEL_TEST);
-
+	
 	if (FAILED(Ready_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
 
 	//if (FAILED(Ready_Test_SceneModel(TEXT("Layer_SceneModel_Test"))))
 	//	return E_FAIL;
-
-	_uint i = m_pGameInstance->Get_CurrentLevel();
 
 	return S_OK;
 }
@@ -76,7 +73,7 @@ HRESULT CLevel_Test::Initialize()
 void CLevel_Test::Tick(const _float& fTimeDelta)
 {
 	//m_pCarChaseManager->Tick();
-	m_pTutorialManager->Tick();
+	//m_pTutorialManager->Tick();
 #ifdef _DEBUG
 	SetWindowText(g_hWnd, TEXT("테스트 레벨"));
 #endif
@@ -149,7 +146,7 @@ HRESULT CLevel_Test::Ready_Camera(const wstring& strLayerTag)
 	CarChaseCameraDesc.fSpeedPecSec = 10.f;
 	CarChaseCameraDesc.fRotatePecSec = XMConvertToRadians(90.f);
 	CarChaseCameraDesc.fSensor = 0.1f;
-	CarChaseCameraDesc.pPlayerMatrix = dynamic_cast<CTransform*>(m_pGameInstance->Get_GameObject_Component(LEVEL_TEST, TEXT("Layer_Texi"), TEXT("Com_Transform", 0)))->Get_WorldFloat4x4();
+	CarChaseCameraDesc.pPlayerMatrix = dynamic_cast<CTransform*>(m_pGameInstance->Get_GameObject_Component(LEVEL_TEST, TEXT("Layer_Taxi"), TEXT("Com_Transform", 0)))->Get_WorldFloat4x4();
 
 	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_CarChaseCamera"), strLayerTag, &CarChaseCameraDesc)))
 		return E_FAIL;
@@ -237,4 +234,5 @@ void CLevel_Test::Free()
 	Safe_Release(m_pSystemManager);
 	Safe_Release(m_pFileTotalManager);
 	Safe_Release(m_pCarChaseManager);
+	Safe_Release(m_pTutorialManager);
 }

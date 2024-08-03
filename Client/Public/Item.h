@@ -45,6 +45,16 @@ public:
 		ITEM_END
 	};
 
+	enum SHADER_NUM {
+		SHADER_DEFAULT, //0
+		SHADER_DEFAULT_BRIGHT, //1 -> BRIGHT 될때의 NONBELND
+		SHAEDER_EFFECT, //2
+
+		// 무조건 제일 아래
+		SHADER_LIGHTDEPTH, //3
+		SHADER_END
+	};
+
 public:
 	typedef struct tMapObjDesc : public CGameObject::GAMEOBJECT_DESC
 	{

@@ -44,8 +44,11 @@ public:
     void Player_Hit_Collision();
     void ItemCollision();
 
+    // 카메라 - 맵 충돌 관련
     _bool Map_Collision_Move(CCollider* pCollider, CTransform* pTransform); // 충돌 후 position 다시 나두기
-    _bool Check_Map_Collision(CCollider* pCollider); // 충돌 확인용
+    _bool Check_Map_Collision(CCollider* pCollider, XMVECTOR& pCollisionPos, CTransform* pTransform); // 충돌 확인용
+    _bool Check_Map_Collision_Using_Position(CCollider* pCollider, XMVECTOR vPosition);
+
 
     class CGameObject* Get_Near_Object(class CGameObject* pObject, vector<CGameObject*>& pObjects, _float fDistance = 5.f);
 
@@ -56,7 +59,12 @@ private:
 
     void ResolveCollision(BoundingSphere* sphere, BoundingBox* box, CTransform* pTransform);
 
-    
+    XMVECTOR Find_Collision_Position(BoundingSphere* sphere, BoundingBox* box, CTransform* pTransform);
+
+
+    // Radius 가져오기 위해서 sphere 가져옴
+    // transform의 position으로 충돌 확인
+    bool Check_PositionAABB_Collision(BoundingSphere* sphere, BoundingBox* box, XMVECTOR vPosition);
 
 private:
     vector<class CLandObject*> m_ImpulseResolutionObjects;

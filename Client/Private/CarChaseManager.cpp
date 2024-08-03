@@ -7,6 +7,10 @@
 #include "CarChase_Reactor.h"
 #include "Highway_Taxi.h"
 
+void CCarChaseManager::Set_Coll()
+{
+}
+
 CCarChaseManager::CCarChaseManager(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: m_pDevice{ pDevice },
 	m_pContext{ pContext },
@@ -28,7 +32,7 @@ HRESULT CCarChaseManager::Initialize()
 	Desc.iNaviNum = 0;
 	Desc.iNaviRouteNum = LINE_A;
 	Desc.iObjectIndex = 999999;
-	if (FAILED(m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Taxi"), TEXT("Layer_Texi"), &Desc)))
+	if (FAILED(m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Taxi"), TEXT("Layer_Taxi"), &Desc)))
 		return E_FAIL;
 
 	return S_OK;
@@ -36,10 +40,16 @@ HRESULT CCarChaseManager::Initialize()
 
 void CCarChaseManager::Tick()
 {
+	if (m_isFinished)
+		return;
+
 	//다음 스테이지로 넘어가기
 	if (m_Stages[m_iCurrentStage]->Tick())
 	{
 		m_iCurrentStage++;
+
+		if (m_iCurrentStage >= m_Stages.size())
+			m_isFinished = true;
 	}
 }
 
@@ -50,6 +60,13 @@ HRESULT CCarChaseManager::Ready_Stage()
 		CCarChase::STAGE_MONSTER_INFO{
 			100000,
 			LINE_B,
+			DIR_M,
+			CCarChase_Monster::REACTOR_VAN,
+			{ CCarChase_Monster::WPR, -1}
+		},
+		CCarChase::STAGE_MONSTER_INFO{
+			110000,
+			LINE_C,
 			DIR_F,
 			CCarChase_Monster::REACTOR_VAN,
 			{ CCarChase_Monster::WPR, -1}

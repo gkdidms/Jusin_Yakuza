@@ -167,6 +167,117 @@ void CCollision_Manager::ResolveCollision(BoundingSphere* sphere, BoundingBox* b
     pTransform->Set_State(CTransform::STATE_POSITION, vSpherePos);
 }
 
+XMVECTOR CCollision_Manager::Find_Collision_Position(BoundingSphere* sphere, BoundingBox* box, CTransform* pTransform)
+{
+
+    // Box의 각 축별 회전 벡터를 구합니다.
+    XMVECTOR boxCenter = XMLoadFloat3(&box->Center);
+    XMVECTOR boxExtents = XMLoadFloat3(&box->Extents);
+    //XMVECTOR boxOrientation = XMLoadFloat4(&box->Orientation);
+
+    //XMVECTOR boxAxisX = XMVector3Rotate(XMVectorSet(1, 0, 0, 0), boxOrientation);
+    //XMVECTOR boxAxisY = XMVector3Rotate(XMVectorSet(0, 1, 0, 0), boxOrientation);
+    //XMVECTOR boxAxisZ = XMVector3Rotate(XMVectorSet(0, 0, 1, 0), boxOrientation);
+
+    // AABB의 각 축을 구합니다.
+    XMVECTOR boxAxisX = XMVectorSet(1, 0, 0, 0);
+    XMVECTOR boxAxisY = XMVectorSet(0, 1, 0, 0);
+    XMVECTOR boxAxisZ = XMVectorSet(0, 0, 1, 0);
+
+    // Sphere와 Box의 중심 간 벡터를 구합니다.
+    XMVECTOR sphereCenter = XMLoadFloat3(&sphere->Center);
+    XMVECTOR centerToCenter = XMVectorSubtract(sphereCenter, boxCenter);
+
+    // 각 축별로 충돌 깊이를 계산합니다.
+    float dotX = XMVectorGetX(XMVector3Dot(centerToCenter, boxAxisX));
+    float dotY = XMVectorGetY(XMVector3Dot(centerToCenter, boxAxisY));
+    float dotZ = XMVectorGetZ(XMVector3Dot(centerToCenter, boxAxisZ));
+
+    float overlapX = sphere->Radius + XMVectorGetX(boxExtents) - fabs(dotX);
+    float overlapY = sphere->Radius + XMVectorGetY(boxExtents) - fabs(dotY);
+    float overlapZ = sphere->Radius + XMVectorGetZ(boxExtents) - fabs(dotZ);
+
+    // 최소 충돌 깊이를 구합니다.
+    float overlap = min(overlapX, min(overlapY, overlapZ));
+
+    // 충돌 방향을 계산합니다.
+    XMVECTOR collisionAxis;
+    if (overlap == overlapX)
+    {
+        collisionAxis = boxAxisX;
+        if (dotX < 0) collisionAxis = XMVectorNegate(collisionAxis);
+    }
+    else if (overlap == overlapY)
+    {
+        collisionAxis = boxAxisY;
+        if (dotY < 0) collisionAxis = XMVectorNegate(collisionAxis);
+    }
+    else
+    {
+        collisionAxis = boxAxisZ;
+        if (dotZ < 0) collisionAxis = XMVectorNegate(collisionAxis);
+    }
+
+    // Sphere를 밀어내는 벡터를 계산합니다.
+    XMVECTOR pushVector = XMVectorScale(collisionAxis, overlap);
+
+    // 충돌 해소: Sphere의 위치를 밀어냅니다.
+    XMFLOAT3 push;
+    XMStoreFloat3(&push, XMVectorZero());
+    XMStoreFloat3(&push, pushVector);
+
+    //sphere->Center.x += push.x;
+    //sphere->Center.y += push.y;
+    //sphere->Center.z += push.z;
+
+    _vector vSpherePos = pTransform->Get_State(CTransform::STATE_POSITION);
+    vSpherePos.m128_f32[0] += push.x;
+    vSpherePos.m128_f32[1] += push.y;
+    vSpherePos.m128_f32[2] += push.z;
+    vSpherePos.m128_f32[3] = 1;
+
+    // 밀어낸 위치를 반환
+    return      vSpherePos;
+}
+
+bool CCollision_Manager::Check_PositionAABB_Collision(BoundingSphere* sphere, BoundingBox* box, XMVECTOR vPosition)
+{
+    XMVECTOR boxCenter = XMLoadFloat3(&box->Center);
+    XMVECTOR boxExtents = XMLoadFloat3(&box->Extents);
+
+    // AABB의 각 축을 구합니다.
+    XMVECTOR boxAxisX = XMVectorSet(1, 0, 0, 0);
+    XMVECTOR boxAxisY = XMVectorSet(0, 1, 0, 0);
+    XMVECTOR boxAxisZ = XMVectorSet(0, 0, 1, 0);
+
+    // Sphere와 Box의 중심 간 벡터를 구합니다.
+    XMVECTOR sphereCenter = vPosition;
+    XMVECTOR centerToCenter = XMVectorSubtract(sphereCenter, boxCenter);
+
+    // 각 축별로 충돌 깊이를 계산합니다.
+    float dotX = XMVectorGetX(XMVector3Dot(centerToCenter, boxAxisX));
+    float dotY = XMVectorGetY(XMVector3Dot(centerToCenter, boxAxisY));
+    float dotZ = XMVectorGetZ(XMVector3Dot(centerToCenter, boxAxisZ));
+
+
+    // Radius 가져오기 위해서
+    float overlapX = sphere->Radius + XMVectorGetX(boxExtents) - fabs(dotX);
+    float overlapY = sphere->Radius + XMVectorGetY(boxExtents) - fabs(dotY);
+    float overlapZ = sphere->Radius + XMVectorGetZ(boxExtents) - fabs(dotZ);
+
+    // 최소 충돌 깊이를 구합니다.
+    float overlap = min(overlapX, min(overlapY, overlapZ));
+
+
+    // 충돌이 발생하지 않는 경우
+    if (overlap <= 0) {
+        return false;
+    }
+
+
+    return true;
+}
+
 // 플레이어한테 적이 맞을 때
 void CCollision_Manager::Enemy_Hit_Collision()
 {
@@ -326,14 +437,27 @@ _bool CCollision_Manager::Map_Collision_Move(CCollider* pCollider, CTransform* p
     return false;
 }
 
-_bool CCollision_Manager::Check_Map_Collision(CCollider* pCollider)
+_bool CCollision_Manager::Check_Map_Collision(CCollider* pCollider, XMVECTOR& pCollisionPos, CTransform* pTransform)
 {
     _float3 vCenter;
     XMStoreFloat3(&vCenter, XMVectorZero());
 
     for (auto& pMapCollider : m_MapColliders)
     {
-        if (pMapCollider->Intersect(pCollider, 500.f))
+        BoundingBox* pDesc = static_cast<BoundingBox*>(pMapCollider->Get_Desc());
+
+        _float3 vExtents = pDesc->Extents;
+
+        _float  fMax = vExtents.x;
+
+        if (fMax < vExtents.y)
+            fMax = vExtents.y;
+
+        if (fMax < vExtents.z)
+            fMax = vExtents.z;
+
+
+        if (pMapCollider->Intersect(pCollider, fMax * 2))
         {
             switch (pMapCollider->Get_Type())
             {
@@ -341,6 +465,9 @@ _bool CCollision_Manager::Check_Map_Collision(CCollider* pCollider)
             {
                 BoundingBox* pDesc = static_cast<BoundingBox*>(pMapCollider->Get_Desc());
                 vCenter = pDesc->Center;
+
+                // 충돌하고 밀어낸 위치를 반환
+                pCollisionPos = Find_Collision_Position(static_cast<BoundingSphere*>(pCollider->Get_Desc()), pDesc, pTransform);
 
                 return true;
             }
@@ -351,6 +478,7 @@ _bool CCollision_Manager::Check_Map_Collision(CCollider* pCollider)
                 BoundingOrientedBox* pDesc = static_cast<BoundingOrientedBox*>(pMapCollider->Get_Desc());
                 vCenter = pDesc->Center;
 
+   
                 return true;
             }
 
@@ -360,10 +488,27 @@ _bool CCollision_Manager::Check_Map_Collision(CCollider* pCollider)
                 BoundingSphere* pDesc = static_cast<BoundingSphere*>(pMapCollider->Get_Desc());
                 vCenter = pDesc->Center;
 
+
                 return true;
             }
 
             }
+        }
+    }
+
+    return false;
+}
+
+_bool CCollision_Manager::Check_Map_Collision_Using_Position(CCollider* pCollider, XMVECTOR vPosition)
+{
+    _float3 vCenter;
+    XMStoreFloat3(&vCenter, XMVectorZero());
+
+    for (auto& pMapCollider : m_MapColliders)
+    {
+        if (Check_PositionAABB_Collision(static_cast<BoundingSphere*>(pCollider->Get_Desc()), static_cast<BoundingBox*>(pMapCollider->Get_Desc()), vPosition))
+        {
+            return true;
         }
     }
 
