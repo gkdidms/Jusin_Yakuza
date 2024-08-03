@@ -33,7 +33,7 @@ HRESULT CLevel_Test::Initialize()
 	// 테스트 다하면 지워라
 	/* For.Prototype_Component_Navigation */
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Navigation"),
-		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/NaviData/Navigation_7.dat")))))
+		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/NaviData/Navigation_3.dat")))))
 		return E_FAIL;
 
 	//m_pCarChaseManager = CCarChaseManager::Create(m_pDevice, m_pContext);
@@ -56,8 +56,8 @@ HRESULT CLevel_Test::Initialize()
 	//	return E_FAIL;
 
 	/* 클라 파싱 */
-	m_pFileTotalManager->Set_MapObj_In_Client(7, LEVEL_TEST);
-	m_pFileTotalManager->Set_Lights_In_Client(90);
+	m_pFileTotalManager->Set_MapObj_In_Client(3, LEVEL_TEST);
+	m_pFileTotalManager->Set_Lights_In_Client(3);
 	m_pFileTotalManager->Set_Collider_In_Client(3, LEVEL_TEST);
 	m_pFileTotalManager->Set_Trigger_In_Client(99, LEVEL_TEST);
 	
@@ -146,7 +146,7 @@ HRESULT CLevel_Test::Ready_Camera(const wstring& strLayerTag)
 	CarChaseCameraDesc.fSpeedPecSec = 10.f;
 	CarChaseCameraDesc.fRotatePecSec = XMConvertToRadians(90.f);
 	CarChaseCameraDesc.fSensor = 0.1f;
-	CarChaseCameraDesc.pPlayerMatrix = dynamic_cast<CTransform*>(m_pGameInstance->Get_GameObject_Component(LEVEL_TEST, TEXT("Layer_Texi"), TEXT("Com_Transform", 0)))->Get_WorldFloat4x4();
+	CarChaseCameraDesc.pPlayerMatrix = dynamic_cast<CTransform*>(m_pGameInstance->Get_GameObject_Component(LEVEL_TEST, TEXT("Layer_Taxi"), TEXT("Com_Transform", 0)))->Get_WorldFloat4x4();
 
 	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_CarChaseCamera"), strLayerTag, &CarChaseCameraDesc)))
 		return E_FAIL;
