@@ -525,6 +525,9 @@
     <ClCompile Include="..\Private\Gun_Cz75.cpp">
       <Filter>02.GameObjects\02.Character\LandObject\03.CarChase\00.Reactor\04.Gun_Cz75</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\Kiryu_KRS_PickUp.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\Pickup</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\MainApp.h">
@@ -1080,6 +1083,9 @@
     </ClInclude>
     <ClInclude Include="..\Public\Gun_Cz75.h">
       <Filter>02.GameObjects\02.Character\LandObject\03.CarChase\00.Reactor\04.Gun_Cz75</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Kiryu_KRS_PickUp.h">
+      <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\Pickup</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1661,7 +1667,7 @@
     <Filter Include="02.GameObjects\02.Character\LandObject\03.CarChase\00.Reactor\04.Gun_Cz75">
       <UniqueIdentifier>{863a5ddf-d4bd-41f1-9986-caf74f4a90c6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\PickupItem">
+    <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\Pickup">
       <UniqueIdentifier>{afa11f52-5f1d-4322-886d-68e4094d377c}</UniqueIdentifier>
     </Filter>
   </ItemGroup>

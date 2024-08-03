@@ -90,6 +90,10 @@ public:
 	void				Set_ItemMode(CItem::ITEM_MODE mode) { m_eItemMode = mode; }
 	void				Set_Grab(bool bGrab) { m_bCurGrab = bGrab;  m_eItemMode = ITEM_GRAB; }
 
+public:
+	_uint				Get_ItemLife() { return m_iLife; }
+	_bool				Decrease_Life();		// 사용횟수 감소 (사용횟수를 전부 소진한 상황이면 false를 리턴한다)
+
 private:
 	void						Set_Item_Mode();
 
@@ -124,6 +128,8 @@ private:
 	ITEM_MODE				m_eItemMode;
 
 	bool					m_bCurGrab = { false }; // 현재 잡고있는지
+
+	_uint					m_iLife = { 3 };		// 적을 타격할 수 있는 횟수
 
 public:
 	HRESULT Add_Components(void* pArg);

@@ -160,7 +160,7 @@ void CItem::Tick(const _float& fTimeDelta)
 		offsetMatrix.r[2] = XMVector3Normalize(offsetMatrix.r[2]);
 
 		if (nullptr != m_vParentMatrix)
-			XMStoreFloat4x4(&m_WorldMatrix, offsetMatrix * XMLoadFloat4x4(m_vParentMatrix) * XMLoadFloat4x4(m_pPlayerMatrix));
+			XMStoreFloat4x4(&m_WorldMatrix, /*offsetMatrix **/ XMLoadFloat4x4(m_vParentMatrix) * XMLoadFloat4x4(m_pPlayerMatrix));
 		else
 			XMStoreFloat4x4(&m_WorldMatrix, offsetMatrix * XMLoadFloat4x4(m_pPlayerMatrix));
 
@@ -331,6 +331,20 @@ HRESULT CItem::Render_LightDepth()
 CCollider* CItem::Get_Collider()
 {
 	return dynamic_cast<CCollider*>(*m_vColliders.begin());
+}
+
+_bool CItem::Decrease_Life()
+{
+	m_iLife--;
+
+	// 감소 이후 생명이 0보다 작아진다면 오브젝트 사망처리
+	if (0 > m_iLife)
+	{
+		Set_ObjectDead();
+		return false;
+	}
+
+	return true;
 }
 
 void CItem::Set_Item_Mode()

@@ -47,7 +47,7 @@ public:
     _bool Map_Collision_Move(CCollider* pCollider, CTransform* pTransform); // 충돌 후 position 다시 나두기
     _bool Check_Map_Collision(CCollider* pCollider); // 충돌 확인용
 
-    class CLandObject* Get_Near_LandObject(class CLandObject* pObject, vector<CGameObject*>& pObjects);
+    class CGameObject* Get_Near_Object(class CGameObject* pObject, vector<CGameObject*>& pObjects, _float fDistance = 5.f);
 
 private:
     // 캐릭터가 겹치지않고 밀어내는 함수

@@ -36,7 +36,7 @@ public:
     enum class KRS_BEHAVIOR_STATE
     {
         BTL_START, IDLE, WALK, RUN, ATTACK, HIT, 
-        SWAY, DOWN, GRAB,
+        SWAY, DOWN, GRAB, PICK_UP,
         SKILL_FLY_KICK, SKILL_KICK_COMBO,
         KRS_BEHAVIOR_END
     };
@@ -53,7 +53,7 @@ public:
     enum class KRC_BEHAVIOR_STATE
     {
         BTL_START, IDLE, WALK, RUN, ATTACK, HIT,
-        SWAY, DOWN, GRAB,
+        SWAY, DOWN, GRAB, PICK_UP,
         GUARD,
         KRC_BEHAVIOR_END
     };
@@ -220,6 +220,7 @@ private:
 
     void Effect_Control_Aura();
     void Setting_Target_Enemy();
+    void Setting_Target_Item();
 
     /* 캐릭터 스테이터스 관련 함수 */ 
 public:
@@ -250,6 +251,7 @@ private:
     /* 플레이어 기능 관련 포인터 변수들 */
 private:
     CLandObject* m_pTargetObject = { nullptr };
+    class CItem* m_pTargetItem = { nullptr };
 
     /* 행동, 이동 관련 변수들 */
 private:

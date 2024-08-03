@@ -232,6 +232,7 @@ void CPlayer::Tick(const _float& fTimeDelta)
 	Trail_Event();
 	Effect_Control_Aura();
 	Setting_Target_Enemy();
+	Setting_Target_Item();
 }
 
 void CPlayer::Late_Tick(const _float& fTimeDelta)
@@ -476,32 +477,6 @@ void CPlayer::Attack_Event(CGameObject* pHitObject, _bool isItem)
 			break;
 		}
 		}
-	}
-	else
-	{
-		CItem* pItem = static_cast<CItem*>(pHitObject);
-
-		// 충돌한 상대 객체가 아이템이라면 KRS일 때에는 현재 그랩한 경우에만 주워지지만, KRC일 때에는 그냥 주워진다.
-		switch (m_eCurrentStyle)
-		{
-		case CPlayer::KRS:
-		{
-			if (m_iCurrentBehavior == (_uint)KRS_BEHAVIOR_STATE::GRAB)
-			{
-				// 여기에 주웠을때에 대한 처리
-
-			}
-
-			break;
-		}
-		case CPlayer::KRC:
-		{
-			//여기에 주웠을 때에 대한 처리
-
-			break;
-		}
-		}
-
 	}
 	
 }
@@ -833,9 +808,6 @@ void CPlayer::Adventure_KeyInput(const _float& fTimeDelta)
 		m_iCurrentBehavior = isShift ? (_uint)ADVENTURE_BEHAVIOR_STATE::WALK : (_uint)ADVENTURE_BEHAVIOR_STATE::RUN;
 		
 		vLookPos = XMVectorSetY(vLookPos, XMVectorGetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION)));
-		_float a = XMVectorGetX(vLookPos);
-		if (isnan(a))
-			int h = 99;
 
 		if (m_iCurrentBehavior == (_uint)ADVENTURE_BEHAVIOR_STATE::WALK || m_iCurrentBehavior == (_uint)ADVENTURE_BEHAVIOR_STATE::RUN)
 			m_pTransformCom->LookAt_For_LandObject(vLookPos);
@@ -852,9 +824,6 @@ void CPlayer::Adventure_KeyInput(const _float& fTimeDelta)
 		m_iCurrentBehavior = isShift ? (_uint)ADVENTURE_BEHAVIOR_STATE::WALK : (_uint)ADVENTURE_BEHAVIOR_STATE::RUN;
 		
 		vLookPos = XMVectorSetY(vLookPos, XMVectorGetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION)));
-		_float a = XMVectorGetX(vLookPos);
-		if (isnan(a))
-			int h = 99;
 
 		if (m_iCurrentBehavior == (_uint)ADVENTURE_BEHAVIOR_STATE::WALK || m_iCurrentBehavior == (_uint)ADVENTURE_BEHAVIOR_STATE::RUN)
 			m_pTransformCom->LookAt_For_LandObject(vLookPos);
@@ -932,7 +901,8 @@ void CPlayer::KRS_KeyInput(const _float& fTimeDelta)
 			m_iCurrentBehavior = (_uint)KRC_BEHAVIOR_STATE::IDLE;
 	}
 
-	if (!m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Stopping() && m_iCurrentBehavior != (_uint)KRS_BEHAVIOR_STATE::GRAB)
+	if (!m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Stopping() && m_iCurrentBehavior != (_uint)KRS_BEHAVIOR_STATE::GRAB
+		&& m_iCurrentBehavior != (_uint)KRS_BEHAVIOR_STATE::PICK_UP)
 	{
 		if (m_pGameInstance->GetMouseState(DIM_LB) == TAP)
 		{
@@ -969,10 +939,25 @@ void CPlayer::KRS_KeyInput(const _float& fTimeDelta)
 		}
 
 		// 어택중이 아닐때에만 Q입력을 받는다
-		if (m_iCurrentBehavior != (_uint)KRS_BEHAVIOR_STATE::ATTACK && m_iCurrentBehavior != (_uint)KRS_BEHAVIOR_STATE::GRAB && m_pGameInstance->GetKeyState(DIK_Q) == TAP)
+		if (m_pGameInstance->GetKeyState(DIK_Q) == TAP 
+			&&	m_iCurrentBehavior != (_uint)KRS_BEHAVIOR_STATE::ATTACK && m_iCurrentBehavior != (_uint)KRS_BEHAVIOR_STATE::GRAB 
+			&& m_iCurrentBehavior != (_uint)KRS_BEHAVIOR_STATE::PICK_UP)
 		{
-			m_iCurrentBehavior = (_uint)KRS_BEHAVIOR_STATE::GRAB;
-			m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Reset();
+			// 아이템 타겟팅 안되어있을 때 Grab으로 빠지고
+			if (m_pTargetItem == nullptr)
+			{
+				m_iCurrentBehavior = (_uint)KRS_BEHAVIOR_STATE::GRAB;
+				m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Reset();
+			}
+			// 아이템 타겟팅 되어있을 때는 PickUp으로 빠진다.
+			else
+			{
+				m_iCurrentBehavior = (_uint)KRS_BEHAVIOR_STATE::PICK_UP;
+				// 여기에 상태값 픽업상태 처리해줘야함
+				dynamic_cast<CItem*>(m_pTargetItem)->Set_ParentMatrix(m_pModelCom->Get_BoneCombinedTransformationMatrix("buki_l_n"));
+				dynamic_cast<CItem*>(m_pTargetItem)->Set_Grab(true);
+			}
+
 		}
 	}
 
@@ -1853,11 +1838,17 @@ void CPlayer::Setting_Target_Enemy()
 		
 		// 기존 타겟중이던 친구의 거리가 3.f 이상 멀어지면 그때 다시 타겟팅한다.
 		if(3.f < vDistance)
-			m_pTargetObject = m_pCollisionManager->Get_Near_LandObject(this, pMonsters);
+			m_pTargetObject = static_cast<CLandObject*>(m_pCollisionManager->Get_Near_Object(this, pMonsters));
 	}
 	else
-		m_pTargetObject = m_pCollisionManager->Get_Near_LandObject(this, pMonsters);
-	
+		m_pTargetObject = static_cast<CLandObject*>(m_pCollisionManager->Get_Near_Object(this, pMonsters));
+}
+
+void CPlayer::Setting_Target_Item()
+{
+	auto pItemList = m_pGameInstance->Get_GameObjects(m_iCurrentLevel, TEXT("Layer_Item"));
+
+	m_pTargetItem = static_cast<CItem*>(m_pCollisionManager->Get_Near_Object(this, pItemList, 1.5f));
 }
 
 void CPlayer::AccHitGauge()
