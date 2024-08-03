@@ -73,12 +73,11 @@ void CCarChase_Reactor::Tick(const _float& fTimeDelta)
 #endif // _DEBUG
 	if (!m_isStop)
 		Move_Waypoint(fTimeDelta);
+
 	//m_pColliderCom->Tick(m_pTransformCom->Get_WorldMatrix());
 
 	for (auto& pMonster : m_Monsters)
 		pMonster->Tick(fTimeDelta);
-
-
 }
 
 void CCarChase_Reactor::Late_Tick(const _float& fTimeDelta)
@@ -181,12 +180,7 @@ void CCarChase_Reactor::Move_Waypoint(const _float& fTimeDelta)
 
 	if (m_iAnim != 0)
 	{
-		if (m_iLineDir == DIR_F)
-			m_fSpeed = 44.f;
-		else if (m_iLineDir == DIR_M)
-			m_fSpeed = 42.f;
-		else
-			m_fSpeed = 40.f;
+		m_fSpeed = fDistance < 300.f ? 41.f : 43.f;
 	}
 	else
 		m_fSpeed = m_fSpeed <= 0.f ? 0.f : m_fSpeed - fTimeDelta * 10.f;

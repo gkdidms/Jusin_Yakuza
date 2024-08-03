@@ -81,6 +81,7 @@ void CPlayerCamera::Tick(const _float& fTimeDelta)
 
 	m_pColliderCom->Tick(m_pTransformCom->Get_WorldMatrix());
 
+	// 카메라 변환 선형보간
 	Return_PrevWorld(fTimeDelta);
 
 	__super::Tick(fTimeDelta);
@@ -88,27 +89,30 @@ void CPlayerCamera::Tick(const _float& fTimeDelta)
 
 void CPlayerCamera::Late_Tick(const _float& fTimeDelta)
 {
+	if (m_pUIManager->isInvenClose())
+	{
+		SetCursorPos(g_iWinSizeX * 0.5f, g_iWinSizeY * 0.5f); // 마우스 좌표 적용해주기
+		ShowCursor(false);
+	}
+
 	if (m_pSystemManager->Get_Camera() != CAMERA_PLAYER) return;
 
 	_vector vPlayerPosition;
 	memcpy(&vPlayerPosition, m_pPlayerMatrix->m[CTransform::STATE_POSITION], sizeof(_float4));
 
-	m_bCamCollision = m_pCollisionManager->Map_Collision_Move(m_pColliderCom, m_pTransformCom);
 
-	m_fCamDistance = XMVectorGetX(XMVector3Length(m_pTransformCom->Get_State(CTransform::STATE_POSITION) - vPlayerPosition));
+	XMVECTOR		vCollisionPos = XMVectorZero();
 
-	if (MAX_DISTANCE < m_fCamDistance)
-		m_fCamDistance = MAX_DISTANCE;
-	else if (MIN_DISTANCE > m_fCamDistance)
-		m_fCamDistance = MIN_DISTANCE;
+	m_bCamCollision = m_pCollisionManager->Check_Map_Collision(m_pColliderCom, vCollisionPos, m_pTransformCom);
 
-	// 충돌 후 거리 및 각도 조정
-	if (m_bCamCollision)
-	{
-		Adjust_Camera_Angle();
-	}
 
-	Compute_View(fTimeDelta);
+	Compute_View_During_Collision(fTimeDelta);
+
+	//LookAt 적용
+	_vector vLookAt = XMVectorSet(XMVectorGetX(vPlayerPosition), XMVectorGetY(vPlayerPosition) + 1.f, XMVectorGetZ(vPlayerPosition), 1);
+
+	// 카메라가 플레이어를 바라보도록 설정
+	m_pTransformCom->LookAt(vLookAt);
 
 	__super::Tick(fTimeDelta);
 }
@@ -120,16 +124,6 @@ HRESULT CPlayerCamera::Render()
 
 void CPlayerCamera::Compute_View(const _float& fTimeDelta)
 {
-	_float a = m_pTransformCom->Get_WorldMatrix().r[1].m128_f32[0];
-	if (isnan(a))
-		int h = 99;
-
-	if (m_pUIManager->isInvenClose())
-	{
-		SetCursorPos(g_iWinSizeX * 0.5f, g_iWinSizeY * 0.5f); // 마우스 좌표 적용해주기
-		ShowCursor(false);
-	}
-
 	// 플레이어 위치 가져오기
 	_vector vPlayerPosition;
 	memcpy(&vPlayerPosition, m_pPlayerMatrix->m[CTransform::STATE_POSITION], sizeof(_float4));
@@ -175,13 +169,72 @@ void CPlayerCamera::Compute_View(const _float& fTimeDelta)
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vCamPosition);
 
-	_vector vLookAt = XMVectorSet(XMVectorGetX(vPlayerPosition), XMVectorGetY(vPlayerPosition) + 1.f, XMVectorGetZ(vPlayerPosition), 1);
+	//_vector vLookAt = XMVectorSet(XMVectorGetX(vPlayerPosition), XMVectorGetY(vPlayerPosition) + 1.f, XMVectorGetZ(vPlayerPosition), 1);
 
-	// 카메라가 플레이어를 바라보도록 설정
-	m_pTransformCom->LookAt(vLookAt);
+	//// 카메라가 플레이어를 바라보도록 설정
+	//m_pTransformCom->LookAt(vLookAt);
 
 	// 월드 매트릭스 업데이트
 	XMStoreFloat4x4(&m_WorldMatrix, m_pTransformCom->Get_WorldMatrix());
+}
+
+void CPlayerCamera::Compute_View_During_Collision(const _float& fTimeDelta)
+{
+	// 플레이어 위치 가져오기
+	_vector vPlayerPosition;
+	memcpy(&vPlayerPosition, m_pPlayerMatrix->m[CTransform::STATE_POSITION], sizeof(_float4));
+
+	// 마우스 입력을 이용한 카메라 회전
+	_long MouseMoveX = m_pGameInstance->Get_DIMouseMove(DIMS_X);
+	_long MouseMoveY = m_pGameInstance->Get_DIMouseMove(DIMS_Y);
+
+	float	fCamAngleY = m_fCamAngleY;
+	float	fCamAngleX = m_fCamAngleX;
+
+	fCamAngleY -= fTimeDelta * m_fSensor * MouseMoveX;
+	fCamAngleX += fTimeDelta * m_fSensor * MouseMoveY;
+
+	// 카메라 각도 제한 (수직 각도 제한)
+	if (fCamAngleX > 70.0f)  // 캐릭터를 아래서 보지 않도록 최대 각도를 45도로 제한
+		fCamAngleX = 70.0f;
+	if (fCamAngleX < 30) // 카메라가 수직 아래로 향하지 않도록 최소 각도를 -89도로 제한
+		fCamAngleX = 30;
+
+	// 이전 카메라 포지션 저장
+	_vector vPrevCamPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+
+
+	// 카메라 포지션 계산
+	_vector vCamPosition = XMVectorSet(
+		m_fCamDistance * cosf(XMConvertToRadians(fCamAngleY)) * cosf(XMConvertToRadians(fCamAngleX)),
+		m_fCamDistance * sinf(XMConvertToRadians(fCamAngleX)),
+		m_fCamDistance * sinf(XMConvertToRadians(fCamAngleY)) * cosf(XMConvertToRadians(fCamAngleX)),
+		1.f
+	);
+
+
+	vCamPosition += XMVectorSet(XMVectorGetX(vPlayerPosition), XMVectorGetY(vPlayerPosition), XMVectorGetZ(vPlayerPosition), 0);
+
+	// 바뀐 카메라 위치와 콜라이더 충돌 체크함
+	if (true == m_pCollisionManager->Check_Map_Collision_Using_Position(m_pColliderCom, vCamPosition))
+	{
+		// 아직도 충돌됨
+		return;
+	}
+	else
+	{
+		// 충돌 벗어남
+		m_bCamCollision = false;
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, vCamPosition);
+
+		m_fCamAngleY = fCamAngleY;
+		m_fCamAngleX = fCamAngleX;
+
+		// 월드 매트릭스 업데이트
+		XMStoreFloat4x4(&m_WorldMatrix, m_pTransformCom->Get_WorldMatrix());
+	}
+
+
 }
 
 void CPlayerCamera::Set_StartPos()

@@ -582,7 +582,7 @@ _bool CMesh::isCloth()
 	//	strName.find("eye") == string::npos)
 	//	return true;
 
-	return false;
+	return true;
 }
 
 CMesh* CMesh::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CModel::MODELTYPE eModelType, const aiMesh* pAIMesh, _fmatrix PreTransformMatrix, const vector<class CBone*>& Bones)
