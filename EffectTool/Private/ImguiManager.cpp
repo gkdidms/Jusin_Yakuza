@@ -978,6 +978,8 @@ HRESULT CImguiManager::Edit_Particle(_uint Index)
 		EffectDesc.vStartColor = m_EffectDesc.vStartColor;
 		EffectDesc.vEndColor = m_EffectDesc.vEndColor;
 		EffectDesc.iShaderPass = m_EffectDesc.iShaderPass;
+		
+
 		EffectDesc.TextureTag = m_EffectDesc.TextureTag;
 		EffectDesc.fDistortion = m_EffectDesc.fDistortion;
 
@@ -1613,7 +1615,7 @@ void CImguiManager::Editor_Tick(_float fTimeDelta)
 		bChange = true;
 	}
 	ImGui::SameLine();
-	if (ImGui::RadioButton("DISTORTION", &m_EffectDesc.iShaderPass, PASS_DISTORTION))
+	if (ImGui::RadioButton("NOBILLDISTORTION", &m_EffectDesc.iShaderPass, PASS_NOBILLDISTORTION))
 	{
 		if (m_bNobillboard)
 		{
@@ -1627,7 +1629,7 @@ void CImguiManager::Editor_Tick(_float fTimeDelta)
 		}
 		bChange = true;
 	}
-	ImGui::SameLine();
+
 	if (ImGui::RadioButton("NOBILLBOARD", &m_EffectDesc.iShaderPass, PASS_NOBILLBOARD))
 	{
 		if (m_bSpread)
@@ -1642,7 +1644,22 @@ void CImguiManager::Editor_Tick(_float fTimeDelta)
 		}
 		bChange = true;
 	}
-
+	ImGui::SameLine();
+	if (ImGui::RadioButton("DISTORTION", &m_EffectDesc.iShaderPass, PASS_DISTORTION))
+	{
+		if (m_bSpread)
+		{
+			if (-1 != m_iCurEditIndex)
+			{
+				CEffect* pParticle = dynamic_cast<CEffect*>(m_EditParticle[m_iCurEditIndex]);
+				pParticle->Edit_Action(CEffect::ACTION_SPREAD);	
+				m_EffectDesc.BufferInstance.isBillboard = true;
+			}
+			m_bSpread = false;
+		}
+		bChange = true;
+	}
+	
 	if (PASS_NOBILLBOARD == m_EffectDesc.iShaderPass)
 	{
 		if (ImGui::Checkbox("NoBillboard", &m_bNobillboard))
@@ -1842,8 +1859,7 @@ void CImguiManager::Editor_Tick(_float fTimeDelta)
 		}
 	}
 	break;
-
-	case PASS_DISTORTION:
+	case PASS_NOBILLDISTORTION:
 	{
 		_float* Temp = (_float*)&m_EffectDesc.fDistortion;
 		if (ImGui::InputFloat("DistortionWeight", Temp))
@@ -1910,6 +1926,25 @@ void CImguiManager::Editor_Tick(_float fTimeDelta)
 		if (ImGui::InputFloat("CrossArea", Temp))
 		{
 			memcpy(&m_EffectDesc.BufferInstance.CrossArea, Temp, sizeof(_float));
+			bChange = true;
+		}
+		break;
+	}
+
+	case PASS_DISTORTION:
+	{
+		_float* Temp = (_float*)&m_EffectDesc.fDistortion;
+		if (ImGui::InputFloat("DistortionWeight", Temp))
+		{
+			memcpy(&m_EffectDesc.fDistortion, Temp, sizeof(_float));
+			bChange = true;
+		}
+
+
+		Temp = (_float*)&m_EffectDesc.fLifeAlpha;
+		if (ImGui::InputFloat2("LifeAlpha", Temp))
+		{
+			memcpy(&m_EffectDesc.fLifeAlpha, Temp, sizeof(_float2));
 			bChange = true;
 		}
 		break;

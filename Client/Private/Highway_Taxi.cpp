@@ -66,8 +66,8 @@ void CHighway_Taxi::Tick(const _float& fTimeDelta)
 {
 	__super::Tick(fTimeDelta);
 
-	if (m_isObjectDead)
-		m_pModelCom->Play_Animation(fTimeDelta);
+	//if (m_isObjectDead)
+	//	m_pModelCom->Play_Animation(fTimeDelta);
 
 #ifdef _DEBUG
 	if (m_pGameInstance->GetKeyState(DIK_LCONTROL) == TAP)
@@ -92,7 +92,6 @@ void CHighway_Taxi::Late_Tick(const _float& fTimeDelta)
 		vCurrentPos = XMVectorSetY(vCurrentPos, fHeight);
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, vCurrentPos);
 	}
-	m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
 	m_pKiryu->Late_Tick(fTimeDelta);
 }
 
@@ -104,7 +103,7 @@ HRESULT CHighway_Taxi::Render()
 	int i = 0;
 	for (auto& pMesh : m_pModelCom->Get_Meshes())
 	{
-		m_pModelCom->Bind_BoneMatrices(m_pShaderCom, "g_BoneMatrices", i);
+		//m_pModelCom->Bind_BoneMatrices(m_pShaderCom, "g_BoneMatrices", i);
 
 		m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE);
 		m_pModelCom->Bind_Material(m_pShaderCom, "g_MultiDiffuseTexture", i, aiTextureType_SHININESS);
@@ -138,12 +137,11 @@ void CHighway_Taxi::Move_Waypoint(const _float& fTimeDelta)
 
 	_float fSpeed = 40.f;
 	m_pTransformCom->Go_Straight_CustumSpeed(fSpeed, fTimeDelta, m_pNavigationCom);
-	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&vMovePos));
 }
 
 HRESULT CHighway_Taxi::Add_Components()
 {
-	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Shader_VtxAnim"),
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Shader_Mesh"),
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
 		return E_FAIL;
 
