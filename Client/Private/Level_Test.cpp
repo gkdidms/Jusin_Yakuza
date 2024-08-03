@@ -44,9 +44,9 @@ HRESULT CLevel_Test::Initialize()
  	if (FAILED(Ready_Player(TEXT("Layer_Player"))))
 		return E_FAIL;
 
-	//m_pTutorialManager = CTutorialManager::Create();
-	//if (nullptr == m_pTutorialManager)
-	//	return E_FAIL;
+	m_pTutorialManager = CTutorialManager::Create();
+	if (nullptr == m_pTutorialManager)
+		return E_FAIL;
 
 	/*if (FAILED(Ready_Monster(TEXT("Layer_Monster"))))
 		return E_FAIL;*/
@@ -60,8 +60,8 @@ HRESULT CLevel_Test::Initialize()
 	/* 클라 파싱 */
 	m_pFileTotalManager->Set_MapObj_In_Client(7, LEVEL_TEST);
 	m_pFileTotalManager->Set_Lights_In_Client(90);
-	//m_pFileTotalManager->Set_Collider_In_Client(3, LEVEL_TEST);
-	//m_pFileTotalManager->Set_Trigger_In_Client(3, LEVEL_TEST);
+	m_pFileTotalManager->Set_Collider_In_Client(3, LEVEL_TEST);
+	m_pFileTotalManager->Set_Trigger_In_Client(3, LEVEL_TEST);
 
 	if (FAILED(Ready_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
@@ -77,7 +77,7 @@ HRESULT CLevel_Test::Initialize()
 void CLevel_Test::Tick(const _float& fTimeDelta)
 {
 	//m_pCarChaseManager->Tick();
-	//m_pTutorialManager->Tick();
+	m_pTutorialManager->Tick();
 #ifdef _DEBUG
 	SetWindowText(g_hWnd, TEXT("테스트 레벨"));
 #endif
@@ -194,8 +194,7 @@ HRESULT CLevel_Test::Ready_Map(const wstring& strLayerTag)
 
 HRESULT CLevel_Test::Ready_Effect(const wstring& strLayerTag)
 {
-	//if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("
-	// "), strLayerTag, nullptr)))
+	//if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_Particle_Point_Hit1_Part0"), strLayerTag, nullptr)))
 	//	return E_FAIL;
 
 	//if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_Particle_Aura_asd"), strLayerTag, nullptr)))
