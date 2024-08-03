@@ -198,7 +198,7 @@ void CPlayer::Tick(const _float& fTimeDelta)
 		}
 	}
 #else
-	if (DEFAULT_ANIMAITION == m_eAnimComType)
+	if (DEFAULT == m_eAnimComType)
 	{
 		m_pModelCom->Play_Animation_Separation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")), m_iHandAnimIndex, m_SeparationAnimComs[HAND_COM], false, (_int)HAND_COM);
 		m_pModelCom->Play_Animation_Separation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")), m_iFaceAnimIndex, m_SeparationAnimComs[FACE_COM], false, (_int)FACE_COM);

@@ -108,20 +108,6 @@ void CPlayerCamera::Late_Tick(const _float& fTimeDelta)
 
 	Compute_View_During_Collision(fTimeDelta);
 
-	//if (true == m_bCamCollision)
-	//{
-	//	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, vCollisionPos);
-
-	//	Compute_View_During_Collision(fTimeDelta);
-
-	//	
-	//}
-	//else
-	//{
-	//	Compute_View(fTimeDelta);
-
-	//}
-
 	//LookAt Àû¿ë
 	_vector vLookAt = XMVectorSet(XMVectorGetX(vPlayerPosition), XMVectorGetY(vPlayerPosition) + 1.f, XMVectorGetZ(vPlayerPosition), 1);
 
