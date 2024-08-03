@@ -90,7 +90,7 @@ void CKiryu_KRS_PickUp::Tick(const _float& fTimeDelta)
 				XMStoreFloat4(&vDir, m_pPlayer->Get_TransformCom()->Get_State(CTransform::STATE_LOOK));
 
 				CItem::THROW_INFO_DESC Desc{
-					vDir, 20.f
+					vDir, 25.f
 				};
 
 				CItem* pItem = m_pPlayer->Get_CurrentItem();
