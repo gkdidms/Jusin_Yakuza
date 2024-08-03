@@ -36,6 +36,7 @@ private:
 	void Play_Off();
 
 	void Move_KeyInput(const _float& fTimeDelta);
+	void Attack_KeyInput(const _float& fTimeDelta);
 
 public:
 	static CBehaviorAnimation* Create(class CPlayer* pPlayer);
@@ -45,7 +46,7 @@ private:
 	ANIM_STATE	m_eAnimState = { ANIM_START };
 	_bool		m_isStop = { false };
 
-	_int		m_iComboCount = { -1 };
+	_int		m_iComboCount = { 0 };
 	_int		m_iDirection = { -1 };		// F, B, L, R
 
 	_bool		m_isShaked = { false };

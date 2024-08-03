@@ -23,12 +23,12 @@ CKiryu_KRS_PickUp::CKiryu_KRS_PickUp()
 		[749]	[p_wpc_shift_l]
 		[750]	[p_wpc_shift_r]
 
-		[753]	[p_wpc_stand_btl_lp]		
+		[751]	[p_wpc_stand]
 		[755]	[p_wpc_throw]
 	*/
 
 	m_AnimationIndices.push_back(742);	// 0 [742]	[p_wpc_pickup]
-	m_AnimationIndices.push_back(753);	// 1 [753]	[p_wpc_stand_btl_lp]	
+	m_AnimationIndices.push_back(751);	// 1 [751]	[p_wpc_stand]
 
 	m_AnimationIndices.push_back(733);	// 2 [733]	[p_wpc_cmb_01]
 	m_AnimationIndices.push_back(734);	// 3 [734]	[p_wpc_cmb_02]
@@ -73,8 +73,13 @@ void CKiryu_KRS_PickUp::Tick(const _float& fTimeDelta)
 	case ANIM_LOOP:
 		m_pPlayer->Set_HandAnimIndex(CPlayer::HAND_HAKO);
 		m_pPlayer->On_Separation_Hand();
-		// 여기에 움직이는 키인풋
 		Move_KeyInput(fTimeDelta);
+		Attack_KeyInput(fTimeDelta);
+		break;
+	case ANIM_ONCE:
+		m_pPlayer->Set_HandAnimIndex(CPlayer::HAND_HAKO);
+		m_pPlayer->On_Separation_Hand();
+		Attack_KeyInput(fTimeDelta);
 		break;
 	case ANIM_END:
 		// 놓치는게 end (p_kru_sync_neck_off)
@@ -91,7 +96,7 @@ void CKiryu_KRS_PickUp::Change_Animation()
 	if (0 > m_iCurrentIndex) return;
 
 	m_pPlayer->Off_Separation_Hand();
-	m_pPlayer->Change_Animation(m_AnimationIndices[m_iCurrentIndex]);
+	m_pPlayer->Change_Animation(m_AnimationIndices[m_iCurrentIndex + m_iComboCount]);
 }
 
 _bool CKiryu_KRS_PickUp::Get_AnimationEnd()
@@ -110,7 +115,10 @@ _bool CKiryu_KRS_PickUp::Get_AnimationEnd()
 			if(m_isStop)
 				m_eAnimState = ANIM_END;
 			else
+			{
+				m_iComboCount = 0;			// 뭐든지 루프로 돌아갈때에는 콤보카운트를 초기화해야한다
 				m_eAnimState = ANIM_LOOP;
+			}
 		}
 
 		else if (ANIM_END == m_eAnimState)
@@ -135,6 +143,7 @@ void CKiryu_KRS_PickUp::Reset()
 
 void CKiryu_KRS_PickUp::Combo_Count(_bool isFinAction)
 {
+	m_iCurrentIndex = 2;
 	if (Changeable_Combo_Animation())
 	{
 		m_iComboCount++;
@@ -164,12 +173,10 @@ void CKiryu_KRS_PickUp::Event(void* pValue)
 
 _bool CKiryu_KRS_PickUp::Changeable_Combo_Animation()
 {
-	_float fInterval = 0.8f;
+	_float fInterval = 0.4f;
 
-	if (0 == m_iCurrentIndex)
-	{
-		fInterval = 0.2f;
-	}
+	if (m_iComboCount > 1)
+		fInterval = 0.8f;
 
 	if (Checked_Animation_Ratio(fInterval))
 	{
@@ -200,12 +207,6 @@ void CKiryu_KRS_PickUp::Play_Off()
 
 void CKiryu_KRS_PickUp::Move_KeyInput(const _float& fTimeDelta)
 {
-	if (m_pGameInstance->GetKeyState(DIK_Q) == TAP)
-	{
-		m_iCurrentIndex = 13;
-		m_eAnimState = ANIM_ONCE;
-		m_isStop = true;
-	}
 	/*
 	* 	m_AnimationIndices.push_back(743);	// 5 [743]	[p_wpc_shift_b]
 		m_AnimationIndices.push_back(744);	// 6 [744]	[p_wpc_shift_bl]
@@ -277,6 +278,22 @@ void CKiryu_KRS_PickUp::Move_KeyInput(const _float& fTimeDelta)
 		m_iCurrentIndex = 8;
 	else
 		m_iCurrentIndex = 1;
+}
+
+void CKiryu_KRS_PickUp::Attack_KeyInput(const _float& fTimeDelta)
+{
+	if (m_pGameInstance->GetMouseState(DIM_LB) == TAP)
+	{
+		Combo_Count();
+		m_eAnimState = ANIM_ONCE;
+	}
+
+	if (m_pGameInstance->GetKeyState(DIK_Q) == TAP)
+	{
+		m_iCurrentIndex = 13;
+		m_eAnimState = ANIM_ONCE;
+		m_isStop = true;
+	}
 }
 
 CBehaviorAnimation* CKiryu_KRS_PickUp::Create(CPlayer* pPlayer)
