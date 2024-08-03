@@ -336,7 +336,7 @@ HRESULT CParticle_Point::Load_Data(const string strDirectory)
     }
 
 
-    if (6 == m_iShaderPass)
+    if (6 == m_iShaderPass|| 8 == m_iShaderPass)
         in.read((char*)&m_fDistortion, sizeof(_float));
 
     in.close();
