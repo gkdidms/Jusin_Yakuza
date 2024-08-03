@@ -3,6 +3,7 @@
 #include "Player.h"
 #include "Camera.h"
 #include "Monster.h"
+#include "Item.h"
 
 CKiryu_KRS_PickUp::CKiryu_KRS_PickUp()
 	:CBehaviorAnimation{}
@@ -80,6 +81,22 @@ void CKiryu_KRS_PickUp::Tick(const _float& fTimeDelta)
 		m_pPlayer->Set_HandAnimIndex(CPlayer::HAND_HAKO);
 		m_pPlayer->On_Separation_Hand();
 		Attack_KeyInput(fTimeDelta);
+
+		if (m_iCurrentIndex == 13)
+		{
+			if (Changeable_Combo_Animation())
+			{
+				_float4 vDir;
+				XMStoreFloat4(&vDir, m_pPlayer->Get_TransformCom()->Get_State(CTransform::STATE_LOOK));
+
+				CItem::THROW_INFO_DESC Desc{
+					vDir, 20.f
+				};
+
+				CItem* pItem = m_pPlayer->Get_CurrentItem();
+				pItem->Throw_On(Desc);
+			}
+		}
 		break;
 	case ANIM_END:
 		// 놓치는게 end (p_kru_sync_neck_off)
@@ -177,6 +194,9 @@ _bool CKiryu_KRS_PickUp::Changeable_Combo_Animation()
 
 	if (m_iComboCount > 1)
 		fInterval = 0.8f;
+
+	if(m_iCurrentIndex == 13)
+		fInterval = 0.4f;
 
 	if (Checked_Animation_Ratio(fInterval))
 	{

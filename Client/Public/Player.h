@@ -158,6 +158,10 @@ public:
         return m_pColliderCom;
     }
 
+    class CItem* Get_CurrentItem() {
+        return m_pTargetItem;
+    }
+
     /* Setter */
 public:
     void    Set_StartPos(XMMATRIX    vStartPos) { m_pTransformCom->Set_WorldMatrix(vStartPos); }

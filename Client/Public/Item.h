@@ -17,6 +17,7 @@ class CItem final : public CGameObject
 {
 private:
 	const _float BRIGHT_DISTANCE = 5.f;
+	const _float THROW_TIME = 1.f;
 
 public:
 	enum OBJECT_TYPE {
@@ -63,6 +64,12 @@ public:
 		_float4x4			vOffsetMatrix;
 	}MAPOBJ_DESC;
 
+	typedef struct tThrowInfoDesc
+	{
+		_float4 vThrowDir;
+		_float fThrowSpeed;
+	}THROW_INFO_DESC;
+
 
 private:
 	CItem(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -93,9 +100,13 @@ public:
 public:
 	_uint				Get_ItemLife() { return m_iLife; }
 	_bool				Decrease_Life();		// 사용횟수 감소 (사용횟수를 전부 소진한 상황이면 false를 리턴한다)
+	void				Throw_On(THROW_INFO_DESC& Desc);
 
 private:
-	void						Set_Item_Mode();
+	void				Throwing(const _float& fTimeDelta);
+
+private:
+	void				Set_Item_Mode();
 
 private:
 	CShader* m_pShaderCom = { nullptr };
@@ -120,7 +131,7 @@ private:
 	//int						m_iRimLightTime;
 
 	_float4x4				m_vOffsetMatrix; // 위치 조정값
-	const _float4x4*		m_vParentMatrix; // 부모
+	const _float4x4*		m_vParentMatrix; // 부모 (뼈)
 	const _float4x4*		m_pPlayerMatrix; // 플레이어 위치
 
 	_float4x4				m_WorldMatrix;
@@ -130,6 +141,10 @@ private:
 	bool					m_bCurGrab = { false }; // 현재 잡고있는지
 
 	_uint					m_iLife = { 3 };		// 적을 타격할 수 있는 횟수
+	
+	_bool					m_isThrowing = { false };
+	_float					m_fThrowTimer = { 0.f };
+	THROW_INFO_DESC			m_ThrowInfo{};
 
 public:
 	HRESULT Add_Components(void* pArg);
