@@ -12,7 +12,7 @@ class CPlayerCamera :
     public CCamera
 {
 private:
-    const _float MAX_DISTANCE = 3.7f;
+    const _float MAX_DISTANCE = 3.5f;
     const _float MIN_DISTANCE = 3.0f;
 
 public:
@@ -50,6 +50,7 @@ private:
     // 이전 월드매트릭스로 선형보간하는 함수
     void    Return_PrevWorld(const _float& fTimeDelta);
     void    Reset_RetureVariables();            // 관련 변수 초기화 함수
+
 
 public:
     void Store_PrevMatrix() {
