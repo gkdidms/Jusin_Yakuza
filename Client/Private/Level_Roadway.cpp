@@ -44,6 +44,8 @@ HRESULT CLevel_Roadway::Initialize()
 	if (FAILED(Ready_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
 
+	m_pSystemManager->Set_Camera(CAMERA_CARCHASE);
+
     return S_OK;
 }
 

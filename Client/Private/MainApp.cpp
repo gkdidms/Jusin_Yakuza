@@ -182,8 +182,6 @@ HRESULT CMainApp::Render()
 
 	m_pGameInstance->Draw();
 
-#ifdef _DEBUG
-	//프레임 확인용.
 	++m_iNumRender;
 
 	if (m_fTimeAcc >= 1.f)
@@ -195,6 +193,12 @@ HRESULT CMainApp::Render()
 	}
 
 	m_pGameInstance->Render_Font(TEXT("Font_Default"), m_szFPS, _float2(0.f, 0.f), XMVectorSet(1.f, 1.f, 0.f, 1.f));
+
+#ifdef _DEBUG
+	//프레임 확인용.
+
+
+
 
 	m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("!!!테스트용 키는 화면에 모두 작성할것 !!! "), _float2(500.f, 0.f), XMVectorSet(1.f, 0.f, 0.f, 1.f));
 	m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("!!!처음부터->TEST , 이어하기 ->OFFICE_1F!!! "), _float2(500.f, 20.f), XMVectorSet(1.f, 0.f, 0.f, 1.f));
