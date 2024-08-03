@@ -73,12 +73,12 @@ _bool CCarChase::Start()
 			return false;
 	}
 
-	//CHighway_Taxi* pPlayer = dynamic_cast<CHighway_Taxi*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Texi"), 0));
-	//
-	//pPlayer->Set_Dir(m_Info.iStageDir);
+	CHighway_Taxi* pPlayer = dynamic_cast<CHighway_Taxi*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Texi"), 0));
+	
+	pPlayer->Set_Dir(m_Info.iStageDir);
 
-	//if (m_Info.iPlayerLine != m_Info.iPrePlayerLine)
-	//	pPlayer->Set_NavigationRouteIndex(m_Info.iPlayerLine);
+	if (m_Info.iPlayerLine != m_Info.iPrePlayerLine)
+		pPlayer->Set_NavigationRouteIndex(m_Info.iPlayerLine);
 
 	return true;
 }
