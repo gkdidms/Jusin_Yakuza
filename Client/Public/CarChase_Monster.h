@@ -119,7 +119,6 @@ protected:
 
 protected:
     class CAI_CarChase* m_pTree = { nullptr };
-    class 
     const _float4x4* m_pParentMatrix = { nullptr }; 
 
 protected:
