@@ -6,6 +6,7 @@
 #include "DebugManager.h"
 #include "FileTotalMgr.h"
 #include "CarChaseManager.h"
+#include "TutorialManager.h"
 
 #include "PlayerCamera.h"
 #include "DebugCamera.h"
