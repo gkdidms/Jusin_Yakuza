@@ -55,6 +55,12 @@ void CUICarchase::OverAction()
 {
 }
 
+HRESULT CUICarchase::Add_TargetingRound()
+{
+    
+    return S_OK;
+}
+
 CUICarchase* CUICarchase::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg)
 {
     CUICarchase* pInstance = new CUICarchase();
