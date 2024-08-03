@@ -17,7 +17,7 @@
 #include "Adventure.h"
 #include "Map.h"
 #include "Item.h"
-
+#include "Highway_Taxi.h"
 #include "Trigger.h"
 
 IMPLEMENT_SINGLETON(CFileTotalMgr)
@@ -241,21 +241,43 @@ HRESULT CFileTotalMgr::Set_GameObject_In_Client(int iStageLevel)
         else if (OBJECT_TYPE::PLAYER == m_MapTotalInform.pMapObjDesc[i].iObjType)
         {
             XMMATRIX vStartPos = XMLoadFloat4x4(&m_MapTotalInform.pMapObjDesc[i].vTransform);
-            dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject(iStageLevel, TEXT("Layer_Player"), 0))->Set_StartPos(vStartPos);
 
-            // 네비 루트 세팅
-            dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject(iStageLevel, TEXT("Layer_Player"), 0))->Set_NaviRouteIndex(m_MapTotalInform.pMapObjDesc[i].iNaviRoute);
-
-            if (-1 == m_MapTotalInform.pMapObjDesc[i].iNaviNum)
+            if (nullptr == m_pGameInstance->Get_GameObject(iStageLevel, TEXT("Layer_Player"), 0))
             {
-                // 예외처리
-                dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject(iStageLevel, TEXT("Layer_Player"), 0))->Set_NavigationIndex(0);
+                //Layer_Taxi
+                dynamic_cast<CHighway_Taxi*>(m_pGameInstance->Get_GameObject(iStageLevel, TEXT("Layer_Taxi"), 0))->Set_StartPos(vStartPos);
+
+                // 네비 루트 세팅
+                dynamic_cast<CHighway_Taxi*>(m_pGameInstance->Get_GameObject(iStageLevel, TEXT("Layer_Taxi"), 0))->Set_NaviRouteIndex(m_MapTotalInform.pMapObjDesc[i].iNaviRoute);
+
+                if (-1 == m_MapTotalInform.pMapObjDesc[i].iNaviNum)
+                {
+                    // 예외처리
+                    dynamic_cast<CHighway_Taxi*>(m_pGameInstance->Get_GameObject(iStageLevel, TEXT("Layer_Taxi"), 0))->Set_NavigationIndex(0);
+                }
+                else
+                {
+                    dynamic_cast<CHighway_Taxi*>(m_pGameInstance->Get_GameObject(iStageLevel, TEXT("Layer_Taxi"), 0))->Set_NavigationIndex(m_MapTotalInform.pMapObjDesc[i].iNaviNum);
+                }
+
             }
             else
             {
-                dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject(iStageLevel, TEXT("Layer_Player"), 0))->Set_NavigationIndex(m_MapTotalInform.pMapObjDesc[i].iNaviNum);
-            }
+                dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject(iStageLevel, TEXT("Layer_Player"), 0))->Set_StartPos(vStartPos);
 
+                // 네비 루트 세팅
+                dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject(iStageLevel, TEXT("Layer_Player"), 0))->Set_NaviRouteIndex(m_MapTotalInform.pMapObjDesc[i].iNaviRoute);
+
+                if (-1 == m_MapTotalInform.pMapObjDesc[i].iNaviNum)
+                {
+                    // 예외처리
+                    dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject(iStageLevel, TEXT("Layer_Player"), 0))->Set_NavigationIndex(0);
+                }
+                else
+                {
+                    dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject(iStageLevel, TEXT("Layer_Player"), 0))->Set_NavigationIndex(m_MapTotalInform.pMapObjDesc[i].iNaviNum);
+                }
+            }
             
         }
         else if (OBJECT_TYPE::SKY == m_MapTotalInform.pMapObjDesc[i].iObjType)
@@ -450,6 +472,8 @@ HRESULT CFileTotalMgr::Set_GameObject_In_Client(int iStageLevel)
                     mapDesc.pColliderDesc[j].vQuaternion = m_MapTotalInform.pMapObjDesc[i].pObjColliders[j].vQuaternion;
                 }
             }
+
+            mapDesc.vPlayerMatrix = dynamic_cast<CTransform*>(m_pGameInstance->Get_GameObject_Component(iStageLevel, TEXT("Layer_Player"), TEXT("Com_Transform", 0)))->Get_WorldFloat4x4();
 
             m_pGameInstance->Add_GameObject(iStageLevel, TEXT("Prototype_GameObject_Map"), m_Layers[iLayer], &mapDesc);
         }

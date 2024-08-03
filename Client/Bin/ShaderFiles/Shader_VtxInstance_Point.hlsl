@@ -262,7 +262,62 @@ void GS_DIRSCALE(point GS_IN In[1], inout TriangleStream<GS_OUT> Triangles)
 /* TriangleList인 경우 : 정점 세개를 받아서 w나누기를 각 정점에 대해서 수행한다. */
 /* 뷰포트(윈도우좌표로) 변환. */
 /* 래스터라이즈 : 정점으로 둘러쌓여진 픽셀의 정보를, 정점을 선형보간하여 만든다. -> 픽셀이 만들어졌다!!!!!!!!!!!! */
+[maxvertexcount(6)] //방향성 x
+void GS_DISTORTION(point GS_NOBILL_IN In[1], inout TriangleStream<GS_OUT> Triangles)
+{
+    GS_OUT Out[4];
 
+    for (int i = 0; i < 4; ++i)
+    {
+        Out[i].vPosition = float4(0.f, 0.f, 0.f, 0.f);
+        Out[i].vTexcoord = float2(0.f, 0.f);
+        Out[i].vLifeTime = float2(0.f, 0.f);
+    }
+
+    float3 vRight = In[0].TransformMatrix._11_12_13_14 * In[0].vPSize.x * In[0].vRectSize.x * 0.5f;
+    float3 vUp = In[0].TransformMatrix._21_22_23_24 * In[0].vPSize.y * In[0].vRectSize.x * 0.5f;
+    vector vLook = In[0].TransformMatrix._31_32_33_34;
+
+    float3 vPosition;
+    matrix matVP = mul(g_ViewMatrix, g_ProjMatrix);
+    
+    float4 PointPosition = float4(In[0].vPosition, 1.f); //월드좌표
+
+        
+    vPosition = In[0].vPosition + vRight + vUp;
+    Out[0].vPosition = mul(float4(vPosition, 1.f), matVP);
+    Out[0].vTexcoord = float2(0.f, 0.f);
+    Out[0].vLifeTime = In[0].vLifeTime;
+
+    
+    vPosition = In[0].vPosition - vRight + vUp;
+    Out[1].vPosition = mul(float4(vPosition, 1.f), matVP);
+    Out[1].vTexcoord = float2(1.f, 0.f);
+    Out[1].vLifeTime = In[0].vLifeTime;
+
+    
+    vPosition = In[0].vPosition - vRight - vUp;
+    Out[2].vPosition = mul(float4(vPosition, 1.f), matVP);
+    Out[2].vTexcoord = float2(1.f, 1.f);
+    Out[2].vLifeTime = In[0].vLifeTime;
+
+
+    vPosition = In[0].vPosition + vRight - vUp;
+    Out[3].vPosition = mul(float4(vPosition, 1.f), matVP);
+    Out[3].vTexcoord = float2(0.f, 1.f);
+    Out[3].vLifeTime = In[0].vLifeTime;
+
+    
+    Triangles.Append(Out[0]);
+    Triangles.Append(Out[1]);
+    Triangles.Append(Out[2]);
+    Triangles.RestartStrip();
+
+    Triangles.Append(Out[0]);
+    Triangles.Append(Out[2]);
+    Triangles.Append(Out[3]);
+    Triangles.RestartStrip();
+}
 //파티클의 점 하나를 그리고 픽셀로 넘어간다 사각형 한개 생성후 픽셸로 감
 [maxvertexcount(6)] //방향성 x
 void GS_NOBILLBOARD(point GS_NOBILL_IN In[1], inout TriangleStream<GS_NOBIL_OUT> Triangles)
@@ -712,15 +767,15 @@ technique11 DefaultTechnique
         PixelShader = compile ps_5_0 PS_RIM_DEPTH();
     }
 
-    pass Distortion //6
+    pass NO_BILL_Distortion //6
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_None_Test_None_Write, 0);
         SetBlendState(BS_Blend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
    
 		/* 어떤 셰이덜르 국동할지. 셰이더를 몇 버젼으로 컴파일할지. 진입점함수가 무엇이찌. */
-        VertexShader = compile vs_5_0 VS_MAIN();
-        GeometryShader = compile gs_5_0 GS_DEAFULT();
+        VertexShader = compile vs_5_0 VS_NOBILLBOARD();
+        GeometryShader = compile gs_5_0 GS_DISTORTION();
         HullShader = NULL;
         DomainShader = NULL;
         PixelShader = compile ps_5_0 PS_DISTORTION();
@@ -738,6 +793,20 @@ technique11 DefaultTechnique
         HullShader = NULL;
         DomainShader = NULL;
         PixelShader = compile ps_5_0 PS_NOBILLBOARD_NOCOLOR();
+    }
+
+    pass Distortion //8
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_None_Test_None_Write, 0);
+        SetBlendState(BS_Blend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+   
+		/* 어떤 셰이덜르 국동할지. 셰이더를 몇 버젼으로 컴파일할지. 진입점함수가 무엇이찌. */
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = compile gs_5_0 GS_DEAFULT();
+        HullShader = NULL;
+        DomainShader = NULL;
+        PixelShader = compile ps_5_0 PS_DISTORTION();
     }
 }
 

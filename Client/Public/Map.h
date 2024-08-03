@@ -69,6 +69,7 @@ public:
 
 		bool				bCull;
 		bool				bLocalCull;
+		const _float4x4*	vPlayerMatrix;
 	}MAPOBJ_DESC;
 
 
@@ -95,6 +96,10 @@ public:
 
 	void						Edit_GameObject_Information(MAPOBJ_DESC	mapDesc);
 	CMap::MAPOBJ_DESC			Send_GameObject_Information();
+
+
+private:
+	void						Add_Renderer(const _float& fTimeDelta);
 
 private:
 	CShader* m_pShaderCom = { nullptr };
@@ -127,6 +132,9 @@ private:
 	_float					m_fWaterDeltaTime = { 0 };
 	_bool					m_bCull = { false };
 	_bool					m_bLocalCull = { false }; // 도로mesh 전용
+
+
+	const _float4x4*		m_pPlayerMatrix; // 플레이어 위치
 
 public:
 	HRESULT Add_Components(void* pArg);
