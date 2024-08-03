@@ -207,7 +207,7 @@ CBTNode::NODE_STATE CAI_Van::SitAndUp()
 
 CBTNode::NODE_STATE CAI_Van::Idle()
 {
-	if (*m_pWeaponType != CCarChase_Monster::WPJ)
+	if (*m_pWeaponType == CCarChase_Monster::WPJ)
 	{
 		if (m_isSit) *m_pState = CCarChase_Monster::CARCHASE_AIM_LP;
 	}	

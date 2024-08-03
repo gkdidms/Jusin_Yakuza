@@ -5,6 +5,7 @@
 #include "FileTotalMgr.h"
 #include "Collision_Manager.h"
 #include "CarChaseManager.h"
+#include "UIManager.h"
 
 #include "PlayerCamera.h"
 #include "CineCamera.h"
@@ -16,10 +17,12 @@
 CLevel_Roadway::CLevel_Roadway(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     : CLevel { pDevice, pContext },
     m_pSystemManager{ CSystemManager::GetInstance() },
-    m_pFileTotalManager{ CFileTotalMgr::GetInstance() }
+    m_pFileTotalManager{ CFileTotalMgr::GetInstance() },
+	m_pUIManager{CUIManager::GetInstance()}
 {
     Safe_AddRef(m_pSystemManager);
     Safe_AddRef(m_pFileTotalManager);
+	Safe_AddRef(m_pUIManager);
 }
 
 HRESULT CLevel_Roadway::Initialize()
@@ -27,6 +30,8 @@ HRESULT CLevel_Roadway::Initialize()
 	m_pCarChaseManager = CCarChaseManager::Create(m_pDevice, m_pContext);
 	if (nullptr == m_pCarChaseManager)
 		return E_FAIL;
+
+	m_pUIManager->Open_Scene(TEXT("Carchase"));
 
     if (FAILED(Ready_Player(TEXT("Layer_Player"))))
         return E_FAIL;
@@ -158,4 +163,5 @@ void CLevel_Roadway::Free()
     Safe_Release(m_pSystemManager);
     Safe_Release(m_pFileTotalManager);
 	Safe_Release(m_pCarChaseManager);
+	Safe_Release(m_pUIManager);
 }

@@ -40,6 +40,8 @@ private:
     _float m_fCamAngleX = { 0.f };
     _float m_fCamDistance = { 3.f };
 
+    _int m_iTargetIndex = { 0 };
+
 private:
     void Targeting();
 
