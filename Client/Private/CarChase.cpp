@@ -111,7 +111,6 @@ _bool CCarChase::Running()
 
 _bool CCarChase::End()
 {
-
 	return true;
 }
 

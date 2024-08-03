@@ -94,8 +94,8 @@ HRESULT CPlayer::Initialize(void* pArg)
 	// 기본 몬스터: 20
 	// 삥쟁이: 30
 	// 쿠제: 100
-	m_Info.iMaxHP = 150.f;
-	m_Info.iHp = m_Info.iMaxHP;
+	m_Info.fMaxHP = 150.f;
+	m_Info.fHp = m_Info.fMaxHP;
 
 	ZeroMemory(&m_MoveDirection, sizeof(_bool) * MOVE_DIRECTION_END);
 	ZeroMemory(&m_InputDirection, sizeof(_bool) * MOVE_DIRECTION_END);
@@ -577,8 +577,8 @@ void CPlayer::Take_Damage(_uint iHitColliderType, const _float3& vDir, _float fD
 	//데미지 처리하기
 	if (!m_isObjectDead)
 	{
-		m_Info.iHp -= (fDamage * fDamageDownScale);
-		if (m_Info.iHp <= 0.f)
+		m_Info.fHp -= (fDamage * fDamageDownScale);
+		if (m_Info.fHp <= 0.f)
 			m_isObjectDead = true;
 	}
 }

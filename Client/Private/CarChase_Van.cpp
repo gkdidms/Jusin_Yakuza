@@ -24,7 +24,10 @@ HRESULT CCarChase_Van::Initialize(void* pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
-	m_iState = CCarChase_Monster::CARCHASE_AIM_EN;
+	if (m_iWeaponType == DRV)
+		m_iState = CCarChase_Monster::CARCHASE_SIT_LP;
+	else 
+		m_iState = CCarChase_Monster::CARCHASE_AIM_EN;
 
 	return S_OK;
 }

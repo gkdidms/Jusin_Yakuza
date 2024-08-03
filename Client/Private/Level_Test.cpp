@@ -27,7 +27,6 @@ HRESULT CLevel_Test::Initialize()
 {
 	// 14 : 가라오케
 	// 11 : 도로
-	
 
 	// 테스트 client 로드 숫자랑 동일하게 설정해주기!!!!!!!!!!!!!!!!!!!!!!!
 	// 네비 다르면 터짐
@@ -235,4 +234,5 @@ void CLevel_Test::Free()
 	Safe_Release(m_pSystemManager);
 	Safe_Release(m_pFileTotalManager);
 	Safe_Release(m_pCarChaseManager);
+	Safe_Release(m_pTutorialManager);
 }

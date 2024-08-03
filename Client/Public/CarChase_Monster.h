@@ -8,8 +8,10 @@ class CCarChase_Monster abstract:
 public:
     typedef struct tCarChaseMonsterDesc : public CMonster::MONSTER_IODESC {
         const _float4x4* pParentMatrix;
+        const _float4x4* pBoneMatrix;
         _uint iWeaponType;
         _uint iLineDir; // 위, 옆, 뒤
+        _uint iObjectIndex;
     } CARCHASE_MONSTER_DESC;
 
 public:
@@ -99,6 +101,9 @@ public:
 public:
     _uint Get_LineDir() { return m_iLineDir; } //몬스터의 위치 (앞, 옆, 뒤)
 
+public:
+    void Set_Coll();
+
 protected:
     CCarChase_Monster(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
     CCarChase_Monster(const CCarChase_Monster& rhs);
@@ -118,11 +123,16 @@ protected:
     _uint m_iCurrentAnimType = { CLandObject::ANIM_TYPE_END };
 
 protected:
+    class CUIManager* m_pUIManager = { nullptr };
     class CAI_CarChase* m_pTree = { nullptr };
+
     const _float4x4* m_pParentMatrix = { nullptr }; 
+    const _float4x4* m_pParentBoneMatrix = { nullptr }; // 부착할 부모의 루트뼈
+    const _float4x4* m_pTargetBoneMatrix = { nullptr }; // UI 부착할 몬스터 뼈
 
 protected:
     virtual void Change_Animation();
+    void Update_TargetingUI();
 
 protected:
     virtual HRESULT Add_Components() override;
