@@ -6,7 +6,6 @@
 #include "DebugManager.h"
 #include "FileTotalMgr.h"
 #include "CarChaseManager.h"
-#include "TutorialManager.h"
 
 #include "PlayerCamera.h"
 #include "DebugCamera.h"
@@ -25,9 +24,9 @@ CLevel_Test::CLevel_Test(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 
 HRESULT CLevel_Test::Initialize()
 {
-	// 9 : 길거리
 	// 14 : 가라오케
 	// 11 : 도로
+	
 
 	// 테스트 client 로드 숫자랑 동일하게 설정해주기!!!!!!!!!!!!!!!!!!!!!!!
 	// 네비 다르면 터짐
@@ -47,7 +46,6 @@ HRESULT CLevel_Test::Initialize()
 	m_pTutorialManager = CTutorialManager::Create();
 	if (nullptr == m_pTutorialManager)
 		return E_FAIL;
-
 	/*if (FAILED(Ready_Monster(TEXT("Layer_Monster"))))
 		return E_FAIL;*/
 
@@ -61,7 +59,7 @@ HRESULT CLevel_Test::Initialize()
 	m_pFileTotalManager->Set_MapObj_In_Client(7, LEVEL_TEST);
 	m_pFileTotalManager->Set_Lights_In_Client(90);
 	m_pFileTotalManager->Set_Collider_In_Client(3, LEVEL_TEST);
-	m_pFileTotalManager->Set_Trigger_In_Client(3, LEVEL_TEST);
+	m_pFileTotalManager->Set_Trigger_In_Client(99, LEVEL_TEST);
 
 	if (FAILED(Ready_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
@@ -212,7 +210,7 @@ HRESULT CLevel_Test::Ready_Test_SceneModel(const wstring& strLayerTag)
 	//Desc.fRotatePecSec = XMConvertToRadians(0.f);
 	Desc.fRotatePecSec = XMConvertToRadians(180.f);
 
-	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_Gun_Cz75"), strLayerTag, &Desc)))
+	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_Taxi"), strLayerTag, &Desc)))
 		return E_FAIL;
 
 	return S_OK;
@@ -238,5 +236,4 @@ void CLevel_Test::Free()
 	Safe_Release(m_pSystemManager);
 	Safe_Release(m_pFileTotalManager);
 	Safe_Release(m_pCarChaseManager);
-	Safe_Release(m_pTutorialManager);
 }
