@@ -42,6 +42,7 @@ private:
     // 따라서 그 연산을 수행하는 함수이다.
     // 파이프라인에 뷰행렬 적용은 Late_Tick에서 한번만 해주어야함
     void    Compute_View(const _float& fTimeDelta);
+    void    Compute_View_During_Collision(const _float& fTimeDelta);
 
     //처음 시작할때 설정
     void    Set_StartPos();

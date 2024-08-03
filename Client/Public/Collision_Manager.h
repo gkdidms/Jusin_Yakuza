@@ -47,7 +47,7 @@ public:
     // 카메라 - 맵 충돌 관련
     _bool Map_Collision_Move(CCollider* pCollider, CTransform* pTransform); // 충돌 후 position 다시 나두기
     _bool Check_Map_Collision(CCollider* pCollider, XMVECTOR& pCollisionPos, CTransform* pTransform); // 충돌 확인용
-    _bool Check_Map_Collision_Using_Transform(CCollider* pCollider, XMVECTOR vPosition);
+    _bool Check_Map_Collision_Using_Position(CCollider* pCollider, XMVECTOR vPosition);
 
 
     class CLandObject* Get_Near_LandObject(class CLandObject* pObject, vector<CGameObject*>& pObjects);
