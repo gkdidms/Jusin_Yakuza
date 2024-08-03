@@ -52,6 +52,20 @@ void CUIManager::Set_TutorialText(wstring strText)
 	pScene->Set_Text(strText);
 }
 
+HRESULT CUIManager::Add_Target(_uint iIndex, class CCarChase_Monster* pMonster)
+{
+	CUICarchase* pScene = dynamic_cast<CUICarchase*>(Find_Scene(TEXT("Carchase")));
+
+	return pScene->Add_TargetingRound(iIndex, pMonster);
+}
+
+HRESULT CUIManager::Update_TargetMatrix(_uint iIndex, _matrix TargetMatrix, _float iHP)
+{
+	CUICarchase* pScene = dynamic_cast<CUICarchase*>(Find_Scene(TEXT("Carchase")));
+
+	return pScene->Update_TargetMatrix(iIndex, TargetMatrix, iHP);
+}
+
 HRESULT CUIManager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
 	m_pDevice = pDevice;

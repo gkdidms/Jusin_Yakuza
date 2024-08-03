@@ -24,6 +24,8 @@ HRESULT CReactor_Van::Initialize(void* pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
+	m_strAnimName = "w_mngcar_e_van_wpr_aim_st_1";
+
 	return S_OK;
 }
 
@@ -34,6 +36,9 @@ void CReactor_Van::Priority_Tick(const _float& fTimeDelta)
 void CReactor_Van::Tick(const _float& fTimeDelta)
 {
 	__super::Tick(fTimeDelta);
+
+	if (Check_Dead())
+		m_strAnimName = "w_mngcar_c_van_ded_1";
 }
 
 void CReactor_Van::Late_Tick(const _float& fTimeDelta)
@@ -51,10 +56,15 @@ HRESULT CReactor_Van::Ready_Monster(_int* pMonsterTypes)
 		CCarChase_Van::CARCHASE_MONSTER_DESC Desc{};
 		Desc.iWeaponType = i == 0 ? CCarChase_Monster::DRV : pMonsterTypes[i - 1];
 		Desc.pParentMatrix = m_pTransformCom->Get_WorldFloat4x4();
+		Desc.pBoneMatrix = m_pModelCom->Get_BoneTransformationMatrix("anm_root");
 		Desc.iLineDir = m_iLineDir;
+		Desc.iObjectIndex = m_iObjectIndex + i;
 
-		if (FAILED(m_pGameInstance->Add_GameObject(m_iCurrentLevel, TEXT("Prototype_GameObject_CarChaseVan"), TEXT("Layer_Monster"), &Desc)))
+		CCarChase_Monster* pMonster = dynamic_cast<CCarChase_Monster*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_CarChaseVan"), &Desc));
+		if (nullptr == pMonster)
 			return E_FAIL;
+
+		m_Monsters.emplace_back(pMonster);
 	}
 
 	return S_OK;
@@ -63,11 +73,13 @@ HRESULT CReactor_Van::Ready_Monster(_int* pMonsterTypes)
 void CReactor_Van::Change_Animation()
 {
 	//벤에 관한 애니메이션 넣기
-	if (m_isObjectDead)
-		m_strAnimName = "w_mngcar_c_van_ded_1";
+	if (m_strAnimName == "w_mngcar_e_van_wpr_aim_st_1")
+		m_iAnim = 1;
+	if (m_strAnimName == "w_mngcar_c_van_ded_1")
+		m_iAnim = 0;
 
-	if (FAILED(Setup_Animation()))
-		return;
+	if (m_iAnim == 0 && m_pModelCom->Get_AnimFinished())
+		m_isObjectDead = true;
 }
 
 HRESULT CReactor_Van::Add_Components()
