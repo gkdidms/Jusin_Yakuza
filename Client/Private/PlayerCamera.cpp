@@ -81,6 +81,7 @@ void CPlayerCamera::Tick(const _float& fTimeDelta)
 
 	m_pColliderCom->Tick(m_pTransformCom->Get_WorldMatrix());
 
+	// 카메라 변환 선형보간
 	Return_PrevWorld(fTimeDelta);
 
 	__super::Tick(fTimeDelta);
@@ -93,22 +94,37 @@ void CPlayerCamera::Late_Tick(const _float& fTimeDelta)
 	_vector vPlayerPosition;
 	memcpy(&vPlayerPosition, m_pPlayerMatrix->m[CTransform::STATE_POSITION], sizeof(_float4));
 
-	m_bCamCollision = m_pCollisionManager->Map_Collision_Move(m_pColliderCom, m_pTransformCom);
+	//m_bCamCollision = m_pCollisionManager->Map_Collision_Move(m_pColliderCom, m_pTransformCom);
 
-	m_fCamDistance = XMVectorGetX(XMVector3Length(m_pTransformCom->Get_State(CTransform::STATE_POSITION) - vPlayerPosition));
+	XMVECTOR		vCollisionPos = XMVectorZero();
+	m_bCamCollision = m_pCollisionManager->Check_Map_Collision(m_pColliderCom, vCollisionPos, m_pTransformCom);
 
-	if (MAX_DISTANCE < m_fCamDistance)
-		m_fCamDistance = MAX_DISTANCE;
-	else if (MIN_DISTANCE > m_fCamDistance)
-		m_fCamDistance = MIN_DISTANCE;
+	float		fDistance = XMVectorGetX(XMVector3Length(m_pTransformCom->Get_State(CTransform::STATE_POSITION) - vPlayerPosition));
 
-	// 충돌 후 거리 및 각도 조정
-	if (m_bCamCollision)
+	if (fDistance > MAX_DISTANCE)
 	{
-		Adjust_Camera_Angle();
+		m_bCamCollision = false;
+		//m_fCamDistance = fDistance;
 	}
 
-	Compute_View(fTimeDelta);
+	if (true == m_bCamCollision)
+	{
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, vCollisionPos);
+		Adjust_Camera_Angle();
+		m_fCamDistance = XMVectorGetX(XMVector3Length(m_pTransformCom->Get_State(CTransform::STATE_POSITION) - vPlayerPosition));
+
+		_vector vLookAt = XMVectorSet(XMVectorGetX(vPlayerPosition), XMVectorGetY(vPlayerPosition) + 1.f, XMVectorGetZ(vPlayerPosition), 1);
+
+		// 카메라가 플레이어를 바라보도록 설정
+		m_pTransformCom->LookAt(vLookAt);
+	}
+	else
+	{
+		Compute_View(fTimeDelta);
+	}
+
+	
+	
 
 	__super::Tick(fTimeDelta);
 }

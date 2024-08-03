@@ -45,7 +45,7 @@ public:
     void ItemCollision();
 
     _bool Map_Collision_Move(CCollider* pCollider, CTransform* pTransform); // 충돌 후 position 다시 나두기
-    _bool Check_Map_Collision(CCollider* pCollider); // 충돌 확인용
+    _bool Check_Map_Collision(CCollider* pCollider, XMVECTOR& pCollisionPos, CTransform* pTransform); // 충돌 확인용
 
     class CLandObject* Get_Near_LandObject(class CLandObject* pObject, vector<CGameObject*>& pObjects);
 
@@ -56,7 +56,7 @@ private:
 
     void ResolveCollision(BoundingSphere* sphere, BoundingBox* box, CTransform* pTransform);
 
-    
+    XMVECTOR Find_Collision_Position(BoundingSphere* sphere, BoundingBox* box, CTransform* pTransform);
 
 private:
     vector<class CLandObject*> m_ImpulseResolutionObjects;

@@ -45,8 +45,8 @@ HRESULT CCarChase_Reactor::Initialize(void* pArg)
 
 	m_pNavigationCom->Set_Index(gameobjDesc->iNaviNum);
 
-	//if (FAILED(Ready_Monster(gameobjDesc->iMonsterWeaponType)))
-	//	return E_FAIL;
+	if (FAILED(Ready_Monster(gameobjDesc->iMonsterWeaponType)))
+		return E_FAIL;
 
 	m_pTransformCom->Set_WorldMatrix(XMMatrixIdentity());
 
