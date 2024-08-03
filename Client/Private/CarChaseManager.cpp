@@ -32,7 +32,7 @@ HRESULT CCarChaseManager::Initialize()
 	Desc.iNaviNum = 0;
 	Desc.iNaviRouteNum = LINE_A;
 	Desc.iObjectIndex = 999999;
-	if (FAILED(m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Taxi"), TEXT("Layer_Texi"), &Desc)))
+	if (FAILED(m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Taxi"), TEXT("Layer_Taxi"), &Desc)))
 		return E_FAIL;
 
 	return S_OK;

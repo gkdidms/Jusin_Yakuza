@@ -73,7 +73,7 @@ _bool CCarChase::Start()
 			return false;
 	}
 
-	CHighway_Taxi* pPlayer = dynamic_cast<CHighway_Taxi*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Texi"), 0));
+	CHighway_Taxi* pPlayer = dynamic_cast<CHighway_Taxi*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Taxi"), 0));
 	
 	pPlayer->Set_Dir(m_Info.iStageDir);
 
