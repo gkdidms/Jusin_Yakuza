@@ -34,40 +34,44 @@ HRESULT CPlayerCamera::Initialize_Prototype()
 
 HRESULT CPlayerCamera::Initialize(void* pArg)
 {
-	PLAYER_CAMERA_DESC* pDesc = static_cast<PLAYER_CAMERA_DESC*>(pArg);
-
-	if (nullptr != pDesc)
+	if (LEVEL::LEVEL_ROADWAY != m_iCurrentLevel)
 	{
-		m_fSensor = pDesc->fSensor;
-		m_pPlayerMatrix = pDesc->pPlayerMatrix;
-		m_iCurLevel = pDesc->iCurLevel;
+		PLAYER_CAMERA_DESC* pDesc = static_cast<PLAYER_CAMERA_DESC*>(pArg);
+
+		if (nullptr != pDesc)
+		{
+			m_fSensor = pDesc->fSensor;
+			m_pPlayerMatrix = pDesc->pPlayerMatrix;
+			m_iCurLevel = pDesc->iCurLevel;
+		}
+
+		if (FAILED(__super::Initialize(pArg)))
+			return E_FAIL;
+
+		if (FAILED(Add_Components()))
+			return E_FAIL;
+
+		// 시작점 조정
+		Set_StartPos();
+
+		_vector vPlayerPosition;
+		memcpy(&vPlayerPosition, m_pPlayerMatrix->m[CTransform::STATE_POSITION], sizeof(_float4));
+
+		m_fCamDistance = MIN_DISTANCE;
+
+		_vector vCamPosition = XMVectorSet(
+			m_fCamDistance * cosf(XMConvertToRadians(m_fCamAngleY)) * cosf(XMConvertToRadians(m_fCamAngleX)),
+			m_fCamDistance * sinf(XMConvertToRadians(m_fCamAngleX)),
+			m_fCamDistance * sinf(XMConvertToRadians(m_fCamAngleY)) * cosf(XMConvertToRadians(m_fCamAngleX)),
+			1.f
+		);
+
+		vCamPosition += XMVectorSet(XMVectorGetX(vPlayerPosition), XMVectorGetY(vPlayerPosition), XMVectorGetZ(vPlayerPosition), 0);
+
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, vCamPosition);
+
 	}
-
-	if (FAILED(__super::Initialize(pArg)))
-		return E_FAIL;
-
-	if (FAILED(Add_Components()))
-		return E_FAIL;
-
-	// 시작점 조정
-	Set_StartPos();
-
-	_vector vPlayerPosition;
-	memcpy(&vPlayerPosition, m_pPlayerMatrix->m[CTransform::STATE_POSITION], sizeof(_float4));
-
-	m_fCamDistance = MIN_DISTANCE;
-
-	_vector vCamPosition = XMVectorSet(
-		m_fCamDistance * cosf(XMConvertToRadians(m_fCamAngleY)) * cosf(XMConvertToRadians(m_fCamAngleX)),
-		m_fCamDistance * sinf(XMConvertToRadians(m_fCamAngleX)),
-		m_fCamDistance * sinf(XMConvertToRadians(m_fCamAngleY)) * cosf(XMConvertToRadians(m_fCamAngleX)),
-		1.f
-	);
-
-	vCamPosition += XMVectorSet(XMVectorGetX(vPlayerPosition), XMVectorGetY(vPlayerPosition), XMVectorGetZ(vPlayerPosition), 0);
-
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vCamPosition);
-
+	
 	return S_OK;
 }
 
@@ -77,14 +81,19 @@ void CPlayerCamera::Priority_Tick(const _float& fTimeDelta)
 
 void CPlayerCamera::Tick(const _float& fTimeDelta)
 {
-	if (m_pSystemManager->Get_Camera() != CAMERA_PLAYER) return;
+	if (LEVEL::LEVEL_ROADWAY != m_iCurrentLevel)
+	{
+		if (m_pSystemManager->Get_Camera() != CAMERA_PLAYER) return;
 
-	m_pColliderCom->Tick(m_pTransformCom->Get_WorldMatrix());
+		m_pColliderCom->Tick(m_pTransformCom->Get_WorldMatrix());
 
-	// 카메라 변환 선형보간
-	Return_PrevWorld(fTimeDelta);
+		// 카메라 변환 선형보간
+		Return_PrevWorld(fTimeDelta);
 
-	__super::Tick(fTimeDelta);
+		__super::Tick(fTimeDelta);
+	}
+
+	
 }
 
 void CPlayerCamera::Late_Tick(const _float& fTimeDelta)
@@ -95,26 +104,31 @@ void CPlayerCamera::Late_Tick(const _float& fTimeDelta)
 		ShowCursor(false);
 	}
 
-	if (m_pSystemManager->Get_Camera() != CAMERA_PLAYER) return;
+	if (LEVEL::LEVEL_ROADWAY != m_iCurrentLevel)
+	{
+		if (m_pSystemManager->Get_Camera() != CAMERA_PLAYER) return;
 
-	_vector vPlayerPosition;
-	memcpy(&vPlayerPosition, m_pPlayerMatrix->m[CTransform::STATE_POSITION], sizeof(_float4));
-
-
-	XMVECTOR		vCollisionPos = XMVectorZero();
-
-	m_bCamCollision = m_pCollisionManager->Check_Map_Collision(m_pColliderCom, vCollisionPos, m_pTransformCom);
+		_vector vPlayerPosition;
+		memcpy(&vPlayerPosition, m_pPlayerMatrix->m[CTransform::STATE_POSITION], sizeof(_float4));
 
 
-	Compute_View_During_Collision(fTimeDelta);
+		XMVECTOR		vCollisionPos = XMVectorZero();
 
-	//LookAt 적용
-	_vector vLookAt = XMVectorSet(XMVectorGetX(vPlayerPosition), XMVectorGetY(vPlayerPosition) + 1.f, XMVectorGetZ(vPlayerPosition), 1);
+		m_bCamCollision = m_pCollisionManager->Check_Map_Collision(m_pColliderCom, vCollisionPos, m_pTransformCom);
 
-	// 카메라가 플레이어를 바라보도록 설정
-	m_pTransformCom->LookAt(vLookAt);
 
-	__super::Tick(fTimeDelta);
+		Compute_View_During_Collision(fTimeDelta);
+
+		//LookAt 적용
+		_vector vLookAt = XMVectorSet(XMVectorGetX(vPlayerPosition), XMVectorGetY(vPlayerPosition) + 1.f, XMVectorGetZ(vPlayerPosition), 1);
+
+		// 카메라가 플레이어를 바라보도록 설정
+		m_pTransformCom->LookAt(vLookAt);
+
+		__super::Tick(fTimeDelta);
+	}
+
+	
 }
 
 HRESULT CPlayerCamera::Render()

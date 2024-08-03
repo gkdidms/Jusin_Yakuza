@@ -113,7 +113,7 @@ void CItem::Tick(const _float& fTimeDelta)
 		// bright 모드 아닌데 아직 깜빡거림이 안끝났을때
 		m_bBright = true;
 
-		m_fBrightTime += 0.06;
+		m_fBrightTime += 0.04;
 
 		if (2 < m_fBrightTime)
 		{
