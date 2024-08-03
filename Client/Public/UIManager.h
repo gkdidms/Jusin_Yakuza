@@ -26,9 +26,15 @@ public:
 
 public:
     _bool isInvenClose() { return m_isClose; }
+
+public: // 튜토리얼 용
     _bool isShowTutorialUI(_uint iUIType);
     _bool isCloseTutorialUIAnim();
     void Set_TutorialText(wstring strText);
+
+public: // 카체이스 용
+    HRESULT Add_Target(_uint iIndex, class CCarChase_Monster* pMonster);
+    HRESULT Update_TargetMatrix(_uint iIndex, _matrix TargetMatrix, _float iHP);
 
 public:
     //자신이 만들 ui씬은 미리 할당(수동)
