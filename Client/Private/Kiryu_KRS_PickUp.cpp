@@ -45,16 +45,22 @@ CKiryu_KRS_PickUp::CKiryu_KRS_PickUp()
 	m_AnimationIndices.push_back(750);	// 12 [750]	[p_wpc_shift_r]
 
 	m_AnimationIndices.push_back(755);	// 13 [755]	[p_wpc_throw]
+
+	m_AnimationIndices.push_back(34);	// Damage
 }
 
 void CKiryu_KRS_PickUp::Tick(const _float& fTimeDelta)
 {
-	CLandObject* pTargetObject = m_pPlayer->Get_TargetObject();
-
-	if (nullptr != pTargetObject)
+	// 콤보중일때만 Look 시킨다.
+	if (0 < m_iComboCount)
 	{
-		_vector vLookPos = pTargetObject->Get_TransformCom()->Get_State(CTransform::STATE_POSITION);
-		m_pPlayer->Get_TransformCom()->LookAt_For_LandObject(vLookPos);
+		CLandObject* pTargetObject = m_pPlayer->Get_TargetObject();
+
+		if (nullptr != pTargetObject)
+		{
+			_vector vLookPos = pTargetObject->Get_TransformCom()->Get_State(CTransform::STATE_POSITION);
+			m_pPlayer->Get_TransformCom()->LookAt_For_LandObject(vLookPos);
+		}
 	}
 
 	switch (m_eAnimState)
@@ -76,6 +82,8 @@ void CKiryu_KRS_PickUp::Tick(const _float& fTimeDelta)
 		m_pPlayer->On_Separation_Hand();
 		Move_KeyInput(fTimeDelta);
 		Attack_KeyInput(fTimeDelta);
+
+
 		break;
 	case ANIM_ONCE:
 		m_pPlayer->Set_HandAnimIndex(CPlayer::HAND_HAKO);
@@ -84,6 +92,7 @@ void CKiryu_KRS_PickUp::Tick(const _float& fTimeDelta)
 
 		if (m_iCurrentIndex == 13)
 		{
+			// 던지는 모션일 때, 애니메이션이 일정 이상 실행된 뒤, 플레이어가 바라보는 방향으로 날아간다.
 			if (Changeable_Combo_Animation())
 			{
 				_float4 vDir;
@@ -97,6 +106,7 @@ void CKiryu_KRS_PickUp::Tick(const _float& fTimeDelta)
 				pItem->Throw_On(Desc);
 			}
 		}
+
 		break;
 	case ANIM_END:
 		// 놓치는게 end (p_kru_sync_neck_off)
@@ -104,6 +114,9 @@ void CKiryu_KRS_PickUp::Tick(const _float& fTimeDelta)
 	default:
 		break;
 	}
+
+	if (m_isHit)
+		Play_Hit();
 
 	//Shaking();
 }
@@ -178,14 +191,22 @@ void CKiryu_KRS_PickUp::Stop()
 // 여기서는 따로 넘겨받는 값 없이 
 void CKiryu_KRS_PickUp::Setting_Value(void* pValue)
 {
+	// 어깨 이후로 뼈를 분리해서 어깨 이후뼈는 그대로 유지하고, 그 전 뼈들은 히트모션에 맞는 애니메이션을 꺼내와서 실행하는 식으로 해야한다
+	PICK_UP_HIT_DESC* pDesc = static_cast<PICK_UP_HIT_DESC*>(pValue);
+
+	m_pPlayer->Separation_Bone("mune_c_n", CPlayer::DEFAULT_ANIM, false);		// 기존뼈들을 현재 들고있는 모션대로 돌린다.
+	//m_pPlayer->Separation_Bone("ude1_r_n", CPlayer::DEFAULT_ANIM);
+
+	m_AnimationIndices[14] = pDesc->iHitAnimIndex;
+	m_iCurrentIndex = 14;		// 모델에서 돌리는 애니메이션 
+
+
+	m_isHit = true;
 }
 
 void CKiryu_KRS_PickUp::Event(void* pValue)
 {
-	_bool* pIsOff = static_cast<_bool*>(pValue);
 
-	if (pIsOff)
-		Play_Off();
 }
 
 _bool CKiryu_KRS_PickUp::Changeable_Combo_Animation()
@@ -221,8 +242,20 @@ void CKiryu_KRS_PickUp::Shaking()
 	}
 }
 
-void CKiryu_KRS_PickUp::Play_Off()
+void CKiryu_KRS_PickUp::Play_Hit()
 {
+	//CAnim* pAnim = static_cast<CAnim*>(m_pPlayer->Get_Component(TEXT("Com_Anim_Default")));
+	//if (pAnim->Get_AnimFinished())
+
+	CModel* pModel = static_cast<CModel*>(m_pPlayer->Get_Component(TEXT("Com_Model")));
+
+	if (pModel->Get_AnimFinished())
+	{
+		m_isHit = false;
+		m_pPlayer->Separation_Bone("mune_c_n", -1);		// 기존뼈들을 현재 들고있는 모션대로 돌린다.
+		//m_pPlayer->Separation_Bone("ude1_r_n", -1);
+		//pModel->Reset_Animation();
+	}
 }
 
 void CKiryu_KRS_PickUp::Move_KeyInput(const _float& fTimeDelta)
@@ -294,9 +327,9 @@ void CKiryu_KRS_PickUp::Move_KeyInput(const _float& fTimeDelta)
 		}
 	}
 
-	if (isMove)
+	if (isMove && !m_isHit)
 		m_iCurrentIndex = 8;
-	else
+	else if(!m_isHit)
 		m_iCurrentIndex = 1;
 }
 
@@ -310,9 +343,13 @@ void CKiryu_KRS_PickUp::Attack_KeyInput(const _float& fTimeDelta)
 
 	if (m_pGameInstance->GetKeyState(DIK_Q) == TAP)
 	{
-		m_iCurrentIndex = 13;
-		m_eAnimState = ANIM_ONCE;
-		m_isStop = true;
+		if (m_iComboCount <= 0 && Changeable_Combo_Animation())
+		{
+			m_iComboCount = 0;
+			m_iCurrentIndex = 13;
+			m_eAnimState = ANIM_ONCE;
+			m_isStop = true;
+		}
 	}
 }
 

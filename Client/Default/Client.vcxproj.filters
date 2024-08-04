@@ -528,6 +528,9 @@
     <ClCompile Include="..\Private\Kiryu_KRS_PickUp.cpp">
       <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\Pickup</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\Kiryu_KRC_PickUp.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRC\Pickup</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\MainApp.h">
@@ -1086,6 +1089,9 @@
     </ClInclude>
     <ClInclude Include="..\Public\Kiryu_KRS_PickUp.h">
       <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\Pickup</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Kiryu_KRC_PickUp.h">
+      <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRC\Pickup</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1669,6 +1675,9 @@
     </Filter>
     <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\Pickup">
       <UniqueIdentifier>{afa11f52-5f1d-4322-886d-68e4094d377c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRC\Pickup">
+      <UniqueIdentifier>{5d202184-5e66-49ec-9cf6-6022190810e9}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

@@ -912,6 +912,11 @@ string CKiryu_KRS_Hit::Get_AnimationName()
 	return m_AnimationNames[m_iCurrentIndex];
 }
 
+_uint CKiryu_KRS_Hit::Get_AnimationIndex()
+{
+	return m_AnimationIndices[m_iCurrentIndex];
+}
+
 CBehaviorAnimation* CKiryu_KRS_Hit::Create(CPlayer* pPlayer)
 {
 	CKiryu_KRS_Hit* pInstnace = new CKiryu_KRS_Hit();

@@ -11,6 +11,10 @@ BEGIN(Client)
 class CKiryu_KRS_PickUp : public CBehaviorAnimation
 {
 public:
+	struct PICK_UP_HIT_DESC {
+		_uint iHitAnimIndex;
+	};
+
 	enum ANIM_STATE
 	{
 		ANIM_START, ANIM_LOOP, ANIM_ONCE, ANIM_END
@@ -33,7 +37,7 @@ public:
 private:
 	_bool Changeable_Combo_Animation();
 	void Shaking();
-	void Play_Off();
+	void Play_Hit();
 
 	void Move_KeyInput(const _float& fTimeDelta);
 	void Attack_KeyInput(const _float& fTimeDelta);
@@ -45,6 +49,7 @@ public:
 private:
 	ANIM_STATE	m_eAnimState = { ANIM_START };
 	_bool		m_isStop = { false };
+	_bool		m_isHit = { false };
 
 	_int		m_iComboCount = { 0 };
 	_int		m_iDirection = { -1 };		// F, B, L, R

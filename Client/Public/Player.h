@@ -282,6 +282,8 @@ private:
     _uint                       m_iCutSceneAnimIndex = { 0 };
     _uint                       m_iCutSceneCamAnimIndex = { 0 };
 
+    _uint                       m_iDefaultAnimIndex = { 0 };
+
     /* 플레이어 스테이터스 관련 변수들 */
 private:
     _uint           m_iCurrentHitLevel = { 3 };

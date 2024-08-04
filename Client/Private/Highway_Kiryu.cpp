@@ -62,8 +62,8 @@ void CHighway_Kiryu::Tick(const _float& fTimeDelta)
 
 	Key_Input();
 
-	m_pModelCom->Play_Animation_Separation(fTimeDelta, m_iFaceAnimIndex, m_SeparationAnimComs[FACE_COM], false, (_int)FACE_COM);
-	m_pModelCom->Play_Animation_Separation(fTimeDelta, m_iHandAnimIndex, m_SeparationAnimComs[HAND_COM], false, (_int)HAND_COM);
+	m_pModelCom->Play_Animation_Separation(fTimeDelta, m_iFaceAnimIndex, m_SeparationAnimComs[FACE_ANIM], false, (_int)FACE_ANIM);
+	m_pModelCom->Play_Animation_Separation(fTimeDelta, m_iHandAnimIndex, m_SeparationAnimComs[HAND_ANIM], false, (_int)HAND_ANIM);
 	Play_CurrentAnimation(fTimeDelta);
 
 	m_ModelMatrix = *pTaxiMatrix;
