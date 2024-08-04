@@ -33,9 +33,6 @@ HRESULT CLevel_Roadway::Initialize()
 
 	m_pUIManager->Open_Scene(TEXT("Carchase"));
 
-    //if (FAILED(Ready_Player(TEXT("Layer_Player"))))
-    //    return E_FAIL;
-
     /* Å¬¶ó ÆÄ½Ì */
     m_pFileTotalManager->Set_MapObj_In_Client(STAGE_ROADWAY, LEVEL_ROADWAY);
     m_pFileTotalManager->Set_Lights_In_Client(90);

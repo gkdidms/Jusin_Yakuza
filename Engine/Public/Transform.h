@@ -55,7 +55,7 @@ public:
     void Go_Right(const _float& fTimeDelta);
     void Go_Up(const _float& fTimeDelta);          //0625 혜원 추가 
     void Go_Down(const _float& fTimeDelta);        //0625 혜원 추가
-    void LookAt(_fvector vTargetPosition);
+    void LookAt(_fvector vTargetPosition, _bool isDir = false);
     void LookAt_For_LandObject(_fvector vTargetPosition, _bool isDir = false);   // 0630 혜원 추가, 땅 위에 있는 오브젝트들을 LookAt시킴 (y축으로만 회전함)
     void LookForCamera(_fvector vCamLook, _float fRadian);
     void Turn(_fvector vAxis, _float fTimeDelta);
