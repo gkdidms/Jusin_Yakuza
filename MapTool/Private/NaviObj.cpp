@@ -1,58 +1,58 @@
-#include "..\Public\TriggerObj.h"
+#include "../Public/NaviObj.h"
 #include "Imgui_Manager.h"
-
 #include "GameInstance.h"
 
-CTriggerObj::CTriggerObj(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-    : CGameObject{ pDevice, pContext }
-{
 
-}
-
-CTriggerObj::CTriggerObj(const CTriggerObj& rhs)
-    : CGameObject{ rhs }
+CNaviObj::CNaviObj(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+	: CGameObject{ pDevice, pContext }
 {
 }
 
-HRESULT CTriggerObj::Initialize_Prototype()
+CNaviObj::CNaviObj(const CNaviObj& rhs)
+	: CGameObject{ rhs }
 {
-    return S_OK;
 }
 
-HRESULT CTriggerObj::Initialize(void* pArg)
+HRESULT CNaviObj::Initialize_Prototype()
+{
+	return S_OK;
+}
+
+HRESULT CNaviObj::Initialize(void* pArg)
 {
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
 	if (nullptr != pArg)
 	{
-		TRIGGEROBJ_DESC* triggerobj = (TRIGGEROBJ_DESC*)pArg;
-		m_pTransformCom->Set_WorldMatrix(triggerobj->vStartPos);
-		m_tTriggerDesc = triggerobj->tTriggerDesc;
+		NAVIOBJ_DESC* naviDesc = (NAVIOBJ_DESC*)pArg;
+		m_eRoute = naviDesc->tNaviDesc;
+		m_pTransformCom->Set_WorldMatrix(naviDesc->vStartPos);
 	}
 
-	if (FAILED(Add_Components()))
+	if (FAILED(Add_Components(pArg)))
 		return E_FAIL;
 
-
+	//m_pTransformCom->Set_Scale(0.5, 0.5, 0.5);
 
 	return S_OK;
 }
 
-void CTriggerObj::Priority_Tick(const _float& fTimeDelta)
+void CNaviObj::Priority_Tick(const _float& fTimeDelta)
 {
 }
 
-void CTriggerObj::Tick(const _float& fTimeDelta)
+void CNaviObj::Tick(const _float& fTimeDelta)
 {
+
 }
 
-void CTriggerObj::Late_Tick(const _float& fTimeDelta)
+void CNaviObj::Late_Tick(const _float& fTimeDelta)
 {
 	m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
 }
 
-HRESULT CTriggerObj::Render()
+HRESULT CNaviObj::Render()
 {
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
@@ -66,46 +66,32 @@ HRESULT CTriggerObj::Render()
 			return E_FAIL;
 
 		/*m_pShaderCom->Begin(m_iShaderPassNum);*/
-		m_pShaderCom->Begin(2);
+
+		if(m_iColor == 1)
+			m_pShaderCom->Begin(m_iColor);
+		else if (m_iColor == 3)
+			m_pShaderCom->Begin(m_iColor);
 
 		m_pModelCom->Render(i);
 	}
-//
-//#ifdef _DEBUG
-//	m_pGameInstance->Add_DebugComponent(m_pColliderCom);
-//#endif
 
 
 	return S_OK;
 }
 
-void CTriggerObj::Set_TriggerDesc(TRIGGER_DESC triggerDesc)
+ROUTE_IO CNaviObj::Get_RouteIO()
 {
-	m_tTriggerDesc = triggerDesc;
+	// 위치 반환
+	XMStoreFloat4(&m_eRoute.vPosition, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+
+	return m_eRoute;
 }
 
-TRIGGER_DESC CTriggerObj::Get_TriggerDesc()
+
+
+HRESULT CNaviObj::Add_Components(void* pArg)
 {
-	m_tTriggerDesc.vTransform = *m_pTransformCom->Get_WorldFloat4x4();
 
-	return m_tTriggerDesc;
-}
-
-CTriggerObj* CTriggerObj::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-{
-	CTriggerObj* pInstance = new CTriggerObj(pDevice, pContext);
-
-	if (FAILED(pInstance->Initialize_Prototype()))
-	{
-		MSG_BOX("Failed To Created : CTriggerObj");
-		Safe_Release(pInstance);
-	}
-
-	return pInstance;
-}
-
-HRESULT CTriggerObj::Add_Components()
-{
 	/* For.Com_Model */
 	if (FAILED(__super::Add_Component(LEVEL_RUNMAP, TEXT("Prototype_Component_Model_Bone_Sphere"),
 		TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
@@ -119,7 +105,7 @@ HRESULT CTriggerObj::Add_Components()
 	return S_OK;
 }
 
-HRESULT CTriggerObj::Bind_ShaderResources()
+HRESULT CNaviObj::Bind_ShaderResources()
 {
 	if (FAILED(m_pTransformCom->Bind_ShaderMatrix(m_pShaderCom, "g_WorldMatrix")))
 		return E_FAIL;
@@ -136,7 +122,7 @@ HRESULT CTriggerObj::Bind_ShaderResources()
 
 
 	bool	bWrite;
-	if (CImgui_Manager::IDWRIE::TRIGGER == CImgui_Manager::GetInstance()->Get_Write())
+	if (CImgui_Manager::IDWRIE::NAVIOBJ == CImgui_Manager::GetInstance()->Get_Write())
 	{
 		bWrite = true;
 		if (FAILED(m_pShaderCom->Bind_RawValue("g_bWriteID", &bWrite, sizeof(bool))))
@@ -155,26 +141,36 @@ HRESULT CTriggerObj::Bind_ShaderResources()
 	return S_OK;
 }
 
-
-CGameObject* CTriggerObj::Clone(void* pArg)
+CNaviObj* CNaviObj::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
-	CTriggerObj* pInstance = new CTriggerObj(*this);
+	CNaviObj* pInstance = new CNaviObj(pDevice, pContext);
 
-	if (FAILED(pInstance->Initialize(pArg)))
+	if (FAILED(pInstance->Initialize_Prototype()))
 	{
-		MSG_BOX("Failed To Cloned : CTriggerObj");
+		MSG_BOX("Failed To Created : CNaviObj");
 		Safe_Release(pInstance);
 	}
 
 	return pInstance;
 }
 
-void CTriggerObj::Free()
+CGameObject* CNaviObj::Clone(void* pArg)
+{
+	CNaviObj* pInstance = new CNaviObj(*this);
+
+	if (FAILED(pInstance->Initialize(pArg)))
+	{
+		MSG_BOX("Failed To Cloned : CNaviObj");
+		Safe_Release(pInstance);
+	}
+
+	return pInstance;
+}
+
+void CNaviObj::Free()
 {
 	__super::Free();
 
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pModelCom);
-	Safe_Release(m_pColliderCom);
 }
-
