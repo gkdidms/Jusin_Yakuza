@@ -34,6 +34,7 @@ HRESULT CPlayerCamera::Initialize_Prototype()
 
 HRESULT CPlayerCamera::Initialize(void* pArg)
 {
+	// 고속도로맵에서는 플레이어 없어서 카메라 막기
 	if (LEVEL::LEVEL_ROADWAY != m_iCurrentLevel)
 	{
 		PLAYER_CAMERA_DESC* pDesc = static_cast<PLAYER_CAMERA_DESC*>(pArg);
@@ -110,11 +111,6 @@ void CPlayerCamera::Late_Tick(const _float& fTimeDelta)
 
 		_vector vPlayerPosition;
 		memcpy(&vPlayerPosition, m_pPlayerMatrix->m[CTransform::STATE_POSITION], sizeof(_float4));
-
-
-		XMVECTOR		vCollisionPos = XMVectorZero();
-
-		m_bCamCollision = m_pCollisionManager->Check_Map_Collision(m_pColliderCom, vCollisionPos, m_pTransformCom);
 
 
 		Compute_View_During_Collision(fTimeDelta);
@@ -217,7 +213,6 @@ void CPlayerCamera::Compute_View_During_Collision(const _float& fTimeDelta)
 	// 이전 카메라 포지션 저장
 	_vector vPrevCamPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 
-
 	// 카메라 포지션 계산
 	_vector vCamPosition = XMVectorSet(
 		m_fCamDistance * cosf(XMConvertToRadians(fCamAngleY)) * cosf(XMConvertToRadians(fCamAngleX)),
@@ -228,6 +223,8 @@ void CPlayerCamera::Compute_View_During_Collision(const _float& fTimeDelta)
 
 
 	vCamPosition += XMVectorSet(XMVectorGetX(vPlayerPosition), XMVectorGetY(vPlayerPosition), XMVectorGetZ(vPlayerPosition), 0);
+
+
 
 	// 바뀐 카메라 위치와 콜라이더 충돌 체크함
 	if (true == m_pCollisionManager->Check_Map_Collision_Using_Position(m_pColliderCom, vCamPosition))
