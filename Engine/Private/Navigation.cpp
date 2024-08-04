@@ -65,7 +65,9 @@ HRESULT CNavigation::Initialize(void* pArg)
     {
         NAVIGATION_DESC* pDesc = static_cast<NAVIGATION_DESC*>(pArg);
         m_iCurrentLine = pDesc->iCurrentLine;
-        Find_WayPointIndex(pDesc->vPosition);
+        m_iCurrentWayPointIndex = pDesc->iWayPointIndex;
+
+        if (m_iCurrentWayPointIndex == -1) Find_WayPointIndex(pDesc->vPosition);
     }
 
     return S_OK;

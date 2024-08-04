@@ -34,6 +34,9 @@ public:
         STAGE_INFO Info;
     }CARCHASE_DESC;
 
+public:
+    _uint Get_StageDir() { return m_Info.iStageDir; }
+
 private:
     CCarChase();
     virtual ~CCarChase();

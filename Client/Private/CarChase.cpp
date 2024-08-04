@@ -4,6 +4,7 @@
 
 #include "CarChase_Monster.h"
 #include "CarChase_Reactor.h"
+#include "CarChaseCamera.h"
 
 #include "Highway_Taxi.h"
 
@@ -80,6 +81,10 @@ _bool CCarChase::Start()
 	if (m_Info.iPlayerLine != m_Info.iPrePlayerLine)
 		pPlayer->Set_NavigationRouteIndex(m_Info.iPlayerLine);
 
+	//카메라에 스테이지 방향 넣어주기
+	CCarChaseCamera* pCamera = dynamic_cast<CCarChaseCamera*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Camera"), CAMERA_CARCHASE));
+	pCamera->Set_StageDir(m_Info.iStageDir);
+
 	return true;
 }
 
@@ -89,7 +94,7 @@ _bool CCarChase::Running()
 	vector<CGameObject*> Reactors = m_pGameInstance->Get_GameObjects(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Reactor"));
 	vector<STAGE_MONSTER_INFO> MonsterInfo = m_Info.MonsterInfo;
 
-	_uint iCount = { 0 };
+	/*_uint iCount = { 0 };
 	for (auto& Reactor : Reactors)
 	{
 		find_if(MonsterInfo.begin(), MonsterInfo.end(), [&](STAGE_MONSTER_INFO& Info)->_bool {
@@ -104,6 +109,14 @@ _bool CCarChase::Running()
 	}
 
 	if (MonsterInfo.size() == iCount)
+	{
+		for (auto& pReactor : Reactors)
+			pReactor->Set_Dead();
+
+		return true;
+	}*/
+		
+	if (Reactors.size() <= 0)
 		return true;
 
 	return false;

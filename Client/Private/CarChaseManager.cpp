@@ -5,6 +5,7 @@
 #include "CarChase.h"
 #include "CarChase_Monster.h"
 #include "CarChase_Reactor.h"
+
 #include "Highway_Taxi.h"
 
 void CCarChaseManager::Set_Coll()
@@ -43,14 +44,24 @@ void CCarChaseManager::Tick()
 	if (m_isFinished)
 		return;
 
+	if (m_isStart)
+	{
+		//시작할 때 
+	}
+
 	//다음 스테이지로 넘어가기
 	if (m_Stages[m_iCurrentStage]->Tick())
 	{
 		m_iCurrentStage++;
 
 		if (m_iCurrentStage >= m_Stages.size())
+		{
 			m_isFinished = true;
+			return;
+		}
 	}
+
+
 }
 
 HRESULT CCarChaseManager::Ready_Stage()
@@ -89,7 +100,7 @@ HRESULT CCarChaseManager::Ready_Stage()
 	
 	m_Stages.emplace_back(pStage1);
 
-	////2 스테이지
+	//2 스테이지
 	//vector<CCarChase::STAGE_MONSTER_INFO> MonsterInfo_2 = {
 	//	CCarChase::STAGE_MONSTER_INFO{
 	//		200000,

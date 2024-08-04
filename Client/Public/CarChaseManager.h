@@ -36,6 +36,7 @@ private:
 private:
     _uint m_iCurrentStage = { 0 };
     _bool m_isFinished = { false };
+    _bool m_isStart = { false };
 
 private:
     HRESULT Ready_Stage();

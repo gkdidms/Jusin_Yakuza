@@ -10,6 +10,7 @@ class ENGINE_DLL CNavigation :
 public:
     typedef struct tNavigationDesc {
         _int iCurrentLine = { -1 };
+        _int iWayPointIndex = { -1 };
         _vector vPosition;
     }NAVIGATION_DESC;
 
@@ -30,6 +31,7 @@ public:
     }
     vector<CCell*> Get_Cells() { return m_Cells; }
     vector<ROUTE_IO> Get_RouteIndexs(_int iIndex);
+    _uint Get_WaypointIndex() { return m_iCurrentWayPointIndex; }
 
 public:
     virtual HRESULT Initialize_Prototype(); // Tool¿ë
