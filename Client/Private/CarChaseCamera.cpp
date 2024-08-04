@@ -49,6 +49,8 @@ void CCarChaseCamera::Tick(const _float& fTimeDelta)
 
 	//Adjust_Camera_Angle();
 
+	Targeting();
+
 	_float4 vCameraPosition;
 	vCameraPosition.x = XMVectorGetX(vPlayerPos) + cosf(XMConvertToRadians(m_fCamAngleY)) * cosf(XMConvertToRadians(m_fCamAngleX)) * m_fCamDistance,
 	vCameraPosition.y = XMVectorGetY(vPlayerPos) + m_fCamDistance * sinf(XMConvertToRadians(m_fCamAngleX)) + 2.f;
@@ -59,7 +61,6 @@ void CCarChaseCamera::Tick(const _float& fTimeDelta)
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&vCameraPosition));
 
-	Targeting();
 
 	__super::Tick(fTimeDelta);
 }
@@ -79,14 +80,26 @@ void CCarChaseCamera::Targeting()
 	vector<CGameObject*> Reactors = m_pGameInstance->Get_GameObjects(m_iCurrentLevel, TEXT("Layer_Reactor"));
 
 	_vector vTargetingPos;
-	if (Reactors.empty())
+	if (Reactors.empty() || m_iTargetIndex == -1)
 	{
 		vTargetingPos = XMLoadFloat4((_float4*)&m_pPlayerMatrix->m[3]);
 		m_pTransformCom->LookAt(vTargetingPos);
 		return;
 	}
 	else {
-		vTargetingPos = Reactors[0]->Get_TransformCom()->Get_State(CTransform::STATE_POSITION);
+		if (Reactors[m_iTargetIndex]->isObjectDead())
+		{
+			m_iTargetIndex++;
+			
+			if (m_iTargetIndex >= Reactors.size())
+			{
+				m_iTargetIndex = -1;
+				return;
+			}
+				
+		}
+		
+		vTargetingPos = Reactors[m_iTargetIndex]->Get_TransformCom()->Get_State(CTransform::STATE_POSITION);
 	}
 
 	_vector vCamDirection = XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_POSITION) - vTargetingPos);

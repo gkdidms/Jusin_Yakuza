@@ -56,6 +56,7 @@ protected:
     _bool   m_isColl = { false };
     
 protected:
+    vector<class CCarChase_Monster*> m_Monsters;
     _uint m_iStageDir = { DIR_END };
     _uint m_iLineDir = { DIR_END };
 
@@ -67,6 +68,7 @@ protected:
     virtual HRESULT Ready_Monster(_int* pMonsterTypes) = 0;
     virtual void Change_Animation();
     HRESULT Setup_Animation();
+    _bool Check_Dead();
 
 protected:
     void Move_Waypoint(const _float& fTimeDelta);

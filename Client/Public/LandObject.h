@@ -48,8 +48,8 @@ public:
 
 private: //오브젝트들의 정보를 저장 
     typedef struct tLandObjectInfo {
-        _float iMaxHP;
-        _float iHp;
+        _float fMaxHP;
+        _float fHp;
     } LAND_OBJ_INFO;
 
 protected:

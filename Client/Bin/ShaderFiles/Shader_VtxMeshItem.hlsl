@@ -204,6 +204,49 @@ PS_OUT PS_MAIN(PS_IN In)
 }
 
 
+PS_OUT PS_MAIN_Bright(PS_IN In)
+{
+    PS_OUT Out = (PS_OUT) 0;
+
+    vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
+
+    float4 albedo = float4(1, 1, 1, 1); // 흰색 알베도
+    
+    
+    if (true == g_bBright)
+    {
+        float minBrightness = 0;
+        float maxBrightness = 0.4;
+    
+        float brightness = 0;
+        
+        if(1 < g_fBrightTime)
+        {
+            float fTime = g_fBrightTime - 1;
+            brightness = lerp(maxBrightness, minBrightness, fTime);
+        }
+        else
+        {
+            brightness = lerp(minBrightness, maxBrightness, g_fBrightTime);
+        }
+
+        // 완전히 흰색으로 깜빡이기 위한 색상 혼합
+       
+        vDiffuse.a = 0;
+        vDiffuse = lerp(vDiffuse, albedo, brightness); // 밝기를 알베도 색상과 혼합
+        Out.vDiffuse = vDiffuse;
+    }
+
+    
+  
+   
+
+    Out.vDiffuse = vDiffuse;
+    
+    return Out;
+}
+
+
 
 struct PS_IN_LIGHTDEPTH
 {
@@ -242,9 +285,22 @@ technique11 DefaultTechnique
         PixelShader = compile ps_5_0 PS_MAIN();
     }
 
+
+    pass DefaultBrightPass // 1
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        HullShader = NULL;
+        DomainShader = NULL;
+        PixelShader = compile ps_5_0 PS_MAIN_Bright();
+    }
     
 
-    pass LightDepth //1 - construction , Construction의 render light depth에서 변경해주기
+    pass LightDepth //2 - construction , Construction의 render light depth에서 변경해주기
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_Default, 0);

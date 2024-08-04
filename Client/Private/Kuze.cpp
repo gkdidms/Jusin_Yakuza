@@ -33,8 +33,8 @@ HRESULT CKuze::Initialize(void* pArg)
 	if (FAILED(Add_CharacterData()))
 		return E_FAIL;
 
-	m_Info.iMaxHP = 100.f;
-	m_Info.iHp = m_Info.iMaxHP;
+	m_Info.fMaxHP = 100.f;
+	m_Info.fHp = m_Info.fMaxHP;
 
 	return S_OK;
 }
@@ -69,15 +69,15 @@ void CKuze::Take_Damage(_uint iHitColliderType, const _float3& vDir, _float fDam
 	//데미지 처리하기
 	if (!m_isObjectDead)
 	{
-		m_Info.iHp -= fDamage;
+		m_Info.fHp -= fDamage;
 
 		//무지성이라 변경해야함.
-		if (m_iPage == ONE && m_Info.iHp <= 50)
+		if (m_iPage == ONE && m_Info.fHp <= 50)
 		{
 			m_iPage = TWO;
 		}
 
-		if (m_Info.iHp <= 0.f)
+		if (m_Info.fHp <= 0.f)
 			m_isObjectDead = true;
 	}
 }

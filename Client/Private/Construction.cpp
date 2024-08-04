@@ -119,7 +119,7 @@ void CConstruction::Tick(const _float& fTimeDelta)
 
 void CConstruction::Late_Tick(const _float& fTimeDelta)
 {
-	if (true == m_pGameInstance->isIn_WorldFrustum(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 0.f) && OBJECT_TYPE::LARGE_CONSTRUCTION != m_iObjectType)
+	if (true == m_pGameInstance->isIn_WorldFrustum(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 5.f) && OBJECT_TYPE::LARGE_CONSTRUCTION != m_iObjectType)
 	{
 		if (0 == m_iShaderPassNum || 3 == m_iShaderPassNum)
 		{

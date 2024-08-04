@@ -5,6 +5,7 @@
 #include "FileTotalMgr.h"
 #include "Collision_Manager.h"
 #include "CarChaseManager.h"
+#include "UIManager.h"
 
 #include "PlayerCamera.h"
 #include "CineCamera.h"
@@ -16,10 +17,12 @@
 CLevel_Roadway::CLevel_Roadway(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     : CLevel { pDevice, pContext },
     m_pSystemManager{ CSystemManager::GetInstance() },
-    m_pFileTotalManager{ CFileTotalMgr::GetInstance() }
+    m_pFileTotalManager{ CFileTotalMgr::GetInstance() },
+	m_pUIManager{CUIManager::GetInstance()}
 {
     Safe_AddRef(m_pSystemManager);
     Safe_AddRef(m_pFileTotalManager);
+	Safe_AddRef(m_pUIManager);
 }
 
 HRESULT CLevel_Roadway::Initialize()
@@ -28,8 +31,10 @@ HRESULT CLevel_Roadway::Initialize()
 	if (nullptr == m_pCarChaseManager)
 		return E_FAIL;
 
-    if (FAILED(Ready_Player(TEXT("Layer_Player"))))
-        return E_FAIL;
+	m_pUIManager->Open_Scene(TEXT("Carchase"));
+
+    //if (FAILED(Ready_Player(TEXT("Layer_Player"))))
+    //    return E_FAIL;
 
     /* 클라 파싱 */
     m_pFileTotalManager->Set_MapObj_In_Client(STAGE_ROADWAY, LEVEL_ROADWAY);
@@ -38,6 +43,8 @@ HRESULT CLevel_Roadway::Initialize()
 
 	if (FAILED(Ready_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
+
+	m_pSystemManager->Set_Camera(CAMERA_CARCHASE);
 
     return S_OK;
 }
@@ -53,7 +60,7 @@ void CLevel_Roadway::Tick(const _float& fTimeDelta)
 HRESULT CLevel_Roadway::Ready_Camera(const wstring& strLayerTag)
 {
 	/* 카메라 추가 시 Debug Camera를 첫번째로 놔두고 추가해주세요 (디버깅 툴에서 사용중)*/
-	const _float4x4* pPlayerFloat4x4 = dynamic_cast<CTransform*>(m_pGameInstance->Get_GameObject_Component(LEVEL_ROADWAY, TEXT("Layer_Player"), TEXT("Com_Transform", 0)))->Get_WorldFloat4x4();
+	const _float4x4* pPlayerFloat4x4 = dynamic_cast<CTransform*>(m_pGameInstance->Get_GameObject_Component(LEVEL_ROADWAY, TEXT("Layer_Taxi"), TEXT("Com_Transform", 0)))->Get_WorldFloat4x4();
 
 	/* 0. 디버그용 카메라 */
 	CDebugCamera::DEBUG_CAMERA_DESC		CameraDesc{};
@@ -120,7 +127,7 @@ HRESULT CLevel_Roadway::Ready_Camera(const wstring& strLayerTag)
 	CarChaseCameraDesc.fSpeedPecSec = 10.f;
 	CarChaseCameraDesc.fRotatePecSec = XMConvertToRadians(90.f);
 	CarChaseCameraDesc.fSensor = 0.1f;
-	CarChaseCameraDesc.pPlayerMatrix = dynamic_cast<CTransform*>(m_pGameInstance->Get_GameObject_Component(LEVEL_ROADWAY, TEXT("Layer_Texi"), TEXT("Com_Transform", 0)))->Get_WorldFloat4x4();
+	CarChaseCameraDesc.pPlayerMatrix = dynamic_cast<CTransform*>(m_pGameInstance->Get_GameObject_Component(LEVEL_ROADWAY, TEXT("Layer_Taxi"), TEXT("Com_Transform", 0)))->Get_WorldFloat4x4();
 
 	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_ROADWAY, TEXT("Prototype_GameObject_CarChaseCamera"), strLayerTag, &CarChaseCameraDesc)))
 		return E_FAIL;
@@ -158,4 +165,5 @@ void CLevel_Roadway::Free()
     Safe_Release(m_pSystemManager);
     Safe_Release(m_pFileTotalManager);
 	Safe_Release(m_pCarChaseManager);
+	Safe_Release(m_pUIManager);
 }

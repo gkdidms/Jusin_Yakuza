@@ -87,7 +87,7 @@ PS_OUT PS_MAIN_TONEMAPPING(PS_IN In) // 감마 콜렉션 & ACES 톤매핑
     //vDiffuse = saturate(vDiffuse * (A * vDiffuse + B)) / (vDiffuse * (C * vDiffuse + D) + E);
     vDiffuse = ToneMap(vDiffuse);
     
-    float3 vWhiteScale = 1.f / ToneMap(w);
+    float3 vWhiteScale = 30.f;
     float3 vColor = vDiffuse * vWhiteScale;
     
     Out.vColor = vector(pow(vDiffuse, 1.f / 2.2f), 1.f) * vLuminance * g_fLumVar;
