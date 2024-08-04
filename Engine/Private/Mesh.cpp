@@ -92,7 +92,7 @@ HRESULT CMesh::Initialize(CModel::MODELTYPE eModelType, const BAiMesh* pAIMesh, 
 
 
 	/* 정점 버퍼 생성 */
-	HRESULT			hr = eModelType == CModel::TYPE_NONANIM ? Ready_Vertices_For_NonAnimMesh(pAIMesh, PreTransformMatrix) : Ready_Vertices_For_AnimMesh(pAIMesh, Bones);
+	HRESULT			hr = eModelType == CModel::TYPE_NONANIM|| eModelType == CModel::TYPE_PARTICLE ? (eModelType == CModel::TYPE_PARTICLE ? Ready_Vertices_For_ParticleMesh(pAIMesh, PreTransformMatrix):Ready_Vertices_For_NonAnimMesh(pAIMesh, PreTransformMatrix)) : Ready_Vertices_For_AnimMesh(pAIMesh, Bones);
 
 	if (FAILED(hr))
 		return E_FAIL;
@@ -115,6 +115,14 @@ HRESULT CMesh::Initialize(CModel::MODELTYPE eModelType, const BAiMesh* pAIMesh, 
 		pIndices[iNumIndices++] = pAIMesh->mFaces[i].mIndices[0];
 		pIndices[iNumIndices++] = pAIMesh->mFaces[i].mIndices[1];
 		pIndices[iNumIndices++] = pAIMesh->mFaces[i].mIndices[2];
+	}
+
+	if (eModelType == CModel::TYPE_PARTICLE)
+	{
+		m_pIndices = new _uint[m_iNumIndices];
+		ZeroMemory(m_pIndices, sizeof(_uint) * m_iNumIndices);
+
+		memcpy(pIndices, m_pIndices, sizeof(_uint) * m_iNumIndices);
 	}
 
 	m_InitialData.pSysMem = pIndices;
@@ -307,6 +315,105 @@ HRESULT CMesh::Ready_Vertices_For_NonAnimMesh(const BAiMesh* pAIMesh, _fmatrix P
 
 
 	m_InitialData.pSysMem = pVertices;
+
+	if (FAILED(__super::Create_Buffer(&m_pVB)))
+		return E_FAIL;
+
+	Safe_Delete_Array(pVertices);
+
+	return S_OK;
+}
+
+HRESULT CMesh::Ready_Vertices_For_ParticleMesh(const BAiMesh* pAIMesh, _fmatrix PreTransformMatrix)
+{
+	m_iVertexStride = sizeof(VTXMESH);
+
+	m_Buffer_Desc.ByteWidth = m_iVertexStride * m_iNumVertices;
+	m_Buffer_Desc.Usage = D3D11_USAGE_DEFAULT;
+	m_Buffer_Desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	m_Buffer_Desc.CPUAccessFlags = 0;
+	m_Buffer_Desc.MiscFlags = 0;
+	m_Buffer_Desc.StructureByteStride = m_iVertexStride;
+
+	VTXMESH* pVertices = new VTXMESH[m_iNumVertices];
+	ZeroMemory(pVertices, sizeof(VTXMESH) * m_iNumVertices);
+
+	_float3		vSumPosition = _float3(0, 0, 0);
+	_float3		vMinScale, vMaxScale;
+
+	for (size_t i = 0; i < m_iNumVertices; i++)
+	{
+		memcpy(&pVertices[i].vPosition, &pAIMesh->mVertices[i], sizeof(_float3));
+		XMStoreFloat3(&pVertices[i].vPosition,
+			XMVector3TransformCoord(XMLoadFloat3(&pVertices[i].vPosition), PreTransformMatrix));
+
+		memcpy(&pVertices[i].vNormal, &pAIMesh->mNormals[i], sizeof(_float3));
+		XMStoreFloat3(&pVertices[i].vNormal,
+			XMVector3Normalize(XMVector3TransformNormal(XMLoadFloat3(&pVertices[i].vNormal), PreTransformMatrix)));
+
+		memcpy(&pVertices[i].vTexcoord, &pAIMesh->mTextureCoords[0][i], sizeof(_float2));		//몇번째의 텍스처의 위치정보를 저장할것인지!
+		memcpy(&pVertices[i].vTangent, &pAIMesh->mTangents[i], sizeof(_float3));
+
+		XMStoreFloat4x4(&m_localMatrix, XMMatrixTranslation(pVertices[i].vPosition.x, pVertices[i].vPosition.y, pVertices[i].vPosition.z));
+
+		vSumPosition.x += pVertices[i].vPosition.x;
+		vSumPosition.y += pVertices[i].vPosition.y;
+		vSumPosition.z += pVertices[i].vPosition.z;
+
+		if (0 == i)
+		{
+			vMinScale = pVertices[i].vPosition;
+			vMaxScale = pVertices[i].vPosition;
+		}
+		else
+		{
+			if (vMinScale.x > pVertices[i].vPosition.x)
+				vMinScale.x = pVertices[i].vPosition.x;
+			if (vMinScale.y > pVertices[i].vPosition.y)
+				vMinScale.y = pVertices[i].vPosition.y;
+			if (vMinScale.z > pVertices[i].vPosition.z)
+				vMinScale.z = pVertices[i].vPosition.z;
+
+
+			if (vMaxScale.x < pVertices[i].vPosition.x)
+				vMaxScale.x = pVertices[i].vPosition.x;
+			if (vMaxScale.y < pVertices[i].vPosition.y)
+				vMaxScale.y = pVertices[i].vPosition.y;
+			if (vMaxScale.z < pVertices[i].vPosition.z)
+				vMaxScale.z = pVertices[i].vPosition.z;
+		}
+	}
+
+	_float3			vMeshScale = _float3(0, 0, 0);
+
+	vMeshScale.x = abs(-vMinScale.x + vMaxScale.x);
+	vMeshScale.y = abs(-vMinScale.y + vMaxScale.y);
+	vMeshScale.z = abs(-vMinScale.z + vMaxScale.z);
+
+	float		fMaxScale = 0;
+	if (vMeshScale.x > vMeshScale.y)
+		fMaxScale = vMeshScale.x;
+	else
+		fMaxScale = vMeshScale.y;
+
+	if (vMeshScale.z > fMaxScale)
+		fMaxScale = vMeshScale.z;
+
+	m_fScale = fMaxScale;
+
+	vSumPosition.x /= m_iNumVertices;
+	vSumPosition.y /= m_iNumVertices;
+	vSumPosition.z /= m_iNumVertices;
+
+	XMStoreFloat4x4(&m_localMatrix, XMMatrixTranslation(vSumPosition.x, vSumPosition.y, vSumPosition.z));
+
+
+	m_InitialData.pSysMem = pVertices;
+
+	m_pVertices = new VTXMESH[m_iNumVertices];
+	ZeroMemory(m_pVertices, sizeof(VTXMESH) * m_iNumVertices);
+
+	memcpy(m_pVertices, pVertices, sizeof(VTXMESH) * m_iNumVertices);
 
 	if (FAILED(__super::Create_Buffer(&m_pVB)))
 		return E_FAIL;
@@ -619,5 +726,11 @@ CComponent* CMesh::Clone(void* pArg)
 void CMesh::Free()
 {
 	__super::Free();
+
+	if (nullptr != m_pVertices)
+		Safe_Delete_Array(m_pVertices);
+	if (nullptr != m_pIndices)
+		Safe_Delete_Array(m_pIndices);
+
 
 }

@@ -272,6 +272,63 @@ PS_OUT PS_MAIN_NOCOLOR(PS_IN In)
     return Out;
 }
 
+//지오메트리 어차피 그리는 순서나 픽셀이나 똑같다
+PS_OUT PS_AURA_FIRE(PS_IN In)
+{
+    PS_OUT Out = (PS_OUT) 0;
+
+    float4 PointPosition = In.vPosition; //월드좌표
+
+    float fWeight = abs(PointPosition.z); //정규화된 z 값을 가져옴(0~1)    
+    
+    float2 LifeAlpha = g_lifeAlpha;
+
+    vector Tone = g_ToneTexture.Sample(PointSampler, In.vTexcoord);
+
+    //흐름
+    /*
+    float FlowPow = 1.0f; //왜곡 강도 0~1사이
+    float FlowSpeed = 1.0f; //흐름 속도
+    
+    //스프라이트 는 시간이랑 다름
+    float TimeA = frac(In.vLifeTime.y * FlowSpeed);
+    float TimeB = frac(In.vLifeTime.y + 0.5f * FlowSpeed);
+    
+    float2 ResultTime = float2(TimeA * 0.2f, TimeB * 0.3f);
+
+    // Noise 텍스처를 사용하여 UV 좌표 변화 계산
+    
+    float2 Dist = (g_FluidTexture.Sample(PointSampler, In.vAlphaTex) * 2.0f - 1.0f) * FlowPow;
+   // float2 flowUV = In.vAlphaTex + (g_FluidTexture.Sample(PointSampler, In.vAlphaTex + ResultTime).xy * 2.0 - 1.0) * FlowPow;
+
+    
+    float BaseAlphaA = g_BaseAlphaTexture.Sample(PointSampler, In.vAlphaTex + Dist * TimeA).a;
+    float BaseAlphaB = g_BaseAlphaTexture.Sample(PointSampler, In.vAlphaTex + Dist * TimeB).a;
+   
+    float mixlerp = abs(frac(In.vLifeTime.y) * 2.f - 1.f);
+    
+    float BaseAlpha = lerp(BaseAlphaA, BaseAlphaB, mixlerp); //flow 셰이더 반복
+     */
+    vector UVSprite = g_UVAnimTexture.Sample(LinearSampler, In.vTexcoord);
+    
+    float Alphafactor = frac(In.vLifeTime.y / In.vLifeTime.x);
+    
+    float lerpAlpha = lerp(LifeAlpha.x, LifeAlpha.y, Alphafactor);
+  
+    vector FinalColor = vector(Tone.rgb * UVSprite.rgb, UVSprite.a * lerpAlpha);
+    
+    //결과값 송출
+    float3 ColorN = FinalColor.rgb;
+    
+    float AlphaN = FinalColor.a;
+        
+    Out.vColor = float4(ColorN.rgb * AlphaN, AlphaN) * fWeight;
+    
+    Out.vAlpha = float4(AlphaN, AlphaN, AlphaN, AlphaN);
+    Out.vDistortion = float4(0.0f, 0.0f, 0.0f, 0.0f);
+    return Out;
+}
+
 
 technique11 DefaultTechnique
 {
@@ -303,5 +360,18 @@ technique11 DefaultTechnique
         PixelShader = compile ps_5_0 PS_MAIN_NOCOLOR();
     }
 
+    pass StartAuraFire //1
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_None_Test_None_Write, 0);
+        SetBlendState(BS_WeightsBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+   
+		/* 어떤 셰이덜르 국동할지. 셰이더를 몇 버젼으로 컴파일할지. 진입점함수가 무엇이찌. */
+        VertexShader = compile vs_5_0 VS_LOCAL();
+        GeometryShader = compile gs_5_0 GS_DEAFULT();
+        HullShader = NULL;
+        DomainShader = NULL;
+        PixelShader = compile ps_5_0 PS_AURA_FIRE();
+    }
 }
 

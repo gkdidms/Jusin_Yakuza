@@ -199,6 +199,9 @@
     <Filter Include="01.Utility\02.GameObject\Camera">
       <UniqueIdentifier>{e59c98b4-d124-4e00-bc17-75aa0d04497d}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Utility\03.Component\01.VIBuffer\Instance\Mesh">
+      <UniqueIdentifier>{4addae2b-3921-41a4-88a0-51caad484a17}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\Base.h">
@@ -399,6 +402,9 @@
     <ClInclude Include="..\Public\Calculator.h">
       <Filter>01.Utility\12.Calculator</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\VIBuffer_Instance_Mesh.h">
+      <Filter>01.Utility\03.Component\01.VIBuffer\Instance\Mesh</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\Base.cpp">
@@ -586,6 +592,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Calculator.cpp">
       <Filter>01.Utility\12.Calculator</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\VIBuffer_Instance_Mesh.cpp">
+      <Filter>01.Utility\03.Component\01.VIBuffer\Instance\Mesh</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

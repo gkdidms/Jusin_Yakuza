@@ -32,6 +32,7 @@ public:
 		MODE_PARTICLE,
 		MODE_TRAIL,
 		MODE_AURA,
+		MODE_MESH,
 		MODE_END
 	};
 	enum PASS{ 
@@ -92,7 +93,11 @@ private:
 	void EditorAura_Tick(_float fTimeDelta);
 
 
+	//메쉬 함수
+	HRESULT Create_Mesh();
 
+	void CreateMesh_Tick(_float fTimeDelta);
+	void EditorMesh_Tick(_float fTimeDelta);
 
 	HRESULT AllEffect_Save();
 	HRESULT AllEffect_Load();

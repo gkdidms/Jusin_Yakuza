@@ -497,6 +497,92 @@ void CVIBuffer_Instance::SizeDown_Time(_float fTimeDelta)
 	}
 }
 
+void CVIBuffer_Instance::Leaf_Fall(_float fTimeDelta)
+{
+	bool allInstancesDead = true;
+	D3D11_MAPPED_SUBRESOURCE      SubResource{};
+	m_pContext->Map(m_pVBInstance, 0, D3D11_MAP_WRITE_NO_OVERWRITE, 0, &SubResource);
+	VTXMATRIX* pVertices = (VTXMATRIX*)SubResource.pData;
+	for (size_t i = 0; i < m_InstanceDesc->iNumInstance; i++)
+	{
+
+		pVertices[i].vLifeTime.y += fTimeDelta;
+
+		_float fRatio = pVertices[i].vLifeTime.y / pVertices[i].vLifeTime.x;
+		_vector vRight, vUp, vLook, vPos;
+		vRight = XMLoadFloat4(&pVertices[i].vRight);
+		vUp = XMLoadFloat4(&pVertices[i].vUp);
+		vLook = XMLoadFloat4(&pVertices[i].vLook);
+		vPos = XMLoadFloat4(&pVertices[i].vTranslation);
+
+		if (fRatio <= 0.2f)
+		{
+			_vector Axis = XMQuaternionRotationAxis(XMVector4Normalize(vRight), XMConvertToRadians(m_pSpeeds[i]));
+			_matrix QuternionMatrix = XMMatrixRotationQuaternion(Axis);
+			vRight = XMVector3TransformNormal(vRight, QuternionMatrix);
+			vUp = XMVector3TransformNormal(vUp, QuternionMatrix);
+			vLook = XMVector3TransformNormal(vLook, QuternionMatrix);
+		}
+		else if (fRatio > 0.2f && fRatio <= 0.4f)
+		{
+			_vector Axis = XMQuaternionRotationAxis(XMVector4Normalize(vUp), XMConvertToRadians(m_pSpeeds[i]));
+			_matrix QuternionMatrix = XMMatrixRotationQuaternion(Axis);
+			vRight = XMVector3TransformNormal(vRight, QuternionMatrix);
+			vUp = XMVector3TransformNormal(vUp, QuternionMatrix);
+			vLook = XMVector3TransformNormal(vLook, QuternionMatrix);
+		}
+		else if (fRatio > 0.4f && fRatio <= 0.6f)
+		{
+			_vector Axis = XMQuaternionRotationAxis(XMVector4Normalize(vRight), XMConvertToRadians(m_pSpeeds[i]));
+			_matrix QuternionMatrix = XMMatrixRotationQuaternion(Axis);
+			vRight = XMVector3TransformNormal(vRight, QuternionMatrix);
+			vUp = XMVector3TransformNormal(vUp, QuternionMatrix);
+			vLook = XMVector3TransformNormal(vLook, QuternionMatrix);
+		}
+		else if (fRatio > 0.6f && fRatio <= 0.8f)
+		{
+			_vector Axis = XMQuaternionRotationAxis(XMVector4Normalize(vUp), XMConvertToRadians(m_pSpeeds[i]));
+			_matrix QuternionMatrix = XMMatrixRotationQuaternion(Axis);
+			vRight = XMVector3TransformNormal(vRight, QuternionMatrix);
+			vUp = XMVector3TransformNormal(vUp, QuternionMatrix);
+			vLook = XMVector3TransformNormal(vLook, QuternionMatrix);
+		}
+		else
+		{
+			_vector Axis = XMQuaternionRotationAxis(XMVector4Normalize(vRight), XMConvertToRadians(m_pSpeeds[i]));
+			_matrix QuternionMatrix = XMMatrixRotationQuaternion(Axis);
+			vRight = XMVector3TransformNormal(vRight, QuternionMatrix);
+			vUp = XMVector3TransformNormal(vUp, QuternionMatrix);
+			vLook = XMVector3TransformNormal(vLook, QuternionMatrix);
+		}
+
+		_vector vDir = XMVector4Normalize(vLook);
+		vPos += vDir * m_pSpeeds[i] * fTimeDelta;
+
+		pVertices[i].vTranslation.y -=0.98f * fTimeDelta;
+
+		if (pVertices[i].vLifeTime.y >= pVertices[i].vLifeTime.x)
+		{
+			if (true == m_InstanceDesc->isLoop)
+			{
+				pVertices[i].vTranslation = _float4(m_pOriginalPositions[i].x, m_pOriginalPositions[i].y, m_pOriginalPositions[i].z, 1.f);
+				pVertices[i].vLifeTime.y = 0.f;
+			}
+			else
+			{
+				pVertices[i].vLifeTime.y = pVertices[i].vLifeTime.x;
+			}
+		}
+
+	}
+
+	m_pContext->Unmap(m_pVBInstance, 0);
+
+
+
+
+}
+
 void CVIBuffer_Instance::Compute_Sort()
 {
 	//버퍼에 복사 해둠.

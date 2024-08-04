@@ -47,7 +47,7 @@ private:
 
 private:
     CVIBuffer_Instance::INSTANCE_DESC m_BufferInstance;
-    _float2     m_fUVCount = { 0.f, 0.f };//uv °¹¼ö
+    _float2     m_fUVCount = { 0.f, 0.f };//uv °¹¼ö Åæ
     _float       m_fCurTime = { 0.f };
 private:
     HRESULT Add_Components();

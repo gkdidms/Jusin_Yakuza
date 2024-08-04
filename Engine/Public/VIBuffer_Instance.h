@@ -95,7 +95,7 @@ public:
     _bool LifeTime_Check();
     void SizeUp_Time(_float fTimeDelta);
     void SizeDown_Time(_float fTimeDelta);
-
+    void Leaf_Fall(_float fTimeDelta);
     void Compute_Sort();
 
     

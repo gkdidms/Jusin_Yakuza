@@ -4,6 +4,7 @@
 #pragma region "°´Ã¼ ¿øÇü"
 #include "Particle_Point.h"
 #include "TRailEffect.h"
+#include "Particle_Mesh.h"
 #pragma endregion
 
 static ImGuizmo::OPERATION mCurrentGizmoOperation(ImGuizmo::TRANSLATE);
@@ -48,6 +49,7 @@ HRESULT CImguiManager::Initialize(void* pArg)
 	TextureTags.push_back(TEXT("Prototype_Component_Texture_GuardDist"));
 	TextureTags.push_back(TEXT("Prototype_Component_Texture_Money"));
 	TextureTags.push_back(TEXT("Prototype_Component_Texture_Coin"));
+	TextureTags.push_back(TEXT("Prototype_Component_Texture_AuraAnim"));
 
 
 	if (nullptr != pArg)
@@ -158,6 +160,23 @@ void CImguiManager::Tick(const _float& fTimeDelta)
 		break;
 
 	case MODE_AURA:
+	{
+		CreateAura_Tick(fTimeDelta);
+		EditorAura_Tick(fTimeDelta);
+		Guizmo_Tick(fTimeDelta);
+		Timeline_Tick(fTimeDelta);
+		if (!m_EditAura.empty())
+		{
+
+			for (auto& iter : m_EditAura)
+			{
+				iter->Tick(fTimeDelta);
+				iter->Late_Tick(fTimeDelta);
+			}
+		}
+	}
+	break;
+	case MODE_MESH:
 	{
 		CreateAura_Tick(fTimeDelta);
 		EditorAura_Tick(fTimeDelta);
@@ -573,6 +592,8 @@ void CImguiManager::EditorAura_Tick(_float fTimeDelta)
 		bChange = true;
 	if (ImGui::RadioButton("Start", &m_AuraDesc.iShaderPass, PASS_COLOR))
 		bChange = true;
+	if (ImGui::RadioButton("Anim", &m_AuraDesc.iShaderPass, PASS_ROTATE))
+		bChange = true;
 
 	if (ImGui::Checkbox("Spread", &m_bSpread))
 	{
@@ -734,6 +755,65 @@ void CImguiManager::EditorAura_Tick(_float fTimeDelta)
 
 
 
+}
+
+HRESULT CImguiManager::Create_Mesh()
+{
+
+	if (-1 == m_iCurEditIndex)
+		m_iCurEditIndex = 0;
+
+
+	CParticle_Mesh::PARTICLE_MESH_DESC MeshDesc{};
+
+	MeshDesc.BufferInstance.iNumInstance = 1;
+	MeshDesc.BufferInstance.isLoop = true;
+	MeshDesc.BufferInstance.vLifeTime = _float2(1.f, 1.f);
+	MeshDesc.BufferInstance.vOffsetPos = _float3(0.f, 0.f, 0.f);
+	MeshDesc.BufferInstance.vPivotPos = _float3(0.f, 0.f, 0.f);
+	MeshDesc.BufferInstance.vRange = _float3(0.f, 0.f, 0.f);
+	MeshDesc.BufferInstance.vSize = _float2(1.f, 1.f);
+	MeshDesc.BufferInstance.vSpeed = _float2(1.f, 1.f);
+	MeshDesc.BufferInstance.vRectSize = _float2(1.0f, 1.0f);
+	MeshDesc.BufferInstance.fRadius = 1.f;
+
+	MeshDesc.vStartPos = { 0.f, 0.f, 0.f, 1.f };
+	MeshDesc.fRotate = { 0.f };
+	MeshDesc.fLifeAlpha = { 0.f, 0.f };
+	MeshDesc.eType = CEffect::TYPE_POINT;
+	MeshDesc.ParticleTag = m_pGameInstance->StringToWstring(text_input_buffer);
+	MeshDesc.fStartTime = { 0.f };
+	MeshDesc.iShaderPass = { 0 };
+	MeshDesc.TextureTag = TextureTags[0];
+
+	MeshDesc.strModelTag = TEXT("Prototype_Component_Model_ParticleSphere");
+
+
+
+	CGameObject* pGameParticle = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Particle_Point"), &EffectDesc);
+	if (nullptr == pGameParticle)
+		return E_FAIL;
+
+	if (m_bSpread)
+		dynamic_cast<CEffect*>(pGameParticle)->Edit_Action(CEffect::ACTION_SPREAD);
+	if (m_bDrop)
+		dynamic_cast<CEffect*>(pGameParticle)->Edit_Action(CEffect::ACTION_DROP);
+	if (m_bSizeup)
+		dynamic_cast<CEffect*>(pGameParticle)->Edit_Action(CEffect::ACTION_SIZEUP);
+	if (m_bSizedown)
+		dynamic_cast<CEffect*>(pGameParticle)->Edit_Action(CEffect::ACTION_SIZEDOWN);
+
+	m_EditParticle.push_back(pGameParticle);
+	m_iCurEditIndex = m_EditParticle.size() - 1;
+	return S_OK;
+}
+
+void CImguiManager::CreateMesh_Tick(_float fTimeDelta)
+{
+}
+
+void CImguiManager::EditorMesh_Tick(_float fTimeDelta)
+{
 }
 
 void CImguiManager::EditorTrail_Tick(_float fTimeDelta)
