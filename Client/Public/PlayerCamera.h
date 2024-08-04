@@ -12,7 +12,7 @@ class CPlayerCamera :
     public CCamera
 {
 private:
-    const _float MAX_DISTANCE = 3.0f;
+    const _float MAX_DISTANCE = 2.9f;
     const _float MIN_DISTANCE = 2.0f;
 
 public:
