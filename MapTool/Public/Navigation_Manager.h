@@ -86,6 +86,7 @@ private:
 	class CShader* m_pShaderLineCom = nullptr;
 
 	class CVIBuffer_Line* m_pVIBufferCom = { nullptr };
+	vector<class CVIBuffer_Line*>	m_vLineBufferLine;
 
 	class CGameInstance* m_pGameInstance = { nullptr };
 
@@ -124,6 +125,9 @@ private:
 
 	bool									m_bMakeRoute_IMGUI = { false };
 	bool									m_bMakeRoute_Picking = { false };
+
+
+	bool									m_bRouteAllView = { false };
 
 public:
 	virtual void Free() override;

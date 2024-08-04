@@ -120,6 +120,24 @@ HRESULT CNavigation_Manager::Render()
 		m_pVIBufferCom->Render();
 	}
 
+	if (0 != m_vLineBufferLine.size())
+	{
+		for (int i = 0; i < m_vLineBufferLine.size(); i++)
+		{
+			XMStoreFloat4x4(&m_WorldMatrix, XMMatrixIdentity());
+			m_WorldMatrix.m[3][1] += 0.2f;
+			m_pShaderLineCom->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix);
+			m_pShaderLineCom->Bind_Matrix("g_ViewMatrix", m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_VIEW));
+			m_pShaderLineCom->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_PROJ));
+
+			_vector vColor = { 0.f, 0.f, 1.f, 1.f };
+			m_pShaderLineCom->Bind_RawValue("g_vColor", &vColor, sizeof(_vector));
+
+			m_pShaderLineCom->Begin(0);
+			m_vLineBufferLine[i]->Render();
+		}
+		
+	}
 	
 
 	return S_OK;
@@ -217,6 +235,37 @@ void CNavigation_Manager::Load_Cell_IMGUI()
 	if (ImGui::Button(u8" route cell 수정 "))
 	{
 		m_Routes[route_layer_current_idx] = m_Route_CellIndexes;
+	}
+
+	// 다보이게끔
+	static int RouteAllView = 0;
+	if (ImGui::RadioButton(u8"Route 전부 보기 - O", RouteAllView == 0))
+	{
+		RouteAllView = 0;
+	}
+	ImGui::SameLine();
+	if (ImGui::RadioButton(u8"Route 전부 보기 - X", RouteAllView == 1))
+	{
+		RouteAllView = 1;
+		m_bRouteAllView = false;
+		for (auto& iter : m_vLineBufferLine)
+			Safe_Release(iter);
+		m_vLineBufferLine.clear();
+
+	}
+
+	if (0 == RouteAllView && false == m_bRouteAllView)
+	{
+		m_bRouteAllView = true;
+
+		for (int i = 0; i < m_Routes.size(); i++)
+		{
+			CVIBuffer_Line*		pBuffer = CVIBuffer_Line::Create(m_pDevice, m_pContext, m_Routes[i]);
+			if (nullptr == m_pVIBufferCom)
+				MSG_BOX("VIBuffer_Lint 생성 불가");
+
+			m_vLineBufferLine.push_back(pBuffer);
+		}
 	}
 
 	ImGui::End();
@@ -361,6 +410,11 @@ HRESULT CNavigation_Manager::Load_Cells(_uint iIndex)
 	m_RouteName.clear();
 
 	Safe_Release(m_pVIBufferCom);
+
+	for (auto& iter : m_vLineBufferLine)
+		Safe_Release(iter);
+	m_vLineBufferLine.clear();
+
 
 	m_Route_CellIndexes.clear();
 
@@ -788,6 +842,10 @@ void CNavigation_Manager::Make_Route()
 			Delete_AllRouteCell(m_iCurrentRouteCellIndex);
 
 			Safe_Release(m_pVIBufferCom);
+
+			for (auto& iter : m_vLineBufferLine)
+				Safe_Release(iter);
+			m_vLineBufferLine.clear();
 		}
 
 		if (ImGui::Button(u8"네비에 루트추가"))
@@ -1124,6 +1182,10 @@ void CNavigation_Manager::Free()
 	m_FileNames.clear();
 
 	Safe_Release(m_pVIBufferCom);
+
+	for (auto& iter : m_vLineBufferLine)
+		Safe_Release(iter);
+	m_vLineBufferLine.clear();
 
 
 	m_Route_CellIndexes.clear();
