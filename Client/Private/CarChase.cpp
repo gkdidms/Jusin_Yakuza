@@ -87,9 +87,9 @@ _bool CCarChase::Start()
 _bool CCarChase::Running()
 {
 	vector<CGameObject*> Reactors = m_pGameInstance->Get_GameObjects(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Reactor"));
-	vector<STAGE_MONSTER_INFO> MonsterInfo = m_Info.MonsterInfo;
+	//vector<STAGE_MONSTER_INFO> MonsterInfo = m_Info.MonsterInfo;
 
-	_uint iCount = { 0 };
+	/*_uint iCount = { 0 };
 	for (auto& Reactor : Reactors)
 	{
 		find_if(MonsterInfo.begin(), MonsterInfo.end(), [&](STAGE_MONSTER_INFO& Info)->_bool {
@@ -104,6 +104,9 @@ _bool CCarChase::Running()
 	}
 
 	if (MonsterInfo.size() == iCount)
+		return true;*/
+
+	if (Reactors.size() <= 0)
 		return true;
 
 	return false;

@@ -37,8 +37,7 @@ void CReactor_Van::Tick(const _float& fTimeDelta)
 {
 	__super::Tick(fTimeDelta);
 
-	if (Check_Dead())
-		m_strAnimName = "w_mngcar_c_van_ded_1";
+	m_isObjectDead = Check_Dead();
 }
 
 void CReactor_Van::Late_Tick(const _float& fTimeDelta)
@@ -72,6 +71,9 @@ HRESULT CReactor_Van::Ready_Monster(_int* pMonsterTypes)
 
 void CReactor_Van::Change_Animation()
 {
+	if (m_isObjectDead)
+		m_strAnimName = "w_mngcar_c_van_ded_1";
+
 	//벤에 관한 애니메이션 넣기
 	if (m_strAnimName == "w_mngcar_e_van_wpr_aim_st_1")
 		m_iAnim = 1;

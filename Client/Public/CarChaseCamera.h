@@ -20,6 +20,9 @@ private:
     virtual ~CCarChaseCamera() = default;
 
 public:
+    void Set_StageDir(_uint iDir) { m_iStageDir = iDir; }
+
+public:
     virtual HRESULT Initialize_Prototype() override;
     virtual HRESULT Initialize(void* pArg) override;
     virtual void Priority_Tick(const _float& fTimeDelta) override;
@@ -30,20 +33,18 @@ public:
 private:
     class CSystemManager* m_pSystemManager = { nullptr };
     const _float4x4* m_pPlayerMatrix = { nullptr };
-    _vector m_vPrevCamPosition = {};
 
-    _float4x4 m_OrbitMatrix = {};
-    _float4x4 m_LookMatrix = {};
+    _uint m_iStageDir = { DIR_END };
 
     _float m_fSensor = { 0.f };
     _float m_fCamAngleY = { 0.f };
     _float m_fCamAngleX = { 0.f };
-    _float m_fCamDistance = { 3.f };
+    _float m_fCamDistance = { 4.f };
 
     _int m_iTargetIndex = { 0 };
 
 private:
-    void Targeting();
+    void Targeting(const _float& fTimeDelta);
 
 public:
     static CCarChaseCamera* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

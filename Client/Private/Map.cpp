@@ -138,9 +138,8 @@ void CMap::Late_Tick(const _float& fTimeDelta)
 	if (fDistance < 100)
 	{
 		// Renderer 추가 및 벡터에 추가
-		Add_Renderer(fTimeDelta);
 	}
-
+	Add_Renderer(fTimeDelta);
 
 	m_pGameInstance->Add_Renderer(CRenderer::RENDER_SHADOWOBJ, this);
 

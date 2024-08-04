@@ -41,7 +41,6 @@ public:
     virtual HRESULT Render() override;
 
 protected:
-    CAnim* m_pAnimCom = { nullptr }; // 애니메이션만 따로 저장하고있는 애니메이션 컴포넌트
     CNavigation* m_pNavigationCom = { nullptr };
 
 protected:
@@ -67,7 +66,6 @@ protected:
 protected:
     virtual HRESULT Ready_Monster(_int* pMonsterTypes) = 0;
     virtual void Change_Animation();
-    HRESULT Setup_Animation();
     _bool Check_Dead();
 
 protected:
