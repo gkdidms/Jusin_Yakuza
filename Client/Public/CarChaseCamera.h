@@ -20,7 +20,7 @@ private:
     virtual ~CCarChaseCamera() = default;
 
 public:
-    void Set_StageDir(_uint iDir) { m_iStageDir = iDir; }
+    void Set_StageDir(_uint iDir);
 
 public:
     virtual HRESULT Initialize_Prototype() override;
@@ -35,6 +35,7 @@ private:
     const _float4x4* m_pPlayerMatrix = { nullptr };
 
     _uint m_iStageDir = { DIR_END };
+    _vector m_vDir = {1.f, 0.f, 0.f, 0.f };
 
     _float m_fSensor = { 0.f };
     _float m_fCamAngleY = { 0.f };

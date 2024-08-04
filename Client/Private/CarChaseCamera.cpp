@@ -17,6 +17,22 @@ CCarChaseCamera::CCarChaseCamera(const CCarChaseCamera& rhs)
 	Safe_AddRef(m_pSystemManager);
 }
 
+void CCarChaseCamera::Set_StageDir(_uint iDir)
+{
+	m_iStageDir = iDir;
+
+	if (iDir == DIR_L)
+		m_vDir = XMVectorSet(1.f, 0.f, 0.f, 0.f);
+	else if (iDir == DIR_R)
+		m_vDir = XMVectorSet(1.f, 0.f, 1.f, 0.f);
+	else if (iDir == DIR_F)
+		m_vDir = XMVectorSet(-1.f, 0.f, 0.f, 0.f);
+	else if (iDir == DIR_B)
+		m_vDir = XMVectorSet(-1.f, 0.f, 0.f, 0.f);
+
+
+}
+
 HRESULT CCarChaseCamera::Initialize_Prototype()
 {
 	return S_OK;
@@ -49,9 +65,9 @@ void CCarChaseCamera::Tick(const _float& fTimeDelta)
 	Targeting(fTimeDelta);
 
 	_float4 vCameraPosition;
-	vCameraPosition.x = XMVectorGetX(vPlayerPos) + cosf(XMConvertToRadians(m_fCamAngleY)) * cosf(XMConvertToRadians(m_fCamAngleX)) * m_fCamDistance,
-	vCameraPosition.y = XMVectorGetY(vPlayerPos) + m_fCamDistance * sinf(XMConvertToRadians(m_fCamAngleX)) + 2.f;
-	vCameraPosition.z = XMVectorGetZ(vPlayerPos) + sinf(XMConvertToRadians(m_fCamAngleY)) * cosf(XMConvertToRadians(m_fCamAngleX)),
+	vCameraPosition.x = XMVectorGetX(vPlayerPos) + cosf(XMConvertToRadians(m_fCamAngleX)) * cosf(XMConvertToRadians(m_fCamAngleY)) * m_fCamDistance,
+	vCameraPosition.y = XMVectorGetY(vPlayerPos) + m_fCamDistance * sinf(XMConvertToRadians(m_fCamAngleY)) + 2.f;
+	vCameraPosition.z = XMVectorGetZ(vPlayerPos) + sinf(XMConvertToRadians(m_fCamAngleX)) * cosf(XMConvertToRadians(m_fCamAngleY)),
 	vCameraPosition.w = 1.f;
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&vCameraPosition));
@@ -78,32 +94,47 @@ void CCarChaseCamera::Targeting(const _float& fTimeDelta)
 	if (Reactors.empty() || m_iTargetIndex == -1)
 	{
 		vTargetingPos = XMLoadFloat4((_float4*)&m_pPlayerMatrix->m[3]);
+
+		//선형보간
+		_vector vCamDirection = XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK));
+		_vector vCamTargetDirection = XMVector3Normalize(vTargetingPos - m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+		_vector vLerpDir = XMVectorLerp(vCamDirection, vCamTargetDirection, fTimeDelta * 3.f);
+		m_pTransformCom->LookAt(vLerpDir, true);
+
+		//카메라 이동값 용
+		_vector vCamMoveDir = XMLoadFloat4((_float4*)&m_pPlayerMatrix->m[0]) * -1.f;
+		m_fCamAngleX = XMConvertToDegrees(atan2f(XMVectorGetZ(vCamMoveDir), XMVectorGetX(vCamMoveDir)));
+		m_fCamAngleY = XMConvertToDegrees(asinf(XMVectorGetY(vCamMoveDir) / m_fCamDistance));
 	}
 	else {
-		if (Reactors[m_iTargetIndex]->isObjectDead())
+		CGameObject* pTarget = Reactors.back();
+
+		if (pTarget->isObjectDead())
 		{
-			m_iTargetIndex++;
-			if (m_iTargetIndex >= Reactors.size())
+			if (Reactors.size() <= 1)
 			{
 				m_iTargetIndex = -1;
 				return;
 			}
+
+			pTarget = Reactors[Reactors.size() - 2];
 		}
 
-		vTargetingPos = Reactors[m_iTargetIndex]->Get_TransformCom()->Get_State(CTransform::STATE_POSITION);
+		vTargetingPos = pTarget->Get_TransformCom()->Get_State(CTransform::STATE_POSITION);
+
+		//선형보간
+		_vector vCamDirection = XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK));
+		_vector vCamTargetDirection = XMVector3Normalize(vTargetingPos - m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+		_vector vLerpDir = XMVectorLerp(vCamDirection, vCamTargetDirection, fTimeDelta * 3.f);
+		m_pTransformCom->LookAt(vLerpDir, true);
+
+		//카메라 이동값 용
+		_vector vCamMoveDir = XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_POSITION) - vTargetingPos);
+		m_fCamAngleX = XMConvertToDegrees(atan2f(XMVectorGetZ(vCamMoveDir), XMVectorGetX(vCamMoveDir)));
+		m_fCamAngleY = XMConvertToDegrees(asinf(XMVectorGetY(vCamMoveDir) / m_fCamDistance));
 	}
 
-	_vector vCamDirection = XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK));
-	_vector vCamTargetDirection = XMVector3Normalize(vTargetingPos - m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 
-	_vector vLerpDir = XMVectorLerp(vCamDirection, vCamTargetDirection, fTimeDelta * 3.f);
-
-	//카메라 이동값 용
-	_vector vCamDir = XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_POSITION) - vTargetingPos);
-	m_fCamAngleY = XMConvertToDegrees(atan2f(XMVectorGetZ(vCamDir), XMVectorGetX(vCamDir)));
-	m_fCamAngleX = XMConvertToDegrees(asinf(XMVectorGetY(vCamDir) / m_fCamDistance));
-
-	m_pTransformCom->LookAt(vLerpDir, true);
 }
 
 CCarChaseCamera* CCarChaseCamera::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

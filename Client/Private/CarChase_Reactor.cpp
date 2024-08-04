@@ -5,6 +5,7 @@
 
 #include "Player.h"
 #include "CarChase_Monster.h"
+#include "Highway_Taxi.h"
 
 CCarChase_Reactor::CCarChase_Reactor(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLandObject{ pDevice, pContext }
@@ -50,6 +51,10 @@ HRESULT CCarChase_Reactor::Initialize(void* pArg)
 		return E_FAIL;
 
 	m_pTransformCom->Set_WorldMatrix(XMMatrixIdentity());
+
+	//플레이어의 위치보다 100 떨어진 곳에 위치하도록 한다.
+
+
 
 	return S_OK;
 }

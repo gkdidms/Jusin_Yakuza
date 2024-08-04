@@ -81,7 +81,7 @@ void CReactor_Van::Change_Animation()
 		m_iAnim = 0;
 
 	if (m_iAnim == 0 && m_pModelCom->Get_AnimFinished())
-		m_isObjectDead = true;
+		m_isDead = true;
 }
 
 HRESULT CReactor_Van::Add_Components()

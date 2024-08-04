@@ -31,6 +31,7 @@ HRESULT CLevel_Roadway::Initialize()
 	if (nullptr == m_pCarChaseManager)
 		return E_FAIL;
 
+
 	m_pUIManager->Open_Scene(TEXT("Carchase"));
 
     /* Å¬¶ó ÆÄ½Ì */
