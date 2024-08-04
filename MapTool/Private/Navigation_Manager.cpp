@@ -394,6 +394,7 @@ void CNavigation_Manager::Load_Cell_IMGUI()
 	if (m_iCurrentRouteNum != route_layer_current_idx)
 	{
 		m_iCurrentRouteNum = route_layer_current_idx;
+		m_iCurrentRouteCellIndex = 0;
 		Load_Route(m_iCurrentRouteNum);
 	}
 
@@ -1079,6 +1080,7 @@ void CNavigation_Manager::Make_Route()
 		{
 			Delete_AllRouteCell(m_iCurrentRouteCellIndex);
 			Update_CellIndex_Draw();
+			Update_Route_Draw();
 
 			Safe_Release(m_pVIBufferCom);
 
