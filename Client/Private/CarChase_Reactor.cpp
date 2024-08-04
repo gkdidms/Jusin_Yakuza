@@ -175,7 +175,7 @@ void CCarChase_Reactor::Move_Waypoint(const _float& fTimeDelta)
 	m_pTransformCom->LookAt_For_LandObject(vDir, true);
 
 	//플레이어와 멀다면
-	CGameObject* pPlayer = m_pGameInstance->Get_GameObject(m_iCurrentLevel, TEXT("Layer_Texi"), 0);
+	CGameObject* pPlayer = m_pGameInstance->Get_GameObject(m_iCurrentLevel, TEXT("Layer_Taxi"), 0);
 	_float fDistance = XMVectorGetX(XMVector3Length(pPlayer->Get_TransformCom()->Get_State(CTransform::STATE_POSITION) - vPosition));
 
 	if (m_iAnim != 0)
