@@ -12,8 +12,8 @@ class CPlayerCamera :
     public CCamera
 {
 private:
-    const _float MAX_DISTANCE = 3.5f;
-    const _float MIN_DISTANCE = 3.0f;
+    const _float MAX_DISTANCE = 3.0f;
+    const _float MIN_DISTANCE = 2.0f;
 
 public:
     typedef struct tPlayerCameraDesc : public CAMERA_DESC
@@ -37,11 +37,6 @@ public:
     virtual HRESULT Render() override;
 
 private:
-    // 왜인진 모르겠으나 카메라 값 연산을 Tick, Late_Tick 에서 
-    // 각각 한번씩 (총 2번) 해주어야 카메라가 안밀림
-    // 따라서 그 연산을 수행하는 함수이다.
-    // 파이프라인에 뷰행렬 적용은 Late_Tick에서 한번만 해주어야함
-    void    Compute_View(const _float& fTimeDelta);
     void    Compute_View_During_Collision(const _float& fTimeDelta);
 
     //처음 시작할때 설정
@@ -87,10 +82,11 @@ private:
     _float m_fPreMouseMoveY; // 이전 각도 값 저장
     _float m_fPreMouseMoveX;
 
-    XMVECTOR    m_vCamCollisionPos = { 0,0,0,1 };
+    XMVECTOR    m_vPlayerPos = { 0,0,0,1 }; // 카메라 충돌 되기 전 마지막 플레이어 위치 저장
     
     bool        m_bPreCamCollision = { false };
     bool        m_bCamCollision = { false };
+    bool        m_bLerp = { false };
     bool        m_bBlock = { false };
     int         m_iCollisionNum = { 0 }; // first collision check 
 
@@ -106,6 +102,8 @@ private:
     float       m_fElapsedTime = 0.0f; // 경과 시간
     float       m_fTotalLerpTime = 0.5f; // 보간에 걸리는 총 시간 (초 단위)
     float       m_fStartFov = 0.0f; // 보간에 걸리는 총 시간 (초 단위)
+
+
 
 private:
     HRESULT Add_Components();
