@@ -312,6 +312,16 @@ void CTransform::Change_Rotation(_fvector vAxis, _float fRadian)
 	Set_State(STATE_LOOK, vLook);
 }
 
+_vector CTransform::Get_Rotation(_fvector vAxis, _float fRadian)
+{
+	_vector		vLook = Get_State(STATE_LOOK);
+
+	_matrix		RotationMatrix = XMMatrixRotationAxis(vAxis, fRadian);
+	vLook = XMVector3TransformNormal(vLook, RotationMatrix);
+
+	return XMVector3Normalize(vLook);
+}
+
 void CTransform::Change_Rotation_Quaternion(const _float4& vQuaternion)
 {
 	// 축 벡터들을 가져온다고 가정
