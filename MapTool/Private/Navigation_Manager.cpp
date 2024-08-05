@@ -934,8 +934,8 @@ int CNavigation_Manager::Get_Player_Monster_NaviIndex(_vector vPosition)
 	{
 		/* 그냥 넣어주는거 */
 		int			iNeighborsIndex;
-
-		if (true == m_Cells[i]->isIn(vPosition, &iNeighborsIndex))
+		XMVECTOR		vSlidingNormal;
+		if (true == m_Cells[i]->isIn(vPosition, &iNeighborsIndex, vSlidingNormal))
 		{
 			return i;
 		}
@@ -960,8 +960,8 @@ void CNavigation_Manager::Find_Cells()
 				{
 					/* 그냥 넣어주는거 */
 					int			iNeighborsIndex;
-
-					if (true == m_Cells[i]->isIn(vTargetPos, &iNeighborsIndex))
+					XMVECTOR	vSlidingNormal;
+					if (true == m_Cells[i]->isIn(vTargetPos, &iNeighborsIndex, vSlidingNormal))
 					{
 						m_iCurrentCellIndex = i;
 					}
@@ -1023,8 +1023,8 @@ void CNavigation_Manager::Make_Route()
 			{
 				/* 그냥 넣어주는거 */
 				int			iNeighborsIndex;
-
-				if (true == m_Cells[i]->isIn(vTargetPos, &iNeighborsIndex))
+				XMVECTOR	vSlidingNormal;
+				if (true == m_Cells[i]->isIn(vTargetPos, &iNeighborsIndex, vSlidingNormal))
 				{
 					m_iCurrentCellIndex = i;
 				}

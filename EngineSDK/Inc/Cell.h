@@ -44,7 +44,7 @@ public:
     HRESULT Initialize(const _float3* pPoints, _int iIndex, OPTION OptionType);
     _bool Compare_Points(_fvector vSourPoint, _fvector vDestPoint);
     _float Compute_Height(_fvector vPosition);
-    _bool isIn(_fvector vPosition, _int* pNeighborsIndex);
+    _bool isIn(_fvector vPosition, _int* pNeighborsIndex, _vector&  vNormal);
     void SetUp_Neighbor(LINE_TYPE eNeighbor, CCell* pCell) {
         m_iNeighborIndices[eNeighbor] = pCell->m_iIndex;
     }

@@ -22,8 +22,8 @@ public:
     };
 
 private:
-    const _float MAX_DISTANCE = 2.9f;
-    const _float MIN_DISTANCE = 2.0f;
+    const _float MAX_DISTANCE = 3.1f;
+    const _float MIN_DISTANCE = 2.5f;
 
 public:
     typedef struct tPlayerCameraDesc : public CAMERA_DESC
