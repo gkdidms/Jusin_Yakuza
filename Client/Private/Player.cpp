@@ -968,10 +968,6 @@ void CPlayer::KRS_KeyInput(const _float& fTimeDelta)
 			else
 			{
 				m_iCurrentBehavior = (_uint)KRS_BEHAVIOR_STATE::PICK_UP;
-<<<<<<< HEAD
-				// ø©±‚ø° ªÛ≈¬∞™ «»æ˜ªÛ≈¬ √≥∏Æ«ÿ¡‡æﬂ«‘
-=======
->>>>>>> ?ÄÍ≤©Í∞ê ?°Í∏∞
 				dynamic_cast<CItem*>(m_pTargetItem)->Set_ParentMatrix(m_pModelCom->Get_BoneCombinedTransformationMatrix("buki_l_n"));
 				dynamic_cast<CItem*>(m_pTargetItem)->Set_Grab(true);
 			}
