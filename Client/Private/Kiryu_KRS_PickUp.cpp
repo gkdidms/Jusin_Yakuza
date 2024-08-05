@@ -199,6 +199,7 @@ void CKiryu_KRS_PickUp::Setting_Value(void* pValue)
 
 	m_AnimationIndices[14] = pDesc->iHitAnimIndex;
 	m_iCurrentIndex = 14;		// 모델에서 돌리는 애니메이션 
+	m_iComboCount = 0;
 
 
 	m_isHit = true;
@@ -211,7 +212,7 @@ void CKiryu_KRS_PickUp::Event(void* pValue)
 
 _bool CKiryu_KRS_PickUp::Changeable_Combo_Animation()
 {
-	_float fInterval = 0.4f;
+	_float fInterval = 0.3f;
 
 	if (m_iComboCount > 1)
 		fInterval = 0.8f;
