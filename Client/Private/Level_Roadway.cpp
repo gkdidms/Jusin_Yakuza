@@ -31,10 +31,8 @@ HRESULT CLevel_Roadway::Initialize()
 	if (nullptr == m_pCarChaseManager)
 		return E_FAIL;
 
-	m_pUIManager->Open_Scene(TEXT("Carchase"));
 
-    //if (FAILED(Ready_Player(TEXT("Layer_Player"))))
-    //    return E_FAIL;
+	m_pUIManager->Open_Scene(TEXT("Carchase"));
 
     /* Å¬¶ó ÆÄ½Ì */
     m_pFileTotalManager->Set_MapObj_In_Client(STAGE_ROADWAY, LEVEL_ROADWAY);

@@ -5,6 +5,7 @@
 
 #include "Player.h"
 #include "CarChase_Monster.h"
+#include "Highway_Taxi.h"
 
 CCarChase_Reactor::CCarChase_Reactor(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLandObject{ pDevice, pContext }
@@ -50,6 +51,10 @@ HRESULT CCarChase_Reactor::Initialize(void* pArg)
 		return E_FAIL;
 
 	m_pTransformCom->Set_WorldMatrix(XMMatrixIdentity());
+
+	//플레이어의 위치보다 100 떨어진 곳에 위치하도록 한다.
+
+
 
 	return S_OK;
 }
@@ -137,24 +142,6 @@ void CCarChase_Reactor::Change_Animation()
 {
 }
 
-HRESULT CCarChase_Reactor::Setup_Animation()
-{
-	m_iAnim = m_pAnimCom->Get_AnimationIndex(m_strAnimName.c_str());
-
-	if (m_iAnim == -1)
-		return E_FAIL;
-
-	// 실제로 애니메이션 체인지가 일어났을 때 켜져있던 어택 콜라이더를 전부 끈다
-	if (m_pModelCom->Set_AnimationIndex(m_iAnim, m_pAnimCom->Get_Animations(), m_fChangeInterval))
-	{
-		m_pModelCom->Set_PreAnimations(m_pAnimCom->Get_Animations());
-
-		Off_Attack_Colliders();
-	}
-
-	return S_OK;
-}
-
 _bool CCarChase_Reactor::Check_Dead()
 {
 	for (auto& pMonster : m_Monsters)
@@ -180,7 +167,7 @@ void CCarChase_Reactor::Move_Waypoint(const _float& fTimeDelta)
 
 	if (m_iAnim != 0)
 	{
-		m_fSpeed = fDistance < 300.f ? 41.f : 43.f;
+		m_fSpeed = fDistance < 300.f ? 40.f : 43.f;
 	}
 	else
 		m_fSpeed = m_fSpeed <= 0.f ? 0.f : m_fSpeed - fTimeDelta * 10.f;
@@ -192,10 +179,6 @@ HRESULT CCarChase_Reactor::Add_Components()
 {
 	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Shader_VtxAnim"),
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
-		return E_FAIL;
-
-	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_ReactorHighwayAnim"),
-		TEXT("Com_Anim"), reinterpret_cast<CComponent**>(&m_pAnimCom))))
 		return E_FAIL;
 
 	CNavigation::NAVIGATION_DESC Desc{};
@@ -224,7 +207,6 @@ void CCarChase_Reactor::Free()
 {
 	__super::Free();
 
-	Safe_Release(m_pAnimCom);
 	Safe_Release(m_pNavigationCom);
 
 	for (auto& pMonster : m_Monsters)
