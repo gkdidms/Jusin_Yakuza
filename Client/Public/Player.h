@@ -235,11 +235,15 @@ public:
     void Setting_RimLight();
     HRESULT Bind_RimLight();
 
+    /* 기타 기능 */
+private:
+    void HitFreeze_On();
+    void HitFreeze_Off();
+    void HitFreeze_Timer(const _float& fTimeDelta);
+
     
     /* 출력, 행동 관련 포인터 변수들 */
 private:
-    CNavigation* m_pNavigationCom = { nullptr };
-
     CAnim* m_pAnimCom = { nullptr }; // 애니메이션만 따로 저장하고있는 애니메이션 컴포넌트
     CModel* m_pCameraModel = { nullptr };
 
@@ -290,6 +294,11 @@ private:
     _float          m_fHitGauge = { 0.f };
 
     int             m_iNaviRouteNum = { 0 }; //루트
+
+private:
+    _bool m_isHitFreeze = { false };
+    const _float m_fHitFreezeTime = { 0.5f };
+    _float m_fHitFreezeTimer = { 0.f };
 
 #ifdef _DEBUG
     _bool m_isAnimStart = { true };

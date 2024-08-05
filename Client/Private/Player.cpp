@@ -26,6 +26,9 @@
 #include "Item.h"
 
 #pragma region 행동 관련 헤더들
+#include "Kiryu_KRS_Attack.h"
+#include "Kiryu_KRH_Attack.h"
+#include "Kiryu_KRC_Attack.h"
 #include "Kiryu_KRC_Hit.h"
 #include "Kiryu_KRH_Hit.h"
 #include "Kiryu_KRS_Hit.h"
@@ -125,8 +128,11 @@ void CPlayer::Tick(const _float& fTimeDelta)
 
 	// 배틀 시작 애니메이션 아닐 경우 타임델타를 1로 고정시켜준다.
 	// TODO: 다른곳에서 시간조절이 필요하다면 수정해야한다
-	if (m_iCurrentBehavior != (_uint)KRS_BEHAVIOR_STATE::BTL_START)
+	if (!m_isHitFreeze && m_iCurrentBehavior != (_uint)KRS_BEHAVIOR_STATE::BTL_START)
 		m_pGameInstance->Set_TimeSpeed(TEXT("Timer_60"), 1.f);
+
+	if (m_isHitFreeze)
+		HitFreeze_Timer(fTimeDelta);
 
 	if (m_pGameInstance->GetKeyState(DIK_UP) == TAP)
 	{
@@ -466,6 +472,30 @@ void CPlayer::Attack_Event(CGameObject* pHitObject, _bool isItem)
 				m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Setting_Value(&Desc);
 			}
 
+			if (m_iCurrentBehavior == (_uint)KRS_BEHAVIOR_STATE::ATTACK)
+			{
+				// 피니시 블로우고, 상대방이 죽었다면 잠깐 멈춘다.
+				if (static_cast<CKiryu_KRS_Attack*>(m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior))->IsFinishBlow())
+				{
+					if(m_pTargetObject->isObjectDead())
+						HitFreeze_On();
+				}
+			}
+
+			break;
+		}
+		case CPlayer::KRH:
+		{
+			if (m_iCurrentBehavior == (_uint)KRH_BEHAVIOR_STATE::ATTACK)
+			{
+				// 피니시 블로우고, 상대방이 죽었다면 잠깐 멈춘다.
+				if (static_cast<CKiryu_KRH_Attack*>(m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior))->IsFinishBlow())
+				{
+					if (m_pTargetObject->isObjectDead())
+						HitFreeze_On();
+				}
+			}
+
 			break;
 		}
 		case CPlayer::KRC:
@@ -474,6 +504,13 @@ void CPlayer::Attack_Event(CGameObject* pHitObject, _bool isItem)
 			{
 				CKiryu_KRC_Grab::KRC_Grab_DESC Desc{ true, Compute_Target_Direction(pLandObject) };
 				m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Setting_Value(&Desc);
+			}
+
+			if (m_iCurrentBehavior == (_uint)KRC_BEHAVIOR_STATE::ATTACK)
+			{
+				// 상대방이 죽었다면 잠깐 멈춘다.
+				if (m_pTargetObject->isObjectDead())
+					HitFreeze_On();
 			}
 
 			break;
@@ -515,7 +552,7 @@ void CPlayer::Take_Damage(_uint iHitColliderType, const _float3& vDir, _float fD
 			CKiryu_KRS_PickUp::PICK_UP_HIT_DESC Desc{ m_AnimationTree[KRS].at((_uint)KRS_BEHAVIOR_STATE::HIT)->Get_AnimationIndex() };
 			m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Setting_Value((void*)&Desc);
 
-			// 사용을 다 햇으면 다시 초기화해준다.
+			// 사용을 다 했으면 다시 초기화해준다.
 			m_AnimationTree[KRS].at((_uint)KRS_BEHAVIOR_STATE::HIT)->Reset();
 
 		}
@@ -1924,6 +1961,31 @@ HRESULT CPlayer::Bind_RimLight()
 		return E_FAIL;
 
 	return S_OK;
+}
+
+void CPlayer::HitFreeze_On()
+{
+	m_isHitFreeze = true;
+	m_pGameInstance->Set_TimeSpeed(TEXT("Timer_60"), 0.1f);
+	m_pGameInstance->Set_TimeSpeed(TEXT("Timer_Player"), 0.1f);
+}
+
+void CPlayer::HitFreeze_Off()
+{
+	m_isHitFreeze = false;
+	m_pGameInstance->Set_TimeSpeed(TEXT("Timer_60"), 1.f);
+	m_pGameInstance->Set_TimeSpeed(TEXT("Timer_Player"), 1.f);
+}
+
+void CPlayer::HitFreeze_Timer(const _float& fTimeDelta)
+{
+	m_fHitFreezeTimer += m_pGameInstance->Get_TimeDelta(TEXT("Timer_Game"));
+
+	if (m_fHitFreezeTime <= m_fHitFreezeTimer)
+	{
+		m_fHitFreezeTimer = 0.f;
+		HitFreeze_Off();
+	}
 }
 
 CPlayer* CPlayer::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

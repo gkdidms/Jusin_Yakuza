@@ -283,7 +283,6 @@ public:
 
 protected:
     CAnim* m_pAnimCom[ANIM_TYPE_END] = {nullptr}; // 애니메이션만 따로 저장하고있는 애니메이션 컴포넌트
-    CNavigation* m_pNavigationCom = { nullptr };
     class CAI_Monster* m_pTree = { nullptr };
 
     class CTutorialManager* m_pTutorialManager = { nullptr };

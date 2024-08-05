@@ -79,7 +79,7 @@ void CCollision_Manager::ImpulseResolution()
     {
         for (size_t j = 0; j < m_ImpulseResolutionObjects.size(); j++)
         {
-            if (i >= j) continue;
+            if (i == j) continue;
 
             _vector vPosition_Object_I = m_ImpulseResolutionObjects[i]->Get_TransformCom()->Get_State(CTransform::STATE_POSITION);
             _vector vPosition_Object_J = m_ImpulseResolutionObjects[j]->Get_TransformCom()->Get_State(CTransform::STATE_POSITION);
@@ -317,8 +317,8 @@ void CCollision_Manager::Enemy_Hit_Collision()
                 m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Money"), TEXT("Layer_Particle"), &EffectDesc);
                 m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Coin"), TEXT("Layer_Particle"), &EffectDesc);
 
-                pPlayerAttackCollider->ParentObject_Attack(pEnemyHitCollider);
                 pEnemyHitCollider->ParentObject_Hit(pPlayerAttackCollider);
+                pPlayerAttackCollider->ParentObject_Attack(pEnemyHitCollider);
             }
 
         }
@@ -350,8 +350,8 @@ void CCollision_Manager::Player_Hit_Collision()
                 m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Damage1_Part3"), TEXT("Layer_Particle"), &EffectDesc);
                 m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Damage1_Glow0"), TEXT("Layer_Particle"), &EffectDesc);
 
-                pEnemyAttackCollider->ParentObject_Attack(pPlayerHitCollider);
                 pPlayerHitCollider->ParentObject_Hit(pEnemyAttackCollider);
+                pEnemyAttackCollider->ParentObject_Attack(pPlayerHitCollider);
             }
         }
     }
