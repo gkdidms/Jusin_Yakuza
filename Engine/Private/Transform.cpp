@@ -178,11 +178,11 @@ void CTransform::Go_Down(const _float& fTimeDelta)
 	Set_State(STATE_POSITION, vPosition);
 }
 
-void CTransform::LookAt(_fvector vTargetPosition)
+void CTransform::LookAt(_fvector vTargetPosition, _bool isDir)
 {
 	_float3 m_vScale = Get_Scaled();
 
-	_vector vLook = vTargetPosition - Get_State(STATE_POSITION);
+	_vector vLook = isDir ? XMVector3Normalize(vTargetPosition) : vTargetPosition - Get_State(STATE_POSITION);
 	_vector vRight = XMVector3Cross(XMVectorSet(0.f, 1.f, 0.f, 0.f), vLook);
 	_vector vUp = XMVector3Cross(vLook, vRight);
 
@@ -310,6 +310,16 @@ void CTransform::Change_Rotation(_fvector vAxis, _float fRadian)
 	Set_State(STATE_RIGHT, vRight);
 	Set_State(STATE_UP, vUp);
 	Set_State(STATE_LOOK, vLook);
+}
+
+_vector CTransform::Get_Rotation(_fvector vAxis, _float fRadian)
+{
+	_vector		vLook = Get_State(STATE_LOOK);
+
+	_matrix		RotationMatrix = XMMatrixRotationAxis(vAxis, fRadian);
+	vLook = XMVector3TransformNormal(vLook, RotationMatrix);
+
+	return XMVector3Normalize(vLook);
 }
 
 void CTransform::Change_Rotation_Quaternion(const _float4& vQuaternion)
