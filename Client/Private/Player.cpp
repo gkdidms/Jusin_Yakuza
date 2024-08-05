@@ -515,22 +515,6 @@ void CPlayer::Take_Damage(_uint iHitColliderType, const _float3& vDir, _float fD
 			m_AnimationTree[KRS].at((_uint)KRS_BEHAVIOR_STATE::HIT)->Reset();
 
 		}
-		else if (m_iCurrentBehavior == (_uint)KRS_BEHAVIOR_STATE::PICK_UP)		// π´æ∞° µÈ∞Ì ¿÷¥¬ ªÛ≈¬∏È µ˚∑Œ √≥∏Æ«—¥Ÿ.
-		{
-			string strAnimationName = pAttackedObject->Get_CurrentAnimationName();
-
-			// »˜∆Æ ∞¥√ºø°º≠ æ÷¥œ∏ﬁ¿Ãº« ºº∆√«ÿ¡÷∞Ì, «ˆ¿Á ±◊ æ÷¥œ∏ﬁ¿Ãº«¿ª ≤®≥ª¡‡æﬂ«—¥Ÿ.
-			CKiryu_KRS_Hit::KRS_Hit_DESC HitDesc{ &vDir, fDamage, strAnimationName, iDirection };
-			
-			m_iDefaultAnimIndex = m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Get_AnimationIndex();			//ƒƒ∆˜≥Õ∆Æø°º≠ æµ æ÷¥œ∏ﬁ¿Ãº« (pickupªÛ≈¬¿« ¿Œµ¶Ω∫)
-
-			CKiryu_KRS_PickUp::PICK_UP_HIT_DESC Desc{ m_AnimationTree[KRS].at((_uint)KRS_BEHAVIOR_STATE::HIT)->Get_AnimationIndex() };
-			m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Setting_Value((void*)&Desc);
-
-			// ªÁøÎ¿ª ¥Ÿ «ﬁ¿∏∏È ¥ŸΩ√ √ ±‚»≠«ÿ¡ÿ¥Ÿ.
-			m_AnimationTree[KRS].at((_uint)KRS_BEHAVIOR_STATE::HIT)->Reset();
-
-		}
 		else if(m_iCurrentBehavior != (_uint)KRS_BEHAVIOR_STATE::SKILL_FLY_KICK)						// Ω¥∆€æ∆∏” ¿˚øÎ«“ «‡µø ≈∏¿‘µÈ¿ª øπø‹√≥∏Æ«ÿ¡÷æÓæﬂ«—¥Ÿ.
 		{
 			CKiryu_KRS_Hit::KRS_Hit_DESC Desc{ &vDir, fDamage, pAttackedObject->Get_CurrentAnimationName(), iDirection };
@@ -984,7 +968,10 @@ void CPlayer::KRS_KeyInput(const _float& fTimeDelta)
 			else
 			{
 				m_iCurrentBehavior = (_uint)KRS_BEHAVIOR_STATE::PICK_UP;
+<<<<<<< HEAD
 				// ø©±‚ø° ªÛ≈¬∞™ «»æ˜ªÛ≈¬ √≥∏Æ«ÿ¡‡æﬂ«‘
+=======
+>>>>>>> ?ÄÍ≤©Í∞ê ?°Í∏∞
 				dynamic_cast<CItem*>(m_pTargetItem)->Set_ParentMatrix(m_pModelCom->Get_BoneCombinedTransformationMatrix("buki_l_n"));
 				dynamic_cast<CItem*>(m_pTargetItem)->Set_Grab(true);
 			}
