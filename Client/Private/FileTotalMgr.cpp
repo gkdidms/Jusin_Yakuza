@@ -623,6 +623,8 @@ HRESULT CFileTotalMgr::Set_GameObject_In_Client(int iStageLevel)
 
             mapDesc.vOffsetMatrix = m_MapTotalInform.pMapObjDesc[i].vOffsetTransform;
 
+            mapDesc.fSpeedPecSec = 1.f;
+
             m_pGameInstance->Add_GameObject(iStageLevel, TEXT("Prototype_GameObject_Item"), m_Layers[iLayer], &mapDesc);
         }
         else 

@@ -30,6 +30,7 @@ public:
 	virtual void Reset();
 	virtual void Setting_Value(void* pValue = nullptr);
 	virtual string Get_AnimationName();
+	virtual _uint Get_AnimationIndex();
 
 private:
 	vector<string> m_AnimationNames;

@@ -23,7 +23,7 @@ public:
     // 분할된 애니메이션 컴포넌트 종류 (필요 시 늘어날 예정)
     enum SEPARATION_ANIMATION_COM_TYPE
     {
-        FACE_COM, HAND_COM, PART_ANIMATION_COM_TYPE_END
+        FACE_ANIM, HAND_ANIM, DEFAULT_ANIM, PART_ANIMATION_COM_TYPE_END
     };
 
     /* 
@@ -98,6 +98,10 @@ public:
     virtual void Off_Separation_Hand(_uint iHandType = 0);
     virtual void On_Separation_Face();
     virtual void Off_Separation_Face();
+
+    // iAnimType이 -1이라면 분리해제, 그 외의 값이라면 애니메이션 컴포넌트 인덱스와 맞춰줘야한다.
+    // isExceptParent 이 true라면 부모뼈만 분리 제외한다.
+    void Separation_Bone(string strBoneName, _int iAnimType = -1, _bool isExceptParent = true);
 
     /* Fublic Virtual Funtion */
 public:

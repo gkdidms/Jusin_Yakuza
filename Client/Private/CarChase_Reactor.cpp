@@ -41,6 +41,7 @@ HRESULT CCarChase_Reactor::Initialize(void* pArg)
 	m_iNaviRouteNum = gameobjDesc->iNaviRouteNum;
 	m_iStageDir = gameobjDesc->iStageDir;
 	m_iLineDir = gameobjDesc->iLineDir;
+	m_iWaypointIndex = gameobjDesc->iWaypointIndex;
 
 	if (FAILED(Add_Components()))
 		return E_FAIL;
@@ -51,8 +52,7 @@ HRESULT CCarChase_Reactor::Initialize(void* pArg)
 		return E_FAIL;
 
 	m_pTransformCom->Set_WorldMatrix(XMMatrixIdentity());
-
-	//플레이어의 위치보다 100 떨어진 곳에 위치하도록 한다.
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_pNavigationCom->Get_CurrentWaypointPos());
 
 
 
@@ -147,7 +147,9 @@ _bool CCarChase_Reactor::Check_Dead()
 	for (auto& pMonster : m_Monsters)
 	{
 		if (!pMonster->isObjectDead())
+		{
 			return false;
+		}
 	}
 		
 	return true;
@@ -167,7 +169,7 @@ void CCarChase_Reactor::Move_Waypoint(const _float& fTimeDelta)
 
 	if (m_iAnim != 0)
 	{
-		m_fSpeed = fDistance < 300.f ? 40.f : 43.f;
+		m_fSpeed = fDistance < 300.f ? 40.f : 100.f;
 	}
 	else
 		m_fSpeed = m_fSpeed <= 0.f ? 0.f : m_fSpeed - fTimeDelta * 10.f;
@@ -181,9 +183,15 @@ HRESULT CCarChase_Reactor::Add_Components()
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
 		return E_FAIL;
 
+	//플레이어 위치보다 100뒤에 잇도록 수정
+	CHighway_Taxi* pPlayer = dynamic_cast<CHighway_Taxi*>(m_pGameInstance->Get_GameObject(m_iCurrentLevel, TEXT("Layer_Taxi"), 0));
+	_vector vPlayerPos = pPlayer->Get_TransformCom()->Get_State(CTransform::STATE_POSITION);
+	
+
 	CNavigation::NAVIGATION_DESC Desc{};
 	Desc.iCurrentLine = m_iNaviRouteNum;
-	Desc.vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	Desc.iWayPointIndex = m_iWaypointIndex;
+	Desc.vPosition = vPlayerPos - XMVectorSet(0.f, 0.f, 100.f, 0.f);
 	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Navigation"),
 		TEXT("Com_Navigation"), reinterpret_cast<CComponent**>(&m_pNavigationCom), &Desc)))
 		return E_FAIL;

@@ -92,8 +92,9 @@ void CCarChase_Monster::Set_Coll()
 	{
 		m_Info.fHp = 0.f;
 		m_isObjectDead = true;
+
+		m_pUIManager->Remove_Target(m_iObjectIndex);
 	}
-	
 }
 
 void CCarChase_Monster::Change_Animation()

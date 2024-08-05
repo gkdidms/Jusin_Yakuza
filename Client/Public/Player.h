@@ -36,7 +36,7 @@ public:
     enum class KRS_BEHAVIOR_STATE
     {
         BTL_START, IDLE, WALK, RUN, ATTACK, HIT, 
-        SWAY, DOWN, GRAB,
+        SWAY, DOWN, GRAB, PICK_UP,
         SKILL_FLY_KICK, SKILL_KICK_COMBO,
         KRS_BEHAVIOR_END
     };
@@ -53,7 +53,7 @@ public:
     enum class KRC_BEHAVIOR_STATE
     {
         BTL_START, IDLE, WALK, RUN, ATTACK, HIT,
-        SWAY, DOWN, GRAB,
+        SWAY, DOWN, GRAB, PICK_UP,
         GUARD,
         KRC_BEHAVIOR_END
     };
@@ -158,6 +158,10 @@ public:
         return m_pColliderCom;
     }
 
+    class CItem* Get_CurrentItem() {
+        return m_pTargetItem;
+    }
+
     /* Setter */
 public:
     void    Set_StartPos(XMMATRIX    vStartPos) { m_pTransformCom->Set_WorldMatrix(vStartPos); }
@@ -220,6 +224,7 @@ private:
 
     void Effect_Control_Aura();
     void Setting_Target_Enemy();
+    void Setting_Target_Item();
 
     /* 캐릭터 스테이터스 관련 함수 */ 
 public:
@@ -250,6 +255,7 @@ private:
     /* 플레이어 기능 관련 포인터 변수들 */
 private:
     CLandObject* m_pTargetObject = { nullptr };
+    class CItem* m_pTargetItem = { nullptr };
 
     /* 행동, 이동 관련 변수들 */
 private:
@@ -275,6 +281,8 @@ private:
 
     _uint                       m_iCutSceneAnimIndex = { 0 };
     _uint                       m_iCutSceneCamAnimIndex = { 0 };
+
+    _uint                       m_iDefaultAnimIndex = { 0 };
 
     /* 플레이어 스테이터스 관련 변수들 */
 private:

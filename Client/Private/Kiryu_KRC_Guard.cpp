@@ -2,6 +2,7 @@
 #include "Kiryu_KRC_Guard.h"
 #include "Kiryu_KRC_Hit.h"
 #include "Player.h"
+#include "Camera.h"
 
 CKiryu_KRC_Guard::CKiryu_KRC_Guard()
 	:CBehaviorAnimation{}
@@ -66,15 +67,16 @@ void CKiryu_KRC_Guard::Tick(const _float& fTimeDelta)
 	{
 		if (m_pGameInstance->GetMouseState(DIM_LB) == TAP)
 		{
+			m_isShaked = true;
 			m_eCurrentType = COUNTER_ATTACK;
 			m_iIndex = 7;
 		}
 
 		if (m_pGameInstance->GetMouseState(DIM_RB) == TAP)
 		{
+			m_isShaked = true;
 			m_eCurrentType = COUNTER_ATTACK;
 			m_iIndex = 8;
-
 		}
 	}
 	else if (m_eCurrentType == COUNTER_ATTACK)
@@ -88,6 +90,7 @@ void CKiryu_KRC_Guard::Tick(const _float& fTimeDelta)
 		}
 	}
 
+	Shaking();
 }
 
 void CKiryu_KRC_Guard::Change_Animation()
@@ -115,6 +118,7 @@ _bool CKiryu_KRC_Guard::Get_AnimationEnd()
 		
 		m_iCurrentIndex = 0;
 		m_iIndex = 0;
+		m_isShaked = false;
 
 		return true;
 	}
@@ -141,6 +145,7 @@ void CKiryu_KRC_Guard::Reset()
 	m_eCurrentType = GUARD;
 	m_iCurrentIndex = 0;
 	m_isStop = false;
+	m_isShaked = false;
 }
 
 void CKiryu_KRC_Guard::Setting_Value(void* pValue)
@@ -175,8 +180,32 @@ void CKiryu_KRC_Guard::Setting_Value(void* pValue)
 		}
 		m_eCurrentType = HIT;
 
+		// 쉐이킹
+		m_isShaked = true;
+
 		// 애니메이션을 초기화하고 다시시작하는 함수를 실행시켜야한다.
 		m_pPlayer->Change_ResetAnimaition(m_AnimationIndices[m_iIndex]);
+	}
+}
+
+void CKiryu_KRC_Guard::Shaking()
+{
+	if (m_isShaked && Checked_Animation_Ratio(0.2))
+	{
+		//카메라 쉐이킹
+		CCamera* pCamera = dynamic_cast<CCamera*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Camera"), CAMERA_PLAYER));
+
+		if(7 == m_iIndex)
+			pCamera->Set_Shaking(true, { 1.f, 1.f, 0.f }, 0.2, 0.4);
+		else if (8 == m_iIndex)
+		{
+			if (Checked_Animation_Ratio(0.4))
+			{
+				pCamera->Set_Shaking(true, { 1.f, 1.f, 0.f }, 0.2, 0.4);
+			}
+		}
+		else
+			pCamera->Set_Shaking(true, { 1.f, 1.f, 0.f }, 0.2, 0.3);
 	}
 }
 

@@ -106,6 +106,7 @@ _bool CBounding_AABB::Intersect(CCollider::TYPE eTargetType, CBounding* pTargetB
 const _float3& CBounding_AABB::ImpulseResolution(CCollider::TYPE eTargetType, CBounding* pTargetBounding, _float fDistance)
 {
 	static _float3 vResultPosition(0.f, 0.f, 0.f);
+	const float scaleFactor = 0.2f; // 밀려나는 값을 줄이는 스케일 팩터 (0.5로 설정)
 
 	// 밀어내기 기능은 AABB에서만 할 것
 	if (!Intersect(eTargetType, pTargetBounding, fDistance) || eTargetType != Engine::CCollider::COLLIDER_AABB)
@@ -143,19 +144,19 @@ const _float3& CBounding_AABB::ImpulseResolution(CCollider::TYPE eTargetType, CB
 	{
 		// Push out along the X-axis
 		float fPushX = (m_pBoundingBox->Center.x < pDesc->Center.x) ? -fIntersectWidth : fIntersectWidth;
-		vResultPosition = _float3(fPushX, 0.0f, 0.0f);
+		vResultPosition = _float3(fPushX * scaleFactor, 0.0f, 0.0f);
 	}
 	else if (fIntersectHeight < fIntersectDepth)
 	{
 		// Push out along the Y-axis
 		float fPushY = (m_pBoundingBox->Center.y < pDesc->Center.y) ? -fIntersectHeight : fIntersectHeight;
-		vResultPosition = _float3(0.0f, fPushY, 0.0f);
+		vResultPosition = _float3(0.0f, fPushY * scaleFactor, 0.0f);
 	}
 	else
 	{
 		// Push out along the Z-axis
 		float fPushZ = (m_pBoundingBox->Center.z < pDesc->Center.z) ? -fIntersectDepth : fIntersectDepth;
-		vResultPosition = _float3(0.0f, 0.0f, fPushZ);
+		vResultPosition = _float3(0.0f, 0.0f, fPushZ * scaleFactor);
 	}
 
 	return vResultPosition;

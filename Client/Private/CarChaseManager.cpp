@@ -46,7 +46,7 @@ void CCarChaseManager::Tick()
 
 	if (m_isStart)
 	{
-		//시작할 때 
+		//시작할 때 퀘스트 창 뜨도록 구현 
 	}
 
 	//다음 스테이지로 넘어가기

@@ -146,7 +146,7 @@
       <Filter>02.GameObjects\02.Character\LandObject\01.Monster\Yakuza\00.RushYakuza\AI</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\MapCollider.cpp">
-      <Filter>02.GameObjects\07.MapCollider</Filter>
+      <Filter>02.GameObjects\99.Camera\07.MapCollider</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Kiryu_KRS_Attack.cpp">
       <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\Attack</Filter>
@@ -525,6 +525,12 @@
     <ClCompile Include="..\Private\Gun_Cz75.cpp">
       <Filter>02.GameObjects\02.Character\LandObject\03.CarChase\00.Reactor\04.Gun_Cz75</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\Kiryu_KRS_PickUp.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\Pickup</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Kiryu_KRC_PickUp.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRC\Pickup</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\MainApp.h">
@@ -702,7 +708,7 @@
       <Filter>02.GameObjects\02.Character\LandObject\01.Monster\Yakuza\00.RushYakuza\AI</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\MapCollider.h">
-      <Filter>02.GameObjects\07.MapCollider</Filter>
+      <Filter>02.GameObjects\99.Camera\07.MapCollider</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Kiryu_KRS_Attack.h">
       <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\Attack</Filter>
@@ -1081,6 +1087,12 @@
     <ClInclude Include="..\Public\Gun_Cz75.h">
       <Filter>02.GameObjects\02.Character\LandObject\03.CarChase\00.Reactor\04.Gun_Cz75</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Kiryu_KRS_PickUp.h">
+      <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\Pickup</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Kiryu_KRC_PickUp.h">
+      <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRC\Pickup</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -1427,12 +1439,6 @@
     <Filter Include="01.Levels\06.DogimazoLobby">
       <UniqueIdentifier>{25a6b42e-eb92-436c-9649-04df553ee3f1}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\07.MapCollider">
-      <UniqueIdentifier>{28cec43f-865c-488e-83e1-e6b15b632319}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\07.MapCollider\Obj">
-      <UniqueIdentifier>{4e8421d6-5ada-48ec-9fce-0aed349f2f59}</UniqueIdentifier>
-    </Filter>
     <Filter Include="01.Levels\07.DogimazoBoss">
       <UniqueIdentifier>{c3987abd-0a35-468c-b0db-541aa2913f3b}</UniqueIdentifier>
     </Filter>
@@ -1661,8 +1667,17 @@
     <Filter Include="02.GameObjects\02.Character\LandObject\03.CarChase\00.Reactor\04.Gun_Cz75">
       <UniqueIdentifier>{863a5ddf-d4bd-41f1-9986-caf74f4a90c6}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\PickupItem">
+    <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\Pickup">
       <UniqueIdentifier>{afa11f52-5f1d-4322-886d-68e4094d377c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRC\Pickup">
+		<UniqueIdentifier>{5d202184-5e66-49ec-9cf6-6022190810e9}</UniqueIdentifier>
+	</Filter>
+    <Filter Include="02.GameObjects\99.Camera\07.MapCollider">
+      <UniqueIdentifier>{28cec43f-865c-488e-83e1-e6b15b632319}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.Camera\07.MapCollider\Obj">
+      <UniqueIdentifier>{4e8421d6-5ada-48ec-9fce-0aed349f2f59}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

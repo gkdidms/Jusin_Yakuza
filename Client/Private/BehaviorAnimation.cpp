@@ -21,6 +21,7 @@
 #include "Kiryu_KRS_Sway.h"
 #include "Kiryu_KRS_Down.h"
 #include "Kiryu_KRS_Grab.h"
+#include "Kiryu_KRS_PickUp.h"
 #pragma endregion
 
 #pragma region KRH
@@ -98,6 +99,8 @@ CBehaviorAnimation* CBehaviorAnimation::Create_KRS_Behavior(_uint iBehavior, cla
 		return CKiryu_KRS_Down::Create(pPlayer);
 	case CPlayer::KRS_BEHAVIOR_STATE::GRAB:
 		return CKiryu_KRS_Grab::Create(pPlayer);
+	case CPlayer::KRS_BEHAVIOR_STATE::PICK_UP:
+		return CKiryu_KRS_PickUp::Create(pPlayer);
 	case CPlayer::KRS_BEHAVIOR_STATE::SKILL_FLY_KICK:
 		return CKiryu_KRS_FlyKick::Create(pPlayer);
 	case CPlayer::KRS_BEHAVIOR_STATE::SKILL_KICK_COMBO:
