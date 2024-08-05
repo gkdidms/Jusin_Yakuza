@@ -61,18 +61,50 @@ HRESULT CItem::Initialize(void* pArg)
 
 		for (int i = 0; i < gameobjDesc->iColliderNum; i++)
 		{
-			OBJCOLLIDER_DESC		objDesc = gameobjDesc->pColliderDesc[i];
+			//COLLIDER_AABB, COLLIDER_OBB, COLLIDER_SPHERE
+			if (CCollider::TYPE::COLLIDER_AABB == gameobjDesc->pColliderDesc[i].iColliderType)
+			{
+				OBJCOLLIDER_DESC		objDesc = gameobjDesc->pColliderDesc[i];
 
-			CBounding_OBB::BOUNDING_OBB_DESC		ColliderDesc{};
+				CBounding_Sphere::BOUNDING_SPHERE_DESC		ColliderDesc{};
 
-			ColliderDesc.eType = (CCollider::TYPE)objDesc.iColliderType;
-			ColliderDesc.vExtents = objDesc.vExtents;
-			ColliderDesc.vCenter = objDesc.vCenter;
-			ColliderDesc.vRotation = objDesc.vQuaternion;
+				ColliderDesc.eType = CCollider::COLLIDER_SPHERE;
+				ColliderDesc.fRadius = objDesc.vExtents.x;
+				ColliderDesc.vCenter = objDesc.vCenter;
 
-			CCollider* pCollider = dynamic_cast<CCollider*>(m_pGameInstance->Add_Component_Clone(m_iCurrentLevel, TEXT("Prototype_Component_Collider"), &ColliderDesc));
+				CCollider* pCollider = dynamic_cast<CCollider*>(m_pGameInstance->Add_Component_Clone(m_iCurrentLevel, TEXT("Prototype_Component_Collider"), &ColliderDesc));
 
-			m_vColliders.push_back(pCollider);
+				m_vColliders.push_back(pCollider);
+			}
+			else if (CCollider::TYPE::COLLIDER_AABB == (CCollider::TYPE)gameobjDesc->pColliderDesc[i].iColliderType)
+			{
+				OBJCOLLIDER_DESC		objDesc = gameobjDesc->pColliderDesc[i];
+
+				CBounding_AABB::BOUNDING_AABB_DESC		ColliderDesc{};
+				ColliderDesc.eType = CCollider::COLLIDER_AABB;
+				ColliderDesc.vExtents = objDesc.vExtents;
+				ColliderDesc.vCenter = objDesc.vCenter;
+
+				CCollider* pCollider = dynamic_cast<CCollider*>(m_pGameInstance->Add_Component_Clone(m_iCurrentLevel, TEXT("Prototype_Component_Collider"), &ColliderDesc));
+
+				m_vColliders.push_back(pCollider);
+			}
+			else
+			{
+				OBJCOLLIDER_DESC		objDesc = gameobjDesc->pColliderDesc[i];
+
+				CBounding_OBB::BOUNDING_OBB_DESC		ColliderDesc{};
+
+				ColliderDesc.eType = CCollider::COLLIDER_OBB;
+				ColliderDesc.vExtents = objDesc.vExtents;
+				ColliderDesc.vCenter = objDesc.vCenter;
+				ColliderDesc.vRotation = objDesc.vQuaternion;
+
+				CCollider* pCollider = dynamic_cast<CCollider*>(m_pGameInstance->Add_Component_Clone(m_iCurrentLevel, TEXT("Prototype_Component_Collider"), &ColliderDesc));
+
+				m_vColliders.push_back(pCollider);
+			}
+
 
 		}
 
