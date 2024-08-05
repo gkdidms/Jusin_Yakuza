@@ -72,6 +72,8 @@ HRESULT CPlayerCamera::Initialize(void* pArg)
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, vCamPosition);
 
 	}
+
+	m_eCamState = CAM_IDLE;
 	
 	return S_OK;
 }
@@ -129,6 +131,14 @@ void CPlayerCamera::Compute_View_During_Collision(const _float& fTimeDelta)
 	_vector vPlayerPosition;
 	memcpy(&vPlayerPosition, m_pPlayerMatrix->m[CTransform::STATE_POSITION], sizeof(_float4));
 
+	// 너무 멀리 떨어져있을경우 충돌됐어도 선형보간해서 따라가야함
+	float		fDistance = XMVectorGetX(XMVector3Length(vPlayerPosition - m_pTransformCom->Get_State(CTransform::STATE_POSITION)));
+	if (2 < fDistance)
+	{
+		m_bBlock = false;
+
+	}
+
 	// 마우스 입력을 이용한 카메라 회전
 	_long MouseMoveX = m_pGameInstance->Get_DIMouseMove(DIMS_X);
 	_long MouseMoveY = m_pGameInstance->Get_DIMouseMove(DIMS_Y);
@@ -160,9 +170,15 @@ void CPlayerCamera::Compute_View_During_Collision(const _float& fTimeDelta)
 
 	vCamPosition += XMVectorSet(XMVectorGetX(vPlayerPosition), XMVectorGetY(vPlayerPosition), XMVectorGetZ(vPlayerPosition), 0);
 
+
+	XMVECTOR	vCollisionPos;
 	// 충돌 됐을때 막기
-	if (true == m_pCollisionManager->Check_Map_Collision_Using_Position(m_pColliderCom, vCamPosition))
+	if (true == m_pCollisionManager->Check_Map_Collision_Using_Position(m_pColliderCom, vCamPosition, vCollisionPos))
 	{
+		if (false == m_bBlock)
+		{
+			m_vLatestCollisionPos = vCamPosition;
+		}
 		m_bBlock = true;
 	}
 	else
@@ -170,26 +186,19 @@ void CPlayerCamera::Compute_View_During_Collision(const _float& fTimeDelta)
 		m_bBlock = false;
 	}
 
-	// 너무 멀리 떨어져있을경우 충돌됐어도 선형보간해서 따라가야함
-	float		fDistance = XMVectorGetX(XMVector3Length(vPlayerPosition - m_pTransformCom->Get_State(CTransform::STATE_POSITION)));
-	if (MAX_DISTANCE < fDistance)
-	{
-		m_bBlock = false;
-	}
+	
 
 
 	// 바뀐 카메라 위치와 콜라이더 충돌 체크함
 	if (true == m_bBlock)
 	{
-		//// 아직도 충돌됨
-		//if (false == m_bCamCollision)
-		//{
-		//	// 첫 충돌
-		//	m_bCamCollision = true;
-		//	m_vPlayerPos = vPlayerPosition;
-		//}
+		// 고정 위치 구하기
+		m_pCollisionManager->Check_Map_Collision_Using_Position(m_pColliderCom, m_vLatestCollisionPos, vCollisionPos);
 
-		//_vector vLookAt = XMVectorSet(XMVectorGetX(m_vPlayerPos), XMVectorGetY(m_vPlayerPos) + 1.f, XMVectorGetZ(m_vPlayerPos), 1);
+
+
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, vCollisionPos);
+
 		_vector vLookAt = XMVectorSet(XMVectorGetX(vPlayerPosition), XMVectorGetY(vPlayerPosition) + 1.f, XMVectorGetZ(vPlayerPosition), 1);
 		m_pTransformCom->LookAt(vLookAt);
 
@@ -200,7 +209,7 @@ void CPlayerCamera::Compute_View_During_Collision(const _float& fTimeDelta)
 	}
 	else
 	{
-		if (true == m_bCamCollision && false == m_bLerp)
+		if (true == m_bCamCollision)
 		{
 			// 충돌 벗어남
 			m_bCamCollision = false;
@@ -348,6 +357,8 @@ void CPlayerCamera::Reset_RetureVariables()
 	m_fTotalLerpTime = 0.5f; // 보간에 걸리는 총 시간 (초 단위)
 	m_fStartFov = 0.0f; // 보간에 걸리는 총 시간 (초 단위)
 }
+
+
 
 HRESULT CPlayerCamera::Add_Components()
 {
