@@ -1161,7 +1161,7 @@ void CModel::Play_Animation_Separation(_float fTimeDelta, _uint iAnimIndex, CAni
 			Animations[iAnimIndex]->Update_TransformationMatrix_Separation(fTimeDelta, m_Bones, isLoop, iAnimType);
 		else
 		{
-			Animations[iAnimIndex]->Update_Change_Animation_Separation(fTimeDelta, m_Bones, m_PreAnimations[pAnim->Get_PrevAnimIndex()], m_ChangeInterval, iAnimType);
+			Animations[iAnimIndex]->Update_Change_Animation_Separation(fTimeDelta, m_Bones, Animations[pAnim->Get_PrevAnimIndex()], m_ChangeInterval, iAnimType);
 		}
 	}
 
@@ -1204,7 +1204,7 @@ void CModel::Play_Animation_Rotation_SeparationBone(_float fTimeDelta, string st
 				Animations[m_AnimDesc.iAnimIndex]->Update_TransformationMatrix(fTimeDelta, m_Bones, isLoop, isRoot);
 			else
 			{
-				Animations[m_AnimDesc.iAnimIndex]->Update_Change_Animation(fTimeDelta, m_Bones, m_PreAnimations[m_iPrevAnimIndex], m_ChangeInterval, isRoot);
+				Animations[m_AnimDesc.iAnimIndex]->Update_Change_Animation(fTimeDelta, m_Bones, Animations[m_iPrevAnimIndex], m_ChangeInterval, isRoot);
 			}
 		}
 	}
@@ -1288,11 +1288,15 @@ void CModel::Reset_Animation(_uint iAnimIndex)
 
 void CModel::Set_Separation_ParentBone(string strBoneName, _int iAnimType)
 {
+	_bool isChild = false;
+
 	for (auto& pBone : m_Bones)
 	{
 		if (pBone->Compare_Name(strBoneName.c_str()))
 		{
 			pBone->Set_Separation(iAnimType);
+
+			isChild = true;
 		}
 
 		// 부모뼈가 -1이라면 건너뛰기
@@ -1302,7 +1306,9 @@ void CModel::Set_Separation_ParentBone(string strBoneName, _int iAnimType)
 		// 현재 뼈의 부모뼈를 구해서, 그 부모뼈가 제외된 뼌지 확인한다.
 		// 부모가 제외되었다면 본인도 제외한다.
 		// 부모의 부모뼈도 다 봐야한다!! 재귀함수임
-		Check_Separation_Parents(pBone, iAnimType);
+		// 설정한 뼈의 자식뼈들의 경우만 상위부모를 체크한다.
+		if(isChild)
+			Check_Separation_Parents(pBone, iAnimType);
 	}
 }
 

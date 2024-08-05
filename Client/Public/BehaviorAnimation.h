@@ -28,6 +28,7 @@ public:
 	virtual void Combo_Count(_bool isFinAction = false) {};
 	virtual void Setting_Value(void* pValue = nullptr) {};
 	virtual string Get_AnimationName() { return string(); };
+	virtual _uint Get_AnimationIndex() { return m_AnimationIndices[m_iCurrentIndex]; };
 	virtual _bool Checked_Animation_Ratio(_float fRatio);
 	virtual void Event(void* pValue = nullptr) {}
 

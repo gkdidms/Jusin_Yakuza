@@ -36,11 +36,16 @@ public:
 	virtual void Setting_Value(void* pValue = nullptr) override;
 
 private:
+	void Shaking();
+
+private:
 	_uint m_iIndex = { 0 };
 	STATE_TYPE m_eCurrentType = GUARD;
 
 	ANIM_STATE m_eAnimState = { ANIM_START };
 	_bool m_isStop = { false };
+
+	_bool m_isShaked = { false };
 
 public:
 	static CBehaviorAnimation* Create(class CPlayer* pPlayer);

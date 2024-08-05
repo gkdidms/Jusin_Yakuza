@@ -91,7 +91,7 @@ void CLandObject::ImpulseResolution(CLandObject* pTargetObject, _float fDistance
 
 	if (!XMVector3Equal(XMLoadFloat3(&vDir), XMVectorZero()))
 	{
-		_vector vMovePos = m_pTransformCom->Get_State(CTransform::STATE_POSITION) + (XMLoadFloat3(&vDir) * 0.3f);
+		_vector vMovePos = m_pTransformCom->Get_State(CTransform::STATE_POSITION) + (XMLoadFloat3(&vDir));
 
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, vMovePos);
 	}
@@ -282,17 +282,17 @@ void CLandObject::On_Separation_Hand(_uint iHandType)
 	switch (iHandType)
 	{
 	case 0:		//양손
-		m_pModelCom->Set_Separation_ParentBone("ude3_r_n", (_int)HAND_COM);
-		m_pModelCom->Set_Separation_ParentBone("ude3_l_n", (_int)HAND_COM);
+		m_pModelCom->Set_Separation_ParentBone("ude3_r_n", (_int)HAND_ANIM);
+		m_pModelCom->Set_Separation_ParentBone("ude3_l_n", (_int)HAND_ANIM);
 		m_pModelCom->Set_Separation_SingleBone("ude3_r_n", -1);
 		m_pModelCom->Set_Separation_SingleBone("ude3_l_n", -1);
 		break;
 	case 1:		//왼손
-		m_pModelCom->Set_Separation_ParentBone("ude3_l_n", (_int)HAND_COM);
+		m_pModelCom->Set_Separation_ParentBone("ude3_l_n", (_int)HAND_ANIM);
 		m_pModelCom->Set_Separation_SingleBone("ude3_l_n", -1);
 		break;
 	case 2:		//오른손
-		m_pModelCom->Set_Separation_ParentBone("ude3_r_n", (_int)HAND_COM);
+		m_pModelCom->Set_Separation_ParentBone("ude3_r_n", (_int)HAND_ANIM);
 		m_pModelCom->Set_Separation_SingleBone("ude3_r_n", -1);
 		break;
 	}
@@ -317,13 +317,20 @@ void CLandObject::Off_Separation_Hand(_uint iHandType)
 
 void CLandObject::On_Separation_Face()
 {
-	m_pModelCom->Set_Separation_ParentBone("face_c_n", (_int)FACE_COM);
+	m_pModelCom->Set_Separation_ParentBone("face_c_n", (_int)FACE_ANIM);
 	m_pModelCom->Set_Separation_SingleBone("face_c_n", -1);
 }
 
 void CLandObject::Off_Separation_Face()
 {
 	m_pModelCom->Set_Separation_ParentBone("face_c_n", -1);
+}
+
+void CLandObject::Separation_Bone(string strBoneName, _int iAnimType, _bool isExceptParent)
+{
+	m_pModelCom->Set_Separation_ParentBone(strBoneName, iAnimType);
+	if(isExceptParent)
+		m_pModelCom->Set_Separation_SingleBone(strBoneName, -1);
 }
 
 void CLandObject::Off_Attack_Colliders()

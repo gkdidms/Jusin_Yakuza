@@ -33,6 +33,7 @@
 #include "Kiryu_KRH_Down.h"
 #include "Kiryu_KRS_Grab.h"
 #include "Kiryu_KRC_Grab.h"
+#include "Kiryu_KRS_PickUp.h"
 #pragma endregion
 
 CPlayer::CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -186,28 +187,30 @@ void CPlayer::Tick(const _float& fTimeDelta)
 	{
 		if (DEFAULT == m_eAnimComType)
 		{
-			m_pModelCom->Play_Animation_Separation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")), m_iHandAnimIndex, m_SeparationAnimComs[HAND_COM], false, (_int)HAND_COM);
-			m_pModelCom->Play_Animation_Separation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")), m_iFaceAnimIndex, m_SeparationAnimComs[FACE_COM], false, (_int)FACE_COM);
+			m_pModelCom->Play_Animation_Separation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")), m_iHandAnimIndex, m_SeparationAnimComs[HAND_ANIM], false, (_int)HAND_ANIM);
+			m_pModelCom->Play_Animation_Separation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")), m_iFaceAnimIndex, m_SeparationAnimComs[FACE_ANIM], false, (_int)FACE_ANIM);
+			m_pModelCom->Play_Animation_Separation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")), m_iDefaultAnimIndex, m_SeparationAnimComs[DEFAULT_ANIM], false, (_int)DEFAULT_ANIM);
 			m_pModelCom->Play_Animation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")));
 		}
 		else
 		{
-			m_pModelCom->Play_Animation_Separation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")), m_iHandAnimIndex, m_SeparationAnimComs[HAND_COM], false, (_int)HAND_COM);
-			m_pModelCom->Play_Animation_Separation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")), m_iFaceAnimIndex, m_SeparationAnimComs[FACE_COM], false, (_int)FACE_COM);
+			m_pModelCom->Play_Animation_Separation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")), m_iHandAnimIndex, m_SeparationAnimComs[HAND_ANIM], false, (_int)HAND_ANIM);
+			m_pModelCom->Play_Animation_Separation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")), m_iFaceAnimIndex, m_SeparationAnimComs[FACE_ANIM], false, (_int)FACE_ANIM);
+			m_pModelCom->Play_Animation_Separation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")), m_iDefaultAnimIndex, m_SeparationAnimComs[DEFAULT_ANIM], false, (_int)DEFAULT_ANIM);
 			Play_CutScene();
 		}
 	}
 #else
 	if (DEFAULT == m_eAnimComType)
 	{
-		m_pModelCom->Play_Animation_Separation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")), m_iHandAnimIndex, m_SeparationAnimComs[HAND_COM], false, (_int)HAND_COM);
-		m_pModelCom->Play_Animation_Separation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")), m_iFaceAnimIndex, m_SeparationAnimComs[FACE_COM], false, (_int)FACE_COM);
+		m_pModelCom->Play_Animation_Separation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")), m_iHandAnimIndex, m_SeparationAnimComs[HAND_ANIM], false, (_int)HAND_ANIM);
+		m_pModelCom->Play_Animation_Separation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")), m_iFaceAnimIndex, m_SeparationAnimComs[FACE_ANIM], false, (_int)FACE_ANIM);
 		m_pModelCom->Play_Animation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")));
 	}
 	else
 	{
-		m_pModelCom->Play_Animation_Separation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")), m_iHandAnimIndex, m_SeparationAnimComs[HAND_COM], false, (_int)HAND_COM);
-		m_pModelCom->Play_Animation_Separation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")), m_iFaceAnimIndex, m_SeparationAnimComs[FACE_COM], false, (_int)FACE_COM);
+		m_pModelCom->Play_Animation_Separation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")), m_iHandAnimIndex, m_SeparationAnimComs[HAND_ANIM], false, (_int)HAND_ANIM);
+		m_pModelCom->Play_Animation_Separation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")), m_iFaceAnimIndex, m_SeparationAnimComs[FACE_ANIM], false, (_int)FACE_ANIM);
 		Play_CutScene();
 	}
 #endif // _DEBUG
@@ -232,6 +235,7 @@ void CPlayer::Tick(const _float& fTimeDelta)
 	Trail_Event();
 	Effect_Control_Aura();
 	Setting_Target_Enemy();
+	Setting_Target_Item();
 }
 
 void CPlayer::Late_Tick(const _float& fTimeDelta)
@@ -476,32 +480,6 @@ void CPlayer::Attack_Event(CGameObject* pHitObject, _bool isItem)
 		}
 		}
 	}
-	else
-	{
-		CItem* pItem = static_cast<CItem*>(pHitObject);
-
-		// 충돌한 상대 객체가 아이템이라면 KRS일 때에는 현재 그랩한 경우에만 주워지지만, KRC일 때에는 그냥 주워진다.
-		switch (m_eCurrentStyle)
-		{
-		case CPlayer::KRS:
-		{
-			if (m_iCurrentBehavior == (_uint)KRS_BEHAVIOR_STATE::GRAB)
-			{
-				// 여기에 주웠을때에 대한 처리
-
-			}
-
-			break;
-		}
-		case CPlayer::KRC:
-		{
-			//여기에 주웠을 때에 대한 처리
-
-			break;
-		}
-		}
-
-	}
 	
 }
 
@@ -525,6 +503,22 @@ void CPlayer::Take_Damage(_uint iHitColliderType, const _float3& vDir, _float fD
 			CKiryu_KRS_Down::KRS_DOWN_DESC Desc{ -1, iDirection, strAnimationName };
 			m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Setting_Value((void*)&Desc);
 		}
+		else if (m_iCurrentBehavior == (_uint)KRS_BEHAVIOR_STATE::PICK_UP)		// 무언가 들고 있는 상태면 따로 처리한다.
+		{
+			string strAnimationName = pAttackedObject->Get_CurrentAnimationName();
+
+			// 히트 객체에서 애니메이션 세팅해주고, 현재 그 애니메이션을 꺼내줘야한다.
+			CKiryu_KRS_Hit::KRS_Hit_DESC HitDesc{ &vDir, fDamage, strAnimationName, iDirection };
+			
+			m_iDefaultAnimIndex = m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Get_AnimationIndex();			//컴포넌트에서 쓸 애니메이션 (pickup상태의 인덱스)
+
+			CKiryu_KRS_PickUp::PICK_UP_HIT_DESC Desc{ m_AnimationTree[KRS].at((_uint)KRS_BEHAVIOR_STATE::HIT)->Get_AnimationIndex() };
+			m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Setting_Value((void*)&Desc);
+
+			// 사용을 다 햇으면 다시 초기화해준다.
+			m_AnimationTree[KRS].at((_uint)KRS_BEHAVIOR_STATE::HIT)->Reset();
+
+		}
 		else if(m_iCurrentBehavior != (_uint)KRS_BEHAVIOR_STATE::SKILL_FLY_KICK)						// 슈퍼아머 적용할 행동 타입들을 예외처리해주어야한다.
 		{
 			CKiryu_KRS_Hit::KRS_Hit_DESC Desc{ &vDir, fDamage, pAttackedObject->Get_CurrentAnimationName(), iDirection };
@@ -532,6 +526,7 @@ void CPlayer::Take_Damage(_uint iHitColliderType, const _float3& vDir, _float fD
 			m_iCurrentBehavior = (_uint)KRS_BEHAVIOR_STATE::HIT;
 			m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Setting_Value((void*)&Desc);
 		}
+
 
 		break;
 	}
@@ -832,9 +827,6 @@ void CPlayer::Adventure_KeyInput(const _float& fTimeDelta)
 		m_iCurrentBehavior = isShift ? (_uint)ADVENTURE_BEHAVIOR_STATE::WALK : (_uint)ADVENTURE_BEHAVIOR_STATE::RUN;
 		
 		vLookPos = XMVectorSetY(vLookPos, XMVectorGetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION)));
-		_float a = XMVectorGetX(vLookPos);
-		if (isnan(a))
-			int h = 99;
 
 		if (m_iCurrentBehavior == (_uint)ADVENTURE_BEHAVIOR_STATE::WALK || m_iCurrentBehavior == (_uint)ADVENTURE_BEHAVIOR_STATE::RUN)
 			m_pTransformCom->LookAt_For_LandObject(vLookPos);
@@ -851,9 +843,6 @@ void CPlayer::Adventure_KeyInput(const _float& fTimeDelta)
 		m_iCurrentBehavior = isShift ? (_uint)ADVENTURE_BEHAVIOR_STATE::WALK : (_uint)ADVENTURE_BEHAVIOR_STATE::RUN;
 		
 		vLookPos = XMVectorSetY(vLookPos, XMVectorGetY(m_pTransformCom->Get_State(CTransform::STATE_POSITION)));
-		_float a = XMVectorGetX(vLookPos);
-		if (isnan(a))
-			int h = 99;
 
 		if (m_iCurrentBehavior == (_uint)ADVENTURE_BEHAVIOR_STATE::WALK || m_iCurrentBehavior == (_uint)ADVENTURE_BEHAVIOR_STATE::RUN)
 			m_pTransformCom->LookAt_For_LandObject(vLookPos);
@@ -931,7 +920,8 @@ void CPlayer::KRS_KeyInput(const _float& fTimeDelta)
 			m_iCurrentBehavior = (_uint)KRC_BEHAVIOR_STATE::IDLE;
 	}
 
-	if (!m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Stopping() && m_iCurrentBehavior != (_uint)KRS_BEHAVIOR_STATE::GRAB)
+	if (!m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Stopping() && m_iCurrentBehavior != (_uint)KRS_BEHAVIOR_STATE::GRAB
+		&& m_iCurrentBehavior != (_uint)KRS_BEHAVIOR_STATE::PICK_UP)
 	{
 		if (m_pGameInstance->GetMouseState(DIM_LB) == TAP)
 		{
@@ -968,10 +958,24 @@ void CPlayer::KRS_KeyInput(const _float& fTimeDelta)
 		}
 
 		// 어택중이 아닐때에만 Q입력을 받는다
-		if (m_iCurrentBehavior != (_uint)KRS_BEHAVIOR_STATE::ATTACK && m_iCurrentBehavior != (_uint)KRS_BEHAVIOR_STATE::GRAB && m_pGameInstance->GetKeyState(DIK_Q) == TAP)
+		if (m_pGameInstance->GetKeyState(DIK_Q) == TAP 
+			&&	m_iCurrentBehavior != (_uint)KRS_BEHAVIOR_STATE::ATTACK && m_iCurrentBehavior != (_uint)KRS_BEHAVIOR_STATE::GRAB 
+			&& m_iCurrentBehavior != (_uint)KRS_BEHAVIOR_STATE::PICK_UP)
 		{
-			m_iCurrentBehavior = (_uint)KRS_BEHAVIOR_STATE::GRAB;
-			m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Reset();
+			// 아이템 타겟팅 안되어있을 때 Grab으로 빠지고
+			if (m_pTargetItem == nullptr)
+			{
+				m_iCurrentBehavior = (_uint)KRS_BEHAVIOR_STATE::GRAB;
+				m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Reset();
+			}
+			// 아이템 타겟팅 되어있을 때는 PickUp으로 빠진다.
+			else
+			{
+				m_iCurrentBehavior = (_uint)KRS_BEHAVIOR_STATE::PICK_UP;
+				dynamic_cast<CItem*>(m_pTargetItem)->Set_ParentMatrix(m_pModelCom->Get_BoneCombinedTransformationMatrix("buki_l_n"));
+				dynamic_cast<CItem*>(m_pTargetItem)->Set_Grab(true);
+			}
+
 		}
 	}
 
@@ -1425,6 +1429,13 @@ HRESULT CPlayer::Add_Components()
 		return E_FAIL;
 	m_SeparationAnimComs.push_back(pAnimCom);
 
+	//Prototype_Component_Anim_Kiryu
+	pAnimCom = { nullptr };
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Anim_Kiryu"),
+		TEXT("Com_Anim_Default"), reinterpret_cast<CComponent**>(&pAnimCom))))
+		return E_FAIL;
+	m_SeparationAnimComs.push_back(pAnimCom);
+
 	return S_OK;
 }
 
@@ -1852,11 +1863,19 @@ void CPlayer::Setting_Target_Enemy()
 		
 		// 기존 타겟중이던 친구의 거리가 3.f 이상 멀어지면 그때 다시 타겟팅한다.
 		if(3.f < vDistance)
-			m_pTargetObject = m_pCollisionManager->Get_Near_LandObject(this, pMonsters);
+			m_pTargetObject = static_cast<CLandObject*>(m_pCollisionManager->Get_Near_Object(this, pMonsters));
 	}
 	else
-		m_pTargetObject = m_pCollisionManager->Get_Near_LandObject(this, pMonsters);
-	
+		m_pTargetObject = static_cast<CLandObject*>(m_pCollisionManager->Get_Near_Object(this, pMonsters));
+}
+
+void CPlayer::Setting_Target_Item()
+{
+	if (9 == m_iCurrentBehavior) return;
+
+	auto pItemList = m_pGameInstance->Get_GameObjects(m_iCurrentLevel, TEXT("Layer_Item"));
+
+	m_pTargetItem = static_cast<CItem*>(m_pCollisionManager->Get_Near_Object(this, pItemList, 1.5f));
 }
 
 void CPlayer::AccHitGauge()
