@@ -192,13 +192,12 @@ HRESULT CConstruction::Render()
 		m_pGameInstance->Add_DebugComponent(iter);
 #endif
 
-
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
 
-
 	_uint	iNumMeshes = m_pModelCom->Get_NumMeshes();
 	vector<CMesh*> Meshes = m_pModelCom->Get_Meshes();
+
 	for (size_t i = 0; i < iNumMeshes; i++)
 	{
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))

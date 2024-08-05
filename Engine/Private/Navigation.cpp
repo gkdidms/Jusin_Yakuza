@@ -66,7 +66,7 @@ HRESULT CNavigation::Initialize(void* pArg)
         NAVIGATION_DESC* pDesc = static_cast<NAVIGATION_DESC*>(pArg);
         m_iCurrentLine = pDesc->iCurrentLine;
         m_iCurrentWayPointIndex = pDesc->iWayPointIndex;
-
+        m_iPreWayPointIndex = m_iCurrentWayPointIndex - 1;
         if (m_iCurrentWayPointIndex == -1) Find_WayPointIndex(pDesc->vPosition);
     }
 
@@ -342,6 +342,10 @@ _vector CNavigation::Compute_WayPointDir(_vector vPosition, const _float& fTimeD
     {
         m_iCurrentWayPointIndex++;
 
+        if (fDistance == 0.f)
+        {
+            return Compute_WayPointDir(vPosition, fTimeDelta);
+        }
         // 인덱스가 배열의 길이보다 크다면 다시 초기값으로 돌아간다.
         if (m_iCurrentWayPointIndex >= m_Routes[m_iCurrentLine].size())
             m_iCurrentWayPointIndex = 0.f;

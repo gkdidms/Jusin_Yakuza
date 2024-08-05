@@ -66,7 +66,7 @@ void CCarChaseCamera::Tick(const _float& fTimeDelta)
 
 	_float4 vCameraPosition;
 	vCameraPosition.x = XMVectorGetX(vPlayerPos) + cosf(XMConvertToRadians(m_fCamAngleX)) * cosf(XMConvertToRadians(m_fCamAngleY)) * m_fCamDistance,
-	vCameraPosition.y = XMVectorGetY(vPlayerPos) + m_fCamDistance * sinf(XMConvertToRadians(m_fCamAngleY)) + 2.f;
+	vCameraPosition.y = XMVectorGetY(vPlayerPos) + m_fCamDistance * sinf(XMConvertToRadians(m_fCamAngleY)) + m_fHeight;
 	vCameraPosition.z = XMVectorGetZ(vPlayerPos) + sinf(XMConvertToRadians(m_fCamAngleX)) * cosf(XMConvertToRadians(m_fCamAngleY)),
 	vCameraPosition.w = 1.f;
 
@@ -93,6 +93,7 @@ void CCarChaseCamera::Targeting(const _float& fTimeDelta)
 	_vector vTargetingPos;
 	if (Reactors.empty() || m_iTargetIndex == -1)
 	{
+		m_fHeight = 4.f;
 		vTargetingPos = XMLoadFloat4((_float4*)&m_pPlayerMatrix->m[3]);
 
 		//선형보간
@@ -120,6 +121,7 @@ void CCarChaseCamera::Targeting(const _float& fTimeDelta)
 			pTarget = Reactors[Reactors.size() - 2];
 		}
 
+		m_fHeight = 2.f;
 		vTargetingPos = pTarget->Get_TransformCom()->Get_State(CTransform::STATE_POSITION);
 
 		//선형보간
