@@ -25,8 +25,8 @@ public:
     _bool isObjectDead() { return m_isObjectDead; }
 
 public:
-    void        Set_Dead() { m_isDead = true; }
-    void        Set_ObjectDead() { m_isObjectDead = true; }
+    void        Set_Dead() { m_isDead = true; }               // 객체 자체가 죽었을 때 (객체를 삭제한다)
+    void        Set_ObjectDead() { m_isObjectDead = true; }   // 객체가 죽었는지 (객체 삭제X)
     float       Get_ObjID() { return m_iObjectIndex; }
     void        Set_ObjID(float fID) { m_iObjectIndex = fID; }
 

@@ -50,7 +50,7 @@ public:
     _bool Check_Map_Collision_Using_Position(CCollider* pCollider, XMVECTOR vPosition);
 
 
-    class CLandObject* Get_Near_LandObject(class CLandObject* pObject, vector<CGameObject*>& pObjects);
+    class CGameObject* Get_Near_Object(class CGameObject* pObject, vector<CGameObject*>& pObjects, _float fDistance = 5.f);
 
 private:
     // 캐릭터가 겹치지않고 밀어내는 함수

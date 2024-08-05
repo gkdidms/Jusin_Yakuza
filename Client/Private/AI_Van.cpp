@@ -132,7 +132,7 @@ CBTNode::NODE_STATE CAI_Van::Check_Attack()
 	//m_isAttack이 false일 경우 공격을 할지 하지 않을지 결정한다.
 	if (m_fDelayAttackDuration <= m_fAttackDelayTime)
 	{
-		m_iSkill == SKILL_SHOT;
+		m_iSkill = SKILL_SHOT;
 		m_fAttackDelayTime = 0.f;
 
 		return CBTNode::SUCCESS;

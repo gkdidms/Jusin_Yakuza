@@ -335,7 +335,7 @@ HRESULT CRenderer::Ready_Targets()
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Distortion"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(0.f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
 #pragma endregion
-	
+
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_RimLight"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(1.f, 1.f, 1.f, 1.f))))
 		return E_FAIL;
 
@@ -674,7 +674,7 @@ void CRenderer::Draw()
 
 	Render_DeferredResult(); // 복사한 이미지를 백버퍼에 넣어줌. (Deferred 최종)
 
-	
+
 
 	if (m_isRimLight)
 		Render_RimLight();
@@ -709,7 +709,7 @@ void CRenderer::Draw()
 	Render_Bloom();
 	Render_FinalEffectBlend();
 
-	
+
 	Render_Blender();
 	Render_Effect();
 	Render_FinlaOIT();
@@ -725,7 +725,7 @@ void CRenderer::Clear()
 {
 	for (size_t i = 0; i < RENDER_END; i++)
 	{
-  		for (auto& pGameObject : m_RenderObject[i])
+		for (auto& pGameObject : m_RenderObject[i])
 			Safe_Release(pGameObject);
 
 		m_RenderObject[i].clear();
@@ -1637,7 +1637,7 @@ void CRenderer::Render_RimLight()
 
 	m_pShader->Begin(19);
 
-	m_pVIBuffer->Render();	
+	m_pVIBuffer->Render();
 
 	if (FAILED(m_pGameInstance->End_MRT()))
 		return;
@@ -1777,10 +1777,10 @@ void CRenderer::Render_Effect()// 새로운 타겟에 파티클 그리기
 
 void CRenderer::Render_FinlaOIT() //파티클 그린 타겟 병합
 {
-	
+
 	if (m_isBOF)
 	{
-		if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MTR_BOF"),nullptr,false)))
+		if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MTR_BOF"), nullptr, false)))
 			return;
 	}
 	else
@@ -1915,12 +1915,12 @@ void CRenderer::Render_Debug()
 			return;
 	}
 
-		if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_Effect"), m_pShader, m_pVIBuffer)))
-			return;
+	if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_Effect"), m_pShader, m_pVIBuffer)))
+		return;
 	//	if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_Blur_X"), m_pShader, m_pVIBuffer)))
 	//		return;
-		if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_Blur_Y"), m_pShader, m_pVIBuffer)))
-			return;
+	if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_Blur_Y"), m_pShader, m_pVIBuffer)))
+		return;
 	if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_Accum"), m_pShader, m_pVIBuffer)))
 		return;
 	if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_RimLight"), m_pShader, m_pVIBuffer)))
@@ -1932,7 +1932,7 @@ void CRenderer::Render_Debug()
 	if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_Decals"), m_pShader, m_pVIBuffer)))
 		return;
 
-	
+
 }
 #endif // DEBUG
 
