@@ -47,6 +47,7 @@ private:
     void    Return_PrevWorld(const _float& fTimeDelta);
     void    Reset_RetureVariables();            // 관련 변수 초기화 함수
 
+    void    Play_FovLerp(const _float& fTimeDelta);
 
 public:
     void Store_PrevMatrix() {

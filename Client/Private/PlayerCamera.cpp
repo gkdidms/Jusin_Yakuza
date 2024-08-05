@@ -89,7 +89,10 @@ void CPlayerCamera::Tick(const _float& fTimeDelta)
 		m_pColliderCom->Tick(m_pTransformCom->Get_WorldMatrix());
 
 		// 카메라 변환 선형보간
-		Return_PrevWorld(fTimeDelta);
+		//Return_PrevWorld(fTimeDelta);
+
+		if(m_isReturn)
+			Play_FovLerp(fTimeDelta);
 
 		__super::Tick(fTimeDelta);
 	}
@@ -347,6 +350,27 @@ void CPlayerCamera::Reset_RetureVariables()
 	m_fElapsedTime = 0.0f; // 경과 시간
 	m_fTotalLerpTime = 0.5f; // 보간에 걸리는 총 시간 (초 단위)
 	m_fStartFov = 0.0f; // 보간에 걸리는 총 시간 (초 단위)
+}
+
+void CPlayerCamera::Play_FovLerp(const _float& fTimeDelta)
+{
+	// 경과 시간 업데이트
+	m_fElapsedTime += fTimeDelta;
+	m_fLerpRatio = m_fElapsedTime / m_fTotalLerpTime;
+
+	// 보간 비율이 1을 초과하지 않도록 제한
+	if (m_fLerpRatio >= 1.0f)
+	{
+		m_fLerpRatio = 1.0f;
+		m_isReturn = false; // 보간 완료
+	}
+
+	m_fFovY = LerpFloat(m_fStartFov, m_fDefaultFovY, m_fLerpRatio);
+	// 여기서 false가 나온다는것은, 완료 이후라는 것으로 초기화해줘야한다.
+	if (!m_isReturn)
+	{
+		Reset_RetureVariables();
+	}
 }
 
 HRESULT CPlayerCamera::Add_Components()
