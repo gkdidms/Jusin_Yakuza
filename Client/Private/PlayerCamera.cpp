@@ -177,6 +177,7 @@ void CPlayerCamera::Compute_View_During_Collision(const _float& fTimeDelta)
 	{
 		if (false == m_bBlock)
 		{
+			// 계속 충돌 위치 바뀌지 않게 지정해주기
 			m_vLatestCollisionPos = vCamPosition;
 		}
 		m_bBlock = true;
@@ -194,8 +195,6 @@ void CPlayerCamera::Compute_View_During_Collision(const _float& fTimeDelta)
 	{
 		// 고정 위치 구하기
 		m_pCollisionManager->Check_Map_Collision_Using_Position(m_pColliderCom, m_vLatestCollisionPos, vCollisionPos);
-
-
 
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, vCollisionPos);
 
