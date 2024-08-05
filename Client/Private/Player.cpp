@@ -418,6 +418,7 @@ HRESULT CPlayer::Render()
 
 		_bool isRS = true;
 		_bool isRD = true;
+		_bool isRM = true;
 
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RSTexture", i, aiTextureType_SPECULAR)))
 			isRS = false;
@@ -425,8 +426,11 @@ HRESULT CPlayer::Render()
 
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RDTexture", i, aiTextureType_OPACITY)))
 			isRD = false;
-
 		m_pShaderCom->Bind_RawValue("g_isRD", &isRD, sizeof(_bool));
+
+		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RMTexture", i, aiTextureType_METALNESS)))
+			isRM = false;
+		m_pShaderCom->Bind_RawValue("g_isRM", &isRM, sizeof(_bool));
 
 		if (pMesh->Get_AlphaApply())
 			m_pShaderCom->Begin(1);     //ºí·£µå

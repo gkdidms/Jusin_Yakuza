@@ -43,6 +43,7 @@ private:
     _float m_fCamDistance = { 4.f };
 
     _int m_iTargetIndex = { 0 };
+    _float m_fHeight = { 2.f };
 
 private:
     void Targeting(const _float& fTimeDelta);

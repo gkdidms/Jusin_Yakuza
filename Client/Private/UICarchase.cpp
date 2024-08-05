@@ -37,6 +37,22 @@ HRESULT CUICarchase::Update_TargetMatrix(_uint iIndex, _matrix TargetMatrix, _fl
     return S_OK;
 }
 
+HRESULT CUICarchase::Remove_Target(_uint iIndex)
+{
+    CARCCHASE_UI_DESC* pTarget = Find_TargetUI(iIndex);
+    if (nullptr == pTarget)
+        return E_FAIL;
+
+    Safe_Release(pTarget->HPBarBackUI);
+    Safe_Release(pTarget->HPBarUI);
+    Safe_Release(pTarget->pMonsterAddr);
+    Safe_Release(pTarget->TargetingUI);
+
+    m_Targets.erase(iIndex);
+
+    return S_OK;
+}
+
 HRESULT CUICarchase::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg)
 {
     if (FAILED(__super::Initialize(pDevice, pContext, pArg)))
@@ -196,8 +212,10 @@ void CUICarchase::Coll_Aim()
                 && fAimMinY > fTargetMinY && fAimMaxY < fTargetMaxY)
             {
                 //Ãæµ¹
-                pTarget.second.pMonsterAddr->Set_Coll();
                 pTarget.second.TargetingUI->Show_UI();
+                pTarget.second.pMonsterAddr->Set_Coll();
+                
+                return;
             }
         }
     }

@@ -32,6 +32,7 @@ public:
     vector<CCell*> Get_Cells() { return m_Cells; }
     vector<ROUTE_IO> Get_RouteIndexs(_int iIndex);
     _uint Get_WaypointIndex() { return m_iCurrentWayPointIndex; }
+    _vector Get_CurrentWaypointPos() { return XMLoadFloat4(&m_Routes[m_iCurrentLine][m_iCurrentWayPointIndex].vPosition); }
 
 public:
     virtual HRESULT Initialize_Prototype(); // Tool¿ë

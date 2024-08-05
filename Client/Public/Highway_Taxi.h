@@ -22,6 +22,10 @@ private:
     virtual ~CHighway_Taxi() = default;
 
 public:
+    _uint Get_CurrentWaypointIndex();
+    _uint Get_WaypointSize(); // 플레이어가 있는 위치의 웨이포인트 갯수
+
+public:
     void Set_NavigationRouteIndex(_uint iLine);
     void Set_Dir(_uint iStageDir);
 
