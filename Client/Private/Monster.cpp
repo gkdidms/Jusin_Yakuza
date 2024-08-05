@@ -355,7 +355,7 @@ void CMonster::Late_Tick(const _float& fTimeDelta)
 	//ÄÃ¸µ
 	if (m_pGameInstance->isIn_WorldFrustum(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 1.5f))
 	{
-		//m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
+		m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
 
 		if (!m_isSynchronizing)
 			m_pCollisionManager->Add_ImpulseResolution(this);

@@ -13,8 +13,19 @@ CHighway_Taxi::CHighway_Taxi(const CHighway_Taxi& rhs)
 {
 }
 
+_uint CHighway_Taxi::Get_CurrentWaypointIndex()
+{
+	return m_pNavigationCom->Get_WaypointIndex();
+}
+
+_uint CHighway_Taxi::Get_WaypointSize()
+{
+	return m_pNavigationCom->Get_RouteIndexs(m_iNaviRouteNum).size();
+}
+
 void CHighway_Taxi::Set_NavigationRouteIndex(_uint iLine)
 {
+	m_iNaviRouteNum = iLine;
 	m_pNavigationCom->Set_NavigationRouteIndex(iLine);
 }
 

@@ -35,6 +35,7 @@ public: // 튜토리얼 용
 public: // 카체이스 용
     HRESULT Add_Target(_uint iIndex, class CCarChase_Monster* pMonster);
     HRESULT Update_TargetMatrix(_uint iIndex, _matrix TargetMatrix, _float iHP);
+    HRESULT Remove_Target(_uint iIndex);
 
 public:
     //자신이 만들 ui씬은 미리 할당(수동)

@@ -53,8 +53,6 @@ Texture2D g_AmbientTexture;
 Texture2D g_BackBlurTexture;
 Texture2D g_NonLightNonBlurTexture;
 
-
-
 //±×¸²ÀÚ
 Texture2DArray g_LightDepthTextureArray : register(t0);
 bool g_isArray;

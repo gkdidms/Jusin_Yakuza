@@ -62,7 +62,7 @@ void CCollision_Manager::Tick()
     Enemy_Hit_Collision();
     Player_Hit_Collision();
 
-    ItemCollision(); // 아이템 충돌 체크
+    //ItemCollision(); // 아이템 충돌 체크
 
     if (m_pGameInstance->GetKeyState(DIK_Z) == TAP)
 #ifdef _DEBUG
@@ -88,7 +88,7 @@ void CCollision_Manager::ImpulseResolution()
             _vector vDistance = vPosition_Object_I - vPosition_Object_J;
 
             _float fDistance = XMVectorGetX(XMVector3Length(vDistance));
-            if (0.5f > fDistance)
+            if (1.f > fDistance)
                 m_ImpulseResolutionObjects[i]->ImpulseResolution(m_ImpulseResolutionObjects[j], 2.f);
         }
     }
@@ -554,10 +554,9 @@ _bool CCollision_Manager::Check_Map_Collision_Using_Position(CCollider* pCollide
     return false;
 }
 
-CLandObject* CCollision_Manager::Get_Near_LandObject(CLandObject* pObject, vector<CGameObject*>& pObjects)
+CGameObject* CCollision_Manager::Get_Near_Object(CGameObject* pObject, vector<CGameObject*>& pObjects, _float fDistance)
 {
     // 5거리 이내에 있는 애들만 검색한다.
-    _float fDinstance = { 5.f };
     CLandObject* pValue = { nullptr };
 
     for (auto& pTarget : pObjects)
@@ -568,9 +567,9 @@ CLandObject* CCollision_Manager::Get_Near_LandObject(CLandObject* pObject, vecto
         _vector vBasePosition = pObject->Get_TransformCom()->Get_State(CTransform::STATE_POSITION);
         _vector vTargetPosition = pTarget->Get_TransformCom()->Get_State(CTransform::STATE_POSITION);
 
-        if (XMVectorGetX(XMVector3Length(vBasePosition - vTargetPosition)) < fDinstance)
+        if (XMVectorGetX(XMVector3Length(vBasePosition - vTargetPosition)) < fDistance)
         {
-            fDinstance = XMVectorGetX(XMVector3Length(vBasePosition - vTargetPosition));
+            fDistance = XMVectorGetX(XMVector3Length(vBasePosition - vTargetPosition));
             pValue = static_cast<CLandObject*>(pTarget);
         }
     }

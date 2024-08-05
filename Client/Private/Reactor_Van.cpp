@@ -119,4 +119,5 @@ CGameObject* CReactor_Van::Clone(void* pArg)
 void CReactor_Van::Free()
 {
 	__super::Free();
+	
 }

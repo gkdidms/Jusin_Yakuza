@@ -48,6 +48,16 @@ _bool CCarChase::Tick()
 _bool CCarChase::Start()
 {
 	vector<STAGE_MONSTER_INFO> MonsterInfo = m_Info.MonsterInfo;
+	CHighway_Taxi* pPlayer = dynamic_cast<CHighway_Taxi*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Taxi"), 0));
+
+	//몬스터의 위치는 플레이어 웨이포인트 인덱스의 -10만큼
+	_int iWaypoint = pPlayer->Get_CurrentWaypointIndex() - 1;
+
+	if (iWaypoint < 0)
+	{
+		//0보다 작다면
+		iWaypoint = pPlayer->Get_WaypointSize() + iWaypoint;
+	}
 
 	for (auto& iter : MonsterInfo)
 	{
@@ -59,6 +69,7 @@ _bool CCarChase::Start()
 		Desc.iLineDir = iter.iMonsterDir; // 몬스터 앞, 옆, 뒤 방향
 		Desc.iObjectIndex = iter.iObjectIndex;
 		Desc.iNaviRouteNum = iter.iMonsterLine;
+		Desc.iWaypointIndex = iWaypoint;
 		memcpy(Desc.iMonsterWeaponType, iter.iWeaponType, sizeof(_int) * 2);
 
 		wstring strGameObject = TEXT("");
@@ -74,8 +85,6 @@ _bool CCarChase::Start()
 			return false;
 	}
 
-	CHighway_Taxi* pPlayer = dynamic_cast<CHighway_Taxi*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Taxi"), 0));
-	
 	pPlayer->Set_Dir(m_Info.iStageDir);
 
 	if (m_Info.iPlayerLine != m_Info.iPrePlayerLine)

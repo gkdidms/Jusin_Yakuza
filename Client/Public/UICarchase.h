@@ -21,6 +21,7 @@ protected:
 
 public:
     HRESULT Update_TargetMatrix(_uint iIndex, _matrix TargetMatrix, _float iHP);
+    HRESULT Remove_Target(_uint iIndex);
 
 public:
     virtual HRESULT Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg) override;

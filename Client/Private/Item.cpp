@@ -191,20 +191,30 @@ void CItem::Tick(const _float& fTimeDelta)
 		offsetMatrix.r[1] = XMVector3Normalize(offsetMatrix.r[1]);
 		offsetMatrix.r[2] = XMVector3Normalize(offsetMatrix.r[2]);
 
+		_matrix PlayerMatrix, ParentMatrix;
+		PlayerMatrix = ParentMatrix = XMMatrixIdentity();
+
+		if (nullptr != m_pPlayerMatrix)
+			PlayerMatrix = XMLoadFloat4x4(m_pPlayerMatrix);
+
 		if (nullptr != m_vParentMatrix)
-			XMStoreFloat4x4(&m_WorldMatrix, offsetMatrix * XMLoadFloat4x4(m_vParentMatrix) * XMLoadFloat4x4(m_pPlayerMatrix));
-		else
-			XMStoreFloat4x4(&m_WorldMatrix, offsetMatrix * XMLoadFloat4x4(m_pPlayerMatrix));
+			ParentMatrix = XMLoadFloat4x4(m_vParentMatrix);
+
+		XMStoreFloat4x4(&m_WorldMatrix, /*offsetMatrix **/ ParentMatrix * PlayerMatrix);
 
 		XMMATRIX worldMatrix = XMLoadFloat4x4(&m_WorldMatrix);
 		m_pTransformCom->Set_WorldMatrix(worldMatrix);
 	}
 	else
 	{
-		XMStoreFloat4x4(&m_WorldMatrix, m_pTransformCom->Get_WorldMatrix());
+		//XMStoreFloat4x4(&m_WorldMatrix, m_pTransformCom->Get_WorldMatrix());
+		//m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(&m_WorldMatrix));
 	}
 
-	_matrix		worldMatrix = XMLoadFloat4x4(&m_WorldMatrix);
+	if (m_isThrowing)
+		Throwing(fTimeDelta);	
+
+	_matrix		worldMatrix = m_pTransformCom->Get_WorldMatrix();
 
 #ifdef _DEBUG
 	for (auto& iter : m_vColliders)
@@ -375,8 +385,55 @@ CCollider* CItem::Get_Collider()
 	return dynamic_cast<CCollider*>(*m_vColliders.begin());
 }
 
+_bool CItem::Decrease_Life()
+{
+	m_iLife--;
+
+	// 감소 이후 생명이 0보다 작아진다면 오브젝트 사망처리
+	if (0 > m_iLife)
+	{
+		Set_ObjectDead();
+		return false;
+	}
+
+	return true;
+}
+
+void CItem::Throw_On(THROW_INFO_DESC& Desc)
+{
+	if (m_isThrowing) return;
+
+	m_eItemMode = ITEM_IDLE;
+
+	m_isThrowing = true;
+	m_ThrowInfo.fThrowSpeed = Desc.fThrowSpeed;
+	m_ThrowInfo.vThrowDir = Desc.vThrowDir;
+
+	m_pPlayerMatrix = nullptr;
+	m_vParentMatrix = nullptr;
+}
+
+void CItem::Throwing(const _float& fTimeDelta)
+{
+	m_fThrowTimer += fTimeDelta;
+	if (THROW_TIME <= m_fThrowTimer)
+	{
+		m_fThrowTimer = 0.f;
+		m_isThrowing = false;
+
+
+		// TODO: 오브젝트를 죽음처리하면 디졸브를 실행해야한다.
+		Set_ObjectDead();
+	}
+
+	m_pTransformCom->Go_Move_Custum(m_ThrowInfo.vThrowDir, m_ThrowInfo.fThrowSpeed, fTimeDelta);
+	//m_pTransformCom->Go_Straight(fTimeDelta);
+}
+
 void CItem::Set_Item_Mode()
 {
+	if (nullptr == m_pPlayerMatrix) return;
+
 	_vector vPlayerPosition;
 	memcpy(&vPlayerPosition, m_pPlayerMatrix->m[CTransform::STATE_POSITION], sizeof(_float4));
 

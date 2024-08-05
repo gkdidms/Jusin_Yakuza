@@ -20,6 +20,7 @@ public:
         _int             iNaviRouteNum;
         _uint iStageDir;
         _uint iLineDir;
+        _int iWaypointIndex;
         
         _int iMonsterWeaponType[2];
     }HIGHWAY_IODESC;
@@ -60,6 +61,7 @@ protected:
     _uint m_iLineDir = { DIR_END };
 
     _int     m_iNaviRouteNum = { 0 };
+    _int m_iWaypointIndex = { -1 };
     _float m_fSpeed = { 40.f };
 
 
