@@ -57,7 +57,7 @@ HRESULT CLevel_Test::Initialize()
 
 	/* Å¬¶ó ÆÄ½Ì */
 	m_pFileTotalManager->Set_MapObj_In_Client(7, LEVEL_TEST);
-	m_pFileTotalManager->Set_Lights_In_Client(0);
+	m_pFileTotalManager->Set_Lights_In_Client(90);
 	m_pFileTotalManager->Set_Collider_In_Client(0, LEVEL_TEST);
 	m_pFileTotalManager->Set_Trigger_In_Client(99, LEVEL_TEST);
 	
