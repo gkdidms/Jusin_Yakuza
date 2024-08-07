@@ -8,61 +8,34 @@
 CKiryu_KRC_PickUp::CKiryu_KRC_PickUp()
 	:CBehaviorAnimation{}
 {
-	/*
-		[339]	[p_krc_wpc_atk_pickup_l]
-		[340]	[p_krc_wpc_atk_pickup_r]
-		[341]	[p_krc_wpc_atk_tackle_sp_en]
-		[342]	[p_krc_wpc_atk_tackle_sp_lp]
-		[343]	[p_krc_wpc_atk_tackle_sp_st]
-		[344]	[p_krc_wpc_cmb_01]
-		[345]	[p_krc_wpc_cmb_01_fin]
-		[346]	[p_krc_wpc_cmb_01_pickup_l]
-		[347]	[p_krc_wpc_cmb_01_pickup_r]
-		[348]	[p_krc_wpc_cmb_02]
-		[349]	[p_krc_wpc_cmb_02_fin]
-		[350]	[p_krc_wpc_cmb_02_pickup_l]
-		[351]	[p_krc_wpc_cmb_02_pickup_r]
-		[352]	[p_krc_wpc_cmb_03]
-		[353]	[p_krc_wpc_cmb_03_pickup_l]
-		[354]	[p_krc_wpc_cmb_03_pickup_r]
-		[355]	[p_krc_wpc_guard]
-		[356]	[p_krc_wpc_guard_en]
-		[357]	[p_krc_wpc_guard_lp]
-		[358]	[p_krc_wpc_guard_st]
-		[359]	[p_krc_wpc_shift_b]
-		[360]	[p_krc_wpc_shift_bl]
-		[361]	[p_krc_wpc_shift_br]
-		[362]	[p_krc_wpc_shift_f]
-		[363]	[p_krc_wpc_shift_fl]
-		[364]	[p_krc_wpc_shift_fr]
-		[365]	[p_krc_wpc_shift_l]
-		[366]	[p_krc_wpc_shift_r]
-		[367]	[p_krc_wpc_stand]
-		[368]	[p_krc_wpc_stand_btl_en]
-		[369]	[p_krc_wpc_stand_btl_lp]
-		[370]	[p_krc_wpc_stand_btl_st]
-		[371]	[p_krc_wpc_throw_sp]
-	*/
+	m_AnimationIndices.push_back(742);	// 0 [742]	[p_wpc_pickup]			// 직접 주웠을 때
+	m_AnimationIndices.push_back(367);	// 1 [367]	[p_krc_wpc_stand]
 
-	m_AnimationIndices.push_back(742);	// 0 [742]	[p_wpc_pickup]
-	m_AnimationIndices.push_back(751);	// 1 [751]	[p_wpc_stand]
+	// 이동
+	m_AnimationIndices.push_back(362);	// 2 [362]	[p_krc_wpc_shift_f]
 
-	m_AnimationIndices.push_back(733);	// 2 [733]	[p_wpc_cmb_01]
-	m_AnimationIndices.push_back(734);	// 3 [734]	[p_wpc_cmb_02]
-	m_AnimationIndices.push_back(735);	// 4 [735]	[p_wpc_cmb_03]
+	//이미 들고있는 상태에서의 콤보
+	m_AnimationIndices.push_back(344);	// 3 [344]	[p_krc_wpc_cmb_01]
+	m_AnimationIndices.push_back(348);	// 4 [348]	[p_krc_wpc_cmb_02]
+	m_AnimationIndices.push_back(352);	// 5 [352]	[p_krc_wpc_cmb_03]
+	m_AnimationIndices.push_back(371);	// 6 [371]	[p_krc_wpc_throw_sp]
 
-	m_AnimationIndices.push_back(743);	// 5 [743]	[p_wpc_shift_b]
-	m_AnimationIndices.push_back(744);	// 6 [744]	[p_wpc_shift_bl]
-	m_AnimationIndices.push_back(745);	// 7 [745]	[p_wpc_shift_br]
-	m_AnimationIndices.push_back(746);	// 8 [746]	[p_wpc_shift_f]
-	m_AnimationIndices.push_back(747);	// 9 [747]	[p_wpc_shift_fl]
-	m_AnimationIndices.push_back(748);	// 10 [748]	[p_wpc_shift_fr]
-	m_AnimationIndices.push_back(749);	// 11 [749]	[p_wpc_shift_l]
-	m_AnimationIndices.push_back(750);	// 12 [750]	[p_wpc_shift_r]
+	//이미 들고있는 상태에서의 콤보
+	m_AnimationIndices.push_back(345);	// 7 [345]	[p_krc_wpc_cmb_01_fin]
+	m_AnimationIndices.push_back(349);	// 8 [349]	[p_krc_wpc_cmb_02_fin]
 
-	m_AnimationIndices.push_back(755);	// 13 [755]	[p_wpc_throw]
+	// 공격하면서 주웠을 때
+	m_AnimationIndices.push_back(339);	// 9 [339]	[p_krc_wpc_atk_pickup_l]
+	m_AnimationIndices.push_back(346);	// 10 [346]	[p_krc_wpc_cmb_01_pickup_l]
+	m_AnimationIndices.push_back(350);	// 11 [350]	[p_krc_wpc_cmb_02_pickup_l]
+	m_AnimationIndices.push_back(353);	// 12 [353]	[p_krc_wpc_cmb_03_pickup_l]
 
-	m_AnimationIndices.push_back(34);	// Damage
+	m_AnimationIndices.push_back(340);	// 13 [340]	[p_krc_wpc_atk_pickup_r]
+	m_AnimationIndices.push_back(347);	// 14 [347]	[p_krc_wpc_cmb_01_pickup_r]
+	m_AnimationIndices.push_back(351);	// 15 [351]	[p_krc_wpc_cmb_02_pickup_r]
+	m_AnimationIndices.push_back(354);	// 16 [354]	[p_krc_wpc_cmb_03_pickup_r]
+
+	m_AnimationIndices.push_back(34);	// 17 Damage
 }
 
 void CKiryu_KRC_PickUp::Tick(const _float& fTimeDelta)
@@ -79,12 +52,13 @@ void CKiryu_KRC_PickUp::Tick(const _float& fTimeDelta)
 		}
 	}
 
+	//KRC 픽업 애니메이션은 이미 손 애니메이션이 들어가있어서 기존에 적용되어있는걸 제거
+	m_pPlayer->Off_Separation_Hand();
+
 	switch (m_eAnimState)
 	{
 	case ANIM_START:
 	{
-		m_pPlayer->Set_HandAnimIndex(CPlayer::HAND_HAKO);
-		m_pPlayer->On_Separation_Hand();
 		if (Changeable_Combo_Animation())
 		{
 			m_eAnimState = ANIM_LOOP;
@@ -94,38 +68,34 @@ void CKiryu_KRC_PickUp::Tick(const _float& fTimeDelta)
 		break;
 	}
 	case ANIM_LOOP:
-		m_pPlayer->Set_HandAnimIndex(CPlayer::HAND_HAKO);
-		m_pPlayer->On_Separation_Hand();
 		Move_KeyInput(fTimeDelta);
 		Attack_KeyInput(fTimeDelta);
 
 
 		break;
 	case ANIM_ONCE:
-		m_pPlayer->Set_HandAnimIndex(CPlayer::HAND_HAKO);
-		m_pPlayer->On_Separation_Hand();
 		Attack_KeyInput(fTimeDelta);
 
-		if (m_iCurrentIndex == 13)
+		if (m_eBehaviorState == ATTACK)
 		{
-			// 던지는 모션일 때, 애니메이션이 일정 이상 실행된 뒤, 플레이어가 바라보는 방향으로 날아간다.
-			if (Changeable_Combo_Animation())
+			if (m_iComboCount == 3)
 			{
-				_float4 vDir;
-				XMStoreFloat4(&vDir, m_pPlayer->Get_TransformCom()->Get_State(CTransform::STATE_LOOK));
+				if (Changeable_Combo_Animation())
+				{
+					_float4 vDir;
+					XMStoreFloat4(&vDir, m_pPlayer->Get_TransformCom()->Get_State(CTransform::STATE_LOOK));
 
-				CItem::THROW_INFO_DESC Desc{
-					vDir, 25.f
-				};
+					CItem::THROW_INFO_DESC Desc{
+						vDir, 25.f
+					};
 
-				CItem* pItem = m_pPlayer->Get_CurrentItem();
-				pItem->Throw_On(Desc);
+					CItem* pItem = m_pPlayer->Get_CurrentItem();
+					pItem->Throw_On(Desc);
+					m_isStop = true;
+				}
 			}
 		}
 
-		break;
-	case ANIM_END:
-		// 놓치는게 end (p_kru_sync_neck_off)
 		break;
 	default:
 		break;
@@ -189,13 +159,19 @@ void CKiryu_KRC_PickUp::Reset()
 
 void CKiryu_KRC_PickUp::Combo_Count(_bool isFinAction)
 {
-	m_iCurrentIndex = 2;
+	m_iCurrentIndex = 3;
+
+	m_eBehaviorState = ATTACK;
+
 	if (Changeable_Combo_Animation())
 	{
 		m_iComboCount++;
 
-		if (m_iComboCount > 2)
+		if (m_iComboCount > 3)
+		{
 			m_iComboCount = 0;
+			m_isStop = true;
+		}
 	}
 }
 
@@ -208,35 +184,44 @@ void CKiryu_KRC_PickUp::Stop()
 void CKiryu_KRC_PickUp::Setting_Value(void* pValue)
 {
 	// 어깨 이후로 뼈를 분리해서 어깨 이후뼈는 그대로 유지하고, 그 전 뼈들은 히트모션에 맞는 애니메이션을 꺼내와서 실행하는 식으로 해야한다
-	PICK_UP_HIT_DESC* pDesc = static_cast<PICK_UP_HIT_DESC*>(pValue);
+	KRC_PICK_UP_HIT_DESC* pDesc = static_cast<KRC_PICK_UP_HIT_DESC*>(pValue);
 
 	m_pPlayer->Separation_Bone("mune_c_n", CPlayer::DEFAULT_ANIM, false);		// 기존뼈들을 현재 들고있는 모션대로 돌린다.
 	//m_pPlayer->Separation_Bone("ude1_r_n", CPlayer::DEFAULT_ANIM);
 
-	m_AnimationIndices[14] = pDesc->iHitAnimIndex;
-	m_iCurrentIndex = 14;		// 모델에서 돌리는 애니메이션 
-
+	m_AnimationIndices[17] = pDesc->iHitAnimIndex;
+	m_iCurrentIndex = 17;		// 모델에서 돌리는 애니메이션 
+	m_iComboCount = 0;
 
 	m_isHit = true;
 }
 
 void CKiryu_KRC_PickUp::Event(void* pValue)
 {
+	KRC_PICK_UP_DESC* pDesc = static_cast<KRC_PICK_UP_DESC*>(pValue);
 
+	m_iComboCount = pDesc->iComboCount;
+	Play_PickupCombo(pDesc->isLeft);
 }
 
 _bool CKiryu_KRC_PickUp::Changeable_Combo_Animation()
 {
 	_float fInterval = 0.4f;
 
-	if (m_iComboCount > 1)
-		fInterval = 0.8f;
+	if (m_iComboCount == 2)
+		fInterval = 0.6f;
 
-	if(m_iCurrentIndex == 13)
-		fInterval = 0.4f;
+	if (m_eBehaviorState == ATTACK)
+	{
+		if (m_iComboCount == 3)
+		{
+			fInterval = 0.3f;
+		}
+	}
 
 	if (Checked_Animation_Ratio(fInterval))
 	{
+		m_eBehaviorState = NONE_ATTAK;
 		m_isShaked = false;
 		return true;
 	}
@@ -246,7 +231,7 @@ _bool CKiryu_KRC_PickUp::Changeable_Combo_Animation()
 
 void CKiryu_KRC_PickUp::Shaking()
 {
-	if (m_iCurrentIndex == 13)
+	if (m_iCurrentIndex == 6)
 	{
 		if (!m_isShaked && Checked_Animation_Ratio(0.4))
 		{
@@ -274,19 +259,27 @@ void CKiryu_KRC_PickUp::Play_Hit()
 	}
 }
 
-void CKiryu_KRC_PickUp::Move_KeyInput(const _float& fTimeDelta)
+void CKiryu_KRC_PickUp::Play_PickupCombo(_bool isLeft)
 {
 	/*
-	* 	m_AnimationIndices.push_back(743);	// 5 [743]	[p_wpc_shift_b]
-		m_AnimationIndices.push_back(744);	// 6 [744]	[p_wpc_shift_bl]
-		m_AnimationIndices.push_back(745);	// 7 [745]	[p_wpc_shift_br]
-		m_AnimationIndices.push_back(746);	// 8 [746]	[p_wpc_shift_f]
-		m_AnimationIndices.push_back(747);	// 9 [747]	[p_wpc_shift_fl]
-		m_AnimationIndices.push_back(748);	// 10 [748]	[p_wpc_shift_fr]
-		m_AnimationIndices.push_back(749);	// 11 [749]	[p_wpc_shift_l]
-		m_AnimationIndices.push_back(750);	// 12 [750]	[p_wpc_shift_r]
-	*/
+	m_AnimationIndices.push_back(339);	// 9 [339]	[p_krc_wpc_atk_pickup_l]
+	m_AnimationIndices.push_back(346);	// 10 [346]	[p_krc_wpc_cmb_01_pickup_l]
+	m_AnimationIndices.push_back(350);	// 11 [350]	[p_krc_wpc_cmb_02_pickup_l]
+	m_AnimationIndices.push_back(353);	// 12 [353]	[p_krc_wpc_cmb_03_pickup_l]
 
+	m_AnimationIndices.push_back(340);	// 13 [340]	[p_krc_wpc_atk_pickup_r]
+	m_AnimationIndices.push_back(347);	// 14 [347]	[p_krc_wpc_cmb_01_pickup_r]
+	m_AnimationIndices.push_back(351);	// 15 [351]	[p_krc_wpc_cmb_02_pickup_r]
+	m_AnimationIndices.push_back(354);	// 16 [354]	[p_krc_wpc_cmb_03_pickup_r]
+	*/
+	if (isLeft)
+		m_iCurrentIndex = 9;
+	else
+		m_iCurrentIndex = 13;
+}
+
+void CKiryu_KRC_PickUp::Move_KeyInput(const _float& fTimeDelta)
+{
 	_bool isMove = false;
 
 	if (m_pGameInstance->GetKeyState(DIK_W) == HOLD)
@@ -344,7 +337,7 @@ void CKiryu_KRC_PickUp::Move_KeyInput(const _float& fTimeDelta)
 	}
 
 	if (isMove && !m_isHit)
-		m_iCurrentIndex = 8;
+		m_iCurrentIndex = 2;
 	else if(!m_isHit)
 		m_iCurrentIndex = 1;
 }
@@ -355,17 +348,6 @@ void CKiryu_KRC_PickUp::Attack_KeyInput(const _float& fTimeDelta)
 	{
 		Combo_Count();
 		m_eAnimState = ANIM_ONCE;
-	}
-
-	if (m_pGameInstance->GetKeyState(DIK_Q) == TAP)
-	{
-		if (m_iComboCount <= 0 && Changeable_Combo_Animation())
-		{
-			m_iComboCount = 0;
-			m_iCurrentIndex = 13;
-			m_eAnimState = ANIM_ONCE;
-			m_isStop = true;
-		}
 	}
 }
 

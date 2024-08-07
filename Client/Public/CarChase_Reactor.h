@@ -47,6 +47,7 @@ protected:
 protected:
     _bool m_isAnimLoop = { false };
     _bool m_isStop = { false };
+    _bool m_isStart = { true };
     _uint m_iState = { 0 };
     _float m_fChangeInterval = { 4.f };
 
@@ -63,6 +64,8 @@ protected:
     _int     m_iNaviRouteNum = { 0 };
     _int m_iWaypointIndex = { -1 };
     _float m_fSpeed = { 40.f };
+    _float m_fMaxSpeed = { 55.f };
+    _float m_fMinSpeed = { 40.f };
 
 
 protected:

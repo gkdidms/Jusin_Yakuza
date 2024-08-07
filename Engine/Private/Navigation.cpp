@@ -68,8 +68,11 @@ HRESULT CNavigation::Initialize(void* pArg)
         m_iCurrentWayPointIndex = pDesc->iWayPointIndex;
         m_iPreWayPointIndex = m_iCurrentWayPointIndex;
         if (m_iCurrentWayPointIndex == -1) Find_WayPointIndex(pDesc->vPosition);
+
+        m_iCurrentIndex = Find_PlayerMonster_Index(XMLoadFloat4(&m_Routes[m_iCurrentLine][m_iCurrentWayPointIndex].vPosition));
     }
 
+    
     return S_OK;
 }
 
@@ -227,7 +230,7 @@ void CNavigation::Find_WayPointIndex(_vector vPosition)
 {
     //포지션으로 웨이포인트 인덱스 만들기
     _float fMinDistance = 0.f;
-    _uint iIndex = 0;
+    _int iIndex = 0;
     for (auto& vWayPoint : m_Routes[m_iCurrentLine])
     {
         _float fDistance = XMVectorGetX(XMVector3Length(XMLoadFloat4(&vWayPoint.vPosition) - vPosition));
@@ -317,13 +320,11 @@ _bool CNavigation::isMove(_fvector vMovePos)
     }
 }
 
-_vector CNavigation::Compute_WayPointDir(_vector vPosition, const _float& fTimeDelta)
+_vector CNavigation::Compute_WayPointDir(_vector vPosition, const _float& fTimeDelta, _bool isStart)
 {
     //현재 플레이어의 위치에서 다음 웨이포인트까지의 방향벡터를 구한다.
-    _vector vCurrentWayPoint = XMLoadFloat4(&m_Routes[m_iCurrentLine][m_iCurrentWayPointIndex].vPosition);
 
-    //XMStoreFloat4(vMovePos, XMVectorLerp(vPosition, vCurrentWayPoint, fTimeDelta * 20.f));
-    
+    _vector vCurrentWayPoint = XMLoadFloat4(&m_Routes[m_iCurrentLine][m_iCurrentWayPointIndex].vPosition);
     _vector vDir = vCurrentWayPoint - vPosition;
     _float fDistance = XMVectorGetX(XMVector3Length(vDir));
 
@@ -334,27 +335,27 @@ _vector CNavigation::Compute_WayPointDir(_vector vPosition, const _float& fTimeD
     }
     else
     {
+        //방향벡터 선형보간
         m_fTime += fTimeDelta * 6.f;
         vResultDir = XMVectorLerp(m_vPreDir, m_vNextDir, m_fTime >= 1.f ? 1.f : m_fTime);
     }
 
-    //특정 거리보다 작다면 다음 웨이포인트로 이동한다.
-    if (fDistance <= m_fMaxDistance)
+    if (fDistance <= (isStart ? 20.f : m_fMaxDistance))
     {
         m_iCurrentWayPointIndex++;
 
-        if (fDistance == 0.f)
-        {
-            return Compute_WayPointDir(vPosition, fTimeDelta);
-        }
         // 인덱스가 배열의 길이보다 크다면 다시 초기값으로 돌아간다.
         if (m_iCurrentWayPointIndex >= m_Routes[m_iCurrentLine].size())
             m_iCurrentWayPointIndex = 0.f;
 
+        if (fDistance == 0.f)
+        {
+            return Compute_WayPointDir(vPosition, fTimeDelta, isStart);
+        }
+
         m_vPreDir = XMVector3Normalize(vDir);
         m_vNextDir = XMVector3Normalize(XMLoadFloat4(&m_Routes[m_iCurrentLine][m_iCurrentWayPointIndex].vPosition) - XMLoadFloat4(&m_Routes[m_iCurrentLine][m_iPreWayPointIndex].vPosition));
         m_fTime = 0.f;
-
         m_iPreWayPointIndex = m_iCurrentWayPointIndex;
     }
 

@@ -151,7 +151,12 @@ void CKiryu_KRS_Attack::Combo_Count(_bool isFinAction)
 		if (static_cast<CMonster*>(pTargetObject)->isDown())
 			m_iComboCount = 10;
 	}
-}		
+}
+
+_bool CKiryu_KRS_Attack::IsFinishBlow()
+{
+	return 3 < m_iComboCount;
+}
 
 _bool CKiryu_KRS_Attack::Changeable_Combo_Animation()
 {

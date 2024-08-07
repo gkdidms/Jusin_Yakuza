@@ -17,22 +17,6 @@ CCarChaseCamera::CCarChaseCamera(const CCarChaseCamera& rhs)
 	Safe_AddRef(m_pSystemManager);
 }
 
-void CCarChaseCamera::Set_StageDir(_uint iDir)
-{
-	m_iStageDir = iDir;
-
-	if (iDir == DIR_L)
-		m_vDir = XMVectorSet(1.f, 0.f, 0.f, 0.f);
-	else if (iDir == DIR_R)
-		m_vDir = XMVectorSet(1.f, 0.f, 1.f, 0.f);
-	else if (iDir == DIR_F)
-		m_vDir = XMVectorSet(-1.f, 0.f, 0.f, 0.f);
-	else if (iDir == DIR_B)
-		m_vDir = XMVectorSet(-1.f, 0.f, 0.f, 0.f);
-
-
-}
-
 HRESULT CCarChaseCamera::Initialize_Prototype()
 {
 	return S_OK;

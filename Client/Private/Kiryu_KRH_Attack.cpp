@@ -148,6 +148,11 @@ void CKiryu_KRH_Attack::Setting_Value(void* pValue)
 	m_isPunch = *pIsPunch;
 }
 
+_bool CKiryu_KRH_Attack::IsFinishBlow()
+{
+	return 7 < m_iComboCount;
+}
+
 _bool CKiryu_KRH_Attack::Changeable_Combo_Animation()
 {
 	_float fInterval = 0.18f;

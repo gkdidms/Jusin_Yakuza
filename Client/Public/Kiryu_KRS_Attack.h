@@ -21,6 +21,8 @@ public:
 	virtual void Reset();
 	virtual void Combo_Count(_bool isFinAction = false) override;
 
+	_bool IsFinishBlow();
+
 private:
 	_bool Changeable_Combo_Animation();
 	void Shaking();

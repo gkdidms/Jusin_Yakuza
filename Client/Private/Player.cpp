@@ -26,6 +26,9 @@
 #include "Item.h"
 
 #pragma region 행동 관련 헤더들
+#include "Kiryu_KRS_Attack.h"
+#include "Kiryu_KRH_Attack.h"
+#include "Kiryu_KRC_Attack.h"
 #include "Kiryu_KRC_Hit.h"
 #include "Kiryu_KRH_Hit.h"
 #include "Kiryu_KRS_Hit.h"
@@ -34,6 +37,7 @@
 #include "Kiryu_KRS_Grab.h"
 #include "Kiryu_KRC_Grab.h"
 #include "Kiryu_KRS_PickUp.h"
+#include "Kiryu_KRC_PickUp.h"
 #pragma endregion
 
 CPlayer::CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -69,6 +73,11 @@ void CPlayer::Set_SeizeOff(_bool isOff)
 
 	//8번 Grab 공통
 	m_AnimationTree[m_eCurrentStyle].at(8)->Event(&isOff);
+}
+
+void CPlayer::Set_ItemOff()
+{
+	m_pTargetItem = nullptr;
 }
 
 HRESULT CPlayer::Initialize_Prototype()
@@ -125,8 +134,11 @@ void CPlayer::Tick(const _float& fTimeDelta)
 
 	// 배틀 시작 애니메이션 아닐 경우 타임델타를 1로 고정시켜준다.
 	// TODO: 다른곳에서 시간조절이 필요하다면 수정해야한다
-	if (m_iCurrentBehavior != (_uint)KRS_BEHAVIOR_STATE::BTL_START)
+	if (!m_isHitFreeze && m_iCurrentBehavior != (_uint)KRS_BEHAVIOR_STATE::BTL_START)
 		m_pGameInstance->Set_TimeSpeed(TEXT("Timer_60"), 1.f);
+
+	if (m_isHitFreeze)
+		HitFreeze_Timer(fTimeDelta);
 
 	if (m_pGameInstance->GetKeyState(DIK_UP) == TAP)
 	{
@@ -481,6 +493,30 @@ void CPlayer::Attack_Event(CGameObject* pHitObject, _bool isItem)
 				m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Setting_Value(&Desc);
 			}
 
+			if (m_iCurrentBehavior == (_uint)KRS_BEHAVIOR_STATE::ATTACK)
+			{
+				// 피니시 블로우고, 상대방이 죽었다면 잠깐 멈춘다.
+				if (static_cast<CKiryu_KRS_Attack*>(m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior))->IsFinishBlow())
+				{
+					if(m_pTargetObject->isObjectDead())
+						HitFreeze_On();
+				}
+			}
+
+			break;
+		}
+		case CPlayer::KRH:
+		{
+			if (m_iCurrentBehavior == (_uint)KRH_BEHAVIOR_STATE::ATTACK)
+			{
+				// 피니시 블로우고, 상대방이 죽었다면 잠깐 멈춘다.
+				if (static_cast<CKiryu_KRH_Attack*>(m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior))->IsFinishBlow())
+				{
+					if (m_pTargetObject->isObjectDead())
+						HitFreeze_On();
+				}
+			}
+
 			break;
 		}
 		case CPlayer::KRC:
@@ -489,6 +525,13 @@ void CPlayer::Attack_Event(CGameObject* pHitObject, _bool isItem)
 			{
 				CKiryu_KRC_Grab::KRC_Grab_DESC Desc{ true, Compute_Target_Direction(pLandObject) };
 				m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Setting_Value(&Desc);
+			}
+
+			if (m_iCurrentBehavior == (_uint)KRC_BEHAVIOR_STATE::ATTACK)
+			{
+				// 상대방이 죽었다면 잠깐 멈춘다.
+				if (m_pTargetObject->isObjectDead())
+					HitFreeze_On();
 			}
 
 			break;
@@ -527,10 +570,10 @@ void CPlayer::Take_Damage(_uint iHitColliderType, const _float3& vDir, _float fD
 			
 			m_iDefaultAnimIndex = m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Get_AnimationIndex();			//컴포넌트에서 쓸 애니메이션 (pickup상태의 인덱스)
 
-			CKiryu_KRS_PickUp::PICK_UP_HIT_DESC Desc{ m_AnimationTree[KRS].at((_uint)KRS_BEHAVIOR_STATE::HIT)->Get_AnimationIndex() };
+			CKiryu_KRS_PickUp::KRS_PICK_UP_HIT_DESC Desc{ m_AnimationTree[KRS].at((_uint)KRS_BEHAVIOR_STATE::HIT)->Get_AnimationIndex() };
 			m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Setting_Value((void*)&Desc);
 
-			// 사용을 다 햇으면 다시 초기화해준다.
+			// 사용을 다 했으면 다시 초기화해준다.
 			m_AnimationTree[KRS].at((_uint)KRS_BEHAVIOR_STATE::HIT)->Reset();
 
 		}
@@ -577,6 +620,22 @@ void CPlayer::Take_Damage(_uint iHitColliderType, const _float3& vDir, _float fD
 		{
 			m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Setting_Value((void*)&Desc);
 			fDamageDownScale = 0.2f;
+		}
+		else if (m_iCurrentBehavior == (_uint)KRC_BEHAVIOR_STATE::PICK_UP)		// 무언가 들고 있는 상태면 따로 처리한다.
+		{
+			string strAnimationName = pAttackedObject->Get_CurrentAnimationName();
+
+			// 히트 객체에서 애니메이션 세팅해주고, 현재 그 애니메이션을 꺼내줘야한다.
+			CKiryu_KRC_Hit::KRC_Hit_DESC HitDesc{ &vDir, fDamage, strAnimationName, iDirection };
+
+			m_iDefaultAnimIndex = m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Get_AnimationIndex();			//컴포넌트에서 쓸 애니메이션 (pickup상태의 인덱스)
+
+			CKiryu_KRC_PickUp::KRC_PICK_UP_HIT_DESC Desc{ m_AnimationTree[KRC].at((_uint)KRC_BEHAVIOR_STATE::HIT)->Get_AnimationIndex() };
+			m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Setting_Value((void*)&Desc);
+
+			// 사용을 다 했으면 다시 초기화해준다.
+			m_AnimationTree[KRC].at((_uint)KRC_BEHAVIOR_STATE::HIT)->Reset();
+
 		}
 		else
 		{
@@ -763,6 +822,49 @@ _int CPlayer::Compute_Target_Direction(CLandObject* pAttackedObject)
 			iDirection = 2;
 		else // 오른쪽
 			iDirection = 3;
+	}
+
+	return iDirection;
+}
+
+_int CPlayer::Compute_Target_Direction_Pos(CGameObject* pAttackedObject)
+{
+	// F, B, L, R
+	_int iDirection = -1;
+
+	_vector vTargetPos = pAttackedObject->Get_TransformCom()->Get_State(CTransform::STATE_POSITION);
+	_vector vMyPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+
+	_vector vDir = XMVector3Normalize(vMyPos - vTargetPos);
+
+	_vector vMyLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
+	_vector vMyRight = m_pTransformCom->Get_State(CTransform::STATE_RIGHT);
+
+	// Look 벡터와의 내적 계산
+	float fDotLook = XMVector3Dot(vMyLook, vDir).m128_f32[0];
+	// Right 벡터와의 내적 계산
+	float fDotRight = XMVector3Dot(vMyRight, vDir).m128_f32[0];
+
+	// 앞/뒤 구분
+	if (fDotLook > XMConvertToRadians(45.f)) {
+		// 앞쪽 (코사인 45도보다 크면 앞쪽으로 간주)
+		iDirection = 0;
+	}
+	else if (fDotLook < -XMConvertToRadians(45.f)) {
+		// 뒤쪽
+		iDirection = 1;
+	}
+
+	// 좌/우 구분 (앞/뒤가 아닌 경우에만 검사)
+	if (iDirection == -1) {
+		if (fDotRight > XMConvertToRadians(45.f)) {
+			// 오른쪽
+			iDirection = 2;
+		}
+		else if (fDotRight < -XMConvertToRadians(45.f)) {
+			// 왼쪽
+			iDirection = 3;
+		}
 	}
 
 	return iDirection;
@@ -1009,6 +1111,15 @@ void CPlayer::KRS_KeyInput(const _float& fTimeDelta)
 
 				m_InputDirection[F] = true;
 				Compute_MoveDirection_FB();
+
+				// 직교깨지는 것 테스트
+				_float fTestValue = vLookPos.m128_f32[0];
+				if (isnan(fTestValue))
+				{
+					int a = 0;
+				}
+
+
 				m_pTransformCom->LookAt_For_LandObject(vLookPos);
 				isMove = true;
 			}
@@ -1021,7 +1132,16 @@ void CPlayer::KRS_KeyInput(const _float& fTimeDelta)
 				m_iCurrentBehavior = isShift ? (_uint)KRS_BEHAVIOR_STATE::WALK : (_uint)KRS_BEHAVIOR_STATE::RUN;
 				m_InputDirection[B] = true;
 				Compute_MoveDirection_FB();
+
+				// 직교깨지는 것 테스트
+				_float fTestValue = vLookPos.m128_f32[0];
+				if (isnan(fTestValue))
+				{
+					int a = 0;
+				}
+
 				m_pTransformCom->LookAt_For_LandObject(vLookPos);
+
 				isMove = true;
 			}
 			if (m_pGameInstance->GetKeyState(DIK_A) == HOLD)
@@ -1033,6 +1153,7 @@ void CPlayer::KRS_KeyInput(const _float& fTimeDelta)
 				m_iCurrentBehavior = isShift ? (_uint)KRS_BEHAVIOR_STATE::WALK : (_uint)KRS_BEHAVIOR_STATE::RUN;
 				m_InputDirection[L] = true;
 				Compute_MoveDirection_RL();
+
 				m_pTransformCom->LookAt_For_LandObject(vLookPos);
 				isMove = true;
 			}
@@ -1044,6 +1165,14 @@ void CPlayer::KRS_KeyInput(const _float& fTimeDelta)
 				m_iCurrentBehavior = isShift ? (_uint)KRS_BEHAVIOR_STATE::WALK : (_uint)KRS_BEHAVIOR_STATE::RUN;
 				m_InputDirection[R] = true;
 				Compute_MoveDirection_RL();
+
+				// 직교깨지는 것 테스트
+				_float fTestValue = vLookPos.m128_f32[0];
+				if (isnan(fTestValue))
+				{
+					int a = 0;
+				}
+
 				m_pTransformCom->LookAt_For_LandObject(vLookPos);
 				isMove = true;
 			}
@@ -1156,6 +1285,7 @@ void CPlayer::KRH_KeyInput(const _float& fTimeDelta)
 				m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Change_Animation();
 			}
 		}
+
 	}
 
 
@@ -1287,7 +1417,8 @@ void CPlayer::KRC_KeyInput(const _float& fTimeDelta)
 
 	if (m_iCurrentBehavior != (_uint)KRC_BEHAVIOR_STATE::GUARD)
 	{
-		if (!m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Stopping() && m_iCurrentBehavior != (_uint)KRC_BEHAVIOR_STATE::GRAB)
+		if (!m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Stopping() && m_iCurrentBehavior != (_uint)KRC_BEHAVIOR_STATE::GRAB
+			&& m_iCurrentBehavior != (_uint)KRC_BEHAVIOR_STATE::PICK_UP)
 		{
 			if (m_pGameInstance->GetMouseState(DIM_LB) == TAP)
 			{
@@ -1295,9 +1426,29 @@ void CPlayer::KRC_KeyInput(const _float& fTimeDelta)
 				if (m_iCurrentBehavior != (_uint)KRC_BEHAVIOR_STATE::ATTACK)
 					m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Reset();
 
-				m_iCurrentBehavior = (_uint)KRC_BEHAVIOR_STATE::ATTACK;
-				m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Change_Animation();
-				m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Combo_Count();
+				// 좌클 콤보 도중, 타겟팅되는 아이템이 있다면 자동으로 집는다.
+				if (nullptr == m_pTargetItem)
+				{
+					m_iCurrentBehavior = (_uint)KRC_BEHAVIOR_STATE::ATTACK;
+					m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Change_Animation();
+					m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Combo_Count();
+				}
+				else
+				{
+					m_iCurrentBehavior = (_uint)KRC_BEHAVIOR_STATE::PICK_UP;
+					CKiryu_KRC_PickUp::KRC_PICK_UP_DESC Desc{};
+					_uint iCount = static_cast<CKiryu_KRC_Attack*>(m_AnimationTree[KRC].at((_uint)KRC_BEHAVIOR_STATE::ATTACK))->Get_ComboCount();
+
+					Desc.iComboCount = iCount > 3 ? 3 : iCount;
+					Desc.isLeft = Compute_Target_Direction_Pos(m_pTargetItem) == 3 ? true : false;
+
+					m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Event(&Desc);
+
+					// 아이템 집는 코드
+					dynamic_cast<CItem*>(m_pTargetItem)->Set_ParentMatrix(m_pModelCom->Get_BoneCombinedTransformationMatrix("buki_l_n"));
+					dynamic_cast<CItem*>(m_pTargetItem)->Set_Grab(true);
+				}
+
 			}
 			if (m_pGameInstance->GetMouseState(DIM_RB) == TAP)
 			{
@@ -1318,10 +1469,25 @@ void CPlayer::KRC_KeyInput(const _float& fTimeDelta)
 			}
 
 			// 어택중이 아닐때에만 Q입력을 받는다
-			if (m_iCurrentBehavior != (_uint)KRC_BEHAVIOR_STATE::ATTACK && m_iCurrentBehavior != (_uint)KRC_BEHAVIOR_STATE::GRAB && m_pGameInstance->GetKeyState(DIK_Q) == TAP)
+			if (m_pGameInstance->GetKeyState(DIK_Q) == TAP
+				&& m_iCurrentBehavior != (_uint)KRC_BEHAVIOR_STATE::ATTACK && m_iCurrentBehavior != (_uint)KRC_BEHAVIOR_STATE::GRAB
+				&& m_iCurrentBehavior != (_uint)KRC_BEHAVIOR_STATE::PICK_UP)
 			{
-				m_iCurrentBehavior = (_uint)KRC_BEHAVIOR_STATE::GRAB;
-				m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Reset();
+				// 아이템 타겟팅 안되어있을 때 Grab으로 빠지고
+				if (m_pTargetItem == nullptr)
+				{
+					m_iCurrentBehavior = (_uint)KRC_BEHAVIOR_STATE::GRAB;
+					m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Reset();
+				}
+				// 아이템 타겟팅 되어있을 때는 PickUp으로 빠진다.
+				else
+				{
+					// Q로 집는 아이템은 얌전히 집는다
+					m_iCurrentBehavior = (_uint)KRC_BEHAVIOR_STATE::PICK_UP;
+					dynamic_cast<CItem*>(m_pTargetItem)->Set_ParentMatrix(m_pModelCom->Get_BoneCombinedTransformationMatrix("buki_l_n"));
+					dynamic_cast<CItem*>(m_pTargetItem)->Set_Grab(true);
+				}
+
 			}
 		}
 
@@ -1605,9 +1771,14 @@ void CPlayer::Play_CutScene()
 			Off_Separation_Face();				// 컷신 종료 후 얼굴 애니메이션 종료
 			On_Separation_Hand();				// 컷신 종료 후 손 애니메이션 켜기
 
+			//// 컷신 애니메이션이 종료된 이후에 위치하도록 하는 코드 (지우면안됨)
+			//_matrix boneMatrix = XMLoadFloat4x4(m_pModelCom->Get_BoneCombinedTransformationMatrix("center_c_n")) * m_pTransformCom->Get_WorldMatrix();
+			//_vector vPos = boneMatrix.r[CTransform::STATE_POSITION];
+			//m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos);			
 			return;
 		}
 
+		// 실제로 모델의 애니메이션을 돌리는건 컴포넌트이고, m_pCameraModel는 카메라 애니메이션을 실행하는 모델이라 랜더하지않는다
 		m_pModelCom->Play_Animation_CutScene(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")), m_pAnimCom, false, m_iCutSceneAnimIndex, false);
 
 		CPlayer* pPlayer = this;
@@ -1618,6 +1789,7 @@ void CPlayer::Play_CutScene()
 		// 플레이어의 월드 변환 행렬
 		//_matrix matPlayerWorld = pPlayer->Get_TransformCom()->Get_WorldMatrix();
 		_matrix matPlayerWorld = m_pTransformCom->Get_WorldMatrix();
+
 		_matrix matVectorBoneWorld = XMLoadFloat4x4(m_pModelCom->Get_BoneCombinedTransformationMatrix("vector_c_n"));
 
 		// Blender의 좌표계를 DirectX의 좌표계로 변환하기 위한 회전 행렬
@@ -1630,6 +1802,10 @@ void CPlayer::Play_CutScene()
 
 		// 최종 뷰 행렬을 계산
 		_matrix viewMatrix = XMMatrixInverse(nullptr, finalMat);
+		
+		bool containsNaN = XMMatrixIsNaN(viewMatrix);
+		if (containsNaN)
+			return;
 
 		// 뷰 행렬을 파이프라인에 설정
 		m_pGameInstance->Set_Transform(CPipeLine::D3DTS_VIEW, viewMatrix);
@@ -1637,7 +1813,7 @@ void CPlayer::Play_CutScene()
 		auto KeyFrames = m_pCameraModel->Get_CurrentKeyFrameIndices(m_iCutSceneCamAnimIndex);
 		_uint iKeyFrameIndex = KeyFrames->front();
 
-
+		_float fFov = m_pCameraModel->Get_FoV(m_pCameraModel->Get_AnimationName(m_iCutSceneCamAnimIndex), iKeyFrameIndex);
 		pCamera->Set_FoV(m_pCameraModel->Get_FoV(m_pCameraModel->Get_AnimationName(m_iCutSceneCamAnimIndex), iKeyFrameIndex));
 
 		CModel::ANIMATION_DESC Desc{ m_iCutSceneCamAnimIndex, false };
@@ -1650,14 +1826,6 @@ void CPlayer::Play_CutScene()
 
 void CPlayer::Reset_CutSceneEvent()
 {
-	// 이 때 실행하는 애니메이션들은 선형보간을 하지 않는 애니메이션이므로 선형보간 간격을 0으로 꼭!! 초기화해야한다.
-	m_pModelCom->Set_ChangeInterval(0.0);
-	m_pCameraModel->Set_ChangeInterval(0.0);
-	m_pAnimCom->Reset_Animation(m_iCutSceneAnimIndex);
-	m_pCameraModel->Reset_Animation(m_iCutSceneCamAnimIndex);
-
-	m_eAnimComType = (m_eAnimComType == DEFAULT ? CUTSCENE : DEFAULT);
-
 	CAMERA eCurrentCam = m_pSystemManager->Get_Camera();
 
 	switch (eCurrentCam)
@@ -1668,6 +1836,10 @@ void CPlayer::Reset_CutSceneEvent()
 		CPlayerCamera* pCamera = dynamic_cast<CPlayerCamera*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Camera"), CAMERA_PLAYER));
 		// 플레이어 카메라의 현재 상태를 저장한다.
 		pCamera->Store_PrevMatrix();
+
+		// 컷신으로 돌릴 때, 컷신 카메라를 초기화해준다.
+		CCutSceneCamera* pCutSceneCamera = dynamic_cast<CCutSceneCamera*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Camera"), CAMERA_CUTSCENE));
+		pCutSceneCamera->Reset_RetureVariables();
 		break;
 	}
 
@@ -1675,17 +1847,28 @@ void CPlayer::Reset_CutSceneEvent()
 	case Client::CAMERA_CUTSCENE:
 		// 현재 컷신카메라의 마지막 행렬과 Fov를 받아와서
 		CCutSceneCamera* pCutSceneCamera = dynamic_cast<CCutSceneCamera*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Camera"), CAMERA_CUTSCENE));
-		_matrix LastMatrix = XMLoadFloat4x4(pCutSceneCamera->Get_WorldMatrix());
+		//_matrix LastMatrix = XMLoadFloat4x4(pCutSceneCamera->Get_WorldMatrix());
+		_matrix LastMatrix = m_pGameInstance->Get_Transform_Matrix(CPipeLine::D3DTS_VIEW);
 		_float fLastFov = pCutSceneCamera->Get_Fov();
+		pCutSceneCamera->On_Return();
 
 		// 플레이어 카메라에 해당 정보를 모두 저장해준다.
-		CPlayerCamera* pCamera = dynamic_cast<CPlayerCamera*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Camera"), CAMERA_PLAYER));
-		pCamera->Store_StartMatrix(LastMatrix);
-		pCamera->Set_StartFov(fLastFov);		//선형보간할 때 시작값 fov 설정
-		pCamera->Set_FoV(fLastFov);				//현재 fov설정
-		pCamera->On_Return();
+		//CPlayerCamera* pCamera = dynamic_cast<CPlayerCamera*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Camera"), CAMERA_PLAYER));
+		////pCamera->Get_TransformCom()->Set_State(CTransform::STATE_POSITION, LastMatrix.r[CTransform::STATE_POSITION]);
+		////pCamera->Get_TransformCom()->Set_WorldMatrix(LastMatrix);
+		////pCamera->Set_StartFov(fLastFov);		//선형보간할 때 시작값 fov 설정
+		////pCamera->Set_FoV(fLastFov);				//현재 fov설정
+		
 		break;
 	}
+
+	// 이 때 실행하는 애니메이션들은 선형보간을 하지 않는 애니메이션이므로 선형보간 간격을 0으로 꼭!! 초기화해야한다.
+	m_pModelCom->Set_ChangeInterval(0.0);
+	m_pCameraModel->Set_ChangeInterval(0.0);
+	m_pAnimCom->Reset_Animation(m_iCutSceneAnimIndex);
+	m_pCameraModel->Reset_Animation(m_iCutSceneCamAnimIndex);
+
+	m_eAnimComType = (m_eAnimComType == DEFAULT ? CUTSCENE : DEFAULT);
 
 	// 그리고 체인지
 	m_pSystemManager->Set_Camera(CAMERA_CUTSCENE == m_pSystemManager->Get_Camera() ? CAMERA_PLAYER : CAMERA_CUTSCENE);
@@ -1944,6 +2127,39 @@ HRESULT CPlayer::Bind_RimLight()
 		return E_FAIL;
 
 	return S_OK;
+}
+
+void CPlayer::HitFreeze_On()
+{
+	m_isHitFreeze = true;
+	m_pGameInstance->Set_TimeSpeed(TEXT("Timer_60"), 0.1f);
+	m_pGameInstance->Set_TimeSpeed(TEXT("Timer_Player"), 0.1f);
+	
+	CPlayerCamera* pCamera = dynamic_cast<CPlayerCamera*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Camera"), CAMERA_PLAYER));
+	pCamera->Set_StartFov(XMConvertToRadians(45.0f));				//현재 fov설정
+	pCamera->Set_FoV(XMConvertToRadians(45.0f));				//현재 fov설정
+	pCamera->On_Return();
+}
+
+void CPlayer::HitFreeze_Off()
+{
+	m_isHitFreeze = false;
+	m_pGameInstance->Set_TimeSpeed(TEXT("Timer_60"), 1.f);
+	m_pGameInstance->Set_TimeSpeed(TEXT("Timer_Player"), 1.f);
+
+	//CPlayerCamera* pCamera = dynamic_cast<CPlayerCamera*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Camera"), CAMERA_PLAYER));
+	//pCamera->Set_FoV(XMConvertToRadians(60.0f));				//현재 fov설정
+}
+
+void CPlayer::HitFreeze_Timer(const _float& fTimeDelta)
+{
+	m_fHitFreezeTimer += m_pGameInstance->Get_TimeDelta(TEXT("Timer_Game"));
+
+	if (m_fHitFreezeTime <= m_fHitFreezeTimer)
+	{
+		m_fHitFreezeTimer = 0.f;
+		HitFreeze_Off();
+	}
 }
 
 CPlayer* CPlayer::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
