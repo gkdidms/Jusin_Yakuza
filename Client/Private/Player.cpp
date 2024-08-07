@@ -37,6 +37,7 @@
 #include "Kiryu_KRS_Grab.h"
 #include "Kiryu_KRC_Grab.h"
 #include "Kiryu_KRS_PickUp.h"
+#include "Kiryu_KRC_PickUp.h"
 #pragma endregion
 
 CPlayer::CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -72,6 +73,11 @@ void CPlayer::Set_SeizeOff(_bool isOff)
 
 	//8번 Grab 공통
 	m_AnimationTree[m_eCurrentStyle].at(8)->Event(&isOff);
+}
+
+void CPlayer::Set_ItemOff()
+{
+	m_pTargetItem = nullptr;
 }
 
 HRESULT CPlayer::Initialize_Prototype()
@@ -568,7 +574,7 @@ void CPlayer::Take_Damage(_uint iHitColliderType, const _float3& vDir, _float fD
 			
 			m_iDefaultAnimIndex = m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Get_AnimationIndex();			//컴포넌트에서 쓸 애니메이션 (pickup상태의 인덱스)
 
-			CKiryu_KRS_PickUp::PICK_UP_HIT_DESC Desc{ m_AnimationTree[KRS].at((_uint)KRS_BEHAVIOR_STATE::HIT)->Get_AnimationIndex() };
+			CKiryu_KRS_PickUp::KRS_PICK_UP_HIT_DESC Desc{ m_AnimationTree[KRS].at((_uint)KRS_BEHAVIOR_STATE::HIT)->Get_AnimationIndex() };
 			m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Setting_Value((void*)&Desc);
 
 			// 사용을 다 했으면 다시 초기화해준다.
@@ -618,6 +624,22 @@ void CPlayer::Take_Damage(_uint iHitColliderType, const _float3& vDir, _float fD
 		{
 			m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Setting_Value((void*)&Desc);
 			fDamageDownScale = 0.2f;
+		}
+		else if (m_iCurrentBehavior == (_uint)KRC_BEHAVIOR_STATE::PICK_UP)		// 무언가 들고 있는 상태면 따로 처리한다.
+		{
+			string strAnimationName = pAttackedObject->Get_CurrentAnimationName();
+
+			// 히트 객체에서 애니메이션 세팅해주고, 현재 그 애니메이션을 꺼내줘야한다.
+			CKiryu_KRC_Hit::KRC_Hit_DESC HitDesc{ &vDir, fDamage, strAnimationName, iDirection };
+
+			m_iDefaultAnimIndex = m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Get_AnimationIndex();			//컴포넌트에서 쓸 애니메이션 (pickup상태의 인덱스)
+
+			CKiryu_KRC_PickUp::KRC_PICK_UP_HIT_DESC Desc{ m_AnimationTree[KRC].at((_uint)KRC_BEHAVIOR_STATE::HIT)->Get_AnimationIndex() };
+			m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Setting_Value((void*)&Desc);
+
+			// 사용을 다 했으면 다시 초기화해준다.
+			m_AnimationTree[KRC].at((_uint)KRC_BEHAVIOR_STATE::HIT)->Reset();
+
 		}
 		else
 		{
@@ -804,6 +826,49 @@ _int CPlayer::Compute_Target_Direction(CLandObject* pAttackedObject)
 			iDirection = 2;
 		else // 오른쪽
 			iDirection = 3;
+	}
+
+	return iDirection;
+}
+
+_int CPlayer::Compute_Target_Direction_Pos(CGameObject* pAttackedObject)
+{
+	// F, B, L, R
+	_int iDirection = -1;
+
+	_vector vTargetPos = pAttackedObject->Get_TransformCom()->Get_State(CTransform::STATE_POSITION);
+	_vector vMyPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+
+	_vector vDir = XMVector3Normalize(vMyPos - vTargetPos);
+
+	_vector vMyLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
+	_vector vMyRight = m_pTransformCom->Get_State(CTransform::STATE_RIGHT);
+
+	// Look 벡터와의 내적 계산
+	float fDotLook = XMVector3Dot(vMyLook, vDir).m128_f32[0];
+	// Right 벡터와의 내적 계산
+	float fDotRight = XMVector3Dot(vMyRight, vDir).m128_f32[0];
+
+	// 앞/뒤 구분
+	if (fDotLook > XMConvertToRadians(45.f)) {
+		// 앞쪽 (코사인 45도보다 크면 앞쪽으로 간주)
+		iDirection = 0;
+	}
+	else if (fDotLook < -XMConvertToRadians(45.f)) {
+		// 뒤쪽
+		iDirection = 1;
+	}
+
+	// 좌/우 구분 (앞/뒤가 아닌 경우에만 검사)
+	if (iDirection == -1) {
+		if (fDotRight > XMConvertToRadians(45.f)) {
+			// 오른쪽
+			iDirection = 2;
+		}
+		else if (fDotRight < -XMConvertToRadians(45.f)) {
+			// 왼쪽
+			iDirection = 3;
+		}
 	}
 
 	return iDirection;
@@ -1224,6 +1289,7 @@ void CPlayer::KRH_KeyInput(const _float& fTimeDelta)
 				m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Change_Animation();
 			}
 		}
+
 	}
 
 
@@ -1355,7 +1421,8 @@ void CPlayer::KRC_KeyInput(const _float& fTimeDelta)
 
 	if (m_iCurrentBehavior != (_uint)KRC_BEHAVIOR_STATE::GUARD)
 	{
-		if (!m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Stopping() && m_iCurrentBehavior != (_uint)KRC_BEHAVIOR_STATE::GRAB)
+		if (!m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Stopping() && m_iCurrentBehavior != (_uint)KRC_BEHAVIOR_STATE::GRAB
+			&& m_iCurrentBehavior != (_uint)KRC_BEHAVIOR_STATE::PICK_UP)
 		{
 			if (m_pGameInstance->GetMouseState(DIM_LB) == TAP)
 			{
@@ -1363,9 +1430,29 @@ void CPlayer::KRC_KeyInput(const _float& fTimeDelta)
 				if (m_iCurrentBehavior != (_uint)KRC_BEHAVIOR_STATE::ATTACK)
 					m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Reset();
 
-				m_iCurrentBehavior = (_uint)KRC_BEHAVIOR_STATE::ATTACK;
-				m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Change_Animation();
-				m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Combo_Count();
+				// 좌클 콤보 도중, 타겟팅되는 아이템이 있다면 자동으로 집는다.
+				if (nullptr == m_pTargetItem)
+				{
+					m_iCurrentBehavior = (_uint)KRC_BEHAVIOR_STATE::ATTACK;
+					m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Change_Animation();
+					m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Combo_Count();
+				}
+				else
+				{
+					m_iCurrentBehavior = (_uint)KRC_BEHAVIOR_STATE::PICK_UP;
+					CKiryu_KRC_PickUp::KRC_PICK_UP_DESC Desc{};
+					_uint iCount = static_cast<CKiryu_KRC_Attack*>(m_AnimationTree[KRC].at((_uint)KRC_BEHAVIOR_STATE::ATTACK))->Get_ComboCount();
+
+					Desc.iComboCount = iCount > 3 ? 3 : iCount;
+					Desc.isLeft = Compute_Target_Direction_Pos(m_pTargetItem) == 3 ? true : false;
+
+					m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Event(&Desc);
+
+					// 아이템 집는 코드
+					dynamic_cast<CItem*>(m_pTargetItem)->Set_ParentMatrix(m_pModelCom->Get_BoneCombinedTransformationMatrix("buki_l_n"));
+					dynamic_cast<CItem*>(m_pTargetItem)->Set_Grab(true);
+				}
+
 			}
 			if (m_pGameInstance->GetMouseState(DIM_RB) == TAP)
 			{
@@ -1386,10 +1473,25 @@ void CPlayer::KRC_KeyInput(const _float& fTimeDelta)
 			}
 
 			// 어택중이 아닐때에만 Q입력을 받는다
-			if (m_iCurrentBehavior != (_uint)KRC_BEHAVIOR_STATE::ATTACK && m_iCurrentBehavior != (_uint)KRC_BEHAVIOR_STATE::GRAB && m_pGameInstance->GetKeyState(DIK_Q) == TAP)
+			if (m_pGameInstance->GetKeyState(DIK_Q) == TAP
+				&& m_iCurrentBehavior != (_uint)KRC_BEHAVIOR_STATE::ATTACK && m_iCurrentBehavior != (_uint)KRC_BEHAVIOR_STATE::GRAB
+				&& m_iCurrentBehavior != (_uint)KRC_BEHAVIOR_STATE::PICK_UP)
 			{
-				m_iCurrentBehavior = (_uint)KRC_BEHAVIOR_STATE::GRAB;
-				m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Reset();
+				// 아이템 타겟팅 안되어있을 때 Grab으로 빠지고
+				if (m_pTargetItem == nullptr)
+				{
+					m_iCurrentBehavior = (_uint)KRC_BEHAVIOR_STATE::GRAB;
+					m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Reset();
+				}
+				// 아이템 타겟팅 되어있을 때는 PickUp으로 빠진다.
+				else
+				{
+					// Q로 집는 아이템은 얌전히 집는다
+					m_iCurrentBehavior = (_uint)KRC_BEHAVIOR_STATE::PICK_UP;
+					dynamic_cast<CItem*>(m_pTargetItem)->Set_ParentMatrix(m_pModelCom->Get_BoneCombinedTransformationMatrix("buki_l_n"));
+					dynamic_cast<CItem*>(m_pTargetItem)->Set_Grab(true);
+				}
+
 			}
 		}
 

@@ -11,13 +11,23 @@ BEGIN(Client)
 class CKiryu_KRC_PickUp : public CBehaviorAnimation
 {
 public:
-	struct PICK_UP_HIT_DESC {
+	struct KRC_PICK_UP_HIT_DESC {
 		_uint iHitAnimIndex;
+	};
+
+	struct KRC_PICK_UP_DESC {
+		_bool isLeft;			// 아이템이 왼쪽에있는지, 오른쪽에 있는지
+		_uint iComboCount;		// 몇타째에 집었는지
 	};
 
 	enum ANIM_STATE
 	{
 		ANIM_START, ANIM_LOOP, ANIM_ONCE, ANIM_END
+	};
+
+	enum ATTACK_STATE 
+	{
+		NONE_ATTAK, ATTACK
 	};
 
 private:
@@ -39,6 +49,8 @@ private:
 	void Shaking();
 	void Play_Hit();
 
+	void Play_PickupCombo(_bool isLeft);
+
 	void Move_KeyInput(const _float& fTimeDelta);
 	void Attack_KeyInput(const _float& fTimeDelta);
 
@@ -48,6 +60,8 @@ public:
 
 private:
 	ANIM_STATE	m_eAnimState = { ANIM_START };
+	ATTACK_STATE m_eBehaviorState = { NONE_ATTAK };
+
 	_bool		m_isStop = { false };
 	_bool		m_isHit = { false };
 

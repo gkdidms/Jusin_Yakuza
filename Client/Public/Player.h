@@ -168,6 +168,8 @@ public:
     void    Set_NavigationIndex(int iIndex) { m_pNavigationCom->Set_Index(iIndex); }
     void    Set_NaviRouteIndex(int iIndex) { m_iNaviRouteNum = iIndex; }
     void    Set_SeizeOff(_bool isOff = true);                       //TODO: 잡힌 상태에서 off 시킬 때 부를 함수
+    void    Set_ItemOff();
+
 
     /* Virtual Funtion */
 public:
@@ -192,7 +194,13 @@ private:
     /* Compute Function */
 private:
     void Synchronize_Root(const _float& fTimeDelta);
-    _int Compute_Target_Direction(CLandObject* pAttackedObject);
+    // 각 객체의 Look끼리연산해서 마주보고있는지, 옆에있는지 등을 판단
+    // 상대 객체가 나를 바라보고 있음을 기준으로, 좌/우/앞/뒤 어디서 나를 보는지를 판단하는 함수
+    _int Compute_Target_Direction(CLandObject* pAttackedObject);                
+
+    // 상대 객체의 포지션을 기준으로 계산함
+    // 내 위치를 기준으로 좌/우/앞/뒤 어디에 존재하는지를 판단
+    _int Compute_Target_Direction_Pos(CGameObject* pAttackedObject);           
 
     //키 입력관련함수들
 private:

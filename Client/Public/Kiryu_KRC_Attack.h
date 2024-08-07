@@ -22,6 +22,11 @@ public:
 	virtual void Combo_Count(_bool isFinAction = false) override;
 	virtual void Setting_Value(void* pValue = nullptr) override;
 
+public:
+	_uint Get_ComboCount() {
+		return m_iComboCount;
+	}
+
 private:
 	_bool Changeable_Combo_Animation();
 
