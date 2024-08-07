@@ -101,33 +101,36 @@ HRESULT CCarChaseManager::Ready_Stage()
 	m_Stages.emplace_back(pStage1);
 
 	//2 스테이지
-	//vector<CCarChase::STAGE_MONSTER_INFO> MonsterInfo_2 = {
-	//	CCarChase::STAGE_MONSTER_INFO{
-	//		200000,
-	//		LINE_B,
-	//		CCarChase_Monster::REACTOR_VAN,
-	//		{ CCarChase_Monster::WPR, -1}
-	//	},
-	//	CCarChase::STAGE_MONSTER_INFO{
-	//		200001,
-	//		LINE_D,
-	//		CCarChase_Monster::REACTOR_VAN,
-	//		{ CCarChase_Monster::WPR, -1 }
-	//	},
-	//};
+	vector<CCarChase::STAGE_MONSTER_INFO> MonsterInfo_2 = {
+		CCarChase::STAGE_MONSTER_INFO{
+			200000,
+			LINE_B,
+			DIR_M,
+			CCarChase_Monster::REACTOR_VAN,
+			{ CCarChase_Monster::WPR, -1}
+		},
+		CCarChase::STAGE_MONSTER_INFO{
+			200001,
+			LINE_D,
+			DIR_F,
+			CCarChase_Monster::REACTOR_VAN,
+			{ CCarChase_Monster::WPR, -1 }
+		},
+	};
 
-	//CCarChase::STAGE_INFO StageInfo_2 = CCarChase::STAGE_INFO{
-	//	LINE_C,
-	//	LINE_A,
-	//	MonsterInfo_2
-	//};
+	CCarChase::STAGE_INFO StageInfo_2 = CCarChase::STAGE_INFO{
+		LINE_A,
+		LINE_B,
+		DIR_L,
+		MonsterInfo_2
+	};
 
-	//Desc.Info = StageInfo_2;
-	//CCarChase* pStage2 = CCarChase::Create(&Desc);
-	//if (nullptr == pStage2)
-	//	return E_FAIL;
+	Desc.Info = StageInfo_2;
+	CCarChase* pStage2 = CCarChase::Create(&Desc);
+	if (nullptr == pStage2)
+		return E_FAIL;
 
-	//m_Stages.emplace_back(pStage2);
+	m_Stages.emplace_back(pStage2);
 
 	////3 스테이지
 	//vector<CCarChase::STAGE_MONSTER_INFO> MonsterInfo_3 = {

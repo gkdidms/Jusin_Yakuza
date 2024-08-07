@@ -191,35 +191,35 @@ void CRushYakuza::Change_Animation()
 		m_strAnimName = "p_krh_atk_punch_b";
 		break;
 	}
-	case MONSTER_CMD_1:
+	case MONSTER_CMB_1:
 	{
 		//p_krh_cmb_01[p_krh_cmb_01]
 		m_strAnimName = "p_krh_cmb_01";
 		break;
 	}
-	case MONSTER_CMD_2:
+	case MONSTER_CMB_2:
 	{
 		//p_krh_cmb_02[p_krh_cmb_02]
 		m_strAnimName = "p_krh_cmb_02";
 		break;
 	}
-	case MONSTER_CMD_3:
+	case MONSTER_CMB_3:
 	{
 		//p_krh_cmb_03[p_krh_cmb_03]
 		m_strAnimName = "p_krh_cmb_03";
 		break;
 	}
-	case MONSTER_CMD_4:
+	case MONSTER_CMB_4:
 	{
 		//p_krh_cmb_04[p_krh_cmb_04]
 		m_strAnimName = "p_krh_cmb_04";
 		break;
 	}
-	case MONSTER_CMD_5:
+	case MONSTER_CMB_5:
 	{
 		//p_krh_cmb_05[p_krh_cmb_05]
 		m_strAnimName = "p_krh_cmb_05";
-		Shaking(0.3, 0.2, 0.2);
+		Shaking(0.3f, 0.2f, 0.2f);
 		break;
 	}
 	case MONSTER_GURAD_START:

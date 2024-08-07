@@ -20,6 +20,7 @@
 #include "Navigation.h"
 #include "ComputeShader.h"
 #include "AStart.h"
+#include "NeoShader.h"
 
 #include "Bounding_AABB.h"
 #include "Bounding_OBB.h"

@@ -162,24 +162,24 @@ void CWPAYakuza::Change_Animation()
 		m_strAnimName = "e_wpa_sway_l";
 		break;
 	}
-	case MONSTER_CMD_1:
+	case MONSTER_CMB_1:
 	{
 		//e_wpa_cmb_01[e_wpa_cmb_01]
 		m_strAnimName = "e_wpa_cmb_01";
-		Shaking(0.3, 0.2, 0.2);
+		Shaking(0.3f, 0.2f, 0.2f);
 		break;
 	}
-	case MONSTER_CMD_2:
+	case MONSTER_CMB_2:
 	{
 		//e_wpa_cmb_02[e_wpa_cmb_02]
 		m_strAnimName = "e_wpa_cmb_02";
-		Shaking(0.3, 0.2, 0.2);
+		Shaking(0.3f, 0.2f, 0.2f);
 		break;
 	}
 	case MONSTER_HEAVY_ATTACK:
 	{
 		m_strAnimName = "e_wpa_atk_heavy";
-		Shaking(0.3, 0.3, 0.3);
+		Shaking(0.3f, 0.3f, 0.3f);
 		break;
 	}
 	default:
