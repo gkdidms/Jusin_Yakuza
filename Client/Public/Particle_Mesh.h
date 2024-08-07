@@ -10,13 +10,14 @@ class CModel;
 END
 
 class CParticle_Mesh :
-    public CEffect
+	public CEffect
 {
 public:
 	typedef struct tPARTICLE_MESH_DESC :public CEffect::EFFECT_DESC
 	{
 		CVIBuffer_Instance::INSTANCE_DESC BufferInstance;
 		wstring strModelTag;
+		wstring strNormalTag;
 	}PARTICLE_MESH_DESC;
 
 private:
@@ -35,14 +36,16 @@ public:
 
 public:
 	wstring Get_ModelTag() { return m_strModelTag; }
+	wstring Get_NormalTag() { return m_strNormalTag; }
 private:
 	CShader* m_pShaderCom = { nullptr };
-	CTexture* m_pTextureCom = { nullptr };
+	CTexture* m_pTextureCom[2] = {nullptr};
 	CModel* m_pModelCom = { nullptr };
 	CVIBuffer_Instance_Mesh* m_pVIBufferCom = { nullptr };
 
 	CVIBuffer_Instance::INSTANCE_DESC m_BufferInstance;
 	wstring m_strModelTag = { TEXT("") };
+	wstring m_strNormalTag = { TEXT("") };
 	_float       m_fCurTime = { 0.f };
 public:
 	virtual HRESULT Save_Data(const string strDirectory)override;

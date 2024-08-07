@@ -7,7 +7,7 @@ const _uint CEffect::iAction[CEffect::ACTION_END] = {
     0x00000002, /* 0000 0010 */
     0x00000004, /*0000 0100 */
     0x00000008, /*0000 1000 */
-   // 0x00000010, /*0001 0000 */
+    0x00000010, /*0001 0000 */
     //0x00000020, /*0010 0000 */
    // 0x00000040, /*0100 0000 */
 };
@@ -30,7 +30,9 @@ CEffect::CEffect(const CEffect& rhs)
     m_iAction{ rhs.m_iAction },
     m_vStartColor{ rhs.m_vStartColor },
     m_vEndColor{ rhs.m_vEndColor },
-    m_fDistortion{rhs.m_fDistortion}
+    m_fDistortion{rhs.m_fDistortion},
+    m_isNormal{rhs.m_isNormal},
+    m_NormalTag{rhs.m_NormalTag}
 {
 }
 
@@ -63,6 +65,8 @@ HRESULT CEffect::Initialize(void* pArg)
             m_fLifeAlpha = pDesc->fLifeAlpha;
             m_fRotate = pDesc->fRotate;
             m_fDistortion = pDesc->fDistortion;
+            m_isNormal = pDesc->isNormal;
+            m_NormalTag = pDesc->NormalTag;
         }
         else
         {
