@@ -109,6 +109,8 @@ bool g_isMulti;
 
 float g_RDCount = { 1.f };
 
+float Opacity = { 0.f };
+
 float AssetShader = { 0.f };
 float DisableRDRT = { 0.f };
 float Engine = { 0.f };
@@ -118,3 +120,11 @@ float Rough = { 0.f };
 float IsY3Shader = { 0.f };
 float Imperfection = { 0.f };
 float SPShader = { 0.f };
+
+bool g_isUVShader = { false };
+float g_fRTX = { 0.f };
+float g_fRTY = { 0.f };
+float g_fRDRMRS_X = { 0.f };
+float g_fRDRMRS_Y = { 0.f };
+float f_fImperfection_UV = { 0.f };
+float f_fEngine_UV = { 0.f };

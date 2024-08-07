@@ -173,14 +173,14 @@ void CShakedown::Change_Animation()
 	{
 		//e_kta_atk_down[e_kta_atk_down]
 		m_strAnimName = "e_kta_atk_down";
-		Shaking(0.3, 0.3, 0.35);
+		Shaking(0.3f, 0.3f, 0.35f);
 		break;
 	}
 	case MONSTER_RARIATTO:
 	{
 		//e_kta_atk_rariatto[e_kta_atk_rariatto]
 		m_strAnimName = "e_kta_atk_rariatto";
-		Shaking(0.2, 0.5, 0.2);
+		Shaking(0.2f, 0.5f, 0.2f);
 		break;
 	}
 	case MONSTER_GUARD_RUN:
@@ -192,33 +192,33 @@ void CShakedown::Change_Animation()
 		if (m_iShakedCount < 1)
 		{
 			m_iShakedCount++;
-			Shaking(0.5, 0.2, 0.2);			// 돌진 시작할 때 한번
+			Shaking(0.5f, 0.2f, 0.2f);			// 돌진 시작할 때 한번
 		}
 		else
 		{
-			Shaking(0.8, 0.2, 0.2);			// 돌진 종료 시 한번
+			Shaking(0.8f, 0.2f, 0.2f);			// 돌진 종료 시 한번
 		}
 		break;
 	}
-	case MONSTER_CMD_1:
+	case MONSTER_CMB_1:
 	{
 		//e_kta_cmb_a_01[e_kta_cmb_a_01]
 		m_strAnimName = "e_kta_cmb_a_01";
-		Shaking(0.3, 0.2, 0.2);
+		Shaking(0.3f, 0.2f, 0.2f);
 		break;
 	}
-	case MONSTER_CMD_2:
+	case MONSTER_CMB_2:
 	{
 		//e_kta_cmb_a_02[e_kta_cmb_a_02]
 		m_strAnimName = "e_kta_cmb_a_02";
-		Shaking(0.3, 0.2, 0.2);
+		Shaking(0.3f, 0.2f, 0.2f);
 		break;
 	}
-	case MONSTER_CMD_3:
+	case MONSTER_CMB_3:
 	{
 		//e_kta_cmb_a_03[e_kta_cmb_a_03]
 		m_strAnimName = "e_kta_cmb_a_03";
-		Shaking(0.55, 0.3, 0.3);
+		Shaking(0.55f, 0.3f, 0.3f);
 		break;
 	}
 	case MONSTER_GURAD_START:

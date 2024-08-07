@@ -8,6 +8,8 @@ BEGIN(Client)
 class CYoneda :
     public CMonster
 {
+public:
+    enum WEAPON { BAREHAND, KNIFE, WEAPON_END };
 private:
     CYoneda(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
     CYoneda(const CYoneda& rhs);
@@ -23,11 +25,11 @@ public:
 private:
     class CAI_Yoneda* m_pTree = { nullptr };
 
+    _uint m_iWeaponType = { WEAPON_END };
+
 private:
     virtual HRESULT Add_Components() override;
     virtual void Change_Animation();
-
-private:
     
 
 public:

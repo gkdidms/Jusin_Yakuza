@@ -19,6 +19,7 @@ public:
         SKILL_SHIFT,
         SKILL_SWAY,
         SKILL_HIT,
+        SKILL_ATK_NORMAL,
         SKILL_CMD,
         SKILL_CMD_A,
         SKILL_CMD_B,

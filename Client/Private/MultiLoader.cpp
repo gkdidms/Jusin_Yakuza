@@ -382,8 +382,6 @@ HRESULT CMultiLoader::Loading_Default()
 	//if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Kiryu_CarChase"), CAnim::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Anim/Animation_Kiryu_CarChase.fbx", true))))
 	//	return E_FAIL;
 
-
-
 	/* For.Prototype_Component_Anim_NPC */
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Anim_NPC"), CAnim::Create(m_pDevice, m_pContext, "../Bin/DataFiles/AnimationData/Animation_NPC.dat", false))))
 		return E_FAIL;
@@ -430,6 +428,12 @@ HRESULT CMultiLoader::Loading_Default()
 
 #pragma endregion
 
+#pragma endregion
+
+#pragma region Meterial
+	/////* For.Prototype_Component_Kiryu_Meterial */
+	//if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Kiryu_Material"), CNeoShader::Create(m_pDevice, m_pContext, "../Bin/DataFiles/MeterialData/Kiryu.dat"))))
+	//	return E_FAIL;
 #pragma endregion
 
 #pragma region Shader
@@ -637,7 +641,7 @@ HRESULT CMultiLoader::Loading_For_NonAnim()
 
 	_matrix PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Model_Bone_Sphere"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/NonAnim/Bone_Sphere/Bin/Square.dat", PreTransformMatrix, true))))
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/NonAnim/Bone_Sphere/Bin/Bone_Sphere.dat", PreTransformMatrix, true))))
 		return E_FAIL;
 
 

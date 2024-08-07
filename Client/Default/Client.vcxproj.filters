@@ -531,6 +531,18 @@
     <ClCompile Include="..\Private\Kiryu_KRC_PickUp.cpp">
       <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRC\Pickup</Filter>
     </ClCompile>
+    <ClCompile Include="..\private\YonedaTrigger.cpp">
+      <Filter>02.GameObjects\08.Trigger\02.YonedaTrigger</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Reactor_Sedan.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\03.CarChase\00.Reactor\01.Sedan</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Reactor_Bike.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\03.CarChase\00.Reactor\02.Bike</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Reactor_Heli.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\03.CarChase\00.Reactor\03.Heli</Filter>
+	</ClCompile>
     <ClCompile Include="..\Private\Particle_Mesh.cpp">
       <Filter>02.GameObjects\06.Effect\Mesh</Filter>
     </ClCompile>
@@ -1096,6 +1108,18 @@
     <ClInclude Include="..\Public\Kiryu_KRC_PickUp.h">
       <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRC\Pickup</Filter>
     </ClInclude>
+    <ClInclude Include="..\public\YonedaTrigger.h">
+      <Filter>02.GameObjects\08.Trigger\02.YonedaTrigger</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Reactor_Sedan.h">
+      <Filter>02.GameObjects\02.Character\LandObject\03.CarChase\00.Reactor\01.Sedan</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Reactor_Bike.h">
+      <Filter>02.GameObjects\02.Character\LandObject\03.CarChase\00.Reactor\02.Bike</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Reactor_Heli.h">
+      <Filter>02.GameObjects\02.Character\LandObject\03.CarChase\00.Reactor\03.Heli</Filter>
+	</ClInclude>
     <ClInclude Include="..\Public\Particle_Mesh.h">
       <Filter>02.GameObjects\06.Effect\Mesh</Filter>
     </ClInclude>

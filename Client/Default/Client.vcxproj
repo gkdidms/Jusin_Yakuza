@@ -221,7 +221,9 @@
     <ClInclude Include="..\Public\Kiryu_KRS_PickUp.h" />
     <ClInclude Include="..\Public\Map.h" />
     <ClInclude Include="..\Public\MultiLoader.h" />
-    <ClInclude Include="..\Public\Particle_Mesh.h" />
+    <ClInclude Include="..\Public\Reactor_Bike.h" />
+    <ClInclude Include="..\Public\Reactor_Heli.h" />
+    <ClInclude Include="..\Public\Reactor_Sedan.h" />
     <ClInclude Include="..\public\Reactor_Van.h" />
     <ClInclude Include="..\Public\KillQuest.h" />
     <ClInclude Include="..\Public\Kiryu_KRC_Down.h" />
@@ -355,6 +357,7 @@
     <ClInclude Include="..\public\WPAYakuza.h" />
     <ClInclude Include="..\public\WPHYakuza.h" />
     <ClInclude Include="..\public\Yoneda.h" />
+    <ClInclude Include="..\public\YonedaTrigger.h" />
     <ClInclude Include="Client.h" />
     <ClInclude Include="framework.h" />
     <ClInclude Include="Resource.h" />
@@ -402,7 +405,9 @@
     <ClCompile Include="..\Private\Collision_Manager.cpp" />
     <ClCompile Include="..\Private\Kiryu_KRC_PickUp.cpp" />
     <ClCompile Include="..\Private\Kiryu_KRS_PickUp.cpp" />
-    <ClCompile Include="..\Private\Particle_Mesh.cpp" />
+    <ClCompile Include="..\Private\Reactor_Bike.cpp" />
+    <ClCompile Include="..\Private\Reactor_Heli.cpp" />
+    <ClCompile Include="..\Private\Reactor_Sedan.cpp" />
     <ClCompile Include="..\Private\UICarchase.cpp" />
     <ClCompile Include="..\Private\CutSceneCamera.cpp" />
     <ClCompile Include="..\private\DefaultYakuza.cpp" />
@@ -545,6 +550,7 @@
     <ClCompile Include="..\private\WPAYakuza.cpp" />
     <ClCompile Include="..\private\WPHYakuza.cpp" />
     <ClCompile Include="..\private\Yoneda.cpp" />
+    <ClCompile Include="..\private\YonedaTrigger.cpp" />
     <ClCompile Include="..\Public\UILoading.cpp" />
     <ClCompile Include="Client.cpp" />
   </ItemGroup>
@@ -560,7 +566,6 @@
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Trail.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxAnimMesh.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxCube.hlsl" />
-    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxInstance_Mesh.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxInstance_Point.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxMesh.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxMeshItem.hlsl" />
