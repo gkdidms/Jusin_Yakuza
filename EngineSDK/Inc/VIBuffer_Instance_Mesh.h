@@ -8,7 +8,7 @@ public:
     typedef struct tINSTANCE_MESH_DESC :public CVIBuffer_Instance::INSTANCE_DESC
     {
         class CMesh* pMeshs;
-
+        INSTANCE_DESC* InstanceDesc ;
     }INSTANCE_MESH_DESC;
 private:
     CVIBuffer_Instance_Mesh(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -18,6 +18,7 @@ private:
 public:
     virtual HRESULT Initialize_Prototype() override;
     virtual HRESULT Initialize(void* pArg) override;
+
     
 private:
     _char				m_szName[MAX_PATH] = "";

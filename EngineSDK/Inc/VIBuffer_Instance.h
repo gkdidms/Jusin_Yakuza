@@ -29,8 +29,16 @@ public:
         _float GravityScale;
         _float CrossArea;//단면적가로저항
         _bool isBillboard;
+
+        _float3 vMinSpeed;
+        _float3 vMaxSpeed;
+        _float2 fWeight;//min,max
+        _float3 vMinFrequency;//진동 주파수
+        _float3 vMaxFrequency;
+        _float3 vMinAmplitude;
+        _float3 vMaxAmplitude;//진동 범위
         //아우라
-        _bool isAura;
+        _bool isAttach;
     }INSTANCE_DESC;
 
 protected:
@@ -59,6 +67,10 @@ protected:
     _float* m_pOriginalSize = { nullptr };
     _float3* m_pOriginalOffsets = { nullptr };
     _float3* m_pOriginalAngleVelocity = { nullptr };
+    _float3* m_pMeshSpeed = { nullptr };
+    _float* m_pWeight = { nullptr };
+    _float3* m_pFrequency = { nullptr };
+    _float3* m_pAmplitude = { nullptr };
 
     const _float4x4* m_pCurrentWorldMatrix = { nullptr };
 
@@ -88,14 +100,13 @@ protected:
 public:
     void Spread(_float fTimeDelta);
     void RotSpread(_float fTimeDelta);
-    void Aura(_float fTimeDelta);
+    void MeshSpread(_float fTimeDelta);
     void Reset();
 
-    void Drop(_float fTimeDelta);
     _bool LifeTime_Check();
     void SizeUp_Time(_float fTimeDelta);
     void SizeDown_Time(_float fTimeDelta);
-    void Leaf_Fall(_float fTimeDelta);
+
     void Compute_Sort();
 
     

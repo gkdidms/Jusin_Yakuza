@@ -86,6 +86,7 @@
 #include "Particle_Point.h"
 #include "TRailEffect.h"
 #include "Aura.h"
+#include "Particle_Mesh.h"
 #pragma endregion
 
 CMultiLoader::CMultiLoader(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -864,6 +865,26 @@ HRESULT CMultiLoader::Add_GameObject_Particle_On_Path(const wstring& strPath)
 				/* For.Prototype_GameObject_Particle_Aura */
 				if (FAILED(m_pGameInstance->Add_GameObject_Prototype(m_pGameInstance->StringToWstring(Tag),
 					CAura::Create(m_pDevice, m_pContext, AllPath))))
+					return E_FAIL;
+
+			}
+		}
+		else if (TEXT("Mesh") == strChannelName)
+		{
+			for (const auto& entry : fs::directory_iterator(strDirectory))
+			{
+
+				string FileName = entry.path().filename().string();
+				string AllPath = strDirectory + FileName;
+
+				string Tag;
+				_int dotPos = FileName.find_last_of(".");
+				Tag = FileName.substr(0, dotPos);
+
+
+				/* For.Prototype_GameObject_Mesh */
+				if (FAILED(m_pGameInstance->Add_GameObject_Prototype(m_pGameInstance->StringToWstring(Tag),
+					CParticle_Mesh::Create(m_pDevice, m_pContext, AllPath))))
 					return E_FAIL;
 
 			}

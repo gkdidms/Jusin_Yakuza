@@ -262,7 +262,7 @@ HRESULT CAura::Load_Data(const string strDirectory)
 	in.read((char*)&m_BufferInstance.vSpeed, sizeof(_float2));
 	in.read((char*)&m_BufferInstance.vLifeTime, sizeof(_float2));
 	in.read((char*)&m_BufferInstance.isLoop, sizeof(_bool));
-	m_BufferInstance.isAura = true;
+
 	in.close();
 
 	return S_OK;
