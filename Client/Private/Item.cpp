@@ -62,7 +62,7 @@ HRESULT CItem::Initialize(void* pArg)
 		for (int i = 0; i < gameobjDesc->iColliderNum; i++)
 		{
 			//COLLIDER_AABB, COLLIDER_OBB, COLLIDER_SPHERE
-			if (CCollider::TYPE::COLLIDER_AABB == gameobjDesc->pColliderDesc[i].iColliderType)
+			if (CCollider::TYPE::COLLIDER_SPHERE == (CCollider::TYPE)gameobjDesc->pColliderDesc[i].iColliderType)
 			{
 				OBJCOLLIDER_DESC		objDesc = gameobjDesc->pColliderDesc[i];
 
