@@ -7,7 +7,7 @@ BEGIN(Engine)
 class ENGINE_DLL CModel final : public CComponent
 {
 public:
-	enum MODELTYPE { TYPE_NONANIM, TYPE_ANIM, TYPE_END };
+	enum MODELTYPE { TYPE_NONANIM, TYPE_ANIM, TYPE_PARTICLE, TYPE_END };
 
 	struct ANIMATION_DESC
 	{
@@ -79,6 +79,7 @@ public:
 	_uint Get_NumAnimations() { return m_iAnimations; }
 	_uint Get_NumBones() { return m_iNumBones; }
 	_uint Get_CurrentAnimationIndex() { return m_AnimDesc.iAnimIndex; }
+	const char* Get_MaterialName(_uint iIndex) { return m_Materials[iIndex].strMaterialName; }
 	const vector<_uint>* Get_CurrentKeyFrameIndices(string strAnimationName = "");
 	const vector<_uint>* Get_CurrentKeyFrameIndices(_uint iAnimIndex);
 

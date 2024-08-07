@@ -66,7 +66,7 @@ HRESULT CNavigation::Initialize(void* pArg)
         NAVIGATION_DESC* pDesc = static_cast<NAVIGATION_DESC*>(pArg);
         m_iCurrentLine = pDesc->iCurrentLine;
         m_iCurrentWayPointIndex = pDesc->iWayPointIndex;
-        m_iPreWayPointIndex = m_iCurrentWayPointIndex - 1;
+        m_iPreWayPointIndex = m_iCurrentWayPointIndex;
         if (m_iCurrentWayPointIndex == -1) Find_WayPointIndex(pDesc->vPosition);
     }
 
@@ -84,7 +84,8 @@ int CNavigation::Find_PlayerMonster_Index(_fvector vTargetPos)
         /* 그냥 넣어주는거 */
         int			iNeighborsIndex;
 
-        if (true == m_Cells[i]->isIn(vTargetPos, &iNeighborsIndex))
+        _vector vSlidingNormal;
+        if (true == m_Cells[i]->isIn(vTargetPos, &iNeighborsIndex, vSlidingNormal))
         {
             return i;
         }
@@ -291,7 +292,7 @@ _bool CNavigation::isMove(_fvector vMovePos)
     _int iNeighborsIndex = { -1 };
 
     // 셀 안에 있는지?
-    if (m_Cells[m_iCurrentIndex]->isIn(vMovePos, &iNeighborsIndex))
+    if (m_Cells[m_iCurrentIndex]->isIn(vMovePos, &iNeighborsIndex, m_vSlidingNormal))
         return true;
     else
     {
@@ -303,7 +304,7 @@ _bool CNavigation::isMove(_fvector vMovePos)
                 if (-1 == iNeighborsIndex)
                     return false;
 
-                if (m_Cells[iNeighborsIndex]->isIn(vMovePos, &iNeighborsIndex))
+                if (m_Cells[iNeighborsIndex]->isIn(vMovePos, &iNeighborsIndex, m_vSlidingNormal))
                 {
                     m_iCurrentIndex = iNeighborsIndex;
                     return true;

@@ -206,19 +206,19 @@ CBTNode::NODE_STATE CAI_Shakedown::ATK_CMD()
 			return CBTNode::RUNNING;
 		}
 
-		if (*m_pState == CMonster::MONSTER_CMD_1 && *(m_pAnimCom[*m_pCurrentAnimType]->Get_AnimPosition()) >= 24.0)
+		if (*m_pState == CMonster::MONSTER_CMB_1 && *(m_pAnimCom[*m_pCurrentAnimType]->Get_AnimPosition()) >= 24.0)
 		{
 			LookAtPlayer();
-			*m_pState = CMonster::MONSTER_CMD_2;
+			*m_pState = CMonster::MONSTER_CMB_2;
 			m_fCmbCount++;
 		}
-		else if (*m_pState == CMonster::MONSTER_CMD_2 && *(m_pAnimCom[*m_pCurrentAnimType]->Get_AnimPosition()) >= 29.0)
+		else if (*m_pState == CMonster::MONSTER_CMB_2 && *(m_pAnimCom[*m_pCurrentAnimType]->Get_AnimPosition()) >= 29.0)
 		{
 			LookAtPlayer();
-			*m_pState = CMonster::MONSTER_CMD_3;
+			*m_pState = CMonster::MONSTER_CMB_3;
 			m_fCmbCount++;
 		}
-		else if (*m_pState == CMonster::MONSTER_CMD_3 && m_pAnimCom[*m_pCurrentAnimType]->Get_AnimFinished())
+		else if (*m_pState == CMonster::MONSTER_CMB_3 && m_pAnimCom[*m_pCurrentAnimType]->Get_AnimFinished())
 		{
 			m_isAttack = false;
 
@@ -234,7 +234,7 @@ CBTNode::NODE_STATE CAI_Shakedown::ATK_CMD()
 		m_fCmbCount = 0.f;
 
 		m_isAttack = true;
-		*m_pState = CMonster::MONSTER_CMD_1;
+		*m_pState = CMonster::MONSTER_CMB_1;
 
 		return CBTNode::SUCCESS;
 	}

@@ -47,6 +47,7 @@ private:
 
 private:
 	HRESULT Add_GameObject_Particle_On_Path(const wstring& strPath);
+	HRESULT Add_GameObject_ParticleMesh_On_Path(const wstring& strPath);
 
 public:
     static CLoader* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, LEVEL eNextLevel);

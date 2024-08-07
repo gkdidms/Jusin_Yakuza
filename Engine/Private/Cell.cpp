@@ -74,7 +74,7 @@ _float CCell::Compute_Height(_fvector vPosition)
     return (-XMVectorGetX(vPlane) * vLocalPos.x - XMVectorGetZ(vPlane) * vLocalPos.z - XMVectorGetW(vPlane)) / XMVectorGetY(vPlane);
 }
 
-_bool CCell::isIn(_fvector vPosition, _int* pNeighborsIndex)
+_bool CCell::isIn(_fvector vPosition, _int* pNeighborsIndex, _vector& vNormal)
 {
     _vector vSour, vDesc;
     
@@ -88,6 +88,7 @@ _bool CCell::isIn(_fvector vPosition, _int* pNeighborsIndex)
         {
             // 선을 나갔다면 그 선에 인접한 인덱스를 넣어주고 false을 리턴.
             *pNeighborsIndex = m_iNeighborIndices[i];
+            vNormal = XMVector3Normalize(vDesc);
             return false;
         }
     }

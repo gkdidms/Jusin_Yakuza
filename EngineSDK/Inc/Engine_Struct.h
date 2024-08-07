@@ -331,6 +331,7 @@ namespace Engine
 
 	typedef struct
 	{
+		char strMaterialName[MAX_PATH];
 		class CTexture* pMaterialTextures[AI_TEXTURE_TYPE_MAX];
 	} MESH_MATERIAL;
 
@@ -369,6 +370,13 @@ namespace Engine
 		static const unsigned int		iNumElements = { 9 };
 		static const D3D11_INPUT_ELEMENT_DESC	Elements[9];
 	}VTXINSTANCE_POINT;
+
+	typedef struct ENGINE_DLL tVtxInstance_Mesh
+	{
+		static const unsigned int		iNumElements = { 11 };
+		static const D3D11_INPUT_ELEMENT_DESC	Elements[11];
+	}VTXINSTANCE_MESH;
+
 
 	typedef struct ENGINE_DLL tagIndex32
 	{

@@ -7,6 +7,7 @@ BEGIN(Engine)
 class CCollider;
 class CModel;
 class CAnim;
+class CNeoShader;
 class CNavigation;
 END
 
@@ -164,6 +165,7 @@ protected:
     CCollider* m_pColliderCom = { nullptr };
     CModel* m_pModelCom = { nullptr };
     CShader* m_pShaderCom = { nullptr };
+    CNeoShader* m_pMaterialCom = { nullptr };
     CNavigation* m_pNavigationCom = { nullptr };
 
     // 애니메이션 툴에서 찍은 데이터 파싱해서 들고있는 객체

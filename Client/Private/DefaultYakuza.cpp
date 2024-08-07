@@ -151,46 +151,46 @@ void CDefaultYakuza::Change_Animation()
 		m_strAnimName = "e_sway_l";
 		break;
 	}
-	case MONSTER_CMD_1:
+	case MONSTER_CMB_1:
 	{
 		m_strAnimName = "e_sae_cmb_01";
-		Shaking(0.3, 0.2, 0.2);
+		Shaking(0.3f, 0.2f, 0.2f);
 		break;
 	}
-	case MONSTER_CMD_2:
+	case MONSTER_CMB_2:
 	{
 		m_strAnimName = "e_sae_cmb_02";
-		Shaking(0.3, 0.2, 0.2);
+		Shaking(0.3f, 0.2f, 0.2f);
 		break;
 	}
-	case MONSTER_CMD_3:
+	case MONSTER_CMB_3:
 	{
 		m_strAnimName = "e_sae_cmb_03";
-		Shaking(0.3, 0.2, 0.2);
+		Shaking(0.3f, 0.2f, 0.2f);
 		break;
 	}
 	case MONSTER_HEAVY_ATTACK:
 	{
 		m_strAnimName = "e_sae_atk_heavy_f";
-		Shaking(0.3, 0.3, 0.3);
+		Shaking(0.3f, 0.3f, 0.3f);
 		break;
 	}
 	case MONSTER_HEAVY_RENDA:
 	{
 		m_strAnimName = "e_sae_atk_heavy_renda";
-		Shaking(0.3, 0.3, 0.3);
+		Shaking(0.3f, 0.3f, 0.3f);
 		break;
 	}
 	case MONSTER_KICK:
 	{
 		m_strAnimName = "e_sae_atk_kick_f";
-		Shaking(0.3, 0.3, 0.3);
+		Shaking(0.3f, 0.3f, 0.3f);
 		break;
 	}
 	case MONSTER_RUN_ATK:
 	{
 		m_strAnimName = "e_sae_atk_run";
-		Shaking(0.3, 0.3, 0.3);
+		Shaking(0.3f, 0.3f, 0.3f);
 		break;
 	}
 	default:

@@ -34,6 +34,8 @@ public:
     _uint Get_WaypointIndex() { return m_iCurrentWayPointIndex; }
     _vector Get_CurrentWaypointPos() { return XMLoadFloat4(&m_Routes[m_iCurrentLine][m_iCurrentWayPointIndex].vPosition); }
 
+    _vector Get_SlidingNormal() { return m_vSlidingNormal; }
+
 public:
     virtual HRESULT Initialize_Prototype(); // Tool¿ë
     virtual HRESULT Initialize_Prototype(const wstring strFilePath);
@@ -45,6 +47,7 @@ public:
     _bool isMove(_fvector vMovePos);
     _vector Compute_WayPointDir(_vector vPosition, const _float& fTimeDelta);
     _float Compute_Height(_fvector vPosition);
+
 
 #ifdef _DEBUG
 public:
@@ -63,6 +66,8 @@ private:
 
 private:
     _int m_iCurrentIndex = { -1 };
+
+    _vector     m_vSlidingNormal;
 
     //ÃÑ°ÝÀü¿ë
 private:

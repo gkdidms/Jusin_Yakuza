@@ -13,6 +13,137 @@
 #include <iostream>
 #include <io.h>
 
+#include "ImGuizmo.h"
+#include "ImSequencer.h"
+#include "PipeLine.h"
+
+
+bool useWindowN = false;
+int gizmoCountN = 1;
+static ImGuizmo::OPERATION mCurrentGizmoOperationN(ImGuizmo::TRANSLATE);
+
+
+// TRANSFORM의 MATRIX
+void EditTransformN(float* cameraView, float* cameraProjection, float* matrix, bool editTransformDecomposition)
+{
+	static ImGuizmo::MODE mCurrentGizmoMode(ImGuizmo::WORLD);
+	static bool useSnap = false;
+	static float snap[3] = { 1.f, 1.f, 1.f };
+	static float bounds[] = { -0.5f, -0.5f, -0.5f, 0.5f, 0.5f, 0.5f };
+	static float boundsSnap[] = { 0.1f, 0.1f, 0.1f };
+	static bool boundSizing = false;
+	static bool boundSizingSnap = false;
+
+	editTransformDecomposition = true;
+	if (editTransformDecomposition)
+	{
+		if (ImGui::IsKeyPressed(ImGuiKey_T))
+			mCurrentGizmoOperationN = ImGuizmo::TRANSLATE;
+		if (ImGui::IsKeyPressed(ImGuiKey_E))
+			mCurrentGizmoOperationN = ImGuizmo::ROTATE;
+		if (ImGui::IsKeyPressed(ImGuiKey_R)) // r Key
+			mCurrentGizmoOperationN = ImGuizmo::SCALE;
+		if (ImGui::RadioButton("Translate", mCurrentGizmoOperationN == ImGuizmo::TRANSLATE))
+			mCurrentGizmoOperationN = ImGuizmo::TRANSLATE;
+		ImGui::SameLine();
+		if (ImGui::RadioButton("Rotate", mCurrentGizmoOperationN == ImGuizmo::ROTATE))
+			mCurrentGizmoOperationN = ImGuizmo::ROTATE;
+		ImGui::SameLine();
+		if (ImGui::RadioButton("Scale", mCurrentGizmoOperationN == ImGuizmo::SCALE))
+			mCurrentGizmoOperationN = ImGuizmo::SCALE;
+		/* if (ImGui::RadioButton("Universal", mCurrentGizmoOperation == ImGuizmo::UNIVERSAL))
+			 mCurrentGizmoOperation = ImGuizmo::UNIVERSAL;*/
+		float matrixTranslation[3], matrixRotation[3], matrixScale[3];
+		ImGuizmo::DecomposeMatrixToComponents(matrix, matrixTranslation, matrixRotation, matrixScale);
+		ImGui::InputFloat3("Tr", matrixTranslation);
+		ImGui::InputFloat3("Rt", matrixRotation);
+		ImGui::InputFloat3("Sc", matrixScale);
+		ImGuizmo::RecomposeMatrixFromComponents(matrixTranslation, matrixRotation, matrixScale, matrix);
+
+		if (mCurrentGizmoOperationN != ImGuizmo::SCALE)
+		{
+			if (ImGui::RadioButton("Local", mCurrentGizmoMode == ImGuizmo::LOCAL))
+				mCurrentGizmoMode = ImGuizmo::LOCAL;
+			ImGui::SameLine();
+			if (ImGui::RadioButton("World", mCurrentGizmoMode == ImGuizmo::WORLD))
+				mCurrentGizmoMode = ImGuizmo::WORLD;
+		}
+		if (ImGui::IsKeyPressed(ImGuiKey_S))
+			useSnap = !useSnap;
+		ImGui::Checkbox("##UseSnap", &useSnap);
+		ImGui::SameLine();
+
+		switch (mCurrentGizmoOperationN)
+		{
+		case ImGuizmo::TRANSLATE:
+			ImGui::InputFloat3("Snap", &snap[0]);
+			break;
+		case ImGuizmo::ROTATE:
+			ImGui::InputFloat("Angle Snap", &snap[0]);
+			break;
+		case ImGuizmo::SCALE:
+			ImGui::InputFloat("Scale Snap", &snap[0]);
+			break;
+		}
+		ImGui::Checkbox("Bound Sizing", &boundSizing);
+		if (boundSizing)
+		{
+			ImGui::PushID(3);
+			ImGui::Checkbox("##BoundSizing", &boundSizingSnap);
+			ImGui::SameLine();
+			ImGui::InputFloat3("Snap", boundsSnap);
+			ImGui::PopID();
+		}
+	}
+
+	ImGuiIO& io = ImGui::GetIO();
+	float viewManipulateRight = io.DisplaySize.x;
+	float viewManipulateTop = 0;
+	static ImGuiWindowFlags gizmoWindowFlags = 0;
+	if (useWindowN)
+	{
+		ImGui::SetNextWindowSize(ImVec2(800, 400), ImGuiCond_Appearing);
+		ImGui::SetNextWindowPos(ImVec2(400, 20), ImGuiCond_Appearing);
+		ImGui::PushStyleColor(ImGuiCol_WindowBg, (ImVec4)ImColor(0.35f, 0.3f, 0.3f));
+		ImGui::Begin("Gizmo", 0, gizmoWindowFlags);
+		ImGuizmo::SetDrawlist();
+		float windowWidth = (float)ImGui::GetWindowWidth();
+		float windowHeight = (float)ImGui::GetWindowHeight();
+		ImGuizmo::SetRect(ImGui::GetWindowPos().x, ImGui::GetWindowPos().y, windowWidth, windowHeight);
+		viewManipulateRight = ImGui::GetWindowPos().x + windowWidth;
+		viewManipulateTop = ImGui::GetWindowPos().y;
+		//ImGuiWindow* window = ImGui::GetCurrentWindow();
+		//gizmoWindowFlags = ImGui::IsWindowHovered() && ImGui::IsMouseHoveringRect(window->InnerRect.Min, window->InnerRect.Max) ? ImGuiWindowFlags_NoMove : 0;
+	}
+	else
+	{
+		// 이거만 신경쓰기 얼마만큼 기즈모 화면값
+		ImGuizmo::SetRect(0, 0, io.DisplaySize.x, io.DisplaySize.y);
+	}
+	ImGuizmo::SetRect(0, 0, io.DisplaySize.x, io.DisplaySize.y);
+	//격자
+	//ImGuizmo::DrawGrid(cameraView, cameraProjection, identityMatrix, 100.f);
+	// 큐브 그려주는애
+	//ImGuizmo::DrawCubes(cameraView, cameraProjection, &objectMatrix[0][0], gizmoCount);
+
+	// 옮기는애
+	// 객체 잡고 동그라미좌표계 그려주는애
+	// 객체 잡고 동그라미좌표계 그려주는애
+	// matrix : 객체월드행ㄹ려
+	ImGuizmo::Manipulate(cameraView, cameraProjection, mCurrentGizmoOperationN, mCurrentGizmoMode, matrix, NULL, useSnap ? &snap[0] : NULL, boundSizing ? bounds : NULL, boundSizingSnap ? boundsSnap : NULL);
+
+	// 화면 상단 카메라 돌아가는애
+	//ImGuizmo::ViewManipulate(cameraView, camDistance, ImVec2(viewManipulateRight - 128, viewManipulateTop), ImVec2(128, 128), 0x10101010);
+
+
+	if (useWindowN)
+	{
+		ImGui::End();
+		// 이거해보기 터지면
+		ImGui::PopStyleColor(1);
+	}
+}
+
 
 
 IMPLEMENT_SINGLETON(CNavigation_Manager)
@@ -57,7 +188,49 @@ void CNavigation_Manager::Tick(_float fTimeDelta)
 
 void CNavigation_Manager::Late_Tick(_float fTimeDelta)
 {
+	if (true == m_bRouteAllView)
+	{
 
+		int iCurRoute = 0;
+
+		for (auto& pair : m_Routes)
+		{
+			for (auto& iter : pair.second)
+			{
+				// m_iCurrentRouteNum : 현재 route 번호
+				if (iCurRoute != m_iCurrentRouteNum)
+				{
+					iter->Set_Color(1);
+					iter->Late_Tick(fTimeDelta);
+
+
+				}
+			}
+
+			iCurRoute++;
+		}
+
+
+
+		for (auto& iter : m_Route_CellIndexes)
+		{
+			iter->Late_Tick(fTimeDelta);
+			iter->Set_Color(3);
+
+
+		}
+	}
+	else
+	{
+		int iIndex = 0;
+
+		for (auto& iter : m_Route_CellIndexes)
+		{
+			iter->Late_Tick(fTimeDelta);
+			iter->Set_Color(3);
+
+		}
+	}
 }
 
 HRESULT CNavigation_Manager::Render()
@@ -218,10 +391,11 @@ void CNavigation_Manager::Load_Cell_IMGUI()
 		ImGui::EndListBox();
 	}
 
-	if (m_iCurrentFileRoute != route_layer_current_idx)
+	if (m_iCurrentRouteNum != route_layer_current_idx)
 	{
-		m_iCurrentFileRoute = route_layer_current_idx;
-		Load_Route(m_iCurrentFileRoute);
+		m_iCurrentRouteNum = route_layer_current_idx;
+		m_iCurrentRouteCellIndex = 0;
+		Load_Route(m_iCurrentRouteNum);
 	}
 
 
@@ -231,14 +405,30 @@ void CNavigation_Manager::Load_Cell_IMGUI()
 	}
 
 
-	ImGui::Text(u8"옆 route index의 cell 값들 수정");
+	ImGui::Text(u8"이미 만들어진 route에 대해 수정할때 꼭 눌러주기 - 그래야지 시각적으로 보임");
 	if (ImGui::Button(u8" route cell 수정 "))
 	{
-		m_Routes[route_layer_current_idx] = m_Route_CellIndexes;
+		for (auto& iter : m_Routes[route_layer_current_idx])
+		{
+			Safe_Release(iter);
+		}
+
+		m_Routes[route_layer_current_idx].clear();
+
+		for (auto& iter : m_Route_CellIndexes)
+		{
+			Safe_AddRef(iter);
+			m_Routes[route_layer_current_idx].push_back(iter);
+		}
+		
+
+		Update_CellIndex_Draw();
+		Update_Route_Draw();
+		
 	}
 
 	// 다보이게끔
-	static int RouteAllView = 0;
+	static int RouteAllView = 1;
 	if (ImGui::RadioButton(u8"Route 전부 보기 - O", RouteAllView == 0))
 	{
 		RouteAllView = 0;
@@ -260,8 +450,8 @@ void CNavigation_Manager::Load_Cell_IMGUI()
 
 		for (int i = 0; i < m_Routes.size(); i++)
 		{
-			CVIBuffer_Line*		pBuffer = CVIBuffer_Line::Create(m_pDevice, m_pContext, m_Routes[i]);
-			if (nullptr == m_pVIBufferCom)
+			CVIBuffer_Line*		pBuffer = CVIBuffer_Line::Create(m_pDevice, m_pContext, m_Routes_Draw[i]);
+			if (nullptr == pBuffer)
 				MSG_BOX("VIBuffer_Lint 생성 불가");
 
 			m_vLineBufferLine.push_back(pBuffer);
@@ -376,7 +566,7 @@ HRESULT CNavigation_Manager::Save_Cells(_uint iIndex)
 
 		for (int j = 0; j < iCellCnt; j++)
 		{
-			arr[j] = m_Routes.find(i)->second[j];
+			arr[j] = m_Routes.find(i)->second[j]->Get_RouteIO();
 		}
 
 		out.write(reinterpret_cast<char*>(arr), iCellCnt * sizeof(ROUTE_IO));
@@ -397,9 +587,6 @@ HRESULT CNavigation_Manager::Load_Cells(_uint iIndex)
 		Safe_Release(iter);
 	m_Cells.clear();
 
-	for (auto& cell : m_RouteCells)
-		Safe_Release(cell);
-	m_RouteCells.clear();
 
 	for (auto& iter : m_IndexesName)
 		Safe_Delete(iter);
@@ -416,17 +603,32 @@ HRESULT CNavigation_Manager::Load_Cells(_uint iIndex)
 	m_vLineBufferLine.clear();
 
 
+
+	for (auto& iter : m_Route_CellIndexes)
+		Safe_Release(iter);
 	m_Route_CellIndexes.clear();
 
-	for (auto& Pair : m_Routes)
-		Pair.second.clear();
+	for (auto& iter : m_Routes)
+	{
+		for (auto& pair : iter.second)
+			Safe_Release(pair);
+
+		iter.second.clear();
+	}
 	m_Routes.clear();
+
+
+	m_Route_CellIndexes_Draw.clear();
+
+	for (auto& Pair : m_Routes_Draw)
+		Pair.second.clear();
+	m_Routes_Draw.clear();
 
 
 	/* 새로 로드할 때는 index 다시 0으로 되돌리기*/
 	m_iCurrentCellIndex = 0;
 	m_iCurrentRouteCellIndex = 0;
-	m_iCurrentFileRoute = 0;
+	m_iCurrentRouteNum = 0;
 
 	_ulong		dwByte = {};
 	char fullPath[MAX_PATH];
@@ -484,7 +686,27 @@ HRESULT CNavigation_Manager::Load_Cells(_uint iIndex)
 			routeCells.push_back(arr[j]);
 		}
 
-		m_Routes.emplace(i, routeCells);
+
+		vector<CNaviObj*>		routeObjs;
+
+		for (int j = 0; j < iCellCnt; j++)
+		{
+			CNaviObj::NAVIOBJ_DESC naviobjdesc;
+			naviobjdesc.tNaviDesc.iCellNums = m_iCurrentCellIndex;
+			naviobjdesc.tNaviDesc.vPosition = arr[j].vPosition;
+
+			XMMATRIX startPos = XMMatrixIdentity();
+			startPos.r[3].m128_f32[0] = arr[j].vPosition.x;
+			startPos.r[3].m128_f32[1] = arr[j].vPosition.y;
+			startPos.r[3].m128_f32[2] = arr[j].vPosition.z;
+			startPos.r[3].m128_f32[3] = arr[j].vPosition.w;
+
+			naviobjdesc.vStartPos = startPos;
+
+			routeObjs.push_back(dynamic_cast<CNaviObj*>(CGameInstance::GetInstance()->Clone_Object(TEXT("Prototype_GameObject_NaviObj"), &naviobjdesc)));
+		}
+
+		m_Routes.emplace(i, routeObjs);
 
 		Safe_Delete(arr);
 	}
@@ -503,7 +725,11 @@ HRESULT CNavigation_Manager::Load_Cells(_uint iIndex)
 	Update_CellsName();
 	Update_RouteName();
 	Update_IndexesName();
-	Load_Route(m_iCurrentFileRoute);
+	Load_Route(m_iCurrentRouteNum);
+
+
+	Update_CellIndex_Draw();
+	Update_Route_Draw();
 }
 
 
@@ -512,42 +738,38 @@ HRESULT CNavigation_Manager::Load_Route(_uint iIndex)
 
 	if (iIndex < m_Routes.size())
 	{
+
+
+		for (auto& iter : m_Route_CellIndexes)
+			Safe_Release(iter);
 		m_Route_CellIndexes.clear();
+
+		m_Route_CellIndexes_Draw.clear();
 
 		int iNums = m_Routes.find(iIndex)->second.size();
 
 		for (int i = 0; i < iNums; i++)
 		{
+			Safe_AddRef(m_Routes.find(iIndex)->second[i]);
 			m_Route_CellIndexes.push_back(m_Routes.find(iIndex)->second[i]);
 		}
 
-		for (auto& cell : m_RouteCells)
-			Safe_Release(cell);
-		m_RouteCells.clear();
-
-
-
-		for (size_t i = 0; i < iNums; ++i)
-		{
-			if (m_Cells.size() > 0)
-			{
-				m_RouteCells.push_back(m_Cells[m_Route_CellIndexes[i].iCellNums]);
-				Safe_AddRef(m_Cells[m_Route_CellIndexes[i].iCellNums]);
-			}
-		}
-
-		if (0 < m_RouteCells.size())
+		if (0 < m_Route_CellIndexes_Draw.size())
 		{
 			Safe_Release(m_pVIBufferCom);
 
-			m_pVIBufferCom = CVIBuffer_Line::Create(m_pDevice, m_pContext, m_Route_CellIndexes);
+			m_pVIBufferCom = CVIBuffer_Line::Create(m_pDevice, m_pContext, m_Route_CellIndexes_Draw);
 			if (nullptr == m_pVIBufferCom)
 				MSG_BOX("VIBuffer_Lint 생성 불가");
 		}
 
 		Update_IndexesName();
 	}
+
+	Update_CellIndex_Draw();
+	Update_Route_Draw();
 	
+	iIndex = 0;
 
 	return S_OK;
 }
@@ -575,7 +797,6 @@ void CNavigation_Manager::Show_FileName()
 		}
 		ImGui::EndListBox();
 	}
-
 
 }
 
@@ -663,19 +884,16 @@ void CNavigation_Manager::Delete_AllCell()
 
 void CNavigation_Manager::Delete_RouteCell(_int& iIndex)
 {
-	vector<ROUTE_IO>::iterator	iter = m_Route_CellIndexes.begin();
-	list<CCell*>::iterator	cellIter = m_RouteCells.begin();
+	vector<CNaviObj*>::iterator	iter = m_Route_CellIndexes.begin();
 
 	for (int i = 0; i < iIndex; i++)
 	{
 		iter++;
-		cellIter++;
 	}
 
+	Safe_Release(*iter);
 	m_Route_CellIndexes.erase(iter);
 
-	Safe_Release(*cellIter);
-	m_RouteCells.erase(cellIter);
 
 	/* 인덱스 옮겨주기 */
 	if (0 > m_iCurrentRouteCellIndex - 1)
@@ -688,18 +906,23 @@ void CNavigation_Manager::Delete_RouteCell(_int& iIndex)
 	}
 
 	Update_IndexesName();
+	Update_CellIndex_Draw();
+
+	Update_Route_Draw();
+
 }
 
 void CNavigation_Manager::Delete_AllRouteCell(_int& iIndex)
 {
 
+	for (auto& iter : m_Route_CellIndexes)
+		Safe_Release(iter);
 	m_Route_CellIndexes.clear();
 
-	for (auto& cell : m_RouteCells)
-		Safe_Release(cell);
-	m_RouteCells.clear();
 
 	Update_IndexesName();
+	Update_CellIndex_Draw();
+	Update_Route_Draw();
 
 	/* 인덱스도 같이 초기화 */
 	iIndex = 0;
@@ -711,8 +934,8 @@ int CNavigation_Manager::Get_Player_Monster_NaviIndex(_vector vPosition)
 	{
 		/* 그냥 넣어주는거 */
 		int			iNeighborsIndex;
-
-		if (true == m_Cells[i]->isIn(vPosition, &iNeighborsIndex))
+		XMVECTOR		vSlidingNormal;
+		if (true == m_Cells[i]->isIn(vPosition, &iNeighborsIndex, vSlidingNormal))
 		{
 			return i;
 		}
@@ -737,8 +960,8 @@ void CNavigation_Manager::Find_Cells()
 				{
 					/* 그냥 넣어주는거 */
 					int			iNeighborsIndex;
-
-					if (true == m_Cells[i]->isIn(vTargetPos, &iNeighborsIndex))
+					XMVECTOR	vSlidingNormal;
+					if (true == m_Cells[i]->isIn(vTargetPos, &iNeighborsIndex, vSlidingNormal))
 					{
 						m_iCurrentCellIndex = i;
 					}
@@ -778,10 +1001,14 @@ void CNavigation_Manager::Make_Route()
 			ImGui::EndListBox();
 		}
 
+		Click_To_Select_Object(index_current_idx);
+
 		if (m_iCurrentRouteCellIndex != index_current_idx)
 		{
 			m_iCurrentRouteCellIndex = index_current_idx;
 		}
+
+		Edit_GameObject_Transform(m_iCurrentRouteCellIndex);
 
 		ImGui::Text(u8"버튼 클릭 후 피킹하면 추가됨");
 		
@@ -796,28 +1023,40 @@ void CNavigation_Manager::Make_Route()
 			{
 				/* 그냥 넣어주는거 */
 				int			iNeighborsIndex;
-
-				if (true == m_Cells[i]->isIn(vTargetPos, &iNeighborsIndex))
+				XMVECTOR	vSlidingNormal;
+				if (true == m_Cells[i]->isIn(vTargetPos, &iNeighborsIndex, vSlidingNormal))
 				{
 					m_iCurrentCellIndex = i;
 				}
 			}
 
-			ROUTE_IO		routeIO;
-			routeIO.iCellNums = m_iCurrentCellIndex;
-			XMStoreFloat4(&routeIO.vPosition, vTargetPos);
-			m_Route_CellIndexes.push_back(routeIO);
-			m_RouteCells.push_back(m_Cells[m_iCurrentCellIndex]);
+			CNaviObj::NAVIOBJ_DESC naviobjdesc;
+			naviobjdesc.tNaviDesc.iCellNums = m_iCurrentCellIndex;
+			XMStoreFloat4(&naviobjdesc.tNaviDesc.vPosition, vTargetPos);
+
+			XMMATRIX startPos = XMMatrixIdentity();
+			startPos.r[3].m128_f32[0] = vTargetPos.m128_f32[0];
+			startPos.r[3].m128_f32[1] = vTargetPos.m128_f32[1];
+			startPos.r[3].m128_f32[2] = vTargetPos.m128_f32[2];
+			startPos.r[3].m128_f32[3] = vTargetPos.m128_f32[3];
+
+			naviobjdesc.vStartPos = startPos;
+
+			m_Route_CellIndexes.push_back(dynamic_cast<CNaviObj*>(CGameInstance::GetInstance()->Clone_Object(TEXT("Prototype_GameObject_NaviObj"), &naviobjdesc)));
 			Safe_AddRef(m_Cells[m_iCurrentCellIndex]);
 
 			// route 안의 index update
 			Update_IndexesName();
+			
+			Update_CellIndex_Draw();
+			Update_Route_Draw();
 
 			if (2 <= m_Route_CellIndexes.size())
 			{
 				Safe_Release(m_pVIBufferCom);
 
-				m_pVIBufferCom = CVIBuffer_Line::Create(m_pDevice, m_pContext, m_Route_CellIndexes);
+
+				m_pVIBufferCom = CVIBuffer_Line::Create(m_pDevice, m_pContext, m_Route_CellIndexes_Draw);
 				if (nullptr == m_pVIBufferCom)
 					MSG_BOX("VIBuffer_Lint 생성 불가");
 			}
@@ -840,6 +1079,8 @@ void CNavigation_Manager::Make_Route()
 		if (ImGui::Button(u8" cell Index 전체삭제 "))
 		{
 			Delete_AllRouteCell(m_iCurrentRouteCellIndex);
+			Update_CellIndex_Draw();
+			Update_Route_Draw();
 
 			Safe_Release(m_pVIBufferCom);
 
@@ -857,15 +1098,6 @@ void CNavigation_Manager::Make_Route()
 		ImGui::NewLine();
 
 
-
-		//static int iRouteFileNum = 70;
-		//ImGui::InputInt(u8"루트 저장 index : ", &iRouteFileNum);
-
-		//if (ImGui::Button(u8"루트 저장"))
-		//{
-		//	Save_Route(iRouteFileNum);
-		//}
-
 		ImGui::NewLine();
 
 		if (ImGui::Button(u8" 창 닫기 "))
@@ -880,14 +1112,17 @@ void CNavigation_Manager::Make_Route()
 
 void CNavigation_Manager::Add_Route_In_Navi()
 {
-	vector<ROUTE_IO>		routes;
+	vector<CNaviObj*>		routes;
 	
 	for (int i = 0; i < m_Route_CellIndexes.size(); i++)
 	{
+		Safe_AddRef(m_Route_CellIndexes[i]);
 		routes.push_back(m_Route_CellIndexes[i]);
 	}
 
 	m_Routes.emplace(m_Routes.size(), routes);
+
+	Update_Route_Draw();
 }
 
 
@@ -951,12 +1186,9 @@ void CNavigation_Manager::Show_Cells_IMGUI()
 		{
 			for (int n = 0; n < m_CellsName.size(); n++)
 			{
-				/*const bool is_selected = (cell_current_idx == n);*/
 				const bool is_selected = (cell_current_idx == n);
 				if (ImGui::Selectable(m_CellsName[n], is_selected))
 				{
-					/*cell_current_idx = n;
-					m_iCurrentCellIndex = cell_current_idx;*/
 					cell_current_idx = n;
 				}
 
@@ -1000,10 +1232,6 @@ void CNavigation_Manager::Show_Cells_IMGUI()
 
 		m_Cells[m_iCurrentCellIndex]->Set_Option(static_cast<CCell::OPTION>(m_iCurrentOption));
 
-		/*if (ImGui::Button(u8"네비 옵션 수정"))
-		{
-			m_Cells[m_iCurrentCellIndex]->Set_Option(static_cast<CCell::OPTION>(m_iCurrentOption));
-		}*/
 
 	}
 
@@ -1093,17 +1321,22 @@ void CNavigation_Manager::Update_IndexesName()
 			char* szName = new char[MAX_PATH];
 			strcpy(szName, "Index");
 			char buff[MAX_PATH];
-			sprintf(buff, "%d", m_Route_CellIndexes[i].iCellNums);
+			sprintf(buff, "%d", m_Route_CellIndexes[i]->Get_RouteIO().iCellNums);
 			strcat(szName, buff);
+			char buff_idx[MAX_PATH];
+			sprintf(buff_idx, "%d", i);
+			strcat(szName, buff_idx);
 
 			m_IndexesName.push_back(szName);
+
+			m_Route_CellIndexes[i]->Set_ObjID(i);
 		}
 	}
 }
 
 void CNavigation_Manager::Update_Routes()
 {
-	map<int, vector<ROUTE_IO>> new_m_Routes;
+	map<int, vector<class CNaviObj*>> new_m_Routes;
 	int new_key = 0;
 	for (const auto& pair : m_Routes) {
 		new_m_Routes[new_key] = pair.second;
@@ -1116,14 +1349,20 @@ void CNavigation_Manager::Update_Routes()
 
 void CNavigation_Manager::Delete_Route(_int& iIndex)
 {
-	if (0 < m_RouteCells.size())
+	if (m_Routes.size() > 0)
 	{
-		map<int, vector<ROUTE_IO>>::iterator iter = m_Routes.begin();
+		map<int, vector<class CNaviObj*>>::iterator iter = m_Routes.begin();
 
 		for (int i = 0; i < iIndex; i++)
 		{
 			iter++;
 		}
+
+		for (auto& i : iter->second)
+		{
+			Safe_Release(i);
+		}
+
 
 		iter->second.clear();
 		m_Routes.erase(iIndex);
@@ -1143,8 +1382,109 @@ void CNavigation_Manager::Delete_Route(_int& iIndex)
 		Update_IndexesName();
 
 		Load_Route(iIndex);
+
+		Update_CellIndex_Draw();
+		Update_Route_Draw();
 	}
 	
+	m_iCurrentRouteCellIndex = 0;
+}
+
+void CNavigation_Manager::Update_CellIndex_Draw()
+{
+	// 그리기 위한 정보 업데이트
+	m_Route_CellIndexes_Draw.clear();
+
+	Safe_Release(m_pVIBufferCom);
+
+	for (auto& iter : m_Route_CellIndexes)
+	{
+		m_Route_CellIndexes_Draw.push_back(iter->Get_RouteIO());
+	}
+
+	m_pVIBufferCom = CVIBuffer_Line::Create(m_pDevice, m_pContext, m_Route_CellIndexes_Draw);
+	if (nullptr == m_pVIBufferCom)
+		MSG_BOX("VIBuffer_Lint 생성 불가");
+
+}
+
+void CNavigation_Manager::Update_Route_Draw()
+{
+	// 그리기 위한 정보 업데이트
+	for (auto& Pair : m_Routes_Draw)
+		Pair.second.clear();
+	m_Routes_Draw.clear();
+
+	int index = 0;
+
+	for (auto& pair : m_Routes)
+	{
+		vector<ROUTE_IO>	routeIO;
+		for (auto& iter : pair.second)
+		{
+			routeIO.push_back(iter->Get_RouteIO());
+		}
+
+		m_Routes_Draw.emplace(index, routeIO);
+
+		index++;
+	}
+
+}
+
+void CNavigation_Manager::Edit_GameObject_Transform(int iNumObject)
+{
+	if (0 < m_Route_CellIndexes.size())
+	{
+		vector<CNaviObj*>::iterator iter = m_Route_CellIndexes.begin();
+
+		if (iNumObject > m_Route_CellIndexes.size())
+			return;
+
+		if (0 != iNumObject)
+		{
+			for (int i = 0; i < iNumObject; i++)
+			{
+				iter++;
+			}
+		}
+
+		EditTransformN((float*)CGameInstance::GetInstance()->Get_Transform_Float4x4(CPipeLine::D3DTS_VIEW),
+			(float*)CGameInstance::GetInstance()->Get_Transform_Float4x4(CPipeLine::D3DTS_PROJ),
+			(float*)dynamic_cast<CGameObject*>(*iter)->Get_TransformCom()->Get_WorldFloat4x4(),
+			true);
+	}
+	
+}
+
+void CNavigation_Manager::Click_To_Select_Object(int& iObjectNum)
+{
+	if (HOLD == m_pGameInstance->GetKeyState(DIK_G))
+	{
+		m_bFindObject = true;
+	}
+	else
+	{
+		m_bFindObject = false;
+	}
+
+	if (true == m_bFindObject)
+	{
+		m_bFindObject = false;
+
+		_bool		isPick;
+
+		_float		iIndex = 0;
+		iIndex = m_pGameInstance->FindObjID(&isPick);
+
+		if (iIndex > 0)
+		{
+			/* ID는 1부터 시작하니까 INDEX 받을때는 -1 해주기 */
+			iObjectNum = iIndex - 1;
+
+		}
+
+	}
 }
 
 
@@ -1160,9 +1500,11 @@ void CNavigation_Manager::Free()
 		Safe_Release(cell);
 	m_Cells.clear();
 
-	for (auto& cell : m_RouteCells)
-		Safe_Release(cell);
-	m_RouteCells.clear();
+	m_vPoints.clear();
+
+	for (auto& iter : m_RouteFileNames)
+		Safe_Delete(iter);
+
 
 	for (auto& iter : m_CellsName)
 		Safe_Delete(iter);
@@ -1188,13 +1530,27 @@ void CNavigation_Manager::Free()
 	m_vLineBufferLine.clear();
 
 
+
+	for (auto& iter : m_Route_CellIndexes)
+		Safe_Release(iter);
 	m_Route_CellIndexes.clear();
 
 
+	m_Route_CellIndexes_Draw.clear();
 
-	for (auto& Pair : m_Routes)
+	for (auto& Pair : m_Routes_Draw)
 		Pair.second.clear();
+	m_Routes_Draw.clear();
+
+	for (auto& iter : m_Routes)
+	{
+		for (auto& pair : iter.second)
+			Safe_Release(pair);
+
+		iter.second.clear();
+	}
 	m_Routes.clear();
+
 
 
 	Safe_Release(m_pGameInstance);

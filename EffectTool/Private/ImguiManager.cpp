@@ -4,6 +4,7 @@
 #pragma region "객체 원형"
 #include "Particle_Point.h"
 #include "TRailEffect.h"
+#include "Particle_Mesh.h"
 #pragma endregion
 
 static ImGuizmo::OPERATION mCurrentGizmoOperation(ImGuizmo::TRANSLATE);
@@ -38,16 +39,44 @@ HRESULT CImguiManager::Initialize(void* pArg)
 	TextureTags.push_back(TEXT("Prototype_Component_Texture_Trail"));
 	TextureTags.push_back(TEXT("Prototype_Component_Texture_Test"));
 	TextureTags.push_back(TEXT("Prototype_Component_Texture_HitSpark"));
-	TextureTags.push_back(TEXT("Prototype_Component_Texture_AuraTone"));
 	TextureTags.push_back(TEXT("Prototype_Component_Texture_HitBase"));
 	TextureTags.push_back(TEXT("Prototype_Component_Texture_SmokeBase"));
-	TextureTags.push_back(TEXT("Prototype_Component_Texture_AuraToneRush"));
-	TextureTags.push_back(TEXT("Prototype_Component_Texture_AuraToneDestroy"));
 	TextureTags.push_back(TEXT("Prototype_Component_Texture_GuardParticle"));
 	TextureTags.push_back(TEXT("Prototype_Component_Texture_GuardSmoke"));
 	TextureTags.push_back(TEXT("Prototype_Component_Texture_GuardDist"));
 	TextureTags.push_back(TEXT("Prototype_Component_Texture_Money"));
 	TextureTags.push_back(TEXT("Prototype_Component_Texture_Coin"));
+	TextureTags.push_back(TEXT("Prototype_Component_Texture_AuraAnim"));
+	TextureTags.push_back(TEXT("Prototype_Component_Texture_WaveFace"));
+	TextureTags.push_back(TEXT("Prototype_Component_Texture_AuraBase"));
+
+	TextureTags.push_back(TEXT("Prototype_Component_Texture_BloodD0"));
+	TextureTags.push_back(TEXT("Prototype_Component_Texture_BloodD1"));
+	TextureTags.push_back(TEXT("Prototype_Component_Texture_BloodD2"));
+	TextureTags.push_back(TEXT("Prototype_Component_Texture_BloodD3"));
+	TextureTags.push_back(TEXT("Prototype_Component_Texture_BloodD4"));
+	TextureTags.push_back(TEXT("Prototype_Component_Texture_BloodD5"));
+	TextureTags.push_back(TEXT("Prototype_Component_Texture_BloodD6"));
+	TextureTags.push_back(TEXT("Prototype_Component_Texture_BloodD7"));
+	TextureTags.push_back(TEXT("Prototype_Component_Texture_BloodD8"));
+
+	ToneTextureTags.push_back(TEXT("Prototype_Component_Texture_AuraTone"));
+	ToneTextureTags.push_back(TEXT("Prototype_Component_Texture_AuraToneRush"));
+	ToneTextureTags.push_back(TEXT("Prototype_Component_Texture_AuraToneDestroy"));
+
+	MeshTags.push_back(TEXT("Prototype_Component_Model_ParticleSphere"));
+	MeshTags.push_back(TEXT("Prototype_Component_Model_ParticleMoney"));
+	MeshTags.push_back(TEXT("Prototype_Component_Model_ParticleBlood"));
+
+	NormalTags.push_back(TEXT("Prototype_Component_Texture_BloodN0"));
+	NormalTags.push_back(TEXT("Prototype_Component_Texture_BloodN1"));
+	NormalTags.push_back(TEXT("Prototype_Component_Texture_BloodN2"));
+	NormalTags.push_back(TEXT("Prototype_Component_Texture_BloodN3"));
+	NormalTags.push_back(TEXT("Prototype_Component_Texture_BloodN4"));
+	NormalTags.push_back(TEXT("Prototype_Component_Texture_BloodN5"));
+	NormalTags.push_back(TEXT("Prototype_Component_Texture_BloodN6"));
+	NormalTags.push_back(TEXT("Prototype_Component_Texture_BloodN7"));
+	NormalTags.push_back(TEXT("Prototype_Component_Texture_BloodN8"));
 
 
 	if (nullptr != pArg)
@@ -174,6 +203,23 @@ void CImguiManager::Tick(const _float& fTimeDelta)
 		}
 	}
 	break;
+	case MODE_MESH:
+	{
+		CreateMesh_Tick(fTimeDelta);
+		EditorMesh_Tick(fTimeDelta);
+		Guizmo_Tick(fTimeDelta);
+		Timeline_Tick(fTimeDelta);
+		if (!m_EditMesh.empty())
+		{
+
+			for (auto& iter : m_EditMesh)
+			{
+				iter->Tick(fTimeDelta);
+				iter->Late_Tick(fTimeDelta);
+			}
+		}
+	}
+	break;
 	default:
 		break;
 	}
@@ -292,6 +338,11 @@ void CImguiManager::Guizmo(_float fTimeDelta)
 				objectWorld = (_float*)dynamic_cast<CTransform*>(m_EditAura[m_iCurEditIndex]->Get_TransformCom())->Get_WorldFloat4x4();
 			}
 			break;
+			case MODE_MESH:
+			{
+				objectWorld = (_float*)dynamic_cast<CTransform*>(m_EditMesh[m_iCurEditIndex]->Get_TransformCom())->Get_WorldFloat4x4();
+			}
+			break;
 			default:
 				break;
 			}
@@ -305,7 +356,7 @@ void CImguiManager::Guizmo(_float fTimeDelta)
 HRESULT CImguiManager::Mode_Select(_float fTimeDelta)
 {
 	ImGui::SetNextWindowPos(ImVec2(0, 0), ImGuiCond_FirstUseEver);
-	ImGui::SetNextWindowSize(ImVec2(150, 100), ImGuiCond_None);
+	ImGui::SetNextWindowSize(ImVec2(150, 130), ImGuiCond_None);
 
 	ImGui::Begin("Mode_Select");
 
@@ -329,6 +380,14 @@ HRESULT CImguiManager::Mode_Select(_float fTimeDelta)
 	{
 		m_iMode = MODE_AURA;
 		if (!m_EditAura.empty())
+			m_iCurEditIndex = 0;
+		else
+			m_iCurEditIndex = -1;
+	}
+	if (ImGui::Button("Mesh Mode"))
+	{
+		m_iMode = MODE_MESH;
+		if (!m_EditMesh.empty())
 			m_iCurEditIndex = 0;
 		else
 			m_iCurEditIndex = -1;
@@ -372,8 +431,6 @@ HRESULT CImguiManager::Create_Particle()
 
 	if(m_bSpread)
 		dynamic_cast<CEffect*>(pGameParticle)->Edit_Action(CEffect::ACTION_SPREAD);
-	if(m_bDrop)
-		dynamic_cast<CEffect*>(pGameParticle)->Edit_Action(CEffect::ACTION_DROP);
 	if (m_bSizeup)
 		dynamic_cast<CEffect*>(pGameParticle)->Edit_Action(CEffect::ACTION_SIZEUP);
 	if (m_bSizedown)
@@ -418,31 +475,31 @@ HRESULT CImguiManager::Create_Aura()
 	if (-1 == m_iCurEditIndex)
 		m_iCurEditIndex = 0;
 
-	CAura::AURA_DESC EffectDesc{};
+	CAura::AURA_DESC AuraDesc{};
 
 
-	EffectDesc.BufferInstance.iNumInstance = 1;
-	EffectDesc.BufferInstance.isLoop = true;
-	EffectDesc.BufferInstance.vLifeTime = _float2(1.f, 1.f);
-	EffectDesc.BufferInstance.vOffsetPos = _float3(0.f, 0.f, 0.f);
-	EffectDesc.BufferInstance.vPivotPos = _float3(0.f, 0.f, 0.f);
-	EffectDesc.BufferInstance.vRange = _float3(0.f, 0.f, 0.f);
-	EffectDesc.BufferInstance.vSize = _float2(1.f, 1.f);
-	EffectDesc.BufferInstance.vSpeed = _float2(1.f, 1.f);
-	EffectDesc.BufferInstance.vRectSize = _float2(1.0f, 1.0f);
-	EffectDesc.BufferInstance.fRadius = 1.f;
+	AuraDesc.BufferInstance.iNumInstance = 1;
+	AuraDesc.BufferInstance.isLoop = true;
+	AuraDesc.BufferInstance.vLifeTime = _float2(1.f, 1.f);
+	AuraDesc.BufferInstance.vOffsetPos = _float3(0.f, 0.f, 0.f);
+	AuraDesc.BufferInstance.vPivotPos = _float3(0.f, 0.f, 0.f);
+	AuraDesc.BufferInstance.vRange = _float3(0.f, 0.f, 0.f);
+	AuraDesc.BufferInstance.vSize = _float2(1.f, 1.f);
+	AuraDesc.BufferInstance.vSpeed = _float2(1.f, 1.f);
+	AuraDesc.BufferInstance.vRectSize = _float2(1.0f, 1.0f);
+	AuraDesc.BufferInstance.fRadius = 1.f;
 
-	EffectDesc.vStartPos = { 0.f, 0.f, 0.f, 1.f };
-	EffectDesc.fRotate = { 0.f };
-	EffectDesc.fLifeAlpha = { 0.f, 0.f };
-	EffectDesc.eType = CEffect::TYPE_POINT;
-	EffectDesc.ParticleTag = m_pGameInstance->StringToWstring(m_AuraTag);
-	EffectDesc.fStartTime = { 0.f };
-	EffectDesc.iShaderPass = { 0 };
-	EffectDesc.TextureTag = TextureTags[0];
+	AuraDesc.vStartPos = { 0.f, 0.f, 0.f, 1.f };
+	AuraDesc.fRotate = { 0.f };
+	AuraDesc.fLifeAlpha = { 0.f, 0.f };
+	AuraDesc.eType = CEffect::TYPE_POINT;
+	AuraDesc.ParticleTag = m_pGameInstance->StringToWstring(m_AuraTag);
+	AuraDesc.fStartTime = { 0.f };
+	AuraDesc.iShaderPass = { 0 };
+	AuraDesc.TextureTag = TextureTags[0];
+	AuraDesc.ToneTextureTag = ToneTextureTags[0];
 
-
-	CGameObject* pGameParticle = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Aura"), &EffectDesc);
+	CGameObject* pGameParticle = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Aura"), &AuraDesc);
 	if (nullptr == pGameParticle)
 		return E_FAIL;
 
@@ -569,10 +626,18 @@ void CImguiManager::EditorAura_Tick(_float fTimeDelta)
 	ImGui::Text(to_string(m_iCurEditIndex).c_str());
 
 
-	if (ImGui::RadioButton("FLUID", &m_AuraDesc.iShaderPass, PASS_NOCOLOR))
+	if (ImGui::RadioButton("FLUID", &m_AuraDesc.iShaderPass, 0))
 		bChange = true;
-	if (ImGui::RadioButton("Start", &m_AuraDesc.iShaderPass, PASS_COLOR))
+	if (ImGui::RadioButton("Start", &m_AuraDesc.iShaderPass, 1))
 		bChange = true;
+	if (ImGui::RadioButton("Anim", &m_AuraDesc.iShaderPass, 2))
+		bChange = true;
+
+	if (ImGui::Checkbox("Attach", &m_AuraDesc.BufferInstance.isAttach))
+	{
+		bChange = true;
+	}
+
 
 	if (ImGui::Checkbox("Spread", &m_bSpread))
 	{
@@ -580,16 +645,6 @@ void CImguiManager::EditorAura_Tick(_float fTimeDelta)
 		{
 			CEffect* pParticle = dynamic_cast<CEffect*>(m_EditAura[m_iCurEditIndex]);
 			pParticle->Edit_Action(CEffect::ACTION_SPREAD);
-		}
-	}
-	ImGui::SameLine();
-
-	if (ImGui::Checkbox("Drop", &m_bDrop))
-	{
-		if (-1 != m_iCurEditIndex)
-		{
-			CEffect* pParticle = dynamic_cast<CEffect*>(m_EditAura[m_iCurEditIndex]);
-			pParticle->Edit_Action(CEffect::ACTION_DROP);
 		}
 	}
 	ImGui::SameLine();
@@ -611,14 +666,6 @@ void CImguiManager::EditorAura_Tick(_float fTimeDelta)
 			pParticle->Edit_Action(CEffect::ACTION_SIZEDOWN);
 		}
 	}
-	if (ImGui::Checkbox("Aura", &m_bAura))
-	{
-		if (-1 != m_iCurEditIndex)
-		{
-			CEffect* pParticle = dynamic_cast<CEffect*>(m_EditAura[m_iCurEditIndex]);
-			pParticle->Edit_Action(CEffect::ACTION_AURA);
-		}
-	}
 
 	if (ImGui::Checkbox("useRadius", &m_AuraDesc.BufferInstance.bRadius))
 	{
@@ -628,6 +675,16 @@ void CImguiManager::EditorAura_Tick(_float fTimeDelta)
 	if (ImGui::Checkbox("isLoop", &m_AuraDesc.BufferInstance.isLoop))
 	{
 		bChange = true;
+	}
+
+	static char strAuraReName[MAX_PATH]{};
+
+	ImGui::InputText("ParticleTag", strAuraReName, MAX_PATH);
+	if (ImGui::Button(u8"변경하기"))
+	{
+		bChange = true;
+		string tag = strAuraReName;
+		m_AuraDesc.ParticleTag = m_pGameInstance->StringToWstring(tag);
 	}
 
 	if (ImGui::InputScalar("NumInstance", ImGuiDataType_U32, &m_AuraDesc.BufferInstance.iNumInstance))
@@ -720,8 +777,28 @@ void CImguiManager::EditorAura_Tick(_float fTimeDelta)
 	}
 
 
-	File_Selctor(&bChange);
+	Temp = (_float*)&m_AuraDesc.fToneUVCount;
+	if (ImGui::InputFloat2("fToneUVCount", Temp))
+	{
+		memcpy(&m_AuraDesc.fToneUVCount, Temp, sizeof(_float2));
+		bChange = true;
+	}
 
+	Temp = (_float*)&m_AuraDesc.fFlowPow;
+	if (ImGui::InputFloat("fFlowPow", Temp))
+	{
+		memcpy(&m_AuraDesc.fFlowPow, Temp, sizeof(_float));
+		bChange = true;
+	}
+	Temp = (_float*)&m_AuraDesc.fFlowSpeed;
+	if (ImGui::InputFloat("fFlowSpeed", Temp))
+	{
+		memcpy(&m_AuraDesc.fFlowSpeed, Temp, sizeof(_float));
+		bChange = true;
+	}
+
+	File_Selctor(&bChange);
+	Tone_File_Selector(&bChange);
 
 
 
@@ -734,6 +811,545 @@ void CImguiManager::EditorAura_Tick(_float fTimeDelta)
 
 
 
+}
+
+void CImguiManager::Tone_File_Selector(_bool* bChange)
+{
+	_int iSize = ToneTextureTags.size();
+	if (ImGui::BeginListBox("ToneBox"))
+	{
+		for (int i = 0; i < iSize; i++)
+		{
+			// 리스트박스 아이템의 텍스트
+			const bool isSelected = (m_iCurToneTexture == i);
+			char Label[256] = {};
+			strcpy_s(Label, m_pGameInstance->WstringToString(ToneTextureTags[i]).c_str());
+			if (ImGui::Selectable(Label, isSelected))
+			{
+				m_iCurToneTexture = i; // 선택된 아이템 업데이트	
+				*bChange = true;
+			}
+
+
+			// 선택된 아이템이 보이도록 스크롤
+			if (isSelected)
+			{
+				ImGui::SetItemDefaultFocus();
+
+			}
+		}
+		ImGui::EndListBox();
+	}
+
+
+	if (-1 != m_iCurEditIndex)
+	{
+		m_AuraDesc.ToneTextureTag = ToneTextureTags[m_iCurToneTexture];
+	}
+
+}
+
+HRESULT CImguiManager::Create_Mesh()
+{
+
+	if (-1 == m_iCurEditIndex)
+		m_iCurEditIndex = 0;
+
+
+	CParticle_Mesh::PARTICLE_MESH_DESC MeshDesc{};
+
+	MeshDesc.BufferInstance.iNumInstance = 1;
+	MeshDesc.BufferInstance.isLoop = true;
+	MeshDesc.BufferInstance.vLifeTime = _float2(1.f, 1.f);
+	MeshDesc.BufferInstance.vOffsetPos = _float3(0.f, 0.f, 0.f);
+	MeshDesc.BufferInstance.vPivotPos = _float3(0.f, 0.f, 0.f);
+	MeshDesc.BufferInstance.vRange = _float3(0.f, 0.f, 0.f);
+	MeshDesc.BufferInstance.vSize = _float2(1.f, 1.f);
+	MeshDesc.BufferInstance.vSpeed = _float2(1.f, 1.f);
+	MeshDesc.BufferInstance.vRectSize = _float2(1.0f, 1.0f);
+	MeshDesc.BufferInstance.fRadius = 1.f;
+
+	MeshDesc.vStartPos = { 0.f, 0.f, 0.f, 1.f };
+	MeshDesc.fRotate = { 0.f };
+	MeshDesc.fLifeAlpha = { 0.f, 0.f };
+	MeshDesc.eType = CEffect::TYPE_MESHEFFECT;
+	MeshDesc.ParticleTag = m_pGameInstance->StringToWstring(text_input_buffer);
+	MeshDesc.fStartTime = { 0.f };
+	MeshDesc.iShaderPass = { 0 };
+	MeshDesc.TextureTag = TextureTags[0];
+
+	MeshDesc.strModelTag = TEXT("Prototype_Component_Model_ParticleSphere");
+
+
+
+	CGameObject* pGameParticle = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Particle_Mesh"), &MeshDesc);
+	if (nullptr == pGameParticle)
+		return E_FAIL;
+
+	if (m_bSpread)
+		dynamic_cast<CEffect*>(pGameParticle)->Edit_Action(CEffect::ACTION_SPREAD);
+	if (m_bSizeup)
+		dynamic_cast<CEffect*>(pGameParticle)->Edit_Action(CEffect::ACTION_SIZEUP);
+	if (m_bSizedown)
+		dynamic_cast<CEffect*>(pGameParticle)->Edit_Action(CEffect::ACTION_SIZEDOWN);
+
+	m_EditMesh.push_back(pGameParticle);
+	m_iCurEditIndex = m_EditMesh.size() - 1;
+	return S_OK;
+}
+
+void CImguiManager::CreateMesh_Tick(_float fTimeDelta)
+{
+	ImGui::SetNextWindowPos(ImVec2(980, 0), ImGuiCond_None);
+	ImGui::SetNextWindowSize(ImVec2(300, 200), ImGuiCond_None);
+
+	ImGui::Begin("Particle_Mesh_Create");
+
+
+	if (ImGui::InputText("ParticleTag", text_input_buffer, IM_ARRAYSIZE(text_input_buffer)))
+	{
+		m_EffectDesc.ParticleTag = m_pGameInstance->StringToWstring(text_input_buffer);
+	}
+
+	if (ImGui::Button("Create Particle Mesh"))
+	{
+		if ('\0' != text_input_buffer[0])
+		{
+			Create_Mesh();
+		}
+	}
+	if (ImGui::Button("Delete Particle"))
+	{
+		if (!m_EditMesh.empty())
+		{
+			Safe_Release(m_EditMesh.back());
+			m_EditMesh.pop_back();
+			if (m_EditMesh.empty())
+				m_iCurEditIndex = -1;
+			else
+				m_iCurEditIndex = 0;
+		}
+	}
+	if (ImGui::Button(u8"파티클 모두저장"))
+	{
+		AllEffect_Save();
+	}
+	Load_Selctor();
+
+
+	ImGui::End();
+}
+
+void CImguiManager::EditorMesh_Tick(_float fTimeDelta)
+{
+	ImGui::SetNextWindowPos(ImVec2(980, 200), ImGuiCond_None);
+	ImGui::SetNextWindowSize(ImVec2(300, 520), ImGuiCond_None);
+
+	ImGui::Begin("Mesh_Edit");
+
+	_int iSize = m_EditMesh.size();
+	if (ImGui::BeginListBox("listBox"))
+	{
+		for (int i = 0; i < iSize; i++)
+		{
+			// 리스트박스 아이템의 텍스트
+			const bool isSelected = (m_iCurEditIndex == i);
+			char Label[256] = {};
+			strcpy_s(Label, m_pGameInstance->WstringToString(dynamic_cast<CEffect*>(m_EditMesh[i])->Get_Tag()).c_str());
+			if (ImGui::Selectable(Label, isSelected))
+			{
+				m_iCurEditIndex = i; // 선택된 아이템 업데이트	
+				m_MeshDesc.ParticleTag = dynamic_cast<CEffect*>(m_EditMesh[i])->Get_Tag();
+			}
+
+			// 선택된 아이템이 보이도록 스크롤
+			if (isSelected)
+			{
+				ImGui::SetItemDefaultFocus();
+			}
+		}
+		ImGui::EndListBox();
+	}
+
+	if (-1 != m_iCurEditIndex)
+	{
+		Load_Desc(m_iCurEditIndex);
+	}
+
+	_bool bChange = false;
+	ImGui::Text(to_string(m_iCurEditIndex).c_str());
+
+
+	if (ImGui::RadioButton("MESH", &m_MeshDesc.iShaderPass, MESHPASS_MESH))
+	{
+		bChange = true;
+	}
+	ImGui::SameLine();
+	if (ImGui::RadioButton("MESHEFFECT", &m_MeshDesc.iShaderPass, MESHPASS_MESHEFFECT))
+	{
+		bChange = true;
+	}
+
+
+
+
+
+
+	static char strReName[MAX_PATH]{};
+
+	ImGui::InputText("ParticleTag", strReName, MAX_PATH);
+	if (ImGui::Button(u8"변경하기"))
+	{
+		bChange = true;
+		string tag = strReName;
+		m_MeshDesc.ParticleTag = m_pGameInstance->StringToWstring(tag);
+	}
+
+	if (ImGui::Checkbox("Nobill", &m_bNobillboard))
+	{
+		if (-1 != m_iCurEditIndex)
+		{
+			CEffect* pParticle = dynamic_cast<CEffect*>(m_EditMesh[m_iCurEditIndex]);
+			pParticle->Edit_Action(CEffect::ACTION_NOBILLBOARD);
+		}
+	}
+	ImGui::SameLine();
+
+	if (ImGui::Checkbox("SizeUP", &m_bSizeup))
+	{
+		if (-1 != m_iCurEditIndex)
+		{
+			CEffect* pParticle = dynamic_cast<CEffect*>(m_EditMesh[m_iCurEditIndex]);
+			pParticle->Edit_Action(CEffect::ACTION_SIZEUP);
+		}
+	}
+	ImGui::SameLine();
+	if (ImGui::Checkbox("SizeDown", &m_bSizedown))
+	{
+		if (-1 != m_iCurEditIndex)
+		{
+			CEffect* pParticle = dynamic_cast<CEffect*>(m_EditMesh[m_iCurEditIndex]);
+			pParticle->Edit_Action(CEffect::ACTION_SIZEDOWN);
+		}
+	}
+
+
+
+
+	if (ImGui::Checkbox("useRadius", &m_MeshDesc.BufferInstance.bRadius))
+	{
+		bChange = true;
+	}
+	ImGui::SameLine();
+	if (ImGui::Checkbox("isLoop", &m_MeshDesc.BufferInstance.isLoop))
+	{
+		bChange = true;
+	}
+	ImGui::SameLine();
+	if (ImGui::Checkbox("Attach", &m_MeshDesc.BufferInstance.isAttach))
+	{
+		bChange = true;
+	}
+
+
+	if (ImGui::InputScalar("NumInstance", ImGuiDataType_U32, &m_MeshDesc.BufferInstance.iNumInstance))
+	{
+		bChange = true;
+	}
+
+
+	_float* Temp = (_float*)&m_MeshDesc.BufferInstance.vOffsetPos;
+	if (ImGui::InputFloat3("OffsetPos", Temp))
+	{
+		memcpy(&m_MeshDesc.BufferInstance.vOffsetPos, Temp, sizeof(_float3));
+		bChange = true;
+	}
+
+	Temp = (_float*)&m_MeshDesc.BufferInstance.vPivotPos;
+	if (ImGui::InputFloat3("PivotPos", Temp))
+	{
+		memcpy(&m_MeshDesc.BufferInstance.vPivotPos, Temp, sizeof(_float3));
+		bChange = true;
+	}
+
+	if (!m_MeshDesc.BufferInstance.bRadius)
+	{
+
+		Temp = (_float*)&m_MeshDesc.BufferInstance.vRange;
+		if (ImGui::InputFloat3("Range", Temp))
+		{
+			memcpy(&m_MeshDesc.BufferInstance.vRange, Temp, sizeof(_float3));
+			bChange = true;
+		}
+	}
+	else
+	{
+		Temp = (_float*)&m_MeshDesc.BufferInstance.fRadius;
+		if (ImGui::InputFloat("Radius", Temp))
+		{
+			memcpy(&m_MeshDesc.BufferInstance.fRadius, Temp, sizeof(_float));
+			bChange = true;
+		}
+	}
+
+	Temp = (_float*)&m_MeshDesc.BufferInstance.vSize;
+	if (ImGui::InputFloat2("Size", Temp))
+	{
+		memcpy(&m_MeshDesc.BufferInstance.vSize, Temp, sizeof(_float2));
+		bChange = true;
+	}
+
+	Temp = (_float*)&m_MeshDesc.BufferInstance.vRectSize;
+	if (ImGui::InputFloat2("RectSize", Temp))
+	{
+		if (Temp[0] > Temp[1])
+			Temp[1] = Temp[0];
+		memcpy(&m_MeshDesc.BufferInstance.vRectSize, Temp, sizeof(_float2));
+		bChange = true;
+	}
+
+	Temp = (_float*)&m_MeshDesc.BufferInstance.vLifeTime;
+	if (ImGui::InputFloat2("LifeTime", Temp))
+	{
+		if (Temp[0] > Temp[1])
+			Temp[1] = Temp[0];
+		memcpy(&m_MeshDesc.BufferInstance.vLifeTime, Temp, sizeof(_float2));
+		bChange = true;
+	}
+
+	Temp = (_float*)&m_MeshDesc.fLifeAlpha;
+	if (ImGui::InputFloat2("LifeAlpha", Temp))
+	{
+		memcpy(&m_MeshDesc.fLifeAlpha, Temp, sizeof(_float2));
+		bChange = true;
+	}
+
+	Temp = (_float*)&m_MeshDesc.fStartTime;
+	if (ImGui::InputFloat("StartTime", Temp))
+	{
+		memcpy(&m_MeshDesc.fStartTime, Temp, sizeof(_float));
+		bChange = true;
+	}
+
+	Temp = (_float*)&m_MeshDesc.BufferInstance.LowStartRot;
+	if (ImGui::InputFloat3("LowStartRot", Temp))
+	{
+		if (Temp[0] > m_MeshDesc.BufferInstance.HighStartRot.x)
+			m_MeshDesc.BufferInstance.HighStartRot.x = Temp[0];
+		if (Temp[1] > m_MeshDesc.BufferInstance.HighStartRot.y)
+			m_MeshDesc.BufferInstance.HighStartRot.y = Temp[1];
+		if (Temp[2] > m_MeshDesc.BufferInstance.HighStartRot.z)
+			m_MeshDesc.BufferInstance.HighStartRot.z = Temp[2];
+		memcpy(&m_MeshDesc.BufferInstance.LowStartRot, Temp, sizeof(_float3));
+		bChange = true;
+	}
+
+	Temp = (_float*)&m_MeshDesc.BufferInstance.HighStartRot;
+	if (ImGui::InputFloat3("HighStartRot", Temp))
+	{
+		if (Temp[0] < m_MeshDesc.BufferInstance.LowStartRot.x)
+			m_MeshDesc.BufferInstance.LowStartRot.x = Temp[0];
+		if (Temp[1] < m_MeshDesc.BufferInstance.LowStartRot.y)
+			m_MeshDesc.BufferInstance.LowStartRot.y = Temp[1];
+		if (Temp[2] < m_MeshDesc.BufferInstance.LowStartRot.z)
+			m_MeshDesc.BufferInstance.LowStartRot.z = Temp[2];
+		memcpy(&m_MeshDesc.BufferInstance.HighStartRot, Temp, sizeof(_float3));
+		bChange = true;
+	}
+	Temp = (_float*)&m_MeshDesc.BufferInstance.LowAngleVelocity;
+	if (ImGui::InputFloat3("LowAngleVelocity", Temp))
+	{
+		if (Temp[0] > m_MeshDesc.BufferInstance.HighAngleVelocity.x)
+			m_MeshDesc.BufferInstance.HighAngleVelocity.x = Temp[0];
+		if (Temp[1] > m_MeshDesc.BufferInstance.HighAngleVelocity.y)
+			m_MeshDesc.BufferInstance.HighAngleVelocity.y = Temp[1];
+		if (Temp[2] > m_MeshDesc.BufferInstance.HighAngleVelocity.z)
+			m_MeshDesc.BufferInstance.HighAngleVelocity.z = Temp[2];
+		memcpy(&m_MeshDesc.BufferInstance.LowAngleVelocity, Temp, sizeof(_float3));
+		bChange = true;
+	}
+	Temp = (_float*)&m_MeshDesc.BufferInstance.HighAngleVelocity;
+	if (ImGui::InputFloat3("HighAngleVelocity", Temp))
+	{
+		if (Temp[0] < m_MeshDesc.BufferInstance.LowAngleVelocity.x)
+			m_MeshDesc.BufferInstance.LowAngleVelocity.x = Temp[0];
+		if (Temp[1] < m_MeshDesc.BufferInstance.LowAngleVelocity.y)
+			m_MeshDesc.BufferInstance.LowAngleVelocity.y = Temp[1];
+		if (Temp[2] < m_MeshDesc.BufferInstance.LowAngleVelocity.z)
+			m_MeshDesc.BufferInstance.LowAngleVelocity.z = Temp[2];
+		memcpy(&m_MeshDesc.BufferInstance.HighAngleVelocity, Temp, sizeof(_float3));
+		bChange = true;
+	}
+	Temp = (_float*)&m_MeshDesc.BufferInstance.GravityScale;
+	if (ImGui::InputFloat("GravityScale", Temp))
+	{
+		memcpy(&m_MeshDesc.BufferInstance.GravityScale, Temp, sizeof(_float));
+		bChange = true;
+	}
+	Temp = (_float*)&m_MeshDesc.BufferInstance.CrossArea;
+	if (ImGui::InputFloat("CrossArea", Temp))
+	{
+		memcpy(&m_MeshDesc.BufferInstance.CrossArea, Temp, sizeof(_float));
+		bChange = true;
+	}
+	Temp = (_float*)&m_MeshDesc.BufferInstance.vMinSpeed;
+	if (ImGui::InputFloat3("vMinSpeed", Temp))
+	{
+		if (Temp[0] > m_MeshDesc.BufferInstance.vMaxSpeed.x)
+			m_MeshDesc.BufferInstance.vMaxSpeed.x = Temp[0];
+		if (Temp[1] > m_MeshDesc.BufferInstance.vMaxSpeed.y)
+			m_MeshDesc.BufferInstance.vMaxSpeed.y = Temp[1];
+		if (Temp[2] > m_MeshDesc.BufferInstance.vMaxSpeed.z)
+			m_MeshDesc.BufferInstance.vMaxSpeed.z = Temp[2];
+		memcpy(&m_MeshDesc.BufferInstance.vMinSpeed, Temp, sizeof(_float3));
+		bChange = true;
+	}
+	Temp = (_float*)&m_MeshDesc.BufferInstance.vMaxSpeed;
+	if (ImGui::InputFloat3("vMaxSpeed", Temp))
+	{
+		if (Temp[0] < m_MeshDesc.BufferInstance.vMinSpeed.x)
+			m_MeshDesc.BufferInstance.vMinSpeed.x = Temp[0];
+		if (Temp[1] < m_MeshDesc.BufferInstance.vMinSpeed.y)
+			m_MeshDesc.BufferInstance.vMinSpeed.y = Temp[1];
+		if (Temp[2] < m_MeshDesc.BufferInstance.vMinSpeed.z)
+			m_MeshDesc.BufferInstance.vMinSpeed.z = Temp[2];
+		memcpy(&m_MeshDesc.BufferInstance.vMaxSpeed, Temp, sizeof(_float3));
+		bChange = true;
+	}
+	Temp = (_float*)&m_MeshDesc.BufferInstance.fWeight;
+	if (ImGui::InputFloat2("fWeight", Temp))
+	{
+		if (Temp[0] > Temp[1])
+			Temp[1] = Temp[0];
+
+		memcpy(&m_MeshDesc.BufferInstance.fWeight, Temp, sizeof(_float2));
+		bChange = true;
+	}
+	Temp = (_float*)&m_MeshDesc.BufferInstance.vMinFrequency;
+	if (ImGui::InputFloat3("vMinFrequency", Temp))
+	{
+		if (Temp[0] > m_MeshDesc.BufferInstance.vMaxFrequency.x)
+			m_MeshDesc.BufferInstance.vMaxFrequency.x = Temp[0];
+		if (Temp[1] > m_MeshDesc.BufferInstance.vMaxFrequency.y)
+			m_MeshDesc.BufferInstance.vMaxFrequency.y = Temp[1];
+		if (Temp[2] > m_MeshDesc.BufferInstance.vMaxFrequency.z)
+			m_MeshDesc.BufferInstance.vMaxFrequency.z = Temp[2];
+		memcpy(&m_MeshDesc.BufferInstance.vMinFrequency, Temp, sizeof(_float3));
+		bChange = true;
+	}
+	Temp = (_float*)&m_MeshDesc.BufferInstance.vMaxFrequency;
+	if (ImGui::InputFloat3("vMaxFrequency", Temp))
+	{
+		if (Temp[0] < m_MeshDesc.BufferInstance.vMinFrequency.x)
+			m_MeshDesc.BufferInstance.vMinFrequency.x = Temp[0];
+		if (Temp[1] < m_MeshDesc.BufferInstance.vMinFrequency.y)
+			m_MeshDesc.BufferInstance.vMinFrequency.y = Temp[1];
+		if (Temp[2] < m_MeshDesc.BufferInstance.vMinFrequency.z)
+			m_MeshDesc.BufferInstance.vMinFrequency.z = Temp[2];
+		memcpy(&m_MeshDesc.BufferInstance.vMaxFrequency, Temp, sizeof(_float3));
+		bChange = true;
+	}
+	Temp = (_float*)&m_MeshDesc.BufferInstance.vMinAmplitude;
+	if (ImGui::InputFloat3("vMinAmplitude", Temp))
+	{
+		if (Temp[0] > m_MeshDesc.BufferInstance.vMaxAmplitude.x)
+			m_MeshDesc.BufferInstance.vMaxAmplitude.x = Temp[0];
+		if (Temp[1] > m_MeshDesc.BufferInstance.vMaxAmplitude.y)
+			m_MeshDesc.BufferInstance.vMaxAmplitude.y = Temp[1];
+		if (Temp[2] > m_MeshDesc.BufferInstance.vMaxAmplitude.z)
+			m_MeshDesc.BufferInstance.vMaxAmplitude.z = Temp[2];
+		memcpy(&m_MeshDesc.BufferInstance.vMinAmplitude, Temp, sizeof(_float3));
+		bChange = true;
+	}
+	Temp = (_float*)&m_MeshDesc.BufferInstance.vMaxAmplitude;
+	if (ImGui::InputFloat3("vMaxAmplitude", Temp))
+	{
+		if (Temp[0] < m_MeshDesc.BufferInstance.vMinAmplitude.x)
+			m_MeshDesc.BufferInstance.vMinAmplitude.x = Temp[0];
+		if (Temp[1] < m_MeshDesc.BufferInstance.vMinAmplitude.y)
+			m_MeshDesc.BufferInstance.vMinAmplitude.y = Temp[1];
+		if (Temp[2] < m_MeshDesc.BufferInstance.vMinAmplitude.z)
+			m_MeshDesc.BufferInstance.vMinAmplitude.z = Temp[2];
+		memcpy(&m_MeshDesc.BufferInstance.vMaxAmplitude, Temp, sizeof(_float3));
+		bChange = true;
+	}
+
+
+
+	File_Selctor(&bChange);
+	Mesh_File_Selctor(&bChange);
+
+	if (bChange)
+	{
+		Edit_Particle(m_iCurEditIndex);
+	}
+	ImGui::End();
+}
+
+void CImguiManager::Mesh_File_Selctor(_bool* bChange)
+{
+
+	_int iSize = MeshTags.size();
+	if (ImGui::BeginListBox("MeshBox"))
+	{
+		for (int i = 0; i < iSize; i++)
+		{
+			// 리스트박스 아이템의 텍스트
+			const bool isSelected = (m_iCurMesh == i);
+			char Label[256] = {};
+			strcpy_s(Label, m_pGameInstance->WstringToString(MeshTags[i]).c_str());
+			if (ImGui::Selectable(Label, isSelected))
+			{
+				m_iCurMesh = i; // 선택된 아이템 업데이트	
+				*bChange = true;
+			}
+
+
+			// 선택된 아이템이 보이도록 스크롤
+			if (isSelected)
+			{
+				ImGui::SetItemDefaultFocus();
+
+			}
+		}
+		ImGui::EndListBox();
+	}
+
+	if (-1 != m_iCurEditIndex)
+	{
+		m_MeshDesc.strModelTag = MeshTags[m_iCurMesh];	
+	}
+
+	_int iNormalSize = NormalTags.size();
+	if (ImGui::BeginListBox("NormalBox"))
+	{
+		for (int i = 0; i < iNormalSize; i++)
+		{
+			// 리스트박스 아이템의 텍스트
+			const bool isSelected = (m_iCurNormalTexture == i);
+			char Label[256] = {};
+			strcpy_s(Label, m_pGameInstance->WstringToString(NormalTags[i]).c_str());
+			if (ImGui::Selectable(Label, isSelected))
+			{
+				m_iCurNormalTexture = i; // 선택된 아이템 업데이트	
+				*bChange = true;
+			}
+
+
+			// 선택된 아이템이 보이도록 스크롤
+			if (isSelected)
+			{
+				ImGui::SetItemDefaultFocus();
+
+			}
+		}
+		ImGui::EndListBox();
+	}
+
+	if (-1 != m_iCurEditIndex)
+	{
+		m_MeshDesc.strNormalTag = NormalTags[m_iCurNormalTexture];
+	}
 }
 
 void CImguiManager::EditorTrail_Tick(_float fTimeDelta)
@@ -871,6 +1487,19 @@ HRESULT CImguiManager::AllEffect_Save()
 
 	}
 	break;
+	case Client::CImguiManager::MODE_MESH:
+	{
+		string strDirectory = "../../Client/Bin/DataFiles/Particle/Mesh";
+
+		fs::path path(strDirectory);
+		if (!exists(path))
+			fs::create_directory(path);
+
+		for (auto iter : m_EditMesh)
+			dynamic_cast<CParticle_Mesh*>(iter)->Save_Data(strDirectory);
+
+	}
+	break;
 	case Client::CImguiManager::MODE_END:
 		break;
 	default:
@@ -968,6 +1597,7 @@ HRESULT CImguiManager::Edit_Particle(_uint Index)
 		EffectDesc.BufferInstance.GravityScale = m_EffectDesc.BufferInstance.GravityScale;
 		EffectDesc.BufferInstance.isBillboard = m_EffectDesc.BufferInstance.isBillboard;
 		EffectDesc.BufferInstance.CrossArea = m_EffectDesc.BufferInstance.CrossArea;
+		EffectDesc.BufferInstance.isAttach = m_EffectDesc.BufferInstance.isAttach;
 
 		EffectDesc.vStartPos = m_EffectDesc.vStartPos;
 		EffectDesc.fRotate = m_EffectDesc.fRotate;
@@ -983,20 +1613,23 @@ HRESULT CImguiManager::Edit_Particle(_uint Index)
 		EffectDesc.TextureTag = m_EffectDesc.TextureTag;
 		EffectDesc.fDistortion = m_EffectDesc.fDistortion;
 
+		EffectDesc.isNormal = m_EffectDesc.isNormal;
+		EffectDesc.NormalTag = m_EffectDesc.NormalTag;
+
 		m_EditParticle[Index] = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Particle_Point"), &EffectDesc);
 		if (nullptr == m_EditParticle[Index])
 			return E_FAIL;
 
 		if (m_bSpread)
 			dynamic_cast<CEffect*>(m_EditParticle[Index])->Edit_Action(CEffect::ACTION_SPREAD);
-		if (m_bDrop)
-			dynamic_cast<CEffect*>(m_EditParticle[Index])->Edit_Action(CEffect::ACTION_DROP);
 		if (m_bSizeup)
 			dynamic_cast<CEffect*>(m_EditParticle[Index])->Edit_Action(CEffect::ACTION_SIZEUP);
 		if (m_bSizedown)
 			dynamic_cast<CEffect*>(m_EditParticle[Index])->Edit_Action(CEffect::ACTION_SIZEDOWN);
 		if (m_bNobillboard)
 			dynamic_cast<CEffect*>(m_EditParticle[Index])->Edit_Action(CEffect::ACTION_NOBILLBOARD);
+		if (m_bFallSpread)
+			dynamic_cast<CEffect*>(m_EditParticle[Index])->Edit_Action(CEffect::ACTION_FALLSPREAD);
 		
 	}
 		break;
@@ -1052,6 +1685,7 @@ HRESULT CImguiManager::Edit_Particle(_uint Index)
 		AuraDesc.BufferInstance.vRectSize = m_AuraDesc.BufferInstance.vRectSize;
 		AuraDesc.BufferInstance.fRadius = m_AuraDesc.BufferInstance.fRadius;
 		AuraDesc.BufferInstance.bRadius = m_AuraDesc.BufferInstance.bRadius;
+		AuraDesc.BufferInstance.isAttach = m_AuraDesc.BufferInstance.isAttach;
 
 		AuraDesc.vStartPos = m_AuraDesc.vStartPos;
 		AuraDesc.fRotate = m_AuraDesc.fRotate;
@@ -1063,8 +1697,11 @@ HRESULT CImguiManager::Edit_Particle(_uint Index)
 		AuraDesc.vEndColor = m_AuraDesc.vEndColor;
 		AuraDesc.iShaderPass = m_AuraDesc.iShaderPass;
 		AuraDesc.TextureTag = m_AuraDesc.TextureTag;
+		AuraDesc.ToneTextureTag = m_AuraDesc.ToneTextureTag;
 		AuraDesc.fUVCount = m_AuraDesc.fUVCount;
-		AuraDesc.isAura = true;
+		AuraDesc.fToneUVCount = m_AuraDesc.fToneUVCount;
+		AuraDesc.fFlowPow = m_AuraDesc.fFlowPow;
+		AuraDesc.fFlowSpeed = m_AuraDesc.fFlowSpeed;
 
 
 		m_EditAura[Index] = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Aura"), &AuraDesc);
@@ -1073,16 +1710,57 @@ HRESULT CImguiManager::Edit_Particle(_uint Index)
 
 		if (m_bSpread)
 			dynamic_cast<CEffect*>(m_EditAura[Index])->Edit_Action(CEffect::ACTION_SPREAD);
-		if (m_bDrop)
-			dynamic_cast<CEffect*>(m_EditAura[Index])->Edit_Action(CEffect::ACTION_DROP);
 		if (m_bSizeup)
 			dynamic_cast<CEffect*>(m_EditAura[Index])->Edit_Action(CEffect::ACTION_SIZEUP);
 		if (m_bSizedown)
 			dynamic_cast<CEffect*>(m_EditAura[Index])->Edit_Action(CEffect::ACTION_SIZEDOWN);
-		if (m_bAura)
-			dynamic_cast<CEffect*>(m_EditAura[Index])->Edit_Action(CEffect::ACTION_AURA);
 	}
 		break;
+	case MODE_MESH:
+	{
+
+		if (m_EditMesh.size() <= Index)
+			return E_FAIL;
+		else
+		{
+			Safe_Release(m_EditMesh[Index]);
+		}
+
+		CParticle_Mesh::PARTICLE_MESH_DESC MeshDesc{};
+
+		memcpy(&MeshDesc.BufferInstance, &m_MeshDesc.BufferInstance, sizeof(CVIBuffer_Instance::INSTANCE_DESC));
+
+		MeshDesc.vStartPos = m_MeshDesc.vStartPos;
+		MeshDesc.fRotate = m_MeshDesc.fRotate;
+		MeshDesc.fLifeAlpha = m_MeshDesc.fLifeAlpha;
+		MeshDesc.eType = m_MeshDesc.eType;
+		MeshDesc.ParticleTag = m_MeshDesc.ParticleTag;
+		MeshDesc.fStartTime = m_MeshDesc.fStartTime;
+		MeshDesc.vStartColor = m_MeshDesc.vStartColor;
+		MeshDesc.vEndColor = m_MeshDesc.vEndColor;
+		MeshDesc.iShaderPass = m_MeshDesc.iShaderPass;
+
+
+		MeshDesc.TextureTag = m_MeshDesc.TextureTag;
+		MeshDesc.fDistortion = m_MeshDesc.fDistortion;
+
+
+		MeshDesc.strModelTag = m_MeshDesc.strModelTag;
+
+		m_EditMesh[Index] = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Particle_Mesh"), &MeshDesc);
+		if (nullptr == m_EditMesh[Index])
+			return E_FAIL;
+
+		if (m_bSpread)
+			dynamic_cast<CEffect*>(m_EditMesh[Index])->Edit_Action(CEffect::ACTION_SPREAD);
+		if (m_bSizeup)
+			dynamic_cast<CEffect*>(m_EditMesh[Index])->Edit_Action(CEffect::ACTION_SIZEUP);
+		if (m_bSizedown)
+			dynamic_cast<CEffect*>(m_EditMesh[Index])->Edit_Action(CEffect::ACTION_SIZEDOWN);
+		if (m_bNobillboard)
+			dynamic_cast<CEffect*>(m_EditMesh[Index])->Edit_Action(CEffect::ACTION_NOBILLBOARD);
+	}
+	break;
 	default:
 		break;
 	}
@@ -1103,24 +1781,7 @@ HRESULT CImguiManager::Load_Desc(_uint Index)
 		pEffect =dynamic_cast<CEffect*>(m_EditParticle[Index]);
 		CVIBuffer_Instance::INSTANCE_DESC* pDesc = static_cast<CVIBuffer_Instance::INSTANCE_DESC*>(pEffect->Get_Instance());
 
-		m_EffectDesc.BufferInstance.iNumInstance = pDesc->iNumInstance;
-		m_EffectDesc.BufferInstance.isLoop = pDesc->isLoop;
-		m_EffectDesc.BufferInstance.vLifeTime = pDesc->vLifeTime;
-		m_EffectDesc.BufferInstance.vOffsetPos = pDesc->vOffsetPos;
-		m_EffectDesc.BufferInstance.vPivotPos = pDesc->vPivotPos;
-		m_EffectDesc.BufferInstance.vRange = pDesc->vRange;
-		m_EffectDesc.BufferInstance.vSize = pDesc->vSize;
-		m_EffectDesc.BufferInstance.vSpeed = pDesc->vSpeed;
-		m_EffectDesc.BufferInstance.vRectSize = pDesc->vRectSize;
-		m_EffectDesc.BufferInstance.fRadius = pDesc->fRadius;
-		m_EffectDesc.BufferInstance.bRadius = pDesc->bRadius;
-		m_EffectDesc.BufferInstance.LowStartRot = pDesc->LowStartRot;
-		m_EffectDesc.BufferInstance.HighStartRot = pDesc->HighStartRot;
-		m_EffectDesc.BufferInstance.LowAngleVelocity = pDesc->LowAngleVelocity;
-		m_EffectDesc.BufferInstance.HighAngleVelocity = pDesc->HighAngleVelocity;
-		m_EffectDesc.BufferInstance.GravityScale = pDesc->GravityScale;
-		m_EffectDesc.BufferInstance.isBillboard = pDesc->isBillboard;
-		m_EffectDesc.BufferInstance.CrossArea = pDesc->CrossArea;
+		m_EffectDesc.BufferInstance = *pDesc;
 
 		m_EffectDesc.eType = pEffect->Get_Type();
 		m_EffectDesc.vStartPos = pEffect->Get_StartPos();
@@ -1134,6 +1795,9 @@ HRESULT CImguiManager::Load_Desc(_uint Index)
 		m_EffectDesc.TextureTag = pEffect->Get_TextureTag();
 		m_EffectDesc.fDistortion = pEffect->Get_fDistortion();
 
+		m_EffectDesc.isNormal = pEffect->Get_isNormal();
+		m_EffectDesc.NormalTag = pEffect->Get_NormalTag();
+
 		for (size_t i = 0; i < TextureTags.size(); i++)
 		{
 			if (m_EffectDesc.TextureTag == TextureTags[i])
@@ -1143,6 +1807,19 @@ HRESULT CImguiManager::Load_Desc(_uint Index)
 			}
 		}
 
+		if (m_EffectDesc.isNormal)
+		{
+			for (size_t i = 0; i < NormalTags.size(); i++)
+			{
+				if (m_EffectDesc.NormalTag == NormalTags[i])
+				{
+					m_iCurNormalTexture = i;
+					break;
+				}
+			}
+		}
+
+
 		_uint CheckAction = pEffect->Get_Action();
 
 		if (CheckAction & pEffect->iAction[CEffect::ACTION_SPREAD])
@@ -1150,10 +1827,6 @@ HRESULT CImguiManager::Load_Desc(_uint Index)
 		else
 			m_bSpread = false;
 
-		if (CheckAction & pEffect->iAction[CEffect::ACTION_DROP])
-			m_bDrop = true;
-		else
-			m_bDrop = false;
 
 		if (CheckAction & pEffect->iAction[CEffect::ACTION_SIZEUP])
 			m_bSizeup = true;
@@ -1169,6 +1842,11 @@ HRESULT CImguiManager::Load_Desc(_uint Index)
 			m_bNobillboard = true;
 		else
 			m_bNobillboard = false;
+
+		if (CheckAction & pEffect->iAction[CEffect::ACTION_FALLSPREAD])
+			m_bFallSpread = true;
+		else
+			m_bFallSpread = false;
 	}
 		break;
 	case MODE_TRAIL:
@@ -1207,17 +1885,8 @@ HRESULT CImguiManager::Load_Desc(_uint Index)
 		CVIBuffer_Instance::INSTANCE_DESC* pDesc = static_cast<CVIBuffer_Instance::INSTANCE_DESC*>(pAuraEffect->Get_Instance());
 
 
-		m_AuraDesc.BufferInstance.iNumInstance = pDesc->iNumInstance;
-		m_AuraDesc.BufferInstance.isLoop = pDesc->isLoop;
-		m_AuraDesc.BufferInstance.vLifeTime = pDesc->vLifeTime;
-		m_AuraDesc.BufferInstance.vOffsetPos = pDesc->vOffsetPos;
-		m_AuraDesc.BufferInstance.vPivotPos = pDesc->vPivotPos;
-		m_AuraDesc.BufferInstance.vRange = pDesc->vRange;
-		m_AuraDesc.BufferInstance.vSize = pDesc->vSize;
-		m_AuraDesc.BufferInstance.vSpeed = pDesc->vSpeed;
-		m_AuraDesc.BufferInstance.vRectSize = pDesc->vRectSize;
-		m_AuraDesc.BufferInstance.fRadius = pDesc->fRadius;
-		m_AuraDesc.BufferInstance.bRadius = pDesc->bRadius;
+		m_AuraDesc.BufferInstance = *pDesc;
+
 
 		m_AuraDesc.eType = pAuraEffect->Get_Type();
 		m_AuraDesc.vStartPos = pAuraEffect->Get_StartPos();
@@ -1229,8 +1898,14 @@ HRESULT CImguiManager::Load_Desc(_uint Index)
 		m_AuraDesc.vEndColor = pAuraEffect->Get_EColor();
 		m_AuraDesc.iShaderPass = pAuraEffect->Get_ShaderPass();
 		m_AuraDesc.TextureTag = pAuraEffect->Get_TextureTag();
+		m_AuraDesc.ToneTextureTag = pAuraEffect->Get_ToneTextureTag();	
 		m_AuraDesc.fUVCount = pAuraEffect->Get_UVCount();
-		m_AuraDesc.isAura = true;
+		m_AuraDesc.fToneUVCount = pAuraEffect->Get_ToneUVCount();
+		m_AuraDesc.fFlowPow = pAuraEffect->Get_FlowPow();
+		m_AuraDesc.fFlowSpeed = pAuraEffect->Get_FlowSpeed();
+
+
+
 		_uint CheckAction = pAuraEffect->Get_Action();
 
 
@@ -1243,16 +1918,22 @@ HRESULT CImguiManager::Load_Desc(_uint Index)
 			}
 		}
 
+		for (size_t i = 0; i < ToneTextureTags.size(); i++)
+		{
+			if (m_AuraDesc.ToneTextureTag == ToneTextureTags[i])
+			{
+				m_iCurToneTexture = i;
+				break;
+			}
+		}
+
 
 		if (CheckAction & pAuraEffect->iAction[CEffect::ACTION_SPREAD])
 			m_bSpread = true;
 		else
 			m_bSpread = false;
 
-		if (CheckAction & pAuraEffect->iAction[CEffect::ACTION_DROP])
-			m_bDrop = true;
-		else
-			m_bDrop = false;
+
 
 		if (CheckAction & pAuraEffect->iAction[CEffect::ACTION_SIZEUP])
 			m_bSizeup = true;
@@ -1264,10 +1945,84 @@ HRESULT CImguiManager::Load_Desc(_uint Index)
 		else
 			m_bSizedown = false;
 
-		if (CheckAction & pAuraEffect->iAction[CEffect::ACTION_AURA])
-			m_bAura = true;
+
+
+	}
+	break;
+	case MODE_MESH:
+	{
+		pEffect = dynamic_cast<CEffect*>(m_EditMesh[Index]);
+		CVIBuffer_Instance::INSTANCE_DESC* pDesc = static_cast<CVIBuffer_Instance::INSTANCE_DESC*>(pEffect->Get_Instance());
+
+		memcpy(&m_MeshDesc.BufferInstance, pDesc, sizeof(CVIBuffer_Instance::INSTANCE_DESC));
+		//m_MeshDesc.BufferInstance = *pDesc;
+
+		m_MeshDesc.eType = pEffect->Get_Type();
+		m_MeshDesc.vStartPos = pEffect->Get_StartPos();
+		m_MeshDesc.fRotate = pEffect->Get_Rotate();
+		m_MeshDesc.fLifeAlpha = pEffect->Get_LifeAlpha();
+		m_MeshDesc.fStartTime = *pEffect->Get_pStartTime();
+		m_MeshDesc.ParticleTag = pEffect->Get_Tag();
+		m_MeshDesc.vStartColor = pEffect->Get_SColor();
+		m_MeshDesc.vEndColor = pEffect->Get_EColor();
+		m_MeshDesc.iShaderPass = pEffect->Get_ShaderPass();
+		m_MeshDesc.TextureTag = pEffect->Get_TextureTag();
+		m_MeshDesc.fDistortion = pEffect->Get_fDistortion();
+
+		m_MeshDesc.strModelTag = dynamic_cast<CParticle_Mesh*>(pEffect)->Get_ModelTag();
+		m_MeshDesc.strNormalTag = dynamic_cast<CParticle_Mesh*>(pEffect)->Get_NormalTag();
+
+		for (size_t i = 0; i < TextureTags.size(); i++)
+		{
+			if (m_MeshDesc.TextureTag == TextureTags[i])
+			{
+				m_iCurTexture = i;
+				break;
+			}
+		}
+
+		for (size_t i = 0; i < MeshTags.size(); i++)
+		{
+			if (m_MeshDesc.strModelTag == MeshTags[i])
+			{
+				m_iCurMesh = i;
+				break;
+			}
+		}
+
+		for (size_t i = 0; i < NormalTags.size(); i++)
+		{
+			if (m_MeshDesc.strNormalTag == NormalTags[i])
+			{
+				m_iCurNormalTexture = i;
+				break;
+			}
+		}
+
+		_uint CheckAction = pEffect->Get_Action();
+
+		if (CheckAction & pEffect->iAction[CEffect::ACTION_SPREAD])
+			m_bSpread = true;
 		else
-			m_bAura = false;
+			m_bSpread = false;
+
+
+		if (CheckAction & pEffect->iAction[CEffect::ACTION_SIZEUP])
+			m_bSizeup = true;
+		else
+			m_bSizeup = false;
+
+		if (CheckAction & pEffect->iAction[CEffect::ACTION_SIZEDOWN])
+			m_bSizedown = true;
+		else
+			m_bSizedown = false;
+
+		if (CheckAction & pEffect->iAction[CEffect::ACTION_NOBILLBOARD])
+			m_bNobillboard = true;
+		else
+			m_bNobillboard = false;
+
+
 
 	}
 	break;
@@ -1329,6 +2084,12 @@ void CImguiManager::File_Selctor(_bool* bChange)
 		case Client::CImguiManager::MODE_AURA:
 		{
 			m_AuraDesc.TextureTag = TextureTags[m_iCurTexture];
+
+		}
+		break;
+		case Client::CImguiManager::MODE_MESH:
+		{
+			m_MeshDesc.TextureTag = TextureTags[m_iCurTexture];
 
 		}
 		break;
@@ -1443,6 +2204,39 @@ void CImguiManager::Load_Selctor()
 		}
 	}
 	break;
+	case Client::CImguiManager::MODE_MESH:
+	{
+		if (ImGui::Button(u8"로드 파티클생성"))
+		{
+			IGFD::FileDialogConfig config;
+			config.path = "../../Client/Bin/DataFiles/Particle/Mesh";
+			ImGuiFileDialog::Instance()->OpenDialog("ChooseTextureKey", "Choose File", ".dat", config);
+		}
+		if (ImGuiFileDialog::Instance()->Display("ChooseTextureKey")) {
+			if (ImGuiFileDialog::Instance()->IsOk()) { // action if OK
+				std::string filePathName = ImGuiFileDialog::Instance()->GetFilePathName();
+				std::string fileName = ImGuiFileDialog::Instance()->GetCurrentFileName();
+				// action
+
+
+				string Tag;
+				_int dotPos = fileName.find_last_of(".");
+				Tag = fileName.substr(0, dotPos);
+
+
+				CGameObject* pGameParticle = m_pGameInstance->Clone_Object(m_pGameInstance->StringToWstring(Tag), nullptr);
+				if (nullptr == pGameParticle)
+					MSG_BOX("생성 실패");
+
+				m_EditMesh.push_back(pGameParticle);
+				m_iCurEditIndex = m_EditMesh.size() - 1;
+			}
+
+			// close
+			ImGuiFileDialog::Instance()->Close();
+		}
+	}
+	break;
 	case Client::CImguiManager::MODE_END:
 		break;
 	default:
@@ -1539,6 +2333,10 @@ void CImguiManager::Editor_Tick(_float fTimeDelta)
 	ImGui::SameLine();
 	if (ImGui::RadioButton("Glow",(_int*) & m_EffectDesc.eType, CEffect::TYPE::TYPE_GLOW))
 		bChange = true;
+	ImGui::SameLine();
+	if (ImGui::Checkbox("Attach", &m_EffectDesc.BufferInstance.isAttach))
+		bChange = true;
+	
 
 
 	if (ImGui::RadioButton("NOCOLOR", &m_EffectDesc.iShaderPass, PASS_NOCOLOR))
@@ -1659,6 +2457,13 @@ void CImguiManager::Editor_Tick(_float fTimeDelta)
 		}
 		bChange = true;
 	}
+	if (ImGui::RadioButton("FALLSPREAD", &m_EffectDesc.iShaderPass, PASS_FALLSPREAD))
+	{
+		bChange = true;
+	}
+
+
+
 	
 	if (PASS_NOBILLBOARD == m_EffectDesc.iShaderPass)
 	{
@@ -1671,7 +2476,7 @@ void CImguiManager::Editor_Tick(_float fTimeDelta)
 			}
 		}
 	}
-	else
+	else if (PASS_FALLSPREAD != m_EffectDesc.iShaderPass)
 	{
 		if (ImGui::Checkbox("Spread", &m_bSpread))
 		{
@@ -1683,18 +2488,21 @@ void CImguiManager::Editor_Tick(_float fTimeDelta)
 		}
 	}
 
-	ImGui::SameLine();
 
-	if (ImGui::Checkbox("Drop", &m_bDrop))
+	if (PASS_FALLSPREAD == m_EffectDesc.iShaderPass)
 	{
-		if (-1 != m_iCurEditIndex)
+		if (ImGui::Checkbox("FallSpread", &m_bFallSpread))
 		{
-			CEffect* pParticle = dynamic_cast<CEffect*>(m_EditParticle[m_iCurEditIndex]);
-			pParticle->Edit_Action(CEffect::ACTION_DROP);
+			if (-1 != m_iCurEditIndex)
+			{
+				CEffect* pParticle = dynamic_cast<CEffect*>(m_EditParticle[m_iCurEditIndex]);
+				pParticle->Edit_Action(CEffect::ACTION_FALLSPREAD);
+			}
 		}
-	}	
-	ImGui::SameLine();
+	}
 
+
+	ImGui::SameLine();
 	if (ImGui::Checkbox("SizeUP", &m_bSizeup))
 	{
 		if (-1 != m_iCurEditIndex)
@@ -1725,6 +2533,12 @@ void CImguiManager::Editor_Tick(_float fTimeDelta)
 	{
 		bChange = true;
 	}
+	ImGui::SameLine();
+	if (ImGui::Checkbox("isNormal", &m_EffectDesc.isNormal))
+	{
+		bChange = true;
+	}
+
 	static char strReName[MAX_PATH]{};
 
 	ImGui::InputText("ParticleTag", strReName, MAX_PATH);
@@ -1949,6 +2763,89 @@ void CImguiManager::Editor_Tick(_float fTimeDelta)
 		}
 		break;
 	}
+	case PASS_FALLSPREAD:
+	{
+		Temp = (_float*)&m_EffectDesc.fLifeAlpha;
+		if (ImGui::InputFloat2("LifeAlpha", Temp))
+		{
+			memcpy(&m_EffectDesc.fLifeAlpha, Temp, sizeof(_float2));
+			bChange = true;
+		}
+
+		Temp = (_float*)&m_EffectDesc.BufferInstance.LowStartRot;
+		if (ImGui::InputFloat3("LowStartRot", Temp))
+		{
+			memcpy(&m_EffectDesc.BufferInstance.LowStartRot, Temp, sizeof(_float3));
+			bChange = true;
+		}
+
+		Temp = (_float*)&m_EffectDesc.BufferInstance.HighStartRot;
+		if (ImGui::InputFloat3("HighStartRot", Temp))
+		{
+			memcpy(&m_EffectDesc.BufferInstance.HighStartRot, Temp, sizeof(_float3));
+			bChange = true;
+		}
+		Temp = (_float*)&m_EffectDesc.BufferInstance.LowAngleVelocity;
+		if (ImGui::InputFloat3("LowAngleVelocity", Temp))
+		{
+			memcpy(&m_EffectDesc.BufferInstance.LowAngleVelocity, Temp, sizeof(_float3));
+			bChange = true;
+		}
+		Temp = (_float*)&m_EffectDesc.BufferInstance.HighAngleVelocity;
+		if (ImGui::InputFloat3("HighAngleVelocity", Temp))
+		{
+			memcpy(&m_EffectDesc.BufferInstance.HighAngleVelocity, Temp, sizeof(_float3));
+			bChange = true;
+		}
+		Temp = (_float*)&m_EffectDesc.BufferInstance.GravityScale;
+		if (ImGui::InputFloat("GravityScale", Temp))
+		{
+			memcpy(&m_EffectDesc.BufferInstance.GravityScale, Temp, sizeof(_float));
+			bChange = true;
+		}
+		Temp = (_float*)&m_EffectDesc.BufferInstance.CrossArea;
+		if (ImGui::InputFloat("CrossArea", Temp))
+		{
+			memcpy(&m_EffectDesc.BufferInstance.CrossArea, Temp, sizeof(_float));
+			bChange = true;
+		}
+
+		if(m_EffectDesc.isNormal)
+		{
+			_int iNormalSize = NormalTags.size();
+			if (ImGui::BeginListBox("NormalBox"))
+			{
+				for (int i = 0; i < iNormalSize; i++)
+				{
+					// 리스트박스 아이템의 텍스트
+					const bool isSelected = (m_iCurNormalTexture == i);
+					char Label[256] = {};
+					strcpy_s(Label, m_pGameInstance->WstringToString(NormalTags[i]).c_str());
+					if (ImGui::Selectable(Label, isSelected))
+					{
+						m_iCurNormalTexture = i; // 선택된 아이템 업데이트	
+						bChange = true;
+					}
+
+
+					// 선택된 아이템이 보이도록 스크롤
+					if (isSelected)
+					{
+						ImGui::SetItemDefaultFocus();
+
+					}
+				}
+				ImGui::EndListBox();
+			}
+
+			if (-1 != m_iCurEditIndex)
+			{
+				m_EffectDesc.NormalTag = NormalTags[m_iCurNormalTexture];
+			}
+		}
+		break;
+	}
+
 	default:
 		break;
 	}
@@ -2227,6 +3124,9 @@ void CImguiManager::Free()
 		Safe_Release(iter);
 
 	for (auto& iter : m_EditAura)
+		Safe_Release(iter);
+
+	for (auto& iter : m_EditMesh)
 		Safe_Release(iter);
 
 	Safe_Release(m_pDevice);

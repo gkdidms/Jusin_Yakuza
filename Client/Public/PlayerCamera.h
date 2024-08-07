@@ -11,9 +11,19 @@ BEGIN(Client)
 class CPlayerCamera :
     public CCamera
 {
+public:
+    enum CAM_STATE
+    {
+        CAM_IDLE,
+        CAM_COLLISION_BLOCK,
+        CAM_LERP,
+        CAM_GOTO_SAFE_POS,
+        CAM_STATE_END
+    };
+
 private:
-    const _float MAX_DISTANCE = 2.9f;
-    const _float MIN_DISTANCE = 2.0f;
+    const _float MAX_DISTANCE = 3.1f;
+    const _float MIN_DISTANCE = 2.5f;
 
 public:
     typedef struct tPlayerCameraDesc : public CAMERA_DESC
@@ -48,6 +58,8 @@ private:
     void    Reset_RetureVariables();            // 관련 변수 초기화 함수
 
     void    Play_FovLerp(const _float& fTimeDelta);
+
+
 
 public:
     void Store_PrevMatrix() {
@@ -84,6 +96,8 @@ private:
     _float m_fPreMouseMoveX;
 
     XMVECTOR    m_vPlayerPos = { 0,0,0,1 }; // 카메라 충돌 되기 전 마지막 플레이어 위치 저장
+    XMVECTOR    m_vLatestCollisionPos;      // 가장 최근 충돌 위치
+    XMVECTOR    m_vSafePos;      // 가장 최근 충돌 위치
     
     bool        m_bPreCamCollision = { false };
     bool        m_bCamCollision = { false };
@@ -104,7 +118,7 @@ private:
     float       m_fTotalLerpTime = 0.5f; // 보간에 걸리는 총 시간 (초 단위)
     float       m_fStartFov = 0.0f; // 보간에 걸리는 총 시간 (초 단위)
 
-
+    CAM_STATE        m_eCamState = { CAM_STATE_END };
 
 private:
     HRESULT Add_Components();

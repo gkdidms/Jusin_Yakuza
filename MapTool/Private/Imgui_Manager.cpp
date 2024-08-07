@@ -142,6 +142,7 @@ void CImgui_Manager::Tick(_float fTimeDelta)
     if (m_bNaviTool_IMGUI)
     {
         Set_NaviTool_IMGUI();
+        m_eWrieID = NAVIOBJ;
     }
 
     if (m_bLightMgr_IMGUI)
@@ -202,6 +203,8 @@ void CImgui_Manager::Late_Tick(_float fTimeDelta)
     m_pTriggerMgr->Late_Tick(fTimeDelta);
 
     m_pTriggerObjMgr->Late_Tick(fTimeDelta);
+
+    m_pNavigationMgr->Late_Tick(fTimeDelta);
 }
 
 void CImgui_Manager::Render()

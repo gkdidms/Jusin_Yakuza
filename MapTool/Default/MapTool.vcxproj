@@ -213,16 +213,17 @@
     <ClInclude Include="..\public\MainApp.h" />
     <ClInclude Include="..\Public\Monster.h" />
     <ClInclude Include="..\Public\Navigation_Manager.h" />
+    <ClInclude Include="..\Public\NaviObj.h">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+    </ClInclude>
     <ClInclude Include="..\Public\ObjPlace_Manager.h" />
     <ClInclude Include="..\public\PlayerCamera.h" />
     <ClInclude Include="..\Public\RushYakuza.h" />
     <ClInclude Include="..\Public\SystemManager.h" />
     <ClInclude Include="..\Public\Terrain.h" />
     <ClInclude Include="..\Public\Terrain_Manager.h" />
-    <ClInclude Include="..\Public\TriggerObj.h">
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
-      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
-    </ClInclude>
+    <ClInclude Include="..\Public\TriggerObj.h" />
     <ClInclude Include="..\Public\TriggerObj_Manager.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
@@ -285,6 +286,10 @@
     <ClCompile Include="..\private\MainApp.cpp" />
     <ClCompile Include="..\Private\Monster.cpp" />
     <ClCompile Include="..\Private\Navigation_Manager.cpp" />
+    <ClCompile Include="..\Private\NaviObj.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\Private\ObjPlace_Manager.cpp" />
     <ClCompile Include="..\private\PlayerCamera.cpp" />
     <ClCompile Include="..\Private\RushYakuza.cpp" />

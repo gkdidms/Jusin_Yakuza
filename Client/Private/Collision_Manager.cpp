@@ -240,7 +240,7 @@ XMVECTOR CCollision_Manager::Find_Collision_Position(BoundingSphere* sphere, Bou
     return      vSpherePos;
 }
 
-bool CCollision_Manager::Check_PositionAABB_Collision(BoundingSphere* sphere, BoundingBox* box, XMVECTOR vPosition)
+bool CCollision_Manager::Check_PositionAABB_Collision(BoundingSphere* sphere, BoundingBox* box, XMVECTOR vPosition, XMVECTOR& pCollisionPos)
 {
     XMVECTOR boxCenter = XMLoadFloat3(&box->Center);
     XMVECTOR boxExtents = XMLoadFloat3(&box->Extents);
@@ -273,6 +273,45 @@ bool CCollision_Manager::Check_PositionAABB_Collision(BoundingSphere* sphere, Bo
     if (overlap <= 0) {
         return false;
     }
+
+
+    // 충돌 방향을 계산합니다.
+    XMVECTOR collisionAxis;
+    if (overlap == overlapX)
+    {
+        collisionAxis = boxAxisX;
+        if (dotX < 0) collisionAxis = XMVectorNegate(collisionAxis);
+    }
+    else if (overlap == overlapY)
+    {
+        collisionAxis = boxAxisY;
+        if (dotY < 0) collisionAxis = XMVectorNegate(collisionAxis);
+    }
+    else
+    {
+        collisionAxis = boxAxisZ;
+        if (dotZ < 0) collisionAxis = XMVectorNegate(collisionAxis);
+    }
+
+    // Sphere를 밀어내는 벡터를 계산합니다.
+    XMVECTOR pushVector = XMVectorScale(collisionAxis, overlap);
+
+    // 충돌 해소: Sphere의 위치를 밀어냅니다.
+    XMFLOAT3 push;
+    XMStoreFloat3(&push, XMVectorZero());
+    XMStoreFloat3(&push, pushVector);
+
+    //sphere->Center.x += push.x;
+    //sphere->Center.y += push.y;
+    //sphere->Center.z += push.z;
+
+    _vector vSpherePos = vPosition;
+    vSpherePos.m128_f32[0] += push.x;
+    vSpherePos.m128_f32[1] += push.y;
+    vSpherePos.m128_f32[2] += push.z;
+    vSpherePos.m128_f32[3] = 1;
+
+    pCollisionPos = vSpherePos;
 
 
     return true;
@@ -314,8 +353,8 @@ void CCollision_Manager::Enemy_Hit_Collision()
 
                 EffectDesc.pWorldMatrix = &matrix;
                 //돈체크
-                m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Money"), TEXT("Layer_Particle"), &EffectDesc);
-                m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Coin"), TEXT("Layer_Particle"), &EffectDesc);
+                m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Mesh_Money"), TEXT("Layer_Particle"), &EffectDesc);
+                //m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Coin"), TEXT("Layer_Particle"), &EffectDesc);
 
                 pEnemyHitCollider->ParentObject_Hit(pPlayerAttackCollider);
                 pPlayerAttackCollider->ParentObject_Attack(pEnemyHitCollider);
@@ -499,14 +538,14 @@ _bool CCollision_Manager::Check_Map_Collision(CCollider* pCollider, XMVECTOR& pC
     return false;
 }
 
-_bool CCollision_Manager::Check_Map_Collision_Using_Position(CCollider* pCollider, XMVECTOR vPosition)
+_bool CCollision_Manager::Check_Map_Collision_Using_Position(CCollider* pCollider, XMVECTOR vPosition, XMVECTOR& pCollisionPos)
 {
     _float3 vCenter;
     XMStoreFloat3(&vCenter, XMVectorZero());
 
     for (auto& pMapCollider : m_MapColliders)
     {
-        if (Check_PositionAABB_Collision(static_cast<BoundingSphere*>(pCollider->Get_Desc()), static_cast<BoundingBox*>(pMapCollider->Get_Desc()), vPosition))
+        if (Check_PositionAABB_Collision(static_cast<BoundingSphere*>(pCollider->Get_Desc()), static_cast<BoundingBox*>(pMapCollider->Get_Desc()), vPosition, pCollisionPos))
         {
             return true;
         }

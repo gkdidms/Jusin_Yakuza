@@ -25,16 +25,18 @@ public:
         _float4 vStartColor;
         _float4 vEndColor;
         _float2 fLifeAlpha;
-        _bool isAura;
         _int iShaderPass;
 
         _float fDistortion;
 
+        _bool isNormal;
+        wstring NormalTag;
+
         const _float4x4* pWorldMatrix = { nullptr };
     }EFFECT_DESC;
 
-    enum TYPE { TYPE_POINT, TYPE_TRAIL, TYPE_GLOW, TYPE_AURA, TYPE_END };
-    enum ACTION { ACTION_SPREAD, ACTION_DROP, ACTION_SIZEUP, ACTION_SIZEDOWN, ACTION_AURA, ACTION_NOBILLBOARD, ACTION_END };
+    enum TYPE { TYPE_POINT, TYPE_TRAIL, TYPE_GLOW, TYPE_AURA, TYPE_MESH,TYPE_MESHEFFECT, TYPE_END };
+    enum ACTION { ACTION_SPREAD,  ACTION_SIZEUP, ACTION_SIZEDOWN,  ACTION_NOBILLBOARD, ACTION_FALLSPREAD, ACTION_END };
     static const _uint iAction[ACTION_END];
 
 protected:
@@ -73,8 +75,10 @@ public:
     wstring Get_TextureTag() { return m_TextureTag; }
     _float2 Get_LifeAlpha() { return m_fLifeAlpha; }
     _float Get_Rotate() { return m_fRotate; }
-    _bool Get_isAura() { return m_isAura;  }
     _float Get_fDistortion() { return m_fDistortion; }
+    _bool Get_isNormal() {        return m_isNormal;    }
+    wstring Get_NormalTag() { return m_NormalTag; }
+
     virtual void Reset_Buffer();
 public:
     virtual HRESULT Save_Data(const string strDirectory);
@@ -94,8 +98,10 @@ protected:
     _uint			m_iAction = { 0 };
     _float4     m_vStartColor = { 0.f , 0.f , 0.f , 0.f };
     _float4     m_vEndColor = { 0.f , 0.f , 0.f , 0.f };
-    _bool       m_isAura = { false };
     _float      m_fDistortion = { 0.f };
+
+    _bool       m_isNormal = { false };
+    wstring    m_NormalTag = { TEXT("") };
 
     const _float4x4* m_pWorldMatrix = { nullptr };
 

@@ -10,6 +10,7 @@
 #include "VIBuffer_Instance.h"
 #include "VIBuffer_Instance_Point.h"
 #include "VIBuffer_Instance_Rect.h"
+#include "VIBuffer_Instance_Mesh.h"
 #include "VIBuffer_Cube.h"
 #include "VIBuffer_Trail.h"
 
@@ -20,6 +21,7 @@
 #include "Navigation.h"
 #include "ComputeShader.h"
 #include "AStart.h"
+#include "NeoShader.h"
 
 #include "Bounding_AABB.h"
 #include "Bounding_OBB.h"

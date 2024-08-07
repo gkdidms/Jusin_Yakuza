@@ -190,12 +190,14 @@ call Copy_Client.bat</Command>
     </ClInclude>
     <ClInclude Include="..\Public\FreeCamera.h" />
     <ClInclude Include="..\Public\ImguiManager.h" />
+    <ClInclude Include="..\Public\Land.h" />
     <ClInclude Include="..\Public\Level_Edit.h" />
     <ClInclude Include="..\public\Level_Loading.h" />
     <ClInclude Include="..\public\Level_Logo.h" />
     <ClInclude Include="..\public\Level_Test.h" />
     <ClInclude Include="..\public\Loader.h" />
     <ClInclude Include="..\public\MainApp.h" />
+    <ClInclude Include="..\Public\Particle_Mesh.h" />
     <ClInclude Include="..\Public\Particle_Point.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
@@ -231,12 +233,14 @@ call Copy_Client.bat</Command>
     </ClCompile>
     <ClCompile Include="..\Private\FreeCamera.cpp" />
     <ClCompile Include="..\Private\ImguiManager.cpp" />
+    <ClCompile Include="..\Private\Land.cpp" />
     <ClCompile Include="..\Private\Level_Edit.cpp" />
     <ClCompile Include="..\private\Level_Loading.cpp" />
     <ClCompile Include="..\private\Level_Logo.cpp" />
     <ClCompile Include="..\private\Level_Test.cpp" />
     <ClCompile Include="..\private\Loader.cpp" />
     <ClCompile Include="..\private\MainApp.cpp" />
+    <ClCompile Include="..\Private\Particle_Mesh.cpp" />
     <ClCompile Include="..\Private\Particle_Point.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
@@ -253,6 +257,8 @@ call Copy_Client.bat</Command>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Aura.hlsl" />
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxInstance_Mesh.hlsl" />
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxMesh.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Trail.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxCube.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxInstance_Point.hlsl" />

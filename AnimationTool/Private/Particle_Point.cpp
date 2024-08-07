@@ -77,10 +77,6 @@ void CParticle_Point::Tick(const _float& fTimeDelta)
         {
             m_pVIBufferCom->Spread(fTimeDelta);
         }
-        if (m_iAction & iAction[ACTION_DROP])
-        {
-            m_pVIBufferCom->Drop(fTimeDelta);
-        }
         if (m_iAction & iAction[ACTION_SIZEUP])
         {
             m_pVIBufferCom->SizeUp_Time(fTimeDelta);
@@ -88,6 +84,14 @@ void CParticle_Point::Tick(const _float& fTimeDelta)
         if (m_iAction & iAction[ACTION_SIZEDOWN])
         {
             m_pVIBufferCom->SizeDown_Time(fTimeDelta);
+        }
+        if (m_iAction & iAction[ACTION_NOBILLBOARD])
+        {
+            m_pVIBufferCom->RotSpread(fTimeDelta);
+        }
+        if (m_iAction & iAction[ACTION_FALLSPREAD])
+        {
+            m_pVIBufferCom->FallSpread(fTimeDelta);
         }
     }
 

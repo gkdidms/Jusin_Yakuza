@@ -42,7 +42,7 @@ private:
     _float m_fCamAngleX = { 0.f };
     _float m_fCamDistance = { 4.f };
 
-    _int m_iTargetIndex = { 0 };
+    _bool m_isTargetPlayer = { false };
     _float m_fHeight = { 2.f };
 
 private:

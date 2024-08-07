@@ -346,11 +346,11 @@ CBTNode::NODE_STATE CAI_Kuze::ATK_CMD_A()
 {
 	if (m_iSkill == SKILL_CMD_A && m_isAttack)
 	{
-		if (*m_pState == CMonster::MONSTER_CMD_A_1 && *(m_pAnimCom[*m_pCurrentAnimType]->Get_AnimPosition()) >= 20.0)
+		if (*m_pState == CMonster::MONSTER_CMB_A_1 && *(m_pAnimCom[*m_pCurrentAnimType]->Get_AnimPosition()) >= 20.0)
 		{
-			*m_pState = CMonster::MONSTER_CMD_A_2;
+			*m_pState = CMonster::MONSTER_CMB_A_2;
 		}
-		else if (*m_pState == CMonster::MONSTER_CMD_A_2 && m_pAnimCom[*m_pCurrentAnimType]->Get_AnimFinished())
+		else if (*m_pState == CMonster::MONSTER_CMB_A_2 && m_pAnimCom[*m_pCurrentAnimType]->Get_AnimFinished())
 		{
 			m_isAttack = false;
 
@@ -363,7 +363,7 @@ CBTNode::NODE_STATE CAI_Kuze::ATK_CMD_A()
 	if (m_iSkill == SKILL_CMD_A)
 	{
 		m_isAttack = true;
-		*m_pState = CMonster::MONSTER_CMD_A_1;
+		*m_pState = CMonster::MONSTER_CMB_A_1;
 
 		return CBTNode::SUCCESS;
 	}
@@ -375,9 +375,9 @@ CBTNode::NODE_STATE CAI_Kuze::ATK_CMD_B()
 {
 	if (m_iSkill == SKILL_CMD_B && m_isAttack)
 	{
-		if (*m_pState == CMonster::MONSTER_CMD_B_1 && *(m_pAnimCom[*m_pCurrentAnimType]->Get_AnimPosition()) >= 20.0)
-			*m_pState = CMonster::MONSTER_CMD_B_2;
-		else if (*m_pState == CMonster::MONSTER_CMD_B_2 && m_pAnimCom[*m_pCurrentAnimType]->Get_AnimFinished())
+		if (*m_pState == CMonster::MONSTER_CMB_B_1 && *(m_pAnimCom[*m_pCurrentAnimType]->Get_AnimPosition()) >= 20.0)
+			*m_pState = CMonster::MONSTER_CMB_B_2;
+		else if (*m_pState == CMonster::MONSTER_CMB_B_2 && m_pAnimCom[*m_pCurrentAnimType]->Get_AnimFinished())
 		{
 			m_isAttack = false;
 
@@ -390,7 +390,7 @@ CBTNode::NODE_STATE CAI_Kuze::ATK_CMD_B()
 	if (m_iSkill == SKILL_CMD_B)
 	{
 		m_isAttack = true;
-		*m_pState = CMonster::MONSTER_CMD_B_1;
+		*m_pState = CMonster::MONSTER_CMB_B_1;
 
 		return CBTNode::SUCCESS;
 	}
@@ -402,9 +402,9 @@ CBTNode::NODE_STATE CAI_Kuze::ATK_HeadButt()
 {
 	if (m_iSkill == SKILL_CMD_HEADBUTT && m_isAttack)
 	{
-		if (*m_pState == CMonster::MONSTER_CMD_HEADBUTT_1 && *(m_pAnimCom[*m_pCurrentAnimType]->Get_AnimPosition()) >= 13.f)
-			*m_pState = CMonster::MONSTER_CMD_HEADBUTT_2;
-		else if (*m_pState == CMonster::MONSTER_CMD_HEADBUTT_2 && m_pAnimCom[*m_pCurrentAnimType]->Get_AnimFinished())
+		if (*m_pState == CMonster::MONSTER_CMB_HEADBUTT_1 && *(m_pAnimCom[*m_pCurrentAnimType]->Get_AnimPosition()) >= 13.f)
+			*m_pState = CMonster::MONSTER_CMB_HEADBUTT_2;
+		else if (*m_pState == CMonster::MONSTER_CMB_HEADBUTT_2 && m_pAnimCom[*m_pCurrentAnimType]->Get_AnimFinished())
 		{
 			m_isAttack = false;
 
@@ -417,7 +417,7 @@ CBTNode::NODE_STATE CAI_Kuze::ATK_HeadButt()
 	if (m_iSkill == SKILL_CMD_HEADBUTT)
 	{
 		m_isAttack = true;
-		*m_pState = CMonster::MONSTER_CMD_HEADBUTT_1;
+		*m_pState = CMonster::MONSTER_CMB_HEADBUTT_1;
 
 		return CBTNode::SUCCESS;
 	}
@@ -429,11 +429,11 @@ CBTNode::NODE_STATE CAI_Kuze::ATK_Renda()
 {
 	if (m_iSkill == SKILL_CMD_RENDA && m_isAttack)
 	{
-		if (*m_pState == CMonster::MONSTER_CMD_RENDA_1 && m_pAnimCom[*m_pCurrentAnimType]->Get_AnimFinished())
-			*m_pState = CMonster::MONSTER_CMD_RENDA_2;
-		else if (*m_pState == CMonster::MONSTER_CMD_RENDA_2 && m_pAnimCom[*m_pCurrentAnimType]->Get_AnimFinished())
-			*m_pState = CMonster::MONSTER_CMD_RENDA_3;
-		else if (*m_pState == CMonster::MONSTER_CMD_RENDA_3 && m_pAnimCom[*m_pCurrentAnimType]->Get_AnimFinished())
+		if (*m_pState == CMonster::MONSTER_CMB_RENDA_1 && m_pAnimCom[*m_pCurrentAnimType]->Get_AnimFinished())
+			*m_pState = CMonster::MONSTER_CMB_RENDA_2;
+		else if (*m_pState == CMonster::MONSTER_CMB_RENDA_2 && m_pAnimCom[*m_pCurrentAnimType]->Get_AnimFinished())
+			*m_pState = CMonster::MONSTER_CMB_RENDA_3;
+		else if (*m_pState == CMonster::MONSTER_CMB_RENDA_3 && m_pAnimCom[*m_pCurrentAnimType]->Get_AnimFinished())
 		{
 			m_isAttack = false;
 
@@ -446,7 +446,7 @@ CBTNode::NODE_STATE CAI_Kuze::ATK_Renda()
 	if (m_iSkill == SKILL_CMD_RENDA)
 	{
 		m_isAttack = true;
-		*m_pState = CMonster::MONSTER_CMD_RENDA_1;
+		*m_pState = CMonster::MONSTER_CMB_RENDA_1;
 
 		return CBTNode::SUCCESS;
 	}
