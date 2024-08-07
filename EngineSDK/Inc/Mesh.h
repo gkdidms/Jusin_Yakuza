@@ -38,6 +38,8 @@ public:
 	_float		Get_MeshScale() { return m_fScale; }
 
 	_bool isCloth();
+	_bool isSkin();
+	_bool DisableRDRT();
 
 public:
 	void Set_AlphaApply(_bool isValue) { m_isAlphaApply = isValue; }
