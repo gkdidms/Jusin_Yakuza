@@ -119,70 +119,70 @@ void CConstruction::Tick(const _float& fTimeDelta)
 
 void CConstruction::Late_Tick(const _float& fTimeDelta)
 {
-	if (true == m_pGameInstance->isIn_WorldFrustum(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 5.f) && OBJECT_TYPE::LARGE_CONSTRUCTION != m_iObjectType)
-	{
-		if (0 == m_iShaderPassNum || 3 == m_iShaderPassNum)
-		{
-			m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
-		}
-		else if (1 == m_iShaderPassNum)
-		{
-			m_pGameInstance->Add_Renderer(CRenderer::RENDER_GLASS, this);
-		}
-		else if (2 == m_iShaderPassNum)
-		{
-			m_pGameInstance->Add_Renderer(CRenderer::RENDER_PUDDLE, this);
-		}
-		else
-		{
-			m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
-		}
+	//if (true == m_pGameInstance->isIn_WorldFrustum(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 5.f) && OBJECT_TYPE::LARGE_CONSTRUCTION != m_iObjectType)
+	//{
+	//	if (0 == m_iShaderPassNum || 3 == m_iShaderPassNum)
+	//	{
+	//		m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
+	//	}
+	//	else if (1 == m_iShaderPassNum)
+	//	{
+	//		m_pGameInstance->Add_Renderer(CRenderer::RENDER_GLASS, this);
+	//	}
+	//	else if (2 == m_iShaderPassNum)
+	//	{
+	//		m_pGameInstance->Add_Renderer(CRenderer::RENDER_PUDDLE, this);
+	//	}
+	//	else
+	//	{
+	//		m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
+	//	}
 
-		if (1 != m_iObjectType)
-		{
-			if (m_pGameInstance->isShadow())
-			{
-				// 처음 렌더를 돌 때만 그림자를 그려준다.
-				m_pGameInstance->Add_Renderer(CRenderer::RENDER_SHADOWOBJ, this);
-			}
-		}
+	//	if (1 != m_iObjectType)
+	//	{
+	//		if (m_pGameInstance->isShadow())
+	//		{
+	//			// 처음 렌더를 돌 때만 그림자를 그려준다.
+	//			m_pGameInstance->Add_Renderer(CRenderer::RENDER_SHADOWOBJ, this);
+	//		}
+	//	}
 
-		for (auto& iter : m_vDecals)
-			iter->Late_Tick(fTimeDelta);
-	}
-	else if(OBJECT_TYPE::LARGE_CONSTRUCTION == m_iObjectType)
-	{
-		// 컬링x
-		if (0 == m_iShaderPassNum || 3 == m_iShaderPassNum)
-		{
-			m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
-		}
-		else if (1 == m_iShaderPassNum)
-		{
-			m_pGameInstance->Add_Renderer(CRenderer::RENDER_GLASS, this);
-		}
-		else if (2 == m_iShaderPassNum)
-		{
-			m_pGameInstance->Add_Renderer(CRenderer::RENDER_PUDDLE, this);
-		}
-		else
-		{
-			m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
-		}
+	//	for (auto& iter : m_vDecals)
+	//		iter->Late_Tick(fTimeDelta);
+	//}
+	//else if(OBJECT_TYPE::LARGE_CONSTRUCTION == m_iObjectType)
+	//{
+	//	// 컬링x
+	//	if (0 == m_iShaderPassNum || 3 == m_iShaderPassNum)
+	//	{
+	//		m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
+	//	}
+	//	else if (1 == m_iShaderPassNum)
+	//	{
+	//		m_pGameInstance->Add_Renderer(CRenderer::RENDER_GLASS, this);
+	//	}
+	//	else if (2 == m_iShaderPassNum)
+	//	{
+	//		m_pGameInstance->Add_Renderer(CRenderer::RENDER_PUDDLE, this);
+	//	}
+	//	else
+	//	{
+	//		m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
+	//	}
 
-		if (1 != m_iObjectType)
-		{
-			if (m_pGameInstance->isShadow())
-			{
-				// 처음 렌더를 돌 때만 그림자를 그려준다.
-				m_pGameInstance->Add_Renderer(CRenderer::RENDER_SHADOWOBJ, this);
-			}
-		}
+	//	if (1 != m_iObjectType)
+	//	{
+	//		if (m_pGameInstance->isShadow())
+	//		{
+	//			// 처음 렌더를 돌 때만 그림자를 그려준다.
+	//			m_pGameInstance->Add_Renderer(CRenderer::RENDER_SHADOWOBJ, this);
+	//		}
+	//	}
 
-		for (auto& iter : m_vDecals)
-			iter->Late_Tick(fTimeDelta);
-	}
-	
+	//	for (auto& iter : m_vDecals)
+	//		iter->Late_Tick(fTimeDelta);
+	//}
+	//
 }
 
 HRESULT CConstruction::Render()
@@ -200,70 +200,38 @@ HRESULT CConstruction::Render()
 
 	for (size_t i = 0; i < iNumMeshes; i++)
 	{
+		_bool fFar = m_pGameInstance->Get_CamFar();
+		m_pShaderCom->Bind_RawValue("g_fFar", &fFar, sizeof(_float));
+
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
 			return E_FAIL;
+		m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS);
 
 		_bool isRS = true;
 		_bool isRD = true;
-		if (!strcmp(Meshes[i]->Get_Name(), "box4783"))
-		{
-			isRS = false;
-			isRD = false;
-		}
+		_bool isRM = true;
+		_bool isMulti = true;
+		_float fRDCount = 1.f;
+		
+		m_pShaderCom->Bind_RawValue("g_RDCount", &fRDCount, sizeof(_float));
+
+		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_MultiDiffuseTexture", i, aiTextureType_SHININESS)))
+			isMulti = false;
+		m_pShaderCom->Bind_RawValue("g_isMulti", &isMulti, sizeof(_bool));
 
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RSTexture", i, aiTextureType_SPECULAR)))
 			isRS = false;
 		m_pShaderCom->Bind_RawValue("g_isRS", &isRS, sizeof(_bool));
+		m_pShaderCom->Bind_RawValue("IsY3Shader", &isRS, sizeof(_bool));
 
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RDTexture", i, aiTextureType_OPACITY)))
 			isRD = false;
-
 		m_pShaderCom->Bind_RawValue("g_isRD", &isRD, sizeof(_bool));
 
-		bool	bNormalExist = m_pModelCom->Check_Exist_Material(i, aiTextureType_NORMALS);
-		// Normal texture가 있을 경우
-		if (true == bNormalExist)
-		{
-			m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS);
+		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RMTexture", i, aiTextureType_METALNESS)))
+			isRM = false;
+		m_pShaderCom->Bind_RawValue("g_isRM", &isRM, sizeof(_bool));
 
-			if (FAILED(m_pShaderCom->Bind_RawValue("g_bExistNormalTex", &bNormalExist, sizeof(bool))))
-				return E_FAIL;
-		}
-		else
-		{
-			if (FAILED(m_pShaderCom->Bind_RawValue("g_bExistNormalTex", &bNormalExist, sizeof(bool))))
-				return E_FAIL;
-		}
-
-		bool	bRMExist = m_pModelCom->Check_Exist_Material(i, aiTextureType_METALNESS);
-		if (true == bRMExist)
-		{
-			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RMTexture", i, aiTextureType_METALNESS)))
-				return E_FAIL;
-
-			if (FAILED(m_pShaderCom->Bind_RawValue("g_bExistRMTex", &bRMExist, sizeof(bool))))
-				return E_FAIL;
-		}
-		else
-		{
-			if (FAILED(m_pShaderCom->Bind_RawValue("g_bExistRMTex", &bRMExist, sizeof(bool))))
-				return E_FAIL;
-		}
-
-		bool	bRSExist = m_pModelCom->Check_Exist_Material(i, aiTextureType_SPECULAR);
-		if (true == bRSExist)
-		{
-			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RSTexture", i, aiTextureType_SPECULAR)))
-				return E_FAIL;
-
-			if (FAILED(m_pShaderCom->Bind_RawValue("g_bExistRSTex", &bRSExist, sizeof(bool))))
-				return E_FAIL;
-		}
-		else
-		{
-			if (FAILED(m_pShaderCom->Bind_RawValue("g_bExistRSTex", &bRSExist, sizeof(bool))))
-				return E_FAIL;
-		}
 
 		if (1 == m_iShaderPassNum)
 		{

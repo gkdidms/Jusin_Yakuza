@@ -1671,8 +1671,8 @@
       <UniqueIdentifier>{afa11f52-5f1d-4322-886d-68e4094d377c}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRC\Pickup">
-		<UniqueIdentifier>{5d202184-5e66-49ec-9cf6-6022190810e9}</UniqueIdentifier>
-	</Filter>
+      <UniqueIdentifier>{5d202184-5e66-49ec-9cf6-6022190810e9}</UniqueIdentifier>
+    </Filter>
     <Filter Include="02.GameObjects\99.Camera\07.MapCollider">
       <UniqueIdentifier>{28cec43f-865c-488e-83e1-e6b15b632319}</UniqueIdentifier>
     </Filter>
@@ -1728,6 +1728,12 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Bin\ShaderFiles\Shader_Client_Defines.hlsli">
+      <Filter>97.ShaderFiles</Filter>
+    </None>
+    <None Include="..\Bin\ShaderFiles\Shader_Neo.hlsli">
+      <Filter>97.ShaderFiles</Filter>
+    </None>
+    <None Include="..\Bin\ShaderFiles\Shader_NeoMetallic.hlsli">
       <Filter>97.ShaderFiles</Filter>
     </None>
   </ItemGroup>
