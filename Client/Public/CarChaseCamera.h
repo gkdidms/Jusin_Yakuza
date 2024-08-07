@@ -20,7 +20,9 @@ private:
     virtual ~CCarChaseCamera() = default;
 
 public:
-    void Set_StageDir(_uint iDir);
+    void Set_StageDir(_uint iDir) {
+        m_iStageDir = iDir;
+    }
 
 public:
     virtual HRESULT Initialize_Prototype() override;

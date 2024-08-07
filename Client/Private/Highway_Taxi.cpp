@@ -58,8 +58,6 @@ HRESULT CHighway_Taxi::Initialize(void* pArg)
 	if (FAILED(Add_Objects()))
 		return E_FAIL;
 
-	m_pNavigationCom->Set_Index(gameobjDesc->iNaviNum);
-
 	m_pTransformCom->Set_WorldMatrix(XMMatrixIdentity());
 
 	return S_OK;
