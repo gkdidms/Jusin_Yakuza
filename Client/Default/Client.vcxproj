@@ -570,6 +570,8 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Bin\ShaderFiles\Shader_Client_Defines.hlsli" />
+    <None Include="..\Bin\ShaderFiles\Shader_Neo.hlsli" />
+    <None Include="..\Bin\ShaderFiles\Shader_NeoMetallic.hlsli" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

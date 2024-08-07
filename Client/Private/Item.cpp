@@ -224,70 +224,37 @@ HRESULT CItem::Render()
 		{
 			if (false == m_bBright)
 			{
+				_bool fFar = m_pGameInstance->Get_CamFar();
+				m_pShaderCom->Bind_RawValue("g_fFar", &fFar, sizeof(_float));
+
 				if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
 					return E_FAIL;
+				m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS);
 
 				_bool isRS = true;
 				_bool isRD = true;
-				if (!strcmp(Meshes[i]->Get_Name(), "box4783"))
-				{
-					isRS = false;
-					isRD = false;
-				}
+				_bool isRM = true;
+				_bool isMulti = true;
+				_float fRDCount = 1.f;
+
+				m_pShaderCom->Bind_RawValue("g_RDCount", &fRDCount, sizeof(_float));
+
+				if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_MultiDiffuseTexture", i, aiTextureType_SHININESS)))
+					isMulti = false;
+				m_pShaderCom->Bind_RawValue("g_isMulti", &isMulti, sizeof(_bool));
 
 				if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RSTexture", i, aiTextureType_SPECULAR)))
 					isRS = false;
 				m_pShaderCom->Bind_RawValue("g_isRS", &isRS, sizeof(_bool));
+				m_pShaderCom->Bind_RawValue("IsY3Shader", &isRS, sizeof(_bool));
 
 				if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RDTexture", i, aiTextureType_OPACITY)))
 					isRD = false;
-
 				m_pShaderCom->Bind_RawValue("g_isRD", &isRD, sizeof(_bool));
 
-				bool	bNormalExist = m_pModelCom->Check_Exist_Material(i, aiTextureType_NORMALS);
-				// Normal texture가 있을 경우
-				if (true == bNormalExist)
-				{
-					m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS);
-
-					if (FAILED(m_pShaderCom->Bind_RawValue("g_bExistNormalTex", &bNormalExist, sizeof(bool))))
-						return E_FAIL;
-				}
-				else
-				{
-					if (FAILED(m_pShaderCom->Bind_RawValue("g_bExistNormalTex", &bNormalExist, sizeof(bool))))
-						return E_FAIL;
-				}
-
-				bool	bRMExist = m_pModelCom->Check_Exist_Material(i, aiTextureType_METALNESS);
-				if (true == bRMExist)
-				{
-					if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RMTexture", i, aiTextureType_METALNESS)))
-						return E_FAIL;
-
-					if (FAILED(m_pShaderCom->Bind_RawValue("g_bExistRMTex", &bRMExist, sizeof(bool))))
-						return E_FAIL;
-				}
-				else
-				{
-					if (FAILED(m_pShaderCom->Bind_RawValue("g_bExistRMTex", &bRMExist, sizeof(bool))))
-						return E_FAIL;
-				}
-
-				bool	bRSExist = m_pModelCom->Check_Exist_Material(i, aiTextureType_SPECULAR);
-				if (true == bRSExist)
-				{
-					if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RSTexture", i, aiTextureType_SPECULAR)))
-						return E_FAIL;
-
-					if (FAILED(m_pShaderCom->Bind_RawValue("g_bExistRSTex", &bRSExist, sizeof(bool))))
-						return E_FAIL;
-				}
-				else
-				{
-					if (FAILED(m_pShaderCom->Bind_RawValue("g_bExistRSTex", &bRSExist, sizeof(bool))))
-						return E_FAIL;
-				}
+				if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RMTexture", i, aiTextureType_METALNESS)))
+					isRM = false;
+				m_pShaderCom->Bind_RawValue("g_isRM", &isRM, sizeof(_bool));
 
 				m_pShaderCom->Begin(SHADER_DEFAULT);
 
