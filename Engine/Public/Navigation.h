@@ -33,8 +33,9 @@ public:
     vector<ROUTE_IO> Get_RouteIndexs(_int iIndex);
     _uint Get_WaypointIndex() { return m_iCurrentWayPointIndex; }
     _vector Get_CurrentWaypointPos() { return XMLoadFloat4(&m_Routes[m_iCurrentLine][m_iCurrentWayPointIndex].vPosition); }
-
+    _vector Get_WaypointPos(_uint iIndex) { return XMLoadFloat4(&m_Routes[m_iCurrentLine][iIndex].vPosition); }
     _vector Get_SlidingNormal() { return m_vSlidingNormal; }
+    _uint Get_RouteSize() { return m_Routes[m_iCurrentLine].size(); }
 
 public:
     virtual HRESULT Initialize_Prototype(); // Tool¿ë
@@ -45,7 +46,7 @@ public:
 public:
     int Find_PlayerMonster_Index(_fvector vTargetPos);
     _bool isMove(_fvector vMovePos);
-    _vector Compute_WayPointDir(_vector vPosition, const _float& fTimeDelta);
+    _vector Compute_WayPointDir(_vector vPosition, const _float& fTimeDelta, _bool isStart = false);
     _float Compute_Height(_fvector vPosition);
 
 
@@ -74,7 +75,7 @@ private:
     _uint m_iCurrentLine = { 0 };
     _uint m_iCurrentWayPointIndex = { 0 };
     _uint m_iPreWayPointIndex = { 0 };
-    _float m_fMaxDistance = { 3.f };
+    _float m_fMaxDistance = { 5.f };
 
     _vector m_vPreDir = {};
     _vector m_vNextDir = {};

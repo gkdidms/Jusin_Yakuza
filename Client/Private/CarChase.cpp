@@ -51,7 +51,7 @@ _bool CCarChase::Start()
 	CHighway_Taxi* pPlayer = dynamic_cast<CHighway_Taxi*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Taxi"), 0));
 
 	//몬스터의 위치는 플레이어 웨이포인트 인덱스의 -10만큼
-	_int iWaypoint = pPlayer->Get_CurrentWaypointIndex() - 1;
+	_int iWaypoint = pPlayer->Get_CurrentWaypointIndex() - 10;
 
 	if (iWaypoint < 0)
 	{
@@ -59,6 +59,7 @@ _bool CCarChase::Start()
 		iWaypoint = pPlayer->Get_WaypointSize() + iWaypoint;
 	}
 
+	//몬스터 생성
 	for (auto& iter : MonsterInfo)
 	{
 		CCarChase_Reactor::HIGHWAY_IODESC Desc{};
@@ -67,10 +68,10 @@ _bool CCarChase::Start()
 		Desc.iNaviNum = 0;
 		Desc.iStageDir = m_Info.iStageDir; // 스테이지 등장 방향
 		Desc.iLineDir = iter.iMonsterDir; // 몬스터 앞, 옆, 뒤 방향
-		Desc.iObjectIndex = iter.iObjectIndex;
-		Desc.iNaviRouteNum = iter.iMonsterLine;
-		Desc.iWaypointIndex = iWaypoint;
-		memcpy(Desc.iMonsterWeaponType, iter.iWeaponType, sizeof(_int) * 2);
+		Desc.iObjectIndex = iter.iObjectIndex; // 오브젝트 id 값
+		Desc.iNaviRouteNum = iter.iMonsterLine; // 몬스터가 사용할 line의 index
+		Desc.iWaypointIndex = iWaypoint; // 생성될 waypoint
+		memcpy(Desc.iMonsterWeaponType, iter.iWeaponType, sizeof(_int) * 2); // 몬스터 종류 (탈 것마다 몬스터가 다르다)
 
 		wstring strGameObject = TEXT("");
 
@@ -80,11 +81,14 @@ _bool CCarChase::Start()
 			strGameObject = TEXT("Prototype_GameObject_ReactorSedan");
 		else if (iter.iReactorType == CCarChase_Monster::REACTOR_BIKE)
 			strGameObject = TEXT("Prototype_GameObject_ReactorBike");
+		else if (iter.iReactorType == CCarChase_Monster::REACTOR_HELI)
+			strGameObject = TEXT("Prototype_GameObject_ReactorHeli");
 
 		if (FAILED(m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), strGameObject, TEXT("Layer_Reactor"), &Desc)))
 			return false;
 	}
 
+	//플레이어 스테이지 방향 값 넣어줌
 	pPlayer->Set_Dir(m_Info.iStageDir);
 
 	if (m_Info.iPlayerLine != m_Info.iPrePlayerLine)

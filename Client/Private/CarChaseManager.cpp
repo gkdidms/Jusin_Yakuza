@@ -105,14 +105,14 @@ HRESULT CCarChaseManager::Ready_Stage()
 		CCarChase::STAGE_MONSTER_INFO{
 			200000,
 			LINE_B,
-			DIR_M,
+			DIR_F,
 			CCarChase_Monster::REACTOR_VAN,
 			{ CCarChase_Monster::WPR, -1}
 		},
 		CCarChase::STAGE_MONSTER_INFO{
 			200001,
 			LINE_D,
-			DIR_F,
+			DIR_B,
 			CCarChase_Monster::REACTOR_VAN,
 			{ CCarChase_Monster::WPR, -1 }
 		},
@@ -120,7 +120,7 @@ HRESULT CCarChaseManager::Ready_Stage()
 
 	CCarChase::STAGE_INFO StageInfo_2 = CCarChase::STAGE_INFO{
 		LINE_A,
-		LINE_B,
+		LINE_A,
 		DIR_L,
 		MonsterInfo_2
 	};
