@@ -112,10 +112,10 @@ public:
 	const _float4x4* Get_BoneTransformationMatrix(const _char* pBoneName) const;
 
 	const _char* Get_AnimationName(_uint iAnimIndex);
-	const _double* Get_AnimationCurrentPosition(class CAnim* pAnim = nullptr);
-	const _double* Get_AnimationDuration(class CAnim* pAnim = nullptr);
-	const _float3* Get_AnimationCenterMove(class CAnim* pAnim = nullptr);
-	const _float4* Get_AnimationCenterRotation(class CAnim* pAnim = nullptr);
+	const _double* Get_AnimationCurrentPosition(class CAnim* pAnim = nullptr, _int iAnimIndex = -1);
+	const _double* Get_AnimationDuration(class CAnim* pAnim = nullptr, _int iAnimIndex = -1);
+	const _float3* Get_AnimationCenterMove(class CAnim* pAnim = nullptr, _int iAnimIndex = -1);
+	const _float4* Get_AnimationCenterRotation(class CAnim* pAnim = nullptr, _int iAnimIndex = -1);
 
 	// 로컬 절두체를 위한
 	_float4x4		Get_LocalMatrix();

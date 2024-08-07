@@ -1622,9 +1622,14 @@ void CPlayer::Play_CutScene()
 			Off_Separation_Face();				// 컷신 종료 후 얼굴 애니메이션 종료
 			On_Separation_Hand();				// 컷신 종료 후 손 애니메이션 켜기
 
+			//// 컷신 애니메이션이 종료된 이후에 위치하도록 하는 코드 (지우면안됨)
+			//_matrix boneMatrix = XMLoadFloat4x4(m_pModelCom->Get_BoneCombinedTransformationMatrix("center_c_n")) * m_pTransformCom->Get_WorldMatrix();
+			//_vector vPos = boneMatrix.r[CTransform::STATE_POSITION];
+			//m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos);			
 			return;
 		}
 
+		// 실제로 모델의 애니메이션을 돌리는건 컴포넌트이고, m_pCameraModel는 카메라 애니메이션을 실행하는 모델이라 랜더하지않는다
 		m_pModelCom->Play_Animation_CutScene(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")), m_pAnimCom, false, m_iCutSceneAnimIndex, false);
 
 		CPlayer* pPlayer = this;
@@ -1654,7 +1659,7 @@ void CPlayer::Play_CutScene()
 		auto KeyFrames = m_pCameraModel->Get_CurrentKeyFrameIndices(m_iCutSceneCamAnimIndex);
 		_uint iKeyFrameIndex = KeyFrames->front();
 
-
+		_float fFov = m_pCameraModel->Get_FoV(m_pCameraModel->Get_AnimationName(m_iCutSceneCamAnimIndex), iKeyFrameIndex);
 		pCamera->Set_FoV(m_pCameraModel->Get_FoV(m_pCameraModel->Get_AnimationName(m_iCutSceneCamAnimIndex), iKeyFrameIndex));
 
 		CModel::ANIMATION_DESC Desc{ m_iCutSceneCamAnimIndex, false };
@@ -1667,14 +1672,6 @@ void CPlayer::Play_CutScene()
 
 void CPlayer::Reset_CutSceneEvent()
 {
-	// 이 때 실행하는 애니메이션들은 선형보간을 하지 않는 애니메이션이므로 선형보간 간격을 0으로 꼭!! 초기화해야한다.
-	m_pModelCom->Set_ChangeInterval(0.0);
-	m_pCameraModel->Set_ChangeInterval(0.0);
-	m_pAnimCom->Reset_Animation(m_iCutSceneAnimIndex);
-	m_pCameraModel->Reset_Animation(m_iCutSceneCamAnimIndex);
-
-	m_eAnimComType = (m_eAnimComType == DEFAULT ? CUTSCENE : DEFAULT);
-
 	CAMERA eCurrentCam = m_pSystemManager->Get_Camera();
 
 	switch (eCurrentCam)
@@ -1692,17 +1689,28 @@ void CPlayer::Reset_CutSceneEvent()
 	case Client::CAMERA_CUTSCENE:
 		// 현재 컷신카메라의 마지막 행렬과 Fov를 받아와서
 		CCutSceneCamera* pCutSceneCamera = dynamic_cast<CCutSceneCamera*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Camera"), CAMERA_CUTSCENE));
-		_matrix LastMatrix = XMLoadFloat4x4(pCutSceneCamera->Get_WorldMatrix());
+		//_matrix LastMatrix = XMLoadFloat4x4(pCutSceneCamera->Get_WorldMatrix());
+		_matrix LastMatrix = m_pGameInstance->Get_Transform_Matrix(CPipeLine::D3DTS_VIEW);
 		_float fLastFov = pCutSceneCamera->Get_Fov();
+		pCutSceneCamera->On_Return();
 
 		// 플레이어 카메라에 해당 정보를 모두 저장해준다.
-		CPlayerCamera* pCamera = dynamic_cast<CPlayerCamera*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Camera"), CAMERA_PLAYER));
-		pCamera->Store_StartMatrix(LastMatrix);
-		pCamera->Set_StartFov(fLastFov);		//선형보간할 때 시작값 fov 설정
-		pCamera->Set_FoV(fLastFov);				//현재 fov설정
-		pCamera->On_Return();
+		//CPlayerCamera* pCamera = dynamic_cast<CPlayerCamera*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Camera"), CAMERA_PLAYER));
+		////pCamera->Get_TransformCom()->Set_State(CTransform::STATE_POSITION, LastMatrix.r[CTransform::STATE_POSITION]);
+		////pCamera->Get_TransformCom()->Set_WorldMatrix(LastMatrix);
+		////pCamera->Set_StartFov(fLastFov);		//선형보간할 때 시작값 fov 설정
+		////pCamera->Set_FoV(fLastFov);				//현재 fov설정
+		
 		break;
 	}
+
+	// 이 때 실행하는 애니메이션들은 선형보간을 하지 않는 애니메이션이므로 선형보간 간격을 0으로 꼭!! 초기화해야한다.
+	m_pModelCom->Set_ChangeInterval(0.0);
+	m_pCameraModel->Set_ChangeInterval(0.0);
+	m_pAnimCom->Reset_Animation(m_iCutSceneAnimIndex);
+	m_pCameraModel->Reset_Animation(m_iCutSceneCamAnimIndex);
+
+	m_eAnimComType = (m_eAnimComType == DEFAULT ? CUTSCENE : DEFAULT);
 
 	// 그리고 체인지
 	m_pSystemManager->Set_Camera(CAMERA_CUTSCENE == m_pSystemManager->Get_Camera() ? CAMERA_PLAYER : CAMERA_CUTSCENE);
