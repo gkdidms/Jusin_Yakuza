@@ -41,10 +41,14 @@ Texture2D g_MultiDiffuseTexture;
 Texture2D g_ShadeTexture;
 Texture2D g_RMTexture;
 Texture2D g_RSTexture;
+Texture2D g_SurfaceTexture;
+Texture2D g_SubSurfaceTexture;
+Texture2D g_OEShaderTexture;
 Texture2D g_LightMapTexture;
 Texture2D g_SpecularTexture;
 Texture2D g_DepthTexture;
-Texture2D g_MetallicTexture;
+Texture2D g_OESpecularTexture;
+
 Texture2D g_BackBufferTexture;
 Texture2D g_ToneMappingTexture;
 Texture2D g_LuminanceTexture;
