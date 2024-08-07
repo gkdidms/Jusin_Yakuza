@@ -1,6 +1,8 @@
 #include "..\Public\TriggerObj.h"
 #include "Imgui_Manager.h"
 
+#include "GameInstance.h"
+
 CTriggerObj::CTriggerObj(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     : CGameObject{ pDevice, pContext }
 {

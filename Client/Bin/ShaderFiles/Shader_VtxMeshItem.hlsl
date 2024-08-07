@@ -203,7 +203,7 @@ PS_OUT PS_MAIN_Bright(PS_IN In)
     if (true == g_bBright)
     {
         float minBrightness = 0;
-        float maxBrightness = 0.4;
+        float maxBrightness = 0.5;
     
         float brightness = 0;
         

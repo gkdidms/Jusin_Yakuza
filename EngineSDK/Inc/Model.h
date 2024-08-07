@@ -7,7 +7,7 @@ BEGIN(Engine)
 class ENGINE_DLL CModel final : public CComponent
 {
 public:
-	enum MODELTYPE { TYPE_NONANIM, TYPE_ANIM, TYPE_END };
+	enum MODELTYPE { TYPE_NONANIM, TYPE_ANIM, TYPE_PARTICLE, TYPE_END };
 
 	struct ANIMATION_DESC
 	{

@@ -17,6 +17,7 @@ float g_NearZ = 0.01f;
 float g_fFar = 3000.f;
 float g_FarZ = 3000.f;
 float g_fDistortionWeight;
+bool g_isAttach;
 
 struct VS_IN
 {
@@ -57,38 +58,22 @@ VS_OUT VS_MAIN(VS_IN In)
 
     vector vPosition = mul(float4(In.vPosition, 1.f), In.TransformMatrix);//로컬이동.
 
-    matrix matWV, matWVP;
-
-    matWV = mul(g_WorldMatrix, g_ViewMatrix);
-    matWVP = mul(matWV, g_ProjMatrix);
-    
-
-    Out.vPosition = mul(vPosition, g_WorldMatrix).xyz;//월드상
-    Out.vPSize = In.vPSize;
-    Out.vDir = normalize(mul(In.vDir, g_WorldMatrix));
-    Out.vLifeTime = In.vLifeTime;
-    Out.vRectSize = In.vRectSize;
-
-    return Out;
-}
-
-VS_OUT VS_LOCAL(VS_IN In)
-{
-    VS_OUT Out = (VS_OUT) 0;
-
-    vector vPosition = mul(float4(In.vPosition, 1.f), In.TransformMatrix);
-
-    //matrix matWV, matWVP;
-
-  //  matWV = mul(g_WorldMatrix, g_ViewMatrix);
-  //  matWVP = mul(matWV, g_ProjMatrix);
-    
-
-    Out.vPosition = vPosition.xyz; 
-    Out.vPSize = In.vPSize;
-    Out.vDir = In.vDir;
-    Out.vLifeTime = In.vLifeTime;
-    Out.vRectSize = In.vRectSize;
+    if (g_isAttach)
+    {  
+        Out.vPosition = mul(vPosition, g_WorldMatrix).xyz;//월드상
+        Out.vPSize = In.vPSize;
+        Out.vDir = normalize(mul(In.vDir, g_WorldMatrix));
+        Out.vLifeTime = In.vLifeTime;
+        Out.vRectSize = In.vRectSize;
+    }
+    else
+    {
+        Out.vPosition = vPosition.xyz;
+        Out.vPSize = In.vPSize;
+        Out.vDir = In.vDir;
+        Out.vLifeTime = In.vLifeTime;
+        Out.vRectSize = In.vRectSize;
+    }
 
     return Out;
 }
@@ -99,10 +84,10 @@ VS_NOBILL_OUT VS_NOBILLBOARD(VS_IN In)
 
     vector vPosition = mul(float4(In.vPosition, 1.f), In.TransformMatrix); //로컬이동.
     
-    Out.TransformMatrix = mul(In.TransformMatrix,g_WorldMatrix);
-    Out.vPosition = mul(vPosition, g_WorldMatrix).xyz; //월드상
+    Out.TransformMatrix = In.TransformMatrix;
+    Out.vPosition = vPosition.xyz; //월드상
     Out.vPSize = In.vPSize;
-    Out.vDir = normalize(mul(In.vDir, g_WorldMatrix));
+    Out.vDir = normalize(In.vDir);
     Out.vLifeTime = In.vLifeTime;
     Out.vRectSize = In.vRectSize;
 
@@ -432,11 +417,8 @@ void GS_ROTSCALE(point GS_IN In[1], inout TriangleStream<GS_OUT> Triangles)
     vUp = normalize(mul(vector(vUp, 0.f), rotate)).xyz * In[0].vPSize.y * In[0].vRectSize.x * 0.5f;
     
 
-  //  float3x3 wpos = g_WorldMatrix._11_12_13_21_41_42_43;
-
     float4 vPosition;
-   // matrix matWV = mul(g_WorldMatrix, g_ViewMatrix);
-   // matrix matWVP = mul(matWV, g_ProjMatrix);
+
     matrix matVP = mul(g_ViewMatrix, g_ProjMatrix);
     
     float4 PointPosition = float4(In[0].vPosition, 1.f); //월드좌표

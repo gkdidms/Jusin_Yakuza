@@ -204,6 +204,9 @@
     </Filter>
     <Filter Include="01.Utility\03.Component\11.NeoShader\Material">
       <UniqueIdentifier>{4936d498-9a6c-49bd-ae9f-35a582eb3c53}</UniqueIdentifier>
+	</Filter>
+    <Filter Include="01.Utility\03.Component\01.VIBuffer\Instance\Mesh">
+      <UniqueIdentifier>{4addae2b-3921-41a4-88a0-51caad484a17}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -407,9 +410,12 @@
     </ClInclude>
     <ClInclude Include="..\public\Material.h">
       <Filter>01.Utility\03.Component\11.NeoShader\Material</Filter>
-    </ClInclude>
+	</ClInclude>
     <ClInclude Include="..\public\NeoShader.h">
       <Filter>01.Utility\03.Component\11.NeoShader</Filter>
+	</ClInclude>
+    <ClInclude Include="..\Public\VIBuffer_Instance_Mesh.h">
+      <Filter>01.Utility\03.Component\01.VIBuffer\Instance\Mesh</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -604,6 +610,9 @@
     </ClCompile>
     <ClCompile Include="..\private\NeoShader.cpp">
       <Filter>01.Utility\03.Component\11.NeoShader</Filter>
+	</ClCompile>
+    <ClCompile Include="..\Private\VIBuffer_Instance_Mesh.cpp">
+      <Filter>01.Utility\03.Component\01.VIBuffer\Instance\Mesh</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>

@@ -30,8 +30,8 @@ void CLevel_Test::Tick(const _float& fTimeDelta)
 
 HRESULT CLevel_Test::Ready_Object(const wstring& strLayerTag)
 {
-	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_Sky"), strLayerTag)))
-		return E_FAIL;
+	//if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_Sky"), strLayerTag)))
+	//	return E_FAIL;
 
 
 	LIGHT_DESC			LightDesc = {};
@@ -47,7 +47,7 @@ HRESULT CLevel_Test::Ready_Object(const wstring& strLayerTag)
 
 	CFreeCamera::FREE_CAMERA_DESC CameraDesc{};
 
-	CameraDesc.vEye = _float4(0.0f, 0.f, -1.f, 1.f);
+	CameraDesc.vEye = _float4(0.0f, 10.f, -10.f, 1.f);
 	CameraDesc.vFocus = _float4(0.0f, 0.0f, 0.0f, 1.f);
 	CameraDesc.fFovY = XMConvertToRadians(60.0f);
 	CameraDesc.fAspect = (_float)g_iWinSizeX / (_float)g_iWinSizeY;
@@ -58,10 +58,15 @@ HRESULT CLevel_Test::Ready_Object(const wstring& strLayerTag)
 	CameraDesc.fSensor = 0.1f;
 
 	
-	XMStoreFloat4x4(&CameraDesc.vPrePosition, XMMatrixRotationY(XMConvertToRadians(90.f)) * XMMatrixTranslation(-2.f, 0.f, 0.f));
+	XMStoreFloat4x4(&CameraDesc.vPrePosition, XMMatrixRotationX(XMConvertToRadians(25.f)) * XMMatrixRotationY(XMConvertToRadians(135.f)) * XMMatrixTranslation(-2.f, 2.f, 2.f));
 
 	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_FreeCamera"), strLayerTag, &CameraDesc)))
 		return E_FAIL;
+
+
+	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_Land"), strLayerTag)))
+		return E_FAIL;
+
 
 	return S_OK;
 }

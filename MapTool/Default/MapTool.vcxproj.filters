@@ -130,6 +130,9 @@
     <ClCompile Include="..\Private\TriggerObj_Manager.cpp">
       <Filter>03.Managers\08.TriggerObj_Manager</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\NaviObj.cpp">
+      <Filter>02.GameObjects\11.NaviObj</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\MainApp.h">
@@ -273,11 +276,14 @@
     <ClInclude Include="..\Public\Trigger_Manager.h">
       <Filter>03.Managers\07.Trigger_Manager</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\TriggerObj_Manager.h">
+      <Filter>03.Managers\08.TriggerObj_Manager</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\TriggerObj.h">
       <Filter>02.GameObjects\10.TriggerObj</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\TriggerObj_Manager.h">
-      <Filter>03.Managers\08.TriggerObj_Manager</Filter>
+    <ClInclude Include="..\Public\NaviObj.h">
+      <Filter>02.GameObjects\11.NaviObj</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -405,6 +411,9 @@
     </Filter>
     <Filter Include="03.Managers\08.TriggerObj_Manager">
       <UniqueIdentifier>{5049aa18-0aed-43a7-8839-485cf7919437}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\11.NaviObj">
+      <UniqueIdentifier>{30eaaa1a-4b9f-4dfb-a95e-02fcabee5738}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

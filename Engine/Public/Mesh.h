@@ -17,6 +17,8 @@ public:
 
 	HRESULT Ready_Vertices_For_NonAnimMesh(const aiMesh* pAIMesh, _fmatrix PreTransformMatrix);
 	HRESULT Ready_Vertices_For_NonAnimMesh(const BAiMesh* pAIMesh, _fmatrix PreTransformMatrix);
+	HRESULT Ready_Vertices_For_ParticleMesh(const aiMesh* pAIMesh, _fmatrix PreTransformMatrix);
+	HRESULT Ready_Vertices_For_ParticleMesh(const BAiMesh* pAIMesh, _fmatrix PreTransformMatrix);
 	HRESULT Ready_Vertices_For_AnimMesh(const aiMesh* pAIMesh, const vector<class CBone*>& Bones);
 	HRESULT Ready_Vertices_For_AnimMesh(const BAiMesh* pAIMesh, const vector<class CBone*>& Bones);
 
@@ -25,6 +27,9 @@ public:
 public:
 	_uint Get_MaterialIndex() { return m_iMaterialIndex; }
 	_uint Get_NumBones() { return m_iNumBones; }
+
+	VTXMESH* Get_Vertices() { return m_pVertices; }
+	_uint* Get_Mesh_Indices() { return m_pIndices; }
 
 	const _char* Get_Name() const {
 		return m_szName;
@@ -58,6 +63,8 @@ private:
 	_float4x4			m_localMatrix;
 	_float				m_fScale;
 
+	VTXMESH* m_pVertices = { nullptr };
+	_uint* m_pIndices = { nullptr };
 public:
 	static CMesh* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CModel::MODELTYPE eModelType, const aiMesh* pAIMesh, _fmatrix PreTransformMatrix, const vector<class CBone*>& Bones);
 	static CMesh* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CModel::MODELTYPE eModelType, const BAiMesh* pAIMesh, _fmatrix PreTransformMatrix, const vector<class CBone*>& Bones);
