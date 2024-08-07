@@ -43,7 +43,6 @@ HRESULT CParticle_Mesh::Initialize(void* pArg)
     {
         PARTICLE_MESH_DESC* pDesc = static_cast<PARTICLE_MESH_DESC*>(pArg);
 
-        m_strModelTag = pDesc->strModelTag;
 
 
         if (nullptr == pDesc->pWorldMatrix)
@@ -51,6 +50,7 @@ HRESULT CParticle_Mesh::Initialize(void* pArg)
             PARTICLE_MESH_DESC* pDesc = static_cast<PARTICLE_MESH_DESC*>(pArg);
             m_BufferInstance = pDesc->BufferInstance;
             m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&pDesc->vStartPos));
+            m_strModelTag = pDesc->strModelTag;
         }
         else
         {
