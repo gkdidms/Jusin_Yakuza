@@ -91,6 +91,12 @@
     <ClCompile Include="..\..\Imgui\ImGuiFileDialog\ImGuiFileDialog.cpp">
       <Filter>96.ImGui\Source</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\Particle_Mesh.cpp">
+      <Filter>02.GameObjects\03.Effect\Particle_Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Land.cpp">
+      <Filter>02.GameObjects\05.Land</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\MainApp.h">
@@ -204,6 +210,12 @@
     <ClInclude Include="..\..\Imgui\ImGuiFileDialog\ImGuiFileDialogConfig.h">
       <Filter>96.ImGui\Source</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Particle_Mesh.h">
+      <Filter>02.GameObjects\03.Effect\Particle_Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Land.h">
+      <Filter>02.GameObjects\05.Land</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="small.ico">
@@ -289,6 +301,12 @@
     <Filter Include="02.GameObjects\03.Effect\Aura">
       <UniqueIdentifier>{5faeba9b-5ecf-4474-9f39-62ffb65dd5ce}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\03.Effect\Particle_Mesh">
+      <UniqueIdentifier>{1e88d57e-9943-47cc-a955-debbe14eff35}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\05.Land">
+      <UniqueIdentifier>{fc7a0ff8-0554-4f5a-a17a-e504696e1ff2}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxPosTex.hlsl">
@@ -304,6 +322,12 @@
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Aura.hlsl">
+      <Filter>97.ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxMesh.hlsl">
+      <Filter>97.ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxInstance_Mesh.hlsl">
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
   </ItemGroup>

@@ -6,9 +6,11 @@
 #pragma region "객체 원형"
 #include "FreeCamera.h"
 #include "Particle_Point.h"
+#include "Particle_Mesh.h"
 #include "TRailEffect.h"
 #include "Aura.h"
 #include "Sky.h"
+#include "Land.h"
 #pragma endregion
 
 
@@ -138,6 +140,12 @@ HRESULT CLoader::Loading_For_TestLevel()
 {
 	lstrcpy(m_szLoadingText, TEXT("텍스쳐를 로딩 중 입니다."));
 
+	/* Prototype_Component_Texture_Grid*/
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Texture_Grid"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/UVGrid.dds"), 1))))
+		return E_FAIL;
+
+
 	/* Prototype_Component_Texture_Sphere */
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Texture_Sphere"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/lm000.dds"), 1))))
@@ -227,6 +235,104 @@ HRESULT CLoader::Loading_For_TestLevel()
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Texture_Coin"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/Money/coin100.dds"), 1))))
 		return E_FAIL;
+
+	/* Prototype_Component_Texture_Coin*/
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Texture_WaveFace"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/e_j_0011_waveface.dds"), 1))))
+		return E_FAIL;
+
+#pragma endregion
+
+#pragma region Blood_Texture
+	/* Prototype_Component_Texture_BloodD0 */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Texture_BloodD0"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/Blood/e_j_0042_chi_sibuki_e.dds"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_BloodN0 */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Texture_BloodN0"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/Blood/e_j_0043_chi_sibuki_e_nml.dds"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_BloodD1 */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Texture_BloodD1"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/Blood/e_j_0050_chiato_c.dds"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_BloodN1 */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Texture_BloodN1"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/Blood/e_j_0051_chiato_c_nml.dds"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_BloodD2 */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Texture_BloodD2"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/Blood/e_j_0052_chiato_d.dds"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_BloodN2 */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Texture_BloodN2"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/Blood/e_j_0053_chiato_d_nml.dds"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_BloodD3 */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Texture_BloodD3"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/Blood/e_j_0054_chiato_e.dds"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_BloodN3 */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Texture_BloodN3"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/Blood/e_j_0055_chiato_e_nml.dds"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_BloodD4 */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Texture_BloodD4"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/Blood/e_j_0060_chiato_g.dds"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_BloodN4 */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Texture_BloodN4"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/Blood/e_j_0060_chiato_g_nml.dds"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_BloodD5 */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Texture_BloodD5"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/Blood/e_o_2510_blood_a.dds"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_BloodN5 */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Texture_BloodN5"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/Blood/e_o_2510_blood_a_nml.dds"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_BloodD6 */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Texture_BloodD6"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/Blood/e_o_2513_blood_d.dds"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_BloodN6 */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Texture_BloodN6"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/Blood/e_o_2513_blood_d_nml.dds"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_BloodD7 */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Texture_BloodD7"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/Blood/e_o_2514_blood_e.dds"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_BloodN7 */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Texture_BloodN7"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/Blood/e_o_2514_blood_e_nml.dds"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_BloodD8 */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Texture_BloodD8"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/Blood/e_o_2515_blood_f.dds"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_BloodN8 */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Texture_BloodN8"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/Blood/e_o_2515_blood_f_nml.dds"), 1))))
+		return E_FAIL;
 #pragma endregion
 
 	lstrcpy(m_szLoadingText, TEXT("컴포넌트 원형 를(을) 로딩 중 입니다."));
@@ -241,6 +347,10 @@ HRESULT CLoader::Loading_For_TestLevel()
 		CVIBuffer_Trail::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	/* For.Prototype_Component_VIBuffer_Instance_Mesh */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_VIBuffer_Instance_Mesh"),
+		CVIBuffer_Instance_Mesh::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 
 
 	/* For.Prototype_Component_VIBuffer_Cube */
@@ -249,6 +359,13 @@ HRESULT CLoader::Loading_For_TestLevel()
 		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("객체 원형를(을) 로딩 중 입니다."));
+
+	/* For.Prototype_GameObject_Land*/
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Land"),
+		CLand::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+
 	/* For.Prototype_GameObject_FreeCamera */
 	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_FreeCamera"),
 		CFreeCamera::Create(m_pDevice, m_pContext))))
@@ -256,7 +373,12 @@ HRESULT CLoader::Loading_For_TestLevel()
 
 
 	Add_GameObject_Particle_On_Path(TEXT("../../Client/Bin/DataFiles/Particle/"));
+	//Add_GameObject_ParticleMesh_On_Path(TEXT("../../Client/Bin/Resources/Models/Particle/"));
 
+		/* For.Prototype_GameObject_Particle_Mesh	 */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Particle_Mesh"),
+		CParticle_Mesh::Create(m_pDevice, m_pContext))))	
+		return E_FAIL;
 
 
 	/* For.Prototype_GameObject_Particle_Point */
@@ -280,7 +402,29 @@ HRESULT CLoader::Loading_For_TestLevel()
 		return E_FAIL;
 
 
+	//바이너리 인가 아닌가를 마지막에 넣어주기.
+	_matrix PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);	
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Model_UVGrid"),
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/NonAnim/Particle/Bin/UVBase.dat", PreTransformMatrix, true, true))))
+		return E_FAIL;
 
+	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Model_ParticleSphere"),
+		//CModel::Create(m_pDevice, m_pContext, CModel::TYPE_PARTICLE, "../../Client/Bin/Resources/Models/NonAnim/Particle/Bone_Sphere.fbx", PreTransformMatrix, false, true))))
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_PARTICLE, "../../Client/Bin/Resources/Models/NonAnim/Particle/Bin/Bone_Sphere.dat", PreTransformMatrix, true, true))))
+		return E_FAIL;
+
+	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Model_ParticleMoney"),
+		//CModel::Create(m_pDevice, m_pContext, CModel::TYPE_PARTICLE, "../../Client/Bin/Resources/Models/NonAnim/Particle/Money.fbx", PreTransformMatrix, false, true))))
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_PARTICLE, "../../Client/Bin/Resources/Models/NonAnim/Particle/Bin/Money.dat", PreTransformMatrix, true, true))))
+		return E_FAIL;
+
+	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Model_ParticleBlood"),
+		//CModel::Create(m_pDevice, m_pContext, CModel::TYPE_PARTICLE, "../../Client/Bin/Resources/Models/NonAnim/Particle/Blood.fbx", PreTransformMatrix, false, true))))
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_PARTICLE, "../../Client/Bin/Resources/Models/NonAnim/Particle/Bin/Blood.dat", PreTransformMatrix, true, true))))
+		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("셰이더를(을) 로딩 중 입니다."));
 
@@ -304,6 +448,15 @@ HRESULT CLoader::Loading_For_TestLevel()
 		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_Aura.hlsl"), VTXINSTANCE_POINT::Elements, VTXINSTANCE_POINT::iNumElements))))
 		return E_FAIL;
 
+	/* For.Prototype_Component_Shader_VtxMesh*/
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Shader_VtxMesh"),
+		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxMesh.hlsl"), VTXMESH::Elements, VTXMESH::iNumElements))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Shader_VtxInstance_Mesh*/
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Shader_VtxInstance_Mesh"),
+		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxInstance_Mesh.hlsl"), VTXINSTANCE_MESH::Elements, VTXINSTANCE_MESH::iNumElements))))
+		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
 
@@ -382,10 +535,63 @@ HRESULT CLoader::Add_GameObject_Particle_On_Path(const wstring& strPath)
 
 			}
 		}
+		else if (TEXT("Mesh") == strChannelName)
+		{
+			for (const auto& entry : fs::directory_iterator(strDirectory))
+			{
+
+				string FileName = entry.path().filename().string();
+				string AllPath = strDirectory + FileName;
+
+				string Tag;
+				_int dotPos = FileName.find_last_of(".");
+				Tag = FileName.substr(0, dotPos);
+
+
+				/* For.Prototype_GameObject_Mesh */
+				if (FAILED(m_pGameInstance->Add_GameObject_Prototype(m_pGameInstance->StringToWstring(Tag),
+					CParticle_Mesh::Create(m_pDevice, m_pContext, AllPath))))
+					return E_FAIL;
+
+			}
+		}
 		
 
 	}
 	return S_OK;
+}
+
+HRESULT CLoader::Add_GameObject_ParticleMesh_On_Path(const wstring& strPath)
+{
+	vector<wstring> vecDirectorys;
+	m_pGameInstance->Get_DirectoryName(strPath, vecDirectorys);
+
+	for (auto& strChannelName : vecDirectorys)
+	{
+		wstring strFilePath = strPath + strChannelName + TEXT("/");
+		string strDirectory = m_pGameInstance->WstringToString(strFilePath);
+
+
+		for (const auto& entry : fs::directory_iterator(strDirectory))
+		{
+
+			string FileName = entry.path().filename().string();
+			string AllPath = strDirectory + FileName;
+
+			string Tag;
+			_int dotPos = FileName.find_last_of(".");
+			Tag = FileName.substr(0, dotPos);
+
+
+			/* For.Prototype_GameObject_Particle_Point */
+			if (FAILED(m_pGameInstance->Add_GameObject_Prototype(m_pGameInstance->StringToWstring(Tag),
+				CParticle_Point::Create(m_pDevice, m_pContext, AllPath))))
+				return E_FAIL;
+
+		}
+	}
+	return S_OK;
+
 }
 
 CLoader* CLoader::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, LEVEL eNextLevel)

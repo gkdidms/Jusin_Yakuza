@@ -207,23 +207,23 @@ CBTNode::NODE_STATE CAI_RushYakuza::ATK_CMD()
 {
 	if (m_iSkill == SKILL_CMD && m_isAttack)
 	{
-		if (*m_pState == CMonster::MONSTER_CMD_1 && *(m_pAnimCom[*m_pCurrentAnimType]->Get_AnimPosition()) >= 10.0)
+		if (*m_pState == CMonster::MONSTER_CMB_1 && *(m_pAnimCom[*m_pCurrentAnimType]->Get_AnimPosition()) >= 10.0)
 		{
-			*m_pState = CMonster::MONSTER_CMD_2;
+			*m_pState = CMonster::MONSTER_CMB_2;
 		}
-		else if (*m_pState == CMonster::MONSTER_CMD_2 && *(m_pAnimCom[*m_pCurrentAnimType]->Get_AnimPosition()) >= 10.0)
+		else if (*m_pState == CMonster::MONSTER_CMB_2 && *(m_pAnimCom[*m_pCurrentAnimType]->Get_AnimPosition()) >= 10.0)
 		{
-			*m_pState = CMonster::MONSTER_CMD_3;
+			*m_pState = CMonster::MONSTER_CMB_3;
 		}
-		else if (*m_pState == CMonster::MONSTER_CMD_3 && *(m_pAnimCom[*m_pCurrentAnimType]->Get_AnimPosition()) >= 10.0)
+		else if (*m_pState == CMonster::MONSTER_CMB_3 && *(m_pAnimCom[*m_pCurrentAnimType]->Get_AnimPosition()) >= 10.0)
 		{
-			*m_pState = CMonster::MONSTER_CMD_4;
+			*m_pState = CMonster::MONSTER_CMB_4;
 		}
-		else if (*m_pState == CMonster::MONSTER_CMD_4 && *(m_pAnimCom[*m_pCurrentAnimType]->Get_AnimPosition()) >= 10.0)
+		else if (*m_pState == CMonster::MONSTER_CMB_4 && *(m_pAnimCom[*m_pCurrentAnimType]->Get_AnimPosition()) >= 10.0)
 		{
-			*m_pState = CMonster::MONSTER_CMD_5;
+			*m_pState = CMonster::MONSTER_CMB_5;
 		}
-		else if (*m_pState == CMonster::MONSTER_CMD_5 && m_pAnimCom[*m_pCurrentAnimType]->Get_AnimFinished())
+		else if (*m_pState == CMonster::MONSTER_CMB_5 && m_pAnimCom[*m_pCurrentAnimType]->Get_AnimFinished())
 		{
 			//콤보 끝.
 			m_isAttack = false;
@@ -237,7 +237,7 @@ CBTNode::NODE_STATE CAI_RushYakuza::ATK_CMD()
 	//첫 진입 시
 	if (m_iSkill == SKILL_CMD)
 	{
-		*m_pState = CMonster::MONSTER_CMD_1;
+		*m_pState = CMonster::MONSTER_CMB_1;
 		m_isAttack = true;
 
 		return CBTNode::SUCCESS;

@@ -17,7 +17,8 @@ public:
 
 public:
     HRESULT Create_Buffer(ID3D11Buffer** pOut);
-
+    _uint Get_NumVertex() { return m_iNumVertices; }
+    _uint Get_NumIndices() { return m_iNumIndices; }
 protected:
     ID3D11Buffer* m_pVB;
     ID3D11Buffer* m_pIB;

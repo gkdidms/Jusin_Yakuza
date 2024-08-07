@@ -15,6 +15,7 @@
 #include "ColliderObj.h"
 #include "RushYakuza.h"
 #include "TriggerObj.h"
+#include "NaviObj.h"
 #pragma endregion
 
 
@@ -259,6 +260,11 @@ HRESULT CLoader::Loading_For_RunMapLevel(int iLevel)
 	/* For.Prototype_GameObject_TriggerObj */
 	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_TriggerObj"),
 		CTriggerObj::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_NaviObj */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_NaviObj"),
+		CNaviObj::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 

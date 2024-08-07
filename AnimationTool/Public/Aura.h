@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "Effect.h"
 #include "Client_Defines.h"
 #include "VIBuffer_Instance_Point.h"
@@ -47,7 +47,7 @@ private:
 
 private:
     CVIBuffer_Instance::INSTANCE_DESC m_BufferInstance;
-    _float2     m_fUVCount = { 0.f, 0.f };//uv °¹¼ö
+    _float2     m_fUVCount = { 0.f, 0.f };//uv ê°¯ìˆ˜
     _float       m_fCurTime = { 0.f };
 private:
     HRESULT Add_Components();

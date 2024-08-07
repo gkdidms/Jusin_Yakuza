@@ -58,7 +58,7 @@ HRESULT CModel::Initialize_Prototype(MODELTYPE eModelType, const _char* pModelFi
 	{
 		_uint		iFlag = aiProcess_ConvertToLeftHanded;
 
-		if (TYPE_NONANIM == eModelType)
+		if (TYPE_NONANIM == eModelType	||	TYPE_PARTICLE == eModelType)
 			iFlag |= aiProcess_PreTransformVertices | aiProcess_GenNormals |  aiProcess_GenUVCoords| aiProcess_CalcTangentSpace;// aiProcessPreset_TargetRealtime_Fast;
 		else
 			iFlag |= aiProcess_CalcTangentSpace | aiProcess_GenNormals | aiProcess_Triangulate | aiProcess_GenUVCoords | aiProcess_SortByPType;
@@ -93,7 +93,7 @@ HRESULT CModel::Initialize_Prototype(MODELTYPE eModelType, const _char* pModelFi
 			return E_FAIL;
 	}
 
-	if (TYPE_NONANIM != eModelType)
+	if (TYPE_NONANIM != eModelType && TYPE_PARTICLE != eModelType)
 	{
 		string pCameraFovFilePath = "../Bin/DataFiles/CameraFoVAnimationData/" + m_pGameInstance->Get_FileName(pModelFilePath) + "_camera_fov.csv";
 
@@ -136,10 +136,11 @@ HRESULT CModel::Ready_Materials(const _char* pModelFilePath)
 	for (size_t i = 0; i < m_iNumMaterials; i++)
 	{
 		MESH_MATERIAL		MeshMaterial{};
-
+		//memcpy(MeshMaterial.strMaterialName, m_pAIScene->mMaterials[i]->GetName().C_Str(), sizeof(m_pAIScene->mMaterials[i]->GetName()));
 		for (size_t j = aiTextureType_DIFFUSE; j < AI_TEXTURE_TYPE_MAX; j++)
 		{
 			aiString pPath;
+			
 
 			if (FAILED(m_pAIScene->mMaterials[i]->GetTexture((aiTextureType)j, 0, &pPath)))
 				continue;
@@ -424,10 +425,14 @@ HRESULT CModel::Export_Materials(ofstream& out, const _char* pModelFilePath, con
 
 	for (size_t i = 0; i < m_iNumMaterials; i++)
 	{
+		//string name = m_pAIScene->mMaterials[i]->GetName().C_Str();
+		//_uint iNumMaterialName = sizeof(name);
+		//out.write((char*)&iNumMaterialName, sizeof(_uint));
+		//out.write(name.c_str(), iNumMaterialName);
+
 		for (size_t j = aiTextureType_DIFFUSE; j < AI_TEXTURE_TYPE_MAX; j++)
 		{
 			aiString pPath;
-
 			if (FAILED(m_pAIScene->mMaterials[i]->GetTexture((aiTextureType)j, 0, &pPath)))
 			{
 				_uint iZero = 0;
@@ -515,7 +520,7 @@ HRESULT CModel::Export_Animations(ofstream& out)
 				
 				if (Channel->mNumRotationKeys > k)
 				{
-					_float4 vRotationKeys;
+					_float4 vRotationKeys{};
 					vRotationKeys.x = Channel->mRotationKeys[k].mValue.x;
 					vRotationKeys.y = Channel->mRotationKeys[k].mValue.y;
 					vRotationKeys.z = Channel->mRotationKeys[k].mValue.z;
@@ -703,6 +708,9 @@ HRESULT CModel::Import_Materials(ifstream& in, _bool isTool)
 	for (size_t i = 0; i < m_iNumMaterials; i++)
 	{
 		MESH_MATERIAL		MeshMaterial{};
+		//_uint iNumMaterialName = 0;
+		//in.read((char*)&iNumMaterialName, sizeof(_uint));
+		//in.read(MeshMaterial.strMaterialName, iNumMaterialName);
 
 		for (size_t j = aiTextureType_DIFFUSE; j < AI_TEXTURE_TYPE_MAX; j++)
 		{

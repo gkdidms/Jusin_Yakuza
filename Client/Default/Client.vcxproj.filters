@@ -531,6 +531,21 @@
     <ClCompile Include="..\Private\Kiryu_KRC_PickUp.cpp">
       <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRC\Pickup</Filter>
     </ClCompile>
+    <ClCompile Include="..\private\YonedaTrigger.cpp">
+      <Filter>02.GameObjects\08.Trigger\02.YonedaTrigger</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Reactor_Sedan.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\03.CarChase\00.Reactor\01.Sedan</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Reactor_Bike.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\03.CarChase\00.Reactor\02.Bike</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Reactor_Heli.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\03.CarChase\00.Reactor\03.Heli</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Particle_Mesh.cpp">
+      <Filter>02.GameObjects\06.Effect\Mesh</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\MainApp.h">
@@ -1092,6 +1107,21 @@
     </ClInclude>
     <ClInclude Include="..\Public\Kiryu_KRC_PickUp.h">
       <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRC\Pickup</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\YonedaTrigger.h">
+      <Filter>02.GameObjects\08.Trigger\02.YonedaTrigger</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Reactor_Sedan.h">
+      <Filter>02.GameObjects\02.Character\LandObject\03.CarChase\00.Reactor\01.Sedan</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Reactor_Bike.h">
+      <Filter>02.GameObjects\02.Character\LandObject\03.CarChase\00.Reactor\02.Bike</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Reactor_Heli.h">
+      <Filter>02.GameObjects\02.Character\LandObject\03.CarChase\00.Reactor\03.Heli</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Particle_Mesh.h">
+      <Filter>02.GameObjects\06.Effect\Mesh</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1678,6 +1708,9 @@
     </Filter>
     <Filter Include="02.GameObjects\99.Camera\07.MapCollider\Obj">
       <UniqueIdentifier>{4e8421d6-5ada-48ec-9fce-0aed349f2f59}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\06.Effect\Mesh">
+      <UniqueIdentifier>{1a4c277c-2284-46fe-9cf0-050678dc69ca}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

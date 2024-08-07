@@ -52,58 +52,6 @@ void CWPHYakuza::Late_Tick(const _float& fTimeDelta)
 	__super::Late_Tick(fTimeDelta);
 }
 
-HRESULT CWPHYakuza::Render()
-{
-	if (FAILED(Bind_ResourceData()))
-		return E_FAIL;
-
-	int i = 0;
-	for (auto& pMesh : m_pModelCom->Get_Meshes())
-	{
-		_bool isCloth = true;
-		string strMeshName = string(pMesh->Get_Name());
-		if (strMeshName.find("hair") != string::npos || strMeshName.find("face") != string::npos ||
-			strMeshName.find("foot") != string::npos || strMeshName.find("body") != string::npos ||
-			strMeshName.find("eye") != string::npos)
-			isCloth = false;
-
-		m_pShaderCom->Bind_RawValue("g_isCloth", &isCloth, sizeof(_bool));
-
-		m_pModelCom->Bind_BoneMatrices(m_pShaderCom, "g_BoneMatrices", i);
-
-		m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE);
-		m_pModelCom->Bind_Material(m_pShaderCom, "g_MultiDiffuseTexture", i, aiTextureType_SHININESS);
-		m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS);
-
-		_bool isRS = true;
-		_bool isRD = true;
-
-		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RSTexture", i, aiTextureType_SPECULAR)))
-			isRS = false;
-		m_pShaderCom->Bind_RawValue("g_isRS", &isRS, sizeof(_bool));
-
-		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RDTexture", i, aiTextureType_OPACITY)))
-			isRD = false;
-
-		m_pShaderCom->Bind_RawValue("g_isRD", &isRD, sizeof(_bool));
-
-		if (pMesh->Get_AlphaApply())
-			m_pShaderCom->Begin(1);     //블랜드
-		else
-			m_pShaderCom->Begin(0);		//디폴트
-
-		m_pModelCom->Render(i);
-
-		i++;
-	}
-
-#ifdef _DEBUG
-	m_pGameInstance->Add_DebugComponent(m_pColliderCom);
-#endif
-
-	return S_OK;
-}
-
 HRESULT CWPHYakuza::Add_Components()
 {
 	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Shader_VtxAnim"),

@@ -201,7 +201,7 @@ void CKuze::Change_Animation()
 	{
 		//e_kuz_atk_down[e_kuz_atk_down]
 		m_strAnimName = "e_kuz_atk_down";
-		Shaking(0.3, 0.2, 0.3);
+		Shaking(0.3f, 0.2f, 0.3f);
 		break;
 	}
 	case MONSTER_JAB:
@@ -210,54 +210,54 @@ void CKuze::Change_Animation()
 		m_strAnimName = "e_kuz_atk_jab";
 		break;
 	}
-	case MONSTER_CMD_A_1:
+	case MONSTER_CMB_A_1:
 	{
 		//e_kuz_cmb_a_01[e_kuz_cmb_a_01]
 		m_strAnimName = "e_kuz_cmb_a_01";
 		break;
 	}
-	case MONSTER_CMD_A_2:
+	case MONSTER_CMB_A_2:
 	{
 		//e_kuz_cmb_a_02[e_kuz_cmb_a_02]
 		m_strAnimName = "e_kuz_cmb_a_02";
-		Shaking(0.7, 0.2, 0.3);
+		Shaking(0.7f, 0.2f, 0.3f);
 		break;
 	}
-	case MONSTER_CMD_A_3:
+	case MONSTER_CMB_A_3:
 	{
 		//e_kuz_cmb_a_03[e_kuz_cmb_a_03]
 		m_strAnimName = "e_kuz_cmb_a_03";
-		Shaking(0.3, 0.2, 0.3);
+		Shaking(0.3f, 0.2f, 0.3f);
 		break;
 	}
-	case MONSTER_CMD_B_1:
+	case MONSTER_CMB_B_1:
 	{
 		//e_kuz_cmb_b_01[e_kuz_cmb_b_01]
 		m_strAnimName = "e_kuz_cmb_b_01";
 		break;
 	}
-	case MONSTER_CMD_B_2:
+	case MONSTER_CMB_B_2:
 	{
 		//e_kuz_cmb_b_02[e_kuz_cmb_b_02]
 		m_strAnimName = "e_kuz_cmb_b_02";
-		Shaking(0.3, 0.2, 0.3);
+		Shaking(0.3f, 0.2f, 0.3f);
 		break;
 	}
-	case MONSTER_CMD_B_3:
+	case MONSTER_CMB_B_3:
 	{
 		//e_kuz_cmb_b_03[e_kuz_cmb_b_03]
 		m_strAnimName = "e_kuz_cmb_b_03";
-		Shaking(0.3, 0.2, 0.3);
+		Shaking(0.3f, 0.2f, 0.3f);
 		break;
 	}
-	case MONSTER_CMD_HEADBUTT_1:
+	case MONSTER_CMB_HEADBUTT_1:
 	{
 		//e_kuz_cmb_headbutt_01[e_kuz_cmb_headbutt_01]
 		m_strAnimName = "e_kuz_cmb_headbutt_01";
-		Shaking(0.3, 0.2, 0.3);
+		Shaking(0.3f, 0.2f, 0.3f);
 		break;
 	}
-	case MONSTER_CMD_HEADBUTT_2:
+	case MONSTER_CMB_HEADBUTT_2:
 	{
 		//e_kuz_cmb_headbutt_02[e_kuz_cmb_headbutt_02]
 		m_strAnimName = "e_kuz_cmb_headbutt_02";
@@ -266,32 +266,32 @@ void CKuze::Change_Animation()
 		if (m_iShakedCount < 3)
 		{
 			m_iShakedCount++;
-			Shaking(0.2 * (m_iShakedCount + 1), 0.2, 0.2);
+			Shaking(0.2f * (m_iShakedCount + 1.f), 0.2f, 0.2f);
 		}
 		else
 		{
-			Shaking(0.8, 0.2, 0.4);			// 마지막타에만 강하게
+			Shaking(0.8f, 0.2f, 0.4f);			// 마지막타에만 강하게
 		}
 
 		break;
 	}
-	case MONSTER_CMD_RENDA_1:
+	case MONSTER_CMB_RENDA_1:
 	{
 		//e_kuz_cmb_renda_01[e_kuz_cmb_renda_01]
 		m_strAnimName = "e_kuz_cmb_renda_01";
 		break;
 	}
-	case MONSTER_CMD_RENDA_2:
+	case MONSTER_CMB_RENDA_2:
 	{
 		//e_kuz_cmb_renda_02_l[e_kuz_cmb_renda_02_l]
 		m_strAnimName = "e_kuz_cmb_renda_02_l";
 		break;
 	}
-	case MONSTER_CMD_RENDA_3:
+	case MONSTER_CMB_RENDA_3:
 	{
 		//e_kuz_cmb_renda_02_l_fin[e_kuz_cmb_renda_02_l_fin]
 		m_strAnimName = "e_kuz_cmb_renda_02_l_fin";
-		Shaking(0.3, 0.2, 0.3);
+		Shaking(0.3f, 0.2f, 0.3f);
 		break;
 	}
 	case MONSTER_HEAVY_ATTACK:
@@ -302,11 +302,11 @@ void CKuze::Change_Animation()
 		if (m_iShakedCount == 0)			// 첫타, 발 밟기
 		{
 			m_iShakedCount++;
-			Shaking(0.3, 0.2, 0.2);			
+			Shaking(0.3f, 0.2f, 0.2f);			
 		}
 		else if (m_iShakedCount == 2)		// 마지막타, 팔꿈치로 후려치는 거에는 쉐이킹을 강하게
 		{
-			Shaking(0.6, 0.2, 0.4);			
+			Shaking(0.6f, 0.2f, 0.4f);			
 		}
 		break;
 	}
@@ -314,7 +314,7 @@ void CKuze::Change_Animation()
 	{
 		//e_kuz_atk_hiji_2ren[e_kuz_atk_hiji_2ren]
 		m_strAnimName = "e_kuz_atk_hiji_2ren";
-		Shaking(0.3, 0.2, 0.2);
+		Shaking(0.3f, 0.2f, 0.2f);
 		break;
 	}
 	case MONSTER_STEP_B:

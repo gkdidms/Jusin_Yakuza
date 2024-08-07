@@ -89,9 +89,11 @@ HRESULT CCarChaseCamera::Render()
 void CCarChaseCamera::Targeting(const _float& fTimeDelta)
 {
 	vector<CGameObject*> Reactors = m_pGameInstance->Get_GameObjects(m_iCurrentLevel, TEXT("Layer_Reactor"));
+	if (Reactors.size() >= 2)
+		m_isTargetPlayer = false;
 
 	_vector vTargetingPos;
-	if (Reactors.empty() || m_iTargetIndex == -1)
+	if (Reactors.empty() || m_isTargetPlayer)
 	{
 		m_fHeight = 4.f;
 		vTargetingPos = XMLoadFloat4((_float4*)&m_pPlayerMatrix->m[3]);
@@ -114,7 +116,7 @@ void CCarChaseCamera::Targeting(const _float& fTimeDelta)
 		{
 			if (Reactors.size() <= 1)
 			{
-				m_iTargetIndex = -1;
+				m_isTargetPlayer = true;
 				return;
 			}
 

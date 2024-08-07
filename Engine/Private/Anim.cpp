@@ -283,6 +283,8 @@ HRESULT CAnim::Save_File(const _char* pModelFilePath, vector<CBone*> Bones)
 		}
 	}
 
+	out.close();
+
 	return S_OK;
 }
 
@@ -392,6 +394,8 @@ HRESULT CAnim::Load_File(const _char* pModelFilePath)
 
 	for (auto& pBone : Bones)
 		Safe_Release(pBone);
+
+	in.close();
 
 	return S_OK;
 }

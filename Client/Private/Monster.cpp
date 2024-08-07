@@ -420,28 +420,47 @@ HRESULT CMonster::Render()
 				return E_FAIL;
 		}
 
-		
-		_bool isCloth = pMesh->isCloth();
+		//if (FAILED(m_pMeterialCom->Bind_Shader(m_pShaderCom, m_pModelCom->Get_MaterialName(pMesh->Get_MaterialIndex()))))
+		//	return E_FAIL;
 
-		m_pShaderCom->Bind_RawValue("g_isCloth", &isCloth, sizeof(_bool));
+		_bool fFar = m_pGameInstance->Get_CamFar();
+		m_pShaderCom->Bind_RawValue("g_fFar", &fFar, sizeof(_float));
 
 		m_pModelCom->Bind_BoneMatrices(m_pShaderCom, "g_BoneMatrices", i);
 
 		m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE);
-		m_pModelCom->Bind_Material(m_pShaderCom, "g_MultiDiffuseTexture", i, aiTextureType_SHININESS);
+
 		m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS);
 
 		_bool isRS = true;
 		_bool isRD = true;
+		_bool isRM = true;
+		_bool isMulti = true;
+		_float fRDCount = 1.f;
+
+		if (m_pGameInstance->Find_String(pMesh->Get_Name(), "shirts") ||
+			m_pGameInstance->Find_String(pMesh->Get_Name(), "jacket") ||
+			m_pGameInstance->Find_String(pMesh->Get_Name(), "pants"))
+			fRDCount = 50.f;
+		m_pShaderCom->Bind_RawValue("g_RDCount", &fRDCount, sizeof(_float));
+
+
+		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_MultiDiffuseTexture", i, aiTextureType_SHININESS)))
+			isMulti = false;
+		m_pShaderCom->Bind_RawValue("g_isMulti", &isMulti, sizeof(_bool));
 
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RSTexture", i, aiTextureType_SPECULAR)))
 			isRS = false;
 		m_pShaderCom->Bind_RawValue("g_isRS", &isRS, sizeof(_bool));
+		m_pShaderCom->Bind_RawValue("IsY3Shader", &isRS, sizeof(_bool));
 
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RDTexture", i, aiTextureType_OPACITY)))
 			isRD = false;
-
 		m_pShaderCom->Bind_RawValue("g_isRD", &isRD, sizeof(_bool));
+
+		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RMTexture", i, aiTextureType_METALNESS)))
+			isRM = false;
+		m_pShaderCom->Bind_RawValue("g_isRM", &isRM, sizeof(_bool));
 
 		if (pMesh->Get_AlphaApply())
 			m_pShaderCom->Begin(1);     //ºí·£µå
