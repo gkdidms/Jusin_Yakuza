@@ -77,10 +77,6 @@ void CParticle_Point::Tick(const _float& fTimeDelta)
         {
            m_pVIBufferCom->Spread(fTimeDelta); 
         }
-        if (m_iAction & iAction[ACTION_DROP])
-        {
-            m_pVIBufferCom->Drop(fTimeDelta);
-        }
         if (m_iAction & iAction[ACTION_SIZEUP])
         {
             m_pVIBufferCom->SizeUp_Time(fTimeDelta);
@@ -384,6 +380,9 @@ HRESULT CParticle_Point::Bind_ShaderResources()
     if (FAILED(m_pShaderCom->Bind_RawValue("g_vEndColor", &m_vEndColor, sizeof(_float4))))
         return E_FAIL;
     if (FAILED(m_pShaderCom->Bind_RawValue("g_lifeAlpha", &m_fLifeAlpha, sizeof(_float2))))
+        return E_FAIL;
+
+    if (FAILED(m_pShaderCom->Bind_RawValue("g_isAttach", &m_BufferInstance.isAttach, sizeof(_bool))))
         return E_FAIL;
 
     _float Radian = XMConvertToRadians(m_fRotate++);

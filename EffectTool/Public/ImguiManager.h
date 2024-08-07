@@ -5,6 +5,7 @@
 #include "Particle_Point.h"
 #include "TRailEffect.h"
 #include "Aura.h"
+#include "Particle_Mesh.h"
 #include "Client_Defines.h"
 
 #pragma region "Imgui"
@@ -32,6 +33,7 @@ public:
 		MODE_PARTICLE,
 		MODE_TRAIL,
 		MODE_AURA,
+		MODE_MESH,
 		MODE_END
 	};
 	enum PASS{ 
@@ -44,6 +46,12 @@ public:
 		PASS_NOBILLBOARD,
 		PASS_DISTORTION,
 		PASS_END};
+
+	enum MESHPASS {
+		MESHPASS_MESH,
+		MESHPASS_MESHEFFECT,
+		MESHPASS_END
+	};
 private:
 	CImguiManager(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual ~CImguiManager() = default;
@@ -91,6 +99,15 @@ private:
 	void CreateAura_Tick(_float fTimeDelta);
 	void EditorAura_Tick(_float fTimeDelta);
 
+	void Tone_File_Selector(_bool* bChange);
+
+	//메쉬 함수
+	HRESULT Create_Mesh();
+
+	void CreateMesh_Tick(_float fTimeDelta);
+	void EditorMesh_Tick(_float fTimeDelta);
+	void Mesh_File_Selctor(_bool* bChange);
+
 
 
 
@@ -107,20 +124,21 @@ private:
 	_uint m_iMode = { MODE_END };
 	//파티클 액션에 대한 bool 값.
 	_bool m_bSpread = { false };
-	_bool m_bDrop = { false };
 	_bool m_bSizeup = { false };
 	_bool m_bSizedown = { false };
-	_bool m_bAura = { false };
 	_bool m_bNobillboard = { false };
 	_bool m_bGuizmo = { false };
 	//생성 파티클 담는 곳
 	vector<CGameObject*> m_EditParticle = {  };
 	vector<CGameObject*> m_EditTrail = {  };
 	vector<CGameObject*> m_EditAura = {  };
+	vector<CGameObject*> m_EditMesh = {  };
+
 
 	CParticle_Point::PARTICLE_POINT_DESC m_EffectDesc = {};
 	CTRailEffect::TRAIL_DESC m_TrailDesc = {};
 	CAura::AURA_DESC m_AuraDesc = {};
+	CParticle_Mesh::PARTICLE_MESH_DESC m_MeshDesc = {};
 
 	bool m_bDragging = { false };
 
@@ -133,7 +151,11 @@ private:
 	_float m_fMaxTime = { 30.f };
 
 	_int m_iCurTexture = { 0 };
+	_int m_iCurToneTexture = { 0 };
+	_int m_iCurMesh= { 0 };
 	vector<wstring> TextureTags;
+	vector<wstring> ToneTextureTags;
+	vector<wstring> MeshTags;
 
 	public:
 	static CImguiManager* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

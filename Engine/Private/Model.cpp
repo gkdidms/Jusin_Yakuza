@@ -58,7 +58,7 @@ HRESULT CModel::Initialize_Prototype(MODELTYPE eModelType, const _char* pModelFi
 	{
 		_uint		iFlag = aiProcess_ConvertToLeftHanded;
 
-		if (TYPE_NONANIM == eModelType)
+		if (TYPE_NONANIM == eModelType	||	TYPE_PARTICLE == eModelType)
 			iFlag |= aiProcess_PreTransformVertices | aiProcess_GenNormals |  aiProcess_GenUVCoords| aiProcess_CalcTangentSpace;// aiProcessPreset_TargetRealtime_Fast;
 		else
 			iFlag |= aiProcess_CalcTangentSpace | aiProcess_GenNormals | aiProcess_Triangulate | aiProcess_GenUVCoords | aiProcess_SortByPType;
@@ -93,7 +93,7 @@ HRESULT CModel::Initialize_Prototype(MODELTYPE eModelType, const _char* pModelFi
 			return E_FAIL;
 	}
 
-	if (TYPE_NONANIM != eModelType)
+	if (TYPE_NONANIM != eModelType && TYPE_PARTICLE != eModelType)
 	{
 		string pCameraFovFilePath = "../Bin/DataFiles/CameraFoVAnimationData/" + m_pGameInstance->Get_FileName(pModelFilePath) + "_camera_fov.csv";
 
@@ -515,7 +515,7 @@ HRESULT CModel::Export_Animations(ofstream& out)
 				
 				if (Channel->mNumRotationKeys > k)
 				{
-					_float4 vRotationKeys;
+					_float4 vRotationKeys{};
 					vRotationKeys.x = Channel->mRotationKeys[k].mValue.x;
 					vRotationKeys.y = Channel->mRotationKeys[k].mValue.y;
 					vRotationKeys.z = Channel->mRotationKeys[k].mValue.z;

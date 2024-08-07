@@ -353,8 +353,8 @@ void CCollision_Manager::Enemy_Hit_Collision()
 
                 EffectDesc.pWorldMatrix = &matrix;
                 //µ·Ã¼Å©
-                m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Money"), TEXT("Layer_Particle"), &EffectDesc);
-                m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Coin"), TEXT("Layer_Particle"), &EffectDesc);
+                m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Mesh_Money"), TEXT("Layer_Particle"), &EffectDesc);
+                //m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Coin"), TEXT("Layer_Particle"), &EffectDesc);
 
                 pPlayerAttackCollider->ParentObject_Attack(pEnemyHitCollider);
                 pEnemyHitCollider->ParentObject_Hit(pPlayerAttackCollider);

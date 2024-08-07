@@ -47,6 +47,8 @@ HRESULT CMainApp::Initialize()
 	if (FAILED(Ready_Manager()))
 		return E_FAIL;
 	
+	//m_pGameInstance->Set_DebugView(true);
+	
 	return S_OK;
 }
 
