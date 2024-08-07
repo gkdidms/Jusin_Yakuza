@@ -9,7 +9,11 @@ CAura::CAura(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 CAura::CAura(const CAura& rhs)
 	:CEffect{ rhs },
 	m_BufferInstance{ rhs.m_BufferInstance },
-	m_fUVCount{ rhs.m_fUVCount }
+	m_fUVCount{ rhs.m_fUVCount },
+	m_fToneUVCount{ rhs.m_fToneUVCount },
+	m_ToneTextureTag{rhs.m_ToneTextureTag },
+	m_fFlowPow{rhs.m_fFlowPow },
+	m_fFlowSpeed{rhs.m_fFlowSpeed }
 {
 }
 
@@ -35,11 +39,16 @@ HRESULT CAura::Initialize(void* pArg)
 	{
 		EFFECT_DESC* pDesc = static_cast<EFFECT_DESC*>(pArg);
 
+
 		if (nullptr == pDesc->pWorldMatrix)
 		{
 			AURA_DESC* pDesc = static_cast<AURA_DESC*>(pArg);
 			m_BufferInstance = pDesc->BufferInstance;
 			m_fUVCount = pDesc->fUVCount;
+			m_fToneUVCount = pDesc->fToneUVCount;
+			m_ToneTextureTag = pDesc->ToneTextureTag;
+			m_fFlowPow = pDesc->fFlowPow;
+			m_fFlowSpeed = pDesc->fFlowSpeed;
 		}
 		else
 		{
@@ -83,10 +92,6 @@ void CAura::Tick(const _float& fTimeDelta)
 	{
 		m_pVIBufferCom->Spread(fTimeDelta);//스타트
 	}
-	if (m_iAction & iAction[ACTION_DROP])
-	{
-		m_pVIBufferCom->Drop(fTimeDelta);
-	}
 	if (m_iAction & iAction[ACTION_SIZEUP])
 	{
 		m_pVIBufferCom->SizeUp_Time(fTimeDelta);
@@ -95,10 +100,7 @@ void CAura::Tick(const _float& fTimeDelta)
 	{
 		m_pVIBufferCom->SizeDown_Time(fTimeDelta);
 	}
-	if (m_iAction & iAction[ACTION_AURA])
-	{
-		m_pVIBufferCom->Aura(fTimeDelta);//아우라
-	}
+
 
 }
 
@@ -146,6 +148,7 @@ HRESULT CAura::Save_Data(const string strDirectory)
 	string Directory = strDirectory;
 	string ParticleTag = m_pGameInstance->WstringToString(m_ParticleTag);
 	string TextureTag = m_pGameInstance->WstringToString(m_TextureTag);
+	string ToneTextureTag = m_pGameInstance->WstringToString(m_ToneTextureTag);
 
 	string headTag = "Prototype_GameObject_Particle_Aura_";
 	Directory += "/" + headTag + ParticleTag + ".dat";
@@ -164,6 +167,11 @@ HRESULT CAura::Save_Data(const string strDirectory)
 	out.write((char*)&strTexturelength, sizeof(_int));
 	out.write(TextureTag.c_str(), strTexturelength);
 
+	_int strToneTexturelength = ToneTextureTag.length();
+	out.write((char*)&strToneTexturelength, sizeof(_int));
+	out.write(ToneTextureTag.c_str(), strToneTexturelength);
+
+
 	out.write((char*)&m_iShaderPass, sizeof(_int));
 
 	out.write((char*)&m_fStartTime, sizeof(_float));
@@ -176,7 +184,11 @@ HRESULT CAura::Save_Data(const string strDirectory)
 
 	out.write((char*)&m_fUVCount, sizeof(_float2));
 
-	out.write((char*)&m_isAura, sizeof(_float2));
+	out.write((char*)&m_fToneUVCount, sizeof(_float2));
+
+	out.write((char*)&m_fFlowPow, sizeof(_float));
+
+	out.write((char*)&m_fFlowSpeed, sizeof(_float));
 
 	out.write((char*)&m_BufferInstance.iNumInstance, sizeof(_uint));
 	out.write((char*)&m_BufferInstance.vOffsetPos, sizeof(_float3));
@@ -189,6 +201,8 @@ HRESULT CAura::Save_Data(const string strDirectory)
 	out.write((char*)&m_BufferInstance.vSpeed, sizeof(_float2));
 	out.write((char*)&m_BufferInstance.vLifeTime, sizeof(_float2));
 	out.write((char*)&m_BufferInstance.isLoop, sizeof(_bool));
+	out.write((char*)&m_BufferInstance.isAttach, sizeof(_bool));
+
 
 	out.flush();
 
@@ -234,6 +248,14 @@ HRESULT CAura::Load_Data(const string strDirectory)
 	string textag = charTextureTag;
 	m_TextureTag = m_pGameInstance->StringToWstring(textag);
 
+	_int strToneTexturelength;
+	char charToneTextureTag[MAX_PATH] = {};
+
+	in.read((char*)&strToneTexturelength, sizeof(_int));
+
+	in.read(charToneTextureTag, strToneTexturelength);
+	string Tonetextag = charToneTextureTag;
+	m_ToneTextureTag = m_pGameInstance->StringToWstring(Tonetextag);
 
 	in.read((char*)&m_iShaderPass, sizeof(_int));
 
@@ -247,8 +269,14 @@ HRESULT CAura::Load_Data(const string strDirectory)
 
 	in.read((char*)&m_fUVCount, sizeof(_float2));
 
-	in.read((char*)&m_isAura, sizeof(_float2));
-	m_isAura = true;
+	in.read((char*)&m_fToneUVCount, sizeof(_float2));
+
+	in.read((char*)&m_fFlowPow, sizeof(_float));
+
+	in.read((char*)&m_fFlowSpeed, sizeof(_float));
+
+
+
 
 	in.read((char*)&m_BufferInstance.iNumInstance, sizeof(_uint));
 	in.read((char*)&m_BufferInstance.vOffsetPos, sizeof(_float3));
@@ -261,7 +289,9 @@ HRESULT CAura::Load_Data(const string strDirectory)
 	in.read((char*)&m_BufferInstance.vSpeed, sizeof(_float2));
 	in.read((char*)&m_BufferInstance.vLifeTime, sizeof(_float2));
 	in.read((char*)&m_BufferInstance.isLoop, sizeof(_bool));
-	m_BufferInstance.isAura = true;
+	in.read((char*)&m_BufferInstance.isAttach, sizeof(_bool));
+
+
 	in.close();
 
 	return S_OK;
@@ -281,23 +311,18 @@ HRESULT CAura::Add_Components()
 
 	//톤텍스처 선택
 	/* For.Com_Texture */
-	if (FAILED(__super::Add_Component(m_iCurrentLevel, m_TextureTag,
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, m_ToneTextureTag,
 		TEXT("Com_Texture0"), reinterpret_cast<CComponent**>(&m_pTextureCom[0]))))
 		return E_FAIL;
 
-	//uv애님
-	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Texture_AuraAnim"),
-		TEXT("Com_Texture1"), reinterpret_cast<CComponent**>(&m_pTextureCom[1]))))
-		return E_FAIL;
-
 	//베이스
-	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Texture_AuraBase"),
-		TEXT("Com_Texture2"), reinterpret_cast<CComponent**>(&m_pTextureCom[2]))))
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, m_TextureTag,
+		TEXT("Com_Texture2"), reinterpret_cast<CComponent**>(&m_pTextureCom[1]))))
 		return E_FAIL;
 
 	//플루드(흐름)
 	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Texture_AuraFluid"),
-		TEXT("Com_Texture3"), reinterpret_cast<CComponent**>(&m_pTextureCom[3]))))
+		TEXT("Com_Texture3"), reinterpret_cast<CComponent**>(&m_pTextureCom[2]))))
 		return E_FAIL;
 }
 
@@ -320,16 +345,22 @@ HRESULT CAura::Bind_ShaderResources()
 
 	if (FAILED(m_pTextureCom[0]->Bind_ShaderResource(m_pShaderCom, "g_ToneTexture", 0)))
 		return E_FAIL;
-	if (FAILED(m_pTextureCom[1]->Bind_ShaderResource(m_pShaderCom, "g_UVAnimTexture", 0)))
+	if (FAILED(m_pTextureCom[1]->Bind_ShaderResource(m_pShaderCom, "g_BaseAlphaTexture", 0)))
 		return E_FAIL;
-	if (FAILED(m_pTextureCom[2]->Bind_ShaderResource(m_pShaderCom, "g_BaseAlphaTexture", 0)))
-		return E_FAIL;
-	if (FAILED(m_pTextureCom[3]->Bind_ShaderResource(m_pShaderCom, "g_FluidTexture", 0)))
+	if (FAILED(m_pTextureCom[2]->Bind_ShaderResource(m_pShaderCom, "g_FluidTexture", 0)))
 		return E_FAIL;
 
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_fUVCount", &m_fUVCount, sizeof(_float2))))
 		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_fToneUVCount", &m_fToneUVCount, sizeof(_float2))))
+		return E_FAIL;
 
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_fFlowPow", &m_fFlowPow, sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_fFlowSpeed", &m_fFlowSpeed, sizeof(_float))))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_isAttach", &m_BufferInstance.isAttach, sizeof(_bool))))
+		return E_FAIL;
 	return S_OK;
 }
 

@@ -219,6 +219,7 @@
     <ClInclude Include="..\Public\Kiryu_KRC_Grab.h" />
     <ClInclude Include="..\Public\Map.h" />
     <ClInclude Include="..\Public\MultiLoader.h" />
+    <ClInclude Include="..\Public\Particle_Mesh.h" />
     <ClInclude Include="..\public\Reactor_Van.h" />
     <ClInclude Include="..\Public\KillQuest.h" />
     <ClInclude Include="..\Public\Kiryu_KRC_Down.h" />
@@ -397,6 +398,7 @@
     <ClCompile Include="..\Private\CarChase_Sedan.cpp" />
     <ClCompile Include="..\private\CarChase_Van.cpp" />
     <ClCompile Include="..\Private\Collision_Manager.cpp" />
+    <ClCompile Include="..\Private\Particle_Mesh.cpp" />
     <ClCompile Include="..\Private\UICarchase.cpp" />
     <ClCompile Include="..\Private\CutSceneCamera.cpp" />
     <ClCompile Include="..\private\DefaultYakuza.cpp" />
@@ -554,6 +556,7 @@
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Trail.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxAnimMesh.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxCube.hlsl" />
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxInstance_Mesh.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxInstance_Point.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxMesh.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxMeshItem.hlsl" />

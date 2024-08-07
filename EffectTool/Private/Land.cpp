@@ -46,8 +46,6 @@ HRESULT CLand::Render()
     if (FAILED(Bind_ShaderResources()))
         return E_FAIL;
 
-
-
     _uint	iNumMeshes = m_pModelCom->Get_NumMeshes();
 
     for (size_t i = 0; i < iNumMeshes; i++)
@@ -59,7 +57,6 @@ HRESULT CLand::Render()
 
         m_pModelCom->Render(i);
     }
-
 
     return S_OK;
 }
@@ -123,5 +120,8 @@ void CLand::Free()
     __super::Free();
 
     Safe_Release(m_pShaderCom);
-    Safe_Release(m_pModelCom);
+
+        Safe_Release(m_pModelCom);
+    
+
 }

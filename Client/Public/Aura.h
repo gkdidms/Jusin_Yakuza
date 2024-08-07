@@ -17,7 +17,10 @@ public:
     {
         CVIBuffer_Instance::INSTANCE_DESC BufferInstance;
         _float2 fUVCount;
-
+        _float2 fToneUVCount;
+        wstring ToneTextureTag;
+        _float fFlowPow;
+        _float fFlowSpeed;
     }AURA_DESC;
 private:
     CAura(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -35,6 +38,10 @@ public:
 
     virtual void* Get_Instance()override;
     _float2  Get_UVCount() { return m_fUVCount; }
+    _float2  Get_ToneUVCount() { return m_fToneUVCount; }
+    wstring Get_ToneTextureTag() { return m_ToneTextureTag; }
+    _float Get_FlowPow() { return m_fFlowPow; }
+    _float Get_FlowSpeed() { return m_fFlowSpeed; }
     virtual void Reset_Buffer() override;
 public:
     virtual HRESULT Save_Data(const string strDirectory)override;
@@ -47,8 +54,13 @@ private:
 
 private:
     CVIBuffer_Instance::INSTANCE_DESC m_BufferInstance;
-    _float2     m_fUVCount = { 0.f, 0.f };//uv °¹¼ö Åæ
+    _float2     m_fUVCount = { 0.f, 0.f };//uv °¹¼ö
+    _float2     m_fToneUVCount = { 0.f, 0.f };//uv °¹¼ö Åæ
     _float       m_fCurTime = { 0.f };
+    wstring     m_ToneTextureTag;
+    _float      m_fFlowPow;
+    _float      m_fFlowSpeed;
+
 private:
     HRESULT Add_Components();
     HRESULT Bind_ShaderResources();

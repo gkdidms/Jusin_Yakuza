@@ -525,6 +525,9 @@
     <ClCompile Include="..\Private\Gun_Cz75.cpp">
       <Filter>02.GameObjects\02.Character\LandObject\03.CarChase\00.Reactor\04.Gun_Cz75</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\Particle_Mesh.cpp">
+      <Filter>02.GameObjects\06.Effect\Mesh</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\MainApp.h">
@@ -1080,6 +1083,9 @@
     </ClInclude>
     <ClInclude Include="..\Public\Gun_Cz75.h">
       <Filter>02.GameObjects\02.Character\LandObject\03.CarChase\00.Reactor\04.Gun_Cz75</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Particle_Mesh.h">
+      <Filter>02.GameObjects\06.Effect\Mesh</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1664,6 +1670,9 @@
     <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\PickupItem">
       <UniqueIdentifier>{afa11f52-5f1d-4322-886d-68e4094d377c}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\06.Effect\Mesh">
+      <UniqueIdentifier>{4bdc667e-54b1-4853-86fa-0289008abf25}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Client.rc">
@@ -1708,6 +1717,9 @@
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxMeshItem.hlsl">
+      <Filter>97.ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxInstance_Mesh.hlsl">
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
   </ItemGroup>
