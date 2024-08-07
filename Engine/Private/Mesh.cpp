@@ -568,19 +568,34 @@ void CMesh::Fill_Matrices(vector<class CBone*>& Bones, _float4x4* pMeshBoneMatri
 _bool CMesh::isCloth()
 {
 	string strName = string(m_szName);
-	if (m_pGameInstance->Find_String(strName, "hair") || 
-		m_pGameInstance->Find_String(strName, "face") || 
-		m_pGameInstance->Find_String(strName, "foot") || 
-		m_pGameInstance->Find_String(strName, "body") || 
-		m_pGameInstance->Find_String(strName, "eye"))
-		return false;
+	if (m_pGameInstance->Find_String(strName, "jacket") || 
+		m_pGameInstance->Find_String(strName, "pants") || 
+		m_pGameInstance->Find_String(strName, "shoes") || 
+		m_pGameInstance->Find_String(strName, "socks"))
+		return true;
 		
-	//if (strName.find("hair") == string::npos ||
-	//	strName.find("face") == string::npos ||
-	//	strName.find("foot") == string::npos ||
-	//	strName.find("body") == string::npos ||
-	//	strName.find("eye") == string::npos)
-	//	return true;
+	return false;
+}
+
+_bool CMesh::isSkin()
+{
+	string strName = string(m_szName);
+	if (m_pGameInstance->Find_String(strName, "face") ||
+		m_pGameInstance->Find_String(strName, "body"))
+		return true;
+
+	return false;
+}
+
+_bool CMesh::DisableRDRT()
+{
+	string strName = string(m_szName);
+	if (m_pGameInstance->Find_String(strName, "suit") ||
+		m_pGameInstance->Find_String(strName, "jacketw1") ||
+		m_pGameInstance->Find_String(strName, "pants")||
+		m_pGameInstance->Find_String(strName, "shoes") ||
+		m_pGameInstance->Find_String(strName, "socks"))
+		return false;
 
 	return true;
 }
