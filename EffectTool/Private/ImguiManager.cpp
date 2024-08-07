@@ -50,12 +50,34 @@ HRESULT CImguiManager::Initialize(void* pArg)
 	TextureTags.push_back(TEXT("Prototype_Component_Texture_WaveFace"));
 	TextureTags.push_back(TEXT("Prototype_Component_Texture_AuraBase"));
 
+	TextureTags.push_back(TEXT("Prototype_Component_Texture_BloodD0"));
+	TextureTags.push_back(TEXT("Prototype_Component_Texture_BloodD1"));
+	TextureTags.push_back(TEXT("Prototype_Component_Texture_BloodD2"));
+	TextureTags.push_back(TEXT("Prototype_Component_Texture_BloodD3"));
+	TextureTags.push_back(TEXT("Prototype_Component_Texture_BloodD4"));
+	TextureTags.push_back(TEXT("Prototype_Component_Texture_BloodD5"));
+	TextureTags.push_back(TEXT("Prototype_Component_Texture_BloodD6"));
+	TextureTags.push_back(TEXT("Prototype_Component_Texture_BloodD7"));
+	TextureTags.push_back(TEXT("Prototype_Component_Texture_BloodD8"));
+
 	ToneTextureTags.push_back(TEXT("Prototype_Component_Texture_AuraTone"));
 	ToneTextureTags.push_back(TEXT("Prototype_Component_Texture_AuraToneRush"));
 	ToneTextureTags.push_back(TEXT("Prototype_Component_Texture_AuraToneDestroy"));
 
 	MeshTags.push_back(TEXT("Prototype_Component_Model_ParticleSphere"));
 	MeshTags.push_back(TEXT("Prototype_Component_Model_ParticleMoney"));
+	MeshTags.push_back(TEXT("Prototype_Component_Model_ParticleBlood"));
+
+	NormalTags.push_back(TEXT("Prototype_Component_Texture_BloodN0"));
+	NormalTags.push_back(TEXT("Prototype_Component_Texture_BloodN1"));
+	NormalTags.push_back(TEXT("Prototype_Component_Texture_BloodN2"));
+	NormalTags.push_back(TEXT("Prototype_Component_Texture_BloodN3"));
+	NormalTags.push_back(TEXT("Prototype_Component_Texture_BloodN4"));
+	NormalTags.push_back(TEXT("Prototype_Component_Texture_BloodN5"));
+	NormalTags.push_back(TEXT("Prototype_Component_Texture_BloodN6"));
+	NormalTags.push_back(TEXT("Prototype_Component_Texture_BloodN7"));
+	NormalTags.push_back(TEXT("Prototype_Component_Texture_BloodN8"));
+
 
 	if (nullptr != pArg)
 	{
@@ -1112,6 +1134,12 @@ void CImguiManager::EditorMesh_Tick(_float fTimeDelta)
 	Temp = (_float*)&m_MeshDesc.BufferInstance.LowStartRot;
 	if (ImGui::InputFloat3("LowStartRot", Temp))
 	{
+		if (Temp[0] > m_MeshDesc.BufferInstance.HighStartRot.x)
+			m_MeshDesc.BufferInstance.HighStartRot.x = Temp[0];
+		if (Temp[1] > m_MeshDesc.BufferInstance.HighStartRot.y)
+			m_MeshDesc.BufferInstance.HighStartRot.y = Temp[1];
+		if (Temp[2] > m_MeshDesc.BufferInstance.HighStartRot.z)
+			m_MeshDesc.BufferInstance.HighStartRot.z = Temp[2];
 		memcpy(&m_MeshDesc.BufferInstance.LowStartRot, Temp, sizeof(_float3));
 		bChange = true;
 	}
@@ -1119,18 +1147,36 @@ void CImguiManager::EditorMesh_Tick(_float fTimeDelta)
 	Temp = (_float*)&m_MeshDesc.BufferInstance.HighStartRot;
 	if (ImGui::InputFloat3("HighStartRot", Temp))
 	{
+		if (Temp[0] < m_MeshDesc.BufferInstance.LowStartRot.x)
+			m_MeshDesc.BufferInstance.LowStartRot.x = Temp[0];
+		if (Temp[1] < m_MeshDesc.BufferInstance.LowStartRot.y)
+			m_MeshDesc.BufferInstance.LowStartRot.y = Temp[1];
+		if (Temp[2] < m_MeshDesc.BufferInstance.LowStartRot.z)
+			m_MeshDesc.BufferInstance.LowStartRot.z = Temp[2];
 		memcpy(&m_MeshDesc.BufferInstance.HighStartRot, Temp, sizeof(_float3));
 		bChange = true;
 	}
 	Temp = (_float*)&m_MeshDesc.BufferInstance.LowAngleVelocity;
 	if (ImGui::InputFloat3("LowAngleVelocity", Temp))
 	{
+		if (Temp[0] > m_MeshDesc.BufferInstance.HighAngleVelocity.x)
+			m_MeshDesc.BufferInstance.HighAngleVelocity.x = Temp[0];
+		if (Temp[1] > m_MeshDesc.BufferInstance.HighAngleVelocity.y)
+			m_MeshDesc.BufferInstance.HighAngleVelocity.y = Temp[1];
+		if (Temp[2] > m_MeshDesc.BufferInstance.HighAngleVelocity.z)
+			m_MeshDesc.BufferInstance.HighAngleVelocity.z = Temp[2];
 		memcpy(&m_MeshDesc.BufferInstance.LowAngleVelocity, Temp, sizeof(_float3));
 		bChange = true;
 	}
 	Temp = (_float*)&m_MeshDesc.BufferInstance.HighAngleVelocity;
 	if (ImGui::InputFloat3("HighAngleVelocity", Temp))
 	{
+		if (Temp[0] < m_MeshDesc.BufferInstance.LowAngleVelocity.x)
+			m_MeshDesc.BufferInstance.LowAngleVelocity.x = Temp[0];
+		if (Temp[1] < m_MeshDesc.BufferInstance.LowAngleVelocity.y)
+			m_MeshDesc.BufferInstance.LowAngleVelocity.y = Temp[1];
+		if (Temp[2] < m_MeshDesc.BufferInstance.LowAngleVelocity.z)
+			m_MeshDesc.BufferInstance.LowAngleVelocity.z = Temp[2];
 		memcpy(&m_MeshDesc.BufferInstance.HighAngleVelocity, Temp, sizeof(_float3));
 		bChange = true;
 	}
@@ -1272,6 +1318,37 @@ void CImguiManager::Mesh_File_Selctor(_bool* bChange)
 	if (-1 != m_iCurEditIndex)
 	{
 		m_MeshDesc.strModelTag = MeshTags[m_iCurMesh];	
+	}
+
+	_int iNormalSize = NormalTags.size();
+	if (ImGui::BeginListBox("NormalBox"))
+	{
+		for (int i = 0; i < iNormalSize; i++)
+		{
+			// 리스트박스 아이템의 텍스트
+			const bool isSelected = (m_iCurNormalTexture == i);
+			char Label[256] = {};
+			strcpy_s(Label, m_pGameInstance->WstringToString(NormalTags[i]).c_str());
+			if (ImGui::Selectable(Label, isSelected))
+			{
+				m_iCurNormalTexture = i; // 선택된 아이템 업데이트	
+				*bChange = true;
+			}
+
+
+			// 선택된 아이템이 보이도록 스크롤
+			if (isSelected)
+			{
+				ImGui::SetItemDefaultFocus();
+
+			}
+		}
+		ImGui::EndListBox();
+	}
+
+	if (-1 != m_iCurEditIndex)
+	{
+		m_MeshDesc.strNormalTag = NormalTags[m_iCurNormalTexture];
 	}
 }
 
@@ -1536,6 +1613,9 @@ HRESULT CImguiManager::Edit_Particle(_uint Index)
 		EffectDesc.TextureTag = m_EffectDesc.TextureTag;
 		EffectDesc.fDistortion = m_EffectDesc.fDistortion;
 
+		EffectDesc.isNormal = m_EffectDesc.isNormal;
+		EffectDesc.NormalTag = m_EffectDesc.NormalTag;
+
 		m_EditParticle[Index] = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Particle_Point"), &EffectDesc);
 		if (nullptr == m_EditParticle[Index])
 			return E_FAIL;
@@ -1548,6 +1628,8 @@ HRESULT CImguiManager::Edit_Particle(_uint Index)
 			dynamic_cast<CEffect*>(m_EditParticle[Index])->Edit_Action(CEffect::ACTION_SIZEDOWN);
 		if (m_bNobillboard)
 			dynamic_cast<CEffect*>(m_EditParticle[Index])->Edit_Action(CEffect::ACTION_NOBILLBOARD);
+		if (m_bFallSpread)
+			dynamic_cast<CEffect*>(m_EditParticle[Index])->Edit_Action(CEffect::ACTION_FALLSPREAD);
 		
 	}
 		break;
@@ -1713,6 +1795,9 @@ HRESULT CImguiManager::Load_Desc(_uint Index)
 		m_EffectDesc.TextureTag = pEffect->Get_TextureTag();
 		m_EffectDesc.fDistortion = pEffect->Get_fDistortion();
 
+		m_EffectDesc.isNormal = pEffect->Get_isNormal();
+		m_EffectDesc.NormalTag = pEffect->Get_NormalTag();
+
 		for (size_t i = 0; i < TextureTags.size(); i++)
 		{
 			if (m_EffectDesc.TextureTag == TextureTags[i])
@@ -1721,6 +1806,19 @@ HRESULT CImguiManager::Load_Desc(_uint Index)
 				break;
 			}
 		}
+
+		if (m_EffectDesc.isNormal)
+		{
+			for (size_t i = 0; i < NormalTags.size(); i++)
+			{
+				if (m_EffectDesc.NormalTag == NormalTags[i])
+				{
+					m_iCurNormalTexture = i;
+					break;
+				}
+			}
+		}
+
 
 		_uint CheckAction = pEffect->Get_Action();
 
@@ -1744,6 +1842,11 @@ HRESULT CImguiManager::Load_Desc(_uint Index)
 			m_bNobillboard = true;
 		else
 			m_bNobillboard = false;
+
+		if (CheckAction & pEffect->iAction[CEffect::ACTION_FALLSPREAD])
+			m_bFallSpread = true;
+		else
+			m_bFallSpread = false;
 	}
 		break;
 	case MODE_TRAIL:
@@ -1824,6 +1927,7 @@ HRESULT CImguiManager::Load_Desc(_uint Index)
 			}
 		}
 
+
 		if (CheckAction & pAuraEffect->iAction[CEffect::ACTION_SPREAD])
 			m_bSpread = true;
 		else
@@ -1866,6 +1970,7 @@ HRESULT CImguiManager::Load_Desc(_uint Index)
 		m_MeshDesc.fDistortion = pEffect->Get_fDistortion();
 
 		m_MeshDesc.strModelTag = dynamic_cast<CParticle_Mesh*>(pEffect)->Get_ModelTag();
+		m_MeshDesc.strNormalTag = dynamic_cast<CParticle_Mesh*>(pEffect)->Get_NormalTag();
 
 		for (size_t i = 0; i < TextureTags.size(); i++)
 		{
@@ -1881,6 +1986,15 @@ HRESULT CImguiManager::Load_Desc(_uint Index)
 			if (m_MeshDesc.strModelTag == MeshTags[i])
 			{
 				m_iCurMesh = i;
+				break;
+			}
+		}
+
+		for (size_t i = 0; i < NormalTags.size(); i++)
+		{
+			if (m_MeshDesc.strNormalTag == NormalTags[i])
+			{
+				m_iCurNormalTexture = i;
 				break;
 			}
 		}
@@ -2343,6 +2457,13 @@ void CImguiManager::Editor_Tick(_float fTimeDelta)
 		}
 		bChange = true;
 	}
+	if (ImGui::RadioButton("FALLSPREAD", &m_EffectDesc.iShaderPass, PASS_FALLSPREAD))
+	{
+		bChange = true;
+	}
+
+
+
 	
 	if (PASS_NOBILLBOARD == m_EffectDesc.iShaderPass)
 	{
@@ -2355,7 +2476,7 @@ void CImguiManager::Editor_Tick(_float fTimeDelta)
 			}
 		}
 	}
-	else
+	else if (PASS_FALLSPREAD != m_EffectDesc.iShaderPass)
 	{
 		if (ImGui::Checkbox("Spread", &m_bSpread))
 		{
@@ -2367,10 +2488,21 @@ void CImguiManager::Editor_Tick(_float fTimeDelta)
 		}
 	}
 
+
+	if (PASS_FALLSPREAD == m_EffectDesc.iShaderPass)
+	{
+		if (ImGui::Checkbox("FallSpread", &m_bFallSpread))
+		{
+			if (-1 != m_iCurEditIndex)
+			{
+				CEffect* pParticle = dynamic_cast<CEffect*>(m_EditParticle[m_iCurEditIndex]);
+				pParticle->Edit_Action(CEffect::ACTION_FALLSPREAD);
+			}
+		}
+	}
+
+
 	ImGui::SameLine();
-
-
-
 	if (ImGui::Checkbox("SizeUP", &m_bSizeup))
 	{
 		if (-1 != m_iCurEditIndex)
@@ -2401,6 +2533,12 @@ void CImguiManager::Editor_Tick(_float fTimeDelta)
 	{
 		bChange = true;
 	}
+	ImGui::SameLine();
+	if (ImGui::Checkbox("isNormal", &m_EffectDesc.isNormal))
+	{
+		bChange = true;
+	}
+
 	static char strReName[MAX_PATH]{};
 
 	ImGui::InputText("ParticleTag", strReName, MAX_PATH);
@@ -2625,6 +2763,89 @@ void CImguiManager::Editor_Tick(_float fTimeDelta)
 		}
 		break;
 	}
+	case PASS_FALLSPREAD:
+	{
+		Temp = (_float*)&m_EffectDesc.fLifeAlpha;
+		if (ImGui::InputFloat2("LifeAlpha", Temp))
+		{
+			memcpy(&m_EffectDesc.fLifeAlpha, Temp, sizeof(_float2));
+			bChange = true;
+		}
+
+		Temp = (_float*)&m_EffectDesc.BufferInstance.LowStartRot;
+		if (ImGui::InputFloat3("LowStartRot", Temp))
+		{
+			memcpy(&m_EffectDesc.BufferInstance.LowStartRot, Temp, sizeof(_float3));
+			bChange = true;
+		}
+
+		Temp = (_float*)&m_EffectDesc.BufferInstance.HighStartRot;
+		if (ImGui::InputFloat3("HighStartRot", Temp))
+		{
+			memcpy(&m_EffectDesc.BufferInstance.HighStartRot, Temp, sizeof(_float3));
+			bChange = true;
+		}
+		Temp = (_float*)&m_EffectDesc.BufferInstance.LowAngleVelocity;
+		if (ImGui::InputFloat3("LowAngleVelocity", Temp))
+		{
+			memcpy(&m_EffectDesc.BufferInstance.LowAngleVelocity, Temp, sizeof(_float3));
+			bChange = true;
+		}
+		Temp = (_float*)&m_EffectDesc.BufferInstance.HighAngleVelocity;
+		if (ImGui::InputFloat3("HighAngleVelocity", Temp))
+		{
+			memcpy(&m_EffectDesc.BufferInstance.HighAngleVelocity, Temp, sizeof(_float3));
+			bChange = true;
+		}
+		Temp = (_float*)&m_EffectDesc.BufferInstance.GravityScale;
+		if (ImGui::InputFloat("GravityScale", Temp))
+		{
+			memcpy(&m_EffectDesc.BufferInstance.GravityScale, Temp, sizeof(_float));
+			bChange = true;
+		}
+		Temp = (_float*)&m_EffectDesc.BufferInstance.CrossArea;
+		if (ImGui::InputFloat("CrossArea", Temp))
+		{
+			memcpy(&m_EffectDesc.BufferInstance.CrossArea, Temp, sizeof(_float));
+			bChange = true;
+		}
+
+		if(m_EffectDesc.isNormal)
+		{
+			_int iNormalSize = NormalTags.size();
+			if (ImGui::BeginListBox("NormalBox"))
+			{
+				for (int i = 0; i < iNormalSize; i++)
+				{
+					// 리스트박스 아이템의 텍스트
+					const bool isSelected = (m_iCurNormalTexture == i);
+					char Label[256] = {};
+					strcpy_s(Label, m_pGameInstance->WstringToString(NormalTags[i]).c_str());
+					if (ImGui::Selectable(Label, isSelected))
+					{
+						m_iCurNormalTexture = i; // 선택된 아이템 업데이트	
+						bChange = true;
+					}
+
+
+					// 선택된 아이템이 보이도록 스크롤
+					if (isSelected)
+					{
+						ImGui::SetItemDefaultFocus();
+
+					}
+				}
+				ImGui::EndListBox();
+			}
+
+			if (-1 != m_iCurEditIndex)
+			{
+				m_EffectDesc.NormalTag = NormalTags[m_iCurNormalTexture];
+			}
+		}
+		break;
+	}
+
 	default:
 		break;
 	}

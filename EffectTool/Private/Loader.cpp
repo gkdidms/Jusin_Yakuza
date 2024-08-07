@@ -243,6 +243,98 @@ HRESULT CLoader::Loading_For_TestLevel()
 
 #pragma endregion
 
+#pragma region Blood_Texture
+	/* Prototype_Component_Texture_BloodD0 */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Texture_BloodD0"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/Blood/e_j_0042_chi_sibuki_e.dds"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_BloodN0 */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Texture_BloodN0"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/Blood/e_j_0043_chi_sibuki_e_nml.dds"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_BloodD1 */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Texture_BloodD1"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/Blood/e_j_0050_chiato_c.dds"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_BloodN1 */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Texture_BloodN1"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/Blood/e_j_0051_chiato_c_nml.dds"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_BloodD2 */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Texture_BloodD2"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/Blood/e_j_0052_chiato_d.dds"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_BloodN2 */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Texture_BloodN2"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/Blood/e_j_0053_chiato_d_nml.dds"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_BloodD3 */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Texture_BloodD3"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/Blood/e_j_0054_chiato_e.dds"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_BloodN3 */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Texture_BloodN3"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/Blood/e_j_0055_chiato_e_nml.dds"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_BloodD4 */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Texture_BloodD4"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/Blood/e_j_0060_chiato_g.dds"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_BloodN4 */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Texture_BloodN4"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/Blood/e_j_0060_chiato_g_nml.dds"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_BloodD5 */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Texture_BloodD5"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/Blood/e_o_2510_blood_a.dds"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_BloodN5 */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Texture_BloodN5"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/Blood/e_o_2510_blood_a_nml.dds"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_BloodD6 */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Texture_BloodD6"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/Blood/e_o_2513_blood_d.dds"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_BloodN6 */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Texture_BloodN6"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/Blood/e_o_2513_blood_d_nml.dds"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_BloodD7 */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Texture_BloodD7"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/Blood/e_o_2514_blood_e.dds"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_BloodN7 */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Texture_BloodN7"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/Blood/e_o_2514_blood_e_nml.dds"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_BloodD8 */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Texture_BloodD8"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/Blood/e_o_2515_blood_f.dds"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_BloodN8 */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Texture_BloodN8"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/Blood/e_o_2515_blood_f_nml.dds"), 1))))
+		return E_FAIL;
+#pragma endregion
+
 	lstrcpy(m_szLoadingText, TEXT("컴포넌트 원형 를(을) 로딩 중 입니다."));
 
 	/* For.Prototype_Component_VIBuffer_Instance_Point */
@@ -326,6 +418,12 @@ HRESULT CLoader::Loading_For_TestLevel()
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Model_ParticleMoney"),
 		//CModel::Create(m_pDevice, m_pContext, CModel::TYPE_PARTICLE, "../../Client/Bin/Resources/Models/NonAnim/Particle/Money.fbx", PreTransformMatrix, false, true))))
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_PARTICLE, "../../Client/Bin/Resources/Models/NonAnim/Particle/Bin/Money.dat", PreTransformMatrix, true, true))))
+		return E_FAIL;
+
+	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Model_ParticleBlood"),
+		//CModel::Create(m_pDevice, m_pContext, CModel::TYPE_PARTICLE, "../../Client/Bin/Resources/Models/NonAnim/Particle/Blood.fbx", PreTransformMatrix, false, true))))
+		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_PARTICLE, "../../Client/Bin/Resources/Models/NonAnim/Particle/Bin/Blood.dat", PreTransformMatrix, true, true))))
 		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("셰이더를(을) 로딩 중 입니다."));

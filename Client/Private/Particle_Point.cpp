@@ -89,6 +89,10 @@ void CParticle_Point::Tick(const _float& fTimeDelta)
         {
             m_pVIBufferCom->RotSpread(fTimeDelta);
         }
+        if (m_iAction & iAction[ACTION_FALLSPREAD])
+        {
+            m_pVIBufferCom->FallSpread(fTimeDelta);
+        }
     }
 
 
@@ -104,7 +108,7 @@ void CParticle_Point::Late_Tick(const _float& fTimeDelta)
     {
         if (m_BufferInstance.isLoop)
         {
-            if (7 == m_iShaderPass)
+            if (7 == m_iShaderPass|| 9 == m_iShaderPass)
                 m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
             else
                 m_pGameInstance->Add_Renderer(CRenderer::RENDER_EFFECT, this);
@@ -113,7 +117,7 @@ void CParticle_Point::Late_Tick(const _float& fTimeDelta)
         {
             if (m_fCurTime >= m_fStartTime && !m_isDead)
             {
-                if (7 == m_iShaderPass)
+                if (7 == m_iShaderPass|| 9 == m_iShaderPass)
                     m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
                 else
                    m_pGameInstance->Add_Renderer(CRenderer::RENDER_EFFECT, this);
@@ -354,8 +358,17 @@ HRESULT CParticle_Point::Add_Components()
 
     /* For.Com_Texture */
     if (FAILED(__super::Add_Component(m_iCurrentLevel, m_TextureTag,
-        TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
+        TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom[0]))))
         return E_FAIL;
+
+    if (m_isNormal)
+    {
+        /* For.Com_NormalTexture */
+        if (FAILED(__super::Add_Component(m_iCurrentLevel, m_NormalTag,
+            TEXT("Com_NormalTexture"), reinterpret_cast<CComponent**>(&m_pTextureCom[1]))))
+            return E_FAIL;
+    }
+
 
     return S_OK;
 }
@@ -370,8 +383,15 @@ HRESULT CParticle_Point::Bind_ShaderResources()
     if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_PROJ))))
         return E_FAIL;
 
-    if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_Texture", 0)))
+    if (FAILED(m_pTextureCom[0]->Bind_ShaderResource(m_pShaderCom, "g_Texture", 0)))
         return E_FAIL;
+
+    if (m_isNormal)
+    {
+        if (FAILED(m_pTextureCom[1]->Bind_ShaderResource(m_pShaderCom, "g_NormalTexture", 0)))
+            return E_FAIL;
+    }
+
     if (FAILED(m_pShaderCom->Bind_RawValue("g_vCamPosition", m_pGameInstance->Get_CamPosition_Float4(), sizeof(_float4))))
         return E_FAIL;
 
@@ -441,6 +461,7 @@ void CParticle_Point::Free()
     __super::Free();
 
     Safe_Release(m_pVIBufferCom);
-    Safe_Release(m_pTextureCom);
+    for (auto& iter : m_pTextureCom)
+        Safe_Release(iter);
     Safe_Release(m_pShaderCom);
 }

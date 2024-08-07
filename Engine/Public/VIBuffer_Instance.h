@@ -100,6 +100,7 @@ protected:
 public:
     void Spread(_float fTimeDelta);
     void RotSpread(_float fTimeDelta);
+    void FallSpread(_float fTimeDelta);
     void MeshSpread(_float fTimeDelta);
     void Reset();
 

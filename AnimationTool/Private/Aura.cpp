@@ -83,10 +83,6 @@ void CAura::Tick(const _float& fTimeDelta)
 	{
 		m_pVIBufferCom->Spread(fTimeDelta);//스타트
 	}
-	if (m_iAction & iAction[ACTION_DROP])
-	{
-		m_pVIBufferCom->Drop(fTimeDelta);
-	}
 	if (m_iAction & iAction[ACTION_SIZEUP])
 	{
 		m_pVIBufferCom->SizeUp_Time(fTimeDelta);
@@ -94,10 +90,6 @@ void CAura::Tick(const _float& fTimeDelta)
 	if (m_iAction & iAction[ACTION_SIZEDOWN])
 	{
 		m_pVIBufferCom->SizeDown_Time(fTimeDelta);
-	}
-	if (m_iAction & iAction[ACTION_AURA])
-	{
-		m_pVIBufferCom->Aura(fTimeDelta);//아우라
 	}
 
 }

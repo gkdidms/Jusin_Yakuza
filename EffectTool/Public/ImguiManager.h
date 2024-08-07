@@ -45,6 +45,7 @@ public:
 		PASS_NOBILLDISTORTION=6,
 		PASS_NOBILLBOARD,
 		PASS_DISTORTION,
+		PASS_FALLSPREAD,
 		PASS_END};
 
 	enum MESHPASS {
@@ -127,6 +128,7 @@ private:
 	_bool m_bSizeup = { false };
 	_bool m_bSizedown = { false };
 	_bool m_bNobillboard = { false };
+	_bool m_bFallSpread = { false };
 	_bool m_bGuizmo = { false };
 	//생성 파티클 담는 곳
 	vector<CGameObject*> m_EditParticle = {  };
@@ -153,9 +155,11 @@ private:
 	_int m_iCurTexture = { 0 };
 	_int m_iCurToneTexture = { 0 };
 	_int m_iCurMesh= { 0 };
+	_int m_iCurNormalTexture= { 0 };
 	vector<wstring> TextureTags;
 	vector<wstring> ToneTextureTags;
 	vector<wstring> MeshTags;
+	vector<wstring> NormalTags;
 
 	public:
 	static CImguiManager* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

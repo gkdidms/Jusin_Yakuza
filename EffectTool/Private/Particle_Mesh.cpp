@@ -10,7 +10,8 @@ CParticle_Mesh::CParticle_Mesh(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 CParticle_Mesh::CParticle_Mesh(const CParticle_Mesh& rhs)
     :CEffect{ rhs },
     m_BufferInstance{ rhs.m_BufferInstance },
-    m_strModelTag{rhs.m_strModelTag }
+    m_strModelTag{rhs.m_strModelTag },
+    m_strNormalTag{rhs.m_strNormalTag }
 {
     
 }
@@ -51,6 +52,7 @@ HRESULT CParticle_Mesh::Initialize(void* pArg)
             m_BufferInstance = pDesc->BufferInstance;
             m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&pDesc->vStartPos));
             m_strModelTag = pDesc->strModelTag;
+            m_strNormalTag = pDesc->strNormalTag;
         }
         else
         {
@@ -114,7 +116,6 @@ void CParticle_Mesh::Late_Tick(const _float& fTimeDelta)
             m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
         else if(1== m_iShaderPass)
             m_pGameInstance->Add_Renderer(CRenderer::RENDER_EFFECT, this);
-
     }
     else
     {
@@ -150,6 +151,7 @@ HRESULT CParticle_Mesh::Save_Data(const string strDirectory)
     string ParticleTag = m_pGameInstance->WstringToString(m_ParticleTag);
     string TextureTag = m_pGameInstance->WstringToString(m_TextureTag);
     string ModelTag = m_pGameInstance->WstringToString(m_strModelTag);
+    string NormalTag = m_pGameInstance->WstringToString(m_strNormalTag);
 
     string headTag = "Prototype_GameObject_Particle_Mesh_";
     Directory += "/" + headTag + ParticleTag + ".dat";
@@ -171,6 +173,10 @@ HRESULT CParticle_Mesh::Save_Data(const string strDirectory)
     _int strModellength = ModelTag.length();
     out.write((char*)&strModellength, sizeof(_int));
     out.write(ModelTag.c_str(), strModellength);
+
+    _int strNormallength = NormalTag.length();
+    out.write((char*)&strNormallength, sizeof(_int));
+    out.write(NormalTag.c_str(), strNormallength);
 
     out.write((char*)&m_iShaderPass, sizeof(_int));
 
@@ -268,6 +274,16 @@ HRESULT CParticle_Mesh::Load_Data(const string strDirectory)
     string modeltag = charModelTag;
     m_strModelTag = m_pGameInstance->StringToWstring(modeltag);
 
+    _int strNormallength;
+    char charNormalTag[MAX_PATH] = {};
+
+    in.read((char*)&strNormallength, sizeof(_int));
+
+    in.read(charNormalTag, strNormallength);
+    string Normaltag = charNormalTag;
+    m_strNormalTag = m_pGameInstance->StringToWstring(Normaltag);
+
+
     in.read((char*)&m_iShaderPass, sizeof(_int));
 
     in.read((char*)&m_fStartTime, sizeof(_float));
@@ -344,10 +360,18 @@ HRESULT CParticle_Mesh::Add_Components()
         TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
         return E_FAIL;
 
-    /* For.Com_Texture */
+    /* For.Com_Texture0 */
     if (FAILED(__super::Add_Component(m_iCurrentLevel, m_TextureTag,
-        TEXT("Com_Texture"), reinterpret_cast<CComponent**>(&m_pTextureCom))))
+        TEXT("Com_Texture0"), reinterpret_cast<CComponent**>(&m_pTextureCom[0]))))
         return E_FAIL;
+
+    if(TEXT("")!= m_strNormalTag)
+    {
+        /* For.Com_Texture1 */
+        if (FAILED(__super::Add_Component(m_iCurrentLevel, m_strNormalTag,
+            TEXT("Com_Texture1"), reinterpret_cast<CComponent**>(&m_pTextureCom[1]))))
+            return E_FAIL;
+    }
 
     return S_OK;
 }
@@ -365,8 +389,14 @@ HRESULT CParticle_Mesh::Bind_ShaderResources()
     //if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_Texture", 0, aiTextureType_DIFFUSE)))
     //    return E_FAIL;
 
-    if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_Texture", 0)))
+    if (FAILED(m_pTextureCom[0]->Bind_ShaderResource(m_pShaderCom, "g_Texture", 0)))
         return E_FAIL;
+
+    if (TEXT("") != m_strNormalTag)
+    {
+        if (FAILED(m_pTextureCom[1]->Bind_ShaderResource(m_pShaderCom, "g_NormalTexture", 0)))
+            return E_FAIL;
+    }
 
     //if (FAILED(m_pShaderCom->Bind_RawValue("g_vCamPosition", m_pGameInstance->Get_CamPosition_Float4(), sizeof(_float4))))
     //    return E_FAIL;
@@ -428,7 +458,9 @@ void CParticle_Mesh::Free()
     __super::Free();
 
     Safe_Release(m_pVIBufferCom);
-    Safe_Release(m_pTextureCom);
+    for (auto& iter : m_pTextureCom)
+        Safe_Release(iter);
+
     Safe_Release(m_pShaderCom);
     Safe_Release(m_pModelCom);
 }

@@ -29,11 +29,14 @@ public:
 
         _float fDistortion;
 
+        _bool isNormal;
+        wstring NormalTag;
+
         const _float4x4* pWorldMatrix = { nullptr };
     }EFFECT_DESC;
 
     enum TYPE { TYPE_POINT, TYPE_TRAIL, TYPE_GLOW, TYPE_AURA, TYPE_MESH,TYPE_MESHEFFECT, TYPE_END };
-    enum ACTION { ACTION_SPREAD,  ACTION_SIZEUP, ACTION_SIZEDOWN,  ACTION_NOBILLBOARD,  ACTION_END };
+    enum ACTION { ACTION_SPREAD,  ACTION_SIZEUP, ACTION_SIZEDOWN,  ACTION_NOBILLBOARD, ACTION_FALLSPREAD, ACTION_END };
     static const _uint iAction[ACTION_END];
 
 protected:
@@ -73,6 +76,9 @@ public:
     _float2 Get_LifeAlpha() { return m_fLifeAlpha; }
     _float Get_Rotate() { return m_fRotate; }
     _float Get_fDistortion() { return m_fDistortion; }
+    _bool Get_isNormal() {        return m_isNormal;    }
+    wstring Get_NormalTag() { return m_NormalTag; }
+
     virtual void Reset_Buffer();
 public:
     virtual HRESULT Save_Data(const string strDirectory);
@@ -93,6 +99,9 @@ protected:
     _float4     m_vStartColor = { 0.f , 0.f , 0.f , 0.f };
     _float4     m_vEndColor = { 0.f , 0.f , 0.f , 0.f };
     _float      m_fDistortion = { 0.f };
+
+    _bool       m_isNormal = { false };
+    wstring    m_NormalTag = { TEXT("") };
 
     const _float4x4* m_pWorldMatrix = { nullptr };
 
