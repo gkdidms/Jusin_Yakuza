@@ -61,7 +61,7 @@ void CKiryu_KRC_PickUp::Tick(const _float& fTimeDelta)
 	{
 		if (Changeable_Combo_Animation())
 		{
-			m_eAnimState = ANaa_LOOP;
+			m_eAnimState = ANIM_LOOP;
 			m_iCurrentIndex = 1;
 		}
 
