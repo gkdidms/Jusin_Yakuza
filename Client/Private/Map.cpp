@@ -930,7 +930,7 @@ void CMap::Add_Renderer(const _float& fTimeDelta)
 				fScale = 10;
 
 			// 컬링
-			if (true == m_pGameInstance->isIn_WorldFrustum(worldPos, fScale))
+			if (true == m_pGameInstance->isIn_WorldFrustum(worldPos, fScale * 1.5))
 			{
 				// 컬링안함
 				if (0 == strcmp(baseNameCStr, "DEFAULTMESH"))
