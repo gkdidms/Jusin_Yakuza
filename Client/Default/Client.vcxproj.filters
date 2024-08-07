@@ -542,7 +542,7 @@
     </ClCompile>
     <ClCompile Include="..\Private\Reactor_Heli.cpp">
       <Filter>02.GameObjects\02.Character\LandObject\03.CarChase\00.Reactor\03.Heli</Filter>
-	</ClCompile>
+    </ClCompile>
     <ClCompile Include="..\Private\Particle_Mesh.cpp">
       <Filter>02.GameObjects\06.Effect\Mesh</Filter>
     </ClCompile>
@@ -1119,7 +1119,7 @@
     </ClInclude>
     <ClInclude Include="..\Public\Reactor_Heli.h">
       <Filter>02.GameObjects\02.Character\LandObject\03.CarChase\00.Reactor\03.Heli</Filter>
-	</ClInclude>
+    </ClInclude>
     <ClInclude Include="..\Public\Particle_Mesh.h">
       <Filter>02.GameObjects\06.Effect\Mesh</Filter>
     </ClInclude>
@@ -1756,9 +1756,6 @@
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxMeshItem.hlsl">
-      <Filter>97.ShaderFiles</Filter>
-    </FxCompile>
-    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxInstance_Mesh.hlsl">
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
   </ItemGroup>
