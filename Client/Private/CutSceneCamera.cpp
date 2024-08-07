@@ -43,8 +43,6 @@ void CCutSceneCamera::Tick(const _float& fTimeDelta)
 
 	ShowCursor(false);
 
-	//Compute_ViewMatrix();
-
 	// 플레이어와 같은 타이머를 써야한다
 	__super::Tick(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")));
 }
@@ -56,39 +54,6 @@ void CCutSceneCamera::Late_Tick(const _float& fTimeDelta)
 HRESULT CCutSceneCamera::Render()
 {
 	return S_OK;
-}
-
-void CCutSceneCamera::Compute_ViewMatrix()
-{
-	CPlayer* pPlayer = static_cast<CPlayer*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"), 0));
-
-	CModel* pPlayerCamModelCom = static_cast<CModel*>(pPlayer->Get_Component(TEXT("Com_Model_Cam")));
-	CModel* pPlayerModelCom = static_cast<CModel*>(pPlayer->Get_Component(TEXT("Com_Model")));
-
-	// Blender에서 얻은 본의 변환 행렬
-	_matrix matCameraMatrix = XMLoadFloat4x4(pPlayerCamModelCom->Get_BoneCombinedTransformationMatrix("Camera"));
-	_matrix matPlayerWorld = pPlayer->Get_TransformCom()->Get_WorldMatrix();
-
-	// 카메라를 vector_c_n 뼈에 붙여줘야한다.
-	_matrix matVectorBoneWorld = XMLoadFloat4x4(pPlayerModelCom->Get_BoneCombinedTransformationMatrix("vector_c_n"));
-
-	// Blender의 좌표계를 DirectX의 좌표계로 변환하기 위한 회전 행렬
-	_matrix rotationMatrixX = XMMatrixRotationX(XMConvertToRadians(fConvertX));
-	_matrix rotationMatrixY = XMMatrixRotationY(XMConvertToRadians(fConvertY));
-	_matrix rotationMatrixZ = XMMatrixRotationZ(XMConvertToRadians(fConvertZ));
-
-	// Blender의 본 변환 행렬과 플레이어의 월드 변환 행렬을 결합하고 좌표계 변환을 적용
-	_matrix viewMatrix = rotationMatrixX * rotationMatrixY * rotationMatrixZ * matVectorBoneWorld * matCameraMatrix * matPlayerWorld;
-
-	// 최종 뷰 행렬을 계산
-	_matrix viewMatrixInv = XMMatrixInverse(nullptr, viewMatrix);
-
-	// 뷰 행렬을 파이프라인에 설정
-	m_pGameInstance->Set_Transform(CPipeLine::D3DTS_VIEW, viewMatrix);
-
-	auto KeyFrames = pPlayerCamModelCom->Get_CurrentKeyFrameIndices(32);
-	_uint iKeyFrameIndex = KeyFrames->front();
-	Set_FoV(pPlayerCamModelCom->Get_FoV(pPlayerCamModelCom->Get_AnimationName(32), iKeyFrameIndex));
 }
 
 void CCutSceneCamera::Return_PrevWorld(const _float& fTimeDelta)
@@ -138,10 +103,11 @@ void CCutSceneCamera::Return_PrevWorld(const _float& fTimeDelta)
 void CCutSceneCamera::Reset_RetureVariables()
 {
 	m_isReturn = { false };
-	m_fLerpRatio = { 0.f };    // 보간 비율
-	m_fElapsedTime = 0.0f; // 경과 시간
-	m_fTotalLerpTime = 0.5f; // 보간에 걸리는 총 시간 (초 단위)
-	m_fStartFov = 0.0f; // 보간에 걸리는 총 시간 (초 단위)
+	m_fLerpRatio = { 0.f };
+	m_fElapsedTime = 0.0f; 
+	m_fTotalLerpTime = 0.5f; 
+	m_fStartFov = 0.0f; 
+	m_fFovY = m_fDefaultFovY;
 }
 
 void CCutSceneCamera::Play_FovLerp(const _float& fTimeDelta)

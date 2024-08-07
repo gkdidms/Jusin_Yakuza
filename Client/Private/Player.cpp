@@ -1050,6 +1050,15 @@ void CPlayer::KRS_KeyInput(const _float& fTimeDelta)
 
 				m_InputDirection[F] = true;
 				Compute_MoveDirection_FB();
+
+				// 직교깨지는 것 테스트
+				_float fTestValue = vLookPos.m128_f32[0];
+				if (isnan(fTestValue))
+				{
+					int a = 0;
+				}
+
+
 				m_pTransformCom->LookAt_For_LandObject(vLookPos);
 				isMove = true;
 			}
@@ -1062,7 +1071,16 @@ void CPlayer::KRS_KeyInput(const _float& fTimeDelta)
 				m_iCurrentBehavior = isShift ? (_uint)KRS_BEHAVIOR_STATE::WALK : (_uint)KRS_BEHAVIOR_STATE::RUN;
 				m_InputDirection[B] = true;
 				Compute_MoveDirection_FB();
+
+				// 직교깨지는 것 테스트
+				_float fTestValue = vLookPos.m128_f32[0];
+				if (isnan(fTestValue))
+				{
+					int a = 0;
+				}
+
 				m_pTransformCom->LookAt_For_LandObject(vLookPos);
+
 				isMove = true;
 			}
 			if (m_pGameInstance->GetKeyState(DIK_A) == HOLD)
@@ -1074,6 +1092,7 @@ void CPlayer::KRS_KeyInput(const _float& fTimeDelta)
 				m_iCurrentBehavior = isShift ? (_uint)KRS_BEHAVIOR_STATE::WALK : (_uint)KRS_BEHAVIOR_STATE::RUN;
 				m_InputDirection[L] = true;
 				Compute_MoveDirection_RL();
+
 				m_pTransformCom->LookAt_For_LandObject(vLookPos);
 				isMove = true;
 			}
@@ -1085,6 +1104,14 @@ void CPlayer::KRS_KeyInput(const _float& fTimeDelta)
 				m_iCurrentBehavior = isShift ? (_uint)KRS_BEHAVIOR_STATE::WALK : (_uint)KRS_BEHAVIOR_STATE::RUN;
 				m_InputDirection[R] = true;
 				Compute_MoveDirection_RL();
+
+				// 직교깨지는 것 테스트
+				_float fTestValue = vLookPos.m128_f32[0];
+				if (isnan(fTestValue))
+				{
+					int a = 0;
+				}
+
 				m_pTransformCom->LookAt_For_LandObject(vLookPos);
 				isMove = true;
 			}
@@ -1659,6 +1686,7 @@ void CPlayer::Play_CutScene()
 		// 플레이어의 월드 변환 행렬
 		//_matrix matPlayerWorld = pPlayer->Get_TransformCom()->Get_WorldMatrix();
 		_matrix matPlayerWorld = m_pTransformCom->Get_WorldMatrix();
+
 		_matrix matVectorBoneWorld = XMLoadFloat4x4(m_pModelCom->Get_BoneCombinedTransformationMatrix("vector_c_n"));
 
 		// Blender의 좌표계를 DirectX의 좌표계로 변환하기 위한 회전 행렬
@@ -1671,6 +1699,10 @@ void CPlayer::Play_CutScene()
 
 		// 최종 뷰 행렬을 계산
 		_matrix viewMatrix = XMMatrixInverse(nullptr, finalMat);
+		
+		bool containsNaN = XMMatrixIsNaN(viewMatrix);
+		if (containsNaN)
+			return;
 
 		// 뷰 행렬을 파이프라인에 설정
 		m_pGameInstance->Set_Transform(CPipeLine::D3DTS_VIEW, viewMatrix);
@@ -1701,6 +1733,10 @@ void CPlayer::Reset_CutSceneEvent()
 		CPlayerCamera* pCamera = dynamic_cast<CPlayerCamera*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Camera"), CAMERA_PLAYER));
 		// 플레이어 카메라의 현재 상태를 저장한다.
 		pCamera->Store_PrevMatrix();
+
+		// 컷신으로 돌릴 때, 컷신 카메라를 초기화해준다.
+		CCutSceneCamera* pCutSceneCamera = dynamic_cast<CCutSceneCamera*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Camera"), CAMERA_CUTSCENE));
+		pCutSceneCamera->Reset_RetureVariables();
 		break;
 	}
 
