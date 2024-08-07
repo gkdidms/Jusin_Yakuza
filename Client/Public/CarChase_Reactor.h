@@ -20,6 +20,7 @@ public:
         _int             iNaviRouteNum;
         _uint iStageDir;
         _uint iLineDir;
+        _int iWaypointIndex;
         
         _int iMonsterWeaponType[2];
     }HIGHWAY_IODESC;
@@ -41,7 +42,6 @@ public:
     virtual HRESULT Render() override;
 
 protected:
-    CAnim* m_pAnimCom = { nullptr }; // 애니메이션만 따로 저장하고있는 애니메이션 컴포넌트
     CNavigation* m_pNavigationCom = { nullptr };
 
 protected:
@@ -61,13 +61,13 @@ protected:
     _uint m_iLineDir = { DIR_END };
 
     _int     m_iNaviRouteNum = { 0 };
+    _int m_iWaypointIndex = { -1 };
     _float m_fSpeed = { 40.f };
 
 
 protected:
     virtual HRESULT Ready_Monster(_int* pMonsterTypes) = 0;
     virtual void Change_Animation();
-    HRESULT Setup_Animation();
     _bool Check_Dead();
 
 protected:

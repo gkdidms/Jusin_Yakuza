@@ -1,5 +1,4 @@
-#include "Engine_Shader_Defines.hlsli"
-#include "Shader_Client_Defines.hlsli"
+#include "Shader_Neo.hlsli"
 
 struct VS_IN
 {
@@ -99,7 +98,7 @@ struct GS_OUT
 [maxvertexcount(9)]
 void GS_MAIN_LIGHTDEPTH(triangle GS_IN In[3], inout TriangleStream<GS_OUT> Out)
 {
-    GS_OUT Output[3] = (GS_OUT[3])0;
+    GS_OUT Output[3] = (GS_OUT[3]) 0;
     
     for (int i = 0; i < 3; i++)
     {
@@ -132,73 +131,61 @@ struct PS_OUT
     vector vDiffuse : SV_TARGET0;
     vector vNormal : SV_TARGET1;
     vector vDepth : SV_TARGET2;
-    vector vRM : SV_TARGET3;
-    vector vRS : SV_Target4;
-    vector vMulti : SV_Target5;
-    vector vRD : SV_Target6;
+    vector vSurface : SV_TARGET3; // vector(metallic, goughness, speculer, 0.f)
+    vector vSusurface: SV_Target4;
+    vector vOEShader : SV_Target5;
+    vector vSpecular : SV_Target6;
 };
 
-bool g_isCloth;
 PS_OUT PS_MAIN(PS_IN In)
 {
     PS_OUT Out = (PS_OUT) 0;
     
-    vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
-    vector vMultiDiffuce = g_MultiDiffuseTexture.Sample(LinearSampler, In.vTexcoord);
+    vector vDiffuseDesc = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
+    if (vDiffuseDesc.a < 0.1f)
+        discard;
+   
+    vector vMulti = g_isMulti ? g_MultiDiffuseTexture.Sample(LinearSampler, In.vTexcoord) : vector(0.f, 1.f, 0.f, 1.f);
+    vector vRD = g_isRD ? g_RDTexture.Sample(LinearSampler, In.vTexcoord) : vector(1.f, 1.f, 1.f, 1.f);
+    vector vRS = g_isRS ? g_RSTexture.Sample(LinearSampler, In.vTexcoord) : vector(1.f, 1.f, 1.f, 1.f);
+    vector vRM = g_isRM ? g_RMTexture.Sample(LinearSampler, In.vTexcoord) : vector(0.5f, 1.f, 0.5f, 1.f);
 
     //노말 벡터 구하기
     vector vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexcoord);
-
     vNormalDesc = vNormalDesc * 2.f - 1.f;
-    vNormalDesc = vector(vNormalDesc.w, vNormalDesc.y, 1.f, 0.f);
     
+    //Neo Shader
+    float fFactor = RepeatingPatternBlendFactor(vMulti);
+    vector vDiffuse = DiffusePortion(vDiffuseDesc, vRS, vRD, fFactor, In.vTexcoord);
+    
+    COMBINE_OUT Result = Neo_MetallicAndGlossiness(vMulti, vRM); // Metallic, Rouhness 최종
+    vDiffuse = Get_Diffuse(vMulti.a, Result.fFactor, vDiffuse); // Diffuse 최종
+    
+    //Tangent Normal 구하기 
+    vNormalDesc = Get_Normal(vNormalDesc, fFactor);
     float3x3 WorldMatrix = float3x3(In.vTangent.xyz, In.vBinormal.xyz, In.vNormal.xyz);
     vector vNormalBTN = vector(mul(vNormalDesc.xyz, WorldMatrix), 0.f);
-
-  
-    if (vDiffuse.a < 0.1f)
-        discard;
-
-    vector vRSRD;
-    vector vRDDesc;
-
-    if (g_isRD)
-    {
-        vRDDesc = g_RDTexture.Sample(LinearSampler, In.vTexcoord * 50.f);
-        Out.vRD = vRDDesc;
-    }
-    
-    if (g_isRS)
-    {
-        vector vRSDesc = g_RSTexture.Sample(LinearSampler, In.vTexcoord * 20.f);
-        Out.vRS = vRSDesc;
-        vRSDesc = lerp(vRSDesc, vRDDesc, 0.3f);
-        Out.vDiffuse = lerp(vDiffuse, vRSDesc, g_isCloth ? vMultiDiffuce.z : 0.f);
-        
-    }
-    else
-    {
-        if (g_isRD)
-            Out.vDiffuse = lerp(vDiffuse, vRDDesc, g_isCloth ? vMultiDiffuce.z : 0.f);
-        else
-            Out.vDiffuse = vDiffuse;
-    }
+    Out.vNormal = vector(vNormalBTN.xyz * 0.5f + 0.5f, 0.f);
 
     float RimIndex = 0.f;
     if (0.05f < g_isRimLight)
     {
-        if (In.vTexcoord.y >= g_fRimUV.x && In.vTexcoord.y <g_fRimUV.y)
+        if (In.vTexcoord.y >= g_fRimUV.x && In.vTexcoord.y < g_fRimUV.y)
         {
             RimIndex = g_isRimLight;
         }
     }
-
-
-    Out.vNormal = vector(vNormalBTN.xyz * 0.5f + 0.5f, 0.f);
+    
+    OE_SPECULAR OEResult = Neo_OE_Specular(vMulti, vRM, vRS);
+    float fMixMultiFactor = lerp(vMulti.y, 1.f, AssetShader);
+    float fDeffuseFactor = vDiffuseDesc.a * 1.f;
     
     Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_fFar, RimIndex, 0.f);
-    
-    Out.vMulti = vMultiDiffuce;
+    Out.vDiffuse = vDiffuse;
+    Out.vSurface = vector(Result.fMetalness, Result.fRoughness, Result.fSpeclure, 0);
+    Out.vSusurface = SubSurface(vRD);
+    Out.vOEShader = vector(OEResult.fRouhness, OEResult.fMixShaderFactor, fMixMultiFactor, fDeffuseFactor);
+    Out.vSpecular = vector(OEResult.vSpecular, 0.f);
     
     return Out;
 }
@@ -208,50 +195,50 @@ PS_OUT PS_BLEND(PS_IN In)
     PS_OUT Out = (PS_OUT) 0;
     
     vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
-    vector vMultiDiffuce = g_MultiDiffuseTexture.Sample(LinearSampler, In.vTexcoord);
+  
+    vector vMulti = g_isMulti ? g_MultiDiffuseTexture.Sample(LinearSampler, In.vTexcoord) : vector(0.f, 1.f, 0.f, 1.f);
+    vector vRD = g_isRD ? g_RDTexture.Sample(LinearSampler, In.vTexcoord * g_RDCount) : vector(1.f, 1.f, 1.f, 1.f);
+    vector vRS = g_isRS ? g_RSTexture.Sample(LinearSampler, In.vTexcoord) : vector(1.f, 1.f, 1.f, 1.f);
+    vector vRM = g_isRM ? g_RMTexture.Sample(LinearSampler, In.vTexcoord) : vector(0.5f, 1.f, 0.5f, 1.f);
+
+    //노말 벡터 구하기
     vector vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexcoord);
+    vNormalDesc = vNormalDesc * 2.f - 1.f;
     
-    float3 vNormal = vNormalDesc.xyz * 2.f - 1.f;
+    //Neo Shader
+    float fFactor = RepeatingPatternBlendFactor(vMulti);
+    vector vDiffuseColor = DiffusePortion(vDiffuse, vRS, vRD, fFactor, In.vTexcoord);
     
+    COMBINE_OUT Result = Neo_MetallicAndGlossiness(vMulti, vRM); // Metallic, Rouhness 최종
+    vDiffuseColor = Get_Diffuse(vMulti.a, Result.fFactor, vDiffuseColor); // Diffuse 최종
+    vDiffuseColor.a = vDiffuse.a;
+    
+    //Tangent Normal 구하기 
+    vNormalDesc = Get_Normal(vNormalDesc, fFactor);
     float3x3 WorldMatrix = float3x3(In.vTangent.xyz, In.vBinormal.xyz, In.vNormal.xyz);
-    vNormal = mul(vNormal, WorldMatrix);
-    
-    vDiffuse.xyz *= vDiffuse.a;
-    
-    if (vDiffuse.a < 0.1f)
-        discard;
-    
-    //RS + RD
-    vector vRSRD;
-    vector vRDDesc;
-    if (g_isRD)
+    vector vNormalBTN = vector(mul(vNormalDesc.xyz, WorldMatrix), 0.f);
+    Out.vNormal = vector(vNormalBTN.xyz * 0.5f + 0.5f, 0.f);
+
+    float RimIndex = 0.f;
+    if (0.05f < g_isRimLight)
     {
-        vRDDesc = g_RDTexture.Sample(LinearSampler, In.vTexcoord * 50.f);
-        Out.vRD = vRDDesc;
+        if (In.vTexcoord.y >= g_fRimUV.x && In.vTexcoord.y < g_fRimUV.y)
+        {
+            RimIndex = g_isRimLight;
+        }
     }
     
-    if (g_isRS)
-    {
-        vector vRSDesc = g_RSTexture.Sample(LinearSampler, In.vTexcoord * 20.f);
-        Out.vRS = vRSDesc;
-        vRSDesc = lerp(vRSDesc, vRDDesc, 0.7f);
-        Out.vDiffuse = lerp(vDiffuse, vRSDesc, vMultiDiffuce.z);
-        
-    }
-    else
-    {
-        if (g_isRD)
-            Out.vDiffuse = lerp(vDiffuse, vRDDesc, vMultiDiffuce.z);
-        else
-            Out.vDiffuse = vDiffuse;
-    }
-
-
-    Out.vNormal = vector(vNormal.xyz * 0.5f + 0.5f, 0.f);
-    Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_fFar, 0.f, 1.f);
-    Out.vMulti = vMultiDiffuce;
+    OE_SPECULAR OEResult = Neo_OE_Specular(vMulti, vRM, vRS);
+    float fMixMultiFactor = lerp(vMulti.y, 1.f, AssetShader);
+    float fDeffuseFactor = vDiffuse.a * 1.f;
     
-
+    Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_fFar, RimIndex, 0.f);
+    Out.vDiffuse = vDiffuseColor;
+    Out.vSurface = vector(Result.fMetalness / g_fFar, Result.fRoughness / g_fFar, Result.fSpeclure / g_fFar, g_fFar);
+    Out.vSusurface = SubSurface(vRD) / g_fFar;
+    Out.vOEShader = vector(OEResult.fRouhness, OEResult.fMixShaderFactor, fMixMultiFactor, fDeffuseFactor);
+    Out.vSpecular = vector(OEResult.vSpecular, 0.f);
+    
     return Out;
 }
 

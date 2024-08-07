@@ -67,8 +67,8 @@ struct PS_OUT_LIGHT
     vector vShade : SV_TARGET0;
     vector vLightMap : SV_TARGET1;
     vector vSpecularRM : SV_TARGET2;
-    vector vSpecularMulti : SV_TARGET3;
-    vector vSpecular : SV_TARGET4;
+    vector vSpecular : SV_TARGET3;
+    vector vScattring : SV_TARGET4;
 };
 
 PS_OUT PS_MAIN_SSAO(PS_IN In)
@@ -121,15 +121,35 @@ PS_OUT_LIGHT PS_MAIN_LIGHT_DIRECTIONAL(PS_IN In)
         vAmbient *= vAmbientDesc;
     
     Out.vShade = g_vLightDiffuse * saturate(max(dot(normalize(g_vLightDir) * -1.f, normalize(vNormal)), 0.f) + vAmbient);
+    Out.vScattring = vector(SubSucface(In.vTexcoord, normalize(vNormal)), 1.f);
     
     if (g_isPBR)
     {
-        Out.vSpecularRM = BRDF(In.vPosition, In.vTexcoord, normalize(vNormal), vDepthDesc);
-        Out.vSpecularMulti = vector(BRDF_MULTI(In.vPosition, In.vTexcoord, normalize(vNormal), vDepthDesc), 1.f);
+        vector vWorldPos;
+
+        vWorldPos.x = In.vTexcoord.x * 2.f - 1.f;
+        vWorldPos.y = In.vTexcoord.y * -2.f + 1.f;
+        vWorldPos.z = vDepthDesc.x; /* 0 ~ 1 */
+        vWorldPos.w = 1.f;
+
+        vWorldPos = vWorldPos * (vDepthDesc.y * g_fFar);
+
+	/* 뷰스페이스 상의 위치를 구한다. */
+        vWorldPos = mul(vWorldPos, g_ProjMatrixInv);
+
+	/* 월드스페이스 상의 위치를 구한다. */
+        vWorldPos = mul(vWorldPos, g_ViewMatrixInv);
+
+    //vector vReflect = reflect(normalize(g_vLightDir), normalize(vNormal));
+        float3 vLook = normalize(g_vCamPosition - vWorldPos).xyz;
+        
+        Out.vSpecularRM = BRDF(In.vPosition, In.vTexcoord, normalize(vNormal), vDepthDesc, vLook);
+        Out.vSpecular = vector(CalcuateSpecular(In.vTexcoord, normalize(vNormal), vLook), 0.f);
         Out.vLightMap = g_vLightDiffuse;
     }
     
     //Grass
+    /*
     vector vGlassNormalDesc = g_GlassNormalTexture.Sample(LinearSampler, In.vTexcoord);
     vector vGlassNormal = vector(vGlassNormalDesc.xyz * 2.f - 1.f, 0.f);
     if (vGlassNormalDesc.a == 0.f)
@@ -153,6 +173,7 @@ PS_OUT_LIGHT PS_MAIN_LIGHT_DIRECTIONAL(PS_IN In)
     
         Out.vSpecular = pow(max(dot(normalize(vReflect), normalize(vLook)), 0.f), 30.f);
     }
+    */
     
     return Out;
 }
@@ -236,22 +257,29 @@ PS_OUT PS_MAIN_COPY_BACKBUFFER_RESULT(PS_IN In)
     PS_OUT Out = (PS_OUT) 0;
 
     vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
-    
     vector vShade = g_ShadeTexture.Sample(LinearSampler, In.vTexcoord);
-    vector vSpeculer = g_SpecularTexture.Sample(LinearSampler, In.vTexcoord);
+    vector vSubSurface = g_SubSurfaceTexture.Sample(LinearSampler, In.vTexcoord);
     
     if (g_isPBR)
     {
+        vector vSpeculer = g_SpecularTexture.Sample(LinearSampler, In.vTexcoord);
         vector vSpeculerRM = g_RMTexture.Sample(LinearSampler, In.vTexcoord);
-        vector vMetallicMulti = g_MultiDiffuseTexture.Sample(LinearSampler, In.vTexcoord);
-    
         vector vLightmap = g_LightMapTexture.Sample(LinearSampler, In.vTexcoord);
-    // 여기 Speculer 수정해야 함.
-        Out.vColor = (vDiffuse * vMetallicMulti) * vShade + (vSpeculerRM + vSpeculer) * vLightmap;
+        vector vOEShader = g_OEShaderTexture.Sample(LinearSampler, In.vTexcoord);
+        
+        vector vNeoShader = (vector(vDiffuse.xyz, 1.f) + vSubSurface) * vShade + vSpeculerRM * vLightmap;
+        
+        vSpeculer = lerp(vector(0.f, 0.f, 0.f, 0.f), vSpeculer, vOEShader.g);
+        
+        vector vResultShader = vNeoShader + vSpeculer;
+        vResultShader = lerp(vector(0.f, 0.f, 0.f, 0.f), vResultShader, vOEShader.b);
+        
+        Out.vColor = vNeoShader;
+
     }
     else
     {
-        Out.vColor = vDiffuse * vShade;
+        Out.vColor = (vector(vDiffuse.xyz, 1.f) + vSubSurface) * vShade;
     }
     
     if (g_isShadow)
@@ -609,8 +637,8 @@ technique11 DefaultTechnique
         HullShader = NULL;
         DomainShader = NULL;
         PixelShader = compile ps_5_0 PS_MAIN_SSAO();
-
     }
+
     pass OITRender //15
     {
         SetRasterizerState(RS_Default);
@@ -703,6 +731,5 @@ technique11 DefaultTechnique
         DomainShader = NULL;
         PixelShader = compile ps_5_0 PS_MAIN_NonBlurNonLight_Final();
     }
-
 
 }

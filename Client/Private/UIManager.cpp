@@ -66,6 +66,13 @@ HRESULT CUIManager::Update_TargetMatrix(_uint iIndex, _matrix TargetMatrix, _flo
 	return pScene->Update_TargetMatrix(iIndex, TargetMatrix, iHP);
 }
 
+HRESULT CUIManager::Remove_Target(_uint iIndex)
+{
+	CUICarchase* pScene = dynamic_cast<CUICarchase*>(Find_Scene(TEXT("Carchase")));
+
+	return pScene->Remove_Target(iIndex);
+}
+
 HRESULT CUIManager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
 	m_pDevice = pDevice;

@@ -4,6 +4,7 @@
 
 #include "CarChase_Monster.h"
 #include "CarChase_Reactor.h"
+#include "CarChaseCamera.h"
 
 #include "Highway_Taxi.h"
 
@@ -47,6 +48,16 @@ _bool CCarChase::Tick()
 _bool CCarChase::Start()
 {
 	vector<STAGE_MONSTER_INFO> MonsterInfo = m_Info.MonsterInfo;
+	CHighway_Taxi* pPlayer = dynamic_cast<CHighway_Taxi*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Taxi"), 0));
+
+	//몬스터의 위치는 플레이어 웨이포인트 인덱스의 -10만큼
+	_int iWaypoint = pPlayer->Get_CurrentWaypointIndex() - 1;
+
+	if (iWaypoint < 0)
+	{
+		//0보다 작다면
+		iWaypoint = pPlayer->Get_WaypointSize() + iWaypoint;
+	}
 
 	for (auto& iter : MonsterInfo)
 	{
@@ -58,6 +69,7 @@ _bool CCarChase::Start()
 		Desc.iLineDir = iter.iMonsterDir; // 몬스터 앞, 옆, 뒤 방향
 		Desc.iObjectIndex = iter.iObjectIndex;
 		Desc.iNaviRouteNum = iter.iMonsterLine;
+		Desc.iWaypointIndex = iWaypoint;
 		memcpy(Desc.iMonsterWeaponType, iter.iWeaponType, sizeof(_int) * 2);
 
 		wstring strGameObject = TEXT("");
@@ -73,12 +85,14 @@ _bool CCarChase::Start()
 			return false;
 	}
 
-	CHighway_Taxi* pPlayer = dynamic_cast<CHighway_Taxi*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Taxi"), 0));
-	
 	pPlayer->Set_Dir(m_Info.iStageDir);
 
 	if (m_Info.iPlayerLine != m_Info.iPrePlayerLine)
 		pPlayer->Set_NavigationRouteIndex(m_Info.iPlayerLine);
+
+	//카메라에 스테이지 방향 넣어주기
+	CCarChaseCamera* pCamera = dynamic_cast<CCarChaseCamera*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Camera"), CAMERA_CARCHASE));
+	pCamera->Set_StageDir(m_Info.iStageDir);
 
 	return true;
 }
@@ -89,7 +103,7 @@ _bool CCarChase::Running()
 	vector<CGameObject*> Reactors = m_pGameInstance->Get_GameObjects(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Reactor"));
 	vector<STAGE_MONSTER_INFO> MonsterInfo = m_Info.MonsterInfo;
 
-	_uint iCount = { 0 };
+	/*_uint iCount = { 0 };
 	for (auto& Reactor : Reactors)
 	{
 		find_if(MonsterInfo.begin(), MonsterInfo.end(), [&](STAGE_MONSTER_INFO& Info)->_bool {
@@ -104,6 +118,14 @@ _bool CCarChase::Running()
 	}
 
 	if (MonsterInfo.size() == iCount)
+	{
+		for (auto& pReactor : Reactors)
+			pReactor->Set_Dead();
+
+		return true;
+	}*/
+		
+	if (Reactors.size() <= 0)
 		return true;
 
 	return false;

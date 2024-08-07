@@ -61,8 +61,7 @@ float g_fTimeDelta;
 
 float g_fOut = { 0.5f };
 
-bool g_isRS;
-bool g_isRD;
+
 
 float g_fTexcoordX = { 0.f };
 float g_fTexcoordY = { 0.f };
@@ -101,3 +100,21 @@ bool g_bBright;
 
 int g_iCount = { 0 };
 const int g_iMaxCasCade = { 3 };
+
+/*Neo ºŒ¿Ã¥ı ø…º«*/
+bool g_isRS;
+bool g_isRD;
+bool g_isRM;
+bool g_isMulti;
+
+float g_RDCount = { 1.f };
+
+float AssetShader = { 0.f };
+float DisableRDRT = { 0.f };
+float Engine = { 0.f };
+float IsOEClothShader = { 0.f };
+float SkinShader = { 0.f };
+float Rough = { 0.f };
+float IsY3Shader = { 0.f };
+float Imperfection = { 0.f };
+float SPShader = { 0.f };

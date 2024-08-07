@@ -55,12 +55,13 @@ public:
     void Go_Right(const _float& fTimeDelta);
     void Go_Up(const _float& fTimeDelta);          //0625 혜원 추가 
     void Go_Down(const _float& fTimeDelta);        //0625 혜원 추가
-    void LookAt(_fvector vTargetPosition);
+    void LookAt(_fvector vTargetPosition, _bool isDir = false);
     void LookAt_For_LandObject(_fvector vTargetPosition, _bool isDir = false);   // 0630 혜원 추가, 땅 위에 있는 오브젝트들을 LookAt시킴 (y축으로만 회전함)
     void LookForCamera(_fvector vCamLook, _float fRadian);
     void Turn(_fvector vAxis, _float fTimeDelta);
     void Rotation(_fvector vAxis, _float fRadian); // 방향 초기화 후 회전
     void Change_Rotation(_fvector vAxis, _float fRadian); // 오브젝트가 바라보는 방향을 기준으로 회전
+    _vector Get_Rotation(_fvector vAxis, _float fRadian); // 오브젝트가 바라보는 방향을 기준으로 회전값을 반환
     void Change_Rotation_Quaternion(const _float4& vQuaternion); // 오브젝트가 바라보는 방향을 기준으로 회전
 
 private:

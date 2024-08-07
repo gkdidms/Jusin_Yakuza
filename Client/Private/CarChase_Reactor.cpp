@@ -5,6 +5,7 @@
 
 #include "Player.h"
 #include "CarChase_Monster.h"
+#include "Highway_Taxi.h"
 
 CCarChase_Reactor::CCarChase_Reactor(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLandObject{ pDevice, pContext }
@@ -40,6 +41,7 @@ HRESULT CCarChase_Reactor::Initialize(void* pArg)
 	m_iNaviRouteNum = gameobjDesc->iNaviRouteNum;
 	m_iStageDir = gameobjDesc->iStageDir;
 	m_iLineDir = gameobjDesc->iLineDir;
+	m_iWaypointIndex = gameobjDesc->iWaypointIndex;
 
 	if (FAILED(Add_Components()))
 		return E_FAIL;
@@ -50,6 +52,9 @@ HRESULT CCarChase_Reactor::Initialize(void* pArg)
 		return E_FAIL;
 
 	m_pTransformCom->Set_WorldMatrix(XMMatrixIdentity());
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_pNavigationCom->Get_CurrentWaypointPos());
+
+
 
 	return S_OK;
 }
@@ -137,30 +142,14 @@ void CCarChase_Reactor::Change_Animation()
 {
 }
 
-HRESULT CCarChase_Reactor::Setup_Animation()
-{
-	m_iAnim = m_pAnimCom->Get_AnimationIndex(m_strAnimName.c_str());
-
-	if (m_iAnim == -1)
-		return E_FAIL;
-
-	// 실제로 애니메이션 체인지가 일어났을 때 켜져있던 어택 콜라이더를 전부 끈다
-	if (m_pModelCom->Set_AnimationIndex(m_iAnim, m_pAnimCom->Get_Animations(), m_fChangeInterval))
-	{
-		m_pModelCom->Set_PreAnimations(m_pAnimCom->Get_Animations());
-
-		Off_Attack_Colliders();
-	}
-
-	return S_OK;
-}
-
 _bool CCarChase_Reactor::Check_Dead()
 {
 	for (auto& pMonster : m_Monsters)
 	{
 		if (!pMonster->isObjectDead())
+		{
 			return false;
+		}
 	}
 		
 	return true;
@@ -180,7 +169,7 @@ void CCarChase_Reactor::Move_Waypoint(const _float& fTimeDelta)
 
 	if (m_iAnim != 0)
 	{
-		m_fSpeed = fDistance < 300.f ? 41.f : 43.f;
+		m_fSpeed = fDistance < 300.f ? 40.f : 100.f;
 	}
 	else
 		m_fSpeed = m_fSpeed <= 0.f ? 0.f : m_fSpeed - fTimeDelta * 10.f;
@@ -194,13 +183,15 @@ HRESULT CCarChase_Reactor::Add_Components()
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_ReactorHighwayAnim"),
-		TEXT("Com_Anim"), reinterpret_cast<CComponent**>(&m_pAnimCom))))
-		return E_FAIL;
+	//플레이어 위치보다 100뒤에 잇도록 수정
+	CHighway_Taxi* pPlayer = dynamic_cast<CHighway_Taxi*>(m_pGameInstance->Get_GameObject(m_iCurrentLevel, TEXT("Layer_Taxi"), 0));
+	_vector vPlayerPos = pPlayer->Get_TransformCom()->Get_State(CTransform::STATE_POSITION);
+	
 
 	CNavigation::NAVIGATION_DESC Desc{};
 	Desc.iCurrentLine = m_iNaviRouteNum;
-	Desc.vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	Desc.iWayPointIndex = m_iWaypointIndex;
+	Desc.vPosition = vPlayerPos - XMVectorSet(0.f, 0.f, 100.f, 0.f);
 	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Navigation"),
 		TEXT("Com_Navigation"), reinterpret_cast<CComponent**>(&m_pNavigationCom), &Desc)))
 		return E_FAIL;
@@ -224,7 +215,6 @@ void CCarChase_Reactor::Free()
 {
 	__super::Free();
 
-	Safe_Release(m_pAnimCom);
 	Safe_Release(m_pNavigationCom);
 
 	for (auto& pMonster : m_Monsters)
