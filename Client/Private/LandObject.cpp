@@ -93,7 +93,15 @@ void CLandObject::ImpulseResolution(CLandObject* pTargetObject, _float fDistance
 	{
 		_vector vMovePos = m_pTransformCom->Get_State(CTransform::STATE_POSITION) + (XMLoadFloat3(&vDir));
 
-		m_pTransformCom->Set_State(CTransform::STATE_POSITION, vMovePos);
+		//CNavigation* pTargetNavi = dynamic_cast<CNavigation*>(pTargetObject->Get_Component(TEXT("Com_Navigation")));
+		if(nullptr == m_pNavigationCom)
+			m_pTransformCom->Set_State(CTransform::STATE_POSITION, vMovePos);
+		else
+		{
+			// 네비 밖인지 아닌지 검사해야함.
+			if (m_pNavigationCom->isMove(vMovePos))
+				m_pTransformCom->Set_State(CTransform::STATE_POSITION, vMovePos);
+		}
 	}
 }
 

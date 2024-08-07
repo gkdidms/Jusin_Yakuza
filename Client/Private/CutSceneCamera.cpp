@@ -43,8 +43,6 @@ void CCutSceneCamera::Tick(const _float& fTimeDelta)
 
 	ShowCursor(false);
 
-	//Compute_ViewMatrix();
-
 	// 플레이어와 같은 타이머를 써야한다
 	__super::Tick(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")));
 }
@@ -58,37 +56,79 @@ HRESULT CCutSceneCamera::Render()
 	return S_OK;
 }
 
-void CCutSceneCamera::Compute_ViewMatrix()
+void CCutSceneCamera::Return_PrevWorld(const _float& fTimeDelta)
 {
-	CPlayer* pPlayer = static_cast<CPlayer*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"), 0));
+	if (!m_isReturn) return;
 
-	CModel* pPlayerCamModelCom = static_cast<CModel*>(pPlayer->Get_Component(TEXT("Com_Model_Cam")));
-	CModel* pPlayerModelCom = static_cast<CModel*>(pPlayer->Get_Component(TEXT("Com_Model")));
+	// 경과 시간 업데이트
+	m_fElapsedTime += fTimeDelta;
+	m_fLerpRatio = m_fElapsedTime / m_fTotalLerpTime;
 
-	// Blender에서 얻은 본의 변환 행렬
-	_matrix matCameraMatrix = XMLoadFloat4x4(pPlayerCamModelCom->Get_BoneCombinedTransformationMatrix("Camera"));
-	_matrix matPlayerWorld = pPlayer->Get_TransformCom()->Get_WorldMatrix();
+	// 보간 비율이 1을 초과하지 않도록 제한
+	if (m_fLerpRatio >= 1.0f)
+	{
+		m_fLerpRatio = 1.0f;
+		m_isReturn = false; // 보간 완료
+	}
 
-	// 카메라를 vector_c_n 뼈에 붙여줘야한다.
-	_matrix matVectorBoneWorld = XMLoadFloat4x4(pPlayerModelCom->Get_BoneCombinedTransformationMatrix("vector_c_n"));
+	// 이전 행렬과 시작 행렬을 분해해서 저장
+	_matrix PrevMat = XMLoadFloat4x4(&m_PrevMatrix);
+	_vector vPrevScale, vPrevRot, vPrevPos;
+	XMMatrixDecompose(&vPrevScale, &vPrevRot, &vPrevPos, PrevMat);
 
-	// Blender의 좌표계를 DirectX의 좌표계로 변환하기 위한 회전 행렬
-	_matrix rotationMatrixX = XMMatrixRotationX(XMConvertToRadians(fConvertX));
-	_matrix rotationMatrixY = XMMatrixRotationY(XMConvertToRadians(fConvertY));
-	_matrix rotationMatrixZ = XMMatrixRotationZ(XMConvertToRadians(fConvertZ));
+	_matrix StartMat = XMLoadFloat4x4(&m_StartMatrix);
+	_vector vStartScale, vStartRot, vStartPos;
+	XMMatrixDecompose(&vStartScale, &vStartRot, &vStartPos, StartMat);
 
-	// Blender의 본 변환 행렬과 플레이어의 월드 변환 행렬을 결합하고 좌표계 변환을 적용
-	_matrix viewMatrix = rotationMatrixX * rotationMatrixY * rotationMatrixZ * matVectorBoneWorld * matCameraMatrix * matPlayerWorld;
+	// 각 성분에 대해 선형 보간
+	_vector vScaleLerp = XMVectorLerp(vPrevScale, vStartScale, m_fLerpRatio);
+	_vector vTransLerp = XMVectorLerp(vPrevPos, vStartPos, m_fLerpRatio);
+	_vector vRotLerp = XMQuaternionSlerp(vPrevRot, vStartRot, m_fLerpRatio); // 회전은 구면 선형 보간(Slerp)을 사용
 
-	// 최종 뷰 행렬을 계산
-	_matrix viewMatrixInv = XMMatrixInverse(nullptr, viewMatrix);
+	// 보간된 값을 결합해 행렬 생성
+	_matrix M = XMMatrixScalingFromVector(vScaleLerp) *
+		XMMatrixRotationQuaternion(vRotLerp) *
+		XMMatrixTranslationFromVector(vTransLerp);
 
-	// 뷰 행렬을 파이프라인에 설정
-	m_pGameInstance->Set_Transform(CPipeLine::D3DTS_VIEW, viewMatrix);
+	XMStoreFloat4x4(&m_WorldMatrix, M);
+	m_fFovY = LerpFloat(m_fStartFov, m_fDefaultFovY, m_fLerpRatio);
 
-	auto KeyFrames = pPlayerCamModelCom->Get_CurrentKeyFrameIndices(32);
-	_uint iKeyFrameIndex = KeyFrames->front();
-	Set_FoV(pPlayerCamModelCom->Get_FoV(pPlayerCamModelCom->Get_AnimationName(32), iKeyFrameIndex));
+	// 여기서 false가 나온다는것은, 완료 이후라는 것으로 초기화해줘야한다.
+	if (!m_isReturn)
+	{
+		Reset_RetureVariables();
+	}
+}
+
+void CCutSceneCamera::Reset_RetureVariables()
+{
+	m_isReturn = { false };
+	m_fLerpRatio = { 0.f };
+	m_fElapsedTime = 0.0f; 
+	m_fTotalLerpTime = 0.5f; 
+	m_fStartFov = 0.0f; 
+	m_fFovY = m_fDefaultFovY;
+}
+
+void CCutSceneCamera::Play_FovLerp(const _float& fTimeDelta)
+{
+	// 경과 시간 업데이트
+	m_fElapsedTime += fTimeDelta;
+	m_fLerpRatio = m_fElapsedTime / m_fTotalLerpTime;
+
+	// 보간 비율이 1을 초과하지 않도록 제한
+	if (m_fLerpRatio >= 1.0f)
+	{
+		m_fLerpRatio = 1.0f;
+		m_isReturn = false; // 보간 완료
+	}
+
+	m_fFovY = LerpFloat(m_fStartFov, m_fDefaultFovY, m_fLerpRatio);
+	// 여기서 false가 나온다는것은, 완료 이후라는 것으로 초기화해줘야한다.
+	if (!m_isReturn)
+	{
+		Reset_RetureVariables();
+	}
 }
 
 CCutSceneCamera* CCutSceneCamera::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

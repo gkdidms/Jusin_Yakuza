@@ -11,7 +11,7 @@ BEGIN(Client)
 class CKiryu_KRS_PickUp : public CBehaviorAnimation
 {
 public:
-	struct PICK_UP_HIT_DESC {
+	struct KRS_PICK_UP_HIT_DESC {
 		_uint iHitAnimIndex;
 	};
 

@@ -39,25 +39,26 @@ HRESULT CSocketCollider::Initialize(void * pArg)
 		{
 		case 0:
 		{
-			m_fDamage = 2.f;
+			//TODO: 테스트용으로 데미지를 강하게 바꿔놔서 디버깅 완료 후 수정해야한다.
+			m_fDamage = 90.f;
 
 			break;
 		}
 		case 1:
 		{
-			m_fDamage = 4.f;
+			m_fDamage = 10.f;
 
 			break;
 		}
 		case 2:
 		{
-			m_fDamage = 3.f;
+			m_fDamage = 8.f;
 
 			break;
 		}
 		case 3:
 		{
-			m_fDamage = 3.f;
+			m_fDamage = 5.f;
 			break;
 		}
 		}

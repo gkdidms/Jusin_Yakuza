@@ -1436,34 +1436,34 @@ const _char* CModel::Get_AnimationName(_uint iAnimIndex)
 	return m_Animations[iAnimIndex]->Get_AnimName();
 }
 
-const _double* CModel::Get_AnimationCurrentPosition(CAnim* pAnim)
+const _double* CModel::Get_AnimationCurrentPosition(CAnim* pAnim, _int iAnimIndex)
 {
 	if (nullptr == pAnim)
-		return m_Animations[m_AnimDesc.iAnimIndex]->Get_CurrentPosition();
+		return m_Animations[iAnimIndex == -1 ? m_AnimDesc.iAnimIndex : iAnimIndex]->Get_CurrentPosition();
 	else
 		return pAnim->Get_AnimPosition();
 }
 
-const _double* CModel::Get_AnimationDuration(CAnim* pAnim)
+const _double* CModel::Get_AnimationDuration(CAnim* pAnim, _int iAnimIndex)
 {
 	if (nullptr == pAnim)
-		return m_Animations[m_AnimDesc.iAnimIndex]->Get_Duration();
+		return m_Animations[iAnimIndex == -1 ? m_AnimDesc.iAnimIndex : iAnimIndex]->Get_Duration();
 	else
 		return pAnim->Get_AnimDuration();
 }
 
-const _float3* CModel::Get_AnimationCenterMove(CAnim* pAnim)
+const _float3* CModel::Get_AnimationCenterMove(CAnim* pAnim, _int iAnimIndex)
 {
 	if(nullptr == pAnim)
-		return m_Animations[m_AnimDesc.iAnimIndex]->Get_CenterMoveValue();
+		return m_Animations[iAnimIndex == -1 ? m_AnimDesc.iAnimIndex : iAnimIndex]->Get_CenterMoveValue();
 	else
 		return pAnim->Get_AnimationCenterMove();
 }
 
-const _float4* CModel::Get_AnimationCenterRotation(CAnim* pAnim)
+const _float4* CModel::Get_AnimationCenterRotation(CAnim* pAnim, _int iAnimIndex)
 {
 	if (nullptr == pAnim)
-		return m_Animations[m_AnimDesc.iAnimIndex]->Get_CenterRotationValue();
+		return m_Animations[iAnimIndex == -1 ? m_AnimDesc.iAnimIndex : iAnimIndex]->Get_CenterRotationValue();
 	else
 		return pAnim->Get_AnimationCenterRotation();
 }

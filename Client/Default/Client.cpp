@@ -66,6 +66,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         return FALSE;
     if (FAILED(pGameInstance->Ready_Timer(TEXT("Timer_Player"))))
         return FALSE;
+    if (FAILED(pGameInstance->Ready_Timer(TEXT("Timer_Game"))))               // 게임캐릭터들과 별개로 실행되는 게임 자체의 타이머
+        return FALSE;
 
 #ifdef _DEBUG
     
@@ -100,6 +102,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         {
             pGameInstance->Update_TimeDelta(TEXT("Timer_60"));
             pGameInstance->Update_TimeDelta(TEXT("Timer_Player"));
+            pGameInstance->Update_TimeDelta(TEXT("Timer_Game"));
             _float fTimeDelta = pGameInstance->Get_TimeDelta(TEXT("Timer_60"));
 
             if (pDebugManager->isDebug() && pDebugManager->isTimeStop())
@@ -113,6 +116,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         {
             pGameInstance->Update_TimeDelta(TEXT("Timer_60"));
             pGameInstance->Update_TimeDelta(TEXT("Timer_Player"));
+            pGameInstance->Update_TimeDelta(TEXT("Timer_Game"));
             _float fTimeDelta = pGameInstance->Get_TimeDelta(TEXT("Timer_60"));
 #endif // _DEBUG
             pMainApp->Tick(fTimeDelta);

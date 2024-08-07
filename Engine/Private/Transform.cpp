@@ -28,6 +28,10 @@ void CTransform::Set_State(STATE eState, _fvector vState)
 {
 	_matrix matWorld = XMLoadFloat4x4(&m_WorldMatrix);
 
+	_bool isNan = XMVector4IsNaN(vState);
+	if (isNan)
+		int a = 0;
+
 	matWorld.r[eState] = vState;
 
 	XMStoreFloat4x4(&m_WorldMatrix, matWorld);
@@ -300,7 +304,12 @@ void CTransform::LookAt(_fvector vTargetPosition, _bool isDir)
 	_vector vRight = XMVector3Cross(XMVectorSet(0.f, 1.f, 0.f, 0.f), vLook);
 	_vector vUp = XMVector3Cross(vLook, vRight);
 
-	if (isnan(XMVector4Normalize(vRight).m128_f32[0]) || isnan(XMVector4Normalize(vUp).m128_f32[0]) || isnan(XMVector4Normalize(vLook).m128_f32[0]))
+	if (XMVector4IsNaN(XMVector4Normalize(vRight)) || XMVector4IsNaN(XMVector4Normalize(vUp)) || XMVector4IsNaN(XMVector4Normalize(vLook)))
+	{
+		return;
+	}
+
+	if (IsZeroVector(vRight) || IsZeroVector(vUp) || IsZeroVector(vLook))
 	{
 		return;
 	}
@@ -329,6 +338,17 @@ void CTransform::LookAt_For_LandObject(_fvector vTargetPosition, _bool isDir)
 
 	// Look ∫§≈Õ ¿Á∞ËªÍ
 	vLook = XMVector3Normalize(XMVector3Cross(vRight, vUp));
+
+	if (XMVector3IsNaN(XMVector3Normalize(vRight)) || XMVector3IsNaN(XMVector3Normalize(vUp)) || XMVector3IsNaN(XMVector3Normalize(vLook)))
+	{
+		return;
+	}
+
+	if (IsZeroVector(vRight) || IsZeroVector(vUp) || IsZeroVector(vLook))
+	{
+		return;
+	}
+
 
 	Set_State(STATE_RIGHT, vRight * Get_Scaled().x);
 	Set_State(STATE_LOOK, vLook * Get_Scaled().z);

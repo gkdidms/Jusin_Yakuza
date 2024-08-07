@@ -59,7 +59,11 @@ namespace Engine
 	{
 		return (1 - t) * a + t * b;
 	}
-	
+
+	static bool IsZeroVector(XMVECTOR v) {
+		XMVECTOR zero = XMVectorZero();
+		return XMVector3Equal(v, zero);
+	}
 }
 
 #endif // Engine_Function_h__
