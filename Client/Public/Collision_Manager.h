@@ -46,8 +46,8 @@ public:
 
     // 카메라 - 맵 충돌 관련
     _bool Map_Collision_Move(CCollider* pCollider, CTransform* pTransform); // 충돌 후 position 다시 나두기
-    _bool Check_Map_Collision(CCollider* pCollider, XMVECTOR& pCollisionPos, CTransform* pTransform); // 충돌 확인용
-    _bool Check_Map_Collision_Using_Position(CCollider* pCollider, XMVECTOR vPosition);
+    _bool Check_Map_Collision(CCollider* pCollider, XMVECTOR& pCollisionPos, CTransform* pTransform); // 충돌 확인용 - transform으로 확인
+    _bool Check_Map_Collision_Using_Position(CCollider* pCollider, XMVECTOR vPosition, XMVECTOR& pCollisionPos); //충돌 확인용 - position(vector)로 확인
 
 
     class CGameObject* Get_Near_Object(class CGameObject* pObject, vector<CGameObject*>& pObjects, _float fDistance = 5.f);
@@ -64,7 +64,7 @@ private:
 
     // Radius 가져오기 위해서 sphere 가져옴
     // transform의 position으로 충돌 확인
-    bool Check_PositionAABB_Collision(BoundingSphere* sphere, BoundingBox* box, XMVECTOR vPosition);
+    bool Check_PositionAABB_Collision(BoundingSphere* sphere, BoundingBox* box, XMVECTOR vPosition, XMVECTOR& pCollisionPos);
 
 private:
     vector<class CLandObject*> m_ImpulseResolutionObjects;

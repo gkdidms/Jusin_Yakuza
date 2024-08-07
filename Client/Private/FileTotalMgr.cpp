@@ -529,6 +529,15 @@ HRESULT CFileTotalMgr::Set_GameObject_In_Client(int iStageLevel)
                 }
             }
 
+            if (nullptr != m_pGameInstance->Get_GameObject(iStageLevel, TEXT("Layer_Player"), 0))
+            {
+                mapDesc.vPlayerMatrix = dynamic_cast<CTransform*>(m_pGameInstance->Get_GameObject_Component(iStageLevel, TEXT("Layer_Player"), TEXT("Com_Transform", 0)))->Get_WorldFloat4x4();
+            }
+            else
+            {
+                mapDesc.vPlayerMatrix = dynamic_cast<CTransform*>(m_pGameInstance->Get_GameObject_Component(iStageLevel, TEXT("Layer_Taxi"), TEXT("Com_Transform", 0)))->Get_WorldFloat4x4();
+            }
+
             m_pGameInstance->Add_GameObject(iStageLevel, TEXT("Prototype_GameObject_Map"), m_Layers[iLayer], &mapDesc);
         }
         else if (OBJECT_TYPE::MAP_LOCALCULL == m_MapTotalInform.pMapObjDesc[i].iObjType)
@@ -573,6 +582,15 @@ HRESULT CFileTotalMgr::Set_GameObject_In_Client(int iStageLevel)
                     mapDesc.pColliderDesc[j].vExtents = m_MapTotalInform.pMapObjDesc[i].pObjColliders[j].vExtents;
                     mapDesc.pColliderDesc[j].vQuaternion = m_MapTotalInform.pMapObjDesc[i].pObjColliders[j].vQuaternion;
                 }
+            }
+
+            if (nullptr != m_pGameInstance->Get_GameObject(iStageLevel, TEXT("Layer_Player"), 0))
+            {
+                mapDesc.vPlayerMatrix = dynamic_cast<CTransform*>(m_pGameInstance->Get_GameObject_Component(iStageLevel, TEXT("Layer_Player"), TEXT("Com_Transform", 0)))->Get_WorldFloat4x4();
+            }
+            else
+            {
+                mapDesc.vPlayerMatrix = dynamic_cast<CTransform*>(m_pGameInstance->Get_GameObject_Component(iStageLevel, TEXT("Layer_Taxi"), TEXT("Com_Transform", 0)))->Get_WorldFloat4x4();
             }
 
             m_pGameInstance->Add_GameObject(iStageLevel, TEXT("Prototype_GameObject_Map"), m_Layers[iLayer], &mapDesc);

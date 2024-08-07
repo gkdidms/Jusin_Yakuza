@@ -6,6 +6,7 @@
 #include "Shader.h"
 #include "Client_Defines.h"
 #include "VIBuffer_Line.h"
+#include "NaviObj.h"
 
 BEGIN(Engine)
 class CGameInstance;
@@ -58,6 +59,8 @@ public:
 	void					Make_Route();
 	void					Add_Route_In_Navi();
 
+
+
 	/* For IMGUI_MANAGER */
 public:
 	void					Show_Cells_IMGUI();
@@ -79,6 +82,14 @@ private:
 	void					Delete_Route(_int& iIndex);
 
 
+	// Line 그리기 위한 정보 업데이트
+	void					Update_CellIndex_Draw();
+	void					Update_Route_Draw();
+
+	void							Edit_GameObject_Transform(int iNumObject);
+	void							Click_To_Select_Object(int& iObjectNum);
+
+
 private:
 	ID3D11Device* m_pDevice = { nullptr };
 	ID3D11DeviceContext* m_pContext = { nullptr };
@@ -97,14 +108,23 @@ private:
 private:
 	vector<class CCell*>					m_Cells;
 
-	vector<ROUTE_IO>						m_Route_CellIndexes; // 루트관련 index
+	//vector<ROUTE_IO>						m_Route_CellIndexes; // 루트관련 index
 
-	map<int, vector<ROUTE_IO>>					m_Routes; // 현재 네비가 가지고 있는 루트와 그에 대한 cell index
+	//map<int, vector<ROUTE_IO>>				m_Routes; // 현재 네비가 가지고 있는 루트와 그에 대한 cell index
+
+
+	vector<class CNaviObj*>					m_Route_CellIndexes; // 루트관련 index
+
+	map<int, vector<class CNaviObj*>>		m_Routes; // 현재 네비가 가지고 있는 루트와 그에 대한 cell index
+
+
+	//Line 그리는거 때문에
+	vector<ROUTE_IO>						m_Route_CellIndexes_Draw; 
+	map<int, vector<ROUTE_IO>>				m_Routes_Draw; 
+
+
 
 	static _float4x4						m_WorldMatrix; /* 객체들이 공유할 수 있게끔 static */
-
-
-	list<class CCell*>						m_RouteCells; // 루트에서 line 그리기 위한 cell
 
 private:
 	vector<char*>							m_CellsName;
@@ -121,13 +141,15 @@ private:
 	_int									m_iCurrentOption = { 0 };
 
 	_int									m_iCurrentRouteCellIndex = { 0 };
-	_int									m_iCurrentFileRoute = { 0 }; // route의 번호
+	_int									m_iCurrentRouteNum = { 0 }; // route의 번호
 
 	bool									m_bMakeRoute_IMGUI = { false };
 	bool									m_bMakeRoute_Picking = { false };
 
 
 	bool									m_bRouteAllView = { false };
+
+	bool									m_bFindObject = { false };
 
 public:
 	virtual void Free() override;

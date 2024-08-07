@@ -14,6 +14,10 @@ public:
         _float fRotatePecSec;
     }TRANSFORM_DESC;
 
+
+private:
+    const _float MAX_DISTANCE = 256.f;
+
 private:
     CTransform(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
     CTransform(const CTransform& rhs);

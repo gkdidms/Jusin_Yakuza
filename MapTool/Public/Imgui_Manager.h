@@ -26,6 +26,7 @@ public:
 		LIGHT,
 		TRIGGER,
 		TRIGGEROBJ,
+		NAVIOBJ,
 		IDWRITE_END
 	};
 

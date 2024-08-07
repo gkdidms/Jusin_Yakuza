@@ -89,12 +89,69 @@ void CTransform::Go_Straight_CustumSpeed(const _float& fSpeed, const _float& fTi
 	_vector vPosition = Get_State(STATE_POSITION);
 	_vector vLook = Get_State(STATE_LOOK);
 
-	vPosition += XMVector3NormalizeEst(vLook) * fSpeed * fTimeDelta;
+	vPosition += XMVector3Normalize(vLook) * fSpeed * fTimeDelta;
 
 	if (nullptr != pNavi)
 	{
 		if (!pNavi->isMove(vPosition))
+		{
+			// 슬라이딩벡터
+			_vector vNormal = XMVector3Normalize(pNavi->Get_SlidingNormal());
+
+			_float fDot = XMVectorGetX(XMVector3Dot(vLook, vNormal));
+			vNormal = vNormal * fDot * -1.f;
+			_vector vSliding = XMVector3Normalize(vLook + vNormal);
+
+			// 현재 슬라이딩 벡터와 벽의 노말 벡터 사이의 각도를 계산
+			float fDotProduct = XMVectorGetX(XMVector3Dot(vSliding, vNormal));
+			float fAngle = acosf(fDotProduct / (XMVectorGetX(XMVector3Length(vSliding)) * XMVectorGetX(XMVector3Length(vNormal))));
+			fAngle = XMConvertToDegrees(fAngle);
+
+			_vector vPos = Get_State(CTransform::STATE_POSITION);
+
+			if (fAngle <= 2.0f || fAngle >= 88.0f)
+			{
+				const float rotationStep = XMConvertToRadians(30.0f); // 3도
+				const int numSteps = static_cast<int>(360.0f / 30.0f); // 360도 / 3도 = 120회전
+
+				bool validMovementFound = false;
+
+				for (int i = 0; i < numSteps; ++i)
+				{
+					// 회전 행렬 생성
+					_matrix rotationMatrix = XMMatrixRotationY(rotationStep * i);
+					_vector vNewSliding = XMVector3TransformNormal(vSliding, rotationMatrix);
+
+					vPos = Get_State(CTransform::STATE_POSITION);
+					vPos += vNewSliding * fTimeDelta * fSpeed;
+
+					if (true == pNavi->isMove(vPos))
+					{
+						vSliding = vNewSliding;
+						Set_State(CTransform::STATE_POSITION, vPos);
+						Set_State(CTransform::STATE_LOOK, vSliding);
+						printf("슬라이딩대체성공\n");
+						return;
+					}
+
+				}
+				printf("슬라이딩대체실패\n");
+				return;
+			}
+			else
+			{
+				vPos += vSliding * fTimeDelta * fSpeed;
+				if (true == pNavi->isMove(vPos))
+				{
+					Set_State(CTransform::STATE_POSITION, vPos);
+					Set_State(CTransform::STATE_LOOK, vSliding);
+					return;
+				}
+			}
+
+
 			return;
+		}
 	}
 
 	if (isnan(vPosition.m128_f32[0]))	return;
@@ -110,13 +167,70 @@ void CTransform::Go_Move_Custum(const _float4& vDir, const _float& fSpeed, const
 	if (nullptr != pNavi)
 	{
 		if (!pNavi->isMove(vPosition))
+		{
+			// 슬라이딩벡터
+			_vector vNormal = XMVector3Normalize(pNavi->Get_SlidingNormal());
+
+			XMVECTOR	vDirection = XMLoadFloat4(&vDir);
+			_float fDot = XMVectorGetX(XMVector3Dot(vDirection, vNormal));
+			vNormal = vNormal * fDot * -1.f;
+			_vector vSliding = XMVector3Normalize(vDirection + vNormal);
+
+			// 현재 슬라이딩 벡터와 벽의 노말 벡터 사이의 각도를 계산
+			float fDotProduct = XMVectorGetX(XMVector3Dot(vSliding, vNormal));
+			float fAngle = acosf(fDotProduct / (XMVectorGetX(XMVector3Length(vSliding)) * XMVectorGetX(XMVector3Length(vNormal))));
+			fAngle = XMConvertToDegrees(fAngle);
+
+			_vector vPos = Get_State(CTransform::STATE_POSITION);
+
+			if (fAngle <= 2.0f || fAngle >= 88.0f)
+			{
+				const float rotationStep = XMConvertToRadians(30.0f); // 3도
+				const int numSteps = static_cast<int>(360.0f / 30.0f); // 360도 / 3도 = 120회전
+
+				bool validMovementFound = false;
+
+				for (int i = 0; i < numSteps; ++i)
+				{
+					// 회전 행렬 생성
+					_matrix rotationMatrix = XMMatrixRotationY(rotationStep * i);
+					_vector vNewSliding = XMVector3TransformNormal(vSliding, rotationMatrix);
+
+					vPos = Get_State(CTransform::STATE_POSITION);
+					vPos += vNewSliding * fTimeDelta * fSpeed;
+
+					if (true == pNavi->isMove(vPos))
+					{
+						vSliding = vNewSliding;
+						Set_State(CTransform::STATE_POSITION, vPos);
+						printf("슬라이딩대체성공\n");
+						return;
+					}
+
+				}
+				return;
+			}
+			else
+			{
+				vPos += vSliding * fTimeDelta * fSpeed;
+				if (true == pNavi->isMove(vPos))
+				{
+					Set_State(CTransform::STATE_POSITION, vPos);
+					return;
+				}
+			}
+
+
 			return;
+		}
+
 	}
 
 	if (isnan(vPosition.m128_f32[0]))	return;
 
 	Set_State(STATE_POSITION, vPosition);
 }
+
 
 void CTransform::Go_Backward(const _float& fTimeDelta)
 {
