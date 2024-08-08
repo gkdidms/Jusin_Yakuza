@@ -448,6 +448,7 @@ HRESULT CMonster::Render()
 		_bool isRS = true;
 		_bool isRD = true;
 		_bool isRM = true;
+		_bool isRT = true;
 		_bool isMulti = true;
 		_float fRDCount = 1.f;
 
@@ -474,6 +475,10 @@ HRESULT CMonster::Render()
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RMTexture", i, aiTextureType_METALNESS)))
 			isRM = false;
 		m_pShaderCom->Bind_RawValue("g_isRM", &isRM, sizeof(_bool));
+
+		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RTTexture", i, aiTextureType_EMISSIVE)))
+			isRT = false;
+		m_pShaderCom->Bind_RawValue("g_isRT", &isRT, sizeof(_bool));
 
 		if (pMesh->Get_AlphaApply())
 			m_pShaderCom->Begin(1);     //ºí·£µå
