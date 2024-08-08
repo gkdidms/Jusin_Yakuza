@@ -24,7 +24,7 @@ public:
 
     typedef struct tStageInfo {
         _uint iPlayerLine;
-        _uint iPrePlayerLine;
+        _uint iNextPlayerLine;
         _uint iStageDir;
         vector<STAGE_MONSTER_INFO> MonsterInfo;
     } STAGE_INFO;
@@ -57,6 +57,7 @@ private:
     STAGE_INFO m_Info = {};
 
     _uint m_iState = { STAGE_STATE_END };
+    _bool m_isPlayerMove = { false };
 
 public:
     static CCarChase* Create(void* pArg);

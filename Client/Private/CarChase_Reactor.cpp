@@ -146,6 +146,10 @@ _bool CCarChase_Reactor::Check_Dead()
 		{
 			return false;
 		}
+
+		//운전수가 죽으면 바로 죽게 된다.
+		if (!pMonster->isObjectDead() && pMonster->Get_WeaponType() == CCarChase_Monster::DRV)
+			return true;
 	}
 		
 	return true;
@@ -171,24 +175,39 @@ void CCarChase_Reactor::Move_Waypoint(const _float& fTimeDelta)
 		//DIR_M 일 경우 플레이어 인덱스
 		//DIR_B 일 경우 플레이어 인덱스 - 1
 		_int iGoalIndex = 0;
-		if (m_iLineDir == DIR_F)
-			iGoalIndex = iMaxIndex == iPlayerCurrentWaypointIndex + 1 ? 0 : iPlayerCurrentWaypointIndex + 1;
-		else if (m_iLineDir == DIR_M)
-			iGoalIndex = iPlayerCurrentWaypointIndex;
-		else if (m_iLineDir == DIR_B)
-			iGoalIndex = 0 > iPlayerCurrentWaypointIndex - 1 ? iMaxIndex : iPlayerCurrentWaypointIndex - 1;
+		if (m_iStageDir == DIR_R || m_iStageDir == DIR_L)
+		{
+			if (m_iLineDir == DIR_F)
+				iGoalIndex = iMaxIndex == iPlayerCurrentWaypointIndex + 1 ? 0 : iPlayerCurrentWaypointIndex + 1;
+			else if (m_iLineDir == DIR_M)
+				iGoalIndex = iPlayerCurrentWaypointIndex;
+			else if (m_iLineDir == DIR_B)
+				iGoalIndex = 0 > iPlayerCurrentWaypointIndex - 1 ? iMaxIndex - 1 : iPlayerCurrentWaypointIndex - 1;
+		}
+		else if (m_iStageDir == DIR_B)
+		{
+			iGoalIndex = iPlayerCurrentWaypointIndex - 2;
+		}
+		else if (m_iStageDir == DIR_F)
+		{
+			iGoalIndex = iPlayerCurrentWaypointIndex + 1;
+		}
 
 		_float fDistance = XMVectorGetX(XMVector3Length(m_pNavigationCom->Get_WaypointPos(iGoalIndex) - vPosition));
 
+		//스피드 값 지정
+		//스테이지 방향이 DIR_F이고 Start일 경우 
+		//앞에서 뒤로 이동하도록 함
+		_float fBack = m_iStageDir == DIR_F && m_isStart ? -1.f : 1.f;
 		_float fFactor = fDistance / 20.f;
-		m_fSpeed = m_fMaxSpeed * fFactor;
-		if (m_fSpeed < m_fMinSpeed)
+		m_fSpeed = m_fMaxSpeed * fFactor * fBack;
+		if (m_fSpeed < m_fMinSpeed * fBack)
 		{
 			m_isStart = false;
-			m_fSpeed = m_fMinSpeed;
+			m_fSpeed = m_fMinSpeed * fBack;
 		}
-		else if (m_fSpeed > m_fMaxSpeed)
-			m_fSpeed = m_fMaxSpeed;
+		else if (m_fSpeed > m_fMaxSpeed * fBack)
+			m_fSpeed = m_fMaxSpeed * fBack;
 	}
 	else
 	{

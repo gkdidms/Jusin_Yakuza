@@ -109,6 +109,9 @@ protected:
     CCarChase_Monster(const CCarChase_Monster& rhs);
     virtual ~CCarChase_Monster() = default;
 
+public://몬스터가 들고잇는 무기 타입에 따라서 모션이 달라짐.
+    _uint Get_WeaponType() { return m_iWeaponType; }
+
 public:
     virtual HRESULT Initialize_Prototype() override;
     virtual HRESULT Initialize(void* pArg) override;

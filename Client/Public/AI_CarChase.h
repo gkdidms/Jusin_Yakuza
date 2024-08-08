@@ -70,7 +70,7 @@ protected:
     _bool m_isSit = { true };
 
 protected:
-    _float m_fDelayAttackDuration = { 2.f };
+    _float m_fDelayAttackDuration = { 4.f };
     _float m_fAttackDelayTime = { 0.f }; // 공격이 끝난 후 지속시간
 
     _float m_fSitDuration = { 7.f };

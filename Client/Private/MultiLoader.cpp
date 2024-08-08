@@ -48,6 +48,7 @@
 #include "AI_Kuze.h"
 #include "AI_WPHYakuza.h"
 #include "AI_DefaultYakuza.h"
+#include "AI_Yoneda.h"
 
 #include "AI_Passersby.h"
 
@@ -323,6 +324,11 @@ HRESULT CMultiLoader::Loading_Default()
 	/* For.Prototype_BTNode_DefaultYakuza*/
 	if (FAILED(m_pGameInstance->Add_BTNode_Prototype(m_eNextLevel, TEXT("Prototype_BTNode_DefaultYakuza"),
 		CAI_DefaultYakuza::Create())))
+		return E_FAIL;
+
+	/* For.Prototype_BTNode_Yoneda*/
+	if (FAILED(m_pGameInstance->Add_BTNode_Prototype(m_eNextLevel, TEXT("Prototype_BTNode_Yoneda"),
+		CAI_Yoneda::Create())))
 		return E_FAIL;
 #pragma endregion
 

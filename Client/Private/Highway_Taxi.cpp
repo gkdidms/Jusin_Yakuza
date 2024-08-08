@@ -25,6 +25,8 @@ _uint CHighway_Taxi::Get_WaypointSize()
 
 void CHighway_Taxi::Set_NavigationRouteIndex(_uint iLine)
 {
+	//라인이 기존과 다르다면 변경된 라인으로 이동 후 진행되도록 한다.
+
 	m_iNaviRouteNum = iLine;
 	m_pNavigationCom->Set_NavigationRouteIndex(iLine);
 }

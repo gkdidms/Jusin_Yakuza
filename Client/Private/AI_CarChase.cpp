@@ -39,6 +39,8 @@ HRESULT CAI_CarChase::Initialize(void* pArg)
 
     m_pPlayer = dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"), 0));
 
+	m_fDelayAttackDuration = m_pGameInstance->Get_Random(3.f, 5.f);
+
     return S_OK;
 }
 

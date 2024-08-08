@@ -136,7 +136,8 @@ HRESULT CModel::Ready_Materials(const _char* pModelFilePath)
 	for (size_t i = 0; i < m_iNumMaterials; i++)
 	{
 		MESH_MATERIAL		MeshMaterial{};
-		//memcpy(MeshMaterial.strMaterialName, m_pAIScene->mMaterials[i]->GetName().C_Str(), sizeof(m_pAIScene->mMaterials[i]->GetName()));
+		string name = m_pAIScene->mMaterials[i]->GetName().C_Str();
+		memcpy(MeshMaterial.strMaterialName, name.c_str(), sizeof(name));
 		for (size_t j = aiTextureType_DIFFUSE; j < AI_TEXTURE_TYPE_MAX; j++)
 		{
 			aiString pPath;
