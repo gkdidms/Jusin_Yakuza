@@ -222,6 +222,7 @@ public:
     void Style_Change(BATTLE_STYLE eStyle);
     void Reset_MoveDirection();
 
+    void Set_CutSceneStartMotion(CUTSCENE_ANIMATION_TYPE eType, _uint iFaceAnimIndex);
     void Set_CutSceneAnim(CUTSCENE_ANIMATION_TYPE eType, _uint iFaceAnimIndex);
     void Play_CutScene();
     void Reset_CutSceneEvent();
@@ -289,6 +290,7 @@ private:
     /* 애니메이션 관련 */
 private:
     ANIMATION_COMPONENT_TYPE    m_eAnimComType = { DEFAULT };
+    _bool                       m_isCutSceneStartMotion = { false };
     map<CUTSCENE_ANIMATION_TYPE, string> m_CutSceneAnimation;
 
     _uint                       m_iCutSceneAnimIndex = { 0 };

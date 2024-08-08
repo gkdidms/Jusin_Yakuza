@@ -203,6 +203,7 @@ void CPlayer::Tick(const _float& fTimeDelta)
 			m_pModelCom->Play_Animation_Separation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")), m_iFaceAnimIndex, m_SeparationAnimComs[FACE_ANIM], false, (_int)FACE_ANIM);
 			m_pModelCom->Play_Animation_Separation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")), m_iDefaultAnimIndex, m_SeparationAnimComs[DEFAULT_ANIM], false, (_int)DEFAULT_ANIM);
 			m_pModelCom->Play_Animation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")));
+			Play_CutScene();
 		}
 		else
 		{
@@ -218,6 +219,7 @@ void CPlayer::Tick(const _float& fTimeDelta)
 		m_pModelCom->Play_Animation_Separation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")), m_iHandAnimIndex, m_SeparationAnimComs[HAND_ANIM], false, (_int)HAND_ANIM);
 		m_pModelCom->Play_Animation_Separation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")), m_iFaceAnimIndex, m_SeparationAnimComs[FACE_ANIM], false, (_int)FACE_ANIM);
 		m_pModelCom->Play_Animation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")));
+		Play_CutScene();
 	}
 	else
 	{
@@ -1663,6 +1665,8 @@ void CPlayer::Compute_Height()
 
 void CPlayer::Change_Animation(_uint iIndex, _float fInterval)
 {
+	if (m_isCutSceneStartMotion) return;
+
 	if (m_pModelCom->Set_AnimationIndex(iIndex, fInterval))
 	{
 		// 실제로 애니메이션 체인지가 일어났을 때 켜져있던 어택 콜라이더를 전부 끈다
@@ -1678,6 +1682,8 @@ void CPlayer::Change_Animation(_uint iIndex, _float fInterval)
 
 void CPlayer::Change_ResetAnimaition(_uint iIndex, _float fInterval)
 {
+	if (m_isCutSceneStartMotion) return;
+
 	m_pModelCom->Reset_Animation(iIndex);
 
 	if (m_pModelCom->Set_AnimationIndex(iIndex, fInterval))
@@ -1709,8 +1715,102 @@ void CPlayer::Reset_MoveDirection()
 	ZeroMemory(m_InputDirection, sizeof(_bool) * MOVE_DIRECTION_END);
 }
 
+void CPlayer::Set_CutSceneStartMotion(CUTSCENE_ANIMATION_TYPE eType, _uint iFaceAnimIndex)
+{
+	/*
+	*	[648]	[p_sh1010_kiryu_gswing]
+		[650]	[p_sh11330_noukudaki_climax]
+		[651]	[p_sh1511_oi_kickover_utu_c]
+		[652]	[p_sh1520_oiuchi_head_punch_ao]
+		[653]	[p_sh1530_nage_oiuchi_lapel]
+		[654]	[p_sh1540_nage_oiuchi_neck]
+		[655]	[p_sh1550_oi_combo]
+		[656]	[p_sh1620_mount]
+		[657]	[p_sh20021_gougeki_c]
+		[659]	[p_sh2040_pole_knock_lapel]
+		[660]	[p_sh2140_brainbuster_bench]
+		[661]	[p_sh23000_kabe_airon]
+		[662]	[p_sh23020_oi_upper]
+		[663]	[p_sh3261_doramukan_88]
+		[664]	[p_sh5470_gao_kneekick]
+	*/
+
+	m_isCutSceneStartMotion = true;
+	switch (eType)
+	{
+	case Client::CPlayer::GOUGEKI_C:
+	{
+		//[657]	[p_sh20021_gougeki_c]
+		m_pModelCom->Set_AnimationIndex(657, 4.f);
+		break;
+	}
+	case Client::CPlayer::OI_TRAMPLE_AO:
+	{
+		//[655]	[p_sh1550_oi_combo]
+		m_pModelCom->Set_AnimationIndex(655, 4.f);
+		break;
+
+	}
+	case Client::CPlayer::OI_KICKOVER_UTU_C:
+	{
+		//[651]	[p_sh1511_oi_kickover_utu_c]
+		m_pModelCom->Set_AnimationIndex(651, 4.f);
+		break;
+
+	}
+	case Client::CPlayer::KIRYU_GSWING:
+	{
+		//[648]	[p_sh1010_kiryu_gswing]
+		m_pModelCom->Set_AnimationIndex(648, 4.f);
+		break;
+
+	}
+	case Client::CPlayer::LAPEL_OIUCHI_NECK:
+	{
+		//[653]	[p_sh1530_nage_oiuchi_lapel]
+		m_pModelCom->Set_AnimationIndex(653, 4.f);
+		break;
+
+	}
+	case Client::CPlayer::NAGE_OIUCHI_NECK:
+	{
+		//[654]	[p_sh1540_nage_oiuchi_neck]
+		m_pModelCom->Set_AnimationIndex(651, 4.f);
+		break;
+
+	}
+	case Client::CPlayer::POLE_KNOCK_LAPEL:
+	{
+		//	[659]	[p_sh2040_pole_knock_lapel]
+		m_pModelCom->Set_AnimationIndex(659, 4.f);
+		break;
+	}
+	case Client::CPlayer::DORAMUKAN_88:
+	{
+		//	[663]	[p_sh3261_doramukan_88]
+		m_pModelCom->Set_AnimationIndex(663, 4.f);
+		break;
+	}
+	case Client::CPlayer::OI_UPPER:
+	{
+		//[662]	[p_sh23020_oi_upper]
+		m_pModelCom->Set_AnimationIndex(662, 4.f);
+		break;
+	}
+	// 시작 애니메이션이 없는 컷신이라면 false로 돌려준다.
+	default:
+	{
+		m_isCutSceneStartMotion = false;
+		break;
+	}
+	}
+
+}
+
 void CPlayer::Set_CutSceneAnim(CUTSCENE_ANIMATION_TYPE eType, _uint iFaceAnimIndex)
 {
+	Set_CutSceneStartMotion(eType, iFaceAnimIndex);
+
 	// 없으면 종료
 	auto iter = m_CutSceneAnimation.find(eType);
 	if (m_CutSceneAnimation.end() == iter) return;
@@ -1753,11 +1853,26 @@ void CPlayer::Set_CutSceneAnim(CUTSCENE_ANIMATION_TYPE eType, _uint iFaceAnimInd
 		j++;
 	}
 
-	Reset_CutSceneEvent();
 }
 
 void CPlayer::Play_CutScene()
 {
+	if (m_isCutSceneStartMotion)
+	{
+		CCamera* pCamera = dynamic_cast<CCamera*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Camera"), m_pSystemManager->Get_Camera()));
+		_double fRatio = *m_pModelCom->Get_AnimationCurrentPosition() / *m_pModelCom->Get_AnimationDuration();
+		pCamera->Set_CustomRatio(static_cast<_float>(fRatio));
+
+		pCamera->Set_TargetFoV(XMConvertToRadians(30.f));
+		pCamera->Start_Zoom();
+		
+		if (m_pModelCom->Get_AnimFinished())
+		{
+			m_isCutSceneStartMotion = false;
+			Reset_CutSceneEvent();
+		}
+	}
+
 	if (CUTSCENE == m_eAnimComType)
 	{
 		// 카메라 모델의 애니메이션이 종료되면 똑같이 플레이어의 애니메이션도 종료된 것이기 때문에 기존상태로 되돌린다.
@@ -1802,7 +1917,7 @@ void CPlayer::Play_CutScene()
 
 		// 최종 뷰 행렬을 계산
 		_matrix viewMatrix = XMMatrixInverse(nullptr, finalMat);
-		
+
 		bool containsNaN = XMMatrixIsNaN(viewMatrix);
 		if (containsNaN)
 			return;
@@ -1839,7 +1954,7 @@ void CPlayer::Reset_CutSceneEvent()
 
 		// 컷신으로 돌릴 때, 컷신 카메라를 초기화해준다.
 		CCutSceneCamera* pCutSceneCamera = dynamic_cast<CCutSceneCamera*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Camera"), CAMERA_CUTSCENE));
-		pCutSceneCamera->Reset_RetureVariables();
+		pCutSceneCamera->Reset_ReturnVariables();
 		break;
 	}
 
