@@ -21,7 +21,7 @@ float RepeatingPatternBlendFactor(vector vMulti)
 
 vector DiffusePortion(vector vDiffuse, vector vRS, vector vRD, float Factor, float2 vTexcoord)
 {
-    vector fMix = lerp(vRS.r, vRD, IsY3Shader);
+    vector fMix = lerp(vRD, vRS.r, IsY3Shader);
     vector fMix2 = lerp(fMix, vector(1.f, 1.f, 1.f, 1.f), SkinShader);
     vector fMultiply = lerp(vDiffuse, vDiffuse * fMix2, Factor);
     
@@ -35,19 +35,19 @@ vector SubSurface(vector vRD)
     return lerp(vector(0.f, 0.f, 0.f, 0.f), vRD, fMultiply);
 }
 
-vector Get_Diffuse(float fMultiAlpha, float vMetallicFactor, vector vDiffuse)
+vector Get_Diffuse(float fMultiAlpha,  vector vDiffuse)
 {
-    float fMultiply = fMultiAlpha * Engine;
-    float3 vMix = lerp(float3(0.5f, 0.5f, 0.5f), float3(0.5f, 1.f, 0.5f), fMultiply);
+    float fFactor = fMultiAlpha * Engine;
+    float3 vMix = lerp(float3(0.5f, 0.5f, 0.5f), float3(0.5f, 1.f, 0.5f), fFactor);
     
     float vMapRange1 = MapRange(vMix.r, 0.f, 0.5f, 0.f, 1.f);
     float vMapRange2 = MapRange(vMix.r, 0.5f, 1.f, 0.f, 1.f);
 
     vector vDiffuseResult = lerp(vDiffuse, vector(1.f, 1.f, 1.f, 1.f), vMapRange2);
     vector vMix2 = lerp(vector(0.f, 0.f, 0.f, 0.f), vDiffuseResult, vMapRange1);
-    vector vResultMix = vector(lerp(vMix2.xyz, vMix2.xyz, vMetallicFactor), 1.f);
+    //vector vResultMix = vector(lerp(vMix2.xyz, vMix2.xyz, vMetallicFactor), 1.f);
     
-    return vResultMix;
+    return vMix2;
 }
 
 bool CheckIfGreenNormalMap(float fX)

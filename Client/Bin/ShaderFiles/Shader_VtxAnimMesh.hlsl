@@ -162,15 +162,15 @@ PS_OUT PS_MAIN(PS_IN In)
     vector vDiffuse = DiffusePortion(vDiffuseDesc, vRS, vRD, fFactor, In.vTexcoord);
     
     COMBINE_OUT Result = Neo_MetallicAndGlossiness(vMulti, vRM); // Metallic, Rouhness 최종
-    vDiffuse = Get_Diffuse(vMulti.a, Result.fFactor, vDiffuse); // Diffuse 최종
+    vDiffuse = Get_Diffuse(vMulti.a, vDiffuse); // Diffuse 최종
     
     //Tangent Normal 구하기 
     vNormalDesc = Get_Normal(vNormalDesc, vRT, fFactor);
 
     vNormalDesc = vNormalDesc * 2.f - 1.f;
     float3x3 WorldMatrix = float3x3(In.vTangent.xyz, In.vBinormal.xyz, In.vNormal.xyz);
-    vector vNormalBTN = vector(mul(vNormalDesc.xyz, WorldMatrix), 0.f);
-    Out.vNormal = normalize(vector(vNormalBTN.xyz * 0.5f + 0.5f, 0.f));
+    vector vNormalBTN = normalize(vector(mul(vNormalDesc.xyz, WorldMatrix), 0.f));
+    Out.vNormal = vector(vNormalBTN.xyz * 0.5f + 0.5f, 0.f);
 
     float RimIndex = 0.f;
     if (0.05f < g_isRimLight)
@@ -216,7 +216,7 @@ PS_OUT PS_BLEND(PS_IN In)
     vector vDiffuseColor = DiffusePortion(vDiffuse, vRS, vRD, fFactor, In.vTexcoord);
     
     COMBINE_OUT Result = Neo_MetallicAndGlossiness(vMulti, vRM); // Metallic, Rouhness 최종
-    vDiffuseColor = Get_Diffuse(vMulti.a, Result.fFactor, vDiffuseColor); // Diffuse 최종
+    vDiffuseColor = Get_Diffuse(vMulti.a, vDiffuseColor); // Diffuse 최종
     vDiffuseColor.a = vDiffuse.a;
     
     //Tangent Normal 구하기 

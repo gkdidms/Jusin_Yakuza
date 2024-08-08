@@ -15,13 +15,13 @@ struct COMBINE_OUT
     float fFactor;
 };
 
-float MapRange(float value, float inMin, float inMax, float outMin, float outMax)
+float MapRange(float value, float fromMin, float fromMax, float toMin, float toMax)
 {
-    // 입력 값이 범위를 넘어가지 않도록 클램프
-    value = clamp(value, inMin, inMax);
-    
-    // 비례적으로 변환
-    return outMin + (value - inMin) * (outMax - outMin) / (inMax - inMin);
+    // 입력 값을 0에서 1 범위로 정규화
+    float normalizedValue = (value - fromMin) / (fromMax - fromMin);
+
+    // 정규화된 값을 새로운 범위로 변환
+    return toMin + normalizedValue * (toMax - toMin);
 }
 
 
