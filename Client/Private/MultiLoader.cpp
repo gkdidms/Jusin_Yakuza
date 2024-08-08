@@ -49,6 +49,7 @@
 #include "AI_WPHYakuza.h"
 #include "AI_DefaultYakuza.h"
 #include "AI_Yoneda.h"
+
 #include "AI_Passersby.h"
 
 #include "AI_Van.h"

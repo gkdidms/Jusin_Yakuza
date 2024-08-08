@@ -204,10 +204,6 @@ void CVIBuffer_Instance::RotSpread(_float fTimeDelta)
 
 		pVertices[i].vLifeTime.y += fTimeDelta;
 
-
-
-
-
 		// 메쉬 속력 로드
 		_vector MeshSpeed = XMLoadFloat3(&m_pMeshSpeed[i]);
 
@@ -375,14 +371,14 @@ void CVIBuffer_Instance::FallSpread(_float fTimeDelta)
 		pVertices[i].vLifeTime.y += fTimeDelta;
 		//x가 최종,y 가 current
 		_vector WorlPosition = XMLoadFloat4x4(m_pCurrentWorldMatrix).r[3];
-
-		_vector			vDir = XMLoadFloat4(&pVertices[i].vDirection);
+		
+		_vector			vDir = (XMLoadFloat4(&pVertices[i].vDirection));
 
 		_vector Hor = XMVectorSetY(vDir, 0.f);
 		//수평가속도 = -1/2 × 수평 속도²(크기는 1 고정)
 		_vector HorAcc = -0.5f * m_InstanceDesc->CrossArea * XMVectorMultiply(Hor, Hor);
 
-		_vector HorVel = Hor * m_pSpeeds[i] + HorAcc * pVertices[i].vLifeTime.y;
+		_vector HorVel = Hor * m_pSpeeds[i] + HorAcc * fTimeDelta;
 		if (XMVectorGetX(vDir) > 0.f)
 		{
 			if (XMVectorGetX(HorVel) < 0.f)
@@ -405,25 +401,27 @@ void CVIBuffer_Instance::FallSpread(_float fTimeDelta)
 		}
 
 		//수평 운동 거리 = 초기 수평 속도 × 시간 + 1 / 2 × 가속도 × 시간²
-		_vector HorDistance = HorVel * pVertices[i].vLifeTime.y;
+		_vector HorDistance = HorVel * fTimeDelta;
 
 		_vector Ver = XMVectorSet(0.f, XMVectorGetY(vDir), 0.f, 0.f);
+
 		//수직가속도 = 중력 - 공기 저항 = 9.81 - 1/2 × 수직 속도²
 		_vector Gravity = XMVectorSet(0.f, -9.81f, 0.f, 0.f);
-		_vector VerAcc = Gravity - (-0.5f * XMVectorMultiply(Ver, Ver));
-		//if (VerVel.m128_f32[1] < 0.f)
-		//	VerVel = XMVectorSet(0.f, 0.f, 0.f, 0.f);
+		_vector VerAcc = Gravity + (-0.5f * XMVectorMultiply(Ver, Ver));
+
 		//수직 운동 거리 = 초기 수직 속도 × 시간 + 1 / 2 × 가속도 × 시간²
-		_vector VerVel = Ver * m_pSpeeds[i] + VerAcc * m_InstanceDesc->GravityScale * pVertices[i].vLifeTime.y;
-		_vector VerDistance = VerVel * pVertices[i].vLifeTime.y;
+		_vector VerVel = Ver * m_pSpeeds[i] + VerAcc * m_InstanceDesc->GravityScale * fTimeDelta;
+		_vector VerDistance = VerVel * fTimeDelta;
 
 		//전체 운동 거리 = (수평 운동 거리 + 수직 운동 거리) / 2
 		_vector FinDistance = (HorDistance + VerDistance);
 
-		//XMStoreFloat4(&pVertices[i].vDirection, vDir);		
+		_vector OriginPosition = XMVectorSet(pVertices[i].vTranslation.x, pVertices[i].vTranslation.y, pVertices[i].vTranslation.z, 1.f);
 
-		_vector OriginPosition = XMVectorSet(m_pOriginalPositions[i].x, m_pOriginalPositions[i].y, m_pOriginalPositions[i].z, 1.f);
-		XMStoreFloat4(&pVertices[i].vTranslation, OriginPosition + FinDistance);
+		_vector FinalPosition = OriginPosition + FinDistance;
+
+		XMStoreFloat4(&pVertices[i].vTranslation, FinalPosition);
+
 
 		//회전. 준비
 		_vector vRight = XMLoadFloat4(&pVertices[i].vRight);
@@ -442,16 +440,23 @@ void CVIBuffer_Instance::FallSpread(_float fTimeDelta)
 		XMStoreFloat4(&pVertices[i].vUp, XMVector4Normalize(vUp));
 		XMStoreFloat4(&pVertices[i].vLook, XMVector4Normalize(vLook));
 
-
 		if (pVertices[i].vLifeTime.y >= pVertices[i].vLifeTime.x)
 		{
 			if (true == m_InstanceDesc->isLoop)
 			{
-				//m_pOriginalOffsets[i] = _float3(m_InstanceDesc->vOffsetPos.x, m_InstanceDesc->vOffsetPos.y, m_InstanceDesc->vOffsetPos.z); // Loop를 위해 저장해준다.
+				_vector WorldPosition = XMLoadFloat4x4(m_pCurrentWorldMatrix).r[3];
+
 				pVertices[i].vTranslation = _float4(m_pOriginalPositions[i].x, m_pOriginalPositions[i].y, m_pOriginalPositions[i].z, 1.f);
-				pVertices[i].vLifeTime.y = 0.f;
-				_vector			vDir = XMVectorSetW(XMLoadFloat4(&pVertices[i].vTranslation) - XMLoadFloat3(&m_pOriginalOffsets[i]), 0.f);
+				_vector			vDir = XMVector4Normalize(XMVectorSetW(XMLoadFloat4(&pVertices[i].vTranslation) - XMLoadFloat3(&m_pOriginalOffsets[i]), 0.f));
 				XMStoreFloat4(&pVertices[i].vDirection, vDir);
+				pVertices[i].vLifeTime.y = 0.f;
+
+				if (!m_InstanceDesc->isAttach)//항상 붙여다닐꺼?
+				{
+					pVertices[i].vTranslation.x += XMVectorGetX(WorldPosition);
+					pVertices[i].vTranslation.y += XMVectorGetY(WorldPosition);
+					pVertices[i].vTranslation.z += XMVectorGetZ(WorldPosition);
+				}
 
 				_float StartRotX = XMConvertToRadians(m_pGameInstance->Get_Random(m_InstanceDesc->LowStartRot.x, m_InstanceDesc->HighStartRot.x));
 				_float StartRotY = XMConvertToRadians(m_pGameInstance->Get_Random(m_InstanceDesc->LowStartRot.y, m_InstanceDesc->HighStartRot.y));

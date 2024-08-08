@@ -17,15 +17,14 @@ public:
 	{
 		CVIBuffer_Instance::INSTANCE_DESC BufferInstance;
 		wstring strModelTag;
-		wstring strNormalTag;
 	}PARTICLE_MESH_DESC;
 
 private:
 	CParticle_Mesh(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CParticle_Mesh(const CParticle_Mesh& rhs);
 	virtual ~CParticle_Mesh() = default;
-	virtual void* Get_Instance()override;
 public:
+	virtual void* Get_Instance()override;
 	virtual HRESULT Initialize_Prototype() override;
 	virtual HRESULT Initialize_Prototype(string strFilePath);
 	virtual HRESULT Initialize(void* pArg) override;
@@ -36,7 +35,6 @@ public:
 
 public:
 	wstring Get_ModelTag() { return m_strModelTag; }
-	wstring Get_NormalTag() { return m_strNormalTag; }
 private:
 	CShader* m_pShaderCom = { nullptr };
 	CTexture* m_pTextureCom[2] = {nullptr};
@@ -45,7 +43,6 @@ private:
 
 	CVIBuffer_Instance::INSTANCE_DESC m_BufferInstance;
 	wstring m_strModelTag = { TEXT("") };
-	wstring m_strNormalTag = { TEXT("") };
 	_float       m_fCurTime = { 0.f };
 public:
 	virtual HRESULT Save_Data(const string strDirectory)override;
