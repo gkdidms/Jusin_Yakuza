@@ -6,7 +6,8 @@ BEGIN(Client)
 class CUICarchase :
     public CUIScene
 {
-    enum TYPE { AIM, TARGETING, HPBAR_BACK, HPBAR, TYPE_END };
+    enum TYPE { AIM, TARGETING, HPBAR_BACK, HPBAR, INFO,  TYPE_END };
+    enum INFO {PLAYERHP , HITEYE , CARHP , AMMO , INFO_END};
     typedef struct tCarchaseUIDesc {
         class CUI_Object* TargetingUI;
         class CUI_Object* HPBarBackUI;
@@ -32,7 +33,7 @@ public:
 
 public:
     HRESULT Add_TargetingRound(_uint iIndex, class CCarChase_Monster* pMonster);
-
+    HRESULT Update_Player();
 private:
     map<_uint, CARCCHASE_UI_DESC> m_Targets; // ≈∏∞Ÿ∆√ UI ¿˙¿Â
 

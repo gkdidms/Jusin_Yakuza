@@ -147,6 +147,7 @@ public:
     _bool isAttack() { return m_iCurrentBehavior == static_cast<_uint>(KRS_BEHAVIOR_STATE::ATTACK); }
     _bool isDown() { return m_iCurrentBehavior == static_cast<_uint>(KRS_BEHAVIOR_STATE::DOWN); }
     _uint Get_CurrentHitLevel() { return m_iCurrentHitLevel; }
+    _float Get_HitGauage() {  return m_fHitGauge;}
 
     const _bool* Get_MoveDirection() {
         return m_MoveDirection;
@@ -242,6 +243,7 @@ private:
     void Setting_Target_Item();
     void Setting_Target_Wall();
 
+
     /* 캐릭터 스테이터스 관련 함수 */ 
 public:
     void AccHitGauge();
@@ -324,6 +326,9 @@ private:
     _bool m_isAnimStart = { true };
     CUTSCENE_ANIMATION_TYPE m_eCutSceneType = { OI_UPPER };
 #endif // _DEBUG
+
+
+
 
 private:
     virtual HRESULT Add_Components() override;

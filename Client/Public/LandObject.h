@@ -47,8 +47,8 @@ public:
         HAND_MAX                    //[16] [hand_parts_9_hand_max] 전부 핀 손
     };
 
-
-private: //오브젝트들의 정보를 저장 
+    //이거 ui에서 알려고 public으로 변환시킴
+public: //오브젝트들의 정보를 저장 
     typedef struct tLandObjectInfo {
         _float fMaxHP;
         _float fHp;

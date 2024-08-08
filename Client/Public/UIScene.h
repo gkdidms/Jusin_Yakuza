@@ -13,7 +13,7 @@ class CUIScene :
 public:
     typedef struct tSceneDesc {
         _bool isLoading;
-
+        wstring strSceneName;
     }SCENE_DESC;
 protected:
     CUIScene();
@@ -46,6 +46,7 @@ public:
     virtual void Reset() {
         m_isClose = false;  
     }
+    wstring Get_SceneName() { return m_strSceneName; }
 protected:
     class CGameInstance* m_pGameInstance = { nullptr };
     ID3D11Device* m_pDevice = { nullptr };
@@ -61,7 +62,7 @@ protected:
 
     _bool m_isAnimFin = { false };
     _bool m_isClose = { false };
-
+    wstring m_strSceneName = { TEXT("") };
 
     _bool m_isLoading = { false };
 public:
