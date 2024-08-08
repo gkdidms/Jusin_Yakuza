@@ -211,10 +211,14 @@ COMBINE_OUT CombineMTAndRM(vector vMT, vector vRM, float fMetelnessOverride, flo
 
 float Neo_Glossiness(float3 vColor, vector vMulti)
 {
-    float vMix = lerp(vColor.y, vMulti.x, 1.f);
-    float vMix2 = lerp(vColor.z, vMix, 0.5f);
+    float3 vMix = lerp(vColor.y, vMulti.x, Engine);
+    float3 vMix2 = lerp(vColor.z, vMix, AssetShader);
     
-    return vMix;
+    float fFactor = IsOEClothShader * (1.f - Engine);
+    
+    float3 vInvertedColor = lerp(vMix2, 1.f - vMix2, 1.f - Rough);
+    
+    return lerp(vInvertedColor, float3(0.5f, 0.5f, 0.5f), fFactor);
 }
 
 // Metallic과 Glossiness 구할 수 있음.

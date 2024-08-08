@@ -140,19 +140,22 @@ struct PS_OUT
 PS_OUT PS_MAIN(PS_IN In)
 {
     PS_OUT Out = (PS_OUT) 0;
+    UV_SHADER UV = (UV_SHADER) 0;
+    if (g_isUVShader)
+        UV = UV_Shader(In.vTexcoord);
     
     vector vDiffuseDesc = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
     if (vDiffuseDesc.a < 0.1f)
         discard;
    
     vector vMulti = g_isMulti ? g_MultiDiffuseTexture.Sample(LinearSampler, In.vTexcoord) : vector(0.f, 1.f, 0.f, 1.f);
-    vector vRD = g_isRD ? g_RDTexture.Sample(LinearSampler, In.vTexcoord) : vector(1.f, 1.f, 1.f, 1.f);
-    vector vRS = g_isRS ? g_RSTexture.Sample(LinearSampler, In.vTexcoord) : vector(1.f, 1.f, 1.f, 1.f);
-    vector vRM = g_isRM ? g_RMTexture.Sample(LinearSampler, In.vTexcoord) : vector(0.5f, 1.f, 0.5f, 1.f);
-    vector vRT = g_isRT ? g_RTTexture.Sample(LinearSampler, In.vTexcoord) : vector(0.5f, 0.5f, 1.f, 0.5f);
+    vector vRD = g_isRD ? g_RDTexture.Sample(LinearSampler, g_isUVShader ? UV.RDRMRS : In.vTexcoord) : vector(1.f, 1.f, 1.f, 1.f);
+    vector vRS = g_isRS ? g_RSTexture.Sample(LinearSampler, g_isUVShader ? UV.RDRMRS : In.vTexcoord) : vector(1.f, 1.f, 1.f, 1.f);
+    vector vRM = g_isRM ? g_RMTexture.Sample(LinearSampler, g_isUVShader ? UV.RDRMRS : In.vTexcoord) : vector(0.5f, 1.f, 0.5f, 1.f);
+    vector vRT = g_isRT ? g_RTTexture.Sample(LinearSampler, g_isUVShader ? UV.RT : In.vTexcoord) : vector(0.5f, 0.5f, 1.f, 0.5f);
     //노말 벡터 구하기
     vector vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexcoord);
-    vNormalDesc = vNormalDesc * 2.f - 1.f;
+    
     
     //Neo Shader
     float fFactor = RepeatingPatternBlendFactor(vMulti);
@@ -163,9 +166,11 @@ PS_OUT PS_MAIN(PS_IN In)
     
     //Tangent Normal 구하기 
     vNormalDesc = Get_Normal(vNormalDesc, vRT, fFactor);
+
+    vNormalDesc = vNormalDesc * 2.f - 1.f;
     float3x3 WorldMatrix = float3x3(In.vTangent.xyz, In.vBinormal.xyz, In.vNormal.xyz);
     vector vNormalBTN = vector(mul(vNormalDesc.xyz, WorldMatrix), 0.f);
-    Out.vNormal = vector(vNormalBTN.xyz * 0.5f + 0.5f, 0.f);
+    Out.vNormal = normalize(vector(vNormalBTN.xyz * 0.5f + 0.5f, 0.f));
 
     float RimIndex = 0.f;
     if (0.05f < g_isRimLight)

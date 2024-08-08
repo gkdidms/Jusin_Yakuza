@@ -11,6 +11,7 @@ public:
         _bool isUVShader;
 
         _float fOpacity;
+        _float4 vSpecularColor;
         _float fSpecularPower;
         _float fAssetShader;
         _float fDisableRDRS;

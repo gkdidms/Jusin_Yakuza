@@ -60,6 +60,7 @@ protected:
 public:
     _bool isSway() { return m_isSway; }
     _bool isGuard() { return m_isGuard; }
+    _bool isAttack() { return m_isAttack; }
     _uint Get_DownDir();
 
 public:
@@ -85,6 +86,7 @@ protected:
     _uint* m_pCurrentAnimType = { nullptr };
 
 protected:
+    _bool m_isStart = { true };
     _bool m_isAttack = { false };
     _bool m_isAngry = { false };
     _bool m_isSync = { false };
@@ -121,6 +123,10 @@ protected:
     _float2 m_fSwayDistance = {};
 
 protected:
+    //전투 시작 시 시작 모션
+    virtual CBTNode::NODE_STATE Check_Start();
+    virtual CBTNode::NODE_STATE Start();
+
     //플레이어에게 잡혀있는가?
     virtual CBTNode::NODE_STATE Chcek_Sync(); // 싱크 모션을 해야하는가?
 
