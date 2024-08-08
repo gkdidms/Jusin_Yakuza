@@ -16,6 +16,20 @@ CYoneda::CYoneda(const CYoneda& rhs)
 {
 }
 
+void CYoneda::Set_TriggerQte(_uint iWeaponChange, _uint iTriggerID)
+{
+	m_iWeaponType = iWeaponChange;
+
+	if (iTriggerID == 1000)
+	{
+		//액션 변경 가능
+		m_iState = CMonster::MONSTER_A60300_000_2;
+	}
+
+	m_pTree->Set_Sync(true);
+	m_iCurrentAnimType = CUTSCENE;
+}
+
 HRESULT CYoneda::Initialize_Prototype()
 {
 	return S_OK;
@@ -31,7 +45,7 @@ HRESULT CYoneda::Initialize(void* pArg)
 	if (FAILED(Add_CharacterData()))
 		return E_FAIL;
 
-	m_iWeaponType = BAREHAND;
+	m_iWeaponType = KNIFE; // 무기 체인지 값
 
 	return S_OK;
 }
@@ -87,7 +101,7 @@ HRESULT CYoneda::Add_Components()
 	AIDesc.pThis = this;
 	AIDesc.pWeaponType = &m_iWeaponType;
 
-	m_pTree = dynamic_cast<CAI_Yoneda*>(m_pGameInstance->Add_BTNode(m_iCurrentLevel, TEXT(""), &AIDesc));
+	m_pTree = dynamic_cast<CAI_Yoneda*>(m_pGameInstance->Add_BTNode(m_iCurrentLevel, TEXT("Prototype_BTNode_Yoneda"), &AIDesc));
 	if (nullptr == m_pTree)
 		return E_FAIL;
 
@@ -256,6 +270,11 @@ void CYoneda::Change_Animation()
 	case MONSTER_ATK_NORAML:
 	{
 		m_strAnimName = "e_wpb_knife_atk";
+		break;
+	}
+	case MONSTER_ATK_DOWN:
+	{
+		m_strAnimName = "e_sae_atk_down";
 		break;
 	}
 	default:

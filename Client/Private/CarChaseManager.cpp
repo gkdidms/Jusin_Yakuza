@@ -60,10 +60,12 @@ void CCarChaseManager::Tick()
 			return;
 		}
 	}
-
-
 }
 
+/*
+Stage가 DIR_F, DIR_B	 일 경우 무조건 몬스터 방향은 
+DIR_F, DIR_B 이 된다.
+*/
 HRESULT CCarChaseManager::Ready_Stage()
 {
 	//1 스테이지
@@ -80,13 +82,13 @@ HRESULT CCarChaseManager::Ready_Stage()
 			LINE_C,
 			DIR_F,
 			CCarChase_Monster::REACTOR_VAN,
-			{ CCarChase_Monster::WPR, -1}
+			{ CCarChase_Monster::WPR, CCarChase_Monster::WPJ}
 		},
 	};
 
 	CCarChase::STAGE_INFO StageInfo_1 = CCarChase::STAGE_INFO{
 		LINE_A,
-		LINE_A,
+		LINE_B,
 		DIR_L,
 		MonsterInfo_1
 	};
@@ -104,7 +106,7 @@ HRESULT CCarChaseManager::Ready_Stage()
 	vector<CCarChase::STAGE_MONSTER_INFO> MonsterInfo_2 = {
 		CCarChase::STAGE_MONSTER_INFO{
 			200000,
-			LINE_B,
+			LINE_C,
 			DIR_F,
 			CCarChase_Monster::REACTOR_VAN,
 			{ CCarChase_Monster::WPR, -1}
@@ -112,16 +114,16 @@ HRESULT CCarChaseManager::Ready_Stage()
 		CCarChase::STAGE_MONSTER_INFO{
 			200001,
 			LINE_D,
-			DIR_B,
+			DIR_F,
 			CCarChase_Monster::REACTOR_VAN,
 			{ CCarChase_Monster::WPR, -1 }
 		},
 	};
 
 	CCarChase::STAGE_INFO StageInfo_2 = CCarChase::STAGE_INFO{
+		LINE_B,
 		LINE_A,
-		LINE_A,
-		DIR_L,
+		DIR_F,
 		MonsterInfo_2
 	};
 

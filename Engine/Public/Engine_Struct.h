@@ -27,6 +27,8 @@ namespace Engine
 		bool					bMoveScene; // cinemachine 후 scene 전환되는 경우 true
 		int						iCineNum;
 		int						iLevelNum; // 다음씬으로 넘어갈 경우 sceneNum 주기
+		int						iYonedaKnife;
+		int						iTriggerID;
 	};
 
 	struct ENGINE_DLL TRIGGER_IO
@@ -39,6 +41,7 @@ namespace Engine
 	{
 		int				iCellNums;
 		_float4			vPosition;
+		int				iPointOption;
 	};
 
 

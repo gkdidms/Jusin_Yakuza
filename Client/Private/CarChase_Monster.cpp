@@ -31,15 +31,15 @@ HRESULT CCarChase_Monster::Initialize(void* pArg)
 	if (nullptr == pArg)
 		return E_FAIL;
 
-	if (FAILED(__super::Initialize(pArg)))
-		return E_FAIL;
-
 	CARCHASE_MONSTER_DESC* pDesc = static_cast<CARCHASE_MONSTER_DESC*>(pArg);
 	m_pParentMatrix = pDesc->pParentMatrix;
 	m_pParentBoneMatrix = pDesc->pBoneMatrix;
 	m_iWeaponType = pDesc->iWeaponType;
 	m_iLineDir = pDesc->iLineDir;
 	m_iObjectIndex = pDesc->iObjectIndex;
+
+	if (FAILED(__super::Initialize(pArg)))
+		return E_FAIL;
 
 	m_iCurrentAnimType = CLandObject::DEFAULT;
 
@@ -162,6 +162,17 @@ HRESULT CCarChase_Monster::Bind_ResourceData()
 		return E_FAIL;
 
 	return S_OK;
+}
+
+void CCarChase_Monster::Get_LookDir()
+{
+	//몬스터가 바라봐야하는 방향(앞, 뒤, 왼, 오)
+	//van, heli 의 경우 방향이 정해져 있음 (무조건 왼쪽에 존재함)
+
+	if (m_iLineDir == DIR_F)
+		m_iDir = DIR_B;
+	else if (m_iLineDir == DIR_B)
+		m_iDir == DIR_F;
 }
 
 void CCarChase_Monster::Free()

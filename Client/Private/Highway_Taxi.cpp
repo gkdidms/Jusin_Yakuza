@@ -23,8 +23,15 @@ _uint CHighway_Taxi::Get_WaypointSize()
 	return m_pNavigationCom->Get_RouteIndexs(m_iNaviRouteNum).size();
 }
 
+const _float4x4* CHighway_Taxi::Get_KiryuBoneMatrix(const _char* pBoneName)
+{
+	return m_pKiryu->Get_BoneMatrix(pBoneName);
+}
+
 void CHighway_Taxi::Set_NavigationRouteIndex(_uint iLine)
 {
+	//라인이 기존과 다르다면 변경된 라인으로 이동 후 진행되도록 한다.
+
 	m_iNaviRouteNum = iLine;
 	m_pNavigationCom->Set_NavigationRouteIndex(iLine);
 }

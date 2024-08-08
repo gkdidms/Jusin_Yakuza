@@ -109,6 +109,9 @@ protected:
     CCarChase_Monster(const CCarChase_Monster& rhs);
     virtual ~CCarChase_Monster() = default;
 
+public://몬스터가 들고잇는 무기 타입에 따라서 모션이 달라짐.
+    _uint Get_WeaponType() { return m_iWeaponType; }
+
 public:
     virtual HRESULT Initialize_Prototype() override;
     virtual HRESULT Initialize(void* pArg) override;
@@ -118,7 +121,7 @@ public:
 
 protected:
     _uint m_iWeaponType = { WEAPON_END };
-    _uint m_iDir = { DIR_END };
+    _uint m_iDir = { DIR_END }; // 몬스터가 바라봐야 하는 방향
     _uint m_iLineDir = { DIR_END };
     _uint m_iCurrentAnimType = { CLandObject::ANIM_TYPE_END };
 
@@ -137,6 +140,7 @@ protected:
 protected:
     virtual HRESULT Add_Components() override;
     virtual HRESULT Bind_ResourceData() override;
+    virtual void Get_LookDir();
 
 public:
     virtual void Free();

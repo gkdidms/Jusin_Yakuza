@@ -37,6 +37,8 @@ public:
 	ROUTE_IO		Get_RouteIO(); 
 	void			Set_NaviNum(int num) { m_eRoute.iCellNums = num; }
 	void			Set_Color(int num) { m_iColor = num; }
+	//_int			Get_PointOpiton() { return m_eRoute.iPointOption; }
+	//void			Set_PointOption(_int iOption) { m_eRoute.iPointOption = iOption; }
 
 private:
 	CShader* m_pShaderCom = { nullptr };

@@ -39,6 +39,9 @@ HRESULT CAI_Yoneda::Initialize(void* pArg)
 
 void CAI_Yoneda::Tick(const _float& fTimeDelta)
 {
+	__super::Tick(fTimeDelta);
+
+	this->Execute();
 }
 
 CBTNode::NODE_STATE CAI_Yoneda::Execute()
@@ -66,6 +69,12 @@ void CAI_Yoneda::Ready_Tree()
 	pDownSelector->Add_Children(CLeafNode::Create(bind(&CAI_Yoneda::StandUp, this)));
 	pDownSelector->Add_Children(CLeafNode::Create(bind(&CAI_Yoneda::Dead, this)));
 	pDownSeq->Add_Children(pDownSelector);
+#pragma endregion
+
+#pragma region PlayerDown
+	CSequance* pPlayerDownSeq = CSequance::Create();
+	pPlayerDownSeq->Add_Children(CLeafNode::Create(bind(&CAI_Yoneda::Check_PlayerDown, this)));
+	pPlayerDownSeq->Add_Children(CLeafNode::Create(bind(&CAI_Yoneda::ATK_Down, this)));
 #pragma endregion
 
 #pragma region Sway
@@ -137,7 +146,7 @@ CBTNode::NODE_STATE CAI_Yoneda::Attack()
 
 	static _uint iCount = rand() % 10;
 
-	if (DistanceFromPlayer() > 5.f)
+	if (*m_pWeaponType == CYoneda::BAREHAND && DistanceFromPlayer() > 5.f)
 	{
 		m_iSkill = SKILL_RUN_ATK;
 	}
@@ -180,20 +189,15 @@ CBTNode::NODE_STATE CAI_Yoneda::ATK_CMB()
 {
 	if (m_iSkill == SKILL_CMD && m_isAttack)
 	{
-		if (m_pAnimCom[*m_pCurrentAnimType]->Get_AnimFinished())
+		if (*m_pState == CMonster::MONSTER_CMB_1 && *(m_pAnimCom[*m_pCurrentAnimType]->Get_AnimPosition()) >= 12.0)
+			*m_pState = CMonster::MONSTER_CMB_2;
+		else if (*m_pState == CMonster::MONSTER_CMB_2 && *(m_pAnimCom[*m_pCurrentAnimType]->Get_AnimPosition()) >= 12.0)
+			*m_pState = CMonster::MONSTER_CMB_3;
+		else if (*m_pState == CMonster::MONSTER_CMB_3 && m_pAnimCom[*m_pCurrentAnimType]->Get_AnimFinished())
 		{
-			if (*m_pState == CMonster::MONSTER_CMB_1)
-				*m_pState = CMonster::MONSTER_CMB_2;
+			m_isAttack = false;
 
-			else if (*m_pState == CMonster::MONSTER_CMB_2)
-				*m_pState = CMonster::MONSTER_CMB_3;
-
-			if (*m_pState == CMonster::MONSTER_CMB_3)
-			{
-				m_isAttack = false;
-
-				return CBTNode::SUCCESS;
-			}
+			return CBTNode::SUCCESS;
 		}
 
 		return CBTNode::RUNNING;
@@ -323,7 +327,8 @@ CBTNode::NODE_STATE CAI_Yoneda::ATK_Normal()
 	if (m_iSkill == SKILL_ATK_NORMAL)
 	{
 		m_isAttack = true;
-		*m_pState == CMonster::MONSTER_ATK_NORAML;
+		*m_pState = CMonster::MONSTER_ATK_NORAML;
+		return CBTNode::SUCCESS;
 	}
 
 	return CBTNode::FAIL;
@@ -346,7 +351,8 @@ CBTNode::NODE_STATE CAI_Yoneda::ATK_3Ren()
 	if (m_iSkill == SKILL_RENDA)
 	{
 		m_isAttack = true;
-		*m_pState == CMonster::MONSTER_3REN;
+		*m_pState = CMonster::MONSTER_3REN;
+		return CBTNode::SUCCESS;
 	}
 
 	return CBTNode::FAIL;
@@ -356,9 +362,9 @@ CBTNode::NODE_STATE CAI_Yoneda::ATK_Knife_CMB()
 {
 	if (m_iSkill == SKILL_CMD && m_isAttack)
 	{
-		if (*m_pState == CMonster::MONSTER_CMB_1 && m_pAnimCom[*m_pCurrentAnimType]->Get_AnimFinished())
+		if (*m_pState == CMonster::MONSTER_CMB_1 && *(m_pAnimCom[*m_pCurrentAnimType]->Get_AnimPosition()) >= 16.0)
 			*m_pState = CMonster::MONSTER_CMB_2;
-		if (*m_pState == CMonster::MONSTER_CMB_2)
+		if (*m_pState == CMonster::MONSTER_CMB_2 && m_pAnimCom[*m_pCurrentAnimType]->Get_AnimFinished())
 		{
 			m_isAttack = false;
 
@@ -371,7 +377,8 @@ CBTNode::NODE_STATE CAI_Yoneda::ATK_Knife_CMB()
 	if (m_iSkill == SKILL_CMD)
 	{
 		m_isAttack = true;
-		*m_pState == CMonster::MONSTER_CMB_1;
+		*m_pState = CMonster::MONSTER_CMB_1;
+		return CBTNode::SUCCESS;
 	}
 
 	return CBTNode::FAIL;

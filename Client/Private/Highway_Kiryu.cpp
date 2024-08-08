@@ -531,3 +531,8 @@ string CHighway_Kiryu::Get_CurrentAnimationName()
 {
 	return m_pModelCom->Get_AnimationName(m_pModelCom->Get_CurrentAnimationIndex());
 }
+
+const _float4x4* CHighway_Kiryu::Get_BoneMatrix(const char* strBoneName)
+{
+	return m_pModelCom->Get_BoneCombinedTransformationMatrix(strBoneName);
+}

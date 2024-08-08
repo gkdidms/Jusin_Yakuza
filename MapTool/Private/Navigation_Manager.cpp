@@ -569,7 +569,16 @@ HRESULT CNavigation_Manager::Save_Cells(_uint iIndex)
 			arr[j] = m_Routes.find(i)->second[j]->Get_RouteIO();
 		}
 
-		out.write(reinterpret_cast<char*>(arr), iCellCnt * sizeof(ROUTE_IO));
+		//out.write(reinterpret_cast<char*>(arr), iCellCnt * sizeof(ROUTE_IO));
+
+		for (int j = 0; j < iCellCnt; j++)
+		{
+			int a = 0;
+			out.write((char*)&arr[j].iCellNums, sizeof(int));
+			out.write((_char*)&arr[j].vPosition, sizeof(_float4));
+			out.write((char*)&arr[j].iCellNums, sizeof(int));
+		}
+		
 
 		Safe_Delete(arr);
 	}
@@ -677,7 +686,16 @@ HRESULT CNavigation_Manager::Load_Cells(_uint iIndex)
 		in.read((_char*)&iCellCnt, sizeof(_uint));
 
 		ROUTE_IO* arr = new ROUTE_IO[iCellCnt];
-		in.read(reinterpret_cast<char*>(arr), iCellCnt * sizeof(ROUTE_IO));
+
+		for (int j = 0; j < iCellCnt; j++)
+		{
+			in.read((char*)&arr[j].iCellNums, sizeof(int));
+			in.read((_char*)&arr[j].vPosition, sizeof(_float4));
+			in.read((char*)&arr[j].iPointOption, sizeof(int));
+		}
+
+		
+		/*in.read(reinterpret_cast<char*>(arr), iCellCnt * sizeof(ROUTE_IO));*/
 
 		vector<ROUTE_IO>		routeCells;
 
@@ -738,8 +756,6 @@ HRESULT CNavigation_Manager::Load_Route(_uint iIndex)
 
 	if (iIndex < m_Routes.size())
 	{
-
-
 		for (auto& iter : m_Route_CellIndexes)
 			Safe_Release(iter);
 		m_Route_CellIndexes.clear();
@@ -973,12 +989,24 @@ void CNavigation_Manager::Find_Cells()
 
 void CNavigation_Manager::Make_Route()
 {
-	if (true == m_bMakeRoute_IMGUI)
+	if (true == m_bMakeRoute_IMGUI && 0 < m_Cells.size())
 	{
 		ImGui::Begin(u8" Route Num ");
 		ImGui::Text(u8" 1. Cell 찾기 - F 누르고 클릭 - 각도를 위에서 바라보게끔 ");
 		ImGui::Text(u8" 2. 원하는 cell이 선택됐으면 cell - route에 추가 버튼 누르기 ");
 		ImGui::NewLine();
+
+		ImGui::Text(u8" 처음 입력 세팅 번호 ");
+		static int iNewPointOpiton = 0;
+		if (ImGui::RadioButton(u8"일직선", iNewPointOpiton == 0))
+		{
+			iNewPointOpiton = 0;
+		}
+		ImGui::SameLine();
+		if (ImGui::RadioButton(u8"코너", iNewPointOpiton == 1))
+		{
+			iNewPointOpiton = 1;
+		}
 
 		static int index_current_idx;
 
@@ -1003,12 +1031,35 @@ void CNavigation_Manager::Make_Route()
 
 		Click_To_Select_Object(index_current_idx);
 
-		if (m_iCurrentRouteCellIndex != index_current_idx)
+		if (m_iCurrentRouteCellIndex != index_current_idx && 0 < m_Route_CellIndexes.size())
 		{
 			m_iCurrentRouteCellIndex = index_current_idx;
+		/*	m_iPointOption = m_Route_CellIndexes[m_iCurrentRouteCellIndex]->Get_PointOpiton();*/
 		}
 
 		Edit_GameObject_Transform(m_iCurrentRouteCellIndex);
+
+
+		ImGui::Text(u8" 저장확인 + 수정용 ");
+		static int iPointOpiton = 0;
+		if (ImGui::RadioButton(u8"일직선", m_iPointOption == 0))
+		{
+			iPointOpiton = 0;
+			m_iPointOption = 0;
+		}
+		ImGui::SameLine();
+		if (ImGui::RadioButton(u8"코너", m_iPointOption == 1))
+		{
+			iPointOpiton = 1;
+			m_iPointOption = 1;
+		}
+
+		//if (0 < m_Route_CellIndexes.size())
+		//{
+		//	m_Route_CellIndexes[m_iCurrentRouteCellIndex]->Set_PointOption(m_iPointOption);
+		//}
+		//
+
 
 		ImGui::Text(u8"버튼 클릭 후 피킹하면 추가됨");
 		
@@ -1032,6 +1083,7 @@ void CNavigation_Manager::Make_Route()
 
 			CNaviObj::NAVIOBJ_DESC naviobjdesc;
 			naviobjdesc.tNaviDesc.iCellNums = m_iCurrentCellIndex;
+			//naviobjdesc.tNaviDesc.iPointOption = iNewPointOpiton;
 			XMStoreFloat4(&naviobjdesc.tNaviDesc.vPosition, vTargetPos);
 
 			XMMATRIX startPos = XMMatrixIdentity();
@@ -1044,6 +1096,9 @@ void CNavigation_Manager::Make_Route()
 
 			m_Route_CellIndexes.push_back(dynamic_cast<CNaviObj*>(CGameInstance::GetInstance()->Clone_Object(TEXT("Prototype_GameObject_NaviObj"), &naviobjdesc)));
 			Safe_AddRef(m_Cells[m_iCurrentCellIndex]);
+
+			m_iCurrentRouteCellIndex = m_Route_CellIndexes.size() - 1;
+			//m_iPointOption = m_Route_CellIndexes[m_iCurrentRouteCellIndex]->Get_PointOpiton();
 
 			// route 안의 index update
 			Update_IndexesName();
@@ -1502,9 +1557,13 @@ void CNavigation_Manager::Free()
 
 	m_vPoints.clear();
 
+	for (auto& iter : m_FileNames)
+		Safe_Delete(iter);
+	m_FileNames.clear();
+
 	for (auto& iter : m_RouteFileNames)
 		Safe_Delete(iter);
-
+	m_RouteFileNames.clear();
 
 	for (auto& iter : m_CellsName)
 		Safe_Delete(iter);
@@ -1519,9 +1578,7 @@ void CNavigation_Manager::Free()
 	m_RouteName.clear();
 
 
-	for (auto& iter : m_FileNames)
-		Safe_Delete(iter);
-	m_FileNames.clear();
+
 
 	Safe_Release(m_pVIBufferCom);
 

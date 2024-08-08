@@ -44,14 +44,14 @@ _bool CCarChase::Tick()
 	return false;
 }
 
-//몬스터 생성 & 플레이어 자리 이동
+//몬스터 생성 & 플레이어 dir / 카메라 dir 수정
 _bool CCarChase::Start()
 {
 	vector<STAGE_MONSTER_INFO> MonsterInfo = m_Info.MonsterInfo;
 	CHighway_Taxi* pPlayer = dynamic_cast<CHighway_Taxi*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Taxi"), 0));
 
 	//몬스터의 위치는 플레이어 웨이포인트 인덱스의 -10만큼
-	_int iWaypoint = pPlayer->Get_CurrentWaypointIndex() - 10;
+	_int iWaypoint = m_Info.iStageDir == DIR_F ? pPlayer->Get_CurrentWaypointIndex() + 3: pPlayer->Get_CurrentWaypointIndex() - 10;
 
 	if (iWaypoint < 0)
 	{
@@ -90,9 +90,6 @@ _bool CCarChase::Start()
 
 	//플레이어 스테이지 방향 값 넣어줌
 	pPlayer->Set_Dir(m_Info.iStageDir);
-
-	if (m_Info.iPlayerLine != m_Info.iPrePlayerLine)
-		pPlayer->Set_NavigationRouteIndex(m_Info.iPlayerLine);
 
 	//카메라에 스테이지 방향 넣어주기
 	CCarChaseCamera* pCamera = dynamic_cast<CCarChaseCamera*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Camera"), CAMERA_CARCHASE));
@@ -135,8 +132,16 @@ _bool CCarChase::Running()
 	return false;
 }
 
+//플레이어 자리 이동
 _bool CCarChase::End()
 {
+	// 다음 스테이지 방향과 지금 스테이지 방향이 다르다면
+	if (m_Info.iPlayerLine != m_Info.iNextPlayerLine)
+	{
+		CHighway_Taxi* pPlayer = dynamic_cast<CHighway_Taxi*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Taxi"), 0));
+		pPlayer->Set_NavigationRouteIndex(m_Info.iNextPlayerLine);
+	}
+
 	return true;
 }
 

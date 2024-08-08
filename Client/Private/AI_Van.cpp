@@ -158,7 +158,7 @@ CBTNode::NODE_STATE CAI_Van::ATK_Shot()
 	{
 		m_isAttack = true;
 		if (*m_pWeaponType == CCarChase_Monster::WPR)
-			*m_pState = CCarChase_Monster::CARCHASE_SHOT_LP;
+			*m_pState = CCarChase_Monster::CARCHASE_SHOT_ST;
 		else if (*m_pWeaponType == CCarChase_Monster::WPJ)
 			*m_pState = CCarChase_Monster::CARCHASE_AIM_SHOT;
 
@@ -209,7 +209,7 @@ CBTNode::NODE_STATE CAI_Van::Idle()
 {
 	if (*m_pWeaponType == CCarChase_Monster::WPJ)
 	{
-		if (m_isSit) *m_pState = CCarChase_Monster::CARCHASE_AIM_LP;
+		if (!m_isSit) *m_pState = CCarChase_Monster::CARCHASE_AIM_LP;
 	}	
 	else if (*m_pWeaponType == CCarChase_Monster::WPR)
 		*m_pState = CCarChase_Monster::CARCHASE_AIM_LP;

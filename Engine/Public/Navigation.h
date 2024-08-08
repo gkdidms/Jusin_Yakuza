@@ -22,7 +22,12 @@ private:
 public:
     void Set_Points(const _float3* vPoints, _int OptionType);
     void Set_Index(_uint iIndex) { m_iCurrentIndex = iIndex; }
-    void Set_NavigationRouteIndex(_uint iIndex) { m_iCurrentLine = iIndex; }
+    //플레이어 루트 이동 시 
+    //웨이포인트도 멀리 이동한다.
+    void Set_NavigationRouteIndex(_uint iIndex) { 
+        m_iCurrentLine = iIndex;
+        m_iCurrentWayPointIndex += 2;
+    }
 
 public:
     CCell::OPTION Get_OptionType() { return m_Cells[m_iCurrentIndex]->Get_Option(); }
