@@ -11,7 +11,6 @@ public:
         const _float4x4* pBoneMatrix;
         _uint iWeaponType;
         _uint iLineDir; // À§, ¿·, µÚ
-        _uint iObjectIndex;
     } CARCHASE_MONSTER_DESC;
 
 public:
