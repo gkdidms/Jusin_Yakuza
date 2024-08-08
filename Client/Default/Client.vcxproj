@@ -185,6 +185,7 @@
     <ClInclude Include="..\public\Adventure.h" />
     <ClInclude Include="..\public\Adv_Passersby.h" />
     <ClInclude Include="..\public\AI_Adventure.h" />
+    <ClInclude Include="..\public\AI_Bike.h" />
     <ClInclude Include="..\public\AI_CarChase.h" />
     <ClInclude Include="..\public\AI_DefaultYakuza.h" />
     <ClInclude Include="..\Public\AI_Kuze.h" />
@@ -382,6 +383,7 @@
     <ClCompile Include="..\private\Adventure.cpp" />
     <ClCompile Include="..\private\Adv_Passersby.cpp" />
     <ClCompile Include="..\private\AI_Adventure.cpp" />
+    <ClCompile Include="..\private\AI_Bike.cpp" />
     <ClCompile Include="..\private\AI_CarChase.cpp" />
     <ClCompile Include="..\private\AI_DefaultYakuza.cpp" />
     <ClCompile Include="..\Private\AI_Kuze.cpp" />

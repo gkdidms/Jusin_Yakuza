@@ -15,13 +15,13 @@ struct COMBINE_OUT
     float fFactor;
 };
 
-float MapRange(float value, float inMin, float inMax, float outMin, float outMax)
+float MapRange(float value, float fromMin, float fromMax, float toMin, float toMax)
 {
-    // 입력 값이 범위를 넘어가지 않도록 클램프
-    value = clamp(value, inMin, inMax);
-    
-    // 비례적으로 변환
-    return outMin + (value - inMin) * (outMax - outMin) / (inMax - inMin);
+    // 입력 값을 0에서 1 범위로 정규화
+    float normalizedValue = (value - fromMin) / (fromMax - fromMin);
+
+    // 정규화된 값을 새로운 범위로 변환
+    return toMin + normalizedValue * (toMax - toMin);
 }
 
 
@@ -211,10 +211,14 @@ COMBINE_OUT CombineMTAndRM(vector vMT, vector vRM, float fMetelnessOverride, flo
 
 float Neo_Glossiness(float3 vColor, vector vMulti)
 {
-    float vMix = lerp(vColor.y, vMulti.x, 1.f);
-    float vMix2 = lerp(vColor.z, vMix, 0.5f);
+    float3 vMix = lerp(vColor.y, vMulti.x, Engine);
+    float3 vMix2 = lerp(vColor.z, vMix, AssetShader);
     
-    return vMix;
+    float fFactor = IsOEClothShader * (1.f - Engine);
+    
+    float3 vInvertedColor = lerp(vMix2, 1.f - vMix2, 1.f - Rough);
+    
+    return lerp(vInvertedColor, float3(0.5f, 0.5f, 0.5f), fFactor);
 }
 
 // Metallic과 Glossiness 구할 수 있음.

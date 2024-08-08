@@ -28,14 +28,12 @@ HRESULT CLevel_Test::Initialize()
 	// 14 : 가라오케
 	// 11 : 도로
 
-	// 91: 혜원 테스트맵 (3번맵 기반)
-
 	// 테스트 client 로드 숫자랑 동일하게 설정해주기!!!!!!!!!!!!!!!!!!!!!!!
 	// 네비 다르면 터짐
 	// 테스트 다하면 지워라
 	/* For.Prototype_Component_Navigation */
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Navigation"),
-		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/NaviData/Navigation_3.dat")))))
+		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/NaviData/Navigation_7.dat")))))
 		return E_FAIL;
 
 	//m_pCarChaseManager = CCarChaseManager::Create(m_pDevice, m_pContext);
@@ -58,10 +56,10 @@ HRESULT CLevel_Test::Initialize()
 	//	return E_FAIL;
 
 	/* 클라 파싱 */
-	m_pFileTotalManager->Set_MapObj_In_Client(91, LEVEL_TEST);
-	m_pFileTotalManager->Set_Lights_In_Client(3);
-	m_pFileTotalManager->Set_Collider_In_Client(3, LEVEL_TEST);
-	m_pFileTotalManager->Set_Trigger_In_Client(99, LEVEL_TEST);
+	m_pFileTotalManager->Set_MapObj_In_Client(7, LEVEL_TEST);
+	m_pFileTotalManager->Set_Lights_In_Client(99);
+	m_pFileTotalManager->Set_Collider_In_Client(0, LEVEL_TEST);
+	m_pFileTotalManager->Set_Trigger_In_Client(3, LEVEL_TEST);
 	
 	if (FAILED(Ready_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;

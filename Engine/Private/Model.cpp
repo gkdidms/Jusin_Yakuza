@@ -426,10 +426,10 @@ HRESULT CModel::Export_Materials(ofstream& out, const _char* pModelFilePath, con
 
 	for (size_t i = 0; i < m_iNumMaterials; i++)
 	{
-		//string name = m_pAIScene->mMaterials[i]->GetName().C_Str();
-		//_uint iNumMaterialName = sizeof(name);
-		//out.write((char*)&iNumMaterialName, sizeof(_uint));
-		//out.write(name.c_str(), iNumMaterialName);
+		string name = m_pAIScene->mMaterials[i]->GetName().C_Str();
+		_uint iNumMaterialName = name.size();
+		out.write((char*)&iNumMaterialName, sizeof(_uint));
+		out.write(name.c_str(), iNumMaterialName);
 
 		for (size_t j = aiTextureType_DIFFUSE; j < AI_TEXTURE_TYPE_MAX; j++)
 		{
@@ -709,9 +709,9 @@ HRESULT CModel::Import_Materials(ifstream& in, _bool isTool)
 	for (size_t i = 0; i < m_iNumMaterials; i++)
 	{
 		MESH_MATERIAL		MeshMaterial{};
-		//_uint iNumMaterialName = 0;
-		//in.read((char*)&iNumMaterialName, sizeof(_uint));
-		//in.read(MeshMaterial.strMaterialName, iNumMaterialName);
+		_uint iNumMaterialName = 0;
+		in.read((char*)&iNumMaterialName, sizeof(_uint));
+		in.read(MeshMaterial.strMaterialName, iNumMaterialName);
 
 		for (size_t j = aiTextureType_DIFFUSE; j < AI_TEXTURE_TYPE_MAX; j++)
 		{

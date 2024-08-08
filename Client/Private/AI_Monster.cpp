@@ -839,6 +839,27 @@ _uint CAI_Monster::Get_DownDir()
 	return DIR_END;
 }
 
+CBTNode::NODE_STATE CAI_Monster::Check_Start()
+{
+	if (m_isStart)
+		return CBTNode::SUCCESS;
+
+	return CBTNode::FAIL;
+}
+
+CBTNode::NODE_STATE CAI_Monster::Start()
+{
+	if (*m_pState == CMonster::MONSTER_BTLST && m_pAnimCom[*m_pCurrentAnimType]->Get_AnimFinished())
+	{
+		m_isStart = false;
+		return CBTNode::SUCCESS;
+	}
+		
+	*m_pState = CMonster::MONSTER_BTLST;
+
+	return CBTNode::RUNNING;
+}
+
 CBTNode::NODE_STATE CAI_Monster::Chcek_Sync()
 {
 	if (!m_isSync)
@@ -1231,9 +1252,8 @@ CBTNode::NODE_STATE CAI_Monster::Check_Angry()
 	// 분노상태 전환 분기
 	if (!m_isAngry)
 	{
-		_uint iRandom = m_pGameInstance->Get_Random(0, 100);
-
-		if (iRandom < 30.f)
+		//플레이어와 충돌했을때 데미지가 30.f 이라면?
+		if (m_pThis->Get_HitDamage() < 30.f)
 		{
 			// 분노 상태로 이동
 			return CBTNode::SUCCESS;
