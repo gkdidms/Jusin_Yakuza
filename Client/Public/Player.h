@@ -4,6 +4,7 @@
 
 BEGIN(Engine)
 class CShader;
+class CCollider;
 class CNavigation;
 class CAnim;
 END
@@ -200,7 +201,7 @@ private:
 
     // 상대 객체의 포지션을 기준으로 계산함
     // 내 위치를 기준으로 좌/우/앞/뒤 어디에 존재하는지를 판단
-    _int Compute_Target_Direction_Pos(CGameObject* pAttackedObject);           
+    _int Compute_Target_Direction_Pos(_fvector vTargetPos);
 
     //키 입력관련함수들
 private:
@@ -228,6 +229,7 @@ public:
     void Reset_CutSceneEvent();
 
     void HitAction_Down();
+    void HitAction_WallBack();
 
 private:
     void Compute_MoveDirection_FB();
@@ -236,6 +238,7 @@ private:
     void Effect_Control_Aura();
     void Setting_Target_Enemy();
     void Setting_Target_Item();
+    void Setting_Target_Wall();
 
     /* 캐릭터 스테이터스 관련 함수 */ 
 public:
@@ -271,6 +274,7 @@ private:
 private:
     class CMonster* m_pTargetObject = { nullptr };
     class CItem* m_pTargetItem = { nullptr };
+    CCollider* m_pTargetWall = { nullptr };
 
     /* 행동, 이동 관련 변수들 */
 private:
@@ -299,6 +303,8 @@ private:
     _uint                       m_iCutSceneCamAnimIndex = { 0 };
 
     _uint                       m_iDefaultAnimIndex = { 0 };
+
+    _bool                       m_CanHitAction = { false };
 
     /* 플레이어 스테이터스 관련 변수들 */
 private:

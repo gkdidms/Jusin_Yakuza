@@ -24,6 +24,7 @@
 
 #include "Monster.h"
 #include "Item.h"
+#include "MapCollider.h"
 
 #pragma region 행동 관련 헤더들
 #include "Kiryu_KRS_Attack.h"
@@ -238,6 +239,12 @@ void CPlayer::Tick(const _float& fTimeDelta)
 	for (auto& pEffect : m_pTrailEffects)
 		pEffect.second->Tick(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")));
 
+	// 히트액션이 가능한 상태인지 구분한다.
+	if (2 < m_iCurrentHitLevel)
+	{
+		m_CanHitAction = true;
+	}
+
 	// TODO: 튜토리얼 UI 정리된 이후 켜야함
 	//if(!m_pUIManager->IsOpend())
 		KeyInput(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")));
@@ -250,6 +257,7 @@ void CPlayer::Tick(const _float& fTimeDelta)
 	Effect_Control_Aura();
 	Setting_Target_Enemy();
 	Setting_Target_Item();
+	Setting_Target_Wall();
 }
 
 void CPlayer::Late_Tick(const _float& fTimeDelta)
@@ -829,43 +837,55 @@ _int CPlayer::Compute_Target_Direction(CLandObject* pAttackedObject)
 	return iDirection;
 }
 
-_int CPlayer::Compute_Target_Direction_Pos(CGameObject* pAttackedObject)
+_int CPlayer::Compute_Target_Direction_Pos(_fvector vTargetPos)
 {
 	// F, B, L, R
 	_int iDirection = -1;
 
-	_vector vTargetPos = pAttackedObject->Get_TransformCom()->Get_State(CTransform::STATE_POSITION);
 	_vector vMyPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 
 	_vector vDir = XMVector3Normalize(vMyPos - vTargetPos);
+	vDir = XMVectorSetY(vDir, 0.f);
 
 	_vector vMyLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
 	_vector vMyRight = m_pTransformCom->Get_State(CTransform::STATE_RIGHT);
 
 	// Look 벡터와의 내적 계산
-	float fDotLook = XMVector3Dot(vMyLook, vDir).m128_f32[0];
+	_float fDotLook = XMVector3Dot(vMyLook, vDir).m128_f32[0];
 	// Right 벡터와의 내적 계산
-	float fDotRight = XMVector3Dot(vMyRight, vDir).m128_f32[0];
-
+	_float fDotRight = XMVector3Dot(vMyRight, vDir).m128_f32[0];
 	// 앞/뒤 구분
-	if (fDotLook > XMConvertToRadians(45.f)) {
+	_float cos45 = cosf(XMConvertToRadians(45.f));
+	iDirection = -1; // 초기화
+
+	if (fDotLook > cos45) {
 		// 앞쪽 (코사인 45도보다 크면 앞쪽으로 간주)
-		iDirection = 0;
-	}
-	else if (fDotLook < -XMConvertToRadians(45.f)) {
-		// 뒤쪽
 		iDirection = 1;
+	}
+	else if (fDotLook < -cos45) {
+		// 뒤쪽
+		iDirection = 0;
 	}
 
 	// 좌/우 구분 (앞/뒤가 아닌 경우에만 검사)
 	if (iDirection == -1) {
-		if (fDotRight > XMConvertToRadians(45.f)) {
+		if (fDotRight > cos45) {
 			// 오른쪽
 			iDirection = 2;
 		}
-		else if (fDotRight < -XMConvertToRadians(45.f)) {
+		else if (fDotRight < -cos45) {
 			// 왼쪽
 			iDirection = 3;
+		}
+	}
+
+	// 만약 모든 조건에 해당되지 않는 경우를 처리 (여기서 추가 검사를 할 수도 있음)
+	if (iDirection == -1) {
+		if (fDotLook > 0) {
+			iDirection = 1; // 앞쪽으로 간주
+		}
+		else {
+			iDirection = 0; // 뒤쪽으로 간주
 		}
 	}
 
@@ -1058,9 +1078,14 @@ void CPlayer::KRS_KeyInput(const _float& fTimeDelta)
 			// 그에 맞는 커맨드 액션을 실행시ㅕ켜야 한다.
 
 			// 여기에 스킬트리가 완료되면 스킬을 보유중인지에 대한 조건식을 추가로 잡아야한다
-			if (2 < m_iCurrentHitLevel && m_pTargetObject == nullptr ? false : m_pTargetObject->isDown())
+			if (m_CanHitAction)
 			{
-				HitAction_Down();
+				if (m_pTargetWall != nullptr)
+				{
+					HitAction_WallBack();
+				}
+				else if (m_pTargetObject == nullptr ? false : m_pTargetObject->isDown())
+					HitAction_Down();
 			}
 			else if (m_iCurrentBehavior == (_uint)KRS_BEHAVIOR_STATE::RUN)
 			{
@@ -1277,9 +1302,14 @@ void CPlayer::KRH_KeyInput(const _float& fTimeDelta)
 		}
 		if (m_pGameInstance->GetMouseState(DIM_RB) == TAP)
 		{
-			if (2 < m_iCurrentHitLevel && m_pTargetObject == nullptr ? false : m_pTargetObject->isDown())
+			if (m_CanHitAction)
 			{
-				HitAction_Down();
+				if (m_pTargetWall != nullptr)
+				{
+					HitAction_WallBack();
+				}
+				else if (m_pTargetObject == nullptr ? false : m_pTargetObject->isDown())
+					HitAction_Down();
 			}
 			else if (m_iCurrentBehavior == (_uint)KRH_BEHAVIOR_STATE::ATTACK)
 			{
@@ -1450,7 +1480,7 @@ void CPlayer::KRC_KeyInput(const _float& fTimeDelta)
 					_uint iCount = static_cast<CKiryu_KRC_Attack*>(m_AnimationTree[KRC].at((_uint)KRC_BEHAVIOR_STATE::ATTACK))->Get_ComboCount();
 
 					Desc.iComboCount = iCount > 3 ? 3 : iCount;
-					Desc.isLeft = Compute_Target_Direction_Pos(m_pTargetItem) == 3 ? true : false;
+					Desc.isLeft = Compute_Target_Direction_Pos(m_pTargetItem->Get_TransformCom()->Get_State(CTransform::STATE_POSITION)) == 3 ? true : false;
 
 					m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Event(&Desc);
 
@@ -1464,9 +1494,10 @@ void CPlayer::KRC_KeyInput(const _float& fTimeDelta)
 			{
 				// 현재 어택상태인지를 구분해서 마무리 액션을 실행시키거나
 				// 그에 맞는 커맨드 액션을 실행시켜야 한다.
-				if (2 < m_iCurrentHitLevel && m_pTargetObject == nullptr ? false : m_pTargetObject->isDown())
+				if (m_CanHitAction)
 				{
-					HitAction_Down();
+					if(m_pTargetObject == nullptr ? false : m_pTargetObject->isDown())
+						HitAction_Down();
 				}
 				else if (m_iCurrentBehavior == (_uint)KRC_BEHAVIOR_STATE::ATTACK)
 				{
@@ -1819,6 +1850,7 @@ void CPlayer::Set_CutSceneStartMotion(CUTSCENE_ANIMATION_TYPE eType)
 	default:
 	{
 		m_isCutSceneStartMotion = false;
+		Reset_CutSceneEvent();
 		break;
 	}
 	}
@@ -1870,7 +1902,6 @@ void CPlayer::Set_CutSceneAnim(CUTSCENE_ANIMATION_TYPE eType, _uint iFaceAnimInd
 		}
 		j++;
 	}
-
 }
 
 void CPlayer::Play_CutScene()
@@ -2015,6 +2046,21 @@ void CPlayer::HitAction_Down()
 	else
 	{
 		Set_CutSceneAnim(m_pTargetObject->Get_DownDir() == DIR_F ? OI_UPPER : OI_KICK, 1);
+	}
+}
+
+void CPlayer::HitAction_WallBack()
+{
+	_vector vMyPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	_vector vWallPos = XMLoadFloat3(&m_pTargetWall->Get_Center());
+
+	// F, B, L, R
+	_int iDir = Compute_Target_Direction_Pos(vWallPos);
+	if (B == iDir)
+	{
+		//m_pTargetWall->Get
+
+		Set_CutSceneAnim(m_eCurrentStyle == KRS ? HAIHEKI_KICK : HAIHEKI_PUNCH, 1);
 	}
 }
 
@@ -2223,6 +2269,17 @@ void CPlayer::Setting_Target_Item()
 	auto pItemList = m_pGameInstance->Get_GameObjects(m_iCurrentLevel, TEXT("Layer_Item"));
 
 	m_pTargetItem = static_cast<CItem*>(m_pCollisionManager->Get_Near_Object(this, pItemList, 1.5f));
+}
+
+void CPlayer::Setting_Target_Wall()
+{
+	if (static_cast<_uint>(KRS_BEHAVIOR_STATE::RUN) < m_iCurrentBehavior) return;
+
+	CMapCollider* pMapCollider = static_cast<CMapCollider*>(m_pGameInstance->Get_GameObject(m_iCurrentLevel, TEXT("Layer_MapCollider"), 0));
+
+	auto pWallList = pMapCollider->Get_Colliders();
+
+	m_pTargetWall = (m_pCollisionManager->Get_Near_Collider(this, pWallList, 3.f));
 }
 
 void CPlayer::AccHitGauge()

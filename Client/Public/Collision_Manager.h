@@ -51,6 +51,7 @@ public:
 
 
     class CGameObject* Get_Near_Object(class CGameObject* pObject, vector<CGameObject*>& pObjects, _float fDistance = 5.f);
+    class CCollider* Get_Near_Collider(class CGameObject* pObject, vector<CCollider*>& pObjects, _float fDistance = 5.f);
 
 private:
     // 캐릭터가 겹치지않고 밀어내는 함수

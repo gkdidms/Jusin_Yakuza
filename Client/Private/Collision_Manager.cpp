@@ -569,8 +569,26 @@ CGameObject* CCollision_Manager::Get_Near_Object(CGameObject* pObject, vector<CG
 
         if (XMVectorGetX(XMVector3Length(vBasePosition - vTargetPosition)) < fDistance)
         {
-            fDistance = XMVectorGetX(XMVector3Length(vBasePosition - vTargetPosition));
             pValue = static_cast<CLandObject*>(pTarget);
+        }
+    }
+
+    return pValue;
+}
+
+CCollider* CCollision_Manager::Get_Near_Collider(CGameObject* pObject, vector<CCollider*>& pColliders, _float fDistance)
+{
+    // 5거리 이내에 있는 애들만 검색한다.
+    CCollider* pValue = { nullptr };
+
+    for (auto& pTarget : pColliders)
+    {
+        _vector vBasePosition = pObject->Get_TransformCom()->Get_State(CTransform::STATE_POSITION);
+        _float3 vTargetCenter = pTarget->Get_Center();
+
+        if (XMVectorGetX(XMVector3Length(vBasePosition - XMLoadFloat3(&vTargetCenter))) < fDistance)
+        {
+            pValue = pTarget;
         }
     }
 
