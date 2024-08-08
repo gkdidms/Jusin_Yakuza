@@ -150,7 +150,7 @@ public:
         return m_MoveDirection;
     }
 
-    CLandObject* Get_TargetObject() {
+    class CMonster* Get_TargetObject() {
         return m_pTargetObject;
     }
 
@@ -222,10 +222,12 @@ public:
     void Style_Change(BATTLE_STYLE eStyle);
     void Reset_MoveDirection();
 
-    void Set_CutSceneStartMotion(CUTSCENE_ANIMATION_TYPE eType, _uint iFaceAnimIndex);
+    void Set_CutSceneStartMotion(CUTSCENE_ANIMATION_TYPE eType);
     void Set_CutSceneAnim(CUTSCENE_ANIMATION_TYPE eType, _uint iFaceAnimIndex);
     void Play_CutScene();
     void Reset_CutSceneEvent();
+
+    void HitAction_Down();
 
 private:
     void Compute_MoveDirection_FB();
@@ -267,7 +269,7 @@ private:
 
     /* 플레이어 기능 관련 포인터 변수들 */
 private:
-    CLandObject* m_pTargetObject = { nullptr };
+    class CMonster* m_pTargetObject = { nullptr };
     class CItem* m_pTargetItem = { nullptr };
 
     /* 행동, 이동 관련 변수들 */

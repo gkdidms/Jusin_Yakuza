@@ -1058,7 +1058,11 @@ void CPlayer::KRS_KeyInput(const _float& fTimeDelta)
 			// 그에 맞는 커맨드 액션을 실행시ㅕ켜야 한다.
 
 			// 여기에 스킬트리가 완료되면 스킬을 보유중인지에 대한 조건식을 추가로 잡아야한다
-			if (m_iCurrentBehavior == (_uint)KRS_BEHAVIOR_STATE::RUN)
+			if (2 < m_iCurrentHitLevel)
+			{
+				HitAction_Down();
+			}
+			else if (m_iCurrentBehavior == (_uint)KRS_BEHAVIOR_STATE::RUN)
 			{
 				m_iCurrentBehavior = (_uint)KRS_BEHAVIOR_STATE::SKILL_FLY_KICK;
 			}
@@ -1273,7 +1277,11 @@ void CPlayer::KRH_KeyInput(const _float& fTimeDelta)
 		}
 		if (m_pGameInstance->GetMouseState(DIM_RB) == TAP)
 		{
-			if (m_iCurrentBehavior == (_uint)KRH_BEHAVIOR_STATE::ATTACK)
+			if (2 < m_iCurrentHitLevel)
+			{
+				HitAction_Down();
+			}
+			else if (m_iCurrentBehavior == (_uint)KRH_BEHAVIOR_STATE::ATTACK)
 			{
 				m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Change_Animation();
 				m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Combo_Count(true);
@@ -1456,7 +1464,11 @@ void CPlayer::KRC_KeyInput(const _float& fTimeDelta)
 			{
 				// 현재 어택상태인지를 구분해서 마무리 액션을 실행시키거나
 				// 그에 맞는 커맨드 액션을 실행시켜야 한다.
-				if (m_iCurrentBehavior == (_uint)KRC_BEHAVIOR_STATE::ATTACK)
+				if (2 < m_iCurrentHitLevel)
+				{
+					HitAction_Down();
+				}
+				else if (m_iCurrentBehavior == (_uint)KRC_BEHAVIOR_STATE::ATTACK)
 				{
 					m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Combo_Count(true);
 				}
@@ -1715,7 +1727,7 @@ void CPlayer::Reset_MoveDirection()
 	ZeroMemory(m_InputDirection, sizeof(_bool) * MOVE_DIRECTION_END);
 }
 
-void CPlayer::Set_CutSceneStartMotion(CUTSCENE_ANIMATION_TYPE eType, _uint iFaceAnimIndex)
+void CPlayer::Set_CutSceneStartMotion(CUTSCENE_ANIMATION_TYPE eType)
 {
 	/*
 	*	[648]	[p_sh1010_kiryu_gswing]
@@ -1791,6 +1803,12 @@ void CPlayer::Set_CutSceneStartMotion(CUTSCENE_ANIMATION_TYPE eType, _uint iFace
 		m_pModelCom->Set_AnimationIndex(663, 4.f);
 		break;
 	}
+	case Client::CPlayer::OI_KICK:
+	{
+		//[662]	[p_sh23020_oi_upper]
+		m_pModelCom->Set_AnimationIndex(662, 4.f);
+		break;
+	}
 	case Client::CPlayer::OI_UPPER:
 	{
 		//[662]	[p_sh23020_oi_upper]
@@ -1809,7 +1827,7 @@ void CPlayer::Set_CutSceneStartMotion(CUTSCENE_ANIMATION_TYPE eType, _uint iFace
 
 void CPlayer::Set_CutSceneAnim(CUTSCENE_ANIMATION_TYPE eType, _uint iFaceAnimIndex)
 {
-	Set_CutSceneStartMotion(eType, iFaceAnimIndex);
+	Set_CutSceneStartMotion(eType);
 
 	// 없으면 종료
 	auto iter = m_CutSceneAnimation.find(eType);
@@ -1965,15 +1983,7 @@ void CPlayer::Reset_CutSceneEvent()
 		//_matrix LastMatrix = XMLoadFloat4x4(pCutSceneCamera->Get_WorldMatrix());
 		_matrix LastMatrix = m_pGameInstance->Get_Transform_Matrix(CPipeLine::D3DTS_VIEW);
 		_float fLastFov = pCutSceneCamera->Get_Fov();
-		pCutSceneCamera->On_Return();
-
-		// 플레이어 카메라에 해당 정보를 모두 저장해준다.
-		//CPlayerCamera* pCamera = dynamic_cast<CPlayerCamera*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Camera"), CAMERA_PLAYER));
-		////pCamera->Get_TransformCom()->Set_State(CTransform::STATE_POSITION, LastMatrix.r[CTransform::STATE_POSITION]);
-		////pCamera->Get_TransformCom()->Set_WorldMatrix(LastMatrix);
-		////pCamera->Set_StartFov(fLastFov);		//선형보간할 때 시작값 fov 설정
-		////pCamera->Set_FoV(fLastFov);				//현재 fov설정
-		
+		pCutSceneCamera->On_Return();		
 		break;
 	}
 
@@ -1987,6 +1997,24 @@ void CPlayer::Reset_CutSceneEvent()
 
 	// 그리고 체인지
 	m_pSystemManager->Set_Camera(CAMERA_CUTSCENE == m_pSystemManager->Get_Camera() ? CAMERA_PLAYER : CAMERA_CUTSCENE);
+}
+
+void CPlayer::HitAction_Down()
+{
+	if (m_pTargetObject == nullptr ? false : m_pTargetObject->isDown())
+	{
+		if (KRH == m_eCurrentStyle)
+		{
+			// 엎드려 넘어졌는지, 누워서 넘어졌는지 판단해서 실행시켜야함
+			//m_pTargetObject->
+			Set_CutSceneAnim(OI_TRAMPLE_AO, 1);
+			
+		}
+		else
+		{
+			Set_CutSceneAnim(OI_KICK, 1);
+		}
+	}
 }
 
 void CPlayer::Compute_MoveDirection_FB()
@@ -2181,10 +2209,10 @@ void CPlayer::Setting_Target_Enemy()
 		
 		// 기존 타겟중이던 친구의 거리가 3.f 이상 멀어지면 그때 다시 타겟팅한다.
 		if(3.f < vDistance)
-			m_pTargetObject = static_cast<CLandObject*>(m_pCollisionManager->Get_Near_Object(this, pMonsters));
+			m_pTargetObject = static_cast<CMonster*>(m_pCollisionManager->Get_Near_Object(this, pMonsters));
 	}
 	else
-		m_pTargetObject = static_cast<CLandObject*>(m_pCollisionManager->Get_Near_Object(this, pMonsters));
+		m_pTargetObject = static_cast<CMonster*>(m_pCollisionManager->Get_Near_Object(this, pMonsters));
 }
 
 void CPlayer::Setting_Target_Item()
