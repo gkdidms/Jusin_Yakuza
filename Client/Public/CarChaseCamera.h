@@ -12,6 +12,7 @@ public:
     {
         _float fSensor;
         const _float4x4* pPlayerMatrix;
+        const _float4x4* pPlayerBoneMatrix;
     } CARCHASE_CAMERA_DESC;
 
 private:
@@ -35,6 +36,9 @@ public:
 private:
     class CSystemManager* m_pSystemManager = { nullptr };
     const _float4x4* m_pPlayerMatrix = { nullptr };
+    const _float4x4* m_pPlayerBoneMatrix = { nullptr };
+
+    _float4x4 m_pPlayerWorldMatrix = {};
 
     _uint m_iStageDir = { DIR_END };
     _vector m_vDir = {1.f, 0.f, 0.f, 0.f };
