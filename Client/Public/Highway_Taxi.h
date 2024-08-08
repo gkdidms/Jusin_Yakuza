@@ -55,6 +55,10 @@ protected:
 
     _bool m_isStop = { false };
 
+    //ui 연동용으로 제작
+    _float m_fCarHp = { 300.f };
+    _float m_fMaxCarHp = { 300.f };
+
 protected:
     virtual void Change_Animation();
     void Move_Waypoint(const _float& fTimeDelta);
@@ -63,7 +67,10 @@ protected:
     virtual HRESULT Add_Components() override;
     HRESULT Add_Objects();
     virtual HRESULT Bind_ResourceData() override;
-
+public:
+    _float Get_CarHp() { return m_fCarHp; }
+    _float Get_CarMaxHp() { return m_fMaxCarHp; }
+    void* Get_Kiryu() { return m_pKiryu; }
 public:
     static CHighway_Taxi* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
     virtual CGameObject* Clone(void* pArg);

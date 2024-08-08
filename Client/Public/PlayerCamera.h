@@ -55,7 +55,7 @@ private:
 
     // 이전 월드매트릭스로 선형보간하는 함수
     void    Return_PrevWorld(const _float& fTimeDelta);
-    void    Reset_RetureVariables();            // 관련 변수 초기화 함수
+    void    Reset_ReturnVariables();            // 관련 변수 초기화 함수
 
     void    Play_FovLerp(const _float& fTimeDelta);
 
@@ -113,10 +113,8 @@ private:
     _bool       m_isReturn = { false };
     _float4x4    m_StartMatrix;         // 컷신 캠으로 변경 시 지금상태의 매트릭스를 저장
     _float4x4    m_PrevMatrix;         // 컷신 캠으로 변경 시 지금상태의 매트릭스를 저장
-    _float       m_fLerpRatio = { 0.f };    // 보간 비율
-    float       m_fElapsedTime = 0.0f; // 경과 시간
-    float       m_fTotalLerpTime = 0.5f; // 보간에 걸리는 총 시간 (초 단위)
-    float       m_fStartFov = 0.0f; // 보간에 걸리는 총 시간 (초 단위)
+
+    _float       m_fStartFov = 0.0f; 
 
     CAM_STATE        m_eCamState = { CAM_STATE_END };
 

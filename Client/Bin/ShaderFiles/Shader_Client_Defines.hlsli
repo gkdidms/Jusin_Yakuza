@@ -113,6 +113,9 @@ float g_RDCount = { 1.f };
 
 float Opacity = { 0.f };
 
+float fSpecularPower = { 0.f };
+vector vSpecularColor;
+
 float AssetShader = { 0.f };
 float DisableRDRT = { 0.f };
 float Engine = { 0.f };

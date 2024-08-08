@@ -54,6 +54,7 @@ public:
     // CLandObject을(를) 통해 상속됨
     string Get_CurrentAnimationName() override;
     const _float4x4* Get_BoneMatrix(const char* strBoneName);
+
 private:
     virtual void Change_Animation();
     
@@ -90,6 +91,11 @@ private:
     _float m_fHP = { 300.f };
     _float m_fHitEye = { 100.f };
 
+    _float m_fMaxHP = { 300.f };
+    _float m_fMaxHitEye = { 100.f };
+
+
+
     _uint m_iCurrentAmmo = { MAX_AMMO };
 
     _bool           m_isLeft = { false };           // 시작 시 오른쪽부터 시작한다
@@ -97,6 +103,18 @@ private:
     _uint           m_iStageDir = { DIR_END };
     _bool           m_isStarted = { false };
     _bool           m_isHitEyeCharging = { true };
+
+public:
+    _float Get_MaxHP() { return m_fMaxHP; }
+    _float Get_HP() { return m_fHP; }
+    _float Get_MaxHitEye() { return m_fMaxHitEye; }
+    _float Get_HitEye() { return m_fHitEye; }
+   const _uint Get_MaxAmmo() { return MAX_AMMO; }
+    _uint Get_Ammo() { return m_iCurrentAmmo; }
+
+    //아래는 ui에서 확인한 코드 지워도됨
+    void Shot() { m_iCurrentAmmo--; }
+    void Damage() { m_fHP -= 2.f; }
 
 public:
     static CHighway_Kiryu* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

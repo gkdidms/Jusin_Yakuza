@@ -84,28 +84,37 @@ HRESULT CUIManager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 	
 	CUIScene::SCENE_DESC Desc{};
 	Desc.isLoading = true;
-
+	Desc.strSceneName = TEXT("Loading");
 	CUIScene* pScene = CUILoading::Create(m_pDevice ,m_pContext ,&Desc);
 	m_AllScene.emplace(make_pair(TEXT("Loading"), pScene));
 
+	Desc.strSceneName = TEXT("Logo");
 	 pScene = CUILogo::Create(m_pDevice, m_pContext, &Desc);
 	m_AllScene.emplace(make_pair(TEXT("Logo"), pScene));
 
+	Desc.strSceneName = TEXT("NowLoading");
 	pScene = CUINowLoading::Create(m_pDevice, m_pContext, &Desc);
 	m_AllScene.emplace(make_pair(TEXT("NowLoading"), pScene));
 
+	Desc.strSceneName = TEXT("MainMenu");
 	pScene = CUIMainMenu::Create(m_pDevice, m_pContext, &Desc);
 	m_AllScene.emplace(make_pair(TEXT("MainMenu"), pScene));
 
-	pScene = CUIMenu::Create(m_pDevice, m_pContext);
+
+
+	Desc.isLoading = false;
+	Desc.strSceneName = TEXT("Menu");
+	pScene = CUIMenu::Create(m_pDevice, m_pContext,&Desc);
 	m_AllScene.emplace( make_pair(TEXT("Menu"), pScene) );
 
-	pScene = CUILife::Create(m_pDevice, m_pContext);
+	Desc.strSceneName = TEXT("Life");
+	pScene = CUILife::Create(m_pDevice, m_pContext,&Desc);
 	m_AllScene.emplace(make_pair(TEXT("Life"), pScene));
 	Safe_AddRef(pScene);
 	m_AlwaysUI.push_back(pScene);
 
-	pScene = CUIMoney::Create(m_pDevice, m_pContext);
+	Desc.strSceneName = TEXT("Money");
+	pScene = CUIMoney::Create(m_pDevice, m_pContext,&Desc);
 	m_AllScene.emplace(make_pair(TEXT("Money"), pScene));
 	Safe_AddRef(pScene);
 	m_AlwaysUI.push_back(pScene);
@@ -116,28 +125,38 @@ HRESULT CUIManager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 
 	InvenDesc.pInventory = m_pInventory;
 
+	InvenDesc.isLoading = false;
+	InvenDesc.strSceneName = TEXT("Inven");
 	pScene = CUIInven::Create(m_pDevice, m_pContext ,&InvenDesc);
 	m_AllScene.emplace(make_pair(TEXT("Inven"), pScene));
 
-	pScene = CUITutorial::Create(m_pDevice, m_pContext);
+
+	Desc.strSceneName = TEXT("Tutorial");
+	pScene = CUITutorial::Create(m_pDevice, m_pContext, &Desc);
 	m_AllScene.emplace(make_pair(TEXT("Tutorial"), pScene));
 
-	pScene = CUITalk::Create(m_pDevice, m_pContext);
+	Desc.strSceneName = TEXT("Talk");
+	pScene = CUITalk::Create(m_pDevice, m_pContext, &Desc);
 	m_AllScene.emplace(make_pair(TEXT("Talk"), pScene));
 
-	pScene = CUISkillMenu::Create(m_pDevice, m_pContext);
+	Desc.strSceneName = TEXT("SkillMenu");
+	pScene = CUISkillMenu::Create(m_pDevice, m_pContext, &Desc);
 	m_AllScene.emplace(make_pair(TEXT("SkillMenu"), pScene));
 
-	pScene = CUISkillHolligan::Create(m_pDevice, m_pContext);
+	Desc.strSceneName = TEXT("SkillHolligan");
+	pScene = CUISkillHolligan::Create(m_pDevice, m_pContext, &Desc);
 	m_AllScene.emplace(make_pair(TEXT("SkillHolligan"), pScene));
 
-	pScene = CUISkillRush::Create(m_pDevice, m_pContext);
+	Desc.strSceneName = TEXT("SkillRush");
+	pScene = CUISkillRush::Create(m_pDevice, m_pContext,&Desc);
 	m_AllScene.emplace(make_pair(TEXT("SkillRush"), pScene));
 
-	pScene = CUISkillDestroyer::Create(m_pDevice, m_pContext);
+	Desc.strSceneName = TEXT("SkillDestroyer");
+	pScene = CUISkillDestroyer::Create(m_pDevice, m_pContext, &Desc);
 	m_AllScene.emplace(make_pair(TEXT("SkillDestroyer"), pScene));
 
-	pScene = CUICarchase::Create(m_pDevice, m_pContext);
+	Desc.strSceneName = TEXT("Carchase");
+	pScene = CUICarchase::Create(m_pDevice, m_pContext, &Desc);
 	m_AllScene.emplace(make_pair(TEXT("Carchase"), pScene));
 
 	return S_OK;
@@ -203,7 +222,7 @@ HRESULT CUIManager::Tick(const _float& fTimeDelta)
 
 	if (!m_PlayScene.empty() )
 	{
-		if(!m_PlayScene.back()->Get_isLoading())
+		if(!m_PlayScene.back()->Get_isLoading()	&&	m_PlayScene.back()->Get_SceneName()!= TEXT("Carchase"))
 		{
 			for (auto& pUIScene : m_AlwaysUI)
 			{
@@ -246,7 +265,7 @@ HRESULT CUIManager::Late_Tick(const _float& fTimeDelta)
 	{
 		if (!m_PlayScene.empty())
 		{
-			if (!m_PlayScene.back()->Get_isLoading())
+			if (!m_PlayScene.back()->Get_isLoading() && m_PlayScene.back()->Get_SceneName() != TEXT("Carchase"))
 			{
 				for (auto& pUIScene : m_AlwaysUI)
 				{
@@ -265,7 +284,7 @@ HRESULT CUIManager::Late_Tick(const _float& fTimeDelta)
 #else
 	if (!m_PlayScene.empty())
 	{
-		if (!m_PlayScene.back()->Get_isLoading())
+		if (!m_PlayScene.back()->Get_isLoading() && m_PlayScene.back()->Get_SceneName() != TEXT("Carchase"))
 		{
 			for (auto& pUIScene : m_AlwaysUI)
 			{
@@ -329,4 +348,12 @@ void CUIManager::Start_Talk()
 void CUIManager::Change_TutorialUI(_uint iUIType)
 {
 	dynamic_cast<CUITutorial*>(m_PlayScene.back())->Set_State(iUIType);
+}
+
+_bool CUIManager::Check_Scene(wstring SceneName)
+{
+	if (SceneName == m_PlayScene.back()->Get_SceneName())
+		return true;
+	else
+		return false;
 }

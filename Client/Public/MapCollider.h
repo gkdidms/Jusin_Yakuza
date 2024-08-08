@@ -25,6 +25,12 @@ public:
 	virtual void Late_Tick(const _float& fTimeDelta) override;
 	virtual HRESULT Render() override;
 
+public:
+	const vector<CCollider*>& Get_Colliders(){
+		return m_vCollider;
+	}
+
+
 private:
 	class CCollision_Manager* m_pCollisionManager = { nullptr };
 

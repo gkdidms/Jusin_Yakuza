@@ -44,8 +44,8 @@ CKiryu_KRS_PickUp::CKiryu_KRS_PickUp()
 
 void CKiryu_KRS_PickUp::Tick(const _float& fTimeDelta)
 {
-	// 콤보중일때만 Look 시킨다.
-	if (0 < m_iComboCount)
+	// 콤보중이거나 던질때만 Look 시킨다.
+	if (0 < m_iComboCount || 6 == m_iCurrentIndex)
 	{
 		CLandObject* pTargetObject = m_pPlayer->Get_TargetObject();
 
