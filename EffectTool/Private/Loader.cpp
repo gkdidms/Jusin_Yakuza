@@ -145,6 +145,10 @@ HRESULT CLoader::Loading_For_TestLevel()
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/UVGrid.dds"), 1))))
 		return E_FAIL;
 
+	/* Prototype_Component_Texture_Fluid*/
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Texture_Fluid"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/e_j_0015_fluid01.dds"), 1))))
+		return E_FAIL;
 
 	/* Prototype_Component_Texture_Sphere */
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Texture_Sphere"),
