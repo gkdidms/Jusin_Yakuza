@@ -45,7 +45,7 @@ HRESULT CUICarchase::Remove_Target(_uint iIndex)
 
     Safe_Release(pTarget->HPBarBackUI);
     Safe_Release(pTarget->HPBarUI);
-    Safe_Release(pTarget->pMonsterAddr);
+    //Safe_Release(pTarget->pMonsterAddr);
     Safe_Release(pTarget->TargetingUI);
 
     m_Targets.erase(iIndex);
@@ -132,7 +132,7 @@ HRESULT CUICarchase::Add_TargetingRound(_uint iIndex, class CCarChase_Monster* p
     Desc.pMonsterAddr = pMonster;
 
     m_Targets.emplace(iIndex, Desc);
-    Safe_AddRef(pMonster);
+  //  Safe_AddRef(pMonster);
     
     return S_OK;
 }
@@ -242,7 +242,7 @@ void CUICarchase::Free()
     {
         Safe_Release(pTarget.second.HPBarBackUI);
         Safe_Release(pTarget.second.HPBarUI);
-        Safe_Release(pTarget.second.pMonsterAddr);
+       // Safe_Release(pTarget.second.pMonsterAddr);
         Safe_Release(pTarget.second.TargetingUI);
     }
     m_Targets.clear();
