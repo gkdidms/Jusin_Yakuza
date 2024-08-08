@@ -33,6 +33,7 @@ HRESULT CCamera::Initialize(void* pArg)
 	m_fFar = pCameraDesc->fFar;
 
 	m_fDefaultFovY = m_fFovY;
+	m_fTargetFovY = m_fFovY;
 	m_fDefaultNear = m_fNear;
 	m_fDefaultFar = m_fFar;
 
@@ -46,6 +47,7 @@ void CCamera::Priority_Tick(const _float& fTimeDelta)
 void CCamera::Tick(const _float& fTimeDelta, _bool isAuto)
 {
 	Shaking(fTimeDelta);
+	Zoom(fTimeDelta);
 
 	if (isAuto)
 		m_WorldMatrix = *m_pTransformCom->Get_WorldFloat4x4();
@@ -111,21 +113,34 @@ void CCamera::Rotation(_float4x4* OrbitMatrix, _fvector vAxis, _float fRadian)
 
 void CCamera::Zoom(const _float& fTimeDelta)
 {
-	//_vector vDirect = XMVector3Normalize(m_pGameInstance->Get_CamLook());
-	//_vector vCamPos = m_pGameInstance->Get_CamPosition();
-	//if (fTimeDelta < 0)
-	//	vCamPos -= vDirect;
-	//else if (fTimeDelta > 0)
-	//	vCamPos += vDirect;
+	if (!m_isZooming) return;
 
-	//m_pTransformCom->Set_State(CTransform::STATE_POSITION, vCamPos);
+	// 커스텀 보간 비율이 0이 아니라면 커스텀된대로 보간해준다
+	if (-1.f != m_fCustomLerpRatio)
+	{
+		m_fFovY = LerpFloat(m_fDefaultFovY, m_fTargetFovY, m_fCustomLerpRatio);
+	}
+	else
+	{
+		// 경과 시간 업데이트
+		m_fElapsedTime += fTimeDelta;
+		m_fLerpRatio = m_fElapsedTime / m_fTotalLerpTime;
 
-	m_fFovY += fTimeDelta;
+		// 보간 비율이 1을 초과하지 않도록 제한
+		if (m_fLerpRatio >= 1.0f)
+		{
+			m_fLerpRatio = 1.0f;
+			m_isZooming = false; // 보간 완료
+		}
 
-	if (m_fFovY > 2.f)
-		m_fFovY = 2.f;
-	else if (m_fFovY < 0.03f)
-		m_fFovY = 0.03f;
+		m_fFovY = LerpFloat(m_fDefaultFovY, m_fTargetFovY, m_fLerpRatio);
+	}
+
+	// 여기서 false가 나온다는것은, 완료 이후라는 것으로 초기화해줘야한다.
+	if (!m_isZooming)
+	{
+		Reset_ZoomVariables();
+	}
 }
 
 void CCamera::LookAt(_float4x4* OrbitMatrix, _fvector vTargetPos, _fvector vPosition)
@@ -170,6 +185,17 @@ void CCamera::Shaking(_float fTimeDelta)
 		m_fShakeTime = 0.f;
 		m_isShaking = false;
 	}
+}
+
+void CCamera::Reset_ZoomVariables()
+{
+	m_isZooming = { false };
+	m_fLerpRatio = { 0.f };    // 보간 비율
+	m_fElapsedTime = 0.0f; // 경과 시간
+	m_fTotalLerpTime = 0.5f; // 보간에 걸리는 총 시간 (초 단위)
+	m_fCustomLerpRatio = -1.f;
+	m_fTargetFovY = m_fDefaultFovY;
+	m_fFovY = m_fDefaultFovY;
 }
 
 HRESULT CCamera::Render()

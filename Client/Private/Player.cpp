@@ -24,6 +24,7 @@
 
 #include "Monster.h"
 #include "Item.h"
+#include "MapCollider.h"
 
 #pragma region 행동 관련 헤더들
 #include "Kiryu_KRS_Attack.h"
@@ -185,6 +186,17 @@ void CPlayer::Tick(const _float& fTimeDelta)
 	Synchronize_Root(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")));
 
 #ifdef _DEBUG
+
+	if (m_pGameInstance->GetKeyState(DIK_M) == TAP)
+	{
+		m_iFaceAnimIndex = 8;
+		On_Separation_Face();
+	}	
+	if (m_pGameInstance->GetKeyState(DIK_N) == TAP)
+	{
+		Off_Separation_Face();
+	}
+
 	if (m_pGameInstance->GetKeyState(DIK_Z) == TAP)
 	{
 		//TODO: 여기에서 enum값을 필요한 애니메이션으로 바꾸면 해당하는 컷신이 실행된당
@@ -203,6 +215,7 @@ void CPlayer::Tick(const _float& fTimeDelta)
 			m_pModelCom->Play_Animation_Separation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")), m_iFaceAnimIndex, m_SeparationAnimComs[FACE_ANIM], false, (_int)FACE_ANIM);
 			m_pModelCom->Play_Animation_Separation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")), m_iDefaultAnimIndex, m_SeparationAnimComs[DEFAULT_ANIM], false, (_int)DEFAULT_ANIM);
 			m_pModelCom->Play_Animation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")));
+			Play_CutScene();
 		}
 		else
 		{
@@ -218,6 +231,7 @@ void CPlayer::Tick(const _float& fTimeDelta)
 		m_pModelCom->Play_Animation_Separation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")), m_iHandAnimIndex, m_SeparationAnimComs[HAND_ANIM], false, (_int)HAND_ANIM);
 		m_pModelCom->Play_Animation_Separation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")), m_iFaceAnimIndex, m_SeparationAnimComs[FACE_ANIM], false, (_int)FACE_ANIM);
 		m_pModelCom->Play_Animation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")));
+		Play_CutScene();
 	}
 	else
 	{
@@ -236,6 +250,12 @@ void CPlayer::Tick(const _float& fTimeDelta)
 	for (auto& pEffect : m_pTrailEffects)
 		pEffect.second->Tick(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")));
 
+	// 히트액션이 가능한 상태인지 구분한다.
+	if (2 < m_iCurrentHitLevel)
+	{
+		m_CanHitAction = true;
+	}
+
 	// TODO: 튜토리얼 UI 정리된 이후 켜야함
 	//if(!m_pUIManager->IsOpend())
 		KeyInput(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")));
@@ -248,6 +268,7 @@ void CPlayer::Tick(const _float& fTimeDelta)
 	Effect_Control_Aura();
 	Setting_Target_Enemy();
 	Setting_Target_Item();
+	Setting_Target_Wall();
 }
 
 void CPlayer::Late_Tick(const _float& fTimeDelta)
@@ -832,43 +853,55 @@ _int CPlayer::Compute_Target_Direction(CLandObject* pAttackedObject)
 	return iDirection;
 }
 
-_int CPlayer::Compute_Target_Direction_Pos(CGameObject* pAttackedObject)
+_int CPlayer::Compute_Target_Direction_Pos(_fvector vTargetPos)
 {
 	// F, B, L, R
 	_int iDirection = -1;
 
-	_vector vTargetPos = pAttackedObject->Get_TransformCom()->Get_State(CTransform::STATE_POSITION);
 	_vector vMyPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 
 	_vector vDir = XMVector3Normalize(vMyPos - vTargetPos);
+	vDir = XMVectorSetY(vDir, 0.f);
 
 	_vector vMyLook = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
 	_vector vMyRight = m_pTransformCom->Get_State(CTransform::STATE_RIGHT);
 
 	// Look 벡터와의 내적 계산
-	float fDotLook = XMVector3Dot(vMyLook, vDir).m128_f32[0];
+	_float fDotLook = XMVector3Dot(vMyLook, vDir).m128_f32[0];
 	// Right 벡터와의 내적 계산
-	float fDotRight = XMVector3Dot(vMyRight, vDir).m128_f32[0];
-
+	_float fDotRight = XMVector3Dot(vMyRight, vDir).m128_f32[0];
 	// 앞/뒤 구분
-	if (fDotLook > XMConvertToRadians(45.f)) {
+	_float cos45 = cosf(XMConvertToRadians(45.f));
+	iDirection = -1; // 초기화
+
+	if (fDotLook > cos45) {
 		// 앞쪽 (코사인 45도보다 크면 앞쪽으로 간주)
-		iDirection = 0;
-	}
-	else if (fDotLook < -XMConvertToRadians(45.f)) {
-		// 뒤쪽
 		iDirection = 1;
+	}
+	else if (fDotLook < -cos45) {
+		// 뒤쪽
+		iDirection = 0;
 	}
 
 	// 좌/우 구분 (앞/뒤가 아닌 경우에만 검사)
 	if (iDirection == -1) {
-		if (fDotRight > XMConvertToRadians(45.f)) {
+		if (fDotRight > cos45) {
 			// 오른쪽
 			iDirection = 2;
 		}
-		else if (fDotRight < -XMConvertToRadians(45.f)) {
+		else if (fDotRight < -cos45) {
 			// 왼쪽
 			iDirection = 3;
+		}
+	}
+
+	// 만약 모든 조건에 해당되지 않는 경우를 처리 (여기서 추가 검사를 할 수도 있음)
+	if (iDirection == -1) {
+		if (fDotLook > 0) {
+			iDirection = 1; // 앞쪽으로 간주
+		}
+		else {
+			iDirection = 0; // 뒤쪽으로 간주
 		}
 	}
 
@@ -1061,7 +1094,16 @@ void CPlayer::KRS_KeyInput(const _float& fTimeDelta)
 			// 그에 맞는 커맨드 액션을 실행시ㅕ켜야 한다.
 
 			// 여기에 스킬트리가 완료되면 스킬을 보유중인지에 대한 조건식을 추가로 잡아야한다
-			if (m_iCurrentBehavior == (_uint)KRS_BEHAVIOR_STATE::RUN)
+			if (m_CanHitAction)
+			{
+				if (m_pTargetWall != nullptr)
+				{
+					HitAction_WallBack();
+				}
+				else if (m_pTargetObject == nullptr ? false : m_pTargetObject->isDown())
+					HitAction_Down();
+			}
+			else if (m_iCurrentBehavior == (_uint)KRS_BEHAVIOR_STATE::RUN)
 			{
 				m_iCurrentBehavior = (_uint)KRS_BEHAVIOR_STATE::SKILL_FLY_KICK;
 			}
@@ -1276,7 +1318,23 @@ void CPlayer::KRH_KeyInput(const _float& fTimeDelta)
 		}
 		if (m_pGameInstance->GetMouseState(DIM_RB) == TAP)
 		{
-			if (m_iCurrentBehavior == (_uint)KRH_BEHAVIOR_STATE::ATTACK)
+			if (m_CanHitAction)
+			{
+				if (m_pTargetWall != nullptr)
+				{
+					HitAction_WallBack();
+				}
+				else if (m_pTargetObject == nullptr ? false : m_pTargetObject->isDown())
+				{
+					HitAction_Down();
+				}
+				// 몬스터가 어택중일 때 실행시킬 것
+				//else if (m_pTargetObject == nullptr ? false : m_pTargetObject->isDown())
+				//{
+				//	HitAction_CounterElbow();
+				//}
+			}
+			else if (m_iCurrentBehavior == (_uint)KRH_BEHAVIOR_STATE::ATTACK)
 			{
 				m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Change_Animation();
 				m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Combo_Count(true);
@@ -1445,7 +1503,7 @@ void CPlayer::KRC_KeyInput(const _float& fTimeDelta)
 					_uint iCount = static_cast<CKiryu_KRC_Attack*>(m_AnimationTree[KRC].at((_uint)KRC_BEHAVIOR_STATE::ATTACK))->Get_ComboCount();
 
 					Desc.iComboCount = iCount > 3 ? 3 : iCount;
-					Desc.isLeft = Compute_Target_Direction_Pos(m_pTargetItem) == 3 ? true : false;
+					Desc.isLeft = Compute_Target_Direction_Pos(m_pTargetItem->Get_TransformCom()->Get_State(CTransform::STATE_POSITION)) == 3 ? true : false;
 
 					m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Event(&Desc);
 
@@ -1459,7 +1517,12 @@ void CPlayer::KRC_KeyInput(const _float& fTimeDelta)
 			{
 				// 현재 어택상태인지를 구분해서 마무리 액션을 실행시키거나
 				// 그에 맞는 커맨드 액션을 실행시켜야 한다.
-				if (m_iCurrentBehavior == (_uint)KRC_BEHAVIOR_STATE::ATTACK)
+				if (m_CanHitAction)
+				{
+					if(m_pTargetObject == nullptr ? false : m_pTargetObject->isDown())
+						HitAction_Down();
+				}
+				else if (m_iCurrentBehavior == (_uint)KRC_BEHAVIOR_STATE::ATTACK)
 				{
 					m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Combo_Count(true);
 				}
@@ -1668,6 +1731,8 @@ void CPlayer::Compute_Height()
 
 void CPlayer::Change_Animation(_uint iIndex, _float fInterval)
 {
+	if (m_isCutSceneStartMotion) return;
+
 	if (m_pModelCom->Set_AnimationIndex(iIndex, fInterval))
 	{
 		// 실제로 애니메이션 체인지가 일어났을 때 켜져있던 어택 콜라이더를 전부 끈다
@@ -1683,6 +1748,8 @@ void CPlayer::Change_Animation(_uint iIndex, _float fInterval)
 
 void CPlayer::Change_ResetAnimaition(_uint iIndex, _float fInterval)
 {
+	if (m_isCutSceneStartMotion) return;
+
 	m_pModelCom->Reset_Animation(iIndex);
 
 	if (m_pModelCom->Set_AnimationIndex(iIndex, fInterval))
@@ -1714,8 +1781,109 @@ void CPlayer::Reset_MoveDirection()
 	ZeroMemory(m_InputDirection, sizeof(_bool) * MOVE_DIRECTION_END);
 }
 
+void CPlayer::Set_CutSceneStartMotion(CUTSCENE_ANIMATION_TYPE eType)
+{
+	/*
+	*	[648]	[p_sh1010_kiryu_gswing]
+		[650]	[p_sh11330_noukudaki_climax]
+		[651]	[p_sh1511_oi_kickover_utu_c]
+		[652]	[p_sh1520_oiuchi_head_punch_ao]
+		[653]	[p_sh1530_nage_oiuchi_lapel]
+		[654]	[p_sh1540_nage_oiuchi_neck]
+		[655]	[p_sh1550_oi_combo]
+		[656]	[p_sh1620_mount]
+		[657]	[p_sh20021_gougeki_c]
+		[659]	[p_sh2040_pole_knock_lapel]
+		[660]	[p_sh2140_brainbuster_bench]
+		[661]	[p_sh23000_kabe_airon]
+		[662]	[p_sh23020_oi_upper]
+		[663]	[p_sh3261_doramukan_88]
+		[664]	[p_sh5470_gao_kneekick]
+	*/
+
+	m_isCutSceneStartMotion = true;
+	switch (eType)
+	{
+	case Client::CPlayer::GOUGEKI_C:
+	{
+		//[657]	[p_sh20021_gougeki_c]
+		m_pModelCom->Set_AnimationIndex(657, 4.f);
+		break;
+	}
+	case Client::CPlayer::OI_TRAMPLE_AO:
+	{
+		//[655]	[p_sh1550_oi_combo]
+		m_pModelCom->Set_AnimationIndex(655, 4.f);
+		break;
+
+	}
+	case Client::CPlayer::OI_KICKOVER_UTU_C:
+	{
+		//[651]	[p_sh1511_oi_kickover_utu_c]
+		m_pModelCom->Set_AnimationIndex(651, 4.f);
+		break;
+
+	}
+	case Client::CPlayer::KIRYU_GSWING:
+	{
+		//[648]	[p_sh1010_kiryu_gswing]
+		m_pModelCom->Set_AnimationIndex(648, 4.f);
+		break;
+
+	}
+	case Client::CPlayer::LAPEL_OIUCHI_NECK:
+	{
+		//[653]	[p_sh1530_nage_oiuchi_lapel]
+		m_pModelCom->Set_AnimationIndex(653, 4.f);
+		break;
+
+	}
+	case Client::CPlayer::NAGE_OIUCHI_NECK:
+	{
+		//[654]	[p_sh1540_nage_oiuchi_neck]
+		m_pModelCom->Set_AnimationIndex(651, 4.f);
+		break;
+
+	}
+	case Client::CPlayer::POLE_KNOCK_LAPEL:
+	{
+		//	[659]	[p_sh2040_pole_knock_lapel]
+		m_pModelCom->Set_AnimationIndex(659, 4.f);
+		break;
+	}
+	case Client::CPlayer::DORAMUKAN_88:
+	{
+		//	[663]	[p_sh3261_doramukan_88]
+		m_pModelCom->Set_AnimationIndex(663, 4.f);
+		break;
+	}
+	case Client::CPlayer::OI_KICK:
+	{
+		//[662]	[p_sh23020_oi_upper]
+		m_pModelCom->Set_AnimationIndex(662, 4.f);
+		break;
+	}
+	case Client::CPlayer::OI_UPPER:
+	{
+		//[662]	[p_sh23020_oi_upper]
+		m_pModelCom->Set_AnimationIndex(662, 4.f);
+		break;
+	}
+	// 시작 애니메이션이 없는 컷신이라면 false로 돌려준다.
+	default:
+	{
+		m_isCutSceneStartMotion = false;
+		Reset_CutSceneEvent();
+		break;
+	}
+	}
+
+}
+
 void CPlayer::Set_CutSceneAnim(CUTSCENE_ANIMATION_TYPE eType, _uint iFaceAnimIndex)
 {
+	Set_CutSceneStartMotion(eType);
+
 	// 없으면 종료
 	auto iter = m_CutSceneAnimation.find(eType);
 	if (m_CutSceneAnimation.end() == iter) return;
@@ -1757,12 +1925,26 @@ void CPlayer::Set_CutSceneAnim(CUTSCENE_ANIMATION_TYPE eType, _uint iFaceAnimInd
 		}
 		j++;
 	}
-
-	Reset_CutSceneEvent();
 }
 
 void CPlayer::Play_CutScene()
 {
+	if (m_isCutSceneStartMotion)
+	{
+		CCamera* pCamera = dynamic_cast<CCamera*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Camera"), m_pSystemManager->Get_Camera()));
+		_double fRatio = *m_pModelCom->Get_AnimationCurrentPosition() / *m_pModelCom->Get_AnimationDuration();
+		pCamera->Set_CustomRatio(static_cast<_float>(fRatio));
+
+		pCamera->Set_TargetFoV(XMConvertToRadians(30.f));
+		pCamera->Start_Zoom();
+		
+		if (m_pModelCom->Get_AnimFinished())
+		{
+			m_isCutSceneStartMotion = false;
+			Reset_CutSceneEvent();
+		}
+	}
+
 	if (CUTSCENE == m_eAnimComType)
 	{
 		// 카메라 모델의 애니메이션이 종료되면 똑같이 플레이어의 애니메이션도 종료된 것이기 때문에 기존상태로 되돌린다.
@@ -1782,6 +1964,8 @@ void CPlayer::Play_CutScene()
 			//m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos);			
 			return;
 		}
+
+		On_Separation_Face();
 
 		// 실제로 모델의 애니메이션을 돌리는건 컴포넌트이고, m_pCameraModel는 카메라 애니메이션을 실행하는 모델이라 랜더하지않는다
 		m_pModelCom->Play_Animation_CutScene(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")), m_pAnimCom, false, m_iCutSceneAnimIndex, false);
@@ -1807,7 +1991,7 @@ void CPlayer::Play_CutScene()
 
 		// 최종 뷰 행렬을 계산
 		_matrix viewMatrix = XMMatrixInverse(nullptr, finalMat);
-		
+
 		bool containsNaN = XMMatrixIsNaN(viewMatrix);
 		if (containsNaN)
 			return;
@@ -1844,7 +2028,7 @@ void CPlayer::Reset_CutSceneEvent()
 
 		// 컷신으로 돌릴 때, 컷신 카메라를 초기화해준다.
 		CCutSceneCamera* pCutSceneCamera = dynamic_cast<CCutSceneCamera*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Camera"), CAMERA_CUTSCENE));
-		pCutSceneCamera->Reset_RetureVariables();
+		pCutSceneCamera->Reset_ReturnVariables();
 		break;
 	}
 
@@ -1855,15 +2039,7 @@ void CPlayer::Reset_CutSceneEvent()
 		//_matrix LastMatrix = XMLoadFloat4x4(pCutSceneCamera->Get_WorldMatrix());
 		_matrix LastMatrix = m_pGameInstance->Get_Transform_Matrix(CPipeLine::D3DTS_VIEW);
 		_float fLastFov = pCutSceneCamera->Get_Fov();
-		pCutSceneCamera->On_Return();
-
-		// 플레이어 카메라에 해당 정보를 모두 저장해준다.
-		//CPlayerCamera* pCamera = dynamic_cast<CPlayerCamera*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Camera"), CAMERA_PLAYER));
-		////pCamera->Get_TransformCom()->Set_State(CTransform::STATE_POSITION, LastMatrix.r[CTransform::STATE_POSITION]);
-		////pCamera->Get_TransformCom()->Set_WorldMatrix(LastMatrix);
-		////pCamera->Set_StartFov(fLastFov);		//선형보간할 때 시작값 fov 설정
-		////pCamera->Set_FoV(fLastFov);				//현재 fov설정
-		
+		pCutSceneCamera->On_Return();		
 		break;
 	}
 
@@ -1877,6 +2053,56 @@ void CPlayer::Reset_CutSceneEvent()
 
 	// 그리고 체인지
 	m_pSystemManager->Set_Camera(CAMERA_CUTSCENE == m_pSystemManager->Get_Camera() ? CAMERA_PLAYER : CAMERA_CUTSCENE);
+}
+
+void CPlayer::HitAction_Down()
+{
+	if (KRH == m_eCurrentStyle)
+	{
+		// 엎드려 넘어졌는지, 누워서 넘어졌는지 판단해서 실행시켜야함
+		/*
+		* DIR_F : 앞으로 누워잇음
+		* DIR_B : 뒤로 엎어져잇음
+		* DIR_END : 방향을 가져오지 못함
+		*/
+		Set_CutSceneAnim(m_pTargetObject->Get_DownDir() == DIR_F ? OI_TRAMPLE_AO : OI_KICKOVER_UTU_C, 1);
+			
+	}
+	else
+	{
+		Set_CutSceneAnim(m_pTargetObject->Get_DownDir() == DIR_F ? OI_UPPER : OI_KICK, 1);
+	}
+}
+
+void CPlayer::HitAction_WallBack()
+{
+	_vector vMyPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	_vector vWallPos = XMLoadFloat3(&m_pTargetWall->Get_Center());
+
+	// F, B, L, R
+	_int iDir = Compute_Target_Direction_Pos(vWallPos);
+	if (B == iDir)
+	{
+		// TODO: 배벽의 극) 위치 Set해줘야함.
+		//CBounding_AABB::BOUNDING_AABB_DESC* pDesc = reinterpret_cast<CBounding_AABB::BOUNDING_AABB_DESC*>(m_pTargetWall->Get_Desc());
+		//_vector vExtents = XMLoadFloat3(&pDesc->vExtents);
+
+		//_vector vPos = vWallPos;
+		//vPos.m128_f32[0] += vExtents.m128_f32[0];
+		//	
+
+		//_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+
+		//vPos.m128_f32[0] += 1.f;
+		//m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos);
+
+		Set_CutSceneAnim(m_eCurrentStyle == KRS ? HAIHEKI_KICK : HAIHEKI_PUNCH, 1);
+	}
+}
+
+void CPlayer::HitAction_CounterElbow()
+{
+	Set_CutSceneAnim(KOBUSHIKUDAKI, 8);
 }
 
 void CPlayer::Compute_MoveDirection_FB()
@@ -2071,10 +2297,10 @@ void CPlayer::Setting_Target_Enemy()
 		
 		// 기존 타겟중이던 친구의 거리가 3.f 이상 멀어지면 그때 다시 타겟팅한다.
 		if(3.f < vDistance)
-			m_pTargetObject = static_cast<CLandObject*>(m_pCollisionManager->Get_Near_Object(this, pMonsters));
+			m_pTargetObject = static_cast<CMonster*>(m_pCollisionManager->Get_Near_Object(this, pMonsters));
 	}
 	else
-		m_pTargetObject = static_cast<CLandObject*>(m_pCollisionManager->Get_Near_Object(this, pMonsters));
+		m_pTargetObject = static_cast<CMonster*>(m_pCollisionManager->Get_Near_Object(this, pMonsters));
 }
 
 void CPlayer::Setting_Target_Item()
@@ -2084,6 +2310,17 @@ void CPlayer::Setting_Target_Item()
 	auto pItemList = m_pGameInstance->Get_GameObjects(m_iCurrentLevel, TEXT("Layer_Item"));
 
 	m_pTargetItem = static_cast<CItem*>(m_pCollisionManager->Get_Near_Object(this, pItemList, 1.5f));
+}
+
+void CPlayer::Setting_Target_Wall()
+{
+	if (static_cast<_uint>(KRS_BEHAVIOR_STATE::RUN) < m_iCurrentBehavior) return;
+
+	CMapCollider* pMapCollider = static_cast<CMapCollider*>(m_pGameInstance->Get_GameObject(m_iCurrentLevel, TEXT("Layer_MapCollider"), 0));
+
+	auto pWallList = pMapCollider->Get_Colliders();
+
+	m_pTargetWall = (m_pCollisionManager->Get_Near_Collider(this, pWallList, 3.f));
 }
 
 void CPlayer::AccHitGauge()

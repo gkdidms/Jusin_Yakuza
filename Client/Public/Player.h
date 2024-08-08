@@ -4,6 +4,7 @@
 
 BEGIN(Engine)
 class CShader;
+class CCollider;
 class CNavigation;
 class CAnim;
 END
@@ -124,6 +125,7 @@ public:
     void Set_AnimStart(_bool isAnim) { m_isAnimStart = isAnim; }
 
     _bool isAnimStart() { return m_isAnimStart; }
+    _bool CanHitAction() { return m_CanHitAction; }
 
     const map<CUTSCENE_ANIMATION_TYPE, string>& Get_CutSceneAnims() const
     {
@@ -150,7 +152,7 @@ public:
         return m_MoveDirection;
     }
 
-    CLandObject* Get_TargetObject() {
+    class CMonster* Get_TargetObject() {
         return m_pTargetObject;
     }
 
@@ -200,7 +202,7 @@ private:
 
     // 상대 객체의 포지션을 기준으로 계산함
     // 내 위치를 기준으로 좌/우/앞/뒤 어디에 존재하는지를 판단
-    _int Compute_Target_Direction_Pos(CGameObject* pAttackedObject);           
+    _int Compute_Target_Direction_Pos(_fvector vTargetPos);
 
     //키 입력관련함수들
 private:
@@ -222,9 +224,14 @@ public:
     void Style_Change(BATTLE_STYLE eStyle);
     void Reset_MoveDirection();
 
+    void Set_CutSceneStartMotion(CUTSCENE_ANIMATION_TYPE eType);
     void Set_CutSceneAnim(CUTSCENE_ANIMATION_TYPE eType, _uint iFaceAnimIndex);
     void Play_CutScene();
     void Reset_CutSceneEvent();
+
+    void HitAction_Down();
+    void HitAction_WallBack();
+    void HitAction_CounterElbow();
 
 private:
     void Compute_MoveDirection_FB();
@@ -233,6 +240,7 @@ private:
     void Effect_Control_Aura();
     void Setting_Target_Enemy();
     void Setting_Target_Item();
+    void Setting_Target_Wall();
 
     /* 캐릭터 스테이터스 관련 함수 */ 
 public:
@@ -266,8 +274,9 @@ private:
 
     /* 플레이어 기능 관련 포인터 변수들 */
 private:
-    CLandObject* m_pTargetObject = { nullptr };
+    class CMonster* m_pTargetObject = { nullptr };
     class CItem* m_pTargetItem = { nullptr };
+    CCollider* m_pTargetWall = { nullptr };
 
     /* 행동, 이동 관련 변수들 */
 private:
@@ -289,12 +298,15 @@ private:
     /* 애니메이션 관련 */
 private:
     ANIMATION_COMPONENT_TYPE    m_eAnimComType = { DEFAULT };
+    _bool                       m_isCutSceneStartMotion = { false };
     map<CUTSCENE_ANIMATION_TYPE, string> m_CutSceneAnimation;
 
     _uint                       m_iCutSceneAnimIndex = { 0 };
     _uint                       m_iCutSceneCamAnimIndex = { 0 };
 
     _uint                       m_iDefaultAnimIndex = { 0 };
+
+    _bool                       m_CanHitAction = { false };
 
     /* 플레이어 스테이터스 관련 변수들 */
 private:

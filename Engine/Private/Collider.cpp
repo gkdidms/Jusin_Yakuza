@@ -96,6 +96,10 @@ void* CCollider::Get_OriginDesc()
 	return m_pCurrentBounding->Get_OriginDesc();
 }
 
+const _float3& CCollider::Get_Center()
+{
+	return m_pCurrentBounding->Get_Center();
+}
 
 void CCollider::Set_Value(void* pDesc)
 {

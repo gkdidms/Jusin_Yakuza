@@ -38,12 +38,20 @@ public:
     virtual void Late_Tick(const _float& fTimeDelta) override;
     virtual HRESULT Render() override;
 
+public:
+    void Start_Zoom() {
+        m_isZooming = true;
+    };
+
 protected:
     virtual void Turn(_float4x4* OrbitMatrix, _fvector vAxis, const _float& fTimeDelta);
     virtual void Rotation(_float4x4* OrbitMatrix, _fvector vAxis, _float fRadian);
     virtual void Zoom(const _float& fTimeDelta);
     virtual void LookAt(_float4x4* OrbitMatrix, _fvector vTargetPos, _fvector vPosition);
+
+protected:
     void Shaking(_float fTimeDelta);
+    void Reset_ZoomVariables();
 
 public:
     const _float4x4* Get_WorldMatrix() const
@@ -58,6 +66,14 @@ public:
 
     void Set_FoV(_float fFov) {
         m_fFovY = fFov;
+    }
+
+    void Set_TargetFoV(_float fFov) {
+        m_fTargetFovY = fFov;
+    }
+
+    void Set_CustomRatio(_float fCustomRatio) {
+        m_fCustomLerpRatio = fCustomRatio;
     }
 
     void Set_WorldMatrix(_fmatrix WorldMatrix)
@@ -75,10 +91,18 @@ protected:
     _float m_fNear;
     _float m_fFar;
 
+    // Fov 변형 관련
+    _float       m_fTargetFovY;
+    _float       m_fLerpRatio = { 0.f };    // 보간 비율
+    _float       m_fCustomLerpRatio = { -1.f };    // 사용자 정의 보간 비율
+    _float       m_fElapsedTime = 0.0f; // 경과 시간
+    _float       m_fTotalLerpTime = 0.5f; // 보간에 걸리는 총 시간 (초 단위)
+
     _float4x4 m_WorldMatrix;
 
 protected:
     _bool m_isShaking = { false };
+    _bool m_isZooming = { false };
 
     _float m_fShakeTime = { 0.f };
     _float m_fShakeDuration = {}; //지속시간

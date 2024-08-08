@@ -81,7 +81,7 @@ void CKiryu_KRC_Guard::Tick(const _float& fTimeDelta)
 	}
 	else if (m_eCurrentType == COUNTER_ATTACK)
 	{
-		CLandObject* pTargetObject = m_pPlayer->Get_TargetObject();
+		CLandObject* pTargetObject = reinterpret_cast<CLandObject*>(m_pPlayer->Get_TargetObject());
 
 		if (nullptr != pTargetObject)
 		{

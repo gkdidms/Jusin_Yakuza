@@ -17,7 +17,7 @@ CKiryu_KRC_Walk::CKiryu_KRC_Walk()
 
 void CKiryu_KRC_Walk::Tick(const _float& fTimeDelta)
 {
-	CLandObject* pTargetObject = m_pPlayer->Get_TargetObject();
+	CLandObject* pTargetObject = reinterpret_cast<CLandObject*>(m_pPlayer->Get_TargetObject());
 
 	if (nullptr != pTargetObject)
 	{
