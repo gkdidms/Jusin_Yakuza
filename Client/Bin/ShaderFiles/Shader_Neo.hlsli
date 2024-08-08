@@ -68,9 +68,8 @@ float4 Overlay(float4 baseColor, float4 overlayColor, float factor)
     return float4(resultColor, baseColor.a); // 알파 값 유지
 }
 
-float4 Get_Normal(vector vNormal, float fFactor)
+float4 Get_Normal(vector vNormal, vector vRT, float fFactor)
 {
-    vector vRT = vector(0.5f, 0.5f, 1.f, 0.5f);
     
     //check if Green normal map
     bool isCheck = CheckIfGreenNormalMap(vNormal.x);

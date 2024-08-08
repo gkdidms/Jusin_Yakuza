@@ -149,7 +149,7 @@ PS_OUT PS_MAIN(PS_IN In)
     vector vRD = g_isRD ? g_RDTexture.Sample(LinearSampler, In.vTexcoord) : vector(1.f, 1.f, 1.f, 1.f);
     vector vRS = g_isRS ? g_RSTexture.Sample(LinearSampler, In.vTexcoord) : vector(1.f, 1.f, 1.f, 1.f);
     vector vRM = g_isRM ? g_RMTexture.Sample(LinearSampler, In.vTexcoord) : vector(0.5f, 1.f, 0.5f, 1.f);
-
+    vector vRT = g_isRT ? g_RTTexture.Sample(LinearSampler, In.vTexcoord) : vector(0.5f, 0.5f, 1.f, 0.5f);
     //노말 벡터 구하기
     vector vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexcoord);
     vNormalDesc = vNormalDesc * 2.f - 1.f;
@@ -162,7 +162,7 @@ PS_OUT PS_MAIN(PS_IN In)
     vDiffuse = Get_Diffuse(vMulti.a, Result.fFactor, vDiffuse); // Diffuse 최종
     
     //Tangent Normal 구하기 
-    vNormalDesc = Get_Normal(vNormalDesc, fFactor);
+    vNormalDesc = Get_Normal(vNormalDesc, vRT, fFactor);
     float3x3 WorldMatrix = float3x3(In.vTangent.xyz, In.vBinormal.xyz, In.vNormal.xyz);
     vector vNormalBTN = vector(mul(vNormalDesc.xyz, WorldMatrix), 0.f);
     Out.vNormal = vector(vNormalBTN.xyz * 0.5f + 0.5f, 0.f);
@@ -200,7 +200,8 @@ PS_OUT PS_BLEND(PS_IN In)
     vector vRD = g_isRD ? g_RDTexture.Sample(LinearSampler, In.vTexcoord * g_RDCount) : vector(1.f, 1.f, 1.f, 1.f);
     vector vRS = g_isRS ? g_RSTexture.Sample(LinearSampler, In.vTexcoord) : vector(1.f, 1.f, 1.f, 1.f);
     vector vRM = g_isRM ? g_RMTexture.Sample(LinearSampler, In.vTexcoord) : vector(0.5f, 1.f, 0.5f, 1.f);
-
+    vector vRT = g_isRT ? g_RTTexture.Sample(LinearSampler, In.vTexcoord) : vector(0.5f, 0.5f, 1.f, 0.5f);
+    
     //노말 벡터 구하기
     vector vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexcoord);
     vNormalDesc = vNormalDesc * 2.f - 1.f;
@@ -214,7 +215,7 @@ PS_OUT PS_BLEND(PS_IN In)
     vDiffuseColor.a = vDiffuse.a;
     
     //Tangent Normal 구하기 
-    vNormalDesc = Get_Normal(vNormalDesc, fFactor);
+    vNormalDesc = Get_Normal(vNormalDesc, vRT, fFactor);
     float3x3 WorldMatrix = float3x3(In.vTangent.xyz, In.vBinormal.xyz, In.vNormal.xyz);
     vector vNormalBTN = vector(mul(vNormalDesc.xyz, WorldMatrix), 0.f);
     Out.vNormal = vector(vNormalBTN.xyz * 0.5f + 0.5f, 0.f);
