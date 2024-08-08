@@ -68,6 +68,12 @@ void CAI_DefaultYakuza::Ready_Tree()
 	pDownSeq->Add_Children(pDownSelector);
 #pragma endregion
 
+#pragma region PlayerDown
+	CSequance* pPlayerDownSeq = CSequance::Create();
+	pPlayerDownSeq->Add_Children(CLeafNode::Create(bind(&CAI_DefaultYakuza::Check_PlayerDown, this)));
+	pPlayerDownSeq->Add_Children(CLeafNode::Create(bind(&CAI_DefaultYakuza::ATK_Down, this)));
+#pragma endregion
+
 #pragma region Sway
 	CSequance* pSwaySeq = CSequance::Create();
 	pSwaySeq->Add_Children(CLeafNode::Create(bind(&CAI_DefaultYakuza::Check_Sway, this)));

@@ -254,6 +254,7 @@ public:
     
 public:
     _float Get_HitDamage() { return m_fHitDamage; }
+    _uint Get_DownDir();
 
 public:
     virtual HRESULT Initialize_Prototype() override;
