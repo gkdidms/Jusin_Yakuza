@@ -57,9 +57,11 @@ bool CYonedaTrigger::Move_Scene(int& iLevelNum)
 	{
 		if (m_pGameInstance->GetKeyState(DIK_G) == TAP)
 		{
-			
+			CYoneda* pYoneda = dynamic_cast<CYoneda*>(m_pGameInstance->Get_GameObject(m_iCurrentLevel, TEXT("Layer_Yoneda"), 0));
+			pYoneda->Set_TriggerQte(m_tTriggerDesc.iYonedaKnife, m_tTriggerDesc.iTriggerID);
 		}
 	}
+
 	return false;
 }
 

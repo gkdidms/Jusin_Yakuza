@@ -16,6 +16,17 @@ CYoneda::CYoneda(const CYoneda& rhs)
 {
 }
 
+void CYoneda::Set_TriggerQte(_uint iWeaponChange, _uint iTriggerID)
+{
+	m_iWeaponType = iWeaponChange;
+
+	m_pTree->Set_Sync(true);
+	if (iTriggerID == 1000)
+	{
+		m_iState = CMonster::MONSTER_A60300_000_2;
+	}
+}
+
 HRESULT CYoneda::Initialize_Prototype()
 {
 	return S_OK;
@@ -90,9 +101,6 @@ HRESULT CYoneda::Add_Components()
 	m_pTree = dynamic_cast<CAI_Yoneda*>(m_pGameInstance->Add_BTNode(m_iCurrentLevel, TEXT("Prototype_BTNode_Yoneda"), &AIDesc));
 	if (nullptr == m_pTree)
 		return E_FAIL;
-
-
-
 
 	return S_OK;
 }

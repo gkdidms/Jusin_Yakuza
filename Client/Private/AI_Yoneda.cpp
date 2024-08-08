@@ -39,6 +39,9 @@ HRESULT CAI_Yoneda::Initialize(void* pArg)
 
 void CAI_Yoneda::Tick(const _float& fTimeDelta)
 {
+	__super::Tick(fTimeDelta);
+
+	this->Execute();
 }
 
 CBTNode::NODE_STATE CAI_Yoneda::Execute()

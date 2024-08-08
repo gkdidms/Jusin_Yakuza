@@ -206,7 +206,7 @@ HRESULT CFileTotalMgr::Set_GameObject_In_Client(int iStageLevel)
                 monsterDesc.iNaviNum = m_MapTotalInform.pMapObjDesc[i].iNaviNum;
             }
 
-            m_pGameInstance->Add_GameObject(iStageLevel, TEXT("Prototype_GameObject_Yoneda"), m_Layers[iLayer], &monsterDesc);
+            m_pGameInstance->Add_GameObject(iStageLevel, TEXT("Prototype_GameObject_Yoneda"), TEXT("Layer_Yoneda"), &monsterDesc);
         }
         else if (OBJECT_TYPE::MONSTER_KUZE == m_MapTotalInform.pMapObjDesc[i].iObjType)
         {

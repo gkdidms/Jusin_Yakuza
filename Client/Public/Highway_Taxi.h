@@ -24,6 +24,7 @@ private:
 public:
     _uint Get_CurrentWaypointIndex();
     _uint Get_WaypointSize(); // 플레이어가 있는 위치의 웨이포인트 갯수
+    const _float4x4* Get_KiryuBoneMatrix(const _char* pBoneName);
 
 public:
     void Set_NavigationRouteIndex(_uint iLine); // 네비게이션 Route 변경

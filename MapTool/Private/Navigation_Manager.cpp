@@ -691,7 +691,7 @@ HRESULT CNavigation_Manager::Load_Cells(_uint iIndex)
 		{
 			in.read((char*)&arr[j].iCellNums, sizeof(int));
 			in.read((_char*)&arr[j].vPosition, sizeof(_float4));
-			in.read((char*)&arr[j]., sizeof(int));
+			in.read((char*)&arr[j].iPointOption, sizeof(int));
 		}
 
 		
