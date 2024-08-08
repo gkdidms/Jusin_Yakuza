@@ -573,10 +573,9 @@ HRESULT CNavigation_Manager::Save_Cells(_uint iIndex)
 
 		for (int j = 0; j < iCellCnt; j++)
 		{
-			int a = 0;
 			out.write((char*)&arr[j].iCellNums, sizeof(int));
 			out.write((_char*)&arr[j].vPosition, sizeof(_float4));
-			out.write((char*)&arr[j].iCellNums, sizeof(int));
+			out.write((char*)&arr[j].iPointOption, sizeof(int));
 		}
 		
 
@@ -691,7 +690,7 @@ HRESULT CNavigation_Manager::Load_Cells(_uint iIndex)
 		{
 			in.read((char*)&arr[j].iCellNums, sizeof(int));
 			in.read((_char*)&arr[j].vPosition, sizeof(_float4));
-			in.read((char*)&arr[j]., sizeof(int));
+			in.read((char*)&arr[j].iPointOption, sizeof(int));
 		}
 
 		
@@ -712,6 +711,7 @@ HRESULT CNavigation_Manager::Load_Cells(_uint iIndex)
 			CNaviObj::NAVIOBJ_DESC naviobjdesc;
 			naviobjdesc.tNaviDesc.iCellNums = m_iCurrentCellIndex;
 			naviobjdesc.tNaviDesc.vPosition = arr[j].vPosition;
+			naviobjdesc.tNaviDesc.iPointOption = arr[j].iPointOption;
 
 			XMMATRIX startPos = XMMatrixIdentity();
 			startPos.r[3].m128_f32[0] = arr[j].vPosition.x;
@@ -1034,7 +1034,12 @@ void CNavigation_Manager::Make_Route()
 		if (m_iCurrentRouteCellIndex != index_current_idx && 0 < m_Route_CellIndexes.size())
 		{
 			m_iCurrentRouteCellIndex = index_current_idx;
-		/*	m_iPointOption = m_Route_CellIndexes[m_iCurrentRouteCellIndex]->Get_PointOpiton();*/
+			m_iPointOption = m_Route_CellIndexes[m_iCurrentRouteCellIndex]->Get_PointOpiton();
+		}
+
+		if (0 < m_Route_CellIndexes.size())
+		{
+			m_iPointOption = m_Route_CellIndexes[m_iCurrentRouteCellIndex]->Get_PointOpiton();
 		}
 
 		Edit_GameObject_Transform(m_iCurrentRouteCellIndex);
@@ -1054,13 +1059,7 @@ void CNavigation_Manager::Make_Route()
 			m_iPointOption = 1;
 		}
 
-		//if (0 < m_Route_CellIndexes.size())
-		//{
-		//	m_Route_CellIndexes[m_iCurrentRouteCellIndex]->Set_PointOption(m_iPointOption);
-		//}
-		//
-
-
+	
 		ImGui::Text(u8"버튼 클릭 후 피킹하면 추가됨");
 		
 		if (m_bMakeRoute_Picking == true && m_pGameInstance->GetMouseState(DIM_LB) == AWAY)
@@ -1083,7 +1082,7 @@ void CNavigation_Manager::Make_Route()
 
 			CNaviObj::NAVIOBJ_DESC naviobjdesc;
 			naviobjdesc.tNaviDesc.iCellNums = m_iCurrentCellIndex;
-			//naviobjdesc.tNaviDesc.iPointOption = iNewPointOpiton;
+			naviobjdesc.tNaviDesc.iPointOption = iNewPointOpiton;
 			XMStoreFloat4(&naviobjdesc.tNaviDesc.vPosition, vTargetPos);
 
 			XMMATRIX startPos = XMMatrixIdentity();
@@ -1098,7 +1097,7 @@ void CNavigation_Manager::Make_Route()
 			Safe_AddRef(m_Cells[m_iCurrentCellIndex]);
 
 			m_iCurrentRouteCellIndex = m_Route_CellIndexes.size() - 1;
-			//m_iPointOption = m_Route_CellIndexes[m_iCurrentRouteCellIndex]->Get_PointOpiton();
+			m_iPointOption = m_Route_CellIndexes[m_iCurrentRouteCellIndex]->Get_PointOpiton();
 
 			// route 안의 index update
 			Update_IndexesName();
@@ -1117,6 +1116,14 @@ void CNavigation_Manager::Make_Route()
 			}
 			
 		}
+
+
+		if (0 < m_Route_CellIndexes.size())
+		{
+			m_Route_CellIndexes[m_iCurrentRouteCellIndex]->Set_PointOption(m_iPointOption);
+		}
+
+
 
 		if (ImGui::Button(u8"cell - route에 추가 "))
 		{
