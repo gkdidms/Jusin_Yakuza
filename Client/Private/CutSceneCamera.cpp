@@ -96,11 +96,11 @@ void CCutSceneCamera::Return_PrevWorld(const _float& fTimeDelta)
 	// 여기서 false가 나온다는것은, 완료 이후라는 것으로 초기화해줘야한다.
 	if (!m_isReturn)
 	{
-		Reset_RetureVariables();
+		Reset_ReturnVariables();
 	}
 }
 
-void CCutSceneCamera::Reset_RetureVariables()
+void CCutSceneCamera::Reset_ReturnVariables()
 {
 	m_isReturn = { false };
 	m_fLerpRatio = { 0.f };
@@ -127,7 +127,7 @@ void CCutSceneCamera::Play_FovLerp(const _float& fTimeDelta)
 	// 여기서 false가 나온다는것은, 완료 이후라는 것으로 초기화해줘야한다.
 	if (!m_isReturn)
 	{
-		Reset_RetureVariables();
+		Reset_ReturnVariables();
 	}
 }
 

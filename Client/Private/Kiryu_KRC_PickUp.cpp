@@ -349,6 +349,13 @@ void CKiryu_KRC_PickUp::Attack_KeyInput(const _float& fTimeDelta)
 		Combo_Count();
 		m_eAnimState = ANIM_ONCE;
 	}
+	if (m_pGameInstance->GetMouseState(DIM_RB) == TAP)
+	{
+		if (m_pPlayer->CanHitAction())
+		{
+			m_pPlayer->Set_CutSceneAnim(CPlayer::DORAMUKAN_88, 8);
+		}
+	}
 }
 
 CBehaviorAnimation* CKiryu_KRC_PickUp::Create(CPlayer* pPlayer)

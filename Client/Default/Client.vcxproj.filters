@@ -546,6 +546,9 @@
     <ClCompile Include="..\Private\Particle_Mesh.cpp">
       <Filter>02.GameObjects\06.Effect\Mesh</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\Kiryu_KRS_BackWall.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\BackWall</Filter>
+	</ClCompile>
     <ClCompile Include="..\private\AI_Bike.cpp">
       <Filter>02.GameObjects\02.Character\LandObject\03.CarChase\01.Monster\02.Bike\AI</Filter>
     </ClCompile>
@@ -1126,6 +1129,9 @@
     <ClInclude Include="..\Public\Particle_Mesh.h">
       <Filter>02.GameObjects\06.Effect\Mesh</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Kiryu_KRS_BackWall.h">
+      <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\BackWall</Filter>
+	</ClInclude>
     <ClInclude Include="..\public\AI_Bike.h">
       <Filter>02.GameObjects\02.Character\LandObject\03.CarChase\01.Monster\02.Bike\AI</Filter>
     </ClInclude>
@@ -1720,6 +1726,9 @@
     </Filter>
     <Filter Include="02.GameObjects\02.Character\LandObject\03.CarChase\01.Monster\02.Bike\AI">
       <UniqueIdentifier>{3f21bbf2-293f-4185-a228-fe0f284007e4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\BackWall">
+      <UniqueIdentifier>{dd39301f-6059-42e5-99b4-0208b284dc5e}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

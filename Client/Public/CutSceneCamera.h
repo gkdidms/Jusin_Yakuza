@@ -45,7 +45,7 @@ private:
     void    Play_FovLerp(const _float& fTimeDelta);
 
 public:
-    void    Reset_RetureVariables();            // 관련 변수 초기화 함수
+    void    Reset_ReturnVariables();            // 관련 변수 초기화 함수
 
 private:
     class CSystemManager* m_pSystemManager = { nullptr };

@@ -26,6 +26,7 @@ public:
     TYPE Get_Type() { return m_ColliderType; }       //0625 Çý¿ø Ãß°¡
     void* Get_Desc();       //0625 Çý¿ø Ãß°¡
     void* Get_OriginDesc();       //0625 Çý¿ø Ãß°¡
+    const _float3& Get_Center();
 
 public:
     void Set_Value(void* pDesc);
