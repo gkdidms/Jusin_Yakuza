@@ -18,6 +18,11 @@ HRESULT CMaterial::Bind_Shader(CShader* pShader)
 {
 	if (FAILED(pShader->Bind_RawValue("Opacity", &m_Info.fOpacity, sizeof(_float))))
 		return E_FAIL;
+	if (FAILED(pShader->Bind_RawValue("fSpecularPower", &m_Info.fSpecularPower, sizeof(_float))))
+		return E_FAIL;
+	_vector vSpecularColor = XMLoadFloat4(&m_Info.vSpecularColor);
+	if (FAILED(pShader->Bind_RawValue("vSpecularColor", &vSpecularColor, sizeof(_vector))))
+		return E_FAIL;
 	if (FAILED(pShader->Bind_RawValue("AssetShader", &m_Info.fAssetShader, sizeof(_float))))
 		return E_FAIL;
 	if (FAILED(pShader->Bind_RawValue("DisableRDRT", &m_Info.fDisableRDRS, sizeof(_float))))
@@ -36,7 +41,6 @@ HRESULT CMaterial::Bind_Shader(CShader* pShader)
 		return E_FAIL;
 	if (FAILED(pShader->Bind_RawValue("SPShader", &m_Info.SPShader, sizeof(_float))))
 		return E_FAIL;
-
 	if (FAILED(pShader->Bind_RawValue("g_isUVShader", &m_Info.isUVShader, sizeof(_bool))))
 		return E_FAIL;
 

@@ -523,7 +523,7 @@
       <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRC\Grab</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Gun_Cz75.cpp">
-      <Filter>02.GameObjects\02.Character\LandObject\03.CarChase\03.Weapon\00.Gun_Cz75</Filter>
+      <Filter>02.GameObjects\02.Character\LandObject\03.CarChase\00.Reactor\04.Gun_Cz75</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Kiryu_KRS_PickUp.cpp">
       <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\Pickup</Filter>
@@ -545,6 +545,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Particle_Mesh.cpp">
       <Filter>02.GameObjects\06.Effect\Mesh</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\AI_Bike.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\03.CarChase\01.Monster\02.Bike\AI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1100,7 +1103,7 @@
       <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRC\Grab</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Gun_Cz75.h">
-      <Filter>02.GameObjects\02.Character\LandObject\03.CarChase\03.Weapon\00.Gun_Cz75</Filter>
+      <Filter>02.GameObjects\02.Character\LandObject\03.CarChase\00.Reactor\04.Gun_Cz75</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Kiryu_KRS_PickUp.h">
       <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\Pickup</Filter>
@@ -1122,6 +1125,9 @@
     </ClInclude>
     <ClInclude Include="..\Public\Particle_Mesh.h">
       <Filter>02.GameObjects\06.Effect\Mesh</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\AI_Bike.h">
+      <Filter>02.GameObjects\02.Character\LandObject\03.CarChase\01.Monster\02.Bike\AI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1694,6 +1700,9 @@
     <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRC\Grab">
       <UniqueIdentifier>{d3efaff5-4225-4b36-991c-46c5d2a29f60}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\03.CarChase\00.Reactor\04.Gun_Cz75">
+      <UniqueIdentifier>{863a5ddf-d4bd-41f1-9986-caf74f4a90c6}</UniqueIdentifier>
+    </Filter>
     <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\Pickup">
       <UniqueIdentifier>{afa11f52-5f1d-4322-886d-68e4094d377c}</UniqueIdentifier>
     </Filter>
@@ -1709,11 +1718,8 @@
     <Filter Include="02.GameObjects\06.Effect\Mesh">
       <UniqueIdentifier>{1a4c277c-2284-46fe-9cf0-050678dc69ca}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\02.Character\LandObject\03.CarChase\03.Weapon">
-      <UniqueIdentifier>{09bdb66a-0dae-422c-a2b3-bd22a712e073}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\02.Character\LandObject\03.CarChase\03.Weapon\00.Gun_Cz75">
-      <UniqueIdentifier>{863a5ddf-d4bd-41f1-9986-caf74f4a90c6}</UniqueIdentifier>
+    <Filter Include="02.GameObjects\02.Character\LandObject\03.CarChase\01.Monster\02.Bike\AI">
+      <UniqueIdentifier>{3f21bbf2-293f-4185-a228-fe0f284007e4}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

@@ -438,9 +438,12 @@ HRESULT CMultiLoader::Loading_Default()
 #pragma endregion
 
 #pragma region Meterial
-	/////* For.Prototype_Component_Kiryu_Meterial */
-	//if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Kiryu_Material"), CNeoShader::Create(m_pDevice, m_pContext, "../Bin/DataFiles/MeterialData/Kiryu.dat"))))
-	//	return E_FAIL;
+	///* For.Prototype_Component_Kiryu_Meterial */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Kiryu_Material"), CNeoShader::Create(m_pDevice, m_pContext, "../Bin/DataFiles/MeterialData/Kiryu.dat"))))
+		return E_FAIL;
+	///* For.Prototype_Component_Yoneda_Meterial */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Yoneda_Meterial"), CNeoShader::Create(m_pDevice, m_pContext, "../Bin/DataFiles/MeterialData/Yoneda.dat"))))
+		return E_FAIL;
 #pragma endregion
 
 #pragma region Shader
@@ -638,24 +641,18 @@ HRESULT CMultiLoader::Loading_For_Anim()
 HRESULT CMultiLoader::Loading_For_NonAnim()
 {
 #pragma region Model
-	Add_Models_On_Path_NonAnim(LEVEL_TEST, TEXT("../Bin/Resources/Models/NonAnim/Map/Map0"));
+	//Add_Models_On_Path_NonAnim(LEVEL_TEST, TEXT("../Bin/Resources/Models/NonAnim/Map/Map0"));
 
-	Add_Models_On_Path_NonAnim(LEVEL_TEST, TEXT("../Bin/Resources/Models/NonAnim/Map/Map1"));
+	//Add_Models_On_Path_NonAnim(LEVEL_TEST, TEXT("../Bin/Resources/Models/NonAnim/Map/Map1"));
 
 	Add_Models_On_Path_NonAnim(LEVEL_TEST, TEXT("../Bin/Resources/Models/NonAnim/Map/Map2"));
 
 	Add_Models_On_Path_NonAnim(LEVEL_TEST, TEXT("../Bin/Resources/Models/NonAnim/Map/Map3"));
 
-	_matrix PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
-	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Model_Bone_Sphere"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/NonAnim/Bone_Sphere/Bin/Bone_Sphere.dat", PreTransformMatrix, true))))
-		return E_FAIL;
+	Add_Models_On_Path_NonAnim(LEVEL_TEST, TEXT("../Bin/Resources/Models/NonAnim/Map/KaraokeMap"));
+	Add_Models_On_Path_NonAnim(LEVEL_TEST, TEXT("../Bin/Resources/Models/NonAnim/Bone_Sphere"));
+	Add_Models_On_Path_NonAnim(LEVEL_TEST, TEXT("../Bin/Resources/Models/NonAnim/Gun_Cz75"));
 
-
-	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
-	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Model_Gun_Cz75"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/NonAnim/Gun_Cz75/Bin/Gun_Cz75.dat", PreTransformMatrix, true))))
-		return E_FAIL;
 #pragma endregion
 
 #pragma region Map
