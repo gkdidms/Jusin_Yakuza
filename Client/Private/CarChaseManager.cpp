@@ -82,7 +82,7 @@ HRESULT CCarChaseManager::Ready_Stage()
 			LINE_C,
 			DIR_F,
 			CCarChase_Monster::REACTOR_VAN,
-			{ CCarChase_Monster::WPR, -1}
+			{ CCarChase_Monster::WPR, CCarChase_Monster::WPJ}
 		},
 	};
 

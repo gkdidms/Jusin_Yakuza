@@ -12,6 +12,8 @@
 #include "DebugCamera.h"
 #include "CarChaseCamera.h"
 
+#include "Highway_Taxi.h"
+
 #include "Level_Loading.h"
 
 CLevel_Roadway::CLevel_Roadway(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -125,7 +127,9 @@ HRESULT CLevel_Roadway::Ready_Camera(const wstring& strLayerTag)
 	CarChaseCameraDesc.fSpeedPecSec = 10.f;
 	CarChaseCameraDesc.fRotatePecSec = XMConvertToRadians(90.f);
 	CarChaseCameraDesc.fSensor = 0.1f;
-	CarChaseCameraDesc.pPlayerMatrix = dynamic_cast<CTransform*>(m_pGameInstance->Get_GameObject_Component(LEVEL_ROADWAY, TEXT("Layer_Taxi"), TEXT("Com_Transform", 0)))->Get_WorldFloat4x4();
+	CHighway_Taxi* pTaxi = dynamic_cast<CHighway_Taxi*>(m_pGameInstance->Get_GameObject(LEVEL_ROADWAY, TEXT("Layer_Taxi"), 0));
+	CarChaseCameraDesc.pPlayerMatrix = pTaxi->Get_TransformCom()->Get_WorldFloat4x4();
+	CarChaseCameraDesc.pPlayerBoneMatrix = pTaxi->Get_KiryuBoneMatrix("kubi_c_n");
 
 	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_ROADWAY, TEXT("Prototype_GameObject_CarChaseCamera"), strLayerTag, &CarChaseCameraDesc)))
 		return E_FAIL;
