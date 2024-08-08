@@ -2086,6 +2086,7 @@ void CPlayer::Setting_Target_Item()
 	m_pTargetItem = static_cast<CItem*>(m_pCollisionManager->Get_Near_Object(this, pItemList, 1.5f));
 }
 
+
 void CPlayer::AccHitGauge()
 {
 	//if (PLAYER_HITGAUGE_LEVEL_INTERVAL * 3.f < m_fHitGauge)

@@ -11,7 +11,8 @@ class CUIManager :
     public CBase
 {
     DECLARE_SINGLETON(CUIManager)
-
+public:
+    enum INFO{HP, SKILLGAUAGE , EAGLEEYE , CARHP , INFO_END};
 private:
     CUIManager();
     virtual ~CUIManager() = default;
@@ -36,6 +37,7 @@ public: // 카체이스 용
     HRESULT Add_Target(_uint iIndex, class CCarChase_Monster* pMonster);
     HRESULT Update_TargetMatrix(_uint iIndex, _matrix TargetMatrix, _float iHP);
     HRESULT Remove_Target(_uint iIndex);
+
 
 public:
     //자신이 만들 ui씬은 미리 할당(수동)
@@ -65,7 +67,7 @@ public:
 public:
     void Start_Talk();
     void Change_TutorialUI(_uint iUIType);
-
+    _bool Check_Scene(wstring SceneName);
 
 private:
 
@@ -86,7 +88,7 @@ private:
 
 private:
     _bool m_isClose = { true };
-
+    wstring m_iCurScene = { TEXT("") };
 private:
     class CPlayer* m_pPlayer = { nullptr };
 
