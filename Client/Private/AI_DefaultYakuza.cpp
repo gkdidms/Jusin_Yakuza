@@ -182,20 +182,15 @@ CBTNode::NODE_STATE CAI_DefaultYakuza::ATK_CMB()
 {
 	if (m_iSkill == SKILL_CMD && m_isAttack)
 	{
-		if (m_pAnimCom[*m_pCurrentAnimType]->Get_AnimFinished())
+		if (*m_pState == CMonster::MONSTER_CMB_1 && *(m_pAnimCom[*m_pCurrentAnimType]->Get_AnimPosition()) >= 12.0)
+			*m_pState = CMonster::MONSTER_CMB_2;
+		else if (*m_pState == CMonster::MONSTER_CMB_2 && *(m_pAnimCom[*m_pCurrentAnimType]->Get_AnimPosition()) >= 12.0)
+			*m_pState = CMonster::MONSTER_CMB_3;
+		else if (*m_pState == CMonster::MONSTER_CMB_3 && m_pAnimCom[*m_pCurrentAnimType]->Get_AnimFinished())
 		{
-			if (*m_pState == CMonster::MONSTER_CMB_1)
-				*m_pState = CMonster::MONSTER_CMB_2;
+			m_isAttack = false;
 
-			else if (*m_pState == CMonster::MONSTER_CMB_2)
-				*m_pState = CMonster::MONSTER_CMB_3;
-
-			if (*m_pState == CMonster::MONSTER_CMB_3)
-			{
-				m_isAttack = false;
-
-				return CBTNode::SUCCESS;
-			}
+			return CBTNode::SUCCESS;
 		}
 
 		return CBTNode::RUNNING;
