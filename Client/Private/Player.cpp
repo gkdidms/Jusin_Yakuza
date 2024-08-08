@@ -2006,7 +2006,7 @@ void CPlayer::HitAction_Down()
 		if (KRH == m_eCurrentStyle)
 		{
 			// 엎드려 넘어졌는지, 누워서 넘어졌는지 판단해서 실행시켜야함
-			//m_pTargetObject->
+			//m_pTargetObject->Get_Down
 			Set_CutSceneAnim(OI_TRAMPLE_AO, 1);
 			
 		}
