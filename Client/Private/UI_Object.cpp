@@ -9,7 +9,8 @@ CUI_Object::CUI_Object(const CUI_Object& rhs)
 	: CGameObject { rhs },
 	m_strName{rhs.m_strName},
 	m_iTypeIndex{rhs.m_iTypeIndex},
-	m_isEvent{ rhs.m_isEvent }
+	m_isEvent{ rhs.m_isEvent },
+	m_isScreen{ rhs.m_isScreen }
 {
 }
 
