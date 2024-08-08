@@ -1334,8 +1334,8 @@ HRESULT CLoader::Add_Models_On_Path(_uint iLevel, const wstring& strPath, _bool 
 					if (FAILED(m_pGameInstance->Add_Component_Prototype(iLevel, strComponentName,
 						CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, file_path.c_str(), PreTransformMatrix, true))))
 						return E_FAIL;
-				}
 
+				}
 			}
 		}
 
