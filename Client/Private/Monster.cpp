@@ -255,6 +255,19 @@ void CMonster::Set_Sync(string strPlayerAnim)
 	Change_Animation();
 }
 
+/*
+* DIR_F : 앞으로 누워잇음
+* DIR_B : 뒤로 엎어져잇음
+* DIR_END : 방향을 가져오지 못함
+*/
+_uint CMonster::Get_DownDir()
+{
+	if (m_isDown = false)
+		return DIR_END;
+
+	return m_pTree->Get_DownDir();
+}
+
 HRESULT CMonster::Initialize_Prototype()
 {
 	return S_OK;
