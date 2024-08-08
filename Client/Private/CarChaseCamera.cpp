@@ -82,7 +82,7 @@ void CCarChaseCamera::Targeting(const _float& fTimeDelta)
 	{
 		m_fHeight = 4.f;
 		XMStoreFloat4x4(&m_pPlayerWorldMatrix, XMLoadFloat4x4(m_pPlayerBoneMatrix) * XMLoadFloat4x4(m_pPlayerMatrix));
-		vTargetingPos = XMLoadFloat4((_float4*)&m_pPlayerWorldMatrix.m[3]);
+		vTargetingPos = XMLoadFloat4((_float4*)&m_pPlayerMatrix->m[3]);
 
 		//선형보간
 		_vector vCamDirection = XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK));
