@@ -148,7 +148,7 @@ _bool CCarChase_Reactor::Check_Dead()
 		}
 
 		//운전수가 죽으면 바로 죽게 된다.
-		if (!pMonster->isObjectDead() && pMonster->Get_WeaponType() == CCarChase_Monster::DRV)
+		if (pMonster->isObjectDead() && pMonster->Get_WeaponType() == CCarChase_Monster::DRV)
 			return true;
 	}
 		

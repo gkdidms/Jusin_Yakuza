@@ -23,6 +23,11 @@ CMonster::CMonster(const CMonster& rhs)
 {
 }
 
+_bool CMonster::isAttack()
+{
+	return m_pTree->isAttack();
+}
+
 void CMonster::Set_Sync(string strPlayerAnim)
 {
 	string_view strAnim = strPlayerAnim;
@@ -433,8 +438,8 @@ HRESULT CMonster::Render()
 				return E_FAIL;
 		}
 
-		//if (FAILED(m_pMeterialCom->Bind_Shader(m_pShaderCom, m_pModelCom->Get_MaterialName(pMesh->Get_MaterialIndex()))))
-		//	return E_FAIL;
+		if (FAILED(m_pMaterialCom->Bind_Shader(m_pShaderCom, m_pModelCom->Get_MaterialName(pMesh->Get_MaterialIndex()))))
+			return E_FAIL;
 
 		_bool fFar = m_pGameInstance->Get_CamFar();
 		m_pShaderCom->Bind_RawValue("g_fFar", &fFar, sizeof(_float));

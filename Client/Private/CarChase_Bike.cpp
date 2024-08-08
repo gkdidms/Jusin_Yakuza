@@ -45,7 +45,7 @@ void CCarChase_Bike::Change_Animation()
 	{
 	case CARCHASE_CURVA_L:
 	{
-		if (m_iWeaponType == DRV)
+		if (m_iWeaponType == DRV || m_iWeaponType == GUN)
 			m_strAnimName = "mngcar_e_bik_drv_curve_l_lp";
 		else if (m_iWeaponType == RKT)
 			m_strAnimName = "mngcar_e_bik_rkt_curve_l_lp";
@@ -53,7 +53,7 @@ void CCarChase_Bike::Change_Animation()
 	}
 	case CARCHASE_CURVA_R:
 	{
-		if (m_iWeaponType == DRV)
+		if (m_iWeaponType == DRV || m_iWeaponType == GUN)
 			m_strAnimName = "mngcar_e_bik_drv_curve_r_lp";
 		else if (m_iWeaponType == RKT)
 			m_strAnimName = "mngcar_e_bik_rkt_curve_r_lp";
@@ -61,7 +61,7 @@ void CCarChase_Bike::Change_Animation()
 	}
 	case CARCHASE_TENTOU_A:
 	{
-		if (m_iWeaponType == DRV)
+		if (m_iWeaponType == DRV || m_iWeaponType == GUN)
 			m_strAnimName = "mngcar_e_bik_drv_tentou_a";
 		if (m_iWeaponType == RKT)
 			m_strAnimName = "mngcar_e_bik_rkt_tentou_a";
@@ -69,7 +69,7 @@ void CCarChase_Bike::Change_Animation()
 	}
 	case CARCHASE_TENTOU_B:
 	{
-		if (m_iWeaponType == DRV)
+		if (m_iWeaponType == DRV || m_iWeaponType == GUN)
 			m_strAnimName = "mngcar_e_bik_drv_tentou_b";
 		if (m_iWeaponType == RKT)
 			m_strAnimName = "mngcar_e_bik_rkt_tentou_b";
@@ -77,7 +77,7 @@ void CCarChase_Bike::Change_Animation()
 	}
 	case CARCHASE_TENTOU_C:
 	{
-		if (m_iWeaponType == DRV)
+		if (m_iWeaponType == DRV || m_iWeaponType == GUN)
 			m_strAnimName = "mngcar_e_bik_drv_tentou_c";
 		if (m_iWeaponType == RKT)
 			m_strAnimName = "mngcar_e_bik_rkt_tentou_c";
@@ -152,7 +152,7 @@ void CCarChase_Bike::Change_Animation()
 	}
 	case CARCHASE_DAM_LV_2:
 	{
-		if (m_iWeaponType == DRV)
+		if (m_iWeaponType == DRV || m_iWeaponType == GUN)
 			m_strAnimName = "mngcar_e_bik_drv_dam_lv02";
 		else if (m_iWeaponType == RKT)
 			m_strAnimName = "mngcar_e_bik_rkt_dam_lv02";

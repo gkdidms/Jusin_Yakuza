@@ -159,7 +159,7 @@ PS_MAIN_OUT PS_MAIN(PS_IN In)
     vDiffuse = DiffusePortion(vDiffuse, vRS, vRD, fFactor, In.vTexcoord);
     
     COMBINE_OUT Result = Neo_MetallicAndGlossiness(vMulti, vRM); // Metallic, Rouhness 최종
-    vDiffuse = Get_Diffuse(vMulti.a, Result.fFactor, vDiffuse); // Diffuse 최종
+    vDiffuse = Get_Diffuse(vMulti.a, vDiffuse); // Diffuse 최종
     
     //Tangent Normal 구하기 
     vNormalDesc = Get_Normal(vNormalDesc, vRT, fFactor);
