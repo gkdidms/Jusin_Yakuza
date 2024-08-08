@@ -37,6 +37,16 @@ void CYonedaTrigger::Tick(const _float& fTimeDelta)
 {
 	m_pColliderCom->Tick(m_WorldMatrix);
 
+	//충돌 시 요네다에게 싱크 액션 전달
+	if (m_pColliderCom->Intersect(dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject(m_iCurrentLevel, TEXT("Layer_Player"), 0))->Get_PlayerCollider(), 3))
+	{
+		if (m_pGameInstance->GetKeyState(DIK_G) == TAP)
+		{
+			CYoneda* pYoneda = dynamic_cast<CYoneda*>(m_pGameInstance->Get_GameObject(m_iCurrentLevel, TEXT("Layer_Yoneda"), 0));
+			pYoneda->Set_TriggerQte(m_tTriggerDesc.iYonedaKnife, m_tTriggerDesc.iTriggerID);
+		}
+	}
+
 	__super::Tick(fTimeDelta);
 }
 
@@ -52,16 +62,6 @@ HRESULT CYonedaTrigger::Render()
 
 bool CYonedaTrigger::Move_Scene(int& iLevelNum)
 {
-	//충돌 시 요네다에게 싱크 액션 전달
-	if (m_pColliderCom->Intersect(dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject(m_iCurrentLevel, TEXT("Layer_Player"), 0))->Get_PlayerCollider(), 3))
-	{
-		if (m_pGameInstance->GetKeyState(DIK_G) == TAP)
-		{
-			CYoneda* pYoneda = dynamic_cast<CYoneda*>(m_pGameInstance->Get_GameObject(m_iCurrentLevel, TEXT("Layer_Yoneda"), 0));
-			pYoneda->Set_TriggerQte(m_tTriggerDesc.iYonedaKnife, m_tTriggerDesc.iTriggerID);
-		}
-	}
-
 	return false;
 }
 

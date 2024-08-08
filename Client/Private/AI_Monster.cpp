@@ -865,6 +865,7 @@ CBTNode::NODE_STATE CAI_Monster::Chcek_Sync()
 
 	if (m_pAnimCom[*m_pCurrentAnimType]->Get_AnimFinished())
 	{
+		Reset_State();
 		m_isSync = false;
 		return CBTNode::SUCCESS;
 	}
@@ -883,6 +884,7 @@ CBTNode::NODE_STATE CAI_Monster::Check_Down()
 		return CBTNode::SUCCESS;
 	}
 
+	*m_pCurrentAnimType = CMonster::DEFAULT;
 	return CBTNode::FAIL;
 }
 
@@ -953,8 +955,6 @@ CBTNode::NODE_STATE CAI_Monster::Dead()
 
 CBTNode::NODE_STATE CAI_Monster::Check_PlayerDown()
 {
-	*m_pCurrentAnimType = CMonster::DEFAULT;
-
 	if (m_isPlayerDownAtk && !m_pPlayer->isDown())
 	{
 		m_isPlayerDownAtk = false;
