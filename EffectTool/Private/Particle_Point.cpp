@@ -190,6 +190,7 @@ HRESULT CParticle_Point::Save_Data(const string strDirectory)
     string Directory = strDirectory;
     string ParticleTag = m_pGameInstance->WstringToString(m_ParticleTag);
     string TextureTag = m_pGameInstance->WstringToString(m_TextureTag);
+    string NormalTag = m_pGameInstance->WstringToString(m_NormalTag);
 
     string headTag = "Prototype_GameObject_Particle_Point_";
     Directory += "/" + headTag + ParticleTag + ".dat";
@@ -251,7 +252,14 @@ HRESULT CParticle_Point::Save_Data(const string strDirectory)
      out.write((char*)&m_fDistortion, sizeof(_float));
 
 
-    out.flush();
+    if (9 == m_iShaderPass)
+    {
+        out.write((char*)&m_isNormal, sizeof(_bool));
+
+        _int strNormallength = NormalTag.length();
+        out.write((char*)&strNormallength, sizeof(_int));
+        out.write(NormalTag.c_str(), strNormallength);
+    }
 
     out.close();
 
@@ -339,6 +347,20 @@ HRESULT CParticle_Point::Load_Data(const string strDirectory)
     if (6 == m_iShaderPass|| 8 == m_iShaderPass)
         in.read((char*)&m_fDistortion, sizeof(_float));
 
+    if (9 == m_iShaderPass)
+    {
+        in.read((char*)&m_isNormal, sizeof(_bool));
+
+        _int strNormallength;
+        char charNormalTag[MAX_PATH] = {};
+
+        in.read((char*)&strNormallength, sizeof(_int));
+
+        in.read(charNormalTag, strNormallength);
+        string Normaltag = charNormalTag;
+        m_NormalTag = m_pGameInstance->StringToWstring(Normaltag);
+    }
+
     in.close();
 
     return S_OK;
@@ -386,6 +408,9 @@ HRESULT CParticle_Point::Bind_ShaderResources()
     if (FAILED(m_pTextureCom[0]->Bind_ShaderResource(m_pShaderCom, "g_Texture", 0)))
         return E_FAIL;
 
+    if (FAILED(m_pShaderCom->Bind_RawValue("g_isNormal", &m_isNormal, sizeof(_bool))))
+        return E_FAIL;
+
     if (m_isNormal)
     {
         if (FAILED(m_pTextureCom[1]->Bind_ShaderResource(m_pShaderCom, "g_NormalTexture", 0)))
@@ -414,6 +439,8 @@ HRESULT CParticle_Point::Bind_ShaderResources()
         if (FAILED(m_pShaderCom->Bind_RawValue("g_fDistortionWeight", &m_fDistortion, sizeof(_float))))
             return E_FAIL;
     }
+
+
     return S_OK;
 }
 

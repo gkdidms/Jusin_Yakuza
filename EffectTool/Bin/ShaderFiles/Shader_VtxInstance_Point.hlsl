@@ -5,7 +5,7 @@ matrix g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
 
 
 Texture2D g_Texture;
-texture2D g_NormalTexture;
+Texture2D g_NormalTexture;
 Texture2D g_ResultTexture;
 Texture2D g_AccumColor;
 Texture2D g_AccumAlpha;
@@ -19,6 +19,7 @@ float g_fFar = 3000.f;
 float g_FarZ = 3000.f;
 float g_fDistortionWeight;
 bool g_isAttach;
+bool g_isNormal;
 
 struct VS_IN
 {
@@ -83,14 +84,30 @@ VS_NOBILL_OUT VS_NOBILLBOARD(VS_IN In)
 {
     VS_NOBILL_OUT Out = (VS_NOBILL_OUT) 0;
 
-    vector vPosition = mul(float4(In.vPosition, 1.f), In.TransformMatrix); //로컬이동.
+    if(g_isAttach)
+    {
+        vector vPosition = mul(mul(float4(In.vPosition, 1.f), In.TransformMatrix), g_WorldMatrix); //로컬이동.
     
-    Out.TransformMatrix = In.TransformMatrix;
-    Out.vPosition = vPosition.xyz; //월드상
-    Out.vPSize = In.vPSize;
-    Out.vDir = normalize(In.vDir);
-    Out.vLifeTime = In.vLifeTime;
-    Out.vRectSize = In.vRectSize;
+        Out.TransformMatrix = mul(In.TransformMatrix, g_WorldMatrix);
+        Out.vPosition = vPosition.xyz; //월드상
+        Out.vPSize = In.vPSize;
+        Out.vDir = normalize(In.vDir);
+        Out.vLifeTime = In.vLifeTime;
+        Out.vRectSize = In.vRectSize;
+    }
+    else
+    {
+        vector vPosition = mul(float4(In.vPosition, 1.f), In.TransformMatrix); //로컬이동.
+    
+        Out.TransformMatrix = In.TransformMatrix;
+        Out.vPosition = vPosition.xyz; //월드상
+        Out.vPSize = In.vPSize;
+        Out.vDir = normalize(In.vDir);
+        Out.vLifeTime = In.vLifeTime;
+        Out.vRectSize = In.vRectSize;
+    }
+    
+
 
     return Out;
 }
@@ -132,6 +149,8 @@ struct GS_NOBIL_OUT
     float2 vLifeTime : COLOR0;
     float4 vProjPos : COLOR1;
     float4 vNormal : NORMAL;
+    float4 vTangent : TANGENT;
+    float4 vBinormal : BINORMAL;
 };
 
 //파티클의 점 하나를 그리고 픽셀로 넘어간다 사각형 한개 생성후 픽셸로 감
@@ -317,6 +336,8 @@ void GS_NOBILLBOARD(point GS_NOBILL_IN In[1], inout TriangleStream<GS_NOBIL_OUT>
         Out[i].vLifeTime = float2(0.f, 0.f);
         Out[i].vProjPos = float4(0.f, 0.f, 0.f, 0.f);
         Out[i].vNormal = float4(0.f, 0.f, 0.f, 0.f);
+        Out[i].vTangent = float4(0.f, 0.f, 0.f, 0.f);
+        Out[i].vBinormal = float4(0.f, 0.f, 0.f, 0.f);
     }
 
     float3 vRight = In[0].TransformMatrix._11_12_13_14 * In[0].vPSize.x * In[0].vRectSize.x * 0.5f;
@@ -380,12 +401,14 @@ void GS_FALL(point GS_NOBILL_IN In[1], inout TriangleStream<GS_NOBIL_OUT> Triang
         Out[i].vLifeTime = float2(0.f, 0.f);
         Out[i].vProjPos = float4(0.f, 0.f, 0.f, 0.f);
         Out[i].vNormal = float4(0.f, 0.f, 0.f, 0.f);
+        Out[i].vTangent = float4(0.f, 0.f, 0.f, 0.f);
+        Out[i].vBinormal = float4(0.f, 0.f, 0.f, 0.f);
     }
 
     float3 vDirection = In[0].vDir.xyz;
     //방향에 회전을 준다.
    
-    vector vLook = g_vCamPosition - vector(In[0].vPosition, 1.f);
+    vector vLook = normalize(g_vCamPosition - vector(In[0].vPosition, 1.f));
     float3 vRight = normalize(cross(vDirection, vLook.xyz)) * In[0].vPSize.x * In[0].vRectSize.x * 0.5f;
     float3 vUp = normalize(cross(vLook.xyz, vRight)) * In[0].vPSize.y * In[0].vRectSize.x * 0.5f;
 
@@ -401,6 +424,8 @@ void GS_FALL(point GS_NOBILL_IN In[1], inout TriangleStream<GS_NOBIL_OUT> Triang
     Out[0].vLifeTime = In[0].vLifeTime;
     Out[0].vProjPos = Out[0].vPosition;
     Out[0].vNormal = vLook;
+    Out[0].vTangent =  vector(vRight, 0.f);
+    Out[0].vBinormal = vector(vUp, 0.f);
     
     vPosition = In[0].vPosition - vRight + vUp;
     Out[1].vPosition = mul(float4(vPosition, 1.f), matVP);
@@ -408,6 +433,9 @@ void GS_FALL(point GS_NOBILL_IN In[1], inout TriangleStream<GS_NOBIL_OUT> Triang
     Out[1].vLifeTime = In[0].vLifeTime;
     Out[1].vProjPos = Out[1].vPosition;
     Out[1].vNormal = vLook;
+    Out[1].vTangent = vector(vRight, 0.f);
+    Out[1].vBinormal = vector(vUp, 0.f);
+    
     
     vPosition = In[0].vPosition - vRight - vUp;
     Out[2].vPosition = mul(float4(vPosition, 1.f), matVP);
@@ -415,13 +443,17 @@ void GS_FALL(point GS_NOBILL_IN In[1], inout TriangleStream<GS_NOBIL_OUT> Triang
     Out[2].vLifeTime = In[0].vLifeTime;
     Out[2].vProjPos = Out[2].vPosition;
     Out[2].vNormal = vLook;
-
+    Out[2].vTangent = vector(vRight, 0.f);
+    Out[2].vBinormal = vector(vUp, 0.f);
+    
     vPosition = In[0].vPosition + vRight - vUp;
     Out[3].vPosition = mul(float4(vPosition, 1.f), matVP);
     Out[3].vTexcoord = float2(0.f, 1.f);
     Out[3].vLifeTime = In[0].vLifeTime;
     Out[3].vProjPos = Out[3].vPosition;
     Out[3].vNormal = vLook;
+    Out[3].vTangent = vector(vRight, 0.f);
+    Out[3].vBinormal = vector(vUp, 0.f);
     
     Triangles.Append(Out[0]);
     Triangles.Append(Out[1]);
@@ -568,7 +600,8 @@ struct PS_NOBIL_IN
     float2 vLifeTime : COLOR0;
     float4 vProjPos : COLOR1;
     float4 vNormal : NORMAL;
-
+    float4 vTangent : TANGENT;
+    float4 vBinormal : BINORMAL;
 };
 
 struct PS_NOBILL_OUT
@@ -590,12 +623,22 @@ PS_NOBILL_OUT PS_NOBILLBOARD_NOCOLOR(PS_NOBIL_IN In)
     float4 PointPosition = In.vPosition; //월드좌표
 
     vector vParticle = g_Texture.Sample(LinearSampler, In.vTexcoord);
+    vector vNormalmap = g_NormalTexture.Sample(LinearSampler, In.vTexcoord);
     
     Out.vDiffuse = vParticle;
     Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_fFar, 0.f, 0.f);
+    
+    if (g_isNormal)
+        {   
+            float3x3 WorldMatrix = float3x3(In.vTangent.xyz, In.vBinormal.xyz, In.vNormal.xyz);
+           vector vNormalBTN = vector(mul(vNormalmap.xyz, WorldMatrix), 0.f);
+    
+           Out.vNormal = vector(vNormalBTN.xyz * 0.5f + 0.5f, 0.f);
+        }
+    else
+    {
     Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
-    
-    
+    }
     
     return Out;
 }
@@ -607,18 +650,30 @@ PS_NOBILL_OUT PS_FALL(PS_NOBIL_IN In)
     float4 PointPosition = In.vPosition; //월드좌표
 
     vector vParticle = g_Texture.Sample(LinearSampler, In.vTexcoord);
-    
+    vector vNormalmap = g_NormalTexture.Sample(LinearSampler, In.vTexcoord);
+
     float factor = lerp(0.1f, 3.f, In.vLifeTime.y / In.vLifeTime.x);
 
+    vParticle.a *= lerp(g_lifeAlpha.x, g_lifeAlpha.y, In.vLifeTime.y / In.vLifeTime.x);
     vParticle.a=pow(vParticle.a, factor);
     
     Out.vDiffuse = vParticle;
-    
+
     if (vParticle.a < 0.1f)
         discard;
     Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_fFar, 0.f, 0.f);
    
-    Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
+    if (g_isNormal)
+    {
+        float3x3 WorldMatrix = float3x3(In.vTangent.xyz, In.vBinormal.xyz, In.vNormal.xyz);
+        vector vNormalBTN = vector(mul(vNormalmap.xyz, WorldMatrix), 0.f);
+    
+        Out.vNormal = vector(vNormalBTN.xyz * 0.5f + 0.5f, 0.f);
+    }
+    else
+    {
+        Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
+    }
     
     
     

@@ -164,8 +164,6 @@ void CCarChase_Van::Change_Animation()
 	{
 		if (m_iWeaponType == WPR)
 			m_strAnimName = "mngcar_e_van_wpr_shot_lp";
-
-		m_isAnimLoop = { true };
 		break;
 	}
 	case CARCHASE_SHOT_R_LP:
