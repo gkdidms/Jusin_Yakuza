@@ -16,6 +16,9 @@ private:
     virtual ~CYoneda() = default;
     
 public:
+    void Set_TriggerQte(_uint iWeaponChange, _uint iTriggerID);
+
+public:
     virtual HRESULT Initialize_Prototype() override;
     virtual HRESULT Initialize(void* pArg) override;
     virtual void Priority_Tick(const _float& fTimeDelta) override;
@@ -23,8 +26,6 @@ public:
     virtual void Late_Tick(const _float& fTimeDelta) override;
 
 private:
-    class CAI_Yoneda* m_pTree = { nullptr };
-
     _uint m_iWeaponType = { WEAPON_END };
 
 private:
