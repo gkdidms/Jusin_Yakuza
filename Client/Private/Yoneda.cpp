@@ -87,9 +87,12 @@ HRESULT CYoneda::Add_Components()
 	AIDesc.pThis = this;
 	AIDesc.pWeaponType = &m_iWeaponType;
 
-	m_pTree = dynamic_cast<CAI_Yoneda*>(m_pGameInstance->Add_BTNode(m_iCurrentLevel, TEXT(""), &AIDesc));
+	m_pTree = dynamic_cast<CAI_Yoneda*>(m_pGameInstance->Add_BTNode(m_iCurrentLevel, TEXT("Prototype_BTNode_Yoneda"), &AIDesc));
 	if (nullptr == m_pTree)
 		return E_FAIL;
+
+
+
 
 	return S_OK;
 }

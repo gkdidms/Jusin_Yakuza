@@ -80,6 +80,7 @@
 #include "LevelTrigger.h"
 #include "MonsterTrigger.h"
 #include "QuestTrigger.h"
+#include "YonedaTrigger.h"
 #pragma endregion
 
 
@@ -706,6 +707,11 @@ HRESULT CMultiLoader::Loading_For_NonAnim()
 	/* For.Prototype_GameObject_QuestTrigger */
 	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_QuestTrigger"),
 		CQuestTrigger::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_YonedaTrigger */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_YonedaTrigger"),
+		CYonedaTrigger::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	/* For.Prototype_GameObject_AdvPassersby */

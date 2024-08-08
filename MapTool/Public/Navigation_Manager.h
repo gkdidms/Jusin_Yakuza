@@ -139,6 +139,7 @@ private:
 	_int									m_iCurrentCellIndex = { 0 };
 	_int									m_iCurrentFileNavi = { 0 };
 	_int									m_iCurrentOption = { 0 };
+	_int									m_iPointOption = { 0 };
 
 	_int									m_iCurrentRouteCellIndex = { 0 };
 	_int									m_iCurrentRouteNum = { 0 }; // routeÀÇ ¹øÈ£

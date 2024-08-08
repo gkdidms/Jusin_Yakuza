@@ -339,6 +339,14 @@ void CTrigger_Manager::Show_Add_Trigger_IMGUI()
 	static int			iCineNum = 0;
 	ImGui::InputInt(u8"시네머신 번호", &iCineNum);
 
+	static int			iYonedaKnife = 0;
+	ImGui::InputInt(u8"요네다 칼 유무", &iYonedaKnife);
+
+	ImGui::NewLine();
+
+	static int iTriggerID = 0;
+	ImGui::InputInt(u8"트리거 ID", &iTriggerID);
+
 
 	ImGui::Text(u8"트리거 추가 - 추가 버튼 누르고 pick ");
 
@@ -352,6 +360,8 @@ void CTrigger_Manager::Show_Add_Trigger_IMGUI()
 	triggerAddDesc.bMoveScene = bscenemove;
 	triggerAddDesc.iLevelNum = ilevelNum;
 	triggerAddDesc.iCineNum = iCineNum;
+	triggerAddDesc.iYonedaKnife = iYonedaKnife;
+	triggerAddDesc.iTriggerID = iTriggerID;
 
 	/* 왼쪽 클릭할 시 트리거 추가 */
 	if (CGameInstance::GetInstance()->Get_DIMouseState(DIM_LB) && true == m_bAddTrigger)
@@ -664,6 +674,20 @@ void CTrigger_Manager::Edit_Installed_Trigger()
 	ImGui::InputInt(u8"시네머신번호", &m_tCurTriggerDesc.iCineNum);
 
 	ImGui::NewLine();
+
+	static int iYonedaKnife = m_tCurTriggerDesc.iYonedaKnife;
+	ImGui::InputInt(u8"요네다 칼 유무", &m_tCurTriggerDesc.iYonedaKnife);
+
+	ImGui::NewLine();
+
+	static int iTriggerID = m_tCurTriggerDesc.iTriggerID;
+	ImGui::InputInt(u8"트리거 ID", &m_tCurTriggerDesc.iTriggerID);
+
+
+	ImGui::NewLine();
+
+	
+
 
 	m_TriggerObjects[m_iCurrentTriggerIndex]->Set_TriggerDesc(m_tCurTriggerDesc);
 

@@ -48,7 +48,7 @@
 #include "AI_Kuze.h"
 #include "AI_WPHYakuza.h"
 #include "AI_DefaultYakuza.h"
-
+#include "AI_Yoneda.h"
 #include "AI_Passersby.h"
 
 #include "AI_Van.h"
@@ -79,6 +79,7 @@
 #include "LevelTrigger.h"
 #include "MonsterTrigger.h"
 #include "QuestTrigger.h"
+#include "YonedaTrigger.h"
 #pragma endregion
 
 
@@ -176,6 +177,14 @@ HRESULT CLoader::Loading()
 /* 공통적인 저장 객체를 넣어주는 함수. */
 HRESULT CLoader::Loading_Default()
 {
+
+#pragma region Trigger
+	/* For.Prototype_GameObject_YonedaTrigger */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_YonedaTrigger"),
+		CYonedaTrigger::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+#pragma endregion
+
 #pragma region Texture
 	lstrcpy(m_szLoadingText, TEXT("텍스쳐를 로딩 중 입니다."));
 
@@ -311,6 +320,11 @@ HRESULT CLoader::Loading_Default()
 	/* For.Prototype_BTNode_DefaultYakuza*/
 	if (FAILED(m_pGameInstance->Add_BTNode_Prototype(m_eNextLevel, TEXT("Prototype_BTNode_DefaultYakuza"),
 		CAI_DefaultYakuza::Create())))
+		return E_FAIL;
+
+	/* For.Prototype_BTNode_Yoneda*/
+	if (FAILED(m_pGameInstance->Add_BTNode_Prototype(m_eNextLevel, TEXT("Prototype_BTNode_Yoneda"),
+		CAI_Yoneda::Create())))
 		return E_FAIL;
 #pragma endregion
 
@@ -449,6 +463,9 @@ HRESULT CLoader::Loading_Default()
 		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxInstance_Point.hlsl"), VTXINSTANCE_POINT::Elements, VTXINSTANCE_POINT::iNumElements))))
 		return E_FAIL;
 #pragma endregion
+
+
+
 
 
 	return S_OK;
@@ -647,10 +664,12 @@ HRESULT CLoader::Loading_For_Office_1F()
 		CLevelTrigger::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	/* For.Prototype_GameObject_LevelTrigger */
+	/* For.Prototype_GameObject_MonsterTrigger */
 	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_MonsterTrigger"),
 		CMonsterTrigger::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+
+
 
 	/* For.Prototype_GameObject_AdvSuit */
 	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_AdvPassersby"),
@@ -1334,8 +1353,8 @@ HRESULT CLoader::Add_Models_On_Path(_uint iLevel, const wstring& strPath, _bool 
 					if (FAILED(m_pGameInstance->Add_Component_Prototype(iLevel, strComponentName,
 						CModel::Create(m_pDevice, m_pContext, CModel::TYPE_ANIM, file_path.c_str(), PreTransformMatrix, true))))
 						return E_FAIL;
-				}
 
+				}
 			}
 		}
 
