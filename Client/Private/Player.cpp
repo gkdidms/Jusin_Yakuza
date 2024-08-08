@@ -1058,7 +1058,7 @@ void CPlayer::KRS_KeyInput(const _float& fTimeDelta)
 			// 그에 맞는 커맨드 액션을 실행시ㅕ켜야 한다.
 
 			// 여기에 스킬트리가 완료되면 스킬을 보유중인지에 대한 조건식을 추가로 잡아야한다
-			if (2 < m_iCurrentHitLevel)
+			if (2 < m_iCurrentHitLevel && m_pTargetObject == nullptr ? false : m_pTargetObject->isDown())
 			{
 				HitAction_Down();
 			}
@@ -1277,7 +1277,7 @@ void CPlayer::KRH_KeyInput(const _float& fTimeDelta)
 		}
 		if (m_pGameInstance->GetMouseState(DIM_RB) == TAP)
 		{
-			if (2 < m_iCurrentHitLevel)
+			if (2 < m_iCurrentHitLevel && m_pTargetObject == nullptr ? false : m_pTargetObject->isDown())
 			{
 				HitAction_Down();
 			}
@@ -1464,7 +1464,7 @@ void CPlayer::KRC_KeyInput(const _float& fTimeDelta)
 			{
 				// 현재 어택상태인지를 구분해서 마무리 액션을 실행시키거나
 				// 그에 맞는 커맨드 액션을 실행시켜야 한다.
-				if (2 < m_iCurrentHitLevel)
+				if (2 < m_iCurrentHitLevel && m_pTargetObject == nullptr ? false : m_pTargetObject->isDown())
 				{
 					HitAction_Down();
 				}
@@ -2001,19 +2001,20 @@ void CPlayer::Reset_CutSceneEvent()
 
 void CPlayer::HitAction_Down()
 {
-	if (m_pTargetObject == nullptr ? false : m_pTargetObject->isDown())
+	if (KRH == m_eCurrentStyle)
 	{
-		if (KRH == m_eCurrentStyle)
-		{
-			// 엎드려 넘어졌는지, 누워서 넘어졌는지 판단해서 실행시켜야함
-			//m_pTargetObject->Get_Down
-			Set_CutSceneAnim(OI_TRAMPLE_AO, 1);
+		// 엎드려 넘어졌는지, 누워서 넘어졌는지 판단해서 실행시켜야함
+		/*
+		* DIR_F : 앞으로 누워잇음
+		* DIR_B : 뒤로 엎어져잇음
+		* DIR_END : 방향을 가져오지 못함
+		*/
+		Set_CutSceneAnim(m_pTargetObject->Get_DownDir() == DIR_F ? OI_TRAMPLE_AO : OI_KICKOVER_UTU_C, 1);
 			
-		}
-		else
-		{
-			Set_CutSceneAnim(OI_KICK, 1);
-		}
+	}
+	else
+	{
+		Set_CutSceneAnim(m_pTargetObject->Get_DownDir() == DIR_F ? OI_UPPER : OI_KICK, 1);
 	}
 }
 
