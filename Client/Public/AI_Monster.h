@@ -60,6 +60,7 @@ protected:
 public:
     _bool isSway() { return m_isSway; }
     _bool isGuard() { return m_isGuard; }
+    _uint Get_DownDir();
 
 public:
     void Set_Sync(_bool isSync) { m_isSync = isSync; }
