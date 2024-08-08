@@ -48,7 +48,7 @@
 #include "AI_Kuze.h"
 #include "AI_WPHYakuza.h"
 #include "AI_DefaultYakuza.h"
-
+#include "AI_Yoneda.h"
 #include "AI_Passersby.h"
 
 #include "AI_Van.h"
@@ -79,6 +79,7 @@
 #include "LevelTrigger.h"
 #include "MonsterTrigger.h"
 #include "QuestTrigger.h"
+#include "YonedaTrigger.h"
 #pragma endregion
 
 
@@ -323,6 +324,11 @@ HRESULT CMultiLoader::Loading_Default()
 	/* For.Prototype_BTNode_DefaultYakuza*/
 	if (FAILED(m_pGameInstance->Add_BTNode_Prototype(m_eNextLevel, TEXT("Prototype_BTNode_DefaultYakuza"),
 		CAI_DefaultYakuza::Create())))
+		return E_FAIL;
+
+	/* For.Prototype_BTNode_Yoneda*/
+	if (FAILED(m_pGameInstance->Add_BTNode_Prototype(m_eNextLevel, TEXT("Prototype_BTNode_Yoneda"),
+		CAI_Yoneda::Create())))
 		return E_FAIL;
 #pragma endregion
 
@@ -700,6 +706,11 @@ HRESULT CMultiLoader::Loading_For_NonAnim()
 	/* For.Prototype_GameObject_QuestTrigger */
 	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_QuestTrigger"),
 		CQuestTrigger::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_YonedaTrigger */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_YonedaTrigger"),
+		CYonedaTrigger::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	/* For.Prototype_GameObject_AdvPassersby */

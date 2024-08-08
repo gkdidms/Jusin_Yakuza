@@ -59,7 +59,7 @@ HRESULT CLevel_Test::Initialize()
 	m_pFileTotalManager->Set_MapObj_In_Client(0, LEVEL_TEST);
 	m_pFileTotalManager->Set_Lights_In_Client(0);
 	m_pFileTotalManager->Set_Collider_In_Client(0, LEVEL_TEST);
-	m_pFileTotalManager->Set_Trigger_In_Client(99, LEVEL_TEST);
+	m_pFileTotalManager->Set_Trigger_In_Client(3, LEVEL_TEST);
 	
 	if (FAILED(Ready_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;

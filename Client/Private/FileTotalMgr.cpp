@@ -180,7 +180,7 @@ HRESULT CFileTotalMgr::Set_GameObject_In_Client(int iStageLevel)
         }
         else if (OBJECT_TYPE::MONSTER_YONEDA == m_MapTotalInform.pMapObjDesc[i].iObjType)
         {
-            CRushYakuza::MONSTER_IODESC		monsterDesc;
+            CYoneda::MONSTER_IODESC		monsterDesc;
             monsterDesc.vStartPos = XMLoadFloat4x4(&m_MapTotalInform.pMapObjDesc[i].vTransform);
             int		iLayer = Find_Layers_Index(m_MapTotalInform.pMapObjDesc[i].strLayer);
 
@@ -752,8 +752,12 @@ HRESULT CFileTotalMgr::Set_Trigger_In_Client(int iTriggerLoadingNum, int iStageL
         {
 
         }
-        else if (TRIGGER_CINEMACHINE == m_Trigger.pTriggers[i].iTriggerType)
+        else if (TRIGGER_YONEDA == m_Trigger.pTriggers[i].iTriggerType)
         {
+            CTrigger::TRIGGEROBJ_DESC       triggerObjDesc;
+            triggerObjDesc.tTriggerDesc = m_Trigger.pTriggers[i];
+
+            m_pGameInstance->Add_GameObject(iStageLevel, TEXT("Prototype_GameObject_YonedaTrigger"), TEXT("Layer_Trigger"), &triggerObjDesc);
 
         }
         else if (TRIGGER_MONSTER == m_Trigger.pTriggers[i].iTriggerType)
