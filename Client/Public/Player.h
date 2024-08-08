@@ -125,6 +125,7 @@ public:
     void Set_AnimStart(_bool isAnim) { m_isAnimStart = isAnim; }
 
     _bool isAnimStart() { return m_isAnimStart; }
+    _bool CanHitAction() { return m_CanHitAction; }
 
     const map<CUTSCENE_ANIMATION_TYPE, string>& Get_CutSceneAnims() const
     {
@@ -230,6 +231,7 @@ public:
 
     void HitAction_Down();
     void HitAction_WallBack();
+    void HitAction_CounterElbow();
 
 private:
     void Compute_MoveDirection_FB();

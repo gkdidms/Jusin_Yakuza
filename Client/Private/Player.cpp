@@ -186,6 +186,17 @@ void CPlayer::Tick(const _float& fTimeDelta)
 	Synchronize_Root(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")));
 
 #ifdef _DEBUG
+
+	if (m_pGameInstance->GetKeyState(DIK_M) == TAP)
+	{
+		m_iFaceAnimIndex = 8;
+		On_Separation_Face();
+	}	
+	if (m_pGameInstance->GetKeyState(DIK_N) == TAP)
+	{
+		Off_Separation_Face();
+	}
+
 	if (m_pGameInstance->GetKeyState(DIK_Z) == TAP)
 	{
 		//TODO: 여기에서 enum값을 필요한 애니메이션으로 바꾸면 해당하는 컷신이 실행된당
@@ -1309,7 +1320,14 @@ void CPlayer::KRH_KeyInput(const _float& fTimeDelta)
 					HitAction_WallBack();
 				}
 				else if (m_pTargetObject == nullptr ? false : m_pTargetObject->isDown())
+				{
 					HitAction_Down();
+				}
+				// 몬스터가 어택중일 때 실행시킬 것
+				//else if (m_pTargetObject == nullptr ? false : m_pTargetObject->isDown())
+				//{
+				//	HitAction_CounterElbow();
+				//}
 			}
 			else if (m_iCurrentBehavior == (_uint)KRH_BEHAVIOR_STATE::ATTACK)
 			{
@@ -1942,6 +1960,8 @@ void CPlayer::Play_CutScene()
 			return;
 		}
 
+		On_Separation_Face();
+
 		// 실제로 모델의 애니메이션을 돌리는건 컴포넌트이고, m_pCameraModel는 카메라 애니메이션을 실행하는 모델이라 랜더하지않는다
 		m_pModelCom->Play_Animation_CutScene(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")), m_pAnimCom, false, m_iCutSceneAnimIndex, false);
 
@@ -2058,10 +2078,26 @@ void CPlayer::HitAction_WallBack()
 	_int iDir = Compute_Target_Direction_Pos(vWallPos);
 	if (B == iDir)
 	{
-		//m_pTargetWall->Get
+		// TODO: 배벽의 극) 위치 Set해줘야함.
+		//CBounding_AABB::BOUNDING_AABB_DESC* pDesc = reinterpret_cast<CBounding_AABB::BOUNDING_AABB_DESC*>(m_pTargetWall->Get_Desc());
+		//_vector vExtents = XMLoadFloat3(&pDesc->vExtents);
+
+		//_vector vPos = vWallPos;
+		//vPos.m128_f32[0] += vExtents.m128_f32[0];
+		//	
+
+		//_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+
+		//vPos.m128_f32[0] += 1.f;
+		//m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos);
 
 		Set_CutSceneAnim(m_eCurrentStyle == KRS ? HAIHEKI_KICK : HAIHEKI_PUNCH, 1);
 	}
+}
+
+void CPlayer::HitAction_CounterElbow()
+{
+	Set_CutSceneAnim(KOBUSHIKUDAKI, 8);
 }
 
 void CPlayer::Compute_MoveDirection_FB()
