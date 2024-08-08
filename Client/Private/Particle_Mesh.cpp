@@ -10,8 +10,7 @@ CParticle_Mesh::CParticle_Mesh(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 CParticle_Mesh::CParticle_Mesh(const CParticle_Mesh& rhs)
     :CEffect{ rhs },
     m_BufferInstance{ rhs.m_BufferInstance },
-    m_strModelTag{rhs.m_strModelTag },
-    m_strNormalTag{rhs.m_strNormalTag }
+    m_strModelTag{rhs.m_strModelTag }
 {
     
 }
@@ -52,7 +51,6 @@ HRESULT CParticle_Mesh::Initialize(void* pArg)
             m_BufferInstance = pDesc->BufferInstance;
             m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&pDesc->vStartPos));
             m_strModelTag = pDesc->strModelTag;
-            m_strNormalTag = pDesc->strNormalTag;
         }
         else
         {
@@ -151,7 +149,6 @@ HRESULT CParticle_Mesh::Save_Data(const string strDirectory)
     string ParticleTag = m_pGameInstance->WstringToString(m_ParticleTag);
     string TextureTag = m_pGameInstance->WstringToString(m_TextureTag);
     string ModelTag = m_pGameInstance->WstringToString(m_strModelTag);
-    string NormalTag = m_pGameInstance->WstringToString(m_strNormalTag);
 
     string headTag = "Prototype_GameObject_Particle_Mesh_";
     Directory += "/" + headTag + ParticleTag + ".dat";
@@ -173,10 +170,6 @@ HRESULT CParticle_Mesh::Save_Data(const string strDirectory)
     _int strModellength = ModelTag.length();
     out.write((char*)&strModellength, sizeof(_int));
     out.write(ModelTag.c_str(), strModellength);
-
-    _int strNormallength = NormalTag.length();
-    out.write((char*)&strNormallength, sizeof(_int));
-    out.write(NormalTag.c_str(), strNormallength);
 
     out.write((char*)&m_iShaderPass, sizeof(_int));
 
@@ -274,15 +267,6 @@ HRESULT CParticle_Mesh::Load_Data(const string strDirectory)
     string modeltag = charModelTag;
     m_strModelTag = m_pGameInstance->StringToWstring(modeltag);
 
-    _int strNormallength;
-    char charNormalTag[MAX_PATH] = {};
-
-    in.read((char*)&strNormallength, sizeof(_int));
-
-    in.read(charNormalTag, strNormallength);
-    string Normaltag = charNormalTag;
-    m_strNormalTag = m_pGameInstance->StringToWstring(Normaltag);
-
 
     in.read((char*)&m_iShaderPass, sizeof(_int));
 
@@ -365,10 +349,10 @@ HRESULT CParticle_Mesh::Add_Components()
         TEXT("Com_Texture0"), reinterpret_cast<CComponent**>(&m_pTextureCom[0]))))
         return E_FAIL;
 
-    if(TEXT("")!= m_strNormalTag)
+    if(m_isNormal)
     {
         /* For.Com_Texture1 */
-        if (FAILED(__super::Add_Component(m_iCurrentLevel, m_strNormalTag,
+        if (FAILED(__super::Add_Component(m_iCurrentLevel, m_NormalTag,
             TEXT("Com_Texture1"), reinterpret_cast<CComponent**>(&m_pTextureCom[1]))))
             return E_FAIL;
     }
@@ -392,7 +376,7 @@ HRESULT CParticle_Mesh::Bind_ShaderResources()
     if (FAILED(m_pTextureCom[0]->Bind_ShaderResource(m_pShaderCom, "g_Texture", 0)))
         return E_FAIL;
 
-    if (TEXT("") != m_strNormalTag)
+    if(m_isNormal)
     {
         if (FAILED(m_pTextureCom[1]->Bind_ShaderResource(m_pShaderCom, "g_NormalTexture", 0)))
             return E_FAIL;

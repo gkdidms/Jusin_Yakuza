@@ -59,6 +59,7 @@ HRESULT CImguiManager::Initialize(void* pArg)
 	TextureTags.push_back(TEXT("Prototype_Component_Texture_BloodD6"));
 	TextureTags.push_back(TEXT("Prototype_Component_Texture_BloodD7"));
 	TextureTags.push_back(TEXT("Prototype_Component_Texture_BloodD8"));
+	TextureTags.push_back(TEXT("Prototype_Component_Texture_Fluid"));
 
 	ToneTextureTags.push_back(TEXT("Prototype_Component_Texture_AuraTone"));
 	ToneTextureTags.push_back(TEXT("Prototype_Component_Texture_AuraToneRush"));
@@ -1319,37 +1320,6 @@ void CImguiManager::Mesh_File_Selctor(_bool* bChange)
 	{
 		m_MeshDesc.strModelTag = MeshTags[m_iCurMesh];	
 	}
-
-	_int iNormalSize = NormalTags.size();
-	if (ImGui::BeginListBox("NormalBox"))
-	{
-		for (int i = 0; i < iNormalSize; i++)
-		{
-			// 리스트박스 아이템의 텍스트
-			const bool isSelected = (m_iCurNormalTexture == i);
-			char Label[256] = {};
-			strcpy_s(Label, m_pGameInstance->WstringToString(NormalTags[i]).c_str());
-			if (ImGui::Selectable(Label, isSelected))
-			{
-				m_iCurNormalTexture = i; // 선택된 아이템 업데이트	
-				*bChange = true;
-			}
-
-
-			// 선택된 아이템이 보이도록 스크롤
-			if (isSelected)
-			{
-				ImGui::SetItemDefaultFocus();
-
-			}
-		}
-		ImGui::EndListBox();
-	}
-
-	if (-1 != m_iCurEditIndex)
-	{
-		m_MeshDesc.strNormalTag = NormalTags[m_iCurNormalTexture];
-	}
 }
 
 void CImguiManager::EditorTrail_Tick(_float fTimeDelta)
@@ -1970,7 +1940,6 @@ HRESULT CImguiManager::Load_Desc(_uint Index)
 		m_MeshDesc.fDistortion = pEffect->Get_fDistortion();
 
 		m_MeshDesc.strModelTag = dynamic_cast<CParticle_Mesh*>(pEffect)->Get_ModelTag();
-		m_MeshDesc.strNormalTag = dynamic_cast<CParticle_Mesh*>(pEffect)->Get_NormalTag();
 
 		for (size_t i = 0; i < TextureTags.size(); i++)
 		{
@@ -1986,15 +1955,6 @@ HRESULT CImguiManager::Load_Desc(_uint Index)
 			if (m_MeshDesc.strModelTag == MeshTags[i])
 			{
 				m_iCurMesh = i;
-				break;
-			}
-		}
-
-		for (size_t i = 0; i < NormalTags.size(); i++)
-		{
-			if (m_MeshDesc.strNormalTag == NormalTags[i])
-			{
-				m_iCurNormalTexture = i;
 				break;
 			}
 		}
@@ -2459,6 +2419,7 @@ void CImguiManager::Editor_Tick(_float fTimeDelta)
 	}
 	if (ImGui::RadioButton("FALLSPREAD", &m_EffectDesc.iShaderPass, PASS_FALLSPREAD))
 	{
+		m_EffectDesc.BufferInstance.isBillboard = true;
 		bChange = true;
 	}
 
@@ -2960,15 +2921,9 @@ void CImguiManager::Reset_Particle()
 	{
 
 		dynamic_cast<CEffect*>(m_EditParticle[i]);
-		//if ()
-		//{
-
-		//}
 
 		void* pVoidpDesc = dynamic_cast<CParticle_Point*>(m_EditParticle[i])->Get_Instance();	
 		CVIBuffer_Instance::INSTANCE_DESC* pDesc = static_cast<CVIBuffer_Instance::INSTANCE_DESC*>(pVoidpDesc);	
-
-
 
 		if(!pDesc->isLoop)	
 		{
@@ -2990,9 +2945,22 @@ void CImguiManager::Reset_Particle()
 			Edit_Particle(i);
 		}
 	}
-//	if(!m_EditParticle.empty())
-		//Load_Desc(m_iCurEditIndex);
 
+	for (size_t i = 0; i < m_EditMesh.size(); i++)
+	{
+
+
+		void* pVoidpDesc = dynamic_cast<CParticle_Mesh*>(m_EditMesh[i])->Get_Instance();
+
+
+		CVIBuffer_Instance::INSTANCE_DESC* pDesc = static_cast<CVIBuffer_Instance::INSTANCE_DESC*>(pVoidpDesc);
+
+		if (!pDesc->isLoop)
+		{
+			Load_Desc(i);
+			Edit_Particle(i);
+		}
+	}
 }
 
 void CImguiManager::Timeline_Tick(_float fTimeDelta)
