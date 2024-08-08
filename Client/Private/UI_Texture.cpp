@@ -33,7 +33,8 @@ CUI_Texture::CUI_Texture(const CUI_Texture& rhs)
 	m_isAnimLoop{rhs.m_isAnimLoop},
 	m_fUpPoint{ rhs.m_fUpPoint },
 	m_fDownPoint{ rhs.m_fDownPoint },
-	m_vEndColor{ rhs.m_vEndColor }
+	m_vEndColor{ rhs.m_vEndColor },
+	m_isParent{ rhs.m_isParent }
 {
 }
 

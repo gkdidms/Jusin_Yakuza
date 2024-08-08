@@ -22,8 +22,8 @@ CGroup::CGroup(const CGroup& rhs)
 {
 	for (auto& iter : rhs.m_PartObjects)
 	{
-		Safe_AddRef(iter);
-		m_PartObjects.push_back(iter);
+		CUI_Object* pUI = dynamic_cast<CUI_Object*>(iter->Clone(nullptr));
+		m_PartObjects.emplace_back(pUI);
 	}
 
 }
