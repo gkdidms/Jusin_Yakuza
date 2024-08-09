@@ -1,5 +1,8 @@
 #include "CarChase_Sedan.h"
 
+#include "GameInstance.h"
+#include "Highway_Taxi.h"
+
 CCarChase_Sedan::CCarChase_Sedan(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CCarChase_Monster{ pDevice, pContext }
 {
@@ -493,6 +496,21 @@ HRESULT CCarChase_Sedan::Add_Components()
 		return E_FAIL;
 
 	return S_OK;
+}
+
+void CCarChase_Sedan::Change_Dir()
+{
+	//플레이어가 몬스터의 왼쪽에 있다면
+	//왼쪽에 존재하는 몬스터의 앞에 있는지, 오른쪽에 있는지
+	CHighway_Taxi* pPlayer = dynamic_cast<CHighway_Taxi*>(m_pGameInstance->Get_GameObject(m_iCurrentLevel, TEXT("Layer_Taxi"), 0));
+	//_vector vPlayerPos = pPlayer->Get_TransformCom()->Get
+	if (m_iWeaponType == GUN_L)
+	{
+
+	}
+	//플레이어가 몬스터의 오른쪽에 있다면
+
+
 }
 
 CCarChase_Sedan* CCarChase_Sedan::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
