@@ -56,7 +56,12 @@ void CUILife::Update_PlayerInfo()
 	_uint Level = m_pGameInstance->Get_CurrentLevel();
 	CPlayer* pPlayer = dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject(Level ,TEXT("Layer_Player"),0));
 
-	m_iBts= pPlayer->Get_BattleStyle()-1;
+	_int Bts= pPlayer->Get_BattleStyle()-1;
+	if (-1 == Bts)
+		Bts = m_iBts;
+	
+	m_iBts = Bts;
+
 	m_iHitLevel = pPlayer->Get_CurrentHitLevel()+1;
 
 	//advbenture , krs , krh, krc 기본 , 불한당, 러쉬 , 파괴자.

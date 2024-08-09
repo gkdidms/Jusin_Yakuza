@@ -548,7 +548,7 @@
     </ClCompile>
     <ClCompile Include="..\Private\Kiryu_KRS_BackWall.cpp">
       <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\BackWall</Filter>
-	</ClCompile>
+    </ClCompile>
     <ClCompile Include="..\private\AI_Bike.cpp">
       <Filter>02.GameObjects\02.Character\LandObject\03.CarChase\01.Monster\02.Bike\AI</Filter>
     </ClCompile>
@@ -1131,7 +1131,7 @@
     </ClInclude>
     <ClInclude Include="..\Public\Kiryu_KRS_BackWall.h">
       <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\BackWall</Filter>
-	</ClInclude>
+    </ClInclude>
     <ClInclude Include="..\public\AI_Bike.h">
       <Filter>02.GameObjects\02.Character\LandObject\03.CarChase\01.Monster\02.Bike\AI</Filter>
     </ClInclude>
@@ -1774,6 +1774,9 @@
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxMeshItem.hlsl">
+      <Filter>97.ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxInstance_Mesh.hlsl">
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
   </ItemGroup>

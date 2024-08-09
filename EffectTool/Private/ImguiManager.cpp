@@ -59,7 +59,13 @@ HRESULT CImguiManager::Initialize(void* pArg)
 	TextureTags.push_back(TEXT("Prototype_Component_Texture_BloodD6"));
 	TextureTags.push_back(TEXT("Prototype_Component_Texture_BloodD7"));
 	TextureTags.push_back(TEXT("Prototype_Component_Texture_BloodD8"));
-	TextureTags.push_back(TEXT("Prototype_Component_Texture_Fluid"));
+	TextureTags.push_back(TEXT("Prototype_Component_Texture_LiquidD"));
+	TextureTags.push_back(TEXT("Prototype_Component_Texture_LiquidAnimAD"));
+	TextureTags.push_back(TEXT("Prototype_Component_Texture_LiquidAnimBD"));
+	TextureTags.push_back(TEXT("Prototype_Component_Texture_LiquidAnimCD"));
+	TextureTags.push_back(TEXT("Prototype_Component_Texture_LiquidAnimDD"));
+	TextureTags.push_back(TEXT("Prototype_Component_Texture_LiquidAnimED"));
+	TextureTags.push_back(TEXT("Prototype_Component_Texture_LiquidAnimFD"));
 
 	ToneTextureTags.push_back(TEXT("Prototype_Component_Texture_AuraTone"));
 	ToneTextureTags.push_back(TEXT("Prototype_Component_Texture_AuraToneRush"));
@@ -78,6 +84,13 @@ HRESULT CImguiManager::Initialize(void* pArg)
 	NormalTags.push_back(TEXT("Prototype_Component_Texture_BloodN6"));
 	NormalTags.push_back(TEXT("Prototype_Component_Texture_BloodN7"));
 	NormalTags.push_back(TEXT("Prototype_Component_Texture_BloodN8"));
+	NormalTags.push_back(TEXT("Prototype_Component_Texture_LiquidN"));
+	NormalTags.push_back(TEXT("Prototype_Component_Texture_LiquidAnimAN"));
+	NormalTags.push_back(TEXT("Prototype_Component_Texture_LiquidAnimBN"));
+	NormalTags.push_back(TEXT("Prototype_Component_Texture_LiquidAnimCN"));
+	NormalTags.push_back(TEXT("Prototype_Component_Texture_LiquidAnimDN"));
+	NormalTags.push_back(TEXT("Prototype_Component_Texture_LiquidAnimEN"));
+	NormalTags.push_back(TEXT("Prototype_Component_Texture_LiquidAnimFN"));
 
 
 	if (nullptr != pArg)
