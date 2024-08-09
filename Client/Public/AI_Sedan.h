@@ -1,25 +1,15 @@
 #pragma once
 #include "AI_CarChase.h"
 
-/*
-* DRV, GUN, RKT
-* DRV : ¿îÀü¸¸ ÇÔ
-* GUN : ¿îÀü¼®¿¡¼­ ÃÑ ½ô
-* RKT : µÞ ÀÚ¼®¿¡¼­ ÃÑ½ô 
-* 
-* DRV, RKT : ÇÑ¼Â
-* GUN : È¥ÀÚ
-*/
-
 BEGIN(Client)
-class CAI_Bike :
+class CAI_Sedan :
     public CAI_CarChase
 {
 private:
-    CAI_Bike();
-    CAI_Bike(const CAI_Bike& rhs);
-    virtual ~CAI_Bike() = default;
-
+    CAI_Sedan();
+    CAI_Sedan(const CAI_Sedan& rhs);
+    virtual ~CAI_Sedan() = default;
+    
 public:
     virtual HRESULT Initialize_Prototype();
     virtual HRESULT Initialize(void* pArg);
@@ -30,17 +20,21 @@ protected:
     virtual void Ready_Tree();
 
 private:
+    _uint m_iCurrentDir = { DIR_END };
+    _uint m_iPrevDir = { DIR_END };
+
+private:
     virtual CBTNode::NODE_STATE Dead() override;
     virtual CBTNode::NODE_STATE Hit() override;
 
     CBTNode::NODE_STATE Check_Attack();
     CBTNode::NODE_STATE ATK_Shot();
 
-    CBTNode::NODE_STATE Check_Ready();
-    CBTNode::NODE_STATE Ready();
+    CBTNode::NODE_STATE Check_Idle();
+    CBTNode::NODE_STATE Idle();
 
 public:
-    static CAI_Bike* Create();
+    static CAI_Sedan* Create();
     virtual CBTNode* Clone(void* pArg);
     virtual void Free();
 };

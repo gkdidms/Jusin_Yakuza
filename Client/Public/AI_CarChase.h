@@ -56,7 +56,7 @@ protected:
     CGameInstance* m_pGameInstance = { nullptr };
 
     CAnim* m_pAnimCom[2] = {nullptr};
-    class CPlayer* m_pPlayer = { nullptr };
+    class CHighway_Taxi* m_pPlayer = { nullptr };
     class CCarChase_Monster* m_pThis = { nullptr };
 
     _uint* m_pState = { nullptr };
@@ -70,6 +70,7 @@ protected:
     _bool m_isAttack = { false };
     _bool m_isAtkReady = { false };
     _bool m_isSit = { false };
+    _bool m_isHit = { false };
 
 protected:
     _float m_fDelayAttackDuration = { 3.f };
