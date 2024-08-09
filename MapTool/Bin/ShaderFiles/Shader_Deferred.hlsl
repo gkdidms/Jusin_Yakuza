@@ -258,7 +258,6 @@ PS_OUT PS_MAIN_COPY_BACKBUFFER_RESULT(PS_IN In)
 
     vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
     vector vShade = g_ShadeTexture.Sample(LinearSampler, In.vTexcoord);
-    vector vSubSurface = g_SubSurfaceTexture.Sample(LinearSampler, In.vTexcoord);
     
     if (g_isPBR)
     {
@@ -267,7 +266,7 @@ PS_OUT PS_MAIN_COPY_BACKBUFFER_RESULT(PS_IN In)
         vector vLightmap = g_LightMapTexture.Sample(LinearSampler, In.vTexcoord);
         vector vOEShader = g_OEShaderTexture.Sample(LinearSampler, In.vTexcoord);
         
-        vector vNeoShader = (vector(vDiffuse.xyz, 1.f) + vSubSurface) * vShade + vSpeculerRM * vLightmap;
+        vector vNeoShader = vector(vDiffuse.xyz, 1.f) * vShade + vSpeculerRM * vLightmap;
         
         vSpeculer = lerp(vector(0.f, 0.f, 0.f, 0.f), vSpeculer, vOEShader.g);
         
@@ -275,11 +274,10 @@ PS_OUT PS_MAIN_COPY_BACKBUFFER_RESULT(PS_IN In)
         vResultShader = lerp(vector(0.f, 0.f, 0.f, 0.f), vResultShader, vOEShader.b);
         
         Out.vColor = vNeoShader;
-
     }
     else
     {
-        Out.vColor = (vector(vDiffuse.xyz, 1.f) + vSubSurface) * vShade;
+        Out.vColor = vector(vDiffuse.xyz, 1.f) * vShade;
     }
     
     if (g_isShadow)

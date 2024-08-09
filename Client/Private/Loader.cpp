@@ -413,6 +413,10 @@ HRESULT CLoader::Loading_Default()
 
 #pragma endregion
 
+#pragma region Meterial
+	Add_Components_On_Path_Material(m_eNextLevel, TEXT("../Bin/DataFiles/MeterialData"));
+#pragma endregion
+
 #pragma region Shader
 	lstrcpy(m_szLoadingText, TEXT("셰이더를(을) 로딩 중 입니다."));
 	/* For.Prototype_Component_Shader_VtxAnim */
@@ -464,10 +468,6 @@ HRESULT CLoader::Loading_Default()
 		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxInstance_Point.hlsl"), VTXINSTANCE_POINT::Elements, VTXINSTANCE_POINT::iNumElements))))
 		return E_FAIL;
 #pragma endregion
-
-
-
-
 
 	return S_OK;
 }
@@ -1580,6 +1580,41 @@ HRESULT CLoader::Add_Models_On_Path_NonAnim(_uint iLevel, const wstring& strPath
 				CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, strBinPath.c_str(), NonAnimPreTransformMatrix, true))))
 				return E_FAIL;
 		}
+	}
+	return S_OK;
+}
+
+HRESULT CLoader::Add_Components_On_Path_Material(_uint iLevel, const wstring& strPath)
+{
+	vector<string> fbxFilesName;
+	wstring		wstrFullPath = strPath;
+	_matrix		NonAnimPreTransformMatrix;
+
+	// fbx 제외하고 fbx 파일 이름들 저장
+	for (const auto& entry : fs::directory_iterator(wstrFullPath)) {
+		if (entry.is_regular_file() && entry.path().extension() == L".dat") {
+
+			string strFileName = entry.path().filename().string();
+
+			size_t lastDot = entry.path().filename().string().find_last_of(".");
+
+			strFileName = entry.path().filename().string().substr(0, lastDot);
+
+			fbxFilesName.push_back(strFileName);
+		}
+	}
+
+	for (const auto& fbxNames : fbxFilesName)
+	{
+		wstring strFilePath = strPath + TEXT("/");
+		string strDirectory = m_pGameInstance->WstringToString(strFilePath);
+		string strBinPath = strDirectory + fbxNames + ".dat";
+
+		wstring strComponentName = TEXT("Prototype_Component_Material_") + m_pGameInstance->StringToWstring(fbxNames);
+
+		if (FAILED(m_pGameInstance->Add_Component_Prototype(iLevel, strComponentName,
+			CNeoShader::Create(m_pDevice, m_pContext, strBinPath.c_str()))))
+			return E_FAIL;
 	}
 	return S_OK;
 }

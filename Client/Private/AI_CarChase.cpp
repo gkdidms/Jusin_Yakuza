@@ -46,8 +46,11 @@ HRESULT CAI_CarChase::Initialize(void* pArg)
 
 void CAI_CarChase::Tick(const _float& fTimeDelta)
 {
-	if (!m_isAttack)
+	if (!m_isAttack && !m_isAtkReady)
 		m_fAttackDelayTime += fTimeDelta;
+
+	if (!m_isAtkReady)
+		m_fAttackReadyDelayTime += fTimeDelta;
 
 	m_fSitUpTime += fTimeDelta;
 

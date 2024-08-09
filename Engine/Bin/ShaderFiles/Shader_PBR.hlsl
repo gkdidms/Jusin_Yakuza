@@ -183,16 +183,6 @@ float4 BRDF(float4 vPosition, float2 vTexcoord, float4 vNormal, float4 vDepthDes
     return vector(vSpecular * Combine.z, 0.f) ;
 }
 
-float3 SubSucface(float2 vTexcoord, float4 vNormal)
-{
-    float vSubSurcafe = g_SubSurfaceTexture.Sample(LinearSampler, vTexcoord).r; // 0
-    
-    float3 vScatterColor = vSubSurcafe;
-    float vScatterAmount = saturate(dot(normalize(g_vLightDir), vNormal)); // ºûÀÇ »ê¶õ°ª
-   
-    return vScatterColor * vScatterAmount;
-}
-
 float3 CalcuateSpecular(float2 vTexcoord, float4 vNormal, float3 vLook)
 {
     vector vOEShader = g_OEShaderTexture.Sample(LinearSampler, vTexcoord);
