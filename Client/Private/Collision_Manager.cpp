@@ -597,9 +597,58 @@ CCollider* CCollision_Manager::Get_Near_Collider(CGameObject* pObject, vector<CC
 
 void CCollision_Manager::Blood_Effect(CEffect::EFFECT_DESC& EffectDesc)
 {
-    m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Blood0"), TEXT("Layer_Particle"), &EffectDesc);
-    m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Blood6"), TEXT("Layer_Particle"), &EffectDesc);
+    m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Hit_Blood0"), TEXT("Layer_Particle"), &EffectDesc);
+    m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Hit_Blood1"), TEXT("Layer_Particle"), &EffectDesc);
+    m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Hit_Blood2"), TEXT("Layer_Particle"), &EffectDesc);
 
+}
+
+void CCollision_Manager::Blood_Splash(CEffect::EFFECT_DESC& EffectDesc)
+{
+    m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Aura_BloodSplash"), TEXT("Layer_Particle"), &EffectDesc);
+}
+
+void CCollision_Manager::Car_HitSpark(CEffect::EFFECT_DESC& EffectDesc)
+{
+    m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_CarHitSpark0"), TEXT("Layer_Particle"), &EffectDesc);
+    m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_CarHitSpark1"), TEXT("Layer_Particle"), &EffectDesc);
+}
+
+void CCollision_Manager::Car_Fire(CEffect::EFFECT_DESC& EffectDesc)
+{
+    m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Aura_FireA"), TEXT("Layer_Particle"), &EffectDesc);
+}
+
+void CCollision_Manager::Car_Explosion(CEffect::EFFECT_DESC& EffectDesc)
+{
+    m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Aura_ExpA"), TEXT("Layer_Particle"), &EffectDesc);
+}
+
+void CCollision_Manager::Shot_Flash(CEffect::EFFECT_DESC& EffectDesc)
+{
+    m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Aura_ExpB"), TEXT("Layer_Particle"), &EffectDesc);
+}
+
+void CCollision_Manager::Cine_NoseBlood(CEffect::EFFECT_DESC& EffectDesc)
+{
+    m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Blood0"), TEXT("Layer_Particle"), &EffectDesc);
+}
+
+void CCollision_Manager::Cine_MouseBlood(CEffect::EFFECT_DESC& EffectDesc)
+{
+    m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Blood6"), TEXT("Layer_Particle"), &EffectDesc);
+}
+
+void CCollision_Manager::Car_BackTrail(CEffect::EFFECT_DESC& EffectDesc)
+{
+    m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Trail_CarBackLight"), TEXT("Layer_Particle"), &EffectDesc);
+}
+
+void CCollision_Manager::Car_GlassBroke(CEffect::EFFECT_DESC& EffectDesc)
+{
+    m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Mesh_glass0"), TEXT("Layer_Particle"), &EffectDesc);
+    m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Mesh_glass1"), TEXT("Layer_Particle"), &EffectDesc);
+    m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Mesh_glass2"), TEXT("Layer_Particle"), &EffectDesc);
 }
 
 void CCollision_Manager::Impulse_Clear()
