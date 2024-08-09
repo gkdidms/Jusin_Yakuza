@@ -345,6 +345,29 @@ HRESULT CItem::Render_LightDepth()
 	return S_OK;
 }
 
+void CItem::ImpulseResolution(CGameObject* pTargetObject, _float fDistance)
+{
+	//CCollider* pCollider = dynamic_cast<CCollider*>(*m_vColliders.begin());
+	//if (nullptr == pCollider) return;
+
+	//_float3 vDir = m_pColliderCom->ImpulseResolution(dynamic_cast<CLandObject*>(pTargetObject)->Get_Collider(), fDistance);
+
+	//if (!XMVector3Equal(XMLoadFloat3(&vDir), XMVectorZero()))
+	//{
+	//	_vector vMovePos = m_pTransformCom->Get_State(CTransform::STATE_POSITION) + (XMLoadFloat3(&vDir));
+
+	//	//CNavigation* pTargetNavi = dynamic_cast<CNavigation*>(pTargetObject->Get_Component(TEXT("Com_Navigation")));
+	//	if (nullptr == m_pNavigationCom)
+	//		m_pTransformCom->Set_State(CTransform::STATE_POSITION, vMovePos);
+	//	else
+	//	{
+	//		// 네비 밖인지 아닌지 검사해야함.
+	//		if (m_pNavigationCom->isMove(vMovePos))
+	//			m_pTransformCom->Set_State(CTransform::STATE_POSITION, vMovePos);
+	//	}
+	//}
+}
+
 
 
 CCollider* CItem::Get_Collider()
