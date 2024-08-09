@@ -45,27 +45,17 @@ HRESULT CLevel_Test::Initialize()
 
 	//m_pTutorialManager = CTutorialManager::Create();
 	//if (nullptr == m_pTutorialManager)
-	//	return E_FAIL;
-	/*if (FAILED(Ready_Monster(TEXT("Layer_Monster"))))
-		return E_FAIL;*/
-
-	//if (FAILED(Ready_Map(TEXT("Layer_Map"))))
-	//	return E_FAIL;
-
-	//if (FAILED(Ready_Effect(TEXT("Layer_Effect"))))
-	//	return E_FAIL;
 
 	/* Å¬¶ó ÆÄ½Ì */
-	m_pFileTotalManager->Set_MapObj_In_Client(7, LEVEL_TEST);
-	m_pFileTotalManager->Set_Lights_In_Client(99);
-	m_pFileTotalManager->Set_Collider_In_Client(0, LEVEL_TEST);
-	m_pFileTotalManager->Set_Trigger_In_Client(3, LEVEL_TEST);
+	if (FAILED(Ready_Test_Load()))
+		return E_FAIL;
+
+	//Çý¿ø Å×½ºÆ® ¿ë
+	//if (FAILED(Ready_Test_Hyewon()))
+	//	return E_FAIL;
 	
 	if (FAILED(Ready_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
-
-	//if (FAILED(Ready_Test_SceneModel(TEXT("Layer_SceneModel_Test"))))
-	//	return E_FAIL;
 
 	return S_OK;
 }
@@ -166,50 +156,22 @@ HRESULT CLevel_Test::Ready_Player(const wstring& strLayerTag)
 
 	return S_OK;
 }
-
-HRESULT CLevel_Test::Ready_Monster(const wstring& strLayerTag)
+HRESULT CLevel_Test::Ready_Test_Load()
 {
-	CGameObject::GAMEOBJECT_DESC Desc{};
-	Desc.fSpeedPecSec = 10.f;
-	//Desc.fRotatePecSec = XMConvertToRadians(0.f);
-	Desc.fRotatePecSec = XMConvertToRadians(180.f);
-
-	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_Kuze"), strLayerTag, &Desc)))
-		return E_FAIL;
+	m_pFileTotalManager->Set_MapObj_In_Client(7, LEVEL_TEST);
+	m_pFileTotalManager->Set_Lights_In_Client(99);
+	m_pFileTotalManager->Set_Collider_In_Client(0, LEVEL_TEST);
+	//m_pFileTotalManager->Set_Trigger_In_Client(79, LEVEL_TEST);
 
 	return S_OK;
 }
 
-HRESULT CLevel_Test::Ready_Map(const wstring& strLayerTag)
+HRESULT CLevel_Test::Ready_Test_Hyewon()
 {
-	//if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_Map"), strLayerTag)))
-	//	return E_FAIL;
-
-	return S_OK;
-}
-
-HRESULT CLevel_Test::Ready_Effect(const wstring& strLayerTag)
-{
-	//if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_Particle_Point_Hit1_Part0"), strLayerTag, nullptr)))
-	//	return E_FAIL;
-
-	//if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_Particle_Aura_asd"), strLayerTag, nullptr)))
-	//	return E_FAIL;
-
-	//m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Aura_Start_Rush"), TEXT("Layer_Particle"), nullptr);
-
-	return S_OK;
-}
-
-HRESULT CLevel_Test::Ready_Test_SceneModel(const wstring& strLayerTag)
-{
-	CGameObject::GAMEOBJECT_DESC Desc{};
-	Desc.fSpeedPecSec = 10.f;
-	//Desc.fRotatePecSec = XMConvertToRadians(0.f);
-	Desc.fRotatePecSec = XMConvertToRadians(180.f);
-
-	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_Taxi"), strLayerTag, &Desc)))
-		return E_FAIL;
+	m_pFileTotalManager->Set_MapObj_In_Client(79, LEVEL_TEST);
+	m_pFileTotalManager->Set_Lights_In_Client(99);
+	m_pFileTotalManager->Set_Collider_In_Client(0, LEVEL_TEST);
+	m_pFileTotalManager->Set_Trigger_In_Client(79, LEVEL_TEST);
 
 	return S_OK;
 }

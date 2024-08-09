@@ -84,6 +84,10 @@ void CImguiManager::Tick(const _float& fTimeDelta)
 			RimLightWindow();
 		if (m_isTrailWindow)
 			TrailWindow();
+		if (m_isFaceWindow)
+			FaceWindow();
+		if (m_isBloodWindow)
+			BloodWindow();
 	}
 
 	// 애니메이션 이벤트가 있는 콜라이더의 색상을 시안색으로 바꿔주는 기능
@@ -153,6 +157,9 @@ void CImguiManager::ModelList()
 	if (ImGui::RadioButton(u8"플레이어", m_iModelType == PLAYER))
 	{
 		m_iModelType = PLAYER;
+
+		Change_Model();
+
 		m_Anims = m_pRenderModel->Get_Animations();
 	}
 	ImGui::SameLine();
@@ -160,11 +167,31 @@ void CImguiManager::ModelList()
 	{
 		m_iModelType = ENEMY;
 
+		Change_Model();
+
 		auto pAnimCom = m_pRenderModel->Get_AnimComponent();
 		m_Anims = pAnimCom->Get_Animations();
 	}
+	ImGui::SameLine();
+	if (ImGui::RadioButton(u8"싱크액션", m_iModelType == SYNC))
+	{
+		m_iModelType = SYNC;
 
-	Setting_AnimationList();
+		Change_Model();
+
+		auto pAnimCom = m_pRenderModel->Get_AnimComponent();
+		m_Anims = pAnimCom->Get_Animations();
+	}
+	ImGui::SameLine();
+	if (ImGui::RadioButton(u8"기타", m_iModelType == ETC))
+	{
+		m_iModelType = ETC;
+
+		Change_Model();
+
+		auto pAnimCom = m_pRenderModel->Get_AnimComponent();
+		m_Anims = pAnimCom->Get_Animations();
+	}
 
 	if (ImGui::DragFloat3("Position", m_ModelPosition, 0.1f))
 	{
@@ -212,20 +239,7 @@ void CImguiManager::ModelList()
 
 	if (ImGui::ListBox("##", &m_iModelSelectedIndex, items.data(), m_ModelNameList.size()))
 	{
-		m_iAnimIndex = 0;
-		m_iSearchAnimIndex = 0;
-		m_iAddedAnimSelectedIndex = 0;
-		m_iBoneSelectedIndex = 0;
-		m_iBoneSelectedIndex = 0;
-		m_iColliderSelectedIndex = 0;
-		m_iEventBoneIndex = 0;
-		m_iChannelSelectedIndex = 0;
-		m_iEventSelectedIndex = 0;
-		m_iMeshSelectedIndex = 0;
-		m_iAddedMeshSelectedIndex = 0;
-
-		m_pRenderModel->Change_Model(m_pGameInstance->StringToWstring(m_ModelNameList[m_iModelSelectedIndex]));
-		//All_Load();
+		Change_Model();
 	}
 
 	if (ImGui::Button(u8"데이터 저장하기"))
@@ -264,7 +278,7 @@ void CImguiManager::AnimListWindow()
 	if (ImGui::ListBox("##", &m_iAnimIndex, items.data(), items.size()))
 	{
 		m_fAnimationPosition = 0.f;
-		m_pRenderModel->Change_Animation(m_iAnimIndex, m_iModelType == ENEMY ? true : false);
+		m_pRenderModel->Change_Animation(m_iAnimIndex, m_iModelType == PLAYER ? false : true);
 		//m_isAnimLoop = m_pRenderModel->Get_AnimLoop(m_iAnimIndex);
 	}
 
@@ -717,6 +731,22 @@ void CImguiManager::KeyFrameWindow()
 	}
 #pragma endregion
 
+#pragma region 페이스 이벤트 버튼
+	ImGui::Text("Face Event");
+	if (ImGui::Button("Face Op"))
+	{
+		m_isFaceWindow = true;
+	}
+#pragma endregion
+
+#pragma region 블러드 이펙트 이벤트 버튼
+	ImGui::Text("Blood Event");
+	if (ImGui::Button("Blood Op"))
+	{
+		m_isBloodWindow = true;
+	}
+#pragma endregion
+
 	if (ImGui::Button(u8"애니메이션 이벤트 저장"))
 	{
 		string strDirectory = "../../Client/Bin/DataFiles/Character/" + m_ModelNameList[m_iModelSelectedIndex];
@@ -1104,6 +1134,24 @@ void CImguiManager::TrailWindow()
 void CImguiManager::SoundListWindow()
 {
 	ImGui::Begin("Sound List", &m_isSoundListWindow);
+
+	ImGui::Text(u8"테스트용으로 띄웠습니다");
+
+	ImGui::End();
+}
+
+void CImguiManager::FaceWindow()
+{
+	ImGui::Begin("Face Event", &m_isFaceWindow);
+
+	ImGui::Text(u8"테스트용으로 띄웠습니다");
+
+	ImGui::End();
+}
+
+void CImguiManager::BloodWindow()
+{
+	ImGui::Begin("Blood Particle Event", &m_isBloodWindow);
 
 	ImGui::Text(u8"테스트용으로 띄웠습니다");
 
@@ -1667,8 +1715,6 @@ void CImguiManager::All_Load()
 	EffectState_Load(strDirectory);
 	RimEvent_Load(strDirectory);
 	TrailEvent_Load(strDirectory);
-
-	Setting_AnimationList();
 }
 
 void CImguiManager::AlphaMesh_Load(string strPath)
@@ -2030,6 +2076,57 @@ void CImguiManager::Setting_Trail()
 				m_pRenderModel->Trail_On((*lower_bound_iter).second.strBonelName, false);
 		}
 	}
+}
+
+void CImguiManager::Change_Model()
+{
+	m_iAnimIndex = 0;
+	m_iSearchAnimIndex = 0;
+	m_iAddedAnimSelectedIndex = 0;
+	m_iBoneSelectedIndex = 0;
+	m_iBoneSelectedIndex = 0;
+	m_iColliderSelectedIndex = 0;
+	m_iEventBoneIndex = 0;
+	m_iChannelSelectedIndex = 0;
+	m_iEventSelectedIndex = 0;
+	m_iMeshSelectedIndex = 0;
+	m_iAddedMeshSelectedIndex = 0;
+
+	wstring strModelName = m_pGameInstance->StringToWstring(m_ModelNameList[m_iModelSelectedIndex]);
+	wstring strAnimName = TEXT("");
+
+	if (TEXT("Kiryu") == strModelName)
+	{
+		if (SYNC == m_iModelType)
+		{
+			strAnimName = TEXT("CutSceneAnim_ForPlayer");
+		}
+		else
+		{
+			strAnimName = strModelName;
+		}
+
+	}
+	else if (TEXT("Jimu") == strModelName || TEXT("Kuze") == strModelName || TEXT("Kuze_Fight") == strModelName
+		|| TEXT("YakuzaA") == strModelName || TEXT("YakuzaB") == strModelName || TEXT("YakuzaC") == strModelName || TEXT("YakuzaD") == strModelName
+		|| TEXT("Yoneda") == strModelName)
+	{
+		if (SYNC == m_iModelType)
+		{
+			strAnimName = TEXT("SyncAnim");
+		}
+		else
+		{
+
+			strAnimName = TEXT("Common");
+		}
+	}
+	else if (TEXT("Bike") == strModelName || TEXT("Heli") == strModelName || TEXT("Van") == strModelName || TEXT("Sedan") == strModelName)
+	{
+		strAnimName = TEXT("ReactorHighwayAnim");
+	}
+
+	m_pRenderModel->Change_Model(strModelName, strAnimName);
 }
 
 void CImguiManager::Setting_InitialData()

@@ -225,6 +225,7 @@
     <ClInclude Include="..\Public\Map.h" />
     <ClInclude Include="..\Public\MultiLoader.h" />
     <ClInclude Include="..\Public\Particle_Mesh.h" />
+    <ClInclude Include="..\Public\QteManager.h" />
     <ClInclude Include="..\Public\Reactor_Bike.h" />
     <ClInclude Include="..\Public\Reactor_Heli.h" />
     <ClInclude Include="..\Public\Reactor_Sedan.h" />
@@ -413,6 +414,7 @@
     <ClCompile Include="..\Private\Kiryu_KRS_BackWall.cpp" />
     <ClCompile Include="..\Private\Kiryu_KRS_PickUp.cpp" />
     <ClCompile Include="..\Private\Particle_Mesh.cpp" />
+    <ClCompile Include="..\Private\QteManager.cpp" />
     <ClCompile Include="..\Private\Reactor_Bike.cpp" />
     <ClCompile Include="..\Private\Reactor_Heli.cpp" />
     <ClCompile Include="..\Private\Reactor_Sedan.cpp" />

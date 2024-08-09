@@ -33,7 +33,7 @@ public:
     virtual HRESULT Render();
 
     virtual void* Get_Instance()override;
-
+    virtual void Reset_Buffer() override;
 public:
     virtual HRESULT Save_Data(const string strDirectory)override;
     virtual HRESULT Load_Data(const string strDirectory)override;

@@ -62,9 +62,9 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
     if (FAILED(pGameInstance->Ready_Timer(TEXT("Timer_Default"))))
         return FALSE;
-    if (FAILED(pGameInstance->Ready_Timer(TEXT("Timer_60"))))
+    if (FAILED(pGameInstance->Ready_Timer(TEXT("Timer_60"))))                  // 플레이어를 제외하고 대부분 사용중
         return FALSE;
-    if (FAILED(pGameInstance->Ready_Timer(TEXT("Timer_Player"))))
+    if (FAILED(pGameInstance->Ready_Timer(TEXT("Timer_Player"))))               // 플레이어만 사용중
         return FALSE;
     if (FAILED(pGameInstance->Ready_Timer(TEXT("Timer_Game"))))               // 게임캐릭터들과 별개로 실행되는 게임 자체의 타이머
         return FALSE;

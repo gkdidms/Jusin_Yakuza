@@ -14,7 +14,7 @@ CKiryu_KRS_KickCombo::CKiryu_KRS_KickCombo()
 
 void CKiryu_KRS_KickCombo::Tick(const _float& fTimeDelta)
 {
-	CLandObject* pTargetObject = m_pPlayer->Get_TargetObject();
+	CLandObject* pTargetObject = (CLandObject*)m_pPlayer->Get_TargetObject();
 
 	if (nullptr != pTargetObject)
 	{

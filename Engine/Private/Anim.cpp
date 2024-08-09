@@ -61,6 +61,28 @@ const _float3* CAnim::Get_AnimationCenterMove()
 	return m_Animations[m_iCurrentIndex]->Get_CenterMoveValue();
 }
 
+const vector<_uint>* CAnim::Get_CurrentKeyFrameIndices(string strAnimationName)
+{
+	if (strAnimationName == "")
+		return m_Animations[m_iCurrentIndex]->Get_CurrentKeyFrameIndices();
+	else
+	{
+		for (auto& pAnimation : m_Animations)
+		{
+			if ((pAnimation->Get_AnimName() == strAnimationName))
+			{
+				return pAnimation->Get_CurrentKeyFrameIndices();
+			}
+		}
+
+	}
+}
+
+const vector<_uint>* CAnim::Get_CurrentKeyFrameIndices(_uint iAnimIndex)
+{
+	return m_Animations[iAnimIndex]->Get_CurrentKeyFrameIndices();
+}
+
 _bool CAnim::Get_AnimFinished() const
 {
 	return m_Animations[m_iCurrentIndex]->Get_Finished();
@@ -107,9 +129,19 @@ const _double* CAnim::Get_AnimDuration()
 	return m_Animations[m_iCurrentIndex]->Get_Duration();
 }
 
+const _double* CAnim::Get_AnimDuration(_uint iAnimIndex)
+{
+	return m_Animations[iAnimIndex]->Get_Duration();
+}
+
 const _double* CAnim::Get_AnimPosition()
 {
 	return m_Animations[m_iCurrentIndex]->Get_CurrentPosition();
+}
+
+const _double* CAnim::Get_AnimPosition(_uint iAnimIndex)
+{
+	return m_Animations[iAnimIndex]->Get_CurrentPosition();
 }
 
 HRESULT CAnim::Initialize_Prototype(const _char* pModelFilePath, _bool isSave)
