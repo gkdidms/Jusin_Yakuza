@@ -108,6 +108,7 @@ public:
     // [9] f210_special_10[f_kiryu]             // 눈 부릅뜨는
     // [10] f211_special_11[f_kiryu]            // 인상쓰고 실눈뜨고봄
     // [11] f212_special_12[f_kiryu]            // 눈 크게뜸 (놀란듯)
+
 #pragma endregion
 
 private:
@@ -137,7 +138,6 @@ public:
         m_eCutSceneType = eAnim;
     }
 
-
 #endif // DEBUG
 
     /* Getter */
@@ -153,8 +153,8 @@ public:
         return m_MoveDirection;
     }
 
-    class CMonster* Get_TargetObject() {
-        return m_pTargetObject;
+    class CLandObject* Get_TargetObject() {
+        return reinterpret_cast<CLandObject*>(m_pTargetObject);
     }
 
     CCollider* Get_PlayerCollider() {
@@ -262,8 +262,8 @@ private:
     
     /* 출력, 행동 관련 포인터 변수들 */
 private:
-    CAnim* m_pAnimCom = { nullptr }; // 애니메이션만 따로 저장하고있는 애니메이션 컴포넌트
-    CModel* m_pCameraModel = { nullptr };
+    CAnim* m_pAnimCom = { nullptr };                // 컷신 돌릴 때 사용하는 애니메이션 컴포넌트
+    CModel* m_pCameraModel = { nullptr };           // 카메라 돌릴 때 쓰는 모델 (랜더하지않음)
 
     // 이 때, 사용하는 키 값은 행동에 대한 키값을 가진다. (스타일은 배열 인덱스)
     map<_uint, class CBehaviorAnimation*> m_AnimationTree[BATTLE_STYLE_END];

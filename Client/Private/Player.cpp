@@ -1093,31 +1093,39 @@ void CPlayer::KRS_KeyInput(const _float& fTimeDelta)
 			// 그에 맞는 커맨드 액션을 실행시ㅕ켜야 한다.
 
 			// 여기에 스킬트리가 완료되면 스킬을 보유중인지에 대한 조건식을 추가로 잡아야한다
+			_bool isHitActionPlay = { false };
 			if (m_CanHitAction)
 			{
 				if (m_pTargetWall != nullptr)
 				{
+					isHitActionPlay = true;
 					HitAction_WallBack();
 				}
 				else if (m_pTargetObject == nullptr ? false : m_pTargetObject->isDown())
+				{
+					isHitActionPlay = true;
 					HitAction_Down();
-			}
-			else if (m_iCurrentBehavior == (_uint)KRS_BEHAVIOR_STATE::RUN)
-			{
-				m_iCurrentBehavior = (_uint)KRS_BEHAVIOR_STATE::SKILL_FLY_KICK;
-			}
-			// 기본 러쉬콤보 진행중일 때에 우클릭이 들어오면 피니시 블로 실행
-			else if(m_iCurrentBehavior == (_uint)KRS_BEHAVIOR_STATE::ATTACK)
-			{
-				m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Combo_Count(true);
-			}
-			// 아무것도 아닌 상태에서 우클릭이 들어온다면 킥콤보를 실행
-			else
-			{
-				m_iCurrentBehavior = (_uint)KRS_BEHAVIOR_STATE::SKILL_KICK_COMBO;
-				m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Combo_Count();
+				}
 			}
 
+			if (!isHitActionPlay) 
+			{
+				if (m_iCurrentBehavior == (_uint)KRS_BEHAVIOR_STATE::RUN)
+				{
+					m_iCurrentBehavior = (_uint)KRS_BEHAVIOR_STATE::SKILL_FLY_KICK;
+				}
+				// 기본 러쉬콤보 진행중일 때에 우클릭이 들어오면 피니시 블로 실행
+				else if (m_iCurrentBehavior == (_uint)KRS_BEHAVIOR_STATE::ATTACK)
+				{
+					m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Combo_Count(true);
+				}
+				// 아무것도 아닌 상태에서 우클릭이 들어온다면 킥콤보를 실행
+				else
+				{
+					m_iCurrentBehavior = (_uint)KRS_BEHAVIOR_STATE::SKILL_KICK_COMBO;
+					m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Combo_Count();
+				}
+			}
 		}
 
 		// 어택중이 아닐때에만 Q입력을 받는다
@@ -1317,33 +1325,42 @@ void CPlayer::KRH_KeyInput(const _float& fTimeDelta)
 		}
 		if (m_pGameInstance->GetMouseState(DIM_RB) == TAP)
 		{
+			_bool isHitActionPlay = { false };
+
 			if (m_CanHitAction)
 			{
 				if (m_pTargetWall != nullptr)
 				{
+					isHitActionPlay = true;
 					HitAction_WallBack();
 				}
 				else if (m_pTargetObject == nullptr ? false : m_pTargetObject->isDown())
 				{
+					isHitActionPlay = true;
 					HitAction_Down();
 				}
 				else if (m_pTargetObject == nullptr ? false : m_pTargetObject->isAttack())
 				{
+					isHitActionPlay = true;
 					HitAction_CounterElbow();
 				}
 			}
-			else if (m_iCurrentBehavior == (_uint)KRH_BEHAVIOR_STATE::ATTACK)
-			{
-				m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Change_Animation();
-				m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Combo_Count(true);
-			}
-			else
-			{
-				m_iCurrentBehavior = (_uint)KRH_BEHAVIOR_STATE::ATTACK;
 
-				_bool isPunch = true;
-				m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Setting_Value(&isPunch);
-				m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Change_Animation();
+			if (isHitActionPlay)
+			{
+				if (m_iCurrentBehavior == (_uint)KRH_BEHAVIOR_STATE::ATTACK)
+				{
+					m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Change_Animation();
+					m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Combo_Count(true);
+				}
+				else
+				{
+					m_iCurrentBehavior = (_uint)KRH_BEHAVIOR_STATE::ATTACK;
+
+					_bool isPunch = true;
+					m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Setting_Value(&isPunch);
+					m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Change_Animation();
+				}
 			}
 		}
 
@@ -1515,22 +1532,31 @@ void CPlayer::KRC_KeyInput(const _float& fTimeDelta)
 			{
 				// 현재 어택상태인지를 구분해서 마무리 액션을 실행시키거나
 				// 그에 맞는 커맨드 액션을 실행시켜야 한다.
+
+				_bool isHitActionPlay = { false };
 				if (m_CanHitAction)
 				{
-					if(m_pTargetObject == nullptr ? false : m_pTargetObject->isDown())
+					if (m_pTargetObject == nullptr ? false : m_pTargetObject->isDown())
+					{
+						isHitActionPlay = true;
 						HitAction_Down();
+					}
 				}
-				else if (m_iCurrentBehavior == (_uint)KRC_BEHAVIOR_STATE::ATTACK)
-				{
-					m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Combo_Count(true);
-				}
-				else
-				{
-					m_iCurrentBehavior = (_uint)KRC_BEHAVIOR_STATE::ATTACK;
 
-					_bool isBut = true;
-					m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Setting_Value(&isBut);
-					m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Change_Animation();
+				if (isHitActionPlay)
+				{
+					if (m_iCurrentBehavior == (_uint)KRC_BEHAVIOR_STATE::ATTACK)
+					{
+						m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Combo_Count(true);
+					}
+					else
+					{
+						m_iCurrentBehavior = (_uint)KRC_BEHAVIOR_STATE::ATTACK;
+
+						_bool isBut = true;
+						m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Setting_Value(&isBut);
+						m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Change_Animation();
+					}
 				}
 			}
 
@@ -1880,6 +1906,7 @@ void CPlayer::Set_CutSceneStartMotion(CUTSCENE_ANIMATION_TYPE eType)
 
 void CPlayer::Set_CutSceneAnim(CUTSCENE_ANIMATION_TYPE eType, _uint iFaceAnimIndex)
 {
+	if (CUTSCENE == m_eAnimComType) return;
 	Set_CutSceneStartMotion(eType);
 
 	// 없으면 종료
@@ -2300,8 +2327,12 @@ void CPlayer::Setting_Target_Enemy()
 			auto pMosnter = m_pCollisionManager->Get_Near_Object(this, pMonsters);
 			auto pYoneda = m_pCollisionManager->Get_Near_Object(this, pYonedas);
 
-			_float vMonsterLength = XMVectorGetX(XMVector3Length(m_pTransformCom->Get_State(CTransform::STATE_POSITION) - pMosnter->Get_TransformCom()->Get_State(CTransform::STATE_POSITION)));
-			_float vYonedaLength = XMVectorGetX(XMVector3Length(m_pTransformCom->Get_State(CTransform::STATE_POSITION) - pYoneda->Get_TransformCom()->Get_State(CTransform::STATE_POSITION)));
+			_float vMonsterLength = 999999.f;
+			_float vYonedaLength = 999999.f;
+			if (nullptr != pMosnter)
+				vMonsterLength = XMVectorGetX(XMVector3Length(m_pTransformCom->Get_State(CTransform::STATE_POSITION) - pMosnter->Get_TransformCom()->Get_State(CTransform::STATE_POSITION)));
+			if (nullptr != pYoneda)
+				vYonedaLength = XMVectorGetX(XMVector3Length(m_pTransformCom->Get_State(CTransform::STATE_POSITION) - pYoneda->Get_TransformCom()->Get_State(CTransform::STATE_POSITION)));
 
 			m_pTargetObject = vMonsterLength < vYonedaLength ? static_cast<CMonster*>(pMosnter) : static_cast<CMonster*>(pYoneda);
 		}
@@ -2311,8 +2342,12 @@ void CPlayer::Setting_Target_Enemy()
 		auto pMosnter = m_pCollisionManager->Get_Near_Object(this, pMonsters);
 		auto pYoneda = m_pCollisionManager->Get_Near_Object(this, pYonedas);
 
-		_float vMonsterLength = XMVectorGetX(XMVector3Length(m_pTransformCom->Get_State(CTransform::STATE_POSITION) - pMosnter->Get_TransformCom()->Get_State(CTransform::STATE_POSITION)));
-		_float vYonedaLength = XMVectorGetX(XMVector3Length(m_pTransformCom->Get_State(CTransform::STATE_POSITION) - pYoneda->Get_TransformCom()->Get_State(CTransform::STATE_POSITION)));
+		_float vMonsterLength = 999999.f;
+		_float vYonedaLength = 999999.f;
+		if(nullptr != pMosnter)
+			vMonsterLength = XMVectorGetX(XMVector3Length(m_pTransformCom->Get_State(CTransform::STATE_POSITION) - pMosnter->Get_TransformCom()->Get_State(CTransform::STATE_POSITION)));
+		if (nullptr != pYoneda)
+			vYonedaLength = XMVectorGetX(XMVector3Length(m_pTransformCom->Get_State(CTransform::STATE_POSITION) - pYoneda->Get_TransformCom()->Get_State(CTransform::STATE_POSITION)));
 
 		m_pTargetObject = vMonsterLength < vYonedaLength ? static_cast<CMonster*>(pMosnter) : static_cast<CMonster*>(pYoneda);
 
