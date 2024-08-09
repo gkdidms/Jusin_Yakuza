@@ -81,7 +81,7 @@ public:
     virtual HRESULT Render_LightDepth() override;
 
     /* 충돌관련 함수들 */
-    virtual void ImpulseResolution(CLandObject* pTargetObject, _float fDistance = 0.5f);
+    virtual void ImpulseResolution(CGameObject* pTargetObject, _float fDistance = 0.5f) override;
     virtual void Attack_Event(CGameObject* pHitObject, _bool isItem = false) {};
     virtual void Take_Damage(_uint iHitColliderType, const _float3& vDir, _float fDamage, CLandObject* pAttackedObject, _bool isBlowAttack = false) {};
 

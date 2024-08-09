@@ -83,11 +83,11 @@ HRESULT CLandObject::Render_LightDepth()
 	return S_OK;
 }
 
-void CLandObject::ImpulseResolution(CLandObject* pTargetObject, _float fDistance)
+void CLandObject::ImpulseResolution(CGameObject* pTargetObject, _float fDistance)
 {
 	if (nullptr == m_pColliderCom) return;
 
-	_float3 vDir = m_pColliderCom->ImpulseResolution(pTargetObject->Get_Collider(), fDistance);
+	_float3 vDir = m_pColliderCom->ImpulseResolution(dynamic_cast<CLandObject*>(pTargetObject)->Get_Collider(), fDistance);
 
 	if (!XMVector3Equal(XMLoadFloat3(&vDir), XMVectorZero()))
 	{

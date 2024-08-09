@@ -69,7 +69,7 @@ public:
 
 
 public:
-	void Change_Model(wstring strModelName);
+	void Change_Model(wstring strModelName, wstring strAnimName = TEXT(""));
 	void Change_Animation(_uint iAnimIndex, _bool isMonster = false);
 	void Select_Bone(_uint iBoneIndex);
 	void Select_Mesh(_uint iMeshIndex) {
