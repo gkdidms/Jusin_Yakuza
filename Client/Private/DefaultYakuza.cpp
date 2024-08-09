@@ -193,6 +193,11 @@ void CDefaultYakuza::Change_Animation()
 		Shaking(0.3f, 0.3f, 0.3f);
 		break;
 	}
+	case MONSTER_ATK_DOWN:
+	{
+		m_strAnimName = "e_sae_atk_down";
+		break;
+	}
 	default:
 		break;
 	}

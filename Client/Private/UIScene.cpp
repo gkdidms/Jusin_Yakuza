@@ -94,7 +94,7 @@ HRESULT CUIScene::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContex
 	{
 		SCENE_DESC* pDesc = static_cast<SCENE_DESC*>(pArg);
 		m_isLoading = pDesc->isLoading;
-
+		m_strSceneName = pDesc->strSceneName;
 	}
 
 	return S_OK;

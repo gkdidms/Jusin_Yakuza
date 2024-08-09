@@ -26,6 +26,7 @@ public:
     {
         //공격 모션
         MONSTER_IDLE,
+        MONSTER_BTLST,
         MONSTER_RUN,
         MONSTER_SHIFT_F,
         MONSTER_SHIFT_L,
@@ -239,6 +240,7 @@ protected:
 public:
     _bool isColl() { return m_isColl; }
     _bool isDown() { return m_isDown; }
+    _bool isAttack();
     _bool isSynchronizing() { return m_isSynchronizing; }
     _bool isTutorialAttack() {
         _bool isResult = m_isTutorialAttack;
@@ -251,9 +253,10 @@ public:
     void Set_Down(_bool isDown) { m_isDown = isDown; }
     void Set_Sync(string strPlayerAnim);
     void Set_RimLight(_float isRimLight) { m_isRimLight = isRimLight; }
-    
+
 public:
     _float Get_HitDamage() { return m_fHitDamage; }
+    _uint Get_DownDir();
 
 public:
     virtual HRESULT Initialize_Prototype() override;

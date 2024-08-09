@@ -64,6 +64,10 @@ HRESULT CNeoShader::File_Open(const char* strFilePath)
 
 
 		in.read((char*)&Desc.fOpacity, sizeof(_float));
+		in.read((char*)&Desc.vSpecularColor.x, sizeof(_float));
+		in.read((char*)&Desc.vSpecularColor.y, sizeof(_float));
+		in.read((char*)&Desc.vSpecularColor.z, sizeof(_float));
+		in.read((char*)&Desc.vSpecularColor.w, sizeof(_float));
 		in.read((char*)&Desc.fSpecularPower, sizeof(_float));
 		in.read((char*)&Desc.fAssetShader, sizeof(_float));
 		in.read((char*)&Desc.fDisableRDRS, sizeof(_float));

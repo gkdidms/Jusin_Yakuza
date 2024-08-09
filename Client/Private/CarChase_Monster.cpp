@@ -36,7 +36,6 @@ HRESULT CCarChase_Monster::Initialize(void* pArg)
 	m_pParentBoneMatrix = pDesc->pBoneMatrix;
 	m_iWeaponType = pDesc->iWeaponType;
 	m_iLineDir = pDesc->iLineDir;
-	m_iObjectIndex = pDesc->iObjectIndex;
 
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;

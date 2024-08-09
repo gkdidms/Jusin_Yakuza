@@ -427,7 +427,7 @@ HRESULT CModel::Export_Materials(ofstream& out, const _char* pModelFilePath, con
 	for (size_t i = 0; i < m_iNumMaterials; i++)
 	{
 		string name = m_pAIScene->mMaterials[i]->GetName().C_Str();
-		_uint iNumMaterialName = sizeof(name);
+		_uint iNumMaterialName = name.size();
 		out.write((char*)&iNumMaterialName, sizeof(_uint));
 		out.write(name.c_str(), iNumMaterialName);
 

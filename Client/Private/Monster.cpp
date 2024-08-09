@@ -23,6 +23,11 @@ CMonster::CMonster(const CMonster& rhs)
 {
 }
 
+_bool CMonster::isAttack()
+{
+	return m_pTree->isAttack();
+}
+
 void CMonster::Set_Sync(string strPlayerAnim)
 {
 	string_view strAnim = strPlayerAnim;
@@ -255,6 +260,19 @@ void CMonster::Set_Sync(string strPlayerAnim)
 	Change_Animation();
 }
 
+/*
+* DIR_F : 앞으로 누워잇음
+* DIR_B : 뒤로 엎어져잇음
+* DIR_END : 방향을 가져오지 못함
+*/
+_uint CMonster::Get_DownDir()
+{
+	if (m_isDown = false)
+		return DIR_END;
+
+	return m_pTree->Get_DownDir();
+}
+
 HRESULT CMonster::Initialize_Prototype()
 {
 	return S_OK;
@@ -420,8 +438,8 @@ HRESULT CMonster::Render()
 				return E_FAIL;
 		}
 
-		//if (FAILED(m_pMeterialCom->Bind_Shader(m_pShaderCom, m_pModelCom->Get_MaterialName(pMesh->Get_MaterialIndex()))))
-		//	return E_FAIL;
+		if (FAILED(m_pMaterialCom->Bind_Shader(m_pShaderCom, m_pModelCom->Get_MaterialName(pMesh->Get_MaterialIndex()))))
+			return E_FAIL;
 
 		_bool fFar = m_pGameInstance->Get_CamFar();
 		m_pShaderCom->Bind_RawValue("g_fFar", &fFar, sizeof(_float));
@@ -435,6 +453,7 @@ HRESULT CMonster::Render()
 		_bool isRS = true;
 		_bool isRD = true;
 		_bool isRM = true;
+		_bool isRT = true;
 		_bool isMulti = true;
 		_float fRDCount = 1.f;
 
@@ -461,6 +480,10 @@ HRESULT CMonster::Render()
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RMTexture", i, aiTextureType_METALNESS)))
 			isRM = false;
 		m_pShaderCom->Bind_RawValue("g_isRM", &isRM, sizeof(_bool));
+
+		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RTTexture", i, aiTextureType_EMISSIVE)))
+			isRT = false;
+		m_pShaderCom->Bind_RawValue("g_isRT", &isRT, sizeof(_bool));
 
 		if (pMesh->Get_AlphaApply())
 			m_pShaderCom->Begin(1);     //블랜드

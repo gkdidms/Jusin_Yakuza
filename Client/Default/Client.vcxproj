@@ -185,6 +185,7 @@
     <ClInclude Include="..\public\Adventure.h" />
     <ClInclude Include="..\public\Adv_Passersby.h" />
     <ClInclude Include="..\public\AI_Adventure.h" />
+    <ClInclude Include="..\public\AI_Bike.h" />
     <ClInclude Include="..\public\AI_CarChase.h" />
     <ClInclude Include="..\public\AI_DefaultYakuza.h" />
     <ClInclude Include="..\Public\AI_Kuze.h" />
@@ -218,6 +219,7 @@
     <ClInclude Include="..\Public\Item.h" />
     <ClInclude Include="..\Public\Kiryu_KRC_Grab.h" />
     <ClInclude Include="..\Public\Kiryu_KRC_PickUp.h" />
+    <ClInclude Include="..\Public\Kiryu_KRS_BackWall.h" />
     <ClInclude Include="..\Public\Kiryu_KRS_PickUp.h" />
     <ClInclude Include="..\Public\Map.h" />
     <ClInclude Include="..\Public\MultiLoader.h" />
@@ -381,6 +383,7 @@
     <ClCompile Include="..\private\Adventure.cpp" />
     <ClCompile Include="..\private\Adv_Passersby.cpp" />
     <ClCompile Include="..\private\AI_Adventure.cpp" />
+    <ClCompile Include="..\private\AI_Bike.cpp" />
     <ClCompile Include="..\private\AI_CarChase.cpp" />
     <ClCompile Include="..\private\AI_DefaultYakuza.cpp" />
     <ClCompile Include="..\Private\AI_Kuze.cpp" />
@@ -405,6 +408,7 @@
     <ClCompile Include="..\private\CarChase_Van.cpp" />
     <ClCompile Include="..\Private\Collision_Manager.cpp" />
     <ClCompile Include="..\Private\Kiryu_KRC_PickUp.cpp" />
+    <ClCompile Include="..\Private\Kiryu_KRS_BackWall.cpp" />
     <ClCompile Include="..\Private\Kiryu_KRS_PickUp.cpp" />
     <ClCompile Include="..\Private\Particle_Mesh.cpp" />
     <ClCompile Include="..\Private\Reactor_Bike.cpp" />

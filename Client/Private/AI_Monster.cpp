@@ -780,6 +780,31 @@ _uint CAI_Monster::Check_KRC(_uint iPlayerLv, _bool isBehine, _bool isAnimChange
 _bool CAI_Monster::Check_StandUp()
 {
 	//앞을 바라봄
+	if (Get_DownDir() == DIR_F)
+	{
+		m_pThis->Set_Down(false);
+		*m_pState = CMonster::MONSTER_STANDUP_DNF_FAST;
+		return false;
+	}
+
+	//엎어져잇음
+	if (Get_DownDir() == DIR_B)
+	{
+		m_pThis->Set_Down(false);
+		*m_pState = CMonster::MONSTER_STANDUP_DNB_FAST;
+		return false;
+	}
+
+	//standUp 끝
+	if (*m_pState == CMonster::MONSTER_STANDUP_DNF_FAST
+		|| *m_pState == CMonster::MONSTER_STANDUP_DNB_FAST)
+		m_pThis->Set_Down(false);
+
+	return true;
+}
+
+_uint CAI_Monster::Get_DownDir()
+{
 	if (*m_pState == CMonster::MONSTER_DWN_EXPLODE_F
 		|| *m_pState == CMonster::MONSTER_DWN_BODY_F
 		|| *m_pState == CMonster::MONSTER_DWN_BODY_F_SP
@@ -795,15 +820,9 @@ _bool CAI_Monster::Check_StandUp()
 		|| *m_pState == CMonster::MONSTER_KRC_SYNC1_NECK_ATK_PUNCH
 		|| *m_pState == CMonster::MONSTER_KRS_SYNC1_CMB_03_FIN
 		|| *m_pState == CMonster::MONSTER_KRU_SYNC1_LAPEL_CMB_03
-		|| *m_pState == CMonster::MONSTER_KRU_SYNC1_LAPEL_NAGE
-		)
-	{
-		m_pThis->Set_Down(false);
-		*m_pState = CMonster::MONSTER_STANDUP_DNF_FAST;
-		return false;
-	}
+		|| *m_pState == CMonster::MONSTER_KRU_SYNC1_LAPEL_NAGE)
+		return DIR_F;
 
-	//엎어져잇음
 	if (*m_pState == CMonster::MONSTER_DWN_DIRECT_B
 		|| *m_pState == CMonster::MONSTER_DWN_DIRECT_B_BOUND_G
 		|| *m_pState == CMonster::MONSTER_DWN_BODY_B
@@ -815,18 +834,30 @@ _bool CAI_Monster::Check_StandUp()
 		|| *m_pState == CMonster::MONSTER_KRS_SYNC1_CMB_03_FIN_B
 		|| *m_pState == CMonster::MONSTER_SYNC1_LEG_ATK_KICK
 		|| *m_pState == CMonster::MONSTER_SYNC1_LEG_NAGE)
+		return DIR_B;
+
+	return DIR_END;
+}
+
+CBTNode::NODE_STATE CAI_Monster::Check_Start()
+{
+	if (m_isStart)
+		return CBTNode::SUCCESS;
+
+	return CBTNode::FAIL;
+}
+
+CBTNode::NODE_STATE CAI_Monster::Start()
+{
+	if (*m_pState == CMonster::MONSTER_BTLST && m_pAnimCom[*m_pCurrentAnimType]->Get_AnimFinished())
 	{
-		m_pThis->Set_Down(false);
-		*m_pState = CMonster::MONSTER_STANDUP_DNB_FAST;
-		return false;
+		m_isStart = false;
+		return CBTNode::SUCCESS;
 	}
+		
+	*m_pState = CMonster::MONSTER_BTLST;
 
-	//standUp 끝
-	if (*m_pState == CMonster::MONSTER_STANDUP_DNF_FAST
-		|| *m_pState == CMonster::MONSTER_STANDUP_DNB_FAST)
-		m_pThis->Set_Down(false);
-
-	return true;
+	return CBTNode::RUNNING;
 }
 
 CBTNode::NODE_STATE CAI_Monster::Chcek_Sync()
@@ -839,7 +870,6 @@ CBTNode::NODE_STATE CAI_Monster::Chcek_Sync()
 		
 
 	if (*m_pState == CMonster::MONSTER_SYNC1_LEG_LP ||
-		*m_pState == CMonster::MONSTER_SYNC1_LEG_NAGE ||
 		*m_pState == CMonster::MONSTER_SYNC1_LEG_ST_B ||
 		*m_pState == CMonster::MONSTER_SYNC1_LEG_ST_F ||
 		*m_pState == CMonster::MONSTER_SYNC1_LEG_WALK)
@@ -847,12 +877,13 @@ CBTNode::NODE_STATE CAI_Monster::Chcek_Sync()
 		if (m_fSyncDuration <= m_fSyncTime)
 		{
 			//Leg에 대한 처리
+			m_fSyncTime = 0.f;
+			*m_pState = CMonster::MONSTER_SYNC1_LEG_OFF;
+			return CBTNode::SUCCESS;
 		}
 	}
 
-	if (*m_pState == CMonster::MONSTER_KRU_SYNC1_NECK_CMB_01 || 
-		*m_pState == CMonster::MONSTER_KRU_SYNC1_NECK_CMB_02 ||
-		*m_pState == CMonster::MONSTER_KRU_SYNC1_NECK_LP ||
+	if (*m_pState == CMonster::MONSTER_KRU_SYNC1_NECK_LP ||
 		*m_pState == CMonster::MONSTER_KRU_SYNC1_NECK_RESIST ||
 		*m_pState == CMonster::MONSTER_KRU_SYNC1_NECK_ST ||
 		*m_pState == CMonster::MONSTER_KRU_SYNC1_NECK_WALK)
@@ -860,11 +891,15 @@ CBTNode::NODE_STATE CAI_Monster::Chcek_Sync()
 		if (m_fSyncDuration <= m_fSyncTime)
 		{
 			//KRU_SYNC1_NECK에 대한 처리
+			m_fSyncTime = 0.f;
+			*m_pState = CMonster::MONSTER_KRU_SYNC1_NECK_OFF;
+			return CBTNode::SUCCESS;
 		}
 	}
 
 	if (m_pAnimCom[*m_pCurrentAnimType]->Get_AnimFinished())
 	{
+		Reset_State();
 		m_isSync = false;
 		return CBTNode::SUCCESS;
 	}
@@ -883,6 +918,7 @@ CBTNode::NODE_STATE CAI_Monster::Check_Down()
 		return CBTNode::SUCCESS;
 	}
 
+	*m_pCurrentAnimType = CMonster::DEFAULT;
 	return CBTNode::FAIL;
 }
 
@@ -953,8 +989,6 @@ CBTNode::NODE_STATE CAI_Monster::Dead()
 
 CBTNode::NODE_STATE CAI_Monster::Check_PlayerDown()
 {
-	*m_pCurrentAnimType = CMonster::DEFAULT;
-
 	if (m_isPlayerDownAtk && !m_pPlayer->isDown())
 	{
 		m_isPlayerDownAtk = false;
@@ -1218,9 +1252,8 @@ CBTNode::NODE_STATE CAI_Monster::Check_Angry()
 	// 분노상태 전환 분기
 	if (!m_isAngry)
 	{
-		_uint iRandom = m_pGameInstance->Get_Random(0, 100);
-
-		if (iRandom < 30.f)
+		//플레이어와 충돌했을때 데미지가 30.f 이라면?
+		if (m_pThis->Get_HitDamage() < 30.f)
 		{
 			// 분노 상태로 이동
 			return CBTNode::SUCCESS;

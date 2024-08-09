@@ -19,6 +19,7 @@ Texture2D g_MultiDiffuseTexture;
 Texture2D g_RSTexture;
 Texture2D g_RMTexture;
 Texture2D g_RDTexture;
+Texture2D g_RTTexture;
 
 float g_fProgress;
 
@@ -105,11 +106,15 @@ const int g_iMaxCasCade = { 3 };
 bool g_isRS;
 bool g_isRD;
 bool g_isRM;
+bool g_isRT;
 bool g_isMulti;
 
 float g_RDCount = { 1.f };
 
 float Opacity = { 0.f };
+
+float fSpecularPower = { 0.f };
+vector vSpecularColor;
 
 float AssetShader = { 0.f };
 float DisableRDRT = { 0.f };

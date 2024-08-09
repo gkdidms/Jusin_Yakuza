@@ -9,6 +9,8 @@
 #include "Text.h"	
 
 #include "CarChase_Monster.h"
+#include "Highway_Taxi.h"   
+#include "Highway_Kiryu.h"
 
 CUICarchase::CUICarchase()
     :CUIScene{}
@@ -45,7 +47,7 @@ HRESULT CUICarchase::Remove_Target(_uint iIndex)
 
     Safe_Release(pTarget->HPBarBackUI);
     Safe_Release(pTarget->HPBarUI);
-    Safe_Release(pTarget->pMonsterAddr);
+    //Safe_Release(pTarget->pMonsterAddr);
     Safe_Release(pTarget->TargetingUI);
 
     m_Targets.erase(iIndex);
@@ -57,14 +59,18 @@ HRESULT CUICarchase::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pCon
 {
     if (FAILED(__super::Initialize(pDevice, pContext, pArg)))
         return E_FAIL;
+
     return S_OK;
 }
 
 HRESULT CUICarchase::Tick(const _float& fTimeDelta)
 {
+    Update_Player();
+
     __super::Tick(fTimeDelta);
 
     m_EventUI[AIM]->Tick(fTimeDelta);
+    m_EventUI[INFO]->Tick(fTimeDelta);
 
     Move_Aim(fTimeDelta);
 
@@ -83,6 +89,7 @@ HRESULT CUICarchase::Late_Tick(const _float& fTimeDelta)
     __super::Late_Tick(fTimeDelta);
 
     m_EventUI[AIM]->Late_Tick(fTimeDelta);
+    m_EventUI[INFO]->Late_Tick(fTimeDelta);
 
     for (auto& pTarget : m_Targets)
     {
@@ -132,8 +139,37 @@ HRESULT CUICarchase::Add_TargetingRound(_uint iIndex, class CCarChase_Monster* p
     Desc.pMonsterAddr = pMonster;
 
     m_Targets.emplace(iIndex, Desc);
-    Safe_AddRef(pMonster);
+    //Safe_AddRef(pMonster);
     
+    return S_OK;
+}
+
+HRESULT CUICarchase::Update_Player()
+{
+    _uint Level = m_pGameInstance->Get_CurrentLevel();
+
+    CHighway_Taxi* Taxi = dynamic_cast<CHighway_Taxi*>(m_pGameInstance->Get_GameObject(Level, TEXT("Layer_Taxi"), 0));
+
+    CHighway_Kiryu* pKiryu = static_cast<CHighway_Kiryu*>(Taxi->Get_Kiryu());
+
+    //정보 갱신 + ui 업데이트
+    //1 . 캐릭피 , 2히트아이 , 3자동차피 , 4총알
+    vector<CUI_Object*>* pUI =  dynamic_cast<CGroup*>(m_EventUI[INFO])->Get_pPartObjects();
+
+    _float Upoint = m_pGameInstance->Lerp(-1.f, 0.f, pKiryu->Get_HP() / pKiryu->Get_MaxHP());
+    dynamic_cast<CUI_Texture*>((*pUI)[PLAYERHP])->Change_Point(_float4(0.f,0.f,Upoint,0.f),_float4(0.f,0.f,Upoint,0.f));
+
+    Upoint = m_pGameInstance->Lerp(-1.f, 0.f, pKiryu->Get_HitEye() / pKiryu->Get_MaxHitEye());
+    dynamic_cast<CUI_Texture*>((*pUI)[HITEYE])->Change_Point(_float4(0.f,0.f,Upoint,0.f),_float4(0.f,0.f,Upoint,0.f));
+
+    Upoint = m_pGameInstance->Lerp(-1.f, 0.f, Taxi->Get_CarHp() / Taxi->Get_CarMaxHp());
+    dynamic_cast<CUI_Texture*>((*pUI)[CARHP])->Change_Point(_float4(0.f, 0.f, Upoint, 0.f), _float4(0.f, 0.f, Upoint, 0.f));
+
+    Upoint = m_pGameInstance->Lerp(-1.f, 0.f, Taxi->Get_CarHp() / Taxi->Get_CarMaxHp());
+
+    wstring NumAmmo = to_wstring(pKiryu->Get_Ammo());
+    dynamic_cast<CText*>((*pUI)[AMMO])->Set_Text(NumAmmo);
+
     return S_OK;
 }
 
@@ -184,6 +220,17 @@ void CUICarchase::Coll_Aim()
 {
     if (m_pGameInstance->GetMouseState(DIM_LB) == TAP)
     {
+
+        //아래는 ui에서 확인한 코드 지워도됨
+        //_uint Level = m_pGameInstance->Get_CurrentLevel();
+
+        //CHighway_Taxi* Taxi = dynamic_cast<CHighway_Taxi*>(m_pGameInstance->Get_GameObject(Level, TEXT("Layer_Taxi"), 0));
+
+        //CHighway_Kiryu* pKiryu = static_cast<CHighway_Kiryu*>(Taxi->Get_Kiryu());
+
+        //pKiryu->Shot();
+        //pKiryu->Damage();
+
         _float4 vAimPos;
         XMStoreFloat4(&vAimPos, m_EventUI[AIM]->Get_TransformCom()->Get_State(CTransform::STATE_POSITION));
         _float3 vAimScale = m_EventUI[AIM]->Get_TransformCom()->Get_Scaled();
@@ -242,7 +289,7 @@ void CUICarchase::Free()
     {
         Safe_Release(pTarget.second.HPBarBackUI);
         Safe_Release(pTarget.second.HPBarUI);
-        Safe_Release(pTarget.second.pMonsterAddr);
+        //Safe_Release(pTarget.second.pMonsterAddr);
         Safe_Release(pTarget.second.TargetingUI);
     }
     m_Targets.clear();
