@@ -10,7 +10,7 @@ CKiryu_KRS_FlyKick::CKiryu_KRS_FlyKick()
 
 void CKiryu_KRS_FlyKick::Tick(const _float& fTimeDelta)
 {
-	CLandObject* pTargetObject = m_pPlayer->Get_TargetObject();
+	CLandObject* pTargetObject = (CLandObject*)m_pPlayer->Get_TargetObject();
 
 	if (nullptr != pTargetObject)
 	{
