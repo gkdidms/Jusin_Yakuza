@@ -191,6 +191,7 @@
     <ClInclude Include="..\Public\AI_Kuze.h" />
     <ClInclude Include="..\public\AI_Monster.h" />
     <ClInclude Include="..\public\AI_RushYakuza.h" />
+    <ClInclude Include="..\public\AI_Sedan.h" />
     <ClInclude Include="..\public\AI_Shakedown.h" />
     <ClInclude Include="..\public\AI_Passersby.h" />
     <ClInclude Include="..\public\AI_Van.h" />
@@ -389,6 +390,7 @@
     <ClCompile Include="..\Private\AI_Kuze.cpp" />
     <ClCompile Include="..\private\AI_Monster.cpp" />
     <ClCompile Include="..\private\AI_RushYakuza.cpp" />
+    <ClCompile Include="..\private\AI_Sedan.cpp" />
     <ClCompile Include="..\private\AI_Shakedown.cpp" />
     <ClCompile Include="..\private\AI_Passersby.cpp" />
     <ClCompile Include="..\private\AI_Van.cpp" />

@@ -38,6 +38,7 @@ HRESULT CCarChase_Monster::Initialize(void* pArg)
 	m_pParentBoneMatrix = pDesc->pBoneMatrix;
 	m_iWeaponType = pDesc->iWeaponType;
 	m_iLineDir = pDesc->iLineDir;
+	m_iStageDir = pDesc->iStageDir;
 
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
@@ -176,13 +177,13 @@ void CCarChase_Monster::Get_LookDir()
 	if (m_iStageDir == DIR_B)
 		m_iDir = DIR_F;
 	else if (m_iStageDir == DIR_R)
-		m_iDir = DIR_L;
-	else if (m_iStageDir == DIR_L)
 		m_iDir = DIR_R;
+	else if (m_iStageDir == DIR_L)
+		m_iDir = DIR_L;
 	else if (m_iStageDir == DIR_F)
 	{
 		//플레이어가 나의 오른쪽에 있는지, 왼쪽에 있는지 확인해야 함.
-		m_iDir == DirFromPlayerPos() == DIR_R ? DIR_L : DIR_R;
+		m_iDir == DirFromPlayerPos() == DIR_R ? DIR_R : DIR_L;
 	}
 }
 

@@ -1,6 +1,7 @@
 #include "GameInstance.h"
 #include "Kiryu_KRS_Walk.h"
 #include "Player.h"
+#include "Monster.h"
 
 CKiryu_KRS_Walk::CKiryu_KRS_Walk()
 	:CBehaviorAnimation{}
