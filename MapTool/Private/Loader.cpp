@@ -145,7 +145,7 @@ HRESULT CLoader::Loading_For_RunMapLevel(int iLevel)
 
 	Add_Models_On_Path_NonAnim(iLevel, TEXT("../../Client/Bin/Resources/Models/NonAnim/Map/Map3"));
 
-
+	//Add_Models_On_Path_NonAnim(iLevel, TEXT("../../Client/Bin/Resources/Models/NonAnim/Bone_Sphere"));
 	Add_Models_On_Path_NonAnim(iLevel, TEXT("../../Client/Bin/Resources/Models/NonAnim/Map/KaraokeMap"));
 
 	/* For.Prototype_Component_VIBuffer_Terrain */
@@ -168,6 +168,11 @@ HRESULT CLoader::Loading_For_RunMapLevel(int iLevel)
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(iLevel, TEXT("Prototype_Component_Model_Bone_Sphere"),
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/NonAnim/Bone_Sphere/Bin/Square.dat", PreTransformMatrix, true, true))))
 		return E_FAIL;
+
+	//PreTransformMatrix = XMMatrixIdentity();
+	//if (FAILED(m_pGameInstance->Add_Component_Prototype(iLevel, TEXT("Prototype_Component_Model_Bone_Sphere"),
+	//	CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/NonAnim/Map/Map1/soto01.fbx", PreTransformMatrix, false, true))))
+	//	return E_FAIL;
 
 
 	lstrcpy(m_szLoadingText, TEXT("셰이더를(을) 로딩 중 입니다."));

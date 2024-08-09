@@ -641,7 +641,7 @@ HRESULT CMultiLoader::Loading_For_Anim()
 HRESULT CMultiLoader::Loading_For_NonAnim()
 {
 #pragma region Model
-	//Add_Models_On_Path_NonAnim(LEVEL_TEST, TEXT("../Bin/Resources/Models/NonAnim/Map/Map0"));
+	Add_Models_On_Path_NonAnim(LEVEL_TEST, TEXT("../Bin/Resources/Models/NonAnim/Map/Map0"));
 
 	Add_Models_On_Path_NonAnim(LEVEL_TEST, TEXT("../Bin/Resources/Models/NonAnim/Map/Map1"));
 

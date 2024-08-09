@@ -33,7 +33,7 @@ HRESULT CLevel_Test::Initialize()
 	// 테스트 다하면 지워라
 	/* For.Prototype_Component_Navigation */
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Navigation"),
-		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/NaviData/Navigation_9.dat")))))
+		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/NaviData/Navigation_5.dat")))))
 		return E_FAIL;
 
 	//m_pCarChaseManager = CCarChaseManager::Create(m_pDevice, m_pContext);
@@ -51,9 +51,9 @@ HRESULT CLevel_Test::Initialize()
 
 	//if (FAILED(Ready_Map(TEXT("Layer_Map"))))
 	//	return E_FAIL;9
-	m_pFileTotalManager->Set_MapObj_In_Client(79, LEVEL_TEST);
-	m_pFileTotalManager->Set_Lights_In_Client(90);
-	m_pFileTotalManager->Set_Collider_In_Client(0, LEVEL_TEST);
+	m_pFileTotalManager->Set_MapObj_In_Client(5, LEVEL_TEST);
+	m_pFileTotalManager->Set_Lights_In_Client(5);
+	m_pFileTotalManager->Set_Collider_In_Client(5, LEVEL_TEST);
 	m_pFileTotalManager->Set_Trigger_In_Client(3, LEVEL_TEST);
 	
 	if (FAILED(Ready_Camera(TEXT("Layer_Camera"))))
