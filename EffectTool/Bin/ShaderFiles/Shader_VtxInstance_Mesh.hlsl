@@ -216,7 +216,9 @@ PS_NOBLENDER_OUT PS_NONBLEDNER(PS_NOBLENDER_IN In)
 
     vector vParticle = g_Texture.Sample(LinearSampler, In.vTexcoord);
     
-    Out.vDiffuse = vector(vParticle.xyz, 1.f);
+    Out.vDiffuse = vParticle;
+    if(Out.vDiffuse.a<0.1f)
+       discard;
     Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_fFar, 0.f, 0.f);
     Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
     return Out;
@@ -228,20 +230,6 @@ technique11 DefaultTechnique
     pass DefaultPass //0
     {
         SetRasterizerState(RS_Cull_NON_CW);
-        SetDepthStencilState(DSS_None_Test_None_Write, 0);
-        SetBlendState(BS_WeightsBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
-   
-		/* 어떤 셰이덜르 국동할지. 셰이더를 몇 버젼으로 컴파일할지. 진입점함수가 무엇이찌. */
-        VertexShader = compile vs_5_0 VS_MAIN();
-        GeometryShader = NULL;
-        HullShader = NULL;
-        DomainShader = NULL;
-        PixelShader = compile ps_5_0 PS_MAIN();
-    }
-
-    pass NonBlenderPass //1
-    {
-        SetRasterizerState(RS_Cull_NON_CW);
         SetDepthStencilState(DSS_Default, 0);
         SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
    
@@ -251,6 +239,20 @@ technique11 DefaultTechnique
         HullShader = NULL;
         DomainShader = NULL;
         PixelShader = compile ps_5_0 PS_NONBLEDNER();
+    }
+
+    pass NonBlenderPass //1
+    {
+        SetRasterizerState(RS_Cull_NON_CW);
+        SetDepthStencilState(DSS_None_Test_None_Write, 0);
+        SetBlendState(BS_WeightsBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+   
+		/* 어떤 셰이덜르 국동할지. 셰이더를 몇 버젼으로 컴파일할지. 진입점함수가 무엇이찌. */
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        HullShader = NULL;
+        DomainShader = NULL;
+        PixelShader = compile ps_5_0 PS_MAIN();
     }
 }
 
