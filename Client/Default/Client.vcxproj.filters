@@ -550,12 +550,15 @@
     </ClCompile>
     <ClCompile Include="..\Private\QteManager.cpp">
       <Filter>02.GameObjects\11.QTE</Filter>
-	</ClCompile>
+    </ClCompile>
     <ClCompile Include="..\Private\MapColliderObj.cpp">
       <Filter>95.Utility\04.CollisionManager\MapCollider</Filter>
     </ClCompile>
     <ClCompile Include="..\private\AI_Sedan.cpp">
       <Filter>02.GameObjects\02.Character\LandObject\03.CarChase\01.Monster\01.Sedan\AI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\AI_Heli.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\03.CarChase\01.Monster\03.Heli\AI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1135,15 +1138,18 @@
     </ClInclude>
     <ClInclude Include="..\public\AI_Bike.h">
       <Filter>02.GameObjects\02.Character\LandObject\03.CarChase\01.Monster\02.Bike\AI</Filter>
-	</ClInclude>
+    </ClInclude>
     <ClInclude Include="..\Public\QteManager.h">
       <Filter>02.GameObjects\11.QTE</Filter>
-	</ClInclude>
+    </ClInclude>
     <ClInclude Include="..\Public\MapColliderObj.h">
       <Filter>95.Utility\04.CollisionManager\MapCollider</Filter>
     </ClInclude>
     <ClInclude Include="..\public\AI_Sedan.h">
       <Filter>02.GameObjects\02.Character\LandObject\03.CarChase\01.Monster\01.Sedan\AI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\AI_Heli.h">
+      <Filter>02.GameObjects\02.Character\LandObject\03.CarChase\01.Monster\03.Heli\AI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1748,6 +1754,9 @@
     </Filter>
     <Filter Include="02.GameObjects\11.QTE">
       <UniqueIdentifier>{9605cd98-5bfa-433f-84c2-281c8a52391d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\03.CarChase\01.Monster\03.Heli\AI">
+      <UniqueIdentifier>{0e77d35c-b64b-45b9-8f71-b342cfa6b864}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

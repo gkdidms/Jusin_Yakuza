@@ -277,6 +277,11 @@ _bool CGameInstance::isRimLight()
 	return m_pRenderer->isRimLight();
 }
 
+_bool CGameInstance::isRadialBlur()
+{
+	return m_pRenderer->isRadialBlur();
+}
+
 void CGameInstance::Set_PBR(_bool isPBR)
 {
 	m_pRenderer->Set_PBR(isPBR);
@@ -325,6 +330,11 @@ void CGameInstance::Set_Shadow(_bool isShadow)
 void CGameInstance::Set_RimLight(_bool isRimLight)
 {
 	m_pRenderer->Set_RimLight(isRimLight);
+}
+
+void CGameInstance::Set_RadialBlur(_bool isRadialBlur)
+{
+	m_pRenderer->Set_RadialBlur(isRadialBlur);
 }
 
 int CGameInstance::Get_RenderState()

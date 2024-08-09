@@ -74,8 +74,8 @@ HRESULT CCarChaseManager::Ready_Stage()
 			100000,
 			LINE_B,
 			DIR_M,
-			CCarChase_Monster::REACTOR_BIKE,
-			{ CCarChase_Monster::GUN, -1}
+			CCarChase_Monster::REACTOR_SEDAN,
+			{ CCarChase_Monster::GUN_R, -1}
 		},
 	};
 

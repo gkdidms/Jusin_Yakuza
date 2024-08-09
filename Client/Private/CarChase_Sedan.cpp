@@ -1,5 +1,10 @@
 #include "CarChase_Sedan.h"
 
+#include "GameInstance.h"
+#include "Highway_Taxi.h"
+
+#include "AI_Sedan.h"
+
 CCarChase_Sedan::CCarChase_Sedan(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CCarChase_Monster{ pDevice, pContext }
 {
@@ -31,6 +36,9 @@ void CCarChase_Sedan::Priority_Tick(const _float& fTimeDelta)
 
 void CCarChase_Sedan::Tick(const _float& fTimeDelta)
 {
+	if (m_iWeaponType == DRV)
+		m_iDir = Change_Dir();
+
 	__super::Tick(fTimeDelta);
 }
 
@@ -492,7 +500,88 @@ HRESULT CCarChase_Sedan::Add_Components()
 		TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
 		return E_FAIL;
 
+	CAI_Sedan::AI_CARCHASE_DESC Desc{};
+	memcpy(Desc.pAnim, m_pAnimCom, sizeof(CAnim*) * ANIM_TYPE_END);
+	Desc.pCurrentAnimType = &m_iCurrentAnimType;
+	Desc.pDir = &m_iDir;
+	Desc.pState = &m_iState;
+	Desc.pThis = this;
+	Desc.pWeaponType = &m_iWeaponType;
+
+	m_pTree = dynamic_cast<CAI_Sedan*>(m_pGameInstance->Add_BTNode(m_iCurrentLevel, TEXT("Prototype_BTNode_Sedan"), &Desc));
+	if (nullptr == m_pTree)
+		return E_FAIL;
+
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Meterial_Sedan"),
+		TEXT("Com_Material"), reinterpret_cast<CComponent**>(&m_pMaterialCom))))
+		return E_FAIL;
+
 	return S_OK;
+}
+
+_uint CCarChase_Sedan::Change_Dir()
+{
+	//몬스터가 플레이어 왼쪽에 있다면
+	//왼쪽에 존재하는 몬스터의 앞에 있는지, 오른쪽에 있는지
+	CHighway_Taxi* pPlayer = dynamic_cast<CHighway_Taxi*>(m_pGameInstance->Get_GameObject(m_iCurrentLevel, TEXT("Layer_Taxi"), 0));
+	_vector vPlayerPos = pPlayer->Get_TransformCom()->Get_State(CTransform::STATE_POSITION);
+	_vector vPlayerLook = pPlayer->Get_TransformCom()->Get_State(CTransform::STATE_LOOK);
+	_vector vMonsterPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+
+	_vector vLeft = XMVector3Cross(vPlayerLook, XMVectorSet(0.f, 1.f, 0.f, 0.f));
+	_vector vRight = XMVector3Cross(XMVectorSet(0.f, 1.f, 0.f, 0.f), vPlayerLook);
+
+	_vector vPos = vMonsterPos - vPlayerPos;
+
+	_float vLeftDot = XMVectorGetX(XMVector3Dot(vPos, vLeft));
+	_float vRightDot = XMVectorGetX(XMVector3Dot(vPos, vRight));
+	_float vUpDot = XMVectorGetX(XMVector3Dot(vPos, vPlayerLook));
+	_float vDownDot = XMVectorGetX(XMVector3Dot(vPos, vPlayerLook * -1.f));
+
+	if (m_iWeaponType == GUN_L)
+	{
+		if (vLeftDot > 0)
+		{
+			if (acos(vDownDot) < XMConvertToRadians(45.f) * 0.5f)
+			{
+				return DIR_B;
+			}
+			else
+				m_iDir = DIR_L;
+		}
+		else if (vRightDot > 0)
+		{
+			if (acos(vUpDot) < XMConvertToRadians(45.f) * 0.5f)
+			{
+				return DIR_F;
+			}
+
+			m_iDir = DIR_R;
+		}
+	}
+	else if (m_iWeaponType == GUN_R)
+	{
+		if (vLeftDot > 0)
+		{
+			if (acos(vUpDot) < XMConvertToRadians(45.f) * 0.5f)
+			{
+				return DIR_F;
+			}
+			else
+				m_iDir = DIR_L;
+		}
+		else if (vRightDot > 0)
+		{
+			if (acos(vDownDot) < XMConvertToRadians(45.f) * 0.5f)
+			{
+				return DIR_B;
+			}
+
+			m_iDir = DIR_R;
+		}
+	}
+
+	return DIR_END;
 }
 
 CCarChase_Sedan* CCarChase_Sedan::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

@@ -91,7 +91,7 @@ void CCarChaseCamera::Targeting(const _float& fTimeDelta)
 		m_pTransformCom->LookAt(vLerpDir, true);
 
 		//카메라 이동값 용
-		_vector vCamMoveDir = XMLoadFloat4((_float4*)&m_pPlayerWorldMatrix.m[3]) * -1.f;
+		_vector vCamMoveDir = XMLoadFloat4((_float4*)&m_pPlayerWorldMatrix.m[0]) * -1.f;
 		m_fCamAngleX = XMConvertToDegrees(atan2f(XMVectorGetZ(vCamMoveDir), XMVectorGetX(vCamMoveDir)));
 		m_fCamAngleY = XMConvertToDegrees(asinf(XMVectorGetY(vCamMoveDir) / m_fCamDistance));
 	}

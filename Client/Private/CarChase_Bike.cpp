@@ -248,6 +248,10 @@ HRESULT CCarChase_Bike::Add_Components()
 	if (nullptr == m_pTree)
 		return E_FAIL;
 
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Meterial_Bike"),
+		TEXT("Com_Material"), reinterpret_cast<CComponent**>(&m_pMaterialCom))))
+		return E_FAIL;
+
 	return S_OK;
 }
 
