@@ -134,7 +134,6 @@ void CPlayer::Tick(const _float& fTimeDelta)
 	m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Tick(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")));
 
 	// 배틀 시작 애니메이션 아닐 경우 타임델타를 1로 고정시켜준다.
-	// TODO: 다른곳에서 시간조절이 필요하다면 수정해야한다
 	if (!m_isHitFreeze && m_iCurrentBehavior != (_uint)KRS_BEHAVIOR_STATE::BTL_START)
 		m_pGameInstance->Set_TimeSpeed(TEXT("Timer_60"), 1.f);
 
@@ -1328,11 +1327,10 @@ void CPlayer::KRH_KeyInput(const _float& fTimeDelta)
 				{
 					HitAction_Down();
 				}
-				// 몬스터가 어택중일 때 실행시킬 것
-				//else if (m_pTargetObject == nullptr ? false : m_pTargetObject->isDown())
-				//{
-				//	HitAction_CounterElbow();
-				//}
+				else if (m_pTargetObject == nullptr ? false : m_pTargetObject->isAttack())
+				{
+					HitAction_CounterElbow();
+				}
 			}
 			else if (m_iCurrentBehavior == (_uint)KRH_BEHAVIOR_STATE::ATTACK)
 			{
@@ -2290,17 +2288,35 @@ void CPlayer::Setting_Target_Enemy()
 {
 	if (2 == m_iCurrentBehavior) return; 
 	auto pMonsters = m_pGameInstance->Get_GameObjects(m_iCurrentLevel, TEXT("Layer_Monster"));
+	auto pYonedas = m_pGameInstance->Get_GameObjects(m_iCurrentLevel, TEXT("Layer_Yoneda"));
 	
 	if (nullptr != m_pTargetObject)
 	{
 		_float vDistance = XMVectorGetX(XMVector3Length(m_pTransformCom->Get_State(CTransform::STATE_POSITION) - m_pTargetObject->Get_TransformCom()->Get_State(CTransform::STATE_POSITION)));
 		
 		// 기존 타겟중이던 친구의 거리가 3.f 이상 멀어지면 그때 다시 타겟팅한다.
-		if(3.f < vDistance)
-			m_pTargetObject = static_cast<CMonster*>(m_pCollisionManager->Get_Near_Object(this, pMonsters));
+		if (3.f < vDistance)
+		{
+			auto pMosnter = m_pCollisionManager->Get_Near_Object(this, pMonsters);
+			auto pYoneda = m_pCollisionManager->Get_Near_Object(this, pYonedas);
+
+			_float vMonsterLength = XMVectorGetX(XMVector3Length(m_pTransformCom->Get_State(CTransform::STATE_POSITION) - pMosnter->Get_TransformCom()->Get_State(CTransform::STATE_POSITION)));
+			_float vYonedaLength = XMVectorGetX(XMVector3Length(m_pTransformCom->Get_State(CTransform::STATE_POSITION) - pYoneda->Get_TransformCom()->Get_State(CTransform::STATE_POSITION)));
+
+			m_pTargetObject = vMonsterLength < vYonedaLength ? static_cast<CMonster*>(pMosnter) : static_cast<CMonster*>(pYoneda);
+		}
 	}
 	else
-		m_pTargetObject = static_cast<CMonster*>(m_pCollisionManager->Get_Near_Object(this, pMonsters));
+	{
+		auto pMosnter = m_pCollisionManager->Get_Near_Object(this, pMonsters);
+		auto pYoneda = m_pCollisionManager->Get_Near_Object(this, pYonedas);
+
+		_float vMonsterLength = XMVectorGetX(XMVector3Length(m_pTransformCom->Get_State(CTransform::STATE_POSITION) - pMosnter->Get_TransformCom()->Get_State(CTransform::STATE_POSITION)));
+		_float vYonedaLength = XMVectorGetX(XMVector3Length(m_pTransformCom->Get_State(CTransform::STATE_POSITION) - pYoneda->Get_TransformCom()->Get_State(CTransform::STATE_POSITION)));
+
+		m_pTargetObject = vMonsterLength < vYonedaLength ? static_cast<CMonster*>(pMosnter) : static_cast<CMonster*>(pYoneda);
+
+	}
 }
 
 void CPlayer::Setting_Target_Item()
