@@ -1,7 +1,7 @@
 #pragma once
 #include "Base.h"
 #include "Client_Defines.h"
-
+#include "Effect.h"
 BEGIN(Engine)
 class CCollider;
 class CGameObject;
@@ -91,6 +91,9 @@ private:
 
     float           m_fIntersectDistance = { 0 };
 
+    //피파티클
+private:
+    void Blood_Effect(CEffect::EFFECT_DESC& EffectDesc);
 private:
     void Impulse_Clear();
     void Battle_Clear();
