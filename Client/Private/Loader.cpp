@@ -905,20 +905,9 @@ HRESULT CLoader::Loading_For_CarChase()
 
 	//Add_Models_On_Path_NonAnim(LEVEL_TEST, TEXT("../Bin/Resources/Models/NonAnim/Map/KaraokeMap"));
 
-	_matrix PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
-	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_ROADWAY, TEXT("Prototype_Component_Model_Bone_Sphere"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/NonAnim/Bone_Sphere.fbx", PreTransformMatrix, true))))
-		return E_FAIL;
-
-	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
-	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_ROADWAY, TEXT("Prototype_Component_Model_Gun_Cz75"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/NonAnim/Gun_Cz75.fbx", PreTransformMatrix, true))))
-		return E_FAIL;
-
-	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
-	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_ROADWAY, TEXT("Prototype_Component_Model_Taxi"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/NonAnim/Taxi.fbx", PreTransformMatrix, true))))
-		return E_FAIL;
+	Add_Models_On_Path_NonAnim(LEVEL_ROADWAY, TEXT("../Bin/Resources/Models/NonAnim/Bone_Sphere"));
+	Add_Models_On_Path_NonAnim(LEVEL_ROADWAY, TEXT("../Bin/Resources/Models/NonAnim/Gun_Cz75"));
+	Add_Models_On_Path_NonAnim(LEVEL_ROADWAY, TEXT("../Bin/Resources/Models/NonAnim/Taxi"));
 #pragma endregion
 
 #pragma region GameObject
