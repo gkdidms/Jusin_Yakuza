@@ -63,6 +63,8 @@ void CYonedaTrigger::Tick(const _float& fTimeDelta)
 					eType = CPlayer::YONEDA_DOSU;
 
 				pPlayer->Set_CutSceneAnim(eType, 1);
+
+				pYoneda->Get_TransformCom()->Set_State(CTransform::STATE_POSITION, pPlayer->Get_TransformCom()->Get_State(CTransform::STATE_POSITION));
 			}
 		}
 	}

@@ -36,6 +36,7 @@ void CYoneda::Set_TriggerQte(_uint iWeaponChange, _uint iTriggerID)
 		m_iState = CMonster::MONSTER_A60350_000_2;
 	}
 
+	m_isSynchronizing = true;
 	m_pTree->Set_Sync(true);
 	m_iCurrentAnimType = CUTSCENE;
 }
