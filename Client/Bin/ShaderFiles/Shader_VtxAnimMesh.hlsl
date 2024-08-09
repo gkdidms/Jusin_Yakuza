@@ -132,9 +132,8 @@ struct PS_OUT
     vector vNormal : SV_TARGET1;
     vector vDepth : SV_TARGET2;
     vector vSurface : SV_TARGET3; // vector(metallic, goughness, speculer, 0.f)
-    vector vSusurface: SV_Target4;
-    vector vOEShader : SV_Target5;
-    vector vSpecular : SV_Target6;
+    vector vOEShader : SV_Target4;
+    vector vSpecular : SV_Target5;
 };
 
 PS_OUT PS_MAIN(PS_IN In)
@@ -145,8 +144,6 @@ PS_OUT PS_MAIN(PS_IN In)
         UV = UV_Shader(In.vTexcoord);
     
     vector vDiffuseDesc = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
-    if (vDiffuseDesc.a < 0.1f)
-        discard;
    
     vector vMulti = g_isMulti ? g_MultiDiffuseTexture.Sample(LinearSampler, In.vTexcoord) : vector(0.f, 1.f, 0.f, 1.f);
     vector vRD = g_isRD ? g_RDTexture.Sample(LinearSampler, g_isUVShader ? UV.RDRMRS : In.vTexcoord) : vector(1.f, 1.f, 1.f, 1.f);
@@ -188,7 +185,6 @@ PS_OUT PS_MAIN(PS_IN In)
     Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_fFar, RimIndex, 0.f);
     Out.vDiffuse = vDiffuse;
     Out.vSurface = vector(Result.fMetalness, Result.fRoughness, Result.fSpeclure, 0);
-    Out.vSusurface = SubSurface(vRD);
     Out.vOEShader = vector(OEResult.fRouhness, OEResult.fMixShaderFactor, fMixMultiFactor, fDeffuseFactor);
     Out.vSpecular = vector(OEResult.vSpecular, 0.f);
     
@@ -198,29 +194,32 @@ PS_OUT PS_MAIN(PS_IN In)
 PS_OUT PS_BLEND(PS_IN In)
 {
     PS_OUT Out = (PS_OUT) 0;
+    UV_SHADER UV = (UV_SHADER) 0;
+    if (g_isUVShader)
+        UV = UV_Shader(In.vTexcoord);
     
-    vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
-  
+    vector vDiffuseDesc = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
+   
     vector vMulti = g_isMulti ? g_MultiDiffuseTexture.Sample(LinearSampler, In.vTexcoord) : vector(0.f, 1.f, 0.f, 1.f);
-    vector vRD = g_isRD ? g_RDTexture.Sample(LinearSampler, In.vTexcoord * g_RDCount) : vector(1.f, 1.f, 1.f, 1.f);
-    vector vRS = g_isRS ? g_RSTexture.Sample(LinearSampler, In.vTexcoord) : vector(1.f, 1.f, 1.f, 1.f);
-    vector vRM = g_isRM ? g_RMTexture.Sample(LinearSampler, In.vTexcoord) : vector(0.5f, 1.f, 0.5f, 1.f);
-    vector vRT = g_isRT ? g_RTTexture.Sample(LinearSampler, In.vTexcoord) : vector(0.5f, 0.5f, 1.f, 0.5f);
-    
+    vector vRD = g_isRD ? g_RDTexture.Sample(LinearSampler, g_isUVShader ? UV.RDRMRS : In.vTexcoord) : vector(1.f, 1.f, 1.f, 1.f);
+    vector vRS = g_isRS ? g_RSTexture.Sample(LinearSampler, g_isUVShader ? UV.RDRMRS : In.vTexcoord) : vector(1.f, 1.f, 1.f, 1.f);
+    vector vRM = g_isRM ? g_RMTexture.Sample(LinearSampler, g_isUVShader ? UV.RDRMRS : In.vTexcoord) : vector(0.5f, 1.f, 0.5f, 1.f);
+    vector vRT = g_isRT ? g_RTTexture.Sample(LinearSampler, g_isUVShader ? UV.RT : In.vTexcoord) : vector(0.5f, 0.5f, 1.f, 0.5f);
     //노말 벡터 구하기
     vector vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexcoord);
-    vNormalDesc = vNormalDesc * 2.f - 1.f;
+
     
     //Neo Shader
     float fFactor = RepeatingPatternBlendFactor(vMulti);
-    vector vDiffuseColor = DiffusePortion(vDiffuse, vRS, vRD, fFactor, In.vTexcoord);
+    vector vDiffuseColor = DiffusePortion(vDiffuseDesc, vRS, vRD, fFactor, In.vTexcoord);
     
     COMBINE_OUT Result = Neo_MetallicAndGlossiness(vMulti, vRM); // Metallic, Rouhness 최종
     vDiffuseColor = Get_Diffuse(vMulti.a, vDiffuseColor); // Diffuse 최종
-    vDiffuseColor.a = vDiffuse.a;
+    vDiffuseColor.a = vDiffuseDesc.a;
     
     //Tangent Normal 구하기 
     vNormalDesc = Get_Normal(vNormalDesc, vRT, fFactor);
+    vNormalDesc = vNormalDesc * 2.f - 1.f;
     float3x3 WorldMatrix = float3x3(In.vTangent.xyz, In.vBinormal.xyz, In.vNormal.xyz);
     vector vNormalBTN = vector(mul(vNormalDesc.xyz, WorldMatrix), 0.f);
     Out.vNormal = vector(vNormalBTN.xyz * 0.5f + 0.5f, 0.f);
@@ -236,12 +235,11 @@ PS_OUT PS_BLEND(PS_IN In)
     
     OE_SPECULAR OEResult = Neo_OE_Specular(vMulti, vRM, vRS);
     float fMixMultiFactor = lerp(vMulti.y, 1.f, AssetShader);
-    float fDeffuseFactor = vDiffuse.a * 1.f;
+    float fDeffuseFactor = vDiffuseDesc.a * 1.f;
     
     Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_fFar, RimIndex, 0.f);
     Out.vDiffuse = vDiffuseColor;
     Out.vSurface = vector(Result.fMetalness / g_fFar, Result.fRoughness / g_fFar, Result.fSpeclure / g_fFar, g_fFar);
-    Out.vSusurface = SubSurface(vRD) / g_fFar;
     Out.vOEShader = vector(OEResult.fRouhness, OEResult.fMixShaderFactor, fMixMultiFactor, fDeffuseFactor);
     Out.vSpecular = vector(OEResult.vSpecular, 0.f);
     

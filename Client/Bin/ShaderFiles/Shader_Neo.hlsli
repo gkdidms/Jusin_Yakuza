@@ -13,7 +13,7 @@ float RepeatingPatternBlendFactor(vector vMulti)
     float isCloth = 1.f - IsOEClothShader;
     float fMix = lerp(isCloth, vector(1.f, 1.f, 1.f, 1.f), Engine);
     
-    float vMix2 = lerp(vMulti.b, vMulti.a, isCloth);
+    float vMix2 = lerp(vMulti.z, vMulti.a, isCloth);
     float fDisableRDAndRT = 1.f - DisableRDRT;
     
     return vMix2 * fDisableRDAndRT;
@@ -52,7 +52,7 @@ vector Get_Diffuse(float fMultiAlpha,  vector vDiffuse)
 
 bool CheckIfGreenNormalMap(float fX)
 {
-    return fX == 0.f;
+    return fX == 0.f ? 1.f : 0.f;
 }
 
 float4 Overlay(float4 baseColor, float4 overlayColor, float factor)
@@ -68,9 +68,8 @@ float4 Overlay(float4 baseColor, float4 overlayColor, float factor)
 
 float4 Get_Normal(vector vNormal, vector vRT, float fFactor)
 {
-    
     //check if Green normal map
-    bool isCheck = CheckIfGreenNormalMap(vNormal.x);
+    float isCheck = CheckIfGreenNormalMap(vNormal.x);
     
     float fMix = lerp(vNormal.r, vNormal.a, isCheck);
     float4 vCombineNormal = float4(fMix, vNormal.g, 1.f, 0.f);

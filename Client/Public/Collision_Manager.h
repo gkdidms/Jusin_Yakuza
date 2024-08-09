@@ -1,7 +1,7 @@
 #pragma once
 #include "Base.h"
 #include "Client_Defines.h"
-
+#include "Effect.h"
 BEGIN(Engine)
 class CCollider;
 class CGameObject;
@@ -91,6 +91,28 @@ private:
 
     float           m_fIntersectDistance = { 0 };
 
+    //피파티클
+private:
+    //사람이 총맞았을떄 이펙트
+    void Blood_Effect(CEffect::EFFECT_DESC& EffectDesc);
+    //피 부족시 추가
+    void Blood_Splash(CEffect::EFFECT_DESC& EffectDesc);
+    //자동차, 오토바이에 총맞을때 나오는 스파크
+    void Car_HitSpark(CEffect::EFFECT_DESC& EffectDesc);
+    //차 터지고 나서 불
+    void Car_Fire(CEffect::EFFECT_DESC& EffectDesc);
+    //차 터질때
+    void Car_Explosion(CEffect::EFFECT_DESC& EffectDesc);
+    //총쏠떄
+    void Shot_Flash(CEffect::EFFECT_DESC& EffectDesc);
+    //시네마 초반 코피 터지기
+    void Cine_NoseBlood(CEffect::EFFECT_DESC& EffectDesc);
+    //시네마 입에서 피토
+    void Cine_MouseBlood(CEffect::EFFECT_DESC& EffectDesc);
+    //자동차 뒷불(트레일버퍼)
+    void Car_BackTrail(CEffect::EFFECT_DESC& EffectDesc);
+    //자동차 창문 깨짐
+    void Car_GlassBroke(CEffect::EFFECT_DESC& EffectDesc);
 private:
     void Impulse_Clear();
     void Battle_Clear();

@@ -127,9 +127,8 @@ struct PS_MAIN_OUT
     vector vNormal : SV_TARGET1;
     vector vDepth : SV_TARGET2;
     vector vSurface : SV_TARGET3; // vector(metallic, goughness, speculer, 0.f)
-    vector vSusurface : SV_Target4;
-    vector vOEShader : SV_Target5;
-    vector vSpecular : SV_Target6;
+    vector vOEShader : SV_Target4;
+    vector vSpecular : SV_Target5;
 };
 
 
@@ -149,7 +148,7 @@ PS_MAIN_OUT PS_MAIN(PS_IN In)
     vector vRT = vector(0.5f, 0.5f, 1.f, 0.5f);
     //노말 벡터 구하기
     vector vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexcoord);
-    vNormalDesc = vNormalDesc * 2.f - 1.f;
+
     
     //Neo Shader
     float fFactor = RepeatingPatternBlendFactor(vMulti);
@@ -160,6 +159,8 @@ PS_MAIN_OUT PS_MAIN(PS_IN In)
     
     //Tangent Normal 구하기 
     vNormalDesc = Get_Normal(vNormalDesc, vRT, fFactor);
+    
+    vNormalDesc = vNormalDesc * 2.f - 1.f;
     float3x3 WorldMatrix = float3x3(In.vTangent.xyz, In.vBinormal.xyz, In.vNormal.xyz);
     vector vNormalBTN = vector(mul(vNormalDesc.xyz, WorldMatrix), 0.f);
     Out.vNormal = vector(vNormalBTN.xyz * 0.5f + 0.5f, 0.f);
@@ -180,7 +181,6 @@ PS_MAIN_OUT PS_MAIN(PS_IN In)
     Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_fFar, RimIndex, 0.f);
     Out.vDiffuse = vDiffuse;
     Out.vSurface = vector(Result.fMetalness, Result.fRoughness, Result.fSpeclure, 0);
-    Out.vSusurface = SubSurface(vRD);
     Out.vOEShader = vector(OEResult.fRouhness, OEResult.fMixShaderFactor, fMixMultiFactor, fDeffuseFactor);
     Out.vSpecular = vector(OEResult.vSpecular, 0.f);
     

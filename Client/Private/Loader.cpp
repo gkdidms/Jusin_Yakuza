@@ -29,10 +29,16 @@
 
 #pragma region Monster
 #include "CarChase_Van.h"
+#include "CarChase_Sedan.h"
+#include "CarChase_Bike.h"
+#include "CarChase_Heli.h"
 #pragma endregion
 
 #pragma region Reactor
 #include "Reactor_Van.h"
+#include "Reactor_Sedan.h"
+#include "Reactor_Bike.h"
+#include "Reactor_Heli.h"
 
 #include "Gun_Cz75.h"
 #pragma endregion
@@ -49,10 +55,11 @@
 #include "AI_WPHYakuza.h"
 #include "AI_DefaultYakuza.h"
 #include "AI_Yoneda.h"
+
 #include "AI_Passersby.h"
 
 #include "AI_Van.h"
-
+#include "AI_Bike.h"
 #pragma endregion
 
 #pragma region Camera
@@ -413,6 +420,10 @@ HRESULT CLoader::Loading_Default()
 
 #pragma endregion
 
+#pragma region Meterial
+	Add_Components_On_Path_Material(m_eNextLevel, TEXT("../Bin/DataFiles/MeterialData"));
+#pragma endregion
+
 #pragma region Shader
 	lstrcpy(m_szLoadingText, TEXT("셰이더를(을) 로딩 중 입니다."));
 	/* For.Prototype_Component_Shader_VtxAnim */
@@ -465,10 +476,6 @@ HRESULT CLoader::Loading_Default()
 		return E_FAIL;
 #pragma endregion
 
-
-
-
-
 	return S_OK;
 }
 
@@ -493,6 +500,11 @@ if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototyp
 	if (FAILED(m_pGameInstance->Add_BTNode_Prototype(m_eNextLevel, TEXT("Prototype_BTNode_Van"),
 		CAI_Van::Create())))
 		return E_FAIL;
+
+	/* For.Prototype_BTNode_Bike*/
+	if (FAILED(m_pGameInstance->Add_BTNode_Prototype(m_eNextLevel, TEXT("Prototype_BTNode_Bike"),
+		CAI_Bike::Create())))
+		return E_FAIL;
 #pragma endregion
 
 #pragma region GameObject
@@ -503,17 +515,37 @@ if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototyp
 
 	/* For.Prototype_GameObject_ReactorSedan */
 	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_ReactorSedan"),
-		CReactor_Van::Create(m_pDevice, m_pContext))))
+		CReactor_Sedan::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	/* For.Prototype_GameObject_ReactorBike */
 	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_ReactorBike"),
-		CReactor_Van::Create(m_pDevice, m_pContext))))
+		CReactor_Bike::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_ReactorHeli */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_ReactorHeli"),
+		CReactor_Heli::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	/* For.Prototype_GameObject_CarChaseVan*/
 	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_CarChaseVan"),
 		CCarChase_Van::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_CarChaseSedan*/
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_CarChaseSedan"),
+		CCarChase_Sedan::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_CarChaseBike*/
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_CarChaseBike"),
+		CCarChase_Bike::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_CarChaseHeli*/
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_CarChaseHeli"),
+		CCarChase_Heli::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	/* For.Prototype_GameObject_Gun_Cz75*/
@@ -905,20 +937,9 @@ HRESULT CLoader::Loading_For_CarChase()
 
 	//Add_Models_On_Path_NonAnim(LEVEL_TEST, TEXT("../Bin/Resources/Models/NonAnim/Map/KaraokeMap"));
 
-	_matrix PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
-	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_ROADWAY, TEXT("Prototype_Component_Model_Bone_Sphere"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/NonAnim/Bone_Sphere.fbx", PreTransformMatrix, true))))
-		return E_FAIL;
-
-	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
-	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_ROADWAY, TEXT("Prototype_Component_Model_Gun_Cz75"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/NonAnim/Gun_Cz75.fbx", PreTransformMatrix, true))))
-		return E_FAIL;
-
-	PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
-	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_ROADWAY, TEXT("Prototype_Component_Model_Taxi"),
-		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/NonAnim/Taxi.fbx", PreTransformMatrix, true))))
-		return E_FAIL;
+	Add_Models_On_Path_NonAnim(LEVEL_ROADWAY, TEXT("../Bin/Resources/Models/NonAnim/Bone_Sphere"));
+	Add_Models_On_Path_NonAnim(LEVEL_ROADWAY, TEXT("../Bin/Resources/Models/NonAnim/Gun_Cz75"));
+	Add_Models_On_Path_NonAnim(LEVEL_ROADWAY, TEXT("../Bin/Resources/Models/NonAnim/Taxi"));
 #pragma endregion
 
 #pragma region GameObject
@@ -1580,6 +1601,41 @@ HRESULT CLoader::Add_Models_On_Path_NonAnim(_uint iLevel, const wstring& strPath
 				CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, strBinPath.c_str(), NonAnimPreTransformMatrix, true))))
 				return E_FAIL;
 		}
+	}
+	return S_OK;
+}
+
+HRESULT CLoader::Add_Components_On_Path_Material(_uint iLevel, const wstring& strPath)
+{
+	vector<string> fbxFilesName;
+	wstring		wstrFullPath = strPath;
+	_matrix		NonAnimPreTransformMatrix;
+
+	// fbx 제외하고 fbx 파일 이름들 저장
+	for (const auto& entry : fs::directory_iterator(wstrFullPath)) {
+		if (entry.is_regular_file() && entry.path().extension() == L".dat") {
+
+			string strFileName = entry.path().filename().string();
+
+			size_t lastDot = entry.path().filename().string().find_last_of(".");
+
+			strFileName = entry.path().filename().string().substr(0, lastDot);
+
+			fbxFilesName.push_back(strFileName);
+		}
+	}
+
+	for (const auto& fbxNames : fbxFilesName)
+	{
+		wstring strFilePath = strPath + TEXT("/");
+		string strDirectory = m_pGameInstance->WstringToString(strFilePath);
+		string strBinPath = strDirectory + fbxNames + ".dat";
+
+		wstring strComponentName = TEXT("Prototype_Component_Material_") + m_pGameInstance->StringToWstring(fbxNames);
+
+		if (FAILED(m_pGameInstance->Add_Component_Prototype(iLevel, strComponentName,
+			CNeoShader::Create(m_pDevice, m_pContext, strBinPath.c_str()))))
+			return E_FAIL;
 	}
 	return S_OK;
 }

@@ -145,11 +145,6 @@ HRESULT CLoader::Loading_For_TestLevel()
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/UVGrid.dds"), 1))))
 		return E_FAIL;
 
-	/* Prototype_Component_Texture_Fluid*/
-	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Texture_Fluid"),
-		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/e_j_0015_fluid01.dds"), 1))))
-		return E_FAIL;
-
 	/* Prototype_Component_Texture_Sphere */
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Texture_Sphere"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/lm000.dds"), 1))))
@@ -189,6 +184,47 @@ HRESULT CLoader::Loading_For_TestLevel()
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Texture_AuraAnim"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/e_j_0076_aura_g.dds"), 1))))
 		return E_FAIL;
+
+	/* Prototype_Component_Texture_FireAnim */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Texture_FireAnim"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/e_j_0085_fireanim_f.dds"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_ExpAnimA */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Texture_ExpAnimA"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/e_j_0252_expAnimG.dds"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_ExpAnimB */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Texture_ExpAnimB"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/e_j_0252_explosionB.dds"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_CarBackLight */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Texture_CarBackLight"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/Backlight.dds"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_BrokenGlass0 */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Texture_BrokenGlass0"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/e_j_0090_glass_0.dds"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_BrokenGlass1 */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Texture_BrokenGlass1"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/e_j_0090_glass_1.dds"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_BrokenGlass2 */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Texture_BrokenGlass2"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/e_j_0090_glass_2.dds"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_BrokenGlass3 */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Texture_BrokenGlass3"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/e_j_0090_glass_3.dds"), 1))))
+		return E_FAIL;
+
 
 	/* Prototype_Component_Texture_AuraFluid */
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Texture_AuraFluid"),
@@ -337,6 +373,81 @@ HRESULT CLoader::Loading_For_TestLevel()
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Texture_BloodN8"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/Blood/e_o_2515_blood_f_nml.dds"), 1))))
 		return E_FAIL;
+
+	/* Prototype_Component_Texture_LiquidD */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Texture_LiquidD"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/Blood/e_j_0015_fluid01.dds"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_LiquidN */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Texture_LiquidN"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/Blood/e_j_0015_fluid01Nml.dds"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_LiquidAnimAD */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Texture_LiquidAnimAD"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/Blood/e_j_0017_liquidanim_beb.dds"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_LiquidAnimAN */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Texture_LiquidAnimAN"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/Blood/e_j_0017_liquidanim_bebNml.dds"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_LiquidAnimBD */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Texture_LiquidAnimBD"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/Blood/e_j_0017_liquidanim_bf.dds"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_LiquidAnimBN */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Texture_LiquidAnimBN"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/Blood/e_j_0017_liquidanim_bfNml.dds"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_LiquidAnimCD */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Texture_LiquidAnimCD"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/Blood/e_j_0017_liquidanim_bf2.dds"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_LiquidAnimCN */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Texture_LiquidAnimCN"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/Blood/e_j_0017_liquidanim_bf2Nml.dds"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_LiquidAnimDD */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Texture_LiquidAnimDD"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/Blood/e_j_0017_liquidanim_g.dds"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_LiquidAnimDN */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Texture_LiquidAnimDN"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/Blood/e_j_0017_liquidanim_gNml.dds"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_LiquidAnimED */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Texture_LiquidAnimED"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/Blood/e_j_0017_liquidanim_g_boke.dds"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_LiquidAnimEN */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Texture_LiquidAnimEN"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/Blood/e_j_0017_liquidanim_gNml2.dds"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_LiquidAnimFD */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Texture_LiquidAnimFD"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/Blood/e_j_0017_liquidanim_hb.dds"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_LiquidAnimFN */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Texture_LiquidAnimFN"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/Blood/e_j_0017_liquidanim_hbNml.dds"), 1))))
+		return E_FAIL;
+	
+		/* Prototype_Component_Texture_BloodAnim */
+		if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Texture_BloodAnim"),
+			CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/Blood/e_j_0033_bfBloodSplash01.dds"), 1))))
+			return E_FAIL;
 #pragma endregion
 
 	lstrcpy(m_szLoadingText, TEXT("컴포넌트 원형 를(을) 로딩 중 입니다."));
@@ -409,6 +520,7 @@ HRESULT CLoader::Loading_For_TestLevel()
 	//바이너리 인가 아닌가를 마지막에 넣어주기.
 	_matrix PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);	
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Model_UVGrid"),
+		//CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/NonAnim/Particle/UVBase.fbx", PreTransformMatrix, false, true))))
 		CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/NonAnim/Particle/Bin/UVBase.dat", PreTransformMatrix, true, true))))
 		return E_FAIL;
 

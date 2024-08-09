@@ -454,14 +454,6 @@ HRESULT CPlayer::Render()
 		_bool isRM = true;
 		_bool isRT = true;
 		_bool isMulti = true;
-		_float fRDCount = 1.f;
-
-		if (m_pGameInstance->Find_String(pMesh->Get_Name(), "shirts") ||
-			m_pGameInstance->Find_String(pMesh->Get_Name(), "jacket") || 
-			m_pGameInstance->Find_String(pMesh->Get_Name(), "pants"))
-			fRDCount = 50.f;
-		m_pShaderCom->Bind_RawValue("g_RDCount", &fRDCount, sizeof(_float));
-
 
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_MultiDiffuseTexture", i, aiTextureType_SHININESS)))
 			isMulti = false;
@@ -470,7 +462,6 @@ HRESULT CPlayer::Render()
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RSTexture", i, aiTextureType_SPECULAR)))
 			isRS = false;
 		m_pShaderCom->Bind_RawValue("g_isRS", &isRS, sizeof(_bool));
-		m_pShaderCom->Bind_RawValue("IsY3Shader", &isRS, sizeof(_bool));
 
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RDTexture", i, aiTextureType_OPACITY)))
 			isRD = false;
@@ -1719,7 +1710,7 @@ HRESULT CPlayer::Add_Components()
 	m_SeparationAnimComs.push_back(pAnimCom);
 
 	//Prototype_Component_Anim_Kiryu
-	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Kiryu_Material"),
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Material_Kiryu"),
 		TEXT("Com_Material"), reinterpret_cast<CComponent**>(&m_pMaterialCom))))
 		return E_FAIL;
 
@@ -2385,12 +2376,12 @@ void CPlayer::Setting_Target_Wall()
 
 void CPlayer::AccHitGauge()
 {
-	//if (PLAYER_HITGAUGE_LEVEL_INTERVAL * 3.f < m_fHitGauge)
-	//	m_fHitGauge = PLAYER_HITGAUGE_LEVEL_INTERVAL * 3.f;
-	//else
-	//	m_fHitGauge += 5.f;
+	if (PLAYER_HITGAUGE_LEVEL_INTERVAL * 3.f < m_fHitGauge)
+		m_fHitGauge = PLAYER_HITGAUGE_LEVEL_INTERVAL * 3.f;
+	else
+		m_fHitGauge += 5.f;
 
-	//m_iCurrentHitLevel = (m_fHitGauge / PLAYER_HITGAUGE_LEVEL_INTERVAL);
+	m_iCurrentHitLevel = (m_fHitGauge / PLAYER_HITGAUGE_LEVEL_INTERVAL);
 }
 
 void CPlayer::Setting_RimLight()

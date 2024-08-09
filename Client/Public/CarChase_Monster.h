@@ -11,10 +11,11 @@ public:
         const _float4x4* pBoneMatrix;
         _uint iWeaponType;
         _uint iLineDir; // 위, 옆, 뒤
+        _uint iStageDir; // 위, 왼, 오, 앞
     } CARCHASE_MONSTER_DESC;
 
 public:
-    enum WEAPON_TYPE { DRV, RKT, GUN, WPJ, WPR, GAT, WEAPON_END };
+    enum WEAPON_TYPE { DRV, RKT, GUN, WPJ, WPR, GAT, GUN_R, GUN_L, WEAPON_END };
     enum REACTOR_TYPE { REACTOR_VAN, REACTOR_SEDAN, REACTOR_BIKE, REACTOR_HELI, REACTOR_TYPE_END };
     enum CARCHASE_STATE {
         CARCHASE_CURVA_L,
@@ -122,6 +123,7 @@ protected:
     _uint m_iWeaponType = { WEAPON_END };
     _uint m_iDir = { DIR_END }; // 몬스터가 바라봐야 하는 방향
     _uint m_iLineDir = { DIR_END };
+    _uint m_iStageDir = { DIR_END };
     _uint m_iCurrentAnimType = { CLandObject::ANIM_TYPE_END };
 
 protected:
@@ -135,11 +137,13 @@ protected:
 protected:
     virtual void Change_Animation();
     void Update_TargetingUI();
+    void Get_LookDir();
+    _uint DirFromPlayerPos();
 
 protected:
     virtual HRESULT Add_Components() override;
     virtual HRESULT Bind_ResourceData() override;
-    virtual void Get_LookDir();
+    
 
 public:
     virtual void Free();

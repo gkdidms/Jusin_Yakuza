@@ -317,7 +317,7 @@ private:
 
     /* 플레이어 스테이터스 관련 변수들 */
 private:
-    _uint           m_iCurrentHitLevel = { 3 };
+    _uint           m_iCurrentHitLevel = { 0 };
     _float          m_fHitGauge = { 0.f };
 
     int             m_iNaviRouteNum = { 0 }; //루트

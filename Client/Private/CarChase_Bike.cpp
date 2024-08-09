@@ -1,5 +1,9 @@
 #include "CarChase_Bike.h"
 
+#include "GameInstance.h"
+
+#include "AI_Bike.h"
+
 CCarChase_Bike::CCarChase_Bike(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CCarChase_Monster{ pDevice, pContext }
 {
@@ -49,6 +53,8 @@ void CCarChase_Bike::Change_Animation()
 			m_strAnimName = "mngcar_e_bik_drv_curve_l_lp";
 		else if (m_iWeaponType == RKT)
 			m_strAnimName = "mngcar_e_bik_rkt_curve_l_lp";
+
+		m_isAnimLoop = true;
 		break;
 	}
 	case CARCHASE_CURVA_R:
@@ -57,6 +63,8 @@ void CCarChase_Bike::Change_Animation()
 			m_strAnimName = "mngcar_e_bik_drv_curve_r_lp";
 		else if (m_iWeaponType == RKT)
 			m_strAnimName = "mngcar_e_bik_rkt_curve_r_lp";
+
+		m_isAnimLoop = true;
 		break;
 	}
 	case CARCHASE_TENTOU_A:
@@ -87,24 +95,32 @@ void CCarChase_Bike::Change_Animation()
 	{
 		if (m_iWeaponType == GUN)
 			m_strAnimName = "mngcar_e_bik_gun_aim_f_lp";
+
+		m_isAnimLoop = true;
 		break;
 	}
 	case CARCHASE_AIM_L90_LP:
 	{
 		if (m_iWeaponType == GUN)
 			m_strAnimName = "mngcar_e_bik_gun_aim_l90_lp";
+
+		m_isAnimLoop = true;
 		break;
 	}
 	case CARCHASE_AIM_R90_LP:
 	{
 		if (m_iWeaponType == GUN)
 			m_strAnimName = "mngcar_e_bik_gun_aim_r90_lp";
+
+		m_isAnimLoop = true;
 		break;
 	}
 	case CARCHASE_AIM_L_LP:
 	{
 		if (m_iWeaponType == RKT)
 			m_strAnimName = "mngcar_e_bik_rkt_aim_l_lp";
+
+		m_isAnimLoop = true;
 		break;
 	}
 	case CARCHASE_AIM_R_LP:
@@ -113,12 +129,15 @@ void CCarChase_Bike::Change_Animation()
 			m_strAnimName = "mngcar_e_bik_gun_aim_r_lp";
 		else if (m_iWeaponType == RKT)
 			m_strAnimName = "mngcar_e_bik_rkt_aim_r_lp";
+
+		m_isAnimLoop = true;
 		break;
 	}
 	case CARCHASE_AIM_SHOT_F:
 	{
 		if (m_iWeaponType == GUN)
 			m_strAnimName = "mngcar_e_bik_gun_aim_shot_f";
+
 		break;
 	}
 	case CARCHASE_AIM_SHOT_R:
@@ -162,6 +181,7 @@ void CCarChase_Bike::Change_Animation()
 	{
 		if (m_iWeaponType == RKT)
 			m_strAnimName = "mngcar_e_bik_rkt_ded_l";
+
 		break;
 	}
 	case CARCHASE_DED_R:
@@ -197,6 +217,7 @@ void CCarChase_Bike::Change_Animation()
 		else if (m_iWeaponType == RKT)
 			m_strAnimName = "mngcar_e_bik_rkt_stand_lp";
 
+		m_isAnimLoop = true;
 		break;
 	}
 	default:
@@ -213,6 +234,18 @@ HRESULT CCarChase_Bike::Add_Components()
 
 	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Model_Shakedown"),
 		TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
+		return E_FAIL;
+
+	CAI_Bike::AI_CARCHASE_DESC Desc{};
+	memcpy(Desc.pAnim, m_pAnimCom, sizeof(CAnim*) * ANIM_TYPE_END);
+	Desc.pCurrentAnimType = &m_iCurrentAnimType;
+	Desc.pDir = &m_iDir;
+	Desc.pState = &m_iState;
+	Desc.pThis = this;
+	Desc.pWeaponType = &m_iWeaponType;
+
+	m_pTree = dynamic_cast<CAI_Bike*>(m_pGameInstance->Add_BTNode(m_iCurrentLevel, TEXT("Prototype_BTNode_Bike"), &Desc));
+	if (nullptr == m_pTree)
 		return E_FAIL;
 
 	return S_OK;
