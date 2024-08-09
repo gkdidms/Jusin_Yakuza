@@ -1,6 +1,7 @@
 #include "GameInstance.h"
 #include "Kiryu_KRS_KickCombo.h"
 #include "Player.h"
+#include "Monster.h"
 #include "Camera.h"
 
 CKiryu_KRS_KickCombo::CKiryu_KRS_KickCombo()

@@ -54,12 +54,6 @@ void CAI_Bike::Ready_Tree()
 	pDownSeq->Add_Children(CLeafNode::Create(bind(&CAI_Bike::Dead, this)));
 #pragma endregion
 
-	//#pragma region Sync
-	//	CSequance* pSyncSeq = CSequance::Create();
-	//	pSyncSeq->Add_Children(CLeafNode::Create(bind(&CAI_Bike::Check_Sync, this)));
-	//	pSyncSeq->Add_Children(CLeafNode::Create(bind(&CAI_Bike::Sync, this)));
-	//#pragma endregion
-
 #pragma region HIT
 	CSequance* pHitSeq = CSequance::Create();
 	pHitSeq->Add_Children(CLeafNode::Create(bind(&CAI_Bike::Check_Hit, this)));
@@ -72,9 +66,10 @@ void CAI_Bike::Ready_Tree()
 	pAttackSeq->Add_Children(CLeafNode::Create(bind(&CAI_Bike::ATK_Shot, this)));
 #pragma endregion
 
-#pragma region Shift/Idle
-	CSequance* pBreakSeq = CSequance::Create();
-	pBreakSeq->Add_Children(CLeafNode::Create(bind(&CAI_Bike::Idle, this)));
+#pragma region Ready
+	CSequance* pReadySeq = CSequance::Create();
+	pReadySeq->Add_Children(CLeafNode::Create(bind(&CAI_Bike::Check_Ready, this)));
+	pReadySeq->Add_Children(CLeafNode::Create(bind(&CAI_Bike::Ready, this)));
 #pragma endregion
 
 #pragma region Root
@@ -82,7 +77,7 @@ void CAI_Bike::Ready_Tree()
 	//pRoot->Add_Children(pSyncSeq);
 	pRoot->Add_Children(pHitSeq);
 	pRoot->Add_Children(pAttackSeq);
-	pRoot->Add_Children(pBreakSeq);
+	pRoot->Add_Children(pReadySeq);
 #pragma endregion
 
 	m_pRootNode = pRoot;
@@ -100,7 +95,19 @@ CBTNode::NODE_STATE CAI_Bike::Dead()
 
 CBTNode::NODE_STATE CAI_Bike::Hit()
 {
+	if (m_isHit)
+	{
+		if (*m_pState == CCarChase_Monster::CARCHASE_DAM_LV_2 && m_pAnimCom[*m_pCurrentAnimType]->Get_AnimFinished())
+		{
+			m_isHit = false;
+			return CBTNode::SUCCESS;
+		}
+
+		return CBTNode::RUNNING;
+	}
+
 	*m_pState = CCarChase_Monster::CARCHASE_DAM_LV_2;
+	m_isHit = true;
 
 	return CBTNode::SUCCESS;
 }
@@ -119,8 +126,6 @@ CBTNode::NODE_STATE CAI_Bike::Check_Attack()
 	{
 		m_iSkill = SKILL_SHOT;
 		m_fAttackDelayTime = 0.f;
-		m_isAtkReady = false;
-
 		return CBTNode::SUCCESS;
 	}
 
@@ -136,7 +141,8 @@ CBTNode::NODE_STATE CAI_Bike::ATK_Shot()
 			if (m_pAnimCom[*m_pCurrentAnimType]->Get_AnimFinished())
 			{
 				m_isAttack = false;
-
+				m_isAtkReady = false;
+				m_fAttackReadyDelayTime = 0.f;
 				return CBTNode::SUCCESS;
 			}
 		}
@@ -179,38 +185,48 @@ CBTNode::NODE_STATE CAI_Bike::ATK_Shot()
 
 CBTNode::NODE_STATE CAI_Bike::Check_Ready()
 {
-	if (*m_pWeaponType == CCarChase_Monster::DRV) return CBTNode::FAIL;
-
-	if (!m_isAtkReady)
+	if (m_fDelayAttackReadyDuration < m_fAttackReadyDelayTime)
 	{
-		if (m_fDelayAttackReadyDuration < m_fAttackReadyDelayTime)
-		{
-			//true이면 Ready 준비하는 중
-			m_isAtkReady = true;
-			
-			return CBTNode::SUCCESS;
-		}
-	}
-
-	return CBTNode::FAIL;
-}
-
-CBTNode::NODE_STATE CAI_Bike::Ready()
-{
-	if (*m_pWeaponType == CCarChase_Monster::RKT || *m_pWeaponType == CCarChase_Monster::GUN)
-	{
-		if (*m_pDir == DIR_L)
-			*m_pState = CCarChase_Monster::CARCHASE_AIM_L_LP;
-		else if (*m_pDir == DIR_R)
-			*m_pState = CCarChase_Monster::CARCHASE_AIM_R_LP;
+		//true이면 Ready 준비하는 중
+		m_isAtkReady = !m_isAtkReady;
+		m_fAttackReadyDelayTime = 0.f;
 	}
 
 	return CBTNode::SUCCESS;
 }
 
-CBTNode::NODE_STATE CAI_Bike::Idle()
+CBTNode::NODE_STATE CAI_Bike::Ready()
 {
-	*m_pState = CCarChase_Monster::CARCHASE_STAND_UP;
+	if (m_isAtkReady && *m_pWeaponType != CCarChase_Monster::DRV)
+	{
+		if (*m_pWeaponType == CCarChase_Monster::RKT)
+		{
+			if (*m_pDir == DIR_L)
+				*m_pState = CCarChase_Monster::CARCHASE_AIM_L_LP;
+			else if (*m_pDir == DIR_R)
+				*m_pState = CCarChase_Monster::CARCHASE_AIM_R_LP;
+		}
+		else if (*m_pWeaponType == CCarChase_Monster::GUN)
+		{
+			if (*m_pDir == DIR_F)
+				*m_pState = CCarChase_Monster::CARCHASE_AIM_F_LP;
+
+			_uint iDir = AngleFromPlayer();
+			if (iDir == DIR_R)
+				*m_pState = CCarChase_Monster::CARCHASE_AIM_R90_LP;
+			else if (iDir == DIR_FR)
+				*m_pState = CCarChase_Monster::CARCHASE_AIM_R_LP;
+			else if (iDir == DIR_L)
+				*m_pState = CCarChase_Monster::CARCHASE_AIM_L90_LP;
+			else if (iDir == DIR_FL)
+				*m_pState = CCarChase_Monster::CARCHASE_AIM_L_LP;
+		}
+	}
+	else
+	{
+		*m_pState = CCarChase_Monster::CARCHASE_STAND_UP;
+	}
+
 
 	return CBTNode::SUCCESS;
 }
