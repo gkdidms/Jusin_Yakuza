@@ -47,6 +47,7 @@ public:
 protected:
     virtual void Ready_Tree() = 0;
     _float DistanceFromPlayer();
+    _uint AngleFromPlayer();
     _bool isBehine();
     void LookAtPlayer();
 
@@ -67,11 +68,15 @@ protected:
     _uint m_iSkill = { SKILL_END };
 
     _bool m_isAttack = { false };
+    _bool m_isAtkReady = { false };
     _bool m_isSit = { false };
 
 protected:
-    _float m_fDelayAttackDuration = { 4.f };
+    _float m_fDelayAttackDuration = { 3.f };
     _float m_fAttackDelayTime = { 0.f }; // 공격이 끝난 후 지속시간
+
+    _float m_fDelayAttackReadyDuration = { 4.f };
+    _float m_fAttackReadyDelayTime = { 0.f }; // 공격 준비 시간
 
     _float m_fSitDuration = { 7.f };
     _float m_fUpDuration = { 7.f };

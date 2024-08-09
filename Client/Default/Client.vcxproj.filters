@@ -346,7 +346,6 @@
     <ClCompile Include="..\Private\Level_DogimazoLobby.cpp">
       <Filter>01.Levels\06.DogimazoLobby</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\MapColliderObj.cpp" />
     <ClCompile Include="..\Private\Trigger.cpp">
       <Filter>02.GameObjects\08.Trigger</Filter>
     </ClCompile>
@@ -548,9 +547,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\Kiryu_KRS_BackWall.cpp">
       <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\BackWall</Filter>
-	</ClCompile>
+    </ClCompile>
     <ClCompile Include="..\private\AI_Bike.cpp">
       <Filter>02.GameObjects\02.Character\LandObject\03.CarChase\01.Monster\02.Bike\AI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\MapColliderObj.cpp">
+      <Filter>95.Utility\04.CollisionManager\MapCollider</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -929,7 +931,6 @@
     <ClInclude Include="..\Public\Level_DogimazoLobby.h">
       <Filter>01.Levels\06.DogimazoLobby</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\MapColliderObj.h" />
     <ClInclude Include="..\Public\Trigger.h">
       <Filter>02.GameObjects\08.Trigger</Filter>
     </ClInclude>
@@ -1131,9 +1132,12 @@
     </ClInclude>
     <ClInclude Include="..\Public\Kiryu_KRS_BackWall.h">
       <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\BackWall</Filter>
-	</ClInclude>
+    </ClInclude>
     <ClInclude Include="..\public\AI_Bike.h">
       <Filter>02.GameObjects\02.Character\LandObject\03.CarChase\01.Monster\02.Bike\AI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\MapColliderObj.h">
+      <Filter>95.Utility\04.CollisionManager\MapCollider</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1730,6 +1734,9 @@
     <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\BackWall">
       <UniqueIdentifier>{dd39301f-6059-42e5-99b4-0208b284dc5e}</UniqueIdentifier>
     </Filter>
+    <Filter Include="95.Utility\04.CollisionManager\MapCollider">
+      <UniqueIdentifier>{d0cac265-3330-4643-b000-4a4f602408a6}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Client.rc">
@@ -1774,6 +1781,9 @@
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxMeshItem.hlsl">
+      <Filter>97.ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxInstance_Mesh.hlsl">
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
   </ItemGroup>

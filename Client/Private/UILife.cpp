@@ -56,8 +56,13 @@ void CUILife::Update_PlayerInfo()
 	_uint Level = m_pGameInstance->Get_CurrentLevel();
 	CPlayer* pPlayer = dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject(Level ,TEXT("Layer_Player"),0));
 
-	m_iBts= pPlayer->Get_BattleStyle();
-	m_iHitLevel = pPlayer->Get_CurrentHitLevel() - 1;
+	_int Bts= pPlayer->Get_BattleStyle()-1;
+	if (-1 == Bts)
+		Bts = m_iBts;
+	
+	m_iBts = Bts;
+
+	m_iHitLevel = pPlayer->Get_CurrentHitLevel()+1;
 
 	//advbenture , krs , krh, krc 기본 , 불한당, 러쉬 , 파괴자.
 	//m_iCurrentHitLevel 0 ,1,2
@@ -75,7 +80,7 @@ void CUILife::Update_PlayerInfo()
 	 _float Curgauage = fmod(Hitgauage, 50.f);
 
 
-	 for (size_t i = 0; i < 3; i++)
+	 for (size_t i = SKILL0; i < GAUAGE_END; i++)
 	 {
 		 if(i<m_iHitLevel)
 			 dynamic_cast<CUI_Texture*>((*pSkillGauage)[i])->Change_Point(_float4(0.f,0.f,0.f,0.f), _float4(0.f, 0.f,  m_fEndHit[i], 0.f));
@@ -86,15 +91,18 @@ void CUILife::Update_PlayerInfo()
 			 _float UGauagepoint = m_pGameInstance->Lerp(-1.f, 0.f, Curgauage / 50.f);
 			 _float DGauagepoint = UGauagepoint;
 			 if (DGauagepoint >= m_fEndHit[i])
+			 {
 				 DGauagepoint = m_fEndHit[i];
+			 }
 
-			 dynamic_cast<CUI_Texture*>((*pSkillGauage)[i])->Change_Point(_float4(0.f, 0.f, UGauagepoint, 0.f), _float4(0.f, 0.f, DGauagepoint, 0.f));
+				 dynamic_cast<CUI_Texture*>((*pSkillGauage)[i])->Change_Point(_float4(0.f, 0.f, UGauagepoint, 0.f), _float4(0.f, 0.f, DGauagepoint, 0.f));
+
 		 }
 
 	 }
 
 
-	 dynamic_cast<CGroup*>(m_EventUI[NUM])->Show_Choice(m_iHitLevel);
+	 dynamic_cast<CGroup*>(m_EventUI[NUM])->Show_Choice(m_iHitLevel-1);
 	 dynamic_cast<CGroup*>(m_EventUI[LIGHT])->Show_Choice(m_iBts);
 
 

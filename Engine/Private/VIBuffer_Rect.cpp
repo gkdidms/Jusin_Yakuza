@@ -120,10 +120,10 @@ HRESULT CVIBuffer_Rect::Initialize(void* pArg)
 		pVertexts[1].vPosition = _float3{ 0.5f + pDesc->vUpPoint.z, 0.5f + pDesc->vUpPoint.w, 0.f };
 		pVertexts[1].vTexcoord = { fX + fWeightX,fY };
 
-		pVertexts[2].vPosition = _float3{ 0.5f + pDesc->vDownPoint.x, -0.5f + pDesc->vDownPoint.y, 0.f };
+		pVertexts[2].vPosition = _float3{ 0.5f + pDesc->vDownPoint.z, -0.5f + pDesc->vDownPoint.w, 0.f };
 		pVertexts[2].vTexcoord = { fX + fWeightX,fY + fWeightY };
 
-		pVertexts[3].vPosition = _float3{ -0.5f + pDesc->vDownPoint.z, -0.5f + pDesc->vDownPoint.x, 0.f };
+		pVertexts[3].vPosition = _float3{ -0.5f + pDesc->vDownPoint.x, -0.5f + pDesc->vDownPoint.y, 0.f };
 		pVertexts[3].vTexcoord = { fX,fY + fWeightY };
 
 		m_InitialData.pSysMem = pVertexts;

@@ -56,6 +56,7 @@ private:
 	HRESULT Add_Models_On_Path(_uint iLevel, const wstring& strPath, _bool bAnim = true);		// 0627 혜원추가
 	HRESULT Add_GameObject_Particle_On_Path(const wstring& strPath);
 	HRESULT Add_Models_On_Path_NonAnim(_uint iLevel, const wstring& strPath);				// 현정추가
+	HRESULT Add_Components_On_Path_Material(_uint iLevel, const wstring& strPath);
 
 private:
 	HRESULT Loading_Default();

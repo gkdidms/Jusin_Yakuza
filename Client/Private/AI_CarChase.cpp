@@ -46,8 +46,11 @@ HRESULT CAI_CarChase::Initialize(void* pArg)
 
 void CAI_CarChase::Tick(const _float& fTimeDelta)
 {
-	if (!m_isAttack)
+	if (!m_isAttack && !m_isAtkReady)
 		m_fAttackDelayTime += fTimeDelta;
+
+	if (!m_isAtkReady)
+		m_fAttackReadyDelayTime += fTimeDelta;
 
 	m_fSitUpTime += fTimeDelta;
 
@@ -62,6 +65,36 @@ _float CAI_CarChase::DistanceFromPlayer()
 	_float fDistance = XMVector3Length(vPlayerPos - vThisPos).m128_f32[0]; // 거리 측정	
 
 	return fDistance;
+}
+
+_uint CAI_CarChase::AngleFromPlayer()
+{
+	//몬스터를 기준으로 플레이어가 뒤에 존재하는지 확인하기.
+	_vector vThisLook = m_pThis->Get_TransformCom()->Get_State(CTransform::STATE_LOOK);
+	_vector vThisPos = m_pThis->Get_TransformCom()->Get_State(CTransform::STATE_POSITION);
+	_vector vPlayerPos = m_pPlayer->Get_TransformCom()->Get_State(CTransform::STATE_POSITION);
+
+	_vector vToPlayer = XMVector3Normalize(vPlayerPos - vThisPos);
+
+	_vector vLeftLook = XMVector3Cross(vThisLook, XMVectorSet(0.f, 1.f, 0.f, 0.f));
+	_vector vRightLook = XMVector3Cross(XMVectorSet(0.f, 1.f, 0.f, 0.f), vThisLook);
+
+	_float fLeftDot = XMVectorGetX(XMVector3Dot(vLeftLook, vToPlayer));
+	_float fRightDot = XMVectorGetX(XMVector3Dot(vRightLook, vToPlayer));
+
+	if (acos(fLeftDot) > XMConvertToRadians(45.f))
+	{
+		//왼쪽에 있음
+		return DIR_FL;
+	}
+	else if (acos(fLeftDot) > XMConvertToRadians(90.f))
+		return DIR_L;
+	else if (acos(fRightDot) > XMConvertToRadians(45.f))
+		return DIR_FR;
+	else if (acos(fRightDot) > XMConvertToRadians(90.f))
+		return DIR_R;
+
+	return DIR_END;
 }
 
 _bool CAI_CarChase::isBehine()

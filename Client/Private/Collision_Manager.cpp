@@ -595,6 +595,13 @@ CCollider* CCollision_Manager::Get_Near_Collider(CGameObject* pObject, vector<CC
     return pValue;
 }
 
+void CCollision_Manager::Blood_Effect(CEffect::EFFECT_DESC& EffectDesc)
+{
+    m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Blood0"), TEXT("Layer_Particle"), &EffectDesc);
+    m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Blood6"), TEXT("Layer_Particle"), &EffectDesc);
+
+}
+
 void CCollision_Manager::Impulse_Clear()
 {
     for (auto& pObject : m_ImpulseResolutionObjects)
