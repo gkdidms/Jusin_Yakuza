@@ -68,7 +68,6 @@ struct PS_OUT_LIGHT
     vector vLightMap : SV_TARGET1;
     vector vSpecularRM : SV_TARGET2;
     vector vSpecular : SV_TARGET3;
-    vector vScattring : SV_TARGET4;
 };
 
 PS_OUT PS_MAIN_SSAO(PS_IN In)
@@ -121,7 +120,6 @@ PS_OUT_LIGHT PS_MAIN_LIGHT_DIRECTIONAL(PS_IN In)
         vAmbient *= vAmbientDesc;
     
     Out.vShade = g_vLightDiffuse * saturate(max(dot(normalize(g_vLightDir) * -1.f, normalize(vNormal)), 0.f) + vAmbient);
-    Out.vScattring = vector(SubSucface(In.vTexcoord, normalize(vNormal)), 1.f);
     
     if (g_isPBR)
     {

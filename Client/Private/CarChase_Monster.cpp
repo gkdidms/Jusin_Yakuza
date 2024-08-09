@@ -5,6 +5,8 @@
 
 #include "AI_CarChase.h"
 
+#include "Highway_Taxi.h"
+
 
 
 CCarChase_Monster::CCarChase_Monster(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -49,6 +51,9 @@ HRESULT CCarChase_Monster::Initialize(void* pArg)
 
 	m_Info.fMaxHP = 100.f;
 	m_Info.fHp = m_Info.fMaxHP;
+
+	//몬스터가 바라봐야 할 방향 얻기
+	Get_LookDir();
 
 	return S_OK;
 }
@@ -165,13 +170,49 @@ HRESULT CCarChase_Monster::Bind_ResourceData()
 
 void CCarChase_Monster::Get_LookDir()
 {
-	//몬스터가 바라봐야하는 방향(앞, 뒤, 왼, 오)
+	//몬스터가 바라봐야하는 방향(앞, 왼, 오)
 	//van, heli 의 경우 방향이 정해져 있음 (무조건 왼쪽에 존재함)
 
-	if (m_iLineDir == DIR_F)
-		m_iDir = DIR_B;
-	else if (m_iLineDir == DIR_B)
-		m_iDir == DIR_F;
+	if (m_iStageDir == DIR_B)
+		m_iDir = DIR_F;
+	else if (m_iStageDir == DIR_R)
+		m_iDir = DIR_L;
+	else if (m_iStageDir == DIR_L)
+		m_iDir = DIR_R;
+	else if (m_iStageDir == DIR_F)
+	{
+		//플레이어가 나의 오른쪽에 있는지, 왼쪽에 있는지 확인해야 함.
+		m_iDir == DirFromPlayerPos() == DIR_R ? DIR_L : DIR_R;
+	}
+}
+
+//플레이어 방향에 따라 달라지는 플레이어의 방향
+_uint CCarChase_Monster::DirFromPlayerPos()
+{
+	CHighway_Taxi* pPlayer = dynamic_cast<CHighway_Taxi*>(m_pGameInstance->Get_GameObject(m_iCurrentLevel, TEXT("Layer_Taxi"), 0));
+	_vector vPlayerPos = pPlayer->Get_TransformCom()->Get_State(CTransform::STATE_POSITION);
+	_vector vPlayerLook = pPlayer->Get_TransformCom()->Get_State(CTransform::STATE_LOOK);
+
+	_vector vLeft = XMVector3Cross(vPlayerLook, XMVectorSet(0.f, 1.f, 0.f, 0.f));
+	_vector vRight = XMVector3Cross(XMVectorSet(0.f, 1.f, 0.f, 0.f), vPlayerLook);
+
+	_vector vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION) - vPlayerPos;
+
+	_float vLeftDot = XMVectorGetX(XMVector3Dot(vPos, vLeft));
+	_float vRightDot = XMVectorGetX(XMVector3Dot(vPos, vRight));
+	
+	if (vLeftDot > 0)
+	{
+		//왼쪽에 있음
+		return DIR_L;
+	}
+	else if (vRightDot > 0)
+	{
+		//오른쪽에 있음
+		return DIR_R;
+	}
+
+	return DIR_END;
 }
 
 void CCarChase_Monster::Free()

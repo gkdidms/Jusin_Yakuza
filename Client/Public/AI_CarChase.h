@@ -47,6 +47,7 @@ public:
 protected:
     virtual void Ready_Tree() = 0;
     _float DistanceFromPlayer();
+    _uint AngleFromPlayer();
     _bool isBehine();
     void LookAtPlayer();
 

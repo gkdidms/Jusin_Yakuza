@@ -133,10 +133,12 @@ CBTNode::NODE_STATE CAI_Bike::ATK_Shot()
 	{
 		if (*m_pWeaponType == CCarChase_Monster::RKT)
 		{
-			if (*m_pDir == DIR_L)
-				*m_pState = CCarChase_Monster::CARCHASE_AIM_SHOT_L;
-			else if (*m_pDir == DIR_R)
-				*m_pState = CCarChase_Monster::CARCHASE_AIM_SHOT_R;
+			if (m_pAnimCom[*m_pCurrentAnimType]->Get_AnimFinished())
+			{
+				m_isAttack = false;
+
+				return CBTNode::SUCCESS;
+			}
 		}
 
 		return CBTNode::RUNNING;
@@ -144,6 +146,8 @@ CBTNode::NODE_STATE CAI_Bike::ATK_Shot()
 
 	if (m_iSkill == SKILL_SHOT)
 	{
+		m_isAttack = true;
+
 		if (*m_pWeaponType == CCarChase_Monster::RKT)
 		{
 			if (*m_pDir == DIR_L)
@@ -151,6 +155,22 @@ CBTNode::NODE_STATE CAI_Bike::ATK_Shot()
 			else if (*m_pDir == DIR_R)
 				*m_pState = CCarChase_Monster::CARCHASE_AIM_SHOT_R;
 		}
+		else if (*m_pWeaponType == CCarChase_Monster::GUN)
+		{
+			if (*m_pDir == DIR_F)
+				*m_pState = CCarChase_Monster::CARCHASE_AIM_SHOT_F;
+
+			_uint iDir = AngleFromPlayer();
+			if (iDir == DIR_R)
+				*m_pState = CCarChase_Monster::CARCHASE_AIM_SHOT_R90;
+			else if (iDir == DIR_FR)
+				*m_pState = CCarChase_Monster::CARCHASE_AIM_SHOT_R;
+			else if (iDir == DIR_L)
+				*m_pState = CCarChase_Monster::CARCHASE_AIM_SHOT_L90;
+			else if (iDir == DIR_FL)
+				*m_pState = CCarChase_Monster::CARCHASE_AIM_SHOT_L;
+		}
+
 		return CBTNode::SUCCESS;
 	}
 
@@ -159,6 +179,8 @@ CBTNode::NODE_STATE CAI_Bike::ATK_Shot()
 
 CBTNode::NODE_STATE CAI_Bike::Check_Ready()
 {
+	if (*m_pWeaponType == CCarChase_Monster::DRV) return CBTNode::FAIL;
+
 	if (!m_isAtkReady)
 	{
 		if (m_fDelayAttackReadyDuration < m_fAttackReadyDelayTime)
@@ -189,6 +211,7 @@ CBTNode::NODE_STATE CAI_Bike::Ready()
 CBTNode::NODE_STATE CAI_Bike::Idle()
 {
 	*m_pState = CCarChase_Monster::CARCHASE_STAND_UP;
+
 	return CBTNode::SUCCESS;
 }
 
