@@ -652,7 +652,8 @@ HRESULT CMultiLoader::Loading_Default()
 #pragma endregion
 
 #pragma region Meterial
-	Add_Components_On_Path_Material(m_eNextLevel, TEXT("../Bin/DataFiles/MeterialData"));
+	Add_Components_On_Path_Material(m_eNextLevel, TEXT("../Bin/DataFiles/MeterialData/Char"));
+	Add_Components_On_Path_Material(m_eNextLevel, TEXT("../Bin/DataFiles/MeterialData/Map"));
 #pragma endregion
 
 #pragma region Shader
