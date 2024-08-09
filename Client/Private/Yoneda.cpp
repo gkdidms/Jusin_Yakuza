@@ -25,6 +25,16 @@ void CYoneda::Set_TriggerQte(_uint iWeaponChange, _uint iTriggerID)
 		//액션 변경 가능
 		m_iState = CMonster::MONSTER_A60300_000_2;
 	}
+	else if (iTriggerID == 1001)
+	{
+		//액션 변경 가능
+		m_iState = CMonster::MONSTER_A60330_000_2;
+	}
+	else if (iTriggerID == 1002)
+	{
+		//액션 변경 가능
+		m_iState = CMonster::MONSTER_A60350_000_2;
+	}
 
 	m_pTree->Set_Sync(true);
 	m_iCurrentAnimType = CUTSCENE;

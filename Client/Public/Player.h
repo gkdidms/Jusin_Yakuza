@@ -92,6 +92,11 @@ public:
         OI_KICK,                    //h23010 머리채 잡고 들어서 발로참 (엎드린 상태)
         OI_UPPER,                   //h23020 머리채잡고 들어서 주먹으로 침 (누워있는 상태)
 
+        /* 요네다 컷신 */
+        YONEDA_H,                   //A60300 요네다 등장
+        YONEDA_DOWN_ATTACK,         //A60330 요네다 복도
+        YONEDA_DOSU,                //a60350 요네다 화장실
+
         CUTSCENE_ANIMATION_END
     };
 

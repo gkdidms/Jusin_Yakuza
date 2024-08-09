@@ -734,6 +734,10 @@ void CPlayer::Ready_CutSceneAnimation()
 		KABE_AIRON,                 //h23000 벽으로 밀치고 때림
 		OI_KICK,                    //h23010 머리채 잡고 들어서 발로참 (엎드린 상태)
 		OI_UPPER,                   //h23020 머리채잡고 들어서 주먹으로 침 (누워있는 상태)
+
+		YONEDA_H,                   //a60300 요네다 등장
+		YONEDA_DOWN_ATTACK,         //a60330 요네다 복도
+		YONEDA_DOSU,                //a60350 요네다 화장실
 	*/
 	/* 불한당 */
 	m_CutSceneAnimation.emplace(FINISHBLOW, "h23320");
@@ -760,6 +764,11 @@ void CPlayer::Ready_CutSceneAnimation()
 	m_CutSceneAnimation.emplace(KABE_AIRON, "h23000");
 	m_CutSceneAnimation.emplace(OI_KICK, "h23010");
 	m_CutSceneAnimation.emplace(OI_UPPER, "h23020");
+
+	/* 요네다 컷신 (QTE) */
+	m_CutSceneAnimation.emplace(YONEDA_H, "a60300");
+	m_CutSceneAnimation.emplace(YONEDA_DOWN_ATTACK, "a60330");
+	m_CutSceneAnimation.emplace(YONEDA_DOSU, "a60350");
 }
 
 // 현재 애니메이션의 y축을 제거하고 사용하는 상태이다 (혹시 애니메이션의 y축 이동도 적용이 필요하다면 로직 수정이 필요함
