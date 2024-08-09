@@ -60,10 +60,6 @@ void CTRailEffect::Priority_Tick(const _float& fTimeDelta)
 
 void CTRailEffect::Tick(const _float& fTimeDelta)
 {
-	if (m_pGameInstance->GetKeyState(DIK_W))
-		m_pTransformCom->Go_Straight(fTimeDelta);
-
-
 	__super::Tick(fTimeDelta);
 
 	_float4x4 TrailMatrix = *m_pTransformCom->Get_WorldFloat4x4();
@@ -73,7 +69,6 @@ void CTRailEffect::Tick(const _float& fTimeDelta)
 
 void CTRailEffect::Late_Tick(const _float& fTimeDelta)
 {
-	if (m_isOff) return;
 	//Compute_ViewZ(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 
 	m_pGameInstance->Add_Renderer(CRenderer::RENDER_EFFECT, this);
@@ -95,6 +90,11 @@ HRESULT CTRailEffect::Render()
 void* CTRailEffect::Get_Instance()
 {
 	return &m_TrailDesc;
+}
+
+void CTRailEffect::Reset_Buffer()
+{
+	m_pVIBufferCom->Reset_Trail();
 }
 
 HRESULT CTRailEffect::Save_Data(const string strDirectory)
