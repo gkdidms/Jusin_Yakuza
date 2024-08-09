@@ -59,7 +59,7 @@ HRESULT CReactor_Sedan::Ready_Monster(_int* pMonsterTypes)
 		Desc.iLineDir = m_iLineDir;
 		Desc.iObjectIndex = m_iObjectIndex + i;
 
-		CCarChase_Monster* pMonster = dynamic_cast<CCarChase_Monster*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_CarChaseVan"), &Desc));
+		CCarChase_Monster* pMonster = dynamic_cast<CCarChase_Monster*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_CarChaseSedan"), &Desc));
 		if (nullptr == pMonster)
 			return E_FAIL;
 

@@ -1,5 +1,8 @@
 #include "CarChase_Heli.h"
 
+#include "GameInstance.h"
+#include "AI_Heli.h"
+
 CCarChase_Heli::CCarChase_Heli(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CCarChase_Monster{ pDevice, pContext }
 {
@@ -133,6 +136,22 @@ HRESULT CCarChase_Heli::Add_Components()
 
 	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Model_Shakedown"),
 		TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
+		return E_FAIL;
+
+	CAI_Heli::AI_CARCHASE_DESC Desc{};
+	memcpy(Desc.pAnim, m_pAnimCom, sizeof(CAnim*) * ANIM_TYPE_END);
+	Desc.pCurrentAnimType = &m_iCurrentAnimType;
+	Desc.pDir = &m_iDir;
+	Desc.pState = &m_iState;
+	Desc.pThis = this;
+	Desc.pWeaponType = &m_iWeaponType;
+
+	m_pTree = dynamic_cast<CAI_Heli*>(m_pGameInstance->Add_BTNode(m_iCurrentLevel, TEXT("Prototype_BTNode_Heli"), &Desc));
+	if (nullptr == m_pTree)
+		return E_FAIL;
+
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Meterial_Heli"),
+		TEXT("Com_Material"), reinterpret_cast<CComponent**>(&m_pMaterialCom))))
 		return E_FAIL;
 
 	return S_OK;

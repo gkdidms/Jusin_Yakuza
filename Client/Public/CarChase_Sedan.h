@@ -27,6 +27,7 @@ public:
 private:
     virtual void Change_Animation();
     virtual HRESULT Add_Components() override;
+    _uint Change_Dir();
 
 public:
     static CCarChase_Sedan* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
