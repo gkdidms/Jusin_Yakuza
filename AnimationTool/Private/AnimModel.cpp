@@ -210,16 +210,22 @@ _bool CAnimModel::Get_AnimLoop(_uint iAnimIndex)
     return m_pModelCom->Get_AnimLoop(iAnimIndex);
 }
 
-void CAnimModel::Change_Model(wstring strModelName)
+void CAnimModel::Change_Model(wstring strModelName, wstring strAnimName)
 {
     Safe_Release(m_pModelCom);
+    Safe_Release(m_pAnimCom);
 
     m_iAnimIndex = 0;
     m_strModelName = strModelName;
 
     wstring strComponentTag = TEXT("Prototype_Component_Model_") + m_strModelName;
-
     m_pModelCom = reinterpret_cast<CModel*>(m_pGameInstance->Add_Component_Clone(LEVEL_EDIT, strComponentTag));
+
+    if (TEXT("") != strAnimName)
+    {
+        wstring strAnimComponentTag = TEXT("Prototype_Component_Anim_") + strAnimName;
+        m_pAnimCom = reinterpret_cast<CAnim*>(m_pGameInstance->Add_Component_Clone(LEVEL_EDIT, strAnimComponentTag));
+    }
 
     Ready_BoneSphere();
 }

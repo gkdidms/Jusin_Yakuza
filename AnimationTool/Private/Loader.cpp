@@ -203,15 +203,12 @@ HRESULT CLoader::Loading_For_EditLevel()
 		CVIBuffer_Trail::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	/* For.Prototype_Component_Anim */
-	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_EDIT, TEXT("Prototype_Component_Anim"), CAnim::Create(m_pDevice, m_pContext, "../../Client/Bin/DataFiles/AnimationData/Animation.dat", false))))
-		return E_FAIL;
-
 #pragma endregion
 
 	lstrcpy(m_szLoadingText, TEXT("모델를(을) 로딩 중 입니다."));
 	Add_Models_On_Path(TEXT("../../Client/Bin/Resources/Models/Anim/"));
 	Add_Models_On_Path(TEXT("../../Client/Bin/Resources/Models/NonAnim/"), false);
+	Add_Animation_Component_On_Path(TEXT("../../Client/Bin/Resources/Models/NonAnim/"));		// 패스 노상관
 
 #pragma region Effect
 	Add_GameObject_Particle_On_Path(TEXT("../../Client/Bin/DataFiles/Particle/"));
@@ -410,6 +407,77 @@ HRESULT CLoader::Add_GameObject_Particle_On_Path(const wstring& strPath)
 
 
 	}
+	return S_OK;
+}
+
+HRESULT CLoader::Add_Animation_Component_On_Path(const wstring& strPath)
+{
+	/* For.Prototype_Component_Anim*/
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_EDIT, TEXT("Prototype_Component_Anim"), CAnim::Create(m_pDevice, m_pContext, "../../Client/Bin/DataFiles/AnimationData/Animation.dat", false))))
+		return E_FAIL;
+	/*if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Anim"), CAnim::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Anim/Animation.fbx", true))))
+		return E_FAIL;*/
+
+	/* For.Prototype_Component_Anim_Common */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_EDIT, TEXT("Prototype_Component_Anim_Common"), CAnim::Create(m_pDevice, m_pContext, "../../Client/Bin/DataFiles/AnimationData/Animation.dat", false))))
+		return E_FAIL;
+	/*if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Anim"), CAnim::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Anim/Animation.fbx", true))))
+		return E_FAIL;*/
+
+	/* For.Prototype_Component_Anim_SyncAnim */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_EDIT, TEXT("Prototype_Component_Anim_SyncAnim"), CAnim::Create(m_pDevice, m_pContext, "../../Client/Bin/DataFiles/AnimationData/Animation_Sync.dat", false))))
+		return E_FAIL;
+	/*if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Anim_SyncAnim"), CAnim::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Anim/Animation_Sync.fbx", true))))
+		return E_FAIL;*/
+
+	///* For.Prototype_Component_Anim_CutSceneAnim_ForPlayer */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_EDIT, TEXT("Prototype_Component_Anim_CutSceneAnim_ForPlayer"), CAnim::Create(m_pDevice, m_pContext, "../../Client/Bin/DataFiles/AnimationData/Animation_CutScene_ForPlayer.dat", false))))
+		return E_FAIL;
+	//if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Anim_CutSceneAnim_ForPlayer"), CAnim::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Anim/Animation_CutScene_ForPlayer.fbx", true))))
+	//	return E_FAIL;
+
+	///* For.Prototype_Component_Anim_Kiryu */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_EDIT, TEXT("Prototype_Component_Anim_Kiryu"), CAnim::Create(m_pDevice, m_pContext, "../../Client/Bin/Resources/Models/Anim/Kiryu/Animation_Kiryu.dat", false))))
+		return E_FAIL;
+	//if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Anim_Kiryu"), CAnim::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Anim/Animation_Kiryu.fbx", true))))
+	//	return E_FAIL;
+
+	///* For.Prototype_Component_Anim_KiryuFace */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_EDIT, TEXT("Prototype_Component_Anim_KiryuFace"), CAnim::Create(m_pDevice, m_pContext, "../../Client/Bin/DataFiles/AnimationData/Animation_Kiryu_Face.dat", false))))
+		return E_FAIL;
+	//if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Anim_KiryuFace"), CAnim::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Anim/Animation_Kiryu_Face.fbx", true))))
+	//	return E_FAIL;
+
+	///* For.Prototype_Component_Anim_Hand */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_EDIT, TEXT("Prototype_Component_Anim_Hand"), CAnim::Create(m_pDevice, m_pContext, "../../Client/Bin/DataFiles/AnimationData/Animation_Hand.dat", false))))
+		return E_FAIL;
+	//if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Anim_Hand"), CAnim::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Anim/Animation_Hand.fbx", true))))
+	//	return E_FAIL;
+
+	///* For.Prototype_Component_Kiryu_CarChase */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_EDIT, TEXT("Prototype_Component_Kiryu_CarChase"), CAnim::Create(m_pDevice, m_pContext, "../../Client/Bin/DataFiles/AnimationData/Animation_Kiryu_CarChase.dat", false))))
+		return E_FAIL;
+	//if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Kiryu_CarChase"), CAnim::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Anim/Animation_Kiryu_CarChase.fbx", true))))
+	//	return E_FAIL;
+
+	/* For.Prototype_Component_Anim_NPC */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_EDIT, TEXT("Prototype_Component_Anim_NPC"), CAnim::Create(m_pDevice, m_pContext, "../Bin/DataFiles/AnimationData/Animation_NPC.dat", false))))
+		return E_FAIL;
+	/*if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Anim_NPC"), CAnim::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Anim/Animation_NPC.fbx", true))))
+		return E_FAIL;*/
+
+	/* For.Prototype_Component_Anim_ReactorHighwayAnim */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_EDIT, TEXT("Prototype_Component_Anim_ReactorHighwayAnim"), CAnim::Create(m_pDevice, m_pContext, "../../Client/Bin/DataFiles/AnimationData/Animation_Reactor_Highway.dat", false))))
+		return E_FAIL;
+	//if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Anim_ReactorHighwayAnim"), CAnim::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Anim/Animation_Reactor_Highway.fbx", true))))
+	//	return E_FAIL;
+
+	/* For.Prototype_Component_CarChaseAnim */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_EDIT, TEXT("Prototype_Component_CarChaseAnim"), CAnim::Create(m_pDevice, m_pContext, "../../Client/Bin/DataFiles/AnimationData/Animation_CarChase.dat", false))))
+		return E_FAIL;
+	//if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_CarChaseAnim"), CAnim::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Anim/Animation_CarChase.fbx", true))))
+	//	return E_FAIL;
+
 	return S_OK;
 }
 

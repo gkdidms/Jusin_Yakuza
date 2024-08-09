@@ -1,6 +1,7 @@
 #include "GameInstance.h"
 #include "Kiryu_KRS_KickCombo.h"
 #include "Player.h"
+#include "Monster.h"
 #include "Camera.h"
 
 CKiryu_KRS_KickCombo::CKiryu_KRS_KickCombo()
@@ -13,7 +14,7 @@ CKiryu_KRS_KickCombo::CKiryu_KRS_KickCombo()
 
 void CKiryu_KRS_KickCombo::Tick(const _float& fTimeDelta)
 {
-	CLandObject* pTargetObject = m_pPlayer->Get_TargetObject();
+	CLandObject* pTargetObject = (CLandObject*)m_pPlayer->Get_TargetObject();
 
 	if (nullptr != pTargetObject)
 	{

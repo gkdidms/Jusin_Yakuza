@@ -31,9 +31,13 @@ public: // 애니메이션 관련
     _bool Get_AnimFinished();
     _bool Get_LoopAnimFinished();
     const _double* Get_AnimDuration();
+    const _double* Get_AnimDuration(_uint iAnimIndex);
     const _double* Get_AnimPosition();
+    const _double* Get_AnimPosition(_uint iAnimIndex);
     const _float4* Get_AnimationCenterRotation();
     const _float3* Get_AnimationCenterMove();
+    const vector<_uint>* Get_CurrentKeyFrameIndices(string strAnimationName = "");
+    const vector<_uint>* Get_CurrentKeyFrameIndices(_uint iAnimIndex);
 
     _bool Get_AnimFinished() const;
     _bool Get_AnimChanged() const;

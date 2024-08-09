@@ -30,9 +30,6 @@ protected:
     virtual void Ready_Tree();
 
 private:
-
-
-private:
     virtual CBTNode::NODE_STATE Dead() override;
     virtual CBTNode::NODE_STATE Hit() override;
 
@@ -41,8 +38,6 @@ private:
 
     CBTNode::NODE_STATE Check_Ready();
     CBTNode::NODE_STATE Ready();
-
-    CBTNode::NODE_STATE Idle();
 
 public:
     static CAI_Bike* Create();

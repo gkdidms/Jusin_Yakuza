@@ -105,10 +105,23 @@ CBTNode::NODE_STATE CAI_Van::Dead()
 
 CBTNode::NODE_STATE CAI_Van::Hit()
 {
+	if (m_isHit)
+	{
+		if (m_pAnimCom[*m_pCurrentAnimType]->Get_AnimFinished())
+		{
+			m_isHit = false;
+			return CBTNode::SUCCESS;
+		}
+
+		return CBTNode::RUNNING;
+	}
+
 	if (*m_pWeaponType != CCarChase_Monster::DRV)
 		*m_pState = CCarChase_Monster::CARCHASE_DAM_LV_2;
 	else if (*m_pWeaponType == CCarChase_Monster::DRV)
 		*m_pState = CCarChase_Monster::CARCHASE_SIT_DWN;
+
+	m_isHit = true;
 
 	return CBTNode::SUCCESS;
 }

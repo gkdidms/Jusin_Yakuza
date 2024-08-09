@@ -20,6 +20,8 @@ HRESULT CCarChase_Sedan::Initialize(void* pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
+	m_iDir = DirFromPlayerPos();
+
 	return S_OK;
 }
 
@@ -70,7 +72,7 @@ void CCarChase_Sedan::Change_Animation()
 	}
 	case CARCHASE_AIML_CURVE_L:
 	{
-		if (m_iWeaponType == GUN)
+		if (m_iWeaponType == GUN_L)
 		{
 			if (m_iDir == DIR_B)
 				m_strAnimName = "mngcar_c_car_gun_aiml_b_curvel";
@@ -86,7 +88,7 @@ void CCarChase_Sedan::Change_Animation()
 	}
 	case CARCHASE_AIML_CURVE_R:
 	{
-		if (m_iWeaponType == GUN)
+		if (m_iWeaponType == GUN_L)
 		{
 			if (m_iDir == DIR_B)
 				m_strAnimName = "mngcar_c_car_gun_aiml_b_curver";
@@ -102,7 +104,7 @@ void CCarChase_Sedan::Change_Animation()
 	}
 	case CARCHASE_AIML_DAM:
 	{
-		if (m_iWeaponType == GUN)
+		if (m_iWeaponType == GUN_L)
 		{
 			if (m_iDir == DIR_B)
 				m_strAnimName = "mngcar_c_car_gun_aiml_b_dam";
@@ -118,7 +120,7 @@ void CCarChase_Sedan::Change_Animation()
 	}
 	case CARCHASE_AIML_DAD:
 	{
-		if (m_iWeaponType == GUN)
+		if (m_iWeaponType == GUN_L)
 		{
 			if (m_iDir == DIR_B)
 				m_strAnimName = "mngcar_c_car_gun_aiml_b_ded";
@@ -134,7 +136,7 @@ void CCarChase_Sedan::Change_Animation()
 	}
 	case CARCHASE_AIML_DWN:
 	{
-		if (m_iWeaponType == GUN)
+		if (m_iWeaponType == GUN_L)
 		{
 			if (m_iDir == DIR_B)
 				m_strAnimName = "mngcar_c_car_gun_aiml_b_dwn";
@@ -150,7 +152,7 @@ void CCarChase_Sedan::Change_Animation()
 	}
 	case CARCHASE_AIML_HI:
 	{
-		if (m_iWeaponType == GUN)
+		if (m_iWeaponType == GUN_L)
 		{
 			if (m_iDir == DIR_B)
 				m_strAnimName = "mngcar_c_car_gun_aiml_b_hi";
@@ -166,7 +168,7 @@ void CCarChase_Sedan::Change_Animation()
 	}
 	case CARCHASE_AIML_L45:
 	{
-		if (m_iWeaponType == GUN)
+		if (m_iWeaponType == GUN_L)
 		{
 			if (m_iDir == DIR_B)
 				m_strAnimName = "mngcar_c_car_gun_aiml_b_l45";
@@ -182,7 +184,7 @@ void CCarChase_Sedan::Change_Animation()
 	}
 	case CARCHASE_AIML_LP:
 	{
-		if (m_iWeaponType == GUN)
+		if (m_iWeaponType == GUN_L)
 		{
 			if (m_iDir == DIR_B)
 				m_strAnimName = "mngcar_c_car_gun_aiml_b_lp";
@@ -198,7 +200,7 @@ void CCarChase_Sedan::Change_Animation()
 	}
 	case CARCHASE_AIML_SHOT:
 	{
-		if (m_iWeaponType == GUN)
+		if (m_iWeaponType == GUN_L)
 		{
 			if (m_iDir == DIR_B)
 				m_strAnimName = "mngcar_c_car_gun_aiml_b_shot";
@@ -214,7 +216,7 @@ void CCarChase_Sedan::Change_Animation()
 	}
 	case CARCHASE_AIML_STD_LP:
 	{
-		if (m_iWeaponType == GUN)
+		if (m_iWeaponType == GUN_L)
 		{
 			if (m_iDir == DIR_B)
 				m_strAnimName = "mngcar_c_car_gun_aiml_b_std_lp";
@@ -230,32 +232,32 @@ void CCarChase_Sedan::Change_Animation()
 	}
 	case CARCHASE_AIML_BTOL:
 	{
-		if (m_iWeaponType == GUN)
+		if (m_iWeaponType == GUN_L)
 			m_strAnimName = "mngcar_c_car_gun_aiml_btol";
 			
 		break;
 	}
 	case CARCHASE_AIML_FTOL:
 	{
-		if (m_iWeaponType == GUN)
+		if (m_iWeaponType == GUN_L)
 			m_strAnimName = "mngcar_c_car_gun_aiml_ftol";
 		break;
 	}
 	case CARCHASE_AIML_LTOB:
 	{
-		if (m_iWeaponType == GUN)
+		if (m_iWeaponType == GUN_L)
 			m_strAnimName = "mngcar_c_car_gun_aiml_ltol";
 		break;
 	}
 	case CARCHASE_AIML_LTOF:
 	{
-		if (m_iWeaponType == GUN)
+		if (m_iWeaponType == GUN_L)
 			m_strAnimName = "mngcar_c_car_gun_aiml_ltol";
 		break;
 	}
 	case CARCHASE_AIMR_CURVE_L:
 	{
-		if (m_iWeaponType == GUN)
+		if (m_iWeaponType == GUN_R)
 		{
 			if (m_iDir == DIR_B)
 				m_strAnimName = "mngcar_c_car_gun_aimr_b_curvel";
@@ -271,7 +273,7 @@ void CCarChase_Sedan::Change_Animation()
 	}
 	case CARCHASE_AIMR_CURVE_R:
 	{
-		if (m_iWeaponType == GUN)
+		if (m_iWeaponType == GUN_R)
 		{
 			if (m_iDir == DIR_B)
 				m_strAnimName = "mngcar_c_car_gun_aimr_b_curver";
@@ -287,7 +289,7 @@ void CCarChase_Sedan::Change_Animation()
 	}
 	case CARCHASE_AIMR_DAM:
 	{
-		if (m_iWeaponType == GUN)
+		if (m_iWeaponType == GUN_R)
 		{
 			if (m_iDir == DIR_B)
 				m_strAnimName = "mngcar_c_car_gun_aimr_b_dam";
@@ -303,7 +305,7 @@ void CCarChase_Sedan::Change_Animation()
 	}
 	case CARCHASE_AIMR_DAD:
 	{
-		if (m_iWeaponType == GUN)
+		if (m_iWeaponType == GUN_R)
 		{
 			if (m_iDir == DIR_B)
 				m_strAnimName = "mngcar_c_car_gun_aimr_b_ded";
@@ -319,7 +321,7 @@ void CCarChase_Sedan::Change_Animation()
 	}
 	case CARCHASE_AIMR_DWN:
 	{
-		if (m_iWeaponType == GUN)
+		if (m_iWeaponType == GUN_R)
 		{
 			if (m_iDir == DIR_B)
 				m_strAnimName = "mngcar_c_car_gun_aimr_b_dwn";
@@ -335,7 +337,7 @@ void CCarChase_Sedan::Change_Animation()
 	}
 	case CARCHASE_AIMR_HI:
 	{
-		if (m_iWeaponType == GUN)
+		if (m_iWeaponType == GUN_R)
 		{
 			if (m_iDir == DIR_B)
 				m_strAnimName = "mngcar_c_car_gun_aimr_b_hi";
@@ -351,7 +353,7 @@ void CCarChase_Sedan::Change_Animation()
 	}
 	case CARCHASE_AIMR_L45:
 	{
-		if (m_iWeaponType == GUN)
+		if (m_iWeaponType == GUN_R)
 		{
 			if (m_iDir == DIR_B)
 				m_strAnimName = "mngcar_c_car_gun_aimr_b_l45";
@@ -367,7 +369,7 @@ void CCarChase_Sedan::Change_Animation()
 	}
 	case CARCHASE_AIMR_LP:
 	{
-		if (m_iWeaponType == GUN)
+		if (m_iWeaponType == GUN_R)
 		{
 			if (m_iDir == DIR_B)
 				m_strAnimName = "mngcar_c_car_gun_aimr_b_lp";
@@ -383,7 +385,7 @@ void CCarChase_Sedan::Change_Animation()
 	}
 	case CARCHASE_AIMR_SHOT:
 	{
-		if (m_iWeaponType == GUN)
+		if (m_iWeaponType == GUN_R)
 		{
 			if (m_iDir == DIR_B)
 				m_strAnimName = "mngcar_c_car_gun_aimr_b_shot";
@@ -399,7 +401,7 @@ void CCarChase_Sedan::Change_Animation()
 	}
 	case CARCHASE_AIMR_STD_LP:
 	{
-		if (m_iWeaponType == GUN)
+		if (m_iWeaponType == GUN_R)
 		{
 			if (m_iDir == DIR_B)
 				m_strAnimName = "mngcar_c_car_gun_aimr_b_std_lp";
@@ -415,62 +417,62 @@ void CCarChase_Sedan::Change_Animation()
 	}
 	case CARCHASE_AIMR_BTOL:
 	{
-		if (m_iWeaponType == GUN)
+		if (m_iWeaponType == GUN_R)
 			m_strAnimName = "mngcar_c_car_gun_aimr_btol";
 
 		break;
 	}
 	case CARCHASE_AIMR_FTOL:
 	{
-		if (m_iWeaponType == GUN)
+		if (m_iWeaponType == GUN_R)
 			m_strAnimName = "mngcar_c_car_gun_aimr_ftol";
 		break;
 	}
 	case CARCHASE_AIMR_LTOB:
 	{
-		if (m_iWeaponType == GUN)
+		if (m_iWeaponType == GUN_R)
 			m_strAnimName = "mngcar_c_car_gun_aimr_ltol";
 		break;
 	}
 	case CARCHASE_AIMR_LTOF:
 	{
-		if (m_iWeaponType == GUN)
+		if (m_iWeaponType == GUN_R)
 			m_strAnimName = "mngcar_c_car_gun_aimr_ltol";
 		break;
 	}
 	case CARCHASE_SITL_EN:
 	{
-		if (m_iWeaponType == GUN)
+		if (m_iWeaponType == GUN_L)
 			m_strAnimName = "mngcar_c_car_gun_sitl_en";
 		break;
 	}
 	case CARCHASE_SITL_LP:
 	{
-		if (m_iWeaponType == GUN)
+		if (m_iWeaponType == GUN_L)
 			m_strAnimName = "mngcar_c_car_gun_sitl_lp";
 		break;
 	}
 	case CARCHASE_SITL_ST:
 	{
-		if (m_iWeaponType == GUN)
+		if (m_iWeaponType == GUN_L)
 			m_strAnimName = "mngcar_c_car_gun_sitl_st";
 		break;
 	}
 	case CARCHASE_SITR_EN:
 	{
-		if (m_iWeaponType == GUN)
+		if (m_iWeaponType == GUN_R)
 			m_strAnimName = "mngcar_c_car_gun_sitr_en";
 		break;
 	}
 	case CARCHASE_SITR_LP:
 	{
-		if (m_iWeaponType == GUN)
+		if (m_iWeaponType == GUN_R)
 			m_strAnimName = "mngcar_c_car_gun_sitr_lp";
 		break;
 	}
 	case CARCHASE_SITR_ST:
 	{
-		if (m_iWeaponType == GUN)
+		if (m_iWeaponType == GUN_R)
 			m_strAnimName = "mngcar_c_car_gun_sitr_st";
 		break;
 	}

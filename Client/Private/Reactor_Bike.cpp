@@ -24,6 +24,8 @@ HRESULT CReactor_Bike::Initialize(void* pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
+	m_iAnim = 3;
+
 	return S_OK;
 }
 
@@ -45,16 +47,17 @@ void CReactor_Bike::Late_Tick(const _float& fTimeDelta)
 
 HRESULT CReactor_Bike::Ready_Monster(_int* pMonsterTypes)
 {
-	for (size_t i = 0; i < 3; ++i)
+	for (size_t i = 0; i < 2; ++i)
 	{
-		if (i > 0 && pMonsterTypes[i - 1] == -1)
+		if (pMonsterTypes[i] == -1)
 			break;
 
 		CCarChase_Bike::CARCHASE_MONSTER_DESC Desc{};
-		Desc.iWeaponType = i == 0 ? CCarChase_Monster::DRV : pMonsterTypes[i - 1];
+		Desc.iWeaponType = pMonsterTypes[i];
 		Desc.pParentMatrix = m_pTransformCom->Get_WorldFloat4x4();
 		Desc.pBoneMatrix = m_pModelCom->Get_BoneTransformationMatrix("anm_root");
 		Desc.iLineDir = m_iLineDir;
+		Desc.iStageDir = m_iStageDir;
 		Desc.iObjectIndex = m_iObjectIndex + i;
 
 		CCarChase_Monster* pMonster = dynamic_cast<CCarChase_Monster*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_CarChaseBike"), &Desc));
@@ -74,9 +77,13 @@ void CReactor_Bike::Change_Animation()
 
 	//바이크에 관한 애니메이션 넣기
 	if (m_strAnimName == "w_mngcar_bik_tentou_b_1")
-		m_iAnim = 5;
+	{
+		m_iAnim = 6;
+		return;
+	}
+		
 
-	if (m_iAnim == 5 && m_pModelCom->Get_AnimFinished())
+	if (m_iAnim == 6 && m_pModelCom->Get_AnimFinished())
 		m_isDead = true;
 }
 

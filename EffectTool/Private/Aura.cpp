@@ -204,7 +204,11 @@ HRESULT CAura::Save_Data(const string strDirectory)
 	out.write((char*)&m_BufferInstance.isAttach, sizeof(_bool));
 
 
-	out.flush();
+	if (2 == m_iShaderPass)
+	{
+		out.write((char*)&m_vStartColor, sizeof(_float4));
+		out.write((char*)&m_vEndColor, sizeof(_float4));
+	}
 
 	out.close();
 
@@ -291,6 +295,11 @@ HRESULT CAura::Load_Data(const string strDirectory)
 	in.read((char*)&m_BufferInstance.isLoop, sizeof(_bool));
 	in.read((char*)&m_BufferInstance.isAttach, sizeof(_bool));
 
+	if (2 == m_iShaderPass)
+	{
+		in.read((char*)&m_vStartColor, sizeof(_float4));
+		in.read((char*)&m_vEndColor, sizeof(_float4));
+	}
 
 	in.close();
 
@@ -342,6 +351,13 @@ HRESULT CAura::Bind_ShaderResources()
 
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_lifeAlpha", &m_fLifeAlpha, sizeof(_float2))))
 		return E_FAIL;
+
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_vStartColor", &m_vStartColor, sizeof(_float4))))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_vEndColor", &m_vEndColor, sizeof(_float4))))
+		return E_FAIL;
+
+
 
 	if (FAILED(m_pTextureCom[0]->Bind_ShaderResource(m_pShaderCom, "g_ToneTexture", 0)))
 		return E_FAIL;
