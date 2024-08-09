@@ -64,7 +64,7 @@ HRESULT CItem::Initialize(void* pArg)
 			//COLLIDER_AABB, COLLIDER_OBB, COLLIDER_SPHERE
 			if (CCollider::TYPE::COLLIDER_SPHERE == (CCollider::TYPE)gameobjDesc->pColliderDesc[i].iColliderType)
 			{
-				OBJCOLLIDER_DESC		objDesc = gameobjDesc->pColliderDesc[i];
+				/*OBJCOLLIDER_DESC		objDesc = gameobjDesc->pColliderDesc[i];
 
 				CBounding_Sphere::BOUNDING_SPHERE_DESC		ColliderDesc{};
 
@@ -74,7 +74,7 @@ HRESULT CItem::Initialize(void* pArg)
 
 				CCollider* pCollider = dynamic_cast<CCollider*>(m_pGameInstance->Add_Component_Clone(m_iCurrentLevel, TEXT("Prototype_Component_Collider"), &ColliderDesc));
 
-				m_vColliders.push_back(pCollider);
+				m_vColliders.push_back(pCollider);*/
 			}
 			else if (CCollider::TYPE::COLLIDER_AABB == (CCollider::TYPE)gameobjDesc->pColliderDesc[i].iColliderType)
 			{
@@ -85,9 +85,9 @@ HRESULT CItem::Initialize(void* pArg)
 				ColliderDesc.vExtents = objDesc.vExtents;
 				ColliderDesc.vCenter = objDesc.vCenter;
 
-				CCollider* pCollider = dynamic_cast<CCollider*>(m_pGameInstance->Add_Component_Clone(m_iCurrentLevel, TEXT("Prototype_Component_Collider"), &ColliderDesc));
+				m_pColliderCom = dynamic_cast<CCollider*>(m_pGameInstance->Add_Component_Clone(m_iCurrentLevel, TEXT("Prototype_Component_Collider"), &ColliderDesc));
 
-				m_vColliders.push_back(pCollider);
+				/*m_vColliders.push_back(pCollider);*/
 			}
 			else
 			{
@@ -100,9 +100,9 @@ HRESULT CItem::Initialize(void* pArg)
 				ColliderDesc.vCenter = objDesc.vCenter;
 				ColliderDesc.vRotation = objDesc.vQuaternion;
 
-				CCollider* pCollider = dynamic_cast<CCollider*>(m_pGameInstance->Add_Component_Clone(m_iCurrentLevel, TEXT("Prototype_Component_Collider"), &ColliderDesc));
+				m_pOBBColliderCom = dynamic_cast<CCollider*>(m_pGameInstance->Add_Component_Clone(m_iCurrentLevel, TEXT("Prototype_Component_Collider"), &ColliderDesc));
 
-				m_vColliders.push_back(pCollider);
+				/*m_vColliders.push_back(pCollider);*/
 			}
 
 
@@ -217,8 +217,19 @@ void CItem::Tick(const _float& fTimeDelta)
 	_matrix		worldMatrix = m_pTransformCom->Get_WorldMatrix();
 
 #ifdef _DEBUG
-	for (auto& iter : m_vColliders)
-		iter->Tick(worldMatrix);
+	//for (auto& iter : m_vColliders)
+	//	iter->Tick(worldMatrix);
+
+
+	if (nullptr != m_pColliderCom)
+	{
+		m_pColliderCom->Tick(worldMatrix);
+	}
+
+	if (nullptr != m_pOBBColliderCom)
+	{
+		m_pOBBColliderCom->Tick(worldMatrix);
+	}
 #endif
 
 }
@@ -238,8 +249,18 @@ void CItem::Late_Tick(const _float& fTimeDelta)
 HRESULT CItem::Render()
 {
 #ifdef _DEBUG
-	for (auto& iter : m_vColliders)
-		m_pGameInstance->Add_DebugComponent(iter);
+	//for (auto& iter : m_vColliders)
+	//	m_pGameInstance->Add_DebugComponent(iter);
+
+	if (nullptr != m_pColliderCom)
+	{
+		m_pGameInstance->Add_DebugComponent(m_pColliderCom);
+	}
+
+	if (nullptr != m_pOBBColliderCom)
+	{
+		m_pGameInstance->Add_DebugComponent(m_pOBBColliderCom);
+	}
 #endif
 
 	if (FAILED(Bind_ShaderResources()))
@@ -369,11 +390,6 @@ void CItem::ImpulseResolution(CGameObject* pTargetObject, _float fDistance)
 }
 
 
-
-CCollider* CItem::Get_Collider()
-{
-	return dynamic_cast<CCollider*>(*m_vColliders.begin());
-}
 
 _bool CItem::Decrease_Life()
 {
@@ -514,9 +530,12 @@ void CItem::Free()
 		Safe_Release(iter);
 	m_vDecals.clear();
 
-	for (auto& iter : m_vColliders)
-		Safe_Release(iter);
-	m_vColliders.clear();
+	//for (auto& iter : m_vColliders)
+	//	Safe_Release(iter);
+	//m_vColliders.clear();
+
+	Safe_Release(m_pColliderCom);
+	Safe_Release(m_pOBBColliderCom);
 
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pModelCom);

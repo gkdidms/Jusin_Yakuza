@@ -102,7 +102,8 @@ public:
 	// 붙이고 싶은 뼈의 행렬을 받아오는 함수
 	void		Set_ParentMatrix(const _float4x4* vParentMatrix) { m_vParentMatrix = vParentMatrix;  }
 
-	CCollider* Get_Collider();
+	CCollider* Get_AABBCollider() { return m_pColliderCom; }
+	CCollider* Get_OBBCollider() { return m_pOBBColliderCom; }
 
 	ITEM_MODE			Get_ItemMode() { return m_eItemMode; }
 	void				Set_ItemMode(CItem::ITEM_MODE mode) { m_eItemMode = mode; }
@@ -123,11 +124,13 @@ private:
 	CShader* m_pShaderCom = { nullptr };
 	CModel* m_pModelCom = { nullptr };
 	class CSystemManager* m_pSystemManager = { nullptr };
+	CCollider* m_pColliderCom = { nullptr }; //AABB 저장
+	CCollider* m_pOBBColliderCom = { nullptr }; //AABB 저장
 
 private:
 	_bool m_isFirst = { true };
 	vector<CDecal*>			m_vDecals;
-	vector<CCollider*>		m_vColliders;
+	//vector<CCollider*>		m_vColliders;
 	int						m_iLayerNum;
 	wstring					m_wstrModelName;
 	int						m_iShaderPassNum = { 0 };
