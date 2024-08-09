@@ -49,6 +49,7 @@ private:
 	HRESULT Loading_For_Dogimazo_Lobby();
 	HRESULT Loading_For_Dogimazo_Boss();
 	HRESULT Loading_For_CarChase();
+	HRESULT Loading_For_Karaoke();
 	HRESULT Loading_For_Test();
 
 private:

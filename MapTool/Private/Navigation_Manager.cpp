@@ -573,7 +573,14 @@ HRESULT CNavigation_Manager::Save_Cells(_uint iIndex)
 
 		for (int j = 0; j < iCellCnt; j++)
 		{
-			out.write((char*)&arr[j].iCellNums, sizeof(int));
+			//NaviIndex 찾기 사용
+			_vector		vPos = XMLoadFloat4(&arr[j].vPosition);
+			int		iIndex = Get_Player_Monster_NaviIndex(vPos);
+
+			if (-1 == iIndex)
+				iIndex = 0;
+
+			out.write((char*)&iIndex, sizeof(int));
 			out.write((_char*)&arr[j].vPosition, sizeof(_float4));
 			out.write((char*)&arr[j].iPointOption, sizeof(int));
 		}
@@ -709,7 +716,7 @@ HRESULT CNavigation_Manager::Load_Cells(_uint iIndex)
 		for (int j = 0; j < iCellCnt; j++)
 		{
 			CNaviObj::NAVIOBJ_DESC naviobjdesc;
-			naviobjdesc.tNaviDesc.iCellNums = m_iCurrentCellIndex;
+			naviobjdesc.tNaviDesc.iCellNums = arr[j].iCellNums;
 			naviobjdesc.tNaviDesc.vPosition = arr[j].vPosition;
 			naviobjdesc.tNaviDesc.iPointOption = arr[j].iPointOption;
 
@@ -1037,26 +1044,29 @@ void CNavigation_Manager::Make_Route()
 			m_iPointOption = m_Route_CellIndexes[m_iCurrentRouteCellIndex]->Get_PointOpiton();
 		}
 
-		if (0 < m_Route_CellIndexes.size())
-		{
-			m_iPointOption = m_Route_CellIndexes[m_iCurrentRouteCellIndex]->Get_PointOpiton();
-		}
+
 
 		Edit_GameObject_Transform(m_iCurrentRouteCellIndex);
 
 
 		ImGui::Text(u8" 저장확인 + 수정용 ");
-		static int iPointOpiton = 0;
-		if (ImGui::RadioButton(u8"일직선", m_iPointOption == 0))
+		static int iPointOpiton = m_iPointOption;
+		if (ImGui::RadioButton(u8"일직선 - 수정용", m_iPointOption == 0))
 		{
 			iPointOpiton = 0;
 			m_iPointOption = 0;
 		}
 		ImGui::SameLine();
-		if (ImGui::RadioButton(u8"코너", m_iPointOption == 1))
+		if (ImGui::RadioButton(u8"코너 - 수정용", m_iPointOption == 1))
 		{
 			iPointOpiton = 1;
 			m_iPointOption = 1;
+		}
+
+
+		if (0 < m_Route_CellIndexes.size())
+		{
+			m_Route_CellIndexes[m_iCurrentRouteCellIndex]->Set_PointOption(m_iPointOption);
 		}
 
 	
@@ -1118,10 +1128,7 @@ void CNavigation_Manager::Make_Route()
 		}
 
 
-		if (0 < m_Route_CellIndexes.size())
-		{
-			m_Route_CellIndexes[m_iCurrentRouteCellIndex]->Set_PointOption(m_iPointOption);
-		}
+
 
 
 
