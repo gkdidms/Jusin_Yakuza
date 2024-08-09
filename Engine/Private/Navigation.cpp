@@ -184,7 +184,13 @@ HRESULT CNavigation::Load_File(const wstring strFilePath)
         ifs.read((_char*)&iCellCnt, sizeof(_uint));
 
         ROUTE_IO* arr = new ROUTE_IO[iCellCnt];
-        ifs.read(reinterpret_cast<char*>(arr), iCellCnt * sizeof(ROUTE_IO));
+        
+        for (int j = 0; j < iCellCnt; j++)
+        {
+            ifs.read((char*)&arr[j].iCellNums, sizeof(int));
+            ifs.read((_char*)&arr[j].vPosition, sizeof(_float4));
+            ifs.read((char*)&arr[j].iPointOption, sizeof(int));
+        }
 
         vector<ROUTE_IO>		routeCells;
 

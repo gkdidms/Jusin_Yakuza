@@ -169,8 +169,12 @@ HRESULT CLoader::Loading()
 	case LEVEL_ROADWAY:
 		hr = Loading_For_CarChase();
 		break;
+	case LEVEL_KARAOKE:
+		hr = Loading_For_Karaoke();
+		break;
 	case LEVEL_TEST:
 		hr = Loading_For_Test();
+		break;
 	}
 
 	LeaveCriticalSection(&m_Critical_Section);
@@ -940,6 +944,214 @@ HRESULT CLoader::Loading_For_CarChase()
 	Add_Models_On_Path_NonAnim(LEVEL_ROADWAY, TEXT("../Bin/Resources/Models/NonAnim/Bone_Sphere"));
 	Add_Models_On_Path_NonAnim(LEVEL_ROADWAY, TEXT("../Bin/Resources/Models/NonAnim/Gun_Cz75"));
 	Add_Models_On_Path_NonAnim(LEVEL_ROADWAY, TEXT("../Bin/Resources/Models/NonAnim/Taxi"));
+#pragma endregion
+
+#pragma region GameObject
+	lstrcpy(m_szLoadingText, TEXT("객체원형를(을) 로딩 중 입니다."));
+
+	Add_GameObject_Particle_On_Path(TEXT("../../Client/Bin/DataFiles/Particle/"));
+
+
+
+#pragma region Camera
+	/* For.Prototype_GameObject_DebugCamera */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_DebugCamera"), CDebugCamera::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_PlayerCamera */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_PlayerCamera"), CPlayerCamera::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_CCineCamera */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_CCineCamera"), CCineCamera::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_CutSceneCamera */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_CutSceneCamera"), CCutSceneCamera::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_CarChaseCamera */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_CarChaseCamera"), CCarChaseCamera::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+#pragma endregion
+
+#pragma region Player
+	/* For.Prototype_GameObject_Player */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Player"), CPlayer::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_SoketCollider */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_SoketCollider"),
+		CSocketCollider::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_SoketEffect */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_SoketEffect"),
+		CSocketEffect::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+#pragma endregion
+
+#pragma region Monster
+	/* For.Prototype_GameObject_RushYakuza */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_RushYakuza"),
+		CRushYakuza::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_WPAYakuza */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_WPAYakuza"),
+		CWPAYakuza::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_Shakedown */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Shakedown"),
+		CShakedown::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_Kuze */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Kuze"),
+		CKuze::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_Yoneda */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Yoneda"),
+		CYoneda::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_WPH */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_WPH"),
+		CWPHYakuza::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_Default */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Default"),
+		CDefaultYakuza::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+#pragma endregion
+
+#pragma region Highway
+	/* For.Prototype_GameObject_Taxi (For.Player) */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Taxi"),
+		CHighway_Taxi::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_CarChase_Kiryu (For.Player) */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_CarChase_Kiryu"),
+		CHighway_Kiryu::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+#pragma endregion
+
+
+#pragma region Map
+	/* For.Prototype_GameObject_Terrain */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Terrain"),
+		CTerrain::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_Construction */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Construction"),
+		CConstruction::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_Decal */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Decal"),
+		CDecal::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_MapCollider */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_MapCollider"),
+		CMapCollider::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_SkyDome */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_SkyDome"),
+		CSkyDome::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_MapColliderObj */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_MapColliderObj"),
+		CMapColliderObj::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_LightConstruction */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_LightConstruction"),
+		CLightConstruction::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_LevelTrigger */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_LevelTrigger"),
+		CLevelTrigger::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_MonsterTrigger */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_MonsterTrigger"),
+		CMonsterTrigger::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_QuestTrigger */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_QuestTrigger"),
+		CQuestTrigger::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_AdvPassersby */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_AdvPassersby"),
+		CAdv_Passersby::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_Map */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Map"),
+		CMap::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_Item */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Item"),
+		CItem::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+#pragma endregion
+
+#pragma endregion
+
+	if (FAILED(Loading_Highway()))
+		return E_FAIL;
+
+	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
+
+	m_isFinished = true;
+
+	return S_OK;
+}
+
+HRESULT CLoader::Loading_For_Karaoke()
+{
+	if (FAILED(Loading_Default()))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_KARAOKE, TEXT("Prototype_Component_Navigation"),
+		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/NaviData/Navigation_9.dat")))))
+		return E_FAIL;
+
+#pragma region Model
+	lstrcpy(m_szLoadingText, TEXT("모델를(을) 로딩 중 입니다."));
+	//Add_Models_On_Path(LEVEL_KARAOKE, TEXT("../Bin/Resources/Models/Anim/"));
+
+	Add_Models_On_Path_NonAnim(LEVEL_KARAOKE, TEXT("../Bin/Resources/Models/NonAnim/Map/KaraokeMap"));
+	Add_Models_On_Path_NonAnim(LEVEL_KARAOKE, TEXT("../Bin/Resources/Models/NonAnim/Bone_Sphere"));
+	Add_Models_On_Path_NonAnim(LEVEL_KARAOKE, TEXT("../Bin/Resources/Models/NonAnim/Gun_Cz75"));
+	Add_Models_On_Path_NonAnim(LEVEL_KARAOKE, TEXT("../Bin/Resources/Models/NonAnim/Taxi"));
+
+	//_matrix PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
+	//if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_KARAOKE, TEXT("Prototype_Component_Model_Bone_Sphere"),
+	//	CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/NonAnim/Bone_Sphere/Bin/Square.dat", PreTransformMatrix, true))))
+	//	return E_FAIL;
+
+	//PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
+	//if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_KARAOKE, TEXT("Prototype_Component_Model_Gun_Cz75"),
+	//	CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/NonAnim/Gun_Cz75/Bin/Gun_Cz75.dat", PreTransformMatrix, true))))
+	//	return E_FAIL;
+
+	//PreTransformMatrix = XMMatrixScaling(0.01f, 0.01f, 0.01f);
+	//if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_KARAOKE, TEXT("Prototype_Component_Model_Taxi"),
+	//	CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../Bin/Resources/Models/NonAnim/Taxi/Bin/Taxi.dat", PreTransformMatrix, true))))
+	//	return E_FAIL;
 #pragma endregion
 
 #pragma region GameObject

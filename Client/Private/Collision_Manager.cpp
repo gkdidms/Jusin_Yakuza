@@ -409,7 +409,7 @@ void CCollision_Manager::ItemCollision()
 
             if (itemMode == CItem::ITEM_BRIGHT)
             {
-                CCollider* pItemCollider = dynamic_cast<CItem*>(item)->Get_Collider();
+                CCollider* pItemCollider = dynamic_cast<CItem*>(item)->Get_AABBCollider();
 
                 if (pItemCollider->Intersect(pPlayerAttackCollider->Get_Collider()))
                 {
