@@ -30,12 +30,17 @@ protected:
     virtual void Ready_Tree();
 
 private:
+
+
+private:
     virtual CBTNode::NODE_STATE Dead() override;
     virtual CBTNode::NODE_STATE Hit() override;
-    virtual CBTNode::NODE_STATE Sync() override;
 
     CBTNode::NODE_STATE Check_Attack();
     CBTNode::NODE_STATE ATK_Shot();
+
+    CBTNode::NODE_STATE Check_Ready();
+    CBTNode::NODE_STATE Ready();
 
     CBTNode::NODE_STATE Idle();
 
