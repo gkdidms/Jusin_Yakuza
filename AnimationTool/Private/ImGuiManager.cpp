@@ -84,6 +84,10 @@ void CImguiManager::Tick(const _float& fTimeDelta)
 			RimLightWindow();
 		if (m_isTrailWindow)
 			TrailWindow();
+		if (m_isFaceWindow)
+			FaceWindow();
+		if (m_isBloodWindow)
+			BloodWindow();
 	}
 
 	// 애니메이션 이벤트가 있는 콜라이더의 색상을 시안색으로 바꿔주는 기능
@@ -727,6 +731,22 @@ void CImguiManager::KeyFrameWindow()
 	}
 #pragma endregion
 
+#pragma region 페이스 이벤트 버튼
+	ImGui::Text("Face Event");
+	if (ImGui::Button("Face Op"))
+	{
+		m_isFaceWindow = true;
+	}
+#pragma endregion
+
+#pragma region 블러드 이펙트 이벤트 버튼
+	ImGui::Text("Blood Event");
+	if (ImGui::Button("Blood Op"))
+	{
+		m_isBloodWindow = true;
+	}
+#pragma endregion
+
 	if (ImGui::Button(u8"애니메이션 이벤트 저장"))
 	{
 		string strDirectory = "../../Client/Bin/DataFiles/Character/" + m_ModelNameList[m_iModelSelectedIndex];
@@ -1114,6 +1134,24 @@ void CImguiManager::TrailWindow()
 void CImguiManager::SoundListWindow()
 {
 	ImGui::Begin("Sound List", &m_isSoundListWindow);
+
+	ImGui::Text(u8"테스트용으로 띄웠습니다");
+
+	ImGui::End();
+}
+
+void CImguiManager::FaceWindow()
+{
+	ImGui::Begin("Face Event", &m_isFaceWindow);
+
+	ImGui::Text(u8"테스트용으로 띄웠습니다");
+
+	ImGui::End();
+}
+
+void CImguiManager::BloodWindow()
+{
+	ImGui::Begin("Blood Particle Event", &m_isBloodWindow);
 
 	ImGui::Text(u8"테스트용으로 띄웠습니다");
 

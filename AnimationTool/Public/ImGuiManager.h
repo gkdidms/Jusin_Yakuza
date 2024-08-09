@@ -106,6 +106,9 @@ private:
 	void RimLightWindow();
 	void TrailWindow();
 	void SoundListWindow();
+	void SlowWindow();
+	void FaceWindow();
+	void BloodWindow();
 
 	void DrawTimeline(ImDrawList* d);
 	void DrawChannels();
@@ -239,6 +242,15 @@ private:
 	// first: 애니메이션 이름, second: 트레일 이벤트정보
 	multimap<string, Animation_TrailState>		m_TrailEvents;
 
+	/* 페이스 윈도우 */
+private:
+	_bool						m_isFaceWindow = { false };
+	int							m_iFaceEventIndex = { 0 };
+
+	/* 블러드 이펙트 윈도우 */
+private:
+	_bool						m_isBloodWindow = { false };
+	int							m_iBloodEventIndex = { 0 };
 
 private:
 	_bool						m_isSoundListWindow = { false };
