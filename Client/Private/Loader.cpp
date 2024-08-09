@@ -60,6 +60,8 @@
 
 #include "AI_Van.h"
 #include "AI_Bike.h"
+#include "AI_Sedan.h"
+#include "AI_Heli.h"
 #pragma endregion
 
 #pragma region Camera
@@ -508,6 +510,16 @@ if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototyp
 	/* For.Prototype_BTNode_Bike*/
 	if (FAILED(m_pGameInstance->Add_BTNode_Prototype(m_eNextLevel, TEXT("Prototype_BTNode_Bike"),
 		CAI_Bike::Create())))
+		return E_FAIL;
+
+	/* For.Prototype_BTNode_Sedan*/
+	if (FAILED(m_pGameInstance->Add_BTNode_Prototype(m_eNextLevel, TEXT("Prototype_BTNode_Sedan"),
+		CAI_Sedan::Create())))
+		return E_FAIL;
+
+	/* For.Prototype_BTNode_Heli*/
+	if (FAILED(m_pGameInstance->Add_BTNode_Prototype(m_eNextLevel, TEXT("Prototype_BTNode_Heli"),
+		CAI_Heli::Create())))
 		return E_FAIL;
 #pragma endregion
 

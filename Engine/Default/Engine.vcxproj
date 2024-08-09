@@ -333,6 +333,7 @@ call Copy.bat</Command>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_HDR.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Line.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_PBR.hlsl" />
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_PostProcessing.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_SSAO.hlsl" />
   </ItemGroup>
   <ItemGroup>
