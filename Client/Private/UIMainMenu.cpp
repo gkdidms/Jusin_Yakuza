@@ -83,7 +83,7 @@ void CUIMainMenu::Action()
 	case 1 :
 	{
 		// 레벨지정
-		if (FAILED(m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_KARAOKE))))
+		if (FAILED(m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_ROADWAY))))
 			return;
 		break;
 	}

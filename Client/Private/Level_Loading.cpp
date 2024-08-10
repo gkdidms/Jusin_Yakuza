@@ -80,7 +80,7 @@ void CLevel_Loading::Tick(const _float& fTimeDelta)
 			{
 				CLevel* pNewLevel = { nullptr };
 
-				m_pGameInstance->Set_CurrentLevel(m_eNextLevel);
+ 				m_pGameInstance->Set_CurrentLevel(m_eNextLevel);
 				CUIManager::GetInstance()->Close_Scene();
 				switch (m_eNextLevel)
 				{
