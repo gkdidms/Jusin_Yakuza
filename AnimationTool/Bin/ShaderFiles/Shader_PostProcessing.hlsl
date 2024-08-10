@@ -22,3 +22,21 @@ PS_OUT PS_MAIN_RADIALBLUR(PS_IN In)
     
     return Out;
 }
+
+PS_OUT PS_MAIN_SCREENCRACK(PS_IN In)
+{
+    PS_OUT Out = (PS_OUT) 0;
+    
+    vector vBlurColor = vector(0.f, 0.f, 0.f, 0.f);
+    
+    float2 vCenter = float2(0.5f, 0.5f);
+    float fPower = 0.01f;
+    
+    float2 vDir = In.vTexcoord - vCenter;
+
+    vBlurColor = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
+    
+    Out.vColor = vector(vBlurColor.xyz, 1.f);
+    
+    return Out;
+}

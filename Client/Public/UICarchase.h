@@ -14,7 +14,7 @@ class CUICarchase :
         class CUI_Object* HPBarUI;
         class CCarChase_Monster* pMonsterAddr;
     } CARCCHASE_UI_DESC;
-
+    enum RELOAD { Back = 8, TEXT, RELOAD_END };
 protected:
     CUICarchase();
     CUICarchase(const CUICarchase& rhs);
@@ -24,6 +24,7 @@ public:
     HRESULT Update_TargetMatrix(_uint iIndex, _matrix TargetMatrix, _float iHP);
     HRESULT Remove_Target(_uint iIndex);
 
+    virtual HRESULT Show_Scene()override;//ui 애님 준비(초기화/열때 정방향 진행)
 public:
     virtual HRESULT Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg) override;
     virtual HRESULT Tick(const _float& fTimeDelta) override;
@@ -38,7 +39,7 @@ private:
     map<_uint, CARCCHASE_UI_DESC> m_Targets; // 타겟팅 UI 저장
 
     _float m_fAimSpeed = { 100.f };
-
+    _uint KiryuType = { 0 };
 private:
     void Move_Aim(const _float& fTimeDelta);
     CARCCHASE_UI_DESC* Find_TargetUI(_uint iIndex);

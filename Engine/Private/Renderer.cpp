@@ -343,11 +343,14 @@ HRESULT CRenderer::Ready_Targets()
 	/*Target_FinalEffect*/
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_FinalEffect"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
-
+	
 	/*Target_RadialBlur*/
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_RadialBlur"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
 
+	/*Target_SceneCrack*/
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_SceneCrack"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
+		return E_FAIL;
 	return S_OK;
 }
 
@@ -523,6 +526,10 @@ HRESULT CRenderer::Ready_MRTs()
 
 	/* MRT_RadialBlur */
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_RadialBlur"), TEXT("Target_RadialBlur"))))
+		return E_FAIL;
+
+	/* MRT_SceneCrack */
+	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_SceneCrack"), TEXT("Target_SceneCrack"))))
 		return E_FAIL;
 
 	return S_OK;
@@ -1864,6 +1871,27 @@ void CRenderer::Render_RadialBlur()
 		return;
 
 	m_pShader->Begin(22);
+
+	m_pVIBuffer->Render();
+
+	if (FAILED(m_pGameInstance->End_MRT()))
+		return;
+}
+
+void CRenderer::Render_Crack()
+{
+	
+	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_SceneCrack"))))
+		return;
+
+	if (FAILED(m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix)))
+		return;
+	if (FAILED(m_pShader->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix)))
+		return;
+	if (FAILED(m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
+		return;
+
+	m_pShader->Begin(22);	
 
 	m_pVIBuffer->Render();
 

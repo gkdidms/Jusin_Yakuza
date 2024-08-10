@@ -113,6 +113,7 @@ private:
 
     /*PostProcessing*/
     void Render_RadialBlur();
+    void Render_Crack();
 
 
     /*최종 렌더 (빼지마세요)*/
