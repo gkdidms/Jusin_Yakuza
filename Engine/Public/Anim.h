@@ -20,6 +20,7 @@ public:
     _uint Get_NumAnimation() { return m_iAnimations; }
     _uint Get_AnimationIndex(const _char* pName);
     string Get_AnimationName(_uint iIndex);
+    class CAnimation* Get_CurrentAnimation();
 
 public:
     void Set_CurrentAnimIndex(_uint iIndex) { m_iCurrentIndex = iIndex; }

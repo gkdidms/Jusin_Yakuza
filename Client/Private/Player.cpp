@@ -249,9 +249,14 @@ void CPlayer::Tick(const _float& fTimeDelta)
 		m_CanHitAction = true;
 	}
 
-	// TODO: 튜토리얼 UI 정리된 이후 켜야함
-	//if(!m_pUIManager->IsOpend())
+	
+	if (m_eAnimComType == DEFAULT)
+	{
+		// TODO: 튜토리얼 UI 정리된 이후 켜야함
+		//if(!m_pUIManager->IsOpend())
 		KeyInput(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")));
+	}
+
 
 	m_pColliderCom->Tick(m_pTransformCom->Get_WorldMatrix());
 

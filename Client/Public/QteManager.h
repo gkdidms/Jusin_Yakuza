@@ -17,9 +17,14 @@ public:
 
     struct QTE_DESC {
         _uint iAnimIndex;
+        _uint iCamAnimIndex;
         _uint iStartKeyFrameIndex;
         _uint iEndKeyFrameIndex;
         _uint iKeyFrames;
+        _uint iSuccesStartFrame;
+        _uint iSuccesEndFrame;
+        _uint iFailedStartFrame;
+        _uint iFailedEndFrame;
     };
 
     const _float QTE_TIME = 2.f;
@@ -46,6 +51,9 @@ private:
     HRESULT Ready_SlowKeyFrame();
 
     void ResetVariables();
+
+    void Skip_KeyFrame(_uint iAnimIndex, QTE_DESC& Desc);
+    void Cancle_KeyFrame(_uint iAnimIndex, QTE_DESC& Desc);
 
 public:
     void Slowing();
