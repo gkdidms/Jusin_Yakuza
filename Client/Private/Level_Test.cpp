@@ -33,34 +33,29 @@ HRESULT CLevel_Test::Initialize()
 	// 테스트 다하면 지워라
 	/* For.Prototype_Component_Navigation */
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Navigation"),
-		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/NaviData/Navigation_3.dat")))))
+		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/NaviData/Navigation_7.dat")))))
 		return E_FAIL;
 
 	//m_pCarChaseManager = CCarChaseManager::Create(m_pDevice, m_pContext);
 	//if (nullptr == m_pCarChaseManager)
 	//	return E_FAIL;
 
- 	if (FAILED(Ready_Player(TEXT("Layer_Player"))))
+	if (FAILED(Ready_Player(TEXT("Layer_Player"))))
 		return E_FAIL;
-	
+
 	//m_pTutorialManager = CTutorialManager::Create();
 	//if (nullptr == m_pTutorialManager)
-	//	return E_FAIL;
-	/*if (FAILED(Ready_Monster(TEXT("Layer_Monster"))))
-		return E_FAIL;*/
 
-	//if (FAILED(Ready_Map(TEXT("Layer_Map"))))
-	//	return E_FAIL;9
-	m_pFileTotalManager->Set_MapObj_In_Client(3, LEVEL_TEST);
-	m_pFileTotalManager->Set_Lights_In_Client(3);
-	m_pFileTotalManager->Set_Collider_In_Client(3, LEVEL_TEST);
-	m_pFileTotalManager->Set_Trigger_In_Client(3, LEVEL_TEST);
-	
-	if (FAILED(Ready_Camera(TEXT("Layer_Camera"))))
+	/* 클라 파싱 */
+	if (FAILED(Ready_Test_Load()))
 		return E_FAIL;
 
-	//if (FAILED(Ready_Test_SceneModel(TEXT("Layer_SceneModel_Test"))))
+	//혜원 테스트 용
+	//if (FAILED(Ready_Test_Hyewon()))
 	//	return E_FAIL;
+
+	if (FAILED(Ready_Camera(TEXT("Layer_Camera"))))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -112,7 +107,7 @@ HRESULT CLevel_Test::Ready_Camera(const wstring& strLayerTag)
 	PlayerCameraDesc.fSpeedPecSec = 20.f;
 	PlayerCameraDesc.fRotatePecSec = XMConvertToRadians(90.f);
 	PlayerCameraDesc.pPlayerMatrix = dynamic_cast<CTransform*>(m_pGameInstance->Get_GameObject_Component(LEVEL_TEST, TEXT("Layer_Player"), TEXT("Com_Transform", 0)))->Get_WorldFloat4x4();
-	
+
 	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_PlayerCamera"), strLayerTag, &PlayerCameraDesc)))
 		return E_FAIL;
 
@@ -161,50 +156,22 @@ HRESULT CLevel_Test::Ready_Player(const wstring& strLayerTag)
 
 	return S_OK;
 }
-
-HRESULT CLevel_Test::Ready_Monster(const wstring& strLayerTag)
+HRESULT CLevel_Test::Ready_Test_Load()
 {
-	CGameObject::GAMEOBJECT_DESC Desc{};
-	Desc.fSpeedPecSec = 10.f;
-	//Desc.fRotatePecSec = XMConvertToRadians(0.f);
-	Desc.fRotatePecSec = XMConvertToRadians(180.f);
-
-	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_Kuze"), strLayerTag, &Desc)))
-		return E_FAIL;
+	m_pFileTotalManager->Set_MapObj_In_Client(7, LEVEL_TEST);
+	m_pFileTotalManager->Set_Lights_In_Client(99);
+	m_pFileTotalManager->Set_Collider_In_Client(0, LEVEL_TEST);
+	//m_pFileTotalManager->Set_Trigger_In_Client(79, LEVEL_TEST);
 
 	return S_OK;
 }
 
-HRESULT CLevel_Test::Ready_Map(const wstring& strLayerTag)
+HRESULT CLevel_Test::Ready_Test_Hyewon()
 {
-	//if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_Map"), strLayerTag)))
-	//	return E_FAIL;
-
-	return S_OK;
-}
-
-HRESULT CLevel_Test::Ready_Effect(const wstring& strLayerTag)
-{
-	//if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_Particle_Point_Hit1_Part0"), strLayerTag, nullptr)))
-	//	return E_FAIL;
-
-	//if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_Particle_Aura_asd"), strLayerTag, nullptr)))
-	//	return E_FAIL;
-
-	//m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Aura_Start_Rush"), TEXT("Layer_Particle"), nullptr);
-
-	return S_OK;
-}
-
-HRESULT CLevel_Test::Ready_Test_SceneModel(const wstring& strLayerTag)
-{
-	CGameObject::GAMEOBJECT_DESC Desc{};
-	Desc.fSpeedPecSec = 10.f;
-	//Desc.fRotatePecSec = XMConvertToRadians(0.f);
-	Desc.fRotatePecSec = XMConvertToRadians(180.f);
-
-	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_Taxi"), strLayerTag, &Desc)))
-		return E_FAIL;
+	m_pFileTotalManager->Set_MapObj_In_Client(79, LEVEL_TEST);
+	m_pFileTotalManager->Set_Lights_In_Client(99);
+	m_pFileTotalManager->Set_Collider_In_Client(0, LEVEL_TEST);
+	m_pFileTotalManager->Set_Trigger_In_Client(79, LEVEL_TEST);
 
 	return S_OK;
 }
