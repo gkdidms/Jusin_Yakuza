@@ -186,11 +186,11 @@ void CCarChase_Reactor::Move_Waypoint(const _float& fTimeDelta)
 		}
 		else if (m_iStageDir == DIR_B)
 		{
-			iGoalIndex = iPlayerCurrentWaypointIndex - 2;
+			iGoalIndex = 0 > iPlayerCurrentWaypointIndex - 2 ? iMaxIndex - 2: iPlayerCurrentWaypointIndex - 2;
 		}
 		else if (m_iStageDir == DIR_F)
 		{
-			iGoalIndex = iPlayerCurrentWaypointIndex + 1;
+			iGoalIndex = iMaxIndex == iPlayerCurrentWaypointIndex + 1 ? 0 : iPlayerCurrentWaypointIndex + 1;
 		}
 
 		_float fDistance = XMVectorGetX(XMVector3Length(m_pNavigationCom->Get_WaypointPos(iGoalIndex) - vPosition));
