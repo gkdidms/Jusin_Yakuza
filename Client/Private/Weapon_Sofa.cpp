@@ -1,24 +1,24 @@
-#include "Gun_Cz75.h"
+#include "Weapon_Sofa.h"
 
 #include "GameInstance.h"
 #include "Shader.h"
 
-CGun_Cz75::CGun_Cz75(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+CSofa::CSofa(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CSocketModel{ pDevice, pContext }
 {
 }
 
-CGun_Cz75::CGun_Cz75(const CGun_Cz75& rhs)
+CSofa::CSofa(const CSofa& rhs)
 	:CSocketModel{ rhs }
 {
 }
 
-HRESULT CGun_Cz75::Initialize_Prototype()
+HRESULT CSofa::Initialize_Prototype()
 {
 	return S_OK;
 }
 
-HRESULT CGun_Cz75::Initialize(void* pArg)
+HRESULT CSofa::Initialize(void* pArg)
 {
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
@@ -32,24 +32,24 @@ HRESULT CGun_Cz75::Initialize(void* pArg)
 	return S_OK;
 }
 
-void CGun_Cz75::Priority_Tick(const _float& fTimeDelta)
+void CSofa::Priority_Tick(const _float& fTimeDelta)
 {
 	__super::Priority_Tick(fTimeDelta);
 }
 
-void CGun_Cz75::Tick(const _float& fTimeDelta)
+void CSofa::Tick(const _float& fTimeDelta)
 {
 	__super::Tick(fTimeDelta);
 }
 
-void CGun_Cz75::Late_Tick(const _float& fTimeDelta)
+void CSofa::Late_Tick(const _float& fTimeDelta)
 {
 	__super::Late_Tick(fTimeDelta);
 
 	m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
 }
 
-HRESULT CGun_Cz75::Render()
+HRESULT CSofa::Render()
 {
 	if (FAILED(Bind_ResourceData()))
 		return E_FAIL;
@@ -70,20 +70,20 @@ HRESULT CGun_Cz75::Render()
 	return S_OK;
 }
 
-HRESULT CGun_Cz75::Add_Components()
+HRESULT CSofa::Add_Components()
 {
 	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Shader_Mesh"),
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Model_Gun_Cz75"),
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Model_sofa"),
 		TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
 		return E_FAIL;
 
 	return S_OK;
 }
 
-HRESULT CGun_Cz75::Bind_ResourceData()
+HRESULT CSofa::Bind_ResourceData()
 {
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix)))
 		return E_FAIL;
@@ -97,9 +97,9 @@ HRESULT CGun_Cz75::Bind_ResourceData()
 	return S_OK;
 }
 
-CGun_Cz75* CGun_Cz75::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+CSofa* CSofa::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
-	CGun_Cz75* pInstance = new CGun_Cz75(pDevice, pContext);
+	CSofa* pInstance = new CSofa(pDevice, pContext);
 
 	if (FAILED(pInstance->Initialize_Prototype()))
 		Safe_Release(pInstance);
@@ -107,9 +107,9 @@ CGun_Cz75* CGun_Cz75::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContex
 	return pInstance;
 }
 
-CGameObject* CGun_Cz75::Clone(void* pArg)
+CGameObject* CSofa::Clone(void* pArg)
 {
-	CGun_Cz75* pInstance = new CGun_Cz75(*this);
+	CSofa* pInstance = new CSofa(*this);
 
 	if (FAILED(pInstance->Initialize(pArg)))
 		Safe_Release(pInstance);
@@ -117,7 +117,7 @@ CGameObject* CGun_Cz75::Clone(void* pArg)
 	return pInstance;
 }
 
-void CGun_Cz75::Free()
+void CSofa::Free()
 {
 	__super::Free();
 }

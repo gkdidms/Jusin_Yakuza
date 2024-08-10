@@ -8,7 +8,7 @@
 
 #include "AI_WPHYakuza.h"
 
-#include "Sofa.h"
+#include "Weapon_Sofa.h"
 
 CWPHYakuza::CWPHYakuza(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     : CMonster { pDevice, pContext }

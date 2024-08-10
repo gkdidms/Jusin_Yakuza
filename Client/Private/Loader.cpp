@@ -20,8 +20,9 @@
 #include "DefaultYakuza.h"
 #pragma endregion
 
-#pragma region Monster_Item
-#include "Sofa.h"
+#pragma region Weapon_Common
+#include "Weapon_Sofa.h"
+#include "Weapon_Knife.h"
 #pragma endregion
 
 #pragma region CarChase
@@ -37,13 +38,18 @@
 #include "CarChase_Heli.h"
 #pragma endregion
 
+#pragma region Weapon
+#include "Weapon_Gun_Cz75.h"
+#include "Weapon_MchnGun.h"
+#include "Weapon_RcktGun.h"
+#include "Weapon_ShotGun.h"
+#pragma endregion
+
 #pragma region Reactor
 #include "Reactor_Van.h"
 #include "Reactor_Sedan.h"
 #include "Reactor_Bike.h"
 #include "Reactor_Heli.h"
-
-#include "Gun_Cz75.h"
 #pragma endregion
 
 #pragma region Adventure
@@ -570,11 +576,6 @@ if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototyp
 	/* For.Prototype_GameObject_Gun_Cz75*/
 	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Gun_Cz75"),
 		CGun_Cz75::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	/* For.Prototype_GameObject_Sofa*/
-	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Sofa"),
-		CSofa::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 #pragma endregion
 
@@ -1538,6 +1539,18 @@ HRESULT CLoader::Loading_For_Test()
 		return E_FAIL;
 #pragma endregion
 
+#pragma endregion
+
+#pragma region Weapon
+	/* For.Prototype_GameObject_Sofa*/
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Sofa"),
+		CSofa::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_Knife*/
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Knife"),
+		CKnife::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 #pragma endregion
 
 	Loading_Highway();

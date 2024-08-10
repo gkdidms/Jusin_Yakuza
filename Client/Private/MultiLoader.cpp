@@ -20,8 +20,9 @@
 #include "DefaultYakuza.h"
 #pragma endregion
 
-#pragma region Monster_Item
-#include "Sofa.h"
+#pragma region Weapon_Common
+#include "Weapon_Sofa.h"
+#include "Weapon_Knife.h"
 #pragma endregion
 
 #pragma region CarChase
@@ -34,10 +35,15 @@
 #include "CarChase_Van.h"
 #pragma endregion
 
+#pragma region Weapon
+#include "Weapon_Gun_Cz75.h"
+#include "Weapon_MchnGun.h"
+#include "Weapon_RcktGun.h"
+#include "Weapon_ShotGun.h"
+#pragma endregion
+
 #pragma region Reactor
 #include "Reactor_Van.h"
-
-#include "Gun_Cz75.h"
 #pragma endregion
 
 #pragma region Adventure
@@ -769,13 +775,24 @@ if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_
 	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Gun_Cz75"),
 		CGun_Cz75::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+#pragma endregion
 
+	return S_OK;
+}
+
+HRESULT CMultiLoader::Loading_Weapon()
+{
+#pragma region Weapon
 	/* For.Prototype_GameObject_Sofa*/
 	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Sofa"),
 		CSofa::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
-#pragma endregion
 
+	/* For.Prototype_GameObject_Knife*/
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Knife"),
+		CKnife::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+#pragma endregion
 	return S_OK;
 }
 
@@ -958,6 +975,9 @@ HRESULT CMultiLoader::Loading_For_Default()
 		return E_FAIL;
 
 	if (FAILED(Loading_Highway()))
+		return E_FAIL;
+
+	if (FAILED(Loading_Weapon()))
 		return E_FAIL;
 
 	Add_GameObject_Particle_On_Path(TEXT("../../Client/Bin/DataFiles/Particle/"));
