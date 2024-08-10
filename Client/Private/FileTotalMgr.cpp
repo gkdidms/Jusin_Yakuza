@@ -1186,7 +1186,6 @@ void CFileTotalMgr::Reset_Cinemachine()
         Safe_Release(m_pCinemachineCam);
 }
 
-
 HRESULT CFileTotalMgr::Set_Terrain_Size(int iStageLevel)
 {
     /* 땅 크기 수정*/

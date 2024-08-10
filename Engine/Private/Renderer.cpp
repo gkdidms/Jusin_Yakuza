@@ -149,6 +149,8 @@ HRESULT CRenderer::Initialize()
 
 	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_Decal"), 950.f, 150.f, 100.f, 100.f)))
 		return E_FAIL;
+	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_RadialBlur"), 950.f, 250.f, 100.f, 100.f)))
+		return E_FAIL;
 #endif // _DEBUG
 
 
@@ -337,6 +339,14 @@ HRESULT CRenderer::Ready_Targets()
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Decal"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
 
+	/*Target_FinalEffect*/
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_FinalEffect"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
+		return E_FAIL;
+
+	/*Target_RadialBlur*/
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_RadialBlur"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -504,6 +514,14 @@ HRESULT CRenderer::Ready_MRTs()
 
 	/* MRT_Decals */
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_Decals"), TEXT("Target_Decal"))))
+		return E_FAIL;
+
+	/* MRT_Distortion */
+	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_Distortion"), TEXT("Target_FinalEffect"))))
+		return E_FAIL;
+
+	/* MRT_RadialBlur */
+	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_RadialBlur"), TEXT("Target_RadialBlur"))))
 		return E_FAIL;
 
 	return S_OK;
@@ -698,6 +716,13 @@ void CRenderer::Draw()
 	Render_Effect();
 	Render_FinlaOIT();
 	Render_Distortion();
+
+	if (m_isRadialBlur)
+		Render_RadialBlur();
+
+	//최종적으로 백버퍼에 그림을 그려줌
+	Render_FinalResult();
+
 	Render_UI();
 
 #ifdef _DEBUG
@@ -1794,8 +1819,12 @@ void CRenderer::Render_FinlaOIT() //파티클 그린 타겟 병합
 
 }
 
+//최종 파티클
 void CRenderer::Render_Distortion()
 {
+	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_Distortion"))))
+		return;
+
 	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Distortion"), m_pShader, "g_Distortion")))//이펙트 텍스처 원본
 		return;
 
@@ -1812,8 +1841,51 @@ void CRenderer::Render_Distortion()
 	m_pShader->Begin(20);//디스토션 제작
 
 	m_pVIBuffer->Render();
+
+	if (FAILED(m_pGameInstance->End_MRT()))
+		return;
 }
 
+
+void CRenderer::Render_RadialBlur()
+{
+	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_RadialBlur"))))
+		return;
+
+	if (FAILED(m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix)))
+		return;
+	if (FAILED(m_pShader->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix)))
+		return;
+	if (FAILED(m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
+		return;
+
+	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_FinalEffect"), m_pShader, "g_DiffuseTexture")))
+		return;
+
+	m_pShader->Begin(22);
+
+	m_pVIBuffer->Render();
+
+	if (FAILED(m_pGameInstance->End_MRT()))
+		return;
+}
+
+void CRenderer::Render_FinalResult()
+{
+	if (FAILED(m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix)))
+		return;
+	if (FAILED(m_pShader->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix)))
+		return;
+	if (FAILED(m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
+		return;
+
+	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(m_isRadialBlur ? TEXT("Target_RadialBlur") : TEXT("Target_FinalEffect"), m_pShader, "g_BackBufferTexture")))
+		return;
+
+	m_pShader->Begin(4);
+
+	m_pVIBuffer->Render();
+}
 
 void CRenderer::Render_UI()
 {
@@ -1911,7 +1983,8 @@ void CRenderer::Render_Debug()
 
 	if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_Decals"), m_pShader, m_pVIBuffer)))
 		return;
-
+	if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_RadialBlur"), m_pShader, m_pVIBuffer)))
+		return;
 
 }
 #endif // DEBUG

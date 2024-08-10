@@ -37,15 +37,39 @@ void CYonedaTrigger::Tick(const _float& fTimeDelta)
 {
 	m_pColliderCom->Tick(m_WorldMatrix);
 
-	//충돌 시 요네다에게 싱크 액션 전달
-	if (m_pColliderCom->Intersect(dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject(m_iCurrentLevel, TEXT("Layer_Player"), 0))->Get_PlayerCollider(), 3))
+	CPlayer* pPlayer = dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject(m_iCurrentLevel, TEXT("Layer_Player"), 0));
+
+	if (nullptr != pPlayer)
 	{
-		if (m_pGameInstance->GetKeyState(DIK_G) == TAP)
+		//충돌 시 요네다에게 싱크 액션 전달
+		if (m_pColliderCom->Intersect(pPlayer->Get_PlayerCollider(), 3))
 		{
-			CYoneda* pYoneda = dynamic_cast<CYoneda*>(m_pGameInstance->Get_GameObject(m_iCurrentLevel, TEXT("Layer_Yoneda"), 0));
-			pYoneda->Set_TriggerQte(m_tTriggerDesc.iYonedaKnife, m_tTriggerDesc.iTriggerID);
+			if (m_pGameInstance->GetKeyState(DIK_G) == TAP)
+			{
+				CYoneda* pYoneda = dynamic_cast<CYoneda*>(m_pGameInstance->Get_GameObject(m_iCurrentLevel, TEXT("Layer_Yoneda"), 0));
+				pYoneda->Set_TriggerQte(m_tTriggerDesc.iYonedaKnife, m_tTriggerDesc.iTriggerID);
+
+				//MONSTER_A60300_000_2 : 1000
+				// 
+				//YONEDA_H,                   //A60300 요네다 등장
+				//YONEDA_DOWN_ATTACK,         //A60330 요네다 복도
+				//YONEDA_DOSU,                //a60350 요네다 화장실
+				CPlayer::CUTSCENE_ANIMATION_TYPE eType = CPlayer::YONEDA_H;
+				if (m_tTriggerDesc.iTriggerID == 1000)
+					eType = CPlayer::YONEDA_H;
+				else if(m_tTriggerDesc.iTriggerID == 1001)
+					eType = CPlayer::YONEDA_DOWN_ATTACK;
+				else if(m_tTriggerDesc.iTriggerID == 1002)
+					eType = CPlayer::YONEDA_DOSU;
+
+				pPlayer->Set_CutSceneAnim(eType, 1);
+
+				pYoneda->Get_TransformCom()->Set_State(CTransform::STATE_POSITION, pPlayer->Get_TransformCom()->Get_State(CTransform::STATE_POSITION));
+			}
 		}
 	}
+
+
 
 	__super::Tick(fTimeDelta);
 }

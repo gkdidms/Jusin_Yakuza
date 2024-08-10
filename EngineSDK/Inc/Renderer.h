@@ -36,6 +36,7 @@ public:
     void Set_BOF(_bool isBOF) { m_isBOF = isBOF; }
     void Set_Shadow(_bool isShadow) { m_isShadow = isShadow; }
     void Set_RimLight(_bool isRimLight) { m_isRimLight = isRimLight; }
+    void Set_RadialBlur(_bool isRadialBlur) { m_isRadialBlur = isRadialBlur; }
 
 public:
     _bool isHDR() { return m_isHDR; }
@@ -44,6 +45,7 @@ public:
     _bool isBOF() { return m_isBOF; }
     _bool isShadow() { return m_isShadow; }
     _bool isRimLight() { return m_isRimLight; }
+    _bool isRadialBlur() { return m_isRadialBlur; }
     _float Get_HDRLight() { return m_fHDRLight; }
     _float Get_SSAORadiuse() { return m_fSSAORadiuse; }
     _float Get_SSAOBlur() { return m_fSSAOBlur; }
@@ -107,6 +109,12 @@ private:
     void Render_FinlaOIT();// 파티클 최종병합
     void Render_Distortion();//디스토션 파티클
 
+    /*PostProcessing*/
+    void Render_RadialBlur();
+
+    /*최종 렌더*/
+    void Render_FinalResult();
+
     void Render_UI();
 
 private:
@@ -150,6 +158,7 @@ private:
                 _bool m_isBOF = { false };
                 _bool m_isShadow = { false };
                 _bool m_isRimLight = { true };
+                _bool m_isRadialBlur = { false };
 
 #else
             private:
@@ -159,6 +168,7 @@ private:
                 _bool m_isBOF = { true };
                 _bool m_isShadow = { true };
                 _bool m_isRimLight = { true };
+                _bool m_isRadialBlur = { false };
 #endif // DEBUG
 
     _float m_fHDRLight = { 1.f };

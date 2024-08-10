@@ -66,6 +66,15 @@ HRESULT CImguiManager::Initialize(void* pArg)
 	TextureTags.push_back(TEXT("Prototype_Component_Texture_LiquidAnimDD"));
 	TextureTags.push_back(TEXT("Prototype_Component_Texture_LiquidAnimED"));
 	TextureTags.push_back(TEXT("Prototype_Component_Texture_LiquidAnimFD"));
+	TextureTags.push_back(TEXT("Prototype_Component_Texture_ExpAnimA"));
+	TextureTags.push_back(TEXT("Prototype_Component_Texture_ExpAnimB"));
+	TextureTags.push_back(TEXT("Prototype_Component_Texture_FireAnim"));
+	TextureTags.push_back(TEXT("Prototype_Component_Texture_CarBackLight"));
+	TextureTags.push_back(TEXT("Prototype_Component_Texture_BrokenGlass0"));
+	TextureTags.push_back(TEXT("Prototype_Component_Texture_BrokenGlass1"));
+	TextureTags.push_back(TEXT("Prototype_Component_Texture_BrokenGlass2"));
+	TextureTags.push_back(TEXT("Prototype_Component_Texture_BrokenGlass3"));
+	TextureTags.push_back(TEXT("Prototype_Component_Texture_BloodAnim"));
 
 	ToneTextureTags.push_back(TEXT("Prototype_Component_Texture_AuraTone"));
 	ToneTextureTags.push_back(TEXT("Prototype_Component_Texture_AuraToneRush"));
@@ -813,8 +822,33 @@ void CImguiManager::EditorAura_Tick(_float fTimeDelta)
 
 	File_Selctor(&bChange);
 	Tone_File_Selector(&bChange);
+	if (2 == m_AuraDesc.iShaderPass)
+	{
+		static bool alpha_preview = true;
+		static bool alpha_half_preview = false;
+		static bool drag_and_drop = true;
+		static bool options_menu = true;
+		static bool hdr = false;
+		ImGuiColorEditFlags misc_flags = (hdr ? ImGuiColorEditFlags_HDR : 0) | (drag_and_drop ? 0 : ImGuiColorEditFlags_NoDragDrop) | (alpha_half_preview ? ImGuiColorEditFlags_AlphaPreviewHalf : (alpha_preview ? ImGuiColorEditFlags_AlphaPreview : 0)) | (options_menu ? 0 : ImGuiColorEditFlags_NoOptions);
 
+		if (ImGui::ColorEdit4("MyColor##2f", (float*)&m_AuraDesc.vStartColor, ImGuiColorEditFlags_Float | misc_flags))
+		{
+			bChange = true;
+		}
 
+		static bool alpha_preview1 = true;
+		static bool alpha_half_preview1 = false;
+		static bool drag_and_drop1 = true;
+		static bool options_menu1 = true;
+		static bool hdr1 = false;
+		ImGuiColorEditFlags misc_flags1 = (hdr1 ? ImGuiColorEditFlags_HDR : 0) | (drag_and_drop1 ? 0 : ImGuiColorEditFlags_NoDragDrop) | (alpha_half_preview1 ? ImGuiColorEditFlags_AlphaPreviewHalf : (alpha_preview1 ? ImGuiColorEditFlags_AlphaPreview : 0)) | (options_menu1 ? 0 : ImGuiColorEditFlags_NoOptions);
+
+		if (ImGui::ColorEdit4("MyColor##", (float*)&m_AuraDesc.vEndColor, ImGuiColorEditFlags_Float | misc_flags1))
+		{
+			bChange = true;
+		}
+
+	}
 
 
 	if (bChange)
@@ -2739,13 +2773,14 @@ void CImguiManager::Editor_Tick(_float fTimeDelta)
 	}
 	case PASS_FALLSPREAD:
 	{
+
 		Temp = (_float*)&m_EffectDesc.fLifeAlpha;
 		if (ImGui::InputFloat2("LifeAlpha", Temp))
 		{
 			memcpy(&m_EffectDesc.fLifeAlpha, Temp, sizeof(_float2));
 			bChange = true;
 		}
-
+		Color_Palette();
 		Temp = (_float*)&m_EffectDesc.BufferInstance.LowStartRot;
 		if (ImGui::InputFloat3("LowStartRot", Temp))
 		{
@@ -2784,7 +2819,18 @@ void CImguiManager::Editor_Tick(_float fTimeDelta)
 			bChange = true;
 		}
 
-		if(m_EffectDesc.isNormal)
+		
+		break;
+	}
+
+	default:
+		break;
+	}
+
+
+	File_Selctor(&bChange);
+
+		if (m_EffectDesc.isNormal)
 		{
 			_int iNormalSize = NormalTags.size();
 			if (ImGui::BeginListBox("NormalBox"))
@@ -2817,16 +2863,7 @@ void CImguiManager::Editor_Tick(_float fTimeDelta)
 				m_EffectDesc.NormalTag = NormalTags[m_iCurNormalTexture];
 			}
 		}
-		break;
-	}
 
-	default:
-		break;
-	}
-
-
-	File_Selctor(&bChange);
-	
 	
 
 

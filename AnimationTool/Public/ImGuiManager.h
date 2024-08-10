@@ -20,7 +20,7 @@ class CImguiManager final :
 private:
 	enum Model_Type
 	{
-		PLAYER, ENEMY
+		PLAYER, ENEMY, SYNC, ETC,
 	};
 
 	enum Collider_Type
@@ -106,6 +106,9 @@ private:
 	void RimLightWindow();
 	void TrailWindow();
 	void SoundListWindow();
+	void SlowWindow();
+	void FaceWindow();
+	void BloodWindow();
 
 	void DrawTimeline(ImDrawList* d);
 	void DrawChannels();
@@ -157,6 +160,7 @@ private:
 	void Setting_AnimationList();			//플레이어,적 선택한 값에 따라 애니메이션 컴포넌트를 읽어온다
 	void Setting_RimLight();				// 림라이트 매시 이름 적용하기
 	void Setting_Trail();				// 트레일 온오프 적용하기
+	void Change_Model();
 
 private:
 	ImGuiIO* io;
@@ -238,6 +242,15 @@ private:
 	// first: 애니메이션 이름, second: 트레일 이벤트정보
 	multimap<string, Animation_TrailState>		m_TrailEvents;
 
+	/* 페이스 윈도우 */
+private:
+	_bool						m_isFaceWindow = { false };
+	int							m_iFaceEventIndex = { 0 };
+
+	/* 블러드 이펙트 윈도우 */
+private:
+	_bool						m_isBloodWindow = { false };
+	int							m_iBloodEventIndex = { 0 };
 
 private:
 	_bool						m_isSoundListWindow = { false };

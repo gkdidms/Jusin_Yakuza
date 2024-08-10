@@ -232,11 +232,12 @@ HRESULT CUIManager::Tick(const _float& fTimeDelta)
 	}
 	else
 	{
-		//for (auto& pUIScene : m_AlwaysUI)
-		//{
-		//	pUIScene->Tick(fTimeDelta);
-		//}
+		for (auto& pUIScene : m_AlwaysUI)
+		{
+			pUIScene->Tick(fTimeDelta);
+		}
 	}
+
 
 
 	return S_OK;
@@ -275,10 +276,10 @@ HRESULT CUIManager::Late_Tick(const _float& fTimeDelta)
 		}
 		else
 		{
-			//for (auto& pUIScene : m_AlwaysUI)
-			//{
-			//	pUIScene->Late_Tick(fTimeDelta);
-			//}
+			for (auto& pUIScene : m_AlwaysUI)
+			{
+				pUIScene->Late_Tick(fTimeDelta);
+			}
 		}
 	}
 #else

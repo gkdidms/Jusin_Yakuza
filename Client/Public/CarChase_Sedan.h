@@ -1,6 +1,10 @@
 #pragma once
 #include "CarChase_Monster.h"
 
+/*
+* 플레이어가 오른쪽에 있을 때, AIML_L,B / AIMR_L,F;
+* 플레이어가 왼쪽에 있을 때, AIMR_R,B / AIML_R,F
+*/
 BEGIN(Client)
 class CCarChase_Sedan :
     public CCarChase_Monster
@@ -20,11 +24,10 @@ public:
     virtual void Tick(const _float& fTimeDelta) override;
     virtual void Late_Tick(const _float& fTimeDelta) override;
 
-
-
 private:
     virtual void Change_Animation();
     virtual HRESULT Add_Components() override;
+    _uint Change_Dir();
 
 public:
     static CCarChase_Sedan* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

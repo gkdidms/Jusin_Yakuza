@@ -29,10 +29,16 @@
 
 #pragma region Monster
 #include "CarChase_Van.h"
+#include "CarChase_Sedan.h"
+#include "CarChase_Bike.h"
+#include "CarChase_Heli.h"
 #pragma endregion
 
 #pragma region Reactor
 #include "Reactor_Van.h"
+#include "Reactor_Sedan.h"
+#include "Reactor_Bike.h"
+#include "Reactor_Heli.h"
 
 #include "Gun_Cz75.h"
 #pragma endregion
@@ -49,10 +55,13 @@
 #include "AI_WPHYakuza.h"
 #include "AI_DefaultYakuza.h"
 #include "AI_Yoneda.h"
+
 #include "AI_Passersby.h"
 
 #include "AI_Van.h"
-
+#include "AI_Bike.h"
+#include "AI_Sedan.h"
+#include "AI_Heli.h"
 #pragma endregion
 
 #pragma region Camera
@@ -497,6 +506,21 @@ if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototyp
 	if (FAILED(m_pGameInstance->Add_BTNode_Prototype(m_eNextLevel, TEXT("Prototype_BTNode_Van"),
 		CAI_Van::Create())))
 		return E_FAIL;
+
+	/* For.Prototype_BTNode_Bike*/
+	if (FAILED(m_pGameInstance->Add_BTNode_Prototype(m_eNextLevel, TEXT("Prototype_BTNode_Bike"),
+		CAI_Bike::Create())))
+		return E_FAIL;
+
+	/* For.Prototype_BTNode_Sedan*/
+	if (FAILED(m_pGameInstance->Add_BTNode_Prototype(m_eNextLevel, TEXT("Prototype_BTNode_Sedan"),
+		CAI_Sedan::Create())))
+		return E_FAIL;
+
+	/* For.Prototype_BTNode_Heli*/
+	if (FAILED(m_pGameInstance->Add_BTNode_Prototype(m_eNextLevel, TEXT("Prototype_BTNode_Heli"),
+		CAI_Heli::Create())))
+		return E_FAIL;
 #pragma endregion
 
 #pragma region GameObject
@@ -507,17 +531,37 @@ if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototyp
 
 	/* For.Prototype_GameObject_ReactorSedan */
 	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_ReactorSedan"),
-		CReactor_Van::Create(m_pDevice, m_pContext))))
+		CReactor_Sedan::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	/* For.Prototype_GameObject_ReactorBike */
 	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_ReactorBike"),
-		CReactor_Van::Create(m_pDevice, m_pContext))))
+		CReactor_Bike::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_ReactorHeli */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_ReactorHeli"),
+		CReactor_Heli::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	/* For.Prototype_GameObject_CarChaseVan*/
 	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_CarChaseVan"),
 		CCarChase_Van::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_CarChaseSedan*/
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_CarChaseSedan"),
+		CCarChase_Sedan::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_CarChaseBike*/
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_CarChaseBike"),
+		CCarChase_Bike::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_CarChaseHeli*/
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_CarChaseHeli"),
+		CCarChase_Heli::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	/* For.Prototype_GameObject_Gun_Cz75*/

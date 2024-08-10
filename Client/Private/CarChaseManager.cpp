@@ -74,15 +74,8 @@ HRESULT CCarChaseManager::Ready_Stage()
 			100000,
 			LINE_B,
 			DIR_M,
-			CCarChase_Monster::REACTOR_VAN,
-			{ CCarChase_Monster::WPR, -1}
-		},
-		CCarChase::STAGE_MONSTER_INFO{
-			110000,
-			LINE_C,
-			DIR_F,
-			CCarChase_Monster::REACTOR_VAN,
-			{ CCarChase_Monster::WPR, CCarChase_Monster::WPJ}
+			CCarChase_Monster::REACTOR_SEDAN,
+			{ CCarChase_Monster::GUN_R, -1}
 		},
 	};
 

@@ -24,10 +24,10 @@ private:
 private:
     HRESULT Ready_Camera(const wstring& strLayerTag);
     HRESULT Ready_Player(const wstring& strLayerTag);
-    HRESULT Ready_Monster(const wstring& strLayerTag);
-    HRESULT Ready_Map(const wstring& strLayerTag);
-    HRESULT Ready_Effect(const wstring& strLayerTag);
-    HRESULT Ready_Test_SceneModel(const wstring& strLayerTag);
+
+private:
+    HRESULT Ready_Test_Load();
+    HRESULT Ready_Test_Hyewon();
 
 public:
     static CLevel_Test* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

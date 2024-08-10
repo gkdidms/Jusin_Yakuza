@@ -301,6 +301,8 @@ HRESULT CMap::Render()
 		{
 			int		i = m_vRenderDefaulMeshIndex[k];
 
+			m_pMaterialCom->Bind_Shader(m_pShaderCom, m_pModelCom->Get_MaterialName(Meshes[i]->Get_MaterialIndex()));
+
 			_bool fFar = m_pGameInstance->Get_CamFar();
 			m_pShaderCom->Bind_RawValue("g_fFar", &fFar, sizeof(_float));
 
@@ -311,10 +313,8 @@ HRESULT CMap::Render()
 			_bool isRS = true;
 			_bool isRD = true;
 			_bool isRM = true;
+			_bool isRT = false;
 			_bool isMulti = true;
-			_float fRDCount = 1.f;
-
-			m_pShaderCom->Bind_RawValue("g_RDCount", &fRDCount, sizeof(_float));
 
 			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_MultiDiffuseTexture", i, aiTextureType_SHININESS)))
 				isMulti = false;
@@ -323,7 +323,6 @@ HRESULT CMap::Render()
 			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RSTexture", i, aiTextureType_SPECULAR)))
 				isRS = false;
 			m_pShaderCom->Bind_RawValue("g_isRS", &isRS, sizeof(_bool));
-			m_pShaderCom->Bind_RawValue("IsY3Shader", &isRS, sizeof(_bool));
 
 			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RDTexture", i, aiTextureType_OPACITY)))
 				isRD = false;
@@ -332,6 +331,7 @@ HRESULT CMap::Render()
 			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RMTexture", i, aiTextureType_METALNESS)))
 				isRM = false;
 			m_pShaderCom->Bind_RawValue("g_isRM", &isRM, sizeof(_bool));
+			m_pShaderCom->Bind_RawValue("g_isRT", &isRT, sizeof(_bool));
 
 			m_pShaderCom->Begin(SHADER_DEFAULT_MAP);
 
@@ -343,6 +343,8 @@ HRESULT CMap::Render()
 		{
 			int		i = m_vSignMeshIndex[k];
 
+			m_pMaterialCom->Bind_Shader(m_pShaderCom, m_pModelCom->Get_MaterialName(Meshes[i]->Get_MaterialIndex()));
+
 			_bool fFar = m_pGameInstance->Get_CamFar();
 			m_pShaderCom->Bind_RawValue("g_fFar", &fFar, sizeof(_float));
 
@@ -354,9 +356,6 @@ HRESULT CMap::Render()
 			_bool isRD = true;
 			_bool isRM = true;
 			_bool isMulti = true;
-			_float fRDCount = 1.f;
-
-			m_pShaderCom->Bind_RawValue("g_RDCount", &fRDCount, sizeof(_float));
 
 			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_MultiDiffuseTexture", i, aiTextureType_SHININESS)))
 				isMulti = false;
@@ -365,7 +364,6 @@ HRESULT CMap::Render()
 			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RSTexture", i, aiTextureType_SPECULAR)))
 				isRS = false;
 			m_pShaderCom->Bind_RawValue("g_isRS", &isRS, sizeof(_bool));
-			m_pShaderCom->Bind_RawValue("IsY3Shader", &isRS, sizeof(_bool));
 
 			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RDTexture", i, aiTextureType_OPACITY)))
 				isRD = false;
@@ -974,6 +972,23 @@ HRESULT CMap::Add_Components(void* pArg)
 	/* For.Com_Model */
 	if (FAILED(__super::Add_Component(m_iCurrentLevel, gameobjDesc->wstrModelName,
 		TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
+		return E_FAIL;
+
+	//모델 이름 추출
+	string strModelName = m_pGameInstance->WstringToString(gameobjDesc->wstrModelName);
+	string strRemoveName = "Prototype_Component_Model_";
+	_int iPos = strModelName.find(strRemoveName);
+	
+	if (iPos == string::npos)
+		return E_FAIL;
+
+	strModelName = strModelName.erase(iPos, strRemoveName.size());
+
+	wstring strMaterialName = TEXT("Prototype_Component_Material_") + m_pGameInstance->StringToWstring(strModelName);
+
+	/* For.Com_Model */
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, strMaterialName,
+		TEXT("Com_Material"), reinterpret_cast<CComponent**>(&m_pMaterialCom))))
 		return E_FAIL;
 
 	/* For.Com_Shader */

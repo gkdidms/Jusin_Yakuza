@@ -181,6 +181,10 @@ void CDebugManager::Window_Debug()
         if (ImGui::Checkbox("BOF", &isBOF))
             m_pGameInstance->Set_BOF(isBOF);
 
+        _bool isRadialBlur = m_pGameInstance->isRadialBlur();
+        if (ImGui::Checkbox("RadialBlur", &isRadialBlur))
+            m_pGameInstance->Set_RadialBlur(isRadialBlur);
+
         _bool isShadow = m_pGameInstance->isShadow();
         if (ImGui::Checkbox("Shadow", &isShadow))
             m_pGameInstance->Set_Shadow(isShadow);

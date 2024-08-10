@@ -1066,13 +1066,13 @@ void CModel::Play_Animation_CutScene(_float fTimeDelta, CAnim* pAnim, _bool isLo
 		else
 		{
 			if (0.0 == m_ChangeInterval)
-				m_Animations[m_AnimDesc.iAnimIndex]->Update_TransformationMatrix(fTimeDelta, m_Bones, m_AnimDesc.isLoop, isRoot, strExcludeBoneName);
+				m_Animations[iAnimIndex]->Update_TransformationMatrix(fTimeDelta, m_Bones, m_AnimDesc.isLoop, isRoot, strExcludeBoneName);
 			else
 			{
-				if (m_Animations[m_AnimDesc.iAnimIndex]->Get_Changed())
-					m_Animations[m_AnimDesc.iAnimIndex]->Update_TransformationMatrix(fTimeDelta, m_Bones, m_AnimDesc.isLoop, isRoot, strExcludeBoneName);
+				if (m_Animations[iAnimIndex]->Get_Changed())
+					m_Animations[iAnimIndex]->Update_TransformationMatrix(fTimeDelta, m_Bones, m_AnimDesc.isLoop, isRoot, strExcludeBoneName);
 				else
-					m_Animations[m_AnimDesc.iAnimIndex]->Update_Change_Animation(fTimeDelta, m_Bones, m_Animations[m_iPrevAnimIndex], m_ChangeInterval, isRoot);
+					m_Animations[iAnimIndex]->Update_Change_Animation(fTimeDelta, m_Bones, m_Animations[m_iPrevAnimIndex], m_ChangeInterval, isRoot);
 			}
 		}
 

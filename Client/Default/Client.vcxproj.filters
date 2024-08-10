@@ -355,9 +355,6 @@
     <ClCompile Include="..\Private\Kiryu_KRC_Guard.cpp">
       <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRC\Gaurd</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\MapColliderObj.cpp">
-      <Filter>02.GameObjects\07.MapCollider\Obj</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\MonsterTrigger.cpp">
       <Filter>02.GameObjects\08.Trigger\03.MonsterTrigger</Filter>
     </ClCompile>
@@ -551,8 +548,17 @@
     <ClCompile Include="..\private\AI_Bike.cpp">
       <Filter>02.GameObjects\02.Character\LandObject\03.CarChase\01.Monster\02.Bike\AI</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\QteManager.cpp">
+      <Filter>02.GameObjects\11.QTE</Filter>
+    </ClCompile>
     <ClCompile Include="..\Private\MapColliderObj.cpp">
       <Filter>95.Utility\04.CollisionManager\MapCollider</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\AI_Sedan.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\03.CarChase\01.Monster\01.Sedan\AI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\AI_Heli.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\03.CarChase\01.Monster\03.Heli\AI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -940,9 +946,6 @@
     <ClInclude Include="..\Public\Kiryu_KRC_Guard.h">
       <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRC\Gaurd</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\MapColliderObj.h">
-      <Filter>02.GameObjects\07.MapCollider\Obj</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\MonsterTrigger.h">
       <Filter>02.GameObjects\08.Trigger\03.MonsterTrigger</Filter>
     </ClInclude>
@@ -1136,8 +1139,17 @@
     <ClInclude Include="..\public\AI_Bike.h">
       <Filter>02.GameObjects\02.Character\LandObject\03.CarChase\01.Monster\02.Bike\AI</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\QteManager.h">
+      <Filter>02.GameObjects\11.QTE</Filter>
+    </ClInclude>
     <ClInclude Include="..\Public\MapColliderObj.h">
       <Filter>95.Utility\04.CollisionManager\MapCollider</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\AI_Sedan.h">
+      <Filter>02.GameObjects\02.Character\LandObject\03.CarChase\01.Monster\01.Sedan\AI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\AI_Heli.h">
+      <Filter>02.GameObjects\02.Character\LandObject\03.CarChase\01.Monster\03.Heli\AI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1224,15 +1236,6 @@
     <Filter Include="02.GameObjects\01.Terrain">
       <UniqueIdentifier>{73fc58be-6ca4-4e86-b2ac-39c7c7e26f66}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\02.Character">
-      <UniqueIdentifier>{a666196a-f926-41d0-a823-380685d12205}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\02.Character\CharacterData">
-      <UniqueIdentifier>{d47f23c7-f09f-46fd-a441-f1561bb9a95a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\02.Character\PartObject">
-      <UniqueIdentifier>{83de469b-7019-4bed-9e97-276b7f63de30}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObjects\03.Construction">
       <UniqueIdentifier>{95e29977-56e8-4ee9-b1c8-71236bd9d68b}</UniqueIdentifier>
     </Filter>
@@ -1250,9 +1253,6 @@
     </Filter>
     <Filter Include="95.Utility\03.BehaviorTree\LeafNode">
       <UniqueIdentifier>{3352b812-faf6-4a67-8b29-1e9df787da34}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\02.Character\PartObject\SocketObject">
-      <UniqueIdentifier>{5ecdde66-d1d6-47ad-8170-66d5ccd28aa5}</UniqueIdentifier>
     </Filter>
     <Filter Include="01.Levels\01.Office1F">
       <UniqueIdentifier>{93e0ad20-97d5-4c82-8681-669fe5987803}</UniqueIdentifier>
@@ -1359,6 +1359,156 @@
     <Filter Include="01.Levels\05.DogimazoStairs">
       <UniqueIdentifier>{6ad6a7d5-8a3a-4b60-90c6-c60a0fc7b848}</UniqueIdentifier>
     </Filter>
+    <Filter Include="95.Utility\05.UIManager\UIScene\UILoading">
+      <UniqueIdentifier>{28a57a2e-3ddc-4618-946e-d1f1d605ee62}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\05.UIManager\UIScene\UINowLoading">
+      <UniqueIdentifier>{c4f58730-64e2-429e-a674-89a880b4483f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Levels\06.DogimazoLobby">
+      <UniqueIdentifier>{25a6b42e-eb92-436c-9649-04df553ee3f1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Levels\07.DogimazoBoss">
+      <UniqueIdentifier>{c3987abd-0a35-468c-b0db-541aa2913f3b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\08.Trigger">
+      <UniqueIdentifier>{5e413a4a-e72f-49f2-a5ef-97b426f638b5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\08.Trigger\00.LevelTrigger">
+      <UniqueIdentifier>{835e72e8-1619-411a-b7e0-d0d01d39c3ed}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\08.Trigger\01.CineTrigger">
+      <UniqueIdentifier>{cae0d787-995c-4814-9000-134f1f4a389d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\08.Trigger\02.YonedaTrigger">
+      <UniqueIdentifier>{cd20dace-6e28-432e-8fd8-98fbb338d7d3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\08.Trigger\03.MonsterTrigger">
+      <UniqueIdentifier>{2f3289df-1818-4e53-8abd-71e5f39e8890}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\05.UIManager\UIScene\UILogo">
+      <UniqueIdentifier>{f5907b5b-7eff-4b99-92c0-1c84f75e1aa6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\05.UIManager\UIScene\UIMainMenu">
+      <UniqueIdentifier>{cc133ece-de19-4795-8445-46223b7c17db}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\05.UIManager\UIScene\UITutorial">
+      <UniqueIdentifier>{39820b06-aaf0-40df-8bc1-4fb5f0dd4a47}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.QuestManager">
+      <UniqueIdentifier>{99d22282-0f87-45bb-9816-932e5bb6ed7f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.QuestManager\Quest">
+      <UniqueIdentifier>{4be77cd6-cbe5-4bd8-a515-a6c9d4a3a680}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.QuestManager\Quest\Kill">
+      <UniqueIdentifier>{4b00f293-e44c-4c8c-bbe5-8bfaf75aba1d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.QuestManager\Quest\Move">
+      <UniqueIdentifier>{dc05f660-d6af-4f38-a455-af1400fc4559}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.QuestManager\Quest\Talk">
+      <UniqueIdentifier>{53247556-8aa3-49a4-8532-072c4e5cfff5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\06.Script">
+      <UniqueIdentifier>{8f2c42e2-6806-4ca7-8c34-f094134ea57f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.Camera\02.CutSceneCamera">
+      <UniqueIdentifier>{c2e83612-82aa-4ea8-acef-b6fd1976a302}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Levels\08.Street">
+      <UniqueIdentifier>{09ec77ac-537d-4622-88ef-58812619eb82}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Levels\09.Karaoke">
+      <UniqueIdentifier>{fbb6370c-86d4-46e5-add1-a457a8c37bc1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Levels\10.Roadway">
+      <UniqueIdentifier>{87725d6a-6f60-470c-8c92-bd83c479e2c0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\05.UIManager\UIScene\UITalk">
+      <UniqueIdentifier>{67923609-fa00-4887-b22f-1a67293fb0e8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\08.Trigger\04.QuestTrigger">
+      <UniqueIdentifier>{da0e49a7-16d4-4f19-8630-34614ccb1ea8}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="00.MainApp">
+      <UniqueIdentifier>{556d0fda-c211-44a2-8eb0-f1fedf692025}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04.TutorialManager">
+      <UniqueIdentifier>{a475faae-9189-4a79-b06c-052d30bf820e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Levels\11.Tutorial">
+      <UniqueIdentifier>{09b93e95-8641-4f86-aceb-8d96cd45c75e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\05.UIManager\UIScene\UISkillMenu">
+      <UniqueIdentifier>{0ab17753-4bbc-4a85-bd25-2aadad5a276c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\05.UIManager\UIScene\UISkillHolligan">
+      <UniqueIdentifier>{de8a5743-5598-4e2f-87cb-fcb88da43132}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\05.UIManager\UIScene\UISkillRush">
+      <UniqueIdentifier>{84f15fef-0b71-4a83-8280-465dff0a9170}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\05.UIManager\UIScene\UISkillDestroyer">
+      <UniqueIdentifier>{fd65e228-ee0b-4ff4-ba2b-248b93e87aa2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05.CarChaseManager">
+      <UniqueIdentifier>{fcea56b4-7172-49b8-87b8-180ce5856b11}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="05.CarChaseManager\CarChase">
+      <UniqueIdentifier>{a353c1ee-691f-4f56-9f2c-1d1c1a238879}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.Camera\03.CarChaseCamera">
+      <UniqueIdentifier>{bff01ef7-0f0f-4e43-95f0-363f4db71b0e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="04.TutorialManager\Tutorial">
+      <UniqueIdentifier>{6c80e3f7-9417-4acb-93c2-c3ede27f4567}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\09.Map">
+      <UniqueIdentifier>{496fa44a-4681-459c-b144-eb9fc5553389}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\10.Item">
+      <UniqueIdentifier>{dd3a40b8-36dc-4a84-9d0d-1d9478345039}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Levels\99.Loading\Loader\Multi">
+      <UniqueIdentifier>{14084344-ff5f-4f23-a39e-50e4aa861e1e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\05.UIManager\UIScene\UICarchase">
+      <UniqueIdentifier>{4b94c748-b126-437b-ad3d-610dbe526ea2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.Camera\07.MapCollider">
+      <UniqueIdentifier>{28cec43f-865c-488e-83e1-e6b15b632319}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\99.Camera\07.MapCollider\Obj">
+      <UniqueIdentifier>{4e8421d6-5ada-48ec-9fce-0aed349f2f59}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\06.Effect\Mesh">
+      <UniqueIdentifier>{1a4c277c-2284-46fe-9cf0-050678dc69ca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\04.CollisionManager\MapCollider">
+      <UniqueIdentifier>{d0cac265-3330-4643-b000-4a4f602408a6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character">
+      <UniqueIdentifier>{a666196a-f926-41d0-a823-380685d12205}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\CharacterData">
+      <UniqueIdentifier>{d47f23c7-f09f-46fd-a441-f1561bb9a95a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\PartObject">
+      <UniqueIdentifier>{83de469b-7019-4bed-9e97-276b7f63de30}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\PartObject\SocketObject">
+      <UniqueIdentifier>{5ecdde66-d1d6-47ad-8170-66d5ccd28aa5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\PartObject\SocketObject\SocketEffect">
+      <UniqueIdentifier>{9f450e59-cfd3-4163-ba5b-93f729ea938c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\PartObject\SocketObject\SocketCollider">
+      <UniqueIdentifier>{260596ca-843e-47fe-ae9b-3a65ebc2b9a0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\PartObject\SocketObject\SocketModel">
+      <UniqueIdentifier>{6f1aed31-e44d-41d3-8392-90366bbbca74}</UniqueIdentifier>
+    </Filter>
     <Filter Include="02.GameObjects\02.Character\LandObject">
       <UniqueIdentifier>{9fbfc139-fa7b-4bb5-8bfa-68ab385abcc7}</UniqueIdentifier>
     </Filter>
@@ -1397,6 +1547,18 @@
     </Filter>
     <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\Down">
       <UniqueIdentifier>{411f4610-fe97-4d33-920b-5bb3aace9a06}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\Kick">
+      <UniqueIdentifier>{a9945f42-cce3-48fc-9eb8-92b573bbc48c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\Grab">
+      <UniqueIdentifier>{361ce6c0-0d0d-4b6e-a702-8485478db768}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\Pickup">
+      <UniqueIdentifier>{afa11f52-5f1d-4322-886d-68e4094d377c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\BackWall">
+      <UniqueIdentifier>{dd39301f-6059-42e5-99b4-0208b284dc5e}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRH">
       <UniqueIdentifier>{1d4cafe1-9cb2-45ed-bfe3-aa4c3bdc39ae}</UniqueIdentifier>
@@ -1449,6 +1611,18 @@
     <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRC\Run">
       <UniqueIdentifier>{05554c49-48f2-436a-81e4-f66627213c96}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRC\Down">
+      <UniqueIdentifier>{d637aab2-a6a6-48f2-9052-428c77df965b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRC\Gaurd">
+      <UniqueIdentifier>{3f5ad5dc-5e30-4a8e-9db6-f53eb73719fc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRC\Grab">
+      <UniqueIdentifier>{d3efaff5-4225-4b36-991c-46c5d2a29f60}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRC\Pickup">
+      <UniqueIdentifier>{5d202184-5e66-49ec-9cf6-6022190810e9}</UniqueIdentifier>
+    </Filter>
     <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\Adventure">
       <UniqueIdentifier>{01eb585a-455f-4390-bc11-248673075203}</UniqueIdentifier>
     </Filter>
@@ -1463,117 +1637,6 @@
     </Filter>
     <Filter Include="02.GameObjects\02.Character\LandObject\01.Monster">
       <UniqueIdentifier>{45d3ed81-5372-4412-bf1f-89cbd1f74552}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\Kick">
-      <UniqueIdentifier>{a9945f42-cce3-48fc-9eb8-92b573bbc48c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="95.Utility\05.UIManager\UIScene\UILoading">
-      <UniqueIdentifier>{28a57a2e-3ddc-4618-946e-d1f1d605ee62}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="95.Utility\05.UIManager\UIScene\UINowLoading">
-      <UniqueIdentifier>{c4f58730-64e2-429e-a674-89a880b4483f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\02.Character\PartObject\SocketObject\SocketEffect">
-      <UniqueIdentifier>{9f450e59-cfd3-4163-ba5b-93f729ea938c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\02.Character\PartObject\SocketObject\SocketCollider">
-      <UniqueIdentifier>{260596ca-843e-47fe-ae9b-3a65ebc2b9a0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRC\Down">
-      <UniqueIdentifier>{d637aab2-a6a6-48f2-9052-428c77df965b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="01.Levels\06.DogimazoLobby">
-      <UniqueIdentifier>{25a6b42e-eb92-436c-9649-04df553ee3f1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="01.Levels\07.DogimazoBoss">
-      <UniqueIdentifier>{c3987abd-0a35-468c-b0db-541aa2913f3b}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRC\Gaurd">
-      <UniqueIdentifier>{3f5ad5dc-5e30-4a8e-9db6-f53eb73719fc}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\08.Trigger">
-      <UniqueIdentifier>{5e413a4a-e72f-49f2-a5ef-97b426f638b5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\08.Trigger\00.LevelTrigger">
-      <UniqueIdentifier>{835e72e8-1619-411a-b7e0-d0d01d39c3ed}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\08.Trigger\01.CineTrigger">
-      <UniqueIdentifier>{cae0d787-995c-4814-9000-134f1f4a389d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\08.Trigger\02.YonedaTrigger">
-      <UniqueIdentifier>{cd20dace-6e28-432e-8fd8-98fbb338d7d3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\08.Trigger\03.MonsterTrigger">
-      <UniqueIdentifier>{2f3289df-1818-4e53-8abd-71e5f39e8890}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="95.Utility\05.UIManager\UIScene\UILogo">
-      <UniqueIdentifier>{f5907b5b-7eff-4b99-92c0-1c84f75e1aa6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="95.Utility\05.UIManager\UIScene\UIMainMenu">
-      <UniqueIdentifier>{cc133ece-de19-4795-8445-46223b7c17db}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\Grab">
-      <UniqueIdentifier>{361ce6c0-0d0d-4b6e-a702-8485478db768}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\02.Character\LandObject\02.Adventure">
-      <UniqueIdentifier>{e953efb4-bf89-4f41-8ac1-a70274d77017}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\02.Character\LandObject\02.Adventure\AI">
-      <UniqueIdentifier>{118e6329-be46-4fd0-8074-1988d055f79a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby">
-      <UniqueIdentifier>{32d0da74-6f1f-48e1-b18f-c96b8d5b2377}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby\AI">
-      <UniqueIdentifier>{826ca722-05bb-4d95-acd5-42aa425e1c6f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="95.Utility\05.UIManager\UIScene\UITutorial">
-      <UniqueIdentifier>{39820b06-aaf0-40df-8bc1-4fb5f0dd4a47}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03.QuestManager">
-      <UniqueIdentifier>{99d22282-0f87-45bb-9816-932e5bb6ed7f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03.QuestManager\Quest">
-      <UniqueIdentifier>{4be77cd6-cbe5-4bd8-a515-a6c9d4a3a680}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03.QuestManager\Quest\Kill">
-      <UniqueIdentifier>{4b00f293-e44c-4c8c-bbe5-8bfaf75aba1d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03.QuestManager\Quest\Move">
-      <UniqueIdentifier>{dc05f660-d6af-4f38-a455-af1400fc4559}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="03.QuestManager\Quest\Talk">
-      <UniqueIdentifier>{53247556-8aa3-49a4-8532-072c4e5cfff5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="95.Utility\06.Script">
-      <UniqueIdentifier>{8f2c42e2-6806-4ca7-8c34-f094134ea57f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\99.Camera\02.CutSceneCamera">
-      <UniqueIdentifier>{c2e83612-82aa-4ea8-acef-b6fd1976a302}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="01.Levels\08.Street">
-      <UniqueIdentifier>{09ec77ac-537d-4622-88ef-58812619eb82}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="01.Levels\09.Karaoke">
-      <UniqueIdentifier>{fbb6370c-86d4-46e5-add1-a457a8c37bc1}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="01.Levels\10.Roadway">
-      <UniqueIdentifier>{87725d6a-6f60-470c-8c92-bd83c479e2c0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="95.Utility\05.UIManager\UIScene\UITalk">
-      <UniqueIdentifier>{67923609-fa00-4887-b22f-1a67293fb0e8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\08.Trigger\04.QuestTrigger">
-      <UniqueIdentifier>{da0e49a7-16d4-4f19-8630-34614ccb1ea8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="00.MainApp">
-      <UniqueIdentifier>{556d0fda-c211-44a2-8eb0-f1fedf692025}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="04.TutorialManager">
-      <UniqueIdentifier>{a475faae-9189-4a79-b06c-052d30bf820e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="01.Levels\11.Tutorial">
-      <UniqueIdentifier>{09b93e95-8641-4f86-aceb-8d96cd45c75e}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObjects\02.Character\LandObject\01.Monster\AI">
       <UniqueIdentifier>{7c984c39-25b1-4b6b-b10a-cd7e33117ecd}</UniqueIdentifier>
@@ -1623,35 +1686,17 @@
     <Filter Include="02.GameObjects\02.Character\LandObject\01.Monster\Yoneda\AI">
       <UniqueIdentifier>{ce943862-3c8c-4c61-af0a-695062dd5489}</UniqueIdentifier>
     </Filter>
-    <Filter Include="95.Utility\05.UIManager\UIScene\UISkillMenu">
-      <UniqueIdentifier>{0ab17753-4bbc-4a85-bd25-2aadad5a276c}</UniqueIdentifier>
+    <Filter Include="02.GameObjects\02.Character\LandObject\02.Adventure">
+      <UniqueIdentifier>{e953efb4-bf89-4f41-8ac1-a70274d77017}</UniqueIdentifier>
     </Filter>
-    <Filter Include="95.Utility\05.UIManager\UIScene\UISkillHolligan">
-      <UniqueIdentifier>{de8a5743-5598-4e2f-87cb-fcb88da43132}</UniqueIdentifier>
+    <Filter Include="02.GameObjects\02.Character\LandObject\02.Adventure\AI">
+      <UniqueIdentifier>{118e6329-be46-4fd0-8074-1988d055f79a}</UniqueIdentifier>
     </Filter>
-    <Filter Include="95.Utility\05.UIManager\UIScene\UISkillRush">
-      <UniqueIdentifier>{84f15fef-0b71-4a83-8280-465dff0a9170}</UniqueIdentifier>
+    <Filter Include="02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby">
+      <UniqueIdentifier>{32d0da74-6f1f-48e1-b18f-c96b8d5b2377}</UniqueIdentifier>
     </Filter>
-    <Filter Include="95.Utility\05.UIManager\UIScene\UISkillDestroyer">
-      <UniqueIdentifier>{fd65e228-ee0b-4ff4-ba2b-248b93e87aa2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="05.CarChaseManager">
-      <UniqueIdentifier>{fcea56b4-7172-49b8-87b8-180ce5856b11}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="05.CarChaseManager\CarChase">
-      <UniqueIdentifier>{a353c1ee-691f-4f56-9f2c-1d1c1a238879}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\99.Camera\03.CarChaseCamera">
-      <UniqueIdentifier>{bff01ef7-0f0f-4e43-95f0-363f4db71b0e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="04.TutorialManager\Tutorial">
-      <UniqueIdentifier>{6c80e3f7-9417-4acb-93c2-c3ede27f4567}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\09.Map">
-      <UniqueIdentifier>{496fa44a-4681-459c-b144-eb9fc5553389}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\10.Item">
-      <UniqueIdentifier>{dd3a40b8-36dc-4a84-9d0d-1d9478345039}</UniqueIdentifier>
+    <Filter Include="02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby\AI">
+      <UniqueIdentifier>{826ca722-05bb-4d95-acd5-42aa425e1c6f}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObjects\02.Character\LandObject\03.CarChase">
       <UniqueIdentifier>{5c299c28-69e6-4612-a808-f559d8352e9d}</UniqueIdentifier>
@@ -1670,6 +1715,9 @@
     </Filter>
     <Filter Include="02.GameObjects\02.Character\LandObject\03.CarChase\01.Monster\02.Bike">
       <UniqueIdentifier>{8fe3393b-936e-4ed0-9e7d-49da5b00a861}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\03.CarChase\01.Monster\02.Bike\AI">
+      <UniqueIdentifier>{3f21bbf2-293f-4185-a228-fe0f284007e4}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObjects\02.Character\LandObject\03.CarChase\01.Monster\03.Heli">
       <UniqueIdentifier>{a93d07bc-b9d2-40b6-b646-d43ef43d4154}</UniqueIdentifier>
@@ -1692,50 +1740,23 @@
     <Filter Include="02.GameObjects\02.Character\LandObject\03.CarChase\00.Reactor\02.Bike">
       <UniqueIdentifier>{b8bf80a5-ef27-4fc2-b1fa-01936ccfc529}</UniqueIdentifier>
     </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\03.CarChase\00.Reactor\04.Gun_Cz75">
+      <UniqueIdentifier>{863a5ddf-d4bd-41f1-9986-caf74f4a90c6}</UniqueIdentifier>
+    </Filter>
     <Filter Include="02.GameObjects\02.Character\LandObject\03.CarChase\02.Taxi">
       <UniqueIdentifier>{eae66a81-9be8-4e33-ab79-2ff998391627}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="01.Levels\99.Loading\Loader\Multi">
-      <UniqueIdentifier>{14084344-ff5f-4f23-a39e-50e4aa861e1e}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObjects\02.Character\LandObject\03.CarChase\02.Taxi\Kiryu">
       <UniqueIdentifier>{20572d64-5160-43d4-8e4b-17be5773ca5e}</UniqueIdentifier>
     </Filter>
-    <Filter Include="95.Utility\05.UIManager\UIScene\UICarchase">
-      <UniqueIdentifier>{4b94c748-b126-437b-ad3d-610dbe526ea2}</UniqueIdentifier>
+    <Filter Include="02.GameObjects\02.Character\LandObject\03.CarChase\01.Monster\01.Sedan\AI">
+      <UniqueIdentifier>{b6d6a011-642b-4cd4-b763-c6d280ce2a9f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\02.Character\PartObject\SocketObject\SocketModel">
-      <UniqueIdentifier>{6f1aed31-e44d-41d3-8392-90366bbbca74}</UniqueIdentifier>
+    <Filter Include="02.GameObjects\11.QTE">
+      <UniqueIdentifier>{9605cd98-5bfa-433f-84c2-281c8a52391d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRC\Grab">
-      <UniqueIdentifier>{d3efaff5-4225-4b36-991c-46c5d2a29f60}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\02.Character\LandObject\03.CarChase\00.Reactor\04.Gun_Cz75">
-      <UniqueIdentifier>{863a5ddf-d4bd-41f1-9986-caf74f4a90c6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\Pickup">
-      <UniqueIdentifier>{afa11f52-5f1d-4322-886d-68e4094d377c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRC\Pickup">
-      <UniqueIdentifier>{5d202184-5e66-49ec-9cf6-6022190810e9}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\99.Camera\07.MapCollider">
-      <UniqueIdentifier>{28cec43f-865c-488e-83e1-e6b15b632319}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\99.Camera\07.MapCollider\Obj">
-      <UniqueIdentifier>{4e8421d6-5ada-48ec-9fce-0aed349f2f59}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\06.Effect\Mesh">
-      <UniqueIdentifier>{1a4c277c-2284-46fe-9cf0-050678dc69ca}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\02.Character\LandObject\03.CarChase\01.Monster\02.Bike\AI">
-      <UniqueIdentifier>{3f21bbf2-293f-4185-a228-fe0f284007e4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\BackWall">
-      <UniqueIdentifier>{dd39301f-6059-42e5-99b4-0208b284dc5e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="95.Utility\04.CollisionManager\MapCollider">
-      <UniqueIdentifier>{d0cac265-3330-4643-b000-4a4f602408a6}</UniqueIdentifier>
+    <Filter Include="02.GameObjects\02.Character\LandObject\03.CarChase\01.Monster\03.Heli\AI">
+      <UniqueIdentifier>{0e77d35c-b64b-45b9-8f71-b342cfa6b864}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
