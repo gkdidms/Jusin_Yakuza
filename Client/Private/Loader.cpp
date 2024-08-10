@@ -8,6 +8,7 @@
 
 #include "SocketCollider.h"
 #include "SocketEffect.h"
+#include "QteManager.h"
 #pragma endregion
 
 #pragma region Monster
@@ -204,6 +205,13 @@ HRESULT CLoader::Loading_Default()
 	/* For.Prototype_GameObject_YonedaTrigger */
 	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_YonedaTrigger"),
 		CYonedaTrigger::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+#pragma endregion
+
+#pragma region Etc
+	/* For.Prototype_GameObject_QTEManager*/
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_QTEManager"),
+		CQteManager::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 #pragma endregion
 

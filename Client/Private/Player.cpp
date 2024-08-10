@@ -26,6 +26,8 @@
 #include "Item.h"
 #include "MapCollider.h"
 
+#include "QteManager.h"
+
 #pragma region 행동 관련 헤더들
 #include "Kiryu_KRS_Attack.h"
 #include "Kiryu_KRH_Attack.h"
@@ -113,6 +115,8 @@ HRESULT CPlayer::Initialize(void* pArg)
 
 	// 새로 생성할 때 마다 UI매니저에 본인을 Set해준다.
 	m_pUIManager->Set_Player(this);
+
+	m_pQTEMgr = dynamic_cast<CQteManager*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_QTEManager"), nullptr));
 
 	On_Separation_Hand(0);			// 양손 분리 켜둠
 
@@ -258,6 +262,8 @@ void CPlayer::Tick(const _float& fTimeDelta)
 	Setting_Target_Enemy();
 	Setting_Target_Item();
 	Setting_Target_Wall();
+
+	m_pQTEMgr->Tick(fTimeDelta);
 }
 
 void CPlayer::Late_Tick(const _float& fTimeDelta)
@@ -1940,6 +1946,8 @@ void CPlayer::Set_CutSceneAnim(CUTSCENE_ANIMATION_TYPE eType, _uint iFaceAnimInd
 		}
 		j++;
 	}
+
+	m_pQTEMgr->Set_Animation(m_pAnimCom, m_CutSceneAnimation.at(eType));
 }
 
 void CPlayer::Play_CutScene()
@@ -2476,6 +2484,7 @@ void CPlayer::Free()
 	__super::Free();
 
 	Safe_Release(m_pTargetObject);
+	Safe_Release(m_pQTEMgr);
 
 	for (size_t i = 0; i < BATTLE_STYLE_END; i++)
 	{

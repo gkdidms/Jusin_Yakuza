@@ -8,6 +8,7 @@
 
 #include "SocketCollider.h"
 #include "SocketEffect.h"
+#include "QteManager.h"
 #pragma endregion
 
 #pragma region Monster
@@ -206,7 +207,12 @@ HRESULT CMultiLoader::Loading_Default()
 		return E_FAIL;
 #pragma endregion
 
-
+#pragma region Etc
+	/* For.Prototype_GameObject_QTEManager*/
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_QTEManager"),
+		CQteManager::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+#pragma endregion
 
 #pragma region Effect_Texture/* Prototype_Component_Texture_Sphere */
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Texture_Sphere"),
