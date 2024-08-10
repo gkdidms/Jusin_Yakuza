@@ -55,6 +55,43 @@ HRESULT CUICarchase::Remove_Target(_uint iIndex)
     return S_OK;
 }
 
+HRESULT CUICarchase::Show_Scene()
+{
+
+    _int Index = 0;
+
+    //8번9번 ui 리로드
+    for (auto& iter : m_UI)
+    {
+        if (CUI_Object::TYPE_BTN != iter->Get_TypeIndex())
+        {
+            if (Back == Index || TEXT == Index)
+            {
+                iter->Close_UI();
+            }
+            else
+                iter->Show_UI();
+        }
+        else
+            iter->Close_UI();
+
+        Index++;
+    }
+
+    for (auto& iter : m_EventUI)
+    {
+        if (CUI_Object::TYPE_BTN != iter->Get_TypeIndex())
+            iter->Show_UI();
+        else
+            iter->Close_UI();
+    }
+    m_isAnimFin = false;
+    m_isClose = false;
+
+
+    return S_OK;
+}
+
 HRESULT CUICarchase::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg)
 {
     if (FAILED(__super::Initialize(pDevice, pContext, pArg)))
@@ -151,6 +188,27 @@ HRESULT CUICarchase::Update_Player()
     CHighway_Taxi* Taxi = dynamic_cast<CHighway_Taxi*>(m_pGameInstance->Get_GameObject(Level, TEXT("Layer_Taxi"), 0));
 
     CHighway_Kiryu* pKiryu = static_cast<CHighway_Kiryu*>(Taxi->Get_Kiryu());
+
+   _uint Type = pKiryu->Get_CurrentBehavior();
+
+   if (CHighway_Kiryu::HIDE == Type)
+   {
+       if (KiryuType != Type)
+       {
+           m_UI[Back]->Show_UI();
+           m_UI[TEXT]->Show_UI();
+       }
+           KiryuType = Type;
+   }
+   else
+   {
+       if (KiryuType != Type && CHighway_Kiryu::HIDE== KiryuType)
+       {
+           m_UI[Back]->Close_UI();
+           m_UI[TEXT]->Close_UI();
+       }
+           KiryuType = Type;
+   }
 
     //정보 갱신 + ui 업데이트
     //1 . 캐릭피 , 2히트아이 , 3자동차피 , 4총알
