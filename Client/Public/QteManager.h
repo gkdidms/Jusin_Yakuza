@@ -53,7 +53,7 @@ private:
     void ResetVariables();
 
     void Skip_KeyFrame(_uint iAnimIndex, QTE_DESC& Desc);
-    void Cancle_KeyFrame(_uint iAnimIndex, QTE_DESC& Desc);
+    void Cancle_KeyFrame();
 
 public:
     void Slowing();
@@ -72,6 +72,7 @@ private:
     _uint   m_iSuccess = { 0 };                     // 0: 암것도아님, 1: 성공, 2: 실패
 
     string m_strAnimationName;
+    string m_strPlayingAnimName;
 
     unordered_map<string, QTE_DESC> m_QTEs;
 

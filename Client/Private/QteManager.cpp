@@ -35,6 +35,7 @@ void Client::CQteManager::Tick(const _float& fTimeDelta)
 {
     Check_QTE_Section();
     Slowing();
+    Cancle_KeyFrame();
 }
 
 void Client::CQteManager::Late_Tick(const _float& fTimeDelta)
@@ -50,6 +51,7 @@ void Client::CQteManager::Set_Animation(CAnim* pAnim, string strAnimName)
 {
     m_pPlayerAnimCom = pAnim;
     m_strAnimationName = strAnimName;
+    m_strPlayingAnimName = m_strAnimationName;
     m_iSuccess = 0;
 }
 
@@ -149,10 +151,14 @@ void Client::CQteManager::Skip_KeyFrame(_uint iAnimIndex, QTE_DESC& Desc)
     }
 }
 
-void CQteManager::Cancle_KeyFrame(_uint iAnimIndex, QTE_DESC& Desc)
+void CQteManager::Cancle_KeyFrame()
 {
+    if ("" == m_strPlayingAnimName) return;
+
+    QTE_DESC m_eCurrentQTE = m_QTEs.find(m_strPlayingAnimName)->second;
+
     // 성공 키프레임과 실패 키프레임을 비교해서, 성공 키프레임이 앞쪽이라면 true, 실패 키프레임이 앞쪽이라면 false
-    _bool isFront = Desc.iSuccesStartFrame < Desc.iFailedStartFrame;         
+    _bool isFront = m_eCurrentQTE.iSuccesStartFrame < m_eCurrentQTE.iFailedStartFrame;
     auto AnimList = m_pPlayerAnimCom->Get_Animations();
 
     switch (m_iSuccess)
@@ -161,8 +167,10 @@ void CQteManager::Cancle_KeyFrame(_uint iAnimIndex, QTE_DESC& Desc)
     {
         if (isFront)
         {
-            if (Desc.iSuccesEndFrame <= *AnimList[iAnimIndex]->Get_CurrentPosition())
+            if (m_eCurrentQTE.iSuccesEndFrame <= *AnimList[m_eCurrentQTE.iAnimIndex]->Get_CurrentPosition())
             {
+                m_strPlayingAnimName = "";
+                 
                 // 이 때 컷신 종료해줘야한다.
                 CPlayer* pPlayer = dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"), 0));
                 pPlayer->Reset_CutSceneEvent();
@@ -174,8 +182,10 @@ void CQteManager::Cancle_KeyFrame(_uint iAnimIndex, QTE_DESC& Desc)
     {
         if (!isFront)
         {
-            if (Desc.iFailedEndFrame <= *AnimList[iAnimIndex]->Get_CurrentPosition())
+            if (m_eCurrentQTE.iFailedEndFrame <= *AnimList[m_eCurrentQTE.iAnimIndex]->Get_CurrentPosition())
             {
+                m_strPlayingAnimName = "";
+
                 // 이 때 컷신 종료해줘야한다.
                 CPlayer* pPlayer = dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"), 0));
                 pPlayer->Reset_CutSceneEvent();
@@ -248,9 +258,7 @@ void Client::CQteManager::Check_QTE_Section()
             ResetVariables();
 
             Skip_KeyFrame(animIndex, it->second);
-        }
-
-        //Cancle_KeyFrame(animIndex, it->second);
+        }        
     }
 
 }
