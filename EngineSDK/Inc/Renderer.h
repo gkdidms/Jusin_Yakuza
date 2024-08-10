@@ -111,8 +111,10 @@ private:
 
     /*PostProcessing*/
     void Render_RadialBlur();
+    void Render_Crack();
 
-    /*√÷¡æ ∑ª¥ı*/
+
+    /*√÷¡æ ∑ª¥ı (ª©¡ˆ∏∂ººø‰)*/
     void Render_FinalResult();
 
     void Render_UI();

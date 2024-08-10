@@ -159,9 +159,6 @@
     <ClInclude Include="..\Public\Group.h">
       <Filter>02.GameObjects\03.GameObject\99.Group</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\UI_Texture.h">
-      <Filter>02.GameObjects\03.GameObject\00.UI_Texture</Filter>
-    </ClInclude>
     <ClInclude Include="..\public\UI_Object.h">
       <Filter>02.GameObjects\03.GameObject</Filter>
     </ClInclude>
@@ -215,6 +212,9 @@
     </ClInclude>
     <ClInclude Include="..\..\Imgui\imGuizmo\GraphEditor.h">
       <Filter>96.IMGUI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\UI_Texture.h">
+      <Filter>02.GameObjects\03.GameObject\00.UI_Texture</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

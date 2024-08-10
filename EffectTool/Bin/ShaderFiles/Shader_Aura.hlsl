@@ -439,21 +439,48 @@ PS_OUT PS_AURA_FIRE(PS_IN In)
     
     float2 LifeAlpha = g_lifeAlpha;
 
-    vector Tone = g_ToneTexture.Sample(PointSampler, In.vTexcoord);
+    vector Tone = g_ToneTexture.Sample(PointSampler, In.vToneTex);
 
-    vector UVSprite = g_UVAnimTexture.Sample(LinearSampler, In.vTexcoord);
+    float FlowPow = g_fFlowPow; //왜곡 강도 0~1사이
+    float FlowSpeed = g_fFlowSpeed; //흐름 속도
+    
+    //스프라이트 는 시간이랑 다름
+    float TimeA = frac(In.vLifeTime.y * FlowSpeed);
+    float TimeB = frac(In.vLifeTime.y + 0.5f * FlowSpeed);
+    
+    float2 ResultTime = float2(TimeA * 0.2f, TimeB * 0.3f);
+
+    // Noise 텍스처를 사용하여 UV 좌표 변화 계산
+    
+    float2 Dist = (g_FluidTexture.Sample(PointSampler, In.vAlphaTex) * 2.0f - 1.0f) * FlowPow;
+   // float2 flowUV = In.vAlphaTex + (g_FluidTexture.Sample(PointSampler, In.vAlphaTex + ResultTime).xy * 2.0 - 1.0) * FlowPow;
+
+
+    float BaseAlphaA = g_BaseAlphaTexture.Sample(PointSampler, In.vTexcoord + Dist * TimeA).a;
+    float BaseAlphaB = g_BaseAlphaTexture.Sample(PointSampler, In.vTexcoord + Dist * TimeB).a;
+
+    float mixlerp = abs(frac(In.vLifeTime.y) * 2.f - 1.f);
+    
+    float BaseAlpha = lerp(BaseAlphaA, BaseAlphaB, mixlerp); //flow 셰이더 반복
+    
+    vector UVSprite = g_UVAnimTexture.Sample(PointSampler, In.vTexcoord);
     
     float Alphafactor = frac(In.vLifeTime.y / In.vLifeTime.x);
     
     float lerpAlpha = lerp(LifeAlpha.x, LifeAlpha.y, Alphafactor);
   
-    vector FinalColor = vector(Tone.rgb * UVSprite.rgb, UVSprite.a * lerpAlpha);
-    
-    //결과값 송출
+    vector FinalColor;
+    FinalColor.rgb= Tone.rgb;
+    FinalColor.a = lerpAlpha * BaseAlpha;
+
+    // FinalColor = vector(flowUV, flowUV);
+
     float3 ColorN = FinalColor.rgb;
     
     float AlphaN = FinalColor.a;
         
+  //  AlphaN *= lerp(g_lifeAlpha.x, g_lifeAlpha.y, In.vLifeTime.y / In.vLifeTime.x);
+    
     Out.vColor = float4(ColorN.rgb * AlphaN, AlphaN) * fWeight;
     
     Out.vAlpha = float4(AlphaN, AlphaN, AlphaN, AlphaN);
@@ -478,7 +505,7 @@ technique11 DefaultTechnique
         PixelShader = compile ps_5_0 PS_MAIN_NOCOLOR();
     }
 
-    pass StartAuraFluid //0
+    pass StartAuraFluid //1
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_None_Test_None_Write, 0);
@@ -492,7 +519,7 @@ technique11 DefaultTechnique
         PixelShader = compile ps_5_0 PS_MAIN_NOCOLOR();
     }
 
-    pass StartAuraFire //1
+    pass StartAuraFire //2
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_None_Test_None_Write, 0);
@@ -504,6 +531,20 @@ technique11 DefaultTechnique
         HullShader = NULL;
         DomainShader = NULL;
         PixelShader = compile ps_5_0 PS_MAIN_COLOR();
+    }
+
+    pass AuraFire //3
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_None_Test_None_Write, 0);
+        SetBlendState(BS_WeightsBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+   
+		/* 어떤 셰이덜르 국동할지. 셰이더를 몇 버젼으로 컴파일할지. 진입점함수가 무엇이찌. */
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = compile gs_5_0 GS_NOROTATE();
+        HullShader = NULL;
+        DomainShader = NULL;
+        PixelShader = compile ps_5_0 PS_AURA_FIRE();
     }
 }
 
