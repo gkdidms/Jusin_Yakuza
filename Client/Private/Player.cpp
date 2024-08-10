@@ -186,16 +186,6 @@ void CPlayer::Tick(const _float& fTimeDelta)
 
 #ifdef _DEBUG
 
-	if (m_pGameInstance->GetKeyState(DIK_M) == TAP)
-	{
-		m_iFaceAnimIndex = 8;
-		On_Separation_Face();
-	}	
-	if (m_pGameInstance->GetKeyState(DIK_N) == TAP)
-	{
-		Off_Separation_Face();
-	}
-
 	if (m_pGameInstance->GetKeyState(DIK_Z) == TAP)
 	{
 		//TODO: 여기에서 enum값을 필요한 애니메이션으로 바꾸면 해당하는 컷신이 실행된당

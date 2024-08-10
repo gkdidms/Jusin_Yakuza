@@ -27,7 +27,7 @@ HRESULT CSofa::Initialize(void* pArg)
 		return E_FAIL;
 
 	m_pTransformCom->Change_Rotation(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), XMConvertToRadians(-90.f));
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0, 0.04, -0.03, 1));
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0.f, 0.3f, 0.3f, 1));
 
 	return S_OK;
 }
@@ -39,6 +39,15 @@ void CSofa::Priority_Tick(const _float& fTimeDelta)
 
 void CSofa::Tick(const _float& fTimeDelta)
 {
+	if (m_pGameInstance->GetKeyState(DIK_M) == HOLD)
+	{
+		m_pTransformCom->Go_Straight(fTimeDelta);
+	}
+	if (m_pGameInstance->GetKeyState(DIK_N) == HOLD)
+	{
+		m_pTransformCom->Go_Backward(fTimeDelta);
+	}
+
 	__super::Tick(fTimeDelta);
 }
 
