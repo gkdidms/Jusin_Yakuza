@@ -775,6 +775,21 @@ if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_
 	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Gun_Cz75"),
 		CGun_Cz75::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+
+	/* For.Prototype_GameObject_ShotGun*/
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_ShotGun"),
+		CShotGun::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_MchnGun*/
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_MchnGun"),
+		CMchnGun::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_RcktGun*/
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_RcktGun"),
+		CRcktGun::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 #pragma endregion
 
 	return S_OK;
@@ -887,6 +902,11 @@ HRESULT CMultiLoader::Loading_For_NonAnim()
 	Add_Models_On_Path_NonAnim(LEVEL_TEST, TEXT("../Bin/Resources/Models/NonAnim/Map/KaraokeMap"));
 	Add_Models_On_Path_NonAnim(LEVEL_TEST, TEXT("../Bin/Resources/Models/NonAnim/Bone_Sphere"));
 	Add_Models_On_Path_NonAnim(LEVEL_TEST, TEXT("../Bin/Resources/Models/NonAnim/Gun_Cz75"));
+	Add_Models_On_Path_NonAnim(LEVEL_TEST, TEXT("../Bin/Resources/Models/NonAnim/Knife"));
+	Add_Models_On_Path_NonAnim(LEVEL_TEST, TEXT("../Bin/Resources/Models/NonAnim/MchnGun"));
+	Add_Models_On_Path_NonAnim(LEVEL_TEST, TEXT("../Bin/Resources/Models/NonAnim/RcktGun"));
+	Add_Models_On_Path_NonAnim(LEVEL_TEST, TEXT("../Bin/Resources/Models/NonAnim/RcktGunBullet"));
+	Add_Models_On_Path_NonAnim(LEVEL_TEST, TEXT("../Bin/Resources/Models/NonAnim/ShotGun"));
 
 #pragma endregion
 
@@ -977,9 +997,6 @@ HRESULT CMultiLoader::Loading_For_Default()
 	if (FAILED(Loading_Highway()))
 		return E_FAIL;
 
-	if (FAILED(Loading_Weapon()))
-		return E_FAIL;
-
 	Add_GameObject_Particle_On_Path(TEXT("../../Client/Bin/DataFiles/Particle/"));
 
 #pragma region Camera
@@ -1003,6 +1020,9 @@ HRESULT CMultiLoader::Loading_For_Default()
 	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_CarChaseCamera"), CCarChaseCamera::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 #pragma endregion
+
+	if (FAILED(Loading_Weapon()))
+		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("디폴트 로딩이 완료되었습니다."));
 

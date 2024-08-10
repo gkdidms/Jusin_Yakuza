@@ -27,7 +27,8 @@ HRESULT CShotGun::Initialize(void* pArg)
 		return E_FAIL;
 
 	m_pTransformCom->Change_Rotation(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), XMConvertToRadians(-90.f));
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0, 0.04, -0.03, 1));
+	m_pTransformCom->Change_Rotation(m_pTransformCom->Get_State(CTransform::STATE_UP), XMConvertToRadians(180.f));
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0.f, 0.1, -0.07f, 1));
 
 	return S_OK;
 }
