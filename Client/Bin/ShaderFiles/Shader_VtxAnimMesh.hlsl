@@ -78,6 +78,46 @@ VS_OUT_LIGHTDEPTH VS_MAIN_LIGHTDEPTH(VS_IN In)
     return Out;
 }
 
+/*
+struct VS_OUT_MOTIONBLUR
+{
+    float4 vPosition : SV_POSITION;
+    float2 vTexcoord : TEXCOORD0;
+    float4 vProjPos : TEXCOORD1;
+    float4 vOldPosition : TEXCOORD2;
+};
+
+
+VS_OUT VS_MAIN_MOTIONBLUR(VS_IN In)
+{
+    VS_OUT Out = (VS_OUT) 0;
+    
+    float fWeightW = 1.f - (In.vBlendWeights.x + In.vBlendWeights.y + In.vBlendWeights.z);
+    
+    matrix TransformMatrix = mul(g_BoneMatrices[In.vBlendIndices.x], In.vBlendWeights.x) +
+    mul(g_BoneMatrices[In.vBlendIndices.y], In.vBlendWeights.y) +
+    mul(g_BoneMatrices[In.vBlendIndices.z], In.vBlendWeights.z) +
+    mul(g_BoneMatrices[In.vBlendIndices.w], fWeightW);
+    
+    vector vPosition = mul(float4(In.vPosition, 1.f), TransformMatrix);
+    vector vNormal = mul(float4(In.vNormal, 0.f), TransformMatrix);
+
+    matrix matWV, matWVP;
+
+    matWV = mul(g_WorldMatrix, g_ViewMatrix);
+    matWVP = mul(matWV, g_ProjMatrix);
+
+    Out.vPosition = mul(vPosition, matWVP);
+    Out.vNormal = normalize(mul(vNormal, g_WorldMatrix));
+    Out.vTexcoord = In.vTexcoord;
+    Out.vProjPos = Out.vPosition;
+    Out.vTangent = normalize(mul(vector(In.vTangent.xyz, 0.f), g_WorldMatrix));
+    Out.vBinormal = vector(cross(Out.vNormal.xyz, Out.vTangent.xyz), 0.f);
+    
+    return Out;
+}
+*/
+
 // LightDepth¿ë GS
 struct GS_IN
 {
@@ -296,6 +336,19 @@ technique11 DefaultTechnique
     }
 
     pass LightDepth
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN_LIGHTDEPTH();
+        GeometryShader = compile gs_5_0 GS_MAIN_LIGHTDEPTH();
+        HullShader = NULL;
+        DomainShader = NULL;
+        PixelShader = compile ps_5_0 PS_MAIN_LIGHTDEPTH();
+    }
+
+    pass MotionBlur
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_Default, 0);

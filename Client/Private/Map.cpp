@@ -355,6 +355,7 @@ HRESULT CMap::Render()
 			_bool isRS = true;
 			_bool isRD = true;
 			_bool isRM = true;
+			_bool isRT = false;
 			_bool isMulti = true;
 
 			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_MultiDiffuseTexture", i, aiTextureType_SHININESS)))
@@ -372,6 +373,7 @@ HRESULT CMap::Render()
 			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RMTexture", i, aiTextureType_METALNESS)))
 				isRM = false;
 			m_pShaderCom->Bind_RawValue("g_isRM", &isRM, sizeof(_bool));
+			m_pShaderCom->Bind_RawValue("g_isRT", &isRT, sizeof(_bool));
 
 			m_pShaderCom->Begin(SHADER_SIGN);
 
@@ -669,7 +671,6 @@ HRESULT CMap::Render()
 
 	}
 #pragma endregion
-
 
 #pragma region Render_NonLightNonBlur
 	if (iRenderState == CRenderer::RENDER_NONLIGHT_NONBLUR)
