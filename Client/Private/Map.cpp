@@ -153,6 +153,20 @@ HRESULT CMap::Render()
 #endif
 
 
+	m_vRenderGlassMeshIndex.clear();
+	m_vDecalMeshIndex.clear();
+	m_vDecalLightMeshIndex.clear();
+	m_vSignMeshIndex.clear();
+	m_vLampMeshIndex.clear();
+	m_vDecalBlendMeshIndex.clear();
+	m_vBloomIndex.clear();
+	m_vMaskSignIndex.clear();
+	m_vDynamicSignIndex.clear();
+	m_vStrongBloomIndex.clear();
+	m_vCompulsoryDecalBlendMeshIndex.clear();
+
+
+
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
 
@@ -383,24 +397,37 @@ HRESULT CMap::Render()
 		{
 			int		i = m_vLampMeshIndex[k];
 
+			m_pMaterialCom->Bind_Shader(m_pShaderCom, m_pModelCom->Get_MaterialName(Meshes[i]->Get_MaterialIndex()));
+
+			_bool fFar = m_pGameInstance->Get_CamFar();
+			m_pShaderCom->Bind_RawValue("g_fFar", &fFar, sizeof(_float));
+
 			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
 				return E_FAIL;
+			m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS);
 
-			bool	bRMExist = m_pModelCom->Check_Exist_Material(i, aiTextureType_METALNESS);
+			_bool isRS = true;
+			_bool isRD = true;
+			_bool isRM = true;
+			_bool isRT = false;
+			_bool isMulti = true;
 
-			// Normal texture가 있을 경우
-			if (true == bRMExist)
-			{
-				m_pModelCom->Bind_Material(m_pShaderCom, "g_RMTexture", i, aiTextureType_METALNESS);
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_MultiDiffuseTexture", i, aiTextureType_SHININESS)))
+				isMulti = false;
+			m_pShaderCom->Bind_RawValue("g_isMulti", &isMulti, sizeof(_bool));
 
-				if (FAILED(m_pShaderCom->Bind_RawValue("g_bExistRMTex", &bRMExist, sizeof(bool))))
-					return E_FAIL;
-			}
-			else
-			{
-				if (FAILED(m_pShaderCom->Bind_RawValue("g_bExistRMTex", &bRMExist, sizeof(bool))))
-					return E_FAIL;
-			}
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RSTexture", i, aiTextureType_SPECULAR)))
+				isRS = false;
+			m_pShaderCom->Bind_RawValue("g_isRS", &isRS, sizeof(_bool));
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RDTexture", i, aiTextureType_OPACITY)))
+				isRD = false;
+			m_pShaderCom->Bind_RawValue("g_isRD", &isRD, sizeof(_bool));
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RMTexture", i, aiTextureType_METALNESS)))
+				isRM = false;
+			m_pShaderCom->Bind_RawValue("g_isRM", &isRM, sizeof(_bool));
+			m_pShaderCom->Bind_RawValue("g_isRT", &isRT, sizeof(_bool));
 
 			m_pShaderCom->Begin(SHADER_DEFAULT_MAP);
 
@@ -411,8 +438,37 @@ HRESULT CMap::Render()
 		{
 			int		i = m_vBloomIndex[k];
 
+			m_pMaterialCom->Bind_Shader(m_pShaderCom, m_pModelCom->Get_MaterialName(Meshes[i]->Get_MaterialIndex()));
+
+			_bool fFar = m_pGameInstance->Get_CamFar();
+			m_pShaderCom->Bind_RawValue("g_fFar", &fFar, sizeof(_float));
+
 			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
 				return E_FAIL;
+			m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS);
+
+			_bool isRS = true;
+			_bool isRD = true;
+			_bool isRM = true;
+			_bool isRT = false;
+			_bool isMulti = true;
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_MultiDiffuseTexture", i, aiTextureType_SHININESS)))
+				isMulti = false;
+			m_pShaderCom->Bind_RawValue("g_isMulti", &isMulti, sizeof(_bool));
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RSTexture", i, aiTextureType_SPECULAR)))
+				isRS = false;
+			m_pShaderCom->Bind_RawValue("g_isRS", &isRS, sizeof(_bool));
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RDTexture", i, aiTextureType_OPACITY)))
+				isRD = false;
+			m_pShaderCom->Bind_RawValue("g_isRD", &isRD, sizeof(_bool));
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RMTexture", i, aiTextureType_METALNESS)))
+				isRM = false;
+			m_pShaderCom->Bind_RawValue("g_isRM", &isRM, sizeof(_bool));
+			m_pShaderCom->Bind_RawValue("g_isRT", &isRT, sizeof(_bool));
 
 			m_pShaderCom->Begin(SHADER_DEFAULT_MAP);
 
@@ -436,8 +492,37 @@ HRESULT CMap::Render()
 		{
 			int		i = m_vStrongBloomIndex[k];
 
+			m_pMaterialCom->Bind_Shader(m_pShaderCom, m_pModelCom->Get_MaterialName(Meshes[i]->Get_MaterialIndex()));
+
+			_bool fFar = m_pGameInstance->Get_CamFar();
+			m_pShaderCom->Bind_RawValue("g_fFar", &fFar, sizeof(_float));
+
 			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
 				return E_FAIL;
+			m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS);
+
+			_bool isRS = true;
+			_bool isRD = true;
+			_bool isRM = true;
+			_bool isRT = false;
+			_bool isMulti = true;
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_MultiDiffuseTexture", i, aiTextureType_SHININESS)))
+				isMulti = false;
+			m_pShaderCom->Bind_RawValue("g_isMulti", &isMulti, sizeof(_bool));
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RSTexture", i, aiTextureType_SPECULAR)))
+				isRS = false;
+			m_pShaderCom->Bind_RawValue("g_isRS", &isRS, sizeof(_bool));
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RDTexture", i, aiTextureType_OPACITY)))
+				isRD = false;
+			m_pShaderCom->Bind_RawValue("g_isRD", &isRD, sizeof(_bool));
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RMTexture", i, aiTextureType_METALNESS)))
+				isRM = false;
+			m_pShaderCom->Bind_RawValue("g_isRM", &isRM, sizeof(_bool));
+			m_pShaderCom->Bind_RawValue("g_isRT", &isRT, sizeof(_bool));
 
 			m_pShaderCom->Begin(SHADER_DEFAULT_MAP);
 
@@ -848,11 +933,11 @@ void CMap::Add_Renderer(const _float& fTimeDelta)
 			{
 				m_vDynamicSignIndex.push_back(i);
 			}
-			else
-			{
-				// mesh 안합쳐놓으면 그냥 default로 처리
-				m_vRenderDefaulMeshIndex.push_back(i);
-			}
+			//else
+			//{
+			//	// mesh 안합쳐놓으면 그냥 default로 처리
+			//	m_vRenderDefaulMeshIndex.push_back(i);
+			//}
 		}
 		else if (false == m_bLocalCull)
 		{
@@ -914,11 +999,11 @@ void CMap::Add_Renderer(const _float& fTimeDelta)
 				{
 					m_vDynamicSignIndex.push_back(i);
 				}
-				else
-				{
-					// mesh 안합쳐놓으면 그냥 default로 처리
-					m_vRenderDefaulMeshIndex.push_back(i);
-				}
+				//else
+				//{
+				//	// mesh 안합쳐놓으면 그냥 default로 처리
+				//	m_vRenderDefaulMeshIndex.push_back(i);
+				//}
 			}
 		}
 		else

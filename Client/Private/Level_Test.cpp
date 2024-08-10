@@ -33,7 +33,7 @@ HRESULT CLevel_Test::Initialize()
 	// 테스트 다하면 지워라
 	/* For.Prototype_Component_Navigation */
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Navigation"),
-		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/NaviData/Navigation_7.dat")))))
+		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/NaviData/Navigation_90.dat")))))
 		return E_FAIL;
 
 	//m_pCarChaseManager = CCarChaseManager::Create(m_pDevice, m_pContext);
@@ -47,8 +47,8 @@ HRESULT CLevel_Test::Initialize()
 	//if (nullptr == m_pTutorialManager)
 
 	/* 클라 파싱 */
-	if (FAILED(Ready_Test_Load()))
-		return E_FAIL;
+	//if (FAILED(Ready_Test_Load()))
+	//	return E_FAIL;
 
 	//혜원 테스트 용
 	//if (FAILED(Ready_Test_Hyewon()))
