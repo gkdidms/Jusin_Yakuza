@@ -113,7 +113,11 @@ void Client::CQteManager::ResetVariables()
 void Client::CQteManager::Skip_KeyFrame()
 {
     auto AnimList = m_pPlayerAnimCom->Get_Animations();
-    QTE_DESC Desc = m_QTEs.find(m_strPlayingAnimName)->second;
+
+    auto iter = m_QTEs.find(m_strPlayingAnimName);
+
+    if (iter == m_QTEs.end()) return;
+    QTE_DESC Desc = iter->second;
 
     switch (m_iSuccess)
     {
@@ -156,7 +160,10 @@ void CQteManager::Cancle_KeyFrame()
 {
     if ("" == m_strPlayingAnimName) return;
 
-    QTE_DESC m_eCurrentQTE = m_QTEs.find(m_strPlayingAnimName)->second;
+    auto iter = m_QTEs.find(m_strPlayingAnimName);
+
+    if (iter == m_QTEs.end()) return;
+    QTE_DESC m_eCurrentQTE = iter->second;
 
     // 성공 키프레임과 실패 키프레임을 비교해서, 성공 키프레임이 앞쪽이라면 true, 실패 키프레임이 앞쪽이라면 false
     _bool isFront = m_eCurrentQTE.iSuccesStartFrame < m_eCurrentQTE.iFailedStartFrame;

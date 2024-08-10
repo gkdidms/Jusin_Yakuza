@@ -2435,6 +2435,8 @@ void CPlayer::HitFreeze_On()
 	pCamera->Set_StartFov(XMConvertToRadians(45.0f));				//현재 fov설정
 	pCamera->Set_FoV(XMConvertToRadians(45.0f));				//현재 fov설정
 	pCamera->On_Return();
+
+	m_pGameInstance->Set_RadialBlur(true);
 }
 
 void CPlayer::HitFreeze_Off()
@@ -2443,6 +2445,7 @@ void CPlayer::HitFreeze_Off()
 	m_pGameInstance->Set_TimeSpeed(TEXT("Timer_60"), 1.f);
 	m_pGameInstance->Set_TimeSpeed(TEXT("Timer_Player"), 1.f);
 
+	m_pGameInstance->Set_RadialBlur(false);
 	//CPlayerCamera* pCamera = dynamic_cast<CPlayerCamera*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Camera"), CAMERA_PLAYER));
 	//pCamera->Set_FoV(XMConvertToRadians(60.0f));				//현재 fov설정
 }
