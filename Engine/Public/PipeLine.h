@@ -14,6 +14,7 @@ private:
 
 public:
     const _float4x4* Get_Transform_Float4x4(D3DTRANSFORMSTATE eState);
+    const _float4x4* Get_Old_Transform_Float4x4(D3DTRANSFORMSTATE eState);
     _matrix Get_Transform_Matrix(D3DTRANSFORMSTATE eState);
     const _float4x4* Get_Transform_Inverse_Float4x4(D3DTRANSFORMSTATE eState);
     _matrix Get_Transform_Inverse_Matrix(D3DTRANSFORMSTATE eState);
@@ -31,6 +32,7 @@ public:
 
 public:
     void Set_Transform(D3DTRANSFORMSTATE eState, _fmatrix matTransform) {
+        m_OldTransformStateMatrix[eState] = m_TransformStateMatrix[eState];
         XMStoreFloat4x4(&m_TransformStateMatrix[eState], matTransform);
     }
 
@@ -61,6 +63,7 @@ private: //Shadow
 
 private:
     _float4x4 m_TransformStateMatrix[D3DTS_END];
+    _float4x4 m_OldTransformStateMatrix[D3DTS_END];
     _float4x4 m_TransformStateInverseMatrix[D3DTS_END];
     _float4x4 m_ReflectMatrix;
     _float4 m_vCamPosition;

@@ -9,6 +9,11 @@ const _float4x4* CPipeLine::Get_Transform_Float4x4(D3DTRANSFORMSTATE eState)
 	return &m_TransformStateMatrix[eState];
 }
 
+const _float4x4* CPipeLine::Get_Old_Transform_Float4x4(D3DTRANSFORMSTATE eState)
+{
+	return &m_TransformStateMatrix[eState];
+}
+
 _matrix CPipeLine::Get_Transform_Matrix(D3DTRANSFORMSTATE eState)
 {
 	return XMLoadFloat4x4(&m_TransformStateMatrix[eState]);

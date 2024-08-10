@@ -37,6 +37,7 @@ public:
     void Set_Shadow(_bool isShadow) { m_isShadow = isShadow; }
     void Set_RimLight(_bool isRimLight) { m_isRimLight = isRimLight; }
     void Set_RadialBlur(_bool isRadialBlur) { m_isRadialBlur = isRadialBlur; }
+    void Set_MotionBlur(_bool isMotionBlur) { m_isMotionBlur = isMotionBlur; }
 
 public:
     _bool isHDR() { return m_isHDR; }
@@ -46,6 +47,7 @@ public:
     _bool isShadow() { return m_isShadow; }
     _bool isRimLight() { return m_isRimLight; }
     _bool isRadialBlur() { return m_isRadialBlur; }
+    _bool isMotionBlur() { return m_isMotionBlur; }
     _float Get_HDRLight() { return m_fHDRLight; }
     _float Get_SSAORadiuse() { return m_fSSAORadiuse; }
     _float Get_SSAOBlur() { return m_fSSAOBlur; }
@@ -160,6 +162,7 @@ private:
                 _bool m_isShadow = { false };
                 _bool m_isRimLight = { true };
                 _bool m_isRadialBlur = { false };
+                _bool m_isMotionBlur = { false };
 
 #else
             private:
@@ -170,6 +173,7 @@ private:
                 _bool m_isShadow = { true };
                 _bool m_isRimLight = { true };
                 _bool m_isRadialBlur = { false };
+                _bool m_isMotionBlur = { false };
 #endif // DEBUG
 
     _float m_fHDRLight = { 1.f };

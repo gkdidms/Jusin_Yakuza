@@ -353,8 +353,6 @@ HRESULT CConstruction::Add_Components(void* pArg)
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
 		return E_FAIL;
 
-
-
 	return S_OK;
 }
 
