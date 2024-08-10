@@ -560,6 +560,9 @@
     <ClCompile Include="..\private\AI_Heli.cpp">
       <Filter>02.GameObjects\02.Character\LandObject\03.CarChase\01.Monster\03.Heli\AI</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\Sofa.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\Yakuza\02.WPHYakuza\Sofa</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\MainApp.h">
@@ -1150,6 +1153,9 @@
     </ClInclude>
     <ClInclude Include="..\public\AI_Heli.h">
       <Filter>02.GameObjects\02.Character\LandObject\03.CarChase\01.Monster\03.Heli\AI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Sofa.h">
+      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\Yakuza\02.WPHYakuza\Sofa</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1757,6 +1763,9 @@
     </Filter>
     <Filter Include="02.GameObjects\02.Character\LandObject\03.CarChase\01.Monster\03.Heli\AI">
       <UniqueIdentifier>{0e77d35c-b64b-45b9-8f71-b342cfa6b864}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\01.Monster\Yakuza\02.WPHYakuza\Sofa">
+      <UniqueIdentifier>{b55a0fb9-13d3-4a1a-ab39-ca0c5f7e7802}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

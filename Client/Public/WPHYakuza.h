@@ -23,8 +23,11 @@ public:
 
 private:
     virtual HRESULT Add_Components() override;
+    HRESULT Add_Objects();
     virtual void Change_Animation() override;
 
+private:
+    class CSofa* m_pSofa = { nullptr };
 
 public:
     static CWPHYakuza* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

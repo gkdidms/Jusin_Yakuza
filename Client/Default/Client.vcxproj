@@ -329,6 +329,7 @@
     <ClInclude Include="..\Public\SocketEffect.h" />
     <ClInclude Include="..\Public\SocketModel.h" />
     <ClInclude Include="..\Public\SocketObject.h" />
+    <ClInclude Include="..\Public\Sofa.h" />
     <ClInclude Include="..\public\SystemManager.h" />
     <ClInclude Include="..\Public\TalkQuest.h" />
     <ClInclude Include="..\Public\Terrain.h" />
@@ -420,6 +421,7 @@
     <ClCompile Include="..\Private\Reactor_Bike.cpp" />
     <ClCompile Include="..\Private\Reactor_Heli.cpp" />
     <ClCompile Include="..\Private\Reactor_Sedan.cpp" />
+    <ClCompile Include="..\Private\Sofa.cpp" />
     <ClCompile Include="..\Private\UICarchase.cpp" />
     <ClCompile Include="..\Private\CutSceneCamera.cpp" />
     <ClCompile Include="..\private\DefaultYakuza.cpp" />

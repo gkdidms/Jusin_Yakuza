@@ -18,7 +18,10 @@
 #include "Yoneda.h"
 #include "WPHYakuza.h"
 #include "DefaultYakuza.h"
+#pragma endregion
 
+#pragma region Monster_Item
+#include "Sofa.h"
 #pragma endregion
 
 #pragma region CarChase
@@ -567,6 +570,11 @@ if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototyp
 	/* For.Prototype_GameObject_Gun_Cz75*/
 	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Gun_Cz75"),
 		CGun_Cz75::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_Sofa*/
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Sofa"),
+		CSofa::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 #pragma endregion
 
