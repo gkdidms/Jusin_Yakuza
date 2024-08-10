@@ -112,7 +112,8 @@ private:
     /*PostProcessing*/
     void Render_RadialBlur();
 
-    /*최종 렌더*/
+
+    /*최종 렌더 (빼지마세요)*/
     void Render_FinalResult();
 
     void Render_UI();
