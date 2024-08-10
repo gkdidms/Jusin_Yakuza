@@ -28,6 +28,7 @@ public:
 
 public:
     HRESULT Bind_Matrix(const _float4x4* pMatrix);
+    HRESULT Bind_
 
 private:
     HRESULT Ready_Texture2D(_uint iSizeX, _uint iSizeY);
