@@ -55,6 +55,9 @@ void CUILife::Update_PlayerInfo()
 {
 	_uint Level = m_pGameInstance->Get_CurrentLevel();
 	CPlayer* pPlayer = dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject(Level ,TEXT("Layer_Player"),0));
+	if (nullptr == pPlayer)
+		return;
+
 
 	_int Bts= pPlayer->Get_BattleStyle()-1;
 	if (-1 == Bts)

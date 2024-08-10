@@ -142,6 +142,7 @@ private:
 public:
 	HRESULT Add_Components(void* pArg);
 	HRESULT Bind_ShaderResources();
+	HRESULT Reset_Bind();
 
 public:
 	static CMap* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

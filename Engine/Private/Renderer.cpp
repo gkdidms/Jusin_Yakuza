@@ -149,6 +149,7 @@ HRESULT CRenderer::Initialize()
 
 	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_Decal"), 950.f, 150.f, 100.f, 100.f)))
 		return E_FAIL;
+
 	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_RadialBlur"), 950.f, 250.f, 100.f, 100.f)))
 		return E_FAIL;
 #endif // _DEBUG
@@ -164,27 +165,27 @@ HRESULT CRenderer::Ready_Targets()
 	m_pContext->RSGetViewports(&iNumViewPort, &ViewPort);
 
 	//20240712_NonBlendDiffuse 의 백버퍼 칼라(알파 빼고 )가 기본 스카이 박스에 곱해져서 색이 핑크핑크로 나왔었음 일단 0,0,0,0 으로 바꾸면 수습가능 (만약 다른색 원하면 구조 고쳐야됨.
-	/*Target_NonBlendDiffuse*/
+	/*Target_Diffuse*/
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Diffuse"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_B8G8R8A8_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
 
-	/*Target_NonBlendNormal*/
+	/*Target_Normal*/
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Normal"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 1.f))))
 		return E_FAIL;
 
-	/*Target_NonBlendDepth*/
+	/*Target_Depth*/
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Depth"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(0.f, 0.f, 0.f, 1.f))))
 		return E_FAIL;
 
-	/* Target_NonBlendSurface */
+	/* Target_Surface */
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Surface"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(1.f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
 
-	/* Target_NonBlendSurface */
+	/* Target_OEShader */
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_OEShader"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
 
-	/* Target_NonBlendSubSurface */
+	/* Target_OESpecular */
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_OESpecular"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
 
@@ -656,7 +657,7 @@ void CRenderer::Draw()
 
 	Render_NonBlender();
 
-	//Render_Decal();
+	Render_Decal();
 
 	//Render_Glass();
 

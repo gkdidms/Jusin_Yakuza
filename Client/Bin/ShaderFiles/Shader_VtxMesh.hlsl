@@ -147,9 +147,8 @@ PS_MAIN_OUT PS_MAIN(PS_IN In)
     vector vRM = g_isRM ? g_RMTexture.Sample(LinearSampler, In.vTexcoord) : vector(0.5f, 1.f, 0.5f, 1.f);
     vector vRT = vector(0.5f, 0.5f, 1.f, 0.5f);
     //노말 벡터 구하기
-    vector vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexcoord);
+    vector vNormalDesc = g_isNormal ? g_NormalTexture.Sample(LinearSampler, In.vTexcoord) : vector(0.5f, 0.5f, 1.f, 1.f);
 
-    
     //Neo Shader
     float fFactor = RepeatingPatternBlendFactor(vMulti);
     vDiffuse = DiffusePortion(vDiffuse, vRS, vRD, fFactor, In.vTexcoord);

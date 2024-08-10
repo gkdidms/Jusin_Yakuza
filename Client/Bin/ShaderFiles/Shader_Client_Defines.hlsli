@@ -2,6 +2,7 @@
 /* 상수 테이블과 struct 모음*/
 
 matrix g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
+matrix g_OldWorldMatrix, g_OldViewMatrix, g_OldProjMatrix;
 matrix g_WorldMatrixInv, g_ViewMatrixInv, g_ProjMatrixInv;
 
 Texture2D g_Texture;
@@ -107,6 +108,7 @@ bool g_isRS;
 bool g_isRD;
 bool g_isRM;
 bool g_isRT;
+bool g_isNormal;
 bool g_isMulti;
 
 float g_RDCount = { 1.f };
