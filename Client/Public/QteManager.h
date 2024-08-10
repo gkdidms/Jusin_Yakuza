@@ -52,7 +52,7 @@ private:
 
     void ResetVariables();
 
-    void Skip_KeyFrame(_uint iAnimIndex, QTE_DESC& Desc);
+    void Skip_KeyFrame();
     void Cancle_KeyFrame();
 
 public:

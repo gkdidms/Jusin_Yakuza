@@ -110,16 +110,17 @@ void Client::CQteManager::ResetVariables()
     m_pGameInstance->Set_TimeSpeed(TEXT("Timer_60"), 1);
 }
 
-void Client::CQteManager::Skip_KeyFrame(_uint iAnimIndex, QTE_DESC& Desc)
+void Client::CQteManager::Skip_KeyFrame()
 {
     auto AnimList = m_pPlayerAnimCom->Get_Animations();
+    QTE_DESC Desc = m_QTEs.find(m_strPlayingAnimName)->second;
 
     switch (m_iSuccess)
     {
     case 1:         //성공
     {
         // 키류 모델 애니메이션의 키프레임을 옮겨준다.
-        AnimList[iAnimIndex]->Set_CurrentPosition(_double(Desc.iSuccesStartFrame));
+        AnimList[Desc.iAnimIndex]->Set_CurrentPosition(_double(Desc.iSuccesStartFrame));
 
         // 키류 컷신 카메라 애니메이션의 키프레임을 옮겨준다.
         CPlayer* pPlayer = dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"), 0));
@@ -135,7 +136,7 @@ void Client::CQteManager::Skip_KeyFrame(_uint iAnimIndex, QTE_DESC& Desc)
     }
     case 2:         //실패
     {
-        AnimList[iAnimIndex]->Set_CurrentPosition(_double(Desc.iFailedStartFrame));
+        AnimList[Desc.iAnimIndex]->Set_CurrentPosition(_double(Desc.iFailedStartFrame));
 
         // 키류 컷신 카메라 애니메이션의 키프레임을 옮겨준다.
         CPlayer* pPlayer = dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"), 0));
@@ -165,33 +166,33 @@ void CQteManager::Cancle_KeyFrame()
     {
     case 1:
     {
-        if (isFront)
+        if (m_eCurrentQTE.iSuccesEndFrame <= *AnimList[m_eCurrentQTE.iAnimIndex]->Get_CurrentPosition())
         {
-            if (m_eCurrentQTE.iSuccesEndFrame <= *AnimList[m_eCurrentQTE.iAnimIndex]->Get_CurrentPosition())
-            {
-                m_strPlayingAnimName = "";
+            m_strPlayingAnimName = "";
                  
-                // 이 때 컷신 종료해줘야한다.
-                CPlayer* pPlayer = dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"), 0));
-                pPlayer->Reset_CutSceneEvent();
-            }
+            // 이 때 컷신 종료해줘야한다.
+            CPlayer* pPlayer = dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"), 0));
+            pPlayer->Reset_CutSceneEvent();
+
+            CYoneda* pYoneda = dynamic_cast<CYoneda*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Yoneda"), 0));
+            pYoneda->Off_Sync();
         }
+         
         break;
     }
     case 2:
-    {
-        if (!isFront)
+{
+        if (m_eCurrentQTE.iFailedEndFrame <= *AnimList[m_eCurrentQTE.iAnimIndex]->Get_CurrentPosition())
         {
-            if (m_eCurrentQTE.iFailedEndFrame <= *AnimList[m_eCurrentQTE.iAnimIndex]->Get_CurrentPosition())
-            {
-                m_strPlayingAnimName = "";
+            m_strPlayingAnimName = "";
 
-                // 이 때 컷신 종료해줘야한다.
-                CPlayer* pPlayer = dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"), 0));
-                pPlayer->Reset_CutSceneEvent();
-            }
+            // 이 때 컷신 종료해줘야한다.
+            CPlayer* pPlayer = dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"), 0));
+            pPlayer->Reset_CutSceneEvent();
+
+            CYoneda* pYoneda = dynamic_cast<CYoneda*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Yoneda"), 0));
+            pYoneda->Off_Sync();
         }
-        break;
 
         break;
     }
@@ -228,6 +229,7 @@ void Client::CQteManager::Slowing()
         if (Check_QTE())
         {
             m_iSuccess = 1;
+            Skip_KeyFrame();
             ResetVariables();
         }
     }
@@ -257,7 +259,7 @@ void Client::CQteManager::Check_QTE_Section()
             m_isSlowing = false;
             ResetVariables();
 
-            Skip_KeyFrame(animIndex, it->second);
+            Skip_KeyFrame();
         }        
     }
 
