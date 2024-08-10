@@ -21,13 +21,13 @@ struct GS_OUT
 
 cbuffer BoneMatrices : register(b0)
 {
-    matrix BoneMatrixArray[256];
+    matrix BoneMatrixArray[512];
 };
 
 StructuredBuffer<GS_IN> g_InputBuffer;
 RWStructuredBuffer<GS_OUT> g_OutputBuffer;
 
-[numthreads(16, 16, 1)]
+[numthreads(64, 1, 1)]
 void GS_MAIN(uint3 dispatchThreadID : SV_DispatchThreadID)
 {
     uint iIndex = dispatchThreadID.x; // ¡§¡° ¿Œµ¶Ω∫

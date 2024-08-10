@@ -373,6 +373,14 @@ HRESULT CPlayer::Render()
 	int i = 0;
 	for (auto& pMesh : m_pModelCom->Get_Meshes())
 	{
+		m_pModelCom->Bind_BoneMatrices(m_pComputeShaderCom, i);
+
+		m_pComputeShaderCom->Render();
+
+		m_pModelCom->Render(i);
+
+		m_pComputeShaderCom->Bind_SRV();
+
 		if(ADVENTURE != m_isRimLight)
 		{
 			// 전신일 때 임의로 Full을 저장해주고 사용한다.
@@ -480,7 +488,7 @@ HRESULT CPlayer::Render()
 		else
 			m_pShaderCom->Begin(0);		//디폴트
 
-		m_pModelCom->Render(i);
+		//m_pModelCom->Render(i);
 
 		i++;
 	}

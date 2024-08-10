@@ -73,11 +73,18 @@ HRESULT CComputeShader::Initialize(void* pArg)
 
 HRESULT CComputeShader::Render()
 {
-    m_pContext->CSSetShader(m_pComputeShader, nullptr, 0);
+
     m_pContext->CSSetConstantBuffers(0, 1, &m_pBoneMatrix);
     m_pContext->CSSetShaderResources(0, 1, &m_pSRV);
     m_pContext->CSSetUnorderedAccessViews(0, 1, &m_pUAV, nullptr);
-    m_pContext->Dispatch(1, 1, 1);
+    m_pContext->CSSetShader(m_pComputeShader, nullptr, 0);
+
+    m_pContext->Dispatch(21, 13, 1);
+
+    m_pContext->CSSetShader(nullptr, nullptr, 0);
+    m_pContext->CSSetShaderResources(0, 0, nullptr);
+    m_pContext->CSSetUnorderedAccessViews(0, 0, nullptr, nullptr);
+    m_pContext->CSSetConstantBuffers(0, 0, nullptr);
 
     return S_OK;
 }
@@ -87,6 +94,12 @@ HRESULT CComputeShader::Bind_Matrix(const _float4x4* pMatrix)
 
     m_pContext->UpdateSubresource(m_pBoneMatrix, 0, nullptr, pMatrix, 0, 0);
 
+    return S_OK;
+}
+
+HRESULT CComputeShader::Bind_SRV()
+{
+    m_pContext->VSSetShaderResources(0, 1, &m_pSRV);
     return S_OK;
 }
 

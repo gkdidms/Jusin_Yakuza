@@ -819,16 +819,16 @@ void CRenderer::Render_Compute()
 {
 	m_iRenderState = RENDER_NONBLENDER;
 
-	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_Compute"), nullptr, false)))
-		return;
+	//if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_Compute"), nullptr, false)))
+	//	return;
 
 	for (auto& iter : m_RenderObject[RENDER_NONBLENDER])
 	{
 		iter->Render_Compute();
 	}
 
-	if (FAILED(m_pGameInstance->End_MRT()))
-		return;
+	//if (FAILED(m_pGameInstance->End_MRT()))
+	//	return;
 }
 
 void CRenderer::Render_NonBlender()

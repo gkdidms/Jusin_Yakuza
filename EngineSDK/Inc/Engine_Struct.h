@@ -332,6 +332,17 @@ namespace Engine
 		static const D3D11_INPUT_ELEMENT_DESC Elements[iNumElements];
 	} VTXANIMMESH;
 
+	typedef struct ENGINE_DLL tVexAnimBone
+	{
+		XMFLOAT3 vPosition;
+		XMFLOAT3 vNormal;
+		XMFLOAT2 vTexcoord;
+		XMFLOAT3 vTangent;
+
+		static const _uint iNumElements = 4;
+		static const D3D11_INPUT_ELEMENT_DESC Elements[iNumElements];
+	} VTXANIMBONE;
+
 	typedef struct
 	{
 		char strMaterialName[MAX_PATH];
