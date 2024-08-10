@@ -18,12 +18,12 @@ HRESULT CRenderTarget_Manager::Initialize()
 	return S_OK;
 }
 
-HRESULT CRenderTarget_Manager::Add_RenderTarget(const wstring& strRenderTargetTag, _uint iSizeX, _uint iSizeY, DXGI_FORMAT ePixelFormat, const _float4& vClearColor, _uint iArrayCount)
+HRESULT CRenderTarget_Manager::Add_RenderTarget(const wstring& strRenderTargetTag, _uint iSizeX, _uint iSizeY, DXGI_FORMAT ePixelFormat, const _float4& vClearColor, _uint iArrayCount, _bool isComputeShader)
 {
 	if (nullptr != Find_RenderTarget(strRenderTargetTag))
 		return E_FAIL;
 
-	CRenderTarget* pRenderTarget = CRenderTarget::Create(m_pDevice, m_pContext, iSizeX, iSizeY, ePixelFormat, vClearColor, iArrayCount);
+	CRenderTarget* pRenderTarget = CRenderTarget::Create(m_pDevice, m_pContext, iSizeX, iSizeY, ePixelFormat, vClearColor, iArrayCount, isComputeShader);
 	if (nullptr == pRenderTarget)
 		return E_FAIL;
 
@@ -87,8 +87,38 @@ HRESULT CRenderTarget_Manager::Begin_MRT(const wstring& strMRTTag, ID3D11DepthSt
 	return S_OK;
 }
 
+HRESULT CRenderTarget_Manager::Begin_MRT_Compute(const wstring& strMRTTag, ID3D11DepthStencilView* pDSView, _bool isClear)
+{
+	ID3D11ShaderResourceView* pSRV[D3D11_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT] = {
+	nullptr
+	};
+
+	m_pContext->CSSetShaderResources(0, D3D11_COMMONSHADER_INPUT_RESOURCE_SLOT_COUNT, pSRV); //초기화 해주는 작업
+
+	list<CRenderTarget*>* pMRT = Find_MRT(strMRTTag);
+	if (nullptr == pMRT)
+		return E_FAIL;
+
+	_uint		iNumRenderTargets = {};
+
+	ID3D11UnorderedAccessView* pUnorderedAccessViews[8] = {};
+
+	for (auto& pRenderTarget : *pMRT)
+	{
+		if (isClear) pRenderTarget->Clear();
+		ID3D11UnorderedAccessView* const pUAV = pRenderTarget->Get_UAV();
+		m_pContext->CSSetUnorderedAccessViews(0, iNumRenderTargets, &pUAV, nullptr);
+	}
+
+	if (nullptr != pDSView)
+		m_pContext->ClearDepthStencilView(pDSView, D3D11_CLEAR_DEPTH | D3D11_CLEAR_STENCIL, 1.f, 0);
+
+	return S_OK;
+}
+
 HRESULT CRenderTarget_Manager::End_MRT()
 {
+	m_pContext->CSSetUnorderedAccessViews(0, 0, nullptr, nullptr); // 초기화
 	m_pContext->OMSetRenderTargets(1, &m_pBackBufferView, m_pDepthStencilView);
 	return S_OK;
 }

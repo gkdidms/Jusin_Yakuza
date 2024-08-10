@@ -11,9 +11,10 @@ private:
 
 public:
     HRESULT Initialize();
-    HRESULT Add_RenderTarget(const wstring& strRenderTargetTag, _uint iSizeX, _uint iSizeY, DXGI_FORMAT ePixelFormat, const _float4& vClearColor, _uint iArrayCount);
+    HRESULT Add_RenderTarget(const wstring& strRenderTargetTag, _uint iSizeX, _uint iSizeY, DXGI_FORMAT ePixelFormat, const _float4& vClearColor, _uint iArrayCount, _bool isComputeShader);
     HRESULT Add_MRT(const wstring& strMRTTag, const wstring& strRenderTargetTag);
     HRESULT Begin_MRT(const wstring& strMRTTag, ID3D11DepthStencilView* pDSView, _bool isClear);
+    HRESULT Begin_MRT_Compute(const wstring& strMRTTag, ID3D11DepthStencilView* pDSView, _bool isClear);
     HRESULT End_MRT();
     HRESULT Bind_RenderTargetSRV(const wstring& strTargetTag, class CShader* pShader, const _char* pConstantName);
     HRESULT Copy_Resource(const wstring& strTargetTag, ID3D11Texture2D* pDesc);

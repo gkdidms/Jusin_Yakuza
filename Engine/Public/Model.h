@@ -44,6 +44,7 @@ public:
 
 	HRESULT Bind_Material(class CShader* pShader, const _char* pConstantName, _uint iNumMeshIndex, aiTextureType eTextureType);
 	HRESULT Bind_BoneMatrices(class CShader* pShader, const _char* pConstantName, _uint iNumMeshIndex);
+	HRESULT Bind_BoneMatrices(class CComputeShader* pShader, _uint iNumMeshIndex);
 	bool	Check_Exist_Material(_uint iNumMeshIndex, aiTextureType eTextureType);
 
 	void Play_Animation(_float fTimeDelta, _bool isRoot = true, string strExcludeBoneName = "");

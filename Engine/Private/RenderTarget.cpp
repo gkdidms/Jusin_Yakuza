@@ -60,9 +60,53 @@ HRESULT CRenderTarget::Initialize(_uint iSizeX, _uint iSizeY, DXGI_FORMAT ePixel
 	return S_OK;
 }
 
+HRESULT CRenderTarget::Initialize(_uint iSizeX, _uint iSizeY, DXGI_FORMAT ePixelFormat)
+{
+	//D3D11_VIEWPORT ViewPort{};
+	//_uint iViewPortNum = 1;
+	//m_pContext->RSGetViewports(&iViewPortNum, &ViewPort);
+
+	D3D11_TEXTURE2D_DESC	TextureDesc;
+	ZeroMemory(&TextureDesc, sizeof(D3D11_TEXTURE2D_DESC));
+
+	TextureDesc.Width = iSizeX;
+	TextureDesc.Height = iSizeY;
+	TextureDesc.MipLevels = 1;
+	TextureDesc.ArraySize = 1;
+	TextureDesc.Format = ePixelFormat;
+
+	TextureDesc.SampleDesc.Quality = 0;
+	TextureDesc.SampleDesc.Count = 1;
+
+	TextureDesc.Usage = D3D11_USAGE_DEFAULT;
+	TextureDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_UNORDERED_ACCESS;
+	TextureDesc.CPUAccessFlags = 0;
+	TextureDesc.MiscFlags = 0;
+
+	if (FAILED(m_pDevice->CreateTexture2D(&TextureDesc, nullptr, &m_pTexture2D)))
+		return E_FAIL;
+
+	if (FAILED(m_pDevice->CreateShaderResourceView(m_pTexture2D, nullptr, &m_pSRV)))
+		return E_FAIL;
+
+	D3D11_UNORDERED_ACCESS_VIEW_DESC UavDesc{};
+	UavDesc.Format = ePixelFormat;
+	UavDesc.ViewDimension = D3D11_UAV_DIMENSION_TEXTURE2D;
+	UavDesc.Texture2D.MipSlice = 0;
+	if (FAILED(m_pDevice->CreateUnorderedAccessView(m_pTexture2D, &UavDesc, &m_pUAV)))
+		return E_FAIL;
+
+	m_vClearColor = _float4(0.f, 0.f, 0.f, 0.f);
+
+	return S_OK;
+}
+
 HRESULT CRenderTarget::Clear()
 {
-	m_pContext->ClearRenderTargetView(m_pRTV, (_float*)&m_vClearColor);
+	if (m_pRTV == nullptr)
+		m_pContext->ClearUnorderedAccessViewFloat(m_pUAV, (_float*)&m_vClearColor);
+	else
+		m_pContext->ClearRenderTargetView(m_pRTV, (_float*)&m_vClearColor);
 
 	return S_OK;
 }
@@ -129,12 +173,20 @@ HRESULT CRenderTarget::Render_Debug(CShader* pShader, CVIBuffer_Rect* pVIBuffer,
 }
 #endif // _DEBUG
 
-CRenderTarget* CRenderTarget::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, _uint iSizeX, _uint iSizeY, DXGI_FORMAT ePixelFormat, const _float4& vClearColor, _uint iArrayCount)
+CRenderTarget* CRenderTarget::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, _uint iSizeX, _uint iSizeY, DXGI_FORMAT ePixelFormat, const _float4& vClearColor, _uint iArrayCount, _bool isComputeShader)
 {
 	CRenderTarget* pInstance = new CRenderTarget(pDevice, pContext);
 
-	if (FAILED(pInstance->Initialize(iSizeX, iSizeY, ePixelFormat, vClearColor, iArrayCount)))
-		Safe_Release(pInstance);
+	if (isComputeShader)
+	{
+		if (FAILED(pInstance->Initialize(iSizeX, iSizeY, ePixelFormat)))
+			Safe_Release(pInstance);
+	}
+	else
+	{
+		if (FAILED(pInstance->Initialize(iSizeX, iSizeY, ePixelFormat, vClearColor, iArrayCount)))
+			Safe_Release(pInstance);
+	}
 
 	return pInstance;
 }
@@ -144,6 +196,7 @@ void CRenderTarget::Free()
 	Safe_Release(m_pTexture2D);
 	Safe_Release(m_pRTV);
 	Safe_Release(m_pSRV);
+	Safe_Release(m_pUAV);
 
 	Safe_Release(m_pDevice);
 	Safe_Release(m_pContext);

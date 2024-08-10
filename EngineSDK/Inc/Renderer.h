@@ -72,6 +72,7 @@ public:
 private:
     void Render_Priority();
     void Render_ShadowObjects();
+    void Render_Compute();
     void Render_NonBlender();
 
     /* Map */
@@ -113,6 +114,9 @@ private:
 
     /*PostProcessing*/
     void Render_RadialBlur();
+    
+    /*모션 블러*/
+    void Render_MotionBlur();
 
 
     /*최종 렌더 (빼지마세요)*/

@@ -586,9 +586,9 @@ float CGameInstance::FindObjID(_bool* isSuccess)
 	return m_pPicking->FindObjID(isSuccess);
 }
 
-HRESULT CGameInstance::Add_RenderTarget(const wstring& strRenderTargetTag, _uint iSizeX, _uint iSizeY, DXGI_FORMAT ePixelFormat, const _float4& vClearColor, _uint iArrayCount)
+HRESULT CGameInstance::Add_RenderTarget(const wstring& strRenderTargetTag, _uint iSizeX, _uint iSizeY, DXGI_FORMAT ePixelFormat, const _float4& vClearColor, _uint iArrayCount, _bool isComputeShader)
 {
-	return m_pRenderTarget_Manager->Add_RenderTarget(strRenderTargetTag, iSizeX, iSizeY, ePixelFormat, vClearColor, iArrayCount);
+	return m_pRenderTarget_Manager->Add_RenderTarget(strRenderTargetTag, iSizeX, iSizeY, ePixelFormat, vClearColor, iArrayCount, isComputeShader);
 }
 
 HRESULT CGameInstance::Add_MRT(const wstring& strMRTTag, const wstring& strRenderTargetTag)
@@ -597,6 +597,11 @@ HRESULT CGameInstance::Add_MRT(const wstring& strMRTTag, const wstring& strRende
 }
 
 HRESULT CGameInstance::Begin_MRT(const wstring& strMRTTag, ID3D11DepthStencilView* pDSView, _bool isClear)
+{
+	return m_pRenderTarget_Manager->Begin_MRT(strMRTTag, pDSView, isClear);
+}
+
+HRESULT CGameInstance::Begin_MRT_Compute(const wstring& strMRTTag, ID3D11DepthStencilView* pDSView, _bool isClear)
 {
 	return m_pRenderTarget_Manager->Begin_MRT(strMRTTag, pDSView, isClear);
 }

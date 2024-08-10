@@ -163,9 +163,6 @@
     <Filter Include="01.Utility\10.Random">
       <UniqueIdentifier>{7023e928-6a8a-4376-a161-481610a029e9}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01.Utility\03.Component\08.ComputeShader">
-      <UniqueIdentifier>{0c4835a7-cc1d-4213-a200-edf37363c233}</UniqueIdentifier>
-    </Filter>
     <Filter Include="01.Utility\03.Component\09.Animation">
       <UniqueIdentifier>{2ff9a63d-40d0-42e3-affa-f343d3f9c0b4}</UniqueIdentifier>
     </Filter>
@@ -207,6 +204,9 @@
     </Filter>
     <Filter Include="01.Utility\03.Component\01.VIBuffer\Instance\Mesh">
       <UniqueIdentifier>{4addae2b-3921-41a4-88a0-51caad484a17}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Utility\03.Component\08.ComputeShader">
+      <UniqueIdentifier>{0c4835a7-cc1d-4213-a200-edf37363c233}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

@@ -164,6 +164,10 @@ HRESULT CRenderer::Ready_Targets()
 	_uint iNumViewPort = 1;
 	m_pContext->RSGetViewports(&iNumViewPort, &ViewPort);
 
+	///*Target_Diffuse*/
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_ComputeTexture"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f), 1, true)))
+		return E_FAIL;
+
 	//20240712_NonBlendDiffuse 의 백버퍼 칼라(알파 빼고 )가 기본 스카이 박스에 곱해져서 색이 핑크핑크로 나왔었음 일단 0,0,0,0 으로 바꾸면 수습가능 (만약 다른색 원하면 구조 고쳐야됨.
 	/*Target_Diffuse*/
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Diffuse"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_B8G8R8A8_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
@@ -344,9 +348,13 @@ HRESULT CRenderer::Ready_Targets()
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_FinalEffect"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
 
+#pragma region PostProcess
 	/*Target_RadialBlur*/
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_RadialBlur"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
+#pragma endregion
+
+
 
 	return S_OK;
 }
@@ -525,6 +533,10 @@ HRESULT CRenderer::Ready_MRTs()
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_RadialBlur"), TEXT("Target_RadialBlur"))))
 		return E_FAIL;
 
+	/* MRT_Compute */
+	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_Compute"), TEXT("Target_ComputeTexture"))))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -649,6 +661,8 @@ void CRenderer::Add_Renderer(RENDERER_STATE eRenderState, CGameObject* pGameObje
 void CRenderer::Draw()
 {
 	Render_Priority();
+
+	Render_Compute();
 
 	if (m_isShadow)
 	{
@@ -796,6 +810,22 @@ void CRenderer::Render_ShadowObjects()
 		Safe_Release(pGameObject);
 	}
 	m_RenderObject[RENDER_SHADOWOBJ].clear();
+
+	if (FAILED(m_pGameInstance->End_MRT()))
+		return;
+}
+
+void CRenderer::Render_Compute()
+{
+	m_iRenderState = RENDER_NONBLENDER;
+
+	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_Compute"), nullptr, false)))
+		return;
+
+	for (auto& iter : m_RenderObject[RENDER_NONBLENDER])
+	{
+		iter->Render_Compute();
+	}
 
 	if (FAILED(m_pGameInstance->End_MRT()))
 		return;
@@ -1869,6 +1899,10 @@ void CRenderer::Render_RadialBlur()
 
 	if (FAILED(m_pGameInstance->End_MRT()))
 		return;
+}
+
+void CRenderer::Render_MotionBlur()
+{
 }
 
 void CRenderer::Render_FinalResult()

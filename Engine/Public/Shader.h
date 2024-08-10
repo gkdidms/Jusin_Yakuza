@@ -3,10 +3,10 @@
 
 BEGIN(Engine)
 
-class ENGINE_DLL CShader final:
+class ENGINE_DLL CShader:
     public CComponent
 {
-private:
+protected:
     CShader(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
     CShader(const CShader& rhs);
     virtual ~CShader() = default;

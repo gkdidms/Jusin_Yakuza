@@ -945,6 +945,15 @@ HRESULT CModel::Bind_BoneMatrices(CShader* pShader, const _char* pConstantName, 
 	return pShader->Bind_Matrices(pConstantName, m_MeshBoneMatrices, 512);
 }
 
+HRESULT CModel::Bind_BoneMatrices(CComputeShader* pShader, _uint iNumMeshIndex)
+{
+	ZeroMemory(m_MeshBoneMatrices, sizeof(_float4x4) * 512);
+
+	m_Meshes[iNumMeshIndex]->Fill_Matrices(m_Bones, m_MeshBoneMatrices);
+
+	return pShader->Bind_Matrix(m_MeshBoneMatrices);
+}
+
 bool CModel::Check_Exist_Material(_uint iNumMeshIndex, aiTextureType eTextureType)
 {
 	auto* pTexture = m_Materials[m_Meshes[iNumMeshIndex]->Get_MaterialIndex()].pMaterialTextures[eTextureType];

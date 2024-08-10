@@ -1662,6 +1662,11 @@ HRESULT CPlayer::Add_Components()
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
 		return E_FAIL;
 
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Shader_AnimCompute"),
+		TEXT("Com_ComShader"), reinterpret_cast<CComponent**>(&m_pComputeShaderCom))))
+		return E_FAIL;
+
+
 	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Model_Kiryu"),
 		TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
 		return E_FAIL;

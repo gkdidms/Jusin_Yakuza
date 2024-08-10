@@ -9,6 +9,7 @@ class CModel;
 class CAnim;
 class CNeoShader;
 class CNavigation;
+class CComputeShader;
 END
 
 BEGIN(Client)
@@ -79,6 +80,7 @@ public:
     virtual void Late_Tick(const _float& fTimeDelta) override;
     virtual HRESULT Render() override;
     virtual HRESULT Render_LightDepth() override;
+    virtual HRESULT Render_Compute() override;
 
     /* 충돌관련 함수들 */
     virtual void ImpulseResolution(CGameObject* pTargetObject, _float fDistance = 0.5f) override;
@@ -165,6 +167,7 @@ protected:
     CCollider* m_pColliderCom = { nullptr };
     CModel* m_pModelCom = { nullptr };
     CShader* m_pShaderCom = { nullptr };
+    CComputeShader* m_pComputeShaderCom = { nullptr };
     CNeoShader* m_pMaterialCom = { nullptr };
     CNavigation* m_pNavigationCom = { nullptr };
 

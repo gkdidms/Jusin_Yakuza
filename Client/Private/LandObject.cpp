@@ -83,6 +83,23 @@ HRESULT CLandObject::Render_LightDepth()
 	return S_OK;
 }
 
+HRESULT CLandObject::Render_Compute()
+{
+	//Bind
+	_uint i = 0;
+	for (auto& pMesh : m_pModelCom->Get_Meshes())
+	{
+		m_pModelCom->Bind_BoneMatrices(m_pComputeShaderCom, i);
+
+		m_pComputeShaderCom->Render();
+		m_pModelCom->Render(i);
+
+		i++;
+	}
+
+	return S_OK;
+}
+
 void CLandObject::ImpulseResolution(CGameObject* pTargetObject, _float fDistance)
 {
 	if (nullptr == m_pColliderCom) return;
@@ -385,6 +402,7 @@ void CLandObject::Free()
 	Safe_Release(m_pData);
 	Safe_Release(m_pModelCom);
 	Safe_Release(m_pShaderCom);
+	Safe_Release(m_pComputeShaderCom);
 	Safe_Release(m_pColliderCom);
 	Safe_Release(m_pSystemManager);
 	Safe_Release(m_pCollisionManager);
