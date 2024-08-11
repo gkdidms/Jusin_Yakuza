@@ -2578,4 +2578,20 @@ void CPlayer::Free()
 
 		m_AnimationTree[i].clear();
 	}
+	for (auto& pEffect : m_HooliganAura)
+	{
+		Safe_Release(pEffect);
+	}
+	m_HooliganAura.clear();
+	for (auto& pEffect : m_RushAura)
+	{
+		Safe_Release(pEffect);
+	}
+	m_RushAura.clear();
+	for (auto& pEffect : m_DestroyerAura)
+	{
+		Safe_Release(pEffect);
+	}
+	m_DestroyerAura.clear();
+
 }
