@@ -151,6 +151,9 @@ HRESULT CMesh::Initialize(CModel::MODELTYPE eModelType, const BAiMesh* pAIMesh, 
 
 	Safe_Delete_Array(pIndices);
 
+	if (eModelType == CModel::TYPE_ANIM)
+		Ready_ComputeBuffer();
+
 	return S_OK;
 }
 
@@ -548,9 +551,9 @@ HRESULT CMesh::Ready_Vertices_For_AnimMesh(const aiMesh* pAIMesh, const vector<c
 
 	m_Buffer_Desc.ByteWidth = m_iVertexStride * m_iNumVertices;
 	m_Buffer_Desc.Usage = D3D11_USAGE_DEFAULT;
-	m_Buffer_Desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	m_Buffer_Desc.BindFlags = D3D11_BIND_VERTEX_BUFFER | D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_UNORDERED_ACCESS;
 	m_Buffer_Desc.CPUAccessFlags = 0;
-	m_Buffer_Desc.MiscFlags = 0;
+	m_Buffer_Desc.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
 	m_Buffer_Desc.StructureByteStride = m_iVertexStride;
 
 	VTXANIMMESH* pVertices = new VTXANIMMESH[m_iNumVertices];
@@ -654,8 +657,11 @@ HRESULT CMesh::Ready_Vertices_For_AnimMesh(const aiMesh* pAIMesh, const vector<c
 
 	m_InitialData.pSysMem = pVertices;
 
-	if (FAILED(__super::Create_Buffer(&m_pVB)))
+	if (FAILED(m_pDevice->CreateBuffer(&m_Buffer_Desc, &m_InitialData, &m_pVB)))
 		return E_FAIL;
+
+	/*if (FAILED(__super::Create_Buffer(&m_pVB)))
+		return E_FAIL;*/
 
 	Safe_Delete_Array(pVertices);
 
@@ -668,9 +674,9 @@ HRESULT CMesh::Ready_Vertices_For_AnimMesh(const BAiMesh* pAIMesh, const vector<
 
 	m_Buffer_Desc.ByteWidth = m_iVertexStride * m_iNumVertices;
 	m_Buffer_Desc.Usage = D3D11_USAGE_DEFAULT;
-	m_Buffer_Desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	m_Buffer_Desc.BindFlags = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_UNORDERED_ACCESS;
 	m_Buffer_Desc.CPUAccessFlags = 0;
-	m_Buffer_Desc.MiscFlags = 0;
+	m_Buffer_Desc.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
 	m_Buffer_Desc.StructureByteStride = m_iVertexStride;
 
 	VTXANIMMESH* pVertices = new VTXANIMMESH[m_iNumVertices];
@@ -776,7 +782,7 @@ HRESULT CMesh::Ready_Vertices_For_AnimMesh(const BAiMesh* pAIMesh, const vector<
 
 	m_InitialData.pSysMem = pVertices;
 
-	if (FAILED(__super::Create_Buffer(&m_pVB)))
+	if (FAILED(m_pDevice->CreateBuffer(&m_Buffer_Desc, &m_InitialData, &m_pVB)))
 		return E_FAIL;
 
 	Safe_Delete_Array(pVertices);
@@ -789,6 +795,27 @@ void CMesh::Fill_Matrices(vector<class CBone*>& Bones, _float4x4* pMeshBoneMatri
 {
 	for (size_t i = 0; i < m_iNumBones; i++)
 		XMStoreFloat4x4(&pMeshBoneMatrices[i], XMLoadFloat4x4(&m_OffsetMatrices[i]) * XMLoadFloat4x4(Bones[m_BoneIndices[i]]->Get_CombinedTransformationMatrix()));
+}
+
+HRESULT CMesh::Render()
+{
+	// UAV에서 데이터 복사
+	// UAV의 데이터를 스테이징 버퍼로 복사
+	m_pContext->CopyResource(m_pProcessedVertexBuffer, m_pVB); // pUAVBuffer는 UAV로 사용된 버퍼
+
+	// 그래픽 파이프라인에 정점 버퍼 설정
+	ID3D11Buffer* pBuffers[] = { m_pProcessedVertexBuffer };
+	UINT pStrides[] = { m_iVertexStride };
+	UINT pOffsets[] = { 0 };
+
+	m_pContext->IASetVertexBuffers(0, 1, pBuffers, pStrides, pOffsets);
+	m_pContext->IASetIndexBuffer(m_pIB, m_GIFormat, 0);
+	m_pContext->IASetPrimitiveTopology(m_Primitive_Topology);
+
+	// 최종 드로우 호출
+	m_pContext->DrawIndexed(m_iNumIndices, 0, 0);
+
+	return S_OK;
 }
 
 _bool CMesh::isCloth()

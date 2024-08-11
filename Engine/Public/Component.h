@@ -15,6 +15,7 @@ public:
     virtual HRESULT Initialize(void* pArg);
     virtual void Tick();
     virtual HRESULT Render();
+    virtual HRESULT Bind_Compute(class CComputeShader* pShader = nullptr);
 
 protected:
     class CGameInstance* m_pGameInstance = { nullptr };

@@ -1,5 +1,7 @@
 #include "VIBuffer.h"
 
+#include "ComputeShader.h"
+
 CVIBuffer::CVIBuffer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CComponent{pDevice, pContext}
 {
@@ -17,10 +19,16 @@ CVIBuffer::CVIBuffer(const CVIBuffer& rhs)
 	m_iIndexStride { rhs.m_iIndexStride},
 	m_GIFormat { rhs.m_GIFormat},
 	m_Primitive_Topology{ rhs.m_Primitive_Topology },
-	m_iNumVertexBuffers { rhs.m_iNumVertexBuffers }
+	m_iNumVertexBuffers { rhs.m_iNumVertexBuffers },
+	m_pVertexBufferSRV{rhs.m_pVertexBufferSRV},
+	m_pProcessedVertexBuffer{ rhs.m_pProcessedVertexBuffer},
+	m_pResultBufferUAV{rhs.m_pResultBufferUAV}
 {
 	Safe_AddRef(m_pVB);
 	Safe_AddRef(m_pIB);
+	Safe_AddRef(m_pVertexBufferSRV);
+	Safe_AddRef(m_pResultBufferUAV);
+	Safe_AddRef(m_pProcessedVertexBuffer);
 }
 
 HRESULT CVIBuffer::Initialize_Prototype()
@@ -36,7 +44,7 @@ HRESULT CVIBuffer::Initialize(void* pArg)
 HRESULT CVIBuffer::Render()
 {
 	ID3D11Buffer* pVertices[] = {
-		m_pVB,
+	m_pVB,
 	};
 
 	_uint pStrideVertices[] = {
@@ -50,8 +58,19 @@ HRESULT CVIBuffer::Render()
 	m_pContext->IASetVertexBuffers(0, m_iNumVertexBuffers, pVertices, pStrideVertices, pStartVertices);
 	m_pContext->IASetIndexBuffer(m_pIB, m_GIFormat, 0);
 	m_pContext->IASetPrimitiveTopology(m_Primitive_Topology);
-	
+
 	m_pContext->DrawIndexed(m_iNumIndices, 0, 0);
+
+	return S_OK;
+}
+
+HRESULT CVIBuffer::Bind_Compute(CComputeShader* pShader)
+{
+	// 컴퓨트 셰이더 바인딩
+	m_pContext->CSSetShaderResources(0, 1, &m_pVertexBufferSRV);
+	m_pContext->CSSetUnorderedAccessViews(0, 1, &m_pResultBufferUAV, nullptr);
+
+	pShader->Render((m_iNumVertices + 15) / 16);
 
 	return S_OK;
 }
@@ -64,9 +83,49 @@ HRESULT CVIBuffer::Create_Buffer(ID3D11Buffer** pOut)
 	return S_OK;
 }
 
+HRESULT CVIBuffer::Ready_ComputeBuffer()
+{
+	// 정점 버퍼를 위한 Shader Resource View 생성
+	D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
+	srvDesc.Format = DXGI_FORMAT_UNKNOWN; // 정점 버퍼의 형식에 따라 적절히 설정
+	srvDesc.ViewDimension = D3D11_SRV_DIMENSION_BUFFER;
+	srvDesc.Buffer.FirstElement = 0;
+	srvDesc.Buffer.NumElements = m_iNumVertices;
+
+	if (FAILED(m_pDevice->CreateShaderResourceView(m_pVB, &srvDesc, &m_pVertexBufferSRV)))
+		return E_FAIL;
+
+	// 처리된 결과를 위한 Unordered Access View 생성
+	D3D11_UNORDERED_ACCESS_VIEW_DESC uavDesc = {};
+	uavDesc.Format = DXGI_FORMAT_UNKNOWN; // 처리된 결과의 형식에 따라 적절히 설정
+	uavDesc.ViewDimension = D3D11_UAV_DIMENSION_BUFFER;
+	uavDesc.Buffer.FirstElement = 0;
+	uavDesc.Buffer.NumElements = m_iNumVertices;
+
+	if (FAILED(m_pDevice->CreateUnorderedAccessView(m_pVB, &uavDesc, &m_pResultBufferUAV)))
+		return E_FAIL;
+
+	D3D11_BUFFER_DESC Desc{};
+	Desc.ByteWidth = m_iVertexStride * m_iNumVertices;
+	Desc.Usage = D3D11_USAGE_DEFAULT;
+	Desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	Desc.CPUAccessFlags = 0;
+	Desc.MiscFlags = 0;
+	Desc.StructureByteStride = m_iVertexStride;
+
+	if (FAILED(m_pDevice->CreateBuffer(&Desc, nullptr, &m_pProcessedVertexBuffer)))
+		return E_FAIL;
+
+	return S_OK;
+}
+
 void CVIBuffer::Free()
 {
 	__super::Free();
 	Safe_Release(m_pVB);
 	Safe_Release(m_pIB);
+
+	Safe_Release(m_pVertexBufferSRV);
+	Safe_Release(m_pProcessedVertexBuffer);
+	Safe_Release(m_pResultBufferUAV);
 }

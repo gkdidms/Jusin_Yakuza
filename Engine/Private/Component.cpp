@@ -42,6 +42,11 @@ HRESULT CComponent::Render()
 	return S_OK;
 }
 
+HRESULT CComponent::Bind_Compute(CComputeShader* pShader)
+{
+	return S_OK;
+}
+
 void CComponent::Free()
 {
 	Safe_Release(m_pDevice);

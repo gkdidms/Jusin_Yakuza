@@ -927,6 +927,11 @@ HRESULT CModel::Render(_uint iMeshIndex)
 	return S_OK;
 }
 
+HRESULT CModel::Bind_Compute(CComputeShader* pShader, _uint iNumMeshIndex)
+{
+	return m_Meshes[iNumMeshIndex]->Bind_Compute(pShader);
+}
+
 HRESULT CModel::Bind_Material(CShader* pShader, const _char* pConstantName, _uint iNumMeshIndex, aiTextureType eTextureType)
 {
 	auto* pTexture = m_Materials[m_Meshes[iNumMeshIndex]->Get_MaterialIndex()].pMaterialTextures[eTextureType];

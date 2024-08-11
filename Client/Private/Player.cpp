@@ -267,7 +267,7 @@ void CPlayer::Tick(const _float& fTimeDelta)
 	Effect_Control_Aura();
 	Setting_Target_Enemy();
 	Setting_Target_Item();
-	Setting_Target_Wall();
+	//Setting_Target_Wall();
 }
 
 void CPlayer::Late_Tick(const _float& fTimeDelta)
@@ -375,11 +375,7 @@ HRESULT CPlayer::Render()
 	{
 		m_pModelCom->Bind_BoneMatrices(m_pComputeShaderCom, i);
 
-		m_pComputeShaderCom->Render();
-
-		m_pModelCom->Render(i);
-
-		m_pComputeShaderCom->Bind_SRV();
+		m_pModelCom->Bind_Compute(m_pComputeShaderCom, i);
 
 		if(ADVENTURE != m_isRimLight)
 		{
@@ -488,7 +484,7 @@ HRESULT CPlayer::Render()
 		else
 			m_pShaderCom->Begin(0);		//µğÆúÆ®
 
-		//m_pModelCom->Render(i);
+		m_pModelCom->Render(i);
 
 		i++;
 	}

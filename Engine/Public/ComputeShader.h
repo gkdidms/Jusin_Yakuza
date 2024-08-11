@@ -13,7 +13,7 @@ public:
     }COMPUTE_DESC;
 
     struct MatrixBuffer {
-        _float4x4* matrix;
+        _float4x4 matrix[512];
     };
 
 private:
@@ -24,7 +24,7 @@ private:
 public:
     virtual HRESULT Initialize_Prototype(const wstring& strShaderFilePath);
     virtual HRESULT Initialize(void* pArg) override;
-    HRESULT Render();
+    HRESULT Render(_uint iGroupCount);
 
 public:
     HRESULT Bind_Matrix(const _float4x4* pMatrix);

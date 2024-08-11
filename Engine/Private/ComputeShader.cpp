@@ -60,26 +60,28 @@ HRESULT CComputeShader::Initialize(void* pArg)
 {
     D3D11_BUFFER_DESC cbDesc = {};
     cbDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-    cbDesc.ByteWidth = 512;
+    cbDesc.ByteWidth = sizeof(MatrixBuffer);
     cbDesc.Usage = D3D11_USAGE_DEFAULT;
+    cbDesc.CPUAccessFlags = 0;
+    cbDesc.MiscFlags = 0;
+    cbDesc.StructureByteStride = 0;
 
     if (FAILED(m_pDevice->CreateBuffer(&cbDesc, nullptr, &m_pBoneMatrix)))
         return E_FAIL;
 
-    Ready_Texture2D(1280, 720);
+    //Ready_Texture2D(1280, 720);
 
 	return S_OK;
 }
 
-HRESULT CComputeShader::Render()
+HRESULT CComputeShader::Render(_uint iGroupCount)
 {
 
     m_pContext->CSSetConstantBuffers(0, 1, &m_pBoneMatrix);
-    m_pContext->CSSetShaderResources(0, 1, &m_pSRV);
-    m_pContext->CSSetUnorderedAccessViews(0, 1, &m_pUAV, nullptr);
+
     m_pContext->CSSetShader(m_pComputeShader, nullptr, 0);
 
-    m_pContext->Dispatch(21, 13, 1);
+    m_pContext->Dispatch(iGroupCount, 1, 1);
 
     m_pContext->CSSetShader(nullptr, nullptr, 0);
     m_pContext->CSSetShaderResources(0, 0, nullptr);
@@ -91,8 +93,9 @@ HRESULT CComputeShader::Render()
 
 HRESULT CComputeShader::Bind_Matrix(const _float4x4* pMatrix)
 {
-
-    m_pContext->UpdateSubresource(m_pBoneMatrix, 0, nullptr, pMatrix, 0, 0);
+    MatrixBuffer Desc{};
+    memcpy(Desc.matrix, pMatrix, sizeof(MatrixBuffer));
+    m_pContext->UpdateSubresource(m_pBoneMatrix, 0, nullptr, &Desc, 0, 0);
 
     return S_OK;
 }

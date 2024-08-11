@@ -25,6 +25,9 @@ public:
 	void	Fill_Matrices(vector<class CBone*>& Bones, _float4x4* pMeshBoneMatrices);
 
 public:
+	virtual HRESULT Render();
+
+public:
 	_uint Get_MaterialIndex() { return m_iMaterialIndex; }
 	_uint Get_NumBones() { return m_iNumBones; }
 

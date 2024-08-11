@@ -2,10 +2,13 @@
 
 struct VS_IN
 {
-    vector vPosition : POSITION;
-    vector vNormal : NORMAL;
+    float3 vPosition : POSITION;
+    float3 vNormal : NORMAL;
     float2 vTexcoord : TEXCOORD0;
     float3 vTangent : TANGENT;
+    
+    uint4 vBlendIndices : BLENDINDICES;
+    float4 vBlendWeights : BLENDWEIGHTS;
 };
 
 struct VS_OUT
@@ -18,21 +21,17 @@ struct VS_OUT
     float4 vBinormal : BINORMAL;
 };
 
-StructuredBuffer<VS_IN> SkinnedVertices : register(t0);
-
-VS_OUT VS_MAIN(uint id : SV_VertexID)
+VS_OUT VS_MAIN(VS_IN In)
 {
-    VS_IN In = SkinnedVertices[id];
-    
     VS_OUT Out = (VS_OUT) 0;
   
     matrix matWV, matWVP;
-
+    
     matWV = mul(g_WorldMatrix, g_ViewMatrix);
     matWVP = mul(matWV, g_ProjMatrix);
 
-    Out.vPosition = mul(In.vPosition, matWVP);
-    Out.vNormal = normalize(mul(In.vNormal, g_WorldMatrix));
+    Out.vPosition = mul(vector(In.vPosition, 1.f), matWVP);
+    Out.vNormal = normalize(mul(vector(In.vNormal, 1.f), g_WorldMatrix));
     Out.vTexcoord = In.vTexcoord;
     Out.vProjPos = Out.vPosition;
     Out.vTangent = normalize(mul(vector(In.vTangent.xyz, 0.f), g_WorldMatrix));

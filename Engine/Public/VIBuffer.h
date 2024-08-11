@@ -13,13 +13,20 @@ protected:
 public:
     virtual HRESULT Initialize_Prototype() override;
     virtual HRESULT Initialize(void* pArg) override;
-    virtual HRESULT Render();
+    virtual HRESULT Render() override;
+    virtual HRESULT Bind_Compute(class CComputeShader* pShader) override;
 
 public:
     HRESULT Create_Buffer(ID3D11Buffer** pOut);
+    HRESULT Ready_ComputeBuffer();
     _uint Get_NumVertex() { return m_iNumVertices; }
     _uint Get_NumIndices() { return m_iNumIndices; }
+
 protected:
+    ID3D11ShaderResourceView* m_pVertexBufferSRV = { nullptr };
+    ID3D11UnorderedAccessView* m_pResultBufferUAV = { nullptr };
+    ID3D11Buffer* m_pProcessedVertexBuffer = { nullptr };
+
     ID3D11Buffer* m_pVB;
     ID3D11Buffer* m_pIB;
 
