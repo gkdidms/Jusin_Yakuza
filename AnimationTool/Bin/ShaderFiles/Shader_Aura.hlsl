@@ -20,6 +20,9 @@ float g_fFlowSpeed;
 float g_NearZ = 0.01f;
 float g_FarZ = 3000.f;
 
+float4 g_vStartColor;
+float4 g_vEndColor;
+
 bool g_isAttach;
 //vLifeTime.x 종료시간 /vLifeTime.y 현재시간 / vLifeTime.z 누적인덱스
 struct VS_IN
@@ -68,7 +71,7 @@ VS_OUT VS_MAIN(VS_IN In)
 
     vector vPosition = mul(float4(In.vPosition, 1.f), In.TransformMatrix); //로컬이동.
    
-    if(g_isAttach)
+    if (g_isAttach)
     {
         Out.vPosition = mul(vPosition, g_WorldMatrix).xyz; //월드상
         Out.vPSize = In.vPSize;
@@ -168,14 +171,14 @@ void GS_DEAFULT(point GS_IN In[1], inout TriangleStream<GS_OUT> Triangles)
     
     float2 uvWeight = float2(1 / g_fUVCount.x, 1 / g_fUVCount.y);
     
-    float SpriteIndex = lerp(0.f , (g_fUVCount.x* g_fUVCount.y) , (In[0].vLifeTime.y / In[0].vLifeTime.x));
+    float SpriteIndex = lerp(0.f, (g_fUVCount.x * g_fUVCount.y), (In[0].vLifeTime.y / In[0].vLifeTime.x));
     
     float2 uv = float2(float(floor(SpriteIndex) % g_fUVCount.x) / g_fUVCount.x, floor(SpriteIndex / g_fUVCount.x) / g_fUVCount.y);
 
     
     float2 uvToneWeight = float2(1 / g_fToneUVCount.x, 1 / g_fToneUVCount.y);
     
-    float ToneSpriteIndex = lerp(0.f, (g_fToneUVCount.x * g_fToneUVCount.y) , (In[0].vLifeTime.y / In[0].vLifeTime.x));
+    float ToneSpriteIndex = lerp(0.f, (g_fToneUVCount.x * g_fToneUVCount.y), (In[0].vLifeTime.y / In[0].vLifeTime.x));
     
     float2 Toneuv = float2(float(floor(ToneSpriteIndex) % g_fToneUVCount.x) / g_fToneUVCount.x, floor(ToneSpriteIndex / g_fToneUVCount.x) / g_fToneUVCount.y);
 
@@ -189,7 +192,7 @@ void GS_DEAFULT(point GS_IN In[1], inout TriangleStream<GS_OUT> Triangles)
     
     vPosition = In[0].vPosition - vRight + vUp;
     Out[1].vPosition = mul(float4(vPosition, 1.f), matVP);
-    Out[1].vTexcoord = float2(uv.x + uvWeight.x,uv.y);
+    Out[1].vTexcoord = float2(uv.x + uvWeight.x, uv.y);
     Out[1].vToneTex = float2(Toneuv.x + uvToneWeight.x, Toneuv.y);
     Out[1].vAlphaTex = float2(1.f, 0.f);
     Out[1].vLifeTime = In[0].vLifeTime;
@@ -219,6 +222,82 @@ void GS_DEAFULT(point GS_IN In[1], inout TriangleStream<GS_OUT> Triangles)
     Triangles.RestartStrip();
 }
 
+//파티클의 점 하나를 그리고 픽셀로 넘어간다 사각형 한개 생성후 픽셸로 감
+[maxvertexcount(6)] //방향성 x
+void GS_NOROTATE(point GS_IN In[1], inout TriangleStream<GS_OUT> Triangles)
+{
+    GS_OUT Out[4];
+
+    for (int i = 0; i < 4; ++i)
+    {
+        Out[i].vPosition = float4(0.f, 0.f, 0.f, 0.f);
+        Out[i].vTexcoord = float2(0.f, 0.f);
+        Out[i].vLifeTime = float2(0.f, 0.f);
+    }
+	    
+    float3 vLook = g_vCamPosition - vector(In[0].vPosition, 1.f);
+    float3 vRight = normalize(cross(float3(0.f, 1.f, 0.f), vLook.xyz)) * In[0].vPSize.x * In[0].vRectSize.x * 0.5f;
+    float3 vUp = normalize(cross(vLook.xyz, vRight)) * In[0].vPSize.y * In[0].vRectSize.x * 0.5f;
+    
+    float3 vPosition;
+    matrix matVP = mul(g_ViewMatrix, g_ProjMatrix);
+    
+    float4 PointPosition = float4(In[0].vPosition, 1.f); //월드좌표
+        //-1~1 x,y,z
+
+    
+    float2 uvWeight = float2(1 / g_fUVCount.x, 1 / g_fUVCount.y);
+    
+    float SpriteIndex = lerp(0.f, (g_fUVCount.x * g_fUVCount.y), (In[0].vLifeTime.y / In[0].vLifeTime.x));
+    
+    float2 uv = float2(float(floor(SpriteIndex) % g_fUVCount.x) / g_fUVCount.x, floor(SpriteIndex / g_fUVCount.x) / g_fUVCount.y);
+
+    
+    float2 uvToneWeight = float2(1 / g_fToneUVCount.x, 1 / g_fToneUVCount.y);
+    
+    float ToneSpriteIndex = lerp(0.f, (g_fToneUVCount.x * g_fToneUVCount.y), (In[0].vLifeTime.y / In[0].vLifeTime.x));
+    
+    float2 Toneuv = float2(float(floor(ToneSpriteIndex) % g_fToneUVCount.x) / g_fToneUVCount.x, floor(ToneSpriteIndex / g_fToneUVCount.x) / g_fToneUVCount.y);
+
+    
+    vPosition = In[0].vPosition + vRight + vUp;
+    Out[0].vPosition = mul(float4(vPosition, 1.f), matVP);
+    Out[0].vTexcoord = uv;
+    Out[0].vToneTex = Toneuv;
+    Out[0].vAlphaTex = float2(0.f, 0.f);
+    Out[0].vLifeTime = In[0].vLifeTime;
+    
+    vPosition = In[0].vPosition - vRight + vUp;
+    Out[1].vPosition = mul(float4(vPosition, 1.f), matVP);
+    Out[1].vTexcoord = float2(uv.x + uvWeight.x, uv.y);
+    Out[1].vToneTex = float2(Toneuv.x + uvToneWeight.x, Toneuv.y);
+    Out[1].vAlphaTex = float2(1.f, 0.f);
+    Out[1].vLifeTime = In[0].vLifeTime;
+    
+    vPosition = In[0].vPosition - vRight - vUp;
+    Out[2].vPosition = mul(float4(vPosition, 1.f), matVP);
+    Out[2].vTexcoord = float2(uv.x + uvWeight.x, uv.y + uvWeight.y);
+    Out[2].vToneTex = float2(Toneuv.x + uvToneWeight.x, Toneuv.y + uvToneWeight.y);
+    Out[2].vAlphaTex = float2(1.f, 1.f);
+    Out[2].vLifeTime = In[0].vLifeTime;
+    
+    vPosition = In[0].vPosition + vRight - vUp;
+    Out[3].vPosition = mul(float4(vPosition, 1.f), matVP);
+    Out[3].vTexcoord = float2(uv.x, uv.y + uvWeight.y);
+    Out[3].vToneTex = float2(Toneuv.x, Toneuv.y + uvToneWeight.y);
+    Out[3].vAlphaTex = float2(0.f, 1.f);
+    Out[3].vLifeTime = In[0].vLifeTime;
+
+    Triangles.Append(Out[0]);
+    Triangles.Append(Out[1]);
+    Triangles.Append(Out[2]);
+    Triangles.RestartStrip();
+
+    Triangles.Append(Out[0]);
+    Triangles.Append(Out[2]);
+    Triangles.Append(Out[3]);
+    Triangles.RestartStrip();
+}
 struct PS_IN
 {
     float4 vPosition : SV_POSITION;
@@ -249,7 +328,7 @@ PS_OUT PS_MAIN_NOCOLOR(PS_IN In)
 
     vector Tone = g_ToneTexture.Sample(PointSampler, In.vToneTex);
 
-    float FlowPow = g_fFlowPow;//왜곡 강도 0~1사이
+    float FlowPow = g_fFlowPow; //왜곡 강도 0~1사이
     float FlowSpeed = g_fFlowSpeed; //흐름 속도
     
     //스프라이트 는 시간이랑 다름
@@ -260,7 +339,7 @@ PS_OUT PS_MAIN_NOCOLOR(PS_IN In)
 
     // Noise 텍스처를 사용하여 UV 좌표 변화 계산
     
-    float2 Dist = (g_FluidTexture.Sample(PointSampler, In.vAlphaTex) * 2.0f - 1.0f)*FlowPow;
+    float2 Dist = (g_FluidTexture.Sample(PointSampler, In.vAlphaTex) * 2.0f - 1.0f) * FlowPow;
    // float2 flowUV = In.vAlphaTex + (g_FluidTexture.Sample(PointSampler, In.vAlphaTex + ResultTime).xy * 2.0 - 1.0) * FlowPow;
 
 
@@ -269,7 +348,7 @@ PS_OUT PS_MAIN_NOCOLOR(PS_IN In)
 
     float mixlerp = abs(frac(In.vLifeTime.y) * 2.f - 1.f);
     
-    float BaseAlpha = lerp(BaseAlphaA, BaseAlphaB, mixlerp);//flow 셰이더 반복
+    float BaseAlpha = lerp(BaseAlphaA, BaseAlphaB, mixlerp); //flow 셰이더 반복
     
     vector UVSprite = g_UVAnimTexture.Sample(PointSampler, In.vTexcoord);
     
@@ -296,6 +375,60 @@ PS_OUT PS_MAIN_NOCOLOR(PS_IN In)
 }
 
 //지오메트리 어차피 그리는 순서나 픽셀이나 똑같다
+PS_OUT PS_MAIN_COLOR(PS_IN In)
+{
+    PS_OUT Out = (PS_OUT) 0;
+
+    float4 PointPosition = In.vPosition; //월드좌표
+
+    float fWeight = abs(PointPosition.z); //정규화된 z 값을 가져옴(0~1)    
+    
+    float2 LifeAlpha = g_lifeAlpha;
+
+    //vector Tone = g_ToneTexture.Sample(PointSampler, In.vToneTex);
+    float4 LerpColor = lerp(g_vStartColor, g_vEndColor, In.vLifeTime.y / In.vLifeTime.x);
+    float FlowPow = g_fFlowPow; //왜곡 강도 0~1사이
+    float FlowSpeed = g_fFlowSpeed; //흐름 속도
+    
+    //스프라이트 는 시간이랑 다름
+    float TimeA = frac(In.vLifeTime.y * FlowSpeed);
+    float TimeB = frac(In.vLifeTime.y + 0.5f * FlowSpeed);
+    
+    float2 ResultTime = float2(TimeA * 0.2f, TimeB * 0.3f);
+
+    // Noise 텍스처를 사용하여 UV 좌표 변화 계산
+    
+    float2 Dist = (g_FluidTexture.Sample(PointSampler, In.vAlphaTex) * 2.0f - 1.0f) * FlowPow;
+    
+    vector BaseColorA = g_BaseAlphaTexture.Sample(LinearSampler, In.vTexcoord + Dist * TimeA);
+    vector BaseColorB = g_BaseAlphaTexture.Sample(LinearSampler, In.vTexcoord + Dist * TimeB);
+
+    float mixlerp = abs(frac(In.vLifeTime.y) * 2.f - 1.f);
+    
+    vector BaseColor = lerp(BaseColorA, BaseColorB, mixlerp); //flow 셰이더 반복
+    
+    vector UVSprite = g_UVAnimTexture.Sample(LinearSampler, In.vTexcoord);
+    
+    float Alphafactor = frac(In.vLifeTime.y / In.vLifeTime.x);
+    
+    float lerpAlpha = lerp(LifeAlpha.x, LifeAlpha.y, Alphafactor);
+  
+    vector FinalColor = BaseColor;
+    FinalColor.a *= lerpAlpha;
+
+    float3 ColorN = FinalColor.rgb;
+    
+    float AlphaN = FinalColor.a;
+        
+  //  AlphaN *= lerp(g_lifeAlpha.x, g_lifeAlpha.y, In.vLifeTime.y / In.vLifeTime.x);
+    
+    Out.vColor = float4(ColorN.rgb * AlphaN, AlphaN) * fWeight;
+    
+    Out.vAlpha = float4(AlphaN, AlphaN, AlphaN, AlphaN);
+    Out.vDistortion = float4(0.0f, 0.0f, 0.0f, 0.0f);
+    return Out;
+}
+//지오메트리 어차피 그리는 순서나 픽셀이나 똑같다
 PS_OUT PS_AURA_FIRE(PS_IN In)
 {
     PS_OUT Out = (PS_OUT) 0;
@@ -306,21 +439,48 @@ PS_OUT PS_AURA_FIRE(PS_IN In)
     
     float2 LifeAlpha = g_lifeAlpha;
 
-    vector Tone = g_ToneTexture.Sample(PointSampler, In.vTexcoord);
+    vector Tone = g_ToneTexture.Sample(PointSampler, In.vToneTex);
 
-    vector UVSprite = g_UVAnimTexture.Sample(LinearSampler, In.vTexcoord);
+    float FlowPow = g_fFlowPow; //왜곡 강도 0~1사이
+    float FlowSpeed = g_fFlowSpeed; //흐름 속도
+    
+    //스프라이트 는 시간이랑 다름
+    float TimeA = frac(In.vLifeTime.y * FlowSpeed);
+    float TimeB = frac(In.vLifeTime.y + 0.5f * FlowSpeed);
+    
+    float2 ResultTime = float2(TimeA * 0.2f, TimeB * 0.3f);
+
+    // Noise 텍스처를 사용하여 UV 좌표 변화 계산
+    
+    float2 Dist = (g_FluidTexture.Sample(PointSampler, In.vAlphaTex) * 2.0f - 1.0f) * FlowPow;
+   // float2 flowUV = In.vAlphaTex + (g_FluidTexture.Sample(PointSampler, In.vAlphaTex + ResultTime).xy * 2.0 - 1.0) * FlowPow;
+
+
+    float BaseAlphaA = g_BaseAlphaTexture.Sample(PointSampler, In.vTexcoord + Dist * TimeA).a;
+    float BaseAlphaB = g_BaseAlphaTexture.Sample(PointSampler, In.vTexcoord + Dist * TimeB).a;
+
+    float mixlerp = abs(frac(In.vLifeTime.y) * 2.f - 1.f);
+    
+    float BaseAlpha = lerp(BaseAlphaA, BaseAlphaB, mixlerp); //flow 셰이더 반복
+    
+    vector UVSprite = g_UVAnimTexture.Sample(PointSampler, In.vTexcoord);
     
     float Alphafactor = frac(In.vLifeTime.y / In.vLifeTime.x);
     
     float lerpAlpha = lerp(LifeAlpha.x, LifeAlpha.y, Alphafactor);
   
-    vector FinalColor = vector(Tone.rgb * UVSprite.rgb, UVSprite.a * lerpAlpha);
-    
-    //결과값 송출
+    vector FinalColor;
+    FinalColor.rgb = Tone.rgb;
+    FinalColor.a = lerpAlpha * BaseAlpha;
+
+    // FinalColor = vector(flowUV, flowUV);
+
     float3 ColorN = FinalColor.rgb;
     
     float AlphaN = FinalColor.a;
         
+  //  AlphaN *= lerp(g_lifeAlpha.x, g_lifeAlpha.y, In.vLifeTime.y / In.vLifeTime.x);
+    
     Out.vColor = float4(ColorN.rgb * AlphaN, AlphaN) * fWeight;
     
     Out.vAlpha = float4(AlphaN, AlphaN, AlphaN, AlphaN);
@@ -345,7 +505,7 @@ technique11 DefaultTechnique
         PixelShader = compile ps_5_0 PS_MAIN_NOCOLOR();
     }
 
-    pass StartAuraFluid //0
+    pass StartAuraFluid //1
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_None_Test_None_Write, 0);
@@ -359,7 +519,7 @@ technique11 DefaultTechnique
         PixelShader = compile ps_5_0 PS_MAIN_NOCOLOR();
     }
 
-    pass StartAuraFire //1
+    pass StartAuraFire //2
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_None_Test_None_Write, 0);
@@ -367,7 +527,21 @@ technique11 DefaultTechnique
    
 		/* 어떤 셰이덜르 국동할지. 셰이더를 몇 버젼으로 컴파일할지. 진입점함수가 무엇이찌. */
         VertexShader = compile vs_5_0 VS_MAIN();
-        GeometryShader = compile gs_5_0 GS_DEAFULT();
+        GeometryShader = compile gs_5_0 GS_NOROTATE();
+        HullShader = NULL;
+        DomainShader = NULL;
+        PixelShader = compile ps_5_0 PS_MAIN_COLOR();
+    }
+
+    pass AuraFire //3
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_None_Test_None_Write, 0);
+        SetBlendState(BS_WeightsBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+   
+		/* 어떤 셰이덜르 국동할지. 셰이더를 몇 버젼으로 컴파일할지. 진입점함수가 무엇이찌. */
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = compile gs_5_0 GS_NOROTATE();
         HullShader = NULL;
         DomainShader = NULL;
         PixelShader = compile ps_5_0 PS_AURA_FIRE();
