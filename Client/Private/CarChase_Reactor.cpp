@@ -66,7 +66,7 @@ void CCarChase_Reactor::Tick(const _float& fTimeDelta)
 	Change_Animation(); //애니메이션 변경
 
 	if (m_iAnim != -1)
-		m_pModelCom->Play_Animation(fTimeDelta, CModel::ANIMATION_DESC{m_iAnim, m_isAnimLoop});
+		m_pModelCom->Play_Animation(fTimeDelta, CModel::ANIMATION_DESC{_uint(m_iAnim), m_isAnimLoop});
 
 #ifdef _DEBUG
 	if (m_pGameInstance->GetKeyState(DIK_LCONTROL) == TAP)
