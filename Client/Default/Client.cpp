@@ -124,7 +124,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
             pMainApp->Tick(fTimeDelta);
             pMainApp->Render();
 
-            _CrtSetBreakAlloc(5054715); // 추가
+            //_CrtSetBreakAlloc(5054715); // 추가
 
             fTimeAcc = 0.f;
         }
