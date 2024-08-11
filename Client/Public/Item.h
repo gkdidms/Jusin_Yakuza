@@ -43,7 +43,6 @@ public:
 		ITEM_BRIGHT,
 		ITEM_GRAB, // 잡았을때
 		ITEM_DEAD, 
-		ITEM_ATTACK,		// 잡고 공격할 때
 		ITEM_END
 	};
 
@@ -112,6 +111,7 @@ public:
 	ITEM_MODE			Get_ItemMode() { return m_eItemMode; }
 	void				Set_ItemMode(CItem::ITEM_MODE mode) { m_eItemMode = mode; }
 	void				Set_Grab(bool bGrab) { m_bCurGrab = bGrab;  m_eItemMode = ITEM_GRAB; }
+	void				Attacking(_bool isOn = true) { m_isAttacking = isOn; }
 
 public:
 	_uint				Get_ItemLife() { return m_iLife; }
@@ -136,6 +136,7 @@ private:
 
 private:
 	_bool m_isFirst = { true };
+	_bool m_isAttacking = { false };
 	vector<CDecal*>			m_vDecals;
 	//vector<CCollider*>		m_vColliders;
 	int						m_iLayerNum;

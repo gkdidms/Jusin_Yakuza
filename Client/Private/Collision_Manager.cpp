@@ -69,13 +69,7 @@ void CCollision_Manager::Tick()
 
     Enemy_Hit_Collision();
     Player_Hit_Collision();
-
-    //ItemCollision(); // 아이템 충돌 체크
-
-    if (m_pGameInstance->GetKeyState(DIK_Z) == TAP)
-#ifdef _DEBUG
-        cout << " 버튼 입력!" << endl;
-#endif // _DEBUG        
+    Item_Attack_Collision();    
 
     Battle_Clear();
 }
@@ -399,7 +393,8 @@ void CCollision_Manager::Item_Attack_Collision()
         {
             if (pItemCollider->Intersect(pEnemyHitCollider->Get_Collider()))
             {
-                //pEnemyHitCollider->ParentObject_Hit();
+                // 데미지를 제외하고 나머지는 임의의값을 넣음 (몬스터쪽에서 안쓰는값들)
+                pEnemyHitCollider->Get_Parent()->Take_Damage(0, _float3(), 10.f, nullptr, false);
             }
         }
     }

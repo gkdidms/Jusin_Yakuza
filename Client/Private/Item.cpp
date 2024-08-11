@@ -249,9 +249,9 @@ void CItem::Late_Tick(const _float& fTimeDelta)
 			iter->Late_Tick(fTimeDelta);
 	}
 
-	m_pCollisionManager->Add_ImpulseResolution(this);
+	//m_pCollisionManager->Add_ImpulseResolution(this);
 
-	if (ITEM_ATTACK == m_eItemMode)
+	if (m_isAttacking)
 		m_pCollisionManager->Add_ItemCollider(m_pOBBColliderCom);
 
 }
