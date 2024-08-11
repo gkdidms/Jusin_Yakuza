@@ -90,22 +90,22 @@ public:
 protected:
     _bool       m_isOff = { false };
 
-    _uint          m_eType = { TYPE_END };
+    _uint       m_eType = { TYPE_END };
     wstring     m_ParticleTag = { TEXT("") };
     wstring     m_TextureTag = { TEXT("") };
-    _int          m_iShaderPass = { 0 };
+    _int        m_iShaderPass = { 0 };
 
-    _float       m_fStartTime = { 0.f };//작업용파싱x(세이브로드엔 들어가기)
+    _float      m_fStartTime = { 0.f };//작업용파싱x(세이브로드엔 들어가기)
     _float4     m_vStartPos = {};
-    _float       m_fRotate = { 0.f };
+    _float      m_fRotate = { 0.f };
     _float2     m_fLifeAlpha = { 0.f,0.f };
-    _uint			m_iAction = { 0 };
+    _uint		m_iAction = { 0 };
     _float4     m_vStartColor = { 0.f , 0.f , 0.f , 0.f };
     _float4     m_vEndColor = { 0.f , 0.f , 0.f , 0.f };
     _float      m_fDistortion = { 0.f };
 
     _bool       m_isNormal = { false };
-    wstring    m_NormalTag = { TEXT("") };
+    wstring     m_NormalTag = { TEXT("") };
 
     const _float4x4* m_pWorldMatrix = { nullptr };
 

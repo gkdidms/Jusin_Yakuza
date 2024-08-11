@@ -42,9 +42,6 @@ public:
     virtual HRESULT Render() override;
 
 protected:
-    CNavigation* m_pNavigationCom = { nullptr };
-
-protected:
     _bool m_isAnimLoop = { false };
     _bool m_isStop = { false };
     _bool m_isStart = { true };
@@ -52,7 +49,7 @@ protected:
     _float m_fChangeInterval = { 4.f };
 
     string  m_strAnimName = "";
-    _uint   m_iAnim = { 0 };
+    _int   m_iAnim = { 0 };
 
     _bool   m_isColl = { false };
     

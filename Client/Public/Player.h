@@ -198,6 +198,7 @@ public:
 private:
     void Ready_AnimationTree();
     void Ready_CutSceneAnimation();
+    void Ready_AuraEffect();
 
     /* Compute Function */
 private:
@@ -247,6 +248,8 @@ private:
     void Setting_Target_Enemy();
     void Setting_Target_Item();
     void Setting_Target_Wall();
+
+    void Off_Aura(BATTLE_STYLE eStyle);
 
 
     /* 캐릭터 스테이터스 관련 함수 */ 
@@ -317,10 +320,16 @@ private:
 
     /* 플레이어 스테이터스 관련 변수들 */
 private:
-    _uint           m_iCurrentHitLevel = { 0 };
+    _uint           m_iCurrentHitLevel = { 3 };
     _float          m_fHitGauge = { 0.f };
 
     int             m_iNaviRouteNum = { 0 }; //루트
+
+    /* 플레이어 오라 이펙트 모아두기 */
+private:
+    vector<CSocketEffect*> m_HooliganAura;
+    vector<CSocketEffect*> m_RushAura;
+    vector<CSocketEffect*> m_DestroyerAura;
 
 private:
     _bool m_isHitFreeze = { false };

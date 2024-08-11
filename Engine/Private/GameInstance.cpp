@@ -287,6 +287,16 @@ _bool CGameInstance::isMotionBlur()
 	return m_pRenderer->isMotionBlur();
 }
 
+_bool CGameInstance::isInvertColor()
+{
+	return m_pRenderer->isInvertColor();
+}
+
+_bool CGameInstance::isVignette()
+{
+	return m_pRenderer->isVignette();
+}
+
 void CGameInstance::Set_PBR(_bool isPBR)
 {
 	m_pRenderer->Set_PBR(isPBR);
@@ -310,6 +320,16 @@ _float CGameInstance::Get_SSAORadiuse()
 void CGameInstance::Set_SSAOBlur(_float fBlur)
 {
 	m_pRenderer->Set_SSAOBlur(fBlur);
+}
+
+void CGameInstance::Set_InvertColor(_bool isInvertColor)
+{
+	m_pRenderer->Set_InvertColor(isInvertColor);
+}
+
+void CGameInstance::Set_Vignette(_bool isVignette)
+{
+	m_pRenderer->Set_Vignette(isVignette);
 }
 
 _float CGameInstance::Get_SSAOBlur()

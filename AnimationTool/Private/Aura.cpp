@@ -121,6 +121,7 @@ void CAura::Late_Tick(const _float& fTimeDelta)
 
 HRESULT CAura::Render()
 {
+	if (m_isOff) return S_OK;
 
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;

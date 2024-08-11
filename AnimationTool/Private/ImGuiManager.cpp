@@ -85,9 +85,9 @@ void CImguiManager::Tick(const _float& fTimeDelta)
 		if (m_isTrailWindow)
 			TrailWindow();
 		if (m_isFaceWindow)
-			FaceWindow();
+			FaceEventWindow();
 		if (m_isBloodWindow)
-			BloodWindow();
+			BloodEventWindow();
 	}
 
 	// 애니메이션 이벤트가 있는 콜라이더의 색상을 시안색으로 바꿔주는 기능
@@ -909,6 +909,19 @@ void CImguiManager::EffectListWindow()
 	ImGui::ListBox("Added Effects", &m_iAddedEffectSelectedIndex, Addeditems.data(), Addeditems.size());
 	if (ImGui::Button(u8"이펙트 삭제"))
 	{
+		auto iter = m_EffectState.begin();
+		for (size_t i = 0; i < m_iAddedEffectSelectedIndex; i++)
+		{
+			iter++;
+		}
+
+		auto pEffectList = m_pGameInstance->Get_GameObjects(LEVEL_EDIT, TEXT("Layer_Effect"));
+		
+		for (auto pEffect : pEffectList)
+		{
+			//pEffect == (*iter).first
+		}
+
 		CEffect* pEffect = reinterpret_cast<CEffect*>(m_pGameInstance->Get_GameObject(LEVEL_EDIT, TEXT("Layer_Effect"), m_iAddedEffectSelectedIndex));
 		pEffect->Set_Dead();
 
@@ -1042,7 +1055,7 @@ void CImguiManager::TrailWindow()
 
 		m_TrailEvents.emplace(m_AnimNameList[m_iAnimIndex], TrailState);
 
-		Create_Effect(m_BoneNameList[m_iBoneSelectedIndex], m_SelectedEffectName, TEXT("Layer_Trail"));
+		Create_Effect(m_BoneNameList[m_iBoneSelectedIndex], m_SelectedEffectName, TEXT("Layer_Effect"));
 	}
 
 	if (ImGui::Button(u8"트레일 Off"))
@@ -1140,20 +1153,65 @@ void CImguiManager::SoundListWindow()
 	ImGui::End();
 }
 
-void CImguiManager::FaceWindow()
+void CImguiManager::FaceEventWindow()
 {
 	ImGui::Begin("Face Event", &m_isFaceWindow);
 
-	ImGui::Text(u8"테스트용으로 띄웠습니다");
+	ImGui::Text(u8"선택된 애니메이션: %s", m_AnimNameList[m_iAnimIndex].c_str());
+	ImGui::Text(u8"선택된 본(채널리스트에서 선택한 값): %s", m_ChannelNameList[m_iChannelSelectedIndex].c_str());
+
+	ImGui::Text(u8"현재 입력된 애니메이션 포지션: %f", m_fAnimationPosition);
+
+	if (ImGui::Button(u8"표정 On"))
+	{
+
+	}
+	if (ImGui::Button(u8"표정 Change"))
+	{
+
+	}
+	if (ImGui::Button(u8"표정 Off"))
+	{
+
+	}
 
 	ImGui::End();
 }
 
-void CImguiManager::BloodWindow()
+void CImguiManager::BloodEventWindow()
 {
 	ImGui::Begin("Blood Particle Event", &m_isBloodWindow);
 
-	ImGui::Text(u8"테스트용으로 띄웠습니다");
+	ImGui::Text(u8"선택된 애니메이션: %s", m_AnimNameList[m_iAnimIndex].c_str());
+	ImGui::Text(u8"선택된 본(채널리스트에서 선택한 값): %s", m_ChannelNameList[m_iChannelSelectedIndex].c_str());
+
+	ImGui::Text(u8"현재 입력된 애니메이션 포지션: %f", m_fAnimationPosition);
+
+	if (ImGui::Button(u8"피 이펙트 On"))
+	{
+
+	}
+
+	ImGui::End();
+}
+
+void CImguiManager::RadialEventWindow()
+{
+	ImGui::Begin("Radial Event", &m_isRadialEventWindow);
+
+	ImGui::Text(u8"선택된 애니메이션: %s", m_AnimNameList[m_iAnimIndex].c_str());
+	ImGui::Text(u8"선택된 본(채널리스트에서 선택한 값): %s", m_ChannelNameList[m_iChannelSelectedIndex].c_str());
+
+	ImGui::Text(u8"현재 입력된 애니메이션 포지션: %f", m_fAnimationPosition);
+
+	if (ImGui::Button(u8"레디얼 On"))
+	{
+
+	}
+	if (ImGui::Button(u8"레디얼 Off"))
+	{
+
+	}
 
 	ImGui::End();
 }
@@ -1995,7 +2053,8 @@ void CImguiManager::TrailEvent_Load(string strPath)
 
 		if (TrailEvent.iType == 0)
 		{
-			Create_Effect(TrailEvent.strBonelName, m_SelectedEffectName, TEXT("Layer_Trail"));
+			if(m_EffectState.find(TrailEvent.strBonelName) == m_EffectState.end())
+				Create_Effect(TrailEvent.strBonelName, m_SelectedEffectName, TEXT("Layer_Effect"));
 		}
 
 	}
