@@ -35,43 +35,43 @@ HRESULT CPlayerCamera::Initialize_Prototype()
 HRESULT CPlayerCamera::Initialize(void* pArg)
 {
 	// 고속도로맵에서는 플레이어 없어서 카메라 막기
-	if (LEVEL::LEVEL_ROADWAY != m_iCurrentLevel)
-	{
-		PLAYER_CAMERA_DESC* pDesc = static_cast<PLAYER_CAMERA_DESC*>(pArg);
+	//if (LEVEL::LEVEL_ROADWAY != m_iCurrentLevel)
+	//{
+	//	PLAYER_CAMERA_DESC* pDesc = static_cast<PLAYER_CAMERA_DESC*>(pArg);
 
-		if (nullptr != pDesc)
-		{
-			m_fSensor = pDesc->fSensor;
-			m_pPlayerMatrix = pDesc->pPlayerMatrix;
-			m_iCurLevel = pDesc->iCurLevel;
-		}
+	//	if (nullptr != pDesc)
+	//	{
+	//		m_fSensor = pDesc->fSensor;
+	//		m_pPlayerMatrix = pDesc->pPlayerMatrix;
+	//		m_iCurLevel = pDesc->iCurLevel;
+	//	}
 
-		if (FAILED(__super::Initialize(pArg)))
-			return E_FAIL;
+	//	if (FAILED(__super::Initialize(pArg)))
+	//		return E_FAIL;
 
-		if (FAILED(Add_Components()))
-			return E_FAIL;
+	//	if (FAILED(Add_Components()))
+	//		return E_FAIL;
 
-		// 시작점 조정
-		Set_StartPos();
+	//	// 시작점 조정
+	//	Set_StartPos();
 
-		_vector vPlayerPosition;
-		memcpy(&vPlayerPosition, m_pPlayerMatrix->m[CTransform::STATE_POSITION], sizeof(_float4));
+	//	_vector vPlayerPosition;
+	//	memcpy(&vPlayerPosition, m_pPlayerMatrix->m[CTransform::STATE_POSITION], sizeof(_float4));
 
-		m_fCamDistance = MAX_DISTANCE;
+	//	m_fCamDistance = MAX_DISTANCE;
 
-		_vector vCamPosition = XMVectorSet(
-			m_fCamDistance * cosf(XMConvertToRadians(m_fCamAngleY)) * cosf(XMConvertToRadians(m_fCamAngleX)),
-			m_fCamDistance * sinf(XMConvertToRadians(m_fCamAngleX)),
-			m_fCamDistance * sinf(XMConvertToRadians(m_fCamAngleY)) * cosf(XMConvertToRadians(m_fCamAngleX)),
-			1.f
-		);
+	//	_vector vCamPosition = XMVectorSet(
+	//		m_fCamDistance * cosf(XMConvertToRadians(m_fCamAngleY)) * cosf(XMConvertToRadians(m_fCamAngleX)),
+	//		m_fCamDistance * sinf(XMConvertToRadians(m_fCamAngleX)),
+	//		m_fCamDistance * sinf(XMConvertToRadians(m_fCamAngleY)) * cosf(XMConvertToRadians(m_fCamAngleX)),
+	//		1.f
+	//	);
 
-		vCamPosition += XMVectorSet(XMVectorGetX(vPlayerPosition), XMVectorGetY(vPlayerPosition), XMVectorGetZ(vPlayerPosition), 0);
+	//	vCamPosition += XMVectorSet(XMVectorGetX(vPlayerPosition), XMVectorGetY(vPlayerPosition), XMVectorGetZ(vPlayerPosition), 0);
 
-		m_pTransformCom->Set_State(CTransform::STATE_POSITION, vCamPosition);
+	//	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vCamPosition);
 
-	}
+	//}
 
 	m_eCamState = CAM_IDLE;
 	
@@ -84,40 +84,40 @@ void CPlayerCamera::Priority_Tick(const _float& fTimeDelta)
 
 void CPlayerCamera::Tick(const _float& fTimeDelta)
 {
-	if (LEVEL::LEVEL_ROADWAY != m_iCurrentLevel)
-	{
-		if (m_pSystemManager->Get_Camera() != CAMERA_PLAYER) return;
+	//if (LEVEL::LEVEL_ROADWAY != m_iCurrentLevel)
+	//{
+	//	if (m_pSystemManager->Get_Camera() != CAMERA_PLAYER) return;
 
-		m_pColliderCom->Tick(m_pTransformCom->Get_WorldMatrix());
+	//	m_pColliderCom->Tick(m_pTransformCom->Get_WorldMatrix());
 
-		// 카메라 변환 선형보간
-		//Return_PrevWorld(fTimeDelta);
+	//	// 카메라 변환 선형보간
+	//	//Return_PrevWorld(fTimeDelta);
 
-		if(m_isReturn)
-			Play_FovLerp(fTimeDelta);
+	//	if(m_isReturn)
+	//		Play_FovLerp(fTimeDelta);
 
-		__super::Tick(fTimeDelta);
-	}
+	//	__super::Tick(fTimeDelta);
+	//}
 
 	
 }
 
 void CPlayerCamera::Late_Tick(const _float& fTimeDelta)
 {
-	if (m_pUIManager->isInvenClose())
-	{
-		SetCursorPos(g_iWinSizeX * 0.5f, g_iWinSizeY * 0.5f); // 마우스 좌표 적용해주기
-		ShowCursor(false);
-	}
+	//if (m_pUIManager->isInvenClose())
+	//{
+	//	SetCursorPos(g_iWinSizeX * 0.5f, g_iWinSizeY * 0.5f); // 마우스 좌표 적용해주기
+	//	ShowCursor(false);
+	//}
 
-	if (LEVEL::LEVEL_ROADWAY != m_iCurrentLevel)
-	{
-		if (m_pSystemManager->Get_Camera() != CAMERA_PLAYER) return;
+	//if (LEVEL::LEVEL_ROADWAY != m_iCurrentLevel)
+	//{
+	//	if (m_pSystemManager->Get_Camera() != CAMERA_PLAYER) return;
 
-		Compute_View_During_Collision(fTimeDelta);
+	//	Compute_View_During_Collision(fTimeDelta);
 
-		__super::Tick(fTimeDelta);
-	}
+	//	__super::Tick(fTimeDelta);
+	//}
 
 	
 }
