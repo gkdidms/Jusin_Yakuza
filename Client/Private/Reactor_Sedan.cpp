@@ -24,7 +24,9 @@ HRESULT CReactor_Sedan::Initialize(void* pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
-	m_strAnimName = "w_mngcar_e_van_wpr_aim_st_1";
+	//m_strAnimName = "w_mngcar_e_van_wpr_aim_st_1";
+
+	m_iAnim = 7;
 
 	return S_OK;
 }
@@ -43,6 +45,7 @@ void CReactor_Sedan::Tick(const _float& fTimeDelta)
 void CReactor_Sedan::Late_Tick(const _float& fTimeDelta)
 {
 	__super::Late_Tick(fTimeDelta);
+
 }
 
 HRESULT CReactor_Sedan::Ready_Monster(_int* pMonsterTypes)
@@ -72,12 +75,10 @@ HRESULT CReactor_Sedan::Ready_Monster(_int* pMonsterTypes)
 void CReactor_Sedan::Change_Animation()
 {
 	if (m_isObjectDead)
-		m_strAnimName = "w_mngcar_c_van_ded_1";
+		m_strAnimName = "w_mngcar_c_car_ded_b_1";
 
 	//벤에 관한 애니메이션 넣기
-	if (m_strAnimName == "w_mngcar_e_van_wpr_aim_st_1")
-		m_iAnim = 1;
-	if (m_strAnimName == "w_mngcar_c_van_ded_1")
+	if (m_strAnimName == "w_mngcar_c_car_ded_b_1")
 		m_iAnim = 0;
 
 	if (m_iAnim == 0 && m_pModelCom->Get_AnimFinished())

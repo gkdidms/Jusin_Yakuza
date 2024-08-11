@@ -648,8 +648,11 @@ PS_NOBILL_OUT PS_FALL(PS_NOBIL_IN In)
     PS_NOBILL_OUT Out = (PS_NOBILL_OUT) 0;
 
     float4 PointPosition = In.vPosition; //¿ùµåÁÂÇ¥
-
+    
+    float4 LerpColor = lerp(g_vStartColor, g_vEndColor, In.vLifeTime.y / In.vLifeTime.x);
+    
     vector vParticle = g_Texture.Sample(LinearSampler, In.vTexcoord);
+    vParticle *= LerpColor;
     vector vNormalmap = g_NormalTexture.Sample(LinearSampler, In.vTexcoord);
 
     float factor = lerp(0.1f, 3.f, In.vLifeTime.y / In.vLifeTime.x);

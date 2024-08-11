@@ -79,6 +79,28 @@ public:
 		_uint iBoneIndex;
 	};
 
+	struct Animation_FaceEventState
+	{
+		_uint iType;					//0번이 on 1번이 off 2번이 change
+		_float fAinmPosition;
+		_uint iFaceAnimIndex;
+	};
+
+	struct Animation_BloodEventState
+	{
+		_float fAinmPosition;
+		string strBonelName;
+		string strEffectProtoName;
+		_uint iBoneIndex;
+	};
+
+	struct Animation_RadialEventState
+	{
+		_uint iType;
+		_float fAinmPosition;
+		_float fForce;
+	};
+
 
 private:
 	CImguiManager(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -106,9 +128,10 @@ private:
 	void RimLightWindow();
 	void TrailWindow();
 	void SoundListWindow();
-	void SlowWindow();
-	void FaceWindow();
-	void BloodWindow();
+
+	void FaceEventWindow();
+	void BloodEventWindow();
+	void RadialEventWindow();
 
 	void DrawTimeline(ImDrawList* d);
 	void DrawChannels();
@@ -242,15 +265,23 @@ private:
 	// first: 애니메이션 이름, second: 트레일 이벤트정보
 	multimap<string, Animation_TrailState>		m_TrailEvents;
 
-	/* 페이스 윈도우 */
+	/* 페이스 이벤트 윈도우 */
 private:
 	_bool						m_isFaceWindow = { false };
 	int							m_iFaceEventIndex = { 0 };
+
+	// first: 애니메이션 이름, second: 트레일 이벤트정보
+	multimap<string, Animation_TrailState>		m_TrailEvents;
 
 	/* 블러드 이펙트 윈도우 */
 private:
 	_bool						m_isBloodWindow = { false };
 	int							m_iBloodEventIndex = { 0 };
+
+	/* 레디얼 이벤트 윈도우 */
+private:
+	_bool						m_isRadialEventWindow = { false };
+	int							m_iRadialEventIndex = { 0 };
 
 private:
 	_bool						m_isSoundListWindow = { false };
