@@ -104,6 +104,8 @@ HRESULT CPlayer::Initialize(void* pArg)
 	if (FAILED(Add_CharacterData()))
 		return E_FAIL;
 
+	Ready_AuraEffect();
+
 	// 기본 몬스터: 20
 	// 삥쟁이: 30
 	// 쿠제: 100
@@ -761,6 +763,32 @@ void CPlayer::Ready_CutSceneAnimation()
 	m_CutSceneAnimation.emplace(YONEDA_H, "a60300");
 	m_CutSceneAnimation.emplace(YONEDA_DOWN_ATTACK, "a60330");
 	m_CutSceneAnimation.emplace(YONEDA_DOSU, "a60350");
+}
+
+void CPlayer::Ready_AuraEffect()
+{
+	for (auto& pair : m_pEffects)
+	{
+		string strKey = m_pGameInstance->WstringToString(pair.second->Get_EffectName());
+
+		string strHooligan = "Hooligan";
+		string strRush = "Rush";
+		string strDestroyer = "Destroyer";
+
+		if (string::npos != strKey.find(strHooligan))
+		{
+			m_HooliganAura.push_back(pair.second);
+		}
+		if (string::npos != strKey.find(strRush))
+		{
+			m_RushAura.push_back(pair.second);
+		}
+		if (string::npos != strKey.find(strDestroyer))
+		{
+			m_DestroyerAura.push_back(pair.second);
+		}
+	}
+
 }
 
 // 현재 애니메이션의 y축을 제거하고 사용하는 상태이다 (혹시 애니메이션의 y축 이동도 적용이 필요하다면 로직 수정이 필요함
@@ -2191,127 +2219,7 @@ void CPlayer::Compute_MoveDirection_RL()
 
 void CPlayer::Effect_Control_Aura()
 {
-	CSocketEffect* pHooligan = { nullptr };
-	CSocketEffect* pRush = { nullptr };
-	CSocketEffect* pDestroyer = { nullptr };
-
-	for (auto& pair : m_pEffects)
-	{
-		string strKey = m_pGameInstance->WstringToString(pair.second->Get_EffectName());
-
-		regex hooliganPattern("Hooligan");
-		regex rushPattern("Rush");
-		regex destroyerPattern("Destroyer");
-
-		if (regex_search(strKey, hooliganPattern))
-			pHooligan = pair.second;
-		if (regex_search(strKey, rushPattern))
-			pRush = pair.second;
-		if (regex_search(strKey, destroyerPattern))
-			pDestroyer = pair.second;
-	}
-
-	if (0 < m_iCurrentHitLevel)
-	{
-		switch (m_eCurrentStyle)
-		{
-		case Client::CPlayer::KRS:
-			// 기존에 켜져있던 오라를 끈다
-			if (nullptr != pRush)
-				pRush->Off();
-			if (nullptr != pDestroyer)
-				pDestroyer->Off();
-
-			// 현재 스타일에 맞는 오라를 켠다
-			if (nullptr != pHooligan)
-				pHooligan->On();
-
-
-			if (!m_isAuraOn)
-			{
-				CEffect::EFFECT_DESC EffectDesc{};
-
-				_matrix BoneMatrix = XMLoadFloat4x4(m_pModelCom->Get_BoneCombinedTransformationMatrix("kubi_c_n"));
-				_matrix ComputeMatrix = BoneMatrix * m_pTransformCom->Get_WorldMatrix();
-				_float4x4 Matrix;
-				XMStoreFloat4x4(&Matrix, ComputeMatrix);
-
-				EffectDesc.pWorldMatrix = &Matrix;
-				m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Aura_Start_Hooligan"), TEXT("Layer_Particle"), &EffectDesc);
-
-				m_isAuraOn = true;
-			}
-
-			break;
-		case Client::CPlayer::KRH:
-			if (nullptr != pHooligan)
-				pHooligan->Off();
-			if (nullptr != pDestroyer)
-				pDestroyer->Off();
-
-			if (nullptr != pRush)
-				pRush->On();
-
-			if (!m_isAuraOn)
-			{
-				CEffect::EFFECT_DESC EffectDesc{};
-
-				_matrix BoneMatrix = XMLoadFloat4x4(m_pModelCom->Get_BoneCombinedTransformationMatrix("kubi_c_n"));
-				_matrix ComputeMatrix = BoneMatrix * m_pTransformCom->Get_WorldMatrix();
-				_float4x4 Matrix;
-				XMStoreFloat4x4(&Matrix, ComputeMatrix);
-
-				EffectDesc.pWorldMatrix = &Matrix;
-				m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Aura_Start_Rush"), TEXT("Layer_Particle"), &EffectDesc);
-
-				m_isAuraOn = true;
-			}
-
-
-			break;
-		case Client::CPlayer::KRC:
-			if (nullptr != pHooligan)
-				pHooligan->Off();
-			if (nullptr != pRush)
-				pRush->Off();
-
-			if (nullptr != pDestroyer)
-				pDestroyer->On();
-
-			if (!m_isAuraOn)
-			{
-				CEffect::EFFECT_DESC EffectDesc{};
-
-				_matrix BoneMatrix = XMLoadFloat4x4(m_pModelCom->Get_BoneCombinedTransformationMatrix("kubi_c_n"));
-				_matrix ComputeMatrix = BoneMatrix * m_pTransformCom->Get_WorldMatrix();
-				_float4x4 Matrix;
-				XMStoreFloat4x4(&Matrix, ComputeMatrix);
-
-				EffectDesc.pWorldMatrix = &Matrix;
-				m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Aura_Start_Destroyer"), TEXT("Layer_Particle"), &EffectDesc);
-
-				m_isAuraOn = true;
-			}
-			break;
-		default:
-			if (nullptr != pHooligan)
-				pHooligan->Off();
-			if (nullptr != pRush)
-				pRush->Off();
-			if (nullptr != pDestroyer)
-				pDestroyer->Off();
-			return;
-		}
-	}
-	else
-	{
-		if (nullptr != pHooligan)
-			pHooligan->Off();
-		if (nullptr != pRush)
-			pRush->Off();
-		if (nullptr != pDestroyer)
-			pDestroyer->Off();
-	}
+	Off_Aura(m_eCurrentStyle);
 }
 
 void CPlayer::Setting_Target_Enemy()
@@ -2377,14 +2285,107 @@ void CPlayer::Setting_Target_Wall()
 	m_pTargetWall = (m_pCollisionManager->Get_Near_Collider(this, pWallList, 3.f));
 }
 
+void CPlayer::Off_Aura(BATTLE_STYLE eStyle)
+{
+	// eStyle 현재 켜진 스타일이다
+
+	switch (eStyle)
+	{
+	case CPlayer::ADVENTURE:
+	{
+		for (auto pEffect : m_HooliganAura)
+			pEffect->Off();
+
+		for (auto pEffect : m_RushAura)
+			pEffect->Off();
+
+		for (auto pEffect : m_DestroyerAura)
+			pEffect->Off();
+		break;
+	}
+	case CPlayer::KRS:
+	{
+		for (auto pEffect : m_RushAura)
+			pEffect->Off();
+
+		for (auto pEffect : m_DestroyerAura)
+			pEffect->Off();
+
+		if (!m_isAuraOn)
+		{
+			CEffect::EFFECT_DESC EffectDesc{};
+
+			_matrix BoneMatrix = XMLoadFloat4x4(m_pModelCom->Get_BoneCombinedTransformationMatrix("kubi_c_n"));
+			_matrix ComputeMatrix = BoneMatrix * m_pTransformCom->Get_WorldMatrix();
+			_float4x4 Matrix;
+			XMStoreFloat4x4(&Matrix, ComputeMatrix);
+
+			EffectDesc.pWorldMatrix = &Matrix;
+			m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Aura_Start_Hooligan"), TEXT("Layer_Particle"), &EffectDesc);
+
+			m_isAuraOn = true;
+		}
+		break;
+	}
+	case CPlayer::KRH:
+	{
+		for (auto pEffect : m_HooliganAura)
+			pEffect->Off();
+
+		for (auto pEffect : m_DestroyerAura)
+			pEffect->Off();
+
+		if (!m_isAuraOn)
+		{
+			CEffect::EFFECT_DESC EffectDesc{};
+
+			_matrix BoneMatrix = XMLoadFloat4x4(m_pModelCom->Get_BoneCombinedTransformationMatrix("kubi_c_n"));
+			_matrix ComputeMatrix = BoneMatrix * m_pTransformCom->Get_WorldMatrix();
+			_float4x4 Matrix;
+			XMStoreFloat4x4(&Matrix, ComputeMatrix);
+
+			EffectDesc.pWorldMatrix = &Matrix;
+			m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Aura_Start_Rush"), TEXT("Layer_Particle"), &EffectDesc);
+
+			m_isAuraOn = true;
+		}
+		break;
+	}
+	case CPlayer::KRC:
+	{
+		for (auto pEffect : m_HooliganAura)
+			pEffect->Off();
+
+		for (auto pEffect : m_RushAura)
+			pEffect->Off();
+
+		if (!m_isAuraOn)
+		{
+			CEffect::EFFECT_DESC EffectDesc{};
+
+			_matrix BoneMatrix = XMLoadFloat4x4(m_pModelCom->Get_BoneCombinedTransformationMatrix("kubi_c_n"));
+			_matrix ComputeMatrix = BoneMatrix * m_pTransformCom->Get_WorldMatrix();
+			_float4x4 Matrix;
+			XMStoreFloat4x4(&Matrix, ComputeMatrix);
+
+			EffectDesc.pWorldMatrix = &Matrix;
+			m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Aura_Start_Destroyer"), TEXT("Layer_Particle"), &EffectDesc);
+
+			m_isAuraOn = true;
+		}
+		break;
+	}
+	}
+}
+
 void CPlayer::AccHitGauge()
 {
-	if (PLAYER_HITGAUGE_LEVEL_INTERVAL * 3.f < m_fHitGauge)
-		m_fHitGauge = PLAYER_HITGAUGE_LEVEL_INTERVAL * 3.f;
-	else
-		m_fHitGauge += 5.f;
+	//if (PLAYER_HITGAUGE_LEVEL_INTERVAL * 3.f < m_fHitGauge)
+	//	m_fHitGauge = PLAYER_HITGAUGE_LEVEL_INTERVAL * 3.f;
+	//else
+	//	m_fHitGauge += 5.f;
 
-	m_iCurrentHitLevel = (m_fHitGauge / PLAYER_HITGAUGE_LEVEL_INTERVAL);
+	//m_iCurrentHitLevel = (m_fHitGauge / PLAYER_HITGAUGE_LEVEL_INTERVAL);
 }
 
 void CPlayer::Setting_RimLight()
