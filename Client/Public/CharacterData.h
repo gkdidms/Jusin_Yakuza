@@ -49,6 +49,13 @@ public:
         _uint iBoneIndex;
     };
 
+    struct ANIMATION_RADIALEVENTSTATE
+    {
+        _uint iType;				//0번이 on 1번이 off
+        _float fAinmPosition;
+        _float fForce;
+    };
+
 
 private:
     CCharacterData();
@@ -79,6 +86,10 @@ public:
         return m_TrailEvents;
     }
 
+    const multimap<string, ANIMATION_RADIALEVENTSTATE>& Get_RadialEvents() const {
+        return m_RadialEvents;
+    }
+
     const vector<ANIMATION_EVENT>& Get_CurrentEvents() const {
         return m_CurrentEvents;
     }
@@ -91,8 +102,14 @@ public:
         return m_CurrentTrailEvents;
     }
 
+
+    const vector<ANIMATION_RADIALEVENTSTATE>& Get_Current_RadialEvents() const {
+        return m_CurrentRadialEvents;
+    }
+
 public:
     void Set_CurrentAnimation(string strAnimName);          //현재 애니메이션에 맞는 이벤트를 설정해둔다.
+    void Set_CurrentCutSceneAnimation(string strAnimName);          //현재 애니메이션에 맞는 이벤트를 설정해둔다.
 
 private:
     HRESULT Load_AlphaMeshes(string strFilePath);
@@ -102,6 +119,7 @@ private:
     HRESULT Load_EffectState(string strFilePath);
     HRESULT Load_RimLightEvent(string strFilePath);
     HRESULT Load_TrailEvent(string strFilePath);
+    HRESULT Load_RadialEvent(string strFilePath);
 
 private:
     CGameInstance* m_pGameInstance = { nullptr };
@@ -124,9 +142,13 @@ private:
     // first: 애니메이션 이름, second: 트레일 이벤트정보
     multimap<string, ANIMATION_TRAILSTATE>		m_TrailEvents;
 
+    // first: 애니메이션 이름, second: 래디얼 이벤트 정보
+    multimap<string, ANIMATION_RADIALEVENTSTATE>		m_RadialEvents;
+
     vector<ANIMATION_EVENT> m_CurrentEvents; 
     vector<ANIMATION_RIMLIGHTSTATE> m_CurrentRimEvents;
     vector<ANIMATION_TRAILSTATE> m_CurrentTrailEvents;
+    vector<ANIMATION_RADIALEVENTSTATE> m_CurrentRadialEvents;
 
 public:
     static CCharacterData* Create(class CLandObject* pCharacter);

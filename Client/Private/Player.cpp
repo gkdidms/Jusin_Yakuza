@@ -265,6 +265,7 @@ void CPlayer::Tick(const _float& fTimeDelta)
 	Animation_Event();
 	RimLight_Event();
 	Trail_Event();
+	Radial_Event();
 	Effect_Control_Aura();
 	Setting_Target_Enemy();
 	Setting_Target_Item();
@@ -934,6 +935,24 @@ _int CPlayer::Compute_Target_Direction_Pos(_fvector vTargetPos)
 	}
 
 	return iDirection;
+}
+
+void CPlayer::Radial_Event()
+{
+	auto& pCurEvents = m_pData->Get_Current_RadialEvents();
+	for (auto& pEvent : pCurEvents)
+	{
+		_double CurPos = *(m_pCameraModel->Get_AnimationCurrentPosition(nullptr, m_iCutSceneCamAnimIndex));
+		_double Duration = *(m_pCameraModel->Get_AnimationDuration(nullptr, m_iCutSceneCamAnimIndex));
+
+		if (CurPos >= pEvent.fAinmPosition && CurPos < Duration)
+		{
+			if (pEvent.iType == 0)
+				m_pGameInstance->Set_RadialBlur(true);
+			else
+				m_pGameInstance->Set_RadialBlur(false);
+		}
+	}
 }
 
 void CPlayer::KeyInput(const _float& fTimeDelta)
@@ -1947,6 +1966,8 @@ void CPlayer::Set_CutSceneAnim(CUTSCENE_ANIMATION_TYPE eType, _uint iFaceAnimInd
 	On_Separation_Face();			// 얼굴 애니메이션 켜기
 	Off_Separation_Hand();			// 손 분리 애니메이션 끄기
 
+	m_pData->Set_CurrentCutSceneAnimation(iter->second);
+
 	string AnimName = (*iter).second;
 
 	_uint i = 0;
@@ -2416,12 +2437,12 @@ void CPlayer::Off_Aura(BATTLE_STYLE eStyle)
 
 void CPlayer::AccHitGauge()
 {
-	if (PLAYER_HITGAUGE_LEVEL_INTERVAL * 3.f < m_fHitGauge)
-		m_fHitGauge = PLAYER_HITGAUGE_LEVEL_INTERVAL * 3.f;
-	else
-		m_fHitGauge += 5.f;
+	//if (PLAYER_HITGAUGE_LEVEL_INTERVAL * 3.f < m_fHitGauge)
+	//	m_fHitGauge = PLAYER_HITGAUGE_LEVEL_INTERVAL * 3.f;
+	//else
+	//	m_fHitGauge += 5.f;
 
-	m_iCurrentHitLevel = (m_fHitGauge / PLAYER_HITGAUGE_LEVEL_INTERVAL);
+	//m_iCurrentHitLevel = (m_fHitGauge / PLAYER_HITGAUGE_LEVEL_INTERVAL);
 }
 
 void CPlayer::Setting_RimLight()
