@@ -26,6 +26,8 @@
 #include "Item.h"
 #include "MapCollider.h"
 
+#include "QteManager.h"
+
 #pragma region 행동 관련 헤더들
 #include "Kiryu_KRS_Attack.h"
 #include "Kiryu_KRH_Attack.h"
@@ -114,6 +116,8 @@ HRESULT CPlayer::Initialize(void* pArg)
 	// 새로 생성할 때 마다 UI매니저에 본인을 Set해준다.
 	m_pUIManager->Set_Player(this);
 
+	m_pQTEMgr = dynamic_cast<CQteManager*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_QTEManager"), nullptr));
+
 	On_Separation_Hand(0);			// 양손 분리 켜둠
 
 	return S_OK;
@@ -186,16 +190,6 @@ void CPlayer::Tick(const _float& fTimeDelta)
 
 #ifdef _DEBUG
 
-	if (m_pGameInstance->GetKeyState(DIK_M) == TAP)
-	{
-		m_iFaceAnimIndex = 8;
-		On_Separation_Face();
-	}	
-	if (m_pGameInstance->GetKeyState(DIK_N) == TAP)
-	{
-		Off_Separation_Face();
-	}
-
 	if (m_pGameInstance->GetKeyState(DIK_Z) == TAP)
 	{
 		//TODO: 여기에서 enum값을 필요한 애니메이션으로 바꾸면 해당하는 컷신이 실행된당
@@ -255,9 +249,14 @@ void CPlayer::Tick(const _float& fTimeDelta)
 		m_CanHitAction = true;
 	}
 
-	// TODO: 튜토리얼 UI 정리된 이후 켜야함
-	//if(!m_pUIManager->IsOpend())
+	
+	if (m_eAnimComType == DEFAULT)
+	{
+		// TODO: 튜토리얼 UI 정리된 이후 켜야함
+		//if(!m_pUIManager->IsOpend())
 		KeyInput(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")));
+	}
+
 
 	m_pColliderCom->Tick(m_pTransformCom->Get_WorldMatrix());
 
@@ -268,6 +267,8 @@ void CPlayer::Tick(const _float& fTimeDelta)
 	Setting_Target_Enemy();
 	Setting_Target_Item();
 	Setting_Target_Wall();
+
+	m_pQTEMgr->Tick(fTimeDelta);
 }
 
 void CPlayer::Late_Tick(const _float& fTimeDelta)
@@ -1950,6 +1951,8 @@ void CPlayer::Set_CutSceneAnim(CUTSCENE_ANIMATION_TYPE eType, _uint iFaceAnimInd
 		}
 		j++;
 	}
+
+	m_pQTEMgr->Set_Animation(m_pAnimCom, m_CutSceneAnimation.at(eType));
 }
 
 void CPlayer::Play_CutScene()
@@ -2432,6 +2435,8 @@ void CPlayer::HitFreeze_On()
 	pCamera->Set_StartFov(XMConvertToRadians(45.0f));				//현재 fov설정
 	pCamera->Set_FoV(XMConvertToRadians(45.0f));				//현재 fov설정
 	pCamera->On_Return();
+
+	m_pGameInstance->Set_RadialBlur(true);
 }
 
 void CPlayer::HitFreeze_Off()
@@ -2440,6 +2445,7 @@ void CPlayer::HitFreeze_Off()
 	m_pGameInstance->Set_TimeSpeed(TEXT("Timer_60"), 1.f);
 	m_pGameInstance->Set_TimeSpeed(TEXT("Timer_Player"), 1.f);
 
+	m_pGameInstance->Set_RadialBlur(false);
 	//CPlayerCamera* pCamera = dynamic_cast<CPlayerCamera*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Camera"), CAMERA_PLAYER));
 	//pCamera->Set_FoV(XMConvertToRadians(60.0f));				//현재 fov설정
 }
@@ -2486,6 +2492,7 @@ void CPlayer::Free()
 	__super::Free();
 
 	Safe_Release(m_pTargetObject);
+	Safe_Release(m_pQTEMgr);
 
 	for (size_t i = 0; i < BATTLE_STYLE_END; i++)
 	{

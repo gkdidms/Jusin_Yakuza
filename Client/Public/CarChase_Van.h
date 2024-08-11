@@ -20,6 +20,10 @@ public:
 private:
     virtual void Change_Animation();
     virtual HRESULT Add_Components() override;
+    HRESULT Add_Objects();
+
+private:
+    class CShotGun* m_pShotGun = { nullptr };
 
 public:
     static CCarChase_Van* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

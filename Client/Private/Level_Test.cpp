@@ -47,8 +47,8 @@ HRESULT CLevel_Test::Initialize()
 	//if (nullptr == m_pTutorialManager)
 
 	/* Å¬¶ó ÆÄ½Ì */
-	if (FAILED(Ready_Test_Load()))
-		return E_FAIL;
+	//if (FAILED(Ready_Test_Load()))
+	//	return E_FAIL;
 
 	//Çý¿ø Å×½ºÆ® ¿ë
 	if (FAILED(Ready_Test_Hyewon()))
