@@ -7,7 +7,6 @@
 
 #include "SocketModel.h"
 #include "Weapon_Gun_Cz75.h"
-#include "Gun_Cz75.h"
 #include "UIManager.h"
 
 CHighway_Kiryu::CHighway_Kiryu(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
