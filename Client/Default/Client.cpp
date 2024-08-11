@@ -49,7 +49,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
 
     MSG msg;
 
-    //_CrtSetBreakAlloc(1704); // 추가
+    
 
     CMainApp* pMainApp = CMainApp::Create();
     if (nullptr == pMainApp)
@@ -76,6 +76,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
         return FALSE;
     Safe_AddRef(pDebugManager);
 #endif // _DEBUG
+
+
 
     _float		fTimeAcc = { 0.0f };
 
@@ -122,7 +124,7 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
             pMainApp->Tick(fTimeDelta);
             pMainApp->Render();
 
-           
+            _CrtSetBreakAlloc(5054715); // 추가
 
             fTimeAcc = 0.f;
         }

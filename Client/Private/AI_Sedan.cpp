@@ -29,6 +29,8 @@ HRESULT CAI_Sedan::Initialize(void* pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
+	Ready_Tree();
+
 	return S_OK;
 }
 

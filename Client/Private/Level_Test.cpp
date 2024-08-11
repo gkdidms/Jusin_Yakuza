@@ -156,12 +156,13 @@ HRESULT CLevel_Test::Ready_Player(const wstring& strLayerTag)
 
 	return S_OK;
 }
+
 HRESULT CLevel_Test::Ready_Test_Load()
 {
 	m_pFileTotalManager->Set_MapObj_In_Client(7, LEVEL_TEST);
 	m_pFileTotalManager->Set_Lights_In_Client(99);
 	m_pFileTotalManager->Set_Collider_In_Client(0, LEVEL_TEST);
-	//m_pFileTotalManager->Set_Trigger_In_Client(79, LEVEL_TEST);
+	m_pFileTotalManager->Set_Trigger_In_Client(79, LEVEL_TEST);
 
 	return S_OK;
 }
