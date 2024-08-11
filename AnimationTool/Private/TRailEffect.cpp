@@ -76,6 +76,7 @@ void CTRailEffect::Late_Tick(const _float& fTimeDelta)
 
 HRESULT CTRailEffect::Render()
 {
+	if (m_isOff) return S_OK;
 
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;

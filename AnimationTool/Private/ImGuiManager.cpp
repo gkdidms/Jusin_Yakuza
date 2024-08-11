@@ -909,6 +909,19 @@ void CImguiManager::EffectListWindow()
 	ImGui::ListBox("Added Effects", &m_iAddedEffectSelectedIndex, Addeditems.data(), Addeditems.size());
 	if (ImGui::Button(u8"이펙트 삭제"))
 	{
+		auto iter = m_EffectState.begin();
+		for (size_t i = 0; i < m_iAddedEffectSelectedIndex; i++)
+		{
+			iter++;
+		}
+
+		auto pEffectList = m_pGameInstance->Get_GameObjects(LEVEL_EDIT, TEXT("Layer_Effect"));
+		
+		for (auto pEffect : pEffectList)
+		{
+			//pEffect == (*iter).first
+		}
+
 		CEffect* pEffect = reinterpret_cast<CEffect*>(m_pGameInstance->Get_GameObject(LEVEL_EDIT, TEXT("Layer_Effect"), m_iAddedEffectSelectedIndex));
 		pEffect->Set_Dead();
 
@@ -1042,7 +1055,7 @@ void CImguiManager::TrailWindow()
 
 		m_TrailEvents.emplace(m_AnimNameList[m_iAnimIndex], TrailState);
 
-		Create_Effect(m_BoneNameList[m_iBoneSelectedIndex], m_SelectedEffectName, TEXT("Layer_Trail"));
+		Create_Effect(m_BoneNameList[m_iBoneSelectedIndex], m_SelectedEffectName, TEXT("Layer_Effect"));
 	}
 
 	if (ImGui::Button(u8"트레일 Off"))
@@ -1995,7 +2008,8 @@ void CImguiManager::TrailEvent_Load(string strPath)
 
 		if (TrailEvent.iType == 0)
 		{
-			Create_Effect(TrailEvent.strBonelName, m_SelectedEffectName, TEXT("Layer_Trail"));
+			if(m_EffectState.find(TrailEvent.strBonelName) == m_EffectState.end())
+				Create_Effect(TrailEvent.strBonelName, m_SelectedEffectName, TEXT("Layer_Effect"));
 		}
 
 	}

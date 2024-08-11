@@ -71,7 +71,7 @@ VS_OUT VS_MAIN(VS_IN In)
 
     vector vPosition = mul(float4(In.vPosition, 1.f), In.TransformMatrix); //로컬이동.
    
-    if (g_isAttach)
+    if(g_isAttach)
     {
         Out.vPosition = mul(vPosition, g_WorldMatrix).xyz; //월드상
         Out.vPSize = In.vPSize;
@@ -171,14 +171,14 @@ void GS_DEAFULT(point GS_IN In[1], inout TriangleStream<GS_OUT> Triangles)
     
     float2 uvWeight = float2(1 / g_fUVCount.x, 1 / g_fUVCount.y);
     
-    float SpriteIndex = lerp(0.f, (g_fUVCount.x * g_fUVCount.y), (In[0].vLifeTime.y / In[0].vLifeTime.x));
+    float SpriteIndex = lerp(0.f , (g_fUVCount.x* g_fUVCount.y) , (In[0].vLifeTime.y / In[0].vLifeTime.x));
     
     float2 uv = float2(float(floor(SpriteIndex) % g_fUVCount.x) / g_fUVCount.x, floor(SpriteIndex / g_fUVCount.x) / g_fUVCount.y);
 
     
     float2 uvToneWeight = float2(1 / g_fToneUVCount.x, 1 / g_fToneUVCount.y);
     
-    float ToneSpriteIndex = lerp(0.f, (g_fToneUVCount.x * g_fToneUVCount.y), (In[0].vLifeTime.y / In[0].vLifeTime.x));
+    float ToneSpriteIndex = lerp(0.f, (g_fToneUVCount.x * g_fToneUVCount.y) , (In[0].vLifeTime.y / In[0].vLifeTime.x));
     
     float2 Toneuv = float2(float(floor(ToneSpriteIndex) % g_fToneUVCount.x) / g_fToneUVCount.x, floor(ToneSpriteIndex / g_fToneUVCount.x) / g_fToneUVCount.y);
 
@@ -192,7 +192,7 @@ void GS_DEAFULT(point GS_IN In[1], inout TriangleStream<GS_OUT> Triangles)
     
     vPosition = In[0].vPosition - vRight + vUp;
     Out[1].vPosition = mul(float4(vPosition, 1.f), matVP);
-    Out[1].vTexcoord = float2(uv.x + uvWeight.x, uv.y);
+    Out[1].vTexcoord = float2(uv.x + uvWeight.x,uv.y);
     Out[1].vToneTex = float2(Toneuv.x + uvToneWeight.x, Toneuv.y);
     Out[1].vAlphaTex = float2(1.f, 0.f);
     Out[1].vLifeTime = In[0].vLifeTime;
@@ -328,7 +328,7 @@ PS_OUT PS_MAIN_NOCOLOR(PS_IN In)
 
     vector Tone = g_ToneTexture.Sample(PointSampler, In.vToneTex);
 
-    float FlowPow = g_fFlowPow; //왜곡 강도 0~1사이
+    float FlowPow = g_fFlowPow;//왜곡 강도 0~1사이
     float FlowSpeed = g_fFlowSpeed; //흐름 속도
     
     //스프라이트 는 시간이랑 다름
@@ -339,7 +339,7 @@ PS_OUT PS_MAIN_NOCOLOR(PS_IN In)
 
     // Noise 텍스처를 사용하여 UV 좌표 변화 계산
     
-    float2 Dist = (g_FluidTexture.Sample(PointSampler, In.vAlphaTex) * 2.0f - 1.0f) * FlowPow;
+    float2 Dist = (g_FluidTexture.Sample(PointSampler, In.vAlphaTex) * 2.0f - 1.0f)*FlowPow;
    // float2 flowUV = In.vAlphaTex + (g_FluidTexture.Sample(PointSampler, In.vAlphaTex + ResultTime).xy * 2.0 - 1.0) * FlowPow;
 
 
@@ -348,7 +348,7 @@ PS_OUT PS_MAIN_NOCOLOR(PS_IN In)
 
     float mixlerp = abs(frac(In.vLifeTime.y) * 2.f - 1.f);
     
-    float BaseAlpha = lerp(BaseAlphaA, BaseAlphaB, mixlerp); //flow 셰이더 반복
+    float BaseAlpha = lerp(BaseAlphaA, BaseAlphaB, mixlerp);//flow 셰이더 반복
     
     vector UVSprite = g_UVAnimTexture.Sample(PointSampler, In.vTexcoord);
     
@@ -386,7 +386,7 @@ PS_OUT PS_MAIN_COLOR(PS_IN In)
     float2 LifeAlpha = g_lifeAlpha;
 
     //vector Tone = g_ToneTexture.Sample(PointSampler, In.vToneTex);
-    float4 LerpColor = lerp(g_vStartColor, g_vEndColor, In.vLifeTime.y / In.vLifeTime.x);
+        float4 LerpColor = lerp(g_vStartColor, g_vEndColor, In.vLifeTime.y / In.vLifeTime.x);
     float FlowPow = g_fFlowPow; //왜곡 강도 0~1사이
     float FlowSpeed = g_fFlowSpeed; //흐름 속도
     
@@ -470,7 +470,7 @@ PS_OUT PS_AURA_FIRE(PS_IN In)
     float lerpAlpha = lerp(LifeAlpha.x, LifeAlpha.y, Alphafactor);
   
     vector FinalColor;
-    FinalColor.rgb = Tone.rgb;
+    FinalColor.rgb= Tone.rgb;
     FinalColor.a = lerpAlpha * BaseAlpha;
 
     // FinalColor = vector(flowUV, flowUV);
