@@ -1643,7 +1643,8 @@ void CRenderer::Render_RimLight()
 
 	if (FAILED(m_pShader->Bind_RawValue("g_fFar", m_pGameInstance->Get_CamFar(), sizeof(_float))))
 		return;
-	//노멀이 빛이계산 되있음
+
+
 	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Normal"), m_pShader, "g_NormalTexture")))
 		return;
 

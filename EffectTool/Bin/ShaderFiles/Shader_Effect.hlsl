@@ -114,9 +114,10 @@ PS_OUT PS_RIMLIGHT(PS_IN In)//범위 지정 문해야됨
         RimColor = vector(0.92f, 0.05f, 0.90f, 1.f);
     if (0.25f <= BaseDepth.z)
         RimColor = vector(0.95f, 0.92f, 0.18, 1.f);
+    if (0.35f <= BaseDepth.z)
+        RimColor = vector(1.0f, 0.0f, 1.0f, 1.0f);
 
-
-    float fRimpower =1.f;
+    float fRimpower =2.f;
     
     vector vWorldPos;
 
@@ -140,10 +141,10 @@ PS_OUT PS_RIMLIGHT(PS_IN In)//범위 지정 문해야됨
     if(0.05f<BaseDepth.z)
     {
         float RangeAlpha = BaseDepth.w;
-        float fRim = saturate(dot(BaseNormal, vRim));
-        vector FinColor= float4(pow(1.f - fRim, fRimpower) * RimColor);
-     //FinColor.a *= RangeAlpha;
+        float fRim = 1.f - saturate(dot(BaseNormal, vRim));
+        vector FinColor= float4(pow(fRim, fRimpower) * RimColor);
         Out.vColor = FinColor;
+
     }
     else
     {
