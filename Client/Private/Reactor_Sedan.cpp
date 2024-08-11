@@ -45,7 +45,6 @@ void CReactor_Sedan::Tick(const _float& fTimeDelta)
 void CReactor_Sedan::Late_Tick(const _float& fTimeDelta)
 {
 	__super::Late_Tick(fTimeDelta);
-
 }
 
 HRESULT CReactor_Sedan::Ready_Monster(_int* pMonsterTypes)
@@ -58,9 +57,10 @@ HRESULT CReactor_Sedan::Ready_Monster(_int* pMonsterTypes)
 		CCarChase_Van::CARCHASE_MONSTER_DESC Desc{};
 		Desc.iWeaponType = i == 0 ? CCarChase_Monster::DRV : pMonsterTypes[i - 1];
 		Desc.pParentMatrix = m_pTransformCom->Get_WorldFloat4x4();
-		Desc.pBoneMatrix = m_pModelCom->Get_BoneTransformationMatrix("anm_root");
+		Desc.pBoneMatrix = m_pModelCom->Get_BoneCombinedTransformationMatrix("anm_root");
 		Desc.iLineDir = m_iLineDir;
 		Desc.iObjectIndex = m_iObjectIndex + i;
+		Desc.iStageDir = m_iStageDir;
 
 		CCarChase_Monster* pMonster = dynamic_cast<CCarChase_Monster*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_CarChaseSedan"), &Desc));
 		if (nullptr == pMonster)
