@@ -61,6 +61,7 @@ private:
 private:
 	HRESULT Loading_Default();
 	HRESULT Loading_Highway();
+	HRESULT Loading_Weapon();				// 게임오브젝트 원형 생성코드, 어따 둬야할지 몰라서 함수만들어둔거라 필요한 곳에 흡수시키면 될듯함 (혜원)
 
 
 public:

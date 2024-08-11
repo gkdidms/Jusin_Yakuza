@@ -8,6 +8,8 @@
 
 #include "AI_WPHYakuza.h"
 
+#include "Weapon_Sofa.h"
+
 CWPHYakuza::CWPHYakuza(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     : CMonster { pDevice, pContext }
 {
@@ -33,6 +35,9 @@ HRESULT CWPHYakuza::Initialize(void* pArg)
     if (FAILED(Add_CharacterData()))
         return E_FAIL;
 
+    if (FAILED(Add_Objects()))
+        return E_FAIL;
+
 	m_pTransformCom->Set_Scale(1.2f, 1.2f, 1.2f);
 
     return S_OK;
@@ -40,16 +45,19 @@ HRESULT CWPHYakuza::Initialize(void* pArg)
 
 void CWPHYakuza::Priority_Tick(const _float& fTimeDelta)
 {
+	m_pSofa->Priority_Tick(fTimeDelta);
 }
 
 void CWPHYakuza::Tick(const _float& fTimeDelta)
 {
 	__super::Tick(fTimeDelta);
+	m_pSofa->Tick(fTimeDelta);
 }
 
 void CWPHYakuza::Late_Tick(const _float& fTimeDelta)
 {
 	__super::Late_Tick(fTimeDelta);
+	m_pSofa->Late_Tick(fTimeDelta);
 }
 
 HRESULT CWPHYakuza::Add_Components()
@@ -95,6 +103,17 @@ HRESULT CWPHYakuza::Add_Components()
 		TEXT("Com_Navigation"), reinterpret_cast<CComponent**>(&m_pNavigationCom))))
 		return E_FAIL;
 
+	return S_OK;
+}
+
+HRESULT CWPHYakuza::Add_Objects()
+{
+	CSocketObject::SOCKETOBJECT_DESC Desc{};
+	Desc.pParentMatrix = m_pTransformCom->Get_WorldFloat4x4();
+	Desc.pCombinedTransformationMatrix = m_pModelCom->Get_BoneCombinedTransformationMatrix("buki_r_n");
+	Desc.fRotatePecSec = XMConvertToRadians(90.f);
+	Desc.fSpeedPecSec = 1.f;
+	m_pSofa = dynamic_cast<CSofa*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Sofa"), &Desc));
 	return S_OK;
 }
 
@@ -149,4 +168,6 @@ CGameObject* CWPHYakuza::Clone(void* pArg)
 void CWPHYakuza::Free()
 {
     __super::Free();
+
+	Safe_Release(m_pSofa);
 }
