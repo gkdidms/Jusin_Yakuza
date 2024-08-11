@@ -2219,7 +2219,14 @@ void CPlayer::Compute_MoveDirection_RL()
 
 void CPlayer::Effect_Control_Aura()
 {
-	Off_Aura(m_eCurrentStyle);
+	if (0 < m_iCurrentHitLevel)
+	{
+		On_Aura(m_eCurrentStyle);
+	}
+	else
+	{
+		Off_Aura(ADVENTURE);
+	}
 }
 
 void CPlayer::Setting_Target_Enemy()
@@ -2285,6 +2292,78 @@ void CPlayer::Setting_Target_Wall()
 	m_pTargetWall = (m_pCollisionManager->Get_Near_Collider(this, pWallList, 3.f));
 }
 
+void CPlayer::On_Aura(BATTLE_STYLE eStyle)
+{
+	switch (eStyle)
+	{
+	case CPlayer::KRS:
+	{
+		for (auto pEffect : m_HooliganAura)
+			pEffect->On();
+
+		if (!m_isAuraOn)
+		{
+			CEffect::EFFECT_DESC EffectDesc{};
+
+			_matrix BoneMatrix = XMLoadFloat4x4(m_pModelCom->Get_BoneCombinedTransformationMatrix("kubi_c_n"));
+			_matrix ComputeMatrix = BoneMatrix * m_pTransformCom->Get_WorldMatrix();
+			_float4x4 Matrix;
+			XMStoreFloat4x4(&Matrix, ComputeMatrix);
+
+			EffectDesc.pWorldMatrix = &Matrix;
+			m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Aura_Start_Hooligan"), TEXT("Layer_Particle"), &EffectDesc);
+
+			m_isAuraOn = true;
+		}
+		break;
+	}
+	case CPlayer::KRH:
+	{
+		for (auto pEffect : m_RushAura)
+			pEffect->On();
+
+		if (!m_isAuraOn)
+		{
+			CEffect::EFFECT_DESC EffectDesc{};
+
+			_matrix BoneMatrix = XMLoadFloat4x4(m_pModelCom->Get_BoneCombinedTransformationMatrix("kubi_c_n"));
+			_matrix ComputeMatrix = BoneMatrix * m_pTransformCom->Get_WorldMatrix();
+			_float4x4 Matrix;
+			XMStoreFloat4x4(&Matrix, ComputeMatrix);
+
+			EffectDesc.pWorldMatrix = &Matrix;
+			m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Aura_Start_Rush"), TEXT("Layer_Particle"), &EffectDesc);
+
+			m_isAuraOn = true;
+		}
+
+		break;
+	}
+	case CPlayer::KRC:
+	{
+		for (auto pEffect : m_DestroyerAura)
+			pEffect->On();
+
+		if (!m_isAuraOn)
+		{
+			CEffect::EFFECT_DESC EffectDesc{};
+
+			_matrix BoneMatrix = XMLoadFloat4x4(m_pModelCom->Get_BoneCombinedTransformationMatrix("kubi_c_n"));
+			_matrix ComputeMatrix = BoneMatrix * m_pTransformCom->Get_WorldMatrix();
+			_float4x4 Matrix;
+			XMStoreFloat4x4(&Matrix, ComputeMatrix);
+
+			EffectDesc.pWorldMatrix = &Matrix;
+			m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Aura_Start_Destroyer"), TEXT("Layer_Particle"), &EffectDesc);
+
+			m_isAuraOn = true;
+		}
+
+		break;
+	}
+	}
+}
+
 void CPlayer::Off_Aura(BATTLE_STYLE eStyle)
 {
 	// eStyle 현재 켜진 스타일이다
@@ -2305,26 +2384,12 @@ void CPlayer::Off_Aura(BATTLE_STYLE eStyle)
 	}
 	case CPlayer::KRS:
 	{
+
 		for (auto pEffect : m_RushAura)
 			pEffect->Off();
 
 		for (auto pEffect : m_DestroyerAura)
 			pEffect->Off();
-
-		if (!m_isAuraOn)
-		{
-			CEffect::EFFECT_DESC EffectDesc{};
-
-			_matrix BoneMatrix = XMLoadFloat4x4(m_pModelCom->Get_BoneCombinedTransformationMatrix("kubi_c_n"));
-			_matrix ComputeMatrix = BoneMatrix * m_pTransformCom->Get_WorldMatrix();
-			_float4x4 Matrix;
-			XMStoreFloat4x4(&Matrix, ComputeMatrix);
-
-			EffectDesc.pWorldMatrix = &Matrix;
-			m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Aura_Start_Hooligan"), TEXT("Layer_Particle"), &EffectDesc);
-
-			m_isAuraOn = true;
-		}
 		break;
 	}
 	case CPlayer::KRH:
@@ -2334,21 +2399,6 @@ void CPlayer::Off_Aura(BATTLE_STYLE eStyle)
 
 		for (auto pEffect : m_DestroyerAura)
 			pEffect->Off();
-
-		if (!m_isAuraOn)
-		{
-			CEffect::EFFECT_DESC EffectDesc{};
-
-			_matrix BoneMatrix = XMLoadFloat4x4(m_pModelCom->Get_BoneCombinedTransformationMatrix("kubi_c_n"));
-			_matrix ComputeMatrix = BoneMatrix * m_pTransformCom->Get_WorldMatrix();
-			_float4x4 Matrix;
-			XMStoreFloat4x4(&Matrix, ComputeMatrix);
-
-			EffectDesc.pWorldMatrix = &Matrix;
-			m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Aura_Start_Rush"), TEXT("Layer_Particle"), &EffectDesc);
-
-			m_isAuraOn = true;
-		}
 		break;
 	}
 	case CPlayer::KRC:
@@ -2359,20 +2409,6 @@ void CPlayer::Off_Aura(BATTLE_STYLE eStyle)
 		for (auto pEffect : m_RushAura)
 			pEffect->Off();
 
-		if (!m_isAuraOn)
-		{
-			CEffect::EFFECT_DESC EffectDesc{};
-
-			_matrix BoneMatrix = XMLoadFloat4x4(m_pModelCom->Get_BoneCombinedTransformationMatrix("kubi_c_n"));
-			_matrix ComputeMatrix = BoneMatrix * m_pTransformCom->Get_WorldMatrix();
-			_float4x4 Matrix;
-			XMStoreFloat4x4(&Matrix, ComputeMatrix);
-
-			EffectDesc.pWorldMatrix = &Matrix;
-			m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Aura_Start_Destroyer"), TEXT("Layer_Particle"), &EffectDesc);
-
-			m_isAuraOn = true;
-		}
 		break;
 	}
 	}

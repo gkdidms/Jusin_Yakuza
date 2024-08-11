@@ -245,11 +245,13 @@ private:
     void Compute_MoveDirection_RL();
 
     void Effect_Control_Aura();
+    void On_Aura(BATTLE_STYLE eStyle);
+    void Off_Aura(BATTLE_STYLE eStyle);
+
     void Setting_Target_Enemy();
     void Setting_Target_Item();
     void Setting_Target_Wall();
 
-    void Off_Aura(BATTLE_STYLE eStyle);
 
 
     /* 캐릭터 스테이터스 관련 함수 */ 
