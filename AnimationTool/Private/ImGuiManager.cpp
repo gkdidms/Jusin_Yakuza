@@ -85,9 +85,9 @@ void CImguiManager::Tick(const _float& fTimeDelta)
 		if (m_isTrailWindow)
 			TrailWindow();
 		if (m_isFaceWindow)
-			FaceWindow();
+			FaceEventWindow();
 		if (m_isBloodWindow)
-			BloodWindow();
+			BloodEventWindow();
 	}
 
 	// 애니메이션 이벤트가 있는 콜라이더의 색상을 시안색으로 바꿔주는 기능
@@ -1153,20 +1153,65 @@ void CImguiManager::SoundListWindow()
 	ImGui::End();
 }
 
-void CImguiManager::FaceWindow()
+void CImguiManager::FaceEventWindow()
 {
 	ImGui::Begin("Face Event", &m_isFaceWindow);
 
-	ImGui::Text(u8"테스트용으로 띄웠습니다");
+	ImGui::Text(u8"선택된 애니메이션: %s", m_AnimNameList[m_iAnimIndex].c_str());
+	ImGui::Text(u8"선택된 본(채널리스트에서 선택한 값): %s", m_ChannelNameList[m_iChannelSelectedIndex].c_str());
+
+	ImGui::Text(u8"현재 입력된 애니메이션 포지션: %f", m_fAnimationPosition);
+
+	if (ImGui::Button(u8"표정 On"))
+	{
+
+	}
+	if (ImGui::Button(u8"표정 Change"))
+	{
+
+	}
+	if (ImGui::Button(u8"표정 Off"))
+	{
+
+	}
 
 	ImGui::End();
 }
 
-void CImguiManager::BloodWindow()
+void CImguiManager::BloodEventWindow()
 {
 	ImGui::Begin("Blood Particle Event", &m_isBloodWindow);
 
-	ImGui::Text(u8"테스트용으로 띄웠습니다");
+	ImGui::Text(u8"선택된 애니메이션: %s", m_AnimNameList[m_iAnimIndex].c_str());
+	ImGui::Text(u8"선택된 본(채널리스트에서 선택한 값): %s", m_ChannelNameList[m_iChannelSelectedIndex].c_str());
+
+	ImGui::Text(u8"현재 입력된 애니메이션 포지션: %f", m_fAnimationPosition);
+
+	if (ImGui::Button(u8"피 이펙트 On"))
+	{
+
+	}
+
+	ImGui::End();
+}
+
+void CImguiManager::RadialEventWindow()
+{
+	ImGui::Begin("Radial Event", &m_isRadialEventWindow);
+
+	ImGui::Text(u8"선택된 애니메이션: %s", m_AnimNameList[m_iAnimIndex].c_str());
+	ImGui::Text(u8"선택된 본(채널리스트에서 선택한 값): %s", m_ChannelNameList[m_iChannelSelectedIndex].c_str());
+
+	ImGui::Text(u8"현재 입력된 애니메이션 포지션: %f", m_fAnimationPosition);
+
+	if (ImGui::Button(u8"레디얼 On"))
+	{
+
+	}
+	if (ImGui::Button(u8"레디얼 Off"))
+	{
+
+	}
 
 	ImGui::End();
 }
