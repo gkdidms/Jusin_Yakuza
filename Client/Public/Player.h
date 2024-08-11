@@ -333,7 +333,7 @@ private:
 #endif // _DEBUG
 
 
-
+    class CQteManager* m_pQTEMgr = { nullptr };
 
 private:
     virtual HRESULT Add_Components() override;

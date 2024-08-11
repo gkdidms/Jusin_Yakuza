@@ -3,6 +3,7 @@
 #include "GameInstance.h"
 
 #include "AI_Van.h"
+#include "Weapon_ShotGun.h"
 
 CCarChase_Van::CCarChase_Van(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CCarChase_Monster{ pDevice, pContext }
@@ -29,21 +30,28 @@ HRESULT CCarChase_Van::Initialize(void* pArg)
 	else 
 		m_iState = CCarChase_Monster::CARCHASE_AIM_EN;
 
+	if (FAILED(Add_Objects()))
+		return E_FAIL;
+
 	return S_OK;
 }
 
 void CCarChase_Van::Priority_Tick(const _float& fTimeDelta)
 {
+	m_pShotGun->Priority_Tick(fTimeDelta);
 }
 
 void CCarChase_Van::Tick(const _float& fTimeDelta)
 {
 	__super::Tick(fTimeDelta);
+
+	m_pShotGun->Tick(fTimeDelta);
 }
 
 void CCarChase_Van::Late_Tick(const _float& fTimeDelta)
 {
 	__super::Late_Tick(fTimeDelta);
+	m_pShotGun->Late_Tick(fTimeDelta);
 }
 
 void CCarChase_Van::Change_Animation()
@@ -212,6 +220,18 @@ HRESULT CCarChase_Van::Add_Components()
 	return S_OK;
 }
 
+HRESULT CCarChase_Van::Add_Objects()
+{
+	CSocketObject::SOCKETOBJECT_DESC Desc{};
+	Desc.pParentMatrix = m_pParentMatrix;
+	Desc.pCombinedTransformationMatrix = m_pModelCom->Get_BoneCombinedTransformationMatrix("buki_r_n");
+	Desc.fRotatePecSec = XMConvertToRadians(90.f);
+	Desc.fSpeedPecSec = 1.f;
+	m_pShotGun = dynamic_cast<CShotGun*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_ShotGun"), &Desc));
+
+	return S_OK;
+}
+
 CCarChase_Van* CCarChase_Van::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
 	CCarChase_Van* pInstance = new CCarChase_Van(pDevice, pContext);
@@ -235,4 +255,6 @@ CGameObject* CCarChase_Van::Clone(void* pArg)
 void CCarChase_Van::Free()
 {
 	__super::Free();
+
+	Safe_Release(m_pShotGun);
 }

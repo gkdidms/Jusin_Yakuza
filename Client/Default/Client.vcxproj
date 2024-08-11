@@ -215,7 +215,7 @@
     <ClInclude Include="..\public\DefaultYakuza.h" />
     <ClInclude Include="..\public\CarChase_Reactor.h" />
     <ClInclude Include="..\public\CarChase_Monster.h" />
-    <ClInclude Include="..\Public\Gun_Cz75.h" />
+    <ClInclude Include="..\Public\Weapon_Gun_Cz75.h" />
     <ClInclude Include="..\Public\Highway_Kiryu.h" />
     <ClInclude Include="..\Public\Highway_Taxi.h" />
     <ClInclude Include="..\Public\Item.h" />
@@ -329,6 +329,11 @@
     <ClInclude Include="..\Public\SocketEffect.h" />
     <ClInclude Include="..\Public\SocketModel.h" />
     <ClInclude Include="..\Public\SocketObject.h" />
+    <ClInclude Include="..\Public\Weapon_Knife.h" />
+    <ClInclude Include="..\Public\Weapon_MchnGun.h" />
+    <ClInclude Include="..\Public\Weapon_RcktGun.h" />
+    <ClInclude Include="..\Public\Weapon_ShotGun.h" />
+    <ClInclude Include="..\Public\Weapon_Sofa.h" />
     <ClInclude Include="..\public\SystemManager.h" />
     <ClInclude Include="..\Public\TalkQuest.h" />
     <ClInclude Include="..\Public\Terrain.h" />
@@ -425,7 +430,6 @@
     <ClCompile Include="..\private\DefaultYakuza.cpp" />
     <ClCompile Include="..\private\CarChase_Reactor.cpp" />
     <ClCompile Include="..\private\CarChase_Monster.cpp" />
-    <ClCompile Include="..\Private\Gun_Cz75.cpp" />
     <ClCompile Include="..\Private\Highway_Kiryu.cpp" />
     <ClCompile Include="..\Private\Highway_Taxi.cpp" />
     <ClCompile Include="..\Private\Item.cpp" />
@@ -559,6 +563,12 @@
     <ClCompile Include="..\Private\UI_Effect.cpp" />
     <ClCompile Include="..\Private\UI_Object.cpp" />
     <ClCompile Include="..\Private\UI_Texture.cpp" />
+    <ClCompile Include="..\Private\Weapon_Gun_Cz75.cpp" />
+    <ClCompile Include="..\Private\Weapon_Knife.cpp" />
+    <ClCompile Include="..\Private\Weapon_MchnGun.cpp" />
+    <ClCompile Include="..\Private\Weapon_RcktGun.cpp" />
+    <ClCompile Include="..\Private\Weapon_ShotGun.cpp" />
+    <ClCompile Include="..\Private\Weapon_Sofa.cpp" />
     <ClCompile Include="..\private\WPAYakuza.cpp" />
     <ClCompile Include="..\private\WPHYakuza.cpp" />
     <ClCompile Include="..\private\Yoneda.cpp" />
