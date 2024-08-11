@@ -42,7 +42,8 @@ private:
 	//콜라이더 활성화(노랑), 콜라이더 비활성화(주황), 사운드 활성화(초록)
 	enum Animation_Event_Type
 	{
-		COLLIDER_ACTIVATION, COLLIDER_DISABLE, SOUND_ACTIVATION, ANIMATION_EVENT_TYPE_END
+		COLLIDER_ACTIVATION, COLLIDER_DISABLE, SOUND_ACTIVATION, 
+		ANIMATION_EVENT_TYPE_END
 	};
 
 public:
@@ -96,7 +97,7 @@ public:
 
 	struct Animation_RadialEventState
 	{
-		_uint iType;
+		_uint iType;				//0번이 on 1번이 off
 		_float fAinmPosition;
 		_float fForce;
 	};
@@ -166,6 +167,7 @@ private:
 	void EffectState_Save(string strPath);
 	void RimEvent_Save(string strPath);
 	void TrailEvent_Save(string strPath);
+	void RadialEvent_Save(string strPath);
 
 	/* Load */
 	void All_Load();
@@ -176,6 +178,7 @@ private:
 	void EffectState_Load(string strPath);
 	void RimEvent_Load(string strPath);
 	void TrailEvent_Load(string strPath);
+	void RadialEvent_Load(string strPath);
 
 	/* Functional*/
 private:
@@ -271,7 +274,7 @@ private:
 	int							m_iFaceEventIndex = { 0 };
 
 	// first: 애니메이션 이름, second: 트레일 이벤트정보
-	multimap<string, Animation_TrailState>		m_TrailEvents;
+	//multimap<string, Animation_TrailState>		m_FaceEvents;
 
 	/* 블러드 이펙트 윈도우 */
 private:
@@ -282,6 +285,11 @@ private:
 private:
 	_bool						m_isRadialEventWindow = { false };
 	int							m_iRadialEventIndex = { 0 };
+	float						m_fRadialForce = { 1.f };
+	float						m_fRadialAnimPosition = { 1.f };
+
+	// first: 애니메이션 이름, second: 트레일 이벤트정보
+	multimap<string, Animation_RadialEventState>		m_RadialEvents;
 
 private:
 	_bool						m_isSoundListWindow = { false };
