@@ -193,7 +193,6 @@ PS_OUT PS_MAIN(PS_IN In)
     //노말 벡터 구하기
     vector vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexcoord);
     
-    
     //Neo Shader
     float fFactor = RepeatingPatternBlendFactor(vMulti);
     vector vDiffuse = DiffusePortion(vDiffuseDesc, vRS, vRD, fFactor, In.vTexcoord);
@@ -247,7 +246,6 @@ PS_OUT PS_BLEND(PS_IN In)
     vector vRT = g_isRT ? g_RTTexture.Sample(LinearSampler, g_isUVShader ? UV.RT : In.vTexcoord) : vector(0.5f, 0.5f, 1.f, 0.5f);
     //노말 벡터 구하기
     vector vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexcoord);
-
     
     //Neo Shader
     float fFactor = RepeatingPatternBlendFactor(vMulti);

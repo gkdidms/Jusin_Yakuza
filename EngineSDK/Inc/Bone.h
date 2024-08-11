@@ -25,6 +25,7 @@ public:
 	const _float4x4* Get_CombinedTransformationMatrix() const {
 		return &m_CombinedTransformationMatrix;
 	}
+
 	const _float4x4* Get_CustomRotationMatrix() const {
 		return &m_CustomRotationMatrix;
 	}

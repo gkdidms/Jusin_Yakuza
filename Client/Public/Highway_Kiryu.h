@@ -111,6 +111,7 @@ public:
     _float Get_HitEye() { return m_fHitEye; }
    const _uint Get_MaxAmmo() { return MAX_AMMO; }
     _uint Get_Ammo() { return m_iCurrentAmmo; }
+    _uint Get_CurrentBehavior() { return m_eCurrentBehavior; }
 
     //아래는 ui에서 확인한 코드 지워도됨
     void Shot() { m_iCurrentAmmo--; }

@@ -303,13 +303,19 @@ HRESULT CMap::Render()
 
 			if (nullptr != m_pMaterialCom)
 				m_pMaterialCom->Bind_Shader(m_pShaderCom, m_pModelCom->Get_MaterialName(Meshes[i]->Get_MaterialIndex()));
+			else
+			{
+				_bool isUVShader = false;
+				if (FAILED(m_pShaderCom->Bind_RawValue("g_isUVShader", &isUVShader, sizeof(_bool))))
+					return E_FAIL;
+			}
+
 
 			_bool fFar = m_pGameInstance->Get_CamFar();
 			m_pShaderCom->Bind_RawValue("g_fFar", &fFar, sizeof(_float));
 
 			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
 				return E_FAIL;
-			m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS);
 
 			_bool isRS = true;
 			_bool isRD = true;
@@ -359,6 +365,11 @@ HRESULT CMap::Render()
 			_bool isRM = true;
 			_bool isRT = false;
 			_bool isMulti = true;
+			_bool isNormal = true;
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS)))
+				isNormal = false;
+			m_pShaderCom->Bind_RawValue("g_isNormal", &isNormal, sizeof(_bool));
 
 			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_MultiDiffuseTexture", i, aiTextureType_SHININESS)))
 				isMulti = false;
@@ -977,23 +988,21 @@ HRESULT CMap::Add_Components(void* pArg)
 		TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
 		return E_FAIL;
 
-	//모델 이름 추출
-	/*
-	string strModelName = m_pGameInstance->WstringToString(gameobjDesc->wstrModelName);
-	string strRemoveName = "Prototype_Component_Model_";
-	_int iPos = strModelName.find(strRemoveName);
-	
-	if (iPos == string::npos)
-		return E_FAIL;
+	////모델 이름 추출
+	//string strModelName = m_pGameInstance->WstringToString(gameobjDesc->wstrModelName);
+	//string strRemoveName = "Prototype_Component_Model_";
+	//_int iPos = strModelName.find(strRemoveName);
+	//
+	//if (iPos == string::npos)
+	//	return E_FAIL;
 
-	strModelName = strModelName.erase(iPos, strRemoveName.size());
+	//strModelName = strModelName.erase(iPos, strRemoveName.size());
 
-	wstring strMaterialName = TEXT("Prototype_Component_Material_") + m_pGameInstance->StringToWstring(strModelName);
+	//wstring strMaterialName = TEXT("Prototype_Component_Material_") + m_pGameInstance->StringToWstring(strModelName);
 
-	if (FAILED(__super::Add_Component(m_iCurrentLevel, strMaterialName,
-		TEXT("Com_Material"), reinterpret_cast<CComponent**>(&m_pMaterialCom))))
-		return E_FAIL;
-	*/
+	//if (FAILED(__super::Add_Component(m_iCurrentLevel, strMaterialName,
+	//	TEXT("Com_Material"), reinterpret_cast<CComponent**>(&m_pMaterialCom))))
+	//	return E_FAIL;
 
 	/* For.Com_Shader */
 	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Shader_MeshMap"),
@@ -1013,6 +1022,31 @@ HRESULT CMap::Bind_ShaderResources()
 		return E_FAIL;
 
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_fFar", m_pGameInstance->Get_CamFar(), sizeof(_float))))
+		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CMap::Reset_Bind()
+{
+	_bool isRS = false;
+	_bool isRD = false;
+	_bool isRM = false;
+	_bool isRT = false;
+	_bool isMulti = false;
+	_bool isUVShader = false;
+
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_isRS", &isRS, sizeof(_bool))))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_isRD", &isRD, sizeof(_bool))))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_isRM", &isRM, sizeof(_bool))))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_isRT", &isRT, sizeof(_bool))))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_isMulti", &isMulti, sizeof(_bool))))
+		return E_FAIL;
+	if (FAILED(m_pShaderCom->Bind_RawValue("g_isUVShader", &isUVShader, sizeof(_bool))))
 		return E_FAIL;
 
 	return S_OK;
@@ -1071,5 +1105,6 @@ void CMap::Free()
 
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pModelCom);
+	Safe_Release(m_pMaterialCom);
 	Safe_Release(m_pSystemManager);
 }

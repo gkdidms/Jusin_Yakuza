@@ -37,6 +37,7 @@ public:
 
 public:
     void Set_WorldMatrix(_fmatrix WorldMatrix) { XMStoreFloat4x4(&m_WorldMatrix, WorldMatrix); }
+    void Set_OldWorldMatrix(_fmatrix OldWorldMatrix) { XMStoreFloat4x4(&m_WorldMatrix, OldWorldMatrix); }
     void Set_State(STATE eState, _fvector vState);
 
     void Scaling(_float fScaleX, _float fScaleY, _float fScaleZ);
@@ -49,6 +50,7 @@ public:
 
 public:
     HRESULT Bind_ShaderMatrix(class CShader* pShader, const _char* strConstantName);
+    HRESULT Bind_ShaderOldMatrix(class CShader* pShader, const _char* strConstantName);
 
 public:
     void Go_Straight(const _float& fTimeDelta);
@@ -70,6 +72,7 @@ public:
 
 private:
     _float4x4 m_WorldMatrix;
+    _float4x4 m_OldWorldMatrix;
     _float m_fSpeedPerSec = { 0 };
     _float m_fRotationPerSec = { 0 };
 
