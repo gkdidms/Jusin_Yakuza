@@ -7,6 +7,7 @@
 BEGIN(Engine)
 class CShader;
 class CModel;
+class CNavigation;
 END
 
 BEGIN(Client)
@@ -42,6 +43,7 @@ public:
 		ITEM_BRIGHT,
 		ITEM_GRAB, // 잡았을때
 		ITEM_DEAD, 
+		ITEM_ATTACK,		// 잡고 공격할 때
 		ITEM_END
 	};
 
@@ -94,7 +96,9 @@ public:
 	virtual void Late_Tick(const _float& fTimeDelta) override;
 	virtual HRESULT Render() override;
 	virtual HRESULT Render_LightDepth() override;
+
 	virtual void ImpulseResolution(CGameObject* pTargetObject, _float fDistance = 0.5f) override;
+	virtual void Attack_Event(CGameObject* pHitObject, _bool isItem = false) override;
 
 public:
 	CTransform* Get_Transform() { return m_pTransformCom; }
@@ -124,8 +128,11 @@ private:
 	CShader* m_pShaderCom = { nullptr };
 	CModel* m_pModelCom = { nullptr };
 	class CSystemManager* m_pSystemManager = { nullptr };
-	CCollider* m_pColliderCom = { nullptr }; //AABB 저장
+	class CCollision_Manager* m_pCollisionManager = { nullptr };
+	//CCollider* m_pColliderCom = { nullptr }; //AABB 저장
 	CCollider* m_pOBBColliderCom = { nullptr }; //AABB 저장
+
+	CNavigation* m_pNavigationCom = { nullptr };
 
 private:
 	_bool m_isFirst = { true };

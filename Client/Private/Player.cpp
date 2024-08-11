@@ -1845,6 +1845,8 @@ void CPlayer::Style_Change(BATTLE_STYLE eStyle)
 	m_iCurrentBehavior = 0;
 	m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Reset();
 	m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Change_Animation();
+
+	Off_Aura(eStyle);
 }
 
 void CPlayer::Reset_MoveDirection()
@@ -2405,7 +2407,6 @@ void CPlayer::Off_Aura(BATTLE_STYLE eStyle)
 	}
 	case CPlayer::KRS:
 	{
-
 		for (auto pEffect : m_RushAura)
 			pEffect->Off();
 

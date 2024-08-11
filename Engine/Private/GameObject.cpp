@@ -118,4 +118,5 @@ void CGameObject::Free()
 	Safe_Release(m_pContext);
 	Safe_Release(m_pGameInstance);
 	Safe_Release(m_pTransformCom);
+	Safe_Release(m_pColliderCom);
 }
