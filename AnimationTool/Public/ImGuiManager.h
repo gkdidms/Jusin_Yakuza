@@ -106,7 +106,6 @@ private:
 	void RimLightWindow();
 	void TrailWindow();
 	void SoundListWindow();
-	void SlowWindow();
 	void FaceWindow();
 	void BloodWindow();
 
