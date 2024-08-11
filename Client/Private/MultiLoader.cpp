@@ -214,7 +214,8 @@ HRESULT CMultiLoader::Loading_Default()
 		return E_FAIL;
 #pragma endregion
 
-#pragma region Effect_Texture/* Prototype_Component_Texture_Sphere */
+	/* Prototype_Component_Texture_Sphere */
+#pragma region Effect_Texture
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Texture_Sphere"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/lm000.dds"), 1))))
 		return E_FAIL;

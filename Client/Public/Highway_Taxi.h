@@ -46,9 +46,6 @@ public:
     void    Set_NaviRouteIndex(int iIndex) { m_iNaviRouteNum = iIndex; }
 
 protected:
-    class CNavigation* m_pNavigationCom = { nullptr };
-
-protected:
     class CHighway_Kiryu* m_pKiryu = { nullptr };
     _int        m_iNaviRouteNum = { 0 }; // 몬스터가 이동하는 네비게이션 위치
     _uint       m_iStageDir = { DIR_END }; // 스테이지 위치 (앞, 뒤, 왼, 오)

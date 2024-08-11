@@ -351,6 +351,15 @@ HRESULT CRenderer::Ready_Targets()
 	/*Target_SceneCrack*/
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_SceneCrack"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
+
+	/*Target_InvertColor*/
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_InvertColor"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
+		return E_FAIL;
+
+	/*Target_Vignette*/
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Vignette"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -524,6 +533,7 @@ HRESULT CRenderer::Ready_MRTs()
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_Distortion"), TEXT("Target_FinalEffect"))))
 		return E_FAIL;
 
+#pragma region PostProcess
 	/* MRT_RadialBlur */
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_RadialBlur"), TEXT("Target_RadialBlur"))))
 		return E_FAIL;
@@ -531,6 +541,17 @@ HRESULT CRenderer::Ready_MRTs()
 	/* MRT_SceneCrack */
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_SceneCrack"), TEXT("Target_SceneCrack"))))
 		return E_FAIL;
+
+	/* MRT_InvertColor */
+	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_InvertColor"), TEXT("Target_InvertColor"))))
+		return E_FAIL;
+
+	/* MRT_InvertColor */
+	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_Vignette"), TEXT("Target_Vignette"))))
+		return E_FAIL;
+#pragma endregion
+
+
 
 	return S_OK;
 }
@@ -727,6 +748,12 @@ void CRenderer::Draw()
 
 	if (m_isRadialBlur)
 		Render_RadialBlur();
+
+	if (m_isInvertColor)
+		Render_InvertColor();
+
+	if (m_isVignette)
+		Render_Vignette();
 
 	//최종적으로 백버퍼에 그림을 그려줌
 	Render_FinalResult();
@@ -1899,6 +1926,52 @@ void CRenderer::Render_Crack()
 		return;
 }
 
+void CRenderer::Render_InvertColor()
+{
+	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_InvertColor"))))
+		return;
+
+	if (FAILED(m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix)))
+		return;
+	if (FAILED(m_pShader->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix)))
+		return;
+	if (FAILED(m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
+		return;
+
+	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_FinalEffect"), m_pShader, "g_DiffuseTexture")))
+		return;
+
+	m_pShader->Begin(24);
+
+	m_pVIBuffer->Render();
+
+	if (FAILED(m_pGameInstance->End_MRT()))
+		return;
+}
+
+void CRenderer::Render_Vignette()
+{
+	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_Vignette"))))
+		return;
+
+	if (FAILED(m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix)))
+		return;
+	if (FAILED(m_pShader->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix)))
+		return;
+	if (FAILED(m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
+		return;
+
+	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_FinalEffect"), m_pShader, "g_DiffuseTexture")))
+		return;
+
+	m_pShader->Begin(25);
+
+	m_pVIBuffer->Render();
+
+	if (FAILED(m_pGameInstance->End_MRT()))
+		return;
+}
+
 void CRenderer::Render_FinalResult()
 {
 	if (FAILED(m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix)))
@@ -1908,7 +1981,14 @@ void CRenderer::Render_FinalResult()
 	if (FAILED(m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
 		return;
 
-	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(m_isRadialBlur ? TEXT("Target_RadialBlur") : TEXT("Target_FinalEffect"), m_pShader, "g_BackBufferTexture")))
+	wstring strTexture = TEXT("");
+
+	if (m_isRadialBlur) strTexture = TEXT("Target_RadialBlur");
+	else if (m_isInvertColor) strTexture = TEXT("Target_InvertColor");
+	else if (m_isVignette) strTexture = TEXT("Target_Vignette");
+	else strTexture = TEXT("Target_FinalEffect");
+
+	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(strTexture, m_pShader, "g_BackBufferTexture")))
 		return;
 
 	m_pShader->Begin(4);

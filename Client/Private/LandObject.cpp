@@ -389,6 +389,7 @@ void CLandObject::Free()
 	Safe_Release(m_pSystemManager);
 	Safe_Release(m_pCollisionManager);
 	Safe_Release(m_pMaterialCom);
+	Safe_Release(m_pNavigationCom);
 }
 
 void CLandObject::Compute_Height()
