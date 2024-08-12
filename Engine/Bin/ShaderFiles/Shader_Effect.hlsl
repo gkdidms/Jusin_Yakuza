@@ -98,7 +98,7 @@ PS_OUT PS_OIT_RESULT(PS_IN In)
 PS_OUT PS_RIMLIGHT(PS_IN In)//범위 지정 문해야됨
 {
     PS_OUT Out = (PS_OUT) 0;
-
+    
     vector BaseNormal = g_NormalTexture.Sample(LinearSampler, In.vTexcoord);//월드 노멀
     BaseNormal = vector(BaseNormal.xyz * 2.f - 1.f, 0.f);
     
@@ -116,7 +116,7 @@ PS_OUT PS_RIMLIGHT(PS_IN In)//범위 지정 문해야됨
         RimColor = vector(0.95f, 0.92f, 0.18, 1.f);
 
 
-    float fRimpower =1.f;
+    float fRimpower = 15.f;
     
     vector vWorldPos;
 
@@ -133,23 +133,20 @@ PS_OUT PS_RIMLIGHT(PS_IN In)//범위 지정 문해야됨
 
 	        /* 월드스페이스 상의 위치를 구한다. */
     vWorldPos = mul(vWorldPos, g_ViewMatrixInv);
-       
-    
-    vector vRim = normalize(vCamDir - vWorldPos);
-    
-    if(0.05f<BaseDepth.z)
+
+    if(0.05f < BaseDepth.z)
     {
         float RangeAlpha = BaseDepth.w;
-        float fRim = saturate(dot(BaseNormal, vRim));
-        vector FinColor= float4(pow(1.f - fRim, fRimpower) * RimColor);
-     //FinColor.a *= RangeAlpha;
+        
+        //vector vRim = normalize(vWorldPos - vCamDir) * -1.f;
+        vector vRim = normalize(vCamDir - vWorldPos);
+        
+        float fRim = saturate(dot(vRim, BaseNormal));
+        
+        vector FinColor = float4(pow(1.f - fRim, fRimpower) * RimColor);
+    
         Out.vColor = FinColor;
     }
-    else
-    {
-        Out.vColor = vector(0.f, 0.f, 0.f, 0.f);
-    }
-   
     
     return Out;
 }

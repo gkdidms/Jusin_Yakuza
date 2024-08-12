@@ -330,7 +330,7 @@ HRESULT CRenderer::Ready_Targets()
 		return E_FAIL;
 #pragma endregion
 
-	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_RimLight"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(1.f, 1.f, 1.f, 1.f))))
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_RimLight"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(0.f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
 
 	/*Target_NonLightNonBlur*/
@@ -434,7 +434,6 @@ HRESULT CRenderer::Ready_MRTs()
 	/*MRT_CopyBackBuffer*/
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_CopyBackBuffer"), TEXT("Target_BackBuffer"))))
 		return E_FAIL;
-
 
 	/*MRT_Puddle*/
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_Puddle"), TEXT("Target_PuddleDiffuse"))))
@@ -712,13 +711,10 @@ void CRenderer::Draw()
 
 	//물웅덩이에 캡쳐장면 넣어줌
 	//Render_Puddle();
-
 	Render_DeferredResult(); // 복사한 이미지를 백버퍼에 넣어줌. (Deferred 최종)
 
+	Render_RimLight();
 
-
-	if (m_isRimLight)
-		Render_RimLight();
 
 	if (m_isHDR)
 	{
@@ -1667,7 +1663,7 @@ void CRenderer::Render_NonLight_NonBlur()
 	}
 	else
 	{
-		if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_CopyBackBuffer"), nullptr, false)))
+		if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_RimLight"), nullptr, false)))
 			return;
 	}
 
@@ -1691,7 +1687,7 @@ void CRenderer::Render_NonLight_NonBlur()
 
 void CRenderer::Render_RimLight()
 {
-	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_CopyBackBuffer"), nullptr, false)))
+	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_CopyBackBuffer"))))
 		return;
 
 	if (FAILED(m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix)))
@@ -1711,7 +1707,7 @@ void CRenderer::Render_RimLight()
 
 	if (FAILED(m_pShader->Bind_RawValue("g_fFar", m_pGameInstance->Get_CamFar(), sizeof(_float))))
 		return;
-	//노멀이 빛이계산 되있음
+
 	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Normal"), m_pShader, "g_NormalTexture")))
 		return;
 
@@ -2127,10 +2123,6 @@ void CRenderer::Render_Debug()
 		return;
 	if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_RimLight"), m_pShader, m_pVIBuffer)))
 		return;
-
-	if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_RimLight"), m_pShader, m_pVIBuffer)))
-		return;
-
 
 	if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_RadialBlur"), m_pShader, m_pVIBuffer)))
 		return;
