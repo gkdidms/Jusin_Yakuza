@@ -50,7 +50,11 @@ void CCarChase_Van::Tick(const _float& fTimeDelta)
 
 void CCarChase_Van::Late_Tick(const _float& fTimeDelta)
 {
+	m_pModelCom->Play_Animation_Monster(fTimeDelta, m_pAnimCom[m_iCurrentAnimType], m_isAnimLoop, false);
+	XMStoreFloat4x4(&m_ModelWorldMatrix, m_pTransformCom->Get_WorldMatrix() * XMLoadFloat4x4(m_pParentBoneMatrix) * XMLoadFloat4x4(m_pParentMatrix));
+
 	__super::Late_Tick(fTimeDelta);
+
 	m_pShotGun->Late_Tick(fTimeDelta);
 }
 

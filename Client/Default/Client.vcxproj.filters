@@ -575,6 +575,9 @@
     <ClCompile Include="..\Private\Weapon_RcktGun.cpp">
       <Filter>02.GameObjects\02.Character\LandObject\03.CarChase\03.Weapon\RcktGun</Filter>
     </ClCompile>
+    <ClCompile Include="..\private\CarChase_CATBullet.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\03.CarChase\01.Monster\03.Heli\Bullte</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\MainApp.h">
@@ -1180,6 +1183,9 @@
     </ClInclude>
     <ClInclude Include="..\Public\Weapon_Knife.h">
       <Filter>02.GameObjects\02.Character\LandObject\01.Monster\Weapon\Knife</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\CarChase_CATBullet.h">
+      <Filter>02.GameObjects\02.Character\LandObject\03.CarChase\01.Monster\03.Heli\Bullte</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1808,6 +1814,9 @@
     </Filter>
     <Filter Include="02.GameObjects\02.Character\LandObject\03.CarChase\03.Weapon\ShotGun">
       <UniqueIdentifier>{b148cd3e-d4a1-4ad5-bf9a-62fb315a8c04}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\03.CarChase\01.Monster\03.Heli\Bullte">
+      <UniqueIdentifier>{16c72508-b1b3-4cf1-b8ae-05ed6aa731ef}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

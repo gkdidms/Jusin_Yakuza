@@ -44,6 +44,7 @@
 #include "Weapon_MchnGun.h"
 #include "Weapon_RcktGun.h"
 #include "Weapon_ShotGun.h"
+#include "CarChase_CATBullet.h"
 #pragma endregion
 
 #pragma region Reactor
@@ -503,6 +504,7 @@ HRESULT CLoader::Loading_Default()
 	return S_OK;
 }
 
+/* 카체이스용 (나중에 지울것) */
 HRESULT CLoader::Loading_Highway()
 {
 #pragma region Component
@@ -513,8 +515,8 @@ HRESULT CLoader::Loading_Highway()
 	//	return E_FAIL;
 
 	/* For.Prototype_Component_CarChaseAnim */
-if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_CarChaseAnim"), CAnim::Create(m_pDevice, m_pContext, "../Bin/DataFiles/AnimationData/Animation_CarChase.dat", false))))
-	return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_CarChaseAnim"), CAnim::Create(m_pDevice, m_pContext, "../Bin/DataFiles/AnimationData/Animation_CarChase.dat", false))))
+		return E_FAIL;
 	//if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_CarChaseAnim"), CAnim::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Anim/Animation_CarChase.fbx", true))))
 	//	return E_FAIL;
 #pragma endregion
@@ -600,6 +602,11 @@ if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototyp
 	/* For.Prototype_GameObject_RcktGun*/
 	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_RcktGun"),
 		CRcktGun::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_RcktGunBullet*/
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_RcktGunBullet"),
+		CCarChase_CATBullet::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 #pragma endregion
 

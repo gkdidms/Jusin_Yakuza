@@ -55,7 +55,7 @@ HRESULT CReactor_Bike::Ready_Monster(_int* pMonsterTypes)
 		CCarChase_Bike::CARCHASE_MONSTER_DESC Desc{};
 		Desc.iWeaponType = pMonsterTypes[i];
 		Desc.pParentMatrix = m_pTransformCom->Get_WorldFloat4x4();
-		Desc.pBoneMatrix = m_pModelCom->Get_BoneTransformationMatrix("anm_root");
+		Desc.pBoneMatrix = m_pModelCom->Get_BoneCombinedTransformationMatrix("anm_root");
 		Desc.iLineDir = m_iLineDir;
 		Desc.iStageDir = m_iStageDir;
 		Desc.iObjectIndex = m_iObjectIndex + i;
@@ -79,9 +79,8 @@ void CReactor_Bike::Change_Animation()
 	if (m_strAnimName == "w_mngcar_bik_tentou_b_1")
 	{
 		m_iAnim = 6;
-		return;
+		m_pModelCom->Set_AnimationIndex(m_iAnim, 4.f);
 	}
-		
 
 	if (m_iAnim == 6 && m_pModelCom->Get_AnimFinished())
 		m_isDead = true;
