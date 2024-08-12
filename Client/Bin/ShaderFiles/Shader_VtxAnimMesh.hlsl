@@ -205,7 +205,8 @@ PS_OUT PS_MAIN(PS_IN In)
 
     vNormalDesc = vNormalDesc * 2.f - 1.f;
     float3x3 WorldMatrix = float3x3(In.vTangent.xyz, In.vBinormal.xyz, In.vNormal.xyz);
-    vector vNormalBTN = normalize(vector(mul(vNormalDesc.xyz, WorldMatrix), 0.f));
+    //vector vNormalBTN = normalize(vector(mul(vNormalDesc.xyz, WorldMatrix), 0.f));
+    vector vNormalBTN = (vector(mul(vNormalDesc.xyz, WorldMatrix), 0.f));
     Out.vNormal = vector(vNormalBTN.xyz * 0.5f + 0.5f, 0.f);
 
     float RimIndex = 0.f;

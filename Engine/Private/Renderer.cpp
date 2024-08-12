@@ -1671,6 +1671,8 @@ void CRenderer::Render_RimLight()
 	if (FAILED(m_pShader->Bind_RawValue("g_fFar", m_pGameInstance->Get_CamFar(), sizeof(_float))))
 		return;
 
+	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_BackBuffer"), m_pShader, "g_BackBufferTexture")))
+		return;
 
 	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Normal"), m_pShader, "g_NormalTexture")))
 		return;
@@ -1767,8 +1769,8 @@ void CRenderer::Render_FinalEffectBlend()
 	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Effect"), m_pShader, "g_EffectTexture")))//이펙트 텍스처 원본
 		return;
 
-	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(m_isBOF ? TEXT("Target_BOF") : TEXT("Target_BackBuffer"), m_pShader, "g_ResultTexture")))//원본 최종
-		return;
+//	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(m_isBOF ? TEXT("Target_BOF") : TEXT("Target_BackBuffer"), m_pShader, "g_ResultTexture")))//원본 최종
+	//	return;
 
 	m_pShader->Begin(13);
 
