@@ -152,7 +152,6 @@ HRESULT CMap::Render()
 		m_pGameInstance->Add_DebugComponent(iter);
 #endif
 
-
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
 
@@ -293,10 +292,15 @@ HRESULT CMap::Render()
 
 	int		iRenderState = m_pGameInstance->Get_RenderState();
 
+	//NonBlend - 일반메시, 
+
 #pragma region Render_DefaultMeshGroup
 	if (iRenderState == CRenderer::RENDER_NONBLENDER)
 	{
-		// VtxMesh - Defulat_Pass - 0번
+		// 램프 - 일반 mesh 출력, 그리고 부분 nonlight로 들어가서 bloom
+		// 부분 bloom - 전부 출력 후 밝은 부분만 nonlight로 들어가서 bloom
+
+#pragma region 일반
 		for (size_t k = 0; k < m_vRenderDefaulMeshIndex.size(); k++)
 		{
 			int		i = m_vRenderDefaulMeshIndex[k];
@@ -317,41 +321,68 @@ HRESULT CMap::Render()
 			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
 				return E_FAIL;
 
-			_bool isRS = true;
-			_bool isRD = true;
-			_bool isRM = true;
-			_bool isRT = false;
-			_bool isMulti = true;
+			//_bool isRS = true;
+			//_bool isRD = true;
+			//_bool isRM = true;
+			//_bool isRT = false;
+			//_bool isMulti = true;
 
-			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_MultiDiffuseTexture", i, aiTextureType_SHININESS)))
-				isMulti = false;
+			//if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_MultiDiffuseTexture", i, aiTextureType_SHININESS)))
+			//	isMulti = false;
+			//m_pShaderCom->Bind_RawValue("g_isMulti", &isMulti, sizeof(_bool));
+
+			//if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RSTexture", i, aiTextureType_SPECULAR)))
+			//	isRS = false;
+			//m_pShaderCom->Bind_RawValue("g_isRS", &isRS, sizeof(_bool));
+
+			//if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RDTexture", i, aiTextureType_OPACITY)))
+			//	isRD = false;
+			//m_pShaderCom->Bind_RawValue("g_isRD", &isRD, sizeof(_bool));
+
+			//if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RMTexture", i, aiTextureType_METALNESS)))
+			//	isRM = false;
+			//m_pShaderCom->Bind_RawValue("g_isRM", &isRM, sizeof(_bool));
+			//m_pShaderCom->Bind_RawValue("g_isRT", &isRT, sizeof(_bool));
+
+
+			_bool isRS = false;
+			_bool isRD = false;
+			_bool isRM = false;
+			_bool isRT = false;
+			_bool isMulti = false;
+
+
 			m_pShaderCom->Bind_RawValue("g_isMulti", &isMulti, sizeof(_bool));
 
-			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RSTexture", i, aiTextureType_SPECULAR)))
-				isRS = false;
+
 			m_pShaderCom->Bind_RawValue("g_isRS", &isRS, sizeof(_bool));
 
-			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RDTexture", i, aiTextureType_OPACITY)))
-				isRD = false;
 			m_pShaderCom->Bind_RawValue("g_isRD", &isRD, sizeof(_bool));
 
-			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RMTexture", i, aiTextureType_METALNESS)))
-				isRM = false;
+
 			m_pShaderCom->Bind_RawValue("g_isRM", &isRM, sizeof(_bool));
 			m_pShaderCom->Bind_RawValue("g_isRT", &isRT, sizeof(_bool));
+
 
 			m_pShaderCom->Begin(SHADER_DEFAULT_MAP);
 
 			m_pModelCom->Render(i);
 		}
-
-		// VtxMesh - Defulat_Pass - 0번
-		for (size_t k = 0; k < m_vSignMeshIndex.size(); k++)
+#pragma endregion
+	
+#pragma region 램프
+		for (size_t k = 0; k < m_vLampMeshIndex.size(); k++)
 		{
-			int		i = m_vSignMeshIndex[k];
+			int		i = m_vLampMeshIndex[k];
 
 			if (nullptr != m_pMaterialCom)
 				m_pMaterialCom->Bind_Shader(m_pShaderCom, m_pModelCom->Get_MaterialName(Meshes[i]->Get_MaterialIndex()));
+			else
+			{
+				_bool isUVShader = false;
+				if (FAILED(m_pShaderCom->Bind_RawValue("g_isUVShader", &isUVShader, sizeof(_bool))))
+					return E_FAIL;
+			}
 
 			_bool fFar = m_pGameInstance->Get_CamFar();
 			m_pShaderCom->Bind_RawValue("g_fFar", &fFar, sizeof(_float));
@@ -365,11 +396,6 @@ HRESULT CMap::Render()
 			_bool isRM = true;
 			_bool isRT = false;
 			_bool isMulti = true;
-			_bool isNormal = true;
-
-			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS)))
-				isNormal = false;
-			m_pShaderCom->Bind_RawValue("g_isNormal", &isNormal, sizeof(_bool));
 
 			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_MultiDiffuseTexture", i, aiTextureType_SHININESS)))
 				isMulti = false;
@@ -388,79 +414,120 @@ HRESULT CMap::Render()
 			m_pShaderCom->Bind_RawValue("g_isRM", &isRM, sizeof(_bool));
 			m_pShaderCom->Bind_RawValue("g_isRT", &isRT, sizeof(_bool));
 
-			m_pShaderCom->Begin(SHADER_SIGN);
-
-			m_pModelCom->Render(i);
-		}
-
-
-		for (size_t k = 0; k < m_vLampMeshIndex.size(); k++)
-		{
-			int		i = m_vLampMeshIndex[k];
-
-			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
-				return E_FAIL;
-
-			bool	bRMExist = m_pModelCom->Check_Exist_Material(i, aiTextureType_METALNESS);
-
-			// Normal texture가 있을 경우
-			if (true == bRMExist)
-			{
-				m_pModelCom->Bind_Material(m_pShaderCom, "g_RMTexture", i, aiTextureType_METALNESS);
-
-				if (FAILED(m_pShaderCom->Bind_RawValue("g_bExistRMTex", &bRMExist, sizeof(bool))))
-					return E_FAIL;
-			}
-			else
-			{
-				if (FAILED(m_pShaderCom->Bind_RawValue("g_bExistRMTex", &bRMExist, sizeof(bool))))
-					return E_FAIL;
-			}
-
 			m_pShaderCom->Begin(SHADER_DEFAULT_MAP);
 
 			m_pModelCom->Render(i);
 		}
+#pragma endregion
 
+#pragma region 부분bloom
 		for (size_t k = 0; k < m_vBloomIndex.size(); k++)
 		{
 			int		i = m_vBloomIndex[k];
 
+			if (nullptr != m_pMaterialCom)
+				m_pMaterialCom->Bind_Shader(m_pShaderCom, m_pModelCom->Get_MaterialName(Meshes[i]->Get_MaterialIndex()));
+			else
+			{
+				_bool isUVShader = false;
+				if (FAILED(m_pShaderCom->Bind_RawValue("g_isUVShader", &isUVShader, sizeof(_bool))))
+					return E_FAIL;
+			}
+
+			_bool fFar = m_pGameInstance->Get_CamFar();
+			m_pShaderCom->Bind_RawValue("g_fFar", &fFar, sizeof(_float));
+
 			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
 				return E_FAIL;
+			m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS);
+
+			_bool isRS = true;
+			_bool isRD = true;
+			_bool isRM = true;
+			_bool isRT = false;
+			_bool isMulti = true;
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_MultiDiffuseTexture", i, aiTextureType_SHININESS)))
+				isMulti = false;
+			m_pShaderCom->Bind_RawValue("g_isMulti", &isMulti, sizeof(_bool));
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RSTexture", i, aiTextureType_SPECULAR)))
+				isRS = false;
+			m_pShaderCom->Bind_RawValue("g_isRS", &isRS, sizeof(_bool));
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RDTexture", i, aiTextureType_OPACITY)))
+				isRD = false;
+			m_pShaderCom->Bind_RawValue("g_isRD", &isRD, sizeof(_bool));
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RMTexture", i, aiTextureType_METALNESS)))
+				isRM = false;
+			m_pShaderCom->Bind_RawValue("g_isRM", &isRM, sizeof(_bool));
+			m_pShaderCom->Bind_RawValue("g_isRT", &isRT, sizeof(_bool));
 
 			m_pShaderCom->Begin(SHADER_DEFAULT_MAP);
 
 			m_pModelCom->Render(i);
 		}
-
-		for (size_t k = 0; k < m_vMaskSignIndex.size(); k++)
-		{
-			int		i = m_vMaskSignIndex[k];
-
-			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
-				return E_FAIL;
-
-			m_pShaderCom->Begin(SHADER_SIGN_MASK);
-
-			m_pModelCom->Render(i);
-		}
-
-
+#pragma endregion
+		
+#pragma region 강력한bloom
 		for (size_t k = 0; k < m_vStrongBloomIndex.size(); k++)
 		{
 			int		i = m_vStrongBloomIndex[k];
 
+			if (nullptr != m_pMaterialCom)
+				m_pMaterialCom->Bind_Shader(m_pShaderCom, m_pModelCom->Get_MaterialName(Meshes[i]->Get_MaterialIndex()));
+			else
+			{
+				_bool isUVShader = false;
+				if (FAILED(m_pShaderCom->Bind_RawValue("g_isUVShader", &isUVShader, sizeof(_bool))))
+					return E_FAIL;
+			}
+
+			_bool fFar = m_pGameInstance->Get_CamFar();
+			m_pShaderCom->Bind_RawValue("g_fFar", &fFar, sizeof(_float));
+
 			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
 				return E_FAIL;
+			m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS);
+
+			_bool isRS = true;
+			_bool isRD = true;
+			_bool isRM = true;
+			_bool isRT = false;
+			_bool isMulti = true;
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_MultiDiffuseTexture", i, aiTextureType_SHININESS)))
+				isMulti = false;
+			m_pShaderCom->Bind_RawValue("g_isMulti", &isMulti, sizeof(_bool));
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RSTexture", i, aiTextureType_SPECULAR)))
+				isRS = false;
+			m_pShaderCom->Bind_RawValue("g_isRS", &isRS, sizeof(_bool));
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RDTexture", i, aiTextureType_OPACITY)))
+				isRD = false;
+			m_pShaderCom->Bind_RawValue("g_isRD", &isRD, sizeof(_bool));
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RMTexture", i, aiTextureType_METALNESS)))
+				isRM = false;
+			m_pShaderCom->Bind_RawValue("g_isRM", &isRM, sizeof(_bool));
+			m_pShaderCom->Bind_RawValue("g_isRT", &isRT, sizeof(_bool));
 
 			m_pShaderCom->Begin(SHADER_DEFAULT_MAP);
 
 			m_pModelCom->Render(i);
 		}
+#pragma endregion
+
+
+
+
 	}
 #pragma endregion
 
+
+	//Render Glass
 #pragma region Render_GlassMeshGroup
 	if (iRenderState == CRenderer::RENDER_GLASS)
 	{
@@ -545,6 +612,7 @@ HRESULT CMap::Render()
 
 #pragma endregion
 
+	//Render Effect
 #pragma region Render_EffectMeshGroup
 	if (iRenderState == CRenderer::RENDER_EFFECT)
 	{
@@ -563,6 +631,7 @@ HRESULT CMap::Render()
 	}
 #pragma endregion
 
+	//Render Decal
 #pragma region Render_DecalMesh
 
 	if (iRenderState == CRenderer::RENDER_DECAL)
@@ -611,6 +680,7 @@ HRESULT CMap::Render()
 	
 #pragma endregion
 
+	//Render Bloom - nonlight
 #pragma region Render_Bloom
 	if (iRenderState == CRenderer::RENDER_NONLIGHT)
 	{
@@ -685,6 +755,7 @@ HRESULT CMap::Render()
 	}
 #pragma endregion
 
+	// Render NonlightNonBlur
 #pragma region Render_NonLightNonBlur
 	if (iRenderState == CRenderer::RENDER_NONLIGHT_NONBLUR)
 	{
@@ -717,7 +788,7 @@ HRESULT CMap::Render()
 	}
 #pragma endregion
 
-
+	
 
 	return S_OK;
 }
@@ -963,7 +1034,10 @@ void CMap::Add_Renderer(const _float& fTimeDelta)
 		m_pGameInstance->Add_Renderer(CRenderer::RENDER_EFFECT, this);
 
 	if (0 < m_vDecalBlendMeshIndex.size() || 0 < m_vDecalMeshIndex.size() || 0 < m_vCompulsoryDecalBlendMeshIndex.size())
+	{
 		m_pGameInstance->Add_Renderer(CRenderer::RENDER_DECAL, this);
+	}
+		
 
 	// 빛 영향 안받고 원색값 유지
 	if (0 < m_vSignMeshIndex.size() || 0 < m_vMaskSignIndex.size())
@@ -988,21 +1062,22 @@ HRESULT CMap::Add_Components(void* pArg)
 		TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
 		return E_FAIL;
 
-	////모델 이름 추출
-	//string strModelName = m_pGameInstance->WstringToString(gameobjDesc->wstrModelName);
-	//string strRemoveName = "Prototype_Component_Model_";
-	//_int iPos = strModelName.find(strRemoveName);
-	//
-	//if (iPos == string::npos)
-	//	return E_FAIL;
+	//모델 이름 추출
+	string strModelName = m_pGameInstance->WstringToString(gameobjDesc->wstrModelName);
+	string strRemoveName = "Prototype_Component_Model_";
+	_int iPos = strModelName.find(strRemoveName);
 
-	//strModelName = strModelName.erase(iPos, strRemoveName.size());
+	
+	if (iPos == string::npos)
+		return E_FAIL;
 
-	//wstring strMaterialName = TEXT("Prototype_Component_Material_") + m_pGameInstance->StringToWstring(strModelName);
+	strModelName = strModelName.erase(iPos, strRemoveName.size());
 
-	//if (FAILED(__super::Add_Component(m_iCurrentLevel, strMaterialName,
-	//	TEXT("Com_Material"), reinterpret_cast<CComponent**>(&m_pMaterialCom))))
-	//	return E_FAIL;
+	wstring strMaterialName = TEXT("Prototype_Component_Material_") + m_pGameInstance->StringToWstring(strModelName);
+
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, strMaterialName,
+		TEXT("Com_Material"), reinterpret_cast<CComponent**>(&m_pMaterialCom))))
+		m_pMaterialCom = nullptr;
 
 	/* For.Com_Shader */
 	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Shader_MeshMap"),
@@ -1058,7 +1133,7 @@ CMap* CMap::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
-		MSG_BOX("Failed To Created : CConstruction");
+		MSG_BOX("Failed To Created : CMap");
 		Safe_Release(pInstance);
 	}
 
@@ -1071,7 +1146,7 @@ CGameObject* CMap::Clone(void* pArg)
 
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
-		MSG_BOX("Failed To Cloned : CConstruction");
+		MSG_BOX("Failed To Cloned : CMap");
 		Safe_Release(pInstance);
 	}
 

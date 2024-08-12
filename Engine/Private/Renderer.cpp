@@ -147,10 +147,11 @@ HRESULT CRenderer::Initialize()
 	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_RimLight"), 650.f, 50.f, 100.f, 100.f)))
 		return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_Decal"), 950.f, 150.f, 100.f, 100.f)))
+	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_RadialBlur"), 950.f, 250.f, 100.f, 100.f)))
 		return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_RadialBlur"), 950.f, 250.f, 100.f, 100.f)))
+
+	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_DecalContainDiffuse"), 950.f, 150.f, 100.f, 100.f)))
 		return E_FAIL;
 #endif // _DEBUG
 
@@ -338,6 +339,10 @@ HRESULT CRenderer::Ready_Targets()
 
 	/*Target_Decal*/
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Decal"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
+		return E_FAIL;
+
+	/*Target_DecalContainDiffuse*/
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_DecalContainDiffuse"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
 
 	/*Target_FinalEffect*/
@@ -528,6 +533,11 @@ HRESULT CRenderer::Ready_MRTs()
 	/* MRT_Decals */
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_Decals"), TEXT("Target_Decal"))))
 		return E_FAIL;
+
+	/* MRT_DecalsContainDiffuse - Decal이랑 연산한 후의 diffuse */
+	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_DecalsContainDiffuse"), TEXT("Target_DecalContainDiffuse"))))
+		return E_FAIL;
+
 
 	/* MRT_Distortion */
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_Distortion"), TEXT("Target_FinalEffect"))))
@@ -872,6 +882,32 @@ void CRenderer::Render_Decal()
 	if (FAILED(m_pGameInstance->End_MRT()))
 		return;
 
+
+
+
+	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_DecalsContainDiffuse"))))
+		return;
+
+	if (FAILED(m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix)))
+		return;
+	if (FAILED(m_pShader->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix)))
+		return;
+	if (FAILED(m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
+		return;
+
+
+	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Diffuse"), m_pShader, "g_DiffuseTexture")))
+		return;
+	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Decal"), m_pShader, "g_DecalTexture")))
+		return;
+
+	m_pShader->Begin(23);
+	m_pVIBuffer->Render();
+
+	if (FAILED(m_pGameInstance->End_MRT()))
+		return;
+
+
 }
 
 
@@ -1052,8 +1088,12 @@ void CRenderer::Render_LightAcc()
 	if (FAILED(m_pShader->Bind_RawValue("g_isPBR", &m_isPBR, sizeof(_bool))))
 		return;
 
-	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Diffuse"), m_pShader, "g_DiffuseTexture")))
+	//오류생기면 
+	//if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Diffuse"), m_pShader, "g_DiffuseTexture")))
+	//	return;
+	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_DecalContainDiffuse"), m_pShader, "g_DiffuseTexture")))
 		return;
+
 	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Normal"), m_pShader, "g_NormalTexture")))
 		return;
 	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Depth"), m_pShader, "g_DepthTexture")))
@@ -1118,7 +1158,8 @@ void CRenderer::Render_CopyBackBuffer()
 	if (FAILED(m_pShader->Bind_RawValue("g_vCamDir", &vCamDir, sizeof(_vector))))
 		return;
 
-	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Diffuse"), m_pShader, "g_DiffuseTexture")))
+	//오류생기면 Target_Diffuse로 변경
+	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_DecalContainDiffuse"), m_pShader, "g_DiffuseTexture")))
 		return;
 	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Shade"), m_pShader, "g_ShadeTexture")))
 		return;
@@ -2090,9 +2131,12 @@ void CRenderer::Render_Debug()
 	if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_RimLight"), m_pShader, m_pVIBuffer)))
 		return;
 
-	if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_Decals"), m_pShader, m_pVIBuffer)))
-		return;
+
 	if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_RadialBlur"), m_pShader, m_pVIBuffer)))
+		return;
+
+	//MRT_DecalsContainDiffuse
+	if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_DecalsContainDiffuse"), m_pShader, m_pVIBuffer)))
 		return;
 
 }

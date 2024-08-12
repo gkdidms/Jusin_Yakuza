@@ -50,6 +50,12 @@ CModel::CModel(const CModel& rhs)
 
 HRESULT CModel::Initialize_Prototype(MODELTYPE eModelType, const _char* pModelFilePath, _fmatrix PreTransformMatrix, _bool isExported, _bool isTool)
 {
+	const char* blockword = "building";
+
+	if (strstr(pModelFilePath, blockword) != nullptr) {
+		m_bSaveMaterial = false;
+	}
+
 	m_eModelType = eModelType;
 
 	XMStoreFloat4x4(&m_PreTransformMatrix, PreTransformMatrix);
@@ -136,8 +142,13 @@ HRESULT CModel::Ready_Materials(const _char* pModelFilePath)
 	for (size_t i = 0; i < m_iNumMaterials; i++)
 	{
 		MESH_MATERIAL		MeshMaterial{};
-		string name = m_pAIScene->mMaterials[i]->GetName().C_Str();
-		memcpy(MeshMaterial.strMaterialName, name.c_str(), sizeof(name));
+		
+		if (true == m_bSaveMaterial)
+		{
+			string name = m_pAIScene->mMaterials[i]->GetName().C_Str();
+			memcpy(MeshMaterial.strMaterialName, name.c_str(), sizeof(name));
+		}
+		
 		for (size_t j = aiTextureType_DIFFUSE; j < AI_TEXTURE_TYPE_MAX; j++)
 		{
 			aiString pPath;

@@ -8,6 +8,7 @@
 BEGIN(Engine)
 class CShader;
 class CModel;
+class CNeoShader;
 END
 
 BEGIN(Client)
@@ -29,6 +30,18 @@ public:
 		MONSTER_KUZE,
 		LARGE_CONSTRUCTION,
 		OBJ_END
+	};
+
+	enum SHADER_TYPE
+	{
+		SHADER_IDLE,
+		SHADER_GLASS,
+		SHADER_WATER,
+		SHADER_MASK,
+		SHADER_CWPASS,
+		SHADER_NOSHADER,
+		SHADER_LIGHTDEPTH,
+		SHADER_END
 	};
 
 public:
@@ -76,6 +89,7 @@ private:
 	CShader* m_pShaderCom = { nullptr };
 	CModel* m_pModelCom = { nullptr };
 	class CSystemManager* m_pSystemManager = { nullptr };
+	CNeoShader* m_pMaterialCom = { nullptr };
 
 private:
 	_bool m_isFirst = { true };

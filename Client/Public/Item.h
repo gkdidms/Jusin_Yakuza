@@ -64,6 +64,7 @@ public:
 		wstring				wstrModelName;
 		int					iShaderPass;
 		int					iObjType;
+		int					iNaviNum;
 
 		int					iDecalNum;
 		DECAL_DESC_IO*		pDecal;
@@ -131,6 +132,7 @@ private:
 	class CCollision_Manager* m_pCollisionManager = { nullptr };
 	//CCollider* m_pColliderCom = { nullptr }; //AABB 저장
 	CCollider* m_pOBBColliderCom = { nullptr }; //AABB 저장
+	CNavigation* m_pNavigationCom = { nullptr };
 
 	CNavigation* m_pNavigationCom = { nullptr };
 
