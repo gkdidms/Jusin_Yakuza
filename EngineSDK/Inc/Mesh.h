@@ -53,6 +53,8 @@ public:
 	void Set_AlphaApply(_bool isValue) { m_isAlphaApply = isValue; }
 
 private:
+	_uint m_iMeshType = { CModel::TYPE_END };
+
 	_char				m_szName[MAX_PATH] = "";
 
 	_bool				m_isAlphaApply = { false };

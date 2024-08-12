@@ -24,7 +24,7 @@ public:
 		_uint iKeyFrameIndex;
 		_float fFov;
 	};
-
+	
 private:
 	CModel(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CModel(const CModel& rhs);
@@ -45,7 +45,7 @@ public:
 	HRESULT Bind_Compute(class CComputeShader* pShader, _uint iNumMeshIndex);
 	HRESULT Bind_Material(class CShader* pShader, const _char* pConstantName, _uint iNumMeshIndex, aiTextureType eTextureType);
 	HRESULT Bind_BoneMatrices(class CShader* pShader, const _char* pConstantName, _uint iNumMeshIndex);
-	HRESULT Bind_BoneMatrices(class CComputeShader* pShader, _uint iNumMeshIndex);
+	void Bind_BoneMatrices(_uint iNumMeshIndex);
 	bool	Check_Exist_Material(_uint iNumMeshIndex, aiTextureType eTextureType);
 
 	void Play_Animation(_float fTimeDelta, _bool isRoot = true, string strExcludeBoneName = "");
@@ -153,6 +153,7 @@ private:
 private:
 	void	Find_Mesh_Using_DECAL();
 	void	Check_Separation_Parents(CBone* pBone, _int iAnimType);
+	HRESULT Ready_Buffer();
 
 private:
 	MODELTYPE					m_eModelType = { TYPE_END };
@@ -191,6 +192,9 @@ private:
 
 
 	_float4x4					m_ModelLocalMatrix;
+
+private:
+	ID3D11Buffer* m_pBoneBufferMatrix = { nullptr };
 
 public:
 	static CModel* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, MODELTYPE eModelType, const _char* pModelFilePath, _fmatrix PreTransformMatrix, _bool isExported, _bool isTool = false);

@@ -6,9 +6,6 @@ struct VS_IN
     float3 vNormal : NORMAL;
     float2 vTexcoord : TEXCOORD0;
     float3 vTangent : TANGENT;
-    
-    uint4 vBlendIndices : BLENDINDICES;
-    float4 vBlendWeights : BLENDWEIGHTS;
 };
 
 struct VS_OUT
@@ -31,7 +28,7 @@ VS_OUT VS_MAIN(VS_IN In)
     matWVP = mul(matWV, g_ProjMatrix);
 
     Out.vPosition = mul(vector(In.vPosition, 1.f), matWVP);
-    Out.vNormal = normalize(mul(vector(In.vNormal, 1.f), g_WorldMatrix));
+    Out.vNormal = normalize(mul(vector(In.vNormal, 0.f), g_WorldMatrix));
     Out.vTexcoord = In.vTexcoord;
     Out.vProjPos = Out.vPosition;
     Out.vTangent = normalize(mul(vector(In.vTangent.xyz, 0.f), g_WorldMatrix));

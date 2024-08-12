@@ -32,7 +32,7 @@ CMesh::CMesh(const CMesh& rhs)
 HRESULT CMesh::Initialize(CModel::MODELTYPE eModelType, const aiMesh* pAIMesh, _fmatrix PreTransformMatrix, const vector<class CBone*>& Bones)
 {
 	strcpy_s(m_szName, pAIMesh->mName.data);
-
+	m_iMeshType = eModelType;
 	m_iMaterialIndex = pAIMesh->mMaterialIndex;
 
 	//모델 Read시 정점 3개를 하나의 삼각형으로 만들어주는 옵션이기 때문에, 버퍼에도 마찬가지로 트라이앵글리스트 옵션을 줘야한다.
@@ -96,7 +96,7 @@ HRESULT CMesh::Initialize(CModel::MODELTYPE eModelType, const aiMesh* pAIMesh, _
 HRESULT CMesh::Initialize(CModel::MODELTYPE eModelType, const BAiMesh* pAIMesh, _fmatrix PreTransformMatrix, const vector<class CBone*>& Bones)
 {
 	strcpy_s(m_szName, pAIMesh->mName);
-
+	m_iMeshType = eModelType;
 	m_iMaterialIndex = pAIMesh->mMaterialIndex;
 
 	//모델 Read시 정점 3개를 하나의 삼각형으로 만들어주는 옵션이기 때문에, 버퍼에도 마찬가지로 트라이앵글리스트 옵션을 줘야한다.
@@ -799,21 +799,37 @@ void CMesh::Fill_Matrices(vector<class CBone*>& Bones, _float4x4* pMeshBoneMatri
 
 HRESULT CMesh::Render()
 {
-	// UAV에서 데이터 복사
-	// UAV의 데이터를 스테이징 버퍼로 복사
-	m_pContext->CopyResource(m_pProcessedVertexBuffer, m_pVB); // pUAVBuffer는 UAV로 사용된 버퍼
+	if (m_iMeshType == CModel::TYPE_ANIM)
+	{
+		m_pContext->Flush();
 
-	// 그래픽 파이프라인에 정점 버퍼 설정
-	ID3D11Buffer* pBuffers[] = { m_pProcessedVertexBuffer };
-	UINT pStrides[] = { m_iVertexStride };
-	UINT pOffsets[] = { 0 };
+		// UAV에서 데이터 복사
+		// UAV의 데이터를 스테이징 버퍼로 복사
+		m_pContext->CopyResource(m_pProcessedVertexBuffer, m_pUAVOut); // m_pUAVOut는 UAV로 사용된 버퍼
 
-	m_pContext->IASetVertexBuffers(0, 1, pBuffers, pStrides, pOffsets);
-	m_pContext->IASetIndexBuffer(m_pIB, m_GIFormat, 0);
-	m_pContext->IASetPrimitiveTopology(m_Primitive_Topology);
+		// 그래픽 파이프라인에 정점 버퍼 설정
+		ID3D11Buffer* pBuffers[] = { m_pProcessedVertexBuffer };
+		UINT pStrides[] = { sizeof(VTXANIMBONE) };
+		UINT pOffsets[] = { 0 };
 
-	// 최종 드로우 호출
-	m_pContext->DrawIndexed(m_iNumIndices, 0, 0);
+		m_pContext->IASetVertexBuffers(0, 1, pBuffers, pStrides, pOffsets);
+		m_pContext->IASetIndexBuffer(m_pIB, m_GIFormat, 0);
+		m_pContext->IASetPrimitiveTopology(m_Primitive_Topology);
+
+		// 최종 드로우 호출
+		m_pContext->DrawIndexed(m_iNumIndices, 0, 0);
+
+		m_pContext->CSSetShader(nullptr, nullptr, 0);
+		m_pContext->CSSetShaderResources(0, 0, nullptr);
+		m_pContext->CSSetUnorderedAccessViews(0, 0, nullptr, nullptr);
+		m_pContext->CSSetConstantBuffers(0, 0, nullptr);
+	}
+	else
+	{
+		if (FAILED(__super::Render()))
+			return E_FAIL;
+	}
+
 
 	return S_OK;
 }

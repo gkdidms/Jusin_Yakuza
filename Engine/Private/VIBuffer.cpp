@@ -22,13 +22,15 @@ CVIBuffer::CVIBuffer(const CVIBuffer& rhs)
 	m_iNumVertexBuffers { rhs.m_iNumVertexBuffers },
 	m_pVertexBufferSRV{rhs.m_pVertexBufferSRV},
 	m_pProcessedVertexBuffer{ rhs.m_pProcessedVertexBuffer},
-	m_pResultBufferUAV{rhs.m_pResultBufferUAV}
+	m_pResultBufferUAV{rhs.m_pResultBufferUAV},
+	m_pUAVOut{rhs.m_pUAVOut}
 {
 	Safe_AddRef(m_pVB);
 	Safe_AddRef(m_pIB);
 	Safe_AddRef(m_pVertexBufferSRV);
 	Safe_AddRef(m_pResultBufferUAV);
 	Safe_AddRef(m_pProcessedVertexBuffer);
+	Safe_AddRef(m_pUAVOut);
 }
 
 HRESULT CVIBuffer::Initialize_Prototype()
@@ -96,22 +98,33 @@ HRESULT CVIBuffer::Ready_ComputeBuffer()
 		return E_FAIL;
 
 	// 처리된 결과를 위한 Unordered Access View 생성
+	D3D11_BUFFER_DESC bufferDesc = {};
+	bufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	bufferDesc.ByteWidth = sizeof(VTXANIMBONE) * m_iNumVertices;
+	bufferDesc.BindFlags = D3D11_BIND_UNORDERED_ACCESS | D3D11_BIND_SHADER_RESOURCE;
+	bufferDesc.CPUAccessFlags = 0;
+	bufferDesc.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
+	bufferDesc.StructureByteStride = sizeof(VTXANIMBONE);
+
+	if (FAILED(m_pDevice->CreateBuffer(&bufferDesc, nullptr, &m_pUAVOut)))
+		return E_FAIL;
+
 	D3D11_UNORDERED_ACCESS_VIEW_DESC uavDesc = {};
 	uavDesc.Format = DXGI_FORMAT_UNKNOWN; // 처리된 결과의 형식에 따라 적절히 설정
 	uavDesc.ViewDimension = D3D11_UAV_DIMENSION_BUFFER;
 	uavDesc.Buffer.FirstElement = 0;
 	uavDesc.Buffer.NumElements = m_iNumVertices;
 
-	if (FAILED(m_pDevice->CreateUnorderedAccessView(m_pVB, &uavDesc, &m_pResultBufferUAV)))
+	if (FAILED(m_pDevice->CreateUnorderedAccessView(m_pUAVOut, &uavDesc, &m_pResultBufferUAV)))
 		return E_FAIL;
 
 	D3D11_BUFFER_DESC Desc{};
-	Desc.ByteWidth = m_iVertexStride * m_iNumVertices;
+	Desc.ByteWidth = sizeof(VTXANIMBONE) * m_iNumVertices;
 	Desc.Usage = D3D11_USAGE_DEFAULT;
 	Desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	Desc.CPUAccessFlags = 0;
 	Desc.MiscFlags = 0;
-	Desc.StructureByteStride = m_iVertexStride;
+	Desc.StructureByteStride = sizeof(VTXANIMBONE);
 
 	if (FAILED(m_pDevice->CreateBuffer(&Desc, nullptr, &m_pProcessedVertexBuffer)))
 		return E_FAIL;
@@ -124,6 +137,7 @@ void CVIBuffer::Free()
 	__super::Free();
 	Safe_Release(m_pVB);
 	Safe_Release(m_pIB);
+	Safe_Release(m_pUAVOut);
 
 	Safe_Release(m_pVertexBufferSRV);
 	Safe_Release(m_pProcessedVertexBuffer);

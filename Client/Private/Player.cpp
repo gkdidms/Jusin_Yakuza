@@ -373,7 +373,7 @@ HRESULT CPlayer::Render()
 	int i = 0;
 	for (auto& pMesh : m_pModelCom->Get_Meshes())
 	{
-		m_pModelCom->Bind_BoneMatrices(m_pComputeShaderCom, i);
+		m_pModelCom->Bind_BoneMatrices(i);
 
 		m_pModelCom->Bind_Compute(m_pComputeShaderCom, i);
 
@@ -447,7 +447,7 @@ HRESULT CPlayer::Render()
 		_bool fFar = m_pGameInstance->Get_CamFar();
 		m_pShaderCom->Bind_RawValue("g_fFar", &fFar, sizeof(_float));
 
-		m_pModelCom->Bind_BoneMatrices(m_pShaderCom, "g_BoneMatrices", i);
+		//m_pModelCom->Bind_BoneMatrices(m_pShaderCom, "g_BoneMatrices", i);
 
 		m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE);
 		
