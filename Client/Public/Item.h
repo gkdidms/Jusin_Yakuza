@@ -7,6 +7,7 @@
 BEGIN(Engine)
 class CShader;
 class CModel;
+class CNavigation;
 END
 
 BEGIN(Client)
@@ -94,7 +95,9 @@ public:
 	virtual void Late_Tick(const _float& fTimeDelta) override;
 	virtual HRESULT Render() override;
 	virtual HRESULT Render_LightDepth() override;
+
 	virtual void ImpulseResolution(CGameObject* pTargetObject, _float fDistance = 0.5f) override;
+	virtual void Attack_Event(CGameObject* pHitObject, _bool isItem = false) override;
 
 public:
 	CTransform* Get_Transform() { return m_pTransformCom; }
@@ -108,6 +111,7 @@ public:
 	ITEM_MODE			Get_ItemMode() { return m_eItemMode; }
 	void				Set_ItemMode(CItem::ITEM_MODE mode) { m_eItemMode = mode; }
 	void				Set_Grab(bool bGrab) { m_bCurGrab = bGrab;  m_eItemMode = ITEM_GRAB; }
+	void				Attacking(_bool isOn = true) { m_isAttacking = isOn; }
 
 public:
 	_uint				Get_ItemLife() { return m_iLife; }
@@ -124,11 +128,15 @@ private:
 	CShader* m_pShaderCom = { nullptr };
 	CModel* m_pModelCom = { nullptr };
 	class CSystemManager* m_pSystemManager = { nullptr };
-	CCollider* m_pColliderCom = { nullptr }; //AABB 저장
+	class CCollision_Manager* m_pCollisionManager = { nullptr };
+	//CCollider* m_pColliderCom = { nullptr }; //AABB 저장
 	CCollider* m_pOBBColliderCom = { nullptr }; //AABB 저장
+
+	CNavigation* m_pNavigationCom = { nullptr };
 
 private:
 	_bool m_isFirst = { true };
+	_bool m_isAttacking = { false };
 	vector<CDecal*>			m_vDecals;
 	//vector<CCollider*>		m_vColliders;
 	int						m_iLayerNum;

@@ -149,7 +149,13 @@ _bool CCarChase_Reactor::Check_Dead()
 
 		//운전수가 죽으면 바로 죽게 된다.
 		if (pMonster->isObjectDead() && pMonster->Get_WeaponType() == CCarChase_Monster::DRV)
+		{
+			//운전수가 죽으면 다른 얘들도 죽어야 함.
+			for (auto& pAlive : m_Monsters)
+				pAlive->Set_ReactorDead(true);
 			return true;
+		}
+			
 	}
 		
 	return true;
@@ -162,9 +168,10 @@ void CCarChase_Reactor::Move_Waypoint(const _float& fTimeDelta)
 	//웨이포인트 
 	_vector vDir = m_pNavigationCom->Compute_WayPointDir(vPosition, fTimeDelta, m_isStart);
 	m_pTransformCom->LookAt_For_LandObject(vDir, true);
+	
 
 	//플레이어와 인덱스 값의 차이를 둬야 함
-	if (m_iAnim != 0)
+	if (!m_isObjectDead)
 	{
 		CHighway_Taxi* pPlayer = dynamic_cast<CHighway_Taxi*>(m_pGameInstance->Get_GameObject(m_iCurrentLevel, TEXT("Layer_Taxi"), 0));
 		_int iCurrentWaypointIndex = m_pNavigationCom->Get_WaypointIndex();

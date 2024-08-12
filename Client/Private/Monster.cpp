@@ -377,8 +377,8 @@ void CMonster::Late_Tick(const _float& fTimeDelta)
 		m_iPreAnimType = m_iCurrentAnimType;
 
 	//컬링
-	if (m_pGameInstance->isIn_WorldFrustum(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 1.5f))
-	{
+	//if (m_pGameInstance->isIn_WorldFrustum(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 1.5f))
+	//{
 		m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
 
 		if (!m_isSynchronizing)
@@ -398,7 +398,7 @@ void CMonster::Late_Tick(const _float& fTimeDelta)
 				m_pCollisionManager->Add_HitCollider(pPair.second, CCollision_Manager::ENEMY);
 
 		}
-	}
+	//}
 
 	//높이값 태우기
 	_vector vCurrentPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);

@@ -7,7 +7,7 @@ class ENGINE_DLL CGameObject abstract :
     public CBase
 {
 public:
-    typedef struct tGameObjectDesc: public CTransform::TRANSFORM_DESC
+    typedef struct tGameObjectDesc : public CTransform::TRANSFORM_DESC
     {
         _uint iObjectIndex;
     } GAMEOBJECT_DESC;
@@ -40,10 +40,15 @@ public:
     virtual HRESULT Render_Bloom() { return S_OK; }
     virtual HRESULT Render_LightDepth() { return S_OK; }
     virtual void ImpulseResolution(CGameObject* pTargetObject, _float fDistance = 0.5f) {};
+    virtual void Attack_Event(CGameObject* pHitObject, _bool isItem = false) {};
 
 public:
     class CComponent* Get_Component(wstring strComponentTag);
     CTransform* Get_TransformCom() { return m_pTransformCom; }
+
+    class CCollider* Get_Collider() {
+        return m_pColliderCom;
+    }
 
 protected:
     ID3D11Device* m_pDevice = { nullptr };
@@ -54,6 +59,8 @@ protected:
     map<const wstring, class CComponent*> m_Components;
 
 protected:
+    class CCollider* m_pColliderCom = { nullptr };        // 아이템과 충돌처리를 위해 게임오브젝트로 옮김
+
     _uint m_iCurrentLevel = { 0 };
     _bool m_isDead = { false };
     _bool m_isObjectDead = { false };

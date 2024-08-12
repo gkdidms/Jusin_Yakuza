@@ -207,6 +207,7 @@
     <ClInclude Include="..\public\CarChaseCamera.h" />
     <ClInclude Include="..\public\CarChaseManager.h" />
     <ClInclude Include="..\Public\CarChase_Bike.h" />
+    <ClInclude Include="..\public\CarChase_CATBullet.h" />
     <ClInclude Include="..\Public\CarChase_Heli.h" />
     <ClInclude Include="..\Public\CarChase_Sedan.h" />
     <ClInclude Include="..\public\CarChase_Van.h" />
@@ -413,6 +414,7 @@
     <ClCompile Include="..\private\CarChaseCamera.cpp" />
     <ClCompile Include="..\private\CarChaseManager.cpp" />
     <ClCompile Include="..\Private\CarChase_Bike.cpp" />
+    <ClCompile Include="..\private\CarChase_CATBullet.cpp" />
     <ClCompile Include="..\Private\CarChase_Heli.cpp" />
     <ClCompile Include="..\Private\CarChase_Sedan.cpp" />
     <ClCompile Include="..\private\CarChase_Van.cpp" />
