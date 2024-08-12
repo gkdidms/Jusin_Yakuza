@@ -5,6 +5,7 @@
 #include "Mesh.h"
 #include "Bone.h"
 
+#include "CarChase_Reactor.h"
 #include "SocketModel.h"
 #include "Weapon_Gun_Cz75.h"
 #include "UIManager.h"
@@ -135,6 +136,11 @@ void CHighway_Kiryu::Key_Input()
 	if (m_pGameInstance->GetKeyState(DIK_D) == HOLD)
 	{
 	}
+
+	//공격 가능한 환경인지 체크한 후 진행한다.
+	//다른 스킬들도 막기 위해서 return;
+	if (isAttackPossible())
+		return;
 
 	// 발사
 	if (m_pGameInstance->GetMouseState(DIM_LB) == TAP)
@@ -427,6 +433,21 @@ void CHighway_Kiryu::Change_Behavior(BEHAVIOR_TYPE eType)
 void CHighway_Kiryu::HideReload()
 {
 
+}
+
+//몬스터가 제자리에 존재하지 않으면 공격 불가능
+_bool CHighway_Kiryu::isAttackPossible()
+{
+	vector<CGameObject*> Reactors = m_pGameInstance->Get_GameObjects(m_iCurrentLevel, TEXT("Layer_Reactor"));
+
+	for (auto& pReactor : Reactors)
+	{
+		CCarChase_Reactor* pMonster = dynamic_cast<CCarChase_Reactor*>(pReactor);
+		if (pMonster->isStart())
+			return false;
+	}
+
+	return true;
 }
 
 HRESULT CHighway_Kiryu::Add_Components()

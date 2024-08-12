@@ -4,6 +4,7 @@
 
 #include "Player.h"
 #include "CarChase_Monster.h"
+#include "CarChase_CATBullet.h"
 
 #include "LeafNode.h"
 #include "Sequance.h"
@@ -28,6 +29,17 @@ HRESULT CAI_Heli::Initialize(void* pArg)
 {
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
+
+	Ready_Tree();
+
+	if (*m_pWeaponType == CCarChase_Monster::GUN)
+		m_fDelayAttackDuration = 8.f;
+	else if (*m_pWeaponType == CCarChase_Monster::RKT)
+		m_fDelayAttackDuration = 5.f;
+	else if (*m_pWeaponType == CCarChase_Monster::GAT)
+		m_fDelayAttackDuration = 3.f;
+
+	m_fDelayAttackReadyDuration = m_fDelayAttackDuration + 2.f;
 
 	return S_OK;
 }
@@ -167,6 +179,15 @@ CBTNode::NODE_STATE CAI_Heli::ATK_Shot()
 			*m_pState = CCarChase_Monster::CARCHASE_SHOT_F_ST;
 		else
 			*m_pState = CCarChase_Monster::CARCHASE_AIM_SHOT;
+
+		if (*m_pWeaponType == CCarChase_Monster::RKT)
+		{
+			//ºÒ·¿ »ý¼º
+			CCarChase_CATBullet::BULLET_DESC Desc{};
+			Desc.pParentMatrix = m_pThis->Get_ModelMatrix();
+			if (FAILED(m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_RcktGunBullet"), TEXT("Layer_Bullet"), &Desc)))
+				return CBTNode::FAIL;
+		}
 
 		return CBTNode::SUCCESS;
 	}

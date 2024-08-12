@@ -20,7 +20,7 @@ HRESULT CCollision_Manager::Initialize()
     return S_OK;
 }
 
-HRESULT CCollision_Manager::Add_ImpulseResolution(CLandObject* pObejct)
+HRESULT CCollision_Manager::Add_ImpulseResolution(CGameObject* pObejct)
 {
     Safe_AddRef(pObejct);
     m_ImpulseResolutionObjects.push_back(pObejct);
@@ -44,6 +44,14 @@ HRESULT CCollision_Manager::Add_HitCollider(CSocketCollider* pCollider, COLLIDER
     return S_OK;
 }
 
+HRESULT CCollision_Manager::Add_ItemCollider(CCollider* pCollider)
+{
+    Safe_AddRef(pCollider);
+    m_ItemColliders.push_back(pCollider);
+
+    return S_OK;
+}
+
 HRESULT CCollision_Manager::Add_MapCollider(CCollider* pCollider)
 {
     m_fIntersectDistance = 0;
@@ -61,13 +69,7 @@ void CCollision_Manager::Tick()
 
     Enemy_Hit_Collision();
     Player_Hit_Collision();
-
-    //ItemCollision(); // 아이템 충돌 체크
-
-    if (m_pGameInstance->GetKeyState(DIK_Z) == TAP)
-#ifdef _DEBUG
-        cout << " 버튼 입력!" << endl;
-#endif // _DEBUG        
+    Item_Attack_Collision();    
 
     Battle_Clear();
 }
@@ -334,24 +336,15 @@ void CCollision_Manager::Enemy_Hit_Collision()
                 
                 _float4x4 matrix;
                 XMStoreFloat4x4(&matrix, WorldMatrix);
-
                 EffectDesc.pWorldMatrix = &matrix;
+                Player_Attack_Effect(EffectDesc);
 
-                // 플레이어 타격 이펙트 (== 몬스터 피격 이펙트)
-                m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Hit1_Glow0"), TEXT("Layer_Particle"), &EffectDesc);
-                m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Hit1_Part0"), TEXT("Layer_Particle"), &EffectDesc);
-                m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Hit1_Part2"), TEXT("Layer_Particle"), &EffectDesc);
-                m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Hit1_Part3"), TEXT("Layer_Particle"), &EffectDesc);
-                m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Hit1_Part4"), TEXT("Layer_Particle"), &EffectDesc);
-                m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Hit1_Distortion0"), TEXT("Layer_Particle"), &EffectDesc);
-               
- 
+                
                 _matrix MoneyMatrix = XMMatrixIdentity();
                 MoneyMatrix.r[3] = WorldMatrix.r[3];
-
                 XMStoreFloat4x4(&matrix, MoneyMatrix);
-
                 EffectDesc.pWorldMatrix = &matrix;
+
                 //돈체크
                 //m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Mesh_Money"), TEXT("Layer_Particle"), &EffectDesc);
                 //m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Coin"), TEXT("Layer_Particle"), &EffectDesc);
@@ -382,18 +375,30 @@ void CCollision_Manager::Player_Hit_Collision()
 
                 EffectDesc.pWorldMatrix = &matrix;
 
-                // 몬스터 타격 이펙트 (== 플레이어 피격 이펙트)
-                m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Damage1_Part0"), TEXT("Layer_Particle"), &EffectDesc);
-                m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Damage1_Part1"), TEXT("Layer_Particle"), &EffectDesc);
-                m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Damage1_Part2"), TEXT("Layer_Particle"), &EffectDesc);
-                m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Damage1_Part3"), TEXT("Layer_Particle"), &EffectDesc);
-                m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Damage1_Glow0"), TEXT("Layer_Particle"), &EffectDesc);
+                Enemy_Attack_Effect(EffectDesc);
+
 
                 pPlayerHitCollider->ParentObject_Hit(pEnemyAttackCollider);
                 pEnemyAttackCollider->ParentObject_Attack(pPlayerHitCollider);
             }
         }
     }
+}
+
+void CCollision_Manager::Item_Attack_Collision()
+{
+    for (auto& pItemCollider : m_ItemColliders)
+    {
+        for (auto& pEnemyHitCollider : m_HitColliders[ENEMY])
+        {
+            if (pItemCollider->Intersect(pEnemyHitCollider->Get_Collider()))
+            {
+                // 데미지를 제외하고 나머지는 임의의값을 넣음 (몬스터쪽에서 안쓰는값들)
+                pEnemyHitCollider->Get_Parent()->Take_Damage(0, _float3(), 10.f, nullptr, false);
+            }
+        }
+    }
+
 }
 
 void CCollision_Manager::ItemCollision()
@@ -649,6 +654,28 @@ void CCollision_Manager::Car_GlassBroke(CEffect::EFFECT_DESC& EffectDesc)
     m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Mesh_glass0"), TEXT("Layer_Particle"), &EffectDesc);
     m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Mesh_glass1"), TEXT("Layer_Particle"), &EffectDesc);
     m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Mesh_glass2"), TEXT("Layer_Particle"), &EffectDesc);
+}
+
+void CCollision_Manager::Player_Attack_Effect(CEffect::EFFECT_DESC& EffectDesc)
+{
+    // 플레이어 타격 이펙트 (== 몬스터 피격 이펙트)
+    m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Hit1_Glow0"), TEXT("Layer_Particle"), &EffectDesc);
+    m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Hit1_Part0"), TEXT("Layer_Particle"), &EffectDesc);
+    m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Hit1_Part2"), TEXT("Layer_Particle"), &EffectDesc);
+    m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Hit1_Part3"), TEXT("Layer_Particle"), &EffectDesc);
+    m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Hit1_Part4"), TEXT("Layer_Particle"), &EffectDesc);
+    m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Hit1_Distortion0"), TEXT("Layer_Particle"), &EffectDesc);
+}
+
+void CCollision_Manager::Enemy_Attack_Effect(CEffect::EFFECT_DESC& EffectDesc)
+{
+    // 몬스터 타격 이펙트 (== 플레이어 피격 이펙트)
+    m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Damage1_Part0"), TEXT("Layer_Particle"), &EffectDesc);
+    m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Damage1_Part1"), TEXT("Layer_Particle"), &EffectDesc);
+    m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Damage1_Part2"), TEXT("Layer_Particle"), &EffectDesc);
+    m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Damage1_Part3"), TEXT("Layer_Particle"), &EffectDesc);
+    m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Damage1_Glow0"), TEXT("Layer_Particle"), &EffectDesc);
+
 }
 
 void CCollision_Manager::Impulse_Clear()
