@@ -62,14 +62,14 @@ PS_OUT PS_MAIN_RESULT(PS_IN In)
 {
     PS_OUT Out = (PS_OUT) 0;
 
-    vector vResult = g_ResultTexture.Sample(LinearSampler, In.vTexcoord);
+    //vector vResult = g_ResultTexture.Sample(LinearSampler, In.vTexcoord);
 
     vector vBlur = g_BlurTexture.Sample(LinearSampler, In.vTexcoord);
     
     vector vEffect = g_EffectTexture.Sample(LinearSampler, In.vTexcoord);
    
     
-    Out.vColor = vResult + vBlur + vEffect;
+    Out.vColor = vBlur + vEffect;
     
     return Out;
 }
@@ -98,13 +98,15 @@ PS_OUT PS_OIT_RESULT(PS_IN In)
 PS_OUT PS_RIMLIGHT(PS_IN In)//범위 지정 문해야됨
 {
     PS_OUT Out = (PS_OUT) 0;
-    
+
     vector BaseNormal = g_NormalTexture.Sample(LinearSampler, In.vTexcoord);//월드 노멀
     BaseNormal = vector(BaseNormal.xyz * 2.f - 1.f, 0.f);
     
     vector BaseDepth = g_DepthTexture.Sample(LinearSampler, In.vTexcoord);
 
-    vector vCamDir = g_vCamPosition; //월드 카메라
+    vector BackBuffer = g_BackBufferTexture.Sample(PointSampler, In.vTexcoord);
+
+    vector vCamPos = g_vCamPosition; //월드 카메라
    
     vector RimColor = vector(1.0f, 0.0f, 1.0f, 1.0f);
     
@@ -114,10 +116,11 @@ PS_OUT PS_RIMLIGHT(PS_IN In)//범위 지정 문해야됨
         RimColor = vector(0.92f, 0.05f, 0.90f, 1.f);
     if (0.25f <= BaseDepth.z)
         RimColor = vector(0.95f, 0.92f, 0.18, 1.f);
+    if (0.35f <= BaseDepth.z)
+        RimColor = vector(1.0f, 0.0f, 1.0f, 1.0f);
 
+    float fRimpower = 6.f;
 
-    float fRimpower = 15.f;
-    
     vector vWorldPos;
 
     vWorldPos.x = In.vTexcoord.x * 2.f - 1.f;
@@ -125,29 +128,38 @@ PS_OUT PS_RIMLIGHT(PS_IN In)//범위 지정 문해야됨
     vWorldPos.z = BaseDepth.x; /* 0 ~ 1 */
     vWorldPos.w = 1.f;
 
-    vWorldPos = vWorldPos * (BaseDepth.y * g_fFar);
+    vWorldPos = vWorldPos *(BaseDepth.y * g_fFar);
     float fProjZ = vWorldPos.z;
 
-	        /* 뷰스페이스 상의 위치를 구한다. */
+            /* 뷰스페이스 상의 위치를 구한다. */
     vWorldPos = mul(vWorldPos, g_ProjMatrixInv);
 
-	        /* 월드스페이스 상의 위치를 구한다. */
+            /* 월드스페이스 상의 위치를 구한다. */
     vWorldPos = mul(vWorldPos, g_ViewMatrixInv);
 
-    if(0.05f < BaseDepth.z)
+
+    vector vRim = normalize(vCamPos - vWorldPos);
+
+    if(0.05f<BaseDepth.z)
     {
         float RangeAlpha = BaseDepth.w;
-        
-        //vector vRim = normalize(vWorldPos - vCamDir) * -1.f;
-        vector vRim = normalize(vCamDir - vWorldPos);
-        
-        float fRim = saturate(dot(vRim, BaseNormal));
-        
-        vector FinColor = float4(pow(1.f - fRim, fRimpower) * RimColor);
-    
-        Out.vColor = FinColor;
+        float fRim = saturate(dot(BaseNormal, vRim));
+
+        if (fRim > 0.1f)
+            fRim = 1.f;
+        else
+            fRim = -1.f;
+
+        vector FinColor= float4(pow(1.f - fRim, fRimpower) *RimColor);
+
+     //FinColor.a *= RangeAlpha;
+        Out.vColor = BackBuffer+FinColor;   
     }
-    
+    else
+    {
+        Out.vColor = vector(0.f, 0.f, 0.f, 0.f);
+    }
+   
     return Out;
 }
 

@@ -180,7 +180,7 @@ void CPlayer::Tick(const _float& fTimeDelta)
 	}
 	if (m_pGameInstance->GetKeyState(DIK_T) == TAP)
 	{
-		m_pUIManager->Open_Scene(TEXT("Tutorial"));
+		//m_pUIManager->Open_Scene(TEXT("Tutorial"));
 	}
 	if (m_pGameInstance->GetKeyState(DIK_Y) == TAP)
 	{
