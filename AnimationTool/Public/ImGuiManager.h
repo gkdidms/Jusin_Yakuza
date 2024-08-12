@@ -96,7 +96,8 @@ public:
 		_float fAinmPosition;
 		_uint iBoneIndex;
 		string strBonelName;
-		_uint iBloodEffectType;
+		_uint iBloodEffectType;		// 출력시킬 이펙트의 타입
+		_bool isLoop;				// 이펙트 루프여부
 	};
 
 	struct Animation_RadialEventState
@@ -280,13 +281,14 @@ private:
 	int							m_iFaceEventIndex = { 0 };
 
 	// first: 애니메이션 이름, second: 트레일 이벤트정보
-	//multimap<string, Animation_TrailState>		m_FaceEvents;
+	multimap<string, Animation_FaceEventState>		m_FaceEvents;
 
 	/* 블러드 이펙트 윈도우 */
 private:
 	_bool						m_isBloodWindow = { false };
 	int							m_iBloodEventIndex = { 0 };
 	Blood_Effect_Type			m_eBloodEffectType = { NOSE };
+	bool						m_isBloodEffectLoop = { false };
 
 	// first: 애니메이션 이름, second: 이벤트정보
 	multimap<string, Animation_BloodEventState>		m_BloodEvents;
@@ -296,7 +298,6 @@ private:
 	_bool						m_isRadialEventWindow = { false };
 	int							m_iRadialEventIndex = { 0 };
 	float						m_fRadialForce = { 1.f };
-	float						m_fRadialAnimPosition = { 1.f };
 
 	// first: 애니메이션 이름, second: 이벤트정보
 	multimap<string, Animation_RadialEventState>		m_RadialEvents;

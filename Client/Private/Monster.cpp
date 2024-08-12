@@ -629,14 +629,22 @@ void CMonster::BloodEffect_Event()
 				{
 					CEffect::EFFECT_DESC EffectDesc;
 
-					EffectDesc.pWorldMatrix = m_pTransformCom->Get_WorldFloat4x4();
+					_float4x4 worldMat;
+					XMStoreFloat4x4(&worldMat, (XMLoadFloat4x4(m_pModelCom->Get_BoneCombinedTransformationMatrix("_nose_top_c_n")) * m_pTransformCom->Get_WorldMatrix()));
+					
+					//EffectDesc.pWorldMatrix = m_pTransformCom->Get_WorldFloat4x4();
+					EffectDesc.pWorldMatrix = &worldMat;
 					m_pEffectManager->Cine_NoseBlood(EffectDesc);
 				}
 				else if (pEvent.iBloodEffectType == 1)		//ют
 				{
 					CEffect::EFFECT_DESC EffectDesc;
 
-					EffectDesc.pWorldMatrix = m_pTransformCom->Get_WorldFloat4x4();
+					_float4x4 worldMat;
+					XMStoreFloat4x4(&worldMat, (XMLoadFloat4x4(m_pModelCom->Get_BoneCombinedTransformationMatrix("_lip_top_c_n")) * m_pTransformCom->Get_WorldMatrix()));
+
+					//EffectDesc.pWorldMatrix = m_pTransformCom->Get_WorldFloat4x4();
+					EffectDesc.pWorldMatrix = &worldMat;
 					m_pEffectManager->Cine_MouseBlood(EffectDesc);
 				}
 			}

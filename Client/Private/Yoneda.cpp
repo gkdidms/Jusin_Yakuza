@@ -41,6 +41,7 @@ void CYoneda::Set_TriggerQte(_uint iWeaponChange, _uint iTriggerID)
 	m_pTree->Set_Sync(true);
 	m_iCurrentAnimType = CUTSCENE;
 
+	Change_Animation();			// 애니메이션 이름 변경을 위해 한번 실행시킴
 	m_pData->Set_CurrentCutSceneAnimation(m_strAnimName);
 }
 
