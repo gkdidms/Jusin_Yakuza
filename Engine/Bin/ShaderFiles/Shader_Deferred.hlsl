@@ -804,7 +804,7 @@ technique11 DefaultTechnique
         PixelShader = compile ps_5_0 PS_MAIN_VIGNETTE();
     }
 
-    pass DecalContain //23
+    pass DecalContain //26
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_None_Test_None_Write, 0);
