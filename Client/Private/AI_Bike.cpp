@@ -85,7 +85,7 @@ void CAI_Bike::Ready_Tree()
 
 CBTNode::NODE_STATE CAI_Bike::Dead()
 {
-	if (*m_pWeaponType == CCarChase_Monster::RKT)
+	if (*m_pWeaponType == CCarChase_Monster::RKT && !m_pThis->isReactorDead())
 		*m_pState = CCarChase_Monster::CARCHASE_DED_L;
 	else
 		*m_pState = CCarChase_Monster::CARCHASE_TENTOU_B;
