@@ -260,6 +260,12 @@ void CMonster::Set_Sync(string strPlayerAnim)
 	Change_Animation();
 }
 
+void CMonster::Off_Sync()
+{
+	m_isSynchronizing = false;
+	m_iCurrentAnimType = CMonster::DEFAULT;
+}
+
 /*
 * DIR_F : 앞으로 누워잇음
 * DIR_B : 뒤로 엎어져잇음

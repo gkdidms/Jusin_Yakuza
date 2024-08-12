@@ -38,6 +38,8 @@ public:
     void Set_RimLight(_bool isRimLight) { m_isRimLight = isRimLight; }
     void Set_RadialBlur(_bool isRadialBlur) { m_isRadialBlur = isRadialBlur; }
     void Set_MotionBlur(_bool isMotionBlur) { m_isMotionBlur = isMotionBlur; }
+    void Set_InvertColor(_bool isInvertColor) { m_isInvertColor = isInvertColor; }
+    void Set_Vignette(_bool isVignette) { m_isVignette = isVignette; }
 
 public:
     _bool isHDR() { return m_isHDR; }
@@ -48,6 +50,8 @@ public:
     _bool isRimLight() { return m_isRimLight; }
     _bool isRadialBlur() { return m_isRadialBlur; }
     _bool isMotionBlur() { return m_isMotionBlur; }
+    _bool isInvertColor() { return m_isInvertColor; }
+    _bool isVignette() { return m_isVignette; }
     _float Get_HDRLight() { return m_fHDRLight; }
     _float Get_SSAORadiuse() { return m_fSSAORadiuse; }
     _float Get_SSAOBlur() { return m_fSSAOBlur; }
@@ -113,6 +117,9 @@ private:
 
     /*PostProcessing*/
     void Render_RadialBlur();
+    void Render_Crack();
+    void Render_InvertColor();
+    void Render_Vignette();
 
 
     /*√÷¡æ ∑ª¥ı (ª©¡ˆ∏∂ººø‰)*/
@@ -153,6 +160,11 @@ private:
     ID3D11DepthStencilView* m_pLightDepthStencilView = { nullptr };
     ID3D11ShaderResourceView* m_pSSAONoiseView = { nullptr };
 
+    _bool m_isRadialBlur = { false };
+    _bool m_isMotionBlur = { false };
+    _bool m_isInvertColor = { false };
+    _bool m_isVignette = { false };
+
 #ifdef _DEBUG
             private:
                 _bool m_isHDR = { false };
@@ -161,8 +173,7 @@ private:
                 _bool m_isBOF = { false };
                 _bool m_isShadow = { false };
                 _bool m_isRimLight = { true };
-                _bool m_isRadialBlur = { false };
-                _bool m_isMotionBlur = { false };
+
 
 #else
             private:
@@ -172,8 +183,6 @@ private:
                 _bool m_isBOF = { true };
                 _bool m_isShadow = { true };
                 _bool m_isRimLight = { true };
-                _bool m_isRadialBlur = { false };
-                _bool m_isMotionBlur = { false };
 #endif // DEBUG
 
     _float m_fHDRLight = { 1.f };

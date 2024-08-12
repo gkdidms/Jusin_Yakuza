@@ -252,6 +252,7 @@ public:
 public:
     void Set_Down(_bool isDown) { m_isDown = isDown; }
     void Set_Sync(string strPlayerAnim);
+    void Off_Sync();
     void Set_RimLight(_float isRimLight) { m_isRimLight = isRimLight; }
 
 public:

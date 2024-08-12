@@ -62,8 +62,7 @@ public:
     _bool Checked_Animation_Ratio(_float fRatio);
 
 protected:
-    CAnim* m_pAnimCom = { nullptr }; // 애니메이션만 따로 저장하고있는 애니메이션 컴포넌트
-    CNavigation* m_pNavigationCom = { nullptr };
+    CAnim* m_pAnimCom = { nullptr }; // 애니메이션만 따로 저장하고있는 애니메이션 컴포넌트 
     CAStart* m_pAStartCom = { nullptr };
     class CAI_Adventure* m_pTree = { nullptr };    
     
