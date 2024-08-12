@@ -211,6 +211,8 @@ private:
     // 내 위치를 기준으로 좌/우/앞/뒤 어디에 존재하는지를 판단
     _int Compute_Target_Direction_Pos(_fvector vTargetPos);
 
+    void Radial_Event();
+
     //키 입력관련함수들
 private:
     void KeyInput(const _float& fTimeDelta);       //현재 플레이어의 상태에 따른 키입력처리 하는 함수
@@ -245,11 +247,13 @@ private:
     void Compute_MoveDirection_RL();
 
     void Effect_Control_Aura();
+    void On_Aura(BATTLE_STYLE eStyle);
+    void Off_Aura(BATTLE_STYLE eStyle);
+
     void Setting_Target_Enemy();
     void Setting_Target_Item();
     void Setting_Target_Wall();
 
-    void Off_Aura(BATTLE_STYLE eStyle);
 
 
     /* 캐릭터 스테이터스 관련 함수 */ 

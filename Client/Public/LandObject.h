@@ -82,7 +82,7 @@ public:
 
     /* 충돌관련 함수들 */
     virtual void ImpulseResolution(CGameObject* pTargetObject, _float fDistance = 0.5f) override;
-    virtual void Attack_Event(CGameObject* pHitObject, _bool isItem = false) {};
+    virtual void Attack_Event(CGameObject* pHitObject, _bool isItem = false) override {};
     virtual void Take_Damage(_uint iHitColliderType, const _float3& vDir, _float fDamage, CLandObject* pAttackedObject, _bool isBlowAttack = false) {};
 
     /* Virtual Funtion */
@@ -115,10 +115,6 @@ public:
 public:
     const wstring& Get_ModelName() {
         return m_wstrModelName;
-    }
-
-    CCollider* Get_Collider() {
-        return m_pColliderCom;
     }
 
     const unordered_map<_uint, class CSocketCollider*>& Get_Colliders() {
@@ -162,7 +158,6 @@ public:
 protected:
     class CSystemManager* m_pSystemManager = { nullptr };
     class CCollision_Manager* m_pCollisionManager = { nullptr };
-    CCollider* m_pColliderCom = { nullptr };
     CModel* m_pModelCom = { nullptr };
     CShader* m_pShaderCom = { nullptr };
     CNeoShader* m_pMaterialCom = { nullptr };

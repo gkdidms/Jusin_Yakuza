@@ -159,10 +159,13 @@ void CKiryu_KRS_PickUp::Reset()
 	m_isShaked = false;
 	m_isStop = false;
 	m_iCurrentIndex = 0;
+
+	m_pPlayer->Get_CurrentItem()->Attacking(false);
 }
 
 void CKiryu_KRS_PickUp::Combo_Count(_bool isFinAction)
 {
+	m_pPlayer->Get_CurrentItem()->Attacking();
 	m_iCurrentIndex = 2;
 	if (Changeable_Combo_Animation())
 	{
