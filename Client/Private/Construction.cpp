@@ -119,70 +119,70 @@ void CConstruction::Tick(const _float& fTimeDelta)
 
 void CConstruction::Late_Tick(const _float& fTimeDelta)
 {
-	//if (true == m_pGameInstance->isIn_WorldFrustum(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 5.f) && OBJECT_TYPE::LARGE_CONSTRUCTION != m_iObjectType)
-	//{
-	//	if (0 == m_iShaderPassNum || 3 == m_iShaderPassNum)
-	//	{
-	//		m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
-	//	}
-	//	else if (1 == m_iShaderPassNum)
-	//	{
-	//		m_pGameInstance->Add_Renderer(CRenderer::RENDER_GLASS, this);
-	//	}
-	//	else if (2 == m_iShaderPassNum)
-	//	{
-	//		m_pGameInstance->Add_Renderer(CRenderer::RENDER_PUDDLE, this);
-	//	}
-	//	else
-	//	{
-	//		m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
-	//	}
+	if (true == m_pGameInstance->isIn_WorldFrustum(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 5.f) && OBJECT_TYPE::LARGE_CONSTRUCTION != m_iObjectType)
+	{
+		if (0 == m_iShaderPassNum || 3 == m_iShaderPassNum)
+		{
+			m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
+		}
+		else if (1 == m_iShaderPassNum)
+		{
+			//m_pGameInstance->Add_Renderer(CRenderer::RENDER_GLASS, this);
+		}
+		else if (2 == m_iShaderPassNum)
+		{
+			//m_pGameInstance->Add_Renderer(CRenderer::RENDER_PUDDLE, this);
+		}
+		else
+		{
+			m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
+		}
 
-	//	if (1 != m_iObjectType)
-	//	{
-	//		if (m_pGameInstance->isShadow())
-	//		{
-	//			// 처음 렌더를 돌 때만 그림자를 그려준다.
-	//			m_pGameInstance->Add_Renderer(CRenderer::RENDER_SHADOWOBJ, this);
-	//		}
-	//	}
+		if (1 != m_iObjectType)
+		{
+			if (m_pGameInstance->isShadow())
+			{
+				// 처음 렌더를 돌 때만 그림자를 그려준다.
+				m_pGameInstance->Add_Renderer(CRenderer::RENDER_SHADOWOBJ, this);
+			}
+		}
 
-	//	for (auto& iter : m_vDecals)
-	//		iter->Late_Tick(fTimeDelta);
-	//}
-	//else if(OBJECT_TYPE::LARGE_CONSTRUCTION == m_iObjectType)
-	//{
-	//	// 컬링x
-	//	if (0 == m_iShaderPassNum || 3 == m_iShaderPassNum)
-	//	{
-	//		m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
-	//	}
-	//	else if (1 == m_iShaderPassNum)
-	//	{
-	//		m_pGameInstance->Add_Renderer(CRenderer::RENDER_GLASS, this);
-	//	}
-	//	else if (2 == m_iShaderPassNum)
-	//	{
-	//		m_pGameInstance->Add_Renderer(CRenderer::RENDER_PUDDLE, this);
-	//	}
-	//	else
-	//	{
-	//		m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
-	//	}
+		for (auto& iter : m_vDecals)
+			iter->Late_Tick(fTimeDelta);
+	}
+	else if(OBJECT_TYPE::LARGE_CONSTRUCTION == m_iObjectType)
+	{
+		// 컬링x
+		if (0 == m_iShaderPassNum || 3 == m_iShaderPassNum)
+		{
+			m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
+		}
+		else if (1 == m_iShaderPassNum)
+		{
+			m_pGameInstance->Add_Renderer(CRenderer::RENDER_GLASS, this);
+		}
+		else if (2 == m_iShaderPassNum)
+		{
+			m_pGameInstance->Add_Renderer(CRenderer::RENDER_PUDDLE, this);
+		}
+		else 
+		{
+			m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
+		}
 
-	//	if (1 != m_iObjectType)
-	//	{
-	//		if (m_pGameInstance->isShadow())
-	//		{
-	//			// 처음 렌더를 돌 때만 그림자를 그려준다.
-	//			m_pGameInstance->Add_Renderer(CRenderer::RENDER_SHADOWOBJ, this);
-	//		}
-	//	}
+		if (1 != m_iObjectType)
+		{
+			if (m_pGameInstance->isShadow())
+			{
+				// 처음 렌더를 돌 때만 그림자를 그려준다.
+				m_pGameInstance->Add_Renderer(CRenderer::RENDER_SHADOWOBJ, this);
+			}
+		}
 
-	//	for (auto& iter : m_vDecals)
-	//		iter->Late_Tick(fTimeDelta);
-	//}
-	//
+		for (auto& iter : m_vDecals)
+			iter->Late_Tick(fTimeDelta);
+	}
+	
 }
 
 HRESULT CConstruction::Render()
@@ -200,11 +200,23 @@ HRESULT CConstruction::Render()
 
 	for (size_t i = 0; i < iNumMeshes; i++)
 	{
+
+		if (nullptr != m_pMaterialCom)
+			m_pMaterialCom->Bind_Shader(m_pShaderCom, m_pModelCom->Get_MaterialName(Meshes[i]->Get_MaterialIndex()));
+		else
+		{
+			_bool isUVShader = false;
+			if (FAILED(m_pShaderCom->Bind_RawValue("g_isUVShader", &isUVShader, sizeof(_bool))))
+				return E_FAIL;
+		}
+
 		_bool fFar = m_pGameInstance->Get_CamFar();
 		m_pShaderCom->Bind_RawValue("g_fFar", &fFar, sizeof(_float));
 
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
 			return E_FAIL;
+
+	
 		m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS);
 
 		_bool isRS = true;
@@ -229,6 +241,9 @@ HRESULT CConstruction::Render()
 			isRM = false;
 		m_pShaderCom->Bind_RawValue("g_isRM", &isRM, sizeof(_bool));
 		m_pShaderCom->Bind_RawValue("g_isRT", &isRM, sizeof(_bool));
+		
+
+		
 
 
 		if (1 == m_iShaderPassNum)
@@ -291,7 +306,7 @@ HRESULT CConstruction::Render_LightDepth()
 
 	for (size_t i = 0; i < iNumMeshes; i++)
 	{
-		m_pShaderCom->Begin(5);
+		m_pShaderCom->Begin(SHADER_LIGHTDEPTH);
 
 		m_pModelCom->Render(i);
 	}
@@ -353,6 +368,22 @@ HRESULT CConstruction::Add_Components(void* pArg)
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
 		return E_FAIL;
 
+	//모델 이름 추출
+	string strModelName = m_pGameInstance->WstringToString(gameobjDesc->wstrModelName);
+	string strRemoveName = "Prototype_Component_Model_";
+	_int iPos = strModelName.find(strRemoveName);
+
+	if (iPos == string::npos)
+		return E_FAIL;
+
+	strModelName = strModelName.erase(iPos, strRemoveName.size());
+
+	wstring strMaterialName = TEXT("Prototype_Component_Material_") + m_pGameInstance->StringToWstring(strModelName);
+
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, strMaterialName,
+		TEXT("Com_Material"), reinterpret_cast<CComponent**>(&m_pMaterialCom))))
+		m_pMaterialCom = nullptr;
+
 	return S_OK;
 }
 
@@ -409,6 +440,7 @@ void CConstruction::Free()
 		Safe_Release(iter);
 	m_vColliders.clear();
 
+	Safe_Release(m_pMaterialCom);
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pModelCom);
 	Safe_Release(m_pSystemManager);

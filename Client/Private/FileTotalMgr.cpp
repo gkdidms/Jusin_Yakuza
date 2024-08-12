@@ -610,6 +610,7 @@ HRESULT CFileTotalMgr::Set_GameObject_In_Client(int iStageLevel)
             mapDesc.iShaderPass = m_MapTotalInform.pMapObjDesc[i].iShaderPassNum;
             mapDesc.iObjType = m_MapTotalInform.pMapObjDesc[i].iObjType;
             mapDesc.iDecalNum = m_MapTotalInform.pMapObjDesc[i].iDecalNum;
+            mapDesc.iNaviNum = m_MapTotalInform.pMapObjDesc[i].iNaviNum;
 
             if (0 < mapDesc.iDecalNum)
             {

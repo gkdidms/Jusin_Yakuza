@@ -64,6 +64,17 @@ struct PS_OUT
 
 };
 
+struct PS_MAIN_OUT
+{
+    vector vDiffuse : SV_TARGET0;
+    vector vNormal : SV_TARGET1;
+    vector vDepth : SV_TARGET2;
+    vector vSurface : SV_TARGET3; // vector(metallic, goughness, speculer, 0.f)
+    vector vOEShader : SV_Target4;
+    vector vSpecular : SV_Target5;
+};
+
+
 
 PS_OUT PS_MAIN(PS_IN In)
 {

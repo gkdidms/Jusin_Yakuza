@@ -48,6 +48,9 @@ HRESULT CItem::Initialize(void* pArg)
 		m_iShaderPassNum = gameobjDesc->iShaderPass;
 		m_iObjectType = gameobjDesc->iObjType;
 
+		if (nullptr != m_pNavigationCom)
+			m_pNavigationCom->Set_Index(gameobjDesc->iNaviNum);
+
 		for (int i = 0; i < gameobjDesc->iDecalNum; i++)
 		{
 			DECAL_DESC  tDecal;
@@ -492,6 +495,10 @@ HRESULT CItem::Add_Components(void* pArg)
 		TEXT("Com_Navigation"), reinterpret_cast<CComponent**>(&m_pNavigationCom))))
 		return E_FAIL;
 
+	/* For.Com_Navigation */
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Navigation"),
+		TEXT("Com_Navigation"), reinterpret_cast<CComponent**>(&m_pNavigationCom))))
+		return E_FAIL;
 
 	return S_OK;
 }
