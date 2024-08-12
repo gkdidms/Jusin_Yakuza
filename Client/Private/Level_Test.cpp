@@ -33,7 +33,7 @@ HRESULT CLevel_Test::Initialize()
 	// 테스트 다하면 지워라
 	/* For.Prototype_Component_Navigation */
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Navigation"),
-		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/NaviData/Navigation_90.dat")))))
+		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/NaviData/Navigation_3.dat")))))
 		return E_FAIL;
 
 	//m_pCarChaseManager = CCarChaseManager::Create(m_pDevice, m_pContext);
@@ -50,9 +50,16 @@ HRESULT CLevel_Test::Initialize()
 	//if (FAILED(Ready_Test_Load()))
 	//	return E_FAIL;
 
-	//혜원 테스트 용
+
+	////혜원 테스트 용
 	//if (FAILED(Ready_Test_Hyewon()))
 	//	return E_FAIL;
+
+	m_pFileTotalManager->Set_MapObj_In_Client(3, LEVEL_TEST);
+	m_pFileTotalManager->Set_Lights_In_Client(90);
+	m_pFileTotalManager->Set_Collider_In_Client(3, LEVEL_TEST);
+	m_pFileTotalManager->Set_Trigger_In_Client(79, LEVEL_TEST);
+
 
 	if (FAILED(Ready_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
@@ -175,6 +182,7 @@ HRESULT CLevel_Test::Ready_Test_Hyewon()
 
 	return S_OK;
 }
+
 
 CLevel_Test* CLevel_Test::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {

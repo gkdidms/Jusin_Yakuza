@@ -122,6 +122,11 @@ struct PS_OUT
     vector vRD : SV_Target6;
 };
 
+struct PS_OUT_COLOR
+{
+    vector vDiffuse : SV_TARGET0;
+};
+
 struct PS_MAIN_OUT
 {
     vector vDiffuse : SV_TARGET0;
@@ -139,8 +144,10 @@ PS_MAIN_OUT PS_MAIN(PS_IN In)
     PS_MAIN_OUT Out = (PS_MAIN_OUT) 0;
     
     vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
-    if (vDiffuse.a < 0.1f)
-        discard;
+    //if (vDiffuse.a < 0.1f)
+    //    discard;
+    
+    vDiffuse.a = 1;
    
     vector vMulti = g_isMulti ? g_MultiDiffuseTexture.Sample(LinearSampler, In.vTexcoord) : vector(0.f, 1.f, 0.f, 1.f);
     vector vRD = g_isRD ? g_RDTexture.Sample(LinearSampler, In.vTexcoord) : vector(1.f, 1.f, 1.f, 1.f);
@@ -177,6 +184,7 @@ PS_MAIN_OUT PS_MAIN(PS_IN In)
     OE_SPECULAR OEResult = Neo_OE_Specular(vMulti, vRM, vRS);
     float fMixMultiFactor = lerp(vMulti.y, 1.f, AssetShader);
     float fDeffuseFactor = vDiffuse.a * 1.f;
+
     
     Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_fFar, RimIndex, 0.f);
     Out.vDiffuse = vDiffuse;
@@ -251,9 +259,9 @@ PS_OUT PS_GLASSDOOR(PS_IN In)
 
 
 
-PS_OUT PS_MAIN_AlphaMask(PS_IN In)
+PS_OUT_COLOR PS_MAIN_AlphaMask(PS_IN In)
 {
-    PS_OUT Out = (PS_OUT) 0;
+    PS_OUT_COLOR Out = (PS_OUT_COLOR) 0;
 
     vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
     
@@ -265,10 +273,10 @@ PS_OUT PS_MAIN_AlphaMask(PS_IN In)
     return Out;
 }
 
-PS_OUT PS_MAIN_LightMask_Alpha(PS_IN In)
+PS_OUT_COLOR PS_MAIN_LightMask_Alpha(PS_IN In)
 {
     // 모양대로 자르는거
-    PS_OUT Out = (PS_OUT) 0;
+    PS_OUT_COLOR Out = (PS_OUT_COLOR) 0;
 
     vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
     
@@ -278,9 +286,9 @@ PS_OUT PS_MAIN_LightMask_Alpha(PS_IN In)
 }
 
 
-PS_OUT DEFAULT_SIGN_PASS(PS_IN In)
+PS_OUT_COLOR DEFAULT_SIGN_PASS(PS_IN In)
 {
-    PS_OUT Out = (PS_OUT) 0;
+    PS_OUT_COLOR Out = (PS_OUT_COLOR) 0;
 
     vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
     vector vMultiDiffuce = g_MultiDiffuseTexture.Sample(LinearSampler, In.vTexcoord);
@@ -368,9 +376,9 @@ PS_OUT PS_MAIN_Lamp(PS_IN In)
     return Out;
 }
 
-PS_OUT PS_DECAL(PS_IN In)
+PS_OUT_COLOR PS_DECAL(PS_IN In)
 {
-    PS_OUT Out = (PS_OUT) 0;
+    PS_OUT_COLOR Out = (PS_OUT_COLOR) 0;
  
     vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);  
    
@@ -382,9 +390,9 @@ PS_OUT PS_DECAL(PS_IN In)
     return Out;
 }
 
-PS_OUT PS_BloomWhite(PS_IN In)
+PS_OUT_COLOR PS_BloomWhite(PS_IN In)
 {
-    PS_OUT Out = (PS_OUT) 0;
+    PS_OUT_COLOR Out = (PS_OUT_COLOR) 0;
  
     vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
     
@@ -406,9 +414,9 @@ PS_OUT PS_BloomWhite(PS_IN In)
 }
 
 
-PS_OUT PS_MaskEmissive(PS_IN In)
+PS_OUT_COLOR PS_MaskEmissive(PS_IN In)
 {
-    PS_OUT Out = (PS_OUT) 0;
+    PS_OUT_COLOR Out = (PS_OUT_COLOR) 0;
  
     vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
     
@@ -428,9 +436,9 @@ PS_OUT PS_MaskEmissive(PS_IN In)
 
 }
 
-PS_OUT PS_StrongBloom(PS_IN In)
+PS_OUT_COLOR PS_StrongBloom(PS_IN In)
 {
-    PS_OUT Out = (PS_OUT) 0;
+    PS_OUT_COLOR Out = (PS_OUT_COLOR) 0;
  
     vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
     
@@ -452,9 +460,9 @@ PS_OUT PS_StrongBloom(PS_IN In)
 }
 
 
-PS_OUT PS_Compulsory_DECAL(PS_IN In)
+PS_OUT_COLOR PS_Compulsory_DECAL(PS_IN In)
 {
-    PS_OUT Out = (PS_OUT) 0;
+    PS_OUT_COLOR Out = (PS_OUT_COLOR) 0;
  
     vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
    

@@ -7,6 +7,7 @@
 BEGIN(Engine)
 class CShader;
 class CModel;
+class CNavigation;
 END
 
 BEGIN(Client)
@@ -63,6 +64,7 @@ public:
 		wstring				wstrModelName;
 		int					iShaderPass;
 		int					iObjType;
+		int					iNaviNum;
 
 		int					iDecalNum;
 		DECAL_DESC_IO*		pDecal;
@@ -126,6 +128,7 @@ private:
 	class CSystemManager* m_pSystemManager = { nullptr };
 	CCollider* m_pColliderCom = { nullptr }; //AABB 저장
 	CCollider* m_pOBBColliderCom = { nullptr }; //AABB 저장
+	CNavigation* m_pNavigationCom = { nullptr };
 
 private:
 	_bool m_isFirst = { true };

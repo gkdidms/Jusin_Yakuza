@@ -170,8 +170,8 @@ HRESULT CLoader::Loading_For_RunMapLevel(int iLevel)
 		return E_FAIL;
 
 	//PreTransformMatrix = XMMatrixIdentity();
-	//if (FAILED(m_pGameInstance->Add_Component_Prototype(iLevel, TEXT("Prototype_Component_Model_Bone_Sphere"),
-	//	CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/NonAnim/Map/Map1/soto01.fbx", PreTransformMatrix, false, true))))
+	//if (FAILED(m_pGameInstance->Add_Component_Prototype(iLevel, TEXT("Prototype_Component_Model_soto"),
+	//	CModel::Create(m_pDevice, m_pContext, CModel::TYPE_NONANIM, "../../Client/Bin/Resources/Models/NonAnim/Map/Map1/Bin/soto01.dat", PreTransformMatrix, true, true))))
 	//	return E_FAIL;
 
 
