@@ -901,7 +901,7 @@ void CRenderer::Render_Decal()
 	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Decal"), m_pShader, "g_DecalTexture")))
 		return;
 
-	m_pShader->Begin(23);
+	m_pShader->Begin(26);
 	m_pVIBuffer->Render();
 
 	if (FAILED(m_pGameInstance->End_MRT()))
