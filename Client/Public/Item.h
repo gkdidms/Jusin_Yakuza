@@ -134,8 +134,6 @@ private:
 	CCollider* m_pOBBColliderCom = { nullptr }; //AABB ¿˙¿Â
 	CNavigation* m_pNavigationCom = { nullptr };
 
-	CNavigation* m_pNavigationCom = { nullptr };
-
 private:
 	_bool m_isFirst = { true };
 	_bool m_isAttacking = { false };
