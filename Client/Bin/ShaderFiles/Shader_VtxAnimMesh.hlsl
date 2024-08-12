@@ -204,6 +204,7 @@ PS_OUT PS_MAIN(PS_IN In)
     vNormalDesc = Get_Normal(vNormalDesc, vRT, fFactor);
 
     vNormalDesc = vNormalDesc * 2.f - 1.f;
+    //vNormalDesc = vector(vNormalDesc.w, vNormalDesc.y, 1.f, 0.f);
     float3x3 WorldMatrix = float3x3(In.vTangent.xyz, In.vBinormal.xyz, In.vNormal.xyz);
     //vector vNormalBTN = normalize(vector(mul(vNormalDesc.xyz, WorldMatrix), 0.f));
     vector vNormalBTN = (vector(mul(vNormalDesc.xyz, WorldMatrix), 0.f));
