@@ -130,7 +130,7 @@ private:
 	CModel* m_pModelCom = { nullptr };
 	class CSystemManager* m_pSystemManager = { nullptr };
 	class CCollision_Manager* m_pCollisionManager = { nullptr };
-	//CCollider* m_pColliderCom = { nullptr }; //AABB 저장
+	CCollider* m_pColliderCom = { nullptr }; //AABB 저장
 	CCollider* m_pOBBColliderCom = { nullptr }; //AABB 저장
 	CNavigation* m_pNavigationCom = { nullptr };
 

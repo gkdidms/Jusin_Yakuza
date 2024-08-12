@@ -1,6 +1,7 @@
 #include "../Public/NaviObj.h"
 #include "Imgui_Manager.h"
 #include "GameInstance.h"
+#include "NaviObj.h"
 
 
 CNaviObj::CNaviObj(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -9,7 +10,8 @@ CNaviObj::CNaviObj(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 }
 
 CNaviObj::CNaviObj(const CNaviObj& rhs)
-	: CGameObject{ rhs }
+	: CGameObject{ rhs },
+	m_vRouteNums {rhs.m_vRouteNums}
 {
 }
 
@@ -28,6 +30,18 @@ HRESULT CNaviObj::Initialize(void* pArg)
 		NAVIOBJ_DESC* naviDesc = (NAVIOBJ_DESC*)pArg;
 		m_eRoute = naviDesc->tNaviDesc;
 		m_pTransformCom->Set_WorldMatrix(naviDesc->vStartPos);
+
+		if (0 < m_eRoute.iRouteNums)
+		{
+			for (int i = 0; i < m_eRoute.iRouteNums; i++)
+			{
+				m_vRouteNums.push_back(m_eRoute.pRouteID[i]);
+			}
+		}
+		else
+		{
+			m_eRoute.pRouteID = nullptr;
+		}
 	}
 
 	if (FAILED(Add_Components(pArg)))
@@ -84,7 +98,40 @@ ROUTE_IO CNaviObj::Get_RouteIO()
 	// 위치 반환
 	XMStoreFloat4(&m_eRoute.vPosition, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 
+	//혹시 모르니 비워주고 보내기
+	m_eRoute.iRouteNums = m_vRouteNums.size();
+		
+	if(nullptr != m_eRoute.pRouteID)
+		Safe_Delete(m_eRoute.pRouteID);
+
+	if (0 < m_eRoute.iRouteNums)
+	{
+		m_eRoute.pRouteID = new int[m_vRouteNums.size()];
+
+		for (int i = 0; i < m_vRouteNums.size(); i++)
+		{
+			m_eRoute.pRouteID[i] = m_vRouteNums[i];
+		}
+	}
+
+	
+	
 	return m_eRoute;
+}
+
+void CNaviObj::Delete_RouteNum_InVec(int iNum)
+{
+	vector<int>::iterator iter = m_vRouteNums.begin();
+
+	if (0 != iNum)
+	{
+		for (int i = 0; i < iNum; i++)
+		{
+			iter++;
+		}
+	}
+
+	m_vRouteNums.erase(iter);
 }
 
 
@@ -173,4 +220,9 @@ void CNaviObj::Free()
 
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pModelCom);
+
+	if (nullptr != m_eRoute.pRouteID)
+		Safe_Delete(m_eRoute.pRouteID);
+
+	m_vRouteNums.clear();
 }
