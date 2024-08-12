@@ -87,6 +87,10 @@ private:
 
     _float m_fTime = {0.f};
 
+
+private:
+    bool        m_bOrigin = { false };
+
 private:
     HRESULT Load_File(const wstring strFilePath);
     HRESULT SetUp_Neighbors();

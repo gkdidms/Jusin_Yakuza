@@ -74,6 +74,7 @@ private:
 	void					Update_CellsName();
 	void					Update_RouteName();
 	void					Update_IndexesName();
+	void					Update_PointRouteNumName();
 
 
 	void					Update_Routes(); // map 수정
@@ -130,6 +131,7 @@ private:
 	vector<char*>							m_CellsName;
 	vector<char*>							m_RouteName; // 네비가 가지고 있는 루트들의 이름
 	vector<char*>							m_IndexesName; // 루트 안에 있는 cell index 이름들
+	vector<char*>							m_PointRouteSaveNumName; // 루트 안에 있는 cell index 이름들
 
 private:
 	vector<_float3>							m_vPoints;
