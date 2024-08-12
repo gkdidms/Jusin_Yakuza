@@ -68,11 +68,14 @@ HRESULT CVIBuffer::Render()
 
 HRESULT CVIBuffer::Bind_Compute(CComputeShader* pShader)
 {
+	//초기화
+	m_pContext->ClearUnorderedAccessViewFloat(m_pResultBufferUAV, (_float*)&m_vClearColor);
+
 	// 컴퓨트 셰이더 바인딩
 	m_pContext->CSSetShaderResources(0, 1, &m_pVertexBufferSRV);
 	m_pContext->CSSetUnorderedAccessViews(0, 1, &m_pResultBufferUAV, nullptr);
 
-	pShader->Render((m_iNumVertices + 15) / 16);
+	pShader->Render((m_iNumVertices + 63) / 64);
 
 	return S_OK;
 }

@@ -72,6 +72,7 @@ public:
 private:
     void Render_Priority();
     void Render_ShadowObjects();
+    void Render_BoneCompute();
     void Render_NonBlender();
 
     /* Map */

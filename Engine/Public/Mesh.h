@@ -23,6 +23,7 @@ public:
 	HRESULT Ready_Vertices_For_AnimMesh(const BAiMesh* pAIMesh, const vector<class CBone*>& Bones);
 
 	void	Fill_Matrices(vector<class CBone*>& Bones, _float4x4* pMeshBoneMatrices);
+	void	Bind_Matrices(vector<class CBone*>& Bones);
 
 public:
 	virtual HRESULT Render();
@@ -70,6 +71,13 @@ private:
 
 	VTXMESH* m_pVertices = { nullptr };
 	_uint* m_pIndices = { nullptr };
+
+private:
+	HRESULT Ready_Buffer();
+
+private:
+	ID3D11Buffer* m_pBoneBufferMatrix = { nullptr };
+
 public:
 	static CMesh* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CModel::MODELTYPE eModelType, const aiMesh* pAIMesh, _fmatrix PreTransformMatrix, const vector<class CBone*>& Bones);
 	static CMesh* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CModel::MODELTYPE eModelType, const BAiMesh* pAIMesh, _fmatrix PreTransformMatrix, const vector<class CBone*>& Bones);

@@ -15,6 +15,7 @@ CMesh::CMesh(const CMesh& rhs)
 	, m_isAlphaApply{ rhs.m_isAlphaApply }
 	, m_iNumBones{ rhs.m_iNumBones }
 	, m_localMatrix {rhs.m_localMatrix}
+	, m_pBoneBufferMatrix { rhs.m_pBoneBufferMatrix }
 {
 
 	m_pIndices = new _uint[m_iNumIndices];
@@ -27,6 +28,7 @@ CMesh::CMesh(const CMesh& rhs)
 
 	memcpy(m_pVertices, rhs.m_pVertices, sizeof(VTXMESH) * m_iNumVertices);
 
+	Safe_AddRef(m_pBoneBufferMatrix);
 }
 
 HRESULT CMesh::Initialize(CModel::MODELTYPE eModelType, const aiMesh* pAIMesh, _fmatrix PreTransformMatrix, const vector<class CBone*>& Bones)
@@ -153,6 +155,9 @@ HRESULT CMesh::Initialize(CModel::MODELTYPE eModelType, const BAiMesh* pAIMesh, 
 
 	if (eModelType == CModel::TYPE_ANIM)
 		Ready_ComputeBuffer();
+
+	if (FAILED(Ready_Buffer()))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -795,6 +800,21 @@ void CMesh::Fill_Matrices(vector<class CBone*>& Bones, _float4x4* pMeshBoneMatri
 {
 	for (size_t i = 0; i < m_iNumBones; i++)
 		XMStoreFloat4x4(&pMeshBoneMatrices[i], XMLoadFloat4x4(&m_OffsetMatrices[i]) * XMLoadFloat4x4(Bones[m_BoneIndices[i]]->Get_CombinedTransformationMatrix()));
+
+}
+
+void CMesh::Bind_Matrices(vector<class CBone*>& Bones)
+{
+	_matrix pBoneMatrix[512];
+
+	ZeroMemory(pBoneMatrix, sizeof(_matrix) * 512);
+
+	for (size_t i = 0; i < m_iNumBones; i++)
+		pBoneMatrix[i] = XMLoadFloat4x4(&m_OffsetMatrices[i]) * XMLoadFloat4x4(Bones[m_BoneIndices[i]]->Get_CombinedTransformationMatrix());
+
+	m_pContext->UpdateSubresource(m_pBoneBufferMatrix, 0, nullptr, pBoneMatrix, 0, 0);
+
+	m_pContext->CSSetConstantBuffers(0, 1, &m_pBoneBufferMatrix);
 }
 
 HRESULT CMesh::Render()
@@ -869,6 +889,21 @@ _bool CMesh::DisableRDRT()
 	return true;
 }
 
+HRESULT CMesh::Ready_Buffer()
+{
+	D3D11_BUFFER_DESC bufferDesc = {};
+	bufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	bufferDesc.ByteWidth = sizeof(_matrix) * 512;  // 전체 크기 계산
+	bufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	bufferDesc.CPUAccessFlags = 0;
+	bufferDesc.MiscFlags = 0;
+
+	if (FAILED(m_pDevice->CreateBuffer(&bufferDesc, nullptr, &m_pBoneBufferMatrix)))
+		return E_FAIL;
+
+	return S_OK;
+}
+
 CMesh* CMesh::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CModel::MODELTYPE eModelType, const aiMesh* pAIMesh, _fmatrix PreTransformMatrix, const vector<class CBone*>& Bones)
 {
 	CMesh* pInstance = new CMesh(pDevice, pContext);
@@ -908,6 +943,8 @@ void CMesh::Free()
 		Safe_Delete_Array(m_pVertices);
 	if (nullptr != m_pIndices)
 		Safe_Delete_Array(m_pIndices);
+
+	Safe_Release(m_pBoneBufferMatrix);
 
 
 }

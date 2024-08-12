@@ -89,7 +89,9 @@ HRESULT CLandObject::Render_Compute()
 	_uint i = 0;
 	for (auto& pMesh : m_pModelCom->Get_Meshes())
 	{
+		m_pModelCom->Bind_BoneMatrices(i);
 
+		m_pModelCom->Bind_Compute(m_pComputeShaderCom, i);
 
 		i++;
 	}

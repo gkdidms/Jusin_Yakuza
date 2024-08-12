@@ -110,8 +110,6 @@ HRESULT CModel::Initialize_Prototype(MODELTYPE eModelType, const _char* pModelFi
 
 HRESULT CModel::Initialize(void* pArg)
 {
-	Ready_Buffer();
-
     return S_OK;
 }
 
@@ -922,21 +920,6 @@ void CModel::Check_Separation_Parents(CBone* pBone, _int iAnimType)
 	}
 }
 
-HRESULT CModel::Ready_Buffer()
-{
-	D3D11_BUFFER_DESC cbDesc = {};
-	cbDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
-	cbDesc.ByteWidth = sizeof(_float4x4) * 512;
-	cbDesc.Usage = D3D11_USAGE_DEFAULT;
-	cbDesc.CPUAccessFlags = 0;
-	cbDesc.MiscFlags = 0;
-
-	if (FAILED(m_pDevice->CreateBuffer(&cbDesc, nullptr, &m_pBoneBufferMatrix)))
-		return E_FAIL;
-
-	return S_OK;
-}
-
 HRESULT CModel::Render(_uint iMeshIndex)
 {
 	//m_Meshes[iMeshIndex]->Bind_Buffers();
@@ -970,13 +953,9 @@ HRESULT CModel::Bind_BoneMatrices(CShader* pShader, const _char* pConstantName, 
 
 void CModel::Bind_BoneMatrices(_uint iNumMeshIndex)
 {
-	ZeroMemory(m_MeshBoneMatrices, sizeof(_float4x4) * 512);
+	//ZeroMemory(m_MeshBoneMatrices, sizeof(_float4x4) * 512);
 
-	m_Meshes[iNumMeshIndex]->Fill_Matrices(m_Bones, m_MeshBoneMatrices);
-
-	m_pContext->UpdateSubresource(m_pBoneBufferMatrix, 0, nullptr, &m_MeshBoneMatrices, 0, 0);
-
-	m_pContext->CSSetConstantBuffers(0, 1, &m_pBoneBufferMatrix);
+	m_Meshes[iNumMeshIndex]->Bind_Matrices(m_Bones);
 }
 
 bool CModel::Check_Exist_Material(_uint iNumMeshIndex, aiTextureType eTextureType)
@@ -1577,8 +1556,6 @@ void CModel::Free()
 	}
 
 	m_Materials.clear();
-
-	Safe_Release(m_pBoneBufferMatrix);	
 
 	if (true == m_bOrigin)
 	{

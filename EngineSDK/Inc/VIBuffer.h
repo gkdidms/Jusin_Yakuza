@@ -44,6 +44,8 @@ protected:
 
     DXGI_FORMAT m_GIFormat = {};
     D3D11_PRIMITIVE_TOPOLOGY m_Primitive_Topology = {};
+    
+    _float4 m_vClearColor = {0.f, 0.f, 0.f, 0.f};
 
 public:
     virtual void Free() override;

@@ -153,7 +153,7 @@ private:
 private:
 	void	Find_Mesh_Using_DECAL();
 	void	Check_Separation_Parents(CBone* pBone, _int iAnimType);
-	HRESULT Ready_Buffer();
+
 
 private:
 	MODELTYPE					m_eModelType = { TYPE_END };
@@ -194,7 +194,7 @@ private:
 	_float4x4					m_ModelLocalMatrix;
 
 private:
-	ID3D11Buffer* m_pBoneBufferMatrix = { nullptr };
+
 
 public:
 	static CModel* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, MODELTYPE eModelType, const _char* pModelFilePath, _fmatrix PreTransformMatrix, _bool isExported, _bool isTool = false);

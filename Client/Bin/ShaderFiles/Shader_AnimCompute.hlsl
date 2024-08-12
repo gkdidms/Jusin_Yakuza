@@ -17,7 +17,6 @@ struct GS_OUT
     float3 vTangent : TANGENT;
 };
 
-
 cbuffer BoneBuffer : register(b0)
 {
     matrix g_BoneMatrices[512];
@@ -26,7 +25,7 @@ cbuffer BoneBuffer : register(b0)
 StructuredBuffer<GS_IN> g_InputBuffer;
 RWStructuredBuffer<GS_OUT> g_OutputBuffer;
 
-[numthreads(16, 1, 1)]
+[numthreads(64, 1, 1)]
 void GS_MAIN(uint3 dispatchThreadID : SV_DispatchThreadID)
 {
     uint iIndex = dispatchThreadID.x; // ¡§¡° ¿Œµ¶Ω∫
@@ -42,9 +41,10 @@ void GS_MAIN(uint3 dispatchThreadID : SV_DispatchThreadID)
     
     vector vPosition = mul(float4(In.vPosition, 1.f), TransformMatrix);
     vector vNormal = mul(float4(In.vNormal, 0.f), TransformMatrix);
+    vector vTangent = mul(float4(In.vTangent, 0.f), TransformMatrix);
     
     g_OutputBuffer[iIndex].vPosition = vPosition.xyz;
     g_OutputBuffer[iIndex].vNormal = vNormal.xyz;
-    g_OutputBuffer[iIndex].vTangent = In.vTangent;
     g_OutputBuffer[iIndex].vTexcoord = In.vTexcoord;
+    g_OutputBuffer[iIndex].vTangent = vTangent.xyz;
 }

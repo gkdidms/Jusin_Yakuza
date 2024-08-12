@@ -662,6 +662,8 @@ void CRenderer::Draw()
 {
 	Render_Priority();
 
+	Render_BoneCompute();
+
 	if (m_isShadow)
 	{
 		Render_ShadowObjects();
@@ -811,6 +813,14 @@ void CRenderer::Render_ShadowObjects()
 
 	if (FAILED(m_pGameInstance->End_MRT()))
 		return;
+}
+
+void CRenderer::Render_BoneCompute()
+{
+	for (auto& iter : m_RenderObject[RENDER_NONBLENDER])
+	{
+		iter->Render_Compute();
+	}
 }
 
 void CRenderer::Render_NonBlender()

@@ -44,10 +44,6 @@ HRESULT CComputeShader::Initialize_Prototype(const wstring& strShaderFilePath)
 
 HRESULT CComputeShader::Initialize(void* pArg)
 {
-    
-
-    //Ready_Texture2D(1280, 720);
-
 	return S_OK;
 }
 
