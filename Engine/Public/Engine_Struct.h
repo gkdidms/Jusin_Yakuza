@@ -42,6 +42,8 @@ namespace Engine
 		int				iCellNums;
 		_float4			vPosition;
 		int				iPointOption;
+		int				iRouteNums;
+		int*			pRouteID;
 	};
 
 

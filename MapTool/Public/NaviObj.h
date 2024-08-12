@@ -14,6 +14,14 @@ BEGIN(Client)
 class CNaviObj final : public CGameObject
 {
 public:
+	enum POINTTYPE
+	{
+		STRAIGHT,
+		CORNER,
+		POINT_END
+	};
+
+
 	typedef struct tNaviObj : public CGameObject::GAMEOBJECT_DESC
 	{
 		XMMATRIX		vStartPos;
@@ -39,6 +47,11 @@ public:
 	void			Set_Color(int num) { m_iColor = num; }
 	_int			Get_PointOpiton() { return m_eRoute.iPointOption; }
 	void			Set_PointOption(_int iOption) { m_eRoute.iPointOption = iOption; }
+	int				Get_VecNum() { return m_vRouteNums.size(); }
+	vector<int>&		Get_RouteNumsVec() { return m_vRouteNums; }
+	void			Add_RouteNum_InVec(int	iNum) { m_vRouteNums.push_back(iNum); }
+	void			Delete_RouteNum_InVec(int	iNum);
+	void			DeleteAll_RouteNum_InVec() { m_vRouteNums.clear(); }
 
 private:
 	CShader* m_pShaderCom = { nullptr };
@@ -47,6 +60,7 @@ private:
 	ROUTE_IO			m_eRoute;
 
 	int					m_iColor = { 1 };
+	vector<int>								m_vRouteNums;
 
 public:
 	HRESULT							Add_Components(void* pArg);

@@ -104,7 +104,7 @@ HRESULT CPlayer::Initialize(void* pArg)
 	if (FAILED(Add_CharacterData()))
 		return E_FAIL;
 
-	Ready_AuraEffect();
+	//Ready_AuraEffect();
 
 	// ±âº» ¸ó½ºÅÍ: 20
 	// »æÀïÀÌ: 30
@@ -180,7 +180,7 @@ void CPlayer::Tick(const _float& fTimeDelta)
 	}
 	if (m_pGameInstance->GetKeyState(DIK_T) == TAP)
 	{
-		m_pUIManager->Open_Scene(TEXT("Tutorial"));
+		//m_pUIManager->Open_Scene(TEXT("Tutorial"));
 	}
 	if (m_pGameInstance->GetKeyState(DIK_Y) == TAP)
 	{
@@ -2548,8 +2548,6 @@ CGameObject* CPlayer::Clone(void* pArg)
 
 void CPlayer::Free()
 {
-	__super::Free();
-
 	Safe_Release(m_pTargetObject);
 	Safe_Release(m_pQTEMgr);
 
@@ -2594,4 +2592,5 @@ void CPlayer::Free()
 	}
 	m_DestroyerAura.clear();
 
+	__super::Free();
 }

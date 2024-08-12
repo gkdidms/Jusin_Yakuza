@@ -14,6 +14,7 @@
 #include "Level_Loading.h"
 #include "Background.h"
 #include "FileTotalMgr.h"
+#include "EffectManager.h"
 
 #pragma region UI
 #include "Image_Texture.h"
@@ -489,5 +490,4 @@ void CMainApp::Free()
 
 	Safe_Release(m_pCollisionManager);
 	CCollision_Manager::DestroyInstance();
-
 }
