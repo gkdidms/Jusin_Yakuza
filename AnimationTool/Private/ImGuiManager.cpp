@@ -1195,12 +1195,72 @@ void CImguiManager::BloodEventWindow()
 	ImGui::Text(u8"선택된 애니메이션: %s", m_AnimNameList[m_iAnimIndex].c_str());
 	ImGui::Text(u8"선택된 본(채널리스트에서 선택한 값): %s", m_ChannelNameList[m_iChannelSelectedIndex].c_str());
 
-	ImGui::Text(u8"현재 입력된 애니메이션 포지션: %f", m_fAnimationPosition);
+	ImGui::InputFloat(u8"애니메이션 포지션", &m_fAnimationPosition);
+
+	if (ImGui::RadioButton(u8"코", m_eBloodEffectType == NOSE))
+	{
+		m_eBloodEffectType = NOSE;
+	}
+	ImGui::SameLine();
+	if (ImGui::RadioButton(u8"입", m_eBloodEffectType == MOUTH))
+	{
+		m_eBloodEffectType = MOUTH;
+	}
 
 	if (ImGui::Button(u8"피 이펙트 On"))
 	{
+		Animation_BloodEventState Desc{};
+		Desc.fAinmPosition = m_fAnimationPosition;
+		Desc.iBoneIndex = m_iBoneSelectedIndex;
+		Desc.strBonelName = m_BoneNameList[m_iBoneSelectedIndex];
+		Desc.iBloodEffectType = m_eBloodEffectType;
 
+		m_BloodEvents.emplace(m_AnimNameList[m_iAnimIndex], Desc);
 	}
+
+	auto upper_bound_iter = m_BloodEvents.upper_bound(m_AnimNameList[m_iAnimIndex]);
+	auto lower_bound_iter = m_BloodEvents.lower_bound(m_AnimNameList[m_iAnimIndex]);
+
+	ImGui::Text(u8"피 이펙트 이벤트 리스트");
+	vector<const char*> items;
+	for (; lower_bound_iter != upper_bound_iter; ++lower_bound_iter)
+	{
+		items.push_back((*lower_bound_iter).second.iBloodEffectType == NOSE ? "Nose" : "Mouth");
+	}
+	if (ImGui::ListBox("##", &m_iBloodEventIndex, items.data(), items.size()))
+	{
+		auto lower_bound_iter2 = m_BloodEvents.lower_bound(m_AnimNameList[m_iAnimIndex]);
+		for (size_t i = 0; i < m_iBloodEventIndex; i++)
+		{
+			lower_bound_iter2++;
+		}
+
+		m_fAnimationPosition = lower_bound_iter2->second.fAinmPosition;
+	}
+
+
+
+	if (ImGui::Button(u8"불러오기"))
+	{
+		string strDirectory = "../../Client/Bin/DataFiles/Character/" + m_ModelNameList[m_iModelSelectedIndex];
+		BloodEvent_Load(strDirectory);
+	}
+	if (ImGui::Button(u8"삭제"))
+	{
+		auto iterator = m_BloodEvents.lower_bound(m_AnimNameList[m_iAnimIndex]);
+		for (size_t i = 0; i < m_iBloodEventIndex; i++)
+		{
+			iterator++;
+		}
+		m_BloodEvents.erase(iterator);
+	}
+	ImGui::SameLine();
+	if (ImGui::Button(u8"저장"))
+	{
+		string strDirectory = "../../Client/Bin/DataFiles/Character/" + m_ModelNameList[m_iModelSelectedIndex];
+		BloodEvent_Save(strDirectory);
+	}
+
 
 	ImGui::End();
 }
@@ -1235,7 +1295,7 @@ void CImguiManager::RadialEventWindow()
 	}
 
 	ImGui::InputFloat(u8"레디얼블러 강도", &m_fRadialForce);
-	ImGui::Text(u8"애니메이션 포지션: %f", m_fRadialAnimPosition);
+	ImGui::InputFloat(u8"애니메이션 포지션", &m_fRadialAnimPosition);
 
 	if (ImGui::Button(u8"레디얼 On"))
 	{
@@ -1823,6 +1883,37 @@ void CImguiManager::TrailEvent_Save(string strPath)
 	out.close();
 }
 
+void CImguiManager::BloodEvent_Save(string strPath)
+{
+	string strDirectory = strPath;
+	strDirectory += "/" + m_ModelNameList[m_iModelSelectedIndex] + "_BloodEffectEvents.dat";
+
+	ofstream out(strDirectory, ios::binary);
+
+	_uint iNumEvents = m_BloodEvents.size();
+	// 총 몇개의 이펙트를 읽어올 것인지 작성한다
+	out << iNumEvents;
+
+	/*
+	* 	_float fAinmPosition;
+		_uint iBoneIndex;
+		string strBonelName;
+		_uint iBloodEffectType;
+
+	*/
+
+	for (auto& pair : m_BloodEvents)
+	{
+		out << pair.first << endl;
+		out << pair.second.fAinmPosition << endl;
+		out << pair.second.iBoneIndex << endl;
+		out << pair.second.strBonelName << endl;
+		out << pair.second.iBloodEffectType << endl;
+	}
+
+	out.close();
+}
+
 void CImguiManager::RadialEvent_Save(string strPath)
 {
 	string strDirectory = strPath;
@@ -2152,6 +2243,48 @@ void CImguiManager::TrailEvent_Load(string strPath)
 	in.close();
 }
 
+void CImguiManager::BloodEvent_Load(string strPath)
+{
+	string strDirectory = strPath;
+	strDirectory += "/" + m_ModelNameList[m_iModelSelectedIndex] + "_BloodEffectEvents.dat";
+
+	ifstream in(strDirectory, ios::binary);
+
+	if (!in.is_open()) {
+		MSG_BOX("RadialEvents 파일 개방 실패");
+		return;
+	}
+
+	m_BloodEvents.clear();
+
+	_uint iNumEvents{ 0 };
+	// 총 몇개의 이펙트를 읽어올 것인지 작성한다
+	in >> iNumEvents;
+
+	Animation_BloodEventState Event{};
+	string key;
+
+	/*
+	*	_float fAinmPosition;
+		_uint iBoneIndex;
+		string strBonelName;
+		_uint iBloodEffectType;
+	*/
+	for (size_t i = 0; i < iNumEvents; i++)
+	{
+		in >> key;
+		in >> Event.fAinmPosition;
+		in >> Event.iBoneIndex;
+		in >> Event.strBonelName;
+		in >> Event.iBloodEffectType;
+
+		m_BloodEvents.emplace(key, Event);
+	}
+
+
+	in.close();
+}
+
 void CImguiManager::RadialEvent_Load(string strPath)
 {
 	string strDirectory = strPath;
@@ -2266,7 +2399,6 @@ void CImguiManager::Change_Model()
 	m_iAnimIndex = 0;
 	m_iSearchAnimIndex = 0;
 	m_iAddedAnimSelectedIndex = 0;
-	m_iBoneSelectedIndex = 0;
 	m_iBoneSelectedIndex = 0;
 	m_iColliderSelectedIndex = 0;
 	m_iEventBoneIndex = 0;

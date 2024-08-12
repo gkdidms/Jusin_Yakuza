@@ -49,6 +49,14 @@ public:
         _uint iBoneIndex;
     };
 
+    struct ANIMATION_BLOODEVENTSTATE
+    {
+        _float fAinmPosition;
+        _uint iBoneIndex;
+        string strBonelName;
+        _uint iBloodEffectType;     //0 코, 1 입
+    };
+
     struct ANIMATION_RADIALEVENTSTATE
     {
         _uint iType;				//0번이 on 1번이 off
@@ -102,6 +110,9 @@ public:
         return m_CurrentTrailEvents;
     }
 
+    const vector<ANIMATION_BLOODEVENTSTATE>& Get_Current_BloodEffectEvents() const {
+        return m_CurrentBloodEffectEvents;
+    }
 
     const vector<ANIMATION_RADIALEVENTSTATE>& Get_Current_RadialEvents() const {
         return m_CurrentRadialEvents;
@@ -119,6 +130,7 @@ private:
     HRESULT Load_EffectState(string strFilePath);
     HRESULT Load_RimLightEvent(string strFilePath);
     HRESULT Load_TrailEvent(string strFilePath);
+    HRESULT Load_BloodEffectEvent(string strFilePath);
     HRESULT Load_RadialEvent(string strFilePath);
 
 private:
@@ -130,24 +142,29 @@ private:
     vector<_uint> m_LoopAnimations;
 
     // first: 애니메이션 이름
-    multimap<string, ANIMATION_EVENT>           m_AnimationEvents;            
+    multimap<string, ANIMATION_EVENT>               m_AnimationEvents;            
     // first: 뼈인덱스
-    unordered_map<_uint, COLLIDER_STATE>        m_Colliders;
+    unordered_map<_uint, COLLIDER_STATE>            m_Colliders;
     // first 뼈 이름, second 이펙트 파일 이름 (.dat 제거한 이름)
-    multimap<string, wstring>                   m_Effects;
+    multimap<string, wstring>                       m_Effects;
        
     // first: 애니메이션 이름, second: 림라이트 이벤트정보
-    multimap<string, ANIMATION_RIMLIGHTSTATE>	m_RimLightEvents;
+    multimap<string, ANIMATION_RIMLIGHTSTATE>	    m_RimLightEvents;
 
     // first: 애니메이션 이름, second: 트레일 이벤트정보
-    multimap<string, ANIMATION_TRAILSTATE>		m_TrailEvents;
+    multimap<string, ANIMATION_TRAILSTATE>		    m_TrailEvents;
+
+    // first: 애니메이션 이름, second: 래디얼 이벤트 정보
+    multimap<string, ANIMATION_BLOODEVENTSTATE>		    m_BloodEvents;
 
     // first: 애니메이션 이름, second: 래디얼 이벤트 정보
     multimap<string, ANIMATION_RADIALEVENTSTATE>		m_RadialEvents;
 
+
     vector<ANIMATION_EVENT> m_CurrentEvents; 
     vector<ANIMATION_RIMLIGHTSTATE> m_CurrentRimEvents;
     vector<ANIMATION_TRAILSTATE> m_CurrentTrailEvents;
+    vector<ANIMATION_BLOODEVENTSTATE> m_CurrentBloodEffectEvents;
     vector<ANIMATION_RADIALEVENTSTATE> m_CurrentRadialEvents;
 
 public:
