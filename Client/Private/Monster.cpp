@@ -11,16 +11,21 @@
 #include "SocketCollider.h"
 #include "SocketEffect.h"
 #include "Collision_Manager.h"
+#include "EffectManager.h"
 
 
 CMonster::CMonster(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-	: CLandObject{ pDevice, pContext }
+	: CLandObject{ pDevice, pContext },
+	m_pEffectManager{ CEffectManager::GetInstance() }
 {
+	Safe_AddRef(m_pEffectManager);
 }
 
 CMonster::CMonster(const CMonster& rhs)
-	: CLandObject { rhs }
+	: CLandObject { rhs },
+	m_pEffectManager{ CEffectManager::GetInstance() }
 {
+	Safe_AddRef(m_pEffectManager);
 }
 
 _bool CMonster::isAttack()
@@ -256,6 +261,11 @@ void CMonster::Set_Sync(string strPlayerAnim)
 	m_strAnimName = strPlayerAnim;
 	m_iCurrentAnimType = CMonster::CUTSCENE;
 
+	if (CMonster::CUTSCENE == m_iCurrentAnimType)
+	{
+		m_pData->Set_CurrentCutSceneAnimation(m_strAnimName);
+	}
+
 	m_pTree->Set_Sync(true);
 	Change_Animation();
 }
@@ -355,6 +365,7 @@ void CMonster::Tick(const _float& fTimeDelta)
 		pEffect.second->Tick(fTimeDelta);
 
 	Animation_Event();
+	BloodEffect_Event();
 
 	// 현재 켜져있는 Attack용 콜라이더 삽입
 	for (auto& pPair : m_pColliders)
@@ -600,6 +611,37 @@ _bool CMonster::Checked_Animation_Ratio(_float fRatio)
 		return true;
 
 	return false;
+}
+
+void CMonster::BloodEffect_Event()
+{
+	if (m_iCurrentAnimType == CUTSCENE)
+	{
+		auto& pCurEvents = m_pData->Get_Current_BloodEffectEvents();
+		for (auto& pEvent : pCurEvents)
+		{
+			_double CurPos = *m_pModelCom->Get_AnimationCurrentPosition(m_pAnimCom[m_iCurrentAnimType]);
+			_double Duration = *m_pModelCom->Get_AnimationDuration(m_pAnimCom[m_iCurrentAnimType]);
+
+			if (CurPos >= pEvent.fAinmPosition && CurPos < Duration)
+			{
+				if (pEvent.iBloodEffectType == 0)		//코
+				{
+					CEffect::EFFECT_DESC EffectDesc;
+
+					EffectDesc.pWorldMatrix = m_pTransformCom->Get_WorldFloat4x4();
+					m_pEffectManager->Cine_NoseBlood(EffectDesc);
+				}
+				else if (pEvent.iBloodEffectType == 1)		//입
+				{
+					CEffect::EFFECT_DESC EffectDesc;
+
+					EffectDesc.pWorldMatrix = m_pTransformCom->Get_WorldFloat4x4();
+					m_pEffectManager->Cine_MouseBlood(EffectDesc);
+				}
+			}
+		}
+	}
 }
 
 void CMonster::Synchronize_Root(const _float& fTimeDelta)
@@ -1444,4 +1486,5 @@ void CMonster::Free()
 		Safe_Release(pAnim);
 
 	Safe_Release(m_pNavigationCom);
+	Safe_Release(m_pEffectManager);
 }

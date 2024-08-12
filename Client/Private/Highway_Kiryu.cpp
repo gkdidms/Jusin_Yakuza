@@ -74,6 +74,8 @@ void CHighway_Kiryu::Tick(const _float& fTimeDelta)
 		m_pGun_L->Tick(fTimeDelta);
 	else
 		m_pGun_R->Tick(fTimeDelta);
+
+	m_pColliderCom->Tick(XMLoadFloat4x4(&m_ModelMatrix));
 }
 
 void CHighway_Kiryu::Late_Tick(const _float& fTimeDelta)
@@ -111,6 +113,10 @@ HRESULT CHighway_Kiryu::Render()
 		i++;
 	}
 
+#ifdef _DEBUG
+	m_pGameInstance->Add_DebugComponent(m_pColliderCom);
+#endif
+
 	return S_OK;
 }
 
@@ -120,23 +126,6 @@ void CHighway_Kiryu::Change_Animation()
 
 void CHighway_Kiryu::Key_Input()
 {
-	/* 에임 위치 조정하는 키 인풋 */
-	if (m_pGameInstance->GetKeyState(DIK_W) == HOLD)
-	{
-
-	}
-	if (m_pGameInstance->GetKeyState(DIK_A) == HOLD)
-	{
-
-	}
-	if (m_pGameInstance->GetKeyState(DIK_S) == HOLD)
-	{
-
-	}
-	if (m_pGameInstance->GetKeyState(DIK_D) == HOLD)
-	{
-	}
-
 	//공격 가능한 환경인지 체크한 후 진행한다.
 	//다른 스킬들도 막기 위해서 return;
 	if (isAttackPossible())
@@ -458,6 +447,17 @@ HRESULT CHighway_Kiryu::Add_Components()
 
 	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Model_Kiryu_CarChase"),
 		TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
+		return E_FAIL;
+
+
+	CBounding_AABB::BOUNDING_AABB_DESC		ColliderDesc{};
+
+	ColliderDesc.eType = CCollider::COLLIDER_AABB;
+	ColliderDesc.vExtents = _float3(1, 1, 1);
+	ColliderDesc.vCenter = _float3(0, ColliderDesc.vExtents.y, 0);
+
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Collider"),
+		TEXT("Com_Collider"), reinterpret_cast<CComponent**>(&m_pColliderCom), &ColliderDesc)))
 		return E_FAIL;
 
 	//Prototype_Component_Anim_KiryuFace

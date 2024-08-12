@@ -104,7 +104,7 @@ HRESULT CPlayer::Initialize(void* pArg)
 	if (FAILED(Add_CharacterData()))
 		return E_FAIL;
 
-	Ready_AuraEffect();
+	//Ready_AuraEffect();
 
 	// ±‚∫ª ∏ÛΩ∫≈Õ: 20
 	// ªÊ¿Ô¿Ã: 30
@@ -2548,8 +2548,6 @@ CGameObject* CPlayer::Clone(void* pArg)
 
 void CPlayer::Free()
 {
-	__super::Free();
-
 	Safe_Release(m_pTargetObject);
 	Safe_Release(m_pQTEMgr);
 
@@ -2594,4 +2592,5 @@ void CPlayer::Free()
 	}
 	m_DestroyerAura.clear();
 
+	__super::Free();
 }

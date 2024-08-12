@@ -211,7 +211,6 @@ private:
     // 내 위치를 기준으로 좌/우/앞/뒤 어디에 존재하는지를 판단
     _int Compute_Target_Direction_Pos(_fvector vTargetPos);
 
-    void Radial_Event();
 
     //키 입력관련함수들
 private:
@@ -254,6 +253,7 @@ private:
     void Setting_Target_Item();
     void Setting_Target_Wall();
 
+    void Radial_Event();
 
 
     /* 캐릭터 스테이터스 관련 함수 */ 

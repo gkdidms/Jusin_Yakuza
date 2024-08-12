@@ -1,4 +1,6 @@
 #include "Collision_Manager.h"
+#include "EffectManager.h"
+
 #include "LandObject.h"
 #include "SocketCollider.h"
 #include "Component_Manager.h"
@@ -7,12 +9,15 @@
 #include "GameInstance.h"
 #include "Item.h"
 
+
 IMPLEMENT_SINGLETON(CCollision_Manager)
 
 CCollision_Manager::CCollision_Manager()
-    : m_pGameInstance{ CGameInstance::GetInstance() }
+    : m_pGameInstance{ CGameInstance::GetInstance() },
+    m_pEffectManager{ CEffectManager::GetInstance() }
 {
     Safe_AddRef(m_pGameInstance);
+    Safe_AddRef(m_pEffectManager);
 }
 
 HRESULT CCollision_Manager::Initialize()
@@ -329,7 +334,7 @@ void CCollision_Manager::Enemy_Hit_Collision()
             if (pEnemyHitCollider->Intersect(pPlayerAttackCollider->Get_Collider()))
             {
                 static_cast<CPlayer*>(pPlayerAttackCollider->Get_Parent())->AccHitGauge();
-
+                 
                 CEffect::EFFECT_DESC EffectDesc;
 
                 _matrix WorldMatrix = XMLoadFloat4x4(pPlayerAttackCollider->Get_PartWorldMatrix());
@@ -337,7 +342,7 @@ void CCollision_Manager::Enemy_Hit_Collision()
                 _float4x4 matrix;
                 XMStoreFloat4x4(&matrix, WorldMatrix);
                 EffectDesc.pWorldMatrix = &matrix;
-                Player_Attack_Effect(EffectDesc);
+                m_pEffectManager->Player_Attack_Effect(EffectDesc);
 
                 
                 _matrix MoneyMatrix = XMMatrixIdentity();
@@ -375,7 +380,7 @@ void CCollision_Manager::Player_Hit_Collision()
 
                 EffectDesc.pWorldMatrix = &matrix;
 
-                Enemy_Attack_Effect(EffectDesc);
+                m_pEffectManager->Enemy_Attack_Effect(EffectDesc);
 
 
                 pPlayerHitCollider->ParentObject_Hit(pEnemyAttackCollider);
@@ -600,84 +605,6 @@ CCollider* CCollision_Manager::Get_Near_Collider(CGameObject* pObject, vector<CC
     return pValue;
 }
 
-void CCollision_Manager::Blood_Effect(CEffect::EFFECT_DESC& EffectDesc)
-{
-    m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Hit_Blood0"), TEXT("Layer_Particle"), &EffectDesc);
-    m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Hit_Blood1"), TEXT("Layer_Particle"), &EffectDesc);
-    m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Hit_Blood2"), TEXT("Layer_Particle"), &EffectDesc);
-
-}
-
-void CCollision_Manager::Blood_Splash(CEffect::EFFECT_DESC& EffectDesc)
-{
-    m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Aura_BloodSplash"), TEXT("Layer_Particle"), &EffectDesc);
-}
-
-void CCollision_Manager::Car_HitSpark(CEffect::EFFECT_DESC& EffectDesc)
-{
-    m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_CarHitSpark0"), TEXT("Layer_Particle"), &EffectDesc);
-    m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_CarHitSpark1"), TEXT("Layer_Particle"), &EffectDesc);
-}
-
-void CCollision_Manager::Car_Fire(CEffect::EFFECT_DESC& EffectDesc)
-{
-    m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Aura_FireA"), TEXT("Layer_Particle"), &EffectDesc);
-}
-
-void CCollision_Manager::Car_Explosion(CEffect::EFFECT_DESC& EffectDesc)
-{
-    m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Aura_ExpA"), TEXT("Layer_Particle"), &EffectDesc);
-}
-
-void CCollision_Manager::Shot_Flash(CEffect::EFFECT_DESC& EffectDesc)
-{
-    m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Aura_ExpB"), TEXT("Layer_Particle"), &EffectDesc);
-}
-
-void CCollision_Manager::Cine_NoseBlood(CEffect::EFFECT_DESC& EffectDesc)
-{
-    m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Blood0"), TEXT("Layer_Particle"), &EffectDesc);
-}
-
-void CCollision_Manager::Cine_MouseBlood(CEffect::EFFECT_DESC& EffectDesc)
-{
-    m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Blood6"), TEXT("Layer_Particle"), &EffectDesc);
-}
-
-void CCollision_Manager::Car_BackTrail(CEffect::EFFECT_DESC& EffectDesc)
-{
-    m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Trail_CarBackLight"), TEXT("Layer_Particle"), &EffectDesc);
-}
-
-void CCollision_Manager::Car_GlassBroke(CEffect::EFFECT_DESC& EffectDesc)
-{
-    m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Mesh_glass0"), TEXT("Layer_Particle"), &EffectDesc);
-    m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Mesh_glass1"), TEXT("Layer_Particle"), &EffectDesc);
-    m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Mesh_glass2"), TEXT("Layer_Particle"), &EffectDesc);
-}
-
-void CCollision_Manager::Player_Attack_Effect(CEffect::EFFECT_DESC& EffectDesc)
-{
-    // 플레이어 타격 이펙트 (== 몬스터 피격 이펙트)
-    m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Hit1_Glow0"), TEXT("Layer_Particle"), &EffectDesc);
-    m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Hit1_Part0"), TEXT("Layer_Particle"), &EffectDesc);
-    m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Hit1_Part2"), TEXT("Layer_Particle"), &EffectDesc);
-    m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Hit1_Part3"), TEXT("Layer_Particle"), &EffectDesc);
-    m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Hit1_Part4"), TEXT("Layer_Particle"), &EffectDesc);
-    m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Hit1_Distortion0"), TEXT("Layer_Particle"), &EffectDesc);
-}
-
-void CCollision_Manager::Enemy_Attack_Effect(CEffect::EFFECT_DESC& EffectDesc)
-{
-    // 몬스터 타격 이펙트 (== 플레이어 피격 이펙트)
-    m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Damage1_Part0"), TEXT("Layer_Particle"), &EffectDesc);
-    m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Damage1_Part1"), TEXT("Layer_Particle"), &EffectDesc);
-    m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Damage1_Part2"), TEXT("Layer_Particle"), &EffectDesc);
-    m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Damage1_Part3"), TEXT("Layer_Particle"), &EffectDesc);
-    m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Damage1_Glow0"), TEXT("Layer_Particle"), &EffectDesc);
-
-}
-
 void CCollision_Manager::Impulse_Clear()
 {
     for (auto& pObject : m_ImpulseResolutionObjects)
@@ -704,6 +631,7 @@ void CCollision_Manager::Battle_Clear()
 void CCollision_Manager::Free()
 {
     Safe_Release(m_pGameInstance);
+    Safe_Release(m_pEffectManager);
 
     Impulse_Clear();
     Battle_Clear();

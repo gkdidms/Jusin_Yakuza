@@ -578,6 +578,9 @@
     <ClCompile Include="..\private\CarChase_CATBullet.cpp">
       <Filter>02.GameObjects\02.Character\LandObject\03.CarChase\01.Monster\03.Heli\Bullte</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\EffectManager.cpp">
+      <Filter>95.Utility\07.EffectManager</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\MainApp.h">
@@ -1186,6 +1189,9 @@
     </ClInclude>
     <ClInclude Include="..\public\CarChase_CATBullet.h">
       <Filter>02.GameObjects\02.Character\LandObject\03.CarChase\01.Monster\03.Heli\Bullte</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\EffectManager.h">
+      <Filter>95.Utility\07.EffectManager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1817,6 +1823,9 @@
     </Filter>
     <Filter Include="02.GameObjects\02.Character\LandObject\03.CarChase\01.Monster\03.Heli\Bullte">
       <UniqueIdentifier>{16c72508-b1b3-4cf1-b8ae-05ed6aa731ef}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\07.EffectManager">
+      <UniqueIdentifier>{279e9b65-e902-41c9-bff4-c83758a005a6}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
