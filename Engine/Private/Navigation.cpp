@@ -14,6 +14,7 @@ CNavigation::CNavigation(const CNavigation& rhs)
     m_Cells{ rhs.m_Cells },
     m_Routes{ rhs.m_Routes }
 {
+
     Safe_AddRef(m_pShaderCom);
 
     for (auto& pCell : m_Cells)
@@ -40,6 +41,8 @@ HRESULT CNavigation::Initialize_Prototype()
     if (nullptr == m_pShaderCom)
         return E_FAIL;
 
+    m_bOrigin = true;
+
     return S_OK;
 }
 
@@ -55,6 +58,8 @@ HRESULT CNavigation::Initialize_Prototype(const wstring strFilePath)
 
     if (FAILED(SetUp_Neighbors()))
         return E_FAIL;
+
+    m_bOrigin = true;
 
     return S_OK;
 }
@@ -177,31 +182,43 @@ HRESULT CNavigation::Load_File(const wstring strFilePath)
     _uint		iRouteCnt = 0;
     ifs.read((_char*)&iRouteCnt, sizeof(_uint));
 
+
+
+
     for (int i = 0; i < iRouteCnt; i++)
     {
+        vector<ROUTE_IO>		routeCells;
+
         _uint		iCellCnt = 0;
 
         ifs.read((_char*)&iCellCnt, sizeof(_uint));
-
-        ROUTE_IO* arr = new ROUTE_IO[iCellCnt];
         
         for (int j = 0; j < iCellCnt; j++)
         {
-            ifs.read((char*)&arr[j].iCellNums, sizeof(int));
-            ifs.read((_char*)&arr[j].vPosition, sizeof(_float4));
-            ifs.read((char*)&arr[j].iPointOption, sizeof(int));
-        }
+            ROUTE_IO    routePoint;
 
-        vector<ROUTE_IO>		routeCells;
+            ifs.read((char*)&routePoint.iCellNums, sizeof(int));
+            ifs.read((_char*)&routePoint.vPosition, sizeof(_float4));
+            ifs.read((char*)&routePoint.iPointOption, sizeof(int));
 
-        for (int j = 0; j < iCellCnt; j++)
-        {
-            routeCells.push_back(arr[j]);
+            // 루트 인덱스 저장
+            ifs.read((char*)&routePoint.iRouteNums, sizeof(int));
+
+            if (0 < routePoint.iRouteNums)
+            {
+                routePoint.pRouteID = new int[routePoint.iRouteNums];
+
+                for (int k = 0; k < routePoint.iRouteNums; k++)
+                {
+                    ifs.read((char*)&routePoint.pRouteID[k], sizeof(int));
+                }
+            }
+
+            routeCells.push_back(routePoint);
         }
 
         m_Routes.emplace(i, routeCells);
 
-        Safe_Delete(arr);
     }
 
     ifs.close();
@@ -279,6 +296,8 @@ CNavigation* CNavigation::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pCo
         MSG_BOX("Failed To Created : CNavigation");
         Safe_Release(pInstance);
     }
+
+
 
     return pInstance;
 }
@@ -385,7 +404,15 @@ void CNavigation::Free()
 
 
     for (auto& Pair : m_Routes)
+    {
+        for (auto& route : Pair.second)
+        {
+            if(0 < route.iRouteNums && true == m_bOrigin)
+                Safe_Delete(route.pRouteID);
+        }
         Pair.second.clear();
+    }
+        
     m_Routes.clear();
 
     for (auto& pCell : m_Cells)
