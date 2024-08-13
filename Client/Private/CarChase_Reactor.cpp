@@ -140,6 +140,9 @@ void CCarChase_Reactor::Change_Animation()
 
 _bool CCarChase_Reactor::Check_Dead()
 {
+	if (m_isObjectDead)
+		return true;
+
 	for (auto& pMonster : m_Monsters)
 	{
 		if (!pMonster->isObjectDead())
@@ -149,7 +152,11 @@ _bool CCarChase_Reactor::Check_Dead()
 
 		//운전수가 죽으면 바로 죽게 된다.
 		if (pMonster->isObjectDead() && pMonster->Get_WeaponType() == CCarChase_Monster::DRV)
+		{
+
 			return true;
+		}
+			
 	}
 		
 	return true;

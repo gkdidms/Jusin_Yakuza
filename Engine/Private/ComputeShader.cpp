@@ -52,7 +52,10 @@ HRESULT CComputeShader::Render(_uint iGroupCount)
 
     m_pContext->CSSetShader(m_pComputeShader, nullptr, 0);
 
-    m_pContext->Dispatch(iGroupCount, 1, 1);
+    _uint iGroupNum = (iGroupCount + 63) / 64;
+    m_pContext->Dispatch(iGroupNum, 1, 1);
+
+    m_pContext->Flush();
 
     return S_OK;
 }

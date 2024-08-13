@@ -6,6 +6,11 @@ BEGIN(Engine)
 
 class ENGINE_DLL CMesh final : public CVIBuffer
 {
+public:
+	struct BONE_BUFFER {
+		_float4x4 BoneMatrixes[512];
+		_uint iNumVertices;
+	};
 private:
 	CMesh(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CMesh(const CMesh& rhs);
@@ -23,7 +28,7 @@ public:
 	HRESULT Ready_Vertices_For_AnimMesh(const BAiMesh* pAIMesh, const vector<class CBone*>& Bones);
 
 	void	Fill_Matrices(vector<class CBone*>& Bones, _float4x4* pMeshBoneMatrices);
-	void	Bind_Matrices(vector<class CBone*>& Bones);
+	void	Bind_Matrices(vector<class CBone*>& Bones, _float4x4* pMeshBoneMatrices);
 
 public:
 	virtual HRESULT Render();

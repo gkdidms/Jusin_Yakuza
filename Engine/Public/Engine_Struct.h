@@ -334,10 +334,10 @@ namespace Engine
 
 	typedef struct ENGINE_DLL tVexAnimBone
 	{
-		XMFLOAT3 vPosition;
-		XMFLOAT3 vNormal;
+		XMFLOAT4 vPosition;
+		XMFLOAT4 vNormal;
 		XMFLOAT2 vTexcoord;
-		XMFLOAT3 vTangent;
+		XMFLOAT4 vTangent;
 
 		static const _uint iNumElements = 4;
 		static const D3D11_INPUT_ELEMENT_DESC Elements[iNumElements];

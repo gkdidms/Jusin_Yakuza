@@ -6,6 +6,9 @@ struct VS_IN
     float3 vNormal : NORMAL;
     float2 vTexcoord : TEXCOORD0;
     float3 vTangent : TANGENT;
+    
+    uint4 vBlendIndices : BLENDINDICES;
+    float4 vBlendWeights : BLENDWEIGHTS;
 };
 
 struct VS_OUT
@@ -22,16 +25,29 @@ VS_OUT VS_MAIN(VS_IN In)
 {
     VS_OUT Out = (VS_OUT) 0;
   
+    /*
+    float fWeightW = 1.f - (In.vBlendWeights.x + In.vBlendWeights.y + In.vBlendWeights.z);
+    
+    matrix TransformMatrix = mul(g_BoneMatrices[In.vBlendIndices.x], In.vBlendWeights.x) +
+    mul(g_BoneMatrices[In.vBlendIndices.y], In.vBlendWeights.y) +
+    mul(g_BoneMatrices[In.vBlendIndices.z], In.vBlendWeights.z) +
+    mul(g_BoneMatrices[In.vBlendIndices.w], fWeightW);
+    
+    vector vPosition = mul(float4(In.vPosition, 1.f), TransformMatrix);
+    vector vNormal = mul(float4(In.vNormal, 0.f), TransformMatrix);
+    vector vTangent = mul(float4(In.vTangent, 0.f), TransformMatrix);
+    */
+    
     matrix matWV, matWVP;
     
     matWV = mul(g_WorldMatrix, g_ViewMatrix);
     matWVP = mul(matWV, g_ProjMatrix);
 
     Out.vPosition = mul(vector(In.vPosition, 1.f), matWVP);
-    Out.vNormal = normalize(mul(vector(In.vNormal, 0.f), g_WorldMatrix));
+    Out.vNormal = normalize(mul(vector(In.vNormal, 0.1f), g_WorldMatrix));
     Out.vTexcoord = In.vTexcoord;
     Out.vProjPos = Out.vPosition;
-    Out.vTangent = normalize(mul(vector(In.vTangent.xyz, 0.f), g_WorldMatrix));
+    Out.vTangent = normalize(mul(vector(In.vTangent, 0.1f), g_WorldMatrix));
     Out.vBinormal = vector(cross(Out.vNormal.xyz, Out.vTangent.xyz), 0.f);
     
     return Out;

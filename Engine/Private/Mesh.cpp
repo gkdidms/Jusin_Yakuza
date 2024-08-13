@@ -803,16 +803,16 @@ void CMesh::Fill_Matrices(vector<class CBone*>& Bones, _float4x4* pMeshBoneMatri
 
 }
 
-void CMesh::Bind_Matrices(vector<class CBone*>& Bones)
+void CMesh::Bind_Matrices(vector<class CBone*>& Bones, _float4x4* pMeshBoneMatrices)
 {
-	_matrix pBoneMatrix[512];
-
-	ZeroMemory(pBoneMatrix, sizeof(_matrix) * 512);
-
 	for (size_t i = 0; i < m_iNumBones; i++)
-		pBoneMatrix[i] = XMLoadFloat4x4(&m_OffsetMatrices[i]) * XMLoadFloat4x4(Bones[m_BoneIndices[i]]->Get_CombinedTransformationMatrix());
+	{
+		XMStoreFloat4x4(&pMeshBoneMatrices[i], XMLoadFloat4x4(&m_OffsetMatrices[i]) * XMLoadFloat4x4(Bones[m_BoneIndices[i]]->Get_CombinedTransformationMatrix()));
+		XMStoreFloat4x4(&pMeshBoneMatrices[i], XMMatrixTranspose(XMLoadFloat4x4(&pMeshBoneMatrices[i])));
+	}
+		
 
-	m_pContext->UpdateSubresource(m_pBoneBufferMatrix, 0, nullptr, pBoneMatrix, 0, 0);
+	m_pContext->UpdateSubresource(m_pBoneBufferMatrix, 0, nullptr, pMeshBoneMatrices, 0, 0);
 
 	m_pContext->CSSetConstantBuffers(0, 1, &m_pBoneBufferMatrix);
 }
@@ -821,15 +821,13 @@ HRESULT CMesh::Render()
 {
 	if (m_iMeshType == CModel::TYPE_ANIM)
 	{
-		m_pContext->Flush();
-
 		// UAV에서 데이터 복사
 		// UAV의 데이터를 스테이징 버퍼로 복사
 		m_pContext->CopyResource(m_pProcessedVertexBuffer, m_pUAVOut); // m_pUAVOut는 UAV로 사용된 버퍼
 
 		// 그래픽 파이프라인에 정점 버퍼 설정
 		ID3D11Buffer* pBuffers[] = { m_pProcessedVertexBuffer };
-		UINT pStrides[] = { sizeof(VTXANIMBONE) };
+		UINT pStrides[] = { sizeof(VTXANIMMESH) };
 		UINT pOffsets[] = { 0 };
 
 		m_pContext->IASetVertexBuffers(0, 1, pBuffers, pStrides, pOffsets);
@@ -839,10 +837,6 @@ HRESULT CMesh::Render()
 		// 최종 드로우 호출
 		m_pContext->DrawIndexed(m_iNumIndices, 0, 0);
 
-		m_pContext->CSSetShader(nullptr, nullptr, 0);
-		m_pContext->CSSetShaderResources(0, 0, nullptr);
-		m_pContext->CSSetUnorderedAccessViews(0, 0, nullptr, nullptr);
-		m_pContext->CSSetConstantBuffers(0, 0, nullptr);
 	}
 	else
 	{
@@ -893,10 +887,11 @@ HRESULT CMesh::Ready_Buffer()
 {
 	D3D11_BUFFER_DESC bufferDesc = {};
 	bufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	bufferDesc.ByteWidth = sizeof(_matrix) * 512;  // 전체 크기 계산
+	bufferDesc.ByteWidth = sizeof(_float4x4) * 512;  // 전체 크기 계산
 	bufferDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
 	bufferDesc.CPUAccessFlags = 0;
 	bufferDesc.MiscFlags = 0;
+	bufferDesc.StructureByteStride = sizeof(_float4x4);
 
 	if (FAILED(m_pDevice->CreateBuffer(&bufferDesc, nullptr, &m_pBoneBufferMatrix)))
 		return E_FAIL;

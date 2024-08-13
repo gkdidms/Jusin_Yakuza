@@ -15,22 +15,25 @@ struct GS_OUT
     float3 vNormal : NORMAL;
     float2 vTexcoord : TEXCOORD0;
     float3 vTangent : TANGENT;
+    
+    uint4 vBlendIndices : BLENDINDICES;
+    float4 vBlendWeights : BLENDWEIGHTS;
 };
 
-cbuffer BoneBuffer : register(b0)
-{
-    matrix g_BoneMatrices[512];
-};
+matrix g_BoneMatrices[512] : register(b0);
 
-StructuredBuffer<GS_IN> g_InputBuffer;
-RWStructuredBuffer<GS_OUT> g_OutputBuffer;
+StructuredBuffer<GS_IN> g_InputBuffer : register(t0);
+RWStructuredBuffer<GS_OUT> g_OutputBuffer : register(u0);
 
 [numthreads(64, 1, 1)]
 void GS_MAIN(uint3 dispatchThreadID : SV_DispatchThreadID)
 {
-    uint iIndex = dispatchThreadID.x; // 정점 인덱스
+
+    // 전체 정점 인덱스 계산
+    uint globalIndex = dispatchThreadID.x;
     
-    GS_IN In = g_InputBuffer[iIndex];
+  // 전체 정점 인덱스를 사용해 입력 버퍼에서 정점 데이터 가져오기
+    GS_IN In = g_InputBuffer[globalIndex];
     
     float fWeightW = 1.f - (In.vBlendWeights.x + In.vBlendWeights.y + In.vBlendWeights.z);
     
@@ -43,8 +46,12 @@ void GS_MAIN(uint3 dispatchThreadID : SV_DispatchThreadID)
     vector vNormal = mul(float4(In.vNormal, 0.f), TransformMatrix);
     vector vTangent = mul(float4(In.vTangent, 0.f), TransformMatrix);
     
-    g_OutputBuffer[iIndex].vPosition = vPosition.xyz;
-    g_OutputBuffer[iIndex].vNormal = vNormal.xyz;
-    g_OutputBuffer[iIndex].vTexcoord = In.vTexcoord;
-    g_OutputBuffer[iIndex].vTangent = vTangent.xyz;
+        // 글로벌 인덱스를 사용해 출력 버퍼에 저장
+    g_OutputBuffer[globalIndex].vPosition = vPosition.xyz;
+    g_OutputBuffer[globalIndex].vNormal = vNormal.xyz;
+    g_OutputBuffer[globalIndex].vTexcoord = In.vTexcoord;
+    g_OutputBuffer[globalIndex].vTangent = vTangent.xyz;
+    g_OutputBuffer[globalIndex].vBlendIndices = In.vBlendIndices;
+    g_OutputBuffer[globalIndex].vBlendWeights = In.vBlendWeights;
+
 }

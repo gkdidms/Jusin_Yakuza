@@ -68,14 +68,11 @@ HRESULT CVIBuffer::Render()
 
 HRESULT CVIBuffer::Bind_Compute(CComputeShader* pShader)
 {
-	//초기화
-	m_pContext->ClearUnorderedAccessViewFloat(m_pResultBufferUAV, (_float*)&m_vClearColor);
-
 	// 컴퓨트 셰이더 바인딩
 	m_pContext->CSSetShaderResources(0, 1, &m_pVertexBufferSRV);
 	m_pContext->CSSetUnorderedAccessViews(0, 1, &m_pResultBufferUAV, nullptr);
 
-	pShader->Render((m_iNumVertices + 63) / 64);
+	pShader->Render(m_iNumVertices);
 
 	return S_OK;
 }
@@ -103,11 +100,11 @@ HRESULT CVIBuffer::Ready_ComputeBuffer()
 	// 처리된 결과를 위한 Unordered Access View 생성
 	D3D11_BUFFER_DESC bufferDesc = {};
 	bufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	bufferDesc.ByteWidth = sizeof(VTXANIMBONE) * m_iNumVertices;
+	bufferDesc.ByteWidth = sizeof(VTXANIMMESH) * m_iNumVertices;
 	bufferDesc.BindFlags = D3D11_BIND_UNORDERED_ACCESS | D3D11_BIND_SHADER_RESOURCE;
 	bufferDesc.CPUAccessFlags = 0;
 	bufferDesc.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
-	bufferDesc.StructureByteStride = sizeof(VTXANIMBONE);
+	bufferDesc.StructureByteStride = sizeof(VTXANIMMESH);
 
 	if (FAILED(m_pDevice->CreateBuffer(&bufferDesc, nullptr, &m_pUAVOut)))
 		return E_FAIL;
@@ -122,12 +119,12 @@ HRESULT CVIBuffer::Ready_ComputeBuffer()
 		return E_FAIL;
 
 	D3D11_BUFFER_DESC Desc{};
-	Desc.ByteWidth = sizeof(VTXANIMBONE) * m_iNumVertices;
+	Desc.ByteWidth = sizeof(VTXANIMMESH) * m_iNumVertices;
 	Desc.Usage = D3D11_USAGE_DEFAULT;
 	Desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	Desc.CPUAccessFlags = 0;
 	Desc.MiscFlags = 0;
-	Desc.StructureByteStride = sizeof(VTXANIMBONE);
+	Desc.StructureByteStride = sizeof(VTXANIMMESH);
 
 	if (FAILED(m_pDevice->CreateBuffer(&Desc, nullptr, &m_pProcessedVertexBuffer)))
 		return E_FAIL;
