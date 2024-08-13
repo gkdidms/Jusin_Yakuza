@@ -1,35 +1,16 @@
 #include "Shader_Neo.hlsli"
 
-[numthreads(64, 1, 1)]
+[numthreads(8, 8, 1)]
 void GS_MAIN(uint3 dispatchThreadID : SV_DispatchThreadID)
 {
-
     // 전체 정점 인덱스 계산
     uint globalIndex = dispatchThreadID.x;
     
-  // 전체 정점 인덱스를 사용해 입력 버퍼에서 정점 데이터 가져오기
     GS_IN In = g_InputBuffer[globalIndex];
-    
-    float fWeightW = 1.f - (In.vBlendWeights.x + In.vBlendWeights.y + In.vBlendWeights.z);
-    
-    matrix TransformMatrix = mul(g_BoneMatrices[In.vBlendIndices.x], In.vBlendWeights.x) +
-    mul(g_BoneMatrices[In.vBlendIndices.y], In.vBlendWeights.y) +
-    mul(g_BoneMatrices[In.vBlendIndices.z], In.vBlendWeights.z) +
-    mul(g_BoneMatrices[In.vBlendIndices.w], fWeightW);
-    
-    vector vPosition = mul(float4(In.vPosition, 1.f), TransformMatrix);
-    vector vNormal = mul(float4(In.vNormal, 0.f), TransformMatrix);
-    vector vTangent = mul(float4(In.vTangent, 0.f), TransformMatrix);
-    
-        // 글로벌 인덱스를 사용해 출력 버퍼에 저장
-    g_OutputBuffer[globalIndex].vPosition = vPosition;
-    g_OutputBuffer[globalIndex].vNormal = vNormal;
-    g_OutputBuffer[globalIndex].vTexcoord = In.vTexcoord;
-    g_OutputBuffer[globalIndex].vTangent = vTangent;
     
     // 텍스쳐 연산 진행
     uint2 RTTexcoord, RDTexcoord, RSTexcoord, RMTexcoord, MultiTexcoord, NormalTexcoord, DiffuseTexcoord;
-    uint2 PixelCoord = uint2(In.vTexcoord * g_WindowSize);
+    uint2 Texcoord = In.vTexcoord * g_WindowSize;
     
     DiffuseTexcoord = In.vTexcoord * TextureSize[0];
     RTTexcoord = UV_RT(In.vTexcoord * TextureSize[2]);
@@ -63,10 +44,9 @@ void GS_MAIN(uint3 dispatchThreadID : SV_DispatchThreadID)
     float fMixMultiFactor = lerp(vMulti.y, 1.f, AssetShader);
     float fDeffuseFactor = vDiffuseDesc.a * 1.f;
     
-    g_OutputBuffer[globalIndex].vDiffuse = vDiffuse;
-    g_OutputBuffer[globalIndex].vNormalDesc = vector(vNormalDesc.xyz, 0.f);
-    g_OutputBuffer[globalIndex].vSurface = vector(Result.fMetalness, Result.fRoughness, Result.fSpeclure, 0);
-    g_OutputBuffer[globalIndex].vSurface = vector(OEResult.fRouhness, OEResult.fMixShaderFactor, fMixMultiFactor, fDeffuseFactor);
-    g_OutputBuffer[globalIndex].vSpeculer = vector(OEResult.vSpecular, 0.f);
-
+    g_OutDiffuseTexture[Texcoord] = vDiffuse;
+    g_OutNormalTexture[Texcoord] = vector(vNormalDesc.xyz, 0.f);
+    g_OutSurfaceTexture[Texcoord] = vector(Result.fMetalness, Result.fRoughness, Result.fSpeclure, 0);
+    g_OutOEShaderTexture[Texcoord] = vector(OEResult.fRouhness, OEResult.fMixShaderFactor, fMixMultiFactor, fDeffuseFactor);
+    g_OutSpecularTexture[Texcoord] = vector(OEResult.vSpecular, 0.f);
 }

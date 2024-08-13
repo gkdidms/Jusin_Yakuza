@@ -168,6 +168,7 @@ protected:
     CModel* m_pModelCom = { nullptr };
     CShader* m_pShaderCom = { nullptr };
     CComputeShader* m_pComputeShaderCom = { nullptr };
+    CComputeShader* m_pNeoComputeShaderCom = { nullptr };
     CNeoShader* m_pMaterialCom = { nullptr };
     CNavigation* m_pNavigationCom = { nullptr };
 

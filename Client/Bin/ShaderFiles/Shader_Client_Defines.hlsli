@@ -22,6 +22,10 @@ Texture2D g_RMTexture;
 Texture2D g_RDTexture;
 Texture2D g_RTTexture;
 
+Texture2D g_SurfaceTexture;
+Texture2D g_OEShaderTexture;
+Texture2D g_SpecularTexture;
+
 float g_fProgress;
 
 float4 g_vColor;

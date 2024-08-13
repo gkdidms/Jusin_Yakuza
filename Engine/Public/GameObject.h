@@ -7,10 +7,31 @@ class ENGINE_DLL CGameObject abstract :
     public CBase
 {
 public:
-    typedef struct tGameObjectDesc: public CTransform::TRANSFORM_DESC
+    typedef struct tGameObjectDesc : public CTransform::TRANSFORM_DESC
     {
         _uint iObjectIndex;
     } GAMEOBJECT_DESC;
+
+    enum TEXTURE_TYPE {
+        DIFFUSE,
+        NORMAL,
+        SURFACE,
+        OESHADER,
+        SPECULAR,
+        TEXTURE_TYPE_END
+    };
+
+    struct TEXTURE_OPTION {
+        _int g_isRS = { true };
+        _int g_isRD = { true };
+        _int g_isRM = { true };
+        _int g_isRT = { true };
+        _int g_isNormal = { true };
+        _int g_isMulti = { true };
+
+
+        _float2 TextureSize[7];
+    };
 
 protected:
     CGameObject(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -64,11 +85,20 @@ protected:
 protected:
     vector<_float> m_Casecade;
 
+    //컴퓨트 셰이더 용 텍스쳐버퍼
+    ID3D11Buffer* m_pTextureOptionBuffer = { nullptr };
+    vector<ID3D11ShaderResourceView*> m_pBufferSRVTexture;
+    vector<ID3D11UnorderedAccessView*> m_pBufferUAVTexture;
+
 protected:
     HRESULT Add_Component(_uint iLevelIndex, const wstring strComponentPrototypeTag, const wstring strComponentTag, class CComponent** pComponent, void* pArg = nullptr);
+    void Bind_TextureUAV(_uint iType);
+    HRESULT Bind_TextureSRV(class CShader* m_pShader, const _char* pName, _uint iType);
+    HRESULT Ready_Buffer();
 
 private:
     class CComponent* Find_Component(const wstring StrComponentTag);
+
 
 public:
     virtual CGameObject* Clone(void* pArg) = 0;

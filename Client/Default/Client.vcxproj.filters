@@ -1810,6 +1810,9 @@
     <FxCompile Include="..\Bin\ShaderFiles\Shader_AnimCompute.hlsl">
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_NeoCompute.hlsl">
+      <Filter>97.ShaderFiles</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Bin\ShaderFiles\Shader_Client_Defines.hlsli">
@@ -1819,6 +1822,9 @@
       <Filter>97.ShaderFiles</Filter>
     </None>
     <None Include="..\Bin\ShaderFiles\Shader_NeoMetallic.hlsli">
+      <Filter>97.ShaderFiles</Filter>
+    </None>
+    <None Include="..\Bin\ShaderFiles\Shader_Compute_Defines.hlsli">
       <Filter>97.ShaderFiles</Filter>
     </None>
   </ItemGroup>

@@ -15,6 +15,7 @@ public:
     virtual HRESULT Initialize(void* pArg) override;
     virtual HRESULT Render() override;
     virtual HRESULT Bind_Compute(class CComputeShader* pShader) override;
+    virtual HRESULT Bind_ResultSRV();
 
 public:
     HRESULT Create_Buffer(ID3D11Buffer** pOut);
@@ -24,6 +25,7 @@ public:
 
 protected:
     ID3D11ShaderResourceView* m_pVertexBufferSRV = { nullptr };
+    ID3D11ShaderResourceView* m_pResultBufferSRV = { nullptr }; // 정점 정보를 쓰기 위해서 만듦
     ID3D11UnorderedAccessView* m_pResultBufferUAV = { nullptr };
     ID3D11Buffer* m_pProcessedVertexBuffer = { nullptr };
 

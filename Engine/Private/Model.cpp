@@ -933,6 +933,11 @@ HRESULT CModel::Bind_Compute(CComputeShader* pShader, _uint iNumMeshIndex)
 	return m_Meshes[iNumMeshIndex]->Bind_Compute(pShader);
 }
 
+HRESULT CModel::Bind_TextureCompute(_uint iNumMeshIndex)
+{
+	return m_Meshes[iNumMeshIndex]->Bind_ResultSRV();
+}
+
 HRESULT CModel::Bind_Material(CShader* pShader, const _char* pConstantName, _uint iNumMeshIndex, aiTextureType eTextureType)
 {
 	auto* pTexture = m_Materials[m_Meshes[iNumMeshIndex]->Get_MaterialIndex()].pMaterialTextures[eTextureType];
@@ -942,6 +947,15 @@ HRESULT CModel::Bind_Material(CShader* pShader, const _char* pConstantName, _uin
 	return pTexture->Bind_ShaderResource(pShader, pConstantName, 0);
 }
 
+HRESULT CModel::Bind_ComputeMaterial(_uint iNumMeshIndex, _uint iSlot, aiTextureType eTextureType)
+{
+	auto* pTexture = m_Materials[m_Meshes[iNumMeshIndex]->Get_MaterialIndex()].pMaterialTextures[eTextureType];
+	if (nullptr == pTexture)
+		return E_FAIL;
+
+	return pTexture->Bind_ComputeShader(iSlot);
+}
+
 HRESULT CModel::Bind_BoneMatrices(CShader* pShader, const _char* pConstantName, _uint iNumMeshIndex)
 {
 	ZeroMemory(m_MeshBoneMatrices, sizeof(_float4x4) * 512);
@@ -949,6 +963,15 @@ HRESULT CModel::Bind_BoneMatrices(CShader* pShader, const _char* pConstantName, 
 	m_Meshes[iNumMeshIndex]->Fill_Matrices(m_Bones, m_MeshBoneMatrices);
 
 	return pShader->Bind_Matrices(pConstantName, m_MeshBoneMatrices, 512);
+}
+
+_float2 CModel::Get_MaterialSize(_uint iNumMeshIndex, aiTextureType eTextureType, _uint iNumTexture)
+{
+	auto* pTexture = m_Materials[m_Meshes[iNumMeshIndex]->Get_MaterialIndex()].pMaterialTextures[eTextureType];
+	if (nullptr == pTexture)
+		return _float2();
+
+	return pTexture->Get_TextureSize(iNumTexture);
 }
 
 void CModel::Bind_BoneMatrices(_uint iNumMeshIndex)

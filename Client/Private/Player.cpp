@@ -373,9 +373,7 @@ HRESULT CPlayer::Render()
 	int i = 0;
 	for (auto& pMesh : m_pModelCom->Get_Meshes())
 	{
-		m_pModelCom->Bind_BoneMatrices(i);
 
-		m_pModelCom->Bind_Compute(m_pComputeShaderCom, i);
 
 		if(ADVENTURE != m_isRimLight)
 		{
@@ -447,37 +445,17 @@ HRESULT CPlayer::Render()
 		_bool fFar = m_pGameInstance->Get_CamFar();
 		m_pShaderCom->Bind_RawValue("g_fFar", &fFar, sizeof(_float));
 
-		//m_pModelCom->Bind_BoneMatrices(m_pShaderCom, "g_BoneMatrices", i);
-
-		m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE);
-		
-		m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS);
-
-		_bool isRS = true;
-		_bool isRD = true;
-		_bool isRM = true;
-		_bool isRT = true;
-		_bool isMulti = true;
-
-		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_MultiDiffuseTexture", i, aiTextureType_SHININESS)))
-			isMulti = false;
-		m_pShaderCom->Bind_RawValue("g_isMulti", &isMulti, sizeof(_bool));
-
-		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RSTexture", i, aiTextureType_SPECULAR)))
-			isRS = false;
-		m_pShaderCom->Bind_RawValue("g_isRS", &isRS, sizeof(_bool));
-
-		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RDTexture", i, aiTextureType_OPACITY)))
-			isRD = false;
-		m_pShaderCom->Bind_RawValue("g_isRD", &isRD, sizeof(_bool));
-
-		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RMTexture", i, aiTextureType_METALNESS)))
-			isRM = false;
-		m_pShaderCom->Bind_RawValue("g_isRM", &isRM, sizeof(_bool));
-
-		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RTTexture", i, aiTextureType_EMISSIVE)))
-			isRT = false;
-		m_pShaderCom->Bind_RawValue("g_isRT", &isRT, sizeof(_bool));
+		//텍스쳐 보내기
+		if (FAILED(Bind_TextureSRV(m_pShaderCom, "g_DiffuseTexture", TEXTURE_TYPE::DIFFUSE)))
+			return E_FAIL;
+		if (FAILED(Bind_TextureSRV(m_pShaderCom, "g_NormalTexture", TEXTURE_TYPE::NORMAL)))
+			return E_FAIL;
+		if (FAILED(Bind_TextureSRV(m_pShaderCom, "g_SurfaceTexture", TEXTURE_TYPE::SURFACE)))
+			return E_FAIL;
+		if (FAILED(Bind_TextureSRV(m_pShaderCom, "g_OEShaderTexture", TEXTURE_TYPE::OESHADER)))
+			return E_FAIL;
+		if (FAILED(Bind_TextureSRV(m_pShaderCom, "g_SpecularTexture", TEXTURE_TYPE::SPECULAR)))
+			return E_FAIL;
 
 		if (pMesh->Get_AlphaApply())
 			m_pShaderCom->Begin(1);     //블랜드
@@ -1670,6 +1648,9 @@ HRESULT CPlayer::Add_Components()
 		TEXT("Com_ComShader"), reinterpret_cast<CComponent**>(&m_pComputeShaderCom))))
 		return E_FAIL;
 
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Shader_NeoCompute"),
+		TEXT("Com_NeoComShader"), reinterpret_cast<CComponent**>(&m_pNeoComputeShaderCom))))
+		return E_FAIL;
 
 	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Model_Kiryu"),
 		TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))

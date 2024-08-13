@@ -31,8 +31,38 @@ public:
         _float fEngine_UV;
     } METERIAL_DESC;
 
+    struct MATERIAL_BUFFER {
+        _int g_isUVShader = { false };
+
+        float Opacity = { 0.f };
+        float fSpecularPower = { 0.f };
+
+        float AssetShader = { 0.f };
+        float DisableRDRT = { 0.f };
+        float Engine = { 0.f };
+        float IsOEClothShader = { 0.f };
+        float SkinShader = { 0.f };
+        float Rough = { 0.f };
+        float IsY3Shader = { 0.f };
+        float Imperfection = { 0.f };
+        float SPShader = { 0.f };
+
+
+        float g_fRTX = { 0.f };
+        float g_fRTY = { 0.f };
+        float g_fRDRMRS_X = { 0.f };
+        float g_fRDRMRS_Y = { 0.f };
+        float f_fImperfection_UV = { 0.f };
+        float f_fEngine_UV = { 0.f };
+
+        float padding1;
+        float padding2;
+
+        _vector vSpecularColor;
+    };
+
 private:
-    CMaterial();
+    CMaterial(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
     virtual ~CMaterial() = default;
 
 public:
@@ -41,12 +71,21 @@ public:
 public:
     HRESULT Initialize(METERIAL_DESC* pDesc);
     HRESULT Bind_Shader(class CShader* pShader);
+    void Bind_ComputeShader();
 
 private:
+    ID3D11Device* m_pDevice = { nullptr };
+    ID3D11DeviceContext* m_pContext = { nullptr };
+
     METERIAL_DESC m_Info;
 
+    ID3D11Buffer* m_pMaterialBuffer = { nullptr };
+
+private:
+    HRESULT Ready_Buffer();
+
 public:
-    static CMaterial* Create(METERIAL_DESC* pDesc);
+    static CMaterial* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, METERIAL_DESC* pDesc);
     virtual void Free();
 };
 END

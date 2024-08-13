@@ -579,6 +579,7 @@
       <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">GS_MAIN</EntryPointName>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Aura.hlsl" />
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_NeoCompute.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Trail.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxAnimMesh.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxCube.hlsl" />
@@ -595,6 +596,7 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Bin\ShaderFiles\Shader_Client_Defines.hlsli" />
+    <None Include="..\Bin\ShaderFiles\Shader_Compute_Defines.hlsli" />
     <None Include="..\Bin\ShaderFiles\Shader_Neo.hlsli" />
     <None Include="..\Bin\ShaderFiles\Shader_NeoMetallic.hlsli" />
   </ItemGroup>

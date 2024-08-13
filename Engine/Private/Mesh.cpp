@@ -827,7 +827,7 @@ HRESULT CMesh::Render()
 
 		// 그래픽 파이프라인에 정점 버퍼 설정
 		ID3D11Buffer* pBuffers[] = { m_pProcessedVertexBuffer };
-		UINT pStrides[] = { sizeof(VTXANIMMESH) };
+		UINT pStrides[] = { sizeof(VTXANIMBONE) };
 		UINT pOffsets[] = { 0 };
 
 		m_pContext->IASetVertexBuffers(0, 1, pBuffers, pStrides, pOffsets);

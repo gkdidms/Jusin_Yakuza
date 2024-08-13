@@ -37,6 +37,9 @@ HRESULT CLandObject::Initialize(void* pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
+	if (FAILED(Ready_Buffer()))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -89,7 +92,57 @@ HRESULT CLandObject::Render_Compute()
 	_uint i = 0;
 	for (auto& pMesh : m_pModelCom->Get_Meshes())
 	{
+		m_pModelCom->Bind_BoneMatrices(i);
+		m_pMaterialCom->Bind_ComputeShader(m_pModelCom->Get_MaterialName(pMesh->Get_MaterialIndex()));
 
+		TEXTURE_OPTION OptionDesc{};
+		ZeroMemory(OptionDesc.TextureSize, sizeof(_float2) * 7);
+
+		m_pModelCom->Bind_ComputeMaterial(i, 1, aiTextureType_DIFFUSE);
+		OptionDesc.TextureSize[0] = m_pModelCom->Get_MaterialSize(i, aiTextureType_DIFFUSE);
+
+		if (FAILED(m_pModelCom->Bind_ComputeMaterial(i, 2, aiTextureType_NORMALS)))
+			OptionDesc.g_isNormal = false;
+		else
+			OptionDesc.TextureSize[1] = m_pModelCom->Get_MaterialSize(i, aiTextureType_NORMALS);
+
+		if (FAILED(m_pModelCom->Bind_ComputeMaterial(i, 7, aiTextureType_SHININESS)))
+			OptionDesc.g_isMulti = false;
+		else
+			OptionDesc.TextureSize[6] = m_pModelCom->Get_MaterialSize(i, aiTextureType_SHININESS);
+
+		if (FAILED(m_pModelCom->Bind_ComputeMaterial(i, 5, aiTextureType_SPECULAR)))
+			OptionDesc.g_isRS = false;
+		else
+			OptionDesc.TextureSize[4] = m_pModelCom->Get_MaterialSize(i, aiTextureType_SPECULAR);
+
+		if (FAILED(m_pModelCom->Bind_ComputeMaterial(i, 6, aiTextureType_OPACITY)))
+			OptionDesc.g_isRD = false;
+		else
+			OptionDesc.TextureSize[5] = m_pModelCom->Get_MaterialSize(i, aiTextureType_OPACITY);
+
+		if (FAILED(m_pModelCom->Bind_ComputeMaterial(i, 4, aiTextureType_METALNESS)))
+			OptionDesc.g_isRM = false;
+		else
+			OptionDesc.TextureSize[3] = m_pModelCom->Get_MaterialSize(i, aiTextureType_METALNESS);
+
+		if (FAILED(m_pModelCom->Bind_ComputeMaterial(i, 3, aiTextureType_EMISSIVE)))
+			OptionDesc.g_isRT = false;
+		else
+			OptionDesc.TextureSize[2] = m_pModelCom->Get_MaterialSize(i, aiTextureType_EMISSIVE);
+
+		m_pContext->UpdateSubresource(m_pTextureOptionBuffer, 0, nullptr, &OptionDesc, 0, 0);
+		m_pContext->CSSetConstantBuffers(1, 1, &m_pTextureOptionBuffer);
+
+		//받아올 텍스쳐
+		Bind_TextureUAV(TEXTURE_TYPE::DIFFUSE);
+		Bind_TextureUAV(TEXTURE_TYPE::NORMAL);
+		Bind_TextureUAV(TEXTURE_TYPE::SURFACE);
+		Bind_TextureUAV(TEXTURE_TYPE::OESHADER);
+		Bind_TextureUAV(TEXTURE_TYPE::SPECULAR);
+
+		//컴퓨트 셰이더 작동 
+		m_pModelCom->Bind_Compute(m_pComputeShaderCom, i);
 
 		i++;
 	}
@@ -404,6 +457,7 @@ void CLandObject::Free()
 	Safe_Release(m_pSystemManager);
 	Safe_Release(m_pCollisionManager);
 	Safe_Release(m_pMaterialCom);
+	Safe_Release(m_pNeoComputeShaderCom);
 }
 
 void CLandObject::Compute_Height()

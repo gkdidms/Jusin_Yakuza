@@ -20,7 +20,7 @@ HRESULT CNeoShader::Initialize_Prototype(const char* strFilePath)
 {
 	if (FAILED(File_Open(strFilePath)))
 		return E_FAIL;
-
+	
 	return S_OK;
 }
 
@@ -37,6 +37,16 @@ HRESULT CNeoShader::Bind_Shader(CShader* pShader, const char* pMaterialName)
 		return E_FAIL;
 
 	return pMeterial->Bind_Shader(pShader);
+}
+
+void CNeoShader::Bind_ComputeShader(const char* pMaterialName)
+{
+	CMaterial* pMeterial = Fine_Materials(pMaterialName);
+
+	if (nullptr == pMeterial)
+		return;
+
+	pMeterial->Bind_ComputeShader();
 }
 
 HRESULT CNeoShader::File_Open(const char* strFilePath)
@@ -91,7 +101,7 @@ HRESULT CNeoShader::File_Open(const char* strFilePath)
 			in.read((char*)&Desc.fEngine_UV, sizeof(_float));
 		}
 
-		CMaterial* pMeterial = CMaterial::Create(&Desc);
+		CMaterial* pMeterial = CMaterial::Create(m_pDevice, m_pContext, &Desc);
 		if (nullptr == pMeterial)
 			return E_FAIL;
 

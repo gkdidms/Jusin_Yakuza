@@ -324,7 +324,7 @@ namespace Engine
 		XMFLOAT3 vNormal;
 		XMFLOAT2 vTexcoord;
 		XMFLOAT3 vTangent;
-
+		
 		XMUINT4 vBlendIndices; // 정점에게 영향을 주는 뼈의 인덱스
 		XMFLOAT4 vBlendWeights; // 정점에게 영향을 주는 뼈의 영향을 주는 정도 (가중치)
 
@@ -339,7 +339,13 @@ namespace Engine
 		XMFLOAT2 vTexcoord;
 		XMFLOAT4 vTangent;
 
-		static const _uint iNumElements = 4;
+		XMFLOAT4 vDiffuse;
+		XMFLOAT4 vNormalDesc;
+		XMFLOAT4 vSurface;
+		XMFLOAT4 vOEShder;
+		XMFLOAT4 vSpecular;
+
+		static const _uint iNumElements = 9;
 		static const D3D11_INPUT_ELEMENT_DESC Elements[iNumElements];
 	} VTXANIMBONE;
 

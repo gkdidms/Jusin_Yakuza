@@ -201,3 +201,29 @@ UV_SHADER UV_Shader(float2 vTexcoord)
     
     return Out;
 }
+
+uint UV_RT(float2 vTexcoord)
+{
+    float RTX = max(g_fRTX, 1.f);
+    float RTY = max(g_fRTY, 1.f);
+    uint2 RT = uint2(RTX, RTY) * vTexcoord;
+    
+    return RT;
+}
+
+uint2 UV_RDRMRS(float2 vTexcoord)
+{
+    float RDRMRS_X = max(g_fRDRMRS_X, 1.f);
+    float RDRMRS_Y = max(g_fRDRMRS_Y, 1.f);
+    uint2 RDRMRS = uint2(vTexcoord) * uint2(RDRMRS_X, RDRMRS_Y);
+    
+    return RDRMRS;
+}
+
+float4 UV_Imperfection(uint2 RT)
+{
+    vector Imperfection = pow(2.f, f_fImperfection_UV);
+    Imperfection = float4(float2(RT.xy), 0.f, 0.f) / Imperfection;
+    
+    return Imperfection;
+}

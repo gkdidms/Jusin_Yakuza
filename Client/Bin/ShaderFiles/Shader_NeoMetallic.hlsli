@@ -1,5 +1,4 @@
-#include "Engine_Shader_Defines.hlsli"
-#include "Shader_Client_Defines.hlsli"
+#include "Shader_Compute_Defines.hlsli"
 
 struct MRM_OUT
 {

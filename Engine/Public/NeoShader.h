@@ -14,6 +14,7 @@ public:
     HRESULT Initialize_Prototype(const char* strFilePath);
     virtual HRESULT Initialize(void* pArg);
     HRESULT Bind_Shader(class CShader* pShader, const char* pMaterialName);
+    void Bind_ComputeShader(const char* pMaterialName);
 
 private:
     map<string, class CMaterial*> m_Materials;

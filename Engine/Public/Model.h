@@ -43,8 +43,11 @@ public:
 	HRESULT Render(_uint iMeshIndex);
 
 	HRESULT Bind_Compute(class CComputeShader* pShader, _uint iNumMeshIndex);
+	HRESULT Bind_TextureCompute(_uint iNumMeshIndex);
 	HRESULT Bind_Material(class CShader* pShader, const _char* pConstantName, _uint iNumMeshIndex, aiTextureType eTextureType);
+	HRESULT Bind_ComputeMaterial(_uint iNumMeshIndex, _uint iSlot, aiTextureType eTextureType);
 	HRESULT Bind_BoneMatrices(class CShader* pShader, const _char* pConstantName, _uint iNumMeshIndex);
+	_float2 Get_MaterialSize(_uint iNumMeshIndex, aiTextureType eTextureType, _uint iNumTexture = 0);
 	void Bind_BoneMatrices(_uint iNumMeshIndex);
 	bool	Check_Exist_Material(_uint iNumMeshIndex, aiTextureType eTextureType);
 

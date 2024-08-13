@@ -23,13 +23,15 @@ CVIBuffer::CVIBuffer(const CVIBuffer& rhs)
 	m_pVertexBufferSRV{rhs.m_pVertexBufferSRV},
 	m_pProcessedVertexBuffer{ rhs.m_pProcessedVertexBuffer},
 	m_pResultBufferUAV{rhs.m_pResultBufferUAV},
-	m_pUAVOut{rhs.m_pUAVOut}
+	m_pUAVOut{rhs.m_pUAVOut},
+	m_pResultBufferSRV{rhs.m_pResultBufferSRV}
 {
 	Safe_AddRef(m_pVB);
 	Safe_AddRef(m_pIB);
 	Safe_AddRef(m_pVertexBufferSRV);
 	Safe_AddRef(m_pResultBufferUAV);
 	Safe_AddRef(m_pProcessedVertexBuffer);
+	Safe_AddRef(m_pResultBufferSRV);
 	Safe_AddRef(m_pUAVOut);
 }
 
@@ -77,6 +79,12 @@ HRESULT CVIBuffer::Bind_Compute(CComputeShader* pShader)
 	return S_OK;
 }
 
+HRESULT CVIBuffer::Bind_ResultSRV()
+{
+	m_pContext->CSSetShaderResources(0, 1, &m_pResultBufferSRV);
+	return S_OK;
+}
+
 HRESULT CVIBuffer::Create_Buffer(ID3D11Buffer** pOut)
 {
 	if (FAILED(m_pDevice->CreateBuffer(&m_Buffer_Desc, &m_InitialData, pOut)))
@@ -100,13 +108,16 @@ HRESULT CVIBuffer::Ready_ComputeBuffer()
 	// 贸府等 搬苞甫 困茄 Unordered Access View 积己
 	D3D11_BUFFER_DESC bufferDesc = {};
 	bufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	bufferDesc.ByteWidth = sizeof(VTXANIMMESH) * m_iNumVertices;
+	bufferDesc.ByteWidth = sizeof(VTXANIMBONE) * m_iNumVertices;
 	bufferDesc.BindFlags = D3D11_BIND_UNORDERED_ACCESS | D3D11_BIND_SHADER_RESOURCE;
 	bufferDesc.CPUAccessFlags = 0;
 	bufferDesc.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
-	bufferDesc.StructureByteStride = sizeof(VTXANIMMESH);
+	bufferDesc.StructureByteStride = sizeof(VTXANIMBONE);
 
 	if (FAILED(m_pDevice->CreateBuffer(&bufferDesc, nullptr, &m_pUAVOut)))
+		return E_FAIL;
+
+	if (FAILED(m_pDevice->CreateShaderResourceView(m_pUAVOut, &srvDesc, &m_pResultBufferSRV)))
 		return E_FAIL;
 
 	D3D11_UNORDERED_ACCESS_VIEW_DESC uavDesc = {};
@@ -119,12 +130,12 @@ HRESULT CVIBuffer::Ready_ComputeBuffer()
 		return E_FAIL;
 
 	D3D11_BUFFER_DESC Desc{};
-	Desc.ByteWidth = sizeof(VTXANIMMESH) * m_iNumVertices;
+	Desc.ByteWidth = sizeof(VTXANIMBONE) * m_iNumVertices;
 	Desc.Usage = D3D11_USAGE_DEFAULT;
 	Desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	Desc.CPUAccessFlags = 0;
 	Desc.MiscFlags = 0;
-	Desc.StructureByteStride = sizeof(VTXANIMMESH);
+	Desc.StructureByteStride = sizeof(VTXANIMBONE);
 
 	if (FAILED(m_pDevice->CreateBuffer(&Desc, nullptr, &m_pProcessedVertexBuffer)))
 		return E_FAIL;
@@ -140,6 +151,7 @@ void CVIBuffer::Free()
 	Safe_Release(m_pUAVOut);
 
 	Safe_Release(m_pVertexBufferSRV);
+	Safe_Release(m_pResultBufferSRV);
 	Safe_Release(m_pProcessedVertexBuffer);
 	Safe_Release(m_pResultBufferUAV);
 }
