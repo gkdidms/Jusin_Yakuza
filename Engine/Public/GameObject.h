@@ -39,6 +39,7 @@ public:
     virtual HRESULT Render();
     virtual HRESULT Render_Bloom() { return S_OK; }
     virtual HRESULT Render_LightDepth() { return S_OK; }
+    virtual HRESULT Render_BoneCompute() { return S_OK; }
     virtual void ImpulseResolution(CGameObject* pTargetObject, _float fDistance = 0.5f) {};
     virtual void Attack_Event(CGameObject* pHitObject, _bool isItem = false) {};
 

@@ -464,8 +464,6 @@ HRESULT CMonster::Render()
 		_bool fFar = m_pGameInstance->Get_CamFar();
 		m_pShaderCom->Bind_RawValue("g_fFar", &fFar, sizeof(_float));
 
-		m_pModelCom->Bind_BoneMatrices(m_pShaderCom, "g_BoneMatrices", i);
-
 		m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE);
 
 		m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS);
@@ -475,14 +473,6 @@ HRESULT CMonster::Render()
 		_bool isRM = true;
 		_bool isRT = true;
 		_bool isMulti = true;
-		_float fRDCount = 1.f;
-
-		if (m_pGameInstance->Find_String(pMesh->Get_Name(), "shirts") ||
-			m_pGameInstance->Find_String(pMesh->Get_Name(), "jacket") ||
-			m_pGameInstance->Find_String(pMesh->Get_Name(), "pants"))
-			fRDCount = 50.f;
-		m_pShaderCom->Bind_RawValue("g_RDCount", &fRDCount, sizeof(_float));
-
 
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_MultiDiffuseTexture", i, aiTextureType_SHININESS)))
 			isMulti = false;
@@ -689,6 +679,36 @@ void CMonster::Synchronize_Root(const _float& fTimeDelta)
 
 HRESULT CMonster::Add_Components()
 {
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Shader_VtxAnim"),
+		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
+		return E_FAIL;
+
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Shader_BoneCompute"),
+		TEXT("Com_ComputeShader"), reinterpret_cast<CComponent**>(&m_pComputeShaderCom))))
+		return E_FAIL;
+
+	CBounding_AABB::BOUNDING_AABB_DESC		ColliderDesc{};
+
+	ColliderDesc.eType = CCollider::COLLIDER_AABB;
+	ColliderDesc.vExtents = _float3(0.5, 0.8, 0.5);
+	ColliderDesc.vCenter = _float3(0, ColliderDesc.vExtents.y, 0);
+
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Collider"),
+		TEXT("Com_Collider"), reinterpret_cast<CComponent**>(&m_pColliderCom), &ColliderDesc)))
+		return E_FAIL;
+
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Anim"),
+		TEXT("Com_Anim"), reinterpret_cast<CComponent**>(&m_pAnimCom[DEFAULT]))))
+		return E_FAIL;
+
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_SyncAnim"),
+		TEXT("Com_SyncAnim"), reinterpret_cast<CComponent**>(&m_pAnimCom[CUTSCENE]))))
+		return E_FAIL;
+
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Navigation"),
+		TEXT("Com_Navigation"), reinterpret_cast<CComponent**>(&m_pNavigationCom))))
+		return E_FAIL;
+
 	return S_OK;
 }
 

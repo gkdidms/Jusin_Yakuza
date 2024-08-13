@@ -42,6 +42,11 @@ public:
 
 	HRESULT Render(_uint iMeshIndex);
 
+	//컴퓨트 셰이더 용
+	void Bind_BoneMatrices(_uint iNumMeshIndex);
+	HRESULT Bind_Compute(class CComputeShader* pComputeShader, _uint iNumMeshIndex);
+
+	//일반 셰이더 용
 	HRESULT Bind_Material(class CShader* pShader, const _char* pConstantName, _uint iNumMeshIndex, aiTextureType eTextureType);
 	HRESULT Bind_BoneMatrices(class CShader* pShader, const _char* pConstantName, _uint iNumMeshIndex);
 	bool	Check_Exist_Material(_uint iNumMeshIndex, aiTextureType eTextureType);
