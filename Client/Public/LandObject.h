@@ -145,6 +145,11 @@ public:
         m_iHandAnimIndex = iHandAnimIndex;
     }
 
+    // 맵 용 set
+    void    Set_StartPos(XMMATRIX    vStartPos) { m_pTransformCom->Set_WorldMatrix(vStartPos); }
+    void    Set_NavigationIndex(int iIndex);
+    void    Set_NaviRouteIndex(int iIndex) { m_iNaviRouteNum = iIndex; }
+
 #ifdef _DEBUG
 public:
     //uv 체크 디버그용
@@ -207,6 +212,10 @@ protected:
     _float2 m_fRimTopUV = { 0.0f , 0.3f };//0~1사이 [시작v,끝v]상의
     _float2 m_fRimBotUV = { 0.9f, 1.0f };//0~1사이 [시작v,끝v]하의
     _float2 m_fRimPartsUV = { 0.0f, 1.0f };//0~1사이 [시작v,끝v]손,발
+
+
+protected:
+        int             m_iNaviRouteNum = { 0 }; //루트
 
 protected:
     virtual HRESULT Add_Components();
