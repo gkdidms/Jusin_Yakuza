@@ -6,6 +6,7 @@
 #include "AI_CarChase.h"
 
 #include "Highway_Taxi.h"
+#include "EffectManager.h"
 
 
 
@@ -83,12 +84,23 @@ void CCarChase_Monster::Late_Tick(const _float& fTimeDelta)
 	m_isColl = false;
 }
 
+//차안에 타있는 몬스터가 맞으면
 void CCarChase_Monster::Set_Coll()
 {
 	m_isColl = true;
 
 	//충돌처리
 	m_Info.fHp -= 10.f;
+	//피이펙트 출력
+	CEffect::EFFECT_DESC EffectDesc;
+
+	_matrix WorldMatrix = XMLoadFloat4x4(m_pTransformCom->Get_WorldFloat4x4());
+
+	_float4x4 matrix;
+	XMStoreFloat4x4(&matrix, WorldMatrix);
+	EffectDesc.pWorldMatrix = &matrix;
+	CEffectManager::GetInstance()->Blood_Effect(EffectDesc);
+	CEffectManager::GetInstance()->Blood_Splash(EffectDesc);
 
 	if (m_Info.fHp <= 0.f)
 	{

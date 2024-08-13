@@ -214,8 +214,9 @@ HRESULT CMultiLoader::Loading_Default()
 		return E_FAIL;
 #pragma endregion
 
-	/* Prototype_Component_Texture_Sphere */
+
 #pragma region Effect_Texture
+	/* Prototype_Component_Texture_Sphere */
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Texture_Sphere"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/lm000.dds"), 1))))
 		return E_FAIL;
@@ -346,12 +347,12 @@ HRESULT CMultiLoader::Loading_Default()
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/Money/coin100.dds"), 1))))
 		return E_FAIL;
 
-	/* Prototype_Component_Texture_Coin*/
+	/* Prototype_Component_Texture_WaveFace*/
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Texture_WaveFace"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/e_j_0011_waveface.dds"), 1))))
 		return E_FAIL;
 
-#pragma endregion
+#pragma endregion //AYRA
 
 #pragma region Blood_Texture
 	/* Prototype_Component_Texture_BloodD0 */
@@ -518,7 +519,14 @@ HRESULT CMultiLoader::Loading_Default()
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Texture_BloodAnim"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/Blood/e_j_0033_bfBloodSplash01.dds"), 1))))
 		return E_FAIL;
-#pragma endregion
+
+	/* Prototype_Component_Texture_DestroyerFlud */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Texture_DestroyerFlud"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/e_j_0333_kenatugray_fine.dds"), 1))))
+		return E_FAIL;
+#pragma endregion //BLOOD
+
+#pragma endregion //EFFECT
 
 #pragma region BTNode
 	lstrcpy(m_szLoadingText, TEXT("행동트리 원형 를(을) 로딩 중 입니다."));
