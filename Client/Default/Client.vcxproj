@@ -218,6 +218,11 @@
     <ClInclude Include="..\public\CarChase_Monster.h" />
     <ClInclude Include="..\Public\EffectManager.h" />
     <ClInclude Include="..\Public\Karaoke_Kiryu.h" />
+    <ClInclude Include="..\Public\NoteBase.h" />
+    <ClInclude Include="..\Public\NoteBurstHold.h" />
+    <ClInclude Include="..\Public\NoteLong.h" />
+    <ClInclude Include="..\Public\NoteManager.h" />
+    <ClInclude Include="..\Public\NoteSingle.h" />
     <ClInclude Include="..\Public\Weapon_Gun_Cz75.h" />
     <ClInclude Include="..\Public\Highway_Kiryu.h" />
     <ClInclude Include="..\Public\Highway_Taxi.h" />
@@ -426,6 +431,11 @@
     <ClCompile Include="..\Private\Kiryu_KRC_PickUp.cpp" />
     <ClCompile Include="..\Private\Kiryu_KRS_BackWall.cpp" />
     <ClCompile Include="..\Private\Kiryu_KRS_PickUp.cpp" />
+    <ClCompile Include="..\Private\NoteBase.cpp" />
+    <ClCompile Include="..\Private\NoteBurstHold.cpp" />
+    <ClCompile Include="..\Private\NoteLong.cpp" />
+    <ClCompile Include="..\Private\NoteManager.cpp" />
+    <ClCompile Include="..\Private\NoteSingle.cpp" />
     <ClCompile Include="..\Private\Particle_Mesh.cpp" />
     <ClCompile Include="..\Private\QteManager.cpp" />
     <ClCompile Include="..\Private\Reactor_Bike.cpp" />

@@ -584,6 +584,21 @@
     <ClCompile Include="..\Private\Karaoke_Kiryu.cpp">
       <Filter>02.GameObjects\02.Character\LandObject\04.Karaoke</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\NoteManager.cpp">
+      <Filter>02.GameObjects\12.Karaoke\NoteManager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\NoteBase.cpp">
+      <Filter>02.GameObjects\12.Karaoke\NoteManager\Note</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\NoteSingle.cpp">
+      <Filter>02.GameObjects\12.Karaoke\NoteManager\Note\SingleNote</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\NoteLong.cpp">
+      <Filter>02.GameObjects\12.Karaoke\NoteManager\Note\LongNote</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\NoteBurstHold.cpp">
+      <Filter>02.GameObjects\12.Karaoke\NoteManager\Note\BurstHoldNote</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\MainApp.h">
@@ -1198,6 +1213,21 @@
     </ClInclude>
     <ClInclude Include="..\Public\Karaoke_Kiryu.h">
       <Filter>02.GameObjects\02.Character\LandObject\04.Karaoke</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\NoteManager.h">
+      <Filter>02.GameObjects\12.Karaoke\NoteManager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\NoteBase.h">
+      <Filter>02.GameObjects\12.Karaoke\NoteManager\Note</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\NoteSingle.h">
+      <Filter>02.GameObjects\12.Karaoke\NoteManager\Note\SingleNote</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\NoteLong.h">
+      <Filter>02.GameObjects\12.Karaoke\NoteManager\Note\LongNote</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\NoteBurstHold.h">
+      <Filter>02.GameObjects\12.Karaoke\NoteManager\Note\BurstHoldNote</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1835,6 +1865,24 @@
     </Filter>
     <Filter Include="02.GameObjects\02.Character\LandObject\04.Karaoke">
       <UniqueIdentifier>{a2d23b9d-0007-4ad3-a26c-4d6255df806b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\12.Karaoke">
+      <UniqueIdentifier>{c88ca3de-63a0-4dac-a4db-cf9310a5a3bc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\12.Karaoke\NoteManager">
+      <UniqueIdentifier>{10094ddc-12c7-4182-be73-8b5d20cb93b5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\12.Karaoke\NoteManager\Note">
+      <UniqueIdentifier>{1d5ec999-1134-4fb9-b339-aab282505db0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\12.Karaoke\NoteManager\Note\SingleNote">
+      <UniqueIdentifier>{cdd8ed38-99c3-490c-9c01-c2d0591bfe18}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\12.Karaoke\NoteManager\Note\LongNote">
+      <UniqueIdentifier>{6443d46d-9b02-4295-af10-89cde2420938}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\12.Karaoke\NoteManager\Note\BurstHoldNote">
+      <UniqueIdentifier>{c546adc8-3c65-4aca-96af-dd1a697afb52}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
