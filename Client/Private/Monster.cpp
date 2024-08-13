@@ -473,14 +473,6 @@ HRESULT CMonster::Render()
 		_bool isRM = true;
 		_bool isRT = true;
 		_bool isMulti = true;
-		_float fRDCount = 1.f;
-
-		if (m_pGameInstance->Find_String(pMesh->Get_Name(), "shirts") ||
-			m_pGameInstance->Find_String(pMesh->Get_Name(), "jacket") ||
-			m_pGameInstance->Find_String(pMesh->Get_Name(), "pants"))
-			fRDCount = 50.f;
-		m_pShaderCom->Bind_RawValue("g_RDCount", &fRDCount, sizeof(_float));
-
 
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_MultiDiffuseTexture", i, aiTextureType_SHININESS)))
 			isMulti = false;
