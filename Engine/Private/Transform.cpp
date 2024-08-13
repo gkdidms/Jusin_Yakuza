@@ -139,12 +139,10 @@ void CTransform::Go_Straight_CustumSpeed(const _float& fSpeed, const _float& fTi
 						vSliding = vNewSliding;
 						Set_State(CTransform::STATE_POSITION, vPos);
 						Set_State(CTransform::STATE_LOOK, vSliding);
-						printf("슬라이딩대체성공\n");
 						return;
 					}
 
 				}
-				printf("슬라이딩대체실패\n");
 				return;
 			}
 			else
@@ -212,7 +210,6 @@ void CTransform::Go_Move_Custum(const _float4& vDir, const _float& fSpeed, const
 					{
 						vSliding = vNewSliding;
 						Set_State(CTransform::STATE_POSITION, vPos);
-						printf("슬라이딩대체성공\n");
 						return;
 					}
 
