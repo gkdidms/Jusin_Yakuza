@@ -44,6 +44,8 @@ public:
     void Player_Attack_Effect(CEffect::EFFECT_DESC& EffectDesc);
     void Enemy_Attack_Effect(CEffect::EFFECT_DESC& EffectDesc);
 
+    void Cine_BloodEffect(CEffect::EFFECT_DESC& EffectDesc, _uint iEffectType);
+
 private:
 	class CGameInstance* m_pGameInstance = { nullptr };
 
