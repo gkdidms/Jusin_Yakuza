@@ -14,6 +14,7 @@ private:
 public:
 	HRESULT Initialize(CModel::MODELTYPE eModelType, const aiMesh* pAIMesh, _fmatrix PreTransformMatrix, const vector<class CBone*>& Bones);
 	HRESULT Initialize(CModel::MODELTYPE eModelType, const BAiMesh* pAIMesh, _fmatrix PreTransformMatrix, const vector<class CBone*>& Bones);
+	HRESULT Render();
 
 	HRESULT Ready_Vertices_For_NonAnimMesh(const aiMesh* pAIMesh, _fmatrix PreTransformMatrix);
 	HRESULT Ready_Vertices_For_NonAnimMesh(const BAiMesh* pAIMesh, _fmatrix PreTransformMatrix);
@@ -23,6 +24,7 @@ public:
 	HRESULT Ready_Vertices_For_AnimMesh(const BAiMesh* pAIMesh, const vector<class CBone*>& Bones);
 
 	void	Fill_Matrices(vector<class CBone*>& Bones, _float4x4* pMeshBoneMatrices);
+	void Bind_Matrices(vector<class CBone*>& Bones, _float4x4* pMeshBoneMatrices);
 
 public:
 	_uint Get_MaterialIndex() { return m_iMaterialIndex; }
@@ -51,6 +53,7 @@ public:
 
 private:
 	_char				m_szName[MAX_PATH] = "";
+	_uint m_iModelType = { CModel::TYPE_END };
 
 	_bool				m_isAlphaApply = { false };
 
@@ -65,6 +68,12 @@ private:
 
 	VTXMESH* m_pVertices = { nullptr };
 	_uint* m_pIndices = { nullptr };
+
+	ID3D11Buffer* m_pBoneMatrixBuffer = { nullptr };
+
+private:
+	HRESULT Ready_Buffer();
+
 public:
 	static CMesh* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CModel::MODELTYPE eModelType, const aiMesh* pAIMesh, _fmatrix PreTransformMatrix, const vector<class CBone*>& Bones);
 	static CMesh* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CModel::MODELTYPE eModelType, const BAiMesh* pAIMesh, _fmatrix PreTransformMatrix, const vector<class CBone*>& Bones);

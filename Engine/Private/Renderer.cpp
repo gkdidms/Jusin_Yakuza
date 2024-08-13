@@ -685,6 +685,7 @@ void CRenderer::Add_Renderer(RENDERER_STATE eRenderState, CGameObject* pGameObje
 void CRenderer::Draw()
 {
 	Render_Priority();
+	Render_AnimSkinning();
 
 	if (m_isShadow)
 	{
@@ -821,6 +822,14 @@ void CRenderer::Render_Priority()
 
 	if (FAILED(m_pGameInstance->End_MRT()))
 		return;
+}
+
+void CRenderer::Render_AnimSkinning()
+{
+	for (auto& iter : m_RenderObject[RENDER_NONBLENDER])
+	{
+		iter->Render_BoneCompute();
+	}
 }
 
 void CRenderer::Render_ShadowObjects()

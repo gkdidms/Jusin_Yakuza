@@ -730,6 +730,11 @@ HRESULT CMultiLoader::Loading_Default()
 		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxInstance_Mesh.hlsl"), VTXINSTANCE_MESH::Elements, VTXINSTANCE_MESH::iNumElements))))
 		return E_FAIL;
 
+	/* For.Prototype_Component_Shader_BoneCompute */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Shader_BoneCompute"),
+		CComputeShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_BoneCompute.hlsl")))))
+		return E_FAIL;
+
 #pragma endregion
 
 
