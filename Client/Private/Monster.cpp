@@ -639,6 +639,7 @@ void CMonster::BloodEffect_Event()
 					if (pEvent.isOn)
 					{
 						// 해당하는 이펙트를 켜는 함수
+						m_pEffectManager->Cine_BloodEffect(EffectDesc, pEvent.iBloodEffectType);
 					}
 					else
 					{
@@ -647,10 +648,7 @@ void CMonster::BloodEffect_Event()
 				}
 				else								  // 루프가 아닌 이펙트라면
 				{
-					if (pEvent.iBloodEffectType == 0)			// 코
-						m_pEffectManager->Cine_NoseBlood(EffectDesc);
-					else if (pEvent.iBloodEffectType == 1)			// 입
-						m_pEffectManager->Cine_MouseBlood(EffectDesc);
+					m_pEffectManager->Cine_BloodEffect(EffectDesc, pEvent.iBloodEffectType);
 				}
 
 
