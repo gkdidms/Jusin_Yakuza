@@ -1,32 +1,14 @@
 #include "NoteSingle.h"
 #include "GameInstance.h"
 
-CNoteSingle::CNoteSingle()
-    : CNoteBase()
+CNoteSingle::CNoteSingle(_uint iNoteType, _uint iButtonType, _float fStartTime)
+    : CNoteBase(iNoteType, iButtonType, fStartTime)
 {
 }
 
-HRESULT CNoteSingle::Initialize()
+CNoteSingle* CNoteSingle::Create(_uint iNoteType, _uint iButtonType, _float fStartTime)
 {
-    return S_OK;
-}
-
-
-void CNoteSingle::Tick()
-{
-}
-
-CNoteSingle* CNoteSingle::Create()
-{
-	CNoteSingle* pInstance = new CNoteSingle();
-
-	if (FAILED(pInstance->Initialize()))
-	{
-		MSG_BOX("Failed To Created : CNoteSingle");
-		Safe_Release(pInstance);
-	}
-
-	return pInstance;
+	return new CNoteSingle(iNoteType, iButtonType, fStartTime);
 }
 
 void CNoteSingle::Free()

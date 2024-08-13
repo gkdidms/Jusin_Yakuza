@@ -11,18 +11,14 @@ class CNoteLong :
     public CNoteBase
 {
 protected:
-    CNoteLong();
+    CNoteLong(_uint iNoteType, _uint iButtonType, _float fStartTime, _float fEndTime);
     virtual ~CNoteLong() = default;
-
-public:
-    virtual HRESULT Initialize() override;
-    virtual void Tick() override;
 
 private:
     _float m_fEndTime = { 0.f };
 
 public:
-    static CNoteLong* Create();
+    static CNoteLong* Create(_uint iNoteType, _uint iButtonType, _float fStartTime, _float fEndTime);
     virtual void Free() override;
 };
 END

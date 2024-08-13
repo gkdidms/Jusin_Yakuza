@@ -1,32 +1,15 @@
 #include "NoteLong.h"
 #include "GameInstance.h"
 
-CNoteLong::CNoteLong()
-    : CNoteBase()
+CNoteLong::CNoteLong(_uint iNoteType, _uint iButtonType, _float fStartTime, _float fEndTime)
+    : CNoteBase(iNoteType, iButtonType, fStartTime),
+    m_fEndTime{ fEndTime }
 {
 }
 
-HRESULT CNoteLong::Initialize()
+CNoteLong* CNoteLong::Create(_uint iNoteType, _uint iButtonType, _float fStartTime, _float fEndTime)
 {
-    return S_OK;
-}
-
-
-void CNoteLong::Tick()
-{
-}
-
-CNoteLong* CNoteLong::Create()
-{
-	CNoteLong* pInstance = new CNoteLong();
-
-	if (FAILED(pInstance->Initialize()))
-	{
-		MSG_BOX("Failed To Created : CNoteLong");
-		Safe_Release(pInstance);
-	}
-
-	return pInstance;
+	return new CNoteLong(iNoteType, iButtonType, fStartTime, fEndTime);
 }
 
 void CNoteLong::Free()

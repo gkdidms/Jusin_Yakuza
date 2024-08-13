@@ -17,16 +17,13 @@ public:
     };
 
 protected:
-    CNoteBase();
+    CNoteBase(_uint iNoteType, _uint iButtonType, _float fStartTime);
     virtual ~CNoteBase() = default;
-
-public:
-    virtual HRESULT Initialize() = 0;
-    virtual void Tick() = 0;
 
 protected:
     CGameInstance* m_pGameInstance = { nullptr };
 
+    _uint   m_iButtonType = { 0 };
     _uint   m_iNoteType = { 0 };
     _float m_fStartTime = { 0.f };
 

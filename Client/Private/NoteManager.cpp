@@ -41,7 +41,7 @@ HRESULT CNoteManager::Load_NoteData(string strSongName)
 
 	while (getline(in, line)) {
 		istringstream lineStream(line);
-		string cell;
+		string strNoteType, Button, TimePos_S, TimePos_E;
 
 		/*
 		*	0 일반노드
@@ -50,21 +50,26 @@ HRESULT CNoteManager::Load_NoteData(string strSongName)
 		*/
 
 		// 노트 타입
-		getline(lineStream, cell, ',');
-		if (cell == "0")
+		getline(lineStream, strNoteType, ',');
+		getline(lineStream, Button, ',');
+		getline(lineStream, TimePos_S, ',');
+		getline(lineStream, TimePos_E, ',');
+
+
+		if (strNoteType == "0")
 		{
 			// 넘겨주는 인자값을 파일에 저장해둔 값을 넘겨주고, 이니셜라이즈 할 때 저장해야한다.
-			m_Notes.push_back(CNoteSingle::Create());
+			m_Notes.push_back(CNoteSingle::Create(stoi(strNoteType), stoi(Button), stof(TimePos_S)));
 		}
-		else if (cell == "1")
+		else if (strNoteType == "1")
 		{
 			// 넘겨주는 인자값을 파일에 저장해둔 값을 넘겨주고, 이니셜라이즈 할 때 저장해야한다.
-			m_Notes.push_back(CNoteLong::Create());
+			m_Notes.push_back(CNoteLong::Create(stoi(strNoteType), stoi(Button), stof(TimePos_S), stof(TimePos_E)));
 		}
-		else if (cell == "2")
+		else if (strNoteType == "2")
 		{
 			// 넘겨주는 인자값을 파일에 저장해둔 값을 넘겨주고, 이니셜라이즈 할 때 저장해야한다.
-			m_Notes.push_back(CNoteBurstHold::Create());
+			m_Notes.push_back(CNoteBurstHold::Create(stoi(strNoteType), stoi(Button), stof(TimePos_S), stof(TimePos_E)));
 		}
 
 	}

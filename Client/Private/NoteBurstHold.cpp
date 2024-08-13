@@ -1,32 +1,15 @@
-#include "NoteLong.h"
+#include "NoteBurstHold.h"
 #include "GameInstance.h"
 
-CNoteBurstHold::CNoteBurstHold()
-    : CNoteBase()
+CNoteBurstHold::CNoteBurstHold(_uint iNoteType, _uint iButtonType, _float fStartTime, _float fEndTime)
+    : CNoteBase(iNoteType, iButtonType, fStartTime),
+    m_fEndTime{ fEndTime }
 {
 }
 
-HRESULT CNoteBurstHold::Initialize()
+CNoteBurstHold* CNoteBurstHold::Create(_uint iNoteType, _uint iButtonType, _float fStartTime, _float fEndTime)
 {
-    return S_OK;
-}
-
-
-void CNoteBurstHold::Tick()
-{
-}
-
-CNoteBurstHold* CNoteBurstHold::Create()
-{
-	CNoteBurstHold* pInstance = new CNoteBurstHold();
-
-	if (FAILED(pInstance->Initialize()))
-	{
-		MSG_BOX("Failed To Created : CNoteLong");
-		Safe_Release(pInstance);
-	}
-
-	return pInstance;
+	return new CNoteBurstHold(iNoteType, iButtonType, fStartTime, fEndTime);
 }
 
 void CNoteBurstHold::Free()

@@ -11,15 +11,11 @@ class CNoteSingle :
     public CNoteBase
 {
 protected:
-    CNoteSingle();
+    CNoteSingle(_uint iNoteType, _uint iButtonType, _float fStartTime);
     virtual ~CNoteSingle() = default;
 
 public:
-    virtual HRESULT Initialize() override;
-    virtual void Tick() override;
-
-public:
-    static CNoteSingle* Create();
+    static CNoteSingle* Create(_uint iNoteType, _uint iButtonType, _float fStartTime);
     virtual void Free() override;
 };
 END

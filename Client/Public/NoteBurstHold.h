@@ -11,19 +11,15 @@ class CNoteBurstHold :
     public CNoteBase
 {
 protected:
-    CNoteBurstHold();
+    CNoteBurstHold(_uint iNoteType, _uint iButtonType, _float fStartTime, _float fEndTime);
     virtual ~CNoteBurstHold() = default;
-
-public:
-    virtual HRESULT Initialize() override;
-    virtual void Tick() override;
 
 private:
     _float m_fEndTime = { 0.f };
     _uint m_iGreatCount = { 6 };
 
 public:
-    static CNoteBurstHold* Create();
+    static CNoteBurstHold* Create(_uint iNoteType, _uint iButtonType, _float fStartTime, _float fEndTime);
     virtual void Free() override;
 };
 END

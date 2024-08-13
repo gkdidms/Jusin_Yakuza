@@ -1,20 +1,13 @@
 #include "NoteBase.h"
 #include "GameInstance.h"
 
-CNoteBase::CNoteBase()
-    : m_pGameInstance{ CGameInstance::GetInstance() }
+CNoteBase::CNoteBase(_uint iNoteType, _uint iButtonType, _float fStartTime)
+    : m_pGameInstance{ CGameInstance::GetInstance() },
+    m_iNoteType{iNoteType},
+    m_iButtonType{ iButtonType },
+    m_fStartTime{ fStartTime }
 {
     Safe_AddRef(m_pGameInstance);
-}
-
-HRESULT CNoteBase::Initialize()
-{
-    return S_OK;
-}
-
-
-void CNoteBase::Tick()
-{
 }
 
 void CNoteBase::Free()
