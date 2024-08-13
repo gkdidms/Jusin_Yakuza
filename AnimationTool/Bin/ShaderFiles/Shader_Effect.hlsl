@@ -143,14 +143,10 @@ PS_OUT PS_RIMLIGHT(PS_IN In)//범위 지정 문해야됨
     if(0.05f<BaseDepth.z)
     {
         float RangeAlpha = BaseDepth.w;
-        float fRim = saturate(dot(BaseNormal, vRim));
+        float fRim = 1.f - max(0, dot(BaseNormal, vRim));
+        fRim = smoothstep(1.f - 0.05f, 1.f, fRim) * 0.8f;
 
-        if (fRim > 0.1f)
-            fRim = 1.f;
-        else
-            fRim = -1.f;
-
-        vector FinColor= float4(pow(1.f - fRim, fRimpower) *RimColor);
+        vector FinColor = fRim * RimColor; //float4(pow(1.f - fRim, fRimpower) *RimColor);
 
      //FinColor.a *= RangeAlpha;
         Out.vColor = BackBuffer+FinColor;   

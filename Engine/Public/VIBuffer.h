@@ -19,8 +19,16 @@ public:
     HRESULT Create_Buffer(ID3D11Buffer** pOut);
     _uint Get_NumVertex() { return m_iNumVertices; }
     _uint Get_NumIndices() { return m_iNumIndices; }
+
+    HRESULT Bind_Compute(class CComputeShader* pShader);
+
 protected:
+    ID3D11ShaderResourceView* m_pVertexBufferSRV = { nullptr };
+    ID3D11UnorderedAccessView* m_pResultBufferUAV = { nullptr };
+    ID3D11Buffer* m_pProcessedVertexBuffer = { nullptr };
+
     ID3D11Buffer* m_pVB;
+    ID3D11Buffer* m_pUAVOut;
     ID3D11Buffer* m_pIB;
 
 protected:
@@ -36,6 +44,9 @@ protected:
 
     DXGI_FORMAT m_GIFormat = {};
     D3D11_PRIMITIVE_TOPOLOGY m_Primitive_Topology = {};
+
+protected:
+    HRESULT Ready_BoneBuffer();
 
 public:
     virtual void Free() override;

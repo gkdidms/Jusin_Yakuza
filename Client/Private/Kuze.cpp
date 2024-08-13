@@ -84,30 +84,11 @@ void CKuze::Take_Damage(_uint iHitColliderType, const _float3& vDir, _float fDam
 
 HRESULT CKuze::Add_Components()
 {
-	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Shader_VtxAnim"),
-		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
+	if (FAILED(__super::Add_Components()))
 		return E_FAIL;
 
 	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Model_Kuze_Fight"),
 		TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
-		return E_FAIL;
-
-	CBounding_AABB::BOUNDING_AABB_DESC		ColliderDesc{};
-
-	ColliderDesc.eType = CCollider::COLLIDER_AABB;
-	ColliderDesc.vExtents = _float3(0.5, 0.8, 0.5);
-	ColliderDesc.vCenter = _float3(0, ColliderDesc.vExtents.y, 0);
-
-	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Collider"),
-		TEXT("Com_Collider"), reinterpret_cast<CComponent**>(&m_pColliderCom), &ColliderDesc)))
-		return E_FAIL;
-
-	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Anim"),
-		TEXT("Com_Anim"), reinterpret_cast<CComponent**>(&m_pAnimCom[DEFAULT]))))
-		return E_FAIL;
-
-	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_SyncAnim"),
-		TEXT("Com_SyncAnim"), reinterpret_cast<CComponent**>(&m_pAnimCom[CUTSCENE]))))
 		return E_FAIL;
 
 	//행동트리 저장
@@ -119,10 +100,6 @@ HRESULT CKuze::Add_Components()
 
 	m_pTree = dynamic_cast<CAI_Kuze*>(m_pGameInstance->Add_BTNode(m_iCurrentLevel, TEXT("Prototype_BTNode_Kuze"), &AIDesc));
 	if (nullptr == m_pTree)
-		return E_FAIL;
-
-	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Navigation"),
-		TEXT("Com_Navigation"), reinterpret_cast<CComponent**>(&m_pNavigationCom))))
 		return E_FAIL;
 
 	return S_OK;

@@ -64,7 +64,7 @@ HRESULT CVIBuffer_Instance::Compute_Render()
 	ComputeDesc.OutputBuffer = mOutputUAV;
 	ComputeDesc.NumElement = m_InstanceDesc->iNumInstance;
 
-	m_pComputeShader->Render(&ComputeDesc);
+	//m_pComputeShader->Render(&ComputeDesc);
 
 	m_pContext->Flush();
 
