@@ -400,12 +400,12 @@ void CLandObject::Free()
 	}
 	m_SeparationAnimComs.clear();
 
+	Safe_Release(m_pSystemManager);
+	Safe_Release(m_pCollisionManager);
 	Safe_Release(m_pData);
 	Safe_Release(m_pModelCom);
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pColliderCom);
-	Safe_Release(m_pSystemManager);
-	Safe_Release(m_pCollisionManager);
 	Safe_Release(m_pMaterialCom);
 	Safe_Release(m_pNavigationCom);
 	Safe_Release(m_pComputeShaderCom);
