@@ -34,6 +34,7 @@ VS_OUT VS_MAIN(VS_IN In)
     
     vector vPosition = mul(float4(In.vPosition, 1.f), TransformMatrix);
     vector vNormal = mul(float4(In.vNormal, 0.f), TransformMatrix);
+    vector vTangent = mul(float4(In.vTangent, 0.f), TransformMatrix);
 
     matrix matWV, matWVP;
 
@@ -44,7 +45,7 @@ VS_OUT VS_MAIN(VS_IN In)
     Out.vNormal = normalize(mul(vNormal, g_WorldMatrix));
     Out.vTexcoord = In.vTexcoord;
     Out.vProjPos = Out.vPosition;
-    Out.vTangent = normalize(mul(vector(In.vTangent.xyz, 0.f), g_WorldMatrix));
+    Out.vTangent = normalize(mul(vTangent, g_WorldMatrix));
     Out.vBinormal = vector(cross(Out.vNormal.xyz, Out.vTangent.xyz), 0.f);
     
     return Out;
@@ -206,10 +207,9 @@ PS_OUT PS_MAIN(PS_IN In)
     vNormalDesc = vNormalDesc * 2.f - 1.f;
     //vNormalDesc = vector(vNormalDesc.w, vNormalDesc.y, 1.f, 0.f);
     float3x3 WorldMatrix = float3x3(In.vTangent.xyz, In.vBinormal.xyz, In.vNormal.xyz);
-    //vector vNormalBTN = normalize(vector(mul(vNormalDesc.xyz, WorldMatrix), 0.f));
-    vector vNormalBTN = (vector(mul(vNormalDesc.xyz, WorldMatrix), 0.f));
-    Out.vNormal = vector(vNormalBTN.xyz * 0.5f + 0.5f, 0.f);
-
+    vector vNormalBTN = normalize(vector(mul(vNormalDesc.xyz, WorldMatrix), 0.f));
+    //vector vNormalBTN = (vector(mul(vNormalDesc.xyz, WorldMatrix), 0.f));
+    
     float RimIndex = 0.f;
     if (0.05f < g_isRimLight)
     {
@@ -224,8 +224,9 @@ PS_OUT PS_MAIN(PS_IN In)
     float fDeffuseFactor = vDiffuseDesc.a * 1.f;
     
     Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_fFar, RimIndex, 0.f);
+    Out.vNormal = vector(vNormalBTN.xyz * 0.5f + 0.5f, 0.f);
     Out.vDiffuse = vDiffuse;
-    Out.vSurface = vector(Result.fMetalness, Result.fRoughness, Result.fSpeclure, 0);
+    Out.vSurface = vector(Result.fMetalness, Result.fRoughness, Result.fSpeclure, Engine);
     Out.vOEShader = vector(OEResult.fRouhness, OEResult.fMixShaderFactor, fMixMultiFactor, fDeffuseFactor);
     Out.vSpecular = vector(OEResult.vSpecular, 0.f);
     
