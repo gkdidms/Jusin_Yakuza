@@ -615,20 +615,33 @@ void CMonster::BloodEffect_Event()
 
 			if (CurPos >= pEvent.fAinmPosition && CurPos < Duration)
 			{
-				if (pEvent.iBloodEffectType == 0)		//코
-				{
-					CEffect::EFFECT_DESC EffectDesc;
+				CEffect::EFFECT_DESC EffectDesc;
 
-					EffectDesc.pWorldMatrix = m_pTransformCom->Get_WorldFloat4x4();
-					m_pEffectManager->Cine_NoseBlood(EffectDesc);
-				}
-				else if (pEvent.iBloodEffectType == 1)		//입
-				{
-					CEffect::EFFECT_DESC EffectDesc;
+				_float4x4 worldMat;
+					
+				_uint iBoneIndex = pEvent.iBoneIndex;
+				_matrix BoneMatrix = XMLoadFloat4x4(m_pModelCom->Get_BoneCombinedTransformationMatrix_AtIndex(iBoneIndex));
+				XMStoreFloat4x4(&worldMat, (BoneMatrix * m_pTransformCom->Get_WorldMatrix()));
+				EffectDesc.pWorldMatrix = &worldMat;
 
-					EffectDesc.pWorldMatrix = m_pTransformCom->Get_WorldFloat4x4();
-					m_pEffectManager->Cine_MouseBlood(EffectDesc);
+				if (pEvent.isLoop)
+				{
+					if (pEvent.isOn)
+					{
+						// 해당하는 이펙트를 켜는 함수
+						m_pEffectManager->Cine_BloodEffect(EffectDesc, pEvent.iBloodEffectType);
+					}
+					else
+					{
+						//해당하는 이펙트를 끄는 함수
+					}
 				}
+				else								  // 루프가 아닌 이펙트라면
+				{
+					m_pEffectManager->Cine_BloodEffect(EffectDesc, pEvent.iBloodEffectType);
+				}
+
+
 			}
 		}
 	}

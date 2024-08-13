@@ -525,6 +525,8 @@ HRESULT CCharacterData::Load_BloodEffectEvent(string strFilePath)
 			in >> Desc.iBoneIndex;
 			in >> Desc.strBonelName;
 			in >> Desc.iBloodEffectType;
+			in >> Desc.isLoop;
+			in >> Desc.isOn;
 
 			m_BloodEvents.emplace(strAnimName, Desc);
 		}

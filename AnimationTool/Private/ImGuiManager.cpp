@@ -136,8 +136,6 @@ void CImguiManager::Tick(const _float& fTimeDelta)
 
 }
 
-
-
 HRESULT CImguiManager::Render()
 {
 	ImGui::EndFrame();
@@ -1167,10 +1165,26 @@ void CImguiManager::FaceEventWindow()
 {
 	ImGui::Begin("Face Event", &m_isFaceWindow);
 
-	ImGui::Text(u8"선택된 애니메이션: %s", m_AnimNameList[m_iAnimIndex].c_str());
-	ImGui::Text(u8"선택된 본(채널리스트에서 선택한 값): %s", m_ChannelNameList[m_iChannelSelectedIndex].c_str());
+	ImGui::Text(u8"[0] f201_special_01 총격전에서 로켓 격파하는 컷신에서 쓰임");
+	ImGui::Text(u8"[1] f202_special_02 인상씀(화난)");
+	ImGui::Text(u8"[2] f203_special_03 인상씀(뭐야저건 이런표정) 황당해하는듯");
+	ImGui::Text(u8"[3] f204_special_04 인상쓰고있는데 오묘하게 웃음");
+	ImGui::Text(u8"[4] f205_special_05 뭔지모르겠는 오묘한 표정");
+	ImGui::Text(u8"[5] f206_special_06 미심쩍게 웃음");
+	ImGui::Text(u8"[6] f207_special_07 아파할 때 쓰일듯?");
+	ImGui::Text(u8"[7] f208_special_08 뭔가 안쓰럽게보는거같아보임");
+	ImGui::Text(u8"[8] f209_special_09 크게 화낼 때");
+	ImGui::Text(u8"[9] f210_special_10 눈 부릅뜨는");
+	ImGui::Text(u8"[10] f211_special_11 인상쓰고 실눈뜨고봄");
+	ImGui::Text(u8"[11] f212_special_12 눈 크게뜸 (놀란듯)\n");
+		
 
-	ImGui::Text(u8"현재 입력된 애니메이션 포지션: %f", m_fAnimationPosition);
+	ImGui::Text(u8"선택된 애니메이션: %s", m_AnimNameList[m_iAnimIndex].c_str());
+	ImGui::Text(u8"선택된 본(본 리스트에서 선택한 값): %s", m_BoneNameList[m_iBoneSelectedIndex].c_str());
+
+	ImGui::InputFloat(u8"애니메이션 포지션", &m_fAnimationPosition);
+
+	ImGui::InputInt(u8"표정 인덱스", &m_iFaceAnimIndex);
 
 	if (ImGui::Button(u8"표정 On"))
 	{
@@ -1193,18 +1207,34 @@ void CImguiManager::BloodEventWindow()
 	ImGui::Begin("Blood Particle Event", &m_isBloodWindow);
 
 	ImGui::Text(u8"선택된 애니메이션: %s", m_AnimNameList[m_iAnimIndex].c_str());
-	ImGui::Text(u8"선택된 본(채널리스트에서 선택한 값): %s", m_ChannelNameList[m_iChannelSelectedIndex].c_str());
+	ImGui::Text(u8"선택된 본(본 리스트에서 선택한 값): %s", m_BoneNameList[m_iBoneSelectedIndex].c_str());
 
 	ImGui::InputFloat(u8"애니메이션 포지션", &m_fAnimationPosition);
 
-	if (ImGui::RadioButton(u8"코", m_eBloodEffectType == NOSE))
+	ImGui::Text(u8"파싱할 때 정해둔 타입을 int형으로 입력한다.");
+	ImGui::Text(u8"0: 코, 1: 입, 2: ...");
+	ImGui::InputInt(u8"출력할 이펙트 타입: ", &m_eBloodEffectType);
+
+	if (ImGui::RadioButton(u8"루프 O", m_isBloodEffectLoop))
 	{
-		m_eBloodEffectType = NOSE;
+		m_isBloodEffectLoop = true;
 	}
 	ImGui::SameLine();
-	if (ImGui::RadioButton(u8"입", m_eBloodEffectType == MOUTH))
+	if (ImGui::RadioButton(u8"루프 X", !m_isBloodEffectLoop))
 	{
-		m_eBloodEffectType = MOUTH;
+		m_isBloodEffectLoop = false;
+	}
+
+	if (ImGui::Button(u8"코"))
+	{
+		m_iBoneSelectedIndex = 99;
+		Gui_Select_Bone(99);
+	}
+	ImGui::SameLine();
+	if (ImGui::Button(u8"입"))
+	{
+		m_iBoneSelectedIndex = 89;
+		Gui_Select_Bone(89);
 	}
 
 	if (ImGui::Button(u8"피 이펙트 On"))
@@ -1214,20 +1244,44 @@ void CImguiManager::BloodEventWindow()
 		Desc.iBoneIndex = m_iBoneSelectedIndex;
 		Desc.strBonelName = m_BoneNameList[m_iBoneSelectedIndex];
 		Desc.iBloodEffectType = m_eBloodEffectType;
+		Desc.isLoop = m_isBloodEffectLoop;
+		Desc.isOn = true;
 
 		m_BloodEvents.emplace(m_AnimNameList[m_iAnimIndex], Desc);
+	}
+	if (m_isBloodEffectLoop)
+	{
+		if (ImGui::Button(u8"피 이펙트 Off"))
+		{
+			Animation_BloodEventState Desc{};
+			Desc.fAinmPosition = m_fAnimationPosition;
+			Desc.iBoneIndex = m_iBoneSelectedIndex;
+			Desc.strBonelName = m_BoneNameList[m_iBoneSelectedIndex];
+			Desc.iBloodEffectType = m_eBloodEffectType;
+			Desc.isLoop = m_isBloodEffectLoop;
+			Desc.isOn = false;
+
+			m_BloodEvents.emplace(m_AnimNameList[m_iAnimIndex], Desc);
+		}
 	}
 
 	auto upper_bound_iter = m_BloodEvents.upper_bound(m_AnimNameList[m_iAnimIndex]);
 	auto lower_bound_iter = m_BloodEvents.lower_bound(m_AnimNameList[m_iAnimIndex]);
 
 	ImGui::Text(u8"피 이펙트 이벤트 리스트");
-	vector<const char*> items;
+	vector<string> itemStrings; // std::string을 사용하여 문자열 저장
+	vector<const char*> items; // const char* 리스트
+
+	itemStrings.reserve(distance(lower_bound_iter, upper_bound_iter));
+	items.reserve(distance(lower_bound_iter, upper_bound_iter));
+
 	for (; lower_bound_iter != upper_bound_iter; ++lower_bound_iter)
 	{
-		items.push_back((*lower_bound_iter).second.iBloodEffectType == NOSE ? "Nose" : "Mouth");
+		itemStrings.push_back(to_string((*lower_bound_iter).second.iBloodEffectType)); // 정수를 문자열로 변환하여 저장
+		items.push_back(itemStrings.back().c_str()); // 변환된 문자열을 리스트에 추가
 	}
-	if (ImGui::ListBox("##", &m_iBloodEventIndex, items.data(), items.size()))
+
+	if (ImGui::ListBox(u8"##", &m_iBloodEventIndex, items.data(), items.size()))
 	{
 		auto lower_bound_iter2 = m_BloodEvents.lower_bound(m_AnimNameList[m_iAnimIndex]);
 		for (size_t i = 0; i < m_iBloodEventIndex; i++)
@@ -1237,8 +1291,6 @@ void CImguiManager::BloodEventWindow()
 
 		m_fAnimationPosition = lower_bound_iter2->second.fAinmPosition;
 	}
-
-
 
 	if (ImGui::Button(u8"불러오기"))
 	{
@@ -1291,11 +1343,11 @@ void CImguiManager::RadialEventWindow()
 		}
 
 		m_fRadialForce = lower_bound_iter2->second.fForce;
-		m_fRadialAnimPosition = lower_bound_iter2->second.fAinmPosition;
+		m_fAnimationPosition = lower_bound_iter2->second.fAinmPosition;
 	}
 
 	ImGui::InputFloat(u8"레디얼블러 강도", &m_fRadialForce);
-	ImGui::InputFloat(u8"애니메이션 포지션", &m_fRadialAnimPosition);
+	ImGui::InputFloat(u8"애니메이션 포지션", &m_fAnimationPosition);
 
 	if (ImGui::Button(u8"레디얼 On"))
 	{
@@ -1895,11 +1947,11 @@ void CImguiManager::BloodEvent_Save(string strPath)
 	out << iNumEvents;
 
 	/*
-	* 	_float fAinmPosition;
+		_float fAinmPosition;
 		_uint iBoneIndex;
 		string strBonelName;
-		_uint iBloodEffectType;
-
+		_uint iBloodEffectType;		// 출력시킬 이펙트의 타입
+		_bool isLoop;		// 출력시킬 이펙트의 타입
 	*/
 
 	for (auto& pair : m_BloodEvents)
@@ -1909,6 +1961,8 @@ void CImguiManager::BloodEvent_Save(string strPath)
 		out << pair.second.iBoneIndex << endl;
 		out << pair.second.strBonelName << endl;
 		out << pair.second.iBloodEffectType << endl;
+		out << pair.second.isLoop << endl;
+		out << pair.second.isOn << endl;
 	}
 
 	out.close();
@@ -2251,7 +2305,7 @@ void CImguiManager::BloodEvent_Load(string strPath)
 	ifstream in(strDirectory, ios::binary);
 
 	if (!in.is_open()) {
-		MSG_BOX("RadialEvents 파일 개방 실패");
+		MSG_BOX("BloodEffectEvents 파일 개방 실패");
 		return;
 	}
 
@@ -2265,10 +2319,11 @@ void CImguiManager::BloodEvent_Load(string strPath)
 	string key;
 
 	/*
-	*	_float fAinmPosition;
+		_float fAinmPosition;
 		_uint iBoneIndex;
 		string strBonelName;
-		_uint iBloodEffectType;
+		_uint iBloodEffectType;		// 출력시킬 이펙트의 타입
+		_bool isLoop;				// 이펙트 루프여부
 	*/
 	for (size_t i = 0; i < iNumEvents; i++)
 	{
@@ -2277,6 +2332,8 @@ void CImguiManager::BloodEvent_Load(string strPath)
 		in >> Event.iBoneIndex;
 		in >> Event.strBonelName;
 		in >> Event.iBloodEffectType;
+		in >> Event.isLoop;
+		in >> Event.isOn;
 
 		m_BloodEvents.emplace(key, Event);
 	}
