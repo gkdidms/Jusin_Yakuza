@@ -625,28 +625,35 @@ void CMonster::BloodEffect_Event()
 
 			if (CurPos >= pEvent.fAinmPosition && CurPos < Duration)
 			{
-				if (pEvent.iBloodEffectType == 0)		//코
-				{
-					CEffect::EFFECT_DESC EffectDesc;
+				CEffect::EFFECT_DESC EffectDesc;
 
-					_float4x4 worldMat;
-					XMStoreFloat4x4(&worldMat, (XMLoadFloat4x4(m_pModelCom->Get_BoneCombinedTransformationMatrix("_nose_top_c_n")) * m_pTransformCom->Get_WorldMatrix()));
+				_float4x4 worldMat;
 					
-					//EffectDesc.pWorldMatrix = m_pTransformCom->Get_WorldFloat4x4();
-					EffectDesc.pWorldMatrix = &worldMat;
-					m_pEffectManager->Cine_NoseBlood(EffectDesc);
-				}
-				else if (pEvent.iBloodEffectType == 1)		//입
+				_uint iBoneIndex = pEvent.iBoneIndex;
+				_matrix BoneMatrix = XMLoadFloat4x4(m_pModelCom->Get_BoneCombinedTransformationMatrix_AtIndex(iBoneIndex));
+				XMStoreFloat4x4(&worldMat, (BoneMatrix * m_pTransformCom->Get_WorldMatrix()));
+				EffectDesc.pWorldMatrix = &worldMat;
+
+				if (pEvent.isLoop)
 				{
-					CEffect::EFFECT_DESC EffectDesc;
-
-					_float4x4 worldMat;
-					XMStoreFloat4x4(&worldMat, (XMLoadFloat4x4(m_pModelCom->Get_BoneCombinedTransformationMatrix("_lip_top_c_n")) * m_pTransformCom->Get_WorldMatrix()));
-
-					//EffectDesc.pWorldMatrix = m_pTransformCom->Get_WorldFloat4x4();
-					EffectDesc.pWorldMatrix = &worldMat;
-					m_pEffectManager->Cine_MouseBlood(EffectDesc);
+					if (pEvent.isOn)
+					{
+						// 해당하는 이펙트를 켜는 함수
+					}
+					else
+					{
+						//해당하는 이펙트를 끄는 함수
+					}
 				}
+				else								  // 루프가 아닌 이펙트라면
+				{
+					if (pEvent.iBloodEffectType == 0)			// 코
+						m_pEffectManager->Cine_NoseBlood(EffectDesc);
+					else if (pEvent.iBloodEffectType == 1)			// 입
+						m_pEffectManager->Cine_MouseBlood(EffectDesc);
+				}
+
+
 			}
 		}
 	}
