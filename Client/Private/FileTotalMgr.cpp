@@ -263,19 +263,19 @@ HRESULT CFileTotalMgr::Set_GameObject_In_Client(int iStageLevel)
             }
             else
             {
-                dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject(iStageLevel, TEXT("Layer_Player"), 0))->Set_StartPos(vStartPos);
+                dynamic_cast<CLandObject*>(m_pGameInstance->Get_GameObject(iStageLevel, TEXT("Layer_Player"), 0))->Set_StartPos(vStartPos);
 
                 // 네비 루트 세팅
-                dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject(iStageLevel, TEXT("Layer_Player"), 0))->Set_NaviRouteIndex(m_MapTotalInform.pMapObjDesc[i].iNaviRoute);
+                dynamic_cast<CLandObject*>(m_pGameInstance->Get_GameObject(iStageLevel, TEXT("Layer_Player"), 0))->Set_NaviRouteIndex(m_MapTotalInform.pMapObjDesc[i].iNaviRoute);
 
                 if (-1 == m_MapTotalInform.pMapObjDesc[i].iNaviNum)
                 {
                     // 예외처리
-                    dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject(iStageLevel, TEXT("Layer_Player"), 0))->Set_NavigationIndex(0);
+                    dynamic_cast<CLandObject*>(m_pGameInstance->Get_GameObject(iStageLevel, TEXT("Layer_Player"), 0))->Set_NavigationIndex(0);
                 }
                 else
                 {
-                    dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject(iStageLevel, TEXT("Layer_Player"), 0))->Set_NavigationIndex(m_MapTotalInform.pMapObjDesc[i].iNaviNum);
+                    dynamic_cast<CLandObject*>(m_pGameInstance->Get_GameObject(iStageLevel, TEXT("Layer_Player"), 0))->Set_NavigationIndex(m_MapTotalInform.pMapObjDesc[i].iNaviNum);
                 }
             }
             

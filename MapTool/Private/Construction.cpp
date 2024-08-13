@@ -127,6 +127,14 @@ void CConstruction::Late_Tick(const _float& fTimeDelta)
 	/*for (auto& iter : m_vDecals)
 		iter->Late_Tick(fTimeDelta);*/
 
+	XMVECTOR worldPos = XMVectorZero();
+	worldPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+
+	//if (true == m_pGameInstance->isIn_WorldFrustum(worldPos, 20))
+	//{
+	//	m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
+	//}
+
 	m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
 
 }
