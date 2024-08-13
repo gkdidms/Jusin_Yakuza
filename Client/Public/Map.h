@@ -46,7 +46,7 @@ public:
 		SHADER_SIGN_MASK, //8
 		SHADER_STRONGBLOOM, //9
 		SHADER_COMPULSORY_DECALBLEND, //10
-
+		SHADER_DYNAMIC_SIGN_SMALL,
 
 		// 무조건 제일 아래
 		SHADER_LIGHTDEPTH, //11
@@ -138,6 +138,11 @@ private:
 
 
 	const _float4x4*		m_pPlayerMatrix; // 플레이어 위치
+
+
+	bool					m_bCompulsoryAlpha = { false };
+
+	float					m_fDynamicTime = { 0 };
 
 public:
 	HRESULT Add_Components(void* pArg);

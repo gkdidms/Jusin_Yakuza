@@ -144,11 +144,16 @@ PS_MAIN_OUT PS_MAIN(PS_IN In)
     PS_MAIN_OUT Out = (PS_MAIN_OUT) 0;
     
     vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
-    //if (vDiffuse.a < 0.1f)
-    //    discard;
+
     
-    vDiffuse.a = 1;
-   
+    if (true == g_bCompulsoryAlpha)
+    {
+        vDiffuse.a = 1;
+    }
+    
+    //if (vDiffuse.a < 0.2f)
+    //    discard;
+
     vector vMulti = g_isMulti ? g_MultiDiffuseTexture.Sample(LinearSampler, In.vTexcoord) : vector(0.f, 1.f, 0.f, 1.f);
     vector vRD = g_isRD ? g_RDTexture.Sample(LinearSampler, In.vTexcoord) : vector(1.f, 1.f, 1.f, 1.f);
     vector vRS = g_isRS ? g_RSTexture.Sample(LinearSampler, In.vTexcoord) : vector(1.f, 1.f, 1.f, 1.f);
@@ -474,6 +479,28 @@ PS_OUT_COLOR PS_Compulsory_DECAL(PS_IN In)
 }
 
 
+PS_OUT_COLOR PS_DYNAMIC_SMALL(PS_IN In)
+{
+    PS_OUT_COLOR Out = (PS_OUT_COLOR) 0;
+    
+    
+    
+    In.vTexcoord.x += g_fTimeDelta;
+    
+    //if (1 < In.vTexcoord.x)
+    //    In.vTexcoord.x = 0;
+ 
+    vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
+    
+    if(vDiffuse.a < 0.1)
+        discard;
+    
+    Out.vDiffuse = vDiffuse;
+    
+    return Out;
+}
+
+
 
 struct PS_IN_LIGHTDEPTH
 {
@@ -643,6 +670,20 @@ technique11 DefaultTechnique
         HullShader = NULL;
         DomainShader = NULL;
         PixelShader = compile ps_5_0 PS_Compulsory_DECAL();
+    }
+
+
+    pass DynamicSmallSign // 11
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        HullShader = NULL;
+        DomainShader = NULL;
+        PixelShader = compile ps_5_0 PS_DYNAMIC_SMALL();
     }
 
    

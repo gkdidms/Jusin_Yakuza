@@ -106,6 +106,10 @@ void CMap::Tick(const _float& fTimeDelta)
 			m_fWaterDeltaTime = 0;
 	}
 
+	m_fDynamicTime += fTimeDelta * 5;
+
+	if (1 < m_fDynamicTime)
+		m_fDynamicTime = 0;
 
 #ifdef _DEBUG
 	for (auto& iter : m_vColliders)
@@ -321,48 +325,30 @@ HRESULT CMap::Render()
 			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
 				return E_FAIL;
 
-			//_bool isRS = true;
-			//_bool isRD = true;
-			//_bool isRM = true;
-			//_bool isRT = false;
-			//_bool isMulti = true;
-
-			//if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_MultiDiffuseTexture", i, aiTextureType_SHININESS)))
-			//	isMulti = false;
-			//m_pShaderCom->Bind_RawValue("g_isMulti", &isMulti, sizeof(_bool));
-
-			//if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RSTexture", i, aiTextureType_SPECULAR)))
-			//	isRS = false;
-			//m_pShaderCom->Bind_RawValue("g_isRS", &isRS, sizeof(_bool));
-
-			//if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RDTexture", i, aiTextureType_OPACITY)))
-			//	isRD = false;
-			//m_pShaderCom->Bind_RawValue("g_isRD", &isRD, sizeof(_bool));
-
-			//if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RMTexture", i, aiTextureType_METALNESS)))
-			//	isRM = false;
-			//m_pShaderCom->Bind_RawValue("g_isRM", &isRM, sizeof(_bool));
-			//m_pShaderCom->Bind_RawValue("g_isRT", &isRT, sizeof(_bool));
-
-
-			_bool isRS = false;
-			_bool isRD = false;
-			_bool isRM = false;
+			_bool isRS = true;
+			_bool isRD = true;
+			_bool isRM = true;
 			_bool isRT = false;
-			_bool isMulti = false;
+			_bool isMulti = true;
 
-
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_MultiDiffuseTexture", i, aiTextureType_SHININESS)))
+				isMulti = false;
 			m_pShaderCom->Bind_RawValue("g_isMulti", &isMulti, sizeof(_bool));
 
-
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RSTexture", i, aiTextureType_SPECULAR)))
+				isRS = false;
 			m_pShaderCom->Bind_RawValue("g_isRS", &isRS, sizeof(_bool));
 
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RDTexture", i, aiTextureType_OPACITY)))
+				isRD = false;
 			m_pShaderCom->Bind_RawValue("g_isRD", &isRD, sizeof(_bool));
 
-
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RMTexture", i, aiTextureType_METALNESS)))
+				isRM = false;
 			m_pShaderCom->Bind_RawValue("g_isRM", &isRM, sizeof(_bool));
 			m_pShaderCom->Bind_RawValue("g_isRT", &isRT, sizeof(_bool));
 
+			m_pShaderCom->Bind_RawValue("g_bCompulsoryAlpha", &m_bCompulsoryAlpha, sizeof(_bool));
 
 			m_pShaderCom->Begin(SHADER_DEFAULT_MAP);
 
@@ -414,6 +400,8 @@ HRESULT CMap::Render()
 			m_pShaderCom->Bind_RawValue("g_isRM", &isRM, sizeof(_bool));
 			m_pShaderCom->Bind_RawValue("g_isRT", &isRT, sizeof(_bool));
 
+			m_pShaderCom->Bind_RawValue("g_bCompulsoryAlpha", &m_bCompulsoryAlpha, sizeof(_bool));
+
 			m_pShaderCom->Begin(SHADER_DEFAULT_MAP);
 
 			m_pModelCom->Render(i);
@@ -463,6 +451,8 @@ HRESULT CMap::Render()
 				isRM = false;
 			m_pShaderCom->Bind_RawValue("g_isRM", &isRM, sizeof(_bool));
 			m_pShaderCom->Bind_RawValue("g_isRT", &isRT, sizeof(_bool));
+
+			m_pShaderCom->Bind_RawValue("g_bCompulsoryAlpha", &m_bCompulsoryAlpha, sizeof(_bool));
 
 			m_pShaderCom->Begin(SHADER_DEFAULT_MAP);
 
@@ -514,12 +504,65 @@ HRESULT CMap::Render()
 			m_pShaderCom->Bind_RawValue("g_isRM", &isRM, sizeof(_bool));
 			m_pShaderCom->Bind_RawValue("g_isRT", &isRT, sizeof(_bool));
 
+			m_pShaderCom->Bind_RawValue("g_bCompulsoryAlpha", &m_bCompulsoryAlpha, sizeof(_bool));
+
 			m_pShaderCom->Begin(SHADER_DEFAULT_MAP);
 
 			m_pModelCom->Render(i);
 		}
 #pragma endregion
 
+#pragma region 강력한bloom
+		for (size_t k = 0; k < m_vRenderGlassMeshIndex.size(); k++)
+		{
+			int		i = m_vRenderGlassMeshIndex[k];
+
+			if (nullptr != m_pMaterialCom)
+				m_pMaterialCom->Bind_Shader(m_pShaderCom, m_pModelCom->Get_MaterialName(Meshes[i]->Get_MaterialIndex()));
+			else
+			{
+				_bool isUVShader = false;
+				if (FAILED(m_pShaderCom->Bind_RawValue("g_isUVShader", &isUVShader, sizeof(_bool))))
+					return E_FAIL;
+			}
+
+			_bool fFar = m_pGameInstance->Get_CamFar();
+			m_pShaderCom->Bind_RawValue("g_fFar", &fFar, sizeof(_float));
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
+				return E_FAIL;
+			m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS);
+
+			_bool isRS = true;
+			_bool isRD = true;
+			_bool isRM = true;
+			_bool isRT = false;
+			_bool isMulti = true;
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_MultiDiffuseTexture", i, aiTextureType_SHININESS)))
+				isMulti = false;
+			m_pShaderCom->Bind_RawValue("g_isMulti", &isMulti, sizeof(_bool));
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RSTexture", i, aiTextureType_SPECULAR)))
+				isRS = false;
+			m_pShaderCom->Bind_RawValue("g_isRS", &isRS, sizeof(_bool));
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RDTexture", i, aiTextureType_OPACITY)))
+				isRD = false;
+			m_pShaderCom->Bind_RawValue("g_isRD", &isRD, sizeof(_bool));
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RMTexture", i, aiTextureType_METALNESS)))
+				isRM = false;
+			m_pShaderCom->Bind_RawValue("g_isRM", &isRM, sizeof(_bool));
+			m_pShaderCom->Bind_RawValue("g_isRT", &isRT, sizeof(_bool));
+
+			m_pShaderCom->Bind_RawValue("g_bCompulsoryAlpha", &m_bCompulsoryAlpha, sizeof(_bool));
+
+			m_pShaderCom->Begin(SHADER_DEFAULT_MAP);
+
+			m_pModelCom->Render(i);
+		}
+#pragma endregion
 
 
 
@@ -785,6 +828,22 @@ HRESULT CMap::Render()
 
 			m_pModelCom->Render(i);
 		}
+
+
+		for (size_t k = 0; k < m_vDynamicSignIndex.size(); k++)
+		{
+			int		i = m_vDynamicSignIndex[k];
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
+				return E_FAIL;
+
+			if (FAILED(m_pShaderCom->Bind_RawValue("g_fTimeDelta", &m_fDynamicTime, sizeof(float))))
+				return E_FAIL;
+
+			m_pShaderCom->Begin(SHADER_DYNAMIC_SIGN_SMALL);
+
+			m_pModelCom->Render(i);
+		}
 	}
 #pragma endregion
 
@@ -1040,7 +1099,7 @@ void CMap::Add_Renderer(const _float& fTimeDelta)
 		
 
 	// 빛 영향 안받고 원색값 유지
-	if (0 < m_vSignMeshIndex.size() || 0 < m_vMaskSignIndex.size())
+	if (0 < m_vSignMeshIndex.size() || 0 < m_vMaskSignIndex.size() || 0 < m_vDynamicSignIndex.size())
 		m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONLIGHT_NONBLUR, this);
 
 	//Bloom
@@ -1066,12 +1125,16 @@ HRESULT CMap::Add_Components(void* pArg)
 	string strModelName = m_pGameInstance->WstringToString(gameobjDesc->wstrModelName);
 	string strRemoveName = "Prototype_Component_Model_";
 	_int iPos = strModelName.find(strRemoveName);
-
 	
 	if (iPos == string::npos)
 		return E_FAIL;
 
 	strModelName = strModelName.erase(iPos, strRemoveName.size());
+
+	if (strModelName == "doujima_gaikan")
+	{
+		m_bCompulsoryAlpha = { true };
+	}
 
 	wstring strMaterialName = TEXT("Prototype_Component_Material_") + m_pGameInstance->StringToWstring(strModelName);
 
