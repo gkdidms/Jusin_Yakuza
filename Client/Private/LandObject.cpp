@@ -368,6 +368,11 @@ void CLandObject::Off_Attack_Colliders()
 	}
 }
 
+void CLandObject::Set_NavigationIndex(int iIndex)
+{
+	m_pNavigationCom->Set_Index(iIndex); 
+}
+
 HRESULT CLandObject::Add_Components()
 {
 	return S_OK;

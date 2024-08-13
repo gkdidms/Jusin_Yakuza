@@ -117,7 +117,7 @@ private:
 	// 따로 랜더그룹을 다르게
 	vector<int>				m_vRenderDefaulMeshIndex; // RENDER_NONBLEND -> 일반 건물 + sign 포함. sign은 shaderpass를 다르게 두기
 	vector<int>				m_vRenderGlassMeshIndex; // RENDER_GLASS
-	vector<int>				m_vDecalMeshIndex; // RENDER_NONBLEND + mask
+	vector<int>				m_vMaskMeshIndex; // RENDER_NONBLEND + mask
 	vector<int>				m_vDecalLightMeshIndex; // RENDER_EFFECT + mask
 	vector<int>				m_vSignMeshIndex; // 그냥 환한 전등
 	vector<int>				m_vLampMeshIndex; // 그냥 환한 전등
