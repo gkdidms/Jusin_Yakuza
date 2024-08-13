@@ -46,7 +46,7 @@ public:
 		SHADER_SIGN_MASK, //8
 		SHADER_STRONGBLOOM, //9
 		SHADER_COMPULSORY_DECALBLEND, //10
-
+		SHADER_DYNAMIC_SIGN_SMALL,
 
 		// 무조건 제일 아래
 		SHADER_LIGHTDEPTH, //11
@@ -70,7 +70,7 @@ public:
 
 		bool				bCull;
 		bool				bLocalCull;
-		const _float4x4*	vPlayerMatrix;
+		const _float4x4* vPlayerMatrix;
 	}MAPOBJ_DESC;
 
 
@@ -89,7 +89,7 @@ public:
 	virtual HRESULT Render_LightDepth() override;
 
 public:
-	CTransform*					Get_Transform() { return m_pTransformCom; }
+	CTransform* Get_Transform() { return m_pTransformCom; }
 
 public:
 	int							Get_ObjPlaceDesc(OBJECTPLACE_DESC* objplaceDesc);
@@ -137,7 +137,14 @@ private:
 	_bool					m_bLocalCull = { false }; // 도로mesh 전용
 
 
-	const _float4x4*		m_pPlayerMatrix; // 플레이어 위치
+	const _float4x4* m_pPlayerMatrix; // 플레이어 위치
+
+
+	bool					m_bCompulsoryAlpha = { false };
+
+	float					m_fDynamicTime = { 0 };
+	float					m_fTimer = { 0 };
+	bool					m_bPositive = { false };
 
 public:
 	HRESULT Add_Components(void* pArg);
