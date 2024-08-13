@@ -104,7 +104,7 @@ HRESULT CPlayer::Initialize(void* pArg)
 	if (FAILED(Add_CharacterData()))
 		return E_FAIL;
 
-	//Ready_AuraEffect();
+	Ready_AuraEffect();
 
 	// ±‚∫ª ∏ÛΩ∫≈Õ: 20
 	// ªÊ¿Ô¿Ã: 30
@@ -2561,12 +2561,12 @@ void CPlayer::Free()
 
 		m_AnimationTree[i].clear();
 	}
-	
 
 #ifdef _DEBUG
 	Safe_Release(m_pDebugManager);
 #endif // _DEBUG
 
+	Safe_Release(m_pTargetItem);
 	Safe_Release(m_pUIManager);
 	Safe_Release(m_pNavigationCom);
 	Safe_Release(m_pAnimCom);

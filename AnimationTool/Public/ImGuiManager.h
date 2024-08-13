@@ -36,11 +36,6 @@ private:
 		HAND_A, FOOT_A, JOINT_A, HEAD_A,
 		HEAD_H = 10, BODY_H, LEG_H,
 	};
-	enum Blood_Effect_Type
-	{
-		NOSE, MOUTH, BLOOD_EFFECT_END
-	};
-
 
 	// 선택된거는 빨간색으로 보여준다
 	//콜라이더 활성화(노랑), 콜라이더 비활성화(주황), 사운드 활성화(초록)
@@ -96,7 +91,9 @@ public:
 		_float fAinmPosition;
 		_uint iBoneIndex;
 		string strBonelName;
-		_uint iBloodEffectType;
+		_uint iBloodEffectType;		// 출력시킬 이펙트의 타입
+		_bool isLoop;				// 루프 여부
+		_bool isOn;					// 이펙트 On/Off 정보
 	};
 
 	struct Animation_RadialEventState
@@ -278,15 +275,17 @@ private:
 private:
 	_bool						m_isFaceWindow = { false };
 	int							m_iFaceEventIndex = { 0 };
+	int							m_iFaceAnimIndex = { 0 };
 
 	// first: 애니메이션 이름, second: 트레일 이벤트정보
-	//multimap<string, Animation_TrailState>		m_FaceEvents;
+	multimap<string, Animation_FaceEventState>		m_FaceEvents;
 
 	/* 블러드 이펙트 윈도우 */
 private:
 	_bool						m_isBloodWindow = { false };
 	int							m_iBloodEventIndex = { 0 };
-	Blood_Effect_Type			m_eBloodEffectType = { NOSE };
+	int							m_eBloodEffectType = { 0 };
+	bool						m_isBloodEffectLoop = { false };
 
 	// first: 애니메이션 이름, second: 이벤트정보
 	multimap<string, Animation_BloodEventState>		m_BloodEvents;
@@ -296,7 +295,6 @@ private:
 	_bool						m_isRadialEventWindow = { false };
 	int							m_iRadialEventIndex = { 0 };
 	float						m_fRadialForce = { 1.f };
-	float						m_fRadialAnimPosition = { 1.f };
 
 	// first: 애니메이션 이름, second: 이벤트정보
 	multimap<string, Animation_RadialEventState>		m_RadialEvents;

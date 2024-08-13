@@ -85,6 +85,20 @@ void CEffectManager::Enemy_Attack_Effect(CEffect::EFFECT_DESC& EffectDesc)
     m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Damage1_Glow0"), TEXT("Layer_Particle"), &EffectDesc);
 }
 
+void CEffectManager::Cine_BloodEffect(CEffect::EFFECT_DESC& EffectDesc, _uint iEffectType)
+{
+    // 그 외의 번호는 필요  시 작성해서 쓸 것
+    switch(iEffectType)
+    {
+    case 0:         //코
+        Cine_NoseBlood(EffectDesc);
+        break;
+    case 1:         //입
+        Cine_MouseBlood(EffectDesc);
+        break;
+    }
+}
+
 void CEffectManager::Free()
 {
     Safe_Release(m_pGameInstance);

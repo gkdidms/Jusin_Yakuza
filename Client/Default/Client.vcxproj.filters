@@ -581,6 +581,9 @@
     <ClCompile Include="..\Private\EffectManager.cpp">
       <Filter>95.Utility\07.EffectManager</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\Karaoke_Kiryu.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\04.Karaoke</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\MainApp.h">
@@ -1192,6 +1195,9 @@
     </ClInclude>
     <ClInclude Include="..\Public\EffectManager.h">
       <Filter>95.Utility\07.EffectManager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Karaoke_Kiryu.h">
+      <Filter>02.GameObjects\02.Character\LandObject\04.Karaoke</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1826,6 +1832,9 @@
     </Filter>
     <Filter Include="95.Utility\07.EffectManager">
       <UniqueIdentifier>{279e9b65-e902-41c9-bff4-c83758a005a6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\04.Karaoke">
+      <UniqueIdentifier>{a2d23b9d-0007-4ad3-a26c-4d6255df806b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
