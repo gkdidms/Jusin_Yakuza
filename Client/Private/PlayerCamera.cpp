@@ -189,8 +189,6 @@ void CPlayerCamera::Compute_View_During_Collision(const _float& fTimeDelta)
 		m_bBlock = false;
 	}
 
-	
-
 
 	// 바뀐 카메라 위치와 콜라이더 충돌 체크함
 	if (true == m_bBlock)

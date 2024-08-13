@@ -534,10 +534,15 @@ PS_OUT_COLOR PS_DYNAMIC_SMALL(PS_IN In)
  
     vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
     
-    if(vDiffuse.a < 0.1)
+    
+    if(vDiffuse.a < 0.2)
         discard;
     
-    Out.vDiffuse = vDiffuse;
+    vector emissiveColor = float4(0, 0, 0, 0);
+    
+    emissiveColor.rgb = vDiffuse.rgb * 0.4;
+    
+    Out.vDiffuse = vDiffuse + emissiveColor;
     
     return Out;
 }
@@ -719,7 +724,7 @@ technique11 DefaultTechnique
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_Default, 0);
-        SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 
         VertexShader = compile vs_5_0 VS_MAIN();
         GeometryShader = NULL;
