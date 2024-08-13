@@ -94,11 +94,7 @@ void CCarChase_Monster::Set_Coll()
 	//피이펙트 출력
 	CEffect::EFFECT_DESC EffectDesc;
 
-	_matrix WorldMatrix = XMLoadFloat4x4(m_pTransformCom->Get_WorldFloat4x4());
-
-	_float4x4 matrix;
-	XMStoreFloat4x4(&matrix, WorldMatrix);
-	EffectDesc.pWorldMatrix = &matrix;
+	EffectDesc.pWorldMatrix = &m_pWorldMatrix;
 	CEffectManager::GetInstance()->Blood_Effect(EffectDesc);
 	CEffectManager::GetInstance()->Blood_Splash(EffectDesc);
 
@@ -124,6 +120,9 @@ void CCarChase_Monster::Update_TargetingUI()
 	_matrix VPMatrix = m_pGameInstance->Get_Transform_Matrix(CPipeLine::D3DTS_VIEW) * m_pGameInstance->Get_Transform_Matrix(CPipeLine::D3DTS_PROJ);
 
 	_matrix vWorldMaitrx = XMLoadFloat4x4(m_pTargetBoneMatrix) * XMLoadFloat4x4(&m_ModelWorldMatrix);
+
+	//틱마다 업데이트
+	XMStoreFloat4x4(&m_pWorldMatrix, vWorldMaitrx);	
 
 	_matrix ResultMatrix = vWorldMaitrx * VPMatrix;
 	_vector vPos = ResultMatrix.r[3];
