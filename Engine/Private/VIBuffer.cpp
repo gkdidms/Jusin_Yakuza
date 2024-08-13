@@ -100,11 +100,11 @@ HRESULT CVIBuffer::Ready_BoneBuffer()
 	// 贸府等 搬苞甫 困茄 Unordered Access View 积己
 	D3D11_BUFFER_DESC bufferDesc = {};
 	bufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	bufferDesc.ByteWidth = sizeof(VTXANIMMESH) * m_iNumVertices;
+	bufferDesc.ByteWidth = sizeof(VTXANIMBONE) * m_iNumVertices;
 	bufferDesc.BindFlags = D3D11_BIND_UNORDERED_ACCESS | D3D11_BIND_SHADER_RESOURCE;
 	bufferDesc.CPUAccessFlags = 0;
 	bufferDesc.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
-	bufferDesc.StructureByteStride = sizeof(VTXANIMMESH);
+	bufferDesc.StructureByteStride = sizeof(VTXANIMBONE);
 
 	if (FAILED(m_pDevice->CreateBuffer(&bufferDesc, nullptr, &m_pUAVOut)))
 		return E_FAIL;
@@ -119,12 +119,12 @@ HRESULT CVIBuffer::Ready_BoneBuffer()
 		return E_FAIL;
 
 	D3D11_BUFFER_DESC Desc{};
-	Desc.ByteWidth = sizeof(VTXANIMMESH) * m_iNumVertices;
+	Desc.ByteWidth = sizeof(VTXANIMBONE) * m_iNumVertices;
 	Desc.Usage = D3D11_USAGE_DEFAULT;
 	Desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	Desc.CPUAccessFlags = 0;
 	Desc.MiscFlags = 0;
-	Desc.StructureByteStride = sizeof(VTXANIMMESH);
+	Desc.StructureByteStride = sizeof(VTXANIMBONE);
 
 	if (FAILED(m_pDevice->CreateBuffer(&Desc, nullptr, &m_pProcessedVertexBuffer)))
 		return E_FAIL;

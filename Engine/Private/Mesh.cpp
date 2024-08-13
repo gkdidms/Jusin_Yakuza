@@ -188,7 +188,7 @@ HRESULT CMesh::Render()
 		};
 
 		_uint pStrideVertices[] = {
-			sizeof(VTXANIMMESH),
+			sizeof(VTXANIMBONE),
 		};
 
 		_uint pStartVertices[] = {
@@ -853,7 +853,7 @@ void CMesh::Bind_Matrices(vector<class CBone*>& Bones, _float4x4* pMeshBoneMatri
 	for (size_t i = 0; i < m_iNumBones; i++)
 	{
 		XMStoreFloat4x4(&pMeshBoneMatrices[i], XMLoadFloat4x4(&m_OffsetMatrices[i]) * XMLoadFloat4x4(Bones[m_BoneIndices[i]]->Get_CombinedTransformationMatrix()));
-		XMMatrixTranspose(XMLoadFloat4x4(&pMeshBoneMatrices[i]));
+		XMStoreFloat4x4(&pMeshBoneMatrices[i], XMMatrixTranspose(XMLoadFloat4x4(&pMeshBoneMatrices[i])));
 	}
 
 	m_pContext->UpdateSubresource(m_pBoneMatrixBuffer, 0, nullptr, pMeshBoneMatrices, 0, 0);

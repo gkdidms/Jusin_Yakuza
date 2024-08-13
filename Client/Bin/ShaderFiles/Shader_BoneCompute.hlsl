@@ -15,9 +15,6 @@ struct GS_OUT
     float3 vNormal : NORMAL;
     float2 vTexcoord : TEXCOORD0;
     float3 vTangent : TANGENT;
-    
-    uint4 vBlendIndices : BLENDINDICES;
-    float4 vBlendWeights : BLENDWEIGHTS;
 };
 
 matrix g_BoneMatrices[512] : register(b0);
