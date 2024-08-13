@@ -23,6 +23,12 @@ private:
     _uint m_iNumTextures = { 0 };
     vector<ID3D11ShaderResourceView*> m_pTextures;
 
+    vector<ID3D11ShaderResourceView*> m_pBufferSRVTexture;
+    vector<ID3D11UnorderedAccessView*> m_pBufferUAVTexture;
+
+private:
+    HRESULT Ready_Buffer();
+
 public:
     static CTexture* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring& strTextureFilePath, _uint iNumTextures = 1);
     virtual CComponent* Clone(void* pArg) override;
