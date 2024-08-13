@@ -106,10 +106,26 @@ void CMap::Tick(const _float& fTimeDelta)
 			m_fWaterDeltaTime = 0;
 	}
 
-	m_fDynamicTime += fTimeDelta * 5;
-
-	if (1 < m_fDynamicTime)
+	m_fTimer += fTimeDelta;
+	if (1 < m_fTimer)
+	{
+		m_fTimer = 0;
 		m_fDynamicTime = 0;
+		if (true == m_bPositive)
+			m_fDynamicTime += 0.25;
+		else
+			m_fDynamicTime -= 0.25;
+
+		m_bPositive = m_bPositive ? false : true;
+	}
+	
+
+	//if (0. < m_fDynamicTime || -0.5 > m_fDynamicTime)
+	//{
+	//	m_fDynamicTime = 0;
+	//	
+	//}
+		
 
 #ifdef _DEBUG
 	for (auto& iter : m_vColliders)

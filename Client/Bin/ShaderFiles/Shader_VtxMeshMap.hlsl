@@ -151,8 +151,8 @@ PS_MAIN_OUT PS_MAIN(PS_IN In)
         vDiffuse.a = 1;
     }
     
-    //if (vDiffuse.a < 0.2f)
-    //    discard;
+    if (vDiffuse.a < 0.2f)
+        discard;
 
     vector vMulti = g_isMulti ? g_MultiDiffuseTexture.Sample(LinearSampler, In.vTexcoord) : vector(0.f, 1.f, 0.f, 1.f);
     vector vRD = g_isRD ? g_RDTexture.Sample(LinearSampler, In.vTexcoord) : vector(1.f, 1.f, 1.f, 1.f);
