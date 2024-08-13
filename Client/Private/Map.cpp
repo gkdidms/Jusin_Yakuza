@@ -138,7 +138,7 @@ void CMap::Late_Tick(const _float& fTimeDelta)
 	// Renderer에 추가되는 mesh index 비워주고 시작
 	m_vRenderDefaulMeshIndex.clear();
 	m_vRenderGlassMeshIndex.clear();
-	m_vDecalMeshIndex.clear();
+	m_vMaskMeshIndex.clear();
 	m_vDecalLightMeshIndex.clear();
 	m_vSignMeshIndex.clear();
 	m_vLampMeshIndex.clear();
@@ -580,7 +580,56 @@ HRESULT CMap::Render()
 		}
 #pragma endregion
 
+#pragma region Mask_구Decal
+		for (size_t k = 0; k < m_vMaskMeshIndex.size(); k++)
+		{
+			int		i = m_vMaskMeshIndex[k];
 
+			if (nullptr != m_pMaterialCom)
+				m_pMaterialCom->Bind_Shader(m_pShaderCom, m_pModelCom->Get_MaterialName(Meshes[i]->Get_MaterialIndex()));
+			else
+			{
+				_bool isUVShader = false;
+				if (FAILED(m_pShaderCom->Bind_RawValue("g_isUVShader", &isUVShader, sizeof(_bool))))
+					return E_FAIL;
+			}
+
+
+			_bool fFar = m_pGameInstance->Get_CamFar();
+			m_pShaderCom->Bind_RawValue("g_fFar", &fFar, sizeof(_float));
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
+				return E_FAIL;
+
+			_bool isRS = true;
+			_bool isRD = true;
+			_bool isRM = true;
+			_bool isRT = false;
+			_bool isMulti = true;
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_MultiDiffuseTexture", i, aiTextureType_SHININESS)))
+				isMulti = false;
+			m_pShaderCom->Bind_RawValue("g_isMulti", &isMulti, sizeof(_bool));
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RSTexture", i, aiTextureType_SPECULAR)))
+				isRS = false;
+			m_pShaderCom->Bind_RawValue("g_isRS", &isRS, sizeof(_bool));
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RDTexture", i, aiTextureType_OPACITY)))
+				isRD = false;
+			m_pShaderCom->Bind_RawValue("g_isRD", &isRD, sizeof(_bool));
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RMTexture", i, aiTextureType_METALNESS)))
+				isRM = false;
+			m_pShaderCom->Bind_RawValue("g_isRM", &isRM, sizeof(_bool));
+			m_pShaderCom->Bind_RawValue("g_isRT", &isRT, sizeof(_bool));
+
+
+			m_pShaderCom->Begin(SHADER_DECAL_MASK);
+
+			m_pModelCom->Render(i);
+		}
+#pragma endregion
 
 	}
 #pragma endregion
@@ -709,20 +758,6 @@ HRESULT CMap::Render()
 			m_pModelCom->Render(i);
 		}
 
-		// 일반 마스크
-		// VtxMesh - Defulat_Pass - 2번
-		for (size_t k = 0; k < m_vDecalMeshIndex.size(); k++)
-		{
-			int		i = m_vDecalMeshIndex[k];
-
-			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
-				return E_FAIL;
-
-
-			m_pShaderCom->Begin(SHADER_DECAL_MASK);
-
-			m_pModelCom->Render(i);
-		}
 
 		for (size_t k = 0; k < m_vCompulsoryDecalBlendMeshIndex.size(); k++)
 		{
@@ -969,7 +1004,7 @@ void CMap::Add_Renderer(const _float& fTimeDelta)
 			}
 			else if (0 == strcmp(baseNameCStr, "DECALMESH"))
 			{
-				m_vDecalMeshIndex.push_back(i);
+				m_vMaskMeshIndex.push_back(i);
 			}
 			else if (0 == strcmp(baseNameCStr, "DECALLIGHTMESH"))
 			{
@@ -1035,7 +1070,7 @@ void CMap::Add_Renderer(const _float& fTimeDelta)
 				}
 				else if (0 == strcmp(baseNameCStr, "DECALMESH"))
 				{
-					m_vDecalMeshIndex.push_back(i);
+					m_vMaskMeshIndex.push_back(i);
 				}
 				else if (0 == strcmp(baseNameCStr, "DECALLIGHTMESH"))
 				{
@@ -1091,13 +1126,13 @@ void CMap::Add_Renderer(const _float& fTimeDelta)
 
 			if (true == m_pGameInstance->isIn_WorldFrustum(worldPos, fScale))
 			{
-				m_vDecalMeshIndex.push_back(i);
+				m_vMaskMeshIndex.push_back(i);
 			}
 		}
 	}
 
 	// RENDER_NONBLEND 돼야하는 그룹
-	if (0 < m_vRenderDefaulMeshIndex.size() || 0 < m_vSignMeshIndex.size() || 0 < m_vLampMeshIndex.size() || 0 < m_vBloomIndex.size())
+	if (0 < m_vRenderDefaulMeshIndex.size() || 0 < m_vSignMeshIndex.size() || 0 < m_vLampMeshIndex.size() || 0 < m_vBloomIndex.size() || 0 < m_vMaskMeshIndex.size())
 		m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
 
 	// RENDER_GLASS 돼야하는 그룹
@@ -1108,7 +1143,7 @@ void CMap::Add_Renderer(const _float& fTimeDelta)
 	if (0 < m_vDecalLightMeshIndex.size() || 0 < m_vLampMeshIndex.size())
 		m_pGameInstance->Add_Renderer(CRenderer::RENDER_EFFECT, this);
 
-	if (0 < m_vDecalBlendMeshIndex.size() || 0 < m_vDecalMeshIndex.size() || 0 < m_vCompulsoryDecalBlendMeshIndex.size())
+	if (0 < m_vDecalBlendMeshIndex.size() || 0 < m_vCompulsoryDecalBlendMeshIndex.size())
 	{
 		m_pGameInstance->Add_Renderer(CRenderer::RENDER_DECAL, this);
 	}
@@ -1246,7 +1281,7 @@ void CMap::Free()
 
 	m_vRenderDefaulMeshIndex.clear();
 	m_vRenderGlassMeshIndex.clear();
-	m_vDecalMeshIndex.clear();
+	m_vMaskMeshIndex.clear();
 	m_vDecalLightMeshIndex.clear();
 	m_vSignMeshIndex.clear();
 	m_vLampMeshIndex.clear();
