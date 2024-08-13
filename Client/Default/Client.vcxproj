@@ -217,6 +217,7 @@
     <ClInclude Include="..\public\CarChase_Reactor.h" />
     <ClInclude Include="..\public\CarChase_Monster.h" />
     <ClInclude Include="..\Public\EffectManager.h" />
+    <ClInclude Include="..\Public\Karaoke_Kiryu.h" />
     <ClInclude Include="..\Public\Weapon_Gun_Cz75.h" />
     <ClInclude Include="..\Public\Highway_Kiryu.h" />
     <ClInclude Include="..\Public\Highway_Taxi.h" />
@@ -421,6 +422,7 @@
     <ClCompile Include="..\private\CarChase_Van.cpp" />
     <ClCompile Include="..\Private\Collision_Manager.cpp" />
     <ClCompile Include="..\Private\EffectManager.cpp" />
+    <ClCompile Include="..\Private\Karaoke_Kiryu.cpp" />
     <ClCompile Include="..\Private\Kiryu_KRC_PickUp.cpp" />
     <ClCompile Include="..\Private\Kiryu_KRS_BackWall.cpp" />
     <ClCompile Include="..\Private\Kiryu_KRS_PickUp.cpp" />

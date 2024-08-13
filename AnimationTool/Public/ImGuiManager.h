@@ -275,6 +275,7 @@ private:
 private:
 	_bool						m_isFaceWindow = { false };
 	int							m_iFaceEventIndex = { 0 };
+	int							m_iFaceAnimIndex = { 0 };
 
 	// first: 애니메이션 이름, second: 트레일 이벤트정보
 	multimap<string, Animation_FaceEventState>		m_FaceEvents;

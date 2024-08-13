@@ -136,8 +136,6 @@ void CImguiManager::Tick(const _float& fTimeDelta)
 
 }
 
-
-
 HRESULT CImguiManager::Render()
 {
 	ImGui::EndFrame();
@@ -1185,6 +1183,8 @@ void CImguiManager::FaceEventWindow()
 	ImGui::Text(u8"선택된 본(본 리스트에서 선택한 값): %s", m_BoneNameList[m_iBoneSelectedIndex].c_str());
 
 	ImGui::InputFloat(u8"애니메이션 포지션", &m_fAnimationPosition);
+
+	ImGui::InputInt(u8"표정 인덱스", &m_iFaceAnimIndex);
 
 	if (ImGui::Button(u8"표정 On"))
 	{
