@@ -938,6 +938,19 @@ HRESULT CModel::Render(_uint iMeshIndex)
 	return S_OK;
 }
 
+void CModel::Bind_BoneMatrices(_uint iNumMeshIndex)
+{
+	ZeroMemory(m_MeshBoneMatrices, sizeof(_float4x4) * 512);
+
+	m_Meshes[iNumMeshIndex]->Bind_Matrices(m_Bones, m_MeshBoneMatrices);
+}
+
+HRESULT CModel::Bind_Compute(CComputeShader* pComputeShader, _uint iNumMeshIndex)
+{
+	return m_Meshes[iNumMeshIndex]->Bind_Compute(pComputeShader);
+}
+
+
 HRESULT CModel::Bind_Material(CShader* pShader, const _char* pConstantName, _uint iNumMeshIndex, aiTextureType eTextureType)
 {
 	auto* pTexture = m_Materials[m_Meshes[iNumMeshIndex]->Get_MaterialIndex()].pMaterialTextures[eTextureType];

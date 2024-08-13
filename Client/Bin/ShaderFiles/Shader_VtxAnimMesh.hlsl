@@ -6,9 +6,6 @@ struct VS_IN
     float3 vNormal : NORMAL;
     float2 vTexcoord : TEXCOORD0;
     float3 vTangent : TANGENT;
-    
-    uint4 vBlendIndices : BLENDINDICES;
-    float4 vBlendWeights : BLENDWEIGHTS;
 };
 
 struct VS_OUT
@@ -25,26 +22,16 @@ VS_OUT VS_MAIN(VS_IN In)
 {
     VS_OUT Out = (VS_OUT) 0;
     
-    float fWeightW = 1.f - (In.vBlendWeights.x + In.vBlendWeights.y + In.vBlendWeights.z);
-    
-    matrix TransformMatrix = mul(g_BoneMatrices[In.vBlendIndices.x], In.vBlendWeights.x) +
-    mul(g_BoneMatrices[In.vBlendIndices.y], In.vBlendWeights.y) +
-    mul(g_BoneMatrices[In.vBlendIndices.z], In.vBlendWeights.z) +
-    mul(g_BoneMatrices[In.vBlendIndices.w], fWeightW);
-    
-    vector vPosition = mul(float4(In.vPosition, 1.f), TransformMatrix);
-    vector vNormal = mul(float4(In.vNormal, 0.f), TransformMatrix);
-
     matrix matWV, matWVP;
 
     matWV = mul(g_WorldMatrix, g_ViewMatrix);
     matWVP = mul(matWV, g_ProjMatrix);
 
-    Out.vPosition = mul(vPosition, matWVP);
-    Out.vNormal = normalize(mul(vNormal, g_WorldMatrix));
+    Out.vPosition = mul(vector(In.vPosition, 1.f), matWVP);
+    Out.vNormal = normalize(mul(vector(In.vNormal, 0.f), g_WorldMatrix));
     Out.vTexcoord = In.vTexcoord;
     Out.vProjPos = Out.vPosition;
-    Out.vTangent = normalize(mul(vector(In.vTangent.xyz, 0.f), g_WorldMatrix));
+    Out.vTangent = normalize(mul(vector(In.vTangent, 0.f), g_WorldMatrix));
     Out.vBinormal = vector(cross(Out.vNormal.xyz, Out.vTangent.xyz), 0.f);
     
     return Out;
@@ -62,61 +49,12 @@ VS_OUT_LIGHTDEPTH VS_MAIN_LIGHTDEPTH(VS_IN In)
 {
     VS_OUT_LIGHTDEPTH Out = (VS_OUT_LIGHTDEPTH) 0;
 
-    float fWeightW = 1.f - (In.vBlendWeights.x + In.vBlendWeights.y + In.vBlendWeights.z);
-
-    matrix TransformMatrix = mul(g_BoneMatrices[In.vBlendIndices.x], In.vBlendWeights.x) +
-    mul(g_BoneMatrices[In.vBlendIndices.y], In.vBlendWeights.y) +
-    mul(g_BoneMatrices[In.vBlendIndices.z], In.vBlendWeights.z) +
-    mul(g_BoneMatrices[In.vBlendIndices.w], fWeightW);
-
-    vector vPosition = mul(float4(In.vPosition, 1.f), TransformMatrix);
-
-    Out.vPosition = mul(vPosition, g_WorldMatrix);
-    Out.vTexcoord = In.vTexcoord;
-    Out.vProjPos = vPosition;
-
-    return Out;
-}
-
-/*
-struct VS_OUT_MOTIONBLUR
-{
-    float4 vPosition : SV_POSITION;
-    float2 vTexcoord : TEXCOORD0;
-    float4 vProjPos : TEXCOORD1;
-    float4 vOldPosition : TEXCOORD2;
-};
-
-
-VS_OUT VS_MAIN_MOTIONBLUR(VS_IN In)
-{
-    VS_OUT Out = (VS_OUT) 0;
-    
-    float fWeightW = 1.f - (In.vBlendWeights.x + In.vBlendWeights.y + In.vBlendWeights.z);
-    
-    matrix TransformMatrix = mul(g_BoneMatrices[In.vBlendIndices.x], In.vBlendWeights.x) +
-    mul(g_BoneMatrices[In.vBlendIndices.y], In.vBlendWeights.y) +
-    mul(g_BoneMatrices[In.vBlendIndices.z], In.vBlendWeights.z) +
-    mul(g_BoneMatrices[In.vBlendIndices.w], fWeightW);
-    
-    vector vPosition = mul(float4(In.vPosition, 1.f), TransformMatrix);
-    vector vNormal = mul(float4(In.vNormal, 0.f), TransformMatrix);
-
-    matrix matWV, matWVP;
-
-    matWV = mul(g_WorldMatrix, g_ViewMatrix);
-    matWVP = mul(matWV, g_ProjMatrix);
-
-    Out.vPosition = mul(vPosition, matWVP);
-    Out.vNormal = normalize(mul(vNormal, g_WorldMatrix));
+    Out.vPosition = mul(vector(In.vPosition, 1.f), g_WorldMatrix);
     Out.vTexcoord = In.vTexcoord;
     Out.vProjPos = Out.vPosition;
-    Out.vTangent = normalize(mul(vector(In.vTangent.xyz, 0.f), g_WorldMatrix));
-    Out.vBinormal = vector(cross(Out.vNormal.xyz, Out.vTangent.xyz), 0.f);
-    
+
     return Out;
 }
-*/
 
 // LightDepth¿ë GS
 struct GS_IN
@@ -206,10 +144,9 @@ PS_OUT PS_MAIN(PS_IN In)
     vNormalDesc = vNormalDesc * 2.f - 1.f;
     //vNormalDesc = vector(vNormalDesc.w, vNormalDesc.y, 1.f, 0.f);
     float3x3 WorldMatrix = float3x3(In.vTangent.xyz, In.vBinormal.xyz, In.vNormal.xyz);
-    //vector vNormalBTN = normalize(vector(mul(vNormalDesc.xyz, WorldMatrix), 0.f));
-    vector vNormalBTN = (vector(mul(vNormalDesc.xyz, WorldMatrix), 0.f));
-    Out.vNormal = vector(vNormalBTN.xyz * 0.5f + 0.5f, 0.f);
-
+    vector vNormalBTN = normalize(vector(mul(vNormalDesc.xyz, WorldMatrix), 0.f));
+    //vector vNormalBTN = (vector(mul(vNormalDesc.xyz, WorldMatrix), 0.f));
+    
     float RimIndex = 0.f;
     if (0.05f < g_isRimLight)
     {
@@ -224,8 +161,9 @@ PS_OUT PS_MAIN(PS_IN In)
     float fDeffuseFactor = vDiffuseDesc.a * 1.f;
     
     Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_fFar, RimIndex, 0.f);
+    Out.vNormal = vector(vNormalBTN.xyz * 0.5f + 0.5f, 0.f);
     Out.vDiffuse = vDiffuse;
-    Out.vSurface = vector(Result.fMetalness, Result.fRoughness, Result.fSpeclure, 0);
+    Out.vSurface = vector(Result.fMetalness, Result.fRoughness, Result.fSpeclure, Engine);
     Out.vOEShader = vector(OEResult.fRouhness, OEResult.fMixShaderFactor, fMixMultiFactor, fDeffuseFactor);
     Out.vSpecular = vector(OEResult.vSpecular, 0.f);
     
@@ -336,19 +274,6 @@ technique11 DefaultTechnique
     }
 
     pass LightDepth
-    {
-        SetRasterizerState(RS_Default);
-        SetDepthStencilState(DSS_Default, 0);
-        SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
-
-        VertexShader = compile vs_5_0 VS_MAIN_LIGHTDEPTH();
-        GeometryShader = compile gs_5_0 GS_MAIN_LIGHTDEPTH();
-        HullShader = NULL;
-        DomainShader = NULL;
-        PixelShader = compile ps_5_0 PS_MAIN_LIGHTDEPTH();
-    }
-
-    pass MotionBlur
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_Default, 0);
