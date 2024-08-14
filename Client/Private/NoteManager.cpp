@@ -56,17 +56,17 @@ HRESULT CNoteManager::Load_NoteData(string strSongName)
 		getline(lineStream, TimePos_E, ',');
 
 
-		if (strNoteType == "0")
+		if (strNoteType == "0")//일반
 		{
 			// 넘겨주는 인자값을 파일에 저장해둔 값을 넘겨주고, 이니셜라이즈 할 때 저장해야한다.
 			m_Notes.push_back(CNoteSingle::Create(stoi(strNoteType), stoi(Button), stof(TimePos_S)));
 		}
-		else if (strNoteType == "1")
+		else if (strNoteType == "1")//유지
 		{
 			// 넘겨주는 인자값을 파일에 저장해둔 값을 넘겨주고, 이니셜라이즈 할 때 저장해야한다.
 			m_Notes.push_back(CNoteLong::Create(stoi(strNoteType), stoi(Button), stof(TimePos_S), stof(TimePos_E)));
 		}
-		else if (strNoteType == "2")
+		else if (strNoteType == "2")//연타
 		{
 			// 넘겨주는 인자값을 파일에 저장해둔 값을 넘겨주고, 이니셜라이즈 할 때 저장해야한다.
 			m_Notes.push_back(CNoteBurstHold::Create(stoi(strNoteType), stoi(Button), stof(TimePos_S), stof(TimePos_E)));

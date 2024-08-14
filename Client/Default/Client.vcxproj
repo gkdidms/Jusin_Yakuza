@@ -226,6 +226,7 @@
     <ClInclude Include="..\Public\NoteSingle.h" />
     <ClInclude Include="..\Public\Loader_Other.h" />
     <ClInclude Include="..\Public\Loader_Anim.h" />
+    <ClInclude Include="..\Public\UIKaraoke_Select.h" />
     <ClInclude Include="..\Public\Weapon_Gun_Cz75.h" />
     <ClInclude Include="..\Public\Highway_Kiryu.h" />
     <ClInclude Include="..\Public\Highway_Taxi.h" />
@@ -568,6 +569,7 @@
     <ClCompile Include="..\private\Tutorial.cpp" />
     <ClCompile Include="..\private\TutorialManager.cpp" />
     <ClCompile Include="..\Private\UIInven.cpp" />
+    <ClCompile Include="..\Private\UIKaraoke_Select.cpp" />
     <ClCompile Include="..\Private\UILife.cpp" />
     <ClCompile Include="..\Private\UILogo.cpp" />
     <ClCompile Include="..\Private\UIMainMenu.cpp" />

@@ -608,6 +608,9 @@
     <ClCompile Include="..\Private\Loader_Other.cpp">
       <Filter>01.Levels\99.Loading\Loader\New\Other</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\UIKaraoke_Select.cpp">
+      <Filter>95.Utility\05.UIManager\UIScene\UIKaraoke_Select</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\MainApp.h">
@@ -1246,6 +1249,9 @@
     </ClInclude>
     <ClInclude Include="..\Public\Loader_Other.h">
       <Filter>01.Levels\99.Loading\Loader\New\Other</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIKaraoke_Select.h">
+      <Filter>95.Utility\05.UIManager\UIScene\UIKaraoke_Select</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1913,6 +1919,9 @@
     </Filter>
     <Filter Include="01.Levels\99.Loading\Loader\New\Other">
       <UniqueIdentifier>{72c7d0c3-74b2-447f-a915-187b4dc90856}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\05.UIManager\UIScene\UIKaraoke_Select">
+      <UniqueIdentifier>{24fefc7d-ea55-411a-ab9f-a5959d534130}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

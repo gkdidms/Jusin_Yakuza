@@ -19,6 +19,8 @@
 #include"UISkillDestroyer.h"
 #include "UICarchase.h"
 
+#include "UIKaraoke_Select.h"
+
 
 #include "InventoryManager.h"
 #include "Player.h"
@@ -158,6 +160,11 @@ HRESULT CUIManager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 	Desc.strSceneName = TEXT("Carchase");
 	pScene = CUICarchase::Create(m_pDevice, m_pContext, &Desc);
 	m_AllScene.emplace(make_pair(TEXT("Carchase"), pScene));
+
+	Desc.strSceneName = TEXT("Karaoke_Select");
+	pScene = CUIKaraoke_Select::Create(m_pDevice, m_pContext, &Desc);
+	m_AllScene.emplace(make_pair(TEXT("Karaoke_Select"), pScene));
+
 
 	return S_OK;
 }
