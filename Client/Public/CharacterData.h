@@ -49,6 +49,14 @@ public:
         _uint iBoneIndex;
     };
 
+    struct ANIMATION_FACEEVENTSTATE
+    {
+        _uint iType;					//0번이 on 1번이 off 2번이 change
+        _float fAinmPosition;
+        _uint iFaceAnimIndex;
+    };
+
+
     struct ANIMATION_BLOODEVENTSTATE
     {
         _float fAinmPosition;
@@ -132,6 +140,7 @@ private:
     HRESULT Load_EffectState(string strFilePath);
     HRESULT Load_RimLightEvent(string strFilePath);
     HRESULT Load_TrailEvent(string strFilePath);
+    HRESULT Load_FaceEvent(string strFilePath);
     HRESULT Load_BloodEffectEvent(string strFilePath);
     HRESULT Load_RadialEvent(string strFilePath);
 
@@ -155,6 +164,9 @@ private:
 
     // first: 애니메이션 이름, second: 트레일 이벤트정보
     multimap<string, ANIMATION_TRAILSTATE>		    m_TrailEvents;
+
+    // first: 애니메이션 이름, second: 래디얼 이벤트 정보
+    multimap<string, ANIMATION_FACEEVENTSTATE>		    m_FaceEvents;
 
     // first: 애니메이션 이름, second: 래디얼 이벤트 정보
     multimap<string, ANIMATION_BLOODEVENTSTATE>		    m_BloodEvents;

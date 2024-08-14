@@ -62,6 +62,11 @@ HRESULT CCharacterData::Initialize(CLandObject* pCharacter)
 	if (FAILED(Load_TrailEvent(strFileFullPath)))
 		return E_FAIL;
 
+	strFileName = m_pGameInstance->WstringToString(m_pCharacter->Get_ModelName()) + "_FaceEvents.dat";
+	strFileFullPath = strFilePath + strFileName;
+	if (FAILED(Load_FaceEvent(strFileFullPath)))
+		return E_FAIL;
+
 	// 피 이펙트 이벤트는 컷신 애니메이션 컴포넌트를 쓰고있기때문에, 사용 시 주의가 필요하다
 	strFileName = m_pGameInstance->WstringToString(m_pCharacter->Get_ModelName()) + "_BloodEffectEvents.dat";
 	strFileFullPath = strFilePath + strFileName;
@@ -482,6 +487,50 @@ HRESULT CCharacterData::Load_TrailEvent(string strFilePath)
 			in >> Desc.fAinmPosition;
 
 			m_TrailEvents.emplace(strAnimName, Desc);
+		}
+
+		in.close();
+	}
+	return S_OK;
+}
+
+HRESULT CCharacterData::Load_FaceEvent(string strFilePath)
+{
+	// 트레일 생섣해야함
+/*
+	_float fAinmPosition;
+	_uint iBoneIndex;
+	string strBonelName;
+	_uint iBloodEffectType;
+*/
+	if (fs::exists(strFilePath))
+	{
+#ifdef _DEBUG
+		cout << "_FaceEvent Yes!!" << endl;
+#endif // _DEBUG
+
+		ifstream in(strFilePath, ios::binary);
+
+		if (!in.is_open()) {
+			MSG_BOX("FaceEvent 개방 실패");
+			return E_FAIL;
+		}
+
+		_uint iNumEvent = { 0 };
+		in >> iNumEvent;
+
+		for (size_t i = 0; i < iNumEvent; i++)
+		{
+			string strAnimName = "";
+			in >> strAnimName;				//Key값으로 쓰일 애니메이션 이름
+
+			ANIMATION_FACEEVENTSTATE Desc{};
+
+			in >> Desc.iType;
+			in >> Desc.fAinmPosition;
+			in >> Desc.iFaceAnimIndex;
+
+			m_FaceEvents.emplace(strAnimName, Desc);
 		}
 
 		in.close();
