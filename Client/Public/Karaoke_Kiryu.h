@@ -38,6 +38,11 @@ public:
     // CLandObject을(를) 통해 상속됨
     string Get_CurrentAnimationName() override;
 
+public:
+    void Set_CutSceneAnim();
+    void Play_CutScene(const _float& fTimeDelta);
+    void Reset_CutSceneEvent();
+
 private:
     void Ready_SingingInterval();
 
