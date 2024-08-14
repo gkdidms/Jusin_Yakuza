@@ -253,8 +253,10 @@ void CDebugManager::Window_Debug()
             m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_DOGIMAZO_LOBBY));
         if (ImGui::Button("Level_Dogimazo_Boss"))
             m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_DOGIMAZO_BOSS));
-        if (ImGui::Button("Level_Roadway"))
-            m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_ROADWAY));
+        if (ImGui::Button("Level_Street"))
+            m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_STREET));
+        if (ImGui::Button("Level_CarChase"))
+            m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_CARCHASE));
         if (ImGui::Button("Level_Karaoke"))
             m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_KARAOKE));
     }

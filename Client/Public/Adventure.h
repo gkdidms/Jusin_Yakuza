@@ -73,6 +73,7 @@ protected:
     _bool m_isAnimLoop = { false };
     _uint m_iState = { 0 };
     _float m_fChangeInterval = { 4.f };
+    _float m_fOffset = { 0.8f };
 
     _float          m_fPrevSpeed;
     _float4         m_vPrevMove;
@@ -87,7 +88,7 @@ protected:
 
     int     m_iNaviRouteNum = { 0 };
 
-    _float m_fSpeed = { 3.f };
+    _float m_fSpeed = { 2.f };
 
 protected:
     virtual void Change_Animation();

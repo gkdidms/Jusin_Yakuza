@@ -444,14 +444,15 @@ _vector CNavigation::Compute_WayPointDir_Adv(_vector vPosition, const _float& fT
 
     if (fDistance <= m_fMaxDistance)
     {
-        m_iRouteDir == DIR_F ? m_iCurrentWayPointIndex++ : m_iCurrentWayPointIndex--;
+        if (m_iRouteDir == DIR_F)
+            m_iCurrentWayPointIndex++;
+        else 
+            m_iCurrentWayPointIndex--;
 
         if (m_iCurrentWayPointIndex >= CurrentRoute.size() || m_iCurrentWayPointIndex < 0)
         {
             //沥规氢 -> 开规氢
             //开规氢 -> 沥规氢 
-            m_iRouteDir = m_iRouteDir == DIR_F ? DIR_B : DIR_F;
-
             if (m_iRouteDir == DIR_F)
             {
                 m_iRouteDir = DIR_B;
@@ -459,8 +460,8 @@ _vector CNavigation::Compute_WayPointDir_Adv(_vector vPosition, const _float& fT
             }
             else
             {
-                m_iRouteDir == DIR_F;
-                m_iCurrentRouteIndex = 0;
+                m_iRouteDir = DIR_F;
+                m_iCurrentWayPointIndex = 0;
             }
         }
 
@@ -472,7 +473,7 @@ _vector CNavigation::Compute_WayPointDir_Adv(_vector vPosition, const _float& fT
         }
 
         m_vPreDir = XMVector3Normalize(vDir);
-        m_vNextDir = XMVector3Normalize(XMLoadFloat4(&CurrentRoute[m_iCurrentWayPointIndex].vPosition) - XMLoadFloat4(&m_Routes[m_iPreRouteIndex][m_iPreWayPointIndex].vPosition));
+        m_vNextDir = XMVector3Normalize(XMLoadFloat4(&m_Routes[m_iCurrentRouteIndex][m_iCurrentWayPointIndex].vPosition) - XMLoadFloat4(&m_Routes[m_iPreRouteIndex][m_iPreWayPointIndex].vPosition));
         m_fTime = 0.f;
 
         m_iPreRouteIndex = m_iCurrentRouteIndex;
