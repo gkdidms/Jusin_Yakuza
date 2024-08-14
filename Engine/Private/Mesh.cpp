@@ -32,9 +32,11 @@ CMesh::CMesh(const CMesh& rhs)
 	Safe_AddRef(m_pBoneMatrixBuffer);
 }
 
-HRESULT CMesh::Initialize(CModel::MODELTYPE eModelType, const aiMesh* pAIMesh, _fmatrix PreTransformMatrix, const vector<class CBone*>& Bones)
+HRESULT CMesh::Initialize(CModel::MODELTYPE eModelType, const aiMesh* pAIMesh, _fmatrix PreTransformMatrix, const vector<class CBone*>& Bones, _bool isTool)
 {
 	strcpy_s(m_szName, pAIMesh->mName.data);
+
+	m_isTool = isTool;
 
 	m_iMaterialIndex = pAIMesh->mMaterialIndex;
 	m_iModelType = eModelType;
@@ -94,7 +96,7 @@ HRESULT CMesh::Initialize(CModel::MODELTYPE eModelType, const aiMesh* pAIMesh, _
 
 	Safe_Delete_Array(pIndices);
 
-	if (m_iModelType == CModel::TYPE_ANIM)
+	if (m_iModelType == CModel::TYPE_ANIM && !m_isTool)
 	{
 		if (FAILED(Ready_BoneBuffer()))
 			return E_FAIL;
@@ -106,12 +108,14 @@ HRESULT CMesh::Initialize(CModel::MODELTYPE eModelType, const aiMesh* pAIMesh, _
     return S_OK;
 }
 
-HRESULT CMesh::Initialize(CModel::MODELTYPE eModelType, const BAiMesh* pAIMesh, _fmatrix PreTransformMatrix, const vector<class CBone*>& Bones)
+HRESULT CMesh::Initialize(CModel::MODELTYPE eModelType, const BAiMesh* pAIMesh, _fmatrix PreTransformMatrix, const vector<class CBone*>& Bones, _bool isTool)
 {
 	strcpy_s(m_szName, pAIMesh->mName);
 
-	m_iMaterialIndex = pAIMesh->mMaterialIndex;
+	m_isTool = isTool;
 	m_iModelType = eModelType;
+
+	m_iMaterialIndex = pAIMesh->mMaterialIndex;
 
 	//모델 Read시 정점 3개를 하나의 삼각형으로 만들어주는 옵션이기 때문에, 버퍼에도 마찬가지로 트라이앵글리스트 옵션을 줘야한다.
 	m_Primitive_Topology = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
@@ -165,7 +169,7 @@ HRESULT CMesh::Initialize(CModel::MODELTYPE eModelType, const BAiMesh* pAIMesh, 
 
 	Safe_Delete_Array(pIndices);
 
-	if (m_iModelType == CModel::TYPE_ANIM)
+	if (m_iModelType == CModel::TYPE_ANIM && !isTool)
 	{
 		if (FAILED(Ready_BoneBuffer()))
 			return E_FAIL;
@@ -177,9 +181,9 @@ HRESULT CMesh::Initialize(CModel::MODELTYPE eModelType, const BAiMesh* pAIMesh, 
 	return S_OK;
 }
 
-HRESULT CMesh::Render()
+HRESULT CMesh::Render(_bool isTool)
 {
-	if (m_iModelType == CModel::TYPE_ANIM)
+	if (m_iModelType == CModel::TYPE_ANIM && !isTool)
 	{
 		m_pContext->CopyResource(m_pProcessedVertexBuffer, m_pUAVOut);
 
@@ -603,12 +607,24 @@ HRESULT CMesh::Ready_Vertices_For_AnimMesh(const aiMesh* pAIMesh, const vector<c
 {
 	m_iVertexStride = sizeof(VTXANIMMESH);
 
-	m_Buffer_Desc.ByteWidth = m_iVertexStride * m_iNumVertices;
-	m_Buffer_Desc.Usage = D3D11_USAGE_DEFAULT;
-	m_Buffer_Desc.BindFlags = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_UNORDERED_ACCESS;
-	m_Buffer_Desc.CPUAccessFlags = 0;
-	m_Buffer_Desc.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
-	m_Buffer_Desc.StructureByteStride = m_iVertexStride;
+	if (m_isTool)
+	{
+		m_Buffer_Desc.ByteWidth = m_iVertexStride * m_iNumVertices;
+		m_Buffer_Desc.Usage = D3D11_USAGE_DEFAULT;
+		m_Buffer_Desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+		m_Buffer_Desc.CPUAccessFlags = 0;
+		m_Buffer_Desc.MiscFlags = 0;
+		m_Buffer_Desc.StructureByteStride = m_iVertexStride;
+	}
+	else
+	{
+		m_Buffer_Desc.ByteWidth = m_iVertexStride * m_iNumVertices;
+		m_Buffer_Desc.Usage = D3D11_USAGE_DEFAULT;
+		m_Buffer_Desc.BindFlags = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_UNORDERED_ACCESS;
+		m_Buffer_Desc.CPUAccessFlags = 0;
+		m_Buffer_Desc.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
+		m_Buffer_Desc.StructureByteStride = m_iVertexStride;
+	}
 
 	VTXANIMMESH* pVertices = new VTXANIMMESH[m_iNumVertices];
 	ZeroMemory(pVertices, sizeof(VTXANIMMESH) * m_iNumVertices);
@@ -723,12 +739,24 @@ HRESULT CMesh::Ready_Vertices_For_AnimMesh(const BAiMesh* pAIMesh, const vector<
 {
 	m_iVertexStride = sizeof(VTXANIMMESH);
 
-	m_Buffer_Desc.ByteWidth = m_iVertexStride * m_iNumVertices;
-	m_Buffer_Desc.Usage = D3D11_USAGE_DEFAULT;
-	m_Buffer_Desc.BindFlags = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_UNORDERED_ACCESS;
-	m_Buffer_Desc.CPUAccessFlags = 0;
-	m_Buffer_Desc.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
-	m_Buffer_Desc.StructureByteStride = m_iVertexStride;
+	if (m_isTool)
+	{
+		m_Buffer_Desc.ByteWidth = m_iVertexStride * m_iNumVertices;
+		m_Buffer_Desc.Usage = D3D11_USAGE_DEFAULT;
+		m_Buffer_Desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+		m_Buffer_Desc.CPUAccessFlags = 0;
+		m_Buffer_Desc.MiscFlags = 0;
+		m_Buffer_Desc.StructureByteStride = m_iVertexStride;
+	}
+	else
+	{
+		m_Buffer_Desc.ByteWidth = m_iVertexStride * m_iNumVertices;
+		m_Buffer_Desc.Usage = D3D11_USAGE_DEFAULT;
+		m_Buffer_Desc.BindFlags = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_UNORDERED_ACCESS;
+		m_Buffer_Desc.CPUAccessFlags = 0;
+		m_Buffer_Desc.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
+		m_Buffer_Desc.StructureByteStride = m_iVertexStride;
+	}
 
 	VTXANIMMESH* pVertices = new VTXANIMMESH[m_iNumVertices];
 	ZeroMemory(pVertices, sizeof(VTXANIMMESH) * m_iNumVertices);
@@ -911,11 +939,11 @@ HRESULT CMesh::Ready_Buffer()
 	return S_OK;
 }
 
-CMesh* CMesh::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CModel::MODELTYPE eModelType, const aiMesh* pAIMesh, _fmatrix PreTransformMatrix, const vector<class CBone*>& Bones)
+CMesh* CMesh::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CModel::MODELTYPE eModelType, const aiMesh* pAIMesh, _fmatrix PreTransformMatrix, const vector<class CBone*>& Bones, _bool isTool)
 {
 	CMesh* pInstance = new CMesh(pDevice, pContext);
 
-	if (FAILED(pInstance->Initialize(eModelType, pAIMesh, PreTransformMatrix, Bones)))
+	if (FAILED(pInstance->Initialize(eModelType, pAIMesh, PreTransformMatrix, Bones, isTool)))
 	{
 		MSG_BOX("Failed To Created : CMesh");
 		Safe_Release(pInstance);
@@ -924,11 +952,11 @@ CMesh* CMesh::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CMode
 	return pInstance;
 }
 
-CMesh* CMesh::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CModel::MODELTYPE eModelType, const BAiMesh* pAIMesh, _fmatrix PreTransformMatrix, const vector<class CBone*>& Bones)
+CMesh* CMesh::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CModel::MODELTYPE eModelType, const BAiMesh* pAIMesh, _fmatrix PreTransformMatrix, const vector<class CBone*>& Bones, _bool isTool)
 {
 	CMesh* pInstance = new CMesh(pDevice, pContext);
 
-	if (FAILED(pInstance->Initialize(eModelType, pAIMesh, PreTransformMatrix, Bones)))
+	if (FAILED(pInstance->Initialize(eModelType, pAIMesh, PreTransformMatrix, Bones, isTool)))
 	{
 		MSG_BOX("Failed To Created : CMesh");
 		Safe_Release(pInstance);

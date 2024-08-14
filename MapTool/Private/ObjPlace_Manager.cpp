@@ -1319,7 +1319,7 @@ void CObjPlace_Manager::Load_ModelName()
 	vObjectNames.clear();
 
 	/* 몬스터 모델 로드*/
-	m_pGameInstance->Get_FileNames("../../Client/Bin/Resources/Models/Anim", vObjectNames);
+	m_pGameInstance->Get_FileNames("../../Client/Bin/Resources/Models/Anim/Monster", vObjectNames);
 
 	for (int i = 0; i < vObjectNames.size(); i++)
 	{
