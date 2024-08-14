@@ -1319,7 +1319,7 @@ void CObjPlace_Manager::Load_ModelName()
 	vObjectNames.clear();
 
 	/* 몬스터 모델 로드*/
-	m_pGameInstance->Get_FileNames("../../Client/Bin/Resources/Models/Anim", vObjectNames);
+	m_pGameInstance->Get_FileNames("../../Client/Bin/Resources/Models/Anim/Monster/", vObjectNames);
 
 	for (int i = 0; i < vObjectNames.size(); i++)
 	{
@@ -1331,6 +1331,38 @@ void CObjPlace_Manager::Load_ModelName()
 	}
 
 	vObjectNames.clear();
+
+
+	m_pGameInstance->Get_FileNames("../../Client/Bin/Resources/Models/Anim/Car/", vObjectNames);
+
+	for (int i = 0; i < vObjectNames.size(); i++)
+	{
+		string modifiedString = modifyString(vObjectNames[i]);
+
+		char* cfilename = new char[MAX_PATH];
+		strcpy(cfilename, StringToCharDIY(modifiedString));
+		m_MonsterNames.push_back(cfilename);
+	}
+
+	vObjectNames.clear();
+
+
+	m_pGameInstance->Get_FileNames("../../Client/Bin/Resources/Models/Anim/Monster/", vObjectNames);
+
+	for (int i = 0; i < vObjectNames.size(); i++)
+	{
+		string modifiedString = modifyString(vObjectNames[i]);
+
+		char* cfilename = new char[MAX_PATH];
+		strcpy(cfilename, StringToCharDIY(modifiedString));
+		m_MonsterNames.push_back(cfilename);
+	}
+
+	vObjectNames.clear();
+
+
+
+
 
 	/* map2 모델 로드*/
 	m_pGameInstance->Get_FileNames("../../Client/Bin/Resources/Models/NonAnim/Map/Map2/Bin", vObjectNames);

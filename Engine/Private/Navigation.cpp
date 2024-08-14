@@ -69,15 +69,16 @@ HRESULT CNavigation::Initialize(void* pArg)
     if (nullptr != pArg)
     {
         NAVIGATION_DESC* pDesc = static_cast<NAVIGATION_DESC*>(pArg);
-        m_iCurrentLine = pDesc->iCurrentLine;
+        m_iRouteDir = pDesc->iCurrentRouteDir;
+        m_iCurrentRouteIndex = pDesc->iCurrentLine;
+        m_iPreRouteIndex = m_iCurrentRouteIndex;
         m_iCurrentWayPointIndex = pDesc->iWayPointIndex;
         m_iPreWayPointIndex = m_iCurrentWayPointIndex;
         if (m_iCurrentWayPointIndex == -1) Find_WayPointIndex(pDesc->vPosition);
 
-        m_iCurrentIndex = Find_PlayerMonster_Index(XMLoadFloat4(&m_Routes[m_iCurrentLine][m_iCurrentWayPointIndex].vPosition));
+        m_iCurrentIndex = Find_PlayerMonster_Index(XMLoadFloat4(&m_Routes[m_iCurrentRouteIndex][m_iCurrentWayPointIndex].vPosition));
     }
 
-    
     return S_OK;
 }
 
@@ -254,7 +255,7 @@ void CNavigation::Find_WayPointIndex(_vector vPosition)
     //포지션으로 웨이포인트 인덱스 만들기
     _float fMinDistance = 0.f;
     _int iIndex = 0;
-    for (auto& vWayPoint : m_Routes[m_iCurrentLine])
+    for (auto& vWayPoint : m_Routes[m_iCurrentRouteIndex])
     {
         _float fDistance = XMVectorGetX(XMVector3Length(XMLoadFloat4(&vWayPoint.vPosition) - vPosition));
 
@@ -262,16 +263,46 @@ void CNavigation::Find_WayPointIndex(_vector vPosition)
 
         if (fMinDistance == 0.f || fMinDistance >= fDistance)
         {
-            if (iIndex >= m_Routes[m_iCurrentLine].size())
+            if (iIndex >= m_Routes[m_iCurrentRouteIndex].size())
                 iIndex = 0;
 
             m_iCurrentWayPointIndex = iIndex;
-            m_iPreWayPointIndex = iIndex == 0 ? m_Routes[m_iCurrentLine].size() - 1 : iIndex - 1;
+            m_iPreWayPointIndex = iIndex == 0 ? m_Routes[m_iCurrentRouteIndex].size() - 1 : iIndex - 1;
             fMinDistance = fDistance;
         }
     }
 
-    m_vNextDir = XMVector3Normalize(XMLoadFloat4(&m_Routes[m_iCurrentLine][m_iCurrentWayPointIndex].vPosition) - vPosition);
+    m_vNextDir = XMVector3Normalize(XMLoadFloat4(&m_Routes[m_iCurrentRouteIndex][m_iCurrentWayPointIndex].vPosition) - vPosition);
+}
+
+//Index가 코너 일 경우 스왑한다.
+//모든 인덱스의 처음과 끝은 코너로 생성한다고 가정한다.
+//정방향일 경우 루트의 첫 인덱스는 코너에서 제외한다.
+//인접한 루트 + 내가 가지고 있는 루트를 고려한다.
+void CNavigation::Swap_Route(vector<ROUTE_IO> CurrentRoute)
+{
+    if (CurrentRoute[m_iCurrentWayPointIndex].iPointOption == CORNEL)
+    {
+        if ((m_iRouteDir == DIR_F && m_iCurrentWayPointIndex == 0) ||
+            (m_iRouteDir == DIR_B && m_iCurrentWayPointIndex == CurrentRoute.size() - 1))
+            return;
+
+        vector<_uint> Route = { m_iCurrentRouteIndex };
+        for (size_t i = 0; i < CurrentRoute[m_iCurrentWayPointIndex].iRouteNums; ++i)
+            Route.emplace_back(CurrentRoute[m_iCurrentWayPointIndex].pRouteID[i]);
+
+        //랜덤으로 Route를 스왑.
+        _uint iRandomIdex = m_pGameInstance->Get_Random(0, _int(Route.size() - 1));
+        
+        if (iRandomIdex == m_iCurrentRouteIndex)
+            return;
+           
+        m_iCurrentRouteIndex = iRandomIdex;
+        if (m_iRouteDir == DIR_F)
+            m_iCurrentWayPointIndex = 0; // 정방향일 경우
+        else if (m_iRouteDir == DIR_B)
+            m_iCurrentWayPointIndex = m_Routes[m_iCurrentRouteIndex].size() - 1; // 역방향일 경우
+    }
 }
 
 CNavigation* CNavigation::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring strFilePath)
@@ -348,8 +379,8 @@ _bool CNavigation::isMove(_fvector vMovePos)
 _vector CNavigation::Compute_WayPointDir(_vector vPosition, const _float& fTimeDelta, _bool isStart)
 {
     //현재 플레이어의 위치에서 다음 웨이포인트까지의 방향벡터를 구한다.
-
-    _vector vCurrentWayPoint = XMLoadFloat4(&m_Routes[m_iCurrentLine][m_iCurrentWayPointIndex].vPosition);
+    vector<ROUTE_IO> CurrentRoute = m_Routes[m_iCurrentRouteIndex];
+    _vector vCurrentWayPoint = XMLoadFloat4(&m_Routes[m_iCurrentRouteIndex][m_iCurrentWayPointIndex].vPosition);
     _vector vDir = vCurrentWayPoint - vPosition;
     _float fDistance = XMVectorGetX(XMVector3Length(vDir));
 
@@ -370,7 +401,7 @@ _vector CNavigation::Compute_WayPointDir(_vector vPosition, const _float& fTimeD
         m_iCurrentWayPointIndex++;
 
         // 인덱스가 배열의 길이보다 크다면 다시 초기값으로 돌아간다.
-        if (m_iCurrentWayPointIndex >= m_Routes[m_iCurrentLine].size())
+        if (m_iCurrentWayPointIndex >= m_Routes[m_iCurrentRouteIndex].size())
             m_iCurrentWayPointIndex = 0.f;
 
         if (fDistance == 0.f)
@@ -378,9 +409,73 @@ _vector CNavigation::Compute_WayPointDir(_vector vPosition, const _float& fTimeD
             return Compute_WayPointDir(vPosition, fTimeDelta, isStart);
         }
 
+        if (fDistance == 0.f)
+        {
+            return Compute_WayPointDir(vPosition, fTimeDelta, isStart);
+        }
+
         m_vPreDir = XMVector3Normalize(vDir);
-        m_vNextDir = XMVector3Normalize(XMLoadFloat4(&m_Routes[m_iCurrentLine][m_iCurrentWayPointIndex].vPosition) - XMLoadFloat4(&m_Routes[m_iCurrentLine][m_iPreWayPointIndex].vPosition));
+        m_vNextDir = XMVector3Normalize(XMLoadFloat4(&m_Routes[m_iCurrentRouteIndex][m_iCurrentWayPointIndex].vPosition) - XMLoadFloat4(&m_Routes[m_iCurrentRouteIndex][m_iPreWayPointIndex].vPosition));
         m_fTime = 0.f;
+        m_iPreWayPointIndex = m_iCurrentWayPointIndex;
+    }
+
+    return vResultDir;
+}
+
+_vector CNavigation::Compute_WayPointDir_Adv(_vector vPosition, const _float& fTimeDelta, _bool isStart)
+{
+    vector<ROUTE_IO> CurrentRoute = m_Routes[m_iCurrentRouteIndex];
+    _vector vCurrentWayPoint = XMLoadFloat4(&CurrentRoute[m_iCurrentWayPointIndex].vPosition);
+    _vector vDir = vCurrentWayPoint - vPosition;
+    _float fDistance = XMVectorGetX(XMVector3Length(vDir));
+
+    _vector vResultDir;
+    if (XMVectorGetX(m_vPreDir) == 0.f)
+    {
+        vResultDir = XMVector3Normalize(vDir);
+    }
+    else
+    {
+        //방향벡터 선형보간
+        m_fTime += fTimeDelta * 6.f;
+        vResultDir = XMVectorLerp(m_vPreDir, m_vNextDir, m_fTime >= 1.f ? 1.f : m_fTime);
+    }
+
+    if (fDistance <= m_fMaxDistance)
+    {
+        m_iRouteDir == DIR_F ? m_iCurrentWayPointIndex++ : m_iCurrentWayPointIndex--;
+
+        if (m_iCurrentWayPointIndex >= CurrentRoute.size() || m_iCurrentWayPointIndex < 0)
+        {
+            //정방향 -> 역방향
+            //역방향 -> 정방향 
+            m_iRouteDir = m_iRouteDir == DIR_F ? DIR_B : DIR_F;
+
+            if (m_iRouteDir == DIR_F)
+            {
+                m_iRouteDir = DIR_B;
+                m_iCurrentWayPointIndex = CurrentRoute.size() - 1;
+            }
+            else
+            {
+                m_iRouteDir == DIR_F;
+                m_iCurrentRouteIndex = 0;
+            }
+        }
+
+        Swap_Route(CurrentRoute);
+
+        if (fDistance == 0.f)
+        {
+            return Compute_WayPointDir(vPosition, fTimeDelta, isStart);
+        }
+
+        m_vPreDir = XMVector3Normalize(vDir);
+        m_vNextDir = XMVector3Normalize(XMLoadFloat4(&CurrentRoute[m_iCurrentWayPointIndex].vPosition) - XMLoadFloat4(&m_Routes[m_iPreRouteIndex][m_iPreWayPointIndex].vPosition));
+        m_fTime = 0.f;
+
+        m_iPreRouteIndex = m_iCurrentRouteIndex;
         m_iPreWayPointIndex = m_iCurrentWayPointIndex;
     }
 

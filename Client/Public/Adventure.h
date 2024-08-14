@@ -46,6 +46,9 @@ public:
     _bool isColl() { return m_isColl; }
 
 public:
+    void Set_Move();
+
+public:
     virtual HRESULT Initialize_Prototype() override;
     virtual HRESULT Initialize(void* pArg) override;
     virtual void Priority_Tick(const _float& fTimeDelta) override;
@@ -83,6 +86,8 @@ protected:
     _bool   m_isColl = { false };
 
     int     m_iNaviRouteNum = { 0 };
+
+    _float m_fSpeed = { 3.f };
 
 protected:
     virtual void Change_Animation();

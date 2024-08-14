@@ -23,6 +23,11 @@ void CAdventure::Start_Root(_int iGoalIndex)
 	m_pAStartCom->Start_Root(m_pNavigationCom, iGoalIndex);
 }
 
+void CAdventure::Set_Move()
+{
+	
+}
+
 HRESULT CAdventure::Initialize_Prototype()
 {
 	return S_OK;
@@ -46,22 +51,11 @@ void CAdventure::Tick(const _float& fTimeDelta)
 
 	Change_Animation();
 
-	//길찾기 알고리즘
-	
-	
-	
-	if (m_pGameInstance->GetMouseState(DIM_LB) == TAP)
-	{
-		_bool isPicking = false;
-		_vector vGoalPos = m_pGameInstance->Picking(&isPicking);
-		if (isPicking)
-		{
-			
-		}
-	}
-	
-
 	m_pModelCom->Play_Animation(fTimeDelta, m_pAnimCom, m_isAnimLoop);
+
+	_vector vDir = m_pNavigationCom->Compute_WayPointDir_Adv(m_pTransformCom->Get_State(CTransform::STATE_POSITION), fTimeDelta);
+	m_pTransformCom->LookAt_For_LandObject(vDir, true);
+	m_pTransformCom->Go_Straight_CustumSpeed(m_fSpeed, fTimeDelta, m_pNavigationCom);
 
 	Synchronize_Root(fTimeDelta);
 }
@@ -84,12 +78,6 @@ HRESULT CAdventure::Render()
 	int i = 0;
 	for (auto& pMesh : m_pModelCom->Get_Meshes())
 	{
-		_bool isCloth = pMesh->isCloth();
-
-		m_pShaderCom->Bind_RawValue("g_isCloth", &isCloth, sizeof(_bool));
-
-		m_pModelCom->Bind_BoneMatrices(m_pShaderCom, "g_BoneMatrices", i);
-
 		m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE);
 		m_pModelCom->Bind_Material(m_pShaderCom, "g_MultiDiffuseTexture", i, aiTextureType_SHININESS);
 		m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS);
@@ -302,6 +290,10 @@ HRESULT CAdventure::Add_Components()
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
 		return E_FAIL;
 
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Shader_BoneCompute"),
+		TEXT("Com_ComputeShader"), reinterpret_cast<CComponent**>(&m_pComputeShaderCom))))
+		return E_FAIL;
+
 	if (FAILED(__super::Add_Component(m_iCurrentLevel, m_wstrModelName,
 		TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
 		return E_FAIL;
@@ -320,8 +312,13 @@ HRESULT CAdventure::Add_Components()
 		TEXT("Com_Anim"), reinterpret_cast<CComponent**>(&m_pAnimCom))))
 		return E_FAIL;
 
+	CNavigation::NAVIGATION_DESC Desc{};
+	Desc.iCurrentLine = m_iNaviRouteNum;
+	Desc.iCurrentRouteDir = DIR_F;
+	Desc.vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+
 	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Navigation"),
-		TEXT("Com_Navigation"), reinterpret_cast<CComponent**>(&m_pNavigationCom))))
+		TEXT("Com_Navigation"), reinterpret_cast<CComponent**>(&m_pNavigationCom), &Desc)))
 		return E_FAIL;
 
 	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_AStart"),
