@@ -55,7 +55,7 @@
 #pragma endregion
 
 #pragma region Adventure
-#include "Adv_Passersby.h"
+#include "RoadNML.h"
 #pragma endregion
 
 #pragma region BTNode
@@ -67,7 +67,7 @@
 #include "AI_DefaultYakuza.h"
 #include "AI_Yoneda.h"
 
-#include "AI_Passersby.h"
+#include "AI_RoadNML.h"
 
 #include "AI_Van.h"
 #include "AI_Bike.h"
@@ -161,7 +161,7 @@ HRESULT CLoader::Loading()
 	case LEVEL_DOGIMAZO_BOSS:
 		hr = Loading_For_Dogimazo_Boss();
 		break;
-	case LEVEL_ROADWAY:
+	case LEVEL_CARCHASE:
 		hr = Loading_For_CarChase();
 		break;
 	case LEVEL_KARAOKE:

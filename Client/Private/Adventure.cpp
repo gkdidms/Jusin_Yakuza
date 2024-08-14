@@ -6,7 +6,6 @@
 #include "SocketCollider.h"
 #include "AI_Monster.h"
 
-#include "AI_Passersby.h"
 
 CAdventure::CAdventure(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CLandObject { pDevice, pContext }
@@ -38,6 +37,17 @@ HRESULT CAdventure::Initialize(void* pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
+	ADVENTURE_IODESC* gameobjDesc = static_cast<ADVENTURE_IODESC*>(pArg);
+	m_pTransformCom->Set_WorldMatrix(gameobjDesc->vStartPos);
+	m_wstrModelName = gameobjDesc->wstrModelName;
+	m_iNaviRouteNum = gameobjDesc->iNaviRouteNum;
+
+	if (FAILED(Add_Components()))
+		return E_FAIL;
+
+	m_pNavigationCom->Set_Index(gameobjDesc->iNaviNum);
+	m_pModelCom->Set_AnimationIndex(0);
+
 	return S_OK;
 }
 
@@ -47,17 +57,6 @@ void CAdventure::Priority_Tick(const _float& fTimeDelta)
 
 void CAdventure::Tick(const _float& fTimeDelta)
 {
-	m_pTree->Tick(fTimeDelta);
-
-	Change_Animation();
-
-	m_pModelCom->Play_Animation(fTimeDelta * m_fOffset, m_pAnimCom, m_isAnimLoop);
-
-	_vector vDir = m_pNavigationCom->Compute_WayPointDir_Adv(m_pTransformCom->Get_State(CTransform::STATE_POSITION), fTimeDelta);
-	m_pTransformCom->LookAt_For_LandObject(vDir, true);
-	//m_pTransformCom->Go_Straight_CustumSpeed(m_fSpeed, fTimeDelta, m_pNavigationCom);
-
-	Synchronize_Root(fTimeDelta);
 }
 
 void CAdventure::Late_Tick(const _float& fTimeDelta)

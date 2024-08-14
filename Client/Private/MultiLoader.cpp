@@ -54,7 +54,7 @@
 #pragma endregion
 
 #pragma region Adventure
-#include "Adv_Passersby.h"
+#include "RoadNML.h"
 #pragma endregion
 
 #pragma region BTNode
@@ -66,7 +66,7 @@
 #include "AI_DefaultYakuza.h"
 #include "AI_Yoneda.h"
 
-#include "AI_Passersby.h"
+#include "AI_RoadNML.h"
 
 #include "AI_Van.h"
 #include "AI_Bike.h"
@@ -661,7 +661,7 @@ HRESULT CMultiLoader::Loading_Default()
 
 	/* For.Prototype_BTNode_Passersby*/
 	if (FAILED(m_pGameInstance->Add_BTNode_Prototype(m_eNextLevel, TEXT("Prototype_BTNode_Passersby"),
-		CAI_Passersby::Create())))
+		CAI_RoadNML::Create())))
 		return E_FAIL;
 
 	/* For.Prototype_BTNode_WPHYakuza*/
