@@ -11,7 +11,7 @@ BEGIN(Client)
 class CLoader :
 	public CBase
 {
-private:
+protected:
 	CLoader(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual ~CLoader() = default;
 
@@ -25,10 +25,10 @@ public:
 	}
 
 public:
-	HRESULT Initialize(LEVEL eNextLevel);
-	HRESULT Loading();
+	virtual HRESULT Initialize(LEVEL eNextLevel);
+	virtual HRESULT Loading();
 
-private:
+protected:
 	ID3D11Device* m_pDevice = { nullptr };
 	ID3D11DeviceContext* m_pContext = { nullptr };
 
@@ -39,32 +39,30 @@ private:
 	_bool					m_isFinished = { false };
 	CGameInstance* m_pGameInstance = { nullptr };
 
-private:
-	HRESULT Loading_For_LogoLevel();
-	HRESULT Loading_For_Office_1F();
-	HRESULT Loading_For_Office_2F();
-	HRESULT Loading_For_Office_Boss();
-	HRESULT Loading_For_Dogimazo();
-	HRESULT Loading_For_Dogimazo_Stairs();
-	HRESULT Loading_For_Dogimazo_Lobby();
-	HRESULT Loading_For_Dogimazo_Boss();
-	HRESULT Loading_For_CarChase();
-	HRESULT Loading_For_Karaoke();
-	HRESULT Loading_For_Test();
+	/* 각 맵에 관해 로딩할 수 있도록 해주는 함수*/
+protected:
+	virtual HRESULT Loading_For_LogoLevel();
+	virtual	HRESULT Loading_For_Office_1F();
+	virtual	HRESULT Loading_For_Office_2F();
+	virtual	HRESULT Loading_For_Office_Boss();
+	virtual	HRESULT Loading_For_Dogimazo();
+	virtual	HRESULT Loading_For_Dogimazo_Stairs();
+	virtual	HRESULT Loading_For_Dogimazo_Lobby();
+	virtual	HRESULT Loading_For_Dogimazo_Boss();
+	virtual	HRESULT Loading_For_CarChase();
+	virtual	HRESULT Loading_For_Karaoke();
 
-private:
-	HRESULT Add_Models_On_Path(_uint iLevel, const wstring& strPath, _bool bAnim = true);		// 0627 혜원추가
+	/*파일 입출력에 관련된 함수*/
+protected:
+	HRESULT Add_Models_On_Path(_uint iLevel, const wstring& strPath, _bool bAnim = true);
 	HRESULT Add_GameObject_Particle_On_Path(const wstring& strPath);
-	HRESULT Add_Models_On_Path_NonAnim(_uint iLevel, const wstring& strPath);				// 현정추가
+	HRESULT Add_Models_On_Path_NonAnim(_uint iLevel, const wstring& strPath);
 	HRESULT Add_Components_On_Path_Material(_uint iLevel, const wstring& strPath);
 
-private:
-	HRESULT Loading_Default();
-	HRESULT Loading_Highway();
-
+protected:
+	virtual HRESULT Loading_Default(); // 모든 level을 로딩할때 필요한 정보에 대해서 넣어둔다.
 
 public:
-	static CLoader* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, LEVEL eNextLevel);
 	virtual void Free() override;
 };
 END
