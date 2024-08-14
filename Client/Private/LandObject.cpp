@@ -359,6 +359,11 @@ void CLandObject::Separation_Bone(string strBoneName, _int iAnimType, _bool isEx
 		m_pModelCom->Set_Separation_SingleBone(strBoneName, -1);
 }
 
+void CLandObject::Separation_SingleBone(string strBoneName, _int iAnimType)
+{
+	m_pModelCom->Set_Separation_SingleBone(strBoneName, iAnimType);
+}
+
 void CLandObject::Off_Attack_Colliders()
 {
 	for (auto& pSocketCollider : m_pColliders)

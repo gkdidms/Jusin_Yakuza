@@ -56,7 +56,7 @@ public:
 	void Play_Animation(_float fTimeDelta, const ANIMATION_DESC& AnimDesc, _bool isRoot = true, string strExcludeBoneName = "");
 	void Play_Animation_CutScene(_float fTimeDelta, class CAnim* pAnim = nullptr, _bool isLoop = false, _int iAnimIndex = -1, _bool isRoot = true, string strExcludeBoneName = "");
 	void Play_Animation_Monster(_float fTimeDelta, class CAnim* pAnim, _bool isLoop, _bool isRoot = true);
-	void Play_Animation_Separation(_float fTimeDelta, _uint iAnimIndex, class CAnim* pAnim, _bool isLoop, _int iAnimType);
+	void Play_Animation_Separation(_float fTimeDelta, _uint iAnimIndex, class CAnim* pAnim, _bool isLoop, _int iAnimType, _float fChangeInterval = 0.f);
 
 	// iDir 0: X, 1: y, 2:z 축으로 회전시킨다.
 	void Play_Animation_Rotation_SeparationBone(_float fTimeDelta, string strBoneName, _uint iDir, _float fRadian, _bool isRoot = true, _bool isLoop = false, class CAnim* pAnim = nullptr);

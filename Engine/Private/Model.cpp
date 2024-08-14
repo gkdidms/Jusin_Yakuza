@@ -1177,25 +1177,26 @@ void CModel::Play_Animation_Monster(_float fTimeDelta, class CAnim* pAnim, _bool
 		pBone->Update_CombinedTransformationMatrix(m_Bones, XMLoadFloat4x4(&m_PreTransformMatrix));
 }
 
-void CModel::Play_Animation_Separation(_float fTimeDelta, _uint iAnimIndex, CAnim* pAnim, _bool isLoop, _int iAnimType)
+void CModel::Play_Animation_Separation(_float fTimeDelta, _uint iAnimIndex, CAnim* pAnim, _bool isLoop, _int iAnimType, _float fChangeInterval)
 {
 		//애니메이션 목록 전달하기 ;
 	vector<CAnimation*> Animations = pAnim->Get_Animations();
 
 	if (1 > Animations.size()) return;
 
-	pAnim->Set_PrevAnimIndex(pAnim->Get_CurrentAnimIndex());
-	pAnim->Set_CurrentAnimIndex(iAnimIndex);
-
-	if (0.0 == m_ChangeInterval)
+	if (0.0 == fChangeInterval)
 		Animations[iAnimIndex]->Update_TransformationMatrix_Separation(fTimeDelta, m_Bones, isLoop, iAnimType);
 	else
 	{
 		if (Animations[iAnimIndex]->Get_Changed())
+		{
+			pAnim->Set_PrevAnimIndex(pAnim->Get_CurrentAnimIndex());
+			pAnim->Set_CurrentAnimIndex(iAnimIndex);
 			Animations[iAnimIndex]->Update_TransformationMatrix_Separation(fTimeDelta, m_Bones, isLoop, iAnimType);
+		}
 		else
 		{
-			Animations[iAnimIndex]->Update_Change_Animation_Separation(fTimeDelta, m_Bones, Animations[pAnim->Get_PrevAnimIndex()], m_ChangeInterval, iAnimType);
+			Animations[iAnimIndex]->Update_Change_Animation_Separation(fTimeDelta, m_Bones, Animations[pAnim->Get_PrevAnimIndex()], fChangeInterval, iAnimType);
 		}
 	}
 

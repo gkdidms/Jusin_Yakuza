@@ -61,7 +61,10 @@ HRESULT CKaraoke_Kiryu::Initialize(void* pArg)
 		return E_FAIL;
 
 	m_iHandAnimIndex = HAND_BOU;
-	On_Separation_Hand(2);			// 양손 분리 켜둠
+	On_Separation_Hand(2);			// 오른손 분리 
+
+	m_iFaceAnimIndex = 0;
+	Separation_Bone("_jaw_c_n", 3, false);
 
 	/*
 	*	[0] p_kru_uta_ainote_a_lp[p_kru_uta_ainote_a_lp]
@@ -82,9 +85,21 @@ void CKaraoke_Kiryu::Priority_Tick(const _float& fTimeDelta)
 
 void CKaraoke_Kiryu::Tick(const _float& fTimeDelta)
 {
-	m_pModelCom->Play_Animation(fTimeDelta);
-	m_pModelCom->Play_Animation_Separation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")), m_iHandAnimIndex, m_SeparationAnimComs[HAND_ANIM], false, (_int)HAND_ANIM);
-	m_pModelCom->Play_Animation_Separation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")), m_iFaceAnimIndex, m_SeparationAnimComs[FACE_ANIM], false, (_int)FACE_ANIM);
+	if (m_pGameInstance->GetKeyState(DIK_L) == TAP)
+	{
+		m_iFaceAnimIndex = 1;
+		m_SeparationAnimComs[FACE_ANIM]->Reset_Animation(m_iFaceAnimIndex);
+	}
+	if (m_pGameInstance->GetKeyState(DIK_K) == TAP)
+	{
+		m_iFaceAnimIndex = 0;
+		m_SeparationAnimComs[FACE_ANIM]->Reset_Animation(m_iFaceAnimIndex);
+	}
+
+ 	m_pModelCom->Play_Animation(fTimeDelta);
+	m_pModelCom->Play_Animation_Separation(fTimeDelta, m_iHandAnimIndex, m_SeparationAnimComs[HAND_ANIM], false, (_int)HAND_ANIM);
+	//m_pModelCom->Play_Animation_Separation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")), m_iFaceAnimIndex, m_SeparationAnimComs[FACE_ANIM], false, (_int)FACE_ANIM);
+	m_pModelCom->Play_Animation_Separation(fTimeDelta, m_iFaceAnimIndex, m_SeparationAnimComs[FACE_ANIM], false, 3, 2.f);
 }
 
 void CKaraoke_Kiryu::Late_Tick(const _float& fTimeDelta)
@@ -202,9 +217,9 @@ HRESULT CKaraoke_Kiryu::Add_Components()
 		TEXT("Com_Anim"), reinterpret_cast<CComponent**>(&m_pAnimCom))))
 		return E_FAIL;
 
-	//Prototype_Component_Anim_KiryuFace
+	//Prototype_Component_Anim_Kiryu_Karaoke_Face
 	CAnim* pAnimCom = { nullptr };
-	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Anim_KiryuFace"),
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Anim_Kiryu_Karaoke_Face"),
 		TEXT("Com_Anim_Face"), reinterpret_cast<CComponent**>(&pAnimCom))))
 		return E_FAIL;
 	m_SeparationAnimComs.push_back(pAnimCom);
