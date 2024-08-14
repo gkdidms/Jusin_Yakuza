@@ -599,6 +599,15 @@
     <ClCompile Include="..\Private\NoteBurstHold.cpp">
       <Filter>02.GameObjects\12.Karaoke\NoteManager\Note\BurstHoldNote</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\Loader_Anim.cpp">
+      <Filter>01.Levels\99.Loading\Loader\New\Player</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Loader_Map.cpp">
+      <Filter>01.Levels\99.Loading\Loader\New\Map</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Loader_Other.cpp">
+      <Filter>01.Levels\99.Loading\Loader\New\Other</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\MainApp.h">
@@ -1228,6 +1237,15 @@
     </ClInclude>
     <ClInclude Include="..\Public\NoteBurstHold.h">
       <Filter>02.GameObjects\12.Karaoke\NoteManager\Note\BurstHoldNote</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Loader_Anim.h">
+      <Filter>01.Levels\99.Loading\Loader\New\Player</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Loader_Map.h">
+      <Filter>01.Levels\99.Loading\Loader\New\Map</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Loader_Other.h">
+      <Filter>01.Levels\99.Loading\Loader\New\Other</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1883,6 +1901,18 @@
     </Filter>
     <Filter Include="02.GameObjects\12.Karaoke\NoteManager\Note\BurstHoldNote">
       <UniqueIdentifier>{c546adc8-3c65-4aca-96af-dd1a697afb52}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Levels\99.Loading\Loader\New">
+      <UniqueIdentifier>{eade0889-07d4-42dd-82b0-53075a952527}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Levels\99.Loading\Loader\New\Player">
+      <UniqueIdentifier>{113ed405-1693-453a-ba87-4df7d1074b33}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Levels\99.Loading\Loader\New\Map">
+      <UniqueIdentifier>{8b0126ab-9c66-473e-bf49-da286c529ebc}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Levels\99.Loading\Loader\New\Other">
+      <UniqueIdentifier>{72c7d0c3-74b2-447f-a915-187b4dc90856}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

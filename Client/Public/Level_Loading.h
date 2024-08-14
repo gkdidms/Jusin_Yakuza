@@ -9,6 +9,9 @@ BEGIN(Client)
 
 class CLevel_Loading final : public CLevel
 {
+public:
+	enum LOADER_TYPE { ANIM, MAP, OTEHR, LOADER_TYPE_END };
+
 private:
 	CLevel_Loading(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual ~CLevel_Loading() = default;
@@ -20,7 +23,7 @@ public:
 private:
 	LEVEL				m_eNextLevel = { LEVEL_END };
 
-	class CLoader* m_pLoader = { nullptr };
+	class CLoader* m_pLoader[3] = {nullptr};
 	class CMultiLoader* m_pMultiLoader = { nullptr };
 
 private:

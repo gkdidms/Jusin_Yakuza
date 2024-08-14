@@ -77,8 +77,6 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
     Safe_AddRef(pDebugManager);
 #endif // _DEBUG
 
-
-
     _float		fTimeAcc = { 0.0f };
 
     // 기본 메시지 루프입니다:
@@ -95,6 +93,8 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
                 DispatchMessage(&msg);
             }
         }
+
+        //_CrtSetBreakAlloc(4996512); // 추가
 
         pGameInstance->Update_TimeDelta(TEXT("Timer_Default"));
 
@@ -124,13 +124,13 @@ int APIENTRY wWinMain(_In_ HINSTANCE hInstance,
             pMainApp->Tick(fTimeDelta);
             pMainApp->Render();
 
-            //_CrtSetBreakAlloc(5054715); // 추가
+
 
             fTimeAcc = 0.f;
         }
     }
 
-     
+
 #ifdef _DEBUG
     Safe_Release(pDebugManager);
 #endif // _DEBUG
