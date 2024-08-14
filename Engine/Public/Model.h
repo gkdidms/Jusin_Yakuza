@@ -190,6 +190,8 @@ private:
 
 	_float4x4					m_ModelLocalMatrix;
 
+	_bool						m_bSaveMaterial = { true };
+
 public:
 	static CModel* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, MODELTYPE eModelType, const _char* pModelFilePath, _fmatrix PreTransformMatrix, _bool isExported, _bool isTool = false);
 	virtual CComponent* Clone(void* pArg) override;

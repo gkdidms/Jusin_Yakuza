@@ -61,6 +61,18 @@ HRESULT CCharacterData::Initialize(CLandObject* pCharacter)
 	strFileFullPath = strFilePath + strFileName;
 	if (FAILED(Load_TrailEvent(strFileFullPath)))
 		return E_FAIL;
+
+	// 피 이펙트 이벤트는 컷신 애니메이션 컴포넌트를 쓰고있기때문에, 사용 시 주의가 필요하다
+	strFileName = m_pGameInstance->WstringToString(m_pCharacter->Get_ModelName()) + "_BloodEffectEvents.dat";
+	strFileFullPath = strFilePath + strFileName;
+	if (FAILED(Load_BloodEffectEvent(strFileFullPath)))
+		return E_FAIL;
+	
+	// 레디얼 이벤트는 애니메이션 컴포넌트를 쓰고있기때문에, 사용 시 주의가 필요하다
+	strFileName = m_pGameInstance->WstringToString(m_pCharacter->Get_ModelName()) + "_RadialEvents.dat";
+	strFileFullPath = strFilePath + strFileName;
+	if (FAILED(Load_RadialEvent(strFileFullPath)))
+		return E_FAIL;
 	
 	return S_OK;
 }
@@ -133,7 +145,61 @@ void CCharacterData::Set_CurrentAnimation(string strAnimName)
 			}
 		}
 	}
+}
 
+void CCharacterData::Set_CurrentCutSceneAnimation(string strAnimName)
+{
+	//피 이펙트 이벤트 설정해주기
+	m_CurrentBloodEffectEvents.clear();
+	// 반복자를 사용하여 문자열이 포함된 키를 찾기
+	for (auto it = m_BloodEvents.begin(); it != m_BloodEvents.end(); ++it) {
+		if (it->first.find(strAnimName) != string::npos) {
+			m_CurrentBloodEffectEvents.push_back((*it).second);
+		}
+	}
+
+	auto bloodEffect_lower_bound_iter = m_BloodEvents.lower_bound(strAnimName);
+
+	// 반환된 iter의 키값이 다르다면 맵 내에 해당 키값이 존재하지 않는다는 뜻
+	if (bloodEffect_lower_bound_iter != m_BloodEvents.end())
+	{
+		auto bloodEffect_upper_bound_iter = m_BloodEvents.upper_bound(strAnimName);
+
+		for (; bloodEffect_lower_bound_iter != bloodEffect_upper_bound_iter; ++bloodEffect_lower_bound_iter)
+		{
+			// 추가적으로, 부분 문자열을 포함하는지 확인
+			if (bloodEffect_lower_bound_iter->first.find(strAnimName) != string::npos)
+			{
+				m_CurrentBloodEffectEvents.push_back(bloodEffect_lower_bound_iter->second);
+			}
+		}
+	}
+
+	//라디얼 이벤트 설정해주기
+	m_CurrentRadialEvents.clear();
+	// 반복자를 사용하여 문자열이 포함된 키를 찾기
+	for (auto it = m_RadialEvents.begin(); it != m_RadialEvents.end(); ++it) {
+		if (it->first.find(strAnimName) != string::npos) {
+			m_CurrentRadialEvents.push_back((*it).second);
+		}
+	}
+
+	auto radial_lower_bound_iter = m_RadialEvents.lower_bound(strAnimName);
+
+	// 반환된 iter의 키값이 다르다면 맵 내에 해당 키값이 존재하지 않는다는 뜻
+	if (radial_lower_bound_iter != m_RadialEvents.end())
+	{
+		auto radial_upper_bound_iter = m_RadialEvents.upper_bound(strAnimName);
+
+		for (; radial_lower_bound_iter != radial_upper_bound_iter; ++radial_lower_bound_iter)
+		{
+			// 추가적으로, 부분 문자열을 포함하는지 확인
+			if (radial_lower_bound_iter->first.find(strAnimName) != std::string::npos)
+			{
+				m_CurrentRadialEvents.push_back(radial_lower_bound_iter->second);
+			}
+		}
+	}
 }
 
 HRESULT CCharacterData::Load_AlphaMeshes(string strFilePath)
@@ -416,6 +482,94 @@ HRESULT CCharacterData::Load_TrailEvent(string strFilePath)
 			in >> Desc.fAinmPosition;
 
 			m_TrailEvents.emplace(strAnimName, Desc);
+		}
+
+		in.close();
+	}
+	return S_OK;
+}
+
+HRESULT CCharacterData::Load_BloodEffectEvent(string strFilePath)
+{
+	// 트레일 생섣해야함
+	/*
+		_float fAinmPosition;
+		_uint iBoneIndex;
+		string strBonelName;
+		_uint iBloodEffectType;
+	*/
+	if (fs::exists(strFilePath))
+	{
+#ifdef _DEBUG
+		cout << "_BloodEffect Yes!!" << endl;
+#endif // _DEBUG
+
+		ifstream in(strFilePath, ios::binary);
+
+		if (!in.is_open()) {
+			MSG_BOX("BloodEffect 개방 실패");
+			return E_FAIL;
+		}
+
+		_uint iNumEvent = { 0 };
+		in >> iNumEvent;
+
+		for (size_t i = 0; i < iNumEvent; i++)
+		{
+			string strAnimName = "";
+			in >> strAnimName;				//Key값으로 쓰일 애니메이션 이름
+
+			ANIMATION_BLOODEVENTSTATE Desc{};
+
+			in >> Desc.fAinmPosition;
+			in >> Desc.iBoneIndex;
+			in >> Desc.strBonelName;
+			in >> Desc.iBloodEffectType;
+
+			m_BloodEvents.emplace(strAnimName, Desc);
+		}
+
+		in.close();
+	}
+	return S_OK;
+}
+
+HRESULT CCharacterData::Load_RadialEvent(string strFilePath)
+{
+	// 트레일 생섣해야함
+	/*
+		_uint iType;				//0번이 on 1번이 off
+		_float fAinmPosition;
+		_float fForce;
+	*/
+	if (fs::exists(strFilePath))
+	{
+#ifdef _DEBUG
+		cout << "_RadialEvent Yes!!" << endl;
+#endif // _DEBUG
+
+		ifstream in(strFilePath, ios::binary);
+
+		if (!in.is_open()) {
+			MSG_BOX("RadialEvent 개방 실패");
+			return E_FAIL;
+		}
+
+		_uint iNumEvent = { 0 };
+		in >> iNumEvent;
+
+		for (size_t i = 0; i < iNumEvent; i++)
+		{
+			string strAnimName = "";
+			in >> strAnimName;				//Key값으로 쓰일 애니메이션 이름
+
+			ANIMATION_RADIALEVENTSTATE Desc{};
+
+			in >> Desc.iType;
+			in >> Desc.fAinmPosition;
+			in >> Desc.fForce;
+
+			m_RadialEvents.emplace(strAnimName, Desc);
 		}
 
 		in.close();

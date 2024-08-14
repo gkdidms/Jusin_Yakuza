@@ -147,9 +147,11 @@ HRESULT CRenderer::Initialize()
 	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_RimLight"), 650.f, 50.f, 100.f, 100.f)))
 		return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_Decal"), 950.f, 150.f, 100.f, 100.f)))
-		return E_FAIL;
 	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_RadialBlur"), 950.f, 250.f, 100.f, 100.f)))
+		return E_FAIL;
+
+
+	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_DecalContainDiffuse"), 950.f, 150.f, 100.f, 100.f)))
 		return E_FAIL;
 #endif // _DEBUG
 
@@ -164,27 +166,27 @@ HRESULT CRenderer::Ready_Targets()
 	m_pContext->RSGetViewports(&iNumViewPort, &ViewPort);
 
 	//20240712_NonBlendDiffuse 의 백버퍼 칼라(알파 빼고 )가 기본 스카이 박스에 곱해져서 색이 핑크핑크로 나왔었음 일단 0,0,0,0 으로 바꾸면 수습가능 (만약 다른색 원하면 구조 고쳐야됨.
-	/*Target_NonBlendDiffuse*/
+	/*Target_Diffuse*/
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Diffuse"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_B8G8R8A8_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
 
-	/*Target_NonBlendNormal*/
+	/*Target_Normal*/
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Normal"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 1.f))))
 		return E_FAIL;
 
-	/*Target_NonBlendDepth*/
+	/*Target_Depth*/
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Depth"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(0.f, 0.f, 0.f, 1.f))))
 		return E_FAIL;
 
-	/* Target_NonBlendSurface */
+	/* Target_Surface */
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Surface"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(1.f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
 
-	/* Target_NonBlendSurface */
+	/* Target_OEShader */
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_OEShader"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
 
-	/* Target_NonBlendSubSurface */
+	/* Target_OESpecular */
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_OESpecular"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
 
@@ -339,12 +341,28 @@ HRESULT CRenderer::Ready_Targets()
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Decal"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
 
+	/*Target_DecalContainDiffuse*/
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_DecalContainDiffuse"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
+		return E_FAIL;
+
 	/*Target_FinalEffect*/
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_FinalEffect"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
-
+	
 	/*Target_RadialBlur*/
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_RadialBlur"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
+		return E_FAIL;
+
+	/*Target_SceneCrack*/
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_SceneCrack"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
+		return E_FAIL;
+
+	/*Target_InvertColor*/
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_InvertColor"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
+		return E_FAIL;
+
+	/*Target_Vignette*/
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Vignette"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
 
 	return S_OK;
@@ -516,13 +534,34 @@ HRESULT CRenderer::Ready_MRTs()
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_Decals"), TEXT("Target_Decal"))))
 		return E_FAIL;
 
+	/* MRT_DecalsContainDiffuse - Decal이랑 연산한 후의 diffuse */
+	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_DecalsContainDiffuse"), TEXT("Target_DecalContainDiffuse"))))
+		return E_FAIL;
+
+
 	/* MRT_Distortion */
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_Distortion"), TEXT("Target_FinalEffect"))))
 		return E_FAIL;
 
+#pragma region PostProcess
 	/* MRT_RadialBlur */
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_RadialBlur"), TEXT("Target_RadialBlur"))))
 		return E_FAIL;
+
+	/* MRT_SceneCrack */
+	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_SceneCrack"), TEXT("Target_SceneCrack"))))
+		return E_FAIL;
+
+	/* MRT_InvertColor */
+	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_InvertColor"), TEXT("Target_InvertColor"))))
+		return E_FAIL;
+
+	/* MRT_InvertColor */
+	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_Vignette"), TEXT("Target_Vignette"))))
+		return E_FAIL;
+#pragma endregion
+
+
 
 	return S_OK;
 }
@@ -656,7 +695,7 @@ void CRenderer::Draw()
 
 	Render_NonBlender();
 
-	//Render_Decal();
+	Render_Decal();
 
 	//Render_Glass();
 
@@ -719,6 +758,12 @@ void CRenderer::Draw()
 
 	if (m_isRadialBlur)
 		Render_RadialBlur();
+
+	if (m_isInvertColor)
+		Render_InvertColor();
+
+	if (m_isVignette)
+		Render_Vignette();
 
 	//최종적으로 백버퍼에 그림을 그려줌
 	Render_FinalResult();
@@ -836,6 +881,32 @@ void CRenderer::Render_Decal()
 
 	if (FAILED(m_pGameInstance->End_MRT()))
 		return;
+
+
+
+
+	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_DecalsContainDiffuse"))))
+		return;
+
+	if (FAILED(m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix)))
+		return;
+	if (FAILED(m_pShader->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix)))
+		return;
+	if (FAILED(m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
+		return;
+
+
+	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Diffuse"), m_pShader, "g_DiffuseTexture")))
+		return;
+	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Decal"), m_pShader, "g_DecalTexture")))
+		return;
+
+	m_pShader->Begin(26);
+	m_pVIBuffer->Render();
+
+	if (FAILED(m_pGameInstance->End_MRT()))
+		return;
+
 
 }
 
@@ -1017,8 +1088,12 @@ void CRenderer::Render_LightAcc()
 	if (FAILED(m_pShader->Bind_RawValue("g_isPBR", &m_isPBR, sizeof(_bool))))
 		return;
 
-	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Diffuse"), m_pShader, "g_DiffuseTexture")))
+	//오류생기면 
+	//if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Diffuse"), m_pShader, "g_DiffuseTexture")))
+	//	return;
+	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_DecalContainDiffuse"), m_pShader, "g_DiffuseTexture")))
 		return;
+
 	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Normal"), m_pShader, "g_NormalTexture")))
 		return;
 	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Depth"), m_pShader, "g_DepthTexture")))
@@ -1083,7 +1158,8 @@ void CRenderer::Render_CopyBackBuffer()
 	if (FAILED(m_pShader->Bind_RawValue("g_vCamDir", &vCamDir, sizeof(_vector))))
 		return;
 
-	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Diffuse"), m_pShader, "g_DiffuseTexture")))
+	//오류생기면 Target_Diffuse로 변경
+	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_DecalContainDiffuse"), m_pShader, "g_DiffuseTexture")))
 		return;
 	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Shade"), m_pShader, "g_ShadeTexture")))
 		return;
@@ -1635,7 +1711,10 @@ void CRenderer::Render_RimLight()
 
 	if (FAILED(m_pShader->Bind_RawValue("g_fFar", m_pGameInstance->Get_CamFar(), sizeof(_float))))
 		return;
-	//노멀이 빛이계산 되있음
+
+	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_BackBuffer"), m_pShader, "g_BackBufferTexture")))
+		return;
+
 	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Normal"), m_pShader, "g_NormalTexture")))
 		return;
 
@@ -1731,8 +1810,8 @@ void CRenderer::Render_FinalEffectBlend()
 	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Effect"), m_pShader, "g_EffectTexture")))//이펙트 텍스처 원본
 		return;
 
-	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(m_isBOF ? TEXT("Target_BOF") : TEXT("Target_BackBuffer"), m_pShader, "g_ResultTexture")))//원본 최종
-		return;
+//	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(m_isBOF ? TEXT("Target_BOF") : TEXT("Target_BackBuffer"), m_pShader, "g_ResultTexture")))//원본 최종
+	//	return;
 
 	m_pShader->Begin(13);
 
@@ -1870,6 +1949,73 @@ void CRenderer::Render_RadialBlur()
 		return;
 }
 
+void CRenderer::Render_Crack()
+{
+	
+	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_SceneCrack"))))
+		return;
+
+	if (FAILED(m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix)))
+		return;
+	if (FAILED(m_pShader->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix)))
+		return;
+	if (FAILED(m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
+		return;
+
+	m_pShader->Begin(22);	
+
+	m_pVIBuffer->Render();
+
+	if (FAILED(m_pGameInstance->End_MRT()))
+		return;
+}
+
+void CRenderer::Render_InvertColor()
+{
+	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_InvertColor"))))
+		return;
+
+	if (FAILED(m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix)))
+		return;
+	if (FAILED(m_pShader->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix)))
+		return;
+	if (FAILED(m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
+		return;
+
+	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_FinalEffect"), m_pShader, "g_DiffuseTexture")))
+		return;
+
+	m_pShader->Begin(24);
+
+	m_pVIBuffer->Render();
+
+	if (FAILED(m_pGameInstance->End_MRT()))
+		return;
+}
+
+void CRenderer::Render_Vignette()
+{
+	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_Vignette"))))
+		return;
+
+	if (FAILED(m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix)))
+		return;
+	if (FAILED(m_pShader->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix)))
+		return;
+	if (FAILED(m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
+		return;
+
+	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_FinalEffect"), m_pShader, "g_DiffuseTexture")))
+		return;
+
+	m_pShader->Begin(25);
+
+	m_pVIBuffer->Render();
+
+	if (FAILED(m_pGameInstance->End_MRT()))
+		return;
+}
+
 void CRenderer::Render_FinalResult()
 {
 	if (FAILED(m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix)))
@@ -1879,7 +2025,14 @@ void CRenderer::Render_FinalResult()
 	if (FAILED(m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
 		return;
 
-	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(m_isRadialBlur ? TEXT("Target_RadialBlur") : TEXT("Target_FinalEffect"), m_pShader, "g_BackBufferTexture")))
+	wstring strTexture = TEXT("");
+
+	if (m_isRadialBlur) strTexture = TEXT("Target_RadialBlur");
+	else if (m_isInvertColor) strTexture = TEXT("Target_InvertColor");
+	else if (m_isVignette) strTexture = TEXT("Target_Vignette");
+	else strTexture = TEXT("Target_FinalEffect");
+
+	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(strTexture, m_pShader, "g_BackBufferTexture")))
 		return;
 
 	m_pShader->Begin(4);
@@ -1981,9 +2134,12 @@ void CRenderer::Render_Debug()
 	if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_RimLight"), m_pShader, m_pVIBuffer)))
 		return;
 
-	if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_Decals"), m_pShader, m_pVIBuffer)))
-		return;
+
 	if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_RadialBlur"), m_pShader, m_pVIBuffer)))
+		return;
+
+	//MRT_DecalsContainDiffuse
+	if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_DecalsContainDiffuse"), m_pShader, m_pVIBuffer)))
 		return;
 
 }

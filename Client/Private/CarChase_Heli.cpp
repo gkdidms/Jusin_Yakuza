@@ -37,6 +37,20 @@ void CCarChase_Heli::Tick(const _float& fTimeDelta)
 
 void CCarChase_Heli::Late_Tick(const _float& fTimeDelta)
 {
+	m_pModelCom->Play_Animation_Monster(fTimeDelta, m_pAnimCom[m_iCurrentAnimType], m_isAnimLoop, false);
+
+	_matrix ParentMatrix = XMLoadFloat4x4(m_pParentBoneMatrix) * XMLoadFloat4x4(m_pParentMatrix);
+	//ParentMatrix.r[3] = (XMLoadFloat4x4(m_pParentBoneMatrix) * XMLoadFloat4x4(m_pParentMatrix)).r[3];
+	//ParentMatrix.r[2] = XMLoadFloat4x4(m_pParentMatrix).r[2];
+	_matrix		RotationMatrix = XMMatrixRotationAxis(ParentMatrix.r[0], XMConvertToRadians(-90.f));
+
+	ParentMatrix.r[0] = XMVector3TransformNormal(ParentMatrix.r[0], RotationMatrix);
+	ParentMatrix.r[1] = XMVector3TransformNormal(ParentMatrix.r[1], RotationMatrix);
+	ParentMatrix.r[2] = XMVector3TransformNormal(ParentMatrix.r[2], RotationMatrix);
+
+	XMStoreFloat4x4(&m_ModelWorldMatrix, m_pTransformCom->Get_WorldMatrix() * ParentMatrix);
+	
+
 	__super::Late_Tick(fTimeDelta);
 }
 
@@ -148,10 +162,6 @@ HRESULT CCarChase_Heli::Add_Components()
 
 	m_pTree = dynamic_cast<CAI_Heli*>(m_pGameInstance->Add_BTNode(m_iCurrentLevel, TEXT("Prototype_BTNode_Heli"), &Desc));
 	if (nullptr == m_pTree)
-		return E_FAIL;
-
-	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Meterial_Heli"),
-		TEXT("Com_Material"), reinterpret_cast<CComponent**>(&m_pMaterialCom))))
 		return E_FAIL;
 
 	return S_OK;

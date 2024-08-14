@@ -76,6 +76,11 @@ HRESULT CTransform::Bind_ShaderMatrix(CShader* pShader, const _char* pConstantNa
 	return pShader->Bind_Matrix(pConstantName, &m_WorldMatrix);
 }
 
+HRESULT CTransform::Bind_ShaderOldMatrix(CShader* pShader, const _char* pConstantName)
+{
+	return pShader->Bind_Matrix(pConstantName, &m_OldWorldMatrix);
+}
+
 void CTransform::Go_Straight(const _float& fTimeDelta)
 {
 	_vector vPosition = Get_State(STATE_POSITION);

@@ -518,9 +518,6 @@
     <ClCompile Include="..\Private\Kiryu_KRC_Grab.cpp">
       <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRC\Grab</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\Gun_Cz75.cpp">
-      <Filter>02.GameObjects\02.Character\LandObject\03.CarChase\00.Reactor\04.Gun_Cz75</Filter>
-    </ClCompile>
     <ClCompile Include="..\Private\Kiryu_KRS_PickUp.cpp">
       <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\Pickup</Filter>
     </ClCompile>
@@ -559,6 +556,30 @@
     </ClCompile>
     <ClCompile Include="..\private\AI_Heli.cpp">
       <Filter>02.GameObjects\02.Character\LandObject\03.CarChase\01.Monster\03.Heli\AI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Weapon_Gun_Cz75.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\03.CarChase\03.Weapon\Gun_Cz75</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Weapon_Sofa.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\Weapon\Sofa</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Weapon_Knife.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\Weapon\Knife</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Weapon_MchnGun.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\03.CarChase\03.Weapon\MchnGun</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Weapon_ShotGun.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\03.CarChase\03.Weapon\ShotGun</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Weapon_RcktGun.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\03.CarChase\03.Weapon\RcktGun</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\CarChase_CATBullet.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\03.CarChase\01.Monster\03.Heli\Bullte</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\EffectManager.cpp">
+      <Filter>95.Utility\07.EffectManager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1109,8 +1130,8 @@
     <ClInclude Include="..\Public\Kiryu_KRC_Grab.h">
       <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRC\Grab</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\Gun_Cz75.h">
-      <Filter>02.GameObjects\02.Character\LandObject\03.CarChase\00.Reactor\04.Gun_Cz75</Filter>
+    <ClInclude Include="..\Public\Weapon_Gun_Cz75.h">
+      <Filter>02.GameObjects\02.Character\LandObject\03.CarChase\03.Weapon\Gun_Cz75</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Kiryu_KRS_PickUp.h">
       <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\Pickup</Filter>
@@ -1150,6 +1171,27 @@
     </ClInclude>
     <ClInclude Include="..\public\AI_Heli.h">
       <Filter>02.GameObjects\02.Character\LandObject\03.CarChase\01.Monster\03.Heli\AI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Weapon_Sofa.h">
+      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\Weapon\Sofa</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Weapon_MchnGun.h">
+      <Filter>02.GameObjects\02.Character\LandObject\03.CarChase\03.Weapon\MchnGun</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Weapon_ShotGun.h">
+      <Filter>02.GameObjects\02.Character\LandObject\03.CarChase\03.Weapon\ShotGun</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Weapon_RcktGun.h">
+      <Filter>02.GameObjects\02.Character\LandObject\03.CarChase\03.Weapon\RcktGun</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Weapon_Knife.h">
+      <Filter>02.GameObjects\02.Character\LandObject\01.Monster\Weapon\Knife</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\CarChase_CATBullet.h">
+      <Filter>02.GameObjects\02.Character\LandObject\03.CarChase\01.Monster\03.Heli\Bullte</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\EffectManager.h">
+      <Filter>95.Utility\07.EffectManager</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1740,9 +1782,6 @@
     <Filter Include="02.GameObjects\02.Character\LandObject\03.CarChase\00.Reactor\02.Bike">
       <UniqueIdentifier>{b8bf80a5-ef27-4fc2-b1fa-01936ccfc529}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\02.Character\LandObject\03.CarChase\00.Reactor\04.Gun_Cz75">
-      <UniqueIdentifier>{863a5ddf-d4bd-41f1-9986-caf74f4a90c6}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObjects\02.Character\LandObject\03.CarChase\02.Taxi">
       <UniqueIdentifier>{eae66a81-9be8-4e33-ab79-2ff998391627}</UniqueIdentifier>
     </Filter>
@@ -1757,6 +1796,36 @@
     </Filter>
     <Filter Include="02.GameObjects\02.Character\LandObject\03.CarChase\01.Monster\03.Heli\AI">
       <UniqueIdentifier>{0e77d35c-b64b-45b9-8f71-b342cfa6b864}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\01.Monster\Weapon">
+      <UniqueIdentifier>{21891aa2-638e-40ae-bbfe-652f6dec7b73}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\01.Monster\Weapon\Sofa">
+      <UniqueIdentifier>{b55a0fb9-13d3-4a1a-ab39-ca0c5f7e7802}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\01.Monster\Weapon\Knife">
+      <UniqueIdentifier>{83e93fd7-0b9c-4e2b-8e71-ed4856745fb5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\03.CarChase\03.Weapon">
+      <UniqueIdentifier>{c79cc4b0-2e1d-4a92-b37f-cf2d78eaf787}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\03.CarChase\03.Weapon\Gun_Cz75">
+      <UniqueIdentifier>{863a5ddf-d4bd-41f1-9986-caf74f4a90c6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\03.CarChase\03.Weapon\MchnGun">
+      <UniqueIdentifier>{cd1a5331-4ce2-4ff6-a899-a31e3901859b}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\03.CarChase\03.Weapon\RcktGun">
+      <UniqueIdentifier>{e486d985-0d95-4a71-9a5a-c9f3fbe43f25}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\03.CarChase\03.Weapon\ShotGun">
+      <UniqueIdentifier>{b148cd3e-d4a1-4ad5-bf9a-62fb315a8c04}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\03.CarChase\01.Monster\03.Heli\Bullte">
+      <UniqueIdentifier>{16c72508-b1b3-4cf1-b8ae-05ed6aa731ef}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\07.EffectManager">
+      <UniqueIdentifier>{279e9b65-e902-41c9-bff4-c83758a005a6}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

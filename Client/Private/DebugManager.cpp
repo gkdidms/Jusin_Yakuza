@@ -185,6 +185,14 @@ void CDebugManager::Window_Debug()
         if (ImGui::Checkbox("RadialBlur", &isRadialBlur))
             m_pGameInstance->Set_RadialBlur(isRadialBlur);
 
+        _bool isInvertColor = m_pGameInstance->isInvertColor();
+        if (ImGui::Checkbox("InvertColor", &isInvertColor))
+            m_pGameInstance->Set_InvertColor(isInvertColor);
+
+        _bool isVignette = m_pGameInstance->isVignette();
+        if (ImGui::Checkbox("Vignette", &isVignette))
+            m_pGameInstance->Set_Vignette(isVignette);
+
         _bool isShadow = m_pGameInstance->isShadow();
         if (ImGui::Checkbox("Shadow", &isShadow))
             m_pGameInstance->Set_Shadow(isShadow);

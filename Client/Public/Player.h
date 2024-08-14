@@ -198,6 +198,7 @@ public:
 private:
     void Ready_AnimationTree();
     void Ready_CutSceneAnimation();
+    void Ready_AuraEffect();
 
     /* Compute Function */
 private:
@@ -209,6 +210,7 @@ private:
     // 상대 객체의 포지션을 기준으로 계산함
     // 내 위치를 기준으로 좌/우/앞/뒤 어디에 존재하는지를 판단
     _int Compute_Target_Direction_Pos(_fvector vTargetPos);
+
 
     //키 입력관련함수들
 private:
@@ -244,9 +246,14 @@ private:
     void Compute_MoveDirection_RL();
 
     void Effect_Control_Aura();
+    void On_Aura(BATTLE_STYLE eStyle);
+    void Off_Aura(BATTLE_STYLE eStyle);
+
     void Setting_Target_Enemy();
     void Setting_Target_Item();
     void Setting_Target_Wall();
+
+    void Radial_Event();
 
 
     /* 캐릭터 스테이터스 관련 함수 */ 
@@ -317,10 +324,16 @@ private:
 
     /* 플레이어 스테이터스 관련 변수들 */
 private:
-    _uint           m_iCurrentHitLevel = { 0 };
+    _uint           m_iCurrentHitLevel = { 3 };
     _float          m_fHitGauge = { 0.f };
 
     int             m_iNaviRouteNum = { 0 }; //루트
+
+    /* 플레이어 오라 이펙트 모아두기 */
+private:
+    vector<CSocketEffect*> m_HooliganAura;
+    vector<CSocketEffect*> m_RushAura;
+    vector<CSocketEffect*> m_DestroyerAura;
 
 private:
     _bool m_isHitFreeze = { false };
@@ -333,7 +346,7 @@ private:
 #endif // _DEBUG
 
 
-
+    class CQteManager* m_pQTEMgr = { nullptr };
 
 private:
     virtual HRESULT Add_Components() override;

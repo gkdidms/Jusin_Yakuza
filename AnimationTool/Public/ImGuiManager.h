@@ -36,13 +36,18 @@ private:
 		HAND_A, FOOT_A, JOINT_A, HEAD_A,
 		HEAD_H = 10, BODY_H, LEG_H,
 	};
+	enum Blood_Effect_Type
+	{
+		NOSE, MOUTH, BLOOD_EFFECT_END
+	};
 
 
 	// 선택된거는 빨간색으로 보여준다
 	//콜라이더 활성화(노랑), 콜라이더 비활성화(주황), 사운드 활성화(초록)
 	enum Animation_Event_Type
 	{
-		COLLIDER_ACTIVATION, COLLIDER_DISABLE, SOUND_ACTIVATION, ANIMATION_EVENT_TYPE_END
+		COLLIDER_ACTIVATION, COLLIDER_DISABLE, SOUND_ACTIVATION, 
+		ANIMATION_EVENT_TYPE_END
 	};
 
 public:
@@ -79,6 +84,28 @@ public:
 		_uint iBoneIndex;
 	};
 
+	struct Animation_FaceEventState
+	{
+		_uint iType;					//0번이 on 1번이 off 2번이 change
+		_float fAinmPosition;
+		_uint iFaceAnimIndex;
+	};
+
+	struct Animation_BloodEventState
+	{
+		_float fAinmPosition;
+		_uint iBoneIndex;
+		string strBonelName;
+		_uint iBloodEffectType;
+	};
+
+	struct Animation_RadialEventState
+	{
+		_uint iType;				//0번이 on 1번이 off
+		_float fAinmPosition;
+		_float fForce;
+	};
+
 
 private:
 	CImguiManager(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -106,9 +133,10 @@ private:
 	void RimLightWindow();
 	void TrailWindow();
 	void SoundListWindow();
-	void SlowWindow();
-	void FaceWindow();
-	void BloodWindow();
+
+	void FaceEventWindow();
+	void BloodEventWindow();
+	void RadialEventWindow();
 
 	void DrawTimeline(ImDrawList* d);
 	void DrawChannels();
@@ -143,6 +171,8 @@ private:
 	void EffectState_Save(string strPath);
 	void RimEvent_Save(string strPath);
 	void TrailEvent_Save(string strPath);
+	void BloodEvent_Save(string strPath);
+	void RadialEvent_Save(string strPath);
 
 	/* Load */
 	void All_Load();
@@ -153,6 +183,8 @@ private:
 	void EffectState_Load(string strPath);
 	void RimEvent_Load(string strPath);
 	void TrailEvent_Load(string strPath);
+	void BloodEvent_Load(string strPath);
+	void RadialEvent_Load(string strPath);
 
 	/* Functional*/
 private:
@@ -242,15 +274,32 @@ private:
 	// first: 애니메이션 이름, second: 트레일 이벤트정보
 	multimap<string, Animation_TrailState>		m_TrailEvents;
 
-	/* 페이스 윈도우 */
+	/* 페이스 이벤트 윈도우 */
 private:
 	_bool						m_isFaceWindow = { false };
 	int							m_iFaceEventIndex = { 0 };
+
+	// first: 애니메이션 이름, second: 트레일 이벤트정보
+	//multimap<string, Animation_TrailState>		m_FaceEvents;
 
 	/* 블러드 이펙트 윈도우 */
 private:
 	_bool						m_isBloodWindow = { false };
 	int							m_iBloodEventIndex = { 0 };
+	Blood_Effect_Type			m_eBloodEffectType = { NOSE };
+
+	// first: 애니메이션 이름, second: 이벤트정보
+	multimap<string, Animation_BloodEventState>		m_BloodEvents;
+
+	/* 레디얼 이벤트 윈도우 */
+private:
+	_bool						m_isRadialEventWindow = { false };
+	int							m_iRadialEventIndex = { 0 };
+	float						m_fRadialForce = { 1.f };
+	float						m_fRadialAnimPosition = { 1.f };
+
+	// first: 애니메이션 이름, second: 이벤트정보
+	multimap<string, Animation_RadialEventState>		m_RadialEvents;
 
 private:
 	_bool						m_isSoundListWindow = { false };

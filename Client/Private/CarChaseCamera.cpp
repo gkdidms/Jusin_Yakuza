@@ -102,7 +102,8 @@ void CCarChaseCamera::Targeting(const _float& fTimeDelta)
 		{
 			if (Reactors.size() <= 1)
 			{
-				m_isTargetPlayer = true;
+				if (pTarget->isDead())
+					m_isTargetPlayer = true;
 				return;
 			}
 

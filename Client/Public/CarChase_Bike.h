@@ -18,8 +18,9 @@ public:
     virtual void Late_Tick(const _float& fTimeDelta) override;
 
 private:
-    virtual void Change_Animation();
+    virtual void Change_Animation() override;
     virtual HRESULT Add_Components() override;
+    virtual void Set_ParentMatrix() override;
 
 public:
     static CCarChase_Bike* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

@@ -32,6 +32,7 @@ protected:
 
 public:
     virtual string Get_CurrentAnimationName();
+    _bool isStart() { return m_isStart; }
 
 public:
     virtual HRESULT Initialize_Prototype() override;
@@ -42,19 +43,18 @@ public:
     virtual HRESULT Render() override;
 
 protected:
-    CNavigation* m_pNavigationCom = { nullptr };
-
-protected:
     _bool m_isAnimLoop = { false };
     _bool m_isStop = { false };
     _bool m_isStart = { true };
+    _bool   m_isColl = { false };
+
     _uint m_iState = { 0 };
     _float m_fChangeInterval = { 4.f };
 
     string  m_strAnimName = "";
-    _uint   m_iAnim = { 0 };
+    _int   m_iAnim = { 0 };
 
-    _bool   m_isColl = { false };
+    
     
 protected:
     vector<class CCarChase_Monster*> m_Monsters;

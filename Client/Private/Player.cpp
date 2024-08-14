@@ -26,6 +26,8 @@
 #include "Item.h"
 #include "MapCollider.h"
 
+#include "QteManager.h"
+
 #pragma region 행동 관련 헤더들
 #include "Kiryu_KRS_Attack.h"
 #include "Kiryu_KRH_Attack.h"
@@ -102,6 +104,8 @@ HRESULT CPlayer::Initialize(void* pArg)
 	if (FAILED(Add_CharacterData()))
 		return E_FAIL;
 
+	//Ready_AuraEffect();
+
 	// 기본 몬스터: 20
 	// 삥쟁이: 30
 	// 쿠제: 100
@@ -113,6 +117,8 @@ HRESULT CPlayer::Initialize(void* pArg)
 
 	// 새로 생성할 때 마다 UI매니저에 본인을 Set해준다.
 	m_pUIManager->Set_Player(this);
+
+	m_pQTEMgr = dynamic_cast<CQteManager*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_QTEManager"), nullptr));
 
 	On_Separation_Hand(0);			// 양손 분리 켜둠
 
@@ -174,7 +180,7 @@ void CPlayer::Tick(const _float& fTimeDelta)
 	}
 	if (m_pGameInstance->GetKeyState(DIK_T) == TAP)
 	{
-		m_pUIManager->Open_Scene(TEXT("Tutorial"));
+		//m_pUIManager->Open_Scene(TEXT("Tutorial"));
 	}
 	if (m_pGameInstance->GetKeyState(DIK_Y) == TAP)
 	{
@@ -185,16 +191,6 @@ void CPlayer::Tick(const _float& fTimeDelta)
 	Synchronize_Root(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")));
 
 #ifdef _DEBUG
-
-	if (m_pGameInstance->GetKeyState(DIK_M) == TAP)
-	{
-		m_iFaceAnimIndex = 8;
-		On_Separation_Face();
-	}	
-	if (m_pGameInstance->GetKeyState(DIK_N) == TAP)
-	{
-		Off_Separation_Face();
-	}
 
 	if (m_pGameInstance->GetKeyState(DIK_Z) == TAP)
 	{
@@ -255,19 +251,27 @@ void CPlayer::Tick(const _float& fTimeDelta)
 		m_CanHitAction = true;
 	}
 
-	// TODO: 튜토리얼 UI 정리된 이후 켜야함
-	//if(!m_pUIManager->IsOpend())
+	
+	if (m_eAnimComType == DEFAULT)
+	{
+		// TODO: 튜토리얼 UI 정리된 이후 켜야함
+		//if(!m_pUIManager->IsOpend())
 		KeyInput(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")));
+	}
+
 
 	m_pColliderCom->Tick(m_pTransformCom->Get_WorldMatrix());
 
 	Animation_Event();
 	RimLight_Event();
 	Trail_Event();
+	Radial_Event();
 	Effect_Control_Aura();
 	Setting_Target_Enemy();
 	Setting_Target_Item();
 	Setting_Target_Wall();
+
+	m_pQTEMgr->Tick(fTimeDelta);
 }
 
 void CPlayer::Late_Tick(const _float& fTimeDelta)
@@ -762,6 +766,32 @@ void CPlayer::Ready_CutSceneAnimation()
 	m_CutSceneAnimation.emplace(YONEDA_DOSU, "a60350");
 }
 
+void CPlayer::Ready_AuraEffect()
+{
+	for (auto& pair : m_pEffects)
+	{
+		string strKey = m_pGameInstance->WstringToString(pair.second->Get_EffectName());
+
+		string strHooligan = "Hooligan";
+		string strRush = "Rush";
+		string strDestroyer = "Destroyer";
+
+		if (string::npos != strKey.find(strHooligan))
+		{
+			m_HooliganAura.push_back(pair.second);
+		}
+		if (string::npos != strKey.find(strRush))
+		{
+			m_RushAura.push_back(pair.second);
+		}
+		if (string::npos != strKey.find(strDestroyer))
+		{
+			m_DestroyerAura.push_back(pair.second);
+		}
+	}
+
+}
+
 // 현재 애니메이션의 y축을 제거하고 사용하는 상태이다 (혹시 애니메이션의 y축 이동도 적용이 필요하다면 로직 수정이 필요함
 void CPlayer::Synchronize_Root(const _float& fTimeDelta)
 {
@@ -905,6 +935,24 @@ _int CPlayer::Compute_Target_Direction_Pos(_fvector vTargetPos)
 	}
 
 	return iDirection;
+}
+
+void CPlayer::Radial_Event()
+{
+	auto& pCurEvents = m_pData->Get_Current_RadialEvents();
+	for (auto& pEvent : pCurEvents)
+	{
+		_double CurPos = *(m_pCameraModel->Get_AnimationCurrentPosition(nullptr, m_iCutSceneCamAnimIndex));
+		_double Duration = *(m_pCameraModel->Get_AnimationDuration(nullptr, m_iCutSceneCamAnimIndex));
+
+		if (CurPos >= pEvent.fAinmPosition && CurPos < Duration)
+		{
+			if (pEvent.iType == 0)
+				m_pGameInstance->Set_RadialBlur(true);
+			else
+				m_pGameInstance->Set_RadialBlur(false);
+		}
+	}
 }
 
 void CPlayer::KeyInput(const _float& fTimeDelta)
@@ -1797,6 +1845,8 @@ void CPlayer::Style_Change(BATTLE_STYLE eStyle)
 	m_iCurrentBehavior = 0;
 	m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Reset();
 	m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Change_Animation();
+
+	Off_Aura(eStyle);
 }
 
 void CPlayer::Reset_MoveDirection()
@@ -1918,6 +1968,8 @@ void CPlayer::Set_CutSceneAnim(CUTSCENE_ANIMATION_TYPE eType, _uint iFaceAnimInd
 	On_Separation_Face();			// 얼굴 애니메이션 켜기
 	Off_Separation_Hand();			// 손 분리 애니메이션 끄기
 
+	m_pData->Set_CurrentCutSceneAnimation(iter->second);
+
 	string AnimName = (*iter).second;
 
 	_uint i = 0;
@@ -1950,6 +2002,8 @@ void CPlayer::Set_CutSceneAnim(CUTSCENE_ANIMATION_TYPE eType, _uint iFaceAnimInd
 		}
 		j++;
 	}
+
+	m_pQTEMgr->Set_Animation(m_pAnimCom, m_CutSceneAnimation.at(eType));
 }
 
 void CPlayer::Play_CutScene()
@@ -2188,126 +2242,13 @@ void CPlayer::Compute_MoveDirection_RL()
 
 void CPlayer::Effect_Control_Aura()
 {
-	CSocketEffect* pHooligan = { nullptr };
-	CSocketEffect* pRush = { nullptr };
-	CSocketEffect* pDestroyer = { nullptr };
-
-	for (auto& pair : m_pEffects)
-	{
-		string strKey = m_pGameInstance->WstringToString(pair.second->Get_EffectName());
-
-		regex hooliganPattern("Hooligan");
-		regex rushPattern("Rush");
-		regex destroyerPattern("Destroyer");
-
-		if (regex_search(strKey, hooliganPattern))
-			pHooligan = pair.second;
-		if (regex_search(strKey, rushPattern))
-			pRush = pair.second;
-		if (regex_search(strKey, destroyerPattern))
-			pDestroyer = pair.second;
-	}
-
 	if (0 < m_iCurrentHitLevel)
 	{
-		switch (m_eCurrentStyle)
-		{
-		case Client::CPlayer::KRS:
-			// 기존에 켜져있던 오라를 끈다
-			if (nullptr != pRush)
-				pRush->Off();
-			if (nullptr != pDestroyer)
-				pDestroyer->Off();
-
-			// 현재 스타일에 맞는 오라를 켠다
-			if (nullptr != pHooligan)
-				pHooligan->On();
-
-
-			if (!m_isAuraOn)
-			{
-				CEffect::EFFECT_DESC EffectDesc{};
-
-				_matrix BoneMatrix = XMLoadFloat4x4(m_pModelCom->Get_BoneCombinedTransformationMatrix("kubi_c_n"));
-				_matrix ComputeMatrix = BoneMatrix * m_pTransformCom->Get_WorldMatrix();
-				_float4x4 Matrix;
-				XMStoreFloat4x4(&Matrix, ComputeMatrix);
-
-				EffectDesc.pWorldMatrix = &Matrix;
-				m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Aura_Start_Hooligan"), TEXT("Layer_Particle"), &EffectDesc);
-
-				m_isAuraOn = true;
-			}
-
-			break;
-		case Client::CPlayer::KRH:
-			if (nullptr != pHooligan)
-				pHooligan->Off();
-			if (nullptr != pDestroyer)
-				pDestroyer->Off();
-
-			if (nullptr != pRush)
-				pRush->On();
-
-			if (!m_isAuraOn)
-			{
-				CEffect::EFFECT_DESC EffectDesc{};
-
-				_matrix BoneMatrix = XMLoadFloat4x4(m_pModelCom->Get_BoneCombinedTransformationMatrix("kubi_c_n"));
-				_matrix ComputeMatrix = BoneMatrix * m_pTransformCom->Get_WorldMatrix();
-				_float4x4 Matrix;
-				XMStoreFloat4x4(&Matrix, ComputeMatrix);
-
-				EffectDesc.pWorldMatrix = &Matrix;
-				m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Aura_Start_Rush"), TEXT("Layer_Particle"), &EffectDesc);
-
-				m_isAuraOn = true;
-			}
-
-
-			break;
-		case Client::CPlayer::KRC:
-			if (nullptr != pHooligan)
-				pHooligan->Off();
-			if (nullptr != pRush)
-				pRush->Off();
-
-			if (nullptr != pDestroyer)
-				pDestroyer->On();
-
-			if (!m_isAuraOn)
-			{
-				CEffect::EFFECT_DESC EffectDesc{};
-
-				_matrix BoneMatrix = XMLoadFloat4x4(m_pModelCom->Get_BoneCombinedTransformationMatrix("kubi_c_n"));
-				_matrix ComputeMatrix = BoneMatrix * m_pTransformCom->Get_WorldMatrix();
-				_float4x4 Matrix;
-				XMStoreFloat4x4(&Matrix, ComputeMatrix);
-
-				EffectDesc.pWorldMatrix = &Matrix;
-				m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Aura_Start_Destroyer"), TEXT("Layer_Particle"), &EffectDesc);
-
-				m_isAuraOn = true;
-			}
-			break;
-		default:
-			if (nullptr != pHooligan)
-				pHooligan->Off();
-			if (nullptr != pRush)
-				pRush->Off();
-			if (nullptr != pDestroyer)
-				pDestroyer->Off();
-			return;
-		}
+		On_Aura(m_eCurrentStyle);
 	}
 	else
 	{
-		if (nullptr != pHooligan)
-			pHooligan->Off();
-		if (nullptr != pRush)
-			pRush->Off();
-		if (nullptr != pDestroyer)
-			pDestroyer->Off();
+		Off_Aura(ADVENTURE);
 	}
 }
 
@@ -2374,14 +2315,135 @@ void CPlayer::Setting_Target_Wall()
 	m_pTargetWall = (m_pCollisionManager->Get_Near_Collider(this, pWallList, 3.f));
 }
 
+void CPlayer::On_Aura(BATTLE_STYLE eStyle)
+{
+	switch (eStyle)
+	{
+	case CPlayer::KRS:
+	{
+		for (auto pEffect : m_HooliganAura)
+			pEffect->On();
+
+		if (!m_isAuraOn)
+		{
+			CEffect::EFFECT_DESC EffectDesc{};
+
+			_matrix BoneMatrix = XMLoadFloat4x4(m_pModelCom->Get_BoneCombinedTransformationMatrix("kubi_c_n"));
+			_matrix ComputeMatrix = BoneMatrix * m_pTransformCom->Get_WorldMatrix();
+			_float4x4 Matrix;
+			XMStoreFloat4x4(&Matrix, ComputeMatrix);
+
+			EffectDesc.pWorldMatrix = &Matrix;
+			m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Aura_Start_Hooligan"), TEXT("Layer_Particle"), &EffectDesc);
+
+			m_isAuraOn = true;
+		}
+		break;
+	}
+	case CPlayer::KRH:
+	{
+		for (auto pEffect : m_RushAura)
+			pEffect->On();
+
+		if (!m_isAuraOn)
+		{
+			CEffect::EFFECT_DESC EffectDesc{};
+
+			_matrix BoneMatrix = XMLoadFloat4x4(m_pModelCom->Get_BoneCombinedTransformationMatrix("kubi_c_n"));
+			_matrix ComputeMatrix = BoneMatrix * m_pTransformCom->Get_WorldMatrix();
+			_float4x4 Matrix;
+			XMStoreFloat4x4(&Matrix, ComputeMatrix);
+
+			EffectDesc.pWorldMatrix = &Matrix;
+			m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Aura_Start_Rush"), TEXT("Layer_Particle"), &EffectDesc);
+
+			m_isAuraOn = true;
+		}
+
+		break;
+	}
+	case CPlayer::KRC:
+	{
+		for (auto pEffect : m_DestroyerAura)
+			pEffect->On();
+
+		if (!m_isAuraOn)
+		{
+			CEffect::EFFECT_DESC EffectDesc{};
+
+			_matrix BoneMatrix = XMLoadFloat4x4(m_pModelCom->Get_BoneCombinedTransformationMatrix("kubi_c_n"));
+			_matrix ComputeMatrix = BoneMatrix * m_pTransformCom->Get_WorldMatrix();
+			_float4x4 Matrix;
+			XMStoreFloat4x4(&Matrix, ComputeMatrix);
+
+			EffectDesc.pWorldMatrix = &Matrix;
+			m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Aura_Start_Destroyer"), TEXT("Layer_Particle"), &EffectDesc);
+
+			m_isAuraOn = true;
+		}
+
+		break;
+	}
+	}
+}
+
+void CPlayer::Off_Aura(BATTLE_STYLE eStyle)
+{
+	// eStyle 현재 켜진 스타일이다
+
+	switch (eStyle)
+	{
+	case CPlayer::ADVENTURE:
+	{
+		for (auto pEffect : m_HooliganAura)
+			pEffect->Off();
+
+		for (auto pEffect : m_RushAura)
+			pEffect->Off();
+
+		for (auto pEffect : m_DestroyerAura)
+			pEffect->Off();
+		break;
+	}
+	case CPlayer::KRS:
+	{
+		for (auto pEffect : m_RushAura)
+			pEffect->Off();
+
+		for (auto pEffect : m_DestroyerAura)
+			pEffect->Off();
+		break;
+	}
+	case CPlayer::KRH:
+	{
+		for (auto pEffect : m_HooliganAura)
+			pEffect->Off();
+
+		for (auto pEffect : m_DestroyerAura)
+			pEffect->Off();
+		break;
+	}
+	case CPlayer::KRC:
+	{
+		for (auto pEffect : m_HooliganAura)
+			pEffect->Off();
+
+		for (auto pEffect : m_RushAura)
+			pEffect->Off();
+
+		break;
+	}
+	}
+}
+
 void CPlayer::AccHitGauge()
 {
-	if (PLAYER_HITGAUGE_LEVEL_INTERVAL * 3.f < m_fHitGauge)
-		m_fHitGauge = PLAYER_HITGAUGE_LEVEL_INTERVAL * 3.f;
-	else
-		m_fHitGauge += 5.f;
+	//if (PLAYER_HITGAUGE_LEVEL_INTERVAL * 3.f < m_fHitGauge)
+	//	m_fHitGauge = PLAYER_HITGAUGE_LEVEL_INTERVAL * 3.f;
+	//else
+	//	m_fHitGauge += 5.f;
 
-	m_iCurrentHitLevel = (m_fHitGauge / PLAYER_HITGAUGE_LEVEL_INTERVAL);
+	//m_iCurrentHitLevel = (m_fHitGauge / PLAYER_HITGAUGE_LEVEL_INTERVAL);
 }
 
 void CPlayer::Setting_RimLight()
@@ -2432,6 +2494,8 @@ void CPlayer::HitFreeze_On()
 	pCamera->Set_StartFov(XMConvertToRadians(45.0f));				//현재 fov설정
 	pCamera->Set_FoV(XMConvertToRadians(45.0f));				//현재 fov설정
 	pCamera->On_Return();
+
+	m_pGameInstance->Set_RadialBlur(true);
 }
 
 void CPlayer::HitFreeze_Off()
@@ -2440,6 +2504,7 @@ void CPlayer::HitFreeze_Off()
 	m_pGameInstance->Set_TimeSpeed(TEXT("Timer_60"), 1.f);
 	m_pGameInstance->Set_TimeSpeed(TEXT("Timer_Player"), 1.f);
 
+	m_pGameInstance->Set_RadialBlur(false);
 	//CPlayerCamera* pCamera = dynamic_cast<CPlayerCamera*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Camera"), CAMERA_PLAYER));
 	//pCamera->Set_FoV(XMConvertToRadians(60.0f));				//현재 fov설정
 }
@@ -2483,9 +2548,8 @@ CGameObject* CPlayer::Clone(void* pArg)
 
 void CPlayer::Free()
 {
-	__super::Free();
-
 	Safe_Release(m_pTargetObject);
+	Safe_Release(m_pQTEMgr);
 
 	for (size_t i = 0; i < BATTLE_STYLE_END; i++)
 	{
@@ -2512,4 +2576,21 @@ void CPlayer::Free()
 
 		m_AnimationTree[i].clear();
 	}
+	for (auto& pEffect : m_HooliganAura)
+	{
+		Safe_Release(pEffect);
+	}
+	m_HooliganAura.clear();
+	for (auto& pEffect : m_RushAura)
+	{
+		Safe_Release(pEffect);
+	}
+	m_RushAura.clear();
+	for (auto& pEffect : m_DestroyerAura)
+	{
+		Safe_Release(pEffect);
+	}
+	m_DestroyerAura.clear();
+
+	__super::Free();
 }

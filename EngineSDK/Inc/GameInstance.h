@@ -92,6 +92,9 @@ public:
     _bool isShadow();
     _bool isRimLight();
     _bool isRadialBlur();
+    _bool isMotionBlur();
+    _bool isInvertColor();
+    _bool isVignette();
     
     void Set_PBR(_bool isPBR);
     void Set_BOF(_bool isBOF);
@@ -106,6 +109,9 @@ public:
     void Set_Shadow(_bool isShadow);
     void Set_RimLight(_bool isRimLight);
     void Set_RadialBlur(_bool isRadialBlur);
+    void Set_MotionBlur(_bool isMotionBlur);
+    void Set_InvertColor(_bool isInvertColor);
+    void Set_Vignette(_bool isVignette);
     int Get_RenderState();
 #ifdef _DEBUG
 public:

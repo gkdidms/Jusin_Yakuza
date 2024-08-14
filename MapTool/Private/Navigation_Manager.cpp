@@ -396,6 +396,7 @@ void CNavigation_Manager::Load_Cell_IMGUI()
 		m_iCurrentRouteNum = route_layer_current_idx;
 		m_iCurrentRouteCellIndex = 0;
 		Load_Route(m_iCurrentRouteNum);
+		Update_PointRouteNumName();
 	}
 
 
@@ -583,6 +584,18 @@ HRESULT CNavigation_Manager::Save_Cells(_uint iIndex)
 			out.write((char*)&iIndex, sizeof(int));
 			out.write((_char*)&arr[j].vPosition, sizeof(_float4));
 			out.write((char*)&arr[j].iPointOption, sizeof(int));
+
+			// 루트 인덱스 저장
+			out.write((char*)&arr[j].iRouteNums, sizeof(int));
+
+			if (0 < arr[j].iRouteNums)
+			{
+				for (int k = 0; k < arr[j].iRouteNums; k++)
+				{
+					out.write((char*)&arr[j].pRouteID[k], sizeof(int));
+				}
+			}
+
 		}
 		
 
@@ -698,16 +711,19 @@ HRESULT CNavigation_Manager::Load_Cells(_uint iIndex)
 			in.read((char*)&arr[j].iCellNums, sizeof(int));
 			in.read((_char*)&arr[j].vPosition, sizeof(_float4));
 			in.read((char*)&arr[j].iPointOption, sizeof(int));
-		}
 
-		
-		/*in.read(reinterpret_cast<char*>(arr), iCellCnt * sizeof(ROUTE_IO));*/
+			// 루트 인덱스 저장
+			in.read((char*)&arr[j].iRouteNums, sizeof(int));
 
-		vector<ROUTE_IO>		routeCells;
+			if (0 < arr[j].iRouteNums)
+			{
+				arr[j].pRouteID = new int[arr[j].iRouteNums];
 
-		for (int j = 0; j < iCellCnt; j++)
-		{
-			routeCells.push_back(arr[j]);
+				for (int k = 0; k < arr[j].iRouteNums; k++)
+				{
+					in.read((char*)&arr[j].pRouteID[k], sizeof(int));
+				}
+			}
 		}
 
 
@@ -719,6 +735,8 @@ HRESULT CNavigation_Manager::Load_Cells(_uint iIndex)
 			naviobjdesc.tNaviDesc.iCellNums = arr[j].iCellNums;
 			naviobjdesc.tNaviDesc.vPosition = arr[j].vPosition;
 			naviobjdesc.tNaviDesc.iPointOption = arr[j].iPointOption;
+			naviobjdesc.tNaviDesc.iRouteNums = arr[j].iRouteNums;
+			naviobjdesc.tNaviDesc.pRouteID = arr[j].pRouteID;
 
 			XMMATRIX startPos = XMMatrixIdentity();
 			startPos.r[3].m128_f32[0] = arr[j].vPosition.x;
@@ -732,6 +750,8 @@ HRESULT CNavigation_Manager::Load_Cells(_uint iIndex)
 		}
 
 		m_Routes.emplace(i, routeObjs);
+
+
 
 		Safe_Delete(arr);
 	}
@@ -752,7 +772,6 @@ HRESULT CNavigation_Manager::Load_Cells(_uint iIndex)
 	Update_IndexesName();
 	Load_Route(m_iCurrentRouteNum);
 
-
 	Update_CellIndex_Draw();
 	Update_Route_Draw();
 }
@@ -767,7 +786,11 @@ HRESULT CNavigation_Manager::Load_Route(_uint iIndex)
 			Safe_Release(iter);
 		m_Route_CellIndexes.clear();
 
+
 		m_Route_CellIndexes_Draw.clear();
+
+
+
 
 		int iNums = m_Routes.find(iIndex)->second.size();
 
@@ -780,6 +803,10 @@ HRESULT CNavigation_Manager::Load_Route(_uint iIndex)
 		if (0 < m_Route_CellIndexes_Draw.size())
 		{
 			Safe_Release(m_pVIBufferCom);
+
+			for (auto& iter : m_vLineBufferLine)
+				Safe_Release(iter);
+			m_vLineBufferLine.clear();
 
 			m_pVIBufferCom = CVIBuffer_Line::Create(m_pDevice, m_pContext, m_Route_CellIndexes_Draw);
 			if (nullptr == m_pVIBufferCom)
@@ -1038,10 +1065,14 @@ void CNavigation_Manager::Make_Route()
 
 		Click_To_Select_Object(index_current_idx);
 
+		// 다른 점 선택
 		if (m_iCurrentRouteCellIndex != index_current_idx && 0 < m_Route_CellIndexes.size())
 		{
 			m_iCurrentRouteCellIndex = index_current_idx;
 			m_iPointOption = m_Route_CellIndexes[m_iCurrentRouteCellIndex]->Get_PointOpiton();
+
+
+			Update_PointRouteNumName();
 		}
 
 
@@ -1061,6 +1092,44 @@ void CNavigation_Manager::Make_Route()
 		{
 			iPointOpiton = 1;
 			m_iPointOption = 1;
+		}
+
+		static int point_route_Num = 0;
+
+		// point에 넘어갈 루트 번호 저장하기
+		if (ImGui::BeginListBox(u8"point에 루트저장"))
+		{
+			for (int n = 0; n < m_PointRouteSaveNumName.size(); n++)
+			{
+				const bool is_selected = (point_route_Num == n);
+				if (ImGui::Selectable(m_PointRouteSaveNumName[n], is_selected))
+					point_route_Num = n;
+
+				if (is_selected)
+					ImGui::SetItemDefaultFocus();
+			}
+			ImGui::EndListBox();
+		}
+
+		static int iRouteNum = 0;
+		ImGui::InputInt(u8"루트번호 입력 : ", &iRouteNum);
+
+		if (ImGui::Button(u8"포인트에 루트번호 저장"))
+		{
+			m_Route_CellIndexes[m_iCurrentRouteCellIndex]->Add_RouteNum_InVec(iRouteNum);
+			Update_PointRouteNumName();
+		}
+		
+		if (ImGui::Button(u8"포인트 - 루트번호 삭제"))
+		{
+			m_Route_CellIndexes[m_iCurrentRouteCellIndex]->Delete_RouteNum_InVec(point_route_Num);
+			Update_PointRouteNumName();
+		}
+
+		if (ImGui::Button(u8"포인트 - 루트번호 전체삭제"))
+		{
+			m_Route_CellIndexes[m_iCurrentRouteCellIndex]->DeleteAll_RouteNum_InVec();
+			Update_PointRouteNumName();
 		}
 
 
@@ -1126,9 +1195,6 @@ void CNavigation_Manager::Make_Route()
 			}
 			
 		}
-
-
-
 
 
 
@@ -1347,6 +1413,8 @@ void CNavigation_Manager::Update_CellsName()
 			m_CellsName.push_back(szName);
 		}
 	}
+
+
 }
 
 void CNavigation_Manager::Update_RouteName()
@@ -1399,6 +1467,34 @@ void CNavigation_Manager::Update_IndexesName()
 			m_IndexesName.push_back(szName);
 
 			m_Route_CellIndexes[i]->Set_ObjID(i);
+		}
+	}
+
+}
+
+void CNavigation_Manager::Update_PointRouteNumName()
+{
+	if (0 < m_PointRouteSaveNumName.size())
+	{
+		for (auto& iter : m_PointRouteSaveNumName)
+			Safe_Delete(iter);
+
+		m_PointRouteSaveNumName.clear();
+	}
+
+
+	if (0 < m_Route_CellIndexes[m_iCurrentRouteCellIndex]->Get_VecNum())
+	{
+		for (int i = 0; i < m_Route_CellIndexes[m_iCurrentRouteCellIndex]->Get_RouteNumsVec().size(); i++)
+		{
+			char* szName = new char[MAX_PATH];
+			strcpy(szName, "RouteNum");
+			char buff[MAX_PATH];
+			sprintf(buff, "%d", m_Route_CellIndexes[m_iCurrentRouteCellIndex]->Get_RouteNumsVec()[i]);
+			strcat(szName, buff);
+
+			m_PointRouteSaveNumName.push_back(szName);
+
 		}
 	}
 }
@@ -1592,8 +1688,6 @@ void CNavigation_Manager::Free()
 	m_RouteName.clear();
 
 
-
-
 	Safe_Release(m_pVIBufferCom);
 
 	for (auto& iter : m_vLineBufferLine)
@@ -1601,17 +1695,9 @@ void CNavigation_Manager::Free()
 	m_vLineBufferLine.clear();
 
 
-
 	for (auto& iter : m_Route_CellIndexes)
 		Safe_Release(iter);
 	m_Route_CellIndexes.clear();
-
-
-	m_Route_CellIndexes_Draw.clear();
-
-	for (auto& Pair : m_Routes_Draw)
-		Pair.second.clear();
-	m_Routes_Draw.clear();
 
 	for (auto& iter : m_Routes)
 	{
@@ -1622,6 +1708,15 @@ void CNavigation_Manager::Free()
 	}
 	m_Routes.clear();
 
+
+	m_Route_CellIndexes_Draw.clear();
+
+
+	for (auto& Pair : m_Routes_Draw)
+	{
+		Pair.second.clear();
+	}
+	m_Routes_Draw.clear();
 
 
 	Safe_Release(m_pGameInstance);

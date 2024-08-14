@@ -38,6 +38,9 @@ void CCarChase_Bike::Tick(const _float& fTimeDelta)
 
 void CCarChase_Bike::Late_Tick(const _float& fTimeDelta)
 {
+	m_pModelCom->Play_Animation_Monster(fTimeDelta, m_pAnimCom[m_iCurrentAnimType], m_isAnimLoop, false);
+	Set_ParentMatrix();
+
 	__super::Late_Tick(fTimeDelta);
 }
 
@@ -248,11 +251,15 @@ HRESULT CCarChase_Bike::Add_Components()
 	if (nullptr == m_pTree)
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Meterial_Bike"),
-		TEXT("Com_Material"), reinterpret_cast<CComponent**>(&m_pMaterialCom))))
-		return E_FAIL;
-
 	return S_OK;
+}
+
+void CCarChase_Bike::Set_ParentMatrix()
+{
+	if (m_iWeaponType == RKT && (m_iState == CARCHASE_DED_R || m_iState == CARCHASE_DED_L) && *(m_pAnimCom[m_iCurrentAnimType]->Get_AnimPosition()) >= 33.f)
+		return;
+
+	XMStoreFloat4x4(&m_ModelWorldMatrix, m_pTransformCom->Get_WorldMatrix() * XMLoadFloat4x4(m_pParentBoneMatrix) * XMLoadFloat4x4(m_pParentMatrix));
 }
 
 CCarChase_Bike* CCarChase_Bike::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

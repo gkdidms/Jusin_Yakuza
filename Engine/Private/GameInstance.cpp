@@ -282,6 +282,21 @@ _bool CGameInstance::isRadialBlur()
 	return m_pRenderer->isRadialBlur();
 }
 
+_bool CGameInstance::isMotionBlur()
+{
+	return m_pRenderer->isMotionBlur();
+}
+
+_bool CGameInstance::isInvertColor()
+{
+	return m_pRenderer->isInvertColor();
+}
+
+_bool CGameInstance::isVignette()
+{
+	return m_pRenderer->isVignette();
+}
+
 void CGameInstance::Set_PBR(_bool isPBR)
 {
 	m_pRenderer->Set_PBR(isPBR);
@@ -305,6 +320,16 @@ _float CGameInstance::Get_SSAORadiuse()
 void CGameInstance::Set_SSAOBlur(_float fBlur)
 {
 	m_pRenderer->Set_SSAOBlur(fBlur);
+}
+
+void CGameInstance::Set_InvertColor(_bool isInvertColor)
+{
+	m_pRenderer->Set_InvertColor(isInvertColor);
+}
+
+void CGameInstance::Set_Vignette(_bool isVignette)
+{
+	m_pRenderer->Set_Vignette(isVignette);
 }
 
 _float CGameInstance::Get_SSAOBlur()
@@ -335,6 +360,11 @@ void CGameInstance::Set_RimLight(_bool isRimLight)
 void CGameInstance::Set_RadialBlur(_bool isRadialBlur)
 {
 	m_pRenderer->Set_RadialBlur(isRadialBlur);
+}
+
+void CGameInstance::Set_MotionBlur(_bool isMotionBlur)
+{
+	m_pRenderer->Set_MotionBlur(isMotionBlur);
 }
 
 int CGameInstance::Get_RenderState()

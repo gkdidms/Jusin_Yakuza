@@ -2,7 +2,7 @@
 
 #include "GameInstance.h"
 
-#include "CarChase_Van.h"
+#include "CarChase_Heli.h"
 
 CReactor_Heli::CReactor_Heli(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CCarChase_Reactor{ pDevice, pContext }
@@ -24,7 +24,7 @@ HRESULT CReactor_Heli::Initialize(void* pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
-	m_strAnimName = "w_mngcar_e_van_wpr_aim_st_1";
+	m_strAnimName = "w_mngcar_e_hel_rkt_stand";
 
 	return S_OK;
 }
@@ -37,12 +37,26 @@ void CReactor_Heli::Tick(const _float& fTimeDelta)
 {
 	__super::Tick(fTimeDelta);
 
+	m_pTransformCom->Change_Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(90.f));
 	m_isObjectDead = Check_Dead();
 }
 
 void CReactor_Heli::Late_Tick(const _float& fTimeDelta)
 {
-	__super::Late_Tick(fTimeDelta);
+	//컬링
+	m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
+
+	//높이값 태우기
+	_vector vCurrentPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	if (nullptr != m_pNavigationCom)
+	{
+		float fHeight = m_pNavigationCom->Compute_Height(vCurrentPos);
+		vCurrentPos = XMVectorSetY(vCurrentPos, fHeight + 3.f);
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, vCurrentPos);
+	}
+
+	for (auto& pMonster : m_Monsters)
+		pMonster->Late_Tick(fTimeDelta);
 }
 
 HRESULT CReactor_Heli::Ready_Monster(_int* pMonsterTypes)
@@ -52,14 +66,15 @@ HRESULT CReactor_Heli::Ready_Monster(_int* pMonsterTypes)
 		if (i > 0 && pMonsterTypes[i - 1] == -1)
 			break;
 
-		CCarChase_Van::CARCHASE_MONSTER_DESC Desc{};
-		Desc.iWeaponType = i == 0 ? CCarChase_Monster::DRV : pMonsterTypes[i - 1];
+		CCarChase_Heli::CARCHASE_MONSTER_DESC Desc{};
+		Desc.iWeaponType = i == 0 ? CCarChase_Monster::GUN : pMonsterTypes[i - 1];
 		Desc.pParentMatrix = m_pTransformCom->Get_WorldFloat4x4();
-		Desc.pBoneMatrix = m_pModelCom->Get_BoneTransformationMatrix("anm_root");
+		Desc.pBoneMatrix = m_pModelCom->Get_BoneCombinedTransformationMatrix("anm_root");
 		Desc.iLineDir = m_iLineDir;
 		Desc.iObjectIndex = m_iObjectIndex + i;
+		Desc.iStageDir = m_iStageDir;
 
-		CCarChase_Monster* pMonster = dynamic_cast<CCarChase_Monster*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_CarChaseVan"), &Desc));
+		CCarChase_Monster* pMonster = dynamic_cast<CCarChase_Monster*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_CarChaseHeli"), &Desc));
 		if (nullptr == pMonster)
 			return E_FAIL;
 
@@ -72,12 +87,12 @@ HRESULT CReactor_Heli::Ready_Monster(_int* pMonsterTypes)
 void CReactor_Heli::Change_Animation()
 {
 	if (m_isObjectDead)
-		m_strAnimName = "w_mngcar_c_van_ded_1";
+		m_strAnimName = "w_mngcar_e_hel_rkt_reload_1";
 
 	//벤에 관한 애니메이션 넣기
-	if (m_strAnimName == "w_mngcar_e_van_wpr_aim_st_1")
+	if (m_strAnimName == "w_mngcar_e_hel_rkt_stand")
 		m_iAnim = 1;
-	if (m_strAnimName == "w_mngcar_c_van_ded_1")
+	if (m_strAnimName == "w_mngcar_e_hel_rkt_reload_1")
 		m_iAnim = 0;
 
 	if (m_iAnim == 0 && m_pModelCom->Get_AnimFinished())
@@ -91,6 +106,10 @@ HRESULT CReactor_Heli::Add_Components()
 
 	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Model_Heli"),
 		TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
+		return E_FAIL;
+
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Material_Heli"),
+		TEXT("Com_Material"), reinterpret_cast<CComponent**>(&m_pMaterialCom))))
 		return E_FAIL;
 
 	return S_OK;

@@ -54,6 +54,7 @@ public:
     // CLandObject을(를) 통해 상속됨
     string Get_CurrentAnimationName() override;
     const _float4x4* Get_BoneMatrix(const char* strBoneName);
+    const _float4x4* Get_ModelMatrix() { return &m_ModelMatrix; }
 
 private:
     virtual void Change_Animation();
@@ -74,6 +75,7 @@ private:
 private:
     void Change_Behavior(BEHAVIOR_TYPE eType);
     void HideReload();
+    _bool isAttackPossible();
 
 private:
     virtual HRESULT Add_Components() override;
@@ -111,6 +113,7 @@ public:
     _float Get_HitEye() { return m_fHitEye; }
    const _uint Get_MaxAmmo() { return MAX_AMMO; }
     _uint Get_Ammo() { return m_iCurrentAmmo; }
+    _uint Get_CurrentBehavior() { return m_eCurrentBehavior; }
 
     //아래는 ui에서 확인한 코드 지워도됨
     void Shot() { m_iCurrentAmmo--; }

@@ -25,7 +25,7 @@ HRESULT CCarChase_Sedan::Initialize(void* pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
-	m_iDir = DirFromPlayerPos();
+	m_iDir = Change_Dir();
 
 	return S_OK;
 }
@@ -36,14 +36,14 @@ void CCarChase_Sedan::Priority_Tick(const _float& fTimeDelta)
 
 void CCarChase_Sedan::Tick(const _float& fTimeDelta)
 {
-	if (m_iWeaponType == DRV)
-		m_iDir = Change_Dir();
-
 	__super::Tick(fTimeDelta);
 }
 
 void CCarChase_Sedan::Late_Tick(const _float& fTimeDelta)
 {
+	m_pModelCom->Play_Animation_Monster(fTimeDelta, m_pAnimCom[m_iCurrentAnimType], m_isAnimLoop, false);
+	Set_ParentMatrix();
+
 	__super::Late_Tick(fTimeDelta);
 }
 
@@ -117,7 +117,7 @@ void CCarChase_Sedan::Change_Animation()
 			if (m_iDir == DIR_B)
 				m_strAnimName = "mngcar_c_car_gun_aiml_b_dam";
 			else if (m_iDir == DIR_F)
-				m_strAnimName = "mngcar_c_car_gun_aiml_b_dam";
+				m_strAnimName = "mngcar_c_car_gun_aiml_f_dam";
 			else if (m_iDir == DIR_L)
 				m_strAnimName = "mngcar_c_car_gun_aiml_l_dam";
 			else if (m_iDir == DIR_R)
@@ -126,7 +126,7 @@ void CCarChase_Sedan::Change_Animation()
 			
 		break;
 	}
-	case CARCHASE_AIML_DAD:
+	case CARCHASE_AIML_DED:
 	{
 		if (m_iWeaponType == GUN_L)
 		{
@@ -218,6 +218,14 @@ void CCarChase_Sedan::Change_Animation()
 				m_strAnimName = "mngcar_c_car_gun_aiml_l_shot";
 			else if (m_iDir == DIR_R)
 				m_strAnimName = "mngcar_c_car_gun_aiml_r_shot";
+			//else if (m_iDir == DIR_FL)
+			//	m_strAnimName = "mngcar_c_car_gun_aiml_l_r45";
+			//else if (m_iDir == DIR_BL)
+			//	m_strAnimName = "mngcar_c_car_gun_aiml_l_l45";
+			//else if (m_iDir == DIR_FR)
+			//	m_strAnimName = "mngcar_c_car_gun_aiml_r_l45";
+			//else if (m_iDir == DIR_BR)
+			//	m_strAnimName = "mngcar_c_car_gun_aiml_r_r45";
 		}
 			
 		break;
@@ -311,7 +319,7 @@ void CCarChase_Sedan::Change_Animation()
 
 		break;
 	}
-	case CARCHASE_AIMR_DAD:
+	case CARCHASE_AIMR_DED:
 	{
 		if (m_iWeaponType == GUN_R)
 		{
@@ -512,73 +520,91 @@ HRESULT CCarChase_Sedan::Add_Components()
 	if (nullptr == m_pTree)
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Meterial_Sedan"),
-		TEXT("Com_Material"), reinterpret_cast<CComponent**>(&m_pMaterialCom))))
-		return E_FAIL;
-
 	return S_OK;
+}
+
+void CCarChase_Sedan::Set_ParentMatrix()
+{
+	if ((m_iState == CARCHASE_AIML_DED || m_iState == CARCHASE_AIMR_DED) && *(m_pAnimCom[m_iCurrentAnimType]->Get_AnimPosition()) >= 38.f)
+		return;
+	
+
+	XMStoreFloat4x4(&m_ModelWorldMatrix, m_pTransformCom->Get_WorldMatrix() * XMLoadFloat4x4(m_pParentBoneMatrix) * XMLoadFloat4x4(m_pParentMatrix));
 }
 
 _uint CCarChase_Sedan::Change_Dir()
 {
 	//몬스터가 플레이어 왼쪽에 있다면
 	//왼쪽에 존재하는 몬스터의 앞에 있는지, 오른쪽에 있는지
-	CHighway_Taxi* pPlayer = dynamic_cast<CHighway_Taxi*>(m_pGameInstance->Get_GameObject(m_iCurrentLevel, TEXT("Layer_Taxi"), 0));
-	_vector vPlayerPos = pPlayer->Get_TransformCom()->Get_State(CTransform::STATE_POSITION);
-	_vector vPlayerLook = pPlayer->Get_TransformCom()->Get_State(CTransform::STATE_LOOK);
-	_vector vMonsterPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 
-	_vector vLeft = XMVector3Cross(vPlayerLook, XMVectorSet(0.f, 1.f, 0.f, 0.f));
-	_vector vRight = XMVector3Cross(XMVectorSet(0.f, 1.f, 0.f, 0.f), vPlayerLook);
+	//CHighway_Taxi* pPlayer = dynamic_cast<CHighway_Taxi*>(m_pGameInstance->Get_GameObject(m_iCurrentLevel, TEXT("Layer_Taxi"), 0));
+	//_vector vPlayerPos = pPlayer->Get_TransformCom()->Get_State(CTransform::STATE_POSITION);
+	//_vector vPlayerLook = pPlayer->Get_TransformCom()->Get_State(CTransform::STATE_LOOK);
+	//_vector vMonsterPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 
-	_vector vPos = vMonsterPos - vPlayerPos;
+	//_vector vLeft = XMVector3Cross(vPlayerLook, XMVectorSet(0.f, 1.f, 0.f, 0.f));
+	//_vector vRight = XMVector3Cross(XMVectorSet(0.f, 1.f, 0.f, 0.f), vPlayerLook);
 
-	_float vLeftDot = XMVectorGetX(XMVector3Dot(vPos, vLeft));
-	_float vRightDot = XMVectorGetX(XMVector3Dot(vPos, vRight));
-	_float vUpDot = XMVectorGetX(XMVector3Dot(vPos, vPlayerLook));
-	_float vDownDot = XMVectorGetX(XMVector3Dot(vPos, vPlayerLook * -1.f));
+	//_vector vPos = vMonsterPos - vPlayerPos;
+
+	//_float vLeftDot = XMVectorGetX(XMVector3Dot(vPos, vLeft));
+	//_float vRightDot = XMVectorGetX(XMVector3Dot(vPos, vRight));
+	//_float vUpDot = XMVectorGetX(XMVector3Dot(vPos, vPlayerLook));
+	//_float vDownDot = XMVectorGetX(XMVector3Dot(vPos, vPlayerLook * -1.f));
 
 	if (m_iWeaponType == GUN_L)
 	{
-		if (vLeftDot > 0)
-		{
-			if (acos(vDownDot) < XMConvertToRadians(45.f) * 0.5f)
-			{
-				return DIR_B;
-			}
-			else
-				m_iDir = DIR_L;
-		}
-		else if (vRightDot > 0)
-		{
-			if (acos(vUpDot) < XMConvertToRadians(45.f) * 0.5f)
-			{
-				return DIR_F;
-			}
+		if (m_iStageDir == DIR_F)
+			return DIR_B;
+		else if (m_iStageDir == DIR_B)
+			return DIR_F;
+		else if (m_iStageDir == DIR_R)
+			return DIR_L;
+		else if (m_iStageDir == DIR_L)
+			return DIR_R;
+		//if (m_iStageDir == DIR_L)
+		//{
 
-			m_iDir = DIR_R;
-		}
+		//}
+		//else if (m_iStageDir == DIR_R)
+		//{
+		//	if (acos(vUpDot) < XMConvertToRadians(30.f) * 0.5f)
+		//	{
+		//		return DIR_B;
+		//	}
+
+		//	return DIR_R;
+		//}
 	}
 	else if (m_iWeaponType == GUN_R)
 	{
-		if (vLeftDot > 0)
-		{
-			if (acos(vUpDot) < XMConvertToRadians(45.f) * 0.5f)
-			{
-				return DIR_F;
-			}
-			else
-				m_iDir = DIR_L;
-		}
-		else if (vRightDot > 0)
-		{
-			if (acos(vDownDot) < XMConvertToRadians(45.f) * 0.5f)
-			{
-				return DIR_B;
-			}
+		if (m_iStageDir == DIR_F)
+			return DIR_B;
+		else if (m_iStageDir == DIR_B)
+			return DIR_F;
+		else if (m_iStageDir == DIR_R)
+			return DIR_L;
+		else if (m_iStageDir == DIR_L)
+			return DIR_R;
 
-			m_iDir = DIR_R;
-		}
+		//if (vLeftDot > 0)
+		//{
+		//	if (acos(vUpDot) < XMConvertToRadians(30.f) * 0.5f)
+		//	{
+		//		return DIR_B;
+		//	}
+		//	else
+		//		return DIR_L;
+		//}
+		//else if (vRightDot > 0)
+		//{
+		//	if (acos(vDownDot) < XMConvertToRadians(30.f) * 0.5f)
+		//	{
+		//		return DIR_F;
+		//	}
+
+		//	return DIR_R;
+		//}
 	}
 
 	return DIR_END;

@@ -4,6 +4,7 @@
 #include "Mesh.h"
 
 #include "AI_Yoneda.h"
+#include "CharacterData.h"
 
 
 CYoneda::CYoneda(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -39,6 +40,8 @@ void CYoneda::Set_TriggerQte(_uint iWeaponChange, _uint iTriggerID)
 	m_isSynchronizing = true;
 	m_pTree->Set_Sync(true);
 	m_iCurrentAnimType = CUTSCENE;
+
+	m_pData->Set_CurrentCutSceneAnimation(m_strAnimName);
 }
 
 HRESULT CYoneda::Initialize_Prototype()
@@ -115,7 +118,7 @@ HRESULT CYoneda::Add_Components()
 	if (nullptr == m_pTree)
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Meterial_Yoneda"),
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Material_Yoneda"),
 		TEXT("Com_Material"), reinterpret_cast<CComponent**>(&m_pMaterialCom))))
 		return E_FAIL;
 

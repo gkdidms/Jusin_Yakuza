@@ -142,8 +142,9 @@ PS_OUT PS_ALPHABLEND(PS_IN In)
     
     
     vector BaseColor = g_Texture.Sample(LinearSampler, In.vTexcoord);
-    
+   // float2 ControlAlpha = g_fControlAlpha;
     //BaseColor.rgb = BaseColor.rgb * BaseColor.a;
+    //BaseColor.a *= ControlAlpha.x;
     Out.vColor = BaseColor;
     
     return Out;

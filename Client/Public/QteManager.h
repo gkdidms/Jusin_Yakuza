@@ -6,6 +6,7 @@ BEGIN(Engine)
 class CAnim;
 END
 
+BEGIN(Client)
 class CQteManager :
     public CGameObject
 {
@@ -16,12 +17,19 @@ public:
 
     struct QTE_DESC {
         _uint iAnimIndex;
+        _uint iCamAnimIndex;
         _uint iStartKeyFrameIndex;
         _uint iEndKeyFrameIndex;
         _uint iKeyFrames;
+        _uint iSuccesStartFrame;
+        _uint iSuccesEndFrame;
+        _uint iFailedStartFrame;
+        _uint iFailedEndFrame;
     };
 
     const _float QTE_TIME = 2.f;
+    const _float QTE_TIME_SPEED = 0.3f;
+    const _float QTE_TIME_SPEED_MAX = 0.7f;
 
 private:
     CQteManager(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -36,24 +44,41 @@ public:
     virtual void Late_Tick(const _float& fTimeDelta) override;
     virtual HRESULT Render() override;
 
+public:
+    void Set_Animation(CAnim* pAnim, string strAnimName);
+
 private:
     HRESULT Ready_SlowKeyFrame();
 
+    void ResetVariables();
+
+    void Skip_KeyFrame();
+    void Cancle_KeyFrame();
+
 public:
-    void Slowing(CAnim* pAnimCom);
+    void Slowing();
+    _bool Check_QTE();
+    void Check_QTE_Section();
 
 private:
-    _float m_fSlowSpeed = { 0.f };
-    _float  m_fOutTimer = { 0.f };
-    _bool   m_bButton = { false };                  // false: Q, true: E
-    _bool   m_isSuccess = { false };                
+    CAnim* m_pPlayerAnimCom = { nullptr };
+
+    _float m_fSlowSpeed = { QTE_TIME_SPEED_MAX };
+
+    _float  m_fOutTime = { 0.f };
+    _float  m_fPassTime = { 0.f };
+    _bool   m_isSlowing = { false };
+
+    _uint   m_iSuccess = { 0 };                     // 0: 암것도아님, 1: 성공, 2: 실패
 
     string m_strAnimationName;
+    string m_strPlayingAnimName;
 
     unordered_map<string, QTE_DESC> m_QTEs;
 
 public:
+    static CQteManager* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
     CGameObject* Clone(void* pArg) override;
     virtual void Free() override;
 };
-
+END

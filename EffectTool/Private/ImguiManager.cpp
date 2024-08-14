@@ -75,6 +75,8 @@ HRESULT CImguiManager::Initialize(void* pArg)
 	TextureTags.push_back(TEXT("Prototype_Component_Texture_BrokenGlass2"));
 	TextureTags.push_back(TEXT("Prototype_Component_Texture_BrokenGlass3"));
 	TextureTags.push_back(TEXT("Prototype_Component_Texture_BloodAnim"));
+	TextureTags.push_back(TEXT("Prototype_Component_Texture_DestroyerFlud"));
+
 
 	ToneTextureTags.push_back(TEXT("Prototype_Component_Texture_AuraTone"));
 	ToneTextureTags.push_back(TEXT("Prototype_Component_Texture_AuraToneRush"));
@@ -654,6 +656,8 @@ void CImguiManager::EditorAura_Tick(_float fTimeDelta)
 	if (ImGui::RadioButton("Start", &m_AuraDesc.iShaderPass, 1))
 		bChange = true;
 	if (ImGui::RadioButton("Anim", &m_AuraDesc.iShaderPass, 2))
+		bChange = true;
+	if (ImGui::RadioButton("ToneAnim", &m_AuraDesc.iShaderPass, 3))
 		bChange = true;
 
 	if (ImGui::Checkbox("Attach", &m_AuraDesc.BufferInstance.isAttach))

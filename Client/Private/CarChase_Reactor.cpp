@@ -6,6 +6,7 @@
 #include "Player.h"
 #include "CarChase_Monster.h"
 #include "Highway_Taxi.h"
+#include"EffectManager.h"
 
 CCarChase_Reactor::CCarChase_Reactor(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLandObject{ pDevice, pContext }
@@ -66,7 +67,7 @@ void CCarChase_Reactor::Tick(const _float& fTimeDelta)
 	Change_Animation(); //애니메이션 변경
 
 	if (m_iAnim != -1)
-		m_pModelCom->Play_Animation(fTimeDelta, CModel::ANIMATION_DESC{m_iAnim, m_isAnimLoop});
+		m_pModelCom->Play_Animation(fTimeDelta, CModel::ANIMATION_DESC{_uint(m_iAnim), m_isAnimLoop});
 
 #ifdef _DEBUG
 	if (m_pGameInstance->GetKeyState(DIK_LCONTROL) == TAP)
@@ -140,18 +141,35 @@ void CCarChase_Reactor::Change_Animation()
 
 _bool CCarChase_Reactor::Check_Dead()
 {
+	if (m_isObjectDead)
+		return true;
+
 	for (auto& pMonster : m_Monsters)
 	{
 		if (!pMonster->isObjectDead())
 		{
+
 			return false;
 		}
 
 		//운전수가 죽으면 바로 죽게 된다.
 		if (pMonster->isObjectDead() && pMonster->Get_WeaponType() == CCarChase_Monster::DRV)
+		{
+
 			return true;
+		}
+
 	}
-		
+	//헬기 폭파 이펙트
+	CEffect::EFFECT_DESC EffectDesc;
+
+	_matrix WorldMatrix = XMLoadFloat4x4(m_pTransformCom->Get_WorldFloat4x4());
+
+	_float4x4 matrix;
+	XMStoreFloat4x4(&matrix, WorldMatrix);
+	EffectDesc.pWorldMatrix = &matrix;
+	CEffectManager::GetInstance()->Car_Explosion(EffectDesc);
+
 	return true;
 }
 
@@ -162,9 +180,10 @@ void CCarChase_Reactor::Move_Waypoint(const _float& fTimeDelta)
 	//웨이포인트 
 	_vector vDir = m_pNavigationCom->Compute_WayPointDir(vPosition, fTimeDelta, m_isStart);
 	m_pTransformCom->LookAt_For_LandObject(vDir, true);
+	
 
 	//플레이어와 인덱스 값의 차이를 둬야 함
-	if (m_iAnim != 0)
+	if (!m_isObjectDead)
 	{
 		CHighway_Taxi* pPlayer = dynamic_cast<CHighway_Taxi*>(m_pGameInstance->Get_GameObject(m_iCurrentLevel, TEXT("Layer_Taxi"), 0));
 		_int iCurrentWaypointIndex = m_pNavigationCom->Get_WaypointIndex();
@@ -186,11 +205,11 @@ void CCarChase_Reactor::Move_Waypoint(const _float& fTimeDelta)
 		}
 		else if (m_iStageDir == DIR_B)
 		{
-			iGoalIndex = iPlayerCurrentWaypointIndex - 2;
+			iGoalIndex = 0 > iPlayerCurrentWaypointIndex - 2 ? iMaxIndex - 2: iPlayerCurrentWaypointIndex - 2;
 		}
 		else if (m_iStageDir == DIR_F)
 		{
-			iGoalIndex = iPlayerCurrentWaypointIndex + 1;
+			iGoalIndex = iMaxIndex == iPlayerCurrentWaypointIndex + 1 ? 0 : iPlayerCurrentWaypointIndex + 1;
 		}
 
 		_float fDistance = XMVectorGetX(XMVector3Length(m_pNavigationCom->Get_WaypointPos(iGoalIndex) - vPosition));

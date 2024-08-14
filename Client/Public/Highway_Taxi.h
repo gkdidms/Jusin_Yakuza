@@ -46,9 +46,6 @@ public:
     void    Set_NaviRouteIndex(int iIndex) { m_iNaviRouteNum = iIndex; }
 
 protected:
-    class CNavigation* m_pNavigationCom = { nullptr };
-
-protected:
     class CHighway_Kiryu* m_pKiryu = { nullptr };
     _int        m_iNaviRouteNum = { 0 }; // 몬스터가 이동하는 네비게이션 위치
     _uint       m_iStageDir = { DIR_END }; // 스테이지 위치 (앞, 뒤, 왼, 오)
@@ -70,7 +67,8 @@ protected:
 public:
     _float Get_CarHp() { return m_fCarHp; }
     _float Get_CarMaxHp() { return m_fMaxCarHp; }
-    void* Get_Kiryu() { return m_pKiryu; }
+    class CHighway_Kiryu* Get_Kiryu() { return m_pKiryu; }
+
 public:
     static CHighway_Taxi* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
     virtual CGameObject* Clone(void* pArg);

@@ -59,7 +59,7 @@ public:
         CARCHASE_AIML_CURVE_L,
         CARCHASE_AIML_CURVE_R,
         CARCHASE_AIML_DAM,
-        CARCHASE_AIML_DAD,
+        CARCHASE_AIML_DED,
         CARCHASE_AIML_DWN,
         CARCHASE_AIML_HI,
         CARCHASE_AIML_L45,
@@ -73,7 +73,7 @@ public:
         CARCHASE_AIMR_CURVE_L,
         CARCHASE_AIMR_CURVE_R,
         CARCHASE_AIMR_DAM,
-        CARCHASE_AIMR_DAD,
+        CARCHASE_AIMR_DED,
         CARCHASE_AIMR_DWN,
         CARCHASE_AIMR_HI,
         CARCHASE_AIMR_L45,
@@ -100,7 +100,7 @@ public:
 
 public:
     _uint Get_LineDir() { return m_iLineDir; } //몬스터의 위치 (앞, 옆, 뒤)
-
+    const _float4x4* Get_ModelMatrix() { return &m_ModelWorldMatrix; }
 public:
     void Set_Coll();
 
@@ -111,6 +111,10 @@ protected:
 
 public://몬스터가 들고잇는 무기 타입에 따라서 모션이 달라짐.
     _uint Get_WeaponType() { return m_iWeaponType; }
+    _bool isReactorDead() { return m_isReactorDead; }
+
+public:
+    void Set_ReactorDead(_bool isReactorDead) { m_isReactorDead = isReactorDead; }
 
 public:
     virtual HRESULT Initialize_Prototype() override;
@@ -127,14 +131,17 @@ protected:
     _uint m_iCurrentAnimType = { CLandObject::ANIM_TYPE_END };
 
 protected:
+    _bool m_isReactorDead = { false }; // 자동차가 전복되는 경우
+
+protected:
     class CUIManager* m_pUIManager = { nullptr };
     class CAI_CarChase* m_pTree = { nullptr };
 
     const _float4x4* m_pParentMatrix = { nullptr }; 
     const _float4x4* m_pParentBoneMatrix = { nullptr }; // 부착할 부모의 루트뼈
     const _float4x4* m_pTargetBoneMatrix = { nullptr }; // UI 부착할 몬스터 뼈
-
-protected:
+    _float4x4 m_pWorldMatrix;
+protected: 
     virtual void Change_Animation();
     void Update_TargetingUI();
     void Get_LookDir();
@@ -143,7 +150,7 @@ protected:
 protected:
     virtual HRESULT Add_Components() override;
     virtual HRESULT Bind_ResourceData() override;
-    
+    virtual void Set_ParentMatrix();
 
 public:
     virtual void Free();

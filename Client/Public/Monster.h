@@ -252,6 +252,7 @@ public:
 public:
     void Set_Down(_bool isDown) { m_isDown = isDown; }
     void Set_Sync(string strPlayerAnim);
+    void Off_Sync();
     void Set_RimLight(_float isRimLight) { m_isRimLight = isRimLight; }
 
 public:
@@ -286,11 +287,14 @@ public:
 
     _bool Checked_Animation_Ratio(_float fRatio);
 
+    void BloodEffect_Event();
+
 protected:
     CAnim* m_pAnimCom[ANIM_TYPE_END] = {nullptr}; // 애니메이션만 따로 저장하고있는 애니메이션 컴포넌트
     class CAI_Monster* m_pTree = { nullptr };
 
     class CTutorialManager* m_pTutorialManager = { nullptr };
+    class CEffectManager* m_pEffectManager = { nullptr };
 
 protected:
     _bool m_isAnimLoop = { false };

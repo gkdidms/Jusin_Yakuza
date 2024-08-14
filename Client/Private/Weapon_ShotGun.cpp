@@ -1,24 +1,24 @@
-#include "Gun_Cz75.h"
+#include "Weapon_ShotGun.h"
 
 #include "GameInstance.h"
 #include "Shader.h"
 
-CGun_Cz75::CGun_Cz75(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+CShotGun::CShotGun(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CSocketModel{ pDevice, pContext }
 {
 }
 
-CGun_Cz75::CGun_Cz75(const CGun_Cz75& rhs)
+CShotGun::CShotGun(const CShotGun& rhs)
 	:CSocketModel{ rhs }
 {
 }
 
-HRESULT CGun_Cz75::Initialize_Prototype()
+HRESULT CShotGun::Initialize_Prototype()
 {
 	return S_OK;
 }
 
-HRESULT CGun_Cz75::Initialize(void* pArg)
+HRESULT CShotGun::Initialize(void* pArg)
 {
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
@@ -27,29 +27,30 @@ HRESULT CGun_Cz75::Initialize(void* pArg)
 		return E_FAIL;
 
 	m_pTransformCom->Change_Rotation(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), XMConvertToRadians(-90.f));
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0, 0.04, -0.03, 1));
+	m_pTransformCom->Change_Rotation(m_pTransformCom->Get_State(CTransform::STATE_UP), XMConvertToRadians(180.f));
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0.f, 0.1, -0.07f, 1));
 
 	return S_OK;
 }
 
-void CGun_Cz75::Priority_Tick(const _float& fTimeDelta)
+void CShotGun::Priority_Tick(const _float& fTimeDelta)
 {
 	__super::Priority_Tick(fTimeDelta);
 }
 
-void CGun_Cz75::Tick(const _float& fTimeDelta)
+void CShotGun::Tick(const _float& fTimeDelta)
 {
 	__super::Tick(fTimeDelta);
 }
 
-void CGun_Cz75::Late_Tick(const _float& fTimeDelta)
+void CShotGun::Late_Tick(const _float& fTimeDelta)
 {
 	__super::Late_Tick(fTimeDelta);
 
 	m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
 }
 
-HRESULT CGun_Cz75::Render()
+HRESULT CShotGun::Render()
 {
 	if (FAILED(Bind_ResourceData()))
 		return E_FAIL;
@@ -70,20 +71,20 @@ HRESULT CGun_Cz75::Render()
 	return S_OK;
 }
 
-HRESULT CGun_Cz75::Add_Components()
+HRESULT CShotGun::Add_Components()
 {
 	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Shader_Mesh"),
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Model_Gun_Cz75"),
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Model_ShotGun"),
 		TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
 		return E_FAIL;
 
 	return S_OK;
 }
 
-HRESULT CGun_Cz75::Bind_ResourceData()
+HRESULT CShotGun::Bind_ResourceData()
 {
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix)))
 		return E_FAIL;
@@ -97,9 +98,9 @@ HRESULT CGun_Cz75::Bind_ResourceData()
 	return S_OK;
 }
 
-CGun_Cz75* CGun_Cz75::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+CShotGun* CShotGun::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
-	CGun_Cz75* pInstance = new CGun_Cz75(pDevice, pContext);
+	CShotGun* pInstance = new CShotGun(pDevice, pContext);
 
 	if (FAILED(pInstance->Initialize_Prototype()))
 		Safe_Release(pInstance);
@@ -107,9 +108,9 @@ CGun_Cz75* CGun_Cz75::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContex
 	return pInstance;
 }
 
-CGameObject* CGun_Cz75::Clone(void* pArg)
+CGameObject* CShotGun::Clone(void* pArg)
 {
-	CGun_Cz75* pInstance = new CGun_Cz75(*this);
+	CShotGun* pInstance = new CShotGun(*this);
 
 	if (FAILED(pInstance->Initialize(pArg)))
 		Safe_Release(pInstance);
@@ -117,7 +118,7 @@ CGameObject* CGun_Cz75::Clone(void* pArg)
 	return pInstance;
 }
 
-void CGun_Cz75::Free()
+void CShotGun::Free()
 {
 	__super::Free();
 }

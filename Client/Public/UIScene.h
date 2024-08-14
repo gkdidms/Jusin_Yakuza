@@ -15,6 +15,7 @@ public:
         _bool isLoading;
         wstring strSceneName;
     }SCENE_DESC;
+
 protected:
     CUIScene();
     CUIScene(const CUIScene& rhs);

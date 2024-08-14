@@ -132,7 +132,7 @@ CBTNode::NODE_STATE CAI_CarChase::Check_Down()
 	if (m_iSkill == SKILL_DEAD)
 		return CBTNode::RUNNING;
 
-	if (m_pThis->isObjectDead())
+	if (m_pThis->isObjectDead() || m_pThis->isReactorDead())
 		return CBTNode::SUCCESS;
 
 	return CBTNode::FAIL;

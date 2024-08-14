@@ -15,6 +15,7 @@ class CCollision_Manager :
     DECLARE_SINGLETON(CCollision_Manager)
 
 public:
+    // 소켓콜라이더만 적용 (아이템은 소켓콜라이더를 사용하지 않음)
     enum COLLIDER_TYPE
     {
         PLAYER, ENEMY, TYPE_END
@@ -26,9 +27,10 @@ private:
 
 public:
     HRESULT Initialize();
-    HRESULT Add_ImpulseResolution(class CLandObject* pObejct);          // 서로 밀어내는 작업을 할 객체를 추가해주는 함수
+    HRESULT Add_ImpulseResolution(CGameObject* pObejct);          // 서로 밀어내는 작업을 할 객체를 추가해주는 함수
     HRESULT Add_AttackCollider(class CSocketCollider* pCollider, COLLIDER_TYPE eType);          // 서로 밀어내는 작업을 할 객체를 추가해주는 함수
     HRESULT Add_HitCollider(class CSocketCollider* pCollider, COLLIDER_TYPE eType);          // 서로 밀어내는 작업을 할 객체를 추가해주는 함수
+    HRESULT Add_ItemCollider(CCollider* pCollider);          // 서로 밀어내는 작업을 할 객체를 추가해주는 함수
 
     HRESULT Add_MapCollider(CCollider* pCollider);
 
@@ -42,6 +44,7 @@ public:
     */
     void Enemy_Hit_Collision();
     void Player_Hit_Collision();
+    void Item_Attack_Collision();           // 아이템에 몬스터가 맞았는지?
     void ItemCollision();
 
     // 카메라 - 맵 충돌 관련
@@ -49,9 +52,8 @@ public:
     _bool Check_Map_Collision(CCollider* pCollider, XMVECTOR& pCollisionPos, CTransform* pTransform); // 충돌 확인용 - transform으로 확인
     _bool Check_Map_Collision_Using_Position(CCollider* pCollider, XMVECTOR vPosition, XMVECTOR& pCollisionPos); //충돌 확인용 - position(vector)로 확인
 
-
-    class CGameObject* Get_Near_Object(class CGameObject* pObject, vector<CGameObject*>& pObjects, _float fDistance = 5.f);
-    class CCollider* Get_Near_Collider(class CGameObject* pObject, vector<CCollider*>& pObjects, _float fDistance = 5.f);
+    CGameObject* Get_Near_Object(CGameObject* pObject, vector<CGameObject*>& pObjects, _float fDistance = 5.f);
+    CCollider* Get_Near_Collider(CGameObject* pObject, vector<CCollider*>& pObjects, _float fDistance = 5.f);
 
 private:
     // 캐릭터가 겹치지않고 밀어내는 함수
@@ -68,7 +70,7 @@ private:
     bool Check_PositionAABB_Collision(BoundingSphere* sphere, BoundingBox* box, XMVECTOR vPosition, XMVECTOR& pCollisionPos);
 
 private:
-    vector<class CLandObject*> m_ImpulseResolutionObjects;
+    vector<CGameObject*> m_ImpulseResolutionObjects;
 
     /*
     * AttackColliders는 Attack타입의 소켓 콜라이더들을 모아둘 벡터
@@ -87,32 +89,11 @@ private:
     vector<CCollider*> m_ItemColliders;
 
     CGameInstance* m_pGameInstance = { nullptr };
+    class CEffectManager* m_pEffectManager = { nullptr };
 
 
     float           m_fIntersectDistance = { 0 };
 
-    //피파티클
-private:
-    //사람이 총맞았을떄 이펙트
-    void Blood_Effect(CEffect::EFFECT_DESC& EffectDesc);
-    //피 부족시 추가
-    void Blood_Splash(CEffect::EFFECT_DESC& EffectDesc);
-    //자동차, 오토바이에 총맞을때 나오는 스파크
-    void Car_HitSpark(CEffect::EFFECT_DESC& EffectDesc);
-    //차 터지고 나서 불
-    void Car_Fire(CEffect::EFFECT_DESC& EffectDesc);
-    //차 터질때
-    void Car_Explosion(CEffect::EFFECT_DESC& EffectDesc);
-    //총쏠떄
-    void Shot_Flash(CEffect::EFFECT_DESC& EffectDesc);
-    //시네마 초반 코피 터지기
-    void Cine_NoseBlood(CEffect::EFFECT_DESC& EffectDesc);
-    //시네마 입에서 피토
-    void Cine_MouseBlood(CEffect::EFFECT_DESC& EffectDesc);
-    //자동차 뒷불(트레일버퍼)
-    void Car_BackTrail(CEffect::EFFECT_DESC& EffectDesc);
-    //자동차 창문 깨짐
-    void Car_GlassBroke(CEffect::EFFECT_DESC& EffectDesc);
 private:
     void Impulse_Clear();
     void Battle_Clear();

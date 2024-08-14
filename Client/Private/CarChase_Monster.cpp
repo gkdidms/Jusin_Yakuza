@@ -6,6 +6,7 @@
 #include "AI_CarChase.h"
 
 #include "Highway_Taxi.h"
+#include "EffectManager.h"
 
 
 
@@ -74,9 +75,6 @@ void CCarChase_Monster::Tick(const _float& fTimeDelta)
 
 void CCarChase_Monster::Late_Tick(const _float& fTimeDelta)
 {
-	m_pModelCom->Play_Animation_Monster(fTimeDelta, m_pAnimCom[m_iCurrentAnimType], m_isAnimLoop, false);
-	XMStoreFloat4x4(&m_ModelWorldMatrix, m_pTransformCom->Get_WorldMatrix() * XMLoadFloat4x4(m_pParentBoneMatrix) * XMLoadFloat4x4(m_pParentMatrix));
-
 	//컬링
 	m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
 
@@ -86,12 +84,19 @@ void CCarChase_Monster::Late_Tick(const _float& fTimeDelta)
 	m_isColl = false;
 }
 
+//차안에 타있는 몬스터가 맞으면
 void CCarChase_Monster::Set_Coll()
 {
 	m_isColl = true;
 
 	//충돌처리
 	m_Info.fHp -= 10.f;
+	//피이펙트 출력
+	CEffect::EFFECT_DESC EffectDesc;
+
+	EffectDesc.pWorldMatrix = &m_pWorldMatrix;
+	CEffectManager::GetInstance()->Blood_Effect(EffectDesc);
+	CEffectManager::GetInstance()->Blood_Splash(EffectDesc);
 
 	if (m_Info.fHp <= 0.f)
 	{
@@ -115,6 +120,9 @@ void CCarChase_Monster::Update_TargetingUI()
 	_matrix VPMatrix = m_pGameInstance->Get_Transform_Matrix(CPipeLine::D3DTS_VIEW) * m_pGameInstance->Get_Transform_Matrix(CPipeLine::D3DTS_PROJ);
 
 	_matrix vWorldMaitrx = XMLoadFloat4x4(m_pTargetBoneMatrix) * XMLoadFloat4x4(&m_ModelWorldMatrix);
+
+	//틱마다 업데이트
+	XMStoreFloat4x4(&m_pWorldMatrix, vWorldMaitrx);	
 
 	_matrix ResultMatrix = vWorldMaitrx * VPMatrix;
 	_vector vPos = ResultMatrix.r[3];
@@ -177,13 +185,13 @@ void CCarChase_Monster::Get_LookDir()
 	if (m_iStageDir == DIR_B)
 		m_iDir = DIR_F;
 	else if (m_iStageDir == DIR_R)
-		m_iDir = DIR_R;
-	else if (m_iStageDir == DIR_L)
 		m_iDir = DIR_L;
+	else if (m_iStageDir == DIR_L)
+		m_iDir = DIR_R;
 	else if (m_iStageDir == DIR_F)
 	{
 		//플레이어가 나의 오른쪽에 있는지, 왼쪽에 있는지 확인해야 함.
-		m_iDir == DirFromPlayerPos() == DIR_R ? DIR_R : DIR_L;
+		m_iDir == DirFromPlayerPos() == DIR_R ? DIR_L : DIR_R;
 	}
 }
 
@@ -214,6 +222,10 @@ _uint CCarChase_Monster::DirFromPlayerPos()
 	}
 
 	return DIR_END;
+}
+
+void CCarChase_Monster::Set_ParentMatrix()
+{
 }
 
 void CCarChase_Monster::Free()

@@ -87,7 +87,7 @@ void CLandObject::ImpulseResolution(CGameObject* pTargetObject, _float fDistance
 {
 	if (nullptr == m_pColliderCom) return;
 
-	_float3 vDir = m_pColliderCom->ImpulseResolution(dynamic_cast<CLandObject*>(pTargetObject)->Get_Collider(), fDistance);
+	_float3 vDir = m_pColliderCom->ImpulseResolution(pTargetObject->Get_Collider(), fDistance);
 
 	if (!XMVector3Equal(XMLoadFloat3(&vDir), XMVectorZero()))
 	{
@@ -389,6 +389,7 @@ void CLandObject::Free()
 	Safe_Release(m_pSystemManager);
 	Safe_Release(m_pCollisionManager);
 	Safe_Release(m_pMaterialCom);
+	Safe_Release(m_pNavigationCom);
 }
 
 void CLandObject::Compute_Height()

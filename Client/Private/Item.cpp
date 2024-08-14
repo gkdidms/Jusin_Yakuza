@@ -2,22 +2,27 @@
 
 #include "GameInstance.h"
 #include "SystemManager.h"
+#include "Collision_Manager.h"
 #include "Transform.h"
 
 #include "Mesh.h"
 
 CItem::CItem(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CGameObject{ pDevice, pContext },
-	m_pSystemManager{ CSystemManager::GetInstance() }
+	m_pSystemManager{ CSystemManager::GetInstance() },
+	m_pCollisionManager{ CCollision_Manager::GetInstance() }
 {
 	Safe_AddRef(m_pSystemManager);
+	Safe_AddRef(m_pCollisionManager);
 }
 
 CItem::CItem(const CItem& rhs)
 	: CGameObject{ rhs },
-	m_pSystemManager{ rhs.m_pSystemManager }
+	m_pSystemManager{ rhs.m_pSystemManager },
+	m_pCollisionManager{ rhs.m_pCollisionManager }
 {
 	Safe_AddRef(m_pSystemManager);
+	Safe_AddRef(m_pCollisionManager);
 }
 
 HRESULT CItem::Initialize_Prototype()
@@ -42,6 +47,9 @@ HRESULT CItem::Initialize(void* pArg)
 		m_wstrModelName = gameobjDesc->wstrModelName;
 		m_iShaderPassNum = gameobjDesc->iShaderPass;
 		m_iObjectType = gameobjDesc->iObjType;
+
+		if (nullptr != m_pNavigationCom)
+			m_pNavigationCom->Set_Index(gameobjDesc->iNaviNum);
 
 		for (int i = 0; i < gameobjDesc->iDecalNum; i++)
 		{
@@ -244,6 +252,11 @@ void CItem::Late_Tick(const _float& fTimeDelta)
 			iter->Late_Tick(fTimeDelta);
 	}
 
+	//m_pCollisionManager->Add_ImpulseResolution(this);
+
+	if (m_isAttacking)
+		m_pCollisionManager->Add_ItemCollider(m_pOBBColliderCom);
+
 }
 
 HRESULT CItem::Render()
@@ -368,28 +381,30 @@ HRESULT CItem::Render_LightDepth()
 
 void CItem::ImpulseResolution(CGameObject* pTargetObject, _float fDistance)
 {
-	//CCollider* pCollider = dynamic_cast<CCollider*>(*m_vColliders.begin());
-	//if (nullptr == pCollider) return;
+	if (nullptr == m_pColliderCom) return;
 
-	//_float3 vDir = m_pColliderCom->ImpulseResolution(dynamic_cast<CLandObject*>(pTargetObject)->Get_Collider(), fDistance);
+	_float3 vDir = m_pColliderCom->ImpulseResolution(pTargetObject->Get_Collider(), fDistance);
 
-	//if (!XMVector3Equal(XMLoadFloat3(&vDir), XMVectorZero()))
-	//{
-	//	_vector vMovePos = m_pTransformCom->Get_State(CTransform::STATE_POSITION) + (XMLoadFloat3(&vDir));
+	if (!XMVector3Equal(XMLoadFloat3(&vDir), XMVectorZero()))
+	{
+		_vector vMovePos = m_pTransformCom->Get_State(CTransform::STATE_POSITION) + (XMLoadFloat3(&vDir));
 
-	//	//CNavigation* pTargetNavi = dynamic_cast<CNavigation*>(pTargetObject->Get_Component(TEXT("Com_Navigation")));
-	//	if (nullptr == m_pNavigationCom)
-	//		m_pTransformCom->Set_State(CTransform::STATE_POSITION, vMovePos);
-	//	else
-	//	{
-	//		// 네비 밖인지 아닌지 검사해야함.
-	//		if (m_pNavigationCom->isMove(vMovePos))
-	//			m_pTransformCom->Set_State(CTransform::STATE_POSITION, vMovePos);
-	//	}
-	//}
+		//CNavigation* pTargetNavi = dynamic_cast<CNavigation*>(pTargetObject->Get_Component(TEXT("Com_Navigation")));
+		if (nullptr == m_pNavigationCom)
+			m_pTransformCom->Set_State(CTransform::STATE_POSITION, vMovePos);
+		else
+		{
+			// 네비 밖인지 아닌지 검사해야함.
+			if (m_pNavigationCom->isMove(vMovePos))
+				m_pTransformCom->Set_State(CTransform::STATE_POSITION, vMovePos);
+		}
+	}
 }
 
+void CItem::Attack_Event(CGameObject* pHitObject, _bool isItem)
+{
 
+}
 
 _bool CItem::Decrease_Life()
 {
@@ -477,6 +492,10 @@ HRESULT CItem::Add_Components(void* pArg)
 		return E_FAIL;
 
 
+	/* For.Com_Navigation */
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Navigation"),
+		TEXT("Com_Navigation"), reinterpret_cast<CComponent**>(&m_pNavigationCom))))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -537,7 +556,9 @@ void CItem::Free()
 	Safe_Release(m_pColliderCom);
 	Safe_Release(m_pOBBColliderCom);
 
-	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pModelCom);
+	Safe_Release(m_pShaderCom);
+	Safe_Release(m_pNavigationCom);
 	Safe_Release(m_pSystemManager);
+	Safe_Release(m_pCollisionManager);
 }

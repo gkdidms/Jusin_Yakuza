@@ -433,6 +433,30 @@ PS_OUT PS_MAIN_NonBlurNonLight_Final(PS_IN In)
     return Out;
 }
 
+
+
+PS_OUT PS_CONTAIN_DECAL(PS_IN In)
+{
+
+    PS_OUT Out = (PS_OUT) 0;
+
+    vector vDiffuseColor = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
+    
+    vector vDecal = g_DecalTexture.Sample(LinearSampler, In.vTexcoord);
+    
+    if (vDecal.r != 0 && vDecal.g != 0 && vDecal.b != 0)
+    {
+        vDiffuseColor = lerp(vDiffuseColor, vDecal, vDecal.a);
+    }
+        
+    Out.vColor = vDiffuseColor;
+    
+    
+    return Out;
+}
+
+
+
 technique11 DefaultTechnique
 {
 
@@ -739,6 +763,58 @@ technique11 DefaultTechnique
         HullShader = NULL;
         DomainShader = NULL;
         PixelShader = compile ps_5_0 PS_MAIN_RADIALBLUR();
+    }
+
+    pass ScreenCrack //23
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_Default, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        HullShader = NULL;
+        DomainShader = NULL;
+        PixelShader = compile ps_5_0 PS_MAIN_SCREENCRACK();
+    }
+
+    pass InvertColor //24
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_Default, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        HullShader = NULL;
+        DomainShader = NULL;
+        PixelShader = compile ps_5_0 PS_MAIN_INVERTCOLOR();
+    }
+
+    pass Vignette //25
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_Default, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        HullShader = NULL;
+        DomainShader = NULL;
+        PixelShader = compile ps_5_0 PS_MAIN_VIGNETTE();
+    }
+
+    pass DecalContain //26
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_None_Test_None_Write, 0);
+        SetBlendState(BS_Default, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        HullShader = NULL;
+        DomainShader = NULL;
+        PixelShader = compile ps_5_0 PS_CONTAIN_DECAL();
     }
 
 

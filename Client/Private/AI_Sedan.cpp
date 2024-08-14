@@ -29,6 +29,8 @@ HRESULT CAI_Sedan::Initialize(void* pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
+	Ready_Tree();
+
 	return S_OK;
 }
 
@@ -82,10 +84,13 @@ void CAI_Sedan::Ready_Tree()
 
 CBTNode::NODE_STATE CAI_Sedan::Dead()
 {
+	if (m_pThis->isReactorDead())
+		return CBTNode::SUCCESS;
+
 	if (*m_pWeaponType == CCarChase_Monster::GUN_L)
-		*m_pState = CCarChase_Monster::CARCHASE_AIML_DAD;
+		*m_pState = CCarChase_Monster::CARCHASE_AIML_DED;
 	else if (*m_pWeaponType == CCarChase_Monster::GUN_R)
-		*m_pState = CCarChase_Monster::CARCHASE_AIMR_DAD;
+		*m_pState = CCarChase_Monster::CARCHASE_AIMR_DED;
 
 	return CBTNode::SUCCESS;
 }
