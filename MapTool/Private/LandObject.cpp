@@ -42,6 +42,7 @@ void CLandObject::Late_Tick(const _float& fTimeDelta)
 
 HRESULT CLandObject::Render()
 {
+
 	return S_OK;
 }
 
