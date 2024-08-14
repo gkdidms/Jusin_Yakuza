@@ -85,7 +85,6 @@ float4 Get_Normal(vector vNormal, vector vRT, float fFactor)
 // RGB를 HSV로 변환하는 함수
 float3 RGBtoHSV(float3 rgb)
 {
-    /*
     float3 hsv;
     float maxVal = max(rgb.r, max(rgb.g, rgb.b));
     float minVal = min(rgb.r, min(rgb.g, rgb.b));
@@ -114,14 +113,6 @@ float3 RGBtoHSV(float3 rgb)
 
     // Value 계산
     hsv.z = maxVal;
-*/
-    float4 K = float4(0.0, -1.0 / 3.0, 2.0 / 3.0, -1.0);
-    float4 p = (rgb.g < rgb.b) ? float4(rgb.bg, K.wz) : float4(rgb.gb, K.xy);
-    float4 q = (rgb.r < p.x) ? float4(p.xyw, rgb.r) : float4(rgb.r, p.yzx);
-
-    float d = q.x - min(q.w, q.y);
-    float e = 1.0e-10;
-    float3 hsv = float3(abs(q.z + (q.w - q.y) / (6.0 * d + e)), d / (q.x + e), q.x);
 
     return hsv;
 }
