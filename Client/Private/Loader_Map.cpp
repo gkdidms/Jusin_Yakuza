@@ -197,6 +197,12 @@ HRESULT CLoader_Map::Loading_For_LogoLevel()
 	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_RcktGunBullet"),
 		CCarChase_CATBullet::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+
+	lstrcpy(m_szLoadingText, TEXT("객체 원형 를(을) 로딩 중 입니다."));
+	/* For.Prototype_GameObject_Sofa*/
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Sofa"),
+		CSofa::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 #pragma endregion
 
 

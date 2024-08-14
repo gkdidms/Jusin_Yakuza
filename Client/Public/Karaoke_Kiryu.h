@@ -13,6 +13,11 @@ BEGIN(Client)
 class CKaraoke_Kiryu :
     public CLandObject
 {
+public:
+    enum MOUTH_ANIM
+    {
+        CLOSE, OPEN, MOUTH_ANIM_END
+    };
 private:
     const _float ANIM_INTERVAL = 4.f;
     
@@ -32,6 +37,22 @@ public:
 
     // CLandObject을(를) 통해 상속됨
     string Get_CurrentAnimationName() override;
+
+public:
+    void Set_CutSceneAnim();
+    void Play_CutScene(const _float& fTimeDelta);
+    void Reset_CutSceneEvent();
+
+private:
+    void Ready_SingingInterval();
+
+    void SingOff() {
+        m_isSinging = false;
+        m_iFaceAnimIndex = CLOSE;
+    }
+    void Play_SingingAnim(const _float& fTimeDelta);
+
+    void Change_MouthAnim();
     
     /* 출력, 행동 관련 포인터 변수들 */
 private:
@@ -54,6 +75,16 @@ private:
     _uint                       m_iCutSceneCamAnimIndex = { 0 };
 
     _uint                       m_iDefaultAnimIndex = { 0 };
+
+    _float                      m_fPrevSpeed = { 0.f };
+    _float4                     m_vPrevMove;
+    _float4                     m_vPrevRotation;
+    _float4x4                   m_ModelWorldMatrix;
+
+    list<_float>                m_fMouthChangeInterval;
+
+    _bool                       m_isSinging = { false };
+    _float                      m_fMouthTimer = { 0.f };
 
 private:
     virtual HRESULT Add_Components() override;
