@@ -103,8 +103,7 @@ HRESULT CModel::Initialize_Prototype(MODELTYPE eModelType, const _char* pModelFi
 	{
 		string pCameraFovFilePath = "../Bin/DataFiles/CameraFoVAnimationData/" + m_pGameInstance->Get_FileName(pModelFilePath) + "_camera_fov.csv";
 
-		if (FAILED(Ready_CameraAnimations(pCameraFovFilePath)))
-			return E_FAIL;
+		Ready_CameraAnimations(pCameraFovFilePath);
 	}
 
 	m_AnimLoops.resize(m_iAnimations);

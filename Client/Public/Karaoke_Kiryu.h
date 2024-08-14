@@ -55,6 +55,11 @@ private:
 
     _uint                       m_iDefaultAnimIndex = { 0 };
 
+    _float                      m_fPrevSpeed = { 0.f };
+    _float4                     m_vPrevMove;
+    _float4                     m_vPrevRotation;
+    _float4x4                   m_ModelWorldMatrix;
+
 private:
     virtual HRESULT Add_Components() override;
     virtual HRESULT Bind_ResourceData() override;

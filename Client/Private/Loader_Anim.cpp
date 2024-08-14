@@ -55,6 +55,10 @@
 #include "AI_Heli.h"
 #pragma endregion
 
+#pragma region Karaoke
+#include "Karaoke_Kiryu.h"
+#pragma endregion
+
 CLoader_Anim::CLoader_Anim(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLoader{ pDevice, pContext }
 {
@@ -220,6 +224,11 @@ HRESULT CLoader_Anim::Loading_For_LogoLevel()
 	lstrcpy(m_szLoadingText, TEXT("플레이어 원형객체를 로딩 중 입니다."));
 	/* For.Prototype_GameObject_Player */
 	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Player"), CPlayer::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	// TODO: 테스트용으로 넣은거라 테스트 끝나면 제거필요
+	/* For.Prototype_GameObject_Kiryu_Karaoke */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Kiryu_Karaoke"), CKaraoke_Kiryu::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	/* For.Prototype_GameObject_SoketCollider */
@@ -504,6 +513,10 @@ HRESULT CLoader_Anim::Loading_For_Karaoke()
 		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
+
+	/* For.Prototype_GameObject_Kiryu_Karaoke */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Kiryu_Karaoke"), CKaraoke_Kiryu::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 
 	m_isFinished = true;
 

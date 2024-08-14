@@ -60,8 +60,19 @@ HRESULT CKaraoke_Kiryu::Initialize(void* pArg)
 	if (FAILED(Add_CharacterData()))
 		return E_FAIL;
 
-	On_Separation_Hand(0);			// 양손 분리 켜둠
+	m_iHandAnimIndex = HAND_BOU;
+	On_Separation_Hand(2);			// 양손 분리 켜둠
 
+	/*
+	*	[0] p_kru_uta_ainote_a_lp[p_kru_uta_ainote_a_lp]
+		[1] p_kru_uta_sing_good_1[p_kru_uta_sing_good_1]
+		[2] p_kru_uta_sing_kamae[p_kru_uta_sing_kamae]
+		[3] p_kru_uta_sing_nml[p_kru_uta_sing_nml]
+		[4] p_oki_uta_sing_nml_lp[p_oki_uta_sing_nml_lp]
+
+	*/
+
+	m_pModelCom->Set_AnimationIndex(3);
 	return S_OK;
 }
 
@@ -71,7 +82,9 @@ void CKaraoke_Kiryu::Priority_Tick(const _float& fTimeDelta)
 
 void CKaraoke_Kiryu::Tick(const _float& fTimeDelta)
 {
-	
+	m_pModelCom->Play_Animation(fTimeDelta);
+	m_pModelCom->Play_Animation_Separation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")), m_iHandAnimIndex, m_SeparationAnimComs[HAND_ANIM], false, (_int)HAND_ANIM);
+	m_pModelCom->Play_Animation_Separation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")), m_iFaceAnimIndex, m_SeparationAnimComs[FACE_ANIM], false, (_int)FACE_ANIM);
 }
 
 void CKaraoke_Kiryu::Late_Tick(const _float& fTimeDelta)
@@ -159,11 +172,15 @@ HRESULT CKaraoke_Kiryu::Add_Components()
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Model_Kiryu"),
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Shader_BoneCompute"),
+		TEXT("Com_ComputeShader"), reinterpret_cast<CComponent**>(&m_pComputeShaderCom))))
+		return E_FAIL;
+
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Model_Kiryu_Karaoke"),
 		TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Model_Kiryu_CamAction"),
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Model_Kiryu_Karaoke_CamAction"),
 		TEXT("Com_Model_Cam"), reinterpret_cast<CComponent**>(&m_pCameraModel))))
 		return E_FAIL;
 
@@ -255,7 +272,7 @@ CKaraoke_Kiryu* CKaraoke_Kiryu::Create(ID3D11Device* pDevice, ID3D11DeviceContex
 
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
-		MSG_BOX("Failed To Created : CPlayer");
+		MSG_BOX("Failed To Created : CKaraoke_Kiryu");
 		Safe_Release(pInstance);
 	}
 
@@ -268,7 +285,7 @@ CGameObject* CKaraoke_Kiryu::Clone(void* pArg)
 
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
-		MSG_BOX("Failed To Cloned : CPlayer");
+		MSG_BOX("Failed To Cloned : CKaraoke_Kiryu");
 		Safe_Release(pInstance);
 	}
 

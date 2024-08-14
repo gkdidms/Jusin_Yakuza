@@ -122,6 +122,14 @@ void CHighway_Kiryu::Change_Animation()
 {
 }
 
+_bool CHighway_Kiryu::Checked_Animation_Ratio(_float fRatio)
+{
+	if (fRatio < *m_pModelCom->Get_AnimationCurrentPosition() / *m_pModelCom->Get_AnimationDuration())
+		return true;
+
+	return false;
+}
+
 void CHighway_Kiryu::Key_Input()
 {
 	//공격 가능한 환경인지 체크한 후 진행한다.
@@ -352,11 +360,11 @@ void CHighway_Kiryu::Play_Swap(_float fTimeDelta)
 	else
 		m_pModelCom->Set_AnimationIndex((m_isLeft ? 77 : 78), 4.f);
 
-	if (!m_isStarted && m_pModelCom->Get_AnimFinished())
+	if (!m_isStarted && Checked_Animation_Ratio(0.7))
 	{
 		m_isStarted = true;
 	}
-	else if (m_pModelCom->Get_AnimFinished())
+	else if (Checked_Animation_Ratio(0.7))
 	{
 		m_isLeft = !m_isLeft;
 		Change_Behavior(AIMING);
