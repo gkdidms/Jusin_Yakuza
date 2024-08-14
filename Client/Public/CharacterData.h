@@ -120,6 +120,10 @@ public:
         return m_CurrentTrailEvents;
     }
 
+    const vector<ANIMATION_FACEEVENTSTATE>& Get_Current_FaceEvents() const {
+        return m_CurrentFaceEvents;
+    }
+
     const vector<ANIMATION_BLOODEVENTSTATE>& Get_Current_BloodEffectEvents() const {
         return m_CurrentBloodEffectEvents;
     }
@@ -178,6 +182,7 @@ private:
     vector<ANIMATION_EVENT> m_CurrentEvents; 
     vector<ANIMATION_RIMLIGHTSTATE> m_CurrentRimEvents;
     vector<ANIMATION_TRAILSTATE> m_CurrentTrailEvents;
+    vector<ANIMATION_FACEEVENTSTATE> m_CurrentFaceEvents;
     vector<ANIMATION_BLOODEVENTSTATE> m_CurrentBloodEffectEvents;
     vector<ANIMATION_RADIALEVENTSTATE> m_CurrentRadialEvents;
 

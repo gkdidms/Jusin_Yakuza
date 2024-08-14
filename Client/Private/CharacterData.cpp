@@ -155,6 +155,32 @@ void CCharacterData::Set_CurrentAnimation(string strAnimName)
 void CCharacterData::Set_CurrentCutSceneAnimation(string strAnimName)
 {
 	//피 이펙트 이벤트 설정해주기
+	m_CurrentFaceEvents.clear();
+	// 반복자를 사용하여 문자열이 포함된 키를 찾기
+	for (auto it = m_FaceEvents.begin(); it != m_FaceEvents.end(); ++it) {
+		if (it->first.find(strAnimName) != string::npos) {
+			m_CurrentFaceEvents.push_back((*it).second);
+		}
+	}
+
+	auto face_lower_bound_iter = m_FaceEvents.lower_bound(strAnimName);
+
+	// 반환된 iter의 키값이 다르다면 맵 내에 해당 키값이 존재하지 않는다는 뜻
+	if (face_lower_bound_iter != m_FaceEvents.end())
+	{
+		auto face_upper_bound_iter = m_FaceEvents.upper_bound(strAnimName);
+
+		for (; face_lower_bound_iter != face_upper_bound_iter; ++face_lower_bound_iter)
+		{
+			// 추가적으로, 부분 문자열을 포함하는지 확인
+			if (face_lower_bound_iter->first.find(strAnimName) != string::npos)
+			{
+				m_CurrentFaceEvents.push_back(face_lower_bound_iter->second);
+			}
+		}
+	}
+
+	//피 이펙트 이벤트 설정해주기
 	m_CurrentBloodEffectEvents.clear();
 	// 반복자를 사용하여 문자열이 포함된 키를 찾기
 	for (auto it = m_BloodEvents.begin(); it != m_BloodEvents.end(); ++it) {
