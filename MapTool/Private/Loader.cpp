@@ -134,7 +134,9 @@ HRESULT CLoader::Loading_For_RunMapLevel(int iLevel)
 		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("모델를(을) 로딩 중 입니다."));
-	Add_Models_On_Path(iLevel, TEXT("../../Client/Bin/Resources/Models/Anim/"));
+	Add_Models_On_Path(iLevel, TEXT("../../Client/Bin/Resources/Models/Anim/Car"));
+	Add_Models_On_Path(iLevel, TEXT("../../Client/Bin/Resources/Models/Anim/Monster"));
+	Add_Models_On_Path(iLevel, TEXT("../../Client/Bin/Resources/Models/Anim/Player"));
 
 
 	Add_Models_On_Path_NonAnim(iLevel, TEXT("../../Client/Bin/Resources/Models/NonAnim/Map/Map0"));
