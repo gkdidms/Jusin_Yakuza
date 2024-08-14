@@ -487,15 +487,26 @@ HRESULT CHighway_Kiryu::Add_Components()
 
 HRESULT CHighway_Kiryu::Add_Objects()
 {
-	CSocketObject::SOCKETOBJECT_DESC Desc{};
+	CGun_Cz75::CZ75_DESC Desc{};
 	Desc.pParentMatrix = pTaxiMatrix;
 	Desc.pCombinedTransformationMatrix = m_pModelCom->Get_BoneCombinedTransformationMatrix("buki_r_n");
 	Desc.fRotatePecSec = XMConvertToRadians(90.f);
 	Desc.fSpeedPecSec = 1.f;
+	Desc.fLocalAngle = XMConvertToRadians(-90.f);
+	Desc.iLocalRotAxis = 0;
+	Desc.vLocalPos = _float3(0, 0.04, -0.03);
 	m_pGun_R = dynamic_cast<CGun_Cz75*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Gun_Cz75"), &Desc));
 
-	Desc.pCombinedTransformationMatrix = m_pModelCom->Get_BoneCombinedTransformationMatrix("buki_l_n");
-	m_pGun_L = dynamic_cast<CGun_Cz75*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Gun_Cz75"), &Desc));
+	CGun_Cz75::CZ75_DESC Desc_L{};
+	Desc_L.pParentMatrix = pTaxiMatrix;
+	Desc_L.pCombinedTransformationMatrix = m_pModelCom->Get_BoneCombinedTransformationMatrix("buki_l_n");
+	Desc_L.fRotatePecSec = XMConvertToRadians(90.f);
+	Desc_L.fSpeedPecSec = 1.f;
+	Desc_L.fLocalAngle = XMConvertToRadians(-90.f);
+	Desc_L.iLocalRotAxis = 0;
+	Desc_L.vLocalPos = _float3(0, 0.04, -0.03);
+
+	m_pGun_L = dynamic_cast<CGun_Cz75*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Gun_Cz75"), &Desc_L));
 
 	return S_OK;
 }
