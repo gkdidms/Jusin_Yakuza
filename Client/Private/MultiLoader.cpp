@@ -34,6 +34,9 @@
 
 #pragma region Monster
 #include "CarChase_Van.h"
+#include "CarChase_Sedan.h"
+#include "CarChase_Bike.h"
+#include "CarChase_Heli.h"
 #pragma endregion
 
 #pragma region Weapon
@@ -45,6 +48,9 @@
 
 #pragma region Reactor
 #include "Reactor_Van.h"
+#include "Reactor_Sedan.h"
+#include "Reactor_Bike.h"
+#include "Reactor_Heli.h"
 #pragma endregion
 
 #pragma region Adventure
@@ -63,6 +69,9 @@
 #include "AI_Passersby.h"
 
 #include "AI_Van.h"
+#include "AI_Bike.h"
+#include "AI_Sedan.h"
+#include "AI_Heli.h"
 
 #pragma endregion
 
@@ -740,6 +749,27 @@ HRESULT CMultiLoader::Loading_Default()
 
 HRESULT CMultiLoader::Loading_Highway()
 {
+#pragma region BTNode
+	/* For.Prototype_BTNode_Van*/
+	if (FAILED(m_pGameInstance->Add_BTNode_Prototype(m_eNextLevel, TEXT("Prototype_BTNode_Van"),
+		CAI_Van::Create())))
+		return E_FAIL;
+
+	/* For.Prototype_BTNode_Bike*/
+	if (FAILED(m_pGameInstance->Add_BTNode_Prototype(m_eNextLevel, TEXT("Prototype_BTNode_Bike"),
+		CAI_Bike::Create())))
+		return E_FAIL;
+
+	/* For.Prototype_BTNode_Sedan*/
+	if (FAILED(m_pGameInstance->Add_BTNode_Prototype(m_eNextLevel, TEXT("Prototype_BTNode_Sedan"),
+		CAI_Sedan::Create())))
+		return E_FAIL;
+
+	/* For.Prototype_BTNode_Heli*/
+	if (FAILED(m_pGameInstance->Add_BTNode_Prototype(m_eNextLevel, TEXT("Prototype_BTNode_Heli"),
+		CAI_Heli::Create())))
+		return E_FAIL;
+#pragma endregion
 
 	return S_OK;
 }
@@ -749,6 +779,12 @@ HRESULT CMultiLoader::Loading_For_Anim()
 	Add_Models_On_Path(LEVEL_TEST, TEXT("../Bin/Resources/Models/Anim/Player/"));
 	Add_Models_On_Path(LEVEL_TEST, TEXT("../Bin/Resources/Models/Anim/Monster/"));
 	Add_Models_On_Path(LEVEL_TEST, TEXT("../Bin/Resources/Models/Anim/Car/"));
+
+	/* For.Prototype_Component_CarChaseAnim */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_CarChaseAnim"), CAnim::Create(m_pDevice, m_pContext, "../Bin/DataFiles/AnimationData/Animation_CarChase.dat", false))))
+		return E_FAIL;
+	//if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_CarChaseAnim"), CAnim::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Anim/Animation_CarChase.fbx", true))))
+	//	return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("애님 로딩이 완료되었습니다."));
 
@@ -773,6 +809,8 @@ HRESULT CMultiLoader::Loading_For_NonAnim()
 	Add_Models_On_Path_NonAnim(LEVEL_TEST, TEXT("../Bin/Resources/Models/NonAnim/Bone_Sphere"));
 
 	Add_Models_On_Path_NonAnim(LEVEL_TEST, TEXT("../Bin/Resources/Models/NonAnim/Gun_Cz75"));
+
+	Add_Models_On_Path_NonAnim(LEVEL_TEST, TEXT("../Bin/Resources/Models/NonAnim/Taxi")); // 논애님이지만 플레이어로 구분
 #pragma endregion
 
 	lstrcpy(m_szLoadingText, TEXT("논애님 로딩이 완료되었습니다."));
