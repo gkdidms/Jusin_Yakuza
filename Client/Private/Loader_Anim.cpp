@@ -132,7 +132,7 @@ HRESULT CLoader_Anim::Loading_Default()
 		return E_FAIL;
 
 	/* For.Prototype_BTNode_Passersby*/
-	if (FAILED(m_pGameInstance->Add_BTNode_Prototype(m_eNextLevel, TEXT("Prototype_BTNode_Passersby"),
+	if (FAILED(m_pGameInstance->Add_BTNode_Prototype(m_eNextLevel, TEXT("Prototype_BTNode_RoadNML"),
 		CAI_RoadNML::Create())))
 		return E_FAIL;
 
@@ -400,6 +400,18 @@ HRESULT CLoader_Anim::Loading_For_Dogimazo_Boss()
 {
 	if (FAILED(Loading_Default()))
 		return E_FAIL;
+
+	m_isFinished = true;
+
+	return S_OK;
+}
+
+HRESULT CLoader_Anim::Loading_For_Street()
+{
+	if (FAILED(Loading_Default()))
+		return E_FAIL;
+	
+	//행인 액션/모델 로드하기
 
 	m_isFinished = true;
 

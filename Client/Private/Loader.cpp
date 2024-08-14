@@ -223,6 +223,11 @@ HRESULT CLoader::Loading_For_Dogimazo_Boss()
 	return S_OK;
 }
 
+HRESULT CLoader::Loading_For_Street()
+{
+	return S_OK;
+}
+
 HRESULT CLoader::Loading_For_CarChase()
 {
 	return S_OK;

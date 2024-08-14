@@ -52,7 +52,7 @@ HRESULT CRoadNML::Add_Components()
 	AIDesc.pThis = this;
 	AIDesc.pAStartCom = m_pAStartCom;
 
-	m_pTree = dynamic_cast<CAI_RoadNML*>(m_pGameInstance->Add_BTNode(m_iCurrentLevel, TEXT("Prototype_BTNode_Passersby"), &AIDesc));
+	m_pTree = dynamic_cast<CAI_RoadNML*>(m_pGameInstance->Add_BTNode(m_iCurrentLevel, TEXT("Prototype_BTNode_RoadNML"), &AIDesc));
 	if (nullptr == m_pTree)
 		return E_FAIL;
 
