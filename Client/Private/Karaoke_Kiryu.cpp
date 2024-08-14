@@ -60,10 +60,12 @@ HRESULT CKaraoke_Kiryu::Initialize(void* pArg)
 	if (FAILED(Add_CharacterData()))
 		return E_FAIL;
 
+	Ready_SingingInterval();
+
 	m_iHandAnimIndex = HAND_BOU;
 	On_Separation_Hand(2);			// 오른손 분리 
 
-	m_iFaceAnimIndex = 0;
+	m_iFaceAnimIndex = CLOSE;
 	Separation_Bone("_jaw_c_n", 3, false);
 
 	/*
@@ -87,14 +89,14 @@ void CKaraoke_Kiryu::Tick(const _float& fTimeDelta)
 {
 	if (m_pGameInstance->GetKeyState(DIK_L) == TAP)
 	{
-		m_iFaceAnimIndex = 1;
-		m_SeparationAnimComs[FACE_ANIM]->Reset_Animation(m_iFaceAnimIndex);
+		if (m_isSinging)
+			SingOff();
+		else
+			m_isSinging = true;
 	}
-	if (m_pGameInstance->GetKeyState(DIK_K) == TAP)
-	{
-		m_iFaceAnimIndex = 0;
-		m_SeparationAnimComs[FACE_ANIM]->Reset_Animation(m_iFaceAnimIndex);
-	}
+
+	if (m_isSinging)
+		Play_SingingAnim(fTimeDelta);
 
  	m_pModelCom->Play_Animation(fTimeDelta);
 	m_pModelCom->Play_Animation_Separation(fTimeDelta, m_iHandAnimIndex, m_SeparationAnimComs[HAND_ANIM], false, (_int)HAND_ANIM);
@@ -326,4 +328,50 @@ void CKaraoke_Kiryu::Free()
 string CKaraoke_Kiryu::Get_CurrentAnimationName()
 {
 	return ExtractString(m_pModelCom->Get_AnimationName(m_pModelCom->Get_CurrentAnimationIndex()));
+}
+
+void CKaraoke_Kiryu::Ready_SingingInterval()
+{
+	m_fMouthChangeInterval.push_back(0.1f);
+	m_fMouthChangeInterval.push_back(0.1f);
+	m_fMouthChangeInterval.push_back(0.2f);
+	m_fMouthChangeInterval.push_back(0.2f);
+	m_fMouthChangeInterval.push_back(0.1f);
+	m_fMouthChangeInterval.push_back(0.1f);
+	m_fMouthChangeInterval.push_back(0.3f);
+	m_fMouthChangeInterval.push_back(0.3f);
+	m_fMouthChangeInterval.push_back(0.1f);
+	m_fMouthChangeInterval.push_back(0.1f);
+	m_fMouthChangeInterval.push_back(0.4f);
+	m_fMouthChangeInterval.push_back(0.4f);
+	m_fMouthChangeInterval.push_back(0.1f);
+	m_fMouthChangeInterval.push_back(0.1f);
+	m_fMouthChangeInterval.push_back(0.1f);
+	m_fMouthChangeInterval.push_back(0.1f);
+	m_fMouthChangeInterval.push_back(0.1f);
+	m_fMouthChangeInterval.push_back(0.1f);
+	m_fMouthChangeInterval.push_back(0.2f);
+	m_fMouthChangeInterval.push_back(0.2f);
+}
+
+void CKaraoke_Kiryu::Play_SingingAnim(const _float& fTimeDelta)
+{
+	_float fCurrent = m_fMouthChangeInterval.front();
+
+	m_fMouthTimer += fTimeDelta;
+	if (fCurrent <= m_fMouthTimer)
+	{
+		m_fMouthTimer = 0.f;
+
+		Change_MouthAnim();
+		// 맨 앞에거를 지우고, 맨앞 값을 맨 뒤로 다시 푸시백해준다.
+		m_fMouthChangeInterval.erase(m_fMouthChangeInterval.begin());
+		m_fMouthChangeInterval.push_back(fCurrent);
+	}
+}
+
+void CKaraoke_Kiryu::Change_MouthAnim()
+{
+	m_iFaceAnimIndex = m_iFaceAnimIndex == CLOSE ? OPEN : CLOSE;
+	m_SeparationAnimComs[FACE_ANIM]->Reset_Animation(m_iFaceAnimIndex);
 }
