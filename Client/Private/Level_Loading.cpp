@@ -1,10 +1,15 @@
 #include "../Default/framework.h"
 
 #include "GameInstance.h"
+#include "UIManager.h"
 
 #pragma region LEVEL_HEADER
-#include "Loader.h"
+#include "Loader_Anim.h"
+#include "Loader_Other.h"
+#include "Loader_Map.h"
+
 #include "MultiLoader.h"
+
 #include "Level_Loading.h"
 #include "Level_Logo.h"
 #include "Level_Office1F.h"
@@ -18,7 +23,6 @@
 #include "Level_Test.h"
 #pragma endregion
 
-#include "UIManager.h"
 CLevel_Loading::CLevel_Loading(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLevel(pDevice, pContext)
 {
@@ -41,8 +45,16 @@ HRESULT CLevel_Loading::Initialize(LEVEL eNextLevel)
 	}
 	else
 	{
-		m_pLoader = CLoader::Create(m_pDevice, m_pContext, eNextLevel);
-		if (nullptr == m_pLoader)
+		m_pLoader[ANIM] = CLoader_Anim::Create(m_pDevice, m_pContext, eNextLevel);
+		if (nullptr == m_pLoader[ANIM])
+			return E_FAIL;
+
+		m_pLoader[MAP] = CLoader_Map::Create(m_pDevice, m_pContext, eNextLevel);
+		if (nullptr == m_pLoader[MAP])
+			return E_FAIL;
+
+		m_pLoader[OTEHR] = CLoader_Other::Create(m_pDevice, m_pContext, eNextLevel);
+		if (nullptr == m_pLoader[OTEHR])
 			return E_FAIL;
 	}
 
@@ -74,7 +86,20 @@ void CLevel_Loading::Tick(const _float& fTimeDelta)
 	}
 	else
 	{
-		if (true == m_pLoader->is_Finished())
+		_bool isFinished = { true };
+		for (auto& pLoader : m_pLoader)
+		{
+			if (!pLoader->is_Finished())
+			{
+				isFinished = false;
+				SetWindowText(g_hWnd, pLoader->Get_LoadingText());
+				return;
+			}
+		}
+
+		SetWindowText(g_hWnd, TEXT("로딩이 완료되었습니다."));
+
+		if (true == isFinished)
 		{
 			if (m_pGameInstance->GetKeyState(DIK_RETURN) == TAP)
 			{
@@ -129,8 +154,6 @@ void CLevel_Loading::Tick(const _float& fTimeDelta)
 #ifdef _DEBUG
 	if (m_eNextLevel == LEVEL_TEST)
 		SetWindowText(g_hWnd, m_pMultiLoader->Get_LoadingText());
-	else
-		SetWindowText(g_hWnd, m_pLoader->Get_LoadingText());
 #else
 	// 로딩 화면 만들어지기 전까지 릴리즈 모드에서도 볼 수 있게 해야함
 	SetWindowText(g_hWnd, m_pLoader->Get_LoadingText());
@@ -173,6 +196,8 @@ void CLevel_Loading::Free()
 {
 	__super::Free();
 
-	Safe_Release(m_pLoader);
-	Safe_Release(m_pMultiLoader);
+	for (auto& pLoader : m_pLoader)
+		Safe_Release(pLoader);
+
+ 	Safe_Release(m_pMultiLoader);
 }
