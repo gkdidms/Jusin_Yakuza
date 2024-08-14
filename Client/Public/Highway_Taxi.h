@@ -42,7 +42,7 @@ public:
     // CLandObject을(를) 통해 상속됨
     string  Get_CurrentAnimationName() override;
     void    Set_StartPos(XMMATRIX    vStartPos) { m_pTransformCom->Set_WorldMatrix(vStartPos); }
-    void    Set_NavigationIndex(int iIndex) { m_pNavigationCom->Set_Index(iIndex); }
+    void    Set_NavigationIndex(int iIndex);
     void    Set_NaviRouteIndex(int iIndex) { m_iNaviRouteNum = iIndex; }
 
 protected:

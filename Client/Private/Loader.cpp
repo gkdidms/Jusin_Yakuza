@@ -446,7 +446,10 @@ HRESULT CLoader::Loading_Default()
 
 #pragma region Meterial
 	Add_Components_On_Path_Material(m_eNextLevel, TEXT("../Bin/DataFiles/MeterialData/Char"));
-
+	Add_Components_On_Path_Material(m_eNextLevel, TEXT("../Bin/DataFiles/MeterialData/Map/Map0"));
+	Add_Components_On_Path_Material(m_eNextLevel, TEXT("../Bin/DataFiles/MeterialData/Map/Map1"));
+	Add_Components_On_Path_Material(m_eNextLevel, TEXT("../Bin/DataFiles/MeterialData/Map/Map2"));
+	Add_Components_On_Path_Material(m_eNextLevel, TEXT("../Bin/DataFiles/MeterialData/Map/Map3"));
 #pragma endregion
 
 #pragma region Shader
