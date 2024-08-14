@@ -102,44 +102,6 @@ void CMainApp::Tick(const _float& fTimeDelta)
 	m_fTimeAcc += fTimeDelta;
 
 #ifdef _DEBUG
-	if (m_pGameInstance->Get_CurrentLevel() > 2)
-	{
-		if (m_pGameInstance->GetKeyState(DIK_1) == TAP)
-		{
-			if (FAILED(m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_OFFICE_1F))))
-				return;
-		}
-		if (m_pGameInstance->GetKeyState(DIK_2) == TAP)
-		{
-			if (FAILED(m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_OFFICE_2F))))
-				return;
-		}
-		if (m_pGameInstance->GetKeyState(DIK_3) == TAP)
-		{
-			if (FAILED(m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_OFFICE_BOSS))))
-				return;
-		}
-		if (m_pGameInstance->GetKeyState(DIK_4) == TAP)
-		{
-			if (FAILED(m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_DOGIMAZO))))
-				return;
-		}
-		if (m_pGameInstance->GetKeyState(DIK_5) == TAP)
-		{
-			if (FAILED(m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_DOGIMAZO_STAIRS))))
-				return;
-		}
-		if (m_pGameInstance->GetKeyState(DIK_6) == TAP)
-		{
-			if (FAILED(m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_DOGIMAZO_LOBBY))))
-				return;
-		}
-		if (m_pGameInstance->GetKeyState(DIK_7) == TAP)
-		{
-			if (FAILED(m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_DOGIMAZO_BOSS))))
-				return;
-		}
-	}
 	if (m_pGameInstance->GetKeyState(DIK_F4) == TAP)
 	{
 		m_pSystemManager->Set_Camera(m_pSystemManager->Get_Camera() == CAMERA_DEBUG ? CAMERA_CUTSCENE : CAMERA_DEBUG);
