@@ -52,7 +52,7 @@ vector Get_Diffuse(float fMultiAlpha,  vector vDiffuse)
 
 bool CheckIfGreenNormalMap(float fX)
 {
-    return int(fX) == 0 ? 1.f : 0.f;
+    return fX > 0.01f ? 0.f : 1.f;
 }
 
 float4 Overlay(float4 baseColor, float4 overlayColor, float factor)

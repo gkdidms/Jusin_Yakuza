@@ -102,8 +102,6 @@ HRESULT CRenderer::Initialize()
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_LightMap"), 150.f, 350.f, 100.f, 100.f)))
 		return E_FAIL;
-	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_BackBlur"), 150.f, 450.f, 100.f, 100.f)))
-		return E_FAIL;
 	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_SpecularRM"), 150.f, 550.f, 100.f, 100.f)))
 		return E_FAIL;
 	
@@ -687,6 +685,7 @@ void CRenderer::Add_Renderer(RENDERER_STATE eRenderState, CGameObject* pGameObje
 void CRenderer::Draw()
 {
 	Render_Priority();
+	Render_AnimSkinning();
 
 	if (m_isShadow)
 	{
@@ -823,6 +822,14 @@ void CRenderer::Render_Priority()
 
 	if (FAILED(m_pGameInstance->End_MRT()))
 		return;
+}
+
+void CRenderer::Render_AnimSkinning()
+{
+	for (auto& iter : m_RenderObject[RENDER_NONBLENDER])
+	{
+		iter->Render_BoneCompute();
+	}
 }
 
 void CRenderer::Render_ShadowObjects()
@@ -1089,10 +1096,10 @@ void CRenderer::Render_LightAcc()
 		return;
 
 	//오류생기면 
-	//if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Diffuse"), m_pShader, "g_DiffuseTexture")))
-	//	return;
-	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_DecalContainDiffuse"), m_pShader, "g_DiffuseTexture")))
+	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Diffuse"), m_pShader, "g_DiffuseTexture")))
 		return;
+	/*if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_DecalContainDiffuse"), m_pShader, "g_DiffuseTexture")))
+		return;*/
 
 	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Normal"), m_pShader, "g_NormalTexture")))
 		return;

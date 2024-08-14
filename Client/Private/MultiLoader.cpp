@@ -680,13 +680,14 @@ HRESULT CMultiLoader::Loading_Default()
 	Add_Components_On_Path_Material(m_eNextLevel, TEXT("../Bin/DataFiles/MeterialData/Map/Map0"));
 	Add_Components_On_Path_Material(m_eNextLevel, TEXT("../Bin/DataFiles/MeterialData/Map/Map1"));
 	Add_Components_On_Path_Material(m_eNextLevel, TEXT("../Bin/DataFiles/MeterialData/Map/Map2"));
+	Add_Components_On_Path_Material(m_eNextLevel, TEXT("../Bin/DataFiles/MeterialData/Map/Map3"));
 #pragma endregion
 
 #pragma region Shader
 	lstrcpy(m_szLoadingText, TEXT("셰이더를(을) 로딩 중 입니다."));
 	/* For.Prototype_Component_Shader_VtxAnim */
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Shader_VtxAnim"),
-		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxAnimMesh.hlsl"), VTXANIMMESH::Elements, VTXANIMMESH::iNumElements))))
+		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxAnimMesh.hlsl"), VTXANIMBONE::Elements, VTXANIMBONE::iNumElements))))
 		return E_FAIL;
 	/* For.Prototype_Component_Shader_Mesh */
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Shader_Mesh"),
@@ -736,6 +737,11 @@ HRESULT CMultiLoader::Loading_Default()
 	/* For.Prototype_Component_Shader_VtxInstance_Mesh*/
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Shader_VtxInstance_Mesh"),
 		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxInstance_Mesh.hlsl"), VTXINSTANCE_MESH::Elements, VTXINSTANCE_MESH::iNumElements))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Shader_BoneCompute */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Shader_BoneCompute"),
+		CComputeShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_BoneCompute.hlsl")))))
 		return E_FAIL;
 
 #pragma endregion

@@ -75,6 +75,7 @@ public:
 
 private:
     void Render_Priority();
+    void Render_AnimSkinning();
     void Render_ShadowObjects();
     void Render_NonBlender();
 

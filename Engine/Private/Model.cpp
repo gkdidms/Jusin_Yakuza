@@ -237,7 +237,9 @@ HRESULT CModel::Ready_CameraAnimations(string& pBinFilePath)
 	ifstream in(pBinFilePath, ios::binary);
 
 	if (!in.is_open()) {
+#ifdef _DEBUG
 		MSG_BOX("Camera FoV 파일 개방 실패 (카메라 애니메이션이 없는 경우는 무시해도됨)");
+#endif // _DEBUG
 		return E_FAIL;
 	}
 
@@ -937,6 +939,19 @@ HRESULT CModel::Render(_uint iMeshIndex)
 
 	return S_OK;
 }
+
+void CModel::Bind_BoneMatrices(_uint iNumMeshIndex)
+{
+	ZeroMemory(m_MeshBoneMatrices, sizeof(_float4x4) * 512);
+
+	m_Meshes[iNumMeshIndex]->Bind_Matrices(m_Bones, m_MeshBoneMatrices);
+}
+
+HRESULT CModel::Bind_Compute(CComputeShader* pComputeShader, _uint iNumMeshIndex)
+{
+	return m_Meshes[iNumMeshIndex]->Bind_Compute(pComputeShader);
+}
+
 
 HRESULT CModel::Bind_Material(CShader* pShader, const _char* pConstantName, _uint iNumMeshIndex, aiTextureType eTextureType)
 {

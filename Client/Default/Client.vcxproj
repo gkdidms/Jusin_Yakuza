@@ -217,6 +217,12 @@
     <ClInclude Include="..\public\CarChase_Reactor.h" />
     <ClInclude Include="..\public\CarChase_Monster.h" />
     <ClInclude Include="..\Public\EffectManager.h" />
+    <ClInclude Include="..\Public\Karaoke_Kiryu.h" />
+    <ClInclude Include="..\Public\NoteBase.h" />
+    <ClInclude Include="..\Public\NoteBurstHold.h" />
+    <ClInclude Include="..\Public\NoteLong.h" />
+    <ClInclude Include="..\Public\NoteManager.h" />
+    <ClInclude Include="..\Public\NoteSingle.h" />
     <ClInclude Include="..\Public\Weapon_Gun_Cz75.h" />
     <ClInclude Include="..\Public\Highway_Kiryu.h" />
     <ClInclude Include="..\Public\Highway_Taxi.h" />
@@ -421,9 +427,15 @@
     <ClCompile Include="..\private\CarChase_Van.cpp" />
     <ClCompile Include="..\Private\Collision_Manager.cpp" />
     <ClCompile Include="..\Private\EffectManager.cpp" />
+    <ClCompile Include="..\Private\Karaoke_Kiryu.cpp" />
     <ClCompile Include="..\Private\Kiryu_KRC_PickUp.cpp" />
     <ClCompile Include="..\Private\Kiryu_KRS_BackWall.cpp" />
     <ClCompile Include="..\Private\Kiryu_KRS_PickUp.cpp" />
+    <ClCompile Include="..\Private\NoteBase.cpp" />
+    <ClCompile Include="..\Private\NoteBurstHold.cpp" />
+    <ClCompile Include="..\Private\NoteLong.cpp" />
+    <ClCompile Include="..\Private\NoteManager.cpp" />
+    <ClCompile Include="..\Private\NoteSingle.cpp" />
     <ClCompile Include="..\Private\Particle_Mesh.cpp" />
     <ClCompile Include="..\Private\QteManager.cpp" />
     <ClCompile Include="..\Private\Reactor_Bike.cpp" />
@@ -589,6 +601,10 @@
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Aura.hlsl" />
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_BoneCompute.hlsl">
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">GS_MAIN</EntryPointName>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compute</ShaderType>
+    </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Trail.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxAnimMesh.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxCube.hlsl" />

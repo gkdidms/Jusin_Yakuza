@@ -667,7 +667,10 @@ HRESULT CLoader::Loading_Default()
 
 #pragma region Meterial
 	Add_Components_On_Path_Material(m_eNextLevel, TEXT("../Bin/DataFiles/MeterialData/Char"));
-
+	Add_Components_On_Path_Material(m_eNextLevel, TEXT("../Bin/DataFiles/MeterialData/Map/Map0"));
+	Add_Components_On_Path_Material(m_eNextLevel, TEXT("../Bin/DataFiles/MeterialData/Map/Map1"));
+	Add_Components_On_Path_Material(m_eNextLevel, TEXT("../Bin/DataFiles/MeterialData/Map/Map2"));
+	Add_Components_On_Path_Material(m_eNextLevel, TEXT("../Bin/DataFiles/MeterialData/Map/Map3"));
 #pragma endregion
 
 #pragma region Shader
@@ -719,6 +722,11 @@ HRESULT CLoader::Loading_Default()
 	/* For.Prototype_Component_Shader_VtxInstance_Point */
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Shader_VtxInstance_Point"),
 		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxInstance_Point.hlsl"), VTXINSTANCE_POINT::Elements, VTXINSTANCE_POINT::iNumElements))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Shader_BoneCompute */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Shader_BoneCompute"),
+		CComputeShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_BoneCompute.hlsl")))))
 		return E_FAIL;
 #pragma endregion
 

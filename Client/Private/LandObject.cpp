@@ -83,6 +83,24 @@ HRESULT CLandObject::Render_LightDepth()
 	return S_OK;
 }
 
+HRESULT CLandObject::Render_BoneCompute()
+{
+	if (nullptr == m_pComputeShaderCom)
+		return S_OK;
+
+	int i = 0;
+
+	for (auto& pMesh : m_pModelCom->Get_Meshes())
+	{
+		m_pModelCom->Bind_BoneMatrices(i);
+		m_pModelCom->Bind_Compute(m_pComputeShaderCom, i);
+
+		i++;
+	}
+
+	return S_OK;
+}
+
 void CLandObject::ImpulseResolution(CGameObject* pTargetObject, _float fDistance)
 {
 	if (nullptr == m_pColliderCom) return;
@@ -163,24 +181,24 @@ void CLandObject::Apply_ChracterData()
 			it->second->Off();
 	}
 
-	//auto& pEffects = m_pData->Get_Effets();
+	auto& pEffects = m_pData->Get_Effets();
 
-	//for (auto& pEffect : pEffects)
-	//{
-	//	CSocketEffect::SOKET_EFFECT_DESC Desc{};
-	//	Desc.pParentMatrix = m_pTransformCom->Get_WorldFloat4x4();
-	//	Desc.pCombinedTransformationMatrix = m_pModelCom->Get_BoneCombinedTransformationMatrix(pEffect.first.c_str());
-	//	Desc.wstrEffectName = pEffect.second;
+	for (auto& pEffect : pEffects)
+	{
+		CSocketEffect::SOKET_EFFECT_DESC Desc{};
+		Desc.pParentMatrix = m_pTransformCom->Get_WorldFloat4x4();
+		Desc.pCombinedTransformationMatrix = m_pModelCom->Get_BoneCombinedTransformationMatrix(pEffect.first.c_str());
+		Desc.wstrEffectName = pEffect.second;
 
-	//	CGameObject* pSoketEffect = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_SoketEffect"), &Desc);
-	//	if (nullptr == pSoketEffect)
-	//		return;
+		CGameObject* pSoketEffect = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_SoketEffect"), &Desc);
+		if (nullptr == pSoketEffect)
+			return;
 
-	//	auto it = m_pEffects.emplace(pEffect.first, static_cast<CSocketEffect*>(pSoketEffect));
+		auto it = m_pEffects.emplace(pEffect.first, static_cast<CSocketEffect*>(pSoketEffect));
 
-	//	//it->second->On();
-	//	it->second->Off();
-	//}
+		//it->second->On();
+		it->second->Off();
+	}
 
 	auto& pTrailEvents = m_pData->Get_TrailEvents();
 
@@ -350,6 +368,11 @@ void CLandObject::Off_Attack_Colliders()
 	}
 }
 
+void CLandObject::Set_NavigationIndex(int iIndex)
+{
+	m_pNavigationCom->Set_Index(iIndex); 
+}
+
 HRESULT CLandObject::Add_Components()
 {
 	return S_OK;
@@ -390,6 +413,7 @@ void CLandObject::Free()
 	Safe_Release(m_pCollisionManager);
 	Safe_Release(m_pMaterialCom);
 	Safe_Release(m_pNavigationCom);
+	Safe_Release(m_pComputeShaderCom);
 }
 
 void CLandObject::Compute_Height()

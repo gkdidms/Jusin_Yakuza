@@ -104,7 +104,7 @@ HRESULT CPlayer::Initialize(void* pArg)
 	if (FAILED(Add_CharacterData()))
 		return E_FAIL;
 
-	//Ready_AuraEffect();
+	Ready_AuraEffect();
 
 	// ±âº» ¸ó½ºÅÍ: 20
 	// »æÀïÀÌ: 30
@@ -446,8 +446,6 @@ HRESULT CPlayer::Render()
 
 		_bool fFar = m_pGameInstance->Get_CamFar();
 		m_pShaderCom->Bind_RawValue("g_fFar", &fFar, sizeof(_float));
-
-		m_pModelCom->Bind_BoneMatrices(m_pShaderCom, "g_BoneMatrices", i);
 
 		m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE);
 		
@@ -1762,6 +1760,11 @@ HRESULT CPlayer::Add_Components()
 		TEXT("Com_Material"), reinterpret_cast<CComponent**>(&m_pMaterialCom))))
 		return E_FAIL;
 
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Shader_BoneCompute"),
+		TEXT("Com_ComputeShader"), reinterpret_cast<CComponent**>(&m_pComputeShaderCom))))
+		return E_FAIL;
+
+
 	return S_OK;
 }
 
@@ -2558,12 +2561,12 @@ void CPlayer::Free()
 
 		m_AnimationTree[i].clear();
 	}
-	
 
 #ifdef _DEBUG
 	Safe_Release(m_pDebugManager);
 #endif // _DEBUG
 
+	Safe_Release(m_pTargetItem);
 	Safe_Release(m_pUIManager);
 	Safe_Release(m_pNavigationCom);
 	Safe_Release(m_pAnimCom);

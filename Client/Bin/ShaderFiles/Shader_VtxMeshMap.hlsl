@@ -144,11 +144,14 @@ PS_MAIN_OUT PS_MAIN(PS_IN In)
     PS_MAIN_OUT Out = (PS_MAIN_OUT) 0;
     
     vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
-    //if (vDiffuse.a < 0.1f)
-    //    discard;
+
     
-    vDiffuse.a = 1;
-   
+    if (true == g_bCompulsoryAlpha)
+    {
+        vDiffuse.a = 1;
+    }
+
+
     vector vMulti = g_isMulti ? g_MultiDiffuseTexture.Sample(LinearSampler, In.vTexcoord) : vector(0.f, 1.f, 0.f, 1.f);
     vector vRD = g_isRD ? g_RDTexture.Sample(LinearSampler, In.vTexcoord) : vector(1.f, 1.f, 1.f, 1.f);
     vector vRS = g_isRS ? g_RSTexture.Sample(LinearSampler, In.vTexcoord) : vector(1.f, 1.f, 1.f, 1.f);
@@ -188,7 +191,7 @@ PS_MAIN_OUT PS_MAIN(PS_IN In)
     
     Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_fFar, RimIndex, 0.f);
     Out.vDiffuse = vDiffuse;
-    Out.vSurface = vector(Result.fMetalness, Result.fRoughness, Result.fSpeclure, 0);
+    Out.vSurface = vector(Result.fMetalness, Result.fRoughness, Result.fSpeclure, Engine);
     Out.vSusurface = SubSurface(vRD);
     Out.vOEShader = vector(OEResult.fRouhness, OEResult.fMixShaderFactor, fMixMultiFactor, fDeffuseFactor);
     Out.vSpecular = vector(OEResult.vSpecular, 0.f);
@@ -259,16 +262,60 @@ PS_OUT PS_GLASSDOOR(PS_IN In)
 
 
 
-PS_OUT_COLOR PS_MAIN_AlphaMask(PS_IN In)
+PS_MAIN_OUT PS_MAIN_AlphaMask(PS_IN In)
 {
-    PS_OUT_COLOR Out = (PS_OUT_COLOR) 0;
-
+    PS_MAIN_OUT Out = (PS_MAIN_OUT) 0;
+    
     vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
+
     
+    if (vDiffuse.a < 0.2f)
+        discard;
 
 
+    vector vMulti = g_isMulti ? g_MultiDiffuseTexture.Sample(LinearSampler, In.vTexcoord) : vector(0.f, 1.f, 0.f, 1.f);
+    vector vRD = g_isRD ? g_RDTexture.Sample(LinearSampler, In.vTexcoord) : vector(1.f, 1.f, 1.f, 1.f);
+    vector vRS = g_isRS ? g_RSTexture.Sample(LinearSampler, In.vTexcoord) : vector(1.f, 1.f, 1.f, 1.f);
+    vector vRM = g_isRM ? g_RMTexture.Sample(LinearSampler, In.vTexcoord) : vector(0.5f, 1.f, 0.5f, 1.f);
+    vector vRT = vector(0.5f, 0.5f, 1.f, 0.5f);
+    
+    //노말 벡터 구하기
+    vector vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexcoord);
+    vNormalDesc = vNormalDesc * 2.f - 1.f;
+    
+    //Neo Shader
+    float fFactor = RepeatingPatternBlendFactor(vMulti);
+    vDiffuse = DiffusePortion(vDiffuse, vRS, vRD, fFactor, In.vTexcoord);
+    
+    COMBINE_OUT Result = Neo_MetallicAndGlossiness(vMulti, vRM); // Metallic, Rouhness 최종
+    vDiffuse = Get_Diffuse(vMulti.a, vDiffuse); // Diffuse 최종
+    
+    //Tangent Normal 구하기 
+    vNormalDesc = Get_Normal(vNormalDesc, vRT, fFactor);
+    float3x3 WorldMatrix = float3x3(In.vTangent.xyz, In.vBinormal.xyz, In.vNormal.xyz);
+    vector vNormalBTN = vector(mul(vNormalDesc.xyz, WorldMatrix), 0.f);
+    Out.vNormal = vector(vNormalBTN.xyz * 0.5f + 0.5f, 0.f);
+
+    float RimIndex = 0.f;
+    if (0.05f < g_isRimLight)
+    {
+        if (In.vTexcoord.y >= g_fRimUV.x && In.vTexcoord.y < g_fRimUV.y)
+        {
+            RimIndex = g_isRimLight;
+        }
+    }
+    
+    OE_SPECULAR OEResult = Neo_OE_Specular(vMulti, vRM, vRS);
+    float fMixMultiFactor = lerp(vMulti.y, 1.f, AssetShader);
+    float fDeffuseFactor = vDiffuse.a * 1.f;
+
+    
+    Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_fFar, RimIndex, 0.f);
     Out.vDiffuse = vDiffuse;
-    
+    Out.vSurface = vector(Result.fMetalness, Result.fRoughness, Result.fSpeclure, 0);
+    Out.vSusurface = SubSurface(vRD);
+    Out.vOEShader = vector(OEResult.fRouhness, OEResult.fMixShaderFactor, fMixMultiFactor, fDeffuseFactor);
+    Out.vSpecular = vector(OEResult.vSpecular, 0.f);
     
     return Out;
 }
@@ -474,6 +521,33 @@ PS_OUT_COLOR PS_Compulsory_DECAL(PS_IN In)
 }
 
 
+PS_OUT_COLOR PS_DYNAMIC_SMALL(PS_IN In)
+{
+    PS_OUT_COLOR Out = (PS_OUT_COLOR) 0;
+    
+    
+    
+    In.vTexcoord.x += g_fTimeDelta;
+    
+    //if (1 < In.vTexcoord.x)
+    //    In.vTexcoord.x = 0;
+ 
+    vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
+    
+    
+    if(vDiffuse.a < 0.2)
+        discard;
+    
+    vector emissiveColor = float4(0, 0, 0, 0);
+    
+    emissiveColor.rgb = vDiffuse.rgb * 0.4;
+    
+    Out.vDiffuse = vDiffuse + emissiveColor;
+    
+    return Out;
+}
+
+
 
 struct PS_IN_LIGHTDEPTH
 {
@@ -643,6 +717,20 @@ technique11 DefaultTechnique
         HullShader = NULL;
         DomainShader = NULL;
         PixelShader = compile ps_5_0 PS_Compulsory_DECAL();
+    }
+
+
+    pass DynamicSmallSign // 11
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        HullShader = NULL;
+        DomainShader = NULL;
+        PixelShader = compile ps_5_0 PS_DYNAMIC_SMALL();
     }
 
    

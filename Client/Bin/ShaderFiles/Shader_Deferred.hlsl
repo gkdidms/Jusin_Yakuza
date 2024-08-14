@@ -264,8 +264,7 @@ PS_OUT PS_MAIN_COPY_BACKBUFFER_RESULT(PS_IN In)
         vector vLightmap = g_LightMapTexture.Sample(LinearSampler, In.vTexcoord);
         vector vOEShader = g_OEShaderTexture.Sample(LinearSampler, In.vTexcoord);
         
-        vector vNeoShader = vector(vDiffuse.xyz, 1.f) * vShade + vSpeculerRM * vLightmap;
-        
+        vector vNeoShader = vector(vSpeculerRM.xyz, 1.f) * vShade;
         vSpeculer = lerp(vector(0.f, 0.f, 0.f, 0.f), vSpeculer, vOEShader.g);
         
         vector vResultShader = vNeoShader + vSpeculer;

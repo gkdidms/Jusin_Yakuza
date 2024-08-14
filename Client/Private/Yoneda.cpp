@@ -41,6 +41,7 @@ void CYoneda::Set_TriggerQte(_uint iWeaponChange, _uint iTriggerID)
 	m_pTree->Set_Sync(true);
 	m_iCurrentAnimType = CUTSCENE;
 
+	Change_Animation();			// 애니메이션 이름 변경을 위해 한번 실행시킴
 	m_pData->Set_CurrentCutSceneAnimation(m_strAnimName);
 }
 
@@ -80,30 +81,11 @@ void CYoneda::Late_Tick(const _float& fTimeDelta)
 
 HRESULT CYoneda::Add_Components()
 {
-	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Shader_VtxAnim"),
-		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
+	if (FAILED(__super::Add_Components()))
 		return E_FAIL;
 
 	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Model_Yoneda"),
 		TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
-		return E_FAIL;
-
-	CBounding_AABB::BOUNDING_AABB_DESC		ColliderDesc{};
-
-	ColliderDesc.eType = CCollider::COLLIDER_AABB;
-	ColliderDesc.vExtents = _float3(0.5, 0.8, 0.5);
-	ColliderDesc.vCenter = _float3(0, ColliderDesc.vExtents.y, 0);
-
-	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Collider"),
-		TEXT("Com_Collider"), reinterpret_cast<CComponent**>(&m_pColliderCom), &ColliderDesc)))
-		return E_FAIL;
-
-	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Anim"),
-		TEXT("Com_Anim"), reinterpret_cast<CComponent**>(&m_pAnimCom[DEFAULT]))))
-		return E_FAIL;
-
-	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_SyncAnim"),
-		TEXT("Com_SyncAnim"), reinterpret_cast<CComponent**>(&m_pAnimCom[CUTSCENE]))))
 		return E_FAIL;
 
 	//행동트리 저장
@@ -117,11 +99,6 @@ HRESULT CYoneda::Add_Components()
 	m_pTree = dynamic_cast<CAI_Yoneda*>(m_pGameInstance->Add_BTNode(m_iCurrentLevel, TEXT("Prototype_BTNode_Yoneda"), &AIDesc));
 	if (nullptr == m_pTree)
 		return E_FAIL;
-
-	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Material_Yoneda"),
-		TEXT("Com_Material"), reinterpret_cast<CComponent**>(&m_pMaterialCom))))
-		return E_FAIL;
-
 
 	return S_OK;
 }

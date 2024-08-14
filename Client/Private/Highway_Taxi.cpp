@@ -139,6 +139,11 @@ string CHighway_Taxi::Get_CurrentAnimationName()
 	return m_pModelCom->Get_AnimationName(m_pModelCom->Get_CurrentAnimationIndex());
 }
 
+void CHighway_Taxi::Set_NavigationIndex(int iIndex)
+{
+	m_pNavigationCom->Set_Index(iIndex);
+}
+
 void CHighway_Taxi::Change_Animation()
 {
 }

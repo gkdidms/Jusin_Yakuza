@@ -9,6 +9,7 @@ class CModel;
 class CAnim;
 class CNeoShader;
 class CNavigation;
+class CComputeShader;
 END
 
 BEGIN(Client)
@@ -79,6 +80,7 @@ public:
     virtual void Late_Tick(const _float& fTimeDelta) override;
     virtual HRESULT Render() override;
     virtual HRESULT Render_LightDepth() override;
+    virtual HRESULT Render_BoneCompute() override;
 
     /* 충돌관련 함수들 */
     virtual void ImpulseResolution(CGameObject* pTargetObject, _float fDistance = 0.5f) override;
@@ -143,6 +145,11 @@ public:
         m_iHandAnimIndex = iHandAnimIndex;
     }
 
+    // 맵 용 set
+    void    Set_StartPos(XMMATRIX    vStartPos) { m_pTransformCom->Set_WorldMatrix(vStartPos); }
+    void    Set_NavigationIndex(int iIndex);
+    void    Set_NaviRouteIndex(int iIndex) { m_iNaviRouteNum = iIndex; }
+
 #ifdef _DEBUG
 public:
     //uv 체크 디버그용
@@ -160,6 +167,7 @@ protected:
     class CCollision_Manager* m_pCollisionManager = { nullptr };
     CModel* m_pModelCom = { nullptr };
     CShader* m_pShaderCom = { nullptr };
+    CComputeShader* m_pComputeShaderCom = { nullptr };
     CNeoShader* m_pMaterialCom = { nullptr };
     CNavigation* m_pNavigationCom = { nullptr };
 
@@ -204,6 +212,10 @@ protected:
     _float2 m_fRimTopUV = { 0.0f , 0.3f };//0~1사이 [시작v,끝v]상의
     _float2 m_fRimBotUV = { 0.9f, 1.0f };//0~1사이 [시작v,끝v]하의
     _float2 m_fRimPartsUV = { 0.0f, 1.0f };//0~1사이 [시작v,끝v]손,발
+
+
+protected:
+        int             m_iNaviRouteNum = { 0 }; //루트
 
 protected:
     virtual HRESULT Add_Components();

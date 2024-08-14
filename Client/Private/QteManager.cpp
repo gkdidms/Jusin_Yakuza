@@ -301,4 +301,6 @@ CGameObject* Client::CQteManager::Clone(void* pArg)
 void Client::CQteManager::Free()
 {
     __super::Free();
+
+    Safe_Release(m_pPlayerAnimCom);
 }

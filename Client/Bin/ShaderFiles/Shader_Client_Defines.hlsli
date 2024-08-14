@@ -95,6 +95,10 @@ bool g_bExistRMTex;
 bool g_bExistRSTex;
 bool g_bReflExist;
 
+
+/* Map */
+bool g_bCompulsoryAlpha;
+
 /* Item */
 float g_fBrightTime;
 bool g_bBright;
