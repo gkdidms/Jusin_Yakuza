@@ -57,22 +57,22 @@ void CGun_Cz75::Priority_Tick(const _float& fTimeDelta)
 
 void CGun_Cz75::Tick(const _float& fTimeDelta)
 {
-	if (m_pGameInstance->GetKeyState(DIK_UP) == HOLD)
-	{
-		m_pTransformCom->Turn(m_pTransformCom->Get_State(CTransform::STATE_LOOK), fTimeDelta);
-	}
-	if (m_pGameInstance->GetKeyState(DIK_DOWN) == HOLD)
-	{
-		m_pTransformCom->Turn(m_pTransformCom->Get_State(CTransform::STATE_LOOK), -fTimeDelta);
-	}
-	if (m_pGameInstance->GetKeyState(DIK_LEFT) == HOLD)
-	{
-		m_pTransformCom->Turn(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), fTimeDelta);
-	}
-	if (m_pGameInstance->GetKeyState(DIK_RIGHT) == HOLD)
-	{
-		m_pTransformCom->Turn(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), -fTimeDelta);
-	}
+	//if (m_pGameInstance->GetKeyState(DIK_UP) == HOLD)
+	//{
+	//	m_pTransformCom->Turn(m_pTransformCom->Get_State(CTransform::STATE_LOOK), fTimeDelta);
+	//}
+	//if (m_pGameInstance->GetKeyState(DIK_DOWN) == HOLD)
+	//{
+	//	m_pTransformCom->Turn(m_pTransformCom->Get_State(CTransform::STATE_LOOK), -fTimeDelta);
+	//}
+	//if (m_pGameInstance->GetKeyState(DIK_LEFT) == HOLD)
+	//{
+	//	m_pTransformCom->Turn(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), fTimeDelta);
+	//}
+	//if (m_pGameInstance->GetKeyState(DIK_RIGHT) == HOLD)
+	//{
+	//	m_pTransformCom->Turn(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), -fTimeDelta);
+	//}
 
 	__super::Tick(fTimeDelta);
 }

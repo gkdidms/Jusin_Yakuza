@@ -345,13 +345,14 @@ void CHighway_Kiryu::Play_Swap(_float fTimeDelta)
 	/*
 	*	[77] [mngcar_c_car_gun_sync_aimltor]
 		[78] [mngcar_c_car_gun_sync_aimrtol]
+		// [73] [mngcar_c_car_gun_sitl_st]
 	*/
 	if (!m_isStarted)
 		m_pModelCom->Set_AnimationIndex((m_isLeft ? 73 : 76), 4.f);
 	else
 		m_pModelCom->Set_AnimationIndex((m_isLeft ? 77 : 78), 4.f);
 
-	if (m_isStarted && m_pModelCom->Get_AnimFinished())
+	if (!m_isStarted && m_pModelCom->Get_AnimFinished())
 	{
 		m_isStarted = true;
 	}
