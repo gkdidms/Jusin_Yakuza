@@ -481,7 +481,6 @@ HRESULT CMonster::Render()
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RSTexture", i, aiTextureType_SPECULAR)))
 			isRS = false;
 		m_pShaderCom->Bind_RawValue("g_isRS", &isRS, sizeof(_bool));
-		m_pShaderCom->Bind_RawValue("IsY3Shader", &isRS, sizeof(_bool));
 
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RDTexture", i, aiTextureType_OPACITY)))
 			isRD = false;

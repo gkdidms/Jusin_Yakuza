@@ -84,10 +84,6 @@ private:
     void Render_Glass();
     void Render_Puddle();
 
-    /* SSAO */
-    void Render_SSAO();
-    void Render_SSAOBlur();
-
     void Render_LightAcc(); // Light 연산 + SSAO 합 + PBR
     void Render_CopyBackBuffer();
     void Render_DeferredResult();
@@ -122,6 +118,9 @@ private:
     void Render_InvertColor();
     void Render_Vignette();
 
+    /* SSAO */
+    void Render_SSAO();
+    void Render_SSAOBlur();
 
     /*최종 렌더 (빼지마세요)*/
     void Render_FinalResult();
