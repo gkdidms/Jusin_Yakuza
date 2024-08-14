@@ -7,20 +7,24 @@
 #include "FileTotalMgr.h"
 #include "CarChaseManager.h"
 #include "TutorialManager.h"
+#include "UIManager.h"
 
 #include "PlayerCamera.h"
 #include "DebugCamera.h"
 #include "CineCamera.h"
 #include "CutSceneCamera.h"
 #include "CarChaseCamera.h"
+#include <Highway_Taxi.h>
 
 CLevel_Test::CLevel_Test(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLevel{ pDevice, pContext },
 	m_pSystemManager{ CSystemManager::GetInstance() },
-	m_pFileTotalManager{ CFileTotalMgr::GetInstance() }
+	m_pFileTotalManager{ CFileTotalMgr::GetInstance() },
+	m_pUIManager{ CUIManager::GetInstance() }
 {
 	Safe_AddRef(m_pSystemManager);
 	Safe_AddRef(m_pFileTotalManager);
+	Safe_AddRef(m_pUIManager);
 }
 
 HRESULT CLevel_Test::Initialize()
@@ -32,12 +36,25 @@ HRESULT CLevel_Test::Initialize()
 	// 네비 다르면 터짐
 	// 테스트 다하면 지워라
 	/* For.Prototype_Component_Navigation */
+	//m_pSystemManager->Set_Camera(CAMERA_CARCHASE);
+
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Navigation"),
 		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/NaviData/Navigation_99.dat")))))
 		return E_FAIL;
 
 	//m_pCarChaseManager = CCarChaseManager::Create(m_pDevice, m_pContext);
 	//if (nullptr == m_pCarChaseManager)
+	//	return E_FAIL;
+
+
+	//m_pUIManager->Open_Scene(TEXT("Carchase"));
+
+	///* 클라 파싱 */
+	//m_pFileTotalManager->Set_MapObj_In_Client(STAGE_ROADWAY, LEVEL_TEST);
+	//m_pFileTotalManager->Set_Lights_In_Client(90);
+	//m_pFileTotalManager->Set_Collider_In_Client(STAGE_ROADWAY, LEVEL_CARCHASE);
+
+	//if (FAILED(Ready_Camera(TEXT("Layer_Camera"))))
 	//	return E_FAIL;
 
 	if (FAILED(Ready_Player(TEXT("Layer_Player"))))
@@ -54,7 +71,7 @@ HRESULT CLevel_Test::Initialize()
 	//if (FAILED(Ready_Test_Hyewon()))
 	//	return E_FAIL;
 
-	m_pFileTotalManager->Set_MapObj_In_Client(7, LEVEL_TEST);
+	m_pFileTotalManager->Set_MapObj_In_Client(70, LEVEL_TEST);
 	m_pFileTotalManager->Set_Lights_In_Client(90);
 	m_pFileTotalManager->Set_Collider_In_Client(3, LEVEL_TEST);
 	//m_pFileTotalManager->Set_Trigger_In_Client(79, LEVEL_TEST);
@@ -142,7 +159,9 @@ HRESULT CLevel_Test::Ready_Camera(const wstring& strLayerTag)
 	CarChaseCameraDesc.fSpeedPecSec = 10.f;
 	CarChaseCameraDesc.fRotatePecSec = XMConvertToRadians(90.f);
 	CarChaseCameraDesc.fSensor = 0.1f;
-	CarChaseCameraDesc.pPlayerMatrix = dynamic_cast<CTransform*>(m_pGameInstance->Get_GameObject_Component(LEVEL_TEST, TEXT("Layer_Taxi"), TEXT("Com_Transform", 0)))->Get_WorldFloat4x4();
+	//CHighway_Taxi* pTaxi = dynamic_cast<CHighway_Taxi*>(m_pGameInstance->Get_GameObject(LEVEL_TEST, TEXT("Layer_Taxi"), 0));
+	//CarChaseCameraDesc.pPlayerMatrix = pTaxi->Get_TransformCom()->Get_WorldFloat4x4();
+	//CarChaseCameraDesc.pPlayerBoneMatrix = pTaxi->Get_KiryuBoneMatrix("kubi_c_n");
 
 	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_CarChaseCamera"), strLayerTag, &CarChaseCameraDesc)))
 		return E_FAIL;
@@ -204,4 +223,5 @@ void CLevel_Test::Free()
 	Safe_Release(m_pFileTotalManager);
 	Safe_Release(m_pCarChaseManager);
 	Safe_Release(m_pTutorialManager);
+	Safe_Release(m_pUIManager);
 }

@@ -377,21 +377,21 @@ HRESULT CLoader_Map::Loading_For_CarChase()
 	if (FAILED(Loading_Default()))
 		return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_ROADWAY, TEXT("Prototype_Component_Navigation"),
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_CARCHASE, TEXT("Prototype_Component_Navigation"),
 		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/NaviData/Navigation_8.dat")))))
 		return E_FAIL;
 
 #pragma region Model
 	lstrcpy(m_szLoadingText, TEXT("모델를(을) 로딩 중 입니다."));
-	Add_Models_On_Path_NonAnim(LEVEL_ROADWAY, TEXT("../Bin/Resources/Models/NonAnim/Map/Map3"));
+	Add_Models_On_Path_NonAnim(LEVEL_CARCHASE, TEXT("../Bin/Resources/Models/NonAnim/Map/Map3"));
 	Add_Components_On_Path_Material(m_eNextLevel, TEXT("../Bin/DataFiles/MaterialData/Map/Map3"));
 
-	Add_Models_On_Path_NonAnim(LEVEL_ROADWAY, TEXT("../Bin/Resources/Models/NonAnim/Weapon/Gun_Cz75"));
-	Add_Models_On_Path_NonAnim(LEVEL_ROADWAY, TEXT("../Bin/Resources/Models/NonAnim/Weapon/Knife"));
-	Add_Models_On_Path_NonAnim(LEVEL_ROADWAY, TEXT("../Bin/Resources/Models/NonAnim/Weapon/MchnGun"));
-	Add_Models_On_Path_NonAnim(LEVEL_ROADWAY, TEXT("../Bin/Resources/Models/NonAnim/Weapon/RcktGun"));
-	Add_Models_On_Path_NonAnim(LEVEL_ROADWAY, TEXT("../Bin/Resources/Models/NonAnim/Weapon/RcktGunBullet"));
-	Add_Models_On_Path_NonAnim(LEVEL_ROADWAY, TEXT("../Bin/Resources/Models/NonAnim/Weapon/ShotGun"));
+	Add_Models_On_Path_NonAnim(LEVEL_CARCHASE, TEXT("../Bin/Resources/Models/NonAnim/Weapon/Gun_Cz75"));
+	Add_Models_On_Path_NonAnim(LEVEL_CARCHASE, TEXT("../Bin/Resources/Models/NonAnim/Weapon/Knife"));
+	Add_Models_On_Path_NonAnim(LEVEL_CARCHASE, TEXT("../Bin/Resources/Models/NonAnim/Weapon/MchnGun"));
+	Add_Models_On_Path_NonAnim(LEVEL_CARCHASE, TEXT("../Bin/Resources/Models/NonAnim/Weapon/RcktGun"));
+	Add_Models_On_Path_NonAnim(LEVEL_CARCHASE, TEXT("../Bin/Resources/Models/NonAnim/Weapon/RcktGunBullet"));
+	Add_Models_On_Path_NonAnim(LEVEL_CARCHASE, TEXT("../Bin/Resources/Models/NonAnim/Weapon/ShotGun"));
 #pragma endregion
 
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
