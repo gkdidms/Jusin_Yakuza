@@ -42,10 +42,13 @@ void CKiryu_KRC_Grab::Tick(const _float& fTimeDelta)
 {
 	CLandObject* pTargetObject = m_pPlayer->Get_TargetObject();
 
-	if (nullptr != pTargetObject)
+	if (m_iCurrentIndex != 9)
 	{
-		_vector vLookPos = pTargetObject->Get_TransformCom()->Get_State(CTransform::STATE_POSITION);
-		m_pPlayer->Get_TransformCom()->LookAt_For_LandObject(vLookPos);
+		if (nullptr != pTargetObject)
+		{
+			_vector vLookPos = pTargetObject->Get_TransformCom()->Get_State(CTransform::STATE_POSITION);
+			m_pPlayer->Get_TransformCom()->LookAt_For_LandObject(vLookPos);
+		}
 	}
 
 	if (m_isGrabed)
@@ -237,6 +240,8 @@ void CKiryu_KRC_Grab::Move_KeyInput(const _float& fTimeDelta)
 		m_iCurrentIndex = 9;
 		m_eAnimState = ANIM_ONCE;
 		m_isStop = true;
+
+		static_cast<CMonster*>(m_pPlayer->Get_TargetObject())->Set_Sync("p_krc_sync_lapel_nage");
 	}
 }
 

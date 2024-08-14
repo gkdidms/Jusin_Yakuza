@@ -39,7 +39,7 @@ HRESULT CLevel_Test::Initialize()
 	//m_pSystemManager->Set_Camera(CAMERA_CARCHASE);
 
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Navigation"),
-		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/NaviData/Navigation_99.dat")))))
+		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/NaviData/Navigation_79.dat")))))
 		return E_FAIL;
 
 	//m_pCarChaseManager = CCarChaseManager::Create(m_pDevice, m_pContext);
@@ -67,9 +67,9 @@ HRESULT CLevel_Test::Initialize()
 	//if (FAILED(Ready_Test_Load()))
 	//	return E_FAIL;
 
-	////혜원 테스트 용
-	//if (FAILED(Ready_Test_Hyewon()))
-	//	return E_FAIL;
+	//혜원 테스트 용
+	if (FAILED(Ready_Test_Hyewon()))
+		return E_FAIL;
 
 	m_pFileTotalManager->Set_MapObj_In_Client(70, LEVEL_TEST);
 	m_pFileTotalManager->Set_Lights_In_Client(90);
@@ -179,6 +179,10 @@ HRESULT CLevel_Test::Ready_Player(const wstring& strLayerTag)
 	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_Player"), strLayerTag, &Desc)))
 		return E_FAIL;
 
+	// 가라오케 플레이어
+	//if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_Kiryu_Karaoke"), strLayerTag, &Desc)))
+	//	return E_FAIL;
+
 	return S_OK;
 }
 HRESULT CLevel_Test::Ready_Test_Load()
@@ -193,8 +197,18 @@ HRESULT CLevel_Test::Ready_Test_Load()
 
 HRESULT CLevel_Test::Ready_Test_Hyewon()
 {
-	m_pFileTotalManager->Set_MapObj_In_Client(9, LEVEL_TEST);
-	m_pFileTotalManager->Set_Lights_In_Client(99);
+	// 가라오케 네비는 9번ㄴ
+	// 가라오케 맵 81번
+	// 
+	//m_pFileTotalManager->Set_MapObj_In_Client(81, LEVEL_TEST);
+	//m_pFileTotalManager->Set_Lights_In_Client(9);
+
+	//요네다 깔린 길거리맵 91
+	// 과거의 길거리맵 79
+	// 길거리맵 네비: 7
+	// 과거의 길거리맵 네비: 79
+	m_pFileTotalManager->Set_MapObj_In_Client(91, LEVEL_TEST);
+	m_pFileTotalManager->Set_Lights_In_Client(9);
 	m_pFileTotalManager->Set_Collider_In_Client(0, LEVEL_TEST);
 	m_pFileTotalManager->Set_Trigger_In_Client(79, LEVEL_TEST);
 
