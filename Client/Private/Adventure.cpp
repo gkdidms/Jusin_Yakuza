@@ -51,11 +51,11 @@ void CAdventure::Tick(const _float& fTimeDelta)
 
 	Change_Animation();
 
-	m_pModelCom->Play_Animation(fTimeDelta, m_pAnimCom, m_isAnimLoop);
+	m_pModelCom->Play_Animation(fTimeDelta * m_fOffset, m_pAnimCom, m_isAnimLoop);
 
 	_vector vDir = m_pNavigationCom->Compute_WayPointDir_Adv(m_pTransformCom->Get_State(CTransform::STATE_POSITION), fTimeDelta);
 	m_pTransformCom->LookAt_For_LandObject(vDir, true);
-	m_pTransformCom->Go_Straight_CustumSpeed(m_fSpeed, fTimeDelta, m_pNavigationCom);
+	//m_pTransformCom->Go_Straight_CustumSpeed(m_fSpeed, fTimeDelta, m_pNavigationCom);
 
 	Synchronize_Root(fTimeDelta);
 }
@@ -169,6 +169,7 @@ _bool CAdventure::Checked_Animation_Ratio(_float fRatio)
 void CAdventure::Change_Animation()
 {
 	m_isAnimLoop = false;
+	m_fOffset = 1.f;
 
 	switch (m_iState)
 	{
@@ -180,8 +181,9 @@ void CAdventure::Change_Animation()
 	}
 	case ADVENTURE_WALK:
 	{
-		m_strAnimName = "p_mov_walk";
+		m_strAnimName = "p_mov_walk_fast";
 		m_isAnimLoop = true;
+		m_fOffset = 0.8f;
 		break;
 	}
 	case ADVENTURE_WALK_S:
