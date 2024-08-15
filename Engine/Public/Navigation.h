@@ -8,7 +8,10 @@ class ENGINE_DLL CNavigation :
     public CComponent
 {
 public:
+    enum WAYPOINT_OPTION { DEFAULT, CORNEL, OPTION_END };
+
     typedef struct tNavigationDesc {
+        _uint iCurrentRouteDir = { DIR_END }; // 걸어가는 방향 (정방향인지, 역방향인지)
         _int iCurrentLine = { -1 };
         _int iWayPointIndex = { -1 };
         _vector vPosition;
@@ -25,7 +28,7 @@ public:
     //플레이어 루트 이동 시 
     //웨이포인트도 멀리 이동한다.
     void Set_NavigationRouteIndex(_uint iIndex) { 
-        m_iCurrentLine = iIndex;
+        m_iCurrentRouteIndex = iIndex;
         m_iCurrentWayPointIndex += 2;
     }
 
@@ -37,10 +40,10 @@ public:
     vector<CCell*> Get_Cells() { return m_Cells; }
     vector<ROUTE_IO> Get_RouteIndexs(_int iIndex);
     _uint Get_WaypointIndex() { return m_iCurrentWayPointIndex; }
-    _vector Get_CurrentWaypointPos() { return XMLoadFloat4(&m_Routes[m_iCurrentLine][m_iCurrentWayPointIndex].vPosition); }
-    _vector Get_WaypointPos(_uint iIndex) { return XMLoadFloat4(&m_Routes[m_iCurrentLine][iIndex].vPosition); }
+    _vector Get_CurrentWaypointPos() { return XMLoadFloat4(&m_Routes[m_iCurrentRouteIndex][m_iCurrentWayPointIndex].vPosition); }
+    _vector Get_WaypointPos(_uint iIndex) { return XMLoadFloat4(&m_Routes[m_iCurrentRouteIndex][iIndex].vPosition); }
     _vector Get_SlidingNormal() { return m_vSlidingNormal; }
-    _uint Get_RouteSize() { return m_Routes[m_iCurrentLine].size(); }
+    _uint Get_RouteSize() { return m_Routes[m_iCurrentRouteIndex].size(); }
 
 public:
     virtual HRESULT Initialize_Prototype(); // Tool용
@@ -52,6 +55,7 @@ public:
     int Find_PlayerMonster_Index(_fvector vTargetPos);
     _bool isMove(_fvector vMovePos);
     _vector Compute_WayPointDir(_vector vPosition, const _float& fTimeDelta, _bool isStart = false);
+    _vector Compute_WayPointDir_Adv(_vector vPosition, const _float& fTimeDelta, _bool isStart = false);
     _float Compute_Height(_fvector vPosition);
 
 
@@ -65,6 +69,7 @@ private:
     class CShader* m_pShaderCom = { nullptr };
     vector<CCell*> m_Cells; // 삼각형들의 집합 저장
     map<_int, vector<ROUTE_IO>>					m_Routes;
+    _uint m_iRouteDir = { DIR_END };
 
     _uint m_iIndexCount = { 0 };
 
@@ -72,14 +77,14 @@ private:
 
 private:
     _int m_iCurrentIndex = { -1 };
-
     _vector     m_vSlidingNormal;
 
     //총격전용
 private:
-    _uint m_iCurrentLine = { 0 };
-    _uint m_iCurrentWayPointIndex = { 0 };
-    _uint m_iPreWayPointIndex = { 0 };
+    _uint m_iCurrentRouteIndex = { 0 }; //루트 인덱스
+    _uint m_iPreRouteIndex = { 0 }; //루트 인덱스
+    _int m_iCurrentWayPointIndex = { 0 };
+    _int m_iPreWayPointIndex = { 0 };
     _float m_fMaxDistance = { 5.f };
 
     _vector m_vPreDir = {};
@@ -95,6 +100,7 @@ private:
     HRESULT Load_File(const wstring strFilePath);
     HRESULT SetUp_Neighbors();
     void Find_WayPointIndex(_vector vPosition);
+    void Swap_Route(vector<ROUTE_IO> CurrentRoute);
 
 public:
     static CNavigation* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring strFilePath);

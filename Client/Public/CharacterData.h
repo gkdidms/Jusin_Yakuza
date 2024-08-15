@@ -49,6 +49,14 @@ public:
         _uint iBoneIndex;
     };
 
+    struct ANIMATION_FACEEVENTSTATE
+    {
+        _uint iType;					//0번이 on 1번이 off 2번이 change
+        _float fAinmPosition;
+        _uint iFaceAnimIndex;
+    };
+
+
     struct ANIMATION_BLOODEVENTSTATE
     {
         _float fAinmPosition;
@@ -112,6 +120,10 @@ public:
         return m_CurrentTrailEvents;
     }
 
+    const vector<ANIMATION_FACEEVENTSTATE>& Get_Current_FaceEvents() const {
+        return m_CurrentFaceEvents;
+    }
+
     const vector<ANIMATION_BLOODEVENTSTATE>& Get_Current_BloodEffectEvents() const {
         return m_CurrentBloodEffectEvents;
     }
@@ -132,6 +144,7 @@ private:
     HRESULT Load_EffectState(string strFilePath);
     HRESULT Load_RimLightEvent(string strFilePath);
     HRESULT Load_TrailEvent(string strFilePath);
+    HRESULT Load_FaceEvent(string strFilePath);
     HRESULT Load_BloodEffectEvent(string strFilePath);
     HRESULT Load_RadialEvent(string strFilePath);
 
@@ -157,6 +170,9 @@ private:
     multimap<string, ANIMATION_TRAILSTATE>		    m_TrailEvents;
 
     // first: 애니메이션 이름, second: 래디얼 이벤트 정보
+    multimap<string, ANIMATION_FACEEVENTSTATE>		    m_FaceEvents;
+
+    // first: 애니메이션 이름, second: 래디얼 이벤트 정보
     multimap<string, ANIMATION_BLOODEVENTSTATE>		    m_BloodEvents;
 
     // first: 애니메이션 이름, second: 래디얼 이벤트 정보
@@ -166,6 +182,7 @@ private:
     vector<ANIMATION_EVENT> m_CurrentEvents; 
     vector<ANIMATION_RIMLIGHTSTATE> m_CurrentRimEvents;
     vector<ANIMATION_TRAILSTATE> m_CurrentTrailEvents;
+    vector<ANIMATION_FACEEVENTSTATE> m_CurrentFaceEvents;
     vector<ANIMATION_BLOODEVENTSTATE> m_CurrentBloodEffectEvents;
     vector<ANIMATION_RADIALEVENTSTATE> m_CurrentRadialEvents;
 

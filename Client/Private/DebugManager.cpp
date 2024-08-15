@@ -9,6 +9,7 @@
 
 #include "DebugCamera.h"
 #include "Player.h"
+#include "Level_Loading.h"
 
 IMPLEMENT_SINGLETON(CDebugManager)
 
@@ -232,6 +233,32 @@ void CDebugManager::Window_Debug()
 
         if (ImGui::InputInt("Light Number", &m_iLightPass, 0))
             m_pFileTotalMgr->Set_Lights_In_Client(m_iLightPass);
+    }
+
+    if (ImGui::CollapsingHeader("Level"))
+    {
+        ImGui::SeparatorText("Level Change");
+
+        if (ImGui::Button("Level_Office1"))
+            m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_OFFICE_1F));
+        if (ImGui::Button("Level_Office2"))
+            m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_OFFICE_2F));
+        if (ImGui::Button("Level_Office_Boss"))
+            m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_OFFICE_BOSS));
+        if (ImGui::Button("Level_Dogimazo"))
+            m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_DOGIMAZO));
+        if (ImGui::Button("Level_Dogimazo_Staire"))
+            m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_DOGIMAZO_STAIRS));
+        if (ImGui::Button("Level_Dogimazo_Lobby"))
+            m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_DOGIMAZO_LOBBY));
+        if (ImGui::Button("Level_Dogimazo_Boss"))
+            m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_DOGIMAZO_BOSS));
+        if (ImGui::Button("Level_Street"))
+            m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_STREET));
+        if (ImGui::Button("Level_CarChase"))
+            m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_CARCHASE));
+        if (ImGui::Button("Level_Karaoke"))
+            m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_KARAOKE));
     }
 
     if (ImGui::CollapsingHeader("Effect  / UI"))

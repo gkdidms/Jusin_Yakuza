@@ -34,6 +34,9 @@
 
 #pragma region Monster
 #include "CarChase_Van.h"
+#include "CarChase_Sedan.h"
+#include "CarChase_Bike.h"
+#include "CarChase_Heli.h"
 #pragma endregion
 
 #pragma region Weapon
@@ -45,10 +48,13 @@
 
 #pragma region Reactor
 #include "Reactor_Van.h"
+#include "Reactor_Sedan.h"
+#include "Reactor_Bike.h"
+#include "Reactor_Heli.h"
 #pragma endregion
 
 #pragma region Adventure
-#include "Adv_Passersby.h"
+#include "RoadNML.h"
 #pragma endregion
 
 #pragma region BTNode
@@ -60,9 +66,12 @@
 #include "AI_DefaultYakuza.h"
 #include "AI_Yoneda.h"
 
-#include "AI_Passersby.h"
+#include "AI_RoadNML.h"
 
 #include "AI_Van.h"
+#include "AI_Bike.h"
+#include "AI_Sedan.h"
+#include "AI_Heli.h"
 
 #pragma endregion
 
@@ -540,10 +549,23 @@ HRESULT CMultiLoader::Loading_Default()
 	/*if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_SyncAnim"), CAnim::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Anim/Animation_Sync.fbx", true))))
 		return E_FAIL;*/
 
+		/* For.Prototype_Component_Anim_NPC */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Anim_NPC"), CAnim::Create(m_pDevice, m_pContext, "../Bin/DataFiles/Models/Anim/Monster/Jimu/Animation_NPC.dat", false))))
+		return E_FAIL;
+	//if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Anim_NPC"), CAnim::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Anim/Monster/Animation_NPC.fbx", true))))
+	//	return E_FAIL;
+
 		///* For.Prototype_Component_CutSceneAnim_ForPlayer */
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_CutSceneAnim_ForPlayer"), CAnim::Create(m_pDevice, m_pContext, "../Bin/DataFiles/AnimationData/Animation_CutScene_ForPlayer.dat", false))))
 		return E_FAIL;
 	//if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_CutSceneAnim_ForPlayer"), CAnim::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Anim/Animation_CutScene_ForPlayer.fbx", true))))
+	//	return E_FAIL;
+
+
+	///* For.Prototype_Component_Anim_Kiryu_Karaoke_CutScene */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Anim_Kiryu_Karaoke_CutScene"), CAnim::Create(m_pDevice, m_pContext, "../Bin/DataFiles/AnimationData/Animation_Kiryu_Karaoke_CutScene.dat", false))))
+		return E_FAIL;
+	//if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Anim_Kiryu_Karaoke_CutScene"), CAnim::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Anim/Animation_Kiryu_Karaoke_CutScene.fbx", true))))
 	//	return E_FAIL;
 
 	///* For.Prototype_Component_Anim_Kiryu */
@@ -562,6 +584,12 @@ HRESULT CMultiLoader::Loading_Default()
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Anim_Hand"), CAnim::Create(m_pDevice, m_pContext, "../Bin/DataFiles/AnimationData/Animation_Hand.dat", false))))
 		return E_FAIL;
 	//if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Anim_Hand"), CAnim::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Anim/Animation_Hand.fbx", true))))
+	//	return E_FAIL;
+
+	///* For.Prototype_Component_Anim_Kiryu_Karaoke_Face */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Anim_Kiryu_Karaoke_Face"), CAnim::Create(m_pDevice, m_pContext, "../Bin/DataFiles/AnimationData/Animation_Kiryu_Karaoke_Face.dat", false))))
+		return E_FAIL;
+	//if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Anim_Kiryu_Karaoke_Face"), CAnim::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Anim/Animation_Kiryu_Karaoke_Face.fbx", true))))
 	//	return E_FAIL;
 
 	///* For.Prototype_Component_Kiryu_CarChase */
@@ -626,6 +654,50 @@ HRESULT CMultiLoader::Loading_Default()
 	Add_Components_On_Path_Material(m_eNextLevel, TEXT("../Bin/DataFiles/MaterialData/Map/Map1"));
 	Add_Components_On_Path_Material(m_eNextLevel, TEXT("../Bin/DataFiles/MaterialData/Map/Map2"));
 	Add_Components_On_Path_Material(m_eNextLevel, TEXT("../Bin/DataFiles/MaterialData/Map/Map3"));
+#pragma endregion
+
+#pragma region BTNode
+	lstrcpy(m_szLoadingText, TEXT("행동트리 원형 를(을) 로딩 중 입니다."));
+	/* For.Prototype_BTNode_RushYakuza*/
+	if (FAILED(m_pGameInstance->Add_BTNode_Prototype(m_eNextLevel, TEXT("Prototype_BTNode_RushYakuza"),
+		CAI_RushYakuza::Create())))
+		return E_FAIL;
+
+	/* For.Prototype_BTNode_WPAYakuza*/
+	if (FAILED(m_pGameInstance->Add_BTNode_Prototype(m_eNextLevel, TEXT("Prototype_BTNode_WPAYakuza"),
+		CAI_WPAYakuza::Create())))
+		return E_FAIL;
+
+	/* For.Prototype_BTNode_Shakedown*/
+	if (FAILED(m_pGameInstance->Add_BTNode_Prototype(m_eNextLevel, TEXT("Prototype_BTNode_Shakedown"),
+		CAI_Shakedown::Create())))
+		return E_FAIL;
+
+	/* For.Prototype_BTNode_Kuze*/
+	if (FAILED(m_pGameInstance->Add_BTNode_Prototype(m_eNextLevel, TEXT("Prototype_BTNode_Kuze"),
+		CAI_Kuze::Create())))
+		return E_FAIL;
+
+	/* For.Prototype_BTNode_Passersby*/
+	if (FAILED(m_pGameInstance->Add_BTNode_Prototype(m_eNextLevel, TEXT("Prototype_BTNode_RoadNML"),
+		CAI_RoadNML::Create())))
+		return E_FAIL;
+
+	/* For.Prototype_BTNode_WPHYakuza*/
+	if (FAILED(m_pGameInstance->Add_BTNode_Prototype(m_eNextLevel, TEXT("Prototype_BTNode_WPHYakuza"),
+		CAI_WPHYakuza::Create())))
+		return E_FAIL;
+
+	/* For.Prototype_BTNode_DefaultYakuza*/
+	if (FAILED(m_pGameInstance->Add_BTNode_Prototype(m_eNextLevel, TEXT("Prototype_BTNode_DefaultYakuza"),
+		CAI_DefaultYakuza::Create())))
+		return E_FAIL;
+
+	/* For.Prototype_BTNode_Yoneda*/
+	if (FAILED(m_pGameInstance->Add_BTNode_Prototype(m_eNextLevel, TEXT("Prototype_BTNode_Yoneda"),
+		CAI_Yoneda::Create())))
+		return E_FAIL;
+
 #pragma endregion
 
 #pragma region Shader
@@ -696,26 +768,25 @@ HRESULT CMultiLoader::Loading_Default()
 
 HRESULT CMultiLoader::Loading_Highway()
 {
-#pragma region GameObject
-
-	/* For.Prototype_GameObject_Gun_Cz75*/
-	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Gun_Cz75"),
-		CGun_Cz75::Create(m_pDevice, m_pContext))))
+#pragma region BTNode
+	/* For.Prototype_BTNode_Van*/
+	if (FAILED(m_pGameInstance->Add_BTNode_Prototype(m_eNextLevel, TEXT("Prototype_BTNode_Van"),
+		CAI_Van::Create())))
 		return E_FAIL;
 
-	/* For.Prototype_GameObject_ShotGun*/
-	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_ShotGun"),
-		CShotGun::Create(m_pDevice, m_pContext))))
+	/* For.Prototype_BTNode_Bike*/
+	if (FAILED(m_pGameInstance->Add_BTNode_Prototype(m_eNextLevel, TEXT("Prototype_BTNode_Bike"),
+		CAI_Bike::Create())))
 		return E_FAIL;
 
-	/* For.Prototype_GameObject_MchnGun*/
-	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_MchnGun"),
-		CMchnGun::Create(m_pDevice, m_pContext))))
+	/* For.Prototype_BTNode_Sedan*/
+	if (FAILED(m_pGameInstance->Add_BTNode_Prototype(m_eNextLevel, TEXT("Prototype_BTNode_Sedan"),
+		CAI_Sedan::Create())))
 		return E_FAIL;
 
-	/* For.Prototype_GameObject_RcktGun*/
-	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_RcktGun"),
-		CRcktGun::Create(m_pDevice, m_pContext))))
+	/* For.Prototype_BTNode_Heli*/
+	if (FAILED(m_pGameInstance->Add_BTNode_Prototype(m_eNextLevel, TEXT("Prototype_BTNode_Heli"),
+		CAI_Heli::Create())))
 		return E_FAIL;
 #pragma endregion
 
@@ -727,6 +798,12 @@ HRESULT CMultiLoader::Loading_For_Anim()
 	Add_Models_On_Path(LEVEL_TEST, TEXT("../Bin/Resources/Models/Anim/Player/"));
 	Add_Models_On_Path(LEVEL_TEST, TEXT("../Bin/Resources/Models/Anim/Monster/"));
 	Add_Models_On_Path(LEVEL_TEST, TEXT("../Bin/Resources/Models/Anim/Car/"));
+
+	/* For.Prototype_Component_CarChaseAnim */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_CarChaseAnim"), CAnim::Create(m_pDevice, m_pContext, "../Bin/DataFiles/AnimationData/Animation_CarChase.dat", false))))
+		return E_FAIL;
+	//if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_CarChaseAnim"), CAnim::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Anim/Animation_CarChase.fbx", true))))
+	//	return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("애님 로딩이 완료되었습니다."));
 
@@ -751,6 +828,8 @@ HRESULT CMultiLoader::Loading_For_NonAnim()
 	Add_Models_On_Path_NonAnim(LEVEL_TEST, TEXT("../Bin/Resources/Models/NonAnim/Bone_Sphere"));
 
 	Add_Models_On_Path_NonAnim(LEVEL_TEST, TEXT("../Bin/Resources/Models/NonAnim/Gun_Cz75"));
+
+	Add_Models_On_Path_NonAnim(LEVEL_TEST, TEXT("../Bin/Resources/Models/NonAnim/Taxi")); // 논애님이지만 플레이어로 구분
 #pragma endregion
 
 	lstrcpy(m_szLoadingText, TEXT("논애님 로딩이 완료되었습니다."));

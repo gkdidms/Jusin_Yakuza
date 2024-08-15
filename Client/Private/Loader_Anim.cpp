@@ -35,7 +35,8 @@
 #pragma endregion
 
 #pragma region Adventure
-#include "Adv_Passersby.h"
+#include "RoadNML.h"
+#include "RoadYNG.h"
 #pragma endregion
 
 #pragma region BTNode
@@ -47,12 +48,16 @@
 #include "AI_DefaultYakuza.h"
 #include "AI_Yoneda.h"
 
-#include "AI_Passersby.h"
+#include "AI_RoadNML.h"
 
 #include "AI_Van.h"
 #include "AI_Bike.h"
 #include "AI_Sedan.h"
 #include "AI_Heli.h"
+#pragma endregion
+
+#pragma region Karaoke
+#include "Karaoke_Kiryu.h"
 #pragma endregion
 
 CLoader_Anim::CLoader_Anim(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -98,8 +103,8 @@ HRESULT CLoader_Anim::Loading()
 HRESULT CLoader_Anim::Loading_Default()
 {
 #pragma region Model
-	Add_Models_On_Path(m_eNextLevel, TEXT("../Bin/Resources/Models/Anim/Player"));
-	Add_Models_On_Path(m_eNextLevel, TEXT("../Bin/Resources/Models/Anim/Monster"));
+	Add_Models_On_Path(m_eNextLevel, TEXT("../Bin/Resources/Models/Anim/Player/"));
+	Add_Models_On_Path(m_eNextLevel, TEXT("../Bin/Resources/Models/Anim/Monster/"));
 #pragma endregion
 
 #pragma region Meterial
@@ -131,8 +136,8 @@ HRESULT CLoader_Anim::Loading_Default()
 		return E_FAIL;
 
 	/* For.Prototype_BTNode_Passersby*/
-	if (FAILED(m_pGameInstance->Add_BTNode_Prototype(m_eNextLevel, TEXT("Prototype_BTNode_Passersby"),
-		CAI_Passersby::Create())))
+	if (FAILED(m_pGameInstance->Add_BTNode_Prototype(m_eNextLevel, TEXT("Prototype_BTNode_RoadNML"),
+		CAI_RoadNML::Create())))
 		return E_FAIL;
 
 	/* For.Prototype_BTNode_WPHYakuza*/
@@ -148,11 +153,6 @@ HRESULT CLoader_Anim::Loading_Default()
 	/* For.Prototype_BTNode_Yoneda*/
 	if (FAILED(m_pGameInstance->Add_BTNode_Prototype(m_eNextLevel, TEXT("Prototype_BTNode_Yoneda"),
 		CAI_Yoneda::Create())))
-		return E_FAIL;
-
-	/* For.Prototype_GameObject_AdvPassersby */
-	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_AdvPassersby"),
-		CAdv_Passersby::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 #pragma endregion
 
@@ -171,10 +171,10 @@ HRESULT CLoader_Anim::Loading_Default()
 		return E_FAIL;*/
 
 		/* For.Prototype_Component_Anim_NPC */
-	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Anim_NPC"), CAnim::Create(m_pDevice, m_pContext, "../Bin/DataFiles/AnimationData/Animation_NPC.dat", false))))
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Anim_NPC"), CAnim::Create(m_pDevice, m_pContext, "../Bin/DataFiles/Models/Anim/Monster/Jimu/Animation_NPC.dat", false))))
 		return E_FAIL;
-	/*if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Anim_NPC"), CAnim::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Anim/Animation_NPC.fbx", true))))
-		return E_FAIL;*/
+	//if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Anim_NPC"), CAnim::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Anim/Monster/Animation_NPC.fbx", true))))
+	//	return E_FAIL;
 
 		/* For.Prototype_Component_AStart */
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_AStart"),
@@ -188,7 +188,7 @@ HRESULT CLoader_Anim::Loading_Default()
 	//	return E_FAIL;
 
 	/* For.Prototype_Component_Anim_Kiryu */
-	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Anim_Kiryu"), CAnim::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Anim/Kiryu/Animation_Kiryu.dat", false))))
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Anim_Kiryu"), CAnim::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Anim/Player/Kiryu/Animation_Kiryu.dat", false))))
 		return E_FAIL;
 	//if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Anim_Kiryu"), CAnim::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Anim/Animation_Kiryu.fbx", true))))
 	//	return E_FAIL;
@@ -222,6 +222,11 @@ HRESULT CLoader_Anim::Loading_For_LogoLevel()
 	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Player"), CPlayer::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	// TODO: 테스트용으로 넣은거라 테스트 끝나면 제거필요
+	/* For.Prototype_GameObject_Kiryu_Karaoke */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Kiryu_Karaoke"), CKaraoke_Kiryu::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 	/* For.Prototype_GameObject_SoketCollider */
 	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_SoketCollider"),
 		CSocketCollider::Create(m_pDevice, m_pContext))))
@@ -236,49 +241,6 @@ HRESULT CLoader_Anim::Loading_For_LogoLevel()
 	/* For.Prototype_GameObject_QTEManager*/
 	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_QTEManager"),
 		CQteManager::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-#pragma endregion
-
-#pragma region BTNode
-	lstrcpy(m_szLoadingText, TEXT("행동트리 원형 를(을) 로딩 중 입니다."));
-	/* For.Prototype_BTNode_RushYakuza*/
-	if (FAILED(m_pGameInstance->Add_BTNode_Prototype(m_eNextLevel, TEXT("Prototype_BTNode_RushYakuza"),
-		CAI_RushYakuza::Create())))
-		return E_FAIL;
-
-	/* For.Prototype_BTNode_WPAYakuza*/
-	if (FAILED(m_pGameInstance->Add_BTNode_Prototype(m_eNextLevel, TEXT("Prototype_BTNode_WPAYakuza"),
-		CAI_WPAYakuza::Create())))
-		return E_FAIL;
-
-	/* For.Prototype_BTNode_Shakedown*/
-	if (FAILED(m_pGameInstance->Add_BTNode_Prototype(m_eNextLevel, TEXT("Prototype_BTNode_Shakedown"),
-		CAI_Shakedown::Create())))
-		return E_FAIL;
-
-	/* For.Prototype_BTNode_Kuze*/
-	if (FAILED(m_pGameInstance->Add_BTNode_Prototype(m_eNextLevel, TEXT("Prototype_BTNode_Kuze"),
-		CAI_Kuze::Create())))
-		return E_FAIL;
-
-	/* For.Prototype_BTNode_Passersby*/
-	if (FAILED(m_pGameInstance->Add_BTNode_Prototype(m_eNextLevel, TEXT("Prototype_BTNode_Passersby"),
-		CAI_Passersby::Create())))
-		return E_FAIL;
-
-	/* For.Prototype_BTNode_WPHYakuza*/
-	if (FAILED(m_pGameInstance->Add_BTNode_Prototype(m_eNextLevel, TEXT("Prototype_BTNode_WPHYakuza"),
-		CAI_WPHYakuza::Create())))
-		return E_FAIL;
-
-	/* For.Prototype_BTNode_DefaultYakuza*/
-	if (FAILED(m_pGameInstance->Add_BTNode_Prototype(m_eNextLevel, TEXT("Prototype_BTNode_DefaultYakuza"),
-		CAI_DefaultYakuza::Create())))
-		return E_FAIL;
-
-	/* For.Prototype_BTNode_Yoneda*/
-	if (FAILED(m_pGameInstance->Add_BTNode_Prototype(m_eNextLevel, TEXT("Prototype_BTNode_Yoneda"),
-		CAI_Yoneda::Create())))
 		return E_FAIL;
 #pragma endregion
 
@@ -317,9 +279,67 @@ HRESULT CLoader_Anim::Loading_For_LogoLevel()
 	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Default"),
 		CDefaultYakuza::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+
+	/* For.Prototype_GameObject_RoadNML */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_RoadNML"),
+		CRoadNML::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 #pragma endregion
 
+#pragma region GameObject
+	lstrcpy(m_szLoadingText, TEXT("객체원형를(을) 로딩 중 입니다."));
 
+	/* For.Prototype_GameObject_Taxi (For.Player) */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Taxi"),
+		CHighway_Taxi::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_CarChase_Kiryu (For.Player) */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_CarChase_Kiryu"),
+		CHighway_Kiryu::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_ReactorVan */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_ReactorVan"),
+		CReactor_Van::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_ReactorSedan */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_ReactorSedan"),
+		CReactor_Sedan::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_ReactorBike */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_ReactorBike"),
+		CReactor_Bike::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_ReactorHeli */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_ReactorHeli"),
+		CReactor_Heli::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_CarChaseVan*/
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_CarChaseVan"),
+		CCarChase_Van::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_CarChaseSedan*/
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_CarChaseSedan"),
+		CCarChase_Sedan::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_CarChaseBike*/
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_CarChaseBike"),
+		CCarChase_Bike::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_CarChaseHeli*/
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_CarChaseHeli"),
+		CCarChase_Heli::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+#pragma endregion
 
 	m_isFinished = true;
 
@@ -395,6 +415,18 @@ HRESULT CLoader_Anim::Loading_For_Dogimazo_Boss()
 	return S_OK;
 }
 
+HRESULT CLoader_Anim::Loading_For_Street()
+{
+	if (FAILED(Loading_Default()))
+		return E_FAIL;
+	
+	//행인 액션/모델 로드하기
+
+	m_isFinished = true;
+
+	return S_OK;
+}
+
 HRESULT CLoader_Anim::Loading_For_CarChase()
 {
 	if (FAILED(Loading_Default()))
@@ -402,11 +434,12 @@ HRESULT CLoader_Anim::Loading_For_CarChase()
 
 #pragma region Model
 	lstrcpy(m_szLoadingText, TEXT("모델를(을) 로딩 중 입니다."));
-	Add_Models_On_Path(LEVEL_ROADWAY, TEXT("../Bin/Resources/Models/Anim/Car"));
-	Add_Models_On_Path_NonAnim(LEVEL_ROADWAY, TEXT("../Bin/Resources/Models/NonAnim/Taxi")); // 논애님이지만 플레이어로 구분
+	Add_Models_On_Path(LEVEL_CARCHASE, TEXT("../Bin/Resources/Models/Anim/Car/"));
+	Add_Models_On_Path_NonAnim(LEVEL_CARCHASE, TEXT("../Bin/Resources/Models/NonAnim/Taxi")); // 논애님이지만 플레이어로 구분
 #pragma endregion
 
 #pragma region Component
+	lstrcpy(m_szLoadingText, TEXT("컴포넌트 원형 를(을) 로딩 중 입니다."));
 	/* For.Prototype_Component_CarChaseAnim */
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_CarChaseAnim"), CAnim::Create(m_pDevice, m_pContext, "../Bin/DataFiles/AnimationData/Animation_CarChase.dat", false))))
 		return E_FAIL;
@@ -414,8 +447,9 @@ HRESULT CLoader_Anim::Loading_For_CarChase()
 	//	return E_FAIL;
 #pragma endregion
 
-#pragma region BTNode
-	/* For.Prototype_BTNode_Van*/
+#pragma region BT
+	lstrcpy(m_szLoadingText, TEXT("행동트리 원형 를(을) 로딩 중 입니다."));
+		/* For.Prototype_BTNode_Van*/
 	if (FAILED(m_pGameInstance->Add_BTNode_Prototype(m_eNextLevel, TEXT("Prototype_BTNode_Van"),
 		CAI_Van::Create())))
 		return E_FAIL;
@@ -436,60 +470,6 @@ HRESULT CLoader_Anim::Loading_For_CarChase()
 		return E_FAIL;
 #pragma endregion
 
-#pragma region GameObject
-	lstrcpy(m_szLoadingText, TEXT("객체원형를(을) 로딩 중 입니다."));
-
-	/* For.Prototype_GameObject_Taxi (For.Player) */
-	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Taxi"),
-		CHighway_Taxi::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	/* For.Prototype_GameObject_CarChase_Kiryu (For.Player) */
-	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_CarChase_Kiryu"),
-		CHighway_Kiryu::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	/* For.Prototype_GameObject_ReactorVan */
-	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_ReactorVan"),
-		CReactor_Van::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	/* For.Prototype_GameObject_ReactorSedan */
-	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_ReactorSedan"),
-		CReactor_Sedan::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	/* For.Prototype_GameObject_ReactorBike */
-	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_ReactorBike"),
-		CReactor_Bike::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	/* For.Prototype_GameObject_ReactorHeli */
-	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_ReactorHeli"),
-		CReactor_Heli::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	/* For.Prototype_GameObject_CarChaseVan*/
-	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_CarChaseVan"),
-		CCarChase_Van::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	/* For.Prototype_GameObject_CarChaseSedan*/
-	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_CarChaseSedan"),
-		CCarChase_Sedan::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	/* For.Prototype_GameObject_CarChaseBike*/
-	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_CarChaseBike"),
-		CCarChase_Bike::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	/* For.Prototype_GameObject_CarChaseHeli*/
-	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_CarChaseHeli"),
-		CCarChase_Heli::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-#pragma endregion
 
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
 
@@ -504,6 +484,10 @@ HRESULT CLoader_Anim::Loading_For_Karaoke()
 		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
+
+	/* For.Prototype_GameObject_Kiryu_Karaoke */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Kiryu_Karaoke"), CKaraoke_Kiryu::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 
 	m_isFinished = true;
 

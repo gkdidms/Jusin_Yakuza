@@ -37,9 +37,9 @@ HRESULT CLevel_Roadway::Initialize()
 	m_pUIManager->Open_Scene(TEXT("Carchase"));
 
     /* 클라 파싱 */
-    m_pFileTotalManager->Set_MapObj_In_Client(STAGE_ROADWAY, LEVEL_ROADWAY);
+    m_pFileTotalManager->Set_MapObj_In_Client(STAGE_ROADWAY, LEVEL_CARCHASE);
     m_pFileTotalManager->Set_Lights_In_Client(90);
-    //m_pFileTotalManager->Set_Collider_In_Client(STAGE_ROADWAY, LEVEL_ROADWAY);
+    //m_pFileTotalManager->Set_Collider_In_Client(STAGE_ROADWAY, LEVEL_CARCHASE);
 
 	if (FAILED(Ready_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
@@ -60,7 +60,7 @@ void CLevel_Roadway::Tick(const _float& fTimeDelta)
 HRESULT CLevel_Roadway::Ready_Camera(const wstring& strLayerTag)
 {
 	/* 카메라 추가 시 Debug Camera를 첫번째로 놔두고 추가해주세요 (디버깅 툴에서 사용중)*/
-	const _float4x4* pPlayerFloat4x4 = dynamic_cast<CTransform*>(m_pGameInstance->Get_GameObject_Component(LEVEL_ROADWAY, TEXT("Layer_Taxi"), TEXT("Com_Transform", 0)))->Get_WorldFloat4x4();
+	const _float4x4* pPlayerFloat4x4 = dynamic_cast<CTransform*>(m_pGameInstance->Get_GameObject_Component(LEVEL_CARCHASE, TEXT("Layer_Taxi"), TEXT("Com_Transform", 0)))->Get_WorldFloat4x4();
 
 	/* 0. 디버그용 카메라 */
 	CDebugCamera::DEBUG_CAMERA_DESC		CameraDesc{};
@@ -75,14 +75,14 @@ HRESULT CLevel_Roadway::Ready_Camera(const wstring& strLayerTag)
 	CameraDesc.fRotatePecSec = XMConvertToRadians(90.f);
 	CameraDesc.pPlayerMatrix = pPlayerFloat4x4;
 
-	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_ROADWAY, TEXT("Prototype_GameObject_DebugCamera"), strLayerTag, &CameraDesc)))
+	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_CARCHASE, TEXT("Prototype_GameObject_DebugCamera"), strLayerTag, &CameraDesc)))
 		return E_FAIL;
 
 	/* 초기화 할때는 -1 */
 	/* 1. 씬용 카메라 */
 	CCineCamera::CINE_CAMERA_DESC		cineDesc;
 	cineDesc.iFileNum = -1;
-	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_ROADWAY, TEXT("Prototype_GameObject_CCineCamera"), strLayerTag, &cineDesc)))
+	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_CARCHASE, TEXT("Prototype_GameObject_CCineCamera"), strLayerTag, &cineDesc)))
 		return E_FAIL;
 
 	/* 2. 플레이어 카메라 */
@@ -97,9 +97,9 @@ HRESULT CLevel_Roadway::Ready_Camera(const wstring& strLayerTag)
 	PlayerCameraDesc.fSpeedPecSec = 20.f;
 	PlayerCameraDesc.fRotatePecSec = XMConvertToRadians(90.f);
 	PlayerCameraDesc.pPlayerMatrix = pPlayerFloat4x4;
-	PlayerCameraDesc.iCurLevel = LEVEL_ROADWAY;
+	PlayerCameraDesc.iCurLevel = LEVEL_CARCHASE;
 
-	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_ROADWAY, TEXT("Prototype_GameObject_PlayerCamera"), strLayerTag, &PlayerCameraDesc)))
+	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_CARCHASE, TEXT("Prototype_GameObject_PlayerCamera"), strLayerTag, &PlayerCameraDesc)))
 		return E_FAIL;
 
 	/* 3. 컷신용 카메라 */
@@ -113,7 +113,7 @@ HRESULT CLevel_Roadway::Ready_Camera(const wstring& strLayerTag)
 	CutSceneCameraDesc.fSpeedPecSec = 10.f;
 	CutSceneCameraDesc.fRotatePecSec = XMConvertToRadians(90.f);
 
-	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_ROADWAY, TEXT("Prototype_GameObject_CutSceneCamera"), strLayerTag, &CutSceneCameraDesc)))
+	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_CARCHASE, TEXT("Prototype_GameObject_CutSceneCamera"), strLayerTag, &CutSceneCameraDesc)))
 		return E_FAIL;
 
 	///* 4. 추격전용 카메라 */
@@ -127,11 +127,11 @@ HRESULT CLevel_Roadway::Ready_Camera(const wstring& strLayerTag)
 	CarChaseCameraDesc.fSpeedPecSec = 10.f;
 	CarChaseCameraDesc.fRotatePecSec = XMConvertToRadians(90.f);
 	CarChaseCameraDesc.fSensor = 0.1f;
-	CHighway_Taxi* pTaxi = dynamic_cast<CHighway_Taxi*>(m_pGameInstance->Get_GameObject(LEVEL_ROADWAY, TEXT("Layer_Taxi"), 0));
+	CHighway_Taxi* pTaxi = dynamic_cast<CHighway_Taxi*>(m_pGameInstance->Get_GameObject(LEVEL_CARCHASE, TEXT("Layer_Taxi"), 0));
 	CarChaseCameraDesc.pPlayerMatrix = pTaxi->Get_TransformCom()->Get_WorldFloat4x4();
 	CarChaseCameraDesc.pPlayerBoneMatrix = pTaxi->Get_KiryuBoneMatrix("kubi_c_n");
 
-	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_ROADWAY, TEXT("Prototype_GameObject_CarChaseCamera"), strLayerTag, &CarChaseCameraDesc)))
+	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_CARCHASE, TEXT("Prototype_GameObject_CarChaseCamera"), strLayerTag, &CarChaseCameraDesc)))
 		return E_FAIL;
 
 	return S_OK;
@@ -144,7 +144,7 @@ HRESULT CLevel_Roadway::Ready_Player(const wstring& strLayerTag)
 	//Desc.fRotatePecSec = XMConvertToRadians(0.f);
 	Desc.fRotatePecSec = XMConvertToRadians(180.f);
 
-	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_ROADWAY, TEXT("Prototype_GameObject_Player"), strLayerTag, &Desc)))
+	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_CARCHASE, TEXT("Prototype_GameObject_Player"), strLayerTag, &Desc)))
 		return E_FAIL;
 
 	return S_OK;

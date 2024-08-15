@@ -270,6 +270,7 @@ void CPlayer::Tick(const _float& fTimeDelta)
 	RimLight_Event();
 	Trail_Event();
 	Radial_Event();
+	Face_Event();
 	Effect_Control_Aura();
 	Setting_Target_Enemy();
 	Setting_Target_Item();
@@ -953,6 +954,33 @@ void CPlayer::Radial_Event()
 				m_pGameInstance->Set_RadialBlur(true);
 			else
 				m_pGameInstance->Set_RadialBlur(false);
+		}
+	}
+}
+
+void CPlayer::Face_Event()
+{
+	auto& pCurEvents = m_pData->Get_Current_FaceEvents();
+	for (auto& pEvent : pCurEvents)
+	{
+		_double CurPos = *(m_pCameraModel->Get_AnimationCurrentPosition(nullptr, m_iCutSceneCamAnimIndex));
+		_double Duration = *(m_pCameraModel->Get_AnimationDuration(nullptr, m_iCutSceneCamAnimIndex));
+
+		if (CurPos >= pEvent.fAinmPosition && CurPos < Duration)
+		{
+			if (pEvent.iType == 0)
+			{
+				m_iFaceAnimIndex = pEvent.iFaceAnimIndex;
+				On_Separation_Face();
+			}
+			else if (pEvent.iType == 2)
+			{
+				m_iFaceAnimIndex = pEvent.iFaceAnimIndex;
+			}
+			else if (pEvent.iType == 1)
+			{
+				Off_Separation_Face();
+			}
 		}
 	}
 }
@@ -1970,9 +1998,9 @@ void CPlayer::Set_CutSceneAnim(CUTSCENE_ANIMATION_TYPE eType, _uint iFaceAnimInd
 	auto iter = m_CutSceneAnimation.find(eType);
 	if (m_CutSceneAnimation.end() == iter) return;
 
-	m_iFaceAnimIndex = iFaceAnimIndex;
+	//m_iFaceAnimIndex = iFaceAnimIndex;
 
-	On_Separation_Face();			// 얼굴 애니메이션 켜기
+	//On_Separation_Face();			// 얼굴 애니메이션 켜기
 	Off_Separation_Hand();			// 손 분리 애니메이션 끄기
 
 	m_pData->Set_CurrentCutSceneAnimation(iter->second);
@@ -2050,8 +2078,6 @@ void CPlayer::Play_CutScene()
 			//m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos);			
 			return;
 		}
-
-		On_Separation_Face();
 
 		// 실제로 모델의 애니메이션을 돌리는건 컴포넌트이고, m_pCameraModel는 카메라 애니메이션을 실행하는 모델이라 랜더하지않는다
 		m_pModelCom->Play_Animation_CutScene(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")), m_pAnimCom, false, m_iCutSceneAnimIndex, false);

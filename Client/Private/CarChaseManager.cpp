@@ -72,11 +72,11 @@ HRESULT CCarChaseManager::Ready_Stage()
 	vector<CCarChase::STAGE_MONSTER_INFO> MonsterInfo_1 = {
 		CCarChase::STAGE_MONSTER_INFO{
 			100000,
-			LINE_D,
-			DIR_M,
-			CCarChase_Monster::REACTOR_HELI,
-			{ CCarChase_Monster::RKT, CCarChase_Monster::GAT }
-		}
+			LINE_C,
+			DIR_F,
+			CCarChase_Monster::REACTOR_SEDAN,
+			{ CCarChase_Monster::GUN_L, CCarChase_Monster::GUN_R}
+		},
 	};
 
 	CCarChase::STAGE_INFO StageInfo_1 = CCarChase::STAGE_INFO{
@@ -105,12 +105,12 @@ HRESULT CCarChaseManager::Ready_Stage()
 			{ CCarChase_Monster::WPR, -1}
 		},
 		CCarChase::STAGE_MONSTER_INFO{
-			200001,
+			210000,
 			LINE_D,
-			DIR_F,
-			CCarChase_Monster::REACTOR_VAN,
-			{ CCarChase_Monster::WPR, -1 }
-		},
+			DIR_M,
+			CCarChase_Monster::REACTOR_BIKE,
+			{ CCarChase_Monster::DRV, CCarChase_Monster::RKT}
+		}
 	};
 
 	CCarChase::STAGE_INFO StageInfo_2 = CCarChase::STAGE_INFO{
@@ -127,34 +127,30 @@ HRESULT CCarChaseManager::Ready_Stage()
 
 	m_Stages.emplace_back(pStage2);
 
-	////3 스테이지
-	//vector<CCarChase::STAGE_MONSTER_INFO> MonsterInfo_3 = {
-	//	CCarChase::STAGE_MONSTER_INFO{
-	//		300000,
-	//		LINE_A,
-	//		CCarChase_Monster::REACTOR_VAN,
-	//		{ CCarChase_Monster::WPR, -1}
-	//	},
-	//	CCarChase::STAGE_MONSTER_INFO{
-	//		300001,
-	//		LINE_B,
-	//		CCarChase_Monster::REACTOR_VAN,
-	//		{ CCarChase_Monster::WPR, -1}
-	//	},
-	//};
+	//3 스테이지
+	vector<CCarChase::STAGE_MONSTER_INFO> MonsterInfo_3 = {
+		CCarChase::STAGE_MONSTER_INFO{
+			300000,
+			LINE_D,
+			DIR_M,
+			CCarChase_Monster::REACTOR_HELI,
+			{ CCarChase_Monster::RKT, CCarChase_Monster::GAT }
+		}
+	};
 
-	//CCarChase::STAGE_INFO StageInfo_3 = CCarChase::STAGE_INFO{
-	//	LINE_D,
-	//	LINE_C,
-	//	MonsterInfo_3
-	//};
+	CCarChase::STAGE_INFO StageInfo_3 = CCarChase::STAGE_INFO{
+		LINE_A,
+		LINE_A,
+		DIR_R,
+		MonsterInfo_3
+	};
 
-	//Desc.Info = StageInfo_3;
-	//CCarChase* pStage3 = CCarChase::Create(&Desc);
-	//if (nullptr == pStage3)
-	//	return E_FAIL;
+	Desc.Info = StageInfo_3;
+	CCarChase* pStage3 = CCarChase::Create(&Desc);
+	if (nullptr == pStage3)
+		return E_FAIL;
 
-	//m_Stages.emplace_back(pStage3);
+	m_Stages.emplace_back(pStage3);
 }
 
 CCarChaseManager* CCarChaseManager::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

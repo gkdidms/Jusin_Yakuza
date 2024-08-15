@@ -29,6 +29,7 @@ CModel::CModel(const CModel& rhs)
 	, m_vDecalMaterials { rhs.m_vDecalMaterials }
 	, m_iCameras{ rhs.m_iCameras }
 	, m_FovAnimation{ rhs.m_FovAnimation }
+	, m_isTool {rhs.m_isTool}
 {
 	for (auto& pPrototypeAnimation : rhs.m_Animations)
 		m_Animations.emplace_back(pPrototypeAnimation->Clone());
@@ -51,6 +52,8 @@ CModel::CModel(const CModel& rhs)
 HRESULT CModel::Initialize_Prototype(MODELTYPE eModelType, const _char* pModelFilePath, _fmatrix PreTransformMatrix, _bool isExported, _bool isTool)
 {
 	const char* blockword = "building";
+
+	m_isTool = isTool;
 
 	if (strstr(pModelFilePath, blockword) != nullptr) {
 		m_bSaveMaterial = false;
@@ -103,8 +106,7 @@ HRESULT CModel::Initialize_Prototype(MODELTYPE eModelType, const _char* pModelFi
 	{
 		string pCameraFovFilePath = "../Bin/DataFiles/CameraFoVAnimationData/" + m_pGameInstance->Get_FileName(pModelFilePath) + "_camera_fov.csv";
 
-		if (FAILED(Ready_CameraAnimations(pCameraFovFilePath)))
-			return E_FAIL;
+		Ready_CameraAnimations(pCameraFovFilePath);
 	}
 
 	m_AnimLoops.resize(m_iAnimations);
@@ -124,7 +126,7 @@ HRESULT CModel::Ready_Meshes()
 
 	for (size_t i = 0; i < m_iNumMeshes; ++i)
 	{
-		CMesh* pMesh = CMesh::Create(m_pDevice, m_pContext, m_eModelType, m_pAIScene->mMeshes[i], XMLoadFloat4x4(&m_PreTransformMatrix), m_Bones);
+		CMesh* pMesh = CMesh::Create(m_pDevice, m_pContext, m_eModelType, m_pAIScene->mMeshes[i], XMLoadFloat4x4(&m_PreTransformMatrix), m_Bones, m_isTool);
 
 		if (nullptr == pMesh)
 			return E_FAIL;
@@ -691,7 +693,7 @@ HRESULT CModel::Import_Meshes(ifstream& in)
 			in.read((char*)&BAIMesh.mBones[j]->mOffsetMatrix, sizeof(_float4x4));
 		}
 
-		m_Meshes.emplace_back(CMesh::Create(m_pDevice, m_pContext, m_eModelType, &BAIMesh, XMLoadFloat4x4(&m_PreTransformMatrix), m_Bones));
+		m_Meshes.emplace_back(CMesh::Create(m_pDevice, m_pContext, m_eModelType, &BAIMesh, XMLoadFloat4x4(&m_PreTransformMatrix), m_Bones, m_isTool));
 
 		for (size_t j = 0; j < BAIMesh.mNumBones; j++)
 		{
@@ -935,7 +937,7 @@ void CModel::Check_Separation_Parents(CBone* pBone, _int iAnimType)
 HRESULT CModel::Render(_uint iMeshIndex)
 {
 	//m_Meshes[iMeshIndex]->Bind_Buffers();
-	m_Meshes[iMeshIndex]->Render();
+	m_Meshes[iMeshIndex]->Render(m_isTool);
 
 	return S_OK;
 }
@@ -1178,25 +1180,26 @@ void CModel::Play_Animation_Monster(_float fTimeDelta, class CAnim* pAnim, _bool
 		pBone->Update_CombinedTransformationMatrix(m_Bones, XMLoadFloat4x4(&m_PreTransformMatrix));
 }
 
-void CModel::Play_Animation_Separation(_float fTimeDelta, _uint iAnimIndex, CAnim* pAnim, _bool isLoop, _int iAnimType)
+void CModel::Play_Animation_Separation(_float fTimeDelta, _uint iAnimIndex, CAnim* pAnim, _bool isLoop, _int iAnimType, _float fChangeInterval)
 {
 		//애니메이션 목록 전달하기 ;
 	vector<CAnimation*> Animations = pAnim->Get_Animations();
 
 	if (1 > Animations.size()) return;
 
-	pAnim->Set_PrevAnimIndex(pAnim->Get_CurrentAnimIndex());
-	pAnim->Set_CurrentAnimIndex(iAnimIndex);
-
-	if (0.0 == m_ChangeInterval)
+	if (0.0 == fChangeInterval)
 		Animations[iAnimIndex]->Update_TransformationMatrix_Separation(fTimeDelta, m_Bones, isLoop, iAnimType);
 	else
 	{
 		if (Animations[iAnimIndex]->Get_Changed())
+		{
+			pAnim->Set_PrevAnimIndex(pAnim->Get_CurrentAnimIndex());
+			pAnim->Set_CurrentAnimIndex(iAnimIndex);
 			Animations[iAnimIndex]->Update_TransformationMatrix_Separation(fTimeDelta, m_Bones, isLoop, iAnimType);
+		}
 		else
 		{
-			Animations[iAnimIndex]->Update_Change_Animation_Separation(fTimeDelta, m_Bones, Animations[pAnim->Get_PrevAnimIndex()], m_ChangeInterval, iAnimType);
+			Animations[iAnimIndex]->Update_Change_Animation_Separation(fTimeDelta, m_Bones, Animations[pAnim->Get_PrevAnimIndex()], fChangeInterval, iAnimType);
 		}
 	}
 

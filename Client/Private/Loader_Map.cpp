@@ -99,11 +99,6 @@ HRESULT CLoader_Map::Loading_Default()
 
 	Add_Models_On_Path_NonAnim(m_eNextLevel, TEXT("../Bin/Resources/Models/NonAnim/Bone_Sphere"));
 
-#pragma region Meterial
-	
-	Add_Components_On_Path_Material(m_eNextLevel, TEXT("../Bin/DataFiles/MaterialData/Map/Map2"));
-#pragma endregion
-
 	return S_OK;
 }
 
@@ -175,6 +170,41 @@ HRESULT CLoader_Map::Loading_For_LogoLevel()
 	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_YonedaTrigger"),
 		CYonedaTrigger::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+
+
+#pragma region GameObject
+	/* For.Prototype_GameObject_Gun_Cz75*/
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Gun_Cz75"),
+		CGun_Cz75::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_ShotGun*/
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_ShotGun"),
+		CShotGun::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_MchnGun*/
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_MchnGun"),
+		CMchnGun::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_RcktGun*/
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_RcktGun"),
+		CRcktGun::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_RcktGunBullet*/
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_RcktGunBullet"),
+		CCarChase_CATBullet::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	lstrcpy(m_szLoadingText, TEXT("객체 원형 를(을) 로딩 중 입니다."));
+	/* For.Prototype_GameObject_Sofa*/
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Sofa"),
+		CSofa::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+#pragma endregion
+
 
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
 
@@ -343,53 +373,49 @@ HRESULT CLoader_Map::Loading_For_Dogimazo_Boss()
 	return S_OK;
 }
 
+HRESULT CLoader_Map::Loading_For_Street()
+{
+	if (FAILED(Loading_Default()))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Navigation */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Navigation"),
+		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/NaviData/Navigation_7.dat")))))
+		return E_FAIL;
+
+#pragma region Model
+	lstrcpy(m_szLoadingText, TEXT("모델를(을) 로딩 중 입니다."));
+	Add_Models_On_Path_NonAnim(m_eNextLevel, TEXT("../Bin/Resources/Models/NonAnim/Map/Map2"));
+	Add_Components_On_Path_Material(m_eNextLevel, TEXT("../Bin/DataFiles/MaterialData/Map/Map2"));
+#pragma endregion
+
+	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
+
+	m_isFinished = true;
+
+	return S_OK;
+}
+
 HRESULT CLoader_Map::Loading_For_CarChase()
 {
 	if (FAILED(Loading_Default()))
 		return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_ROADWAY, TEXT("Prototype_Component_Navigation"),
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_CARCHASE, TEXT("Prototype_Component_Navigation"),
 		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/NaviData/Navigation_8.dat")))))
 		return E_FAIL;
 
 #pragma region Model
 	lstrcpy(m_szLoadingText, TEXT("모델를(을) 로딩 중 입니다."));
-	Add_Models_On_Path_NonAnim(LEVEL_ROADWAY, TEXT("../Bin/Resources/Models/NonAnim/Map/Map3"));
+	Add_Models_On_Path_NonAnim(LEVEL_CARCHASE, TEXT("../Bin/Resources/Models/NonAnim/Map/Map3"));
 	Add_Components_On_Path_Material(m_eNextLevel, TEXT("../Bin/DataFiles/MaterialData/Map/Map3"));
 
-	Add_Models_On_Path_NonAnim(LEVEL_ROADWAY, TEXT("../Bin/Resources/Models/NonAnim/Weapon/Gun_Cz75"));
-	Add_Models_On_Path_NonAnim(LEVEL_ROADWAY, TEXT("../Bin/Resources/Models/NonAnim/Weapon/Knife"));
-	Add_Models_On_Path_NonAnim(LEVEL_ROADWAY, TEXT("../Bin/Resources/Models/NonAnim/Weapon/MchnGun"));
-	Add_Models_On_Path_NonAnim(LEVEL_ROADWAY, TEXT("../Bin/Resources/Models/NonAnim/Weapon/RcktGun"));
-	Add_Models_On_Path_NonAnim(LEVEL_ROADWAY, TEXT("../Bin/Resources/Models/NonAnim/Weapon/RcktGunBullet"));
-	Add_Models_On_Path_NonAnim(LEVEL_ROADWAY, TEXT("../Bin/Resources/Models/NonAnim/Weapon/ShotGun"));
-#pragma endregion
-
-#pragma region GameObject
-	/* For.Prototype_GameObject_Gun_Cz75*/
-	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Gun_Cz75"),
-		CGun_Cz75::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	/* For.Prototype_GameObject_ShotGun*/
-	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_ShotGun"),
-		CShotGun::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	/* For.Prototype_GameObject_MchnGun*/
-	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_MchnGun"),
-		CMchnGun::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	/* For.Prototype_GameObject_RcktGun*/
-	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_RcktGun"),
-		CRcktGun::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
-	/* For.Prototype_GameObject_RcktGunBullet*/
-	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_RcktGunBullet"),
-		CCarChase_CATBullet::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
+	Add_Models_On_Path_NonAnim(LEVEL_CARCHASE, TEXT("../Bin/Resources/Models/NonAnim/Weapon/Gun_Cz75"));
+	Add_Models_On_Path_NonAnim(LEVEL_CARCHASE, TEXT("../Bin/Resources/Models/NonAnim/Weapon/Knife"));
+	Add_Models_On_Path_NonAnim(LEVEL_CARCHASE, TEXT("../Bin/Resources/Models/NonAnim/Weapon/MchnGun"));
+	Add_Models_On_Path_NonAnim(LEVEL_CARCHASE, TEXT("../Bin/Resources/Models/NonAnim/Weapon/RcktGun"));
+	Add_Models_On_Path_NonAnim(LEVEL_CARCHASE, TEXT("../Bin/Resources/Models/NonAnim/Weapon/RcktGunBullet"));
+	Add_Models_On_Path_NonAnim(LEVEL_CARCHASE, TEXT("../Bin/Resources/Models/NonAnim/Weapon/ShotGun"));
 #pragma endregion
 
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));

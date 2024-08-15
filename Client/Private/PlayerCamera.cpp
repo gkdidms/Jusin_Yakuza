@@ -35,7 +35,7 @@ HRESULT CPlayerCamera::Initialize_Prototype()
 HRESULT CPlayerCamera::Initialize(void* pArg)
 {
 	// 고속도로맵에서는 플레이어 없어서 카메라 막기
-	if (LEVEL::LEVEL_ROADWAY != m_iCurrentLevel)
+	if (m_pSystemManager->Get_Camera() != CAMERA_CARCHASE)
 	{
 		PLAYER_CAMERA_DESC* pDesc = static_cast<PLAYER_CAMERA_DESC*>(pArg);
 
@@ -84,7 +84,7 @@ void CPlayerCamera::Priority_Tick(const _float& fTimeDelta)
 
 void CPlayerCamera::Tick(const _float& fTimeDelta)
 {
-	if (LEVEL::LEVEL_ROADWAY != m_iCurrentLevel)
+	if (LEVEL::LEVEL_CARCHASE != m_iCurrentLevel)
 	{
 		if (m_pSystemManager->Get_Camera() != CAMERA_PLAYER) return;
 
@@ -110,7 +110,7 @@ void CPlayerCamera::Late_Tick(const _float& fTimeDelta)
 		ShowCursor(false);
 	}
 
-	if (LEVEL::LEVEL_ROADWAY != m_iCurrentLevel)
+	if (LEVEL::LEVEL_CARCHASE != m_iCurrentLevel)
 	{
 		if (m_pSystemManager->Get_Camera() != CAMERA_PLAYER) return;
 
