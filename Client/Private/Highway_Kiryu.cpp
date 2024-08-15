@@ -45,7 +45,6 @@ HRESULT CHighway_Kiryu::Initialize(void* pArg)
 		return E_FAIL;
 
 	Set_HandAnimIndex(HAND_GUN);
-	On_Separation_Hand(m_isLeft ? 1 : 2);
 
 	return S_OK;
 }
@@ -74,6 +73,12 @@ void CHighway_Kiryu::Tick(const _float& fTimeDelta)
 		m_pGun_L->Tick(fTimeDelta);
 	else
 		m_pGun_R->Tick(fTimeDelta);
+
+	if (m_isFirstTick)
+	{
+		m_isFirstTick = false;
+		On_Separation_Hand(m_isLeft ? 1 : 2);
+	}
 
 	m_pColliderCom->Tick(XMLoadFloat4x4(&m_ModelMatrix));
 }

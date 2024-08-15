@@ -103,6 +103,9 @@ private:
     _bool           m_isStarted = { false };
     _bool           m_isHitEyeCharging = { true };
 
+    // 첫틱이 돌고나서 뼈 분리가 되어야 총 잡는손에 문제가 안생긴다.
+    _bool           m_isFirstTick = { true };
+
 public:
     _float Get_MaxHP() { return m_fMaxHP; }
     _float Get_HP() { return m_fHP; }
