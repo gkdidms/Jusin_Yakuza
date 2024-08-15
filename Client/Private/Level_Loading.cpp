@@ -133,7 +133,7 @@ void CLevel_Loading::Tick(const _float& fTimeDelta)
 				case LEVEL_DOGIMAZO_BOSS:
 					pNewLevel = CLevel_DogimazoBoss::Create(m_pDevice, m_pContext);
 					break;
-				case LEVEL_ROADWAY:
+				case LEVEL_CARCHASE:
 					pNewLevel = CLevel_Roadway::Create(m_pDevice, m_pContext);
 					break;
 				case LEVEL_TEST:

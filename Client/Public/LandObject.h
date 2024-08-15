@@ -106,6 +106,7 @@ public:
     // iAnimType이 -1이라면 분리해제, 그 외의 값이라면 애니메이션 컴포넌트 인덱스와 맞춰줘야한다.
     // isExceptParent 이 true라면 부모뼈만 분리 제외한다.
     void Separation_Bone(string strBoneName, _int iAnimType = -1, _bool isExceptParent = true);
+    void Separation_SingleBone(string strBoneName, _int iAnimType = -1);
 
     /* Fublic Virtual Funtion */
 public:

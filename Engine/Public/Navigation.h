@@ -83,8 +83,8 @@ private:
 private:
     _uint m_iCurrentRouteIndex = { 0 }; //∑Á∆Æ ¿Œµ¶Ω∫
     _uint m_iPreRouteIndex = { 0 }; //∑Á∆Æ ¿Œµ¶Ω∫
-    _uint m_iCurrentWayPointIndex = { 0 };
-    _uint m_iPreWayPointIndex = { 0 };
+    _int m_iCurrentWayPointIndex = { 0 };
+    _int m_iPreWayPointIndex = { 0 };
     _float m_fMaxDistance = { 5.f };
 
     _vector m_vPreDir = {};

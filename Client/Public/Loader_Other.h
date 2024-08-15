@@ -28,6 +28,7 @@ private:
 	virtual HRESULT Loading_For_Dogimazo_Stairs() override;
 	virtual HRESULT Loading_For_Dogimazo_Lobby() override;
 	virtual HRESULT Loading_For_Dogimazo_Boss() override;
+	virtual	HRESULT Loading_For_Street() override;
 	virtual HRESULT Loading_For_CarChase() override;
 	virtual HRESULT Loading_For_Karaoke() override;
 

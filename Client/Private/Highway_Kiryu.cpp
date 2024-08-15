@@ -122,6 +122,14 @@ void CHighway_Kiryu::Change_Animation()
 {
 }
 
+_bool CHighway_Kiryu::Checked_Animation_Ratio(_float fRatio)
+{
+	if (fRatio < *m_pModelCom->Get_AnimationCurrentPosition() / *m_pModelCom->Get_AnimationDuration())
+		return true;
+
+	return false;
+}
+
 void CHighway_Kiryu::Key_Input()
 {
 	//공격 가능한 환경인지 체크한 후 진행한다.
@@ -345,17 +353,18 @@ void CHighway_Kiryu::Play_Swap(_float fTimeDelta)
 	/*
 	*	[77] [mngcar_c_car_gun_sync_aimltor]
 		[78] [mngcar_c_car_gun_sync_aimrtol]
+		// [73] [mngcar_c_car_gun_sitl_st]
 	*/
 	if (!m_isStarted)
 		m_pModelCom->Set_AnimationIndex((m_isLeft ? 73 : 76), 4.f);
 	else
 		m_pModelCom->Set_AnimationIndex((m_isLeft ? 77 : 78), 4.f);
 
-	if (m_isStarted && m_pModelCom->Get_AnimFinished())
+	if (!m_isStarted && Checked_Animation_Ratio(0.7))
 	{
 		m_isStarted = true;
 	}
-	else if (m_pModelCom->Get_AnimFinished())
+	else if (Checked_Animation_Ratio(0.7))
 	{
 		m_isLeft = !m_isLeft;
 		Change_Behavior(AIMING);
@@ -487,15 +496,26 @@ HRESULT CHighway_Kiryu::Add_Components()
 
 HRESULT CHighway_Kiryu::Add_Objects()
 {
-	CSocketObject::SOCKETOBJECT_DESC Desc{};
+	CGun_Cz75::CZ75_DESC Desc{};
 	Desc.pParentMatrix = pTaxiMatrix;
 	Desc.pCombinedTransformationMatrix = m_pModelCom->Get_BoneCombinedTransformationMatrix("buki_r_n");
 	Desc.fRotatePecSec = XMConvertToRadians(90.f);
 	Desc.fSpeedPecSec = 1.f;
+	Desc.fLocalAngle = XMConvertToRadians(-90.f);
+	Desc.iLocalRotAxis = 0;
+	Desc.vLocalPos = _float3(0, 0.04, -0.03);
 	m_pGun_R = dynamic_cast<CGun_Cz75*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Gun_Cz75"), &Desc));
 
-	Desc.pCombinedTransformationMatrix = m_pModelCom->Get_BoneCombinedTransformationMatrix("buki_l_n");
-	m_pGun_L = dynamic_cast<CGun_Cz75*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Gun_Cz75"), &Desc));
+	CGun_Cz75::CZ75_DESC Desc_L{};
+	Desc_L.pParentMatrix = pTaxiMatrix;
+	Desc_L.pCombinedTransformationMatrix = m_pModelCom->Get_BoneCombinedTransformationMatrix("buki_l_n");
+	Desc_L.fRotatePecSec = XMConvertToRadians(90.f);
+	Desc_L.fSpeedPecSec = 1.f;
+	Desc_L.fLocalAngle = XMConvertToRadians(-90.f);
+	Desc_L.iLocalRotAxis = 0;
+	Desc_L.vLocalPos = _float3(0, 0.04, -0.03);
+
+	m_pGun_L = dynamic_cast<CGun_Cz75*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Gun_Cz75"), &Desc_L));
 
 	return S_OK;
 }

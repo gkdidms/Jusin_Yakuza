@@ -49,6 +49,7 @@ protected:
 	virtual	HRESULT Loading_For_Dogimazo_Stairs();
 	virtual	HRESULT Loading_For_Dogimazo_Lobby();
 	virtual	HRESULT Loading_For_Dogimazo_Boss();
+	virtual HRESULT Loading_For_Street();
 	virtual	HRESULT Loading_For_CarChase();
 	virtual	HRESULT Loading_For_Karaoke();
 

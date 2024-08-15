@@ -12,6 +12,7 @@
 
 #include "UIManager.h"
 #include "Camera.h"
+#include "PlayerCamera.h"
 #include "CutSceneCamera.h"
 
 CKaraoke_Kiryu::CKaraoke_Kiryu(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -60,8 +61,24 @@ HRESULT CKaraoke_Kiryu::Initialize(void* pArg)
 	if (FAILED(Add_CharacterData()))
 		return E_FAIL;
 
-	On_Separation_Hand(0);			// 양손 분리 켜둠
+	Ready_SingingInterval();
 
+	m_iHandAnimIndex = HAND_BOU;
+	On_Separation_Hand(2);			// 오른손 분리 
+
+	m_iFaceAnimIndex = CLOSE;
+	Separation_Bone("_jaw_c_n", 3, false);
+
+	/*
+	*	[0] p_kru_uta_ainote_a_lp[p_kru_uta_ainote_a_lp]
+		[1] p_kru_uta_sing_good_1[p_kru_uta_sing_good_1]
+		[2] p_kru_uta_sing_kamae[p_kru_uta_sing_kamae]
+		[3] p_kru_uta_sing_nml[p_kru_uta_sing_nml]
+		[4] p_oki_uta_sing_nml_lp[p_oki_uta_sing_nml_lp]
+
+	*/
+
+	m_pModelCom->Set_AnimationIndex(3);
 	return S_OK;
 }
 
@@ -71,7 +88,28 @@ void CKaraoke_Kiryu::Priority_Tick(const _float& fTimeDelta)
 
 void CKaraoke_Kiryu::Tick(const _float& fTimeDelta)
 {
-	
+	if (m_pGameInstance->GetKeyState(DIK_L) == TAP)
+	{
+		if (m_isSinging)
+			SingOff();
+		else
+			m_isSinging = true;
+	}
+
+	if (m_pGameInstance->GetKeyState(DIK_K) == TAP)
+	{
+		Set_CutSceneAnim();
+	}
+
+	if (m_isSinging)
+		Play_SingingAnim(fTimeDelta);
+
+ 	m_pModelCom->Play_Animation(fTimeDelta);
+	m_pModelCom->Play_Animation_Separation(fTimeDelta, m_iHandAnimIndex, m_SeparationAnimComs[HAND_ANIM], false, (_int)HAND_ANIM);
+	//m_pModelCom->Play_Animation_Separation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")), m_iFaceAnimIndex, m_SeparationAnimComs[FACE_ANIM], false, (_int)FACE_ANIM);
+	m_pModelCom->Play_Animation_Separation(fTimeDelta, m_iFaceAnimIndex, m_SeparationAnimComs[FACE_ANIM], false, 3, 2.f);
+
+	Play_CutScene(fTimeDelta);
 }
 
 void CKaraoke_Kiryu::Late_Tick(const _float& fTimeDelta)
@@ -159,11 +197,15 @@ HRESULT CKaraoke_Kiryu::Add_Components()
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Model_Kiryu"),
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Shader_BoneCompute"),
+		TEXT("Com_ComputeShader"), reinterpret_cast<CComponent**>(&m_pComputeShaderCom))))
+		return E_FAIL;
+
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Model_Kiryu_Karaoke"),
 		TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Model_Kiryu_CamAction"),
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Model_Kiryu_Karaoke_CamAction"),
 		TEXT("Com_Model_Cam"), reinterpret_cast<CComponent**>(&m_pCameraModel))))
 		return E_FAIL;
 
@@ -181,13 +223,13 @@ HRESULT CKaraoke_Kiryu::Add_Components()
 		TEXT("Com_Navigation"), reinterpret_cast<CComponent**>(&m_pNavigationCom))))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_CutSceneAnim_ForPlayer"),
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Anim_Kiryu_Karaoke_CutScene"),
 		TEXT("Com_Anim"), reinterpret_cast<CComponent**>(&m_pAnimCom))))
 		return E_FAIL;
 
-	//Prototype_Component_Anim_KiryuFace
+	//Prototype_Component_Anim_Kiryu_Karaoke_Face
 	CAnim* pAnimCom = { nullptr };
-	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Anim_KiryuFace"),
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Anim_Kiryu_Karaoke_Face"),
 		TEXT("Com_Anim_Face"), reinterpret_cast<CComponent**>(&pAnimCom))))
 		return E_FAIL;
 	m_SeparationAnimComs.push_back(pAnimCom);
@@ -255,7 +297,7 @@ CKaraoke_Kiryu* CKaraoke_Kiryu::Create(ID3D11Device* pDevice, ID3D11DeviceContex
 
 	if (FAILED(pInstance->Initialize_Prototype()))
 	{
-		MSG_BOX("Failed To Created : CPlayer");
+		MSG_BOX("Failed To Created : CKaraoke_Kiryu");
 		Safe_Release(pInstance);
 	}
 
@@ -268,7 +310,7 @@ CGameObject* CKaraoke_Kiryu::Clone(void* pArg)
 
 	if (FAILED(pInstance->Initialize(pArg)))
 	{
-		MSG_BOX("Failed To Cloned : CPlayer");
+		MSG_BOX("Failed To Cloned : CKaraoke_Kiryu");
 		Safe_Release(pInstance);
 	}
 
@@ -294,4 +336,175 @@ void CKaraoke_Kiryu::Free()
 string CKaraoke_Kiryu::Get_CurrentAnimationName()
 {
 	return ExtractString(m_pModelCom->Get_AnimationName(m_pModelCom->Get_CurrentAnimationIndex()));
+}
+
+void CKaraoke_Kiryu::Set_CutSceneAnim()
+{
+	if (CUTSCENE == m_eAnimComType) return;
+
+	m_eAnimComType = CUTSCENE;
+
+	Separation_Bone("_jaw_c_n");
+	Off_Separation_Hand();			// 손 분리 애니메이션 끄기
+
+	_uint j = 0;
+	auto CameraAnimList = m_pCameraModel->Get_Animations();
+	for (auto& pAnimation : CameraAnimList)
+	{
+		string CameraAnimName = pAnimation->Get_AnimName();
+
+		// 애니메이션 이름에 .cmt가 포함된 경우만 카메라 애니메이션이다.
+		if (CameraAnimName.find(".cmt") != std::string::npos && CameraAnimName.find("m53020") != std::string::npos)
+		{
+			m_iCutSceneCamAnimIndex = j;
+			break;
+		}
+		j++;
+	}
+}
+
+void CKaraoke_Kiryu::Play_CutScene(const _float& fTimeDelta)
+{
+	if (CUTSCENE == m_eAnimComType)
+	{
+		// 카메라 모델의 애니메이션이 종료되면 똑같이 플레이어의 애니메이션도 종료된 것이기 때문에 기존상태로 되돌린다.
+		// 컷신 종료 시 점수판 띄워야함
+		if (m_pCameraModel->Get_AnimFinished())
+		{
+			Reset_CutSceneEvent();
+
+			return;
+		}
+
+		// 실제로 모델의 애니메이션을 돌리는건 컴포넌트이고, m_pCameraModel는 카메라 애니메이션을 실행하는 모델이라 랜더하지않는다
+		m_pModelCom->Play_Animation_CutScene(fTimeDelta, m_pAnimCom, false, m_iCutSceneAnimIndex, false);
+
+		CCamera* pCamera = dynamic_cast<CCamera*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Camera"), CAMERA_CUTSCENE));
+		// Blender에서 얻은 본의 변환 행렬
+		_matrix matBoneMatrix = XMLoadFloat4x4(m_pCameraModel->Get_BoneCombinedTransformationMatrix("Camera"));
+
+		// 플레이어의 월드 변환 행렬
+		//_matrix matPlayerWorld = pPlayer->Get_TransformCom()->Get_WorldMatrix();
+		_matrix matPlayerWorld = m_pTransformCom->Get_WorldMatrix();
+
+		_matrix matVectorBoneWorld = XMLoadFloat4x4(m_pModelCom->Get_BoneCombinedTransformationMatrix("vector_c_n"));
+
+		// Blender의 좌표계를 DirectX의 좌표계로 변환하기 위한 회전 행렬
+		_matrix rotationMatrixX = XMMatrixRotationX(XMConvertToRadians(90));
+		_matrix rotationMatrixY = XMMatrixRotationY(XMConvertToRadians(-180));
+		_matrix rotationMatrixZ = XMMatrixRotationZ(XMConvertToRadians(90));
+
+		// Blender의 본 변환 행렬과 플레이어의 월드 변환 행렬을 결합하고 좌표계 변환을 적용
+		_matrix finalMat = rotationMatrixX * rotationMatrixY * rotationMatrixZ * matVectorBoneWorld * matBoneMatrix * matPlayerWorld;
+
+		// 최종 뷰 행렬을 계산
+		_matrix viewMatrix = XMMatrixInverse(nullptr, finalMat);
+
+		bool containsNaN = XMMatrixIsNaN(viewMatrix);
+		if (containsNaN)
+			return;
+
+		// 뷰 행렬을 파이프라인에 설정
+		m_pGameInstance->Set_Transform(CPipeLine::D3DTS_VIEW, viewMatrix);
+
+		auto KeyFrames = m_pCameraModel->Get_CurrentKeyFrameIndices(m_iCutSceneCamAnimIndex);
+		_uint iKeyFrameIndex = KeyFrames->front();
+
+		_float fFov = m_pCameraModel->Get_FoV(m_pCameraModel->Get_AnimationName(m_iCutSceneCamAnimIndex), iKeyFrameIndex);
+		pCamera->Set_FoV(m_pCameraModel->Get_FoV(m_pCameraModel->Get_AnimationName(m_iCutSceneCamAnimIndex), iKeyFrameIndex));
+
+		CModel::ANIMATION_DESC Desc{ m_iCutSceneCamAnimIndex, false };
+		m_pCameraModel->Set_AnimationIndex(Desc);
+
+		// 카메라 본 애니메이션 실행
+		m_pCameraModel->Play_Animation_CutScene(fTimeDelta, nullptr, false, m_iCutSceneCamAnimIndex, false, "Camera");
+	}
+}
+
+void CKaraoke_Kiryu::Reset_CutSceneEvent()
+{
+	CAMERA eCurrentCam = m_pSystemManager->Get_Camera();
+
+	switch (eCurrentCam)
+	{
+		// 현재 플레이어 카메라이며, 컷신으로 돌리는 상황
+	case Client::CAMERA_PLAYER:
+	{
+		CPlayerCamera* pCamera = dynamic_cast<CPlayerCamera*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Camera"), CAMERA_PLAYER));
+		// 플레이어 카메라의 현재 상태를 저장한다.
+		pCamera->Store_PrevMatrix();
+
+		// 컷신으로 돌릴 때, 컷신 카메라를 초기화해준다.
+		CCutSceneCamera* pCutSceneCamera = dynamic_cast<CCutSceneCamera*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Camera"), CAMERA_CUTSCENE));
+		pCutSceneCamera->Reset_ReturnVariables();
+		break;
+	}
+
+	// 현재 컷신 카메라이며, 플레이어 카메라로 돌리는 상황
+	case Client::CAMERA_CUTSCENE:
+		// 현재 컷신카메라의 마지막 행렬과 Fov를 받아와서
+		CCutSceneCamera* pCutSceneCamera = dynamic_cast<CCutSceneCamera*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Camera"), CAMERA_CUTSCENE));
+		//_matrix LastMatrix = XMLoadFloat4x4(pCutSceneCamera->Get_WorldMatrix());
+		_matrix LastMatrix = m_pGameInstance->Get_Transform_Matrix(CPipeLine::D3DTS_VIEW);
+		_float fLastFov = pCutSceneCamera->Get_Fov();
+		pCutSceneCamera->On_Return();
+		break;
+	}
+
+	// 이 때 실행하는 애니메이션들은 선형보간을 하지 않는 애니메이션이므로 선형보간 간격을 0으로 꼭!! 초기화해야한다.
+	m_pModelCom->Set_ChangeInterval(0.0);
+	m_pCameraModel->Set_ChangeInterval(0.0);
+	m_pAnimCom->Reset_Animation(m_iCutSceneAnimIndex);
+	m_pCameraModel->Reset_Animation(m_iCutSceneCamAnimIndex);
+
+	m_eAnimComType = (m_eAnimComType == DEFAULT ? CUTSCENE : DEFAULT);
+
+	// 그리고 체인지
+	m_pSystemManager->Set_Camera(CAMERA_CUTSCENE == m_pSystemManager->Get_Camera() ? CAMERA_PLAYER : CAMERA_CUTSCENE);
+}
+
+void CKaraoke_Kiryu::Ready_SingingInterval()
+{
+	m_fMouthChangeInterval.push_back(0.1f);
+	m_fMouthChangeInterval.push_back(0.1f);
+	m_fMouthChangeInterval.push_back(0.2f);
+	m_fMouthChangeInterval.push_back(0.2f);
+	m_fMouthChangeInterval.push_back(0.1f);
+	m_fMouthChangeInterval.push_back(0.1f);
+	m_fMouthChangeInterval.push_back(0.3f);
+	m_fMouthChangeInterval.push_back(0.3f);
+	m_fMouthChangeInterval.push_back(0.1f);
+	m_fMouthChangeInterval.push_back(0.1f);
+	m_fMouthChangeInterval.push_back(0.4f);
+	m_fMouthChangeInterval.push_back(0.4f);
+	m_fMouthChangeInterval.push_back(0.1f);
+	m_fMouthChangeInterval.push_back(0.1f);
+	m_fMouthChangeInterval.push_back(0.1f);
+	m_fMouthChangeInterval.push_back(0.1f);
+	m_fMouthChangeInterval.push_back(0.1f);
+	m_fMouthChangeInterval.push_back(0.1f);
+	m_fMouthChangeInterval.push_back(0.2f);
+	m_fMouthChangeInterval.push_back(0.2f);
+}
+
+void CKaraoke_Kiryu::Play_SingingAnim(const _float& fTimeDelta)
+{
+	_float fCurrent = m_fMouthChangeInterval.front();
+
+	m_fMouthTimer += fTimeDelta;
+	if (fCurrent <= m_fMouthTimer)
+	{
+		m_fMouthTimer = 0.f;
+
+		Change_MouthAnim();
+		// 맨 앞에거를 지우고, 맨앞 값을 맨 뒤로 다시 푸시백해준다.
+		m_fMouthChangeInterval.erase(m_fMouthChangeInterval.begin());
+		m_fMouthChangeInterval.push_back(fCurrent);
+	}
+}
+
+void CKaraoke_Kiryu::Change_MouthAnim()
+{
+	m_iFaceAnimIndex = m_iFaceAnimIndex == CLOSE ? OPEN : CLOSE;
+	m_SeparationAnimComs[FACE_ANIM]->Reset_Animation(m_iFaceAnimIndex);
 }

@@ -168,6 +168,7 @@ private:
 	void EffectState_Save(string strPath);
 	void RimEvent_Save(string strPath);
 	void TrailEvent_Save(string strPath);
+	void FaceEvent_Save(string strPath);
 	void BloodEvent_Save(string strPath);
 	void RadialEvent_Save(string strPath);
 
@@ -180,6 +181,7 @@ private:
 	void EffectState_Load(string strPath);
 	void RimEvent_Load(string strPath);
 	void TrailEvent_Load(string strPath);
+	void FaceEvent_Load(string strPath);
 	void BloodEvent_Load(string strPath);
 	void RadialEvent_Load(string strPath);
 
