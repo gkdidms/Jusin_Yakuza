@@ -134,13 +134,13 @@ void CHighway_Kiryu::Key_Input()
 {
 	//공격 가능한 환경인지 체크한 후 진행한다.
 	//다른 스킬들도 막기 위해서 return;
-	if (isAttackPossible())
-		return;
-
-	// 발사
-	if (m_pGameInstance->GetMouseState(DIM_LB) == TAP)
+	if (!isAttackPossible())
 	{
-		Change_Behavior(SHOT);
+		// 발사
+		if (m_pGameInstance->GetMouseState(DIM_LB) == TAP)
+		{
+			Change_Behavior(SHOT);
+		}
 	}
 
 	// 히트아이 사용
@@ -154,7 +154,7 @@ void CHighway_Kiryu::Key_Input()
 		else
 		{
 			m_isHitEyeCharging = false;
-			m_fHitEye -= HITEYE_DECREASE_SPEED * m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player"));
+			m_fHitEye -= HITEYE_DECREASE_SPEED * m_pGameInstance->Get_TimeDelta(TEXT("Timer_Game"));
 			m_pGameInstance->Set_TimeSpeed(TEXT("Timer_60"), 0.2f);
 		}
 	}
@@ -166,9 +166,9 @@ void CHighway_Kiryu::Key_Input()
 
 	if (m_isHitEyeCharging)
 	{
+		m_fHitEye += HITEYE_DECREASE_SPEED * m_pGameInstance->Get_TimeDelta(TEXT("Timer_Game"));
 		if (100.f < m_fHitEye)
 			m_fHitEye = 100.f;
-		m_fHitEye += HITEYE_DECREASE_SPEED * m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player"));
 	}
 
 	// 장전/숨기
