@@ -125,6 +125,12 @@ void CMap::Tick(const _float& fTimeDelta)
 	//	m_fDynamicTime = 0;
 	//	
 	//}
+
+	XMMATRIX		posWorldMatrix = XMMatrixIdentity();
+	XMVECTOR		vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	memcpy(&posWorldMatrix.r[3], &vPos, sizeof(_vector));
+
+	m_pColliderCom->Tick(posWorldMatrix);
 		
 
 #ifdef _DEBUG
@@ -163,6 +169,7 @@ void CMap::Late_Tick(const _float& fTimeDelta)
 
 //	m_pGameInstance->Add_Renderer(CRenderer::RENDER_SHADOWOBJ, this);
 
+
 }
 
 HRESULT CMap::Render()
@@ -170,6 +177,8 @@ HRESULT CMap::Render()
 #ifdef _DEBUG
 	for (auto& iter : m_vColliders)
 		m_pGameInstance->Add_DebugComponent(iter);
+
+	m_pGameInstance->Add_DebugComponent(m_pColliderCom);
 #endif
 
 	if (FAILED(Bind_ShaderResources()))
@@ -1198,11 +1207,22 @@ HRESULT CMap::Add_Components(void* pArg)
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
 		return E_FAIL;
 
+
+
+	CBounding_AABB::BOUNDING_AABB_DESC		ColliderDesc{};
+	ColliderDesc.eType = CCollider::COLLIDER_AABB;
+	ColliderDesc.vExtents = _float3(7,7,7);
+	ColliderDesc.vCenter = _float3(gameobjDesc->vStartPos.r[3].m128_f32[0], gameobjDesc->vStartPos.r[3].m128_f32[1], gameobjDesc->vStartPos.r[3].m128_f32[2]);
+
+	m_pColliderCom = dynamic_cast<CCollider*>(m_pGameInstance->Add_Component_Clone(m_iCurrentLevel, TEXT("Prototype_Component_Collider"), &ColliderDesc));
+
+
+
 	return S_OK;
 }
 
 HRESULT CMap::Bind_ShaderResources()
-{
+{ 
 	if (FAILED(m_pTransformCom->Bind_ShaderMatrix(m_pShaderCom, "g_WorldMatrix")))
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_VIEW))))
@@ -1292,6 +1312,8 @@ void CMap::Free()
 	m_vStrongBloomIndex.clear();
 	m_vCompulsoryDecalBlendMeshIndex.clear();
 
+
+	Safe_Release(m_pColliderCom);
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pModelCom);
 	Safe_Release(m_pMaterialCom);

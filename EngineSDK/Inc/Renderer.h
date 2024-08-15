@@ -127,11 +127,15 @@ private:
 
     void Render_UI();
 
+
+    void Render_Occulusion();
+
 private:
     HRESULT Ready_Targets();
     HRESULT Ready_MRTs();
     HRESULT Ready_LightDepth();
     HRESULT Ready_SSAONoiseTexture();
+    HRESULT Ready_Occulusion();
 
 
 #ifdef _DEBUG
@@ -146,6 +150,7 @@ private:
     ID3D11Device* m_pDevice = { nullptr };
     ID3D11DeviceContext* m_pContext = { nullptr };
     class CGameInstance* m_pGameInstance = { nullptr };
+    ID3D11Query* m_pOcclusionQuery = { nullptr };
 
     list<class CGameObject*> m_RenderObject[RENDER_END];
 

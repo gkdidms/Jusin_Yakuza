@@ -8,6 +8,7 @@ BEGIN(Engine)
 class CShader;
 class CModel;
 class CNavigation;
+class CTexture;
 END
 
 BEGIN(Client)
@@ -49,7 +50,7 @@ public:
 	enum SHADER_NUM {
 		SHADER_DEFAULT, //0
 		SHADER_DEFAULT_BRIGHT, //1 -> BRIGHT 될때의 NONBELND
-		SHAEDER_EFFECT, //2
+		SHADER_DISSOLVE, //2
 
 		// 무조건 제일 아래
 		SHADER_LIGHTDEPTH, //3
@@ -111,7 +112,7 @@ public:
 
 	ITEM_MODE			Get_ItemMode() { return m_eItemMode; }
 	void				Set_ItemMode(CItem::ITEM_MODE mode) { m_eItemMode = mode; }
-	void				Set_Grab(bool bGrab) { m_bCurGrab = bGrab;  m_eItemMode = ITEM_GRAB; }
+	void				Set_Grab(bool bGrab) { m_bCurGrab = bGrab;  m_eItemMode = ITEM_GRAB;}
 	void				Attacking(_bool isOn = true) { m_isAttacking = isOn; }
 
 public:
@@ -133,6 +134,8 @@ private:
 	CCollider* m_pColliderCom = { nullptr }; //AABB 저장
 	CCollider* m_pOBBColliderCom = { nullptr }; //AABB 저장
 	CNavigation* m_pNavigationCom = { nullptr };
+
+	CTexture* m_pDissolveTextureCom = { nullptr };
 
 private:
 	_bool m_isFirst = { true };
@@ -167,6 +170,11 @@ private:
 	_bool					m_isThrowing = { false };
 	_float					m_fThrowTimer = { 0.f };
 	THROW_INFO_DESC			m_ThrowInfo{};
+
+
+	_float					m_fDissolveTime = { 0 };
+	_bool					m_bDissovle = { false };
+	
 
 public:
 	HRESULT Add_Components(void* pArg);

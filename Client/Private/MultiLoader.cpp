@@ -205,6 +205,8 @@ HRESULT CMultiLoader::Loading(_uint iType)
 }
 
 /* 공통적인 저장 객체를 넣어주는 함수. */
+
+/* 공통적인 저장 객체를 넣어주는 함수. */
 HRESULT CMultiLoader::Loading_Default()
 {
 #pragma region Texture
@@ -523,6 +525,15 @@ HRESULT CMultiLoader::Loading_Default()
 		return E_FAIL;
 #pragma endregion
 
+
+#pragma region DissolveTexture
+	/* Prototype_Component_Texture_Coin*/
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Texture_Dissolve_0"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Dissovle_%d.dds"), 1))))
+		return E_FAIL;
+#pragma endregion
+
+
 #pragma region Component
 	lstrcpy(m_szLoadingText, TEXT("컴포넌트 원형 를(을) 로딩 중 입니다."));
 	/* For.Prototype_Component_VIBuffer_Terrain */
@@ -550,7 +561,7 @@ HRESULT CMultiLoader::Loading_Default()
 		return E_FAIL;*/
 
 		/* For.Prototype_Component_Anim_NPC */
-	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Anim_NPC"), CAnim::Create(m_pDevice, m_pContext, "../Bin/DataFiles/Models/Anim/Monster/Jimu/Animation_NPC.dat", false))))
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Anim_NPC"), CAnim::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Anim/Monster/Jimu/Animation_NPC.dat", false))))
 		return E_FAIL;
 	//if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Anim_NPC"), CAnim::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Anim/Monster/Animation_NPC.fbx", true))))
 	//	return E_FAIL;
@@ -597,12 +608,6 @@ HRESULT CMultiLoader::Loading_Default()
 		return E_FAIL;
 	//if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Kiryu_CarChase"), CAnim::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Anim/Animation_Kiryu_CarChase.fbx", true))))
 	//	return E_FAIL;
-
-	/* For.Prototype_Component_Anim_NPC */
-	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Anim_NPC"), CAnim::Create(m_pDevice, m_pContext, "../Bin/DataFiles/AnimationData/Animation_NPC.dat", false))))
-		return E_FAIL;
-	/*if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Anim_NPC"), CAnim::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Anim/Animation_NPC.fbx", true))))
-		return E_FAIL;*/
 
 		/* For.Prototype_Component_Collider */
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Collider"), CCollider::Create(m_pDevice, m_pContext))))
@@ -792,7 +797,6 @@ HRESULT CMultiLoader::Loading_Highway()
 
 	return S_OK;
 }
-
 HRESULT CMultiLoader::Loading_For_Anim()
 {
 	Add_Models_On_Path(LEVEL_TEST, TEXT("../Bin/Resources/Models/Anim/Player/"));

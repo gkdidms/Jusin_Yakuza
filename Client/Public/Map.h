@@ -8,6 +8,7 @@ BEGIN(Engine)
 class CShader;
 class CModel;
 class CNeoShader;
+class CCollider;
 END
 
 BEGIN(Client)
@@ -106,6 +107,7 @@ private:
 	CShader* m_pShaderCom = { nullptr };
 	CModel* m_pModelCom = { nullptr };
 	CNeoShader* m_pMaterialCom = { nullptr };
+	CCollider* m_pColliderCom = { nullptr };
 
 	class CSystemManager* m_pSystemManager = { nullptr };
 
