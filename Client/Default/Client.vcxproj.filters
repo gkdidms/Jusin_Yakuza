@@ -629,6 +629,9 @@
     <ClCompile Include="..\Private\UIKaraoke_Score.cpp">
       <Filter>95.Utility\05.UIManager\UIScene\UIKaraoke_Score</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\UITitle.cpp">
+      <Filter>95.Utility\05.UIManager\UIScene\UITitle</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\MainApp.h">
@@ -1288,6 +1291,9 @@
     </ClInclude>
     <ClInclude Include="..\Public\UIKaraoke_Score.h">
       <Filter>95.Utility\05.UIManager\UIScene\UIKaraoke_Score</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UITitle.h">
+      <Filter>95.Utility\05.UIManager\UIScene\UITitle</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1979,6 +1985,9 @@
     </Filter>
     <Filter Include="95.Utility\05.UIManager\UIScene\UIKaraoke_Score">
       <UniqueIdentifier>{24e750fa-2c28-4120-a72a-e3f2bab74b8d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\05.UIManager\UIScene\UITitle">
+      <UniqueIdentifier>{30831fab-dee3-4322-945c-12079c973a08}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

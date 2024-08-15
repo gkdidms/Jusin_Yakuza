@@ -18,10 +18,12 @@
 #include"UISkillRush.h"
 #include"UISkillDestroyer.h"
 #include "UICarchase.h"
+#include "UITitle.h"
 
 #include "UIKaraoke_Select.h"
 #include "UIKaraoke_Play.h"
 #include "UIKaraoke_Score.h"
+
 
 
 #include "InventoryManager.h"
@@ -177,6 +179,11 @@ HRESULT CUIManager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 	Desc.strSceneName = TEXT("Karaoke_Score");
 	pScene = CUIKaraoke_Score::Create(m_pDevice, m_pContext, &Desc);
 	m_AllScene.emplace(make_pair(TEXT("Karaoke_Score"), pScene));
+
+	Desc.isLoading = true;
+	Desc.strSceneName = TEXT("Title");
+	pScene = CUITitle::Create(m_pDevice, m_pContext, &Desc);
+	m_AllScene.emplace(make_pair(TEXT("Title"), pScene));
 
 	return S_OK;
 }

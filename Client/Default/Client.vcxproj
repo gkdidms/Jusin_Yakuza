@@ -233,6 +233,7 @@
     <ClInclude Include="..\Public\UIKaraoke_Play.h" />
     <ClInclude Include="..\Public\UIKaraoke_Score.h" />
     <ClInclude Include="..\Public\UIKaraoke_Select.h" />
+    <ClInclude Include="..\Public\UITitle.h" />
     <ClInclude Include="..\Public\Weapon_Gun_Cz75.h" />
     <ClInclude Include="..\Public\Highway_Kiryu.h" />
     <ClInclude Include="..\Public\Highway_Taxi.h" />
@@ -595,6 +596,7 @@
     <ClCompile Include="..\Private\UISkillMenu.cpp" />
     <ClCompile Include="..\Private\UISkillRush.cpp" />
     <ClCompile Include="..\Private\UITalk.cpp" />
+    <ClCompile Include="..\Private\UITitle.cpp" />
     <ClCompile Include="..\Private\UITutorial.cpp" />
     <ClCompile Include="..\Private\UI_Effect.cpp" />
     <ClCompile Include="..\Private\UI_Object.cpp" />
