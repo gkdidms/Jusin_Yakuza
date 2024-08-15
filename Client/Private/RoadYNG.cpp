@@ -2,7 +2,6 @@
 
 #include "GameInstance.h"
 
-#include "AI_Adventure.h"
 
 CRoadYNG::CRoadYNG(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CRoadStanding{ pDevice, pContext }
@@ -33,12 +32,7 @@ void CRoadYNG::Priority_Tick(const _float& fTimeDelta)
 
 void CRoadYNG::Tick(const _float& fTimeDelta)
 {
-	m_pTree->Tick(fTimeDelta);
-
-	Change_Animation();
-	m_pModelCom->Play_Animation(fTimeDelta * m_fOffset, m_pAnimCom, m_isAnimLoop);
-
-	Synchronize_Root(fTimeDelta);
+	__super::Tick(fTimeDelta);
 }
 
 void CRoadYNG::Late_Tick(const _float& fTimeDelta)

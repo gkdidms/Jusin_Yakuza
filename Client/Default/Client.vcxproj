@@ -183,11 +183,12 @@
     <ClInclude Include="..\..\Imgui\imgui\imstb_textedit.h" />
     <ClInclude Include="..\..\Imgui\imgui\imstb_truetype.h" />
     <ClInclude Include="..\public\Adventure.h" />
+    <ClInclude Include="..\Public\AI_RoadStanding.h" />
     <ClInclude Include="..\public\RoadNML.h" />
     <ClInclude Include="..\public\RoadStanding.h" />
     <ClInclude Include="..\public\RoadWalker.h" />
     <ClInclude Include="..\public\RoadYNG.h" />
-    <ClInclude Include="..\public\AI_Adventure.h" />
+    <ClInclude Include="..\public\AI_RoadWalker.h" />
     <ClInclude Include="..\public\AI_Bike.h" />
     <ClInclude Include="..\public\AI_CarChase.h" />
     <ClInclude Include="..\public\AI_DefaultYakuza.h" />
@@ -403,11 +404,12 @@
     <ClCompile Include="..\..\Imgui\imgui\imgui_tables.cpp" />
     <ClCompile Include="..\..\Imgui\imgui\imgui_widgets.cpp" />
     <ClCompile Include="..\private\Adventure.cpp" />
+    <ClCompile Include="..\Private\AI_RoadStanding.cpp" />
     <ClCompile Include="..\private\RoadNML.cpp" />
     <ClCompile Include="..\private\RoadStanding.cpp" />
     <ClCompile Include="..\private\RoadWalker.cpp" />
     <ClCompile Include="..\private\RoadYNG.cpp" />
-    <ClCompile Include="..\private\AI_Adventure.cpp" />
+    <ClCompile Include="..\private\AI_RoadWalker.cpp" />
     <ClCompile Include="..\private\AI_Bike.cpp" />
     <ClCompile Include="..\private\AI_CarChase.cpp" />
     <ClCompile Include="..\private\AI_DefaultYakuza.cpp" />

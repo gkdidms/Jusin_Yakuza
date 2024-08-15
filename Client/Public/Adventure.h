@@ -23,6 +23,7 @@ public:
         int             iNaviRouteNum;
     }ADVENTURE_IODESC;
 
+public:
     enum ADVENTURE_STATE
     {
         ADVENTURE_IDLE,
@@ -32,6 +33,8 @@ public:
         ADVENTURE_HIT_L,
         ADVENTURE_HIT_R,
         ADVENTURE_TURN,
+        ADVENTURE_TURN90_R,
+        ADVENTURE_TURN90_L,
     };
 
 public:
@@ -67,7 +70,6 @@ public:
 protected:
     CAnim* m_pAnimCom = { nullptr }; // 애니메이션만 따로 저장하고있는 애니메이션 컴포넌트 
     CAStart* m_pAStartCom = { nullptr };
-    class CAI_Adventure* m_pTree = { nullptr };    
     
 protected:
     _bool m_isAnimLoop = { false };

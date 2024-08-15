@@ -376,8 +376,8 @@
     <ClCompile Include="..\private\RoadNML.cpp">
       <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\Walker\00.NML</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\AI_Adventure.cpp">
-      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\AI</Filter>
+    <ClCompile Include="..\private\AI_RoadWalker.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\Walker\AI</Filter>
     </ClCompile>
     <ClCompile Include="..\private\AI_RoadNML.cpp">
       <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\Walker\00.NML\AI</Filter>
@@ -616,6 +616,9 @@
     </ClCompile>
     <ClCompile Include="..\private\RoadStanding.cpp">
       <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\Standing</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\AI_RoadStanding.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\AI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1027,8 +1030,8 @@
     <ClInclude Include="..\public\RoadNML.h">
       <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\Walker\00.NML</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\AI_Adventure.h">
-      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\AI</Filter>
+    <ClInclude Include="..\public\AI_RoadWalker.h">
+      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\Walker\AI</Filter>
     </ClInclude>
     <ClInclude Include="..\public\AI_RoadNML.h">
       <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\Walker\00.NML\AI</Filter>
@@ -1264,6 +1267,9 @@
     </ClInclude>
     <ClInclude Include="..\public\RoadStanding.h">
       <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\Standing</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\AI_RoadStanding.h">
+      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\AI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1803,9 +1809,6 @@
     <Filter Include="02.GameObjects\02.Character\LandObject\02.Adventure">
       <UniqueIdentifier>{e953efb4-bf89-4f41-8ac1-a70274d77017}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\02.Character\LandObject\02.Adventure\AI">
-      <UniqueIdentifier>{118e6329-be46-4fd0-8074-1988d055f79a}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObjects\02.Character\LandObject\03.CarChase">
       <UniqueIdentifier>{5c299c28-69e6-4612-a808-f559d8352e9d}</UniqueIdentifier>
     </Filter>
@@ -1943,6 +1946,12 @@
     </Filter>
     <Filter Include="02.GameObjects\02.Character\LandObject\02.Adventure\Standing\00.YNG\AI">
       <UniqueIdentifier>{d07800cf-4913-43c5-9101-0fadabd3e156}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\02.Adventure\Walker\AI">
+      <UniqueIdentifier>{118e6329-be46-4fd0-8074-1988d055f79a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\02.Adventure\AI">
+      <UniqueIdentifier>{16ebbc04-eb2b-4478-bb72-c4894c2ac1a4}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

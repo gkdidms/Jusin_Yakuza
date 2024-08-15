@@ -7,12 +7,12 @@
 #include "LeafNode.h"
 
 CAI_RoadNML::CAI_RoadNML()
-	: CAI_Adventure{}
+	: CAI_RoadWalker{}
 {
 }
 
 CAI_RoadNML::CAI_RoadNML(const CAI_RoadNML& rhs)
-	: CAI_Adventure { rhs }
+	: CAI_RoadWalker { rhs }
 {
 }
 
@@ -56,6 +56,8 @@ void CAI_RoadNML::Ready_Root()
 #pragma region Walk
 	CSequance* pWalkSeq = CSequance::Create();
 	pWalkSeq->Add_Children(CLeafNode::Create(bind(&CAI_RoadNML::Check_Walk, this)));
+	pWalkSeq->Add_Children(CLeafNode::Create(bind(&CAI_RoadNML::Back, this)));
+	pWalkSeq->Add_Children(CLeafNode::Create(bind(&CAI_RoadNML::Turn, this)));
 	pWalkSeq->Add_Children(CLeafNode::Create(bind(&CAI_RoadNML::Walk, this)));
 #pragma endregion
 

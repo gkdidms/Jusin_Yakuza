@@ -2,7 +2,7 @@
 
 #include "GameInstance.h"
 
-#include "AI_Adventure.h"
+#include "AI_RoadStanding.h"
 
 CRoadStanding::CRoadStanding(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CAdventure{pDevice, pContext }
@@ -58,4 +58,5 @@ void CRoadStanding::Change_Animation()
 void CRoadStanding::Free()
 {
 	__super::Free();
+	Safe_Release(m_pTree);
 }

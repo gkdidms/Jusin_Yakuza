@@ -2,7 +2,7 @@
 
 #include "GameInstance.h"
 
-#include "AI_Adventure.h"
+#include "AI_RoadWalker.h"
 
 CRoadWalker::CRoadWalker(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CAdventure{pDevice, pContext }
@@ -39,10 +39,6 @@ void CRoadWalker::Tick(const _float& fTimeDelta)
 
 	m_pModelCom->Play_Animation(fTimeDelta * m_fOffset, m_pAnimCom, m_isAnimLoop);
 
-	_vector vDir = m_pNavigationCom->Compute_WayPointDir_Adv(m_pTransformCom->Get_State(CTransform::STATE_POSITION), fTimeDelta);
-	m_pTransformCom->LookAt_For_LandObject(vDir, true);
-	//m_pTransformCom->Go_Straight_CustumSpeed(m_fSpeed, fTimeDelta, m_pNavigationCom);
-
 	Synchronize_Root(fTimeDelta);
 }
 
@@ -61,9 +57,73 @@ HRESULT CRoadWalker::Add_Components()
 
 void CRoadWalker::Change_Animation()
 {
+	__super::Change_Animation();
+
+	switch (m_iState)
+	{
+	case ADVENTURE_IDLE:
+	{
+		m_strAnimName = "m_nml_tlk_stand_kamae";
+		m_isAnimLoop = true;
+		break;
+	}
+	case ADVENTURE_WALK:
+	{
+		m_strAnimName = "p_mov_walk_fast";
+		m_isAnimLoop = true;
+		m_fOffset = 0.8f;
+		break;
+	}
+	case ADVENTURE_WALK_S:
+	{
+		m_strAnimName = "p_mov_walk_s";
+		break;
+	}
+	case ADVENTURE_WALK_EN:
+	{
+		m_strAnimName = "p_mov_walk_en";
+		break;
+	}
+	case ADVENTURE_HIT_L:
+	{
+		m_strAnimName = "m_hml_act_walk_hit_l";
+		break;
+	}
+	case ADVENTURE_HIT_R:
+	{
+		m_strAnimName = "m_hml_act_walk_hit_r";
+		break;
+	}
+	case ADVENTURE_TURN:
+	{
+		m_strAnimName = "p_mov_turnr";
+		break;
+	}
+	case ADVENTURE_TURN90_L:
+	{
+		m_strAnimName = "p_kru_tlk_stand_turnl90";
+		break;
+	}
+	case ADVENTURE_TURN90_R:
+	{
+		m_strAnimName = "p_kru_tlk_stand_turnr90";
+		break;
+	}
+	default:
+		break;
+	}
+
+	m_iAnim = m_pAnimCom->Get_AnimationIndex(m_strAnimName.c_str());
+
+	if (m_iAnim == -1)
+		return;
+
+	m_pModelCom->Set_AnimationIndex(m_iAnim, m_pAnimCom->Get_Animations(), m_fChangeInterval);
 }
 
 void CRoadWalker::Free()
 {
 	__super::Free();
+
+	Safe_Release(m_pTree);
 }

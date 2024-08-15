@@ -169,52 +169,6 @@ void CAdventure::Change_Animation()
 {
 	m_isAnimLoop = false;
 	m_fOffset = 1.f;
-
-	switch (m_iState)
-	{
-	case ADVENTURE_IDLE:
-	{
-		m_strAnimName = "m_nml_tlk_stand_kamae";
-		m_isAnimLoop = true;
-		break;
-	}
-	case ADVENTURE_WALK:
-	{
-		m_strAnimName = "p_mov_walk_fast";
-		m_isAnimLoop = true;
-		m_fOffset = 0.8f;
-		break;
-	}
-	case ADVENTURE_WALK_S:
-	{
-		m_strAnimName = "p_mov_walk_s";
-		break;
-	}
-	case ADVENTURE_WALK_EN:
-	{
-		m_strAnimName = "p_mov_walk_en";
-		break;
-	}
-	case ADVENTURE_HIT_L:
-	{
-		m_strAnimName = "m_hml_act_walk_hit_l";
-		break;
-	}
-	case ADVENTURE_HIT_R:
-	{
-		m_strAnimName = "m_hml_act_walk_hit_r";
-		break;
-	}
-	default:
-		break;
-	}
-
-	m_iAnim = m_pAnimCom->Get_AnimationIndex(m_strAnimName.c_str());
-	
-	if (m_iAnim == -1)
-		return;
-
-	m_pModelCom->Set_AnimationIndex(m_iAnim, m_pAnimCom->Get_Animations(), m_fChangeInterval);
 }
 
 void CAdventure::Synchronize_Root(const _float& fTimeDelta)
@@ -347,6 +301,5 @@ void CAdventure::Free()
 
 	Safe_Release(m_pAnimCom);
 	Safe_Release(m_pNavigationCom);
-	Safe_Release(m_pTree);
 	Safe_Release(m_pAStartCom);
 }

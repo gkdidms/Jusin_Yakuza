@@ -1,30 +1,30 @@
-#include "AI_Adventure.h"
+#include "AI_RoadStanding.h"
 
 #include "GameInstance.h"
 
 #include "Player.h"
 #include "Adventure.h"
 
-CAI_Adventure::CAI_Adventure()
+CAI_RoadStanding::CAI_RoadStanding()
 	: CBTNode{},
 	m_pGameInstance { CGameInstance::GetInstance() }
 {
 	Safe_AddRef(m_pGameInstance);
 }
 
-CAI_Adventure::CAI_Adventure(const CAI_Adventure& rhs)
+CAI_RoadStanding::CAI_RoadStanding(const CAI_RoadStanding& rhs)
 	: CBTNode{ rhs },
 	m_pGameInstance{ CGameInstance::GetInstance() }
 {
 	Safe_AddRef(m_pGameInstance);
 }
 
-HRESULT CAI_Adventure::Initialize_Prototype()
+HRESULT CAI_RoadStanding::Initialize_Prototype()
 {
 	return S_OK;
 }
 
-HRESULT CAI_Adventure::Initialize(void* pArg)
+HRESULT CAI_RoadStanding::Initialize(void* pArg)
 {
 	if (nullptr == pArg)
 		return E_FAIL;
@@ -39,18 +39,18 @@ HRESULT CAI_Adventure::Initialize(void* pArg)
 	return S_OK;
 }
 
-void CAI_Adventure::Tick(const _float& fTimeDelta)
+void CAI_RoadStanding::Tick(const _float& fTimeDelta)
 {
 }
 
-_bool CAI_Adventure::isRouteMoveFinish()
+_bool CAI_RoadStanding::isRouteMoveFinish()
 {
 
 
 	return false;
 }
 
-CBTNode::NODE_STATE CAI_Adventure::Check_Coll()
+CBTNode::NODE_STATE CAI_RoadStanding::Check_Coll()
 {
 	if (m_pThis->isColl())
 	{
@@ -61,19 +61,19 @@ CBTNode::NODE_STATE CAI_Adventure::Check_Coll()
 	return CBTNode::FAIL;
 }
 
-CBTNode::NODE_STATE CAI_Adventure::Coll()
+CBTNode::NODE_STATE CAI_RoadStanding::Coll()
 {
 
 	return CBTNode::SUCCESS;
 }
 
-CBTNode::NODE_STATE CAI_Adventure::Check_Walk()
+CBTNode::NODE_STATE CAI_RoadStanding::Check_Walk()
 {
 
 	return CBTNode::SUCCESS;
 }
 
-CBTNode::NODE_STATE CAI_Adventure::Turn()
+CBTNode::NODE_STATE CAI_RoadStanding::Turn()
 {
 	if (m_iSkill == SKILL_TURN)
 	{
@@ -84,23 +84,13 @@ CBTNode::NODE_STATE CAI_Adventure::Turn()
 	return CBTNode::FAIL;
 }
 
-CBTNode::NODE_STATE CAI_Adventure::Walk()
+CBTNode::NODE_STATE CAI_RoadStanding::Walk()
 {
-	if (m_iSkill == SKILL_WALK)
-	{
-		if (*m_pState == CAdventure::ADVENTURE_WALK_S && m_pAnimCom->Get_AnimFinished())
-			*m_pState = CAdventure::ADVENTURE_WALK;
-
-		return CBTNode::RUNNING;
-	}
-
-	m_iSkill = SKILL_WALK;
-	*m_pState = CAdventure::ADVENTURE_WALK_S;
 
 	return CBTNode::SUCCESS;
 }
 
-void CAI_Adventure::Free()
+void CAI_RoadStanding::Free()
 {
 	__super::Free();
 

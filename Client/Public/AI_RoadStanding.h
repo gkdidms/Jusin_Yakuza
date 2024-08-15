@@ -10,7 +10,7 @@ class CAStart;
 END
 
 BEGIN(Client)
-class CAI_Adventure abstract :
+class CAI_RoadStanding abstract :
     public CBTNode
 {
 public:
@@ -30,9 +30,9 @@ public:
     };
 
 protected:
-    CAI_Adventure();
-    CAI_Adventure(const CAI_Adventure& rhs);
-    virtual ~CAI_Adventure() = default;
+    CAI_RoadStanding();
+    CAI_RoadStanding(const CAI_RoadStanding& rhs);
+    virtual ~CAI_RoadStanding() = default;
 
 public:
     virtual HRESULT Initialize_Prototype();
