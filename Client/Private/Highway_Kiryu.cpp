@@ -227,10 +227,6 @@ void CHighway_Kiryu::Play_CurrentAnimation(_float fTimeDelta)
 		//m_pModelCom->Play_Animation(fTimeDelta, false);
 
 	m_pModelCom->Play_Animation(fTimeDelta, false);
-
-	// 애니메이션이 이상해서, 하반신만 Shot 애님으로 따로 돌려야한다.
-	m_pModelCom->Play_Animation_Separation(fTimeDelta, (m_isLeft ? 31 : 66), m_pAnimCom, true, 3);
-	m_pModelCom->Play_Animation_Separation(fTimeDelta, (m_isLeft ? 34 : 70), m_pAnimCom, true, 4);
 }
 
 void CHighway_Kiryu::Play_Animing(_float fTimeDelta)
@@ -360,11 +356,12 @@ void CHighway_Kiryu::Play_Swap(_float fTimeDelta)
 	else
 		m_pModelCom->Set_AnimationIndex((m_isLeft ? 77 : 78), 4.f);
 
-	if (!m_isStarted && Checked_Animation_Ratio(0.7))
+	// 차로 들어가는 모션
+	if (!m_isStarted && Checked_Animation_Ratio(0.6))
 	{
 		m_isStarted = true;
 	}
-	else if (Checked_Animation_Ratio(0.7))
+	else if (Checked_Animation_Ratio(0.6))
 	{
 		m_isLeft = !m_isLeft;
 		Change_Behavior(AIMING);
@@ -378,7 +375,7 @@ void CHighway_Kiryu::Change_Behavior(BEHAVIOR_TYPE eType)
 	Off_Separation_Hand();
 
 	// 어깨 분리 해제
-	m_pModelCom->Set_Separation_ParentBone(m_isLeft ? "ude1_r_n" : "ude1_l_n", -1);
+	//m_pModelCom->Set_Separation_ParentBone(m_isLeft ? "ude1_r_n" : "ude1_l_n", -1);
 
 	switch (eType)
 	{
@@ -387,36 +384,32 @@ void CHighway_Kiryu::Change_Behavior(BEHAVIOR_TYPE eType)
 		if (m_eCurrentBehavior != SHOT)
 			m_isStarted = false;
 
-		//m_pModelCom->Set_Separation_ParentBone("ketu_c_n", 3);
 		break;
 	}
 	case CHighway_Kiryu::HIDE:
 	{
-		m_isStarted = false;
+		if (eType != m_eCurrentBehavior)
+			m_isStarted = false;
 
-		//m_pModelCom->Set_Separation_ParentBone("ketu_c_n", -1);
 		break;
 	}
 	case CHighway_Kiryu::HIT:
 	{
 		m_isStarted = true;
-		//m_pModelCom->Set_Separation_ParentBone("ketu_c_n", 3);
 		break;
 	}
 	case CHighway_Kiryu::SHOT:
 	{
 		m_isStarted = true;
-		//m_pModelCom->Set_Separation_ParentBone("ketu_c_n", 3);
 
 		// 어깨 분리
-		m_pModelCom->Set_Separation_ParentBone(m_isLeft ? "ude1_r_n" : "ude1_l_n", 4);
-		m_pModelCom->Set_Separation_SingleBone(m_isLeft ? "ude1_r_n" : "ude1_l_n", -1);
+		//m_pModelCom->Set_Separation_ParentBone(m_isLeft ? "ude1_r_n" : "ude1_l_n", 4);
+		//m_pModelCom->Set_Separation_SingleBone(m_isLeft ? "ude1_r_n" : "ude1_l_n", -1);
 		break;
 	}
 	case CHighway_Kiryu::SWAP:
 	{
 		m_isStarted = false;
-		//m_pModelCom->Set_Separation_ParentBone("ketu_c_n", -1);
 		break;
 	}
 	}
@@ -485,12 +478,6 @@ HRESULT CHighway_Kiryu::Add_Components()
 		return E_FAIL;
 	m_SeparationAnimComs.push_back(pAnimCom);
 
-	//Prototype_Component_Kiryu_CarChase
-	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Kiryu_CarChase"),
-		TEXT("Com_Anim"), reinterpret_cast<CComponent**>(&m_pAnimCom))))
-		return E_FAIL;
-
-
 	return S_OK;
 }
 
@@ -522,14 +509,8 @@ HRESULT CHighway_Kiryu::Add_Objects()
 
 HRESULT CHighway_Kiryu::Bind_ResourceData()
 {
-	//if (FAILED(m_pTransformCom->Bind_ShaderMatrix(m_pShaderCom, "g_WorldMatrix")))
-	//	return E_FAIL;
-
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_WorldMatrix", &m_ModelMatrix)))
 		return E_FAIL;
-	/*
-	if (FAILED(m_pShaderCom->Bind_Matrix("g_WorldMatrix", pTaxiMatrix)))
-		return E_FAIL;*/
 
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_VIEW))))
 		return E_FAIL;
@@ -568,7 +549,6 @@ void CHighway_Kiryu::Free()
 
 	Safe_Release(m_pGun_R);
 	Safe_Release(m_pGun_L);
-	Safe_Release(m_pAnimCom);
 }
 
 string CHighway_Kiryu::Get_CurrentAnimationName()

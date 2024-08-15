@@ -86,7 +86,6 @@ private:
     const _float4x4* pTaxiMatrix = { nullptr };
     _float4x4 m_ModelMatrix;
 
-    CAnim* m_pAnimCom = { nullptr };
     class CGun_Cz75* m_pGun_R = { nullptr };
     class CGun_Cz75* m_pGun_L = { nullptr };
 
@@ -95,8 +94,6 @@ private:
 
     _float m_fMaxHP = { 300.f };
     _float m_fMaxHitEye = { 100.f };
-
-
 
     _uint m_iCurrentAmmo = { MAX_AMMO };
 
