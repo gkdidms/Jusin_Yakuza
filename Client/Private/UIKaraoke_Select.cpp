@@ -22,18 +22,77 @@ HRESULT CUIKaraoke_Select::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext
     return S_OK;
 }
 
+HRESULT CUIKaraoke_Select::Add_UIData(CUI_Object* pUIObject)
+{
+
+    if (pUIObject->Get_Event())
+    {
+        if (nullptr == m_Disc)
+            m_Disc = pUIObject;
+        else if (m_UIGrade.size() < 3)
+            m_UIGrade.push_back(pUIObject);
+        else if (nullptr == m_Select)
+            m_Select = static_cast<CGroup*>(pUIObject);
+        else if (m_UIName.size() < 3)
+            m_UIName.push_back(pUIObject);
+        else
+            m_EventUI.push_back(pUIObject);
+
+        return S_OK;
+    }
+    else
+    {
+        m_UI.push_back(pUIObject);
+    }
+
+    if (CUI_Object::TYPE_BTN == pUIObject->Get_TypeIndex())
+    {
+        Safe_AddRef(pUIObject);
+        m_Button.push_back(dynamic_cast<CBtn*>(pUIObject));
+    }
+
+
+    return S_OK;
+}
+
+
 HRESULT CUIKaraoke_Select::Tick(const _float& fTimeDelta)
 {
+    m_Disc->Tick(fTimeDelta);
     if(FAILED(__super::Tick(fTimeDelta)))
         return E_FAIL;
+
+    for (auto& iter : m_EventUI)
+        iter->Tick(fTimeDelta);
+    for (auto& iter : m_UIGrade)
+        iter->Tick(fTimeDelta);
+    for (auto& iter : m_UIName)
+        iter->Tick(fTimeDelta);
+
+
+    m_Select->Tick(fTimeDelta);
 
     return S_OK;
 }
 
 HRESULT CUIKaraoke_Select::Late_Tick(const _float& fTimeDelta)
 {
+    m_Disc->Late_Tick(fTimeDelta);
     if (FAILED(__super::Late_Tick(fTimeDelta)))
         return E_FAIL;
+
+    for (auto& iter : m_EventUI)
+        iter->Late_Tick(fTimeDelta);
+    for (auto& iter : m_UIGrade)
+        iter->Late_Tick(fTimeDelta);
+    for (auto& iter : m_UIName)
+        iter->Late_Tick(fTimeDelta);
+
+    m_Select->Late_Tick(fTimeDelta);
+
+    if (!m_isAnimFin)
+        Check_AimFin();
+
     return S_OK;
 }
 
