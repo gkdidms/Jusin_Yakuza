@@ -573,7 +573,7 @@ HRESULT CModel::Import_Model(string& pBinFilePath, _bool isTool)
 	ifstream in(pBinFilePath, ios::binary);
 
 	if (!in.is_open()) {
-		MSG_BOX("파일 개방 실패");
+		MSG_BOX("Model 바이너리 파일 개방 실패");
 		return E_FAIL;
 	}
 

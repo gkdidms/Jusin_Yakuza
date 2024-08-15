@@ -550,7 +550,7 @@ HRESULT CMultiLoader::Loading_Default()
 		return E_FAIL;*/
 
 		/* For.Prototype_Component_Anim_NPC */
-	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Anim_NPC"), CAnim::Create(m_pDevice, m_pContext, "../Bin/DataFiles/Models/Anim/Monster/Jimu/Animation_NPC.dat", false))))
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Anim_NPC"), CAnim::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Anim/Monster/Jimu/Animation_NPC.dat", false))))
 		return E_FAIL;
 	//if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Anim_NPC"), CAnim::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Anim/Monster/Animation_NPC.fbx", true))))
 	//	return E_FAIL;
@@ -597,12 +597,6 @@ HRESULT CMultiLoader::Loading_Default()
 		return E_FAIL;
 	//if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Kiryu_CarChase"), CAnim::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Anim/Animation_Kiryu_CarChase.fbx", true))))
 	//	return E_FAIL;
-
-	/* For.Prototype_Component_Anim_NPC */
-	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Anim_NPC"), CAnim::Create(m_pDevice, m_pContext, "../Bin/DataFiles/AnimationData/Animation_NPC.dat", false))))
-		return E_FAIL;
-	/*if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Anim_NPC"), CAnim::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Anim/Animation_NPC.fbx", true))))
-		return E_FAIL;*/
 
 		/* For.Prototype_Component_Collider */
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Collider"), CCollider::Create(m_pDevice, m_pContext))))
@@ -765,6 +759,7 @@ HRESULT CMultiLoader::Loading_Default()
 
 	return S_OK;
 }
+
 
 HRESULT CMultiLoader::Loading_Highway()
 {
