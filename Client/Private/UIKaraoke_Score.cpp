@@ -148,9 +148,6 @@ void CUIKaraoke_Score::ScoreUpdate()
 	else if(m_iScore<=100)
 		dynamic_cast<CGroup*>(m_EventUI[IMAGE])->Show_Choice(GREAT);
 
-
-
-
 	m_iOnce = true;
 }
 

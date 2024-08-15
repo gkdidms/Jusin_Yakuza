@@ -34,8 +34,10 @@ HRESULT CUIKaraoke_Play::Add_UIData(CUI_Object* pUIObject)
 {
     if (pUIObject->Get_Event())
     {
-        m_pPlayUI.push_back(pUIObject);
-
+        if (m_pPlayUI.size() < 13)
+            m_pPlayUI.push_back(pUIObject);
+        else
+            m_Lyrics=dynamic_cast<CGroup*>(pUIObject);
         return S_OK;
     }
 
@@ -56,7 +58,7 @@ HRESULT CUIKaraoke_Play::Tick(const _float& fTimeDelta)
 
     for (auto& iter : m_pPlayUI)
         iter->Tick(fTimeDelta);
-
+    m_Lyrics->Tick(fTimeDelta);
     return S_OK;
 }
 
@@ -66,7 +68,7 @@ HRESULT CUIKaraoke_Play::Late_Tick(const _float& fTimeDelta)
 
     for (auto& iter : m_pPlayUI)
         iter->Late_Tick(fTimeDelta);
-
+    m_Lyrics->Late_Tick(fTimeDelta);
     if (!m_isAnimFin)
         Check_AimFin();
 
@@ -108,4 +110,5 @@ void CUIKaraoke_Play::Free()
     __super::Free();
     for (auto& iter : m_pPlayUI)
         Safe_Release(iter);
+    Safe_Release(m_Lyrics);
 }
