@@ -252,6 +252,7 @@ void CItem::Late_Tick(const _float& fTimeDelta)
 			iter->Late_Tick(fTimeDelta);
 	}
 
+	// 네비문제 해결되고 주석해제해야 밀림
 	//m_pCollisionManager->Add_ImpulseResolution(this);
 
 	if (m_isAttacking)

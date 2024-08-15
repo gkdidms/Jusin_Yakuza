@@ -11,6 +11,14 @@ BEGIN(Client)
 
 class CGun_Cz75 : public CSocketModel
 {
+public:
+	struct CZ75_DESC : public SOCKETOBJECT_DESC {
+		_float fLocalAngle;
+		_float3 vLocalPos;
+		_uint iLocalRotAxis;			//R U L
+	};
+
+
 protected:
 	CGun_Cz75(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CGun_Cz75(const CGun_Cz75& rhs);

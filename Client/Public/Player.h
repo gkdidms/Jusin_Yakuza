@@ -254,6 +254,7 @@ private:
     void Setting_Target_Wall();
 
     void Radial_Event();
+    void Face_Event();
 
 
     /* 캐릭터 스테이터스 관련 함수 */ 

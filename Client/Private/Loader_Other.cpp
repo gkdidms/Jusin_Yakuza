@@ -582,6 +582,18 @@ HRESULT CLoader_Other::Loading_For_Dogimazo_Boss()
 	return S_OK;
 }
 
+HRESULT CLoader_Other::Loading_For_Street()
+{
+	if (FAILED(Loading_Default()))
+		return E_FAIL;
+
+	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
+
+	m_isFinished = true;
+
+	return S_OK;
+}
+
 HRESULT CLoader_Other::Loading_For_CarChase()
 {
 	if (FAILED(Loading_Default()))
