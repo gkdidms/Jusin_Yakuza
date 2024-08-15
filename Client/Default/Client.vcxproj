@@ -183,6 +183,7 @@
     <ClInclude Include="..\..\Imgui\imgui\imstb_textedit.h" />
     <ClInclude Include="..\..\Imgui\imgui\imstb_truetype.h" />
     <ClInclude Include="..\public\Adventure.h" />
+    <ClInclude Include="..\Public\HeadUI.h" />
     <ClInclude Include="..\Public\KaraokeManager.h" />
     <ClInclude Include="..\public\RoadNML.h" />
     <ClInclude Include="..\public\RoadStanding.h" />
@@ -408,6 +409,7 @@
     <ClCompile Include="..\..\Imgui\imgui\imgui_tables.cpp" />
     <ClCompile Include="..\..\Imgui\imgui\imgui_widgets.cpp" />
     <ClCompile Include="..\private\Adventure.cpp" />
+    <ClCompile Include="..\Private\HeadUI.cpp" />
     <ClCompile Include="..\Private\UIKaraoke_Score.cpp" />
     <ClCompile Include="..\Private\KaraokeManager.cpp" />
     <ClCompile Include="..\private\RoadNML.cpp" />

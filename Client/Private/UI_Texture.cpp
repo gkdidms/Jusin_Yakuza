@@ -304,6 +304,8 @@ HRESULT CUI_Texture::Bind_ResourceData()
 
 	if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_Texture", 0)))
 		return E_FAIL;
+
+	return S_OK;
 }
 
 void CUI_Texture::Free()
