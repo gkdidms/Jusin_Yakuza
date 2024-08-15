@@ -1,16 +1,16 @@
 #pragma once
 #include "UIScene.h"
 BEGIN(Client)
-class CUIKaraoke_Select :
+class CUIKaraoke_Play :
     public CUIScene
 {
 public:
-    enum SELECT { SELECT_MUSIC , SELECT_SING , SELECT_END};
-    enum DISC{DISC0 , TAG0 , TAG1, TAG2 , DISC_END};
+    enum UILIST { BACK, BLUE, MIC, CURRENTBAR, GOODEFFECT, GRADE, GREATEFFECT, HOLD, ROLL, DOWN, LEFT, RIGHT, UP, UILIST_END };
+
 protected:
-    CUIKaraoke_Select();
-    CUIKaraoke_Select(const CUIKaraoke_Select& rhs);
-    virtual ~CUIKaraoke_Select() = default;
+    CUIKaraoke_Play();
+    CUIKaraoke_Play(const CUIKaraoke_Play& rhs);
+    virtual ~CUIKaraoke_Play() = default;
 
 public:
     virtual HRESULT Show_Scene()override;//ui 애님 준비(초기화/열때 정방향 진행)
@@ -27,19 +27,10 @@ public:
     virtual void Action() override;
     virtual void OverAction() override;
 
-    class CGroup* m_Disc;
-    class CGroup* m_Select;
-    vector<CUI_Object*> m_UIGrade;
-    vector<CUI_Object*> m_UIName;
-    class CUI_Object* m_MusicTitle;
-
-
-    _float m_iCurrentTime = { 0.f };
-    _bool m_isStart = false;
-   
+private:
+    vector<class CUI_Object*> m_pPlayUI;
 public:
-    static CUIKaraoke_Select* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg = nullptr);
+    static CUIKaraoke_Play* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg = nullptr);
     virtual void Free();
-
 };
 END

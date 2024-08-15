@@ -1,16 +1,17 @@
 #pragma once
+
 #include "UIScene.h"
 BEGIN(Client)
-class CUIKaraoke_Select :
-    public CUIScene
+class CUIKaraoke_Score:
+	public CUIScene
 {
 public:
-    enum SELECT { SELECT_MUSIC , SELECT_SING , SELECT_END};
-    enum DISC{DISC0 , TAG0 , TAG1, TAG2 , DISC_END};
+    enum SCORE { ONE , TEN  , HUNDRED, IMAGE, SCORE_END};
+    enum IMAGE { BAD, GOOD , GREAT ,IMAGE_END};
 protected:
-    CUIKaraoke_Select();
-    CUIKaraoke_Select(const CUIKaraoke_Select& rhs);
-    virtual ~CUIKaraoke_Select() = default;
+    CUIKaraoke_Score();
+    CUIKaraoke_Score(const CUIKaraoke_Score& rhs);
+    virtual ~CUIKaraoke_Score() = default;
 
 public:
     virtual HRESULT Show_Scene()override;//ui 애님 준비(초기화/열때 정방향 진행)
@@ -27,18 +28,16 @@ public:
     virtual void Action() override;
     virtual void OverAction() override;
 
-    class CGroup* m_Disc;
-    class CGroup* m_Select;
-    vector<CUI_Object*> m_UIGrade;
-    vector<CUI_Object*> m_UIName;
-    class CUI_Object* m_MusicTitle;
-
-
-    _float m_iCurrentTime = { 0.f };
-    _bool m_isStart = false;
-   
 public:
-    static CUIKaraoke_Select* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg = nullptr);
+    void Set_Score(_uint iScore) { m_iScore = iScore; }
+private:
+    void ScoreUpdate();
+private:
+    _uint m_iScore = { 0 };
+    _bool m_iOnce = { false };
+
+public:
+    static CUIKaraoke_Score* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg = nullptr);
     virtual void Free();
 
 };

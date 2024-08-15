@@ -187,10 +187,7 @@ void CPlayer::Tick(const _float& fTimeDelta)
 		m_pUIManager->Open_Scene(TEXT("Carchase"));
 	}
 
-	if (m_pGameInstance->GetKeyState(DIK_K) == TAP)
-	{
-		m_pUIManager->Open_Scene(TEXT("Karaoke_Select"));
-	}
+
 
 	Synchronize_Root(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")));
 

@@ -11,15 +11,12 @@ CNoteManager::CNoteManager()
     Safe_AddRef(m_pGameInstance);
 }
 
-HRESULT CNoteManager::Initialize()
+HRESULT CNoteManager::Initialize(string strSongName)
 {
+	Load_NoteData(strSongName);
     return S_OK;
 }
 
-
-void CNoteManager::Tick()
-{
-}
 
 HRESULT CNoteManager::Load_NoteData(string strSongName)
 {
@@ -75,6 +72,17 @@ HRESULT CNoteManager::Load_NoteData(string strSongName)
 	}
 
 	return S_OK;
+}
+
+CNoteManager* CNoteManager::Create(string strSongName)
+{
+	CNoteManager* pInstance = new CNoteManager;
+	if (FAILED(pInstance->Initialize(strSongName)))
+	{
+		MSG_BOX("NoteManager make Failed");
+		return nullptr;
+	}
+	return pInstance;
 }
 
 void CNoteManager::Free()
