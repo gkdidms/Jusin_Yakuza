@@ -24,8 +24,7 @@ public:
 
     enum SKILL {
         SKILL_IDLE,
-        SKILL_WALK,
-        SKILL_TURN,
+        SKILL_GROUND,
         SKILL_END
     };
 
@@ -58,17 +57,21 @@ protected:
     vector<ROUTE_IO> m_Routes = {};
 
 protected:
+    _bool m_isGround = { false };
+
+protected:
     virtual void Ready_Root() = 0;
-    _bool isRouteMoveFinish();
+    _float DistanceFromPlayer();
 
 protected:
     //충돌 감지
     virtual CBTNode::NODE_STATE Check_Coll();
     virtual CBTNode::NODE_STATE Coll();
-    //걷기
-    virtual CBTNode::NODE_STATE Check_Walk();
-    virtual CBTNode::NODE_STATE Turn();
-    virtual CBTNode::NODE_STATE Walk(); // 정해진 루트로 걷는다.
+
+    //서있는 상태
+    virtual CBTNode::NODE_STATE Check_Stand();
+    virtual CBTNode::NODE_STATE Ground_The_Player();
+    virtual CBTNode::NODE_STATE Stand();
 
 public:
     virtual void Free();

@@ -74,9 +74,9 @@ void CRoadWalker::Change_Animation()
 		m_fOffset = 0.8f;
 		break;
 	}
-	case ADVENTURE_WALK_S:
+	case ADVENTURE_WALK_ST:
 	{
-		m_strAnimName = "p_mov_walk_s";
+		m_strAnimName = "p_mov_walk_st";
 		break;
 	}
 	case ADVENTURE_WALK_EN:
@@ -96,17 +96,20 @@ void CRoadWalker::Change_Animation()
 	}
 	case ADVENTURE_TURN:
 	{
-		m_strAnimName = "p_mov_turnr";
+		if (m_pNavigationCom->Get_RouteDir() == DIR_F)
+			m_strAnimName = "p_mov_turnl";
+		else if (m_pNavigationCom->Get_RouteDir() == DIR_B)
+			m_strAnimName = "p_mov_turnr";
 		break;
 	}
 	case ADVENTURE_TURN90_L:
 	{
-		m_strAnimName = "p_kru_tlk_stand_turnl90";
+		m_strAnimName = "p_kru_tlk_stand_turnr90"; // 몬스터 기준으로 왼, 오 결정해서 반대로 둠
 		break;
 	}
 	case ADVENTURE_TURN90_R:
 	{
-		m_strAnimName = "p_kru_tlk_stand_turnr90";
+		m_strAnimName = "p_kru_tlk_stand_turnl90";
 		break;
 	}
 	default:
@@ -118,7 +121,8 @@ void CRoadWalker::Change_Animation()
 	if (m_iAnim == -1)
 		return;
 
-	m_pModelCom->Set_AnimationIndex(m_iAnim, m_pAnimCom->Get_Animations(), m_fChangeInterval);
+	if (FAILED(Setup_Animation()))
+		return;
 }
 
 void CRoadWalker::Free()

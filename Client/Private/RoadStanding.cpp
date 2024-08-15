@@ -53,6 +53,7 @@ HRESULT CRoadStanding::Add_Components()
 
 void CRoadStanding::Change_Animation()
 {
+	__super::Change_Animation();
 }
 
 void CRoadStanding::Free()

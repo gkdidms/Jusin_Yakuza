@@ -1,14 +1,14 @@
 #pragma once
-#include "Adventure.h"
+#include "RoadWalker.h"
 
 BEGIN(Client)
-class CRoadStanding abstract :
-    public CAdventure
+class CRoadYOP :
+    public CRoadWalker
 {
-protected:
-    CRoadStanding(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-    CRoadStanding(const CRoadStanding& rhs);
-    virtual ~CRoadStanding() = default;
+private:
+    CRoadYOP(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+    CRoadYOP(const CRoadYOP& rhs);
+    virtual ~CRoadYOP() = default;
 
 public:
     virtual HRESULT Initialize_Prototype() override;
@@ -17,14 +17,12 @@ public:
     virtual void Tick(const _float& fTimeDelta) override;
     virtual void Late_Tick(const _float& fTimeDelta) override;
 
-protected:
-    class CAI_RoadStanding* m_pTree = { nullptr };
-
-protected:
-    virtual HRESULT Add_Components() override;
-    virtual void Change_Animation() override;
-
 public:
+    virtual HRESULT Add_Components() override;
+    
+public:
+    static CRoadYOP* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+    virtual CGameObject* Clone(void* pArg);
     virtual void Free();
 };
 END

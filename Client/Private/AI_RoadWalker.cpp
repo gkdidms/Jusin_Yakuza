@@ -68,6 +68,19 @@ CBTNode::NODE_STATE CAI_RoadWalker::Coll()
 
 CBTNode::NODE_STATE CAI_RoadWalker::Check_Walk()
 {
+	if (m_isBack || m_isTurn)
+	{
+		if (m_iSkill == SKILL_BACK || m_iSkill == SKILL_TURN)
+			return CBTNode::SUCCESS;
+
+		if (*m_pState == CAdventure::ADVENTURE_WALK_EN && m_pAnimCom->Get_AnimFinished())
+			return CBTNode::SUCCESS;
+
+		*m_pState = CAdventure::ADVENTURE_WALK_EN;
+		m_isWalk = false;
+
+		return CBTNode::RUNNING;
+	}
 
 	return CBTNode::SUCCESS;
 }
@@ -81,11 +94,14 @@ CBTNode::NODE_STATE CAI_RoadWalker::Back()
 		if (m_pAnimCom->Get_AnimFinished())
 		{
 			m_isBack = false;
+			m_isTurn = false;
+			m_isWalk = true;
 		}
 
 		return CBTNode::SUCCESS;
 	}
 
+	m_iSkill = SKILL_BACK;
 	*m_pState = CAdventure::ADVENTURE_TURN;
 
 	return CBTNode::SUCCESS;
@@ -99,33 +115,36 @@ CBTNode::NODE_STATE CAI_RoadWalker::Turn()
 	{
 		if (m_pAnimCom->Get_AnimFinished())
 		{
-			m_isBack = false;
+			m_isTurn = false;
+			m_isWalk = true;
 		}
 
 		return CBTNode::SUCCESS;
 	}
 	
+	m_iSkill = SKILL_TURN;
+
 	//턴 하는 방향 구하기
 	if (m_iDir == DIR_R)
 		*m_pState = CAdventure::ADVENTURE_TURN90_R;
 	else if (m_iDir == DIR_L)
 		*m_pState = CAdventure::ADVENTURE_TURN90_L;
 
-	return CBTNode::FAIL;
+	return CBTNode::SUCCESS;
 }
 
 CBTNode::NODE_STATE CAI_RoadWalker::Walk()
 {
 	if (m_iSkill == SKILL_WALK)
 	{
-		if (*m_pState == CAdventure::ADVENTURE_WALK_S && m_pAnimCom->Get_AnimFinished())
+		if (*m_pState == CAdventure::ADVENTURE_WALK_ST && m_pAnimCom->Get_AnimFinished())
 			*m_pState = CAdventure::ADVENTURE_WALK;
 
 		return CBTNode::RUNNING;
 	}
 
 	m_iSkill = SKILL_WALK;
-	*m_pState = CAdventure::ADVENTURE_WALK_S;
+	*m_pState = CAdventure::ADVENTURE_WALK_ST;
 
 	return CBTNode::SUCCESS;
 }

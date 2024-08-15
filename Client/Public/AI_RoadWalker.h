@@ -63,7 +63,7 @@ protected:
     _bool m_isWayPointFinish = { true };
 
 protected:
-    _bool m_isWalk = { false };
+    _bool m_isWalk = { true };
     _bool m_isTurn = { false }; // 옆으로 턴 해야 하는가
     _bool m_isBack = { false }; //뒤를 돌아야 하는가
     _int m_iDir = { DIR_END };

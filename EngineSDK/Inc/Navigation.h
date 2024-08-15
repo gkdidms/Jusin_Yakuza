@@ -44,6 +44,7 @@ public:
     _vector Get_WaypointPos(_uint iIndex) { return XMLoadFloat4(&m_Routes[m_iCurrentRouteIndex][iIndex].vPosition); }
     _vector Get_SlidingNormal() { return m_vSlidingNormal; }
     _uint Get_RouteSize() { return m_Routes[m_iCurrentRouteIndex].size(); }
+    _int Get_RouteDir() { return m_iRouteDir; }
 
 public:
     virtual HRESULT Initialize_Prototype(); // Tool¿ë

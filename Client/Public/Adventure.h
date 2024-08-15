@@ -28,13 +28,28 @@ public:
     {
         ADVENTURE_IDLE,
         ADVENTURE_WALK,
-        ADVENTURE_WALK_S,
+        ADVENTURE_WALK_ST,
         ADVENTURE_WALK_EN,
         ADVENTURE_HIT_L,
         ADVENTURE_HIT_R,
         ADVENTURE_TURN,
         ADVENTURE_TURN90_R,
         ADVENTURE_TURN90_L,
+
+
+        ADVENTURE_REACT_A,
+        ADVENTURE_REACT_B,
+        ADVENTURE_REACT_C,
+        ADVENTURE_REACT_D,
+        ADVENTURE_STAND_ST,
+        ADVENTURE_STAND,
+    };
+
+    enum GENDER
+    {
+        GENDER_F,
+        GENDER_M,
+        GENDER_END
     };
 
 public:
@@ -49,7 +64,7 @@ public:
     _bool isColl() { return m_isColl; }
 
 public:
-    void Set_Move();
+    void Set_Cheer() { m_isCheer = true; }
 
 public:
     virtual HRESULT Initialize_Prototype() override;
@@ -87,15 +102,20 @@ protected:
     _uint   m_iAnim = { 0 };
 
     _bool   m_isColl = { false };
+    _bool m_isCheer = { false };
 
     int     m_iNaviRouteNum = { 0 };
 
     _float m_fSpeed = { 2.f };
 
 protected:
+    _uint m_iGender = { GENDER_END };
+
+protected:
     virtual void Change_Animation();
     void Synchronize_Root(const _float& fTimeDelta);
     void Check_Separation();
+    HRESULT Setup_Animation();
 
 protected:
     virtual HRESULT Add_Components() override;

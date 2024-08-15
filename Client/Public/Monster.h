@@ -22,6 +22,7 @@ public:
     }MONSTER_IODESC;
 
 public:
+    enum MONSTER_TYPE { RUSH, WPA, DEFAULT, WPH, SHAKDDOWN, YONEDA, KUZE, MONSTER_TYPE_END };
     enum MONSTER_STATE
     {
         //공격 모션

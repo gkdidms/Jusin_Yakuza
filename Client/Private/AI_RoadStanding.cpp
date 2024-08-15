@@ -43,11 +43,14 @@ void CAI_RoadStanding::Tick(const _float& fTimeDelta)
 {
 }
 
-_bool CAI_RoadStanding::isRouteMoveFinish()
+_float CAI_RoadStanding::DistanceFromPlayer()
 {
+	_vector vPlayerPos = m_pPlayer->Get_TransformCom()->Get_State(CTransform::STATE_POSITION);
+	_vector vThisPos = m_pThis->Get_TransformCom()->Get_State(CTransform::STATE_POSITION);
 
+	_float fDistance = XMVectorGetX(XMVector3Length(vPlayerPos - vThisPos));
 
-	return false;
+	return fDistance;
 }
 
 CBTNode::NODE_STATE CAI_RoadStanding::Check_Coll()
@@ -67,25 +70,27 @@ CBTNode::NODE_STATE CAI_RoadStanding::Coll()
 	return CBTNode::SUCCESS;
 }
 
-CBTNode::NODE_STATE CAI_RoadStanding::Check_Walk()
+CBTNode::NODE_STATE CAI_RoadStanding::Check_Stand()
 {
+	//플레이어가 근처에 있다면 맞는 동작을 한다.
+	if (DistanceFromPlayer() > 5.f)
+	{
+		m_iSkill = SKILL_GROUND;
+	}
+	else
+		m_isGround = false;
 
 	return CBTNode::SUCCESS;
 }
 
-CBTNode::NODE_STATE CAI_RoadStanding::Turn()
+CBTNode::NODE_STATE CAI_RoadStanding::Ground_The_Player()
 {
-	if (m_iSkill == SKILL_TURN)
-	{
-		// 현재 look 방향에서 현재 이동 좌표의 각도를 구한다.
-		
-	}
-
 	return CBTNode::FAIL;
 }
 
-CBTNode::NODE_STATE CAI_RoadStanding::Walk()
+CBTNode::NODE_STATE CAI_RoadStanding::Stand()
 {
+	*m_pState = CAdventure::ADVENTURE_IDLE;
 
 	return CBTNode::SUCCESS;
 }

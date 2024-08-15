@@ -43,7 +43,6 @@ public:
         SKILL_END
     };
     enum PLAYER_ATK_DIR { F, B, L, R, PLAYER_ATK_DIR_END };
-    enum MONSTER_TYPE { RUSH, WPA, WPH, DEFAULT, SHAKDDOWN, KUZE, MONSTER_TYPE_END };
 
     typedef struct tAIMonster {
         class CAnim* pAnim[2];
@@ -97,7 +96,7 @@ protected:
     _bool m_isPlayerDownAtk = { false }; // 플레이어에게 다운 어택을 한번 사용했는가를 체크
 
     _uint m_iSkill = { SKILL_END };
-    _uint m_iMonsterType = { MONSTER_TYPE_END };
+    _uint m_iMonsterType = { 0 };
 
 protected:
     _float m_fDelayAttackDuration = { 2.f };
