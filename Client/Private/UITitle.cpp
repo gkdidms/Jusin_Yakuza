@@ -58,10 +58,11 @@ HRESULT CUITitle::Tick(const _float& fTimeDelta)
 
 HRESULT CUITitle::Late_Tick(const _float& fTimeDelta)
 {
-    if (m_isStart && m_iCurrentTime > 3.0f)
+    if (m_isStart && m_iCurrentTime > 2.0f)
     {
         //여기다가 시간 지나면 꺼질지 뭐할지 선택하면됨(나는 꺼질꺼임)
         CUIManager::GetInstance()->Close_Scene();
+        m_isStart = false;
     }
 
     if (FAILED(__super::Late_Tick(fTimeDelta)))
@@ -81,6 +82,7 @@ void CUITitle::Start_Title(_uint Index)
     dynamic_cast<CGroup*>(m_EventUI[0])->Show_Choice(Index);
 
     //밖에서 불러와서 몇번쨰 타이틀 띄울지 하자
+    m_isStart = true;
 }
 
 CUITitle* CUITitle::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg)

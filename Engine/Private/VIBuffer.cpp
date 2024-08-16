@@ -80,7 +80,9 @@ HRESULT CVIBuffer::Bind_Compute(CComputeShader* pShader)
 	m_pContext->CSSetShaderResources(0, 1, &m_pVertexBufferSRV);
 	m_pContext->CSSetUnorderedAccessViews(0, 1, &m_pResultBufferUAV, nullptr);
 
-	pShader->Render(m_iNumVertices);
+	_uint iGroupNum = (m_iNumVertices + 63) / 64;
+
+	pShader->Render(iGroupNum, 1, 1);
 
 	return S_OK;
 }

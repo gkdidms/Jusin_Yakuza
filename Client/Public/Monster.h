@@ -22,6 +22,7 @@ public:
     }MONSTER_IODESC;
 
 public:
+    enum MONSTER_TYPE { RUSH, WPA, MONSTER_DEFAULT, WPH, SHAKDDOWN, YONEDA, KUZE, MONSTER_TYPE_END };
     enum MONSTER_STATE
     {
         //공격 모션
@@ -254,6 +255,7 @@ public:
     void Set_Sync(string strPlayerAnim);
     void Off_Sync();
     void Set_RimLight(_float isRimLight) { m_isRimLight = isRimLight; }
+    void Set_Start(_bool isStart); // 전투 시작 시 
 
 public:
     _float Get_HitDamage() { return m_fHitDamage; }

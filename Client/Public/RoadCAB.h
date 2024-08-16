@@ -3,13 +3,13 @@
 
 /* ÀþÀº »ç¶÷ */
 BEGIN(Client)
-class CRoadYNG :
+class CRoadCAB :
     public CRoadStanding
 {
 private:
-    CRoadYNG(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
-    CRoadYNG(const CRoadYNG& rhs);
-    virtual ~CRoadYNG() = default;
+    CRoadCAB(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+    CRoadCAB(const CRoadCAB& rhs);
+    virtual ~CRoadCAB() = default;
 
 public:
     virtual HRESULT Initialize_Prototype() override;
@@ -20,9 +20,10 @@ public:
 
 public:
     virtual HRESULT Add_Components() override;
+    virtual void Change_Animation() override;
 
 public:
-    static CRoadYNG* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
+    static CRoadCAB* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
     virtual CGameObject* Clone(void* pArg);
     virtual void Free();
 };
