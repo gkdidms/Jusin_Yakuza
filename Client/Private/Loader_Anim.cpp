@@ -171,7 +171,7 @@ HRESULT CLoader_Anim::Loading_Default()
 		return E_FAIL;*/
 
 		/* For.Prototype_Component_Anim_NPC */
-	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Anim_NPC"), CAnim::Create(m_pDevice, m_pContext, "../Bin/DataFiles/Models/Anim/Monster/Jimu/Animation_NPC.dat", false))))
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Anim_NPC"), CAnim::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Anim/Monster/Jimu/Animation_NPC.dat", false))))
 		return E_FAIL;
 	//if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Anim_NPC"), CAnim::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Anim/Monster/Animation_NPC.fbx", true))))
 	//	return E_FAIL;
@@ -209,6 +209,12 @@ HRESULT CLoader_Anim::Loading_Default()
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Kiryu_CarChase"), CAnim::Create(m_pDevice, m_pContext, "../Bin/DataFiles/AnimationData/Animation_Kiryu_CarChase.dat", false))))
 		return E_FAIL;
 	//if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Kiryu_CarChase"), CAnim::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Anim/Animation_Kiryu_CarChase.fbx", true))))
+	//	return E_FAIL;
+
+	///* For.Prototype_Component_Kiryu_CarChase_Better */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Kiryu_CarChase_Better"), CAnim::Create(m_pDevice, m_pContext, "../Bin/DataFiles/AnimationData/Animation_Kiryu_CarChase_Better.dat", false))))
+		return E_FAIL;
+	//if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Kiryu_CarChase_Better"), CAnim::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Anim/Animation_Kiryu_CarChase_Better.fbx", true))))
 	//	return E_FAIL;
 #pragma endregion
 
@@ -351,7 +357,7 @@ HRESULT CLoader_Anim::Loading_For_Office_1F()
 	if (FAILED(Loading_Default()))
 		return E_FAIL;
 
-	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
+	lstrcpy(m_szLoadingText, TEXT("애님 로딩이 완료되었습니다."));
 
 	m_isFinished = true;
 
@@ -362,7 +368,7 @@ HRESULT CLoader_Anim::Loading_For_Office_2F()
 {
 	if (FAILED(Loading_Default()))
 		return E_FAIL;
-
+	lstrcpy(m_szLoadingText, TEXT("애님 로딩이 완료되었습니다."));
 	m_isFinished = true;
 
 	return S_OK;
@@ -372,7 +378,7 @@ HRESULT CLoader_Anim::Loading_For_Office_Boss()
 {
 	if (FAILED(Loading_Default()))
 		return E_FAIL;
-
+	lstrcpy(m_szLoadingText, TEXT("애님 로딩이 완료되었습니다."));
 	m_isFinished = true;
 	return S_OK;
 }
@@ -381,7 +387,7 @@ HRESULT CLoader_Anim::Loading_For_Dogimazo()
 {
 	if (FAILED(Loading_Default()))
 		return E_FAIL;
-
+	lstrcpy(m_szLoadingText, TEXT("애님 로딩이 완료되었습니다."));
 	m_isFinished = true;
 	return S_OK;
 }
@@ -390,7 +396,7 @@ HRESULT CLoader_Anim::Loading_For_Dogimazo_Stairs()
 {
 	if (FAILED(Loading_Default()))
 		return E_FAIL;
-
+	lstrcpy(m_szLoadingText, TEXT("애님 로딩이 완료되었습니다."));
 	m_isFinished = true;
 	return S_OK;
 }
@@ -399,7 +405,7 @@ HRESULT CLoader_Anim::Loading_For_Dogimazo_Lobby()
 {
 	if (FAILED(Loading_Default()))
 		return E_FAIL;
-
+	lstrcpy(m_szLoadingText, TEXT("애님 로딩이 완료되었습니다."));
 	m_isFinished = true;
 
 	return S_OK;
@@ -409,7 +415,7 @@ HRESULT CLoader_Anim::Loading_For_Dogimazo_Boss()
 {
 	if (FAILED(Loading_Default()))
 		return E_FAIL;
-
+	lstrcpy(m_szLoadingText, TEXT("애님 로딩이 완료되었습니다."));
 	m_isFinished = true;
 
 	return S_OK;
@@ -421,7 +427,7 @@ HRESULT CLoader_Anim::Loading_For_Street()
 		return E_FAIL;
 	
 	//행인 액션/모델 로드하기
-
+	lstrcpy(m_szLoadingText, TEXT("애님 로딩이 완료되었습니다."));
 	m_isFinished = true;
 
 	return S_OK;
@@ -471,7 +477,7 @@ HRESULT CLoader_Anim::Loading_For_CarChase()
 #pragma endregion
 
 
-	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
+	lstrcpy(m_szLoadingText, TEXT("애님 로딩이 완료되었습니다."));
 
 	m_isFinished = true;
 
@@ -483,11 +489,12 @@ HRESULT CLoader_Anim::Loading_For_Karaoke()
 	if (FAILED(Loading_Default()))
 		return E_FAIL;
 
-	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
+	
 
-	/* For.Prototype_GameObject_Kiryu_Karaoke */
-	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Kiryu_Karaoke"), CKaraoke_Kiryu::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
+	///* For.Prototype_GameObject_Kiryu_Karaoke */
+	//if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Kiryu_Karaoke"), CKaraoke_Kiryu::Create(m_pDevice, m_pContext))))
+	//	return E_FAIL;
+	lstrcpy(m_szLoadingText, TEXT("애님 로딩이 완료되었습니다."));
 
 	m_isFinished = true;
 

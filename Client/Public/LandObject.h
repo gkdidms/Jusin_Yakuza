@@ -119,6 +119,10 @@ public:
     const wstring& Get_ModelName() {
         return m_wstrModelName;
     }
+    
+    const wstring& Get_ScndModelName() {
+        return m_wstrScndModelName;
+    }
 
     const unordered_map<_uint, class CSocketCollider*>& Get_Colliders() {
         return m_pColliders;
@@ -181,6 +185,7 @@ protected:
 
     // 사용할 모델의 이름 (객체 생성 이후 바뀌지 않는다)
     wstring m_wstrModelName = TEXT("");
+    wstring m_wstrScndModelName = TEXT("");
 
     // 림라이트를 적용해줄 메시의 이름 (필요할 때마다 바뀌는 값)
     string m_strRimMeshName = "";

@@ -5,6 +5,7 @@
 
 #include "SocketCollider.h"
 #include "AI_Monster.h"
+#include "AI_Adventure.h"
 
 
 CAdventure::CAdventure(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

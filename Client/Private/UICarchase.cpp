@@ -104,18 +104,20 @@ HRESULT CUICarchase::Tick(const _float& fTimeDelta)
 {
     Update_Player();
 
-    __super::Tick(fTimeDelta);
+    _float fGameTimeDelta = m_pGameInstance->Get_TimeDelta(TEXT("Timer_Game"));
+
+    __super::Tick(fGameTimeDelta);
 
     m_EventUI[AIM]->Tick(fTimeDelta);
     m_EventUI[INFO]->Tick(fTimeDelta);
 
-    Move_Aim(fTimeDelta);
+    Move_Aim(fGameTimeDelta);
 
     for (auto& pTarget : m_Targets)
     {
-        pTarget.second.HPBarBackUI->Tick(fTimeDelta);
-        pTarget.second.HPBarUI->Tick(fTimeDelta);
-        pTarget.second.TargetingUI->Tick(fTimeDelta);
+        pTarget.second.HPBarBackUI->Tick(fGameTimeDelta);
+        pTarget.second.HPBarUI->Tick(fGameTimeDelta);
+        pTarget.second.TargetingUI->Tick(fGameTimeDelta);
     }
 
     return S_OK;
@@ -123,16 +125,18 @@ HRESULT CUICarchase::Tick(const _float& fTimeDelta)
 
 HRESULT CUICarchase::Late_Tick(const _float& fTimeDelta)
 {
-    __super::Late_Tick(fTimeDelta);
+    _float fGameTimeDelta = m_pGameInstance->Get_TimeDelta(TEXT("Timer_Game"));
+    
+    __super::Late_Tick(fGameTimeDelta);
 
     m_EventUI[AIM]->Late_Tick(fTimeDelta);
     m_EventUI[INFO]->Late_Tick(fTimeDelta);
 
     for (auto& pTarget : m_Targets)
     {
-        pTarget.second.HPBarBackUI->Late_Tick(fTimeDelta);
-        pTarget.second.HPBarUI->Late_Tick(fTimeDelta);
-        pTarget.second.TargetingUI->Late_Tick(fTimeDelta);
+        pTarget.second.HPBarBackUI->Late_Tick(fGameTimeDelta);
+        pTarget.second.HPBarUI->Late_Tick(fGameTimeDelta);
+        pTarget.second.TargetingUI->Late_Tick(fGameTimeDelta);
     }
 
     if (!m_isAnimFin)
