@@ -8,6 +8,7 @@
 #include "CarChaseCamera.h"
 
 #include "Highway_Taxi.h"
+#include "Highway_Kiryu.h"
 
 CCarChase::CCarChase()
 	: m_pGameInstance{ CGameInstance::GetInstance() },
@@ -159,21 +160,26 @@ void CCarChase::Set_TaxiStageDir()
 		pPlayer->Set_Dir(m_Info.iStageDir);
 	else
 	{
-		_vector vTaxiPos = pPlayer->Get_TransformCom()->Get_State(CTransform::STATE_POSITION);
+		_vector vTaxiPos = XMLoadFloat3(pPlayer->Get_Kiryu()->Get_Pos());
 		_vector vTargetPos = m_pUIManager->Get_Target()->Get_TransformCom()->Get_State(CTransform::STATE_POSITION);
 
-		_vector vDir = XMVector3Normalize(vTaxiPos - vTargetPos);
-		_vector vTaxiLook = pPlayer->Get_TransformCom()->Get_State(CTransform::STATE_LOOK);
+		_vector vDir = XMVector3Normalize(vTargetPos- vTaxiPos);
+		_vector vTaxiLook = XMLoadFloat3(pPlayer->Get_Kiryu()->Get_Right());
 
 		_float fDot = acos(XMVectorGetX(XMVector3Dot(vDir, vTaxiLook)));
 
 		_uint iDir = m_Info.iStageDir;
 
-		const float PI = 3.14159265359f;
-		const float FRONT_ANGLE = PI / 8;          // 22.5도
-		const float FRONT_DIAGONAL_ANGLE = 3 * PI / 8;  // 67.5도
-		const float SIDE_ANGLE = 5 * PI / 8;       // 112.5도
-		const float BACK_DIAGONAL_ANGLE = 7 * PI / 8;  // 157.5도
+		//const float PI = 3.14159265359f;
+		//const float FRONT_ANGLE = PI / 8;          // 22.5도
+		//const float FRONT_DIAGONAL_ANGLE = 3 * PI / 8;  // 67.5도
+		//const float SIDE_ANGLE = 5 * PI / 8;       // 112.5도
+		//const float BACK_DIAGONAL_ANGLE = 7 * PI / 8;  // 157.5도
+
+		const float FRONT_ANGLE = XMConvertToRadians(10.f);
+		const float FRONT_DIAGONAL_ANGLE = XMConvertToRadians(45.f);
+		const float SIDE_ANGLE = XMConvertToRadians(160.f);
+		const float BACK_DIAGONAL_ANGLE = XMConvertToRadians(170.f);
 
 		if (fDot <= FRONT_ANGLE) {
 			// 앞 (Front)

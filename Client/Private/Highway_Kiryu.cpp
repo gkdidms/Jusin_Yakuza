@@ -65,6 +65,7 @@ void CHighway_Kiryu::Tick(const _float& fTimeDelta)
 
 	m_pModelCom->Play_Animation_Separation(fTimeDelta, m_iFaceAnimIndex, m_SeparationAnimComs[FACE_ANIM], false, (_int)FACE_ANIM);
 	m_pModelCom->Play_Animation_Separation(fTimeDelta, m_iHandAnimIndex, m_SeparationAnimComs[HAND_ANIM], false, (_int)HAND_ANIM);
+	m_pModelCom->Play_Animation_Separation(fTimeDelta, m_iUdeIndex, m_SeparationAnimComs[DEFAULT_ANIM], false, (_int)DEFAULT_ANIM);
 	Play_CurrentAnimation(fTimeDelta);
 
 	m_ModelMatrix = *pTaxiMatrix;
@@ -221,13 +222,6 @@ void CHighway_Kiryu::Play_CurrentAnimation(_float fTimeDelta)
 	}
 	}
 
-	//if (m_bTest)
-	//{
-	//	m_pModelCom->Play_Animation_Rotation_SeparationBone(fTimeDelta, "kosi_c_n", 2, m_fTest, false);
-	//}
-	//else
-		//m_pModelCom->Play_Animation(fTimeDelta, false);
-
 	m_pModelCom->Play_Animation(fTimeDelta, false);
 }
 
@@ -344,11 +338,39 @@ void CHighway_Kiryu::Play_Hit(_float fTimeDelta)
 void CHighway_Kiryu::Play_Shot(_float fTimeDelta)
 {
 	// [31] [mngcar_c_car_gun_aiml_l_shot]
+	// [19] [mngcar_c_car_gun_aiml_f_shot]
+	// [8] [mngcar_c_car_gun_aiml_b_shot]
+	// [43] [mngcar_c_car_gun_aimr_b_shot]
+	// [54] [mngcar_c_car_gun_aimr_f_shot]
 	// [66] [mngcar_c_car_gun_aimr_r_shot]
 
-	m_pModelCom->Set_AnimationIndex((m_isLeft ? 31 : 66), 4.f);
+	//_uint iAnimIndex = (m_isLeft ? 31 : 66);
 
-	if (m_pModelCom->Get_AnimFinished())
+	//// 0 ¾Õ, 1 ¾Õ ´ë°¢, 2 ¿·, 3 µÞ ´ë°¢, 4 µÚ
+	//switch (m_iStageDir)
+	//{
+	//case 0:			//¾Õ
+	//	iAnimIndex = (m_isLeft ? 17 : 52);
+	//	break;
+	//case 1:		//¾Õ ´ë°¢
+	//	iAnimIndex = (m_isLeft ? 31 : 66);
+	//	break;
+	//case 2:		//¿·
+	//	iAnimIndex = (m_isLeft ? 31 : 66);
+	//	break;
+	//case 3:		//µÞ ´ë°¢
+	//	iAnimIndex = (m_isLeft ? 31 : 66);
+	//	break;
+	//case 4:		//µÚ
+	//	iAnimIndex = (m_isLeft ? 8 : 43);
+	//	break;
+	//}
+	//m_pModelCom->Set_AnimationIndex(iAnimIndex, 4.f);
+
+	//if (m_pModelCom->Get_AnimFinished())
+	//	Change_Behavior(AIMING);
+
+	if(m_SeparationAnimComs[DEFAULT_ANIM]->Get_AnimFinished())
 		Change_Behavior(AIMING);
 }
 
@@ -383,7 +405,7 @@ void CHighway_Kiryu::Change_Behavior(BEHAVIOR_TYPE eType)
 	Off_Separation_Hand();
 
 	// ¾î±ú ºÐ¸® ÇØÁ¦
-	m_pModelCom->Set_Separation_ParentBone(m_isLeft ? "ude1_r_n" : "ude1_l_n", -1);
+	m_pModelCom->Set_Separation_ParentBone(m_isLeft ? "ude2_l_n" : "ude2_r_n", -1);
 
 	switch (eType)
 	{
@@ -411,8 +433,13 @@ void CHighway_Kiryu::Change_Behavior(BEHAVIOR_TYPE eType)
 		m_isStarted = true;
 
 		// ¾î±ú ºÐ¸®
-		m_pModelCom->Set_Separation_ParentBone(m_isLeft ? "ude1_r_n" : "ude1_l_n", 4);
-		m_pModelCom->Set_Separation_SingleBone(m_isLeft ? "ude1_r_n" : "ude1_l_n", -1);
+		m_pModelCom->Set_Separation_ParentBone(m_isLeft ? "ude2_l_n" : "ude2_r_n", DEFAULT_ANIM);
+		//m_pModelCom->Set_Separation_SingleBone(m_isLeft ? "ude2_l_n" : "ude2_r_n", -1);
+
+		m_iUdeIndex = m_isLeft ? 34 : 70;
+
+		m_SeparationAnimComs[DEFAULT_ANIM]->Reset_Animation(m_iUdeIndex);
+		m_SeparationAnimComs[DEFAULT_ANIM]->Set_CurrentAnimIndex(m_iUdeIndex);
 		break;
 	}
 	case CHighway_Kiryu::SWAP:
@@ -483,6 +510,13 @@ HRESULT CHighway_Kiryu::Add_Components()
 	pAnimCom = { nullptr };
 	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Anim_Hand"),
 		TEXT("Com_Anim_Hand"), reinterpret_cast<CComponent**>(&pAnimCom))))
+		return E_FAIL;
+	m_SeparationAnimComs.push_back(pAnimCom);
+
+	//Prototype_Component_Kiryu_CarChase
+	pAnimCom = { nullptr };
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Kiryu_CarChase"),
+		TEXT("Com_Anim"), reinterpret_cast<CComponent**>(&pAnimCom))))
 		return E_FAIL;
 	m_SeparationAnimComs.push_back(pAnimCom);
 
@@ -567,4 +601,28 @@ string CHighway_Kiryu::Get_CurrentAnimationName()
 const _float4x4* CHighway_Kiryu::Get_BoneMatrix(const char* strBoneName)
 {
 	return m_pModelCom->Get_BoneCombinedTransformationMatrix(strBoneName);
+}
+
+const _float3* CHighway_Kiryu::Get_Pos()
+{
+	_float3 vPos;
+
+	memcpy(&vPos, m_ModelMatrix.m[CTransform::STATE_POSITION], sizeof(_float3));
+	return &vPos;
+}
+
+const _float3* CHighway_Kiryu::Get_Look()
+{
+	_float3 vLook;
+
+	memcpy(&vLook, m_ModelMatrix.m[CTransform::STATE_LOOK], sizeof(_float3));
+	return &vLook;
+}
+
+const _float3* CHighway_Kiryu::Get_Right()
+{
+	_float3 vRight;
+
+	memcpy(&vRight, m_ModelMatrix.m[CTransform::STATE_RIGHT], sizeof(_float3));
+	return &vRight;
 }
