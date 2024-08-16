@@ -55,7 +55,7 @@ HRESULT CReactor_Van::Ready_Monster(_int* pMonsterTypes)
 		CCarChase_Van::CARCHASE_MONSTER_DESC Desc{};
 		Desc.iWeaponType = i == 0 ? CCarChase_Monster::DRV : pMonsterTypes[i - 1];
 		Desc.pParentMatrix = m_pTransformCom->Get_WorldFloat4x4();
-		Desc.pBoneMatrix = m_pModelCom->Get_BoneCombinedTransformationMatrix("anm_root");
+		Desc.pBoneMatrix = m_pModelCom->Get_BoneTransformationMatrix("anm_root");
 		Desc.iLineDir = m_iLineDir;
 		Desc.iObjectIndex = m_iObjectIndex + i;
 

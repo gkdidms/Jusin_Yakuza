@@ -7,6 +7,7 @@
 #include "FileTotalMgr.h"
 #include "CarChaseManager.h"
 #include "TutorialManager.h"
+#include "FightManager.h"
 #include "UIManager.h"
 
 #include "PlayerCamera.h"
@@ -20,11 +21,13 @@ CLevel_Test::CLevel_Test(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLevel{ pDevice, pContext },
 	m_pSystemManager{ CSystemManager::GetInstance() },
 	m_pFileTotalManager{ CFileTotalMgr::GetInstance() },
-	m_pUIManager{ CUIManager::GetInstance() }
+	m_pUIManager{ CUIManager::GetInstance() },
+	m_pFightManager{ CFightManager::GetInstance()}
 {
 	Safe_AddRef(m_pSystemManager);
 	Safe_AddRef(m_pFileTotalManager);
 	Safe_AddRef(m_pUIManager);
+	Safe_AddRef(m_pFightManager);
 }
 
 HRESULT CLevel_Test::Initialize()
@@ -238,4 +241,5 @@ void CLevel_Test::Free()
 	Safe_Release(m_pCarChaseManager);
 	Safe_Release(m_pTutorialManager);
 	Safe_Release(m_pUIManager);
+	Safe_Release(m_pFightManager);
 }

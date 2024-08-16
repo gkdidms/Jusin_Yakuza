@@ -1002,14 +1002,15 @@ void CRenderer::Render_SSAOBlur()
 	m_pGameInstance->Bind_ComputeRenderTargetSRV(TEXT("Target_Ambient"));
 	m_pGameInstance->Bind_ComputeRenderTargetUAV(TEXT("Target_Blur_X"));
 
-	UINT GroupX = (1280 + 15) / 16;
-	UINT GroupY = (720 + 15) / 16;
-	m_pComputeShader[BLURX]->Render(GroupX, GroupY, 1);
+	UINT GroupX = (1280 + 255) / 256;
+
+	m_pComputeShader[BLURX]->Render(GroupX, 1, 1);
 	
+	UINT GroupY = (720 + 255) / 256;
 	m_pGameInstance->Bind_ComputeRenderTargetSRV(TEXT("Target_Blur_X"));
 	m_pGameInstance->Bind_ComputeRenderTargetUAV(TEXT("Target_SSAO"));
 
-	m_pComputeShader[BLURY]->Render(GroupX, GroupY, 1);
+	m_pComputeShader[BLURY]->Render(1, GroupY, 1);
 }
 
 void CRenderer::Render_LightAcc()
@@ -1365,18 +1366,17 @@ void CRenderer::Render_Bloom()
 	m_pGameInstance->Bind_ComputeRenderTargetSRV(TEXT("Target_Effect"));
 	m_pGameInstance->Bind_ComputeRenderTargetUAV(TEXT("Target_Blur_X"));
 
-	UINT GroupX = (1280 + 15) / 16;
-	UINT GroupY = (720 + 15) / 16;
-	m_pComputeShader[BLURX]->Render(GroupX, GroupY, 1);
+	UINT GroupX = (1280 + 255) / 256;
 
-	m_pContext->Flush();
+	m_pComputeShader[BLURX]->Render(GroupX, 1, 1);
+
+	UINT GroupY = (720 + 255) / 256;
 
 	m_pGameInstance->Bind_ComputeRenderTargetSRV(TEXT("Target_Blur_X"));
 	m_pGameInstance->Bind_ComputeRenderTargetUAV(TEXT("Target_Blur_Y"));
 
-	m_pComputeShader[BLURX]->Render(GroupX, GroupY, 1);
+	m_pComputeShader[BLURX]->Render(1, GroupY, 1);
 
-	m_pContext->Flush();
 
 	/*
 	if (FAILED(m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix)))
@@ -1550,16 +1550,16 @@ void CRenderer::Render_DeferredBlur()
 	m_pGameInstance->Bind_ComputeRenderTargetSRV(TEXT("Target_FinalEffect"));
 	m_pGameInstance->Bind_ComputeRenderTargetUAV(TEXT("Target_Blur_X"));
 
-	UINT GroupX = (1280 + 15) / 16;
-	UINT GroupY = (720 + 15) / 16;
-	m_pComputeShader[BLURX]->Render(GroupX, GroupY, 1);
+	UINT GroupX = (1280 + 255) / 256;
 
-	m_pContext->Flush();
+	m_pComputeShader[BLURX]->Render(GroupX, 720, 1);
+
+	UINT GroupY = (720 + 255) / 256;
 
 	m_pGameInstance->Bind_ComputeRenderTargetSRV(TEXT("Target_Blur_X"));
 	m_pGameInstance->Bind_ComputeRenderTargetUAV(TEXT("Target_BackBlur"));
 
-	m_pComputeShader[BLURX]->Render(GroupX, GroupY, 1);
+	m_pComputeShader[BLURX]->Render(1280, GroupY, 1);
 
 	m_pContext->Flush();
 
