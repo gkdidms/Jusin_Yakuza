@@ -209,6 +209,7 @@ HRESULT CMultiLoader::Loading(_uint iType)
 /* 공통적인 저장 객체를 넣어주는 함수. */
 HRESULT CMultiLoader::Loading_Default()
 {
+
 #pragma region Texture
 	lstrcpy(m_szLoadingText, TEXT("텍스쳐를 로딩 중 입니다."));
 
@@ -769,7 +770,9 @@ HRESULT CMultiLoader::Loading_Default()
 #pragma endregion
 
 	return S_OK;
+
 }
+
 
 HRESULT CMultiLoader::Loading_Highway()
 {

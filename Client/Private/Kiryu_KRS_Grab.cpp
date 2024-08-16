@@ -269,6 +269,18 @@ void CKiryu_KRS_Grab::Move_KeyInput(const _float& fTimeDelta)
 
 		static_cast<CMonster*>(m_pPlayer->Get_TargetObject())->Set_Sync("p_kru_sync_neck_nage");
 	}
+
+	//3 [585] [p_kru_sync_lapel_walk]
+	if (m_pGameInstance->GetKeyState(DIK_S) == HOLD)
+	{
+		m_iCurrentIndex = 3;
+		m_eAnimState = ANIM_LOOP;
+	}
+	else if (m_pGameInstance->GetKeyState(DIK_S) == AWAY)
+	{
+		m_iCurrentIndex = 2;
+		m_eAnimState = ANIM_LOOP;
+	}
 }
 
 CBehaviorAnimation* CKiryu_KRS_Grab::Create(CPlayer* pPlayer)
