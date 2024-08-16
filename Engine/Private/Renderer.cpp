@@ -60,6 +60,16 @@ HRESULT CRenderer::Initialize()
 	if (nullptr == m_pShader)
 		return E_FAIL;
 
+	m_pComputeShader[DOWNSAMPLING] = CComputeShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_Downsampling.hlsl"));
+	if (nullptr == m_pComputeShader[DOWNSAMPLING])
+		return E_FAIL;
+	m_pComputeShader[BLURX] = CComputeShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_BlurX.hlsl"));
+	if (nullptr == m_pComputeShader[BLURX])
+		return E_FAIL;
+	m_pComputeShader[BLURY] = CComputeShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_BlurY.hlsl"));
+	if (nullptr == m_pComputeShader[BLURY])
+		return E_FAIL;
+
 	/* 화면을 꽉 채워주기 위한 월드변환행렬. */
 	D3D11_VIEWPORT ViewPort{};
 	_uint iNumViewPort = 1;
@@ -96,7 +106,7 @@ HRESULT CRenderer::Initialize()
 
 	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_Shade"), 150.f, 50.f, 100.f, 100.f)))
 		return E_FAIL;
-	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_Ambient"), 150.f, 150.f, 100.f, 100.f)))
+	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_SSAO"), 150.f, 150.f, 100.f, 100.f)))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_BackBuffer"), 150.f, 250.f, 100.f, 100.f)))
 		return E_FAIL;
@@ -105,7 +115,7 @@ HRESULT CRenderer::Initialize()
 	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_SpecularRM"), 150.f, 550.f, 100.f, 100.f)))
 		return E_FAIL;
 	
-	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_128x128"), 250.f, 050.f, 100.f, 100.f)))
+	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_FinalResult"), 250.f, 050.f, 100.f, 100.f)))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_Luminance"), 250.f, 150.f, 100.f, 100.f)))
 		return E_FAIL;
@@ -114,27 +124,15 @@ HRESULT CRenderer::Initialize()
 	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_BackBlurReverse"), 250.f, 350.f, 100.f, 100.f)))
 		return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_64x64"), 350.f, 050.f, 100.f, 100.f)))
-		return E_FAIL;
-	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_32x32"), 350.f, 150.f, 100.f, 100.f)))
-		return E_FAIL;
-	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_16x16"), 350.f, 250.f, 100.f, 100.f)))
-		return E_FAIL;
-	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_8x8"), 350.f, 350.f, 100.f, 100.f)))
-		return E_FAIL;
-	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_4x4"), 450.f, 50.f, 100.f, 100.f)))
-		return E_FAIL;
-	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_2x2"), 450.f, 150.f, 100.f, 100.f)))
-		return E_FAIL;
 	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_1x1"), 450.f, 250.f, 100.f, 100.f)))
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_Effect"), 550.f, 50.f, 100.f, 100.f)))
 		return E_FAIL;
-	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_Blur_X"), 550.f, 150.f, 100.f, 100.f)))
-		return E_FAIL;
-	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_Blur_Y"), 550.f, 250.f, 100.f, 100.f)))
-		return E_FAIL;
+	//if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_Blur_X"), 550.f, 150.f, 100.f, 100.f)))
+	//	return E_FAIL;
+	//if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_Blur_Y"), 550.f, 250.f, 100.f, 100.f)))
+	//	return E_FAIL;
 	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_AccumColor"), 750.f, 50.f, 100.f, 100.f)))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_AccumAlpha"), 750.f, 150.f, 100.f, 100.f)))
@@ -165,7 +163,7 @@ HRESULT CRenderer::Ready_Targets()
 
 	//20240712_NonBlendDiffuse 의 백버퍼 칼라(알파 빼고 )가 기본 스카이 박스에 곱해져서 색이 핑크핑크로 나왔었음 일단 0,0,0,0 으로 바꾸면 수습가능 (만약 다른색 원하면 구조 고쳐야됨.
 	/*Target_Diffuse*/
-	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Diffuse"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_B8G8R8A8_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Diffuse"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R16G16B16A16_FLOAT, _float4(0.f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
 
 	/*Target_Normal*/
@@ -233,7 +231,7 @@ HRESULT CRenderer::Ready_Targets()
 	//	return E_FAIL;
 
 	/* Target_LightDepth */
-	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_LightDepth"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R32_FLOAT, _float4(1.f, 1.f, 1.f, 1.f), 3)))
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_LightDepth"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R32_FLOAT, _float4(1.f, 1.f, 1.f, 1.f), false, 3)))
 		return E_FAIL;
 
 	/* Target_LightMap */
@@ -253,7 +251,9 @@ HRESULT CRenderer::Ready_Targets()
 		return E_FAIL;
 
 	/*Target_SSAO*/
-	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_SSAO"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 1.f))))
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_CopyAmbient"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(1.f, 0.f, 0.f, 0.f), true)))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_SSAO"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 1.f), true)))
 		return E_FAIL;
 
 	/*Target_SpecularRM*/
@@ -285,21 +285,25 @@ HRESULT CRenderer::Ready_Targets()
 		return E_FAIL;
 
 	//Luminance
-	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_128x128"), 128, 128, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_640x360"), 1, 1, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f), true)))
 		return E_FAIL;
-	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_64x64"), 64, 64, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_320x180"), 1, 1, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f), true)))
 		return E_FAIL;
-	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_32x32"), 32, 32, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_160x90"), 1, 1, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f), true)))
 		return E_FAIL;
-	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_16x16"), 16, 16, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_80x45"), 1, 1, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f), true)))
 		return E_FAIL;
-	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_8x8"), 8, 8, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_40x23"), 1, 1, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f), true)))
 		return E_FAIL;
-	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_4x4"), 4, 4, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_20x12"), 1, 1, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f), true)))
 		return E_FAIL;
-	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_2x2"), 2, 2, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_10x6"), 1, 1, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f), true)))
 		return E_FAIL;
-	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_1x1"), 1, 1, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_5x3"), 1, 1, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f), true)))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_3x2"), 1, 1, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f), true)))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_1x1"), 1, 1, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f), true)))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_CopyLuminance"), 1, 1, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
@@ -311,10 +315,10 @@ HRESULT CRenderer::Ready_Targets()
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Effect"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R8G8B8A8_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Blur_X"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R8G8B8A8_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Blur_X"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R8G8B8A8_UNORM, _float4(0.f, 0.f, 0.f, 0.f), true)))
 		return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Blur_Y"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R8G8B8A8_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Blur_Y"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R8G8B8A8_UNORM, _float4(0.f, 0.f, 0.f, 0.f), true)))
 		return E_FAIL;
 #pragma endregion
 
@@ -361,6 +365,10 @@ HRESULT CRenderer::Ready_Targets()
 
 	/*Target_Vignette*/
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Vignette"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
+		return E_FAIL;
+
+	/*Target_FinalResult*/
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_FinalResult"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
 
 	return S_OK;
@@ -459,36 +467,8 @@ HRESULT CRenderer::Ready_MRTs()
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_HDR"), TEXT("Target_ToneMapping"))))
 		return E_FAIL;
 
-	/*MRT_128*/
-	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_128"), TEXT("Target_128x128"))))
-		return E_FAIL;
-
-	/*MRT_64*/
-	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_64"), TEXT("Target_64x64"))))
-		return E_FAIL;
-
-	/*MRT_32*/
-	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_32"), TEXT("Target_32x32"))))
-		return E_FAIL;
-
-	/*MRT_16*/
-	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_16"), TEXT("Target_16x16"))))
-		return E_FAIL;
-
-	/*MRT_8*/
-	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_8"), TEXT("Target_8x8"))))
-		return E_FAIL;
-
-	/*MRT_4*/
-	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_4"), TEXT("Target_4x4"))))
-		return E_FAIL;
-
-	/*MRT_2*/
-	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_2"), TEXT("Target_2x2"))))
-		return E_FAIL;
-
 	/*MRT_1*/
-	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_1"), TEXT("Target_1x1"))))
+	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_DownSampling"), TEXT("Target_1x1"))))
 		return E_FAIL;
 
 	/*MRT_Luminance*/
@@ -559,6 +539,10 @@ HRESULT CRenderer::Ready_MRTs()
 		return E_FAIL;
 #pragma endregion
 
+	/* MRT_FinalResult */
+	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_FinalResult"), TEXT("Target_FinalResult"))))
+		return E_FAIL;
+	
 
 
 	return S_OK;
@@ -697,6 +681,11 @@ void CRenderer::Draw()
 	Render_Decal();
 
 	//Render_Glass();
+	if (m_isSSAO)
+	{
+		Render_SSAO();
+		Render_SSAOBlur();
+	}
 
 	Render_LightAcc();
 	Render_CopyBackBuffer(); // 최종으로 그려서 백버퍼에 올라갈 이미지 복사
@@ -707,7 +696,7 @@ void CRenderer::Draw()
 		Render_RimLight();
 
 	if (m_isHDR)
-		Render_Luminance();
+		Render_DownSampling();
 
 	// 간판을 위해 임의로 남겨두기
 	Render_NonLight_NonBlur();
@@ -723,11 +712,7 @@ void CRenderer::Draw()
 	Render_Distortion();
 
 	/* PostProcessing*/
-	if (m_isSSAO)
-	{
-		Render_SSAO();
-		Render_SSAOBlur();
-	}
+
 
 	if (m_isInvertColor)
 		Render_InvertColor();
@@ -754,7 +739,6 @@ void CRenderer::Draw()
 	{
 		Render_AvgLuminance();
 		Render_CopyLuminance();
-		Render_HDR();
 		Render_LuminanceResult();
 	}
 
@@ -966,6 +950,68 @@ void CRenderer::Render_Glass()
 
 }
 
+void CRenderer::Render_SSAO()
+{
+	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_SSAO"))))
+		return;
+
+	if (FAILED(m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix)))
+		return;
+	if (FAILED(m_pShader->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix)))
+		return;
+	if (FAILED(m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
+		return;
+
+	if (FAILED(m_pShader->Bind_Matrix("g_CamViewMatrix", m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_VIEW))))
+		return;
+	if (FAILED(m_pShader->Bind_Matrix("g_CamProjMatrix", m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_PROJ))))
+		return;
+
+	if (FAILED(m_pShader->Bind_Matrix("g_ViewMatrixInv", m_pGameInstance->Get_Transform_Inverse_Float4x4(CPipeLine::D3DTS_VIEW))))
+		return;
+	if (FAILED(m_pShader->Bind_Matrix("g_ProjMatrixInv", m_pGameInstance->Get_Transform_Inverse_Float4x4(CPipeLine::D3DTS_PROJ))))
+		return;
+
+	if (FAILED(m_pShader->Bind_RawValue("g_fFar", m_pGameInstance->Get_CamFar(), sizeof(_float))))
+		return;
+	if (FAILED(m_pShader->Bind_RawValue("g_fRadiuse", &m_fSSAORadiuse, sizeof(_float))))
+		return;
+	if (FAILED(m_pShader->Bind_RawValue("g_fSSAOBise", &m_fSSAOBiae, sizeof(_float))))
+		return;
+	if (FAILED(m_pShader->Bind_RawValue("g_vCamPosition", m_pGameInstance->Get_CamPosition_Float4(), sizeof(_float4))))
+		return;
+	if (FAILED(m_pShader->Bind_Vectors("g_SSAORandoms", m_vSSAOKernal, 64)))
+		return;
+
+	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Normal"), m_pShader, "g_NormalTexture")))
+		return;
+	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Depth"), m_pShader, "g_DepthTexture")))
+		return;
+	if (FAILED(m_pShader->Bind_SRV("g_SSAONoisesTexture", m_pSSAONoiseView)))
+		return;
+
+	m_pShader->Begin(14);
+	m_pVIBuffer->Render();
+
+	if (FAILED(m_pGameInstance->End_MRT()))
+		return;
+}
+
+void CRenderer::Render_SSAOBlur()
+{
+	m_pGameInstance->Bind_ComputeRenderTargetSRV(TEXT("Target_Ambient"));
+	m_pGameInstance->Bind_ComputeRenderTargetUAV(TEXT("Target_Blur_X"));
+
+	UINT GroupX = (1280 + 15) / 16;
+	UINT GroupY = (720 + 15) / 16;
+	m_pComputeShader[BLURX]->Render(GroupX, GroupY, 1);
+	
+	m_pGameInstance->Bind_ComputeRenderTargetSRV(TEXT("Target_Blur_X"));
+	m_pGameInstance->Bind_ComputeRenderTargetUAV(TEXT("Target_SSAO"));
+
+	m_pComputeShader[BLURY]->Render(GroupX, GroupY, 1);
+}
+
 void CRenderer::Render_LightAcc()
 {
 	/* Light + PBR */
@@ -999,12 +1045,11 @@ void CRenderer::Render_LightAcc()
 		return;
 	/*if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_DecalContainDiffuse"), m_pShader, "g_DiffuseTexture")))
 		return;*/
-
+	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_SSAO"), m_pShader, "g_AmbientTexture")))
+		return;
 	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Normal"), m_pShader, "g_NormalTexture")))
 		return;
 	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Depth"), m_pShader, "g_DepthTexture")))
-		return;
-	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_SSAO"), m_pShader, "g_AmbientTexture")))
 		return;
 	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Surface"), m_pShader, "g_SurfaceTexture")))
 		return;
@@ -1123,7 +1168,6 @@ void CRenderer::Render_Puddle()
 	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_PuddleDiffuse"), m_pShader, "g_DiffuseTexture")))
 		return;
 
-
 	m_pShader->Begin(18);
 
 	m_pVIBuffer->Render();
@@ -1149,222 +1193,69 @@ void CRenderer::Render_DeferredResult() // 백버퍼에 Diffuse와 Shade를 더해서 그�
 	m_pVIBuffer->Render();
 }
 
-void CRenderer::Render_Luminance()
+void CRenderer::Render_DownSampling()
 {
-	//128x128
 
-	D3D11_VIEWPORT			ViewPortDesc;
-	ZeroMemory(&ViewPortDesc, sizeof(D3D11_VIEWPORT));
-	ViewPortDesc.TopLeftX = 0;
-	ViewPortDesc.TopLeftY = 0;
-	ViewPortDesc.Width = (_float)128.f;
-	ViewPortDesc.Height = (_float)128.f;
-	ViewPortDesc.MinDepth = 0.f;
-	ViewPortDesc.MaxDepth = 1.f;
+	//컴퓨트 다운샘플링 진행
+	for (size_t i = 0; i < 10; ++i)
+	{
+		if (i == 0)
+		{
+			m_pGameInstance->Bind_ComputeRenderTargetSRV(TEXT("Target_BackBuffer"));
+			m_pGameInstance->Bind_ComputeRenderTargetUAV(TEXT("Target_640x360"));
+		}
+		else if (i == 1)
+		{
+			m_pGameInstance->Bind_ComputeRenderTargetSRV(TEXT("Target_640x360"));
+			m_pGameInstance->Bind_ComputeRenderTargetUAV(TEXT("Target_320x180"));
+		}
+		else if (i == 2)
+		{
+			m_pGameInstance->Bind_ComputeRenderTargetSRV(TEXT("Target_320x180"));
+			m_pGameInstance->Bind_ComputeRenderTargetUAV(TEXT("Target_160x90"));
+		}
+		else if (i == 3)
+		{
+			m_pGameInstance->Bind_ComputeRenderTargetSRV(TEXT("Target_160x90"));
+			m_pGameInstance->Bind_ComputeRenderTargetUAV(TEXT("Target_80x45"));
+		}
+		else if (i == 4)
+		{
+			m_pGameInstance->Bind_ComputeRenderTargetSRV(TEXT("Target_80x45"));
+			m_pGameInstance->Bind_ComputeRenderTargetUAV(TEXT("Target_40x23"));
+		}
+		else if (i == 5)
+		{
+			m_pGameInstance->Bind_ComputeRenderTargetSRV(TEXT("Target_40x23"));
+			m_pGameInstance->Bind_ComputeRenderTargetUAV(TEXT("Target_20x12"));
+		}
+		else if (i == 6)
+		{
+			m_pGameInstance->Bind_ComputeRenderTargetSRV(TEXT("Target_20x12"));
+			m_pGameInstance->Bind_ComputeRenderTargetUAV(TEXT("Target_10x6"));
+		}
+		else if (i == 7)
+		{
+			m_pGameInstance->Bind_ComputeRenderTargetSRV(TEXT("Target_10x6"));
+			m_pGameInstance->Bind_ComputeRenderTargetUAV(TEXT("Target_5x3"));
+		}
+		else if (i == 8)
+		{
+			m_pGameInstance->Bind_ComputeRenderTargetSRV(TEXT("Target_5x3"));
+			m_pGameInstance->Bind_ComputeRenderTargetUAV(TEXT("Target_3x2"));
+		}
+		else if (i == 8)
+		{
+			m_pGameInstance->Bind_ComputeRenderTargetSRV(TEXT("Target_3x2"));
+			m_pGameInstance->Bind_ComputeRenderTargetUAV(TEXT("Target_1x1"));
+		}
 
-	m_pContext->RSSetViewports(1, &ViewPortDesc);
+		UINT threadGroupX = (1280 + 15) / 16;
+		UINT threadGroupY = (720 + 15) / 16;
 
-	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_128"))))
-		return;
+		m_pComputeShader[DOWNSAMPLING]->Render(threadGroupX, threadGroupY, 1);
+	}
 
-	if (FAILED(m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix)))
-		return;
-	if (FAILED(m_pShader->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix)))
-		return;
-	if (FAILED(m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
-		return;
-
-
-	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_BackBuffer"), m_pShader, "g_BackBufferTexture")))
-		return;
-
-
-	m_pShader->Begin(5);
-	m_pVIBuffer->Render();
-
-	if (FAILED(m_pGameInstance->End_MRT()))
-		return;
-
-	//64x64
-
-	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_64"))))
-		return;
-
-	ZeroMemory(&ViewPortDesc, sizeof(D3D11_VIEWPORT));
-	ViewPortDesc.TopLeftX = 0;
-	ViewPortDesc.TopLeftY = 0;
-	ViewPortDesc.Width = (_float)64.f;
-	ViewPortDesc.Height = (_float)64.f;
-	ViewPortDesc.MinDepth = 0.f;
-	ViewPortDesc.MaxDepth = 1.f;
-
-	m_pContext->RSSetViewports(1, &ViewPortDesc);
-
-	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_128x128"), m_pShader, "g_LuminanceTexture")))
-		return;
-
-	m_pShader->Begin(6);
-	m_pVIBuffer->Render();
-
-	if (FAILED(m_pGameInstance->End_MRT()))
-		return;
-
-	//32x32
-
-	ZeroMemory(&ViewPortDesc, sizeof(D3D11_VIEWPORT));
-	ViewPortDesc.TopLeftX = 0;
-	ViewPortDesc.TopLeftY = 0;
-	ViewPortDesc.Width = (_float)32.f;
-	ViewPortDesc.Height = (_float)32.f;
-	ViewPortDesc.MinDepth = 0.f;
-	ViewPortDesc.MaxDepth = 1.f;
-
-	m_pContext->RSSetViewports(1, &ViewPortDesc);
-
-	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_32"))))
-		return;
-
-	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_64x64"), m_pShader, "g_LuminanceTexture")))
-		return;
-
-	m_pShader->Begin(6);
-	m_pVIBuffer->Render();
-
-	if (FAILED(m_pGameInstance->End_MRT()))
-		return;
-
-	//16x16
-
-	ZeroMemory(&ViewPortDesc, sizeof(D3D11_VIEWPORT));
-	ViewPortDesc.TopLeftX = 0;
-	ViewPortDesc.TopLeftY = 0;
-	ViewPortDesc.Width = (_float)16.f;
-	ViewPortDesc.Height = (_float)16.f;
-	ViewPortDesc.MinDepth = 0.f;
-	ViewPortDesc.MaxDepth = 1.f;
-
-	m_pContext->RSSetViewports(1, &ViewPortDesc);
-	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_16"))))
-		return;
-
-	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_32x32"), m_pShader, "g_LuminanceTexture")))
-		return;
-
-	m_pShader->Begin(6);
-	m_pVIBuffer->Render();
-
-	if (FAILED(m_pGameInstance->End_MRT()))
-		return;
-
-	//8x8
-
-	ZeroMemory(&ViewPortDesc, sizeof(D3D11_VIEWPORT));
-	ViewPortDesc.TopLeftX = 0;
-	ViewPortDesc.TopLeftY = 0;
-	ViewPortDesc.Width = (_float)8.f;
-	ViewPortDesc.Height = (_float)8.f;
-	ViewPortDesc.MinDepth = 0.f;
-	ViewPortDesc.MaxDepth = 1.f;
-
-	m_pContext->RSSetViewports(1, &ViewPortDesc);
-
-	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_8"))))
-		return;
-
-	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_16x16"), m_pShader, "g_LuminanceTexture")))
-		return;
-
-	m_pShader->Begin(6);
-	m_pVIBuffer->Render();
-
-	if (FAILED(m_pGameInstance->End_MRT()))
-		return;
-
-	//4x4
-
-	ZeroMemory(&ViewPortDesc, sizeof(D3D11_VIEWPORT));
-	ViewPortDesc.TopLeftX = 0;
-	ViewPortDesc.TopLeftY = 0;
-	ViewPortDesc.Width = (_float)4.f;
-	ViewPortDesc.Height = (_float)4.f;
-	ViewPortDesc.MinDepth = 0.f;
-	ViewPortDesc.MaxDepth = 1.f;
-
-	m_pContext->RSSetViewports(1, &ViewPortDesc);
-	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_4"))))
-		return;
-
-	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_8x8"), m_pShader, "g_LuminanceTexture")))
-		return;
-
-	m_pShader->Begin(6);
-	m_pVIBuffer->Render();
-
-	if (FAILED(m_pGameInstance->End_MRT()))
-		return;
-
-	//2x2
-
-	ZeroMemory(&ViewPortDesc, sizeof(D3D11_VIEWPORT));
-	ViewPortDesc.TopLeftX = 0;
-	ViewPortDesc.TopLeftY = 0;
-	ViewPortDesc.Width = (_float)2.f;
-	ViewPortDesc.Height = (_float)2.f;
-	ViewPortDesc.MinDepth = 0.f;
-	ViewPortDesc.MaxDepth = 1.f;
-
-	m_pContext->RSSetViewports(1, &ViewPortDesc);
-
-	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_2"))))
-		return;
-
-	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_4x4"), m_pShader, "g_LuminanceTexture")))
-		return;
-
-	m_pShader->Begin(6);
-	m_pVIBuffer->Render();
-
-	if (FAILED(m_pGameInstance->End_MRT()))
-		return;
-
-	//1x1
-
-	ZeroMemory(&ViewPortDesc, sizeof(D3D11_VIEWPORT));
-	ViewPortDesc.TopLeftX = 0;
-	ViewPortDesc.TopLeftY = 0;
-	ViewPortDesc.Width = (_float)1.f;
-	ViewPortDesc.Height = (_float)1.f;
-	ViewPortDesc.MinDepth = 0.f;
-	ViewPortDesc.MaxDepth = 1.f;
-
-	m_pContext->RSSetViewports(1, &ViewPortDesc);
-
-	//_bool isFninshed = { true };
-
-	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_1"))))
-		return;
-
-	//if (FAILED(m_pShader->Bind_RawValue("g_isFinished", &isFninshed, sizeof(_bool))))
-	//	return;
-
-	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_2x2"), m_pShader, "g_LuminanceTexture")))
-		return;
-
-	m_pShader->Begin(10);
-	m_pVIBuffer->Render();
-
-	if (FAILED(m_pGameInstance->End_MRT()))
-		return;
-
-	ZeroMemory(&ViewPortDesc, sizeof(D3D11_VIEWPORT));
-	ViewPortDesc.TopLeftX = 0;
-	ViewPortDesc.TopLeftY = 0;
-	ViewPortDesc.Width = (_float)1280.f;
-	ViewPortDesc.Height = (_float)720.f;
-	ViewPortDesc.MinDepth = 0.f;
-	ViewPortDesc.MaxDepth = 1.f;
-
-	m_pContext->RSSetViewports(1, &ViewPortDesc);
 }
 
 void CRenderer::Render_NonLight_NonBlur()
@@ -1470,6 +1361,24 @@ void CRenderer::Render_NonLight()
 
 void CRenderer::Render_Bloom()
 {
+
+	m_pGameInstance->Bind_ComputeRenderTargetSRV(TEXT("Target_Effect"));
+	m_pGameInstance->Bind_ComputeRenderTargetUAV(TEXT("Target_Blur_X"));
+
+	UINT GroupX = (1280 + 15) / 16;
+	UINT GroupY = (720 + 15) / 16;
+	m_pComputeShader[BLURX]->Render(GroupX, GroupY, 1);
+
+	m_pContext->Flush();
+
+	m_pGameInstance->Bind_ComputeRenderTargetSRV(TEXT("Target_Blur_X"));
+	m_pGameInstance->Bind_ComputeRenderTargetUAV(TEXT("Target_Blur_Y"));
+
+	m_pComputeShader[BLURX]->Render(GroupX, GroupY, 1);
+
+	m_pContext->Flush();
+
+	/*
 	if (FAILED(m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix)))
 		return;
 	if (FAILED(m_pShader->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix)))
@@ -1502,6 +1411,7 @@ void CRenderer::Render_Bloom()
 
 	if (FAILED(m_pGameInstance->End_MRT()))
 		return;
+		*/
 }
 
 void CRenderer::Render_FinalEffectBlend()
@@ -1634,95 +1544,26 @@ void CRenderer::Render_Distortion()
 
 /*Post Processing*/
 #pragma region PostProcessing
-void CRenderer::Render_SSAO()
-{
-	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_SSAO"))))
-		return;
-
-	if (FAILED(m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix)))
-		return;
-	if (FAILED(m_pShader->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix)))
-		return;
-	if (FAILED(m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
-		return;
-
-	if (FAILED(m_pShader->Bind_Matrix("g_CamViewMatrix", m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_VIEW))))
-		return;
-	if (FAILED(m_pShader->Bind_Matrix("g_CamProjMatrix", m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_PROJ))))
-		return;
-
-	if (FAILED(m_pShader->Bind_Matrix("g_ViewMatrixInv", m_pGameInstance->Get_Transform_Inverse_Float4x4(CPipeLine::D3DTS_VIEW))))
-		return;
-	if (FAILED(m_pShader->Bind_Matrix("g_ProjMatrixInv", m_pGameInstance->Get_Transform_Inverse_Float4x4(CPipeLine::D3DTS_PROJ))))
-		return;
-
-	if (FAILED(m_pShader->Bind_RawValue("g_fFar", m_pGameInstance->Get_CamFar(), sizeof(_float))))
-		return;
-	if (FAILED(m_pShader->Bind_RawValue("g_fRadiuse", &m_fSSAORadiuse, sizeof(_float))))
-		return;
-	if (FAILED(m_pShader->Bind_RawValue("g_fSSAOBise", &m_fSSAOBiae, sizeof(_float))))
-		return;
-	if (FAILED(m_pShader->Bind_RawValue("g_vCamPosition", m_pGameInstance->Get_CamPosition_Float4(), sizeof(_float4))))
-		return;
-	if (FAILED(m_pShader->Bind_Vectors("g_SSAORandoms", m_vSSAOKernal, 64)))
-		return;
-
-	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Normal"), m_pShader, "g_NormalTexture")))
-		return;
-	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Depth"), m_pShader, "g_DepthTexture")))
-		return;
-	if (FAILED(m_pShader->Bind_SRV("g_SSAONoisesTexture", m_pSSAONoiseView)))
-		return;
-
-	m_pShader->Begin(14);
-	m_pVIBuffer->Render();
-
-	if (FAILED(m_pGameInstance->End_MRT()))
-		return;
-}
-
-void CRenderer::Render_SSAOBlur()
-{
-	if (FAILED(m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix)))
-		return;
-	if (FAILED(m_pShader->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix)))
-		return;
-	if (FAILED(m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
-		return;
-
-	if (FAILED(m_pShader->Bind_RawValue("g_fTotal", &m_fSSAOBlur, sizeof(_float))))
-		return;
-
-	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_Blur_X"))))
-		return;
-
-	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Ambient"), m_pShader, "g_EffectTexture")))
-		return;
-
-	m_pShader->Begin(11);
-
-	m_pVIBuffer->Render();
-
-	if (FAILED(m_pGameInstance->End_MRT()))
-		return;
-
-	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_SSAOBlur"))))
-		return;
-
-	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Blur_X"), m_pShader, "g_EffectTexture")))
-		return;
-
-	m_pShader->Begin(12);
-
-	m_pVIBuffer->Render();
-
-	if (FAILED(m_pGameInstance->End_MRT()))
-		return;
-}
 
 void CRenderer::Render_DeferredBlur()
 {
+	m_pGameInstance->Bind_ComputeRenderTargetSRV(TEXT("Target_FinalEffect"));
+	m_pGameInstance->Bind_ComputeRenderTargetUAV(TEXT("Target_Blur_X"));
 
+	UINT GroupX = (1280 + 15) / 16;
+	UINT GroupY = (720 + 15) / 16;
+	m_pComputeShader[BLURX]->Render(GroupX, GroupY, 1);
+
+	m_pContext->Flush();
+
+	m_pGameInstance->Bind_ComputeRenderTargetSRV(TEXT("Target_Blur_X"));
+	m_pGameInstance->Bind_ComputeRenderTargetUAV(TEXT("Target_BackBlur"));
+
+	m_pComputeShader[BLURX]->Render(GroupX, GroupY, 1);
+
+	m_pContext->Flush();
+
+	/*
 	if (FAILED(m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix)))
 		return;
 	if (FAILED(m_pShader->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix)))
@@ -1758,6 +1599,7 @@ void CRenderer::Render_DeferredBlur()
 
 	if (FAILED(m_pGameInstance->End_MRT()))
 		return;
+	*/
 }
 
 void CRenderer::Render_BOF()
@@ -1782,8 +1624,9 @@ void CRenderer::Render_BOF()
 	if (FAILED(m_pShader->Bind_RawValue("g_vCamPosition", m_pGameInstance->Get_CamPosition_Float4(), sizeof(_float4))))
 		return;
 
-	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_ToneMapping"), m_pShader, "g_DiffuseTexture")))
+	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_FinalEffect"), m_pShader, "g_DiffuseTexture")))
 		return;
+
 	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_BackBlur"), m_pShader, "g_BackBlurTexture")))
 		return;
 	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Depth"), m_pShader, "g_DepthTexture")))
@@ -1810,7 +1653,7 @@ void CRenderer::Render_RadialBlur()
 	if (FAILED(m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
 		return;
 
-	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(m_isSSAO ? TEXT("Target_SSAO") : m_isBOF ? TEXT("Target_BOF") : TEXT("Target_FinalEffect"), m_pShader, "g_DiffuseTexture")))
+	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(m_isBOF ? TEXT("Target_BOF") : TEXT("Target_FinalEffect"), m_pShader, "g_DiffuseTexture")))
 		return;
 
 	m_pShader->Begin(22);
@@ -1854,7 +1697,7 @@ void CRenderer::Render_InvertColor()
 	if (FAILED(m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
 		return;
 
-	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_FinalEffect"), m_pShader, "g_DiffuseTexture")))
+	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(m_isRadialBlur ? TEXT("Target_RadialBlur") : m_isBOF ? TEXT("Target_BOF") : TEXT("Target_FinalEffect"), m_pShader, "g_DiffuseTexture")))
 		return;
 
 	m_pShader->Begin(24);
@@ -1891,6 +1734,13 @@ void CRenderer::Render_Vignette()
 
 void CRenderer::Render_FinalResult()
 {
+	if (m_isHDR)
+	{
+		if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_FinalResult"))))
+			return;
+	}
+
+	
 	if (FAILED(m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix)))
 		return;
 	if (FAILED(m_pShader->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix)))
@@ -1898,12 +1748,20 @@ void CRenderer::Render_FinalResult()
 	if (FAILED(m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
 		return;
 
-	wstring strTexture = TEXT("");
+	wstring strTexture = TEXT("Target_FinalEffect");
 
+	if (m_isSSAO)
+	{
+		if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_SSAO"), m_pShader, "g_AmbientTexture")))
+			return;
+	}
+
+	if (m_isBOF) strTexture = TEXT("Target_BOF");
 	if (m_isRadialBlur) strTexture = TEXT("Target_RadialBlur");
-	else if (m_isInvertColor) strTexture = TEXT("Target_InvertColor");
-	else if (m_isVignette) strTexture = TEXT("Target_Vignette");
-	else strTexture = TEXT("Target_FinalEffect");
+	if (m_isInvertColor) strTexture = TEXT("Target_InvertColor");
+	if (m_isVignette) strTexture = TEXT("Target_Vignette");
+
+	
 
 	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(strTexture, m_pShader, "g_BackBufferTexture")))
 		return;
@@ -1911,39 +1769,17 @@ void CRenderer::Render_FinalResult()
 	m_pShader->Begin(4);
 
 	m_pVIBuffer->Render();
+
+	if (m_isHDR)
+	{
+		if (FAILED(m_pGameInstance->End_MRT()))
+			return;
+	}
+
 }
 
 /*HDR*/
 #pragma region HDR
-
-void CRenderer::Render_HDR()
-{
-	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_HDR"))))
-		return;
-
-	if (FAILED(m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix)))
-		return;
-	if (FAILED(m_pShader->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix)))
-		return;
-	if (FAILED(m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
-		return;
-
-	if (FAILED(m_pShader->Bind_RawValue("g_fLumVar", &m_fHDRLight, sizeof(_float))))
-		return;
-
-	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_BackBuffer"), m_pShader, "g_BackBufferTexture")))
-		return;
-	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Luminance"), m_pShader, "g_LuminanceTexture")))
-		return;
-
-	m_pShader->Begin(9);
-
-	m_pVIBuffer->Render();
-
-	if (FAILED(m_pGameInstance->End_MRT()))
-		return;
-}
-
 void CRenderer::Render_AvgLuminance()
 {
 	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_Luminance"))))
@@ -1961,7 +1797,7 @@ void CRenderer::Render_AvgLuminance()
 	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_CopyLuminance"), m_pShader, "g_CopyLuminanceTexture")))
 		return;
 
-	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_BackBuffer"), m_pShader, "g_BackBufferTexture")))
+	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_FinalResult"), m_pShader, "g_BackBufferTexture")))
 		return;
 
 	m_pShader->Begin(7);
@@ -1987,11 +1823,6 @@ void CRenderer::Render_CopyLuminance()
 	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_1x1"), m_pShader, "g_LuminanceTexture")))
 		return;
 
-	/*if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Diffuse"), m_pShader, "g_DiffuseTexture")))
-		return;
-	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Shade"), m_pShader, "g_ShadeTexture")))
-		return;*/
-
 	m_pShader->Begin(8);
 
 	m_pVIBuffer->Render();
@@ -2000,7 +1831,6 @@ void CRenderer::Render_CopyLuminance()
 		return;
 
 }
-#pragma endregion
 
 void CRenderer::Render_LuminanceResult()
 {
@@ -2011,13 +1841,21 @@ void CRenderer::Render_LuminanceResult()
 	if (FAILED(m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
 		return;
 
-	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_ToneMapping"), m_pShader, "g_BackBufferTexture")))
+	if (FAILED(m_pShader->Bind_RawValue("g_fLumVar", &m_fHDRLight, sizeof(_float))))
 		return;
 
-	m_pShader->Begin(4);
+	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_FinalResult"), m_pShader, "g_BackBufferTexture")))
+		return;
+	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Luminance"), m_pShader, "g_LuminanceTexture")))
+		return;
+
+	m_pShader->Begin(9);
 
 	m_pVIBuffer->Render();
 }
+#pragma endregion
+
+
 
 void CRenderer::Render_UI()
 {
@@ -2081,21 +1919,7 @@ void CRenderer::Render_Debug()
 			return;
 		if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_Luminance"), m_pShader, m_pVIBuffer)))
 			return;
-		if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_128"), m_pShader, m_pVIBuffer)))
-			return;
-		if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_64"), m_pShader, m_pVIBuffer)))
-			return;
-		if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_32"), m_pShader, m_pVIBuffer)))
-			return;
-		if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_16"), m_pShader, m_pVIBuffer)))
-			return;
-		if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_8"), m_pShader, m_pVIBuffer)))
-			return;
-		if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_4"), m_pShader, m_pVIBuffer)))
-			return;
-		if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_2"), m_pShader, m_pVIBuffer)))
-			return;
-		if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_1"), m_pShader, m_pVIBuffer)))
+		if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_DownSampling"), m_pShader, m_pVIBuffer)))
 			return;
 	}
 
@@ -2103,8 +1927,8 @@ void CRenderer::Render_Debug()
 		return;
 	//	if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_Blur_X"), m_pShader, m_pVIBuffer)))
 	//		return;
-	if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_Blur_Y"), m_pShader, m_pVIBuffer)))
-		return;
+	//if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_Blur_Y"), m_pShader, m_pVIBuffer)))
+	//	return;
 	if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_Accum"), m_pShader, m_pVIBuffer)))
 		return;
 	if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_RimLight"), m_pShader, m_pVIBuffer)))
@@ -2120,6 +1944,11 @@ void CRenderer::Render_Debug()
 	//MRT_DecalsContainDiffuse
 	if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_DecalsContainDiffuse"), m_pShader, m_pVIBuffer)))
 		return;
+	//MRT_DecalsContainDiffuse
+	if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_FinalResult"), m_pShader, m_pVIBuffer)))
+		return;
+
+	
 
 }
 #endif // DEBUG
@@ -2160,6 +1989,8 @@ void CRenderer::Free()
 	Safe_Release(m_pSSAONoiseView);
 
 	Safe_Release(m_pShader);
+	for(auto& pShader : m_pComputeShader)
+		Safe_Release(pShader);
 	Safe_Release(m_pVIBuffer);
 
 	Safe_Release(m_pDevice);
