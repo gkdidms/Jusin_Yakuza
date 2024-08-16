@@ -132,6 +132,7 @@ private:
     HRESULT Ready_MRTs();
     HRESULT Ready_LightDepth();
     HRESULT Ready_SSAONoiseTexture();
+    HRESULT Ready_OcculusionDepth();
 
 
 #ifdef _DEBUG
@@ -159,6 +160,9 @@ private:
 
     ID3D11DepthStencilView* m_pLightDepthStencilView = { nullptr };
     ID3D11ShaderResourceView* m_pSSAONoiseView = { nullptr };
+
+
+    ID3D11DepthStencilView* m_pOcculusionDepthView = { nullptr };
 
     _bool m_isRadialBlur = { false };
     _bool m_isMotionBlur = { false };
