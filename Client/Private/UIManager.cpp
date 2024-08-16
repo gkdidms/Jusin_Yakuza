@@ -73,6 +73,13 @@ HRESULT CUIManager::Remove_Target(_uint iIndex)
 	return pScene->Remove_Target(iIndex);
 }
 
+CCarChase_Monster* CUIManager::Get_Target()
+{
+	CUICarchase* pScene = dynamic_cast<CUICarchase*>(Find_Scene(TEXT("Carchase")));
+
+	return pScene->Get_Target();;
+}
+
 HRESULT CUIManager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
 	m_pDevice = pDevice;

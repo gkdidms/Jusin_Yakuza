@@ -139,13 +139,10 @@ void CHighway_Kiryu::Key_Input()
 {
 	//공격 가능한 환경인지 체크한 후 진행한다.
 	//다른 스킬들도 막기 위해서 return;
-	if (!isAttackPossible())
+	// 발사
+	if (m_pGameInstance->GetMouseState(DIM_LB) == TAP)
 	{
-		// 발사
-		if (m_pGameInstance->GetMouseState(DIM_LB) == TAP)
-		{
-			Change_Behavior(SHOT);
-		}
+		Change_Behavior(SHOT);
 	}
 
 	// 히트아이 사용
@@ -260,20 +257,26 @@ void CHighway_Kiryu::Play_Animing(_float fTimeDelta)
 	// [52] [mngcar_c_car_gun_aimr_f_lp]
 
 	// 몬스터에 에임띄운거 나오고 나서 각도조절기능 추가예정
+
 	_uint iAnimIndex = 29;
+
+	// 0 앞, 1 앞 대각, 2 옆, 3 뒷 대각, 4 뒤
 	switch (m_iStageDir)
 	{
-	case DIR_F:
+	case 0:			//앞
 		iAnimIndex = (m_isLeft ? 17 : 52);
 		break;
-	case DIR_B:
+	case 1:		//앞 대각
+		iAnimIndex = (m_isLeft ? 18 : 53);
+		break;
+	case 2:		//옆
+		iAnimIndex = (m_isLeft ? 29 : 64);
+		break;
+	case 3:		//뒷 대각
+		iAnimIndex = (m_isLeft ? 6 : 41);
+		break;
+	case 4:		//뒤
 		iAnimIndex = (m_isLeft ? 7 : 42);
-		break;
-	case DIR_L:
-		iAnimIndex = (m_isLeft ? 29 : 64);
-		break;
-	case DIR_R:
-		iAnimIndex = (m_isLeft ? 29 : 64);
 		break;
 	}
 
@@ -380,7 +383,7 @@ void CHighway_Kiryu::Change_Behavior(BEHAVIOR_TYPE eType)
 	Off_Separation_Hand();
 
 	// 어깨 분리 해제
-	//m_pModelCom->Set_Separation_ParentBone(m_isLeft ? "ude1_r_n" : "ude1_l_n", -1);
+	m_pModelCom->Set_Separation_ParentBone(m_isLeft ? "ude1_r_n" : "ude1_l_n", -1);
 
 	switch (eType)
 	{
@@ -408,8 +411,8 @@ void CHighway_Kiryu::Change_Behavior(BEHAVIOR_TYPE eType)
 		m_isStarted = true;
 
 		// 어깨 분리
-		//m_pModelCom->Set_Separation_ParentBone(m_isLeft ? "ude1_r_n" : "ude1_l_n", 4);
-		//m_pModelCom->Set_Separation_SingleBone(m_isLeft ? "ude1_r_n" : "ude1_l_n", -1);
+		m_pModelCom->Set_Separation_ParentBone(m_isLeft ? "ude1_r_n" : "ude1_l_n", 4);
+		m_pModelCom->Set_Separation_SingleBone(m_isLeft ? "ude1_r_n" : "ude1_l_n", -1);
 		break;
 	}
 	case CHighway_Kiryu::SWAP:

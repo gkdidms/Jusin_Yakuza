@@ -71,9 +71,10 @@ private:
     void Play_Shot(_float fTimeDelta);
     void Play_Swap(_float fTimeDelta);
 
+public:
+    void Change_Behavior(BEHAVIOR_TYPE eType);
 
 private:
-    void Change_Behavior(BEHAVIOR_TYPE eType);
     void HideReload();
     _bool isAttackPossible();
 
