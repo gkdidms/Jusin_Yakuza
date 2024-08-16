@@ -38,7 +38,7 @@ public:
 private:
     map<_uint, CARCCHASE_UI_DESC> m_Targets; // 타겟팅 UI 저장
 
-    _float m_fAimSpeed = { 100.f };
+    _float m_fAimSpeed = { 250.f };
     _uint KiryuType = { 0 };
 private:
     void Move_Aim(const _float& fTimeDelta);

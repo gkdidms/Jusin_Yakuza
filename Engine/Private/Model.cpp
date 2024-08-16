@@ -314,7 +314,7 @@ HRESULT CModel::Export_Bones(ofstream& out)
 	_int iNumBones = m_Bones.size();
 
 	// 사용하지 않는 뼈를 제거한다
-	_uint	iCount = { 0 };
+	_int	iCount = { 0 };
 	for (size_t i = 0; i < iNumBones; i++)
 	{
 		if ("" != m_pGameInstance->Extract_String(m_Bones[i]->Get_Name(), '[', ']'))
@@ -330,15 +330,14 @@ HRESULT CModel::Export_Bones(ofstream& out)
 
 	out.write((char*)&iNumBones, sizeof(_uint));
 
-	_uint i = 0;
 	for (auto& Bone : m_Bones)
 	{
 		string strValue = Bone->Get_Name();
-		if ("" != m_pGameInstance->Extract_String(m_Bones[i]->Get_Name(), '[', ']'))
+		if ("" != m_pGameInstance->Extract_String(Bone->Get_Name(), '[', ']'))
 		{
 			// decal이란 이름은 실제 사용하는 뼈인듯해서 제거하면안된다.
 			regex Regex("decal");
-			if (!regex_search(m_Bones[i]->Get_Name(), Regex))
+			if (!regex_search(Bone->Get_Name(), Regex))
 				continue;
 		}
 		
@@ -346,12 +345,14 @@ HRESULT CModel::Export_Bones(ofstream& out)
 		out.write((char*)&iValue, sizeof(_uint));
 		out.write(strValue.c_str(), strValue.size());
 
-		iValue = Bone->Get_ParentBoneIndex();
+		_int iParentIndex = Bone->Get_ParentBoneIndex();
+
+		//iValue = (iParentIndex - iCount) < -1 ? iParentIndex : iParentIndex - iCount;
+		iValue = iParentIndex;
 		out.write((char*)&iValue, sizeof(_int));
 
 		_float4x4 TransformationMatrix = *(Bone->Get_TransformationMatrix());
 		out.write((char*)&TransformationMatrix, sizeof(_float4x4));
-		i++;
 	}
 	return S_OK;
 }
@@ -573,7 +574,7 @@ HRESULT CModel::Import_Model(string& pBinFilePath, _bool isTool)
 	ifstream in(pBinFilePath, ios::binary);
 
 	if (!in.is_open()) {
-		MSG_BOX("파일 개방 실패");
+		MSG_BOX("Model 바이너리 파일 개방 실패");
 		return E_FAIL;
 	}
 

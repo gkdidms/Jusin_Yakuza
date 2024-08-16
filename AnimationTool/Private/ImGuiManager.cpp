@@ -27,7 +27,7 @@ CImguiManager::CImguiManager(ID3D11Device* pDevice, ID3D11DeviceContext* pContex
 
 HRESULT CImguiManager::Initialize(void* pArg)
 {
-	Setting_InitialData();
+	Setting_InitialData("Player/");
 
 	//ImGui
 	IMGUI_CHECKVERSION();
@@ -153,8 +153,21 @@ HRESULT CImguiManager::Render()
 
 void CImguiManager::ModelList()
 {
+	if (ImGui::RadioButton(u8"플레이어 모델", m_iModelPathType == PLAYER))
+	{
+		m_iModelPathType = PLAYER;
+		Setting_ModelList("Player/");
+	}
+	ImGui::SameLine();
+	if (ImGui::RadioButton(u8"몬스터 모델", m_iModelPathType == ENEMY))
+	{
+		m_iModelPathType = ENEMY;
+		Setting_ModelList("Monster/");
+	}
+
+
 	ImGui::Text(u8"적 체크 시 AnimComponent의 애니메이션 목록으로 설정한다");
-	if (ImGui::RadioButton(u8"플레이어", m_iModelType == PLAYER))
+	if (ImGui::RadioButton(u8"모델 내 애니메이션", m_iModelType == PLAYER))
 	{
 		m_iModelType = PLAYER;
 
@@ -163,7 +176,7 @@ void CImguiManager::ModelList()
 		m_Anims = m_pRenderModel->Get_Animations();
 	}
 	ImGui::SameLine();
-	if (ImGui::RadioButton(u8"적", m_iModelType == ENEMY))
+	if (ImGui::RadioButton(u8"애님 컴", m_iModelType == ENEMY))
 	{
 		m_iModelType = ENEMY;
 
@@ -173,19 +186,9 @@ void CImguiManager::ModelList()
 		m_Anims = pAnimCom->Get_Animations();
 	}
 	ImGui::SameLine();
-	if (ImGui::RadioButton(u8"싱크액션", m_iModelType == SYNC))
+	if (ImGui::RadioButton(u8"싱크액션 애님컴", m_iModelType == SYNC))
 	{
 		m_iModelType = SYNC;
-
-		Change_Model();
-
-		auto pAnimCom = m_pRenderModel->Get_AnimComponent();
-		m_Anims = pAnimCom->Get_Animations();
-	}
-	ImGui::SameLine();
-	if (ImGui::RadioButton(u8"기타", m_iModelType == ETC))
-	{
-		m_iModelType = ETC;
 
 		Change_Model();
 
@@ -242,10 +245,10 @@ void CImguiManager::ModelList()
 		Change_Model();
 	}
 
-	if (ImGui::Button(u8"데이터 저장하기"))
-	{
-		All_Save();
-	}
+	//if (ImGui::Button(u8"데이터 저장하기"))
+	//{
+	//	All_Save();
+	//}
 	if (ImGui::Button(u8"데이터 로드하기"))
 	{
 		All_Load();
@@ -2626,16 +2629,12 @@ void CImguiManager::Change_Model()
 	m_pRenderModel->Change_Model(strModelName, strAnimName);
 }
 
-void CImguiManager::Setting_InitialData()
+void CImguiManager::Setting_InitialData(string strFolderType)
 {
-	string strDirPath = "../../Client/Bin/Resources/Models/Anim/Player/";
+	Setting_ModelList(strFolderType);
 
-	m_pGameInstance->Get_DirectoryName(strDirPath, m_ModelNameList);
-	g_wstrModelName = m_pGameInstance->StringToWstring(m_ModelNameList.front());
-
-	strDirPath = "../../Client/Bin/DataFiles/Particle/";
+	string strDirPath = "../../Client/Bin/DataFiles/Particle/";
 	m_pGameInstance->Get_DirectoryName(strDirPath, m_EffectTypeList);
-
 
 	for (size_t i = 0; i < m_EffectTypeList.size(); i++)
 	{
@@ -2647,6 +2646,16 @@ void CImguiManager::Setting_InitialData()
 			m_EffectFiles.emplace(i, tempFileNames[j]);
 		}
 	}
+}
+
+void CImguiManager::Setting_ModelList(string strFolderType)
+{
+	m_ModelNameList.clear();
+
+	string strDirPath = "../../Client/Bin/Resources/Models/Anim/" + strFolderType;
+
+	m_pGameInstance->Get_DirectoryName(strDirPath, m_ModelNameList);
+	g_wstrModelName = m_pGameInstance->StringToWstring(m_ModelNameList.front());
 }
 
 CImguiManager* CImguiManager::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
