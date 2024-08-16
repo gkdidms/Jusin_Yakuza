@@ -18,6 +18,12 @@
 #include"UISkillRush.h"
 #include"UISkillDestroyer.h"
 #include "UICarchase.h"
+#include "UITitle.h"
+
+#include "UIKaraoke_Select.h"
+#include "UIKaraoke_Play.h"
+#include "UIKaraoke_Score.h"
+
 
 
 #include "InventoryManager.h"
@@ -158,6 +164,26 @@ HRESULT CUIManager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 	Desc.strSceneName = TEXT("Carchase");
 	pScene = CUICarchase::Create(m_pDevice, m_pContext, &Desc);
 	m_AllScene.emplace(make_pair(TEXT("Carchase"), pScene));
+
+	Desc.isLoading = true;
+	Desc.strSceneName = TEXT("Karaoke_Select");
+	pScene = CUIKaraoke_Select::Create(m_pDevice, m_pContext, &Desc);
+	m_AllScene.emplace(make_pair(TEXT("Karaoke_Select"), pScene));
+
+	Desc.isLoading = false;
+	Desc.strSceneName = TEXT("Karaoke_Play");
+	pScene = CUIKaraoke_Play::Create(m_pDevice, m_pContext, &Desc);
+	m_AllScene.emplace(make_pair(TEXT("Karaoke_Play"), pScene));
+
+	Desc.isLoading = true;
+	Desc.strSceneName = TEXT("Karaoke_Score");
+	pScene = CUIKaraoke_Score::Create(m_pDevice, m_pContext, &Desc);
+	m_AllScene.emplace(make_pair(TEXT("Karaoke_Score"), pScene));
+
+	Desc.isLoading = true;
+	Desc.strSceneName = TEXT("Title");
+	pScene = CUITitle::Create(m_pDevice, m_pContext, &Desc);
+	m_AllScene.emplace(make_pair(TEXT("Title"), pScene));
 
 	return S_OK;
 }
@@ -357,4 +383,12 @@ _bool CUIManager::Check_Scene(wstring SceneName)
 		return true;
 	else
 		return false;
+}
+
+void CUIManager::Set_Score(_uint iScore)
+{
+	if (TEXT("Karaoke_Score") == m_PlayScene.back()->Get_SceneName())
+	{
+		dynamic_cast<CUIKaraoke_Score*>(m_PlayScene.back())->Set_Score(iScore);
+	}
 }
