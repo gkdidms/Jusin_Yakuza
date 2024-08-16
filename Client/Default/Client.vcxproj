@@ -183,6 +183,8 @@
     <ClInclude Include="..\..\Imgui\imgui\imstb_textedit.h" />
     <ClInclude Include="..\..\Imgui\imgui\imstb_truetype.h" />
     <ClInclude Include="..\public\Adventure.h" />
+    <ClInclude Include="..\Public\HeadUI.h" />
+    <ClInclude Include="..\Public\KaraokeManager.h" />
     <ClInclude Include="..\public\RoadNML.h" />
     <ClInclude Include="..\public\RoadStanding.h" />
     <ClInclude Include="..\public\RoadWalker.h" />
@@ -229,6 +231,10 @@
     <ClInclude Include="..\Public\NoteSingle.h" />
     <ClInclude Include="..\Public\Loader_Other.h" />
     <ClInclude Include="..\Public\Loader_Anim.h" />
+    <ClInclude Include="..\Public\UIKaraoke_Play.h" />
+    <ClInclude Include="..\Public\UIKaraoke_Score.h" />
+    <ClInclude Include="..\Public\UIKaraoke_Select.h" />
+    <ClInclude Include="..\Public\UITitle.h" />
     <ClInclude Include="..\Public\Weapon_Gun_Cz75.h" />
     <ClInclude Include="..\Public\Highway_Kiryu.h" />
     <ClInclude Include="..\Public\Highway_Taxi.h" />
@@ -403,6 +409,9 @@
     <ClCompile Include="..\..\Imgui\imgui\imgui_tables.cpp" />
     <ClCompile Include="..\..\Imgui\imgui\imgui_widgets.cpp" />
     <ClCompile Include="..\private\Adventure.cpp" />
+    <ClCompile Include="..\Private\HeadUI.cpp" />
+    <ClCompile Include="..\Private\UIKaraoke_Score.cpp" />
+    <ClCompile Include="..\Private\KaraokeManager.cpp" />
     <ClCompile Include="..\private\RoadNML.cpp" />
     <ClCompile Include="..\private\RoadStanding.cpp" />
     <ClCompile Include="..\private\RoadWalker.cpp" />
@@ -574,6 +583,8 @@
     <ClCompile Include="..\private\Tutorial.cpp" />
     <ClCompile Include="..\private\TutorialManager.cpp" />
     <ClCompile Include="..\Private\UIInven.cpp" />
+    <ClCompile Include="..\Private\UIKaraoke_Play.cpp" />
+    <ClCompile Include="..\Private\UIKaraoke_Select.cpp" />
     <ClCompile Include="..\Private\UILife.cpp" />
     <ClCompile Include="..\Private\UILogo.cpp" />
     <ClCompile Include="..\Private\UIMainMenu.cpp" />
@@ -587,6 +598,7 @@
     <ClCompile Include="..\Private\UISkillMenu.cpp" />
     <ClCompile Include="..\Private\UISkillRush.cpp" />
     <ClCompile Include="..\Private\UITalk.cpp" />
+    <ClCompile Include="..\Private\UITitle.cpp" />
     <ClCompile Include="..\Private\UITutorial.cpp" />
     <ClCompile Include="..\Private\UI_Effect.cpp" />
     <ClCompile Include="..\Private\UI_Object.cpp" />

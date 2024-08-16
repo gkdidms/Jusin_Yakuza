@@ -11,6 +11,8 @@
 
 #include "Level_Loading.h"
 
+#include "KaraokeManager.h"
+
 CLevel_Karaoke::CLevel_Karaoke(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     : CLevel { pDevice, pContext },
     m_pSystemManager{ CSystemManager::GetInstance() },
@@ -25,10 +27,15 @@ HRESULT CLevel_Karaoke::Initialize()
     if (FAILED(Ready_Player(TEXT("Layer_Player"))))
         return E_FAIL;
 
-    /* Å¬¶ó ÆÄ½Ì */
+    ///* Å¬¶ó ÆÄ½Ì */
     m_pFileTotalManager->Set_MapObj_In_Client(STAGE_KARAOKE, LEVEL_KARAOKE);
     m_pFileTotalManager->Set_Lights_In_Client(STAGE_KARAOKE);
     m_pFileTotalManager->Set_Collider_In_Client(STAGE_KARAOKE, LEVEL_KARAOKE);
+
+	m_pKaraokeManager = CKaraokeManager::Create();
+	if (nullptr == m_pKaraokeManager)
+		return E_FAIL;
+
 
 	if (FAILED(Ready_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
@@ -38,7 +45,7 @@ HRESULT CLevel_Karaoke::Initialize()
 
 void CLevel_Karaoke::Tick(const _float& fTimeDelta)
 {
-
+	m_pKaraokeManager->Tick(fTimeDelta);
 #ifdef _DEBUG
     SetWindowText(g_hWnd, TEXT("°¡¶ó¿ÀÄÉ ¸Ê"));
 #endif
@@ -121,4 +128,5 @@ void CLevel_Karaoke::Free()
 
     Safe_Release(m_pSystemManager);
     Safe_Release(m_pFileTotalManager);
+    Safe_Release(m_pKaraokeManager);
 }

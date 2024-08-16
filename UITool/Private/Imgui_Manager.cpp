@@ -1476,7 +1476,6 @@ void CImgui_Manager::Window_Binary_Group()
                         MSG_BOX("Point 변경 실패");
                 }
 
-
                 ImGui::DragFloat2("StartUV", (float*)&m_StartUV, 0.001f, 0.0f, 1.f);
                 ImGui::DragFloat2("EndUV", (float*)&m_EndUV, 0.001f, 0.0f, 1.f);
 

@@ -70,6 +70,9 @@ public:
     void Change_TutorialUI(_uint iUIType);
     _bool Check_Scene(wstring SceneName);
 
+    //카라오케 점수 전달용
+public:
+    void Set_Score(_uint iScore);
 private:
 
     ID3D11Device* m_pDevice = { nullptr };
