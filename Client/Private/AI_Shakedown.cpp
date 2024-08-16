@@ -56,7 +56,7 @@ HRESULT CAI_Shakedown::Initialize(void* pArg)
 
 	m_fDelayAttackDuration = 3.f;
 
-	m_iMonsterType = CAI_Monster::SHAKDDOWN;
+	m_iMonsterType = CMonster::SHAKDDOWN;
 
 	m_fSwayDistance = _float2(1.8f, 2.f);
 

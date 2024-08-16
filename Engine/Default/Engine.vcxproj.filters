@@ -643,6 +643,15 @@
     <FxCompile Include="..\Bin\ShaderFiles\Shader_PostProcessing.hlsl">
       <Filter>98.Shader</Filter>
     </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_Downsampling.hlsl">
+      <Filter>98.Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_BlurX.hlsl">
+      <Filter>98.Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_BlurY.hlsl">
+      <Filter>98.Shader</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Bin\ShaderFiles\Engine_Shader_Defines.hlsli">

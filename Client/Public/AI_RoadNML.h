@@ -1,9 +1,9 @@
 #pragma once
-#include "AI_Adventure.h"
+#include "AI_RoadWalker.h"
 
 BEGIN(Client)
 class CAI_RoadNML :
-    public CAI_Adventure
+    public CAI_RoadWalker
 {
 private:
     CAI_RoadNML();

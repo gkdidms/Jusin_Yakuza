@@ -47,6 +47,7 @@ protected:
     _bool m_isStop = { false };
     _bool m_isStart = { true };
     _bool   m_isColl = { false };
+    _bool m_isFinishEffect = { false };
 
     _uint m_iState = { 0 };
     _float m_fChangeInterval = { 4.f };
@@ -54,7 +55,6 @@ protected:
     string  m_strAnimName = "";
     _int   m_iAnim = { 0 };
 
-    
     
 protected:
     vector<class CCarChase_Monster*> m_Monsters;

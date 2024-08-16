@@ -31,7 +31,7 @@ HRESULT CAI_DefaultYakuza::Initialize(void* pArg)
 	Ready_Tree();
 
 	m_fDelayAttackDuration = m_pGameInstance->Get_Random(8.f, 10.f);
-	m_iMonsterType = CAI_Monster::DEFAULT;
+	m_iMonsterType = CMonster::MONSTER_DEFAULT;
 
 	return S_OK;
 }

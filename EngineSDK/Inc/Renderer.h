@@ -21,6 +21,7 @@ public:
         RENDER_END
     };
 
+    enum SHADER_TYPE { DOWNSAMPLING, BLURX, BLURY, SHADER_TYPE_END };
 private:
     CRenderer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
     virtual ~CRenderer() = default;
@@ -93,8 +94,7 @@ private:
     void Render_BOF();
 
     /* HDR*/
-    void Render_Luminance();
-    void Render_HDR();
+    void Render_DownSampling();
     void Render_CopyLuminance();
     void Render_AvgLuminance();
     void Render_LuminanceResult();
@@ -155,6 +155,7 @@ private:
 
 private:
     class CShader* m_pShader = { nullptr };
+    class CComputeShader* m_pComputeShader[SHADER_TYPE_END] = {nullptr};
     class CVIBuffer_Rect* m_pVIBuffer = { nullptr };
 
     _float4x4 m_WorldMatrix;
