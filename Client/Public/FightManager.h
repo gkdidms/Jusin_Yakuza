@@ -2,6 +2,11 @@
 #include "Base.h"
 
 #include "Client_Defines.h"
+
+BEGIN(Engine)
+class CGameInstane;
+END
+
 BEGIN(Client)
 class CFightManager : public CBase
 {
@@ -21,9 +26,14 @@ public:
 	void Tick(const _float& fTimeDelta);
 
 private:
+	CGameInstance* m_pGameInstance = { nullptr };
 	class CUIManager* m_pUIManager = { nullptr };
+
 private:
 	_bool m_isFightStage = { false };
+
+	_float m_fFinishDuration = { 3.f };
+	_float m_fFinishTime = { 0.f };
 
 public:
 	virtual void Free();

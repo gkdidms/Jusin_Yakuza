@@ -108,9 +108,11 @@ HRESULT CRenderer::Initialize()
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_SSAO"), 150.f, 150.f, 100.f, 100.f)))
 		return E_FAIL;
-	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_BackBuffer"), 150.f, 250.f, 100.f, 100.f)))
+	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_Ambient"), 150.f, 250.f, 100.f, 100.f)))
 		return E_FAIL;
-	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_LightMap"), 150.f, 350.f, 100.f, 100.f)))
+	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_BackBuffer"), 150.f, 350.f, 100.f, 100.f)))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_LightMap"), 150.f, 450.f, 100.f, 100.f)))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_SpecularRM"), 150.f, 550.f, 100.f, 100.f)))
 		return E_FAIL;
@@ -1004,13 +1006,13 @@ void CRenderer::Render_SSAOBlur()
 
 	UINT GroupX = (1280 + 255) / 256;
 
-	m_pComputeShader[BLURX]->Render(GroupX, 1, 1);
+	m_pComputeShader[BLURX]->Render(GroupX, 720, 1);
 	
 	UINT GroupY = (720 + 255) / 256;
 	m_pGameInstance->Bind_ComputeRenderTargetSRV(TEXT("Target_Blur_X"));
 	m_pGameInstance->Bind_ComputeRenderTargetUAV(TEXT("Target_SSAO"));
 
-	m_pComputeShader[BLURY]->Render(1, GroupY, 1);
+	m_pComputeShader[BLURY]->Render(1280, GroupY, 1);
 }
 
 void CRenderer::Render_LightAcc()
@@ -1196,7 +1198,6 @@ void CRenderer::Render_DeferredResult() // 백버퍼에 Diffuse와 Shade를 더해서 그�
 
 void CRenderer::Render_DownSampling()
 {
-
 	//컴퓨트 다운샘플링 진행
 	for (size_t i = 0; i < 10; ++i)
 	{

@@ -1310,17 +1310,29 @@
     <ClInclude Include="..\Public\UIKaraoke_Play.h">
       <Filter>95.Utility\05.UIManager\UIScene\UIKaraoke_Play</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\KaraokeManager.h">
-      <Filter>06.KaraokeManager</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\UIKaraoke_Score.h">
       <Filter>95.Utility\05.UIManager\UIScene\UIKaraoke_Score</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\UITitle.h">
       <Filter>95.Utility\05.UIManager\UIScene\UITitle</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\HeadUI.h">
-      <Filter>02.GameObjects\13.HeadUI</Filter>
+    <ClInclude Include="..\public\FightManager.h">
+      <Filter>06.FightManager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\AI_RoadStanding.h">
+      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\AI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\MonsterGroup.h">
+      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\MonsterGroup</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\AI_RoadCAB.h">
+      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\Standing\01.CAB\AI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\RoadCAB.h">
+      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\Standing\01.CAB</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\AI_RoadStanding_NML.h">
+      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\Standing\00.NML\AI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

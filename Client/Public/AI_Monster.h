@@ -64,6 +64,7 @@ public:
 
 public:
     void Set_Sync(_bool isSync) { m_isSync = isSync; }
+    void Set_Start(_bool isStart) { m_isStart = isStart; }
 
 public:
     virtual HRESULT Initialize_Prototype();
@@ -85,7 +86,7 @@ protected:
     _uint* m_pCurrentAnimType = { nullptr };
 
 protected:
-    _bool m_isStart = { true };
+    _bool m_isStart = { false };
     _bool m_isAttack = { false };
     _bool m_isAngry = { false };
     _bool m_isSync = { false };

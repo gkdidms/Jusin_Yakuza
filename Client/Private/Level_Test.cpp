@@ -79,6 +79,7 @@ HRESULT CLevel_Test::Initialize()
 	m_pFileTotalManager->Set_Collider_In_Client(3, LEVEL_TEST);
 	//m_pFileTotalManager->Set_Trigger_In_Client(79, LEVEL_TEST);
 
+	m_pFightManager->Set_FightStage(true);
 
 	if (FAILED(Ready_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
@@ -90,6 +91,7 @@ void CLevel_Test::Tick(const _float& fTimeDelta)
 {
 	//m_pCarChaseManager->Tick();
 	//m_pTutorialManager->Tick();
+	m_pFightManager->Tick(fTimeDelta);
 #ifdef _DEBUG
 	SetWindowText(g_hWnd, TEXT("테스트 레벨"));
 #endif

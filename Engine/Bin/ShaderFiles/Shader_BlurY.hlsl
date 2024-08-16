@@ -23,32 +23,15 @@ void GS_MAIN(uint3 dispatchThreadID : SV_DispatchThreadID, int3 GroupIndex : SV_
     InputTexture.GetDimensions(width, height);
     int2 ImageSize = int2(width, height);
     
-    gCache[GroupIndex.y + 5] = InputTexture.Load(int3(outputCoord, 0));
+    vector vColor = float4(0.f, 0.f, 0.f, 0.f);
     
-    if (GroupIndex.y < 5)
-    {
-        int x = max(dispatchThreadID.y - 5, 0);
-        outputCoord.y = (x / ImageSize.y);
-        gCache[GroupIndex.y] = InputTexture.Load(int3(outputCoord, 0));
-    }
-    if (GroupIndex.y >= 251)
-    {
-        int x = min(dispatchThreadID.y + 5, ImageSize.y);
-        outputCoord.y = (x / ImageSize.y);
-        gCache[GroupIndex.y + 10] = InputTexture.Load(int3(outputCoord, 0));
-    }
-    
-    GroupMemoryBarrierWithGroupSync();
-    
-    float4 color = float4(0, 0, 0, 0);
+    [unroll]
     for (int i = -6; i < 7; ++i)
     {
-        int offsetCoord = GroupIndex.y + i + 5;
-        
-        color += g_fWeight[6 + i] * gCache[GroupIndex.y + i];
+        int2 offsetCoord = outputCoord + int2(0, i);
+        offsetCoord.y = clamp(offsetCoord.y, 0, int(ImageSize.y - 1));
+        vColor += g_fWeight[6 + i] * InputTexture.Load(int3(offsetCoord, 0));
     }
     
-    color /= g_fTotal;
-    
-    OutputTexture[outputCoord] = color;
+    OutputTexture[outputCoord] = vColor;
 }
