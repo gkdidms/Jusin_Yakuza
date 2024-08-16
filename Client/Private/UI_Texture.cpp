@@ -261,8 +261,8 @@ HRESULT CUI_Texture::Bind_ResourceData()
 	if (m_isParent)
 	{
 		_float4x4 ResultWorld;
-		//XMStoreFloat4x4(&ResultWorld, m_pTransformCom->Get_WorldMatrix() * XMLoadFloat4x4(m_pParentMatrix));
-		XMStoreFloat4x4(&ResultWorld, XMLoadFloat4x4(&m_WorldMatrix) * XMLoadFloat4x4(m_pParentMatrix));
+		XMStoreFloat4x4(&ResultWorld, m_pTransformCom->Get_WorldMatrix() * XMLoadFloat4x4(m_pParentMatrix));
+		//XMStoreFloat4x4(&ResultWorld, XMLoadFloat4x4(&m_WorldMatrix) * XMLoadFloat4x4(m_pParentMatrix));
 
 		if (FAILED(m_pShaderCom->Bind_Matrix("g_WorldMatrix", &ResultWorld)))
 			return E_FAIL;
@@ -304,6 +304,8 @@ HRESULT CUI_Texture::Bind_ResourceData()
 
 	if (FAILED(m_pTextureCom->Bind_ShaderResource(m_pShaderCom, "g_Texture", 0)))
 		return E_FAIL;
+
+	return S_OK;
 }
 
 void CUI_Texture::Free()

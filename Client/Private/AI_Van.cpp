@@ -8,6 +8,7 @@
 #include "LeafNode.h"
 #include "Sequance.h"
 #include "Selector.h"
+#include "EffectManager.h"
 
 CAI_Van::CAI_Van()
 	: CAI_CarChase{}
@@ -99,6 +100,17 @@ CBTNode::NODE_STATE CAI_Van::Dead()
 {
 	if (*m_pWeaponType != CCarChase_Monster::DRV)
 		*m_pState = CCarChase_Monster::CARCHASE_DED;
+
+	CEffect::EFFECT_DESC EffectDesc;
+
+	
+	_matrix WorldMatrix = XMLoadFloat4x4(m_pThis->Get_TransformCom()->Get_WorldFloat4x4());
+
+	_float4x4 matrix;
+	XMStoreFloat4x4(&matrix, WorldMatrix);
+	EffectDesc.pWorldMatrix = &matrix;
+
+	CEffectManager::GetInstance()->Car_Explosion(EffectDesc);
 
 	return CBTNode::SUCCESS;
 }

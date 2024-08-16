@@ -188,6 +188,7 @@ void CPlayer::Tick(const _float& fTimeDelta)
 	}
 
 
+
 	Synchronize_Root(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")));
 
 #ifdef _DEBUG

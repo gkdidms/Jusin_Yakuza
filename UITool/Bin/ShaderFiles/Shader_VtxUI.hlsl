@@ -142,8 +142,9 @@ PS_OUT PS_ALPHABLEND(PS_IN In)
     
     
     vector BaseColor = g_Texture.Sample(LinearSampler, In.vTexcoord);
-    
+   // float2 ControlAlpha = g_fControlAlpha;
     //BaseColor.rgb = BaseColor.rgb * BaseColor.a;
+    //BaseColor.a *= ControlAlpha.x;
     Out.vColor = BaseColor;
     
     return Out;
@@ -471,7 +472,7 @@ technique11 DefaultTechnique
         SetDepthStencilState(DSS_Default, 0);
         SetBlendState(BS_Screen, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 
-        VertexShader = compile vs_5_0 VS_ANIM();
+        VertexShader = compile vs_5_0 VS_MAIN();
         GeometryShader = NULL;
         HullShader = NULL;
         DomainShader = NULL;

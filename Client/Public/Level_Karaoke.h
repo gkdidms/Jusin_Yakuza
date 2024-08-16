@@ -17,6 +17,7 @@ public:
 private:
     class CSystemManager* m_pSystemManager = { nullptr };
     class CFileTotalMgr* m_pFileTotalManager = { nullptr };
+    class CKaraokeManager* m_pKaraokeManager = { nullptr };
 
 private:
     HRESULT Ready_Camera(const wstring& strLayerTag);

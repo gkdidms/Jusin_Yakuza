@@ -140,8 +140,8 @@ protected:
     const _float4x4* m_pParentMatrix = { nullptr }; 
     const _float4x4* m_pParentBoneMatrix = { nullptr }; // ºÎÂøÇÒ ºÎ¸ğÀÇ ·çÆ®»À
     const _float4x4* m_pTargetBoneMatrix = { nullptr }; // UI ºÎÂøÇÒ ¸ó½ºÅÍ »À
-
-protected:
+    _float4x4 m_pWorldMatrix;
+protected: 
     virtual void Change_Animation();
     void Update_TargetingUI();
     void Get_LookDir();

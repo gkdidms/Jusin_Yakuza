@@ -617,6 +617,24 @@
     <ClCompile Include="..\private\RoadStanding.cpp">
       <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\Standing</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\UIKaraoke_Select.cpp">
+      <Filter>95.Utility\05.UIManager\UIScene\UIKaraoke_Select</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIKaraoke_Play.cpp">
+      <Filter>95.Utility\05.UIManager\UIScene\UIKaraoke_Play</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\KaraokeManager.cpp">
+      <Filter>06.KaraokeManager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIKaraoke_Score.cpp">
+      <Filter>95.Utility\05.UIManager\UIScene\UIKaraoke_Score</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UITitle.cpp">
+      <Filter>95.Utility\05.UIManager\UIScene\UITitle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\HeadUI.cpp">
+      <Filter>02.GameObjects\13.HeadUI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\MainApp.h">
@@ -1264,6 +1282,24 @@
     </ClInclude>
     <ClInclude Include="..\public\RoadStanding.h">
       <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\Standing</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIKaraoke_Select.h">
+      <Filter>95.Utility\05.UIManager\UIScene\UIKaraoke_Select</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIKaraoke_Play.h">
+      <Filter>95.Utility\05.UIManager\UIScene\UIKaraoke_Play</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\KaraokeManager.h">
+      <Filter>06.KaraokeManager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIKaraoke_Score.h">
+      <Filter>95.Utility\05.UIManager\UIScene\UIKaraoke_Score</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UITitle.h">
+      <Filter>95.Utility\05.UIManager\UIScene\UITitle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\HeadUI.h">
+      <Filter>02.GameObjects\13.HeadUI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1943,6 +1979,24 @@
     </Filter>
     <Filter Include="02.GameObjects\02.Character\LandObject\02.Adventure\Standing\00.YNG\AI">
       <UniqueIdentifier>{d07800cf-4913-43c5-9101-0fadabd3e156}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\05.UIManager\UIScene\UIKaraoke_Select">
+      <UniqueIdentifier>{9552b748-69cc-4e5d-809b-65ab482f2a02}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\05.UIManager\UIScene\UIKaraoke_Play">
+      <UniqueIdentifier>{89b5f32b-a135-4a09-b509-b249ac6b1469}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06.KaraokeManager">
+      <UniqueIdentifier>{8e50b980-64ac-47bc-af7b-202c88551681}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\05.UIManager\UIScene\UIKaraoke_Score">
+      <UniqueIdentifier>{24e750fa-2c28-4120-a72a-e3f2bab74b8d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\05.UIManager\UIScene\UITitle">
+      <UniqueIdentifier>{30831fab-dee3-4322-945c-12079c973a08}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\13.HeadUI">
+      <UniqueIdentifier>{f51c6e12-d152-4828-9f5c-8354f9fa7ce2}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
