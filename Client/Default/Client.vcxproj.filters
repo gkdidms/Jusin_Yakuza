@@ -633,7 +633,7 @@
       <Filter>95.Utility\05.UIManager\UIScene\UITitle</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\HeadUI.cpp">
-      <Filter>02.GameObjects\13.HeadUI</Filter>
+      <Filter>95.Utility\05.UIManager\UIScene\UIObject\UITexture\HeadUI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1299,7 +1299,7 @@
       <Filter>95.Utility\05.UIManager\UIScene\UITitle</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\HeadUI.h">
-      <Filter>02.GameObjects\13.HeadUI</Filter>
+      <Filter>95.Utility\05.UIManager\UIScene\UIObject\UITexture\HeadUI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1995,7 +1995,7 @@
     <Filter Include="95.Utility\05.UIManager\UIScene\UITitle">
       <UniqueIdentifier>{30831fab-dee3-4322-945c-12079c973a08}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\13.HeadUI">
+    <Filter Include="95.Utility\05.UIManager\UIScene\UIObject\UITexture\HeadUI">
       <UniqueIdentifier>{f51c6e12-d152-4828-9f5c-8354f9fa7ce2}</UniqueIdentifier>
     </Filter>
   </ItemGroup>

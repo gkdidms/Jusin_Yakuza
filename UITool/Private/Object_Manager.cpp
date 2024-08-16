@@ -269,6 +269,7 @@ HRESULT CObject_Manager::Save_binary()
 			switch (pObj->Get_TypeIndex())
 			{
 			case UITool::CObject_Manager::IMG:
+			case UITool::CObject_Manager::HEADUI:
 			case UITool::CObject_Manager::BTN:	
 			case UITool::CObject_Manager::TEXT:
 			case UITool::CObject_Manager::EFFECT:
@@ -323,6 +324,7 @@ HRESULT CObject_Manager::Load_binary(const wstring& strObjectTag, const string F
 	switch (Type)	
 	{
 	case IMG:
+	case HEADUI:
 	{
 		CImage_Texture::tUITextureDesc pDesc{};
 		pDesc.iTypeIndex = Type;
@@ -1004,7 +1006,7 @@ HRESULT CObject_Manager::Add_BinaryObject(const wstring& strObjectTag, void* pAr
 	}
 
 	// 타입별로 클래스 생성.
-	if (iType == IMG)
+	if (iType == IMG || iType == HEADUI)
 	{
 		CUI_Texture::UI_TEXTURE_DESC TextureDesc = {};
 		TextureDesc.strTextureFileName = pDesc->strFileName;
