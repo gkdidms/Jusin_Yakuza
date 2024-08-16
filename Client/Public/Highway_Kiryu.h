@@ -86,7 +86,6 @@ private:
     const _float4x4* pTaxiMatrix = { nullptr };
     _float4x4 m_ModelMatrix;
 
-    CAnim* m_pAnimCom = { nullptr };
     class CGun_Cz75* m_pGun_R = { nullptr };
     class CGun_Cz75* m_pGun_L = { nullptr };
 
@@ -96,8 +95,6 @@ private:
     _float m_fMaxHP = { 300.f };
     _float m_fMaxHitEye = { 100.f };
 
-
-
     _uint m_iCurrentAmmo = { MAX_AMMO };
 
     _bool           m_isLeft = { false };           // 시작 시 오른쪽부터 시작한다
@@ -105,6 +102,9 @@ private:
     _uint           m_iStageDir = { DIR_END };
     _bool           m_isStarted = { false };
     _bool           m_isHitEyeCharging = { true };
+
+    // 첫틱이 돌고나서 뼈 분리가 되어야 총 잡는손에 문제가 안생긴다.
+    _bool           m_isFirstTick = { true };
 
 public:
     _float Get_MaxHP() { return m_fMaxHP; }
