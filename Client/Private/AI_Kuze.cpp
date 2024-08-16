@@ -71,7 +71,7 @@ HRESULT CAI_Kuze::Initialize(void* pArg)
 	Ready_Tree();
 
 	m_fDelayAttackDuration = 5.f;
-	m_iMonsterType = CAI_Monster::KUZE;
+	m_iMonsterType = CMonster::KUZE;
 
 	m_fSwayDistance = _float2(1.6f, 1.9f);
 

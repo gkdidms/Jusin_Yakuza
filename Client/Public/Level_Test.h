@@ -22,6 +22,7 @@ private:
     class CTutorialManager* m_pTutorialManager = { nullptr };
     class CKaraokeManager* m_pKaraokeManager = { nullptr };
     class CUIManager* m_pUIManager = { nullptr };
+    class CFightManager* m_pFightManager = { nullptr };
 
 private:
     HRESULT Ready_Camera(const wstring& strLayerTag);

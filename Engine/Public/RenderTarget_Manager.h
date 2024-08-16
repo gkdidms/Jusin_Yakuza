@@ -10,12 +10,18 @@ private:
     virtual ~CRenderTarget_Manager() = default;
 
 public:
+    ID3D11Texture2D* Get_TextureBuffer(const wstring& strTargetTag);
+
+public:
     HRESULT Initialize();
-    HRESULT Add_RenderTarget(const wstring& strRenderTargetTag, _uint iSizeX, _uint iSizeY, DXGI_FORMAT ePixelFormat, const _float4& vClearColor, _uint iArrayCount);
+    HRESULT Add_RenderTarget(const wstring& strRenderTargetTag, _uint iSizeX, _uint iSizeY, DXGI_FORMAT ePixelFormat, const _float4& vClearColor, _bool isCompute, _uint iArrayCount);
     HRESULT Add_MRT(const wstring& strMRTTag, const wstring& strRenderTargetTag);
     HRESULT Begin_MRT(const wstring& strMRTTag, ID3D11DepthStencilView* pDSView, _bool isClear);
     HRESULT End_MRT();
     HRESULT Bind_RenderTargetSRV(const wstring& strTargetTag, class CShader* pShader, const _char* pConstantName);
+    void Bind_ComputeRenderTargetSRV(const wstring& strTargetTag);
+    void Bind_ComputeRenderTargetUAV(const wstring& strTargetTag);
+
     HRESULT Copy_Resource(const wstring& strTargetTag, ID3D11Texture2D* pDesc);
     HRESULT Create_Texture(const wstring& strTargetTag, const wstring& strSaveFilePath);
     HRESULT Clear_RenderTarget(const wstring& strTargetTag);

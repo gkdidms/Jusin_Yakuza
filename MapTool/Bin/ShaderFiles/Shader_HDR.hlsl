@@ -42,6 +42,9 @@ PS_OUT PS_MAIN_LUMINANCE(PS_IN In) // 현재 프레임의 평균 휘도 맵 구하기 (최종)
     PS_OUT Out = (PS_OUT) 0;
     
     vector fNew = g_LuminanceTexture.Sample(LinearSampler, In.vTexcoord);
+    float vColor = log(dot(fNew.xyz, Luminance) + 0.0001f);
+    fNew = exp(vColor / 16);
+    
     vector fOld = g_CopyLuminanceTexture.Sample(LinearSampler, In.vTexcoord);
     
     vector vDiffuse = g_BackBufferTexture.Sample(LinearSampler, In.vTexcoord);
@@ -65,6 +68,8 @@ PS_OUT PS_MAIN_COPYLUMINANCE(PS_IN In) // 이전 휘도를 저장
     PS_OUT Out = (PS_OUT) 0;
     
     vector fNew = g_LuminanceTexture.Sample(LinearSampler, In.vTexcoord);
+    float vColor = log(dot(fNew.xyz, Luminance) + 0.0001f);
+    fNew = exp(vColor / 16);
     
     Out.vColor = fNew;
     
@@ -73,8 +78,7 @@ PS_OUT PS_MAIN_COPYLUMINANCE(PS_IN In) // 이전 휘도를 저장
 
 float3 ToneMap(float3 x)
 {
-    return ((x * (A * x + C * B) + D * E) / (x * (A * x + B) + D * F)) - (E / F);
-
+    return saturate(x * (A * x + B)) / (x * (C * x + D) + E);
 }
 
 PS_OUT PS_MAIN_TONEMAPPING(PS_IN In) // 감마 콜렉션 & ACES 톤매핑
@@ -84,11 +88,9 @@ PS_OUT PS_MAIN_TONEMAPPING(PS_IN In) // 감마 콜렉션 & ACES 톤매핑
     vector vLuminance = g_LuminanceTexture.Sample(LinearSampler, In.vTexcoord);
     float3 vDiffuse = pow(g_BackBufferTexture.Sample(LinearSampler, In.vTexcoord).xyz, 2.2f);
     
-    //vDiffuse = saturate(vDiffuse * (A * vDiffuse + B)) / (vDiffuse * (C * vDiffuse + D) + E);
-    vDiffuse = ToneMap(vDiffuse);
+    vDiffuse = ToneMap(vDiffuse.xyz);
     
-    float3 vWhiteScale = 30.f;
-    float3 vColor = vDiffuse * vWhiteScale;
+    float3 vColor = vDiffuse;
     
     Out.vColor = vector(pow(vDiffuse, 1.f / 2.2f), 1.f) * vLuminance * g_fLumVar;
     
