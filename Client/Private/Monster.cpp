@@ -364,6 +364,9 @@ void CMonster::Tick(const _float& fTimeDelta)
 	for (auto& pEffect : m_pEffects)
 		pEffect.second->Tick(fTimeDelta);
 
+	for (auto& pEffect : m_pBloodEffects)
+		pEffect.second->Tick(fTimeDelta);
+
 	Animation_Event();
 	BloodEffect_Event();
 
@@ -424,6 +427,9 @@ void CMonster::Late_Tick(const _float& fTimeDelta)
 		pCollider.second->Late_Tick(fTimeDelta);
 
 	for (auto& pEffect : m_pEffects)
+		pEffect.second->Late_Tick(fTimeDelta);
+
+	for (auto& pEffect : m_pBloodEffects)
 		pEffect.second->Late_Tick(fTimeDelta);
 
 }
@@ -628,11 +634,12 @@ void CMonster::BloodEffect_Event()
 					if (pEvent.isOn)
 					{
 						// 해당하는 이펙트를 켜는 함수
-						m_pEffectManager->Cine_BloodEffect(EffectDesc, pEvent.iBloodEffectType);
+						m_pBloodEffects.find(pEvent.strBonelName)->second->On();
 					}
 					else
 					{
 						//해당하는 이펙트를 끄는 함수
+						m_pBloodEffects.find(pEvent.strBonelName)->second->Off();
 					}
 				}
 				else								  // 루프가 아닌 이펙트라면

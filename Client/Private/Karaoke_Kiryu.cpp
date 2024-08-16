@@ -88,18 +88,18 @@ void CKaraoke_Kiryu::Priority_Tick(const _float& fTimeDelta)
 
 void CKaraoke_Kiryu::Tick(const _float& fTimeDelta)
 {
-	if (m_pGameInstance->GetKeyState(DIK_L) == TAP)
-	{
-		if (m_isSinging)
-			SingOff();
-		else
-			m_isSinging = true;
-	}
+	//if (m_pGameInstance->GetKeyState(DIK_L) == TAP)
+	//{
+	//	if (m_isSinging)
+	//		SingOff();
+	//	else
+	//		m_isSinging = true;
+	//}
 
-	if (m_pGameInstance->GetKeyState(DIK_K) == TAP)
-	{
-		Set_CutSceneAnim();
-	}
+	//if (m_pGameInstance->GetKeyState(DIK_K) == TAP)
+	//{
+	//	Set_CutSceneAnim();
+	//}
 
 	if (m_isSinging)
 		Play_SingingAnim(fTimeDelta);
