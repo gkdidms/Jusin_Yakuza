@@ -71,6 +71,13 @@ void CParticle_Point::Tick(const _float& fTimeDelta)
             m_isDead = true;
     }
 
+#ifdef _CLIENT
+
+    if (m_BufferInstance.isAttach)
+        m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(m_pWorldMatrix));
+
+#endif // _CLIENT
+
     if (m_fCurTime >= m_fStartTime)
     {
         if (m_iAction & iAction[ACTION_SPREAD])
@@ -261,6 +268,7 @@ HRESULT CParticle_Point::Save_Data(const string strDirectory)
         out.write(NormalTag.c_str(), strNormallength);
     }
 
+    out.write((char*)&m_BufferInstance.isAttach, sizeof(_bool));
     out.close();
 
     return S_OK;
@@ -360,7 +368,7 @@ HRESULT CParticle_Point::Load_Data(const string strDirectory)
         string Normaltag = charNormalTag;
         m_NormalTag = m_pGameInstance->StringToWstring(Normaltag);
     }
-
+    in.read((char*)&m_BufferInstance.isAttach, sizeof(_bool));
     in.close();
 
     return S_OK;
