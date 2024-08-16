@@ -22,9 +22,28 @@ HRESULT CCharacterData::Initialize(CLandObject* pCharacter)
 	// 알파 적용할 메시 로드
 	string strFilePath = m_pGameInstance->WstringToString(wstrFilePath);
 	string strFileName = m_pGameInstance->WstringToString(m_pCharacter->Get_ModelName()) + "_AlphaMeshes.dat";
-	string strFileFullPath = strFilePath + strFileName;
-	if (FAILED(Load_AlphaMeshes(strFileFullPath)))
-		return E_FAIL;
+
+	string strFileFullPath;
+
+	//Get_ScndModelName 값이 비어있지않다면 알파메시는 다른 이름으로 읽어와야한다.
+	if (m_pCharacter->Get_ScndModelName() != TEXT(""))
+	{
+		wstring wstrFilePath_Scnd = TEXT("../Bin/DataFiles/Character/");
+		wstrFilePath_Scnd += m_pCharacter->Get_ScndModelName() + TEXT("/");
+
+		string strFilePath_Scnd = m_pGameInstance->WstringToString(wstrFilePath_Scnd);
+		string strFileName_Scnd = m_pGameInstance->WstringToString(m_pCharacter->Get_ScndModelName()) + "_AlphaMeshes.dat";
+
+		string strFileFullPath_Scnd = strFilePath_Scnd + strFileName_Scnd;
+		if (FAILED(Load_AlphaMeshes(strFileFullPath_Scnd)))
+			return E_FAIL;
+	}
+	else
+	{
+		strFileFullPath = strFilePath + strFileName;
+		if (FAILED(Load_AlphaMeshes(strFileFullPath)))
+			return E_FAIL;
+	}
 
 	// 루프애니메이션 정보 로드
 	strFileName = m_pGameInstance->WstringToString(m_pCharacter->Get_ModelName()) + "_LoopAnimations.dat";

@@ -148,7 +148,8 @@ private:
 private:
 	/* Initailize */
 	void Setting_Collider_Value(_uint iBoneIndex);
-	void Setting_InitialData();
+	void Setting_InitialData(string strFolderType);
+	void Setting_ModelList(string strFolderType);
 
 	/* Reset */
 	void Reset_Collider_Value();
@@ -319,6 +320,7 @@ private:
 	float						m_fAnimationPosition = { 0.f };
 
 	int							m_iModelType = { PLAYER };
+	int							m_iModelPathType = { PLAYER };
 
 private:
 	bool						m_isPause = { false };
