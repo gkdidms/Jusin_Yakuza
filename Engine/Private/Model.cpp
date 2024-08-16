@@ -30,6 +30,7 @@ CModel::CModel(const CModel& rhs)
 	, m_iCameras{ rhs.m_iCameras }
 	, m_FovAnimation{ rhs.m_FovAnimation }
 	, m_isTool {rhs.m_isTool}
+	, m_vModelLocalSize {rhs.m_vModelLocalSize}
 {
 	for (auto& pPrototypeAnimation : rhs.m_Animations)
 		m_Animations.emplace_back(pPrototypeAnimation->Clone());
@@ -101,6 +102,28 @@ HRESULT CModel::Initialize_Prototype(MODELTYPE eModelType, const _char* pModelFi
 		if (FAILED(Import_Model(str, isTool)))
 			return E_FAIL;
 	}
+
+	if (0 < m_Meshes.size())
+	{
+		// model 자체의 크기 구함
+		_float3		vMaxPosition = m_Meshes[0]->Get_MaxPoints();
+		_float3		vMinPosition = m_Meshes[0]->Get_MinPoints();
+
+		for (size_t i = 1; i < m_iNumMeshes; ++i)
+		{
+			vMinPosition.x = vMinPosition.x > m_Meshes[i]->Get_MinPoints().x ? m_Meshes[i]->Get_MinPoints().x : vMinPosition.x;
+			vMinPosition.y = vMinPosition.y > m_Meshes[i]->Get_MinPoints().y ? m_Meshes[i]->Get_MinPoints().y : vMinPosition.y;
+			vMinPosition.z = vMinPosition.z > m_Meshes[i]->Get_MinPoints().z ? m_Meshes[i]->Get_MinPoints().z : vMinPosition.z;
+
+			vMaxPosition.x = vMaxPosition.x < m_Meshes[i]->Get_MaxPoints().x ? m_Meshes[i]->Get_MaxPoints().x : vMaxPosition.x;
+			vMaxPosition.y = vMaxPosition.y < m_Meshes[i]->Get_MaxPoints().y ? m_Meshes[i]->Get_MaxPoints().y : vMaxPosition.y;
+			vMaxPosition.z = vMaxPosition.z < m_Meshes[i]->Get_MaxPoints().z ? m_Meshes[i]->Get_MaxPoints().z : vMaxPosition.z;
+		}
+
+		m_vModelLocalSize = _float3(abs(vMaxPosition.x - vMinPosition.x), abs(vMaxPosition.y - vMinPosition.y), abs(vMaxPosition.z - vMinPosition.z));
+	}
+
+
 
 	if (TYPE_NONANIM != eModelType && TYPE_PARTICLE != eModelType)
 	{

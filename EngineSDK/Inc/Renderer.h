@@ -132,6 +132,9 @@ private:
     HRESULT Ready_MRTs();
     HRESULT Ready_LightDepth();
     HRESULT Ready_SSAONoiseTexture();
+
+
+
     HRESULT Ready_OcculusionDepth();
 
 

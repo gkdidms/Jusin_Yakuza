@@ -9,6 +9,7 @@
 CMap::CMap(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CGameObject{ pDevice, pContext },
 	m_pSystemManager{ CSystemManager::GetInstance() }
+	, m_bOrigin {true}
 {
 	Safe_AddRef(m_pSystemManager);
 }
@@ -31,6 +32,14 @@ HRESULT CMap::Initialize(void* pArg)
 
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
+
+	// Occlusion Query 객체 생성 및 소유
+	D3D11_QUERY_DESC queryDesc;
+	queryDesc.Query = D3D11_QUERY_OCCLUSION;
+	queryDesc.MiscFlags = 0;
+
+	m_pDevice->CreateQuery(&queryDesc, &m_pQuery);
+
 
 	if (FAILED(Add_Components(pArg)))
 		return E_FAIL;
@@ -127,8 +136,6 @@ void CMap::Tick(const _float& fTimeDelta)
 	//}
 
 	XMMATRIX		posWorldMatrix = XMMatrixIdentity();
-	XMVECTOR		vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-	memcpy(&posWorldMatrix.r[3], &vPos, sizeof(_vector));
 
 	m_pColliderCom->Tick(posWorldMatrix);
 		
@@ -1207,14 +1214,16 @@ HRESULT CMap::Add_Components(void* pArg)
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
 		return E_FAIL;
 
-
+	// Occulusion Culling을 위한 scale 파악
+	m_vModelScale = m_pModelCom->Get_LocalModelSize();
 
 	CBounding_AABB::BOUNDING_AABB_DESC		ColliderDesc{};
 	ColliderDesc.eType = CCollider::COLLIDER_AABB;
-	ColliderDesc.vExtents = _float3(7,7,7);
-	ColliderDesc.vCenter = _float3(gameobjDesc->vStartPos.r[3].m128_f32[0], gameobjDesc->vStartPos.r[3].m128_f32[1], gameobjDesc->vStartPos.r[3].m128_f32[2]);
+	ColliderDesc.vExtents = m_vModelScale;
+	ColliderDesc.vCenter = _float3(gameobjDesc->vStartPos.r[3].m128_f32[0], m_vModelScale.y * 0.5, gameobjDesc->vStartPos.r[3].m128_f32[2]);
 
 	m_pColliderCom = dynamic_cast<CCollider*>(m_pGameInstance->Add_Component_Clone(m_iCurrentLevel, TEXT("Prototype_Component_Collider"), &ColliderDesc));
+
 
 
 
@@ -1312,6 +1321,8 @@ void CMap::Free()
 	m_vStrongBloomIndex.clear();
 	m_vCompulsoryDecalBlendMeshIndex.clear();
 
+	if(false == m_bOrigin)
+		Safe_Release(m_pQuery);
 
 	Safe_Release(m_pColliderCom);
 	Safe_Release(m_pShaderCom);

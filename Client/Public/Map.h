@@ -108,6 +108,7 @@ private:
 	CModel* m_pModelCom = { nullptr };
 	CNeoShader* m_pMaterialCom = { nullptr };
 	CCollider* m_pColliderCom = { nullptr };
+	ID3D11Query*		m_pQuery = { nullptr };
 
 	class CSystemManager* m_pSystemManager = { nullptr };
 
@@ -147,6 +148,10 @@ private:
 	float					m_fDynamicTime = { 0 };
 	float					m_fTimer = { 0 };
 	bool					m_bPositive = { false };
+
+
+	bool					m_bOrigin = { false };
+	_float3					m_vModelScale; // ¸ðµ¨ ÀÚÃ¼ÀÇ scale
 
 public:
 	HRESULT Add_Components(void* pArg);
