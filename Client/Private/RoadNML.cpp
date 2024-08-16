@@ -21,6 +21,9 @@ HRESULT CRoadNML::Initialize_Prototype()
 
 HRESULT CRoadNML::Initialize(void* pArg)
 {
+	if (FAILED(__super::Initialize(pArg)))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -51,6 +54,7 @@ HRESULT CRoadNML::Add_Components()
 	AIDesc.pState = &m_iState;
 	AIDesc.pThis = this;
 	AIDesc.pAStartCom = m_pAStartCom;
+	AIDesc.pNavigation = m_pNavigationCom;
 
 	m_pTree = dynamic_cast<CAI_RoadNML*>(m_pGameInstance->Add_BTNode(m_iCurrentLevel, TEXT("Prototype_BTNode_RoadNML"), &AIDesc));
 	if (nullptr == m_pTree)

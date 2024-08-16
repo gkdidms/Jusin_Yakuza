@@ -272,15 +272,18 @@ void CNavigation::Find_WayPointIndex(_vector vPosition)
         }
     }
 
-    m_vNextDir = XMVector3Normalize(XMLoadFloat4(&m_Routes[m_iCurrentRouteIndex][m_iCurrentWayPointIndex].vPosition) - vPosition);
+    m_vNextDir = XMVector3Normalize(XMLoadFloat4(&m_Routes[m_iCurrentRouteIndex][m_iCurrentWayPointIndex].vPosition) - XMLoadFloat4(&m_Routes[m_iPreRouteIndex][m_iPreWayPointIndex].vPosition));
 }
 
 //Index가 코너 일 경우 스왑한다.
 //모든 인덱스의 처음과 끝은 코너로 생성한다고 가정한다.
 //정방향일 경우 루트의 첫 인덱스는 코너에서 제외한다.
 //인접한 루트 + 내가 가지고 있는 루트를 고려한다.
-void CNavigation::Swap_Route(vector<ROUTE_IO> CurrentRoute)
+void CNavigation::Swap_Route(vector<ROUTE_IO> CurrentRoute, _vector vCurrnetDir, _bool* isTurn, _int* iDir)
 {
+    if (*isTurn)
+        return;
+
     if (CurrentRoute[m_iCurrentWayPointIndex].iPointOption == CORNEL)
     {
         if ((m_iRouteDir == DIR_F && m_iCurrentWayPointIndex == 0) ||
@@ -295,13 +298,28 @@ void CNavigation::Swap_Route(vector<ROUTE_IO> CurrentRoute)
         _uint iRandomIdex = m_pGameInstance->Get_Random(0, _int(Route.size() - 1));
         
         if (iRandomIdex == m_iCurrentRouteIndex)
+        {
+
             return;
+        }
+
            
         m_iCurrentRouteIndex = iRandomIdex;
         if (m_iRouteDir == DIR_F)
             m_iCurrentWayPointIndex = 0; // 정방향일 경우
         else if (m_iRouteDir == DIR_B)
             m_iCurrentWayPointIndex = m_Routes[m_iCurrentRouteIndex].size() - 1; // 역방향일 경우
+
+        _vector vRight = XMVector3Cross(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMVector3Normalize(vCurrnetDir));
+        //이동하는 방향 구하기
+        _float fAngle = XMVectorGetX(XMVector3Dot(XMLoadFloat4(&m_Routes[m_iCurrentRouteIndex][m_iCurrentWayPointIndex].vPosition), vRight));
+        
+        if (fAngle > 0)
+            *iDir = DIR_R;
+        else if (fAngle < 0)
+            *iDir = DIR_L;
+
+        *isTurn = true;
     }
 }
 
@@ -423,64 +441,53 @@ _vector CNavigation::Compute_WayPointDir(_vector vPosition, const _float& fTimeD
     return vResultDir;
 }
 
-_vector CNavigation::Compute_WayPointDir_Adv(_vector vPosition, const _float& fTimeDelta, _bool isStart)
+_vector CNavigation::Compute_WayPointDir_Adv(_vector vPosition, const _float& fTimeDelta, _bool* isTurn, _int* iDir, _bool* isBack)
 {
-    vector<ROUTE_IO> CurrentRoute = m_Routes[m_iCurrentRouteIndex];
-    _vector vCurrentWayPoint = XMLoadFloat4(&CurrentRoute[m_iCurrentWayPointIndex].vPosition);
+    _vector vCurrentWayPoint = XMLoadFloat4(&m_Routes[m_iCurrentRouteIndex][m_iCurrentWayPointIndex].vPosition);
     _vector vDir = vCurrentWayPoint - vPosition;
     _float fDistance = XMVectorGetX(XMVector3Length(vDir));
 
-    _vector vResultDir;
-    if (XMVectorGetX(m_vPreDir) == 0.f)
+    if (fDistance <= 1.5f)
     {
-        vResultDir = XMVector3Normalize(vDir);
-    }
-    else
-    {
-        //방향벡터 선형보간
-        m_fTime += fTimeDelta * 6.f;
-        vResultDir = XMVectorLerp(m_vPreDir, m_vNextDir, m_fTime >= 1.f ? 1.f : m_fTime);
-    }
+        Swap_Route(m_Routes[m_iCurrentRouteIndex], vDir, isTurn, iDir);
 
-    if (fDistance <= m_fMaxDistance)
-    {
-        if (m_iRouteDir == DIR_F)
-            m_iCurrentWayPointIndex++;
-        else 
-            m_iCurrentWayPointIndex--;
-
-        if (m_iCurrentWayPointIndex >= CurrentRoute.size() || m_iCurrentWayPointIndex < 0)
+        if (!*isTurn)
         {
-            //정방향 -> 역방향
-            //역방향 -> 정방향 
             if (m_iRouteDir == DIR_F)
-            {
-                m_iRouteDir = DIR_B;
-                m_iCurrentWayPointIndex = CurrentRoute.size() - 1;
-            }
+                m_iCurrentWayPointIndex++;
             else
+                m_iCurrentWayPointIndex--;
+
+            if (m_iCurrentWayPointIndex >= m_Routes[m_iCurrentRouteIndex].size() || m_iCurrentWayPointIndex < 0)
             {
-                m_iRouteDir = DIR_F;
-                m_iCurrentWayPointIndex = 0;
+                //정방향 -> 역방향
+                //역방향 -> 정방향 
+                if (m_iRouteDir == DIR_F)
+                {
+                    m_iRouteDir = DIR_B;
+                    m_iCurrentWayPointIndex = m_Routes[m_iCurrentRouteIndex].size() - 1;
+                }
+                else
+                {
+                    m_iRouteDir = DIR_F;
+                    m_iCurrentWayPointIndex = 0;
+                }
+                *isBack = true;
             }
         }
-
-        Swap_Route(CurrentRoute);
 
         if (fDistance == 0.f)
         {
-            return Compute_WayPointDir(vPosition, fTimeDelta, isStart);
+            return Compute_WayPointDir_Adv(vPosition, fTimeDelta, isTurn, iDir, isBack);
         }
 
-        m_vPreDir = XMVector3Normalize(vDir);
         m_vNextDir = XMVector3Normalize(XMLoadFloat4(&m_Routes[m_iCurrentRouteIndex][m_iCurrentWayPointIndex].vPosition) - XMLoadFloat4(&m_Routes[m_iPreRouteIndex][m_iPreWayPointIndex].vPosition));
-        m_fTime = 0.f;
 
         m_iPreRouteIndex = m_iCurrentRouteIndex;
         m_iPreWayPointIndex = m_iCurrentWayPointIndex;
     }
 
-    return vResultDir;
+    return m_vNextDir;
 }
 
 _float CNavigation::Compute_Height(_fvector vPosition)
