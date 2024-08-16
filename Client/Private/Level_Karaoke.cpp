@@ -28,9 +28,9 @@ HRESULT CLevel_Karaoke::Initialize()
         return E_FAIL;
 
     ///* Å¬¶ó ÆÄ½Ì */
-    //m_pFileTotalManager->Set_MapObj_In_Client(STAGE_KARAOKE, LEVEL_KARAOKE);
-    //m_pFileTotalManager->Set_Lights_In_Client(STAGE_KARAOKE);
-    //m_pFileTotalManager->Set_Collider_In_Client(STAGE_KARAOKE, LEVEL_KARAOKE);
+    m_pFileTotalManager->Set_MapObj_In_Client(STAGE_KARAOKE, LEVEL_KARAOKE);
+    m_pFileTotalManager->Set_Lights_In_Client(STAGE_KARAOKE);
+    m_pFileTotalManager->Set_Collider_In_Client(STAGE_KARAOKE, LEVEL_KARAOKE);
 
 	m_pKaraokeManager = CKaraokeManager::Create();
 	if (nullptr == m_pKaraokeManager)

@@ -20,6 +20,7 @@
 #include "Level_DogimazoLobby.h"
 #include "Level_DogimazoBoss.h"
 #include "Level_Roadway.h"
+#include "Level_Karaoke.h"
 #include "Level_Test.h"
 #pragma endregion
 
@@ -135,6 +136,9 @@ void CLevel_Loading::Tick(const _float& fTimeDelta)
 					break;
 				case LEVEL_CARCHASE:
 					pNewLevel = CLevel_Roadway::Create(m_pDevice, m_pContext);
+					break;
+				case LEVEL_KARAOKE:
+					pNewLevel = CLevel_Karaoke::Create(m_pDevice, m_pContext);
 					break;
 				case LEVEL_TEST:
 					pNewLevel = CLevel_Test::Create(m_pDevice, m_pContext);
