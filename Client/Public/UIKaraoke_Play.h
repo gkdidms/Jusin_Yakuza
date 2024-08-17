@@ -38,6 +38,11 @@ public:
     virtual void Action() override;
     virtual void OverAction() override;
 
+public:
+    void Set_Notes(const vector<class CNoteBase*>* pNotes) {
+        m_pNotes = pNotes;
+    }
+
 private:
     void Ready_LyricsTime();
     void Ready_LyricsSocket();
@@ -59,6 +64,8 @@ private:
 
     vector<LYRICS_DESC> m_LyricsTime;
     vector<_float3> m_LyricsSocket;
+
+    const vector<class CNoteBase*>* m_pNotes;
 
 public:
     static CUIKaraoke_Play* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg = nullptr);

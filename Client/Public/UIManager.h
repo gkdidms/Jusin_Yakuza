@@ -100,7 +100,7 @@ private:
 private:
     class CPlayer* m_pPlayer = { nullptr };
 
-private:
+public:
    CUIScene* Find_Scene(wstring strSceneName);      
 
 public:

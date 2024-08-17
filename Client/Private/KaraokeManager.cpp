@@ -2,6 +2,9 @@
 #include "UIManager.h"
 #include "NoteManager.h"
 #include "GameInstance.h"
+
+#include "UIKaraoke_Play.h"
+
 CKaraokeManager::CKaraokeManager()
 	: m_pUIManager{ CUIManager::GetInstance() },
 	m_pGameInstance{CGameInstance::GetInstance()}
@@ -15,6 +18,8 @@ HRESULT CKaraokeManager::Initialize()
 	if (FAILED(Ready_Karaoke()))
 		return E_FAIL;
 
+	// UI씬에 노트 정보를 연결한다
+	Setting_NoteUIs();
 
 	return S_OK;
 }
@@ -47,6 +52,12 @@ void CKaraokeManager::KeyInput()
 		m_pUIManager->Open_Scene(TEXT("Karaoke_Select"));
 		m_isStart = true;
 	}
+}
+
+void CKaraokeManager::Setting_NoteUIs()
+{
+	CUIKaraoke_Play* pPlayScene = dynamic_cast<CUIKaraoke_Play*>(m_pUIManager->Find_Scene(TEXT("Karaoke_Play")));
+	pPlayScene->Set_Notes(m_Music.front()->Get_Notes());
 }
 
 HRESULT CKaraokeManager::Ready_Karaoke()
