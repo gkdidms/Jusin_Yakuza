@@ -23,6 +23,7 @@ protected:
 public:
     HRESULT Update_TargetMatrix(_uint iIndex, _matrix TargetMatrix, _float iHP);
     HRESULT Remove_Target(_uint iIndex);
+    class CCarChase_Monster* Get_Target();
 
     virtual HRESULT Show_Scene()override;//ui 애님 준비(초기화/열때 정방향 진행)
 public:
@@ -40,6 +41,9 @@ private:
 
     _float m_fAimSpeed = { 250.f };
     _uint KiryuType = { 0 };
+
+    CARCCHASE_UI_DESC* m_CurrentTarget = { nullptr };
+
 private:
     void Move_Aim(const _float& fTimeDelta);
     CARCCHASE_UI_DESC* Find_TargetUI(_uint iIndex);

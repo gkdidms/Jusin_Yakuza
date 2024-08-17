@@ -4,7 +4,11 @@ BEGIN(Client)
 class CUITitle :
     public CUIScene
 {
+public:
+    enum TITLE_IMG {
 
+        TITLE_IMG_END
+    };
 protected:
     CUITitle();
     CUITitle(const CUITitle& rhs);

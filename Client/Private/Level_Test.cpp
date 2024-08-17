@@ -9,7 +9,6 @@
 #include "TutorialManager.h"
 #include "FightManager.h"
 #include "UIManager.h"
-#include "KaraokeManager.h"
 
 #include "PlayerCamera.h"
 #include "DebugCamera.h"
@@ -40,7 +39,9 @@ HRESULT CLevel_Test::Initialize()
 	// 네비 다르면 터짐
 	// 테스트 다하면 지워라
 	/* For.Prototype_Component_Navigation */
-	//m_pSystemManager->Set_Camera(CAMERA_CARCHASE);
+	//if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Navigation"),
+	//	CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/NaviData/Navigation_79.dat")))))
+	//	return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Navigation"),
 		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/NaviData/Navigation_99.dat")))))
@@ -75,15 +76,19 @@ HRESULT CLevel_Test::Initialize()
 	//if (FAILED(Ready_Test_Hyewon()))
 	//	return E_FAIL;
 
-	/*카라오케 테스트용*/
-	m_pKaraokeManager = CKaraokeManager::Create();
-	if (nullptr == m_pKaraokeManager)
-		return E_FAIL;
+	//m_pFileTotalManager->Set_MapObj_In_Client(98, LEVEL_TEST);
+	//m_pFileTotalManager->Set_Lights_In_Client(90);
+	//m_pFileTotalManager->Set_Collider_In_Client(3, LEVEL_TEST);
+	////m_pFileTotalManager->Set_Trigger_In_Client(79, LEVEL_TEST);
+
+	//if (FAILED(Ready_Test_Hyewon()))
+	//	return E_FAIL;
 
 	m_pFileTotalManager->Set_MapObj_In_Client(70, LEVEL_TEST);
 	m_pFileTotalManager->Set_Lights_In_Client(90);
 	m_pFileTotalManager->Set_Collider_In_Client(3, LEVEL_TEST);
 	//m_pFileTotalManager->Set_Trigger_In_Client(79, LEVEL_TEST);
+
 
 	m_pFightManager->Set_FightStage(true);
 
@@ -98,7 +103,6 @@ void CLevel_Test::Tick(const _float& fTimeDelta)
 	//m_pCarChaseManager->Tick();
 	//m_pTutorialManager->Tick();
 	m_pFightManager->Tick(fTimeDelta);
-	m_pKaraokeManager->Tick(fTimeDelta);
 #ifdef _DEBUG
 	SetWindowText(g_hWnd, TEXT("테스트 레벨"));
 #endif
@@ -188,8 +192,11 @@ HRESULT CLevel_Test::Ready_Player(const wstring& strLayerTag)
 	//Desc.fRotatePecSec = XMConvertToRadians(0.f);
 	Desc.fRotatePecSec = XMConvertToRadians(180.f);
 
+	// 원래 플레이어
 	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_Player"), strLayerTag, &Desc)))
 		return E_FAIL;
+	//if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_Kiryu_Karaoke"), strLayerTag, &Desc)))
+	//	return E_FAIL;
 
 	// 가라오케 플레이어
 	//if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_Kiryu_Karaoke"), strLayerTag, &Desc)))
@@ -251,5 +258,4 @@ void CLevel_Test::Free()
 	Safe_Release(m_pTutorialManager);
 	Safe_Release(m_pUIManager);
 	Safe_Release(m_pFightManager);
-	Safe_Release(m_pKaraokeManager);
 }

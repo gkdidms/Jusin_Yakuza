@@ -42,6 +42,11 @@ void CHighway_Taxi::Set_Dir(_uint iStageDir)
 	m_pKiryu->Set_StageDir(iStageDir);
 }
 
+void CHighway_Taxi::Sit_Swap()
+{
+	m_pKiryu->Change_Behavior(CHighway_Kiryu::SWAP);
+}
+
 HRESULT CHighway_Taxi::Initialize_Prototype()
 {
 	return S_OK;

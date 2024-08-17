@@ -56,6 +56,10 @@ public:
     const _float4x4* Get_BoneMatrix(const char* strBoneName);
     const _float4x4* Get_ModelMatrix() { return &m_ModelMatrix; }
 
+    const _float3* Get_Pos();
+    const _float3* Get_Look();
+    const _float3* Get_Right();
+
 private:
     virtual void Change_Animation();
     _bool Checked_Animation_Ratio(_float fRatio);
@@ -71,9 +75,10 @@ private:
     void Play_Shot(_float fTimeDelta);
     void Play_Swap(_float fTimeDelta);
 
+public:
+    void Change_Behavior(BEHAVIOR_TYPE eType);
 
 private:
-    void Change_Behavior(BEHAVIOR_TYPE eType);
     void HideReload();
     _bool isAttackPossible();
 
@@ -105,6 +110,8 @@ private:
 
     // 첫틱이 돌고나서 뼈 분리가 되어야 총 잡는손에 문제가 안생긴다.
     _bool           m_isFirstTick = { true };
+
+    _uint           m_iUdeIndex = 31;
 
 public:
     _float Get_MaxHP() { return m_fMaxHP; }

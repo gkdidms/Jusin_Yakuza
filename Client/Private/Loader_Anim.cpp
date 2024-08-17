@@ -105,6 +105,7 @@ HRESULT CLoader_Anim::Loading_Default()
 #pragma region Model
 	Add_Models_On_Path(m_eNextLevel, TEXT("../Bin/Resources/Models/Anim/Player/"));
 	Add_Models_On_Path(m_eNextLevel, TEXT("../Bin/Resources/Models/Anim/Monster/"));
+	Add_Models_On_Path(m_eNextLevel, TEXT("../Bin/Resources/Models/Anim/NPC/"));
 #pragma endregion
 
 #pragma region Meterial
@@ -211,11 +212,6 @@ HRESULT CLoader_Anim::Loading_Default()
 	//if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Kiryu_CarChase"), CAnim::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Anim/Animation_Kiryu_CarChase.fbx", true))))
 	//	return E_FAIL;
 
-	///* For.Prototype_Component_Kiryu_CarChase_Better */
-	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Kiryu_CarChase_Better"), CAnim::Create(m_pDevice, m_pContext, "../Bin/DataFiles/AnimationData/Animation_Kiryu_CarChase_Better.dat", false))))
-		return E_FAIL;
-	//if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Kiryu_CarChase_Better"), CAnim::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Anim/Animation_Kiryu_CarChase_Better.fbx", true))))
-	//	return E_FAIL;
 #pragma endregion
 
 	return S_OK;
