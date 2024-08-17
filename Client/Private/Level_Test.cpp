@@ -9,6 +9,7 @@
 #include "TutorialManager.h"
 #include "FightManager.h"
 #include "UIManager.h"
+#include "KaraokeManager.h"
 
 #include "PlayerCamera.h"
 #include "DebugCamera.h"
@@ -74,6 +75,11 @@ HRESULT CLevel_Test::Initialize()
 	//if (FAILED(Ready_Test_Hyewon()))
 	//	return E_FAIL;
 
+	/*카라오케 테스트용*/
+	m_pKaraokeManager = CKaraokeManager::Create();
+	if (nullptr == m_pKaraokeManager)
+		return E_FAIL;
+
 	m_pFileTotalManager->Set_MapObj_In_Client(70, LEVEL_TEST);
 	m_pFileTotalManager->Set_Lights_In_Client(90);
 	m_pFileTotalManager->Set_Collider_In_Client(3, LEVEL_TEST);
@@ -92,6 +98,7 @@ void CLevel_Test::Tick(const _float& fTimeDelta)
 	//m_pCarChaseManager->Tick();
 	//m_pTutorialManager->Tick();
 	m_pFightManager->Tick(fTimeDelta);
+	m_pKaraokeManager->Tick(fTimeDelta);
 #ifdef _DEBUG
 	SetWindowText(g_hWnd, TEXT("테스트 레벨"));
 #endif
@@ -244,4 +251,5 @@ void CLevel_Test::Free()
 	Safe_Release(m_pTutorialManager);
 	Safe_Release(m_pUIManager);
 	Safe_Release(m_pFightManager);
+	Safe_Release(m_pKaraokeManager);
 }

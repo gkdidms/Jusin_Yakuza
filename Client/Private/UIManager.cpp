@@ -19,6 +19,8 @@
 #include"UISkillDestroyer.h"
 #include "UICarchase.h"
 #include "UITitle.h"
+#include "UIFightScore.h"
+#include "UIStoreImage.h"
 
 #include "UIKaraoke_Select.h"
 #include "UIKaraoke_Play.h"
@@ -191,7 +193,7 @@ HRESULT CUIManager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 	pScene = CUIKaraoke_Select::Create(m_pDevice, m_pContext, &Desc);
 	m_AllScene.emplace(make_pair(TEXT("Karaoke_Select"), pScene));
 
-	Desc.isLoading = false;
+	Desc.isLoading = true;
 	Desc.strSceneName = TEXT("Karaoke_Play");
 	pScene = CUIKaraoke_Play::Create(m_pDevice, m_pContext, &Desc);
 	m_AllScene.emplace(make_pair(TEXT("Karaoke_Play"), pScene));
@@ -205,6 +207,18 @@ HRESULT CUIManager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 	Desc.strSceneName = TEXT("Title");
 	pScene = CUITitle::Create(m_pDevice, m_pContext, &Desc);
 	m_AllScene.emplace(make_pair(TEXT("Title"), pScene));
+
+	Desc.isLoading = true;
+	Desc.strSceneName = TEXT("FightScore");
+	pScene = CUIFightScore::Create(m_pDevice, m_pContext, &Desc);
+	m_AllScene.emplace(make_pair(TEXT("FightScore"), pScene));
+
+	Desc.isLoading = true;
+	Desc.strSceneName = TEXT("StoreImage");
+	pScene = CUIStoreImage::Create(m_pDevice, m_pContext, &Desc);
+	m_AllScene.emplace(make_pair(TEXT("StoreImage"), pScene));
+
+
 
 	return S_OK;
 }

@@ -18,7 +18,7 @@ HRESULT CUIKaraoke_Play::Show_Scene()
 {
     if (FAILED(__super::Show_Scene()))
         return E_FAIL;
-
+    m_isStart = false;
     return S_OK;
 }
 
@@ -36,8 +36,11 @@ HRESULT CUIKaraoke_Play::Add_UIData(CUI_Object* pUIObject)
     {
         if (m_pPlayUI.size() < 13)
             m_pPlayUI.push_back(pUIObject);
+        else if (nullptr == m_Lyrics)
+            m_Lyrics = dynamic_cast<CGroup*>(pUIObject);
         else
-            m_Lyrics=dynamic_cast<CGroup*>(pUIObject);
+            m_Title = dynamic_cast<CUI_Texture*>(pUIObject);
+
         return S_OK;
     }
 
@@ -55,20 +58,41 @@ HRESULT CUIKaraoke_Play::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* 
 
 HRESULT CUIKaraoke_Play::Tick(const _float& fTimeDelta)
 {
-
-    for (auto& iter : m_pPlayUI)
-        iter->Tick(fTimeDelta);
-    m_Lyrics->Tick(fTimeDelta);
+    if(m_isStart)
+    {
+        for (auto& iter : m_pPlayUI)
+            iter->Tick(fTimeDelta);
+        m_Lyrics->Tick(fTimeDelta);
+    }
+    else
+    {
+        m_iCurrentTime += fTimeDelta;
+        if (1.f < m_iCurrentTime)
+        {
+            m_Title->Tick(fTimeDelta);
+        }
+    }
     return S_OK;
 }
 
 HRESULT CUIKaraoke_Play::Late_Tick(const _float& fTimeDelta)
 {
 
+    if(m_isStart)
+    {
+        for (auto& iter : m_pPlayUI)
+            iter->Late_Tick(fTimeDelta);
+        m_Lyrics->Late_Tick(fTimeDelta);
+    }
+    else
+    {
+        m_Title->Late_Tick(fTimeDelta);
+        if (m_Title->Check_AnimFin())
+        {
+            m_isStart = true;
+        }
+    }
 
-    for (auto& iter : m_pPlayUI)
-        iter->Late_Tick(fTimeDelta);
-    m_Lyrics->Late_Tick(fTimeDelta);
     if (!m_isAnimFin)
         Check_AimFin();
 

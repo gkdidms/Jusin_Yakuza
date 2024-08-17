@@ -76,6 +76,9 @@ public:
     //카라오케 점수 전달용
 public:
     void Set_Score(_uint iScore);
+public:
+    void Set_Money(_uint Money) { m_Money = Money; }
+    _uint Get_Money() { return m_Money; }
 private:
 
     ID3D11Device* m_pDevice = { nullptr };
@@ -96,6 +99,9 @@ private:
 private:
     _bool m_isClose = { true };
     wstring m_iCurScene = { TEXT("") };
+
+private:
+    _uint m_Money = { 0 };
 private:
     class CPlayer* m_pPlayer = { nullptr };
 

@@ -23,6 +23,7 @@ HRESULT CUIKaraoke_Select::Show_Scene()
     m_iCurButton = 0;
     m_isStart = false;
     m_iCurrentTime = 0.f;
+
     Action();
     return S_OK;
 }
@@ -112,9 +113,6 @@ HRESULT CUIKaraoke_Select::Late_Tick(const _float& fTimeDelta)
 
     }
 
-
-
-
     m_Disc->Late_Tick(fTimeDelta);
     if (FAILED(__super::Late_Tick(fTimeDelta)))
         return E_FAIL;
@@ -136,6 +134,7 @@ HRESULT CUIKaraoke_Select::Late_Tick(const _float& fTimeDelta)
         CUIManager::GetInstance()->Close_Scene();
         CUIManager::GetInstance()->Open_Scene(TEXT("Karaoke_Play"));
     }
+
 
     if (!m_isAnimFin)
         Check_AimFin();

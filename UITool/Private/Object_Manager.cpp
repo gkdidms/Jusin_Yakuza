@@ -676,7 +676,7 @@ HRESULT CObject_Manager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* 
 	XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH(ViewPort.Width, ViewPort.Height, 0.f, 1.f));
 
 	//백버퍼 카피
-	CRenderTarget* pCopyBackBuffer = CRenderTarget::Create(m_pDevice, m_pContext, 1280.f, 720.f, DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(0.f, 0.f, 0.f, 0.f));
+	CRenderTarget* pCopyBackBuffer = CRenderTarget::Create(m_pDevice, m_pContext, 1280.f, 720.f, DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(0.f, 0.f, 0.f, 0.f),false);
 	if (nullptr == pCopyBackBuffer)
 		return E_FAIL;
 #ifdef _DEBUG
@@ -1334,7 +1334,7 @@ vector<class CUI_Object*>* CObject_Manager::Find_BinaryObject(const wstring& str
 
 HRESULT CObject_Manager::Create_Texture2D()
 {
-	CRenderTarget* pRenderTarget = CRenderTarget::Create(m_pDevice, m_pContext, 1280.f, 720.f, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f));
+	CRenderTarget* pRenderTarget = CRenderTarget::Create(m_pDevice, m_pContext, 1280.f, 720.f, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f),false);
 
 	if (nullptr == pRenderTarget)
 		return E_FAIL;
@@ -1359,7 +1359,7 @@ HRESULT CObject_Manager::Create_Texture2D()
 
 HRESULT CObject_Manager::Create_BinaryTexture2D()
 {
-	CRenderTarget* pRenderTarget = CRenderTarget::Create(m_pDevice, m_pContext, 1280.f, 720.f, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f));
+	CRenderTarget* pRenderTarget = CRenderTarget::Create(m_pDevice, m_pContext, 1280.f, 720.f, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f),false);
 
 	if (nullptr == pRenderTarget)
 		return E_FAIL;
