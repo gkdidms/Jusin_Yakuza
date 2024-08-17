@@ -221,6 +221,40 @@ void CLandObject::Apply_ChracterData()
 			Safe_Release(pSoketEffect);
 	}
 
+
+	auto& pBloodEffectEvents = m_pData->Get_BloodEffectEvents();
+
+	for (auto& pBloodEffectEvent : pBloodEffectEvents)
+	{
+		CSocketEffect::SOKET_EFFECT_DESC Desc{};
+		Desc.pParentMatrix = m_pTransformCom->Get_WorldFloat4x4();
+		Desc.pCombinedTransformationMatrix = m_pModelCom->Get_BoneCombinedTransformationMatrix(pBloodEffectEvent.second.strBonelName.c_str());
+
+		if (pBloodEffectEvent.second.isLoop)
+		{
+			switch (pBloodEffectEvent.second.iBloodEffectType)
+			{
+			case 1:
+			{
+				Desc.wstrEffectName = TEXT("Prototype_GameObject_Particle_Point_Blood6");
+			}
+			break;
+			}
+
+			CGameObject* pSoketEffect = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_SoketEffect"), &Desc);
+			if (nullptr == pSoketEffect)
+				return;
+
+			auto it = m_pBloodEffects.emplace(pBloodEffectEvent.second.strBonelName, static_cast<CSocketEffect*>(pSoketEffect));
+
+			if (it.second)
+				it.first->second->Off();
+			else
+				Safe_Release(pSoketEffect);
+		}
+
+	}
+
 }
 
 void CLandObject::Animation_Event()
@@ -403,6 +437,10 @@ void CLandObject::Free()
 	for (auto& pEffect : m_pTrailEffects)
 		Safe_Release(pEffect.second);
 	m_pTrailEffects.clear();
+
+	for (auto& pEffect : m_pBloodEffects)
+		Safe_Release(pEffect.second);
+	m_pBloodEffects.clear();
 
 	for (auto pAnimCom : m_SeparationAnimComs)
 	{

@@ -104,6 +104,10 @@ public:
         return m_TrailEvents;
     }
 
+    const multimap<string, ANIMATION_BLOODEVENTSTATE>& Get_BloodEffectEvents() const {
+        return m_BloodEvents;
+    }
+
     const multimap<string, ANIMATION_RADIALEVENTSTATE>& Get_RadialEvents() const {
         return m_RadialEvents;
     }

@@ -1,17 +1,21 @@
 #include "CarChase.h"
 
 #include "GameInstance.h"
+#include "UIManager.h"
 
 #include "CarChase_Monster.h"
 #include "CarChase_Reactor.h"
 #include "CarChaseCamera.h"
 
 #include "Highway_Taxi.h"
+#include "Highway_Kiryu.h"
 
 CCarChase::CCarChase()
-	: m_pGameInstance{ CGameInstance::GetInstance() }
+	: m_pGameInstance{ CGameInstance::GetInstance() },
+	m_pUIManager{ CUIManager::GetInstance() }
 {
 	Safe_AddRef(m_pGameInstance);
+	Safe_AddRef(m_pUIManager);
 }
 
 CCarChase::~CCarChase()
@@ -88,8 +92,7 @@ _bool CCarChase::Start()
 			return false;
 	}
 
-	//플레이어 스테이지 방향 값 넣어줌
-	pPlayer->Set_Dir(m_Info.iStageDir);
+	Set_TaxiStageDir();
 
 	//카메라에 스테이지 방향 넣어주기
 	CCarChaseCamera* pCamera = dynamic_cast<CCarChaseCamera*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Camera"), CAMERA_CARCHASE));
@@ -125,6 +128,8 @@ _bool CCarChase::Running()
 
 		return true;
 	}*/
+
+	Set_TaxiStageDir();				//달리는 중에도 몬스터의 위치는 바뀔 수 있으므로, 각도 체인지
 		
 	if (Reactors.size() <= 0)
 		return true;
@@ -140,9 +145,66 @@ _bool CCarChase::End()
 	{
 		CHighway_Taxi* pPlayer = dynamic_cast<CHighway_Taxi*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Taxi"), 0));
 		pPlayer->Set_NavigationRouteIndex(m_Info.iNextPlayerLine);
+		pPlayer->Sit_Swap();
 	}
 
 	return true;
+}
+
+void CCarChase::Set_TaxiStageDir()
+{
+	CHighway_Taxi* pPlayer = dynamic_cast<CHighway_Taxi*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Taxi"), 0));
+
+	//플레이어 스테이지 방향 값 넣어줌
+	if (nullptr == m_pUIManager->Get_Target())
+		pPlayer->Set_Dir(m_Info.iStageDir);
+	else
+	{
+		_vector vTaxiPos = XMLoadFloat3(pPlayer->Get_Kiryu()->Get_Pos());
+		_vector vTargetPos = m_pUIManager->Get_Target()->Get_TransformCom()->Get_State(CTransform::STATE_POSITION);
+
+		_vector vDir = XMVector3Normalize(vTargetPos- vTaxiPos);
+		_vector vTaxiLook = XMLoadFloat3(pPlayer->Get_Kiryu()->Get_Right());
+
+		_float fDot = acos(XMVectorGetX(XMVector3Dot(vDir, vTaxiLook)));
+
+		_uint iDir = m_Info.iStageDir;
+
+		//const float PI = 3.14159265359f;
+		//const float FRONT_ANGLE = PI / 8;          // 22.5도
+		//const float FRONT_DIAGONAL_ANGLE = 3 * PI / 8;  // 67.5도
+		//const float SIDE_ANGLE = 5 * PI / 8;       // 112.5도
+		//const float BACK_DIAGONAL_ANGLE = 7 * PI / 8;  // 157.5도
+
+		const float FRONT_ANGLE = XMConvertToRadians(10.f);
+		const float FRONT_DIAGONAL_ANGLE = XMConvertToRadians(45.f);
+		const float SIDE_ANGLE = XMConvertToRadians(160.f);
+		const float BACK_DIAGONAL_ANGLE = XMConvertToRadians(170.f);
+
+		if (fDot <= FRONT_ANGLE) {
+			// 앞 (Front)
+			iDir = 0;
+		}
+		else if (fDot <= FRONT_DIAGONAL_ANGLE) {
+			// 앞대각선 (Front Diagonal)
+			iDir = 1;
+		}
+		else if (fDot <= SIDE_ANGLE) {
+			// 옆 (Side)
+			iDir = 2;
+		}
+		else if (fDot <= BACK_DIAGONAL_ANGLE) {
+			// 뒷대각선 (Back Diagonal)
+			iDir = 3;
+		}
+		else {
+			// 뒤 (Back)
+			iDir = 4;
+		}
+
+		// 0 앞, 1 앞 대각, 2 옆, 3 뒷 대각, 4 뒤
+		pPlayer->Set_Dir(iDir);
+	}
 }
 
 CCarChase* CCarChase::Create(void* pArg)
@@ -158,4 +220,5 @@ CCarChase* CCarChase::Create(void* pArg)
 void CCarChase::Free()
 {
 	Safe_Release(m_pGameInstance);
+	Safe_Release(m_pUIManager);
 }
