@@ -105,6 +105,7 @@ HRESULT CLoader_Anim::Loading_Default()
 #pragma region Model
 	Add_Models_On_Path(m_eNextLevel, TEXT("../Bin/Resources/Models/Anim/Player/"));
 	Add_Models_On_Path(m_eNextLevel, TEXT("../Bin/Resources/Models/Anim/Monster/"));
+	Add_Models_On_Path(m_eNextLevel, TEXT("../Bin/Resources/Models/Anim/NPC/"));
 #pragma endregion
 
 #pragma region Meterial

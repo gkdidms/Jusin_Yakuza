@@ -387,6 +387,9 @@ HRESULT CLoader_Map::Loading_For_Street()
 	lstrcpy(m_szLoadingText, TEXT("모델를(을) 로딩 중 입니다."));
 	Add_Models_On_Path_NonAnim(m_eNextLevel, TEXT("../Bin/Resources/Models/NonAnim/Map/Map2"));
 	Add_Components_On_Path_Material(m_eNextLevel, TEXT("../Bin/DataFiles/MaterialData/Map/Map2"));
+
+	Add_Models_On_Path_NonAnim(m_eNextLevel, TEXT("../Bin/Resources/Models/NonAnim/Reactor/Moving_Sedan"));
+	Add_Models_On_Path_NonAnim(m_eNextLevel, TEXT("../Bin/Resources/Models/NonAnim/Reactor/Moving_Sedan_2"));
 #pragma endregion
 
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));

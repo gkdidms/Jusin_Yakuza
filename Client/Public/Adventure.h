@@ -43,6 +43,10 @@ public:
         ADVENTURE_REACT_D,
         ADVENTURE_STAND_ST,
         ADVENTURE_STAND,
+
+        ADVENTURE_TISSUE_ST,
+        ADVENTURE_TISSUE_LP,
+        ADVENTURE_TISSUE_EN,
     };
 
     enum GENDER
