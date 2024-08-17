@@ -370,8 +370,8 @@ PS_OUT PS_MAIN_BOF(PS_IN In)
 
     vector vDiffuseDesc = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
     vector vDiffuseBlurDesc = g_BackBlurTexture.Sample(LinearSampler, In.vTexcoord);
-    
     vector vDepthDesc = g_DepthTexture.Sample(PointSampler, In.vTexcoord);
+    
     vector vWorldPos;
 
     vWorldPos.x = In.vTexcoord.x * 2.f - 1.f;
