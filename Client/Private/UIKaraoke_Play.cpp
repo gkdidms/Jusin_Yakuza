@@ -207,7 +207,7 @@ void CUIKaraoke_Play::Ready_LyricsTime()
     m_LyricsTime.push_back(Desc);
 
     // 네가 좋아서
-    Desc.fTime = 71.053;
+    Desc.fTime = 72.053;
     Desc.iSocketIndex = 1;
     m_LyricsTime.push_back(Desc);
 
@@ -367,13 +367,20 @@ void CUIKaraoke_Play::CurrentBar_Control()
     if (0 < iCurLyricsIndex)
     {
         _vector vPos = m_pPlayUI[BACK][m_LyricsTime[iCurLyricsIndex].iSocketIndex]->Get_TransformCom()->Get_State(CTransform::STATE_POSITION);
+        _vector vEndPos = vPos;
         
         // 시작 위치 잡기
         _float3 vScaled = m_pPlayUI[BACK][m_LyricsTime[iCurLyricsIndex].iSocketIndex]->Get_PartObject(1)->Get_TransformCom()->Get_Scaled();
         _float3 vScaled2 = m_pPlayUI[BACK][m_LyricsTime[iCurLyricsIndex].iSocketIndex]->Get_PartObject(0)->Get_TransformCom()->Get_Scaled();
         _float3 vScaled3 = m_pPlayUI[BACK][m_LyricsTime[iCurLyricsIndex].iSocketIndex]->Get_TransformCom()->Get_Scaled();
-        vPos.m128_f32[0] -= (vScaled.x * 0.5f * vScaled3.x + vScaled2.x * 0.5f);
+        _float3 vScaled4 = m_pPlayUI[BACK][m_LyricsTime[iCurLyricsIndex].iSocketIndex]->Get_PartObject(2)->Get_TransformCom()->Get_Scaled();
+        vPos.m128_f32[0] -= (vScaled.x * 0.5f * vScaled3.x + vScaled2.x * 0.5f); 
+        vEndPos.m128_f32[0] += (vScaled.x * 0.5f * vScaled3.x + vScaled4.x * 0.5f);
 
+        _float fCurrentPos = m_fCurSoundTime - m_LyricsTime[iCurLyricsIndex].fTime;
+
+        vPos.m128_f32[0] = LerpFloat(vPos.m128_f32[0], vEndPos.m128_f32[0], (fCurrentPos / m_LyricsTime[iCurLyricsIndex].fDuration));
+        
         m_pPlayUI[CURRENTBAR].front()->Get_TransformCom()->Set_State(CTransform::STATE_POSITION, vPos);
         m_pPlayUI[CURRENTBAR].front()->Show_On_All();
     }
