@@ -240,6 +240,7 @@
     <ClInclude Include="..\Public\UIKaraoke_Play.h" />
     <ClInclude Include="..\Public\UIKaraoke_Score.h" />
     <ClInclude Include="..\Public\UIKaraoke_Select.h" />
+    <ClInclude Include="..\Public\UIQTE.h" />
     <ClInclude Include="..\Public\UIStoreImage.h" />
     <ClInclude Include="..\Public\UITitle.h" />
     <ClInclude Include="..\Public\Weapon_Gun_Cz75.h" />
@@ -607,6 +608,7 @@
     <ClCompile Include="..\Private\UIMenu.cpp" />
     <ClCompile Include="..\Private\UIMoney.cpp" />
     <ClCompile Include="..\Private\UINowLoading.cpp" />
+    <ClCompile Include="..\Private\UIQTE.cpp" />
     <ClCompile Include="..\Private\UIScene.cpp" />
     <ClCompile Include="..\Private\UISkillDestroyer.cpp" />
     <ClCompile Include="..\Private\UISkillHolligan.cpp" />

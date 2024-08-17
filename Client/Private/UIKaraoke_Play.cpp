@@ -135,4 +135,5 @@ void CUIKaraoke_Play::Free()
     for (auto& iter : m_pPlayUI)
         Safe_Release(iter);
     Safe_Release(m_Lyrics);
+    Safe_Release(m_Title);
 }

@@ -26,7 +26,7 @@ private:
 
 public:
     void Set_PartObject(CUI_Object* pObject) { m_PartObjects.emplace_back(pObject); }
-
+    virtual void Set_isPlay(_bool isPlay)override;
 public:
     vector<CUI_Object*> Get_PartObjects() { return m_PartObjects; }
     vector<CUI_Object*>* Get_pPartObjects() { return &m_PartObjects; }
