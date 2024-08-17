@@ -794,6 +794,7 @@ HRESULT CMultiLoader::Loading_For_Anim()
 {
 	Add_Models_On_Path(LEVEL_TEST, TEXT("../Bin/Resources/Models/Anim/Player/"));
 	Add_Models_On_Path(LEVEL_TEST, TEXT("../Bin/Resources/Models/Anim/Monster/"));
+	Add_Models_On_Path(LEVEL_TEST, TEXT("../Bin/Resources/Models/Anim/NPC/"));
 	Add_Models_On_Path(LEVEL_TEST, TEXT("../Bin/Resources/Models/Anim/Car/"));
 
 	/* For.Prototype_Component_CarChaseAnim */
@@ -825,6 +826,9 @@ HRESULT CMultiLoader::Loading_For_NonAnim()
 	Add_Models_On_Path_NonAnim(LEVEL_TEST, TEXT("../Bin/Resources/Models/NonAnim/Bone_Sphere"));
 
 	Add_Models_On_Path_NonAnim(LEVEL_TEST, TEXT("../Bin/Resources/Models/NonAnim/Gun_Cz75"));
+
+	Add_Models_On_Path_NonAnim(m_eNextLevel, TEXT("../Bin/Resources/Models/NonAnim/Reactor/Moving_Sedan"));
+	Add_Models_On_Path_NonAnim(m_eNextLevel, TEXT("../Bin/Resources/Models/NonAnim/Reactor/Moving_Sedan_2"));
 
 	Add_Models_On_Path_NonAnim(LEVEL_TEST, TEXT("../Bin/Resources/Models/NonAnim/Taxi")); // 논애님이지만 플레이어로 구분
 #pragma endregion

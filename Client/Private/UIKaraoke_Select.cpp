@@ -26,6 +26,7 @@ HRESULT CUIKaraoke_Select::Show_Scene()
     m_iCurButton = 0;
     m_isStart = false;
     m_iCurrentTime = 0.f;
+
     Action();
     return S_OK;
 }
@@ -137,6 +138,7 @@ HRESULT CUIKaraoke_Select::Late_Tick(const _float& fTimeDelta)
 
         m_pGameInstance->PlaySound_W(L"Bakamita.mp3", SOUND_BGM, 0.5f);
     }
+
 
     if (!m_isAnimFin)
         Check_AimFin();
