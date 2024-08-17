@@ -170,7 +170,18 @@ void CCarChase_Reactor::Change_Animation()
 _bool CCarChase_Reactor::Check_Dead()
 {
 	if (m_isObjectDead)
+	{
+		if (m_isFinishEffect)
+			return true;
+
+		if (m_pModelCom->Get_AnimFinished())
+		{
+			m_isFinishEffect = true;
+			//여기가 죽었을때 굴러가고 터지는 부분
+
+		}
 		return true;
+	}
 
 	for (auto& pMonster : m_Monsters)
 	{

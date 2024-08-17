@@ -44,6 +44,7 @@ public:
     _vector Get_WaypointPos(_uint iIndex) { return XMLoadFloat4(&m_Routes[m_iCurrentRouteIndex][iIndex].vPosition); }
     _vector Get_SlidingNormal() { return m_vSlidingNormal; }
     _uint Get_RouteSize() { return m_Routes[m_iCurrentRouteIndex].size(); }
+    _int Get_RouteDir() { return m_iRouteDir; }
 
 public:
     virtual HRESULT Initialize_Prototype(); // Tool¿ë
@@ -55,7 +56,7 @@ public:
     int Find_PlayerMonster_Index(_fvector vTargetPos);
     _bool isMove(_fvector vMovePos);
     _vector Compute_WayPointDir(_vector vPosition, const _float& fTimeDelta, _bool isStart = false);
-    _vector Compute_WayPointDir_Adv(_vector vPosition, const _float& fTimeDelta, _bool isStart = false);
+    _vector Compute_WayPointDir_Adv(_vector vPosition, const _float& fTimeDelta, _bool* isTurn, _int* iDir, _bool* isBack);
     _float Compute_Height(_fvector vPosition);
 
 
@@ -100,7 +101,7 @@ private:
     HRESULT Load_File(const wstring strFilePath);
     HRESULT SetUp_Neighbors();
     void Find_WayPointIndex(_vector vPosition);
-    void Swap_Route(vector<ROUTE_IO> CurrentRoute);
+    void Swap_Route(vector<ROUTE_IO> CurrentRoute, _vector vCurrnetDir, _bool* isTurn, _int* iDir);
 
 public:
     static CNavigation* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring strFilePath);

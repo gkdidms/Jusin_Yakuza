@@ -376,8 +376,8 @@
     <ClCompile Include="..\private\RoadNML.cpp">
       <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\Walker\00.NML</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\AI_Adventure.cpp">
-      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\AI</Filter>
+    <ClCompile Include="..\private\AI_RoadWalker.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\Walker\AI</Filter>
     </ClCompile>
     <ClCompile Include="..\private\AI_RoadNML.cpp">
       <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\Walker\00.NML\AI</Filter>
@@ -608,8 +608,8 @@
     <ClCompile Include="..\Private\Loader_Other.cpp">
       <Filter>01.Levels\99.Loading\Loader\New\Other</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\RoadYNG.cpp">
-      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\Standing\00.YNG</Filter>
+    <ClCompile Include="..\private\RoadStanding_NML.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\Standing\00.NML</Filter>
     </ClCompile>
     <ClCompile Include="..\private\RoadWalker.cpp">
       <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\Walker</Filter>
@@ -634,6 +634,27 @@
     </ClCompile>
     <ClCompile Include="..\Private\HeadUI.cpp">
       <Filter>02.GameObjects\13.HeadUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\AI_RoadStanding.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\AI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\RoadYOP.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\Walker\01.YOP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\RoadCAB.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\Standing\01.CAB</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\AI_RoadCAB.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\Standing\01.CAB\AI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\AI_RoadStanding_NML.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\Standing\00.NML\AI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\MonsterGroup.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\MonsterGroup</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\FightManager.cpp">
+      <Filter>06.FightManager</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1045,8 +1066,8 @@
     <ClInclude Include="..\public\RoadNML.h">
       <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\Walker\00.NML</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\AI_Adventure.h">
-      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\AI</Filter>
+    <ClInclude Include="..\public\AI_RoadWalker.h">
+      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\Walker\AI</Filter>
     </ClInclude>
     <ClInclude Include="..\public\AI_RoadNML.h">
       <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\Walker\00.NML\AI</Filter>
@@ -1274,8 +1295,8 @@
     <ClInclude Include="..\Public\Loader_Other.h">
       <Filter>01.Levels\99.Loading\Loader\New\Other</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\RoadYNG.h">
-      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\Standing\00.YNG</Filter>
+    <ClInclude Include="..\public\RoadStanding_NML.h">
+      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\Standing\00.NML</Filter>
     </ClInclude>
     <ClInclude Include="..\public\RoadWalker.h">
       <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\Walker</Filter>
@@ -1289,17 +1310,29 @@
     <ClInclude Include="..\Public\UIKaraoke_Play.h">
       <Filter>95.Utility\05.UIManager\UIScene\UIKaraoke_Play</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\KaraokeManager.h">
-      <Filter>06.KaraokeManager</Filter>
-    </ClInclude>
     <ClInclude Include="..\Public\UIKaraoke_Score.h">
       <Filter>95.Utility\05.UIManager\UIScene\UIKaraoke_Score</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\UITitle.h">
       <Filter>95.Utility\05.UIManager\UIScene\UITitle</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\HeadUI.h">
-      <Filter>02.GameObjects\13.HeadUI</Filter>
+    <ClInclude Include="..\public\FightManager.h">
+      <Filter>06.FightManager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\AI_RoadStanding.h">
+      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\AI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\MonsterGroup.h">
+      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\MonsterGroup</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\AI_RoadCAB.h">
+      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\Standing\01.CAB\AI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\RoadCAB.h">
+      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\Standing\01.CAB</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\AI_RoadStanding_NML.h">
+      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\Standing\00.NML\AI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1839,9 +1872,6 @@
     <Filter Include="02.GameObjects\02.Character\LandObject\02.Adventure">
       <UniqueIdentifier>{e953efb4-bf89-4f41-8ac1-a70274d77017}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\02.Character\LandObject\02.Adventure\AI">
-      <UniqueIdentifier>{118e6329-be46-4fd0-8074-1988d055f79a}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObjects\02.Character\LandObject\03.CarChase">
       <UniqueIdentifier>{5c299c28-69e6-4612-a808-f559d8352e9d}</UniqueIdentifier>
     </Filter>
@@ -1974,10 +2004,25 @@
     <Filter Include="02.GameObjects\02.Character\LandObject\02.Adventure\Walker\00.NML\AI">
       <UniqueIdentifier>{826ca722-05bb-4d95-acd5-42aa425e1c6f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\02.Character\LandObject\02.Adventure\Standing\00.YNG">
+    <Filter Include="02.GameObjects\02.Character\LandObject\02.Adventure\Walker\AI">
+      <UniqueIdentifier>{118e6329-be46-4fd0-8074-1988d055f79a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\02.Adventure\AI">
+      <UniqueIdentifier>{16ebbc04-eb2b-4478-bb72-c4894c2ac1a4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\02.Adventure\Walker\01.YOP">
+      <UniqueIdentifier>{95e0265b-d22a-451a-9d86-207070a3e337}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\02.Adventure\Standing\01.CAB">
+      <UniqueIdentifier>{4d8b340f-3734-4527-967f-73c95c0f010d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\02.Adventure\Standing\01.CAB\AI">
+      <UniqueIdentifier>{57361669-b117-499a-85e3-13c66056ce0e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\02.Adventure\Standing\00.NML">
       <UniqueIdentifier>{4f89b866-ac52-47f8-a288-1b2938a7684f}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\02.Character\LandObject\02.Adventure\Standing\00.YNG\AI">
+    <Filter Include="02.GameObjects\02.Character\LandObject\02.Adventure\Standing\00.NML\AI">
       <UniqueIdentifier>{d07800cf-4913-43c5-9101-0fadabd3e156}</UniqueIdentifier>
     </Filter>
     <Filter Include="95.Utility\05.UIManager\UIScene\UIKaraoke_Select">
@@ -1997,6 +2042,15 @@
     </Filter>
     <Filter Include="02.GameObjects\13.HeadUI">
       <UniqueIdentifier>{f51c6e12-d152-4828-9f5c-8354f9fa7ce2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\02.Adventure\Standing\02.Tissue">
+      <UniqueIdentifier>{4777f0b2-a8f0-4e18-b5de-37fd840cf24a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\02.Adventure\MonsterGroup">
+      <UniqueIdentifier>{36fe7f9f-65f0-4112-a92d-8a21a869b4bf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06.FightManager">
+      <UniqueIdentifier>{60075471-10c1-46e8-b958-25b36b621421}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

@@ -19,6 +19,9 @@ public:
     virtual void Late_Tick(const _float& fTimeDelta) override;
 
 protected:
+    class CAI_RoadWalker* m_pTree = { nullptr };
+
+protected:
     virtual HRESULT Add_Components() override;
     virtual void Change_Animation() override;
     

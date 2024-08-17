@@ -79,11 +79,32 @@ HRESULT CUIManager::Remove_Target(_uint iIndex)
 	return pScene->Remove_Target(iIndex);
 }
 
-CCarChase_Monster* CUIManager::Get_Target()
+CCarChase_Monster * CUIManager::Get_Target()
 {
 	CUICarchase* pScene = dynamic_cast<CUICarchase*>(Find_Scene(TEXT("Carchase")));
 
 	return pScene->Get_Target();;
+}
+
+void CUIManager::Set_TitleStart(_bool isStart)
+{
+	CUITitle* pScene = dynamic_cast<CUITitle*>(Find_Scene(TEXT("Title")));
+
+	pScene->Set_Start(isStart);
+}
+
+_bool CUIManager::isTitleStart()
+{
+	CUITitle* pScene = dynamic_cast<CUITitle*>(Find_Scene(TEXT("Title")));
+
+	return pScene->isStart();
+}
+
+void CUIManager::Start_Title(_int iIndex)
+{
+	CUITitle* pScene = dynamic_cast<CUITitle*>(Find_Scene(TEXT("Title")));
+
+	pScene->Start_Title(iIndex);
 }
 
 HRESULT CUIManager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
