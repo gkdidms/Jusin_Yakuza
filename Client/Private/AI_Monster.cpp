@@ -782,7 +782,6 @@ _bool CAI_Monster::Check_StandUp()
 	//¾ÕÀ» ¹Ù¶óº½
 	if (Get_DownDir() == DIR_F)
 	{
-		m_pThis->Set_Down(false);
 		*m_pState = *m_pState == CMonster::MONSTER_H23070_000_4 ? CMonster::MONSTER_DWN_STANDUP_HEAD_R_EN : CMonster::MONSTER_STANDUP_DNF_FAST;
 		return false;
 	}
@@ -790,7 +789,6 @@ _bool CAI_Monster::Check_StandUp()
 	//¾þ¾îÁ®ÀÕÀ½
 	if (Get_DownDir() == DIR_B)
 	{
-		m_pThis->Set_Down(false);
 		*m_pState = CMonster::MONSTER_STANDUP_DNB_FAST;
 		return false;
 	}

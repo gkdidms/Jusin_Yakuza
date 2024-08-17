@@ -79,11 +79,11 @@ HRESULT CUIManager::Remove_Target(_uint iIndex)
 	return pScene->Remove_Target(iIndex);
 }
 
-CCarChase_Monster * CUIManager::Get_Target()
+CCarChase_Monster* CUIManager::Get_Target()
 {
 	CUICarchase* pScene = dynamic_cast<CUICarchase*>(Find_Scene(TEXT("Carchase")));
 
-	return pScene->Get_Target();;
+	return pScene->Get_Target();
 }
 
 void CUIManager::Set_TitleStart(_bool isStart)
