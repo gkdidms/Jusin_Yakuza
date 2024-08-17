@@ -37,6 +37,7 @@ public: // 카체이스 용
     HRESULT Add_Target(_uint iIndex, class CCarChase_Monster* pMonster);
     HRESULT Update_TargetMatrix(_uint iIndex, _matrix TargetMatrix, _float iHP);
     HRESULT Remove_Target(_uint iIndex);
+    class CCarChase_Monster* Get_Target();
 
 public: //타이틀 용
     void Set_TitleStart(_bool isStart);

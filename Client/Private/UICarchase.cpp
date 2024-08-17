@@ -55,6 +55,11 @@ HRESULT CUICarchase::Remove_Target(_uint iIndex)
     return S_OK;
 }
 
+CCarChase_Monster* CUICarchase::Get_Target()
+{
+    return nullptr == m_CurrentTarget ? nullptr : m_CurrentTarget->pMonsterAddr;
+}
+
 HRESULT CUICarchase::Show_Scene()
 {
 
@@ -282,7 +287,6 @@ void CUICarchase::Coll_Aim()
 {
     if (m_pGameInstance->GetMouseState(DIM_LB) == TAP)
     {
-
         //아래는 ui에서 확인한 코드 지워도됨
         //_uint Level = m_pGameInstance->Get_CurrentLevel();
 
@@ -293,40 +297,52 @@ void CUICarchase::Coll_Aim()
         //pKiryu->Shot();
         //pKiryu->Damage();
 
-        _float4 vAimPos;
-        XMStoreFloat4(&vAimPos, m_EventUI[AIM]->Get_TransformCom()->Get_State(CTransform::STATE_POSITION));
-        _float3 vAimScale = m_EventUI[AIM]->Get_TransformCom()->Get_Scaled();
-        //에임이 정확하게 들어와 있어야 함.
-        for (auto& pTarget : m_Targets)
+        if (nullptr != m_CurrentTarget)
         {
-            _float4 vTargetPos;
-            XMStoreFloat4(&vTargetPos, pTarget.second.TargetingUI->Get_TransformCom()->Get_State(CTransform::STATE_POSITION));
-
-            _float3 vTargetScale;
-            vTargetScale = pTarget.second.TargetingUI->Get_TransformCom()->Get_Scaled();
-
-            _float fAimMinX = vAimPos.x - vAimScale.x * 0.5f;
-            _float fAimMaxX = vAimPos.x + vAimScale.x * 0.5f;
-
-            _float fAimMinY = vAimPos.y - vAimScale.y * 0.5f;
-            _float fAimMaxY = vAimPos.y + vAimScale.y * 0.5f;
-
-            _float fTargetMinX = vTargetPos.x - vTargetScale.x * 0.5f;
-            _float fTargetMaxX = vTargetPos.x + vTargetScale.x * 0.5f;
-
-            _float fTargetMinY = vTargetPos.y - vTargetScale.y * 0.5f;
-            _float fTargetMaxY = vTargetPos.y + vTargetScale.y * 0.5f;
-
-            if (fAimMinX > fTargetMinX && fAimMaxX < fTargetMaxX
-                && fAimMinY > fTargetMinY && fAimMaxY < fTargetMaxY)
-            {
-                //충돌
-                pTarget.second.TargetingUI->Show_UI();
-                pTarget.second.pMonsterAddr->Set_Coll();
-                
-                return;
-            }
+            m_CurrentTarget->TargetingUI->Show_UI();
+            m_CurrentTarget->pMonsterAddr->Set_Coll();
         }
+    }
+
+    _float4 vAimPos;
+    XMStoreFloat4(&vAimPos, m_EventUI[AIM]->Get_TransformCom()->Get_State(CTransform::STATE_POSITION));
+    _float3 vAimScale = m_EventUI[AIM]->Get_TransformCom()->Get_Scaled();
+    //에임이 정확하게 들어와 있어야 함.
+    for (auto& pTarget : m_Targets)
+    {
+        _float4 vTargetPos;
+        XMStoreFloat4(&vTargetPos, pTarget.second.TargetingUI->Get_TransformCom()->Get_State(CTransform::STATE_POSITION));
+
+        _float3 vTargetScale;
+        vTargetScale = pTarget.second.TargetingUI->Get_TransformCom()->Get_Scaled();
+
+        _float fAimMinX = vAimPos.x - vAimScale.x * 0.5f;
+        _float fAimMaxX = vAimPos.x + vAimScale.x * 0.5f;
+
+        _float fAimMinY = vAimPos.y - vAimScale.y * 0.5f;
+        _float fAimMaxY = vAimPos.y + vAimScale.y * 0.5f;
+
+        _float fTargetMinX = vTargetPos.x - vTargetScale.x * 0.5f;
+        _float fTargetMaxX = vTargetPos.x + vTargetScale.x * 0.5f;
+
+        _float fTargetMinY = vTargetPos.y - vTargetScale.y * 0.5f;
+        _float fTargetMaxY = vTargetPos.y + vTargetScale.y * 0.5f;
+
+        _bool isColl = { false };
+
+        if (fAimMinX > fTargetMinX && fAimMaxX < fTargetMaxX
+            && fAimMinY > fTargetMinY && fAimMaxY < fTargetMaxY)
+        {
+            //충돌
+            m_CurrentTarget = &pTarget.second;
+
+            isColl = true;
+            return;
+        }
+
+        // 아무것도 충돌하지 않았을 경우.
+        if (!isColl)
+            m_CurrentTarget = nullptr;
     }
 }
 

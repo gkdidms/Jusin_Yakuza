@@ -29,6 +29,7 @@ public:
 public:
     void Set_NavigationRouteIndex(_uint iLine); // 네비게이션 Route 변경
     void Set_Dir(_uint iStageDir);
+    void Sit_Swap();
 
 public:
     virtual HRESULT Initialize_Prototype() override;

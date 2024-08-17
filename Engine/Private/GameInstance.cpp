@@ -184,6 +184,16 @@ void CGameInstance::SetChannelVolume(CHANNELID eID, float fVolume)
 	m_pSound_Manager->SetChannelVolume(eID, fVolume);
 }
 
+_float CGameInstance::GetSoundPosition(const wstring pSoundKey, CHANNELID eID)
+{
+	return m_pSound_Manager->GetSoundPosition(pSoundKey, eID);
+}
+
+_float CGameInstance::GetSoundDuration(const wstring pSoundKey)
+{
+	return m_pSound_Manager->GetSoundDuration(pSoundKey);
+}
+
 HRESULT CGameInstance::Add_GameObject_Prototype(const wstring strGameObjectTag, CGameObject* pGameObject)
 {
 	return m_pGameObject_Manager->Add_GameObject_Prototype(strGameObjectTag, pGameObject);

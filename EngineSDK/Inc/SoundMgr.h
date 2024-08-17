@@ -20,6 +20,9 @@ public:
 	void StopAll();
 	void SetChannelVolume(CHANNELID eID, float fVolume);
 
+	_float GetSoundPosition(const wstring pSoundKey, CHANNELID eID);
+	_float GetSoundDuration(const wstring pSoundKey);
+
 private:
 	void LoadSoundFile();
 

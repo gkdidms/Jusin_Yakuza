@@ -37,6 +37,8 @@ public:
     void StopSound(CHANNELID eID);
     void StopAll();
     void SetChannelVolume(CHANNELID eID, float fVolume);
+    _float GetSoundPosition(const wstring pSoundKey, CHANNELID eID);
+    _float GetSoundDuration(const wstring pSoundKey);
 
     /* Timer */
 public:
