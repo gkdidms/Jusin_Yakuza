@@ -31,6 +31,7 @@ HRESULT CAI_Yoneda::Initialize(void* pArg)
 
 	AI_YONEDA_DESC* pDesc = static_cast<AI_YONEDA_DESC*>(pArg);
 	m_pWeaponType = pDesc->pWeaponType;
+	m_iMonsterType = CMonster::YONEDA;
 
 	Ready_Tree();
 

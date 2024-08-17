@@ -11,6 +11,15 @@ CRenderTarget_Manager::CRenderTarget_Manager(ID3D11Device* pDevice, ID3D11Device
 	Safe_AddRef(m_pContext);
 }
 
+ID3D11Texture2D* CRenderTarget_Manager::Get_TextureBuffer(const wstring& strTargetTag)
+{
+	CRenderTarget* pRenderTarget = Find_RenderTarget(strTargetTag);
+	if (nullptr == pRenderTarget)
+		return nullptr;
+
+	return pRenderTarget->Get_TextureBuffer();
+}
+
 HRESULT CRenderTarget_Manager::Initialize()
 {
 	m_pContext->OMGetRenderTargets(1, &m_pBackBufferView, &m_pDepthStencilView);
@@ -18,12 +27,12 @@ HRESULT CRenderTarget_Manager::Initialize()
 	return S_OK;
 }
 
-HRESULT CRenderTarget_Manager::Add_RenderTarget(const wstring& strRenderTargetTag, _uint iSizeX, _uint iSizeY, DXGI_FORMAT ePixelFormat, const _float4& vClearColor, _uint iArrayCount)
+HRESULT CRenderTarget_Manager::Add_RenderTarget(const wstring& strRenderTargetTag, _uint iSizeX, _uint iSizeY, DXGI_FORMAT ePixelFormat, const _float4& vClearColor, _bool isCompute, _uint iArrayCount)
 {
 	if (nullptr != Find_RenderTarget(strRenderTargetTag))
 		return E_FAIL;
 
-	CRenderTarget* pRenderTarget = CRenderTarget::Create(m_pDevice, m_pContext, iSizeX, iSizeY, ePixelFormat, vClearColor, iArrayCount);
+	CRenderTarget* pRenderTarget = CRenderTarget::Create(m_pDevice, m_pContext, iSizeX, iSizeY, ePixelFormat, vClearColor, isCompute, iArrayCount);
 	if (nullptr == pRenderTarget)
 		return E_FAIL;
 
@@ -100,6 +109,24 @@ HRESULT CRenderTarget_Manager::Bind_RenderTargetSRV(const wstring& strTargetTag,
 		return E_FAIL;
 
 	return pRenderTarget->Bind_SVR(pShader, pConstantName);
+}
+
+void CRenderTarget_Manager::Bind_ComputeRenderTargetSRV(const wstring& strTargetTag)
+{
+	CRenderTarget* pRenderTarget = Find_RenderTarget(strTargetTag);
+	if (nullptr == pRenderTarget)
+		return;
+
+	pRenderTarget->Bind_ComputeSVR();
+}
+
+void CRenderTarget_Manager::Bind_ComputeRenderTargetUAV(const wstring& strTargetTag)
+{
+	CRenderTarget* pRenderTarget = Find_RenderTarget(strTargetTag);
+	if (nullptr == pRenderTarget)
+		return;
+
+	pRenderTarget->Bind_ComputeUAV();
 }
 
 HRESULT CRenderTarget_Manager::Copy_Resource(const wstring& strTargetTag, ID3D11Texture2D* pDesc)

@@ -170,7 +170,7 @@ public:
 
     /*RenderTarget_Manager*/
 public:
-    HRESULT Add_RenderTarget(const wstring& strRenderTargetTag, _uint iSizeX, _uint iSizeY, DXGI_FORMAT ePixelFormat, const _float4& vClearColor, _uint iArrayCount = 1);
+    HRESULT Add_RenderTarget(const wstring& strRenderTargetTag, _uint iSizeX, _uint iSizeY, DXGI_FORMAT ePixelFormat, const _float4& vClearColor, _bool isCompute = false, _uint iArrayCount = 1);
     HRESULT Add_MRT(const wstring& strMRTTag, const wstring& strRenderTargetTag);
     HRESULT Begin_MRT(const wstring& strMRTTag, ID3D11DepthStencilView* pDSView = nullptr, _bool isClear = true); // isClear == false 일 시 초기화 안됨.
     HRESULT End_MRT();
@@ -178,6 +178,10 @@ public:
     HRESULT Copy_Resource(const wstring& strTargetTag, ID3D11Texture2D* pDesc);
     HRESULT Create_Texture(const wstring& strTargetTag, const wstring& strSaveFilePath);
     HRESULT Clear_RenderTarget(const wstring& strTargetTag);
+
+    ID3D11Texture2D* Get_TextureBuffer(const wstring& strTargetTag);
+    void Bind_ComputeRenderTargetSRV(const wstring& strTargetTag);
+    void Bind_ComputeRenderTargetUAV(const wstring& strTargetTag);
 
     /* Frustum*/
 public:

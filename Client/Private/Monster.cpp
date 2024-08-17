@@ -276,6 +276,11 @@ void CMonster::Off_Sync()
 	m_iCurrentAnimType = CMonster::DEFAULT;
 }
 
+void CMonster::Set_Start(_bool isStart)
+{
+	m_pTree->Set_Start(isStart);
+}
+
 /*
 * DIR_F : 앞으로 누워잇음
 * DIR_B : 뒤로 엎어져잇음

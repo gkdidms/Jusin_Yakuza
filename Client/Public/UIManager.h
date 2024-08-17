@@ -39,6 +39,10 @@ public: // 카체이스 용
     HRESULT Remove_Target(_uint iIndex);
     class CCarChase_Monster* Get_Target();
 
+public: //타이틀 용
+    void Set_TitleStart(_bool isStart);
+    _bool isTitleStart();
+    void Start_Title(_int iIndex);
 
 public:
     //자신이 만들 ui씬은 미리 할당(수동)

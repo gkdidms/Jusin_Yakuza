@@ -5,7 +5,6 @@
 
 #include "SocketCollider.h"
 #include "AI_Monster.h"
-#include "AI_Adventure.h"
 
 
 CAdventure::CAdventure(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -21,11 +20,6 @@ CAdventure::CAdventure(const CAdventure& rhs)
 void CAdventure::Start_Root(_int iGoalIndex)
 {
 	m_pAStartCom->Start_Root(m_pNavigationCom, iGoalIndex);
-}
-
-void CAdventure::Set_Move()
-{
-	
 }
 
 HRESULT CAdventure::Initialize_Prototype()
@@ -170,52 +164,6 @@ void CAdventure::Change_Animation()
 {
 	m_isAnimLoop = false;
 	m_fOffset = 1.f;
-
-	switch (m_iState)
-	{
-	case ADVENTURE_IDLE:
-	{
-		m_strAnimName = "m_nml_tlk_stand_kamae";
-		m_isAnimLoop = true;
-		break;
-	}
-	case ADVENTURE_WALK:
-	{
-		m_strAnimName = "p_mov_walk_fast";
-		m_isAnimLoop = true;
-		m_fOffset = 0.8f;
-		break;
-	}
-	case ADVENTURE_WALK_S:
-	{
-		m_strAnimName = "p_mov_walk_s";
-		break;
-	}
-	case ADVENTURE_WALK_EN:
-	{
-		m_strAnimName = "p_mov_walk_en";
-		break;
-	}
-	case ADVENTURE_HIT_L:
-	{
-		m_strAnimName = "m_hml_act_walk_hit_l";
-		break;
-	}
-	case ADVENTURE_HIT_R:
-	{
-		m_strAnimName = "m_hml_act_walk_hit_r";
-		break;
-	}
-	default:
-		break;
-	}
-
-	m_iAnim = m_pAnimCom->Get_AnimationIndex(m_strAnimName.c_str());
-	
-	if (m_iAnim == -1)
-		return;
-
-	m_pModelCom->Set_AnimationIndex(m_iAnim, m_pAnimCom->Get_Animations(), m_fChangeInterval);
 }
 
 void CAdventure::Synchronize_Root(const _float& fTimeDelta)
@@ -286,6 +234,28 @@ void CAdventure::Check_Separation()
 	//NPC별 충돌 시 피하는 방향 벡터 -> vMoveDir;
 }
 
+
+HRESULT CAdventure::Setup_Animation()
+{
+	m_iAnim = m_pAnimCom->Get_AnimationIndex(m_strAnimName.c_str());
+
+	if (m_iAnim == -1)
+		return E_FAIL;
+
+	// 실제로 애니메이션 체인지가 일어났을 때 켜져있던 어택 콜라이더를 전부 끈다
+	if (m_pModelCom->Set_AnimationIndex(m_iAnim, m_pAnimCom->Get_Animations(), m_fChangeInterval))
+	{
+		m_pModelCom->Set_PreAnimations(m_pAnimCom->Get_Animations());
+
+		Off_Attack_Colliders();
+	}
+
+	if (nullptr != m_pData)
+		m_pData->Set_CurrentAnimation(m_strAnimName);
+
+	return S_OK;
+}
+
 HRESULT CAdventure::Add_Components()
 {
 	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Shader_VtxAnim"),
@@ -348,6 +318,5 @@ void CAdventure::Free()
 
 	Safe_Release(m_pAnimCom);
 	Safe_Release(m_pNavigationCom);
-	Safe_Release(m_pTree);
 	Safe_Release(m_pAStartCom);
 }

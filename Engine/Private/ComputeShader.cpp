@@ -47,15 +47,17 @@ HRESULT CComputeShader::Initialize(void* pArg)
     return S_OK;
 }
 
-HRESULT CComputeShader::Render(_uint iGroupCount)
+HRESULT CComputeShader::Render(_uint iGroupX, _uint iGroupY, _uint iGroupZ)
 {
     m_pContext->CSSetShader(m_pComputeShader, nullptr, 0);
 
-    _uint iGroupNum = (iGroupCount + 63) / 64;
+    m_pContext->Dispatch(iGroupX, iGroupY, iGroupZ);
 
-    m_pContext->Dispatch(iGroupNum, 1, 1);
+    ID3D11UnorderedAccessView* pUAV = { nullptr };
 
     m_pContext->Flush();
+
+    m_pContext->CSSetUnorderedAccessViews(0, 1, &pUAV, nullptr);
 
     return S_OK;
 }
