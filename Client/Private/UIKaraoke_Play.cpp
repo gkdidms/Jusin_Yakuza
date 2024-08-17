@@ -24,6 +24,14 @@ HRESULT CUIKaraoke_Play::Show_Scene()
 
     m_Lyrics->Show_Off_All();
 
+    for (size_t i = 0; i < UILIST_END; i++)
+    {
+        for (auto& pUI : m_pPlayUI[i])
+        {
+            pUI->Show_Off_All();
+        }
+    }
+
     return S_OK;
 }
 
@@ -35,14 +43,27 @@ HRESULT CUIKaraoke_Play::Close_Scene()
     return S_OK;
 }
 
-HRESULT CUIKaraoke_Play::Add_UIData(CUI_Object* pUIObject)
+HRESULT CUIKaraoke_Play::Add_UIData(CUI_Object* pUIObject, wstring wstrPrototypeTag)
 {
     if (pUIObject->Get_Event())
     {
-        if (m_pPlayUI.size() < 13)
-            m_pPlayUI.push_back(pUIObject);
+        if (m_iCloneCount < 13)
+        {
+            m_pPlayUI[m_iCloneCount].push_back(dynamic_cast<CGroup*>(pUIObject));
+
+            _uint iNum = Compute_Num(m_iCloneCount);
+
+            for (size_t i = 0; i < iNum; i++)
+            {
+                m_pPlayUI[m_iCloneCount].push_back(dynamic_cast<CGroup*>(m_pGameInstance->Clone_Object(wstrPrototypeTag, nullptr)));
+            }
+
+            m_iCloneCount++;
+        }
         else
+        {
             m_Lyrics=dynamic_cast<CGroup*>(pUIObject);
+        }
         return S_OK;
     }
 
@@ -65,6 +86,7 @@ HRESULT CUIKaraoke_Play::Tick(const _float& fTimeDelta)
 {
     Change_Lyrics();
 
+    // 컷신 실행시키기
     _float fCurSoundTime = m_pGameInstance->GetSoundPosition(L"Bakamita.mp3", SOUND_BGM);
     if (CUTSCENE_START_POSITION < fCurSoundTime)
     {
@@ -72,36 +94,50 @@ HRESULT CUIKaraoke_Play::Tick(const _float& fTimeDelta)
         pPlayer->Set_CutSceneAnim();
     }
 
-    //if (m_pGameInstance->GetKeyState(DIK_LEFT))
-    //{
-    //    m_Lyrics->Get_PartObject(test)->Get_TransformCom()->Set_Speed(100.f);
-    //    m_Lyrics->Get_PartObject(test)->Get_TransformCom()->Go_Left(fTimeDelta);
-    //}
-    //if (m_pGameInstance->GetKeyState(DIK_RIGHT))
-    //{
-    //    m_Lyrics->Get_PartObject(test)->Get_TransformCom()->Go_Right(fTimeDelta);
-    //}
-    //if (m_pGameInstance->GetKeyState(DIK_UP))
-    //{
-    //    m_Lyrics->Get_PartObject(test)->Get_TransformCom()->Go_Up(fTimeDelta);
-    //}
-    //if (m_pGameInstance->GetKeyState(DIK_DOWN))
-    //{
-    //    m_Lyrics->Get_PartObject(test)->Get_TransformCom()->Go_Down(fTimeDelta);
-    //}
+    m_pPlayUI[BACK][0]->Tick(fTimeDelta);
 
+    if (m_pGameInstance->GetKeyState(DIK_LEFT))
+    {
+        m_pPlayUI[BACK][0]->Get_TransformCom()->Set_Speed(100.f);
+        m_pPlayUI[BACK][0]->Get_TransformCom()->Go_Left(fTimeDelta);
+    }
+    if (m_pGameInstance->GetKeyState(DIK_RIGHT))
+    {
+        m_pPlayUI[BACK][0]->Get_TransformCom()->Go_Right(fTimeDelta);
+    }
+    if (m_pGameInstance->GetKeyState(DIK_UP))
+    {
+        m_pPlayUI[BACK][0]->Get_TransformCom()->Go_Up(fTimeDelta);
+    }
+    if (m_pGameInstance->GetKeyState(DIK_DOWN))
+    {
+        m_pPlayUI[BACK][0]->Get_TransformCom()->Go_Down(fTimeDelta);
+    }
 
-
-    for (auto& iter : m_pPlayUI)
-        iter->Tick(fTimeDelta);
-    //m_Lyrics->Tick(fTimeDelta);
+    for (size_t i = 0; i < UILIST_END; i++)
+    {
+        for (auto& pUI : m_pPlayUI[i])
+        {
+            pUI->Tick(fTimeDelta);
+        }
+    }
+    m_Lyrics->Tick(fTimeDelta);
     return S_OK;
 }
 
 HRESULT CUIKaraoke_Play::Late_Tick(const _float& fTimeDelta)
 {
-    for (auto& iter : m_pPlayUI)
-        iter->Late_Tick(fTimeDelta);
+    //m_pPlayUI[BACK][0]->Late_Tick(fTimeDelta);
+    //for (auto& iter : m_pPlayUI)
+    //    iter->Late_Tick(fTimeDelta);
+
+    for (size_t i = 0; i < UILIST_END; i++)
+    {
+        for (auto& pUI : m_pPlayUI[i])
+        {
+            pUI->Late_Tick(fTimeDelta);
+        }
+    }
     m_Lyrics->Late_Tick(fTimeDelta);
     if (!m_isAnimFin)
         Check_AimFin();
@@ -221,6 +257,14 @@ void CUIKaraoke_Play::Ready_LyricsTime()
     //Desc.fTime = 95.130;
     //Desc.iSocketIndex = 1;
     //m_LyricsTime.push_back(Desc);
+
+    for (size_t i = 0; i < m_LyricsTime.size(); i++)
+    {
+        if(i == m_LyricsTime.size() - 1)
+            m_LyricsTime[i].fDuration = 95.130f - m_LyricsTime[i].fTime;                    // 마지막소절은 그냥 끝나는 시간 정해져잇음
+        else
+            m_LyricsTime[i].fDuration = m_LyricsTime[i + 1].fTime - m_LyricsTime[i].fTime;
+    }
 }
 
 void CUIKaraoke_Play::Ready_LyricsSocket()
@@ -247,9 +291,12 @@ void CUIKaraoke_Play::Change_Lyrics()
 
                     _vector vPos = XMVectorSetW(XMLoadFloat3(&m_LyricsSocket[m_LyricsTime[i].iSocketIndex]), 1.f);
                     m_Lyrics->Get_PartObject(i - 1)->Get_TransformCom()->Set_State(CTransform::STATE_POSITION, vPos);
+                    Setting_BackUI(m_LyricsTime[i], vPos);
+
 
                     vPos = XMVectorSetW(XMLoadFloat3(&m_LyricsSocket[m_LyricsTime[i + 1].iSocketIndex]), 1.f);
                     m_Lyrics->Get_PartObject(i)->Get_TransformCom()->Set_State(CTransform::STATE_POSITION, vPos);
+                    Setting_BackUI(m_LyricsTime[i + 1], vPos);
                 }
                 else if(i != 6)
                 {
@@ -257,12 +304,26 @@ void CUIKaraoke_Play::Change_Lyrics()
 
                     _vector vPos = XMVectorSetW(XMLoadFloat3(&m_LyricsSocket[m_LyricsTime[i].iSocketIndex]), 1.f);
                     m_Lyrics->Get_PartObject(i - 1)->Get_TransformCom()->Set_State(CTransform::STATE_POSITION, vPos);
+
+                    Setting_BackUI(m_LyricsTime[i], vPos);
                 }
             }
         }
 
         if (m_LyricsTime.size() - 1 > i)
         {
+            // 마지막 소절 직전이라면 마지막 가사 꺼질 때 같이 꺼진다.
+            if (i <= m_LyricsTime.size() - 2)
+            {
+                if (fCurSoundTime > m_LyricsTime[m_LyricsTime.size() - 1].fTime + m_LyricsTime[m_LyricsTime.size() - 1].fDuration)
+                {
+                    m_LyricsTime[m_LyricsTime.size() - 1].fTime + m_LyricsTime[m_LyricsTime.size() - 1].fDuration;
+                    m_Lyrics->Show_Off(i - 1);
+
+                    m_pPlayUI[BACK][m_LyricsTime[i].iSocketIndex]->Show_Off_All();
+                }
+            }
+
             if (fCurSoundTime > m_LyricsTime[i + 1].fTime)        //다음가사 on 2초전에 가사끄기
             {
                 if (i != 0)
@@ -271,15 +332,70 @@ void CUIKaraoke_Play::Change_Lyrics()
                     {
                         m_Lyrics->Show_Off(i - 2);
                         m_Lyrics->Show_Off(i - 1);
+
+                        m_pPlayUI[BACK][m_LyricsTime[i - 1].iSocketIndex]->Show_Off_All();
+                        m_pPlayUI[BACK][m_LyricsTime[i].iSocketIndex]->Show_Off_All();
                     }
-                    else if(i != 5)
+                    if (i != 5)
                     {
                         m_Lyrics->Show_Off(i - 1);
-                    }
 
+                        m_pPlayUI[BACK][m_LyricsTime[i].iSocketIndex]->Show_Off_All();
+                    }
+               
                 }
             }
         }
+    }
+}
+
+void CUIKaraoke_Play::Setting_BackUI(LYRICS_DESC Desc, _fvector vPos)
+{
+    _vector vLinePost = vPos;
+    vLinePost = XMVectorSetY(vLinePost, vLinePost.m128_f32[1] - 50.f);
+    vLinePost = XMVectorSetX(vLinePost, vLinePost.m128_f32[0] - 50.f);
+
+    _float3 vScaled = m_pPlayUI[BACK][Desc.iSocketIndex]->Get_TransformCom()->Get_Scaled();
+
+    vLinePost.m128_f32[0] += ((Desc.fDuration * 0.2f) * 0.5f);
+    m_pPlayUI[BACK][Desc.iSocketIndex]->Get_TransformCom()->Set_Scale(Desc.fDuration * 0.2f, vScaled.y, vScaled.z);
+
+    m_pPlayUI[BACK][Desc.iSocketIndex]->Get_TransformCom()->Set_State(CTransform::STATE_POSITION, vLinePost);
+    m_pPlayUI[BACK][Desc.iSocketIndex]->Show_On_All();
+}
+
+_uint CUIKaraoke_Play::Compute_Num(_uint iCount)
+{
+    switch (iCount)
+    {
+    case BACK:
+        return 2;
+    case BLUE:
+        return 0;
+    case MIC:
+        return 20;
+    case CURRENTBAR:
+        return 0;
+    case GOODEFFECT:
+        return 20;
+    case GRADE:
+        return 20;
+    case GREATEFFECT:
+        return 20;
+    case HOLD:
+        return 5;
+    case ROLL:
+        return 5;
+    case DOWN:
+        return 30;
+    case LEFT:
+        return 30;
+    case RIGHT:
+        return 30;
+    case UP:
+        return 30;
+    default:
+        return 0;
     }
 }
 
@@ -298,7 +414,13 @@ CUIKaraoke_Play* CUIKaraoke_Play::Create(ID3D11Device* pDevice, ID3D11DeviceCont
 void CUIKaraoke_Play::Free()
 {
     __super::Free();
-    for (auto& iter : m_pPlayUI)
-        Safe_Release(iter);
+    for (size_t i = 0; i < UILIST_END; i++)
+    {
+        for (auto& iter : m_pPlayUI[i])
+            Safe_Release(iter);
+
+        m_pPlayUI[i].clear();
+    }
+
     Safe_Release(m_Lyrics);
 }

@@ -21,6 +21,7 @@ HRESULT CKaraokeManager::Initialize()
 
 void CKaraokeManager::Tick(const _float& fTimeDelta)
 {
+
 	if(!m_isStart)
 		KeyInput(); //이거 카라오케 키는 용도
 	else

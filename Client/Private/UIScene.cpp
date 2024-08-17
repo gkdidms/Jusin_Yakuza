@@ -14,7 +14,7 @@ CUIScene::CUIScene(const CUIScene& rhs)
 
 }
 
-HRESULT CUIScene::Add_UIData(CUI_Object* pUIObject)
+HRESULT CUIScene::Add_UIData(CUI_Object* pUIObject, wstring wstrPrototypeTag)
 {
 	
 	if (pUIObject->Get_Event())

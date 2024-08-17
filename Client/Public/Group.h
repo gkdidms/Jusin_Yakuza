@@ -46,6 +46,7 @@ public:
 public:
     void Show_Choice(_int Index);
     void Show_Off_All();                        //전체끄기
+    void Show_On_All();                        //전체켜기
     void Show_On(_int Index);
     void Show_Off(_int Index);
 

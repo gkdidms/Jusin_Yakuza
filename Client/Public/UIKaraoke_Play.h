@@ -14,6 +14,7 @@ public:
     struct LYRICS_DESC
     {
         _float fTime;
+        _float fDuration;
         _uint iSocketIndex;
     };
 
@@ -27,7 +28,7 @@ public:
     virtual HRESULT Close_Scene()override;//ui 애님 준비(초기화/닫을떄 반대로진행)
 
 public:
-    virtual HRESULT Add_UIData(class CUI_Object* pUIObject) override;
+    virtual HRESULT Add_UIData(class CUI_Object* pUIObject, wstring wstrPrototypeTag = TEXT("")) override;
     virtual HRESULT Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg) override;
     virtual HRESULT Tick(const _float& fTimeDelta) override;
     virtual HRESULT Late_Tick(const _float& fTimeDelta) override;
@@ -43,16 +44,20 @@ private:
 
 private:
     void Change_Lyrics();
+    void Setting_BackUI(LYRICS_DESC Desc, _fvector vPos);
+
+    _uint Compute_Num(_uint iCount);
 
 private:
     _int m_iCurrentLyrics = { -1 };
-    _int test = { 0 };
+    _int m_iCloneCount = { 0 };
 
-    vector<class CUI_Object*> m_pPlayUI;
+    vector<class CGroup*> m_pPlayUI[UILIST_END];
     class CGroup* m_Lyrics;
 
     vector<LYRICS_DESC> m_LyricsTime;
     vector<_float3> m_LyricsSocket;
+
 public:
     static CUIKaraoke_Play* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg = nullptr);
     virtual void Free();

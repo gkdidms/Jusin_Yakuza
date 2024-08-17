@@ -33,7 +33,7 @@ HRESULT CUIKaraoke_Score::Close_Scene()
 	return S_OK;
 }
 
-HRESULT CUIKaraoke_Score::Add_UIData(CUI_Object* pUIObject)
+HRESULT CUIKaraoke_Score::Add_UIData(CUI_Object* pUIObject, wstring wstrPrototypeTag)
 {
 	if (pUIObject->Get_Event())
 	{
