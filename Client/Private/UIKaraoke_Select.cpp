@@ -133,7 +133,7 @@ HRESULT CUIKaraoke_Select::Late_Tick(const _float& fTimeDelta)
 
     if (m_isStart && m_MusicTitle->Check_AnimFin()&&m_iCurrentTime>3.0f)
     {
-        CUIManager::GetInstance()->Close_Scene();
+        CUIManager::GetInstance()->Close_Scene(m_strSceneName);
         CUIManager::GetInstance()->Open_Scene(TEXT("Karaoke_Play"));
 
         m_pGameInstance->PlaySound_W(L"Bakamita.mp3", SOUND_BGM, 0.5f);

@@ -1,4 +1,4 @@
-#include "Level_Tutorial.h"
+#include "Level_NishikiWalk.h"
 
 #include "GameInstance.h"
 #include "SystemManager.h"
@@ -15,20 +15,18 @@
 
 #include "Level_Loading.h"
 
-CLevel_Tutorial::CLevel_Tutorial(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+CLevel_NIshikiWalk::CLevel_NIshikiWalk(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLevel{ pDevice, pContext },
 	m_pSystemManager{ CSystemManager::GetInstance() },
 	m_pFileTotalManager{ CFileTotalMgr::GetInstance() },
-	m_pFightManager{ CFightManager::GetInstance()},
 	m_pQuestManager{ CQuestManager::GetInstance()}
 {
 	Safe_AddRef(m_pSystemManager);
 	Safe_AddRef(m_pFileTotalManager);
-	Safe_AddRef(m_pFightManager);
 	Safe_AddRef(m_pQuestManager);
 }
 
-HRESULT CLevel_Tutorial::Initialize()
+HRESULT CLevel_NIshikiWalk::Initialize()
 {
 	if (FAILED(Ready_Player(TEXT("Layer_Player"))))
 		return E_FAIL;
@@ -36,36 +34,31 @@ HRESULT CLevel_Tutorial::Initialize()
 	if (FAILED(m_pQuestManager->Initialize()))
 		return E_FAIL;
 
-	m_pQuestManager->Start_Quest(0);
+	m_pQuestManager->Start_Quest(1);
 
 	m_pTutorialManager = CTutorialManager::Create();
 	if (nullptr == m_pTutorialManager)
 		return E_FAIL;
 
 	/* 클라 파싱 */
-	m_pFileTotalManager->Set_MapObj_In_Client(STAGE_TUTORIAL, LEVEL_TUTORIAL);
+	m_pFileTotalManager->Set_MapObj_In_Client(STAGE_NISHIKIWALK, LEVEL_NISHIKIWALK);
 	m_pFileTotalManager->Set_Lights_In_Client(99);
-	//m_pFileTotalManager->Set_Collider_In_Client(STAGE_TUTORIAL, LEVEL_TUTORIAL);
 
 	if (FAILED(Ready_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
 
-	m_pSystemManager->Set_Camera(CAMERA_PLAYER);
-
 	return S_OK;
 }
 
-void CLevel_Tutorial::Tick(const _float& fTimeDelta)
+void CLevel_NIshikiWalk::Tick(const _float& fTimeDelta)
 {
 	m_pQuestManager->Execute();
-	m_pTutorialManager->Tick();
-	m_pFightManager->Tick(fTimeDelta);
 #ifdef _DEBUG
 	SetWindowText(g_hWnd, TEXT("총격전 맵"));
 #endif
 }
 
-HRESULT CLevel_Tutorial::Ready_Camera(const wstring& strLayerTag)
+HRESULT CLevel_NIshikiWalk::Ready_Camera(const wstring& strLayerTag)
 {
 	/* 카메라 추가 시 Debug Camera를 첫번째로 놔두고 추가해주세요 (디버깅 툴에서 사용중)*/
 	const _float4x4* pPlayerFloat4x4 = dynamic_cast<CTransform*>(m_pGameInstance->Get_GameObject_Component(LEVEL_TUTORIAL, TEXT("Layer_Player"), TEXT("Com_Transform", 0)))->Get_WorldFloat4x4();
@@ -113,7 +106,7 @@ HRESULT CLevel_Tutorial::Ready_Camera(const wstring& strLayerTag)
 	return S_OK;
 }
 
-HRESULT CLevel_Tutorial::Ready_Player(const wstring& strLayerTag)
+HRESULT CLevel_NIshikiWalk::Ready_Player(const wstring& strLayerTag)
 {
 	CGameObject::GAMEOBJECT_DESC Desc{};
 	Desc.fSpeedPecSec = 10.f;
@@ -126,9 +119,9 @@ HRESULT CLevel_Tutorial::Ready_Player(const wstring& strLayerTag)
 	return S_OK;
 }
 
-CLevel_Tutorial* CLevel_Tutorial::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+CLevel_NIshikiWalk* CLevel_NIshikiWalk::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
-	CLevel_Tutorial* pInstance = new CLevel_Tutorial(pDevice, pContext);
+	CLevel_NIshikiWalk* pInstance = new CLevel_NIshikiWalk(pDevice, pContext);
 
 	if (FAILED(pInstance->Initialize()))
 		Safe_Release(pInstance);
@@ -136,13 +129,12 @@ CLevel_Tutorial* CLevel_Tutorial::Create(ID3D11Device* pDevice, ID3D11DeviceCont
 	return pInstance;
 }
 
-void CLevel_Tutorial::Free()
+void CLevel_NIshikiWalk::Free()
 {
 	__super::Free();
 
 	Safe_Release(m_pSystemManager);
 	Safe_Release(m_pFileTotalManager);
 	Safe_Release(m_pTutorialManager);
-	Safe_Release(m_pFightManager);
 	Safe_Release(m_pQuestManager);
 }

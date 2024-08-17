@@ -14,6 +14,11 @@ CUIStoreImage::CUIStoreImage(const CUIStoreImage& rhs)
 {
 }
 
+void CUIStoreImage::Close_Image()
+{
+    Close_Scene();
+}
+
 HRESULT CUIStoreImage::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg)
 {
     if (FAILED(__super::Initialize(pDevice, pContext, pArg)))

@@ -2,6 +2,8 @@
 
 #include "GameInstance.h"
 
+#include "Background.h"
+
 #pragma region Camera
 #include "PlayerCamera.h"
 #include "DebugCamera.h"
@@ -496,6 +498,10 @@ HRESULT CLoader_Other::Loading_For_LogoLevel()
 		return E_FAIL;
 #pragma endregion
 
+	/* For.Prototype_GameObject_BackGround */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_BackGround"), CBackground::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 	m_isFinished = true;
 
 	return S_OK;
@@ -611,7 +617,35 @@ HRESULT CLoader_Other::Loading_For_Karaoke()
 	if (FAILED(Loading_Default()))
 		return E_FAIL;
 
-	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
+	lstrcpy(m_szLoadingText, TEXT("Othre 로딩이 완료되었습니다."));
+
+	m_isFinished = true;
+
+	return S_OK;
+}
+
+HRESULT CLoader_Other::Loading_For_NishikiWalk()
+{
+	if (FAILED(Loading_Default()))
+		return E_FAIL;
+
+	lstrcpy(m_szLoadingText, TEXT("Othre 로딩이 완료되었습니다."));
+
+	m_isFinished = true;
+
+	return S_OK;
+}
+
+HRESULT CLoader_Other::Loading_For_Tutorial()
+{
+	if (FAILED(Loading_Default()))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Texture_Nishiki_Beeper"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/UI/Store/2d_yk_adv01-010.dds"), 1))))
+		return E_FAIL;
+
+	lstrcpy(m_szLoadingText, TEXT("Othre 로딩이 완료되었습니다."));
 
 	m_isFinished = true;
 

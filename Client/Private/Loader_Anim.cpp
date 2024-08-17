@@ -497,6 +497,30 @@ HRESULT CLoader_Anim::Loading_For_Karaoke()
 	return S_OK;
 }
 
+HRESULT CLoader_Anim::Loading_For_Tutorial()
+{
+	if (FAILED(Loading_Default()))
+		return E_FAIL;
+
+	lstrcpy(m_szLoadingText, TEXT("애님 로딩이 완료되었습니다."));
+
+	m_isFinished = true;
+
+	return S_OK;
+}
+
+HRESULT CLoader_Anim::Loading_For_NishikiWalk()
+{
+	if (FAILED(Loading_Default()))
+		return E_FAIL;
+
+	lstrcpy(m_szLoadingText, TEXT("애님 로딩이 완료되었습니다."));
+
+	m_isFinished = true;
+
+	return S_OK;
+}
+
 CLoader_Anim* CLoader_Anim::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, LEVEL eNextLevel)
 {
 	CLoader_Anim* pInstance = new CLoader_Anim(pDevice, pContext);

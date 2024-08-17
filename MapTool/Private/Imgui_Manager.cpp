@@ -189,11 +189,11 @@ void CImgui_Manager::Tick(_float fTimeDelta)
 void CImgui_Manager::Late_Tick(_float fTimeDelta)
 {
     /* camera object랑 같이 기록되면 안돼서 카메라 할때는 꺼두기 */
-    if (false == m_bCameraMgr_IMGUI)
-    {
-        m_pObjPlace_Manager->Late_Tick(fTimeDelta);
-    }
+    //if (false == m_bCameraMgr_IMGUI)
+    //{
 
+    //}
+    m_pObjPlace_Manager->Late_Tick(fTimeDelta);
     m_pColliderMgr->Late_Tick(fTimeDelta);
 
     m_pLightTool_Mgr->Late_Tick(fTimeDelta);
