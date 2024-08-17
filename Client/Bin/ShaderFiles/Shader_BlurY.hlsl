@@ -7,10 +7,8 @@ static const float g_fWeight[13] =
 	0.9231, 0.7261, 0.4868, 0.278, 0.1353, 0.0561*/
 };
 
-float g_fTotal = 2.f;
+float g_fTotal = 0.5f;
  
-groupshared float4 gCache[266];
-
 Texture2D<float4> InputTexture : register(t0);
 RWTexture2D<float4> OutputTexture : register(u0);
 
@@ -32,6 +30,8 @@ void GS_MAIN(uint3 dispatchThreadID : SV_DispatchThreadID, int3 GroupIndex : SV_
         offsetCoord.y = clamp(offsetCoord.y, 0, int(ImageSize.y - 1));
         vColor += g_fWeight[6 + i] * InputTexture.Load(int3(offsetCoord, 0));
     }
+    
+    vColor *= 0.5f;
     
     OutputTexture[outputCoord] = vColor;
 }
