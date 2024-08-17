@@ -187,6 +187,7 @@
     <ClInclude Include="..\Public\AI_RoadStanding.h" />
     <ClInclude Include="..\Public\AI_RoadStanding_NML.h" />
     <ClInclude Include="..\public\FightManager.h" />
+    <ClInclude Include="..\Public\KaraokeManager.h" />
     <ClInclude Include="..\public\MonsterGroup.h" />
     <ClInclude Include="..\Public\RoadCAB.h" />
     <ClInclude Include="..\public\RoadNML.h" />

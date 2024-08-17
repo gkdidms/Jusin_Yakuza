@@ -180,6 +180,8 @@ void CKiryu_KRC_Grab::Setting_Value(void* pValue)
 	KRC_Grab_DESC* pDesc = static_cast<KRC_Grab_DESC*>(pValue);
 	m_isGrabed = pDesc->isGrabed;
 	m_iDirection = pDesc->iDirection;
+
+	static_cast<CMonster*>(m_pPlayer->Get_TargetObject())->Set_Sync("p_kru_sync_lapel_lp");
 }
 
 void CKiryu_KRC_Grab::Event(void* pValue)

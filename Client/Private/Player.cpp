@@ -1994,6 +1994,8 @@ void CPlayer::Set_CutSceneAnim(CUTSCENE_ANIMATION_TYPE eType, _uint iFaceAnimInd
 	auto iter = m_CutSceneAnimation.find(eType);
 	if (m_CutSceneAnimation.end() == iter) return;
 
+	m_eCutSceneType = eType;
+
 	//m_iFaceAnimIndex = iFaceAnimIndex;
 
 	//On_Separation_Face();			// 얼굴 애니메이션 켜기
@@ -2033,6 +2035,8 @@ void CPlayer::Set_CutSceneAnim(CUTSCENE_ANIMATION_TYPE eType, _uint iFaceAnimInd
 		}
 		j++;
 	}
+
+	m_pTargetObject->Set_Sync(m_CutSceneAnimation[m_eCutSceneType]);
 
 	m_pQTEMgr->Set_Animation(m_pAnimCom, m_CutSceneAnimation.at(eType));
 }

@@ -67,7 +67,30 @@ HRESULT CUIKaraoke_Play::Tick(const _float& fTimeDelta)
             index = i;
     }
 
-    m_Lyrics->Show_Choice(index);
+    //m_Lyrics->Close_UI();
+    //if (0 != index)
+    //{
+    //    m_Lyrics->Show_Choice(index - 1);
+    //    
+    //}
+
+    if (m_pGameInstance->GetKeyState(DIK_LEFT))
+    {
+        m_Lyrics->Get_PartObject(0)->Get_TransformCom()->Go_Left(fTimeDelta);
+    }
+    if (m_pGameInstance->GetKeyState(DIK_RIGHT))
+    {
+        m_Lyrics->Get_PartObject(0)->Get_TransformCom()->Go_Right(fTimeDelta);
+    }
+    if (m_pGameInstance->GetKeyState(DIK_UP))
+    {
+        m_Lyrics->Get_PartObject(0)->Get_TransformCom()->Go_Up(fTimeDelta);
+    }
+    if (m_pGameInstance->GetKeyState(DIK_DOWN))
+    {
+        m_Lyrics->Get_PartObject(0)->Get_TransformCom()->Go_Down(fTimeDelta);
+    }
+
 
 
     for (auto& iter : m_pPlayUI)
@@ -78,7 +101,6 @@ HRESULT CUIKaraoke_Play::Tick(const _float& fTimeDelta)
 
 HRESULT CUIKaraoke_Play::Late_Tick(const _float& fTimeDelta)
 {
-
     //for (auto& iter : m_pPlayUI)
     //    iter->Late_Tick(fTimeDelta);
     m_Lyrics->Late_Tick(fTimeDelta);
@@ -110,6 +132,7 @@ void CUIKaraoke_Play::Ready_LyricsTime()
 {
     m_LyricsTime.reserve(17);
 
+    m_LyricsTime.push_back(9.461);
     m_LyricsTime.push_back(14.327);
     m_LyricsTime.push_back(20.643);
     m_LyricsTime.push_back(27.609);

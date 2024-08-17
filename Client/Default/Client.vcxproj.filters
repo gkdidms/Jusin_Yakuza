@@ -1334,6 +1334,9 @@
     <ClInclude Include="..\Public\AI_RoadStanding_NML.h">
       <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\Standing\00.NML\AI</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\KaraokeManager.h">
+      <Filter>06.KaraokeManager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
