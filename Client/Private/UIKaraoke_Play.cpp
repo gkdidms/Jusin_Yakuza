@@ -4,6 +4,9 @@
 #include "Group.h"
 #include "Btn.h"
 #include"GameInstance.h"
+
+#include "Karaoke_Kiryu.h"
+
 CUIKaraoke_Play::CUIKaraoke_Play()
     :CUIScene{}
 {
@@ -18,6 +21,8 @@ HRESULT CUIKaraoke_Play::Show_Scene()
 {
     if (FAILED(__super::Show_Scene()))
         return E_FAIL;
+
+    m_Lyrics->Show_Off_All();
 
     return S_OK;
 }
@@ -51,45 +56,39 @@ HRESULT CUIKaraoke_Play::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* 
         return E_FAIL;
 
     Ready_LyricsTime();
+    Ready_LyricsSocket();
 
     return S_OK;
 }
 
 HRESULT CUIKaraoke_Play::Tick(const _float& fTimeDelta)
 {
+    Change_Lyrics();
+
     _float fCurSoundTime = m_pGameInstance->GetSoundPosition(L"Bakamita.mp3", SOUND_BGM);
-
-    _uint index = 0;
-
-    for (size_t i = 0; i < m_LyricsTime.size(); i++)
+    if (CUTSCENE_START_POSITION < fCurSoundTime)
     {
-        if (fCurSoundTime > m_LyricsTime[i])
-            index = i;
+        CKaraoke_Kiryu* pPlayer = dynamic_cast<CKaraoke_Kiryu*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"), 0));
+        pPlayer->Set_CutSceneAnim();
     }
 
-    //m_Lyrics->Close_UI();
-    //if (0 != index)
+    //if (m_pGameInstance->GetKeyState(DIK_LEFT))
     //{
-    //    m_Lyrics->Show_Choice(index - 1);
-    //    
+    //    m_Lyrics->Get_PartObject(test)->Get_TransformCom()->Set_Speed(100.f);
+    //    m_Lyrics->Get_PartObject(test)->Get_TransformCom()->Go_Left(fTimeDelta);
     //}
-
-    if (m_pGameInstance->GetKeyState(DIK_LEFT))
-    {
-        m_Lyrics->Get_PartObject(0)->Get_TransformCom()->Go_Left(fTimeDelta);
-    }
-    if (m_pGameInstance->GetKeyState(DIK_RIGHT))
-    {
-        m_Lyrics->Get_PartObject(0)->Get_TransformCom()->Go_Right(fTimeDelta);
-    }
-    if (m_pGameInstance->GetKeyState(DIK_UP))
-    {
-        m_Lyrics->Get_PartObject(0)->Get_TransformCom()->Go_Up(fTimeDelta);
-    }
-    if (m_pGameInstance->GetKeyState(DIK_DOWN))
-    {
-        m_Lyrics->Get_PartObject(0)->Get_TransformCom()->Go_Down(fTimeDelta);
-    }
+    //if (m_pGameInstance->GetKeyState(DIK_RIGHT))
+    //{
+    //    m_Lyrics->Get_PartObject(test)->Get_TransformCom()->Go_Right(fTimeDelta);
+    //}
+    //if (m_pGameInstance->GetKeyState(DIK_UP))
+    //{
+    //    m_Lyrics->Get_PartObject(test)->Get_TransformCom()->Go_Up(fTimeDelta);
+    //}
+    //if (m_pGameInstance->GetKeyState(DIK_DOWN))
+    //{
+    //    m_Lyrics->Get_PartObject(test)->Get_TransformCom()->Go_Down(fTimeDelta);
+    //}
 
 
 
@@ -101,8 +100,8 @@ HRESULT CUIKaraoke_Play::Tick(const _float& fTimeDelta)
 
 HRESULT CUIKaraoke_Play::Late_Tick(const _float& fTimeDelta)
 {
-    //for (auto& iter : m_pPlayUI)
-    //    iter->Late_Tick(fTimeDelta);
+    for (auto& iter : m_pPlayUI)
+        iter->Late_Tick(fTimeDelta);
     m_Lyrics->Late_Tick(fTimeDelta);
     if (!m_isAnimFin)
         Check_AimFin();
@@ -131,31 +130,157 @@ void CUIKaraoke_Play::OverAction()
 void CUIKaraoke_Play::Ready_LyricsTime()
 {
     m_LyricsTime.reserve(17);
+    LYRICS_DESC Desc{ 9.461, 0 };
+    m_LyricsTime.push_back(Desc);
+    
+    //바보같이 어린애인가봐
+    Desc.fTime = 14.327;
+    Desc.iSocketIndex = 1;
+    m_LyricsTime.push_back(Desc);
 
-    m_LyricsTime.push_back(9.461);
-    m_LyricsTime.push_back(14.327);
-    m_LyricsTime.push_back(20.643);
-    m_LyricsTime.push_back(27.609);
-    m_LyricsTime.push_back(33.275);
-    m_LyricsTime.push_back(39.776);
-    m_LyricsTime.push_back(42.866);
-    m_LyricsTime.push_back(47.231);
-    m_LyricsTime.push_back(53.733);
-    m_LyricsTime.push_back(59.387);
-    m_LyricsTime.push_back(65.517);
-    m_LyricsTime.push_back(67.746);
-    m_LyricsTime.push_back(71.053);
-    m_LyricsTime.push_back(75.826);
-    m_LyricsTime.push_back(78.984);
-    m_LyricsTime.push_back(81.028);
-    m_LyricsTime.push_back(85.191);
-    m_LyricsTime.push_back(91.136);
-    m_LyricsTime.push_back(95.130);
+    //꿈을 쫓아서 상처를 입고
+    Desc.fTime = 20.643;
+    Desc.iSocketIndex = 2;
+    m_LyricsTime.push_back(Desc);
+
+    // 거짓말도 잘 못하면서
+    Desc.fTime = 27.609;
+    Desc.iSocketIndex = 1;
+    m_LyricsTime.push_back(Desc);
+
+    //웃음기 없는 미소를 보였지
+    Desc.fTime = 33.275;
+    Desc.iSocketIndex = 2;
+    m_LyricsTime.push_back(Desc);
+
+    // 아이러브유
+    Desc.fTime = 39.776;                     // 동시에
+    Desc.iSocketIndex = 0;                   // 동시에
+    m_LyricsTime.push_back(Desc);            // 동시에
+                                             // 동시에
+    //한번 말한 적 없는                       // 동시에
+    Desc.fTime = 42.866;                     // 동시에
+    Desc.iSocketIndex = 1;                   // 동시에
+    m_LyricsTime.push_back(Desc);            // 동시에
+
+    //말주변없고 어쩌구
+    Desc.fTime = 47.231;                      
+    Desc.iSocketIndex = 2;
+    m_LyricsTime.push_back(Desc);
+
+    //그런데 그런데 어째서
+    Desc.fTime = 53.733;
+    Desc.iSocketIndex = 1;
+    m_LyricsTime.push_back(Desc);
+
+    // 안녕이란말을 어쩌구
+    Desc.fTime = 59.387;
+    Desc.iSocketIndex = 2;
+    m_LyricsTime.push_back(Desc);           // 여기서 컷신전환됨
+
+    //다메다네
+    Desc.fTime = 65.517;
+    Desc.iSocketIndex = 1;
+    m_LyricsTime.push_back(Desc);
+
+    //다메요 ~~
+    Desc.fTime = 67.746;
+    Desc.iSocketIndex = 2;
+    m_LyricsTime.push_back(Desc);
+
+    // 네가 좋아서
+    Desc.fTime = 71.053;
+    Desc.iSocketIndex = 1;
+    m_LyricsTime.push_back(Desc);
+
+    // 너무 좋아서
+    Desc.fTime = 75.826;
+    Desc.iSocketIndex = 2;
+    m_LyricsTime.push_back(Desc);
+
+    // 아무리
+    Desc.fTime = 78.984;
+    Desc.iSocketIndex = 1;
+    m_LyricsTime.push_back(Desc);
+
+    // 센 술을 어쩌구
+    Desc.fTime = 81.028;
+    Desc.iSocketIndex = 2;
+    m_LyricsTime.push_back(Desc);
+
+    // 떠나지않아 우리 추억이
+    Desc.fTime = 85.191;
+    Desc.iSocketIndex = 1;
+    m_LyricsTime.push_back(Desc);
+
+    // 바보같이
+    Desc.fTime = 91.136;
+    Desc.iSocketIndex = 2;
+    m_LyricsTime.push_back(Desc);
+
+    //Desc.fTime = 95.130;
+    //Desc.iSocketIndex = 1;
+    //m_LyricsTime.push_back(Desc);
+}
+
+void CUIKaraoke_Play::Ready_LyricsSocket()
+{
+    m_LyricsSocket.push_back(_float3(-288.371887, 11.66042638, 0.f));
+    m_LyricsSocket.push_back(_float3(-288.371887, -101.741051, 0.f));
+    m_LyricsSocket.push_back(_float3(-288.371887, -220.680878, 0.f));
 }
 
 void CUIKaraoke_Play::Change_Lyrics()
 {
+    _float fCurSoundTime = m_pGameInstance->GetSoundPosition(L"Bakamita.mp3", SOUND_BGM);
 
+    for (size_t i = 0; i < m_LyricsTime.size(); i++)
+    {
+        if (fCurSoundTime > m_LyricsTime[i].fTime - 1.f)        //2초 전에 가사를 미리 띄운다.
+        {
+            if (i != 0)
+            {
+                if (i == 5)
+                {
+                    m_Lyrics->Show_On(i - 1);
+                    m_Lyrics->Show_On(i);
+
+                    _vector vPos = XMVectorSetW(XMLoadFloat3(&m_LyricsSocket[m_LyricsTime[i].iSocketIndex]), 1.f);
+                    m_Lyrics->Get_PartObject(i - 1)->Get_TransformCom()->Set_State(CTransform::STATE_POSITION, vPos);
+
+                    vPos = XMVectorSetW(XMLoadFloat3(&m_LyricsSocket[m_LyricsTime[i + 1].iSocketIndex]), 1.f);
+                    m_Lyrics->Get_PartObject(i)->Get_TransformCom()->Set_State(CTransform::STATE_POSITION, vPos);
+                }
+                else if(i != 6)
+                {
+                    m_Lyrics->Show_On(i - 1);
+
+                    _vector vPos = XMVectorSetW(XMLoadFloat3(&m_LyricsSocket[m_LyricsTime[i].iSocketIndex]), 1.f);
+                    m_Lyrics->Get_PartObject(i - 1)->Get_TransformCom()->Set_State(CTransform::STATE_POSITION, vPos);
+                }
+            }
+        }
+
+        if (m_LyricsTime.size() - 1 > i)
+        {
+            if (fCurSoundTime > m_LyricsTime[i + 1].fTime)        //다음가사 on 2초전에 가사끄기
+            {
+                if (i != 0)
+                {
+                    if (i == 6)                         // 아이러브유는 다음 가사 꺼질 때 같이 꺼진다
+                    {
+                        m_Lyrics->Show_Off(i - 2);
+                        m_Lyrics->Show_Off(i - 1);
+                    }
+                    else if(i != 5)
+                    {
+                        m_Lyrics->Show_Off(i - 1);
+                    }
+
+                }
+            }
+        }
+    }
 }
 
 CUIKaraoke_Play* CUIKaraoke_Play::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg)

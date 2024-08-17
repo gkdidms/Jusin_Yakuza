@@ -4,8 +4,18 @@ BEGIN(Client)
 class CUIKaraoke_Play :
     public CUIScene
 {
+private:
+    const _float FADE_START_POSITION = 64.479f;
+    const _float CUTSCENE_START_POSITION = 64.9f;
+
 public:
     enum UILIST { BACK, BLUE, MIC, CURRENTBAR, GOODEFFECT, GRADE, GREATEFFECT, HOLD, ROLL, DOWN, LEFT, RIGHT, UP, UILIST_END };
+
+    struct LYRICS_DESC
+    {
+        _float fTime;
+        _uint iSocketIndex;
+    };
 
 protected:
     CUIKaraoke_Play();
@@ -29,17 +39,20 @@ public:
 
 private:
     void Ready_LyricsTime();
+    void Ready_LyricsSocket();
 
 private:
     void Change_Lyrics();
 
 private:
     _int m_iCurrentLyrics = { -1 };
+    _int test = { 0 };
 
     vector<class CUI_Object*> m_pPlayUI;
     class CGroup* m_Lyrics;
 
-    vector<_float> m_LyricsTime;
+    vector<LYRICS_DESC> m_LyricsTime;
+    vector<_float3> m_LyricsSocket;
 public:
     static CUIKaraoke_Play* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg = nullptr);
     virtual void Free();
