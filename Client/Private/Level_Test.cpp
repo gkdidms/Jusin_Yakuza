@@ -40,11 +40,11 @@ HRESULT CLevel_Test::Initialize()
 	// 네비 다르면 터짐
 	// 테스트 다하면 지워라
 	/* For.Prototype_Component_Navigation */
-	//m_pSystemManager->Set_Camera(CAMERA_CARCHASE);
-
-	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Navigation"),
-		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/NaviData/Navigation_9.dat")))))
+	//if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Navigation"),
+	//	CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/NaviData/Navigation_79.dat")))))
+	//	return E_FAIL;
 		return E_FAIL;
+>>>>>>>>> Temporary merge branch 2
 
 	m_pKaraokeManager = CKaraokeManager::Create();
 	if (nullptr == m_pKaraokeManager)
@@ -74,15 +74,24 @@ HRESULT CLevel_Test::Initialize()
 	/* 클라 파싱 */
 	//if (FAILED(Ready_Test_Load()))
 	//	return E_FAIL;
+	//if (FAILED(Ready_Test_Hyewon()))
+	//	return E_FAIL;
 
-	//혜원 테스트 용
-	if (FAILED(Ready_Test_Hyewon()))
-		return E_FAIL;
-
-	//m_pFileTotalManager->Set_MapObj_In_Client(70, LEVEL_TEST);
+	//m_pFileTotalManager->Set_MapObj_In_Client(98, LEVEL_TEST);
 	//m_pFileTotalManager->Set_Lights_In_Client(90);
 	//m_pFileTotalManager->Set_Collider_In_Client(3, LEVEL_TEST);
 	////m_pFileTotalManager->Set_Trigger_In_Client(79, LEVEL_TEST);
+
+	//if (FAILED(Ready_Test_Hyewon()))
+	//	return E_FAIL;
+
+	m_pFileTotalManager->Set_MapObj_In_Client(70, LEVEL_TEST);
+	m_pFileTotalManager->Set_Lights_In_Client(90);
+	m_pFileTotalManager->Set_Collider_In_Client(3, LEVEL_TEST);
+	//m_pFileTotalManager->Set_Trigger_In_Client(79, LEVEL_TEST);
+	if (FAILED(Ready_Test_Hyewon()))
+	////m_pFileTotalManager->Set_Trigger_In_Client(79, LEVEL_TEST);
+>>>>>>>>> Temporary merge branch 2
 
 	//m_pFightManager->Set_FightStage(true);
 
