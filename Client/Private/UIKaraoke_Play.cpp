@@ -88,6 +88,7 @@ HRESULT CUIKaraoke_Play::Tick(const _float& fTimeDelta)
 
     // 컷신 실행시키기
     _float fCurSoundTime = m_pGameInstance->GetSoundPosition(L"Bakamita.mp3", SOUND_BGM);
+
     if (CUTSCENE_START_POSITION < fCurSoundTime)
     {
         CKaraoke_Kiryu* pPlayer = dynamic_cast<CKaraoke_Kiryu*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"), 0));
@@ -280,6 +281,7 @@ void CUIKaraoke_Play::Change_Lyrics()
 
     for (size_t i = 0; i < m_LyricsTime.size(); i++)
     {
+
         if (fCurSoundTime > m_LyricsTime[i].fTime - 1.f)        //2초 전에 가사를 미리 띄운다.
         {
             if (i != 0)
@@ -287,16 +289,14 @@ void CUIKaraoke_Play::Change_Lyrics()
                 if (i == 5)
                 {
                     m_Lyrics->Show_On(i - 1);
-                    m_Lyrics->Show_On(i);
-
                     _vector vPos = XMVectorSetW(XMLoadFloat3(&m_LyricsSocket[m_LyricsTime[i].iSocketIndex]), 1.f);
                     m_Lyrics->Get_PartObject(i - 1)->Get_TransformCom()->Set_State(CTransform::STATE_POSITION, vPos);
-                    Setting_BackUI(m_LyricsTime[i], vPos);
+                    Setting_BackUI(m_LyricsTime[i], vPos, i - 1);
 
-
+                    m_Lyrics->Show_On(i);
                     vPos = XMVectorSetW(XMLoadFloat3(&m_LyricsSocket[m_LyricsTime[i + 1].iSocketIndex]), 1.f);
                     m_Lyrics->Get_PartObject(i)->Get_TransformCom()->Set_State(CTransform::STATE_POSITION, vPos);
-                    Setting_BackUI(m_LyricsTime[i + 1], vPos);
+                    Setting_BackUI(m_LyricsTime[i + 1], vPos, i);
                 }
                 else if(i != 6)
                 {
@@ -305,7 +305,7 @@ void CUIKaraoke_Play::Change_Lyrics()
                     _vector vPos = XMVectorSetW(XMLoadFloat3(&m_LyricsSocket[m_LyricsTime[i].iSocketIndex]), 1.f);
                     m_Lyrics->Get_PartObject(i - 1)->Get_TransformCom()->Set_State(CTransform::STATE_POSITION, vPos);
 
-                    Setting_BackUI(m_LyricsTime[i], vPos);
+                    Setting_BackUI(m_LyricsTime[i], vPos, i - 1);
                 }
             }
         }
@@ -349,18 +349,27 @@ void CUIKaraoke_Play::Change_Lyrics()
     }
 }
 
-void CUIKaraoke_Play::Setting_BackUI(LYRICS_DESC Desc, _fvector vPos)
+void CUIKaraoke_Play::Setting_BackUI(LYRICS_DESC Desc, _fvector vPos, _uint iLyricsIndex)
 {
-    _vector vLinePost = vPos;
-    vLinePost = XMVectorSetY(vLinePost, vLinePost.m128_f32[1] - 50.f);
-    vLinePost = XMVectorSetX(vLinePost, vLinePost.m128_f32[0] - 50.f);
-
+    // 1. 흰색 바의 스케일 조정
     _float3 vScaled = m_pPlayUI[BACK][Desc.iSocketIndex]->Get_TransformCom()->Get_Scaled();
-
-    vLinePost.m128_f32[0] += ((Desc.fDuration * 0.2f) * 0.5f);
     m_pPlayUI[BACK][Desc.iSocketIndex]->Get_TransformCom()->Set_Scale(Desc.fDuration * 0.2f, vScaled.y, vScaled.z);
 
-    m_pPlayUI[BACK][Desc.iSocketIndex]->Get_TransformCom()->Set_State(CTransform::STATE_POSITION, vLinePost);
+    // 2. 텍스트의 위치와 스케일 가져오기
+    _float3 vLyricsScaled = m_Lyrics->Get_PartObject(iLyricsIndex)->Get_TransformCom()->Get_Scaled();
+    _vector vLyricsPos = m_Lyrics->Get_PartObject(iLyricsIndex)->Get_TransformCom()->Get_State(CTransform::STATE_POSITION);
+
+    // 3. 흰색 바의 위치를 텍스트의 왼쪽 시작 부분에 맞추기
+    // 텍스트의 시작 위치와 스케일을 고려하여 흰색 바의 X 위치를 조정
+    _float3 vScaled2 = m_pPlayUI[BACK][Desc.iSocketIndex]->Get_PartObject(1)->Get_TransformCom()->Get_Scaled();
+
+    _vector vBarPos = vLyricsPos;
+    vBarPos = XMVectorSetY(vBarPos, vBarPos.m128_f32[1] - 60.f);
+    vBarPos.m128_f32[0] = vLyricsPos.m128_f32[0] - (vLyricsScaled.x * 0.5f) + (vScaled2.x * 0.5f * Desc.fDuration * 0.2f);
+    vBarPos.m128_f32[0] += 20.f;
+
+    // 4. 흰색 바의 위치 설정
+    m_pPlayUI[BACK][Desc.iSocketIndex]->Get_TransformCom()->Set_State(CTransform::STATE_POSITION, vBarPos);
     m_pPlayUI[BACK][Desc.iSocketIndex]->Show_On_All();
 }
 

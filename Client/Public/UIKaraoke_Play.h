@@ -44,7 +44,7 @@ private:
 
 private:
     void Change_Lyrics();
-    void Setting_BackUI(LYRICS_DESC Desc, _fvector vPos);
+    void Setting_BackUI(LYRICS_DESC Desc, _fvector vPos, _uint iLyricsIndex);
 
     _uint Compute_Num(_uint iCount);
 

@@ -194,6 +194,11 @@ _float CGameInstance::GetSoundDuration(const wstring pSoundKey)
 	return m_pSound_Manager->GetSoundDuration(pSoundKey);
 }
 
+_bool CGameInstance::Get_SoundStart(const wstring pSoundKey, CHANNELID eID)
+{
+	return m_pSound_Manager->Get_Start(pSoundKey, eID);
+}
+
 _bool CGameInstance::Get_SoundEnd(const wstring pSoundKey, CHANNELID eID)
 {
 	return m_pSound_Manager->Get_End(pSoundKey, eID);
