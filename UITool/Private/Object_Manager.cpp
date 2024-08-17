@@ -269,6 +269,7 @@ HRESULT CObject_Manager::Save_binary()
 			switch (pObj->Get_TypeIndex())
 			{
 			case UITool::CObject_Manager::IMG:
+			case UITool::CObject_Manager::HEADUI:
 			case UITool::CObject_Manager::BTN:	
 			case UITool::CObject_Manager::TEXT:
 			case UITool::CObject_Manager::EFFECT:
@@ -323,6 +324,7 @@ HRESULT CObject_Manager::Load_binary(const wstring& strObjectTag, const string F
 	switch (Type)	
 	{
 	case IMG:
+	case HEADUI:
 	{
 		CImage_Texture::tUITextureDesc pDesc{};
 		pDesc.iTypeIndex = Type;
@@ -674,7 +676,7 @@ HRESULT CObject_Manager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* 
 	XMStoreFloat4x4(&m_ProjMatrix, XMMatrixOrthographicLH(ViewPort.Width, ViewPort.Height, 0.f, 1.f));
 
 	//백버퍼 카피
-	CRenderTarget* pCopyBackBuffer = CRenderTarget::Create(m_pDevice, m_pContext, 1280.f, 720.f, DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(0.f, 0.f, 0.f, 0.f));
+	CRenderTarget* pCopyBackBuffer = CRenderTarget::Create(m_pDevice, m_pContext, 1280.f, 720.f, DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(0.f, 0.f, 0.f, 0.f),false);
 	if (nullptr == pCopyBackBuffer)
 		return E_FAIL;
 #ifdef _DEBUG
@@ -1004,7 +1006,7 @@ HRESULT CObject_Manager::Add_BinaryObject(const wstring& strObjectTag, void* pAr
 	}
 
 	// 타입별로 클래스 생성.
-	if (iType == IMG)
+	if (iType == IMG || iType == HEADUI)
 	{
 		CUI_Texture::UI_TEXTURE_DESC TextureDesc = {};
 		TextureDesc.strTextureFileName = pDesc->strFileName;
@@ -1332,7 +1334,7 @@ vector<class CUI_Object*>* CObject_Manager::Find_BinaryObject(const wstring& str
 
 HRESULT CObject_Manager::Create_Texture2D()
 {
-	CRenderTarget* pRenderTarget = CRenderTarget::Create(m_pDevice, m_pContext, 1280.f, 720.f, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f));
+	CRenderTarget* pRenderTarget = CRenderTarget::Create(m_pDevice, m_pContext, 1280.f, 720.f, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f),false);
 
 	if (nullptr == pRenderTarget)
 		return E_FAIL;
@@ -1357,7 +1359,7 @@ HRESULT CObject_Manager::Create_Texture2D()
 
 HRESULT CObject_Manager::Create_BinaryTexture2D()
 {
-	CRenderTarget* pRenderTarget = CRenderTarget::Create(m_pDevice, m_pContext, 1280.f, 720.f, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f));
+	CRenderTarget* pRenderTarget = CRenderTarget::Create(m_pDevice, m_pContext, 1280.f, 720.f, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f),false);
 
 	if (nullptr == pRenderTarget)
 		return E_FAIL;

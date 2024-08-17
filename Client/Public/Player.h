@@ -349,6 +349,10 @@ private:
 
     class CQteManager* m_pQTEMgr = { nullptr };
 
+
+private:
+    _uint m_Money = { 0 };
+
 private:
     virtual HRESULT Add_Components() override;
     virtual HRESULT Bind_ResourceData() override;

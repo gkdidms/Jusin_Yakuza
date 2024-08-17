@@ -22,6 +22,7 @@
 #include "Group.h"
 #include "Btn.h"
 #include "UI_Effect.h"
+#include "HeadUI.h"
 #pragma endregion
 
 CMainApp::CMainApp() :
@@ -251,6 +252,11 @@ HRESULT CMainApp::Ready_Prototype_GameObject()
 		CUI_Effect::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
+	/* For.Prototype_GameObject_HeadUI*/
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_HeadUI"),
+		CHeadUI::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 
 	//만들어둔 데이터 로딩
 	if (FAILED(Add_UI_On_Path(TEXT("../../Client/Bin/DataFiles/UIData/"))))
@@ -387,6 +393,20 @@ HRESULT CMainApp::Add_UI_On_Path(const wstring& strPath)
 					return E_FAIL;
 			}
 			break;
+
+			case 5:
+			{
+
+				/* For.Prototype_GameObject_HeadUI*/
+				if (FAILED(m_pGameInstance->Add_GameObject_Prototype(ProtoFrontName + m_pGameInstance->StringToWstring(Tag),
+					CHeadUI::Create(m_pDevice, m_pContext, in))))
+					return E_FAIL;
+
+				//if (FAILED(m_pUIManager->Add_Data(strChannelName, ProtoFrontName + m_pGameInstance->StringToWstring(Tag))))
+				//	return E_FAIL;
+			}
+			break;
+
 
 			default:
 				break;

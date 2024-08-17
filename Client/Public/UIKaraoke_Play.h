@@ -28,18 +28,11 @@ public:
     virtual void OverAction() override;
 
 private:
-    void Ready_LyricsTime();
-
-private:
-    void Change_Lyrics();
-
-private:
-    _int m_iCurrentLyrics = { -1 };
-
     vector<class CUI_Object*> m_pPlayUI;
     class CGroup* m_Lyrics;
-
-    vector<_float> m_LyricsTime;
+    class CUI_Texture* m_Title;
+    _bool m_isStart = false;
+    _float m_iCurrentTime = { 0.f };
 public:
     static CUIKaraoke_Play* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg = nullptr);
     virtual void Free();

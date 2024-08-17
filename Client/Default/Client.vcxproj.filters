@@ -653,6 +653,12 @@
     <ClCompile Include="..\private\FightManager.cpp">
       <Filter>06.FightManager</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\UIFightScore.cpp">
+      <Filter>95.Utility\05.UIManager\UIScene\UIFightScore</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIStoreImage.cpp">
+      <Filter>95.Utility\05.UIManager\UIScene\UIStoreImage</Filter>
+	</ClCompile>
     <ClCompile Include="..\private\Adventure_Reactor.cpp">
       <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\01.Reactor</Filter>
     </ClCompile>
@@ -1364,6 +1370,15 @@
     <ClInclude Include="..\public\Nishiki.h">
       <Filter>02.GameObjects\02.Character\LandObject\05.NPC\00.Nishiki</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\KaraokeManager.h">
+      <Filter>06.KaraokeManager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIFightScore.h">
+      <Filter>95.Utility\05.UIManager\UIScene\UIFightScore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIStoreImage.h">
+      <Filter>95.Utility\05.UIManager\UIScene\UIStoreImage</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -2043,6 +2058,12 @@
     <Filter Include="06.FightManager">
       <UniqueIdentifier>{60075471-10c1-46e8-b958-25b36b621421}</UniqueIdentifier>
     </Filter>
+    <Filter Include="95.Utility\05.UIManager\UIScene\UIFightScore">
+      <UniqueIdentifier>{761783be-a212-4fe1-adf7-127467f45044}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\05.UIManager\UIScene\UIStoreImage">
+      <UniqueIdentifier>{fd457105-bb59-4c6f-abd6-4eac2881b652}</UniqueIdentifier>
+	</Filter>
     <Filter Include="02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby">
       <UniqueIdentifier>{2631b981-8317-478e-b4c4-0cb3881af39a}</UniqueIdentifier>
     </Filter>
