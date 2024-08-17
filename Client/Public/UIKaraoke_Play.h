@@ -45,12 +45,14 @@ private:
 private:
     void Change_Lyrics();
     void Setting_BackUI(LYRICS_DESC Desc, _fvector vPos, _uint iLyricsIndex);
+    void CurrentBar_Control();
 
     _uint Compute_Num(_uint iCount);
 
 private:
-    _int m_iCurrentLyrics = { -1 };
     _int m_iCloneCount = { 0 };
+
+    _float m_fCurSoundTime = { 0.f };
 
     vector<class CGroup*> m_pPlayUI[UILIST_END];
     class CGroup* m_Lyrics;

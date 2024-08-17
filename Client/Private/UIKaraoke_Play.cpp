@@ -84,35 +84,16 @@ HRESULT CUIKaraoke_Play::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* 
 
 HRESULT CUIKaraoke_Play::Tick(const _float& fTimeDelta)
 {
+    m_fCurSoundTime = m_pGameInstance->GetSoundPosition(L"Bakamita.mp3", SOUND_BGM);
+
     Change_Lyrics();
+    CurrentBar_Control();
 
     // 컷신 실행시키기
-    _float fCurSoundTime = m_pGameInstance->GetSoundPosition(L"Bakamita.mp3", SOUND_BGM);
-
-    if (CUTSCENE_START_POSITION < fCurSoundTime)
+    if (CUTSCENE_START_POSITION < m_fCurSoundTime)
     {
         CKaraoke_Kiryu* pPlayer = dynamic_cast<CKaraoke_Kiryu*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"), 0));
         pPlayer->Set_CutSceneAnim();
-    }
-
-    m_pPlayUI[BACK][0]->Tick(fTimeDelta);
-
-    if (m_pGameInstance->GetKeyState(DIK_LEFT))
-    {
-        m_pPlayUI[BACK][0]->Get_TransformCom()->Set_Speed(100.f);
-        m_pPlayUI[BACK][0]->Get_TransformCom()->Go_Left(fTimeDelta);
-    }
-    if (m_pGameInstance->GetKeyState(DIK_RIGHT))
-    {
-        m_pPlayUI[BACK][0]->Get_TransformCom()->Go_Right(fTimeDelta);
-    }
-    if (m_pGameInstance->GetKeyState(DIK_UP))
-    {
-        m_pPlayUI[BACK][0]->Get_TransformCom()->Go_Up(fTimeDelta);
-    }
-    if (m_pGameInstance->GetKeyState(DIK_DOWN))
-    {
-        m_pPlayUI[BACK][0]->Get_TransformCom()->Go_Down(fTimeDelta);
     }
 
     for (size_t i = 0; i < UILIST_END; i++)
@@ -277,12 +258,10 @@ void CUIKaraoke_Play::Ready_LyricsSocket()
 
 void CUIKaraoke_Play::Change_Lyrics()
 {
-    _float fCurSoundTime = m_pGameInstance->GetSoundPosition(L"Bakamita.mp3", SOUND_BGM);
-
     for (size_t i = 0; i < m_LyricsTime.size(); i++)
     {
 
-        if (fCurSoundTime > m_LyricsTime[i].fTime - 1.f)        //2초 전에 가사를 미리 띄운다.
+        if (m_fCurSoundTime > m_LyricsTime[i].fTime - 1.f)        //2초 전에 가사를 미리 띄운다.
         {
             if (i != 0)
             {
@@ -315,7 +294,7 @@ void CUIKaraoke_Play::Change_Lyrics()
             // 마지막 소절 직전이라면 마지막 가사 꺼질 때 같이 꺼진다.
             if (i <= m_LyricsTime.size() - 2)
             {
-                if (fCurSoundTime > m_LyricsTime[m_LyricsTime.size() - 1].fTime + m_LyricsTime[m_LyricsTime.size() - 1].fDuration)
+                if (m_fCurSoundTime > m_LyricsTime[m_LyricsTime.size() - 1].fTime + m_LyricsTime[m_LyricsTime.size() - 1].fDuration)
                 {
                     m_LyricsTime[m_LyricsTime.size() - 1].fTime + m_LyricsTime[m_LyricsTime.size() - 1].fDuration;
                     m_Lyrics->Show_Off(i - 1);
@@ -324,7 +303,7 @@ void CUIKaraoke_Play::Change_Lyrics()
                 }
             }
 
-            if (fCurSoundTime > m_LyricsTime[i + 1].fTime)        //다음가사 on 2초전에 가사끄기
+            if (m_fCurSoundTime > m_LyricsTime[i + 1].fTime)        //다음가사 on 2초전에 가사끄기
             {
                 if (i != 0)
                 {
@@ -371,6 +350,33 @@ void CUIKaraoke_Play::Setting_BackUI(LYRICS_DESC Desc, _fvector vPos, _uint iLyr
     // 4. 흰색 바의 위치 설정
     m_pPlayUI[BACK][Desc.iSocketIndex]->Get_TransformCom()->Set_State(CTransform::STATE_POSITION, vBarPos);
     m_pPlayUI[BACK][Desc.iSocketIndex]->Show_On_All();
+}
+
+void CUIKaraoke_Play::CurrentBar_Control()
+{
+    _int iCurLyricsIndex = { -1 };
+
+    for (size_t i = 0; i < m_LyricsTime.size(); i++)
+    {
+        if (m_LyricsTime[i].fTime <= m_fCurSoundTime)
+        {
+            iCurLyricsIndex = i;
+        }
+    }
+
+    if (0 < iCurLyricsIndex)
+    {
+        _vector vPos = m_pPlayUI[BACK][m_LyricsTime[iCurLyricsIndex].iSocketIndex]->Get_TransformCom()->Get_State(CTransform::STATE_POSITION);
+        
+        // 시작 위치 잡기
+        _float3 vScaled = m_pPlayUI[BACK][m_LyricsTime[iCurLyricsIndex].iSocketIndex]->Get_PartObject(1)->Get_TransformCom()->Get_Scaled();
+        _float3 vScaled2 = m_pPlayUI[BACK][m_LyricsTime[iCurLyricsIndex].iSocketIndex]->Get_PartObject(0)->Get_TransformCom()->Get_Scaled();
+        _float3 vScaled3 = m_pPlayUI[BACK][m_LyricsTime[iCurLyricsIndex].iSocketIndex]->Get_TransformCom()->Get_Scaled();
+        vPos.m128_f32[0] -= (vScaled.x * 0.5f * vScaled3.x + vScaled2.x * 0.5f);
+
+        m_pPlayUI[CURRENTBAR].front()->Get_TransformCom()->Set_State(CTransform::STATE_POSITION, vPos);
+        m_pPlayUI[CURRENTBAR].front()->Show_On_All();
+    }
 }
 
 _uint CUIKaraoke_Play::Compute_Num(_uint iCount)
