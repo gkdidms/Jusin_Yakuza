@@ -30,8 +30,11 @@ public:
 		int					iShaderPass;
 		int					iObjType;
 		int					iObjPropertyType;
+		int					iNPCDirection;
+
 		int					iNaviNum;
 		int					iRouteNum;
+
 
 		int					iDecalNum;
 		DECAL_DESC_IO*		pDecal;
@@ -107,6 +110,7 @@ private:
 	int												m_iObjectPropertyType = { 0 };
 	int												m_iNaviNum = { -1 };
 	int												m_iRouteNum = { 0 };
+	int												m_iNPCDirection = { 0 };
 
 	XMFLOAT4X4										m_vOffsetMatrix;
 

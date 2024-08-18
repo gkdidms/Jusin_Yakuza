@@ -18,9 +18,11 @@ private:
 
 public:
 	_bool isFightStage() { return m_isFightStage; }
+	_bool isStreetFight() { return m_isStreetFight; }
 
 public:
 	void Set_FightStage(_bool isFightStage);
+	void Set_StreetFight(_bool isStreetFight) { m_isStreetFight = isStreetFight; }
 
 public:
 	void Tick(const _float& fTimeDelta);
@@ -31,6 +33,7 @@ private:
 
 private:
 	_bool m_isFightStage = { false };
+	_bool m_isStreetFight = { false }; // 길에서 싸우는 싸움인지 아닌지 체크
 
 	_float m_fFinishDuration = { 3.f };
 	_float m_fFinishTime = { 0.f };

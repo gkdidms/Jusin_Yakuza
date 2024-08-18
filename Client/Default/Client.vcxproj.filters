@@ -689,8 +689,8 @@
     <ClCompile Include="..\Private\UIStoreImage.cpp">
       <Filter>95.Utility\05.UIManager\UIScene\UIStoreImage</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\UIQTE.cpp">
-      <Filter>95.Utility\05.UIManager\UIScene\UIQTE</Filter>
+    <ClCompile Include="..\Private\Level_NishikiWalk.cpp">
+      <Filter>01.Levels\12.NishikiWalk</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1412,8 +1412,8 @@
     <ClInclude Include="..\Public\UIStoreImage.h">
       <Filter>95.Utility\05.UIManager\UIScene\UIStoreImage</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\UIQTE.h">
-      <Filter>95.Utility\05.UIManager\UIScene\UIQTE</Filter>
+    <ClInclude Include="..\Public\Level_NishikiWalk.h">
+      <Filter>01.Levels\12.NishikiWalk</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -2178,9 +2178,6 @@
     <Filter Include="03.QuestManager\Quest\Main\Chapter_2\0">
       <UniqueIdentifier>{0aab858a-ea0e-4a82-bd30-29fd86502b8d}</UniqueIdentifier>
     </Filter>
-    <Filter Include="95.Utility\05.UIManager\UIScene\UIQTE">
-      <UniqueIdentifier>{d8af9365-f67e-4b28-bc26-c2e86bb33e7b}</UniqueIdentifier>
-    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Client.rc">
@@ -2231,6 +2228,12 @@
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_BoneCompute.hlsl">
+      <Filter>97.ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxCube_Occulusion.hlsl">
+      <Filter>97.ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_OcculusionCulling.hlsl">
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
   </ItemGroup>

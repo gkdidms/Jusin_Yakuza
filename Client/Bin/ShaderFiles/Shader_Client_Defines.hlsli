@@ -102,6 +102,8 @@ bool g_bCompulsoryAlpha;
 /* Item */
 float g_fBrightTime;
 bool g_bBright;
+float g_fDissolveTime;
+float g_fEdgeWidth = { 0.2f };
 
 
 int g_iCount = { 0 };

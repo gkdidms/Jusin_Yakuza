@@ -134,6 +134,56 @@ HRESULT CVIBuffer::Ready_BoneBuffer()
 	return S_OK;
 }
 
+HRESULT CVIBuffer::Ready_AABBCubeBuffer()
+{
+	// 정점 버퍼를 위한 Shader Resource View 생성
+	D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
+	srvDesc.Format = DXGI_FORMAT_UNKNOWN; // 정점 버퍼의 형식에 따라 적절히 설정
+	srvDesc.ViewDimension = D3D11_SRV_DIMENSION_BUFFER;
+	srvDesc.Buffer.FirstElement = 0;
+	srvDesc.Buffer.NumElements = m_iNumVertices;
+
+	if (FAILED(m_pDevice->CreateShaderResourceView(m_pVB, &srvDesc, &m_pVertexBufferSRV)))
+		return E_FAIL;
+
+	// 처리된 결과를 위한 Unordered Access View 생성
+	D3D11_BUFFER_DESC bufferDesc = {};
+	ZeroMemory(&bufferDesc, sizeof(bufferDesc));
+	bufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	bufferDesc.ByteWidth = sizeof(int) * m_iNumVertices;
+	bufferDesc.BindFlags = D3D11_BIND_UNORDERED_ACCESS | D3D11_BIND_SHADER_RESOURCE;
+	bufferDesc.CPUAccessFlags = 0;
+	bufferDesc.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
+	bufferDesc.StructureByteStride = sizeof(int);
+
+	if (FAILED(m_pDevice->CreateBuffer(&bufferDesc, nullptr, &m_pUAVOut)))
+		return E_FAIL;
+
+	// Unordered Access View (UAV) 생성
+	D3D11_UNORDERED_ACCESS_VIEW_DESC uavDesc = {};
+	ZeroMemory(&uavDesc, sizeof(uavDesc));
+	uavDesc.Format = DXGI_FORMAT_UNKNOWN; // 처리된 결과의 형식에 따라 적절히 설정
+	uavDesc.ViewDimension = D3D11_UAV_DIMENSION_BUFFER;
+	uavDesc.Buffer.FirstElement = 0;
+	uavDesc.Buffer.NumElements = m_iNumVertices;
+
+	if (FAILED(m_pDevice->CreateUnorderedAccessView(m_pUAVOut, &uavDesc, &m_pResultBufferUAV)))
+		return E_FAIL;
+
+	D3D11_BUFFER_DESC Desc{};
+	Desc.ByteWidth = sizeof(VTXCUBE) * m_iNumVertices;
+	Desc.Usage = D3D11_USAGE_DEFAULT;
+	Desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
+	Desc.CPUAccessFlags = 0;
+	Desc.MiscFlags = 0;
+	Desc.StructureByteStride = sizeof(VTXCUBE);
+
+	if (FAILED(m_pDevice->CreateBuffer(&Desc, nullptr, &m_pProcessedVertexBuffer)))
+		return E_FAIL;
+	
+	return S_OK;
+}
+
 void CVIBuffer::Free()
 {
 	__super::Free();

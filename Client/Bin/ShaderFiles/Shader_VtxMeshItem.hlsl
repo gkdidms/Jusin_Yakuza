@@ -133,6 +133,11 @@ struct PS_MAIN_OUT
     vector vSpecular : SV_Target5;
 };
 
+struct PS_MAIN_COLOR_OUT
+{
+    vector vDiffuse : SV_TARGET0;
+};
+
 
 
 PS_MAIN_OUT PS_MAIN(PS_IN In)
@@ -191,9 +196,9 @@ PS_MAIN_OUT PS_MAIN(PS_IN In)
 }
 
 
-PS_OUT PS_MAIN_Bright(PS_IN In)
+PS_MAIN_COLOR_OUT PS_MAIN_Bright(PS_IN In)
 {
-    PS_OUT Out = (PS_OUT) 0;
+    PS_MAIN_COLOR_OUT Out = (PS_MAIN_COLOR_OUT) 0;
 
     vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
 
@@ -224,15 +229,37 @@ PS_OUT PS_MAIN_Bright(PS_IN In)
         Out.vDiffuse = vDiffuse;
     }
 
-    
-  
-   
-
     Out.vDiffuse = vDiffuse;
     
     return Out;
 }
 
+
+PS_MAIN_COLOR_OUT PS_MAIN_Dissolve(PS_IN In)
+{
+    PS_MAIN_COLOR_OUT Out = (PS_MAIN_COLOR_OUT) 0;
+
+    // 원래 텍스처 색상
+    float4 color = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
+    // 노이즈 텍스처의 값 (0.0에서 1.0 사이)
+    float noiseValue = g_DissolveTexture.Sample(LinearSampler, In.vTexcoord).r;
+
+    // 테두리 계산
+        //noiseValue > g_fDissolveTime - g_fEdgeWidth && 
+    if (noiseValue < g_fDissolveTime)
+    {
+        // 테두리 외부 부분 제거
+        discard;
+    }
+
+    
+    Out.vDiffuse = color;
+
+    //if (Out.vDiffuse.a < 0.1f)
+    //    discard;
+
+    return Out;
+}
 
 
 struct PS_IN_LIGHTDEPTH
@@ -284,6 +311,20 @@ technique11 DefaultTechnique
         HullShader = NULL;
         DomainShader = NULL;
         PixelShader = compile ps_5_0 PS_MAIN_Bright();
+    }
+
+
+    pass DissolvePass
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        HullShader = NULL;
+        DomainShader = NULL;
+        PixelShader = compile ps_5_0 PS_MAIN_Dissolve();
     }
     
 

@@ -44,7 +44,7 @@ void CFightManager::Tick(const _float& fTimeDelta)
 	//길거리 일 때, 몬스터가 다 죽으면 전투가 끝난다.
 	if (m_pGameInstance->Get_CurrentLevel() == LEVEL_STREET)
 	{
-		vector<CGameObject*> Monsters = m_pGameInstance->Get_GameObjects(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Monster"));
+		vector<CGameObject*> Monsters = m_pGameInstance->Get_GameObjects(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_MonsterGroup"));
 
 		_bool isFinished = true;
 		for (auto& pMonster : Monsters)

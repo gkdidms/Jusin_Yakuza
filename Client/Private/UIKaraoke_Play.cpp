@@ -60,11 +60,10 @@ HRESULT CUIKaraoke_Play::Add_UIData(CUI_Object* pUIObject, wstring wstrPrototype
 
             m_iCloneCount++;
         }
-        else if (nullptr == m_Lyrics)
+        else
         {
-            m_Lyrics = dynamic_cast<CGroup*>(pUIObject);
+            m_Lyrics=dynamic_cast<CGroup*>(pUIObject);
         }
-
         return S_OK;
     }
 
@@ -454,4 +453,5 @@ void CUIKaraoke_Play::Free()
     }
 
     Safe_Release(m_Lyrics);
+    //Safe_Release(m_Title);
 }

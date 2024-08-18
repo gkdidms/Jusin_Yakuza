@@ -8,6 +8,9 @@ BEGIN(Engine)
 class CShader;
 class CModel;
 class CNeoShader;
+class CCollider;
+class CVIBuffer_AABBCube;
+class CComputeShader;
 END
 
 BEGIN(Client)
@@ -69,9 +72,16 @@ public:
 		OBJCOLLIDER_DESC* pColliderDesc;
 
 		bool				bCull;
-		bool				bLocalCull;
 		const _float4x4* vPlayerMatrix;
 	}MAPOBJ_DESC;
+
+
+	struct ObjectData
+	{
+		XMMATRIX worldViewProjMatrix;
+		float g_fFar;
+		float padding[3]; // 패딩 추가 (16바이트 정렬을 맞추기 위함)
+	};
 
 
 private:
@@ -87,6 +97,8 @@ public:
 	virtual void Late_Tick(const _float& fTimeDelta) override;
 	virtual HRESULT Render() override;
 	virtual HRESULT Render_LightDepth() override;
+	virtual HRESULT Render_OcculusionDepth() override;
+	virtual HRESULT Check_OcculusionCulling() override;
 
 public:
 	CTransform* Get_Transform() { return m_pTransformCom; }
@@ -103,11 +115,19 @@ private:
 	void						Add_Renderer(const _float& fTimeDelta);
 
 private:
-	CShader* m_pShaderCom = { nullptr };
+	CShader*	m_pShaderCom = { nullptr };
 	CModel* m_pModelCom = { nullptr };
 	CNeoShader* m_pMaterialCom = { nullptr };
-
 	class CSystemManager* m_pSystemManager = { nullptr };
+
+	// 컬링을 위한 모델과 쉐이더
+	CShader*				m_pCubeShaderCom = { nullptr }; //aabb 큐브 그리기
+	CVIBuffer_AABBCube*		m_pVIBufferCom = { nullptr };
+	CComputeShader*			m_pComputeShaderCom = { nullptr };
+
+
+	ID3D11Buffer*			m_pObjectDataBuffer = { nullptr };
+	ID3D11Buffer*			m_pOutputBufferStaging = { nullptr };
 
 private:
 	_bool m_isFirst = { true };
@@ -134,7 +154,6 @@ private:
 	_int					m_iObjectType = { 0 };
 	_float					m_fWaterDeltaTime = { 0 };
 	_bool					m_bCull = { false };
-	_bool					m_bLocalCull = { false }; // 도로mesh 전용
 
 
 	const _float4x4* m_pPlayerMatrix; // 플레이어 위치
@@ -145,6 +164,7 @@ private:
 	float					m_fDynamicTime = { 0 };
 	float					m_fTimer = { 0 };
 	bool					m_bPositive = { false };
+
 
 public:
 	HRESULT Add_Components(void* pArg);

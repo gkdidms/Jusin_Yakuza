@@ -76,6 +76,33 @@ HRESULT CCineCamera::Load_CamBin(int iFileNum)
 	CAMERAOBJ_IO		camIODesc;
 	Import_Bin_Cam_Data_OnTool(&camIODesc, iFileNum);
 
+	m_vCameraStorage.push_back(camIODesc);
+
+	//m_bFirstLerp = camIODesc.bFirstLerp;
+
+	//for (int i = 0; i < camIODesc.iCameraNum; i++)
+	//{
+	//	CAMERAOBJ_DESC		cameraDesc;
+	//	cameraDesc = camIODesc.pCamObjDesc[i];
+
+	//	m_vCamerasObjDesc.push_back(cameraDesc);
+	//}
+
+	//m_iCurCamIndex = 0;
+
+	//Safe_Delete_Array(camIODesc.pCamObjDesc);
+
+	return S_OK;
+}
+
+void CCineCamera::Setting_Start_Cinemachine(int iCineNum)
+{
+
+	m_vCamerasObjDesc.clear();
+
+	CAMERAOBJ_IO		camIODesc;
+	camIODesc = m_vCameraStorage[iCineNum];
+
 	m_bFirstLerp = camIODesc.bFirstLerp;
 
 	for (int i = 0; i < camIODesc.iCameraNum; i++)
@@ -85,16 +112,8 @@ HRESULT CCineCamera::Load_CamBin(int iFileNum)
 
 		m_vCamerasObjDesc.push_back(cameraDesc);
 	}
+	Initialize_Camera_Class();
 
-	m_iCurCamIndex = 0;
-
-	Safe_Delete_Array(camIODesc.pCamObjDesc);
-
-	return S_OK;
-}
-
-void CCineCamera::Setting_Start_Cinemachine()
-{
 	m_iCurCamIndex = 0;
 
 	m_vEye = XMLoadFloat4(&m_vCamerasObjDesc[m_iCurCamIndex].vEye);
@@ -113,6 +132,8 @@ void CCineCamera::Setting_Start_Cinemachine()
 
 	Set_Start();
 
+
+	m_pSystemManager->Set_Camera(CAMERA::CAMERA_CINEMACHINE);
 }
 
 void CCineCamera::Initialize_Camera_Class()
@@ -452,7 +473,14 @@ CGameObject* CCineCamera::Clone(void* pArg)
 void CCineCamera::Free()
 {
 	Safe_Release(m_pSystemManager);
+
 	m_vCamerasObjDesc.clear();
+
+	for (int i = 0; i < m_vCameraStorage.size() ; i++)
+	{
+		Safe_Delete_Array(m_vCameraStorage[i].pCamObjDesc);
+	}
+	m_vCameraStorage.clear();
 	
 	__super::Free();
 }
