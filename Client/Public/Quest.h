@@ -26,10 +26,11 @@ protected:
 
 public:
     _uint Get_Type() { return m_iType; }
-
-public:
     _int Get_QuestIndex() { return m_iQuestIndex; }
     _int Get_NextQuestIndex() { return m_iNextQuestIndex; }
+
+public:
+    void Set_Coll(_bool isColl) { m_isColl = isColl; }
 
 public:
     virtual HRESULT Initialize(void* pArg);
@@ -44,6 +45,8 @@ protected:
     _int m_iNextQuestIndex = { -1 };
 
     _bool m_isCompleted = { false };
+
+    _bool m_isColl = { false };
 
 public:
     virtual void Free();

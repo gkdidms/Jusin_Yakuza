@@ -40,6 +40,9 @@ public:
     _float GetSoundPosition(const wstring pSoundKey, CHANNELID eID);
     _float GetSoundDuration(const wstring pSoundKey);
 
+    _bool Get_SoundStart(const wstring pSoundKey, CHANNELID eID);
+    _bool Get_SoundEnd(const wstring pSoundKey, CHANNELID eID);
+
     /* Timer */
 public:
     _float		Get_TimeDelta(const _tchar* pTimerTag);

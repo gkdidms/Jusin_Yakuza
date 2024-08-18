@@ -39,6 +39,13 @@ CUIManager::CUIManager()
 	Safe_AddRef(m_pGameInstance);
 }
 
+_bool CUIManager::isOpen(wstring strName)
+{
+	CUIScene* pUIScene = Find_Scene(strName);
+
+	return pUIScene->Get_isOpen();
+}
+
 _bool CUIManager::isShowTutorialUI(_uint iUIType)
 {
 	CUITutorial* pScene = dynamic_cast<CUITutorial*>(Find_Scene(TEXT("Tutorial")));
@@ -51,6 +58,13 @@ _bool CUIManager::isCloseTutorialUIAnim()
 	CUITutorial* pScene = dynamic_cast<CUITutorial*>(Find_Scene(TEXT("Tutorial")));
 
 	return pScene->isCloseCurrentUIAnim();
+}
+
+void CUIManager::Set_TutorialState(_uint iType)
+{
+	CUITutorial* pScene = dynamic_cast<CUITutorial*>(Find_Scene(TEXT("Tutorial")));
+
+	return pScene->Set_State(iType);
 }
 
 void CUIManager::Set_TutorialText(wstring strText)
@@ -237,7 +251,7 @@ HRESULT CUIManager::Add_Data(const wstring strSceneName, wstring strProtoName)
 	if (nullptr == pScene)	
 		return E_FAIL;
 
-	if (FAILED(pScene->Add_UIData(dynamic_cast<CUI_Object*>(m_pGameInstance->Clone_Object(strProtoName, nullptr)))))
+	if (FAILED(pScene->Add_UIData(dynamic_cast<CUI_Object*>(m_pGameInstance->Clone_Object(strProtoName, nullptr)), strProtoName)))
 		return E_FAIL;
 	
 	return S_OK;
@@ -252,13 +266,14 @@ void CUIManager::Open_Scene(const wstring strSceneName)
 		if(!m_PlayScene.empty())
 		m_PlayScene.pop_back();
 	}
+	pUIScene->Set_Open();
 	m_PlayScene.push_back(pUIScene);
 	m_PlayScene.back()->Show_Scene();
 	m_isClose = false;
 
 }
 
-void CUIManager::Close_Scene()
+void CUIManager::Close_Scene(const wstring strSceneName)
 {
 	if (!m_PlayScene.empty())
 	{
@@ -280,7 +295,6 @@ void CUIManager::Click()
 
 HRESULT CUIManager::Tick(const _float& fTimeDelta)
 {
-
 	if(!m_PlayScene.empty())
 	{
 
@@ -406,17 +420,32 @@ void CUIManager::Free()
 	Safe_Release(m_pGameInstance);
 }
 
-void CUIManager::Start_Talk()
+void CUIManager::Start_Talk(_uint iScriptIndex)
 {
-	if (!m_PlayScene.empty())
-	{
-		dynamic_cast<CUITalk*>(m_PlayScene.back())->Start_Talk();
-	}
+	CUITalk* pScene = dynamic_cast<CUITalk*>(Find_Scene(TEXT("Talk")));
+
+	pScene->Start_Talk(iScriptIndex);
+}
+
+_int CUIManager::Get_CurrentPage()
+{
+	CUITalk* pScene = dynamic_cast<CUITalk*>(Find_Scene(TEXT("Talk")));
+
+	return pScene->Get_CurrentScriptPage();
+}
+
+_bool CUIManager::isTalkFinished()
+{
+	CUITalk* pScene = dynamic_cast<CUITalk*>(Find_Scene(TEXT("Talk")));
+
+	return pScene->isFinished();
 }
 
 void CUIManager::Change_TutorialUI(_uint iUIType)
 {
-	dynamic_cast<CUITutorial*>(m_PlayScene.back())->Set_State(iUIType);
+	CUITutorial* pScene = dynamic_cast<CUITutorial*>(Find_Scene(TEXT("Tutorial")));
+
+	pScene->Set_State(iUIType);
 }
 
 _bool CUIManager::Check_Scene(wstring SceneName)
@@ -425,6 +454,13 @@ _bool CUIManager::Check_Scene(wstring SceneName)
 		return true;
 	else
 		return false;
+}
+
+void CUIManager::Close_Image()
+{
+	CUIStoreImage* pScene = dynamic_cast<CUIStoreImage*>(Find_Scene(TEXT("StoreImage")));
+
+	pScene->Close_Image();
 }
 
 void CUIManager::Set_Score(_uint iScore)

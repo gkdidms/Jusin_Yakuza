@@ -27,10 +27,12 @@ public:
 
 public:
     _bool isInvenClose() { return m_isClose; }
+    _bool isOpen(wstring strName);
 
 public: // 튜토리얼 용
     _bool isShowTutorialUI(_uint iUIType);
     _bool isCloseTutorialUIAnim();
+    void Set_TutorialState(_uint iType);
     void Set_TutorialText(wstring strText);
 
 public: // 카체이스 용
@@ -51,7 +53,7 @@ public:
     HRESULT Add_Data(const wstring strSceneName, const wstring strProtoName);
 
     void Open_Scene(const wstring strSceneName);
-    void Close_Scene();
+    void Close_Scene(const wstring strSceneName = TEXT(""));
 
     void Click();
     HRESULT Tick(const _float& fTimeDelta);
@@ -70,9 +72,14 @@ public:
 
     //임시 토크매니저 확인용 제작
 public:
-    void Start_Talk();
+    void Start_Talk(_uint iScriptIndex);
+    _int Get_CurrentPage();
+    _bool isTalkFinished();
     void Change_TutorialUI(_uint iUIType);
     _bool Check_Scene(wstring SceneName);
+
+public: // 스토리 UI
+    void Close_Image();
 
     //카라오케 점수 전달용
 public:
@@ -106,7 +113,7 @@ private:
 private:
     class CPlayer* m_pPlayer = { nullptr };
 
-private:
+public:
    CUIScene* Find_Scene(wstring strSceneName);      
 
 public:

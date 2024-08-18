@@ -33,7 +33,7 @@ HRESULT CUIKaraoke_Score::Close_Scene()
 	return S_OK;
 }
 
-HRESULT CUIKaraoke_Score::Add_UIData(CUI_Object* pUIObject)
+HRESULT CUIKaraoke_Score::Add_UIData(CUI_Object* pUIObject, wstring wstrPrototypeTag)
 {
 	if (pUIObject->Get_Event())
 	{
@@ -87,7 +87,7 @@ HRESULT CUIKaraoke_Score::Late_Tick(const _float& fTimeDelta)
 
 	if (m_pGameInstance->GetKeyState(DIK_E) == TAP)
 	{
-		CUIManager::GetInstance()->Close_Scene();
+		CUIManager::GetInstance()->Close_Scene(m_strSceneName);
 	}
 
 

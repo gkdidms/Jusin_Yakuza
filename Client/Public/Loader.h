@@ -52,6 +52,8 @@ protected:
 	virtual HRESULT Loading_For_Street();
 	virtual	HRESULT Loading_For_CarChase();
 	virtual	HRESULT Loading_For_Karaoke();
+	virtual HRESULT Loading_For_Tutorial();
+	virtual HRESULT Loading_For_NishikiWalk();
 
 	/*파일 입출력에 관련된 함수*/
 protected:

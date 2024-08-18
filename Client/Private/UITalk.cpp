@@ -2,7 +2,6 @@
 
 #include"GameInstance.h"
 
-#include "QuestManager.h"
 #include "ScriptManager.h"
 
 #include "UIManager.h"
@@ -12,23 +11,25 @@
 #include "Text.h"
 
 CUITalk::CUITalk()
-    :CUIScene{},
-	m_pQuestManager { CQuestManager::GetInstance() }
+    :CUIScene{}
 {
-	Safe_AddRef(m_pQuestManager);
 }
 
 CUITalk::CUITalk(const CUITalk& rhs)
-    :CUIScene{ rhs },
-	m_pQuestManager { rhs.m_pQuestManager }
+    :CUIScene{ rhs }
 {
-	Safe_AddRef(m_pQuestManager);
 }
 
 HRESULT CUITalk::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg)
 {
     if (FAILED(__super::Initialize(pDevice, pContext, pArg)))
         return E_FAIL;
+
+	m_pScriptManager = CScriptManager::Create();
+	if (nullptr == m_pScriptManager)
+		return E_FAIL;
+
+	Safe_AddRef(m_pScriptManager);
 
     return S_OK;
 }
@@ -93,9 +94,11 @@ void CUITalk::OverAction()
 {
 }
 
-void CUITalk::Start_Talk()
+void CUITalk::Start_Talk(_uint iScriptIndex)
 {
 	m_iQuestIndex = 0;
+	m_iCurrentScriptIndex = iScriptIndex;
+	m_isFinished = false;
 
 	Ready_Talk();
 	Read_Script();
@@ -103,10 +106,13 @@ void CUITalk::Start_Talk()
 
 _bool CUITalk::Read_Script()
 {
-	CScriptManager::SCRIPT_INFO Script = m_pQuestManager->Get_ScriptInfo(m_iQuestIndex);
+	CScriptManager::SCRIPT_INFO Script = m_pScriptManager->Get_Script(m_iCurrentScriptIndex, m_iQuestIndex);
 
 	if (Script.strName == TEXT("³¡"))
+	{
+		m_isFinished = true;
 		return false;
+	}
 
 	dynamic_cast<CText*>(m_EventUI[NAME])->Set_Text(Script.strName);
 	m_TalkData = Script.strLine;
@@ -173,5 +179,5 @@ void CUITalk::Free()
 {
 	__super::Free();
 
-	Safe_Release(m_pQuestManager);
+	Safe_Release(m_pScriptManager);
 }
