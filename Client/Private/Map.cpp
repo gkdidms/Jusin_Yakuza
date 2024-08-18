@@ -85,6 +85,11 @@ HRESULT CMap::Initialize(void* pArg)
 
 	m_Casecade = { 0.f, 10.f, 24.f, 40.f };
 
+	D3D11_QUERY_DESC queryDesc;
+	queryDesc.Query = D3D11_QUERY_OCCLUSION;
+	queryDesc.MiscFlags = 0;
+	m_pDevice->CreateQuery(&queryDesc, &m_pOcclusionQuery);
+
 
 
 	return S_OK;
@@ -187,13 +192,13 @@ void CMap::Late_Tick(const _float& fTimeDelta)
 
 	}*/
 	
-	m_bRender = false;
-	if (true == m_bRender)
+	if (Check_Render())
 	{
 		Add_Renderer(fTimeDelta);
 		m_pGameInstance->Add_Renderer(CRenderer::RENDER_SHADOWOBJ, this);
 	}
 
+	m_pOcclusionQuery->Release();
 	//m_pGameInstance->Add_Renderer(CRenderer::RENDER_OCCULUSION, this);
 }
 
@@ -1399,6 +1404,24 @@ HRESULT CMap::Reset_Bind()
 	return S_OK;
 }
 
+_bool CMap::Check_Render()
+{
+	m_pContext->Begin(m_pOcclusionQuery);
+
+	m_pGameInstance->Add_Renderer(CRenderer::RENDER_OCCULUSION, this);
+	m_pGameInstance->Occulusion_Culling_Draw();
+
+	m_pContext->End(m_pOcclusionQuery);
+
+	UINT64 occlusionResult = 0;
+	while (m_pContext->GetData(m_pOcclusionQuery, &occlusionResult, sizeof(UINT64), 0) == S_FALSE)
+	{
+		// 결과를 기다리는 중
+	}
+
+	return occlusionResult > 0;
+}
+
 CMap* CMap::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
 	CMap* pInstance = new CMap(pDevice, pContext);
@@ -1460,4 +1483,6 @@ void CMap::Free()
 	Safe_Release(m_pModelCom);
 	Safe_Release(m_pMaterialCom);
 	Safe_Release(m_pSystemManager);
+
+	Safe_Release(m_pOcclusionQuery);
 }

@@ -88,6 +88,7 @@ public:
     /* Renderer */
 public:
     void Add_Renderer(CRenderer::RENDERER_STATE eRenderState, class CGameObject* pGameObject);
+    void Occulusion_Culling_Draw();
     void Set_HDR(_bool isHDR);
     void Set_HDRLight(_float fLight); // HDR ºû ¼¼±â Á¶Àý 
     _bool isHDR();
