@@ -111,22 +111,22 @@ HRESULT CRenderTarget_Manager::Bind_RenderTargetSRV(const wstring& strTargetTag,
 	return pRenderTarget->Bind_SVR(pShader, pConstantName);
 }
 
-void CRenderTarget_Manager::Bind_ComputeRenderTargetSRV(const wstring& strTargetTag)
+void CRenderTarget_Manager::Bind_ComputeRenderTargetSRV(const wstring& strTargetTag, _uint iSlot)
 {
 	CRenderTarget* pRenderTarget = Find_RenderTarget(strTargetTag);
 	if (nullptr == pRenderTarget)
 		return;
 
-	pRenderTarget->Bind_ComputeSVR();
+	pRenderTarget->Bind_ComputeSVR(iSlot);
 }
 
-void CRenderTarget_Manager::Bind_ComputeRenderTargetUAV(const wstring& strTargetTag)
+void CRenderTarget_Manager::Bind_ComputeRenderTargetUAV(const wstring& strTargetTag, _uint iSlot)
 {
 	CRenderTarget* pRenderTarget = Find_RenderTarget(strTargetTag);
 	if (nullptr == pRenderTarget)
 		return;
 
-	pRenderTarget->Bind_ComputeUAV();
+	pRenderTarget->Bind_ComputeUAV(iSlot);
 }
 
 HRESULT CRenderTarget_Manager::Copy_Resource(const wstring& strTargetTag, ID3D11Texture2D* pDesc)
