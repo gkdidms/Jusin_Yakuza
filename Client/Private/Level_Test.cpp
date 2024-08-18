@@ -21,14 +21,10 @@
 CLevel_Test::CLevel_Test(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLevel{ pDevice, pContext },
 	m_pSystemManager{ CSystemManager::GetInstance() },
-	m_pFileTotalManager{ CFileTotalMgr::GetInstance() },
-	m_pUIManager{ CUIManager::GetInstance() },
-	m_pFightManager{ CFightManager::GetInstance()}
+	m_pFileTotalManager{ CFileTotalMgr::GetInstance() }
 {
 	Safe_AddRef(m_pSystemManager);
 	Safe_AddRef(m_pFileTotalManager);
-	Safe_AddRef(m_pUIManager);
-	Safe_AddRef(m_pFightManager);
 }
 
 HRESULT CLevel_Test::Initialize()
@@ -44,14 +40,9 @@ HRESULT CLevel_Test::Initialize()
 		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/NaviData/Navigation_9.dat")))))
 		return E_FAIL;
 
-	m_pKaraokeManager = CKaraokeManager::Create();
-	if (nullptr == m_pKaraokeManager)
-		return E_FAIL;
-
-	//m_pCarChaseManager = CCarChaseManager::Create(m_pDevice, m_pContext);
-	//if (nullptr == m_pCarChaseManager)
+	//m_pKaraokeManager = CKaraokeManager::Create();
+	//if (nullptr == m_pKaraokeManager)
 	//	return E_FAIL;
-
 
 	//m_pUIManager->Open_Scene(TEXT("Carchase"));
 
@@ -63,39 +54,31 @@ HRESULT CLevel_Test::Initialize()
 	//if (FAILED(Ready_Camera(TEXT("Layer_Camera"))))
 	//	return E_FAIL;
 
-	if (FAILED(Ready_Player(TEXT("Layer_Player"))))
-		return E_FAIL;
-
-	//m_pTutorialManager = CTutorialManager::Create();
-	//if (nullptr == m_pTutorialManager)
+	//if (FAILED(Ready_Player(TEXT("Layer_Player"))))
+	//	return E_FAIL;
 
 	/* 클라 파싱 */
 	//if (FAILED(Ready_Test_Load()))
 	//	return E_FAIL;
 
 	// 혜원테스트용
-	if (FAILED(Ready_Test_Hyewon()))
-		return E_FAIL;
+	//if (FAILED(Ready_Test_Hyewon()))
+	//	return E_FAIL;
 
 	//m_pFileTotalManager->Set_MapObj_In_Client(70, LEVEL_TEST);
 	//m_pFileTotalManager->Set_Lights_In_Client(90);
 	//m_pFileTotalManager->Set_Collider_In_Client(3, LEVEL_TEST);
 	//m_pFileTotalManager->Set_Trigger_In_Client(79, LEVEL_TEST);
 
-	m_pFightManager->Set_FightStage(true);
-
-	if (FAILED(Ready_Camera(TEXT("Layer_Camera"))))
-		return E_FAIL;
+	//if (FAILED(Ready_Camera(TEXT("Layer_Camera"))))
+	//	return E_FAIL;
 
 	return S_OK;
 }
 
 void CLevel_Test::Tick(const _float& fTimeDelta)
 {
-	m_pKaraokeManager->Tick(fTimeDelta);
-	//m_pCarChaseManager->Tick();
-	//m_pTutorialManager->Tick();
-	//m_pFightManager->Tick(fTimeDelta);
+	//m_pKaraokeManager->Tick(fTimeDelta);
 #ifdef _DEBUG
 	SetWindowText(g_hWnd, TEXT("테스트 레벨"));
 #endif
@@ -245,9 +228,6 @@ void CLevel_Test::Free()
 
 	Safe_Release(m_pSystemManager);
 	Safe_Release(m_pFileTotalManager);
-	Safe_Release(m_pCarChaseManager);
-	Safe_Release(m_pTutorialManager);
-	Safe_Release(m_pUIManager);
-	Safe_Release(m_pKaraokeManager);
-	Safe_Release(m_pFightManager);
+	//Safe_Release(m_pUIManager);
+	//Safe_Release(m_pKaraokeManager);
 }

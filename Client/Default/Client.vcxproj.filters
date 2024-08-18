@@ -689,6 +689,9 @@
     <ClCompile Include="..\Private\UIStoreImage.cpp">
       <Filter>95.Utility\05.UIManager\UIScene\UIStoreImage</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\Level_NishikiWalk.cpp">
+      <Filter>01.Levels\12.NishikiWalk</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\MainApp.h">
@@ -1408,6 +1411,9 @@
     </ClInclude>
     <ClInclude Include="..\Public\UIStoreImage.h">
       <Filter>95.Utility\05.UIManager\UIScene\UIStoreImage</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Level_NishikiWalk.h">
+      <Filter>01.Levels\12.NishikiWalk</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

@@ -573,7 +573,6 @@ HRESULT CMultiLoader::Loading_Default()
 	//if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_CutSceneAnim_ForPlayer"), CAnim::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Anim/Animation_CutScene_ForPlayer.fbx", true))))
 	//	return E_FAIL;
 
-
 	///* For.Prototype_Component_Anim_Kiryu_Karaoke_CutScene */
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Anim_Kiryu_Karaoke_CutScene"), CAnim::Create(m_pDevice, m_pContext, "../Bin/DataFiles/AnimationData/Animation_Kiryu_Karaoke_CutScene.dat", false))))
 		return E_FAIL;
@@ -827,8 +826,8 @@ HRESULT CMultiLoader::Loading_For_Anim()
 	/* For.Prototype_Component_CarChaseAnim */
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_CarChaseAnim"), CAnim::Create(m_pDevice, m_pContext, "../Bin/DataFiles/AnimationData/Animation_CarChase.dat", false))))
 		return E_FAIL;
-	//if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_CarChaseAnim"), CAnim::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Anim/Animation_CarChase.fbx", true))))
-	//	return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_CarChaseAnim"), CAnim::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Anim/Animation_CarChase.fbx", true))))
+		return E_FAIL;
 
 	lstrcpy(m_szLoadingText, TEXT("애님 로딩이 완료되었습니다."));
 
