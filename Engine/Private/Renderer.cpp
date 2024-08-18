@@ -77,8 +77,20 @@ HRESULT CRenderer::Initialize()
 	m_pComputeShader[DOWNSAMPLING_DEPTH] = CComputeShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_Downsampling_Depth.hlsl"));
 	if (nullptr == m_pComputeShader[DOWNSAMPLING_DEPTH])
 		return E_FAIL;
+	m_pComputeShader[SSAO] = CComputeShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_Compute_SSAO.hlsl"));
+	if (nullptr == m_pComputeShader[SSAO])
+		return E_FAIL;
 
+	/*SSAO를 위한 버퍼*/
+	D3D11_BUFFER_DESC Desc{};
+	Desc.Usage = D3D11_USAGE_DEFAULT;
+	Desc.ByteWidth = sizeof(SSAO_BUFFER);
+	Desc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	Desc.CPUAccessFlags = 0;
+	Desc.StructureByteStride = sizeof(SSAO_BUFFER);
 
+	if (FAILED(m_pDevice->CreateBuffer(&Desc, nullptr, &m_pSSAOBuffer)))
+		return E_FAIL;
 
 	/* 화면을 꽉 채워주기 위한 월드변환행렬. */
 	D3D11_VIEWPORT ViewPort{};
@@ -262,9 +274,8 @@ HRESULT CRenderer::Ready_Targets()
 		return E_FAIL;
 
 	/*Target_Ambient*/
-	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Ambient"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(1.f, 0.f, 0.f, 1.f))))
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Ambient"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(1.f, 0.f, 0.f, 1.f), true)))
 		return E_FAIL;
-
 	/*Target_SSAO*/
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_CopyAmbient"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(1.f, 0.f, 0.f, 0.f), true)))
 		return E_FAIL;
@@ -755,6 +766,10 @@ void CRenderer::Add_Renderer(RENDERER_STATE eRenderState, CGameObject* pGameObje
 
 void CRenderer::Draw()
 {
+#ifdef _DEBUG
+	Render_Debug();
+#endif // _DEBUG
+
 	Render_Priority();
 	Render_AnimSkinning();
 
@@ -831,9 +846,7 @@ void CRenderer::Draw()
 
 	Render_UI();
 
-#ifdef _DEBUG
-	Render_Debug();
-#endif // _DEBUG
+
 }
 
 void CRenderer::Clear()
@@ -1051,6 +1064,31 @@ void CRenderer::Render_Glass()
 
 void CRenderer::Render_SSAO()
 {
+	SSAO_BUFFER BufferDesc{};
+	BufferDesc.fSSAOBise = m_fSSAOBiae;
+	BufferDesc.fRadiuse = m_fSSAORadiuse;
+	BufferDesc.fFar = *(m_pGameInstance->Get_CamFar());
+	memcpy(BufferDesc.vSSAOKernal, m_vSSAOKernal, sizeof(_float4) * 64);
+	BufferDesc.WorldMatrix = XMLoadFloat4x4(&m_WorldMatrix);
+	BufferDesc.ViewMatrixInv = m_pGameInstance->Get_Transform_Inverse_Matrix(CPipeLine::D3DTS_VIEW);
+	BufferDesc.ProjMatrixInv = m_pGameInstance->Get_Transform_Inverse_Matrix(CPipeLine::D3DTS_PROJ);
+	BufferDesc.CamViewMatrix = m_pGameInstance->Get_Transform_Matrix(CPipeLine::D3DTS_VIEW);
+	BufferDesc.CamProjMatrix = m_pGameInstance->Get_Transform_Matrix(CPipeLine::D3DTS_PROJ);
+
+	m_pContext->UpdateSubresource(m_pSSAOBuffer, 0, nullptr, &BufferDesc, 0, 0);
+
+	m_pContext->CSSetConstantBuffers(0, 1, &m_pSSAOBuffer);
+	m_pContext->CSSetShaderResources(0, 1, &m_pSSAONoiseView);
+	m_pGameInstance->Bind_ComputeRenderTargetSRV(TEXT("Target_Depth"), 1);
+	m_pGameInstance->Bind_ComputeRenderTargetSRV(TEXT("Target_Normal"), 2);
+	m_pGameInstance->Bind_ComputeRenderTargetUAV(TEXT("Target_Ambient"));
+
+	UINT GroupX = (1280 + 15) / 16;
+	UINT GroupY = (720 + 15) / 16;
+
+	m_pComputeShader[BLURX]->Render(GroupX, GroupY, 1);
+	
+	/*
 	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_SSAO"))))
 		return;
 
@@ -1094,6 +1132,7 @@ void CRenderer::Render_SSAO()
 
 	if (FAILED(m_pGameInstance->End_MRT()))
 		return;
+		*/
 }
 
 void CRenderer::Render_SSAOBlur()
@@ -2136,6 +2175,7 @@ void CRenderer::Free()
 
 	Safe_Release(m_pLightDepthStencilView);
 	Safe_Release(m_pSSAONoiseView);
+	Safe_Release(m_pSSAOBuffer);
 
 	Safe_Release(m_pShader);
 	for(auto& pShader : m_pComputeShader)
