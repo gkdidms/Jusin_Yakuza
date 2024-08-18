@@ -9,6 +9,8 @@ class CShader;
 class CModel;
 class CNeoShader;
 class CCollider;
+class CVIBuffer_AABBCube;
+class CComputeShader;
 END
 
 BEGIN(Client)
@@ -75,6 +77,14 @@ public:
 	}MAPOBJ_DESC;
 
 
+	struct ObjectData
+	{
+		XMMATRIX worldViewProjMatrix;
+		float g_fFar;
+		float padding[3]; // 패딩 추가 (16바이트 정렬을 맞추기 위함)
+	};
+
+
 private:
 	CMap(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	CMap(const CMap& rhs);
@@ -88,6 +98,8 @@ public:
 	virtual void Late_Tick(const _float& fTimeDelta) override;
 	virtual HRESULT Render() override;
 	virtual HRESULT Render_LightDepth() override;
+	virtual HRESULT Render_OcculusionDepth() override;
+	virtual HRESULT Check_OcculusionCulling() override;
 
 public:
 	CTransform* Get_Transform() { return m_pTransformCom; }
@@ -104,13 +116,19 @@ private:
 	void						Add_Renderer(const _float& fTimeDelta);
 
 private:
-	CShader* m_pShaderCom = { nullptr };
+	CShader*	m_pShaderCom = { nullptr };
 	CModel* m_pModelCom = { nullptr };
 	CNeoShader* m_pMaterialCom = { nullptr };
-	CCollider* m_pColliderCom = { nullptr };
-	ID3D11Query*		m_pQuery = { nullptr };
-
 	class CSystemManager* m_pSystemManager = { nullptr };
+
+	// 컬링을 위한 모델과 쉐이더
+	CShader*				m_pCubeShaderCom = { nullptr }; //aabb 큐브 그리기
+	CVIBuffer_AABBCube*		m_pVIBufferCom = { nullptr };
+	CComputeShader*			m_pComputeShaderCom = { nullptr };
+
+
+	ID3D11Buffer*			m_pObjectDataBuffer = { nullptr };
+	ID3D11Buffer*			m_pOutputBufferStaging = { nullptr };
 
 private:
 	_bool m_isFirst = { true };
@@ -149,9 +167,6 @@ private:
 	float					m_fTimer = { 0 };
 	bool					m_bPositive = { false };
 
-
-	bool					m_bOrigin = { false };
-	_float3					m_vModelScale; // 모델 자체의 scale
 
 public:
 	HRESULT Add_Components(void* pArg);

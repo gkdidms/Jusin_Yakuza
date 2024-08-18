@@ -31,6 +31,8 @@ CModel::CModel(const CModel& rhs)
 	, m_FovAnimation{ rhs.m_FovAnimation }
 	, m_isTool {rhs.m_isTool}
 	, m_vModelLocalSize {rhs.m_vModelLocalSize}
+	, m_vMaxPoints{ rhs.m_vMaxPoints }
+	, m_vMinPoints{ rhs.m_vMinPoints }
 {
 	for (auto& pPrototypeAnimation : rhs.m_Animations)
 		m_Animations.emplace_back(pPrototypeAnimation->Clone());
@@ -120,6 +122,8 @@ HRESULT CModel::Initialize_Prototype(MODELTYPE eModelType, const _char* pModelFi
 			vMaxPosition.z = vMaxPosition.z < m_Meshes[i]->Get_MaxPoints().z ? m_Meshes[i]->Get_MaxPoints().z : vMaxPosition.z;
 		}
 
+		m_vMaxPoints = vMaxPosition;
+		m_vMinPoints = vMinPosition;
 		m_vModelLocalSize = _float3(abs(vMaxPosition.x - vMinPosition.x), abs(vMaxPosition.y - vMinPosition.y), abs(vMaxPosition.z - vMinPosition.z));
 	}
 

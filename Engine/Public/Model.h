@@ -127,6 +127,8 @@ public:
 	_float4x4		Get_LocalMatrix();
 
 	_float3				Get_LocalModelSize() { return m_vModelLocalSize; }
+	_float3				Get_MaxPoints() { return m_vMaxPoints; }
+	_float3				Get_MinPoints() { return m_vMinPoints; }
 
 public:
 	void	Copy_DecalMaterial(vector<DECAL_DESC>* pDecals); /* Decal 정보 얻어오기 */
@@ -197,6 +199,8 @@ private:
 	_bool						m_bSaveMaterial = { true };
 
 	_float3						m_vModelLocalSize; // Occulusion culling을 위한
+	_float3						m_vMaxPoints;
+	_float3						m_vMinPoints;
 
 private:
 	_bool m_isTool = { false };

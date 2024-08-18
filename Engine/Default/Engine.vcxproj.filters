@@ -208,6 +208,9 @@
     <Filter Include="01.Utility\03.Component\01.VIBuffer\Instance\Mesh">
       <UniqueIdentifier>{4addae2b-3921-41a4-88a0-51caad484a17}</UniqueIdentifier>
     </Filter>
+    <Filter Include="01.Utility\03.Component\01.VIBuffer\AABBCube">
+      <UniqueIdentifier>{862bd747-89e4-4621-b508-d2755bfb1321}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\Base.h">
@@ -417,6 +420,9 @@
     <ClInclude Include="..\Public\VIBuffer_Instance_Mesh.h">
       <Filter>01.Utility\03.Component\01.VIBuffer\Instance\Mesh</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\VIBuffer_AABBCube.h">
+      <Filter>01.Utility\03.Component\01.VIBuffer\AABBCube</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\private\Base.cpp">
@@ -614,6 +620,9 @@
     <ClCompile Include="..\Private\VIBuffer_Instance_Mesh.cpp">
       <Filter>01.Utility\03.Component\01.VIBuffer\Instance\Mesh</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\VIBuffer_AABBCube.cpp">
+      <Filter>01.Utility\03.Component\01.VIBuffer\AABBCube</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Cell.hlsl">
@@ -650,6 +659,9 @@
       <Filter>98.Shader</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_BlurY.hlsl">
+      <Filter>98.Shader</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_Downsampling_Depth.hlsl">
       <Filter>98.Shader</Filter>
     </FxCompile>
   </ItemGroup>
