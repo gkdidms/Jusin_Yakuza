@@ -36,7 +36,8 @@ HRESULT CLevel_Tutorial::Initialize()
 	if (FAILED(m_pQuestManager->Initialize()))
 		return E_FAIL;
 
-	m_pQuestManager->Start_Quest(0);
+	m_pQuestManager->Start_Quest(CQuestManager::CHAPTER_1);
+	m_pFightManager->Set_StreetFight(true);
 
 	m_pTutorialManager = CTutorialManager::Create();
 	if (nullptr == m_pTutorialManager)
@@ -57,9 +58,16 @@ HRESULT CLevel_Tutorial::Initialize()
 
 void CLevel_Tutorial::Tick(const _float& fTimeDelta)
 {
-	m_pQuestManager->Execute();
-	m_pTutorialManager->Tick();
+	if (m_pQuestManager->Execute())
+	{
+		//true 이면 다음 스테이지로 이동
+		m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_NISHIKIWALK));
+	}
+
 	m_pFightManager->Tick(fTimeDelta);
+
+	m_pTutorialManager->Tick();
+
 #ifdef _DEBUG
 	SetWindowText(g_hWnd, TEXT("총격전 맵"));
 #endif

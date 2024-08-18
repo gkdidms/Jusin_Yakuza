@@ -271,7 +271,4 @@ void CUIKaraoke_Select::Free()
     for (auto& iter : m_UIName)
         Safe_Release(iter);
     m_UIName.clear();
-
-
-
 }

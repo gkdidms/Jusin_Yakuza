@@ -52,7 +52,7 @@ HRESULT CUIFightScore::Close_Scene()
 	return S_OK;
 }
 
-HRESULT CUIFightScore::Add_UIData(CUI_Object* pUIObject)
+HRESULT CUIFightScore::Add_UIData(class CUI_Object* pUIObject, wstring wstrPrototypeTag)
 {
 	if (pUIObject->Get_Event())
 	{

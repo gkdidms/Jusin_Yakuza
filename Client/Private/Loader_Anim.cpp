@@ -313,9 +313,6 @@ HRESULT CLoader_Anim::Loading_For_LogoLevel()
 	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Default"),
 		CDefaultYakuza::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
-
-
-
 #pragma endregion
 
 #pragma region GameObject

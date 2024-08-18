@@ -453,5 +453,5 @@ void CUIKaraoke_Play::Free()
     }
 
     Safe_Release(m_Lyrics);
-    Safe_Release(m_Title);
+    //Safe_Release(m_Title);
 }
