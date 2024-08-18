@@ -80,7 +80,6 @@ public:
 
 public:
 	int							Get_ObjPlaceDesc(OBJECTPLACE_DESC* objplaceDesc);
-	MAPOBJ_DESC					Get_MapObjDesc_For_AddList();
 
 	void						Edit_GameObject_Information(MAPOBJ_DESC	mapDesc);
 	CConstruction::MAPOBJ_DESC	Send_GameObject_Information();

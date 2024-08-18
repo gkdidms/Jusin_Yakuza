@@ -1,7 +1,7 @@
 #include "MonsterGroup.h"
 
 #include "GameInstance.h"
-
+#include "FileTotalMgr.h"
 #include "Monster.h"
 
 CMonsterGroup::CMonsterGroup(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -24,7 +24,22 @@ HRESULT CMonsterGroup::Initialize(void* pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
+	MONSTERGROUPDESC* monsterDesc = (MONSTERGROUPDESC*)pArg;
+	m_iGroupNum = monsterDesc->iGroupNum;
 
+	for (int i = 0; i < monsterDesc->vMonsters.size(); i++)
+	{
+		//Rush
+		if (CFileTotalMgr::OBJECT_TYPE::MONSTER_RUSH == monsterDesc->vMonsters[i].iObjectType)
+		{
+			m_Monsters.push_back(dynamic_cast<CMonster*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_RushYakuza"), &monsterDesc->vMonsters[i])));
+		}
+		else if (CFileTotalMgr::OBJECT_TYPE::MONSTER_DEFAULT == monsterDesc->vMonsters[i].iObjectType)
+		{
+			m_Monsters.push_back(dynamic_cast<CMonster*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Default"), &monsterDesc->vMonsters[i])));
+		}
+		
+	}
 
 	return S_OK;
 }
@@ -74,5 +89,10 @@ CGameObject* CMonsterGroup::Clone(void* pArg)
 
 void CMonsterGroup::Free()
 {
+	for (auto& iter : m_Monsters)
+	{
+		Safe_Release(iter);
+	}
+
 	__super::Free();
 }

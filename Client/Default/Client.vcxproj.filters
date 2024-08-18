@@ -692,6 +692,22 @@
     <ClCompile Include="..\Private\Level_NishikiWalk.cpp">
       <Filter>01.Levels\12.NishikiWalk</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\UIQTE.cpp" />
+    <ClCompile Include="..\private\Subtitle.cpp">
+      <Filter>07.UI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\KaraokeQuest.cpp">
+      <Filter>03.QuestManager\Quest\Karaoke</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Chapter3_0.cpp">
+      <Filter>03.QuestManager\Quest\Main\Chapter_3\0</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Chapter3_1.cpp">
+      <Filter>03.QuestManager\Quest\Main\Chapter_3\1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Chapter4_0.cpp">
+      <Filter>03.QuestManager\Quest\Main\Chapter_4\0</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\MainApp.h">
@@ -1414,6 +1430,22 @@
     </ClInclude>
     <ClInclude Include="..\Public\Level_NishikiWalk.h">
       <Filter>01.Levels\12.NishikiWalk</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIQTE.h" />
+    <ClInclude Include="..\public\Subtitle.h">
+      <Filter>07.UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\KaraokeQuest.h">
+      <Filter>03.QuestManager\Quest\Karaoke</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Chapter3_0.h">
+      <Filter>03.QuestManager\Quest\Main\Chapter_3\0</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Chapter3_1.h">
+      <Filter>03.QuestManager\Quest\Main\Chapter_3\1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Chapter4_0.h">
+      <Filter>03.QuestManager\Quest\Main\Chapter_4\0</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -2177,6 +2209,27 @@
     </Filter>
     <Filter Include="03.QuestManager\Quest\Main\Chapter_2\0">
       <UniqueIdentifier>{0aab858a-ea0e-4a82-bd30-29fd86502b8d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07.UI">
+      <UniqueIdentifier>{a965cd0b-5011-46b9-a0cf-904504f247a4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.QuestManager\Quest\Main\Chapter_3">
+      <UniqueIdentifier>{3a408304-6099-4e59-88ec-c4649dc5211c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.QuestManager\Quest\Main\Chapter_3\0">
+      <UniqueIdentifier>{4ffe03a6-fecc-4bbb-bd5b-e9d9f9a8bf79}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.QuestManager\Quest\Karaoke">
+      <UniqueIdentifier>{de1b5be3-48d6-43a7-944f-794ea66ff5c7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.QuestManager\Quest\Main\Chapter_3\1">
+      <UniqueIdentifier>{e0b58e9b-cc16-4cbc-b33a-65424093b9c0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.QuestManager\Quest\Main\Chapter_4">
+      <UniqueIdentifier>{9b48d4f4-65ad-4d1a-8ec8-c19571a8a461}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.QuestManager\Quest\Main\Chapter_4\0">
+      <UniqueIdentifier>{b1e1234c-ff0e-4849-8af9-37743d9670a6}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
