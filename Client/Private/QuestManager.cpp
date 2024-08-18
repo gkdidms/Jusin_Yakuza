@@ -5,6 +5,8 @@
 #include "MoveQuest.h"
 #include "TalkQuest.h"
 #include "Chapter1_0.h"
+#include "Chapter1_1.h"
+#include "Chapter2_0.h"
 
 #include "UIManager.h"
 
@@ -109,6 +111,18 @@ HRESULT CQuestManager::Ready_Quest()
     };
     m_QuestInfo.emplace(CHAPTER_1, Chapter1);
 
+    vector<QUEST_INFO> Chapter2;
+    Chapter2 = {
+        QUEST_INFO(
+            QUEST_MAIN,
+            0,
+
+            iQuestIndex++,
+            iNextQuestIndex++
+        )
+    };
+    m_QuestInfo.emplace(CHAPTER_2, Chapter2);
+
     
     return S_OK;
 }
@@ -206,6 +220,32 @@ HRESULT CQuestManager::Add_MainQuest(_int iQuestIndex, _int iNextQuestIndex, _in
         Desc.iScriptIndex = iScriptIndex;
 
         CChapter1_0* pMainQuest = CChapter1_0::Create(&Desc);
+        if (nullptr == pMainQuest)
+            return E_FAIL;
+
+        m_pCurrentQuest = pMainQuest;
+    }
+    else if (iQuestIndex == 2)
+    {
+        CChapter1_1::MAIN_QUEST_DESC Desc{};
+        Desc.iQuestIndex = iQuestIndex;
+        Desc.iNextQuestIndex = iNextQuestIndex;
+        Desc.iScriptIndex = iScriptIndex;
+
+        CChapter1_1* pMainQuest = CChapter1_1::Create(&Desc);
+        if (nullptr == pMainQuest)
+            return E_FAIL;
+
+        m_pCurrentQuest = pMainQuest;
+    }
+    else if (iQuestIndex == 3)
+    {
+        CChapter2_0::MAIN_QUEST_DESC Desc{};
+        Desc.iQuestIndex = iQuestIndex;
+        Desc.iNextQuestIndex = iNextQuestIndex;
+        Desc.iScriptIndex = iScriptIndex;
+
+        CChapter2_0* pMainQuest = CChapter2_0::Create(&Desc);
         if (nullptr == pMainQuest)
             return E_FAIL;
 

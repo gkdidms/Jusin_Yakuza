@@ -121,16 +121,53 @@ HRESULT CNPC::Add_Components()
 		TEXT("Com_ComputeShader"), reinterpret_cast<CComponent**>(&m_pComputeShaderCom))))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Navigation"),
-		TEXT("Com_Navigation"), reinterpret_cast<CComponent**>(&m_pNavigationCom), nullptr)))
-		return E_FAIL;
-
 	return S_OK;
 }
 
 HRESULT CNPC::Bind_ResourceData()
 {
 	return S_OK;
+}
+
+void CNPC::Synchronize_Root(const _float& fTimeDelta)
+{
+	_vector vFF = XMVectorSetZ(XMLoadFloat3(m_pModelCom->Get_AnimationCenterMove()), 0);
+
+	// m_pModelCom->Get_AnimChanged()  선형보간이 끝났는지
+	// m_pModelCom->Get_AnimLerp() 선형보간이 필요한 애니메이션인지
+	if (m_pModelCom->Get_AnimChanged() || !m_pModelCom->Get_AnimLerp())
+	{
+		if (m_pModelCom->Get_AnimRestart())
+		{
+			XMStoreFloat4(&m_vPrevMove, XMVectorZero());
+			m_fPrevSpeed = 0.f;
+		}
+		else
+		{
+			_float4 fMoveDir;
+			_float fMoveSpeed = XMVectorGetX(XMVector3Length(vFF - XMLoadFloat4(&m_vPrevMove)));
+
+			//Y값 이동을 죽인 방향으로 적용해야한다.
+			_vector vTemp = XMVector3Normalize((vFF - XMLoadFloat4(&m_vPrevMove)));
+
+			//Z가 Y처럼 쓰임
+			vTemp = XMVectorSetZ(vTemp, XMVectorGetY(vTemp));
+			XMStoreFloat4(&fMoveDir, XMVector3TransformNormal(XMVectorSetY(vTemp, 0.f), m_pTransformCom->Get_WorldMatrix()));
+
+			if (0.01 > m_fPrevSpeed)
+				m_fPrevSpeed = 0.f;
+
+			m_pTransformCom->Go_Move_Custum(fMoveDir, m_fPrevSpeed, 1, m_pNavigationCom);
+			m_fPrevSpeed = fMoveSpeed;
+
+			XMStoreFloat4(&m_vPrevMove, vFF);
+		}
+	}
+	else
+	{
+		// 선형보간중일때는 무조건 초기화
+		XMStoreFloat4(&m_vPrevMove, XMVectorZero());
+	}
 }
 
 void CNPC::Change_Animation()
