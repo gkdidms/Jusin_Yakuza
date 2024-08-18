@@ -39,8 +39,13 @@ public:
     virtual void OverAction() override;
 
 public:
-    void Set_Notes(const vector<class CNoteBase*>* pNotes) {
+    void Set_Notes(vector<class CNoteBase*>* pNotes) {
         m_pNotes = pNotes;
+    }
+
+public:
+    _bool IsSongEnd() {
+        return m_isSongEnd;
     }
 
 private:
@@ -48,14 +53,21 @@ private:
     void Ready_LyricsSocket();
 
 private:
+    void Update_CurrentLyricsIndex();
+
     void Change_Lyrics();
     void Setting_BackUI(LYRICS_DESC Desc, _fvector vPos, _uint iLyricsIndex);
+    void Setting_BlueUI(LYRICS_DESC Desc, _fvector vPos, _uint iLyricsIndex);
     void CurrentBar_Control();
+    void Show_Notes();
+
+    void Verse_On_SingleNote(class CNoteBase* pNote);
 
     _uint Compute_Num(_uint iCount);
 
 private:
     _int m_iCloneCount = { 0 };
+    _int m_iCurLyricsIndex = { -1 };
 
     _float m_fCurSoundTime = { 0.f };
 
@@ -65,7 +77,9 @@ private:
     vector<LYRICS_DESC> m_LyricsTime;
     vector<_float3> m_LyricsSocket;
 
-    const vector<class CNoteBase*>* m_pNotes;
+    vector<class CNoteBase*>* m_pNotes;
+
+    _bool               m_isSongEnd = { false };
 
 public:
     static CUIKaraoke_Play* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg = nullptr);

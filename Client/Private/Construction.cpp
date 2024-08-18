@@ -332,15 +332,7 @@ int CConstruction::Get_ObjPlaceDesc(OBJECTPLACE_DESC* objplaceDesc)
 	return m_iLayerNum;
 }
 
-CConstruction::MAPOBJ_DESC CConstruction::Get_MapObjDesc_For_AddList()
-{
-	CConstruction::MAPOBJ_DESC		mapobjDesc;
-	mapobjDesc.vStartPos = m_pTransformCom->Get_WorldMatrix();
-	mapobjDesc.wstrModelName = m_wstrModelName;
-	mapobjDesc.iShaderPass = m_iShaderPassNum;
 
-	return mapobjDesc;
-}
 
 void CConstruction::Edit_GameObject_Information(MAPOBJ_DESC mapDesc)
 {

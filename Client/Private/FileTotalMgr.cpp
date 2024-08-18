@@ -27,6 +27,7 @@
 #include "MonsterGroup.h"
 #include "Nishiki.h"
 #include "Adventure_Reactor.h"
+#include "LandObject.h"
 
 IMPLEMENT_SINGLETON(CFileTotalMgr)
 
@@ -94,11 +95,14 @@ HRESULT CFileTotalMgr::Set_MapObj_In_Client(int iMapLoadingNum, int iStageLevel)
 
 HRESULT CFileTotalMgr::Set_GameObject_In_Client(int iStageLevel)
 {
+    map<int, vector<CLandObject::LANDOBJ_MAPDESC>>      vGroupMonster;
+
     for (int i = 0; i < m_MapTotalInform.iNumMapObj; i++)
     {
+
         if (OBJECT_TYPE::MONSTER_RUSH == m_MapTotalInform.pMapObjDesc[i].iObjType)
         {
-            CRushYakuza::MONSTER_IODESC		monsterDesc;
+            CLandObject::LANDOBJ_MAPDESC        monsterDesc;
             monsterDesc.vStartPos = XMLoadFloat4x4(&m_MapTotalInform.pMapObjDesc[i].vTransform);
             int		iLayer = Find_Layers_Index(m_MapTotalInform.pMapObjDesc[i].strLayer);
 
@@ -114,6 +118,9 @@ HRESULT CFileTotalMgr::Set_GameObject_In_Client(int iStageLevel)
             monsterDesc.fRotatePecSec = XMConvertToRadians(180.f);
             monsterDesc.iNaviRouteNum = m_MapTotalInform.pMapObjDesc[i].iNaviRoute;
             monsterDesc.iNPCDirection = m_MapTotalInform.pMapObjDesc[i].iNPCDirection;
+            monsterDesc.iGroupMonster = m_MapTotalInform.pMapObjDesc[i].iGroupMonster;
+            monsterDesc.iGroupNum = m_MapTotalInform.pMapObjDesc[i].iGroupNum;
+            monsterDesc.iObjectType = m_MapTotalInform.pMapObjDesc[i].iObjType;
 
             if (-1 == m_MapTotalInform.pMapObjDesc[i].iNaviNum)
             {
@@ -125,7 +132,80 @@ HRESULT CFileTotalMgr::Set_GameObject_In_Client(int iStageLevel)
                 monsterDesc.iNaviNum = m_MapTotalInform.pMapObjDesc[i].iNaviNum;
             }
 
-            m_pGameInstance->Add_GameObject(iStageLevel, TEXT("Prototype_GameObject_RushYakuza"), m_Layers[iLayer], &monsterDesc);
+            if (1 == m_MapTotalInform.pMapObjDesc[i].iGroupMonster)
+            {
+                // 그룹몬스터
+                if (vGroupMonster.end() == vGroupMonster.find(monsterDesc.iGroupNum))
+                {
+                    // 없음
+                    vector<CLandObject::LANDOBJ_MAPDESC> vDesc;
+                    vDesc.push_back(monsterDesc);
+                    vGroupMonster.emplace(monsterDesc.iGroupNum, vDesc);
+                }
+                else
+                {
+                    vGroupMonster.find(monsterDesc.iGroupNum)->second.push_back(monsterDesc);
+                }
+            }
+            else
+            {
+                // 일반 몬스터
+                m_pGameInstance->Add_GameObject(iStageLevel, TEXT("Prototype_GameObject_RushYakuza"), m_Layers[iLayer], &monsterDesc);
+            }
+
+        }
+        else if (OBJECT_TYPE::MONSTER_DEFAULT == m_MapTotalInform.pMapObjDesc[i].iObjType)
+        {
+            CLandObject::LANDOBJ_MAPDESC        monsterDesc;
+            monsterDesc.vStartPos = XMLoadFloat4x4(&m_MapTotalInform.pMapObjDesc[i].vTransform);
+            int		iLayer = Find_Layers_Index(m_MapTotalInform.pMapObjDesc[i].strLayer);
+
+            /* Layer 정보 안들어옴 */
+            if (iLayer < 0)
+                return S_OK;
+
+            monsterDesc.wstrModelName = m_pGameInstance->StringToWstring(m_MapTotalInform.pMapObjDesc[i].strModelCom);
+            monsterDesc.iShaderPass = m_MapTotalInform.pMapObjDesc[i].iShaderPassNum;
+
+            monsterDesc.fSpeedPecSec = 10.f;
+            monsterDesc.fRotatePecSec = XMConvertToRadians(0.f);
+            monsterDesc.fRotatePecSec = XMConvertToRadians(180.f);
+            monsterDesc.iNaviRouteNum = m_MapTotalInform.pMapObjDesc[i].iNaviRoute;
+            monsterDesc.iGroupMonster = m_MapTotalInform.pMapObjDesc[i].iGroupMonster;
+            monsterDesc.iGroupNum = m_MapTotalInform.pMapObjDesc[i].iGroupNum;
+            monsterDesc.iObjectType = m_MapTotalInform.pMapObjDesc[i].iObjType;
+
+            if (-1 == m_MapTotalInform.pMapObjDesc[i].iNaviNum)
+            {
+                // 예외처리
+                monsterDesc.iNaviNum = 0;
+            }
+            else
+            {
+                monsterDesc.iNaviNum = m_MapTotalInform.pMapObjDesc[i].iNaviNum;
+            }
+            
+            if (1 == m_MapTotalInform.pMapObjDesc[i].iGroupMonster)
+            {
+                // 그룹몬스터
+                if (vGroupMonster.end() == vGroupMonster.find(monsterDesc.iGroupNum))
+                {
+                    // 없음
+                    vector<CLandObject::LANDOBJ_MAPDESC> vDesc;
+                    vDesc.push_back(monsterDesc);
+                    vGroupMonster.emplace(monsterDesc.iGroupNum, vDesc);
+                }
+                else
+                {
+                    vGroupMonster.find(monsterDesc.iGroupNum)->second.push_back(monsterDesc);
+                }
+            }
+            else
+            {
+                // 일반 몬스터
+                m_pGameInstance->Add_GameObject(iStageLevel, TEXT("Prototype_GameObject_Default"), m_Layers[iLayer], &monsterDesc);
+            }
+
         }
         else if (OBJECT_TYPE::MONSTER_WPA == m_MapTotalInform.pMapObjDesc[i].iObjType)
         {
@@ -381,36 +461,6 @@ HRESULT CFileTotalMgr::Set_GameObject_In_Client(int iStageLevel)
             }
 
             m_pGameInstance->Add_GameObject(iStageLevel, TEXT("Prototype_GameObject_RoadNML"), m_Layers[iLayer], &monsterDesc);
-        }
-        else if (OBJECT_TYPE::MONSTER_DEFAULT == m_MapTotalInform.pMapObjDesc[i].iObjType)
-        {
-            CAdventure::ADVENTURE_IODESC		monsterDesc;
-            monsterDesc.vStartPos = XMLoadFloat4x4(&m_MapTotalInform.pMapObjDesc[i].vTransform);
-            int		iLayer = Find_Layers_Index(m_MapTotalInform.pMapObjDesc[i].strLayer);
-
-            /* Layer 정보 안들어옴 */
-            if (iLayer < 0)
-                return S_OK;
-
-            monsterDesc.wstrModelName = m_pGameInstance->StringToWstring(m_MapTotalInform.pMapObjDesc[i].strModelCom);
-            monsterDesc.iShaderPass = m_MapTotalInform.pMapObjDesc[i].iShaderPassNum;
-
-            monsterDesc.fSpeedPecSec = 10.f;
-            monsterDesc.fRotatePecSec = XMConvertToRadians(0.f);
-            monsterDesc.fRotatePecSec = XMConvertToRadians(180.f);
-            monsterDesc.iNaviRouteNum = m_MapTotalInform.pMapObjDesc[i].iNaviRoute;
-
-            if (-1 == m_MapTotalInform.pMapObjDesc[i].iNaviNum)
-            {
-                // 예외처리
-                monsterDesc.iNaviNum = 0;
-            }
-            else
-            {
-                monsterDesc.iNaviNum = m_MapTotalInform.pMapObjDesc[i].iNaviNum;
-            }
-
-            m_pGameInstance->Add_GameObject(iStageLevel, TEXT("Prototype_GameObject_Default"), m_Layers[iLayer], &monsterDesc);
         }
         else if (OBJECT_TYPE::MONSTER_WPH == m_MapTotalInform.pMapObjDesc[i].iObjType)
         {
@@ -899,6 +949,24 @@ HRESULT CFileTotalMgr::Set_GameObject_In_Client(int iStageLevel)
         
 
     }
+
+    if (0 < vGroupMonster.size())
+    {
+        map<int, vector<CLandObject::LANDOBJ_MAPDESC>>::iterator        iter = vGroupMonster.begin();
+
+        while (iter != vGroupMonster.end())
+        {
+            CMonsterGroup::MONSTERGROUPDESC     monsterGroupDesc;
+            monsterGroupDesc.vMonsters = iter->second;
+            monsterGroupDesc.iGroupNum = iter->first;
+
+            m_pGameInstance->Add_GameObject(iStageLevel, TEXT("Prototype_GameObject_MonsterGroup"), TEXT("Layer_MonsterGroup"), &monsterGroupDesc);
+
+            iter++;
+        }
+    }
+    
+
     return S_OK;
 }
 
@@ -1330,6 +1398,8 @@ HRESULT CFileTotalMgr::Set_GameObject_In_Client_Trigger(int iStageLevel)
         }
 
     }
+
+
     return S_OK;
 }
 
@@ -1468,6 +1538,8 @@ HRESULT CFileTotalMgr::Import_Bin_Map_Data_OnClient(MAP_TOTALINFORM_DESC* mapObj
         in.read((char*)&pMapObj->iObjType, sizeof(int));
         in.read((char*)&pMapObj->iObjPropertyType, sizeof(int));
         in.read((char*)&pMapObj->iNPCDirection, sizeof(int));
+        in.read((char*)&pMapObj->iGroupMonster, sizeof(int));
+        in.read((char*)&pMapObj->iGroupNum, sizeof(int));
 
         in.read((char*)&pMapObj->iNaviNum, sizeof(int));
         in.read((char*)&pMapObj->iNaviRoute, sizeof(int));
