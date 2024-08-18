@@ -19,10 +19,10 @@ HRESULT CChapter1_0::Initialize(void* pArg)
 		return E_FAIL;
 
 	//백그라운드 생성
-	if (FAILED(m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_BackGround"), TEXT("Layer_Background"), nullptr)))
+	if (FAILED(m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_BackGround"), TEXT("Layer_StoryImage"), nullptr)))
 		return E_FAIL;
 
-	m_pBackground = dynamic_cast<CBackground*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Background"), 0));
+	m_pBackground = dynamic_cast<CBackground*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_StoryImage"), 0));
 	Safe_AddRef(m_pBackground);
 
 	//씬 카메라 이동 후 스크립트 텍스쳐 나옴

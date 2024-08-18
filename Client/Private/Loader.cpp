@@ -170,6 +170,9 @@ HRESULT CLoader::Loading()
 	case LEVEL_TUTORIAL:
 		hr = Loading_For_Tutorial();
 		break;
+	case LEVEL_NISHIKIWALK:
+		hr = Loading_For_Tutorial();
+		break;
 	}
 
 	LeaveCriticalSection(&m_Critical_Section);
