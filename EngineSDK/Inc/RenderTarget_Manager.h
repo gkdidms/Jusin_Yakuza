@@ -19,8 +19,8 @@ public:
     HRESULT Begin_MRT(const wstring& strMRTTag, ID3D11DepthStencilView* pDSView, _bool isClear);
     HRESULT End_MRT();
     HRESULT Bind_RenderTargetSRV(const wstring& strTargetTag, class CShader* pShader, const _char* pConstantName);
-    void Bind_ComputeRenderTargetSRV(const wstring& strTargetTag);
-    void Bind_ComputeRenderTargetUAV(const wstring& strTargetTag);
+    void Bind_ComputeRenderTargetSRV(const wstring& strTargetTag, _uint iSlot);
+    void Bind_ComputeRenderTargetUAV(const wstring& strTargetTag, _uint iSlot);
 
     HRESULT Copy_Resource(const wstring& strTargetTag, ID3D11Texture2D* pDesc);
     HRESULT Create_Texture(const wstring& strTargetTag, const wstring& strSaveFilePath);

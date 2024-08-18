@@ -198,7 +198,10 @@ void CPlayer::Tick(const _float& fTimeDelta)
 	{
 		m_pUIManager->Open_Scene(TEXT("StoreImage"));
 	}
-
+	if (m_pGameInstance->GetKeyState(DIK_8) == TAP)
+	{
+		m_pUIManager->Open_Scene(TEXT("FightScore"));
+	}
 
 	Synchronize_Root(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")));
 

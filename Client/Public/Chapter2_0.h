@@ -15,6 +15,7 @@ public:
 	virtual _bool Execute() override;
 
 public:
+	class CSubtitle* m_pSubtitle = { nullptr };
 	_bool m_isTitleFinished = { false };
 
 public:
