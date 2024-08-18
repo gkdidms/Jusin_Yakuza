@@ -89,6 +89,10 @@ namespace Engine
 		int					iObjPropertyType; /* object º° Æ¯Â¡ */
 
 		int					iNPCDirection; /* object º° Æ¯Â¡ */
+		int					iGroupMonster; //bool ¿ªÇÒ
+		int					iGroupNum;
+
+
 		int					iNaviNum;
 		int					iNaviRoute;
 
