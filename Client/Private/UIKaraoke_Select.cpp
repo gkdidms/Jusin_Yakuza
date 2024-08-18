@@ -46,7 +46,7 @@ HRESULT CUIKaraoke_Select::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext
     return S_OK;
 }
 
-HRESULT CUIKaraoke_Select::Add_UIData(CUI_Object* pUIObject)
+HRESULT CUIKaraoke_Select::Add_UIData(CUI_Object* pUIObject, wstring wstrPrototypeTag)
 {
 
     if (pUIObject->Get_Event())

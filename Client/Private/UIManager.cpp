@@ -251,7 +251,7 @@ HRESULT CUIManager::Add_Data(const wstring strSceneName, wstring strProtoName)
 	if (nullptr == pScene)	
 		return E_FAIL;
 
-	if (FAILED(pScene->Add_UIData(dynamic_cast<CUI_Object*>(m_pGameInstance->Clone_Object(strProtoName, nullptr)))))
+	if (FAILED(pScene->Add_UIData(dynamic_cast<CUI_Object*>(m_pGameInstance->Clone_Object(strProtoName, nullptr)), strProtoName)))
 		return E_FAIL;
 	
 	return S_OK;

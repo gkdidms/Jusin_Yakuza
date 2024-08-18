@@ -30,6 +30,8 @@ public:
 private:
     void KeyInput();
 
+    void Setting_NoteUIs();
+
 private:
     class CGameInstance* m_pGameInstance = { nullptr };
     class CUIManager* m_pUIManager = { nullptr };

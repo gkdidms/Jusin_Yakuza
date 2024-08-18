@@ -1409,6 +1409,9 @@
     <ClInclude Include="..\Public\AI_RoadTissue.h">
       <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby\00.Standing\02.Tissue\AI</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\KaraokeManager.h">
+      <Filter>06.KaraokeManager</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">

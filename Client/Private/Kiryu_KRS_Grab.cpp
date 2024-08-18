@@ -66,7 +66,7 @@ void CKiryu_KRS_Grab::Tick(const _float& fTimeDelta)
 {
 	CLandObject* pTargetObject = m_pPlayer->Get_TargetObject();
 
-	if (m_iCurrentIndex != 24)
+	if (m_iCurrentIndex != 24 && !m_isCutScene)
 	{
 		if (nullptr != pTargetObject)
 		{
@@ -179,6 +179,7 @@ void CKiryu_KRS_Grab::Reset()
 	m_isGrabed = false;
 	m_isShaked = false;
 	m_isStop = false;
+	m_isCutScene = false;
 	m_iCurrentIndex = 0;
 }
 
@@ -259,6 +260,8 @@ void CKiryu_KRS_Grab::Move_KeyInput(const _float& fTimeDelta)
 		if (2 < m_pPlayer->Get_CurrentHitLevel())	// 히트게이지가 3단까지 풀이라면
 		{
 			m_pPlayer->Set_CutSceneAnim(CPlayer::GOUGEKI_C, 1);
+
+			m_isCutScene = true;
 		}
 	}
 	if (m_pGameInstance->GetKeyState(DIK_Q) == TAP)
