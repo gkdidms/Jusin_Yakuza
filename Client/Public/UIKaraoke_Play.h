@@ -18,6 +18,13 @@ public:
         _uint iSocketIndex;
     };
 
+    struct LYRICS_NOTE_DESC
+    {
+        class CNoteBase* pNote;
+        _bool   isVisible = { false };
+        _uint iIndex;
+    };
+
 protected:
     CUIKaraoke_Play();
     CUIKaraoke_Play(const CUIKaraoke_Play& rhs);
@@ -39,9 +46,7 @@ public:
     virtual void OverAction() override;
 
 public:
-    void Set_Notes(vector<class CNoteBase*>* pNotes) {
-        m_pNotes = pNotes;
-    }
+    void Set_Notes(vector<class CNoteBase*>* pNotes);
 
 public:
     _bool IsSongEnd() {
@@ -59,11 +64,18 @@ private:
     void Setting_BackUI(LYRICS_DESC Desc, _fvector vPos, _uint iLyricsIndex);
     void Setting_BlueUI(LYRICS_DESC Desc, _fvector vPos, _uint iLyricsIndex);
     void CurrentBar_Control();
-    void Show_Notes();
+    void Visible_Notes(_uint iLyricsIndex);
+    void Invisible_Notes(_uint iLyricsIndex);
 
-    void Verse_On_SingleNote(class CNoteBase* pNote);
+    void Verse_On_SingleNote(LYRICS_NOTE_DESC& Desc, _uint iLyricsIndex);
+    void Verse_Off_SingleNote(LYRICS_NOTE_DESC& Desc, _uint iLyricsIndex);
 
     _uint Compute_Num(_uint iCount);
+
+    _uint Trans_ButtonType_To_UI(_uint iNum);
+
+    // 0 일반노드    1 유지 노드     2 연타 노드
+    // 0 UP        1 DOWN        2 LEFT        3 RIGHT
 
 private:
     _int m_iCloneCount = { 0 };
@@ -77,7 +89,10 @@ private:
     vector<LYRICS_DESC> m_LyricsTime;
     vector<_float3> m_LyricsSocket;
 
-    vector<class CNoteBase*>* m_pNotes;
+    // 래퍼런스 카운트 증가하지않음
+    multimap<_uint, LYRICS_NOTE_DESC> m_LyricsNotes;
+
+    vector<_uint> m_Pivots;
 
     _bool               m_isSongEnd = { false };
 
