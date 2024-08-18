@@ -15,7 +15,7 @@ CUIFightScore::CUIFightScore(const CUIFightScore& rhs)
 {
 }
 
-HRESULT CUIFightScore::Add_UIData(CUI_Object* pUIObject)
+HRESULT CUIFightScore::Add_UIData(CUI_Object* pUIObject, wstring wstrPrototypeTag)
 {
 	if (pUIObject->Get_Event())
 	{
@@ -23,7 +23,7 @@ HRESULT CUIFightScore::Add_UIData(CUI_Object* pUIObject)
 			m_Bonus.push_back(pUIObject);
 		else if (nullptr == m_Money)
 			m_Money = static_cast<CGroup*>(pUIObject);
-		else if(nullptr == m_AddMoney)
+		else if (nullptr == m_AddMoney)
 			m_AddMoney = static_cast<CGroup*>(pUIObject);
 		else
 			m_EventUI.push_back(pUIObject);
