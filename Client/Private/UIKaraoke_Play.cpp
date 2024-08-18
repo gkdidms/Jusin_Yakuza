@@ -100,6 +100,11 @@ HRESULT CUIKaraoke_Play::Tick(const _float& fTimeDelta)
     Change_Lyrics();
     CurrentBar_Control();
 
+    if (m_pGameInstance->GetKeyState(DIK_LCONTROL))
+    {
+        m_pGameInstance->Set_SoundPosition(TEXT("Bakamita.mp3"), SOUND_BGM, 86.028);
+    }
+
     // 컷신 실행시키기
     if (CUTSCENE_START_POSITION < m_fCurSoundTime)
     {
