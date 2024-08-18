@@ -752,21 +752,15 @@ void CObjPlace_Manager::Edit_Installed_GameObject(int iNumObject)
 		m_tCurrentObjectDesc.iObjType = (int)OBJECT_TYPE::ROADYOP;
 	}
 
-	if (ImGui::RadioButton(u8"MONSTERGROUP", m_tCurrentObjectDesc.iObjType == 22))
+	if (ImGui::RadioButton(u8"NISHIKI", m_tCurrentObjectDesc.iObjType == 22))
 	{
 		objectType = 22;
-		m_tCurrentObjectDesc.iObjType = (int)OBJECT_TYPE::MONSTERGROUP;
-	}
-
-	if (ImGui::RadioButton(u8"NISHIKI", m_tCurrentObjectDesc.iObjType == 23))
-	{
-		objectType = 23;
 		m_tCurrentObjectDesc.iObjType = (int)OBJECT_TYPE::NISHIKI;
 	}
 
-	if (ImGui::RadioButton(u8"ADVENTURE_REACTOR", m_tCurrentObjectDesc.iObjType == 24))
+	if (ImGui::RadioButton(u8"ADVENTURE_REACTOR", m_tCurrentObjectDesc.iObjType == 23))
 	{
-		objectType = 24;
+		objectType = 23;
 		m_tCurrentObjectDesc.iObjType = (int)OBJECT_TYPE::ADVENTURE_REACTOR;
 	}
 
@@ -1229,7 +1223,6 @@ void CObjPlace_Manager::Set_Map_Object()
 	ImGui::RadioButton(u8"ROADSTANDING_NML", &objectType, OBJECT_TYPE::ROADSTANDING_NML);
 	ImGui::RadioButton(u8"ROADTISSUE", &objectType, OBJECT_TYPE::ROADTISSUE);
 	ImGui::RadioButton(u8"ROADYOP", &objectType, OBJECT_TYPE::ROADYOP);
-	ImGui::RadioButton(u8"MONSTERGROUP", &objectType, OBJECT_TYPE::MONSTERGROUP);
 	ImGui::RadioButton(u8"NISHIKI", &objectType, OBJECT_TYPE::NISHIKI);
 	ImGui::RadioButton(u8"ADVENTURE_REACTOR", &objectType, OBJECT_TYPE::ADVENTURE_REACTOR);
 
