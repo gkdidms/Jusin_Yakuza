@@ -677,6 +677,21 @@
     <ClCompile Include="..\Private\Chapter2_0.cpp">
       <Filter>03.QuestManager\Quest\Main\Chapter_2\0</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\Nishiki.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\05.NPC\00.Nishiki</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\NPC.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\05.NPC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Adventure_Reactor.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\01.Reactor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\RoadTissue.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby\00.Standing\02.Tissue</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\AI_RoadTissue.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby\00.Standing\02.Tissue\AI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\MainApp.h">
@@ -1378,6 +1393,21 @@
     </ClInclude>
     <ClInclude Include="..\Public\Chapter2_0.h">
       <Filter>03.QuestManager\Quest\Main\Chapter_2\0</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Nishiki.h">
+      <Filter>02.GameObjects\02.Character\LandObject\05.NPC\00.Nishiki</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\NPC.h">
+      <Filter>02.GameObjects\02.Character\LandObject\05.NPC</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Adventure_Reactor.h">
+      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\01.Reactor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\RoadTissue.h">
+      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby\00.Standing\02.Tissue</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\AI_RoadTissue.h">
+      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby\00.Standing\02.Tissue\AI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

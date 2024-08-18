@@ -25,7 +25,14 @@
 #include "CarChase_Sedan.h"
 #include "CarChase_Bike.h"
 #include "CarChase_Heli.h"
+
+#include "MonsterGroup.h"
 #pragma endregion
+
+#pragma region NPC
+#include "Nishiki.h"
+#pragma endregion
+
 
 #pragma region Reactor
 #include "Reactor_Van.h"
@@ -36,6 +43,10 @@
 
 #pragma region Adventure
 #include "RoadNML.h"
+#include "RoadYOP.h"
+
+#include "RoadCAB.h"
+#include "RoadTissue.h"
 #include "RoadStanding_NML.h"
 #pragma endregion
 
@@ -49,6 +60,10 @@
 #include "AI_Yoneda.h"
 
 #include "AI_RoadNML.h"
+#include "AI_RoadCAB.h"
+#include "AI_RoadTissue.h"
+#include "AI_RoadStanding_NML.h"
+#include "RoadYOP.h"
 
 #include "AI_Van.h"
 #include "AI_Bike.h"
@@ -112,6 +127,7 @@ HRESULT CLoader_Anim::Loading_Default()
 	Add_Components_On_Path_Material(m_eNextLevel, TEXT("../Bin/DataFiles/MaterialData/Char/Player"));
 	Add_Components_On_Path_Material(m_eNextLevel, TEXT("../Bin/DataFiles/MaterialData/Char/Monster")); 
 	Add_Components_On_Path_Material(m_eNextLevel, TEXT("../Bin/DataFiles/MaterialData/Reactor"));
+	Add_Components_On_Path_Material(m_eNextLevel, TEXT("../Bin/DataFiles/MaterialData/Char/NPC"));
 #pragma endregion
 
 #pragma region BTNode
@@ -136,11 +152,6 @@ HRESULT CLoader_Anim::Loading_Default()
 		CAI_Kuze::Create())))
 		return E_FAIL;
 
-	/* For.Prototype_BTNode_Passersby*/
-	if (FAILED(m_pGameInstance->Add_BTNode_Prototype(m_eNextLevel, TEXT("Prototype_BTNode_RoadNML"),
-		CAI_RoadNML::Create())))
-		return E_FAIL;
-
 	/* For.Prototype_BTNode_WPHYakuza*/
 	if (FAILED(m_pGameInstance->Add_BTNode_Prototype(m_eNextLevel, TEXT("Prototype_BTNode_WPHYakuza"),
 		CAI_WPHYakuza::Create())))
@@ -155,6 +166,27 @@ HRESULT CLoader_Anim::Loading_Default()
 	if (FAILED(m_pGameInstance->Add_BTNode_Prototype(m_eNextLevel, TEXT("Prototype_BTNode_Yoneda"),
 		CAI_Yoneda::Create())))
 		return E_FAIL;
+
+	/* For.Prototype_BTNode_RoadNML*/
+	if (FAILED(m_pGameInstance->Add_BTNode_Prototype(m_eNextLevel, TEXT("Prototype_BTNode_RoadNML"),
+		CAI_RoadNML::Create())))
+		return E_FAIL;
+
+	/* For.Prototype_BTNode_RoadStanding_NML*/
+	if (FAILED(m_pGameInstance->Add_BTNode_Prototype(m_eNextLevel, TEXT("Prototype_BTNode_RoadStanding_NML"),
+		CAI_RoadStanding_NML::Create())))
+		return E_FAIL;
+
+	/* For.Prototype_BTNode_RoadCAB*/
+	if (FAILED(m_pGameInstance->Add_BTNode_Prototype(m_eNextLevel, TEXT("Prototype_BTNode_RoadCAB"),
+		CAI_RoadCAB::Create())))
+		return E_FAIL;
+
+	/* For.Prototype_BTNode_RoadTissue*/
+	if (FAILED(m_pGameInstance->Add_BTNode_Prototype(m_eNextLevel, TEXT("Prototype_BTNode_RoadTissue"),
+		CAI_RoadTissue::Create())))
+		return E_FAIL;
+
 #pragma endregion
 
 #pragma region Component
@@ -282,10 +314,7 @@ HRESULT CLoader_Anim::Loading_For_LogoLevel()
 		CDefaultYakuza::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
-	/* For.Prototype_GameObject_RoadNML */
-	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_RoadNML"),
-		CRoadNML::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
+
 
 #pragma endregion
 
@@ -342,6 +371,40 @@ HRESULT CLoader_Anim::Loading_For_LogoLevel()
 		CCarChase_Heli::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 #pragma endregion
+
+#pragma region NPC/Adventure
+	/* For.Prototype_GameObject_RoadNML */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_RoadNML"),
+		CRoadNML::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	/* For.Prototype_GameObject_RoadCAB*/
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_RoadCAB"),
+		CRoadCAB::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	/* For.Prototype_GameObject_RoadStanding_NML*/
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_RoadStanding_NML"),
+		CRoadStanding_NML::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	/* For.Prototype_GameObject_RoadTissue*/
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_RoadTissue"),
+		CRoadTissue::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+	/* For.Prototype_GameObject_RoadYOP*/
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_RoadYOP"),
+		CRoadYOP::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_MonsterGroup*/
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_MonsterGroup"),
+		CMonsterGroup::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_Nishiki*/
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Nishiki"),
+		CRoadTissue::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+#pragma endregion
+
 
 	m_isFinished = true;
 

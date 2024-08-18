@@ -13,6 +13,8 @@
 #include "Weapon_RcktGun.h"
 #include "Weapon_ShotGun.h"
 #include "CarChase_CATBullet.h"
+
+#include "Adventure_Reactor.h"
 #pragma endregion
 
 #pragma region Map
@@ -204,6 +206,11 @@ HRESULT CLoader_Map::Loading_For_LogoLevel()
 		CSofa::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 #pragma endregion
+
+	/* For.Prototype_GameObject_AdventureReactor*/
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_AdventureReactor"),
+		CAdventure_Reactor::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 
 
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
