@@ -135,6 +135,22 @@ void CMap::Tick(const _float& fTimeDelta)
 		iter->Tick(m_pTransformCom->Get_WorldMatrix());
 #endif
 
+	XMVECTOR		vPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+
+	//int			iMax = m_pModelCom->Get_LocalModelSize().x;
+
+	//iMax = iMax > m_pModelCom->Get_LocalModelSize().y ? iMax : m_pModelCom->Get_LocalModelSize().y;
+	//iMax = iMax > m_pModelCom->Get_LocalModelSize().z ? iMax : m_pModelCom->Get_LocalModelSize().z;
+
+	//if (true == m_pGameInstance->isIn_WorldFrustum(vPos, iMax))
+	//{
+	//	m_pGameInstance->Add_Renderer(CRenderer::RENDER_OCCULUSION, this);
+	//}
+	//else
+	//{
+	//	m_bRender = false;
+	//}
+	
 	m_pGameInstance->Add_Renderer(CRenderer::RENDER_OCCULUSION, this);
 }
 
@@ -171,6 +187,7 @@ void CMap::Late_Tick(const _float& fTimeDelta)
 
 	}*/
 	
+	m_bRender = false;
 	if (true == m_bRender)
 	{
 		Add_Renderer(fTimeDelta);
@@ -974,9 +991,8 @@ HRESULT CMap::Check_OcculusionCulling()
 	
 	m_pContext->CSSetConstantBuffers(0, 1, &m_pObjectDataBuffer);
 
-	// dmd
 	m_pGameInstance->Bind_ComputeRenderTargetSRV(TEXT("Target_OcculusionDepth"), 1);
-	m_pVIBufferCom->Bind_Compute(m_pComputeShaderCom);
+	m_pVIBufferCom->Bind_Compute_AABBCube(m_pComputeShaderCom);
 	
 
 	int pixelCount = 0;

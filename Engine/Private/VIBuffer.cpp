@@ -110,6 +110,18 @@ HRESULT CVIBuffer::Bind_Compute(CComputeShader* pShader)
 	return S_OK;
 }
 
+HRESULT CVIBuffer::Bind_Compute_AABBCube(CComputeShader* pShader)
+{
+	m_pContext->CSSetShaderResources(0, 1, &m_pVertexBufferSRV);
+	m_pContext->CSSetUnorderedAccessViews(0, 1, &m_pResultBufferUAV, nullptr);
+
+	_uint iGroupNum = (m_iNumVertices + 7) / 8;
+
+	pShader->Render(iGroupNum, 1, 1);
+
+	return S_OK;
+}
+
 HRESULT CVIBuffer::Ready_BoneBuffer()
 {
 	// 정점 버퍼를 위한 Shader Resource View 생성

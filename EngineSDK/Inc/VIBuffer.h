@@ -22,6 +22,7 @@ public:
     _uint Get_NumIndices() { return m_iNumIndices; }
 
     HRESULT Bind_Compute(class CComputeShader* pShader);
+    HRESULT Bind_Compute_AABBCube(class CComputeShader* pShader);
 
 protected:
     ID3D11ShaderResourceView* m_pVertexBufferSRV = { nullptr };
