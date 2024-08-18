@@ -114,7 +114,7 @@ void CGameInstance::Tick(const _float& fTimeDelta)
 	m_pFrustum->Tick();
 
 	//Occulusion Culling 먼저 돌기
-	/*m_pRenderer->Occulusion_Culling_Draw();*/
+	m_pRenderer->Occulusion_Culling_Draw();
 
 	m_pGameObject_Manager->Late_Tick(fTimeDelta);
 

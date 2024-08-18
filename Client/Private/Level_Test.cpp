@@ -39,7 +39,7 @@ HRESULT CLevel_Test::Initialize()
 	// 테스트 다하면 지워라
 	/* For.Prototype_Component_Navigation */
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Navigation"),
-		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/NaviData/Navigation_9.dat")))))
+		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/NaviData/Navigation_7.dat")))))
 		return E_FAIL;
 
 	m_pKaraokeManager = CKaraokeManager::Create();

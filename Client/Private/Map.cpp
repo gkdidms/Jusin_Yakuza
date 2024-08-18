@@ -166,13 +166,16 @@ void CMap::Late_Tick(const _float& fTimeDelta)
 		// Renderer 추가 및 벡터에 추가
 	}
 
+	/*if (true == m_pGameInstance->isIn_WorldFrustum(worldPos, fScale * 1.5))
+	{
 
-	Add_Renderer(fTimeDelta);
-	m_pGameInstance->Add_Renderer(CRenderer::RENDER_SHADOWOBJ, this);
-	//if (true == m_bRender)
-	//{
-	//	
-	//}
+	}*/
+	
+	if (true == m_bRender)
+	{
+		Add_Renderer(fTimeDelta);
+		m_pGameInstance->Add_Renderer(CRenderer::RENDER_SHADOWOBJ, this);
+	}
 
 	//m_pGameInstance->Add_Renderer(CRenderer::RENDER_OCCULUSION, this);
 }
@@ -972,7 +975,7 @@ HRESULT CMap::Check_OcculusionCulling()
 	m_pContext->CSSetConstantBuffers(0, 1, &m_pObjectDataBuffer);
 
 	// dmd
-	m_pGameInstance->Bind_ComputeRenderTargetSRV(TEXT("Target_Depth"), 1);
+	m_pGameInstance->Bind_ComputeRenderTargetSRV(TEXT("Target_OcculusionDepth"), 1);
 	m_pVIBufferCom->Bind_Compute(m_pComputeShaderCom);
 	
 
