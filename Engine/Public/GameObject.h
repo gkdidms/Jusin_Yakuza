@@ -29,6 +29,7 @@ public:
     void        Set_ObjectDead() { m_isObjectDead = true; }   // °´Ã¼°¡ Á×¾ú´ÂÁö (°´Ã¼ »èÁ¦X)
     float       Get_ObjID() { return m_iObjectIndex; }
     void        Set_ObjID(float fID) { m_iObjectIndex = fID; }
+    void        Set_Render(_bool bRender) { m_bRender = bRender; } // occulusion culling ÈÄ Á¤º¸ set
 
 public:
     virtual HRESULT Initialize_Prototype();
@@ -40,8 +41,11 @@ public:
     virtual HRESULT Render_Bloom() { return S_OK; }
     virtual HRESULT Render_LightDepth() { return S_OK; }
     virtual HRESULT Render_BoneCompute() { return S_OK; }
+    virtual HRESULT Render_OcculusionDepth() { return S_OK; }
     virtual void ImpulseResolution(CGameObject* pTargetObject, _float fDistance = 0.5f) {};
     virtual void Attack_Event(CGameObject* pHitObject, _bool isItem = false) {};
+
+    virtual HRESULT Check_OcculusionCulling() { return S_OK; }
 
 public:
     class CComponent* Get_Component(wstring strComponentTag);
@@ -67,6 +71,8 @@ protected:
     _bool m_isObjectDead = { false };
 
     _uint   m_iObjectIndex = { 0 };
+
+    _bool   m_bRender = { true };
 
 protected:
     vector<_float> m_Casecade;

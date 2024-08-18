@@ -7,6 +7,7 @@ class ENGINE_DLL CRenderer :
 {
 public:
     enum RENDERER_STATE {
+        RENDER_OCCULUSION,
         RENDER_PRIORITY,
         RENDER_SHADOWOBJ,
         RENDER_NONBLENDER,
@@ -21,7 +22,7 @@ public:
         RENDER_END
     };
 
-    enum SHADER_TYPE { DOWNSAMPLING, BLURX, BLURY, SHADER_TYPE_END };
+    enum SHADER_TYPE { DOWNSAMPLING, BLURX, BLURY, DOWNSAMPLING_DEPTH, SHADER_TYPE_END };
 private:
     CRenderer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
     virtual ~CRenderer() = default;
@@ -64,6 +65,8 @@ public:
     void Add_Renderer(RENDERER_STATE eRenderState, class CGameObject* pGameObject);
     void Draw();
     void Clear();
+
+    void Occulusion_Culling_Draw(); // 컬링을 위해 Tick과 Late_Tick 사이에 돌릴 예정
 
 #ifdef _DEBUG
 public:
@@ -127,11 +130,19 @@ private:
 
     void Render_UI();
 
+    void Render_OcculusionDepth();
+    void Render_OcculusionDownSampling();
+
+    void Check_OcculusionCulling();
+
 private:
     HRESULT Ready_Targets();
     HRESULT Ready_MRTs();
     HRESULT Ready_LightDepth();
     HRESULT Ready_SSAONoiseTexture();
+
+
+    HRESULT Ready_OcculusionDepth();
 
 
 #ifdef _DEBUG
@@ -160,6 +171,9 @@ private:
 
     ID3D11DepthStencilView* m_pLightDepthStencilView = { nullptr };
     ID3D11ShaderResourceView* m_pSSAONoiseView = { nullptr };
+
+
+    ID3D11DepthStencilView* m_pOcculusionDepthView = { nullptr };
 
     _bool m_isRadialBlur = { false };
     _bool m_isMotionBlur = { false };

@@ -32,6 +32,8 @@ HRESULT CMap::Initialize(void* pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
+
+
 	if (FAILED(Add_Components(pArg)))
 		return E_FAIL;
 
@@ -44,7 +46,6 @@ HRESULT CMap::Initialize(void* pArg)
 		m_iShaderPassNum = gameobjDesc->iShaderPass;
 		m_iObjectType = gameobjDesc->iObjType;
 		m_bCull = gameobjDesc->bCull;
-		m_bLocalCull = gameobjDesc->bLocalCull;
 
 		for (int i = 0; i < gameobjDesc->iDecalNum; i++)
 		{
@@ -125,12 +126,17 @@ void CMap::Tick(const _float& fTimeDelta)
 	//	m_fDynamicTime = 0;
 	//	
 	//}
+
+	// Tick에서 추가
+	//m_pGameInstance->Add_Renderer(CRenderer::RENDER_OCCULUSION, this);
 		
 
 #ifdef _DEBUG
 	for (auto& iter : m_vColliders)
 		iter->Tick(m_pTransformCom->Get_WorldMatrix());
 #endif
+
+
 }
 
 void CMap::Late_Tick(const _float& fTimeDelta)
@@ -159,9 +165,11 @@ void CMap::Late_Tick(const _float& fTimeDelta)
 	{
 		// Renderer 추가 및 벡터에 추가
 	}
+
 	Add_Renderer(fTimeDelta);
 
 //	m_pGameInstance->Add_Renderer(CRenderer::RENDER_SHADOWOBJ, this);
+
 
 }
 
@@ -170,6 +178,7 @@ HRESULT CMap::Render()
 #ifdef _DEBUG
 	for (auto& iter : m_vColliders)
 		m_pGameInstance->Add_DebugComponent(iter);
+
 #endif
 
 	if (FAILED(Bind_ShaderResources()))
@@ -319,6 +328,7 @@ HRESULT CMap::Render()
 	{
 		// 램프 - 일반 mesh 출력, 그리고 부분 nonlight로 들어가서 bloom
 		// 부분 bloom - 전부 출력 후 밝은 부분만 nonlight로 들어가서 bloom
+
 
 #pragma region 일반
 		for (size_t k = 0; k < m_vRenderDefaulMeshIndex.size(); k++)
@@ -927,6 +937,66 @@ HRESULT CMap::Render_LightDepth()
 	return S_OK;
 }
 
+HRESULT CMap::Render_OcculusionDepth()
+{
+
+	if (FAILED(m_pTransformCom->Bind_ShaderMatrix(m_pCubeShaderCom, "g_WorldMatrix")))
+		return E_FAIL;
+	if (FAILED(m_pCubeShaderCom->Bind_Matrix("g_ViewMatrix", m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_VIEW))))
+		return E_FAIL;
+	if (FAILED(m_pCubeShaderCom->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_PROJ))))
+		return E_FAIL;
+
+	if (FAILED(m_pCubeShaderCom->Bind_RawValue("g_fFar", m_pGameInstance->Get_CamFar(), sizeof(_float))))
+		return E_FAIL;
+
+	m_pCubeShaderCom->Begin(0);
+
+	m_pVIBufferCom->Render();
+
+
+	return S_OK;
+}
+
+HRESULT CMap::Check_OcculusionCulling()
+{
+	XMMATRIX worldProjView = m_pTransformCom->Get_WorldMatrix() * m_pGameInstance->Get_Transform_Matrix(CPipeLine::D3DTS_VIEW) * m_pGameInstance->Get_Transform_Matrix(CPipeLine::D3DTS_PROJ);
+	CMap::ObjectData objectData = { worldProjView, *m_pGameInstance->Get_CamFar() };
+	m_pContext->UpdateSubresource(m_pObjectDataBuffer, 0, nullptr, &objectData, 0, 0);
+	m_pContext->CSSetConstantBuffers(0, 1, &m_pObjectDataBuffer);
+
+	m_pGameInstance->Bind_ComputeRenderTargetSRV(TEXT("Target_3x2_Occulusion"));
+	m_pVIBufferCom->Bind_Compute(m_pComputeShaderCom);
+
+
+	int pixelCount = 0;
+	m_pVIBufferCom->Copy_ResultResources(m_pOutputBufferStaging);
+
+	D3D11_MAPPED_SUBRESOURCE mappedResource;
+	m_pContext->Map(m_pOutputBufferStaging, 0, D3D11_MAP_READ, 0, &mappedResource);
+
+	// 정점 수 만큼 루프를 돌며 가시성 정보를 합산
+	int* visibilityData = (int*)mappedResource.pData;
+	for (int i = 0; i < m_pVIBufferCom->Get_NumVertex(); ++i)
+	{
+		pixelCount += visibilityData[i];
+	}
+
+	m_pContext->Unmap(m_pOutputBufferStaging, 0);
+
+	// 만약 하나 이상의 정점이 가시성이 있다면 렌더링 플래그를 true로 설정
+	if (pixelCount > 0)
+	{
+		m_bRender = true;
+	}
+	else
+	{
+		m_bRender = false;
+	}
+
+	return S_OK;
+}
+
 int CMap::Get_ObjPlaceDesc(OBJECTPLACE_DESC* objplaceDesc)
 {
 	/* 바이너리화하기 위한 데이터 제공 */
@@ -991,7 +1061,7 @@ void CMap::Add_Renderer(const _float& fTimeDelta)
 
 		const char* baseNameCStr = baseName.c_str();
 
-		if (false == m_bCull && false == m_bLocalCull)
+		if (false == m_bCull)
 		{
 			// 컬링안함
 			if (0 == strcmp(baseNameCStr, "DEFAULTMESH"))
@@ -1049,7 +1119,7 @@ void CMap::Add_Renderer(const _float& fTimeDelta)
 				m_vRenderDefaulMeshIndex.push_back(i);
 			}
 		}
-		else if (false == m_bLocalCull)
+		else
 		{
 			float		fScale = Meshes[i]->Get_MeshScale();
 
@@ -1116,19 +1186,19 @@ void CMap::Add_Renderer(const _float& fTimeDelta)
 				}
 			}
 		}
-		else
-		{
-			// 도로씬에서 다 DECAL 처리
-			float		fScale = Meshes[i]->Get_MeshScale() * 0.5;
+		//else
+		//{
+		//	// 도로씬에서 다 DECAL 처리
+		//	float		fScale = Meshes[i]->Get_MeshScale() * 0.5;
 
-			if (fScale <= 0)
-				fScale = 10;
+		//	if (fScale <= 0)
+		//		fScale = 10;
 
-			if (true == m_pGameInstance->isIn_WorldFrustum(worldPos, fScale))
-			{
-				m_vMaskMeshIndex.push_back(i);
-			}
-		}
+		//	if (true == m_pGameInstance->isIn_WorldFrustum(worldPos, fScale))
+		//	{
+		//		m_vMaskMeshIndex.push_back(i);
+		//	}
+		//}
 	}
 
 	// RENDER_NONBLEND 돼야하는 그룹
@@ -1182,6 +1252,7 @@ HRESULT CMap::Add_Components(void* pArg)
 
 	strModelName = strModelName.erase(iPos, strRemoveName.size());
 
+	
 	if (strModelName == "doujima_gaikan")
 	{
 		m_bCompulsoryAlpha = { true };
@@ -1198,11 +1269,67 @@ HRESULT CMap::Add_Components(void* pArg)
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
 		return E_FAIL;
 
+
+
+	// Occulusion Culling을 위한 scale 파악
+	CVIBuffer_AABBCube::AABBCUBE_DESC		aabbDesc;
+	aabbDesc.vScale = m_pModelCom->Get_LocalModelSize();
+	
+	// Occulusion Culling을 위한
+	/* For.Com_SubModel */
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_VIBuffer_AABBCube"),
+		TEXT("Com_SubModel"), reinterpret_cast<CComponent**>(&m_pVIBufferCom), &aabbDesc)))
+		return E_FAIL;
+
+	/* For.Com_SubShader */
+	//if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Shader_VtxCube_Occulusion"),
+	//	TEXT("Com_SubShader"), reinterpret_cast<CComponent**>(&m_pCubeShaderCom))))
+	//	return E_FAIL;
+
+	/* For.Com_SubShader */
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Shader_OcculusionCulling"),
+		TEXT("Com_ComputeShader"), reinterpret_cast<CComponent**>(&m_pComputeShaderCom))))
+		return E_FAIL;
+
+
+	XMMATRIX worldProjView = m_pTransformCom->Get_WorldMatrix() * m_pGameInstance->Get_Transform_Matrix(CPipeLine::D3DTS_VIEW) * m_pGameInstance->Get_Transform_Matrix(CPipeLine::D3DTS_PROJ);
+	CMap::ObjectData objectData = { worldProjView, *m_pGameInstance->Get_CamFar()};
+
+	D3D11_BUFFER_DESC cbDesc = {};
+	cbDesc.Usage = D3D11_USAGE_DEFAULT;
+	cbDesc.ByteWidth = sizeof(ObjectData);
+	cbDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	cbDesc.CPUAccessFlags = 0;
+
+	D3D11_SUBRESOURCE_DATA initData = {};
+	initData.pSysMem = &objectData;
+
+	if (FAILED(m_pDevice->CreateBuffer(&cbDesc, &initData, &m_pObjectDataBuffer)))
+	{
+		return E_FAIL;
+	}
+
+
+	D3D11_BUFFER_DESC stagingDesc = {};
+	stagingDesc.Usage = D3D11_USAGE_STAGING;
+	int num = m_pVIBufferCom->Get_NumVertex();
+	stagingDesc.ByteWidth = sizeof(int) * num;  // g_OutputBuffer의 크기에 맞춰야 함
+	stagingDesc.BindFlags = 0;  // Staging 버퍼는 바인딩 플래그가 필요 없음
+	stagingDesc.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
+	stagingDesc.MiscFlags = 0;
+
+	if (FAILED(m_pDevice->CreateBuffer(&stagingDesc, nullptr, &m_pOutputBufferStaging)))
+	{
+		// 오류 처리
+		return E_FAIL;
+	}
+
+
 	return S_OK;
 }
 
 HRESULT CMap::Bind_ShaderResources()
-{
+{ 
 	if (FAILED(m_pTransformCom->Bind_ShaderMatrix(m_pShaderCom, "g_WorldMatrix")))
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_VIEW))))
@@ -1292,6 +1419,12 @@ void CMap::Free()
 	m_vStrongBloomIndex.clear();
 	m_vCompulsoryDecalBlendMeshIndex.clear();
 
+	Safe_Release(m_pComputeShaderCom);
+	Safe_Release(m_pCubeShaderCom);
+	Safe_Release(m_pVIBufferCom);
+
+	Safe_Release(m_pObjectDataBuffer);
+	Safe_Release(m_pOutputBufferStaging);
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pModelCom);
 	Safe_Release(m_pMaterialCom);

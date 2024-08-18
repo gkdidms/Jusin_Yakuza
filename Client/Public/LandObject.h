@@ -55,6 +55,16 @@ public: //오브젝트들의 정보를 저장
         _float fHp;
     } LAND_OBJ_INFO;
 
+    typedef struct tMapLandObj : public CGameObject::GAMEOBJECT_DESC
+    {
+        XMMATRIX		vStartPos;
+        wstring			wstrModelName;
+        int				iShaderPass;
+        int             iNaviNum;
+        int             iNaviRouteNum;
+        int             iNPCDirection;
+    }LANDOBJ_MAPDESC;
+
 protected:
     CLandObject(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
     CLandObject(const CLandObject& rhs);
@@ -223,6 +233,7 @@ protected:
 
 protected:
         int             m_iNaviRouteNum = { 0 }; //루트
+        int             m_iNPCDirection = { 0 };
 
 protected:
     virtual HRESULT Add_Components();

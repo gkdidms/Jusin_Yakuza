@@ -47,6 +47,7 @@ protected:
 
 protected:
     HRESULT Ready_BoneBuffer();
+    HRESULT Ready_AABBCubeBuffer();
 
 public:
     virtual void Free() override;

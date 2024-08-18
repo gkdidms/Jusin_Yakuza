@@ -43,6 +43,8 @@ public:
 
 	_float4x4	Get_LocalMatrix() { return m_localMatrix; }
 	_float		Get_MeshScale() { return m_fScale; }
+	_float3		Get_MaxPoints() { return m_vMaxPosition; }
+	_float3		Get_MinPoints() { return m_vMinPosition; }
 
 	_bool isCloth();
 	_bool isSkin();
@@ -70,6 +72,10 @@ private:
 	_uint* m_pIndices = { nullptr };
 
 	ID3D11Buffer* m_pBoneMatrixBuffer = { nullptr };
+
+	// Occulusion을 위해 Model 자체의 대략적인 크기 파악을 위해
+	_float3				m_vMinPosition;
+	_float3				m_vMaxPosition;
 
 private:
 	_bool m_isTool = { false }; // 메쉬 생성 시 툴인지 아닌지 확인하기 위한 변수. 복사 하지 않음.

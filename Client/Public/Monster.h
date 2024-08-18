@@ -12,13 +12,9 @@ class CMonster abstract:
     public CLandObject
 {
 public:
-    typedef struct tMapMonsterObjDesc : public CGameObject::GAMEOBJECT_DESC
+    typedef struct tMapMonsterObjDesc : public CLandObject::LANDOBJ_MAPDESC
     {
-        XMMATRIX		vStartPos;
-        wstring			wstrModelName;
-        int				iShaderPass;
-        int             iNaviNum;
-        int             iNaviRouteNum;
+
     }MONSTER_IODESC;
 
 public:

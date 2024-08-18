@@ -1116,26 +1116,39 @@ void CNavigation_Manager::Make_Route()
 
 		if (ImGui::Button(u8"포인트에 루트번호 저장"))
 		{
-			m_Route_CellIndexes[m_iCurrentRouteCellIndex]->Add_RouteNum_InVec(iRouteNum);
-			Update_PointRouteNumName();
+			if (m_iCurrentRouteCellIndex < m_Route_CellIndexes.size())
+			{
+				m_Route_CellIndexes[m_iCurrentRouteCellIndex]->Add_RouteNum_InVec(iRouteNum);
+				Update_PointRouteNumName();
+			}
 		}
 		
 		if (ImGui::Button(u8"포인트 - 루트번호 삭제"))
 		{
-			m_Route_CellIndexes[m_iCurrentRouteCellIndex]->Delete_RouteNum_InVec(point_route_Num);
-			Update_PointRouteNumName();
+			if (m_iCurrentRouteCellIndex < m_Route_CellIndexes.size())
+			{
+				m_Route_CellIndexes[m_iCurrentRouteCellIndex]->Delete_RouteNum_InVec(point_route_Num);
+				Update_PointRouteNumName();
+			}
+			
 		}
 
 		if (ImGui::Button(u8"포인트 - 루트번호 전체삭제"))
 		{
-			m_Route_CellIndexes[m_iCurrentRouteCellIndex]->DeleteAll_RouteNum_InVec();
-			Update_PointRouteNumName();
+			if (m_iCurrentRouteCellIndex < m_Route_CellIndexes.size())
+			{
+				m_Route_CellIndexes[m_iCurrentRouteCellIndex]->DeleteAll_RouteNum_InVec();
+				Update_PointRouteNumName();
+			}	
 		}
 
 
 		if (0 < m_Route_CellIndexes.size())
 		{
-			m_Route_CellIndexes[m_iCurrentRouteCellIndex]->Set_PointOption(m_iPointOption);
+			if (m_iCurrentRouteCellIndex < m_Route_CellIndexes.size())
+			{
+				m_Route_CellIndexes[m_iCurrentRouteCellIndex]->Set_PointOption(m_iPointOption);
+			}
 		}
 
 	

@@ -235,6 +235,7 @@ call Copy.bat</Command>
     <ClInclude Include="..\Public\Timer_Manager.h" />
     <ClInclude Include="..\Public\Transform.h" />
     <ClInclude Include="..\Public\VIBuffer.h" />
+    <ClInclude Include="..\Public\VIBuffer_AABBCube.h" />
     <ClInclude Include="..\Public\VIBuffer_Cell.h" />
     <ClInclude Include="..\Public\VIBuffer_Cube.h" />
     <ClInclude Include="..\Public\VIBuffer_Instance.h" />
@@ -304,6 +305,7 @@ call Copy.bat</Command>
     <ClCompile Include="..\Private\Timer_Manager.cpp" />
     <ClCompile Include="..\Private\Transform.cpp" />
     <ClCompile Include="..\Private\VIBuffer.cpp" />
+    <ClCompile Include="..\Private\VIBuffer_AABBCube.cpp" />
     <ClCompile Include="..\Private\VIBuffer_Cell.cpp" />
     <ClCompile Include="..\Private\VIBuffer_Cube.cpp" />
     <ClCompile Include="..\Private\VIBuffer_Instance.cpp" />
@@ -341,6 +343,7 @@ call Copy.bat</Command>
       <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">GS_MAIN</EntryPointName>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compute</ShaderType>
     </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_Downsampling_Depth.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Effect.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_HDR.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Line.hlsl" />

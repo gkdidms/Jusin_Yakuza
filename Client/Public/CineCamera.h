@@ -36,8 +36,9 @@ public:
     virtual HRESULT                                 Render() override;
 
     HRESULT                                         Load_CamBin(int iFileNum);
-    void                                            Setting_Start_Cinemachine(); /* 이미 생성 후 */
+    void                                            Setting_Start_Cinemachine(int iCineNum); /* 이미 생성 후 */
     void                                            Initialize_Camera_Class();
+
 
 private:
     HRESULT                                         Import_Bin_Cam_Data_OnTool(CAMERAOBJ_IO* camData, int iFileNum);
@@ -56,9 +57,12 @@ private:
 
 
 private:
-    class CSystemManager* m_pSystemManager = { nullptr };
+    class CSystemManager*                           m_pSystemManager = { nullptr };
     _float                                          m_fSensor = { 0.f };
     vector<CAMERAOBJ_DESC>							m_vCamerasObjDesc;
+
+
+    vector<CAMERAOBJ_IO>                            m_vCameraStorage;
 
     int                                             m_iCurCamIndex = { 0 };
 

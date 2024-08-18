@@ -1083,7 +1083,7 @@ HRESULT CCamera_Manager::Export_Bin_Cam_Data(CAMERAOBJ_IO* camData, int iSaveNum
 	strcpy_s(fullPath, "../../Client/Bin/DataFiles/CameraData/");
 
 	strcat_s(fullPath, "Camera_Data");
-
+	strcat_s(fullPath, "_");
 	string strNum = to_string(iSaveNum);
 	char cLevel[20];
 	strcpy_s(cLevel, strNum.c_str());

@@ -52,6 +52,11 @@ HRESULT CRenderer::Initialize()
 	if (FAILED(Ready_MRTs()))
 		return E_FAIL;
 
+
+	if (FAILED(Ready_OcculusionDepth()))
+		return E_FAIL;
+
+
 	m_pVIBuffer = CVIBuffer_Rect::Create(m_pDevice, m_pContext);
 	if (nullptr == m_pVIBuffer)
 		return E_FAIL;
@@ -69,6 +74,11 @@ HRESULT CRenderer::Initialize()
 	m_pComputeShader[BLURY] = CComputeShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_BlurY.hlsl"));
 	if (nullptr == m_pComputeShader[BLURY])
 		return E_FAIL;
+	m_pComputeShader[DOWNSAMPLING_DEPTH] = CComputeShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_Downsampling_Depth.hlsl"));
+	if (nullptr == m_pComputeShader[DOWNSAMPLING_DEPTH])
+		return E_FAIL;
+
+
 
 	/* 화면을 꽉 채워주기 위한 월드변환행렬. */
 	D3D11_VIEWPORT ViewPort{};
@@ -149,8 +159,11 @@ HRESULT CRenderer::Initialize()
 		return E_FAIL;
 
 
-	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_DecalContainDiffuse"), 950.f, 150.f, 100.f, 100.f)))
+	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_OcculusionDepth"), 950.f, 150.f, 100.f, 100.f)))
 		return E_FAIL;
+
+
+
 #endif // _DEBUG
 
 
@@ -373,6 +386,32 @@ HRESULT CRenderer::Ready_Targets()
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_FinalResult"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
 
+#pragma region MRT_Occulusion
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_OcculusionDepth"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(1.f, 1.f, 1.f, 1.f))))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_640x360_Occulusion"), 1, 1, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(1.f, 1.f, 1.f, 1.f), true)))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_320x180_Occulusion"), 1, 1, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(1.f, 1.f, 1.f, 1.f), true)))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_160x90_Occulusion"), 1, 1, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(1.f, 1.f, 1.f, 1.f), true)))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_80x45_Occulusion"), 1, 1, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(1.f, 1.f, 1.f, 1.f), true)))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_40x23_Occulusion"), 1, 1, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(1.f, 1.f, 1.f, 1.f), true)))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_20x12_Occulusion"), 1, 1, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(1.f, 1.f, 1.f, 1.f), true)))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_10x6_Occulusion"), 1, 1, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(1.f, 1.f, 1.f, 1.f), true)))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_5x3_Occulusion"), 1, 1, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(1.f, 1.f, 1.f, 1.f), true)))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_3x2_Occulusion"), 1, 1, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(1.f, 1.f, 1.f, 1.f), true)))
+		return E_FAIL;
+#pragma endregion
+
+
+
 	return S_OK;
 }
 
@@ -546,6 +585,10 @@ HRESULT CRenderer::Ready_MRTs()
 		return E_FAIL;
 	
 
+	/* MRT_Occulusion */
+	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_Occulusion"), TEXT("Target_OcculusionDepth"))))
+		return E_FAIL;
+
 
 	return S_OK;
 }
@@ -661,6 +704,48 @@ HRESULT CRenderer::Ready_SSAONoiseTexture() // SSAO 연산에 들어갈 랜덤 벡터 텍스
 	return S_OK;
 }
 
+HRESULT CRenderer::Ready_OcculusionDepth()
+{
+	if (nullptr == m_pDevice)
+		return E_FAIL;
+
+	ID3D11Texture2D* pDepthTextureView = nullptr;
+
+	D3D11_TEXTURE2D_DESC depthDesc = {};
+	ZeroMemory(&depthDesc, sizeof(D3D11_TEXTURE2D_DESC));
+	depthDesc.Width = 1280;
+	depthDesc.Height = 720;
+	depthDesc.MipLevels = 1;
+	depthDesc.ArraySize = 1;
+	depthDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT;
+	depthDesc.SampleDesc.Quality = 0;
+	depthDesc.SampleDesc.Count = 1;
+	depthDesc.Usage = D3D11_USAGE_DEFAULT;
+	depthDesc.BindFlags = D3D11_BIND_DEPTH_STENCIL;
+	depthDesc.CPUAccessFlags = 0;
+	depthDesc.MiscFlags = 0;
+
+
+	if (FAILED(m_pDevice->CreateTexture2D(&depthDesc, nullptr, &pDepthTextureView)))
+		return E_FAIL;
+
+
+	D3D11_DEPTH_STENCIL_VIEW_DESC depthStencilViewDesc = {};
+	depthStencilViewDesc.Format = DXGI_FORMAT_D24_UNORM_S8_UINT; // 뷰의 포맷
+	depthStencilViewDesc.ViewDimension = D3D11_DSV_DIMENSION_TEXTURE2D; // 2D 텍스처로 뷰 설정
+	depthStencilViewDesc.Flags = 0; // 추가 옵션 없음
+
+	depthStencilViewDesc.Texture2D.MipSlice = 0; // Mip 레벨 0 사용
+
+	// 깊이/스텐실 뷰 생성
+	if (FAILED(m_pDevice->CreateDepthStencilView(pDepthTextureView, &depthStencilViewDesc, &m_pOcculusionDepthView)))
+		return E_FAIL;
+
+	Safe_Release(pDepthTextureView);
+
+	return S_OK;
+}
+
 void CRenderer::Add_Renderer(RENDERER_STATE eRenderState, CGameObject* pGameObject)
 {
 	m_RenderObject[eRenderState].push_back(pGameObject);
@@ -768,6 +853,18 @@ void CRenderer::Clear()
 	m_DebugComponents.clear();
 
 #endif // _DEBUG
+}
+
+void CRenderer::Occulusion_Culling_Draw()
+{
+	// 처음 Depth 비교
+	Render_OcculusionDepth();
+
+	// 다운 샘플링
+	Render_OcculusionDownSampling();
+
+	// 다운 샘플링 한 것과 depth 비교
+	Check_OcculusionCulling();
 }
 
 #ifdef _DEBUG
@@ -1830,6 +1927,94 @@ void CRenderer::Render_UI()
 	m_RenderObject[RENDER_UI].clear();
 }
 
+void CRenderer::Render_OcculusionDepth()
+{
+	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_Occulusion"), m_pOcculusionDepthView)))
+		return;
+
+	for (auto& pGameObject : m_RenderObject[RENDER_OCCULUSION])
+	{
+		if (nullptr != pGameObject)
+			pGameObject->Render_OcculusionDepth();
+	}
+
+	if (FAILED(m_pGameInstance->End_MRT()))
+		return;
+}
+
+void CRenderer::Render_OcculusionDownSampling()
+{
+	//컴퓨트 다운샘플링 진행
+	for (size_t i = 0; i < 9; ++i)
+	{
+		if (i == 0)
+		{
+			m_pGameInstance->Bind_ComputeRenderTargetSRV(TEXT("Target_OcculusionDepth"));
+			m_pGameInstance->Bind_ComputeRenderTargetUAV(TEXT("Target_640x360_Occulusion"));
+		}
+		else if (i == 1)
+		{
+			m_pGameInstance->Bind_ComputeRenderTargetSRV(TEXT("Target_640x360_Occulusion"));
+			m_pGameInstance->Bind_ComputeRenderTargetUAV(TEXT("Target_320x180_Occulusion"));
+		}
+		else if (i == 2)
+		{
+			m_pGameInstance->Bind_ComputeRenderTargetSRV(TEXT("Target_320x180_Occulusion"));
+			m_pGameInstance->Bind_ComputeRenderTargetUAV(TEXT("Target_160x90_Occulusion"));
+		}
+		else if (i == 3)
+		{
+			m_pGameInstance->Bind_ComputeRenderTargetSRV(TEXT("Target_160x90_Occulusion"));
+			m_pGameInstance->Bind_ComputeRenderTargetUAV(TEXT("Target_80x45_Occulusion"));
+		}
+		else if (i == 4)
+		{
+			m_pGameInstance->Bind_ComputeRenderTargetSRV(TEXT("Target_80x45_Occulusion"));
+			m_pGameInstance->Bind_ComputeRenderTargetUAV(TEXT("Target_40x23_Occulusion"));
+		}
+		else if (i == 5)
+		{
+			m_pGameInstance->Bind_ComputeRenderTargetSRV(TEXT("Target_40x23_Occulusion"));
+			m_pGameInstance->Bind_ComputeRenderTargetUAV(TEXT("Target_20x12_Occulusion"));
+		}
+		else if (i == 6)
+		{
+			m_pGameInstance->Bind_ComputeRenderTargetSRV(TEXT("Target_20x12_Occulusion"));
+			m_pGameInstance->Bind_ComputeRenderTargetUAV(TEXT("Target_10x6_Occulusion"));
+		}
+		else if (i == 7)
+		{
+			m_pGameInstance->Bind_ComputeRenderTargetSRV(TEXT("Target_10x6_Occulusion"));
+			m_pGameInstance->Bind_ComputeRenderTargetUAV(TEXT("Target_5x3_Occulusion"));
+		}
+		else if (i == 8)
+		{
+			m_pGameInstance->Bind_ComputeRenderTargetSRV(TEXT("Target_5x3_Occulusion"));
+			m_pGameInstance->Bind_ComputeRenderTargetUAV(TEXT("Target_3x2_Occulusion"));
+		}
+
+
+		UINT threadGroupX = (1280 + 15) / 16;
+		UINT threadGroupY = (720 + 15) / 16;
+
+		m_pComputeShader[DOWNSAMPLING_DEPTH]->Render(threadGroupX, threadGroupY, 1);
+	}
+}
+
+void CRenderer::Check_OcculusionCulling()
+{
+
+	for (auto& pGameObject : m_RenderObject[RENDER_OCCULUSION])
+	{
+		if (nullptr != pGameObject)
+			pGameObject->Check_OcculusionCulling();
+
+		Safe_Release(pGameObject);
+	}
+	m_RenderObject[RENDER_OCCULUSION].clear();
+
+}
+
 
 
 #ifdef _DEBUG
@@ -1910,8 +2095,8 @@ void CRenderer::Render_Debug()
 	if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_FinalResult"), m_pShader, m_pVIBuffer)))
 		return;
 
-	
-
+	if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_Occulusion"), m_pShader, m_pVIBuffer)))
+		return;
 }
 #endif // DEBUG
 
@@ -1946,6 +2131,8 @@ void CRenderer::Free()
 	}
 
 	Safe_Delete_Array(m_vSSAOKernal);
+
+	Safe_Release(m_pOcculusionDepthView);
 
 	Safe_Release(m_pLightDepthStencilView);
 	Safe_Release(m_pSSAONoiseView);
