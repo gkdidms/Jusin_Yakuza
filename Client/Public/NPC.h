@@ -9,6 +9,12 @@ BEGIN(Client)
 class CNPC abstract:
     public CLandObject
 {
+public:
+    typedef struct tMapNPCObjDesc : public CLandObject::LANDOBJ_MAPDESC
+    {
+
+    }NPC_IODESC;
+
 protected:
     CNPC(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
     CNPC(const CNPC& rhs);

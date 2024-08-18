@@ -148,7 +148,11 @@ void CItem::Tick(const _float& fTimeDelta)
 	// Bright 처리
 	bool		bBright = m_bBright;
 
-	if (0 != m_fBrightTime && ITEM_BRIGHT != m_eItemMode)
+	if (true == m_bDissovle)
+	{
+		m_fDissolveTime += fTimeDelta * 0.4;
+	}
+	else if (0 != m_fBrightTime && ITEM_BRIGHT != m_eItemMode)
 	{
 		// bright 모드 아닌데 아직 깜빡거림이 안끝났을때
 		m_bBright = true;
@@ -333,20 +337,33 @@ HRESULT CItem::Render()
 			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
 				return E_FAIL;
 
+			if (true != m_bDissovle)
+			{
+				if (FAILED(m_pShaderCom->Bind_RawValue("g_bBright", &m_bBright, sizeof(_bool))))
+					return E_FAIL;
 
-			if (FAILED(m_pShaderCom->Bind_RawValue("g_bBright", &m_bBright, sizeof(_bool))))
-				return E_FAIL;
+				if (FAILED(m_pShaderCom->Bind_RawValue("g_fBrightTime", &m_fBrightTime, sizeof(_float))))
+					return E_FAIL;
 
-			if (FAILED(m_pShaderCom->Bind_RawValue("g_fBrightTime", &m_fBrightTime, sizeof(_float))))
-				return E_FAIL;
+				m_pShaderCom->Begin(SHADER_DEFAULT_BRIGHT);
+			}
+			else
+			{
+				
+				m_pDissolveTextureCom->Bind_ShaderResource(m_pShaderCom, "g_DissolveTexture", 0);
 
+				if (FAILED(m_pShaderCom->Bind_ValueFloat("g_fDissolveTime", m_fDissolveTime)))
+					return E_FAIL;
 
-			m_pShaderCom->Begin(SHADER_DEFAULT_BRIGHT);
+				m_pShaderCom->Begin(SHADER_DISSOLVE);
+				
+			}
 
 			m_pModelCom->Render(i);
 		}
-		
+
 	}
+	
 	
 
 	return S_OK;
@@ -429,6 +446,10 @@ void CItem::Throw_On(THROW_INFO_DESC& Desc)
 
 	m_pPlayerMatrix = nullptr;
 	m_vParentMatrix = nullptr;
+
+	// Dissolve 시작
+	m_bDissovle = true;
+
 }
 
 void CItem::Throwing(const _float& fTimeDelta)
@@ -494,6 +515,12 @@ HRESULT CItem::Add_Components(void* pArg)
 		TEXT("Com_Navigation"), reinterpret_cast<CComponent**>(&m_pNavigationCom))))
 		return E_FAIL;
 
+
+	/* For.Com_SubTexture */
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Texture_Dissolve_0"),
+		TEXT("Com_SubTexture"), reinterpret_cast<CComponent**>(&m_pDissolveTextureCom))))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -508,6 +535,7 @@ HRESULT CItem::Bind_ShaderResources()
 
 	if (FAILED(m_pShaderCom->Bind_RawValue("g_fFar", m_pGameInstance->Get_CamFar(), sizeof(_float))))
 		return E_FAIL;
+
 
 	return S_OK;
 }
@@ -549,6 +577,9 @@ void CItem::Free()
 	//for (auto& iter : m_vColliders)
 	//	Safe_Release(iter);
 	//m_vColliders.clear();
+
+
+	Safe_Release(m_pDissolveTextureCom);
 
 	Safe_Release(m_pColliderCom);
 	Safe_Release(m_pOBBColliderCom);

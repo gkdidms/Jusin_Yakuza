@@ -14,13 +14,9 @@ class CAdventure abstract :
     public CLandObject
 {
 public:
-    typedef struct tMapAdventureObjDesc : public CGameObject::GAMEOBJECT_DESC
+    typedef struct tMapAdventureObjDesc : public CLandObject::LANDOBJ_MAPDESC
     {
-        XMMATRIX		vStartPos;
-        wstring			wstrModelName;
-        int				iShaderPass;
-        int             iNaviNum;
-        int             iNaviRouteNum;
+        
     }ADVENTURE_IODESC;
 
 public:

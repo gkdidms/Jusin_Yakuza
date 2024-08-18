@@ -33,7 +33,16 @@ public:
 		MONSTER_WPH,
 		MONSTER_DEFAULT,
 		MAP_NONCULL, // MAP이랑 같은 클래스지만 컬링 안들어감(통MESH)
-		MAP_LOCALCULL,
+
+
+		ROADNML,
+		ROADCAB,
+		ROADSTANDING_NML,
+		ROADTISSUE,
+		ROADYOP,
+		MONSTERGROUP,
+		NISHIKI,
+		ADVENTURE_REACTOR,
 		OBJ_END
 	};
 
@@ -76,7 +85,8 @@ public:
 
 	HRESULT									Set_NaviRoute_In_Client(int iRouteNum);
 
-	void									Load_Cinemachine(int iCineNum, int iStageLevel);
+	void									Load_Cinemachine(int iCineNum, int iStageLevel); //Cinemachine 카메라 정보 자체를 load
+	void									Setting_Start_Cinemachine(int iCineNum);
 
 	/* LEVEL 바뀌면 초기화 시키기 */
 	void									Reset_Cinemachine();
@@ -92,7 +102,7 @@ private:
 	TRIGGER_IO								m_Trigger{};
 	MAP_TOTALINFORM_DESC					m_MapTriggerInform{}; //Trigger로 불러오는 object
 
-	vector<wstring>							m_Layers = { TEXT("Layer_GameObjects"), TEXT("Layer_Monster"), TEXT("Layer_Player"), TEXT("Layer_NPC"), TEXT("Layer_Item") };
+	vector<wstring>							m_Layers = { TEXT("Layer_GameObjects"), TEXT("Layer_Monster"), TEXT("Layer_Player"), TEXT("Layer_NPC"), TEXT("Layer_Item"), TEXT("Layer_Passerby"),  TEXT("Layer_MonsterGroup"), TEXT("Layer_Nishiki") , TEXT("Layer_AdventureReactor") };
 
 private:
 	HRESULT									Set_Terrain_Size(int iStageLevel);
