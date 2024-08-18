@@ -398,7 +398,7 @@ HRESULT CRenderer::Ready_Targets()
 		return E_FAIL;
 
 #pragma region MRT_Occulusion
-	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_OcculusionDepth"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(1.f, 1.f, 1.f, 1.f))))
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_OcculusionDepth"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R32_FLOAT, _float4(1.f, 1.f, 1.f, 1.f))))
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_640x360_Occulusion"), 640, 360, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(1.f, 1.f, 1.f, 1.f), true)))
@@ -876,7 +876,7 @@ void CRenderer::Occulusion_Culling_Draw()
 	// Render_OcculusionDownSampling();
 
 	// 다운 샘플링 한 것과 depth 비교
-	Check_OcculusionCulling();
+	//Check_OcculusionCulling();
 }
 
 #ifdef _DEBUG
