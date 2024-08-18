@@ -63,13 +63,6 @@ public:
         return (0 < m_PlayScene.size());
     }
 
-    /* Setter */
-public:
-    void Set_Player(class CPlayer* pPlayer)
-    {
-        m_pPlayer = pPlayer;
-    }
-
     //임시 토크매니저 확인용 제작
 public:
     void Start_Talk(_uint iScriptIndex);
@@ -84,6 +77,7 @@ public: // 스토리 UI
     //카라오케 점수 전달용
 public:
     void Set_Score(_uint iScore);
+    //파이트 스코어 (돈)
 public:
     void Set_Money(_uint Money) { m_Money = Money; }
     _uint Get_Money() { return m_Money; }
@@ -110,8 +104,6 @@ private:
 
 private:
     _uint m_Money = { 0 };
-private:
-    class CPlayer* m_pPlayer = { nullptr };
 
 public:
    CUIScene* Find_Scene(wstring strSceneName);      

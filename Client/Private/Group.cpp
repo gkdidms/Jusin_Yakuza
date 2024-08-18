@@ -28,6 +28,12 @@ CGroup::CGroup(const CGroup& rhs)
 
 }
 
+void CGroup::Set_isPlay(_bool isPlay)
+{
+	for (auto& iter : m_PartObjects)
+		iter->Set_isPlay(isPlay);
+}
+
 void CGroup::Remove_PartObject(_uint iIndex)
 {
 	auto iter = m_PartObjects.begin();

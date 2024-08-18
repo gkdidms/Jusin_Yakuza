@@ -157,23 +157,23 @@ HRESULT CLevel_Test::Ready_Camera(const wstring& strLayerTag)
 	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_CutSceneCamera"), strLayerTag, &CutSceneCameraDesc)))
 		return E_FAIL;
 
-	///* 4. 추격전용 카메라 */
-	CCarChaseCamera::CARCHASE_CAMERA_DESC		CarChaseCameraDesc{};
-	CarChaseCameraDesc.vEye = _float4(3.f, 2.f, 0.f, 1.f);
-	CarChaseCameraDesc.vFocus = _float4(0.f, 0.0f, 0.0f, 1.f);
-	CarChaseCameraDesc.fFovY = XMConvertToRadians(60.0f);
-	CarChaseCameraDesc.fAspect = g_iWinSizeX / (_float)g_iWinSizeY;
-	CarChaseCameraDesc.fNear = 0.1f;
-	CarChaseCameraDesc.fFar = 3000.f;
-	CarChaseCameraDesc.fSpeedPecSec = 10.f;
-	CarChaseCameraDesc.fRotatePecSec = XMConvertToRadians(90.f);
-	CarChaseCameraDesc.fSensor = 0.1f;
-	//CHighway_Taxi* pTaxi = dynamic_cast<CHighway_Taxi*>(m_pGameInstance->Get_GameObject(LEVEL_TEST, TEXT("Layer_Taxi"), 0));
-	//CarChaseCameraDesc.pPlayerMatrix = pTaxi->Get_TransformCom()->Get_WorldFloat4x4();
-	//CarChaseCameraDesc.pPlayerBoneMatrix = pTaxi->Get_KiryuBoneMatrix("kubi_c_n");
+	/////* 4. 추격전용 카메라 */
+	//CCarChaseCamera::CARCHASE_CAMERA_DESC		CarChaseCameraDesc{};
+	//CarChaseCameraDesc.vEye = _float4(3.f, 2.f, 0.f, 1.f);
+	//CarChaseCameraDesc.vFocus = _float4(0.f, 0.0f, 0.0f, 1.f);
+	//CarChaseCameraDesc.fFovY = XMConvertToRadians(60.0f);
+	//CarChaseCameraDesc.fAspect = g_iWinSizeX / (_float)g_iWinSizeY;
+	//CarChaseCameraDesc.fNear = 0.1f;
+	//CarChaseCameraDesc.fFar = 3000.f;
+	//CarChaseCameraDesc.fSpeedPecSec = 10.f;
+	//CarChaseCameraDesc.fRotatePecSec = XMConvertToRadians(90.f);
+	//CarChaseCameraDesc.fSensor = 0.1f;
+	////CHighway_Taxi* pTaxi = dynamic_cast<CHighway_Taxi*>(m_pGameInstance->Get_GameObject(LEVEL_TEST, TEXT("Layer_Taxi"), 0));
+	////CarChaseCameraDesc.pPlayerMatrix = pTaxi->Get_TransformCom()->Get_WorldFloat4x4();
+	////CarChaseCameraDesc.pPlayerBoneMatrix = pTaxi->Get_KiryuBoneMatrix("kubi_c_n");
 
-	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_CarChaseCamera"), strLayerTag, &CarChaseCameraDesc)))
-		return E_FAIL;
+	//if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_CarChaseCamera"), strLayerTag, &CarChaseCameraDesc)))
+	//	return E_FAIL;
 
 	return S_OK;
 }
