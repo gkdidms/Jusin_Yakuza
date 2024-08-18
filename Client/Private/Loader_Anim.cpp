@@ -398,7 +398,7 @@ HRESULT CLoader_Anim::Loading_For_LogoLevel()
 
 	/* For.Prototype_GameObject_Nishiki*/
 	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Nishiki"),
-		CRoadTissue::Create(m_pDevice, m_pContext))))
+		CNishiki::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 #pragma endregion
 

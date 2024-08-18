@@ -59,10 +59,14 @@ public: //오브젝트들의 정보를 저장
     {
         XMMATRIX		vStartPos;
         wstring			wstrModelName;
+        int             iObjectType;
         int				iShaderPass;
         int             iNaviNum;
         int             iNaviRouteNum;
         int             iNPCDirection;
+
+        int             iGroupMonster;
+        int             iGroupNum;
     }LANDOBJ_MAPDESC;
 
 protected:
