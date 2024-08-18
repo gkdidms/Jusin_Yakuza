@@ -14,7 +14,7 @@ CUIScene::CUIScene(const CUIScene& rhs)
 
 }
 
-HRESULT CUIScene::Add_UIData(CUI_Object* pUIObject)
+HRESULT CUIScene::Add_UIData(CUI_Object* pUIObject, wstring wstrPrototypeTag)
 {
 	
 	if (pUIObject->Get_Event())
@@ -65,7 +65,6 @@ HRESULT CUIScene::Show_Scene()
 
 HRESULT CUIScene::Close_Scene()
 {
-
 	for (auto& iter : m_UI)
 	{
 		iter->Close_UI();
@@ -80,6 +79,7 @@ HRESULT CUIScene::Close_Scene()
 	}
 	m_isAnimFin = false;
 	m_isClose = true;
+	m_isOpen = false;
 	m_iCurButton = -1;
 	m_iPrevButton = -1;
 	return S_OK;

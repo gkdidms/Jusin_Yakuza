@@ -139,6 +139,10 @@ void CPlayer::Tick(const _float& fTimeDelta)
 	m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Change_Animation();
 	m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Tick(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")));
 
+	//대화중일 경우 플레이어는 움직이거나 공격하지 않는다.
+	if (m_pUIManager->isOpen(TEXT("Talk")) && m_pUIManager->isOpen(TEXT("Inven")) && m_pUIManager->isOpen(TEXT("Title")))
+		return;
+
 	// 배틀 시작 애니메이션 아닐 경우 타임델타를 1로 고정시켜준다.
 	if (!m_isHitFreeze && m_iCurrentBehavior != (_uint)KRS_BEHAVIOR_STATE::BTL_START)
 		m_pGameInstance->Set_TimeSpeed(TEXT("Timer_60"), 1.f);
@@ -278,7 +282,7 @@ void CPlayer::Tick(const _float& fTimeDelta)
 	Effect_Control_Aura();
 	Setting_Target_Enemy();
 	Setting_Target_Item();
-	Setting_Target_Wall();
+	//Setting_Target_Wall();
 
 	m_pQTEMgr->Tick(fTimeDelta);
 }
@@ -2001,6 +2005,8 @@ void CPlayer::Set_CutSceneAnim(CUTSCENE_ANIMATION_TYPE eType, _uint iFaceAnimInd
 	auto iter = m_CutSceneAnimation.find(eType);
 	if (m_CutSceneAnimation.end() == iter) return;
 
+	m_eCutSceneType = eType;
+
 	//m_iFaceAnimIndex = iFaceAnimIndex;
 
 	//On_Separation_Face();			// 얼굴 애니메이션 켜기
@@ -2040,6 +2046,8 @@ void CPlayer::Set_CutSceneAnim(CUTSCENE_ANIMATION_TYPE eType, _uint iFaceAnimInd
 		}
 		j++;
 	}
+
+	m_pTargetObject->Set_Sync(m_CutSceneAnimation[m_eCutSceneType]);
 
 	m_pQTEMgr->Set_Animation(m_pAnimCom, m_CutSceneAnimation.at(eType));
 }
@@ -2474,12 +2482,12 @@ void CPlayer::Off_Aura(BATTLE_STYLE eStyle)
 
 void CPlayer::AccHitGauge()
 {
-	//if (PLAYER_HITGAUGE_LEVEL_INTERVAL * 3.f < m_fHitGauge)
-	//	m_fHitGauge = PLAYER_HITGAUGE_LEVEL_INTERVAL * 3.f;
-	//else
-	//	m_fHitGauge += 5.f;
+	if (PLAYER_HITGAUGE_LEVEL_INTERVAL * 3.f < m_fHitGauge)
+		m_fHitGauge = PLAYER_HITGAUGE_LEVEL_INTERVAL * 3.f;
+	else
+		m_fHitGauge += 5.f;
 
-	//m_iCurrentHitLevel = (m_fHitGauge / PLAYER_HITGAUGE_LEVEL_INTERVAL);
+	m_iCurrentHitLevel = (m_fHitGauge / PLAYER_HITGAUGE_LEVEL_INTERVAL);
 }
 
 void CPlayer::Setting_RimLight()

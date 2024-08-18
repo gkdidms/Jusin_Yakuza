@@ -9,13 +9,14 @@
 #include "TutorialManager.h"
 #include "FightManager.h"
 #include "UIManager.h"
+#include "KaraokeManager.h"
 
 #include "PlayerCamera.h"
 #include "DebugCamera.h"
 #include "CineCamera.h"
 #include "CutSceneCamera.h"
 #include "CarChaseCamera.h"
-#include <Highway_Taxi.h>
+#include "Highway_Taxi.h"
 
 CLevel_Test::CLevel_Test(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLevel{ pDevice, pContext },
@@ -39,12 +40,12 @@ HRESULT CLevel_Test::Initialize()
 	// 네비 다르면 터짐
 	// 테스트 다하면 지워라
 	/* For.Prototype_Component_Navigation */
-	//if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Navigation"),
-	//	CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/NaviData/Navigation_79.dat")))))
-	//	return E_FAIL;
-
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Navigation"),
-		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/NaviData/Navigation_99.dat")))))
+		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/NaviData/Navigation_9.dat")))))
+		return E_FAIL;
+
+	m_pKaraokeManager = CKaraokeManager::Create();
+	if (nullptr == m_pKaraokeManager)
 		return E_FAIL;
 
 	//m_pCarChaseManager = CCarChaseManager::Create(m_pDevice, m_pContext);
@@ -72,23 +73,14 @@ HRESULT CLevel_Test::Initialize()
 	//if (FAILED(Ready_Test_Load()))
 	//	return E_FAIL;
 
-	//혜원 테스트 용
-	//if (FAILED(Ready_Test_Hyewon()))
-	//	return E_FAIL;
+	// 혜원테스트용
+	if (FAILED(Ready_Test_Hyewon()))
+		return E_FAIL;
 
-	//m_pFileTotalManager->Set_MapObj_In_Client(98, LEVEL_TEST);
+	//m_pFileTotalManager->Set_MapObj_In_Client(70, LEVEL_TEST);
 	//m_pFileTotalManager->Set_Lights_In_Client(90);
 	//m_pFileTotalManager->Set_Collider_In_Client(3, LEVEL_TEST);
-	////m_pFileTotalManager->Set_Trigger_In_Client(79, LEVEL_TEST);
-
-	//if (FAILED(Ready_Test_Hyewon()))
-	//	return E_FAIL;
-
-	m_pFileTotalManager->Set_MapObj_In_Client(70, LEVEL_TEST);
-	m_pFileTotalManager->Set_Lights_In_Client(90);
-	m_pFileTotalManager->Set_Collider_In_Client(3, LEVEL_TEST);
 	//m_pFileTotalManager->Set_Trigger_In_Client(79, LEVEL_TEST);
-
 
 	m_pFightManager->Set_FightStage(true);
 
@@ -100,9 +92,10 @@ HRESULT CLevel_Test::Initialize()
 
 void CLevel_Test::Tick(const _float& fTimeDelta)
 {
+	m_pKaraokeManager->Tick(fTimeDelta);
 	//m_pCarChaseManager->Tick();
 	//m_pTutorialManager->Tick();
-	m_pFightManager->Tick(fTimeDelta);
+	//m_pFightManager->Tick(fTimeDelta);
 #ifdef _DEBUG
 	SetWindowText(g_hWnd, TEXT("테스트 레벨"));
 #endif
@@ -193,14 +186,12 @@ HRESULT CLevel_Test::Ready_Player(const wstring& strLayerTag)
 	Desc.fRotatePecSec = XMConvertToRadians(180.f);
 
 	// 원래 플레이어
-	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_Player"), strLayerTag, &Desc)))
-		return E_FAIL;
-	//if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_Kiryu_Karaoke"), strLayerTag, &Desc)))
+	//if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_Player"), strLayerTag, &Desc)))
 	//	return E_FAIL;
 
 	// 가라오케 플레이어
-	//if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_Kiryu_Karaoke"), strLayerTag, &Desc)))
-	//	return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_Kiryu_Karaoke"), strLayerTag, &Desc)))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -226,7 +217,7 @@ HRESULT CLevel_Test::Ready_Test_Hyewon()
 	// 과거의 길거리맵 79
 	// 길거리맵 네비: 7
 	// 과거의 길거리맵 네비: 79
-	m_pFileTotalManager->Set_MapObj_In_Client(91, LEVEL_TEST);
+	m_pFileTotalManager->Set_MapObj_In_Client(81, LEVEL_TEST);
 	m_pFileTotalManager->Set_Lights_In_Client(9);
 	m_pFileTotalManager->Set_Collider_In_Client(0, LEVEL_TEST);
 	m_pFileTotalManager->Set_Trigger_In_Client(79, LEVEL_TEST);
@@ -257,5 +248,6 @@ void CLevel_Test::Free()
 	Safe_Release(m_pCarChaseManager);
 	Safe_Release(m_pTutorialManager);
 	Safe_Release(m_pUIManager);
+	Safe_Release(m_pKaraokeManager);
 	Safe_Release(m_pFightManager);
 }
