@@ -201,6 +201,7 @@ protected:
     //뼈 이름, 소켓 이펙트
     multimap<string, class CSocketEffect*>      m_pEffects;
     map<string, class CSocketEffect*>           m_pTrailEffects;
+    map<string, class CSocketEffect*>           m_pBloodEffects;
 
     // 분할한 애니메이션을 실행할 애님 컴포넌트를 들고있을 배열
     vector<CAnim*>        m_SeparationAnimComs;

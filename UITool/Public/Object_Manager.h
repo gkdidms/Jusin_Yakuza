@@ -15,8 +15,11 @@ class CObject_Manager :
 {
     DECLARE_SINGLETON(CObject_Manager)
 
+    //HEADUI와 IMG는 비슷해서 툴에서 볼때는 IMG 로 보고 
+    //클라에서 쓸때는 HEADUI로 씀
+
 public:
-    enum TEXTURE_TYPE { IMG, BTN, TEXT,  GROUP, EFFECT,  TEXTURE_TYPE_END };
+    enum TEXTURE_TYPE { IMG, BTN, TEXT,  GROUP, EFFECT, HEADUI, TEXTURE_TYPE_END };
     enum MOVE_TYPE { UP, DOWN, MOVE_END };
     typedef struct {
         _uint iTextureType;

@@ -37,6 +37,8 @@
 #include "CarChase_Sedan.h"
 #include "CarChase_Bike.h"
 #include "CarChase_Heli.h"
+
+#include "MonsterGroup.h"
 #pragma endregion
 
 #pragma region Weapon
@@ -55,6 +57,11 @@
 
 #pragma region Adventure
 #include "RoadNML.h"
+#include "RoadYOP.h"
+
+#include "RoadCAB.h"
+#include "RoadTissue.h"
+#include "RoadStanding_NML.h"
 #pragma endregion
 
 #pragma region BTNode
@@ -67,6 +74,10 @@
 #include "AI_Yoneda.h"
 
 #include "AI_RoadNML.h"
+#include "AI_RoadCAB.h"
+#include "AI_RoadTissue.h"
+#include "AI_RoadStanding_NML.h"
+#include "RoadYOP.h"
 
 #include "AI_Van.h"
 #include "AI_Bike.h"
@@ -659,6 +670,7 @@ HRESULT CMultiLoader::Loading_Default()
 #pragma region Meterial
 	Add_Components_On_Path_Material(m_eNextLevel, TEXT("../Bin/DataFiles/MaterialData/Char/Player"));
 	Add_Components_On_Path_Material(m_eNextLevel, TEXT("../Bin/DataFiles/MaterialData/Char/Monster"));
+	Add_Components_On_Path_Material(m_eNextLevel, TEXT("../Bin/DataFiles/MaterialData/Char/NPC"));
 	Add_Components_On_Path_Material(m_eNextLevel, TEXT("../Bin/DataFiles/MaterialData/Reactor"));
 	Add_Components_On_Path_Material(m_eNextLevel, TEXT("../Bin/DataFiles/MaterialData/Map/Map0"));
 	Add_Components_On_Path_Material(m_eNextLevel, TEXT("../Bin/DataFiles/MaterialData/Map/Map1"));
@@ -688,11 +700,6 @@ HRESULT CMultiLoader::Loading_Default()
 		CAI_Kuze::Create())))
 		return E_FAIL;
 
-	/* For.Prototype_BTNode_Passersby*/
-	if (FAILED(m_pGameInstance->Add_BTNode_Prototype(m_eNextLevel, TEXT("Prototype_BTNode_RoadNML"),
-		CAI_RoadNML::Create())))
-		return E_FAIL;
-
 	/* For.Prototype_BTNode_WPHYakuza*/
 	if (FAILED(m_pGameInstance->Add_BTNode_Prototype(m_eNextLevel, TEXT("Prototype_BTNode_WPHYakuza"),
 		CAI_WPHYakuza::Create())))
@@ -706,6 +713,26 @@ HRESULT CMultiLoader::Loading_Default()
 	/* For.Prototype_BTNode_Yoneda*/
 	if (FAILED(m_pGameInstance->Add_BTNode_Prototype(m_eNextLevel, TEXT("Prototype_BTNode_Yoneda"),
 		CAI_Yoneda::Create())))
+		return E_FAIL;
+
+	/* For.Prototype_BTNode_RoadNML*/
+	if (FAILED(m_pGameInstance->Add_BTNode_Prototype(m_eNextLevel, TEXT("Prototype_BTNode_RoadNML"),
+		CAI_RoadNML::Create())))
+		return E_FAIL;
+
+	/* For.Prototype_BTNode_RoadStanding_NML*/
+	if (FAILED(m_pGameInstance->Add_BTNode_Prototype(m_eNextLevel, TEXT("Prototype_BTNode_RoadStanding_NML"),
+		CAI_RoadStanding_NML::Create())))
+		return E_FAIL;
+
+	/* For.Prototype_BTNode_RoadCAB*/
+	if (FAILED(m_pGameInstance->Add_BTNode_Prototype(m_eNextLevel, TEXT("Prototype_BTNode_RoadCAB"),
+		CAI_RoadCAB::Create())))
+		return E_FAIL;
+
+	/* For.Prototype_BTNode_RoadTissue*/
+	if (FAILED(m_pGameInstance->Add_BTNode_Prototype(m_eNextLevel, TEXT("Prototype_BTNode_RoadTissue"),
+		CAI_RoadTissue::Create())))
 		return E_FAIL;
 
 #pragma endregion
@@ -819,6 +846,7 @@ HRESULT CMultiLoader::Loading_For_Anim()
 {
 	Add_Models_On_Path(LEVEL_TEST, TEXT("../Bin/Resources/Models/Anim/Player/"));
 	Add_Models_On_Path(LEVEL_TEST, TEXT("../Bin/Resources/Models/Anim/Monster/"));
+	Add_Models_On_Path(LEVEL_TEST, TEXT("../Bin/Resources/Models/Anim/NPC/"));
 	Add_Models_On_Path(LEVEL_TEST, TEXT("../Bin/Resources/Models/Anim/Car/"));
 
 	/* For.Prototype_Component_CarChaseAnim */
@@ -850,6 +878,9 @@ HRESULT CMultiLoader::Loading_For_NonAnim()
 	Add_Models_On_Path_NonAnim(LEVEL_TEST, TEXT("../Bin/Resources/Models/NonAnim/Bone_Sphere"));
 
 	Add_Models_On_Path_NonAnim(LEVEL_TEST, TEXT("../Bin/Resources/Models/NonAnim/Gun_Cz75"));
+
+	Add_Models_On_Path_NonAnim(m_eNextLevel, TEXT("../Bin/Resources/Models/NonAnim/Reactor/Moving_Sedan"));
+	Add_Models_On_Path_NonAnim(m_eNextLevel, TEXT("../Bin/Resources/Models/NonAnim/Reactor/Moving_Sedan_2"));
 
 	Add_Models_On_Path_NonAnim(LEVEL_TEST, TEXT("../Bin/Resources/Models/NonAnim/Taxi")); // 논애님이지만 플레이어로 구분
 #pragma endregion

@@ -17,6 +17,10 @@ private:
 public:
     HRESULT Initialize(string strSongName);
 
+public:
+    const vector<class CNoteBase*>* Get_Notes() {
+        return &m_Notes;
+    }
 
 private:
     HRESULT Load_NoteData(string strSongName);

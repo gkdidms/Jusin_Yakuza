@@ -370,17 +370,14 @@
     <ClCompile Include="..\Private\Kiryu_KRS_Grab.cpp">
       <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\Grab</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\Adventure.cpp">
-      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure</Filter>
-    </ClCompile>
     <ClCompile Include="..\private\RoadNML.cpp">
-      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\Walker\00.NML</Filter>
+      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby\01.Walker\00.NML</Filter>
     </ClCompile>
     <ClCompile Include="..\private\AI_RoadWalker.cpp">
-      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\Walker\AI</Filter>
+      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby\01.Walker\AI</Filter>
     </ClCompile>
     <ClCompile Include="..\private\AI_RoadNML.cpp">
-      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\Walker\00.NML\AI</Filter>
+      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby\01.Walker\00.NML\AI</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\UITutorial.cpp">
       <Filter>95.Utility\05.UIManager\UIScene\UITutorial</Filter>
@@ -609,13 +606,13 @@
       <Filter>01.Levels\99.Loading\Loader\New\Other</Filter>
     </ClCompile>
     <ClCompile Include="..\private\RoadStanding_NML.cpp">
-      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\Standing\00.NML</Filter>
+      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby\00.Standing\00.NML</Filter>
     </ClCompile>
     <ClCompile Include="..\private\RoadWalker.cpp">
-      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\Walker</Filter>
+      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby\01.Walker</Filter>
     </ClCompile>
     <ClCompile Include="..\private\RoadStanding.cpp">
-      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\Standing</Filter>
+      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby\00.Standing</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\UIKaraoke_Select.cpp">
       <Filter>95.Utility\05.UIManager\UIScene\UIKaraoke_Select</Filter>
@@ -636,25 +633,61 @@
       <Filter>02.GameObjects\13.HeadUI</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\AI_RoadStanding.cpp">
-      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\AI</Filter>
+      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby\00.Standing\AI</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\RoadYOP.cpp">
-      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\Walker\01.YOP</Filter>
+      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby\01.Walker\01.YOP</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\RoadCAB.cpp">
-      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\Standing\01.CAB</Filter>
+      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby\00.Standing\01.CAB</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\AI_RoadCAB.cpp">
-      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\Standing\01.CAB\AI</Filter>
+      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby\00.Standing\01.CAB\AI</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\AI_RoadStanding_NML.cpp">
-      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\Standing\00.NML\AI</Filter>
+      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby\00.Standing\00.NML\AI</Filter>
     </ClCompile>
     <ClCompile Include="..\private\MonsterGroup.cpp">
-      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\MonsterGroup</Filter>
+      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby\02.MonsterGroup</Filter>
     </ClCompile>
     <ClCompile Include="..\private\FightManager.cpp">
       <Filter>06.FightManager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Adventure.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIFightScore.cpp">
+      <Filter>95.Utility\05.UIManager\UIScene\UIFightScore</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\RoadTissue.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby\00.Standing\02.Tissue</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\AI_RoadTissue.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby\00.Standing\02.Tissue\AI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Adventure_Reactor.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\01.Reactor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Nishiki.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\05.NPC\00.Nishiki</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\NPC.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\05.NPC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\MainQuest.cpp">
+      <Filter>03.QuestManager\Quest\Main</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Chapter1_0.cpp">
+      <Filter>03.QuestManager\Quest\Main\Chapter_1\0</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Chapter1_1.cpp">
+      <Filter>03.QuestManager\Quest\Main\Chapter_1\1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Chapter2_0.cpp">
+      <Filter>03.QuestManager\Quest\Main\Chapter_2\0</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIStoreImage.cpp">
+      <Filter>95.Utility\05.UIManager\UIScene\UIStoreImage</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1060,17 +1093,14 @@
     <ClInclude Include="..\Public\Kiryu_KRS_Grab.h">
       <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\Grab</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\Adventure.h">
-      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure</Filter>
-    </ClInclude>
     <ClInclude Include="..\public\RoadNML.h">
-      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\Walker\00.NML</Filter>
+      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby\01.Walker\00.NML</Filter>
     </ClInclude>
     <ClInclude Include="..\public\AI_RoadWalker.h">
-      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\Walker\AI</Filter>
+      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby\01.Walker\AI</Filter>
     </ClInclude>
     <ClInclude Include="..\public\AI_RoadNML.h">
-      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\Walker\00.NML\AI</Filter>
+      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby\01.Walker\00.NML\AI</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\UITutorial.h">
       <Filter>95.Utility\05.UIManager\UIScene\UITutorial</Filter>
@@ -1296,13 +1326,13 @@
       <Filter>01.Levels\99.Loading\Loader\New\Other</Filter>
     </ClInclude>
     <ClInclude Include="..\public\RoadStanding_NML.h">
-      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\Standing\00.NML</Filter>
+      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby\00.Standing\00.NML</Filter>
     </ClInclude>
     <ClInclude Include="..\public\RoadWalker.h">
-      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\Walker</Filter>
+      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby\01.Walker</Filter>
     </ClInclude>
     <ClInclude Include="..\public\RoadStanding.h">
-      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\Standing</Filter>
+      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby\00.Standing</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\UIKaraoke_Select.h">
       <Filter>95.Utility\05.UIManager\UIScene\UIKaraoke_Select</Filter>
@@ -1320,19 +1350,64 @@
       <Filter>06.FightManager</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\AI_RoadStanding.h">
-      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\AI</Filter>
+      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby\00.Standing\AI</Filter>
     </ClInclude>
     <ClInclude Include="..\public\MonsterGroup.h">
-      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\MonsterGroup</Filter>
+      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby\02.MonsterGroup</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\AI_RoadCAB.h">
-      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\Standing\01.CAB\AI</Filter>
+      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby\00.Standing\01.CAB\AI</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\RoadCAB.h">
-      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\Standing\01.CAB</Filter>
+      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby\00.Standing\01.CAB</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\AI_RoadStanding_NML.h">
-      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\Standing\00.NML\AI</Filter>
+      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby\00.Standing\00.NML\AI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Adventure.h">
+      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\KaraokeManager.h">
+      <Filter>06.KaraokeManager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\KaraokeManager.h">
+      <Filter>06.KaraokeManager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIFightScore.h">
+      <Filter>95.Utility\05.UIManager\UIScene\UIFightScore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\RoadTissue.h">
+      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby\00.Standing\02.Tissue</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\AI_RoadTissue.h">
+      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby\00.Standing\02.Tissue\AI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\RoadYOP.h">
+      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby\01.Walker\01.YOP</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Adventure_Reactor.h">
+      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\01.Reactor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Nishiki.h">
+      <Filter>02.GameObjects\02.Character\LandObject\05.NPC\00.Nishiki</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\NPC.h">
+      <Filter>02.GameObjects\02.Character\LandObject\05.NPC</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\MainQuest.h">
+      <Filter>03.QuestManager\Quest\Main</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Chapter1_0.h">
+      <Filter>03.QuestManager\Quest\Main\Chapter_1\0</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Chapter1_1.h">
+      <Filter>03.QuestManager\Quest\Main\Chapter_1\1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Chapter2_0.h">
+      <Filter>03.QuestManager\Quest\Main\Chapter_2\0</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIStoreImage.h">
+      <Filter>95.Utility\05.UIManager\UIScene\UIStoreImage</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1452,6 +1527,51 @@
     <Filter Include="02.GameObjects\03.Construction\LightConstruction">
       <UniqueIdentifier>{66dcb392-2821-4235-8686-00b40a167705}</UniqueIdentifier>
     </Filter>
+    <Filter Include="95.Utility\05.UIManager">
+      <UniqueIdentifier>{a9202d9c-ebfb-42c2-8f41-ba5c40000cda}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\05.UIManager\UIScene">
+      <UniqueIdentifier>{83ce56e8-0e17-4ffc-b2e5-000528c20f54}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\05.UIManager\UIScene\UIObject">
+      <UniqueIdentifier>{5c86afa3-8050-43e6-be46-c45bd8c73406}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\05.UIManager\UIScene\UIInven">
+      <UniqueIdentifier>{5a2d21e4-6e70-41b2-9ba4-d716f92d65a3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\05.UIManager\UIScene\UILife">
+      <UniqueIdentifier>{252a1ef7-55e9-46cf-a20a-72d190aff5b7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\05.UIManager\UIScene\UIMenu">
+      <UniqueIdentifier>{2f9119e0-9ea5-4bdf-b2af-3e897c0854c0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\05.UIManager\UIScene\UIMoney">
+      <UniqueIdentifier>{7e36ba30-a92e-4595-bba6-d760cf7feefb}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\05.UIManager\InventoryManager">
+      <UniqueIdentifier>{ec9969f6-f3fc-42e1-bb34-c5b79b4087a3}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\05.UIManager\InventoryManager\ItemData">
+      <UniqueIdentifier>{1b6edbda-4992-4482-8fe5-f74f11bf2ce4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\05.UIManager\UIScene\UIObject\UITexture">
+      <UniqueIdentifier>{8b20b3a1-e821-47b7-9519-e6bda1f9c855}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\05.UIManager\UIScene\UIObject\UITexture\UI_Effect">
+      <UniqueIdentifier>{7687d4f7-e9b7-4653-9727-d52abd2dc4e5}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\05.UIManager\UIScene\UIObject\UITexture\Text">
+      <UniqueIdentifier>{7e154e24-f9cd-44d6-98a0-3740478d46b4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\05.UIManager\UIScene\UIObject\UITexture\Image_Texture">
+      <UniqueIdentifier>{7ba24c26-5011-468c-9922-c8db8eb8224c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\05.UIManager\UIScene\UIObject\UITexture\Btn">
+      <UniqueIdentifier>{76b96514-5b82-403e-858f-16580839fe1e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\05.UIManager\UIScene\UIObject\Group">
+      <UniqueIdentifier>{4978f2c8-2f0c-4e8e-aee4-94423890d362}</UniqueIdentifier>
+    </Filter>
     <Filter Include="01.Levels\03.OfficeBoss">
       <UniqueIdentifier>{40398097-918f-4cc8-8582-5b3b7d76ae90}</UniqueIdentifier>
     </Filter>
@@ -1497,6 +1617,12 @@
     <Filter Include="01.Levels\05.DogimazoStairs">
       <UniqueIdentifier>{6ad6a7d5-8a3a-4b60-90c6-c60a0fc7b848}</UniqueIdentifier>
     </Filter>
+    <Filter Include="95.Utility\05.UIManager\UIScene\UILoading">
+      <UniqueIdentifier>{28a57a2e-3ddc-4618-946e-d1f1d605ee62}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\05.UIManager\UIScene\UINowLoading">
+      <UniqueIdentifier>{c4f58730-64e2-429e-a674-89a880b4483f}</UniqueIdentifier>
+    </Filter>
     <Filter Include="01.Levels\06.DogimazoLobby">
       <UniqueIdentifier>{25a6b42e-eb92-436c-9649-04df553ee3f1}</UniqueIdentifier>
     </Filter>
@@ -1517,6 +1643,15 @@
     </Filter>
     <Filter Include="02.GameObjects\08.Trigger\03.MonsterTrigger">
       <UniqueIdentifier>{2f3289df-1818-4e53-8abd-71e5f39e8890}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\05.UIManager\UIScene\UILogo">
+      <UniqueIdentifier>{f5907b5b-7eff-4b99-92c0-1c84f75e1aa6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\05.UIManager\UIScene\UIMainMenu">
+      <UniqueIdentifier>{cc133ece-de19-4795-8445-46223b7c17db}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\05.UIManager\UIScene\UITutorial">
+      <UniqueIdentifier>{39820b06-aaf0-40df-8bc1-4fb5f0dd4a47}</UniqueIdentifier>
     </Filter>
     <Filter Include="03.QuestManager">
       <UniqueIdentifier>{99d22282-0f87-45bb-9816-932e5bb6ed7f}</UniqueIdentifier>
@@ -1548,6 +1683,9 @@
     <Filter Include="01.Levels\10.Roadway">
       <UniqueIdentifier>{87725d6a-6f60-470c-8c92-bd83c479e2c0}</UniqueIdentifier>
     </Filter>
+    <Filter Include="95.Utility\05.UIManager\UIScene\UITalk">
+      <UniqueIdentifier>{67923609-fa00-4887-b22f-1a67293fb0e8}</UniqueIdentifier>
+    </Filter>
     <Filter Include="02.GameObjects\08.Trigger\04.QuestTrigger">
       <UniqueIdentifier>{da0e49a7-16d4-4f19-8630-34614ccb1ea8}</UniqueIdentifier>
     </Filter>
@@ -1559,6 +1697,18 @@
     </Filter>
     <Filter Include="01.Levels\11.Tutorial">
       <UniqueIdentifier>{09b93e95-8641-4f86-aceb-8d96cd45c75e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\05.UIManager\UIScene\UISkillMenu">
+      <UniqueIdentifier>{0ab17753-4bbc-4a85-bd25-2aadad5a276c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\05.UIManager\UIScene\UISkillHolligan">
+      <UniqueIdentifier>{de8a5743-5598-4e2f-87cb-fcb88da43132}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\05.UIManager\UIScene\UISkillRush">
+      <UniqueIdentifier>{84f15fef-0b71-4a83-8280-465dff0a9170}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\05.UIManager\UIScene\UISkillDestroyer">
+      <UniqueIdentifier>{fd65e228-ee0b-4ff4-ba2b-248b93e87aa2}</UniqueIdentifier>
     </Filter>
     <Filter Include="05.CarChaseManager">
       <UniqueIdentifier>{fcea56b4-7172-49b8-87b8-180ce5856b11}</UniqueIdentifier>
@@ -1580,6 +1730,9 @@
     </Filter>
     <Filter Include="01.Levels\99.Loading\Loader\Multi">
       <UniqueIdentifier>{14084344-ff5f-4f23-a39e-50e4aa861e1e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\05.UIManager\UIScene\UICarchase">
+      <UniqueIdentifier>{4b94c748-b126-437b-ad3d-610dbe526ea2}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObjects\99.Camera\07.MapCollider">
       <UniqueIdentifier>{28cec43f-865c-488e-83e1-e6b15b632319}</UniqueIdentifier>
@@ -1914,131 +2067,14 @@
     <Filter Include="01.Levels\99.Loading\Loader\New\Other">
       <UniqueIdentifier>{72c7d0c3-74b2-447f-a915-187b4dc90856}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\02.Character\LandObject\02.Adventure\Walker">
-      <UniqueIdentifier>{32cfeb87-e345-4fa5-814c-59789f56b410}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\02.Character\LandObject\02.Adventure\Standing">
-      <UniqueIdentifier>{ab637ee5-cf3c-4e2d-9ff6-d99aff7ab004}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\02.Character\LandObject\02.Adventure\Walker\00.NML">
-      <UniqueIdentifier>{32d0da74-6f1f-48e1-b18f-c96b8d5b2377}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\02.Character\LandObject\02.Adventure\Walker\00.NML\AI">
-      <UniqueIdentifier>{826ca722-05bb-4d95-acd5-42aa425e1c6f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\02.Character\LandObject\02.Adventure\Walker\AI">
-      <UniqueIdentifier>{118e6329-be46-4fd0-8074-1988d055f79a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\02.Character\LandObject\02.Adventure\AI">
-      <UniqueIdentifier>{16ebbc04-eb2b-4478-bb72-c4894c2ac1a4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\02.Character\LandObject\02.Adventure\Walker\01.YOP">
-      <UniqueIdentifier>{95e0265b-d22a-451a-9d86-207070a3e337}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\02.Character\LandObject\02.Adventure\Standing\01.CAB">
-      <UniqueIdentifier>{4d8b340f-3734-4527-967f-73c95c0f010d}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\02.Character\LandObject\02.Adventure\Standing\01.CAB\AI">
-      <UniqueIdentifier>{57361669-b117-499a-85e3-13c66056ce0e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\02.Character\LandObject\02.Adventure\Standing\00.NML">
-      <UniqueIdentifier>{4f89b866-ac52-47f8-a288-1b2938a7684f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\02.Character\LandObject\02.Adventure\Standing\00.NML\AI">
-      <UniqueIdentifier>{d07800cf-4913-43c5-9101-0fadabd3e156}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="06.KaraokeManager">
-      <UniqueIdentifier>{8e50b980-64ac-47bc-af7b-202c88551681}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\13.HeadUI">
-      <UniqueIdentifier>{f51c6e12-d152-4828-9f5c-8354f9fa7ce2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\02.Character\LandObject\02.Adventure\Standing\02.Tissue">
-      <UniqueIdentifier>{4777f0b2-a8f0-4e18-b5de-37fd840cf24a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\02.Character\LandObject\02.Adventure\MonsterGroup">
-      <UniqueIdentifier>{36fe7f9f-65f0-4112-a92d-8a21a869b4bf}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="06.FightManager">
-      <UniqueIdentifier>{60075471-10c1-46e8-b958-25b36b621421}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="95.Utility\05.UIManager">
-      <UniqueIdentifier>{a9202d9c-ebfb-42c2-8f41-ba5c40000cda}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="95.Utility\05.UIManager\UIScene">
-      <UniqueIdentifier>{83ce56e8-0e17-4ffc-b2e5-000528c20f54}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="95.Utility\05.UIManager\UIScene\UIObject">
-      <UniqueIdentifier>{5c86afa3-8050-43e6-be46-c45bd8c73406}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="95.Utility\05.UIManager\UIScene\UIObject\UITexture">
-      <UniqueIdentifier>{8b20b3a1-e821-47b7-9519-e6bda1f9c855}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="95.Utility\05.UIManager\UIScene\UIObject\UITexture\UI_Effect">
-      <UniqueIdentifier>{7687d4f7-e9b7-4653-9727-d52abd2dc4e5}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="95.Utility\05.UIManager\UIScene\UIObject\UITexture\Text">
-      <UniqueIdentifier>{7e154e24-f9cd-44d6-98a0-3740478d46b4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="95.Utility\05.UIManager\UIScene\UIObject\UITexture\Image_Texture">
-      <UniqueIdentifier>{7ba24c26-5011-468c-9922-c8db8eb8224c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="95.Utility\05.UIManager\UIScene\UIObject\UITexture\Btn">
-      <UniqueIdentifier>{76b96514-5b82-403e-858f-16580839fe1e}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="95.Utility\05.UIManager\UIScene\UIObject\Group">
-      <UniqueIdentifier>{4978f2c8-2f0c-4e8e-aee4-94423890d362}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="95.Utility\05.UIManager\UIScene\UIInven">
-      <UniqueIdentifier>{5a2d21e4-6e70-41b2-9ba4-d716f92d65a3}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="95.Utility\05.UIManager\UIScene\UILife">
-      <UniqueIdentifier>{252a1ef7-55e9-46cf-a20a-72d190aff5b7}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="95.Utility\05.UIManager\UIScene\UIMenu">
-      <UniqueIdentifier>{2f9119e0-9ea5-4bdf-b2af-3e897c0854c0}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="95.Utility\05.UIManager\UIScene\UIMoney">
-      <UniqueIdentifier>{7e36ba30-a92e-4595-bba6-d760cf7feefb}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="95.Utility\05.UIManager\UIScene\UILoading">
-      <UniqueIdentifier>{28a57a2e-3ddc-4618-946e-d1f1d605ee62}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="95.Utility\05.UIManager\UIScene\UINowLoading">
-      <UniqueIdentifier>{c4f58730-64e2-429e-a674-89a880b4483f}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="95.Utility\05.UIManager\UIScene\UILogo">
-      <UniqueIdentifier>{f5907b5b-7eff-4b99-92c0-1c84f75e1aa6}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="95.Utility\05.UIManager\UIScene\UIMainMenu">
-      <UniqueIdentifier>{cc133ece-de19-4795-8445-46223b7c17db}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="95.Utility\05.UIManager\UIScene\UITutorial">
-      <UniqueIdentifier>{39820b06-aaf0-40df-8bc1-4fb5f0dd4a47}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="95.Utility\05.UIManager\UIScene\UITalk">
-      <UniqueIdentifier>{67923609-fa00-4887-b22f-1a67293fb0e8}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="95.Utility\05.UIManager\UIScene\UISkillMenu">
-      <UniqueIdentifier>{0ab17753-4bbc-4a85-bd25-2aadad5a276c}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="95.Utility\05.UIManager\UIScene\UISkillHolligan">
-      <UniqueIdentifier>{de8a5743-5598-4e2f-87cb-fcb88da43132}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="95.Utility\05.UIManager\UIScene\UISkillRush">
-      <UniqueIdentifier>{84f15fef-0b71-4a83-8280-465dff0a9170}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="95.Utility\05.UIManager\UIScene\UISkillDestroyer">
-      <UniqueIdentifier>{fd65e228-ee0b-4ff4-ba2b-248b93e87aa2}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="95.Utility\05.UIManager\UIScene\UICarchase">
-      <UniqueIdentifier>{4b94c748-b126-437b-ad3d-610dbe526ea2}</UniqueIdentifier>
-    </Filter>
     <Filter Include="95.Utility\05.UIManager\UIScene\UIKaraoke_Select">
       <UniqueIdentifier>{9552b748-69cc-4e5d-809b-65ab482f2a02}</UniqueIdentifier>
     </Filter>
     <Filter Include="95.Utility\05.UIManager\UIScene\UIKaraoke_Play">
       <UniqueIdentifier>{89b5f32b-a135-4a09-b509-b249ac6b1469}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06.KaraokeManager">
+      <UniqueIdentifier>{8e50b980-64ac-47bc-af7b-202c88551681}</UniqueIdentifier>
     </Filter>
     <Filter Include="95.Utility\05.UIManager\UIScene\UIKaraoke_Score">
       <UniqueIdentifier>{24e750fa-2c28-4120-a72a-e3f2bab74b8d}</UniqueIdentifier>
@@ -2046,11 +2082,95 @@
     <Filter Include="95.Utility\05.UIManager\UIScene\UITitle">
       <UniqueIdentifier>{30831fab-dee3-4322-945c-12079c973a08}</UniqueIdentifier>
     </Filter>
-    <Filter Include="95.Utility\05.UIManager\InventoryManager">
-      <UniqueIdentifier>{ec9969f6-f3fc-42e1-bb34-c5b79b4087a3}</UniqueIdentifier>
+    <Filter Include="02.GameObjects\13.HeadUI">
+      <UniqueIdentifier>{f51c6e12-d152-4828-9f5c-8354f9fa7ce2}</UniqueIdentifier>
     </Filter>
-    <Filter Include="95.Utility\05.UIManager\InventoryManager\ItemData">
-      <UniqueIdentifier>{1b6edbda-4992-4482-8fe5-f74f11bf2ce4}</UniqueIdentifier>
+    <Filter Include="06.FightManager">
+      <UniqueIdentifier>{60075471-10c1-46e8-b958-25b36b621421}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\05.UIManager\UIScene\UIFightScore">
+      <UniqueIdentifier>{761783be-a212-4fe1-adf7-127467f45044}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\05.UIManager\UIScene\UIStoreImage">
+      <UniqueIdentifier>{fd457105-bb59-4c6f-abd6-4eac2881b652}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby">
+      <UniqueIdentifier>{2631b981-8317-478e-b4c4-0cb3881af39a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby\02.MonsterGroup">
+      <UniqueIdentifier>{36fe7f9f-65f0-4112-a92d-8a21a869b4bf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby\00.Standing">
+      <UniqueIdentifier>{ab637ee5-cf3c-4e2d-9ff6-d99aff7ab004}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby\00.Standing\01.CAB">
+      <UniqueIdentifier>{4d8b340f-3734-4527-967f-73c95c0f010d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby\00.Standing\01.CAB\AI">
+      <UniqueIdentifier>{57361669-b117-499a-85e3-13c66056ce0e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby\00.Standing\00.NML">
+      <UniqueIdentifier>{4f89b866-ac52-47f8-a288-1b2938a7684f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby\00.Standing\00.NML\AI">
+      <UniqueIdentifier>{d07800cf-4913-43c5-9101-0fadabd3e156}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby\00.Standing\02.Tissue">
+      <UniqueIdentifier>{4777f0b2-a8f0-4e18-b5de-37fd840cf24a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby\00.Standing\02.Tissue\AI">
+      <UniqueIdentifier>{31fcde30-83a0-43bd-ac03-fb4a03d72e87}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby\00.Standing\AI">
+      <UniqueIdentifier>{16ebbc04-eb2b-4478-bb72-c4894c2ac1a4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby\01.Walker">
+      <UniqueIdentifier>{32cfeb87-e345-4fa5-814c-59789f56b410}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby\01.Walker\00.NML">
+      <UniqueIdentifier>{32d0da74-6f1f-48e1-b18f-c96b8d5b2377}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby\01.Walker\00.NML\AI">
+      <UniqueIdentifier>{826ca722-05bb-4d95-acd5-42aa425e1c6f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby\01.Walker\AI">
+      <UniqueIdentifier>{118e6329-be46-4fd0-8074-1988d055f79a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby\01.Walker\01.YOP">
+      <UniqueIdentifier>{95e0265b-d22a-451a-9d86-207070a3e337}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\02.Adventure\01.Reactor">
+      <UniqueIdentifier>{aad757a4-7baf-4155-9d1c-dd613e203657}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\05.NPC">
+      <UniqueIdentifier>{f492ad94-922c-4670-9ed0-68aa22cc8562}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\05.NPC\00.Nishiki">
+      <UniqueIdentifier>{bee9ce01-3c08-40f1-b5ef-f93fd054e0ca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\05.NPC\01.Kanekashi">
+      <UniqueIdentifier>{cfc40050-0b96-4c44-a0c2-60892605fe8f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.QuestManager\Quest\Main">
+      <UniqueIdentifier>{6b71c9eb-f3cc-4a45-9193-7c80a9cc3970}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.QuestManager\Quest\Main\Chapter_1">
+      <UniqueIdentifier>{415199ca-d45c-4343-a9f0-63369a8551b2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.QuestManager\Quest\Main\Chapter_1\0">
+      <UniqueIdentifier>{23ba251f-283a-4e54-be08-f8ee6d45334f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.QuestManager\Quest\Main\Chapter_1\1">
+      <UniqueIdentifier>{86e579e0-bfaf-4fb3-9bf4-640fc7dfe652}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Levels\12.NishikiWalk">
+      <UniqueIdentifier>{75a359bd-f3c1-4d69-b316-5fd41d66aa5a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.QuestManager\Quest\Main\Chapter_2">
+      <UniqueIdentifier>{151862c1-c970-4eb7-ae4f-da72cc1ca262}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.QuestManager\Quest\Main\Chapter_2\0">
+      <UniqueIdentifier>{0aab858a-ea0e-4a82-bd30-29fd86502b8d}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
@@ -2102,12 +2222,6 @@
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_BoneCompute.hlsl">
-      <Filter>97.ShaderFiles</Filter>
-    </FxCompile>
-    <FxCompile Include="..\Bin\ShaderFiles\Shader_OcculusionCulling.hlsl">
-      <Filter>97.ShaderFiles</Filter>
-    </FxCompile>
-    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxCube_Occulusion.hlsl">
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
   </ItemGroup>

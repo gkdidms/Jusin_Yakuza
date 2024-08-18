@@ -288,7 +288,7 @@ HRESULT CRenderer::Ready_Targets()
 		return E_FAIL;
 
 	/*Target_BackBlur*/
-	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_BackBlur"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 1.f))))
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_BackBlur"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 1.f), true)))
 		return E_FAIL;
 	//
 	/*Target_BackBlur*/
@@ -1466,14 +1466,14 @@ void CRenderer::Render_Bloom()
 
 	UINT GroupX = (1280 + 255) / 256;
 
-	m_pComputeShader[BLURX]->Render(GroupX, 1, 1);
+	m_pComputeShader[BLURX]->Render(GroupX, 720, 1);
 
 	UINT GroupY = (720 + 255) / 256;
 
 	m_pGameInstance->Bind_ComputeRenderTargetSRV(TEXT("Target_Blur_X"));
 	m_pGameInstance->Bind_ComputeRenderTargetUAV(TEXT("Target_Blur_Y"));
 
-	m_pComputeShader[BLURX]->Render(1, GroupY, 1);
+	m_pComputeShader[BLURY]->Render(1280, GroupY, 1);
 
 
 	/*
@@ -1657,47 +1657,9 @@ void CRenderer::Render_DeferredBlur()
 	m_pGameInstance->Bind_ComputeRenderTargetSRV(TEXT("Target_Blur_X"));
 	m_pGameInstance->Bind_ComputeRenderTargetUAV(TEXT("Target_BackBlur"));
 
-	m_pComputeShader[BLURX]->Render(1280, GroupY, 1);
+	m_pComputeShader[BLURY]->Render(1280, GroupY, 1);
 
 	m_pContext->Flush();
-
-	/*
-	if (FAILED(m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix)))
-		return;
-	if (FAILED(m_pShader->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix)))
-		return;
-	if (FAILED(m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
-		return;
-
-	if (FAILED(m_pShader->Bind_RawValue("g_fTotal", &m_fSSAOBlur, sizeof(_float))))
-		return;
-
-	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_Blur_X"))))
-		return;
-
-	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_SSAO"), m_pShader, "g_EffectTexture")))
-		return;
-
-	m_pShader->Begin(11);
-
-	m_pVIBuffer->Render();
-
-	if (FAILED(m_pGameInstance->End_MRT()))
-		return;
-
-	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MTR_DeferredBlur"))))
-		return;
-
-	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Blur_X"), m_pShader, "g_EffectTexture")))
-		return;
-
-	m_pShader->Begin(12);
-
-	m_pVIBuffer->Render();
-
-	if (FAILED(m_pGameInstance->End_MRT()))
-		return;
-	*/
 }
 
 void CRenderer::Render_BOF()
@@ -1724,7 +1686,6 @@ void CRenderer::Render_BOF()
 
 	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_FinalEffect"), m_pShader, "g_DiffuseTexture")))
 		return;
-
 	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_BackBlur"), m_pShader, "g_BackBlurTexture")))
 		return;
 	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Depth"), m_pShader, "g_DepthTexture")))

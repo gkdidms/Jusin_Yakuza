@@ -51,7 +51,11 @@ public:
     _bool End();
 
 private:
+    void Set_TaxiStageDir();
+
+private:
     CGameInstance* m_pGameInstance = { nullptr };
+    class CUIManager* m_pUIManager = { nullptr };
 
 private:
     STAGE_INFO m_Info = {};

@@ -5,6 +5,9 @@
 #include "FileTotalMgr.h"
 #include "Collision_Manager.h"
 #include "TutorialManager.h"
+#include "FightManager.h"
+#include "QuestManager.h"
+#include "ScriptManager.h"
 
 #include "PlayerCamera.h"
 #include "CineCamera.h"
@@ -15,34 +18,48 @@
 CLevel_Tutorial::CLevel_Tutorial(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLevel{ pDevice, pContext },
 	m_pSystemManager{ CSystemManager::GetInstance() },
-	m_pFileTotalManager{ CFileTotalMgr::GetInstance() }
+	m_pFileTotalManager{ CFileTotalMgr::GetInstance() },
+	m_pFightManager{ CFightManager::GetInstance()},
+	m_pQuestManager{ CQuestManager::GetInstance()}
 {
 	Safe_AddRef(m_pSystemManager);
 	Safe_AddRef(m_pFileTotalManager);
+	Safe_AddRef(m_pFightManager);
+	Safe_AddRef(m_pQuestManager);
 }
 
 HRESULT CLevel_Tutorial::Initialize()
 {
+	if (FAILED(Ready_Player(TEXT("Layer_Player"))))
+		return E_FAIL;
+
+	if (FAILED(m_pQuestManager->Initialize()))
+		return E_FAIL;
+
+	m_pQuestManager->Start_Quest(0);
+
 	m_pTutorialManager = CTutorialManager::Create();
 	if (nullptr == m_pTutorialManager)
 		return E_FAIL;
 
-	if (FAILED(Ready_Player(TEXT("Layer_Player"))))
-		return E_FAIL;
-
 	/* Å¬¶ó ÆÄ½Ì */
 	m_pFileTotalManager->Set_MapObj_In_Client(STAGE_TUTORIAL, LEVEL_TUTORIAL);
-	m_pFileTotalManager->Set_Lights_In_Client(STAGE_TUTORIAL);
-	m_pFileTotalManager->Set_Collider_In_Client(STAGE_TUTORIAL, LEVEL_TUTORIAL);
+	m_pFileTotalManager->Set_Lights_In_Client(99);
+	//m_pFileTotalManager->Set_Collider_In_Client(STAGE_TUTORIAL, LEVEL_TUTORIAL);
 
 	if (FAILED(Ready_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
+
+	m_pSystemManager->Set_Camera(CAMERA_PLAYER);
 
 	return S_OK;
 }
 
 void CLevel_Tutorial::Tick(const _float& fTimeDelta)
 {
+	m_pQuestManager->Execute();
+	m_pTutorialManager->Tick();
+	m_pFightManager->Tick(fTimeDelta);
 #ifdef _DEBUG
 	SetWindowText(g_hWnd, TEXT("ÃÑ°ÝÀü ¸Ê"));
 #endif
@@ -126,4 +143,6 @@ void CLevel_Tutorial::Free()
 	Safe_Release(m_pSystemManager);
 	Safe_Release(m_pFileTotalManager);
 	Safe_Release(m_pTutorialManager);
+	Safe_Release(m_pFightManager);
+	Safe_Release(m_pQuestManager);
 }

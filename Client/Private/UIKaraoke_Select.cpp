@@ -5,6 +5,9 @@
 #include "Group.h"
 #include "Btn.h"
 #include"GameInstance.h"
+
+#include "Karaoke_Kiryu.h"
+
 CUIKaraoke_Select::CUIKaraoke_Select()
     :CUIScene{}
 {
@@ -23,6 +26,7 @@ HRESULT CUIKaraoke_Select::Show_Scene()
     m_iCurButton = 0;
     m_isStart = false;
     m_iCurrentTime = 0.f;
+
     Action();
     return S_OK;
 }
@@ -42,7 +46,7 @@ HRESULT CUIKaraoke_Select::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext
     return S_OK;
 }
 
-HRESULT CUIKaraoke_Select::Add_UIData(CUI_Object* pUIObject)
+HRESULT CUIKaraoke_Select::Add_UIData(CUI_Object* pUIObject, wstring wstrPrototypeTag)
 {
 
     if (pUIObject->Get_Event())
@@ -109,11 +113,7 @@ HRESULT CUIKaraoke_Select::Late_Tick(const _float& fTimeDelta)
     if (m_pGameInstance->GetKeyState(DIK_E) == TAP)
     {
         m_isStart = true;
-
     }
-
-
-
 
     m_Disc->Late_Tick(fTimeDelta);
     if (FAILED(__super::Late_Tick(fTimeDelta)))
@@ -133,9 +133,12 @@ HRESULT CUIKaraoke_Select::Late_Tick(const _float& fTimeDelta)
 
     if (m_isStart && m_MusicTitle->Check_AnimFin()&&m_iCurrentTime>3.0f)
     {
-        CUIManager::GetInstance()->Close_Scene();
+        CUIManager::GetInstance()->Close_Scene(m_strSceneName);
         CUIManager::GetInstance()->Open_Scene(TEXT("Karaoke_Play"));
+
+        m_pGameInstance->PlaySound_W(L"Bakamita.mp3", SOUND_BGM, 0.5f);
     }
+
 
     if (!m_isAnimFin)
         Check_AimFin();
@@ -146,9 +149,6 @@ HRESULT CUIKaraoke_Select::Late_Tick(const _float& fTimeDelta)
             OverAction();
         }
     }
-
-
-
 
     return S_OK;
 }

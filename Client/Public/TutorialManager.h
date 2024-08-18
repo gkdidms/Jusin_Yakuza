@@ -15,6 +15,9 @@ public:
     HRESULT Initialize();
     void Tick();
 
+public:
+    void Start_Tutorial();
+
 private:
     class CUIManager* m_pUIManager = { nullptr };
     vector<class CTutorial*> m_Tutorials = {};

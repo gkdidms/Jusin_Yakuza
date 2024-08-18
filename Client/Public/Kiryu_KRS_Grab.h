@@ -57,5 +57,6 @@ private:
 
 	_bool		m_isGrabed = { false };
 	_bool		m_isShaked = { false };
+	_bool		m_isCutScene = { false };
 };
 END
