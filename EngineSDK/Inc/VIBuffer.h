@@ -14,6 +14,7 @@ public:
     virtual HRESULT Initialize_Prototype() override;
     virtual HRESULT Initialize(void* pArg) override;
     virtual HRESULT Render();
+    virtual HRESULT Render_Compute();
 
 public:
     HRESULT Create_Buffer(ID3D11Buffer** pOut);

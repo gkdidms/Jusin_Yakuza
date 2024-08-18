@@ -127,8 +127,7 @@ void CMap::Tick(const _float& fTimeDelta)
 	//	
 	//}
 
-	// Tick에서 추가
-	//m_pGameInstance->Add_Renderer(CRenderer::RENDER_OCCULUSION, this);
+
 		
 
 #ifdef _DEBUG
@@ -136,11 +135,12 @@ void CMap::Tick(const _float& fTimeDelta)
 		iter->Tick(m_pTransformCom->Get_WorldMatrix());
 #endif
 
-
+	m_pGameInstance->Add_Renderer(CRenderer::RENDER_OCCULUSION, this);
 }
 
 void CMap::Late_Tick(const _float& fTimeDelta)
 {
+
 	// Renderer에 추가되는 mesh index 비워주고 시작
 	m_vRenderDefaulMeshIndex.clear();
 	m_vRenderGlassMeshIndex.clear();
@@ -166,11 +166,18 @@ void CMap::Late_Tick(const _float& fTimeDelta)
 		// Renderer 추가 및 벡터에 추가
 	}
 
-	Add_Renderer(fTimeDelta);
+	/*if (true == m_pGameInstance->isIn_WorldFrustum(worldPos, fScale * 1.5))
+	{
 
-//	m_pGameInstance->Add_Renderer(CRenderer::RENDER_SHADOWOBJ, this);
+	}*/
+	
+	if (true == m_bRender)
+	{
+		Add_Renderer(fTimeDelta);
+		m_pGameInstance->Add_Renderer(CRenderer::RENDER_SHADOWOBJ, this);
+	}
 
-
+	//m_pGameInstance->Add_Renderer(CRenderer::RENDER_OCCULUSION, this);
 }
 
 HRESULT CMap::Render()
@@ -961,13 +968,16 @@ HRESULT CMap::Render_OcculusionDepth()
 HRESULT CMap::Check_OcculusionCulling()
 {
 	XMMATRIX worldProjView = m_pTransformCom->Get_WorldMatrix() * m_pGameInstance->Get_Transform_Matrix(CPipeLine::D3DTS_VIEW) * m_pGameInstance->Get_Transform_Matrix(CPipeLine::D3DTS_PROJ);
+	worldProjView = XMMatrixTranspose(worldProjView);
 	CMap::ObjectData objectData = { worldProjView, *m_pGameInstance->Get_CamFar() };
 	m_pContext->UpdateSubresource(m_pObjectDataBuffer, 0, nullptr, &objectData, 0, 0);
+	
 	m_pContext->CSSetConstantBuffers(0, 1, &m_pObjectDataBuffer);
 
-	m_pGameInstance->Bind_ComputeRenderTargetSRV(TEXT("Target_3x2_Occulusion"));
+	// dmd
+	m_pGameInstance->Bind_ComputeRenderTargetSRV(TEXT("Target_OcculusionDepth"), 1);
 	m_pVIBufferCom->Bind_Compute(m_pComputeShaderCom);
-
+	
 
 	int pixelCount = 0;
 	m_pVIBufferCom->Copy_ResultResources(m_pOutputBufferStaging);
@@ -1258,6 +1268,8 @@ HRESULT CMap::Add_Components(void* pArg)
 		m_bCompulsoryAlpha = { true };
 	}
 
+
+
 	wstring strMaterialName = TEXT("Prototype_Component_Material_") + m_pGameInstance->StringToWstring(strModelName);
 
 	if (FAILED(__super::Add_Component(m_iCurrentLevel, strMaterialName,
@@ -1274,6 +1286,9 @@ HRESULT CMap::Add_Components(void* pArg)
 	// Occulusion Culling을 위한 scale 파악
 	CVIBuffer_AABBCube::AABBCUBE_DESC		aabbDesc;
 	aabbDesc.vScale = m_pModelCom->Get_LocalModelSize();
+	//aabbDesc.vScale.x *= 0.5;
+	//aabbDesc.vScale.y *= 0.5;
+	//aabbDesc.vScale.z *= 0.5;
 	
 	// Occulusion Culling을 위한
 	/* For.Com_SubModel */
@@ -1282,9 +1297,9 @@ HRESULT CMap::Add_Components(void* pArg)
 		return E_FAIL;
 
 	/* For.Com_SubShader */
-	//if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Shader_VtxCube_Occulusion"),
-	//	TEXT("Com_SubShader"), reinterpret_cast<CComponent**>(&m_pCubeShaderCom))))
-	//	return E_FAIL;
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Shader_VtxCube_Occulusion"),
+		TEXT("Com_SubShader"), reinterpret_cast<CComponent**>(&m_pCubeShaderCom))))
+		return E_FAIL;
 
 	/* For.Com_SubShader */
 	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Shader_OcculusionCulling"),
