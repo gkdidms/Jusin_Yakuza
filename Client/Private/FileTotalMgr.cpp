@@ -1169,16 +1169,21 @@ void CFileTotalMgr::Load_Cinemachine(int iCineNum, int iStageLevel)
         m_pCinemachineCam = dynamic_cast<CCineCamera*>(m_pGameInstance->Get_GameObject(iStageLevel, TEXT("Layer_Camera"), 1));
         Safe_AddRef(m_pCinemachineCam);
         m_pCinemachineCam->Load_CamBin(iCineNum);
-        m_pCinemachineCam->Initialize_Camera_Class();
-        m_pCinemachineCam->Setting_Start_Cinemachine();
+        /*m_pCinemachineCam->Initialize_Camera_Class();*/
+        //m_pCinemachineCam->Setting_Start_Cinemachine();
     }
     else
     {
         m_pCinemachineCam->Load_CamBin(iCineNum);
-        m_pCinemachineCam->Setting_Start_Cinemachine();
+        //m_pCinemachineCam->Setting_Start_Cinemachine();
     }
 
-    CSystemManager::GetInstance()->Set_Camera(CAMERA::CAMERA_CINEMACHINE);
+    //CSystemManager::GetInstance()->Set_Camera(CAMERA::CAMERA_CINEMACHINE);
+}
+
+void CFileTotalMgr::Setting_Start_Cinemachine(int iCineNum)
+{
+    m_pCinemachineCam->Setting_Start_Cinemachine(iCineNum);
 }
 
 void CFileTotalMgr::Reset_Cinemachine()

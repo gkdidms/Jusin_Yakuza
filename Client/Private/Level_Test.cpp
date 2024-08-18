@@ -63,6 +63,10 @@ HRESULT CLevel_Test::Initialize()
 	if (FAILED(Ready_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
 
+	// Cinemachine 번호 로드
+	m_pFileTotalManager->Load_Cinemachine(0, LEVEL_TEST);
+	m_pFileTotalManager->Load_Cinemachine(1, LEVEL_TEST);
+
 	return S_OK;
 }
 
@@ -70,6 +74,20 @@ void CLevel_Test::Tick(const _float& fTimeDelta)
 {
 	//m_pCarChaseManager->Tick();
 	//m_pTutorialManager->Tick();
+
+	//bool bPlay = false;
+	//if (m_pGameInstance->GetKeyState(DIK_H) == TAP)
+	//{
+	//	bPlay = true;
+	//}
+
+	//if (bPlay == true)
+	//{
+	//	// cinemachine 시작하기
+	//	m_pFileTotalManager->Setting_Start_Cinemachine(1);
+	//}
+	
+
 #ifdef _DEBUG
 	SetWindowText(g_hWnd, TEXT("테스트 레벨"));
 #endif

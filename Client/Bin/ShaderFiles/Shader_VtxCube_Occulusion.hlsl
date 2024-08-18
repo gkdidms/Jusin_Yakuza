@@ -23,10 +23,7 @@ struct VS_OUT
 struct VS_IN_Depth
 {
     float3 vPosition : POSITION; // 12바이트
-    float padding1 : TEXCOORD0; // 4바이트 패딩 (정렬 맞춤)
-
-    float3 vTexcoord : TEXCOORD1; // 12바이트
-    float padding2 : TEXCOORD2; // 4바이트 패딩 (정렬 맞춤)
+    float3 vTexcoord : TEXCOORD0; // 12바이트
 };
 
 struct VS_OUT_Depth

@@ -76,7 +76,8 @@ public:
 
 	HRESULT									Set_NaviRoute_In_Client(int iRouteNum);
 
-	void									Load_Cinemachine(int iCineNum, int iStageLevel);
+	void									Load_Cinemachine(int iCineNum, int iStageLevel); //Cinemachine 카메라 정보 자체를 load
+	void									Setting_Start_Cinemachine(int iCineNum);
 
 	/* LEVEL 바뀌면 초기화 시키기 */
 	void									Reset_Cinemachine();

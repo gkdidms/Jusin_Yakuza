@@ -129,7 +129,7 @@ void CMap::Tick(const _float& fTimeDelta)
 	//}
 
 	// Tick에서 추가
-	m_pGameInstance->Add_Renderer(CRenderer::RENDER_OCCULUSION, this);
+	//m_pGameInstance->Add_Renderer(CRenderer::RENDER_OCCULUSION, this);
 		
 
 #ifdef _DEBUG
@@ -1283,9 +1283,9 @@ HRESULT CMap::Add_Components(void* pArg)
 		return E_FAIL;
 
 	/* For.Com_SubShader */
-	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Shader_VtxCube_Occulusion"),
-		TEXT("Com_SubShader"), reinterpret_cast<CComponent**>(&m_pCubeShaderCom))))
-		return E_FAIL;
+	//if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Shader_VtxCube_Occulusion"),
+	//	TEXT("Com_SubShader"), reinterpret_cast<CComponent**>(&m_pCubeShaderCom))))
+	//	return E_FAIL;
 
 	/* For.Com_SubShader */
 	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Shader_OcculusionCulling"),
