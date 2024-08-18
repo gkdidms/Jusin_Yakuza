@@ -13,6 +13,8 @@
 #include "Weapon_RcktGun.h"
 #include "Weapon_ShotGun.h"
 #include "CarChase_CATBullet.h"
+
+#include "Adventure_Reactor.h"
 #pragma endregion
 
 #pragma region Map
@@ -204,6 +206,11 @@ HRESULT CLoader_Map::Loading_For_LogoLevel()
 		CSofa::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 #pragma endregion
+
+	/* For.Prototype_GameObject_AdventureReactor*/
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_AdventureReactor"),
+		CAdventure_Reactor::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 
 
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
@@ -438,6 +445,44 @@ HRESULT CLoader_Map::Loading_For_Karaoke()
 		return E_FAIL;
 
 	Add_Models_On_Path_NonAnim(m_eNextLevel, TEXT("../Bin/Resources/Models/NonAnim/Map/KaraokeMap"));
+
+	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
+
+	m_isFinished = true;
+
+	return S_OK;
+}
+
+HRESULT CLoader_Map::Loading_For_Tutorial()
+{
+	if (FAILED(Loading_Default()))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Navigation */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Navigation"),
+		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/NaviData/Navigation_7.dat")))))
+		return E_FAIL;
+
+	Add_Models_On_Path_NonAnim(m_eNextLevel, TEXT("../Bin/Resources/Models/NonAnim/Map/Map2"));
+
+	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
+
+	m_isFinished = true;
+
+	return S_OK;
+}
+
+HRESULT CLoader_Map::Loading_For_NishikiWalk()
+{
+	if (FAILED(Loading_Default()))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Navigation */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Navigation"),
+		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/NaviData/Navigation_11.dat")))))
+		return E_FAIL;
+
+	Add_Models_On_Path_NonAnim(m_eNextLevel, TEXT("../Bin/Resources/Models/NonAnim/Map/Map2"));
 
 	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
 

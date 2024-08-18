@@ -139,6 +139,10 @@ void CPlayer::Tick(const _float& fTimeDelta)
 	m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Change_Animation();
 	m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Tick(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")));
 
+	//대화중일 경우 플레이어는 움직이거나 공격하지 않는다.
+	if (m_pUIManager->isOpen(TEXT("Talk")) && m_pUIManager->isOpen(TEXT("Inven")) && m_pUIManager->isOpen(TEXT("Title")))
+		return;
+
 	// 배틀 시작 애니메이션 아닐 경우 타임델타를 1로 고정시켜준다.
 	if (!m_isHitFreeze && m_iCurrentBehavior != (_uint)KRS_BEHAVIOR_STATE::BTL_START)
 		m_pGameInstance->Set_TimeSpeed(TEXT("Timer_60"), 1.f);
@@ -278,7 +282,7 @@ void CPlayer::Tick(const _float& fTimeDelta)
 	Effect_Control_Aura();
 	Setting_Target_Enemy();
 	Setting_Target_Item();
-	Setting_Target_Wall();
+	//Setting_Target_Wall();
 
 	m_pQTEMgr->Tick(fTimeDelta);
 }

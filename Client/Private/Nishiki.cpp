@@ -1,5 +1,7 @@
 #include "Nishiki.h"
 
+#include "GameInstance.h"
+
 CNishiki::CNishiki(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CNPC{ pDevice, pContext }
 {
@@ -30,6 +32,7 @@ void CNishiki::Tick(const _float& fTimeDelta)
 
 void CNishiki::Late_Tick(const _float& fTimeDelta)
 {
+	m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
 }
 
 void CNishiki::Change_Animation()

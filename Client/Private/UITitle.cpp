@@ -61,7 +61,7 @@ HRESULT CUITitle::Late_Tick(const _float& fTimeDelta)
     if (m_isStart && m_iCurrentTime > 2.0f)
     {
         //¿©±â´Ù°¡ ½Ã°£ Áö³ª¸é ²¨ÁúÁö ¹¹ÇÒÁö ¼±ÅÃÇÏ¸éµÊ(³ª´Â ²¨Áú²¨ÀÓ)
-        CUIManager::GetInstance()->Close_Scene();
+        CUIManager::GetInstance()->Close_Scene(m_strSceneName);
         m_isStart = false;
     }
 

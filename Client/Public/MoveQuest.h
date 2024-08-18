@@ -32,7 +32,6 @@ public:
 
 private:
     _int m_iTriggerIndex = { -1 };
-    _bool m_isColl = { false };
 
 public:
     static CMoveQuest* Create(void* pArg);

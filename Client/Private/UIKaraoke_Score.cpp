@@ -87,7 +87,7 @@ HRESULT CUIKaraoke_Score::Late_Tick(const _float& fTimeDelta)
 
 	if (m_pGameInstance->GetKeyState(DIK_E) == TAP)
 	{
-		CUIManager::GetInstance()->Close_Scene();
+		CUIManager::GetInstance()->Close_Scene(m_strSceneName);
 	}
 
 

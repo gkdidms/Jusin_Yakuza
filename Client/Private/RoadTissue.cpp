@@ -33,9 +33,7 @@ void CRoadTissue::Priority_Tick(const _float& fTimeDelta)
 
 void CRoadTissue::Tick(const _float& fTimeDelta)
 {
-    m_pTree->Tick(fTimeDelta);
-    
-    Synchronize_Root(fTimeDelta);
+    __super::Tick(fTimeDelta);
 }
 
 void CRoadTissue::Late_Tick(const _float& fTimeDelta)

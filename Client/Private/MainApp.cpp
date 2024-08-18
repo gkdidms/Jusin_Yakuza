@@ -64,9 +64,6 @@ HRESULT CMainApp::Initialize()
 	if (FAILED(m_pUIManager->Initialize(m_pDevice, m_pContext)))
 		return E_FAIL;
 
-	if (FAILED(m_pQuestManager->Initialize()))
-		return E_FAIL;
-
 	if (FAILED(Ready_Font()))
 		return E_FAIL;
 
@@ -96,8 +93,6 @@ void CMainApp::Tick(const _float& fTimeDelta)
 	m_pCollisionManager->Tick();
 	m_pUIManager->Tick(fTimeDelta);
 	m_pUIManager->Late_Tick(fTimeDelta);
-	//퀘스트 성공 여부 확인 
-	m_pQuestManager->Execute();
 
 	//프레임 확인용 나중에 다시 디버그로 넣어야함
 	m_fTimeAcc += fTimeDelta;
@@ -223,10 +218,6 @@ HRESULT CMainApp::Ready_Font()
 
 HRESULT CMainApp::Ready_Prototype_GameObject()
 {
-	/* For.Prototype_GameObject_BackGround */
-	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_BackGround"), CBackground::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
 	/* For.Prototype_GameObject_Image_Texture */
 	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Image_Texture"),
 		CImage_Texture::Create(m_pDevice, m_pContext))))
