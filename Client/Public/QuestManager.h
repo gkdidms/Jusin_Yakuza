@@ -11,8 +11,8 @@ class CQuestManager :
     DECLARE_SINGLETON(CQuestManager)
 
 public:
-    enum QUEST_TYPE { QUEST_MAIN, QUEST_KILL, QUEST_MOVE, QUEST_TALK, QUEST_END };
-    enum CHAPTRE { CHAPTER_1, CHAPTER_2, CHAPTER_3, CHAPTER_4, CHAPTER_END };
+    enum QUEST_TYPE { QUEST_MAIN, QUEST_KILL, QUEST_MOVE, QUEST_TALK, QUEST_KARAOKE, QUEST_END };
+    enum CHAPTRE { CHAPTER_1, CHAPTER_2, CHAPTER_3, CHAPTER_4, CHAPTER_5, CHAPTER_END };
     typedef struct tQuestInfo {
         tQuestInfo(_uint iType, _uint iScriptIndex, _int iQuestIndex, _int iNextQuestIndex, _int iTargetIndex = -1, _int iTriggerIndex = -1, _int iObjectIndex = -1)
             : iType{ iType },
@@ -63,6 +63,7 @@ private:
     HRESULT Add_MoveQuest(_int iQuestIndex, _int iNextQuestIndex, _int iTriggerIndex, _int iScriptIndex);
     HRESULT Add_TalkQuest(_int iQuestIndex, _int iNextQuestIndex, _int iObjectIndex, _int iScriptIndex);
     HRESULT Add_MainQuest(_int iQuestIndex, _int iNextQuestIndex, _int iObjectIndex, _int iScriptIndex);
+    HRESULT Add_KaraokeQuest(_int iQuestIndex, _int iNextQuestIndex, _int iObjectIndex, _int iScriptIndex);
 
 public:
     virtual void Free();

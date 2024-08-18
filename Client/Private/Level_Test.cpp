@@ -60,12 +60,12 @@ HRESULT CLevel_Test::Initialize()
 		return E_FAIL;
 
 	/* 클라 파싱 */
-	//if (FAILED(Ready_Test_Load()))
-	//	return E_FAIL;
+	if (FAILED(Ready_Test_Load()))
+		return E_FAIL;
 
 	// 혜원테스트용
-	if (FAILED(Ready_Test_Hyewon()))
-		return E_FAIL;
+	//if (FAILED(Ready_Test_Hyewon()))
+	//	return E_FAIL;
 
 	m_pFileTotalManager->Set_MapObj_In_Client(71, LEVEL_TEST);
 	m_pFileTotalManager->Set_Lights_In_Client(90);
@@ -84,6 +84,11 @@ void CLevel_Test::Tick(const _float& fTimeDelta)
 #ifdef _DEBUG
 	SetWindowText(g_hWnd, TEXT("테스트 레벨"));
 #endif
+
+	if (m_pKaraokeManager->IsSongEnd())
+	{
+		int a = 0;
+	}
 }
 
 HRESULT CLevel_Test::Ready_Camera(const wstring& strLayerTag)

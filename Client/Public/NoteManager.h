@@ -18,7 +18,7 @@ public:
     HRESULT Initialize(string strSongName);
 
 public:
-    const vector<class CNoteBase*>* Get_Notes() {
+    vector<class CNoteBase*>* Get_Notes() {
         return &m_Notes;
     }
 

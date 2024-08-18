@@ -1,6 +1,13 @@
 #pragma once
 #include "NPC.h"
 
+/*
+레벨에 따라서 상태가 변한다.
+키류를 기다리고 있는 경우 -> IDLE
+키류와 대화중일 때 -> Talk
+키류가 노래를 부르고 있을 때 -> Cheer
+걷는 스테이지 일 경우 -> walk
+*/
 BEGIN(Client)
 class CNishiki :
     public CNPC

@@ -1,4 +1,4 @@
-#include "Chapter2_0.h"
+#include "Chapter3_0.h"
 
 #include "GameInstance.h"
 
@@ -6,12 +6,12 @@
 
 #include "Background.h"
 
-CChapter2_0::CChapter2_0()
+CChapter3_0::CChapter3_0()
 	: CMainQuest{}
 {
 }
 
-HRESULT CChapter2_0::Initialize(void* pArg)
+HRESULT CChapter3_0::Initialize(void* pArg)
 {
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
@@ -29,7 +29,7 @@ HRESULT CChapter2_0::Initialize(void* pArg)
 }
 
 //대화가 끝나면 자동으로 다음 스테이지로 넘어감
-_bool CChapter2_0::Execute()
+_bool CChapter3_0::Execute()
 {
 	if (m_pSubtitle->isFinished())
 		return true;
@@ -37,9 +37,9 @@ _bool CChapter2_0::Execute()
 	return false;
 }
 
-CChapter2_0* CChapter2_0::Create(void* pArg)
+CChapter3_0* CChapter3_0::Create(void* pArg)
 {
-	CChapter2_0* pInstance = new CChapter2_0();
+	CChapter3_0* pInstance = new CChapter3_0();
 
 	if (FAILED(pInstance->Initialize(pArg)))
 		Safe_Release(pInstance);
@@ -47,7 +47,7 @@ CChapter2_0* CChapter2_0::Create(void* pArg)
 	return pInstance;
 }
 
-void CChapter2_0::Free()
+void CChapter3_0::Free()
 {
 	__super::Free();
 	Safe_Release(m_pSubtitle);
