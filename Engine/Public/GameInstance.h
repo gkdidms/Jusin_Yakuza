@@ -184,7 +184,7 @@ public:
 
     ID3D11Texture2D* Get_TextureBuffer(const wstring& strTargetTag);
     void Bind_ComputeRenderTargetSRV(const wstring& strTargetTag, _uint iSlot = 0);
-    void Bind_ComputeRenderTargetUAV(const wstring& strTargetTag);
+    void Bind_ComputeRenderTargetUAV(const wstring& strTargetTag, _uint iSlot = 0);
 
     /* Frustum*/
 public:

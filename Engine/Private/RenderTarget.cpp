@@ -97,9 +97,9 @@ void CRenderTarget::Bind_ComputeSVR(_uint iSlot)
 	m_pContext->CSSetShaderResources(iSlot, 1, &m_pSRV);
 }
 
-void CRenderTarget::Bind_ComputeUAV()
+void CRenderTarget::Bind_ComputeUAV(_uint iSlot)
 {
-	m_pContext->CSSetUnorderedAccessViews(0, 1, &m_pUAV, nullptr);
+	m_pContext->CSSetUnorderedAccessViews(iSlot, 1, &m_pUAV, nullptr);
 }
 
 HRESULT CRenderTarget::Copy_Resource(ID3D11Texture2D* pDesc)

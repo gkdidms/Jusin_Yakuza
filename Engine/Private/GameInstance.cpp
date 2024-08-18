@@ -114,7 +114,7 @@ void CGameInstance::Tick(const _float& fTimeDelta)
 	m_pFrustum->Tick();
 
 	//Occulusion Culling 먼저 돌기
-	m_pRenderer->Occulusion_Culling_Draw();
+	//m_pRenderer->Occulusion_Culling_Draw();
 
 	m_pGameObject_Manager->Late_Tick(fTimeDelta);
 
@@ -679,9 +679,9 @@ void CGameInstance::Bind_ComputeRenderTargetSRV(const wstring& strTargetTag, _ui
 	m_pRenderTarget_Manager->Bind_ComputeRenderTargetSRV(strTargetTag, iSlot);
 }
 
-void CGameInstance::Bind_ComputeRenderTargetUAV(const wstring& strTargetTag)
+void CGameInstance::Bind_ComputeRenderTargetUAV(const wstring& strTargetTag, _uint iSlot)
 {
-	m_pRenderTarget_Manager->Bind_ComputeRenderTargetUAV(strTargetTag);
+	m_pRenderTarget_Manager->Bind_ComputeRenderTargetUAV(strTargetTag, iSlot);
 }
 
 void CGameInstance::Transform_ToLocalSpace(_fmatrix WorldMatrixInv)

@@ -22,7 +22,26 @@ public:
         RENDER_END
     };
 
-    enum SHADER_TYPE { DOWNSAMPLING, BLURX, BLURY, DOWNSAMPLING_DEPTH, SHADER_TYPE_END };
+    enum SHADER_TYPE { DOWNSAMPLING, BLURX, BLURY, DOWNSAMPLING_DEPTH, SSAO, SHADER_TYPE_END };
+
+    //SSAO ¹öÆÛ¿ë
+    struct SSAO_BUFFER
+    {
+        _float4 vSSAOKernal[64];
+        _matrix WorldMatrix;
+        _matrix ViewMatrixInv;
+        _matrix ProjMatrixInv;
+        _matrix CamViewMatrix;
+        _matrix CamProjMatrix;
+        
+        _float4 vCamPosition;
+        _float fFar;
+        _float fRadiuse;
+        _float fSSAOBise;
+        _float buffer1;
+    };
+
+
 private:
     CRenderer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
     virtual ~CRenderer() = default;
@@ -172,8 +191,9 @@ private:
     ID3D11DepthStencilView* m_pLightDepthStencilView = { nullptr };
     ID3D11ShaderResourceView* m_pSSAONoiseView = { nullptr };
 
-
     ID3D11DepthStencilView* m_pOcculusionDepthView = { nullptr };
+
+    ID3D11Buffer* m_pSSAOBuffer = { nullptr };
 
     _bool m_isRadialBlur = { false };
     _bool m_isMotionBlur = { false };
