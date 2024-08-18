@@ -260,7 +260,6 @@ void CUIKaraoke_Play::Change_Lyrics()
 {
     for (size_t i = 0; i < m_LyricsTime.size(); i++)
     {
-
         if (m_fCurSoundTime > m_LyricsTime[i].fTime - 1.f)        //2초 전에 가사를 미리 띄운다.
         {
             if (i != 0)
@@ -286,6 +285,11 @@ void CUIKaraoke_Play::Change_Lyrics()
 
                     Setting_BackUI(m_LyricsTime[i], vPos, i - 1);
                 }
+            }
+            else
+            {
+                _vector vPos = XMVectorSetW(XMLoadFloat3(&m_LyricsSocket[m_LyricsTime[i].iSocketIndex]), 1.f);
+                Setting_BackUI(m_LyricsTime[i], vPos, i - 1);
             }
         }
 
@@ -321,7 +325,10 @@ void CUIKaraoke_Play::Change_Lyrics()
 
                         m_pPlayUI[BACK][m_LyricsTime[i].iSocketIndex]->Show_Off_All();
                     }
-               
+                }
+                else
+                {
+                    m_pPlayUI[BACK][m_LyricsTime[i].iSocketIndex]->Show_Off_All();
                 }
             }
         }
@@ -335,8 +342,9 @@ void CUIKaraoke_Play::Setting_BackUI(LYRICS_DESC Desc, _fvector vPos, _uint iLyr
     m_pPlayUI[BACK][Desc.iSocketIndex]->Get_TransformCom()->Set_Scale(Desc.fDuration * 0.2f, vScaled.y, vScaled.z);
 
     // 2. 텍스트의 위치와 스케일 가져오기
-    _float3 vLyricsScaled = m_Lyrics->Get_PartObject(iLyricsIndex)->Get_TransformCom()->Get_Scaled();
-    _vector vLyricsPos = m_Lyrics->Get_PartObject(iLyricsIndex)->Get_TransformCom()->Get_State(CTransform::STATE_POSITION);
+    _float3 vLyricsScaled = m_Lyrics->Get_PartObject(0)->Get_TransformCom()->Get_Scaled();
+    _vector vLyricsPos = vPos;
+    //_vector vLyricsPos = m_Lyrics->Get_PartObject(iLyricsIndex)->Get_TransformCom()->Get_State(CTransform::STATE_POSITION);
 
     // 3. 흰색 바의 위치를 텍스트의 왼쪽 시작 부분에 맞추기
     // 텍스트의 시작 위치와 스케일을 고려하여 흰색 바의 X 위치를 조정
@@ -364,7 +372,7 @@ void CUIKaraoke_Play::CurrentBar_Control()
         }
     }
 
-    if (0 < iCurLyricsIndex)
+    if (-1 < iCurLyricsIndex)
     {
         _vector vPos = m_pPlayUI[BACK][m_LyricsTime[iCurLyricsIndex].iSocketIndex]->Get_TransformCom()->Get_State(CTransform::STATE_POSITION);
         _vector vEndPos = vPos;
