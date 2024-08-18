@@ -64,6 +64,11 @@
 #include "RoadStanding_NML.h"
 #pragma endregion
 
+#pragma region NPC
+#include "Nishiki.h"
+#pragma endregion
+
+
 #pragma region BTNode
 #include "AI_RushYakuza.h"
 #include "AI_WPAYakuza.h"

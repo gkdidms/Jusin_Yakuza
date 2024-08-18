@@ -46,7 +46,6 @@ HRESULT CMap::Initialize(void* pArg)
 		m_iShaderPassNum = gameobjDesc->iShaderPass;
 		m_iObjectType = gameobjDesc->iObjType;
 		m_bCull = gameobjDesc->bCull;
-		m_bLocalCull = gameobjDesc->bLocalCull;
 
 		for (int i = 0; i < gameobjDesc->iDecalNum; i++)
 		{
@@ -1062,7 +1061,7 @@ void CMap::Add_Renderer(const _float& fTimeDelta)
 
 		const char* baseNameCStr = baseName.c_str();
 
-		if (false == m_bCull && false == m_bLocalCull)
+		if (false == m_bCull)
 		{
 			// 컬링안함
 			if (0 == strcmp(baseNameCStr, "DEFAULTMESH"))
@@ -1120,7 +1119,7 @@ void CMap::Add_Renderer(const _float& fTimeDelta)
 				m_vRenderDefaulMeshIndex.push_back(i);
 			}
 		}
-		else if (false == m_bLocalCull)
+		else
 		{
 			float		fScale = Meshes[i]->Get_MeshScale();
 
@@ -1187,19 +1186,19 @@ void CMap::Add_Renderer(const _float& fTimeDelta)
 				}
 			}
 		}
-		else
-		{
-			// 도로씬에서 다 DECAL 처리
-			float		fScale = Meshes[i]->Get_MeshScale() * 0.5;
+		//else
+		//{
+		//	// 도로씬에서 다 DECAL 처리
+		//	float		fScale = Meshes[i]->Get_MeshScale() * 0.5;
 
-			if (fScale <= 0)
-				fScale = 10;
+		//	if (fScale <= 0)
+		//		fScale = 10;
 
-			if (true == m_pGameInstance->isIn_WorldFrustum(worldPos, fScale))
-			{
-				m_vMaskMeshIndex.push_back(i);
-			}
-		}
+		//	if (true == m_pGameInstance->isIn_WorldFrustum(worldPos, fScale))
+		//	{
+		//		m_vMaskMeshIndex.push_back(i);
+		//	}
+		//}
 	}
 
 	// RENDER_NONBLEND 돼야하는 그룹

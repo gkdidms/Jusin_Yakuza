@@ -6,13 +6,9 @@ class CAdventure_Reactor :
     public CLandObject
 {
 public:
-    typedef struct tMapAdventureReactorObjDesc : public CGameObject::GAMEOBJECT_DESC
+    typedef struct tMapAdventureReactorObjDesc : public CLandObject::LANDOBJ_MAPDESC
     {
-        XMMATRIX		vStartPos;
-        wstring			wstrModelName;
-        int				iShaderPass;
-        int             iNaviNum;
-        int             iNaviRouteNum;
+
     }ADVENTURE_REACTOR_IODESC;
 
 private:

@@ -72,7 +72,6 @@ public:
 		OBJCOLLIDER_DESC* pColliderDesc;
 
 		bool				bCull;
-		bool				bLocalCull;
 		const _float4x4* vPlayerMatrix;
 	}MAPOBJ_DESC;
 
@@ -155,7 +154,6 @@ private:
 	_int					m_iObjectType = { 0 };
 	_float					m_fWaterDeltaTime = { 0 };
 	_bool					m_bCull = { false };
-	_bool					m_bLocalCull = { false }; // 도로mesh 전용
 
 
 	const _float4x4* m_pPlayerMatrix; // 플레이어 위치

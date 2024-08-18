@@ -87,6 +87,8 @@ namespace Engine
 		int					iShaderPassNum; /* shader pass 번호 */
 		int					iObjType; /* object 종류 관련 - construction, item 등.. */
 		int					iObjPropertyType; /* object 별 특징 */
+
+		int					iNPCDirection; /* object 별 특징 */
 		int					iNaviNum;
 		int					iNaviRoute;
 
