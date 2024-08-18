@@ -99,6 +99,11 @@ void CLevel_Test::Tick(const _float& fTimeDelta)
 #ifdef _DEBUG
 	SetWindowText(g_hWnd, TEXT("테스트 레벨"));
 #endif
+
+	if (m_pKaraokeManager->IsSongEnd())
+	{
+		int a = 0;
+	}
 }
 
 HRESULT CLevel_Test::Ready_Camera(const wstring& strLayerTag)

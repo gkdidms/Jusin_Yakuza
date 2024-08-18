@@ -90,6 +90,9 @@ HRESULT CUIKaraoke_Play::Tick(const _float& fTimeDelta)
 {
     m_fCurSoundTime = m_pGameInstance->GetSoundPosition(L"Bakamita.mp3", SOUND_BGM);
 
+    if (m_pGameInstance->Get_SoundEnd(TEXT("Bakamita.mp3"), SOUND_BGM))
+        m_isSongEnd = true;
+
     Update_CurrentLyricsIndex();
 
     Change_Lyrics();
@@ -494,7 +497,7 @@ void CUIKaraoke_Play::Verse_On_SingleNote(CNoteBase* pNote)
         case 0:     //Up
         {
             m_pPlayUI[UP].front()->Show_On_All();
-            _float fRatio = (pNote->Get_StartTime() / m_LyricsTime[m_iCurLyricsIndex].fDuration);
+            _float fRatio = ((pNote->Get_StartTime() - fVerseStartTime) / m_LyricsTime[m_iCurLyricsIndex].fDuration);
             
             _vector vPos = m_pPlayUI[BACK][m_LyricsTime[m_iCurLyricsIndex].iSocketIndex]->Get_TransformCom()->Get_State(CTransform::STATE_POSITION);
             _vector vEndPos = vPos;
@@ -520,7 +523,7 @@ void CUIKaraoke_Play::Verse_On_SingleNote(CNoteBase* pNote)
         {
             m_pPlayUI[DOWN].front()->Show_On_All();
 
-            _float fRatio = (pNote->Get_StartTime() / m_LyricsTime[m_iCurLyricsIndex].fDuration);
+            _float fRatio = ((pNote->Get_StartTime() - fVerseStartTime) / m_LyricsTime[m_iCurLyricsIndex].fDuration);
 
             _vector vPos = m_pPlayUI[BACK][m_LyricsTime[m_iCurLyricsIndex].iSocketIndex]->Get_TransformCom()->Get_State(CTransform::STATE_POSITION);
             _vector vEndPos = vPos;
@@ -544,7 +547,7 @@ void CUIKaraoke_Play::Verse_On_SingleNote(CNoteBase* pNote)
         case 2:     //Left
         {
             m_pPlayUI[LEFT].front()->Show_On_All();
-            _float fRatio = (pNote->Get_StartTime() / m_LyricsTime[m_iCurLyricsIndex].fDuration);
+            _float fRatio = ((pNote->Get_StartTime() - fVerseStartTime) / m_LyricsTime[m_iCurLyricsIndex].fDuration);
 
             _vector vPos = m_pPlayUI[BACK][m_LyricsTime[m_iCurLyricsIndex].iSocketIndex]->Get_TransformCom()->Get_State(CTransform::STATE_POSITION);
             _vector vEndPos = vPos;
@@ -570,7 +573,7 @@ void CUIKaraoke_Play::Verse_On_SingleNote(CNoteBase* pNote)
         {
             m_pPlayUI[RIGHT].front()->Show_On_All();
 
-            _float fRatio = (pNote->Get_StartTime() / m_LyricsTime[m_iCurLyricsIndex].fDuration);
+            _float fRatio = ((pNote->Get_StartTime() - fVerseStartTime) / m_LyricsTime[m_iCurLyricsIndex].fDuration);
 
             _vector vPos = m_pPlayUI[BACK][m_LyricsTime[m_iCurLyricsIndex].iSocketIndex]->Get_TransformCom()->Get_State(CTransform::STATE_POSITION);
             _vector vEndPos = vPos;

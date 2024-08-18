@@ -11,6 +11,9 @@ BEGIN(Client)
 class CKaraokeManager :
     public CBase
 {
+private:
+    const _float SCORE_TIMER = 3.f;
+
 public:
     enum MUSIC { STUPID , JUDGEMENT,MERMAID , MUSIC_END};
 
@@ -31,6 +34,11 @@ private:
     void KeyInput();
 
     void Setting_NoteUIs();
+    
+public:
+    _bool IsSongEnd() {
+        return m_isScoreEnd;
+    }
 
 private:
     class CGameInstance* m_pGameInstance = { nullptr };
@@ -41,6 +49,10 @@ private:
 
     _bool m_isStart = { false };
     _uint m_iCurrentScore = { 0 };//이번판 점수 기입
+
+    _float  m_fScoreTimer = { 0.f };
+    _bool m_isScoreTimerOn = { false };
+    _bool m_isScoreEnd = { false };
 
 private:
     HRESULT Ready_Karaoke();

@@ -43,6 +43,11 @@ public:
         m_pNotes = pNotes;
     }
 
+public:
+    _bool IsSongEnd() {
+        return m_isSongEnd;
+    }
+
 private:
     void Ready_LyricsTime();
     void Ready_LyricsSocket();
@@ -73,6 +78,8 @@ private:
     vector<_float3> m_LyricsSocket;
 
     vector<class CNoteBase*>* m_pNotes;
+
+    _bool               m_isSongEnd = { false };
 
 public:
     static CUIKaraoke_Play* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg = nullptr);
