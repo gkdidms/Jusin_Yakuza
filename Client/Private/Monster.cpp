@@ -907,6 +907,11 @@ void CMonster::Change_Animation()
 			m_strAnimName = "c_standup_dnb_fast";
 			break;
 		}
+		case MONSTER_DWN_STANDUP_HEAD_R_EN:
+		{
+			m_strAnimName = "c_dwn_standup_head_r_en";
+			break;
+		}
 		case MONSTER_ANGRY_START:
 		{
 			//e_angry_typec[e_angry_typec]

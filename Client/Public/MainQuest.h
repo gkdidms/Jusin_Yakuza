@@ -1,0 +1,29 @@
+#pragma once
+#include "Quest.h"
+
+BEGIN(Client)
+class CMainQuest abstract:
+    public CQuest
+{
+public:
+    typedef struct tMainQuestDesc : public CQuest::QUEST_DESC {
+        _uint iScriptIndex;
+    } MAIN_QUEST_DESC;
+
+protected:
+    CMainQuest();
+    virtual ~CMainQuest() = default;
+
+public:
+    virtual HRESULT Initialize(void* pArg) override;
+
+protected:
+    class CUIManager* m_pUIManager = { nullptr };
+
+protected:
+    _uint m_iScriptIndex = { 0 };
+
+public:
+    virtual void Free();
+};
+END

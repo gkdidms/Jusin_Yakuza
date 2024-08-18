@@ -68,8 +68,7 @@ void CQuestTrigger::Late_Tick(const _float& fTimeDelta)
 			{
 				if (m_pQuestManager->Get_CurrentQuestType() == CQuestManager::QUEST_TALK)
 				{
-					m_pUIManager->Open_Scene(TEXT("Talk"));
-					m_pUIManager->Start_Talk();
+					m_pQuestManager->Set_CurrentColl();
 				}
 			}
 		}

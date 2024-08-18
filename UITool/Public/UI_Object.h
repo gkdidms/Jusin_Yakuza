@@ -24,7 +24,7 @@ public:
         _bool isScreen;
     } UI_OBJECT_DESC;
 
-    enum TEXTURE_TYPE { TYPE_IMG, TYPE_BTN, TYPE_TEXT, TYPE_GROUP, TYPE_UIEFFECT, TEXTURE_TYPE_END };
+    enum TEXTURE_TYPE { TYPE_IMG, TYPE_BTN, TYPE_TEXT, TYPE_GROUP, TYPE_UIEFFECT,   TYPE_HEADUI,    TEXTURE_TYPE_END };
 
 protected:
     CUI_Object(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

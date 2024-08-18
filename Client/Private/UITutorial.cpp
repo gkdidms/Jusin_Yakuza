@@ -46,7 +46,6 @@ HRESULT CUITutorial::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pCon
 HRESULT CUITutorial::Tick(const _float& fTimeDelta)
 {
 	//__super::Tick(fTimeDelta);
-	
 	m_EventUI[m_iState]->Tick(fTimeDelta);
 
 	return S_OK;

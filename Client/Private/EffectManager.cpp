@@ -16,11 +16,6 @@ void CEffectManager::Blood_Effect(CEffect::EFFECT_DESC& EffectDesc)
     m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Hit_Blood2"), TEXT("Layer_Particle"), &EffectDesc);
 }
 
-void CEffectManager::Blood_Splash(CEffect::EFFECT_DESC& EffectDesc)
-{
-    m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Aura_BloodSplash"), TEXT("Layer_Particle"), &EffectDesc);
-}
-
 void CEffectManager::Car_HitSpark(CEffect::EFFECT_DESC& EffectDesc)
 {
     m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_CarHitSpark0"), TEXT("Layer_Particle"), &EffectDesc);

@@ -81,6 +81,7 @@ HRESULT CImguiManager::Initialize(void* pArg)
 	ToneTextureTags.push_back(TEXT("Prototype_Component_Texture_AuraTone"));
 	ToneTextureTags.push_back(TEXT("Prototype_Component_Texture_AuraToneRush"));
 	ToneTextureTags.push_back(TEXT("Prototype_Component_Texture_AuraToneDestroy"));
+	ToneTextureTags.push_back(TEXT("Prototype_Component_Texture_BloodTone"));
 
 	MeshTags.push_back(TEXT("Prototype_Component_Model_ParticleSphere"));
 	MeshTags.push_back(TEXT("Prototype_Component_Model_ParticleMoney"));
@@ -2297,8 +2298,8 @@ void CImguiManager::Create_Tick(_float fTimeDelta)
 
 void CImguiManager::Editor_Tick(_float fTimeDelta)
 {
-	ImGui::SetNextWindowPos(ImVec2(980, 200), ImGuiCond_None);
-	ImGui::SetNextWindowSize(ImVec2(300, 520), ImGuiCond_None);
+	ImGui::SetNextWindowPos(ImVec2(880, 200), ImGuiCond_None);
+	ImGui::SetNextWindowSize(ImVec2(400, 520), ImGuiCond_None);
 
 	ImGui::Begin("Particle_Edit");
 

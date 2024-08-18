@@ -7,6 +7,7 @@ BEGIN(Engine)
 class CVIBuffer_Rect;
 END
 
+/* UI 이미지 용으로 사용함,*/
 BEGIN(Client)
 class CBackground :
     public CGameObject
@@ -15,6 +16,12 @@ private:
     CBackground(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
     CBackground(const CBackground& rhs);
     virtual ~CBackground() = default;
+
+public:
+	_bool isShow() { return m_isShow; }
+
+public:
+	void Set_Show(_bool isShow) { m_isShow = isShow; }
     
 public:
 	virtual HRESULT Initialize_Prototype() override;
@@ -31,6 +38,9 @@ private:
 
 	_float							m_fX, m_fY, m_fSizeX, m_fSizeY;
 	_float4x4						m_WorldMatrix, m_ViewMatrix, m_ProjMatrix;
+
+private:
+	_bool m_isShow = { false };
 
 private:
 	HRESULT Add_Components();

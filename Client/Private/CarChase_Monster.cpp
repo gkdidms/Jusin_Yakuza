@@ -96,7 +96,6 @@ void CCarChase_Monster::Set_Coll()
 
 	EffectDesc.pWorldMatrix = &m_pWorldMatrix;
 	CEffectManager::GetInstance()->Blood_Effect(EffectDesc);
-	CEffectManager::GetInstance()->Blood_Splash(EffectDesc);
 
 	if (m_Info.fHp <= 0.f)
 	{

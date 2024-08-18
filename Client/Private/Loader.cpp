@@ -167,6 +167,9 @@ HRESULT CLoader::Loading()
 	case LEVEL_KARAOKE:
 		hr = Loading_For_Karaoke();
 		break;
+	case LEVEL_TUTORIAL:
+		hr = Loading_For_Tutorial();
+		break;
 	}
 
 	LeaveCriticalSection(&m_Critical_Section);
@@ -234,6 +237,16 @@ HRESULT CLoader::Loading_For_CarChase()
 }
 
 HRESULT CLoader::Loading_For_Karaoke()
+{
+	return S_OK;
+}
+
+HRESULT CLoader::Loading_For_Tutorial()
+{
+	return S_OK;
+}
+
+HRESULT CLoader::Loading_For_NishikiWalk()
 {
 	return S_OK;
 }
