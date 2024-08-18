@@ -35,7 +35,7 @@ public:
     void Set_Name(string strName) { m_strName = strName; }
     void Set_Event(_bool isEvent) { m_isEvent = isEvent; }
     void Set_isScreen(_bool isScreen) { m_isScreen = isScreen; }
-    void Set_isPlay(_bool isPlay) { m_isPlay = isPlay; }
+    virtual void Set_isPlay(_bool isPlay) { m_isPlay = isPlay; }
 public:
     string Get_Name() { return m_strName; }
     _bool Get_Event() { return m_isEvent; }

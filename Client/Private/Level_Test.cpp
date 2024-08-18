@@ -7,20 +7,28 @@
 #include "FileTotalMgr.h"
 #include "CarChaseManager.h"
 #include "TutorialManager.h"
+#include "FightManager.h"
+#include "UIManager.h"
+#include "KaraokeManager.h"
 
 #include "PlayerCamera.h"
 #include "DebugCamera.h"
 #include "CineCamera.h"
 #include "CutSceneCamera.h"
 #include "CarChaseCamera.h"
+#include "Highway_Taxi.h"
 
 CLevel_Test::CLevel_Test(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLevel{ pDevice, pContext },
 	m_pSystemManager{ CSystemManager::GetInstance() },
-	m_pFileTotalManager{ CFileTotalMgr::GetInstance() }
+	m_pFileTotalManager{ CFileTotalMgr::GetInstance() },
+	m_pUIManager{ CUIManager::GetInstance() },
+	m_pFightManager{ CFightManager::GetInstance()}
 {
 	Safe_AddRef(m_pSystemManager);
 	Safe_AddRef(m_pFileTotalManager);
+	Safe_AddRef(m_pUIManager);
+	Safe_AddRef(m_pFightManager);
 }
 
 HRESULT CLevel_Test::Initialize()
@@ -33,11 +41,26 @@ HRESULT CLevel_Test::Initialize()
 	// 테스트 다하면 지워라
 	/* For.Prototype_Component_Navigation */
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Navigation"),
-		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/NaviData/Navigation_90.dat")))))
+		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/NaviData/Navigation_9.dat")))))
+		return E_FAIL;
+
+	m_pKaraokeManager = CKaraokeManager::Create();
+	if (nullptr == m_pKaraokeManager)
 		return E_FAIL;
 
 	//m_pCarChaseManager = CCarChaseManager::Create(m_pDevice, m_pContext);
 	//if (nullptr == m_pCarChaseManager)
+	//	return E_FAIL;
+
+
+	//m_pUIManager->Open_Scene(TEXT("Carchase"));
+
+	///* 클라 파싱 */
+	//m_pFileTotalManager->Set_MapObj_In_Client(STAGE_ROADWAY, LEVEL_TEST);
+	//m_pFileTotalManager->Set_Lights_In_Client(90);
+	//m_pFileTotalManager->Set_Collider_In_Client(STAGE_ROADWAY, LEVEL_CARCHASE);
+
+	//if (FAILED(Ready_Camera(TEXT("Layer_Camera"))))
 	//	return E_FAIL;
 
 	if (FAILED(Ready_Player(TEXT("Layer_Player"))))
@@ -50,44 +73,29 @@ HRESULT CLevel_Test::Initialize()
 	//if (FAILED(Ready_Test_Load()))
 	//	return E_FAIL;
 
-	////혜원 테스트 용
-	//if (FAILED(Ready_Test_Hyewon()))
-	//	return E_FAIL;
+	// 혜원테스트용
+	if (FAILED(Ready_Test_Hyewon()))
+		return E_FAIL;
 
-	m_pFileTotalManager->Set_MapObj_In_Client(88, LEVEL_TEST);
-	m_pFileTotalManager->Set_Lights_In_Client(90);
-	m_pFileTotalManager->Set_Collider_In_Client(3, LEVEL_TEST);
+	//m_pFileTotalManager->Set_MapObj_In_Client(70, LEVEL_TEST);
+	//m_pFileTotalManager->Set_Lights_In_Client(90);
+	//m_pFileTotalManager->Set_Collider_In_Client(3, LEVEL_TEST);
 	//m_pFileTotalManager->Set_Trigger_In_Client(79, LEVEL_TEST);
 
+	m_pFightManager->Set_FightStage(true);
 
 	if (FAILED(Ready_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
-
-	// Cinemachine 번호 로드
-	m_pFileTotalManager->Load_Cinemachine(0, LEVEL_TEST);
-	m_pFileTotalManager->Load_Cinemachine(1, LEVEL_TEST);
 
 	return S_OK;
 }
 
 void CLevel_Test::Tick(const _float& fTimeDelta)
 {
+	m_pKaraokeManager->Tick(fTimeDelta);
 	//m_pCarChaseManager->Tick();
 	//m_pTutorialManager->Tick();
-
-	//bool bPlay = false;
-	//if (m_pGameInstance->GetKeyState(DIK_H) == TAP)
-	//{
-	//	bPlay = true;
-	//}
-
-	//if (bPlay == true)
-	//{
-	//	// cinemachine 시작하기
-	//	m_pFileTotalManager->Setting_Start_Cinemachine(1);
-	//}
-	
-
+	//m_pFightManager->Tick(fTimeDelta);
 #ifdef _DEBUG
 	SetWindowText(g_hWnd, TEXT("테스트 레벨"));
 #endif
@@ -127,7 +135,7 @@ HRESULT CLevel_Test::Ready_Camera(const wstring& strLayerTag)
 	PlayerCameraDesc.fFovY = XMConvertToRadians(60.0f);
 	PlayerCameraDesc.fAspect = g_iWinSizeX / (_float)g_iWinSizeY;
 	PlayerCameraDesc.fNear = 0.1f;
-	PlayerCameraDesc.fFar = 1000.f;
+	PlayerCameraDesc.fFar = 3000.f;
 	PlayerCameraDesc.fSpeedPecSec = 20.f;
 	PlayerCameraDesc.fRotatePecSec = XMConvertToRadians(90.f);
 	PlayerCameraDesc.pPlayerMatrix = dynamic_cast<CTransform*>(m_pGameInstance->Get_GameObject_Component(LEVEL_TEST, TEXT("Layer_Player"), TEXT("Com_Transform", 0)))->Get_WorldFloat4x4();
@@ -149,21 +157,23 @@ HRESULT CLevel_Test::Ready_Camera(const wstring& strLayerTag)
 	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_CutSceneCamera"), strLayerTag, &CutSceneCameraDesc)))
 		return E_FAIL;
 
-	///* 4. 추격전용 카메라 */
-	CCarChaseCamera::CARCHASE_CAMERA_DESC		CarChaseCameraDesc{};
-	CarChaseCameraDesc.vEye = _float4(3.f, 2.f, 0.f, 1.f);
-	CarChaseCameraDesc.vFocus = _float4(0.f, 0.0f, 0.0f, 1.f);
-	CarChaseCameraDesc.fFovY = XMConvertToRadians(60.0f);
-	CarChaseCameraDesc.fAspect = g_iWinSizeX / (_float)g_iWinSizeY;
-	CarChaseCameraDesc.fNear = 0.1f;
-	CarChaseCameraDesc.fFar = 3000.f;
-	CarChaseCameraDesc.fSpeedPecSec = 10.f;
-	CarChaseCameraDesc.fRotatePecSec = XMConvertToRadians(90.f);
-	CarChaseCameraDesc.fSensor = 0.1f;
-	CarChaseCameraDesc.pPlayerMatrix = dynamic_cast<CTransform*>(m_pGameInstance->Get_GameObject_Component(LEVEL_TEST, TEXT("Layer_Taxi"), TEXT("Com_Transform", 0)))->Get_WorldFloat4x4();
+	/////* 4. 추격전용 카메라 */
+	//CCarChaseCamera::CARCHASE_CAMERA_DESC		CarChaseCameraDesc{};
+	//CarChaseCameraDesc.vEye = _float4(3.f, 2.f, 0.f, 1.f);
+	//CarChaseCameraDesc.vFocus = _float4(0.f, 0.0f, 0.0f, 1.f);
+	//CarChaseCameraDesc.fFovY = XMConvertToRadians(60.0f);
+	//CarChaseCameraDesc.fAspect = g_iWinSizeX / (_float)g_iWinSizeY;
+	//CarChaseCameraDesc.fNear = 0.1f;
+	//CarChaseCameraDesc.fFar = 3000.f;
+	//CarChaseCameraDesc.fSpeedPecSec = 10.f;
+	//CarChaseCameraDesc.fRotatePecSec = XMConvertToRadians(90.f);
+	//CarChaseCameraDesc.fSensor = 0.1f;
+	////CHighway_Taxi* pTaxi = dynamic_cast<CHighway_Taxi*>(m_pGameInstance->Get_GameObject(LEVEL_TEST, TEXT("Layer_Taxi"), 0));
+	////CarChaseCameraDesc.pPlayerMatrix = pTaxi->Get_TransformCom()->Get_WorldFloat4x4();
+	////CarChaseCameraDesc.pPlayerBoneMatrix = pTaxi->Get_KiryuBoneMatrix("kubi_c_n");
 
-	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_CarChaseCamera"), strLayerTag, &CarChaseCameraDesc)))
-		return E_FAIL;
+	//if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_CarChaseCamera"), strLayerTag, &CarChaseCameraDesc)))
+	//	return E_FAIL;
 
 	return S_OK;
 }
@@ -175,7 +185,12 @@ HRESULT CLevel_Test::Ready_Player(const wstring& strLayerTag)
 	//Desc.fRotatePecSec = XMConvertToRadians(0.f);
 	Desc.fRotatePecSec = XMConvertToRadians(180.f);
 
-	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_Player"), strLayerTag, &Desc)))
+	// 원래 플레이어
+	//if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_Player"), strLayerTag, &Desc)))
+	//	return E_FAIL;
+
+	// 가라오케 플레이어
+	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_Kiryu_Karaoke"), strLayerTag, &Desc)))
 		return E_FAIL;
 
 	return S_OK;
@@ -192,8 +207,18 @@ HRESULT CLevel_Test::Ready_Test_Load()
 
 HRESULT CLevel_Test::Ready_Test_Hyewon()
 {
-	m_pFileTotalManager->Set_MapObj_In_Client(9, LEVEL_TEST);
-	m_pFileTotalManager->Set_Lights_In_Client(99);
+	// 가라오케 네비는 9번ㄴ
+	// 가라오케 맵 81번
+	// 
+	//m_pFileTotalManager->Set_MapObj_In_Client(81, LEVEL_TEST);
+	//m_pFileTotalManager->Set_Lights_In_Client(9);
+
+	//요네다 깔린 길거리맵 91
+	// 과거의 길거리맵 79
+	// 길거리맵 네비: 7
+	// 과거의 길거리맵 네비: 79
+	m_pFileTotalManager->Set_MapObj_In_Client(81, LEVEL_TEST);
+	m_pFileTotalManager->Set_Lights_In_Client(9);
 	m_pFileTotalManager->Set_Collider_In_Client(0, LEVEL_TEST);
 	m_pFileTotalManager->Set_Trigger_In_Client(79, LEVEL_TEST);
 
@@ -222,4 +247,7 @@ void CLevel_Test::Free()
 	Safe_Release(m_pFileTotalManager);
 	Safe_Release(m_pCarChaseManager);
 	Safe_Release(m_pTutorialManager);
+	Safe_Release(m_pUIManager);
+	Safe_Release(m_pKaraokeManager);
+	Safe_Release(m_pFightManager);
 }
