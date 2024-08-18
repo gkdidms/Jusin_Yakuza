@@ -59,6 +59,8 @@ void CKaraokeManager::Tick(const _float& fTimeDelta)
 			m_fScoreTimer += fTimeDelta;
 			if (SCORE_TIMER <= m_fScoreTimer)
 			{
+				m_pUIManager->Close_Scene();
+
 				m_isStart = false;
 				m_isScoreEnd = true;
 			}
