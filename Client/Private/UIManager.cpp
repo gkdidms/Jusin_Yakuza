@@ -21,6 +21,7 @@
 #include "UITitle.h"
 #include "UIFightScore.h"
 #include "UIStoreImage.h"
+#include "UIQTE.h"
 
 #include "UIKaraoke_Select.h"
 #include "UIKaraoke_Play.h"
@@ -238,6 +239,11 @@ HRESULT CUIManager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 	Desc.strSceneName = TEXT("StoreImage");
 	pScene = CUIStoreImage::Create(m_pDevice, m_pContext, &Desc);
 	m_AllScene.emplace(make_pair(TEXT("StoreImage"), pScene));
+
+	Desc.isLoading = true;
+	Desc.strSceneName = TEXT("QTE");
+	pScene = CUIQTE::Create(m_pDevice, m_pContext, &Desc);
+	m_AllScene.emplace(make_pair(TEXT("QTE"), pScene));
 
 
 
