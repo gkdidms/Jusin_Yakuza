@@ -96,6 +96,8 @@ HRESULT CUIKaraoke_Play::Tick(const _float& fTimeDelta)
         pPlayer->Set_CutSceneAnim();
     }
 
+    m_Lyrics->Tick(fTimeDelta);
+
     for (size_t i = 0; i < UILIST_END; i++)
     {
         for (auto& pUI : m_pPlayUI[i])
@@ -103,7 +105,6 @@ HRESULT CUIKaraoke_Play::Tick(const _float& fTimeDelta)
             pUI->Tick(fTimeDelta);
         }
     }
-    m_Lyrics->Tick(fTimeDelta);
     return S_OK;
 }
 
@@ -113,6 +114,8 @@ HRESULT CUIKaraoke_Play::Late_Tick(const _float& fTimeDelta)
     //for (auto& iter : m_pPlayUI)
     //    iter->Late_Tick(fTimeDelta);
 
+    m_Lyrics->Late_Tick(fTimeDelta);
+
     for (size_t i = 0; i < UILIST_END; i++)
     {
         for (auto& pUI : m_pPlayUI[i])
@@ -120,7 +123,7 @@ HRESULT CUIKaraoke_Play::Late_Tick(const _float& fTimeDelta)
             pUI->Late_Tick(fTimeDelta);
         }
     }
-    m_Lyrics->Late_Tick(fTimeDelta);
+    
     if (!m_isAnimFin)
         Check_AimFin();
 
@@ -243,7 +246,7 @@ void CUIKaraoke_Play::Ready_LyricsTime()
     for (size_t i = 0; i < m_LyricsTime.size(); i++)
     {
         if(i == m_LyricsTime.size() - 1)
-            m_LyricsTime[i].fDuration = 95.130f - m_LyricsTime[i].fTime;                    // 마지막소절은 그냥 끝나는 시간 정해져잇음
+            m_LyricsTime[i].fDuration = 95.719f - m_LyricsTime[i].fTime;                    // 마지막소절은 그냥 끝나는 시간 정해져잇음
         else
             m_LyricsTime[i].fDuration = m_LyricsTime[i + 1].fTime - m_LyricsTime[i].fTime;
     }
@@ -295,19 +298,7 @@ void CUIKaraoke_Play::Change_Lyrics()
 
         if (m_LyricsTime.size() - 1 > i)
         {
-            // 마지막 소절 직전이라면 마지막 가사 꺼질 때 같이 꺼진다.
-            if (i <= m_LyricsTime.size() - 2)
-            {
-                if (m_fCurSoundTime > m_LyricsTime[m_LyricsTime.size() - 1].fTime + m_LyricsTime[m_LyricsTime.size() - 1].fDuration)
-                {
-                    m_LyricsTime[m_LyricsTime.size() - 1].fTime + m_LyricsTime[m_LyricsTime.size() - 1].fDuration;
-                    m_Lyrics->Show_Off(i - 1);
-
-                    m_pPlayUI[BACK][m_LyricsTime[i].iSocketIndex]->Show_Off_All();
-                }
-            }
-
-            if (m_fCurSoundTime > m_LyricsTime[i + 1].fTime)        //다음가사 on 2초전에 가사끄기
+            if (m_fCurSoundTime > m_LyricsTime[i + 1].fTime + 1.f)        //다음가사 on 1초 뒤에 가사끄기
             {
                 if (i != 0)
                 {
@@ -328,6 +319,18 @@ void CUIKaraoke_Play::Change_Lyrics()
                 }
                 else
                 {
+                    m_pPlayUI[BACK][m_LyricsTime[i].iSocketIndex]->Show_Off_All();
+                }
+            }
+        }
+        else
+        {
+            // 마지막 소절 직전이라면 마지막 가사 꺼질 때 같이 꺼진다.
+            if (i == m_LyricsTime.size() - 1)
+            {
+                if (m_fCurSoundTime > (m_LyricsTime[m_LyricsTime.size() - 1].fTime + m_LyricsTime[m_LyricsTime.size() - 1].fDuration))
+                {
+                    m_Lyrics->Show_Off(i - 1);
                     m_pPlayUI[BACK][m_LyricsTime[i].iSocketIndex]->Show_Off_All();
                 }
             }
@@ -362,6 +365,13 @@ void CUIKaraoke_Play::Setting_BackUI(LYRICS_DESC Desc, _fvector vPos, _uint iLyr
 
 void CUIKaraoke_Play::CurrentBar_Control()
 {
+    _float a = (m_LyricsTime[m_LyricsTime.size() - 1].fTime + m_LyricsTime[m_LyricsTime.size() - 1].fDuration);
+    if (a <= m_fCurSoundTime)
+    {
+        m_pPlayUI[CURRENTBAR].front()->Show_Off_All();
+        return;
+    }
+
     _int iCurLyricsIndex = { -1 };
 
     for (size_t i = 0; i < m_LyricsTime.size(); i++)
@@ -378,12 +388,15 @@ void CUIKaraoke_Play::CurrentBar_Control()
         _vector vEndPos = vPos;
         
         // 시작 위치 잡기
-        _float3 vScaled = m_pPlayUI[BACK][m_LyricsTime[iCurLyricsIndex].iSocketIndex]->Get_PartObject(1)->Get_TransformCom()->Get_Scaled();
-        _float3 vScaled2 = m_pPlayUI[BACK][m_LyricsTime[iCurLyricsIndex].iSocketIndex]->Get_PartObject(0)->Get_TransformCom()->Get_Scaled();
-        _float3 vScaled3 = m_pPlayUI[BACK][m_LyricsTime[iCurLyricsIndex].iSocketIndex]->Get_TransformCom()->Get_Scaled();
-        _float3 vScaled4 = m_pPlayUI[BACK][m_LyricsTime[iCurLyricsIndex].iSocketIndex]->Get_PartObject(2)->Get_TransformCom()->Get_Scaled();
-        vPos.m128_f32[0] -= (vScaled.x * 0.5f * vScaled3.x + vScaled2.x * 0.5f); 
-        vEndPos.m128_f32[0] += (vScaled.x * 0.5f * vScaled3.x + vScaled4.x * 0.5f);
+        _float3 vScaled_Center = m_pPlayUI[BACK][m_LyricsTime[iCurLyricsIndex].iSocketIndex]->Get_PartObject(1)->Get_TransformCom()->Get_Scaled();
+        _float3 vScaled_Front = m_pPlayUI[BACK][m_LyricsTime[iCurLyricsIndex].iSocketIndex]->Get_PartObject(0)->Get_TransformCom()->Get_Scaled();
+        _float3 vScaled_Back = m_pPlayUI[BACK][m_LyricsTime[iCurLyricsIndex].iSocketIndex]->Get_PartObject(2)->Get_TransformCom()->Get_Scaled();
+
+        // 해당 그룹 전체에 적용된 크기를 가져와서 적용해줘야한다.
+        _float3 vScaled_All = m_pPlayUI[BACK][m_LyricsTime[iCurLyricsIndex].iSocketIndex]->Get_TransformCom()->Get_Scaled();
+
+        vPos.m128_f32[0] -= (vScaled_Center.x * 0.5f * vScaled_All.x + vScaled_Front.x * 0.5f);
+        vEndPos.m128_f32[0] += (vScaled_Center.x * 0.5f * vScaled_All.x + vScaled_Back.x * 0.5f);
 
         _float fCurrentPos = m_fCurSoundTime - m_LyricsTime[iCurLyricsIndex].fTime;
 
