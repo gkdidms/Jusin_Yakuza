@@ -29,6 +29,7 @@ protected:
     ID3D11Buffer* m_pProcessedVertexBuffer = { nullptr };
 
     ID3D11Buffer* m_pVB;
+    ID3D11Buffer* m_pSRVIn;
     ID3D11Buffer* m_pUAVOut;
     ID3D11Buffer* m_pIB;
 
