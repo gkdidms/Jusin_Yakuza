@@ -18,7 +18,7 @@ public:
     HRESULT Clear();
     HRESULT Bind_SVR(class CShader* pShader, const _char* pConstantName);
     void Bind_ComputeSVR(_uint iSlot);
-    void Bind_ComputeUAV();
+    void Bind_ComputeUAV(_uint iSlot);
     HRESULT Copy_Resource(ID3D11Texture2D* pDesc);
     HRESULT Create_Texture(const wstring& strSaveFilePath);
 
