@@ -92,9 +92,9 @@ HRESULT CRenderTarget::Bind_SVR(CShader* pShader, const _char* pConstantName)
 	return pShader->Bind_SRV(pConstantName, m_pSRV);
 }
 
-void CRenderTarget::Bind_ComputeSVR()
+void CRenderTarget::Bind_ComputeSVR(_uint iSlot)
 {
-	m_pContext->CSSetShaderResources(0, 1, &m_pSRV);
+	m_pContext->CSSetShaderResources(iSlot, 1, &m_pSRV);
 }
 
 void CRenderTarget::Bind_ComputeUAV()

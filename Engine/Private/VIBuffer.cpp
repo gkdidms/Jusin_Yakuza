@@ -67,6 +67,29 @@ HRESULT CVIBuffer::Render()
 	return S_OK;
 }
 
+HRESULT CVIBuffer::Render_Compute()
+{
+	ID3D11Buffer* pVertices[] = {
+		m_pVB,
+	};
+
+	_uint pStrideVertices[] = {
+		m_iVertexStride,
+	};
+
+	_uint pStartVertices[] = {
+		0,
+	};
+
+	m_pContext->IASetVertexBuffers(0, m_iNumVertexBuffers, pVertices, pStrideVertices, pStartVertices);
+	m_pContext->IASetIndexBuffer(m_pIB, m_GIFormat, 0);
+	m_pContext->IASetPrimitiveTopology(m_Primitive_Topology);
+
+	m_pContext->DrawIndexed(m_iNumIndices, 0, 0);
+
+	return S_OK;
+}
+
 HRESULT CVIBuffer::Create_Buffer(ID3D11Buffer** pOut)
 {
 	if (FAILED(m_pDevice->CreateBuffer(&m_Buffer_Desc, &m_InitialData, pOut)))
