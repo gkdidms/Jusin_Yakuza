@@ -68,8 +68,8 @@ struct PS_IN
 struct PS_OUT
 {
     vector vDiffuse : SV_TARGET0;
-    vector vNormal : SV_TARGET1;
-    vector vDepth : SV_TARGET2;
+    //vector vNormal : SV_TARGET1;
+    //vector vDepth : SV_TARGET2;
     //vector vSpecular : SV_TARGET3;
 };
 
@@ -82,11 +82,11 @@ PS_OUT PS_MAIN_CAMERAEYE(PS_IN In)
     Out.vDiffuse = g_Texture.Sample(LinearSampler, In.vTexcoord);
 	
     // 투명할 경우(0.1보다 작으면 투명하니) 그리지 않음
-    if (Out.vDiffuse.a < 0.1f)
-        discard;
+    //if (Out.vDiffuse.a < 0.1f)
+    //    discard;
     Out.vDiffuse = float4(1, 0, 0, 1);
-    Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
-    Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 3000.f, g_fObjID, 1.f);
+    //Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
+    //Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 3000.f, g_fObjID, 1.f);
     
     return Out;
 }
@@ -98,11 +98,11 @@ PS_OUT PS_MAIN_CAMERAFOCUS(PS_IN In)
     Out.vDiffuse = g_Texture.Sample(LinearSampler, In.vTexcoord);
 	
     // 투명할 경우(0.1보다 작으면 투명하니) 그리지 않음
-    if (Out.vDiffuse.a < 0.1f)
-        discard;
+    //if (Out.vDiffuse.a < 0.1f)
+    //    discard;
     Out.vDiffuse = float4(0, 0, 1, 1);
-    Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
-    Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 3000.f, g_fObjID, 1.f);
+    //Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
+    //Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 3000.f, g_fObjID, 1.f);
     
     return Out;
 }

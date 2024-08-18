@@ -116,7 +116,7 @@ HRESULT CPlayer::Initialize(void* pArg)
 	ZeroMemory(&m_InputDirection, sizeof(_bool) * MOVE_DIRECTION_END);
 
 	// 새로 생성할 때 마다 UI매니저에 본인을 Set해준다.
-	m_pUIManager->Set_Player(this);
+	//m_pUIManager->Set_Player(this);
 
 	m_pQTEMgr = dynamic_cast<CQteManager*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_QTEManager"), nullptr));
 

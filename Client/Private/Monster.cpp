@@ -311,6 +311,7 @@ HRESULT CMonster::Initialize(void* pArg)
 	m_pTransformCom->Set_WorldMatrix(gameobjDesc->vStartPos);
 	m_wstrModelName = gameobjDesc->wstrModelName;
 	m_iNaviRouteNum = gameobjDesc->iNaviRouteNum;
+	m_iNPCDirection = gameobjDesc->iNPCDirection;
 
 	if (FAILED(Add_Components()))
 		return E_FAIL;

@@ -64,6 +64,11 @@
 #include "RoadStanding_NML.h"
 #pragma endregion
 
+#pragma region NPC
+#include "Nishiki.h"
+#pragma endregion
+
+
 #pragma region BTNode
 #include "AI_RushYakuza.h"
 #include "AI_WPAYakuza.h"
@@ -214,6 +219,8 @@ HRESULT CMultiLoader::Loading(_uint iType)
 
 	return S_OK;
 }
+
+/* 공통적인 저장 객체를 넣어주는 함수. */
 
 /* 공통적인 저장 객체를 넣어주는 함수. */
 HRESULT CMultiLoader::Loading_Default()
@@ -535,6 +542,15 @@ HRESULT CMultiLoader::Loading_Default()
 		return E_FAIL;
 #pragma endregion
 
+
+#pragma region DissolveTexture
+	/* Prototype_Component_Texture_Coin*/
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Texture_Dissolve_0"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Dissovle_%d.dds"), 1))))
+		return E_FAIL;
+#pragma endregion
+
+
 #pragma region Component
 	lstrcpy(m_szLoadingText, TEXT("컴포넌트 원형 를(을) 로딩 중 입니다."));
 	/* For.Prototype_Component_VIBuffer_Terrain */
@@ -547,6 +563,10 @@ HRESULT CMultiLoader::Loading_Default()
 
 	/* For.Prototype_Component_VIBuffer_Cube */
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_VIBuffer_Cube"), CVIBuffer_Cube::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_VIBuffer_AABBCube */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_VIBuffer_AABBCube"), CVIBuffer_AABBCube::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 	/* For.Prototype_Component_Anim */
@@ -759,6 +779,10 @@ HRESULT CMultiLoader::Loading_Default()
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Shader_VtxCube"),
 		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxCube.hlsl"), VTXCUBE::Elements, VTXCUBE::iNumElements))))
 		return E_FAIL;
+	///* For.Prototype_Component_Shader_VtxCube */
+	//if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Shader_VtxCube_Occulusion"),
+	//	CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxCube_Occulusion.hlsl"), VTXCUBE_OCCULUSION::Elements, VTXCUBE_OCCULUSION::iNumElements))))
+	//	return E_FAIL;
 	/* For.Prototype_Component_Shader_Aura*/
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Shader_Aura"),
 		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_Aura.hlsl"), VTXINSTANCE_POINT::Elements, VTXINSTANCE_POINT::iNumElements))))
@@ -781,6 +805,13 @@ HRESULT CMultiLoader::Loading_Default()
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Shader_BoneCompute"),
 		CComputeShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_BoneCompute.hlsl")))))
 		return E_FAIL;
+
+
+	/* For.Prototype_Component_Shader_OcculusionCulling */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Shader_OcculusionCulling"),
+		CComputeShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_OcculusionCulling.hlsl")))))
+		return E_FAIL;
+
 
 #pragma endregion
 
@@ -815,7 +846,6 @@ HRESULT CMultiLoader::Loading_Highway()
 
 	return S_OK;
 }
-
 HRESULT CMultiLoader::Loading_For_Anim()
 {
 	Add_Models_On_Path(LEVEL_TEST, TEXT("../Bin/Resources/Models/Anim/Player/"));

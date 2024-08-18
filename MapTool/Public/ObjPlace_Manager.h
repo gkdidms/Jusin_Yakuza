@@ -35,7 +35,16 @@ public:
 		MONSTER_WPH,
 		MONSTER_DEFAULT,
 		MAP_NONCULL,
-		MAP_LOCALCULL,
+
+
+		ROADNML,
+		ROADCAB,
+		ROADSTANDING_NML,
+		ROADTISSUE,
+		ROADYOP,
+		MONSTERGROUP,
+		NISHIKI,
+		ADVENTURE_REACTOR,
 		OBJ_END
 	};
 
@@ -64,6 +73,7 @@ public:
 		int				iShaderPass;
 		int				iObjType;
 		int				iObjPropertyType;
+		int				iNPCDirection;
 		int				iNaviRouteNum;
 		XMFLOAT4X4		vOffsetMatrix;
 	}MAPTOOL_OBJPLACE_DESC;
@@ -130,7 +140,7 @@ private:
 
 
 private:
-	vector<const char*>							m_Layers = { "Layer_GameObjects", "Layer_Monster", "Layer_Player", "Layer_NPC" , "Layer_Item" };
+	vector<const char*>							m_Layers = { "Layer_GameObjects", "Layer_Monster", "Layer_Player", "Layer_NPC" , "Layer_Item", "Layer_Passerby", "Layer_MonsterGroup", "Layer_Nishiki" , "Layer_AdventureReactor" };
 	/* object이름, cgameobject */
 	multimap<wstring, CGameObject*>				m_GameObjects; /* 추가한 오브젝트 저장 */
 	vector<char*>								m_ObjectNames_Map0; /* 추가한 오브젝트 이름들 */

@@ -24,7 +24,17 @@ HRESULT CNPC::Initialize(void* pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
-	return S_OK;
+	NPC_IODESC* gameobjDesc = static_cast<NPC_IODESC*>(pArg);
+	m_pTransformCom->Set_WorldMatrix(gameobjDesc->vStartPos);
+	m_wstrModelName = gameobjDesc->wstrModelName;
+	m_iNaviRouteNum = gameobjDesc->iNaviRouteNum;
+	m_iNPCDirection = gameobjDesc->iNPCDirection;
+
+	if (FAILED(Add_Components()))
+		return E_FAIL;
+
+	m_pNavigationCom->Set_Index(gameobjDesc->iNaviNum);
+	m_pModelCom->Set_AnimationIndex(0);
 }
 
 void CNPC::Priority_Tick(const _float& fTimeDelta)

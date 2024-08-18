@@ -251,6 +251,7 @@
     <ClInclude Include="..\Public\UIKaraoke_Play.h" />
     <ClInclude Include="..\Public\UIKaraoke_Score.h" />
     <ClInclude Include="..\Public\UIKaraoke_Select.h" />
+    <ClInclude Include="..\Public\UIQTE.h" />
     <ClInclude Include="..\Public\UIStoreImage.h" />
     <ClInclude Include="..\Public\UITitle.h" />
     <ClInclude Include="..\Public\Weapon_Gun_Cz75.h" />
@@ -628,6 +629,7 @@
     <ClCompile Include="..\Private\UIMenu.cpp" />
     <ClCompile Include="..\Private\UIMoney.cpp" />
     <ClCompile Include="..\Private\UINowLoading.cpp" />
+    <ClCompile Include="..\Private\UIQTE.cpp" />
     <ClCompile Include="..\Private\UIScene.cpp" />
     <ClCompile Include="..\Private\UISkillDestroyer.cpp" />
     <ClCompile Include="..\Private\UISkillHolligan.cpp" />
@@ -666,9 +668,11 @@
       <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">GS_MAIN</EntryPointName>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compute</ShaderType>
     </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_OcculusionCulling.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Trail.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxAnimMesh.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxCube.hlsl" />
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxCube_Occulusion.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxInstance_Mesh.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxInstance_Point.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxMesh.hlsl" />
