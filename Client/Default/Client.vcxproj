@@ -183,15 +183,25 @@
     <ClInclude Include="..\..\Imgui\imgui\imstb_textedit.h" />
     <ClInclude Include="..\..\Imgui\imgui\imstb_truetype.h" />
     <ClInclude Include="..\public\Adventure.h" />
+    <ClInclude Include="..\Public\Adventure_Reactor.h" />
     <ClInclude Include="..\Public\AI_RoadCAB.h" />
     <ClInclude Include="..\Public\AI_RoadStanding.h" />
     <ClInclude Include="..\Public\AI_RoadStanding_NML.h" />
+    <ClInclude Include="..\Public\AI_RoadTissue.h" />
+    <ClInclude Include="..\Public\Chapter1_0.h" />
+    <ClInclude Include="..\Public\Chapter1_1.h" />
+    <ClInclude Include="..\Public\Chapter2_0.h" />
     <ClInclude Include="..\public\FightManager.h" />
     <ClInclude Include="..\Public\KaraokeManager.h" />
+    <ClInclude Include="..\Public\Level_NishikiWalk.h" />
+    <ClInclude Include="..\Public\MainQuest.h" />
     <ClInclude Include="..\public\MonsterGroup.h" />
+    <ClInclude Include="..\Public\Nishiki.h" />
+    <ClInclude Include="..\Public\NPC.h" />
     <ClInclude Include="..\Public\RoadCAB.h" />
     <ClInclude Include="..\public\RoadNML.h" />
     <ClInclude Include="..\public\RoadStanding.h" />
+    <ClInclude Include="..\Public\RoadTissue.h" />
     <ClInclude Include="..\public\RoadWalker.h" />
     <ClInclude Include="..\public\RoadStanding_NML.h" />
     <ClInclude Include="..\public\AI_RoadWalker.h" />
@@ -236,9 +246,13 @@
     <ClInclude Include="..\Public\NoteSingle.h" />
     <ClInclude Include="..\Public\Loader_Other.h" />
     <ClInclude Include="..\Public\Loader_Anim.h" />
+    <ClInclude Include="..\Public\RoadYOP.h" />
+    <ClInclude Include="..\Public\UIFightScore.h" />
     <ClInclude Include="..\Public\UIKaraoke_Play.h" />
     <ClInclude Include="..\Public\UIKaraoke_Score.h" />
     <ClInclude Include="..\Public\UIKaraoke_Select.h" />
+    <ClInclude Include="..\Public\UIQTE.h" />
+    <ClInclude Include="..\Public\UIStoreImage.h" />
     <ClInclude Include="..\Public\UITitle.h" />
     <ClInclude Include="..\Public\Weapon_Gun_Cz75.h" />
     <ClInclude Include="..\Public\Highway_Kiryu.h" />
@@ -414,7 +428,18 @@
     <ClCompile Include="..\..\Imgui\imgui\imgui_tables.cpp" />
     <ClCompile Include="..\..\Imgui\imgui\imgui_widgets.cpp" />
     <ClCompile Include="..\private\Adventure.cpp" />
+    <ClCompile Include="..\Private\Adventure_Reactor.cpp" />
+    <ClCompile Include="..\Private\AI_RoadTissue.cpp" />
+    <ClCompile Include="..\Private\Chapter1_0.cpp" />
+    <ClCompile Include="..\Private\Chapter1_1.cpp" />
+    <ClCompile Include="..\Private\Chapter2_0.cpp" />
     <ClCompile Include="..\Private\HeadUI.cpp" />
+    <ClCompile Include="..\Private\Level_NishikiWalk.cpp" />
+    <ClCompile Include="..\Private\MainQuest.cpp" />
+    <ClCompile Include="..\Private\Nishiki.cpp" />
+    <ClCompile Include="..\Private\NPC.cpp" />
+    <ClCompile Include="..\Private\RoadTissue.cpp" />
+    <ClCompile Include="..\Private\UIFightScore.cpp" />
     <ClCompile Include="..\Private\UIKaraoke_Score.cpp" />
     <ClCompile Include="..\Private\KaraokeManager.cpp" />
     <ClCompile Include="..\Private\AI_RoadCAB.cpp" />
@@ -604,11 +629,13 @@
     <ClCompile Include="..\Private\UIMenu.cpp" />
     <ClCompile Include="..\Private\UIMoney.cpp" />
     <ClCompile Include="..\Private\UINowLoading.cpp" />
+    <ClCompile Include="..\Private\UIQTE.cpp" />
     <ClCompile Include="..\Private\UIScene.cpp" />
     <ClCompile Include="..\Private\UISkillDestroyer.cpp" />
     <ClCompile Include="..\Private\UISkillHolligan.cpp" />
     <ClCompile Include="..\Private\UISkillMenu.cpp" />
     <ClCompile Include="..\Private\UISkillRush.cpp" />
+    <ClCompile Include="..\Private\UIStoreImage.cpp" />
     <ClCompile Include="..\Private\UITalk.cpp" />
     <ClCompile Include="..\Private\UITitle.cpp" />
     <ClCompile Include="..\Private\UITutorial.cpp" />
@@ -641,9 +668,11 @@
       <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">GS_MAIN</EntryPointName>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compute</ShaderType>
     </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_OcculusionCulling.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Trail.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxAnimMesh.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxCube.hlsl" />
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxCube_Occulusion.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxInstance_Mesh.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxInstance_Point.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxMesh.hlsl" />

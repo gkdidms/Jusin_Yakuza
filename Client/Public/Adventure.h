@@ -14,13 +14,9 @@ class CAdventure abstract :
     public CLandObject
 {
 public:
-    typedef struct tMapAdventureObjDesc : public CGameObject::GAMEOBJECT_DESC
+    typedef struct tMapAdventureObjDesc : public CLandObject::LANDOBJ_MAPDESC
     {
-        XMMATRIX		vStartPos;
-        wstring			wstrModelName;
-        int				iShaderPass;
-        int             iNaviNum;
-        int             iNaviRouteNum;
+        
     }ADVENTURE_IODESC;
 
 public:
@@ -43,6 +39,10 @@ public:
         ADVENTURE_REACT_D,
         ADVENTURE_STAND_ST,
         ADVENTURE_STAND,
+
+        ADVENTURE_TISSUE_ST,
+        ADVENTURE_TISSUE_LP,
+        ADVENTURE_TISSUE_EN,
     };
 
     enum GENDER

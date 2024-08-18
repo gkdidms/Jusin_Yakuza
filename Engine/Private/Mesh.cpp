@@ -14,9 +14,11 @@ CMesh::CMesh(const CMesh& rhs)
 	, m_OffsetMatrices{ rhs.m_OffsetMatrices }
 	, m_isAlphaApply{ rhs.m_isAlphaApply }
 	, m_iNumBones{ rhs.m_iNumBones }
-	, m_localMatrix {rhs.m_localMatrix}
 	, m_pBoneMatrixBuffer {rhs.m_pBoneMatrixBuffer}
 	, m_iModelType {rhs.m_iModelType}
+	, m_localMatrix{ rhs.m_localMatrix }
+	, m_vMaxPosition {rhs.m_vMaxPosition}
+	, m_vMinPosition {rhs.m_vMinPosition}
 {
 
 	m_pIndices = new _uint[m_iNumIndices];
@@ -292,6 +294,9 @@ HRESULT CMesh::Ready_Vertices_For_NonAnimMesh(const aiMesh* pAIMesh, _fmatrix Pr
 
 	m_fScale = fMaxScale;
 
+	m_vMinPosition = vMinScale;
+	m_vMaxPosition = vMaxScale;
+
 
 	vSumPosition.x /= m_iNumVertices;
 	vSumPosition.y /= m_iNumVertices;
@@ -386,6 +391,8 @@ HRESULT CMesh::Ready_Vertices_For_NonAnimMesh(const BAiMesh* pAIMesh, _fmatrix P
 		fMaxScale = vMeshScale.z;
 
 	m_fScale = fMaxScale;
+	m_vMinPosition = vMinScale;
+	m_vMaxPosition = vMaxScale;
 
 	vSumPosition.x /= m_iNumVertices;
 	vSumPosition.y /= m_iNumVertices;

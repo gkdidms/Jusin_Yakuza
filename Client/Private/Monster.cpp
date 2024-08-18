@@ -311,6 +311,7 @@ HRESULT CMonster::Initialize(void* pArg)
 	m_pTransformCom->Set_WorldMatrix(gameobjDesc->vStartPos);
 	m_wstrModelName = gameobjDesc->wstrModelName;
 	m_iNaviRouteNum = gameobjDesc->iNaviRouteNum;
+	m_iNPCDirection = gameobjDesc->iNPCDirection;
 
 	if (FAILED(Add_Components()))
 		return E_FAIL;
@@ -905,6 +906,11 @@ void CMonster::Change_Animation()
 		case MONSTER_STANDUP_DNB_FAST:
 		{
 			m_strAnimName = "c_standup_dnb_fast";
+			break;
+		}
+		case MONSTER_DWN_STANDUP_HEAD_R_EN:
+		{
+			m_strAnimName = "c_dwn_standup_head_r_en";
 			break;
 		}
 		case MONSTER_ANGRY_START:

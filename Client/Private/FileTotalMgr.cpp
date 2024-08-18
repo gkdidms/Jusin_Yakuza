@@ -19,6 +19,14 @@
 #include "Item.h"
 #include "Highway_Taxi.h"
 #include "Trigger.h"
+#include "RoadNML.h"
+#include "RoadCAB.h"
+#include "RoadStanding_NML.h"
+#include "RoadTissue.h"
+#include "RoadYOP.h"
+#include "MonsterGroup.h"
+#include "Nishiki.h"
+#include "Adventure_Reactor.h"
 
 IMPLEMENT_SINGLETON(CFileTotalMgr)
 
@@ -105,6 +113,7 @@ HRESULT CFileTotalMgr::Set_GameObject_In_Client(int iStageLevel)
             monsterDesc.fRotatePecSec = XMConvertToRadians(0.f);
             monsterDesc.fRotatePecSec = XMConvertToRadians(180.f);
             monsterDesc.iNaviRouteNum = m_MapTotalInform.pMapObjDesc[i].iNaviRoute;
+            monsterDesc.iNPCDirection = m_MapTotalInform.pMapObjDesc[i].iNPCDirection;
 
             if (-1 == m_MapTotalInform.pMapObjDesc[i].iNaviNum)
             {
@@ -135,6 +144,7 @@ HRESULT CFileTotalMgr::Set_GameObject_In_Client(int iStageLevel)
             monsterDesc.fRotatePecSec = XMConvertToRadians(0.f);
             monsterDesc.fRotatePecSec = XMConvertToRadians(180.f);
             monsterDesc.iNaviRouteNum = m_MapTotalInform.pMapObjDesc[i].iNaviRoute;
+            monsterDesc.iNPCDirection = m_MapTotalInform.pMapObjDesc[i].iNPCDirection;
 
             if (-1 == m_MapTotalInform.pMapObjDesc[i].iNaviNum)
             {
@@ -165,6 +175,7 @@ HRESULT CFileTotalMgr::Set_GameObject_In_Client(int iStageLevel)
             monsterDesc.fRotatePecSec = XMConvertToRadians(0.f);
             monsterDesc.fRotatePecSec = XMConvertToRadians(180.f);
             monsterDesc.iNaviRouteNum = m_MapTotalInform.pMapObjDesc[i].iNaviRoute;
+            monsterDesc.iNPCDirection = m_MapTotalInform.pMapObjDesc[i].iNPCDirection;
             
             if (-1 == m_MapTotalInform.pMapObjDesc[i].iNaviNum)
             {
@@ -195,6 +206,7 @@ HRESULT CFileTotalMgr::Set_GameObject_In_Client(int iStageLevel)
             monsterDesc.fRotatePecSec = XMConvertToRadians(0.f);
             monsterDesc.fRotatePecSec = XMConvertToRadians(180.f);
             monsterDesc.iNaviRouteNum = m_MapTotalInform.pMapObjDesc[i].iNaviRoute;
+            monsterDesc.iNPCDirection = m_MapTotalInform.pMapObjDesc[i].iNPCDirection;
 
             if (-1 == m_MapTotalInform.pMapObjDesc[i].iNaviNum)
             {
@@ -225,6 +237,7 @@ HRESULT CFileTotalMgr::Set_GameObject_In_Client(int iStageLevel)
             monsterDesc.fRotatePecSec = XMConvertToRadians(0.f);
             monsterDesc.fRotatePecSec = XMConvertToRadians(180.f);
             monsterDesc.iNaviRouteNum = m_MapTotalInform.pMapObjDesc[i].iNaviRoute;
+            monsterDesc.iNPCDirection = m_MapTotalInform.pMapObjDesc[i].iNPCDirection;
 
             if (-1 == m_MapTotalInform.pMapObjDesc[i].iNaviNum)
             {
@@ -439,7 +452,6 @@ HRESULT CFileTotalMgr::Set_GameObject_In_Client(int iStageLevel)
             if (iLayer < 0)
                 return S_OK;
 
-            mapDesc.bLocalCull = false;
             mapDesc.bCull = true;
             mapDesc.iLayer = iLayer;
             mapDesc.wstrModelName = m_pGameInstance->StringToWstring(m_MapTotalInform.pMapObjDesc[i].strModelCom);
@@ -495,7 +507,6 @@ HRESULT CFileTotalMgr::Set_GameObject_In_Client(int iStageLevel)
             if (iLayer < 0)
                 return S_OK;
 
-            mapDesc.bLocalCull = false;
             mapDesc.bCull = false;
             mapDesc.iLayer = iLayer;
             mapDesc.wstrModelName = m_pGameInstance->StringToWstring(m_MapTotalInform.pMapObjDesc[i].strModelCom);
@@ -540,61 +551,6 @@ HRESULT CFileTotalMgr::Set_GameObject_In_Client(int iStageLevel)
 
             m_pGameInstance->Add_GameObject(iStageLevel, TEXT("Prototype_GameObject_Map"), m_Layers[iLayer], &mapDesc);
         }
-        else if (OBJECT_TYPE::MAP_LOCALCULL == m_MapTotalInform.pMapObjDesc[i].iObjType)
-        {
-            CMap::MAPOBJ_DESC		mapDesc;
-            mapDesc.vStartPos = XMLoadFloat4x4(&m_MapTotalInform.pMapObjDesc[i].vTransform);
-            int		iLayer = Find_Layers_Index(m_MapTotalInform.pMapObjDesc[i].strLayer);
-
-            /* Layer 정보 안들어옴 */
-            if (iLayer < 0)
-                return S_OK;
-
-            mapDesc.bLocalCull = true;
-            mapDesc.bCull = false;
-            mapDesc.iLayer = iLayer;
-            mapDesc.wstrModelName = m_pGameInstance->StringToWstring(m_MapTotalInform.pMapObjDesc[i].strModelCom);
-            mapDesc.iShaderPass = m_MapTotalInform.pMapObjDesc[i].iShaderPassNum;
-            mapDesc.iObjType = m_MapTotalInform.pMapObjDesc[i].iObjType;
-            mapDesc.iDecalNum = m_MapTotalInform.pMapObjDesc[i].iDecalNum;
-
-            if (0 < mapDesc.iDecalNum)
-            {
-                mapDesc.pDecal = new DECAL_DESC_IO[mapDesc.iDecalNum];
-
-                for (int j = 0; j < mapDesc.iDecalNum; j++)
-                {
-                    mapDesc.pDecal[j].iMaterialNum = m_MapTotalInform.pMapObjDesc[i].pDecals[j].iMaterialNum;
-                    mapDesc.pDecal[j].vTransform = m_MapTotalInform.pMapObjDesc[i].pDecals[j].vTransform;
-                }
-            }
-
-            mapDesc.iColliderNum = m_MapTotalInform.pMapObjDesc[i].iColliderNum;
-
-            if (0 < mapDesc.iColliderNum)
-            {
-                mapDesc.pColliderDesc = new OBJCOLLIDER_DESC[mapDesc.iColliderNum];
-
-                for (int j = 0; j < mapDesc.iColliderNum; j++)
-                {
-                    mapDesc.pColliderDesc[j].iColliderType = m_MapTotalInform.pMapObjDesc[i].pObjColliders[j].iColliderType;
-                    mapDesc.pColliderDesc[j].vCenter = m_MapTotalInform.pMapObjDesc[i].pObjColliders[j].vCenter;
-                    mapDesc.pColliderDesc[j].vExtents = m_MapTotalInform.pMapObjDesc[i].pObjColliders[j].vExtents;
-                    mapDesc.pColliderDesc[j].vQuaternion = m_MapTotalInform.pMapObjDesc[i].pObjColliders[j].vQuaternion;
-                }
-            }
-
-            if (nullptr != m_pGameInstance->Get_GameObject(iStageLevel, TEXT("Layer_Player"), 0))
-            {
-                mapDesc.vPlayerMatrix = dynamic_cast<CTransform*>(m_pGameInstance->Get_GameObject_Component(iStageLevel, TEXT("Layer_Player"), TEXT("Com_Transform", 0)))->Get_WorldFloat4x4();
-            }
-            else
-            {
-                mapDesc.vPlayerMatrix = dynamic_cast<CTransform*>(m_pGameInstance->Get_GameObject_Component(iStageLevel, TEXT("Layer_Taxi"), TEXT("Com_Transform", 0)))->Get_WorldFloat4x4();
-            }
-
-            m_pGameInstance->Add_GameObject(iStageLevel, TEXT("Prototype_GameObject_Map"), m_Layers[iLayer], &mapDesc);
-            }
         else if (OBJECT_TYPE::ITEM == m_MapTotalInform.pMapObjDesc[i].iObjType)
         {
             CItem::MAPOBJ_DESC		mapDesc;
@@ -611,6 +567,7 @@ HRESULT CFileTotalMgr::Set_GameObject_In_Client(int iStageLevel)
             mapDesc.iObjType = m_MapTotalInform.pMapObjDesc[i].iObjType;
             mapDesc.iDecalNum = m_MapTotalInform.pMapObjDesc[i].iDecalNum;
             mapDesc.iNaviNum = m_MapTotalInform.pMapObjDesc[i].iNaviNum;
+
 
             if (0 < mapDesc.iDecalNum)
             {
@@ -645,6 +602,255 @@ HRESULT CFileTotalMgr::Set_GameObject_In_Client(int iStageLevel)
             mapDesc.fSpeedPecSec = 1.f;
 
             m_pGameInstance->Add_GameObject(iStageLevel, TEXT("Prototype_GameObject_Item"), m_Layers[iLayer], &mapDesc);
+        }
+        else if (OBJECT_TYPE::ROADNML == m_MapTotalInform.pMapObjDesc[i].iObjType)
+        {
+            CAdventure::ADVENTURE_IODESC		monsterDesc;
+            monsterDesc.vStartPos = XMLoadFloat4x4(&m_MapTotalInform.pMapObjDesc[i].vTransform);
+            int		iLayer = Find_Layers_Index(m_MapTotalInform.pMapObjDesc[i].strLayer);
+
+            /* Layer 정보 안들어옴 */
+            if (iLayer < 0)
+                return S_OK;
+
+            monsterDesc.wstrModelName = m_pGameInstance->StringToWstring(m_MapTotalInform.pMapObjDesc[i].strModelCom);
+            monsterDesc.iShaderPass = m_MapTotalInform.pMapObjDesc[i].iShaderPassNum;
+
+            monsterDesc.fSpeedPecSec = 10.f;
+            monsterDesc.fRotatePecSec = XMConvertToRadians(0.f);
+            monsterDesc.fRotatePecSec = XMConvertToRadians(180.f);
+            monsterDesc.iNaviRouteNum = m_MapTotalInform.pMapObjDesc[i].iNaviRoute;
+            monsterDesc.iNPCDirection = m_MapTotalInform.pMapObjDesc[i].iNPCDirection;
+
+            if (-1 == m_MapTotalInform.pMapObjDesc[i].iNaviNum)
+            {
+                // 예외처리
+                monsterDesc.iNaviNum = 0;
+            }
+            else
+            {
+                monsterDesc.iNaviNum = m_MapTotalInform.pMapObjDesc[i].iNaviNum;
+            }
+
+            //Layer그냥 지정해주기
+            m_pGameInstance->Add_GameObject(iStageLevel, TEXT("Prototype_GameObject_RoadNML"), m_Layers[5], &monsterDesc);
+        }
+        else if (OBJECT_TYPE::ROADCAB == m_MapTotalInform.pMapObjDesc[i].iObjType)
+        {
+            CAdventure::ADVENTURE_IODESC		monsterDesc;
+            monsterDesc.vStartPos = XMLoadFloat4x4(&m_MapTotalInform.pMapObjDesc[i].vTransform);
+            int		iLayer = Find_Layers_Index(m_MapTotalInform.pMapObjDesc[i].strLayer);
+
+            /* Layer 정보 안들어옴 */
+            if (iLayer < 0)
+                return S_OK;
+
+            monsterDesc.wstrModelName = m_pGameInstance->StringToWstring(m_MapTotalInform.pMapObjDesc[i].strModelCom);
+            monsterDesc.iShaderPass = m_MapTotalInform.pMapObjDesc[i].iShaderPassNum;
+
+            monsterDesc.fSpeedPecSec = 10.f;
+            monsterDesc.fRotatePecSec = XMConvertToRadians(0.f);
+            monsterDesc.fRotatePecSec = XMConvertToRadians(180.f);
+            monsterDesc.iNaviRouteNum = m_MapTotalInform.pMapObjDesc[i].iNaviRoute;
+            monsterDesc.iNPCDirection = m_MapTotalInform.pMapObjDesc[i].iNPCDirection;
+
+            if (-1 == m_MapTotalInform.pMapObjDesc[i].iNaviNum)
+            {
+                // 예외처리
+                monsterDesc.iNaviNum = 0;
+            }
+            else
+            {
+                monsterDesc.iNaviNum = m_MapTotalInform.pMapObjDesc[i].iNaviNum;
+            }
+
+            m_pGameInstance->Add_GameObject(iStageLevel, TEXT("Prototype_GameObject_RoadCAB"), m_Layers[5], &monsterDesc);
+        }
+        else if (OBJECT_TYPE::ROADSTANDING_NML == m_MapTotalInform.pMapObjDesc[i].iObjType)
+        {
+            CAdventure::ADVENTURE_IODESC		monsterDesc;
+            monsterDesc.vStartPos = XMLoadFloat4x4(&m_MapTotalInform.pMapObjDesc[i].vTransform);
+            int		iLayer = Find_Layers_Index(m_MapTotalInform.pMapObjDesc[i].strLayer);
+
+            /* Layer 정보 안들어옴 */
+            if (iLayer < 0)
+                return S_OK;
+
+            monsterDesc.wstrModelName = m_pGameInstance->StringToWstring(m_MapTotalInform.pMapObjDesc[i].strModelCom);
+            monsterDesc.iShaderPass = m_MapTotalInform.pMapObjDesc[i].iShaderPassNum;
+
+            monsterDesc.fSpeedPecSec = 10.f;
+            monsterDesc.fRotatePecSec = XMConvertToRadians(0.f);
+            monsterDesc.fRotatePecSec = XMConvertToRadians(180.f);
+            monsterDesc.iNaviRouteNum = m_MapTotalInform.pMapObjDesc[i].iNaviRoute;
+            monsterDesc.iNPCDirection = m_MapTotalInform.pMapObjDesc[i].iNPCDirection;
+
+            if (-1 == m_MapTotalInform.pMapObjDesc[i].iNaviNum)
+            {
+                // 예외처리
+                monsterDesc.iNaviNum = 0;
+            }
+            else
+            {
+                monsterDesc.iNaviNum = m_MapTotalInform.pMapObjDesc[i].iNaviNum;
+            }
+
+            m_pGameInstance->Add_GameObject(iStageLevel, TEXT("Prototype_GameObject_RoadStanding_NML"), m_Layers[5], &monsterDesc);
+        }
+        else if (OBJECT_TYPE::ROADTISSUE == m_MapTotalInform.pMapObjDesc[i].iObjType)
+        {
+            CAdventure::ADVENTURE_IODESC		monsterDesc;
+            monsterDesc.vStartPos = XMLoadFloat4x4(&m_MapTotalInform.pMapObjDesc[i].vTransform);
+            int		iLayer = Find_Layers_Index(m_MapTotalInform.pMapObjDesc[i].strLayer);
+
+            /* Layer 정보 안들어옴 */
+            if (iLayer < 0)
+                return S_OK;
+
+            monsterDesc.wstrModelName = m_pGameInstance->StringToWstring(m_MapTotalInform.pMapObjDesc[i].strModelCom);
+            monsterDesc.iShaderPass = m_MapTotalInform.pMapObjDesc[i].iShaderPassNum;
+
+            monsterDesc.fSpeedPecSec = 10.f;
+            monsterDesc.fRotatePecSec = XMConvertToRadians(0.f);
+            monsterDesc.fRotatePecSec = XMConvertToRadians(180.f);
+            monsterDesc.iNaviRouteNum = m_MapTotalInform.pMapObjDesc[i].iNaviRoute;
+            monsterDesc.iNPCDirection = m_MapTotalInform.pMapObjDesc[i].iNPCDirection;
+
+            if (-1 == m_MapTotalInform.pMapObjDesc[i].iNaviNum)
+            {
+                // 예외처리
+                monsterDesc.iNaviNum = 0;
+            }
+            else
+            {
+                monsterDesc.iNaviNum = m_MapTotalInform.pMapObjDesc[i].iNaviNum;
+            }
+
+            m_pGameInstance->Add_GameObject(iStageLevel, TEXT("Prototype_GameObject_RoadTissue"), m_Layers[5], &monsterDesc);
+        }
+        else if (OBJECT_TYPE::ROADYOP == m_MapTotalInform.pMapObjDesc[i].iObjType)
+        {
+            CAdventure::ADVENTURE_IODESC		monsterDesc;
+            monsterDesc.vStartPos = XMLoadFloat4x4(&m_MapTotalInform.pMapObjDesc[i].vTransform);
+            int		iLayer = Find_Layers_Index(m_MapTotalInform.pMapObjDesc[i].strLayer);
+
+            /* Layer 정보 안들어옴 */
+            if (iLayer < 0)
+                return S_OK;
+
+            monsterDesc.wstrModelName = m_pGameInstance->StringToWstring(m_MapTotalInform.pMapObjDesc[i].strModelCom);
+            monsterDesc.iShaderPass = m_MapTotalInform.pMapObjDesc[i].iShaderPassNum;
+
+            monsterDesc.fSpeedPecSec = 10.f;
+            monsterDesc.fRotatePecSec = XMConvertToRadians(0.f);
+            monsterDesc.fRotatePecSec = XMConvertToRadians(180.f);
+            monsterDesc.iNaviRouteNum = m_MapTotalInform.pMapObjDesc[i].iNaviRoute;
+            monsterDesc.iNPCDirection = m_MapTotalInform.pMapObjDesc[i].iNPCDirection;
+
+            if (-1 == m_MapTotalInform.pMapObjDesc[i].iNaviNum)
+            {
+                // 예외처리
+                monsterDesc.iNaviNum = 0;
+            }
+            else
+            {
+                monsterDesc.iNaviNum = m_MapTotalInform.pMapObjDesc[i].iNaviNum;
+            }
+
+            m_pGameInstance->Add_GameObject(iStageLevel, TEXT("Prototype_GameObject_RoadYOP"), m_Layers[5], &monsterDesc);
+        }
+        else if (OBJECT_TYPE::MONSTERGROUP == m_MapTotalInform.pMapObjDesc[i].iObjType)
+        {
+            CAdventure::ADVENTURE_IODESC		monsterDesc;
+            monsterDesc.vStartPos = XMLoadFloat4x4(&m_MapTotalInform.pMapObjDesc[i].vTransform);
+            int		iLayer = Find_Layers_Index(m_MapTotalInform.pMapObjDesc[i].strLayer);
+
+            /* Layer 정보 안들어옴 */
+            if (iLayer < 0)
+                return S_OK;
+
+            monsterDesc.wstrModelName = m_pGameInstance->StringToWstring(m_MapTotalInform.pMapObjDesc[i].strModelCom);
+            monsterDesc.iShaderPass = m_MapTotalInform.pMapObjDesc[i].iShaderPassNum;
+
+            monsterDesc.fSpeedPecSec = 10.f;
+            monsterDesc.fRotatePecSec = XMConvertToRadians(0.f);
+            monsterDesc.fRotatePecSec = XMConvertToRadians(180.f);
+            monsterDesc.iNaviRouteNum = m_MapTotalInform.pMapObjDesc[i].iNaviRoute;
+            monsterDesc.iNPCDirection = m_MapTotalInform.pMapObjDesc[i].iNPCDirection;
+
+            if (-1 == m_MapTotalInform.pMapObjDesc[i].iNaviNum)
+            {
+                // 예외처리
+                monsterDesc.iNaviNum = 0;
+            }
+            else
+            {
+                monsterDesc.iNaviNum = m_MapTotalInform.pMapObjDesc[i].iNaviNum;
+            }
+
+            m_pGameInstance->Add_GameObject(iStageLevel, TEXT("Prototype_GameObject_MonsterGroup"), m_Layers[6], &monsterDesc);
+        }
+        else if (OBJECT_TYPE::NISHIKI == m_MapTotalInform.pMapObjDesc[i].iObjType)
+        {
+            CNPC::NPC_IODESC		npcDesc;
+            npcDesc.vStartPos = XMLoadFloat4x4(&m_MapTotalInform.pMapObjDesc[i].vTransform);
+            int		iLayer = Find_Layers_Index(m_MapTotalInform.pMapObjDesc[i].strLayer);
+
+            /* Layer 정보 안들어옴 */
+            if (iLayer < 0)
+                return S_OK;
+
+            npcDesc.wstrModelName = m_pGameInstance->StringToWstring(m_MapTotalInform.pMapObjDesc[i].strModelCom);
+            npcDesc.iShaderPass = m_MapTotalInform.pMapObjDesc[i].iShaderPassNum;
+
+            npcDesc.fSpeedPecSec = 10.f;
+            npcDesc.fRotatePecSec = XMConvertToRadians(0.f);
+            npcDesc.fRotatePecSec = XMConvertToRadians(180.f);
+            npcDesc.iNaviRouteNum = m_MapTotalInform.pMapObjDesc[i].iNaviRoute;
+            npcDesc.iNPCDirection = m_MapTotalInform.pMapObjDesc[i].iNPCDirection;
+
+            if (-1 == m_MapTotalInform.pMapObjDesc[i].iNaviNum)
+            {
+                // 예외처리
+                npcDesc.iNaviNum = 0;
+            }
+            else
+            {
+                npcDesc.iNaviNum = m_MapTotalInform.pMapObjDesc[i].iNaviNum;
+            }
+
+            m_pGameInstance->Add_GameObject(iStageLevel, TEXT("Prototype_GameObject_Nishiki"), m_Layers[7], &npcDesc);
+        }
+        else if (OBJECT_TYPE::ADVENTURE_REACTOR == m_MapTotalInform.pMapObjDesc[i].iObjType)
+        {
+            CAdventure_Reactor::ADVENTURE_REACTOR_IODESC		adventureReactDesc;
+            adventureReactDesc.vStartPos = XMLoadFloat4x4(&m_MapTotalInform.pMapObjDesc[i].vTransform);
+            int		iLayer = Find_Layers_Index(m_MapTotalInform.pMapObjDesc[i].strLayer);
+
+            /* Layer 정보 안들어옴 */
+            if (iLayer < 0)
+                return S_OK;
+
+            adventureReactDesc.wstrModelName = m_pGameInstance->StringToWstring(m_MapTotalInform.pMapObjDesc[i].strModelCom);
+            adventureReactDesc.iShaderPass = m_MapTotalInform.pMapObjDesc[i].iShaderPassNum;
+
+            adventureReactDesc.fSpeedPecSec = 10.f;
+            adventureReactDesc.fRotatePecSec = XMConvertToRadians(0.f);
+            adventureReactDesc.fRotatePecSec = XMConvertToRadians(180.f);
+            adventureReactDesc.iNaviRouteNum = m_MapTotalInform.pMapObjDesc[i].iNaviRoute;
+            adventureReactDesc.iNPCDirection = m_MapTotalInform.pMapObjDesc[i].iNPCDirection;
+
+            if (-1 == m_MapTotalInform.pMapObjDesc[i].iNaviNum)
+            {
+                // 예외처리
+                adventureReactDesc.iNaviNum = 0;
+            }
+            else
+            {
+                adventureReactDesc.iNaviNum = m_MapTotalInform.pMapObjDesc[i].iNaviNum;
+            }
+
+            m_pGameInstance->Add_GameObject(iStageLevel, TEXT("Prototype_GameObject_AdventureReactor"), m_Layers[8], &adventureReactDesc);
         }
         else 
         {
@@ -1169,16 +1375,21 @@ void CFileTotalMgr::Load_Cinemachine(int iCineNum, int iStageLevel)
         m_pCinemachineCam = dynamic_cast<CCineCamera*>(m_pGameInstance->Get_GameObject(iStageLevel, TEXT("Layer_Camera"), 1));
         Safe_AddRef(m_pCinemachineCam);
         m_pCinemachineCam->Load_CamBin(iCineNum);
-        m_pCinemachineCam->Initialize_Camera_Class();
-        m_pCinemachineCam->Setting_Start_Cinemachine();
+        /*m_pCinemachineCam->Initialize_Camera_Class();*/
+        //m_pCinemachineCam->Setting_Start_Cinemachine();
     }
     else
     {
         m_pCinemachineCam->Load_CamBin(iCineNum);
-        m_pCinemachineCam->Setting_Start_Cinemachine();
+        //m_pCinemachineCam->Setting_Start_Cinemachine();
     }
 
-    CSystemManager::GetInstance()->Set_Camera(CAMERA::CAMERA_CINEMACHINE);
+    //CSystemManager::GetInstance()->Set_Camera(CAMERA::CAMERA_CINEMACHINE);
+}
+
+void CFileTotalMgr::Setting_Start_Cinemachine(int iCineNum)
+{
+    m_pCinemachineCam->Setting_Start_Cinemachine(iCineNum);
 }
 
 void CFileTotalMgr::Reset_Cinemachine()
@@ -1256,6 +1467,8 @@ HRESULT CFileTotalMgr::Import_Bin_Map_Data_OnClient(MAP_TOTALINFORM_DESC* mapObj
         in.read((char*)&pMapObj->iShaderPassNum, sizeof(int));
         in.read((char*)&pMapObj->iObjType, sizeof(int));
         in.read((char*)&pMapObj->iObjPropertyType, sizeof(int));
+        in.read((char*)&pMapObj->iNPCDirection, sizeof(int));
+
         in.read((char*)&pMapObj->iNaviNum, sizeof(int));
         in.read((char*)&pMapObj->iNaviRoute, sizeof(int));
 

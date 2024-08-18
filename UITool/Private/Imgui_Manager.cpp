@@ -449,11 +449,12 @@ void CImgui_Manager::Window_Binary()
             ImGui::RadioButton(u8"텍스트", &m_iBinaryObjectType, CObject_Manager::TEXT); ImGui::SameLine();
             ImGui::RadioButton(u8"그룹", &m_iBinaryObjectType, CObject_Manager::GROUP); ImGui::SameLine();
             ImGui::RadioButton(u8"UI이펙트", &m_iBinaryObjectType, CObject_Manager::EFFECT);
+            ImGui::RadioButton(u8"HEADUI", &m_iBinaryObjectType, CObject_Manager::HEADUI);
             ImGui::NewLine();
             ImGui::InputText(u8"저장할 오브젝트 이름 : ", m_szObjectName, MAX_PATH);
 
             //오브젝트 생성
-            if (m_iBinaryObjectType == CObject_Manager::IMG)
+            if (m_iBinaryObjectType == CObject_Manager::IMG )
             {
 
                 //일반 이미지
@@ -636,6 +637,47 @@ void CImgui_Manager::Window_Binary()
                 }
 
             }
+            else   if (m_iBinaryObjectType == CObject_Manager::HEADUI)
+            {
+
+                //일반 이미지
+                if (ImGui::Button(u8"이미지 파일 생성"))
+                {
+                    IGFD::FileDialogConfig config;
+                    config.path = (m_RootDir / "Client" / "Bin" / "Resources" / "Textures" / "UI").string();
+                    ImGuiFileDialog::Instance()->OpenDialog("ChooseBinaryTextureKey", "Choose File", ".dds, .png", config);
+                }
+                if (ImGuiFileDialog::Instance()->Display("ChooseBinaryTextureKey")) {
+                    if (ImGuiFileDialog::Instance()->IsOk()) { // action if OK
+
+                        if ('\0' != m_szObjectName[0])
+                        {
+                            std::string filePathName = ImGuiFileDialog::Instance()->GetFilePathName();
+                            std::string fileName = ImGuiFileDialog::Instance()->GetCurrentFileName();
+                            // action
+                                    // 상대 경로 구하기
+                            filesystem::path filePath = filePathName;
+                            filesystem::path relativePath = filePath.lexically_relative(m_RootDir);
+
+                            CObject_Manager::OBJ_MNG_DESC Desc{};
+                            Desc.strFileName = m_pGameInstance->StringToWstring(fileName);
+                            Desc.strFilePath = m_pGameInstance->StringToWstring("../../" + relativePath.string());
+                            Desc.iTextureType = CObject_Manager::HEADUI;
+                            Desc.strName = m_szObjectName;
+
+                            if (FAILED(m_pObjectManager->Add_BinaryObject(m_pGameInstance->StringToWstring(m_strBinarySelectTag), &Desc)))
+                                MSG_BOX("이미지 생성 실패");
+                        }
+                        else
+                        {
+                            MSG_BOX("이름 작성");
+                        }
+                    }
+
+                    // close
+                    ImGuiFileDialog::Instance()->Close();
+                }
+             }
         }
 
         //생성된 오브젝트 리스트
@@ -1056,13 +1098,14 @@ void CImgui_Manager::Window_Binary_Group()
         ImGui::RadioButton(u8"이미지", &m_iBinaryGroupObjectType, CObject_Manager::IMG); ImGui::SameLine();
         ImGui::RadioButton(u8"버튼", &m_iBinaryGroupObjectType, CObject_Manager::BTN); ImGui::SameLine();
         ImGui::RadioButton(u8"텍스트", &m_iBinaryGroupObjectType, CObject_Manager::TEXT); ImGui::SameLine();
-        ImGui::RadioButton(u8"UI 이펙트", &m_iBinaryGroupObjectType, CObject_Manager::EFFECT);
+        ImGui::RadioButton(u8"UI 이펙트", &m_iBinaryGroupObjectType, CObject_Manager::EFFECT); ImGui::SameLine();
+        ImGui::RadioButton(u8"HEADUI", &m_iBinaryGroupObjectType, CObject_Manager::HEADUI);
 
         ImGui::NewLine();
         ImGui::InputText(u8"저장할 오브젝트 이름 : ", m_szBinaryGroupObjectName, MAX_PATH);
 
         //오브젝트 생성
-        if (m_iBinaryGroupObjectType == CObject_Manager::IMG)
+        if (m_iBinaryGroupObjectType == CObject_Manager::IMG || m_iBinaryGroupObjectType == CObject_Manager::HEADUI)
         {
             //일반 이미지
             if (ImGui::Button(u8"이미지 파일 생성"))

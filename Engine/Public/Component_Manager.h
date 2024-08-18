@@ -13,6 +13,7 @@
 #include "VIBuffer_Instance_Mesh.h"
 #include "VIBuffer_Cube.h"
 #include "VIBuffer_Trail.h"
+#include "VIBuffer_AABBCube.h"
 
 #include "Shader.h"
 #include "Texture.h"

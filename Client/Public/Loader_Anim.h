@@ -35,6 +35,8 @@ protected:
 	virtual	HRESULT Loading_For_Street() override;
 	virtual	HRESULT Loading_For_CarChase() override;
 	virtual	HRESULT Loading_For_Karaoke() override;
+	virtual HRESULT Loading_For_Tutorial() override;
+	virtual HRESULT Loading_For_NishikiWalk() override;
 
 private:
 	virtual HRESULT Loading_Default() override;

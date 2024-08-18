@@ -21,6 +21,8 @@
 #include "Level_DogimazoBoss.h"
 #include "Level_Roadway.h"
 #include "Level_Karaoke.h"
+#include "Level_Tutorial.h"
+#include "Level_NishikiWalk.h"
 #include "Level_Test.h"
 #pragma endregion
 
@@ -139,6 +141,12 @@ void CLevel_Loading::Tick(const _float& fTimeDelta)
 					break;
 				case LEVEL_KARAOKE:
 					pNewLevel = CLevel_Karaoke::Create(m_pDevice, m_pContext);
+					break;
+				case LEVEL_TUTORIAL:
+					pNewLevel = CLevel_Tutorial::Create(m_pDevice, m_pContext);
+					break;
+				case LEVEL_NISHIKIWALK:
+					pNewLevel = CLevel_NIshikiWalk::Create(m_pDevice, m_pContext);
 					break;
 				case LEVEL_TEST:
 					pNewLevel = CLevel_Test::Create(m_pDevice, m_pContext);

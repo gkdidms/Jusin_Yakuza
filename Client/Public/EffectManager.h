@@ -22,8 +22,6 @@ private:
 public:
     //사람이 총맞았을떄 이펙트
     void Blood_Effect(CEffect::EFFECT_DESC& EffectDesc);
-    //피 부족시 추가
-    void Blood_Splash(CEffect::EFFECT_DESC& EffectDesc);
     //자동차, 오토바이에 총맞을때 나오는 스파크
     void Car_HitSpark(CEffect::EFFECT_DESC& EffectDesc);
     //차 터지고 나서 불

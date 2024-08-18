@@ -26,6 +26,7 @@ HRESULT CUIKaraoke_Select::Show_Scene()
     m_iCurButton = 0;
     m_isStart = false;
     m_iCurrentTime = 0.f;
+
     Action();
     return S_OK;
 }
@@ -132,11 +133,12 @@ HRESULT CUIKaraoke_Select::Late_Tick(const _float& fTimeDelta)
 
     if (m_isStart && m_MusicTitle->Check_AnimFin()&&m_iCurrentTime>3.0f)
     {
-        CUIManager::GetInstance()->Close_Scene();
+        CUIManager::GetInstance()->Close_Scene(m_strSceneName);
         CUIManager::GetInstance()->Open_Scene(TEXT("Karaoke_Play"));
 
         m_pGameInstance->PlaySound_W(L"Bakamita.mp3", SOUND_BGM, 0.5f);
     }
+
 
     if (!m_isAnimFin)
         Check_AimFin();
@@ -269,7 +271,4 @@ void CUIKaraoke_Select::Free()
     for (auto& iter : m_UIName)
         Safe_Release(iter);
     m_UIName.clear();
-
-
-
 }

@@ -4,6 +4,9 @@
 #include "KillQuest.h"
 #include "MoveQuest.h"
 #include "TalkQuest.h"
+#include "Chapter1_0.h"
+#include "Chapter1_1.h"
+#include "Chapter2_0.h"
 
 #include "UIManager.h"
 
@@ -35,9 +38,9 @@ CQuestManager::CQuestManager()
 /*
 * 현재 퀘스트에 맞는지 확인 후 스크립트 인덱스 값을 넣어준다.
 */
-const CScriptManager::SCRIPT_INFO CQuestManager::Get_ScriptInfo(_int iScriptCount)
+_uint CQuestManager::Get_ScriptIndex()
 {
-    return m_pScriptManager->Get_Script(m_QuestInfo[m_iCurrentQuestIndex].iScriptIndex, iScriptCount);
+    return m_QuestInfo[m_iCurrentChapter][m_iCurrentQuestIndex].iScriptIndex;
 }
 
 _uint CQuestManager::Get_CurrentQuestType()
@@ -45,18 +48,25 @@ _uint CQuestManager::Get_CurrentQuestType()
     return m_pCurrentQuest->Get_Type();
 }
 
+void CQuestManager::Set_CurrentColl(_bool isColl)
+{
+    m_pCurrentQuest->Set_Coll(isColl);
+}
+
 HRESULT CQuestManager::Initialize()
 {
-    m_pScriptManager = CScriptManager::Create();
-    if (nullptr == m_pScriptManager)
-        return E_FAIL;
-
     if (FAILED(Ready_Quest()))
         return E_FAIL;
 
     m_iCurrentQuestIndex = 0;
     
     return S_OK;
+}
+
+void CQuestManager::Start_Quest(_uint iChapter)
+{
+    m_iCurrentChapter = iChapter;
+    Add_MainQuest(m_QuestInfo[m_iCurrentChapter][0].iQuestIndex, m_QuestInfo[m_iCurrentChapter][0].iNextQuestIndex, m_QuestInfo[m_iCurrentChapter][0].iObjectIndex, m_QuestInfo[m_iCurrentChapter][0].iScriptIndex);
 }
 
 HRESULT CQuestManager::Ready_Quest()
@@ -71,20 +81,48 @@ HRESULT CQuestManager::Ready_Quest()
     //_int iTargetIndex; //Kill
     //_int iTriggerIndex; //Move
     //_int iObjectIndex; // Talk
-    m_QuestInfo = {
+    _uint iQuestIndex = 0;
+    _uint iNextQuestIndex = 1;
+
+    vector<QUEST_INFO> Chapter1;
+    Chapter1 = {
+        QUEST_INFO(
+            QUEST_MAIN,
+            0,
+
+            iQuestIndex++,
+            iNextQuestIndex++
+        ),
         QUEST_INFO(
             QUEST_TALK,
             0,
 
-            0,
+            iQuestIndex++,
+            iNextQuestIndex++,
+            101 // 니시키 오브젝트 index
+        ),
+        QUEST_INFO(
+            QUEST_TALK,
             1,
-            -1,
-            -1,
-            0
+
+            iQuestIndex++,
+            iNextQuestIndex++
+        ),
+    };
+    m_QuestInfo.emplace(CHAPTER_1, Chapter1);
+
+    vector<QUEST_INFO> Chapter2;
+    Chapter2 = {
+        QUEST_INFO(
+            QUEST_MAIN,
+            0,
+
+            iQuestIndex++,
+            iNextQuestIndex++
         )
     };
+    m_QuestInfo.emplace(CHAPTER_2, Chapter2);
 
-    Add_TalkQuest(m_QuestInfo[0].iQuestIndex, m_QuestInfo[0].iNextQuestIndex, m_QuestInfo[0].iObjectIndex, m_QuestInfo[0].iScriptIndex);
     
     return S_OK;
 }
@@ -97,10 +135,12 @@ _bool CQuestManager::Execute()
         Safe_Release(m_pCurrentQuest);
 
         ++m_iCurrentQuestIndex;
-        QUEST_INFO Info = m_QuestInfo[m_iCurrentQuestIndex];
+        QUEST_INFO Info = m_QuestInfo[m_iCurrentChapter][m_iCurrentQuestIndex];
 
         //새로운 퀘스트 부여하기
-        if (Info.iType == QUEST_KILL)
+        if (Info.iType == QUEST_MAIN)
+            Add_MainQuest(Info.iQuestIndex, Info.iNextQuestIndex, Info.iTargetIndex, Info.iScriptIndex);
+        else if (Info.iType == QUEST_KILL)
             Add_KillQuest(Info.iQuestIndex, Info.iNextQuestIndex, Info.iTargetIndex, Info.iScriptIndex);
         else if (Info.iType == QUEST_MOVE)
             Add_MoveQuest(Info.iQuestIndex, Info.iNextQuestIndex, Info.iTriggerIndex, Info.iScriptIndex);
@@ -169,8 +209,53 @@ HRESULT CQuestManager::Add_TalkQuest(_int iQuestIndex, _int iNextQuestIndex, _in
     return S_OK;
 }
 
+/*메인 스토리 생성 함수*/
+HRESULT CQuestManager::Add_MainQuest(_int iQuestIndex, _int iNextQuestIndex, _int iObjectIndex, _int iScriptIndex)
+{
+    if (iQuestIndex == 0)
+    {
+        CChapter1_0::MAIN_QUEST_DESC Desc{};
+        Desc.iQuestIndex = iQuestIndex;
+        Desc.iNextQuestIndex = iNextQuestIndex;
+        Desc.iScriptIndex = iScriptIndex;
+
+        CChapter1_0* pMainQuest = CChapter1_0::Create(&Desc);
+        if (nullptr == pMainQuest)
+            return E_FAIL;
+
+        m_pCurrentQuest = pMainQuest;
+    }
+    else if (iQuestIndex == 2)
+    {
+        CChapter1_1::MAIN_QUEST_DESC Desc{};
+        Desc.iQuestIndex = iQuestIndex;
+        Desc.iNextQuestIndex = iNextQuestIndex;
+        Desc.iScriptIndex = iScriptIndex;
+
+        CChapter1_1* pMainQuest = CChapter1_1::Create(&Desc);
+        if (nullptr == pMainQuest)
+            return E_FAIL;
+
+        m_pCurrentQuest = pMainQuest;
+    }
+    else if (iQuestIndex == 3)
+    {
+        CChapter2_0::MAIN_QUEST_DESC Desc{};
+        Desc.iQuestIndex = iQuestIndex;
+        Desc.iNextQuestIndex = iNextQuestIndex;
+        Desc.iScriptIndex = iScriptIndex;
+
+        CChapter2_0* pMainQuest = CChapter2_0::Create(&Desc);
+        if (nullptr == pMainQuest)
+            return E_FAIL;
+
+        m_pCurrentQuest = pMainQuest;
+    }
+
+    return S_OK;
+}
+
 void CQuestManager::Free()
 {
-    Safe_Release(m_pScriptManager);
     Safe_Release(m_pCurrentQuest);
 }

@@ -87,6 +87,8 @@ namespace Engine
 		int					iShaderPassNum; /* shader pass 번호 */
 		int					iObjType; /* object 종류 관련 - construction, item 등.. */
 		int					iObjPropertyType; /* object 별 특징 */
+
+		int					iNPCDirection; /* object 별 특징 */
 		int					iNaviNum;
 		int					iNaviRoute;
 
@@ -291,13 +293,28 @@ namespace Engine
 
 	typedef struct ENGINE_DLL tVTXCUBE
 	{
-		XMFLOAT3		vPosition;
-		XMFLOAT3		vTexcoord;
+		XMFLOAT3 vPosition;  // 12바이트
 
-		static const unsigned int		iNumElements = { 2 };
-		static const D3D11_INPUT_ELEMENT_DESC	Elements[2];
+		XMFLOAT3 vTexcoord;  // 12바이트
+
+		static const unsigned int iNumElements = 2;
+		static const D3D11_INPUT_ELEMENT_DESC Elements[2];
 
 	}VTXCUBE;
+
+	typedef struct ENGINE_DLL tVTXCUBEOcculusion
+	{
+		XMFLOAT3 vPosition;  // 12바이트
+		float    padding1;   // 4바이트 패딩 (정렬 맞춤)
+
+		XMFLOAT3 vTexcoord;  // 12바이트
+		float    padding2;   // 4바이트 패딩 (정렬 맞춤)
+
+		static const unsigned int iNumElements = 2;
+		static const D3D11_INPUT_ELEMENT_DESC Elements[2];
+
+	}VTXCUBE_OCCULUSION;
+
 
 	typedef struct ENGINE_DLL tVexNorTex
 	{

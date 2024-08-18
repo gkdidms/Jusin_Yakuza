@@ -27,10 +27,12 @@ public:
 
 public:
     _bool isInvenClose() { return m_isClose; }
+    _bool isOpen(wstring strName);
 
 public: // 튜토리얼 용
     _bool isShowTutorialUI(_uint iUIType);
     _bool isCloseTutorialUIAnim();
+    void Set_TutorialState(_uint iType);
     void Set_TutorialText(wstring strText);
 
 public: // 카체이스 용
@@ -51,7 +53,7 @@ public:
     HRESULT Add_Data(const wstring strSceneName, const wstring strProtoName);
 
     void Open_Scene(const wstring strSceneName);
-    void Close_Scene();
+    void Close_Scene(const wstring strSceneName = TEXT(""));
 
     void Click();
     HRESULT Tick(const _float& fTimeDelta);
@@ -61,22 +63,24 @@ public:
         return (0 < m_PlayScene.size());
     }
 
-    /* Setter */
-public:
-    void Set_Player(class CPlayer* pPlayer)
-    {
-        m_pPlayer = pPlayer;
-    }
-
     //임시 토크매니저 확인용 제작
 public:
-    void Start_Talk();
+    void Start_Talk(_uint iScriptIndex);
+    _int Get_CurrentPage();
+    _bool isTalkFinished();
     void Change_TutorialUI(_uint iUIType);
     _bool Check_Scene(wstring SceneName);
+
+public: // 스토리 UI
+    void Close_Image();
 
     //카라오케 점수 전달용
 public:
     void Set_Score(_uint iScore);
+    //파이트 스코어 (돈)
+public:
+    void Set_Money(_uint Money) { m_Money = Money; }
+    _uint Get_Money() { return m_Money; }
 private:
 
     ID3D11Device* m_pDevice = { nullptr };
@@ -97,8 +101,9 @@ private:
 private:
     _bool m_isClose = { true };
     wstring m_iCurScene = { TEXT("") };
+
 private:
-    class CPlayer* m_pPlayer = { nullptr };
+    _uint m_Money = { 0 };
 
 public:
    CUIScene* Find_Scene(wstring strSceneName);      

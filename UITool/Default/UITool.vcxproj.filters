@@ -97,6 +97,9 @@
     <ClCompile Include="..\..\Imgui\imGuizmo\ImCurveEdit.cpp">
       <Filter>96.IMGUI</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\HeadUI.cpp">
+      <Filter>02.GameObjects\03.GameObject\00.UI_Texture\HeadUI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\MainApp.h">
@@ -216,6 +219,9 @@
     <ClInclude Include="..\public\UI_Texture.h">
       <Filter>02.GameObjects\03.GameObject\00.UI_Texture</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\HeadUI.h">
+      <Filter>02.GameObjects\03.GameObject\00.UI_Texture\HeadUI</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Filter Include="00.MainApp">
@@ -292,6 +298,9 @@
     </Filter>
     <Filter Include="02.GameObjects\03.GameObject\00.UI_Texture\UI_Effect">
       <UniqueIdentifier>{f6cbdcf0-c5f3-456c-934c-9775fa7d2c53}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\03.GameObject\00.UI_Texture\HeadUI">
+      <UniqueIdentifier>{09c12305-a7b8-4138-975f-5dab7bc009ef}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
