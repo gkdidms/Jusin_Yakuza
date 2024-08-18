@@ -114,7 +114,6 @@ void CGameInstance::Tick(const _float& fTimeDelta)
 	m_pFrustum->Tick();
 
 	//Occulusion Culling 먼저 돌기
-	//m_pRenderer->Occulusion_Culling_Draw();
 
 	m_pGameObject_Manager->Late_Tick(fTimeDelta);
 
@@ -248,6 +247,11 @@ vector<CGameObject*> CGameInstance::Get_GameObjects(_uint iLevelIndex, const wst
 void CGameInstance::Add_Renderer(CRenderer::RENDERER_STATE eRenderState, CGameObject* pGameObject)
 {
 	m_pRenderer->Add_Renderer(eRenderState, pGameObject);
+}
+
+void CGameInstance::Occulusion_Culling_Draw()
+{
+	m_pRenderer->Occulusion_Culling_Draw();
 }
 
 void CGameInstance::Set_HDR(_bool isHDR)

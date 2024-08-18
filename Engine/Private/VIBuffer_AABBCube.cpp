@@ -40,9 +40,9 @@ HRESULT CVIBuffer_AABBCube::Initialize(void* pArg)
 
 	m_Buffer_Desc.ByteWidth = m_iVertexStride * m_iNumVertices;
 	m_Buffer_Desc.Usage = D3D11_USAGE_DEFAULT;
-	m_Buffer_Desc.BindFlags = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_UNORDERED_ACCESS;
+	m_Buffer_Desc.BindFlags = D3D11_BIND_VERTEX_BUFFER | D3D11_BIND_SHADER_RESOURCE;
 	m_Buffer_Desc.CPUAccessFlags = 0;
-	m_Buffer_Desc.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
+	m_Buffer_Desc.MiscFlags = 0;
 	m_Buffer_Desc.StructureByteStride = m_iVertexStride;
 
 	VTXCUBE_OCCULUSION* pVertices = new VTXCUBE_OCCULUSION[m_iNumVertices];
@@ -126,6 +126,31 @@ HRESULT CVIBuffer_AABBCube::Initialize(void* pArg)
 
 	if (FAILED(Ready_AABBCubeBuffer()))
 		return E_FAIL;
+
+	return S_OK;
+}
+
+HRESULT CVIBuffer_AABBCube::Render()
+{
+	ID3D11Buffer* pVertices[] = {
+		m_pVB,
+	};
+
+	_uint pStrideVertices[] = {
+		m_iVertexStride,
+	};
+
+	_uint pStartVertices[] = {
+		0,
+	};
+
+	m_pContext->IASetVertexBuffers(0, m_iNumVertexBuffers, pVertices, pStrideVertices, pStartVertices);
+	m_pContext->IASetIndexBuffer(m_pIB, m_GIFormat, 0);
+	m_pContext->IASetPrimitiveTopology(m_Primitive_Topology);
+
+	m_pContext->DrawIndexed(m_iNumIndices, 0, 0);
+
+	m_pContext->CopyResource(m_pSRVIn, m_pVB);
 
 	return S_OK;
 }

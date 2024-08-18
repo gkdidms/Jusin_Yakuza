@@ -55,7 +55,7 @@ PS_OUT PS_DEPTH(PS_IN In)
 {
     PS_OUT Out = (PS_OUT) 0;
     
-    Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_fFar, 0, 0.f);
+    Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, 0.f, 0.f, 0.f);
     
     return Out;
 }
