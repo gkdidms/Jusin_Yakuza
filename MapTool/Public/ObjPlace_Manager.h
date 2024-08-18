@@ -74,6 +74,8 @@ public:
 		int				iObjPropertyType;
 		int				iNPCDirection;
 		int				iNaviRouteNum;
+		int				iGroupMonster; //bool ¿ªÇÒ
+		int				iGroupNum;
 		XMFLOAT4X4		vOffsetMatrix;
 	}MAPTOOL_OBJPLACE_DESC;
 

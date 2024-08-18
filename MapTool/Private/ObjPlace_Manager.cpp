@@ -488,6 +488,8 @@ void CObjPlace_Manager::Load_GameObject(int iNum)
 		mapDesc.iObjType = mapTotalInform.pMapObjDesc[i].iObjType;
 		mapDesc.iObjPropertyType = mapTotalInform.pMapObjDesc[i].iObjPropertyType;
 		mapDesc.iNPCDirection = mapTotalInform.pMapObjDesc[i].iNPCDirection;
+		mapDesc.iGroupMonster = mapTotalInform.pMapObjDesc[i].iGroupMonster;
+		mapDesc.iGroupNum = mapTotalInform.pMapObjDesc[i].iGroupNum;
 		mapDesc.iNaviNum = mapTotalInform.pMapObjDesc[i].iNaviNum;
 		mapDesc.iRouteNum = mapTotalInform.pMapObjDesc[i].iNaviRoute;
 		mapDesc.vOffsetMatrix = mapTotalInform.pMapObjDesc[i].vOffsetTransform;
@@ -879,7 +881,21 @@ void CObjPlace_Manager::Edit_Installed_GameObject(int iNumObject)
 	ImGui::RadioButton(u8"역방향 - 수정", &m_tCurrentObjectDesc.iNPCDirection, 1);
 
 
+	ImGui::NewLine();
+	ImGui::Text(u8"몬스터 종류");
 
+	static int iMonsterType = m_tCurrentObjectDesc.iGroupMonster;
+	ImGui::RadioButton(u8"일반 몬스터 - 개별 - 수정", &m_tCurrentObjectDesc.iGroupMonster, 0);
+	ImGui::RadioButton(u8"그룹 몬스터 - 수정", &m_tCurrentObjectDesc.iGroupMonster, 1);
+
+
+	ImGui::NewLine();
+
+	static int iMonsterGroupNum = m_tCurrentObjectDesc.iGroupNum;
+	ImGui::InputInt(u8"몬스터그룹번호 - 수정", &m_tCurrentObjectDesc.iGroupNum);
+
+
+	ImGui::NewLine();
 
 	static int iRouteNum = m_tCurrentObjectDesc.iRouteNum;
 	ImGui::InputInt(u8"루트번호", &m_tCurrentObjectDesc.iRouteNum);
@@ -1042,6 +1058,8 @@ bool CObjPlace_Manager::Add_CloneObject_Imgui(MAPTOOL_OBJPLACE_DESC objDesc, _ui
 		mapDesc.iObjType = objDesc.iObjType;
 		mapDesc.iObjPropertyType = objDesc.iObjPropertyType;
 		mapDesc.iNPCDirection = objDesc.iNPCDirection;
+		mapDesc.iGroupMonster = objDesc.iGroupMonster;
+		mapDesc.iGroupNum = objDesc.iGroupNum;
 		mapDesc.iDecalNum = 0;
 		mapDesc.pDecal = nullptr;
 		mapDesc.iColliderNum = 0;
@@ -1282,6 +1300,22 @@ void CObjPlace_Manager::Set_Map_Object()
 	ImGui::RadioButton(u8"정방향", &iNPCDirection, 0);
 	ImGui::RadioButton(u8"역방향", &iNPCDirection, 1);
 
+	ImGui::NewLine();
+
+	ImGui::Text(u8"몬스터 종류");
+
+	static int iGroupMonster = 0;
+	ImGui::RadioButton(u8"일반 몬스터 - 개별", &iGroupMonster, 0);
+	ImGui::RadioButton(u8"그룹 몬스터", &iGroupMonster, 1);
+
+
+	ImGui::NewLine();
+
+	static int iGroupNum = 0;
+	ImGui::InputInt(u8"몬스터그룹번호", &iGroupNum);
+
+
+	ImGui::NewLine();
 
 	static int iRouteNum = 0;
 	ImGui::InputInt(u8"루트번호", &iRouteNum);
@@ -1366,6 +1400,8 @@ void CObjPlace_Manager::Set_Map_Object()
 	objDesc.iShaderPass = shaderType;
 	objDesc.iObjPropertyType = objectPropertyType;
 	objDesc.iNPCDirection = iNPCDirection;
+	objDesc.iGroupMonster = iGroupMonster;
+	objDesc.iGroupNum = iGroupNum;
 	objDesc.iNaviRouteNum = iRouteNum;
 	objDesc.vOffsetMatrix = myMatrix;
 
@@ -1553,6 +1589,8 @@ HRESULT CObjPlace_Manager::Import_Bin_Map_Data_OnTool(MAP_TOTALINFORM_DESC* mapO
 		in.read((char*)&pMapObj->iObjType, sizeof(int));
 		in.read((char*)&pMapObj->iObjPropertyType, sizeof(int));
 		in.read((char*)&pMapObj->iNPCDirection, sizeof(int));
+		in.read((char*)&pMapObj->iGroupMonster, sizeof(int));
+		in.read((char*)&pMapObj->iGroupNum, sizeof(int));
 
 		in.read((char*)&pMapObj->iNaviNum, sizeof(int));
 		in.read((char*)&pMapObj->iNaviRoute, sizeof(int));
@@ -1637,6 +1675,8 @@ HRESULT CObjPlace_Manager::Export_Bin_Map_Data(MAP_TOTALINFORM_DESC* mapObjData)
 		out.write((char*)&PObjPlaceDesc.iObjType, sizeof(int));
 		out.write((char*)&PObjPlaceDesc.iObjPropertyType, sizeof(int));
 		out.write((char*)&PObjPlaceDesc.iNPCDirection, sizeof(int));
+		out.write((char*)&PObjPlaceDesc.iGroupMonster, sizeof(int));
+		out.write((char*)&PObjPlaceDesc.iGroupNum, sizeof(int));
 
 		//추가
 		out.write((char*)&PObjPlaceDesc.iNaviNum, sizeof(int));
@@ -1711,6 +1751,8 @@ void CObjPlace_Manager::Show_ExampleModel(MAPTOOL_OBJPLACE_DESC objDesc, _uint i
 			mapDesc.iObjType = objDesc.iObjType;
 			mapDesc.iObjPropertyType = objDesc.iObjPropertyType;
 			mapDesc.iNPCDirection = objDesc.iNPCDirection;
+			mapDesc.iGroupMonster = objDesc.iGroupMonster;
+			mapDesc.iGroupNum = objDesc.iGroupNum;
 			mapDesc.iDecalNum = 0;
 			mapDesc.pDecal = nullptr;
 			mapDesc.vOffsetMatrix = objDesc.vOffsetMatrix;
@@ -1740,6 +1782,8 @@ void CObjPlace_Manager::Show_ExampleModel(MAPTOOL_OBJPLACE_DESC objDesc, _uint i
 				mapDesc.iShaderPass = objDesc.iShaderPass;
 				mapDesc.iObjPropertyType = objDesc.iObjPropertyType;
 				mapDesc.iNPCDirection = objDesc.iNPCDirection;
+				mapDesc.iGroupMonster = objDesc.iGroupMonster;
+				mapDesc.iGroupNum = objDesc.iGroupNum;
 				mapDesc.iRouteNum = objDesc.iNaviRouteNum;
 				mapDesc.iDecalNum = 0;
 				mapDesc.pDecal = nullptr;
