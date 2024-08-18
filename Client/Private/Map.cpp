@@ -128,7 +128,7 @@ void CMap::Tick(const _float& fTimeDelta)
 	//}
 
 	// Tick에서 추가
-	//m_pGameInstance->Add_Renderer(CRenderer::RENDER_OCCULUSION, this);
+	m_pGameInstance->Add_Renderer(CRenderer::RENDER_OCCULUSION, this);
 		
 
 #ifdef _DEBUG
@@ -166,10 +166,11 @@ void CMap::Late_Tick(const _float& fTimeDelta)
 		// Renderer 추가 및 벡터에 추가
 	}
 
-	Add_Renderer(fTimeDelta);
-
-//	m_pGameInstance->Add_Renderer(CRenderer::RENDER_SHADOWOBJ, this);
-
+	if (true == m_bRender)
+	{
+		Add_Renderer(fTimeDelta);
+		m_pGameInstance->Add_Renderer(CRenderer::RENDER_SHADOWOBJ, this);
+	}
 
 }
 
@@ -965,7 +966,7 @@ HRESULT CMap::Check_OcculusionCulling()
 	m_pContext->UpdateSubresource(m_pObjectDataBuffer, 0, nullptr, &objectData, 0, 0);
 	m_pContext->CSSetConstantBuffers(0, 1, &m_pObjectDataBuffer);
 
-	m_pGameInstance->Bind_ComputeRenderTargetSRV(TEXT("Target_3x2_Occulusion"));
+	m_pGameInstance->Bind_ComputeRenderTargetSRV(TEXT("Target_OcculusionDepth"));
 	m_pVIBufferCom->Bind_Compute(m_pComputeShaderCom);
 
 
@@ -1282,9 +1283,9 @@ HRESULT CMap::Add_Components(void* pArg)
 		return E_FAIL;
 
 	/* For.Com_SubShader */
-	//if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Shader_VtxCube_Occulusion"),
-	//	TEXT("Com_SubShader"), reinterpret_cast<CComponent**>(&m_pCubeShaderCom))))
-	//	return E_FAIL;
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Shader_VtxCube_Occulusion"),
+		TEXT("Com_SubShader"), reinterpret_cast<CComponent**>(&m_pCubeShaderCom))))
+		return E_FAIL;
 
 	/* For.Com_SubShader */
 	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Shader_OcculusionCulling"),

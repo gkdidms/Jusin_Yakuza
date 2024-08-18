@@ -171,12 +171,12 @@ HRESULT CVIBuffer::Ready_AABBCubeBuffer()
 		return E_FAIL;
 
 	D3D11_BUFFER_DESC Desc{};
-	Desc.ByteWidth = sizeof(VTXCUBE) * m_iNumVertices;
+	Desc.ByteWidth = sizeof(VTXCUBE_OCCULUSION) * m_iNumVertices;
 	Desc.Usage = D3D11_USAGE_DEFAULT;
 	Desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	Desc.CPUAccessFlags = 0;
 	Desc.MiscFlags = 0;
-	Desc.StructureByteStride = sizeof(VTXCUBE);
+	Desc.StructureByteStride = sizeof(VTXCUBE_OCCULUSION);
 
 	if (FAILED(m_pDevice->CreateBuffer(&Desc, nullptr, &m_pProcessedVertexBuffer)))
 		return E_FAIL;

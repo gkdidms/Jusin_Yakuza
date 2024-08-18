@@ -692,6 +692,7 @@
     <ClCompile Include="..\Private\Level_NishikiWalk.cpp">
       <Filter>01.Levels\12.NishikiWalk</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\UIQTE.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\MainApp.h">
@@ -1415,6 +1416,7 @@
     <ClInclude Include="..\Public\Level_NishikiWalk.h">
       <Filter>01.Levels\12.NishikiWalk</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\UIQTE.h" />
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -2230,10 +2232,10 @@
     <FxCompile Include="..\Bin\ShaderFiles\Shader_BoneCompute.hlsl">
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
-    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxCube_Occulusion.hlsl">
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_OcculusionCulling.hlsl">
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
-    <FxCompile Include="..\Bin\ShaderFiles\Shader_OcculusionCulling.hlsl">
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxCube_Occulusion.hlsl">
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
   </ItemGroup>
