@@ -385,19 +385,6 @@ HRESULT CMainApp::Add_UI_On_Path(const wstring& strPath)
 			}
 			break;
 
-			case 5:
-			{
-
-				/* For.Prototype_GameObject_HeadUI*/
-				if (FAILED(m_pGameInstance->Add_GameObject_Prototype(ProtoFrontName + m_pGameInstance->StringToWstring(Tag),
-					CHeadUI::Create(m_pDevice, m_pContext, in))))
-					return E_FAIL;
-
-				//if (FAILED(m_pUIManager->Add_Data(strChannelName, ProtoFrontName + m_pGameInstance->StringToWstring(Tag))))
-				//	return E_FAIL;
-			}
-			break;
-
 
 			default:
 				break;

@@ -689,6 +689,9 @@
     <ClCompile Include="..\Private\UIStoreImage.cpp">
       <Filter>95.Utility\05.UIManager\UIScene\UIStoreImage</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\UIQTE.cpp">
+      <Filter>95.Utility\05.UIManager\UIScene\UIQTE</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\MainApp.h">
@@ -1408,6 +1411,9 @@
     </ClInclude>
     <ClInclude Include="..\Public\UIStoreImage.h">
       <Filter>95.Utility\05.UIManager\UIScene\UIStoreImage</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIQTE.h">
+      <Filter>95.Utility\05.UIManager\UIScene\UIQTE</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -2171,6 +2177,9 @@
     </Filter>
     <Filter Include="03.QuestManager\Quest\Main\Chapter_2\0">
       <UniqueIdentifier>{0aab858a-ea0e-4a82-bd30-29fd86502b8d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\05.UIManager\UIScene\UIQTE">
+      <UniqueIdentifier>{d8af9365-f67e-4b28-bc26-c2e86bb33e7b}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

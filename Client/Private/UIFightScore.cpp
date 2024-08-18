@@ -119,4 +119,10 @@ CUIFightScore* CUIFightScore::Create(ID3D11Device* pDevice, ID3D11DeviceContext*
 void CUIFightScore::Free()
 {
 	__super::Free();
+
+	for (auto& iter : m_Bonus)
+		Safe_Release(iter);
+
+	Safe_Release(m_Money);
+	Safe_Release(m_AddMoney);
 }

@@ -70,12 +70,12 @@ HRESULT CLevel_Test::Initialize()
 	//if (nullptr == m_pTutorialManager)
 
 	/* Å¬¶ó ÆÄ½Ì */
-	//if (FAILED(Ready_Test_Load()))
-	//	return E_FAIL;
+	if (FAILED(Ready_Test_Load()))
+		return E_FAIL;
 
 	// Çý¿øÅ×½ºÆ®¿ë
-	if (FAILED(Ready_Test_Hyewon()))
-		return E_FAIL;
+	//if (FAILED(Ready_Test_Hyewon()))
+	//	return E_FAIL;
 
 	//m_pFileTotalManager->Set_MapObj_In_Client(70, LEVEL_TEST);
 	//m_pFileTotalManager->Set_Lights_In_Client(90);
