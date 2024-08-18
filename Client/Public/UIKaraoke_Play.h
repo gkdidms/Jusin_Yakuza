@@ -50,6 +50,7 @@ private:
 private:
     void Change_Lyrics();
     void Setting_BackUI(LYRICS_DESC Desc, _fvector vPos, _uint iLyricsIndex);
+    void Setting_BlueUI(LYRICS_DESC Desc, _fvector vPos, _uint iLyricsIndex);
     void CurrentBar_Control();
 
     _uint Compute_Num(_uint iCount);

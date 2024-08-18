@@ -361,12 +361,49 @@ void CUIKaraoke_Play::Setting_BackUI(LYRICS_DESC Desc, _fvector vPos, _uint iLyr
     // 4. 흰색 바의 위치 설정
     m_pPlayUI[BACK][Desc.iSocketIndex]->Get_TransformCom()->Set_State(CTransform::STATE_POSITION, vBarPos);
     m_pPlayUI[BACK][Desc.iSocketIndex]->Show_On_All();
+
+    Setting_BlueUI(Desc, vBarPos, iLyricsIndex);
+}
+
+void CUIKaraoke_Play::Setting_BlueUI(LYRICS_DESC Desc, _fvector vPos, _uint iLyricsIndex)
+{
+    _int iCurLyricsIndex = { -1 };
+
+    for (size_t i = 0; i < m_LyricsTime.size(); i++)
+    {
+        if (m_LyricsTime[i].fTime <= m_fCurSoundTime)
+        {
+            iCurLyricsIndex = i;
+        }
+    }
+
+    if (-1 != iCurLyricsIndex)
+    {
+        _float fCurrentPos = m_fCurSoundTime - m_LyricsTime[iCurLyricsIndex].fTime;
+        _float fRatio = (fCurrentPos / m_LyricsTime[iCurLyricsIndex].fDuration);
+
+        _float fSize = LerpFloat(0.f, (m_LyricsTime[iCurLyricsIndex].fDuration * 0.2f), fRatio);
+
+        // 1. 파란색바의 스케일 조정
+        _float3 vScaled = m_pPlayUI[BACK][m_LyricsTime[iCurLyricsIndex].iSocketIndex]->Get_TransformCom()->Get_Scaled();
+        m_pPlayUI[BLUE][m_LyricsTime[iCurLyricsIndex].iSocketIndex]->Get_TransformCom()->Set_Scale(fSize, vScaled.y, vScaled.z);
+
+        _float a = fSize * 0.5f * (m_pPlayUI[BLUE][m_LyricsTime[iCurLyricsIndex].iSocketIndex]->Get_PartObject(1)->Get_TransformCom()->Get_Scaled().x);
+        _float b = fSize * 0.5f * (m_pPlayUI[BLUE][m_LyricsTime[iCurLyricsIndex].iSocketIndex]->Get_PartObject(0)->Get_TransformCom()->Get_Scaled().x
+            + m_pPlayUI[BLUE][m_LyricsTime[iCurLyricsIndex].iSocketIndex]->Get_PartObject(2)->Get_TransformCom()->Get_Scaled().x);
+
+        _vector vCurBarPos = m_pPlayUI[CURRENTBAR].front()->Get_TransformCom()->Get_State(CTransform::STATE_POSITION);
+        vCurBarPos.m128_f32[0] -= (a + b);
+
+        m_pPlayUI[BLUE][m_LyricsTime[iCurLyricsIndex].iSocketIndex]->Get_TransformCom()->Set_State(CTransform::STATE_POSITION, vCurBarPos);
+        m_pPlayUI[BLUE][m_LyricsTime[iCurLyricsIndex].iSocketIndex]->Show_On_All();
+    }
+ 
 }
 
 void CUIKaraoke_Play::CurrentBar_Control()
 {
-    _float a = (m_LyricsTime[m_LyricsTime.size() - 1].fTime + m_LyricsTime[m_LyricsTime.size() - 1].fDuration);
-    if (a <= m_fCurSoundTime)
+    if ((m_LyricsTime[m_LyricsTime.size() - 1].fTime + m_LyricsTime[m_LyricsTime.size() - 1].fDuration) <= m_fCurSoundTime)
     {
         m_pPlayUI[CURRENTBAR].front()->Show_Off_All();
         return;
@@ -395,8 +432,8 @@ void CUIKaraoke_Play::CurrentBar_Control()
         // 해당 그룹 전체에 적용된 크기를 가져와서 적용해줘야한다.
         _float3 vScaled_All = m_pPlayUI[BACK][m_LyricsTime[iCurLyricsIndex].iSocketIndex]->Get_TransformCom()->Get_Scaled();
 
-        vPos.m128_f32[0] -= (vScaled_Center.x * 0.5f * vScaled_All.x + vScaled_Front.x * 0.5f);
-        vEndPos.m128_f32[0] += (vScaled_Center.x * 0.5f * vScaled_All.x + vScaled_Back.x * 0.5f);
+        vPos.m128_f32[0] -= (vScaled_Center.x * 0.5f * vScaled_All.x + vScaled_Front.x * vScaled_All.x);
+        vEndPos.m128_f32[0] += (vScaled_Center.x * 0.5f * vScaled_All.x + vScaled_Back.x * vScaled_All.x);
 
         _float fCurrentPos = m_fCurSoundTime - m_LyricsTime[iCurLyricsIndex].fTime;
 
@@ -414,7 +451,7 @@ _uint CUIKaraoke_Play::Compute_Num(_uint iCount)
     case BACK:
         return 2;
     case BLUE:
-        return 0;
+        return 2;
     case MIC:
         return 20;
     case CURRENTBAR:
