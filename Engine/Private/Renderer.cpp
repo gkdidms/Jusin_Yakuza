@@ -300,23 +300,23 @@ HRESULT CRenderer::Ready_Targets()
 		return E_FAIL;
 
 	//Luminance
-	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_640x360"), 1, 1, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f), true)))
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_640x360"), 640, 360, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f), true)))
 		return E_FAIL;
-	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_320x180"), 1, 1, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f), true)))
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_320x180"), 320, 180, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f), true)))
 		return E_FAIL;
-	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_160x90"), 1, 1, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f), true)))
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_160x90"), 160, 90, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f), true)))
 		return E_FAIL;
-	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_80x45"), 1, 1, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f), true)))
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_80x45"), 80, 45, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f), true)))
 		return E_FAIL;
-	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_40x23"), 1, 1, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f), true)))
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_40x23"), 40, 23, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f), true)))
 		return E_FAIL;
-	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_20x12"), 1, 1, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f), true)))
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_20x12"), 20, 12, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f), true)))
 		return E_FAIL;
-	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_10x6"), 1, 1, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f), true)))
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_10x6"), 10, 6, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f), true)))
 		return E_FAIL;
-	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_5x3"), 1, 1, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f), true)))
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_5x3"), 5, 3, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f), true)))
 		return E_FAIL;
-	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_3x2"), 1, 1, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f), true)))
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_3x2"), 3, 2, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f), true)))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_1x1"), 1, 1, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f), true)))
 		return E_FAIL;
@@ -390,23 +390,23 @@ HRESULT CRenderer::Ready_Targets()
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_OcculusionDepth"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(1.f, 1.f, 1.f, 1.f))))
 		return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_640x360_Occulusion"), 1, 1, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(1.f, 1.f, 1.f, 1.f), true)))
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_640x360_Occulusion"), 640, 360, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(1.f, 1.f, 1.f, 1.f), true)))
 		return E_FAIL;
-	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_320x180_Occulusion"), 1, 1, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(1.f, 1.f, 1.f, 1.f), true)))
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_320x180_Occulusion"), 320, 180, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(1.f, 1.f, 1.f, 1.f), true)))
 		return E_FAIL;
-	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_160x90_Occulusion"), 1, 1, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(1.f, 1.f, 1.f, 1.f), true)))
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_160x90_Occulusion"), 160, 90, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(1.f, 1.f, 1.f, 1.f), true)))
 		return E_FAIL;
-	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_80x45_Occulusion"), 1, 1, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(1.f, 1.f, 1.f, 1.f), true)))
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_80x45_Occulusion"), 80, 45, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(1.f, 1.f, 1.f, 1.f), true)))
 		return E_FAIL;
-	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_40x23_Occulusion"), 1, 1, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(1.f, 1.f, 1.f, 1.f), true)))
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_40x23_Occulusion"), 40, 23, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(1.f, 1.f, 1.f, 1.f), true)))
 		return E_FAIL;
-	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_20x12_Occulusion"), 1, 1, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(1.f, 1.f, 1.f, 1.f), true)))
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_20x12_Occulusion"), 20, 12, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(1.f, 1.f, 1.f, 1.f), true)))
 		return E_FAIL;
-	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_10x6_Occulusion"), 1, 1, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(1.f, 1.f, 1.f, 1.f), true)))
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_10x6_Occulusion"), 10, 6, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(1.f, 1.f, 1.f, 1.f), true)))
 		return E_FAIL;
-	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_5x3_Occulusion"), 1, 1, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(1.f, 1.f, 1.f, 1.f), true)))
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_5x3_Occulusion"), 5, 3, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(1.f, 1.f, 1.f, 1.f), true)))
 		return E_FAIL;
-	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_3x2_Occulusion"), 1, 1, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(1.f, 1.f, 1.f, 1.f), true)))
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_3x2_Occulusion"), 3, 2, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(1.f, 1.f, 1.f, 1.f), true)))
 		return E_FAIL;
 #pragma endregion
 
@@ -755,6 +755,8 @@ void CRenderer::Add_Renderer(RENDERER_STATE eRenderState, CGameObject* pGameObje
 
 void CRenderer::Draw()
 {
+
+
 	Render_Priority();
 	Render_AnimSkinning();
 
@@ -861,7 +863,7 @@ void CRenderer::Occulusion_Culling_Draw()
 	Render_OcculusionDepth();
 
 	// 다운 샘플링
-	Render_OcculusionDownSampling();
+	// Render_OcculusionDownSampling();
 
 	// 다운 샘플링 한 것과 depth 비교
 	Check_OcculusionCulling();

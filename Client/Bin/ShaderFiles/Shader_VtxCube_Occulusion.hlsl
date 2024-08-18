@@ -3,52 +3,39 @@
 
 struct VS_IN
 {
-    float3 vPosition : POSITION; // 12바이트
-    //float padding1 : TEXCOORD0; // 4바이트 패딩 (정렬 맞춤)
-
-    float3 vTexcoord : TEXCOORD1; // 12바이트
-    //float padding2 : TEXCOORD2; // 4바이트 패딩 (정렬 맞춤)
+    float3 vPosition : POSITION;
+    float3 vTexcoord : TEXCOORD0;
+    float padding1 : TEXCOORD1; // 4바이트 패딩 (정렬 맞춤)
+    float padding2 : TEXCOORD2; // 4바이트 패딩 (정렬 맞춤)
 };
 
 struct VS_OUT
 {
-	float4		vPosition : SV_POSITION;
-	float3		vTexcoord : TEXCOORD0;
-};
-
-
-
-// Occulusion을 위한
-
-struct VS_IN_Depth
-{
-    float3 vPosition : POSITION; // 12바이트
-    float3 vTexcoord : TEXCOORD0; // 12바이트
-};
-
-struct VS_OUT_Depth
-{
     float4 vPosition : SV_POSITION;
     float3 vTexcoord : TEXCOORD0;
     float4 vProjPos : TEXCOORD1;
 };
 
 
-struct PS_IN_Depth
+
+struct PS_IN
 {
     float4 vPosition : SV_POSITION;
     float3 vTexcoord : TEXCOORD0;
     float4 vProjPos : TEXCOORD1;
 };
 
-
+struct PS_OUT
+{
+    vector vDepth : SV_TARGET0;
+};
 
 /* 정점 셰이더 :  /* 
 /* 1. 정점의 위치 변환(월드, 뷰, 투영).*/
 /* 2. 정점의 구성정보를 변경한다. */
-VS_OUT_Depth VS_MAIN_Depth(VS_IN In)
+VS_OUT VS_MAIN_Depth(VS_IN In)
 {
-    VS_OUT_Depth Out = (VS_OUT_Depth) 0;
+    VS_OUT Out = (VS_OUT) 0;
 
     matrix matWV, matWVP;
 
@@ -62,14 +49,11 @@ VS_OUT_Depth VS_MAIN_Depth(VS_IN In)
     return Out;
 }
 
-struct PS_OUT_Depth
-{
-    vector vDepth : SV_TARGET0;
-};
 
-PS_OUT_Depth PS_DEPTH(PS_IN_Depth In)
+
+PS_OUT PS_DEPTH(PS_IN In)
 {
-    PS_OUT_Depth Out = (PS_OUT_Depth) 0;
+    PS_OUT Out = (PS_OUT) 0;
     
     Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_fFar, 0, 0.f);
     
@@ -81,7 +65,6 @@ PS_OUT_Depth PS_DEPTH(PS_IN_Depth In)
 technique11 DefaultTechnique
 {
 
-    
     pass OcculuderDepthPass
     {
         SetRasterizerState(RS_Default);
