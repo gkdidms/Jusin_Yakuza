@@ -1,16 +1,13 @@
 #pragma once
 #include "UIScene.h"
 BEGIN(Client)
-class CUIQTE :
+class CUIFade :
     public CUIScene
 {
-public:
-    enum QTE{BUTTON , CIRCLE ,QTE_END};
-
 protected:
-    CUIQTE();
-    CUIQTE(const CUIQTE& rhs);
-    virtual ~CUIQTE() = default;
+    CUIFade();
+    CUIFade(const CUIFade& rhs);
+    virtual ~CUIFade() = default;
 
 public:
     virtual HRESULT Show_Scene()override;//ui 애님 준비(초기화/열때 정방향 진행)
@@ -21,13 +18,13 @@ public:
     virtual HRESULT Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg) override;
     virtual HRESULT Tick(const _float& fTimeDelta) override;
     virtual HRESULT Late_Tick(const _float& fTimeDelta) override;
+    
 
-    void Set_Key(wstring strKey);
-private:
-    _bool m_isPress = false;
 public:
-    static CUIQTE* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg = nullptr);
+    void Fade_Out();
+    void Fade_In();
+public:
+    static CUIFade* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg = nullptr);
     virtual void Free();
 };
-
 END

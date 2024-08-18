@@ -79,7 +79,9 @@ HRESULT CUITitle::Late_Tick(const _float& fTimeDelta)
 void CUITitle::Start_Title(_uint Index)
 {
     m_EventUI[0]->Show_UI();
-    dynamic_cast<CGroup*>(m_EventUI[0])->Show_Choice(Index);
+    m_EventUI[1]->Show_UI();
+
+    dynamic_cast<CGroup*>(m_EventUI[1])->Show_Choice(Index);
 
     //밖에서 불러와서 몇번쨰 타이틀 띄울지 하자
     m_isStart = true;

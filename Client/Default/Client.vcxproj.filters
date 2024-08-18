@@ -692,6 +692,12 @@
     <ClCompile Include="..\Private\Level_NishikiWalk.cpp">
       <Filter>01.Levels\12.NishikiWalk</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\UIQTE.cpp">
+      <Filter>95.Utility\05.UIManager\UIScene\UIQTE</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIFade.cpp">
+      <Filter>95.Utility\05.UIManager\UIScene\UIFade</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\MainApp.h">
@@ -1414,6 +1420,12 @@
     </ClInclude>
     <ClInclude Include="..\Public\Level_NishikiWalk.h">
       <Filter>01.Levels\12.NishikiWalk</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIQTE.h">
+      <Filter>95.Utility\05.UIManager\UIScene\UIQTE</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIFade.h">
+      <Filter>95.Utility\05.UIManager\UIScene\UIFade</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -2177,6 +2189,12 @@
     </Filter>
     <Filter Include="03.QuestManager\Quest\Main\Chapter_2\0">
       <UniqueIdentifier>{0aab858a-ea0e-4a82-bd30-29fd86502b8d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\05.UIManager\UIScene\UIQTE">
+      <UniqueIdentifier>{494066af-0211-43df-8817-a5d1e41b2529}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\05.UIManager\UIScene\UIFade">
+      <UniqueIdentifier>{c62040e6-a437-48f3-9de1-ed878d616d4f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

@@ -105,6 +105,10 @@ private:
 private:
     _uint m_Money = { 0 };
 
+
+public:
+    void Fade_In();
+    void Fade_Out();
 public:
    CUIScene* Find_Scene(wstring strSceneName);      
 

@@ -247,6 +247,7 @@
     <ClInclude Include="..\Public\Loader_Other.h" />
     <ClInclude Include="..\Public\Loader_Anim.h" />
     <ClInclude Include="..\Public\RoadYOP.h" />
+    <ClInclude Include="..\Public\UIFade.h" />
     <ClInclude Include="..\Public\UIFightScore.h" />
     <ClInclude Include="..\Public\UIKaraoke_Play.h" />
     <ClInclude Include="..\Public\UIKaraoke_Score.h" />
@@ -439,6 +440,7 @@
     <ClCompile Include="..\Private\Nishiki.cpp" />
     <ClCompile Include="..\Private\NPC.cpp" />
     <ClCompile Include="..\Private\RoadTissue.cpp" />
+    <ClCompile Include="..\Private\UIFade.cpp" />
     <ClCompile Include="..\Private\UIFightScore.cpp" />
     <ClCompile Include="..\Private\UIKaraoke_Score.cpp" />
     <ClCompile Include="..\Private\KaraokeManager.cpp" />
