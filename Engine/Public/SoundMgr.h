@@ -26,6 +26,8 @@ public:
 	_bool Get_Start(const wstring pSoundKey, CHANNELID eID);
 	_bool Get_End(const wstring pSoundKey, CHANNELID eID);
 
+	void Set_SoundPosition(const wstring pSoundKey, CHANNELID eID, _float fSeconds);
+
 private:
 	void LoadSoundFile();
 

@@ -43,6 +43,8 @@ public:
     _bool Get_SoundStart(const wstring pSoundKey, CHANNELID eID);
     _bool Get_SoundEnd(const wstring pSoundKey, CHANNELID eID);
 
+    void Set_SoundPosition(const wstring pSoundKey, CHANNELID eID, _float fSeconds);
+
     /* Timer */
 public:
     _float		Get_TimeDelta(const _tchar* pTimerTag);

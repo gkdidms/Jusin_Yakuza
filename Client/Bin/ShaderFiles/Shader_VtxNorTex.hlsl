@@ -57,7 +57,7 @@ PS_OUT PS_MAIN(PS_IN In)
     
     Out.vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
     Out.vNormal = vector(In.vNormal.xyz * 0.5f - 0.5f, 0.f);
-    Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 3000.f, 0.f, 1.f);
+    Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / 300.f, 0.f, 1.f);
     return Out;
 }
 

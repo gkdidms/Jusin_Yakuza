@@ -398,7 +398,7 @@ HRESULT CRenderer::Ready_Targets()
 		return E_FAIL;
 
 #pragma region MRT_Occulusion
-	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_OcculusionDepth"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R32_FLOAT, _float4(1.f, 1.f, 1.f, 1.f))))
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_OcculusionDepth"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R32_FLOAT, _float4(0.f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_640x360_Occulusion"), 640, 360, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(1.f, 1.f, 1.f, 1.f), true)))
@@ -944,6 +944,7 @@ void CRenderer::Render_NonBlender()
 
 	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_NonBlend"))))
 		return;
+
 
 	for (auto& iter : m_RenderObject[RENDER_NONBLENDER])
 	{
@@ -1970,11 +1971,18 @@ void CRenderer::Render_OcculusionDepth()
 	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_Occulusion"), m_pOcculusionDepthView)))
 		return;
 
+	m_RenderObject[RENDER_OCCULUSION].sort([](CGameObject* pSour, CGameObject* pDest)->_bool
+		{
+			return dynamic_cast<CGameObject*>(pSour)->Get_CamDistance() < dynamic_cast<CGameObject*>(pDest)->Get_CamDistance();
+		});
+
 	for (auto& pGameObject : m_RenderObject[RENDER_OCCULUSION])
 	{
 		if (nullptr != pGameObject)
 			pGameObject->Render_OcculusionDepth();
+		Safe_Release(pGameObject);
 	}
+	m_RenderObject[RENDER_OCCULUSION].clear();
 
 	if (FAILED(m_pGameInstance->End_MRT()))
 		return;

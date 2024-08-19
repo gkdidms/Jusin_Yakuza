@@ -152,6 +152,7 @@ PS_MAIN_OUT PS_MAIN(PS_IN In)
     }
 
 
+    vector vNormal = g_isNormal ? g_NormalTexture.Sample(LinearSampler, In.vTexcoord) : In.vNormal;
     vector vMulti = g_isMulti ? g_MultiDiffuseTexture.Sample(LinearSampler, In.vTexcoord) : vector(0.f, 1.f, 0.f, 1.f);
     vector vRD = g_isRD ? g_RDTexture.Sample(LinearSampler, In.vTexcoord) : vector(1.f, 1.f, 1.f, 1.f);
     vector vRS = g_isRS ? g_RSTexture.Sample(LinearSampler, In.vTexcoord) : vector(1.f, 1.f, 1.f, 1.f);
@@ -159,7 +160,7 @@ PS_MAIN_OUT PS_MAIN(PS_IN In)
     vector vRT = vector(0.5f, 0.5f, 1.f, 0.5f);
     
     //노말 벡터 구하기
-    vector vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexcoord);
+    vector vNormalDesc = vNormal;
     vNormalDesc = vNormalDesc * 2.f - 1.f;
     
     //Neo Shader
@@ -197,6 +198,33 @@ PS_MAIN_OUT PS_MAIN(PS_IN In)
     Out.vSpecular = vector(OEResult.vSpecular, 0.f);
     
     return Out;
+}
+
+PS_MAIN_OUT PS_FAR_MAIN(PS_IN In)
+{
+    PS_MAIN_OUT Out = (PS_MAIN_OUT) 0;
+    
+    vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
+    if (vDiffuse.a < 0.1f)
+        discard;
+    
+    //노말 벡터 구하기
+    vector vNormalDesc = g_isNormal ? g_NormalTexture.Sample(LinearSampler, In.vTexcoord) : vector(0.5f, 0.5f, 1.f, 1.f);
+
+    //Neo Shader
+    vNormalDesc = vNormalDesc * 2.f - 1.f;
+    float3x3 WorldMatrix = float3x3(In.vTangent.xyz, In.vBinormal.xyz, In.vNormal.xyz);
+    vector vNormalBTN = vector(mul(vNormalDesc.xyz, WorldMatrix), 0.f);
+    Out.vNormal = vector(vNormalBTN.xyz * 0.5f + 0.5f, 0.f);
+    
+    Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_fFar, 0, 0.f);
+    Out.vDiffuse = vDiffuse;
+    Out.vSurface = vector(0, 0, 0, 0);
+    Out.vOEShader = vector(0, 0, 0, 0);
+    Out.vSpecular = vector(0, 0, 0, 0);
+    
+    return Out;
+
 }
 
 PS_OUT PS_GLASSDOOR(PS_IN In)
@@ -272,7 +300,7 @@ PS_MAIN_OUT PS_MAIN_AlphaMask(PS_IN In)
     if (vDiffuse.a < 0.2f)
         discard;
 
-
+    vector vNormal = g_isNormal ? g_NormalTexture.Sample(LinearSampler, In.vTexcoord) : In.vNormal;
     vector vMulti = g_isMulti ? g_MultiDiffuseTexture.Sample(LinearSampler, In.vTexcoord) : vector(0.f, 1.f, 0.f, 1.f);
     vector vRD = g_isRD ? g_RDTexture.Sample(LinearSampler, In.vTexcoord) : vector(1.f, 1.f, 1.f, 1.f);
     vector vRS = g_isRS ? g_RSTexture.Sample(LinearSampler, In.vTexcoord) : vector(1.f, 1.f, 1.f, 1.f);
@@ -280,7 +308,7 @@ PS_MAIN_OUT PS_MAIN_AlphaMask(PS_IN In)
     vector vRT = vector(0.5f, 0.5f, 1.f, 0.5f);
     
     //노말 벡터 구하기
-    vector vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexcoord);
+    vector vNormalDesc = vNormal;
     vNormalDesc = vNormalDesc * 2.f - 1.f;
     
     //Neo Shader
@@ -345,52 +373,6 @@ PS_OUT_COLOR DEFAULT_SIGN_PASS(PS_IN In)
     vDiffuse += emissiveColor;
     Out.vDiffuse = vDiffuse;
     
-    // //RS + RD
-    //vector vRSRD;
-    
-    //if (g_isRS)
-    //{
-    //    vector vRSDesc = g_RSTexture.Sample(LinearSampler, In.vTexcoord);
-    //    Out.vRS = vRSDesc;
-    //     = lerp(vDiffuse, vRSDesc, vMultiDiffuce.z);
-    //}
-    //else
-    //    Out.vDiffuse = vDiffuse;
-    
-    //float3 vNormal;
-    //if (true == g_bExistNormalTex)
-    //{
-    //    // 매핑되는 texture가 있을때
-    //    vector vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexcoord);
-    //    vNormal = vNormalDesc.xyz * 2.f - 1.f;
-    //    vNormal = vector(vNormalDesc.w, vNormalDesc.y, 1.f, 0.f);
-    
-    //    float3x3 WorldMatrix = float3x3(In.vTangent.xyz, In.vBinormal.xyz, In.vNormal.xyz);
-    
-    //    vNormal = mul(vNormal.xyz, WorldMatrix);
-    //}
-    //else
-    //{
-    //    float3x3 WorldMatrix = float3x3(In.vTangent.xyz, In.vBinormal.xyz, In.vNormal.xyz);
-    //    // 텍스처 없을때
-    //    vNormal = mul(In.vNormal.xyz, WorldMatrix);
-    //}
-    
-    //Out.vNormal = vector(vNormal.xyz * 0.5f + 0.5f, 0.f);
-    //Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_fFar, 0.f, 1.f);
-    //Out.vMulti = vMultiDiffuce;
-    
-    
-    //// specularTex와 metalic 같은 rm 사용 - bool 값 같이 사용하기
-    //if (true == g_bExistRMTex)
-    //{
-    //    Out.vRM = g_RMTexture.Sample(LinearSampler, In.vTexcoord);
-    //}
-    
-    //if (true == g_bExistRSTex)
-    //{
-    //    Out.vRS = g_RSTexture.Sample(LinearSampler, In.vTexcoord);
-    //}
     
     
     return Out;
@@ -745,6 +727,19 @@ technique11 DefaultTechnique
         HullShader = NULL;
         DomainShader = NULL;
         PixelShader = compile ps_5_0 PS_MAIN_LIGHTDEPTH();
+    }
+
+    pass FarRnder //13
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        HullShader = NULL;
+        DomainShader = NULL;
+        PixelShader = compile ps_5_0 PS_FAR_MAIN();
     }
 
 
