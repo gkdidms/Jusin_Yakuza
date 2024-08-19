@@ -313,6 +313,7 @@ void CObjPlace_Manager::Show_Installed_GameObjectsList()
 		{
 			m_iCurrentObjectIndex = object_current_idx;
 			Get_CurrentGameObject_Desc(&m_tCurrentObjectDesc, m_iCurrentObjectIndex);
+			Update_ColliderList_In_Object();
 		}
 
 		/* 구조체 한번 더 업데이트 해줘야하는지 파악 */
@@ -2114,6 +2115,11 @@ void CObjPlace_Manager::Update_ColliderList_In_Object()
 	{
 		m_ObjectColliders.push_back(vCollider[i]);
 		Safe_AddRef(vCollider[i]);
+	}
+
+	if (0 < m_ObjectColliders.size())
+	{
+		m_tCurColliderDesc = dynamic_cast<CConstruction*>(iter->second)->Get_ColliderDesc(m_iCurColliderIndex);
 	}
 }
 

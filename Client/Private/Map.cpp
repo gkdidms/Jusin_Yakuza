@@ -191,15 +191,17 @@ void CMap::Late_Tick(const _float& fTimeDelta)
 	{
 
 	}*/
-	
-	if (true == m_bRender)
-	{
-		Add_Renderer(fTimeDelta);
-		m_pGameInstance->Add_Renderer(CRenderer::RENDER_SHADOWOBJ, this);
-	}
 
-	//m_pOcclusionQuery->Release();
-	//m_pGameInstance->Add_Renderer(CRenderer::RENDER_OCCULUSION, this);
+	Add_Renderer(fTimeDelta);
+	m_pGameInstance->Add_Renderer(CRenderer::RENDER_SHADOWOBJ, this);
+	
+	//if (true == m_bRender)
+	//{
+	//	Add_Renderer(fTimeDelta);
+	//	m_pGameInstance->Add_Renderer(CRenderer::RENDER_SHADOWOBJ, this);
+	//}
+
+
 }
 
 HRESULT CMap::Render()
@@ -379,12 +381,17 @@ HRESULT CMap::Render()
 
 			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
 				return E_FAIL;
-
+			
+			_bool isNormal = true;
 			_bool isRS = true;
 			_bool isRD = true;
 			_bool isRM = true;
 			_bool isRT = false;
 			_bool isMulti = true;
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS)))
+				isNormal = false;
+			m_pShaderCom->Bind_RawValue("g_isNormal", &isNormal, sizeof(_bool));
 
 			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_MultiDiffuseTexture", i, aiTextureType_SHININESS)))
 				isMulti = false;
@@ -430,13 +437,17 @@ HRESULT CMap::Render()
 
 			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
 				return E_FAIL;
-			m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS);
 
+			_bool isNormal = true;
 			_bool isRS = true;
 			_bool isRD = true;
 			_bool isRM = true;
 			_bool isRT = false;
 			_bool isMulti = true;
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS)))
+				isNormal = false;
+			m_pShaderCom->Bind_RawValue("g_isNormal", &isNormal, sizeof(_bool));
 
 			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_MultiDiffuseTexture", i, aiTextureType_SHININESS)))
 				isMulti = false;
@@ -482,13 +493,17 @@ HRESULT CMap::Render()
 
 			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
 				return E_FAIL;
-			m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS);
 
+			_bool isNormal = true;
 			_bool isRS = true;
 			_bool isRD = true;
 			_bool isRM = true;
 			_bool isRT = false;
 			_bool isMulti = true;
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS)))
+				isNormal = false;
+			m_pShaderCom->Bind_RawValue("g_isNormal", &isNormal, sizeof(_bool));
 
 			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_MultiDiffuseTexture", i, aiTextureType_SHININESS)))
 				isMulti = false;
@@ -534,13 +549,18 @@ HRESULT CMap::Render()
 
 			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
 				return E_FAIL;
-			m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS);
 
+			_bool isNormal = true;
 			_bool isRS = true;
 			_bool isRD = true;
 			_bool isRM = true;
 			_bool isRT = false;
 			_bool isMulti = true;
+
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS)))
+				isNormal = false;
+			m_pShaderCom->Bind_RawValue("g_isNormal", &isNormal, sizeof(_bool));
 
 			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_MultiDiffuseTexture", i, aiTextureType_SHININESS)))
 				isMulti = false;
@@ -586,13 +606,18 @@ HRESULT CMap::Render()
 
 			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
 				return E_FAIL;
-			m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS);
 
+			_bool isNormal = true;
 			_bool isRS = true;
 			_bool isRD = true;
 			_bool isRM = true;
 			_bool isRT = false;
 			_bool isMulti = true;
+			
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS)))
+				isNormal = false;
+			m_pShaderCom->Bind_RawValue("g_isNormal", &isNormal, sizeof(_bool));
 
 			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_MultiDiffuseTexture", i, aiTextureType_SHININESS)))
 				isMulti = false;
@@ -640,11 +665,16 @@ HRESULT CMap::Render()
 			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
 				return E_FAIL;
 
+			_bool isNormal = true;
 			_bool isRS = true;
 			_bool isRD = true;
 			_bool isRM = true;
 			_bool isRT = false;
 			_bool isMulti = true;
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS)))
+				isNormal = false;
+			m_pShaderCom->Bind_RawValue("g_isNormal", &isNormal, sizeof(_bool));
 
 			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_MultiDiffuseTexture", i, aiTextureType_SHININESS)))
 				isMulti = false;
@@ -969,7 +999,13 @@ HRESULT CMap::Render_LightDepth()
 HRESULT CMap::Render_OcculusionDepth()
 {
 
-	if (FAILED(m_pTransformCom->Bind_ShaderMatrix(m_pCubeShaderCom, "g_WorldMatrix")))
+	//if (FAILED(m_pTransformCom->Bind_ShaderMatrix(m_pCubeShaderCom, "g_WorldMatrix")))
+	//	return E_FAIL;
+
+	_float4x4		vWorldMatrix;
+	XMStoreFloat4x4(&vWorldMatrix, m_CubeWorldMatrix);
+
+	if (FAILED(m_pCubeShaderCom->Bind_Matrix("g_WorldMatrix", &vWorldMatrix)))
 		return E_FAIL;
 	if (FAILED(m_pCubeShaderCom->Bind_Matrix("g_ViewMatrix", m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_VIEW))))
 		return E_FAIL;
@@ -989,7 +1025,7 @@ HRESULT CMap::Render_OcculusionDepth()
 
 HRESULT CMap::Check_OcculusionCulling()
 {
-	XMMATRIX worldProjView = m_pTransformCom->Get_WorldMatrix() * m_pGameInstance->Get_Transform_Matrix(CPipeLine::D3DTS_VIEW) * m_pGameInstance->Get_Transform_Matrix(CPipeLine::D3DTS_PROJ);
+	XMMATRIX worldProjView = m_CubeWorldMatrix * m_pGameInstance->Get_Transform_Matrix(CPipeLine::D3DTS_VIEW) * m_pGameInstance->Get_Transform_Matrix(CPipeLine::D3DTS_PROJ);
 	worldProjView = XMMatrixTranspose(worldProjView);
 	CMap::ObjectData objectData = { worldProjView, *m_pGameInstance->Get_CamFar() };
 	m_pContext->UpdateSubresource(m_pObjectDataBuffer, 0, nullptr, &objectData, 0, 0);
@@ -1217,19 +1253,7 @@ void CMap::Add_Renderer(const _float& fTimeDelta)
 				}
 			}
 		}
-		//else
-		//{
-		//	// 도로씬에서 다 DECAL 처리
-		//	float		fScale = Meshes[i]->Get_MeshScale() * 0.5;
 
-		//	if (fScale <= 0)
-		//		fScale = 10;
-
-		//	if (true == m_pGameInstance->isIn_WorldFrustum(worldPos, fScale))
-		//	{
-		//		m_vMaskMeshIndex.push_back(i);
-		//	}
-		//}
 	}
 
 	// RENDER_NONBLEND 돼야하는 그룹
@@ -1306,10 +1330,27 @@ HRESULT CMap::Add_Components(void* pArg)
 
 	// Occulusion Culling을 위한 scale 파악
 	CVIBuffer_AABBCube::AABBCUBE_DESC		aabbDesc;
-	aabbDesc.vScale = m_pModelCom->Get_LocalModelSize();
-	aabbDesc.vScale.x *= 1.5;
-	aabbDesc.vScale.y *= 1.5;
-	aabbDesc.vScale.z *= 1.5;
+
+	if (0 < gameobjDesc->iColliderNum)
+	{
+		aabbDesc.vScale = gameobjDesc->pColliderDesc[0].vExtents;
+
+		m_CubeWorldMatrix = gameobjDesc->vStartPos;
+
+		m_CubeWorldMatrix.r[3].m128_f32[1] += gameobjDesc->pColliderDesc[0].vCenter.y;
+	}
+	else
+	{
+		aabbDesc.vScale = m_pModelCom->Get_LocalModelSize();
+		//aabbDesc.vScale.x *= 1.5;
+		//aabbDesc.vScale.y *= 1.5;
+		//aabbDesc.vScale.z *= 1.5;
+
+		m_CubeWorldMatrix = gameobjDesc->vStartPos;
+
+		m_CubeWorldMatrix.r[3].m128_f32[1] += aabbDesc.vScale.y;
+	}
+
 	
 	// Occulusion Culling을 위한
 	/* For.Com_SubModel */
