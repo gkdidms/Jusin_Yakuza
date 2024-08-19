@@ -475,6 +475,8 @@ void CVIBuffer_Instance::FallSpread(_float fTimeDelta)
 				m_pOriginalAngleVelocity[i] = _float3(AngleVelocityX, AngleVelocityY, AngleVelocityZ);
 
 				m_pSpeeds[i] = m_pGameInstance->Get_Random(m_InstanceDesc->vSpeed.x, m_InstanceDesc->vSpeed.y);
+
+				pVertices[i].vRectSize.y = m_pGameInstance->Get_Random(0.f, 360.f);//회전
 			}
 		}
 	}
@@ -635,8 +637,11 @@ void CVIBuffer_Instance::Reset()
 
 		//x가 최종,y 가 current
 		_vector WorlPosition = XMLoadFloat4x4(m_pCurrentWorldMatrix).r[3];
+
 		pVertices[i].vTranslation = _float4(m_pOriginalPositions[i].x, m_pOriginalPositions[i].y, m_pOriginalPositions[i].z, 1.f);
-		XMStoreFloat4(&pVertices[i].vDirection, XMVectorSetW(XMLoadFloat4(&pVertices[i].vTranslation) - XMLoadFloat3(&m_pOriginalOffsets[i]), 0.f));
+		_vector			vDir = XMVector4Normalize(XMVectorSetW(XMLoadFloat4(&pVertices[i].vTranslation) - XMLoadFloat3(&m_pOriginalOffsets[i]), 0.f));
+		XMStoreFloat4(&pVertices[i].vDirection, vDir);
+		pVertices[i].vLifeTime.y = 0.f;
 
 		if (!m_InstanceDesc->isAttach)//항상 붙여다닐꺼?
 		{
@@ -644,8 +649,25 @@ void CVIBuffer_Instance::Reset()
 			pVertices[i].vTranslation.y += XMVectorGetY(WorlPosition);
 			pVertices[i].vTranslation.z += XMVectorGetZ(WorlPosition);
 		}
-		pVertices[i].vLifeTime.y = 0.f;
-		pVertices[i].vRectSize.x = 0.f;	//크기
+
+		_float StartRotX = XMConvertToRadians(m_pGameInstance->Get_Random(m_InstanceDesc->LowStartRot.x, m_InstanceDesc->HighStartRot.x));
+		_float StartRotY = XMConvertToRadians(m_pGameInstance->Get_Random(m_InstanceDesc->LowStartRot.y, m_InstanceDesc->HighStartRot.y));
+		_float StartRotZ = XMConvertToRadians(m_pGameInstance->Get_Random(m_InstanceDesc->LowStartRot.z, m_InstanceDesc->HighStartRot.z));
+
+		_matrix StartRot = XMMatrixRotationX(StartRotX) * XMMatrixRotationY(StartRotY) * XMMatrixRotationZ(StartRotZ);
+
+		XMStoreFloat4(&pVertices[i].vRight, XMVector4Normalize(StartRot.r[0]));
+		XMStoreFloat4(&pVertices[i].vUp, XMVector4Normalize(StartRot.r[1]));
+		XMStoreFloat4(&pVertices[i].vLook, XMVector4Normalize(StartRot.r[2]));
+
+		_float AngleVelocityX = XMConvertToRadians(m_pGameInstance->Get_Random(m_InstanceDesc->LowAngleVelocity.x, m_InstanceDesc->HighAngleVelocity.x));
+		_float AngleVelocityY = XMConvertToRadians(m_pGameInstance->Get_Random(m_InstanceDesc->LowAngleVelocity.y, m_InstanceDesc->HighAngleVelocity.y));
+		_float AngleVelocityZ = XMConvertToRadians(m_pGameInstance->Get_Random(m_InstanceDesc->LowAngleVelocity.z, m_InstanceDesc->HighAngleVelocity.z));
+
+		m_pOriginalAngleVelocity[i] = _float3(AngleVelocityX, AngleVelocityY, AngleVelocityZ);
+
+		m_pSpeeds[i] = m_pGameInstance->Get_Random(m_InstanceDesc->vSpeed.x, m_InstanceDesc->vSpeed.y);
+
 		pVertices[i].vRectSize.y = m_pGameInstance->Get_Random(0.f, 360.f);//회전
 	}
 	m_isReset = true;

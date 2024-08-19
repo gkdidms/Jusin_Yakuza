@@ -633,6 +633,7 @@ void CMonster::BloodEffect_Event()
 				_uint iBoneIndex = pEvent.iBoneIndex;
 				_matrix BoneMatrix = XMLoadFloat4x4(m_pModelCom->Get_BoneCombinedTransformationMatrix_AtIndex(iBoneIndex));
 				XMStoreFloat4x4(&worldMat, (BoneMatrix * m_pTransformCom->Get_WorldMatrix()));
+				
 				EffectDesc.pWorldMatrix = &worldMat;
 
 				if (pEvent.isLoop)
@@ -641,6 +642,7 @@ void CMonster::BloodEffect_Event()
 					{
 						// 해당하는 이펙트를 켜는 함수
 						m_pBloodEffects.find(pEvent.strBonelName)->second->On();
+
 					}
 					else
 					{

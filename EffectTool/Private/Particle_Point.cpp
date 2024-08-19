@@ -48,8 +48,11 @@ HRESULT CParticle_Point::Initialize(void* pArg)
             m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(m_pWorldMatrix));
         }
     }
-
+#ifdef _CLIENT
+    m_BufferInstance.WorldMatrix = m_pWorldMatrix;
+#else
     m_BufferInstance.WorldMatrix = m_pTransformCom->Get_WorldFloat4x4();
+#endif  
 
     if (FAILED(Add_Components()))
         return E_FAIL;
@@ -73,7 +76,6 @@ void CParticle_Point::Tick(const _float& fTimeDelta)
 
 #ifdef _CLIENT
 
-    if (m_BufferInstance.isAttach)
         m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(m_pWorldMatrix));
 
 #endif // _CLIENT
@@ -189,6 +191,12 @@ HRESULT CParticle_Point::Render()
 void* CParticle_Point::Get_Instance()
 {
     return &m_BufferInstance;
+}
+
+void CParticle_Point::Reset_Buffer()
+{
+
+    m_pVIBufferCom->Reset();
 }
 
 
