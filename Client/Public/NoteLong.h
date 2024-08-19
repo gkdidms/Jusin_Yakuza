@@ -25,7 +25,7 @@ public:
 
     void Set_InputAcc(_float fAcc)
     {
-        m_fInputAcc = fAcc;
+        m_fInputAcc += fAcc;
     }
 
 private:

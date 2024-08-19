@@ -26,6 +26,7 @@ public:
         _uint iIndex;
         _uint iIndex_End;
         _uint iBarIndex;
+        _float3 vPos;
     };
 
 protected:
