@@ -67,6 +67,29 @@ HRESULT CVIBuffer::Render()
 	return S_OK;
 }
 
+HRESULT CVIBuffer::Render_Compute()
+{
+	ID3D11Buffer* pVertices[] = {
+		m_pVB,
+	};
+
+	_uint pStrideVertices[] = {
+		m_iVertexStride,
+	};
+
+	_uint pStartVertices[] = {
+		0,
+	};
+
+	m_pContext->IASetVertexBuffers(0, m_iNumVertexBuffers, pVertices, pStrideVertices, pStartVertices);
+	m_pContext->IASetIndexBuffer(m_pIB, m_GIFormat, 0);
+	m_pContext->IASetPrimitiveTopology(m_Primitive_Topology);
+
+	m_pContext->DrawIndexed(m_iNumIndices, 0, 0);
+
+	return S_OK;
+}
+
 HRESULT CVIBuffer::Create_Buffer(ID3D11Buffer** pOut)
 {
 	if (FAILED(m_pDevice->CreateBuffer(&m_Buffer_Desc, &m_InitialData, pOut)))
@@ -136,6 +159,18 @@ HRESULT CVIBuffer::Ready_BoneBuffer()
 
 HRESULT CVIBuffer::Ready_AABBCubeBuffer()
 {
+	// 처리된 결과를 위한 Unordered Access View 생성
+	D3D11_BUFFER_DESC SRVbufferDesc = {};
+	SRVbufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	SRVbufferDesc.ByteWidth = sizeof(VTXCUBE_OCCULUSION) * m_iNumVertices;
+	SRVbufferDesc.BindFlags = D3D11_BIND_UNORDERED_ACCESS | D3D11_BIND_SHADER_RESOURCE;
+	SRVbufferDesc.CPUAccessFlags = 0;
+	SRVbufferDesc.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
+	SRVbufferDesc.StructureByteStride = sizeof(VTXCUBE_OCCULUSION);
+
+	if (FAILED(m_pDevice->CreateBuffer(&SRVbufferDesc, nullptr, &m_pSRVIn)))
+		return E_FAIL;
+
 	// 정점 버퍼를 위한 Shader Resource View 생성
 	D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
 	srvDesc.Format = DXGI_FORMAT_UNKNOWN; // 정점 버퍼의 형식에 따라 적절히 설정
@@ -143,20 +178,19 @@ HRESULT CVIBuffer::Ready_AABBCubeBuffer()
 	srvDesc.Buffer.FirstElement = 0;
 	srvDesc.Buffer.NumElements = m_iNumVertices;
 
-	if (FAILED(m_pDevice->CreateShaderResourceView(m_pVB, &srvDesc, &m_pVertexBufferSRV)))
+	if (FAILED(m_pDevice->CreateShaderResourceView(m_pSRVIn, &srvDesc, &m_pVertexBufferSRV)))
 		return E_FAIL;
 
 	// 처리된 결과를 위한 Unordered Access View 생성
-	D3D11_BUFFER_DESC bufferDesc = {};
-	ZeroMemory(&bufferDesc, sizeof(bufferDesc));
-	bufferDesc.Usage = D3D11_USAGE_DEFAULT;
-	bufferDesc.ByteWidth = sizeof(int) * m_iNumVertices;
-	bufferDesc.BindFlags = D3D11_BIND_UNORDERED_ACCESS | D3D11_BIND_SHADER_RESOURCE;
-	bufferDesc.CPUAccessFlags = 0;
-	bufferDesc.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
-	bufferDesc.StructureByteStride = sizeof(int);
+	D3D11_BUFFER_DESC UAVbufferDesc = {};
+	UAVbufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	UAVbufferDesc.ByteWidth = sizeof(int) * m_iNumVertices;
+	UAVbufferDesc.BindFlags = D3D11_BIND_UNORDERED_ACCESS | D3D11_BIND_SHADER_RESOURCE;
+	UAVbufferDesc.CPUAccessFlags = 0;
+	UAVbufferDesc.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
+	UAVbufferDesc.StructureByteStride = sizeof(int);
 
-	if (FAILED(m_pDevice->CreateBuffer(&bufferDesc, nullptr, &m_pUAVOut)))
+	if (FAILED(m_pDevice->CreateBuffer(&UAVbufferDesc, nullptr, &m_pUAVOut)))
 		return E_FAIL;
 
 	// Unordered Access View (UAV) 생성
@@ -171,12 +205,12 @@ HRESULT CVIBuffer::Ready_AABBCubeBuffer()
 		return E_FAIL;
 
 	D3D11_BUFFER_DESC Desc{};
-	Desc.ByteWidth = sizeof(VTXCUBE) * m_iNumVertices;
+	Desc.ByteWidth = sizeof(VTXCUBE_OCCULUSION) * m_iNumVertices;
 	Desc.Usage = D3D11_USAGE_DEFAULT;
 	Desc.BindFlags = D3D11_BIND_VERTEX_BUFFER;
 	Desc.CPUAccessFlags = 0;
 	Desc.MiscFlags = 0;
-	Desc.StructureByteStride = sizeof(VTXCUBE);
+	Desc.StructureByteStride = sizeof(VTXCUBE_OCCULUSION);
 
 	if (FAILED(m_pDevice->CreateBuffer(&Desc, nullptr, &m_pProcessedVertexBuffer)))
 		return E_FAIL;
@@ -190,6 +224,7 @@ void CVIBuffer::Free()
 	Safe_Release(m_pVB);
 	Safe_Release(m_pUAVOut);
 	Safe_Release(m_pIB);
+	Safe_Release(m_pSRVIn);
 
 	Safe_Release(m_pVertexBufferSRV);
 	Safe_Release(m_pResultBufferUAV);

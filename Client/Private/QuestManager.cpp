@@ -4,29 +4,31 @@
 #include "KillQuest.h"
 #include "MoveQuest.h"
 #include "TalkQuest.h"
+#include "KaraokeQuest.h"
+
 #include "Chapter1_0.h"
 #include "Chapter1_1.h"
 #include "Chapter2_0.h"
+#include "Chapter3_0.h"
+#include "Chapter3_1.h"
+#include "Chapter4_0.h"
 
 #include "UIManager.h"
 
 /*
 [스토리라인]
-
-1. 사체업자 애니메이션
-2. 골목으로 시작함
-3. 튜토리얼
-4. 니시키 삐삐
+1. 튜토리얼
+2. 니시키 삐삐
     1. 삐삐 캡쳐
-5. 니시키한테 가기
+3. 니시키한테 가기
     1. 니시키한테 직접 골목으로 걸어다니면서 넣는다.
         1. 큰길안됨.
     2. 니시키한테 쿠제가 화가 낫다는 말
-6. 가라오케로 감
-7. 사체업자
-8. 길거리
-9. 총격전
-10. 도지마조
+4. 가라오케로 감
+5. 사체업자
+6. 길거리
+7. 총격전
+8. 도지마조
 */
 
 IMPLEMENT_SINGLETON(CQuestManager)
@@ -84,6 +86,7 @@ HRESULT CQuestManager::Ready_Quest()
     _uint iQuestIndex = 0;
     _uint iNextQuestIndex = 1;
 
+    //튜토리얼 
     vector<QUEST_INFO> Chapter1;
     Chapter1 = {
         QUEST_INFO(
@@ -111,18 +114,95 @@ HRESULT CQuestManager::Ready_Quest()
     };
     m_QuestInfo.emplace(CHAPTER_1, Chapter1);
 
+    //니시키야마와 걷기
     vector<QUEST_INFO> Chapter2;
     Chapter2 = {
         QUEST_INFO(
             QUEST_MAIN,
+            2,
+
+            iQuestIndex++,
+            iNextQuestIndex++
+        ),
+        QUEST_INFO(
+            QUEST_MOVE,
             0,
+
+            iQuestIndex++,
+            iNextQuestIndex++,
+            -1,
+            80001
+        )
+    };
+    m_QuestInfo.emplace(CHAPTER_2, Chapter2);
+
+    //가라오케
+    vector<QUEST_INFO> Chapter3;
+    Chapter3 = {
+        QUEST_INFO(
+            QUEST_MAIN,
+            3,
+
+            iQuestIndex++,
+            iNextQuestIndex++
+        ),
+        QUEST_INFO(
+            QUEST_KARAOKE,
+            0,
+
+            iQuestIndex++,
+            iNextQuestIndex++
+        ),
+        QUEST_INFO(
+            QUEST_MAIN,
+            4,
 
             iQuestIndex++,
             iNextQuestIndex++
         )
     };
-    m_QuestInfo.emplace(CHAPTER_2, Chapter2);
+    m_QuestInfo.emplace(CHAPTER_3, Chapter3);
 
+    //길거리
+    vector<QUEST_INFO> Chapter4;
+    Chapter4 = {
+        QUEST_INFO(
+            QUEST_MAIN,
+            5,
+
+            iQuestIndex++,
+            iNextQuestIndex++
+        ),
+        QUEST_INFO(
+            QUEST_TALK,
+            0,
+
+            iQuestIndex++,
+            iNextQuestIndex++
+        ),
+        QUEST_INFO(
+            QUEST_MAIN,
+            6,
+
+            iQuestIndex++,
+            iNextQuestIndex++
+        ),
+    };
+    m_QuestInfo.emplace(CHAPTER_4, Chapter4);
+
+    //사체업자
+    vector<QUEST_INFO> Chapter5;
+    Chapter4 = {
+        QUEST_INFO(
+            QUEST_KILL,
+            0,
+
+            iQuestIndex++,
+            iNextQuestIndex++,
+            4001 //iTargetIndex
+        )
+    };
+    m_QuestInfo.emplace(CHAPTER_5, Chapter5);
     
     return S_OK;
 }
@@ -146,6 +226,8 @@ _bool CQuestManager::Execute()
             Add_MoveQuest(Info.iQuestIndex, Info.iNextQuestIndex, Info.iTriggerIndex, Info.iScriptIndex);
         else if (Info.iType == QUEST_TALK)
             Add_TalkQuest(Info.iQuestIndex, Info.iNextQuestIndex, Info.iObjectIndex, Info.iScriptIndex);
+        else if (Info.iType == QUEST_KARAOKE)
+            Add_KaraokeQuest(Info.iQuestIndex, Info.iNextQuestIndex, Info.iObjectIndex, Info.iScriptIndex);
         else
             return false;
 
@@ -251,6 +333,48 @@ HRESULT CQuestManager::Add_MainQuest(_int iQuestIndex, _int iNextQuestIndex, _in
 
         m_pCurrentQuest = pMainQuest;
     }
+    else if (iQuestIndex == 5)
+    {
+        CChapter3_0::MAIN_QUEST_DESC Desc{};
+        Desc.iQuestIndex = iQuestIndex;
+        Desc.iNextQuestIndex = iNextQuestIndex;
+        Desc.iScriptIndex = iScriptIndex;
+
+        CChapter3_0* pMainQuest = CChapter3_0::Create(&Desc);
+        if (nullptr == pMainQuest)
+            return E_FAIL;
+
+        m_pCurrentQuest = pMainQuest;
+    }
+    else if (iQuestIndex == 7)
+    {
+        CChapter3_1::MAIN_QUEST_DESC Desc{};
+        Desc.iQuestIndex = iQuestIndex;
+        Desc.iNextQuestIndex = iNextQuestIndex;
+        Desc.iScriptIndex = iScriptIndex;
+
+        CChapter3_1* pMainQuest = CChapter3_1::Create(&Desc);
+        if (nullptr == pMainQuest)
+            return E_FAIL;
+
+        m_pCurrentQuest = pMainQuest;
+    }
+
+    return S_OK;
+}
+
+HRESULT CQuestManager::Add_KaraokeQuest(_int iQuestIndex, _int iNextQuestIndex, _int iObjectIndex, _int iScriptIndex)
+{
+    CKaraokeQuest::KARAOKE_QUEST_DESC Desc{};
+    Desc.iType = QUEST_TALK;
+    Desc.iQuestIndex = iQuestIndex;
+    Desc.iNextQuestIndex = iNextQuestIndex;
+
+    CKaraokeQuest* pKaraoKeQuest = CKaraokeQuest::Create(&Desc);
+    if (nullptr == pKaraoKeQuest)
+        return E_FAIL;
+
+    m_pCurrentQuest = pKaraoKeQuest;
 
     return S_OK;
 }

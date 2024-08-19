@@ -14,6 +14,7 @@ public:
     virtual HRESULT Initialize_Prototype() override;
     virtual HRESULT Initialize(void* pArg) override;
     virtual HRESULT Render();
+    virtual HRESULT Render_Compute();
 
 public:
     HRESULT Create_Buffer(ID3D11Buffer** pOut);
@@ -28,6 +29,7 @@ protected:
     ID3D11Buffer* m_pProcessedVertexBuffer = { nullptr };
 
     ID3D11Buffer* m_pVB;
+    ID3D11Buffer* m_pSRVIn;
     ID3D11Buffer* m_pUAVOut;
     ID3D11Buffer* m_pIB;
 
