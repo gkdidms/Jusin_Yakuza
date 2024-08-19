@@ -22,6 +22,7 @@
 #include "UIFightScore.h"
 #include "UIStoreImage.h"
 #include "UIQTE.h"
+#include "UIFade.h"
 
 #include "UIKaraoke_Select.h"
 #include "UIKaraoke_Play.h"
@@ -245,6 +246,10 @@ HRESULT CUIManager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 	pScene = CUIQTE::Create(m_pDevice, m_pContext, &Desc);
 	m_AllScene.emplace(make_pair(TEXT("QTE"), pScene));
 
+	Desc.isLoading = true;
+	Desc.strSceneName = TEXT("Fade");
+	pScene = CUIFade::Create(m_pDevice, m_pContext, &Desc);
+	m_AllScene.emplace(make_pair(TEXT("Fade"), pScene));
 
 
 	return S_OK;
@@ -394,6 +399,22 @@ HRESULT CUIManager::Late_Tick(const _float& fTimeDelta)
 }
 
 
+
+void CUIManager::Fade_In()
+{
+	CUIScene* pUIScene = Find_Scene(TEXT("Fade"));
+
+	m_PlayScene.push_back(pUIScene);
+	dynamic_cast<CUIFade*>(m_PlayScene.back())->Fade_In();
+}
+
+void CUIManager::Fade_Out()
+{
+	CUIScene* pUIScene = Find_Scene(TEXT("Fade"));
+
+	m_PlayScene.push_back(pUIScene);
+	dynamic_cast<CUIFade*>(m_PlayScene.back())->Fade_Out();
+}
 
 CUIScene* CUIManager::Find_Scene(wstring strSceneName)
 {

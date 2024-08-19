@@ -1299,6 +1299,10 @@ void CImgui_Manager::Window_Binary_Group()
                  m_EndUV = dynamic_cast<CUI_Texture*>(Objects[n])->Get_EndUV();
                  m_UpPoint = dynamic_cast<CUI_Texture*>(Objects[n])->Get_UpPoint();
                  m_DownPoint = dynamic_cast<CUI_Texture*>(Objects[n])->Get_DownPoint();
+                 if (9 == dynamic_cast<CUI_Texture*>(Objects[n])->Get_ShaderPass())
+                 {
+                     m_isCircle = true;
+                 }
 
 
                  if (CObject_Manager::BTN == Objects[n]->Get_TypeIndex())
@@ -1414,7 +1418,11 @@ void CImgui_Manager::Window_Binary_Group()
             }
             else if (isAnim && !isColor && !isScreen)
             {
-                dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Set_ShaderPass(4);
+                if(true == m_isCircle)
+                    dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Set_ShaderPass(9);
+                else
+                    dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Set_ShaderPass(4);
+
             }
             else if (!isAnim && isColor && !isScreen)
             {
@@ -1447,6 +1455,16 @@ void CImgui_Manager::Window_Binary_Group()
                 if (ImGui::Checkbox("isReverse", &isReverse))
                     dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Set_isReverse(isReverse);
 
+                ImGui::SameLine();
+                if (9 == dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Get_ShaderPass())
+                    m_isCircle = true;
+                else
+                    m_isCircle = false;
+
+                if (ImGui::Checkbox("isCircle", &m_isCircle))
+                    dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Set_ShaderPass(9);
+
+
                 _float2 fAnimTime = dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Get_AnimTime();
                 if (ImGui::DragFloat2("AnimTime", (float*)&fAnimTime, 0.001f, 0.0f, 5.f))
                     dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Set_AnimTime(fAnimTime);
@@ -1463,6 +1481,9 @@ void CImgui_Manager::Window_Binary_Group()
                 _float2 fControlAlpha = dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Get_ControlAlpha();
                 if (ImGui::DragFloat2("ControlAlpha", (float*)&fControlAlpha, 0.001f, 0.0f, 1.0f))
                     dynamic_cast<CUI_Texture*>(Objects[m_iBinaryGroupObjectIndex])->Set_ControlAlpha(fControlAlpha);
+
+
+
             }
 
             if(isColor)

@@ -34,6 +34,12 @@ HRESULT CUIFightScore::Show_Scene()
 		iter->Set_isPlay(false);
 	}
 
+	for (auto& iter : m_Bonus)
+	{
+		iter->Close_UI();
+		iter->Set_isPlay(false);
+	}
+
 	m_pAddMoney->Close_UI();
 	m_pAddMoney->Set_isPlay(false);
 
@@ -95,6 +101,13 @@ HRESULT CUIFightScore::Tick(const _float& fTimeDelta)
 		}
 		m_pAddMoney->Show_UI();
 		m_pAddMoney->Set_isPlay(true);
+
+		for (auto& iter : m_Bonus)
+		{
+			iter->Set_isPlay(true);
+			iter->Show_UI();
+		}
+
 	}
 
 	if (0 != m_iAddMoney)
@@ -119,10 +132,17 @@ HRESULT CUIFightScore::Tick(const _float& fTimeDelta)
 			m_isEnd = true;
 			for (auto& iter : m_EventUI)
 				iter->Close_UI();
+			for (auto& iter : m_Bonus)
+				iter->Close_UI();
 
 			m_pAddMoney->Close_UI();
 		}
 	}
+
+
+
+	for (auto& iter : m_Bonus)
+		iter->Tick(fTimeDelta);
 
 	for (auto& iter : m_EventUI)
 		iter->Tick(fTimeDelta);
@@ -138,6 +158,9 @@ HRESULT CUIFightScore::Late_Tick(const _float& fTimeDelta)
 {
 	if (FAILED(__super::Late_Tick(fTimeDelta)))
 		return E_FAIL;
+
+	for (auto& iter : m_Bonus)
+		iter->Late_Tick(fTimeDelta);
 
 	for (auto& iter : m_EventUI)
 		iter->Late_Tick(fTimeDelta);
