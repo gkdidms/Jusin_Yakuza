@@ -603,12 +603,20 @@ void CUIKaraoke_Play::Invisible_Notes(_uint iLyricsIndex)
         }
         case 1:
         {
-
+            if (lower_bound_iter->second.isVisible)
+            {
+                lower_bound_iter->second.isVisible = false;
+            }
+            Verse_Off_LongNote(lower_bound_iter->second, iLyricsIndex);
             break;
         }
         case 2:
         {
-
+            if (lower_bound_iter->second.isVisible)
+            {
+                lower_bound_iter->second.isVisible = false;
+            }
+            Verse_Off_BurstNote(lower_bound_iter->second, iLyricsIndex);
             break;
         }
         default:
@@ -823,6 +831,47 @@ void CUIKaraoke_Play::Verse_On_LongNote(LYRICS_NOTE_DESC& Desc, _uint iLyricsInd
 
 void CUIKaraoke_Play::Verse_Off_LongNote(LYRICS_NOTE_DESC& Desc, _uint iLyricsIndex)
 {
+    if (0 > iLyricsIndex) return;
+
+    _float fVerseStartTime = m_LyricsTime[iLyricsIndex].fTime;
+    _float fVerseEndTime = m_LyricsTime[iLyricsIndex].fTime + m_LyricsTime[iLyricsIndex].fDuration;
+
+    if (fVerseStartTime <= Desc.pNote->Get_StartTime() && fVerseEndTime > Desc.pNote->Get_StartTime())
+    {
+        switch (Desc.pNote->Get_ButtonType())
+        {
+        case 0:     //Up
+        {
+            m_pPlayUI[UP][Desc.iIndex]->Show_Off_All();
+            m_pPlayUI[UP][Desc.iIndex_End]->Show_Off_All();
+            m_pPlayUI[HOLD][Desc.iBarIndex]->Show_Off_All();
+            break;
+        }
+        case 1:     //Down
+        {
+            m_pPlayUI[DOWN][Desc.iIndex]->Show_Off_All();
+            m_pPlayUI[DOWN][Desc.iIndex_End]->Show_Off_All();
+            m_pPlayUI[HOLD][Desc.iBarIndex]->Show_Off_All();
+            break;
+        }
+        case 2:     //Left
+        {
+            m_pPlayUI[LEFT][Desc.iIndex]->Show_Off_All();
+            m_pPlayUI[LEFT][Desc.iIndex_End]->Show_Off_All();
+            m_pPlayUI[HOLD][Desc.iBarIndex]->Show_Off_All();
+            break;
+        }
+        case 3:     //Right
+        {
+            m_pPlayUI[RIGHT][Desc.iIndex]->Show_Off_All();
+            m_pPlayUI[RIGHT][Desc.iIndex_End]->Show_Off_All();
+            m_pPlayUI[HOLD][Desc.iBarIndex]->Show_Off_All();
+            break;
+        }
+        default:
+            break;
+        }
+    }
 }
 
 void CUIKaraoke_Play::Verse_On_BurstNote(LYRICS_NOTE_DESC& Desc, _uint iLyricsIndex)
@@ -946,6 +995,47 @@ void CUIKaraoke_Play::Verse_On_BurstNote(LYRICS_NOTE_DESC& Desc, _uint iLyricsIn
 
 void CUIKaraoke_Play::Verse_Off_BurstNote(LYRICS_NOTE_DESC& Desc, _uint iLyricsIndex)
 {
+    if (0 > iLyricsIndex) return;
+
+    _float fVerseStartTime = m_LyricsTime[iLyricsIndex].fTime;
+    _float fVerseEndTime = m_LyricsTime[iLyricsIndex].fTime + m_LyricsTime[iLyricsIndex].fDuration;
+
+    if (fVerseStartTime <= Desc.pNote->Get_StartTime() && fVerseEndTime > Desc.pNote->Get_StartTime())
+    {
+        switch (Desc.pNote->Get_ButtonType())
+        {
+        case 0:     //Up
+        {
+            m_pPlayUI[UP][Desc.iIndex]->Show_Off_All();
+            m_pPlayUI[UP][Desc.iIndex_End]->Show_Off_All();
+            m_pPlayUI[ROLL][Desc.iBarIndex]->Show_Off_All();
+            break;
+        }
+        case 1:     //Down
+        {
+            m_pPlayUI[DOWN][Desc.iIndex]->Show_Off_All();
+            m_pPlayUI[DOWN][Desc.iIndex_End]->Show_Off_All();
+            m_pPlayUI[ROLL][Desc.iBarIndex]->Show_Off_All();
+            break;
+        }
+        case 2:     //Left
+        {
+            m_pPlayUI[LEFT][Desc.iIndex]->Show_Off_All();
+            m_pPlayUI[LEFT][Desc.iIndex_End]->Show_Off_All();
+            m_pPlayUI[ROLL][Desc.iBarIndex]->Show_Off_All();
+            break;
+        }
+        case 3:     //Right
+        {
+            m_pPlayUI[RIGHT][Desc.iIndex]->Show_Off_All();
+            m_pPlayUI[RIGHT][Desc.iIndex_End]->Show_Off_All();
+            m_pPlayUI[ROLL][Desc.iBarIndex]->Show_Off_All();
+            break;
+        }
+        default:
+            break;
+        }
+    }
 }
 
 _uint CUIKaraoke_Play::Compute_Num(_uint iCount)
