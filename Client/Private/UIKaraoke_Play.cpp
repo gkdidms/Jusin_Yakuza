@@ -131,7 +131,6 @@ HRESULT CUIKaraoke_Play::Late_Tick(const _float& fTimeDelta)
     //    iter->Late_Tick(fTimeDelta);
 
     Render_Cutsom_Sequence(fTimeDelta);
-    m_Lyrics->Late_Tick(fTimeDelta);
 
     if (!m_isAnimFin)
         Check_AimFin();
@@ -361,7 +360,22 @@ void CUIKaraoke_Play::Show_Grade(CNoteBase* pNote)
     m_pPlayUI[GRADE][m_Pivots[GRADE]]->Show_On(iShowIndex);
     m_pPlayUI[GRADE][m_Pivots[GRADE]]->Show_UI();
 
+
     _vector vPosition = XMVectorSetW(XMLoadFloat3(&Desc.vPos), 1.f);
+
+    if (iShowIndex == 0)
+    {
+        m_pPlayUI[GREATEFFECT][m_Pivots[GREATEFFECT]]->Show_On_All();
+        m_pPlayUI[GREATEFFECT][m_Pivots[GREATEFFECT]]->Close_UI();
+        m_pPlayUI[GREATEFFECT][m_Pivots[GREATEFFECT]]->Get_TransformCom()->Set_State(CTransform::STATE_POSITION, vPosition);
+    }
+    else if (iShowIndex == 1)
+    {
+        m_pPlayUI[GOODEFFECT][m_Pivots[GOODEFFECT]]->Show_On_All();
+        m_pPlayUI[GOODEFFECT][m_Pivots[GOODEFFECT]]->Close_UI();
+        m_pPlayUI[GOODEFFECT][m_Pivots[GOODEFFECT]]->Get_TransformCom()->Set_State(CTransform::STATE_POSITION, vPosition);
+    }
+
     vPosition.m128_f32[1] += 40.f;
     m_pPlayUI[GRADE][m_Pivots[GRADE]]->Get_TransformCom()->Set_State(CTransform::STATE_POSITION, vPosition);
 }
@@ -396,6 +410,8 @@ void CUIKaraoke_Play::Render_Cutsom_Sequence(const _float& fTimeDelta)
     RenderGroup_Mic(fTimeDelta);
 
     RenderGroup_CurrentBar(fTimeDelta);
+
+    m_Lyrics->Late_Tick(fTimeDelta);
 
     RenderGroup_GoodEffect(fTimeDelta);
     RenderGroup_GreatEffect(fTimeDelta);
@@ -610,6 +626,14 @@ void CUIKaraoke_Play::Visible_Notes(_uint iLyricsIndex)
                 {
                     m_Pivots[GRADE] = 0;
                 }
+                if (++m_Pivots[GOODEFFECT] > m_pPlayUI[GOODEFFECT].size() - 1)
+                {
+                    m_Pivots[GOODEFFECT] = 0;
+                }
+                if (++m_Pivots[GREATEFFECT] > m_pPlayUI[GREATEFFECT].size() - 1)
+                {
+                    m_Pivots[GREATEFFECT] = 0;
+                }
             }
             Verse_On_SingleNote(lower_bound_iter->second, iLyricsIndex);
 
@@ -644,6 +668,14 @@ void CUIKaraoke_Play::Visible_Notes(_uint iLyricsIndex)
                 {
                     m_Pivots[GRADE] = 0;
                 }
+                if (++m_Pivots[GOODEFFECT] > m_pPlayUI[GOODEFFECT].size() - 1)
+                {
+                    m_Pivots[GOODEFFECT] = 0;
+                }
+                if (++m_Pivots[GREATEFFECT] > m_pPlayUI[GREATEFFECT].size() - 1)
+                {
+                    m_Pivots[GREATEFFECT] = 0;
+                }
 
             }
             Verse_On_LongNote(lower_bound_iter->second, iLyricsIndex);
@@ -676,6 +708,14 @@ void CUIKaraoke_Play::Visible_Notes(_uint iLyricsIndex)
                 if (++m_Pivots[GRADE] > m_pPlayUI[GRADE].size() - 1)
                 {
                     m_Pivots[GRADE] = 0;
+                }
+                if (++m_Pivots[GOODEFFECT] > m_pPlayUI[GOODEFFECT].size() - 1)
+                {
+                    m_Pivots[GOODEFFECT] = 0;
+                }
+                if (++m_Pivots[GREATEFFECT] > m_pPlayUI[GREATEFFECT].size() - 1)
+                {
+                    m_Pivots[GREATEFFECT] = 0;
                 }
             }
 
