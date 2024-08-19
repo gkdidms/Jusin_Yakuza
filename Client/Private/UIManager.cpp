@@ -125,6 +125,13 @@ void CUIManager::Start_Title(_int iIndex)
 	pScene->Start_Title(iIndex);
 }
 
+_bool CUIManager::isTitleAnimFinished()
+{
+	CUITitle* pScene = dynamic_cast<CUITitle*>(Find_Scene(TEXT("Title")));
+
+	return pScene->Get_isAnimFinish();
+}
+
 HRESULT CUIManager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
 	m_pDevice = pDevice;

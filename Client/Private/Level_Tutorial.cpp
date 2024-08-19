@@ -87,7 +87,7 @@ HRESULT CLevel_Tutorial::Ready_Camera(const wstring& strLayerTag)
 	CameraDesc.fFovY = XMConvertToRadians(60.0f);
 	CameraDesc.fAspect = g_iWinSizeX / (_float)g_iWinSizeY;
 	CameraDesc.fNear = 0.1f;
-	CameraDesc.fFar = 3000.f;
+	CameraDesc.fFar = 300.f;
 	CameraDesc.fSpeedPecSec = 10.f;
 	CameraDesc.fRotatePecSec = XMConvertToRadians(90.f);
 	CameraDesc.pPlayerMatrix = pPlayerFloat4x4;
@@ -110,7 +110,7 @@ HRESULT CLevel_Tutorial::Ready_Camera(const wstring& strLayerTag)
 	PlayerCameraDesc.fFovY = XMConvertToRadians(60.0f);
 	PlayerCameraDesc.fAspect = g_iWinSizeX / (_float)g_iWinSizeY;
 	PlayerCameraDesc.fNear = 0.1f;
-	PlayerCameraDesc.fFar = 3000.f;
+	PlayerCameraDesc.fFar = 300.f;
 	PlayerCameraDesc.fSpeedPecSec = 20.f;
 	PlayerCameraDesc.fRotatePecSec = XMConvertToRadians(90.f);
 	PlayerCameraDesc.pPlayerMatrix = pPlayerFloat4x4;
