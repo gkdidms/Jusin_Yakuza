@@ -56,6 +56,8 @@ public:
         return m_isSongEnd;
     }
 
+    void Show_Grade(CNoteBase* pNote);
+
 private:
     void Ready_LyricsTime();
     void Ready_LyricsSocket();
@@ -127,6 +129,8 @@ private:
     vector<_uint> m_Pivots;
 
     _bool               m_isSongEnd = { false };
+
+    _uint test = 0;
 
 public:
     static CUIKaraoke_Play* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg = nullptr);

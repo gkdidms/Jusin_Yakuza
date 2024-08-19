@@ -46,12 +46,14 @@ private:
     void Setting_NoteUIs();
     void Check_NextNote();
 
-    void Store_SingleNoteScore(CNoteBase* pNote);
-    void Acc_LongNoteScore(CNoteBase* pNote);
-    void Store_LongNoteScore(CNoteBase* pNote);
-    void Store_BurstNoteScore(CNoteBase* pNote);
+    void Store_SingleNoteScore(class CNoteBase* pNote);
+    void Acc_LongNoteScore(class CNoteBase* pNote);
+    void Store_LongNoteScore(class CNoteBase* pNote);
+    void Store_BurstNoteScore(class CNoteBase* pNote);
 
-    void Store_Miss(CNoteBase* pNote);
+    void Store_Miss(class CNoteBase* pNote);
+
+    void Show_Grade_UI(class CNoteBase* pNote);
     
 public:
     _bool IsSongEnd() {

@@ -291,6 +291,31 @@ void CUIKaraoke_Play::Ready_LyricsSocket()
     m_LyricsSocket.push_back(_float3(-288.371887, -220.680878, 0.f));
 }
 
+void CUIKaraoke_Play::Show_Grade(CNoteBase* pNote)
+{
+    CNoteBase::NOTE_SCORE eScore = pNote->Get_Score();
+    if (eScore == CNoteBase::NONE) return;
+
+    _uint iShowIndex = 0;
+
+    switch (eScore)
+    {
+    case Client::CNoteBase::GREAT:
+        iShowIndex = 0;
+        break;
+    case Client::CNoteBase::GOOD:
+        iShowIndex = 1;
+        break;
+    case Client::CNoteBase::BAD:
+        iShowIndex = 2;
+        break;
+    case Client::CNoteBase::MISS:
+        iShowIndex = 3;
+        break;
+    }
+    m_pPlayUI[GRADE][m_Pivots[GRADE]]->Show_On(iShowIndex);
+}
+
 void CUIKaraoke_Play::Update_CurrentLyricsIndex()
 {
     for (size_t i = 0; i < m_LyricsTime.size(); i++)
@@ -530,6 +555,11 @@ void CUIKaraoke_Play::Visible_Notes(_uint iLyricsIndex)
                     m_Pivots[Trans_ButtonType_To_UI(pNote->Get_ButtonType())] = 0;
                 }
                 lower_bound_iter->second.iIndex = m_Pivots[Trans_ButtonType_To_UI(pNote->Get_ButtonType())];
+
+                if (++m_Pivots[GRADE] > m_pPlayUI[GRADE].size() - 1)
+                {
+                    m_Pivots[GRADE] = 0;
+                }
             }
             Verse_On_SingleNote(lower_bound_iter->second, iLyricsIndex);
 
@@ -558,6 +588,13 @@ void CUIKaraoke_Play::Visible_Notes(_uint iLyricsIndex)
                     m_Pivots[HOLD] = 0;
                 }
                 lower_bound_iter->second.iBarIndex = m_Pivots[HOLD];
+
+                // 노트 인덱스 증가 시 점수 UI 인덱스도 증가시켜줘야함
+                if (++m_Pivots[GRADE] > m_pPlayUI[GRADE].size() - 1)
+                {
+                    m_Pivots[GRADE] = 0;
+                }
+
             }
             Verse_On_LongNote(lower_bound_iter->second, iLyricsIndex);
             break;
@@ -585,6 +622,11 @@ void CUIKaraoke_Play::Visible_Notes(_uint iLyricsIndex)
                     m_Pivots[ROLL] = 0;
                 }
                 lower_bound_iter->second.iBarIndex = m_Pivots[ROLL];
+
+                if (++m_Pivots[GRADE] > m_pPlayUI[GRADE].size() - 1)
+                {
+                    m_Pivots[GRADE] = 0;
+                }
             }
 
             Verse_On_BurstNote(lower_bound_iter->second, iLyricsIndex);
@@ -1099,15 +1141,15 @@ _uint CUIKaraoke_Play::Compute_Num(_uint iCount)
     case BLUE:
         return 2;
     case MIC:
-        return 20;
+        return 30;
     case CURRENTBAR:
         return 0;
     case GOODEFFECT:
-        return 20;
+        return 30;
     case GRADE:
-        return 20;
+        return 30;
     case GREATEFFECT:
-        return 20;
+        return 30;
     case HOLD:
         return 5;
     case PRESSLINE:

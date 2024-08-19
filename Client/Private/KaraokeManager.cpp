@@ -247,18 +247,22 @@ void CKaraokeManager::Store_SingleNoteScore(CNoteBase* pNote)
 	if (pNote->Get_StartTime() - fCurSoundPos < GREAT_TIME)
 	{
 		pNote->Set_Score(CNoteBase::GREAT);
+		Show_Grade_UI(pNote);
 	}
 	else if (pNote->Get_StartTime() - fCurSoundPos < GOOD_TIME)		//Good
 	{
 		pNote->Set_Score(CNoteBase::GOOD);
+		Show_Grade_UI(pNote);
 	}
 	else if (pNote->Get_StartTime() - fCurSoundPos < MISS_TIME)		//Bad
 	{
 		pNote->Set_Score(CNoteBase::BAD);
+		Show_Grade_UI(pNote);
 	}
 	else
 	{
 		pNote->Set_Score(CNoteBase::MISS);
+		Show_Grade_UI(pNote);
 	}
 }
 
@@ -281,18 +285,22 @@ void CKaraokeManager::Store_LongNoteScore(CNoteBase* pNote)
 	if ((pLongNote->Get_InputAcc() / fDuration) >= 0.9f)
 	{
 		pLongNote->Set_Score(CNoteBase::GREAT);
+		Show_Grade_UI(pNote);
 	}
 	else if ((pLongNote->Get_InputAcc() / fDuration) >= 0.7f)
 	{
 		pLongNote->Set_Score(CNoteBase::GOOD);
+		Show_Grade_UI(pNote);
 	}
 	else if ((pLongNote->Get_InputAcc() / fDuration) >= 0.5f)
 	{
 		pLongNote->Set_Score(CNoteBase::BAD);
+		Show_Grade_UI(pNote);
 	}
 	else
 	{
 		pLongNote->Set_Score(CNoteBase::MISS);
+		Show_Grade_UI(pNote);
 	}
 }
 
@@ -308,8 +316,17 @@ void CKaraokeManager::Store_Miss(CNoteBase* pNote)
 		_float fCurSoundPos = m_pGameInstance->GetSoundPosition(TEXT("Bakamita.mp3"), SOUND_BGM);
 
 		if (fCurSoundPos - pNote->Get_StartTime() >= MISS_TIME)
+		{
 			pNote->Set_Score(CNoteBase::MISS);
+			Show_Grade_UI(pNote);
+		}
 	}
+}
+
+void CKaraokeManager::Show_Grade_UI(CNoteBase* pNote)
+{
+	CUIKaraoke_Play* pPlayScene = dynamic_cast<CUIKaraoke_Play*>(m_pUIManager->Find_Scene(TEXT("Karaoke_Play")));
+	pPlayScene->Show_Grade(pNote);
 }
 
 HRESULT CKaraokeManager::Ready_Karaoke()
