@@ -13,10 +13,10 @@ class CKaraokeManager :
 {
 private:
     const _float SCORE_TIMER = 3.f;
-    const _float GREAT_TIME = 0.1f;
-    const _float GOOD_TIME = 0.2f;
-    const _float MISS_TIME = 0.3f;
-    const _float MISS_TIME2 = 0.32f;
+    const _float GREAT_TIME = 0.08f;
+    const _float GOOD_TIME = 0.15f;
+    const _float MISS_TIME = 0.2f;
+    const _float MISS_TIME2 = 0.22f;
 
 public:
     enum MUSIC { STUPID , JUDGEMENT,MERMAID , MUSIC_END};
@@ -49,7 +49,8 @@ private:
     void Store_SingleNoteScore(class CNoteBase* pNote);
     void Acc_LongNoteScore(class CNoteBase* pNote);
     void Store_LongNoteScore(class CNoteBase* pNote);
-    void Store_BurstNoteScore(class CNoteBase* pNote);
+    void Acc_BurstNoteScore(class CNoteBase* pNote);
+    void Store_BurstNoteScore(class CNoteBase* pNote, _float fCurSoundPos);
 
     void Store_Miss(class CNoteBase* pNote);
 

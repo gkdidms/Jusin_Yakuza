@@ -193,6 +193,38 @@ void CKaraokeManager::LongNote_KeyInput(CNoteBase* pNote)
 
 void CKaraokeManager::BurstNote_KeyInput(CNoteBase* pNote)
 {
+	// 다른키를 입력했을 때에는 Miss로 빠지기 때문에, 해당하는 키인풋만 받는다.
+	switch (pNote->Get_ButtonType())
+	{
+	case 0:  //업
+		if (m_pGameInstance->GetKeyState(DIK_UP) == TAP)
+		{
+			Acc_BurstNoteScore(pNote);
+		}
+
+		break;
+	case 1:		//다운
+		if (m_pGameInstance->GetKeyState(DIK_DOWN) == TAP)
+		{
+			Acc_BurstNoteScore(pNote);
+		}
+
+		break;
+	case 2:		//레프트
+		if (m_pGameInstance->GetKeyState(DIK_LEFT) == TAP)
+		{
+			Acc_BurstNoteScore(pNote);
+		}
+
+		break;
+	case 3:		//롸이트
+		if (m_pGameInstance->GetKeyState(DIK_RIGHT) == TAP)
+		{
+			Acc_BurstNoteScore(pNote);
+		}
+
+		break;
+	}
 }
 
 void CKaraokeManager::Setting_NoteUIs()
@@ -230,8 +262,11 @@ void CKaraokeManager::Check_NextNote()
 				break;
 				// 연타노트
 			case 2:
+			{
 				BurstNote_KeyInput((*Notes)[m_iCheckNoteIndex]);
+				Store_BurstNoteScore((*Notes)[m_iCheckNoteIndex], fCurSoundPos);
 				break;
+			}
 			default:
 				break;
 			}
@@ -304,9 +339,41 @@ void CKaraokeManager::Store_LongNoteScore(CNoteBase* pNote)
 	}
 }
 
-void CKaraokeManager::Store_BurstNoteScore(CNoteBase* pNote)
+void CKaraokeManager::Acc_BurstNoteScore(CNoteBase* pNote)
 {
 	CNoteBurstHold* pBurstNote = dynamic_cast<CNoteBurstHold*>(pNote);
+
+	pBurstNote->Acc_Count();
+}
+
+void CKaraokeManager::Store_BurstNoteScore(CNoteBase* pNote, _float fCurSoundPos)
+{
+	CNoteBurstHold* pBurstNote = dynamic_cast<CNoteBurstHold*>(pNote);
+
+	if (fCurSoundPos > pBurstNote->Get_EndTime())
+	{
+		// 누적된 값이 90퍼센트 이상이라면 Great
+		if (pBurstNote->Get_InputCount() >= pBurstNote->Get_GreatCount())
+		{
+			pBurstNote->Set_Score(CNoteBase::GREAT);
+			Show_Grade_UI(pNote);
+		}
+		else if (pBurstNote->Get_InputCount() - 1 >= pBurstNote->Get_GreatCount())
+		{
+			pBurstNote->Set_Score(CNoteBase::GOOD);
+			Show_Grade_UI(pNote);
+		}
+		else if (pBurstNote->Get_InputCount() - 2 >= pBurstNote->Get_GreatCount())
+		{
+			pBurstNote->Set_Score(CNoteBase::BAD);
+			Show_Grade_UI(pNote);
+		}
+		else
+		{
+			pBurstNote->Set_Score(CNoteBase::MISS);
+			Show_Grade_UI(pNote);
+		}
+	}
 }
 
 void CKaraokeManager::Store_Miss(CNoteBase* pNote)

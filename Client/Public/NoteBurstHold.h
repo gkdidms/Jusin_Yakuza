@@ -19,13 +19,21 @@ public:
         return m_fEndTime;
     }
 
-    _uint Get_GreatCount(){
-        return m_iGreatCount;
+    _uint Get_GreatCount() {
+        return 6;
+    }
+
+    _uint Get_InputCount(){
+        return m_iInputCount;
+    }
+
+    void Acc_Count() {
+        m_iInputCount++;
     }
 
 private:
     _float m_fEndTime = { 0.f };
-    _uint m_iGreatCount = { 6 };
+    _uint m_iInputCount = { 0 };            //6¹øÄ¡¸é
 
 public:
     static CNoteBurstHold* Create(_uint iNoteType, _uint iButtonType, _float fStartTime, _float fEndTime);
