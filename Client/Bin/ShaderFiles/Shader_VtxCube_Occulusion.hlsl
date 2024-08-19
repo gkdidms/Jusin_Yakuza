@@ -62,6 +62,23 @@ PS_OUT PS_DEPTH(PS_IN In)
 
 
 
+struct PS_OUT_COLOR
+{
+    vector vColor : SV_TARGET0;
+};
+
+
+PS_OUT_COLOR PS_COLOR(PS_IN In)
+{
+    PS_OUT_COLOR Out = (PS_OUT_COLOR) 0;
+    
+    Out.vColor = float4(1, 1, 1, 1);
+    
+    return Out;
+}
+
+
+
 technique11 DefaultTechnique
 {
 
@@ -76,6 +93,19 @@ technique11 DefaultTechnique
         HullShader = NULL;
         DomainShader = NULL;
         PixelShader = compile ps_5_0 PS_DEPTH();
+    }
+
+    pass colorpass
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN_Depth();
+        GeometryShader = NULL;
+        HullShader = NULL;
+        DomainShader = NULL;
+        PixelShader = compile ps_5_0 PS_COLOR();
     }
 
 }
