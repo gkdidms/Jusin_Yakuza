@@ -192,13 +192,13 @@ void CMap::Late_Tick(const _float& fTimeDelta)
 
 	}*/
 	
-	if (Check_Render())
+	if (true == m_bRender)
 	{
 		Add_Renderer(fTimeDelta);
 		m_pGameInstance->Add_Renderer(CRenderer::RENDER_SHADOWOBJ, this);
 	}
 
-	m_pOcclusionQuery->Release();
+	//m_pOcclusionQuery->Release();
 	//m_pGameInstance->Add_Renderer(CRenderer::RENDER_OCCULUSION, this);
 }
 
@@ -1307,9 +1307,9 @@ HRESULT CMap::Add_Components(void* pArg)
 	// Occulusion Culling을 위한 scale 파악
 	CVIBuffer_AABBCube::AABBCUBE_DESC		aabbDesc;
 	aabbDesc.vScale = m_pModelCom->Get_LocalModelSize();
-	//aabbDesc.vScale.x *= 0.5;
-	//aabbDesc.vScale.y *= 0.5;
-	//aabbDesc.vScale.z *= 0.5;
+	aabbDesc.vScale.x *= 1.5;
+	aabbDesc.vScale.y *= 1.5;
+	aabbDesc.vScale.z *= 1.5;
 	
 	// Occulusion Culling을 위한
 	/* For.Com_SubModel */
@@ -1420,6 +1420,7 @@ _bool CMap::Check_Render()
 	}
 
 	return occlusionResult > 0;
+
 }
 
 CMap* CMap::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
