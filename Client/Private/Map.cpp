@@ -1382,13 +1382,13 @@ HRESULT CMap::Add_Components(void* pArg)
 	{
 
 		m_CubeWorldMatrix = XMMatrixIdentity();
-		m_CubeWorldMatrix.r[3].m128_f32[0] = gameobjDesc->vStartPos.r[3].m128_f32[0];
+		m_CubeWorldMatrix.r[3].m128_f32[0] = gameobjDesc->vStartPos.r[3].m128_f32[0] + gameobjDesc->pColliderDesc[0].vCenter.x;
 		m_CubeWorldMatrix.r[3].m128_f32[1] = gameobjDesc->vStartPos.r[3].m128_f32[1] + gameobjDesc->pColliderDesc[0].vCenter.y;
-		m_CubeWorldMatrix.r[3].m128_f32[2] = gameobjDesc->vStartPos.r[3].m128_f32[2];
+		m_CubeWorldMatrix.r[3].m128_f32[2] = gameobjDesc->vStartPos.r[3].m128_f32[2] + gameobjDesc->pColliderDesc[0].vCenter.z;
 
-		m_CubeWorldMatrix.r[0].m128_f32[0] = gameobjDesc->pColliderDesc[0].vExtents.x;
-		m_CubeWorldMatrix.r[1].m128_f32[1] = gameobjDesc->pColliderDesc[0].vExtents.y;
-		m_CubeWorldMatrix.r[2].m128_f32[2] = gameobjDesc->pColliderDesc[0].vExtents.z;
+		m_CubeWorldMatrix.r[0].m128_f32[0] = gameobjDesc->pColliderDesc[0].vExtents.x * 2;
+		m_CubeWorldMatrix.r[1].m128_f32[1] = gameobjDesc->pColliderDesc[0].vExtents.y * 2;
+		m_CubeWorldMatrix.r[2].m128_f32[2] = gameobjDesc->pColliderDesc[0].vExtents.z * 2;
 
 		
 	}
@@ -1402,16 +1402,16 @@ HRESULT CMap::Add_Components(void* pArg)
 		m_CubeWorldMatrix.r[3].m128_f32[1] += aabbDesc.vScale.y;*/
 	}
 
-	_float3 vScale = m_pModelCom->Get_LocalModelSize();
+	//_float3 vScale = m_pModelCom->Get_LocalModelSize();
 
-	m_CubeWorldMatrix = XMMatrixIdentity();
-	m_CubeWorldMatrix.r[3].m128_f32[0] = gameobjDesc->vStartPos.r[3].m128_f32[0];
-	m_CubeWorldMatrix.r[3].m128_f32[1] = gameobjDesc->vStartPos.r[3].m128_f32[1] + vScale.y * 0.5;
-	m_CubeWorldMatrix.r[3].m128_f32[2] = gameobjDesc->vStartPos.r[3].m128_f32[2];
+	//m_CubeWorldMatrix = XMMatrixIdentity();
+	//m_CubeWorldMatrix.r[3].m128_f32[0] = gameobjDesc->vStartPos.r[3].m128_f32[0];
+	//m_CubeWorldMatrix.r[3].m128_f32[1] = gameobjDesc->vStartPos.r[3].m128_f32[1] + vScale.y * 0.5;
+	//m_CubeWorldMatrix.r[3].m128_f32[2] = gameobjDesc->vStartPos.r[3].m128_f32[2];
 
-	m_CubeWorldMatrix.r[0].m128_f32[0] = vScale.x;
-	m_CubeWorldMatrix.r[1].m128_f32[1] = vScale.y;
-	m_CubeWorldMatrix.r[2].m128_f32[2] = vScale.z;
+	//m_CubeWorldMatrix.r[0].m128_f32[0] = vScale.x * 0.8;
+	//m_CubeWorldMatrix.r[1].m128_f32[1] = vScale.y;
+	//m_CubeWorldMatrix.r[2].m128_f32[2] = vScale.z * 0.8;
 
 	
 	// Occulusion Culling¿ª ¿ß«—

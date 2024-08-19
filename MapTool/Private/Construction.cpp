@@ -495,6 +495,10 @@ void CConstruction::Add_Collider(OBJCOLLIDER_DESC tCollider)
 	m_vColliderDesc.push_back(tCollider);
 }
 
+void CConstruction::Rewrite_Collider(OBJCOLLIDER_DESC tCollider)
+{
+}
+
 void CConstruction::Delete_Collider(int iIndex)
 {
 	if (1 == m_vColliders.size())
