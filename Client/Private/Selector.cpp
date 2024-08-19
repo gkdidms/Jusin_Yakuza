@@ -12,6 +12,10 @@ CBTNode::NODE_STATE CSelector::Execute()
     {
         CBTNode::NODE_STATE eState = pChildren->Execute();
 
+        // Success와 Running일때 바로나옴
+        // coll 돌렸는데 coll->success면? : root에서 succes나 run이면 return돼서 walk라는게 실행이 안됨
+        // Selector : 자식노드가 하나라도 success가 나오면 실행안시킴
+        // Sequence : and 연산
         if (eState == CBTNode::SUCCESS || eState == CBTNode::RUNNING)
             return eState;
     }
