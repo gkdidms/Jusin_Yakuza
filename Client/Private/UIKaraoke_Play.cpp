@@ -313,7 +313,57 @@ void CUIKaraoke_Play::Show_Grade(CNoteBase* pNote)
         iShowIndex = 3;
         break;
     }
+
+    auto lower_bound_iter = m_LyricsNotes.lower_bound(m_iCurLyricsIndex);
+    auto upper_bound_iter = m_LyricsNotes.upper_bound(m_iCurLyricsIndex);
+
+    if (m_LyricsNotes.end() == lower_bound_iter) return;
+
+    _float fMin = 99999.f;
+
+    LYRICS_NOTE_DESC Desc;
+
+    // 제일 가까운 노트를 구해서 그 포지션으로 셋팅하고 출력해주기
+    for (; lower_bound_iter != upper_bound_iter; ++lower_bound_iter)
+    {
+        _float fNotePos = { 0.f };
+        switch (lower_bound_iter->second.pNote->Get_Type())
+        {
+        case 0:
+        {
+            fNotePos = lower_bound_iter->second.pNote->Get_StartTime();
+            break;
+        }
+        case 1:
+        {
+            CNoteLong* pLongNote = dynamic_cast<CNoteLong*>(lower_bound_iter->second.pNote);
+
+            fNotePos = pLongNote->Get_EndTime();
+            break;
+        }
+        case 2:
+        {
+            CNoteBurstHold* pLongNote = dynamic_cast<CNoteBurstHold*>(lower_bound_iter->second.pNote);
+
+            fNotePos = pLongNote->Get_EndTime();
+            break;
+        }
+        }
+
+        _float fDistance = abs(m_fCurSoundTime - fNotePos);
+        if (fDistance < fMin)
+        {
+            fMin = fDistance;
+            Desc = lower_bound_iter->second;
+        }
+    }
+
     m_pPlayUI[GRADE][m_Pivots[GRADE]]->Show_On(iShowIndex);
+    m_pPlayUI[GRADE][m_Pivots[GRADE]]->Show_UI();
+
+    _vector vPosition = XMVectorSetW(XMLoadFloat3(&Desc.vPos), 1.f);
+    vPosition.m128_f32[1] += 40.f;
+    m_pPlayUI[GRADE][m_Pivots[GRADE]]->Get_TransformCom()->Set_State(CTransform::STATE_POSITION, vPosition);
 }
 
 void CUIKaraoke_Play::Update_CurrentLyricsIndex()
@@ -702,6 +752,7 @@ void CUIKaraoke_Play::Verse_On_SingleNote(LYRICS_NOTE_DESC& Desc, _uint iLyricsI
             m_pPlayUI[UP][Desc.iIndex]->Show_On_All();
             _float fRatio = ((Desc.pNote->Get_StartTime() - fVerseStartTime) / m_LyricsTime[iLyricsIndex].fDuration);
             m_pPlayUI[UP][Desc.iIndex]->Get_TransformCom()->Set_State(CTransform::STATE_POSITION, Compute_UIPosition(Desc, iLyricsIndex, fRatio));
+            XMStoreFloat3(&Desc.vPos, Compute_UIPosition(Desc, iLyricsIndex, fRatio));
 
             break;
         }
@@ -710,6 +761,7 @@ void CUIKaraoke_Play::Verse_On_SingleNote(LYRICS_NOTE_DESC& Desc, _uint iLyricsI
             m_pPlayUI[DOWN][Desc.iIndex]->Show_On_All();
             _float fRatio = ((Desc.pNote->Get_StartTime() - fVerseStartTime) / m_LyricsTime[iLyricsIndex].fDuration);
             m_pPlayUI[DOWN][Desc.iIndex]->Get_TransformCom()->Set_State(CTransform::STATE_POSITION, Compute_UIPosition(Desc, iLyricsIndex, fRatio));
+            XMStoreFloat3(&Desc.vPos, Compute_UIPosition(Desc, iLyricsIndex, fRatio));
 
             break;
         }
@@ -718,6 +770,7 @@ void CUIKaraoke_Play::Verse_On_SingleNote(LYRICS_NOTE_DESC& Desc, _uint iLyricsI
             m_pPlayUI[LEFT][Desc.iIndex]->Show_On_All();
             _float fRatio = ((Desc.pNote->Get_StartTime() - fVerseStartTime) / m_LyricsTime[iLyricsIndex].fDuration);
             m_pPlayUI[LEFT][Desc.iIndex]->Get_TransformCom()->Set_State(CTransform::STATE_POSITION, Compute_UIPosition(Desc, iLyricsIndex, fRatio));
+            XMStoreFloat3(&Desc.vPos, Compute_UIPosition(Desc, iLyricsIndex, fRatio));
 
             break;
         }
@@ -726,6 +779,8 @@ void CUIKaraoke_Play::Verse_On_SingleNote(LYRICS_NOTE_DESC& Desc, _uint iLyricsI
             m_pPlayUI[RIGHT][Desc.iIndex]->Show_On_All();
             _float fRatio = ((Desc.pNote->Get_StartTime() - fVerseStartTime) / m_LyricsTime[iLyricsIndex].fDuration);
             m_pPlayUI[RIGHT][Desc.iIndex]->Get_TransformCom()->Set_State(CTransform::STATE_POSITION, Compute_UIPosition(Desc, iLyricsIndex, fRatio));
+            XMStoreFloat3(&Desc.vPos, Compute_UIPosition(Desc, iLyricsIndex, fRatio));
+
             break;
         }
         default:
@@ -797,6 +852,7 @@ void CUIKaraoke_Play::Verse_On_LongNote(LYRICS_NOTE_DESC& Desc, _uint iLyricsInd
             _vector vEndPos = Compute_UIPosition(Desc, iLyricsIndex, fRatio);
             m_pPlayUI[UP][Desc.iIndex_End]->Show_On_All();
             m_pPlayUI[UP][Desc.iIndex_End]->Get_TransformCom()->Set_State(CTransform::STATE_POSITION, vEndPos);
+            XMStoreFloat3(&Desc.vPos, vEndPos);
 
             // 길게 누름
             _vector vCenterPos = vEndPos;
@@ -825,6 +881,7 @@ void CUIKaraoke_Play::Verse_On_LongNote(LYRICS_NOTE_DESC& Desc, _uint iLyricsInd
             _vector vEndPos = Compute_UIPosition(Desc, iLyricsIndex, fRatio);
             m_pPlayUI[DOWN][Desc.iIndex_End]->Show_On_All();
             m_pPlayUI[DOWN][Desc.iIndex_End]->Get_TransformCom()->Set_State(CTransform::STATE_POSITION, vEndPos);
+            XMStoreFloat3(&Desc.vPos, vEndPos);
 
             // 길게 누름
             _vector vCenterPos = vEndPos;
@@ -853,6 +910,7 @@ void CUIKaraoke_Play::Verse_On_LongNote(LYRICS_NOTE_DESC& Desc, _uint iLyricsInd
             _vector vEndPos = Compute_UIPosition(Desc, iLyricsIndex, fRatio);
             m_pPlayUI[LEFT][Desc.iIndex_End]->Show_On_All();
             m_pPlayUI[LEFT][Desc.iIndex_End]->Get_TransformCom()->Set_State(CTransform::STATE_POSITION, vEndPos);
+            XMStoreFloat3(&Desc.vPos, vEndPos);
 
             // 길게 누름
             _vector vCenterPos = vEndPos;
@@ -881,6 +939,7 @@ void CUIKaraoke_Play::Verse_On_LongNote(LYRICS_NOTE_DESC& Desc, _uint iLyricsInd
             _vector vEndPos = Compute_UIPosition(Desc, iLyricsIndex, fRatio);
             m_pPlayUI[RIGHT][Desc.iIndex_End]->Show_On_All();
             m_pPlayUI[RIGHT][Desc.iIndex_End]->Get_TransformCom()->Set_State(CTransform::STATE_POSITION, vEndPos);
+            XMStoreFloat3(&Desc.vPos, vEndPos);
 
             // 길게 누름
             _vector vCenterPos = vEndPos;
@@ -978,6 +1037,7 @@ void CUIKaraoke_Play::Verse_On_BurstNote(LYRICS_NOTE_DESC& Desc, _uint iLyricsIn
             _vector vEndPos = Compute_UIPosition(Desc, iLyricsIndex, fRatio);
             m_pPlayUI[UP][Desc.iIndex_End]->Show_On_All();
             m_pPlayUI[UP][Desc.iIndex_End]->Get_TransformCom()->Set_State(CTransform::STATE_POSITION, vEndPos);
+            XMStoreFloat3(&Desc.vPos, vEndPos);
 
             // 길게 누름
             _vector vCenterPos = vEndPos;
@@ -1006,6 +1066,7 @@ void CUIKaraoke_Play::Verse_On_BurstNote(LYRICS_NOTE_DESC& Desc, _uint iLyricsIn
             _vector vEndPos = Compute_UIPosition(Desc, iLyricsIndex, fRatio);
             m_pPlayUI[DOWN][Desc.iIndex_End]->Show_On_All();
             m_pPlayUI[DOWN][Desc.iIndex_End]->Get_TransformCom()->Set_State(CTransform::STATE_POSITION, vEndPos);
+            XMStoreFloat3(&Desc.vPos, vEndPos);
 
             // 길게 누름
             _vector vCenterPos = vEndPos;
@@ -1034,6 +1095,7 @@ void CUIKaraoke_Play::Verse_On_BurstNote(LYRICS_NOTE_DESC& Desc, _uint iLyricsIn
             _vector vEndPos = Compute_UIPosition(Desc, iLyricsIndex, fRatio);
             m_pPlayUI[LEFT][Desc.iIndex_End]->Show_On_All();
             m_pPlayUI[LEFT][Desc.iIndex_End]->Get_TransformCom()->Set_State(CTransform::STATE_POSITION, vEndPos);
+            XMStoreFloat3(&Desc.vPos, vEndPos);
 
             // 길게 누름
             _vector vCenterPos = vEndPos;
@@ -1062,6 +1124,7 @@ void CUIKaraoke_Play::Verse_On_BurstNote(LYRICS_NOTE_DESC& Desc, _uint iLyricsIn
             _vector vEndPos = Compute_UIPosition(Desc, iLyricsIndex, fRatio);
             m_pPlayUI[RIGHT][Desc.iIndex_End]->Show_On_All();
             m_pPlayUI[RIGHT][Desc.iIndex_End]->Get_TransformCom()->Set_State(CTransform::STATE_POSITION, vEndPos);
+            XMStoreFloat3(&Desc.vPos, vEndPos);
 
             // 길게 누름
             _vector vCenterPos = vEndPos;
