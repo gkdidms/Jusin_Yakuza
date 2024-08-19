@@ -354,6 +354,43 @@ PS_OUT PS_BACKBUFFER(PS_IN In)
     return Out;
 }
 
+
+PS_OUT PS_CIRCLE_ANIM(PS_IN In)
+{
+    PS_OUT Out = (PS_OUT) 0;
+    
+    float2 Center = float2(0.5f, 0.5f);
+    
+    float2 CurrentCoord = In.vTexcoord;
+    
+    float2 Dir = normalize(CurrentCoord - Center);
+    
+    float Angle = atan2(-Dir.x, -Dir.y) / (2.0f * 3.141592f);
+    
+    if (Angle < 0.f)
+        Angle += 1.0f; // 각도 범위를 0 ~ 1로 조정
+    
+    float factor = g_fAnimTime.x / g_fAnimTime.y;
+    
+    vector BaseColor = g_Texture.Sample(LinearSampler, In.vTexcoord);
+    if (Angle <= factor)
+    {
+        BaseColor = float4(0.f, 0.f, 0.f, 0.f); // 투명하게 처리하여 지우기
+    }
+    
+    float2 ControlAlpha = g_fControlAlpha;
+    
+    float Alpha = lerp(ControlAlpha.x, ControlAlpha.y, factor);
+    
+    BaseColor = vector(BaseColor.rgb, BaseColor.a * Alpha);
+    
+    vector FinColor = BaseColor;
+
+    Out.vColor = FinColor;
+    
+    return Out;
+}
+
 technique11 DefaultTechnique
 {
 
@@ -471,5 +508,17 @@ technique11 DefaultTechnique
         HullShader = NULL;
         DomainShader = NULL;
         PixelShader = compile ps_5_0 PS_COLOR_REPEAT_EFFECT();
+    }
+    pass Circle_Anim_Texture //9 
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_EFFECTANIM();
+        GeometryShader = NULL;
+        HullShader = NULL;
+        DomainShader = NULL;
+        PixelShader = compile ps_5_0 PS_CIRCLE_ANIM();
     }
 }

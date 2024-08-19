@@ -197,6 +197,25 @@ _bool CSoundMgr::Get_End(const wstring pSoundKey, CHANNELID eID)
 	return false;
 }
 
+void CSoundMgr::Set_SoundPosition(const wstring pSoundKey, CHANNELID eID, _float fSeconds)
+{
+	map<const wstring, FMOD_SOUND*>::iterator iter;
+	// iter = find_if(m_mapSound.begin(), m_mapSound.end(), CTag_Finder(pSoundKey));
+	iter = find_if(m_mapSound.begin(), m_mapSound.end(),
+		[&](auto& iter)->bool
+		{
+			return pSoundKey == iter.first;
+		});
+
+	if (iter == m_mapSound.end())
+		return;
+
+	// 초 단위를 밀리초 단위로 변환합니다.
+	_uint newPosition = static_cast<_uint>(fSeconds * 1000.0f);
+
+	FMOD_Channel_SetPosition(m_pChannelArr[eID], newPosition, FMOD_TIMEUNIT_MS);
+}
+
 void CSoundMgr::LoadSoundFile()
 {
 	_wfinddata64_t fd;

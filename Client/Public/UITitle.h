@@ -4,9 +4,11 @@ BEGIN(Client)
 class CUITitle :
     public CUIScene
 {
+    //EVENTUI  0 번쨰 -> 이펙트
+    //EVENTUI 1 번째 ->타이틀
 public:
     enum TITLE_IMG {
-
+        
         TITLE_IMG_END
     };
 protected:

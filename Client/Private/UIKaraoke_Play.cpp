@@ -36,6 +36,8 @@ HRESULT CUIKaraoke_Play::Show_Scene()
         }
     }
 
+    m_Pivots.resize(UILIST_END);
+
     return S_OK;
 }
 
@@ -97,7 +99,11 @@ HRESULT CUIKaraoke_Play::Tick(const _float& fTimeDelta)
 
     Change_Lyrics();
     CurrentBar_Control();
-    Show_Notes();
+
+    if (m_pGameInstance->GetKeyState(DIK_LCONTROL))
+    {
+        m_pGameInstance->Set_SoundPosition(TEXT("Bakamita.mp3"), SOUND_BGM, 86.028);
+    }
 
     // 컷신 실행시키기
     if (CUTSCENE_START_POSITION < m_fCurSoundTime)
@@ -155,6 +161,29 @@ void CUIKaraoke_Play::Action()
 
 void CUIKaraoke_Play::OverAction()
 {
+}
+
+void CUIKaraoke_Play::Set_Notes(vector<class CNoteBase*>* pNotes)
+{
+    _uint i = 0;
+    for (auto& Lyrics : m_LyricsTime)
+    {
+        _float fVerseStartTime = Lyrics.fTime;
+        _float fVerseEndTime = Lyrics.fTime + Lyrics.fDuration;
+
+        // 해동 노트가 현재 소절내에 포함하면 삽입
+        for (auto& pNote : *pNotes)
+        {
+            //포함된다.
+            if (fVerseStartTime <= pNote->Get_StartTime() && fVerseEndTime > pNote->Get_StartTime())
+            {
+                LYRICS_NOTE_DESC Desc{ pNote, false, 0 };
+                m_LyricsNotes.emplace(i, Desc);
+            }
+        }
+
+        i++;
+    }
 }
 
 void CUIKaraoke_Play::Ready_LyricsTime()
@@ -272,6 +301,8 @@ void CUIKaraoke_Play::Update_CurrentLyricsIndex()
 {
     for (size_t i = 0; i < m_LyricsTime.size(); i++)
     {
+        if (m_iCurLyricsIndex != -1 && i < m_iCurLyricsIndex) continue;
+
         if (m_LyricsTime[i].fTime <= m_fCurSoundTime)
         {
             m_iCurLyricsIndex = i;
@@ -284,6 +315,7 @@ void CUIKaraoke_Play::Change_Lyrics()
 {
     for (size_t i = 0; i < m_LyricsTime.size(); i++)
     {
+        if (m_iCurLyricsIndex > 1 && i < m_iCurLyricsIndex - 1) continue;
         if (m_fCurSoundTime > m_LyricsTime[i].fTime - 1.f)        //2초 전에 가사를 미리 띄운다.
         {
             if (i != 0)
@@ -294,11 +326,13 @@ void CUIKaraoke_Play::Change_Lyrics()
                     _vector vPos = XMVectorSetW(XMLoadFloat3(&m_LyricsSocket[m_LyricsTime[i].iSocketIndex]), 1.f);
                     m_Lyrics->Get_PartObject(i - 1)->Get_TransformCom()->Set_State(CTransform::STATE_POSITION, vPos);
                     Setting_BackUI(m_LyricsTime[i], vPos, i - 1);
+                    Visible_Notes(i);
 
                     m_Lyrics->Show_On(i);
                     vPos = XMVectorSetW(XMLoadFloat3(&m_LyricsSocket[m_LyricsTime[i + 1].iSocketIndex]), 1.f);
                     m_Lyrics->Get_PartObject(i)->Get_TransformCom()->Set_State(CTransform::STATE_POSITION, vPos);
                     Setting_BackUI(m_LyricsTime[i + 1], vPos, i);
+                    Visible_Notes(i + 1);
                 }
                 else if(i != 6)
                 {
@@ -308,12 +342,14 @@ void CUIKaraoke_Play::Change_Lyrics()
                     m_Lyrics->Get_PartObject(i - 1)->Get_TransformCom()->Set_State(CTransform::STATE_POSITION, vPos);
 
                     Setting_BackUI(m_LyricsTime[i], vPos, i - 1);
+                    Visible_Notes(i);
                 }
             }
             else
             {
                 _vector vPos = XMVectorSetW(XMLoadFloat3(&m_LyricsSocket[m_LyricsTime[i].iSocketIndex]), 1.f);
                 Setting_BackUI(m_LyricsTime[i], vPos, i - 1);
+                Visible_Notes(i);
             }
         }
 
@@ -332,6 +368,8 @@ void CUIKaraoke_Play::Change_Lyrics()
                         m_pPlayUI[BACK][m_LyricsTime[i].iSocketIndex]->Show_Off_All();
                         m_pPlayUI[BLUE][m_LyricsTime[i-1].iSocketIndex]->Show_Off_All();
                         m_pPlayUI[BLUE][m_LyricsTime[i].iSocketIndex]->Show_Off_All();
+                        Invisible_Notes(i - 1);
+                        Invisible_Notes(i);
                     }
                     if (i != 5)
                     {
@@ -339,26 +377,26 @@ void CUIKaraoke_Play::Change_Lyrics()
 
                         m_pPlayUI[BACK][m_LyricsTime[i].iSocketIndex]->Show_Off_All();
                         m_pPlayUI[BLUE][m_LyricsTime[i].iSocketIndex]->Show_Off_All();
+                        Invisible_Notes(i);
                     }
                 }
                 else
                 {
                     m_pPlayUI[BACK][m_LyricsTime[i].iSocketIndex]->Show_Off_All();
                     m_pPlayUI[BLUE][m_LyricsTime[i].iSocketIndex]->Show_Off_All();
+                    Invisible_Notes(i);
                 }
             }
         }
         else
         {
             // 마지막 소절 직전이라면 마지막 가사 꺼질 때 같이 꺼진다.
-            if (i == m_LyricsTime.size() - 1)
+            if (m_fCurSoundTime > (m_LyricsTime[m_LyricsTime.size() - 1].fTime + m_LyricsTime[m_LyricsTime.size() - 1].fDuration))
             {
-                if (m_fCurSoundTime > (m_LyricsTime[m_LyricsTime.size() - 1].fTime + m_LyricsTime[m_LyricsTime.size() - 1].fDuration))
-                {
-                    m_Lyrics->Show_Off(i - 1);
-                    m_pPlayUI[BACK][m_LyricsTime[i].iSocketIndex]->Show_Off_All();
-                    m_pPlayUI[BLUE][m_LyricsTime[i].iSocketIndex]->Show_Off_All();
-                }
+                m_Lyrics->Show_Off(i - 1);
+                m_pPlayUI[BACK][m_LyricsTime[i].iSocketIndex]->Show_Off_All();
+                m_pPlayUI[BLUE][m_LyricsTime[i].iSocketIndex]->Show_Off_All();
+                Invisible_Notes(i);
             }
         }
     }
@@ -450,154 +488,243 @@ void CUIKaraoke_Play::CurrentBar_Control()
     }
 }
 
-void CUIKaraoke_Play::Show_Notes()
+void CUIKaraoke_Play::Visible_Notes(_uint iLyricsIndex)
 {
-    if (nullptr != m_pNotes)
+    auto lower_bound_iter = m_LyricsNotes.lower_bound(iLyricsIndex);
+    auto upper_bound_iter = m_LyricsNotes.upper_bound(iLyricsIndex);
+
+    if (m_LyricsNotes.end() == lower_bound_iter) return;
+
+    for (; lower_bound_iter != upper_bound_iter; ++lower_bound_iter)
     {
-        for (auto& pNote : *m_pNotes)
+        // 0 일반노드    1 유지 노드     2 연타 노드
+        CNoteBase* pNote = lower_bound_iter->second.pNote;
+
+        switch (pNote->Get_Type())
         {
-            // 0 일반노드    1 유지 노드     2 연타 노드
-            switch (pNote->Get_Type())
-            {
-            case 0:
-            {
-                Verse_On_SingleNote(pNote);
-
-                break;
-            }
-            case 1:
-            {
-
-                break;
-            }
-            case 2:
-            {
-
-                break;
-            }
-            default:
-                break;
-            }
-            
-        }
-    }
-}
-
-void CUIKaraoke_Play::Verse_On_SingleNote(CNoteBase* pNote)
-{
-    if (0 > m_iCurLyricsIndex) return;
-
-    _float fVerseStartTime = m_LyricsTime[m_iCurLyricsIndex].fTime;
-    _float fVerseEndTime = m_LyricsTime[m_iCurLyricsIndex].fTime + m_LyricsTime[m_iCurLyricsIndex].fDuration;
-
-    if (fVerseStartTime <= pNote->Get_StartTime() && fVerseEndTime > pNote->Get_StartTime())
-    {
-        switch (pNote->Get_ButtonType())
+        case 0:
         {
-        case 0:     //Up
-        {
-            m_pPlayUI[UP].front()->Show_On_All();
-            _float fRatio = ((pNote->Get_StartTime() - fVerseStartTime) / m_LyricsTime[m_iCurLyricsIndex].fDuration);
-            
-            _vector vPos = m_pPlayUI[BACK][m_LyricsTime[m_iCurLyricsIndex].iSocketIndex]->Get_TransformCom()->Get_State(CTransform::STATE_POSITION);
-            _vector vEndPos = vPos;
+            if (!lower_bound_iter->second.isVisible)
+            {
+                lower_bound_iter->second.isVisible = true;
 
-            // 시작 위치 잡기
-            _float3 vScaled_Center = m_pPlayUI[BACK][m_LyricsTime[m_iCurLyricsIndex].iSocketIndex]->Get_PartObject(1)->Get_TransformCom()->Get_Scaled();
-            _float3 vScaled_Front = m_pPlayUI[BACK][m_LyricsTime[m_iCurLyricsIndex].iSocketIndex]->Get_PartObject(0)->Get_TransformCom()->Get_Scaled();
-            _float3 vScaled_Back = m_pPlayUI[BACK][m_LyricsTime[m_iCurLyricsIndex].iSocketIndex]->Get_PartObject(2)->Get_TransformCom()->Get_Scaled();
-
-            // 해당 그룹 전체에 적용된 크기를 가져와서 적용해줘야한다.
-            _float3 vScaled_All = m_pPlayUI[BACK][m_LyricsTime[m_iCurLyricsIndex].iSocketIndex]->Get_TransformCom()->Get_Scaled();
-
-            vPos.m128_f32[0] -= (vScaled_Center.x * 0.5f * vScaled_All.x + vScaled_Front.x * vScaled_All.x);
-            vEndPos.m128_f32[0] += (vScaled_Center.x * 0.5f * vScaled_All.x + vScaled_Back.x * vScaled_All.x);
-
-            vPos.m128_f32[0] = LerpFloat(vPos.m128_f32[0], vEndPos.m128_f32[0], fRatio);
-
-            m_pPlayUI[UP].front()->Get_TransformCom()->Set_State(CTransform::STATE_POSITION, vPos);
+                if (++m_Pivots[Trans_ButtonType_To_UI(pNote->Get_ButtonType())] > m_pPlayUI[UP].size() - 1)
+                {
+                    m_Pivots[Trans_ButtonType_To_UI(pNote->Get_ButtonType())] = 0;
+                }
+                lower_bound_iter->second.iIndex = m_Pivots[Trans_ButtonType_To_UI(pNote->Get_ButtonType())];
+            }
+            Verse_On_SingleNote(lower_bound_iter->second, iLyricsIndex);
 
             break;
         }
-        case 1:     //Down
+        case 1:
         {
-            m_pPlayUI[DOWN].front()->Show_On_All();
-
-            _float fRatio = ((pNote->Get_StartTime() - fVerseStartTime) / m_LyricsTime[m_iCurLyricsIndex].fDuration);
-
-            _vector vPos = m_pPlayUI[BACK][m_LyricsTime[m_iCurLyricsIndex].iSocketIndex]->Get_TransformCom()->Get_State(CTransform::STATE_POSITION);
-            _vector vEndPos = vPos;
-
-            // 시작 위치 잡기
-            _float3 vScaled_Center = m_pPlayUI[BACK][m_LyricsTime[m_iCurLyricsIndex].iSocketIndex]->Get_PartObject(1)->Get_TransformCom()->Get_Scaled();
-            _float3 vScaled_Front = m_pPlayUI[BACK][m_LyricsTime[m_iCurLyricsIndex].iSocketIndex]->Get_PartObject(0)->Get_TransformCom()->Get_Scaled();
-            _float3 vScaled_Back = m_pPlayUI[BACK][m_LyricsTime[m_iCurLyricsIndex].iSocketIndex]->Get_PartObject(2)->Get_TransformCom()->Get_Scaled();
-
-            // 해당 그룹 전체에 적용된 크기를 가져와서 적용해줘야한다.
-            _float3 vScaled_All = m_pPlayUI[BACK][m_LyricsTime[m_iCurLyricsIndex].iSocketIndex]->Get_TransformCom()->Get_Scaled();
-
-            vPos.m128_f32[0] -= (vScaled_Center.x * 0.5f * vScaled_All.x + vScaled_Front.x * vScaled_All.x);
-            vEndPos.m128_f32[0] += (vScaled_Center.x * 0.5f * vScaled_All.x + vScaled_Back.x * vScaled_All.x);
-
-            vPos.m128_f32[0] = LerpFloat(vPos.m128_f32[0], vEndPos.m128_f32[0], fRatio);
-
-            m_pPlayUI[DOWN].front()->Get_TransformCom()->Set_State(CTransform::STATE_POSITION, vPos);
-            break;
-        }
-        case 2:     //Left
-        {
-            m_pPlayUI[LEFT].front()->Show_On_All();
-            _float fRatio = ((pNote->Get_StartTime() - fVerseStartTime) / m_LyricsTime[m_iCurLyricsIndex].fDuration);
-
-            _vector vPos = m_pPlayUI[BACK][m_LyricsTime[m_iCurLyricsIndex].iSocketIndex]->Get_TransformCom()->Get_State(CTransform::STATE_POSITION);
-            _vector vEndPos = vPos;
-
-            // 시작 위치 잡기
-            _float3 vScaled_Center = m_pPlayUI[BACK][m_LyricsTime[m_iCurLyricsIndex].iSocketIndex]->Get_PartObject(1)->Get_TransformCom()->Get_Scaled();
-            _float3 vScaled_Front = m_pPlayUI[BACK][m_LyricsTime[m_iCurLyricsIndex].iSocketIndex]->Get_PartObject(0)->Get_TransformCom()->Get_Scaled();
-            _float3 vScaled_Back = m_pPlayUI[BACK][m_LyricsTime[m_iCurLyricsIndex].iSocketIndex]->Get_PartObject(2)->Get_TransformCom()->Get_Scaled();
-
-            // 해당 그룹 전체에 적용된 크기를 가져와서 적용해줘야한다.
-            _float3 vScaled_All = m_pPlayUI[BACK][m_LyricsTime[m_iCurLyricsIndex].iSocketIndex]->Get_TransformCom()->Get_Scaled();
-
-            vPos.m128_f32[0] -= (vScaled_Center.x * 0.5f * vScaled_All.x + vScaled_Front.x * vScaled_All.x);
-            vEndPos.m128_f32[0] += (vScaled_Center.x * 0.5f * vScaled_All.x + vScaled_Back.x * vScaled_All.x);
-
-            vPos.m128_f32[0] = LerpFloat(vPos.m128_f32[0], vEndPos.m128_f32[0], fRatio);
-
-            m_pPlayUI[LEFT].front()->Get_TransformCom()->Set_State(CTransform::STATE_POSITION, vPos);
 
             break;
         }
-        case 3:     //Right
+        case 2:
         {
-            m_pPlayUI[RIGHT].front()->Show_On_All();
 
-            _float fRatio = ((pNote->Get_StartTime() - fVerseStartTime) / m_LyricsTime[m_iCurLyricsIndex].fDuration);
-
-            _vector vPos = m_pPlayUI[BACK][m_LyricsTime[m_iCurLyricsIndex].iSocketIndex]->Get_TransformCom()->Get_State(CTransform::STATE_POSITION);
-            _vector vEndPos = vPos;
-
-            // 시작 위치 잡기
-            _float3 vScaled_Center = m_pPlayUI[BACK][m_LyricsTime[m_iCurLyricsIndex].iSocketIndex]->Get_PartObject(1)->Get_TransformCom()->Get_Scaled();
-            _float3 vScaled_Front = m_pPlayUI[BACK][m_LyricsTime[m_iCurLyricsIndex].iSocketIndex]->Get_PartObject(0)->Get_TransformCom()->Get_Scaled();
-            _float3 vScaled_Back = m_pPlayUI[BACK][m_LyricsTime[m_iCurLyricsIndex].iSocketIndex]->Get_PartObject(2)->Get_TransformCom()->Get_Scaled();
-
-            // 해당 그룹 전체에 적용된 크기를 가져와서 적용해줘야한다.
-            _float3 vScaled_All = m_pPlayUI[BACK][m_LyricsTime[m_iCurLyricsIndex].iSocketIndex]->Get_TransformCom()->Get_Scaled();
-
-            vPos.m128_f32[0] -= (vScaled_Center.x * 0.5f * vScaled_All.x + vScaled_Front.x * vScaled_All.x);
-            vEndPos.m128_f32[0] += (vScaled_Center.x * 0.5f * vScaled_All.x + vScaled_Back.x * vScaled_All.x);
-
-            vPos.m128_f32[0] = LerpFloat(vPos.m128_f32[0], vEndPos.m128_f32[0], fRatio);
-
-            m_pPlayUI[RIGHT].front()->Get_TransformCom()->Set_State(CTransform::STATE_POSITION, vPos);
             break;
         }
         default:
             break;
         }
+    }
+}
 
+void CUIKaraoke_Play::Invisible_Notes(_uint iLyricsIndex)
+{
+    auto lower_bound_iter = m_LyricsNotes.lower_bound(iLyricsIndex);
+    auto upper_bound_iter = m_LyricsNotes.upper_bound(iLyricsIndex);
+
+    if (m_LyricsNotes.end() == lower_bound_iter) return;
+
+    for (; lower_bound_iter != upper_bound_iter; ++lower_bound_iter)
+    {
+        // 0 일반노드    1 유지 노드     2 연타 노드
+        CNoteBase* pNote = lower_bound_iter->second.pNote;
+
+        switch (pNote->Get_Type())
+        {
+        case 0:
+        {
+            if (lower_bound_iter->second.isVisible)
+            {
+                lower_bound_iter->second.isVisible = false;
+            }
+            Verse_Off_SingleNote(lower_bound_iter->second, iLyricsIndex);
+
+            break;
+        }
+        case 1:
+        {
+
+            break;
+        }
+        case 2:
+        {
+
+            break;
+        }
+        default:
+            break;
+        }
+    }
+}
+
+void CUIKaraoke_Play::Verse_On_SingleNote(LYRICS_NOTE_DESC& Desc, _uint iLyricsIndex)
+{
+    if (0 > iLyricsIndex) return;
+
+    _float fVerseStartTime = m_LyricsTime[iLyricsIndex].fTime;
+    _float fVerseEndTime = m_LyricsTime[iLyricsIndex].fTime + m_LyricsTime[iLyricsIndex].fDuration;
+
+    if (fVerseStartTime <= Desc.pNote->Get_StartTime() && fVerseEndTime > Desc.pNote->Get_StartTime())
+    {
+        switch (Desc.pNote->Get_ButtonType())
+        {
+        case 0:     //Up
+        {
+            m_pPlayUI[UP][Desc.iIndex]->Show_On_All();
+            _float fRatio = ((Desc.pNote->Get_StartTime() - fVerseStartTime) / m_LyricsTime[iLyricsIndex].fDuration);
+            
+            _vector vPos = m_pPlayUI[BACK][m_LyricsTime[iLyricsIndex].iSocketIndex]->Get_TransformCom()->Get_State(CTransform::STATE_POSITION);
+            _vector vEndPos = vPos;
+
+            // 시작 위치 잡기
+            _float3 vScaled_Center = m_pPlayUI[BACK][m_LyricsTime[iLyricsIndex].iSocketIndex]->Get_PartObject(1)->Get_TransformCom()->Get_Scaled();
+            _float3 vScaled_Front = m_pPlayUI[BACK][m_LyricsTime[iLyricsIndex].iSocketIndex]->Get_PartObject(0)->Get_TransformCom()->Get_Scaled();
+            _float3 vScaled_Back = m_pPlayUI[BACK][m_LyricsTime[iLyricsIndex].iSocketIndex]->Get_PartObject(2)->Get_TransformCom()->Get_Scaled();
+
+            // 해당 그룹 전체에 적용된 크기를 가져와서 적용해줘야한다.
+            _float3 vScaled_All = m_pPlayUI[BACK][m_LyricsTime[iLyricsIndex].iSocketIndex]->Get_TransformCom()->Get_Scaled();
+
+            vPos.m128_f32[0] -= (vScaled_Center.x * 0.5f * vScaled_All.x + vScaled_Front.x * vScaled_All.x);
+            vEndPos.m128_f32[0] += (vScaled_Center.x * 0.5f * vScaled_All.x + vScaled_Back.x * vScaled_All.x);
+
+            vPos.m128_f32[0] = LerpFloat(vPos.m128_f32[0], vEndPos.m128_f32[0], fRatio);
+
+            m_pPlayUI[UP][Desc.iIndex]->Get_TransformCom()->Set_State(CTransform::STATE_POSITION, vPos);
+
+            break;
+        }
+        case 1:     //Down
+        {
+            m_pPlayUI[DOWN][Desc.iIndex]->Show_On_All();
+
+            _float fRatio = ((Desc.pNote->Get_StartTime() - fVerseStartTime) / m_LyricsTime[iLyricsIndex].fDuration);
+
+            _vector vPos = m_pPlayUI[BACK][m_LyricsTime[iLyricsIndex].iSocketIndex]->Get_TransformCom()->Get_State(CTransform::STATE_POSITION);
+            _vector vEndPos = vPos;
+
+            // 시작 위치 잡기
+            _float3 vScaled_Center = m_pPlayUI[BACK][m_LyricsTime[iLyricsIndex].iSocketIndex]->Get_PartObject(1)->Get_TransformCom()->Get_Scaled();
+            _float3 vScaled_Front = m_pPlayUI[BACK][m_LyricsTime[iLyricsIndex].iSocketIndex]->Get_PartObject(0)->Get_TransformCom()->Get_Scaled();
+            _float3 vScaled_Back = m_pPlayUI[BACK][m_LyricsTime[iLyricsIndex].iSocketIndex]->Get_PartObject(2)->Get_TransformCom()->Get_Scaled();
+
+            // 해당 그룹 전체에 적용된 크기를 가져와서 적용해줘야한다.
+            _float3 vScaled_All = m_pPlayUI[BACK][m_LyricsTime[iLyricsIndex].iSocketIndex]->Get_TransformCom()->Get_Scaled();
+
+            vPos.m128_f32[0] -= (vScaled_Center.x * 0.5f * vScaled_All.x + vScaled_Front.x * vScaled_All.x);
+            vEndPos.m128_f32[0] += (vScaled_Center.x * 0.5f * vScaled_All.x + vScaled_Back.x * vScaled_All.x);
+
+            vPos.m128_f32[0] = LerpFloat(vPos.m128_f32[0], vEndPos.m128_f32[0], fRatio);
+
+            m_pPlayUI[DOWN][Desc.iIndex]->Get_TransformCom()->Set_State(CTransform::STATE_POSITION, vPos);
+            break;
+        }
+        case 2:     //Left
+        {
+            m_pPlayUI[LEFT][Desc.iIndex]->Show_On_All();
+            _float fRatio = ((Desc.pNote->Get_StartTime() - fVerseStartTime) / m_LyricsTime[iLyricsIndex].fDuration);
+
+            _vector vPos = m_pPlayUI[BACK][m_LyricsTime[iLyricsIndex].iSocketIndex]->Get_TransformCom()->Get_State(CTransform::STATE_POSITION);
+            _vector vEndPos = vPos;
+
+            // 시작 위치 잡기
+            _float3 vScaled_Center = m_pPlayUI[BACK][m_LyricsTime[iLyricsIndex].iSocketIndex]->Get_PartObject(1)->Get_TransformCom()->Get_Scaled();
+            _float3 vScaled_Front = m_pPlayUI[BACK][m_LyricsTime[iLyricsIndex].iSocketIndex]->Get_PartObject(0)->Get_TransformCom()->Get_Scaled();
+            _float3 vScaled_Back = m_pPlayUI[BACK][m_LyricsTime[iLyricsIndex].iSocketIndex]->Get_PartObject(2)->Get_TransformCom()->Get_Scaled();
+
+            // 해당 그룹 전체에 적용된 크기를 가져와서 적용해줘야한다.
+            _float3 vScaled_All = m_pPlayUI[BACK][m_LyricsTime[iLyricsIndex].iSocketIndex]->Get_TransformCom()->Get_Scaled();
+
+            vPos.m128_f32[0] -= (vScaled_Center.x * 0.5f * vScaled_All.x + vScaled_Front.x * vScaled_All.x);
+            vEndPos.m128_f32[0] += (vScaled_Center.x * 0.5f * vScaled_All.x + vScaled_Back.x * vScaled_All.x);
+
+            vPos.m128_f32[0] = LerpFloat(vPos.m128_f32[0], vEndPos.m128_f32[0], fRatio);
+
+            m_pPlayUI[LEFT][Desc.iIndex]->Get_TransformCom()->Set_State(CTransform::STATE_POSITION, vPos);
+
+            break;
+        }
+        case 3:     //Right
+        {
+            m_pPlayUI[RIGHT][Desc.iIndex]->Show_On_All();
+
+            _float fRatio = ((Desc.pNote->Get_StartTime() - fVerseStartTime) / m_LyricsTime[iLyricsIndex].fDuration);
+
+            _vector vPos = m_pPlayUI[BACK][m_LyricsTime[iLyricsIndex].iSocketIndex]->Get_TransformCom()->Get_State(CTransform::STATE_POSITION);
+            _vector vEndPos = vPos;
+
+            // 시작 위치 잡기
+            _float3 vScaled_Center = m_pPlayUI[BACK][m_LyricsTime[iLyricsIndex].iSocketIndex]->Get_PartObject(1)->Get_TransformCom()->Get_Scaled();
+            _float3 vScaled_Front = m_pPlayUI[BACK][m_LyricsTime[iLyricsIndex].iSocketIndex]->Get_PartObject(0)->Get_TransformCom()->Get_Scaled();
+            _float3 vScaled_Back = m_pPlayUI[BACK][m_LyricsTime[iLyricsIndex].iSocketIndex]->Get_PartObject(2)->Get_TransformCom()->Get_Scaled();
+
+            // 해당 그룹 전체에 적용된 크기를 가져와서 적용해줘야한다.
+            _float3 vScaled_All = m_pPlayUI[BACK][m_LyricsTime[iLyricsIndex].iSocketIndex]->Get_TransformCom()->Get_Scaled();
+
+            vPos.m128_f32[0] -= (vScaled_Center.x * 0.5f * vScaled_All.x + vScaled_Front.x * vScaled_All.x);
+            vEndPos.m128_f32[0] += (vScaled_Center.x * 0.5f * vScaled_All.x + vScaled_Back.x * vScaled_All.x);
+
+            vPos.m128_f32[0] = LerpFloat(vPos.m128_f32[0], vEndPos.m128_f32[0], fRatio);
+
+            m_pPlayUI[RIGHT][Desc.iIndex]->Get_TransformCom()->Set_State(CTransform::STATE_POSITION, vPos);
+            break;
+        }
+        default:
+            break;
+        }
+    }
+}
+
+void CUIKaraoke_Play::Verse_Off_SingleNote(LYRICS_NOTE_DESC& Desc, _uint iLyricsIndex)
+{
+    if (0 > iLyricsIndex) return;
+
+    _float fVerseStartTime = m_LyricsTime[iLyricsIndex].fTime;
+    _float fVerseEndTime = m_LyricsTime[iLyricsIndex].fTime + m_LyricsTime[iLyricsIndex].fDuration;
+
+    if (fVerseStartTime <= Desc.pNote->Get_StartTime() && fVerseEndTime > Desc.pNote->Get_StartTime())
+    {
+        switch (Desc.pNote->Get_ButtonType())
+        {
+        case 0:     //Up
+        {
+            m_pPlayUI[UP][Desc.iIndex]->Show_Off_All();
+            break;
+        }
+        case 1:     //Down
+        {
+            m_pPlayUI[DOWN][Desc.iIndex]->Show_Off_All();
+            break;
+        }
+        case 2:     //Left
+        {
+            m_pPlayUI[LEFT][Desc.iIndex]->Show_Off_All();
+            break;
+        }
+        case 3:     //Right
+        {
+            m_pPlayUI[RIGHT][Desc.iIndex]->Show_Off_All();
+            break;
+        }
+        default:
+            break;
+        }
     }
 }
 
@@ -634,6 +761,23 @@ _uint CUIKaraoke_Play::Compute_Num(_uint iCount)
     default:
         return 0;
     }
+}
+
+_uint CUIKaraoke_Play::Trans_ButtonType_To_UI(_uint iNum)
+{
+    // 0 UP        1 DOWN        2 LEFT        3 RIGHT
+    switch (iNum)
+    {
+    case 0:
+        return UP;
+    case 1:
+        return DOWN;
+    case 2:
+        return LEFT;
+    case 3:
+        return RIGHT;
+    }
+    return _uint();
 }
 
 CUIKaraoke_Play* CUIKaraoke_Play::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg)
