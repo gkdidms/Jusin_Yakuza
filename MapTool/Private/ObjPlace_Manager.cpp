@@ -2593,6 +2593,7 @@ void CObjPlace_Manager::Add_ObjectCollider_IMGUI()
 
 
 			ImGui::InputFloat3(u8"ObjCollider Quaternion", reinterpret_cast<float*>(&m_tCurColliderDesc.vQuaternion));
+
 		}
 
 
