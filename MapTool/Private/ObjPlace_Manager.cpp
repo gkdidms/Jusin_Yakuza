@@ -313,6 +313,7 @@ void CObjPlace_Manager::Show_Installed_GameObjectsList()
 		{
 			m_iCurrentObjectIndex = object_current_idx;
 			Get_CurrentGameObject_Desc(&m_tCurrentObjectDesc, m_iCurrentObjectIndex);
+			Update_ColliderList_In_Object();
 		}
 
 		/* 구조체 한번 더 업데이트 해줘야하는지 파악 */
@@ -1501,7 +1502,18 @@ void CObjPlace_Manager::Load_ModelName()
 	vObjectNames.clear();
 
 
+	m_pGameInstance->Get_FileNames("../../Client/Bin/Resources/Models/Anim/NPC/", vObjectNames);
 
+	for (int i = 0; i < vObjectNames.size(); i++)
+	{
+		string modifiedString = modifyString(vObjectNames[i]);
+
+		char* cfilename = new char[MAX_PATH];
+		strcpy(cfilename, StringToCharDIY(modifiedString));
+		m_MonsterNames.push_back(cfilename);
+	}
+
+	vObjectNames.clear();
 
 
 	/* map2 모델 로드*/
@@ -2114,6 +2126,11 @@ void CObjPlace_Manager::Update_ColliderList_In_Object()
 	{
 		m_ObjectColliders.push_back(vCollider[i]);
 		Safe_AddRef(vCollider[i]);
+	}
+
+	if (0 < m_ObjectColliders.size())
+	{
+		m_tCurColliderDesc = dynamic_cast<CConstruction*>(iter->second)->Get_ColliderDesc(m_iCurColliderIndex);
 	}
 }
 

@@ -876,7 +876,7 @@ void CRenderer::Occulusion_Culling_Draw()
 	// Render_OcculusionDownSampling();
 
 	// 다운 샘플링 한 것과 depth 비교
-	//Check_OcculusionCulling();
+	Check_OcculusionCulling();
 }
 
 #ifdef _DEBUG
@@ -944,6 +944,7 @@ void CRenderer::Render_NonBlender()
 
 	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_NonBlend"))))
 		return;
+
 
 	for (auto& iter : m_RenderObject[RENDER_NONBLENDER])
 	{
