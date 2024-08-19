@@ -113,7 +113,6 @@ public:
 	void						Edit_GameObject_Information(MAPOBJ_DESC	mapDesc);
 	CMap::MAPOBJ_DESC			Send_GameObject_Information();
 
-
 private:
 	void						Add_Renderer(const _float& fTimeDelta);
 
@@ -133,7 +132,7 @@ private:
 	ID3D11Buffer*			m_pOutputBufferStaging = { nullptr };
 
 private:
-	_bool m_isFirst = { true };
+	_bool					m_isFirst = { true };
 	vector<CDecal*>			m_vDecals;
 	vector<CCollider*>		m_vColliders;
 
@@ -159,7 +158,8 @@ private:
 	_bool					m_bCull = { false };
 
 
-	const _float4x4* m_pPlayerMatrix; // 플레이어 위치
+	const _float4x4*		m_pPlayerMatrix; // 플레이어 위치
+	_matrix					m_CubeWorldMatrix;
 
 
 	bool					m_bCompulsoryAlpha = { false };

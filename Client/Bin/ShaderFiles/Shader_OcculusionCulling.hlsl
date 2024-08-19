@@ -18,7 +18,7 @@ Texture2D<float4> depthTexture : register(t1); // 3x2 Depth 텍스처
 RWStructuredBuffer<int> g_OutputBuffer : register(u0); // 가시성 판단 후 픽셀 수 기록
 
 // 8개의 스레드를 한 그룹
-[numthreads(64, 1, 1)]
+[numthreads(8, 1, 1)]
 void GS_MAIN(uint3 dispatchThreadID : SV_DispatchThreadID)
 {
     uint index = dispatchThreadID.x;

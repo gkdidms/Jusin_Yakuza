@@ -44,16 +44,25 @@ void CAI_RoadWalker::Tick(const _float& fTimeDelta)
 {
 	if (m_isWalk)
 	{
-		_vector vDir = m_pNavigationCom->Compute_WayPointDir_Adv(m_pThis->Get_TransformCom()->Get_State(CTransform::STATE_POSITION), fTimeDelta, &m_isTurn, &m_iDir, &m_isBack);
+		// waypoint 방향받기
+		// m_isTurn, m_iDir, m_isBack : 여기서 받음
+		_vector vDir = m_pNavigationCom->Compute_WayPointDir_Adv(m_pThis->Get_TransformCom()->Get_State(CTransform::STATE_POSITION), 
+			fTimeDelta, &m_isTurn, &m_iDir, &m_isBack);
 		m_pThis->Get_TransformCom()->LookAt_For_LandObject(vDir, true);
 	}
 }
 
 CBTNode::NODE_STATE CAI_RoadWalker::Check_Coll()
 {
+	// 충돌된지 아닌지 -> 어깨빵
+	// m_pThis : RoadWalker가 this(ai 뺸거)
+	// this : 이 아이를 가지고 있는 애의 포인터 주소. 행동해야하는주체. AI_ROADWALKER 가지고있는애라고 보면됨
+	// this : 행동 해야하는주체. 객체 -> player 같은 애
 	if (m_pThis->isColl())
 	{
-
+		// 이게 성공해줄때
+		// success : sequence 다음 노드로 넘어감
+		// sequence 안에 2개를 가지고 있음 이게 성공하면 다음을 호출. 다음 객체를 호출(action)
 		return CBTNode::SUCCESS;
 	}
 
