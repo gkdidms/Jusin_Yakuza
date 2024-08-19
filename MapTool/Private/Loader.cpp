@@ -137,7 +137,7 @@ HRESULT CLoader::Loading_For_RunMapLevel(int iLevel)
 
 	Add_Models_On_Path(iLevel, TEXT("../../Client/Bin/Resources/Models/Anim/Car"), true);
 	Add_Models_On_Path(iLevel, TEXT("../../Client/Bin/Resources/Models/Anim/Monster"), true);
-	//Add_Models_On_Path(iLevel, TEXT("../../Client/Bin/Resources/Models/Anim/Player/"), true);
+	Add_Models_On_Path(iLevel, TEXT("../../Client/Bin/Resources/Models/Anim/Player/"), true);
 	Add_Models_On_Path(iLevel, TEXT("../../Client/Bin/Resources/Models/Anim/NPC"), true);
 
 	Add_Models_On_Path_NonAnim(iLevel, TEXT("../../Client/Bin/Resources/Models/NonAnim/Map/Map0"));

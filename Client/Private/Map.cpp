@@ -156,7 +156,7 @@ void CMap::Tick(const _float& fTimeDelta)
 	//	m_bRender = false;
 	//}
 	
-	m_pGameInstance->Add_Renderer(CRenderer::RENDER_OCCULUSION, this);
+	/*m_pGameInstance->Add_Renderer(CRenderer::RENDER_OCCULUSION, this);*/
 }
 
 void CMap::Late_Tick(const _float& fTimeDelta)
@@ -1332,21 +1332,17 @@ HRESULT CMap::Add_Components(void* pArg)
 
 		m_CubeWorldMatrix = gameobjDesc->vStartPos;
 
-		m_CubeWorldMatrix.r[3].m128_f32[1] += gameobjDesc->pColliderDesc[0].vCenter.y;
+		m_CubeWorldMatrix.r[3].m128_f32[1] += aabbDesc.vScale.y*0.5;
 	}
 	else
 	{
 		aabbDesc.vScale = m_pModelCom->Get_LocalModelSize();
-		//aabbDesc.vScale.x *= 1.5;
-		//aabbDesc.vScale.y *= 1.5;
-		//aabbDesc.vScale.z *= 1.5;
 
 		m_CubeWorldMatrix = gameobjDesc->vStartPos;
 
-		m_CubeWorldMatrix.r[3].m128_f32[1] += aabbDesc.vScale.y;
+		m_CubeWorldMatrix.r[3].m128_f32[1] += aabbDesc.vScale.y*0.5;
 	}
 
-	
 	// Occulusion Culling¿ª ¿ß«—
 	/* For.Com_SubModel */
 	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_VIBuffer_AABBCube"),
