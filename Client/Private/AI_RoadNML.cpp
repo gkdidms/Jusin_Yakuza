@@ -49,8 +49,20 @@ void CAI_RoadNML::Ready_Root()
 
 #pragma region Coll
 	CSequance* pCollSeq = CSequance::Create();
+	// Add_children : 함수 넣어줌
+	// check_coll : 함수, coll : 함수
 	pCollSeq->Add_Children(CLeafNode::Create(bind(&CAI_RoadNML::Check_Coll, this)));
 	pCollSeq->Add_Children(CLeafNode::Create(bind(&CAI_RoadNML::Coll, this)));
+
+	//check_coll 성공하면 coll로 넘어감
+	//sequence, select는 vector를 가짐, 0~마지막까지 순서대로 실행시킴
+	//sequcence에 check_coll, coll을 넣어놧음
+	//check_coll -> coll 넘어갓음(success)해서 그럼 coll이 만약 success되면
+	//pCollSeq : CAI_RoadNML::Coll의 success를 받음
+	//execute를 보기
+	//pCollSeq이 success, fail, running 리턴되면
+	// pCollSeq success 반환 : 
+
 #pragma endregion
 
 #pragma region Walk
@@ -64,6 +76,7 @@ void CAI_RoadNML::Ready_Root()
 	pWalkSeq->Add_Children(pWalkSelector);
 #pragma endregion
 
+	
 	pRoot->Add_Children(pCollSeq);
 	pRoot->Add_Children(pWalkSeq);
 

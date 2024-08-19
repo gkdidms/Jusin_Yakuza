@@ -1502,7 +1502,18 @@ void CObjPlace_Manager::Load_ModelName()
 	vObjectNames.clear();
 
 
+	m_pGameInstance->Get_FileNames("../../Client/Bin/Resources/Models/Anim/NPC/", vObjectNames);
 
+	for (int i = 0; i < vObjectNames.size(); i++)
+	{
+		string modifiedString = modifyString(vObjectNames[i]);
+
+		char* cfilename = new char[MAX_PATH];
+		strcpy(cfilename, StringToCharDIY(modifiedString));
+		m_MonsterNames.push_back(cfilename);
+	}
+
+	vObjectNames.clear();
 
 
 	/* map2 ¸ðµ¨ ·Îµå*/

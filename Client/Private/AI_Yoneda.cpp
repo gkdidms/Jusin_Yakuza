@@ -271,8 +271,11 @@ CBTNode::NODE_STATE CAI_Yoneda::ATK_Heavy()
 		{
 			m_isAttack = false;
 
+			//진짜 끝
 			return CBTNode::SUCCESS;
 		}
+
+		// 상태 지속을 위해 빠져나감
 		return CBTNode::RUNNING;
 	}
 

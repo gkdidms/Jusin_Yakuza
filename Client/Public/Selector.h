@@ -3,7 +3,7 @@
 
 #include "Client_Defines.h"
 
-/*  And 연산 */
+/*  Or 연산 */
 BEGIN(Client)
 class CSelector :
     public CBTNode

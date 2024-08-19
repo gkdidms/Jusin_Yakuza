@@ -76,7 +76,8 @@ HRESULT CNavigation::Initialize(void* pArg)
         m_iPreWayPointIndex = m_iCurrentWayPointIndex;
         if (m_iCurrentWayPointIndex == -1) Find_WayPointIndex(pDesc->vPosition);
 
-        m_iCurrentIndex = Find_PlayerMonster_Index(XMLoadFloat4(&m_Routes[m_iCurrentRouteIndex][m_iCurrentWayPointIndex].vPosition));
+        if(0 < m_Routes.size() && 0 < m_iCurrentRouteIndex && 0 < m_iCurrentWayPointIndex)
+            m_iCurrentIndex = Find_PlayerMonster_Index(XMLoadFloat4(&m_Routes[m_iCurrentRouteIndex][m_iCurrentWayPointIndex].vPosition));
     }
 
     return S_OK;
@@ -272,7 +273,8 @@ void CNavigation::Find_WayPointIndex(_vector vPosition)
         }
     }
 
-    m_vNextDir = XMVector3Normalize(XMLoadFloat4(&m_Routes[m_iCurrentRouteIndex][m_iCurrentWayPointIndex].vPosition) - XMLoadFloat4(&m_Routes[m_iPreRouteIndex][m_iPreWayPointIndex].vPosition));
+    if (0 < m_Routes.size() && 0 < m_iCurrentRouteIndex && 0 < m_iCurrentWayPointIndex)
+        m_vNextDir = XMVector3Normalize(XMLoadFloat4(&m_Routes[m_iCurrentRouteIndex][m_iCurrentWayPointIndex].vPosition) - XMLoadFloat4(&m_Routes[m_iPreRouteIndex][m_iPreWayPointIndex].vPosition));
 }
 
 //Index가 코너 일 경우 스왑한다.
@@ -286,10 +288,17 @@ void CNavigation::Swap_Route(vector<ROUTE_IO> CurrentRoute, _vector vCurrnetDir,
 
     if (CurrentRoute[m_iCurrentWayPointIndex].iPointOption == CORNEL)
     {
+        // DIR_F : 정방향
+        // DIR_B : 역방향
+        // m_iCurrent : 목표삼은 index
+        // 코너 바꿀때
         if ((m_iRouteDir == DIR_F && m_iCurrentWayPointIndex == 0) ||
             (m_iRouteDir == DIR_B && m_iCurrentWayPointIndex == CurrentRoute.size() - 1))
             return;
 
+        // 코너일떄 route index 저장하고 있었음
+        // 가고 있는 방향 index와 코너가 중간에 있을때도 고려.
+        // Route : 스왑할수있는 선택지를 저장
         vector<_uint> Route = { m_iCurrentRouteIndex };
         for (size_t i = 0; i < CurrentRoute[m_iCurrentWayPointIndex].iRouteNums; ++i)
             Route.emplace_back(CurrentRoute[m_iCurrentWayPointIndex].pRouteID[i]);
@@ -314,11 +323,13 @@ void CNavigation::Swap_Route(vector<ROUTE_IO> CurrentRoute, _vector vCurrnetDir,
         //이동하는 방향 구하기
         _float fAngle = XMVectorGetX(XMVector3Dot(XMLoadFloat4(&m_Routes[m_iCurrentRouteIndex][m_iCurrentWayPointIndex].vPosition), vRight));
         
+        // iDir : 회전방향
         if (fAngle > 0)
             *iDir = DIR_R;
         else if (fAngle < 0)
             *iDir = DIR_L;
 
+        // 회전해야하는지 안해야하는지 체크
         *isTurn = true;
     }
 }
@@ -443,16 +454,26 @@ _vector CNavigation::Compute_WayPointDir(_vector vPosition, const _float& fTimeD
 
 _vector CNavigation::Compute_WayPointDir_Adv(_vector vPosition, const _float& fTimeDelta, _bool* isTurn, _int* iDir, _bool* isBack)
 {
+    // 현재 내 앞의 waypoint
     _vector vCurrentWayPoint = XMLoadFloat4(&m_Routes[m_iCurrentRouteIndex][m_iCurrentWayPointIndex].vPosition);
     _vector vDir = vCurrentWayPoint - vPosition;
     _float fDistance = XMVectorGetX(XMVector3Length(vDir));
 
+    // 특정 range 안에 들어오면 다음 point로 목표잡기
     if (fDistance <= 1.5f)
     {
+        // 코너일때 waypoint swap을 위한 함수
         Swap_Route(m_Routes[m_iCurrentRouteIndex], vDir, isTurn, iDir);
 
+        // turn하면 
+        // isBack : 뒤돌지아닐지
+        // 뒤도는 모션 - isBack
+        // 회전중일때는 뒤로가는 모션 안나오게
+        // isBack : 뒤도는거고 - 순수 뒤도는거
+        // isTurn : 루트바꿔서 회전하는거
         if (!*isTurn)
         {
+            // 정방향 - 플러스, 역방향 - 마이너스로 다음 지점 정해주기
             if (m_iRouteDir == DIR_F)
                 m_iCurrentWayPointIndex++;
             else
@@ -476,13 +497,16 @@ _vector CNavigation::Compute_WayPointDir_Adv(_vector vPosition, const _float& fT
             }
         }
 
+        // 예외처리해준거(아예 포인트에서 시작할떄)
         if (fDistance == 0.f)
         {
             return Compute_WayPointDir_Adv(vPosition, fTimeDelta, isTurn, iDir, isBack);
         }
 
+        // 현재 웨이포인트와 다음 웨이포인트 - 방향 구하는식 -> 이걸로 움직임
         m_vNextDir = XMVector3Normalize(XMLoadFloat4(&m_Routes[m_iCurrentRouteIndex][m_iCurrentWayPointIndex].vPosition) - XMLoadFloat4(&m_Routes[m_iPreRouteIndex][m_iPreWayPointIndex].vPosition));
 
+        // 스왑되면
         m_iPreRouteIndex = m_iCurrentRouteIndex;
         m_iPreWayPointIndex = m_iCurrentWayPointIndex;
     }
