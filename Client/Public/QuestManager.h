@@ -12,7 +12,7 @@ class CQuestManager :
 
 public:
     enum QUEST_TYPE { QUEST_MAIN, QUEST_KILL, QUEST_MOVE, QUEST_TALK, QUEST_KARAOKE, QUEST_END };
-    enum CHAPTRE { CHAPTER_1, CHAPTER_2, CHAPTER_3, CHAPTER_4, CHAPTER_5, CHAPTER_END };
+    enum CHAPTRE { CHAPTER_1, CHAPTER_2, CHAPTER_3, CHAPTER_4, CHAPTER_5, CHAPTER_END }; //레벨 진입 마다 나오는거 
     typedef struct tQuestInfo {
         tQuestInfo(_uint iType, _uint iScriptIndex, _int iQuestIndex, _int iNextQuestIndex, _int iTargetIndex = -1, _int iTriggerIndex = -1, _int iObjectIndex = -1)
             : iType{ iType },
@@ -53,7 +53,7 @@ public:
 private:
     class CQuest* m_pCurrentQuest = { nullptr };
 
-    map<_uint, vector<QUEST_INFO>> m_QuestInfo;
+    map<_uint, vector<QUEST_INFO>> m_QuestInfo; // 퀘스트 데이터 
     _int m_iCurrentQuestIndex = { -1 };
     _int m_iCurrentChapter = { -1 };
 

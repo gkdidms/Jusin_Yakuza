@@ -1974,7 +1974,9 @@ void CRenderer::Render_OcculusionDepth()
 	{
 		if (nullptr != pGameObject)
 			pGameObject->Render_OcculusionDepth();
+		Safe_Release(pGameObject);
 	}
+	m_RenderObject[RENDER_OCCULUSION].clear();
 
 	if (FAILED(m_pGameInstance->End_MRT()))
 		return;
