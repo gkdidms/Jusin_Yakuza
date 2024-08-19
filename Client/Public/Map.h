@@ -100,6 +100,9 @@ public:
 	virtual HRESULT Render_OcculusionDepth() override;
 	virtual HRESULT Check_OcculusionCulling() override;
 
+	HRESULT Near_Render(_uint iRenderState);
+	HRESULT Far_Render(_uint iRenderState);
+
 public:
 	CTransform* Get_Transform() { return m_pTransformCom; }
 
@@ -167,6 +170,10 @@ private:
 
 private:
 	ID3D11Query* m_pOcclusionQuery = { nullptr };
+
+private:
+	_bool m_isFar = { false }; // 플레이어에서 객체가 먼 곳에 있나?
+	_bool m_isShow = { false };
 
 public:
 	HRESULT Add_Components(void* pArg);

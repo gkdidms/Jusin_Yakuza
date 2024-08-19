@@ -1970,6 +1970,11 @@ void CRenderer::Render_OcculusionDepth()
 	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_Occulusion"), m_pOcculusionDepthView)))
 		return;
 
+	m_RenderObject[RENDER_OCCULUSION].sort([](CGameObject* pSour, CGameObject* pDest)->_bool
+		{
+			return dynamic_cast<CGameObject*>(pSour)->Get_CamDistance() < dynamic_cast<CGameObject*>(pDest)->Get_CamDistance();
+		});
+
 	for (auto& pGameObject : m_RenderObject[RENDER_OCCULUSION])
 	{
 		if (nullptr != pGameObject)

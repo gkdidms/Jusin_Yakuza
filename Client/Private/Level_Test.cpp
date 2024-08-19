@@ -103,7 +103,7 @@ HRESULT CLevel_Test::Ready_Camera(const wstring& strLayerTag)
 	CameraDesc.fFovY = XMConvertToRadians(60.0f);
 	CameraDesc.fAspect = g_iWinSizeX / (_float)g_iWinSizeY;
 	CameraDesc.fNear = 0.1f;
-	CameraDesc.fFar = 3000.f;
+	CameraDesc.fFar = 200.f;
 	CameraDesc.fSpeedPecSec = 10.f;
 	CameraDesc.fRotatePecSec = XMConvertToRadians(90.f);
 
@@ -125,7 +125,7 @@ HRESULT CLevel_Test::Ready_Camera(const wstring& strLayerTag)
 	PlayerCameraDesc.fFovY = XMConvertToRadians(60.0f);
 	PlayerCameraDesc.fAspect = g_iWinSizeX / (_float)g_iWinSizeY;
 	PlayerCameraDesc.fNear = 0.1f;
-	PlayerCameraDesc.fFar = 3000.f;
+	PlayerCameraDesc.fFar = 200.f;
 	PlayerCameraDesc.fSpeedPecSec = 20.f;
 	PlayerCameraDesc.fRotatePecSec = XMConvertToRadians(90.f);
 	PlayerCameraDesc.pPlayerMatrix = dynamic_cast<CTransform*>(m_pGameInstance->Get_GameObject_Component(LEVEL_TEST, TEXT("Layer_Player"), TEXT("Com_Transform", 0)))->Get_WorldFloat4x4();
@@ -140,7 +140,7 @@ HRESULT CLevel_Test::Ready_Camera(const wstring& strLayerTag)
 	CutSceneCameraDesc.fFovY = XMConvertToRadians(60.0f);
 	CutSceneCameraDesc.fAspect = g_iWinSizeX / (_float)g_iWinSizeY;
 	CutSceneCameraDesc.fNear = 0.1f;
-	CutSceneCameraDesc.fFar = 3000.f;
+	CutSceneCameraDesc.fFar = 200.f;
 	CutSceneCameraDesc.fSpeedPecSec = 10.f;
 	CutSceneCameraDesc.fRotatePecSec = XMConvertToRadians(90.f);
 
