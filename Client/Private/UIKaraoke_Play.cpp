@@ -53,7 +53,7 @@ HRESULT CUIKaraoke_Play::Add_UIData(CUI_Object* pUIObject, wstring wstrPrototype
 {
     if (pUIObject->Get_Event())
     {
-        if (m_iCloneCount < 13)
+        if (m_iCloneCount < 15)
         {
             m_pPlayUI[m_iCloneCount].push_back(dynamic_cast<CGroup*>(pUIObject));
 
@@ -130,13 +130,7 @@ HRESULT CUIKaraoke_Play::Late_Tick(const _float& fTimeDelta)
     //for (auto& iter : m_pPlayUI)
     //    iter->Late_Tick(fTimeDelta);
 
-    for (size_t i = 0; i < UILIST_END; i++)
-    {
-        for (auto& pUI : m_pPlayUI[i])
-        {
-            pUI->Late_Tick(fTimeDelta);
-        }
-    }
+    Render_Cutsom_Sequence(fTimeDelta);
     m_Lyrics->Late_Tick(fTimeDelta);
 
     if (!m_isAnimFin)
@@ -307,6 +301,31 @@ void CUIKaraoke_Play::Update_CurrentLyricsIndex()
         }
     }
 
+}
+
+void CUIKaraoke_Play::Render_Cutsom_Sequence(const _float& fTimeDelta)
+{
+    RenderGroup_Back(fTimeDelta);
+    RenderGroup_Blue(fTimeDelta);
+
+    RenderGroup_Pressline(fTimeDelta);
+    RenderGroup_Rollline(fTimeDelta);
+    RenderGroup_Hold(fTimeDelta);
+    RenderGroup_Roll(fTimeDelta);
+
+    RenderGroup_Down(fTimeDelta);
+    RenderGroup_Left(fTimeDelta);
+    RenderGroup_Right(fTimeDelta);
+    RenderGroup_Up(fTimeDelta);
+
+    RenderGroup_Mic(fTimeDelta);
+
+    RenderGroup_CurrentBar(fTimeDelta);
+
+    RenderGroup_GoodEffect(fTimeDelta);
+    RenderGroup_GreatEffect(fTimeDelta);
+
+    RenderGroup_Grade(fTimeDelta);
 }
 
 void CUIKaraoke_Play::Change_Lyrics()
@@ -743,8 +762,11 @@ void CUIKaraoke_Play::Verse_On_LongNote(LYRICS_NOTE_DESC& Desc, _uint iLyricsInd
             _float3 vScaled = m_pPlayUI[HOLD][Desc.iBarIndex]->Get_TransformCom()->Get_Scaled();
             _float fSizeX = pNote->Get_EndTime() - pNote->Get_StartTime();
             m_pPlayUI[HOLD][Desc.iBarIndex]->Show_On_All();
-            //m_pPlayUI[HOLD][Desc.iBarIndex]->Get_TransformCom()->Set_Scale(fSizeX, vScaled.y, vScaled.z);
             m_pPlayUI[HOLD][Desc.iBarIndex]->Get_TransformCom()->Set_State(CTransform::STATE_POSITION, vCenterPos);
+
+            m_pPlayUI[PRESSLINE][Desc.iBarIndex]->Show_On_All();
+            m_pPlayUI[PRESSLINE][Desc.iBarIndex]->Get_TransformCom()->Set_State(CTransform::STATE_POSITION, vCenterPos);
+            m_pPlayUI[PRESSLINE][Desc.iBarIndex]->Get_TransformCom()->Set_Scale(fSizeX * DURATION_SCALE, vScaled.y, vScaled.z);
 
             break;
         }
@@ -768,8 +790,11 @@ void CUIKaraoke_Play::Verse_On_LongNote(LYRICS_NOTE_DESC& Desc, _uint iLyricsInd
             _float3 vScaled = m_pPlayUI[HOLD][Desc.iBarIndex]->Get_TransformCom()->Get_Scaled();
             _float fSizeX = pNote->Get_EndTime() - pNote->Get_StartTime();
             m_pPlayUI[HOLD][Desc.iBarIndex]->Show_On_All();
-            //m_pPlayUI[HOLD][Desc.iBarIndex]->Get_TransformCom()->Set_Scale(fSizeX, vScaled.y, vScaled.z);
             m_pPlayUI[HOLD][Desc.iBarIndex]->Get_TransformCom()->Set_State(CTransform::STATE_POSITION, vCenterPos);
+
+            m_pPlayUI[PRESSLINE][Desc.iBarIndex]->Show_On_All();
+            m_pPlayUI[PRESSLINE][Desc.iBarIndex]->Get_TransformCom()->Set_State(CTransform::STATE_POSITION, vCenterPos);
+            m_pPlayUI[PRESSLINE][Desc.iBarIndex]->Get_TransformCom()->Set_Scale(fSizeX * DURATION_SCALE, vScaled.y, vScaled.z);
 
             break;
         }
@@ -793,8 +818,11 @@ void CUIKaraoke_Play::Verse_On_LongNote(LYRICS_NOTE_DESC& Desc, _uint iLyricsInd
             _float3 vScaled = m_pPlayUI[HOLD][Desc.iBarIndex]->Get_TransformCom()->Get_Scaled();
             _float fSizeX = pNote->Get_EndTime() - pNote->Get_StartTime();
             m_pPlayUI[HOLD][Desc.iBarIndex]->Show_On_All();
-            //m_pPlayUI[HOLD][Desc.iBarIndex]->Get_TransformCom()->Set_Scale(fSizeX, vScaled.y, vScaled.z);
             m_pPlayUI[HOLD][Desc.iBarIndex]->Get_TransformCom()->Set_State(CTransform::STATE_POSITION, vCenterPos);
+
+            m_pPlayUI[PRESSLINE][Desc.iBarIndex]->Show_On_All();
+            m_pPlayUI[PRESSLINE][Desc.iBarIndex]->Get_TransformCom()->Set_State(CTransform::STATE_POSITION, vCenterPos);
+            m_pPlayUI[PRESSLINE][Desc.iBarIndex]->Get_TransformCom()->Set_Scale(fSizeX * DURATION_SCALE, vScaled.y, vScaled.z);
 
             break;
         }
@@ -817,9 +845,13 @@ void CUIKaraoke_Play::Verse_On_LongNote(LYRICS_NOTE_DESC& Desc, _uint iLyricsInd
             vCenterPos.m128_f32[0] = LerpFloat(vStartPos.m128_f32[0], vEndPos.m128_f32[0], 0.5f);
             _float3 vScaled = m_pPlayUI[HOLD][Desc.iBarIndex]->Get_TransformCom()->Get_Scaled();
             _float fSizeX = pNote->Get_EndTime() - pNote->Get_StartTime();
+
             m_pPlayUI[HOLD][Desc.iBarIndex]->Show_On_All();
-            //m_pPlayUI[HOLD][Desc.iBarIndex]->Get_TransformCom()->Set_Scale(fSizeX, vScaled.y, vScaled.z);
             m_pPlayUI[HOLD][Desc.iBarIndex]->Get_TransformCom()->Set_State(CTransform::STATE_POSITION, vCenterPos);
+
+            m_pPlayUI[PRESSLINE][Desc.iBarIndex]->Show_On_All();
+            m_pPlayUI[PRESSLINE][Desc.iBarIndex]->Get_TransformCom()->Set_State(CTransform::STATE_POSITION, vCenterPos);
+            m_pPlayUI[PRESSLINE][Desc.iBarIndex]->Get_TransformCom()->Set_Scale(fSizeX * DURATION_SCALE, vScaled.y, vScaled.z);
 
             break;
         }
@@ -845,6 +877,7 @@ void CUIKaraoke_Play::Verse_Off_LongNote(LYRICS_NOTE_DESC& Desc, _uint iLyricsIn
             m_pPlayUI[UP][Desc.iIndex]->Show_Off_All();
             m_pPlayUI[UP][Desc.iIndex_End]->Show_Off_All();
             m_pPlayUI[HOLD][Desc.iBarIndex]->Show_Off_All();
+            m_pPlayUI[PRESSLINE][Desc.iBarIndex]->Show_Off_All();
             break;
         }
         case 1:     //Down
@@ -852,6 +885,7 @@ void CUIKaraoke_Play::Verse_Off_LongNote(LYRICS_NOTE_DESC& Desc, _uint iLyricsIn
             m_pPlayUI[DOWN][Desc.iIndex]->Show_Off_All();
             m_pPlayUI[DOWN][Desc.iIndex_End]->Show_Off_All();
             m_pPlayUI[HOLD][Desc.iBarIndex]->Show_Off_All();
+            m_pPlayUI[PRESSLINE][Desc.iBarIndex]->Show_Off_All();
             break;
         }
         case 2:     //Left
@@ -859,6 +893,7 @@ void CUIKaraoke_Play::Verse_Off_LongNote(LYRICS_NOTE_DESC& Desc, _uint iLyricsIn
             m_pPlayUI[LEFT][Desc.iIndex]->Show_Off_All();
             m_pPlayUI[LEFT][Desc.iIndex_End]->Show_Off_All();
             m_pPlayUI[HOLD][Desc.iBarIndex]->Show_Off_All();
+            m_pPlayUI[PRESSLINE][Desc.iBarIndex]->Show_Off_All();
             break;
         }
         case 3:     //Right
@@ -866,6 +901,7 @@ void CUIKaraoke_Play::Verse_Off_LongNote(LYRICS_NOTE_DESC& Desc, _uint iLyricsIn
             m_pPlayUI[RIGHT][Desc.iIndex]->Show_Off_All();
             m_pPlayUI[RIGHT][Desc.iIndex_End]->Show_Off_All();
             m_pPlayUI[HOLD][Desc.iBarIndex]->Show_Off_All();
+            m_pPlayUI[PRESSLINE][Desc.iBarIndex]->Show_Off_All();
             break;
         }
         default:
@@ -907,8 +943,11 @@ void CUIKaraoke_Play::Verse_On_BurstNote(LYRICS_NOTE_DESC& Desc, _uint iLyricsIn
             _float3 vScaled = m_pPlayUI[ROLL][Desc.iBarIndex]->Get_TransformCom()->Get_Scaled();
             _float fSizeX = pNote->Get_EndTime() - pNote->Get_StartTime();
             m_pPlayUI[ROLL][Desc.iBarIndex]->Show_On_All();
-            //m_pPlayUI[HOLD][Desc.iBarIndex]->Get_TransformCom()->Set_Scale(fSizeX, vScaled.y, vScaled.z);
             m_pPlayUI[ROLL][Desc.iBarIndex]->Get_TransformCom()->Set_State(CTransform::STATE_POSITION, vCenterPos);
+
+            m_pPlayUI[ROLLLINE][Desc.iBarIndex]->Show_On_All();
+            m_pPlayUI[ROLLLINE][Desc.iBarIndex]->Get_TransformCom()->Set_State(CTransform::STATE_POSITION, vCenterPos);
+            m_pPlayUI[ROLLLINE][Desc.iBarIndex]->Get_TransformCom()->Set_Scale(fSizeX * DURATION_SCALE, vScaled.y, vScaled.z);
 
             break;
         }
@@ -932,8 +971,11 @@ void CUIKaraoke_Play::Verse_On_BurstNote(LYRICS_NOTE_DESC& Desc, _uint iLyricsIn
             _float3 vScaled = m_pPlayUI[ROLL][Desc.iBarIndex]->Get_TransformCom()->Get_Scaled();
             _float fSizeX = pNote->Get_EndTime() - pNote->Get_StartTime();
             m_pPlayUI[ROLL][Desc.iBarIndex]->Show_On_All();
-            //m_pPlayUI[HOLD][Desc.iBarIndex]->Get_TransformCom()->Set_Scale(fSizeX, vScaled.y, vScaled.z);
             m_pPlayUI[ROLL][Desc.iBarIndex]->Get_TransformCom()->Set_State(CTransform::STATE_POSITION, vCenterPos);
+
+            m_pPlayUI[ROLLLINE][Desc.iBarIndex]->Show_On_All();
+            m_pPlayUI[ROLLLINE][Desc.iBarIndex]->Get_TransformCom()->Set_State(CTransform::STATE_POSITION, vCenterPos);
+            m_pPlayUI[ROLLLINE][Desc.iBarIndex]->Get_TransformCom()->Set_Scale(fSizeX * DURATION_SCALE, vScaled.y, vScaled.z);
 
             break;
         }
@@ -957,8 +999,11 @@ void CUIKaraoke_Play::Verse_On_BurstNote(LYRICS_NOTE_DESC& Desc, _uint iLyricsIn
             _float3 vScaled = m_pPlayUI[ROLL][Desc.iBarIndex]->Get_TransformCom()->Get_Scaled();
             _float fSizeX = pNote->Get_EndTime() - pNote->Get_StartTime();
             m_pPlayUI[ROLL][Desc.iBarIndex]->Show_On_All();
-            //m_pPlayUI[HOLD][Desc.iBarIndex]->Get_TransformCom()->Set_Scale(fSizeX, vScaled.y, vScaled.z);
             m_pPlayUI[ROLL][Desc.iBarIndex]->Get_TransformCom()->Set_State(CTransform::STATE_POSITION, vCenterPos);
+
+            m_pPlayUI[ROLLLINE][Desc.iBarIndex]->Show_On_All();
+            m_pPlayUI[ROLLLINE][Desc.iBarIndex]->Get_TransformCom()->Set_State(CTransform::STATE_POSITION, vCenterPos);
+            m_pPlayUI[ROLLLINE][Desc.iBarIndex]->Get_TransformCom()->Set_Scale(fSizeX * DURATION_SCALE, vScaled.y, vScaled.z);
 
             break;
         }
@@ -982,8 +1027,11 @@ void CUIKaraoke_Play::Verse_On_BurstNote(LYRICS_NOTE_DESC& Desc, _uint iLyricsIn
             _float3 vScaled = m_pPlayUI[ROLL][Desc.iBarIndex]->Get_TransformCom()->Get_Scaled();
             _float fSizeX = pNote->Get_EndTime() - pNote->Get_StartTime();
             m_pPlayUI[ROLL][Desc.iBarIndex]->Show_On_All();
-            //m_pPlayUI[HOLD][Desc.iBarIndex]->Get_TransformCom()->Set_Scale(fSizeX, vScaled.y, vScaled.z);
             m_pPlayUI[ROLL][Desc.iBarIndex]->Get_TransformCom()->Set_State(CTransform::STATE_POSITION, vCenterPos);
+
+            m_pPlayUI[ROLLLINE][Desc.iBarIndex]->Show_On_All();
+            m_pPlayUI[ROLLLINE][Desc.iBarIndex]->Get_TransformCom()->Set_State(CTransform::STATE_POSITION, vCenterPos);
+            m_pPlayUI[ROLLLINE][Desc.iBarIndex]->Get_TransformCom()->Set_Scale(fSizeX* DURATION_SCALE, vScaled.y, vScaled.z);
 
             break;
         }
@@ -1009,6 +1057,7 @@ void CUIKaraoke_Play::Verse_Off_BurstNote(LYRICS_NOTE_DESC& Desc, _uint iLyricsI
             m_pPlayUI[UP][Desc.iIndex]->Show_Off_All();
             m_pPlayUI[UP][Desc.iIndex_End]->Show_Off_All();
             m_pPlayUI[ROLL][Desc.iBarIndex]->Show_Off_All();
+            m_pPlayUI[ROLLLINE][Desc.iBarIndex]->Show_Off_All();
             break;
         }
         case 1:     //Down
@@ -1016,6 +1065,7 @@ void CUIKaraoke_Play::Verse_Off_BurstNote(LYRICS_NOTE_DESC& Desc, _uint iLyricsI
             m_pPlayUI[DOWN][Desc.iIndex]->Show_Off_All();
             m_pPlayUI[DOWN][Desc.iIndex_End]->Show_Off_All();
             m_pPlayUI[ROLL][Desc.iBarIndex]->Show_Off_All();
+            m_pPlayUI[ROLLLINE][Desc.iBarIndex]->Show_Off_All();
             break;
         }
         case 2:     //Left
@@ -1023,6 +1073,7 @@ void CUIKaraoke_Play::Verse_Off_BurstNote(LYRICS_NOTE_DESC& Desc, _uint iLyricsI
             m_pPlayUI[LEFT][Desc.iIndex]->Show_Off_All();
             m_pPlayUI[LEFT][Desc.iIndex_End]->Show_Off_All();
             m_pPlayUI[ROLL][Desc.iBarIndex]->Show_Off_All();
+            m_pPlayUI[ROLLLINE][Desc.iBarIndex]->Show_Off_All();
             break;
         }
         case 3:     //Right
@@ -1030,6 +1081,7 @@ void CUIKaraoke_Play::Verse_Off_BurstNote(LYRICS_NOTE_DESC& Desc, _uint iLyricsI
             m_pPlayUI[RIGHT][Desc.iIndex]->Show_Off_All();
             m_pPlayUI[RIGHT][Desc.iIndex_End]->Show_Off_All();
             m_pPlayUI[ROLL][Desc.iBarIndex]->Show_Off_All();
+            m_pPlayUI[ROLLLINE][Desc.iBarIndex]->Show_Off_All();
             break;
         }
         default:
@@ -1058,7 +1110,11 @@ _uint CUIKaraoke_Play::Compute_Num(_uint iCount)
         return 20;
     case HOLD:
         return 5;
+    case PRESSLINE:
+        return 5;
     case ROLL:
+        return 5;
+    case ROLLLINE:
         return 5;
     case DOWN:
         return 30;
@@ -1136,4 +1192,125 @@ void CUIKaraoke_Play::Free()
 
     Safe_Release(m_Lyrics);
     //Safe_Release(m_Title);
+}
+
+void CUIKaraoke_Play::RenderGroup_Back(const _float& fTimeDelta)
+{
+    for (auto& pUI : m_pPlayUI[BACK])
+    {
+        pUI->Late_Tick(fTimeDelta);
+    }
+}
+
+void CUIKaraoke_Play::RenderGroup_Blue(const _float& fTimeDelta)
+{
+    for (auto& pUI : m_pPlayUI[BLUE])
+    {
+        pUI->Late_Tick(fTimeDelta);
+    }
+}
+
+void CUIKaraoke_Play::RenderGroup_Mic(const _float& fTimeDelta)
+{
+    for (auto& pUI : m_pPlayUI[MIC])
+    {
+        pUI->Late_Tick(fTimeDelta);
+    }
+}
+
+void CUIKaraoke_Play::RenderGroup_CurrentBar(const _float& fTimeDelta)
+{
+    for (auto& pUI : m_pPlayUI[CURRENTBAR])
+    {
+        pUI->Late_Tick(fTimeDelta);
+    }
+}
+
+void CUIKaraoke_Play::RenderGroup_GoodEffect(const _float& fTimeDelta)
+{
+    for (auto& pUI : m_pPlayUI[GOODEFFECT])
+    {
+        pUI->Late_Tick(fTimeDelta);
+    }
+}
+
+void CUIKaraoke_Play::RenderGroup_Grade(const _float& fTimeDelta)
+{
+    for (auto& pUI : m_pPlayUI[GRADE])
+    {
+        pUI->Late_Tick(fTimeDelta);
+    }
+}
+
+void CUIKaraoke_Play::RenderGroup_GreatEffect(const _float& fTimeDelta)
+{
+    for (auto& pUI : m_pPlayUI[GREATEFFECT])
+    {
+        pUI->Late_Tick(fTimeDelta);
+    }
+}
+
+
+void CUIKaraoke_Play::RenderGroup_Hold(const _float& fTimeDelta)
+{
+    for (auto& pUI : m_pPlayUI[HOLD])
+    {
+        pUI->Late_Tick(fTimeDelta);
+    }
+}
+
+void CUIKaraoke_Play::RenderGroup_Pressline(const _float& fTimeDelta)
+{
+    for (auto& pUI : m_pPlayUI[PRESSLINE])
+    {
+        pUI->Late_Tick(fTimeDelta);
+    }
+}
+
+void CUIKaraoke_Play::RenderGroup_Roll(const _float& fTimeDelta)
+{
+    for (auto& pUI : m_pPlayUI[ROLL])
+    {
+        pUI->Late_Tick(fTimeDelta);
+    }
+}
+
+void CUIKaraoke_Play::RenderGroup_Rollline(const _float& fTimeDelta)
+{
+    for (auto& pUI : m_pPlayUI[ROLLLINE])
+    {
+        pUI->Late_Tick(fTimeDelta);
+    }
+}
+
+void CUIKaraoke_Play::RenderGroup_Down(const _float& fTimeDelta)
+{
+    for (auto& pUI : m_pPlayUI[DOWN])
+    {
+        pUI->Late_Tick(fTimeDelta);
+    }
+}
+
+void CUIKaraoke_Play::RenderGroup_Left(const _float& fTimeDelta)
+{
+    for (auto& pUI : m_pPlayUI[LEFT])
+    {
+        pUI->Late_Tick(fTimeDelta);
+    }
+}
+
+void CUIKaraoke_Play::RenderGroup_Right(const _float& fTimeDelta)
+{
+    for (auto& pUI : m_pPlayUI[RIGHT])
+    {
+        pUI->Late_Tick(fTimeDelta);
+    }
+}
+
+void CUIKaraoke_Play::RenderGroup_Up(const _float& fTimeDelta)
+{
+    for (auto& pUI : m_pPlayUI[UP])
+    {
+        pUI->Late_Tick(fTimeDelta);
+    }
 }

@@ -10,7 +10,7 @@ private:
     const _float DURATION_SCALE = 0.3f;
 
 public:
-    enum UILIST { BACK, BLUE, MIC, CURRENTBAR, GOODEFFECT, GRADE, GREATEFFECT, HOLD, ROLL, DOWN, LEFT, RIGHT, UP, UILIST_END };
+    enum UILIST { BACK, BLUE, MIC, CURRENTBAR, GOODEFFECT, GRADE, GREATEFFECT, HOLD, PRESSLINE, ROLL, ROLLLINE, DOWN, LEFT, RIGHT, UP, UILIST_END };
 
     struct LYRICS_DESC
     {
@@ -62,6 +62,7 @@ private:
 
 private:
     void Update_CurrentLyricsIndex();
+    void Render_Cutsom_Sequence(const _float& fTimeDelta);          // 레이트틱을 원하는 순서대로 몰아 부른다.
 
     void Change_Lyrics();
     void Setting_BackUI(LYRICS_DESC Desc, _fvector vPos, _uint iLyricsIndex);
@@ -86,6 +87,27 @@ private:
 
     // 0 일반노드    1 유지 노드     2 연타 노드
     // 0 UP        1 DOWN        2 LEFT        3 RIGHT
+
+    /* Render Group */
+    //enum BACK, BLUE, MIC, CURRENTBAR, GOODEFFECT, GRADE, GREATEFFECT, HOLD, 
+    // PRESSLINE, ROLL, ROLLLINE, DOWN, LEFT, RIGHT, UP
+
+private:
+    void RenderGroup_Back(const _float& fTimeDelta);
+    void RenderGroup_Blue(const _float& fTimeDelta);
+    void RenderGroup_Mic(const _float& fTimeDelta);
+    void RenderGroup_CurrentBar(const _float& fTimeDelta);
+    void RenderGroup_GoodEffect(const _float& fTimeDelta);
+    void RenderGroup_Grade(const _float& fTimeDelta);
+    void RenderGroup_GreatEffect(const _float& fTimeDelta);
+    void RenderGroup_Hold(const _float& fTimeDelta);
+    void RenderGroup_Pressline(const _float& fTimeDelta);
+    void RenderGroup_Roll(const _float& fTimeDelta);
+    void RenderGroup_Rollline(const _float& fTimeDelta);
+    void RenderGroup_Down(const _float& fTimeDelta);
+    void RenderGroup_Left(const _float& fTimeDelta);
+    void RenderGroup_Right(const _float& fTimeDelta);
+    void RenderGroup_Up(const _float& fTimeDelta);
 
 private:
     _int m_iCloneCount = { 0 };

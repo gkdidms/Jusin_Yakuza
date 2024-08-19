@@ -33,6 +33,8 @@ public:
 private:
     void KeyInput();
 
+    void Playing_KeyInput();
+
     void Setting_NoteUIs();
     
 public:

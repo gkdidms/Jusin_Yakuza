@@ -66,6 +66,8 @@ void CKaraokeManager::Tick(const _float& fTimeDelta)
 			}
 		}
 
+		Playing_KeyInput();
+
 	}
 
 }
@@ -76,6 +78,32 @@ void CKaraokeManager::KeyInput()
 	{
 		m_pUIManager->Open_Scene(TEXT("Karaoke_Select"));
 		m_isStart = true;
+	}
+}
+
+void CKaraokeManager::Playing_KeyInput()
+{
+
+	// 키입력에 필요한거
+	// 유지(HOLD), 떼기(AWAY), 연타하기(TAP) 전부 사용해야한다.
+	if (m_pGameInstance->GetKeyState(DIK_UP) == TAP)
+	{
+
+	}
+
+	if (m_pGameInstance->GetKeyState(DIK_DOWN) == TAP)
+	{
+
+	}
+
+	if (m_pGameInstance->GetKeyState(DIK_LEFT) == TAP)
+	{
+
+	}
+
+	if (m_pGameInstance->GetKeyState(DIK_RIGHT) == TAP)
+	{
+
 	}
 }
 
