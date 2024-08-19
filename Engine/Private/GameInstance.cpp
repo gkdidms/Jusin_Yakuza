@@ -114,7 +114,6 @@ void CGameInstance::Tick(const _float& fTimeDelta)
 	m_pFrustum->Tick();
 
 	//Occulusion Culling 먼저 돌기
-	m_pRenderer->Occulusion_Culling_Draw();
 
 	m_pGameObject_Manager->Late_Tick(fTimeDelta);
 
@@ -253,6 +252,11 @@ vector<CGameObject*> CGameInstance::Get_GameObjects(_uint iLevelIndex, const wst
 void CGameInstance::Add_Renderer(CRenderer::RENDERER_STATE eRenderState, CGameObject* pGameObject)
 {
 	m_pRenderer->Add_Renderer(eRenderState, pGameObject);
+}
+
+void CGameInstance::Occulusion_Culling_Draw()
+{
+	m_pRenderer->Occulusion_Culling_Draw();
 }
 
 void CGameInstance::Set_HDR(_bool isHDR)
@@ -679,14 +683,14 @@ ID3D11Texture2D* CGameInstance::Get_TextureBuffer(const wstring& strTargetTag)
 	return m_pRenderTarget_Manager->Get_TextureBuffer(strTargetTag);
 }
 
-void CGameInstance::Bind_ComputeRenderTargetSRV(const wstring& strTargetTag)
+void CGameInstance::Bind_ComputeRenderTargetSRV(const wstring& strTargetTag, _uint iSlot)
 {
-	m_pRenderTarget_Manager->Bind_ComputeRenderTargetSRV(strTargetTag);
+	m_pRenderTarget_Manager->Bind_ComputeRenderTargetSRV(strTargetTag, iSlot);
 }
 
-void CGameInstance::Bind_ComputeRenderTargetUAV(const wstring& strTargetTag)
+void CGameInstance::Bind_ComputeRenderTargetUAV(const wstring& strTargetTag, _uint iSlot)
 {
-	m_pRenderTarget_Manager->Bind_ComputeRenderTargetUAV(strTargetTag);
+	m_pRenderTarget_Manager->Bind_ComputeRenderTargetUAV(strTargetTag, iSlot);
 }
 
 void CGameInstance::Transform_ToLocalSpace(_fmatrix WorldMatrixInv)

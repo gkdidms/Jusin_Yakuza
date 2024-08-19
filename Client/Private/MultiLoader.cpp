@@ -779,10 +779,10 @@ HRESULT CMultiLoader::Loading_Default()
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Shader_VtxCube"),
 		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxCube.hlsl"), VTXCUBE::Elements, VTXCUBE::iNumElements))))
 		return E_FAIL;
-	///* For.Prototype_Component_Shader_VtxCube */
-	//if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Shader_VtxCube_Occulusion"),
-	//	CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxCube_Occulusion.hlsl"), VTXCUBE_OCCULUSION::Elements, VTXCUBE_OCCULUSION::iNumElements))))
-	//	return E_FAIL;
+	/* For.Prototype_Component_Shader_VtxCube */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Shader_VtxCube_Occulusion"),
+		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxCube_Occulusion.hlsl"), VTXCUBE_OCCULUSION::Elements, VTXCUBE_OCCULUSION::iNumElements))))
+		return E_FAIL;
 	/* For.Prototype_Component_Shader_Aura*/
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Shader_Aura"),
 		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_Aura.hlsl"), VTXINSTANCE_POINT::Elements, VTXINSTANCE_POINT::iNumElements))))

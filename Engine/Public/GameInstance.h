@@ -90,6 +90,7 @@ public:
     /* Renderer */
 public:
     void Add_Renderer(CRenderer::RENDERER_STATE eRenderState, class CGameObject* pGameObject);
+    void Occulusion_Culling_Draw();
     void Set_HDR(_bool isHDR);
     void Set_HDRLight(_float fLight); // HDR ºû ¼¼±â Á¶Àý 
     _bool isHDR();
@@ -185,8 +186,8 @@ public:
     HRESULT Clear_RenderTarget(const wstring& strTargetTag);
 
     ID3D11Texture2D* Get_TextureBuffer(const wstring& strTargetTag);
-    void Bind_ComputeRenderTargetSRV(const wstring& strTargetTag);
-    void Bind_ComputeRenderTargetUAV(const wstring& strTargetTag);
+    void Bind_ComputeRenderTargetSRV(const wstring& strTargetTag, _uint iSlot = 0);
+    void Bind_ComputeRenderTargetUAV(const wstring& strTargetTag, _uint iSlot = 0);
 
     /* Frustum*/
 public:

@@ -15,6 +15,7 @@ public:
     virtual HRESULT Initialize(void* pArg);
     virtual void Tick();
     virtual HRESULT Render();
+    virtual HRESULT Render_Compute();
 
 protected:
     class CGameInstance* m_pGameInstance = { nullptr };

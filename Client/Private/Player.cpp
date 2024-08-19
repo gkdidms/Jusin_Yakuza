@@ -196,10 +196,20 @@ void CPlayer::Tick(const _float& fTimeDelta)
 	}
 	if (m_pGameInstance->GetKeyState(DIK_9) == TAP)
 	{
-		m_pUIManager->Open_Scene(TEXT("StoreImage"));
+		m_pUIManager->Open_Scene(TEXT("Title"));
 	}
-
-
+	if (m_pGameInstance->GetKeyState(DIK_7) == TAP)
+	{
+		m_pUIManager->Open_Scene(TEXT("QTE"));
+	}
+	if (m_pGameInstance->GetKeyState(DIK_5) == TAP)
+	{
+		m_pUIManager->Fade_Out();
+	}
+	if (m_pGameInstance->GetKeyState(DIK_6) == TAP)
+	{
+		m_pUIManager->Fade_In();
+	}
 	Synchronize_Root(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")));
 
 #ifdef _DEBUG
@@ -284,7 +294,7 @@ void CPlayer::Tick(const _float& fTimeDelta)
 	Setting_Target_Item();
 	//Setting_Target_Wall();
 
-	m_pQTEMgr->Tick(fTimeDelta);
+	//m_pQTEMgr->Tick(fTimeDelta);
 }
 
 void CPlayer::Late_Tick(const _float& fTimeDelta)

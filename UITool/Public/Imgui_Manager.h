@@ -107,7 +107,7 @@ private:
 	_float4 m_vColor = {};
 	_uint m_iBinaryPick = { WORLD_END };
 
-
+	_bool m_isCircle = { false };
 	vector<wstring> m_Font;
 	_int m_FontIndex = { 0 };
 	//파일경로
