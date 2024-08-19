@@ -692,12 +692,11 @@
     <ClCompile Include="..\Private\Level_NishikiWalk.cpp">
       <Filter>01.Levels\12.NishikiWalk</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\UIQTE.cpp" />
-    <ClCompile Include="..\private\Subtitle.cpp">
-      <Filter>07.UI</Filter>
+    <ClCompile Include="..\Private\UIQTE.cpp">
+      <Filter>95.Utility\05.UIManager\UIScene\UIQTE</Filter>
     </ClCompile>
-    <ClCompile Include="..\Private\KaraokeQuest.cpp">
-      <Filter>03.QuestManager\Quest\Karaoke</Filter>
+    <ClCompile Include="..\Private\UIFade.cpp">
+      <Filter>95.Utility\05.UIManager\UIScene\UIFade</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Chapter3_0.cpp">
       <Filter>03.QuestManager\Quest\Main\Chapter_3\0</Filter>
@@ -707,6 +706,12 @@
     </ClCompile>
     <ClCompile Include="..\Private\Chapter4_0.cpp">
       <Filter>03.QuestManager\Quest\Main\Chapter_4\0</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\KaraokeQuest.cpp">
+      <Filter>03.QuestManager\Quest\Karaoke</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Subtitle.cpp">
+      <Filter>07.UI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1431,12 +1436,11 @@
     <ClInclude Include="..\Public\Level_NishikiWalk.h">
       <Filter>01.Levels\12.NishikiWalk</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\UIQTE.h" />
-    <ClInclude Include="..\public\Subtitle.h">
-      <Filter>07.UI</Filter>
+    <ClInclude Include="..\Public\UIQTE.h">
+      <Filter>95.Utility\05.UIManager\UIScene\UIQTE</Filter>
     </ClInclude>
-    <ClInclude Include="..\Public\KaraokeQuest.h">
-      <Filter>03.QuestManager\Quest\Karaoke</Filter>
+    <ClInclude Include="..\Public\UIFade.h">
+      <Filter>95.Utility\05.UIManager\UIScene\UIFade</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\Chapter3_0.h">
       <Filter>03.QuestManager\Quest\Main\Chapter_3\0</Filter>
@@ -1446,6 +1450,12 @@
     </ClInclude>
     <ClInclude Include="..\Public\Chapter4_0.h">
       <Filter>03.QuestManager\Quest\Main\Chapter_4\0</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\KaraokeQuest.h">
+      <Filter>03.QuestManager\Quest\Karaoke</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Subtitle.h">
+      <Filter>07.UI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -2230,6 +2240,12 @@
     </Filter>
     <Filter Include="03.QuestManager\Quest\Main\Chapter_4\0">
       <UniqueIdentifier>{b1e1234c-ff0e-4849-8af9-37743d9670a6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\05.UIManager\UIScene\UIQTE">
+      <UniqueIdentifier>{b1a36725-e5c0-4191-9517-a4f1417bd9b1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\05.UIManager\UIScene\UIFade">
+      <UniqueIdentifier>{1a6c981b-ca70-4f90-9dce-c4dc34219b57}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

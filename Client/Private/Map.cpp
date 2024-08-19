@@ -187,21 +187,16 @@ void CMap::Late_Tick(const _float& fTimeDelta)
 		// Renderer 추가 및 벡터에 추가
 	}
 
-	/*if (true == m_pGameInstance->isIn_WorldFrustum(worldPos, fScale * 1.5))
-	{
+	if (true == m_pGameInstance->isIn_WorldFrustum(m_pTransformCom->Get_State(CTransform::STATE_POSITION), m_pModelCom->Get_LocalModelSize().x))
+	{	
+		if (Check_Render())
+		{
+			Add_Renderer(fTimeDelta);
+			m_pGameInstance->Add_Renderer(CRenderer::RENDER_SHADOWOBJ, this);
+		}
+	}
 
-	}*/
-
-	Add_Renderer(fTimeDelta);
-	m_pGameInstance->Add_Renderer(CRenderer::RENDER_SHADOWOBJ, this);
-	
-	//if (true == m_bRender)
-	//{
-	//	Add_Renderer(fTimeDelta);
-	//	m_pGameInstance->Add_Renderer(CRenderer::RENDER_SHADOWOBJ, this);
-	//}
-
-
+	//m_pGameInstance->Add_Renderer(CRenderer::RENDER_OCCULUSION, this);
 }
 
 HRESULT CMap::Render()

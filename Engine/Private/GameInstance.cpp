@@ -208,6 +208,11 @@ _bool CGameInstance::Get_SoundEnd(const wstring pSoundKey, CHANNELID eID)
 	return m_pSound_Manager->Get_End(pSoundKey, eID);
 }
 
+void CGameInstance::Set_SoundPosition(const wstring pSoundKey, CHANNELID eID, _float fSeconds)
+{
+	m_pSound_Manager->Set_SoundPosition(pSoundKey, eID, fSeconds);
+}
+
 HRESULT CGameInstance::Add_GameObject_Prototype(const wstring strGameObjectTag, CGameObject* pGameObject)
 {
 	return m_pGameObject_Manager->Add_GameObject_Prototype(strGameObjectTag, pGameObject);
