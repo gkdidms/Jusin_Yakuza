@@ -301,8 +301,6 @@ void CUIKaraoke_Play::Update_CurrentLyricsIndex()
 {
     for (size_t i = 0; i < m_LyricsTime.size(); i++)
     {
-        if (m_iCurLyricsIndex != -1 && i < m_iCurLyricsIndex) continue;
-
         if (m_LyricsTime[i].fTime <= m_fCurSoundTime)
         {
             m_iCurLyricsIndex = i;
@@ -440,7 +438,7 @@ void CUIKaraoke_Play::Setting_BlueUI(LYRICS_DESC Desc, _fvector vPos, _uint iLyr
 
         // 1. 파란색바의 스케일 조정
         _float3 vScaled = m_pPlayUI[BACK][m_LyricsTime[m_iCurLyricsIndex].iSocketIndex]->Get_TransformCom()->Get_Scaled();
-        m_pPlayUI[BLUE][m_LyricsTime[m_iCurLyricsIndex].iSocketIndex]->Get_TransformCom()->Set_Scale(fSize, vScaled.y, vScaled.z);
+        m_pPlayUI[BLUE][m_LyricsTime[m_iCurLyricsIndex].iSocketIndex]->Get_TransformCom()->Set_Scale(fSize < 0.01f ? 0.01f : fSize, vScaled.y, vScaled.z);
 
         _float a = fSize * 0.5f * (m_pPlayUI[BLUE][m_LyricsTime[m_iCurLyricsIndex].iSocketIndex]->Get_PartObject(1)->Get_TransformCom()->Get_Scaled().x);
         _float b = fSize * 0.5f * (m_pPlayUI[BLUE][m_LyricsTime[m_iCurLyricsIndex].iSocketIndex]->Get_PartObject(0)->Get_TransformCom()->Get_Scaled().x
