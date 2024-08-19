@@ -100,6 +100,7 @@ public:
 	virtual HRESULT Render_OcculusionDepth() override;
 	virtual HRESULT Check_OcculusionCulling() override;
 
+	_bool isOcculusionDepth();
 	HRESULT Near_Render(_uint iRenderState);
 	HRESULT Far_Render(_uint iRenderState);
 
@@ -179,9 +180,6 @@ public:
 	HRESULT Add_Components(void* pArg);
 	HRESULT Bind_ShaderResources();
 	HRESULT Reset_Bind();
-
-public:
-	_bool Check_Render();
 
 public:
 	static CMap* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
