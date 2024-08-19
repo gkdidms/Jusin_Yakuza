@@ -180,147 +180,42 @@ void CMap::Late_Tick(const _float& fTimeDelta)
 
 HRESULT CMap::Render()
 {
-#ifdef _DEBUG
-	for (auto& iter : m_vColliders)
-		m_pGameInstance->Add_DebugComponent(iter);
+//#ifdef _DEBUG
+//	for (auto& iter : m_vColliders)
+//		m_pGameInstance->Add_DebugComponent(iter);
+//
+//#endif
 
+#ifdef _DEBUG
+
+	//if (m_pGameInstance->Get_RenderState() == CRenderer::RENDER_NONBLENDER)
+	//{
+	//	_float4x4 CubeWorldMatrix;
+	//	XMStoreFloat4x4(&CubeWorldMatrix, m_CubeWorldMatrix);
+	//	if (FAILED(m_pCubeShaderCom->Bind_Matrix("g_WorldMatrix", &CubeWorldMatrix)))
+	//		return E_FAIL;
+	//	//if (FAILED(m_pTransformCom->Bind_ShaderMatrix(m_pShaderCom, "g_WorldMatrix")))
+	//	//	return E_FAIL;
+
+	//	if (FAILED(m_pCubeShaderCom->Bind_Matrix("g_ViewMatrix", m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_VIEW))))
+	//		return E_FAIL;
+	//	if (FAILED(m_pCubeShaderCom->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_PROJ))))
+	//		return E_FAIL;
+
+	//	if (FAILED(m_pCubeShaderCom->Bind_RawValue("g_fFar", m_pGameInstance->Get_CamFar(), sizeof(_float))))
+	//		return E_FAIL;
+
+	//	m_pCubeShaderCom->Begin(1);
+
+	//	m_pVIBufferCom->Render();
+	//}
 #endif
+
+	
 
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
 
-#pragma region mesh컬링전Render
-	//_uint	iNumMeshes = m_pModelCom->Get_NumMeshes();
-	//vector<CMesh*> Meshes = m_pModelCom->Get_Meshes();
-	//for (size_t i = 0; i < iNumMeshes; i++)
-	//{
-	//	if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
-	//		return E_FAIL;
-
-	//	_bool isRS = true;
-	//	_bool isRD = true;
-	//	if (!strcmp(Meshes[i]->Get_Name(), "box4783"))
-	//	{
-	//		isRS = false;
-	//		isRD = false;
-	//	}
-
-	//	if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RSTexture", i, aiTextureType_SPECULAR)))
-	//		isRS = false;
-	//	m_pShaderCom->Bind_RawValue("g_isRS", &isRS, sizeof(_bool));
-
-	//	if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RDTexture", i, aiTextureType_OPACITY)))
-	//		isRD = false;
-
-	//	m_pShaderCom->Bind_RawValue("g_isRD", &isRD, sizeof(_bool));
-
-	//	bool	bNormalExist = m_pModelCom->Check_Exist_Material(i, aiTextureType_NORMALS);
-	//	// Normal texture가 있을 경우
-	//	if (true == bNormalExist)
-	//	{
-	//		m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS);
-
-	//		if (FAILED(m_pShaderCom->Bind_RawValue("g_bExistNormalTex", &bNormalExist, sizeof(bool))))
-	//			return E_FAIL;
-	//	}
-	//	else
-	//	{
-	//		if (FAILED(m_pShaderCom->Bind_RawValue("g_bExistNormalTex", &bNormalExist, sizeof(bool))))
-	//			return E_FAIL;
-	//	}
-
-	//	bool	bRMExist = m_pModelCom->Check_Exist_Material(i, aiTextureType_METALNESS);
-	//	if (true == bRMExist)
-	//	{
-	//		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RMTexture", i, aiTextureType_METALNESS)))
-	//			return E_FAIL;
-
-	//		if (FAILED(m_pShaderCom->Bind_RawValue("g_bExistRMTex", &bRMExist, sizeof(bool))))
-	//			return E_FAIL;
-	//	}
-	//	else
-	//	{
-	//		if (FAILED(m_pShaderCom->Bind_RawValue("g_bExistRMTex", &bRMExist, sizeof(bool))))
-	//			return E_FAIL;
-	//	}
-
-	//	bool	bRSExist = m_pModelCom->Check_Exist_Material(i, aiTextureType_SPECULAR);
-	//	if (true == bRSExist)
-	//	{
-	//		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RSTexture", i, aiTextureType_SPECULAR)))
-	//			return E_FAIL;
-
-	//		if (FAILED(m_pShaderCom->Bind_RawValue("g_bExistRSTex", &bRSExist, sizeof(bool))))
-	//			return E_FAIL;
-	//	}
-	//	else
-	//	{
-	//		if (FAILED(m_pShaderCom->Bind_RawValue("g_bExistRSTex", &bRSExist, sizeof(bool))))
-	//			return E_FAIL;
-	//	}
-
-	//	if (1 == m_iShaderPassNum)
-	//	{
-	//		// 유리문 처리
-	//		if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_NonBlendDiffuse"), m_pShaderCom, "g_RefractionTexture")))
-	//			return E_FAIL;
-	//	}
-	//	else if (2 == m_iShaderPassNum)
-	//	{
-	//		//m_pTexture->Bind_ShaderResource(m_pShaderCom, "g_NoiseTexture", 0);
-
-	//		// 웅덩이
-	//		if (FAILED(m_pShaderCom->Bind_RawValue("g_fTimeDelta", &m_fWaterDeltaTime, sizeof(float))))
-	//			return E_FAIL;
-
-	//		if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_NonBlendDiffuse"), m_pShaderCom, "g_RefractionTexture")))
-	//			return E_FAIL;
-
-	//		if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_NonBlendDepth"), m_pShaderCom, "g_DepthTexture")))
-	//			return E_FAIL;
-
-	//		if (FAILED(m_pShaderCom->Bind_RawValue("g_vCamPosition", m_pGameInstance->Get_CamPosition_Float4(), sizeof(_float4))))
-	//			return E_FAIL;
-
-	//		if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrixInv", m_pGameInstance->Get_Transform_Inverse_Float4x4(CPipeLine::D3DTS_VIEW))))
-	//			return E_FAIL;
-	//		if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrixInv", m_pGameInstance->Get_Transform_Inverse_Float4x4(CPipeLine::D3DTS_PROJ))))
-	//			return E_FAIL;
-	//		if (FAILED(m_pShaderCom->Bind_Matrix("g_ReflectViewMatrix", m_pGameInstance->Get_ReflectViewMatrix())))
-	//			return E_FAIL;
-
-	//		if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_BackBlurReverse"), m_pShaderCom, "g_BlurReverseTexture")))
-	//			return E_FAIL;
-
-	//	}
-
-	//	const char* defaultMesh = "DEFAULTMESH";
-	//	const char* glassMesh = "GLASSMESH";
-	//	const char* decalMesh = "DECALMESH";
-	//	const char* signMesh = "SIGNMESH";
-
-	//	if (0 == strcmp(Meshes[i]->Get_Name(), defaultMesh))
-	//	{
-	//		m_pShaderCom->Begin(SHADER_DEFAULT_MAP);
-	//	}
-	//	else if (0 == strcmp(Meshes[i]->Get_Name(), glassMesh))
-	//	{
-	//		m_pShaderCom->Begin(SHADER_GLASS);
-	//	}
-	//	else if (0 == strcmp(Meshes[i]->Get_Name(), decalMesh))
-	//	{
-	//		m_pShaderCom->Begin(SHADER_DECAL);
-	//	}
-	//	else if (0 == strcmp(Meshes[i]->Get_Name(), signMesh))
-	//	{
-	//		m_pShaderCom->Begin(SHADER_SIGN);
-	//	}
-
-
-
-	//	m_pModelCom->Render(i);
-	//}
-#pragma endregion
 
 	vector<CMesh*> Meshes = m_pModelCom->Get_Meshes();
 
@@ -1483,36 +1378,46 @@ HRESULT CMap::Add_Components(void* pArg)
 
 
 	// Occulusion Culling을 위한 scale 파악
-	CVIBuffer_AABBCube::AABBCUBE_DESC        aabbDesc;
-
 	if (0 < gameobjDesc->iColliderNum)
 	{
-		aabbDesc.vScale = gameobjDesc->pColliderDesc[0].vExtents;
-		//aabbDesc.vScale.x *= 1.1;
-		//aabbDesc.vScale.y *= 1.1;
-		//aabbDesc.vScale.z *= 1.1;
 
-		m_CubeWorldMatrix = gameobjDesc->vStartPos;
+		m_CubeWorldMatrix = XMMatrixIdentity();
+		m_CubeWorldMatrix.r[3].m128_f32[0] = gameobjDesc->vStartPos.r[3].m128_f32[0];
+		m_CubeWorldMatrix.r[3].m128_f32[1] = gameobjDesc->vStartPos.r[3].m128_f32[1] + gameobjDesc->pColliderDesc[0].vCenter.y;
+		m_CubeWorldMatrix.r[3].m128_f32[2] = gameobjDesc->vStartPos.r[3].m128_f32[2];
 
-		m_CubeWorldMatrix.r[3].m128_f32[1] = aabbDesc.vScale.y * 0.5f;
+		m_CubeWorldMatrix.r[0].m128_f32[0] = gameobjDesc->pColliderDesc[0].vExtents.x;
+		m_CubeWorldMatrix.r[1].m128_f32[1] = gameobjDesc->pColliderDesc[0].vExtents.y;
+		m_CubeWorldMatrix.r[2].m128_f32[2] = gameobjDesc->pColliderDesc[0].vExtents.z;
+
+		
 	}
 	else
 	{
-		aabbDesc.vScale = m_pModelCom->Get_LocalModelSize();
-		aabbDesc.vScale.x *= 1.1;
-		aabbDesc.vScale.y *= 1.1;
-		aabbDesc.vScale.z *= 1.1;
+		/*_float3 vScale = m_pModelCom->Get_LocalModelSize();
 
+		m_CubeWorldMatrix = XMMatrixIdentity();
 		m_CubeWorldMatrix = gameobjDesc->vStartPos;
 
-		m_CubeWorldMatrix.r[3].m128_f32[1] += aabbDesc.vScale.y;
+		m_CubeWorldMatrix.r[3].m128_f32[1] += aabbDesc.vScale.y;*/
 	}
+
+	_float3 vScale = m_pModelCom->Get_LocalModelSize();
+
+	m_CubeWorldMatrix = XMMatrixIdentity();
+	m_CubeWorldMatrix.r[3].m128_f32[0] = gameobjDesc->vStartPos.r[3].m128_f32[0];
+	m_CubeWorldMatrix.r[3].m128_f32[1] = gameobjDesc->vStartPos.r[3].m128_f32[1] + vScale.y * 0.5;
+	m_CubeWorldMatrix.r[3].m128_f32[2] = gameobjDesc->vStartPos.r[3].m128_f32[2];
+
+	m_CubeWorldMatrix.r[0].m128_f32[0] = vScale.x;
+	m_CubeWorldMatrix.r[1].m128_f32[1] = vScale.y;
+	m_CubeWorldMatrix.r[2].m128_f32[2] = vScale.z;
 
 	
 	// Occulusion Culling을 위한
 	/* For.Com_SubModel */
 	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_VIBuffer_AABBCube"),
-		TEXT("Com_SubModel"), reinterpret_cast<CComponent**>(&m_pVIBufferCom), &aabbDesc)))
+		TEXT("Com_SubModel"), reinterpret_cast<CComponent**>(&m_pVIBufferCom))))
 		return E_FAIL;
 
 	/* For.Com_SubShader */
@@ -1526,7 +1431,7 @@ HRESULT CMap::Add_Components(void* pArg)
 		return E_FAIL;
 
 
-	XMMATRIX worldProjView = m_pTransformCom->Get_WorldMatrix() * m_pGameInstance->Get_Transform_Matrix(CPipeLine::D3DTS_VIEW) * m_pGameInstance->Get_Transform_Matrix(CPipeLine::D3DTS_PROJ);
+	XMMATRIX worldProjView = m_CubeWorldMatrix * m_pGameInstance->Get_Transform_Matrix(CPipeLine::D3DTS_VIEW) * m_pGameInstance->Get_Transform_Matrix(CPipeLine::D3DTS_PROJ);
 	CMap::ObjectData objectData = { worldProjView, *m_pGameInstance->Get_CamFar()};
 
 	D3D11_BUFFER_DESC cbDesc = {};
