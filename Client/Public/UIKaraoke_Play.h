@@ -7,6 +7,7 @@ class CUIKaraoke_Play :
 private:
     const _float FADE_START_POSITION = 64.479f;
     const _float CUTSCENE_START_POSITION = 64.9f;
+    const _float DURATION_SCALE = 0.3f;
 
 public:
     enum UILIST { BACK, BLUE, MIC, CURRENTBAR, GOODEFFECT, GRADE, GREATEFFECT, HOLD, ROLL, DOWN, LEFT, RIGHT, UP, UILIST_END };
@@ -23,6 +24,8 @@ public:
         class CNoteBase* pNote;
         _bool   isVisible = { false };
         _uint iIndex;
+        _uint iIndex_End;
+        _uint iBarIndex;
     };
 
 protected:
@@ -70,7 +73,14 @@ private:
     void Verse_On_SingleNote(LYRICS_NOTE_DESC& Desc, _uint iLyricsIndex);
     void Verse_Off_SingleNote(LYRICS_NOTE_DESC& Desc, _uint iLyricsIndex);
 
+    void Verse_On_LongNote(LYRICS_NOTE_DESC& Desc, _uint iLyricsIndex);
+    void Verse_Off_LongNote(LYRICS_NOTE_DESC& Desc, _uint iLyricsIndex);
+
+    void Verse_On_BurstNote(LYRICS_NOTE_DESC& Desc, _uint iLyricsIndex);
+    void Verse_Off_BurstNote(LYRICS_NOTE_DESC& Desc, _uint iLyricsIndex);
+
     _uint Compute_Num(_uint iCount);
+    _fvector Compute_UIPosition(LYRICS_NOTE_DESC& Desc, _uint iLyricsIndex, _float fRatio);
 
     _uint Trans_ButtonType_To_UI(_uint iNum);
 

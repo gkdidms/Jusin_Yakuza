@@ -14,6 +14,11 @@ protected:
     CNoteLong(_uint iNoteType, _uint iButtonType, _float fStartTime, _float fEndTime);
     virtual ~CNoteLong() = default;
 
+public:
+    _float Get_EndTime() {
+        return m_fEndTime;
+    };
+
 private:
     _float m_fEndTime = { 0.f };
 
