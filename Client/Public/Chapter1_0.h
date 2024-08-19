@@ -16,6 +16,7 @@ public:
 public:
 	class CBackground* m_pBackground = { nullptr };
 	_bool m_isTitleFinished = { false };
+	_bool m_isTitleStart = { false };
 
 public:
 	static CChapter1_0* Create(void* pArg);

@@ -12,8 +12,9 @@ private:
 	virtual ~CMesh() = default;
 
 public:
-	HRESULT Initialize(CModel::MODELTYPE eModelType, const aiMesh* pAIMesh, _fmatrix PreTransformMatrix, const vector<class CBone*>& Bones, _bool isTool);
-	HRESULT Initialize(CModel::MODELTYPE eModelType, const BAiMesh* pAIMesh, _fmatrix PreTransformMatrix, const vector<class CBone*>& Bones, _bool isTool);
+	HRESULT Initialize_Prototype(CModel::MODELTYPE eModelType, const aiMesh* pAIMesh, _fmatrix PreTransformMatrix, const vector<class CBone*>& Bones, _bool isTool);
+	HRESULT Initialize_Prototype(CModel::MODELTYPE eModelType, const BAiMesh* pAIMesh, _fmatrix PreTransformMatrix, const vector<class CBone*>& Bones, _bool isTool);
+	HRESULT Initialize();
 	HRESULT Render(_bool isTool);
 
 	HRESULT Ready_Vertices_For_NonAnimMesh(const aiMesh* pAIMesh, _fmatrix PreTransformMatrix);
@@ -45,10 +46,6 @@ public:
 	_float		Get_MeshScale() { return m_fScale; }
 	_float3		Get_MaxPoints() { return m_vMaxPosition; }
 	_float3		Get_MinPoints() { return m_vMinPosition; }
-
-	_bool isCloth();
-	_bool isSkin();
-	_bool DisableRDRT();
 
 public:
 	void Set_AlphaApply(_bool isValue) { m_isAlphaApply = isValue; }
@@ -86,6 +83,7 @@ private:
 public:
 	static CMesh* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CModel::MODELTYPE eModelType, const aiMesh* pAIMesh, _fmatrix PreTransformMatrix, const vector<class CBone*>& Bones, _bool isTool);
 	static CMesh* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CModel::MODELTYPE eModelType, const BAiMesh* pAIMesh, _fmatrix PreTransformMatrix, const vector<class CBone*>& Bones, _bool isTool);
+	CMesh* Clone();
 	virtual CComponent* Clone(void* pArg) override;
 	virtual void Free() override;
 };

@@ -62,6 +62,7 @@ HRESULT CUITitle::Late_Tick(const _float& fTimeDelta)
     {
         //여기다가 시간 지나면 꺼질지 뭐할지 선택하면됨(나는 꺼질꺼임)
         CUIManager::GetInstance()->Close_Scene(m_strSceneName);
+        m_isEnd = true;
         m_isStart = false;
     }
 
@@ -85,6 +86,7 @@ void CUITitle::Start_Title(_uint Index)
 
     //밖에서 불러와서 몇번쨰 타이틀 띄울지 하자
     m_isStart = true;
+    m_isEnd = false;
 }
 
 CUITitle* CUITitle::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg)

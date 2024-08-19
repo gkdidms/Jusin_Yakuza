@@ -7,7 +7,7 @@
 #include "TutorialManager.h"
 #include "FightManager.h"
 #include "QuestManager.h"
-#include "ScriptManager.h"
+#include "UIManager.h"
 
 #include "PlayerCamera.h"
 #include "CineCamera.h"
@@ -26,6 +26,7 @@ CLevel_Tutorial::CLevel_Tutorial(ID3D11Device* pDevice, ID3D11DeviceContext* pCo
 	Safe_AddRef(m_pFileTotalManager);
 	Safe_AddRef(m_pFightManager);
 	Safe_AddRef(m_pQuestManager);
+	
 }
 
 HRESULT CLevel_Tutorial::Initialize()
@@ -37,16 +38,13 @@ HRESULT CLevel_Tutorial::Initialize()
 		return E_FAIL;
 
 	m_pQuestManager->Start_Quest(CQuestManager::CHAPTER_1);
+	m_pFightManager->Initialize();
 	m_pFightManager->Set_StreetFight(true);
-
-	m_pTutorialManager = CTutorialManager::Create();
-	if (nullptr == m_pTutorialManager)
-		return E_FAIL;
 
 	/* 클라 파싱 */
 	m_pFileTotalManager->Set_MapObj_In_Client(STAGE_TUTORIAL, LEVEL_TUTORIAL);
 	m_pFileTotalManager->Set_Lights_In_Client(99);
-	//m_pFileTotalManager->Set_Trigger_In_Client(STAGE_TUTORIAL, LEVEL_TUTORIAL);
+	m_pFileTotalManager->Set_Trigger_In_Client(STAGE_TUTORIAL, LEVEL_TUTORIAL);
 	//m_pFileTotalManager->Set_Collider_In_Client(STAGE_TUTORIAL, LEVEL_TUTORIAL);
 
 	if (FAILED(Ready_Camera(TEXT("Layer_Camera"))))
@@ -59,15 +57,13 @@ HRESULT CLevel_Tutorial::Initialize()
 
 void CLevel_Tutorial::Tick(const _float& fTimeDelta)
 {
+	m_pFightManager->Tick(fTimeDelta);
+
 	if (m_pQuestManager->Execute())
 	{
 		//true 이면 다음 스테이지로 이동
-		m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_NISHIKIWALK));
+		m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_KARAOKE));
 	}
-
-	m_pFightManager->Tick(fTimeDelta);
-
-	m_pTutorialManager->Tick();
 
 #ifdef _DEBUG
 	SetWindowText(g_hWnd, TEXT("총격전 맵"));
@@ -151,7 +147,6 @@ void CLevel_Tutorial::Free()
 
 	Safe_Release(m_pSystemManager);
 	Safe_Release(m_pFileTotalManager);
-	Safe_Release(m_pTutorialManager);
 	Safe_Release(m_pFightManager);
 	Safe_Release(m_pQuestManager);
 }

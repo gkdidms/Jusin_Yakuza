@@ -173,6 +173,9 @@ HRESULT CLoader::Loading()
 	case LEVEL_NISHIKIWALK:
 		hr = Loading_For_Tutorial();
 		break;
+	case LEVEL_TOKOSTREET:
+		hr = Loading_For_Street();
+		break;
 	}
 
 	LeaveCriticalSection(&m_Critical_Section);

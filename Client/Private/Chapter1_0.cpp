@@ -39,10 +39,12 @@ _bool CChapter1_0::Execute()
 
 	if (m_pUIManager->isTalkFinished())
 	{
-		if (!m_pUIManager->isTitleAnimFinished()) // 타이틀 띄우기
+		if (!m_isTitleStart) // 타이틀 띄우기
 		{
+			m_pUIManager->Open_Scene(TEXT("Title"));
 			m_pUIManager->Set_TitleStart(true); // 니시키야마를 찾아라
 			m_pUIManager->Start_Title(14);
+			m_isTitleStart = true;
 		}
 		else
 		{
