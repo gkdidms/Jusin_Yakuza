@@ -89,6 +89,10 @@ namespace Engine
 		int					iObjPropertyType; /* object 별 특징 */
 
 		int					iNPCDirection; /* object 별 특징 */
+		int					iGroupMonster; //bool 역할
+		int					iGroupNum;
+
+
 		int					iNaviNum;
 		int					iNaviRoute;
 
@@ -305,13 +309,13 @@ namespace Engine
 	typedef struct ENGINE_DLL tVTXCUBEOcculusion
 	{
 		XMFLOAT3 vPosition;  // 12바이트
-		float    padding1;   // 4바이트 패딩 (정렬 맞춤)
-
 		XMFLOAT3 vTexcoord;  // 12바이트
+
+		float    padding1;   // 4바이트 패딩 (정렬 맞춤)
 		float    padding2;   // 4바이트 패딩 (정렬 맞춤)
 
-		static const unsigned int iNumElements = 2;
-		static const D3D11_INPUT_ELEMENT_DESC Elements[2];
+		static const unsigned int iNumElements = 4;
+		static const D3D11_INPUT_ELEMENT_DESC Elements[4];
 
 	}VTXCUBE_OCCULUSION;
 

@@ -39,7 +39,7 @@ HRESULT CLevel_Test::Initialize()
 	// 테스트 다하면 지워라
 	/* For.Prototype_Component_Navigation */
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Navigation"),
-		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/NaviData/Navigation_9.dat")))))
+		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/NaviData/Navigation_7.dat")))))
 		return E_FAIL;
 
 	m_pKaraokeManager = CKaraokeManager::Create();
@@ -59,18 +59,18 @@ HRESULT CLevel_Test::Initialize()
 	if (FAILED(Ready_Player(TEXT("Layer_Player"))))
 		return E_FAIL;
 
-	/* 클라 파싱 */
-	if (FAILED(Ready_Test_Load()))
-		return E_FAIL;
+	///* 클라 파싱 */
+	//if (FAILED(Ready_Test_Load()))
+	//	return E_FAIL;
 
 	// 혜원테스트용
 	//if (FAILED(Ready_Test_Hyewon()))
 	//	return E_FAIL;
 
-	//m_pFileTotalManager->Set_MapObj_In_Client(70, LEVEL_TEST);
-	//m_pFileTotalManager->Set_Lights_In_Client(90);
-	//m_pFileTotalManager->Set_Collider_In_Client(3, LEVEL_TEST);
-	//m_pFileTotalManager->Set_Trigger_In_Client(79, LEVEL_TEST);
+	m_pFileTotalManager->Set_MapObj_In_Client(7, LEVEL_TEST);
+	m_pFileTotalManager->Set_Lights_In_Client(90);
+	m_pFileTotalManager->Set_Collider_In_Client(3, LEVEL_TEST);
+	m_pFileTotalManager->Set_Trigger_In_Client(79, LEVEL_TEST);
 
 	if (FAILED(Ready_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
@@ -84,6 +84,11 @@ void CLevel_Test::Tick(const _float& fTimeDelta)
 #ifdef _DEBUG
 	SetWindowText(g_hWnd, TEXT("테스트 레벨"));
 #endif
+
+	if (m_pKaraokeManager->IsSongEnd())
+	{
+		int a = 0;
+	}
 }
 
 HRESULT CLevel_Test::Ready_Camera(const wstring& strLayerTag)

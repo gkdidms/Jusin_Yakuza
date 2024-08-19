@@ -2,9 +2,7 @@
 
 #include "GameInstance.h"
 
-#include "UIManager.h"
-#include "ScriptManager.h"
-#include "UITutorial.h"
+#include "Subtitle.h"
 
 #include "Background.h"
 
@@ -18,9 +16,14 @@ HRESULT CChapter2_0::Initialize(void* pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
-	//씬 카메라 이동 후 스크립트 텍스쳐 나옴
-	m_pUIManager->Open_Scene(TEXT("Talk"));
-	m_pUIManager->Start_Talk(m_iScriptIndex); // 0번째 대화
+	CSubtitle::SUBTITLE_DESC Desc{};
+	Desc.iScriptChapter = m_iScriptIndex;
+
+	if (FAILED(m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Subtitle"), TEXT("Layer_Subtitle"), &Desc)))
+		return E_FAIL;
+
+	m_pSubtitle = dynamic_cast<CSubtitle*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Subtitle"), 0));
+	Safe_AddRef(m_pSubtitle);
 
 	return S_OK;
 }
@@ -28,7 +31,7 @@ HRESULT CChapter2_0::Initialize(void* pArg)
 //대화가 끝나면 자동으로 다음 스테이지로 넘어감
 _bool CChapter2_0::Execute()
 {
-	if (m_pUIManager->isTalkFinished())
+	if (m_pSubtitle->isFinished())
 		return true;
 
 	return false;
@@ -47,4 +50,5 @@ CChapter2_0* CChapter2_0::Create(void* pArg)
 void CChapter2_0::Free()
 {
 	__super::Free();
+	Safe_Release(m_pSubtitle);
 }

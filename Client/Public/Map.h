@@ -165,11 +165,16 @@ private:
 	float					m_fTimer = { 0 };
 	bool					m_bPositive = { false };
 
+private:
+	ID3D11Query* m_pOcclusionQuery = { nullptr };
 
 public:
 	HRESULT Add_Components(void* pArg);
 	HRESULT Bind_ShaderResources();
 	HRESULT Reset_Bind();
+
+public:
+	_bool Check_Render();
 
 public:
 	static CMap* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

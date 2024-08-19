@@ -17,8 +17,8 @@ public:
     HRESULT Initialize(_uint iSizeX, _uint iSizeY, DXGI_FORMAT ePixelFormat, const _float4& vClearColor, _bool isCompute, _uint iArrayCount);
     HRESULT Clear();
     HRESULT Bind_SVR(class CShader* pShader, const _char* pConstantName);
-    void Bind_ComputeSVR();
-    void Bind_ComputeUAV();
+    void Bind_ComputeSVR(_uint iSlot);
+    void Bind_ComputeUAV(_uint iSlot);
     HRESULT Copy_Resource(ID3D11Texture2D* pDesc);
     HRESULT Create_Texture(const wstring& strSaveFilePath);
 

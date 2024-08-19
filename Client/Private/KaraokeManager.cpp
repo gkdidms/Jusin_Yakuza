@@ -32,15 +32,40 @@ void CKaraokeManager::Tick(const _float& fTimeDelta)
 	else
 	{
 	//여기서 ui랑 노트랑 같이 사용해서 플레이해주자,키받기 등등
-		if (m_pGameInstance->GetKeyState(DIK_O) == TAP)//이건 노래 끝났다는 전제하
+		//if (m_pGameInstance->GetKeyState(DIK_O) == TAP)//이건 노래 끝났다는 전제하
+		//{
+		//	m_pUIManager->Open_Scene(TEXT("Karaoke_Score"));
+		//	m_isStart = false;
+
+		//	//아래 점수 주면됨 현재 점수
+		//	m_iCurrentScore = 80;
+		//	m_pUIManager->Set_Score(m_iCurrentScore);
+		//}
+
+		CUIKaraoke_Play* pPlayScene = dynamic_cast<CUIKaraoke_Play*>(m_pUIManager->Find_Scene(TEXT("Karaoke_Play")));
+
+		if (pPlayScene->IsSongEnd())
 		{
+			m_isScoreTimerOn = true;
 			m_pUIManager->Open_Scene(TEXT("Karaoke_Score"));
-			m_isStart = false;
 
 			//아래 점수 주면됨 현재 점수
 			m_iCurrentScore = 80;
 			m_pUIManager->Set_Score(m_iCurrentScore);
 		}
+
+		if (m_isScoreTimerOn)
+		{
+			m_fScoreTimer += fTimeDelta;
+			if (SCORE_TIMER <= m_fScoreTimer)
+			{
+				m_pUIManager->Close_Scene();
+
+				m_isStart = false;
+				m_isScoreEnd = true;
+			}
+		}
+
 	}
 
 }

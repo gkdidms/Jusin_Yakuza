@@ -30,6 +30,11 @@ public:
 		int					iShaderPass;
 		int					iObjType;
 		int					iObjPropertyType;
+
+
+		int					iGroupMonster; //bool 역할
+		int					iGroupNum;
+
 		int					iNPCDirection;
 
 		int					iNaviNum;
@@ -111,6 +116,8 @@ private:
 	int												m_iNaviNum = { -1 };
 	int												m_iRouteNum = { 0 };
 	int												m_iNPCDirection = { 0 };
+	int												m_iGroupMonster = { 0 }; //bool 역할하는
+	int												m_iGroupNum = { 0 };
 
 	XMFLOAT4X4										m_vOffsetMatrix;
 
