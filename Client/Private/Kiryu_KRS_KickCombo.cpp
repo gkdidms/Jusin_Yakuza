@@ -90,7 +90,7 @@ void CKiryu_KRS_KickCombo::Shaking()
 			m_isShaked = true;
 			//카메라 쉐이킹
 			CCamera* pCamera = dynamic_cast<CCamera*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Camera"), CAMERA_PLAYER));
-			pCamera->Set_Shaking(true, { 1.f, 1.f, 0.f }, 0.2, 0.25);
+			pCamera->Set_Shaking(true, { 1.f, 1.f, 0.f }, 0.2, 0.4);
 		}
 	}
 }

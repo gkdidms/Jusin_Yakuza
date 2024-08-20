@@ -151,6 +151,8 @@ void CPlayer::Tick(const _float& fTimeDelta)
 		HitFreeze_Timer(fTimeDelta);
 	if (m_isHitRadial)
 		HitRadial_Timer(fTimeDelta);
+	if (m_isHitZoom)
+		HitZoomIn_Timer(fTimeDelta);
 
 	if (m_pGameInstance->GetKeyState(DIK_UP) == TAP)
 	{
@@ -534,6 +536,8 @@ void CPlayer::Attack_Event(CGameObject* pHitObject, _bool isItem)
 			{
 				CKiryu_KRS_Grab::KRS_Grab_DESC Desc{ true, Compute_Target_Direction(pLandObject) };
 				m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Setting_Value(&Desc);
+
+				HitZoomIn_On();
 			}
 
 			if (m_iCurrentBehavior == (_uint)KRS_BEHAVIOR_STATE::ATTACK)
@@ -572,6 +576,8 @@ void CPlayer::Attack_Event(CGameObject* pHitObject, _bool isItem)
 			{
 				CKiryu_KRC_Grab::KRC_Grab_DESC Desc{ true, Compute_Target_Direction(pLandObject) };
 				m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Setting_Value(&Desc);
+
+				HitZoomIn_On();
 			}
 
 			if (m_iCurrentBehavior == (_uint)KRC_BEHAVIOR_STATE::ATTACK)
@@ -2602,6 +2608,32 @@ void CPlayer::HitRadial_Timer(const _float& fTimeDelta)
 	{
 		m_fHitRadialTimer = 0.f;
 		HitRadial_Off();
+	}
+}
+
+void CPlayer::HitZoomIn_On()
+{
+	m_isHitZoom = true;
+
+	CPlayerCamera* pCamera = dynamic_cast<CPlayerCamera*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Camera"), CAMERA_PLAYER));
+	pCamera->Set_StartFov(XMConvertToRadians(45.0f));				//현재 fov설정
+	pCamera->Set_FoV(XMConvertToRadians(45.0f));				//현재 fov설정
+	pCamera->On_Return();
+}
+
+void CPlayer::HitZoomIn_Off()
+{
+	m_isHitZoom = false;
+}
+
+void CPlayer::HitZoomIn_Timer(const _float& fTimeDelta)
+{
+	m_fHitZoomTimer += m_pGameInstance->Get_TimeDelta(TEXT("Timer_Game"));
+
+	if (m_fHitZoomTime <= m_fHitZoomTimer)
+	{
+		m_fHitZoomTimer = 0.f;
+		HitZoomIn_Off();
 	}
 }
 
