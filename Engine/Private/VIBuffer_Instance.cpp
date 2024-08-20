@@ -478,6 +478,10 @@ void CVIBuffer_Instance::FallSpread(_float fTimeDelta)
 
 				pVertices[i].vRectSize.y = m_pGameInstance->Get_Random(0.f, 360.f);//È¸Àü
 			}
+			else
+			{
+				pVertices[i].vRectSize.x = 0.f;
+			}
 		}
 	}
 
