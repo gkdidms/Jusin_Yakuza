@@ -71,6 +71,13 @@ void CLevel_Karaoke::Tick(const _float& fTimeDelta)
 		m_pFileTotalManager->Setting_Start_Cinemachine(5);
 	}
 
+	if (!m_isEnded && m_pGameInstance->Get_SoundEnd(TEXT("Bakamita.mp3"), SOUND_BGM))
+	{
+		m_isEnded = true;
+		m_pSystemManager->Set_Camera(CAMERA_CINEMACHINE);
+		m_pFileTotalManager->Setting_Start_Cinemachine(4);
+	}
+
 	if (m_pKaraokeManager->IsScoreEnd())
 	{
 		m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_TOKOSTREET));

@@ -26,6 +26,7 @@ private:
 
 private:
     _bool m_isChanged = { false };
+    _bool m_isEnded = { false };
 
 public:
     static CLevel_Karaoke* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
