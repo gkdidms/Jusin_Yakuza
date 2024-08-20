@@ -39,7 +39,7 @@ HRESULT CLevel_Test::Initialize()
 	// 테스트 다하면 지워라
 	/* For.Prototype_Component_Navigation */
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Navigation"),
-		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/NaviData/Navigation_7.dat")))))
+		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/NaviData/Navigation_99.dat")))))
 		return E_FAIL;
 
 	m_pKaraokeManager = CKaraokeManager::Create();
@@ -67,7 +67,7 @@ HRESULT CLevel_Test::Initialize()
 	//if (FAILED(Ready_Test_Hyewon()))
 	//	return E_FAIL;
 
-	m_pFileTotalManager->Set_MapObj_In_Client(7, LEVEL_TEST);
+	m_pFileTotalManager->Set_MapObj_In_Client(79, LEVEL_TEST);
 	m_pFileTotalManager->Set_Lights_In_Client(90);
 	m_pFileTotalManager->Set_Collider_In_Client(3, LEVEL_TEST);
 	m_pFileTotalManager->Set_Trigger_In_Client(79, LEVEL_TEST);
@@ -85,10 +85,10 @@ void CLevel_Test::Tick(const _float& fTimeDelta)
 	SetWindowText(g_hWnd, TEXT("테스트 레벨"));
 #endif
 
-	if (m_pKaraokeManager->IsSongEnd())
-	{
-		int a = 0;
-	}
+	//if (m_pKaraokeManager->IsSongEnd())
+	//{
+	//	int a = 0;
+	//}
 }
 
 HRESULT CLevel_Test::Ready_Camera(const wstring& strLayerTag)
@@ -179,7 +179,7 @@ HRESULT CLevel_Test::Ready_Player(const wstring& strLayerTag)
 	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_Player"), strLayerTag, &Desc)))
 		return E_FAIL;
 
-	// 가라오케 플레이어
+	//// 가라오케 플레이어
 	//if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_Kiryu_Karaoke"), strLayerTag, &Desc)))
 	//	return E_FAIL;
 

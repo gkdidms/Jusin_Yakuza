@@ -444,7 +444,7 @@ HRESULT CLoader_Map::Loading_For_Karaoke()
 	if (FAILED(Loading_Default()))
 		return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_KARAOKE, TEXT("Prototype_Component_Navigation"),
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Navigation"),
 		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/NaviData/Navigation_9.dat")))))
 		return E_FAIL;
 

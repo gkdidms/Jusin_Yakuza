@@ -667,6 +667,9 @@
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Compute_SSAO.hlsl">
       <Filter>98.Shader</Filter>
     </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_Compute_PBR.hlsl">
+      <Filter>98.Shader</Filter>
+    </FxCompile>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\Bin\ShaderFiles\Engine_Shader_Defines.hlsli">

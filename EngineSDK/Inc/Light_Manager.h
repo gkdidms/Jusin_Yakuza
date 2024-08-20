@@ -6,7 +6,7 @@ class CLight_Manager :
     public CBase
 {
 private:
-    CLight_Manager();
+    CLight_Manager(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
     virtual ~CLight_Manager() = default;
 
 public:
@@ -21,12 +21,16 @@ public:
     void    Edit_Light(int  iLightIndex, LIGHT_DESC lightDesc);
     void    Delete_Light(int iLightIndex);
     void    Delete_AllLights();
+    void Bind_ComputeBuffer(_uint iSlot);
     
 private:
+    ID3D11Device* m_pDevice = { nullptr };
+    ID3D11DeviceContext* m_pContext = { nullptr };
+
     vector<class CLight*> m_Lights;
 
 public:
-    static CLight_Manager* Create();
+    static CLight_Manager* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
     virtual void Free();
 };
 END

@@ -61,7 +61,7 @@ HRESULT CGameInstance::Initialize_Engine(_uint iMaxLevelIndex, const ENGINE_DESC
 	if (nullptr == m_pRenderTarget_Manager)
 		return E_FAIL;
 
-	m_pLight_Manager = CLight_Manager::Create();
+	m_pLight_Manager = CLight_Manager::Create(*ppDevice, *ppContext);
 	if (nullptr == m_pLight_Manager)
 		return E_FAIL;
 
@@ -864,6 +864,11 @@ void CGameInstance::Delete_Light(int iLightIndex)
 void CGameInstance::Delete_AllLights()
 {
 	return m_pLight_Manager->Delete_AllLights();
+}
+
+void CGameInstance::Bind_LightComputeBuffer(_uint iSlot)
+{
+	return m_pLight_Manager->Bind_ComputeBuffer(iSlot);
 }
 
 void CGameInstance::Release_Engine()

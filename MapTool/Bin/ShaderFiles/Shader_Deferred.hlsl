@@ -66,8 +66,7 @@ struct PS_OUT_LIGHT
 {
     vector vShade : SV_TARGET0;
     vector vLightMap : SV_TARGET1;
-    vector vSpecularRM : SV_TARGET2;
-    vector vSpecular : SV_TARGET3;
+    vector vSpecular : SV_TARGET2;
 };
 
 
@@ -89,25 +88,24 @@ PS_OUT_LIGHT PS_MAIN_LIGHT_DIRECTIONAL(PS_IN In)
     
     if (g_isPBR)
     {
+
         vector vWorldPos;
 
         vWorldPos.x = In.vTexcoord.x * 2.f - 1.f;
         vWorldPos.y = In.vTexcoord.y * -2.f + 1.f;
-        vWorldPos.z = vDepthDesc.x; /* 0 ~ 1 */
+        vWorldPos.z = vDepthDesc.x;
         vWorldPos.w = 1.f;
 
         vWorldPos = vWorldPos * (vDepthDesc.y * g_fFar);
-
-	/* 뷰스페이스 상의 위치를 구한다. */
+        
         vWorldPos = mul(vWorldPos, g_ProjMatrixInv);
-
-	/* 월드스페이스 상의 위치를 구한다. */
+        
         vWorldPos = mul(vWorldPos, g_ViewMatrixInv);
-
-    //vector vReflect = reflect(normalize(g_vLightDir), normalize(vNormal));
+        
         float3 vLook = normalize(g_vCamPosition - vWorldPos).xyz;
         
-        Out.vSpecularRM = BRDF(In.vPosition, In.vTexcoord, normalize(vNormal), vDepthDesc, vLook);
+        //Out.vSpecularRM = BRDF(In.vPosition, In.vTexcoord, normalize(vNormal), vDepthDesc, vLook);
+
         Out.vSpecular = vector(CalcuateSpecular(In.vTexcoord, normalize(vNormal), vLook), 0.f);
         Out.vLightMap = g_vLightDiffuse;
     }
@@ -351,9 +349,9 @@ PS_OUT PS_MAIN_BOF(PS_IN In)
     vWorldPos = mul(vWorldPos, g_ProjMatrixInv);
     vWorldPos = mul(vWorldPos, g_ViewMatrixInv);
     
-    float fDistance = length(g_vCamPosition.xyz - vWorldPos.xyz);
+    float fDistance = distance(vWorldPos.xyz, g_vCamPosition.xyz);
     
-    Out.vColor = lerp(vDiffuseDesc, vDiffuseBlurDesc, saturate(fDistance / g_fFar * 50.f));
+    Out.vColor = lerp(vDiffuseDesc, vDiffuseBlurDesc, min(fDistance / g_fFar, 1.f));
     
     return Out;
 }

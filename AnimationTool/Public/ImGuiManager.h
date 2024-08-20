@@ -289,6 +289,7 @@ private:
 	int							m_iBloodEventIndex = { 0 };
 	int							m_eBloodEffectType = { 0 };
 	bool						m_isBloodEffectLoop = { false };
+	bool						m_isBloodEffectOn = { true };
 
 	// first: 애니메이션 이름, second: 이벤트정보
 	multimap<string, Animation_BloodEventState>		m_BloodEvents;

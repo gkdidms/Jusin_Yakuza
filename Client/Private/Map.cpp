@@ -144,7 +144,9 @@ void CMap::Tick(const _float& fTimeDelta)
 	m_fCamDistance = XMVectorGetX(XMVector3Length(vCubePos - m_pGameInstance->Get_CamPosition()));
 	m_isFar = m_fCamDistance > 60;
 	
-	m_pGameInstance->Add_Renderer(CRenderer::RENDER_OCCULUSION, this);
+	if (m_pGameInstance->Get_CurrentLevel() == LEVEL_TUTORIAL || 
+		m_pGameInstance->Get_CurrentLevel() == LEVEL_TOKOSTREET)
+		m_pGameInstance->Add_Renderer(CRenderer::RENDER_OCCULUSION, this);
 }
 
 void CMap::Late_Tick(const _float& fTimeDelta)
@@ -164,17 +166,21 @@ void CMap::Late_Tick(const _float& fTimeDelta)
 	m_vStrongBloomIndex.clear();
 	m_vCompulsoryDecalBlendMeshIndex.clear();
 
-
-
-	//if (true == m_pGameInstance->isIn_WorldFrustum(m_pTransformCom->Get_State(CTransform::STATE_POSITION), m_pModelCom->Get_LocalModelSize().x))
-	//{	
-
-	//}
-	if (isOcculusionDepth())
+	if (m_pGameInstance->Get_CurrentLevel() == LEVEL_TUTORIAL ||
+		m_pGameInstance->Get_CurrentLevel() == LEVEL_TOKOSTREET)
+	{
+		if (isOcculusionDepth())
+		{
+			Add_Renderer(fTimeDelta);
+			m_pGameInstance->Add_Renderer(CRenderer::RENDER_SHADOWOBJ, this);
+		}
+	}
+	else
 	{
 		Add_Renderer(fTimeDelta);
 		m_pGameInstance->Add_Renderer(CRenderer::RENDER_SHADOWOBJ, this);
 	}
+
 	//m_pGameInstance->Add_Renderer(CRenderer::RENDER_OCCULUSION, this);
 }
 
@@ -1239,8 +1245,8 @@ void CMap::Add_Renderer(const _float& fTimeDelta)
 		{
 			float		fScale = Meshes[i]->Get_MeshScale();
 
-			if (fScale <= 0)
-				fScale = 10;
+			if (fScale < 15)
+				fScale = 25;
 
 			// ÄÃ¸µ
 			if (true == m_pGameInstance->isIn_WorldFrustum(worldPos, fScale * 1.5))

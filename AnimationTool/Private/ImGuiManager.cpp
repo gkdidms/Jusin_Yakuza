@@ -1276,6 +1276,11 @@ void CImguiManager::BloodEventWindow()
 	ImGui::Text(u8"0: 코, 1: 입, 2: ...");
 	ImGui::InputInt(u8"출력할 이펙트 타입: ", &m_eBloodEffectType);
 
+	if(m_isBloodEffectOn)
+		ImGui::Text(u8"선택한건 On 이벤트");
+	else
+		ImGui::Text(u8"선택한건 Off 이벤트");
+
 	if (ImGui::RadioButton(u8"루프 O", m_isBloodEffectLoop))
 	{
 		m_isBloodEffectLoop = true;
@@ -1307,6 +1312,7 @@ void CImguiManager::BloodEventWindow()
 		Desc.iBloodEffectType = m_eBloodEffectType;
 		Desc.isLoop = m_isBloodEffectLoop;
 		Desc.isOn = true;
+		m_isBloodEffectOn = true;
 
 		m_BloodEvents.emplace(m_AnimNameList[m_iAnimIndex], Desc);
 	}
@@ -1321,6 +1327,7 @@ void CImguiManager::BloodEventWindow()
 			Desc.iBloodEffectType = m_eBloodEffectType;
 			Desc.isLoop = m_isBloodEffectLoop;
 			Desc.isOn = false;
+			m_isBloodEffectOn = false;
 
 			m_BloodEvents.emplace(m_AnimNameList[m_iAnimIndex], Desc);
 		}
@@ -1351,6 +1358,10 @@ void CImguiManager::BloodEventWindow()
 		}
 
 		m_fAnimationPosition = lower_bound_iter2->second.fAinmPosition;
+		Gui_Select_Bone(lower_bound_iter2->second.iBoneIndex);
+		m_isBloodEffectLoop = lower_bound_iter2->second.isLoop;
+		m_eBloodEffectType = lower_bound_iter2->second.iBloodEffectType;
+		m_isBloodEffectOn = lower_bound_iter2->second.isOn;
 	}
 
 	if (ImGui::Button(u8"불러오기"))
@@ -2466,7 +2477,6 @@ void CImguiManager::BloodEvent_Load(string strPath)
 		m_BloodEvents.emplace(key, Event);
 	}
 
-
 	in.close();
 }
 
@@ -2509,6 +2519,7 @@ void CImguiManager::Gui_Select_Bone(_uint iBoneIndex)
 	Reset_Collider_Value();
 	Setting_Collider_Value(iBoneIndex);
 	m_pRenderModel->Select_Bone(iBoneIndex);
+	m_iBoneSelectedIndex = iBoneIndex;
 }
 
 void CImguiManager::Setting_AnimationList()
