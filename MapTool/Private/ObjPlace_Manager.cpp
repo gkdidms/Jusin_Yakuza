@@ -2450,10 +2450,6 @@ void CObjPlace_Manager::Add_ObjectCollider_IMGUI()
 
 			dynamic_cast<CConstruction*>(iter->second)->Delete_Collider(collider_current_idx);
 
-
-			Update_ColliderList_In_Object();
-			Update_ColliderNameList();
-
 			if (m_ObjectColliders.size() - 1 <= collider_current_idx && m_ObjectColliders.size() - 1 > 0)
 			{
 				collider_current_idx = m_ObjectColliders.size() - 1;
@@ -2463,6 +2459,9 @@ void CObjPlace_Manager::Add_ObjectCollider_IMGUI()
 				collider_current_idx = 0;
 				m_iCurColliderIndex = 0;
 			}
+
+			Update_ColliderList_In_Object();
+			Update_ColliderNameList();
 				
 		}
 
@@ -2513,6 +2512,15 @@ void CObjPlace_Manager::Add_ObjectCollider_IMGUI()
 
 		static XMFLOAT3		vQuaternion = _float3(0, 0, 0);
 		ImGui::InputFloat3(u8"Collider Quaternion", reinterpret_cast<float*>(&vQuaternion));
+
+		if (ImGui::Button(u8"현재 설치된 콜라이더값 불러오기"))
+		{
+			vCenter = m_tCurColliderDesc.vCenter;
+			vExtents = m_tCurColliderDesc.vExtents;
+			vQuaternion = m_tCurColliderDesc.vQuaternion;
+		}
+
+		ImGui::NewLine();
 
 		if (ImGui::Button(u8"콜라이더추가"))
 		{
@@ -2573,16 +2581,19 @@ void CObjPlace_Manager::Add_ObjectCollider_IMGUI()
 			if (ImGui::RadioButton(u8"OJBAABB", m_tCurColliderDesc.iColliderType == (int)CCollider::COLLIDER_AABB))
 			{
 				CurColliderType = CCollider::COLLIDER_AABB;
+				m_tCurColliderDesc.iColliderType = CCollider::COLLIDER_AABB;
 			}
 			ImGui::SameLine();
 			if (ImGui::RadioButton(u8"OBJOBB", m_tCurColliderDesc.iColliderType == (int)CCollider::COLLIDER_OBB))
 			{
 				CurColliderType = CCollider::COLLIDER_OBB;
+				m_tCurColliderDesc.iColliderType = CCollider::COLLIDER_OBB;
 			}
 			ImGui::SameLine();
 			if (ImGui::RadioButton(u8"OBJSPHERE", m_tCurColliderDesc.iColliderType == (int)CCollider::COLLIDER_SPHERE))
 			{
 				CurColliderType = CCollider::COLLIDER_SPHERE;
+				m_tCurColliderDesc.iColliderType = CCollider::COLLIDER_SPHERE;
 			}
 
 
@@ -2594,6 +2605,12 @@ void CObjPlace_Manager::Add_ObjectCollider_IMGUI()
 
 			ImGui::InputFloat3(u8"ObjCollider Quaternion", reinterpret_cast<float*>(&m_tCurColliderDesc.vQuaternion));
 
+
+			multimap<wstring, CGameObject*>::iterator iter = m_GameObjects.begin();
+
+			
+			
+			
 		}
 
 
