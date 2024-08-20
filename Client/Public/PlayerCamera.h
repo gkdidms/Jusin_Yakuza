@@ -14,16 +14,25 @@ class CPlayerCamera :
 public:
     enum CAM_STATE
     {
-        CAM_IDLE,
-        CAM_COLLISION_BLOCK,
-        CAM_LERP,
-        CAM_GOTO_SAFE_POS,
+        CAM_ADV,
+        CAM_BATTLE,
         CAM_STATE_END
     };
 
+
 private:
-    const _float MAX_DISTANCE = 3.1f;
-    const _float MIN_DISTANCE = 2.5f;
+    //원래
+    //const _float MAX_DISTANCE = 3.1f;
+    //const _float MIN_DISTANCE = 2.5f;
+
+    const _float MAX_DISTANCE = 4.1f;
+    const _float MIN_DISTANCE = 3.5f;
+
+    const _float MAX_DISTANCE_ADV = 2.8;
+    const _float MIN_DISTANCE_ADV = 1.5;
+
+    const _float MAX_DISTANCE_BATTLE = 4.1f;
+    const _float MIN_DISTANCE_BATTLE = 3.5f;
 
 public:
     typedef struct tPlayerCameraDesc : public CAMERA_DESC
@@ -48,6 +57,7 @@ public:
 
 private:
     void    Compute_View_During_Collision(const _float& fTimeDelta);
+    void    Camera_FightMode_Change(const _float& fTimeDelta);
 
     //처음 시작할때 설정
     void    Set_StartPos();
@@ -78,6 +88,11 @@ public:
         m_isReturn = true;
     }
 
+    void Set_RotationBlock(_bool bBlock) {
+        // 회전막는 함수 - true면 막아짐
+        m_bBlockRotation = bBlock;
+    }
+
 private:
     class CSystemManager* m_pSystemManager = { nullptr };
     class CCollision_Manager* m_pCollisionManager = { nullptr };
@@ -103,6 +118,9 @@ private:
     bool        m_bCamCollision = { false };
     bool        m_bLerp = { false };
     bool        m_bBlock = { false };
+    bool        m_bFightLerp = { false }; // 모드 변경으로 인한 lerp 처리
+    bool        m_bBlockRotation = { false }; // 카메라 마우스 이동 막기
+
     int         m_iCollisionNum = { 0 }; // first collision check 
 
     _float       m_fTimer = { 0 };
@@ -116,7 +134,14 @@ private:
 
     _float       m_fStartFov = 0.0f; 
 
-    CAM_STATE        m_eCamState = { CAM_STATE_END };
+    CAM_STATE        m_eCurCamState = { CAM_STATE_END };
+    CAM_STATE        m_ePreCamState = { CAM_STATE_END };
+
+    _float          m_fMaxDistance = { MAX_DISTANCE }; // 계속 바껴서
+    _float          m_fMinDistance = { MIN_DISTANCE }; // 계속 바껴서
+
+
+    _float          m_fLerpDelta = { 0 };
 
 private:
     HRESULT Add_Components();

@@ -26,7 +26,7 @@ HRESULT CLevel_Street::Initialize()
         return E_FAIL;
 
     /* Å¬¶ó ÆÄ½Ì */
-    m_pFileTotalManager->Set_MapObj_In_Client(STAGE_STREET, LEVEL_STREET);
+    m_pFileTotalManager->Set_MapObj_In_Client(STAGE_STREET, m_pGameInstance->Get_CurrentLevel());
     m_pFileTotalManager->Set_Lights_In_Client(99);
    // m_pFileTotalManager->Set_Collider_In_Client(STAGE_STREET, LEVEL_STREET);
 

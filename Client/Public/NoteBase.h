@@ -49,6 +49,12 @@ public:
         return m_eScore;
     }
 
+public:
+    void Set_Score(NOTE_SCORE eScore)
+    {
+        m_eScore = eScore;
+    }
+
 protected:
     CGameInstance* m_pGameInstance = { nullptr };
 

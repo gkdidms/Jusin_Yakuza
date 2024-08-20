@@ -12,6 +12,9 @@ private:
     virtual ~CTutorialManager() = default;
 
 public:
+    _bool isTutorialStart() { return m_isStart; }
+
+public:
     HRESULT Initialize();
     void Tick();
 

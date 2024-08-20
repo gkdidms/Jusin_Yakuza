@@ -880,7 +880,6 @@ CBTNode::NODE_STATE CAI_Monster::Chcek_Sync()
 		return CBTNode::FAIL;
 	}
 		
-
 	if (*m_pState == CMonster::MONSTER_SYNC1_LEG_LP ||
 		*m_pState == CMonster::MONSTER_SYNC1_LEG_ST_B ||
 		*m_pState == CMonster::MONSTER_SYNC1_LEG_ST_F ||

@@ -1239,8 +1239,8 @@ void CMap::Add_Renderer(const _float& fTimeDelta)
 		{
 			float		fScale = Meshes[i]->Get_MeshScale();
 
-			if (fScale <= 0)
-				fScale = 10;
+			if (fScale < 15)
+				fScale = 25;
 
 			// ÄÃ¸µ
 			if (true == m_pGameInstance->isIn_WorldFrustum(worldPos, fScale * 1.5))
