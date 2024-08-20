@@ -39,6 +39,7 @@ public:
 
     virtual void* Get_Instance()override;
 
+    virtual void Reset_Buffer() override;
 
 private:
     CShader* m_pShaderCom = { nullptr };

@@ -52,7 +52,7 @@ HRESULT CParticle_Point::Initialize(void* pArg)
     m_BufferInstance.WorldMatrix = m_pWorldMatrix;
 #else
     m_BufferInstance.WorldMatrix = m_pTransformCom->Get_WorldFloat4x4();
-#endif
+#endif  
 
     if (FAILED(Add_Components()))
         return E_FAIL;
@@ -76,7 +76,7 @@ void CParticle_Point::Tick(const _float& fTimeDelta)
 
 #ifdef _CLIENT
 
-    m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(m_pWorldMatrix));
+        m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(m_pWorldMatrix));
 
 #endif // _CLIENT
 
@@ -84,7 +84,7 @@ void CParticle_Point::Tick(const _float& fTimeDelta)
     {
         if (m_iAction & iAction[ACTION_SPREAD])
         {
-            m_pVIBufferCom->Spread(fTimeDelta);
+           m_pVIBufferCom->Spread(fTimeDelta); 
         }
         if (m_iAction & iAction[ACTION_SIZEUP])
         {
@@ -94,7 +94,7 @@ void CParticle_Point::Tick(const _float& fTimeDelta)
         {
             m_pVIBufferCom->SizeDown_Time(fTimeDelta);
         }
-        if (m_iAction & iAction[ACTION_NOBILLBOARD])
+        if (m_iAction & iAction[ACTION_NOBILLBOARD])    
         {
             m_pVIBufferCom->RotSpread(fTimeDelta);
         }
@@ -191,6 +191,12 @@ HRESULT CParticle_Point::Render()
 void* CParticle_Point::Get_Instance()
 {
     return &m_BufferInstance;
+}
+
+void CParticle_Point::Reset_Buffer()
+{
+
+    m_pVIBufferCom->Reset();
 }
 
 
