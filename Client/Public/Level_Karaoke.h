@@ -24,6 +24,10 @@ private:
     HRESULT Ready_Camera(const wstring& strLayerTag);
     HRESULT Ready_Player(const wstring& strLayerTag);
 
+private:
+    _bool m_isChanged = { false };
+    _bool m_isEnded = { false };
+
 public:
     static CLevel_Karaoke* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
     virtual void Free();

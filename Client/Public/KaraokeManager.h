@@ -57,9 +57,19 @@ private:
     void Show_Grade_UI(class CNoteBase* pNote);
     
 public:
-    _bool IsSongEnd() {
+    _bool IsScoreEnd() {
         return m_isScoreEnd;
     }
+
+    _uint Get_MusicSelected() {
+        return m_iMusicSelected;
+    }
+
+    void Set_MusicSelected(_bool isValue) {
+        m_iMusicSelected = isValue;
+    }
+
+    void Open_SelectWindow();
 
 private:
     class CGameInstance* m_pGameInstance = { nullptr };
@@ -76,6 +86,8 @@ private:
     _bool m_isScoreEnd = { false };
 
     _uint m_iCheckNoteIndex = { 0 };        // 검사할 노트 인덱스
+
+    _bool m_iMusicSelected = { false };
 
 private:
     HRESULT Ready_Karaoke();

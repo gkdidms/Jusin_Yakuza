@@ -80,8 +80,7 @@ void CKaraokeManager::KeyInput()
 {
 	if (m_pGameInstance->GetKeyState(DIK_K) == TAP)
 	{
-		m_pUIManager->Open_Scene(TEXT("Karaoke_Select"));
-		m_isStart = true;
+		Open_SelectWindow();
 	}
 }
 
@@ -394,6 +393,12 @@ void CKaraokeManager::Show_Grade_UI(CNoteBase* pNote)
 {
 	CUIKaraoke_Play* pPlayScene = dynamic_cast<CUIKaraoke_Play*>(m_pUIManager->Find_Scene(TEXT("Karaoke_Play")));
 	pPlayScene->Show_Grade(pNote);
+}
+
+void CKaraokeManager::Open_SelectWindow()
+{
+	m_pUIManager->Open_Scene(TEXT("Karaoke_Select"));
+	m_isStart = true;
 }
 
 HRESULT CKaraokeManager::Ready_Karaoke()

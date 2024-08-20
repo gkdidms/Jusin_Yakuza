@@ -85,7 +85,7 @@ void CLevel_Test::Tick(const _float& fTimeDelta)
 	SetWindowText(g_hWnd, TEXT("테스트 레벨"));
 #endif
 
-	if (m_pKaraokeManager->IsSongEnd())
+	if (m_pKaraokeManager->IsScoreEnd())
 	{
 		int a = 0;
 	}
