@@ -126,10 +126,6 @@ HRESULT CUIKaraoke_Play::Tick(const _float& fTimeDelta)
 
 HRESULT CUIKaraoke_Play::Late_Tick(const _float& fTimeDelta)
 {
-    //m_pPlayUI[BACK][0]->Late_Tick(fTimeDelta);
-    //for (auto& iter : m_pPlayUI)
-    //    iter->Late_Tick(fTimeDelta);
-
     Render_Cutsom_Sequence(fTimeDelta);
 
     if (!m_isAnimFin)
@@ -413,8 +409,8 @@ void CUIKaraoke_Play::Render_Cutsom_Sequence(const _float& fTimeDelta)
 
     m_Lyrics->Late_Tick(fTimeDelta);
 
-    RenderGroup_GoodEffect(fTimeDelta);
-    RenderGroup_GreatEffect(fTimeDelta);
+    //RenderGroup_GoodEffect(fTimeDelta);
+    //RenderGroup_GreatEffect(fTimeDelta);
 
     RenderGroup_Grade(fTimeDelta);
 }
