@@ -166,6 +166,7 @@ public:
     void    Edit_Light(int  iLightIndex, LIGHT_DESC lightDesc);
     void    Delete_Light(int iLightIndex);
     void    Delete_AllLights();
+    void Bind_LightComputeBuffer(_uint iSlot = 0);
 
     /* Picking */
 public:

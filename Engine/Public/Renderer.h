@@ -22,7 +22,7 @@ public:
         RENDER_END
     };
 
-    enum SHADER_TYPE { DOWNSAMPLING, BLURX, BLURY, DOWNSAMPLING_DEPTH, SSAO, SHADER_TYPE_END };
+    enum SHADER_TYPE { DOWNSAMPLING, BLURX, BLURY, DOWNSAMPLING_DEPTH, SSAO, PBR, SHADER_TYPE_END };
 
     //SSAO 버퍼용
     struct SSAO_BUFFER
@@ -40,6 +40,22 @@ public:
         _float fRadiuse;
         _float fSSAOBise;
         _float buffer1;
+    };
+
+    //PBR 버퍼용
+    struct PBR_BUFFER
+    {
+        _matrix WorldMatrix;
+        _matrix ViewMatrix;
+        _matrix ProjMatrix;
+        _matrix ViewMatrixInv;
+        _matrix ProjMatrixInv;
+        _matrix CamViewMatrix;
+        _matrix CamProjMatrix;
+
+        _float4 vCamPosition;
+        _float fFar;
+        _float fPadding[3];
     };
 
 
@@ -108,6 +124,9 @@ private:
     void Render_Glass();
     void Render_Puddle();
 
+    /*PBR*/
+    void Render_PBR();
+
     void Render_LightAcc(); // Light 연산 + SSAO 합 + PBR
     void Render_CopyBackBuffer();
     void Render_DeferredResult();
@@ -151,9 +170,6 @@ private:
     void Render_UI();
 
     void Render_OcculusionDepth();
-    void Render_OcculusionDownSampling();
-
-    void Check_OcculusionCulling();
 
 private:
     HRESULT Ready_Targets();
@@ -193,6 +209,7 @@ private:
     ID3D11DepthStencilView* m_pOcculusionDepthView = { nullptr };
 
     ID3D11Buffer* m_pSSAOBuffer = { nullptr };
+    ID3D11Buffer* m_pPBRBuffer = { nullptr };
 
     _bool m_isRadialBlur = { false };
     _bool m_isMotionBlur = { false };
