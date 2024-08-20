@@ -29,12 +29,13 @@ public:
     {
         _float4 vSSAOKernal[64];
         _matrix WorldMatrix;
+        _matrix ViewMatrix;
+        _matrix ProjMatrix;
         _matrix ViewMatrixInv;
         _matrix ProjMatrixInv;
         _matrix CamViewMatrix;
         _matrix CamProjMatrix;
         
-        _float4 vCamPosition;
         _float fFar;
         _float fRadiuse;
         _float fSSAOBise;
