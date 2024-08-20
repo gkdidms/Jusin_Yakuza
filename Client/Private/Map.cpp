@@ -1369,8 +1369,6 @@ HRESULT CMap::Add_Components(void* pArg)
 		m_bCompulsoryAlpha = { true };
 	}
 
-
-
 	wstring strMaterialName = TEXT("Prototype_Component_Material_") + m_pGameInstance->StringToWstring(strModelName);
 
 	if (FAILED(__super::Add_Component(m_iCurrentLevel, strMaterialName,
@@ -1381,8 +1379,6 @@ HRESULT CMap::Add_Components(void* pArg)
 	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Shader_MeshMap"),
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
 		return E_FAIL;
-
-
 
 	// Occulusion CullingÀ» À§ÇÑ scale ÆÄ¾Ç
 	if (0 < gameobjDesc->iColliderNum)

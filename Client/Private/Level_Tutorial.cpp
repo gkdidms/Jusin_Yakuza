@@ -20,12 +20,14 @@ CLevel_Tutorial::CLevel_Tutorial(ID3D11Device* pDevice, ID3D11DeviceContext* pCo
 	m_pSystemManager{ CSystemManager::GetInstance() },
 	m_pFileTotalManager{ CFileTotalMgr::GetInstance() },
 	m_pFightManager{ CFightManager::GetInstance()},
-	m_pQuestManager{ CQuestManager::GetInstance()}
+	m_pQuestManager{ CQuestManager::GetInstance()},
+	m_pUIManager { CUIManager::GetInstance() }
 {
 	Safe_AddRef(m_pSystemManager);
 	Safe_AddRef(m_pFileTotalManager);
 	Safe_AddRef(m_pFightManager);
 	Safe_AddRef(m_pQuestManager);
+	Safe_AddRef(m_pUIManager);
 	
 }
 
@@ -62,7 +64,16 @@ void CLevel_Tutorial::Tick(const _float& fTimeDelta)
 	if (m_pQuestManager->Execute())
 	{
 		//true 이면 다음 스테이지로 이동
-		m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_NISHIKIWALK));
+		if (!m_pUIManager->isOpen(TEXT("Fade")))
+		{
+			m_pUIManager->Open_Scene(TEXT("Fade"));
+			m_pUIManager->Fade_In();
+		}
+		else
+		{
+			if (m_pUIManager->isFindFinished())
+				m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_NISHIKIWALK));
+		}
 	}
 
 #ifdef _DEBUG
@@ -149,4 +160,5 @@ void CLevel_Tutorial::Free()
 	Safe_Release(m_pFileTotalManager);
 	Safe_Release(m_pFightManager);
 	Safe_Release(m_pQuestManager);
+	Safe_Release(m_pUIManager);
 }

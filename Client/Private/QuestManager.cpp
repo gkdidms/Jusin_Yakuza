@@ -268,6 +268,9 @@ HRESULT CQuestManager::Ready_Quest()
 
 _bool CQuestManager::Execute()
 {
+    if (nullptr == m_pCurrentQuest)
+        return true;
+
     if (true == m_pCurrentQuest->Execute())
     {
         // 퀘스트 완료했다면

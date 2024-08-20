@@ -8,6 +8,7 @@
 #include "FightManager.h"
 #include "QuestManager.h"
 #include "ScriptManager.h"
+#include "UIManager.h"
 
 #include "PlayerCamera.h"
 #include "CineCamera.h"
@@ -15,18 +16,20 @@
 
 #include "Level_Loading.h"
 
-CLevel_NIshikiWalk::CLevel_NIshikiWalk(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+CLevel_NishikiWalk::CLevel_NishikiWalk(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLevel{ pDevice, pContext },
 	m_pSystemManager{ CSystemManager::GetInstance() },
 	m_pFileTotalManager{ CFileTotalMgr::GetInstance() },
-	m_pQuestManager{ CQuestManager::GetInstance()}
+	m_pQuestManager{ CQuestManager::GetInstance()},
+	m_pUIManager{ CUIManager::GetInstance() }
 {
 	Safe_AddRef(m_pSystemManager);
 	Safe_AddRef(m_pFileTotalManager);
 	Safe_AddRef(m_pQuestManager);
+	Safe_AddRef(m_pUIManager);
 }
 
-HRESULT CLevel_NIshikiWalk::Initialize()
+HRESULT CLevel_NishikiWalk::Initialize()
 {
 	if (FAILED(Ready_Player(TEXT("Layer_Player"))))
 		return E_FAIL;
@@ -38,7 +41,7 @@ HRESULT CLevel_NIshikiWalk::Initialize()
 	m_pFileTotalManager->Set_MapObj_In_Client(STAGE_NISHIKIWALK, LEVEL_NISHIKIWALK);
 	m_pFileTotalManager->Set_Lights_In_Client(99);
 
-	m_pQuestManager->Start_Quest(CQuestManager::CHAPTER_2);
+	m_pUIManager->Fade_Out();
 
 	if (FAILED(Ready_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
@@ -46,19 +49,36 @@ HRESULT CLevel_NIshikiWalk::Initialize()
 	return S_OK;
 }
 
-void CLevel_NIshikiWalk::Tick(const _float& fTimeDelta)
+void CLevel_NishikiWalk::Tick(const _float& fTimeDelta)
 {
+	if (m_isStart == false)
+	{
+		if (m_pUIManager->isFindFinished())
+		{
+			m_pQuestManager->Start_Quest(CQuestManager::CHAPTER_2);
+			m_isStart = true;
+		}
+	}
+
 	if (m_pQuestManager->Execute())
 	{
-		//true 이면 다음 스테이지로 이동
-		m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_KARAOKE_START));
+		if (!m_pUIManager->isOpen(TEXT("Fade")))
+		{
+			m_pUIManager->Open_Scene(TEXT("Fade"));
+			m_pUIManager->Fade_In();
+		}
+		else
+		{
+			if (m_pUIManager->isFindFinished())
+				m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_KARAOKE_START));
+		}
 	}
 #ifdef _DEBUG
 	SetWindowText(g_hWnd, TEXT("총격전 맵"));
 #endif
 }
 
-HRESULT CLevel_NIshikiWalk::Ready_Camera(const wstring& strLayerTag)
+HRESULT CLevel_NishikiWalk::Ready_Camera(const wstring& strLayerTag)
 {
 	/* 카메라 추가 시 Debug Camera를 첫번째로 놔두고 추가해주세요 (디버깅 툴에서 사용중)*/
 	const _float4x4* pPlayerFloat4x4 = dynamic_cast<CTransform*>(m_pGameInstance->Get_GameObject_Component(LEVEL_NISHIKIWALK, TEXT("Layer_Player"), TEXT("Com_Transform", 0)))->Get_WorldFloat4x4();
@@ -106,7 +126,7 @@ HRESULT CLevel_NIshikiWalk::Ready_Camera(const wstring& strLayerTag)
 	return S_OK;
 }
 
-HRESULT CLevel_NIshikiWalk::Ready_Player(const wstring& strLayerTag)
+HRESULT CLevel_NishikiWalk::Ready_Player(const wstring& strLayerTag)
 {
 	CGameObject::GAMEOBJECT_DESC Desc{};
 	Desc.fSpeedPecSec = 10.f;
@@ -119,9 +139,9 @@ HRESULT CLevel_NIshikiWalk::Ready_Player(const wstring& strLayerTag)
 	return S_OK;
 }
 
-CLevel_NIshikiWalk* CLevel_NIshikiWalk::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+CLevel_NishikiWalk* CLevel_NishikiWalk::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
-	CLevel_NIshikiWalk* pInstance = new CLevel_NIshikiWalk(pDevice, pContext);
+	CLevel_NishikiWalk* pInstance = new CLevel_NishikiWalk(pDevice, pContext);
 
 	if (FAILED(pInstance->Initialize()))
 		Safe_Release(pInstance);
@@ -129,11 +149,12 @@ CLevel_NIshikiWalk* CLevel_NIshikiWalk::Create(ID3D11Device* pDevice, ID3D11Devi
 	return pInstance;
 }
 
-void CLevel_NIshikiWalk::Free()
+void CLevel_NishikiWalk::Free()
 {
 	__super::Free();
 
 	Safe_Release(m_pSystemManager);
 	Safe_Release(m_pFileTotalManager);
 	Safe_Release(m_pQuestManager);
+	Safe_Release(m_pUIManager);
 }

@@ -148,7 +148,7 @@ void CLevel_Loading::Tick(const _float& fTimeDelta)
 					pNewLevel = CLevel_Tutorial::Create(m_pDevice, m_pContext);
 					break;
 				case LEVEL_NISHIKIWALK:
-					pNewLevel = CLevel_NIshikiWalk::Create(m_pDevice, m_pContext);
+					pNewLevel = CLevel_NishikiWalk::Create(m_pDevice, m_pContext);
 					break;
 				case LEVEL_TOKOSTREET:
 					pNewLevel = CLevel_Street::Create(m_pDevice, m_pContext);
