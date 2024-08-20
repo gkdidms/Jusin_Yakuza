@@ -30,12 +30,12 @@ HRESULT CLevel_Karaoke::Initialize()
     if (FAILED(Ready_Player(TEXT("Layer_Player"))))
         return E_FAIL;
 
-	m_pQuestManager->Start_Quest(CQuestManager::CHAPTER_3);
+	//m_pQuestManager->Start_Quest(CQuestManager::CHAPTER_3);
 
     ///* Å¬¶ó ÆÄ½Ì */
     m_pFileTotalManager->Set_MapObj_In_Client(STAGE_KARAOKE, LEVEL_KARAOKE);
     m_pFileTotalManager->Set_Lights_In_Client(99);
-	m_pFileTotalManager->Set_Trigger_In_Client(STAGE_KARAOKE, LEVEL_KARAOKE);
+	//m_pFileTotalManager->Set_Trigger_In_Client(STAGE_KARAOKE, LEVEL_KARAOKE);
     //m_pFileTotalManager->Set_Collider_In_Client(STAGE_KARAOKE, LEVEL_KARAOKE);
 
 	m_pKaraokeManager = CKaraokeManager::Create();
@@ -46,6 +46,13 @@ HRESULT CLevel_Karaoke::Initialize()
 	if (FAILED(Ready_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
 
+	m_pFileTotalManager->Load_Cinemachine(5, LEVEL_KARAOKE);
+	m_pFileTotalManager->Setting_Start_Cinemachine(5);
+
+	m_pSystemManager->Set_Camera(CAMERA_CINEMACHINE);
+	CCineCamera* pCutSceneCamera = dynamic_cast<CCineCamera*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Camera"), CAMERA_CINEMACHINE));
+	pCutSceneCamera->Set_Loop(true);
+
     return S_OK;
 }
 
@@ -53,10 +60,10 @@ void CLevel_Karaoke::Tick(const _float& fTimeDelta)
 {
 	m_pKaraokeManager->Tick(fTimeDelta);
 
-	if (m_pQuestManager->Execute())
-	{
-		m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_TOKOSTREET));
-	}
+	//if (m_pQuestManager->Execute())
+	//{
+	//	m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_TOKOSTREET));
+	//}
 #ifdef _DEBUG
     SetWindowText(g_hWnd, TEXT("°¡¶ó¿ÀÄÉ ¸Ê"));
 #endif
@@ -107,6 +114,20 @@ HRESULT CLevel_Karaoke::Ready_Camera(const wstring& strLayerTag)
 	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_KARAOKE, TEXT("Prototype_GameObject_PlayerCamera"), strLayerTag, &PlayerCameraDesc)))
 		return E_FAIL;
 
+	/* 3. ÄÆ½Å¿ë Ä«¸Þ¶ó */
+	CCamera::CAMERA_DESC		CutSceneCameraDesc{};
+	CutSceneCameraDesc.vEye = _float4(1.0f, 20.0f, -20.f, 1.f);
+	CutSceneCameraDesc.vFocus = _float4(0.f, 0.0f, 0.0f, 1.f);
+	CutSceneCameraDesc.fFovY = XMConvertToRadians(60.0f);
+	CutSceneCameraDesc.fAspect = g_iWinSizeX / (_float)g_iWinSizeY;
+	CutSceneCameraDesc.fNear = 0.1f;
+	CutSceneCameraDesc.fFar = 300.f;
+	CutSceneCameraDesc.fSpeedPecSec = 10.f;
+	CutSceneCameraDesc.fRotatePecSec = XMConvertToRadians(90.f);
+
+	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_KARAOKE, TEXT("Prototype_GameObject_CutSceneCamera"), strLayerTag, &CutSceneCameraDesc)))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -114,10 +135,9 @@ HRESULT CLevel_Karaoke::Ready_Player(const wstring& strLayerTag)
 {
 	CGameObject::GAMEOBJECT_DESC Desc{};
 	Desc.fSpeedPecSec = 10.f;
-	//Desc.fRotatePecSec = XMConvertToRadians(0.f);
 	Desc.fRotatePecSec = XMConvertToRadians(180.f);
 
-	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_KARAOKE, TEXT("Prototype_GameObject_Player"), strLayerTag, &Desc)))
+	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_KARAOKE, TEXT("Prototype_GameObject_Kiryu_Karaoke"), strLayerTag, &Desc)))
 		return E_FAIL;
 
 	return S_OK;
