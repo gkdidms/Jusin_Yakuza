@@ -21,7 +21,6 @@ private:
     class CKaraokeManager* m_pKaraokeManager = { nullptr };
     class CUIManager* m_pUIManager = { nullptr };
 
-
 private:
     HRESULT Ready_Camera(const wstring& strLayerTag);
     HRESULT Ready_Player(const wstring& strLayerTag);
