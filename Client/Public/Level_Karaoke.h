@@ -17,7 +17,6 @@ public:
 private:
     class CSystemManager* m_pSystemManager = { nullptr };
     class CFileTotalMgr* m_pFileTotalManager = { nullptr };
-    class CQuestManager* m_pQuestManager = { nullptr };
     class CKaraokeManager* m_pKaraokeManager = { nullptr };
 
 private:

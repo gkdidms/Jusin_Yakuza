@@ -2,21 +2,22 @@
 
 #include "GameInstance.h"
 #include "FightManager.h"
-
 #include "FileTotalMgr.h"
+
+#include "LandObject.h"
 #include "Monster.h"
 
 #include "Player.h"
 
 CMonsterGroup::CMonsterGroup(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-	: CGameObject{ pDevice, pContext },
+	: CLandObject{ pDevice, pContext },
 	m_pFightManager{CFightManager::GetInstance() }
 {
 	Safe_AddRef(m_pFightManager);
 }
 
 CMonsterGroup::CMonsterGroup(const CMonsterGroup& rhs)
-	: CGameObject{ rhs },
+	: CLandObject{ rhs },
 	m_pFightManager{CFightManager::GetInstance()}
 {
 	Safe_AddRef(m_pFightManager);
@@ -138,4 +139,9 @@ void CMonsterGroup::Free()
 	Safe_Release(m_pFightManager);
 
 	__super::Free();
+}
+
+string CMonsterGroup::Get_CurrentAnimationName()
+{
+	return string();
 }

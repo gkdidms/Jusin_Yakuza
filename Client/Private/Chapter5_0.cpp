@@ -1,16 +1,15 @@
-#include "Chapter3_1.h"
+#include "Chapter5_0.h"
 
 #include "GameInstance.h"
 #include "UIManager.h"
-
 #include "Background.h"
 
-CChapter3_1::CChapter3_1()
+CChapter5_0::CChapter5_0()
 	: CMainQuest{}
 {
 }
 
-HRESULT CChapter3_1::Initialize(void* pArg)
+HRESULT CChapter5_0::Initialize(void* pArg)
 {
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
@@ -23,7 +22,7 @@ HRESULT CChapter3_1::Initialize(void* pArg)
 }
 
 //대화가 끝나면 자동으로 다음 스테이지로 넘어감
-_bool CChapter3_1::Execute()
+_bool CChapter5_0::Execute()
 {
 	if (m_pUIManager->isTalkFinished())
 		return true;
@@ -31,9 +30,9 @@ _bool CChapter3_1::Execute()
 	return false;
 }
 
-CChapter3_1* CChapter3_1::Create(void* pArg)
+CChapter5_0* CChapter5_0::Create(void* pArg)
 {
-	CChapter3_1* pInstance = new CChapter3_1();
+	CChapter5_0* pInstance = new CChapter5_0();
 
 	if (FAILED(pInstance->Initialize(pArg)))
 		Safe_Release(pInstance);
@@ -41,7 +40,7 @@ CChapter3_1* CChapter3_1::Create(void* pArg)
 	return pInstance;
 }
 
-void CChapter3_1::Free()
+void CChapter5_0::Free()
 {
 	__super::Free();
 }

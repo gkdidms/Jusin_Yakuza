@@ -12,6 +12,7 @@
 #include "Chapter3_0.h"
 #include "Chapter3_1.h"
 #include "Chapter4_0.h"
+#include "Chapter5_0.h"
 
 #include "UIManager.h"
 
@@ -155,23 +156,24 @@ HRESULT CQuestManager::Ready_Quest()
         )
     };
     m_QuestInfo.emplace(CHAPTER_3, Chapter3);
+    //m_QuestInfo.emplace(CHAPTER_3, Chapter3);
 
-    //가라오케 노래
-    vector<QUEST_INFO> Chapter4;
-    Chapter4 = {
-        QUEST_INFO(
-            QUEST_KARAOKE,
-            0,
+    ////가라오케 노래
+    //vector<QUEST_INFO> Chapter4;
+    //Chapter4 = {
+    //    QUEST_INFO(
+    //        QUEST_KARAOKE,
+    //        0,
 
-            iQuestIndex++,
-            iNextQuestIndex++
-        )
-    };
-    m_QuestInfo.emplace(CHAPTER_4, Chapter4);
+    //        iQuestIndex++,
+    //        iNextQuestIndex++
+    //    )
+    //};
+    //m_QuestInfo.emplace(CHAPTER_4, Chapter4);
 
     //가라오케 끝
-    vector<QUEST_INFO> Chapter5;
-    Chapter5 = {
+    vector<QUEST_INFO> Chapter4;
+    Chapter4 = {
         QUEST_INFO(
             QUEST_MAIN,
             4,
@@ -180,11 +182,11 @@ HRESULT CQuestManager::Ready_Quest()
             iNextQuestIndex++
         )
     };
-    m_QuestInfo.emplace(CHAPTER_5, Chapter5);
+    m_QuestInfo.emplace(CHAPTER_4, Chapter4);
 
     //길거리
-    vector<QUEST_INFO> Chapter6;
-    Chapter6 = {
+    vector<QUEST_INFO> Chapter5;
+    Chapter5 = {
         QUEST_INFO(
             QUEST_MAIN,
             5,
@@ -207,11 +209,11 @@ HRESULT CQuestManager::Ready_Quest()
             iNextQuestIndex++
         ),
     };
-    m_QuestInfo.emplace(CHAPTER_6, Chapter6);
+    m_QuestInfo.emplace(CHAPTER_5, Chapter5);
 
     //사체업자
-    vector<QUEST_INFO> Chapter7;
-    Chapter7 = {
+    vector<QUEST_INFO> Chapter6;
+    Chapter6 = {
         QUEST_INFO(
             QUEST_KILL,
             0,
@@ -221,7 +223,7 @@ HRESULT CQuestManager::Ready_Quest()
             4001 //iTargetIndex
         )
     };
-    m_QuestInfo.emplace(CHAPTER_7, Chapter7);
+    m_QuestInfo.emplace(CHAPTER_6, Chapter6);
     
     return S_OK;
 }
@@ -344,19 +346,6 @@ HRESULT CQuestManager::Add_MainQuest(_int iQuestIndex, _int iNextQuestIndex, _in
     }
     else if (iQuestIndex == 3)
     {
-        CChapter2_0::MAIN_QUEST_DESC Desc{};
-        Desc.iQuestIndex = iQuestIndex;
-        Desc.iNextQuestIndex = iNextQuestIndex;
-        Desc.iScriptIndex = iScriptIndex;
-
-        CChapter2_0* pMainQuest = CChapter2_0::Create(&Desc);
-        if (nullptr == pMainQuest)
-            return E_FAIL;
-
-        m_pCurrentQuest = pMainQuest;
-    }
-    else if (iQuestIndex == 5)
-    {
         CChapter3_0::MAIN_QUEST_DESC Desc{};
         Desc.iQuestIndex = iQuestIndex;
         Desc.iNextQuestIndex = iNextQuestIndex;
@@ -368,14 +357,27 @@ HRESULT CQuestManager::Add_MainQuest(_int iQuestIndex, _int iNextQuestIndex, _in
 
         m_pCurrentQuest = pMainQuest;
     }
-    else if (iQuestIndex == 7)
+    else if (iQuestIndex == 4)
     {
-        CChapter3_1::MAIN_QUEST_DESC Desc{};
+        CChapter4_0::MAIN_QUEST_DESC Desc{};
         Desc.iQuestIndex = iQuestIndex;
         Desc.iNextQuestIndex = iNextQuestIndex;
         Desc.iScriptIndex = iScriptIndex;
 
-        CChapter3_1* pMainQuest = CChapter3_1::Create(&Desc);
+        CChapter4_0* pMainQuest = CChapter4_0::Create(&Desc);
+        if (nullptr == pMainQuest)
+            return E_FAIL;
+
+        m_pCurrentQuest = pMainQuest;
+    }
+    else if (iQuestIndex == 5)
+    {
+        CChapter5_0::MAIN_QUEST_DESC Desc{};
+        Desc.iQuestIndex = iQuestIndex;
+        Desc.iNextQuestIndex = iNextQuestIndex;
+        Desc.iScriptIndex = iScriptIndex;
+
+        CChapter5_0* pMainQuest = CChapter5_0::Create(&Desc);
         if (nullptr == pMainQuest)
             return E_FAIL;
 

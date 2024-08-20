@@ -1,20 +1,18 @@
 #pragma once
-#include "GameObject.h"
+#include "LandObject.h"
 
 #include "Client_Defines.h"
 
 /* 몬스터를 묶어서 생성하는 용도로 한다. */
 BEGIN(Client)
 class CMonsterGroup :
-    public CGameObject
+    public CLandObject
 {
 public:
     typedef struct tMapAdventureObjDesc : public CGameObject::GAMEOBJECT_DESC
     {
         vector<CLandObject::LANDOBJ_MAPDESC>        vMonsters;
         int                                         iGroupNum;
-
-
     }MONSTERGROUPDESC;
 
 public:
@@ -48,5 +46,7 @@ public:
     static CMonsterGroup* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
     virtual CGameObject* Clone(void* pArg);
     virtual void Free();
+
+    string Get_CurrentAnimationName() override;
 };
 END

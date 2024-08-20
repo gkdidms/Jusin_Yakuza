@@ -43,7 +43,7 @@ _bool CChapter1_0::Execute()
 		{
 			m_pUIManager->Open_Scene(TEXT("Title"));
 			m_pUIManager->Set_TitleStart(true); // 니시키야마를 찾아라
-			m_pUIManager->Start_Title(14);
+			m_pUIManager->Start_Title(13);
 			m_isTitleStart = true;
 		}
 		else

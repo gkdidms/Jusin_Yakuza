@@ -17,20 +17,16 @@
 CLevel_Karaoke::CLevel_Karaoke(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     : CLevel { pDevice, pContext },
     m_pSystemManager{ CSystemManager::GetInstance() },
-    m_pFileTotalManager{ CFileTotalMgr::GetInstance() },
-	m_pQuestManager{ CQuestManager::GetInstance() }
+	m_pFileTotalManager{ CFileTotalMgr::GetInstance() }
 {
     Safe_AddRef(m_pSystemManager);
     Safe_AddRef(m_pFileTotalManager);
-	Safe_AddRef(m_pQuestManager);
 }
 
 HRESULT CLevel_Karaoke::Initialize()
 {
     if (FAILED(Ready_Player(TEXT("Layer_Player"))))
         return E_FAIL;
-
-	//m_pQuestManager->Start_Quest(CQuestManager::CHAPTER_3);
 
     ///* Å¬¶ó ÆÄ½Ì */
     m_pFileTotalManager->Set_MapObj_In_Client(STAGE_KARAOKE, LEVEL_KARAOKE);
@@ -80,13 +76,9 @@ void CLevel_Karaoke::Tick(const _float& fTimeDelta)
 
 	if (m_pKaraokeManager->IsScoreEnd())
 	{
-		m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_TOKOSTREET));
+		m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_KARAOKE_END));
 	}
 
-	//if (m_pQuestManager->Execute())
-	//{
-	//	m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_TOKOSTREET));
-	//}
 #ifdef _DEBUG
     SetWindowText(g_hWnd, TEXT("°¡¶ó¿ÀÄÉ ¸Ê"));
 #endif
@@ -183,5 +175,4 @@ void CLevel_Karaoke::Free()
     Safe_Release(m_pSystemManager);
     Safe_Release(m_pFileTotalManager);
     Safe_Release(m_pKaraokeManager);
-	Safe_Release(m_pQuestManager);
 }

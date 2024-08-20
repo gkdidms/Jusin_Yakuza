@@ -14,6 +14,9 @@ public:
 	virtual HRESULT Initialize(void* pArg) override;
 	virtual _bool Execute() override;
 
+private:
+	class CNishiki* m_pNishiki = { nullptr };
+
 public:
 	static CChapter4_0* Create(void* pArg);
 	virtual void Free();
