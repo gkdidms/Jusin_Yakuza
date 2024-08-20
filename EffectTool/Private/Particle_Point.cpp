@@ -102,7 +102,11 @@ void CParticle_Point::Tick(const _float& fTimeDelta)
         }
         if (m_iAction & iAction[ACTION_FALLSPREAD])
         {
-            m_pVIBufferCom->FallSpread(fTimeDelta);
+           m_pVIBufferCom->FallSpread(fTimeDelta);
+        }
+        if (m_iAction & iAction[ACTION_BLOOD])
+        {
+            m_pVIBufferCom->BloodSpread(fTimeDelta);
         }
     }
 
@@ -278,7 +282,15 @@ HRESULT CParticle_Point::Save_Data(const string strDirectory)
         out.write(NormalTag.c_str(), strNormallength);
         out.write((char*)&m_fUVCount, sizeof(_float2));
 
-        out.write((char*)&m_fUVCount, sizeof(_float2));
+
+        out.write((char*)&m_BufferInstance.LowStartRot, sizeof(_float3));
+        out.write((char*)&m_BufferInstance.HighStartRot, sizeof(_float3));
+        out.write((char*)&m_BufferInstance.LowAngleVelocity, sizeof(_float3));
+        out.write((char*)&m_BufferInstance.HighAngleVelocity, sizeof(_float3));
+        out.write((char*)&m_BufferInstance.GravityScale, sizeof(_float));
+        out.write((char*)&m_BufferInstance.CrossArea, sizeof(_float));
+        out.write((char*)&m_BufferInstance.fDelay, sizeof(_float));
+
     }
 
     out.write((char*)&m_BufferInstance.isAttach, sizeof(_bool));
@@ -382,6 +394,14 @@ HRESULT CParticle_Point::Load_Data(const string strDirectory)
         m_NormalTag = m_pGameInstance->StringToWstring(Normaltag);
 
         in.read((char*)&m_fUVCount, sizeof(_float2));
+
+        in.read((char*)&m_BufferInstance.LowStartRot, sizeof(_float3));
+        in.read((char*)&m_BufferInstance.HighStartRot, sizeof(_float3));
+        in.read((char*)&m_BufferInstance.LowAngleVelocity, sizeof(_float3));
+        in.read((char*)&m_BufferInstance.HighAngleVelocity, sizeof(_float3));
+        in.read((char*)&m_BufferInstance.GravityScale, sizeof(_float));
+        in.read((char*)&m_BufferInstance.CrossArea, sizeof(_float));
+        in.read((char*)&m_BufferInstance.fDelay, sizeof(_float));
     }
     in.read((char*)&m_BufferInstance.isAttach, sizeof(_bool));
     in.close();

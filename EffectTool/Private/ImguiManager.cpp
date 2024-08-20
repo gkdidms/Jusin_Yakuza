@@ -1620,6 +1620,7 @@ HRESULT CImguiManager::Edit_Particle(_uint Index)
 		EffectDesc.BufferInstance.isBillboard = m_EffectDesc.BufferInstance.isBillboard;
 		EffectDesc.BufferInstance.CrossArea = m_EffectDesc.BufferInstance.CrossArea;
 		EffectDesc.BufferInstance.isAttach = m_EffectDesc.BufferInstance.isAttach;
+		EffectDesc.BufferInstance.fDelay = m_EffectDesc.BufferInstance.fDelay;
 
 		EffectDesc.vStartPos = m_EffectDesc.vStartPos;
 		EffectDesc.fRotate = m_EffectDesc.fRotate;
@@ -1871,6 +1872,13 @@ HRESULT CImguiManager::Load_Desc(_uint Index)
 			m_bFallSpread = true;
 		else
 			m_bFallSpread = false;
+
+		if (CheckAction & pEffect->iAction[CEffect::ACTION_BLOOD])	
+			m_bBloodSpread = true;
+		else
+			m_bBloodSpread = false;
+
+		
 	}
 		break;
 	case MODE_TRAIL:
@@ -2514,6 +2522,14 @@ void CImguiManager::Editor_Tick(_float fTimeDelta)
 				pParticle->Edit_Action(CEffect::ACTION_FALLSPREAD);
 			}
 		}
+		if (ImGui::Checkbox("BloodSpread", &m_bBloodSpread))
+		{
+			if (-1 != m_iCurEditIndex)
+			{
+				CEffect* pParticle = dynamic_cast<CEffect*>(m_EditParticle[m_iCurEditIndex]);
+				pParticle->Edit_Action(CEffect::ACTION_BLOOD);
+			}
+		}
 	}
 
 
@@ -2788,9 +2804,16 @@ void CImguiManager::Editor_Tick(_float fTimeDelta)
 			bChange = true;
 		}
 		Color_Palette();
+
 		Temp = (_float*)&m_EffectDesc.BufferInstance.LowStartRot;
 		if (ImGui::InputFloat3("LowStartRot", Temp))
 		{
+			if (Temp[0] > m_EffectDesc.BufferInstance.HighStartRot.x)
+				m_EffectDesc.BufferInstance.HighStartRot.x = Temp[0];
+			if (Temp[1] > m_EffectDesc.BufferInstance.HighStartRot.y)
+				m_EffectDesc.BufferInstance.HighStartRot.y = Temp[1];
+			if (Temp[2] > m_EffectDesc.BufferInstance.HighStartRot.z)
+				m_EffectDesc.BufferInstance.HighStartRot.z = Temp[2];
 			memcpy(&m_EffectDesc.BufferInstance.LowStartRot, Temp, sizeof(_float3));
 			bChange = true;
 		}
@@ -2798,18 +2821,36 @@ void CImguiManager::Editor_Tick(_float fTimeDelta)
 		Temp = (_float*)&m_EffectDesc.BufferInstance.HighStartRot;
 		if (ImGui::InputFloat3("HighStartRot", Temp))
 		{
+			if (Temp[0] < m_EffectDesc.BufferInstance.LowStartRot.x)
+				m_EffectDesc.BufferInstance.LowStartRot.x = Temp[0];
+			if (Temp[1] < m_EffectDesc.BufferInstance.LowStartRot.y)
+				m_EffectDesc.BufferInstance.LowStartRot.y = Temp[1];
+			if (Temp[2] < m_EffectDesc.BufferInstance.LowStartRot.z)
+				m_EffectDesc.BufferInstance.LowStartRot.z = Temp[2];
 			memcpy(&m_EffectDesc.BufferInstance.HighStartRot, Temp, sizeof(_float3));
 			bChange = true;
 		}
 		Temp = (_float*)&m_EffectDesc.BufferInstance.LowAngleVelocity;
 		if (ImGui::InputFloat3("LowAngleVelocity", Temp))
 		{
+			if (Temp[0] > m_EffectDesc.BufferInstance.HighAngleVelocity.x)
+				m_EffectDesc.BufferInstance.HighAngleVelocity.x = Temp[0];
+			if (Temp[1] > m_EffectDesc.BufferInstance.HighAngleVelocity.y)
+				m_EffectDesc.BufferInstance.HighAngleVelocity.y = Temp[1];
+			if (Temp[2] > m_EffectDesc.BufferInstance.HighAngleVelocity.z)
+				m_EffectDesc.BufferInstance.HighAngleVelocity.z = Temp[2];
 			memcpy(&m_EffectDesc.BufferInstance.LowAngleVelocity, Temp, sizeof(_float3));
 			bChange = true;
 		}
 		Temp = (_float*)&m_EffectDesc.BufferInstance.HighAngleVelocity;
 		if (ImGui::InputFloat3("HighAngleVelocity", Temp))
 		{
+			if (Temp[0] < m_EffectDesc.BufferInstance.LowAngleVelocity.x)
+				m_EffectDesc.BufferInstance.LowAngleVelocity.x = Temp[0];
+			if (Temp[1] < m_EffectDesc.BufferInstance.LowAngleVelocity.y)
+				m_EffectDesc.BufferInstance.LowAngleVelocity.y = Temp[1];
+			if (Temp[2] < m_EffectDesc.BufferInstance.LowAngleVelocity.z)
+				m_EffectDesc.BufferInstance.LowAngleVelocity.z = Temp[2];
 			memcpy(&m_EffectDesc.BufferInstance.HighAngleVelocity, Temp, sizeof(_float3));
 			bChange = true;
 		}
@@ -2831,7 +2872,12 @@ void CImguiManager::Editor_Tick(_float fTimeDelta)
 			memcpy(&m_EffectDesc.fUVCount, Temp, sizeof(_float2));
 			bChange = true;
 		}
-		
+		Temp = (_float*)&m_EffectDesc.BufferInstance.fDelay;
+		if (ImGui::InputFloat("Delay", Temp))
+		{
+			memcpy(&m_EffectDesc.BufferInstance.fDelay, Temp, sizeof(_float));
+			bChange = true;
+		}
 		break;
 	}
 
