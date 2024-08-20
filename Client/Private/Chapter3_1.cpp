@@ -1,6 +1,7 @@
 #include "Chapter3_1.h"
 
 #include "GameInstance.h"
+#include "UIManager.h"
 
 #include "Background.h"
 
@@ -14,6 +15,9 @@ HRESULT CChapter3_1::Initialize(void* pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
+	//씬 카메라 이동 후 스크립트 텍스쳐 나옴
+	m_pUIManager->Open_Scene(TEXT("Talk"));
+	m_pUIManager->Start_Talk(m_iScriptIndex);
 
 	return S_OK;
 }
@@ -21,6 +25,9 @@ HRESULT CChapter3_1::Initialize(void* pArg)
 //대화가 끝나면 자동으로 다음 스테이지로 넘어감
 _bool CChapter3_1::Execute()
 {
+	if (m_pUIManager->isTalkFinished())
+		return true;
+
 	return false;
 }
 

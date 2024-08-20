@@ -164,7 +164,7 @@ void CUIKaraoke_Play::Set_Notes(vector<class CNoteBase*>* pNotes)
         _float fVerseStartTime = Lyrics.fTime;
         _float fVerseEndTime = Lyrics.fTime + Lyrics.fDuration;
 
-        // 해동 노트가 현재 소절내에 포함하면 삽입
+        // 해당 노트가 현재 소절내에 포함하면 삽입
         for (auto& pNote : *pNotes)
         {
             //포함된다.
@@ -423,7 +423,7 @@ void CUIKaraoke_Play::Change_Lyrics()
 {
     for (size_t i = 0; i < m_LyricsTime.size(); i++)
     {
-        if (m_iCurLyricsIndex > 1 && i < m_iCurLyricsIndex - 1) continue;
+        if (m_iCurLyricsIndex > 0 && i < m_iCurLyricsIndex - 1) continue;
         if (m_fCurSoundTime > m_LyricsTime[i].fTime - 1.f)        //2초 전에 가사를 미리 띄운다.
         {
             if (i != 0)

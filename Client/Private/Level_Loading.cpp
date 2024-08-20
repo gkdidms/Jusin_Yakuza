@@ -23,6 +23,7 @@
 #include "Level_Karaoke.h"
 #include "Level_Tutorial.h"
 #include "Level_NishikiWalk.h"
+#include "Level_KaraokeLobby.h"
 #include "Level_Test.h"
 #pragma endregion
 
@@ -150,6 +151,12 @@ void CLevel_Loading::Tick(const _float& fTimeDelta)
 					break;
 				case LEVEL_TOKOSTREET:
 					pNewLevel = CLevel_Roadway::Create(m_pDevice, m_pContext);
+					break;
+				case LEVEL_KARAOKE_START:
+					pNewLevel = CLevel_KaraokeLobby::Create(m_pDevice, m_pContext);
+					break;
+				case LEVEL_KARAOKE_END:
+					pNewLevel = CLevel_KaraokeLobby::Create(m_pDevice, m_pContext);
 					break;
 				case LEVEL_TEST:
 					pNewLevel = CLevel_Test::Create(m_pDevice, m_pContext);

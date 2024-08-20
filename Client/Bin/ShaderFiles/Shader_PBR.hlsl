@@ -52,53 +52,6 @@ float NormalDistributionGGXTR(float3 vNormal, float3 h, float a)
     return nom / denom;
 }
 
-/*
-float4 BRDF(float4 vPosition, float2 vTexcoord, float4 vNormal, float4 vDepthDesc, float3 vLook)
-{
-    float3 vAlbedo = g_DiffuseTexture.Sample(LinearSampler, vTexcoord).xyz;
-    vAlbedo = GammaToLinear(vAlbedo);
-    
-    float vDistance = length(normalize(g_vLightPos - vPosition));
-    float vAttenuation = 1.f / (vDistance * vDistance);
-    float3 vLi = g_vLightDiffuse * vAttenuation;
-    
-    float IOR = 1.4;
-    float3 F0 = pow((IOR - 1.f) / (IOR + 1.f), 2.f);
-    
-    vector Combine = g_SurfaceTexture.Sample(PointSampler, vTexcoord);
-    
-    float fMetalic = Combine.r;
-    F0 = lerp(F0, vAlbedo, fMetalic);
-    
-    //vector vLightDir = reflect(normalize(g_vLightDir), vNormal); //g_vLightDir * -1.f;
-    float3 vLightDir = reflect(normalize(g_vLightDir) * -1.f, vNormal).xyz;
-    float3 vHalfway = normalize(vLook + vLightDir);
-    float3 vRadiance = g_vLightDiffuse;
-    
-    //BRDF
-    float vRoughness = Combine.g;
-    float D = NormalDistributionGGXTR(vNormal.xyz, vHalfway, vRoughness); //r : Roughness
-    float G = GeometrySmith(vNormal.xyz, vLook, vLightDir, vRoughness);
-    float3 F = FresnelSchlickRoughness(max(dot(vHalfway, vLook), 0.f), F0, vRoughness);
-    
-    float3 nominator = D * G * F;
-    
-    float WoDotN = saturate(dot(vLook, vNormal.xyz));
-    float WiDotN = saturate(dot(vLightDir, vNormal.xyz));
-    float denominator = (WoDotN * WiDotN * 4);
-    
-    float3 vSpecular = (nominator / (denominator));
-    
-    float3 vKS = F;
-    float3 vKD = 1.f - vKS;
-    vKD *= 1.f - fMetalic;
-    
-    float3 vDiffuse = vKS * vAlbedo / PI;
-    
-    return vector((vDiffuse + vSpecular) * WiDotN, 1.f);
-}
-*/
-
 float3 SchlickApprox(float3 F0, float3 L, float3 H)
 {
     float dotLH = saturate(dot(L, H));
@@ -155,8 +108,6 @@ float4 BRDF(float4 vPosition, float2 vTexcoord, float4 vNormal, float4 vDepthDes
     float3 vLi = g_vLightDiffuse * vAttenuation;
     
     float3 F0 = 0.4;
-    
-    
     
     float fMetalic = Combine.r;
     //F0 = lerp(F0, vAlbedo, fMetalic);

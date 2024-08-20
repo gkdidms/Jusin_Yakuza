@@ -194,9 +194,11 @@
     <ClInclude Include="..\Public\Chapter3_0.h" />
     <ClInclude Include="..\Public\Chapter3_1.h" />
     <ClInclude Include="..\Public\Chapter4_0.h" />
+    <ClInclude Include="..\Public\Chapter5_0.h" />
     <ClInclude Include="..\public\FightManager.h" />
     <ClInclude Include="..\Public\KaraokeManager.h" />
     <ClInclude Include="..\Public\KaraokeQuest.h" />
+    <ClInclude Include="..\Public\Level_KaraokeLobby.h" />
     <ClInclude Include="..\Public\Level_NishikiWalk.h" />
     <ClInclude Include="..\Public\MainQuest.h" />
     <ClInclude Include="..\public\MonsterGroup.h" />
@@ -442,8 +444,10 @@
     <ClCompile Include="..\Private\Chapter3_0.cpp" />
     <ClCompile Include="..\Private\Chapter3_1.cpp" />
     <ClCompile Include="..\Private\Chapter4_0.cpp" />
+    <ClCompile Include="..\Private\Chapter5_0.cpp" />
     <ClCompile Include="..\Private\HeadUI.cpp" />
     <ClCompile Include="..\Private\KaraokeQuest.cpp" />
+    <ClCompile Include="..\Private\Level_KaraokeLobby.cpp" />
     <ClCompile Include="..\Private\Level_NishikiWalk.cpp" />
     <ClCompile Include="..\Private\MainQuest.cpp" />
     <ClCompile Include="..\Private\Nishiki.cpp" />
