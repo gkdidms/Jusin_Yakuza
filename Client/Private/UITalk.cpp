@@ -41,7 +41,7 @@ HRESULT CUITalk::Tick(const _float& fTimeDelta)
 
 	if(!m_TalkFin)
 	{
-		if(m_PlayTime > 0.07f)
+		if(m_PlayTime > 0.03f)
 		{
 			m_PlayTime = 0.f;
 			Talk_Effect(fTimeDelta);

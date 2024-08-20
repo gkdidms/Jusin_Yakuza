@@ -28,7 +28,7 @@ HRESULT CRoadTissue::Initialize(void* pArg)
     if (FAILED(Add_Components()))
         return E_FAIL;
 
-
+    m_fChangeInterval = 14.f;
     return S_OK;
 }
 
@@ -50,8 +50,8 @@ void CRoadTissue::Late_Tick(const _float& fTimeDelta)
 
 HRESULT CRoadTissue::Add_Components()
 {
-    if (FAILED(__super::Add_Components()))
-        return E_FAIL;
+    //if (FAILED(__super::Add_Components()))
+    //    return E_FAIL;
 
     //행동트리 저장
     CAI_RoadTissue::AI_ADVENTURE_DESC AIDesc{};

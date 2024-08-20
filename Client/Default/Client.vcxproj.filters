@@ -713,6 +713,12 @@
     <ClCompile Include="..\Private\Subtitle.cpp">
       <Filter>07.UI</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\Level_KaraokeLobby.cpp">
+      <Filter>01.Levels\13.KaraokeLobby</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Chapter5_0.cpp">
+      <Filter>03.QuestManager\Quest\Main\Chapter_5\0</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\MainApp.h">
@@ -1456,6 +1462,12 @@
     </ClInclude>
     <ClInclude Include="..\Public\Subtitle.h">
       <Filter>07.UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Level_KaraokeLobby.h">
+      <Filter>01.Levels\13.KaraokeLobby</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Chapter5_0.h">
+      <Filter>03.QuestManager\Quest\Main\Chapter_5\0</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -2246,6 +2258,15 @@
     </Filter>
     <Filter Include="95.Utility\05.UIManager\UIScene\UIFade">
       <UniqueIdentifier>{1a6c981b-ca70-4f90-9dce-c4dc34219b57}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Levels\13.KaraokeLobby">
+      <UniqueIdentifier>{18a430a4-f016-4009-b623-a9fee27d3e06}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.QuestManager\Quest\Main\Chapter_5">
+      <UniqueIdentifier>{4721946d-e66a-4c33-b7f4-00540c2fec61}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.QuestManager\Quest\Main\Chapter_5\0">
+      <UniqueIdentifier>{cf0c48d9-c9b3-459a-a20d-016cda7d8c32}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

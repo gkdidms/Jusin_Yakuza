@@ -151,7 +151,6 @@ void CPlayerCamera::Late_Tick(const _float& fTimeDelta)
 		else
 			Compute_View_During_Collision(fTimeDelta);
 
-		__super::Tick(fTimeDelta);
 	}
 
 	
