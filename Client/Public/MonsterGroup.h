@@ -17,6 +17,9 @@ public:
 
     }MONSTERGROUPDESC;
 
+public:
+    vector<class CMonster*> Get_Monsters() { return m_Monsters; }
+
 private:
     CMonsterGroup(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
     CMonsterGroup(const CMonsterGroup& rhs);
@@ -30,15 +33,17 @@ public:
     virtual void Late_Tick(const _float& fTimeDelta) override; 
 
 private:
+    class CFightManager* m_pFightManager = { nullptr };
     vector<class CMonster*> m_Monsters;
 
     _uint m_iMaxCount = { 3 };
     _int   m_iGroupNum = { 0 };
 
-private:
-    HRESULT Ready_Monsters();
+    _bool m_isFight = { false };
 
-    
+private:
+    void Check_Fight();
+
 public:
     static CMonsterGroup* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
     virtual CGameObject* Clone(void* pArg);

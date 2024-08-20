@@ -18,7 +18,6 @@ CModel::CModel(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 CModel::CModel(const CModel& rhs)
     :CComponent{ rhs }
 	, m_iNumMeshes{ rhs.m_iNumMeshes }
-	, m_Meshes{ rhs.m_Meshes }
 	, m_iNumMaterials{ rhs.m_iNumMaterials }
 	, m_Materials{ rhs.m_Materials }
 	, m_eModelType{ rhs.m_eModelType }
@@ -42,8 +41,8 @@ CModel::CModel(const CModel& rhs)
 
 	m_iNumBones = m_Bones.size();
 
-	for (auto& pMesh : m_Meshes)
-		Safe_AddRef(pMesh);
+	for (auto& pMesh : rhs.m_Meshes)
+		m_Meshes.emplace_back(pMesh->Clone());
 
 	for (size_t i = 0; i < m_iNumMaterials; i++)
 	{

@@ -20,6 +20,7 @@ public:
     enum ANIMATION_COMPONENT_TYPE {
         DEFAULT,
         CUTSCENE,
+        ADVENTURE,
         ANIM_TYPE_END
     };
 

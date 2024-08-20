@@ -14,7 +14,6 @@ class CMonster abstract:
 public:
     typedef struct tMapMonsterObjDesc : public CLandObject::LANDOBJ_MAPDESC
     {
-
     }MONSTER_IODESC;
 
 public:
@@ -23,6 +22,10 @@ public:
     {
         //공격 모션
         MONSTER_IDLE,
+        MONSTER_ADVENTURE_IDLE_1,
+        MONSTER_ADVENTURE_IDLE_2,
+        MONSTER_ADVENTURE_IDLE_3,
+        MONSTER_ADVENTURE_IDLE_4,
         MONSTER_BTLST,
         MONSTER_RUN,
         MONSTER_SHIFT_F,
@@ -250,6 +253,7 @@ public:
 public:
     void Set_Down(_bool isDown) { m_isDown = isDown; }
     void Set_Sync(string strPlayerAnim);
+    void Set_Adventure(_bool isAdventure);
     void Off_Sync();
     void Set_RimLight(_float isRimLight) { m_isRimLight = isRimLight; }
     void Set_Start(_bool isStart); // 전투 시작 시 

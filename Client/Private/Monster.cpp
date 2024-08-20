@@ -270,6 +270,11 @@ void CMonster::Set_Sync(string strPlayerAnim)
 	Change_Animation();
 }
 
+void CMonster::Set_Adventure(_bool isAdventure)
+{
+	m_pTree->Set_Adventure(isAdventure);
+}
+
 void CMonster::Off_Sync()
 {
 	m_isSynchronizing = false;
@@ -315,7 +320,6 @@ HRESULT CMonster::Initialize(void* pArg)
 
 	if (FAILED(Add_Components()))
 		return E_FAIL;
-
 
 	if (nullptr != m_pNavigationCom)
 		m_pNavigationCom->Set_Index(gameobjDesc->iNaviNum);
@@ -730,6 +734,10 @@ HRESULT CMonster::Add_Components()
 		TEXT("Com_SyncAnim"), reinterpret_cast<CComponent**>(&m_pAnimCom[CUTSCENE]))))
 		return E_FAIL;
 
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Anim_NPC"),
+		TEXT("Com_AdventureAnim"), reinterpret_cast<CComponent**>(&m_pAnimCom[ADVENTURE]))))
+		return E_FAIL;
+
 	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Navigation"),
 		TEXT("Com_Navigation"), reinterpret_cast<CComponent**>(&m_pNavigationCom))))
 		return E_FAIL;
@@ -758,6 +766,30 @@ void CMonster::Change_Animation()
 	//히트, 데미지 관련 공통 애니메이션
 	switch (m_iState)
 	{
+		case MONSTER_ADVENTURE_IDLE_1:
+		{
+			m_strAnimName = "m_nml_set_stand_listen_01";
+			m_isAnimLoop = true;
+			break;
+		}
+		case MONSTER_ADVENTURE_IDLE_2:
+		{
+			m_strAnimName = "m_nml_set_stand_listen_02";
+			m_isAnimLoop = true;
+			break;
+		}
+		case MONSTER_ADVENTURE_IDLE_3:
+		{
+			m_strAnimName = "m_nml_set_stand_lookfor_02";
+			m_isAnimLoop = true;
+			break;
+		}
+		case MONSTER_ADVENTURE_IDLE_4:
+		{
+			m_strAnimName = "m_nml_set_stand_lookfor";
+			m_isAnimLoop = true;
+			break;
+		}
 		case MONSTER_DWN_DNF_BOUND:
 		{
 			m_strAnimName = "c_dwn_dnb_bound";

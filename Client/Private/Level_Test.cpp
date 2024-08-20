@@ -39,7 +39,7 @@ HRESULT CLevel_Test::Initialize()
 	// 테스트 다하면 지워라
 	/* For.Prototype_Component_Navigation */
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Navigation"),
-		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/NaviData/Navigation_7.dat")))))
+		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/NaviData/Navigation_9.dat")))))
 		return E_FAIL;
 
 	m_pKaraokeManager = CKaraokeManager::Create();
@@ -64,13 +64,13 @@ HRESULT CLevel_Test::Initialize()
 	//	return E_FAIL;
 
 	// 혜원테스트용
-	//if (FAILED(Ready_Test_Hyewon()))
-	//	return E_FAIL;
+	if (FAILED(Ready_Test_Hyewon()))
+		return E_FAIL;
 
-	m_pFileTotalManager->Set_MapObj_In_Client(7, LEVEL_TEST);
-	m_pFileTotalManager->Set_Lights_In_Client(90);
-	m_pFileTotalManager->Set_Collider_In_Client(3, LEVEL_TEST);
-	m_pFileTotalManager->Set_Trigger_In_Client(79, LEVEL_TEST);
+	//m_pFileTotalManager->Set_MapObj_In_Client(7, LEVEL_TEST);
+	//m_pFileTotalManager->Set_Lights_In_Client(90);
+	//m_pFileTotalManager->Set_Collider_In_Client(3, LEVEL_TEST);
+	//m_pFileTotalManager->Set_Trigger_In_Client(79, LEVEL_TEST);
 
 	if (FAILED(Ready_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
@@ -103,7 +103,7 @@ HRESULT CLevel_Test::Ready_Camera(const wstring& strLayerTag)
 	CameraDesc.fFovY = XMConvertToRadians(60.0f);
 	CameraDesc.fAspect = g_iWinSizeX / (_float)g_iWinSizeY;
 	CameraDesc.fNear = 0.1f;
-	CameraDesc.fFar = 3000.f;
+	CameraDesc.fFar = 300.f;
 	CameraDesc.fSpeedPecSec = 10.f;
 	CameraDesc.fRotatePecSec = XMConvertToRadians(90.f);
 
@@ -125,7 +125,7 @@ HRESULT CLevel_Test::Ready_Camera(const wstring& strLayerTag)
 	PlayerCameraDesc.fFovY = XMConvertToRadians(60.0f);
 	PlayerCameraDesc.fAspect = g_iWinSizeX / (_float)g_iWinSizeY;
 	PlayerCameraDesc.fNear = 0.1f;
-	PlayerCameraDesc.fFar = 3000.f;
+	PlayerCameraDesc.fFar = 300.f;
 	PlayerCameraDesc.fSpeedPecSec = 20.f;
 	PlayerCameraDesc.fRotatePecSec = XMConvertToRadians(90.f);
 	PlayerCameraDesc.pPlayerMatrix = dynamic_cast<CTransform*>(m_pGameInstance->Get_GameObject_Component(LEVEL_TEST, TEXT("Layer_Player"), TEXT("Com_Transform", 0)))->Get_WorldFloat4x4();
@@ -140,7 +140,7 @@ HRESULT CLevel_Test::Ready_Camera(const wstring& strLayerTag)
 	CutSceneCameraDesc.fFovY = XMConvertToRadians(60.0f);
 	CutSceneCameraDesc.fAspect = g_iWinSizeX / (_float)g_iWinSizeY;
 	CutSceneCameraDesc.fNear = 0.1f;
-	CutSceneCameraDesc.fFar = 3000.f;
+	CutSceneCameraDesc.fFar = 300.f;
 	CutSceneCameraDesc.fSpeedPecSec = 10.f;
 	CutSceneCameraDesc.fRotatePecSec = XMConvertToRadians(90.f);
 
@@ -176,12 +176,12 @@ HRESULT CLevel_Test::Ready_Player(const wstring& strLayerTag)
 	Desc.fRotatePecSec = XMConvertToRadians(180.f);
 
 	// 원래 플레이어
-	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_Player"), strLayerTag, &Desc)))
-		return E_FAIL;
+	//if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_Player"), strLayerTag, &Desc)))
+	//	return E_FAIL;
 
 	// 가라오케 플레이어
-	//if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_Kiryu_Karaoke"), strLayerTag, &Desc)))
-	//	return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_Kiryu_Karaoke"), strLayerTag, &Desc)))
+		return E_FAIL;
 
 	return S_OK;
 }

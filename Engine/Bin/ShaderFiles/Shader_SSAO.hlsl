@@ -8,25 +8,6 @@ Texture2D g_SSAONoisesTexture;
 
 float g_fSSAOBise = { 0.025f };
 const float2 g_NoiseScale = float2(1280.f / 4.f, 720.f / 4.f);
-float3 g_Randoms[16] =
-{
-    float3(0.0363531820, 0.0195892137, 0.0910752937),
-    float3(0.0271668006, -0.0817698613, 0.0511824936),
-    float3(-0.0558262058, -0.0809410140, 0.0225508530),
-    float3(-0.0607699566, 0.0768491626, 0.0282955095),
-    float3(0.0684265420, -0.0224859975, 0.0743483230),
-    float3(-0.0639691651, -0.0760242194, 0.0354552418),
-    float3(0.0966500565, 0.0333450735, 0.0345177278),
-    float3(0.0650642961, 0.0458409302, 0.0770356283),
-    float3(0.0283417776, 0.0408770181, 0.102645352),
-    float3(-0.0685298145, -0.0951056033, 0.0116156377),
-    float3(-0.00153590832, -0.118244737, 0.0298856888),
-    float3(-0.0690319762, 0.0818628073, 0.0675078705),
-    float3(-0.0371511765, 0.0524620637, 0.114877217),
-    float3(-0.104534455, -0.0193042718, 0.0866346955),
-    float3(-0.0627479777, 0.0276224166, 0.125569463),
-    float3(-0.0750860944, -0.122410446, 0.0413474962)
-};
 
 float3x3 Get_TBN(float3 vNormal, float2 vTexcoord)
 {
@@ -75,4 +56,40 @@ float4 SSAO(float3x3 TBN, float3 vPosition)
     float4 vAmbient = fOcclusion / 64.f;
     
     return vAmbient;
+}
+
+PS_OUT PS_MAIN_SSAO(PS_IN In)
+{
+    PS_OUT Out = (PS_OUT) 0;
+
+    vector vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexcoord);
+    vector vDepthDesc = g_DepthTexture.Sample(PointSampler, In.vTexcoord);
+    
+    if (vNormalDesc.a != 0.f)
+    {
+        Out.vColor = vector(1.f, 1.f, 1.f, 1.f);
+    }
+    else
+    {
+        //뷰스페이스 위치로 옮기기
+        vector vNormal = vector(vNormalDesc.xyz * 2.f - 1.f, 0.0f);
+        vNormal = normalize(mul(vNormal, g_CamViewMatrix));
+        
+        //뷰행렬 상의 위치 구하기
+        vector vPosition;
+        
+        vPosition.x = In.vTexcoord.x * 2.f - 1.f;
+        vPosition.y = In.vTexcoord.y * -2.f + 1.f;
+        vPosition.z = vDepthDesc.x; /* 0 ~ 1 */
+        vPosition.w = 1.f;
+
+        vPosition = vPosition * (vDepthDesc.y * g_fFar);
+        vPosition = mul(vPosition, g_ProjMatrixInv);
+        
+        float4 fAmbient = SSAO(Get_TBN(vNormal.xyz, In.vTexcoord), vPosition.xyz);
+
+        Out.vColor = 1.f - fAmbient;
+    }
+    
+    return Out;
 }
