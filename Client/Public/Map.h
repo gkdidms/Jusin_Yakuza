@@ -100,6 +100,10 @@ public:
 	virtual HRESULT Render_OcculusionDepth() override;
 	virtual HRESULT Check_OcculusionCulling() override;
 
+	_bool isOcculusionDepth();
+	HRESULT Near_Render(_uint iRenderState);
+	HRESULT Far_Render(_uint iRenderState);
+
 public:
 	CTransform* Get_Transform() { return m_pTransformCom; }
 
@@ -109,7 +113,6 @@ public:
 
 	void						Edit_GameObject_Information(MAPOBJ_DESC	mapDesc);
 	CMap::MAPOBJ_DESC			Send_GameObject_Information();
-
 
 private:
 	void						Add_Renderer(const _float& fTimeDelta);
@@ -130,7 +133,7 @@ private:
 	ID3D11Buffer*			m_pOutputBufferStaging = { nullptr };
 
 private:
-	_bool m_isFirst = { true };
+	_bool					m_isFirst = { true };
 	vector<CDecal*>			m_vDecals;
 	vector<CCollider*>		m_vColliders;
 
@@ -156,7 +159,8 @@ private:
 	_bool					m_bCull = { false };
 
 
-	const _float4x4* m_pPlayerMatrix; // 플레이어 위치
+	const _float4x4*		m_pPlayerMatrix; // 플레이어 위치
+	_matrix					m_CubeWorldMatrix;
 
 
 	bool					m_bCompulsoryAlpha = { false };
@@ -168,13 +172,14 @@ private:
 private:
 	ID3D11Query* m_pOcclusionQuery = { nullptr };
 
+private:
+	_bool m_isFar = { false }; // 플레이어에서 객체가 먼 곳에 있나?
+	_bool m_isShow = { false };
+
 public:
 	HRESULT Add_Components(void* pArg);
 	HRESULT Bind_ShaderResources();
 	HRESULT Reset_Bind();
-
-public:
-	_bool Check_Render();
 
 public:
 	static CMap* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

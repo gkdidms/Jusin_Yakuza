@@ -398,7 +398,7 @@ HRESULT CRenderer::Ready_Targets()
 		return E_FAIL;
 
 #pragma region MRT_Occulusion
-	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_OcculusionDepth"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R32_FLOAT, _float4(1.f, 1.f, 1.f, 1.f))))
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_OcculusionDepth"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R32_FLOAT, _float4(0.f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_640x360_Occulusion"), 640, 360, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(1.f, 1.f, 1.f, 1.f), true)))
@@ -945,6 +945,7 @@ void CRenderer::Render_NonBlender()
 	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_NonBlend"))))
 		return;
 
+
 	for (auto& iter : m_RenderObject[RENDER_NONBLENDER])
 	{
 		iter->Render();
@@ -1068,15 +1069,19 @@ void CRenderer::Render_SSAO()
 	BufferDesc.fRadiuse = m_fSSAORadiuse;
 	BufferDesc.fFar = *(m_pGameInstance->Get_CamFar());
 	memcpy(BufferDesc.vSSAOKernal, m_vSSAOKernal, sizeof(_float4) * 64);
-	BufferDesc.WorldMatrix = XMLoadFloat4x4(&m_WorldMatrix);
-	BufferDesc.ViewMatrixInv = m_pGameInstance->Get_Transform_Inverse_Matrix(CPipeLine::D3DTS_VIEW);
-	BufferDesc.ProjMatrixInv = m_pGameInstance->Get_Transform_Inverse_Matrix(CPipeLine::D3DTS_PROJ);
-	BufferDesc.CamViewMatrix = m_pGameInstance->Get_Transform_Matrix(CPipeLine::D3DTS_VIEW);
-	BufferDesc.CamProjMatrix = m_pGameInstance->Get_Transform_Matrix(CPipeLine::D3DTS_PROJ);
+
+	BufferDesc.WorldMatrix = XMMatrixTranspose(XMLoadFloat4x4(&m_WorldMatrix));
+	BufferDesc.ViewMatrix = XMMatrixTranspose(XMLoadFloat4x4(&m_ViewMatrix));
+	BufferDesc.ProjMatrix = XMMatrixTranspose(XMLoadFloat4x4(&m_ProjMatrix));
+	BufferDesc.ViewMatrixInv = XMMatrixTranspose(m_pGameInstance->Get_Transform_Inverse_Matrix(CPipeLine::D3DTS_VIEW));
+	BufferDesc.ProjMatrixInv = XMMatrixTranspose(m_pGameInstance->Get_Transform_Inverse_Matrix(CPipeLine::D3DTS_PROJ));
+	BufferDesc.CamViewMatrix = XMMatrixTranspose(m_pGameInstance->Get_Transform_Matrix(CPipeLine::D3DTS_VIEW));
+	BufferDesc.CamProjMatrix = XMMatrixTranspose(m_pGameInstance->Get_Transform_Matrix(CPipeLine::D3DTS_PROJ));
 
 	m_pContext->UpdateSubresource(m_pSSAOBuffer, 0, nullptr, &BufferDesc, 0, 0);
 
 	m_pContext->CSSetConstantBuffers(0, 1, &m_pSSAOBuffer);
+
 	m_pContext->CSSetShaderResources(0, 1, &m_pSSAONoiseView);
 	m_pGameInstance->Bind_ComputeRenderTargetSRV(TEXT("Target_Depth"), 1);
 	m_pGameInstance->Bind_ComputeRenderTargetSRV(TEXT("Target_Normal"), 2);
@@ -1085,7 +1090,7 @@ void CRenderer::Render_SSAO()
 	UINT GroupX = (1280 + 15) / 16;
 	UINT GroupY = (720 + 15) / 16;
 
-	m_pComputeShader[BLURX]->Render(GroupX, GroupY, 1);
+	m_pComputeShader[SSAO]->Render(GroupX, GroupY, 1);
 	
 	/*
 	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_SSAO"))))
@@ -1969,6 +1974,11 @@ void CRenderer::Render_OcculusionDepth()
 {
 	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_Occulusion"), m_pOcculusionDepthView)))
 		return;
+
+	m_RenderObject[RENDER_OCCULUSION].sort([](CGameObject* pSour, CGameObject* pDest)->_bool
+		{
+			return dynamic_cast<CGameObject*>(pSour)->Get_CamDistance() < dynamic_cast<CGameObject*>(pDest)->Get_CamDistance();
+		});
 
 	for (auto& pGameObject : m_RenderObject[RENDER_OCCULUSION])
 	{

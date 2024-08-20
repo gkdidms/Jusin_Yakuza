@@ -201,7 +201,19 @@ HRESULT CGraphic_Device::Ready_DepthStencilRenderTargetView(_uint iWinCX, _uint 
 	if (FAILED(m_pDevice->CreateDepthStencilView(pDepthStencilTexture, nullptr, &m_pDepthStencilView)))
 		return E_FAIL;
 
+	/*氮胶 胶刨角 可记蔼 积己*/
+	D3D11_DEPTH_STENCIL_DESC depthStencilDesc;
+	ZeroMemory(&depthStencilDesc, sizeof(depthStencilDesc));
+	depthStencilDesc.DepthEnable = TRUE;
+	depthStencilDesc.DepthWriteMask = D3D11_DEPTH_WRITE_MASK_ALL;
+	depthStencilDesc.DepthFunc = D3D11_COMPARISON_LESS;
+
+	ID3D11DepthStencilState* pDepthStaencilState = { nullptr };
+	m_pDevice->CreateDepthStencilState(&depthStencilDesc, &pDepthStaencilState);
+	m_pDeviceContext->OMSetDepthStencilState(pDepthStaencilState, 1);
+
 	Safe_Release(pDepthStencilTexture);
+	Safe_Release(pDepthStaencilState);
 
 	return S_OK;
 }

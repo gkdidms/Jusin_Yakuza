@@ -22,10 +22,6 @@ HRESULT CVIBuffer_AABBCube::Initialize(void* pArg)
 
 	// 게임 오브젝트 크기에 맞춰 큐브 그려주기
 	AABBCUBE_DESC* aabbDesc = (AABBCUBE_DESC*)pArg;
-	_float3		vScale = aabbDesc->vScale;
-	vScale.x *= 0.5;
-	vScale.y *= 0.5;
-	vScale.z *= 0.5;
 
 	m_Primitive_Topology = D3D_PRIMITIVE_TOPOLOGY_TRIANGLELIST;
 	m_GIFormat = DXGI_FORMAT_R16_UINT;
@@ -48,29 +44,29 @@ HRESULT CVIBuffer_AABBCube::Initialize(void* pArg)
 	VTXCUBE_OCCULUSION* pVertices = new VTXCUBE_OCCULUSION[m_iNumVertices];
 	ZeroMemory(pVertices, sizeof(VTXCUBE_OCCULUSION) * m_iNumVertices);
 
-	pVertices[0].vPosition = _float3(-vScale.x, vScale.y, -vScale.z);
-	pVertices[0].vTexcoord = _float3(-0.5f, 0.5f, -0.5f);
+	pVertices[0].vPosition = _float3(-0.5f, 0.5f, -0.5f);
+	pVertices[0].vTexcoord = pVertices[0].vPosition;
 
-	pVertices[1].vPosition = _float3(vScale.x, vScale.y, -vScale.z);
-	pVertices[1].vTexcoord = _float3(0.5f, 0.5f, -0.5f);
+	pVertices[1].vPosition = _float3(0.5f, 0.5f, -0.5f);
+	pVertices[1].vTexcoord = pVertices[1].vPosition;
 
-	pVertices[2].vPosition = _float3(vScale.x, -vScale.y, -vScale.z);
-	pVertices[2].vTexcoord = _float3(0.5f, -0.5f, -0.5f);
+	pVertices[2].vPosition = _float3(0.5f, -0.5f, -0.5f);
+	pVertices[2].vTexcoord = pVertices[2].vPosition;
 
-	pVertices[3].vPosition = _float3(-vScale.x, -vScale.y, -vScale.z);
-	pVertices[3].vTexcoord = _float3(-0.5f, -0.5f, -0.5f);
+	pVertices[3].vPosition = _float3(-0.5f, -0.5f, -0.5f);
+	pVertices[3].vTexcoord = pVertices[3].vPosition;
 
-	pVertices[4].vPosition = _float3(-vScale.x, vScale.y, vScale.z);
-	pVertices[4].vTexcoord = _float3(-0.5f, 0.5f, 0.5f);
+	pVertices[4].vPosition = _float3(-0.5f, 0.5f, 0.5f);
+	pVertices[4].vTexcoord = pVertices[4].vPosition;
 
-	pVertices[5].vPosition = _float3(vScale.x, vScale.y, vScale.z);
-	pVertices[5].vTexcoord = _float3(0.5f, 0.5f, 0.5f);
+	pVertices[5].vPosition = _float3(0.5f, 0.5f, 0.5f);
+	pVertices[5].vTexcoord = pVertices[5].vPosition;
 
-	pVertices[6].vPosition = _float3(vScale.x, -vScale.y, vScale.z);
-	pVertices[6].vTexcoord = _float3(0.5f, -0.5f, 0.5f);
+	pVertices[6].vPosition = _float3(0.5f, -0.5f, 0.5f);
+	pVertices[6].vTexcoord = pVertices[6].vPosition;
 
-	pVertices[7].vPosition = _float3(-vScale.x, -vScale.y, vScale.z);
-	pVertices[7].vTexcoord = _float3(-0.5f, -0.5f, 0.5f);
+	pVertices[7].vPosition = _float3(-0.5f, -0.5f, 0.5f);
+	pVertices[7].vTexcoord = pVertices[7].vPosition;
 
 	m_InitialData.pSysMem = pVertices;
 

@@ -125,6 +125,13 @@ void CUIManager::Start_Title(_int iIndex)
 	pScene->Start_Title(iIndex);
 }
 
+_bool CUIManager::isTitleEnd()
+{
+	CUITitle* pScene = dynamic_cast<CUITitle*>(Find_Scene(TEXT("Title")));
+
+	return pScene->isEnd();
+}
+
 HRESULT CUIManager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
 	m_pDevice = pDevice;
@@ -277,11 +284,11 @@ void CUIManager::Open_Scene(const wstring strSceneName)
 		if(!m_PlayScene.empty())
 		m_PlayScene.pop_back();
 	}
+
 	pUIScene->Set_Open();
 	m_PlayScene.push_back(pUIScene);
 	m_PlayScene.back()->Show_Scene();
 	m_isClose = false;
-
 }
 
 void CUIManager::Close_Scene(const wstring strSceneName)

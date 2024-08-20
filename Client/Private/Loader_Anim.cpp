@@ -545,11 +545,18 @@ HRESULT CLoader_Anim::Loading_For_Karaoke()
 	if (FAILED(Loading_Default()))
 		return E_FAIL;
 
-	
-
-	///* For.Prototype_GameObject_Kiryu_Karaoke */
-	//if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Kiryu_Karaoke"), CKaraoke_Kiryu::Create(m_pDevice, m_pContext))))
+	///* For.Prototype_Component_Anim_Kiryu_Karaoke_CutScene */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Anim_Kiryu_Karaoke_CutScene"), CAnim::Create(m_pDevice, m_pContext, "../Bin/DataFiles/AnimationData/Animation_Kiryu_Karaoke_CutScene.dat", false))))
+		return E_FAIL;
+	//if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Anim_Kiryu_Karaoke_CutScene"), CAnim::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Anim/Animation_Kiryu_Karaoke_CutScene.fbx", true))))
 	//	return E_FAIL;
+
+		///* For.Prototype_Component_Anim_Kiryu_Karaoke_Face */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Anim_Kiryu_Karaoke_Face"), CAnim::Create(m_pDevice, m_pContext, "../Bin/DataFiles/AnimationData/Animation_Kiryu_Karaoke_Face.dat", false))))
+		return E_FAIL;
+	//if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Anim_Kiryu_Karaoke_Face"), CAnim::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Anim/Animation_Kiryu_Karaoke_Face.fbx", true))))
+	//	return E_FAIL;
+
 	lstrcpy(m_szLoadingText, TEXT("애님 로딩이 완료되었습니다."));
 
 	m_isFinished = true;

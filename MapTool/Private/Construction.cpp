@@ -6,6 +6,7 @@
 #include "ObjPlace_Manager.h"
 #include "Mesh.h"
 #include "Navigation_Manager.h"
+#include "Collider.h"
 
 CConstruction::CConstruction(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CGameObject{ pDevice, pContext }
@@ -493,6 +494,11 @@ void CConstruction::Add_Collider(OBJCOLLIDER_DESC tCollider)
 	}
 
 	m_vColliderDesc.push_back(tCollider);
+}
+
+void CConstruction::Rewrite_Collider(OBJCOLLIDER_DESC tCollider, int iIndex)
+{
+
 }
 
 void CConstruction::Delete_Collider(int iIndex)

@@ -76,7 +76,7 @@ HRESULT CCineCamera::Load_CamBin(int iFileNum)
 	CAMERAOBJ_IO		camIODesc;
 	Import_Bin_Cam_Data_OnTool(&camIODesc, iFileNum);
 
-	m_vCameraStorage.push_back(camIODesc);
+	m_CamerasStorage.emplace(iFileNum,camIODesc);
 
 	//m_bFirstLerp = camIODesc.bFirstLerp;
 
@@ -101,7 +101,7 @@ void CCineCamera::Setting_Start_Cinemachine(int iCineNum)
 	m_vCamerasObjDesc.clear();
 
 	CAMERAOBJ_IO		camIODesc;
-	camIODesc = m_vCameraStorage[iCineNum];
+	camIODesc = m_CamerasStorage[iCineNum];
 
 	m_bFirstLerp = camIODesc.bFirstLerp;
 
@@ -223,7 +223,12 @@ void CCineCamera::Cam_Move_Handle_Setting(const _float& fTimeDelta)
 
 				if (m_vCamerasObjDesc.size() == m_iCurCamIndex)
 				{
-					Set_Ending();
+					if (!m_isLoop)
+						Set_Ending();
+					else
+					{
+						m_iCurCamIndex = 0;
+					}
 					return;
 				}
 
@@ -251,6 +256,7 @@ void CCineCamera::Cam_Move_Handle_Setting(const _float& fTimeDelta)
 					camEye = XMLoadFloat4(&m_vCamerasObjDesc[m_iCurCamIndex].vEye);
 					camFocus = XMLoadFloat4(&m_vCamerasObjDesc[m_iCurCamIndex].vFocus);
 					m_pTransformCom->LookAt(camFocus);
+					m_vEye = camEye;
 					m_pTransformCom->Set_State(CTransform::STATE_POSITION, camEye);
 				}
 			}
@@ -264,7 +270,12 @@ void CCineCamera::Cam_Move_Handle_Setting(const _float& fTimeDelta)
 				/* Lerp할땐 m_icurindex++ 안함 -> Lerp 하기 전 stay 후에 ++ 해줘서 필요없음 */
 				if (m_vCamerasObjDesc.size() == m_iCurCamIndex)
 				{
-					Set_Ending();
+					if(!m_isLoop)
+						Set_Ending();
+					else
+					{
+						m_iCurCamIndex = 0;
+					}
 					return;
 				}
 
@@ -280,6 +291,7 @@ void CCineCamera::Cam_Move_Handle_Setting(const _float& fTimeDelta)
 				camEye = XMLoadFloat4(&m_vCamerasObjDesc[m_iCurCamIndex].vEye);
 				camFocus = XMLoadFloat4(&m_vCamerasObjDesc[m_iCurCamIndex].vFocus);
 				m_pTransformCom->LookAt(camFocus);
+				m_vEye = camEye;
 				m_pTransformCom->Set_State(CTransform::STATE_POSITION, camEye);
 
 				m_fLerpDeltaTime = 0;
@@ -331,8 +343,12 @@ void CCineCamera::Cam_Lerp(const _float& fTimeDelta)
 			/* 플레이어로 돌아간 후 카메라를 플레이어 카메라로 세팅 */
 			m_eCurCamState = CAM_STATE_END;
 			m_iCurCamIndex = 0;
-			m_vCamerasObjDesc.clear();
-			CSystemManager::GetInstance()->Set_Camera(CAMERA_DEBUG);
+
+			if (!m_isLoop)
+			{
+				m_vCamerasObjDesc.clear();
+				CSystemManager::GetInstance()->Set_Camera(CAMERA_DEBUG);
+			}
 		}
 	}
 }
@@ -476,11 +492,17 @@ void CCineCamera::Free()
 
 	m_vCamerasObjDesc.clear();
 
-	for (int i = 0; i < m_vCameraStorage.size() ; i++)
+	map<int, CAMERAOBJ_IO>::iterator iter = m_CamerasStorage.begin();
+
+	while (m_CamerasStorage.end() != iter)
 	{
-		Safe_Delete_Array(m_vCameraStorage[i].pCamObjDesc);
+		
+		Safe_Delete_Array(iter->second.pCamObjDesc);
+		
+		iter++;
 	}
-	m_vCameraStorage.clear();
+
+	m_CamerasStorage.clear();
 	
 	__super::Free();
 }

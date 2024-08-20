@@ -23,6 +23,7 @@ public:
 public:
     _bool isDead() { return m_isDead; }
     _bool isObjectDead() { return m_isObjectDead; }
+    _float Get_CamDistance() { return m_fCamDistance; }
 
 public:
     void        Set_Dead() { m_isDead = true; }               // 객체 자체가 죽었을 때 (객체를 삭제한다)
@@ -73,6 +74,8 @@ protected:
     _uint   m_iObjectIndex = { 0 };
 
     _bool   m_bRender = { true };
+
+    _float m_fCamDistance = { 0.f };
 
 protected:
     vector<_float> m_Casecade;

@@ -93,6 +93,7 @@ public:
 	
 
 	void											Add_Collider(OBJCOLLIDER_DESC tCollider);
+	void											Rewrite_Collider(OBJCOLLIDER_DESC tCollider, int iIndex);
 	void											Delete_Collider(int		iIndex);
 	void											Delete_AllCollider();
 

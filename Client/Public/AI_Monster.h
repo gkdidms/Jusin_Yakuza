@@ -65,6 +65,7 @@ public:
 public:
     void Set_Sync(_bool isSync) { m_isSync = isSync; }
     void Set_Start(_bool isStart) { m_isStart = isStart; }
+    void Set_Adventure(_bool isAdventure) { m_isAdventer = isAdventure; }
 
 public:
     virtual HRESULT Initialize_Prototype();
@@ -87,6 +88,7 @@ protected:
 
 protected:
     _bool m_isStart = { false };
+    _bool m_isAdventer = { false };
     _bool m_isAttack = { false };
     _bool m_isAngry = { false };
     _bool m_isSync = { false };

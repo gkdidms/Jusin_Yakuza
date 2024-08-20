@@ -70,41 +70,7 @@ struct PS_OUT_LIGHT
     vector vSpecular : SV_TARGET3;
 };
 
-PS_OUT PS_MAIN_SSAO(PS_IN In)
-{
-    PS_OUT Out = (PS_OUT) 0;
 
-    vector vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexcoord);
-    vector vDepthDesc = g_DepthTexture.Sample(PointSampler, In.vTexcoord);
-    
-    if (vNormalDesc.a != 0.f)
-    {
-        Out.vColor = vector(1.f, 1.f, 1.f, 1.f);
-    }
-    else
-    {
-        //뷰스페이스 위치로 옮기기
-        vector vNormal = vector(vNormalDesc.xyz * 2.f - 1.f, 0.0f);
-        vNormal = normalize(mul(vNormal, g_CamViewMatrix));
-        
-        //뷰행렬 상의 위치 구하기
-        vector vPosition;
-        
-        vPosition.x = In.vTexcoord.x * 2.f - 1.f;
-        vPosition.y = In.vTexcoord.y * -2.f + 1.f;
-        vPosition.z = vDepthDesc.x; /* 0 ~ 1 */
-        vPosition.w = 1.f;
-
-        vPosition = vPosition * (vDepthDesc.y * g_fFar);
-        vPosition = mul(vPosition, g_ProjMatrixInv);
-        
-        float4 fAmbient = SSAO(Get_TBN(vNormal.xyz, In.vTexcoord), vPosition.xyz);
-
-        Out.vColor = 1.f - fAmbient;
-    }
-    
-    return Out;
-}
 
 PS_OUT_LIGHT PS_MAIN_LIGHT_DIRECTIONAL(PS_IN In)
 {
@@ -226,8 +192,8 @@ float PCF_Shadow(vector vWorldPos)
         if (vTexcoord.x < 0 || vTexcoord.x > 1 || vTexcoord.y < 0 || vTexcoord.y > 1)
             continue;
             
-        int dx = 1;
-        int dy = 1;
+        int dx = 1 / 1280;
+        int dy = 1 / 720;
             
         int2 vOffset[9] =
         {

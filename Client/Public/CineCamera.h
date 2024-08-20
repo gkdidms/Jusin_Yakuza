@@ -39,6 +39,9 @@ public:
     void                                            Setting_Start_Cinemachine(int iCineNum); /* 이미 생성 후 */
     void                                            Initialize_Camera_Class();
 
+    void                                            Set_Loop(_bool isLoop) {
+        m_isLoop = isLoop;
+    };
 
 private:
     HRESULT                                         Import_Bin_Cam_Data_OnTool(CAMERAOBJ_IO* camData, int iFileNum);
@@ -62,7 +65,7 @@ private:
     vector<CAMERAOBJ_DESC>							m_vCamerasObjDesc;
 
 
-    vector<CAMERAOBJ_IO>                            m_vCameraStorage;
+    map<int, CAMERAOBJ_IO>                          m_CamerasStorage;
 
     int                                             m_iCurCamIndex = { 0 };
 
@@ -81,6 +84,8 @@ private:
     bool                                            m_bStart = { true }; /* 시작할때 선형보간 처리관련 */
 
     bool                                            m_bInitialize = { false };
+
+    _bool                                           m_isLoop = { false };
 
 
     XMVECTOR                                        m_vStartEye;
