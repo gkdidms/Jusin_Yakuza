@@ -61,9 +61,7 @@ void CSocketEffect::On()
 {
 	if(m_isOn==false)
 	{
-
 		m_pEffect->Reset_Buffer();
-
 	}
 	m_isOn = true;
 

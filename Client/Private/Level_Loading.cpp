@@ -23,6 +23,7 @@
 #include "Level_Karaoke.h"
 #include "Level_Tutorial.h"
 #include "Level_NishikiWalk.h"
+#include "Level_KaraokeLobby.h"
 #include "Level_Test.h"
 #pragma endregion
 
@@ -151,6 +152,12 @@ void CLevel_Loading::Tick(const _float& fTimeDelta)
 				case LEVEL_TOKOSTREET:
 					pNewLevel = CLevel_Roadway::Create(m_pDevice, m_pContext);
 					break;
+				case LEVEL_KARAOKE_START:
+					pNewLevel = CLevel_KaraokeLobby::Create(m_pDevice, m_pContext);
+					break;
+				case LEVEL_KARAOKE_END:
+					pNewLevel = CLevel_KaraokeLobby::Create(m_pDevice, m_pContext);
+					break;
 				case LEVEL_TEST:
 					pNewLevel = CLevel_Test::Create(m_pDevice, m_pContext);
 					break;
@@ -171,7 +178,7 @@ void CLevel_Loading::Tick(const _float& fTimeDelta)
 		SetWindowText(g_hWnd, m_pMultiLoader->Get_LoadingText());
 #else
 	// 로딩 화면 만들어지기 전까지 릴리즈 모드에서도 볼 수 있게 해야함
-	SetWindowText(g_hWnd, m_pLoader->Get_LoadingText());
+	//SetWindowText(g_hWnd, m_pLoader->Get_LoadingText());
 #endif
 }
 

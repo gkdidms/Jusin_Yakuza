@@ -39,7 +39,10 @@ void CEffectManager::Shot_Flash(CEffect::EFFECT_DESC& EffectDesc)
 
 void CEffectManager::Cine_NoseBlood(CEffect::EFFECT_DESC& EffectDesc)
 {
-    m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Blood0"), TEXT("Layer_Particle"), &EffectDesc);
+    m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Blood1"), TEXT("Layer_Particle"), &EffectDesc);
+    static int  a;
+    a++;
+
 }
 
 void CEffectManager::Cine_MouseBlood(CEffect::EFFECT_DESC& EffectDesc)

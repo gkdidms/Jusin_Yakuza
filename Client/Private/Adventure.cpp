@@ -38,7 +38,7 @@ HRESULT CAdventure::Initialize(void* pArg)
 	m_iNaviRouteNum = gameobjDesc->iNaviRouteNum;
 	m_iNPCDirection = gameobjDesc->iNPCDirection;
 
-	if (FAILED(Add_Components()))
+	if (FAILED(CAdventure::Add_Components()))
 		return E_FAIL;
 
 	m_pNavigationCom->Set_Index(gameobjDesc->iNaviNum);

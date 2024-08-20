@@ -123,6 +123,11 @@ void CKiryu_KRC_Attack::Setting_Value(void* pValue)
 	m_isBut = *pIsBut;
 }
 
+_bool CKiryu_KRC_Attack::IsFinishBlow()
+{
+	return 2 < m_iComboCount;
+}
+
 _bool CKiryu_KRC_Attack::Changeable_Combo_Animation()
 {
 	_float fInterval = 0.4f;

@@ -2,6 +2,8 @@
 
 #include "GameInstance.h"
 
+#include "Player.h"
+
 CNishiki::CNishiki(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CNPC{ pDevice, pContext }
 {
@@ -23,6 +25,14 @@ HRESULT CNishiki::Initialize(void* pArg)
 		return E_FAIL;
 
 	m_iObjectIndex = 101;
+
+	if (m_iCurrentLevel == LEVEL_KARAOKE)
+		m_iState = CHEER;
+	else
+		m_iState = IDLE;
+
+	m_isAnimLoop = true;
+
 	return S_OK;
 }
 
@@ -34,8 +44,15 @@ void CNishiki::Tick(const _float& fTimeDelta)
 {
 	if (m_iCurrentLevel == LEVEL_NISHIKIWALK)
 		Move(fTimeDelta);
-
+	
 	Change_Animation();
+
+	if (m_iState == TALK)
+	{
+		//대화중일때 플레이어를 바라보게 하기
+		CPlayer* pPlayer = dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject(m_iCurrentLevel, TEXT("Layer_Player"), 0));
+		m_pTransformCom->LookAt(pPlayer->Get_TransformCom()->Get_State(CTransform::STATE_POSITION));
+	}
 
 	m_pModelCom->Play_Animation(fTimeDelta, m_isAnimLoop);
 

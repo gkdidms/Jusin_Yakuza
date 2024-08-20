@@ -82,10 +82,11 @@ void CScriptManager::Ready_Script_4()
 	Scrpit.emplace(iIndex++, SCRIPT_INFO(TEXT("키류"), TEXT("너, 이 가게는 자주 오냐?")));
 	Scrpit.emplace(iIndex++, SCRIPT_INFO(TEXT("니시키야마"), TEXT("응? 이걸로 2번째인데... 왜?")));
 	Scrpit.emplace(iIndex++, SCRIPT_INFO(TEXT("키류"), TEXT("보틀 키핑 같은 걸 하고 있으니까. 단골인가 했지.")));
-	Scrpit.emplace(iIndex++, SCRIPT_INFO(TEXT("니시키야마"), TEXT("맥주나 깔짝대는 것보다 허세가 있잖아? 가게 사람들한테 얼굴도 알릴 수 있고.난 저렴하게 보이는 건 싫으니까.")));
+	Scrpit.emplace(iIndex++, SCRIPT_INFO(TEXT("니시키야마"), TEXT("맥주나 깔짝대는 것보다 허세가 있잖아?")));
+	Scrpit.emplace(iIndex++, SCRIPT_INFO(TEXT("니시키야마"), TEXT("가게 사람들한테 얼굴도 알릴 수 있고.\\난 저렴하게 보이는 건 싫으니까.")));
 	Scrpit.emplace(iIndex++, SCRIPT_INFO(TEXT("니시키야마"), TEXT("오늘은 진지한 이야기는 하지말자! 가라오케라도 해서 질러 보자고!")));
 	Scrpit.emplace(iIndex++, SCRIPT_INFO(TEXT("키류"), TEXT("훗, 알았어. 오늘은 끝까지 달려주지.")));
-	Scrpit.emplace(iIndex++, SCRIPT_INFO(TEXT("키류"), TEXT("가라오케, Let's Go")));
+	Scrpit.emplace(iIndex++, SCRIPT_INFO(TEXT("키류"), TEXT("가라오케, Let's Go!")));
 
 	m_Scripts.emplace_back(Scrpit);
 }

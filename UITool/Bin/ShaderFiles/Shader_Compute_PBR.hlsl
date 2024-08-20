@@ -140,7 +140,7 @@ float4 BRDF(float4 vPosition, int2 vTexcoord, float4 vNormal, float4 vDepthDesc,
     //F0 = lerp(F0, vAlbedo, fMetalic);
     
     //vector vLightDir = reflect(normalize(g_vLightDir), vNormal); //g_vLightDir * -1.f;
-    float3 vLightDir = normalize(vLightDirection); //reflect(normalize(vLightDirection), vNormal).xyz;
+    float3 vLightDir = reflect(normalize(vLightDirection), vNormal).xyz;
     float3 vHalfway = normalize(vLook + vLightDir);
     float3 vRadiance = vLightDiffuse;
     
