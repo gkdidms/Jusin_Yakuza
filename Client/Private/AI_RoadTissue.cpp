@@ -48,7 +48,7 @@ void CAI_RoadTissue::Tick(const _float& fTimeDelta)
 		{
 			// Ã¹ ½ÃÀÛ
 			*m_pState = CAdventure::ADVENTURE_TISSUE_ST;
-			m_iSkill = SKILL_GROUND;
+			 m_iSkill = SKILL_GROUND;
 		}
 		else if (*m_pState == CAdventure::ADVENTURE_TISSUE_LP)
 		{
@@ -63,7 +63,7 @@ void CAI_RoadTissue::Tick(const _float& fTimeDelta)
 		{
 			if (m_pAnimCom->Get_AnimFinished())
 			{
-				*m_pState = CAdventure::ADVENTURE_IDLE;
+				*m_pState = CAdventure::ADVENTURE_TISSUE_LP;
 			}
 		}
 		else
