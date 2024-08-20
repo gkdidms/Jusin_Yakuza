@@ -2,8 +2,12 @@
 
 #include "Light.h"
 
-CLight_Manager::CLight_Manager()
+CLight_Manager::CLight_Manager(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+	: m_pDevice{ pDevice},
+	m_pContext{ pContext}
 {
+	Safe_AddRef(m_pDevice);
+	Safe_AddRef(m_pContext);
 }
 
 const LIGHT_DESC* CLight_Manager::Get_LightDesc(_uint iIndex) const
@@ -26,7 +30,7 @@ HRESULT CLight_Manager::Initialize()
 
 HRESULT CLight_Manager::Add_Light(const LIGHT_DESC& LightDesc)
 {
-	CLight* pLight = CLight::Create(LightDesc);
+	CLight* pLight = CLight::Create(m_pDevice, m_pContext, LightDesc);
 	if (nullptr == pLight)
 		return E_FAIL;
 
@@ -69,9 +73,14 @@ void CLight_Manager::Delete_AllLights()
 	m_Lights.clear();
 }
 
-CLight_Manager* CLight_Manager::Create()
+void CLight_Manager::Bind_ComputeBuffer(_uint iSlot)
 {
-	CLight_Manager* pInstance = new CLight_Manager();
+	m_Lights[0]->Bind_LightBuffer(iSlot); // 0번이 디렉션이라고 가정한다.
+}
+
+CLight_Manager* CLight_Manager::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
+{
+	CLight_Manager* pInstance = new CLight_Manager(pDevice, pContext);
 
 	if (FAILED(pInstance->Initialize()))
 	{
@@ -87,4 +96,7 @@ void CLight_Manager::Free()
 	for (auto& iter : m_Lights)
 		Safe_Release(iter);
 	m_Lights.clear();
+
+	Safe_Release(m_pDevice);
+	Safe_Release(m_pContext);
 }

@@ -150,8 +150,6 @@ void CPlayerCamera::Late_Tick(const _float& fTimeDelta)
 			Camera_FightMode_Change(fTimeDelta);
 		else
 			Compute_View_During_Collision(fTimeDelta);
-
-		__super::Tick(fTimeDelta);
 	}
 
 	
