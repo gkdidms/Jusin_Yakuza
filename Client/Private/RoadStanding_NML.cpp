@@ -26,6 +26,9 @@ HRESULT CRoadStanding_NML::Initialize(void* pArg)
 
 	m_iMotionType = m_pGameInstance->Get_Random(0, _int(MOTION_LISTEN));
 
+	if (FAILED(Add_Components()))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -47,8 +50,8 @@ void CRoadStanding_NML::Late_Tick(const _float& fTimeDelta)
 
 HRESULT CRoadStanding_NML::Add_Components()
 {
-	if (FAILED(__super::Add_Components()))
-		return E_FAIL;
+	//if (FAILED(__super::Add_Components()))
+	//	return E_FAIL;
 
 	//행동트리 저장
 	CAI_RoadStanding_NML::AI_ADVENTURE_DESC AIDesc{};
