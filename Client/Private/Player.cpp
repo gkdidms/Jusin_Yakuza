@@ -116,7 +116,7 @@ HRESULT CPlayer::Initialize(void* pArg)
 	ZeroMemory(&m_InputDirection, sizeof(_bool) * MOVE_DIRECTION_END);
 
 	// 새로 생성할 때 마다 UI매니저에 본인을 Set해준다.
-	m_pUIManager->Set_Player(this);
+	//m_pUIManager->Set_Player(this);
 
 	m_pQTEMgr = dynamic_cast<CQteManager*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_QTEManager"), nullptr));
 
@@ -138,6 +138,10 @@ void CPlayer::Tick(const _float& fTimeDelta)
 {
 	m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Change_Animation();
 	m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Tick(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")));
+
+	//대화중일 경우 플레이어는 움직이거나 공격하지 않는다.
+	if (m_pUIManager->isOpen(TEXT("Talk")) && m_pUIManager->isOpen(TEXT("Inven")) && m_pUIManager->isOpen(TEXT("Title")))
+		return;
 
 	// 배틀 시작 애니메이션 아닐 경우 타임델타를 1로 고정시켜준다.
 	if (!m_isHitFreeze && m_iCurrentBehavior != (_uint)KRS_BEHAVIOR_STATE::BTL_START)
@@ -186,8 +190,26 @@ void CPlayer::Tick(const _float& fTimeDelta)
 	{
 		m_pUIManager->Open_Scene(TEXT("Carchase"));
 	}
-
-
+	if (m_pGameInstance->GetKeyState(DIK_0) == TAP)
+	{
+		m_pUIManager->Open_Scene(TEXT("FightScore"));
+	}
+	if (m_pGameInstance->GetKeyState(DIK_9) == TAP)
+	{
+		m_pUIManager->Open_Scene(TEXT("Title"));
+	}
+	if (m_pGameInstance->GetKeyState(DIK_7) == TAP)
+	{
+		m_pUIManager->Open_Scene(TEXT("QTE"));
+	}
+	if (m_pGameInstance->GetKeyState(DIK_5) == TAP)
+	{
+		m_pUIManager->Fade_Out();
+	}
+	if (m_pGameInstance->GetKeyState(DIK_6) == TAP)
+	{
+		m_pUIManager->Fade_In();
+	}
 	Synchronize_Root(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")));
 
 #ifdef _DEBUG
@@ -266,12 +288,13 @@ void CPlayer::Tick(const _float& fTimeDelta)
 	RimLight_Event();
 	Trail_Event();
 	Radial_Event();
+	Face_Event();
 	Effect_Control_Aura();
 	Setting_Target_Enemy();
 	Setting_Target_Item();
-	Setting_Target_Wall();
+	//Setting_Target_Wall();
 
-	m_pQTEMgr->Tick(fTimeDelta);
+	//m_pQTEMgr->Tick(fTimeDelta);
 }
 
 void CPlayer::Late_Tick(const _float& fTimeDelta)
@@ -949,6 +972,33 @@ void CPlayer::Radial_Event()
 				m_pGameInstance->Set_RadialBlur(true);
 			else
 				m_pGameInstance->Set_RadialBlur(false);
+		}
+	}
+}
+
+void CPlayer::Face_Event()
+{
+	auto& pCurEvents = m_pData->Get_Current_FaceEvents();
+	for (auto& pEvent : pCurEvents)
+	{
+		_double CurPos = *(m_pCameraModel->Get_AnimationCurrentPosition(nullptr, m_iCutSceneCamAnimIndex));
+		_double Duration = *(m_pCameraModel->Get_AnimationDuration(nullptr, m_iCutSceneCamAnimIndex));
+
+		if (CurPos >= pEvent.fAinmPosition && CurPos < Duration)
+		{
+			if (pEvent.iType == 0)
+			{
+				m_iFaceAnimIndex = pEvent.iFaceAnimIndex;
+				On_Separation_Face();
+			}
+			else if (pEvent.iType == 2)
+			{
+				m_iFaceAnimIndex = pEvent.iFaceAnimIndex;
+			}
+			else if (pEvent.iType == 1)
+			{
+				Off_Separation_Face();
+			}
 		}
 	}
 }
@@ -1755,7 +1805,6 @@ HRESULT CPlayer::Add_Components()
 		return E_FAIL;
 	m_SeparationAnimComs.push_back(pAnimCom);
 
-	//Prototype_Component_Anim_Kiryu
 	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Material_Kiryu"),
 		TEXT("Com_Material"), reinterpret_cast<CComponent**>(&m_pMaterialCom))))
 		return E_FAIL;
@@ -1966,9 +2015,11 @@ void CPlayer::Set_CutSceneAnim(CUTSCENE_ANIMATION_TYPE eType, _uint iFaceAnimInd
 	auto iter = m_CutSceneAnimation.find(eType);
 	if (m_CutSceneAnimation.end() == iter) return;
 
-	m_iFaceAnimIndex = iFaceAnimIndex;
+	m_eCutSceneType = eType;
 
-	On_Separation_Face();			// 얼굴 애니메이션 켜기
+	//m_iFaceAnimIndex = iFaceAnimIndex;
+
+	//On_Separation_Face();			// 얼굴 애니메이션 켜기
 	Off_Separation_Hand();			// 손 분리 애니메이션 끄기
 
 	m_pData->Set_CurrentCutSceneAnimation(iter->second);
@@ -2005,6 +2056,8 @@ void CPlayer::Set_CutSceneAnim(CUTSCENE_ANIMATION_TYPE eType, _uint iFaceAnimInd
 		}
 		j++;
 	}
+
+	m_pTargetObject->Set_Sync(m_CutSceneAnimation[m_eCutSceneType]);
 
 	m_pQTEMgr->Set_Animation(m_pAnimCom, m_CutSceneAnimation.at(eType));
 }
@@ -2046,8 +2099,6 @@ void CPlayer::Play_CutScene()
 			//m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos);			
 			return;
 		}
-
-		On_Separation_Face();
 
 		// 실제로 모델의 애니메이션을 돌리는건 컴포넌트이고, m_pCameraModel는 카메라 애니메이션을 실행하는 모델이라 랜더하지않는다
 		m_pModelCom->Play_Animation_CutScene(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")), m_pAnimCom, false, m_iCutSceneAnimIndex, false);
@@ -2441,12 +2492,12 @@ void CPlayer::Off_Aura(BATTLE_STYLE eStyle)
 
 void CPlayer::AccHitGauge()
 {
-	//if (PLAYER_HITGAUGE_LEVEL_INTERVAL * 3.f < m_fHitGauge)
-	//	m_fHitGauge = PLAYER_HITGAUGE_LEVEL_INTERVAL * 3.f;
-	//else
-	//	m_fHitGauge += 5.f;
+	if (PLAYER_HITGAUGE_LEVEL_INTERVAL * 3.f < m_fHitGauge)
+		m_fHitGauge = PLAYER_HITGAUGE_LEVEL_INTERVAL * 3.f;
+	else
+		m_fHitGauge += 5.f;
 
-	//m_iCurrentHitLevel = (m_fHitGauge / PLAYER_HITGAUGE_LEVEL_INTERVAL);
+	m_iCurrentHitLevel = (m_fHitGauge / PLAYER_HITGAUGE_LEVEL_INTERVAL);
 }
 
 void CPlayer::Setting_RimLight()
@@ -2568,7 +2619,6 @@ void CPlayer::Free()
 
 	Safe_Release(m_pTargetItem);
 	Safe_Release(m_pUIManager);
-	Safe_Release(m_pNavigationCom);
 	Safe_Release(m_pAnimCom);
 	Safe_Release(m_pCameraModel);
 

@@ -66,10 +66,10 @@ void CQuestTrigger::Late_Tick(const _float& fTimeDelta)
 		{
 			if (m_pGameInstance->GetKeyState(DIK_G) == TAP)
 			{
-				if (m_pQuestManager->Get_CurrentQuestType() == CQuestManager::QUEST_TALK)
+				if (m_pQuestManager->Get_CurrentQuestType() == CQuestManager::QUEST_TALK &&
+					m_pQuestManager->Get_CurrentQuestTriggerIndex() == m_tTriggerDesc.iTriggerID)
 				{
-					m_pUIManager->Open_Scene(TEXT("Talk"));
-					m_pUIManager->Start_Talk();
+					m_pQuestManager->Set_CurrentColl();
 				}
 			}
 		}

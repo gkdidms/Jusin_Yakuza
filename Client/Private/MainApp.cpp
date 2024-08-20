@@ -22,6 +22,7 @@
 #include "Group.h"
 #include "Btn.h"
 #include "UI_Effect.h"
+#include "HeadUI.h"
 #pragma endregion
 
 CMainApp::CMainApp() :
@@ -63,9 +64,6 @@ HRESULT CMainApp::Initialize()
 	if (FAILED(m_pUIManager->Initialize(m_pDevice, m_pContext)))
 		return E_FAIL;
 
-	if (FAILED(m_pQuestManager->Initialize()))
-		return E_FAIL;
-
 	if (FAILED(Ready_Font()))
 		return E_FAIL;
 
@@ -95,8 +93,6 @@ void CMainApp::Tick(const _float& fTimeDelta)
 	m_pCollisionManager->Tick();
 	m_pUIManager->Tick(fTimeDelta);
 	m_pUIManager->Late_Tick(fTimeDelta);
-	//퀘스트 성공 여부 확인 
-	m_pQuestManager->Execute();
 
 	//프레임 확인용 나중에 다시 디버그로 넣어야함
 	m_fTimeAcc += fTimeDelta;
@@ -160,9 +156,6 @@ HRESULT CMainApp::Render()
 #ifdef _DEBUG
 	//프레임 확인용.
 
-
-
-
 	m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("!!!테스트용 키는 화면에 모두 작성할것 !!! "), _float2(500.f, 0.f), XMVectorSet(1.f, 0.f, 0.f, 1.f));
 	m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("!!!처음부터->TEST , 이어하기 ->OFFICE_1F!!! "), _float2(500.f, 20.f), XMVectorSet(1.f, 0.f, 0.f, 1.f));
 	m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("!!!1~7 Office 1층 ~ 보스룸 // 무조건 test level이나 office1층 들어가야 함"), _float2(500.f, 40.f), XMVectorSet(1.f, 0.f, 0.f, 1.f));
@@ -222,10 +215,6 @@ HRESULT CMainApp::Ready_Font()
 
 HRESULT CMainApp::Ready_Prototype_GameObject()
 {
-	/* For.Prototype_GameObject_BackGround */
-	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_BackGround"), CBackground::Create(m_pDevice, m_pContext))))
-		return E_FAIL;
-
 	/* For.Prototype_GameObject_Image_Texture */
 	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Image_Texture"),
 		CImage_Texture::Create(m_pDevice, m_pContext))))
@@ -249,6 +238,11 @@ HRESULT CMainApp::Ready_Prototype_GameObject()
 	/* For.Prototype_GameObject_UIEffect */
 	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_UIEffect"),
 		CUI_Effect::Create(m_pDevice, m_pContext))))
+		return E_FAIL; 
+
+	/* For.Prototype_GameObject_HeadUI*/
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_HeadUI"),
+		CHeadUI::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 
 
@@ -332,8 +326,9 @@ HRESULT CMainApp::Add_UI_On_Path(const wstring& strPath)
 
 				if (FAILED(m_pUIManager->Add_Data(strChannelName, ProtoFrontName + m_pGameInstance->StringToWstring(Tag))))
 					return E_FAIL;
+				break;
 			}
-			break;
+
 
 			case 1:
 			{
@@ -345,8 +340,8 @@ HRESULT CMainApp::Add_UI_On_Path(const wstring& strPath)
 
 				if (FAILED(m_pUIManager->Add_Data(strChannelName, ProtoFrontName + m_pGameInstance->StringToWstring(Tag))))
 					return E_FAIL;
+				break;
 			}
-			break;
 
 			case 2:
 			{
@@ -358,8 +353,9 @@ HRESULT CMainApp::Add_UI_On_Path(const wstring& strPath)
 
 				if (FAILED(m_pUIManager->Add_Data(strChannelName, ProtoFrontName + m_pGameInstance->StringToWstring(Tag))))
 					return E_FAIL;
+				break;
 			}
-			break;
+
 
 			case 3:
 			{
@@ -372,8 +368,9 @@ HRESULT CMainApp::Add_UI_On_Path(const wstring& strPath)
 
 				if (FAILED(m_pUIManager->Add_Data(strChannelName, ProtoFrontName + m_pGameInstance->StringToWstring(Tag))))
 					return E_FAIL;
+
+				break;
 			}
-			break;
 
 			case 4:
 			{
@@ -385,11 +382,26 @@ HRESULT CMainApp::Add_UI_On_Path(const wstring& strPath)
 
 				if (FAILED(m_pUIManager->Add_Data(strChannelName, ProtoFrontName + m_pGameInstance->StringToWstring(Tag))))
 					return E_FAIL;
-			}
-			break;
-
-			default:
 				break;
+			}
+
+
+			case 5:
+			{
+
+				/* For.Prototype_GameObject_HeadUI*/
+				if (FAILED(m_pGameInstance->Add_GameObject_Prototype(ProtoFrontName + m_pGameInstance->StringToWstring(Tag),
+					CHeadUI::Create(m_pDevice, m_pContext, in))))
+					return E_FAIL;
+
+				//if (FAILED(m_pUIManager->Add_Data(strChannelName, ProtoFrontName + m_pGameInstance->StringToWstring(Tag))))
+				//	return E_FAIL;
+				break;
+			}
+			default:
+			{
+				break;
+			}
 			}
 		}
 	}

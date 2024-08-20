@@ -42,6 +42,9 @@ HRESULT CConstruction::Initialize(void* pArg)
 		m_iNaviNum = gameobjDesc->iNaviNum;
 		m_iRouteNum = gameobjDesc->iRouteNum;
 		m_vOffsetMatrix = gameobjDesc->vOffsetMatrix;
+		m_iNPCDirection = gameobjDesc->iNPCDirection;
+		m_iGroupMonster = gameobjDesc->iGroupMonster;
+		m_iGroupNum = gameobjDesc->iGroupNum;
 
 		for (int i = 0; i < gameobjDesc->iDecalNum; i++)
 		{
@@ -130,12 +133,12 @@ void CConstruction::Late_Tick(const _float& fTimeDelta)
 	XMVECTOR worldPos = XMVectorZero();
 	worldPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 
-	if (true == m_pGameInstance->isIn_WorldFrustum(worldPos, 20))
-	{
-		m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
-	}
+	//if (true == m_pGameInstance->isIn_WorldFrustum(worldPos, 20))
+	//{
+	//	m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
+	//}
 
-	//m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
+	m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
 
 }
 
@@ -253,9 +256,11 @@ int CConstruction::Get_ObjPlaceDesc(OBJECTPLACE_DESC* objplaceDesc)
 	objplaceDesc->iShaderPassNum = m_iShaderPassNum;
 	objplaceDesc->iObjType = m_iObjectType;
 	objplaceDesc->iObjPropertyType = m_iObjectPropertyType;
+	objplaceDesc->iNPCDirection = m_iNPCDirection;
+	objplaceDesc->iGroupMonster = m_iGroupMonster;
+	objplaceDesc->iGroupNum = m_iGroupNum;
 
-
-	if ((int)CObjPlace_Manager::OBJECT_TYPE::PLAYER == m_iObjectType || (int)CObjPlace_Manager::OBJECT_TYPE::MONSTER_KUZE == m_iObjectType
+	/*if ((int)CObjPlace_Manager::OBJECT_TYPE::PLAYER == m_iObjectType || (int)CObjPlace_Manager::OBJECT_TYPE::MONSTER_KUZE == m_iObjectType
 		|| (int)CObjPlace_Manager::OBJECT_TYPE::MONSTER_RUSH == m_iObjectType || (int)CObjPlace_Manager::OBJECT_TYPE::MONSTER_SHAKEDOWN == m_iObjectType
 		|| (int)CObjPlace_Manager::OBJECT_TYPE::MONSTER_WPA == m_iObjectType || (int)CObjPlace_Manager::OBJECT_TYPE::MONSTER_YONEDA == m_iObjectType
 		|| (int)CObjPlace_Manager::OBJECT_TYPE::ADTENTURE_SUIT == m_iObjectType || (int)CObjPlace_Manager::OBJECT_TYPE::ITEM == m_iObjectType)
@@ -280,7 +285,24 @@ int CConstruction::Get_ObjPlaceDesc(OBJECTPLACE_DESC* objplaceDesc)
 	else
 	{
 		objplaceDesc->iNaviNum = 0;
+	}*/
+
+	CNavigation_Manager* pNaviMgr = CNavigation_Manager::GetInstance();
+	Safe_AddRef(pNaviMgr);
+
+	int		iNaviNum = pNaviMgr->Get_Player_Monster_NaviIndex(m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+
+	m_iNaviNum = 0;
+
+	if (-1 != iNaviNum)
+	{
+		m_iNaviNum = iNaviNum;
 	}
+
+	objplaceDesc->iNaviNum = m_iNaviNum;
+
+
+	Safe_Release(pNaviMgr);
 	
 	objplaceDesc->iNaviRoute = m_iRouteNum;
 	objplaceDesc->vOffsetTransform = m_vOffsetMatrix;
@@ -323,6 +345,10 @@ CConstruction::MAPOBJ_DESC CConstruction::Get_MapObjDesc_For_AddList()
 	mapobjDesc.wstrModelName = m_wstrModelName;
 	mapobjDesc.iShaderPass = m_iShaderPassNum;
 	mapobjDesc.vOffsetMatrix = m_vOffsetMatrix;
+	mapobjDesc.iObjPropertyType = m_iObjectPropertyType;
+	mapobjDesc.iNPCDirection = m_iNPCDirection;
+	mapobjDesc.iGroupMonster = m_iGroupMonster;
+	mapobjDesc.iGroupNum = m_iGroupNum;
 
 	return mapobjDesc;
 }
@@ -335,6 +361,9 @@ void CConstruction::Edit_GameObject_Information(CConstruction::MAPOBJ_DESC mapDe
 	m_iObjectPropertyType = mapDesc.iObjPropertyType;
 	m_iRouteNum = mapDesc.iRouteNum;
 	m_vOffsetMatrix = mapDesc.vOffsetMatrix;
+	m_iNPCDirection = mapDesc.iNPCDirection;
+	m_iGroupMonster = mapDesc.iGroupMonster;
+	m_iGroupNum = mapDesc.iGroupNum;
 }
 
 CConstruction::MAPOBJ_DESC CConstruction::Send_GameObject_Information()
@@ -347,6 +376,9 @@ CConstruction::MAPOBJ_DESC CConstruction::Send_GameObject_Information()
 	mapObjDesc.iObjPropertyType = m_iObjectPropertyType;
 	mapObjDesc.iRouteNum = m_iRouteNum;
 	mapObjDesc.vOffsetMatrix = m_vOffsetMatrix;
+	mapObjDesc.iNPCDirection = m_iNPCDirection;
+	mapObjDesc.iGroupMonster = m_iGroupMonster;
+	mapObjDesc.iGroupNum = m_iGroupNum;
 
 	return mapObjDesc;
 }
@@ -461,6 +493,10 @@ void CConstruction::Add_Collider(OBJCOLLIDER_DESC tCollider)
 	}
 
 	m_vColliderDesc.push_back(tCollider);
+}
+
+void CConstruction::Rewrite_Collider(OBJCOLLIDER_DESC tCollider)
+{
 }
 
 void CConstruction::Delete_Collider(int iIndex)

@@ -270,10 +270,20 @@ void CMonster::Set_Sync(string strPlayerAnim)
 	Change_Animation();
 }
 
+void CMonster::Set_Adventure(_bool isAdventure)
+{
+	m_pTree->Set_Adventure(isAdventure);
+}
+
 void CMonster::Off_Sync()
 {
 	m_isSynchronizing = false;
 	m_iCurrentAnimType = CMonster::DEFAULT;
+}
+
+void CMonster::Set_Start(_bool isStart)
+{
+	m_pTree->Set_Start(isStart);
 }
 
 /*
@@ -306,10 +316,10 @@ HRESULT CMonster::Initialize(void* pArg)
 	m_pTransformCom->Set_WorldMatrix(gameobjDesc->vStartPos);
 	m_wstrModelName = gameobjDesc->wstrModelName;
 	m_iNaviRouteNum = gameobjDesc->iNaviRouteNum;
+	m_iNPCDirection = gameobjDesc->iNPCDirection;
 
 	if (FAILED(Add_Components()))
 		return E_FAIL;
-
 
 	if (nullptr != m_pNavigationCom)
 		m_pNavigationCom->Set_Index(gameobjDesc->iNaviNum);
@@ -362,6 +372,9 @@ void CMonster::Tick(const _float& fTimeDelta)
 		pCollider.second->Tick(fTimeDelta);
 
 	for (auto& pEffect : m_pEffects)
+		pEffect.second->Tick(fTimeDelta);
+
+	for (auto& pEffect : m_pBloodEffects)
 		pEffect.second->Tick(fTimeDelta);
 
 	Animation_Event();
@@ -424,6 +437,9 @@ void CMonster::Late_Tick(const _float& fTimeDelta)
 		pCollider.second->Late_Tick(fTimeDelta);
 
 	for (auto& pEffect : m_pEffects)
+		pEffect.second->Late_Tick(fTimeDelta);
+
+	for (auto& pEffect : m_pBloodEffects)
 		pEffect.second->Late_Tick(fTimeDelta);
 
 }
@@ -628,11 +644,12 @@ void CMonster::BloodEffect_Event()
 					if (pEvent.isOn)
 					{
 						// 해당하는 이펙트를 켜는 함수
-						m_pEffectManager->Cine_BloodEffect(EffectDesc, pEvent.iBloodEffectType);
+						m_pBloodEffects.find(pEvent.strBonelName)->second->On();
 					}
 					else
 					{
 						//해당하는 이펙트를 끄는 함수
+						m_pBloodEffects.find(pEvent.strBonelName)->second->Off();
 					}
 				}
 				else								  // 루프가 아닌 이펙트라면
@@ -717,6 +734,10 @@ HRESULT CMonster::Add_Components()
 		TEXT("Com_SyncAnim"), reinterpret_cast<CComponent**>(&m_pAnimCom[CUTSCENE]))))
 		return E_FAIL;
 
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Anim_NPC"),
+		TEXT("Com_AdventureAnim"), reinterpret_cast<CComponent**>(&m_pAnimCom[ADVENTURE]))))
+		return E_FAIL;
+
 	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Navigation"),
 		TEXT("Com_Navigation"), reinterpret_cast<CComponent**>(&m_pNavigationCom))))
 		return E_FAIL;
@@ -745,6 +766,30 @@ void CMonster::Change_Animation()
 	//히트, 데미지 관련 공통 애니메이션
 	switch (m_iState)
 	{
+		case MONSTER_ADVENTURE_IDLE_1:
+		{
+			m_strAnimName = "m_nml_set_stand_listen_01";
+			m_isAnimLoop = true;
+			break;
+		}
+		case MONSTER_ADVENTURE_IDLE_2:
+		{
+			m_strAnimName = "m_nml_set_stand_listen_02";
+			m_isAnimLoop = true;
+			break;
+		}
+		case MONSTER_ADVENTURE_IDLE_3:
+		{
+			m_strAnimName = "m_nml_set_stand_lookfor_02";
+			m_isAnimLoop = true;
+			break;
+		}
+		case MONSTER_ADVENTURE_IDLE_4:
+		{
+			m_strAnimName = "m_nml_set_stand_lookfor";
+			m_isAnimLoop = true;
+			break;
+		}
 		case MONSTER_DWN_DNF_BOUND:
 		{
 			m_strAnimName = "c_dwn_dnb_bound";
@@ -893,6 +938,11 @@ void CMonster::Change_Animation()
 		case MONSTER_STANDUP_DNB_FAST:
 		{
 			m_strAnimName = "c_standup_dnb_fast";
+			break;
+		}
+		case MONSTER_DWN_STANDUP_HEAD_R_EN:
+		{
+			m_strAnimName = "c_dwn_standup_head_r_en";
 			break;
 		}
 		case MONSTER_ANGRY_START:

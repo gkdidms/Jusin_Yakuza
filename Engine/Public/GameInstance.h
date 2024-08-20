@@ -37,6 +37,13 @@ public:
     void StopSound(CHANNELID eID);
     void StopAll();
     void SetChannelVolume(CHANNELID eID, float fVolume);
+    _float GetSoundPosition(const wstring pSoundKey, CHANNELID eID);
+    _float GetSoundDuration(const wstring pSoundKey);
+
+    _bool Get_SoundStart(const wstring pSoundKey, CHANNELID eID);
+    _bool Get_SoundEnd(const wstring pSoundKey, CHANNELID eID);
+
+    void Set_SoundPosition(const wstring pSoundKey, CHANNELID eID, _float fSeconds);
 
     /* Timer */
 public:
@@ -83,6 +90,7 @@ public:
     /* Renderer */
 public:
     void Add_Renderer(CRenderer::RENDERER_STATE eRenderState, class CGameObject* pGameObject);
+    void Occulusion_Culling_Draw();
     void Set_HDR(_bool isHDR);
     void Set_HDRLight(_float fLight); // HDR 빛 세기 조절 
     _bool isHDR();
@@ -168,7 +176,7 @@ public:
 
     /*RenderTarget_Manager*/
 public:
-    HRESULT Add_RenderTarget(const wstring& strRenderTargetTag, _uint iSizeX, _uint iSizeY, DXGI_FORMAT ePixelFormat, const _float4& vClearColor, _uint iArrayCount = 1);
+    HRESULT Add_RenderTarget(const wstring& strRenderTargetTag, _uint iSizeX, _uint iSizeY, DXGI_FORMAT ePixelFormat, const _float4& vClearColor, _bool isCompute = false, _uint iArrayCount = 1);
     HRESULT Add_MRT(const wstring& strMRTTag, const wstring& strRenderTargetTag);
     HRESULT Begin_MRT(const wstring& strMRTTag, ID3D11DepthStencilView* pDSView = nullptr, _bool isClear = true); // isClear == false 일 시 초기화 안됨.
     HRESULT End_MRT();
@@ -176,6 +184,10 @@ public:
     HRESULT Copy_Resource(const wstring& strTargetTag, ID3D11Texture2D* pDesc);
     HRESULT Create_Texture(const wstring& strTargetTag, const wstring& strSaveFilePath);
     HRESULT Clear_RenderTarget(const wstring& strTargetTag);
+
+    ID3D11Texture2D* Get_TextureBuffer(const wstring& strTargetTag);
+    void Bind_ComputeRenderTargetSRV(const wstring& strTargetTag, _uint iSlot = 0);
+    void Bind_ComputeRenderTargetUAV(const wstring& strTargetTag, _uint iSlot = 0);
 
     /* Frustum*/
 public:

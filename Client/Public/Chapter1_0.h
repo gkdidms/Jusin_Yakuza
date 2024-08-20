@@ -1,0 +1,25 @@
+#pragma once
+#include "MainQuest.h"
+
+BEGIN(Client)
+class CChapter1_0 :
+   public CMainQuest
+{
+private:
+	CChapter1_0();
+	virtual ~CChapter1_0() = default;
+
+public:
+	virtual HRESULT Initialize(void* pArg) override;
+	virtual _bool Execute() override;
+
+public:
+	class CBackground* m_pBackground = { nullptr };
+	_bool m_isTitleFinished = { false };
+	_bool m_isTitleStart = { false };
+
+public:
+	static CChapter1_0* Create(void* pArg);
+	virtual void Free();
+};
+END

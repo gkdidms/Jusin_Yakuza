@@ -131,7 +131,7 @@ _uint CAI_Monster::Check_KRH(_uint iPlayerLv, _bool isBehine, _bool isAnimChange
 	{
 		if (isAnimChange)
 		{
-			if (m_iMonsterType == SHAKDDOWN)
+			if (m_iMonsterType == CMonster::SHAKDDOWN)
 			{
 				if (!isBehine)
 					*m_pState = iPlayerLv == 0 ? CMonster::MONSTER_DAM_BODY_LV01_F : CMonster::MONSTER_DAM_BODY_LV02_F;
@@ -157,7 +157,7 @@ _uint CAI_Monster::Check_KRH(_uint iPlayerLv, _bool isBehine, _bool isAnimChange
 	{
 		if (isAnimChange)
 		{
-			if (m_iMonsterType == SHAKDDOWN)
+			if (m_iMonsterType == CMonster::SHAKDDOWN)
 			{
 				if (!isBehine)
 					*m_pState = iPlayerLv == 0 ? CMonster::MONSTER_DAM_BODY_LV01_F : CMonster::MONSTER_DAM_BODY_LV02_F;
@@ -180,7 +180,7 @@ _uint CAI_Monster::Check_KRH(_uint iPlayerLv, _bool isBehine, _bool isAnimChange
 	{
 		if (isAnimChange)
 		{
-			if (m_iMonsterType == SHAKDDOWN)
+			if (m_iMonsterType == CMonster::SHAKDDOWN)
 			{
 				if (!isBehine)
 					*m_pState = iPlayerLv == 0 ? CMonster::MONSTER_DAM_BODY_LV01_F : CMonster::MONSTER_DAM_BODY_LV02_F;
@@ -203,7 +203,7 @@ _uint CAI_Monster::Check_KRH(_uint iPlayerLv, _bool isBehine, _bool isAnimChange
 	{
 		if (isAnimChange)
 		{
-			if (m_iMonsterType == SHAKDDOWN)
+			if (m_iMonsterType == CMonster::SHAKDDOWN)
 			{
 				if (!isBehine)
 					*m_pState = iPlayerLv == 0 ? CMonster::MONSTER_DAM_BODY_LV01_F : CMonster::MONSTER_DAM_BODY_LV02_F;
@@ -227,7 +227,7 @@ _uint CAI_Monster::Check_KRH(_uint iPlayerLv, _bool isBehine, _bool isAnimChange
 	{
 		if (isAnimChange)
 		{
-			if (m_iMonsterType == SHAKDDOWN)
+			if (m_iMonsterType == CMonster::SHAKDDOWN)
 			{
 				if (!isBehine)
 					*m_pState = iPlayerLv == 0 ? CMonster::MONSTER_DAM_BODY_LV01_F : CMonster::MONSTER_DAM_BODY_LV02_F;
@@ -330,7 +330,7 @@ _uint CAI_Monster::Check_KRH(_uint iPlayerLv, _bool isBehine, _bool isAnimChange
 	{
 		if (isAnimChange)
 		{
-			if (m_iMonsterType == SHAKDDOWN)
+			if (m_iMonsterType == CMonster::SHAKDDOWN)
 			{
 				if (!isBehine)
 					*m_pState = iPlayerLv == 0 ? CMonster::MONSTER_DAM_BODY_LV01_B : CMonster::MONSTER_DAM_BODY_LV02_B;
@@ -354,7 +354,7 @@ _uint CAI_Monster::Check_KRH(_uint iPlayerLv, _bool isBehine, _bool isAnimChange
 	{
 		if (isAnimChange)
 		{
-			if (m_iMonsterType == SHAKDDOWN)
+			if (m_iMonsterType == CMonster::SHAKDDOWN)
 			{
 				if (!isBehine)
 					*m_pState = iPlayerLv == 0 ? CMonster::MONSTER_DAM_BODY_LV01_F : CMonster::MONSTER_DAM_BODY_LV02_F;
@@ -386,7 +386,7 @@ _uint CAI_Monster::Check_KRH(_uint iPlayerLv, _bool isBehine, _bool isAnimChange
 	{
 		if (isAnimChange)
 		{
-			if (m_iMonsterType == SHAKDDOWN)
+			if (m_iMonsterType == CMonster::SHAKDDOWN)
 			{
 				if (!isBehine)
 					*m_pState = iPlayerLv == 0 ? CMonster::MONSTER_DAM_BODY_LV01_F : CMonster::MONSTER_DAM_BODY_LV02_F;
@@ -454,7 +454,7 @@ _uint CAI_Monster::Check_KRS(_uint iPlayerLv, _bool isBehine, _bool isAnimChange
 	{
 		if (isAnimChange)
 		{
-			if (m_iMonsterType == MONSTER_TYPE::SHAKDDOWN)
+			if (m_iMonsterType == CMonster::SHAKDDOWN)
 			{
 				if (!isBehine)
 					*m_pState = iPlayerLv == 0 ? CMonster::MONSTER_DAM_BODY_LV01_F : CMonster::MONSTER_DAM_BODY_LV02_F;
@@ -478,7 +478,7 @@ _uint CAI_Monster::Check_KRS(_uint iPlayerLv, _bool isBehine, _bool isAnimChange
 	{
 		if (isAnimChange)
 		{
-			if (m_iMonsterType == MONSTER_TYPE::SHAKDDOWN)
+			if (m_iMonsterType == CMonster::SHAKDDOWN)
 			{
 				if (!isBehine)
 					*m_pState = iPlayerLv == 0 ? CMonster::MONSTER_DAM_BODY_LV01_F : CMonster::MONSTER_DAM_BODY_LV02_F;
@@ -561,7 +561,7 @@ _uint CAI_Monster::Check_KRS(_uint iPlayerLv, _bool isBehine, _bool isAnimChange
 	{
 		if (isAnimChange)
 		{
-			if (m_iMonsterType == MONSTER_TYPE::SHAKDDOWN)
+			if (m_iMonsterType == CMonster::SHAKDDOWN)
 			{
 				if (!isBehine)
 					*m_pState = iPlayerLv == 0 ? CMonster::MONSTER_DAM_BODY_LV01_F : CMonster::MONSTER_DAM_BODY_LV02_F;
@@ -585,7 +585,7 @@ _uint CAI_Monster::Check_KRS(_uint iPlayerLv, _bool isBehine, _bool isAnimChange
 		//°­°ø°Ý
 		if (isAnimChange)
 		{
-			if (m_iMonsterType == MONSTER_TYPE::SHAKDDOWN)
+			if (m_iMonsterType == CMonster::SHAKDDOWN)
 			{
 				if (!isBehine)
 					*m_pState = iPlayerLv == 0 ? CMonster::MONSTER_DAM_BODY_LV01_F : CMonster::MONSTER_DAM_BODY_LV02_F;
@@ -636,7 +636,7 @@ _uint CAI_Monster::Check_KRC(_uint iPlayerLv, _bool isBehine, _bool isAnimChange
 	{
 		if (isAnimChange)
 		{
-			if (m_iMonsterType == MONSTER_TYPE::SHAKDDOWN)
+			if (m_iMonsterType == CMonster::SHAKDDOWN)
 			{
 				if (!isBehine)
 					*m_pState = CMonster::MONSTER_DAM_HEAD_LV02_F;
@@ -661,7 +661,7 @@ _uint CAI_Monster::Check_KRC(_uint iPlayerLv, _bool isBehine, _bool isAnimChange
 	{
 		if (isAnimChange)
 		{
-			if (m_iMonsterType == MONSTER_TYPE::SHAKDDOWN)
+			if (m_iMonsterType == CMonster::SHAKDDOWN)
 			{
 				if (!isBehine)
 					*m_pState = CMonster::MONSTER_DAM_HEAD_LV02_F;
@@ -686,7 +686,7 @@ _uint CAI_Monster::Check_KRC(_uint iPlayerLv, _bool isBehine, _bool isAnimChange
 	{
 		if (isAnimChange)
 		{
-			if (m_iMonsterType == MONSTER_TYPE::SHAKDDOWN)
+			if (m_iMonsterType == CMonster::SHAKDDOWN)
 			{
 				if (!isBehine)
 					*m_pState = CMonster::MONSTER_DAM_HEAD_LV02_F;
@@ -753,7 +753,7 @@ _uint CAI_Monster::Check_KRC(_uint iPlayerLv, _bool isBehine, _bool isAnimChange
 	{
 		if (isAnimChange)
 		{
-			if (m_iMonsterType == MONSTER_TYPE::SHAKDDOWN)
+			if (m_iMonsterType == CMonster::SHAKDDOWN)
 			{
 				if (!isBehine)
 					*m_pState = CMonster::MONSTER_DAM_HEAD_LV02_F;
@@ -782,15 +782,13 @@ _bool CAI_Monster::Check_StandUp()
 	//¾ÕÀ» ¹Ù¶óº½
 	if (Get_DownDir() == DIR_F)
 	{
-		m_pThis->Set_Down(false);
-		*m_pState = CMonster::MONSTER_STANDUP_DNF_FAST;
+		*m_pState = *m_pState == CMonster::MONSTER_H23070_000_4 ? CMonster::MONSTER_DWN_STANDUP_HEAD_R_EN : CMonster::MONSTER_STANDUP_DNF_FAST;
 		return false;
 	}
 
 	//¾þ¾îÁ®ÀÕÀ½
 	if (Get_DownDir() == DIR_B)
 	{
-		m_pThis->Set_Down(false);
 		*m_pState = CMonster::MONSTER_STANDUP_DNB_FAST;
 		return false;
 	}
@@ -820,7 +818,19 @@ _uint CAI_Monster::Get_DownDir()
 		|| *m_pState == CMonster::MONSTER_KRC_SYNC1_NECK_ATK_PUNCH
 		|| *m_pState == CMonster::MONSTER_KRS_SYNC1_CMB_03_FIN
 		|| *m_pState == CMonster::MONSTER_KRU_SYNC1_LAPEL_CMB_03
-		|| *m_pState == CMonster::MONSTER_KRU_SYNC1_LAPEL_NAGE)
+		|| *m_pState == CMonster::MONSTER_KRU_SYNC1_LAPEL_NAGE
+		|| *m_pState == CMonster::MONSTER_H23320_000_4
+		|| *m_pState == CMonster::MONSTER_H20021_000_2
+		|| *m_pState == CMonster::MONSTER_H10111_000_1
+		|| *m_pState == CMonster::MONSTER_H23060_000_4
+		|| *m_pState == CMonster::MONSTER_H1500_000_1
+		|| *m_pState == CMonster::MONSTER_H1511_000_4
+		|| *m_pState == CMonster::MONSTER_H3261_000_4
+		|| *m_pState == CMonster::MONSTER_H23010_000_4
+		|| *m_pState == CMonster::MONSTER_H23020_000_4
+		|| *m_pState == CMonster::MONSTER_H23070_000_4
+		|| *m_pState == CMonster::MONSTER_KRU_SYNC1_LAPEL_ATK_PUNCH
+		|| *m_pState == CMonster::MONSTER_KRU_SYNC1_NECK_ATK_KICK)
 		return DIR_F;
 
 	if (*m_pState == CMonster::MONSTER_DWN_DIRECT_B
@@ -833,7 +843,9 @@ _uint CAI_Monster::Get_DownDir()
 		|| *m_pState == CMonster::MONSTER_KRC_SYNC1_NECK_NAGE
 		|| *m_pState == CMonster::MONSTER_KRS_SYNC1_CMB_03_FIN_B
 		|| *m_pState == CMonster::MONSTER_SYNC1_LEG_ATK_KICK
-		|| *m_pState == CMonster::MONSTER_SYNC1_LEG_NAGE)
+		|| *m_pState == CMonster::MONSTER_SYNC1_LEG_NAGE
+		|| *m_pState == CMonster::MONSTER_H1540_000_1
+		|| *m_pState == CMonster::MONSTER_KRU_SYNC1_NECK_NAGE)
 		return DIR_B;
 
 	return DIR_END;
@@ -868,7 +880,6 @@ CBTNode::NODE_STATE CAI_Monster::Chcek_Sync()
 		return CBTNode::FAIL;
 	}
 		
-
 	if (*m_pState == CMonster::MONSTER_SYNC1_LEG_LP ||
 		*m_pState == CMonster::MONSTER_SYNC1_LEG_ST_B ||
 		*m_pState == CMonster::MONSTER_SYNC1_LEG_ST_F ||

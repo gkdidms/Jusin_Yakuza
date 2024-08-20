@@ -32,6 +32,8 @@ HRESULT CMap::Initialize(void* pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
+
+
 	if (FAILED(Add_Components(pArg)))
 		return E_FAIL;
 
@@ -44,7 +46,6 @@ HRESULT CMap::Initialize(void* pArg)
 		m_iShaderPassNum = gameobjDesc->iShaderPass;
 		m_iObjectType = gameobjDesc->iObjType;
 		m_bCull = gameobjDesc->bCull;
-		m_bLocalCull = gameobjDesc->bLocalCull;
 
 		for (int i = 0; i < gameobjDesc->iDecalNum; i++)
 		{
@@ -83,6 +84,11 @@ HRESULT CMap::Initialize(void* pArg)
 	}
 
 	m_Casecade = { 0.f, 10.f, 24.f, 40.f };
+
+	D3D11_QUERY_DESC queryDesc;
+	queryDesc.Query = D3D11_QUERY_OCCLUSION;
+	queryDesc.MiscFlags = 0;
+	m_pDevice->CreateQuery(&queryDesc, &m_pOcclusionQuery);
 
 
 
@@ -125,16 +131,25 @@ void CMap::Tick(const _float& fTimeDelta)
 	//	m_fDynamicTime = 0;
 	//	
 	//}
-		
 
 #ifdef _DEBUG
 	for (auto& iter : m_vColliders)
 		iter->Tick(m_pTransformCom->Get_WorldMatrix());
 #endif
+
+	//_vector vPlayerPosition;
+	//memcpy(&vPlayerPosition, m_pPlayerMatrix->m[CTransform::STATE_POSITION], sizeof(_float4));
+
+	_vector vCubePos = m_CubeWorldMatrix.r[3];
+	m_fCamDistance = XMVectorGetX(XMVector3Length(vCubePos - m_pGameInstance->Get_CamPosition()));
+	m_isFar = m_fCamDistance > 60;
+	
+	m_pGameInstance->Add_Renderer(CRenderer::RENDER_OCCULUSION, this);
 }
 
 void CMap::Late_Tick(const _float& fTimeDelta)
 {
+
 	// Renderer에 추가되는 mesh index 비워주고 시작
 	m_vRenderDefaulMeshIndex.clear();
 	m_vRenderGlassMeshIndex.clear();
@@ -149,164 +164,58 @@ void CMap::Late_Tick(const _float& fTimeDelta)
 	m_vStrongBloomIndex.clear();
 	m_vCompulsoryDecalBlendMeshIndex.clear();
 
-	_vector vPlayerPosition;
-	memcpy(&vPlayerPosition, m_pPlayerMatrix->m[CTransform::STATE_POSITION], sizeof(_float4));
-
-	float fDistance = XMVectorGetX(XMVector3Length(m_pTransformCom->Get_State(CTransform::STATE_POSITION) - vPlayerPosition));
 
 
-	if (fDistance < 100)
+	//if (true == m_pGameInstance->isIn_WorldFrustum(m_pTransformCom->Get_State(CTransform::STATE_POSITION), m_pModelCom->Get_LocalModelSize().x))
+	//{	
+
+	//}
+	if (isOcculusionDepth())
 	{
-		// Renderer 추가 및 벡터에 추가
+		Add_Renderer(fTimeDelta);
+		m_pGameInstance->Add_Renderer(CRenderer::RENDER_SHADOWOBJ, this);
 	}
-	Add_Renderer(fTimeDelta);
-
-//	m_pGameInstance->Add_Renderer(CRenderer::RENDER_SHADOWOBJ, this);
-
+	//m_pGameInstance->Add_Renderer(CRenderer::RENDER_OCCULUSION, this);
 }
 
 HRESULT CMap::Render()
 {
+//#ifdef _DEBUG
+//	for (auto& iter : m_vColliders)
+//		m_pGameInstance->Add_DebugComponent(iter);
+//
+//#endif
+
 #ifdef _DEBUG
-	for (auto& iter : m_vColliders)
-		m_pGameInstance->Add_DebugComponent(iter);
+
+	//if (m_pGameInstance->Get_RenderState() == CRenderer::RENDER_NONBLENDER)
+	//{
+	//	_float4x4 CubeWorldMatrix;
+	//	XMStoreFloat4x4(&CubeWorldMatrix, m_CubeWorldMatrix);
+	//	if (FAILED(m_pCubeShaderCom->Bind_Matrix("g_WorldMatrix", &CubeWorldMatrix)))
+	//		return E_FAIL;
+	//	//if (FAILED(m_pTransformCom->Bind_ShaderMatrix(m_pShaderCom, "g_WorldMatrix")))
+	//	//	return E_FAIL;
+
+	//	if (FAILED(m_pCubeShaderCom->Bind_Matrix("g_ViewMatrix", m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_VIEW))))
+	//		return E_FAIL;
+	//	if (FAILED(m_pCubeShaderCom->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_PROJ))))
+	//		return E_FAIL;
+
+	//	if (FAILED(m_pCubeShaderCom->Bind_RawValue("g_fFar", m_pGameInstance->Get_CamFar(), sizeof(_float))))
+	//		return E_FAIL;
+
+	//	m_pCubeShaderCom->Begin(1);
+
+	//	m_pVIBufferCom->Render();
+	//}
 #endif
+
+	
 
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
 
-#pragma region mesh컬링전Render
-	//_uint	iNumMeshes = m_pModelCom->Get_NumMeshes();
-	//vector<CMesh*> Meshes = m_pModelCom->Get_Meshes();
-	//for (size_t i = 0; i < iNumMeshes; i++)
-	//{
-	//	if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
-	//		return E_FAIL;
-
-	//	_bool isRS = true;
-	//	_bool isRD = true;
-	//	if (!strcmp(Meshes[i]->Get_Name(), "box4783"))
-	//	{
-	//		isRS = false;
-	//		isRD = false;
-	//	}
-
-	//	if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RSTexture", i, aiTextureType_SPECULAR)))
-	//		isRS = false;
-	//	m_pShaderCom->Bind_RawValue("g_isRS", &isRS, sizeof(_bool));
-
-	//	if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RDTexture", i, aiTextureType_OPACITY)))
-	//		isRD = false;
-
-	//	m_pShaderCom->Bind_RawValue("g_isRD", &isRD, sizeof(_bool));
-
-	//	bool	bNormalExist = m_pModelCom->Check_Exist_Material(i, aiTextureType_NORMALS);
-	//	// Normal texture가 있을 경우
-	//	if (true == bNormalExist)
-	//	{
-	//		m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS);
-
-	//		if (FAILED(m_pShaderCom->Bind_RawValue("g_bExistNormalTex", &bNormalExist, sizeof(bool))))
-	//			return E_FAIL;
-	//	}
-	//	else
-	//	{
-	//		if (FAILED(m_pShaderCom->Bind_RawValue("g_bExistNormalTex", &bNormalExist, sizeof(bool))))
-	//			return E_FAIL;
-	//	}
-
-	//	bool	bRMExist = m_pModelCom->Check_Exist_Material(i, aiTextureType_METALNESS);
-	//	if (true == bRMExist)
-	//	{
-	//		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RMTexture", i, aiTextureType_METALNESS)))
-	//			return E_FAIL;
-
-	//		if (FAILED(m_pShaderCom->Bind_RawValue("g_bExistRMTex", &bRMExist, sizeof(bool))))
-	//			return E_FAIL;
-	//	}
-	//	else
-	//	{
-	//		if (FAILED(m_pShaderCom->Bind_RawValue("g_bExistRMTex", &bRMExist, sizeof(bool))))
-	//			return E_FAIL;
-	//	}
-
-	//	bool	bRSExist = m_pModelCom->Check_Exist_Material(i, aiTextureType_SPECULAR);
-	//	if (true == bRSExist)
-	//	{
-	//		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RSTexture", i, aiTextureType_SPECULAR)))
-	//			return E_FAIL;
-
-	//		if (FAILED(m_pShaderCom->Bind_RawValue("g_bExistRSTex", &bRSExist, sizeof(bool))))
-	//			return E_FAIL;
-	//	}
-	//	else
-	//	{
-	//		if (FAILED(m_pShaderCom->Bind_RawValue("g_bExistRSTex", &bRSExist, sizeof(bool))))
-	//			return E_FAIL;
-	//	}
-
-	//	if (1 == m_iShaderPassNum)
-	//	{
-	//		// 유리문 처리
-	//		if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_NonBlendDiffuse"), m_pShaderCom, "g_RefractionTexture")))
-	//			return E_FAIL;
-	//	}
-	//	else if (2 == m_iShaderPassNum)
-	//	{
-	//		//m_pTexture->Bind_ShaderResource(m_pShaderCom, "g_NoiseTexture", 0);
-
-	//		// 웅덩이
-	//		if (FAILED(m_pShaderCom->Bind_RawValue("g_fTimeDelta", &m_fWaterDeltaTime, sizeof(float))))
-	//			return E_FAIL;
-
-	//		if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_NonBlendDiffuse"), m_pShaderCom, "g_RefractionTexture")))
-	//			return E_FAIL;
-
-	//		if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_NonBlendDepth"), m_pShaderCom, "g_DepthTexture")))
-	//			return E_FAIL;
-
-	//		if (FAILED(m_pShaderCom->Bind_RawValue("g_vCamPosition", m_pGameInstance->Get_CamPosition_Float4(), sizeof(_float4))))
-	//			return E_FAIL;
-
-	//		if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrixInv", m_pGameInstance->Get_Transform_Inverse_Float4x4(CPipeLine::D3DTS_VIEW))))
-	//			return E_FAIL;
-	//		if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrixInv", m_pGameInstance->Get_Transform_Inverse_Float4x4(CPipeLine::D3DTS_PROJ))))
-	//			return E_FAIL;
-	//		if (FAILED(m_pShaderCom->Bind_Matrix("g_ReflectViewMatrix", m_pGameInstance->Get_ReflectViewMatrix())))
-	//			return E_FAIL;
-
-	//		if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_BackBlurReverse"), m_pShaderCom, "g_BlurReverseTexture")))
-	//			return E_FAIL;
-
-	//	}
-
-	//	const char* defaultMesh = "DEFAULTMESH";
-	//	const char* glassMesh = "GLASSMESH";
-	//	const char* decalMesh = "DECALMESH";
-	//	const char* signMesh = "SIGNMESH";
-
-	//	if (0 == strcmp(Meshes[i]->Get_Name(), defaultMesh))
-	//	{
-	//		m_pShaderCom->Begin(SHADER_DEFAULT_MAP);
-	//	}
-	//	else if (0 == strcmp(Meshes[i]->Get_Name(), glassMesh))
-	//	{
-	//		m_pShaderCom->Begin(SHADER_GLASS);
-	//	}
-	//	else if (0 == strcmp(Meshes[i]->Get_Name(), decalMesh))
-	//	{
-	//		m_pShaderCom->Begin(SHADER_DECAL);
-	//	}
-	//	else if (0 == strcmp(Meshes[i]->Get_Name(), signMesh))
-	//	{
-	//		m_pShaderCom->Begin(SHADER_SIGN);
-	//	}
-
-
-
-	//	m_pModelCom->Render(i);
-	//}
-#pragma endregion
 
 	vector<CMesh*> Meshes = m_pModelCom->Get_Meshes();
 
@@ -315,323 +224,10 @@ HRESULT CMap::Render()
 	//NonBlend - 일반메시, 
 
 #pragma region Render_DefaultMeshGroup
-	if (iRenderState == CRenderer::RENDER_NONBLENDER)
-	{
-		// 램프 - 일반 mesh 출력, 그리고 부분 nonlight로 들어가서 bloom
-		// 부분 bloom - 전부 출력 후 밝은 부분만 nonlight로 들어가서 bloom
-
-#pragma region 일반
-		for (size_t k = 0; k < m_vRenderDefaulMeshIndex.size(); k++)
-		{
-			int		i = m_vRenderDefaulMeshIndex[k];
-
-			if (nullptr != m_pMaterialCom)
-				m_pMaterialCom->Bind_Shader(m_pShaderCom, m_pModelCom->Get_MaterialName(Meshes[i]->Get_MaterialIndex()));
-			else
-			{
-				_bool isUVShader = false;
-				if (FAILED(m_pShaderCom->Bind_RawValue("g_isUVShader", &isUVShader, sizeof(_bool))))
-					return E_FAIL;
-			}
-
-
-			_bool fFar = m_pGameInstance->Get_CamFar();
-			m_pShaderCom->Bind_RawValue("g_fFar", &fFar, sizeof(_float));
-
-			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
-				return E_FAIL;
-
-			_bool isRS = true;
-			_bool isRD = true;
-			_bool isRM = true;
-			_bool isRT = false;
-			_bool isMulti = true;
-
-			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_MultiDiffuseTexture", i, aiTextureType_SHININESS)))
-				isMulti = false;
-			m_pShaderCom->Bind_RawValue("g_isMulti", &isMulti, sizeof(_bool));
-
-			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RSTexture", i, aiTextureType_SPECULAR)))
-				isRS = false;
-			m_pShaderCom->Bind_RawValue("g_isRS", &isRS, sizeof(_bool));
-
-			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RDTexture", i, aiTextureType_OPACITY)))
-				isRD = false;
-			m_pShaderCom->Bind_RawValue("g_isRD", &isRD, sizeof(_bool));
-
-			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RMTexture", i, aiTextureType_METALNESS)))
-				isRM = false;
-			m_pShaderCom->Bind_RawValue("g_isRM", &isRM, sizeof(_bool));
-			m_pShaderCom->Bind_RawValue("g_isRT", &isRT, sizeof(_bool));
-
-			m_pShaderCom->Bind_RawValue("g_bCompulsoryAlpha", &m_bCompulsoryAlpha, sizeof(_bool));
-
-			m_pShaderCom->Begin(SHADER_DEFAULT_MAP);
-
-			m_pModelCom->Render(i);
-		}
-#pragma endregion
-	
-#pragma region 램프
-		for (size_t k = 0; k < m_vLampMeshIndex.size(); k++)
-		{
-			int		i = m_vLampMeshIndex[k];
-
-			if (nullptr != m_pMaterialCom)
-				m_pMaterialCom->Bind_Shader(m_pShaderCom, m_pModelCom->Get_MaterialName(Meshes[i]->Get_MaterialIndex()));
-			else
-			{
-				_bool isUVShader = false;
-				if (FAILED(m_pShaderCom->Bind_RawValue("g_isUVShader", &isUVShader, sizeof(_bool))))
-					return E_FAIL;
-			}
-
-			_bool fFar = m_pGameInstance->Get_CamFar();
-			m_pShaderCom->Bind_RawValue("g_fFar", &fFar, sizeof(_float));
-
-			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
-				return E_FAIL;
-			m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS);
-
-			_bool isRS = true;
-			_bool isRD = true;
-			_bool isRM = true;
-			_bool isRT = false;
-			_bool isMulti = true;
-
-			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_MultiDiffuseTexture", i, aiTextureType_SHININESS)))
-				isMulti = false;
-			m_pShaderCom->Bind_RawValue("g_isMulti", &isMulti, sizeof(_bool));
-
-			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RSTexture", i, aiTextureType_SPECULAR)))
-				isRS = false;
-			m_pShaderCom->Bind_RawValue("g_isRS", &isRS, sizeof(_bool));
-
-			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RDTexture", i, aiTextureType_OPACITY)))
-				isRD = false;
-			m_pShaderCom->Bind_RawValue("g_isRD", &isRD, sizeof(_bool));
-
-			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RMTexture", i, aiTextureType_METALNESS)))
-				isRM = false;
-			m_pShaderCom->Bind_RawValue("g_isRM", &isRM, sizeof(_bool));
-			m_pShaderCom->Bind_RawValue("g_isRT", &isRT, sizeof(_bool));
-
-			m_pShaderCom->Bind_RawValue("g_bCompulsoryAlpha", &m_bCompulsoryAlpha, sizeof(_bool));
-
-			m_pShaderCom->Begin(SHADER_DEFAULT_MAP);
-
-			m_pModelCom->Render(i);
-		}
-#pragma endregion
-
-#pragma region 부분bloom
-		for (size_t k = 0; k < m_vBloomIndex.size(); k++)
-		{
-			int		i = m_vBloomIndex[k];
-
-			if (nullptr != m_pMaterialCom)
-				m_pMaterialCom->Bind_Shader(m_pShaderCom, m_pModelCom->Get_MaterialName(Meshes[i]->Get_MaterialIndex()));
-			else
-			{
-				_bool isUVShader = false;
-				if (FAILED(m_pShaderCom->Bind_RawValue("g_isUVShader", &isUVShader, sizeof(_bool))))
-					return E_FAIL;
-			}
-
-			_bool fFar = m_pGameInstance->Get_CamFar();
-			m_pShaderCom->Bind_RawValue("g_fFar", &fFar, sizeof(_float));
-
-			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
-				return E_FAIL;
-			m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS);
-
-			_bool isRS = true;
-			_bool isRD = true;
-			_bool isRM = true;
-			_bool isRT = false;
-			_bool isMulti = true;
-
-			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_MultiDiffuseTexture", i, aiTextureType_SHININESS)))
-				isMulti = false;
-			m_pShaderCom->Bind_RawValue("g_isMulti", &isMulti, sizeof(_bool));
-
-			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RSTexture", i, aiTextureType_SPECULAR)))
-				isRS = false;
-			m_pShaderCom->Bind_RawValue("g_isRS", &isRS, sizeof(_bool));
-
-			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RDTexture", i, aiTextureType_OPACITY)))
-				isRD = false;
-			m_pShaderCom->Bind_RawValue("g_isRD", &isRD, sizeof(_bool));
-
-			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RMTexture", i, aiTextureType_METALNESS)))
-				isRM = false;
-			m_pShaderCom->Bind_RawValue("g_isRM", &isRM, sizeof(_bool));
-			m_pShaderCom->Bind_RawValue("g_isRT", &isRT, sizeof(_bool));
-
-			m_pShaderCom->Bind_RawValue("g_bCompulsoryAlpha", &m_bCompulsoryAlpha, sizeof(_bool));
-
-			m_pShaderCom->Begin(SHADER_DEFAULT_MAP);
-
-			m_pModelCom->Render(i);
-		}
-#pragma endregion
-		
-#pragma region 강력한bloom
-		for (size_t k = 0; k < m_vStrongBloomIndex.size(); k++)
-		{
-			int		i = m_vStrongBloomIndex[k];
-
-			if (nullptr != m_pMaterialCom)
-				m_pMaterialCom->Bind_Shader(m_pShaderCom, m_pModelCom->Get_MaterialName(Meshes[i]->Get_MaterialIndex()));
-			else
-			{
-				_bool isUVShader = false;
-				if (FAILED(m_pShaderCom->Bind_RawValue("g_isUVShader", &isUVShader, sizeof(_bool))))
-					return E_FAIL;
-			}
-
-			_bool fFar = m_pGameInstance->Get_CamFar();
-			m_pShaderCom->Bind_RawValue("g_fFar", &fFar, sizeof(_float));
-
-			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
-				return E_FAIL;
-			m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS);
-
-			_bool isRS = true;
-			_bool isRD = true;
-			_bool isRM = true;
-			_bool isRT = false;
-			_bool isMulti = true;
-
-			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_MultiDiffuseTexture", i, aiTextureType_SHININESS)))
-				isMulti = false;
-			m_pShaderCom->Bind_RawValue("g_isMulti", &isMulti, sizeof(_bool));
-
-			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RSTexture", i, aiTextureType_SPECULAR)))
-				isRS = false;
-			m_pShaderCom->Bind_RawValue("g_isRS", &isRS, sizeof(_bool));
-
-			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RDTexture", i, aiTextureType_OPACITY)))
-				isRD = false;
-			m_pShaderCom->Bind_RawValue("g_isRD", &isRD, sizeof(_bool));
-
-			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RMTexture", i, aiTextureType_METALNESS)))
-				isRM = false;
-			m_pShaderCom->Bind_RawValue("g_isRM", &isRM, sizeof(_bool));
-			m_pShaderCom->Bind_RawValue("g_isRT", &isRT, sizeof(_bool));
-
-			m_pShaderCom->Bind_RawValue("g_bCompulsoryAlpha", &m_bCompulsoryAlpha, sizeof(_bool));
-
-			m_pShaderCom->Begin(SHADER_DEFAULT_MAP);
-
-			m_pModelCom->Render(i);
-		}
-#pragma endregion
-
-#pragma region 강력한bloom
-		for (size_t k = 0; k < m_vRenderGlassMeshIndex.size(); k++)
-		{
-			int		i = m_vRenderGlassMeshIndex[k];
-
-			if (nullptr != m_pMaterialCom)
-				m_pMaterialCom->Bind_Shader(m_pShaderCom, m_pModelCom->Get_MaterialName(Meshes[i]->Get_MaterialIndex()));
-			else
-			{
-				_bool isUVShader = false;
-				if (FAILED(m_pShaderCom->Bind_RawValue("g_isUVShader", &isUVShader, sizeof(_bool))))
-					return E_FAIL;
-			}
-
-			_bool fFar = m_pGameInstance->Get_CamFar();
-			m_pShaderCom->Bind_RawValue("g_fFar", &fFar, sizeof(_float));
-
-			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
-				return E_FAIL;
-			m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS);
-
-			_bool isRS = true;
-			_bool isRD = true;
-			_bool isRM = true;
-			_bool isRT = false;
-			_bool isMulti = true;
-
-			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_MultiDiffuseTexture", i, aiTextureType_SHININESS)))
-				isMulti = false;
-			m_pShaderCom->Bind_RawValue("g_isMulti", &isMulti, sizeof(_bool));
-
-			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RSTexture", i, aiTextureType_SPECULAR)))
-				isRS = false;
-			m_pShaderCom->Bind_RawValue("g_isRS", &isRS, sizeof(_bool));
-
-			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RDTexture", i, aiTextureType_OPACITY)))
-				isRD = false;
-			m_pShaderCom->Bind_RawValue("g_isRD", &isRD, sizeof(_bool));
-
-			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RMTexture", i, aiTextureType_METALNESS)))
-				isRM = false;
-			m_pShaderCom->Bind_RawValue("g_isRM", &isRM, sizeof(_bool));
-			m_pShaderCom->Bind_RawValue("g_isRT", &isRT, sizeof(_bool));
-
-			m_pShaderCom->Bind_RawValue("g_bCompulsoryAlpha", &m_bCompulsoryAlpha, sizeof(_bool));
-
-			m_pShaderCom->Begin(SHADER_DEFAULT_MAP);
-
-			m_pModelCom->Render(i);
-		}
-#pragma endregion
-
-#pragma region Mask_구Decal
-		for (size_t k = 0; k < m_vMaskMeshIndex.size(); k++)
-		{
-			int		i = m_vMaskMeshIndex[k];
-
-			if (nullptr != m_pMaterialCom)
-				m_pMaterialCom->Bind_Shader(m_pShaderCom, m_pModelCom->Get_MaterialName(Meshes[i]->Get_MaterialIndex()));
-			else
-			{
-				_bool isUVShader = false;
-				if (FAILED(m_pShaderCom->Bind_RawValue("g_isUVShader", &isUVShader, sizeof(_bool))))
-					return E_FAIL;
-			}
-
-
-			_bool fFar = m_pGameInstance->Get_CamFar();
-			m_pShaderCom->Bind_RawValue("g_fFar", &fFar, sizeof(_float));
-
-			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
-				return E_FAIL;
-
-			_bool isRS = true;
-			_bool isRD = true;
-			_bool isRM = true;
-			_bool isRT = false;
-			_bool isMulti = true;
-
-			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_MultiDiffuseTexture", i, aiTextureType_SHININESS)))
-				isMulti = false;
-			m_pShaderCom->Bind_RawValue("g_isMulti", &isMulti, sizeof(_bool));
-
-			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RSTexture", i, aiTextureType_SPECULAR)))
-				isRS = false;
-			m_pShaderCom->Bind_RawValue("g_isRS", &isRS, sizeof(_bool));
-
-			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RDTexture", i, aiTextureType_OPACITY)))
-				isRD = false;
-			m_pShaderCom->Bind_RawValue("g_isRD", &isRD, sizeof(_bool));
-
-			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RMTexture", i, aiTextureType_METALNESS)))
-				isRM = false;
-			m_pShaderCom->Bind_RawValue("g_isRM", &isRM, sizeof(_bool));
-			m_pShaderCom->Bind_RawValue("g_isRT", &isRT, sizeof(_bool));
-
-
-			m_pShaderCom->Begin(SHADER_DECAL_MASK);
-
-			m_pModelCom->Render(i);
-		}
-#pragma endregion
-
-	}
+	if (m_isFar)
+		Far_Render(iRenderState);
+	else 
+		Near_Render(iRenderState);
 #pragma endregion
 
 
@@ -927,6 +523,596 @@ HRESULT CMap::Render_LightDepth()
 	return S_OK;
 }
 
+HRESULT CMap::Render_OcculusionDepth()
+{
+	m_pContext->Begin(m_pOcclusionQuery);
+
+	_float4x4 CubeWorldMatrix;
+	XMStoreFloat4x4(&CubeWorldMatrix, m_CubeWorldMatrix);
+	if (FAILED(m_pCubeShaderCom->Bind_Matrix("g_WorldMatrix", &CubeWorldMatrix)))
+		return E_FAIL;
+	//if (FAILED(m_pTransformCom->Bind_ShaderMatrix(m_pShaderCom, "g_WorldMatrix")))
+	//	return E_FAIL;
+
+	if (FAILED(m_pCubeShaderCom->Bind_Matrix("g_ViewMatrix", m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_VIEW))))
+		return E_FAIL;
+	if (FAILED(m_pCubeShaderCom->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_PROJ))))
+		return E_FAIL;
+
+	if (FAILED(m_pCubeShaderCom->Bind_RawValue("g_fFar", m_pGameInstance->Get_CamFar(), sizeof(_float))))
+		return E_FAIL;
+
+	m_pCubeShaderCom->Begin(0);
+
+	m_pVIBufferCom->Render();
+
+	m_pContext->End(m_pOcclusionQuery);
+
+	return S_OK;
+}
+
+HRESULT CMap::Check_OcculusionCulling()
+{
+	XMMATRIX worldProjView = m_pTransformCom->Get_WorldMatrix() * m_pGameInstance->Get_Transform_Matrix(CPipeLine::D3DTS_VIEW) * m_pGameInstance->Get_Transform_Matrix(CPipeLine::D3DTS_PROJ);
+	worldProjView = XMMatrixTranspose(worldProjView);
+	CMap::ObjectData objectData = { worldProjView, *m_pGameInstance->Get_CamFar() };
+	m_pContext->UpdateSubresource(m_pObjectDataBuffer, 0, nullptr, &objectData, 0, 0);
+	
+	m_pContext->CSSetConstantBuffers(0, 1, &m_pObjectDataBuffer);
+
+	// dmd
+	m_pGameInstance->Bind_ComputeRenderTargetSRV(TEXT("Target_OcculusionDepth"), 1);
+	m_pVIBufferCom->Bind_Compute(m_pComputeShaderCom);
+	
+
+	int pixelCount = 0;
+	m_pVIBufferCom->Copy_ResultResources(m_pOutputBufferStaging);
+
+	D3D11_MAPPED_SUBRESOURCE mappedResource;
+	m_pContext->Map(m_pOutputBufferStaging, 0, D3D11_MAP_READ, 0, &mappedResource);
+
+	// 정점 수 만큼 루프를 돌며 가시성 정보를 합산
+	int* visibilityData = (int*)mappedResource.pData;
+	for (int i = 0; i < m_pVIBufferCom->Get_NumVertex(); ++i)
+	{
+		pixelCount += visibilityData[i];
+	}
+
+	m_pContext->Unmap(m_pOutputBufferStaging, 0);
+
+	// 만약 하나 이상의 정점이 가시성이 있다면 렌더링 플래그를 true로 설정
+	if (pixelCount > 0)
+	{
+		m_bRender = true;
+	}
+	else
+	{
+		m_bRender = false;
+	}
+
+	return S_OK;
+}
+
+_bool CMap::isOcculusionDepth()
+{
+	UINT64 occlusionResult = 0;
+	while (m_pContext->GetData(m_pOcclusionQuery, &occlusionResult, sizeof(UINT64), 0) == S_FALSE)
+	{
+		// 결과를 기다리는 중
+	}
+
+	return occlusionResult > 0;
+}
+
+HRESULT CMap::Near_Render(_uint iRenderState)
+{
+	vector<CMesh*> Meshes = m_pModelCom->Get_Meshes();
+
+	if (iRenderState == CRenderer::RENDER_NONBLENDER)
+	{
+		// 램프 - 일반 mesh 출력, 그리고 부분 nonlight로 들어가서 bloom
+		// 부분 bloom - 전부 출력 후 밝은 부분만 nonlight로 들어가서 bloom
+
+
+#pragma region 일반
+		for (size_t k = 0; k < m_vRenderDefaulMeshIndex.size(); k++)
+		{
+			int		i = m_vRenderDefaulMeshIndex[k];
+
+			if (nullptr != m_pMaterialCom)
+				m_pMaterialCom->Bind_Shader(m_pShaderCom, m_pModelCom->Get_MaterialName(Meshes[i]->Get_MaterialIndex()));
+			else
+			{
+				_bool isUVShader = false;
+				if (FAILED(m_pShaderCom->Bind_RawValue("g_isUVShader", &isUVShader, sizeof(_bool))))
+					return E_FAIL;
+			}
+
+
+			_bool fFar = m_pGameInstance->Get_CamFar();
+			m_pShaderCom->Bind_RawValue("g_fFar", &fFar, sizeof(_float));
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
+				return E_FAIL;
+			
+			_bool isNormal = true;
+			_bool isRS = true;
+			_bool isRD = true;
+			_bool isRM = true;
+			_bool isRT = false;
+			_bool isMulti = true;
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS)))
+				isNormal = false;
+			m_pShaderCom->Bind_RawValue("g_isNormal", &isNormal, sizeof(_bool));
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_MultiDiffuseTexture", i, aiTextureType_SHININESS)))
+				isMulti = false;
+			m_pShaderCom->Bind_RawValue("g_isMulti", &isMulti, sizeof(_bool));
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RSTexture", i, aiTextureType_SPECULAR)))
+				isRS = false;
+			m_pShaderCom->Bind_RawValue("g_isRS", &isRS, sizeof(_bool));
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RDTexture", i, aiTextureType_OPACITY)))
+				isRD = false;
+			m_pShaderCom->Bind_RawValue("g_isRD", &isRD, sizeof(_bool));
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RMTexture", i, aiTextureType_METALNESS)))
+				isRM = false;
+			m_pShaderCom->Bind_RawValue("g_isRM", &isRM, sizeof(_bool));
+			m_pShaderCom->Bind_RawValue("g_isRT", &isRT, sizeof(_bool));
+
+			m_pShaderCom->Bind_RawValue("g_bCompulsoryAlpha", &m_bCompulsoryAlpha, sizeof(_bool));
+
+			m_pShaderCom->Begin(SHADER_DEFAULT_MAP);
+
+			m_pModelCom->Render(i);
+		}
+#pragma endregion
+
+#pragma region 램프
+		for (size_t k = 0; k < m_vLampMeshIndex.size(); k++)
+		{
+			int		i = m_vLampMeshIndex[k];
+
+			if (nullptr != m_pMaterialCom)
+				m_pMaterialCom->Bind_Shader(m_pShaderCom, m_pModelCom->Get_MaterialName(Meshes[i]->Get_MaterialIndex()));
+			else
+			{
+				_bool isUVShader = false;
+				if (FAILED(m_pShaderCom->Bind_RawValue("g_isUVShader", &isUVShader, sizeof(_bool))))
+					return E_FAIL;
+			}
+
+			_bool fFar = m_pGameInstance->Get_CamFar();
+			m_pShaderCom->Bind_RawValue("g_fFar", &fFar, sizeof(_float));
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
+				return E_FAIL;
+
+			_bool isNormal = true;
+			_bool isRS = true;
+			_bool isRD = true;
+			_bool isRM = true;
+			_bool isRT = false;
+			_bool isMulti = true;
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS)))
+				isNormal = false;
+			m_pShaderCom->Bind_RawValue("g_isNormal", &isNormal, sizeof(_bool));
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_MultiDiffuseTexture", i, aiTextureType_SHININESS)))
+				isMulti = false;
+			m_pShaderCom->Bind_RawValue("g_isMulti", &isMulti, sizeof(_bool));
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RSTexture", i, aiTextureType_SPECULAR)))
+				isRS = false;
+			m_pShaderCom->Bind_RawValue("g_isRS", &isRS, sizeof(_bool));
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RDTexture", i, aiTextureType_OPACITY)))
+				isRD = false;
+			m_pShaderCom->Bind_RawValue("g_isRD", &isRD, sizeof(_bool));
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RMTexture", i, aiTextureType_METALNESS)))
+				isRM = false;
+			m_pShaderCom->Bind_RawValue("g_isRM", &isRM, sizeof(_bool));
+			m_pShaderCom->Bind_RawValue("g_isRT", &isRT, sizeof(_bool));
+
+			m_pShaderCom->Bind_RawValue("g_bCompulsoryAlpha", &m_bCompulsoryAlpha, sizeof(_bool));
+
+			m_pShaderCom->Begin(SHADER_DEFAULT_MAP);
+
+			m_pModelCom->Render(i);
+		}
+#pragma endregion
+
+#pragma region 부분bloom
+		for (size_t k = 0; k < m_vBloomIndex.size(); k++)
+		{
+			int		i = m_vBloomIndex[k];
+
+			if (nullptr != m_pMaterialCom)
+				m_pMaterialCom->Bind_Shader(m_pShaderCom, m_pModelCom->Get_MaterialName(Meshes[i]->Get_MaterialIndex()));
+			else
+			{
+				_bool isUVShader = false;
+				if (FAILED(m_pShaderCom->Bind_RawValue("g_isUVShader", &isUVShader, sizeof(_bool))))
+					return E_FAIL;
+			}
+
+			_bool fFar = m_pGameInstance->Get_CamFar();
+			m_pShaderCom->Bind_RawValue("g_fFar", &fFar, sizeof(_float));
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
+				return E_FAIL;
+
+			_bool isNormal = true;
+			_bool isRS = true;
+			_bool isRD = true;
+			_bool isRM = true;
+			_bool isRT = false;
+			_bool isMulti = true;
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS)))
+				isNormal = false;
+			m_pShaderCom->Bind_RawValue("g_isNormal", &isNormal, sizeof(_bool));
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_MultiDiffuseTexture", i, aiTextureType_SHININESS)))
+				isMulti = false;
+			m_pShaderCom->Bind_RawValue("g_isMulti", &isMulti, sizeof(_bool));
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RSTexture", i, aiTextureType_SPECULAR)))
+				isRS = false;
+			m_pShaderCom->Bind_RawValue("g_isRS", &isRS, sizeof(_bool));
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RDTexture", i, aiTextureType_OPACITY)))
+				isRD = false;
+			m_pShaderCom->Bind_RawValue("g_isRD", &isRD, sizeof(_bool));
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RMTexture", i, aiTextureType_METALNESS)))
+				isRM = false;
+			m_pShaderCom->Bind_RawValue("g_isRM", &isRM, sizeof(_bool));
+			m_pShaderCom->Bind_RawValue("g_isRT", &isRT, sizeof(_bool));
+
+			m_pShaderCom->Bind_RawValue("g_bCompulsoryAlpha", &m_bCompulsoryAlpha, sizeof(_bool));
+
+			m_pShaderCom->Begin(SHADER_DEFAULT_MAP);
+
+			m_pModelCom->Render(i);
+		}
+#pragma endregion
+
+#pragma region 강력한bloom
+		for (size_t k = 0; k < m_vStrongBloomIndex.size(); k++)
+		{
+			int		i = m_vStrongBloomIndex[k];
+
+			if (nullptr != m_pMaterialCom)
+				m_pMaterialCom->Bind_Shader(m_pShaderCom, m_pModelCom->Get_MaterialName(Meshes[i]->Get_MaterialIndex()));
+			else
+			{
+				_bool isUVShader = false;
+				if (FAILED(m_pShaderCom->Bind_RawValue("g_isUVShader", &isUVShader, sizeof(_bool))))
+					return E_FAIL;
+			}
+
+			_bool fFar = m_pGameInstance->Get_CamFar();
+			m_pShaderCom->Bind_RawValue("g_fFar", &fFar, sizeof(_float));
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
+				return E_FAIL;
+
+			_bool isNormal = true;
+			_bool isRS = true;
+			_bool isRD = true;
+			_bool isRM = true;
+			_bool isRT = false;
+			_bool isMulti = true;
+
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS)))
+				isNormal = false;
+			m_pShaderCom->Bind_RawValue("g_isNormal", &isNormal, sizeof(_bool));
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_MultiDiffuseTexture", i, aiTextureType_SHININESS)))
+				isMulti = false;
+			m_pShaderCom->Bind_RawValue("g_isMulti", &isMulti, sizeof(_bool));
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RSTexture", i, aiTextureType_SPECULAR)))
+				isRS = false;
+			m_pShaderCom->Bind_RawValue("g_isRS", &isRS, sizeof(_bool));
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RDTexture", i, aiTextureType_OPACITY)))
+				isRD = false;
+			m_pShaderCom->Bind_RawValue("g_isRD", &isRD, sizeof(_bool));
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RMTexture", i, aiTextureType_METALNESS)))
+				isRM = false;
+			m_pShaderCom->Bind_RawValue("g_isRM", &isRM, sizeof(_bool));
+			m_pShaderCom->Bind_RawValue("g_isRT", &isRT, sizeof(_bool));
+
+			m_pShaderCom->Bind_RawValue("g_bCompulsoryAlpha", &m_bCompulsoryAlpha, sizeof(_bool));
+
+			m_pShaderCom->Begin(SHADER_DEFAULT_MAP);
+
+			m_pModelCom->Render(i);
+		}
+#pragma endregion
+
+#pragma region 강력한bloom
+		for (size_t k = 0; k < m_vRenderGlassMeshIndex.size(); k++)
+		{
+			int		i = m_vRenderGlassMeshIndex[k];
+
+			if (nullptr != m_pMaterialCom)
+				m_pMaterialCom->Bind_Shader(m_pShaderCom, m_pModelCom->Get_MaterialName(Meshes[i]->Get_MaterialIndex()));
+			else
+			{
+				_bool isUVShader = false;
+				if (FAILED(m_pShaderCom->Bind_RawValue("g_isUVShader", &isUVShader, sizeof(_bool))))
+					return E_FAIL;
+			}
+
+			_bool fFar = m_pGameInstance->Get_CamFar();
+			m_pShaderCom->Bind_RawValue("g_fFar", &fFar, sizeof(_float));
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
+				return E_FAIL;
+
+			_bool isNormal = true;
+			_bool isRS = true;
+			_bool isRD = true;
+			_bool isRM = true;
+			_bool isRT = false;
+			_bool isMulti = true;
+			
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS)))
+				isNormal = false;
+			m_pShaderCom->Bind_RawValue("g_isNormal", &isNormal, sizeof(_bool));
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_MultiDiffuseTexture", i, aiTextureType_SHININESS)))
+				isMulti = false;
+			m_pShaderCom->Bind_RawValue("g_isMulti", &isMulti, sizeof(_bool));
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RSTexture", i, aiTextureType_SPECULAR)))
+				isRS = false;
+			m_pShaderCom->Bind_RawValue("g_isRS", &isRS, sizeof(_bool));
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RDTexture", i, aiTextureType_OPACITY)))
+				isRD = false;
+			m_pShaderCom->Bind_RawValue("g_isRD", &isRD, sizeof(_bool));
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RMTexture", i, aiTextureType_METALNESS)))
+				isRM = false;
+			m_pShaderCom->Bind_RawValue("g_isRM", &isRM, sizeof(_bool));
+			m_pShaderCom->Bind_RawValue("g_isRT", &isRT, sizeof(_bool));
+
+			m_pShaderCom->Bind_RawValue("g_bCompulsoryAlpha", &m_bCompulsoryAlpha, sizeof(_bool));
+
+			m_pShaderCom->Begin(SHADER_DEFAULT_MAP);
+
+			m_pModelCom->Render(i);
+		}
+#pragma endregion
+
+#pragma region Mask_구Decal
+		for (size_t k = 0; k < m_vMaskMeshIndex.size(); k++)
+		{
+			int		i = m_vMaskMeshIndex[k];
+
+			if (nullptr != m_pMaterialCom)
+				m_pMaterialCom->Bind_Shader(m_pShaderCom, m_pModelCom->Get_MaterialName(Meshes[i]->Get_MaterialIndex()));
+			else
+			{
+				_bool isUVShader = false;
+				if (FAILED(m_pShaderCom->Bind_RawValue("g_isUVShader", &isUVShader, sizeof(_bool))))
+					return E_FAIL;
+			}
+
+
+			_bool fFar = m_pGameInstance->Get_CamFar();
+			m_pShaderCom->Bind_RawValue("g_fFar", &fFar, sizeof(_float));
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
+				return E_FAIL;
+
+			_bool isNormal = true;
+			_bool isRS = true;
+			_bool isRD = true;
+			_bool isRM = true;
+			_bool isRT = false;
+			_bool isMulti = true;
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS)))
+				isNormal = false;
+			m_pShaderCom->Bind_RawValue("g_isNormal", &isNormal, sizeof(_bool));
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_MultiDiffuseTexture", i, aiTextureType_SHININESS)))
+				isMulti = false;
+			m_pShaderCom->Bind_RawValue("g_isMulti", &isMulti, sizeof(_bool));
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RSTexture", i, aiTextureType_SPECULAR)))
+				isRS = false;
+			m_pShaderCom->Bind_RawValue("g_isRS", &isRS, sizeof(_bool));
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RDTexture", i, aiTextureType_OPACITY)))
+				isRD = false;
+			m_pShaderCom->Bind_RawValue("g_isRD", &isRD, sizeof(_bool));
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RMTexture", i, aiTextureType_METALNESS)))
+				isRM = false;
+			m_pShaderCom->Bind_RawValue("g_isRM", &isRM, sizeof(_bool));
+			m_pShaderCom->Bind_RawValue("g_isRT", &isRT, sizeof(_bool));
+
+
+			m_pShaderCom->Begin(SHADER_DECAL_MASK);
+
+			m_pModelCom->Render(i);
+		}
+#pragma endregion
+
+	}
+
+	return S_OK;
+}
+
+HRESULT CMap::Far_Render(_uint iRenderState)
+{
+	vector<CMesh*> Meshes = m_pModelCom->Get_Meshes();
+
+	if (iRenderState == CRenderer::RENDER_NONBLENDER)
+	{
+		// 램프 - 일반 mesh 출력, 그리고 부분 nonlight로 들어가서 bloom
+		// 부분 bloom - 전부 출력 후 밝은 부분만 nonlight로 들어가서 bloom
+
+
+#pragma region 일반
+		for (size_t k = 0; k < m_vRenderDefaulMeshIndex.size(); k++)
+		{
+			int		i = m_vRenderDefaulMeshIndex[k];
+
+			_bool fFar = m_pGameInstance->Get_CamFar();
+			m_pShaderCom->Bind_RawValue("g_fFar", &fFar, sizeof(_float));
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
+				return E_FAIL;
+
+			_bool isNormal = { true };
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS)))
+				isNormal = false;
+			m_pShaderCom->Bind_RawValue("g_isNormal", &isNormal, sizeof(_bool));
+
+			m_pShaderCom->Begin(13);
+
+			m_pModelCom->Render(i);
+		}
+#pragma endregion
+
+#pragma region 램프
+		for (size_t k = 0; k < m_vLampMeshIndex.size(); k++)
+		{
+			int		i = m_vLampMeshIndex[k];
+
+			_bool fFar = m_pGameInstance->Get_CamFar();
+			m_pShaderCom->Bind_RawValue("g_fFar", &fFar, sizeof(_float));
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
+				return E_FAIL;
+
+			_bool isNormal = { true };
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS)))
+				isNormal = false;
+			m_pShaderCom->Bind_RawValue("g_isNormal", &isNormal, sizeof(_bool));
+
+			m_pShaderCom->Begin(13);
+
+			m_pModelCom->Render(i);
+		}
+#pragma endregion
+
+#pragma region 부분bloom
+		for (size_t k = 0; k < m_vBloomIndex.size(); k++)
+		{
+			int		i = m_vBloomIndex[k];
+
+			_bool fFar = m_pGameInstance->Get_CamFar();
+			m_pShaderCom->Bind_RawValue("g_fFar", &fFar, sizeof(_float));
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
+				return E_FAIL;
+
+			_bool isNormal = { true };
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS)))
+				isNormal = false;
+			m_pShaderCom->Bind_RawValue("g_isNormal", &isNormal, sizeof(_bool));
+
+			m_pShaderCom->Begin(13);
+
+			m_pModelCom->Render(i);
+		}
+#pragma endregion
+
+#pragma region 강력한bloom
+		for (size_t k = 0; k < m_vStrongBloomIndex.size(); k++)
+		{
+			int		i = m_vStrongBloomIndex[k];
+
+			_bool fFar = m_pGameInstance->Get_CamFar();
+			m_pShaderCom->Bind_RawValue("g_fFar", &fFar, sizeof(_float));
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
+				return E_FAIL;
+
+			_bool isNormal = { true };
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS)))
+				isNormal = false;
+			m_pShaderCom->Bind_RawValue("g_isNormal", &isNormal, sizeof(_bool));
+
+			m_pShaderCom->Begin(13);
+
+			m_pModelCom->Render(i);
+		}
+#pragma endregion
+
+#pragma region 강력한bloom
+		for (size_t k = 0; k < m_vRenderGlassMeshIndex.size(); k++)
+		{
+			int		i = m_vRenderGlassMeshIndex[k];
+
+			_bool fFar = m_pGameInstance->Get_CamFar();
+			m_pShaderCom->Bind_RawValue("g_fFar", &fFar, sizeof(_float));
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
+				return E_FAIL;
+
+			_bool isNormal = { true };
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS)))
+				isNormal = false;
+			m_pShaderCom->Bind_RawValue("g_isNormal", &isNormal, sizeof(_bool));
+
+			m_pShaderCom->Begin(13);
+
+			m_pModelCom->Render(i);
+		}
+#pragma endregion
+
+#pragma region Mask_구Decal
+		for (size_t k = 0; k < m_vMaskMeshIndex.size(); k++)
+		{
+			int		i = m_vMaskMeshIndex[k];
+
+			//if (FAILED(m_pTransformCom->Bind_ShaderMatrix(m_pCubeShaderCom, "g_WorldMatrix")))
+			//	return E_FAIL;
+
+			_float4x4		vWorldMatrix;
+			XMStoreFloat4x4(&vWorldMatrix, m_CubeWorldMatrix);
+
+			if (FAILED(m_pCubeShaderCom->Bind_Matrix("g_WorldMatrix", &vWorldMatrix)))
+				return E_FAIL;
+			if (FAILED(m_pCubeShaderCom->Bind_Matrix("g_ViewMatrix", m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_VIEW))))
+				return E_FAIL;
+			if (FAILED(m_pCubeShaderCom->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_PROJ))))
+				return E_FAIL;
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
+				return E_FAIL;
+
+			m_pCubeShaderCom->Begin(0);
+
+			m_pVIBufferCom->Render();
+
+		}
+	}
+	return S_OK;
+}
+
 int CMap::Get_ObjPlaceDesc(OBJECTPLACE_DESC* objplaceDesc)
 {
 	/* 바이너리화하기 위한 데이터 제공 */
@@ -991,7 +1177,7 @@ void CMap::Add_Renderer(const _float& fTimeDelta)
 
 		const char* baseNameCStr = baseName.c_str();
 
-		if (false == m_bCull && false == m_bLocalCull)
+		if (false == m_bCull)
 		{
 			// 컬링안함
 			if (0 == strcmp(baseNameCStr, "DEFAULTMESH"))
@@ -1049,7 +1235,7 @@ void CMap::Add_Renderer(const _float& fTimeDelta)
 				m_vRenderDefaulMeshIndex.push_back(i);
 			}
 		}
-		else if (false == m_bLocalCull)
+		else
 		{
 			float		fScale = Meshes[i]->Get_MeshScale();
 
@@ -1116,19 +1302,7 @@ void CMap::Add_Renderer(const _float& fTimeDelta)
 				}
 			}
 		}
-		else
-		{
-			// 도로씬에서 다 DECAL 처리
-			float		fScale = Meshes[i]->Get_MeshScale() * 0.5;
 
-			if (fScale <= 0)
-				fScale = 10;
-
-			if (true == m_pGameInstance->isIn_WorldFrustum(worldPos, fScale))
-			{
-				m_vMaskMeshIndex.push_back(i);
-			}
-		}
 	}
 
 	// RENDER_NONBLEND 돼야하는 그룹
@@ -1182,10 +1356,13 @@ HRESULT CMap::Add_Components(void* pArg)
 
 	strModelName = strModelName.erase(iPos, strRemoveName.size());
 
+	
 	if (strModelName == "doujima_gaikan")
 	{
 		m_bCompulsoryAlpha = { true };
 	}
+
+
 
 	wstring strMaterialName = TEXT("Prototype_Component_Material_") + m_pGameInstance->StringToWstring(strModelName);
 
@@ -1198,11 +1375,100 @@ HRESULT CMap::Add_Components(void* pArg)
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
 		return E_FAIL;
 
+
+
+	// Occulusion Culling을 위한 scale 파악
+	if (0 < gameobjDesc->iColliderNum)
+	{
+
+		m_CubeWorldMatrix = XMMatrixIdentity();
+		m_CubeWorldMatrix.r[3].m128_f32[0] = gameobjDesc->vStartPos.r[3].m128_f32[0] + gameobjDesc->pColliderDesc[0].vCenter.x;
+		m_CubeWorldMatrix.r[3].m128_f32[1] = gameobjDesc->vStartPos.r[3].m128_f32[1] + gameobjDesc->pColliderDesc[0].vCenter.y;
+		m_CubeWorldMatrix.r[3].m128_f32[2] = gameobjDesc->vStartPos.r[3].m128_f32[2] + gameobjDesc->pColliderDesc[0].vCenter.z;
+
+		m_CubeWorldMatrix.r[0].m128_f32[0] = gameobjDesc->pColliderDesc[0].vExtents.x * 2;
+		m_CubeWorldMatrix.r[1].m128_f32[1] = gameobjDesc->pColliderDesc[0].vExtents.y * 2;
+		m_CubeWorldMatrix.r[2].m128_f32[2] = gameobjDesc->pColliderDesc[0].vExtents.z * 2;
+
+		
+	}
+	else
+	{
+		/*_float3 vScale = m_pModelCom->Get_LocalModelSize();
+
+		m_CubeWorldMatrix = XMMatrixIdentity();
+		m_CubeWorldMatrix = gameobjDesc->vStartPos;
+
+		m_CubeWorldMatrix.r[3].m128_f32[1] += aabbDesc.vScale.y;*/
+	}
+
+	//_float3 vScale = m_pModelCom->Get_LocalModelSize();
+
+	//m_CubeWorldMatrix = XMMatrixIdentity();
+	//m_CubeWorldMatrix.r[3].m128_f32[0] = gameobjDesc->vStartPos.r[3].m128_f32[0];
+	//m_CubeWorldMatrix.r[3].m128_f32[1] = gameobjDesc->vStartPos.r[3].m128_f32[1] + vScale.y * 0.5;
+	//m_CubeWorldMatrix.r[3].m128_f32[2] = gameobjDesc->vStartPos.r[3].m128_f32[2];
+
+	//m_CubeWorldMatrix.r[0].m128_f32[0] = vScale.x * 0.8;
+	//m_CubeWorldMatrix.r[1].m128_f32[1] = vScale.y;
+	//m_CubeWorldMatrix.r[2].m128_f32[2] = vScale.z * 0.8;
+
+	
+	// Occulusion Culling을 위한
+	/* For.Com_SubModel */
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_VIBuffer_AABBCube"),
+		TEXT("Com_SubModel"), reinterpret_cast<CComponent**>(&m_pVIBufferCom))))
+		return E_FAIL;
+
+	/* For.Com_SubShader */
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Shader_VtxCube_Occulusion"),
+		TEXT("Com_SubShader"), reinterpret_cast<CComponent**>(&m_pCubeShaderCom))))
+		return E_FAIL;
+
+	/* For.Com_SubShader */
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Shader_OcculusionCulling"),
+		TEXT("Com_ComputeShader"), reinterpret_cast<CComponent**>(&m_pComputeShaderCom))))
+		return E_FAIL;
+
+
+	XMMATRIX worldProjView = m_CubeWorldMatrix * m_pGameInstance->Get_Transform_Matrix(CPipeLine::D3DTS_VIEW) * m_pGameInstance->Get_Transform_Matrix(CPipeLine::D3DTS_PROJ);
+	CMap::ObjectData objectData = { worldProjView, *m_pGameInstance->Get_CamFar()};
+
+	D3D11_BUFFER_DESC cbDesc = {};
+	cbDesc.Usage = D3D11_USAGE_DEFAULT;
+	cbDesc.ByteWidth = sizeof(ObjectData);
+	cbDesc.BindFlags = D3D11_BIND_CONSTANT_BUFFER;
+	cbDesc.CPUAccessFlags = 0;
+
+	D3D11_SUBRESOURCE_DATA initData = {};
+	initData.pSysMem = &objectData;
+
+	if (FAILED(m_pDevice->CreateBuffer(&cbDesc, &initData, &m_pObjectDataBuffer)))
+	{
+		return E_FAIL;
+	}
+
+
+	D3D11_BUFFER_DESC stagingDesc = {};
+	stagingDesc.Usage = D3D11_USAGE_STAGING;
+	int num = m_pVIBufferCom->Get_NumVertex();
+	stagingDesc.ByteWidth = sizeof(int) * num;  // g_OutputBuffer의 크기에 맞춰야 함
+	stagingDesc.BindFlags = 0;  // Staging 버퍼는 바인딩 플래그가 필요 없음
+	stagingDesc.CPUAccessFlags = D3D11_CPU_ACCESS_READ;
+	stagingDesc.MiscFlags = 0;
+
+	if (FAILED(m_pDevice->CreateBuffer(&stagingDesc, nullptr, &m_pOutputBufferStaging)))
+	{
+		// 오류 처리
+		return E_FAIL;
+	}
+
+
 	return S_OK;
 }
 
 HRESULT CMap::Bind_ShaderResources()
-{
+{ 
 	if (FAILED(m_pTransformCom->Bind_ShaderMatrix(m_pShaderCom, "g_WorldMatrix")))
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_VIEW))))
@@ -1292,8 +1558,16 @@ void CMap::Free()
 	m_vStrongBloomIndex.clear();
 	m_vCompulsoryDecalBlendMeshIndex.clear();
 
+	Safe_Release(m_pComputeShaderCom);
+	Safe_Release(m_pCubeShaderCom);
+	Safe_Release(m_pVIBufferCom);
+
+	Safe_Release(m_pObjectDataBuffer);
+	Safe_Release(m_pOutputBufferStaging);
 	Safe_Release(m_pShaderCom);
 	Safe_Release(m_pModelCom);
 	Safe_Release(m_pMaterialCom);
 	Safe_Release(m_pSystemManager);
+
+	Safe_Release(m_pOcclusionQuery);
 }

@@ -43,7 +43,6 @@ public:
         SKILL_END
     };
     enum PLAYER_ATK_DIR { F, B, L, R, PLAYER_ATK_DIR_END };
-    enum MONSTER_TYPE { RUSH, WPA, WPH, DEFAULT, SHAKDDOWN, KUZE, MONSTER_TYPE_END };
 
     typedef struct tAIMonster {
         class CAnim* pAnim[2];
@@ -65,6 +64,8 @@ public:
 
 public:
     void Set_Sync(_bool isSync) { m_isSync = isSync; }
+    void Set_Start(_bool isStart) { m_isStart = isStart; }
+    void Set_Adventure(_bool isAdventure) { m_isAdventer = isAdventure; }
 
 public:
     virtual HRESULT Initialize_Prototype();
@@ -86,7 +87,8 @@ protected:
     _uint* m_pCurrentAnimType = { nullptr };
 
 protected:
-    _bool m_isStart = { true };
+    _bool m_isStart = { false };
+    _bool m_isAdventer = { false };
     _bool m_isAttack = { false };
     _bool m_isAngry = { false };
     _bool m_isSync = { false };
@@ -97,7 +99,7 @@ protected:
     _bool m_isPlayerDownAtk = { false }; // 플레이어에게 다운 어택을 한번 사용했는가를 체크
 
     _uint m_iSkill = { SKILL_END };
-    _uint m_iMonsterType = { MONSTER_TYPE_END };
+    _uint m_iMonsterType = { 0 };
 
 protected:
     _float m_fDelayAttackDuration = { 2.f };

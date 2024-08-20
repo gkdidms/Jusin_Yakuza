@@ -15,10 +15,6 @@ HRESULT CTutorialManager::Initialize()
 {
 	if (FAILED(Ready_Tutorial()))
 		return E_FAIL;
-	m_pUIManager->Close_Scene();
-	m_pUIManager->Open_Scene(TEXT("Tutorial"));
-	m_pUIManager->Change_TutorialUI(CUITutorial::TOTU_NALNARI);
-	m_isStart = true;
 
 	return S_OK;
 }
@@ -42,6 +38,13 @@ void CTutorialManager::Tick()
 				m_isStart = true;
 		}
 	}
+}
+
+void CTutorialManager::Start_Tutorial()
+{
+	m_pUIManager->Open_Scene(TEXT("Tutorial"));
+	m_pUIManager->Change_TutorialUI(CUITutorial::TOTU_NALNARI);
+	m_isStart = true;
 }
 
 HRESULT CTutorialManager::Ready_Tutorial()

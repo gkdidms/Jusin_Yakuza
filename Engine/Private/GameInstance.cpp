@@ -113,6 +113,9 @@ void CGameInstance::Tick(const _float& fTimeDelta)
 
 	m_pFrustum->Tick();
 
+	//Occulusion Culling 먼저 돌기
+	m_pRenderer->Occulusion_Culling_Draw();
+
 	m_pGameObject_Manager->Late_Tick(fTimeDelta);
 
 	m_pLevel_Manager->Tick(fTimeDelta);
@@ -184,6 +187,31 @@ void CGameInstance::SetChannelVolume(CHANNELID eID, float fVolume)
 	m_pSound_Manager->SetChannelVolume(eID, fVolume);
 }
 
+_float CGameInstance::GetSoundPosition(const wstring pSoundKey, CHANNELID eID)
+{
+	return m_pSound_Manager->GetSoundPosition(pSoundKey, eID);
+}
+
+_float CGameInstance::GetSoundDuration(const wstring pSoundKey)
+{
+	return m_pSound_Manager->GetSoundDuration(pSoundKey);
+}
+
+_bool CGameInstance::Get_SoundStart(const wstring pSoundKey, CHANNELID eID)
+{
+	return m_pSound_Manager->Get_Start(pSoundKey, eID);
+}
+
+_bool CGameInstance::Get_SoundEnd(const wstring pSoundKey, CHANNELID eID)
+{
+	return m_pSound_Manager->Get_End(pSoundKey, eID);
+}
+
+void CGameInstance::Set_SoundPosition(const wstring pSoundKey, CHANNELID eID, _float fSeconds)
+{
+	m_pSound_Manager->Set_SoundPosition(pSoundKey, eID, fSeconds);
+}
+
 HRESULT CGameInstance::Add_GameObject_Prototype(const wstring strGameObjectTag, CGameObject* pGameObject)
 {
 	return m_pGameObject_Manager->Add_GameObject_Prototype(strGameObjectTag, pGameObject);
@@ -225,6 +253,11 @@ vector<CGameObject*> CGameInstance::Get_GameObjects(_uint iLevelIndex, const wst
 void CGameInstance::Add_Renderer(CRenderer::RENDERER_STATE eRenderState, CGameObject* pGameObject)
 {
 	m_pRenderer->Add_Renderer(eRenderState, pGameObject);
+}
+
+void CGameInstance::Occulusion_Culling_Draw()
+{
+	m_pRenderer->Occulusion_Culling_Draw();
 }
 
 void CGameInstance::Set_HDR(_bool isHDR)
@@ -606,9 +639,9 @@ float CGameInstance::FindObjID(_bool* isSuccess)
 	return m_pPicking->FindObjID(isSuccess);
 }
 
-HRESULT CGameInstance::Add_RenderTarget(const wstring& strRenderTargetTag, _uint iSizeX, _uint iSizeY, DXGI_FORMAT ePixelFormat, const _float4& vClearColor, _uint iArrayCount)
+HRESULT CGameInstance::Add_RenderTarget(const wstring& strRenderTargetTag, _uint iSizeX, _uint iSizeY, DXGI_FORMAT ePixelFormat, const _float4& vClearColor, _bool isCompute, _uint iArrayCount)
 {
-	return m_pRenderTarget_Manager->Add_RenderTarget(strRenderTargetTag, iSizeX, iSizeY, ePixelFormat, vClearColor, iArrayCount);
+	return m_pRenderTarget_Manager->Add_RenderTarget(strRenderTargetTag, iSizeX, iSizeY, ePixelFormat, vClearColor, isCompute, iArrayCount);
 }
 
 HRESULT CGameInstance::Add_MRT(const wstring& strMRTTag, const wstring& strRenderTargetTag)
@@ -644,6 +677,21 @@ HRESULT CGameInstance::Create_Texture(const wstring& strTargetTag, const wstring
 HRESULT CGameInstance::Clear_RenderTarget(const wstring& strTargetTag)
 {
 	return m_pRenderTarget_Manager->Clear_RenderTarget(strTargetTag);
+}
+
+ID3D11Texture2D* CGameInstance::Get_TextureBuffer(const wstring& strTargetTag)
+{
+	return m_pRenderTarget_Manager->Get_TextureBuffer(strTargetTag);
+}
+
+void CGameInstance::Bind_ComputeRenderTargetSRV(const wstring& strTargetTag, _uint iSlot)
+{
+	m_pRenderTarget_Manager->Bind_ComputeRenderTargetSRV(strTargetTag, iSlot);
+}
+
+void CGameInstance::Bind_ComputeRenderTargetUAV(const wstring& strTargetTag, _uint iSlot)
+{
+	m_pRenderTarget_Manager->Bind_ComputeRenderTargetUAV(strTargetTag, iSlot);
 }
 
 void CGameInstance::Transform_ToLocalSpace(_fmatrix WorldMatrixInv)

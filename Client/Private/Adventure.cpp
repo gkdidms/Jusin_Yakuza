@@ -6,7 +6,6 @@
 #include "SocketCollider.h"
 #include "AI_Monster.h"
 
-#include "AI_Passersby.h"
 
 CAdventure::CAdventure(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CLandObject { pDevice, pContext }
@@ -23,11 +22,6 @@ void CAdventure::Start_Root(_int iGoalIndex)
 	m_pAStartCom->Start_Root(m_pNavigationCom, iGoalIndex);
 }
 
-void CAdventure::Set_Move()
-{
-	
-}
-
 HRESULT CAdventure::Initialize_Prototype()
 {
 	return S_OK;
@@ -38,6 +32,18 @@ HRESULT CAdventure::Initialize(void* pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
+	ADVENTURE_IODESC* gameobjDesc = static_cast<ADVENTURE_IODESC*>(pArg);
+	m_pTransformCom->Set_WorldMatrix(gameobjDesc->vStartPos);
+	m_wstrModelName = gameobjDesc->wstrModelName;
+	m_iNaviRouteNum = gameobjDesc->iNaviRouteNum;
+	m_iNPCDirection = gameobjDesc->iNPCDirection;
+
+	if (FAILED(Add_Components()))
+		return E_FAIL;
+
+	m_pNavigationCom->Set_Index(gameobjDesc->iNaviNum);
+	m_pModelCom->Set_AnimationIndex(0);
+
 	return S_OK;
 }
 
@@ -47,17 +53,6 @@ void CAdventure::Priority_Tick(const _float& fTimeDelta)
 
 void CAdventure::Tick(const _float& fTimeDelta)
 {
-	m_pTree->Tick(fTimeDelta);
-
-	Change_Animation();
-
-	m_pModelCom->Play_Animation(fTimeDelta * m_fOffset, m_pAnimCom, m_isAnimLoop);
-
-	_vector vDir = m_pNavigationCom->Compute_WayPointDir_Adv(m_pTransformCom->Get_State(CTransform::STATE_POSITION), fTimeDelta);
-	m_pTransformCom->LookAt_For_LandObject(vDir, true);
-	//m_pTransformCom->Go_Straight_CustumSpeed(m_fSpeed, fTimeDelta, m_pNavigationCom);
-
-	Synchronize_Root(fTimeDelta);
 }
 
 void CAdventure::Late_Tick(const _float& fTimeDelta)
@@ -78,21 +73,45 @@ HRESULT CAdventure::Render()
 	int i = 0;
 	for (auto& pMesh : m_pModelCom->Get_Meshes())
 	{
+		if (nullptr != m_pMaterialCom)
+		{
+			if (FAILED(m_pMaterialCom->Bind_Shader(m_pShaderCom, m_pModelCom->Get_MaterialName(pMesh->Get_MaterialIndex()))))
+				return E_FAIL;
+		}
+
+		_bool fFar = m_pGameInstance->Get_CamFar();
+		m_pShaderCom->Bind_RawValue("g_fFar", &fFar, sizeof(_float));
+
 		m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE);
-		m_pModelCom->Bind_Material(m_pShaderCom, "g_MultiDiffuseTexture", i, aiTextureType_SHININESS);
+
 		m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS);
 
 		_bool isRS = true;
 		_bool isRD = true;
+		_bool isRM = true;
+		_bool isRT = true;
+		_bool isMulti = true;
+
+		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_MultiDiffuseTexture", i, aiTextureType_SHININESS)))
+			isMulti = false;
+		m_pShaderCom->Bind_RawValue("g_isMulti", &isMulti, sizeof(_bool));
 
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RSTexture", i, aiTextureType_SPECULAR)))
 			isRS = false;
 		m_pShaderCom->Bind_RawValue("g_isRS", &isRS, sizeof(_bool));
+		m_pShaderCom->Bind_RawValue("IsY3Shader", &isRS, sizeof(_bool));
 
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RDTexture", i, aiTextureType_OPACITY)))
 			isRD = false;
-
 		m_pShaderCom->Bind_RawValue("g_isRD", &isRD, sizeof(_bool));
+
+		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RMTexture", i, aiTextureType_METALNESS)))
+			isRM = false;
+		m_pShaderCom->Bind_RawValue("g_isRM", &isRM, sizeof(_bool));
+
+		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RTTexture", i, aiTextureType_EMISSIVE)))
+			isRT = false;
+		m_pShaderCom->Bind_RawValue("g_isRT", &isRT, sizeof(_bool));
 
 		if (pMesh->Get_AlphaApply())
 			m_pShaderCom->Begin(1);     //블랜드
@@ -103,11 +122,6 @@ HRESULT CAdventure::Render()
 
 		i++;
 	}
-
-#ifdef _DEBUG
-	m_pGameInstance->Add_DebugComponent(m_pColliderCom);
-	m_pGameInstance->Add_DebugComponent(m_pAStartCom);
-#endif
 
 	return S_OK;
 }
@@ -170,52 +184,6 @@ void CAdventure::Change_Animation()
 {
 	m_isAnimLoop = false;
 	m_fOffset = 1.f;
-
-	switch (m_iState)
-	{
-	case ADVENTURE_IDLE:
-	{
-		m_strAnimName = "m_nml_tlk_stand_kamae";
-		m_isAnimLoop = true;
-		break;
-	}
-	case ADVENTURE_WALK:
-	{
-		m_strAnimName = "p_mov_walk_fast";
-		m_isAnimLoop = true;
-		m_fOffset = 0.8f;
-		break;
-	}
-	case ADVENTURE_WALK_S:
-	{
-		m_strAnimName = "p_mov_walk_s";
-		break;
-	}
-	case ADVENTURE_WALK_EN:
-	{
-		m_strAnimName = "p_mov_walk_en";
-		break;
-	}
-	case ADVENTURE_HIT_L:
-	{
-		m_strAnimName = "m_hml_act_walk_hit_l";
-		break;
-	}
-	case ADVENTURE_HIT_R:
-	{
-		m_strAnimName = "m_hml_act_walk_hit_r";
-		break;
-	}
-	default:
-		break;
-	}
-
-	m_iAnim = m_pAnimCom->Get_AnimationIndex(m_strAnimName.c_str());
-	
-	if (m_iAnim == -1)
-		return;
-
-	m_pModelCom->Set_AnimationIndex(m_iAnim, m_pAnimCom->Get_Animations(), m_fChangeInterval);
 }
 
 void CAdventure::Synchronize_Root(const _float& fTimeDelta)
@@ -286,6 +254,28 @@ void CAdventure::Check_Separation()
 	//NPC별 충돌 시 피하는 방향 벡터 -> vMoveDir;
 }
 
+
+HRESULT CAdventure::Setup_Animation()
+{
+	m_iAnim = m_pAnimCom->Get_AnimationIndex(m_strAnimName.c_str());
+
+	if (m_iAnim == -1)
+		return E_FAIL;
+
+	// 실제로 애니메이션 체인지가 일어났을 때 켜져있던 어택 콜라이더를 전부 끈다
+	if (m_pModelCom->Set_AnimationIndex(m_iAnim, m_pAnimCom->Get_Animations(), m_fChangeInterval))
+	{
+		m_pModelCom->Set_PreAnimations(m_pAnimCom->Get_Animations());
+
+		Off_Attack_Colliders();
+	}
+
+	if (nullptr != m_pData)
+		m_pData->Set_CurrentAnimation(m_strAnimName);
+
+	return S_OK;
+}
+
 HRESULT CAdventure::Add_Components()
 {
 	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Shader_VtxAnim"),
@@ -348,6 +338,5 @@ void CAdventure::Free()
 
 	Safe_Release(m_pAnimCom);
 	Safe_Release(m_pNavigationCom);
-	Safe_Release(m_pTree);
 	Safe_Release(m_pAStartCom);
 }

@@ -8,6 +8,7 @@
 #include "Player.h"
 #include "CarChase_Monster.h"
 #include "Highway_Taxi.h"
+#include"EffectManager.h"
 
 CCarChase_Reactor::CCarChase_Reactor(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLandObject{ pDevice, pContext }
@@ -168,24 +169,46 @@ void CCarChase_Reactor::Change_Animation()
 
 _bool CCarChase_Reactor::Check_Dead()
 {
+	if (m_isObjectDead)
+	{
+		if (m_isFinishEffect)
+			return true;
+
+		if (m_pModelCom->Get_AnimFinished())
+		{
+			m_isFinishEffect = true;
+			//¿©±â°¡ Á×¾úÀ»¶§ ±¼·¯°¡°í ÅÍÁö´Â ºÎºÐ
+
+		}
+		return true;
+	}
+
 	for (auto& pMonster : m_Monsters)
 	{
 		if (!pMonster->isObjectDead())
 		{
+
 			return false;
 		}
 
 		//¿îÀü¼ö°¡ Á×À¸¸é ¹Ù·Î Á×°Ô µÈ´Ù.
 		if (pMonster->isObjectDead() && pMonster->Get_WeaponType() == CCarChase_Monster::DRV)
 		{
-			//¿îÀü¼ö°¡ Á×À¸¸é ´Ù¸¥ ¾êµéµµ Á×¾î¾ß ÇÔ.
-			for (auto& pAlive : m_Monsters)
-				pAlive->Set_ReactorDead(true);
+
 			return true;
 		}
-			
+
 	}
-		
+	//Çï±â ÆøÆÄ ÀÌÆåÆ®
+	CEffect::EFFECT_DESC EffectDesc;
+
+	_matrix WorldMatrix = XMLoadFloat4x4(m_pTransformCom->Get_WorldFloat4x4());
+
+	_float4x4 matrix;
+	XMStoreFloat4x4(&matrix, WorldMatrix);
+	EffectDesc.pWorldMatrix = &matrix;
+	CEffectManager::GetInstance()->Car_Explosion(EffectDesc);
+
 	return true;
 }
 

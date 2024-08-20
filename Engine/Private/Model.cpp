@@ -18,7 +18,6 @@ CModel::CModel(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 CModel::CModel(const CModel& rhs)
     :CComponent{ rhs }
 	, m_iNumMeshes{ rhs.m_iNumMeshes }
-	, m_Meshes{ rhs.m_Meshes }
 	, m_iNumMaterials{ rhs.m_iNumMaterials }
 	, m_Materials{ rhs.m_Materials }
 	, m_eModelType{ rhs.m_eModelType }
@@ -30,6 +29,9 @@ CModel::CModel(const CModel& rhs)
 	, m_iCameras{ rhs.m_iCameras }
 	, m_FovAnimation{ rhs.m_FovAnimation }
 	, m_isTool {rhs.m_isTool}
+	, m_vModelLocalSize {rhs.m_vModelLocalSize}
+	, m_vMaxPoints{ rhs.m_vMaxPoints }
+	, m_vMinPoints{ rhs.m_vMinPoints }
 {
 	for (auto& pPrototypeAnimation : rhs.m_Animations)
 		m_Animations.emplace_back(pPrototypeAnimation->Clone());
@@ -39,8 +41,8 @@ CModel::CModel(const CModel& rhs)
 
 	m_iNumBones = m_Bones.size();
 
-	for (auto& pMesh : m_Meshes)
-		Safe_AddRef(pMesh);
+	for (auto& pMesh : rhs.m_Meshes)
+		m_Meshes.emplace_back(pMesh->Clone());
 
 	for (size_t i = 0; i < m_iNumMaterials; i++)
 	{
@@ -102,12 +104,35 @@ HRESULT CModel::Initialize_Prototype(MODELTYPE eModelType, const _char* pModelFi
 			return E_FAIL;
 	}
 
+	if (0 < m_Meshes.size())
+	{
+		// model 자체의 크기 구함
+		_float3		vMaxPosition = m_Meshes[0]->Get_MaxPoints();
+		_float3		vMinPosition = m_Meshes[0]->Get_MinPoints();
+
+		for (size_t i = 1; i < m_iNumMeshes; ++i)
+		{
+			vMinPosition.x = vMinPosition.x > m_Meshes[i]->Get_MinPoints().x ? m_Meshes[i]->Get_MinPoints().x : vMinPosition.x;
+			vMinPosition.y = vMinPosition.y > m_Meshes[i]->Get_MinPoints().y ? m_Meshes[i]->Get_MinPoints().y : vMinPosition.y;
+			vMinPosition.z = vMinPosition.z > m_Meshes[i]->Get_MinPoints().z ? m_Meshes[i]->Get_MinPoints().z : vMinPosition.z;
+
+			vMaxPosition.x = vMaxPosition.x < m_Meshes[i]->Get_MaxPoints().x ? m_Meshes[i]->Get_MaxPoints().x : vMaxPosition.x;
+			vMaxPosition.y = vMaxPosition.y < m_Meshes[i]->Get_MaxPoints().y ? m_Meshes[i]->Get_MaxPoints().y : vMaxPosition.y;
+			vMaxPosition.z = vMaxPosition.z < m_Meshes[i]->Get_MaxPoints().z ? m_Meshes[i]->Get_MaxPoints().z : vMaxPosition.z;
+		}
+
+		m_vMaxPoints = vMaxPosition;
+		m_vMinPoints = vMinPosition;
+		m_vModelLocalSize = _float3(abs(vMaxPosition.x - vMinPosition.x), abs(vMaxPosition.y - vMinPosition.y), abs(vMaxPosition.z - vMinPosition.z));
+	}
+
+
+
 	if (TYPE_NONANIM != eModelType && TYPE_PARTICLE != eModelType)
 	{
 		string pCameraFovFilePath = "../Bin/DataFiles/CameraFoVAnimationData/" + m_pGameInstance->Get_FileName(pModelFilePath) + "_camera_fov.csv";
 
-		if (FAILED(Ready_CameraAnimations(pCameraFovFilePath)))
-			return E_FAIL;
+		Ready_CameraAnimations(pCameraFovFilePath);
 	}
 
 	m_AnimLoops.resize(m_iAnimations);
@@ -315,7 +340,7 @@ HRESULT CModel::Export_Bones(ofstream& out)
 	_int iNumBones = m_Bones.size();
 
 	// 사용하지 않는 뼈를 제거한다
-	_uint	iCount = { 0 };
+	_int	iCount = { 0 };
 	for (size_t i = 0; i < iNumBones; i++)
 	{
 		if ("" != m_pGameInstance->Extract_String(m_Bones[i]->Get_Name(), '[', ']'))
@@ -331,15 +356,14 @@ HRESULT CModel::Export_Bones(ofstream& out)
 
 	out.write((char*)&iNumBones, sizeof(_uint));
 
-	_uint i = 0;
 	for (auto& Bone : m_Bones)
 	{
 		string strValue = Bone->Get_Name();
-		if ("" != m_pGameInstance->Extract_String(m_Bones[i]->Get_Name(), '[', ']'))
+		if ("" != m_pGameInstance->Extract_String(Bone->Get_Name(), '[', ']'))
 		{
 			// decal이란 이름은 실제 사용하는 뼈인듯해서 제거하면안된다.
 			regex Regex("decal");
-			if (!regex_search(m_Bones[i]->Get_Name(), Regex))
+			if (!regex_search(Bone->Get_Name(), Regex))
 				continue;
 		}
 		
@@ -347,12 +371,14 @@ HRESULT CModel::Export_Bones(ofstream& out)
 		out.write((char*)&iValue, sizeof(_uint));
 		out.write(strValue.c_str(), strValue.size());
 
-		iValue = Bone->Get_ParentBoneIndex();
+		_int iParentIndex = Bone->Get_ParentBoneIndex();
+
+		//iValue = (iParentIndex - iCount) < -1 ? iParentIndex : iParentIndex - iCount;
+		iValue = iParentIndex;
 		out.write((char*)&iValue, sizeof(_int));
 
 		_float4x4 TransformationMatrix = *(Bone->Get_TransformationMatrix());
 		out.write((char*)&TransformationMatrix, sizeof(_float4x4));
-		i++;
 	}
 	return S_OK;
 }
@@ -574,7 +600,7 @@ HRESULT CModel::Import_Model(string& pBinFilePath, _bool isTool)
 	ifstream in(pBinFilePath, ios::binary);
 
 	if (!in.is_open()) {
-		MSG_BOX("파일 개방 실패");
+		MSG_BOX("Model 바이너리 파일 개방 실패");
 		return E_FAIL;
 	}
 
@@ -1181,25 +1207,26 @@ void CModel::Play_Animation_Monster(_float fTimeDelta, class CAnim* pAnim, _bool
 		pBone->Update_CombinedTransformationMatrix(m_Bones, XMLoadFloat4x4(&m_PreTransformMatrix));
 }
 
-void CModel::Play_Animation_Separation(_float fTimeDelta, _uint iAnimIndex, CAnim* pAnim, _bool isLoop, _int iAnimType)
+void CModel::Play_Animation_Separation(_float fTimeDelta, _uint iAnimIndex, CAnim* pAnim, _bool isLoop, _int iAnimType, _float fChangeInterval)
 {
 		//애니메이션 목록 전달하기 ;
 	vector<CAnimation*> Animations = pAnim->Get_Animations();
 
 	if (1 > Animations.size()) return;
 
-	pAnim->Set_PrevAnimIndex(pAnim->Get_CurrentAnimIndex());
-	pAnim->Set_CurrentAnimIndex(iAnimIndex);
-
-	if (0.0 == m_ChangeInterval)
+	if (0.0 == fChangeInterval)
 		Animations[iAnimIndex]->Update_TransformationMatrix_Separation(fTimeDelta, m_Bones, isLoop, iAnimType);
 	else
 	{
 		if (Animations[iAnimIndex]->Get_Changed())
+		{
+			pAnim->Set_PrevAnimIndex(pAnim->Get_CurrentAnimIndex());
+			pAnim->Set_CurrentAnimIndex(iAnimIndex);
 			Animations[iAnimIndex]->Update_TransformationMatrix_Separation(fTimeDelta, m_Bones, isLoop, iAnimType);
+		}
 		else
 		{
-			Animations[iAnimIndex]->Update_Change_Animation_Separation(fTimeDelta, m_Bones, Animations[pAnim->Get_PrevAnimIndex()], m_ChangeInterval, iAnimType);
+			Animations[iAnimIndex]->Update_Change_Animation_Separation(fTimeDelta, m_Bones, Animations[pAnim->Get_PrevAnimIndex()], fChangeInterval, iAnimType);
 		}
 	}
 

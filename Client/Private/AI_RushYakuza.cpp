@@ -36,8 +36,18 @@ HRESULT CAI_RushYakuza::Initialize(void* pArg)
 	Ready_Tree();
 
 	m_fDelayAttackDuration = m_pGameInstance->Get_Random(6.f, 9.f);
-	m_iMonsterType = CAI_Monster::RUSH;
+	m_iMonsterType = CMonster::RUSH;
 	
+	_uint iRandom = m_pGameInstance->Get_Random(0, 3);
+	if (iRandom == 0)
+		m_iAdventureIdelMotion = CMonster::MONSTER_ADVENTURE_IDLE_1;
+	else if (iRandom == 1)
+		m_iAdventureIdelMotion = CMonster::MONSTER_ADVENTURE_IDLE_2;
+	else if (iRandom == 2)
+		m_iAdventureIdelMotion = CMonster::MONSTER_ADVENTURE_IDLE_3;
+	else if (iRandom == 3)
+		m_iAdventureIdelMotion = CMonster::MONSTER_ADVENTURE_IDLE_4;
+
 	return S_OK;
 }
 
@@ -56,6 +66,12 @@ CBTNode::NODE_STATE CAI_RushYakuza::Execute()
 void CAI_RushYakuza::Ready_Tree()
 {
 	CSelector* pRoot = CSelector::Create();
+
+#pragma region Adventure
+	CSequance* pAdventureSeq = CSequance::Create();
+	pAdventureSeq->Add_Children(CLeafNode::Create(bind(&CAI_RushYakuza::Check_Adventure, this)));
+	pAdventureSeq->Add_Children(CLeafNode::Create(bind(&CAI_RushYakuza::Adventure, this)));
+#pragma endregion
 
 #pragma region Sync
 	CSequance* pSyncSeq = CSequance::Create();
@@ -125,6 +141,7 @@ void CAI_RushYakuza::Ready_Tree()
 #pragma endregion
 
 #pragma region Root
+	pRoot->Add_Children(pAdventureSeq);
 	pRoot->Add_Children(pSyncSeq);
 	pRoot->Add_Children(pDownSeq);
 	pRoot->Add_Children(pSwaySeq);
@@ -135,6 +152,25 @@ void CAI_RushYakuza::Ready_Tree()
 #pragma endregion
 
 	m_pRootNode = pRoot;
+}
+
+CBTNode::NODE_STATE CAI_RushYakuza::Check_Adventure()
+{
+	if (m_isAdventer)
+	{
+		*m_pCurrentAnimType = CLandObject::ADVENTURE;
+		return CBTNode::SUCCESS;
+	}
+
+	Reset_State();
+	return CBTNode::FAIL;
+}
+
+CBTNode::NODE_STATE CAI_RushYakuza::Adventure()
+{
+	*m_pState = m_iAdventureIdelMotion;
+
+	return CBTNode::SUCCESS;
 }
 
 CBTNode::NODE_STATE CAI_RushYakuza::Attack()

@@ -66,10 +66,13 @@ void CKiryu_KRS_Grab::Tick(const _float& fTimeDelta)
 {
 	CLandObject* pTargetObject = m_pPlayer->Get_TargetObject();
 
-	if (nullptr != pTargetObject)
+	if (m_iCurrentIndex != 24 && !m_isCutScene)
 	{
-		_vector vLookPos = pTargetObject->Get_TransformCom()->Get_State(CTransform::STATE_POSITION);
-		m_pPlayer->Get_TransformCom()->LookAt_For_LandObject(vLookPos);
+		if (nullptr != pTargetObject)
+		{
+			_vector vLookPos = pTargetObject->Get_TransformCom()->Get_State(CTransform::STATE_POSITION);
+			m_pPlayer->Get_TransformCom()->LookAt_For_LandObject(vLookPos);
+		}
 	}
 
 	if (m_isGrabed)
@@ -176,6 +179,7 @@ void CKiryu_KRS_Grab::Reset()
 	m_isGrabed = false;
 	m_isShaked = false;
 	m_isStop = false;
+	m_isCutScene = false;
 	m_iCurrentIndex = 0;
 }
 
@@ -202,9 +206,7 @@ void CKiryu_KRS_Grab::Setting_Value(void* pValue)
 	m_isGrabed = pDesc->isGrabed;
 	m_iDirection = pDesc->iDirection;
 
-	//static_cast<CMonster*>(m_pPlayer->Get_TargetObject())->Set_Sync("p_kru_sync_lapel_lp");
-	// 여기서부터 이어서 하면 됨
-	// 넘겨받는 값을 가지고 뒤에서 잡을지 앞에서 잡을지 구분하고, 애니메이션 인덱스 설정해주는거 하려고했엇음
+	static_cast<CMonster*>(m_pPlayer->Get_TargetObject())->Set_Sync("p_kru_sync_lapel_lp");
 }
 
 void CKiryu_KRS_Grab::Event(void* pValue)
@@ -258,6 +260,8 @@ void CKiryu_KRS_Grab::Move_KeyInput(const _float& fTimeDelta)
 		if (2 < m_pPlayer->Get_CurrentHitLevel())	// 히트게이지가 3단까지 풀이라면
 		{
 			m_pPlayer->Set_CutSceneAnim(CPlayer::GOUGEKI_C, 1);
+
+			m_isCutScene = true;
 		}
 	}
 	if (m_pGameInstance->GetKeyState(DIK_Q) == TAP)
@@ -265,6 +269,20 @@ void CKiryu_KRS_Grab::Move_KeyInput(const _float& fTimeDelta)
 		m_iCurrentIndex = 24;
 		m_eAnimState = ANIM_ONCE;
 		m_isStop = true;
+
+		static_cast<CMonster*>(m_pPlayer->Get_TargetObject())->Set_Sync("p_kru_sync_neck_nage");
+	}
+
+	//3 [585] [p_kru_sync_lapel_walk]
+	if (m_pGameInstance->GetKeyState(DIK_S) == HOLD)
+	{
+		m_iCurrentIndex = 3;
+		m_eAnimState = ANIM_LOOP;
+	}
+	else if (m_pGameInstance->GetKeyState(DIK_S) == AWAY)
+	{
+		m_iCurrentIndex = 2;
+		m_eAnimState = ANIM_LOOP;
 	}
 }
 

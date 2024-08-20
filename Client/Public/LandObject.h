@@ -20,6 +20,7 @@ public:
     enum ANIMATION_COMPONENT_TYPE {
         DEFAULT,
         CUTSCENE,
+        ADVENTURE,
         ANIM_TYPE_END
     };
 
@@ -54,6 +55,20 @@ public: //오브젝트들의 정보를 저장
         _float fMaxHP;
         _float fHp;
     } LAND_OBJ_INFO;
+
+    typedef struct tMapLandObj : public CGameObject::GAMEOBJECT_DESC
+    {
+        XMMATRIX		vStartPos;
+        wstring			wstrModelName;
+        int             iObjectType;
+        int				iShaderPass;
+        int             iNaviNum;
+        int             iNaviRouteNum;
+        int             iNPCDirection;
+
+        int             iGroupMonster;
+        int             iGroupNum;
+    }LANDOBJ_MAPDESC;
 
 protected:
     CLandObject(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -106,6 +121,7 @@ public:
     // iAnimType이 -1이라면 분리해제, 그 외의 값이라면 애니메이션 컴포넌트 인덱스와 맞춰줘야한다.
     // isExceptParent 이 true라면 부모뼈만 분리 제외한다.
     void Separation_Bone(string strBoneName, _int iAnimType = -1, _bool isExceptParent = true);
+    void Separation_SingleBone(string strBoneName, _int iAnimType = -1);
 
     /* Fublic Virtual Funtion */
 public:
@@ -117,6 +133,10 @@ public:
 public:
     const wstring& Get_ModelName() {
         return m_wstrModelName;
+    }
+    
+    const wstring& Get_ScndModelName() {
+        return m_wstrScndModelName;
     }
 
     const unordered_map<_uint, class CSocketCollider*>& Get_Colliders() {
@@ -180,6 +200,7 @@ protected:
 
     // 사용할 모델의 이름 (객체 생성 이후 바뀌지 않는다)
     wstring m_wstrModelName = TEXT("");
+    wstring m_wstrScndModelName = TEXT("");
 
     // 림라이트를 적용해줄 메시의 이름 (필요할 때마다 바뀌는 값)
     string m_strRimMeshName = "";
@@ -195,6 +216,7 @@ protected:
     //뼈 이름, 소켓 이펙트
     multimap<string, class CSocketEffect*>      m_pEffects;
     map<string, class CSocketEffect*>           m_pTrailEffects;
+    map<string, class CSocketEffect*>           m_pBloodEffects;
 
     // 분할한 애니메이션을 실행할 애님 컴포넌트를 들고있을 배열
     vector<CAnim*>        m_SeparationAnimComs;
@@ -216,6 +238,7 @@ protected:
 
 protected:
         int             m_iNaviRouteNum = { 0 }; //루트
+        int             m_iNPCDirection = { 0 };
 
 protected:
     virtual HRESULT Add_Components();

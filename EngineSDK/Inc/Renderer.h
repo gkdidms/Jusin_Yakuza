@@ -7,6 +7,7 @@ class ENGINE_DLL CRenderer :
 {
 public:
     enum RENDERER_STATE {
+        RENDER_OCCULUSION,
         RENDER_PRIORITY,
         RENDER_SHADOWOBJ,
         RENDER_NONBLENDER,
@@ -20,6 +21,27 @@ public:
         RENDER_UI,
         RENDER_END
     };
+
+    enum SHADER_TYPE { DOWNSAMPLING, BLURX, BLURY, DOWNSAMPLING_DEPTH, SSAO, SHADER_TYPE_END };
+
+    //SSAO 버퍼용
+    struct SSAO_BUFFER
+    {
+        _float4 vSSAOKernal[64];
+        _matrix WorldMatrix;
+        _matrix ViewMatrix;
+        _matrix ProjMatrix;
+        _matrix ViewMatrixInv;
+        _matrix ProjMatrixInv;
+        _matrix CamViewMatrix;
+        _matrix CamProjMatrix;
+        
+        _float fFar;
+        _float fRadiuse;
+        _float fSSAOBise;
+        _float buffer1;
+    };
+
 
 private:
     CRenderer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -64,6 +86,8 @@ public:
     void Draw();
     void Clear();
 
+    void Occulusion_Culling_Draw(); // 컬링을 위해 Tick과 Late_Tick 사이에 돌릴 예정
+
 #ifdef _DEBUG
 public:
     _bool isDebugView() { return m_isDebugView; }
@@ -93,8 +117,7 @@ private:
     void Render_BOF();
 
     /* HDR*/
-    void Render_Luminance();
-    void Render_HDR();
+    void Render_DownSampling();
     void Render_CopyLuminance();
     void Render_AvgLuminance();
     void Render_LuminanceResult();
@@ -127,12 +150,18 @@ private:
 
     void Render_UI();
 
+    void Render_OcculusionDepth();
+    void Render_OcculusionDownSampling();
+
+    void Check_OcculusionCulling();
+
 private:
     HRESULT Ready_Targets();
     HRESULT Ready_MRTs();
     HRESULT Ready_LightDepth();
     HRESULT Ready_SSAONoiseTexture();
 
+    HRESULT Ready_OcculusionDepth();
 
 #ifdef _DEBUG
 private:
@@ -151,6 +180,7 @@ private:
 
 private:
     class CShader* m_pShader = { nullptr };
+    class CComputeShader* m_pComputeShader[SHADER_TYPE_END] = {nullptr};
     class CVIBuffer_Rect* m_pVIBuffer = { nullptr };
 
     _float4x4 m_WorldMatrix;
@@ -159,6 +189,10 @@ private:
 
     ID3D11DepthStencilView* m_pLightDepthStencilView = { nullptr };
     ID3D11ShaderResourceView* m_pSSAONoiseView = { nullptr };
+
+    ID3D11DepthStencilView* m_pOcculusionDepthView = { nullptr };
+
+    ID3D11Buffer* m_pSSAOBuffer = { nullptr };
 
     _bool m_isRadialBlur = { false };
     _bool m_isMotionBlur = { false };

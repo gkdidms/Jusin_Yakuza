@@ -12,20 +12,20 @@ class CMonster abstract:
     public CLandObject
 {
 public:
-    typedef struct tMapMonsterObjDesc : public CGameObject::GAMEOBJECT_DESC
+    typedef struct tMapMonsterObjDesc : public CLandObject::LANDOBJ_MAPDESC
     {
-        XMMATRIX		vStartPos;
-        wstring			wstrModelName;
-        int				iShaderPass;
-        int             iNaviNum;
-        int             iNaviRouteNum;
     }MONSTER_IODESC;
 
 public:
+    enum MONSTER_TYPE { RUSH, WPA, MONSTER_DEFAULT, WPH, SHAKDDOWN, YONEDA, KUZE, MONSTER_TYPE_END };
     enum MONSTER_STATE
     {
         //공격 모션
         MONSTER_IDLE,
+        MONSTER_ADVENTURE_IDLE_1,
+        MONSTER_ADVENTURE_IDLE_2,
+        MONSTER_ADVENTURE_IDLE_3,
+        MONSTER_ADVENTURE_IDLE_4,
         MONSTER_BTLST,
         MONSTER_RUN,
         MONSTER_SHIFT_F,
@@ -109,6 +109,7 @@ public:
         MONSTER_DWN_BODY_B,
         MONSTER_DWN_BODY_B_SP,
         MONSTER_DWN_EXPLODE_B,
+        MONSTER_DWN_STANDUP_HEAD_R_EN,
         MONSTER_STANDUP_DNF_FAST,
         MONSTER_STANDUP_DNB_FAST,
         MONSTER_DED_L, // 죽음
@@ -252,8 +253,10 @@ public:
 public:
     void Set_Down(_bool isDown) { m_isDown = isDown; }
     void Set_Sync(string strPlayerAnim);
+    void Set_Adventure(_bool isAdventure);
     void Off_Sync();
     void Set_RimLight(_float isRimLight) { m_isRimLight = isRimLight; }
+    void Set_Start(_bool isStart); // 전투 시작 시 
 
 public:
     _float Get_HitDamage() { return m_fHitDamage; }

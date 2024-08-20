@@ -313,6 +313,7 @@ void CObjPlace_Manager::Show_Installed_GameObjectsList()
 		{
 			m_iCurrentObjectIndex = object_current_idx;
 			Get_CurrentGameObject_Desc(&m_tCurrentObjectDesc, m_iCurrentObjectIndex);
+			Update_ColliderList_In_Object();
 		}
 
 		/* 구조체 한번 더 업데이트 해줘야하는지 파악 */
@@ -486,6 +487,10 @@ void CObjPlace_Manager::Load_GameObject(int iNum)
 		mapDesc.wstrModelName = m_pGameInstance->StringToWstring(mapTotalInform.pMapObjDesc[i].strModelCom);
 		mapDesc.iShaderPass = mapTotalInform.pMapObjDesc[i].iShaderPassNum;
 		mapDesc.iObjType = mapTotalInform.pMapObjDesc[i].iObjType;
+		mapDesc.iObjPropertyType = mapTotalInform.pMapObjDesc[i].iObjPropertyType;
+		mapDesc.iNPCDirection = mapTotalInform.pMapObjDesc[i].iNPCDirection;
+		mapDesc.iGroupMonster = mapTotalInform.pMapObjDesc[i].iGroupMonster;
+		mapDesc.iGroupNum = mapTotalInform.pMapObjDesc[i].iGroupNum;
 		mapDesc.iNaviNum = mapTotalInform.pMapObjDesc[i].iNaviNum;
 		mapDesc.iRouteNum = mapTotalInform.pMapObjDesc[i].iNaviRoute;
 		mapDesc.vOffsetMatrix = mapTotalInform.pMapObjDesc[i].vOffsetTransform;
@@ -587,6 +592,30 @@ void CObjPlace_Manager::Edit_Installed_GameObject(int iNumObject)
 	{
 		LayerType = 4;
 		m_tCurrentObjectDesc.iLayer = 4;
+	}
+
+	if (ImGui::RadioButton(m_Layers[5], m_tCurrentObjectDesc.iLayer == 5))
+	{
+		LayerType = 5;
+		m_tCurrentObjectDesc.iLayer = 5;
+	}
+
+	if (ImGui::RadioButton(m_Layers[6], m_tCurrentObjectDesc.iLayer == 6))
+	{
+		LayerType = 6;
+		m_tCurrentObjectDesc.iLayer = 6;
+	}
+
+	if (ImGui::RadioButton(m_Layers[7], m_tCurrentObjectDesc.iLayer == 7))
+	{
+		LayerType = 7;
+		m_tCurrentObjectDesc.iLayer = 7;
+	}
+
+	if (ImGui::RadioButton(m_Layers[8], m_tCurrentObjectDesc.iLayer == 8))
+	{
+		LayerType = 8;
+		m_tCurrentObjectDesc.iLayer = 8;
 	}
 
 
@@ -696,11 +725,49 @@ void CObjPlace_Manager::Edit_Installed_GameObject(int iNumObject)
 		m_tCurrentObjectDesc.iObjType = (int)OBJECT_TYPE::MAP_NONCULL;
 	}
 
-	if (ImGui::RadioButton(u8"MAP_LOCALCULL", m_tCurrentObjectDesc.iObjType == 17))
+	if (ImGui::RadioButton(u8"ROADNML", m_tCurrentObjectDesc.iObjType == 17))
 	{
 		objectType = 17;
-		m_tCurrentObjectDesc.iObjType = (int)OBJECT_TYPE::MAP_LOCALCULL;
+		m_tCurrentObjectDesc.iObjType = (int)OBJECT_TYPE::ROADNML;
 	}
+
+	if (ImGui::RadioButton(u8"ROADCAB", m_tCurrentObjectDesc.iObjType == 18))
+	{
+		objectType = 18;
+		m_tCurrentObjectDesc.iObjType = (int)OBJECT_TYPE::ROADCAB;
+	}
+
+	if (ImGui::RadioButton(u8"ROADSTANDING_NML", m_tCurrentObjectDesc.iObjType == 19))
+	{
+		objectType = 19;
+		m_tCurrentObjectDesc.iObjType = (int)OBJECT_TYPE::ROADSTANDING_NML;
+	}
+
+	if (ImGui::RadioButton(u8"ROADTISSUE", m_tCurrentObjectDesc.iObjType == 20))
+	{
+		objectType = 20;
+		m_tCurrentObjectDesc.iObjType = (int)OBJECT_TYPE::ROADTISSUE;
+	}
+
+	if (ImGui::RadioButton(u8"ROADYOP", m_tCurrentObjectDesc.iObjType == 21))
+	{
+		objectType = 21;
+		m_tCurrentObjectDesc.iObjType = (int)OBJECT_TYPE::ROADYOP;
+	}
+
+	if (ImGui::RadioButton(u8"NISHIKI", m_tCurrentObjectDesc.iObjType == 22))
+	{
+		objectType = 22;
+		m_tCurrentObjectDesc.iObjType = (int)OBJECT_TYPE::NISHIKI;
+	}
+
+	if (ImGui::RadioButton(u8"ADVENTURE_REACTOR", m_tCurrentObjectDesc.iObjType == 23))
+	{
+		objectType = 23;
+		m_tCurrentObjectDesc.iObjType = (int)OBJECT_TYPE::ADVENTURE_REACTOR;
+	}
+
+	
 
 	ImGui::NewLine();
 
@@ -797,7 +864,39 @@ void CObjPlace_Manager::Edit_Installed_GameObject(int iNumObject)
 			m_tCurrentObjectDesc.iShaderPass = 4;
 		}
 	}
+
+	ImGui::NewLine();
+
+	ImGui::Text(u8"아이템성격");
+
+	static int objectPropertyType = m_tCurrentObjectDesc.iObjPropertyType;
+	ImGui::RadioButton(u8"회복 - 수정", &m_tCurrentObjectDesc.iObjPropertyType, 0);
+	ImGui::RadioButton(u8"부수기 - 수정", &m_tCurrentObjectDesc.iObjPropertyType, 1);
 	
+	ImGui::NewLine();
+
+	ImGui::Text(u8"npc 방향");
+
+	static int iNPCDirection = m_tCurrentObjectDesc.iNPCDirection;
+	ImGui::RadioButton(u8"정방향 - 수정", &m_tCurrentObjectDesc.iNPCDirection, 0);
+	ImGui::RadioButton(u8"역방향 - 수정", &m_tCurrentObjectDesc.iNPCDirection, 1);
+
+
+	ImGui::NewLine();
+	ImGui::Text(u8"몬스터 종류");
+
+	static int iMonsterType = m_tCurrentObjectDesc.iGroupMonster;
+	ImGui::RadioButton(u8"일반 몬스터 - 개별 - 수정", &m_tCurrentObjectDesc.iGroupMonster, 0);
+	ImGui::RadioButton(u8"그룹 몬스터 - 수정", &m_tCurrentObjectDesc.iGroupMonster, 1);
+
+
+	ImGui::NewLine();
+
+	static int iMonsterGroupNum = m_tCurrentObjectDesc.iGroupNum;
+	ImGui::InputInt(u8"몬스터그룹번호 - 수정", &m_tCurrentObjectDesc.iGroupNum);
+
+
+	ImGui::NewLine();
 
 	static int iRouteNum = m_tCurrentObjectDesc.iRouteNum;
 	ImGui::InputInt(u8"루트번호", &m_tCurrentObjectDesc.iRouteNum);
@@ -959,6 +1058,9 @@ bool CObjPlace_Manager::Add_CloneObject_Imgui(MAPTOOL_OBJPLACE_DESC objDesc, _ui
 		mapDesc.iShaderPass = objDesc.iShaderPass;
 		mapDesc.iObjType = objDesc.iObjType;
 		mapDesc.iObjPropertyType = objDesc.iObjPropertyType;
+		mapDesc.iNPCDirection = objDesc.iNPCDirection;
+		mapDesc.iGroupMonster = objDesc.iGroupMonster;
+		mapDesc.iGroupNum = objDesc.iGroupNum;
 		mapDesc.iDecalNum = 0;
 		mapDesc.pDecal = nullptr;
 		mapDesc.iColliderNum = 0;
@@ -1107,6 +1209,10 @@ void CObjPlace_Manager::Set_Map_Object()
 	ImGui::RadioButton(m_Layers[2], &LayerType, 2);
 	ImGui::RadioButton(m_Layers[3], &LayerType, 3);
 	ImGui::RadioButton(m_Layers[4], &LayerType, 4);
+	ImGui::RadioButton(m_Layers[5], &LayerType, 5);
+	ImGui::RadioButton(m_Layers[6], &LayerType, 6);
+	ImGui::RadioButton(m_Layers[7], &LayerType, 7);
+	ImGui::RadioButton(m_Layers[8], &LayerType, 8);
 
 	/* 데이터 추가할때마다 수정 */
 	ImGui::NewLine();
@@ -1130,7 +1236,15 @@ void CObjPlace_Manager::Set_Map_Object()
 	ImGui::RadioButton(u8"몬스터 - WPH", &objectType, OBJECT_TYPE::MONSTER_WPH);
 	ImGui::RadioButton(u8"몬스터 - Default", &objectType, OBJECT_TYPE::MONSTER_DEFAULT);
 	ImGui::RadioButton(u8"맵 - NONCULL", &objectType, OBJECT_TYPE::MAP_NONCULL);
-	ImGui::RadioButton(u8"맵 - LOCALCULL", &objectType, OBJECT_TYPE::MAP_LOCALCULL);
+
+	ImGui::RadioButton(u8"ROADNML", &objectType, OBJECT_TYPE::ROADNML);
+	ImGui::RadioButton(u8"ROADCAB", &objectType, OBJECT_TYPE::ROADCAB);
+	ImGui::RadioButton(u8"ROADSTANDING_NML", &objectType, OBJECT_TYPE::ROADSTANDING_NML);
+	ImGui::RadioButton(u8"ROADTISSUE", &objectType, OBJECT_TYPE::ROADTISSUE);
+	ImGui::RadioButton(u8"ROADYOP", &objectType, OBJECT_TYPE::ROADYOP);
+	ImGui::RadioButton(u8"NISHIKI", &objectType, OBJECT_TYPE::NISHIKI);
+	ImGui::RadioButton(u8"ADVENTURE_REACTOR", &objectType, OBJECT_TYPE::ADVENTURE_REACTOR);
+
 
 	ImGui::NewLine();
 
@@ -1173,12 +1287,36 @@ void CObjPlace_Manager::Set_Map_Object()
 
 
 	ImGui::NewLine();
+	ImGui::Text(u8"오브젝트 속성");
 
-	ImGui::Text(u8"오브젝트속성유형 - 플레이어와 몬스터는 네비번호로 사용");
 	static int objectPropertyType = 0;
 	ImGui::RadioButton(u8"회복", &objectPropertyType, 0);
 	ImGui::RadioButton(u8"부수기", &objectPropertyType, 1);
 
+	ImGui::NewLine();
+
+	ImGui::Text(u8"npc 방향");
+
+	static int iNPCDirection = 0;
+	ImGui::RadioButton(u8"정방향", &iNPCDirection, 0);
+	ImGui::RadioButton(u8"역방향", &iNPCDirection, 1);
+
+	ImGui::NewLine();
+
+	ImGui::Text(u8"몬스터 종류");
+
+	static int iGroupMonster = 0;
+	ImGui::RadioButton(u8"일반 몬스터 - 개별", &iGroupMonster, 0);
+	ImGui::RadioButton(u8"그룹 몬스터", &iGroupMonster, 1);
+
+
+	ImGui::NewLine();
+
+	static int iGroupNum = 0;
+	ImGui::InputInt(u8"몬스터그룹번호", &iGroupNum);
+
+
+	ImGui::NewLine();
 
 	static int iRouteNum = 0;
 	ImGui::InputInt(u8"루트번호", &iRouteNum);
@@ -1262,6 +1400,9 @@ void CObjPlace_Manager::Set_Map_Object()
 	objDesc.iObjType = objectType;
 	objDesc.iShaderPass = shaderType;
 	objDesc.iObjPropertyType = objectPropertyType;
+	objDesc.iNPCDirection = iNPCDirection;
+	objDesc.iGroupMonster = iGroupMonster;
+	objDesc.iGroupNum = iGroupNum;
 	objDesc.iNaviRouteNum = iRouteNum;
 	objDesc.vOffsetMatrix = myMatrix;
 
@@ -1347,7 +1488,7 @@ void CObjPlace_Manager::Load_ModelName()
 	vObjectNames.clear();
 
 
-	m_pGameInstance->Get_FileNames("../../Client/Bin/Resources/Models/Anim/Monster/", vObjectNames);
+	m_pGameInstance->Get_FileNames("../../Client/Bin/Resources/Models/Anim/Player/", vObjectNames);
 
 	for (int i = 0; i < vObjectNames.size(); i++)
 	{
@@ -1361,7 +1502,18 @@ void CObjPlace_Manager::Load_ModelName()
 	vObjectNames.clear();
 
 
+	m_pGameInstance->Get_FileNames("../../Client/Bin/Resources/Models/Anim/NPC/", vObjectNames);
 
+	for (int i = 0; i < vObjectNames.size(); i++)
+	{
+		string modifiedString = modifyString(vObjectNames[i]);
+
+		char* cfilename = new char[MAX_PATH];
+		strcpy(cfilename, StringToCharDIY(modifiedString));
+		m_MonsterNames.push_back(cfilename);
+	}
+
+	vObjectNames.clear();
 
 
 	/* map2 모델 로드*/
@@ -1448,6 +1600,9 @@ HRESULT CObjPlace_Manager::Import_Bin_Map_Data_OnTool(MAP_TOTALINFORM_DESC* mapO
 		in.read((char*)&pMapObj->iShaderPassNum, sizeof(int));
 		in.read((char*)&pMapObj->iObjType, sizeof(int));
 		in.read((char*)&pMapObj->iObjPropertyType, sizeof(int));
+		in.read((char*)&pMapObj->iNPCDirection, sizeof(int));
+		in.read((char*)&pMapObj->iGroupMonster, sizeof(int));
+		in.read((char*)&pMapObj->iGroupNum, sizeof(int));
 
 		in.read((char*)&pMapObj->iNaviNum, sizeof(int));
 		in.read((char*)&pMapObj->iNaviRoute, sizeof(int));
@@ -1531,6 +1686,9 @@ HRESULT CObjPlace_Manager::Export_Bin_Map_Data(MAP_TOTALINFORM_DESC* mapObjData)
 		out.write((char*)&PObjPlaceDesc.iShaderPassNum, sizeof(int));
 		out.write((char*)&PObjPlaceDesc.iObjType, sizeof(int));
 		out.write((char*)&PObjPlaceDesc.iObjPropertyType, sizeof(int));
+		out.write((char*)&PObjPlaceDesc.iNPCDirection, sizeof(int));
+		out.write((char*)&PObjPlaceDesc.iGroupMonster, sizeof(int));
+		out.write((char*)&PObjPlaceDesc.iGroupNum, sizeof(int));
 
 		//추가
 		out.write((char*)&PObjPlaceDesc.iNaviNum, sizeof(int));
@@ -1604,6 +1762,9 @@ void CObjPlace_Manager::Show_ExampleModel(MAPTOOL_OBJPLACE_DESC objDesc, _uint i
 			mapDesc.iShaderPass = objDesc.iShaderPass;
 			mapDesc.iObjType = objDesc.iObjType;
 			mapDesc.iObjPropertyType = objDesc.iObjPropertyType;
+			mapDesc.iNPCDirection = objDesc.iNPCDirection;
+			mapDesc.iGroupMonster = objDesc.iGroupMonster;
+			mapDesc.iGroupNum = objDesc.iGroupNum;
 			mapDesc.iDecalNum = 0;
 			mapDesc.pDecal = nullptr;
 			mapDesc.vOffsetMatrix = objDesc.vOffsetMatrix;
@@ -1632,6 +1793,9 @@ void CObjPlace_Manager::Show_ExampleModel(MAPTOOL_OBJPLACE_DESC objDesc, _uint i
 				mapDesc.iObjType = objDesc.iObjType;
 				mapDesc.iShaderPass = objDesc.iShaderPass;
 				mapDesc.iObjPropertyType = objDesc.iObjPropertyType;
+				mapDesc.iNPCDirection = objDesc.iNPCDirection;
+				mapDesc.iGroupMonster = objDesc.iGroupMonster;
+				mapDesc.iGroupNum = objDesc.iGroupNum;
 				mapDesc.iRouteNum = objDesc.iNaviRouteNum;
 				mapDesc.iDecalNum = 0;
 				mapDesc.pDecal = nullptr;
@@ -1962,6 +2126,11 @@ void CObjPlace_Manager::Update_ColliderList_In_Object()
 	{
 		m_ObjectColliders.push_back(vCollider[i]);
 		Safe_AddRef(vCollider[i]);
+	}
+
+	if (0 < m_ObjectColliders.size())
+	{
+		m_tCurColliderDesc = dynamic_cast<CConstruction*>(iter->second)->Get_ColliderDesc(m_iCurColliderIndex);
 	}
 }
 
@@ -2424,6 +2593,7 @@ void CObjPlace_Manager::Add_ObjectCollider_IMGUI()
 
 
 			ImGui::InputFloat3(u8"ObjCollider Quaternion", reinterpret_cast<float*>(&m_tCurColliderDesc.vQuaternion));
+
 		}
 
 

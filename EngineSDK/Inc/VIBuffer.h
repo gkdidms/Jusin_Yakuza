@@ -14,6 +14,7 @@ public:
     virtual HRESULT Initialize_Prototype() override;
     virtual HRESULT Initialize(void* pArg) override;
     virtual HRESULT Render();
+    virtual HRESULT Render_Compute();
 
 public:
     HRESULT Create_Buffer(ID3D11Buffer** pOut);
@@ -21,6 +22,7 @@ public:
     _uint Get_NumIndices() { return m_iNumIndices; }
 
     HRESULT Bind_Compute(class CComputeShader* pShader);
+    HRESULT Bind_Compute_AABBCube(class CComputeShader* pShader);
 
 protected:
     ID3D11ShaderResourceView* m_pVertexBufferSRV = { nullptr };
@@ -28,6 +30,7 @@ protected:
     ID3D11Buffer* m_pProcessedVertexBuffer = { nullptr };
 
     ID3D11Buffer* m_pVB;
+    ID3D11Buffer* m_pSRVIn;
     ID3D11Buffer* m_pUAVOut;
     ID3D11Buffer* m_pIB;
 
@@ -47,6 +50,7 @@ protected:
 
 protected:
     HRESULT Ready_BoneBuffer();
+    HRESULT Ready_AABBCubeBuffer();
 
 public:
     virtual void Free() override;

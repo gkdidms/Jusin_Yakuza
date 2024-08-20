@@ -14,25 +14,26 @@ CMesh::CMesh(const CMesh& rhs)
 	, m_OffsetMatrices{ rhs.m_OffsetMatrices }
 	, m_isAlphaApply{ rhs.m_isAlphaApply }
 	, m_iNumBones{ rhs.m_iNumBones }
-	, m_localMatrix {rhs.m_localMatrix}
-	, m_pBoneMatrixBuffer {rhs.m_pBoneMatrixBuffer}
 	, m_iModelType {rhs.m_iModelType}
+	, m_localMatrix{ rhs.m_localMatrix }
+	, m_vMaxPosition {rhs.m_vMaxPosition}
+	, m_vMinPosition {rhs.m_vMinPosition}
+	, m_isTool {rhs.m_isTool}
+	, m_BoneIndices {rhs.m_BoneIndices}
 {
 
-	m_pIndices = new _uint[m_iNumIndices];
-	ZeroMemory(m_pIndices, sizeof(_uint) * m_iNumIndices);
+	//m_pIndices = new _uint[m_iNumIndices];
+	//ZeroMemory(m_pIndices, sizeof(_uint) * m_iNumIndices);
 
-	memcpy(m_pIndices, rhs.m_pIndices, sizeof(_uint) * m_iNumIndices);
+	//memcpy(m_pIndices, rhs.m_pIndices, sizeof(_uint) * m_iNumIndices);
 
-	m_pVertices = new VTXMESH[m_iNumVertices];
-	ZeroMemory(m_pVertices, sizeof(VTXMESH) * m_iNumVertices);	
+	//m_pVertices = new VTXMESH[m_iNumVertices];
+	//ZeroMemory(m_pVertices, sizeof(VTXMESH) * m_iNumVertices);	
 
-	memcpy(m_pVertices, rhs.m_pVertices, sizeof(VTXMESH) * m_iNumVertices);
-
-	Safe_AddRef(m_pBoneMatrixBuffer);
+	//memcpy(m_pVertices, rhs.m_pVertices, sizeof(VTXMESH) * m_iNumVertices);
 }
 
-HRESULT CMesh::Initialize(CModel::MODELTYPE eModelType, const aiMesh* pAIMesh, _fmatrix PreTransformMatrix, const vector<class CBone*>& Bones, _bool isTool)
+HRESULT CMesh::Initialize_Prototype(CModel::MODELTYPE eModelType, const aiMesh* pAIMesh, _fmatrix PreTransformMatrix, const vector<class CBone*>& Bones, _bool isTool)
 {
 	strcpy_s(m_szName, pAIMesh->mName.data);
 
@@ -96,19 +97,10 @@ HRESULT CMesh::Initialize(CModel::MODELTYPE eModelType, const aiMesh* pAIMesh, _
 
 	Safe_Delete_Array(pIndices);
 
-	if (m_iModelType == CModel::TYPE_ANIM && !m_isTool)
-	{
-		if (FAILED(Ready_BoneBuffer()))
-			return E_FAIL;
-
-		if (FAILED(Ready_Buffer()))
-			return E_FAIL;
-	}
-
     return S_OK;
 }
 
-HRESULT CMesh::Initialize(CModel::MODELTYPE eModelType, const BAiMesh* pAIMesh, _fmatrix PreTransformMatrix, const vector<class CBone*>& Bones, _bool isTool)
+HRESULT CMesh::Initialize_Prototype(CModel::MODELTYPE eModelType, const BAiMesh* pAIMesh, _fmatrix PreTransformMatrix, const vector<class CBone*>& Bones, _bool isTool)
 {
 	strcpy_s(m_szName, pAIMesh->mName);
 
@@ -169,14 +161,13 @@ HRESULT CMesh::Initialize(CModel::MODELTYPE eModelType, const BAiMesh* pAIMesh, 
 
 	Safe_Delete_Array(pIndices);
 
-	if (m_iModelType == CModel::TYPE_ANIM && !isTool)
-	{
-		if (FAILED(Ready_BoneBuffer()))
-			return E_FAIL;
+	return S_OK;
+}
 
-		if (FAILED(Ready_Buffer()))
-			return E_FAIL;
-	}
+HRESULT CMesh::Initialize()
+{
+	if (m_iModelType == CModel::TYPE_ANIM && !m_isTool)
+		Ready_Buffer();
 
 	return S_OK;
 }
@@ -204,7 +195,6 @@ HRESULT CMesh::Render(_bool isTool)
 		m_pContext->IASetPrimitiveTopology(m_Primitive_Topology);
 
 		m_pContext->DrawIndexed(m_iNumIndices, 0, 0);
-
 	}
 	else
 	{
@@ -291,6 +281,9 @@ HRESULT CMesh::Ready_Vertices_For_NonAnimMesh(const aiMesh* pAIMesh, _fmatrix Pr
 		fMaxScale = vMeshScale.z;
 
 	m_fScale = fMaxScale;
+
+	m_vMinPosition = vMinScale;
+	m_vMaxPosition = vMaxScale;
 
 
 	vSumPosition.x /= m_iNumVertices;
@@ -386,6 +379,8 @@ HRESULT CMesh::Ready_Vertices_For_NonAnimMesh(const BAiMesh* pAIMesh, _fmatrix P
 		fMaxScale = vMeshScale.z;
 
 	m_fScale = fMaxScale;
+	m_vMinPosition = vMinScale;
+	m_vMaxPosition = vMaxScale;
 
 	vSumPosition.x /= m_iNumVertices;
 	vSumPosition.y /= m_iNumVertices;
@@ -889,41 +884,6 @@ void CMesh::Bind_Matrices(vector<class CBone*>& Bones, _float4x4* pMeshBoneMatri
 	m_pContext->CSSetConstantBuffers(0, 1, &m_pBoneMatrixBuffer);
 }
 
-_bool CMesh::isCloth()
-{
-	string strName = string(m_szName);
-	if (m_pGameInstance->Find_String(strName, "jacket") || 
-		m_pGameInstance->Find_String(strName, "pants") || 
-		m_pGameInstance->Find_String(strName, "shoes") || 
-		m_pGameInstance->Find_String(strName, "socks"))
-		return true;
-		
-	return false;
-}
-
-_bool CMesh::isSkin()
-{
-	string strName = string(m_szName);
-	if (m_pGameInstance->Find_String(strName, "face") ||
-		m_pGameInstance->Find_String(strName, "body"))
-		return true;
-
-	return false;
-}
-
-_bool CMesh::DisableRDRT()
-{
-	string strName = string(m_szName);
-	if (m_pGameInstance->Find_String(strName, "suit") ||
-		m_pGameInstance->Find_String(strName, "jacketw1") ||
-		m_pGameInstance->Find_String(strName, "pants")||
-		m_pGameInstance->Find_String(strName, "shoes") ||
-		m_pGameInstance->Find_String(strName, "socks"))
-		return false;
-
-	return true;
-}
-
 HRESULT CMesh::Ready_Buffer()
 {
 	D3D11_BUFFER_DESC Desc{};
@@ -943,7 +903,7 @@ CMesh* CMesh::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CMode
 {
 	CMesh* pInstance = new CMesh(pDevice, pContext);
 
-	if (FAILED(pInstance->Initialize(eModelType, pAIMesh, PreTransformMatrix, Bones, isTool)))
+	if (FAILED(pInstance->Initialize_Prototype(eModelType, pAIMesh, PreTransformMatrix, Bones, isTool)))
 	{
 		MSG_BOX("Failed To Created : CMesh");
 		Safe_Release(pInstance);
@@ -956,7 +916,20 @@ CMesh* CMesh::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, CMode
 {
 	CMesh* pInstance = new CMesh(pDevice, pContext);
 
-	if (FAILED(pInstance->Initialize(eModelType, pAIMesh, PreTransformMatrix, Bones, isTool)))
+	if (FAILED(pInstance->Initialize_Prototype(eModelType, pAIMesh, PreTransformMatrix, Bones, isTool)))
+	{
+		MSG_BOX("Failed To Created : CMesh");
+		Safe_Release(pInstance);
+	}
+
+	return pInstance;
+}
+
+CMesh* CMesh::Clone()
+{
+	CMesh* pInstance = new CMesh(*this);
+
+	if (FAILED(pInstance->Initialize()))
 	{
 		MSG_BOX("Failed To Created : CMesh");
 		Safe_Release(pInstance);

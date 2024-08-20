@@ -131,8 +131,6 @@ struct PS_MAIN_OUT
     vector vSpecular : SV_Target5;
 };
 
-
-
 PS_MAIN_OUT PS_MAIN(PS_IN In)
 {
     PS_MAIN_OUT Out = (PS_MAIN_OUT) 0;
@@ -537,6 +535,5 @@ technique11 DefaultTechnique
         DomainShader = NULL;
         PixelShader = compile ps_5_0 PS_MAIN_LIGHTDEPTH();
     }
-
 
 }

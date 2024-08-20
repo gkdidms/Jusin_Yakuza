@@ -73,13 +73,13 @@ HRESULT CSocketEffect::Add_Components(void* pArg)
 {
 	if (nullptr != pArg)
 	{
-		SOKET_EFFECT_DESC* pDesc = static_cast<SOKET_EFFECT_DESC*>(pArg);
+		CEffect::EFFECT_DESC EffectDesc;
 
-		CEffect::EFFECT_DESC Desc{};
-		Desc.pWorldMatrix = &m_WorldMatrix;
+		SOKET_EFFECT_DESC* pDesc = static_cast<SOKET_EFFECT_DESC*>(pArg);
+		EffectDesc.pWorldMatrix = &m_WorldMatrix;
 		
 		m_wstrEffectName = pDesc->wstrEffectName;
-		m_pEffect = reinterpret_cast<CEffect*>(m_pGameInstance->Clone_Object(pDesc->wstrEffectName, &Desc));
+		m_pEffect = reinterpret_cast<CEffect*>(m_pGameInstance->Clone_Object(pDesc->wstrEffectName, &EffectDesc));
 	}
 
 	return S_OK;

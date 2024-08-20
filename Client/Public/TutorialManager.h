@@ -12,8 +12,14 @@ private:
     virtual ~CTutorialManager() = default;
 
 public:
+    _bool isTutorialStart() { return m_isStart; }
+
+public:
     HRESULT Initialize();
     void Tick();
+
+public:
+    void Start_Tutorial();
 
 private:
     class CUIManager* m_pUIManager = { nullptr };

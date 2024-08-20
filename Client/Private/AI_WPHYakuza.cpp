@@ -32,7 +32,7 @@ HRESULT CAI_WPHYakuza::Initialize(void* pArg)
     Ready_Tree();
 
     m_fDelayAttackDuration = m_pGameInstance->Get_Random(6.f, 9.f);
-    m_iMonsterType = CAI_Monster::WPH;
+    m_iMonsterType = CMonster::WPH;
 
     return S_OK;
 }

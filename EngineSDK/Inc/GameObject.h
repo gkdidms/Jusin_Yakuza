@@ -23,12 +23,14 @@ public:
 public:
     _bool isDead() { return m_isDead; }
     _bool isObjectDead() { return m_isObjectDead; }
+    _float Get_CamDistance() { return m_fCamDistance; }
 
 public:
     void        Set_Dead() { m_isDead = true; }               // 객체 자체가 죽었을 때 (객체를 삭제한다)
     void        Set_ObjectDead() { m_isObjectDead = true; }   // 객체가 죽었는지 (객체 삭제X)
     float       Get_ObjID() { return m_iObjectIndex; }
     void        Set_ObjID(float fID) { m_iObjectIndex = fID; }
+    void        Set_Render(_bool bRender) { m_bRender = bRender; } // occulusion culling 후 정보 set
 
 public:
     virtual HRESULT Initialize_Prototype();
@@ -40,8 +42,11 @@ public:
     virtual HRESULT Render_Bloom() { return S_OK; }
     virtual HRESULT Render_LightDepth() { return S_OK; }
     virtual HRESULT Render_BoneCompute() { return S_OK; }
+    virtual HRESULT Render_OcculusionDepth() { return S_OK; }
     virtual void ImpulseResolution(CGameObject* pTargetObject, _float fDistance = 0.5f) {};
     virtual void Attack_Event(CGameObject* pHitObject, _bool isItem = false) {};
+
+    virtual HRESULT Check_OcculusionCulling() { return S_OK; }
 
 public:
     class CComponent* Get_Component(wstring strComponentTag);
@@ -67,6 +72,10 @@ protected:
     _bool m_isObjectDead = { false };
 
     _uint   m_iObjectIndex = { 0 };
+
+    _bool   m_bRender = { true };
+
+    _float m_fCamDistance = { 0.f };
 
 protected:
     vector<_float> m_Casecade;

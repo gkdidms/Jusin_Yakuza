@@ -76,7 +76,7 @@ void CUIMainMenu::Action()
 	{
 	case 0:
 	{
-		if (FAILED(m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_OFFICE_1F))))
+		if (FAILED(m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_TUTORIAL))))
 			return;
 		break;
 	}
@@ -84,6 +84,12 @@ void CUIMainMenu::Action()
 	{
 		// 레벨지정
 		if (FAILED(m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_TEST))))
+			return;
+		break;
+	}
+	case 2:
+	{
+		if (FAILED(m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_KARAOKE))))
 			return;
 		break;
 	}

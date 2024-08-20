@@ -27,7 +27,7 @@ CImguiManager::CImguiManager(ID3D11Device* pDevice, ID3D11DeviceContext* pContex
 
 HRESULT CImguiManager::Initialize(void* pArg)
 {
-	Setting_InitialData();
+	Setting_InitialData("Player/");
 
 	//ImGui
 	IMGUI_CHECKVERSION();
@@ -153,8 +153,21 @@ HRESULT CImguiManager::Render()
 
 void CImguiManager::ModelList()
 {
+	if (ImGui::RadioButton(u8"플레이어 모델", m_iModelPathType == PLAYER))
+	{
+		m_iModelPathType = PLAYER;
+		Setting_ModelList("Player/");
+	}
+	ImGui::SameLine();
+	if (ImGui::RadioButton(u8"몬스터 모델", m_iModelPathType == ENEMY))
+	{
+		m_iModelPathType = ENEMY;
+		Setting_ModelList("Monster/");
+	}
+
+
 	ImGui::Text(u8"적 체크 시 AnimComponent의 애니메이션 목록으로 설정한다");
-	if (ImGui::RadioButton(u8"플레이어", m_iModelType == PLAYER))
+	if (ImGui::RadioButton(u8"모델 내 애니메이션", m_iModelType == PLAYER))
 	{
 		m_iModelType = PLAYER;
 
@@ -163,7 +176,7 @@ void CImguiManager::ModelList()
 		m_Anims = m_pRenderModel->Get_Animations();
 	}
 	ImGui::SameLine();
-	if (ImGui::RadioButton(u8"적", m_iModelType == ENEMY))
+	if (ImGui::RadioButton(u8"애님 컴", m_iModelType == ENEMY))
 	{
 		m_iModelType = ENEMY;
 
@@ -173,19 +186,9 @@ void CImguiManager::ModelList()
 		m_Anims = pAnimCom->Get_Animations();
 	}
 	ImGui::SameLine();
-	if (ImGui::RadioButton(u8"싱크액션", m_iModelType == SYNC))
+	if (ImGui::RadioButton(u8"싱크액션 애님컴", m_iModelType == SYNC))
 	{
 		m_iModelType = SYNC;
-
-		Change_Model();
-
-		auto pAnimCom = m_pRenderModel->Get_AnimComponent();
-		m_Anims = pAnimCom->Get_Animations();
-	}
-	ImGui::SameLine();
-	if (ImGui::RadioButton(u8"기타", m_iModelType == ETC))
-	{
-		m_iModelType = ETC;
 
 		Change_Model();
 
@@ -242,10 +245,10 @@ void CImguiManager::ModelList()
 		Change_Model();
 	}
 
-	if (ImGui::Button(u8"데이터 저장하기"))
-	{
-		All_Save();
-	}
+	//if (ImGui::Button(u8"데이터 저장하기"))
+	//{
+	//	All_Save();
+	//}
 	if (ImGui::Button(u8"데이터 로드하기"))
 	{
 		All_Load();
@@ -1180,23 +1183,81 @@ void CImguiManager::FaceEventWindow()
 		
 
 	ImGui::Text(u8"선택된 애니메이션: %s", m_AnimNameList[m_iAnimIndex].c_str());
-	ImGui::Text(u8"선택된 본(본 리스트에서 선택한 값): %s", m_BoneNameList[m_iBoneSelectedIndex].c_str());
-
 	ImGui::InputFloat(u8"애니메이션 포지션", &m_fAnimationPosition);
 
 	ImGui::InputInt(u8"표정 인덱스", &m_iFaceAnimIndex);
 
 	if (ImGui::Button(u8"표정 On"))
 	{
+		Animation_FaceEventState Desc{};
+		Desc.iType = 0;
+		Desc.fAinmPosition = m_fAnimationPosition;
+		Desc.iFaceAnimIndex = m_iFaceAnimIndex;
 
-	}
-	if (ImGui::Button(u8"표정 Change"))
-	{
-
+		m_FaceEvents.emplace(m_AnimNameList[m_iAnimIndex], Desc);
 	}
 	if (ImGui::Button(u8"표정 Off"))
 	{
+		Animation_FaceEventState Desc{};
+		Desc.iType = 1;
+		Desc.fAinmPosition = m_fAnimationPosition;
+		Desc.iFaceAnimIndex = m_iFaceAnimIndex;
 
+		m_FaceEvents.emplace(m_AnimNameList[m_iAnimIndex], Desc);
+	}
+	if (ImGui::Button(u8"표정 Change"))
+	{
+		Animation_FaceEventState Desc{};
+		Desc.iType = 2;
+		Desc.fAinmPosition = m_fAnimationPosition;
+		Desc.iFaceAnimIndex = m_iFaceAnimIndex;
+
+		m_FaceEvents.emplace(m_AnimNameList[m_iAnimIndex], Desc);
+	}
+
+	ImGui::Text(u8"표정 이벤트 리스트");
+
+	auto upper_bound_iter = m_FaceEvents.upper_bound(m_AnimNameList[m_iAnimIndex]);
+	auto lower_bound_iter = m_FaceEvents.lower_bound(m_AnimNameList[m_iAnimIndex]);
+
+	vector<const char*> items;
+	for (; lower_bound_iter != upper_bound_iter; ++lower_bound_iter)
+	{
+		items.push_back((*lower_bound_iter).second.iType == 0 ? "On" : ((*lower_bound_iter).second.iType == 1 ? "Off" : "Change"));
+	}
+
+	if (ImGui::ListBox("##", &m_iFaceEventIndex, items.data(), items.size()))
+	{
+		auto lower_bound_iter2 = m_FaceEvents.lower_bound(m_AnimNameList[m_iAnimIndex]);
+		for (size_t i = 0; i < m_iFaceEventIndex; i++)
+		{
+			lower_bound_iter2++;
+		}
+
+		m_iFaceAnimIndex = lower_bound_iter2->second.iFaceAnimIndex;
+		m_fAnimationPosition = lower_bound_iter2->second.fAinmPosition;
+	}
+
+	if (ImGui::Button(u8"불러오기"))
+	{
+		string strDirectory = "../../Client/Bin/DataFiles/Character/" + m_ModelNameList[m_iModelSelectedIndex];
+		FaceEvent_Load(strDirectory);
+	}
+	ImGui::SameLine();
+	if (ImGui::Button(u8"삭제"))
+	{
+		auto iterator = m_FaceEvents.lower_bound(m_AnimNameList[m_iAnimIndex]);
+		for (size_t i = 0; i < m_iBloodEventIndex; i++)
+		{
+			iterator++;
+		}
+		m_FaceEvents.erase(iterator);
+	}
+	ImGui::SameLine();
+	if (ImGui::Button(u8"저장"))
+	{
+		string strDirectory = "../../Client/Bin/DataFiles/Character/" + m_ModelNameList[m_iModelSelectedIndex];
+		FaceEvent_Save(strDirectory);
 	}
 
 	ImGui::End();
@@ -1935,6 +1996,34 @@ void CImguiManager::TrailEvent_Save(string strPath)
 	out.close();
 }
 
+void CImguiManager::FaceEvent_Save(string strPath)
+{
+	string strDirectory = strPath;
+	strDirectory += "/" + m_ModelNameList[m_iModelSelectedIndex] + "_FaceEvents.dat";
+
+	ofstream out(strDirectory, ios::binary);
+
+	_uint iNumEvents = m_FaceEvents.size();
+	// 총 몇개의 이펙트를 읽어올 것인지 작성한다
+	out << iNumEvents;
+
+	/*
+		_uint iType;					//0번이 on 1번이 off 2번이 change
+		_float fAinmPosition;
+		_uint iFaceAnimIndex;
+	*/
+
+	for (auto& pair : m_FaceEvents)
+	{
+		out << pair.first << endl;
+		out << pair.second.iType << endl;
+		out << pair.second.fAinmPosition << endl;
+		out << pair.second.iFaceAnimIndex << endl;
+	}
+
+	out.close();
+}
+
 void CImguiManager::BloodEvent_Save(string strPath)
 {
 	string strDirectory = strPath;
@@ -2297,6 +2386,45 @@ void CImguiManager::TrailEvent_Load(string strPath)
 	in.close();
 }
 
+void CImguiManager::FaceEvent_Load(string strPath)
+{
+	string strDirectory = strPath;
+	strDirectory += "/" + m_ModelNameList[m_iModelSelectedIndex] + "_FaceEvents.dat";
+
+	ifstream in(strDirectory, ios::binary);
+
+	if (!in.is_open()) {
+		MSG_BOX("FaceEvents 파일 개방 실패");
+		return;
+	}
+
+	m_BloodEvents.clear();
+
+	_uint iNumEvents{ 0 };
+	// 총 몇개의 이펙트를 읽어올 것인지 작성한다
+	in >> iNumEvents;
+
+	Animation_FaceEventState Event{};
+	string key;
+
+	/*
+		_uint iType;					//0번이 on 1번이 off 2번이 change
+		_float fAinmPosition;
+		_uint iFaceAnimIndex;
+	*/
+	for (size_t i = 0; i < iNumEvents; i++)
+	{
+		in >> key;
+		in >> Event.iType;
+		in >> Event.fAinmPosition;
+		in >> Event.iFaceAnimIndex;
+
+		m_FaceEvents.emplace(key, Event);
+	}
+
+	in.close();
+}
+
 void CImguiManager::BloodEvent_Load(string strPath)
 {
 	string strDirectory = strPath;
@@ -2501,16 +2629,12 @@ void CImguiManager::Change_Model()
 	m_pRenderModel->Change_Model(strModelName, strAnimName);
 }
 
-void CImguiManager::Setting_InitialData()
+void CImguiManager::Setting_InitialData(string strFolderType)
 {
-	string strDirPath = "../../Client/Bin/Resources/Models/Anim/";
+	Setting_ModelList(strFolderType);
 
-	m_pGameInstance->Get_DirectoryName(strDirPath, m_ModelNameList);
-	g_wstrModelName = m_pGameInstance->StringToWstring(m_ModelNameList.front());
-
-	strDirPath = "../../Client/Bin/DataFiles/Particle/";
+	string strDirPath = "../../Client/Bin/DataFiles/Particle/";
 	m_pGameInstance->Get_DirectoryName(strDirPath, m_EffectTypeList);
-
 
 	for (size_t i = 0; i < m_EffectTypeList.size(); i++)
 	{
@@ -2522,6 +2646,16 @@ void CImguiManager::Setting_InitialData()
 			m_EffectFiles.emplace(i, tempFileNames[j]);
 		}
 	}
+}
+
+void CImguiManager::Setting_ModelList(string strFolderType)
+{
+	m_ModelNameList.clear();
+
+	string strDirPath = "../../Client/Bin/Resources/Models/Anim/" + strFolderType;
+
+	m_pGameInstance->Get_DirectoryName(strDirPath, m_ModelNameList);
+	g_wstrModelName = m_pGameInstance->StringToWstring(m_ModelNameList.front());
 }
 
 CImguiManager* CImguiManager::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

@@ -56,6 +56,7 @@ HRESULT CYoneda::Initialize(void* pArg)
 		return E_FAIL;
 
 	m_wstrModelName = TEXT("Jimu");
+	m_wstrScndModelName = TEXT("Yoneda");
 
 	if (FAILED(Add_CharacterData()))
 		return E_FAIL;

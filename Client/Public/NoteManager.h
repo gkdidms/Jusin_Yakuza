@@ -15,8 +15,12 @@ private:
     virtual ~CNoteManager() = default;
 
 public:
-    HRESULT Initialize();
-    void Tick();
+    HRESULT Initialize(string strSongName);
+
+public:
+    vector<class CNoteBase*>* Get_Notes() {
+        return &m_Notes;
+    }
 
 private:
     HRESULT Load_NoteData(string strSongName);
@@ -27,6 +31,7 @@ private:
     vector<class CNoteBase*> m_Notes;
 
 public:
+    static CNoteManager* Create(string strSongName);
     virtual void Free();
 };
 END

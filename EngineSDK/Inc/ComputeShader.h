@@ -20,7 +20,7 @@ private:
 public:
     virtual HRESULT Initialize_Prototype(const wstring& strShaderFilePath);
     virtual HRESULT Initialize(void* pArg) override;
-    HRESULT Render(_uint iGroupCount);
+    HRESULT Render(_uint iGroupX, _uint iGroupY, _uint iGroupZ);
 
 private:
     ID3D11ComputeShader* m_pComputeShader;

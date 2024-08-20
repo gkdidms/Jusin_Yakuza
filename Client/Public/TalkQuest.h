@@ -15,7 +15,7 @@ public:
     typedef struct tTalkQuestDesc : public CQuest::QUEST_DESC {
         _int iObjectIndex;
     } TALK_QUEST_DESC;
-
+    
 private:
     CTalkQuest();
     virtual ~CTalkQuest() = default;
@@ -26,8 +26,6 @@ public:
 
 private:
     _int m_iObjectIndex = { -1 };
-
-    _bool m_isColl = { false };
 
 public:
     static CTalkQuest* Create(void* pArg);

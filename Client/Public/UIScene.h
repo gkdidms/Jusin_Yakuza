@@ -24,7 +24,7 @@ protected:
 public:
     //loader 에서 만든 ui객체를 받아와서 저장해둠. 무조건 파일 순서대로 받아와서 정렬함(순서중요)
     //씬마다 사용법 다르면 오버라이딩 ㄱ
-    virtual HRESULT Add_UIData(class CUI_Object* pUIObject);
+    virtual HRESULT Add_UIData(class CUI_Object* pUIObject, wstring wstrPrototypeTag = TEXT(""));
     
     virtual HRESULT Show_Scene();//ui 애님 준비(초기화/열때 정방향 진행)
     virtual HRESULT Close_Scene();//ui 애님 준비(초기화/닫을떄 반대로진행)
@@ -43,11 +43,16 @@ public:
 public:
     _bool Get_isAnimFinish() { return m_isAnimFin; }
     _bool Get_isClose() { return m_isClose; }
+    _bool Get_isOpen() { return m_isOpen; }
     _bool Get_isLoading() { return m_isLoading; }
     virtual void Reset() {
         m_isClose = false;  
     }
     wstring Get_SceneName() { return m_strSceneName; }
+
+public:
+    void Set_Open(_bool isOpen = true) { m_isOpen = isOpen; }
+
 protected:
     class CGameInstance* m_pGameInstance = { nullptr };
     ID3D11Device* m_pDevice = { nullptr };
@@ -66,6 +71,8 @@ protected:
     wstring m_strSceneName = { TEXT("") };
 
     _bool m_isLoading = { false };
+    _bool m_isOpen = { false };
+
 public:
     virtual void Free();
 };

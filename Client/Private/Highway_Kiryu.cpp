@@ -45,7 +45,6 @@ HRESULT CHighway_Kiryu::Initialize(void* pArg)
 		return E_FAIL;
 
 	Set_HandAnimIndex(HAND_GUN);
-	On_Separation_Hand(m_isLeft ? 1 : 2);
 
 	return S_OK;
 }
@@ -66,6 +65,7 @@ void CHighway_Kiryu::Tick(const _float& fTimeDelta)
 
 	m_pModelCom->Play_Animation_Separation(fTimeDelta, m_iFaceAnimIndex, m_SeparationAnimComs[FACE_ANIM], false, (_int)FACE_ANIM);
 	m_pModelCom->Play_Animation_Separation(fTimeDelta, m_iHandAnimIndex, m_SeparationAnimComs[HAND_ANIM], false, (_int)HAND_ANIM);
+	m_pModelCom->Play_Animation_Separation(fTimeDelta, m_iUdeIndex, m_SeparationAnimComs[DEFAULT_ANIM], false, (_int)DEFAULT_ANIM);
 	Play_CurrentAnimation(fTimeDelta);
 
 	m_ModelMatrix = *pTaxiMatrix;
@@ -74,6 +74,12 @@ void CHighway_Kiryu::Tick(const _float& fTimeDelta)
 		m_pGun_L->Tick(fTimeDelta);
 	else
 		m_pGun_R->Tick(fTimeDelta);
+
+	if (m_isFirstTick)
+	{
+		m_isFirstTick = false;
+		On_Separation_Hand(m_isLeft ? 1 : 2);
+	}
 
 	m_pColliderCom->Tick(XMLoadFloat4x4(&m_ModelMatrix));
 }
@@ -122,13 +128,18 @@ void CHighway_Kiryu::Change_Animation()
 {
 }
 
+_bool CHighway_Kiryu::Checked_Animation_Ratio(_float fRatio)
+{
+	if (fRatio < *m_pModelCom->Get_AnimationCurrentPosition() / *m_pModelCom->Get_AnimationDuration())
+		return true;
+
+	return false;
+}
+
 void CHighway_Kiryu::Key_Input()
 {
 	//공격 가능한 환경인지 체크한 후 진행한다.
 	//다른 스킬들도 막기 위해서 return;
-	if (isAttackPossible())
-		return;
-
 	// 발사
 	if (m_pGameInstance->GetMouseState(DIM_LB) == TAP)
 	{
@@ -146,7 +157,7 @@ void CHighway_Kiryu::Key_Input()
 		else
 		{
 			m_isHitEyeCharging = false;
-			m_fHitEye -= HITEYE_DECREASE_SPEED * m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player"));
+			m_fHitEye -= HITEYE_DECREASE_SPEED * m_pGameInstance->Get_TimeDelta(TEXT("Timer_Game"));
 			m_pGameInstance->Set_TimeSpeed(TEXT("Timer_60"), 0.2f);
 		}
 	}
@@ -158,9 +169,9 @@ void CHighway_Kiryu::Key_Input()
 
 	if (m_isHitEyeCharging)
 	{
+		m_fHitEye += HITEYE_DECREASE_SPEED * m_pGameInstance->Get_TimeDelta(TEXT("Timer_Game"));
 		if (100.f < m_fHitEye)
 			m_fHitEye = 100.f;
-		m_fHitEye += HITEYE_DECREASE_SPEED * m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player"));
 	}
 
 	// 장전/숨기
@@ -211,18 +222,7 @@ void CHighway_Kiryu::Play_CurrentAnimation(_float fTimeDelta)
 	}
 	}
 
-	//if (m_bTest)
-	//{
-	//	m_pModelCom->Play_Animation_Rotation_SeparationBone(fTimeDelta, "kosi_c_n", 2, m_fTest, false);
-	//}
-	//else
-		//m_pModelCom->Play_Animation(fTimeDelta, false);
-
 	m_pModelCom->Play_Animation(fTimeDelta, false);
-
-	// 애니메이션이 이상해서, 하반신만 Shot 애님으로 따로 돌려야한다.
-	m_pModelCom->Play_Animation_Separation(fTimeDelta, (m_isLeft ? 31 : 66), m_pAnimCom, true, 3);
-	m_pModelCom->Play_Animation_Separation(fTimeDelta, (m_isLeft ? 34 : 70), m_pAnimCom, true, 4);
 }
 
 void CHighway_Kiryu::Play_Animing(_float fTimeDelta)
@@ -251,20 +251,26 @@ void CHighway_Kiryu::Play_Animing(_float fTimeDelta)
 	// [52] [mngcar_c_car_gun_aimr_f_lp]
 
 	// 몬스터에 에임띄운거 나오고 나서 각도조절기능 추가예정
+
 	_uint iAnimIndex = 29;
+
+	// 0 앞, 1 앞 대각, 2 옆, 3 뒷 대각, 4 뒤
 	switch (m_iStageDir)
 	{
-	case DIR_F:
+	case 0:			//앞
 		iAnimIndex = (m_isLeft ? 17 : 52);
 		break;
-	case DIR_B:
+	case 1:		//앞 대각
+		iAnimIndex = (m_isLeft ? 18 : 53);
+		break;
+	case 2:		//옆
+		iAnimIndex = (m_isLeft ? 29 : 64);
+		break;
+	case 3:		//뒷 대각
+		iAnimIndex = (m_isLeft ? 6 : 41);
+		break;
+	case 4:		//뒤
 		iAnimIndex = (m_isLeft ? 7 : 42);
-		break;
-	case DIR_L:
-		iAnimIndex = (m_isLeft ? 29 : 64);
-		break;
-	case DIR_R:
-		iAnimIndex = (m_isLeft ? 29 : 64);
 		break;
 	}
 
@@ -332,11 +338,39 @@ void CHighway_Kiryu::Play_Hit(_float fTimeDelta)
 void CHighway_Kiryu::Play_Shot(_float fTimeDelta)
 {
 	// [31] [mngcar_c_car_gun_aiml_l_shot]
+	// [19] [mngcar_c_car_gun_aiml_f_shot]
+	// [8] [mngcar_c_car_gun_aiml_b_shot]
+	// [43] [mngcar_c_car_gun_aimr_b_shot]
+	// [54] [mngcar_c_car_gun_aimr_f_shot]
 	// [66] [mngcar_c_car_gun_aimr_r_shot]
 
-	m_pModelCom->Set_AnimationIndex((m_isLeft ? 31 : 66), 4.f);
+	//_uint iAnimIndex = (m_isLeft ? 31 : 66);
 
-	if (m_pModelCom->Get_AnimFinished())
+	//// 0 앞, 1 앞 대각, 2 옆, 3 뒷 대각, 4 뒤
+	//switch (m_iStageDir)
+	//{
+	//case 0:			//앞
+	//	iAnimIndex = (m_isLeft ? 17 : 52);
+	//	break;
+	//case 1:		//앞 대각
+	//	iAnimIndex = (m_isLeft ? 31 : 66);
+	//	break;
+	//case 2:		//옆
+	//	iAnimIndex = (m_isLeft ? 31 : 66);
+	//	break;
+	//case 3:		//뒷 대각
+	//	iAnimIndex = (m_isLeft ? 31 : 66);
+	//	break;
+	//case 4:		//뒤
+	//	iAnimIndex = (m_isLeft ? 8 : 43);
+	//	break;
+	//}
+	//m_pModelCom->Set_AnimationIndex(iAnimIndex, 4.f);
+
+	//if (m_pModelCom->Get_AnimFinished())
+	//	Change_Behavior(AIMING);
+
+	if(m_SeparationAnimComs[DEFAULT_ANIM]->Get_AnimFinished())
 		Change_Behavior(AIMING);
 }
 
@@ -345,17 +379,19 @@ void CHighway_Kiryu::Play_Swap(_float fTimeDelta)
 	/*
 	*	[77] [mngcar_c_car_gun_sync_aimltor]
 		[78] [mngcar_c_car_gun_sync_aimrtol]
+		// [73] [mngcar_c_car_gun_sitl_st]
 	*/
 	if (!m_isStarted)
 		m_pModelCom->Set_AnimationIndex((m_isLeft ? 73 : 76), 4.f);
 	else
 		m_pModelCom->Set_AnimationIndex((m_isLeft ? 77 : 78), 4.f);
 
-	if (m_isStarted && m_pModelCom->Get_AnimFinished())
+	// 차로 들어가는 모션
+	if (!m_isStarted && Checked_Animation_Ratio(0.6))
 	{
 		m_isStarted = true;
 	}
-	else if (m_pModelCom->Get_AnimFinished())
+	else if (Checked_Animation_Ratio(0.6))
 	{
 		m_isLeft = !m_isLeft;
 		Change_Behavior(AIMING);
@@ -369,7 +405,7 @@ void CHighway_Kiryu::Change_Behavior(BEHAVIOR_TYPE eType)
 	Off_Separation_Hand();
 
 	// 어깨 분리 해제
-	m_pModelCom->Set_Separation_ParentBone(m_isLeft ? "ude1_r_n" : "ude1_l_n", -1);
+	m_pModelCom->Set_Separation_ParentBone(m_isLeft ? "ude2_l_n" : "ude2_r_n", -1);
 
 	switch (eType)
 	{
@@ -378,36 +414,37 @@ void CHighway_Kiryu::Change_Behavior(BEHAVIOR_TYPE eType)
 		if (m_eCurrentBehavior != SHOT)
 			m_isStarted = false;
 
-		//m_pModelCom->Set_Separation_ParentBone("ketu_c_n", 3);
 		break;
 	}
 	case CHighway_Kiryu::HIDE:
 	{
-		m_isStarted = false;
+		if (eType != m_eCurrentBehavior)
+			m_isStarted = false;
 
-		//m_pModelCom->Set_Separation_ParentBone("ketu_c_n", -1);
 		break;
 	}
 	case CHighway_Kiryu::HIT:
 	{
 		m_isStarted = true;
-		//m_pModelCom->Set_Separation_ParentBone("ketu_c_n", 3);
 		break;
 	}
 	case CHighway_Kiryu::SHOT:
 	{
 		m_isStarted = true;
-		//m_pModelCom->Set_Separation_ParentBone("ketu_c_n", 3);
 
 		// 어깨 분리
-		m_pModelCom->Set_Separation_ParentBone(m_isLeft ? "ude1_r_n" : "ude1_l_n", 4);
-		m_pModelCom->Set_Separation_SingleBone(m_isLeft ? "ude1_r_n" : "ude1_l_n", -1);
+		m_pModelCom->Set_Separation_ParentBone(m_isLeft ? "ude2_l_n" : "ude2_r_n", DEFAULT_ANIM);
+		//m_pModelCom->Set_Separation_SingleBone(m_isLeft ? "ude2_l_n" : "ude2_r_n", -1);
+
+		m_iUdeIndex = m_isLeft ? 34 : 70;
+
+		m_SeparationAnimComs[DEFAULT_ANIM]->Reset_Animation(m_iUdeIndex);
+		m_SeparationAnimComs[DEFAULT_ANIM]->Set_CurrentAnimIndex(m_iUdeIndex);
 		break;
 	}
 	case CHighway_Kiryu::SWAP:
 	{
 		m_isStarted = false;
-		//m_pModelCom->Set_Separation_ParentBone("ketu_c_n", -1);
 		break;
 	}
 	}
@@ -477,39 +514,45 @@ HRESULT CHighway_Kiryu::Add_Components()
 	m_SeparationAnimComs.push_back(pAnimCom);
 
 	//Prototype_Component_Kiryu_CarChase
+	pAnimCom = { nullptr };
 	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Kiryu_CarChase"),
-		TEXT("Com_Anim"), reinterpret_cast<CComponent**>(&m_pAnimCom))))
+		TEXT("Com_Anim"), reinterpret_cast<CComponent**>(&pAnimCom))))
 		return E_FAIL;
-
+	m_SeparationAnimComs.push_back(pAnimCom);
 
 	return S_OK;
 }
 
 HRESULT CHighway_Kiryu::Add_Objects()
 {
-	CSocketObject::SOCKETOBJECT_DESC Desc{};
+	CGun_Cz75::CZ75_DESC Desc{};
 	Desc.pParentMatrix = pTaxiMatrix;
 	Desc.pCombinedTransformationMatrix = m_pModelCom->Get_BoneCombinedTransformationMatrix("buki_r_n");
 	Desc.fRotatePecSec = XMConvertToRadians(90.f);
 	Desc.fSpeedPecSec = 1.f;
+	Desc.fLocalAngle = XMConvertToRadians(-90.f);
+	Desc.iLocalRotAxis = 0;
+	Desc.vLocalPos = _float3(0, 0.04, -0.03);
 	m_pGun_R = dynamic_cast<CGun_Cz75*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Gun_Cz75"), &Desc));
 
-	Desc.pCombinedTransformationMatrix = m_pModelCom->Get_BoneCombinedTransformationMatrix("buki_l_n");
-	m_pGun_L = dynamic_cast<CGun_Cz75*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Gun_Cz75"), &Desc));
+	CGun_Cz75::CZ75_DESC Desc_L{};
+	Desc_L.pParentMatrix = pTaxiMatrix;
+	Desc_L.pCombinedTransformationMatrix = m_pModelCom->Get_BoneCombinedTransformationMatrix("buki_l_n");
+	Desc_L.fRotatePecSec = XMConvertToRadians(90.f);
+	Desc_L.fSpeedPecSec = 1.f;
+	Desc_L.fLocalAngle = XMConvertToRadians(-90.f);
+	Desc_L.iLocalRotAxis = 0;
+	Desc_L.vLocalPos = _float3(0, 0.04, -0.03);
+
+	m_pGun_L = dynamic_cast<CGun_Cz75*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Gun_Cz75"), &Desc_L));
 
 	return S_OK;
 }
 
 HRESULT CHighway_Kiryu::Bind_ResourceData()
 {
-	//if (FAILED(m_pTransformCom->Bind_ShaderMatrix(m_pShaderCom, "g_WorldMatrix")))
-	//	return E_FAIL;
-
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_WorldMatrix", &m_ModelMatrix)))
 		return E_FAIL;
-	/*
-	if (FAILED(m_pShaderCom->Bind_Matrix("g_WorldMatrix", pTaxiMatrix)))
-		return E_FAIL;*/
 
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_VIEW))))
 		return E_FAIL;
@@ -548,7 +591,6 @@ void CHighway_Kiryu::Free()
 
 	Safe_Release(m_pGun_R);
 	Safe_Release(m_pGun_L);
-	Safe_Release(m_pAnimCom);
 }
 
 string CHighway_Kiryu::Get_CurrentAnimationName()
@@ -559,4 +601,28 @@ string CHighway_Kiryu::Get_CurrentAnimationName()
 const _float4x4* CHighway_Kiryu::Get_BoneMatrix(const char* strBoneName)
 {
 	return m_pModelCom->Get_BoneCombinedTransformationMatrix(strBoneName);
+}
+
+const _float3* CHighway_Kiryu::Get_Pos()
+{
+	_float3 vPos;
+
+	memcpy(&vPos, m_ModelMatrix.m[CTransform::STATE_POSITION], sizeof(_float3));
+	return &vPos;
+}
+
+const _float3* CHighway_Kiryu::Get_Look()
+{
+	_float3 vLook;
+
+	memcpy(&vLook, m_ModelMatrix.m[CTransform::STATE_LOOK], sizeof(_float3));
+	return &vLook;
+}
+
+const _float3* CHighway_Kiryu::Get_Right()
+{
+	_float3 vRight;
+
+	memcpy(&vRight, m_ModelMatrix.m[CTransform::STATE_RIGHT], sizeof(_float3));
+	return &vRight;
 }

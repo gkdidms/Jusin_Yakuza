@@ -14,24 +14,42 @@ class CAdventure abstract :
     public CLandObject
 {
 public:
-    typedef struct tMapAdventureObjDesc : public CGameObject::GAMEOBJECT_DESC
+    typedef struct tMapAdventureObjDesc : public CLandObject::LANDOBJ_MAPDESC
     {
-        XMMATRIX		vStartPos;
-        wstring			wstrModelName;
-        int				iShaderPass;
-        int             iNaviNum;
-        int             iNaviRouteNum;
+        
     }ADVENTURE_IODESC;
 
+public:
     enum ADVENTURE_STATE
     {
         ADVENTURE_IDLE,
         ADVENTURE_WALK,
-        ADVENTURE_WALK_S,
+        ADVENTURE_WALK_ST,
         ADVENTURE_WALK_EN,
         ADVENTURE_HIT_L,
         ADVENTURE_HIT_R,
         ADVENTURE_TURN,
+        ADVENTURE_TURN90_R,
+        ADVENTURE_TURN90_L,
+
+
+        ADVENTURE_REACT_A,
+        ADVENTURE_REACT_B,
+        ADVENTURE_REACT_C,
+        ADVENTURE_REACT_D,
+        ADVENTURE_STAND_ST,
+        ADVENTURE_STAND,
+
+        ADVENTURE_TISSUE_ST,
+        ADVENTURE_TISSUE_LP,
+        ADVENTURE_TISSUE_EN,
+    };
+
+    enum GENDER
+    {
+        GENDER_F,
+        GENDER_M,
+        GENDER_END
     };
 
 public:
@@ -46,7 +64,7 @@ public:
     _bool isColl() { return m_isColl; }
 
 public:
-    void Set_Move();
+    void Set_Cheer() { m_isCheer = true; }
 
 public:
     virtual HRESULT Initialize_Prototype() override;
@@ -67,7 +85,6 @@ public:
 protected:
     CAnim* m_pAnimCom = { nullptr }; // 애니메이션만 따로 저장하고있는 애니메이션 컴포넌트 
     CAStart* m_pAStartCom = { nullptr };
-    class CAI_Adventure* m_pTree = { nullptr };    
     
 protected:
     _bool m_isAnimLoop = { false };
@@ -85,15 +102,20 @@ protected:
     _uint   m_iAnim = { 0 };
 
     _bool   m_isColl = { false };
+    _bool m_isCheer = { false };
 
     int     m_iNaviRouteNum = { 0 };
 
     _float m_fSpeed = { 2.f };
 
 protected:
+    _uint m_iGender = { GENDER_END };
+
+protected:
     virtual void Change_Animation();
     void Synchronize_Root(const _float& fTimeDelta);
     void Check_Separation();
+    HRESULT Setup_Animation();
 
 protected:
     virtual HRESULT Add_Components() override;

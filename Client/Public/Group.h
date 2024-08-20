@@ -26,13 +26,14 @@ private:
 
 public:
     void Set_PartObject(CUI_Object* pObject) { m_PartObjects.emplace_back(pObject); }
-
+    virtual void Set_isPlay(_bool isPlay)override;
 public:
     vector<CUI_Object*> Get_PartObjects() { return m_PartObjects; }
     vector<CUI_Object*>* Get_pPartObjects() { return &m_PartObjects; }
     CUI_Object* Get_PartObject(_uint iIndex) { return m_PartObjects[iIndex]; }
 
     void Remove_PartObject(_uint iIndex);
+
 public:
     virtual HRESULT Initialize_Prototype() override;
      HRESULT Initialize_Prototype(ifstream& in) ;
@@ -44,6 +45,11 @@ public:
 
 public:
     void Show_Choice(_int Index);
+    void Show_Off_All();                        //전체끄기
+    void Show_On_All();                        //전체켜기
+    void Show_On(_int Index);
+    void Show_Off(_int Index);
+
 private:
     vector<CUI_Object*> m_PartObjects;
     _float4x4 m_GroupWorld;

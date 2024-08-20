@@ -31,6 +31,7 @@ HRESULT CAI_Yoneda::Initialize(void* pArg)
 
 	AI_YONEDA_DESC* pDesc = static_cast<AI_YONEDA_DESC*>(pArg);
 	m_pWeaponType = pDesc->pWeaponType;
+	m_iMonsterType = CMonster::YONEDA;
 
 	Ready_Tree();
 
@@ -270,8 +271,11 @@ CBTNode::NODE_STATE CAI_Yoneda::ATK_Heavy()
 		{
 			m_isAttack = false;
 
+			//진짜 끝
 			return CBTNode::SUCCESS;
 		}
+
+		// 상태 지속을 위해 빠져나감
 		return CBTNode::RUNNING;
 	}
 

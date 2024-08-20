@@ -26,8 +26,26 @@ HRESULT CGun_Cz75::Initialize(void* pArg)
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
-	m_pTransformCom->Change_Rotation(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), XMConvertToRadians(-90.f));
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0, 0.04, -0.03, 1));
+	CZ75_DESC* pDesc = static_cast<CZ75_DESC*>(pArg);
+
+	_vector vAxis;
+	if (pDesc->iLocalRotAxis == 0)
+	{
+		vAxis = m_pTransformCom->Get_State(CTransform::STATE_RIGHT);
+	}
+	else if (pDesc->iLocalRotAxis == 1)
+	{
+		vAxis = m_pTransformCom->Get_State(CTransform::STATE_UP);
+	}
+	else
+	{
+		vAxis = m_pTransformCom->Get_State(CTransform::STATE_LOOK);
+	}
+
+	_vector vPos = XMLoadFloat3(&pDesc->vLocalPos);
+
+	m_pTransformCom->Change_Rotation(vAxis, pDesc->fLocalAngle);
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSetW(vPos, 1));
 
 	return S_OK;
 }
@@ -39,6 +57,23 @@ void CGun_Cz75::Priority_Tick(const _float& fTimeDelta)
 
 void CGun_Cz75::Tick(const _float& fTimeDelta)
 {
+	//if (m_pGameInstance->GetKeyState(DIK_UP) == HOLD)
+	//{
+	//	m_pTransformCom->Turn(m_pTransformCom->Get_State(CTransform::STATE_LOOK), fTimeDelta);
+	//}
+	//if (m_pGameInstance->GetKeyState(DIK_DOWN) == HOLD)
+	//{
+	//	m_pTransformCom->Turn(m_pTransformCom->Get_State(CTransform::STATE_LOOK), -fTimeDelta);
+	//}
+	//if (m_pGameInstance->GetKeyState(DIK_LEFT) == HOLD)
+	//{
+	//	m_pTransformCom->Turn(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), fTimeDelta);
+	//}
+	//if (m_pGameInstance->GetKeyState(DIK_RIGHT) == HOLD)
+	//{
+	//	m_pTransformCom->Turn(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), -fTimeDelta);
+	//}
+
 	__super::Tick(fTimeDelta);
 }
 

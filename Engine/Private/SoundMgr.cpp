@@ -96,16 +96,136 @@ void CSoundMgr::SetChannelVolume(CHANNELID eID, float fVolume)
 	FMOD_System_Update(m_pSystem);
 }
 
+_float CSoundMgr::GetSoundPosition(const wstring pSoundKey, CHANNELID eID)
+{
+	map<const wstring, FMOD_SOUND*>::iterator iter;
+	// iter = find_if(m_mapSound.begin(), m_mapSound.end(), CTag_Finder(pSoundKey));
+	iter = find_if(m_mapSound.begin(), m_mapSound.end(),
+		[&](auto& iter)->bool
+		{
+			return pSoundKey == iter.first;
+		});
+
+	if (iter == m_mapSound.end())
+		return FMOD_ERR_FILE_NOTFOUND;
+
+	_uint position = 0;
+
+	FMOD_Channel_GetPosition(m_pChannelArr[eID], &position, FMOD_TIMEUNIT_MS);
+
+	// 길이를 초 단위로 반환합니다.
+	return static_cast<_float>(position) / 1000.0f;  // 밀리초를 초로 변환
+}
+
+_float CSoundMgr::GetSoundDuration(const wstring pSoundKey)
+{
+	map<const wstring, FMOD_SOUND*>::iterator iter;
+	iter = find_if(m_mapSound.begin(), m_mapSound.end(),
+		[&](auto& iter) -> bool
+		{
+			return pSoundKey == iter.first;
+		});
+
+	if (iter == m_mapSound.end())
+		return FMOD_ERR_FILE_NOTFOUND;
+
+	// 사운드의 전체 길이를 저장할 변수를 선언합니다.
+	unsigned int length = 0;
+	FMOD_RESULT result = FMOD_Sound_GetLength(iter->second, &length, FMOD_TIMEUNIT_MS);
+
+	if (result != FMOD_OK) {
+		// 오류 처리 (필요한 경우)
+		return -1.0f;
+	}
+
+	// 길이를 초 단위로 반환합니다.
+	return static_cast<_float>(length) / 1000.0f;  // 밀리초를 초로 변환
+}
+
+_bool CSoundMgr::Get_Start(const wstring pSoundKey, CHANNELID eID)
+{
+	map<const wstring, FMOD_SOUND*>::iterator iter;
+	// iter = find_if(m_mapSound.begin(), m_mapSound.end(), CTag_Finder(pSoundKey));
+	iter = find_if(m_mapSound.begin(), m_mapSound.end(),
+		[&](auto& iter)->bool
+		{
+			return pSoundKey == iter.first;
+		});
+
+	if (iter == m_mapSound.end())
+		return FMOD_ERR_FILE_NOTFOUND;
+
+	_uint position = 0;
+	FMOD_Channel_GetPosition(m_pChannelArr[eID], &position, FMOD_TIMEUNIT_MS);
+
+	_int isPlaying = { 0 };
+	FMOD_Channel_IsPlaying(m_pChannelArr[eID], &isPlaying);
+
+	if (isPlaying && position > 0) {
+		return true;
+	}
+
+	return false;
+}
+
+_bool CSoundMgr::Get_End(const wstring pSoundKey, CHANNELID eID)
+{
+	map<const wstring, FMOD_SOUND*>::iterator iter;
+	// iter = find_if(m_mapSound.begin(), m_mapSound.end(), CTag_Finder(pSoundKey));
+	iter = find_if(m_mapSound.begin(), m_mapSound.end(),
+		[&](auto& iter)->bool
+		{
+			return pSoundKey == iter.first;
+		});
+
+	if (iter == m_mapSound.end())
+		return FMOD_ERR_FILE_NOTFOUND;
+
+	_uint position = 0;
+	FMOD_Channel_GetPosition(m_pChannelArr[eID], &position, FMOD_TIMEUNIT_MS);
+
+	_uint length = 0;
+	FMOD_RESULT result = FMOD_Sound_GetLength(iter->second, &length, FMOD_TIMEUNIT_MS);
+
+	_int isPlaying = { 0 };
+	FMOD_Channel_IsPlaying(m_pChannelArr[eID], &isPlaying);
+
+	if (!isPlaying && position >= length) {
+		return true;
+	}
+
+	return false;
+}
+
+void CSoundMgr::Set_SoundPosition(const wstring pSoundKey, CHANNELID eID, _float fSeconds)
+{
+	map<const wstring, FMOD_SOUND*>::iterator iter;
+	// iter = find_if(m_mapSound.begin(), m_mapSound.end(), CTag_Finder(pSoundKey));
+	iter = find_if(m_mapSound.begin(), m_mapSound.end(),
+		[&](auto& iter)->bool
+		{
+			return pSoundKey == iter.first;
+		});
+
+	if (iter == m_mapSound.end())
+		return;
+
+	// 초 단위를 밀리초 단위로 변환합니다.
+	_uint newPosition = static_cast<_uint>(fSeconds * 1000.0f);
+
+	FMOD_Channel_SetPosition(m_pChannelArr[eID], newPosition, FMOD_TIMEUNIT_MS);
+}
+
 void CSoundMgr::LoadSoundFile()
 {
 	_wfinddata64_t fd;
-	__int64 handle = _wfindfirst64(L"../../Client/Bin/Resources/Sound/*.*", &fd);
+	__int64 handle = _wfindfirst64(L"../../Client/Bin/Resources/Sounds/Karaoke/Song/*.*", &fd);
 	if (handle == -1 || handle == 0)
 		return;
 
 	int iResult = 0;
 
-	char szCurPath[128] = "../../Client/Bin/Resources/Sound/";
+	char szCurPath[128] = "../../Client/Bin/Resources/Sounds/Karaoke/Song/";
 	char szFullPath[128] = "";
 	char szFilename[MAX_PATH];
 	while (iResult != -1)

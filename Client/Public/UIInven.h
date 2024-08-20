@@ -16,7 +16,7 @@ protected:
 
 public:
 
-    virtual HRESULT Add_UIData(class CUI_Object* pUIObject) override;
+    virtual HRESULT Add_UIData(class CUI_Object* pUIObject, wstring wstrPrototypeTag = TEXT("")) override;
 
     virtual HRESULT Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg) override;
     virtual HRESULT Tick(const _float& fTimeDelta) override;

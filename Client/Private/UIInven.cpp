@@ -16,7 +16,7 @@ CUIInven::CUIInven(const CUIInven& rhs)
 {
 }
 
-HRESULT CUIInven::Add_UIData(CUI_Object* pUIObject)
+HRESULT CUIInven::Add_UIData(CUI_Object* pUIObject, wstring wstrPrototypeTag)
 {
 	if (pUIObject->Get_Event())
 	{

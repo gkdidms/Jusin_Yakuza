@@ -56,7 +56,7 @@ public:
 	void Play_Animation(_float fTimeDelta, const ANIMATION_DESC& AnimDesc, _bool isRoot = true, string strExcludeBoneName = "");
 	void Play_Animation_CutScene(_float fTimeDelta, class CAnim* pAnim = nullptr, _bool isLoop = false, _int iAnimIndex = -1, _bool isRoot = true, string strExcludeBoneName = "");
 	void Play_Animation_Monster(_float fTimeDelta, class CAnim* pAnim, _bool isLoop, _bool isRoot = true);
-	void Play_Animation_Separation(_float fTimeDelta, _uint iAnimIndex, class CAnim* pAnim, _bool isLoop, _int iAnimType);
+	void Play_Animation_Separation(_float fTimeDelta, _uint iAnimIndex, class CAnim* pAnim, _bool isLoop, _int iAnimType, _float fChangeInterval = 0.f);
 
 	// iDir 0: X, 1: y, 2:z 축으로 회전시킨다.
 	void Play_Animation_Rotation_SeparationBone(_float fTimeDelta, string strBoneName, _uint iDir, _float fRadian, _bool isRoot = true, _bool isLoop = false, class CAnim* pAnim = nullptr);
@@ -126,6 +126,10 @@ public:
 	// 로컬 절두체를 위한
 	_float4x4		Get_LocalMatrix();
 
+	_float3				Get_LocalModelSize() { return m_vModelLocalSize; }
+	_float3				Get_MaxPoints() { return m_vMaxPoints; }
+	_float3				Get_MinPoints() { return m_vMinPoints; }
+
 public:
 	void	Copy_DecalMaterial(vector<DECAL_DESC>* pDecals); /* Decal 정보 얻어오기 */
 	CTexture* Copy_DecalTexture(int	iMaterialNum); /* Decal 텍스처 얻어오기 */
@@ -192,10 +196,11 @@ private:
 	vector<DECAL_DESC>			m_vDecalMaterials;
 	bool						m_bOrigin = { false };
 
-
-	_float4x4					m_ModelLocalMatrix;
-
 	_bool						m_bSaveMaterial = { true };
+
+	_float3						m_vModelLocalSize; // Occulusion culling을 위한
+	_float3						m_vMaxPoints;
+	_float3						m_vMinPoints;
 
 private:
 	_bool m_isTool = { false };

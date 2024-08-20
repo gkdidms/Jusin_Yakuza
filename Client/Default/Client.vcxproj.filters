@@ -370,17 +370,14 @@
     <ClCompile Include="..\Private\Kiryu_KRS_Grab.cpp">
       <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\Grab</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\Adventure.cpp">
-      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure</Filter>
+    <ClCompile Include="..\private\RoadNML.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby\01.Walker\00.NML</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\Adv_Passersby.cpp">
-      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby</Filter>
+    <ClCompile Include="..\private\AI_RoadWalker.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby\01.Walker\AI</Filter>
     </ClCompile>
-    <ClCompile Include="..\private\AI_Adventure.cpp">
-      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\AI</Filter>
-    </ClCompile>
-    <ClCompile Include="..\private\AI_Passersby.cpp">
-      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby\AI</Filter>
+    <ClCompile Include="..\private\AI_RoadNML.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby\01.Walker\00.NML\AI</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\UITutorial.cpp">
       <Filter>95.Utility\05.UIManager\UIScene\UITutorial</Filter>
@@ -607,6 +604,114 @@
     </ClCompile>
     <ClCompile Include="..\Private\Loader_Other.cpp">
       <Filter>01.Levels\99.Loading\Loader\New\Other</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\RoadStanding_NML.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby\00.Standing\00.NML</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\RoadWalker.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby\01.Walker</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\RoadStanding.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby\00.Standing</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIKaraoke_Select.cpp">
+      <Filter>95.Utility\05.UIManager\UIScene\UIKaraoke_Select</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIKaraoke_Play.cpp">
+      <Filter>95.Utility\05.UIManager\UIScene\UIKaraoke_Play</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\KaraokeManager.cpp">
+      <Filter>06.KaraokeManager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIKaraoke_Score.cpp">
+      <Filter>95.Utility\05.UIManager\UIScene\UIKaraoke_Score</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UITitle.cpp">
+      <Filter>95.Utility\05.UIManager\UIScene\UITitle</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\HeadUI.cpp">
+      <Filter>02.GameObjects\13.HeadUI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\AI_RoadStanding.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby\00.Standing\AI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\RoadYOP.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby\01.Walker\01.YOP</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\RoadCAB.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby\00.Standing\01.CAB</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\AI_RoadCAB.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby\00.Standing\01.CAB\AI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\AI_RoadStanding_NML.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby\00.Standing\00.NML\AI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\MonsterGroup.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby\02.MonsterGroup</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\FightManager.cpp">
+      <Filter>06.FightManager</Filter>
+    </ClCompile>
+    <ClCompile Include="..\private\Adventure.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIFightScore.cpp">
+      <Filter>95.Utility\05.UIManager\UIScene\UIFightScore</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\RoadTissue.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby\00.Standing\02.Tissue</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\AI_RoadTissue.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby\00.Standing\02.Tissue\AI</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Adventure_Reactor.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\01.Reactor</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Nishiki.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\05.NPC\00.Nishiki</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\NPC.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\05.NPC</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\MainQuest.cpp">
+      <Filter>03.QuestManager\Quest\Main</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Chapter1_0.cpp">
+      <Filter>03.QuestManager\Quest\Main\Chapter_1\0</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Chapter1_1.cpp">
+      <Filter>03.QuestManager\Quest\Main\Chapter_1\1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Chapter2_0.cpp">
+      <Filter>03.QuestManager\Quest\Main\Chapter_2\0</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIStoreImage.cpp">
+      <Filter>95.Utility\05.UIManager\UIScene\UIStoreImage</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Level_NishikiWalk.cpp">
+      <Filter>01.Levels\12.NishikiWalk</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIQTE.cpp">
+      <Filter>95.Utility\05.UIManager\UIScene\UIQTE</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\UIFade.cpp">
+      <Filter>95.Utility\05.UIManager\UIScene\UIFade</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Chapter3_0.cpp">
+      <Filter>03.QuestManager\Quest\Main\Chapter_3\0</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Chapter3_1.cpp">
+      <Filter>03.QuestManager\Quest\Main\Chapter_3\1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Chapter4_0.cpp">
+      <Filter>03.QuestManager\Quest\Main\Chapter_4\0</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\KaraokeQuest.cpp">
+      <Filter>03.QuestManager\Quest\Karaoke</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Subtitle.cpp">
+      <Filter>07.UI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1012,17 +1117,14 @@
     <ClInclude Include="..\Public\Kiryu_KRS_Grab.h">
       <Filter>02.GameObjects\02.Character\LandObject\00.Player\AnimationBehavior\KRS\Grab</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\Adventure.h">
-      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure</Filter>
+    <ClInclude Include="..\public\RoadNML.h">
+      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby\01.Walker\00.NML</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\Adv_Passersby.h">
-      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby</Filter>
+    <ClInclude Include="..\public\AI_RoadWalker.h">
+      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby\01.Walker\AI</Filter>
     </ClInclude>
-    <ClInclude Include="..\public\AI_Adventure.h">
-      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\AI</Filter>
-    </ClInclude>
-    <ClInclude Include="..\public\AI_Passersby.h">
-      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby\AI</Filter>
+    <ClInclude Include="..\public\AI_RoadNML.h">
+      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby\01.Walker\00.NML\AI</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\UITutorial.h">
       <Filter>95.Utility\05.UIManager\UIScene\UITutorial</Filter>
@@ -1246,6 +1348,114 @@
     </ClInclude>
     <ClInclude Include="..\Public\Loader_Other.h">
       <Filter>01.Levels\99.Loading\Loader\New\Other</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\RoadStanding_NML.h">
+      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby\00.Standing\00.NML</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\RoadWalker.h">
+      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby\01.Walker</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\RoadStanding.h">
+      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby\00.Standing</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIKaraoke_Select.h">
+      <Filter>95.Utility\05.UIManager\UIScene\UIKaraoke_Select</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIKaraoke_Play.h">
+      <Filter>95.Utility\05.UIManager\UIScene\UIKaraoke_Play</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIKaraoke_Score.h">
+      <Filter>95.Utility\05.UIManager\UIScene\UIKaraoke_Score</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UITitle.h">
+      <Filter>95.Utility\05.UIManager\UIScene\UITitle</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\FightManager.h">
+      <Filter>06.FightManager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\AI_RoadStanding.h">
+      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby\00.Standing\AI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\MonsterGroup.h">
+      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby\02.MonsterGroup</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\AI_RoadCAB.h">
+      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby\00.Standing\01.CAB\AI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\RoadCAB.h">
+      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby\00.Standing\01.CAB</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\AI_RoadStanding_NML.h">
+      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby\00.Standing\00.NML\AI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\public\Adventure.h">
+      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\KaraokeManager.h">
+      <Filter>06.KaraokeManager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\KaraokeManager.h">
+      <Filter>06.KaraokeManager</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIFightScore.h">
+      <Filter>95.Utility\05.UIManager\UIScene\UIFightScore</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\RoadTissue.h">
+      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby\00.Standing\02.Tissue</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\AI_RoadTissue.h">
+      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby\00.Standing\02.Tissue\AI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\RoadYOP.h">
+      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby\01.Walker\01.YOP</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Adventure_Reactor.h">
+      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\01.Reactor</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Nishiki.h">
+      <Filter>02.GameObjects\02.Character\LandObject\05.NPC\00.Nishiki</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\NPC.h">
+      <Filter>02.GameObjects\02.Character\LandObject\05.NPC</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\MainQuest.h">
+      <Filter>03.QuestManager\Quest\Main</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Chapter1_0.h">
+      <Filter>03.QuestManager\Quest\Main\Chapter_1\0</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Chapter1_1.h">
+      <Filter>03.QuestManager\Quest\Main\Chapter_1\1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Chapter2_0.h">
+      <Filter>03.QuestManager\Quest\Main\Chapter_2\0</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIStoreImage.h">
+      <Filter>95.Utility\05.UIManager\UIScene\UIStoreImage</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Level_NishikiWalk.h">
+      <Filter>01.Levels\12.NishikiWalk</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIQTE.h">
+      <Filter>95.Utility\05.UIManager\UIScene\UIQTE</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\UIFade.h">
+      <Filter>95.Utility\05.UIManager\UIScene\UIFade</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Chapter3_0.h">
+      <Filter>03.QuestManager\Quest\Main\Chapter_3\0</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Chapter3_1.h">
+      <Filter>03.QuestManager\Quest\Main\Chapter_3\1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Chapter4_0.h">
+      <Filter>03.QuestManager\Quest\Main\Chapter_4\0</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\KaraokeQuest.h">
+      <Filter>03.QuestManager\Quest\Karaoke</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Subtitle.h">
+      <Filter>07.UI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -1785,15 +1995,6 @@
     <Filter Include="02.GameObjects\02.Character\LandObject\02.Adventure">
       <UniqueIdentifier>{e953efb4-bf89-4f41-8ac1-a70274d77017}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\02.Character\LandObject\02.Adventure\AI">
-      <UniqueIdentifier>{118e6329-be46-4fd0-8074-1988d055f79a}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby">
-      <UniqueIdentifier>{32d0da74-6f1f-48e1-b18f-c96b8d5b2377}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby\AI">
-      <UniqueIdentifier>{826ca722-05bb-4d95-acd5-42aa425e1c6f}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObjects\02.Character\LandObject\03.CarChase">
       <UniqueIdentifier>{5c299c28-69e6-4612-a808-f559d8352e9d}</UniqueIdentifier>
     </Filter>
@@ -1914,6 +2115,138 @@
     <Filter Include="01.Levels\99.Loading\Loader\New\Other">
       <UniqueIdentifier>{72c7d0c3-74b2-447f-a915-187b4dc90856}</UniqueIdentifier>
     </Filter>
+    <Filter Include="95.Utility\05.UIManager\UIScene\UIKaraoke_Select">
+      <UniqueIdentifier>{9552b748-69cc-4e5d-809b-65ab482f2a02}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\05.UIManager\UIScene\UIKaraoke_Play">
+      <UniqueIdentifier>{89b5f32b-a135-4a09-b509-b249ac6b1469}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06.KaraokeManager">
+      <UniqueIdentifier>{8e50b980-64ac-47bc-af7b-202c88551681}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\05.UIManager\UIScene\UIKaraoke_Score">
+      <UniqueIdentifier>{24e750fa-2c28-4120-a72a-e3f2bab74b8d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\05.UIManager\UIScene\UITitle">
+      <UniqueIdentifier>{30831fab-dee3-4322-945c-12079c973a08}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\13.HeadUI">
+      <UniqueIdentifier>{f51c6e12-d152-4828-9f5c-8354f9fa7ce2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="06.FightManager">
+      <UniqueIdentifier>{60075471-10c1-46e8-b958-25b36b621421}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\05.UIManager\UIScene\UIFightScore">
+      <UniqueIdentifier>{761783be-a212-4fe1-adf7-127467f45044}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\05.UIManager\UIScene\UIStoreImage">
+      <UniqueIdentifier>{fd457105-bb59-4c6f-abd6-4eac2881b652}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby">
+      <UniqueIdentifier>{2631b981-8317-478e-b4c4-0cb3881af39a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby\02.MonsterGroup">
+      <UniqueIdentifier>{36fe7f9f-65f0-4112-a92d-8a21a869b4bf}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby\00.Standing">
+      <UniqueIdentifier>{ab637ee5-cf3c-4e2d-9ff6-d99aff7ab004}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby\00.Standing\01.CAB">
+      <UniqueIdentifier>{4d8b340f-3734-4527-967f-73c95c0f010d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby\00.Standing\01.CAB\AI">
+      <UniqueIdentifier>{57361669-b117-499a-85e3-13c66056ce0e}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby\00.Standing\00.NML">
+      <UniqueIdentifier>{4f89b866-ac52-47f8-a288-1b2938a7684f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby\00.Standing\00.NML\AI">
+      <UniqueIdentifier>{d07800cf-4913-43c5-9101-0fadabd3e156}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby\00.Standing\02.Tissue">
+      <UniqueIdentifier>{4777f0b2-a8f0-4e18-b5de-37fd840cf24a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby\00.Standing\02.Tissue\AI">
+      <UniqueIdentifier>{31fcde30-83a0-43bd-ac03-fb4a03d72e87}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby\00.Standing\AI">
+      <UniqueIdentifier>{16ebbc04-eb2b-4478-bb72-c4894c2ac1a4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby\01.Walker">
+      <UniqueIdentifier>{32cfeb87-e345-4fa5-814c-59789f56b410}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby\01.Walker\00.NML">
+      <UniqueIdentifier>{32d0da74-6f1f-48e1-b18f-c96b8d5b2377}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby\01.Walker\00.NML\AI">
+      <UniqueIdentifier>{826ca722-05bb-4d95-acd5-42aa425e1c6f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby\01.Walker\AI">
+      <UniqueIdentifier>{118e6329-be46-4fd0-8074-1988d055f79a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby\01.Walker\01.YOP">
+      <UniqueIdentifier>{95e0265b-d22a-451a-9d86-207070a3e337}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\02.Adventure\01.Reactor">
+      <UniqueIdentifier>{aad757a4-7baf-4155-9d1c-dd613e203657}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\05.NPC">
+      <UniqueIdentifier>{f492ad94-922c-4670-9ed0-68aa22cc8562}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\05.NPC\00.Nishiki">
+      <UniqueIdentifier>{bee9ce01-3c08-40f1-b5ef-f93fd054e0ca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\05.NPC\01.Kanekashi">
+      <UniqueIdentifier>{cfc40050-0b96-4c44-a0c2-60892605fe8f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.QuestManager\Quest\Main">
+      <UniqueIdentifier>{6b71c9eb-f3cc-4a45-9193-7c80a9cc3970}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.QuestManager\Quest\Main\Chapter_1">
+      <UniqueIdentifier>{415199ca-d45c-4343-a9f0-63369a8551b2}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.QuestManager\Quest\Main\Chapter_1\0">
+      <UniqueIdentifier>{23ba251f-283a-4e54-be08-f8ee6d45334f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.QuestManager\Quest\Main\Chapter_1\1">
+      <UniqueIdentifier>{86e579e0-bfaf-4fb3-9bf4-640fc7dfe652}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Levels\12.NishikiWalk">
+      <UniqueIdentifier>{75a359bd-f3c1-4d69-b316-5fd41d66aa5a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.QuestManager\Quest\Main\Chapter_2">
+      <UniqueIdentifier>{151862c1-c970-4eb7-ae4f-da72cc1ca262}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.QuestManager\Quest\Main\Chapter_2\0">
+      <UniqueIdentifier>{0aab858a-ea0e-4a82-bd30-29fd86502b8d}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="07.UI">
+      <UniqueIdentifier>{a965cd0b-5011-46b9-a0cf-904504f247a4}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.QuestManager\Quest\Main\Chapter_3">
+      <UniqueIdentifier>{3a408304-6099-4e59-88ec-c4649dc5211c}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.QuestManager\Quest\Main\Chapter_3\0">
+      <UniqueIdentifier>{4ffe03a6-fecc-4bbb-bd5b-e9d9f9a8bf79}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.QuestManager\Quest\Karaoke">
+      <UniqueIdentifier>{de1b5be3-48d6-43a7-944f-794ea66ff5c7}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.QuestManager\Quest\Main\Chapter_3\1">
+      <UniqueIdentifier>{e0b58e9b-cc16-4cbc-b33a-65424093b9c0}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.QuestManager\Quest\Main\Chapter_4">
+      <UniqueIdentifier>{9b48d4f4-65ad-4d1a-8ec8-c19571a8a461}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.QuestManager\Quest\Main\Chapter_4\0">
+      <UniqueIdentifier>{b1e1234c-ff0e-4849-8af9-37743d9670a6}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\05.UIManager\UIScene\UIQTE">
+      <UniqueIdentifier>{b1a36725-e5c0-4191-9517-a4f1417bd9b1}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\05.UIManager\UIScene\UIFade">
+      <UniqueIdentifier>{1a6c981b-ca70-4f90-9dce-c4dc34219b57}</UniqueIdentifier>
+    </Filter>
   </ItemGroup>
   <ItemGroup>
     <ResourceCompile Include="Client.rc">
@@ -1964,6 +2297,12 @@
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_BoneCompute.hlsl">
+      <Filter>97.ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxCube_Occulusion.hlsl">
+      <Filter>97.ShaderFiles</Filter>
+    </FxCompile>
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_OcculusionCulling.hlsl">
       <Filter>97.ShaderFiles</Filter>
     </FxCompile>
   </ItemGroup>

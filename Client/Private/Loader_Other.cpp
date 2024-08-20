@@ -2,6 +2,9 @@
 
 #include "GameInstance.h"
 
+#include "Background.h"
+#include "Subtitle.h"
+
 #pragma region Camera
 #include "PlayerCamera.h"
 #include "DebugCamera.h"
@@ -412,6 +415,10 @@ HRESULT CLoader_Other::Loading_Default()
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Shader_VtxMeshSky"),
 		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxMeshSky.hlsl"), VTXMESH::Elements, VTXMESH::iNumElements))))
 		return E_FAIL;
+	/* For.Prototype_Component_Shader_VtxCube */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Shader_VtxCube_Occulusion"),
+		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxCube_Occulusion.hlsl"), VTXCUBE_OCCULUSION::Elements, VTXCUBE_OCCULUSION::iNumElements))))
+		return E_FAIL;
 	/* For.Prototype_Component_Shader_VtxMeshLight */
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Shader_VtxMeshLight"),
 		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxMeshLight.hlsl"), VTXMESH::Elements, VTXMESH::iNumElements))))
@@ -448,6 +455,10 @@ HRESULT CLoader_Other::Loading_Default()
 	/* For.Prototype_Component_Shader_BoneCompute */
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Shader_BoneCompute"),
 		CComputeShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_BoneCompute.hlsl")))))
+		return E_FAIL;
+	/* For.Prototype_Component_Shader_OcculusionCulling */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Shader_OcculusionCulling"),
+		CComputeShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_OcculusionCulling.hlsl")))))
 		return E_FAIL;
 #pragma endregion
 
@@ -495,6 +506,14 @@ HRESULT CLoader_Other::Loading_For_LogoLevel()
 	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_CarChaseCamera"), CCarChaseCamera::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
 #pragma endregion
+
+	/* For.Prototype_GameObject_BackGround */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_BackGround"), CBackground::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_Subtitle */
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Subtitle"), CSubtitle::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
 
 	m_isFinished = true;
 
@@ -582,6 +601,18 @@ HRESULT CLoader_Other::Loading_For_Dogimazo_Boss()
 	return S_OK;
 }
 
+HRESULT CLoader_Other::Loading_For_Street()
+{
+	if (FAILED(Loading_Default()))
+		return E_FAIL;
+
+	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
+
+	m_isFinished = true;
+
+	return S_OK;
+}
+
 HRESULT CLoader_Other::Loading_For_CarChase()
 {
 	if (FAILED(Loading_Default()))
@@ -599,7 +630,35 @@ HRESULT CLoader_Other::Loading_For_Karaoke()
 	if (FAILED(Loading_Default()))
 		return E_FAIL;
 
-	lstrcpy(m_szLoadingText, TEXT("로딩이 완료되었습니다."));
+	lstrcpy(m_szLoadingText, TEXT("Othre 로딩이 완료되었습니다."));
+
+	m_isFinished = true;
+
+	return S_OK;
+}
+
+HRESULT CLoader_Other::Loading_For_NishikiWalk()
+{
+	if (FAILED(Loading_Default()))
+		return E_FAIL;
+
+	lstrcpy(m_szLoadingText, TEXT("Othre 로딩이 완료되었습니다."));
+
+	m_isFinished = true;
+
+	return S_OK;
+}
+
+HRESULT CLoader_Other::Loading_For_Tutorial()
+{
+	if (FAILED(Loading_Default()))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Texture_Nishiki_Beeper"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/UI/Store/2d_yk_adv01-010.dds"), 1))))
+		return E_FAIL;
+
+	lstrcpy(m_szLoadingText, TEXT("Othre 로딩이 완료되었습니다."));
 
 	m_isFinished = true;
 

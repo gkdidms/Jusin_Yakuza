@@ -177,7 +177,7 @@ public:
     //void    Set_NaviRouteIndex(int iIndex) { m_iNaviRouteNum = iIndex; }
     void    Set_SeizeOff(_bool isOff = true);
     void    Set_ItemOff();
-
+    void Set_CurrentStyle(BATTLE_STYLE iStyle) { m_eCurrentStyle = iStyle; }
 
     /* Virtual Funtion */
 public:
@@ -254,6 +254,7 @@ private:
     void Setting_Target_Wall();
 
     void Radial_Event();
+    void Face_Event();
 
 
     /* 캐릭터 스테이터스 관련 함수 */ 
@@ -294,7 +295,7 @@ private:
 
     /* 행동, 이동 관련 변수들 */
 private:
-    BATTLE_STYLE    m_eCurrentStyle = { KRS };
+    BATTLE_STYLE    m_eCurrentStyle = { ADVENTURE };
     // 스타일마다 겹치는 행동이 있을 수 있어서 int값으로 저장하고 형변환하여 저장한다.
     _uint           m_iCurrentBehavior = static_cast<_uint>(KRS_BEHAVIOR_STATE::BTL_START);
 
@@ -324,7 +325,7 @@ private:
 
     /* 플레이어 스테이터스 관련 변수들 */
 private:
-    _uint           m_iCurrentHitLevel = { 3 };
+    _uint           m_iCurrentHitLevel = { 0 };
     _float          m_fHitGauge = { 0.f };
 
     int             m_iNaviRouteNum = { 0 }; //루트
@@ -347,6 +348,10 @@ private:
 
 
     class CQteManager* m_pQTEMgr = { nullptr };
+
+
+private:
+    _uint m_Money = { 0 };
 
 private:
     virtual HRESULT Add_Components() override;

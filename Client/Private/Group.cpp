@@ -28,6 +28,12 @@ CGroup::CGroup(const CGroup& rhs)
 
 }
 
+void CGroup::Set_isPlay(_bool isPlay)
+{
+	for (auto& iter : m_PartObjects)
+		iter->Set_isPlay(isPlay);
+}
+
 void CGroup::Remove_PartObject(_uint iIndex)
 {
 	auto iter = m_PartObjects.begin();
@@ -104,6 +110,36 @@ void CGroup::Show_Choice(_int Index)
 		else
 			m_PartObjects[i]->Set_isPlay(false);
 	}
+}
+
+void CGroup::Show_Off_All()
+{
+	for (size_t i = 0; i < m_PartObjects.size(); i++)
+	{
+		m_PartObjects[i]->Set_isPlay(false);
+	}
+}
+
+void CGroup::Show_On_All()
+{
+	for (size_t i = 0; i < m_PartObjects.size(); i++)
+	{
+		m_PartObjects[i]->Set_isPlay(true);
+	}
+}
+
+void CGroup::Show_On(_int Index)
+{
+	if (m_PartObjects.size() <= Index) return;
+
+	m_PartObjects[Index]->Set_isPlay(true);
+}
+
+void CGroup::Show_Off(_int Index)
+{
+	if (m_PartObjects.size() <= Index) return;
+
+	m_PartObjects[Index]->Set_isPlay(false);
 }
 
 

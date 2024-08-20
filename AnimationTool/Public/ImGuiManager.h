@@ -148,7 +148,8 @@ private:
 private:
 	/* Initailize */
 	void Setting_Collider_Value(_uint iBoneIndex);
-	void Setting_InitialData();
+	void Setting_InitialData(string strFolderType);
+	void Setting_ModelList(string strFolderType);
 
 	/* Reset */
 	void Reset_Collider_Value();
@@ -168,6 +169,7 @@ private:
 	void EffectState_Save(string strPath);
 	void RimEvent_Save(string strPath);
 	void TrailEvent_Save(string strPath);
+	void FaceEvent_Save(string strPath);
 	void BloodEvent_Save(string strPath);
 	void RadialEvent_Save(string strPath);
 
@@ -180,6 +182,7 @@ private:
 	void EffectState_Load(string strPath);
 	void RimEvent_Load(string strPath);
 	void TrailEvent_Load(string strPath);
+	void FaceEvent_Load(string strPath);
 	void BloodEvent_Load(string strPath);
 	void RadialEvent_Load(string strPath);
 
@@ -317,6 +320,7 @@ private:
 	float						m_fAnimationPosition = { 0.f };
 
 	int							m_iModelType = { PLAYER };
+	int							m_iModelPathType = { PLAYER };
 
 private:
 	bool						m_isPause = { false };
