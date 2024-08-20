@@ -65,7 +65,7 @@ private:
 
 private:
     void Update_CurrentLyricsIndex();
-    void Render_Cutsom_Sequence(const _float& fTimeDelta);          // 레이트틱을 원하는 순서대로 몰아 부른다.
+    void Render_Custom_Sequence(const _float& fTimeDelta);          // 레이트틱을 원하는 순서대로 몰아 부른다.
 
     void Change_Lyrics();
     void Setting_BackUI(LYRICS_DESC Desc, _fvector vPos, _uint iLyricsIndex);
