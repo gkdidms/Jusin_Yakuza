@@ -20,6 +20,7 @@ float g_FarZ = 3000.f;
 float g_fDistortionWeight;
 bool g_isAttach;
 bool g_isNormal;
+float2 g_fUVCount;
 
 struct VS_IN
 {
@@ -418,9 +419,17 @@ void GS_FALL(point GS_NOBILL_IN In[1], inout TriangleStream<GS_NOBIL_OUT> Triang
     float4 PointPosition = float4(In[0].vPosition, 1.f); //¿ùµåÁÂÇ¥
 
         
+    //¾Ö´ÔÁøÇà
+    float2 uvWeight = float2(1 / g_fUVCount.x, 1 / g_fUVCount.y);
+    
+    float SpriteIndex = lerp(0.f, (g_fUVCount.x * g_fUVCount.y), (In[0].vLifeTime.y / In[0].vLifeTime.x));
+    
+    float2 uv = float2(float(floor(SpriteIndex) % g_fUVCount.x) / g_fUVCount.x, floor(SpriteIndex / g_fUVCount.x) / g_fUVCount.y);
+
+   
     vPosition = In[0].vPosition + vRight + vUp;
     Out[0].vPosition = mul(float4(vPosition, 1.f), matVP);
-    Out[0].vTexcoord = float2(0.f, 0.f);
+    Out[0].vTexcoord = uv;
     Out[0].vLifeTime = In[0].vLifeTime;
     Out[0].vProjPos = Out[0].vPosition;
     Out[0].vNormal = vLook;
@@ -429,7 +438,7 @@ void GS_FALL(point GS_NOBILL_IN In[1], inout TriangleStream<GS_NOBIL_OUT> Triang
     
     vPosition = In[0].vPosition - vRight + vUp;
     Out[1].vPosition = mul(float4(vPosition, 1.f), matVP);
-    Out[1].vTexcoord = float2(1.f, 0.f);
+    Out[1].vTexcoord = float2(uv.x + uvWeight.x, uv.y);
     Out[1].vLifeTime = In[0].vLifeTime;
     Out[1].vProjPos = Out[1].vPosition;
     Out[1].vNormal = vLook;
@@ -439,7 +448,7 @@ void GS_FALL(point GS_NOBILL_IN In[1], inout TriangleStream<GS_NOBIL_OUT> Triang
     
     vPosition = In[0].vPosition - vRight - vUp;
     Out[2].vPosition = mul(float4(vPosition, 1.f), matVP);
-    Out[2].vTexcoord = float2(1.f, 1.f);
+    Out[2].vTexcoord = float2(uv.x + uvWeight.x, uv.y + uvWeight.y);
     Out[2].vLifeTime = In[0].vLifeTime;
     Out[2].vProjPos = Out[2].vPosition;
     Out[2].vNormal = vLook;
@@ -448,7 +457,7 @@ void GS_FALL(point GS_NOBILL_IN In[1], inout TriangleStream<GS_NOBIL_OUT> Triang
     
     vPosition = In[0].vPosition + vRight - vUp;
     Out[3].vPosition = mul(float4(vPosition, 1.f), matVP);
-    Out[3].vTexcoord = float2(0.f, 1.f);
+    Out[3].vTexcoord = float2(uv.x, uv.y + uvWeight.y);
     Out[3].vLifeTime = In[0].vLifeTime;
     Out[3].vProjPos = Out[3].vPosition;
     Out[3].vNormal = vLook;
@@ -465,6 +474,7 @@ void GS_FALL(point GS_NOBILL_IN In[1], inout TriangleStream<GS_NOBIL_OUT> Triang
     Triangles.Append(Out[3]);
     Triangles.RestartStrip();
 }
+
 float4x4 RotationMatrix(float3 axis, float angle)
 {
     float c, s;

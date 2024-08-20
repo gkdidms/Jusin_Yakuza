@@ -1637,6 +1637,7 @@ HRESULT CImguiManager::Edit_Particle(_uint Index)
 
 		EffectDesc.isNormal = m_EffectDesc.isNormal;
 		EffectDesc.NormalTag = m_EffectDesc.NormalTag;
+		EffectDesc.fUVCount = m_EffectDesc.fUVCount;
 
 		m_EditParticle[Index] = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Particle_Point"), &EffectDesc);
 		if (nullptr == m_EditParticle[Index])
@@ -1819,6 +1820,7 @@ HRESULT CImguiManager::Load_Desc(_uint Index)
 
 		m_EffectDesc.isNormal = pEffect->Get_isNormal();
 		m_EffectDesc.NormalTag = pEffect->Get_NormalTag();
+		m_EffectDesc.fUVCount = dynamic_cast<CParticle_Point*>(pEffect)->Get_UVCount();
 
 		for (size_t i = 0; i < TextureTags.size(); i++)
 		{
@@ -2823,7 +2825,12 @@ void CImguiManager::Editor_Tick(_float fTimeDelta)
 			memcpy(&m_EffectDesc.BufferInstance.CrossArea, Temp, sizeof(_float));
 			bChange = true;
 		}
-
+		Temp = (_float*)&m_EffectDesc.fUVCount;
+		if (ImGui::InputFloat2("UVCount", Temp))
+		{
+			memcpy(&m_EffectDesc.fUVCount, Temp, sizeof(_float2));
+			bChange = true;
+		}
 		
 		break;
 	}

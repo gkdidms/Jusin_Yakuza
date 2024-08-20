@@ -633,11 +633,10 @@ void CMonster::BloodEffect_Event()
 				CEffect::EFFECT_DESC EffectDesc;
 
 				_float4x4 worldMat;
-					
+
 				_uint iBoneIndex = pEvent.iBoneIndex;
 				_matrix BoneMatrix = XMLoadFloat4x4(m_pModelCom->Get_BoneCombinedTransformationMatrix_AtIndex(iBoneIndex));
 				XMStoreFloat4x4(&worldMat, (BoneMatrix * m_pTransformCom->Get_WorldMatrix()));
-				
 				EffectDesc.pWorldMatrix = &worldMat;
 
 				if (pEvent.isLoop)
@@ -646,7 +645,6 @@ void CMonster::BloodEffect_Event()
 					{
 						// 해당하는 이펙트를 켜는 함수
 						m_pBloodEffects.find(pEvent.strBonelName)->second->On();
-
 					}
 					else
 					{
@@ -654,12 +652,18 @@ void CMonster::BloodEffect_Event()
 						m_pBloodEffects.find(pEvent.strBonelName)->second->Off();
 					}
 				}
-				else								  // 루프가 아닌 이펙트라면
+				else                                  // 루프가 아닌 이펙트라면
 				{
-					m_pEffectManager->Cine_BloodEffect(EffectDesc, pEvent.iBloodEffectType);
+					if (!pEvent.isPlayed)
+					{
+						pEvent.isPlayed = true;
+						m_pEffectManager->Cine_BloodEffect(EffectDesc, pEvent.iBloodEffectType);
+					}
 				}
-
-
+			}
+			else if (CurPos >= Duration)
+			{
+				pEvent.isPlayed = false;
 			}
 		}
 	}
