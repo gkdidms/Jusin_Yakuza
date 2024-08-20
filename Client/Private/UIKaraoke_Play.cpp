@@ -126,7 +126,7 @@ HRESULT CUIKaraoke_Play::Tick(const _float& fTimeDelta)
 
 HRESULT CUIKaraoke_Play::Late_Tick(const _float& fTimeDelta)
 {
-    Render_Cutsom_Sequence(fTimeDelta);
+    Render_Custom_Sequence(fTimeDelta);
 
     if (!m_isAnimFin)
         Check_AimFin();
@@ -353,6 +353,7 @@ void CUIKaraoke_Play::Show_Grade(CNoteBase* pNote)
         }
     }
 
+    m_pPlayUI[GRADE][m_Pivots[GRADE]]->Show_Off_All();
     m_pPlayUI[GRADE][m_Pivots[GRADE]]->Show_On(iShowIndex);
     m_pPlayUI[GRADE][m_Pivots[GRADE]]->Show_UI();
 
@@ -388,7 +389,7 @@ void CUIKaraoke_Play::Update_CurrentLyricsIndex()
 
 }
 
-void CUIKaraoke_Play::Render_Cutsom_Sequence(const _float& fTimeDelta)
+void CUIKaraoke_Play::Render_Custom_Sequence(const _float& fTimeDelta)
 {
     RenderGroup_Back(fTimeDelta);
     RenderGroup_Blue(fTimeDelta);
@@ -409,8 +410,8 @@ void CUIKaraoke_Play::Render_Cutsom_Sequence(const _float& fTimeDelta)
 
     m_Lyrics->Late_Tick(fTimeDelta);
 
-    //RenderGroup_GoodEffect(fTimeDelta);
-    //RenderGroup_GreatEffect(fTimeDelta);
+    RenderGroup_GoodEffect(fTimeDelta);
+    RenderGroup_GreatEffect(fTimeDelta);
 
     RenderGroup_Grade(fTimeDelta);
 }
@@ -1244,11 +1245,11 @@ _uint CUIKaraoke_Play::Compute_Num(_uint iCount)
     case CURRENTBAR:
         return 0;
     case GOODEFFECT:
-        return 30;
+        return 50;
     case GRADE:
-        return 30;
+        return 50;
     case GREATEFFECT:
-        return 30;
+        return 50;
     case HOLD:
         return 5;
     case PRESSLINE:
@@ -1258,13 +1259,13 @@ _uint CUIKaraoke_Play::Compute_Num(_uint iCount)
     case ROLLLINE:
         return 5;
     case DOWN:
-        return 30;
+        return 50;
     case LEFT:
-        return 30;
+        return 50;
     case RIGHT:
-        return 30;
+        return 50;
     case UP:
-        return 30;
+        return 50;
     default:
         return 0;
     }
