@@ -125,12 +125,16 @@ private:
     virtual ~CPlayer() = default;
     
 #ifdef _DEBUG
-public:
+
 
 public:
     void Set_AnimStart(_bool isAnim) { m_isAnimStart = isAnim; }
 
     _bool isAnimStart() { return m_isAnimStart; }
+
+
+#endif // DEBUG
+    public:
     _bool CanHitAction() { return m_CanHitAction; }
 
     const map<CUTSCENE_ANIMATION_TYPE, string>& Get_CutSceneAnims() const
@@ -142,8 +146,6 @@ public:
     {
         m_eCutSceneType = eAnim;
     }
-
-#endif // DEBUG
 
     /* Getter */
 public:
@@ -343,9 +345,9 @@ private:
 
 #ifdef _DEBUG
     _bool m_isAnimStart = { true };
-    CUTSCENE_ANIMATION_TYPE m_eCutSceneType = { OI_UPPER };
-#endif // _DEBUG
 
+#endif // _DEBUG
+    CUTSCENE_ANIMATION_TYPE m_eCutSceneType = { OI_UPPER };
 
     class CQteManager* m_pQTEMgr = { nullptr };
 
