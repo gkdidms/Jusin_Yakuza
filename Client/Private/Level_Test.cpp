@@ -176,12 +176,12 @@ HRESULT CLevel_Test::Ready_Player(const wstring& strLayerTag)
 	Desc.fRotatePecSec = XMConvertToRadians(180.f);
 
 	// 원래 플레이어
-	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_Player"), strLayerTag, &Desc)))
-		return E_FAIL;
+	//if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_Player"), strLayerTag, &Desc)))
+	//	return E_FAIL;
 
 	// 가라오케 플레이어
-	//if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_Kiryu_Karaoke"), strLayerTag, &Desc)))
-	//	return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_Kiryu_Karaoke"), strLayerTag, &Desc)))
+		return E_FAIL;
 
 	return S_OK;
 }

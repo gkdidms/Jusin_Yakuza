@@ -654,10 +654,16 @@ void CMonster::BloodEffect_Event()
 				}
 				else								  // 루프가 아닌 이펙트라면
 				{
-					m_pEffectManager->Cine_BloodEffect(EffectDesc, pEvent.iBloodEffectType);
+					if (!pEvent.isPlayed)
+					{
+						pEvent.isPlayed = true;
+						m_pEffectManager->Cine_BloodEffect(EffectDesc, pEvent.iBloodEffectType);
+					}
 				}
-
-
+			}
+			else if (CurPos >= Duration)
+			{
+				pEvent.isPlayed = false;
 			}
 		}
 	}
