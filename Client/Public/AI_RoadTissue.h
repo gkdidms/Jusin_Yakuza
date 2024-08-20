@@ -26,6 +26,9 @@ private:
     virtual CBTNode::NODE_STATE Check_Stand() override;
     virtual CBTNode::NODE_STATE Ground_The_Player() override;
 
+private:
+    _float      m_fGroundDelta = { 0.f };
+
 public:
     static CAI_RoadTissue* Create();
     virtual CBTNode* Clone(void* pArg);

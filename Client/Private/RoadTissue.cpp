@@ -28,7 +28,7 @@ HRESULT CRoadTissue::Initialize(void* pArg)
     if (FAILED(Add_Components()))
         return E_FAIL;
 
-
+    m_fChangeInterval = 14.f;
     return S_OK;
 }
 
