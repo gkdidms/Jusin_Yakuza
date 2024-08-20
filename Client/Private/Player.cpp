@@ -585,7 +585,7 @@ void CPlayer::Attack_Event(CGameObject* pHitObject, _bool isItem)
 				// »ó´ë¹æÀÌ Á×¾ú´Ù¸é Àá±ñ ¸ØÃá´Ù.
 				if (m_pTargetObject->isObjectDead())
 					HitFreeze_On();
-				else if (static_cast<CKiryu_KRH_Attack*>(m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior))->IsFinishBlow())
+				else if (static_cast<CKiryu_KRC_Attack*>(m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior))->IsFinishBlow())
 					HitRadial_On();
 			}
 

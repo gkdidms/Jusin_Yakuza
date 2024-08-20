@@ -39,7 +39,7 @@ HRESULT CLevel_Test::Initialize()
 	// 테스트 다하면 지워라
 	/* For.Prototype_Component_Navigation */
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Navigation"),
-		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/NaviData/Navigation_79.dat")))))
+		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/NaviData/Navigation_3.dat")))))
 		return E_FAIL;
 
 	m_pKaraokeManager = CKaraokeManager::Create();
@@ -200,15 +200,14 @@ HRESULT CLevel_Test::Ready_Test_Hyewon()
 {
 	// 가라오케 네비는 9번ㄴ
 	// 가라오케 맵 81번
-	// 
 	//m_pFileTotalManager->Set_MapObj_In_Client(81, LEVEL_TEST);
 	//m_pFileTotalManager->Set_Lights_In_Client(9);
 
-	//요네다 깔린 길거리맵 91
+	// 몬스터 깔린 맵: 92
+	// 몬스터 깔린 네비: 3
 	// 과거의 길거리맵 79
-	// 길거리맵 네비: 7
 	// 과거의 길거리맵 네비: 79
-	m_pFileTotalManager->Set_MapObj_In_Client(79, LEVEL_TEST);
+	m_pFileTotalManager->Set_MapObj_In_Client(92, LEVEL_TEST);
 	m_pFileTotalManager->Set_Lights_In_Client(99);
 	m_pFileTotalManager->Set_Collider_In_Client(0, LEVEL_TEST);
 	m_pFileTotalManager->Set_Trigger_In_Client(79, LEVEL_TEST);
