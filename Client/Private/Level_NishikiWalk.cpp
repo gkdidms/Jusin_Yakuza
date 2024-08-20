@@ -34,15 +34,11 @@ HRESULT CLevel_NIshikiWalk::Initialize()
 	if (FAILED(m_pQuestManager->Initialize()))
 		return E_FAIL;
 
-	m_pQuestManager->Start_Quest(1);
-
-	m_pTutorialManager = CTutorialManager::Create();
-	if (nullptr == m_pTutorialManager)
-		return E_FAIL;
-
 	/* 클라 파싱 */
 	m_pFileTotalManager->Set_MapObj_In_Client(STAGE_NISHIKIWALK, LEVEL_NISHIKIWALK);
 	m_pFileTotalManager->Set_Lights_In_Client(99);
+
+	m_pQuestManager->Start_Quest(CQuestManager::CHAPTER_2);
 
 	if (FAILED(Ready_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
@@ -52,7 +48,11 @@ HRESULT CLevel_NIshikiWalk::Initialize()
 
 void CLevel_NIshikiWalk::Tick(const _float& fTimeDelta)
 {
-	m_pQuestManager->Execute();
+	if (m_pQuestManager->Execute())
+	{
+		//true 이면 다음 스테이지로 이동
+		m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_KARAOKE_START));
+	}
 #ifdef _DEBUG
 	SetWindowText(g_hWnd, TEXT("총격전 맵"));
 #endif
@@ -61,7 +61,7 @@ void CLevel_NIshikiWalk::Tick(const _float& fTimeDelta)
 HRESULT CLevel_NIshikiWalk::Ready_Camera(const wstring& strLayerTag)
 {
 	/* 카메라 추가 시 Debug Camera를 첫번째로 놔두고 추가해주세요 (디버깅 툴에서 사용중)*/
-	const _float4x4* pPlayerFloat4x4 = dynamic_cast<CTransform*>(m_pGameInstance->Get_GameObject_Component(LEVEL_TUTORIAL, TEXT("Layer_Player"), TEXT("Com_Transform", 0)))->Get_WorldFloat4x4();
+	const _float4x4* pPlayerFloat4x4 = dynamic_cast<CTransform*>(m_pGameInstance->Get_GameObject_Component(LEVEL_NISHIKIWALK, TEXT("Layer_Player"), TEXT("Com_Transform", 0)))->Get_WorldFloat4x4();
 
 	/* 0. 디버그용 카메라 */
 	CDebugCamera::DEBUG_CAMERA_DESC		CameraDesc{};
@@ -76,14 +76,14 @@ HRESULT CLevel_NIshikiWalk::Ready_Camera(const wstring& strLayerTag)
 	CameraDesc.fRotatePecSec = XMConvertToRadians(90.f);
 	CameraDesc.pPlayerMatrix = pPlayerFloat4x4;
 
-	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TUTORIAL, TEXT("Prototype_GameObject_DebugCamera"), strLayerTag, &CameraDesc)))
+	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_NISHIKIWALK, TEXT("Prototype_GameObject_DebugCamera"), strLayerTag, &CameraDesc)))
 		return E_FAIL;
 
 	/* 초기화 할때는 -1 */
 	/* 1. 씬용 카메라 */
 	CCineCamera::CINE_CAMERA_DESC		cineDesc;
 	cineDesc.iFileNum = -1;
-	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TUTORIAL, TEXT("Prototype_GameObject_CCineCamera"), strLayerTag, &cineDesc)))
+	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_NISHIKIWALK, TEXT("Prototype_GameObject_CCineCamera"), strLayerTag, &cineDesc)))
 		return E_FAIL;
 
 	/* 2. 플레이어 카메라 */
@@ -98,9 +98,9 @@ HRESULT CLevel_NIshikiWalk::Ready_Camera(const wstring& strLayerTag)
 	PlayerCameraDesc.fSpeedPecSec = 20.f;
 	PlayerCameraDesc.fRotatePecSec = XMConvertToRadians(90.f);
 	PlayerCameraDesc.pPlayerMatrix = pPlayerFloat4x4;
-	PlayerCameraDesc.iCurLevel = LEVEL_TUTORIAL;
+	PlayerCameraDesc.iCurLevel = LEVEL_NISHIKIWALK;
 
-	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TUTORIAL, TEXT("Prototype_GameObject_PlayerCamera"), strLayerTag, &PlayerCameraDesc)))
+	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_NISHIKIWALK, TEXT("Prototype_GameObject_PlayerCamera"), strLayerTag, &PlayerCameraDesc)))
 		return E_FAIL;
 
 	return S_OK;
@@ -113,7 +113,7 @@ HRESULT CLevel_NIshikiWalk::Ready_Player(const wstring& strLayerTag)
 	//Desc.fRotatePecSec = XMConvertToRadians(0.f);
 	Desc.fRotatePecSec = XMConvertToRadians(180.f);
 
-	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TUTORIAL, TEXT("Prototype_GameObject_Player"), strLayerTag, &Desc)))
+	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_NISHIKIWALK, TEXT("Prototype_GameObject_Player"), strLayerTag, &Desc)))
 		return E_FAIL;
 
 	return S_OK;
@@ -135,6 +135,5 @@ void CLevel_NIshikiWalk::Free()
 
 	Safe_Release(m_pSystemManager);
 	Safe_Release(m_pFileTotalManager);
-	Safe_Release(m_pTutorialManager);
 	Safe_Release(m_pQuestManager);
 }

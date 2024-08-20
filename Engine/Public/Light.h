@@ -26,7 +26,7 @@ public:
     HRESULT             Render(class CShader* pShader, class CVIBuffer_Rect* pVIBuffer);
 
 public:
-    void Bind_LightBuffer(_uint iSlot);
+    HRESULT Bind_LightBuffer(_uint iSlot);
 
 private:
     ID3D11Device* m_pDevice = { nullptr };

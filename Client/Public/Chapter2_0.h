@@ -15,8 +15,8 @@ public:
 	virtual _bool Execute() override;
 
 public:
+	class CNishiki* m_pNishiki = { nullptr };
 	class CSubtitle* m_pSubtitle = { nullptr };
-	_bool m_isTitleFinished = { false };
 
 public:
 	static CChapter2_0* Create(void* pArg);

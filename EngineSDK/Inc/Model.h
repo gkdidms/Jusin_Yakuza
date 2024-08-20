@@ -91,6 +91,7 @@ public:
 	_float Get_FoV(string strAnimationName, _uint iKeyFrameIndex);
 
 	_bool Get_AnimFinished() const;
+	_bool Get_AnimFinished(_uint iIndex) const;
 	_bool Get_AnimChanged() const;
 	_bool Get_AnimRestart() const;
 	_bool Get_AnimLerp() const;			//m_ChangeInterval 값이 0이라면 선형보간을 하지 않는 애니메이션이다

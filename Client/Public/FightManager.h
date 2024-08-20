@@ -4,7 +4,7 @@
 #include "Client_Defines.h"
 
 BEGIN(Engine)
-class CGameInstane;
+class CGameInstance;
 END
 
 BEGIN(Client)

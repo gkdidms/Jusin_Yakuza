@@ -18,7 +18,9 @@ public:
         IDLE,
         TALK,
         CHEER,
-        WALK,
+        WALK_ST,
+        WALK_LP,
+        WALK_EN,
         NISHIKI_STATE_END
     };
 
@@ -29,6 +31,10 @@ private:
 
 public:
     void Set_State(_uint iIndex) { m_iState = iIndex; }
+    
+public:
+    _bool isWalkFinished() { return m_isFinished; }
+    _bool isWalkStartEnd() { return m_isWalkStartEnd; }
 
 public:
     virtual HRESULT Initialize_Prototype() override;
@@ -38,7 +44,13 @@ public:
     virtual void Late_Tick(const _float& fTimeDelta) override;
 
 private:
-    virtual void Change_Animation();
+    _bool m_isFinished = { false };
+    _bool m_isWalkStartEnd = { false };
+
+    _uint m_iAnimIndex = { 0 };
+
+private:
+    void Change_Animation(const _float fTimeDelta);
     virtual HRESULT Add_Components() override;
 
 private:

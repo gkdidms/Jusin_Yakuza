@@ -866,7 +866,7 @@ void CGameInstance::Delete_AllLights()
 	return m_pLight_Manager->Delete_AllLights();
 }
 
-void CGameInstance::Bind_LightComputeBuffer(_uint iSlot)
+HRESULT CGameInstance::Bind_LightComputeBuffer(_uint iSlot)
 {
 	return m_pLight_Manager->Bind_ComputeBuffer(iSlot);
 }

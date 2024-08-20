@@ -62,7 +62,7 @@ void CLevel_Tutorial::Tick(const _float& fTimeDelta)
 	if (m_pQuestManager->Execute())
 	{
 		//true 이면 다음 스테이지로 이동
-		m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_KARAOKE_START));
+		m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_NISHIKIWALK));
 	}
 
 #ifdef _DEBUG

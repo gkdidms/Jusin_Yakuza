@@ -4,6 +4,7 @@
 #include "SystemManager.h"
 #include "FileTotalMgr.h"
 #include "Collision_Manager.h"
+#include "QuestManager.h"
 
 #include "PlayerCamera.h"
 #include "CineCamera.h"
@@ -14,10 +15,12 @@
 CLevel_Street::CLevel_Street(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     : CLevel { pDevice, pContext },
     m_pSystemManager{ CSystemManager::GetInstance() },
-    m_pFileTotalManager{ CFileTotalMgr::GetInstance() }
+    m_pFileTotalManager{ CFileTotalMgr::GetInstance() },
+	m_pQuestManager { CQuestManager::GetInstance() }
 {
     Safe_AddRef(m_pSystemManager);
     Safe_AddRef(m_pFileTotalManager);
+	Safe_AddRef(m_pQuestManager);
 }
 
 HRESULT CLevel_Street::Initialize()
@@ -26,18 +29,39 @@ HRESULT CLevel_Street::Initialize()
         return E_FAIL;
 
     /* 클라 파싱 */
-    m_pFileTotalManager->Set_MapObj_In_Client(STAGE_STREET, m_pGameInstance->Get_CurrentLevel());
-    m_pFileTotalManager->Set_Lights_In_Client(99);
+	if (m_pGameInstance->Get_CurrentLevel() == LEVEL_TOKOSTREET)
+	{
+		m_pFileTotalManager->Set_MapObj_In_Client(STAGE_TOKOSTREET, m_pGameInstance->Get_CurrentLevel());
+		m_pFileTotalManager->Set_Trigger_In_Client(STAGE_TOKOSTREET, m_pGameInstance->Get_CurrentLevel());
+	}
+	else if (m_pGameInstance->Get_CurrentLevel() == LEVEL_STREET)
+	{
+		m_pFileTotalManager->Set_MapObj_In_Client(STAGE_STREET, m_pGameInstance->Get_CurrentLevel());
+		m_pFileTotalManager->Set_Trigger_In_Client(STAGE_STREET, m_pGameInstance->Get_CurrentLevel());
+	}
+    
+	m_pFileTotalManager->Set_Lights_In_Client(99);
    // m_pFileTotalManager->Set_Collider_In_Client(STAGE_STREET, LEVEL_STREET);
 
 	if (FAILED(Ready_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
+
+	if (m_pGameInstance->Get_CurrentLevel() == LEVEL_TOKOSTREET)
+		m_pQuestManager->Start_Quest(CQuestManager::CHAPTER_5);
 
     return S_OK;
 }
 
 void CLevel_Street::Tick(const _float& fTimeDelta)
 {
+	if (m_pQuestManager->Execute())
+	{
+		if (m_pGameInstance->Get_CurrentLevel() == LEVEL_TOKOSTREET)
+			m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_OFFICE_1F));
+		else if (m_pGameInstance->Get_CurrentLevel() == LEVEL_STREET)
+			m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_CARCHASE));
+	}
+
 #ifdef _DEBUG
     SetWindowText(g_hWnd, TEXT("길거리 맵"));
 #endif
@@ -46,7 +70,7 @@ void CLevel_Street::Tick(const _float& fTimeDelta)
 HRESULT CLevel_Street::Ready_Camera(const wstring& strLayerTag)
 {
 	/* 카메라 추가 시 Debug Camera를 첫번째로 놔두고 추가해주세요 (디버깅 툴에서 사용중)*/
-	const _float4x4* pPlayerFloat4x4 = dynamic_cast<CTransform*>(m_pGameInstance->Get_GameObject_Component(LEVEL_STREET, TEXT("Layer_Player"), TEXT("Com_Transform", 0)))->Get_WorldFloat4x4();
+	const _float4x4* pPlayerFloat4x4 = dynamic_cast<CTransform*>(m_pGameInstance->Get_GameObject_Component(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"), TEXT("Com_Transform", 0)))->Get_WorldFloat4x4();
 
 	/* 0. 디버그용 카메라 */
 	CDebugCamera::DEBUG_CAMERA_DESC		CameraDesc{};
@@ -61,14 +85,14 @@ HRESULT CLevel_Street::Ready_Camera(const wstring& strLayerTag)
 	CameraDesc.fRotatePecSec = XMConvertToRadians(90.f);
 	CameraDesc.pPlayerMatrix = pPlayerFloat4x4;
 
-	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_STREET, TEXT("Prototype_GameObject_DebugCamera"), strLayerTag, &CameraDesc)))
+	if (FAILED(m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_DebugCamera"), strLayerTag, &CameraDesc)))
 		return E_FAIL;
 
 	/* 초기화 할때는 -1 */
 	/* 1. 씬용 카메라 */
 	CCineCamera::CINE_CAMERA_DESC		cineDesc;
 	cineDesc.iFileNum = -1;
-	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_STREET, TEXT("Prototype_GameObject_CCineCamera"), strLayerTag, &cineDesc)))
+	if (FAILED(m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_CCineCamera"), strLayerTag, &cineDesc)))
 		return E_FAIL;
 
 	/* 2. 플레이어 카메라 */
@@ -83,9 +107,9 @@ HRESULT CLevel_Street::Ready_Camera(const wstring& strLayerTag)
 	PlayerCameraDesc.fSpeedPecSec = 20.f;
 	PlayerCameraDesc.fRotatePecSec = XMConvertToRadians(90.f);
 	PlayerCameraDesc.pPlayerMatrix = pPlayerFloat4x4;
-	PlayerCameraDesc.iCurLevel = LEVEL_STREET;
+	PlayerCameraDesc.iCurLevel = m_pGameInstance->Get_CurrentLevel();
 
-	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_STREET, TEXT("Prototype_GameObject_PlayerCamera"), strLayerTag, &PlayerCameraDesc)))
+	if (FAILED(m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_PlayerCamera"), strLayerTag, &PlayerCameraDesc)))
 		return E_FAIL;
 
 	/* 3. 컷신용 카메라 */
@@ -99,7 +123,7 @@ HRESULT CLevel_Street::Ready_Camera(const wstring& strLayerTag)
 	CutSceneCameraDesc.fSpeedPecSec = 10.f;
 	CutSceneCameraDesc.fRotatePecSec = XMConvertToRadians(90.f);
 
-	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_CutSceneCamera"), strLayerTag, &CutSceneCameraDesc)))
+	if (FAILED(m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_CutSceneCamera"), strLayerTag, &CutSceneCameraDesc)))
 		return E_FAIL;
 
 	return S_OK;
@@ -112,7 +136,7 @@ HRESULT CLevel_Street::Ready_Player(const wstring& strLayerTag)
 	//Desc.fRotatePecSec = XMConvertToRadians(0.f);
 	Desc.fRotatePecSec = XMConvertToRadians(180.f);
 
-	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_STREET, TEXT("Prototype_GameObject_Player"), strLayerTag, &Desc)))
+	if (FAILED(m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Player"), strLayerTag, &Desc)))
 		return E_FAIL;
 
 	return S_OK;
@@ -134,4 +158,5 @@ void CLevel_Street::Free()
 
     Safe_Release(m_pSystemManager);
     Safe_Release(m_pFileTotalManager);
+	Safe_Release(m_pQuestManager);
 }
