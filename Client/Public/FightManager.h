@@ -21,15 +21,19 @@ public:
 	_bool isStreetFight() { return m_isStreetFight; }
 
 public:
-	void Set_FightStage(_bool isFightStage);
+	void Set_FightStage(_bool isFightStage, class CMonsterGroup* pMonsterGroup = nullptr);
 	void Set_StreetFight(_bool isStreetFight) { m_isStreetFight = isStreetFight; }
 
 public:
+	HRESULT Initialize();
 	void Tick(const _float& fTimeDelta);
 
 private:
 	CGameInstance* m_pGameInstance = { nullptr };
+	class CTutorialManager* m_pTutorialManager = { nullptr };
 	class CUIManager* m_pUIManager = { nullptr };
+
+	class CMonsterGroup* m_pCurrentMonsterGroup = { nullptr };
 
 private:
 	_bool m_isFightStage = { false };
@@ -37,6 +41,8 @@ private:
 
 	_float m_fFinishDuration = { 3.f };
 	_float m_fFinishTime = { 0.f };
+
+	_bool m_isTitleEnd = { false };
 
 public:
 	virtual void Free();

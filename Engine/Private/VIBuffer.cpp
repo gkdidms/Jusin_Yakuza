@@ -19,19 +19,10 @@ CVIBuffer::CVIBuffer(const CVIBuffer& rhs)
 	m_iIndexStride { rhs.m_iIndexStride},
 	m_GIFormat { rhs.m_GIFormat},
 	m_Primitive_Topology{ rhs.m_Primitive_Topology },
-	m_iNumVertexBuffers { rhs.m_iNumVertexBuffers },
-	m_pUAVOut{ rhs.m_pUAVOut },
-	m_pVertexBufferSRV{rhs.m_pVertexBufferSRV},
-	m_pResultBufferUAV(rhs.m_pResultBufferUAV),
-	m_pProcessedVertexBuffer{rhs.m_pProcessedVertexBuffer}
+	m_iNumVertexBuffers { rhs.m_iNumVertexBuffers }
 {
 	Safe_AddRef(m_pVB);
 	Safe_AddRef(m_pIB);
-	Safe_AddRef(m_pUAVOut);
-
-	Safe_AddRef(m_pVertexBufferSRV);
-	Safe_AddRef(m_pResultBufferUAV);
-	Safe_AddRef(m_pProcessedVertexBuffer);
 }
 
 HRESULT CVIBuffer::Initialize_Prototype()
@@ -100,6 +91,12 @@ HRESULT CVIBuffer::Create_Buffer(ID3D11Buffer** pOut)
 
 HRESULT CVIBuffer::Bind_Compute(CComputeShader* pShader)
 {
+	if (m_pVertexBufferSRV == nullptr && m_pResultBufferUAV == nullptr)
+	{
+		Ready_BoneBuffer();
+	}
+
+	m_pContext->CopyResource(m_pSRVIn, m_pVB);
 	m_pContext->CSSetShaderResources(0, 1, &m_pVertexBufferSRV);
 	m_pContext->CSSetUnorderedAccessViews(0, 1, &m_pResultBufferUAV, nullptr);
 
@@ -124,6 +121,18 @@ HRESULT CVIBuffer::Bind_Compute_AABBCube(CComputeShader* pShader)
 
 HRESULT CVIBuffer::Ready_BoneBuffer()
 {
+	// 처리된 결과를 위한 Unordered Access View 생성
+	D3D11_BUFFER_DESC srvbufferDesc = {};
+	srvbufferDesc.ByteWidth = m_iVertexStride * m_iNumVertices;
+	srvbufferDesc.Usage = D3D11_USAGE_DEFAULT;
+	srvbufferDesc.BindFlags = D3D11_BIND_SHADER_RESOURCE | D3D11_BIND_UNORDERED_ACCESS;
+	srvbufferDesc.CPUAccessFlags = 0;
+	srvbufferDesc.MiscFlags = D3D11_RESOURCE_MISC_BUFFER_STRUCTURED;
+	srvbufferDesc.StructureByteStride = m_iVertexStride;
+
+	if (FAILED(m_pDevice->CreateBuffer(&srvbufferDesc, nullptr, &m_pSRVIn)))
+		return E_FAIL;
+
 	// 정점 버퍼를 위한 Shader Resource View 생성
 	D3D11_SHADER_RESOURCE_VIEW_DESC srvDesc = {};
 	srvDesc.Format = DXGI_FORMAT_UNKNOWN; // 정점 버퍼의 형식에 따라 적절히 설정
@@ -131,7 +140,7 @@ HRESULT CVIBuffer::Ready_BoneBuffer()
 	srvDesc.Buffer.FirstElement = 0;
 	srvDesc.Buffer.NumElements = m_iNumVertices;
 
-	if (FAILED(m_pDevice->CreateShaderResourceView(m_pVB, &srvDesc, &m_pVertexBufferSRV)))
+	if (FAILED(m_pDevice->CreateShaderResourceView(m_pSRVIn, &srvDesc, &m_pVertexBufferSRV)))
 		return E_FAIL;
 
 	// 처리된 결과를 위한 Unordered Access View 생성

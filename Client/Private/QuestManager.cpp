@@ -50,6 +50,11 @@ _uint CQuestManager::Get_CurrentQuestType()
     return m_pCurrentQuest->Get_Type();
 }
 
+_uint CQuestManager::Get_CurrentQuestTriggerIndex()
+{
+    return m_QuestInfo[m_iCurrentChapter][m_iCurrentQuestIndex].iObjectIndex;
+}
+
 void CQuestManager::Set_CurrentColl(_bool isColl)
 {
     m_pCurrentQuest->Set_Coll(isColl);
@@ -102,10 +107,12 @@ HRESULT CQuestManager::Ready_Quest()
 
             iQuestIndex++,
             iNextQuestIndex++,
-            101 // 니시키 오브젝트 index
+            -1,
+            -1,
+            8001 // 니시키 오브젝트 index
         ),
         QUEST_INFO(
-            QUEST_TALK,
+            QUEST_MAIN,
             1,
 
             iQuestIndex++,
@@ -114,27 +121,27 @@ HRESULT CQuestManager::Ready_Quest()
     };
     m_QuestInfo.emplace(CHAPTER_1, Chapter1);
 
-    //니시키야마와 걷기
-    vector<QUEST_INFO> Chapter2;
-    Chapter2 = {
-        QUEST_INFO(
-            QUEST_MAIN,
-            2,
+    ////니시키야마와 걷기
+    //vector<QUEST_INFO> Chapter2;
+    //Chapter2 = {
+    //    QUEST_INFO(
+    //        QUEST_MAIN,
+    //        2,
 
-            iQuestIndex++,
-            iNextQuestIndex++
-        ),
-        QUEST_INFO(
-            QUEST_MOVE,
-            0,
+    //        iQuestIndex++,
+    //        iNextQuestIndex++
+    //    ),
+    //    QUEST_INFO(
+    //        QUEST_MOVE,
+    //        0,
 
-            iQuestIndex++,
-            iNextQuestIndex++,
-            -1,
-            80001
-        )
-    };
-    m_QuestInfo.emplace(CHAPTER_2, Chapter2);
+    //        iQuestIndex++,
+    //        iNextQuestIndex++,
+    //        -1,
+    //        80001
+    //    )
+    //};
+    //m_QuestInfo.emplace(CHAPTER_2, Chapter2);
 
     //가라오케
     vector<QUEST_INFO> Chapter3;
@@ -152,6 +159,16 @@ HRESULT CQuestManager::Ready_Quest()
 
             iQuestIndex++,
             iNextQuestIndex++
+        ),
+        QUEST_INFO(
+            QUEST_TALK,
+            0,
+
+            iQuestIndex++,
+            iNextQuestIndex++,
+            -1,
+            -1,
+            8002
         ),
         QUEST_INFO(
             QUEST_MAIN,
@@ -215,6 +232,9 @@ _bool CQuestManager::Execute()
         Safe_Release(m_pCurrentQuest);
 
         ++m_iCurrentQuestIndex;
+        if (m_iCurrentQuestIndex >= m_QuestInfo[m_iCurrentChapter].size())
+            return true;
+
         QUEST_INFO Info = m_QuestInfo[m_iCurrentChapter][m_iCurrentQuestIndex];
 
         //새로운 퀘스트 부여하기
@@ -231,7 +251,7 @@ _bool CQuestManager::Execute()
         else
             return false;
 
-        return true;
+        return false;
     }
 
     return false;
