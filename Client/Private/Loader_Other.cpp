@@ -627,8 +627,84 @@ HRESULT CLoader_Other::Loading_For_CarChase()
 
 HRESULT CLoader_Other::Loading_For_Karaoke()
 {
-	if (FAILED(Loading_Default()))
+
+#pragma region Component
+	lstrcpy(m_szLoadingText, TEXT("컴포넌트 원형 를(을) 로딩 중 입니다."));
+	/* For.Prototype_Component_VIBuffer_Rect */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_VIBuffer_Rect"), CVIBuffer_Rect::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+
+	/* For.Prototype_Component_VIBuffer_Cube */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_VIBuffer_Cube"), CVIBuffer_Cube::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_Collider */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Collider"), CCollider::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_VIBuffer_Instance_Mesh */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_VIBuffer_Instance_Mesh"),
+		CVIBuffer_Instance_Mesh::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_Component_VIBuffer_Instance_Point */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_VIBuffer_Instance_Point"),
+		CVIBuffer_Instance_Point::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+#pragma endregion
+
+#pragma region Shader
+	lstrcpy(m_szLoadingText, TEXT("셰이더를(을) 로딩 중 입니다."));
+	/* For.Prototype_Component_Shader_VtxAnim */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Shader_VtxAnim"),
+		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxAnimMesh.hlsl"), VTXANIMMESH::Elements, VTXANIMMESH::iNumElements))))
+		return E_FAIL;
+	/* For.Prototype_Component_Shader_Mesh */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Shader_Mesh"),
+		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxMesh.hlsl"), VTXMESH::Elements, VTXMESH::iNumElements))))
+		return E_FAIL;
+	/* For.Prototype_Component_Shader_MeshItem */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Shader_MeshItem"),
+		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxMeshItem.hlsl"), VTXMESH::Elements, VTXMESH::iNumElements))))
+		return E_FAIL;
+	/* For.Prototype_Component_Shader_MeshMap */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Shader_MeshMap"),
+		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxMeshMap.hlsl"), VTXMESH::Elements, VTXMESH::iNumElements))))
+		return E_FAIL;
+	/* For.Prototype_Component_Shader_VtxMeshSky */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Shader_VtxMeshSky"),
+		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxMeshSky.hlsl"), VTXMESH::Elements, VTXMESH::iNumElements))))
+		return E_FAIL;
+	/* For.Prototype_Component_Shader_VtxCube */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Shader_VtxCube_Occulusion"),
+		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxCube_Occulusion.hlsl"), VTXCUBE_OCCULUSION::Elements, VTXCUBE_OCCULUSION::iNumElements))))
+		return E_FAIL;
+	/* For.Prototype_Component_Shader_VtxMeshLight */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Shader_VtxMeshLight"),
+		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxMeshLight.hlsl"), VTXMESH::Elements, VTXMESH::iNumElements))))
+		return E_FAIL;
+	/* For.Prototype_Component_Shader_VtxPosTex */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Shader_VtxPosTex"),
+		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxPosTex.hlsl"), VTXPOSTEX::Elements, VTXPOSTEX::iNumElements))))
+		return E_FAIL;
+	/* For.Prototype_Component_Shader_VtxNorTex */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Shader_VtxNorTex"),
+		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxNorTex.hlsl"), VTXNORTEX::Elements, VTXNORTEX::iNumElements))))
+		return E_FAIL;
+	/* For.Prototype_Component_Shader_VtxCube */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Shader_VtxCube"),
+		CShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_VtxCube.hlsl"), VTXCUBE::Elements, VTXCUBE::iNumElements))))
+		return E_FAIL;
+	/* For.Prototype_Component_Shader_BoneCompute */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Shader_BoneCompute"),
+		CComputeShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_BoneCompute.hlsl")))))
+		return E_FAIL;
+	/* For.Prototype_Component_Shader_OcculusionCulling */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Shader_OcculusionCulling"),
+		CComputeShader::Create(m_pDevice, m_pContext, TEXT("../Bin/ShaderFiles/Shader_OcculusionCulling.hlsl")))))
+		return E_FAIL;
+#pragma endregion
+
 
 	lstrcpy(m_szLoadingText, TEXT("Othre 로딩이 완료되었습니다."));
 

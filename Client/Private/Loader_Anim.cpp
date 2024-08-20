@@ -542,14 +542,45 @@ HRESULT CLoader_Anim::Loading_For_CarChase()
 
 HRESULT CLoader_Anim::Loading_For_Karaoke()
 {
-	if (FAILED(Loading_Default()))
-		return E_FAIL;
-
-	
-
-	///* For.Prototype_GameObject_Kiryu_Karaoke */
-	//if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Kiryu_Karaoke"), CKaraoke_Kiryu::Create(m_pDevice, m_pContext))))
+	//if (FAILED(Loading_Default()))
 	//	return E_FAIL;
+	Add_Models_On_Path(m_eNextLevel, TEXT("../Bin/Resources/Models/Anim/Player/"));
+	Add_Models_On_Path(m_eNextLevel, TEXT("../Bin/Resources/Models/Anim/NPC/"));
+
+	Add_Components_On_Path_Material(m_eNextLevel, TEXT("../Bin/DataFiles/MaterialData/Char/NPC"));
+	Add_Components_On_Path_Material(m_eNextLevel, TEXT("../Bin/DataFiles/MaterialData/Char/Player"));
+
+
+	/* For.Prototype_Component_Anim_NPC */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Anim_NPC"), CAnim::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Anim/Monster/Jimu/Animation_NPC.dat", false))))
+		return E_FAIL;
+	//if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Anim_NPC"), CAnim::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Anim/Monster/Animation_NPC.fbx", true))))
+	//	return E_FAIL;
+
+	///* For.Prototype_Component_CutSceneAnim_ForPlayer */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_CutSceneAnim_ForPlayer"), CAnim::Create(m_pDevice, m_pContext, "../Bin/DataFiles/AnimationData/Animation_CutScene_ForPlayer.dat", false))))
+		return E_FAIL;
+	//if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_CutSceneAnim_ForPlayer"), CAnim::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Anim/Kiryu_CamAction.fbx", true))))
+	//	return E_FAIL;
+
+	/* For.Prototype_Component_Anim_Kiryu */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Anim_Kiryu"), CAnim::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Anim/Player/Kiryu/Animation_Kiryu.dat", false))))
+		return E_FAIL;
+	//if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Anim_Kiryu"), CAnim::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Anim/Animation_Kiryu.fbx", true))))
+	//	return E_FAIL;
+
+	///* For.Prototype_Component_Anim_KiryuFace */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Anim_KiryuFace"), CAnim::Create(m_pDevice, m_pContext, "../Bin/DataFiles/AnimationData/Animation_Kiryu_Face.dat", false))))
+		return E_FAIL;
+	//if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Anim_KiryuFace"), CAnim::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Anim/Animation_Kiryu_Face.fbx", true))))
+	//	return E_FAIL;
+
+	///* For.Prototype_Component_Anim_Hand */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Anim_Hand"), CAnim::Create(m_pDevice, m_pContext, "../Bin/DataFiles/AnimationData/Animation_Hand.dat", false))))
+		return E_FAIL;
+	//if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Anim_Hand"), CAnim::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Anim/Animation_Hand.fbx", true))))
+	//	return E_FAIL;
+
 	lstrcpy(m_szLoadingText, TEXT("애님 로딩이 완료되었습니다."));
 
 	m_isFinished = true;

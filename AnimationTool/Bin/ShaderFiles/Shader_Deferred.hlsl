@@ -349,9 +349,9 @@ PS_OUT PS_MAIN_BOF(PS_IN In)
     vWorldPos = mul(vWorldPos, g_ProjMatrixInv);
     vWorldPos = mul(vWorldPos, g_ViewMatrixInv);
     
-    float fDistance = length(vWorldPos.xyz - g_vCamPosition.xyz);
+    float fDistance = distance(vWorldPos.xyz, g_vCamPosition.xyz);
     
-    Out.vColor = lerp(vDiffuseDesc, vDiffuseBlurDesc, saturate(fDistance / g_fFar));
+    Out.vColor = lerp(vDiffuseDesc, vDiffuseBlurDesc, min(fDistance / g_fFar, 1.f));
     
     return Out;
 }

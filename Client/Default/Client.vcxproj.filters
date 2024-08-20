@@ -713,6 +713,9 @@
     <ClCompile Include="..\Private\Subtitle.cpp">
       <Filter>07.UI</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\Level_KaraokeLobby.cpp">
+      <Filter>01.Levels\13.KaraokeLobby</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\MainApp.h">
@@ -1456,6 +1459,9 @@
     </ClInclude>
     <ClInclude Include="..\Public\Subtitle.h">
       <Filter>07.UI</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Level_KaraokeLobby.h">
+      <Filter>01.Levels\13.KaraokeLobby</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -2246,6 +2252,9 @@
     </Filter>
     <Filter Include="95.Utility\05.UIManager\UIScene\UIFade">
       <UniqueIdentifier>{1a6c981b-ca70-4f90-9dce-c4dc34219b57}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Levels\13.KaraokeLobby">
+      <UniqueIdentifier>{18a430a4-f016-4009-b623-a9fee27d3e06}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

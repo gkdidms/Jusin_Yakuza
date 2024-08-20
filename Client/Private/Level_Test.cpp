@@ -185,6 +185,7 @@ HRESULT CLevel_Test::Ready_Player(const wstring& strLayerTag)
 
 	return S_OK;
 }
+
 HRESULT CLevel_Test::Ready_Test_Load()
 {
 	m_pFileTotalManager->Set_MapObj_In_Client(9, LEVEL_TEST);

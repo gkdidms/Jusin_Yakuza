@@ -143,7 +143,7 @@ HRESULT CQuestManager::Ready_Quest()
     //};
     //m_QuestInfo.emplace(CHAPTER_2, Chapter2);
 
-    //가라오케
+    //가라오케 시작
     vector<QUEST_INFO> Chapter3;
     Chapter3 = {
         QUEST_INFO(
@@ -152,24 +152,26 @@ HRESULT CQuestManager::Ready_Quest()
 
             iQuestIndex++,
             iNextQuestIndex++
-        ),
+        )
+    };
+    m_QuestInfo.emplace(CHAPTER_3, Chapter3);
+
+    //가라오케 노래
+    vector<QUEST_INFO> Chapter4;
+    Chapter4 = {
         QUEST_INFO(
             QUEST_KARAOKE,
             0,
 
             iQuestIndex++,
             iNextQuestIndex++
-        ),
-        QUEST_INFO(
-            QUEST_TALK,
-            0,
+        )
+    };
+    m_QuestInfo.emplace(CHAPTER_4, Chapter4);
 
-            iQuestIndex++,
-            iNextQuestIndex++,
-            -1,
-            -1,
-            8002
-        ),
+    //가라오케 끝
+    vector<QUEST_INFO> Chapter5;
+    Chapter5 = {
         QUEST_INFO(
             QUEST_MAIN,
             4,
@@ -178,11 +180,11 @@ HRESULT CQuestManager::Ready_Quest()
             iNextQuestIndex++
         )
     };
-    m_QuestInfo.emplace(CHAPTER_3, Chapter3);
+    m_QuestInfo.emplace(CHAPTER_5, Chapter5);
 
     //길거리
-    vector<QUEST_INFO> Chapter4;
-    Chapter4 = {
+    vector<QUEST_INFO> Chapter6;
+    Chapter6 = {
         QUEST_INFO(
             QUEST_MAIN,
             5,
@@ -205,11 +207,11 @@ HRESULT CQuestManager::Ready_Quest()
             iNextQuestIndex++
         ),
     };
-    m_QuestInfo.emplace(CHAPTER_4, Chapter4);
+    m_QuestInfo.emplace(CHAPTER_6, Chapter6);
 
     //사체업자
-    vector<QUEST_INFO> Chapter5;
-    Chapter4 = {
+    vector<QUEST_INFO> Chapter7;
+    Chapter7 = {
         QUEST_INFO(
             QUEST_KILL,
             0,
@@ -219,7 +221,7 @@ HRESULT CQuestManager::Ready_Quest()
             4001 //iTargetIndex
         )
     };
-    m_QuestInfo.emplace(CHAPTER_5, Chapter5);
+    m_QuestInfo.emplace(CHAPTER_7, Chapter7);
     
     return S_OK;
 }
