@@ -4,6 +4,7 @@
 #include "SystemManager.h"
 #include "FileTotalMgr.h"
 #include "Collision_Manager.h"
+#include "QuestManager.h"
 
 #include "PlayerCamera.h"
 #include "CineCamera.h"
@@ -16,10 +17,12 @@
 CLevel_Karaoke::CLevel_Karaoke(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     : CLevel { pDevice, pContext },
     m_pSystemManager{ CSystemManager::GetInstance() },
-    m_pFileTotalManager{ CFileTotalMgr::GetInstance() }
+    m_pFileTotalManager{ CFileTotalMgr::GetInstance() },
+	m_pQuestManager{ CQuestManager::GetInstance() }
 {
     Safe_AddRef(m_pSystemManager);
     Safe_AddRef(m_pFileTotalManager);
+	Safe_AddRef(m_pQuestManager);
 }
 
 HRESULT CLevel_Karaoke::Initialize()
@@ -27,10 +30,13 @@ HRESULT CLevel_Karaoke::Initialize()
     if (FAILED(Ready_Player(TEXT("Layer_Player"))))
         return E_FAIL;
 
+	m_pQuestManager->Start_Quest(CQuestManager::CHAPTER_3);
+
     ///* Å¬¶ó ÆÄ½Ì */
     m_pFileTotalManager->Set_MapObj_In_Client(STAGE_KARAOKE, LEVEL_KARAOKE);
-    m_pFileTotalManager->Set_Lights_In_Client(STAGE_KARAOKE);
-    m_pFileTotalManager->Set_Collider_In_Client(STAGE_KARAOKE, LEVEL_KARAOKE);
+    m_pFileTotalManager->Set_Lights_In_Client(99);
+	m_pFileTotalManager->Set_Trigger_In_Client(STAGE_KARAOKE, LEVEL_KARAOKE);
+    //m_pFileTotalManager->Set_Collider_In_Client(STAGE_KARAOKE, LEVEL_KARAOKE);
 
 	m_pKaraokeManager = CKaraokeManager::Create();
 	if (nullptr == m_pKaraokeManager)
@@ -46,6 +52,11 @@ HRESULT CLevel_Karaoke::Initialize()
 void CLevel_Karaoke::Tick(const _float& fTimeDelta)
 {
 	m_pKaraokeManager->Tick(fTimeDelta);
+
+	if (m_pQuestManager->Execute())
+	{
+		m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_TOKOSTREET));
+	}
 #ifdef _DEBUG
     SetWindowText(g_hWnd, TEXT("°¡¶ó¿ÀÄÉ ¸Ê"));
 #endif
@@ -64,7 +75,7 @@ HRESULT CLevel_Karaoke::Ready_Camera(const wstring& strLayerTag)
 	CameraDesc.fFovY = XMConvertToRadians(60.0f);
 	CameraDesc.fAspect = g_iWinSizeX / (_float)g_iWinSizeY;
 	CameraDesc.fNear = 0.1f;
-	CameraDesc.fFar = 3000.f;
+	CameraDesc.fFar = 200.f;
 	CameraDesc.fSpeedPecSec = 10.f;
 	CameraDesc.fRotatePecSec = XMConvertToRadians(90.f);
 	CameraDesc.pPlayerMatrix = pPlayerFloat4x4;
@@ -87,7 +98,7 @@ HRESULT CLevel_Karaoke::Ready_Camera(const wstring& strLayerTag)
 	PlayerCameraDesc.fFovY = XMConvertToRadians(60.0f);
 	PlayerCameraDesc.fAspect = g_iWinSizeX / (_float)g_iWinSizeY;
 	PlayerCameraDesc.fNear = 0.1f;
-	PlayerCameraDesc.fFar = 3000.f;
+	PlayerCameraDesc.fFar = 200.f;
 	PlayerCameraDesc.fSpeedPecSec = 20.f;
 	PlayerCameraDesc.fRotatePecSec = XMConvertToRadians(90.f);
 	PlayerCameraDesc.pPlayerMatrix = pPlayerFloat4x4;
@@ -129,4 +140,5 @@ void CLevel_Karaoke::Free()
     Safe_Release(m_pSystemManager);
     Safe_Release(m_pFileTotalManager);
     Safe_Release(m_pKaraokeManager);
+	Safe_Release(m_pQuestManager);
 }

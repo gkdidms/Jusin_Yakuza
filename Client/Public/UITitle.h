@@ -18,6 +18,7 @@ protected:
 
 public:
     _bool isStart() { return m_isStart; }
+    _bool isEnd() { return m_isEnd; }
 
 public:
     void Set_Start(_bool isStart) { m_isStart = isStart; }
@@ -38,6 +39,7 @@ public:
 private:
     _float m_iCurrentTime = { 0.f };
     _bool m_isStart = false;
+    _bool m_isEnd = { false };
 
 public:
     static CUITitle* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg = nullptr);

@@ -22,10 +22,7 @@ HRESULT CNishiki::Initialize(void* pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
-	if (FAILED(Add_Components()))
-		return E_FAIL;
-
-
+	m_iObjectIndex = 101;
 	return S_OK;
 }
 
@@ -42,7 +39,7 @@ void CNishiki::Tick(const _float& fTimeDelta)
 
 	m_pModelCom->Play_Animation(fTimeDelta, m_isAnimLoop);
 
-	Synchronize_Root(fTimeDelta);
+	//Synchronize_Root(fTimeDelta);
 }
 
 void CNishiki::Late_Tick(const _float& fTimeDelta)
@@ -71,8 +68,12 @@ HRESULT CNishiki::Add_Components()
 	if (FAILED(__super::Add_Components()))
 		return E_FAIL;
 
-	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_GameObject_Nishiki"),
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Model_Nishiki"),
 		TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
+		return E_FAIL;
+
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Material_Nishiki"),
+		TEXT("Com_Material"), reinterpret_cast<CComponent**>(&m_pMaterialCom))))
 		return E_FAIL;
 
 	if (m_iCurrentLevel == LEVEL_NISHIKIWALK)

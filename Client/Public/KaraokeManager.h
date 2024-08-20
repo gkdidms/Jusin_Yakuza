@@ -13,6 +13,10 @@ class CKaraokeManager :
 {
 private:
     const _float SCORE_TIMER = 3.f;
+    const _float GREAT_TIME = 0.08f;
+    const _float GOOD_TIME = 0.15f;
+    const _float MISS_TIME = 0.2f;
+    const _float MISS_TIME2 = 0.22f;
 
 public:
     enum MUSIC { STUPID , JUDGEMENT,MERMAID , MUSIC_END};
@@ -33,7 +37,24 @@ public:
 private:
     void KeyInput();
 
+    void Update_CurrentNoteIndex();
+
+    void SingleNote_KeyInput(class CNoteBase* pNote);
+    void LongNote_KeyInput(class CNoteBase* pNote);
+    void BurstNote_KeyInput(class CNoteBase* pNote);
+
     void Setting_NoteUIs();
+    void Check_NextNote();
+
+    void Store_SingleNoteScore(class CNoteBase* pNote);
+    void Acc_LongNoteScore(class CNoteBase* pNote);
+    void Store_LongNoteScore(class CNoteBase* pNote);
+    void Acc_BurstNoteScore(class CNoteBase* pNote);
+    void Store_BurstNoteScore(class CNoteBase* pNote, _float fCurSoundPos);
+
+    void Store_Miss(class CNoteBase* pNote);
+
+    void Show_Grade_UI(class CNoteBase* pNote);
     
 public:
     _bool IsSongEnd() {
@@ -53,6 +74,8 @@ private:
     _float  m_fScoreTimer = { 0.f };
     _bool m_isScoreTimerOn = { false };
     _bool m_isScoreEnd = { false };
+
+    _uint m_iCheckNoteIndex = { 0 };        // 검사할 노트 인덱스
 
 private:
     HRESULT Ready_Karaoke();

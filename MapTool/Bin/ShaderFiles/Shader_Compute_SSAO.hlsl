@@ -1,24 +1,19 @@
-float g_fRadius = 0.003f;
-float g_fSSAOBias = 0.025f;
-const float2 g_NoiseScale = float2(1280.f / 4.f, 720.f / 4.f);
-
 cbuffer SSAOBuffer : register(b0)
 {
-    float4 g_SSAORandoms[64];
-    matrix g_WorldMatrix;
+    float4 SSAORandoms[64];
+    matrix WorldMatrix;
+    matrix ViewMatrix;
+    matrix ProjMatrix;
     matrix ViewMatrixInv;
-    matrix g_ProjMatrixInv;
-    matrix g_CamViewMatrix;
-    matrix g_CamProjMatrix;
+    matrix ProjMatrixInv;
+    matrix CamViewMatrix;
+    matrix CamProjMatrix;
     
-    
-    float4 vCamPosition;
     float fFar;
     float fRadiuse;
     float fSSAOBise;
     float buffer1;
 }
-
 
 Texture2D g_SSAONoiseTexture : register(t0);
 Texture2D g_DepthTexture : register(t1);
@@ -28,9 +23,14 @@ RWTexture2D<float4> g_OutputTexture : register(u0);
 
 float3x3 Get_TBN(float3 vNormal, float2 vTexcoord)
 {
-    float3 vRandomVec = g_SSAONoiseTexture.Load(int3(vTexcoord * g_NoiseScale, 0)).xyz;
+    float2 g_NoiseScale = float2(1280.f / 4.f, 720.f / 4.f);
+    float2 scaledTexcoord = vTexcoord * g_NoiseScale;
+    scaledTexcoord = scaledTexcoord * float2(1280.f, 720.f);
+    int2 wrappedTexcoord = int2(scaledTexcoord % 4.0f);
+    
+    float3 vRandomVec = g_SSAONoiseTexture.Load(int3(wrappedTexcoord, 0)).xyz;
     vRandomVec = vRandomVec * 2.f - 1.f;
-    matrix matWV = mul(g_WorldMatrix, g_CamViewMatrix);
+    matrix matWV = mul(WorldMatrix, ViewMatrix);
     vRandomVec = normalize(mul(vector(vRandomVec, 0.f), matWV)).xyz;
     
     float3 tangent = normalize(vRandomVec - vNormal * dot(vRandomVec, vNormal));
@@ -40,16 +40,16 @@ float3x3 Get_TBN(float3 vNormal, float2 vTexcoord)
     return TBN;
 }
 
-float4 SSAO(float3x3 TBN, float3 vPosition, float2 vTexcoord)
+float4 SSAO(float3x3 TBN, float3 vPosition)
 {
     float fOcclusion = 0.f;
     
     for (int i = 0; i < 64; ++i)
     {
-        float3 vSample = vPosition + mul(g_SSAORandoms[i % 64].xyz, TBN) * g_fRadius; // 뷰스페이스
+        float3 vSample = vPosition + mul(SSAORandoms[i % 64].xyz, TBN) * fRadiuse; // 뷰스페이스
        
         vector vOffset = vector(vSample, 1.f);
-        vOffset = mul(vOffset, g_CamProjMatrix);
+        vOffset = mul(vOffset, CamProjMatrix);
         vOffset.xyz /= vOffset.w;
         vOffset.xy = vOffset.xy * float2(0.5f, -0.5f) + float2(0.5f, 0.5f);
         vOffset.xy = vOffset.xy * int2(1280, 720);
@@ -65,9 +65,9 @@ float4 SSAO(float3x3 TBN, float3 vPosition, float2 vTexcoord)
         
         vOccPosition = vOccPosition * (vOccNorm.y * fFar);
         
-        vOccPosition = mul(vOccPosition, g_ProjMatrixInv);
+        vOccPosition = mul(vOccPosition, ProjMatrixInv);
         
-        fOcclusion += (vOccPosition.z >= vSample.z + g_fSSAOBias ? 1.0 : 0.0);
+        fOcclusion += (vOccPosition.z >= vSample.z + fSSAOBise ? 1.0 : 0.0);
     }
     
     float4 vAmbient = fOcclusion / 64.f;
@@ -90,20 +90,22 @@ void GS_MAIN(uint3 id : SV_DispatchThreadID)
     else
     {
         // 뷰스페이스 위치로 옮기기
-        float3 vNormal = vector(normalize(mul(vNormalDesc * 2.f - 1.f, g_CamViewMatrix)).xyz, 0.f);
+        float3 vNormal = vector(normalize(mul(vNormalDesc * 2.f - 1.f, ViewMatrix)).xyz, 0.f);
 
         // 뷰 행렬 상의 위치 구하기
         vector vPosition;
+        
+        int2 vTexcoord = uv / int2(1280, 720);
 
-        vPosition.x = uv.x * 2.f - 1.f;
-        vPosition.y = uv.y * -2.f + 1.f;
+        vPosition.x = vTexcoord.x * 2.f - 1.f;
+        vPosition.y = vTexcoord.y * -2.f + 1.f;
         vPosition.z = vDepthDesc.x; /* 0 ~ 1 */
         vPosition.w = 1.f;
 
         vPosition = vPosition * (vDepthDesc.y * fFar);
-        vPosition = mul(vPosition, g_ProjMatrixInv);
+        vPosition = mul(vPosition, ProjMatrixInv);
 
-        float4 fAmbient = SSAO(Get_TBN(vNormal, uv), vPosition.xyz, uv);
+        float4 fAmbient = SSAO(Get_TBN(vNormal, vTexcoord), vPosition.xyz);
 
         g_OutputTexture[uv] = 1.f - fAmbient;
     }

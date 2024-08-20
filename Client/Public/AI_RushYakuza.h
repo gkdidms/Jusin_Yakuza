@@ -24,10 +24,18 @@ public:
 private:
     CModel* m_pModelCom = { nullptr };
 
+    _uint m_iAdventureIdelMotion = { 0 };
+
 private:
     void Ready_Tree();
 
 private:
+    //어드벤쳐 일 경우
+    //가만히 서있는다.
+    //플레이어를 발견하면 뛰어온다.
+    CBTNode::NODE_STATE Check_Adventure();
+    CBTNode::NODE_STATE Adventure();
+
     CBTNode::NODE_STATE Attack(); //공격 가능한 상태일때 공격 선택
     CBTNode::NODE_STATE Angry_Attack(); // 화가 난 상태일때 공격 선택
 
