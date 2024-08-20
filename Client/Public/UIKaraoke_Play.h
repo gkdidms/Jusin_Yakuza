@@ -88,6 +88,8 @@ private:
 
     _uint Trans_ButtonType_To_UI(_uint iNum);
 
+    void Off_UI_Effect();
+
     // 0 일반노드    1 유지 노드     2 연타 노드
     // 0 UP        1 DOWN        2 LEFT        3 RIGHT
 
