@@ -87,11 +87,15 @@ void CEffectManager::Cine_BloodEffect(CEffect::EFFECT_DESC& EffectDesc, _uint iE
     // 그 외의 번호는 필요  시 작성해서 쓸 것
     switch(iEffectType)
     {
-    case 0:         //코
+    case 0:         //입(단발)
         Cine_NoseBlood(EffectDesc);
         break;
-    case 1:         //입
+    case 1:         //입(루프_)
         Cine_MouseBlood(EffectDesc);
+        break;
+    case 2:         //충격파
+        m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_23070_Glow"), TEXT("Layer_Particle"), &EffectDesc);
+        m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_23070_Distotion"), TEXT("Layer_Particle"), &EffectDesc);
         break;
     }
 }
