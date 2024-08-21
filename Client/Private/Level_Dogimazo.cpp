@@ -39,6 +39,8 @@ HRESULT CLevel_Dogimazo::Initialize()
 	if (FAILED(Ready_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
 
+	m_pFightManager->Initialize();
+	m_pFightManager->Set_FightStage(true);
 
     return S_OK;
 }
@@ -66,10 +68,8 @@ void CLevel_Dogimazo::Tick(const _float& fTimeDelta)
 				return;
 		}
 	}
-
 	
-
-
+	m_pFightManager->Tick(fTimeDelta);
 
 #ifdef _DEBUG
     SetWindowText(g_hWnd, TEXT("도지마조"));
