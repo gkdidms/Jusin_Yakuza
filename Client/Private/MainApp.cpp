@@ -283,8 +283,6 @@ HRESULT CMainApp::Add_UI_On_Path(const wstring& strPath)
 	vector<wstring> vecDirectorys;
 	m_pGameInstance->Get_DirectoryName(strPath, vecDirectorys);
 
-	CUIManager* m_pUIManager = CUIManager::GetInstance();
-
 	for (auto& strChannelName : vecDirectorys)
 	{
 		wstring strFilePath = strPath + strChannelName + TEXT("/");
@@ -456,12 +454,12 @@ void CMainApp::Free()
 	Safe_Release(m_pQuestManager);
 	CQuestManager::DestroyInstance();
 
-	Safe_Release(m_pUIManager);
-	CUIManager::DestroyInstance();
-	
 	Safe_Release(m_pFileTotalManager);
 	CFileTotalMgr::DestroyInstance();
 
 	Safe_Release(m_pCollisionManager);
 	CCollision_Manager::DestroyInstance();
+
+	Safe_Release(m_pUIManager);
+	CUIManager::DestroyInstance();
 }

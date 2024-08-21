@@ -25,6 +25,7 @@ void CEffectManager::Car_HitSpark(CEffect::EFFECT_DESC& EffectDesc)
 void CEffectManager::Car_Fire(CEffect::EFFECT_DESC& EffectDesc)
 {
     m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Aura_FireA"), TEXT("Layer_Particle"), &EffectDesc);
+    m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Car_Smog"), TEXT("Layer_Particle"), &EffectDesc);
 }
 
 void CEffectManager::Car_Explosion(CEffect::EFFECT_DESC& EffectDesc)
@@ -97,6 +98,13 @@ void CEffectManager::Cine_BloodEffect(CEffect::EFFECT_DESC& EffectDesc, _uint iE
         m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_23070_Glow"), TEXT("Layer_Particle"), &EffectDesc);
         m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_23070_Distotion"), TEXT("Layer_Particle"), &EffectDesc);
         break;
+    case 3://¸ÕÁö
+        m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Smog"), TEXT("Layer_Particle"), &EffectDesc);
+        break;
+    case 4:
+        m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Splash"), TEXT("Layer_Particle"), &EffectDesc);
+        break;
+
     }
 }
 
