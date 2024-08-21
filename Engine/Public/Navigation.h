@@ -56,8 +56,8 @@ public:
     int Find_PlayerMonster_Index(_fvector vTargetPos);
     _bool isMove(_fvector vMovePos);
     _vector Compute_WayPointDir(_vector vPosition, const _float& fTimeDelta, _bool isStart = false);
-    _vector Compute_WayPointDir_Adv(_vector vPosition, const _float& fTimeDelta, _bool* isTurn, _int* iDir, _bool* isBack, _bool* isMove);
     _vector Compute_WayPointDir_Adv(_vector vPosition, const _float& fTimeDelta, _bool* isTurn, _int* iDir, _bool* isBack);
+    _vector Compute_WayPointDir_Adv(_vector vPosition, const _float& fTimeDelta, _bool* isTurn, _int* iDir, _bool* isBack, _vector* vTargetDir);
     _float Compute_Height(_fvector vPosition);
 
 
@@ -94,7 +94,6 @@ private:
 
     _float m_fTime = {0.f};
 
-    bool    m_bFindLoad = { false };
 
 private:
     bool        m_bOrigin = { false };
@@ -105,7 +104,7 @@ private:
     HRESULT SetUp_Neighbors();
     void Find_WayPointIndex(_vector vPosition);
     void Swap_Route(vector<ROUTE_IO> CurrentRoute, _vector vCurrnetDir, _bool* isTurn, _int* iDir);
-    void Swap_Route(vector<ROUTE_IO> CurrentRoute, _vector vCurrnetDir, _bool* isTurn, _int* iDir, _vector& vDir);
+    void Swap_Route_ADV(vector<ROUTE_IO> CurrentRoute, _vector vCurrnetDir, _bool* isTurn, _int* iDir);
 
 public:
     static CNavigation* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring strFilePath);

@@ -333,8 +333,9 @@ void CNavigation::Swap_Route(vector<ROUTE_IO> CurrentRoute, _vector vCurrnetDir,
     }
 }
 
-void CNavigation::Swap_Route(vector<ROUTE_IO> CurrentRoute, _vector vCurrnetDir, _bool* isTurn, _int* iDir, _vector& vDir)
+void CNavigation::Swap_Route_ADV(vector<ROUTE_IO> CurrentRoute, _vector vCurrnetDir, _bool* isTurn, _int* iDir)
 {
+    // TURN 이미 하고 있음
     if (*isTurn)
         return;
 
@@ -363,10 +364,18 @@ void CNavigation::Swap_Route(vector<ROUTE_IO> CurrentRoute, _vector vCurrnetDir,
             return;
         }
 
-        int iPreRouteIndex = m_iCurrentRouteIndex;
-        m_iPreWayPointIndex = m_iCurrentWayPointIndex;
+        XMVECTOR curPos = XMLoadFloat4(&m_Routes[m_iCurrentRouteIndex][m_iCurrentWayPointIndex].vPosition);
 
+
+        float   fMinDistance = XMVectorGetX(XMVector4Length(m_Routes[m_iCurrentRouteIndex][m_iCurrentWayPointIndex].vPosition - m_Routes[iRandomIdex][0].vPosition));
+        for(int i = 0; i < )
+
+        m_iPreRouteIndex = m_iCurrentRouteIndex;
         m_iCurrentRouteIndex = iRandomIdex;
+
+
+
+
         if (m_iRouteDir == DIR_F)
             m_iCurrentWayPointIndex = 0; // 정방향일 경우
         else if (m_iRouteDir == DIR_B)
@@ -384,10 +393,10 @@ void CNavigation::Swap_Route(vector<ROUTE_IO> CurrentRoute, _vector vCurrnetDir,
 
         // 회전해야하는지 안해야하는지 체크
         *isTurn = true;
-
-        vDir = m_vNextDir = XMVector3Normalize(XMLoadFloat4(&m_Routes[m_iCurrentRouteIndex][m_iCurrentWayPointIndex].vPosition) - XMLoadFloat4(&m_Routes[iPreRouteIndex][m_iPreWayPointIndex].vPosition));
     }
 }
+
+
 
 CNavigation* CNavigation::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring strFilePath)
 {
@@ -507,7 +516,9 @@ _vector CNavigation::Compute_WayPointDir(_vector vPosition, const _float& fTimeD
     return vResultDir;
 }
 
-_vector CNavigation::Compute_WayPointDir_Adv(_vector vPosition, const _float& fTimeDelta, _bool* isTurn, _int* iDir, _bool* isBack, _bool* isMove)
+
+
+_vector CNavigation::Compute_WayPointDir_Adv(_vector vPosition, const _float& fTimeDelta, _bool* isTurn, _int* iDir, _bool* isBack)
 {
     // 현재 내 앞의 waypoint
     _vector vCurrentWayPoint = XMLoadFloat4(&m_Routes[m_iCurrentRouteIndex][m_iCurrentWayPointIndex].vPosition);
@@ -515,16 +526,10 @@ _vector CNavigation::Compute_WayPointDir_Adv(_vector vPosition, const _float& fT
     _float fDistance = XMVectorGetX(XMVector3Length(vDir));
 
     // 특정 range 안에 들어오면 다음 point로 목표잡기
-    if (fDistance <= 3.f)
+    if (fDistance <= 2.5f)
     {
-        m_bFindLoad = true;
-
-        if (false == *isBack)
-        {
-            // 코너일때 waypoint swap을 위한 함수
-            Swap_Route(m_Routes[m_iCurrentRouteIndex], vDir, isTurn, iDir, vDir);
-        }
-        
+        // 코너일때 waypoint swap을 위한 함수
+        Swap_Route(m_Routes[m_iCurrentRouteIndex], vDir, isTurn, iDir);
 
         // turn하면 
         // isBack : 뒤돌지아닐지
@@ -540,7 +545,7 @@ _vector CNavigation::Compute_WayPointDir_Adv(_vector vPosition, const _float& fT
             else
                 m_iCurrentWayPointIndex--;
 
-            if ((m_iCurrentWayPointIndex >= m_Routes[m_iCurrentRouteIndex].size() || m_iCurrentWayPointIndex < 0) && false == *isBack)
+            if (m_iCurrentWayPointIndex >= m_Routes[m_iCurrentRouteIndex].size() || m_iCurrentWayPointIndex < 0)
             {
                 //정방향 -> 역방향
                 //역방향 -> 정방향 
@@ -548,47 +553,34 @@ _vector CNavigation::Compute_WayPointDir_Adv(_vector vPosition, const _float& fT
                 {
                     m_iRouteDir = DIR_B;
                     m_iCurrentWayPointIndex = m_Routes[m_iCurrentRouteIndex].size() - 1;
-                    m_iPreWayPointIndex = m_Routes[m_iCurrentRouteIndex].size() - 2;
                 }
                 else
                 {
                     m_iRouteDir = DIR_F;
                     m_iCurrentWayPointIndex = 0;
-                    m_iPreWayPointIndex = 1;
                 }
                 *isBack = true;
-                *isMove = true;
             }
-
-        }
-        else
-        {
-            m_bFindLoad = false;
         }
 
         // 예외처리해준거(아예 포인트에서 시작할떄)
         if (fDistance == 0.f)
         {
-            *isMove = true;
-            return Compute_WayPointDir_Adv(vPosition, fTimeDelta, isTurn, iDir, isBack, isMove);
+            return Compute_WayPointDir_Adv(vPosition, fTimeDelta, isTurn, iDir, isBack);
         }
 
         // 현재 웨이포인트와 다음 웨이포인트 - 방향 구하는식 -> 이걸로 움직임
         m_vNextDir = XMVector3Normalize(XMLoadFloat4(&m_Routes[m_iCurrentRouteIndex][m_iCurrentWayPointIndex].vPosition) - XMLoadFloat4(&m_Routes[m_iPreRouteIndex][m_iPreWayPointIndex].vPosition));
-       
-        
+
         // 스왑되면
         m_iPreRouteIndex = m_iCurrentRouteIndex;
         m_iPreWayPointIndex = m_iCurrentWayPointIndex;
-        
-    
     }
-
 
     return m_vNextDir;
 }
 
-_vector CNavigation::Compute_WayPointDir_Adv(_vector vPosition, const _float& fTimeDelta, _bool* isTurn, _int* iDir, _bool* isBack)
+_vector CNavigation::Compute_WayPointDir_Adv(_vector vPosition, const _float& fTimeDelta, _bool* isTurn, _int* iDir, _bool* isBack, _vector* vTargetDir)
 {
     // 현재 내 앞의 waypoint
     _vector vCurrentWayPoint = XMLoadFloat4(&m_Routes[m_iCurrentRouteIndex][m_iCurrentWayPointIndex].vPosition);
@@ -596,7 +588,7 @@ _vector CNavigation::Compute_WayPointDir_Adv(_vector vPosition, const _float& fT
     _float fDistance = XMVectorGetX(XMVector3Length(vDir));
 
     // 특정 range 안에 들어오면 다음 point로 목표잡기
-    if (fDistance <= 1.5f)
+    if (fDistance <= 2.5f)
     {
         // 코너일때 waypoint swap을 위한 함수
         Swap_Route(m_Routes[m_iCurrentRouteIndex], vDir, isTurn, iDir);
