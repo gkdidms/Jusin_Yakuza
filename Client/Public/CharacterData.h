@@ -66,6 +66,7 @@ public:
         _bool isLoop;				    // 이펙트 루프여부
         _bool isOn;				    // 이펙트 On/Off
         _bool isPlayed = { false };				    // 이펙트 실행했었는지
+
     };
 
     struct ANIMATION_RADIALEVENTSTATE

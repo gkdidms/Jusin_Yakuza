@@ -263,6 +263,10 @@ void CDebugManager::Window_Debug()
             m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_KARAOKE_START));
         if (ImGui::Button("Level_Karaoke_end"))
             m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_KARAOKE_END));
+        if (ImGui::Button("Level_Nishiki"))
+            m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_NISHIKIWALK));
+        if (ImGui::Button("Level_TOKOStreet"))
+            m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_TOKOSTREET));
     }
 
     if (ImGui::CollapsingHeader("Effect  / UI"))

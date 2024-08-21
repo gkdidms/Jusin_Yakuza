@@ -19,6 +19,7 @@ public:
     typedef struct tPARTICLE_POINT_DESC :public CEffect::EFFECT_DESC
     {
         CVIBuffer_Instance::INSTANCE_DESC BufferInstance;
+        _float2 fUVCount;
     }PARTICLE_POINT_DESC;
 
 
@@ -40,7 +41,7 @@ public:
     virtual void* Get_Instance()override;
 
     virtual void Reset_Buffer() override;
-
+    _float2  Get_UVCount() { return m_fUVCount; }
 private:
     CShader* m_pShaderCom = { nullptr };
     CTexture* m_pTextureCom[2] = {nullptr};
@@ -48,7 +49,7 @@ private:
 
     CVIBuffer_Instance::INSTANCE_DESC m_BufferInstance;
     _float       m_fCurTime = { 0.f };
-
+    _float2     m_fUVCount = { 0.f, 0.f };//uv °¹¼ö
 
 public:
     virtual HRESULT Save_Data(const string strDirectory)override;

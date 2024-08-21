@@ -3,6 +3,7 @@
 #include "GameInstance.h"
 #include "SystemManager.h"
 #include "FileTotalMgr.h"
+#include "FightManager.h"
 
 #include "DebugCamera.h"
 #include "PlayerCamera.h"
@@ -14,10 +15,12 @@
 CLevel_Office1F::CLevel_Office1F(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLevel{ pDevice, pContext },
 	m_pSystemManager{ CSystemManager::GetInstance() },
-	m_pFileTotalManager{ CFileTotalMgr::GetInstance() }
+	m_pFileTotalManager{ CFileTotalMgr::GetInstance() },
+	m_pFightManager{ CFightManager::GetInstance() }
 {
 	Safe_AddRef(m_pSystemManager);
 	Safe_AddRef(m_pFileTotalManager);
+	Safe_AddRef(m_pFightManager);
 }
 
 HRESULT CLevel_Office1F::Initialize()
@@ -150,4 +153,5 @@ void CLevel_Office1F::Free()
 
 	Safe_Release(m_pSystemManager);
 	Safe_Release(m_pFileTotalManager);
+	Safe_Release(m_pFightManager);
 }

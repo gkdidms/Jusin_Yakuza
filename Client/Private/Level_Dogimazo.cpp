@@ -4,6 +4,7 @@
 #include "SystemManager.h"
 #include "FileTotalMgr.h"
 #include "Collision_Manager.h"
+#include "FightManager.h"
 
 #include "PlayerCamera.h"
 #include "CineCamera.h"
@@ -15,10 +16,12 @@
 CLevel_Dogimazo::CLevel_Dogimazo(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     : CLevel { pDevice, pContext },
     m_pSystemManager{ CSystemManager::GetInstance() },
-    m_pFileTotalManager{ CFileTotalMgr::GetInstance() }
+    m_pFileTotalManager{ CFileTotalMgr::GetInstance() },
+	m_pFightManager{ CFightManager::GetInstance() }
 {
     Safe_AddRef(m_pSystemManager);
     Safe_AddRef(m_pFileTotalManager);
+	Safe_AddRef(m_pFightManager);
 }
 
 HRESULT CLevel_Dogimazo::Initialize()
@@ -150,4 +153,5 @@ void CLevel_Dogimazo::Free()
 
     Safe_Release(m_pSystemManager);
     Safe_Release(m_pFileTotalManager);
+	Safe_Release(m_pFightManager);
 }
