@@ -136,6 +136,8 @@ HRESULT CVIBuffer_Instance_Point::Initialize(void* pArg)
 	
 		_vector WorlPosition= XMLoadFloat4x4(m_pCurrentWorldMatrix).r[3];		
 
+		pInstanceVertices[i].vRectSize.y = 0.f;
+
 		if(m_InstanceDesc->isBillboard)
 		{
 			if (m_InstanceDesc->bRadius)
@@ -179,10 +181,22 @@ HRESULT CVIBuffer_Instance_Point::Initialize(void* pArg)
 		}
 		else
 		{
+			
+
 			// Look을 랜덤으로 잡아주면 나머지 계산해주기(hlsl에서)
+			_float StartRotX = XMConvertToRadians(m_pGameInstance->Get_Random(m_InstanceDesc->LowStartRot.x, m_InstanceDesc->HighStartRot.x));
+			_float StartRotY = XMConvertToRadians(m_pGameInstance->Get_Random(m_InstanceDesc->LowStartRot.y, m_InstanceDesc->HighStartRot.y));
+			_float StartRotZ = XMConvertToRadians(m_pGameInstance->Get_Random(m_InstanceDesc->LowStartRot.z, m_InstanceDesc->HighStartRot.z));
+
+			_matrix StartRot = XMMatrixRotationRollPitchYaw(StartRotX, StartRotY, StartRotZ);
+
 			pInstanceVertices[i].vRight = _float4(1.f, 0.f, 0.f, 0.f);
 			pInstanceVertices[i].vUp = _float4(0.f, 1.f, 0.f, 0.f);
 			pInstanceVertices[i].vLook = _float4(0.f, 0.f, 1.f, 0.f);
+
+			XMStoreFloat4(&pInstanceVertices[i].vRight, XMVector4Normalize(StartRot.r[0]));
+			XMStoreFloat4(&pInstanceVertices[i].vUp, XMVector4Normalize(StartRot.r[1]));
+			XMStoreFloat4(&pInstanceVertices[i].vLook, XMVector4Normalize(StartRot.r[2]));
 
 			if (m_InstanceDesc->bRadius)
 				pInstanceVertices[i].vTranslation = _float4(RadiusX, RadiusY, RadiusZ, 1.f);

@@ -171,7 +171,7 @@ HRESULT CLoader::Loading()
 		hr = Loading_For_Tutorial();
 		break;
 	case LEVEL_NISHIKIWALK:
-		hr = Loading_For_Tutorial();
+		hr = Loading_For_NishikiWalk();
 		break;
 	case LEVEL_TOKOSTREET:
 		hr = Loading_For_Street();

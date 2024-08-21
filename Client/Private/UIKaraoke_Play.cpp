@@ -285,9 +285,9 @@ void CUIKaraoke_Play::Ready_LyricsTime()
 
 void CUIKaraoke_Play::Ready_LyricsSocket()
 {
-    m_LyricsSocket.push_back(_float3(-288.371887, 11.66042638, 0.f));
-    m_LyricsSocket.push_back(_float3(-288.371887, -101.741051, 0.f));
-    m_LyricsSocket.push_back(_float3(-288.371887, -220.680878, 0.f));
+    m_LyricsSocket.push_back(_float3(-288.371887, 11.66042638, 0.01f));
+    m_LyricsSocket.push_back(_float3(-288.371887, -101.741051, 0.01f));
+    m_LyricsSocket.push_back(_float3(-288.371887, -220.680878, 0.01f));
 }
 
 void CUIKaraoke_Play::Show_Grade(CNoteBase* pNote)
@@ -394,6 +394,9 @@ void CUIKaraoke_Play::Update_CurrentLyricsIndex()
 
 void CUIKaraoke_Play::Render_Cutsom_Sequence(const _float& fTimeDelta)
 {
+
+    m_Lyrics->Late_Tick(fTimeDelta);
+
     RenderGroup_Back(fTimeDelta);
     RenderGroup_Blue(fTimeDelta);
 
@@ -407,11 +410,11 @@ void CUIKaraoke_Play::Render_Cutsom_Sequence(const _float& fTimeDelta)
     RenderGroup_Right(fTimeDelta);
     RenderGroup_Up(fTimeDelta);
 
+
     RenderGroup_Mic(fTimeDelta);
 
     RenderGroup_CurrentBar(fTimeDelta);
 
-    m_Lyrics->Late_Tick(fTimeDelta);
 
     RenderGroup_GoodEffect(fTimeDelta);
     RenderGroup_GreatEffect(fTimeDelta);
@@ -574,6 +577,7 @@ void CUIKaraoke_Play::CurrentBar_Control()
     if (-1 < m_iCurLyricsIndex)
     {
         _vector vPos = m_pPlayUI[BACK][m_LyricsTime[m_iCurLyricsIndex].iSocketIndex]->Get_TransformCom()->Get_State(CTransform::STATE_POSITION);
+        vPos = XMVectorSetZ(vPos, 0.f);
         _vector vEndPos = vPos;
         
         // 시작 위치 잡기
@@ -1277,6 +1281,7 @@ _uint CUIKaraoke_Play::Compute_Num(_uint iCount)
 _fvector CUIKaraoke_Play::Compute_UIPosition(LYRICS_NOTE_DESC& Desc, _uint iLyricsIndex, _float fRatio)
 {
     _vector vPos = m_pPlayUI[BACK][m_LyricsTime[iLyricsIndex].iSocketIndex]->Get_TransformCom()->Get_State(CTransform::STATE_POSITION);
+    vPos = XMVectorSetZ(vPos, 0.f);
     _vector vEndPos = vPos;
 
     // 시작 위치 잡기

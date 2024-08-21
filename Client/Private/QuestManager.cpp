@@ -13,6 +13,10 @@
 #include "Chapter3_1.h"
 #include "Chapter4_0.h"
 #include "Chapter5_0.h"
+#include "Chapter5_1.h"
+#include "Chapter6_0.h"
+#include "Chapter7_0.h"
+#include "Chapter7_1.h"
 
 #include "UIManager.h"
 
@@ -73,6 +77,9 @@ HRESULT CQuestManager::Initialize()
 
 void CQuestManager::Start_Quest(_uint iChapter)
 {
+    if (m_QuestInfo.empty())
+        Ready_Quest();
+
     m_iCurrentChapter = iChapter;
     Add_MainQuest(m_QuestInfo[m_iCurrentChapter][0].iQuestIndex, m_QuestInfo[m_iCurrentChapter][0].iNextQuestIndex, m_QuestInfo[m_iCurrentChapter][0].iObjectIndex, m_QuestInfo[m_iCurrentChapter][0].iScriptIndex);
 }
@@ -122,27 +129,18 @@ HRESULT CQuestManager::Ready_Quest()
     };
     m_QuestInfo.emplace(CHAPTER_1, Chapter1);
 
-    ////니시키야마와 걷기
-    //vector<QUEST_INFO> Chapter2;
-    //Chapter2 = {
-    //    QUEST_INFO(
-    //        QUEST_MAIN,
-    //        2,
+    //니시키야마와 걷기
+    vector<QUEST_INFO> Chapter2;
+    Chapter2 = {
+        QUEST_INFO(
+            QUEST_MAIN,
+            2,
 
-    //        iQuestIndex++,
-    //        iNextQuestIndex++
-    //    ),
-    //    QUEST_INFO(
-    //        QUEST_MOVE,
-    //        0,
-
-    //        iQuestIndex++,
-    //        iNextQuestIndex++,
-    //        -1,
-    //        80001
-    //    )
-    //};
-    //m_QuestInfo.emplace(CHAPTER_2, Chapter2);
+            iQuestIndex++,
+            iNextQuestIndex++
+        )
+    };
+    m_QuestInfo.emplace(CHAPTER_2, Chapter2);
 
     //가라오케 시작
     vector<QUEST_INFO> Chapter3;
@@ -156,20 +154,6 @@ HRESULT CQuestManager::Ready_Quest()
         )
     };
     m_QuestInfo.emplace(CHAPTER_3, Chapter3);
-    //m_QuestInfo.emplace(CHAPTER_3, Chapter3);
-
-    ////가라오케 노래
-    //vector<QUEST_INFO> Chapter4;
-    //Chapter4 = {
-    //    QUEST_INFO(
-    //        QUEST_KARAOKE,
-    //        0,
-
-    //        iQuestIndex++,
-    //        iNextQuestIndex++
-    //    )
-    //};
-    //m_QuestInfo.emplace(CHAPTER_4, Chapter4);
 
     //가라오케 끝
     vector<QUEST_INFO> Chapter4;
@@ -199,7 +183,10 @@ HRESULT CQuestManager::Ready_Quest()
             0,
 
             iQuestIndex++,
-            iNextQuestIndex++
+            iNextQuestIndex++,
+            -1,
+            -1,
+            8002
         ),
         QUEST_INFO(
             QUEST_MAIN,
@@ -220,16 +207,70 @@ HRESULT CQuestManager::Ready_Quest()
 
             iQuestIndex++,
             iNextQuestIndex++,
-            4001 //iTargetIndex
+            4001 // 사체업자
+        ),
+        QUEST_INFO(
+            QUEST_MAIN,
+            7,
+
+            iQuestIndex++,
+            iNextQuestIndex++
         )
     };
     m_QuestInfo.emplace(CHAPTER_6, Chapter6);
+
+    //길거리
+    vector<QUEST_INFO> Chapter7;
+    Chapter7 = {
+        QUEST_INFO(
+            QUEST_TALK,
+            0,
+
+            iQuestIndex++,
+            iNextQuestIndex++,
+            -1,
+            -1,
+            8003
+        )
+    };
+    m_QuestInfo.emplace(CHAPTER_7, Chapter7);
+
+    /* 쿠제 만났을때 */
+    vector<QUEST_INFO> Chapter8;
+    Chapter8 = {
+        QUEST_INFO(
+            QUEST_MAIN,
+            8,
+
+            iQuestIndex++,
+            iNextQuestIndex++
+        ),
+        QUEST_INFO(
+            QUEST_MAIN,
+            9,
+
+            iQuestIndex++,
+            iNextQuestIndex++
+        ),
+        QUEST_INFO(
+            QUEST_KILL,
+            0,
+
+            iQuestIndex++,
+            iNextQuestIndex++,
+            10003 // 쿠제 인덱스 번호
+        )
+    };
+    m_QuestInfo.emplace(CHAPTER_8, Chapter8);
     
     return S_OK;
 }
 
 _bool CQuestManager::Execute()
 {
+    if (nullptr == m_pCurrentQuest)
+        return true;
+
     if (true == m_pCurrentQuest->Execute())
     {
         // 퀘스트 완료했다면
@@ -318,13 +359,13 @@ HRESULT CQuestManager::Add_TalkQuest(_int iQuestIndex, _int iNextQuestIndex, _in
 /*메인 스토리 생성 함수*/
 HRESULT CQuestManager::Add_MainQuest(_int iQuestIndex, _int iNextQuestIndex, _int iObjectIndex, _int iScriptIndex)
 {
+    CMainQuest::MAIN_QUEST_DESC Desc{};
+    Desc.iQuestIndex = iQuestIndex;
+    Desc.iNextQuestIndex = iNextQuestIndex;
+    Desc.iScriptIndex = iScriptIndex;
+
     if (iQuestIndex == 0)
     {
-        CChapter1_0::MAIN_QUEST_DESC Desc{};
-        Desc.iQuestIndex = iQuestIndex;
-        Desc.iNextQuestIndex = iNextQuestIndex;
-        Desc.iScriptIndex = iScriptIndex;
-
         CChapter1_0* pMainQuest = CChapter1_0::Create(&Desc);
         if (nullptr == pMainQuest)
             return E_FAIL;
@@ -333,11 +374,6 @@ HRESULT CQuestManager::Add_MainQuest(_int iQuestIndex, _int iNextQuestIndex, _in
     }
     else if (iQuestIndex == 2)
     {
-        CChapter1_1::MAIN_QUEST_DESC Desc{};
-        Desc.iQuestIndex = iQuestIndex;
-        Desc.iNextQuestIndex = iNextQuestIndex;
-        Desc.iScriptIndex = iScriptIndex;
-
         CChapter1_1* pMainQuest = CChapter1_1::Create(&Desc);
         if (nullptr == pMainQuest)
             return E_FAIL;
@@ -346,12 +382,7 @@ HRESULT CQuestManager::Add_MainQuest(_int iQuestIndex, _int iNextQuestIndex, _in
     }
     else if (iQuestIndex == 3)
     {
-        CChapter3_0::MAIN_QUEST_DESC Desc{};
-        Desc.iQuestIndex = iQuestIndex;
-        Desc.iNextQuestIndex = iNextQuestIndex;
-        Desc.iScriptIndex = iScriptIndex;
-
-        CChapter3_0* pMainQuest = CChapter3_0::Create(&Desc);
+        CChapter2_0* pMainQuest = CChapter2_0::Create(&Desc);
         if (nullptr == pMainQuest)
             return E_FAIL;
 
@@ -359,12 +390,7 @@ HRESULT CQuestManager::Add_MainQuest(_int iQuestIndex, _int iNextQuestIndex, _in
     }
     else if (iQuestIndex == 4)
     {
-        CChapter4_0::MAIN_QUEST_DESC Desc{};
-        Desc.iQuestIndex = iQuestIndex;
-        Desc.iNextQuestIndex = iNextQuestIndex;
-        Desc.iScriptIndex = iScriptIndex;
-
-        CChapter4_0* pMainQuest = CChapter4_0::Create(&Desc);
+        CChapter3_0* pMainQuest = CChapter3_0::Create(&Desc);
         if (nullptr == pMainQuest)
             return E_FAIL;
 
@@ -372,12 +398,47 @@ HRESULT CQuestManager::Add_MainQuest(_int iQuestIndex, _int iNextQuestIndex, _in
     }
     else if (iQuestIndex == 5)
     {
-        CChapter5_0::MAIN_QUEST_DESC Desc{};
-        Desc.iQuestIndex = iQuestIndex;
-        Desc.iNextQuestIndex = iNextQuestIndex;
-        Desc.iScriptIndex = iScriptIndex;
+        CChapter4_0* pMainQuest = CChapter4_0::Create(&Desc);
+        if (nullptr == pMainQuest)
+            return E_FAIL;
 
+        m_pCurrentQuest = pMainQuest;
+    }
+    else if (iQuestIndex == 6)
+    {
         CChapter5_0* pMainQuest = CChapter5_0::Create(&Desc);
+        if (nullptr == pMainQuest)
+            return E_FAIL;
+
+        m_pCurrentQuest = pMainQuest;
+    }
+    else if (iQuestIndex == 8)
+    {
+        CChapter5_1* pMainQuest = CChapter5_1::Create(&Desc);
+        if (nullptr == pMainQuest)
+            return E_FAIL;
+
+        m_pCurrentQuest = pMainQuest;
+    }
+    else if (iQuestIndex == 10) // 삥쟁이 죽인 후 독백
+    {
+        CChapter6_0* pMainQuest = CChapter6_0::Create(&Desc);
+        if (nullptr == pMainQuest)
+            return E_FAIL;
+
+        m_pCurrentQuest = pMainQuest;
+    }
+    else if (iQuestIndex == 12) // 쿠제
+    {
+        CChapter7_0* pMainQuest = CChapter7_0::Create(&Desc);
+        if (nullptr == pMainQuest)
+            return E_FAIL;
+
+        m_pCurrentQuest = pMainQuest;
+    }
+    else if (iQuestIndex == 13) // 쿠제보스등장 컷씬
+    {
+        CChapter7_1* pMainQuest = CChapter7_1::Create(&Desc);
         if (nullptr == pMainQuest)
             return E_FAIL;
 

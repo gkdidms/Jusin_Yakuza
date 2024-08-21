@@ -47,6 +47,9 @@ public: //타이틀 용
     void Start_Title(_int iIndex);
     _bool isTitleEnd();
 
+public: //페이드인페이드아웃
+    _bool isFindFinished();
+
 public:
     //자신이 만들 ui씬은 미리 할당(수동)
     HRESULT Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext) ;
@@ -82,6 +85,7 @@ public:
 public:
     void Set_Money(_uint Money) { m_Money = Money; }
     _uint Get_Money() { return m_Money; }
+    void Set_AlwayUI(_bool isTrue) { m_isAlways = isTrue; }
 private:
 
     ID3D11Device* m_pDevice = { nullptr };
@@ -106,6 +110,8 @@ private:
 private:
     _uint m_Money = { 0 };
 
+private:
+    _bool m_isAlways = { true };
 
 public:
     void Fade_In();

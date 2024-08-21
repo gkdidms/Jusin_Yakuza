@@ -91,6 +91,16 @@ float A = { 2.51f }, B = { 0.03f }, C = { 2.43f }, D = { 0.59f }, E = { 0.14f };
 float g_fTexW = 1280.0f;
 float g_fTexH = 720.0f;
 
+float3 g_vStartPos;
+float2 g_fAnimTime;
+float2 g_fControlAlpha;
+bool g_isUVAnim;
+float2 g_StartUV;
+float2 g_EndUV;
+float4 g_vEndColor;
+float2 g_AnimScale;
+
+
 static const float g_fWeight[13] =
 {
     0.0044, 0.0175, 0.0540, 0.1295, 0.2420, 0.3521, 0.3989, 0.3521, 0.2420, 0.1295, 0.0540, 0.0175, 0.0044

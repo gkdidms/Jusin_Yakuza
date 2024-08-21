@@ -21,7 +21,7 @@ public:
     void    Edit_Light(int  iLightIndex, LIGHT_DESC lightDesc);
     void    Delete_Light(int iLightIndex);
     void    Delete_AllLights();
-    void Bind_ComputeBuffer(_uint iSlot);
+    HRESULT Bind_ComputeBuffer(_uint iSlot);
     
 private:
     ID3D11Device* m_pDevice = { nullptr };
