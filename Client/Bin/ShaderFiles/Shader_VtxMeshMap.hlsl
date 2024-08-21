@@ -194,63 +194,62 @@ PS_MAIN_OUT PS_MAIN(PS_IN In)
     return Out;
 }
 
-PS_OUT PS_GLASSDOOR(PS_IN In)
+PS_MAIN_OUT PS_GLASSDOOR(PS_IN In)
 {
-    PS_OUT Out = (PS_OUT) 0;
-    
-    float2 vRefractTexCoord;
-    vRefractTexCoord.x = In.vProjPos.x / In.vProjPos.w / 2.0f + 0.5f;
-    vRefractTexCoord.y = -In.vProjPos.y / In.vProjPos.w / 2.0f + 0.5f;
 
+    PS_MAIN_OUT Out = (PS_MAIN_OUT) 0;
+    UV_SHADER UV = (UV_SHADER) 0;
+    if (g_isUVShader)
+        UV = UV_Shader(In.vTexcoord);
+    
+    vector vDiffuseDesc = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
+   
+    vector vMulti = g_isMulti ? g_MultiDiffuseTexture.Sample(LinearSampler, In.vTexcoord) : vector(0.f, 1.f, 0.f, 1.f);
+    vector vRD = g_isRD ? g_RDTexture.Sample(LinearSampler, g_isUVShader ? UV.RDRMRS : In.vTexcoord) : vector(1.f, 1.f, 1.f, 1.f);
+    vector vRS = g_isRS ? g_RSTexture.Sample(LinearSampler, g_isUVShader ? UV.RDRMRS : In.vTexcoord) : vector(1.f, 1.f, 1.f, 1.f);
+    vector vRM = g_isRM ? g_RMTexture.Sample(LinearSampler, g_isUVShader ? UV.RDRMRS : In.vTexcoord) : vector(0.5f, 1.f, 0.5f, 1.f);
+    vector vRT = g_isRT ? g_RTTexture.Sample(LinearSampler, g_isUVShader ? UV.RT : In.vTexcoord) : vector(0.5f, 0.5f, 1.f, 0.5f);
+    //노말 벡터 구하기
+    vector vNormalDesc = g_isNormal ? g_NormalTexture.Sample(LinearSampler, In.vTexcoord) : In.vNormal;
+    
+    //Neo Shader
+    float fFactor = RepeatingPatternBlendFactor(vMulti);
+    vector vDiffuse = DiffusePortion(vDiffuseDesc, vRS, vRD, fFactor, In.vTexcoord);
+    
+    COMBINE_OUT Result = Neo_MetallicAndGlossiness(vMulti, vRM); // Metallic, Rouhness 최종
+    vDiffuse = Get_Diffuse(vMulti.a, vDiffuse); // Diffuse 최종
+    
+    //Tangent Normal 구하기 
+    vNormalDesc = Get_Normal(vNormalDesc, vRT, fFactor);
 
-    if (true == g_bExistNormalTex)
+    vNormalDesc = vNormalDesc * 2.f - 1.f;
+    //vNormalDesc = vector(vNormalDesc.w, vNormalDesc.y, 1.f, 0.f);
+    float3x3 WorldMatrix = float3x3(In.vTangent.xyz, In.vBinormal.xyz, In.vNormal.xyz);
+    vector vNormalBTN = normalize(vector(mul(vNormalDesc.xyz, WorldMatrix), 0.f));
+    //vector vNormalBTN = (vector(mul(vNormalDesc.xyz, WorldMatrix), 0.f));
+    
+    float RimIndex = 0.f;
+    if (0.05f < g_isRimLight)
     {
-        // Normal texture 있으면 vTexcoord 다시
-        float3 normal;
-        vector vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexcoord);
-        normal = vNormalDesc.xyz * 2.f - 1.f;
-        vRefractTexCoord = vRefractTexCoord + (normal.xy * g_fRefractionScale);
-    }
-
-    // Refract - 유리 뒤에 비치는 씬
-    float4 vRefractColor = g_RefractionTexture.Sample(LinearSampler, vRefractTexCoord);
-    float4 vGlassTexColor = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
-    float4 vFinalColor = lerp(vRefractColor, vGlassTexColor, 0.5f);
-    
-    Out.vDiffuse = vFinalColor;
-    
-	
-    // 투명할 경우(0.1보다 작으면 투명하니) 그리지 않음
-    if (Out.vDiffuse.a < 0.1f)
-        discard;
-    
-    float3 vNormal;
-    if (true == g_bExistNormalTex)
-    {
-        // 매핑되는 texture가 있을때
-        vector vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexcoord);
-        vNormal = vNormalDesc.xyz * 2.f - 1.f;
-    
-        float3x3 WorldMatrix = float3x3(In.vTangent.xyz, In.vBinormal.xyz, In.vNormal.xyz);
-    
-        vNormal = mul(vNormal.xyz, WorldMatrix);
-    }
-    else
-    {
-        float3x3 WorldMatrix = float3x3(In.vTangent.xyz, In.vBinormal.xyz, In.vNormal.xyz);
-        // 텍스처 없을때
-        vNormal = mul(In.vNormal.xyz, WorldMatrix);
+        if (In.vTexcoord.y >= g_fRimUV.x && In.vTexcoord.y < g_fRimUV.y)
+        {
+            RimIndex = g_isRimLight;
+        }
     }
     
-    Out.vNormal = vector(vNormal.xyz * 0.5f + 0.5f, 0.f);
-    Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_fFar, 0.f, 1.f);
+    OE_SPECULAR OEResult = Neo_OE_Specular(vMulti, vRM, vRS);
+    float fMixMultiFactor = lerp(vMulti.y, 1.f, AssetShader);
+    float fDeffuseFactor = vDiffuseDesc.a * 1.f;
     
-    // specularTex와 metalic 같은 rm 사용 - bool 값 같이 사용하기
-    if (true == g_bExistRMTex)
-    {
-        Out.vRM = g_RMTexture.Sample(LinearSampler, In.vTexcoord);
-    }
     
+    vDiffuse = float4(0, 0, 0, 0);
+    
+    Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_fFar, RimIndex, 0.f);
+    Out.vNormal = vector(vNormalBTN.xyz * 0.5f + 0.5f, 0.f);
+    Out.vDiffuse = vDiffuse;
+    Out.vSurface = vector(Result.fMetalness, Result.fRoughness, Result.fSpeclure, Engine);
+    Out.vOEShader = vector(OEResult.fRouhness, OEResult.fMixShaderFactor, fMixMultiFactor, fDeffuseFactor);
+    Out.vSpecular = vector(OEResult.vSpecular, 0.f);
     
     return Out;
 }
@@ -265,6 +264,9 @@ PS_MAIN_OUT PS_MAIN_AlphaMask(PS_IN In)
         UV = UV_Shader(In.vTexcoord);
     
     vector vDiffuseDesc = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
+    
+    if (vDiffuseDesc.a < 0.3)
+        discard;
    
     vector vMulti = g_isMulti ? g_MultiDiffuseTexture.Sample(LinearSampler, In.vTexcoord) : vector(0.f, 1.f, 0.f, 1.f);
     vector vRD = g_isRD ? g_RDTexture.Sample(LinearSampler, g_isUVShader ? UV.RDRMRS : In.vTexcoord) : vector(1.f, 1.f, 1.f, 1.f);
@@ -482,7 +484,7 @@ PS_OUT_COLOR PS_DYNAMIC_SMALL(PS_IN In)
     vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
     
     
-    if(vDiffuse.a < 0.2)
+    if(vDiffuse.a < 0.3)
         discard;
     
     vector emissiveColor = float4(0, 0, 0, 0);
@@ -494,6 +496,26 @@ PS_OUT_COLOR PS_DYNAMIC_SMALL(PS_IN In)
     return Out;
 }
 
+
+
+PS_OUT_COLOR PS_GLASSCOLOR(PS_IN In)
+{
+    PS_OUT_COLOR Out = (PS_OUT_COLOR) 0;
+    
+    float2 vRefractTexCoord;
+    vRefractTexCoord.x = In.vProjPos.x / In.vProjPos.w / 2.0f + 0.5f;
+    vRefractTexCoord.y = -In.vProjPos.y / In.vProjPos.w / 2.0f + 0.5f;
+
+
+    // Refract - 유리 뒤에 비치는 씬
+    float4 vRefractColor = g_RefractionTexture.Sample(LinearSampler, vRefractTexCoord);
+    float4 vGlassTexColor = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
+    float4 vFinalColor = lerp(vRefractColor, vGlassTexColor, 0.5f);
+    
+    Out.vDiffuse = vFinalColor;
+    
+    return Out;
+}
 
 
 struct PS_IN_LIGHTDEPTH
@@ -536,7 +558,7 @@ technique11 DefaultTechnique
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_Default, 0);
-        SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 
         VertexShader = compile vs_5_0 VS_MAIN();
         GeometryShader = NULL;
@@ -602,7 +624,7 @@ technique11 DefaultTechnique
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_Default, 0);
-        SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 
         VertexShader = compile vs_5_0 VS_MAIN();
         GeometryShader = NULL;
@@ -675,6 +697,19 @@ technique11 DefaultTechnique
         HullShader = NULL;
         DomainShader = NULL;
         PixelShader = compile ps_5_0 PS_DYNAMIC_SMALL();
+    }
+
+    pass GlassColorPass// 12
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        HullShader = NULL;
+        DomainShader = NULL;
+        PixelShader = compile ps_5_0 PS_GLASSCOLOR();
     }
 
    

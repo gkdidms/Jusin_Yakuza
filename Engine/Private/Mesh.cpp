@@ -21,6 +21,7 @@ CMesh::CMesh(const CMesh& rhs)
 	, m_isTool {rhs.m_isTool}
 	, m_BoneIndices {rhs.m_BoneIndices}
 {
+	memcpy(&m_szName, &rhs.m_szName, sizeof(char) * _MAX_PATH);
 
 	//m_pIndices = new _uint[m_iNumIndices];
 	//ZeroMemory(m_pIndices, sizeof(_uint) * m_iNumIndices);

@@ -276,53 +276,24 @@ PS_OUT PS_MAIN_DEFERRED_RESULT(PS_IN In)
     return Out;
 }
 
-PS_OUT_GAMEOBJECT PS_INCLUDE_GLASS(PS_IN In)
+PS_OUT PS_INCLUDE_GLASS(PS_IN In)
 {
 
-    PS_OUT_GAMEOBJECT Out = (PS_OUT_GAMEOBJECT) 0;
+    PS_OUT Out = (PS_OUT) 0;
 
     vector vDiffuseColor = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
     vector vGlassDiffuseColor = g_GlassDiffuseTexture.Sample(LinearSampler, In.vTexcoord);
     
-    vector vNonBlendNormal = g_NormalTexture.Sample(LinearSampler, In.vTexcoord);
-    vector vGlassNormal = g_GlassNormalTexture.Sample(LinearSampler, In.vTexcoord);
-    
-    vector vNonBlendDepth = g_DepthTexture.Sample(LinearSampler, In.vTexcoord);
-    vector vGlassDepth = g_GlassDepthTexture.Sample(LinearSampler, In.vTexcoord);
-    
-    vector vNonBlendRM = g_RMTexture.Sample(LinearSampler, In.vTexcoord);
-    vector vGlassRM = g_GlassRMTexture.Sample(LinearSampler, In.vTexcoord);
-    
-    vector vNonBlendRS = g_RSTexture.Sample(LinearSampler, In.vTexcoord);
-    vector vGlassRS = g_GlassRSTexture.Sample(LinearSampler, In.vTexcoord);
-    
-    vector vDecal = g_DecalTexture.Sample(LinearSampler, In.vTexcoord);
-    
-    if (vDecal.r != 0 && vDecal.g != 0 && vDecal.b != 0)
-    {
-        vDiffuseColor = lerp(vDiffuseColor, vDecal, vDecal.a);
-    }
-        
-    
-    
-    if (vNonBlendDepth.r < vGlassDepth.r)
+    if (0 != vGlassDiffuseColor.r || 0 != vGlassDiffuseColor.g || 0 != vGlassDiffuseColor.b)
     {
         // Nonblend
-        Out.vColor = vDiffuseColor;
-        Out.vNormal = vNonBlendNormal;
-        Out.vDepth = vNonBlendDepth;
-        Out.vRM = vNonBlendRM;
-        Out.vRS = vNonBlendRS;
+        Out.vColor = vGlassDiffuseColor;
     }
     else
     {
-        // Glass
-        Out.vColor = vGlassDiffuseColor;
-        Out.vNormal = vGlassNormal;
-        Out.vDepth = vGlassDepth;
-        Out.vRM = vGlassRM;
-        Out.vRS = vGlassRS;
+        Out.vColor = vDiffuseColor;
     }
+
     
     return Out;
 }

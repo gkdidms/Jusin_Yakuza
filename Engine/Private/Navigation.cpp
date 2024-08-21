@@ -335,65 +335,75 @@ void CNavigation::Swap_Route(vector<ROUTE_IO> CurrentRoute, _vector vCurrnetDir,
 
 void CNavigation::Swap_Route_ADV(vector<ROUTE_IO> CurrentRoute, _vector vCurrnetDir, _bool* isTurn, _int* iDir)
 {
-    //// TURN 이미 하고 있음
-    //if (*isTurn)
-    //    return;
+    // TURN 이미 하고 있음
+    if (*isTurn)
+        return;
 
-    //if (CurrentRoute[m_iCurrentWayPointIndex].iPointOption == CORNEL)
-    //{
-    //    // DIR_F : 정방향
-    //    // DIR_B : 역방향
-    //    // m_iCurrent : 목표삼은 index
-    //    // 코너 바꿀때
-    //    if ((m_iRouteDir == DIR_F && m_iCurrentWayPointIndex == 0) ||
-    //        (m_iRouteDir == DIR_B && m_iCurrentWayPointIndex == CurrentRoute.size() - 1))
-    //        return;
+    if (CurrentRoute[m_iCurrentWayPointIndex].iPointOption == CORNEL)
+    {
+        // DIR_F : 정방향
+        // DIR_B : 역방향
+        // m_iCurrent : 목표삼은 index
+        // 코너 바꿀때
+        if ((m_iRouteDir == DIR_F && m_iCurrentWayPointIndex == 0) ||
+            (m_iRouteDir == DIR_B && m_iCurrentWayPointIndex == CurrentRoute.size() - 1))
+            return;
 
-    //    // 코너일떄 route index 저장하고 있었음
-    //    // 가고 있는 방향 index와 코너가 중간에 있을때도 고려.
-    //    // Route : 스왑할수있는 선택지를 저장
-    //    vector<_uint> Route = { m_iCurrentRouteIndex };
-    //    for (size_t i = 0; i < CurrentRoute[m_iCurrentWayPointIndex].iRouteNums; ++i)
-    //        Route.emplace_back(CurrentRoute[m_iCurrentWayPointIndex].pRouteID[i]);
+        // 코너일떄 route index 저장하고 있었음
+        // 가고 있는 방향 index와 코너가 중간에 있을때도 고려.
+        // Route : 스왑할수있는 선택지를 저장
+        vector<_uint> Route = { m_iCurrentRouteIndex };
+        for (size_t i = 0; i < CurrentRoute[m_iCurrentWayPointIndex].iRouteNums; ++i)
+            Route.emplace_back(CurrentRoute[m_iCurrentWayPointIndex].pRouteID[i]);
 
-    //    //랜덤으로 Route를 스왑.
-    //    _uint iRandomIdex = m_pGameInstance->Get_Random(0, _int(Route.size() - 1));
+        //랜덤으로 Route를 스왑.
+        _uint iRandomIdex = m_pGameInstance->Get_Random(0, _int(Route.size() - 1));
 
-    //    if (iRandomIdex == m_iCurrentRouteIndex || 0 == Route.size())
-    //    {
-    //        return;
-    //    }
+        if (iRandomIdex == m_iCurrentRouteIndex || 0 == Route.size())
+        {
+            return;
+        }
 
-    //    XMVECTOR curPos = XMLoadFloat4(&m_Routes[m_iCurrentRouteIndex][m_iCurrentWayPointIndex].vPosition);
+        XMVECTOR curPos = XMLoadFloat4(&m_Routes[m_iCurrentRouteIndex][m_iCurrentWayPointIndex].vPosition);
+        XMVECTOR nextPos = XMLoadFloat4(&m_Routes[iRandomIdex][0].vPosition);
+
+        float   fMinDistance = XMVectorGetX(XMVector4Length(curPos - nextPos));
+        int     iIndex = 0;
+        for (int i = 0; i < m_Routes[iRandomIdex].size(); i++)
+        {
+            nextPos = XMLoadFloat4(&m_Routes[iRandomIdex][i].vPosition);
+            float   fDistance = XMVectorGetX(XMVector4Length(curPos - nextPos));
+            if (fMinDistance > fDistance)
+            {
+                fMinDistance = fDistance;
+                iIndex = i;
+            }
+        }
+
+        m_iPreRouteIndex = m_iCurrentRouteIndex;
+        m_iCurrentRouteIndex = iRandomIdex;
 
 
-    //    float   fMinDistance = XMVectorGetX(XMVector4Length(m_Routes[m_iCurrentRouteIndex][m_iCurrentWayPointIndex].vPosition - m_Routes[iRandomIdex][0].vPosition));
-    //    for(int i = 0; i < )
-
-    //    m_iPreRouteIndex = m_iCurrentRouteIndex;
-    //    m_iCurrentRouteIndex = iRandomIdex;
 
 
+        if (m_iRouteDir == DIR_F)
+            m_iCurrentWayPointIndex = 0; // 정방향일 경우
+        else if (m_iRouteDir == DIR_B)
+            m_iCurrentWayPointIndex = m_Routes[m_iCurrentRouteIndex].size() - 1; // 역방향일 경우
 
+        _vector vRight = XMVector3Cross(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMVector3Normalize(vCurrnetDir));
+        //이동하는 방향 구하기
+        _float fAngle = XMVectorGetX(XMVector3Dot(XMLoadFloat4(&m_Routes[m_iCurrentRouteIndex][m_iCurrentWayPointIndex].vPosition), vRight));
 
-    //    if (m_iRouteDir == DIR_F)
-    //        m_iCurrentWayPointIndex = 0; // 정방향일 경우
-    //    else if (m_iRouteDir == DIR_B)
-    //        m_iCurrentWayPointIndex = m_Routes[m_iCurrentRouteIndex].size() - 1; // 역방향일 경우
+        // iDir : 회전방향
+        if (fAngle > 0)
+            *iDir = DIR_R;
+        else if (fAngle < 0)
+            *iDir = DIR_L;
 
-    //    _vector vRight = XMVector3Cross(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMVector3Normalize(vCurrnetDir));
-    //    //이동하는 방향 구하기
-    //    _float fAngle = XMVectorGetX(XMVector3Dot(XMLoadFloat4(&m_Routes[m_iCurrentRouteIndex][m_iCurrentWayPointIndex].vPosition), vRight));
-
-    //    // iDir : 회전방향
-    //    if (fAngle > 0)
-    //        *iDir = DIR_R;
-    //    else if (fAngle < 0)
-    //        *iDir = DIR_L;
-
-    //    // 회전해야하는지 안해야하는지 체크
-    //    *isTurn = true;
-    //}
+        // 회전해야하는지 안해야하는지 체크
+        *isTurn = true;
+    }
 }
 
 

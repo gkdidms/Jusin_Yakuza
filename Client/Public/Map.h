@@ -39,7 +39,7 @@ public:
 
 	enum SHADER_NUM {
 		SHADER_DEFAULT_MAP, //0
-		SHADER_GLASS, //1
+		SHADER_GLASS_DEFAULT, //1
 		SHADER_DECAL_MASK, //2
 		SHADER_DECAL_LIGHT, //3
 		SHADER_SIGN, //4
@@ -49,10 +49,11 @@ public:
 		SHADER_SIGN_MASK, //8
 		SHADER_STRONGBLOOM, //9
 		SHADER_COMPULSORY_DECALBLEND, //10
-		SHADER_DYNAMIC_SIGN_SMALL,
+		SHADER_DYNAMIC_SIGN_SMALL, // 11
+		SHADER_GLASS_DIFFUSE, //12
 
 		// 무조건 제일 아래
-		SHADER_LIGHTDEPTH, //11
+		SHADER_LIGHTDEPTH, //13
 		SHADER_END
 	};
 
@@ -167,6 +168,9 @@ private:
 	float					m_fDynamicTime = { 0 };
 	float					m_fTimer = { 0 };
 	bool					m_bPositive = { false };
+
+
+	bool					m_bOcculusionCulling = { false };
 
 private:
 	ID3D11Query* m_pOcclusionQuery = { nullptr };

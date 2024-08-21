@@ -127,7 +127,7 @@ void CConstruction::Late_Tick(const _float& fTimeDelta)
 		}
 		else if (1 == m_iShaderPassNum)
 		{
-			//m_pGameInstance->Add_Renderer(CRenderer::RENDER_GLASS, this);
+			m_pGameInstance->Add_Renderer(CRenderer::RENDER_GLASS, this);
 		}
 		else if (2 == m_iShaderPassNum)
 		{

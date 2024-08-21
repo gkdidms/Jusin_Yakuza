@@ -27,9 +27,6 @@ public:
     HRESULT Ready_Debug(_float fX, _float fY, _float fSizeX, _float fSizeY);
     HRESULT Render_Debug(class CShader* pShader, class CVIBuffer_Rect* pVIBuffer, _bool isArray);
 #endif // _DEBUG
-public:
-    HRESULT Ready_Debug(_float fX, _float fY, _float fSizeX, _float fSizeY);
-    HRESULT Render_Debug(class CShader* pShader, class CVIBuffer_Rect* pVIBuffer, _bool isArray);
 
 private:
     ID3D11Device* m_pDevice = { nullptr };
@@ -44,8 +41,6 @@ private:
 private:
     _float4x4 m_WorldMatrix;
 #endif // _DEBUG
-private:
-    _float4x4 m_WorldMatrix;
 
 private:
     _float4 m_vClearColor;
