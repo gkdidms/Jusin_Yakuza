@@ -68,7 +68,7 @@ HRESULT CUIKaraoke_Play::Add_UIData(CUI_Object* pUIObject, wstring wstrPrototype
         }
         else
         {
-            m_Lyrics=dynamic_cast<CGroup*>(pUIObject);
+            m_Lyrics = dynamic_cast<CGroup*>(pUIObject);
         }
         return S_OK;
     }
@@ -121,15 +121,16 @@ HRESULT CUIKaraoke_Play::Tick(const _float& fTimeDelta)
             pUI->Tick(fTimeDelta);
         }
     }
-
-    Off_UI_Effect();
-
     return S_OK;
 }
 
 HRESULT CUIKaraoke_Play::Late_Tick(const _float& fTimeDelta)
 {
-    Render_Custom_Sequence(fTimeDelta);
+    //m_pPlayUI[BACK][0]->Late_Tick(fTimeDelta);
+    //for (auto& iter : m_pPlayUI)
+    //    iter->Late_Tick(fTimeDelta);
+
+    Render_Cutsom_Sequence(fTimeDelta);
 
     if (!m_isAnimFin)
         Check_AimFin();
@@ -183,7 +184,7 @@ void CUIKaraoke_Play::Ready_LyricsTime()
     m_LyricsTime.reserve(17);
     LYRICS_DESC Desc{ 9.461, 0 };
     m_LyricsTime.push_back(Desc);
-    
+
     //바보같이 어린애인가봐
     Desc.fTime = 14.327;
     Desc.iSocketIndex = 1;
@@ -208,14 +209,14 @@ void CUIKaraoke_Play::Ready_LyricsTime()
     Desc.fTime = 39.776;                     // 동시에
     Desc.iSocketIndex = 0;                   // 동시에
     m_LyricsTime.push_back(Desc);            // 동시에
-                                             // 동시에
-    //한번 말한 적 없는                       // 동시에
+    // 동시에
+//한번 말한 적 없는                       // 동시에
     Desc.fTime = 42.866;                     // 동시에
     Desc.iSocketIndex = 1;                   // 동시에
     m_LyricsTime.push_back(Desc);            // 동시에
 
     //말주변없고 어쩌구
-    Desc.fTime = 47.231;                      
+    Desc.fTime = 47.231;
     Desc.iSocketIndex = 2;
     m_LyricsTime.push_back(Desc);
 
@@ -275,7 +276,7 @@ void CUIKaraoke_Play::Ready_LyricsTime()
 
     for (size_t i = 0; i < m_LyricsTime.size(); i++)
     {
-        if(i == m_LyricsTime.size() - 1)
+        if (i == m_LyricsTime.size() - 1)
             m_LyricsTime[i].fDuration = 95.719f - m_LyricsTime[i].fTime;                    // 마지막소절은 그냥 끝나는 시간 정해져잇음
         else
             m_LyricsTime[i].fDuration = m_LyricsTime[i + 1].fTime - m_LyricsTime[i].fTime;
@@ -284,9 +285,9 @@ void CUIKaraoke_Play::Ready_LyricsTime()
 
 void CUIKaraoke_Play::Ready_LyricsSocket()
 {
-    m_LyricsSocket.push_back(_float3(-288.371887, 11.66042638, 0.f));
-    m_LyricsSocket.push_back(_float3(-288.371887, -101.741051, 0.f));
-    m_LyricsSocket.push_back(_float3(-288.371887, -220.680878, 0.f));
+    m_LyricsSocket.push_back(_float3(-288.371887, 11.66042638, 0.01f));
+    m_LyricsSocket.push_back(_float3(-288.371887, -101.741051, 0.01f));
+    m_LyricsSocket.push_back(_float3(-288.371887, -220.680878, 0.01f));
 }
 
 void CUIKaraoke_Play::Show_Grade(CNoteBase* pNote)
@@ -356,7 +357,6 @@ void CUIKaraoke_Play::Show_Grade(CNoteBase* pNote)
         }
     }
 
-    m_pPlayUI[GRADE][m_Pivots[GRADE]]->Show_Off_All();
     m_pPlayUI[GRADE][m_Pivots[GRADE]]->Show_On(iShowIndex);
     m_pPlayUI[GRADE][m_Pivots[GRADE]]->Show_UI();
 
@@ -366,13 +366,13 @@ void CUIKaraoke_Play::Show_Grade(CNoteBase* pNote)
     if (iShowIndex == 0)
     {
         m_pPlayUI[GREATEFFECT][m_Pivots[GREATEFFECT]]->Show_On_All();
-        m_pPlayUI[GREATEFFECT][m_Pivots[GREATEFFECT]]->Show_UI();
+        m_pPlayUI[GREATEFFECT][m_Pivots[GREATEFFECT]]->Close_UI();
         m_pPlayUI[GREATEFFECT][m_Pivots[GREATEFFECT]]->Get_TransformCom()->Set_State(CTransform::STATE_POSITION, vPosition);
     }
     else if (iShowIndex == 1)
     {
         m_pPlayUI[GOODEFFECT][m_Pivots[GOODEFFECT]]->Show_On_All();
-        m_pPlayUI[GOODEFFECT][m_Pivots[GOODEFFECT]]->Show_UI();
+        m_pPlayUI[GOODEFFECT][m_Pivots[GOODEFFECT]]->Close_UI();
         m_pPlayUI[GOODEFFECT][m_Pivots[GOODEFFECT]]->Get_TransformCom()->Set_State(CTransform::STATE_POSITION, vPosition);
     }
 
@@ -392,8 +392,9 @@ void CUIKaraoke_Play::Update_CurrentLyricsIndex()
 
 }
 
-void CUIKaraoke_Play::Render_Custom_Sequence(const _float& fTimeDelta)
+void CUIKaraoke_Play::Render_Cutsom_Sequence(const _float& fTimeDelta)
 {
+
     m_Lyrics->Late_Tick(fTimeDelta);
 
     RenderGroup_Back(fTimeDelta);
@@ -409,9 +410,11 @@ void CUIKaraoke_Play::Render_Custom_Sequence(const _float& fTimeDelta)
     RenderGroup_Right(fTimeDelta);
     RenderGroup_Up(fTimeDelta);
 
+
     RenderGroup_Mic(fTimeDelta);
 
     RenderGroup_CurrentBar(fTimeDelta);
+
 
     RenderGroup_GoodEffect(fTimeDelta);
     RenderGroup_GreatEffect(fTimeDelta);
@@ -442,7 +445,7 @@ void CUIKaraoke_Play::Change_Lyrics()
                     Setting_BackUI(m_LyricsTime[i + 1], vPos, i);
                     Visible_Notes(i + 1);
                 }
-                else if(i != 6)
+                else if (i != 6)
                 {
                     m_Lyrics->Show_On(i - 1);
 
@@ -474,7 +477,7 @@ void CUIKaraoke_Play::Change_Lyrics()
 
                         m_pPlayUI[BACK][m_LyricsTime[i - 1].iSocketIndex]->Show_Off_All();
                         m_pPlayUI[BACK][m_LyricsTime[i].iSocketIndex]->Show_Off_All();
-                        m_pPlayUI[BLUE][m_LyricsTime[i-1].iSocketIndex]->Show_Off_All();
+                        m_pPlayUI[BLUE][m_LyricsTime[i - 1].iSocketIndex]->Show_Off_All();
                         m_pPlayUI[BLUE][m_LyricsTime[i].iSocketIndex]->Show_Off_All();
                         Invisible_Notes(i - 1);
                         Invisible_Notes(i);
@@ -560,7 +563,7 @@ void CUIKaraoke_Play::Setting_BlueUI(LYRICS_DESC Desc, _fvector vPos, _uint iLyr
         m_pPlayUI[BLUE][m_LyricsTime[m_iCurLyricsIndex].iSocketIndex]->Get_TransformCom()->Set_State(CTransform::STATE_POSITION, vCurBarPos);
         m_pPlayUI[BLUE][m_LyricsTime[m_iCurLyricsIndex].iSocketIndex]->Show_On_All();
     }
- 
+
 }
 
 void CUIKaraoke_Play::CurrentBar_Control()
@@ -574,8 +577,9 @@ void CUIKaraoke_Play::CurrentBar_Control()
     if (-1 < m_iCurLyricsIndex)
     {
         _vector vPos = m_pPlayUI[BACK][m_LyricsTime[m_iCurLyricsIndex].iSocketIndex]->Get_TransformCom()->Get_State(CTransform::STATE_POSITION);
+        vPos = XMVectorSetZ(vPos, 0.f);
         _vector vEndPos = vPos;
-        
+
         // 시작 위치 잡기
         _float3 vScaled_Center = m_pPlayUI[BACK][m_LyricsTime[m_iCurLyricsIndex].iSocketIndex]->Get_PartObject(1)->Get_TransformCom()->Get_Scaled();
         _float3 vScaled_Front = m_pPlayUI[BACK][m_LyricsTime[m_iCurLyricsIndex].iSocketIndex]->Get_PartObject(0)->Get_TransformCom()->Get_Scaled();
@@ -590,7 +594,7 @@ void CUIKaraoke_Play::CurrentBar_Control()
         _float fCurrentPos = m_fCurSoundTime - m_LyricsTime[m_iCurLyricsIndex].fTime;
 
         vPos.m128_f32[0] = LerpFloat(vPos.m128_f32[0], vEndPos.m128_f32[0], (fCurrentPos / m_LyricsTime[m_iCurLyricsIndex].fDuration));
-        
+
         m_pPlayUI[CURRENTBAR].front()->Get_TransformCom()->Set_State(CTransform::STATE_POSITION, vPos);
         m_pPlayUI[CURRENTBAR].front()->Show_On_All();
     }
@@ -1176,7 +1180,7 @@ void CUIKaraoke_Play::Verse_On_BurstNote(LYRICS_NOTE_DESC& Desc, _uint iLyricsIn
 
             m_pPlayUI[ROLLLINE][Desc.iBarIndex]->Show_On_All();
             m_pPlayUI[ROLLLINE][Desc.iBarIndex]->Get_TransformCom()->Set_State(CTransform::STATE_POSITION, vCenterPos);
-            m_pPlayUI[ROLLLINE][Desc.iBarIndex]->Get_TransformCom()->Set_Scale(fSizeX* DURATION_SCALE, vScaled.y, vScaled.z);
+            m_pPlayUI[ROLLLINE][Desc.iBarIndex]->Get_TransformCom()->Set_Scale(fSizeX * DURATION_SCALE, vScaled.y, vScaled.z);
 
             break;
         }
@@ -1248,11 +1252,11 @@ _uint CUIKaraoke_Play::Compute_Num(_uint iCount)
     case CURRENTBAR:
         return 0;
     case GOODEFFECT:
-        return 50;
+        return 30;
     case GRADE:
-        return 50;
+        return 30;
     case GREATEFFECT:
-        return 50;
+        return 30;
     case HOLD:
         return 5;
     case PRESSLINE:
@@ -1262,13 +1266,13 @@ _uint CUIKaraoke_Play::Compute_Num(_uint iCount)
     case ROLLLINE:
         return 5;
     case DOWN:
-        return 50;
+        return 30;
     case LEFT:
-        return 50;
+        return 30;
     case RIGHT:
-        return 50;
+        return 30;
     case UP:
-        return 50;
+        return 30;
     default:
         return 0;
     }
@@ -1277,6 +1281,7 @@ _uint CUIKaraoke_Play::Compute_Num(_uint iCount)
 _fvector CUIKaraoke_Play::Compute_UIPosition(LYRICS_NOTE_DESC& Desc, _uint iLyricsIndex, _float fRatio)
 {
     _vector vPos = m_pPlayUI[BACK][m_LyricsTime[iLyricsIndex].iSocketIndex]->Get_TransformCom()->Get_State(CTransform::STATE_POSITION);
+    vPos = XMVectorSetZ(vPos, 0.f);
     _vector vEndPos = vPos;
 
     // 시작 위치 잡기
@@ -1310,21 +1315,6 @@ _uint CUIKaraoke_Play::Trans_ButtonType_To_UI(_uint iNum)
         return RIGHT;
     }
     return _uint();
-}
-
-void CUIKaraoke_Play::Off_UI_Effect()
-{
-    for (auto& pUIEffect : m_pPlayUI[GREATEFFECT])
-    {
-        if (pUIEffect->Check_AnimFin())
-            pUIEffect->Show_Off_All();
-    }
-
-    for (auto& pUIEffect : m_pPlayUI[GOODEFFECT])
-    {
-        if (pUIEffect->Check_AnimFin())
-            pUIEffect->Show_Off_All();
-    }
 }
 
 CUIKaraoke_Play* CUIKaraoke_Play::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg)
