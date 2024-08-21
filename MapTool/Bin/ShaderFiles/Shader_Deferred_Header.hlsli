@@ -31,6 +31,8 @@ bool g_isPBR;
 bool g_isBOF;
 bool g_isShadow;
 
+float g_fTimeDelta;
+
 Texture2D g_Texture;
 Texture2DArray g_TextureArray;
 

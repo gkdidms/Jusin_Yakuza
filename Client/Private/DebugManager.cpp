@@ -190,6 +190,10 @@ void CDebugManager::Window_Debug()
         if (ImGui::Checkbox("InvertColor", &isInvertColor))
             m_pGameInstance->Set_InvertColor(isInvertColor);
 
+        _bool isInvertSaturationColor = m_pGameInstance->isInvertSaturationColor();
+        if (ImGui::Checkbox("InvertSaturationColor", &isInvertSaturationColor))
+            m_pGameInstance->Set_InvertSaturationColor(isInvertSaturationColor);
+
         _bool isVignette = m_pGameInstance->isVignette();
         if (ImGui::Checkbox("Vignette", &isVignette))
             m_pGameInstance->Set_Vignette(isVignette);
@@ -215,6 +219,34 @@ void CDebugManager::Window_Debug()
         _float fBias = m_pGameInstance->Get_SSAOBias();
         if (ImGui::SliderFloat("Bias", &fBias, 0.0001f, 1.f))
             m_pGameInstance->Set_SSAOBias(fBias);
+
+        ImGui::SeparatorText("InvertColor");
+        _float fDuration = m_pGameInstance->Get_InvertColorDuration();
+        if (ImGui::SliderFloat("InvertDuration", &fDuration, 0.01f, 1.f))
+            m_pGameInstance->Set_InvertColorDuration(fDuration);
+
+        ImGui::SeparatorText("InvertSaturationColor");
+        _float fFactor = m_pGameInstance->Get_InvertSaturationFactor();
+        if (ImGui::SliderFloat("InvertSaturationFactor", &fFactor, 0.01f, 1.f))
+            m_pGameInstance->Set_InvertSaturationFactor(fFactor);
+
+        ImGui::SeparatorText("RadialBlur");
+        _float fPower = m_pGameInstance->Get_RadialPower();
+        if (ImGui::SliderFloat("Power", &fPower, 0.01f, 1.f))
+            m_pGameInstance->Set_RadialPower(fPower);
+
+        _int iSample = m_pGameInstance->Get_RadialSample();
+        if (ImGui::SliderInt("Sample", &iSample, 1, 30))
+            m_pGameInstance->Set_RadialSample(iSample);
+
+        ImGui::SeparatorText("Vignette");
+        _float fIntensity = m_pGameInstance->Get_VignetteIntensity();
+        if (ImGui::SliderFloat("Intensity", &fIntensity, 0.01f, 1.f))
+            m_pGameInstance->Set_VignetteIntensity(fIntensity);
+
+        _float fSmootness = m_pGameInstance->Get_VignetteSmootness();
+        if (ImGui::SliderFloat("Smootness", &fSmootness, 0.01f, 1.f))
+            m_pGameInstance->Set_VignetteSmootness(fSmootness);
 
         //그림자 제어
         ImGui::NewLine();
