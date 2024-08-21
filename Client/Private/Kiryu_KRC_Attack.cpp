@@ -123,6 +123,11 @@ void CKiryu_KRC_Attack::Setting_Value(void* pValue)
 	m_isBut = *pIsBut;
 }
 
+_bool CKiryu_KRC_Attack::IsFinishBlow()
+{
+	return 2 < m_iComboCount;
+}
+
 _bool CKiryu_KRC_Attack::Changeable_Combo_Animation()
 {
 	_float fInterval = 0.4f;
@@ -145,7 +150,7 @@ void CKiryu_KRC_Attack::Shaking()
 		CCamera* pCamera = dynamic_cast<CCamera*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Camera"), CAMERA_PLAYER));
 
 		if(m_iComboCount < 2)
-			pCamera->Set_Shaking(true, { 1.f, 1.f, 0.f }, 0.2, 0.3);
+			pCamera->Set_Shaking(true, { 1.f, 1.f, 0.f }, 0.2, 0.5);
 		else
 			pCamera->Set_Shaking(true, { 1.f, 1.f, 0.f }, 0.3, 0.3);
 	}

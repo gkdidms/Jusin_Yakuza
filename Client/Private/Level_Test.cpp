@@ -17,15 +17,18 @@
 #include "CutSceneCamera.h"
 #include "CarChaseCamera.h"
 #include "Highway_Taxi.h"
+#include "Player.h"
 
 CLevel_Test::CLevel_Test(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLevel{ pDevice, pContext },
 	m_pSystemManager{ CSystemManager::GetInstance() },
 	m_pFileTotalManager{ CFileTotalMgr::GetInstance() },
+	m_pFightManager{ CFightManager::GetInstance() },
 	m_pUIManager{CUIManager::GetInstance()}
 {
 	Safe_AddRef(m_pSystemManager);
 	Safe_AddRef(m_pFileTotalManager);
+	Safe_AddRef(m_pFightManager);
 	Safe_AddRef(m_pUIManager);
 }
 
@@ -39,12 +42,12 @@ HRESULT CLevel_Test::Initialize()
 	// 테스트 다하면 지워라
 	/* For.Prototype_Component_Navigation */
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Navigation"),
-		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/NaviData/Navigation_99.dat")))))
+		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/NaviData/Navigation_3.dat")))))
 		return E_FAIL;
 
-	m_pKaraokeManager = CKaraokeManager::Create();
-	if (nullptr == m_pKaraokeManager)
-		return E_FAIL;
+	//m_pKaraokeManager = CKaraokeManager::Create();
+	//if (nullptr == m_pKaraokeManager)
+	//	return E_FAIL;
 
 	//m_pUIManager->Open_Scene(TEXT("Carchase"));
 
@@ -64,31 +67,37 @@ HRESULT CLevel_Test::Initialize()
 	//	return E_FAIL;
 
 	// 혜원테스트용
-	//if (FAILED(Ready_Test_Hyewon()))
-	//	return E_FAIL;
+	if (FAILED(Ready_Test_Hyewon()))
+		return E_FAIL;
 
-	m_pFileTotalManager->Set_MapObj_In_Client(79, LEVEL_TEST);
-	m_pFileTotalManager->Set_Lights_In_Client(90);
-	m_pFileTotalManager->Set_Collider_In_Client(3, LEVEL_TEST);
-	m_pFileTotalManager->Set_Trigger_In_Client(79, LEVEL_TEST);
+	//m_pFileTotalManager->Set_MapObj_In_Client(7, LEVEL_TEST);
+	//m_pFileTotalManager->Set_Lights_In_Client(90);
+	//m_pFileTotalManager->Set_Collider_In_Client(3, LEVEL_TEST);
+	//m_pFileTotalManager->Set_Trigger_In_Client(79, LEVEL_TEST);
 
 	if (FAILED(Ready_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
+
+	m_pFightManager->Initialize();
+	m_pFightManager->Set_FightStage(true);
+	m_pSystemManager->Set_Camera(CAMERA_PLAYER);
 
 	return S_OK;
 }
 
 void CLevel_Test::Tick(const _float& fTimeDelta)
 {
-	m_pKaraokeManager->Tick(fTimeDelta);
+	if (m_pUIManager->isTitleEnd())
+	{
+		CPlayer* pPlayer = dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"), 0));
+		pPlayer->Battle_Start();
+	}
+
+	m_pFightManager->Tick(fTimeDelta);
+	//m_pKaraokeManager->Tick(fTimeDelta);
 #ifdef _DEBUG
 	SetWindowText(g_hWnd, TEXT("테스트 레벨"));
 #endif
-
-	//if (m_pKaraokeManager->IsSongEnd())
-	//{
-	//	int a = 0;
-	//}
 }
 
 HRESULT CLevel_Test::Ready_Camera(const wstring& strLayerTag)
@@ -179,12 +188,13 @@ HRESULT CLevel_Test::Ready_Player(const wstring& strLayerTag)
 	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_Player"), strLayerTag, &Desc)))
 		return E_FAIL;
 
-	//// 가라오케 플레이어
+	// 가라오케 플레이어
 	//if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_Kiryu_Karaoke"), strLayerTag, &Desc)))
 	//	return E_FAIL;
 
 	return S_OK;
 }
+
 HRESULT CLevel_Test::Ready_Test_Load()
 {
 	m_pFileTotalManager->Set_MapObj_In_Client(9, LEVEL_TEST);
@@ -199,16 +209,15 @@ HRESULT CLevel_Test::Ready_Test_Hyewon()
 {
 	// 가라오케 네비는 9번ㄴ
 	// 가라오케 맵 81번
-	// 
 	//m_pFileTotalManager->Set_MapObj_In_Client(81, LEVEL_TEST);
 	//m_pFileTotalManager->Set_Lights_In_Client(9);
 
-	//요네다 깔린 길거리맵 91
+	// 몬스터 깔린 맵: 92
+	// 몬스터 깔린 네비: 3
 	// 과거의 길거리맵 79
-	// 길거리맵 네비: 7
 	// 과거의 길거리맵 네비: 79
-	m_pFileTotalManager->Set_MapObj_In_Client(81, LEVEL_TEST);
-	m_pFileTotalManager->Set_Lights_In_Client(9);
+	m_pFileTotalManager->Set_MapObj_In_Client(92, LEVEL_TEST);
+	m_pFileTotalManager->Set_Lights_In_Client(99);
 	m_pFileTotalManager->Set_Collider_In_Client(0, LEVEL_TEST);
 	m_pFileTotalManager->Set_Trigger_In_Client(79, LEVEL_TEST);
 
@@ -237,4 +246,5 @@ void CLevel_Test::Free()
 	Safe_Release(m_pFileTotalManager);
 	Safe_Release(m_pUIManager);
 	Safe_Release(m_pKaraokeManager);
+	Safe_Release(m_pFightManager);
 }

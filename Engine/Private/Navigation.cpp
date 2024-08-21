@@ -642,6 +642,40 @@ _vector CNavigation::Compute_WayPointDir_Adv(_vector vPosition, const _float& fT
     return m_vNextDir;
 }
 
+_vector CNavigation::Compute_NishikiDir(_fvector vPosition, const _float& fTimeDelta, _bool* isFinished)
+{
+    // 현재 내 앞의 waypoint
+    _vector vCurrentWayPoint = XMLoadFloat4(&m_Routes[m_iCurrentRouteIndex][m_iCurrentWayPointIndex].vPosition);
+    _vector vDir = vCurrentWayPoint - vPosition;
+    _float fDistance = XMVectorGetX(XMVector3Length(vDir));
+
+    if (fDistance <= 1.5f)
+    {
+        m_iCurrentWayPointIndex++;
+
+        if (m_iCurrentWayPointIndex >= m_Routes[m_iCurrentRouteIndex].size())
+        {
+            *isFinished = true;
+            return vDir;
+        }
+
+        // 예외처리해준거(아예 포인트에서 시작할떄)
+        if (fDistance == 0.f)
+        {
+            return Compute_NishikiDir(vPosition, fTimeDelta, isFinished);
+        }
+
+        // 현재 웨이포인트와 다음 웨이포인트 - 방향 구하는식 -> 이걸로 움직임
+        // 현재 웨이포인트와 다음 웨이포인트 - 방향 구하는식 -> 이걸로 움직임
+        m_vNextDir = XMVector3Normalize(XMLoadFloat4(&m_Routes[m_iCurrentRouteIndex][m_iCurrentWayPointIndex].vPosition) - XMLoadFloat4(&m_Routes[m_iCurrentRouteIndex][m_iPreWayPointIndex].vPosition));
+
+        // 스왑되면
+        m_iPreWayPointIndex = m_iCurrentWayPointIndex;
+    }
+
+    return m_vNextDir;
+}
+
 _float CNavigation::Compute_Height(_fvector vPosition)
 {
     // 예외처리

@@ -1089,8 +1089,8 @@ void CRenderer::Render_SSAO()
 	m_pGameInstance->Bind_ComputeRenderTargetSRV(TEXT("Target_Normal"), 2);
 	m_pGameInstance->Bind_ComputeRenderTargetUAV(TEXT("Target_Ambient"));
 
-	UINT GroupX = (1280 + 15) / 16;
-	UINT GroupY = (720 + 15) / 16;
+	_uint GroupX = (1280 + 15) / 16;
+	_uint GroupY = (720 + 15) / 16;
 
 	m_pComputeShader[SSAO]->Render(GroupX, GroupY, 1);
 }
@@ -1100,11 +1100,11 @@ void CRenderer::Render_SSAOBlur()
 	m_pGameInstance->Bind_ComputeRenderTargetSRV(TEXT("Target_Ambient"));
 	m_pGameInstance->Bind_ComputeRenderTargetUAV(TEXT("Target_Blur_X"));
 
-	UINT GroupX = (1280 + 255) / 256;
+	_uint GroupX = (1280 + 255) / 256;
 
 	m_pComputeShader[BLURX]->Render(GroupX, 720, 1);
 	
-	UINT GroupY = (720 + 255) / 256;
+	_uint GroupY = (720 + 255) / 256;
 	m_pGameInstance->Bind_ComputeRenderTargetSRV(TEXT("Target_Blur_X"));
 	m_pGameInstance->Bind_ComputeRenderTargetUAV(TEXT("Target_SSAO"));
 
@@ -1130,7 +1130,8 @@ void CRenderer::Render_PBR()
 
 	m_pContext->CSSetConstantBuffers(0, 1, &m_pPBRBuffer);
 	//LightBuffer
-	m_pGameInstance->Bind_LightComputeBuffer(1);
+	if (FAILED(m_pGameInstance->Bind_LightComputeBuffer(1)))
+		return;
 
 	m_pGameInstance->Bind_ComputeRenderTargetSRV(TEXT("Target_Depth"), 0);
 	m_pGameInstance->Bind_ComputeRenderTargetSRV(TEXT("Target_Normal"), 1);
@@ -1139,8 +1140,8 @@ void CRenderer::Render_PBR()
 
 	m_pGameInstance->Bind_ComputeRenderTargetUAV(TEXT("Target_PBR"), 0);
 
-	UINT GroupX = (1280 + 15) / 16;
-	UINT GroupY = (720 + 15) / 16;
+	_uint GroupX = (1280 + 15) / 16;
+	_uint GroupY = (720 + 15) / 16;
 
 	m_pComputeShader[PBR]->Render(GroupX, GroupY, 1);
 }
@@ -1988,7 +1989,7 @@ void CRenderer::Render_Debug()
 	}
 
 	m_DebugComponents.clear();
-
+	
 	if (!m_isDebugView) return;
 
 	if (FAILED(m_pShader->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix)))

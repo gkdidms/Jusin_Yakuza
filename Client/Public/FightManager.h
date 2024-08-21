@@ -4,7 +4,7 @@
 #include "Client_Defines.h"
 
 BEGIN(Engine)
-class CGameInstane;
+class CGameInstance;
 END
 
 BEGIN(Client)
@@ -27,6 +27,11 @@ public:
 public:
 	HRESULT Initialize();
 	void Tick(const _float& fTimeDelta);
+
+private:
+	_bool Check_Stage_Clear();			// 길거리맵 제외 스테이지에 남은 몬스터가 있는지를 체크
+
+	
 
 private:
 	CGameInstance* m_pGameInstance = { nullptr };

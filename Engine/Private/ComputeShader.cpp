@@ -20,13 +20,14 @@ HRESULT CComputeShader::Initialize_Prototype(const wstring& strShaderFilePath)
 #ifdef _DEBUG
     iHlslFlag = D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION;
 #else
-    iHlslFlag = D3DCOMPILE_OPTIMIZATION_LEVEL0;
+    //iHlslFlag = D3DCOMPILE_OPTIMIZATION_LEVEL0;
+    iHlslFlag = D3DCOMPILE_SKIP_OPTIMIZATION;
 #endif // DEBUG
 
     ID3DBlob* pShaderBlob = nullptr;
     ID3DBlob* pErrorBlob = nullptr;
 
-    if (FAILED(D3DCompileFromFile(strShaderFilePath.c_str(), nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, "GS_MAIN", "cs_5_0", iHlslFlag, 0, &pShaderBlob, &pErrorBlob)))
+    if (FAILED(D3DCompileFromFile(strShaderFilePath.c_str(), nullptr, D3D_COMPILE_STANDARD_FILE_INCLUDE, "CS_Main", "cs_5_0", iHlslFlag, 0, &pShaderBlob, &pErrorBlob)))
     {
         return E_FAIL;
     }

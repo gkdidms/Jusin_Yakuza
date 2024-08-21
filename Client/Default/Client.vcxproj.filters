@@ -719,6 +719,18 @@
     <ClCompile Include="..\Private\Chapter5_0.cpp">
       <Filter>03.QuestManager\Quest\Main\Chapter_5\0</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\Chapter5_1.cpp">
+      <Filter>03.QuestManager\Quest\Main\Chapter_5\1</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Chapter6_0.cpp">
+      <Filter>03.QuestManager\Quest\Main\Chapter_6\0</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Chapter7_0.cpp">
+      <Filter>03.QuestManager\Quest\Main\Chpater_7\0</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Chapter7_1.cpp">
+      <Filter>03.QuestManager\Quest\Main\Chpater_7\1</Filter>
+	</ClCompile>
     <ClCompile Include="..\Private\AI_RoadYOP.cpp">
       <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby\01.Walker\01.YOP\AI</Filter>
     </ClCompile>
@@ -1472,6 +1484,18 @@
     <ClInclude Include="..\Public\Chapter5_0.h">
       <Filter>03.QuestManager\Quest\Main\Chapter_5\0</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Chapter5_1.h">
+      <Filter>03.QuestManager\Quest\Main\Chapter_5\1</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Chapter6_0.h">
+      <Filter>03.QuestManager\Quest\Main\Chapter_6\0</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Chapter7_0.h">
+      <Filter>03.QuestManager\Quest\Main\Chpater_7\0</Filter>
+	</ClInclude>
+    <ClInclude Include="..\Public\Chapter7_1.h">
+      <Filter>03.QuestManager\Quest\Main\Chpater_7\1</Filter>
+	</ClInclude>
     <ClInclude Include="..\Public\AI_RoadYOP.h">
       <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby\01.Walker\01.YOP\AI</Filter>
     </ClInclude>
@@ -2274,6 +2298,24 @@
     <Filter Include="03.QuestManager\Quest\Main\Chapter_5\0">
       <UniqueIdentifier>{cf0c48d9-c9b3-459a-a20d-016cda7d8c32}</UniqueIdentifier>
     </Filter>
+    <Filter Include="03.QuestManager\Quest\Main\Chapter_5\1">
+      <UniqueIdentifier>{4f4479bf-2192-43b7-b4b6-5e46940ba9da}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.QuestManager\Quest\Main\Chapter_6">
+      <UniqueIdentifier>{a6f512ac-dfb1-4327-8c32-36a8fea6a61f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.QuestManager\Quest\Main\Chapter_6\0">
+      <UniqueIdentifier>{0157374f-fe54-4a54-9e42-7c53e6d6c889}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.QuestManager\Quest\Main\Chpater_7">
+      <UniqueIdentifier>{25957175-2c68-48b4-b5dd-aa8144043f84}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.QuestManager\Quest\Main\Chpater_7\0">
+      <UniqueIdentifier>{879e22a7-41a8-46b9-8615-fd48d9bf5b47}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.QuestManager\Quest\Main\Chpater_7\1">
+      <UniqueIdentifier>{b603e5a4-387d-487a-821c-4df7ceaf74ad}</UniqueIdentifier>
+	</Filter>
     <Filter Include="02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby\01.Walker\01.YOP\AI">
       <UniqueIdentifier>{83021a8a-5cc4-4f65-9ce3-f04d8a18e962}</UniqueIdentifier>
     </Filter>

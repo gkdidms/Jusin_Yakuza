@@ -238,9 +238,9 @@ private:
 
     _float m_fHDRLight = { 1.f };
 
-    _float m_fSSAORadiuse = { 0.032f };
+    _float m_fSSAORadiuse = { 0.135f };
     _float m_fSSAOBlur = { 2.f };
-    _float m_fSSAOBiae = { 0.025f };
+    _float m_fSSAOBiae = { 0.03f };
     _float4* m_vSSAOKernal;
 
     int      m_iRenderState = { RENDER_END };

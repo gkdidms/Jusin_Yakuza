@@ -83,6 +83,11 @@ void CPlayer::Set_ItemOff()
 	m_pTargetItem = nullptr;
 }
 
+void CPlayer::Battle_Start()
+{
+	m_eCurrentStyle = KRS;
+}
+
 HRESULT CPlayer::Initialize_Prototype()
 {
 	return S_OK;
@@ -149,6 +154,10 @@ void CPlayer::Tick(const _float& fTimeDelta)
 
 	if (m_isHitFreeze)
 		HitFreeze_Timer(fTimeDelta);
+	if (m_isHitRadial)
+		HitRadial_Timer(fTimeDelta);
+	if (m_isHitZoom)
+		HitZoomIn_Timer(fTimeDelta);
 
 	if (m_pGameInstance->GetKeyState(DIK_UP) == TAP)
 	{
@@ -309,7 +318,7 @@ void CPlayer::Late_Tick(const _float& fTimeDelta)
 	}
 #else
 	m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
-	m_pGameInstance->Add_Renderer(CRenderer::RENDER_SHADOWOBJ, this); // Shadow¿ë ·»´õ Ãß°¡
+	//m_pGameInstance->Add_Renderer(CRenderer::RENDER_SHADOWOBJ, this); // Shadow¿ë ·»´õ Ãß°¡
 #endif // _DEBUG
 
 	for (auto& pCollider : m_pColliders)
@@ -532,6 +541,8 @@ void CPlayer::Attack_Event(CGameObject* pHitObject, _bool isItem)
 			{
 				CKiryu_KRS_Grab::KRS_Grab_DESC Desc{ true, Compute_Target_Direction(pLandObject) };
 				m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Setting_Value(&Desc);
+
+				HitZoomIn_On();
 			}
 
 			if (m_iCurrentBehavior == (_uint)KRS_BEHAVIOR_STATE::ATTACK)
@@ -541,6 +552,8 @@ void CPlayer::Attack_Event(CGameObject* pHitObject, _bool isItem)
 				{
 					if(m_pTargetObject->isObjectDead())
 						HitFreeze_On();
+					else
+						HitRadial_On();
 				}
 			}
 
@@ -555,6 +568,8 @@ void CPlayer::Attack_Event(CGameObject* pHitObject, _bool isItem)
 				{
 					if (m_pTargetObject->isObjectDead())
 						HitFreeze_On();
+					else
+						HitRadial_On();
 				}
 			}
 
@@ -566,6 +581,8 @@ void CPlayer::Attack_Event(CGameObject* pHitObject, _bool isItem)
 			{
 				CKiryu_KRC_Grab::KRC_Grab_DESC Desc{ true, Compute_Target_Direction(pLandObject) };
 				m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Setting_Value(&Desc);
+
+				HitZoomIn_On();
 			}
 
 			if (m_iCurrentBehavior == (_uint)KRC_BEHAVIOR_STATE::ATTACK)
@@ -573,6 +590,8 @@ void CPlayer::Attack_Event(CGameObject* pHitObject, _bool isItem)
 				// »ó´ë¹æÀÌ Á×¾ú´Ù¸é Àá±ñ ¸ØÃá´Ù.
 				if (m_pTargetObject->isObjectDead())
 					HitFreeze_On();
+				else if (static_cast<CKiryu_KRC_Attack*>(m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior))->IsFinishBlow())
+					HitRadial_On();
 			}
 
 			break;
@@ -1442,7 +1461,7 @@ void CPlayer::KRH_KeyInput(const _float& fTimeDelta)
 				}
 			}
 
-			if (isHitActionPlay)
+			if (!isHitActionPlay)
 			{
 				if (m_iCurrentBehavior == (_uint)KRH_BEHAVIOR_STATE::ATTACK)
 				{
@@ -1639,7 +1658,7 @@ void CPlayer::KRC_KeyInput(const _float& fTimeDelta)
 					}
 				}
 
-				if (isHitActionPlay)
+				if (!isHitActionPlay)
 				{
 					if (m_iCurrentBehavior == (_uint)KRC_BEHAVIOR_STATE::ATTACK)
 					{
@@ -2571,6 +2590,55 @@ void CPlayer::HitFreeze_Timer(const _float& fTimeDelta)
 	{
 		m_fHitFreezeTimer = 0.f;
 		HitFreeze_Off();
+	}
+}
+
+void CPlayer::HitRadial_On()
+{
+	m_isHitRadial = true;
+	m_pGameInstance->Set_RadialBlur(true);
+}
+
+void CPlayer::HitRadial_Off()
+{
+	m_isHitRadial = false;
+	m_pGameInstance->Set_RadialBlur(false);
+}
+
+void CPlayer::HitRadial_Timer(const _float& fTimeDelta)
+{
+	m_fHitRadialTimer += m_pGameInstance->Get_TimeDelta(TEXT("Timer_Game"));
+
+	if (m_fHitRadialTime <= m_fHitRadialTimer)
+	{
+		m_fHitRadialTimer = 0.f;
+		HitRadial_Off();
+	}
+}
+
+void CPlayer::HitZoomIn_On()
+{
+	m_isHitZoom = true;
+
+	CPlayerCamera* pCamera = dynamic_cast<CPlayerCamera*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Camera"), CAMERA_PLAYER));
+	pCamera->Set_StartFov(XMConvertToRadians(45.0f));				//ÇöÀç fov¼³Á¤
+	pCamera->Set_FoV(XMConvertToRadians(45.0f));				//ÇöÀç fov¼³Á¤
+	pCamera->On_Return();
+}
+
+void CPlayer::HitZoomIn_Off()
+{
+	m_isHitZoom = false;
+}
+
+void CPlayer::HitZoomIn_Timer(const _float& fTimeDelta)
+{
+	m_fHitZoomTimer += m_pGameInstance->Get_TimeDelta(TEXT("Timer_Game"));
+
+	if (m_fHitZoomTime <= m_fHitZoomTimer)
+	{
+		m_fHitZoomTimer = 0.f;
+		HitZoomIn_Off();
 	}
 }
 

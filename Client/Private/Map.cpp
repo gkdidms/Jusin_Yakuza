@@ -167,18 +167,19 @@ void CMap::Late_Tick(const _float& fTimeDelta)
 	m_vCompulsoryDecalBlendMeshIndex.clear();
 
 	if (m_pGameInstance->Get_CurrentLevel() == LEVEL_TUTORIAL ||
+		m_pGameInstance->Get_CurrentLevel() == LEVEL_NISHIKIWALK ||
 		m_pGameInstance->Get_CurrentLevel() == LEVEL_TOKOSTREET)
 	{
 		if (isOcculusionDepth())
 		{
 			Add_Renderer(fTimeDelta);
-			m_pGameInstance->Add_Renderer(CRenderer::RENDER_SHADOWOBJ, this);
+			//m_pGameInstance->Add_Renderer(CRenderer::RENDER_SHADOWOBJ, this);
 		}
 	}
 	else
 	{
 		Add_Renderer(fTimeDelta);
-		m_pGameInstance->Add_Renderer(CRenderer::RENDER_SHADOWOBJ, this);
+		//m_pGameInstance->Add_Renderer(CRenderer::RENDER_SHADOWOBJ, this);
 	}
 
 }
@@ -1312,8 +1313,6 @@ HRESULT CMap::Add_Components(void* pArg)
 		m_bCompulsoryAlpha = { true };
 	}
 
-
-
 	wstring strMaterialName = TEXT("Prototype_Component_Material_") + m_pGameInstance->StringToWstring(strModelName);
 
 	if (FAILED(__super::Add_Component(m_iCurrentLevel, strMaterialName,
@@ -1324,8 +1323,6 @@ HRESULT CMap::Add_Components(void* pArg)
 	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Shader_MeshMap"),
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
 		return E_FAIL;
-
-
 
 	// Occulusion CullingÀ» À§ÇÑ scale ÆÄ¾Ç
 	if (0 < gameobjDesc->iColliderNum)

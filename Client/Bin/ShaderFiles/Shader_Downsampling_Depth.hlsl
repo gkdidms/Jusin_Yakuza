@@ -2,7 +2,7 @@ Texture2D<float> InputTexture : register(t0); // t : 인풋 버퍼로 사용, 0 ~ 9 슬�
 RWTexture2D<float> OutputTexture : register(u0); // u : 아웃풋 버퍼, 0 ~ 9 
 
 [numthreads(16, 16, 1)]
-void GS_MAIN(uint3 dispatchThreadID : SV_DispatchThreadID)
+void CS_Main(uint3 dispatchThreadID : SV_DispatchThreadID)
 {
     // Depth는 보간을 하면 안됨
     

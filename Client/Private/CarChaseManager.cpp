@@ -39,10 +39,10 @@ HRESULT CCarChaseManager::Initialize()
 	return S_OK;
 }
 
-void CCarChaseManager::Tick()
+_bool CCarChaseManager::Tick()
 {
 	if (m_isFinished)
-		return;
+		return true;
 
 	if (m_isStart)
 	{
@@ -57,9 +57,10 @@ void CCarChaseManager::Tick()
 		if (m_iCurrentStage >= m_Stages.size())
 		{
 			m_isFinished = true;
-			return;
 		}
 	}
+
+	return false;
 }
 
 /*
