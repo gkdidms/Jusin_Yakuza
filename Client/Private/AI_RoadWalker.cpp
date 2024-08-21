@@ -47,9 +47,14 @@ void CAI_RoadWalker::Tick(const _float& fTimeDelta)
 		// waypoint 방향받기
 		// m_isTurn, m_iDir, m_isBack : 여기서 받음
 		_vector vDir = m_pNavigationCom->Compute_WayPointDir_Adv(m_pThis->Get_TransformCom()->Get_State(CTransform::STATE_POSITION), 
-			fTimeDelta, &m_isTurn, &m_iDir, &m_isBack);
+			fTimeDelta, &m_isTurn, &m_iDir, &m_isBack, &m_bisMove);
 		m_pThis->Get_TransformCom()->LookAt_For_LandObject(vDir, true);
+
+
+		m_vNextDir = vDir;
+		m_bisMove = false;
 	}
+
 }
 
 CBTNode::NODE_STATE CAI_RoadWalker::Check_Coll()
@@ -105,6 +110,8 @@ CBTNode::NODE_STATE CAI_RoadWalker::Back()
 			m_isBack = false;
 			m_isTurn = false;
 			m_isWalk = true;
+			//m_pThis->Get_TransformCom()->LookAt_For_LandObject(m_vNextDir, true);
+			m_bisMove = true;
 		}
 
 		return CBTNode::SUCCESS;
@@ -120,12 +127,16 @@ CBTNode::NODE_STATE CAI_RoadWalker::Turn()
 {
 	if (!m_isTurn) return CBTNode::FAIL;
 
+
 	if (m_iSkill == SKILL_TURN && (*m_pState == CAdventure::ADVENTURE_TURN90_L || *m_pState == CAdventure::ADVENTURE_TURN90_R))
 	{
 		if (m_pAnimCom->Get_AnimFinished())
 		{
 			m_isTurn = false;
 			m_isWalk = true;
+			m_isBack = false;
+			m_bisMove = true;
+			//m_pThis->Get_TransformCom()->LookAt_For_LandObject(m_vNextDir, true);
 		}
 
 		return CBTNode::SUCCESS;
@@ -156,6 +167,37 @@ CBTNode::NODE_STATE CAI_RoadWalker::Walk()
 	*m_pState = CAdventure::ADVENTURE_WALK_ST;
 
 	return CBTNode::SUCCESS;
+}
+
+void CAI_RoadWalker::Rotate_Dir(XMVECTOR& currentDirection, XMVECTOR targetDirection, bool& bEnd)
+{
+	//currentDirection = XMVector3Normalize(currentDirection);
+	//targetDirection = XMVector3Normalize(targetDirection);
+
+	//// 두 벡터 사이의 각도 계산
+	//float cosAngle = XMVectorGetX(XMVector3Dot(currentDirection, targetDirection));
+	//float angle = acosf(cosAngle);
+
+	//// 거의 동일한 방향이면 회전 생략
+	//if (angle < XMConvertToRadians(1.0f)) {
+	//	currentDirection = targetDirection;
+	//	bEnd = true; // 이미 목표 방향과 일치
+	//}
+
+	//// 최대 회전 각도를 1도로 제한
+	//float rotationAngle = XMConvertToRadians(1.0f);
+
+	//// 회전 축을 계산 (두 벡터의 외적)
+	//XMVECTOR rotationAxis = XMVector3Normalize(XMVector3Cross(currentDirection, targetDirection));
+
+	//// 회전 행렬 생성
+	//XMMATRIX rotationMatrix = XMMatrixRotationAxis(rotationAxis, rotationAngle);
+
+	//// 현재 방향에 회전 행렬을 적용하여 새로운 방향 벡터 계산
+	//currentDirection = XMVector3TransformNormal(currentDirection, rotationMatrix);
+
+	//// 여전히 목표 방향과 일치하지 않으면 FALSE 반환
+	//bEnd = false;
 }
 
 void CAI_RoadWalker::Free()

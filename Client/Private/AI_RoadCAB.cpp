@@ -73,7 +73,18 @@ void CAI_RoadCAB::Ready_Root()
 
 CBTNode::NODE_STATE CAI_RoadCAB::Ground_The_Player()
 {
-	if (m_isGround) return CBTNode::FAIL;
+	if (m_isGround)
+	{
+		m_iDelayDelta++;
+
+		if (210 < m_iDelayDelta)
+		{
+			m_iDelayDelta = 0;
+			m_isGround = false;
+		}
+
+		return CBTNode::FAIL;
+	}
 
 	if (m_iSkill == SKILL_GROUND &&
 		(*m_pState == CAdventure::ADVENTURE_REACT_A ||
@@ -84,6 +95,8 @@ CBTNode::NODE_STATE CAI_RoadCAB::Ground_The_Player()
 		if (m_pAnimCom->Get_AnimFinished())
 		{
 			m_isGround = true;
+			m_iDelayDelta = 0;
+			*m_pState = CAdventure::ADVENTURE_IDLE;
 			return CBTNode::SUCCESS;
 		}
 
