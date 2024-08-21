@@ -720,7 +720,15 @@ HRESULT CGameInstance::Render_Debug(const wstring& strMRTTag, CShader* pShader, 
 	return m_pRenderTarget_Manager->Render_Debug(strMRTTag, pShader, pVIBuffer, isArray);
 }
 #endif // _DEBUG
+HRESULT CGameInstance::Ready_Debug(const wstring strRenderTargetTag, _float fX, _float fY, _float fSizeX, _float fSizeY)
+{
+	return m_pRenderTarget_Manager->Ready_Debug(strRenderTargetTag, fX, fY, fSizeX, fSizeY);
+}
 
+HRESULT CGameInstance::Render_Debug(const wstring& strMRTTag, CShader* pShader, CVIBuffer_Rect* pVIBuffer, _bool isArray)
+{
+	return m_pRenderTarget_Manager->Render_Debug(strMRTTag, pShader, pVIBuffer, isArray);
+}
 void CGameInstance::Get_FileNames(const wstring& strPath, vector<wstring>& vecOut)
 {
 	m_pConvert_Manager->Get_FileNames(strPath, vecOut);
