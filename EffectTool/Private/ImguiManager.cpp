@@ -1654,6 +1654,8 @@ HRESULT CImguiManager::Edit_Particle(_uint Index)
 			dynamic_cast<CEffect*>(m_EditParticle[Index])->Edit_Action(CEffect::ACTION_NOBILLBOARD);
 		if (m_bFallSpread)
 			dynamic_cast<CEffect*>(m_EditParticle[Index])->Edit_Action(CEffect::ACTION_FALLSPREAD);
+		if (m_bBloodSpread)
+			dynamic_cast<CEffect*>(m_EditParticle[Index])->Edit_Action(CEffect::ACTION_BLOOD);
 		
 	}
 		break;
