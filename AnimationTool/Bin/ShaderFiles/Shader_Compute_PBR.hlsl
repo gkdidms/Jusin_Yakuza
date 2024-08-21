@@ -1,6 +1,4 @@
 
-
-
 cbuffer PBR_Buffer : register(b0)
 {
     matrix WorldMatrix;
@@ -169,7 +167,7 @@ float4 BRDF(float4 vPosition, int2 vTexcoord, float4 vNormal, float4 vDepthDesc,
 }
 
 [numthreads(16, 16, 1)]
-void GS_MAIN(uint3 id : SV_DispatchThreadID)
+void CS_Main(uint3 id : SV_DispatchThreadID)
 {
     int2 vUV = id.xy;
     int2 vTexcoord = vUV / int2(1280, 720);

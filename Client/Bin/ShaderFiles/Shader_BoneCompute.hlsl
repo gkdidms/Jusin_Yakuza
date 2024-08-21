@@ -23,7 +23,7 @@ StructuredBuffer<GS_IN> g_InputBuffer : register(t0);
 RWStructuredBuffer<GS_OUT> g_OutputBuffer : register(u0);
 
 [numthreads(64, 1, 1)]
-void GS_MAIN(uint3 dispatchThreadID : SV_DispatchThreadID)
+void CS_Main(uint3 dispatchThreadID : SV_DispatchThreadID)
 {
 
     // 전체 정점 인덱스 계산

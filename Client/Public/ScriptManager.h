@@ -37,6 +37,8 @@ private:
     void Ready_Script_6();
     void Ready_Script_7();
     void Ready_Script_8();
+    void Ready_Script_9();
+    void Ready_Script_10();
 
 public:
     static CScriptManager* Create();

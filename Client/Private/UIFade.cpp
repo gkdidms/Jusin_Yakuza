@@ -72,18 +72,24 @@ HRESULT CUIFade::Late_Tick(const _float& fTimeDelta)
         iter->Late_Tick(fTimeDelta);
 
     if (m_EventUI[0]->Check_AnimFin())
+    {
+        m_isFinished = true;
         CUIManager::GetInstance()->Close_Scene(TEXT("Fade"));
+    }
+        
 
     return S_OK;
 }
 
 void CUIFade::Fade_Out()
 {
+    m_isFinished = false;
     m_EventUI[0]->Close_UI();
 }
 
 void CUIFade::Fade_In()
 {
+    m_isFinished = false;
     m_EventUI[0]->Show_UI();
 }
 

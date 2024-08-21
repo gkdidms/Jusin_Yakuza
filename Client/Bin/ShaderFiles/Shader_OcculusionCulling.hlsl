@@ -19,7 +19,7 @@ RWStructuredBuffer<int> g_OutputBuffer : register(u0); // 가시성 판단 후 픽셀 수
 
 // 8개의 스레드를 한 그룹
 [numthreads(8, 1, 1)]
-void GS_MAIN(uint3 dispatchThreadID : SV_DispatchThreadID)
+void CS_Main(uint3 dispatchThreadID : SV_DispatchThreadID)
 {
     uint index = dispatchThreadID.x;
 

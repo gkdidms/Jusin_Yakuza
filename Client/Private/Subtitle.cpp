@@ -41,7 +41,7 @@ void CSubtitle::Priority_Tick(const _float& fTimeDelta)
 
 void CSubtitle::Tick(const _float& fTimeDelta)
 {
-	if (m_isFinished)
+	if (m_isFinished || !m_isStart)
 		return;
 
 	if (m_fDuration < m_fScriptTime)
@@ -62,7 +62,7 @@ void CSubtitle::Tick(const _float& fTimeDelta)
 
 void CSubtitle::Late_Tick(const _float& fTimeDelta)
 {
-	if (!m_isFinished)
+	if (!m_isFinished || m_isStart)
 		m_pGameInstance->Add_Renderer(CRenderer::RENDER_UI, this);
 }
 

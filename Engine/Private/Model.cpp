@@ -1438,6 +1438,11 @@ _bool CModel::Get_AnimFinished() const
 	return m_Animations[m_AnimDesc.iAnimIndex]->Get_Finished();
 }
 
+_bool CModel::Get_AnimFinished(_uint iIndex) const
+{
+	return m_Animations[iIndex]->Get_Finished();
+}
+
 _bool CModel::Get_AnimChanged() const
 {
 	return m_Animations[m_AnimDesc.iAnimIndex]->Get_Changed();

@@ -57,6 +57,7 @@ public:
     _bool isMove(_fvector vMovePos);
     _vector Compute_WayPointDir(_vector vPosition, const _float& fTimeDelta, _bool isStart = false);
     _vector Compute_WayPointDir_Adv(_vector vPosition, const _float& fTimeDelta, _bool* isTurn, _int* iDir, _bool* isBack);
+    _vector Compute_NishikiDir(_fvector vPosition, const _float& fTimeDelta, _bool* isFinished);
     _float Compute_Height(_fvector vPosition);
 
 

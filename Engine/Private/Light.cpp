@@ -54,9 +54,10 @@ HRESULT CLight::Render(CShader* pShader, CVIBuffer_Rect* pVIBuffer)
 	return S_OK;
 }
 
-void CLight::Bind_LightBuffer(_uint iSlot)
+HRESULT CLight::Bind_LightBuffer(_uint iSlot)
 {
 	m_pContext->CSSetConstantBuffers(iSlot, 1, &m_pLightBuffer);
+	return S_OK;
 }
 
 void CLight::Ready_Buffer()
