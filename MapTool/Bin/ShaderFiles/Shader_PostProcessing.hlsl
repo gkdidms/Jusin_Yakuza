@@ -1,6 +1,8 @@
 #include "Shader_Effect.hlsl"
 
-int g_iSample = 10;
+int g_iSample = { 10 };
+float g_fPower = { 0.01 };
+
 PS_OUT PS_MAIN_RADIALBLUR(PS_IN In)
 {
     PS_OUT Out = (PS_OUT) 0;
@@ -8,14 +10,13 @@ PS_OUT PS_MAIN_RADIALBLUR(PS_IN In)
     vector vBlurColor = vector(0.f, 0.f, 0.f, 0.f);
     
     float2 vCenter = float2(0.5f, 0.5f);
-    float fPower = 0.01f;
     
     float2 vDir = In.vTexcoord - vCenter;
     float f = 1.f / float(g_iSample);
     
     for (int i = 0; i < g_iSample; ++i)
     {
-        vBlurColor += g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord - fPower * vDir * float(i)) * f;
+        vBlurColor += g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord - g_fPower * vDir * float(i)) * f;
     }
     
     Out.vColor = vector(vBlurColor.xyz, 1.f);
@@ -67,14 +68,69 @@ float3 RGBToHSL(float3 color)
     return float3(h, s, l);
 }
 
+float3 HSLToRGB(float3 hsl)
+{
+    float h = hsl.x;
+    float s = hsl.y;
+    float l = hsl.z;
+
+    float c = (1.0 - abs(2.0 * l - 1.0)) * s;
+    float x = c * (1.0 - abs(fmod(h / 60.0, 2.0) - 1.0));
+    float m = l - c / 2.0;
+
+    float3 rgb;
+
+    if (h < 60.0)
+        rgb = float3(c, x, 0);
+    else if (h < 120.0)
+        rgb = float3(x, c, 0);
+    else if (h < 180.0)
+        rgb = float3(0, c, x);
+    else if (h < 240.0)
+        rgb = float3(0, x, c);
+    else if (h < 300.0)
+        rgb = float3(x, 0, c);
+    else
+        rgb = float3(c, 0, x);
+
+    rgb += float3(m, m, m);
+
+    return rgb;
+}
+
+float g_fInvertDuration = { 0.5f };
+//흑백으로 변경 후 컬러반전
 PS_OUT PS_MAIN_INVERTCOLOR(PS_IN In)
 {
     PS_OUT Out = (PS_OUT) 0;
     
     vector vColor = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
     
-    Out.vColor = vector(1.f - vColor.xyz, 1.f);
+    float3 vHSL = RGBToHSL(vColor.xyz);
+     
+    float fFactor = saturate(g_fTimeDelta / g_fInvertDuration);
     
+    vHSL.x = fmod(vHSL.x + 180.f, 360.f); // 색반전
+    vHSL.z = fFactor - vHSL.z; // 명도반전
+   
+    Out.vColor = vector(HSLToRGB(vHSL), 1.f);
+    return Out;
+}
+
+//흑백으로 변경
+float g_fSaturationFactor;
+
+PS_OUT PS_MAIN_INVERTSATURATION(PS_IN In)
+{
+    PS_OUT Out = (PS_OUT) 0;
+    
+    vector vColor = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
+    
+    float3 vHSL = RGBToHSL(vColor.xyz);
+    
+    vHSL.y = vHSL.y * g_fSaturationFactor; // 채도반전
+   
+    Out.vColor = vector(HSLToRGB(vHSL), 1.f);
     return Out;
 }
 
