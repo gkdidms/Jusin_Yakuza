@@ -231,7 +231,7 @@ private:
                 _bool m_isHDR = { false };
                 _bool m_isSSAO = { true };
                 _bool m_isPBR = { false };
-                _bool m_isBOF = { false };
+                _bool m_isBOF = { true };
                 _bool m_isShadow = { false };
                 _bool m_isRimLight = { true };
 #endif // DEBUG
@@ -248,7 +248,6 @@ private:
 #ifdef _DEBUG
     _bool m_isDebugView = { false };
 #endif // _DEBUG
-
 
 public:
     static CRenderer* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

@@ -192,7 +192,6 @@ HRESULT CRenderer::Initialize()
 
 #endif // _DEBUG
 
-
 	return S_OK;
 }
 
@@ -847,7 +846,7 @@ void CRenderer::Draw()
 #ifdef _DEBUG
 	Render_Debug();
 #endif // _DEBUG
-
+	Render_Debug();
 }
 
 void CRenderer::Clear()
@@ -1079,6 +1078,8 @@ void CRenderer::Render_SSAO()
 	BufferDesc.ProjMatrixInv = XMMatrixTranspose(m_pGameInstance->Get_Transform_Inverse_Matrix(CPipeLine::D3DTS_PROJ));
 	BufferDesc.CamViewMatrix = XMMatrixTranspose(m_pGameInstance->Get_Transform_Matrix(CPipeLine::D3DTS_VIEW));
 	BufferDesc.CamProjMatrix = XMMatrixTranspose(m_pGameInstance->Get_Transform_Matrix(CPipeLine::D3DTS_PROJ));
+
+
 
 	m_pContext->UpdateSubresource(m_pSSAOBuffer, 0, nullptr, &BufferDesc, 0, 0);
 

@@ -42,7 +42,6 @@ private:
     _float4x4 m_WorldMatrix;
 #endif // _DEBUG
 
-
 private:
     _float4 m_vClearColor;
 

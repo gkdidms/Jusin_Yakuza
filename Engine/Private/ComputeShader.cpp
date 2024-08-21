@@ -20,8 +20,7 @@ HRESULT CComputeShader::Initialize_Prototype(const wstring& strShaderFilePath)
 #ifdef _DEBUG
     iHlslFlag = D3DCOMPILE_DEBUG | D3DCOMPILE_SKIP_OPTIMIZATION;
 #else
-    //iHlslFlag = D3DCOMPILE_OPTIMIZATION_LEVEL0;
-    iHlslFlag = D3DCOMPILE_SKIP_OPTIMIZATION;
+    iHlslFlag = D3D;
 #endif // DEBUG
 
     ID3DBlob* pShaderBlob = nullptr;

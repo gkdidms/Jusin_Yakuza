@@ -146,7 +146,7 @@ HRESULT CKaraoke_Kiryu::Render()
 		if (FAILED(m_pMaterialCom->Bind_Shader(m_pShaderCom, m_pModelCom->Get_MaterialName(pMesh->Get_MaterialIndex()))))
 			return E_FAIL;
 
-		_bool fFar = m_pGameInstance->Get_CamFar();
+		_float fFar = *m_pGameInstance->Get_CamFar();
 		m_pShaderCom->Bind_RawValue("g_fFar", &fFar, sizeof(_float));
 
 		m_pModelCom->Bind_BoneMatrices(m_pShaderCom, "g_BoneMatrices", i);
