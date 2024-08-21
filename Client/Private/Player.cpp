@@ -119,6 +119,8 @@ HRESULT CPlayer::Initialize(void* pArg)
 	m_Info.fMaxHP = 150.f;
 	m_Info.fHp = m_Info.fMaxHP;
 
+	PlayerInfo.iMoney = 100;
+
 	ZeroMemory(&m_MoveDirection, sizeof(_bool) * MOVE_DIRECTION_END);
 	ZeroMemory(&m_InputDirection, sizeof(_bool) * MOVE_DIRECTION_END);
 
@@ -549,10 +551,15 @@ void CPlayer::Attack_Event(CGameObject* pHitObject, _bool isItem)
 
 			if (m_iCurrentBehavior == (_uint)KRS_BEHAVIOR_STATE::ATTACK)
 			{
+				_bool isTargetDead = m_pTargetObject->isObjectDead();
+
+				if (isTargetDead)
+					PlayerInfo.iMoney += 1000;
+
 				// 피니시 블로우고, 상대방이 죽었다면 잠깐 멈춘다.
 				if (static_cast<CKiryu_KRS_Attack*>(m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior))->IsFinishBlow())
 				{
-					if(m_pTargetObject->isObjectDead())
+					if(isTargetDead)
 						HitFreeze_On();
 					else
 						HitRadial_On();

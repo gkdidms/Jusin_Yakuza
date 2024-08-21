@@ -8,6 +8,9 @@
 #include "Monster.h"
 #include "MonsterGroup.h"
 
+#include "UIFightScore.h"
+#include "Player.h"
+
 IMPLEMENT_SINGLETON(CFightManager)
 
 CFightManager::CFightManager()
@@ -157,11 +160,15 @@ void CFightManager::Tick(const _float& fTimeDelta)
 			_uint iLevelIndex = m_pGameInstance->Get_CurrentLevel();
 
 			// 레벨단위가 아니라 던전 단위로 시작과 끝을 정의해야한다.(사채업자 or 도지마조 등)
-			if (iLevelIndex == LEVEL_DOGIMAZO_BOSS || iLevelIndex == LEVEL_OFFICE_BOSS /*|| iLevelIndex == LEVEL_TEST*/)
+			if (iLevelIndex == LEVEL_DOGIMAZO_BOSS || iLevelIndex == LEVEL_OFFICE_BOSS || iLevelIndex == LEVEL_TEST)
 			{
 				m_fFinishTime += m_pGameInstance->Get_TimeDelta(TEXT("Timer_Game"));
 
-				_float fRatio = (m_fFinishDuration - m_fFinishTime * 2.f) / m_fFinishDuration;
+				_float fRatio = (m_fFinishDuration - m_fFinishTime * 1.5f) / m_fFinishDuration;
+
+				m_pUIManager->Open_Scene(TEXT("FightScore"));
+
+				dynamic_cast<CUIFightScore*>(m_pUIManager->Find_Scene(TEXT("FightScore")))->AddMoney(CPlayer::PlayerInfo.iMoney);
 
 				m_pGameInstance->Set_TimeSpeed(TEXT("Timer_60"), fRatio < 0 ? 0.f : fRatio);
 				m_pGameInstance->Set_TimeSpeed(TEXT("Timer_Player"), fRatio < 0 ? 0.f : fRatio);
@@ -174,6 +181,9 @@ void CFightManager::Tick(const _float& fTimeDelta)
 
 					m_pGameInstance->Set_TimeSpeed(TEXT("Timer_60"), 1.f);
 					m_pGameInstance->Set_TimeSpeed(TEXT("Timer_Player"), 1.f);
+
+					// 스코어 창 닫아줘야하는데, 현재 UI가 쉐이더에 가려지는 문제때문에 디버깅을 위해 끄지않고있는중
+					m_pUIManager->Close_Scene(TEXT("FightScore"));
 						
 					return;
 				}

@@ -39,7 +39,7 @@ HRESULT CSocketCollider::Initialize(void * pArg)
 		{
 		case 0:
 		{
-			m_fDamage = 100.f;			// 원래는 3임
+			m_fDamage = 90.f;			// 원래는 3임
 
 			break;
 		}
