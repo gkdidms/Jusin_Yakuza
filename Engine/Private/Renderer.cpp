@@ -191,6 +191,70 @@ HRESULT CRenderer::Initialize()
 
 
 #endif // _DEBUG
+	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_Diffuse"), 50.f, 50.f, 100.f, 100.f)))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_Normal"), 50.f, 150.f, 100.f, 100.f)))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_Depth"), 50.f, 250.f, 100.f, 100.f)))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_Surface"), 50.f, 350.f, 100.f, 100.f)))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_OEShader"), 50.f, 550.f, 100.f, 100.f)))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_OESpecular"), 50.f, 650.f, 100.f, 100.f)))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_LightDepth"), ViewPort.Width - 150.0f, 150.0f, 300.f, 300.f)))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_Shade"), 150.f, 50.f, 100.f, 100.f)))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_SSAO"), 150.f, 150.f, 100.f, 100.f)))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_Ambient"), 150.f, 250.f, 100.f, 100.f)))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_BackBuffer"), 150.f, 350.f, 100.f, 100.f)))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_LightMap"), 150.f, 450.f, 100.f, 100.f)))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_PBR"), 150.f, 550.f, 100.f, 100.f)))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_FinalResult"), 250.f, 050.f, 100.f, 100.f)))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_Luminance"), 250.f, 150.f, 100.f, 100.f)))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_ToneMapping"), 250.f, 250.f, 100.f, 100.f)))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_BackBlurReverse"), 250.f, 350.f, 100.f, 100.f)))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_1x1"), 450.f, 250.f, 100.f, 100.f)))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_Effect"), 550.f, 50.f, 100.f, 100.f)))
+		return E_FAIL;
+	//if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_Blur_X"), 550.f, 150.f, 100.f, 100.f)))
+	//	return E_FAIL;
+	//if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_Blur_Y"), 550.f, 250.f, 100.f, 100.f)))
+	//	return E_FAIL;
+	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_AccumColor"), 750.f, 50.f, 100.f, 100.f)))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_AccumAlpha"), 750.f, 150.f, 100.f, 100.f)))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_Distortion"), 850.f, 50.f, 100.f, 100.f)))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_RimLight"), 650.f, 50.f, 100.f, 100.f)))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_RadialBlur"), 950.f, 250.f, 100.f, 100.f)))
+		return E_FAIL;
+
+
+	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_OcculusionDepth"), 950.f, 150.f, 100.f, 100.f)))
+		return E_FAIL;
+
 
 
 	return S_OK;
@@ -847,7 +911,7 @@ void CRenderer::Draw()
 #ifdef _DEBUG
 	Render_Debug();
 #endif // _DEBUG
-
+	Render_Debug();
 }
 
 void CRenderer::Clear()
@@ -1079,6 +1143,8 @@ void CRenderer::Render_SSAO()
 	BufferDesc.ProjMatrixInv = XMMatrixTranspose(m_pGameInstance->Get_Transform_Inverse_Matrix(CPipeLine::D3DTS_PROJ));
 	BufferDesc.CamViewMatrix = XMMatrixTranspose(m_pGameInstance->Get_Transform_Matrix(CPipeLine::D3DTS_VIEW));
 	BufferDesc.CamProjMatrix = XMMatrixTranspose(m_pGameInstance->Get_Transform_Matrix(CPipeLine::D3DTS_PROJ));
+
+
 
 	m_pContext->UpdateSubresource(m_pSSAOBuffer, 0, nullptr, &BufferDesc, 0, 0);
 
@@ -2064,7 +2130,89 @@ void CRenderer::Render_Debug()
 		return;
 }
 #endif // DEBUG
+void CRenderer::Render_Debug()
+{
+	/*for (auto& pDebugCom : m_DebugComponents)
+	{
+		pDebugCom->Render();
+		Safe_Release(pDebugCom);
+	}
 
+	m_DebugComponents.clear();*/
+
+	if (!m_isDebugView) return;
+
+	if (FAILED(m_pShader->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix)))
+		return;
+	if (FAILED(m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
+		return;
+
+	if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_NonBlend"), m_pShader, m_pVIBuffer)))
+		return;
+	if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_LightAcc"), m_pShader, m_pVIBuffer)))
+		return;
+	if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_CopyBackBuffer"), m_pShader, m_pVIBuffer)))
+		return;
+	if (FAILED(m_pGameInstance->Render_Debug(TEXT("MTR_DeferredBlur"), m_pShader, m_pVIBuffer)))
+		return;
+
+	if (m_isShadow)
+	{
+		if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_ShadowObjects"), m_pShader, m_pVIBuffer)))
+			return;
+	}
+	if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_Puddle"), m_pShader, m_pVIBuffer)))
+		return;
+
+	if (m_isSSAO)
+	{
+		if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_SSAO"), m_pShader, m_pVIBuffer)))
+			return;
+		if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_SSAOBlur"), m_pShader, m_pVIBuffer)))
+			return;
+	}
+
+	if (m_isHDR)
+	{
+		if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_HDR"), m_pShader, m_pVIBuffer)))
+			return;
+		if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_Luminance"), m_pShader, m_pVIBuffer)))
+			return;
+		if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_DownSampling"), m_pShader, m_pVIBuffer)))
+			return;
+	}
+
+	if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_Effect"), m_pShader, m_pVIBuffer)))
+		return;
+	//	if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_Blur_X"), m_pShader, m_pVIBuffer)))
+	//		return;
+	//if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_Blur_Y"), m_pShader, m_pVIBuffer)))
+	//	return;
+	if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_Accum"), m_pShader, m_pVIBuffer)))
+		return;
+	if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_RimLight"), m_pShader, m_pVIBuffer)))
+		return;
+
+	if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_RimLight"), m_pShader, m_pVIBuffer)))
+		return;
+
+
+	if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_RadialBlur"), m_pShader, m_pVIBuffer)))
+		return;
+
+	//MRT_DecalsContainDiffuse
+	if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_DecalsContainDiffuse"), m_pShader, m_pVIBuffer)))
+		return;
+	//MRT_DecalsContainDiffuse
+	if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_FinalResult"), m_pShader, m_pVIBuffer)))
+		return;
+
+	if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_Occulusion"), m_pShader, m_pVIBuffer)))
+		return;
+
+	if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_PBR"), m_pShader, m_pVIBuffer)))
+		return;
+}
 CRenderer* CRenderer::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
 	CRenderer* pInstance = new CRenderer(pDevice, pContext);

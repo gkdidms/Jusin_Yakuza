@@ -102,7 +102,6 @@ public:
 
 	_bool isOcculusionDepth();
 	HRESULT Near_Render(_uint iRenderState);
-	HRESULT Far_Render(_uint iRenderState);
 
 public:
 	CTransform* Get_Transform() { return m_pTransformCom; }
