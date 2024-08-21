@@ -17,15 +17,18 @@
 #include "CutSceneCamera.h"
 #include "CarChaseCamera.h"
 #include "Highway_Taxi.h"
+#include "Player.h"
 
 CLevel_Test::CLevel_Test(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLevel{ pDevice, pContext },
 	m_pSystemManager{ CSystemManager::GetInstance() },
 	m_pFileTotalManager{ CFileTotalMgr::GetInstance() },
+	m_pFightManager{ CFightManager::GetInstance() },
 	m_pUIManager{CUIManager::GetInstance()}
 {
 	Safe_AddRef(m_pSystemManager);
 	Safe_AddRef(m_pFileTotalManager);
+	Safe_AddRef(m_pFightManager);
 	Safe_AddRef(m_pUIManager);
 }
 
@@ -42,9 +45,9 @@ HRESULT CLevel_Test::Initialize()
 		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/NaviData/Navigation_3.dat")))))
 		return E_FAIL;
 
-	m_pKaraokeManager = CKaraokeManager::Create();
-	if (nullptr == m_pKaraokeManager)
-		return E_FAIL;
+	//m_pKaraokeManager = CKaraokeManager::Create();
+	//if (nullptr == m_pKaraokeManager)
+	//	return E_FAIL;
 
 	//m_pUIManager->Open_Scene(TEXT("Carchase"));
 
@@ -75,20 +78,26 @@ HRESULT CLevel_Test::Initialize()
 	if (FAILED(Ready_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
 
+	m_pFightManager->Initialize();
+	m_pFightManager->Set_FightStage(true);
+	m_pSystemManager->Set_Camera(CAMERA_PLAYER);
+
 	return S_OK;
 }
 
 void CLevel_Test::Tick(const _float& fTimeDelta)
 {
-	m_pKaraokeManager->Tick(fTimeDelta);
+	if (m_pUIManager->isTitleEnd())
+	{
+		CPlayer* pPlayer = dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"), 0));
+		pPlayer->Battle_Start();
+	}
+
+	m_pFightManager->Tick(fTimeDelta);
+	//m_pKaraokeManager->Tick(fTimeDelta);
 #ifdef _DEBUG
 	SetWindowText(g_hWnd, TEXT("테스트 레벨"));
 #endif
-
-	if (m_pKaraokeManager->IsScoreEnd())
-	{
-		int a = 0;
-	}
 }
 
 HRESULT CLevel_Test::Ready_Camera(const wstring& strLayerTag)
@@ -237,4 +246,5 @@ void CLevel_Test::Free()
 	Safe_Release(m_pFileTotalManager);
 	Safe_Release(m_pUIManager);
 	Safe_Release(m_pKaraokeManager);
+	Safe_Release(m_pFightManager);
 }

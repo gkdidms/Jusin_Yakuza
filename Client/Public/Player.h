@@ -181,6 +181,8 @@ public:
     void    Set_ItemOff();
     void Set_CurrentStyle(BATTLE_STYLE iStyle) { m_eCurrentStyle = iStyle; }
 
+    void Battle_Start();
+
     /* Virtual Funtion */
 public:
     virtual HRESULT Initialize_Prototype() override;

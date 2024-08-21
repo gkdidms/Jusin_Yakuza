@@ -83,6 +83,11 @@ void CPlayer::Set_ItemOff()
 	m_pTargetItem = nullptr;
 }
 
+void CPlayer::Battle_Start()
+{
+	m_eCurrentStyle = KRS;
+}
+
 HRESULT CPlayer::Initialize_Prototype()
 {
 	return S_OK;
