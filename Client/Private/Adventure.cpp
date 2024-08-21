@@ -80,7 +80,7 @@ HRESULT CAdventure::Render()
 				return E_FAIL;
 		}
 
-		_bool fFar = m_pGameInstance->Get_CamFar();
+		_float fFar = *m_pGameInstance->Get_CamFar();
 		m_pShaderCom->Bind_RawValue("g_fFar", &fFar, sizeof(_float));
 
 		m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE);

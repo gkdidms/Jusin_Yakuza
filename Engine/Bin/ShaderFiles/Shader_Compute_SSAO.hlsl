@@ -47,7 +47,7 @@ float4 SSAO(float3x3 TBN, float3 vPosition)
     for (int i = 0; i < 64; ++i)
     {
         float3 vSample = vPosition + mul(SSAORandoms[i].xyz, TBN) * fRadiuse; // ºä½ºÆäÀÌ½º
-       
+
         float4 vOffset = float4(vSample, 1.f);
         vOffset = mul(vOffset, CamProjMatrix);
         vOffset.xyz /= max(vOffset.w, 1e-6f);
