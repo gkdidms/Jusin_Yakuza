@@ -582,64 +582,64 @@ _vector CNavigation::Compute_WayPointDir_Adv(_vector vPosition, const _float& fT
 
 _vector CNavigation::Compute_WayPointDir_Adv(_vector vPosition, const _float& fTimeDelta, _bool* isTurn, _int* iDir, _bool* isBack, _vector* vTargetDir)
 {
-    // 현재 내 앞의 waypoint
-    _vector vCurrentWayPoint = XMLoadFloat4(&m_Routes[m_iCurrentRouteIndex][m_iCurrentWayPointIndex].vPosition);
-    _vector vDir = vCurrentWayPoint - vPosition;
-    _float fDistance = XMVectorGetX(XMVector3Length(vDir));
+    //// 현재 내 앞의 waypoint
+    //_vector vCurrentWayPoint = XMLoadFloat4(&m_Routes[m_iCurrentRouteIndex][m_iCurrentWayPointIndex].vPosition);
+    //_vector vDir = vCurrentWayPoint - vPosition;
+    //_float fDistance = XMVectorGetX(XMVector3Length(vDir));
 
-    // 특정 range 안에 들어오면 다음 point로 목표잡기
-    if (fDistance <= 2.5f)
-    {
-        // 코너일때 waypoint swap을 위한 함수
-        Swap_Route(m_Routes[m_iCurrentRouteIndex], vDir, isTurn, iDir);
+    //// 특정 range 안에 들어오면 다음 point로 목표잡기
+    //if (fDistance <= 2.5f)
+    //{
+    //    // 코너일때 waypoint swap을 위한 함수
+    //    Swap_Route(m_Routes[m_iCurrentRouteIndex], vDir, isTurn, iDir);
 
-        // turn하면 
-        // isBack : 뒤돌지아닐지
-        // 뒤도는 모션 - isBack
-        // 회전중일때는 뒤로가는 모션 안나오게
-        // isBack : 뒤도는거고 - 순수 뒤도는거
-        // isTurn : 루트바꿔서 회전하는거
-        if (!*isTurn)
-        {
-            // 정방향 - 플러스, 역방향 - 마이너스로 다음 지점 정해주기
-            if (m_iRouteDir == DIR_F)
-                m_iCurrentWayPointIndex++;
-            else
-                m_iCurrentWayPointIndex--;
+    //    // turn하면 
+    //    // isBack : 뒤돌지아닐지
+    //    // 뒤도는 모션 - isBack
+    //    // 회전중일때는 뒤로가는 모션 안나오게
+    //    // isBack : 뒤도는거고 - 순수 뒤도는거
+    //    // isTurn : 루트바꿔서 회전하는거
+    //    if (!*isTurn)
+    //    {
+    //        // 정방향 - 플러스, 역방향 - 마이너스로 다음 지점 정해주기
+    //        if (m_iRouteDir == DIR_F)
+    //            m_iCurrentWayPointIndex++;
+    //        else
+    //            m_iCurrentWayPointIndex--;
 
-            if (m_iCurrentWayPointIndex >= m_Routes[m_iCurrentRouteIndex].size() || m_iCurrentWayPointIndex < 0)
-            {
-                //정방향 -> 역방향
-                //역방향 -> 정방향 
-                if (m_iRouteDir == DIR_F)
-                {
-                    m_iRouteDir = DIR_B;
-                    m_iCurrentWayPointIndex = m_Routes[m_iCurrentRouteIndex].size() - 1;
-                }
-                else
-                {
-                    m_iRouteDir = DIR_F;
-                    m_iCurrentWayPointIndex = 0;
-                }
-                *isBack = true;
-            }
-        }
+    //        if (m_iCurrentWayPointIndex >= m_Routes[m_iCurrentRouteIndex].size() || m_iCurrentWayPointIndex < 0)
+    //        {
+    //            //정방향 -> 역방향
+    //            //역방향 -> 정방향 
+    //            if (m_iRouteDir == DIR_F)
+    //            {
+    //                m_iRouteDir = DIR_B;
+    //                m_iCurrentWayPointIndex = m_Routes[m_iCurrentRouteIndex].size() - 1;
+    //            }
+    //            else
+    //            {
+    //                m_iRouteDir = DIR_F;
+    //                m_iCurrentWayPointIndex = 0;
+    //            }
+    //            *isBack = true;
+    //        }
+    //    }
 
-        // 예외처리해준거(아예 포인트에서 시작할떄)
-        if (fDistance == 0.f)
-        {
-            return Compute_WayPointDir_Adv(vPosition, fTimeDelta, isTurn, iDir, isBack);
-        }
+    //    // 예외처리해준거(아예 포인트에서 시작할떄)
+    //    if (fDistance == 0.f)
+    //    {
+    //        return Compute_WayPointDir_Adv(vPosition, fTimeDelta, isTurn, iDir, isBack);
+    //    }
 
-        // 현재 웨이포인트와 다음 웨이포인트 - 방향 구하는식 -> 이걸로 움직임
-        m_vNextDir = XMVector3Normalize(XMLoadFloat4(&m_Routes[m_iCurrentRouteIndex][m_iCurrentWayPointIndex].vPosition) - XMLoadFloat4(&m_Routes[m_iPreRouteIndex][m_iPreWayPointIndex].vPosition));
+    //    // 현재 웨이포인트와 다음 웨이포인트 - 방향 구하는식 -> 이걸로 움직임
+    //    m_vNextDir = XMVector3Normalize(XMLoadFloat4(&m_Routes[m_iCurrentRouteIndex][m_iCurrentWayPointIndex].vPosition) - XMLoadFloat4(&m_Routes[m_iPreRouteIndex][m_iPreWayPointIndex].vPosition));
 
-        // 스왑되면
-        m_iPreRouteIndex = m_iCurrentRouteIndex;
-        m_iPreWayPointIndex = m_iCurrentWayPointIndex;
-    }
+    //    // 스왑되면
+    //    m_iPreRouteIndex = m_iCurrentRouteIndex;
+    //    m_iPreWayPointIndex = m_iCurrentWayPointIndex;
+    //}
 
-    return m_vNextDir;
+    //return m_vNextDir;
 }
 
 _vector CNavigation::Compute_NishikiDir(_fvector vPosition, const _float& fTimeDelta, _bool* isFinished)
