@@ -43,6 +43,8 @@
 #include "Kiryu_KRC_PickUp.h"
 #pragma endregion
 
+CPlayer::PLAYER_INFO CPlayer::PlayerInfo{ };
+
 CPlayer::CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLandObject{ pDevice, pContext },
 #ifdef _DEBUG
@@ -116,6 +118,8 @@ HRESULT CPlayer::Initialize(void* pArg)
 	// 쿠제: 100
 	m_Info.fMaxHP = 150.f;
 	m_Info.fHp = m_Info.fMaxHP;
+
+	PlayerInfo.iMoney = 100;
 
 	ZeroMemory(&m_MoveDirection, sizeof(_bool) * MOVE_DIRECTION_END);
 	ZeroMemory(&m_InputDirection, sizeof(_bool) * MOVE_DIRECTION_END);
@@ -277,7 +281,7 @@ void CPlayer::Tick(const _float& fTimeDelta)
 		pEffect.second->Tick(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")));
 
 	// 히트액션이 가능한 상태인지 구분한다.
-	if (2 < m_iCurrentHitLevel)
+	if (2 < CPlayer::PlayerInfo.iCurrentHitLevel)
 	{
 		m_CanHitAction = true;
 	}
@@ -445,7 +449,7 @@ HRESULT CPlayer::Render()
 			}
 
 			// 기게이지가 켜져있는 상태라면 상반신 림라이트를 켠다
-			if (0 < m_iCurrentHitLevel)
+			if (0 < CPlayer::PlayerInfo.iCurrentHitLevel)
 			{
 				if (!strcmp(pMesh->Get_Name(), "[l0]jacketw1"))
 				{
@@ -547,10 +551,15 @@ void CPlayer::Attack_Event(CGameObject* pHitObject, _bool isItem)
 
 			if (m_iCurrentBehavior == (_uint)KRS_BEHAVIOR_STATE::ATTACK)
 			{
+				_bool isTargetDead = m_pTargetObject->isObjectDead();
+
+				if (isTargetDead)
+					PlayerInfo.iMoney += 1000;
+
 				// 피니시 블로우고, 상대방이 죽었다면 잠깐 멈춘다.
 				if (static_cast<CKiryu_KRS_Attack*>(m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior))->IsFinishBlow())
 				{
-					if(m_pTargetObject->isObjectDead())
+					if(isTargetDead)
 						HitFreeze_On();
 					else
 						HitRadial_On();
@@ -850,6 +859,8 @@ void CPlayer::Synchronize_Root(const _float& fTimeDelta)
 	//_vector vFF = XMVector3TransformNormal(XMVectorSetZ(XMLoadFloat3(m_pModelCom->Get_AnimationCenterMove()), 0), m_pTransformCom->Get_WorldMatrix());
 	//_vector vFF = XMVector3TransformNormal(vCenterMove, m_pTransformCom->Get_WorldMatrix());
 	_vector vFF = vCenterMove;
+
+	//_matrix Mat = XMLoadFloat4x4(m_pModelCom->Get_BoneCombinedTransformationMatrix_AtIndex(0));
 
 	// m_pModelCom->Get_AnimChanged()  선형보간이 끝났는지
 	// m_pModelCom->Get_AnimLerp() 선형보간이 필요한 애니메이션인지
@@ -2315,7 +2326,7 @@ void CPlayer::Compute_MoveDirection_RL()
 
 void CPlayer::Effect_Control_Aura()
 {
-	if (0 < m_iCurrentHitLevel)
+	if (0 < CPlayer::PlayerInfo.iCurrentHitLevel)
 	{
 		On_Aura(m_eCurrentStyle);
 	}
@@ -2511,12 +2522,12 @@ void CPlayer::Off_Aura(BATTLE_STYLE eStyle)
 
 void CPlayer::AccHitGauge()
 {
-	if (PLAYER_HITGAUGE_LEVEL_INTERVAL * 3.f < m_fHitGauge)
-		m_fHitGauge = PLAYER_HITGAUGE_LEVEL_INTERVAL * 3.f;
+	if (PLAYER_HITGAUGE_LEVEL_INTERVAL * 3.f < CPlayer::PlayerInfo.fHitGauge)
+		CPlayer::PlayerInfo.fHitGauge = PLAYER_HITGAUGE_LEVEL_INTERVAL * 3.f;
 	else
-		m_fHitGauge += 5.f;
+		CPlayer::PlayerInfo.fHitGauge += 5.f;
 
-	m_iCurrentHitLevel = (m_fHitGauge / PLAYER_HITGAUGE_LEVEL_INTERVAL);
+	CPlayer::PlayerInfo.iCurrentHitLevel = (CPlayer::PlayerInfo.fHitGauge / PLAYER_HITGAUGE_LEVEL_INTERVAL);
 }
 
 void CPlayer::Setting_RimLight()

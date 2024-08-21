@@ -5,6 +5,7 @@
 #include "FileTotalMgr.h"
 #include "Collision_Manager.h"
 #include "FightManager.h"
+#include "UIManager.h"
 
 #include "PlayerCamera.h"
 #include "CineCamera.h"
@@ -12,16 +13,19 @@
 
 #include "Level_Loading.h"
 #include "Trigger.h"
+#include "Player.h"
 
 CLevel_OfficeBoss::CLevel_OfficeBoss(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     : CLevel { pDevice, pContext },
     m_pSystemManager{ CSystemManager::GetInstance() },
     m_pFileTotalManager{ CFileTotalMgr::GetInstance() },
-	m_pFightManager{ CFightManager::GetInstance() }
+	m_pFightManager{ CFightManager::GetInstance() },
+	m_pUIManager{ CUIManager::GetInstance() }
 {
     Safe_AddRef(m_pSystemManager);
     Safe_AddRef(m_pFileTotalManager);
 	Safe_AddRef(m_pFightManager);
+	Safe_AddRef(m_pUIManager);
 }
 
 HRESULT CLevel_OfficeBoss::Initialize()
@@ -71,6 +75,12 @@ void CLevel_OfficeBoss::Tick(const _float& fTimeDelta)
 	}
 
 	m_pFightManager->Tick(fTimeDelta);
+
+	if (m_pUIManager->isTitleEnd())
+	{
+		CPlayer* pPlayer = dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"), 0));
+		pPlayer->Battle_Start();
+	}
 
 #ifdef _DEBUG
 
@@ -157,4 +167,5 @@ void CLevel_OfficeBoss::Free()
     Safe_Release(m_pSystemManager);
     Safe_Release(m_pFileTotalManager);
 	Safe_Release(m_pFightManager);
+	Safe_Release(m_pUIManager);
 }
