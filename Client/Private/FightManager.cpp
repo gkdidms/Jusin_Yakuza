@@ -24,10 +24,7 @@ void CFightManager::Set_FightStage(_bool isFightStage, CMonsterGroup* pMonsterGr
 
 	if (m_isFightStage)
 	{
-		//타이틀 떠야 함.
-		m_pUIManager->Open_Scene(TEXT("Title"));
-
-		_uint iTitleIndex = 0;
+		_int iTitleIndex = -1;
 
 		switch (m_pGameInstance->Get_CurrentLevel())
 		{
@@ -43,31 +40,50 @@ void CFightManager::Set_FightStage(_bool isFightStage, CMonsterGroup* pMonsterGr
 		case LEVEL_OFFICE_BOSS:		//삥쟁
 			iTitleIndex = 4;
 			break;
-		case LEVEL_TEST:			//삥쟁
+		case LEVEL_CARCHASE:		//돔황챠
+			iTitleIndex = 3;
+			break;
+		case LEVEL_TEST:			//테스트용으로 그냥 암거나넣음
 			iTitleIndex = 15;
 			break;
+		case LEVEL_STREET:			//삥쟁
+		{
+			// 거리에서 만난상황이면 야쿠자
+			if (nullptr != pMonsterGroup)
+			{
+				iTitleIndex = 12;
+			}
+			break;
+		}
 		default:
 		{
-			if (nullptr != pMonsterGroup)
-				iTitleIndex = 12;		// 거리에서 만난상황이면 야쿠자
+			// 그 외 레벨에서 불렸으면 던전 내에서의 다른 레벨로 판단하여 아무런 처리를 하지 않음
 			break;
 		}
 		}
-		m_pUIManager->Start_Title(iTitleIndex);
 
-		if (pMonsterGroup != nullptr)
+		// 타이틀 인덱스가 0보다 큰 경우에만 타이틀을 띄우는 레벨임
+		if (0 < iTitleIndex)
 		{
-			m_pCurrentMonsterGroup = pMonsterGroup;
-			Safe_AddRef(pMonsterGroup);
-		}
-		else
-		{
-			vector<CGameObject*> Monsters = m_pGameInstance->Get_GameObjects(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Monster"));
+			//타이틀 떠야 함.
+			m_pUIManager->Open_Scene(TEXT("Title"));
 
-			for (auto& pMonster : Monsters)
+			m_pUIManager->Start_Title(iTitleIndex);
+
+			if (pMonsterGroup != nullptr)
 			{
-				CMonster* pTarget = dynamic_cast<CMonster*>(pMonster);
-				pTarget->Set_Start(true);
+				m_pCurrentMonsterGroup = pMonsterGroup;
+				Safe_AddRef(pMonsterGroup);
+			}
+			else
+			{
+				vector<CGameObject*> Monsters = m_pGameInstance->Get_GameObjects(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Monster"));
+
+				for (auto& pMonster : Monsters)
+				{
+					CMonster* pTarget = dynamic_cast<CMonster*>(pMonster);
+					pTarget->Set_Start(true);
+				}
 			}
 		}
 	}
@@ -141,25 +157,53 @@ void CFightManager::Tick(const _float& fTimeDelta)
 			_uint iLevelIndex = m_pGameInstance->Get_CurrentLevel();
 
 			// 레벨단위가 아니라 던전 단위로 시작과 끝을 정의해야한다.(사채업자 or 도지마조 등)
-			if (iLevelIndex == LEVEL_DOGIMAZO_BOSS || iLevelIndex == LEVEL_OFFICE_BOSS || iLevelIndex == LEVEL_TEST)
+			if (iLevelIndex == LEVEL_DOGIMAZO_BOSS || iLevelIndex == LEVEL_OFFICE_BOSS /*|| iLevelIndex == LEVEL_TEST*/)
 			{
-				m_fFinishTime += fTimeDelta;
+				m_fFinishTime += m_pGameInstance->Get_TimeDelta(TEXT("Timer_Game"));
+
+				_float fRatio = (m_fFinishDuration - m_fFinishTime * 2.f) / m_fFinishDuration;
+
+				m_pGameInstance->Set_TimeSpeed(TEXT("Timer_60"), fRatio < 0 ? 0.f : fRatio);
+				m_pGameInstance->Set_TimeSpeed(TEXT("Timer_Player"), fRatio < 0 ? 0.f : fRatio);
 
 				if (m_fFinishDuration < m_fFinishTime)
 				{
 					m_fFinishTime = 0.f;
 					m_isFightStage = false;
 					m_pGameInstance->Set_InvertColor(false);
+
+					m_pGameInstance->Set_TimeSpeed(TEXT("Timer_60"), 1.f);
+					m_pGameInstance->Set_TimeSpeed(TEXT("Timer_Player"), 1.f);
 						
 					return;
 				}
 				m_pGameInstance->Set_InvertColor(true);
 			}
-			//// 던전 속 레벨이 마무리됐는지를 체크한다.
-			//else 
-			//{
+			// 던전 속 레벨이 마무리됐는지를 체크한다.
+			else 
+			{
+				m_fFinishTime += m_pGameInstance->Get_TimeDelta(TEXT("Timer_Game"));
 
-			//}
+				m_pGameInstance->Set_TimeSpeed(TEXT("Timer_60"), 0.f);
+				m_pGameInstance->Set_TimeSpeed(TEXT("Timer_Player"), 0.f);
+
+				if (0.5f < m_fFinishTime)
+				{
+					m_fFinishTime = 0.f;
+					m_isFightStage = false;
+#ifdef _DEBUG
+					cout << "흑백 쉐이더 Off" << endl;
+#endif
+
+					m_pGameInstance->Set_TimeSpeed(TEXT("Timer_60"), 1.f);
+					m_pGameInstance->Set_TimeSpeed(TEXT("Timer_Player"), 1.f);
+
+					return;
+				}
+#ifdef _DEBUG
+				cout << "흑백 쉐이더 On" << endl;
+#endif
+			}
 
 		}
 
