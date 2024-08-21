@@ -55,7 +55,7 @@ float3 LinearToGamma(float3 color, float fGamma)
 //F
 float3 FresnelSchlick(float cosTheta, float3 R0, float IORPower)
 {
-    return R0 + (1.f - R0) * pow(1.f - cosTheta, 5.f * IORPower);
+    return R0 + (1.f - R0) * pow(1.f - cosTheta, 5.f) * IORPower;
 }
 
 float3 FresnelSchlickRoughness(float cosTheta, float3 F0, float roughness)
