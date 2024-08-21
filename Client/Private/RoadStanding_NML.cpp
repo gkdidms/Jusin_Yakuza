@@ -28,6 +28,10 @@ HRESULT CRoadStanding_NML::Initialize(void* pArg)
 
 	if (FAILED(Add_Components()))
 		return E_FAIL;
+	
+	dynamic_cast<CAI_RoadStanding_NML*>(m_pTree)->Set_MotionPointer(&m_iMotionType);
+
+	m_fChangeInterval = 18.f;
 
 	return S_OK;
 }
@@ -81,8 +85,8 @@ void CRoadStanding_NML::Change_Animation()
 				m_strAnimName = "f_nml_act_talk_a_st";
 			else if (m_iMotionType == MOTION_TALK_B)
 				m_strAnimName = "f_nml_act_talk_b_st";
-			else if (m_iMotionType == MOTION_THINK)
-				m_strAnimName = "f_nml_act_stand_atc_think_st";
+			//else if (m_iMotionType == MOTION_THINK)
+			//	m_strAnimName = "f_nml_act_stand_atc_think_st";
 			else if (m_iMotionType == MOTION_LISTEN)
 				m_strAnimName = "f_nml_act_stand_atc_listen_st";
 		}
@@ -92,12 +96,11 @@ void CRoadStanding_NML::Change_Animation()
 				m_strAnimName = "m_nml_act_talk_a_st";
 			else if (m_iMotionType == MOTION_TALK_B)
 				m_strAnimName = "m_nml_act_talk_b_st";
-			else if (m_iMotionType == MOTION_THINK)
-				m_strAnimName = "m_nml_act_stand_atc_think_st";
+			//else if (m_iMotionType == MOTION_THINK)
+			//	m_strAnimName = "m_nml_act_stand_atc_think_st";
 			else if (m_iMotionType == MOTION_LISTEN)
 				m_strAnimName = "m_nml_act_stand_atc_listen_st";
 		}
-		m_isAnimLoop = true;
 		break;
 	}
 	case ADVENTURE_STAND_ST:
@@ -108,8 +111,8 @@ void CRoadStanding_NML::Change_Animation()
 				m_strAnimName = "f_nml_act_talk_a_lp";
 			else if (m_iMotionType == MOTION_TALK_B)
 				m_strAnimName = "f_nml_act_talk_b_lp";
-			else if (m_iMotionType == MOTION_THINK)
-				m_strAnimName = "f_nml_act_stand_atc_think_lp";
+			//else if (m_iMotionType == MOTION_THINK)
+			//	m_strAnimName = "f_nml_act_stand_atc_think_lp";
 			else if (m_iMotionType == MOTION_LISTEN)
 				m_strAnimName = "f_nml_act_stand_atc_listen_lp";
 		}
@@ -119,8 +122,8 @@ void CRoadStanding_NML::Change_Animation()
 				m_strAnimName = "m_nml_act_talk_a_lp";
 			else if (m_iMotionType == MOTION_TALK_B)
 				m_strAnimName = "m_nml_act_talk_b_lp";
-			else if (m_iMotionType == MOTION_THINK)
-				m_strAnimName = "m_nml_act_stand_atc_think_lp";
+			//else if (m_iMotionType == MOTION_THINK)
+			//	m_strAnimName = "m_nml_act_stand_atc_think_lp";
 			else if (m_iMotionType == MOTION_LISTEN)
 				m_strAnimName = "m_nml_act_stand_atc_listen_lp";
 		}

@@ -13,11 +13,11 @@ Texture2D<float4> InputTexture : register(t0);
 RWTexture2D<float4> OutputTexture : register(u0);
 
 [numthreads(256, 1, 1)]
-void GS_MAIN(uint3 dispatchThreadID : SV_DispatchThreadID, int3 GroupIndex : SV_GroupThreadID)
+void CS_Main(uint3 dispatchThreadID : SV_DispatchThreadID, int3 GroupIndex : SV_GroupThreadID)
 {
-    uint2 outputCoord = dispatchThreadID.xy; 
+    int2 outputCoord = dispatchThreadID.xy; 
      
-    float width, height;
+    int width, height;
     InputTexture.GetDimensions(width, height);
     int2 ImageSize = int2(width, height);
 

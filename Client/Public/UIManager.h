@@ -13,6 +13,7 @@ class CUIManager :
     DECLARE_SINGLETON(CUIManager)
 public:
     enum INFO{HP, SKILLGAUAGE , EAGLEEYE , CARHP , INFO_END};
+
 private:
     CUIManager();
     virtual ~CUIManager() = default;
@@ -42,10 +43,35 @@ public: // 카체이스 용
     class CCarChase_Monster* Get_Target();
 
 public: //타이틀 용
+    /*
+    * 타이틀 목록
+    0 출구로 가라
+    1 약손 쾌감으로 가라
+    2 마코토를 찾아라
+    3 도망쳐라
+    4 에가시라 히로야
+    5 쿠제 다이사쿠
+    6 수상한 남자
+    7 수상한 남자들
+    8 폭주족
+    9 챔피언 거리 주민
+    10 호위하라
+    11 거리의 양아치
+    12 야쿠자
+    13 날라리
+    14 니시키야마를 찾아라
+    15 여자를 데리고 도망쳐라
+    16 도지마조 조직원
+    17 동흥 크레디트의 남자들
+    18 날라리들
+    */
     void Set_TitleStart(_bool isStart);
     _bool isTitleStart();
     void Start_Title(_int iIndex);
     _bool isTitleEnd();
+
+public: //페이드인페이드아웃
+    _bool isFindFinished();
 
 public:
     //자신이 만들 ui씬은 미리 할당(수동)

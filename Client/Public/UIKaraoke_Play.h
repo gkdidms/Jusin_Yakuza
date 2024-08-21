@@ -1,4 +1,4 @@
-#pragma once
+ï»¿#pragma once
 #include "UIScene.h"
 BEGIN(Client)
 class CUIKaraoke_Play :
@@ -35,8 +35,8 @@ protected:
     virtual ~CUIKaraoke_Play() = default;
 
 public:
-    virtual HRESULT Show_Scene()override;//ui ¾Ö´Ô ÁØºñ(ÃÊ±âÈ­/¿­¶§ Á¤¹æÇâ ÁøÇà)
-    virtual HRESULT Close_Scene()override;//ui ¾Ö´Ô ÁØºñ(ÃÊ±âÈ­/´İÀ»‹š ¹İ´ë·ÎÁøÇà)
+    virtual HRESULT Show_Scene()override;//ui ì• ë‹˜ ì¤€ë¹„(ì´ˆê¸°í™”/ì—´ë•Œ ì •ë°©í–¥ ì§„í–‰)
+    virtual HRESULT Close_Scene()override;//ui ì• ë‹˜ ì¤€ë¹„(ì´ˆê¸°í™”/ë‹«ì„Â‹Âš ë°˜ëŒ€ë¡œì§„í–‰)
 
 public:
     virtual HRESULT Add_UIData(class CUI_Object* pUIObject, wstring wstrPrototypeTag = TEXT("")) override;
@@ -44,8 +44,8 @@ public:
     virtual HRESULT Tick(const _float& fTimeDelta) override;
     virtual HRESULT Late_Tick(const _float& fTimeDelta) override;
 
-    virtual _bool Click_InterSect()override;//Å¬¸¯½ÃÃæµ¹
-    virtual _bool Over_InterSect()override;//¿À¹ö½Ã Ãæµ¿
+    virtual _bool Click_InterSect()override;//í´ë¦­ì‹œì¶©ëŒ
+    virtual _bool Over_InterSect()override;//ì˜¤ë²„ì‹œ ì¶©ë™
     virtual void Action() override;
     virtual void OverAction() override;
 
@@ -65,7 +65,7 @@ private:
 
 private:
     void Update_CurrentLyricsIndex();
-    void Render_Cutsom_Sequence(const _float& fTimeDelta);          // ·¹ÀÌÆ®Æ½À» ¿øÇÏ´Â ¼ø¼­´ë·Î ¸ô¾Æ ºÎ¸¥´Ù.
+    void Render_Cutsom_Sequence(const _float& fTimeDelta);          // ë ˆì´íŠ¸í‹±ì„ ì›í•˜ëŠ” ìˆœì„œëŒ€ë¡œ ëª°ì•„ ë¶€ë¥¸ë‹¤.
 
     void Change_Lyrics();
     void Setting_BackUI(LYRICS_DESC Desc, _fvector vPos, _uint iLyricsIndex);
@@ -88,7 +88,7 @@ private:
 
     _uint Trans_ButtonType_To_UI(_uint iNum);
 
-    // 0 ÀÏ¹İ³ëµå    1 À¯Áö ³ëµå     2 ¿¬Å¸ ³ëµå
+    // 0 ì¼ë°˜ë…¸ë“œ    1 ìœ ì§€ ë…¸ë“œ     2 ì—°íƒ€ ë…¸ë“œ
     // 0 UP        1 DOWN        2 LEFT        3 RIGHT
 
     /* Render Group */
@@ -124,7 +124,7 @@ private:
     vector<LYRICS_DESC> m_LyricsTime;
     vector<_float3> m_LyricsSocket;
 
-    // ·¡ÆÛ·±½º Ä«¿îÆ® Áõ°¡ÇÏÁö¾ÊÀ½
+    // ë˜í¼ëŸ°ìŠ¤ ì¹´ìš´íŠ¸ ì¦ê°€í•˜ì§€ì•ŠìŒ
     multimap<_uint, LYRICS_NOTE_DESC> m_LyricsNotes;
 
     vector<_uint> m_Pivots;

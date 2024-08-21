@@ -58,6 +58,8 @@ HRESULT CLevel_KaraokeLobby::Initialize()
 	if (FAILED(Ready_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
 
+	m_pSystemManager->Set_Camera(CAMERA_PLAYER);
+
     return S_OK;
 }
 

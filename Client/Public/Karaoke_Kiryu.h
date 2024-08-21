@@ -18,6 +18,19 @@ public:
     {
         CLOSE, OPEN, MOUTH_ANIM_END
     };
+
+    enum SINGING_ANIMATION
+    {
+        CLAP, PASSIONATE_SINGING, IDLE, SINGING, DANCING, SINGING_ANIMATION_END
+    };
+
+    struct PLAY_TIME_EVENT
+    {
+        _float fTime;
+        _int iEventType;               // -1: ÀÔ¾Ö´Ô, ³ª¸ÓÁö´Â ¾Ö´ÔÀÎµ¦½º
+        _bool isChanged = { false };
+    };
+
 private:
     const _float ANIM_INTERVAL = 4.f;
     
@@ -39,12 +52,15 @@ public:
     string Get_CurrentAnimationName() override;
 
 public:
+    void Change_SingingAnimaition(SINGING_ANIMATION eType);
     void Set_CutSceneAnim();
     void Play_CutScene(const _float& fTimeDelta);
     void Reset_CutSceneEvent();
+    void PlayTime_Event();
 
 private:
     void Ready_SingingInterval();
+    void Ready_PlayTimeEvent();
 
     void SingOff() {
         m_isSinging = false;
@@ -85,6 +101,9 @@ private:
 
     _bool                       m_isSinging = { false };
     _float                      m_fMouthTimer = { 0.f };
+
+    SINGING_ANIMATION           m_eSingingAnimType = { IDLE };
+    vector<PLAY_TIME_EVENT>     m_PlayTimeEvent;
 
 private:
     virtual HRESULT Add_Components() override;

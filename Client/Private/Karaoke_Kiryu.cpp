@@ -62,23 +62,28 @@ HRESULT CKaraoke_Kiryu::Initialize(void* pArg)
 		return E_FAIL;
 
 	Ready_SingingInterval();
+	Ready_PlayTimeEvent();
 
 	m_iHandAnimIndex = HAND_BOU;
-	On_Separation_Hand(2);			// 오른손 분리 
+	On_Separation_Hand(0);			// 양손 다 주먹쥠
 
 	m_iFaceAnimIndex = CLOSE;
 	Separation_Bone("_jaw_c_n", 3, false);
 
 	/*
-	*	[0] p_kru_uta_ainote_a_lp[p_kru_uta_ainote_a_lp]
-		[1] p_kru_uta_sing_good_1[p_kru_uta_sing_good_1]
-		[2] p_kru_uta_sing_kamae[p_kru_uta_sing_kamae]
-		[3] p_kru_uta_sing_nml[p_kru_uta_sing_nml]
-		[4] p_oki_uta_sing_nml_lp[p_oki_uta_sing_nml_lp]
+	*	[	[0] p_kru_uta_ainote_a_lp[p_kru_uta_ainote_a_lp]		//박수
+		[	[1] p_kru_uta_sing_good_1[p_kru_uta_sing_good_1]		//열창
+		[	[2] p_kru_uta_sing_kamae[p_kru_uta_sing_kamae]			//아이들
+		[	[3] p_kru_uta_sing_nml[p_kru_uta_sing_nml]				//Singing
+		[	[4] p_oki_uta_sing_nml_lp[p_oki_uta_sing_nml_lp]		//Dancing
 
 	*/
 
-	m_pModelCom->Set_AnimationIndex(3);
+
+
+
+	CModel::ANIMATION_DESC Desc{ static_cast<_uint>(IDLE), true };
+	m_pModelCom->Set_AnimationIndex(Desc, 4.f);
 	return S_OK;
 }
 
@@ -100,6 +105,8 @@ void CKaraoke_Kiryu::Tick(const _float& fTimeDelta)
 	//{
 	//	Set_CutSceneAnim();
 	//}
+
+	PlayTime_Event();
 
 	if (m_isSinging)
 		Play_SingingAnim(fTimeDelta);
@@ -248,6 +255,9 @@ HRESULT CKaraoke_Kiryu::Add_Components()
 		return E_FAIL;
 	m_SeparationAnimComs.push_back(pAnimCom);
 
+
+
+
 	//Prototype_Component_Anim_Kiryu
 	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Material_Kiryu"),
 		TEXT("Com_Material"), reinterpret_cast<CComponent**>(&m_pMaterialCom))))
@@ -336,6 +346,33 @@ void CKaraoke_Kiryu::Free()
 string CKaraoke_Kiryu::Get_CurrentAnimationName()
 {
 	return ExtractString(m_pModelCom->Get_AnimationName(m_pModelCom->Get_CurrentAnimationIndex()));
+}
+
+void CKaraoke_Kiryu::Change_SingingAnimaition(SINGING_ANIMATION eType)
+{
+	m_eSingingAnimType = eType;
+	CModel::ANIMATION_DESC Desc{ static_cast<_uint>(m_eSingingAnimType), true };
+	m_pModelCom->Set_AnimationIndex(Desc, 10.f);
+
+	switch (m_eSingingAnimType)
+	{
+	case Client::CKaraoke_Kiryu::CLAP:
+		Off_Separation_Hand();
+		break;
+	case Client::CKaraoke_Kiryu::PASSIONATE_SINGING:
+		On_Separation_Hand(0);
+		break;
+	case Client::CKaraoke_Kiryu::IDLE:
+		On_Separation_Hand(0);
+		break;
+	case Client::CKaraoke_Kiryu::SINGING:
+		On_Separation_Hand(0);
+		break;
+	case Client::CKaraoke_Kiryu::DANCING:
+		Off_Separation_Hand();
+		break;
+	}
+
 }
 
 void CKaraoke_Kiryu::Set_CutSceneAnim()
@@ -463,6 +500,27 @@ void CKaraoke_Kiryu::Reset_CutSceneEvent()
 	m_pSystemManager->Set_Camera(CAMERA_CUTSCENE == m_pSystemManager->Get_Camera() ? CAMERA_PLAYER : CAMERA_CUTSCENE);
 }
 
+void CKaraoke_Kiryu::PlayTime_Event()
+{
+	_float fCurTime = m_pGameInstance->GetSoundPosition(TEXT("Bakamita.mp3"), SOUND_BGM);
+
+	for (auto& pEvent : m_PlayTimeEvent)
+	{
+		if (pEvent.fTime <= fCurTime && !pEvent.isChanged)
+		{
+			pEvent.isChanged = true;
+
+			if(pEvent.iEventType < 0)
+				m_isSinging = true;
+			else
+			{
+				Change_SingingAnimaition(static_cast<SINGING_ANIMATION>(pEvent.iEventType));
+			}
+		}
+	}
+	
+}
+
 void CKaraoke_Kiryu::Ready_SingingInterval()
 {
 	m_fMouthChangeInterval.push_back(0.1f);
@@ -485,6 +543,32 @@ void CKaraoke_Kiryu::Ready_SingingInterval()
 	m_fMouthChangeInterval.push_back(0.1f);
 	m_fMouthChangeInterval.push_back(0.2f);
 	m_fMouthChangeInterval.push_back(0.2f);
+}
+
+void CKaraoke_Kiryu::Ready_PlayTimeEvent()
+{
+	PLAY_TIME_EVENT Desc{ 14.450f, SINGING, false };
+	m_PlayTimeEvent.push_back(Desc);		// 마이크를 든다
+
+	Desc.fTime = 15.305f;
+	Desc.iEventType = -1;
+	m_PlayTimeEvent.push_back(Desc);		// 입 애니메이션을 넣는다.
+
+	Desc.fTime = 41.375f;
+	Desc.iEventType = PASSIONATE_SINGING;
+	m_PlayTimeEvent.push_back(Desc);		// 열창중
+
+	Desc.fTime = 43.289f;
+	Desc.iEventType = SINGING;
+	m_PlayTimeEvent.push_back(Desc);		
+
+	Desc.fTime = 47.561f;
+	Desc.iEventType = PASSIONATE_SINGING;
+	m_PlayTimeEvent.push_back(Desc);		// 열창중
+
+	Desc.fTime = 48.977f;
+	Desc.iEventType = SINGING;
+	m_PlayTimeEvent.push_back(Desc);		// 열창중
 }
 
 void CKaraoke_Kiryu::Play_SingingAnim(const _float& fTimeDelta)

@@ -44,6 +44,8 @@ public:
 		ROADYOP,
 		NISHIKI,
 		ADVENTURE_REACTOR,
+
+		PLAYER_POSITION, // 포지션만 저장
 		OBJ_END
 	};
 

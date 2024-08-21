@@ -26,8 +26,34 @@ void CFightManager::Set_FightStage(_bool isFightStage, CMonsterGroup* pMonsterGr
 	{
 		//타이틀 떠야 함.
 		m_pUIManager->Open_Scene(TEXT("Title"));
-		m_pUIManager->Start_Title(0);
-		
+
+		_uint iTitleIndex = 0;
+
+		switch (m_pGameInstance->Get_CurrentLevel())
+		{
+		case LEVEL_DOGIMAZO:		//도지마조 조직원
+			iTitleIndex = 16;
+			break;
+		case LEVEL_DOGIMAZO_BOSS:	//쿠제
+			iTitleIndex = 5;
+			break;
+		case LEVEL_OFFICE_1F:		//동흥 크레디트
+			iTitleIndex = 17;
+			break;
+		case LEVEL_OFFICE_BOSS:		//삥쟁
+			iTitleIndex = 4;
+			break;
+		case LEVEL_TEST:			//삥쟁
+			iTitleIndex = 15;
+			break;
+		default:
+		{
+			if (nullptr != pMonsterGroup)
+				iTitleIndex = 12;		// 거리에서 만난상황이면 야쿠자
+			break;
+		}
+		}
+		m_pUIManager->Start_Title(iTitleIndex);
 
 		if (pMonsterGroup != nullptr)
 		{
@@ -108,9 +134,51 @@ void CFightManager::Tick(const _float& fTimeDelta)
 			m_pGameInstance->Set_InvertColor(true);
 		}
 	}
+	else
+	{
+		if (Check_Stage_Clear())
+		{
+			_uint iLevelIndex = m_pGameInstance->Get_CurrentLevel();
 
-	// 그 외 레벨에서는 첫 스테이지 화면에서만 Start 타이틀을 보여준다.
-	
+			// 레벨단위가 아니라 스테이지 단위로 시작과 끝을 정의해야한다.(사채업자 or 도지마조 등)
+			if (iLevelIndex == LEVEL_DOGIMAZO_BOSS || iLevelIndex == LEVEL_OFFICE_BOSS || iLevelIndex == LEVEL_TEST)
+			{
+				m_fFinishTime += fTimeDelta;
+
+				if (m_fFinishDuration < m_fFinishTime)
+				{
+					Safe_Release(m_pCurrentMonsterGroup);
+					m_isFightStage = false;
+					m_pGameInstance->Set_InvertColor(false);
+				}
+				m_pGameInstance->Set_InvertColor(true);
+			}
+		}
+
+	}
+}
+
+_bool CFightManager::Check_Stage_Clear()
+{
+	auto pMonsters = m_pGameInstance->Get_GameObjects(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Monster"));
+	auto pYonedas = m_pGameInstance->Get_GameObjects(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Yoneda"));
+
+	_uint iEnemyCount = { 0 };
+
+	for (auto& pMonster : pMonsters)
+	{
+		if (!pMonster->isObjectDead())
+			iEnemyCount++;
+	}
+
+	for (auto& pYoneda : pYonedas)
+	{
+		if (!pYoneda->isObjectDead())
+			iEnemyCount++;
+	}
+
+	// 죽지않은 객체가 없다면 종료
+	return 1 > iEnemyCount;
 }
 
 void CFightManager::Free()

@@ -16,7 +16,7 @@ RWStructuredBuffer<COMPUTEMATRIX> g_OutMatrix : register(u0);
 groupshared COMPUTEMATRIX shared_data[256];
 
 [numthreads(16, 16, 1)]
-void CSMain(uint3 DTid : SV_DispatchThreadID, uint3 GTid : SV_GroupThreadID)
+void CS_Main(uint3 DTid : SV_DispatchThreadID, uint3 GTid : SV_GroupThreadID)
 {
     // 스레드 그룹 내부의 고유 인덱스 계산
     uint index = GTid.y * 16 + GTid.x;

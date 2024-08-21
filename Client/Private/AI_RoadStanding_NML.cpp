@@ -7,6 +7,7 @@
 #include "LeafNode.h"
 
 #include "Adventure.h"
+#include "RoadStanding_NML.h"
 
 CAI_RoadStanding_NML::CAI_RoadStanding_NML()
 	: CAI_RoadStanding{}
@@ -30,7 +31,7 @@ HRESULT CAI_RoadStanding_NML::Initialize(void* pArg)
 
 	Ready_Root();
 
-	m_iMotionType = m_pGameInstance->Get_Random(0, 1);
+	*m_pState = m_pGameInstance->Get_Random((int)CAdventure::ADVENTURE_STAND_ST, (int)CAdventure::ADVENTURE_STAND);
 
 	return S_OK;
 }
@@ -39,7 +40,23 @@ void CAI_RoadStanding_NML::Tick(const _float& fTimeDelta)
 {
 	__super::Tick(fTimeDelta);
 
-	this->Execute();
+	//this->Execute();
+
+
+	if (DistanceFromPlayer() < 30.f)
+	{
+		m_isGround = true;
+		Execute_Anim();
+	}
+	else
+	{
+		if (true == m_isGround && m_pAnimCom->Get_AnimFinished())
+		{
+			*m_pState = CAdventure::ADVENTURE_STAND_ST;
+			m_isGround = false;
+		}
+		
+	}
 }
 
 CBTNode::NODE_STATE CAI_RoadStanding_NML::Execute()
@@ -59,7 +76,12 @@ void CAI_RoadStanding_NML::Ready_Root()
 
 #pragma region Walk
 	CSequance* pStandSeq = CSequance::Create();
-	pStandSeq->Add_Children(CLeafNode::Create(bind(&CAI_RoadStanding_NML::Stand, this)));
+	pStandSeq->Add_Children(CLeafNode::Create(bind(&CAI_RoadStanding_NML::Check_Stand, this)));
+
+	CSelector* pStandSelector = CSelector::Create();
+	pStandSelector->Add_Children(CLeafNode::Create(bind(&CAI_RoadStanding_NML::Ground_The_Player, this)));
+	pStandSelector->Add_Children(CLeafNode::Create(bind(&CAI_RoadStanding_NML::Stand, this)));
+	pStandSeq->Add_Children(pStandSelector);
 #pragma endregion
 
 	pRoot->Add_Children(pCollSeq);
@@ -81,6 +103,32 @@ CBTNode::NODE_STATE CAI_RoadStanding_NML::Stand()
 	*m_pState = CAdventure::ADVENTURE_STAND_ST;
 
 	return CBTNode::SUCCESS;
+}
+
+void CAI_RoadStanding_NML::Execute_Anim()
+{
+	if (*m_pMotionType < (int)MOTION_TYPE::MOTION_TALK_A || *m_pMotionType >(int)MOTION_TYPE::MOTION_LISTEN)
+	{
+		_uint		iMotion = m_pGameInstance->Get_Random((int)MOTION_TYPE::MOTION_TALK_A, (int)MOTION_TYPE::MOTION_LISTEN);
+		*m_pMotionType = iMotion;
+	}
+
+
+	if (m_pAnimCom->Get_AnimFinished())
+	{
+		if (CAdventure::ADVENTURE_STAND == *m_pState)
+		{
+			*m_pState = CAdventure::ADVENTURE_STAND_ST;
+		}
+		else
+		{
+			*m_pState = CAdventure::ADVENTURE_STAND;
+		}
+
+		_uint		iMotion = m_pGameInstance->Get_Random((int)MOTION_TYPE::MOTION_TALK_A, (int)MOTION_TYPE::MOTION_LISTEN);
+		*m_pMotionType = iMotion;
+	}
+
 }
 
 CAI_RoadStanding_NML* CAI_RoadStanding_NML::Create()

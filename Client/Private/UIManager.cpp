@@ -132,6 +132,13 @@ _bool CUIManager::isTitleEnd()
 	return pScene->isEnd();
 }
 
+_bool CUIManager::isFindFinished()
+{
+	CUIFade* pScene = dynamic_cast<CUIFade*>(Find_Scene(TEXT("Fade")));
+
+	return pScene->isFinished();
+}
+
 HRESULT CUIManager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
 	m_pDevice = pDevice;
