@@ -121,15 +121,14 @@ HRESULT CUIKaraoke_Play::Tick(const _float& fTimeDelta)
             pUI->Tick(fTimeDelta);
         }
     }
+
+    Off_UI_Effect();
+
     return S_OK;
 }
 
 HRESULT CUIKaraoke_Play::Late_Tick(const _float& fTimeDelta)
 {
-    //m_pPlayUI[BACK][0]->Late_Tick(fTimeDelta);
-    //for (auto& iter : m_pPlayUI)
-    //    iter->Late_Tick(fTimeDelta);
-
     Render_Cutsom_Sequence(fTimeDelta);
 
     if (!m_isAnimFin)
@@ -357,22 +356,22 @@ void CUIKaraoke_Play::Show_Grade(CNoteBase* pNote)
         }
     }
 
+    m_pPlayUI[GRADE][m_Pivots[GRADE]]->Show_Off_All();
     m_pPlayUI[GRADE][m_Pivots[GRADE]]->Show_On(iShowIndex);
     m_pPlayUI[GRADE][m_Pivots[GRADE]]->Show_UI();
-
 
     _vector vPosition = XMVectorSetW(XMLoadFloat3(&Desc.vPos), 1.f);
 
     if (iShowIndex == 0)
     {
         m_pPlayUI[GREATEFFECT][m_Pivots[GREATEFFECT]]->Show_On_All();
-        m_pPlayUI[GREATEFFECT][m_Pivots[GREATEFFECT]]->Close_UI();
+        m_pPlayUI[GREATEFFECT][m_Pivots[GREATEFFECT]]->Show_UI();
         m_pPlayUI[GREATEFFECT][m_Pivots[GREATEFFECT]]->Get_TransformCom()->Set_State(CTransform::STATE_POSITION, vPosition);
     }
     else if (iShowIndex == 1)
     {
         m_pPlayUI[GOODEFFECT][m_Pivots[GOODEFFECT]]->Show_On_All();
-        m_pPlayUI[GOODEFFECT][m_Pivots[GOODEFFECT]]->Close_UI();
+        m_pPlayUI[GOODEFFECT][m_Pivots[GOODEFFECT]]->Show_UI();
         m_pPlayUI[GOODEFFECT][m_Pivots[GOODEFFECT]]->Get_TransformCom()->Set_State(CTransform::STATE_POSITION, vPosition);
     }
 
@@ -1315,6 +1314,21 @@ _uint CUIKaraoke_Play::Trans_ButtonType_To_UI(_uint iNum)
         return RIGHT;
     }
     return _uint();
+}
+
+void CUIKaraoke_Play::Off_UI_Effect()
+{
+    for (auto& pUIEffect : m_pPlayUI[GREATEFFECT])
+    {
+        if (pUIEffect->Check_AnimFin())
+            pUIEffect->Show_Off_All();
+    }
+
+    for (auto& pUIEffect : m_pPlayUI[GOODEFFECT])
+    {
+        if (pUIEffect->Check_AnimFin())
+            pUIEffect->Show_Off_All();
+    }
 }
 
 CUIKaraoke_Play* CUIKaraoke_Play::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg)

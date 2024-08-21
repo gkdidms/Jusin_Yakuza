@@ -29,7 +29,7 @@ public:
 	void Tick(const _float& fTimeDelta);
 
 private:
-	_bool Check_Stage_Clear();
+	_bool Check_Stage_Clear();			// 길거리맵 제외 스테이지에 남은 몬스터가 있는지를 체크
 
 	
 

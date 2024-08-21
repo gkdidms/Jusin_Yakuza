@@ -140,19 +140,27 @@ void CFightManager::Tick(const _float& fTimeDelta)
 		{
 			_uint iLevelIndex = m_pGameInstance->Get_CurrentLevel();
 
-			// 레벨단위가 아니라 스테이지 단위로 시작과 끝을 정의해야한다.(사채업자 or 도지마조 등)
+			// 레벨단위가 아니라 던전 단위로 시작과 끝을 정의해야한다.(사채업자 or 도지마조 등)
 			if (iLevelIndex == LEVEL_DOGIMAZO_BOSS || iLevelIndex == LEVEL_OFFICE_BOSS || iLevelIndex == LEVEL_TEST)
 			{
 				m_fFinishTime += fTimeDelta;
 
 				if (m_fFinishDuration < m_fFinishTime)
 				{
-					Safe_Release(m_pCurrentMonsterGroup);
+					m_fFinishTime = 0.f;
 					m_isFightStage = false;
 					m_pGameInstance->Set_InvertColor(false);
+						
+					return;
 				}
 				m_pGameInstance->Set_InvertColor(true);
 			}
+			//// 던전 속 레벨이 마무리됐는지를 체크한다.
+			//else 
+			//{
+
+			//}
+
 		}
 
 	}
