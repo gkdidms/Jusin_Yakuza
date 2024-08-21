@@ -78,7 +78,7 @@ HRESULT CLight_Manager::Bind_ComputeBuffer(_uint iSlot)
 	if (m_Lights.size() <= 0)
 		return E_FAIL;
 
-	return m_Lights[0]->Bind_LightBuffer(iSlot); // 0번이 디렉션이라고 가정한다.\
+	return m_Lights[0]->Bind_LightBuffer(iSlot); // 0번이 디렉션이라고 가정한다.
 }
 
 CLight_Manager* CLight_Manager::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
