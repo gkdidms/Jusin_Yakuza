@@ -201,9 +201,7 @@ public:
     HRESULT Ready_Debug(const wstring strRenderTargetTag, _float fX, _float fY, _float fSizeX, _float fSizeY);
     HRESULT Render_Debug(const wstring& strMRTTag, class CShader* pShader, class CVIBuffer_Rect* pVIBuffer, _bool isArray = false);
 #endif // _DEBUG
-    public:
-        HRESULT Ready_Debug(const wstring strRenderTargetTag, _float fX, _float fY, _float fSizeX, _float fSizeY);
-        HRESULT Render_Debug(const wstring& strMRTTag, class CShader* pShader, class CVIBuffer_Rect* pVIBuffer, _bool isArray = false);
+
     /* Convert_Manager */
 public:
     void Get_FileNames(const wstring& strPath, vector<wstring>& vecOut);

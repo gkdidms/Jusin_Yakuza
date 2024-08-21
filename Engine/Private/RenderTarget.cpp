@@ -158,48 +158,6 @@ HRESULT CRenderTarget::Render_Debug(CShader* pShader, CVIBuffer_Rect* pVIBuffer,
 	return S_OK;
 }
 #endif // _DEBUG
-HRESULT CRenderTarget::Ready_Debug(_float fX, _float fY, _float fSizeX, _float fSizeY)
-{
-	D3D11_VIEWPORT ViewportDesc{};
-	_uint iNumViewport = 1;
-
-	m_pContext->RSGetViewports(&iNumViewport, &ViewportDesc);
-
-	XMStoreFloat4x4(&m_WorldMatrix, XMMatrixIdentity());
-
-	m_WorldMatrix._11 = fSizeX;
-	m_WorldMatrix._22 = fSizeY;
-	m_WorldMatrix._41 = fX - ViewportDesc.Width * 0.5f;
-	m_WorldMatrix._42 = -fY + ViewportDesc.Height * 0.5f;
-
-	return S_OK;
-}
-
-HRESULT CRenderTarget::Render_Debug(CShader* pShader, CVIBuffer_Rect* pVIBuffer, _bool isArray)
-{
-	if (FAILED(pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix)))
-		return E_FAIL;
-
-	if (FAILED(pShader->Bind_RawValue("g_isArray", &isArray, sizeof(_bool))))
-		return E_FAIL;
-
-	if (isArray)
-	{
-		if (FAILED(pShader->Bind_SRV("g_TextureArray", m_pSRV)))
-			return E_FAIL;
-	}
-	else
-	{
-		if (FAILED(pShader->Bind_SRV("g_Texture", m_pSRV)))
-			return E_FAIL;
-	}
-
-
-	pShader->Begin(0);
-	pVIBuffer->Render();
-
-	return S_OK;
-}
 
 CRenderTarget* CRenderTarget::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, _uint iSizeX, _uint iSizeY, DXGI_FORMAT ePixelFormat, const _float4& vClearColor, _bool isCompute, _uint iArrayCount)
 {
