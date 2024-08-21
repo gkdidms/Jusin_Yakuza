@@ -100,7 +100,10 @@ void CNishiki::Change_Animation(const _float fTimeDelta)
 
 	CModel::ANIMATION_DESC Desc{ m_iAnimIndex, m_isAnimLoop};
 	m_pModelCom->Set_AnimationIndex(m_iAnimIndex, m_fChangeInterval);
-	m_pModelCom->Play_Animation(fTimeDelta * fOffset, Desc);
+	if(m_iState == CHEER)
+		m_pModelCom->Play_Animation(fTimeDelta * fOffset, Desc, false);
+	else
+		m_pModelCom->Play_Animation(fTimeDelta * fOffset, Desc);
 }
 
 HRESULT CNishiki::Add_Components()

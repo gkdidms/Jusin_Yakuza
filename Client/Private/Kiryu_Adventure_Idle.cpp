@@ -35,6 +35,9 @@ void CKiryu_Adventure_Idle::Tick(const _float& fTimeDelta)
 
 void CKiryu_Adventure_Idle::Change_Animation()
 {
+	m_pPlayer->Set_HandAnimIndex(CPlayer::HAND_MIDDLE2);
+	m_pPlayer->On_Separation_Hand();
+
 	// 아이들은 모션을 하나만 둔다 (추후 추가예정)
 	m_pPlayer->Change_Animation(m_AnimationIndices[m_eCurrentBehavior]);
 }

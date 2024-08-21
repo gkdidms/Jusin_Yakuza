@@ -39,6 +39,7 @@ public:
         HAND_NEUTRAL,               //[0] [hand_parts_0_neutral] 평소 편하게 펴고있는 상태
         HAND_MIDDLE,                //[1] [hand_parts_10_hand_middle] 
         HAND_MIDDLE2,               //[2] [hand_parts_11_hand_middle2]
+        HAND_MIN,                   //[3] [hand_parts_12_hand_min]
         HAND_CHOP = 8,              //[8] [hand_parts_17_chop]  촙!!! 스킬 쓸 때 손 날로 치기 때문에 손을 편 상태의 모양이다
         HAND_GU,                    //[9] [hand_parts_1_gu] 주먹 쥐는거
         HAND_HAKO,                  //[10] [hand_parts_3_hako] 큰 물체 쥘 때 펼쳐진 손

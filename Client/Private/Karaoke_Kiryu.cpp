@@ -111,7 +111,7 @@ void CKaraoke_Kiryu::Tick(const _float& fTimeDelta)
 	if (m_isSinging)
 		Play_SingingAnim(fTimeDelta);
 
- 	m_pModelCom->Play_Animation(fTimeDelta);
+ 	m_pModelCom->Play_Animation(fTimeDelta, false);
 	m_pModelCom->Play_Animation_Separation(fTimeDelta, m_iHandAnimIndex, m_SeparationAnimComs[HAND_ANIM], false, (_int)HAND_ANIM);
 	//m_pModelCom->Play_Animation_Separation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")), m_iFaceAnimIndex, m_SeparationAnimComs[FACE_ANIM], false, (_int)FACE_ANIM);
 	m_pModelCom->Play_Animation_Separation(fTimeDelta, m_iFaceAnimIndex, m_SeparationAnimComs[FACE_ANIM], false, 3, 2.f);
@@ -329,8 +329,6 @@ CGameObject* CKaraoke_Kiryu::Clone(void* pArg)
 
 void CKaraoke_Kiryu::Free()
 {
-
-
 #ifdef _DEBUG
 	Safe_Release(m_pDebugManager);
 #endif // _DEBUG
