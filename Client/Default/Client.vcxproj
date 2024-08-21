@@ -188,6 +188,7 @@
     <ClInclude Include="..\Public\AI_RoadStanding.h" />
     <ClInclude Include="..\Public\AI_RoadStanding_NML.h" />
     <ClInclude Include="..\Public\AI_RoadTissue.h" />
+    <ClInclude Include="..\Public\AI_RoadYOP.h" />
     <ClInclude Include="..\Public\Chapter1_0.h" />
     <ClInclude Include="..\Public\Chapter1_1.h" />
     <ClInclude Include="..\Public\Chapter2_0.h" />
@@ -195,6 +196,10 @@
     <ClInclude Include="..\Public\Chapter3_1.h" />
     <ClInclude Include="..\Public\Chapter4_0.h" />
     <ClInclude Include="..\Public\Chapter5_0.h" />
+    <ClInclude Include="..\Public\Chapter5_1.h" />
+    <ClInclude Include="..\Public\Chapter6_0.h" />
+    <ClInclude Include="..\Public\Chapter7_0.h" />
+    <ClInclude Include="..\Public\Chapter7_1.h" />
     <ClInclude Include="..\public\FightManager.h" />
     <ClInclude Include="..\Public\KaraokeManager.h" />
     <ClInclude Include="..\Public\KaraokeQuest.h" />
@@ -438,6 +443,7 @@
     <ClCompile Include="..\private\Adventure.cpp" />
     <ClCompile Include="..\Private\Adventure_Reactor.cpp" />
     <ClCompile Include="..\Private\AI_RoadTissue.cpp" />
+    <ClCompile Include="..\Private\AI_RoadYOP.cpp" />
     <ClCompile Include="..\Private\Chapter1_0.cpp" />
     <ClCompile Include="..\Private\Chapter1_1.cpp" />
     <ClCompile Include="..\Private\Chapter2_0.cpp" />
@@ -445,6 +451,10 @@
     <ClCompile Include="..\Private\Chapter3_1.cpp" />
     <ClCompile Include="..\Private\Chapter4_0.cpp" />
     <ClCompile Include="..\Private\Chapter5_0.cpp" />
+    <ClCompile Include="..\Private\Chapter5_1.cpp" />
+    <ClCompile Include="..\Private\Chapter6_0.cpp" />
+    <ClCompile Include="..\Private\Chapter7_0.cpp" />
+    <ClCompile Include="..\Private\Chapter7_1.cpp" />
     <ClCompile Include="..\Private\HeadUI.cpp" />
     <ClCompile Include="..\Private\KaraokeQuest.cpp" />
     <ClCompile Include="..\Private\Level_KaraokeLobby.cpp" />
@@ -681,10 +691,13 @@
   <ItemGroup>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Aura.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_BoneCompute.hlsl">
-      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">GS_MAIN</EntryPointName>
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CS_Main</EntryPointName>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compute</ShaderType>
     </FxCompile>
-    <FxCompile Include="..\Bin\ShaderFiles\Shader_OcculusionCulling.hlsl" />
+    <FxCompile Include="..\Bin\ShaderFiles\Shader_OcculusionCulling.hlsl">
+      <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">CS_Main</EntryPointName>
+      <ShaderType Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">Compute</ShaderType>
+    </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Trail.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxAnimMesh.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_VtxCube.hlsl" />

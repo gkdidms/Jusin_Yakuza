@@ -3,7 +3,7 @@ Texture2D<float4> InputTexture : register(t0); // t : 인풋 버퍼로 쓰겠다. 0 ~ 9 
 RWTexture2D<float4> OutputTexture : register(u0); // u : 아웃풋 버퍼, 0 ~ 9 
 
 [numthreads(16, 16, 1)]
-void GS_MAIN(uint3 dispatchThreadID : SV_DispatchThreadID)
+void CS_Main(uint3 dispatchThreadID : SV_DispatchThreadID)
 {
     uint2 outputCoord = dispatchThreadID.xy; // 픽셀의 고유번호 
 

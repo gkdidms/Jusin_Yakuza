@@ -633,11 +633,10 @@ void CMonster::BloodEffect_Event()
 				CEffect::EFFECT_DESC EffectDesc;
 
 				_float4x4 worldMat;
-					
+
 				_uint iBoneIndex = pEvent.iBoneIndex;
 				_matrix BoneMatrix = XMLoadFloat4x4(m_pModelCom->Get_BoneCombinedTransformationMatrix_AtIndex(iBoneIndex));
 				XMStoreFloat4x4(&worldMat, (BoneMatrix * m_pTransformCom->Get_WorldMatrix()));
-				
 				EffectDesc.pWorldMatrix = &worldMat;
 
 				if (pEvent.isLoop)
@@ -646,7 +645,6 @@ void CMonster::BloodEffect_Event()
 					{
 						// 해당하는 이펙트를 켜는 함수
 						m_pBloodEffects.find(pEvent.strBonelName)->second->On();
-
 					}
 					else
 					{
@@ -654,12 +652,18 @@ void CMonster::BloodEffect_Event()
 						m_pBloodEffects.find(pEvent.strBonelName)->second->Off();
 					}
 				}
-				else								  // 루프가 아닌 이펙트라면
+				else                                  // 루프가 아닌 이펙트라면
 				{
-					m_pEffectManager->Cine_BloodEffect(EffectDesc, pEvent.iBloodEffectType);
+					if (!pEvent.isPlayed)
+					{
+						pEvent.isPlayed = true;
+						m_pEffectManager->Cine_BloodEffect(EffectDesc, pEvent.iBloodEffectType);
+					}
 				}
-
-
+			}
+			else if (CurPos >= Duration)
+			{
+				pEvent.isPlayed = false;
 			}
 		}
 	}
@@ -743,6 +747,23 @@ HRESULT CMonster::Add_Components()
 	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Navigation"),
 		TEXT("Com_Navigation"), reinterpret_cast<CComponent**>(&m_pNavigationCom))))
 		return E_FAIL;
+
+	/*머테리얼 넣어주기*/
+
+	string strModelName = m_pGameInstance->WstringToString(m_wstrModelName);
+	string strRemoveName = "Prototype_Component_Model_";
+	_int iPos = strModelName.find(strRemoveName);
+
+	if (iPos == string::npos)
+		return E_FAIL;
+
+	strModelName = strModelName.erase(iPos, strRemoveName.size());
+
+	wstring strMaterialName = TEXT("Prototype_Component_Material_") + m_pGameInstance->StringToWstring(strModelName);
+
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, strMaterialName,
+		TEXT("Com_Material"), reinterpret_cast<CComponent**>(&m_pMaterialCom))))
+		m_pMaterialCom = nullptr;
 
 	return S_OK;
 }

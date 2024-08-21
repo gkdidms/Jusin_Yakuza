@@ -63,6 +63,7 @@
 #include "AI_RoadCAB.h"
 #include "AI_RoadTissue.h"
 #include "AI_RoadStanding_NML.h"
+#include "AI_RoadYOP.h"
 #include "RoadYOP.h"
 
 #include "AI_Van.h"
@@ -170,6 +171,11 @@ HRESULT CLoader_Anim::Loading_Default()
 	/* For.Prototype_BTNode_RoadNML*/
 	if (FAILED(m_pGameInstance->Add_BTNode_Prototype(m_eNextLevel, TEXT("Prototype_BTNode_RoadNML"),
 		CAI_RoadNML::Create())))
+		return E_FAIL;
+
+	/* For.Prototype_BTNode_RoadYOP*/
+	if (FAILED(m_pGameInstance->Add_BTNode_Prototype(m_eNextLevel, TEXT("Prototype_BTNode_RoadYOP"),
+		CAI_RoadYOP::Create())))
 		return E_FAIL;
 
 	/* For.Prototype_BTNode_RoadStanding_NML*/

@@ -121,16 +121,15 @@ HRESULT CUIKaraoke_Play::Tick(const _float& fTimeDelta)
             pUI->Tick(fTimeDelta);
         }
     }
+
+    Off_UI_Effect();
+
     return S_OK;
 }
 
 HRESULT CUIKaraoke_Play::Late_Tick(const _float& fTimeDelta)
 {
-    //m_pPlayUI[BACK][0]->Late_Tick(fTimeDelta);
-    //for (auto& iter : m_pPlayUI)
-    //    iter->Late_Tick(fTimeDelta);
-
-    Render_Cutsom_Sequence(fTimeDelta);
+    Render_Custom_Sequence(fTimeDelta);
 
     if (!m_isAnimFin)
         Check_AimFin();
@@ -357,6 +356,7 @@ void CUIKaraoke_Play::Show_Grade(CNoteBase* pNote)
         }
     }
 
+    m_pPlayUI[GRADE][m_Pivots[GRADE]]->Show_Off_All();
     m_pPlayUI[GRADE][m_Pivots[GRADE]]->Show_On(iShowIndex);
     m_pPlayUI[GRADE][m_Pivots[GRADE]]->Show_UI();
 
@@ -366,13 +366,13 @@ void CUIKaraoke_Play::Show_Grade(CNoteBase* pNote)
     if (iShowIndex == 0)
     {
         m_pPlayUI[GREATEFFECT][m_Pivots[GREATEFFECT]]->Show_On_All();
-        m_pPlayUI[GREATEFFECT][m_Pivots[GREATEFFECT]]->Close_UI();
+        m_pPlayUI[GREATEFFECT][m_Pivots[GREATEFFECT]]->Show_UI();
         m_pPlayUI[GREATEFFECT][m_Pivots[GREATEFFECT]]->Get_TransformCom()->Set_State(CTransform::STATE_POSITION, vPosition);
     }
     else if (iShowIndex == 1)
     {
         m_pPlayUI[GOODEFFECT][m_Pivots[GOODEFFECT]]->Show_On_All();
-        m_pPlayUI[GOODEFFECT][m_Pivots[GOODEFFECT]]->Close_UI();
+        m_pPlayUI[GOODEFFECT][m_Pivots[GOODEFFECT]]->Show_UI();
         m_pPlayUI[GOODEFFECT][m_Pivots[GOODEFFECT]]->Get_TransformCom()->Set_State(CTransform::STATE_POSITION, vPosition);
     }
 
@@ -392,8 +392,10 @@ void CUIKaraoke_Play::Update_CurrentLyricsIndex()
 
 }
 
-void CUIKaraoke_Play::Render_Cutsom_Sequence(const _float& fTimeDelta)
+void CUIKaraoke_Play::Render_Custom_Sequence(const _float& fTimeDelta)
 {
+    m_Lyrics->Late_Tick(fTimeDelta);
+
     RenderGroup_Back(fTimeDelta);
     RenderGroup_Blue(fTimeDelta);
 
@@ -410,8 +412,6 @@ void CUIKaraoke_Play::Render_Cutsom_Sequence(const _float& fTimeDelta)
     RenderGroup_Mic(fTimeDelta);
 
     RenderGroup_CurrentBar(fTimeDelta);
-
-    m_Lyrics->Late_Tick(fTimeDelta);
 
     RenderGroup_GoodEffect(fTimeDelta);
     RenderGroup_GreatEffect(fTimeDelta);
@@ -1248,11 +1248,11 @@ _uint CUIKaraoke_Play::Compute_Num(_uint iCount)
     case CURRENTBAR:
         return 0;
     case GOODEFFECT:
-        return 30;
+        return 50;
     case GRADE:
-        return 30;
+        return 50;
     case GREATEFFECT:
-        return 30;
+        return 50;
     case HOLD:
         return 5;
     case PRESSLINE:
@@ -1262,13 +1262,13 @@ _uint CUIKaraoke_Play::Compute_Num(_uint iCount)
     case ROLLLINE:
         return 5;
     case DOWN:
-        return 30;
+        return 50;
     case LEFT:
-        return 30;
+        return 50;
     case RIGHT:
-        return 30;
+        return 50;
     case UP:
-        return 30;
+        return 50;
     default:
         return 0;
     }
@@ -1310,6 +1310,21 @@ _uint CUIKaraoke_Play::Trans_ButtonType_To_UI(_uint iNum)
         return RIGHT;
     }
     return _uint();
+}
+
+void CUIKaraoke_Play::Off_UI_Effect()
+{
+    for (auto& pUIEffect : m_pPlayUI[GREATEFFECT])
+    {
+        if (pUIEffect->Check_AnimFin())
+            pUIEffect->Show_Off_All();
+    }
+
+    for (auto& pUIEffect : m_pPlayUI[GOODEFFECT])
+    {
+        if (pUIEffect->Check_AnimFin())
+            pUIEffect->Show_Off_All();
+    }
 }
 
 CUIKaraoke_Play* CUIKaraoke_Play::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg)

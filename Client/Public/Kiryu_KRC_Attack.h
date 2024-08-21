@@ -22,6 +22,8 @@ public:
 	virtual void Combo_Count(_bool isFinAction = false) override;
 	virtual void Setting_Value(void* pValue = nullptr) override;
 
+	_bool IsFinishBlow();
+
 public:
 	_uint Get_ComboCount() {
 		return m_iComboCount;

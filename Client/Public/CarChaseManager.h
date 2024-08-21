@@ -24,7 +24,7 @@ private:
 
 public:
     HRESULT Initialize();
-    void Tick();
+    _bool Tick();
 
 private:
     CGameInstance* m_pGameInstance = { nullptr };

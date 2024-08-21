@@ -19,8 +19,16 @@ public:
 	virtual void Change_Animation() override;
 	virtual _bool Get_AnimationEnd() override;
 
+private:
+	void Shaking();
+
+	void Radial_Control();
+
 public:
 	static CBehaviorAnimation* Create(class CPlayer* pPlayer);
 	virtual void Free() override;
+
+private:
+	_bool m_isShaked = { false };
 };
 END

@@ -767,6 +767,12 @@ void CObjPlace_Manager::Edit_Installed_GameObject(int iNumObject)
 		m_tCurrentObjectDesc.iObjType = (int)OBJECT_TYPE::ADVENTURE_REACTOR;
 	}
 
+
+	if (ImGui::RadioButton(u8"Player Position", m_tCurrentObjectDesc.iObjType == 24))
+	{
+		objectType = 24;
+		m_tCurrentObjectDesc.iObjType = (int)OBJECT_TYPE::PLAYER_POSITION;
+	}
 	
 
 	ImGui::NewLine();
@@ -867,11 +873,11 @@ void CObjPlace_Manager::Edit_Installed_GameObject(int iNumObject)
 
 	ImGui::NewLine();
 
-	ImGui::Text(u8"아이템성격");
+	ImGui::Text(u8"여자남자");
 
 	static int objectPropertyType = m_tCurrentObjectDesc.iObjPropertyType;
-	ImGui::RadioButton(u8"회복 - 수정", &m_tCurrentObjectDesc.iObjPropertyType, 0);
-	ImGui::RadioButton(u8"부수기 - 수정", &m_tCurrentObjectDesc.iObjPropertyType, 1);
+	ImGui::RadioButton(u8"여자", &m_tCurrentObjectDesc.iObjPropertyType, 0);
+	ImGui::RadioButton(u8"남자", &m_tCurrentObjectDesc.iObjPropertyType, 1);
 	
 	ImGui::NewLine();
 
@@ -1244,6 +1250,7 @@ void CObjPlace_Manager::Set_Map_Object()
 	ImGui::RadioButton(u8"ROADYOP", &objectType, OBJECT_TYPE::ROADYOP);
 	ImGui::RadioButton(u8"NISHIKI", &objectType, OBJECT_TYPE::NISHIKI);
 	ImGui::RadioButton(u8"ADVENTURE_REACTOR", &objectType, OBJECT_TYPE::ADVENTURE_REACTOR);
+	ImGui::RadioButton(u8"PLAYER_POSITION", &objectType, OBJECT_TYPE::PLAYER_POSITION);
 
 
 	ImGui::NewLine();
@@ -1290,8 +1297,8 @@ void CObjPlace_Manager::Set_Map_Object()
 	ImGui::Text(u8"오브젝트 속성");
 
 	static int objectPropertyType = 0;
-	ImGui::RadioButton(u8"회복", &objectPropertyType, 0);
-	ImGui::RadioButton(u8"부수기", &objectPropertyType, 1);
+	ImGui::RadioButton(u8"여자", &objectPropertyType, 0);
+	ImGui::RadioButton(u8"남자", &objectPropertyType, 1);
 
 	ImGui::NewLine();
 

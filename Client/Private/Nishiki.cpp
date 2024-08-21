@@ -42,10 +42,19 @@ void CNishiki::Priority_Tick(const _float& fTimeDelta)
 
 void CNishiki::Tick(const _float& fTimeDelta)
 {
+	//니시키야마가 다 걸으면 멈추고 멈추는 순간 레벨 이동한다.
 	if (m_iCurrentLevel == LEVEL_NISHIKIWALK)
+	{
+		if (m_iState == WALK_EN && m_pModelCom->Get_AnimFinished(m_iAnimIndex))
+			m_isFinished = true;
+	}
+
+	if (m_iCurrentLevel == LEVEL_NISHIKIWALK && m_iState != WALK_EN)
+	{
 		Move(fTimeDelta);
-	
-	Change_Animation();
+	}
+
+	Change_Animation(fTimeDelta);
 
 	if (m_iState == TALK)
 	{
@@ -54,9 +63,7 @@ void CNishiki::Tick(const _float& fTimeDelta)
 		m_pTransformCom->LookAt(pPlayer->Get_TransformCom()->Get_State(CTransform::STATE_POSITION));
 	}
 
-	m_pModelCom->Play_Animation(fTimeDelta, m_isAnimLoop);
-
-	//Synchronize_Root(fTimeDelta);
+	Synchronize_Root(fTimeDelta);
 }
 
 void CNishiki::Late_Tick(const _float& fTimeDelta)
@@ -64,20 +71,36 @@ void CNishiki::Late_Tick(const _float& fTimeDelta)
 	m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
 }
 
-void CNishiki::Change_Animation()
+void CNishiki::Change_Animation(const _float fTimeDelta)
 {
-	_uint iAnim = { 0 };
+	_float fOffset = { 1.f };
+	m_isAnimLoop = true;
 
 	if (m_iState == IDLE)
-		iAnim = 2;
+		m_iAnimIndex = 2;
 	else if (m_iState == TALK)
-		iAnim = 1;
-	else if (m_iState == WALK)
-		iAnim = 3;
+		m_iAnimIndex = 1;
+	else if (m_iState == WALK_ST)
+	{
+		m_iAnimIndex = 5;
+		m_isAnimLoop = false;
+	}
+	else if (m_iState == WALK_LP)
+	{
+		m_iAnimIndex = 4;
+		fOffset = 0.8f;
+	}
+	else if (m_iState == WALK_EN)
+	{
+		m_iAnimIndex = 3;
+		m_isAnimLoop = false;
+	}
 	else if (m_iState == CHEER)
-		iAnim = 0;
+		m_iAnimIndex = 0;
 
-	m_pModelCom->Set_AnimationIndex(iAnim, m_fChangeInterval);
+	CModel::ANIMATION_DESC Desc{ m_iAnimIndex, m_isAnimLoop};
+	m_pModelCom->Set_AnimationIndex(m_iAnimIndex, m_fChangeInterval);
+	m_pModelCom->Play_Animation(fTimeDelta * fOffset, Desc);
 }
 
 HRESULT CNishiki::Add_Components()
@@ -116,12 +139,25 @@ HRESULT CNishiki::Add_Components()
 
 void CNishiki::Move(const _float& fTimeDelta)
 {
-	_bool isTurn = false;
-	_int iDir = false;
-	_bool isBack = false;
-	_vector vDir = m_pNavigationCom->Compute_WayPointDir_Adv(m_pTransformCom->Get_State(CTransform::STATE_POSITION), fTimeDelta, &isTurn, &iDir, &isBack);
+	if (m_iState == WALK_ST && m_pModelCom->Get_AnimFinished(m_iAnimIndex))
+	{
+		m_isWalkStartEnd = true;
+		m_iState = WALK_LP;
+	}
+	if (m_iState != WALK_LP)
+		m_iState = WALK_ST;
 
-	m_pTransformCom->LookAt_For_LandObject(vDir);
+	_bool isFinished = false;
+	_vector vDir = m_pNavigationCom->Compute_NishikiDir(m_pTransformCom->Get_State(CTransform::STATE_POSITION), fTimeDelta, &isFinished);
+
+	if (isFinished)
+	{
+		//끝이났다면?
+		m_iState = WALK_EN;
+	}
+	else
+		m_pTransformCom->LookAt_For_LandObject(vDir, true);
+
 }
 
 CNishiki* CNishiki::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

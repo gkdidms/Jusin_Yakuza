@@ -19,6 +19,9 @@ private:
 
 public:
     _bool isFinished() { return m_isFinished; }
+    
+public:
+    void Start_Subscript() { m_isStart = true;  }
 
 public:
     virtual HRESULT Initialize_Prototype() override;
@@ -40,9 +43,10 @@ private:
     _uint m_iScriptIndex = { 0 };
     _uint m_iScriptChapter = { 0 };
 
-    _float m_fDuration = { 2.f };
+    _float m_fDuration = { 3.f };
     _float m_fScriptTime = { 0.f };
 
+    _bool m_isStart = { false };
     _bool m_isFinished = { false };
 
 public:

@@ -65,7 +65,7 @@ private:
 
 private:
     void Update_CurrentLyricsIndex();
-    void Render_Cutsom_Sequence(const _float& fTimeDelta);          // 레이트틱을 원하는 순서대로 몰아 부른다.
+    void Render_Custom_Sequence(const _float& fTimeDelta);          // 레이트틱을 원하는 순서대로 몰아 부른다.
 
     void Change_Lyrics();
     void Setting_BackUI(LYRICS_DESC Desc, _fvector vPos, _uint iLyricsIndex);
@@ -87,6 +87,8 @@ private:
     _fvector Compute_UIPosition(LYRICS_NOTE_DESC& Desc, _uint iLyricsIndex, _float fRatio);
 
     _uint Trans_ButtonType_To_UI(_uint iNum);
+
+    void Off_UI_Effect();
 
     // 0 일반노드    1 유지 노드     2 연타 노드
     // 0 UP        1 DOWN        2 LEFT        3 RIGHT

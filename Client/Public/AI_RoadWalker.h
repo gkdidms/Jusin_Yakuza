@@ -68,6 +68,10 @@ protected:
     _bool m_isBack = { false }; //뒤를 돌아야 하는가
     _int m_iDir = { DIR_END };
 
+    _float  m_fDegree = { 0 };
+    _vector m_vNextDir;
+    _bool   m_bisMove = { true };
+
 protected:
     virtual void Ready_Root() = 0;
 
@@ -80,6 +84,9 @@ protected:
     virtual CBTNode::NODE_STATE Back();
     virtual CBTNode::NODE_STATE Turn();
     virtual CBTNode::NODE_STATE Walk();
+
+
+    void    Rotate_Dir(XMVECTOR& currentDirection, XMVECTOR targetDirection, bool& bEnd);
 
 public:
     virtual void Free();

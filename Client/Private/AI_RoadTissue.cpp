@@ -43,44 +43,41 @@ void CAI_RoadTissue::Tick(const _float& fTimeDelta)
 
 	if (DistanceFromPlayer() < 8.f)
 	{
-		//들어오면 대화 가능함.
-		if (*m_pState == CAdventure::ADVENTURE_IDLE && SKILL_IDLE == m_iSkill)
+		if (SKILL_IDLE == m_iSkill)
 		{
-			// 첫 시작
-			*m_pState = CAdventure::ADVENTURE_TISSUE_ST;
 			m_iSkill = SKILL_GROUND;
+			*m_pState = CAdventure::ADVENTURE_TISSUE_ST;
+			m_fGroundDelta = 0;
 		}
-		else if (*m_pState == CAdventure::ADVENTURE_TISSUE_LP)
+
+		if (*m_pState == CAdventure::ADVENTURE_IDLE)
 		{
-			m_fGroundDelta++;
-			if (2 < m_fGroundDelta)
-			{
-				m_fGroundDelta = 0;
-				*m_pState = CAdventure::ADVENTURE_TISSUE_ST;
-			}
+				m_fGroundDelta++;
+				if (150 < m_fGroundDelta)
+				{
+					m_fGroundDelta = 0;
+					*m_pState = CAdventure::ADVENTURE_TISSUE_ST;
+					m_bStay = true;
+				}
 		}
-		else if (*m_pState == CAdventure::ADVENTURE_TISSUE_ST)
+		else
 		{
 			if (m_pAnimCom->Get_AnimFinished())
 			{
 				*m_pState = CAdventure::ADVENTURE_IDLE;
 			}
 		}
-		else
-		{
-			*m_pState = CAdventure::ADVENTURE_TISSUE_LP;
-		}
+
+
 	}
 	else
 	{
-		// 티슈 주는 모션이었다면?
-		/*if (m_iSkill == SKILL_GROUND && (*m_pState == CAdventure::ADVENTURE_TISSUE_LP || *m_pState == CAdventure::ADVENTURE_TISSUE_EN))
-		{
-			*m_pState = CAdventure::ADVENTURE_TISSUE_ST;
-		}*/
-
-		*m_pState = CAdventure::ADVENTURE_IDLE;
 		m_iSkill = SKILL_IDLE;
+
+		if (m_pAnimCom->Get_AnimFinished() && *m_pState == CAdventure::ADVENTURE_TISSUE_ST)
+		{
+			*m_pState = CAdventure::ADVENTURE_IDLE;
+		}
 	}
 
 

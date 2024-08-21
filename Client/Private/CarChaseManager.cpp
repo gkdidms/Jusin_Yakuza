@@ -39,10 +39,10 @@ HRESULT CCarChaseManager::Initialize()
 	return S_OK;
 }
 
-void CCarChaseManager::Tick()
+_bool CCarChaseManager::Tick()
 {
 	if (m_isFinished)
-		return;
+		return true;
 
 	if (m_isStart)
 	{
@@ -57,9 +57,10 @@ void CCarChaseManager::Tick()
 		if (m_iCurrentStage >= m_Stages.size())
 		{
 			m_isFinished = true;
-			return;
 		}
 	}
+
+	return false;
 }
 
 /*
@@ -103,14 +104,14 @@ HRESULT CCarChaseManager::Ready_Stage()
 			DIR_F,
 			CCarChase_Monster::REACTOR_VAN,
 			{ CCarChase_Monster::WPR, -1}
-		},
-		CCarChase::STAGE_MONSTER_INFO{
-			210000,
-			LINE_D,
-			DIR_M,
-			CCarChase_Monster::REACTOR_BIKE,
-			{ CCarChase_Monster::DRV, CCarChase_Monster::RKT}
 		}
+		//CCarChase::STAGE_MONSTER_INFO{
+		//	210000,
+		//	LINE_D,
+		//	DIR_M,
+		//	CCarChase_Monster::REACTOR_BIKE,
+		//	{ CCarChase_Monster::DRV, CCarChase_Monster::RKT}
+		//}
 	};
 
 	CCarChase::STAGE_INFO StageInfo_2 = CCarChase::STAGE_INFO{

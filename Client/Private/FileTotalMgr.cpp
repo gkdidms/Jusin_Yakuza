@@ -54,6 +54,8 @@ void CFileTotalMgr::Late_Tick(_float fTimeDelta)
 
 HRESULT CFileTotalMgr::Set_MapObj_In_Client(int iMapLoadingNum, int iStageLevel)
 {
+    m_PlayerPosition.clear();
+
     for (int i = 0; i < m_MapTotalInform.iNumMapObj; i++)
     {
         if (0 < m_MapTotalInform.pMapObjDesc[i].iDecalNum)
@@ -734,6 +736,7 @@ HRESULT CFileTotalMgr::Set_GameObject_In_Client(int iStageLevel)
             monsterDesc.fRotatePecSec = XMConvertToRadians(180.f);
             monsterDesc.iNaviRouteNum = m_MapTotalInform.pMapObjDesc[i].iNaviRoute;
             monsterDesc.iNPCDirection = m_MapTotalInform.pMapObjDesc[i].iNPCDirection;
+            monsterDesc.iObjectPropertyType = m_MapTotalInform.pMapObjDesc[i].iNPCDirection;
 
             if (-1 == m_MapTotalInform.pMapObjDesc[i].iNaviNum)
             {
@@ -870,6 +873,11 @@ HRESULT CFileTotalMgr::Set_GameObject_In_Client(int iStageLevel)
             }
 
             m_pGameInstance->Add_GameObject(iStageLevel, TEXT("Prototype_GameObject_AdventureReactor"), m_Layers[8], &adventureReactDesc);
+        }
+        else if (OBJECT_TYPE::PLAYER_POSITION == m_MapTotalInform.pMapObjDesc[i].iObjType)
+        {
+            XMVECTOR position = XMVectorSet(m_MapTotalInform.pMapObjDesc[i].vTransform._41, m_MapTotalInform.pMapObjDesc[i].vTransform._42, m_MapTotalInform.pMapObjDesc[i].vTransform._43, 1);
+            m_PlayerPosition.push_back(position);
         }
         else 
         {
