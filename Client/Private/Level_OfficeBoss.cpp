@@ -40,6 +40,9 @@ HRESULT CLevel_OfficeBoss::Initialize()
 	if (FAILED(Ready_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
 
+	m_pFightManager->Initialize();
+	m_pFightManager->Set_FightStage(true);
+
     return S_OK;
 }
 
@@ -67,7 +70,7 @@ void CLevel_OfficeBoss::Tick(const _float& fTimeDelta)
 		}
 	}
 
-
+	m_pFightManager->Tick(fTimeDelta);
 
 #ifdef _DEBUG
 
