@@ -182,26 +182,6 @@ HRESULT CRenderTarget_Manager::Render_Debug(const wstring& strMRTTag, CShader* p
 	return S_OK;
 }
 #endif // _DEBUG
-HRESULT CRenderTarget_Manager::Ready_Debug(const wstring strRenderTargetTag, _float fX, _float fY, _float fSizeX, _float fSizeY)
-{
-	CRenderTarget* pRenderTarget = Find_RenderTarget(strRenderTargetTag);
-	if (nullptr == pRenderTarget)
-		return E_FAIL;
-
-	return pRenderTarget->Ready_Debug(fX, fY, fSizeX, fSizeY);
-}
-
-HRESULT CRenderTarget_Manager::Render_Debug(const wstring& strMRTTag, CShader* pShader, CVIBuffer_Rect* pVIBuffer, _bool isArray)
-{
-	list<CRenderTarget*>* pMRTList = Find_MRT(strMRTTag);
-	if (nullptr == pMRTList)
-		return E_FAIL;
-
-	for (auto& pRenderTarget : *pMRTList)
-		pRenderTarget->Render_Debug(pShader, pVIBuffer, isArray);
-
-	return S_OK;
-}
 
 CRenderTarget* CRenderTarget_Manager::Find_RenderTarget(const wstring& strRenderTarget)
 {

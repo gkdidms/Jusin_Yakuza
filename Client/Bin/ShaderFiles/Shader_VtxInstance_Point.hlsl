@@ -329,7 +329,7 @@ void GS_DISTORTION(point GS_NOBILL_IN In[1], inout TriangleStream<GS_OUT> Triang
 [maxvertexcount(6)] //规氢己 x
 void GS_NOBILLBOARD(point GS_NOBILL_IN In[1], inout TriangleStream<GS_NOBIL_OUT> Triangles)
 {
-    GS_NOBIL_OUT Out[4] = (GS_NOBIL_OUT[4]) 0;
+    GS_NOBIL_OUT Out[4];
 
     for (int i = 0; i < 4; ++i)
     {
@@ -394,7 +394,7 @@ void GS_NOBILLBOARD(point GS_NOBILL_IN In[1], inout TriangleStream<GS_NOBIL_OUT>
 [maxvertexcount(6)] //规氢己 x
 void GS_FALL(point GS_NOBILL_IN In[1], inout TriangleStream<GS_NOBIL_OUT> Triangles)
 {
-    GS_NOBIL_OUT Out[4] = (GS_NOBIL_OUT[4]) 0;
+    GS_NOBIL_OUT Out[4];
 
     for (int i = 0; i < 4; ++i)
     {
