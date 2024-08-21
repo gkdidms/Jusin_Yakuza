@@ -560,6 +560,10 @@ void CVIBuffer_Instance::BloodSpread(_float fTimeDelta)
 				m_pSpeeds[i] = m_pGameInstance->Get_Random(m_InstanceDesc->vSpeed.x, m_InstanceDesc->vSpeed.y);
 
 			}
+			else
+			{
+				pVertices[i].vRectSize.x = 0.f;
+			}
 			continue;
 		}
 
