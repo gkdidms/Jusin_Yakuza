@@ -9,7 +9,6 @@ class CRoadStanding_NML :
 enum MOTION_TYPE {
     MOTION_TALK_A,  
     MOTION_TALK_B,
-    MOTION_THINK,
     MOTION_LISTEN,
     MOTION_END
 };

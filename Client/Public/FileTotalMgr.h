@@ -42,6 +42,9 @@ public:
 		ROADYOP,
 		NISHIKI,
 		ADVENTURE_REACTOR,
+
+		PLAYER_POSITION, // 포지션만 저장
+
 		OBJ_END
 	};
 
@@ -102,6 +105,8 @@ private:
 	MAP_TOTALINFORM_DESC					m_MapTriggerInform{}; //Trigger로 불러오는 object
 
 	vector<wstring>							m_Layers = { TEXT("Layer_GameObjects"), TEXT("Layer_Monster"), TEXT("Layer_Player"), TEXT("Layer_NPC"), TEXT("Layer_Item"), TEXT("Layer_Passerby"),  TEXT("Layer_MonsterGroup"), TEXT("Layer_Nishiki") , TEXT("Layer_AdventureReactor") };
+
+	vector<_vector>							m_PlayerPosition;
 
 private:
 	HRESULT									Set_Terrain_Size(int iStageLevel);

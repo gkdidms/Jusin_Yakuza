@@ -730,6 +730,9 @@
     </ClCompile>
     <ClCompile Include="..\Private\Chapter7_1.cpp">
       <Filter>03.QuestManager\Quest\Main\Chpater_7\1</Filter>
+	</ClCompile>
+    <ClCompile Include="..\Private\AI_RoadYOP.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby\01.Walker\01.YOP\AI</Filter>
     </ClCompile>
   </ItemGroup>
   <ItemGroup>
@@ -1489,9 +1492,12 @@
     </ClInclude>
     <ClInclude Include="..\Public\Chapter7_0.h">
       <Filter>03.QuestManager\Quest\Main\Chpater_7\0</Filter>
-    </ClInclude>
+	</ClInclude>
     <ClInclude Include="..\Public\Chapter7_1.h">
       <Filter>03.QuestManager\Quest\Main\Chpater_7\1</Filter>
+	</ClInclude>
+    <ClInclude Include="..\Public\AI_RoadYOP.h">
+      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby\01.Walker\01.YOP\AI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -2309,6 +2315,9 @@
     </Filter>
     <Filter Include="03.QuestManager\Quest\Main\Chpater_7\1">
       <UniqueIdentifier>{b603e5a4-387d-487a-821c-4df7ceaf74ad}</UniqueIdentifier>
+	</Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby\01.Walker\01.YOP\AI">
+      <UniqueIdentifier>{83021a8a-5cc4-4f65-9ce3-f04d8a18e962}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

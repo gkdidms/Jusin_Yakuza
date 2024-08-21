@@ -73,7 +73,7 @@ CBTNode::NODE_STATE CAI_RoadStanding::Coll()
 CBTNode::NODE_STATE CAI_RoadStanding::Check_Stand()
 {
 	//플레이어가 근처에 있다면 맞는 동작을 한다.
-	if (DistanceFromPlayer() > 5.f)
+	if (DistanceFromPlayer() < 10.f)
 	{
 		m_iSkill = SKILL_GROUND;
 	}
