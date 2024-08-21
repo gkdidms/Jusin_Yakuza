@@ -227,11 +227,7 @@ void CChannel::Update_TransformationMatrix(_double CurrentPosition, const vector
 		else
 			vTranslation = XMVectorLerp(XMVectorSetW(XMLoadFloat3(&m_KeyFrames.front().vPosition), 1.f), XMVectorSetW(XMLoadFloat3(&KeyFrame.vPosition), 1.f), fRatio);
 
-		// RootBone에서 빼야하는데, 
-		_vector vCenterMove = XMVectorLerp(XMVectorSetW(XMLoadFloat3(&m_KeyFrames.front().vPosition), 1.f), XMVectorSetW(XMLoadFloat3(&KeyFrame.vPosition), 1.f), fRatio);
-
-
-		XMStoreFloat3(fCenterMoveValue, );
+		XMStoreFloat3(fCenterMoveValue, XMVectorLerp(XMVectorSetW(XMLoadFloat3(&m_KeyFrames.front().vPosition), 1.f), XMVectorSetW(XMLoadFloat3(&KeyFrame.vPosition), 1.f), fRatio));
 		XMStoreFloat4(fCenterRotationValue, XMQuaternionSlerp(XMLoadFloat4(&m_KeyFrames.front().vRotation), XMLoadFloat4(&KeyFrame.vRotation), fRatio));
 	}
 
