@@ -62,6 +62,13 @@ void CEffectManager::Car_GlassBroke(CEffect::EFFECT_DESC& EffectDesc)
     m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Mesh_glass2"), TEXT("Layer_Particle"), &EffectDesc);
 }
 
+void CEffectManager::Money(CEffect::EFFECT_DESC& EffectDesc)
+{
+    m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Mesh_Money"), TEXT("Layer_Particle"), &EffectDesc);
+    m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Coin"), TEXT("Layer_Particle"), &EffectDesc);
+
+}
+
 void CEffectManager::Player_Attack_Effect(CEffect::EFFECT_DESC& EffectDesc)
 {
     // 플레이어 타격 이펙트 (== 몬스터 피격 이펙트)

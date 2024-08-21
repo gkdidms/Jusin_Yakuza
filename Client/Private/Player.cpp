@@ -25,7 +25,7 @@
 #include "Monster.h"
 #include "Item.h"
 #include "MapCollider.h"
-
+#include "EffectManager.h"
 #include "QteManager.h"
 
 #pragma region 행동 관련 헤더들
@@ -563,6 +563,11 @@ void CPlayer::Attack_Event(CGameObject* pHitObject, _bool isItem)
 						HitFreeze_On();
 					else
 						HitRadial_On();
+
+					CEffect::EFFECT_DESC EffectDesc{};	
+
+					EffectDesc.pWorldMatrix= pHitObject->Get_TransformCom()->Get_WorldFloat4x4();
+					CEffectManager::GetInstance()->Money(EffectDesc);	
 				}
 			}
 
@@ -579,6 +584,10 @@ void CPlayer::Attack_Event(CGameObject* pHitObject, _bool isItem)
 						HitFreeze_On();
 					else
 						HitRadial_On();
+					CEffect::EFFECT_DESC EffectDesc{};
+
+					EffectDesc.pWorldMatrix = pHitObject->Get_TransformCom()->Get_WorldFloat4x4();
+					CEffectManager::GetInstance()->Money(EffectDesc);
 				}
 			}
 
@@ -600,7 +609,13 @@ void CPlayer::Attack_Event(CGameObject* pHitObject, _bool isItem)
 				if (m_pTargetObject->isObjectDead())
 					HitFreeze_On();
 				else if (static_cast<CKiryu_KRC_Attack*>(m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior))->IsFinishBlow())
+				{
 					HitRadial_On();
+					CEffect::EFFECT_DESC EffectDesc{};
+
+					EffectDesc.pWorldMatrix = pHitObject->Get_TransformCom()->Get_WorldFloat4x4();
+					CEffectManager::GetInstance()->Money(EffectDesc);
+				}
 			}
 
 			break;
