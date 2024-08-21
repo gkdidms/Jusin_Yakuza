@@ -28,7 +28,6 @@ CLevel_Tutorial::CLevel_Tutorial(ID3D11Device* pDevice, ID3D11DeviceContext* pCo
 	Safe_AddRef(m_pFightManager);
 	Safe_AddRef(m_pQuestManager);
 	Safe_AddRef(m_pUIManager);
-	
 }
 
 HRESULT CLevel_Tutorial::Initialize()
@@ -84,7 +83,7 @@ void CLevel_Tutorial::Tick(const _float& fTimeDelta)
 HRESULT CLevel_Tutorial::Ready_Camera(const wstring& strLayerTag)
 {
 	/* 카메라 추가 시 Debug Camera를 첫번째로 놔두고 추가해주세요 (디버깅 툴에서 사용중)*/
-	const _float4x4* pPlayerFloat4x4 = dynamic_cast<CTransform*>(m_pGameInstance->Get_GameObject_Component(LEVEL_TUTORIAL, TEXT("Layer_Player"), TEXT("Com_Transform", 0)))->Get_WorldFloat4x4();
+	const _float4x4* pPlayerFloat4x4 = dynamic_cast<CTransform*>(m_pGameInstance->Get_GameObject_Component(LEVEL_TUTORIAL, TEXT("Layer_Player"), TEXT("Com_Transform"), 0))->Get_WorldFloat4x4();
 
 	/* 0. 디버그용 카메라 */
 	CDebugCamera::DEBUG_CAMERA_DESC		CameraDesc{};

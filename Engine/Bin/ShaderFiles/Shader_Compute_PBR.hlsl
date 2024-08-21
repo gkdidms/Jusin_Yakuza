@@ -53,9 +53,9 @@ float3 LinearToGamma(float3 color, float fGamma)
 }
 
 //F
-float3 FresnelSchlick(float cosTheta, float3 R0)
+float3 FresnelSchlick(float cosTheta, float3 R0, float IORPower)
 {
-    return R0 + (1.f - R0) * pow(1.f - cosTheta, 5.f);
+    return R0 + (1.f - R0) * pow(1.f - cosTheta, 5.f) * IORPower;
 }
 
 float3 FresnelSchlickRoughness(float cosTheta, float3 F0, float roughness)
@@ -126,19 +126,19 @@ float4 BRDF(float4 vPosition, int2 vTexcoord, float4 vNormal, float4 vDepthDesc,
     float fGamma = { 2.2f };
     
     float3 vAlbedo = g_DiffuseTexture.Load(int3(vTexcoord, 0)).xyz;
+    vAlbedo = GammaToLinear(vAlbedo, fGamma);
     vector Combine = g_SurfaceTexture.Load(int3(vTexcoord, 0));
     
     /* Li */
     //float vDistance = length(normalize(vCamPosition - vPosition));
     //float vAttenuation = 1.f / (vDistance * vDistance);
     //float3 vLi = vLightDiffuse * vAttenuation;
-    
-    float3 F0 = 0.4;
     float fMetalic = Combine.r;
+    float3 F0 = 0.04f;
     //F0 = lerp(F0, vAlbedo, fMetalic);
     
     //vector vLightDir = reflect(normalize(g_vLightDir), vNormal); //g_vLightDir * -1.f;
-    float3 vLightDir = reflect(normalize(vLightDirection), vNormal).xyz;
+    float3 vLightDir = vLightDirection;
     float3 vHalfway = normalize(vLook + vLightDir);
     float3 vRadiance = vLightDiffuse;
     
@@ -146,7 +146,8 @@ float4 BRDF(float4 vPosition, int2 vTexcoord, float4 vNormal, float4 vDepthDesc,
     float vRoughness = Combine.g;
     float D = NormalDistributionGGXTR(vNormal.xyz, vHalfway, vRoughness, PI); //r : Roughness
     float G = GeometrySmith(vNormal.xyz, vLook, vLightDir, vRoughness);
-    float3 F = SchlickApprox(F0, vLightDir, vHalfway);
+    float cosTheta = saturate(dot(vNormal.xyz, vHalfway));
+    float3 F = FresnelSchlick(cosTheta, F0, Combine.b);
     
     float3 nominator = D * G * F;
     
@@ -154,7 +155,7 @@ float4 BRDF(float4 vPosition, int2 vTexcoord, float4 vNormal, float4 vDepthDesc,
     float WiDotN = saturate(dot(vLightDir, vNormal.xyz));
     float denominator = (WoDotN * WiDotN * 4.f) + 0.001f;
     
-    float3 vSpecular = (nominator / (denominator)) * Combine.z;
+    float3 vSpecular = nominator / denominator;
     
     float3 vKS = F;
     float3 vKD = 1.f - vKS;
@@ -162,6 +163,7 @@ float4 BRDF(float4 vPosition, int2 vTexcoord, float4 vNormal, float4 vDepthDesc,
     
     float3 vDiffuse = vKD * vAlbedo / PI;
     vDiffuse = (vDiffuse + vSpecular) * vRadiance;
+    vDiffuse = LinearToGamma(vDiffuse, fGamma);
     
     return vector(vDiffuse, 1.f);
 }
@@ -170,7 +172,7 @@ float4 BRDF(float4 vPosition, int2 vTexcoord, float4 vNormal, float4 vDepthDesc,
 void CS_Main(uint3 id : SV_DispatchThreadID)
 {
     int2 vUV = id.xy;
-    int2 vTexcoord = vUV / int2(1280, 720);
+    float2 vTexcoord = vUV / float2(1280.f, 720.f);
     
     vector vNormal = g_NormalTexture.Load(int3(vUV, 0));
     vNormal = vector(vNormal.xyz * 2.f - 1.f, 0.f);
@@ -183,11 +185,7 @@ void CS_Main(uint3 id : SV_DispatchThreadID)
     vWorldPos.w = 1.f;
 
     vWorldPos = vWorldPos * (vDepthDesc.y * fFar);
-
-	/* 뷰스페이스 상의 위치를 구한다. */
     vWorldPos = mul(vWorldPos, ProjMatrixInv);
-
-	/* 월드스페이스 상의 위치를 구한다. */
     vWorldPos = mul(vWorldPos, ViewMatrixInv);
 
     //vector vReflect = reflect(normalize(g_vLightDir), normalize(vNormal));

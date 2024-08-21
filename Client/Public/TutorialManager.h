@@ -30,7 +30,6 @@ private:
 private:
     HRESULT Ready_Tutorial();
 
-   
 public:
     static CTutorialManager* Create();
     virtual void Free();
