@@ -114,6 +114,14 @@ public:
     // [10] f211_special_11[f_kiryu]            // 인상쓰고 실눈뜨고봄
     // [11] f212_special_12[f_kiryu]            // 눈 크게뜸 (놀란듯)
 
+    struct PLAYER_INFO {
+        _uint           iCurrentHitLevel = { 0 };
+        _float          fHitGauge = { 0.f };
+        _uint           iMoney = { 0 };
+        LAND_OBJ_INFO   Info;
+    };
+    static PLAYER_INFO PlayerInfo;
+
 #pragma endregion
 
 private:
@@ -153,8 +161,8 @@ public:
 
     _bool isAttack() { return m_iCurrentBehavior == static_cast<_uint>(KRS_BEHAVIOR_STATE::ATTACK); }
     _bool isDown() { return m_iCurrentBehavior == static_cast<_uint>(KRS_BEHAVIOR_STATE::DOWN); }
-    _uint Get_CurrentHitLevel() { return m_iCurrentHitLevel; }
-    _float Get_HitGauage() {  return m_fHitGauge;}
+    _uint Get_CurrentHitLevel() { return CPlayer::PlayerInfo.iCurrentHitLevel; }
+    _float Get_HitGauage() {  return CPlayer::PlayerInfo.fHitGauge;}
 
     const _bool* Get_MoveDirection() {
         return m_MoveDirection;
@@ -335,12 +343,8 @@ private:
 
     _bool                       m_CanHitAction = { false };
 
-    /* 플레이어 스테이터스 관련 변수들 */
-private:
-    _uint           m_iCurrentHitLevel = { 0 };
-    _float          m_fHitGauge = { 0.f };
+    int                         m_iNaviRouteNum = { 0 }; //루트
 
-    int             m_iNaviRouteNum = { 0 }; //루트
 
     /* 플레이어 오라 이펙트 모아두기 */
 private:
@@ -368,10 +372,6 @@ private:
     CUTSCENE_ANIMATION_TYPE m_eCutSceneType = { OI_UPPER };
 
     class CQteManager* m_pQTEMgr = { nullptr };
-
-
-private:
-    _uint m_Money = { 0 };
 
 private:
     virtual HRESULT Add_Components() override;

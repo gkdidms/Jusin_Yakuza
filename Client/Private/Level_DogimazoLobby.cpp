@@ -5,6 +5,7 @@
 #include "FileTotalMgr.h"
 #include "Collision_Manager.h"
 #include "FightManager.h"
+#include "UIManager.h"
 
 #include "PlayerCamera.h"
 #include "CineCamera.h"
@@ -12,6 +13,7 @@
 
 #include "Level_Loading.h"
 #include "Trigger.h"
+#include "Player.h"
 
 CLevel_DogimazoLobby::CLevel_DogimazoLobby(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     : CLevel{ pDevice, pContext },
@@ -22,6 +24,7 @@ CLevel_DogimazoLobby::CLevel_DogimazoLobby(ID3D11Device* pDevice, ID3D11DeviceCo
 	Safe_AddRef(m_pSystemManager);
 	Safe_AddRef(m_pFileTotalManager);
 	Safe_AddRef(m_pFightManager);
+	Safe_AddRef(m_pUIManager);
 }
 
 HRESULT CLevel_DogimazoLobby::Initialize()
@@ -71,6 +74,12 @@ void CLevel_DogimazoLobby::Tick(const _float& fTimeDelta)
 	}
 
 	m_pFightManager->Tick(fTimeDelta);
+
+	if (m_pUIManager->isTitleEnd())
+	{
+		CPlayer* pPlayer = dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"), 0));
+		pPlayer->Battle_Start();
+	}
 
 #ifdef _DEBUG
     SetWindowText(g_hWnd, TEXT("도지마조 보스 스테이지"));
@@ -155,4 +164,5 @@ void CLevel_DogimazoLobby::Free()
 	Safe_Release(m_pSystemManager);
 	Safe_Release(m_pFileTotalManager);
 	Safe_Release(m_pFightManager);
+	Safe_Release(m_pUIManager);
 }

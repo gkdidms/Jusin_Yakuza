@@ -43,6 +43,8 @@
 #include "Kiryu_KRC_PickUp.h"
 #pragma endregion
 
+CPlayer::PLAYER_INFO CPlayer::PlayerInfo{ };
+
 CPlayer::CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLandObject{ pDevice, pContext },
 #ifdef _DEBUG
@@ -277,7 +279,7 @@ void CPlayer::Tick(const _float& fTimeDelta)
 		pEffect.second->Tick(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")));
 
 	// 히트액션이 가능한 상태인지 구분한다.
-	if (2 < m_iCurrentHitLevel)
+	if (2 < CPlayer::PlayerInfo.iCurrentHitLevel)
 	{
 		m_CanHitAction = true;
 	}
@@ -445,7 +447,7 @@ HRESULT CPlayer::Render()
 			}
 
 			// 기게이지가 켜져있는 상태라면 상반신 림라이트를 켠다
-			if (0 < m_iCurrentHitLevel)
+			if (0 < CPlayer::PlayerInfo.iCurrentHitLevel)
 			{
 				if (!strcmp(pMesh->Get_Name(), "[l0]jacketw1"))
 				{
@@ -2315,7 +2317,7 @@ void CPlayer::Compute_MoveDirection_RL()
 
 void CPlayer::Effect_Control_Aura()
 {
-	if (0 < m_iCurrentHitLevel)
+	if (0 < CPlayer::PlayerInfo.iCurrentHitLevel)
 	{
 		On_Aura(m_eCurrentStyle);
 	}
@@ -2511,12 +2513,12 @@ void CPlayer::Off_Aura(BATTLE_STYLE eStyle)
 
 void CPlayer::AccHitGauge()
 {
-	if (PLAYER_HITGAUGE_LEVEL_INTERVAL * 3.f < m_fHitGauge)
-		m_fHitGauge = PLAYER_HITGAUGE_LEVEL_INTERVAL * 3.f;
+	if (PLAYER_HITGAUGE_LEVEL_INTERVAL * 3.f < CPlayer::PlayerInfo.fHitGauge)
+		CPlayer::PlayerInfo.fHitGauge = PLAYER_HITGAUGE_LEVEL_INTERVAL * 3.f;
 	else
-		m_fHitGauge += 5.f;
+		CPlayer::PlayerInfo.fHitGauge += 5.f;
 
-	m_iCurrentHitLevel = (m_fHitGauge / PLAYER_HITGAUGE_LEVEL_INTERVAL);
+	CPlayer::PlayerInfo.iCurrentHitLevel = (CPlayer::PlayerInfo.fHitGauge / PLAYER_HITGAUGE_LEVEL_INTERVAL);
 }
 
 void CPlayer::Setting_RimLight()
