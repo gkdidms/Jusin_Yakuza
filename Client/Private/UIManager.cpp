@@ -355,7 +355,7 @@ HRESULT CUIManager::Late_Tick(const _float& fTimeDelta)
 	if (!m_PlayScene.empty())
 	{
 
-		if (m_PlayScene.back()->Get_isClose()&& m_PlayScene.back()->Get_isAnimFinish())
+		if (m_PlayScene.back()->Get_isClose() && m_PlayScene.back()->Get_isAnimFinish())
 		{
 			m_PlayScene.pop_back();
 		}
@@ -363,13 +363,13 @@ HRESULT CUIManager::Late_Tick(const _float& fTimeDelta)
 		if (!m_PlayScene.empty())
 		{
 
-				m_PlayScene.back()->Late_Tick(fTimeDelta);
+			m_PlayScene.back()->Late_Tick(fTimeDelta);
 		}
 	}
 
 
 #ifdef _DEBUG
-	if (m_isRender)
+	if (m_isRender && m_isAlways)
 	{
 		if (!m_PlayScene.empty())
 		{
@@ -390,23 +390,26 @@ HRESULT CUIManager::Late_Tick(const _float& fTimeDelta)
 		}
 	}
 #else
-	if (!m_PlayScene.empty())
+	if (m_isAlways)
 	{
-		if (!m_PlayScene.back()->Get_isLoading() && m_PlayScene.back()->Get_SceneName() != TEXT("Carchase"))
+		if (!m_PlayScene.empty())
+		{
+			if (!m_PlayScene.back()->Get_isLoading() && m_PlayScene.back()->Get_SceneName() != TEXT("Carchase"))
+			{
+				for (auto& pUIScene : m_AlwaysUI)
+				{
+					pUIScene->Late_Tick(fTimeDelta);
+				}
+			}
+		}
+		else
 		{
 			for (auto& pUIScene : m_AlwaysUI)
 			{
 				pUIScene->Late_Tick(fTimeDelta);
 			}
 		}
-	}
-	else
-	{
-		for (auto& pUIScene : m_AlwaysUI)
-		{
-			pUIScene->Late_Tick(fTimeDelta);
-		}
-	}
+}
 #endif // _DEBUG
 
 	return S_OK;

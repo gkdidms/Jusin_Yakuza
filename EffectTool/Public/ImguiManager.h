@@ -129,6 +129,7 @@ private:
 	_bool m_bSizedown = { false };
 	_bool m_bNobillboard = { false };
 	_bool m_bFallSpread = { false };
+	_bool m_bBloodSpread = { false };
 	_bool m_bGuizmo = { false };
 	//생성 파티클 담는 곳
 	vector<CGameObject*> m_EditParticle = {  };

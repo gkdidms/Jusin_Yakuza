@@ -41,21 +41,23 @@ VS_OUT VS_ANIM(VS_IN In)
     float3 EndPos = World._41_42_43;
     float3 StartPos = EndPos.xyz + g_vStartPos.xyz;
     
-    float StartScale = g_AnimScale.x;
-    float EndScale = g_AnimScale.y;
+    float XScale = g_AnimScale.x;
+    float YScale = g_AnimScale.y;
     
     
     float factor = g_fAnimTime.x / g_fAnimTime.y;
-    float Scalefactor = lerp(StartScale, EndScale, factor);
+    float XScalefactor = lerp(1.f, XScale, factor);
+    float YScalefactor = lerp(1.f, YScale, factor);
     World._41_42_43 = lerp(StartPos, EndPos, float3(factor, factor, factor));
-    World._11 *= Scalefactor;
-    World._22 *= Scalefactor;
+    World._11 *= XScalefactor;
+    World._22 *= YScalefactor;
     
     
     float4 WorldPos = mul(float4(In.vPosition, 1.f), World);
     
     Out.vPosition = mul(WorldPos, matVP);
     Out.vTexcoord = In.vTexcoord;
+    
     
     return Out;
 }
@@ -121,9 +123,10 @@ PS_OUT PS_ALPHABLEND(PS_IN In)
     PS_OUT Out = (PS_OUT) 0;
     
     
-    vector BaseColor= g_Texture.Sample(PointSampler, In.vTexcoord);
-    
+    vector BaseColor = g_Texture.Sample(LinearSampler, In.vTexcoord);
+   // float2 ControlAlpha = g_fControlAlpha;
     //BaseColor.rgb = BaseColor.rgb * BaseColor.a;
+    //BaseColor.a *= ControlAlpha.x;
     Out.vColor = BaseColor;
     
     return Out;
@@ -133,10 +136,10 @@ PS_OUT PS_COLOR_ALPHABLEND(PS_IN In)
 {
     PS_OUT Out = (PS_OUT) 0;
     
-    vector BaseColor = g_Texture.Sample(PointSampler, In.vTexcoord);
+    vector BaseColor = g_Texture.Sample(LinearSampler, In.vTexcoord);
     vector vMergeColor = g_vColor;
     
-   vector FinalColor = vMergeColor * BaseColor;
+    vector FinalColor = vMergeColor * BaseColor;
 
     Out.vColor = FinalColor;
     
@@ -278,11 +281,9 @@ PS_OUT PS_COLOR_ALPHABLEND_ANIM(PS_IN In)
     
     float2 ControlAlpha = g_fControlAlpha;
     
-    float Alpha = lerp(ControlAlpha.x, ControlAlpha.y, factor);
-    
     vector FinColor = lerp(StartColor, EndColor, factor);
 
-    Out.vColor = vector(FinColor.rgb, FinColor.a * Alpha);
+    Out.vColor = FinColor;
     
     return Out;
 }
@@ -303,7 +304,7 @@ PS_OUT PS_COLOR_SCREEN_ANIM(PS_IN In)
     
     float2 ControlAlpha = g_fControlAlpha;
     
-    float Alpha = lerp(ControlAlpha.x, ControlAlpha.y, factor); 
+    float Alpha = lerp(ControlAlpha.x, ControlAlpha.y, factor);
     
     
     vector FinColor = lerp(StartColor, EndColor, factor);
@@ -325,6 +326,7 @@ PS_OUT PS_COLOR_SCREEN(PS_IN In)
     
     return Out;
 }
+
 
 PS_OUT PS_ALPHABLEND_ANIM(PS_IN In)
 {
@@ -349,11 +351,9 @@ PS_OUT PS_BACKBUFFER(PS_IN In)
     PS_OUT Out = (PS_OUT) 0;
     
     Out.vColor = g_Texture.Sample(LinearSampler, In.vTexcoord);
-
     
     return Out;
 }
-
 
 PS_OUT PS_CIRCLE_ANIM(PS_IN In)
 {
@@ -391,6 +391,8 @@ PS_OUT PS_CIRCLE_ANIM(PS_IN In)
     return Out;
 }
 
+
+
 technique11 DefaultTechnique
 {
 
@@ -407,7 +409,7 @@ technique11 DefaultTechnique
         PixelShader = compile ps_5_0 PS_BACKBUFFER();
     }
 
-    pass AlphaBlend_Texture//1
+    pass AlphaBlend_Texture //1
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_Default, 0);
@@ -421,7 +423,7 @@ technique11 DefaultTechnique
     }
 
 
-    pass Color_AlphaBlend_Texture//2
+    pass Color_AlphaBlend_Texture //2
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_Default, 0);
@@ -509,6 +511,7 @@ technique11 DefaultTechnique
         DomainShader = NULL;
         PixelShader = compile ps_5_0 PS_COLOR_REPEAT_EFFECT();
     }
+
     pass Circle_Anim_Texture //9 
     {
         SetRasterizerState(RS_Default);
