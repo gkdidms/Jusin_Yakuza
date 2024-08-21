@@ -234,7 +234,7 @@ PS_OUT PS_MAIN_COPY_BACKBUFFER_RESULT(PS_IN In)
         vector vResultShader = vNeoShader + vSpeculer;
         vResultShader = lerp(vector(0.f, 0.f, 0.f, 0.f), vResultShader, vOEShader.b);
         
-        Out.vColor = vNeoShader;
+        Out.vColor = vResultShader;
     }
     else
     {
@@ -351,7 +351,7 @@ PS_OUT PS_MAIN_BOF(PS_IN In)
     
     float fDistance = distance(vWorldPos.xyz, g_vCamPosition.xyz);
     
-    Out.vColor = lerp(vDiffuseDesc, vDiffuseBlurDesc, min(fDistance / g_fFar * 50.f, 1.f));
+    Out.vColor = lerp(vDiffuseDesc, vDiffuseBlurDesc, min(fDistance / g_fFar * 5.f, 1.f));
     
     return Out;
 }
@@ -718,7 +718,7 @@ technique11 DefaultTechnique
     pass RadialBlur //22
     {
         SetRasterizerState(RS_Default);
-        SetDepthStencilState(DSS_Default, 0);
+        SetDepthStencilState(DSS_None_Test_None_Write, 0);
         SetBlendState(BS_Default, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xffffffff);
 
         VertexShader = compile vs_5_0 VS_MAIN();
@@ -744,7 +744,7 @@ technique11 DefaultTechnique
     pass InvertColor //24
     {
         SetRasterizerState(RS_Default);
-        SetDepthStencilState(DSS_Default, 0);
+        SetDepthStencilState(DSS_None_Test_None_Write, 0);
         SetBlendState(BS_Default, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xffffffff);
 
         VertexShader = compile vs_5_0 VS_MAIN();
@@ -757,7 +757,7 @@ technique11 DefaultTechnique
     pass Vignette //25
     {
         SetRasterizerState(RS_Default);
-        SetDepthStencilState(DSS_Default, 0);
+        SetDepthStencilState(DSS_None_Test_None_Write, 0);
         SetBlendState(BS_Default, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xffffffff);
 
         VertexShader = compile vs_5_0 VS_MAIN();
@@ -780,5 +780,16 @@ technique11 DefaultTechnique
         PixelShader = compile ps_5_0 PS_CONTAIN_DECAL();
     }
 
+    pass InvertLightness//27
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_None_Test_None_Write, 0);
+        SetBlendState(BS_Default, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xffffffff);
 
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        HullShader = NULL;
+        DomainShader = NULL;
+        PixelShader = compile ps_5_0 PS_MAIN_INVERTSATURATION();
+    }
 }

@@ -103,6 +103,7 @@ public:
     _bool isMotionBlur();
     _bool isInvertColor();
     _bool isVignette();
+    _bool isInvertSaturationColor();
     
     void Set_PBR(_bool isPBR);
     void Set_BOF(_bool isBOF);
@@ -113,6 +114,18 @@ public:
     void Set_SSAOBlur(_float fBlur);
     _float Get_SSAOBlur();
     _float Get_SSAOBias();
+    _float Get_InvertSaturationFactor();
+    void Set_InvertSaturationFactor(_float fFactor);
+    void Set_InvertColorDuration(_float fDuration);
+    void Set_RadialPower(_float fPower);
+    void Set_RadialSample(_int iSample);
+    void Set_VignetteIntensity(_float fIntensity);
+    void Set_VignetteSmootness(_float fSmootness);
+    _float Get_VignetteIntensity();
+    _float Get_VignetteSmootness();
+    _float Get_RadialPower();
+    _int Get_RadialSample();
+    _float Get_InvertColorDuration();
     void Set_SSAOBias(_float fBias);
     void Set_Shadow(_bool isShadow);
     void Set_RimLight(_bool isRimLight);
@@ -120,6 +133,7 @@ public:
     void Set_MotionBlur(_bool isMotionBlur);
     void Set_InvertColor(_bool isInvertColor);
     void Set_Vignette(_bool isVignette);
+    void Set_InvertSaturationColor(_bool isInvertLightnessColor);
     int Get_RenderState();
 #ifdef _DEBUG
 public:

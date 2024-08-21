@@ -402,6 +402,10 @@ HRESULT CRenderer::Ready_Targets()
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_InvertColor"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
 
+	/*Target_InvertLightnessColor*/
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_InvertLightnessColor"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
+		return E_FAIL;
+
 	/*Target_Vignette*/
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Vignette"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
@@ -580,6 +584,10 @@ HRESULT CRenderer::Ready_MRTs()
 
 	/* MRT_InvertColor */
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_InvertColor"), TEXT("Target_InvertColor"))))
+		return E_FAIL;
+
+	/* MRT_InvertLightnessColor */
+	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_InvertLightnessColor"), TEXT("Target_InvertLightnessColor"))))
 		return E_FAIL;
 
 	/* MRT_InvertColor */
@@ -812,10 +820,6 @@ void CRenderer::Draw()
 
 	/* PostProcessing*/
 
-
-	if (m_isInvertColor)
-		Render_InvertColor();
-
 	if (m_isBOF)
 	{
 		Render_DeferredBlur();
@@ -827,6 +831,13 @@ void CRenderer::Draw()
 
 	if (m_isRadialBlur)
 		Render_RadialBlur();
+
+	if (m_isInvertColor)
+		Render_InvertColor();
+	else m_fInvertTime = 0.f;
+
+	if (m_isInvertSaturationColor)
+		Render_InvertSaturationColor();
 
 	if (m_isVignette)
 		Render_Vignette();
@@ -846,7 +857,6 @@ void CRenderer::Draw()
 #ifdef _DEBUG
 	Render_Debug();
 #endif // _DEBUG
-	Render_Debug();
 }
 
 void CRenderer::Clear()
@@ -1114,7 +1124,6 @@ void CRenderer::Render_SSAOBlur()
 
 void CRenderer::Render_PBR()
 {
-	
 	PBR_BUFFER BufferDesc{};
 	BufferDesc.fFar = *(m_pGameInstance->Get_CamFar());
 	BufferDesc.vCamPosition = *(m_pGameInstance->Get_CamPosition_Float4());
@@ -1729,8 +1738,6 @@ void CRenderer::Render_BOF()
 		return;
 }
 
-
-
 void CRenderer::Render_RadialBlur()
 {
 	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_RadialBlur"))))
@@ -1741,6 +1748,11 @@ void CRenderer::Render_RadialBlur()
 	if (FAILED(m_pShader->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix)))
 		return;
 	if (FAILED(m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
+		return;
+
+	if (FAILED(m_pShader->Bind_RawValue("g_iSample", &m_iRadialSample, sizeof(_int))))
+		return;
+	if (FAILED(m_pShader->Bind_RawValue("g_fPower", &m_fRadialPower, sizeof(_float))))
 		return;
 
 	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(m_isBOF ? TEXT("Target_BOF") : TEXT("Target_FinalEffect"), m_pShader, "g_DiffuseTexture")))
@@ -1756,7 +1768,6 @@ void CRenderer::Render_RadialBlur()
 
 void CRenderer::Render_Crack()
 {
-
 	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_SceneCrack"))))
 		return;
 
@@ -1787,10 +1798,40 @@ void CRenderer::Render_InvertColor()
 	if (FAILED(m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
 		return;
 
+	m_fInvertTime += m_pGameInstance->Get_TimeDelta(TEXT("Timer_Game"));
+	if (FAILED(m_pShader->Bind_RawValue("g_fTimeDelta", &m_fInvertTime, sizeof(_float))))
+		return;
+	if (FAILED(m_pShader->Bind_RawValue("g_fInvertDuration", &m_fInvertDuration, sizeof(_float))))
+		return;
 	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(m_isRadialBlur ? TEXT("Target_RadialBlur") : m_isBOF ? TEXT("Target_BOF") : TEXT("Target_FinalEffect"), m_pShader, "g_DiffuseTexture")))
 		return;
 
 	m_pShader->Begin(24);
+
+	m_pVIBuffer->Render();
+
+	if (FAILED(m_pGameInstance->End_MRT()))
+		return;
+}
+
+void CRenderer::Render_InvertSaturationColor()
+{
+	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_InvertLightnessColor"))))
+		return;
+
+	if (FAILED(m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix)))
+		return;
+	if (FAILED(m_pShader->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix)))
+		return;
+	if (FAILED(m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
+		return;
+
+	if (FAILED(m_pShader->Bind_RawValue("g_fSaturationFactor", &m_fSaturationFactor, sizeof(_float))))
+		return;
+	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(m_isRadialBlur ? TEXT("Target_RadialBlur") : m_isBOF ? TEXT("Target_BOF") : TEXT("Target_FinalEffect"), m_pShader, "g_DiffuseTexture")))
+		return;
+
+	m_pShader->Begin(27);
 
 	m_pVIBuffer->Render();
 
@@ -1810,6 +1851,10 @@ void CRenderer::Render_Vignette()
 	if (FAILED(m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
 		return;
 
+	if (FAILED(m_pShader->Bind_RawValue("g_fVignetteIntensity", &m_fVignetteIntensity, sizeof(_float))))
+		return;
+	if (FAILED(m_pShader->Bind_RawValue("g_fVignetteSmootness", &m_fVignetteSmootness, sizeof(_float))))
+		return;
 	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_FinalEffect"), m_pShader, "g_DiffuseTexture")))
 		return;
 
@@ -1830,7 +1875,6 @@ void CRenderer::Render_FinalResult()
 			return;
 	}
 
-	
 	if (FAILED(m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix)))
 		return;
 	if (FAILED(m_pShader->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix)))
@@ -1838,20 +1882,13 @@ void CRenderer::Render_FinalResult()
 	if (FAILED(m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
 		return;
 
-	wstring strTexture = TEXT("Target_FinalEffect");
-
-	if (m_isSSAO)
-	{
-		if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_SSAO"), m_pShader, "g_AmbientTexture")))
-			return;
-	}
+	wstring strTexture = TEXT("Target_FinalEffect"); 
 
 	if (m_isBOF) strTexture = TEXT("Target_BOF");
 	if (m_isRadialBlur) strTexture = TEXT("Target_RadialBlur");
+	if (m_isInvertSaturationColor) strTexture = TEXT("Target_InvertLightnessColor");
 	if (m_isInvertColor) strTexture = TEXT("Target_InvertColor");
 	if (m_isVignette) strTexture = TEXT("Target_Vignette");
-
-	
 
 	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(strTexture, m_pShader, "g_BackBufferTexture")))
 		return;
@@ -1944,8 +1981,6 @@ void CRenderer::Render_LuminanceResult()
 	m_pVIBuffer->Render();
 }
 #pragma endregion
-
-
 
 void CRenderer::Render_UI()
 {

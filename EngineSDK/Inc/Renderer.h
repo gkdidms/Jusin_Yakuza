@@ -77,7 +77,14 @@ public:
     void Set_RadialBlur(_bool isRadialBlur) { m_isRadialBlur = isRadialBlur; }
     void Set_MotionBlur(_bool isMotionBlur) { m_isMotionBlur = isMotionBlur; }
     void Set_InvertColor(_bool isInvertColor) { m_isInvertColor = isInvertColor; }
+    void Set_InvertColorDuration(_float fDuration) { m_fInvertDuration = fDuration; }
     void Set_Vignette(_bool isVignette) { m_isVignette = isVignette; }
+    void Set_InvertSaturationColor(_bool isInvertSaturationColor) { m_isInvertSaturationColor = isInvertSaturationColor; }
+    void Set_InvertSaturationFactor(_float fFactor) { m_fSaturationFactor = fFactor; }
+    void Set_VignetteIntensity(_float fIntensity) { m_fVignetteIntensity = fIntensity; }
+    void Set_VignetteSmootness(_float fSmootness) { m_fVignetteSmootness = fSmootness; }
+    void Set_RadialPower(_float fPower) { m_fRadialPower = fPower; }
+    void Set_RadialSample(_int iSample) { m_iRadialSample = iSample; }
 
 public:
     _bool isHDR() { return m_isHDR; }
@@ -90,11 +97,21 @@ public:
     _bool isMotionBlur() { return m_isMotionBlur; }
     _bool isInvertColor() { return m_isInvertColor; }
     _bool isVignette() { return m_isVignette; }
+    _bool isInvertLightnessColor() { return m_isInvertSaturationColor; }
+
     _float Get_HDRLight() { return m_fHDRLight; }
     _float Get_SSAORadiuse() { return m_fSSAORadiuse; }
     _float Get_SSAOBlur() { return m_fSSAOBlur; }
     _float Get_SSAOBias() { return m_fSSAOBiae; }
+    _float Get_InvertSaturationFactor() { return m_fSaturationFactor; }
+    _float Get_InvertColorDuration() { return m_fInvertDuration; }
+    _float Get_VignetteIntensity() { return m_fVignetteIntensity; }
+    _float Get_VignetteSmootness() { return m_fVignetteSmootness; }
+    _float Get_RadialPower() { return m_fRadialPower; }
+    _int Get_RadialSample() { return m_iRadialSample; }
+
     int     Get_RenderState() { return m_iRenderState; }
+
 
 public:
     HRESULT Initialize();
@@ -158,6 +175,7 @@ private:
     void Render_RadialBlur();
     void Render_Crack();
     void Render_InvertColor();
+    void Render_InvertSaturationColor();
     void Render_Vignette();
 
     /* SSAO */
@@ -214,6 +232,7 @@ private:
     _bool m_isRadialBlur = { false };
     _bool m_isMotionBlur = { false };
     _bool m_isInvertColor = { false };
+    _bool m_isInvertSaturationColor = { false };
     _bool m_isVignette = { false };
 
 #ifdef _DEBUG
@@ -224,13 +243,11 @@ private:
                 _bool m_isBOF = { false };
                 _bool m_isShadow = { false };
                 _bool m_isRimLight = { true };
-
-
 #else
             private:
                 _bool m_isHDR = { false };
                 _bool m_isSSAO = { true };
-                _bool m_isPBR = { false };
+                _bool m_isPBR = { true };
                 _bool m_isBOF = { true };
                 _bool m_isShadow = { false };
                 _bool m_isRimLight = { true };
@@ -238,12 +255,27 @@ private:
 
     _float m_fHDRLight = { 1.f };
 
-    _float m_fSSAORadiuse = { 0.135f };
+    _float m_fSSAORadiuse = { 0.04f };
     _float m_fSSAOBlur = { 2.f };
     _float m_fSSAOBiae = { 0.03f };
     _float4* m_vSSAOKernal;
 
     int      m_iRenderState = { RENDER_END };
+
+    /* Invert Color*/
+    _float m_fInvertTime = { 0.f };
+    _float m_fInvertDuration = { 0.3f };
+
+    /* Invert Lighness Color*/
+    _float m_fSaturationFactor = { 0.2f };
+
+    /* Vignette */
+    _float m_fVignetteIntensity = { 0.5f };
+    _float m_fVignetteSmootness = { 0.2f };
+
+    /*RadialBlur*/
+    _int m_iRadialSample = { 10 };
+    _float m_fRadialPower = { 0.01 };
 
 #ifdef _DEBUG
     _bool m_isDebugView = { false };

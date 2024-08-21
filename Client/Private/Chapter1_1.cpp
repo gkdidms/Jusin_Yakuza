@@ -5,6 +5,8 @@
 #include "ScriptManager.h"
 
 #include "Nishiki.h"
+#include "PlayerCamera.h"
+#include "Player.h"
 
 CChapter1_1::CChapter1_1()
 	: CMainQuest{}
@@ -20,23 +22,25 @@ HRESULT CChapter1_1::Initialize(void* pArg)
 	m_pUIManager->Open_Scene(TEXT("Talk"));
 	m_pUIManager->Start_Talk(m_iScriptIndex);
 
+	dynamic_cast<CPlayerCamera*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Camera"), CAMERA_PLAYER))->Set_RotationBlock(true);
 	m_pNishiki = dynamic_cast<CNishiki*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Nishiki"), 0));
 	Safe_AddRef(m_pNishiki);
 
 	m_pNishiki->Set_State(CNishiki::TALK);
+	dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"), 0))->Set_PlayerStop(true);
 
 	return S_OK;
 }
-
 _bool CChapter1_1::Execute()
 {
 	if (m_pUIManager->isTalkFinished())
 	{
 		m_pNishiki->Set_State(CNishiki::IDLE);
+		dynamic_cast<CPlayerCamera*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Camera"), 0))->Set_RotationBlock(false);
+		dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"), 0))->Set_PlayerStop(false);
 		return true;
 	}
 		
-
 	return false;
 }
 

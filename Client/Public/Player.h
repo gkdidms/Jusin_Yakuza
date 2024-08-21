@@ -147,6 +147,8 @@ public:
         m_eCutSceneType = eAnim;
     }
 
+    void Set_PlayerStop(_bool isStop) { m_isStop = isStop; }
+
     /* Getter */
 public:
     _uint Get_BattleStyle() { return m_eCurrentStyle; }
@@ -372,6 +374,7 @@ private:
 
 private:
     _uint m_Money = { 0 };
+    _bool m_isStop = { 0 };
 
 private:
     virtual HRESULT Add_Components() override;

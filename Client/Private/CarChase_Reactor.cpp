@@ -177,7 +177,7 @@ _bool CCarChase_Reactor::Check_Dead()
 		if (m_pModelCom->Get_AnimFinished())
 		{
 			m_isFinishEffect = true;
-			//여기가 죽었을때 굴러가고 터지는 부분
+			//여기가 죽었을때 굴러가고 터지는 부분(몬스터가 죽으면? 불이 터짐)
 
 		}
 		return true;
@@ -194,7 +194,12 @@ _bool CCarChase_Reactor::Check_Dead()
 		//운전수가 죽으면 바로 죽게 된다.
 		if (pMonster->isObjectDead() && pMonster->Get_WeaponType() == CCarChase_Monster::DRV)
 		{
+			//자동차가 죽으면 멈추고 불난다.+연기
 
+			CEffect::EFFECT_DESC EffectDesc;
+
+			EffectDesc.pWorldMatrix = m_pTransformCom->Get_WorldFloat4x4();
+			CEffectManager::GetInstance()->Car_Fire(EffectDesc);
 			return true;
 		}
 
@@ -202,12 +207,9 @@ _bool CCarChase_Reactor::Check_Dead()
 	//헬기 폭파 이펙트
 	CEffect::EFFECT_DESC EffectDesc;
 
-	_matrix WorldMatrix = XMLoadFloat4x4(m_pTransformCom->Get_WorldFloat4x4());
-
-	_float4x4 matrix;
-	XMStoreFloat4x4(&matrix, WorldMatrix);
-	EffectDesc.pWorldMatrix = &matrix;
+	EffectDesc.pWorldMatrix = m_pTransformCom->Get_WorldFloat4x4();
 	CEffectManager::GetInstance()->Car_Explosion(EffectDesc);
+	CEffectManager::GetInstance()->Car_Fire(EffectDesc);
 
 	return true;
 }
