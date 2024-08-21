@@ -39,6 +39,8 @@ public:
         _float3 vMaxAmplitude;//진동 범위
         //아우라
         _bool isAttach;
+        //blood
+        _float fDelay;
     }INSTANCE_DESC;
 
 protected:
@@ -97,10 +99,16 @@ protected:
 
     _bool m_isReset = { false };
 
+    _float m_iCurrentTime = { 0.f };
+/// <summary>
+/// vRectSize.y 오라에서는 회전
+///     포인트에서는 딜레이
+/// </summary>
 public:
     void Spread(_float fTimeDelta);
     void RotSpread(_float fTimeDelta);
     void FallSpread(_float fTimeDelta);
+    void BloodSpread(_float fTimeDelta);
     void MeshSpread(_float fTimeDelta);
     void Reset();
 

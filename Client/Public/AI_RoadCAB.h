@@ -25,6 +25,9 @@ private:
     //서있는 상태
     virtual CBTNode::NODE_STATE Ground_The_Player() override;
 
+private:
+    int         m_iDelayDelta = { 0 };
+
 public:
     static CAI_RoadCAB* Create();
     virtual CBTNode* Clone(void* pArg);

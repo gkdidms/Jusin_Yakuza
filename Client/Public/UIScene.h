@@ -67,7 +67,7 @@ protected:
 
 
     _bool m_isAnimFin = { false };
-    _bool m_isClose = { false };
+    _bool m_isClose = { true };
     wstring m_strSceneName = { TEXT("") };
 
     _bool m_isLoading = { false };
