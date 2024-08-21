@@ -134,6 +134,16 @@ public:
     void Set_InvertColor(_bool isInvertColor);
     void Set_Vignette(_bool isVignette);
     void Set_InvertSaturationColor(_bool isInvertLightnessColor);
+
+    void Set_AdjectBrightness(_float fBrightness);
+    void Set_AdjectContrast(_float fContrast);
+    void Set_AdjectSaturation(_float fSaturation);
+    void Set_AdjectTint(_float4 vTine);
+    _float Get_AdjectBrightness();
+    _float Get_AdjectContrast();
+    _float Get_AdjectSaturation();
+    _float4 Get_AdjectTint();
+
     int Get_RenderState();
 #ifdef _DEBUG
 public:
