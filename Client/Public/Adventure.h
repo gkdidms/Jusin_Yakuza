@@ -16,7 +16,7 @@ class CAdventure abstract :
 public:
     typedef struct tMapAdventureObjDesc : public CLandObject::LANDOBJ_MAPDESC
     {
-        
+        int         iObjectPropertyType;
     }ADVENTURE_IODESC;
 
 public:

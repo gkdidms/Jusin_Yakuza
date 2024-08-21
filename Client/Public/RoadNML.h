@@ -25,4 +25,5 @@ public:
     virtual CGameObject* Clone(void* pArg);
     virtual void Free();
 };
+
 END

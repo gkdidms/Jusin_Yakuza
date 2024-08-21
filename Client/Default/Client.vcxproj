@@ -188,6 +188,7 @@
     <ClInclude Include="..\Public\AI_RoadStanding.h" />
     <ClInclude Include="..\Public\AI_RoadStanding_NML.h" />
     <ClInclude Include="..\Public\AI_RoadTissue.h" />
+    <ClInclude Include="..\Public\AI_RoadYOP.h" />
     <ClInclude Include="..\Public\Chapter1_0.h" />
     <ClInclude Include="..\Public\Chapter1_1.h" />
     <ClInclude Include="..\Public\Chapter2_0.h" />
@@ -438,6 +439,7 @@
     <ClCompile Include="..\private\Adventure.cpp" />
     <ClCompile Include="..\Private\Adventure_Reactor.cpp" />
     <ClCompile Include="..\Private\AI_RoadTissue.cpp" />
+    <ClCompile Include="..\Private\AI_RoadYOP.cpp" />
     <ClCompile Include="..\Private\Chapter1_0.cpp" />
     <ClCompile Include="..\Private\Chapter1_1.cpp" />
     <ClCompile Include="..\Private\Chapter2_0.cpp" />

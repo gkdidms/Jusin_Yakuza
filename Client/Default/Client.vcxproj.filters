@@ -719,6 +719,9 @@
     <ClCompile Include="..\Private\Chapter5_0.cpp">
       <Filter>03.QuestManager\Quest\Main\Chapter_5\0</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\AI_RoadYOP.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby\01.Walker\01.YOP\AI</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\MainApp.h">
@@ -1468,6 +1471,9 @@
     </ClInclude>
     <ClInclude Include="..\Public\Chapter5_0.h">
       <Filter>03.QuestManager\Quest\Main\Chapter_5\0</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\AI_RoadYOP.h">
+      <Filter>02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby\01.Walker\01.YOP\AI</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -2267,6 +2273,9 @@
     </Filter>
     <Filter Include="03.QuestManager\Quest\Main\Chapter_5\0">
       <UniqueIdentifier>{cf0c48d9-c9b3-459a-a20d-016cda7d8c32}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby\01.Walker\01.YOP\AI">
+      <UniqueIdentifier>{83021a8a-5cc4-4f65-9ce3-f04d8a18e962}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

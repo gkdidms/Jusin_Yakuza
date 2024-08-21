@@ -28,6 +28,7 @@ private:
 
 private:
     _float      m_fGroundDelta = { 0.f };
+    _bool       m_bStay = { false };
 
 public:
     static CAI_RoadTissue* Create();

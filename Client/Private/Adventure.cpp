@@ -37,6 +37,7 @@ HRESULT CAdventure::Initialize(void* pArg)
 	m_wstrModelName = gameobjDesc->wstrModelName;
 	m_iNaviRouteNum = gameobjDesc->iNaviRouteNum;
 	m_iNPCDirection = gameobjDesc->iNPCDirection;
+	m_iGender = gameobjDesc->iObjectPropertyType;
 
 	if (FAILED(CAdventure::Add_Components()))
 		return E_FAIL;

@@ -75,6 +75,9 @@ void CLight_Manager::Delete_AllLights()
 
 void CLight_Manager::Bind_ComputeBuffer(_uint iSlot)
 {
+	if (m_Lights[0] == nullptr)
+		return;
+
 	m_Lights[0]->Bind_LightBuffer(iSlot); // 0번이 디렉션이라고 가정한다.
 }
 
