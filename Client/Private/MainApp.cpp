@@ -15,6 +15,7 @@
 #include "Background.h"
 #include "FileTotalMgr.h"
 #include "EffectManager.h"
+#include "FightManager.h"
 
 #pragma region UI
 #include "Image_Texture.h"
@@ -464,4 +465,6 @@ void CMainApp::Free()
 
 	Safe_Release(m_pCollisionManager);
 	CCollision_Manager::DestroyInstance();
+
+	CFightManager::DestroyInstance();
 }

@@ -860,6 +860,8 @@ void CPlayer::Synchronize_Root(const _float& fTimeDelta)
 	//_vector vFF = XMVector3TransformNormal(vCenterMove, m_pTransformCom->Get_WorldMatrix());
 	_vector vFF = vCenterMove;
 
+	//_matrix Mat = XMLoadFloat4x4(m_pModelCom->Get_BoneCombinedTransformationMatrix_AtIndex(0));
+
 	// m_pModelCom->Get_AnimChanged()  선형보간이 끝났는지
 	// m_pModelCom->Get_AnimLerp() 선형보간이 필요한 애니메이션인지
 	if (m_pModelCom->Get_AnimChanged() || !m_pModelCom->Get_AnimLerp())
