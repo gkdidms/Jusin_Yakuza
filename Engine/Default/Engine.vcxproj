@@ -356,6 +356,7 @@ call Copy.bat</Command>
       <EntryPointName Condition="'$(Configuration)|$(Platform)'=='Release|x64'">CS_Main</EntryPointName>
       <ShaderType Condition="'$(Configuration)|$(Platform)'=='Release|x64'">Compute</ShaderType>
       <DisableOptimizations Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</DisableOptimizations>
+      <AdditionalOptions Condition="'$(Configuration)|$(Platform)'=='Release|x64'">/DEBUG:NONE %(AdditionalOptions)</AdditionalOptions>
     </FxCompile>
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Deferred.hlsl" />
     <FxCompile Include="..\Bin\ShaderFiles\Shader_Downsampling.hlsl">

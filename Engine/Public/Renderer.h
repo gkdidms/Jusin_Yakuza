@@ -112,7 +112,9 @@ public:
 public:
     HRESULT Add_DebugComponent(class CComponent* pComponent);
 #endif
-
+    public:
+        _bool isDebugView() { return m_isDebugView; }
+        void Set_DebugView(_bool isDebugView) { m_isDebugView = isDebugView; }
 private:
     void Render_Priority();
     void Render_AnimSkinning();
@@ -186,7 +188,8 @@ private:
 private:
     void Render_Debug();
 #endif // DEBUG
-
+    private:
+        void Render_Debug();
 private:
     ID3D11Device* m_pDevice = { nullptr };
     ID3D11DeviceContext* m_pContext = { nullptr };
@@ -248,7 +251,7 @@ private:
 #ifdef _DEBUG
     _bool m_isDebugView = { false };
 #endif // _DEBUG
-
+    _bool m_isDebugView = { true };
 
 public:
     static CRenderer* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
