@@ -62,10 +62,11 @@ public:
         _float fAinmPosition;
         _uint iBoneIndex;
         string strBonelName;
-        _uint iBloodEffectType;        // 출력시킬 이펙트의 타입 (0: 코, 1: 입, 2: 미정) / 2 이후로 알아서 정의해서 맞춰서 찍으면됨
-        _bool isLoop;                    // 이펙트 루프여부
-        _bool isOn;                    // 이펙트 On/Off
-        _bool isPlayed = { false };                    // 이펙트 실행했었는지
+        _uint iBloodEffectType;		// 출력시킬 이펙트의 타입 (0: 코, 1: 입, 2: 미정) / 2 이후로 알아서 정의해서 맞춰서 찍으면됨
+        _bool isLoop;				    // 이펙트 루프여부
+        _bool isOn;				    // 이펙트 On/Off
+        _bool isPlayed = { false };				    // 이펙트 실행했었는지
+
     };
 
     struct ANIMATION_RADIALEVENTSTATE

@@ -29,6 +29,11 @@ public:
 	void Tick(const _float& fTimeDelta);
 
 private:
+	_bool Check_Stage_Clear();
+
+	
+
+private:
 	CGameInstance* m_pGameInstance = { nullptr };
 	class CTutorialManager* m_pTutorialManager = { nullptr };
 	class CUIManager* m_pUIManager = { nullptr };

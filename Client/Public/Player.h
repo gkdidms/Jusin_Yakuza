@@ -181,6 +181,8 @@ public:
     void    Set_ItemOff();
     void Set_CurrentStyle(BATTLE_STYLE iStyle) { m_eCurrentStyle = iStyle; }
 
+    void Battle_Start();
+
     /* Virtual Funtion */
 public:
     virtual HRESULT Initialize_Prototype() override;
@@ -274,6 +276,14 @@ private:
     void HitFreeze_Off();
     void HitFreeze_Timer(const _float& fTimeDelta);
 
+    void HitRadial_On();
+    void HitRadial_Off();
+    void HitRadial_Timer(const _float& fTimeDelta);
+
+    void HitZoomIn_On();
+    void HitZoomIn_Off();
+    void HitZoomIn_Timer(const _float& fTimeDelta);
+
     
     /* 출력, 행동 관련 포인터 변수들 */
 private:
@@ -342,6 +352,14 @@ private:
     _bool m_isHitFreeze = { false };
     const _float m_fHitFreezeTime = { 0.5f };
     _float m_fHitFreezeTimer = { 0.f };
+
+    _bool m_isHitRadial = { false };
+    const _float m_fHitRadialTime = { 0.2f };
+    _float m_fHitRadialTimer = { 0.f };
+
+    _bool m_isHitZoom = { false };
+    const _float m_fHitZoomTime = { 0.2f };
+    _float m_fHitZoomTimer = { 0.f };
 
 #ifdef _DEBUG
     _bool m_isAnimStart = { true };
