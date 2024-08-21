@@ -43,8 +43,8 @@ float g_iSpriteIndex;
 float2 g_fUVCount;
 float g_fCurTime;
 
-float g_NearZ = 0.01f;
-float g_FarZ = 300.f;
+float g_NearZ;
+float g_FarZ;
 
 /* Trail */
 Texture2D g_AccumColor;
@@ -58,12 +58,10 @@ float g_fRadian;
 matrix g_ViewMatrixArray[3], g_ProjMatrixArray[3];
 matrix g_BoneMatrices[512];
 
-float g_fFar = { 300.f };
+float g_fFar;
 float g_fTimeDelta;
 
 float g_fOut = { 0.5f };
-
-
 
 float g_fTexcoordX = { 0.f };
 float g_fTexcoordY = { 0.f };
