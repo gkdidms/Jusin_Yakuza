@@ -2,8 +2,11 @@
 
 #include "GameInstance.h"
 #include "UIManager.h"
+#include "FileTotalMgr.h"
 
-#include "Background.h"
+#include "Player.h"
+#include "Nishiki.h"
+
 
 CChapter3_1::CChapter3_1()
 	: CMainQuest{}
@@ -18,6 +21,8 @@ HRESULT CChapter3_1::Initialize(void* pArg)
 	//씬 카메라 이동 후 스크립트 텍스쳐 나옴
 	m_pUIManager->Open_Scene(TEXT("Talk"));
 	m_pUIManager->Start_Talk(m_iScriptIndex);
+
+
 
 	return S_OK;
 }

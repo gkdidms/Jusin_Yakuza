@@ -29,6 +29,7 @@ public:
 private:
     _uint m_iPage = { ONE };
 
+
 private:
     virtual void Take_Damage(_uint iHitColliderType, const _float3& vDir, _float fDamage, CLandObject* pAttackedObject, _bool isBlowAttack = false) override;
     virtual HRESULT Add_Components() override;

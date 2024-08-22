@@ -24,6 +24,10 @@ protected:
 protected:
     _uint m_iScriptIndex = { 0 };
 
+protected:
+    void Player_Stop(_bool isStop);
+    void PlayerCom_Stop(_bool isStop);
+
 public:
     virtual void Free();
 };

@@ -6,6 +6,7 @@
 #include "Collision_Manager.h"
 #include "FightManager.h"
 #include "UIManager.h"
+#include "QuestManager.h"
 
 #include "PlayerCamera.h"
 #include "CineCamera.h"
@@ -19,12 +20,14 @@ CLevel_DogimazoBoss::CLevel_DogimazoBoss(ID3D11Device* pDevice, ID3D11DeviceCont
     m_pSystemManager{ CSystemManager::GetInstance() },
     m_pFileTotalManager{ CFileTotalMgr::GetInstance() },
 	m_pFightManager{ CFightManager::GetInstance() },
-	m_pUIManager{ CUIManager::GetInstance() }
+	m_pUIManager{ CUIManager::GetInstance() },
+	m_pQuestManager{ CQuestManager::GetInstance() }
 {
     Safe_AddRef(m_pSystemManager);
     Safe_AddRef(m_pFileTotalManager);
 	Safe_AddRef(m_pFightManager);
 	Safe_AddRef(m_pUIManager);
+	Safe_AddRef(m_pQuestManager);
 }
 
 HRESULT CLevel_DogimazoBoss::Initialize()
@@ -40,20 +43,37 @@ HRESULT CLevel_DogimazoBoss::Initialize()
 	if (FAILED(Ready_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
 
-	m_pFightManager->Initialize();
-	m_pFightManager->Set_FightStage(true);
+	//m_pFightManager->Initialize();
+	m_pFileTotalManager->Load_Cinemachine(25, LEVEL_DOGIMAZO_BOSS);
+	m_pFileTotalManager->Load_Cinemachine(26, LEVEL_DOGIMAZO_BOSS);
+	m_pFileTotalManager->Load_Cinemachine(27, LEVEL_DOGIMAZO_BOSS);
+	m_pFileTotalManager->Load_Cinemachine(28, LEVEL_DOGIMAZO_BOSS);
+	
+	m_pQuestManager->Start_Quest(CQuestManager::CHAPTER_8);
 
     return S_OK;
 }
 
 void CLevel_DogimazoBoss::Tick(const _float& fTimeDelta)
 {
-	m_pFightManager->Tick(fTimeDelta);
+	m_pQuestManager->Execute();
 
-	if (m_pUIManager->isTitleEnd())
+	if (!m_isFightStart && m_pQuestManager->isFightStart())
 	{
-		CPlayer* pPlayer = dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"), 0));
-		pPlayer->Battle_Start();
+		m_pFightManager->Set_FightStage(true);
+		m_pSystemManager->Set_Camera(CAMERA_PLAYER);
+		m_isFightStart = true;
+	}
+
+	if (m_isFightStart)
+	{
+		m_pFightManager->Tick(fTimeDelta);
+
+		if (m_pUIManager->isTitleEnd())
+		{
+			CPlayer* pPlayer = dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"), 0));
+			pPlayer->Battle_Start();
+		}
 	}
 
 #ifdef _DEBUG
@@ -140,4 +160,5 @@ void CLevel_DogimazoBoss::Free()
     Safe_Release(m_pFileTotalManager);
 	Safe_Release(m_pFightManager);
 	Safe_Release(m_pUIManager);
+	Safe_Release(m_pQuestManager);
 }

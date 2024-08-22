@@ -41,6 +41,7 @@ public:
     _uint Get_ScriptIndex();
     _uint Get_CurrentQuestType();
     _uint Get_CurrentQuestTriggerIndex();
+    _bool isFightStart();
 
 public:
     void Set_Chapter(_uint iIndex) { m_iCurrentChapter = iIndex; }

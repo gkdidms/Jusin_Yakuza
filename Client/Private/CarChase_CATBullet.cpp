@@ -22,6 +22,22 @@ CCarChase_CATBullet::CCarChase_CATBullet(const CCarChase_CATBullet& rhs)
 	Safe_AddRef(m_pUIManager);
 }
 
+void CCarChase_CATBullet::Set_Coll()
+{
+	m_isColl = true;
+
+	//충돌처리
+	m_Info.fHp -= 10.f;
+
+	if (m_Info.fHp <= 0.f)
+	{
+		m_Info.fHp = 0.f;
+		m_isDead = true;
+
+		m_pUIManager->Remove_Target(m_iObjectIndex);
+	}
+}
+
 _vector CCarChase_CATBullet::Get_BulletPos()
 {
 	return XMLoadFloat4((_float4*)&m_WorldMatrix.m[3]);
@@ -56,7 +72,7 @@ HRESULT CCarChase_CATBullet::Initialize(void* pArg)
 
 	m_pUIManager->Add_Target(m_iObjectIndex, this);
 
-	m_Info.fMaxHP = 100.f;
+	m_Info.fMaxHP = 30.f;
 	m_Info.fHp = m_Info.fMaxHP;
 
 	return S_OK;
@@ -68,9 +84,6 @@ void CCarChase_CATBullet::Priority_Tick(const _float& fTimeDelta)
 
 void CCarChase_CATBullet::Tick(const _float& fTimeDelta)
 {
-	if (m_isObjectDead)
-		Set_Dead();
-
 	_vector vPlayerPos = XMLoadFloat4((_float4*)&m_pTarget->Get_ModelMatrix()->m[3]);
 	_vector vThisPos = XMLoadFloat4((_float4*)&m_WorldMatrix.m[3]);
 	float fVerticalSpeed = CalculateInitialVerticalSpeed(vPlayerPos, vThisPos);
@@ -112,6 +125,7 @@ void CCarChase_CATBullet::Late_Tick(const _float& fTimeDelta)
 
 	m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
 
+	m_isColl = false;
 #ifdef _DEBUG
 	m_pGameInstance->Add_DebugComponent(m_pColliderCom);
 #endif
