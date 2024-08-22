@@ -32,7 +32,6 @@ HRESULT CChapter1_1::Initialize(void* pArg)
 	pPlayer->Set_PlayerStop(true);
 	//pPlayer->Get_TransformCom()->(true);
 
-
 	return S_OK;
 }
 
