@@ -66,10 +66,7 @@ struct PS_OUT_LIGHT
 {
     vector vShade : SV_TARGET0;
     vector vLightMap : SV_TARGET1;
-    vector vSpecular : SV_TARGET2;
 };
-
-
 
 PS_OUT_LIGHT PS_MAIN_LIGHT_DIRECTIONAL(PS_IN In)
 {
@@ -104,9 +101,6 @@ PS_OUT_LIGHT PS_MAIN_LIGHT_DIRECTIONAL(PS_IN In)
         
         float3 vLook = normalize(g_vCamPosition - vWorldPos).xyz;
         
-        //Out.vSpecularRM = BRDF(In.vPosition, In.vTexcoord, normalize(vNormal), vDepthDesc, vLook);
-
-        Out.vSpecular = vector(CalcuateSpecular(In.vTexcoord, normalize(vNormal), vLook), 0.f);
         Out.vLightMap = g_vLightDiffuse;
     }
     
@@ -223,18 +217,13 @@ PS_OUT PS_MAIN_COPY_BACKBUFFER_RESULT(PS_IN In)
     
     if (g_isPBR)
     {
-        vector vSpeculer = g_SpecularTexture.Sample(LinearSampler, In.vTexcoord);
         vector vSpeculerRM = g_RMTexture.Sample(LinearSampler, In.vTexcoord);
         vector vLightmap = g_LightMapTexture.Sample(LinearSampler, In.vTexcoord);
-        vector vOEShader = g_OEShaderTexture.Sample(LinearSampler, In.vTexcoord);
+        vector vSpecular = g_SpecularTexture.Sample(LinearSampler, In.vTexcoord);
         
         vector vNeoShader = vector(vSpeculerRM.xyz, 1.f) * vShade;
-        vSpeculer = lerp(vector(0.f, 0.f, 0.f, 0.f), vSpeculer, vOEShader.g);
         
-        vector vResultShader = vNeoShader + vSpeculer;
-        vResultShader = lerp(vector(0.f, 0.f, 0.f, 0.f), vResultShader, vOEShader.b);
-        
-        Out.vColor = vResultShader;
+        Out.vColor = vNeoShader + vSpecular;
     }
     else
     {
@@ -791,5 +780,18 @@ technique11 DefaultTechnique
         HullShader = NULL;
         DomainShader = NULL;
         PixelShader = compile ps_5_0 PS_MAIN_INVERTSATURATION();
+    }
+
+    pass AdjustColor //28
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_None_Test_None_Write, 0);
+        SetBlendState(BS_Default, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        HullShader = NULL;
+        DomainShader = NULL;
+        PixelShader = compile ps_5_0 PS_MAIN_ABJECTCOLOR();
     }
 }

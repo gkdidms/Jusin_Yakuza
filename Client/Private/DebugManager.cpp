@@ -248,6 +248,23 @@ void CDebugManager::Window_Debug()
         if (ImGui::SliderFloat("Smootness", &fSmootness, 0.01f, 1.f))
             m_pGameInstance->Set_VignetteSmootness(fSmootness);
 
+        ImGui::SeparatorText("AdjustColor");
+        _float fBrightness = m_pGameInstance->Get_AdjectBrightness();
+        if (ImGui::SliderFloat("Brightness", &fBrightness, 0.f, 10.f))
+            m_pGameInstance->Set_AdjectBrightness(fBrightness);
+
+        _float fContrast = m_pGameInstance->Get_AdjectContrast();
+        if (ImGui::SliderFloat("contrast", &fContrast, 0.f, 10.f))
+            m_pGameInstance->Set_AdjectContrast(fContrast);
+
+        _float fSaturation = m_pGameInstance->Get_AdjectSaturation();
+        if (ImGui::SliderFloat("Saturation", &fSaturation, 0.f, 10.f))
+            m_pGameInstance->Set_AdjectSaturation(fSaturation);
+
+        _float4 vTine = m_pGameInstance->Get_AdjectTint();
+        if (ImGui::ColorEdit4("vTine", (float*)&vTine, ImGuiColorEditFlags_Float))
+            m_pGameInstance->Set_AdjectTint(vTine);
+
         //그림자 제어
         ImGui::NewLine();
         ImGui::SeparatorText("Shadow");

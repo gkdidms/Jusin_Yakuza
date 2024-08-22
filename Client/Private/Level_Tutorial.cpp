@@ -19,13 +19,13 @@ CLevel_Tutorial::CLevel_Tutorial(ID3D11Device* pDevice, ID3D11DeviceContext* pCo
 	: CLevel{ pDevice, pContext },
 	m_pSystemManager{ CSystemManager::GetInstance() },
 	m_pFileTotalManager{ CFileTotalMgr::GetInstance() },
-	m_pFightManager{ CFightManager::GetInstance()},
+	//m_pFightManager{ CFightManager::GetInstance()},
 	m_pQuestManager{ CQuestManager::GetInstance()},
 	m_pUIManager { CUIManager::GetInstance() }
 {
 	Safe_AddRef(m_pSystemManager);
 	Safe_AddRef(m_pFileTotalManager);
-	Safe_AddRef(m_pFightManager);
+	//Safe_AddRef(m_pFightManager);
 	Safe_AddRef(m_pQuestManager);
 	Safe_AddRef(m_pUIManager);
 }
@@ -39,8 +39,8 @@ HRESULT CLevel_Tutorial::Initialize()
 		return E_FAIL;
 
 	m_pQuestManager->Start_Quest(CQuestManager::CHAPTER_1);
-	m_pFightManager->Initialize();
-	m_pFightManager->Set_StreetFight(true);
+	//m_pFightManager->Initialize();
+	//m_pFightManager->Set_StreetFight(true);
 
 	/* Å¬¶ó ÆÄ½Ì */
 	m_pFileTotalManager->Set_MapObj_In_Client(STAGE_TUTORIAL, LEVEL_TUTORIAL);
@@ -58,7 +58,7 @@ HRESULT CLevel_Tutorial::Initialize()
 
 void CLevel_Tutorial::Tick(const _float& fTimeDelta)
 {
-	m_pFightManager->Tick(fTimeDelta);
+	//m_pFightManager->Tick(fTimeDelta);
 
 	if (m_pQuestManager->Execute())
 	{
@@ -157,7 +157,7 @@ void CLevel_Tutorial::Free()
 
 	Safe_Release(m_pSystemManager);
 	Safe_Release(m_pFileTotalManager);
-	Safe_Release(m_pFightManager);
+	//Safe_Release(m_pFightManager);
 	Safe_Release(m_pQuestManager);
 	Safe_Release(m_pUIManager);
 }

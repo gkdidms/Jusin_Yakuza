@@ -85,6 +85,10 @@ public:
     void Set_VignetteSmootness(_float fSmootness) { m_fVignetteSmootness = fSmootness; }
     void Set_RadialPower(_float fPower) { m_fRadialPower = fPower; }
     void Set_RadialSample(_int iSample) { m_iRadialSample = iSample; }
+    void Set_AdjectBrightness(_float fBrightness) { m_fAdjectBrightness = fBrightness; }
+    void Set_AdjectContrast(_float fContrast) { m_fAdjectContrast = fContrast; }
+    void Set_AdjectSaturation(_float fSaturation) { m_fAdjectSaturation = fSaturation; }
+    void Set_AdjectTint(_float4 vTine) { m_vAdjectTint = vTine; }
 
 public:
     _bool isHDR() { return m_isHDR; }
@@ -109,9 +113,12 @@ public:
     _float Get_VignetteSmootness() { return m_fVignetteSmootness; }
     _float Get_RadialPower() { return m_fRadialPower; }
     _int Get_RadialSample() { return m_iRadialSample; }
+    _float Get_AdjectBrightness() { return m_fAdjectBrightness; }
+    _float Get_AdjectContrast() { return m_fAdjectContrast; }
+    _float Get_AdjectSaturation() { return m_fAdjectSaturation; }
+    _float4 Get_AdjectTint() { return m_vAdjectTint; }
 
     int     Get_RenderState() { return m_iRenderState; }
-
 
 public:
     HRESULT Initialize();
@@ -184,6 +191,9 @@ private:
 
     /*최종 렌더 (빼지마세요)*/
     void Render_FinalResult();
+
+    /*최종적으로 화면에 그려질 색사 보정*/
+    void Render_AdjustColor();
 
     void Render_UI();
 
@@ -276,6 +286,12 @@ private:
     /*RadialBlur*/
     _int m_iRadialSample = { 10 };
     _float m_fRadialPower = { 0.01 };
+
+    /*AdjustColor*/
+    float m_fAdjectBrightness = { 0.1f }; // 밝기 조정
+    float m_fAdjectContrast = { 1.25f }; // 대비 보정
+    float m_fAdjectSaturation = { 1.1f }; // 채도 보정
+    _float4 m_vAdjectTint = _float4(1.05f, 0.95f, 1.f, 0.f); // 색조 조정 (약간의 틴트를 추가)
 
 #ifdef _DEBUG
     _bool m_isDebugView = { false };

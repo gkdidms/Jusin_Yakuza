@@ -74,10 +74,17 @@ HRESULT CCarChaseManager::Ready_Stage()
 		CCarChase::STAGE_MONSTER_INFO{
 			100000,
 			LINE_C,
-			DIR_F,
+			DIR_M,
 			CCarChase_Monster::REACTOR_SEDAN,
 			{ CCarChase_Monster::GUN_L, CCarChase_Monster::GUN_R}
 		},
+		CCarChase::STAGE_MONSTER_INFO{
+			210000,
+			LINE_D,
+			DIR_M,
+			CCarChase_Monster::REACTOR_BIKE,
+			{ CCarChase_Monster::DRV, CCarChase_Monster::RKT}
+		}
 	};
 
 	CCarChase::STAGE_INFO StageInfo_1 = CCarChase::STAGE_INFO{
@@ -101,7 +108,7 @@ HRESULT CCarChaseManager::Ready_Stage()
 		CCarChase::STAGE_MONSTER_INFO{
 			200000,
 			LINE_C,
-			DIR_F,
+			DIR_M,
 			CCarChase_Monster::REACTOR_VAN,
 			{ CCarChase_Monster::WPR, -1}
 		}
