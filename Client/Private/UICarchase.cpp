@@ -12,6 +12,8 @@
 #include "Highway_Taxi.h"   
 #include "Highway_Kiryu.h"
 
+#include "EffectManager.h"
+
 CUICarchase::CUICarchase()
     :CUIScene{}
 {
@@ -305,6 +307,7 @@ void CUICarchase::Coll_Aim()
         CHighway_Kiryu* pKiryu = static_cast<CHighway_Kiryu*>(Taxi->Get_Kiryu());
         if(pKiryu->Shot())
         {
+
             if (nullptr != m_CurrentTarget)
             {
                 m_CurrentTarget->TargetingUI->Show_UI();

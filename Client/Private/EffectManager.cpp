@@ -36,7 +36,8 @@ void CEffectManager::Car_Explosion(CEffect::EFFECT_DESC& EffectDesc)
 
 void CEffectManager::Shot_Flash(CEffect::EFFECT_DESC& EffectDesc)
 {
-    m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Aura_ExpB"), TEXT("Layer_Particle"), &EffectDesc);
+    m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Shot_Exp"), TEXT("Layer_Particle"), &EffectDesc);
+    m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Shot_Glow"), TEXT("Layer_Particle"), &EffectDesc);
 }
 
 void CEffectManager::Cine_NoseBlood(CEffect::EFFECT_DESC& EffectDesc)
