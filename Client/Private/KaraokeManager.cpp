@@ -70,8 +70,8 @@ void CKaraokeManager::Tick(const _float& fTimeDelta)
 			}
 		}
 
-		//Check_NextNote();
-		//Update_CurrentNoteIndex();			// 갱신을 뒤에해줘야함
+		Check_NextNote();
+		Update_CurrentNoteIndex();			// 갱신을 뒤에해줘야함
 	}
 
 }

@@ -14,6 +14,7 @@
 #include "Camera.h"
 #include "PlayerCamera.h"
 #include "CutSceneCamera.h"
+#include "FileTotalMgr.h"
 
 CKaraoke_Kiryu::CKaraoke_Kiryu(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLandObject{ pDevice, pContext },
@@ -132,7 +133,9 @@ void CKaraoke_Kiryu::Late_Tick(const _float& fTimeDelta)
 	m_pGameInstance->Add_Renderer(CRenderer::RENDER_SHADOWOBJ, this); // Shadow¿ë ·»´õ Ãß°¡
 #endif // _DEBUG
 
-	Compute_Height();
+
+	if(CUTSCENE != m_eAnimComType)
+		Compute_Height();
 }
 
 HRESULT CKaraoke_Kiryu::Render()
@@ -396,6 +399,8 @@ void CKaraoke_Kiryu::Set_CutSceneAnim()
 		}
 		j++;
 	}
+
+	m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(CFileTotalMgr::GetInstance()->Get_PlayerMatrix()));
 }
 
 void CKaraoke_Kiryu::Play_CutScene(const _float& fTimeDelta)

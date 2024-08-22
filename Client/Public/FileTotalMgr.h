@@ -93,6 +93,10 @@ public:
 	/* LEVEL 바뀌면 초기화 시키기 */
 	void									Reset_Cinemachine();
 
+	const _float4x4*						Get_PlayerMatrix() { return &m_PlayerPosition.front(); }
+
+	
+
 private:
 	class CGameInstance* m_pGameInstance = { nullptr };
 	CCineCamera* m_pCinemachineCam = { nullptr };
@@ -106,7 +110,7 @@ private:
 
 	vector<wstring>							m_Layers = { TEXT("Layer_GameObjects"), TEXT("Layer_Monster"), TEXT("Layer_Player"), TEXT("Layer_NPC"), TEXT("Layer_Item"), TEXT("Layer_Passerby"),  TEXT("Layer_MonsterGroup"), TEXT("Layer_Nishiki") , TEXT("Layer_AdventureReactor") };
 
-	vector<_vector>							m_PlayerPosition;
+	vector<_float4x4>							m_PlayerPosition;
 
 private:
 	HRESULT									Set_Terrain_Size(int iStageLevel);
