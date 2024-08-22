@@ -56,11 +56,6 @@ void CCarChaseCamera::Tick(const _float& fTimeDelta)
 	if (m_pUIManager->isTitleEnd())
 		Targeting(fTimeDelta);
 
-	if (m_pGameInstance->GetKeyState(DIK_RSHIFT) == TAP)
-	{
-		m_isShoulderView = !m_isShoulderView;
-	}
-
 	_vector vPlayerPos = XMLoadFloat4x4(m_pPlayerMatrix).r[3];
 
 	_float4 vTargetPosition;
