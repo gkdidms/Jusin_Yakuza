@@ -11,6 +11,7 @@
 
 BEGIN(Engine)
 class CGameInstance;
+class CAnimation;
 END
 
 BEGIN(Client)
@@ -20,7 +21,12 @@ class CImguiManager final :
 private:
 	enum Model_Type
 	{
-		PLAYER, ENEMY, SYNC, ETC,
+		PLAYER, ENEMY, NPC, 
+	};
+
+	enum AnimCom_Type
+	{
+		MODEL_ANIMS, ANIM_COM, SYNC_COM, 
 	};
 
 	enum Collider_Type

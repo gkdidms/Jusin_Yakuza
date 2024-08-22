@@ -22,6 +22,8 @@ void CKiryu_KRC_Run::Tick(const _float& fTimeDelta)
 
 void CKiryu_KRC_Run::Change_Animation()
 {
+	m_pPlayer->Set_HandAnimIndex(CPlayer::HAND_MIDDLE2);
+	m_pPlayer->On_Separation_Hand();
 	m_pPlayer->Change_Animation(m_AnimationIndices[m_eAnimState]);
 }
 

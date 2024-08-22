@@ -216,7 +216,7 @@ HRESULT CLevel_Test::Ready_Test_Hyewon()
 	// 몬스터 깔린 네비: 3
 	// 과거의 길거리맵 79
 	// 과거의 길거리맵 네비: 79
-	m_pFileTotalManager->Set_MapObj_In_Client(92, LEVEL_TEST);
+	m_pFileTotalManager->Set_MapObj_In_Client(93, LEVEL_TEST);
 	m_pFileTotalManager->Set_Lights_In_Client(99);
 	m_pFileTotalManager->Set_Collider_In_Client(0, LEVEL_TEST);
 	m_pFileTotalManager->Set_Trigger_In_Client(79, LEVEL_TEST);

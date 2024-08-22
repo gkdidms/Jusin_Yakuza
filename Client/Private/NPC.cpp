@@ -155,7 +155,7 @@ void CNPC::Synchronize_Root(const _float& fTimeDelta)
 		else
 		{
 			_float4 fMoveDir;
-			_float fMoveSpeed = XMVectorGetX(XMVector3Length(vFF - XMLoadFloat4(&m_vPrevMove)));
+			_float fMoveSpeed = XMVectorGetX(XMVector3Length(vFF - XMLoadFloat4(&m_vPrevMove))) * m_fOffset;
 
 			//Y값 이동을 죽인 방향으로 적용해야한다.
 			_vector vTemp = XMVector3Normalize((vFF - XMLoadFloat4(&m_vPrevMove)));

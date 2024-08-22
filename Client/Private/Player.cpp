@@ -113,6 +113,8 @@ HRESULT CPlayer::Initialize(void* pArg)
 
 	Ready_AuraEffect();
 
+	Ready_RootFalseAnimation();
+
 	// 기본 몬스터: 20
 	// 삥쟁이: 30
 	// 쿠제: 100
@@ -223,6 +225,9 @@ void CPlayer::Tick(const _float& fTimeDelta)
 	{
 		m_pUIManager->Fade_In();
 	}
+	
+	Update_RootFalseAnim();			//Play_Animation 이전에 갱신해야한다.
+
 	Synchronize_Root(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")));
 
 #ifdef _DEBUG
@@ -244,7 +249,7 @@ void CPlayer::Tick(const _float& fTimeDelta)
 			m_pModelCom->Play_Animation_Separation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")), m_iHandAnimIndex, m_SeparationAnimComs[HAND_ANIM], false, (_int)HAND_ANIM);
 			m_pModelCom->Play_Animation_Separation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")), m_iFaceAnimIndex, m_SeparationAnimComs[FACE_ANIM], false, (_int)FACE_ANIM);
 			m_pModelCom->Play_Animation_Separation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")), m_iDefaultAnimIndex, m_SeparationAnimComs[DEFAULT_ANIM], false, (_int)DEFAULT_ANIM);
-			m_pModelCom->Play_Animation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")));
+			m_pModelCom->Play_Animation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")), m_isRootAnim);
 			Play_CutScene();
 		}
 		else
@@ -859,6 +864,28 @@ void CPlayer::Ready_AuraEffect()
 
 }
 
+void CPlayer::Ready_RootFalseAnimation()
+{
+	//루트애니메이션을 제외시킬 애니메이션의 인덱스를 작성한다.
+	m_RootFalseAnims.push_back(682);		// [682]	[p_stand_nml]
+	m_RootFalseAnims.push_back(681);		// [681]	[p_stand_idle_lookaround]
+
+	//파괴자
+	m_RootFalseAnims.push_back(318);		// [318]	p_krc_stand_btl_lp[p_krc_stand_btl_lp]
+	m_RootFalseAnims.push_back(367);		// [367]	[p_krc_wpc_stand]
+
+	//러쉬
+	m_RootFalseAnims.push_back(476);		// [476]	p_krh_style_st[p_krh_style_st]
+	m_RootFalseAnims.push_back(474);		// [474]	p_krh_stand_btl_lp[p_krh_stand_btl_lp]
+	m_RootFalseAnims.push_back(473);		// [473]	p_krh_stand_btl_en[p_krh_stand_btl_en]
+
+	//불한당
+	m_RootFalseAnims.push_back(567);		// [567]	p_krs_style_st[p_krs_style_st]
+	m_RootFalseAnims.push_back(565);		// [565]	p_krs_stand_btl_lp[p_krs_stand_btl_lp]
+	m_RootFalseAnims.push_back(564);		// [564]	p_krs_stand_btl_en[p_krs_stand_btl_en]
+	m_RootFalseAnims.push_back(751);		// [751]	[p_wpc_stand]
+}
+
 // 현재 애니메이션의 y축을 제거하고 사용하는 상태이다 (혹시 애니메이션의 y축 이동도 적용이 필요하다면 로직 수정이 필요함
 void CPlayer::Synchronize_Root(const _float& fTimeDelta)
 {
@@ -893,7 +920,7 @@ void CPlayer::Synchronize_Root(const _float& fTimeDelta)
 		{
 			_float4 fMoveDir;
 			_float fMoveSpeed = XMVectorGetX(XMVector3Length(vFF - XMLoadFloat4(&m_vPrevMove)));
-			
+
 			//Y값 이동을 죽인 방향으로 적용해야한다.
 			_vector vTemp = XMVector3Normalize((vFF - XMLoadFloat4(&m_vPrevMove)));
 			//Z가 Y처럼 쓰임
@@ -907,7 +934,7 @@ void CPlayer::Synchronize_Root(const _float& fTimeDelta)
 
 			m_pTransformCom->Go_Move_Custum(fMoveDir, m_fPrevSpeed, 1, m_pNavigationCom);
 			m_fPrevSpeed = fMoveSpeed;
-			
+
 			XMStoreFloat4(&m_vPrevMove, vFF);
 		}
 	}
@@ -2284,6 +2311,22 @@ void CPlayer::HitAction_WallBack()
 void CPlayer::HitAction_CounterElbow()
 {
 	Set_CutSceneAnim(KOBUSHIKUDAKI, 8);
+}
+
+void CPlayer::Update_RootFalseAnim()
+{
+	for (auto& index : m_RootFalseAnims)
+	{
+		if (m_pModelCom->Get_CurrentAnimationIndex() == index)
+		{
+			if(m_pModelCom->Get_AnimChanged())			//선형보간이 끝났을 때에만 변환해준다.
+				m_isRootAnim = false;
+			break;
+		}
+		else
+			m_isRootAnim = true;
+	}
+		
 }
 
 void CPlayer::Compute_MoveDirection_FB()
