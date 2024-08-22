@@ -554,7 +554,7 @@ void CPlayer::Attack_Event(CGameObject* pHitObject, _bool isItem)
 				CKiryu_KRS_Grab::KRS_Grab_DESC Desc{ true, Compute_Target_Direction(pLandObject) };
 				m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Setting_Value(&Desc);
 
-				HitZoomIn_On();
+				HitRadial_On();
 			}
 
 			if (m_iCurrentBehavior == (_uint)KRS_BEHAVIOR_STATE::ATTACK)
@@ -564,13 +564,9 @@ void CPlayer::Attack_Event(CGameObject* pHitObject, _bool isItem)
 				if (isTargetDead)
 					PlayerInfo.iMoney += 1000;
 
-				// 피니시 블로우고, 상대방이 죽었다면 잠깐 멈춘다.
 				if (static_cast<CKiryu_KRS_Attack*>(m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior))->IsFinishBlow())
 				{
-					if(isTargetDead)
-						HitFreeze_On();
-					else
-						HitRadial_On();
+					HitFreeze_On();
 
 					CEffect::EFFECT_DESC EffectDesc{};	
 
@@ -588,10 +584,8 @@ void CPlayer::Attack_Event(CGameObject* pHitObject, _bool isItem)
 				// 피니시 블로우고, 상대방이 죽었다면 잠깐 멈춘다.
 				if (static_cast<CKiryu_KRH_Attack*>(m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior))->IsFinishBlow())
 				{
-					if (m_pTargetObject->isObjectDead())
-						HitFreeze_On();
-					else
-						HitRadial_On();
+					HitFreeze_On();
+
 					CEffect::EFFECT_DESC EffectDesc{};
 
 					EffectDesc.pWorldMatrix = pHitObject->Get_TransformCom()->Get_WorldFloat4x4();
@@ -608,17 +602,16 @@ void CPlayer::Attack_Event(CGameObject* pHitObject, _bool isItem)
 				CKiryu_KRC_Grab::KRC_Grab_DESC Desc{ true, Compute_Target_Direction(pLandObject) };
 				m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Setting_Value(&Desc);
 
-				HitZoomIn_On();
+				HitRadial_On();
 			}
 
 			if (m_iCurrentBehavior == (_uint)KRC_BEHAVIOR_STATE::ATTACK)
 			{
-				// 상대방이 죽었다면 잠깐 멈춘다.
 				if (m_pTargetObject->isObjectDead())
-					HitFreeze_On();
+					HitRadial_On();
 				else if (static_cast<CKiryu_KRC_Attack*>(m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior))->IsFinishBlow())
 				{
-					HitRadial_On();
+					HitFreeze_On();
 					CEffect::EFFECT_DESC EffectDesc{};
 
 					EffectDesc.pWorldMatrix = pHitObject->Get_TransformCom()->Get_WorldFloat4x4();

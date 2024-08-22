@@ -75,8 +75,9 @@ void CLevel_DogimazoStairs::Tick(const _float& fTimeDelta)
 
 	m_pFightManager->Tick(fTimeDelta);
 
-	if (m_pUIManager->isTitleEnd())
+	if (!m_isLevelStarted)
 	{
+		m_isLevelStarted = true;
 		CPlayer* pPlayer = dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"), 0));
 		pPlayer->Battle_Start();
 	}
