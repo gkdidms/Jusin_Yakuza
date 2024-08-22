@@ -64,6 +64,7 @@ void CLevel_Roadway::Tick(const _float& fTimeDelta)
 
 	m_pFightManager->Tick(fTimeDelta);
 
+
 #ifdef _DEBUG
     SetWindowText(g_hWnd, TEXT("ÃÑ°ÝÀü ¸Ê"));
 #endif

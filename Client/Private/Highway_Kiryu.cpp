@@ -75,11 +75,11 @@ void CHighway_Kiryu::Tick(const _float& fTimeDelta)
 	else
 		m_pGun_R->Tick(fTimeDelta);
 
-	if (m_isFirstTick)
-	{
-		m_isFirstTick = false;
-		On_Separation_Hand(m_isLeft ? 1 : 2);
-	}
+	//if (m_isFirstTick)
+	//{
+	//	m_isFirstTick = false;
+	//	On_Separation_Hand(m_isLeft ? 1 : 2);
+	//}
 
 	m_pColliderCom->Tick(XMLoadFloat4x4(&m_ModelMatrix));
 }
@@ -406,9 +406,6 @@ void CHighway_Kiryu::Change_Behavior(BEHAVIOR_TYPE eType)
 {
 	// 양손 다 해제 후 필요한 손만 다시 설정
 	Off_Separation_Hand();
-
-	// 어깨 분리 해제
-	m_pModelCom->Set_Separation_ParentBone(m_isLeft ? "ude2_l_n" : "ude2_r_n", -1);
 
 	switch (eType)
 	{
