@@ -67,6 +67,9 @@ void CKiryu_Adventure_Run::Tick(const _float& fTimeDelta)
 
 void CKiryu_Adventure_Run::Change_Animation()
 {
+	m_pPlayer->Set_HandAnimIndex(CPlayer::HAND_MIDDLE2);
+	m_pPlayer->On_Separation_Hand();
+
 	const _bool* pDirction = m_pPlayer->Get_MoveDirection();
 
 	if (m_eAnimState == ANIM_START)

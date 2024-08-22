@@ -876,8 +876,7 @@ HRESULT CFileTotalMgr::Set_GameObject_In_Client(int iStageLevel)
         }
         else if (OBJECT_TYPE::PLAYER_POSITION == m_MapTotalInform.pMapObjDesc[i].iObjType)
         {
-            XMVECTOR position = XMVectorSet(m_MapTotalInform.pMapObjDesc[i].vTransform._41, m_MapTotalInform.pMapObjDesc[i].vTransform._42, m_MapTotalInform.pMapObjDesc[i].vTransform._43, 1);
-            m_PlayerPosition.push_back(position);
+            m_PlayerPosition.push_back(m_MapTotalInform.pMapObjDesc[i].vTransform);
         }
         else 
         {

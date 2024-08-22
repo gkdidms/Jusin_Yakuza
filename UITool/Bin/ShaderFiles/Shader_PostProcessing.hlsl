@@ -156,3 +156,40 @@ PS_OUT PS_MAIN_VIGNETTE(PS_IN In)
     
     return Out;
 }
+
+float g_fBrightness = { 0.1f }; // 밝기 조정
+float g_fContrast = { 1.f }; // 대비 보정
+float g_fSaturation = { 1.1f }; // 채도 보정
+float4 g_vTint = float4(1.05f, 0.95f, 1.f, 0.f); // 색조 조정 (약간의 틴트를 추가)
+
+float3 AdjustColor(float3 color)
+{
+    // 밝기 조정
+    color += g_fBrightness;
+
+    // 대비 조정
+    color = (color - 0.5f) * g_fContrast + 0.5f;
+
+    // 채도 조정
+    float3 grayscale = dot(color, float3(0.299f, 0.587f, 0.114f)); // 흑백 변환
+    color = lerp(grayscale.xxx, color, g_fSaturation);
+
+    // 색조 조정
+    color *= g_vTint;
+
+    // 색상 클램핑 (0~1 범위 유지)
+    color = saturate(color);
+
+    return color;
+}
+
+PS_OUT PS_MAIN_ABJECTCOLOR(PS_IN In)
+{
+    PS_OUT Out = (PS_OUT) 0;
+    
+    vector vColor = g_BackBufferTexture.Sample(LinearSampler, In.vTexcoord);
+    
+    Out.vColor = float4(AdjustColor(vColor.xyz), 1.f);
+    
+    return Out;
+}

@@ -213,6 +213,7 @@ private:
     void Ready_AnimationTree();
     void Ready_CutSceneAnimation();
     void Ready_AuraEffect();
+    void Ready_RootFalseAnimation();
 
     /* Compute Function */
 private:
@@ -254,6 +255,8 @@ public:
     void HitAction_Down();
     void HitAction_WallBack();
     void HitAction_CounterElbow();
+
+    void Update_RootFalseAnim();
 
 private:
     void Compute_MoveDirection_FB();
@@ -337,6 +340,7 @@ private:
     ANIMATION_COMPONENT_TYPE    m_eAnimComType = { DEFAULT };
     _bool                       m_isCutSceneStartMotion = { false };
     map<CUTSCENE_ANIMATION_TYPE, string> m_CutSceneAnimation;
+    vector<_uint>               m_RootFalseAnims;
 
     _uint                       m_iCutSceneAnimIndex = { 0 };
     _uint                       m_iCutSceneCamAnimIndex = { 0 };
@@ -346,6 +350,8 @@ private:
     _bool                       m_CanHitAction = { false };
 
     int                         m_iNaviRouteNum = { 0 }; //루트
+
+    _bool                       m_isRootAnim = { true };
 
 
     /* 플레이어 오라 이펙트 모아두기 */

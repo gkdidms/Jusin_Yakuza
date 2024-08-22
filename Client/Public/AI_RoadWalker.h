@@ -70,7 +70,7 @@ protected:
 
     _float  m_fDegree = { 0 };
     _vector m_vNextDir;
-    _bool   m_bisMove = { true };
+
 
 protected:
     virtual void Ready_Root() = 0;

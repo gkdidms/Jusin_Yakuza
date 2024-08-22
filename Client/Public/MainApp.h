@@ -36,9 +36,6 @@ private:
 	class CDebugManager* m_pDebugMananger = { nullptr };
 #endif // _DEBUG
 
-#ifdef _DEBUG
-
-#endif
 private:
 	_tchar					m_szFPS[MAX_PATH] = TEXT("");
 	_float					m_fTimeAcc = {};

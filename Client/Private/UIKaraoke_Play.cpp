@@ -102,7 +102,7 @@ HRESULT CUIKaraoke_Play::Tick(const _float& fTimeDelta)
 
     if (m_pGameInstance->GetKeyState(DIK_LCONTROL))
     {
-        m_pGameInstance->Set_SoundPosition(TEXT("Bakamita.mp3"), SOUND_BGM, 86.028);
+        m_pGameInstance->Set_SoundPosition(TEXT("Bakamita.mp3"), SOUND_BGM, 55.028);
     }
 
     // 컷신 실행시키기

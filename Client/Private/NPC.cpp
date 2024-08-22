@@ -63,6 +63,9 @@ HRESULT CNPC::Render()
 				return E_FAIL;
 		}
 
+		//if (FAILED(m_pModelCom->Bind_BoneMatrices(m_pShaderCom, "g_BoneMatrices", i)))
+		//	return E_FAIL;
+
 		_float fFar = *m_pGameInstance->Get_CamFar();
 		m_pShaderCom->Bind_RawValue("g_fFar", &fFar, sizeof(_float));
 
@@ -152,7 +155,7 @@ void CNPC::Synchronize_Root(const _float& fTimeDelta)
 		else
 		{
 			_float4 fMoveDir;
-			_float fMoveSpeed = XMVectorGetX(XMVector3Length(vFF - XMLoadFloat4(&m_vPrevMove)));
+			_float fMoveSpeed = XMVectorGetX(XMVector3Length(vFF - XMLoadFloat4(&m_vPrevMove))) * m_fOffset;
 
 			//Y값 이동을 죽인 방향으로 적용해야한다.
 			_vector vTemp = XMVector3Normalize((vFF - XMLoadFloat4(&m_vPrevMove)));

@@ -18,6 +18,9 @@ void CKiryu_Adventure_Walk::Tick(const _float& fTimeDelta)
 
 void CKiryu_Adventure_Walk::Change_Animation()
 {
+	m_pPlayer->Set_HandAnimIndex(CPlayer::HAND_MIDDLE2);
+	m_pPlayer->On_Separation_Hand();
+
 	const _bool* pDirction = m_pPlayer->Get_MoveDirection();
 
 	m_pPlayer->Change_Animation(m_AnimationIndices[m_iCurrentIndex]);

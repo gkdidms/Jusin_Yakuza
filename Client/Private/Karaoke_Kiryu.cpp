@@ -14,6 +14,7 @@
 #include "Camera.h"
 #include "PlayerCamera.h"
 #include "CutSceneCamera.h"
+#include "FileTotalMgr.h"
 
 CKaraoke_Kiryu::CKaraoke_Kiryu(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLandObject{ pDevice, pContext },
@@ -111,7 +112,7 @@ void CKaraoke_Kiryu::Tick(const _float& fTimeDelta)
 	if (m_isSinging)
 		Play_SingingAnim(fTimeDelta);
 
- 	m_pModelCom->Play_Animation(fTimeDelta);
+ 	m_pModelCom->Play_Animation(fTimeDelta, false);
 	m_pModelCom->Play_Animation_Separation(fTimeDelta, m_iHandAnimIndex, m_SeparationAnimComs[HAND_ANIM], false, (_int)HAND_ANIM);
 	//m_pModelCom->Play_Animation_Separation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")), m_iFaceAnimIndex, m_SeparationAnimComs[FACE_ANIM], false, (_int)FACE_ANIM);
 	m_pModelCom->Play_Animation_Separation(fTimeDelta, m_iFaceAnimIndex, m_SeparationAnimComs[FACE_ANIM], false, 3, 2.f);
@@ -132,7 +133,9 @@ void CKaraoke_Kiryu::Late_Tick(const _float& fTimeDelta)
 	m_pGameInstance->Add_Renderer(CRenderer::RENDER_SHADOWOBJ, this); // Shadow¿ë ·»´õ Ãß°¡
 #endif // _DEBUG
 
-	Compute_Height();
+
+	if(CUTSCENE != m_eAnimComType)
+		Compute_Height();
 }
 
 HRESULT CKaraoke_Kiryu::Render()
@@ -149,7 +152,7 @@ HRESULT CKaraoke_Kiryu::Render()
 		_float fFar = *m_pGameInstance->Get_CamFar();
 		m_pShaderCom->Bind_RawValue("g_fFar", &fFar, sizeof(_float));
 
-		m_pModelCom->Bind_BoneMatrices(m_pShaderCom, "g_BoneMatrices", i);
+		//m_pModelCom->Bind_BoneMatrices(m_pShaderCom, "g_BoneMatrices", i);
 
 		m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE);
 		
@@ -329,8 +332,6 @@ CGameObject* CKaraoke_Kiryu::Clone(void* pArg)
 
 void CKaraoke_Kiryu::Free()
 {
-
-
 #ifdef _DEBUG
 	Safe_Release(m_pDebugManager);
 #endif // _DEBUG
@@ -398,6 +399,8 @@ void CKaraoke_Kiryu::Set_CutSceneAnim()
 		}
 		j++;
 	}
+
+	m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(CFileTotalMgr::GetInstance()->Get_PlayerMatrix()));
 }
 
 void CKaraoke_Kiryu::Play_CutScene(const _float& fTimeDelta)

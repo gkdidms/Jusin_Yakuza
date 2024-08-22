@@ -163,22 +163,28 @@ void CImguiManager::ModelList()
 	{
 		m_iModelPathType = ENEMY;
 		Setting_ModelList("Monster/");
+	}	
+	ImGui::SameLine();
+	if (ImGui::RadioButton(u8"NPC ¸ðµ¨", m_iModelPathType == NPC))
+	{
+		m_iModelPathType = NPC;
+		Setting_ModelList("NPC/");
 	}
 
 
 	ImGui::Text(u8"Àû Ã¼Å© ½Ã AnimComponentÀÇ ¾Ö´Ï¸ÞÀÌ¼Ç ¸ñ·ÏÀ¸·Î ¼³Á¤ÇÑ´Ù");
-	if (ImGui::RadioButton(u8"¸ðµ¨ ³» ¾Ö´Ï¸ÞÀÌ¼Ç", m_iModelType == PLAYER))
+	if (ImGui::RadioButton(u8"¸ðµ¨ ³» ¾Ö´Ï¸ÞÀÌ¼Ç", m_iModelType == MODEL_ANIMS))
 	{
-		m_iModelType = PLAYER;
+		m_iModelType = MODEL_ANIMS;
 
 		Change_Model();
 
 		m_Anims = m_pRenderModel->Get_Animations();
 	}
 	ImGui::SameLine();
-	if (ImGui::RadioButton(u8"¾Ö´Ô ÄÄ", m_iModelType == ENEMY))
+	if (ImGui::RadioButton(u8"¾Ö´Ô ÄÄ", m_iModelType == ANIM_COM))
 	{
-		m_iModelType = ENEMY;
+		m_iModelType = ANIM_COM;
 
 		Change_Model();
 
@@ -186,9 +192,9 @@ void CImguiManager::ModelList()
 		m_Anims = pAnimCom->Get_Animations();
 	}
 	ImGui::SameLine();
-	if (ImGui::RadioButton(u8"½ÌÅ©¾×¼Ç ¾Ö´ÔÄÄ", m_iModelType == SYNC))
+	if (ImGui::RadioButton(u8"½ÌÅ©¾×¼Ç ¾Ö´ÔÄÄ", m_iModelType == SYNC_COM))
 	{
-		m_iModelType = SYNC;
+		m_iModelType = SYNC_COM;
 
 		Change_Model();
 
@@ -2608,7 +2614,7 @@ void CImguiManager::Change_Model()
 
 	if (TEXT("Kiryu") == strModelName)
 	{
-		if (SYNC == m_iModelType)
+		if (SYNC_COM == m_iModelType)
 		{
 			strAnimName = TEXT("CutSceneAnim_ForPlayer");
 		}
@@ -2622,7 +2628,7 @@ void CImguiManager::Change_Model()
 		|| TEXT("YakuzaA") == strModelName || TEXT("YakuzaB") == strModelName || TEXT("YakuzaC") == strModelName || TEXT("YakuzaD") == strModelName
 		|| TEXT("Yoneda") == strModelName)
 	{
-		if (SYNC == m_iModelType)
+		if (SYNC_COM == m_iModelType)
 		{
 			strAnimName = TEXT("SyncAnim");
 		}
