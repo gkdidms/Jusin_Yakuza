@@ -1,6 +1,7 @@
 #include "CarChase_CATBullet.h"
 
 #include "GameInstance.h"
+#include "UIManager.h"
 
 #include "Mesh.h"
 
@@ -8,13 +9,22 @@
 #include "Highway_Taxi.h"
 
 CCarChase_CATBullet::CCarChase_CATBullet(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-	:CGameObject{ pDevice, pContext }
+	:CCarChase_Monster{ pDevice, pContext },
+	m_pUIManager { CUIManager::GetInstance() }
 {
+	Safe_AddRef(m_pUIManager);
 }
 
 CCarChase_CATBullet::CCarChase_CATBullet(const CCarChase_CATBullet& rhs)
-	: CGameObject{ rhs }
+	: CCarChase_Monster{ rhs },
+	m_pUIManager{ rhs.m_pUIManager}
 {
+	Safe_AddRef(m_pUIManager);
+}
+
+_vector CCarChase_CATBullet::Get_BulletPos()
+{
+	return XMLoadFloat4((_float4*)&m_WorldMatrix.m[3]);
 }
 
 HRESULT CCarChase_CATBullet::Initialize_Prototype()
@@ -27,7 +37,7 @@ HRESULT CCarChase_CATBullet::Initialize(void* pArg)
 	if (nullptr == pArg)
 		return E_FAIL;
 
-	if (FAILED(__super::Initialize(pArg)))
+	if (FAILED(CGameObject::Initialize(pArg)))
 		return E_FAIL;
 
 	if (FAILED(Add_Components()))
@@ -42,6 +52,12 @@ HRESULT CCarChase_CATBullet::Initialize(void* pArg)
 	m_pTarget = dynamic_cast<CHighway_Taxi*>(m_pGameInstance->Get_GameObject(m_iCurrentLevel, TEXT("Layer_Taxi"), 0))->Get_Kiryu();
 	if (nullptr == m_pTarget)
 		return E_FAIL;
+	Safe_AddRef(m_pTarget);
+
+	m_pUIManager->Add_Target(m_iObjectIndex, this);
+
+	m_Info.fMaxHP = 100.f;
+	m_Info.fHp = m_Info.fMaxHP;
 
 	return S_OK;
 }
@@ -52,23 +68,53 @@ void CCarChase_CATBullet::Priority_Tick(const _float& fTimeDelta)
 
 void CCarChase_CATBullet::Tick(const _float& fTimeDelta)
 {
-	//플레이어를 타겟으로 따라다님
+	if (m_isObjectDead)
+		Set_Dead();
+
+	_vector vPlayerPos = XMLoadFloat4((_float4*)&m_pTarget->Get_ModelMatrix()->m[3]);
+	_vector vThisPos = XMLoadFloat4((_float4*)&m_WorldMatrix.m[3]);
+	float fVerticalSpeed = CalculateInitialVerticalSpeed(vPlayerPos, vThisPos);
+
+	//플레이어를 바라봄.
 	//m_pTransformCom->LookAt_For_LandObject(XMLoadFloat4((_float4*)&m_pTarget->Get_ModelMatrix()->m[3]));
-	_vector vLook = XMVector3Normalize(XMLoadFloat4((_float4*)&m_pTarget->Get_ModelMatrix()->m[3]) - XMLoadFloat4((_float4*)&m_WorldMatrix.m[3]));
+	_vector vLook = XMVector3Normalize(vPlayerPos - vThisPos);
 	vLook = XMVectorSetW(vLook, 0.f);
 	m_pTransformCom->LookAt(vLook, true);
 
-	m_pTransformCom->Go_Straight_CustumSpeed(m_fSpeed, fTimeDelta);
+	//플레이어를 따라감.
+	// 시간에 따른 위치 업데이트
+	_float4 vTransformPos;
+	XMStoreFloat4(&vTransformPos, m_pTransformCom->Get_State(CTransform::STATE_POSITION));
+
+	//수직 위치
+	fVerticalSpeed -= m_fGravite * fTimeDelta;
+	_float fY = vTransformPos.y + fVerticalSpeed * fTimeDelta;
+
+	XMStoreFloat4(&vTransformPos, XMLoadFloat4(&vTransformPos) + XMVector3Normalize(vLook) * m_fSpeed * fTimeDelta);
+	vTransformPos.y = fY;
+
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&vTransformPos));
 
 	_matrix ParentMatrix = XMMatrixIdentity();
 	ParentMatrix.r[3] = XMVectorSetY(XMLoadFloat4x4(m_pParentMatrix).r[3], XMVectorGetY(XMLoadFloat4x4(m_pParentMatrix).r[3]) + 2.f);
 
 	XMStoreFloat4x4(&m_WorldMatrix, m_pTransformCom->Get_WorldMatrix() * ParentMatrix);
+
+	m_pColliderCom->Tick(XMLoadFloat4x4(&m_WorldMatrix));
 }
 
 void CCarChase_CATBullet::Late_Tick(const _float& fTimeDelta)
 {
+	if (Check_Coll())
+		return;
+
+	Update_TargetingUI();
+
 	m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
+
+#ifdef _DEBUG
+	m_pGameInstance->Add_DebugComponent(m_pColliderCom);
+#endif
 }
 
 HRESULT CCarChase_CATBullet::Render()
@@ -178,6 +224,60 @@ HRESULT CCarChase_CATBullet::Bind_ResourceData()
 	return S_OK;
 }
 
+void CCarChase_CATBullet::Update_TargetingUI()
+{
+	//뼈에 붙이기 (kubi_c_n)
+	_matrix BoneMatrix = XMMatrixIdentity();
+
+	//3D -> 2D 변환
+	_matrix VPMatrix = m_pGameInstance->Get_Transform_Matrix(CPipeLine::D3DTS_VIEW) * m_pGameInstance->Get_Transform_Matrix(CPipeLine::D3DTS_PROJ);
+
+	_matrix vWorldMaitrx = XMLoadFloat4x4(&m_WorldMatrix);
+
+	//틱마다 업데이트
+	XMStoreFloat4x4(&m_pWorldMatrix, vWorldMaitrx);
+
+	_matrix ResultMatrix = vWorldMaitrx * VPMatrix;
+	_vector vPos = ResultMatrix.r[3];
+	_float fX = XMVectorGetX(vPos) / XMVectorGetW(vPos);
+	_float fY = XMVectorGetY(vPos) / XMVectorGetW(vPos);
+
+	_float windowX = fX * (g_iWinSizeX / 2);
+	_float windowY = fY * (g_iWinSizeY / 2);
+
+	BoneMatrix.r[3] = XMVectorSet(windowX, windowY, 0.f, 1.f);
+	m_pUIManager->Update_TargetMatrix(m_iObjectIndex, BoneMatrix, m_Info.fHp);
+}
+
+_float CCarChase_CATBullet::CalculateInitialVerticalSpeed(_vector vPlayerPos, _vector vPosition)
+{
+	// 플레이어까지의 거리 계산
+	float fDistance = XMVectorGetX(XMVector3Length(vPlayerPos - vPosition));
+
+
+	// 도달하는 데 필요한 시간 계산
+	float timeToTarget = fDistance / m_fSpeed;
+
+	// 초기 수직 속도 계산 (kinematic equation: v = u + at -> u = (v - at))
+	float verticalSpeed = (XMVectorGetY(vPlayerPos) - XMVectorGetY(vPosition) + 0.5f * m_fGravite * timeToTarget * timeToTarget) / timeToTarget;
+
+	return verticalSpeed;
+}
+
+_bool CCarChase_CATBullet::Check_Coll()
+{
+
+	if (m_pColliderCom->Intersect(m_pTarget->Get_KiryuCollier(), 1.f))
+	{
+		//충돌이 일어남
+		Set_Dead();
+		m_pUIManager->Remove_Target(m_iObjectIndex);
+
+		return true;
+	}
+	return false;
+}
+
 CCarChase_CATBullet* CCarChase_CATBullet::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
 	CCarChase_CATBullet* pInstance = new CCarChase_CATBullet(pDevice, pContext);
@@ -206,4 +306,8 @@ void CCarChase_CATBullet::Free()
 	Safe_Release(m_pModelCom);
 	Safe_Release(m_pMaterialCom);
 	Safe_Release(m_pColliderCom);
+
+	Safe_Release(m_pTarget);
+
+	Safe_Release(m_pUIManager);
 }

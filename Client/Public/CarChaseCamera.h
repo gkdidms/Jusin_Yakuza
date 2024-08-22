@@ -35,6 +35,7 @@ public:
 
 private:
     class CSystemManager* m_pSystemManager = { nullptr };
+    class CUIManager* m_pUIManager = { nullptr };
     const _float4x4* m_pPlayerMatrix = { nullptr };
     const _float4x4* m_pPlayerBoneMatrix = { nullptr };
 

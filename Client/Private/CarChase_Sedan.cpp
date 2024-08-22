@@ -42,7 +42,6 @@ void CCarChase_Sedan::Tick(const _float& fTimeDelta)
 void CCarChase_Sedan::Late_Tick(const _float& fTimeDelta)
 {
 	Set_ParentMatrix(fTimeDelta);
-
 	__super::Late_Tick(fTimeDelta);
 }
 
