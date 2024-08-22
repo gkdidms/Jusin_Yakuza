@@ -1,6 +1,8 @@
 #include "Chapter1_0.h"
 
 #include "GameInstance.h"
+#include "FileTotalMgr.h"
+#include "SystemManager.h"
 
 #include "UIManager.h"
 #include "ScriptManager.h"
@@ -10,8 +12,10 @@
 #include "Player.h"
 
 CChapter1_0::CChapter1_0()
-	: CMainQuest{}
+	: CMainQuest{},
+	m_pSystemManager{CSystemManager::GetInstance()}
 {
+	Safe_AddRef(m_pSystemManager);
 }
 
 HRESULT CChapter1_0::Initialize(void* pArg)
@@ -27,10 +31,13 @@ HRESULT CChapter1_0::Initialize(void* pArg)
 	Safe_AddRef(m_pBackground);
 
 	//씬 카메라 이동 후 스크립트 텍스쳐 나옴
-	m_pUIManager->Open_Scene(TEXT("Talk"));
-	m_pUIManager->Start_Talk(m_iScriptIndex); // 0번째 대화
+	m_pFileTotalMgr->Setting_Start_Cinemachine(6);
 
-	dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"), 0))->Set_PlayerStop(true);
+	//m_pUIManager->Open_Scene(TEXT("Talk"));
+	//m_pUIManager->Start_Talk(m_iScriptIndex); // 0번째 대화
+
+	//플레이어 움직임 막기
+	Player_Stop(true);
 
 	return S_OK;
 }
@@ -39,15 +46,15 @@ _bool CChapter1_0::Execute()
 {
 	if (m_isTitleFinished)
 	{
-		dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"), 0))->Set_PlayerStop(false);
+		Player_Stop(false);
 		return true;
 	}
-		
 
 	if (m_pUIManager->isTalkFinished())
 	{
 		if (!m_isTitleStart) // 타이틀 띄우기
 		{
+			m_pSystemManager->Set_Camera(CAMERA_PLAYER);
 			m_pUIManager->Open_Scene(TEXT("Title"));
 			m_pUIManager->Set_TitleStart(true); // 니시키야마를 찾아라
 			m_pUIManager->Start_Title(14);
@@ -63,18 +70,37 @@ _bool CChapter1_0::Execute()
 		if (m_pUIManager->Get_CurrentPage() == 1)
 		{
 			if (!m_pBackground->isShow())
+			{
+				m_pSystemManager->Set_Camera(CAMERA_PLAYER);
 				m_pBackground->Set_Show(true);
-
+			}
+				
 			return false;
 		}
 
 		else if (m_pUIManager->Get_CurrentPage() == 2)
 		{
 			if (m_pBackground->isShow())
+			{
+				m_pFileTotalMgr->Setting_Start_Cinemachine(7);
 				m_pBackground->Set_Show(false);
-
+			}
 			return false;
 		}
+	}
+
+	if (m_isStartCameraEnd)
+		return false;
+
+	//6번 씬 카메라가 끝나면 대화창 호출하기
+	//한번 호출 한 이후로는 진입하지 않음.
+	m_fStartTime += m_pGameInstance->Get_TimeDelta(TEXT("Timer_60"));
+
+	if (m_fStartDuration < m_fStartTime)
+	{
+		m_isStartCameraEnd = true;
+		m_pUIManager->Open_Scene(TEXT("Talk"));
+		m_pUIManager->Start_Talk(m_iScriptIndex); // 0번째 대화
 	}
 
 	return false;
@@ -95,4 +121,5 @@ void CChapter1_0::Free()
 	__super::Free();
 
 	Safe_Release(m_pBackground);
+	Safe_Release(m_pSystemManager);
 }

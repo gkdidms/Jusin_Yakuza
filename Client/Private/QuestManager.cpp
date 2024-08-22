@@ -60,6 +60,11 @@ _uint CQuestManager::Get_CurrentQuestTriggerIndex()
     return m_QuestInfo[m_iCurrentChapter][m_iCurrentQuestIndex].iObjectIndex;
 }
 
+_bool CQuestManager::isFightStart()
+{
+    return m_QuestInfo[m_iCurrentChapter][m_iCurrentQuestIndex].iType != QUEST_MAIN;
+}
+
 void CQuestManager::Set_CurrentColl(_bool isColl)
 {
     m_pCurrentQuest->Set_Coll(isColl);
@@ -80,6 +85,7 @@ void CQuestManager::Start_Quest(_uint iChapter)
     if (m_QuestInfo.empty())
         Ready_Quest();
 
+    m_iCurrentQuestIndex = 0;
     m_iCurrentChapter = iChapter;
     Add_MainQuest(m_QuestInfo[m_iCurrentChapter][0].iQuestIndex, m_QuestInfo[m_iCurrentChapter][0].iNextQuestIndex, m_QuestInfo[m_iCurrentChapter][0].iObjectIndex, m_QuestInfo[m_iCurrentChapter][0].iScriptIndex);
 }
@@ -241,13 +247,6 @@ HRESULT CQuestManager::Ready_Quest()
         QUEST_INFO(
             QUEST_MAIN,
             8,
-
-            iQuestIndex++,
-            iNextQuestIndex++
-        ),
-        QUEST_INFO(
-            QUEST_MAIN,
-            9,
 
             iQuestIndex++,
             iNextQuestIndex++
@@ -431,14 +430,6 @@ HRESULT CQuestManager::Add_MainQuest(_int iQuestIndex, _int iNextQuestIndex, _in
     else if (iQuestIndex == 12) // ÄíÁ¦
     {
         CChapter7_0* pMainQuest = CChapter7_0::Create(&Desc);
-        if (nullptr == pMainQuest)
-            return E_FAIL;
-
-        m_pCurrentQuest = pMainQuest;
-    }
-    else if (iQuestIndex == 13) // ÄíÁ¦º¸½ºµîÀå ÄÆ¾À
-    {
-        CChapter7_1* pMainQuest = CChapter7_1::Create(&Desc);
         if (nullptr == pMainQuest)
             return E_FAIL;
 
