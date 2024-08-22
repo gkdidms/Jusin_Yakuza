@@ -130,6 +130,10 @@ _bool CCarChase::Running()
 	}*/
 
 	//Set_TaxiStageDir();				//달리는 중에도 몬스터의 위치는 바뀔 수 있으므로, 각도 체인지
+
+	// 스테이지 진행중일때는 숄더뷰
+	CCarChaseCamera* pCamera = dynamic_cast<CCarChaseCamera*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Camera"), CAMERA_CARCHASE));
+	pCamera->ShoulderView_On();
 		
 	if (Reactors.size() <= 0)
 		return true;
@@ -147,6 +151,11 @@ _bool CCarChase::End()
 		pPlayer->Set_NavigationRouteIndex(m_Info.iNextPlayerLine);
 		pPlayer->Sit_Swap();
 	}
+
+	// 스테이지 교체중엔 일반뷰
+	CCarChaseCamera* pCamera = dynamic_cast<CCarChaseCamera*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Camera"), CAMERA_CARCHASE));
+	pCamera->ShoulderView_Off();
+
 
 	return true;
 }

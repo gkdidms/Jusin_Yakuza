@@ -46,6 +46,9 @@ public:
     virtual HRESULT Render() override;
 
 public:
+    void OnHit(_float fDamage);
+
+public:
     void Set_StageDir(_uint iStageDir) {
         m_iStageDir = iStageDir;
     }
@@ -79,7 +82,6 @@ public:
     void Change_Behavior(BEHAVIOR_TYPE eType);
 
 private:
-    void HideReload();
     _bool isAttackPossible();
 
 private:
@@ -94,10 +96,10 @@ private:
     class CGun_Cz75* m_pGun_R = { nullptr };
     class CGun_Cz75* m_pGun_L = { nullptr };
 
-    _float m_fHP = { 300.f };
+    _float m_fHP = { 200.f };
     _float m_fHitEye = { 100.f };
 
-    _float m_fMaxHP = { 300.f };
+    _float m_fMaxHP = { 200.f };
     _float m_fMaxHitEye = { 100.f };
 
     _uint m_iCurrentAmmo = { MAX_AMMO };

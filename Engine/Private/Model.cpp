@@ -1288,9 +1288,13 @@ void CModel::Play_Animation_Rotation_SeparationBone(_float fTimeDelta, string st
 			vBoneDir = XMVector3Normalize(vBoneDir);
 
 			_matrix RotationMatrix = XMMatrixRotationAxis(vBoneDir, fRadian);
+			_matrix BoneTransformationMatrix = XMLoadFloat4x4(pBone->Get_TransformationMatrix());
 
-			pBone->Set_TransformationMatrix(XMLoadFloat4x4(pBone->Get_TransformationMatrix()) * RotationMatrix);
-			pBone->Set_CustomRotationMatrix(RotationMatrix);
+			_matrix ValueMat = BoneTransformationMatrix * RotationMatrix;
+			ValueMat.r[CTransform::STATE_POSITION] = BoneTransformationMatrix.r[CTransform::STATE_POSITION];
+
+			pBone->Set_TransformationMatrix(ValueMat);
+			pBone->Set_CustomRotationMatrix(RotationMatrix);			// 얼마나 돌렸는지를 저장
 		}
 
 		// 컴바인드행렬을 애니메이션대로 우선 갱신 시키고
