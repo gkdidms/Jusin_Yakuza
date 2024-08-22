@@ -84,8 +84,12 @@ void CAI_Sedan::Ready_Tree()
 
 CBTNode::NODE_STATE CAI_Sedan::Dead()
 {
+	// 차가 죽었을 경우 별다른 애니메이션이 없다.
+	m_iSkill = SKILL_DEAD;
+
 	if (m_pThis->isReactorDead())
 		return CBTNode::SUCCESS;
+
 
 	if (*m_pWeaponType == CCarChase_Monster::GUN_L)
 		*m_pState = CCarChase_Monster::CARCHASE_AIML_DED;

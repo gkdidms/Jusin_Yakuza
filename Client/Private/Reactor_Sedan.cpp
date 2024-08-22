@@ -79,9 +79,9 @@ void CReactor_Sedan::Change_Animation()
 
 	//벤에 관한 애니메이션 넣기
 	if (m_strAnimName == "w_mngcar_c_car_ded_b_1")
-		m_iAnim = 0;
+		m_iAnim = 2;
 
-	if (m_iAnim == 0 && m_pModelCom->Get_AnimFinished())
+	if (m_iAnim == 2 && m_pModelCom->Get_AnimFinished(2))
 		m_isDead = true;
 }
 

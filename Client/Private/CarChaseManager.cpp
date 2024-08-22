@@ -1,6 +1,7 @@
 #include "CarChaseManager.h"
 
 #include "GameInstance.h"
+#include "FightManager.h"
 
 #include "CarChase.h"
 #include "CarChase_Monster.h"
@@ -79,9 +80,9 @@ HRESULT CCarChaseManager::Ready_Stage()
 			{ CCarChase_Monster::GUN_L, CCarChase_Monster::GUN_R}
 		},
 		CCarChase::STAGE_MONSTER_INFO{
-			210000,
+			110000,
 			LINE_D,
-			DIR_M,
+			DIR_B,
 			CCarChase_Monster::REACTOR_BIKE,
 			{ CCarChase_Monster::DRV, CCarChase_Monster::RKT}
 		}
@@ -108,22 +109,22 @@ HRESULT CCarChaseManager::Ready_Stage()
 		CCarChase::STAGE_MONSTER_INFO{
 			200000,
 			LINE_C,
-			DIR_M,
+			DIR_F,
 			CCarChase_Monster::REACTOR_VAN,
 			{ CCarChase_Monster::WPR, -1}
+		},
+		CCarChase::STAGE_MONSTER_INFO{
+			210000,
+			LINE_A,
+			DIR_M,
+			CCarChase_Monster::REACTOR_BIKE,
+			{ CCarChase_Monster::GUN, -1}
 		}
-		//CCarChase::STAGE_MONSTER_INFO{
-		//	210000,
-		//	LINE_D,
-		//	DIR_M,
-		//	CCarChase_Monster::REACTOR_BIKE,
-		//	{ CCarChase_Monster::DRV, CCarChase_Monster::RKT}
-		//}
 	};
 
 	CCarChase::STAGE_INFO StageInfo_2 = CCarChase::STAGE_INFO{
 		LINE_B,
-		LINE_A,
+		LINE_C,
 		DIR_F,
 		MonsterInfo_2
 	};
@@ -139,17 +140,17 @@ HRESULT CCarChaseManager::Ready_Stage()
 	vector<CCarChase::STAGE_MONSTER_INFO> MonsterInfo_3 = {
 		CCarChase::STAGE_MONSTER_INFO{
 			300000,
-			LINE_D,
+			LINE_A,
 			DIR_M,
-			CCarChase_Monster::REACTOR_HELI,
-			{ CCarChase_Monster::RKT, CCarChase_Monster::GAT }
+			CCarChase_Monster::REACTOR_BIKE,
+			{ CCarChase_Monster::DRV, CCarChase_Monster::RKT}
 		}
 	};
 
 	CCarChase::STAGE_INFO StageInfo_3 = CCarChase::STAGE_INFO{
-		LINE_A,
-		LINE_A,
-		DIR_R,
+		LINE_C,
+		LINE_C,
+		DIR_L,
 		MonsterInfo_3
 	};
 
@@ -159,6 +160,113 @@ HRESULT CCarChaseManager::Ready_Stage()
 		return E_FAIL;
 
 	m_Stages.emplace_back(pStage3);
+
+	//4 스테이지
+	vector<CCarChase::STAGE_MONSTER_INFO> MonsterInfo_4 = {
+		CCarChase::STAGE_MONSTER_INFO{
+			400000,
+			LINE_B,
+			DIR_M,
+			CCarChase_Monster::REACTOR_BIKE,
+			{ CCarChase_Monster::DRV, CCarChase_Monster::RKT}
+		},
+		CCarChase::STAGE_MONSTER_INFO{
+			410000,
+			LINE_A,
+			DIR_F,
+			CCarChase_Monster::REACTOR_SEDAN,
+			{ CCarChase_Monster::GUN_R, -1}
+		}
+	};
+
+	CCarChase::STAGE_INFO StageInfo_4 = CCarChase::STAGE_INFO{
+		LINE_C,
+		LINE_A,
+		DIR_L,
+		MonsterInfo_4
+	};
+
+	Desc.Info = StageInfo_4;
+	CCarChase* pStage4 = CCarChase::Create(&Desc);
+	if (nullptr == pStage4)
+		return E_FAIL;
+
+	m_Stages.emplace_back(pStage4);
+
+	//5 스테이지
+	vector<CCarChase::STAGE_MONSTER_INFO> MonsterInfo_5 = {
+		CCarChase::STAGE_MONSTER_INFO{
+			500000,
+			LINE_C,
+			DIR_M,
+			CCarChase_Monster::REACTOR_VAN,
+			{ CCarChase_Monster::WPR, CCarChase_Monster::WPJ}
+		}
+	};
+
+	CCarChase::STAGE_INFO StageInfo_5 = CCarChase::STAGE_INFO{
+		LINE_A,
+		LINE_A,
+		DIR_R,
+		MonsterInfo_5
+	};
+
+	Desc.Info = StageInfo_5;
+	CCarChase* pStage5 = CCarChase::Create(&Desc);
+	if (nullptr == pStage5)
+		return E_FAIL;
+
+	m_Stages.emplace_back(pStage5);
+
+	//6 스테이지
+	vector<CCarChase::STAGE_MONSTER_INFO> MonsterInfo_6 = {
+		CCarChase::STAGE_MONSTER_INFO{
+			600000,
+			LINE_C,
+			DIR_F,
+			CCarChase_Monster::REACTOR_SEDAN,
+			{ CCarChase_Monster::GUN_L, -1}
+		}
+	};
+
+	CCarChase::STAGE_INFO StageInfo_6 = CCarChase::STAGE_INFO{
+		LINE_A,
+		LINE_A,
+		DIR_F,
+		MonsterInfo_6
+	};
+
+	Desc.Info = StageInfo_6;
+	CCarChase* pStage6 = CCarChase::Create(&Desc);
+	if (nullptr == pStage6)
+		return E_FAIL;
+
+	m_Stages.emplace_back(pStage6);
+
+	//7 스테이지
+	vector<CCarChase::STAGE_MONSTER_INFO> MonsterInfo_7 = {
+		CCarChase::STAGE_MONSTER_INFO{
+			700000,
+			LINE_D,
+			DIR_M,
+			CCarChase_Monster::REACTOR_HELI,
+			{ CCarChase_Monster::RKT, CCarChase_Monster::GAT }
+		}
+	};
+
+	CCarChase::STAGE_INFO StageInfo_7 = CCarChase::STAGE_INFO{
+		LINE_A,
+		LINE_A,
+		DIR_R,
+		MonsterInfo_7
+	};
+
+	Desc.Info = StageInfo_7;
+	CCarChase* pStage7 = CCarChase::Create(&Desc);
+	if (nullptr == pStage7)
+		return E_FAIL;
+
+	m_Stages.emplace_back(pStage7);
 }
 
 CCarChaseManager* CCarChaseManager::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

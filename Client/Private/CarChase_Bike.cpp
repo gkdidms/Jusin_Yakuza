@@ -270,10 +270,6 @@ void CCarChase_Bike::Set_ParentMatrix(const _float& fTimeDelta)
 	ParentMatrix.r[2] = XMVector3TransformNormal(ParentMatrix.r[2], RotationMatrix);
 
 	XMStoreFloat4x4(&m_ModelWorldMatrix, m_pTransformCom->Get_WorldMatrix() * ParentMatrix);
-
-
-
-	XMStoreFloat4x4(&m_ModelWorldMatrix, m_pTransformCom->Get_WorldMatrix() * XMLoadFloat4x4(m_pParentBoneMatrix) * XMLoadFloat4x4(m_pParentMatrix));
 }
 
 CCarChase_Bike* CCarChase_Bike::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
