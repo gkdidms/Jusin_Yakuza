@@ -118,6 +118,7 @@ public:
    const _uint Get_MaxAmmo() { return MAX_AMMO; }
     _uint Get_Ammo() { return m_iCurrentAmmo; }
     _uint Get_CurrentBehavior() { return m_eCurrentBehavior; }
+    CCollider* Get_KiryuCollier() { return m_pColliderCom; }
 
     //아래는 ui에서 확인한 코드 지워도됨
     void Shot() { m_iCurrentAmmo--; }
