@@ -96,7 +96,7 @@ void CHighway_Taxi::Tick(const _float& fTimeDelta)
 #endif // _DEBUG
 
 	if (!m_isStop)
-		Move_Waypoint(fTimeDelta);
+		Move_Waypoint(fTimeDelta * m_fBooster);
 
 	m_pKiryu->Tick(fTimeDelta);
 }

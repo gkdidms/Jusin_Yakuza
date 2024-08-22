@@ -457,6 +457,10 @@ void CHighway_Kiryu::Change_Behavior(BEHAVIOR_TYPE eType)
 		if(m_eCurrentBehavior == SHOT && Checked_Animation_Ratio(0.4f))
 			m_pModelCom->Reset_Animation((m_isLeft ? 31 : 66));
 
+		// 카메라 쉐이킹
+		CCarChaseCamera* pCamera = dynamic_cast<CCarChaseCamera*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Camera"), CAMERA_CARCHASE));
+		pCamera->Set_Shaking(true, { 1.f, 1.f, 1.f }, 0.3, 0.5);
+
 		// 어깨 분리
 		//m_pModelCom->Set_Separation_ParentBone(m_isLeft ? "ude2_l_n" : "ude2_r_n", DEFAULT_ANIM);
 		////m_pModelCom->Set_Separation_SingleBone(m_isLeft ? "ude2_l_n" : "ude2_r_n", -1);
