@@ -112,6 +112,8 @@ protected:
     virtual void RimLight_Event();
     virtual void Trail_Event();
 
+    virtual _bool Checked_Animation_Ratio(_float fRatio);
+
 public:
     // iHandType: 0양손, 1 왼손, 2 오른손
     virtual void On_Separation_Hand(_uint iHandType = 0);           // 뼈 이름이 다르면 재정의해서 사용해야한다

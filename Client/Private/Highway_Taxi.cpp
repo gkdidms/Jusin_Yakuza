@@ -96,7 +96,7 @@ void CHighway_Taxi::Tick(const _float& fTimeDelta)
 #endif // _DEBUG
 
 	if (!m_isStop)
-		Move_Waypoint(fTimeDelta);
+		Move_Waypoint(fTimeDelta * m_fBooster);
 
 	m_pKiryu->Tick(fTimeDelta);
 }
@@ -153,6 +153,19 @@ string CHighway_Taxi::Get_CurrentAnimationName()
 void CHighway_Taxi::Set_NavigationIndex(int iIndex)
 {
 	m_pNavigationCom->Set_Index(iIndex);
+}
+
+void CHighway_Taxi::OnHit(_float fDamage)
+{
+	// 키류가 차체에 숨어있는 상황이라면, 차량의 체력이 깎이고, 반대는 키류 체력이 깎인다.
+	if (CHighway_Kiryu::HIDE == m_pKiryu->Get_CurrentBehavior())
+	{
+		m_fCarHp -= fDamage;
+	}
+	else
+	{
+		m_pKiryu->OnHit(fDamage);
+	}
 }
 
 void CHighway_Taxi::Change_Animation()

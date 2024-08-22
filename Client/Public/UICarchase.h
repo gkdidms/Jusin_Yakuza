@@ -39,7 +39,7 @@ public:
 private:
     map<_uint, CARCCHASE_UI_DESC> m_Targets; // 타겟팅 UI 저장
 
-    _float m_fAimSpeed = { 250.f };
+    _float m_fAimSpeed = { 300.f };
     _uint KiryuType = { 0 };
 
     CARCCHASE_UI_DESC* m_CurrentTarget = { nullptr };

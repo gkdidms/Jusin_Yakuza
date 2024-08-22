@@ -31,6 +31,7 @@ public:
 private:
     const _uint MAX_AMMO = 15;
     const _float HITEYE_DECREASE_SPEED = 20.f;
+    const _float RELOAD_TIME = 2.f;
 
 private:
     CHighway_Kiryu(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -44,6 +45,9 @@ public:
     virtual void Tick(const _float& fTimeDelta) override;
     virtual void Late_Tick(const _float& fTimeDelta) override;
     virtual HRESULT Render() override;
+
+public:
+    void OnHit(_float fDamage);
 
 public:
     void Set_StageDir(_uint iStageDir) {
@@ -62,7 +66,7 @@ public:
 
 private:
     virtual void Change_Animation();
-    _bool Checked_Animation_Ratio(_float fRatio);
+    
     void Key_Input();
 
     /* 애니메이션 */
@@ -79,7 +83,6 @@ public:
     void Change_Behavior(BEHAVIOR_TYPE eType);
 
 private:
-    void HideReload();
     _bool isAttackPossible();
 
 private:
@@ -94,10 +97,10 @@ private:
     class CGun_Cz75* m_pGun_R = { nullptr };
     class CGun_Cz75* m_pGun_L = { nullptr };
 
-    _float m_fHP = { 300.f };
+    _float m_fHP = { 200.f };
     _float m_fHitEye = { 100.f };
 
-    _float m_fMaxHP = { 300.f };
+    _float m_fMaxHP = { 200.f };
     _float m_fMaxHitEye = { 100.f };
 
     _uint m_iCurrentAmmo = { MAX_AMMO };
@@ -108,7 +111,7 @@ private:
     _bool           m_isStarted = { false };
     _bool           m_isHitEyeCharging = { true };
 
-    _uint           m_iUdeIndex = 31;
+    _float m_fAccReloadTimer = { 0.f };
 
 public:
     _float Get_MaxHP() { return m_fMaxHP; }
@@ -121,7 +124,7 @@ public:
     CCollider* Get_KiryuCollier() { return m_pColliderCom; }
 
     //아래는 ui에서 확인한 코드 지워도됨
-    void Shot() { m_iCurrentAmmo--; }
+    _bool Shot();
     void Damage() { m_fHP -= 2.f; }
 
 public:
