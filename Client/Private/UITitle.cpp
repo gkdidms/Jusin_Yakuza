@@ -66,6 +66,11 @@ HRESULT CUITitle::Late_Tick(const _float& fTimeDelta)
         m_isStart = false;
     }
 
+    if (m_isStart && m_iCurrentTime > 1.0f)
+    {
+        m_isBattleStart = true;
+    }
+
     if (FAILED(__super::Late_Tick(fTimeDelta)))
         return E_FAIL;
     for (auto& iter : m_EventUI)
@@ -87,6 +92,7 @@ void CUITitle::Start_Title(_uint Index)
     //밖에서 불러와서 몇번쨰 타이틀 띄울지 하자
     m_isStart = true;
     m_isEnd = false;
+    m_isBattleStart = false;
 }
 
 CUITitle* CUITitle::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg)
