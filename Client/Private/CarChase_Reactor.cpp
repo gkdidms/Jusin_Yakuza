@@ -195,7 +195,7 @@ _bool CCarChase_Reactor::Check_Dead()
 			CEffect::EFFECT_DESC EffectDesc;
 
 			EffectDesc.pWorldMatrix = m_pTransformCom->Get_WorldFloat4x4();
-			CEffectManager::GetInstance()->Car_Explosion(EffectDesc);
+			CEffectManager::GetInstance()->Heli_Exp(EffectDesc);
 		}
 		return true;
 	}

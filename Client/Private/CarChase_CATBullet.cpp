@@ -71,7 +71,14 @@ void CCarChase_CATBullet::Priority_Tick(const _float& fTimeDelta)
 void CCarChase_CATBullet::Tick(const _float& fTimeDelta)
 {
 	if (m_isObjectDead)
+	{
 		Set_Dead();
+		//ÀÌÆåÆ® »ý¼º
+		CEffect::EFFECT_DESC EffectDesc;
+
+		EffectDesc.pWorldMatrix = &m_WorldMatrix;
+		CEffectManager::GetInstance()->Heli_BulletExp(EffectDesc);
+	}
 
 	_vector vPlayerPos = XMLoadFloat4((_float4*)&m_pTarget->Get_ModelMatrix()->m[3]);
 	_vector vThisPos = XMLoadFloat4((_float4*)&m_WorldMatrix.m[3]);
