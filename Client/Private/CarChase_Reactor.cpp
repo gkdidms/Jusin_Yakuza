@@ -291,9 +291,6 @@ void CCarChase_Reactor::Move_Waypoint(const _float& fTimeDelta)
 	else if (m_fSpeed > m_fMaxSpeed * fBack)
 		m_fSpeed = m_fMaxSpeed * fBack;
 
-
-	
-
 	m_pTransformCom->Go_Straight_CustumSpeed(m_fSpeed, fTimeDelta, m_pNavigationCom);
 
 }

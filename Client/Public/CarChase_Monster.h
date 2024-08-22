@@ -101,8 +101,9 @@ public:
 public:
     _uint Get_LineDir() { return m_iLineDir; } //몬스터의 위치 (앞, 옆, 뒤)
     const _float4x4* Get_ModelMatrix() { return &m_ModelWorldMatrix; }
+
 public:
-    void Set_Coll();
+    virtual void Set_Coll();
 
 protected:
     CCarChase_Monster(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

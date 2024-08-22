@@ -93,7 +93,7 @@ HRESULT CVIBuffer::Bind_Compute(CComputeShader* pShader)
 {
 	if (m_pVertexBufferSRV == nullptr && m_pResultBufferUAV == nullptr)
 	{
-		Ready_BoneBuffer();
+
 	}
 
 	m_pContext->CopyResource(m_pSRVIn, m_pVB);
@@ -242,6 +242,7 @@ HRESULT CVIBuffer::Ready_AABBCubeBuffer()
 void CVIBuffer::Free()
 {
 	__super::Free();
+
 	Safe_Release(m_pVB);
 	Safe_Release(m_pUAVOut);
 	Safe_Release(m_pIB);

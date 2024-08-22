@@ -4,6 +4,7 @@
 #include "UIManager.h"
 
 #include "Nishiki.h"
+#include "Player.h"
 
 CChapter4_0::CChapter4_0()
 	: CMainQuest{}
@@ -24,6 +25,10 @@ HRESULT CChapter4_0::Initialize(void* pArg)
 
 	m_pNishiki->Set_State(CNishiki::TALK);
 
+	Player_Stop(true);
+
+	//m_pFileTotalMgr->Setting_Start_Cinemachine(19);
+
 	return S_OK;
 }
 
@@ -32,7 +37,7 @@ _bool CChapter4_0::Execute()
 {
 	if (m_pUIManager->isTalkFinished())
 	{
-		m_pNishiki->Set_State(CNishiki::IDLE);
+		Player_Stop(false);
 		return true;
 	}
 
