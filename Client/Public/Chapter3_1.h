@@ -15,8 +15,6 @@ public:
 	virtual _bool Execute() override;
 
 public:
-
-public:
 	static CChapter3_1* Create(void* pArg);
 	virtual void Free();
 };

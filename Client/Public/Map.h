@@ -50,14 +50,15 @@ public:
 		SHADER_STRONGBLOOM, //9
 		SHADER_COMPULSORY_DECALBLEND, //10
 		SHADER_DYNAMIC_SIGN_SMALL, // 11
-		SHADER_GLASS_DIFFUSE, //12
-		SHADER_DYNAMIC_SIGN_BLOOM, // 13
-		SHADER_DYNAMIC_SIGN_FAST, // 14
+		SHADER_DYNAMIC_SIGN_BLOOM, // 12
+		SHADER_DYNAMIC_SIGN_FAST, // 13
 
 		// 무조건 제일 아래
-		SHADER_LIGHTDEPTH, //13
+		SHADER_LIGHTDEPTH, //14
+		SHADER_FAR,
 		SHADER_END
 	};
+
 
 public:
 	typedef struct tMapObjDesc : public CGameObject::GAMEOBJECT_DESC
@@ -105,7 +106,7 @@ public:
 
 	_bool isOcculusionDepth();
 	HRESULT Near_Render(_uint iRenderState);
-
+	HRESULT Far_Render(_uint iRenderState);
 public:
 	CTransform* Get_Transform() { return m_pTransformCom; }
 
@@ -118,6 +119,7 @@ public:
 
 private:
 	void						Add_Renderer(const _float& fTimeDelta);
+	void						Add_Renderer_Far(const _float& fTimeDelta);
 
 private:
 	CShader*	m_pShaderCom = { nullptr };
@@ -152,7 +154,6 @@ private:
 	vector<int>				m_vDynamicSignIndex;
 	vector<int>				m_vStrongBloomIndex;
 	vector<int>				m_vCompulsoryDecalBlendMeshIndex;
-	vector<int>				m_vFastDynamicSign;
 
 	_int					m_iLayerNum;
 	wstring					m_wstrModelName;

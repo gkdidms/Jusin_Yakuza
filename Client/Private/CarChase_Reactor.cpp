@@ -118,6 +118,12 @@ HRESULT CCarChase_Reactor::Render()
 	int i = 0;
 	for (auto& pMesh : m_pModelCom->Get_Meshes())
 	{
+		if (!m_pGameInstance->isShadow())
+		{
+			m_pModelCom->Bind_BoneMatrices(i);
+			m_pModelCom->Bind_Compute(m_pComputeShaderCom, i);
+		}
+
 		if (nullptr != m_pMaterialCom)
 		{
 			if (FAILED(m_pMaterialCom->Bind_Shader(m_pShaderCom, m_pModelCom->Get_MaterialName(pMesh->Get_MaterialIndex()))))
@@ -284,9 +290,6 @@ void CCarChase_Reactor::Move_Waypoint(const _float& fTimeDelta)
 	}
 	else if (m_fSpeed > m_fMaxSpeed * fBack)
 		m_fSpeed = m_fMaxSpeed * fBack;
-
-
-	
 
 	m_pTransformCom->Go_Straight_CustumSpeed(m_fSpeed, fTimeDelta, m_pNavigationCom);
 

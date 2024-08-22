@@ -106,12 +106,50 @@ HRESULT CHighway_Kiryu::Render()
 	int i = 0;
 	for (auto& pMesh : m_pModelCom->Get_Meshes())
 	{
-		//if (FAILED(m_pModelCom->Bind_BoneMatrices(m_pShaderCom, "g_BoneMatrices", i)))
-		//	return E_FAIL;
+		if (!m_pGameInstance->isShadow())
+		{
+			m_pModelCom->Bind_BoneMatrices(i);
+			m_pModelCom->Bind_Compute(m_pComputeShaderCom, i);
+		}
+
+		if (nullptr != m_pMaterialCom)
+		{
+			if (FAILED(m_pMaterialCom->Bind_Shader(m_pShaderCom, m_pModelCom->Get_MaterialName(pMesh->Get_MaterialIndex()))))
+				return E_FAIL;
+		}
+
+		_float fFar = *m_pGameInstance->Get_CamFar();
+		m_pShaderCom->Bind_RawValue("g_fFar", &fFar, sizeof(_float));
 
 		m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE);
-		m_pModelCom->Bind_Material(m_pShaderCom, "g_MultiDiffuseTexture", i, aiTextureType_SHININESS);
+
 		m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS);
+
+		_bool isRS = true;
+		_bool isRD = true;
+		_bool isRM = true;
+		_bool isRT = true;
+		_bool isMulti = true;
+
+		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_MultiDiffuseTexture", i, aiTextureType_SHININESS)))
+			isMulti = false;
+		m_pShaderCom->Bind_RawValue("g_isMulti", &isMulti, sizeof(_bool));
+
+		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RSTexture", i, aiTextureType_SPECULAR)))
+			isRS = false;
+		m_pShaderCom->Bind_RawValue("g_isRS", &isRS, sizeof(_bool));
+
+		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RDTexture", i, aiTextureType_OPACITY)))
+			isRD = false;
+		m_pShaderCom->Bind_RawValue("g_isRD", &isRD, sizeof(_bool));
+
+		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RMTexture", i, aiTextureType_METALNESS)))
+			isRM = false;
+		m_pShaderCom->Bind_RawValue("g_isRM", &isRM, sizeof(_bool));
+
+		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RTTexture", i, aiTextureType_EMISSIVE)))
+			isRT = false;
+		m_pShaderCom->Bind_RawValue("g_isRT", &isRT, sizeof(_bool));
 
 		if (pMesh->Get_AlphaApply())
 			m_pShaderCom->Begin(1);     //ºí·£µå

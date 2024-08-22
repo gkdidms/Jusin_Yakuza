@@ -4,6 +4,9 @@
 #include "UIManager.h"
 #include "Background.h"
 
+#include "Player.h"
+#include "PlayerCamera.h"
+
 CChapter5_0::CChapter5_0()
 	: CMainQuest{}
 {
@@ -18,6 +21,9 @@ HRESULT CChapter5_0::Initialize(void* pArg)
 	m_pUIManager->Open_Scene(TEXT("Talk"));
 	m_pUIManager->Start_Talk(m_iScriptIndex);
 
+	PlayerCom_Stop(true);
+	Player_Stop(true);
+
 	return S_OK;
 }
 
@@ -25,7 +31,12 @@ HRESULT CChapter5_0::Initialize(void* pArg)
 _bool CChapter5_0::Execute()
 {
 	if (m_pUIManager->isTalkFinished())
+	{
+		PlayerCom_Stop(false);
+		Player_Stop(false);
 		return true;
+	}
+		
 
 	return false;
 }

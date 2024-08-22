@@ -18,6 +18,9 @@ HRESULT CChapter5_1::Initialize(void* pArg)
 	m_pUIManager->Open_Scene(TEXT("Talk"));
 	m_pUIManager->Start_Talk(m_iScriptIndex);
 
+	Player_Stop(true);
+	PlayerCom_Stop(true);
+
 	return S_OK;
 }
 
@@ -25,8 +28,12 @@ HRESULT CChapter5_1::Initialize(void* pArg)
 _bool CChapter5_1::Execute()
 {
 	if (m_pUIManager->isTalkFinished())
+	{
+		Player_Stop(false);
+		PlayerCom_Stop(false);
 		return true;
-
+	}
+		
 	return false;
 }
 

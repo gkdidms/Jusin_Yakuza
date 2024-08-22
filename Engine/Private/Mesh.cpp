@@ -171,7 +171,11 @@ HRESULT CMesh::Initialize_Prototype(CModel::MODELTYPE eModelType, const BAiMesh*
 HRESULT CMesh::Initialize()
 {
 	if (m_iModelType == CModel::TYPE_ANIM && !m_isTool)
+	{
+		Ready_BoneBuffer();
 		Ready_Buffer();
+	}
+		
 
 	return S_OK;
 }

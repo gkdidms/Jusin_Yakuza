@@ -19,13 +19,13 @@ CLevel_Tutorial::CLevel_Tutorial(ID3D11Device* pDevice, ID3D11DeviceContext* pCo
 	: CLevel{ pDevice, pContext },
 	m_pSystemManager{ CSystemManager::GetInstance() },
 	m_pFileTotalManager{ CFileTotalMgr::GetInstance() },
-	//m_pFightManager{ CFightManager::GetInstance()},
+	m_pFightManager{ CFightManager::GetInstance()},
 	m_pQuestManager{ CQuestManager::GetInstance()},
 	m_pUIManager { CUIManager::GetInstance() }
 {
 	Safe_AddRef(m_pSystemManager);
 	Safe_AddRef(m_pFileTotalManager);
-	//Safe_AddRef(m_pFightManager);
+	Safe_AddRef(m_pFightManager);
 	Safe_AddRef(m_pQuestManager);
 	Safe_AddRef(m_pUIManager);
 }
@@ -37,13 +37,11 @@ HRESULT CLevel_Tutorial::Initialize()
 
 	if (FAILED(m_pQuestManager->Initialize()))
 		return E_FAIL;
-
-	m_pQuestManager->Start_Quest(CQuestManager::CHAPTER_1);
-	//m_pFightManager->Initialize();
-	//m_pFightManager->Set_StreetFight(true);
+	m_pFightManager->Initialize();
+	m_pFightManager->Set_StreetFight(true);
 
 	/* Å¬¶ó ÆÄ½Ì */
-	m_pFileTotalManager->Set_MapObj_In_Client(7, LEVEL_TUTORIAL);
+	m_pFileTotalManager->Set_MapObj_In_Client(STAGE_TUTORIAL, LEVEL_TUTORIAL);
 	m_pFileTotalManager->Set_Lights_In_Client(99);
 	m_pFileTotalManager->Set_Trigger_In_Client(STAGE_TUTORIAL, LEVEL_TUTORIAL);
 	m_pFileTotalManager->Set_Collider_In_Client(STAGE_TUTORIAL, LEVEL_TUTORIAL);
@@ -51,14 +49,27 @@ HRESULT CLevel_Tutorial::Initialize()
 	if (FAILED(Ready_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
 
-	m_pSystemManager->Set_Camera(CAMERA_PLAYER);
+	m_pFileTotalManager->Load_Cinemachine(6, LEVEL_TUTORIAL);
+	m_pFileTotalManager->Load_Cinemachine(7, LEVEL_TUTORIAL);
+	m_pFileTotalManager->Load_Cinemachine(8, LEVEL_TUTORIAL);
+	m_pFileTotalManager->Load_Cinemachine(9, LEVEL_TUTORIAL);
+	m_pFileTotalManager->Load_Cinemachine(10, LEVEL_TUTORIAL);
+	m_pFileTotalManager->Load_Cinemachine(11, LEVEL_TUTORIAL);
+	m_pFileTotalManager->Load_Cinemachine(12, LEVEL_TUTORIAL);
+	m_pFileTotalManager->Load_Cinemachine(13, LEVEL_TUTORIAL);
+	m_pFileTotalManager->Load_Cinemachine(14, LEVEL_TUTORIAL);
+	m_pFileTotalManager->Load_Cinemachine(15, LEVEL_TUTORIAL);
 
+
+	m_pSystemManager->Set_Camera(CAMERA_PLAYER);
+	m_pQuestManager->Start_Quest(CQuestManager::CHAPTER_1);
+	
 	return S_OK;
 }
 
 void CLevel_Tutorial::Tick(const _float& fTimeDelta)
 {
-	//m_pFightManager->Tick(fTimeDelta);
+	m_pFightManager->Tick(fTimeDelta);
 
 	if (m_pQuestManager->Execute())
 	{
