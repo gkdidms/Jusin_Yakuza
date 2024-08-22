@@ -24,6 +24,12 @@ CCarChase_Monster::CCarChase_Monster(const CCarChase_Monster& rhs)
 	Safe_AddRef(m_pUIManager);
 }
 
+void CCarChase_Monster::Set_ReactorDead(_bool isReactorDead)
+{
+	m_isReactorDead = isReactorDead;
+	m_pUIManager->Remove_Target(m_iObjectIndex);
+}
+
 HRESULT CCarChase_Monster::Initialize_Prototype()
 {
 	return S_OK;

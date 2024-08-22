@@ -114,7 +114,7 @@ public://몬스터가 들고잇는 무기 타입에 따라서 모션이 달라짐.
     _bool isReactorDead() { return m_isReactorDead; }
 
 public:
-    void Set_ReactorDead(_bool isReactorDead) { m_isReactorDead = isReactorDead; }
+    void Set_ReactorDead(_bool isReactorDead);
 
 public:
     virtual HRESULT Initialize_Prototype() override;
