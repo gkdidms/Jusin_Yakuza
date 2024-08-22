@@ -3,6 +3,7 @@
 #include "GameInstance.h"
 
 #include "Player.h"
+#include "CharacterData.h"
 
 CNishiki::CNishiki(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CNPC{ pDevice, pContext }
@@ -32,6 +33,11 @@ HRESULT CNishiki::Initialize(void* pArg)
 		m_iState = IDLE;
 
 	m_isAnimLoop = true;
+
+	m_wstrScndModelName = TEXT("Nishiki");
+
+	if (FAILED(Add_CharacterData()))
+		return E_FAIL;
 
 	return S_OK;
 }
