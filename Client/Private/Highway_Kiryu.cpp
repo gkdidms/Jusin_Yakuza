@@ -130,6 +130,11 @@ HRESULT CHighway_Kiryu::Render()
 	return S_OK;
 }
 
+void CHighway_Kiryu::OnHit(_float fDamage)
+{
+	m_fHP -= fDamage;
+}
+
 void CHighway_Kiryu::Change_Animation()
 {
 }
@@ -456,11 +461,6 @@ void CHighway_Kiryu::Change_Behavior(BEHAVIOR_TYPE eType)
 	m_eCurrentBehavior = eType;
 
 	On_Separation_Hand(m_isLeft ? 1 : 2);
-}
-
-void CHighway_Kiryu::HideReload()
-{
-
 }
 
 //몬스터가 제자리에 존재하지 않으면 공격 불가능
