@@ -21,7 +21,7 @@ CMesh::CMesh(const CMesh& rhs)
 	, m_isTool {rhs.m_isTool}
 	, m_BoneIndices {rhs.m_BoneIndices}
 {
-	strcpy(m_szName, rhs.m_szName);
+	memcpy(&m_szName, &rhs.m_szName, sizeof(char) * _MAX_PATH);
 
 	if(CModel::TYPE_PARTICLE ==m_iModelType)
 	{

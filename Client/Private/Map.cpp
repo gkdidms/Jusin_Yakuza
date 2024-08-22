@@ -112,7 +112,8 @@ void CMap::Tick(const _float& fTimeDelta)
 			m_fWaterDeltaTime = 0;
 	}
 
-	m_fTimer += fTimeDelta;
+	m_fTimer += fTimeDelta * 2;
+
 	if (1 < m_fTimer)
 	{
 		m_fTimer = 0;
@@ -144,8 +145,8 @@ void CMap::Tick(const _float& fTimeDelta)
 	m_fCamDistance = XMVectorGetX(XMVector3Length(vCubePos - m_pGameInstance->Get_CamPosition()));
 
 	
-	if (m_pGameInstance->Get_CurrentLevel() == LEVEL_TUTORIAL || 
-		m_pGameInstance->Get_CurrentLevel() == LEVEL_TOKOSTREET)
+	if ((m_pGameInstance->Get_CurrentLevel() == LEVEL_TUTORIAL || 
+		m_pGameInstance->Get_CurrentLevel() == LEVEL_TOKOSTREET) && true == m_bOcculusionCulling)
 		m_pGameInstance->Add_Renderer(CRenderer::RENDER_OCCULUSION, this);
 }
 
@@ -168,12 +169,20 @@ void CMap::Late_Tick(const _float& fTimeDelta)
 
 	if (m_pGameInstance->Get_CurrentLevel() == LEVEL_TUTORIAL ||
 		m_pGameInstance->Get_CurrentLevel() == LEVEL_NISHIKIWALK ||
-		m_pGameInstance->Get_CurrentLevel() == LEVEL_TOKOSTREET)
+		m_pGameInstance->Get_CurrentLevel() == LEVEL_TOKOSTREET || m_pGameInstance->Get_CurrentLevel() == LEVEL_TEST)
 	{
-		if (isOcculusionDepth())
+		if (true == m_bOcculusionCulling && isOcculusionDepth())
 		{
 			Add_Renderer(fTimeDelta);
 			//m_pGameInstance->Add_Renderer(CRenderer::RENDER_SHADOWOBJ, this);
+		}
+		else if (false == m_bOcculusionCulling)
+		{
+			XMVECTOR	vWorldPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+			if (true == m_pGameInstance->isIn_WorldFrustum(vWorldPos, 20))
+			{
+				Add_Renderer(fTimeDelta);
+			}
 		}
 	}
 	else
@@ -182,43 +191,12 @@ void CMap::Late_Tick(const _float& fTimeDelta)
 		//m_pGameInstance->Add_Renderer(CRenderer::RENDER_SHADOWOBJ, this);
 	}
 
-	//m_pGameInstance->Add_Renderer(CRenderer::RENDER_OCCULUSION, this);
+	m_pGameInstance->Add_Renderer(CRenderer::RENDER_OCCULUSION, this);
 }
 
 HRESULT CMap::Render()
 {
-//#ifdef _DEBUG
-//	for (auto& iter : m_vColliders)
-//		m_pGameInstance->Add_DebugComponent(iter);
-//
-//#endif
 
-#ifdef _DEBUG
-
-	//if (m_pGameInstance->Get_RenderState() == CRenderer::RENDER_NONBLENDER)
-	//{
-	//	_float4x4 CubeWorldMatrix;
-	//	XMStoreFloat4x4(&CubeWorldMatrix, m_CubeWorldMatrix);
-	//	if (FAILED(m_pCubeShaderCom->Bind_Matrix("g_WorldMatrix", &CubeWorldMatrix)))
-	//		return E_FAIL;
-	//	//if (FAILED(m_pTransformCom->Bind_ShaderMatrix(m_pShaderCom, "g_WorldMatrix")))
-	//	//	return E_FAIL;
-
-	//	if (FAILED(m_pCubeShaderCom->Bind_Matrix("g_ViewMatrix", m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_VIEW))))
-	//		return E_FAIL;
-	//	if (FAILED(m_pCubeShaderCom->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_PROJ))))
-	//		return E_FAIL;
-
-	//	if (FAILED(m_pCubeShaderCom->Bind_RawValue("g_fFar", m_pGameInstance->Get_CamFar(), sizeof(_float))))
-	//		return E_FAIL;
-
-	//	m_pCubeShaderCom->Begin(1);
-
-	//	m_pVIBufferCom->Render();
-	//}
-#endif
-
-	
 
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
@@ -234,90 +212,6 @@ HRESULT CMap::Render()
 	Near_Render(iRenderState);
 #pragma endregion
 
-	//Render Glass
-#pragma region Render_GlassMeshGroup
-	if (iRenderState == CRenderer::RENDER_GLASS)
-	{
-		for (size_t k = 0; k < m_vRenderGlassMeshIndex.size(); k++)
-		{
-			int		i = m_vRenderGlassMeshIndex[k];
-
-			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
-				return E_FAIL;
-
-			_bool isRS = true;
-			_bool isRD = true;
-			if (!strcmp(Meshes[i]->Get_Name(), "box4783"))
-			{
-				isRS = false;
-				isRD = false;
-			}
-
-			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RSTexture", i, aiTextureType_SPECULAR)))
-				isRS = false;
-			m_pShaderCom->Bind_RawValue("g_isRS", &isRS, sizeof(_bool));
-
-			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RDTexture", i, aiTextureType_OPACITY)))
-				isRD = false;
-
-			m_pShaderCom->Bind_RawValue("g_isRD", &isRD, sizeof(_bool));
-
-			bool	bNormalExist = m_pModelCom->Check_Exist_Material(i, aiTextureType_NORMALS);
-			// Normal texture가 있을 경우
-			if (true == bNormalExist)
-			{
-				m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS);
-
-				if (FAILED(m_pShaderCom->Bind_RawValue("g_bExistNormalTex", &bNormalExist, sizeof(bool))))
-					return E_FAIL;
-			}
-			else
-			{
-				if (FAILED(m_pShaderCom->Bind_RawValue("g_bExistNormalTex", &bNormalExist, sizeof(bool))))
-					return E_FAIL;
-			}
-
-			bool	bRMExist = m_pModelCom->Check_Exist_Material(i, aiTextureType_METALNESS);
-			if (true == bRMExist)
-			{
-				if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RMTexture", i, aiTextureType_METALNESS)))
-					return E_FAIL;
-
-				if (FAILED(m_pShaderCom->Bind_RawValue("g_bExistRMTex", &bRMExist, sizeof(bool))))
-					return E_FAIL;
-			}
-			else
-			{
-				if (FAILED(m_pShaderCom->Bind_RawValue("g_bExistRMTex", &bRMExist, sizeof(bool))))
-					return E_FAIL;
-			}
-
-			bool	bRSExist = m_pModelCom->Check_Exist_Material(i, aiTextureType_SPECULAR);
-			if (true == bRSExist)
-			{
-				if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RSTexture", i, aiTextureType_SPECULAR)))
-					return E_FAIL;
-
-				if (FAILED(m_pShaderCom->Bind_RawValue("g_bExistRSTex", &bRSExist, sizeof(bool))))
-					return E_FAIL;
-			}
-			else
-			{
-				if (FAILED(m_pShaderCom->Bind_RawValue("g_bExistRSTex", &bRSExist, sizeof(bool))))
-					return E_FAIL;
-			}
-
-			if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_NonBlendDiffuse"), m_pShaderCom, "g_RefractionTexture")))
-				return E_FAIL;
-
-			m_pShaderCom->Begin(SHADER_GLASS);
-
-			m_pModelCom->Render(i);
-		}
-
-	}
-
-#pragma endregion
 
 	//Render Effect
 #pragma region Render_EffectMeshGroup
@@ -338,13 +232,38 @@ HRESULT CMap::Render()
 	}
 #pragma endregion
 
+#pragma region RenderGlass
+	if (iRenderState == CRenderer::RENDER_GLASS)
+	{
+		for (size_t k = 0; k < m_vRenderGlassMeshIndex.size(); k++)
+		{
+			int		i = m_vRenderGlassMeshIndex[k];
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
+				return E_FAIL;
+
+			// 유리문 처리
+			if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Diffuse"), m_pShaderCom, "g_RefractionTexture")))
+				return E_FAIL;
+
+			// 색상값 넣어주기
+			m_pShaderCom->Begin(SHADER_GLASS_DIFFUSE);
+
+			m_pModelCom->Render(i);
+		}
+	}
+
+#pragma endregion
+
+
+
 	//Render Decal
 #pragma region Render_DecalMesh
 
 	if (iRenderState == CRenderer::RENDER_DECAL)
 	{
 		// 일반 마스크
-		// VtxMesh - Defulat_Pass - 2번
+		//- 6번
 		for (size_t k = 0; k < m_vDecalBlendMeshIndex.size(); k++)
 		{
 			int		i = m_vDecalBlendMeshIndex[k];
@@ -369,9 +288,15 @@ HRESULT CMap::Render()
 
 			m_pModelCom->Render(i);
 		}
+
 	}
 	
 #pragma endregion
+
+
+
+
+
 
 	//Render Bloom - nonlight
 #pragma region Render_Bloom
@@ -843,9 +768,10 @@ HRESULT CMap::Near_Render(_uint iRenderState)
 		}
 #pragma endregion
 
-#pragma region 강력한bloom
+#pragma region GLASS
 		for (size_t k = 0; k < m_vRenderGlassMeshIndex.size(); k++)
 		{
+			// GLASS NORMAL, DEPTH 등의 정보 넣기
 			int		i = m_vRenderGlassMeshIndex[k];
 
 			if (nullptr != m_pMaterialCom)
@@ -894,7 +820,7 @@ HRESULT CMap::Near_Render(_uint iRenderState)
 
 			m_pShaderCom->Bind_RawValue("g_bCompulsoryAlpha", &m_bCompulsoryAlpha, sizeof(_bool));
 
-			m_pShaderCom->Begin(SHADER_DEFAULT_MAP);
+			m_pShaderCom->Begin(SHADER_GLASS_DEFAULT);
 
 			m_pModelCom->Render(i);
 		}
@@ -1154,20 +1080,23 @@ void CMap::Add_Renderer(const _float& fTimeDelta)
 	}
 
 	// RENDER_NONBLEND 돼야하는 그룹
-	if (0 < m_vRenderDefaulMeshIndex.size() || 0 < m_vSignMeshIndex.size() || 0 < m_vLampMeshIndex.size() || 0 < m_vBloomIndex.size() || 0 < m_vMaskMeshIndex.size())
+	if (0 < m_vRenderDefaulMeshIndex.size() || 0 < m_vSignMeshIndex.size() || 0 < m_vLampMeshIndex.size() 
+		|| 0 < m_vBloomIndex.size() || 0 < m_vMaskMeshIndex.size() || 0 < m_vStrongBloomIndex.size() || 0 < m_vRenderGlassMeshIndex.size())
 		m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
-
-	// RENDER_GLASS 돼야하는 그룹
-	if (0 < m_vRenderGlassMeshIndex.size())
-		m_pGameInstance->Add_Renderer(CRenderer::RENDER_GLASS, this);
 
 	// RENDER_EFFECT 돼야하는 그룹
 	if (0 < m_vDecalLightMeshIndex.size() || 0 < m_vLampMeshIndex.size())
 		m_pGameInstance->Add_Renderer(CRenderer::RENDER_EFFECT, this);
 
+	// GLASS, DECAL 같이 처리 - COLOR 값만 넣는애들
 	if (0 < m_vDecalBlendMeshIndex.size() || 0 < m_vCompulsoryDecalBlendMeshIndex.size())
 	{
 		m_pGameInstance->Add_Renderer(CRenderer::RENDER_DECAL, this);
+	}
+
+	if (0 < m_vRenderGlassMeshIndex.size())
+	{
+		m_pGameInstance->Add_Renderer(CRenderer::RENDER_GLASS, this);
 	}
 		
 
@@ -1233,29 +1162,13 @@ HRESULT CMap::Add_Components(void* pArg)
 		m_CubeWorldMatrix.r[0].m128_f32[0] = gameobjDesc->pColliderDesc[0].vExtents.x * 2;
 		m_CubeWorldMatrix.r[1].m128_f32[1] = gameobjDesc->pColliderDesc[0].vExtents.y * 2;
 		m_CubeWorldMatrix.r[2].m128_f32[2] = gameobjDesc->pColliderDesc[0].vExtents.z * 2;
-
 		
+		m_bOcculusionCulling = true;
 	}
 	else
 	{
-		/*_float3 vScale = m_pModelCom->Get_LocalModelSize();
-
-		m_CubeWorldMatrix = XMMatrixIdentity();
-		m_CubeWorldMatrix = gameobjDesc->vStartPos;
-
-		m_CubeWorldMatrix.r[3].m128_f32[1] += aabbDesc.vScale.y;*/
+		m_bOcculusionCulling = false;
 	}
-
-	//_float3 vScale = m_pModelCom->Get_LocalModelSize();
-
-	//m_CubeWorldMatrix = XMMatrixIdentity();
-	//m_CubeWorldMatrix.r[3].m128_f32[0] = gameobjDesc->vStartPos.r[3].m128_f32[0];
-	//m_CubeWorldMatrix.r[3].m128_f32[1] = gameobjDesc->vStartPos.r[3].m128_f32[1] + vScale.y * 0.5;
-	//m_CubeWorldMatrix.r[3].m128_f32[2] = gameobjDesc->vStartPos.r[3].m128_f32[2];
-
-	//m_CubeWorldMatrix.r[0].m128_f32[0] = vScale.x * 0.8;
-	//m_CubeWorldMatrix.r[1].m128_f32[1] = vScale.y;
-	//m_CubeWorldMatrix.r[2].m128_f32[2] = vScale.z * 0.8;
 
 	
 	// Occulusion Culling을 위한
@@ -1320,8 +1233,7 @@ HRESULT CMap::Bind_ShaderResources()
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_PROJ))))
 		return E_FAIL;
 
-	if (FAILED(m_pShaderCom->Bind_RawValue("g_fFar", m_pGameInstance->Get_CamFar(), sizeof(_float))))
-		return E_FAIL;
+
 
 	return S_OK;
 }
