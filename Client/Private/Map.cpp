@@ -90,7 +90,8 @@ HRESULT CMap::Initialize(void* pArg)
 	queryDesc.MiscFlags = 0;
 	m_pDevice->CreateQuery(&queryDesc, &m_pOcclusionQuery);
 
-
+	float		fRandom = m_pGameInstance->Get_Random(0, 1);
+	m_fTimer = fRandom;
 
 	return S_OK;
 }
@@ -113,6 +114,8 @@ void CMap::Tick(const _float& fTimeDelta)
 	}
 
 	m_fTimer += fTimeDelta * 2;
+
+
 
 	if (1 < m_fTimer)
 	{
@@ -166,6 +169,7 @@ void CMap::Late_Tick(const _float& fTimeDelta)
 	m_vDynamicSignIndex.clear();
 	m_vStrongBloomIndex.clear();
 	m_vCompulsoryDecalBlendMeshIndex.clear();
+	m_vFastDynamicSign.clear();
 
 	if (m_pGameInstance->Get_CurrentLevel() == LEVEL_TUTORIAL ||
 		m_pGameInstance->Get_CurrentLevel() == LEVEL_NISHIKIWALK ||
@@ -370,6 +374,22 @@ HRESULT CMap::Render()
 			m_pModelCom->Render(i);
 		}
 
+		for (size_t k = 0; k < m_vDynamicSignIndex.size(); k++)
+		{
+			int		i = m_vDynamicSignIndex[k];
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
+				return E_FAIL;
+
+
+			if (FAILED(m_pShaderCom->Bind_RawValue("g_fTimeDelta", &m_fDynamicTime, sizeof(float))))
+				return E_FAIL;
+
+			m_pShaderCom->Begin(SHADER_DYNAMIC_SIGN_BLOOM);
+
+			m_pModelCom->Render(i);
+		}
+
 	}
 #pragma endregion
 
@@ -416,6 +436,27 @@ HRESULT CMap::Render()
 				return E_FAIL;
 
 			m_pShaderCom->Begin(SHADER_DYNAMIC_SIGN_SMALL);
+
+			m_pModelCom->Render(i);
+		}
+
+
+		for (size_t k = 0; k < m_vFastDynamicSign.size(); k++)
+		{
+			int		i = m_vFastDynamicSign[k];
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
+				return E_FAIL;
+
+			if (FAILED(m_pShaderCom->Bind_RawValue("g_fTimeDelta", &m_fDynamicTime, sizeof(float))))
+				return E_FAIL;
+
+			_bool	isEmissive = true;
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_EmissiveTexture", i, aiTextureType_EMISSIVE)))
+				isEmissive = false;
+			m_pShaderCom->Bind_RawValue("g_bEmissiveTex", &isEmissive, sizeof(_bool));
+
+			m_pShaderCom->Begin(SHADER_DYNAMIC_SIGN_FAST);
 
 			m_pModelCom->Render(i);
 		}
@@ -1003,6 +1044,10 @@ void CMap::Add_Renderer(const _float& fTimeDelta)
 			{
 				m_vDynamicSignIndex.push_back(i);
 			}
+			else if (strstr(baseNameCStr, "DYNAMICEMISSIVEFAST") != nullptr)
+			{
+				m_vFastDynamicSign.push_back(i);
+			}
 			else
 			{
 				// mesh 안합쳐놓으면 그냥 default로 처리
@@ -1069,6 +1114,10 @@ void CMap::Add_Renderer(const _float& fTimeDelta)
 				{
 					m_vDynamicSignIndex.push_back(i);
 				}
+				else if (strstr(baseNameCStr, "DYNAMICEMISSIVEFAST") != nullptr)
+				{
+					m_vFastDynamicSign.push_back(i);
+				}
 				else
 				{
 					// mesh 안합쳐놓으면 그냥 default로 처리
@@ -1101,7 +1150,7 @@ void CMap::Add_Renderer(const _float& fTimeDelta)
 		
 
 	// 빛 영향 안받고 원색값 유지
-	if (0 < m_vSignMeshIndex.size() || 0 < m_vMaskSignIndex.size() || 0 < m_vDynamicSignIndex.size())
+	if (0 < m_vSignMeshIndex.size() || 0 < m_vMaskSignIndex.size() || 0 < m_vDynamicSignIndex.size() || 0 < m_vFastDynamicSign.size())
 		m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONLIGHT_NONBLUR, this);
 
 	//Bloom
@@ -1313,6 +1362,7 @@ void CMap::Free()
 	m_vDynamicSignIndex.clear();
 	m_vStrongBloomIndex.clear();
 	m_vCompulsoryDecalBlendMeshIndex.clear();
+	m_vFastDynamicSign.clear();
 
 	Safe_Release(m_pComputeShaderCom);
 	Safe_Release(m_pCubeShaderCom);

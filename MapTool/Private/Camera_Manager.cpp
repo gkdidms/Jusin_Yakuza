@@ -775,6 +775,8 @@ void CCamera_Manager::Show_Edit_Cameras_Inform_IMGUI()
 {
 	ImVec2 size = ImVec2(500, 100);  // 너비: 200, 높이: 100
 
+	if (0 == m_CameraObjs.size())
+		return;
 
 	static int camera_current_idx = 0;
 
@@ -823,91 +825,96 @@ void CCamera_Manager::Show_Edit_Cameras_Inform_IMGUI()
 
 	ImGui::Text(u8"Camera 수정");
 
-	static CAMERAOBJ_DESC		cameraObjDesc = m_tCurCameraDesc;
-
-	if (ImGui::BeginTable("StructTable", 10)) {
-		ImGui::TableNextColumn();
-		ImGui::Text("fFovY");
-		ImGui::TableNextColumn();
-		ImGui::InputFloat("##fFovY", &m_tCurCameraDesc.fFovY); // "##"를 사용하여 ID 레이블을 숨깁니다.
-
-		ImGui::TableNextColumn();
-		ImGui::Text("Aspect");
-		ImGui::TableNextColumn();
-		ImGui::InputFloat("##fAspect", &m_tCurCameraDesc.fAspect);
-
-		ImGui::TableNextColumn();
-		ImGui::Text("fNear");
-		ImGui::TableNextColumn();
-		ImGui::InputFloat("##Near", &m_tCurCameraDesc.fNear);
-
-		ImGui::TableNextColumn();
-		ImGui::Text("fFar");
-		ImGui::TableNextColumn();
-		ImGui::InputFloat("##Far", &m_tCurCameraDesc.fFar);
-
-		ImGui::TableNextColumn();
-		ImGui::Text("fMoveTime");
-		ImGui::TableNextColumn();
-		ImGui::InputFloat("##fMoveTime", &m_tCurCameraDesc.fMoveTime);
-
-		ImGui::TableNextColumn();
-		ImGui::Text("fMoveSpeed");
-		ImGui::TableNextColumn();
-		ImGui::InputFloat("##fMoveSpeed", &m_tCurCameraDesc.fMoveSpeed);
-
-		ImGui::TableNextColumn();
-		ImGui::Text("fStayTime");
-		ImGui::TableNextColumn();
-		ImGui::InputFloat("##fStayTime", &m_tCurCameraDesc.fStayTime);
-
-		ImGui::TableNextColumn();
-		ImGui::Text("Lerp");
-		ImGui::TableNextColumn();	ImGui::Checkbox(u8"##선형보간할건지", &m_tCurCameraDesc.bLerp);
-
-		ImGui::EndTable();
-	}
-
-
-
-
-
-	ImGui::NewLine();
-
-	static	bool	bFocus = true;
-	ImGui::Checkbox(u8"체크-Focus, 체크x-Eye", &bFocus);
-	if (bFocus == true)
+	if (0 < m_CameraObjs.size())
 	{
-		Edit_Focus_Transform();
+		static CAMERAOBJ_DESC		cameraObjDesc = m_tCurCameraDesc;
+
+		if (ImGui::BeginTable("StructTable", 10)) {
+			ImGui::TableNextColumn();
+			ImGui::Text("fFovY");
+			ImGui::TableNextColumn();
+			ImGui::InputFloat("##fFovY", &m_tCurCameraDesc.fFovY); // "##"를 사용하여 ID 레이블을 숨깁니다.
+
+			ImGui::TableNextColumn();
+			ImGui::Text("Aspect");
+			ImGui::TableNextColumn();
+			ImGui::InputFloat("##fAspect", &m_tCurCameraDesc.fAspect);
+
+			ImGui::TableNextColumn();
+			ImGui::Text("fNear");
+			ImGui::TableNextColumn();
+			ImGui::InputFloat("##Near", &m_tCurCameraDesc.fNear);
+
+			ImGui::TableNextColumn();
+			ImGui::Text("fFar");
+			ImGui::TableNextColumn();
+			ImGui::InputFloat("##Far", &m_tCurCameraDesc.fFar);
+
+			ImGui::TableNextColumn();
+			ImGui::Text("fMoveTime");
+			ImGui::TableNextColumn();
+			ImGui::InputFloat("##fMoveTime", &m_tCurCameraDesc.fMoveTime);
+
+			ImGui::TableNextColumn();
+			ImGui::Text("fMoveSpeed");
+			ImGui::TableNextColumn();
+			ImGui::InputFloat("##fMoveSpeed", &m_tCurCameraDesc.fMoveSpeed);
+
+			ImGui::TableNextColumn();
+			ImGui::Text("fStayTime");
+			ImGui::TableNextColumn();
+			ImGui::InputFloat("##fStayTime", &m_tCurCameraDesc.fStayTime);
+
+			ImGui::TableNextColumn();
+			ImGui::Text("Lerp");
+			ImGui::TableNextColumn();	ImGui::Checkbox(u8"##선형보간할건지", &m_tCurCameraDesc.bLerp);
+
+			ImGui::EndTable();
+		}
+
+
+
+
+
+		ImGui::NewLine();
+
+		static	bool	bFocus = true;
+		ImGui::Checkbox(u8"체크-Focus, 체크x-Eye", &bFocus);
+		if (bFocus == true)
+		{
+			Edit_Focus_Transform();
+		}
+		else
+		{
+			Edit_Eye_Transform();
+		}
+
+		XMStoreFloat4(&m_tCurCameraDesc.vEye, m_CameraEyeObjs[m_iCurrentCameraIndex]->Get_Transform()->Get_State(CTransform::STATE_POSITION));
+		XMStoreFloat4(&m_tCurCameraDesc.vFocus, m_CameraFocusObjs[m_iCurrentCameraIndex]->Get_Transform()->Get_State(CTransform::STATE_POSITION));
+
+
+
+		//ImGui::Text(u8"Focus - 확인용, 수정하지 말기!!!!");
+		//ImGui::InputFloat("X", &m_tCurCameraDesc.vFocus.x);
+		//ImGui::InputFloat("Y", &m_tCurCameraDesc.vFocus.y);
+		//ImGui::InputFloat("Z", &m_tCurCameraDesc.vFocus.z);
+		//ImGui::InputFloat("W", &m_tCurCameraDesc.vFocus.w);
+
+		//ImGui::Text(u8"Eye - 확인용, 수정하지말기!!!!!!!");
+		//ImGui::InputFloat("X", &m_tCurCameraDesc.vEye.x);
+		//ImGui::InputFloat("Y", &m_tCurCameraDesc.vEye.y);
+		//ImGui::InputFloat("Z", &m_tCurCameraDesc.vEye.z);
+		//ImGui::InputFloat("W", &m_tCurCameraDesc.vEye.w);
+
+
+
+		if (ImGui::Button(u8"카메라 수정"))
+		{
+			Edit_Camera();
+		}
 	}
-	else
-	{
-		Edit_Eye_Transform();
-	}
 
-	XMStoreFloat4(&m_tCurCameraDesc.vEye, m_CameraEyeObjs[m_iCurrentCameraIndex]->Get_Transform()->Get_State(CTransform::STATE_POSITION));
-	XMStoreFloat4(&m_tCurCameraDesc.vFocus, m_CameraFocusObjs[m_iCurrentCameraIndex]->Get_Transform()->Get_State(CTransform::STATE_POSITION));
-
-
-
-	//ImGui::Text(u8"Focus - 확인용, 수정하지 말기!!!!");
-	//ImGui::InputFloat("X", &m_tCurCameraDesc.vFocus.x);
-	//ImGui::InputFloat("Y", &m_tCurCameraDesc.vFocus.y);
-	//ImGui::InputFloat("Z", &m_tCurCameraDesc.vFocus.z);
-	//ImGui::InputFloat("W", &m_tCurCameraDesc.vFocus.w);
-
-	//ImGui::Text(u8"Eye - 확인용, 수정하지말기!!!!!!!");
-	//ImGui::InputFloat("X", &m_tCurCameraDesc.vEye.x);
-	//ImGui::InputFloat("Y", &m_tCurCameraDesc.vEye.y);
-	//ImGui::InputFloat("Z", &m_tCurCameraDesc.vEye.z);
-	//ImGui::InputFloat("W", &m_tCurCameraDesc.vEye.w);
-
-
-
-	if (ImGui::Button(u8"카메라 수정"))
-	{
-		Edit_Camera();
-	}
+	
 
 }
 
@@ -918,6 +925,9 @@ void CCamera_Manager::Edit_Camera()
 
 void CCamera_Manager::Edit_Focus_Transform()
 {
+	if (0 == m_CameraFocusObjs.size())
+		return;
+
 	vector<CCameraInstallObj*>::iterator iter = m_CameraFocusObjs.begin();
 
 	if (0 != m_iCurrentCameraIndex)
@@ -936,6 +946,9 @@ void CCamera_Manager::Edit_Focus_Transform()
 
 void CCamera_Manager::Edit_Eye_Transform()
 {
+	if (0 == m_CameraEyeObjs.size())
+		return;
+
 	vector<CCameraInstallObj*>::iterator iter = m_CameraEyeObjs.begin();
 
 	if (0 != m_iCurrentCameraIndex)

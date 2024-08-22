@@ -318,6 +318,7 @@ void CTrigger_Manager::Show_Add_Trigger_IMGUI()
 	}
 	else
 	{
+		ImGui::Text(u8"사용x");
 		if (ImGui::BeginListBox(u8"몬스터 트리거"))
 		{
 			for (int n = 0; n < m_TriggerLevel.size(); n++)
@@ -345,7 +346,7 @@ void CTrigger_Manager::Show_Add_Trigger_IMGUI()
 	ImGui::NewLine();
 
 	static int iTriggerID = 0;
-	ImGui::InputInt(u8"트리거 ID", &iTriggerID);
+	ImGui::InputInt(u8"트리거 ID - 몬스터트리거 넘버로도 사용", &iTriggerID);
 
 
 	ImGui::Text(u8"트리거 추가 - 추가 버튼 누르고 pick ");
