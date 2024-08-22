@@ -25,7 +25,7 @@
 #include "Monster.h"
 #include "Item.h"
 #include "MapCollider.h"
-
+#include "EffectManager.h"
 #include "QteManager.h"
 
 #pragma region 행동 관련 헤더들
@@ -485,6 +485,9 @@ HRESULT CPlayer::Render()
 		if (FAILED(m_pMaterialCom->Bind_Shader(m_pShaderCom, m_pModelCom->Get_MaterialName(pMesh->Get_MaterialIndex()))))
 			return E_FAIL;
 
+		//if (FAILED(m_pModelCom->Bind_BoneMatrices(m_pShaderCom, "g_BoneMatrices", i)))
+		//	return E_FAIL;
+
 		_float fFar = *m_pGameInstance->Get_CamFar();
 		m_pShaderCom->Bind_RawValue("g_fFar", &fFar, sizeof(_float));
 
@@ -568,6 +571,11 @@ void CPlayer::Attack_Event(CGameObject* pHitObject, _bool isItem)
 						HitFreeze_On();
 					else
 						HitRadial_On();
+
+					CEffect::EFFECT_DESC EffectDesc{};	
+
+					EffectDesc.pWorldMatrix= pHitObject->Get_TransformCom()->Get_WorldFloat4x4();
+					CEffectManager::GetInstance()->Money(EffectDesc);	
 				}
 			}
 
@@ -584,6 +592,10 @@ void CPlayer::Attack_Event(CGameObject* pHitObject, _bool isItem)
 						HitFreeze_On();
 					else
 						HitRadial_On();
+					CEffect::EFFECT_DESC EffectDesc{};
+
+					EffectDesc.pWorldMatrix = pHitObject->Get_TransformCom()->Get_WorldFloat4x4();
+					CEffectManager::GetInstance()->Money(EffectDesc);
 				}
 			}
 
@@ -605,7 +617,13 @@ void CPlayer::Attack_Event(CGameObject* pHitObject, _bool isItem)
 				if (m_pTargetObject->isObjectDead())
 					HitFreeze_On();
 				else if (static_cast<CKiryu_KRC_Attack*>(m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior))->IsFinishBlow())
+				{
 					HitRadial_On();
+					CEffect::EFFECT_DESC EffectDesc{};
+
+					EffectDesc.pWorldMatrix = pHitObject->Get_TransformCom()->Get_WorldFloat4x4();
+					CEffectManager::GetInstance()->Money(EffectDesc);
+				}
 			}
 
 			break;

@@ -27,7 +27,7 @@ public:
 private:
     virtual void Change_Animation() override;
     virtual HRESULT Add_Components() override;
-    virtual void Set_ParentMatrix() override;
+    virtual void Set_ParentMatrix(const _float& fTimeDelta) override;
 
 private:
     _uint Change_Dir();

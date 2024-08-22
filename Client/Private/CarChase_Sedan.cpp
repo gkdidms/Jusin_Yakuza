@@ -42,7 +42,7 @@ void CCarChase_Sedan::Tick(const _float& fTimeDelta)
 void CCarChase_Sedan::Late_Tick(const _float& fTimeDelta)
 {
 	m_pModelCom->Play_Animation_Monster(fTimeDelta, m_pAnimCom[m_iCurrentAnimType], m_isAnimLoop, false);
-	Set_ParentMatrix();
+	Set_ParentMatrix(fTimeDelta);
 
 	__super::Late_Tick(fTimeDelta);
 }
@@ -523,13 +523,23 @@ HRESULT CCarChase_Sedan::Add_Components()
 	return S_OK;
 }
 
-void CCarChase_Sedan::Set_ParentMatrix()
+void CCarChase_Sedan::Set_ParentMatrix(const _float& fTimeDelta)
 {
+	m_pModelCom->Play_Animation_Monster(fTimeDelta, m_pAnimCom[m_iCurrentAnimType], m_isAnimLoop, false);
+
 	if ((m_iState == CARCHASE_AIML_DED || m_iState == CARCHASE_AIMR_DED) && *(m_pAnimCom[m_iCurrentAnimType]->Get_AnimPosition()) >= 38.f)
 		return;
-	
 
-	XMStoreFloat4x4(&m_ModelWorldMatrix, m_pTransformCom->Get_WorldMatrix() * XMLoadFloat4x4(m_pParentBoneMatrix) * XMLoadFloat4x4(m_pParentMatrix));
+	_matrix ParentMatrix = XMLoadFloat4x4(m_pParentBoneMatrix) * XMLoadFloat4x4(m_pParentMatrix);
+	//ParentMatrix.r[3] = (XMLoadFloat4x4(m_pParentBoneMatrix) * XMLoadFloat4x4(m_pParentMatrix)).r[3];
+	//ParentMatrix.r[2] = XMLoadFloat4x4(m_pParentMatrix).r[2];
+	_matrix		RotationMatrix = XMMatrixRotationAxis(ParentMatrix.r[0], XMConvertToRadians(-90.f));
+
+	ParentMatrix.r[0] = XMVector3TransformNormal(ParentMatrix.r[0], RotationMatrix);
+	ParentMatrix.r[1] = XMVector3TransformNormal(ParentMatrix.r[1], RotationMatrix);
+	ParentMatrix.r[2] = XMVector3TransformNormal(ParentMatrix.r[2], RotationMatrix);
+
+	XMStoreFloat4x4(&m_ModelWorldMatrix, m_pTransformCom->Get_WorldMatrix() * ParentMatrix);
 }
 
 _uint CCarChase_Sedan::Change_Dir()

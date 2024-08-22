@@ -119,6 +119,9 @@ HRESULT CCarChase_Reactor::Render()
 		_float fFar = *m_pGameInstance->Get_CamFar();
 		m_pShaderCom->Bind_RawValue("g_fFar", &fFar, sizeof(_float));
 
+		//if (FAILED(m_pModelCom->Bind_BoneMatrices(m_pShaderCom, "g_BoneMatrices", i)))
+		//	return E_FAIL;
+
 		m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE);
 
 		m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS);
@@ -150,11 +153,8 @@ HRESULT CCarChase_Reactor::Render()
 			isRT = false;
 		m_pShaderCom->Bind_RawValue("g_isRT", &isRT, sizeof(_bool));
 
-		if (pMesh->Get_AlphaApply())
-			m_pShaderCom->Begin(1);     //블랜드
-		else
-			m_pShaderCom->Begin(0);		//디폴트
 
+		m_pShaderCom->Begin(0);		//디폴트
 		m_pModelCom->Render(i);
 
 		i++;
@@ -196,85 +196,85 @@ _bool CCarChase_Reactor::Check_Dead()
 		{
 			//자동차가 죽으면 멈추고 불난다.+연기
 
-			CEffect::EFFECT_DESC EffectDesc;
+			//CEffect::EFFECT_DESC EffectDesc;
 
-			EffectDesc.pWorldMatrix = m_pTransformCom->Get_WorldFloat4x4();
-			CEffectManager::GetInstance()->Car_Fire(EffectDesc);
+			//EffectDesc.pWorldMatrix = m_pTransformCom->Get_WorldFloat4x4();
+			//CEffectManager::GetInstance()->Car_Fire(EffectDesc);
 			return true;
 		}
 
 	}
 	//헬기 폭파 이펙트
-	CEffect::EFFECT_DESC EffectDesc;
+	//CEffect::EFFECT_DESC EffectDesc;
 
-	EffectDesc.pWorldMatrix = m_pTransformCom->Get_WorldFloat4x4();
-	CEffectManager::GetInstance()->Car_Explosion(EffectDesc);
-	CEffectManager::GetInstance()->Car_Fire(EffectDesc);
+	//EffectDesc.pWorldMatrix = m_pTransformCom->Get_WorldFloat4x4();
+	//CEffectManager::GetInstance()->Car_Explosion(EffectDesc);
+	//CEffectManager::GetInstance()->Car_Fire(EffectDesc);
 
 	return true;
 }
 
 void CCarChase_Reactor::Move_Waypoint(const _float& fTimeDelta)
 {
+	if (m_isObjectDead)
+	{
+		m_fSpeed = m_fSpeed <= 0.f ? 0.f : m_fSpeed - fTimeDelta * 40.f;
+		m_pTransformCom->Go_Straight_CustumSpeed(m_fSpeed, fTimeDelta, m_pNavigationCom);
+		return;
+	}
+
 	_vector vPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 
 	//웨이포인트 
 	_vector vDir = m_pNavigationCom->Compute_WayPointDir(vPosition, fTimeDelta, m_isStart);
 	m_pTransformCom->LookAt_For_LandObject(vDir, true);
 	
-
 	//플레이어와 인덱스 값의 차이를 둬야 함
-	if (!m_isObjectDead)
-	{
-		CHighway_Taxi* pPlayer = dynamic_cast<CHighway_Taxi*>(m_pGameInstance->Get_GameObject(m_iCurrentLevel, TEXT("Layer_Taxi"), 0));
-		_int iCurrentWaypointIndex = m_pNavigationCom->Get_WaypointIndex();
-		_int iPlayerCurrentWaypointIndex = pPlayer->Get_CurrentWaypointIndex();
-		_int iMaxIndex = m_pNavigationCom->Get_RouteSize();
+	CHighway_Taxi* pPlayer = dynamic_cast<CHighway_Taxi*>(m_pGameInstance->Get_GameObject(m_iCurrentLevel, TEXT("Layer_Taxi"), 0));
+	_int iCurrentWaypointIndex = m_pNavigationCom->Get_WaypointIndex();
+	_int iPlayerCurrentWaypointIndex = pPlayer->Get_CurrentWaypointIndex();
+	_int iMaxIndex = m_pNavigationCom->Get_RouteSize();
 
-		//DIR_F 일 경우 플레이어 인덱스 + 1
-		//DIR_M 일 경우 플레이어 인덱스
-		//DIR_B 일 경우 플레이어 인덱스 - 1
-		_int iGoalIndex = 0;
-		if (m_iStageDir == DIR_R || m_iStageDir == DIR_L)
-		{
-			if (m_iLineDir == DIR_F)
-				iGoalIndex = iMaxIndex == iPlayerCurrentWaypointIndex + 1 ? 0 : iPlayerCurrentWaypointIndex + 1;
-			else if (m_iLineDir == DIR_M)
-				iGoalIndex = iPlayerCurrentWaypointIndex;
-			else if (m_iLineDir == DIR_B)
-				iGoalIndex = 0 > iPlayerCurrentWaypointIndex - 1 ? iMaxIndex - 1 : iPlayerCurrentWaypointIndex - 1;
-		}
-		else if (m_iStageDir == DIR_B)
-		{
-			iGoalIndex = 0 > iPlayerCurrentWaypointIndex - 2 ? iMaxIndex - 2: iPlayerCurrentWaypointIndex - 2;
-		}
-		else if (m_iStageDir == DIR_F)
-		{
+	//DIR_F 일 경우 플레이어 인덱스 + 1
+	//DIR_M 일 경우 플레이어 인덱스
+	//DIR_B 일 경우 플레이어 인덱스 - 1
+	_int iGoalIndex = 0;
+	if (m_iStageDir == DIR_R || m_iStageDir == DIR_L)
+	{
+		if (m_iLineDir == DIR_F)
 			iGoalIndex = iMaxIndex == iPlayerCurrentWaypointIndex + 1 ? 0 : iPlayerCurrentWaypointIndex + 1;
-		}
-
-		_float fDistance = XMVectorGetX(XMVector3Length(m_pNavigationCom->Get_WaypointPos(iGoalIndex) - vPosition));
-
-		//스피드 값 지정
-		//스테이지 방향이 DIR_F이고 Start일 경우 
-		//앞에서 뒤로 이동하도록 함
-		_float fBack = m_iStageDir == DIR_F && m_isStart ? -1.f : 1.f;
-		_float fFactor = fDistance / 20.f;
-		m_fSpeed = m_fMaxSpeed * fFactor * fBack;
-		if (m_fSpeed < m_fMinSpeed * fBack)
-		{
-			m_isStart = false;
-			m_fSpeed = m_fMinSpeed * fBack;
-		}
-		else if (m_fSpeed > m_fMaxSpeed * fBack)
-			m_fSpeed = m_fMaxSpeed * fBack;
+		else if (m_iLineDir == DIR_M)
+			iGoalIndex = iPlayerCurrentWaypointIndex;
+		else if (m_iLineDir == DIR_B)
+			iGoalIndex = 0 > iPlayerCurrentWaypointIndex - 1 ? iMaxIndex - 1 : iPlayerCurrentWaypointIndex - 1;
 	}
-	else
+	else if (m_iStageDir == DIR_B)
 	{
-		m_fSpeed = m_fSpeed <= 0.f ? 0.f : m_fSpeed - fTimeDelta * 10.f;
+		iGoalIndex = 0 > iPlayerCurrentWaypointIndex - 2 ? iMaxIndex - 2 : iPlayerCurrentWaypointIndex - 2;
 	}
+	else if (m_iStageDir == DIR_F)
+	{
+		iGoalIndex = iMaxIndex == iPlayerCurrentWaypointIndex + 1 ? 0 : iPlayerCurrentWaypointIndex + 1;
+	}
+
+	_float fDistance = XMVectorGetX(XMVector3Length(m_pNavigationCom->Get_WaypointPos(iGoalIndex) - vPosition));
+
+	//스피드 값 지정
+	//스테이지 방향이 DIR_F이고 Start일 경우 
+	//앞에서 뒤로 이동하도록 함
+	_float fBack = m_iStageDir == DIR_F && m_isStart ? -1.f : 1.f;
+	_float fFactor = fDistance / 20.f;
+	m_fSpeed = m_fMaxSpeed * fFactor * fBack;
+	if (m_fSpeed < m_fMinSpeed * fBack)
+	{
+		m_isStart = false;
+		m_fSpeed = m_fMinSpeed * fBack;
+	}
+	else if (m_fSpeed > m_fMaxSpeed * fBack)
+		m_fSpeed = m_fMaxSpeed * fBack;
 
 	m_pTransformCom->Go_Straight_CustumSpeed(m_fSpeed, fTimeDelta, m_pNavigationCom);
+
 }
 
 HRESULT CCarChase_Reactor::Add_Components()

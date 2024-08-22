@@ -65,7 +65,7 @@ protected:
     _int m_iWaypointIndex = { -1 };
     _float m_fSpeed = { 40.f };
     _float m_fMaxSpeed = { 55.f };
-    _float m_fMinSpeed = { 40.5f };
+    _float m_fMinSpeed = { 39.f };
 
 
 protected:

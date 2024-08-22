@@ -66,10 +66,7 @@ struct PS_OUT_LIGHT
 {
     vector vShade : SV_TARGET0;
     vector vLightMap : SV_TARGET1;
-    vector vSpecular : SV_TARGET2;
 };
-
-
 
 PS_OUT_LIGHT PS_MAIN_LIGHT_DIRECTIONAL(PS_IN In)
 {
@@ -104,9 +101,6 @@ PS_OUT_LIGHT PS_MAIN_LIGHT_DIRECTIONAL(PS_IN In)
         
         float3 vLook = normalize(g_vCamPosition - vWorldPos).xyz;
         
-        //Out.vSpecularRM = BRDF(In.vPosition, In.vTexcoord, normalize(vNormal), vDepthDesc, vLook);
-
-        Out.vSpecular = vector(CalcuateSpecular(In.vTexcoord, normalize(vNormal), vLook), 0.f);
         Out.vLightMap = g_vLightDiffuse;
     }
     
@@ -223,18 +217,13 @@ PS_OUT PS_MAIN_COPY_BACKBUFFER_RESULT(PS_IN In)
     
     if (g_isPBR)
     {
-        vector vSpeculer = g_SpecularTexture.Sample(LinearSampler, In.vTexcoord);
         vector vSpeculerRM = g_RMTexture.Sample(LinearSampler, In.vTexcoord);
         vector vLightmap = g_LightMapTexture.Sample(LinearSampler, In.vTexcoord);
-        vector vOEShader = g_OEShaderTexture.Sample(LinearSampler, In.vTexcoord);
+        vector vSpecular = g_SpecularTexture.Sample(LinearSampler, In.vTexcoord);
         
         vector vNeoShader = vector(vSpeculerRM.xyz, 1.f) * vShade;
-        vSpeculer = lerp(vector(0.f, 0.f, 0.f, 0.f), vSpeculer, vOEShader.g);
         
-        vector vResultShader = vNeoShader + vSpeculer;
-        vResultShader = lerp(vector(0.f, 0.f, 0.f, 0.f), vResultShader, vOEShader.b);
-        
-        Out.vColor = vResultShader;
+        Out.vColor = vNeoShader + vSpecular;
     }
     else
     {
@@ -276,53 +265,24 @@ PS_OUT PS_MAIN_DEFERRED_RESULT(PS_IN In)
     return Out;
 }
 
-PS_OUT_GAMEOBJECT PS_INCLUDE_GLASS(PS_IN In)
+PS_OUT PS_INCLUDE_GLASS(PS_IN In)
 {
 
-    PS_OUT_GAMEOBJECT Out = (PS_OUT_GAMEOBJECT) 0;
+    PS_OUT Out = (PS_OUT) 0;
 
     vector vDiffuseColor = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
     vector vGlassDiffuseColor = g_GlassDiffuseTexture.Sample(LinearSampler, In.vTexcoord);
     
-    vector vNonBlendNormal = g_NormalTexture.Sample(LinearSampler, In.vTexcoord);
-    vector vGlassNormal = g_GlassNormalTexture.Sample(LinearSampler, In.vTexcoord);
-    
-    vector vNonBlendDepth = g_DepthTexture.Sample(LinearSampler, In.vTexcoord);
-    vector vGlassDepth = g_GlassDepthTexture.Sample(LinearSampler, In.vTexcoord);
-    
-    vector vNonBlendRM = g_RMTexture.Sample(LinearSampler, In.vTexcoord);
-    vector vGlassRM = g_GlassRMTexture.Sample(LinearSampler, In.vTexcoord);
-    
-    vector vNonBlendRS = g_RSTexture.Sample(LinearSampler, In.vTexcoord);
-    vector vGlassRS = g_GlassRSTexture.Sample(LinearSampler, In.vTexcoord);
-    
-    vector vDecal = g_DecalTexture.Sample(LinearSampler, In.vTexcoord);
-    
-    if (vDecal.r != 0 && vDecal.g != 0 && vDecal.b != 0)
-    {
-        vDiffuseColor = lerp(vDiffuseColor, vDecal, vDecal.a);
-    }
-        
-    
-    
-    if (vNonBlendDepth.r < vGlassDepth.r)
+    if (0 != vGlassDiffuseColor.r || 0 != vGlassDiffuseColor.g || 0 != vGlassDiffuseColor.b)
     {
         // Nonblend
-        Out.vColor = vDiffuseColor;
-        Out.vNormal = vNonBlendNormal;
-        Out.vDepth = vNonBlendDepth;
-        Out.vRM = vNonBlendRM;
-        Out.vRS = vNonBlendRS;
+        Out.vColor = vGlassDiffuseColor;
     }
     else
     {
-        // Glass
-        Out.vColor = vGlassDiffuseColor;
-        Out.vNormal = vGlassNormal;
-        Out.vDepth = vGlassDepth;
-        Out.vRM = vGlassRM;
-        Out.vRS = vGlassRS;
+        Out.vColor = vDiffuseColor;
     }
+
     
     return Out;
 }
@@ -791,5 +751,18 @@ technique11 DefaultTechnique
         HullShader = NULL;
         DomainShader = NULL;
         PixelShader = compile ps_5_0 PS_MAIN_INVERTSATURATION();
+    }
+
+    pass AdjustColor //28
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_None_Test_None_Write, 0);
+        SetBlendState(BS_Default, float4(0.0f, 0.0f, 0.0f, 0.0f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        HullShader = NULL;
+        DomainShader = NULL;
+        PixelShader = compile ps_5_0 PS_MAIN_ABJECTCOLOR();
     }
 }
