@@ -48,8 +48,6 @@ void CCarChase_Sedan::Late_Tick(const _float& fTimeDelta)
 
 void CCarChase_Sedan::Change_Animation()
 {
-	m_isAnimLoop = false;
-
 	switch (m_iState)
 	{
 	case CARCHASE_CURVA_L:
@@ -75,6 +73,8 @@ void CCarChase_Sedan::Change_Animation()
 	{
 		if (m_iWeaponType == DRV)
 			m_strAnimName = "mngcar_e_car_drv_sit_lp";
+
+		m_isAnimLoop = true;
 		break;
 	}
 	case CARCHASE_AIML_CURVE_L:

@@ -129,7 +129,7 @@ _bool CCarChase::Running()
 		return true;
 	}*/
 
-	Set_TaxiStageDir();				//달리는 중에도 몬스터의 위치는 바뀔 수 있으므로, 각도 체인지
+	//Set_TaxiStageDir();				//달리는 중에도 몬스터의 위치는 바뀔 수 있으므로, 각도 체인지
 		
 	if (Reactors.size() <= 0)
 		return true;

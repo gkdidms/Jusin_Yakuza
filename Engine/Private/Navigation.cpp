@@ -77,7 +77,7 @@ HRESULT CNavigation::Initialize(void* pArg)
         if (m_iCurrentWayPointIndex == -1) Find_WayPointIndex(pDesc->vPosition);
         if (m_iCurrentIndex == -1) Find_PlayerMonster_Index(pDesc->vPosition);
 
-        if(0 < m_Routes.size() && 0 < m_iCurrentRouteIndex && 0 < m_iCurrentWayPointIndex)
+        if(0 < m_Routes.size() && 0 <= m_iCurrentRouteIndex && 0 <= m_iCurrentWayPointIndex)
             m_iCurrentIndex = Find_PlayerMonster_Index(XMLoadFloat4(&m_Routes[m_iCurrentRouteIndex][m_iCurrentWayPointIndex].vPosition));
     }
 
