@@ -75,11 +75,11 @@ void CHighway_Kiryu::Tick(const _float& fTimeDelta)
 	else
 		m_pGun_R->Tick(fTimeDelta);
 
-	if (m_isFirstTick)
-	{
-		m_isFirstTick = false;
-		On_Separation_Hand(m_isLeft ? 1 : 2);
-	}
+	//if (m_isFirstTick)
+	//{
+	//	m_isFirstTick = false;
+	//	On_Separation_Hand(m_isLeft ? 1 : 2);
+	//}
 
 	m_pColliderCom->Tick(XMLoadFloat4x4(&m_ModelMatrix));
 }
@@ -347,34 +347,34 @@ void CHighway_Kiryu::Play_Shot(_float fTimeDelta)
 	// [54] [mngcar_c_car_gun_aimr_f_shot]
 	// [66] [mngcar_c_car_gun_aimr_r_shot]
 
-	//_uint iAnimIndex = (m_isLeft ? 31 : 66);
+	_uint iAnimIndex = (m_isLeft ? 31 : 66);
 
-	//// 0 앞, 1 앞 대각, 2 옆, 3 뒷 대각, 4 뒤
-	//switch (m_iStageDir)
-	//{
-	//case 0:			//앞
-	//	iAnimIndex = (m_isLeft ? 17 : 52);
-	//	break;
-	//case 1:		//앞 대각
-	//	iAnimIndex = (m_isLeft ? 31 : 66);
-	//	break;
-	//case 2:		//옆
-	//	iAnimIndex = (m_isLeft ? 31 : 66);
-	//	break;
-	//case 3:		//뒷 대각
-	//	iAnimIndex = (m_isLeft ? 31 : 66);
-	//	break;
-	//case 4:		//뒤
-	//	iAnimIndex = (m_isLeft ? 8 : 43);
-	//	break;
-	//}
-	//m_pModelCom->Set_AnimationIndex(iAnimIndex, 4.f);
+	// 0 앞, 1 앞 대각, 2 옆, 3 뒷 대각, 4 뒤
+	switch (m_iStageDir)
+	{
+	case 0:			//앞
+		iAnimIndex = (m_isLeft ? 17 : 52);
+		break;
+	case 1:		//앞 대각
+		iAnimIndex = (m_isLeft ? 31 : 66);
+		break;
+	case 2:		//옆
+		iAnimIndex = (m_isLeft ? 31 : 66);
+		break;
+	case 3:		//뒷 대각
+		iAnimIndex = (m_isLeft ? 31 : 66);
+		break;
+	case 4:		//뒤
+		iAnimIndex = (m_isLeft ? 8 : 43);
+		break;
+	}
+	m_pModelCom->Set_AnimationIndex(iAnimIndex, 4.f);
 
-	//if (m_pModelCom->Get_AnimFinished())
-	//	Change_Behavior(AIMING);
-
-	if(m_SeparationAnimComs[DEFAULT_ANIM]->Get_AnimFinished())
+	if (m_pModelCom->Get_AnimFinished())
 		Change_Behavior(AIMING);
+
+	//if(m_SeparationAnimComs[DEFAULT_ANIM]->Get_AnimFinished())
+	//	Change_Behavior(AIMING);
 }
 
 void CHighway_Kiryu::Play_Swap(_float fTimeDelta)
@@ -407,9 +407,6 @@ void CHighway_Kiryu::Change_Behavior(BEHAVIOR_TYPE eType)
 	// 양손 다 해제 후 필요한 손만 다시 설정
 	Off_Separation_Hand();
 
-	// 어깨 분리 해제
-	m_pModelCom->Set_Separation_ParentBone(m_isLeft ? "ude2_l_n" : "ude2_r_n", -1);
-
 	switch (eType)
 	{
 	case CHighway_Kiryu::AIMING:
@@ -436,13 +433,13 @@ void CHighway_Kiryu::Change_Behavior(BEHAVIOR_TYPE eType)
 		m_isStarted = true;
 
 		// 어깨 분리
-		m_pModelCom->Set_Separation_ParentBone(m_isLeft ? "ude2_l_n" : "ude2_r_n", DEFAULT_ANIM);
-		//m_pModelCom->Set_Separation_SingleBone(m_isLeft ? "ude2_l_n" : "ude2_r_n", -1);
+		//m_pModelCom->Set_Separation_ParentBone(m_isLeft ? "ude2_l_n" : "ude2_r_n", DEFAULT_ANIM);
+		////m_pModelCom->Set_Separation_SingleBone(m_isLeft ? "ude2_l_n" : "ude2_r_n", -1);
 
-		m_iUdeIndex = m_isLeft ? 34 : 70;
+		//m_iUdeIndex = m_isLeft ? 34 : 70;
 
-		m_SeparationAnimComs[DEFAULT_ANIM]->Reset_Animation(m_iUdeIndex);
-		m_SeparationAnimComs[DEFAULT_ANIM]->Set_CurrentAnimIndex(m_iUdeIndex);
+		//m_SeparationAnimComs[DEFAULT_ANIM]->Reset_Animation(m_iUdeIndex);
+		//m_SeparationAnimComs[DEFAULT_ANIM]->Set_CurrentAnimIndex(m_iUdeIndex);
 		break;
 	}
 	case CHighway_Kiryu::SWAP:

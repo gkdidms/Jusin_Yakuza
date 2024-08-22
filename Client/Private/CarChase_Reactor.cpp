@@ -81,7 +81,11 @@ void CCarChase_Reactor::Tick(const _float& fTimeDelta)
 	//m_pColliderCom->Tick(m_pTransformCom->Get_WorldMatrix());
 
 	for (auto& pMonster : m_Monsters)
-		pMonster->Tick(fTimeDelta);
+	{
+		if (!pMonster->isDead())
+			pMonster->Tick(fTimeDelta);
+	}
+		
 }
 
 void CCarChase_Reactor::Late_Tick(const _float& fTimeDelta)
@@ -99,7 +103,11 @@ void CCarChase_Reactor::Late_Tick(const _float& fTimeDelta)
 	}
 
 	for (auto& pMonster : m_Monsters)
-		pMonster->Late_Tick(fTimeDelta);
+	{
+		if (!pMonster->isDead())
+			pMonster->Late_Tick(fTimeDelta);
+	}
+		
 }
 
 HRESULT CCarChase_Reactor::Render()
@@ -185,15 +193,11 @@ _bool CCarChase_Reactor::Check_Dead()
 
 	for (auto& pMonster : m_Monsters)
 	{
-		if (!pMonster->isObjectDead())
-		{
-
-			return false;
-		}
-
 		//운전수가 죽으면 바로 죽게 된다.
 		if (pMonster->isObjectDead() && pMonster->Get_WeaponType() == CCarChase_Monster::DRV)
 		{
+			for (auto& pMonster : m_Monsters)
+				pMonster->Set_ReactorDead(true);
 			//자동차가 죽으면 멈추고 불난다.+연기
 
 			CEffect::EFFECT_DESC EffectDesc;
@@ -203,7 +207,10 @@ _bool CCarChase_Reactor::Check_Dead()
 			return true;
 		}
 
+		if (!pMonster->isObjectDead())
+			return false;
 	}
+
 	//헬기 폭파 이펙트
 	CEffect::EFFECT_DESC EffectDesc;
 
@@ -218,7 +225,7 @@ void CCarChase_Reactor::Move_Waypoint(const _float& fTimeDelta)
 {
 	if (m_isObjectDead)
 	{
-		m_fSpeed = m_fSpeed <= 0.f ? 0.f : m_fSpeed - fTimeDelta * 40.f;
+		m_fSpeed = m_fSpeed <= 0.f ? 0.f : m_fSpeed - fTimeDelta * 30.f;
 		m_pTransformCom->Go_Straight_CustumSpeed(m_fSpeed, fTimeDelta, m_pNavigationCom);
 		return;
 	}
@@ -260,10 +267,15 @@ void CCarChase_Reactor::Move_Waypoint(const _float& fTimeDelta)
 	_float fDistance = XMVectorGetX(XMVector3Length(m_pNavigationCom->Get_WaypointPos(iGoalIndex) - vPosition));
 
 	//스피드 값 지정
-	//스테이지 방향이 DIR_F이고 Start일 경우 
-	//앞에서 뒤로 이동하도록 함
+	//스테이지 방향이 DIR_F이고 Start일 경우 앞에서 뒤로 이동하도록 함
 	_float fBack = m_iStageDir == DIR_F && m_isStart ? -1.f : 1.f;
-	_float fFactor = fDistance / 20.f;
+
+	//만약 몬스터가 플레이어보다 앞서나간다면 뒤로 이동하도록 한다.
+	if (fBack == 1.f && iPlayerCurrentWaypointIndex + 2 <= iCurrentWaypointIndex)
+		fBack *= 1.f;
+
+	_float fFactor = min(fDistance, 20.f) / 20.f;
+
 	m_fSpeed = m_fMaxSpeed * fFactor * fBack;
 	if (m_fSpeed < m_fMinSpeed * fBack)
 	{
@@ -272,6 +284,9 @@ void CCarChase_Reactor::Move_Waypoint(const _float& fTimeDelta)
 	}
 	else if (m_fSpeed > m_fMaxSpeed * fBack)
 		m_fSpeed = m_fMaxSpeed * fBack;
+
+
+	
 
 	m_pTransformCom->Go_Straight_CustumSpeed(m_fSpeed, fTimeDelta, m_pNavigationCom);
 

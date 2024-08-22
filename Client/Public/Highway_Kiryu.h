@@ -108,9 +108,6 @@ private:
     _bool           m_isStarted = { false };
     _bool           m_isHitEyeCharging = { true };
 
-    // 첫틱이 돌고나서 뼈 분리가 되어야 총 잡는손에 문제가 안생긴다.
-    _bool           m_isFirstTick = { true };
-
     _uint           m_iUdeIndex = 31;
 
 public:
@@ -121,6 +118,7 @@ public:
    const _uint Get_MaxAmmo() { return MAX_AMMO; }
     _uint Get_Ammo() { return m_iCurrentAmmo; }
     _uint Get_CurrentBehavior() { return m_eCurrentBehavior; }
+    CCollider* Get_KiryuCollier() { return m_pColliderCom; }
 
     //아래는 ui에서 확인한 코드 지워도됨
     void Shot() { m_iCurrentAmmo--; }
