@@ -31,6 +31,7 @@ public:
 private:
     const _uint MAX_AMMO = 15;
     const _float HITEYE_DECREASE_SPEED = 20.f;
+    const _float RELOAD_TIME = 2.f;
 
 private:
     CHighway_Kiryu(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -110,7 +111,7 @@ private:
     _bool           m_isStarted = { false };
     _bool           m_isHitEyeCharging = { true };
 
-    _uint           m_iUdeIndex = 31;
+    _float m_fAccReloadTimer = { 0.f };
 
 public:
     _float Get_MaxHP() { return m_fMaxHP; }
@@ -123,7 +124,7 @@ public:
     CCollider* Get_KiryuCollier() { return m_pColliderCom; }
 
     //아래는 ui에서 확인한 코드 지워도됨
-    void Shot() { m_iCurrentAmmo--; }
+    _bool Shot();
     void Damage() { m_fHP -= 2.f; }
 
 public:
