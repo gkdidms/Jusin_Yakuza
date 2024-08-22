@@ -36,8 +36,6 @@ HRESULT CLevel_Roadway::Initialize()
 	if (nullptr == m_pCarChaseManager)
 		return E_FAIL;
 
-	m_pUIManager->Open_Scene(TEXT("Carchase"));
-
     /* Å¬¶ó ÆÄ½Ì */
     m_pFileTotalManager->Set_MapObj_In_Client(STAGE_ROADWAY, LEVEL_CARCHASE);
     m_pFileTotalManager->Set_Lights_In_Client(90);
@@ -55,7 +53,13 @@ HRESULT CLevel_Roadway::Initialize()
 
 void CLevel_Roadway::Tick(const _float& fTimeDelta)
 {
-	if (!m_pUIManager->isOpen(TEXT("Title")))
+	if (m_pUIManager->isTitleEnd() && !m_isTitleEnd)
+	{
+		m_pUIManager->Open_Scene(TEXT("Carchase"));
+		m_isTitleEnd = true;
+	}
+	
+	if (m_isTitleEnd)
 		m_pCarChaseManager->Tick();
 
 	m_pFightManager->Tick(fTimeDelta);
