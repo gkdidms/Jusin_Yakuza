@@ -347,34 +347,34 @@ void CHighway_Kiryu::Play_Shot(_float fTimeDelta)
 	// [54] [mngcar_c_car_gun_aimr_f_shot]
 	// [66] [mngcar_c_car_gun_aimr_r_shot]
 
-	//_uint iAnimIndex = (m_isLeft ? 31 : 66);
+	_uint iAnimIndex = (m_isLeft ? 31 : 66);
 
-	//// 0 ¾Õ, 1 ¾Õ ´ë°¢, 2 ¿·, 3 µÞ ´ë°¢, 4 µÚ
-	//switch (m_iStageDir)
-	//{
-	//case 0:			//¾Õ
-	//	iAnimIndex = (m_isLeft ? 17 : 52);
-	//	break;
-	//case 1:		//¾Õ ´ë°¢
-	//	iAnimIndex = (m_isLeft ? 31 : 66);
-	//	break;
-	//case 2:		//¿·
-	//	iAnimIndex = (m_isLeft ? 31 : 66);
-	//	break;
-	//case 3:		//µÞ ´ë°¢
-	//	iAnimIndex = (m_isLeft ? 31 : 66);
-	//	break;
-	//case 4:		//µÚ
-	//	iAnimIndex = (m_isLeft ? 8 : 43);
-	//	break;
-	//}
-	//m_pModelCom->Set_AnimationIndex(iAnimIndex, 4.f);
+	// 0 ¾Õ, 1 ¾Õ ´ë°¢, 2 ¿·, 3 µÞ ´ë°¢, 4 µÚ
+	switch (m_iStageDir)
+	{
+	case 0:			//¾Õ
+		iAnimIndex = (m_isLeft ? 17 : 52);
+		break;
+	case 1:		//¾Õ ´ë°¢
+		iAnimIndex = (m_isLeft ? 31 : 66);
+		break;
+	case 2:		//¿·
+		iAnimIndex = (m_isLeft ? 31 : 66);
+		break;
+	case 3:		//µÞ ´ë°¢
+		iAnimIndex = (m_isLeft ? 31 : 66);
+		break;
+	case 4:		//µÚ
+		iAnimIndex = (m_isLeft ? 8 : 43);
+		break;
+	}
+	m_pModelCom->Set_AnimationIndex(iAnimIndex, 4.f);
 
-	//if (m_pModelCom->Get_AnimFinished())
-	//	Change_Behavior(AIMING);
-
-	if(m_SeparationAnimComs[DEFAULT_ANIM]->Get_AnimFinished())
+	if (m_pModelCom->Get_AnimFinished())
 		Change_Behavior(AIMING);
+
+	//if(m_SeparationAnimComs[DEFAULT_ANIM]->Get_AnimFinished())
+	//	Change_Behavior(AIMING);
 }
 
 void CHighway_Kiryu::Play_Swap(_float fTimeDelta)
@@ -436,13 +436,13 @@ void CHighway_Kiryu::Change_Behavior(BEHAVIOR_TYPE eType)
 		m_isStarted = true;
 
 		// ¾î±ú ºÐ¸®
-		m_pModelCom->Set_Separation_ParentBone(m_isLeft ? "ude2_l_n" : "ude2_r_n", DEFAULT_ANIM);
-		//m_pModelCom->Set_Separation_SingleBone(m_isLeft ? "ude2_l_n" : "ude2_r_n", -1);
+		//m_pModelCom->Set_Separation_ParentBone(m_isLeft ? "ude2_l_n" : "ude2_r_n", DEFAULT_ANIM);
+		////m_pModelCom->Set_Separation_SingleBone(m_isLeft ? "ude2_l_n" : "ude2_r_n", -1);
 
-		m_iUdeIndex = m_isLeft ? 34 : 70;
+		//m_iUdeIndex = m_isLeft ? 34 : 70;
 
-		m_SeparationAnimComs[DEFAULT_ANIM]->Reset_Animation(m_iUdeIndex);
-		m_SeparationAnimComs[DEFAULT_ANIM]->Set_CurrentAnimIndex(m_iUdeIndex);
+		//m_SeparationAnimComs[DEFAULT_ANIM]->Reset_Animation(m_iUdeIndex);
+		//m_SeparationAnimComs[DEFAULT_ANIM]->Set_CurrentAnimIndex(m_iUdeIndex);
 		break;
 	}
 	case CHighway_Kiryu::SWAP:

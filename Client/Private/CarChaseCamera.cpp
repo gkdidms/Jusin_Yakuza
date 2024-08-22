@@ -87,7 +87,7 @@ void CCarChaseCamera::Targeting(const _float& fTimeDelta)
 		//선형보간
 		_vector vCamDirection = XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK));
 		_vector vCamTargetDirection = XMVector3Normalize(vTargetingPos - m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-		_vector vLerpDir = XMVectorLerp(vCamDirection, vCamTargetDirection, fTimeDelta * 3.f);
+		_vector vLerpDir = XMVectorLerp(vCamDirection, vCamTargetDirection, fTimeDelta * 2.f);
 		m_pTransformCom->LookAt(vLerpDir, true);
 
 		//카메라 이동값 용
@@ -116,7 +116,7 @@ void CCarChaseCamera::Targeting(const _float& fTimeDelta)
 		//선형보간
 		_vector vCamDirection = XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_LOOK));
 		_vector vCamTargetDirection = XMVector3Normalize(vTargetingPos - m_pTransformCom->Get_State(CTransform::STATE_POSITION));
-		_vector vLerpDir = XMVectorLerp(vCamDirection, vCamTargetDirection, fTimeDelta * 3.f);
+		_vector vLerpDir = XMVectorLerp(vCamDirection, vCamTargetDirection, fTimeDelta * 2.f);
 		m_pTransformCom->LookAt(vLerpDir, true);
 
 		//카메라 이동값 용

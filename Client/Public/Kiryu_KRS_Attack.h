@@ -34,5 +34,7 @@ public:
 private:
 	_int m_iComboCount = { -1 };
 	_bool m_isShaked = { false };
+
+	_bool m_isFreezeEventOn = { false };
 };
 END
