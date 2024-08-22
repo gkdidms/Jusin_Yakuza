@@ -124,6 +124,12 @@ HRESULT CHighway_Taxi::Render()
 	int i = 0;
 	for (auto& pMesh : m_pModelCom->Get_Meshes())
 	{
+		if (!m_pGameInstance->isShadow())
+		{
+			m_pModelCom->Bind_BoneMatrices(i);
+			m_pModelCom->Bind_Compute(m_pComputeShaderCom, i);
+		}
+
 		//m_pModelCom->Bind_BoneMatrices(m_pShaderCom, "g_BoneMatrices", i);
 
 		m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE);

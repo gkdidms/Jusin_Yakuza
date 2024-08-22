@@ -43,10 +43,12 @@ HRESULT CLevel_Tutorial::Initialize()
 	//m_pFightManager->Set_StreetFight(true);
 
 	/* Å¬¶ó ÆÄ½Ì */
-	m_pFileTotalManager->Set_MapObj_In_Client(7, LEVEL_TUTORIAL);
+	m_pFileTotalManager->Set_MapObj_In_Client(STAGE_TUTORIAL, LEVEL_TUTORIAL);
 	m_pFileTotalManager->Set_Lights_In_Client(99);
 	m_pFileTotalManager->Set_Trigger_In_Client(STAGE_TUTORIAL, LEVEL_TUTORIAL);
 	m_pFileTotalManager->Set_Collider_In_Client(STAGE_TUTORIAL, LEVEL_TUTORIAL);
+
+	m_pFileTotalManager->Load_Cinemachine(6, LEVEL_TUTORIAL);
 
 	if (FAILED(Ready_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;

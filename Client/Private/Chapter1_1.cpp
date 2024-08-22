@@ -3,6 +3,7 @@
 #include "GameInstance.h"
 #include "UIManager.h"
 #include "ScriptManager.h"
+#include "Nishiki.h"
 
 #include "Nishiki.h"
 #include "PlayerCamera.h"
@@ -27,10 +28,13 @@ HRESULT CChapter1_1::Initialize(void* pArg)
 	Safe_AddRef(m_pNishiki);
 
 	m_pNishiki->Set_State(CNishiki::TALK);
-	dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"), 0))->Set_PlayerStop(true);
+	CPlayer* pPlayer = dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"), 0));
+	pPlayer->Set_PlayerStop(true);
+	//pPlayer->Get_TransformCom()->(true);
 
 	return S_OK;
 }
+
 _bool CChapter1_1::Execute()
 {
 	if (m_pUIManager->isTalkFinished())

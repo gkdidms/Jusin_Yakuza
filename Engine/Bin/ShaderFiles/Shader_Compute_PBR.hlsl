@@ -66,36 +66,16 @@ float3 FresnelSchlickRoughness(float cosTheta, float3 F0, float roughness)
     return F0 + (max(float3(1.0 - roughness, 1.0 - roughness, 1.0 - roughness), F0) - F0) * pow(1.0 - cosTheta, 5.0);
 }
 
-//D
-float NormalDistributionGGXTR(float3 vNormal, float3 h, float a, float PI)
-{
-    float a2 = a * a;
-    float NdotH = saturate(dot(vNormal, h));
-    float NdotH2 = NdotH * NdotH;
-
-    float nom = a2;
-    float denom = NdotH2 * (a2 - 1.f) + 1.f;
-    denom = PI * denom * denom;
-    
-    return nom / denom;
-}
-
-float3 SchlickApprox(float3 F0, float3 L, float3 H)
-{
-    float dotLH = saturate(dot(L, H));
-    return F0 + (1.0f - F0) * pow(1.0f - dotLH, 5.0f);
-}
-
-float DistributionGGX(float3 N, float3 H, float roughness)
+float DistributionGGX(float3 N, float3 H, float roughness, float PI)
 {
     float a = roughness * roughness;
     float a2 = a * a;
-    float NdotH = saturate(dot(N, H));
+    float NdotH = max(dot(N, H), 0.f);
     float NdotH2 = NdotH * NdotH;
 
     float num = a2;
     float denom = (NdotH2 * (a2 - 1.0f) + 1.0f);
-    denom = 3.14159265359f * denom * denom;
+    denom = PI * denom * denom;
 
     return num / denom;
 }
@@ -129,36 +109,34 @@ float4 BRDF(float4 vPosition, int2 vTexcoord, float4 vNormal, float4 vDepthDesc,
     float fGamma = { 2.2f };
     
     float3 vAlbedo = g_DiffuseTexture.Load(int3(vTexcoord, 0)).xyz;
-    vAlbedo = GammaToLinear(vAlbedo, fGamma);
+    //vAlbedo = GammaToLinear(vAlbedo, fGamma);
     vector Combine = g_SurfaceTexture.Load(int3(vTexcoord, 0));
     
     /* Li */
-    //float vDistance = length(normalize(vCamPosition - vPosition));
-    //float vAttenuation = 1.f / (vDistance * vDistance);
-    //float3 vLi = vLightDiffuse * vAttenuation;
     float fMetalic = Combine.r;
-    float3 F0 = 0.04f;
-    F0 = lerp(F0, vAlbedo, Combine.b);
+    float IOR = 1.45f;
+    float3 F0 = pow((IOR - 1.f) / (IOR + 1.f), 2.f) * Combine.b;
+    F0 = lerp(F0, vAlbedo, fMetalic);
     
     //vector vLightDir = reflect(normalize(g_vLightDir), vNormal); //g_vLightDir * -1.f;
-    float3 vLightDir = vLightDirection;
+    float3 vLightDir = normalize(vLightDirection * -1.f);
     float3 vHalfway = normalize(vLook + vLightDir);
     float3 vRadiance = vLightDiffuse;
     
     //BRDF
     float vRoughness = Combine.g;
-    float D = NormalDistributionGGXTR(vNormal.xyz, vHalfway, vRoughness, PI); //r : Roughness
+    float D = DistributionGGX(vNormal.xyz, vHalfway, vRoughness, PI);
     float G = GeometrySmith(vNormal.xyz, vLook, vLightDir, vRoughness);
-    float cosTheta = saturate(dot(vNormal.xyz, vHalfway));
+    float cosTheta = max(dot(vNormal.xyz, vHalfway), 0.f);
     float3 F = FresnelSchlickRoughness(cosTheta, F0, vRoughness);
     
     float3 nominator = D * G * F;
     
     float WoDotN = max(dot(vLook, vNormal.xyz), 0.f);
-    float WiDotN = saturate(dot(vLightDir, vNormal.xyz));
+    float WiDotN = max(dot(vLightDir, vNormal.xyz), 0.f);
     float denominator = (WoDotN * WiDotN * 4.f) + 0.001f;
     
-    float3 vSpecular = nominator / denominator;
+    float3 vSpecular = (nominator / denominator) * Combine.w;
     
     float3 vKS = F;
     float3 vKD = 1.f - vKS;
@@ -166,16 +144,18 @@ float4 BRDF(float4 vPosition, int2 vTexcoord, float4 vNormal, float4 vDepthDesc,
     
     float3 vDiffuse = vKD * vAlbedo / PI;
     vDiffuse = (vDiffuse + vSpecular) * vRadiance;
-    vDiffuse = LinearToGamma(vDiffuse, fGamma);
+    //vDiffuse = LinearToGamma(vDiffuse, fGamma);
     
     return vector(vDiffuse, 1.f);
 }
 
 float3 CookTorranceBRDF(float3 vNormal, float3 vLook, float roughness, float3 F0)
 {
+    float PI = { 3.14f };
+    
     float3 vHalfway = normalize(vLook + vLightDirection.xyz);
     
-    float NDF = DistributionGGX(vNormal, vHalfway, roughness); // GGX Normal Distribution Function
+    float NDF = DistributionGGX(vNormal, vHalfway, roughness, PI); // GGX Normal Distribution Function
     float G = GeometrySmith(vNormal, vLook, vLightDirection.xyz, roughness); // Geometry function
     float3 F = FresnelSchlick(max(dot(vHalfway, vLook), 0.0), F0); // Fresnel Schlick
 
