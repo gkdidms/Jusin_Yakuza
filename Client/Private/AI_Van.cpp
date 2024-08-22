@@ -98,13 +98,25 @@ void CAI_Van::Ready_Tree()
 
 CBTNode::NODE_STATE CAI_Van::Dead()
 {
+	if (m_iSkill == SKILL_DEAD)
+	{
+		if (*m_pState == CCarChase_Monster::CARCHASE_DED && m_pAnimCom[*m_pCurrentAnimType]->Get_AnimFinished())
+		{
+			m_pThis->Set_Dead();
+
+			return CBTNode::SUCCESS;
+		}
+
+		return CBTNode::RUNNING;
+	}
+
 	if (*m_pWeaponType != CCarChase_Monster::DRV)
 		*m_pState = CCarChase_Monster::CARCHASE_DED;
 
 	m_iSkill = SKILL_DEAD;
 
+	//이펙트 붙이는 구간
 	CEffect::EFFECT_DESC EffectDesc;
-
 	
 	_matrix WorldMatrix = XMLoadFloat4x4(m_pThis->Get_TransformCom()->Get_WorldFloat4x4());
 
