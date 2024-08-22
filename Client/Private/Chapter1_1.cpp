@@ -3,6 +3,7 @@
 #include "GameInstance.h"
 #include "UIManager.h"
 #include "ScriptManager.h"
+#include "Nishiki.h"
 
 #include "Nishiki.h"
 #include "PlayerCamera.h"

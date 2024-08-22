@@ -19,6 +19,7 @@ public:
 
 protected:
     class CUIManager* m_pUIManager = { nullptr };
+    class CFileTotalMgr* m_pFileTotalMgr = { nullptr };
 
 protected:
     _uint m_iScriptIndex = { 0 };

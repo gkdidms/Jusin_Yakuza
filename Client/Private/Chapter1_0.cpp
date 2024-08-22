@@ -1,6 +1,7 @@
 #include "Chapter1_0.h"
 
 #include "GameInstance.h"
+#include "FileTotalMgr.h"
 
 #include "UIManager.h"
 #include "ScriptManager.h"
@@ -27,9 +28,12 @@ HRESULT CChapter1_0::Initialize(void* pArg)
 	Safe_AddRef(m_pBackground);
 
 	//씬 카메라 이동 후 스크립트 텍스쳐 나옴
-	m_pUIManager->Open_Scene(TEXT("Talk"));
-	m_pUIManager->Start_Talk(m_iScriptIndex); // 0번째 대화
+	m_pFileTotalMgr->Setting_Start_Cinemachine(6);
 
+	//m_pUIManager->Open_Scene(TEXT("Talk"));
+	//m_pUIManager->Start_Talk(m_iScriptIndex); // 0번째 대화
+
+	//플레이어 움직임 막기
 	dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"), 0))->Set_PlayerStop(true);
 
 	return S_OK;
@@ -42,7 +46,6 @@ _bool CChapter1_0::Execute()
 		dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"), 0))->Set_PlayerStop(false);
 		return true;
 	}
-		
 
 	if (m_pUIManager->isTalkFinished())
 	{
@@ -70,11 +73,21 @@ _bool CChapter1_0::Execute()
 
 		else if (m_pUIManager->Get_CurrentPage() == 2)
 		{
+			m_pFileTotalMgr->Setting_Start_Cinemachine(7);
+
 			if (m_pBackground->isShow())
 				m_pBackground->Set_Show(false);
 
 			return false;
 		}
+	}
+
+	//6번 씬 카메라가 끝나면 대화창 호출하기
+	if (m_isStartCameraEnd)
+	{
+		m_isStartCameraEnd = false;
+		m_pUIManager->Open_Scene(TEXT("Talk"));
+		m_pUIManager->Start_Talk(m_iScriptIndex); // 0번째 대화
 	}
 
 	return false;

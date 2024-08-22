@@ -49,6 +49,7 @@ HRESULT CLevel_Tutorial::Initialize()
 	m_pFileTotalManager->Set_Collider_In_Client(STAGE_TUTORIAL, LEVEL_TUTORIAL);
 
 	m_pFileTotalManager->Load_Cinemachine(6, LEVEL_TUTORIAL);
+	m_pFileTotalManager->Load_Cinemachine(7, LEVEL_TUTORIAL);
 
 	if (FAILED(Ready_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;

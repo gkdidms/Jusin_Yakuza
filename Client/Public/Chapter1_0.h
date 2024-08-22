@@ -18,6 +18,8 @@ public:
 	_bool m_isTitleFinished = { false };
 	_bool m_isTitleStart = { false };
 
+	_bool m_isStartCameraEnd = { false };
+
 public:
 	static CChapter1_0* Create(void* pArg);
 	virtual void Free();

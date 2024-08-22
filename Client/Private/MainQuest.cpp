@@ -2,11 +2,14 @@
 
 #include "ScriptManager.h"
 #include "UIManager.h"
+#include "FileTotalMgr.h"
 
 CMainQuest::CMainQuest()
-	: m_pUIManager { CUIManager::GetInstance() }
+	: m_pUIManager { CUIManager::GetInstance() },
+	m_pFileTotalMgr{ CFileTotalMgr::GetInstance() }
 {
 	Safe_AddRef(m_pUIManager);
+	Safe_AddRef(m_pFileTotalMgr);
 }
 
 HRESULT CMainQuest::Initialize(void* pArg)
@@ -23,4 +26,5 @@ HRESULT CMainQuest::Initialize(void* pArg)
 void CMainQuest::Free()
 {
 	Safe_Release(m_pUIManager);
+	Safe_Release(m_pFileTotalMgr);
 }
