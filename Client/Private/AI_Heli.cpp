@@ -95,6 +95,18 @@ void CAI_Heli::Ready_Tree()
 
 CBTNode::NODE_STATE CAI_Heli::Dead()
 {
+	if (m_iSkill == SKILL_DEAD)
+	{
+		if (*m_pState == CCarChase_Monster::CARCHASE_DED && m_pAnimCom[*m_pCurrentAnimType]->Get_AnimFinished())
+		{
+			m_pThis->Set_Dead();
+
+			return CBTNode::SUCCESS;
+		}
+
+		return CBTNode::RUNNING;
+	}
+
 	*m_pState = CCarChase_Monster::CARCHASE_DED;
 
 	return CBTNode::SUCCESS;

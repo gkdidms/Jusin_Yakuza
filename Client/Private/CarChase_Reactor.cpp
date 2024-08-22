@@ -262,6 +262,10 @@ void CCarChase_Reactor::Move_Waypoint(const _float& fTimeDelta)
 	//스테이지 방향이 DIR_F이고 Start일 경우 앞에서 뒤로 이동하도록 함
 	_float fBack = m_iStageDir == DIR_F && m_isStart ? -1.f : 1.f;
 
+	//만약 몬스터가 플레이어보다 앞서나간다면 뒤로 이동하도록 한다.
+	if (fBack == 1.f && iPlayerCurrentWaypointIndex + 2 <= iCurrentWaypointIndex)
+		fBack *= 1.f;
+
 	_float fFactor = min(fDistance, 20.f) / 20.f;
 
 	m_fSpeed = m_fMaxSpeed * fFactor * fBack;
@@ -272,6 +276,9 @@ void CCarChase_Reactor::Move_Waypoint(const _float& fTimeDelta)
 	}
 	else if (m_fSpeed > m_fMaxSpeed * fBack)
 		m_fSpeed = m_fMaxSpeed * fBack;
+
+
+	
 
 	m_pTransformCom->Go_Straight_CustumSpeed(m_fSpeed, fTimeDelta, m_pNavigationCom);
 
