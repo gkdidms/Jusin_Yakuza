@@ -3,6 +3,8 @@
 #include "GameInstance.h"
 #include "SystemManager.h"
 #include "FileTotalMgr.h"
+#include "FightManager.h"
+#include "UIManager.h"
 
 #include "PlayerCamera.h"
 #include "CineCamera.h"
@@ -10,22 +12,25 @@
 
 #include "Level_Loading.h"
 #include "Trigger.h"
+#include "Player.h"
 
 CLevel_DogimazoStairs::CLevel_DogimazoStairs(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLevel{ pDevice, pContext },
 	m_pSystemManager{ CSystemManager::GetInstance() },
-	m_pFileTotalManager{ CFileTotalMgr::GetInstance() }
+	m_pFileTotalManager{ CFileTotalMgr::GetInstance() },
+	m_pFightManager{ CFightManager::GetInstance() },
+	m_pUIManager{ CUIManager::GetInstance() }
 {
 	Safe_AddRef(m_pSystemManager);
 	Safe_AddRef(m_pFileTotalManager);
+	Safe_AddRef(m_pFightManager);
+	Safe_AddRef(m_pUIManager);
 }
 
 HRESULT CLevel_DogimazoStairs::Initialize()
 {
 	if (FAILED(Ready_Player(TEXT("Layer_Player"))))
 		return E_FAIL;
-
-
 
 	/* 클라 파싱 */
 	m_pFileTotalManager->Set_MapObj_In_Client(STAGE_DOGIMAZO_STAIRS, LEVEL_DOGIMAZO_STAIRS);
@@ -35,6 +40,9 @@ HRESULT CLevel_DogimazoStairs::Initialize()
 
 	if (FAILED(Ready_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
+
+	m_pFightManager->Initialize();
+	m_pFightManager->Set_FightStage(true);
 
 	return S_OK;
 }
@@ -65,7 +73,13 @@ void CLevel_DogimazoStairs::Tick(const _float& fTimeDelta)
 		}
 	}
 
-	
+	m_pFightManager->Tick(fTimeDelta);
+
+	if (m_pUIManager->isTitleEnd())
+	{
+		CPlayer* pPlayer = dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"), 0));
+		pPlayer->Battle_Start();
+	}
 
 #ifdef _DEBUG
 	SetWindowText(g_hWnd, TEXT("도지마조 계단"));
@@ -149,4 +163,6 @@ void CLevel_DogimazoStairs::Free()
 
 	Safe_Release(m_pSystemManager);
 	Safe_Release(m_pFileTotalManager);
+	Safe_Release(m_pFightManager);
+	Safe_Release(m_pUIManager);
 }

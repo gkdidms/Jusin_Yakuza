@@ -4,6 +4,7 @@
 #include "SystemManager.h"
 #include "FileTotalMgr.h"
 #include "FightManager.h"
+#include "UIManager.h"
 
 #include "DebugCamera.h"
 #include "PlayerCamera.h"
@@ -11,16 +12,19 @@
 
 #include "Level_Loading.h"
 #include "Trigger.h"
+#include "Player.h"
 
 CLevel_Office1F::CLevel_Office1F(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLevel{ pDevice, pContext },
 	m_pSystemManager{ CSystemManager::GetInstance() },
 	m_pFileTotalManager{ CFileTotalMgr::GetInstance() },
-	m_pFightManager{ CFightManager::GetInstance() }
+	m_pFightManager{ CFightManager::GetInstance() },
+	m_pUIManager{ CUIManager::GetInstance() }
 {
 	Safe_AddRef(m_pSystemManager);
 	Safe_AddRef(m_pFileTotalManager);
 	Safe_AddRef(m_pFightManager);
+	Safe_AddRef(m_pUIManager);
 }
 
 HRESULT CLevel_Office1F::Initialize()
@@ -32,12 +36,15 @@ HRESULT CLevel_Office1F::Initialize()
 	// 플레이어 위치 받아서 player 위치 설정 후 카메라 위치 설정해줘야하기 때문
 	/* 클라 파싱 */
 	m_pFileTotalManager->Set_MapObj_In_Client(STAGE_OFFICE_1F, LEVEL_OFFICE_1F);
-	m_pFileTotalManager->Set_Lights_In_Client(STAGE_OFFICE_1F);
+	m_pFileTotalManager->Set_Lights_In_Client(99);
 	m_pFileTotalManager->Set_Collider_In_Client(STAGE_OFFICE_1F, LEVEL_OFFICE_1F);
 	m_pFileTotalManager->Set_Trigger_In_Client(STAGE_OFFICE_1F, LEVEL_OFFICE_1F);
 
 	if (FAILED(Ready_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
+
+	m_pFightManager->Initialize();
+	m_pFightManager->Set_FightStage(true);
 
 	return S_OK;
 }
@@ -64,6 +71,14 @@ void CLevel_Office1F::Tick(const _float& fTimeDelta)
 			if (FAILED(m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_OFFICE_2F))))
 				return;
 		}
+	}
+
+	m_pFightManager->Tick(fTimeDelta);
+
+	if (m_pUIManager->isTitleEnd())
+	{
+		CPlayer* pPlayer = dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"), 0));
+		pPlayer->Battle_Start();
 	}
 
 #ifdef _DEBUG
@@ -154,4 +169,5 @@ void CLevel_Office1F::Free()
 	Safe_Release(m_pSystemManager);
 	Safe_Release(m_pFileTotalManager);
 	Safe_Release(m_pFightManager);
+	Safe_Release(m_pUIManager);
 }

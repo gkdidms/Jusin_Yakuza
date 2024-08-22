@@ -7,6 +7,7 @@
 #include "UITutorial.h"
 
 #include "Background.h"
+#include "Player.h"
 
 CChapter1_0::CChapter1_0()
 	: CMainQuest{}
@@ -29,13 +30,19 @@ HRESULT CChapter1_0::Initialize(void* pArg)
 	m_pUIManager->Open_Scene(TEXT("Talk"));
 	m_pUIManager->Start_Talk(m_iScriptIndex); // 0번째 대화
 
+	dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"), 0))->Set_PlayerStop(true);
+
 	return S_OK;
 }
 
 _bool CChapter1_0::Execute()
 {
 	if (m_isTitleFinished)
+	{
+		dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"), 0))->Set_PlayerStop(false);
 		return true;
+	}
+		
 
 	if (m_pUIManager->isTalkFinished())
 	{

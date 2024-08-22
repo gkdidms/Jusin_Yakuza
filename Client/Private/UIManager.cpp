@@ -28,8 +28,6 @@
 #include "UIKaraoke_Play.h"
 #include "UIKaraoke_Score.h"
 
-
-
 #include "InventoryManager.h"
 #include "Player.h"
 

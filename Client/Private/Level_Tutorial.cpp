@@ -19,16 +19,15 @@ CLevel_Tutorial::CLevel_Tutorial(ID3D11Device* pDevice, ID3D11DeviceContext* pCo
 	: CLevel{ pDevice, pContext },
 	m_pSystemManager{ CSystemManager::GetInstance() },
 	m_pFileTotalManager{ CFileTotalMgr::GetInstance() },
-	m_pFightManager{ CFightManager::GetInstance()},
+	//m_pFightManager{ CFightManager::GetInstance()},
 	m_pQuestManager{ CQuestManager::GetInstance()},
 	m_pUIManager { CUIManager::GetInstance() }
 {
 	Safe_AddRef(m_pSystemManager);
 	Safe_AddRef(m_pFileTotalManager);
-	Safe_AddRef(m_pFightManager);
+	//Safe_AddRef(m_pFightManager);
 	Safe_AddRef(m_pQuestManager);
 	Safe_AddRef(m_pUIManager);
-	
 }
 
 HRESULT CLevel_Tutorial::Initialize()
@@ -40,14 +39,14 @@ HRESULT CLevel_Tutorial::Initialize()
 		return E_FAIL;
 
 	m_pQuestManager->Start_Quest(CQuestManager::CHAPTER_1);
-	m_pFightManager->Initialize();
-	m_pFightManager->Set_StreetFight(true);
+	//m_pFightManager->Initialize();
+	//m_pFightManager->Set_StreetFight(true);
 
 	/* 클라 파싱 */
 	m_pFileTotalManager->Set_MapObj_In_Client(7, LEVEL_TUTORIAL);
 	m_pFileTotalManager->Set_Lights_In_Client(99);
 	m_pFileTotalManager->Set_Trigger_In_Client(STAGE_TUTORIAL, LEVEL_TUTORIAL);
-	//m_pFileTotalManager->Set_Collider_In_Client(STAGE_TUTORIAL, LEVEL_TUTORIAL);
+	m_pFileTotalManager->Set_Collider_In_Client(STAGE_TUTORIAL, LEVEL_TUTORIAL);
 
 	if (FAILED(Ready_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
@@ -59,7 +58,7 @@ HRESULT CLevel_Tutorial::Initialize()
 
 void CLevel_Tutorial::Tick(const _float& fTimeDelta)
 {
-	m_pFightManager->Tick(fTimeDelta);
+	//m_pFightManager->Tick(fTimeDelta);
 
 	if (m_pQuestManager->Execute())
 	{
@@ -84,7 +83,7 @@ void CLevel_Tutorial::Tick(const _float& fTimeDelta)
 HRESULT CLevel_Tutorial::Ready_Camera(const wstring& strLayerTag)
 {
 	/* 카메라 추가 시 Debug Camera를 첫번째로 놔두고 추가해주세요 (디버깅 툴에서 사용중)*/
-	const _float4x4* pPlayerFloat4x4 = dynamic_cast<CTransform*>(m_pGameInstance->Get_GameObject_Component(LEVEL_TUTORIAL, TEXT("Layer_Player"), TEXT("Com_Transform", 0)))->Get_WorldFloat4x4();
+	const _float4x4* pPlayerFloat4x4 = dynamic_cast<CTransform*>(m_pGameInstance->Get_GameObject_Component(LEVEL_TUTORIAL, TEXT("Layer_Player"), TEXT("Com_Transform"), 0))->Get_WorldFloat4x4();
 
 	/* 0. 디버그용 카메라 */
 	CDebugCamera::DEBUG_CAMERA_DESC		CameraDesc{};
@@ -158,7 +157,7 @@ void CLevel_Tutorial::Free()
 
 	Safe_Release(m_pSystemManager);
 	Safe_Release(m_pFileTotalManager);
-	Safe_Release(m_pFightManager);
+	//Safe_Release(m_pFightManager);
 	Safe_Release(m_pQuestManager);
 	Safe_Release(m_pUIManager);
 }

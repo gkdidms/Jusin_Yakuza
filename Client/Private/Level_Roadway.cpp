@@ -6,6 +6,7 @@
 #include "Collision_Manager.h"
 #include "CarChaseManager.h"
 #include "UIManager.h"
+#include "FightManager.h"
 
 #include "PlayerCamera.h"
 #include "CineCamera.h"
@@ -20,11 +21,13 @@ CLevel_Roadway::CLevel_Roadway(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
     : CLevel { pDevice, pContext },
     m_pSystemManager{ CSystemManager::GetInstance() },
     m_pFileTotalManager{ CFileTotalMgr::GetInstance() },
-	m_pUIManager{CUIManager::GetInstance()}
+	m_pUIManager{CUIManager::GetInstance()},
+	m_pFightManager{ CFightManager::GetInstance() }
 {
     Safe_AddRef(m_pSystemManager);
     Safe_AddRef(m_pFileTotalManager);
 	Safe_AddRef(m_pUIManager);
+	Safe_AddRef(m_pFightManager);
 }
 
 HRESULT CLevel_Roadway::Initialize()
@@ -44,6 +47,8 @@ HRESULT CLevel_Roadway::Initialize()
 	if (FAILED(Ready_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
 
+	m_pFightManager->Initialize();
+	m_pFightManager->Set_FightStage(true);
 	m_pSystemManager->Set_Camera(CAMERA_CARCHASE);
 
     return S_OK;
@@ -52,6 +57,8 @@ HRESULT CLevel_Roadway::Initialize()
 void CLevel_Roadway::Tick(const _float& fTimeDelta)
 {
 	m_pCarChaseManager->Tick();
+	m_pFightManager->Tick(fTimeDelta);
+
 #ifdef _DEBUG
     SetWindowText(g_hWnd, TEXT("ÃÑ°ÝÀü ¸Ê"));
 #endif
@@ -168,4 +175,5 @@ void CLevel_Roadway::Free()
     Safe_Release(m_pFileTotalManager);
 	Safe_Release(m_pCarChaseManager);
 	Safe_Release(m_pUIManager);
+	Safe_Release(m_pFightManager);
 }

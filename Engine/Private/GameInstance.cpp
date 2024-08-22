@@ -330,6 +330,11 @@ _bool CGameInstance::isVignette()
 	return m_pRenderer->isVignette();
 }
 
+_bool CGameInstance::isInvertSaturationColor()
+{
+	return m_pRenderer->isInvertLightnessColor();
+}
+
 void CGameInstance::Set_PBR(_bool isPBR)
 {
 	m_pRenderer->Set_PBR(isPBR);
@@ -365,6 +370,11 @@ void CGameInstance::Set_Vignette(_bool isVignette)
 	m_pRenderer->Set_Vignette(isVignette);
 }
 
+void CGameInstance::Set_InvertSaturationColor(_bool isInvertLightnessColor)
+{
+	m_pRenderer->Set_InvertSaturationColor(isInvertLightnessColor);
+}
+
 _float CGameInstance::Get_SSAOBlur()
 {
 	return m_pRenderer->Get_SSAOBlur();
@@ -373,6 +383,66 @@ _float CGameInstance::Get_SSAOBlur()
 _float CGameInstance::Get_SSAOBias()
 {
 	return m_pRenderer->Get_SSAOBias();
+}
+
+_float CGameInstance::Get_InvertSaturationFactor()
+{
+	return m_pRenderer->Get_InvertSaturationFactor();
+}
+
+void CGameInstance::Set_InvertSaturationFactor(_float fFactor)
+{
+	m_pRenderer->Set_InvertSaturationFactor(fFactor);
+}
+
+void CGameInstance::Set_InvertColorDuration(_float fDuration)
+{
+	m_pRenderer->Set_InvertColorDuration(fDuration);
+}
+
+void CGameInstance::Set_RadialPower(_float fPower)
+{
+	m_pRenderer->Set_RadialPower(fPower);
+}
+
+void CGameInstance::Set_RadialSample(_int iSample)
+{
+	m_pRenderer->Set_RadialSample(iSample);
+}
+
+void CGameInstance::Set_VignetteIntensity(_float fIntensity)
+{
+	m_pRenderer->Set_VignetteIntensity(fIntensity);
+}
+
+void CGameInstance::Set_VignetteSmootness(_float fSmootness)
+{
+	m_pRenderer->Set_VignetteSmootness(fSmootness);
+}
+
+_float CGameInstance::Get_VignetteIntensity()
+{
+	return m_pRenderer->Get_VignetteIntensity();
+}
+
+_float CGameInstance::Get_VignetteSmootness()
+{
+	return m_pRenderer->Get_VignetteSmootness();
+}
+
+_float CGameInstance::Get_RadialPower()
+{
+	return m_pRenderer->Get_RadialPower();
+}
+
+_int CGameInstance::Get_RadialSample()
+{
+	return m_pRenderer->Get_RadialSample();
+}
+
+_float CGameInstance::Get_InvertColorDuration()
+{
+	return m_pRenderer->Get_InvertColorDuration();
 }
 
 void CGameInstance::Set_SSAOBias(_float fBias)
