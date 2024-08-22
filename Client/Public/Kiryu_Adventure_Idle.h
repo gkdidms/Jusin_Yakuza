@@ -17,7 +17,7 @@ public:
 	};
 
 private:
-	const _float ANIM_CHANGE_TIME = 120.f;	//120초에 한번 씩 주변 둘러보는 애니메이션 실행시키자
+	const _float ANIM_CHANGE_TIME = 30.f;	//30초에 한번 씩 주변 둘러보는 애니메이션 실행시키자
 
 private:
 	CKiryu_Adventure_Idle();

@@ -73,7 +73,7 @@ void CNishiki::Late_Tick(const _float& fTimeDelta)
 
 void CNishiki::Change_Animation(const _float fTimeDelta)
 {
-	_float fOffset = { 1.f };
+	m_fOffset = { 1.f };
 	m_isAnimLoop = true;
 
 	if (m_iState == IDLE)
@@ -88,7 +88,7 @@ void CNishiki::Change_Animation(const _float fTimeDelta)
 	else if (m_iState == WALK_LP)
 	{
 		m_iAnimIndex = 4;
-		fOffset = 0.8f;
+		m_fOffset = 0.8f;
 	}
 	else if (m_iState == WALK_EN)
 	{
@@ -99,8 +99,12 @@ void CNishiki::Change_Animation(const _float fTimeDelta)
 		m_iAnimIndex = 0;
 
 	CModel::ANIMATION_DESC Desc{ m_iAnimIndex, m_isAnimLoop};
+	m_pModelCom->Set_AnimLoop(m_iAnimIndex, m_isAnimLoop);
 	m_pModelCom->Set_AnimationIndex(m_iAnimIndex, m_fChangeInterval);
-	m_pModelCom->Play_Animation(fTimeDelta * fOffset, Desc);
+	if(m_iState == CHEER)
+		m_pModelCom->Play_Animation(fTimeDelta * m_fOffset, Desc, false);
+	else
+		m_pModelCom->Play_Animation(fTimeDelta * m_fOffset, Desc);
 }
 
 HRESULT CNishiki::Add_Components()
