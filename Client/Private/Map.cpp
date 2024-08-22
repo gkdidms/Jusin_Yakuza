@@ -3,7 +3,7 @@
 #include "GameInstance.h"
 #include "SystemManager.h"
 #include "Transform.h"
-
+#include "Player.h"
 #include "Mesh.h"
 
 CMap::CMap(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -129,27 +129,20 @@ void CMap::Tick(const _float& fTimeDelta)
 		m_bPositive = m_bPositive ? false : true;
 	}
 	
-
-	//if (0. < m_fDynamicTime || -0.5 > m_fDynamicTime)
-	//{
-	//	m_fDynamicTime = 0;
-	//	
-	//}
-
 #ifdef _DEBUG
 	for (auto& iter : m_vColliders)
 		iter->Tick(m_pTransformCom->Get_WorldMatrix());
 #endif
 
-	//_vector vPlayerPosition;
-	//memcpy(&vPlayerPosition, m_pPlayerMatrix->m[CTransform::STATE_POSITION], sizeof(_float4));
 
 	_vector vCubePos = m_CubeWorldMatrix.r[3];
 	m_fCamDistance = XMVectorGetX(XMVector3Length(vCubePos - m_pGameInstance->Get_CamPosition()));
 
 	
-	if ((m_pGameInstance->Get_CurrentLevel() == LEVEL_TUTORIAL || 
-		m_pGameInstance->Get_CurrentLevel() == LEVEL_TOKOSTREET) && true == m_bOcculusionCulling)
+	if ((m_pGameInstance->Get_CurrentLevel() == LEVEL_TUTORIAL ||
+		m_pGameInstance->Get_CurrentLevel() == LEVEL_NISHIKIWALK ||
+		m_pGameInstance->Get_CurrentLevel() == LEVEL_TOKOSTREET || 
+		m_pGameInstance->Get_CurrentLevel() == LEVEL_TEST) && true == m_bOcculusionCulling)
 		m_pGameInstance->Add_Renderer(CRenderer::RENDER_OCCULUSION, this);
 }
 
@@ -171,19 +164,38 @@ void CMap::Late_Tick(const _float& fTimeDelta)
 	m_vCompulsoryDecalBlendMeshIndex.clear();
 	m_vFastDynamicSign.clear();
 
+	XMVECTOR vPlayerPos = dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"), 0))->Get_TransformCom()->Get_State(CTransform::STATE_POSITION);
+	XMVECTOR vThisPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+	_float fDistance = XMVector3Length(vPlayerPos - vThisPos).m128_f32[0]; // 거리 측정	
+
+	m_isFar = false;
+
+	if (fDistance > 100)
+		m_isFar = true;
+
 	if (m_pGameInstance->Get_CurrentLevel() == LEVEL_TUTORIAL ||
 		m_pGameInstance->Get_CurrentLevel() == LEVEL_NISHIKIWALK ||
 		m_pGameInstance->Get_CurrentLevel() == LEVEL_TOKOSTREET || m_pGameInstance->Get_CurrentLevel() == LEVEL_TEST)
 	{
 		if (true == m_bOcculusionCulling && isOcculusionDepth())
 		{
-			Add_Renderer(fTimeDelta);
-			//m_pGameInstance->Add_Renderer(CRenderer::RENDER_SHADOWOBJ, this);
+			if (m_isFar == true)
+			{
+				Add_Renderer_Far(fTimeDelta);
+			}
+			else
+			{
+				Add_Renderer(fTimeDelta);
+			}
+			m_pGameInstance->Add_Renderer(CRenderer::RENDER_SHADOWOBJ, this); //-> 건물들만 그려줌
 		}
 		else if (false == m_bOcculusionCulling)
 		{
-			XMVECTOR	vWorldPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-			if (true == m_pGameInstance->isIn_WorldFrustum(vWorldPos, 20))
+			if (m_isFar == true)
+			{
+				Add_Renderer_Far(fTimeDelta);
+			}
+			else
 			{
 				Add_Renderer(fTimeDelta);
 			}
@@ -192,10 +204,8 @@ void CMap::Late_Tick(const _float& fTimeDelta)
 	else
 	{
 		Add_Renderer(fTimeDelta);
-		//m_pGameInstance->Add_Renderer(CRenderer::RENDER_SHADOWOBJ, this);
 	}
 
-	m_pGameInstance->Add_Renderer(CRenderer::RENDER_OCCULUSION, this);
 }
 
 HRESULT CMap::Render()
@@ -213,7 +223,10 @@ HRESULT CMap::Render()
 	//NonBlend - 일반메시, 
 
 #pragma region Render_DefaultMeshGroup
-	Near_Render(iRenderState);
+	if (m_isFar)
+		Far_Render(iRenderState);
+	else
+		Near_Render(iRenderState);
 #pragma endregion
 
 
@@ -296,11 +309,6 @@ HRESULT CMap::Render()
 	}
 	
 #pragma endregion
-
-
-
-
-
 
 	//Render Bloom - nonlight
 #pragma region Render_Bloom
@@ -464,6 +472,196 @@ HRESULT CMap::Render()
 #pragma endregion
 
 	
+
+	return S_OK;
+}
+
+HRESULT CMap::Far_Render(_uint iRenderState)
+{
+	vector<CMesh*> Meshes = m_pModelCom->Get_Meshes();
+
+	if (iRenderState == CRenderer::RENDER_NONBLENDER)
+	{
+		// 램프 - 일반 mesh 출력, 그리고 부분 nonlight로 들어가서 bloom
+		// 부분 bloom - 전부 출력 후 밝은 부분만 nonlight로 들어가서 bloom
+
+
+#pragma region 일반
+		for (size_t k = 0; k < m_vRenderDefaulMeshIndex.size(); k++)
+		{
+			int		i = m_vRenderDefaulMeshIndex[k];
+
+			_bool isUVShader = false;
+			if (FAILED(m_pShaderCom->Bind_RawValue("g_isUVShader", &isUVShader, sizeof(_bool))))
+				return E_FAIL;
+
+			_float fFar = *m_pGameInstance->Get_CamFar();
+			m_pShaderCom->Bind_RawValue("g_fFar", &fFar, sizeof(_float));
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
+				return E_FAIL;
+
+			_bool isNormal = true;
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS)))
+				isNormal = false;
+			m_pShaderCom->Bind_RawValue("g_isNormal", &isNormal, sizeof(_bool));
+
+			m_pShaderCom->Bind_RawValue("g_bCompulsoryAlpha", &m_bCompulsoryAlpha, sizeof(_bool));
+
+			m_pShaderCom->Begin(14);
+
+			m_pModelCom->Render(i);
+		}
+#pragma endregion
+
+#pragma region 램프
+		for (size_t k = 0; k < m_vLampMeshIndex.size(); k++)
+		{
+			int		i = m_vLampMeshIndex[k];
+
+			_bool isUVShader = false;
+			if (FAILED(m_pShaderCom->Bind_RawValue("g_isUVShader", &isUVShader, sizeof(_bool))))
+				return E_FAIL;
+
+			_float fFar = *m_pGameInstance->Get_CamFar();
+			m_pShaderCom->Bind_RawValue("g_fFar", &fFar, sizeof(_float));
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
+				return E_FAIL;
+
+			_bool isNormal = true;
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS)))
+				isNormal = false;
+			m_pShaderCom->Bind_RawValue("g_isNormal", &isNormal, sizeof(_bool));
+
+			m_pShaderCom->Bind_RawValue("g_bCompulsoryAlpha", &m_bCompulsoryAlpha, sizeof(_bool));
+
+			m_pShaderCom->Begin(14);
+
+			m_pModelCom->Render(i);
+		}
+#pragma endregion
+
+#pragma region 부분bloom
+		for (size_t k = 0; k < m_vBloomIndex.size(); k++)
+		{
+			int		i = m_vBloomIndex[k];
+
+			_bool isUVShader = false;
+			if (FAILED(m_pShaderCom->Bind_RawValue("g_isUVShader", &isUVShader, sizeof(_bool))))
+				return E_FAIL;
+
+			_float fFar = *m_pGameInstance->Get_CamFar();
+			m_pShaderCom->Bind_RawValue("g_fFar", &fFar, sizeof(_float));
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
+				return E_FAIL;
+
+			_bool isNormal = true;
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS)))
+				isNormal = false;
+			m_pShaderCom->Bind_RawValue("g_isNormal", &isNormal, sizeof(_bool));
+
+			m_pShaderCom->Bind_RawValue("g_bCompulsoryAlpha", &m_bCompulsoryAlpha, sizeof(_bool));
+
+			m_pShaderCom->Begin(14);
+
+			m_pModelCom->Render(i);
+		}
+#pragma endregion
+
+#pragma region 강력한bloom
+		for (size_t k = 0; k < m_vStrongBloomIndex.size(); k++)
+		{
+			int		i = m_vStrongBloomIndex[k];
+
+			_bool isUVShader = false;
+			if (FAILED(m_pShaderCom->Bind_RawValue("g_isUVShader", &isUVShader, sizeof(_bool))))
+				return E_FAIL;
+
+			_float fFar = *m_pGameInstance->Get_CamFar();
+			m_pShaderCom->Bind_RawValue("g_fFar", &fFar, sizeof(_float));
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
+				return E_FAIL;
+
+			_bool isNormal = true;
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS)))
+				isNormal = false;
+			m_pShaderCom->Bind_RawValue("g_isNormal", &isNormal, sizeof(_bool));
+
+			m_pShaderCom->Bind_RawValue("g_bCompulsoryAlpha", &m_bCompulsoryAlpha, sizeof(_bool));
+
+			m_pShaderCom->Begin(14);
+
+			m_pModelCom->Render(i);
+		}
+#pragma endregion
+
+#pragma region GLASS
+		for (size_t k = 0; k < m_vRenderGlassMeshIndex.size(); k++)
+		{
+			// GLASS NORMAL, DEPTH 등의 정보 넣기
+			int		i = m_vRenderGlassMeshIndex[k];
+
+			_bool isUVShader = false;
+			if (FAILED(m_pShaderCom->Bind_RawValue("g_isUVShader", &isUVShader, sizeof(_bool))))
+				return E_FAIL;
+
+			_float fFar = *m_pGameInstance->Get_CamFar();
+			m_pShaderCom->Bind_RawValue("g_fFar", &fFar, sizeof(_float));
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
+				return E_FAIL;
+
+			_bool isNormal = true;
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS)))
+				isNormal = false;
+			m_pShaderCom->Bind_RawValue("g_isNormal", &isNormal, sizeof(_bool));
+
+			m_pShaderCom->Bind_RawValue("g_bCompulsoryAlpha", &m_bCompulsoryAlpha, sizeof(_bool));
+
+			m_pShaderCom->Begin(14);
+
+			m_pModelCom->Render(i);
+		}
+#pragma endregion
+
+#pragma region Mask_구Decal
+		for (size_t k = 0; k < m_vMaskMeshIndex.size(); k++)
+		{
+			int		i = m_vMaskMeshIndex[k];
+
+			_bool isUVShader = false;
+			if (FAILED(m_pShaderCom->Bind_RawValue("g_isUVShader", &isUVShader, sizeof(_bool))))
+				return E_FAIL;
+
+			_float fFar = *m_pGameInstance->Get_CamFar();
+			m_pShaderCom->Bind_RawValue("g_fFar", &fFar, sizeof(_float));
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
+				return E_FAIL;
+
+			_bool isNormal = true;
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS)))
+				isNormal = false;
+			m_pShaderCom->Bind_RawValue("g_isNormal", &isNormal, sizeof(_bool));
+
+			m_pShaderCom->Bind_RawValue("g_bCompulsoryAlpha", &m_bCompulsoryAlpha, sizeof(_bool));
+
+			m_pShaderCom->Begin(14);
+
+			m_pModelCom->Render(i);
+		}
+#pragma endregion
+
+	}
 
 	return S_OK;
 }
@@ -970,9 +1168,9 @@ CMap::MAPOBJ_DESC CMap::Send_GameObject_Information()
 
 void CMap::Add_Renderer(const _float& fTimeDelta)
 {
-
 	vector<CMesh*> Meshes = m_pModelCom->Get_Meshes();
 	_uint	iNumMeshes = m_pModelCom->Get_NumMeshes();
+
 
 	for (size_t i = 0; i < iNumMeshes; i++)
 	{
@@ -1161,6 +1359,170 @@ void CMap::Add_Renderer(const _float& fTimeDelta)
 	for (auto& iter : m_vDecals)
 		iter->Late_Tick(fTimeDelta);
 
+}
+
+void CMap::Add_Renderer_Far(const _float& fTimeDelta)
+{
+	vector<CMesh*> Meshes = m_pModelCom->Get_Meshes();
+	_uint	iNumMeshes = m_pModelCom->Get_NumMeshes();
+
+
+
+
+
+	for (size_t i = 0; i < iNumMeshes; i++)
+	{
+		_float4x4 vLocalMatrix = Meshes[i]->Get_LocalMatrix();
+
+		XMVECTOR localPos = XMVectorSet(vLocalMatrix._41, vLocalMatrix._42, vLocalMatrix._43, 1);
+		XMVECTOR worldPos = XMVectorZero();
+		worldPos = XMVector3Transform(localPos, m_pTransformCom->Get_WorldMatrix());
+
+		string meshName = Meshes[i]->Get_Name();
+
+		// 점 위치 찾기
+		size_t dotPos = meshName.find('.');
+
+		// 점이 있으면 점 이전 부분을 추출하고, 없으면 전체 문자열을 사용
+		string baseName = (dotPos != string::npos) ? meshName.substr(0, dotPos) : meshName;
+
+		const char* baseNameCStr = baseName.c_str();
+
+		if (false == m_bCull)
+		{
+			// 컬링안함
+			if (0 == strcmp(baseNameCStr, "DEFAULTMESH"))
+			{
+				m_vRenderDefaulMeshIndex.push_back(i);
+			}
+			else if (0 == strcmp(baseNameCStr, "GLASSMESH") || 0 == strcmp(baseNameCStr, "DECALMESH")
+				|| 0 == strcmp(baseNameCStr, "DECALBLENDMESH") || 0 == strcmp(baseNameCStr, "COMBLENDDECAL"))
+			{
+			}
+			else if (0 == strcmp(baseNameCStr, "DECALLIGHTMESH"))
+			{
+				m_vDecalLightMeshIndex.push_back(i);
+			}
+			else if (0 == strcmp(baseNameCStr, "SIGNMESH"))
+			{
+				m_vSignMeshIndex.push_back(i);
+			}
+			else if (0 == strcmp(baseNameCStr, "LAMPMESH"))
+			{
+				// Nonblend + effect 둘 다 호출
+				m_vLampMeshIndex.push_back(i);
+			}
+			else if (0 == strcmp(baseNameCStr, "BLOOMMESH"))
+			{
+				m_vBloomIndex.push_back(i);
+			}
+			else if (0 == strcmp(baseNameCStr, "MASKSIGNMESH"))
+			{
+				m_vMaskSignIndex.push_back(i);
+			}
+			else if (0 == strcmp(baseNameCStr, "STRONGBLOOM"))
+			{
+				m_vStrongBloomIndex.push_back(i);
+			}
+			else if (strstr(baseNameCStr, "DYNAMICSIGN") != nullptr)
+			{
+				m_vDynamicSignIndex.push_back(i);
+			}
+			else
+			{
+				// mesh 안합쳐놓으면 그냥 default로 처리
+				m_vRenderDefaulMeshIndex.push_back(i);
+			}
+		}
+		else
+		{
+			float		fScale = Meshes[i]->Get_MeshScale();
+
+			if (fScale < 15)
+				fScale = 25;
+
+			// 컬링
+			if (true == m_pGameInstance->isIn_WorldFrustum(worldPos, fScale * 1.5))
+			{
+				if (0 == strcmp(baseNameCStr, "DEFAULTMESH"))
+				{
+					m_vRenderDefaulMeshIndex.push_back(i);
+				}
+				else if (0 == strcmp(baseNameCStr, "GLASSMESH") || 0 == strcmp(baseNameCStr, "DECALMESH")
+					|| 0 == strcmp(baseNameCStr, "DECALBLENDMESH") || 0 == strcmp(baseNameCStr, "COMBLENDDECAL"))
+				{
+				}
+				else if (0 == strcmp(baseNameCStr, "SIGNMESH"))
+				{
+					m_vSignMeshIndex.push_back(i);
+				}
+				else if (0 == strcmp(baseNameCStr, "DECALLIGHTMESH"))
+				{
+					m_vDecalLightMeshIndex.push_back(i);
+				}
+				else if (0 == strcmp(baseNameCStr, "LAMPMESH"))
+				{
+					// Nonblend + effect 둘 다 호출
+					m_vLampMeshIndex.push_back(i);
+				}
+				else if (0 == strcmp(baseNameCStr, "BLOOMMESH"))
+				{
+					m_vBloomIndex.push_back(i);
+				}
+				else if (0 == strcmp(baseNameCStr, "MASKSIGNMESH"))
+				{
+					m_vMaskSignIndex.push_back(i);
+				}
+				else if (0 == strcmp(baseNameCStr, "STRONGBLOOM"))
+				{
+					m_vStrongBloomIndex.push_back(i);
+				}
+				else if (strstr(baseNameCStr, "DYNAMICSIGN") != nullptr)
+				{
+					m_vDynamicSignIndex.push_back(i);
+				}
+				else
+				{
+					// mesh 안합쳐놓으면 그냥 default로 처리
+					m_vRenderDefaulMeshIndex.push_back(i);
+				}
+			}
+		}
+
+	}
+
+	// RENDER_NONBLEND 돼야하는 그룹
+	if (0 < m_vRenderDefaulMeshIndex.size() || 0 < m_vSignMeshIndex.size() || 0 < m_vLampMeshIndex.size()
+		|| 0 < m_vBloomIndex.size() || 0 < m_vMaskMeshIndex.size() || 0 < m_vStrongBloomIndex.size() || 0 < m_vRenderGlassMeshIndex.size())
+		m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
+
+	// RENDER_EFFECT 돼야하는 그룹
+	if (0 < m_vDecalLightMeshIndex.size() || 0 < m_vLampMeshIndex.size())
+		m_pGameInstance->Add_Renderer(CRenderer::RENDER_EFFECT, this);
+
+	// GLASS, DECAL 같이 처리 - COLOR 값만 넣는애들
+	if (0 < m_vDecalBlendMeshIndex.size() || 0 < m_vCompulsoryDecalBlendMeshIndex.size())
+	{
+		m_pGameInstance->Add_Renderer(CRenderer::RENDER_DECAL, this);
+	}
+
+	if (0 < m_vRenderGlassMeshIndex.size())
+	{
+		m_pGameInstance->Add_Renderer(CRenderer::RENDER_GLASS, this);
+	}
+
+
+	// 빛 영향 안받고 원색값 유지
+	if (0 < m_vSignMeshIndex.size() || 0 < m_vMaskSignIndex.size() || 0 < m_vDynamicSignIndex.size())
+		m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONLIGHT_NONBLUR, this);
+
+	//Bloom
+	if (0 < m_vBloomIndex.size() || 0 < m_vSignMeshIndex.size() || 0 < m_vLampMeshIndex.size() || 0 < m_vStrongBloomIndex.size())
+		m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONLIGHT, this);
+
+
+	for (auto& iter : m_vDecals)
+		iter->Late_Tick(fTimeDelta);
 }
 
 HRESULT CMap::Add_Components(void* pArg)

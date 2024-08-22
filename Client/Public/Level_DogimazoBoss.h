@@ -19,7 +19,10 @@ private:
     class CFileTotalMgr* m_pFileTotalManager = { nullptr };
     class CFightManager* m_pFightManager = { nullptr };
     class CUIManager* m_pUIManager = { nullptr };
+    class CQuestManager* m_pQuestManager = { nullptr };
 
+private:
+    _bool m_isFightStart = { false };
 private:
     HRESULT Ready_Camera(const wstring& strLayerTag);
     HRESULT Ready_Player(const wstring& strLayerTag);

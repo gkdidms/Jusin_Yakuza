@@ -286,6 +286,15 @@ void CMonster::Set_Start(_bool isStart)
 	m_pTree->Set_Start(isStart);
 }
 
+void CMonster::Set_Animation(string strAnimName, _bool isLoop)
+{
+	m_strAnimName = strAnimName;
+	m_isAnimLoop = isLoop;
+
+	if (FAILED(Setup_Animation()))
+		return;
+}
+
 /*
 * DIR_F : 앞으로 누워잇음
 * DIR_B : 뒤로 엎어져잇음
@@ -353,9 +362,13 @@ void CMonster::Tick(const _float& fTimeDelta)
 		if (m_pAnimCom[m_iCurrentAnimType]->Get_AnimFinished())
 			m_isSynchronizing = false;
 	}
-	m_pTree->Tick(fTimeDelta);
 
-	Change_Animation(); //애니메이션 변경
+	if (!m_isScript)
+	{
+		m_pTree->Tick(fTimeDelta);
+
+		Change_Animation(); //애니메이션 변경
+	}
 
 	_bool isRoot = m_iCurrentAnimType != CUTSCENE;
 
@@ -452,6 +465,12 @@ HRESULT CMonster::Render()
 	int i = 0;
 	for (auto& pMesh : m_pModelCom->Get_Meshes())
 	{
+		if (!m_pGameInstance->isShadow())
+		{
+			m_pModelCom->Bind_BoneMatrices(i);
+			m_pModelCom->Bind_Compute(m_pComputeShaderCom, i);
+		}
+
 		if (!strcmp("[l0]jacketw1", pMesh->Get_Name()))
 		{
 			if (m_isRimLight)

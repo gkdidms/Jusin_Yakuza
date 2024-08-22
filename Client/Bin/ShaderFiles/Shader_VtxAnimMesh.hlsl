@@ -163,7 +163,7 @@ PS_OUT PS_MAIN(PS_IN In)
     Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_fFar, RimIndex, 0.f);
     Out.vNormal = vector(vNormalBTN.xyz * 0.5f + 0.5f, 0.f);
     Out.vDiffuse = vDiffuse;
-    Out.vSurface = vector(Result.fMetalness, Result.fRoughness, Result.fSpeclure, Engine);
+    Out.vSurface = vector(Result.fMetalness, Result.fRoughness, Result.fSpeclure, Result.fFactor);
     Out.vOEShader = vector(OEResult.fRouhness, OEResult.fMixShaderFactor, fMixMultiFactor, fDeffuseFactor);
     Out.vSpecular = vector(OEResult.vSpecular, 0.f);
     
@@ -200,7 +200,6 @@ PS_OUT PS_BLEND(PS_IN In)
     vNormalDesc = vNormalDesc * 2.f - 1.f;
     float3x3 WorldMatrix = float3x3(In.vTangent.xyz, In.vBinormal.xyz, In.vNormal.xyz);
     vector vNormalBTN = vector(mul(vNormalDesc.xyz, WorldMatrix), 0.f);
-    Out.vNormal = vector(vNormalBTN.xyz * 0.5f + 0.5f, 0.f);
 
     float RimIndex = 0.f;
     if (0.05f < g_isRimLight)
@@ -216,8 +215,9 @@ PS_OUT PS_BLEND(PS_IN In)
     float fDeffuseFactor = vDiffuseDesc.a * 1.f;
     
     Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_fFar, RimIndex, 0.f);
+    Out.vNormal = vector(vNormalBTN.xyz * 0.5f + 0.5f, 0.f);
     Out.vDiffuse = vDiffuseColor;
-    Out.vSurface = vector(Result.fMetalness / g_fFar, Result.fRoughness / g_fFar, Result.fSpeclure / g_fFar, g_fFar);
+    Out.vSurface = vector(Result.fMetalness, Result.fRoughness, Result.fSpeclure, Result.fFactor);
     Out.vOEShader = vector(OEResult.fRouhness, OEResult.fMixShaderFactor, fMixMultiFactor, fDeffuseFactor);
     Out.vSpecular = vector(OEResult.vSpecular, 0.f);
     
