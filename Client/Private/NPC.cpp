@@ -57,6 +57,9 @@ HRESULT CNPC::Render()
 	int i = 0;
 	for (auto& pMesh : m_pModelCom->Get_Meshes())
 	{
+		m_pModelCom->Bind_BoneMatrices(i);
+		m_pModelCom->Bind_Compute(m_pComputeShaderCom, i);
+
 		if (nullptr != m_pMaterialCom)
 		{
 			if (FAILED(m_pMaterialCom->Bind_Shader(m_pShaderCom, m_pModelCom->Get_MaterialName(pMesh->Get_MaterialIndex()))))
@@ -86,7 +89,6 @@ HRESULT CNPC::Render()
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RSTexture", i, aiTextureType_SPECULAR)))
 			isRS = false;
 		m_pShaderCom->Bind_RawValue("g_isRS", &isRS, sizeof(_bool));
-		m_pShaderCom->Bind_RawValue("IsY3Shader", &isRS, sizeof(_bool));
 
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RDTexture", i, aiTextureType_OPACITY)))
 			isRD = false;

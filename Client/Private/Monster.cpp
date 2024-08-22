@@ -452,6 +452,12 @@ HRESULT CMonster::Render()
 	int i = 0;
 	for (auto& pMesh : m_pModelCom->Get_Meshes())
 	{
+		if (!m_pGameInstance->isShadow())
+		{
+			m_pModelCom->Bind_BoneMatrices(i);
+			m_pModelCom->Bind_Compute(m_pComputeShaderCom, i);
+		}
+
 		if (!strcmp("[l0]jacketw1", pMesh->Get_Name()))
 		{
 			if (m_isRimLight)

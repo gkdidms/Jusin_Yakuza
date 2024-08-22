@@ -194,6 +194,62 @@ PS_MAIN_OUT PS_MAIN(PS_IN In)
     return Out;
 }
 
+PS_MAIN_OUT PS_MAIN_FAR(PS_IN In)
+{
+    PS_MAIN_OUT Out = (PS_MAIN_OUT) 0;
+    UV_SHADER UV = (UV_SHADER) 0;
+    if (g_isUVShader)
+        UV = UV_Shader(In.vTexcoord);
+    
+    vector vDiffuseDesc = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
+   
+    vector vMulti = vector(0.f, 1.f, 0.f, 1.f);
+    vector vRD = vector(1.f, 1.f, 1.f, 1.f);
+    vector vRS = vector(1.f, 1.f, 1.f, 1.f);
+    vector vRM = vector(0.5f, 1.f, 0.5f, 1.f);
+    vector vRT = vector(0.5f, 0.5f, 1.f, 0.5f);
+    //노말 벡터 구하기
+    vector vNormalDesc = g_isNormal ? g_NormalTexture.Sample(LinearSampler, In.vTexcoord) : In.vNormal;
+    
+    //Neo Shader
+    float fFactor = RepeatingPatternBlendFactor(vMulti);
+    //vector vDiffuse = DiffusePortion(vDiffuseDesc, vRS, vRD, fFactor, In.vTexcoord);
+    
+    COMBINE_OUT Result = Neo_MetallicAndGlossiness(vMulti, vRM); // Metallic, Rouhness 최종
+    //vDiffuse = Get_Diffuse(vMulti.a, vDiffuse); // Diffuse 최종
+    
+    //Tangent Normal 구하기 
+    vNormalDesc = Get_Normal(vNormalDesc, vRT, fFactor);
+
+    vNormalDesc = vNormalDesc * 2.f - 1.f;
+    //vNormalDesc = vector(vNormalDesc.w, vNormalDesc.y, 1.f, 0.f);
+    float3x3 WorldMatrix = float3x3(In.vTangent.xyz, In.vBinormal.xyz, In.vNormal.xyz);
+    vector vNormalBTN = normalize(vector(mul(vNormalDesc.xyz, WorldMatrix), 0.f));
+    //vector vNormalBTN = (vector(mul(vNormalDesc.xyz, WorldMatrix), 0.f));
+    
+    float RimIndex = 0.f;
+    if (0.05f < g_isRimLight)
+    {
+        if (In.vTexcoord.y >= g_fRimUV.x && In.vTexcoord.y < g_fRimUV.y)
+        {
+            RimIndex = g_isRimLight;
+        }
+    }
+    
+   // OE_SPECULAR OEResult = Neo_OE_Specular(vMulti, vRM, vRS);
+    //float fMixMultiFactor = lerp(vMulti.y, 1.f, AssetShader);
+    //float fDeffuseFactor = vDiffuseDesc.a * 1.f;
+    
+    Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_fFar, RimIndex, 0.f);
+    Out.vNormal = vector(vNormalBTN.xyz * 0.5f + 0.5f, 0.f);
+    Out.vDiffuse = vDiffuseDesc;
+    Out.vSurface = vector(Result.fMetalness, Result.fRoughness, Result.fSpeclure, Engine);
+    Out.vOEShader = vector(0.f, 0.f, 0.f, 0.f);
+    Out.vSpecular = vector(0.f, 0.f, 0.f, 0.f);
+    
+    return Out;
+}
+
 PS_MAIN_OUT PS_GLASSDOOR(PS_IN In)
 {
 
@@ -518,6 +574,69 @@ PS_OUT_COLOR PS_GLASSCOLOR(PS_IN In)
 }
 
 
+PS_OUT_COLOR PS_DynamicBloom(PS_IN In)
+{
+    PS_OUT_COLOR Out = (PS_OUT_COLOR) 0;
+ 
+    In.vTexcoord.x += g_fTimeDelta;
+    
+    //if (1 < In.vTexcoord.x)
+    //    In.vTexcoord.x = 0;
+ 
+    vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
+    
+    
+    if (vDiffuse.a < 0.4)
+        discard;
+   
+    if (vDiffuse.r + vDiffuse.g + vDiffuse.b > 1)
+    {
+        // 약간만 bloom 되게끔
+        Out.vDiffuse = vDiffuse;
+    }
+    else
+    {
+        discard;
+    }
+    
+    return Out;
+  
+}
+
+PS_OUT_COLOR PS_DynamicFast(PS_IN In)
+{
+    PS_OUT_COLOR Out = (PS_OUT_COLOR) 0;
+
+    // 텍스처 컬러를 샘플링
+    vector diffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
+
+    // 특정 영역 계산
+    float2 emissiveCenter = float2(0.5, 0.5) + float2(sin(g_fTimeDelta), cos(g_fTimeDelta)) * 0.25;
+    float emissiveRadius = 0.2;
+    float distanceFromCenter = distance(In.vTexcoord, emissiveCenter);
+
+    // 특정 영역에 대한 emissive 효과 적용
+    float emissiveFactor = saturate(1.0 - distanceFromCenter / emissiveRadius);
+    
+
+    vector emissiveColor = diffuse * 0.4;
+    if (true == g_bEmissiveTex)
+        emissiveColor = g_EmissiveTexture.Sample(LinearSampler, In.vTexcoord);
+
+    // 최종 컬러 계산
+    float4 finalColor = diffuse;
+    
+    if (emissiveFactor > 0.8)
+        finalColor += emissiveColor;
+    
+    Out.vDiffuse = finalColor;
+
+    return Out;
+}
+
+
+
+
 struct PS_IN_LIGHTDEPTH
 {
     float4 vPosition : SV_POSITION;
@@ -712,6 +831,32 @@ technique11 DefaultTechnique
         PixelShader = compile ps_5_0 PS_GLASSCOLOR();
     }
 
+    //PS_DynamicBloom
+    pass DynaicBloomPass // 12
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        HullShader = NULL;
+        DomainShader = NULL;
+        PixelShader = compile ps_5_0 PS_DynamicBloom();
+    }
+
+    pass DynaicFastPass // 12
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        HullShader = NULL;
+        DomainShader = NULL;
+        PixelShader = compile ps_5_0 PS_DynamicFast();
+    }
    
     pass LightDepth // - construction , Construction의 render light depth에서 변경해주기
     {
@@ -726,5 +871,17 @@ technique11 DefaultTechnique
         PixelShader = compile ps_5_0 PS_MAIN_LIGHTDEPTH();
     }
 
+    pass FarRender //14 - construction , Construction의 render light depth에서 변경해주기
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        HullShader = NULL;
+        DomainShader = NULL;
+        PixelShader = compile ps_5_0 PS_MAIN_FAR();
+    }
 
 }

@@ -177,7 +177,7 @@ PS_MAIN_OUT PS_MAIN(PS_IN In)
     
     Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_fFar, RimIndex, 0.f);
     Out.vDiffuse = vDiffuse;
-    Out.vSurface = vector(Result.fMetalness, Result.fRoughness, Result.fSpeclure, 0);
+    Out.vSurface = vector(Result.fMetalness, Result.fRoughness, Result.fSpeclure, Result.fFactor);
     Out.vOEShader = vector(OEResult.fRouhness, OEResult.fMixShaderFactor, fMixMultiFactor, fDeffuseFactor);
     Out.vSpecular = vector(OEResult.vSpecular, 0.f);
     
