@@ -140,14 +140,6 @@ void CHighway_Kiryu::Change_Animation()
 {
 }
 
-_bool CHighway_Kiryu::Checked_Animation_Ratio(_float fRatio)
-{
-	if (fRatio < *m_pModelCom->Get_AnimationCurrentPosition() / *m_pModelCom->Get_AnimationDuration())
-		return true;
-
-	return false;
-}
-
 void CHighway_Kiryu::Key_Input()
 {
 	if (m_pGameInstance->GetKeyState(DIK_RSHIFT) == TAP)
