@@ -9,6 +9,7 @@
 #include "SocketModel.h"
 #include "Weapon_Gun_Cz75.h"
 #include "UIManager.h"
+#include "CarChaseCamera.h"
 
 CHighway_Kiryu::CHighway_Kiryu(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLandObject{ pDevice, pContext }
@@ -190,10 +191,16 @@ void CHighway_Kiryu::Key_Input()
 	if (m_pGameInstance->GetKeyState(DIK_E) == HOLD)
 	{
 		Change_Behavior(HIDE);
+
+		CCarChaseCamera* pCamera = dynamic_cast<CCarChaseCamera*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Camera"), CAMERA_CARCHASE));
+		pCamera->ShoulderView_Off();
 	}
 	else if (m_pGameInstance->GetKeyState(DIK_E) == AWAY)
 	{
 		Change_Behavior(AIMING);
+
+		CCarChaseCamera* pCamera = dynamic_cast<CCarChaseCamera*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Camera"), CAMERA_CARCHASE));
+		pCamera->ShoulderView_On();
 	}
 
 	// 자리 바꾸기 (플레이어가 직접 조작하는 것이 아니라 디버깅용으로 추가한 버튼)

@@ -51,7 +51,6 @@ void CCarChaseCamera::Tick(const _float& fTimeDelta)
 {
 	if (m_pSystemManager->Get_Camera() != CAMERA_CARCHASE) return;
 
-	_vector vPlayerPos = XMLoadFloat4x4(m_pPlayerMatrix).r[3];
 
 	//Adjust_Camera_Angle();
 	if (m_pUIManager->isTitleEnd())
@@ -62,25 +61,34 @@ void CCarChaseCamera::Tick(const _float& fTimeDelta)
 		m_isShoulderView = !m_isShoulderView;
 	}
 
-	_float4 vCameraPosition;
+	_vector vPlayerPos = XMLoadFloat4x4(m_pPlayerMatrix).r[3];
 
+	_float4 vTargetPosition;
+
+	// 목표 위치 계산
 	if (!m_isShoulderView)
 	{
-		vCameraPosition.x = XMVectorGetX(vPlayerPos) + cosf(XMConvertToRadians(m_fCamAngleX)) * cosf(XMConvertToRadians(m_fCamAngleY)) * m_fCamDistance,
-		vCameraPosition.y = XMVectorGetY(vPlayerPos) + m_fCamDistance * sinf(XMConvertToRadians(m_fCamAngleY)) + m_fHeight;
-		vCameraPosition.z = XMVectorGetZ(vPlayerPos) + sinf(XMConvertToRadians(m_fCamAngleX)) * cosf(XMConvertToRadians(m_fCamAngleY)),
-		vCameraPosition.w = 1.f;
+		vTargetPosition.x = XMVectorGetX(vPlayerPos) + cosf(XMConvertToRadians(m_fCamAngleX)) * cosf(XMConvertToRadians(m_fCamAngleY)) * m_fCamDistance;
+		vTargetPosition.y = XMVectorGetY(vPlayerPos) + m_fCamDistance * sinf(XMConvertToRadians(m_fCamAngleY)) + m_fHeight;
+		vTargetPosition.z = XMVectorGetZ(vPlayerPos) + sinf(XMConvertToRadians(m_fCamAngleX)) * cosf(XMConvertToRadians(m_fCamAngleY));
+		vTargetPosition.w = 1.f;
 	}
 	else
 	{
-		vCameraPosition.x = XMVectorGetX(vPlayerPos) + cosf(XMConvertToRadians(m_fCamAngleX)) * cosf(XMConvertToRadians(m_fCamAngleY)) * m_fCamDistance_X,
-		vCameraPosition.y = XMVectorGetY(vPlayerPos) + m_fCamDistance_Y * sinf(XMConvertToRadians(m_fCamAngleY)) + m_fHeight;
-		vCameraPosition.z = XMVectorGetZ(vPlayerPos) + sinf(XMConvertToRadians(m_fCamAngleX)) * cosf(XMConvertToRadians(m_fCamAngleY)) * m_fCamDistance_Z,
-		vCameraPosition.w = 1.f;
+		vTargetPosition.x = XMVectorGetX(vPlayerPos) + cosf(XMConvertToRadians(m_fCamAngleX)) * cosf(XMConvertToRadians(m_fCamAngleY)) * m_fCamDistance_X;
+		vTargetPosition.y = XMVectorGetY(vPlayerPos) + m_fCamDistance_Y * sinf(XMConvertToRadians(m_fCamAngleY)) + m_fHeight;
+		vTargetPosition.z = XMVectorGetZ(vPlayerPos) + sinf(XMConvertToRadians(m_fCamAngleX)) * cosf(XMConvertToRadians(m_fCamAngleY)) * m_fCamDistance_Z;
+		vTargetPosition.w = 1.f;
 	}
 
+	// 현재 카메라 위치
+	_vector vCurrentPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&vCameraPosition));
+	// 목표 위치로 선형 보간
+	float lerpFactor = 0.6f; // 보간 속도
+	_vector vNewCameraPosition = XMVectorLerp(vCurrentPosition, XMLoadFloat4(&vTargetPosition), lerpFactor);
+
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vNewCameraPosition);
 
 	
 	__super::Tick(fTimeDelta);

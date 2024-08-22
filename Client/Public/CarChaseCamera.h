@@ -52,26 +52,31 @@ private:
     _uint m_iStageDir = { DIR_END };
     _vector m_vDir = {1.f, 0.f, 0.f, 0.f };
 
-    _bool m_isShoulderView = { false };
+    _bool m_isShoulderView = { true };
 
     /* 기본적인 카메라 정보 */
     _float m_fSensor = { 0.f };
-    _float m_fCamDistance = { 4.f };
     _float m_fCamAngleY = { 0.f };
     _float m_fCamAngleX = { 0.f };
 
+    _float m_fCamDistance = { 4.f };
+
     /* 숄더뷰로 진행하는 카메라 정보 */
-    _float m_fCamDistance_X = { -1.f };
-    _float m_fCamDistance_Y = { 1.f };
-    _float m_fCamDistance_Z = { 1.f };
+    _float m_fCamDistance_X = { 0.f };
+    _float m_fCamDistance_Y = { 0.5f };
+    _float m_fCamDistance_Z = { 0.5f };
 
     _bool m_isTargetPlayer = { false };
     _float m_fHeight = { 2.f };
+
+    _float m_fLerpFactor = { 0.0f };
 
 private:
     void Targeting(const _float& fTimeDelta);
 
     void Focusing_Bullet(CGameObject* pTarget);
+
+    void ViewChange_Lerp(const _float& fTimeDelta);
 
 public:
     static CCarChaseCamera* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
