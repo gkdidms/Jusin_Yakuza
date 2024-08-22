@@ -34,7 +34,12 @@ HRESULT CUICarchase::Update_TargetMatrix(_uint iIndex, _matrix TargetMatrix, _fl
     vTargetPos = XMVectorSetY(vTargetPos, XMVectorGetY(vTargetPos) - 60.f);
     pTarget->HPBarBackUI->Get_TransformCom()->Set_State(CTransform::STATE_POSITION, vTargetPos);
     pTarget->HPBarUI->Get_TransformCom()->Set_State(CTransform::STATE_POSITION, vTargetPos);
-    pTarget->HPBarUI->Get_TransformCom()->Set_Scale(iHP, 6.f, 0.f);
+
+    _float LerpHp =m_pGameInstance->Lerp(-1.f, 0.f, iHP / 100.f);
+
+    static_cast<CUI_Texture*>(pTarget->HPBarUI)->Change_Point(_float4(0.f, 0.f, LerpHp, 0.f),_float4(0.f, 0.f, LerpHp,0.f));
+
+    pTarget->HPBarUI->Get_TransformCom()->Set_Scale(100.f, 6.f, 0.f);
 
     return S_OK;
 }

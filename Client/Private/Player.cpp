@@ -1966,6 +1966,8 @@ void CPlayer::Style_Change(BATTLE_STYLE eStyle)
 	m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Reset();
 	m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Change_Animation();
 
+	m_pUIManager->Change_Style(eStyle);
+
 	Off_Aura(eStyle);
 }
 

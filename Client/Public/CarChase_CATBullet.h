@@ -39,6 +39,7 @@ private:
     CModel* m_pModelCom = { nullptr };
     CNeoShader* m_pMaterialCom = { nullptr };
     CCollider* m_pColliderCom = { nullptr };
+    class CEffect* m_pEffect = {nullptr};
 
     class CHighway_Kiryu* m_pTarget = { nullptr };
     class CUIManager* m_pUIManager = { nullptr };

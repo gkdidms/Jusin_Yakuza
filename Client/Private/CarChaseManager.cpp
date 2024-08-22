@@ -243,7 +243,7 @@ HRESULT CCarChaseManager::Ready_Stage()
 		return E_FAIL;
 
 	m_Stages.emplace_back(pStage6);
-
+	
 	*/
 
 	//7 스테이지

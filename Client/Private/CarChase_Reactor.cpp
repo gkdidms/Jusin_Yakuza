@@ -186,7 +186,10 @@ _bool CCarChase_Reactor::Check_Dead()
 		{
 			m_isFinishEffect = true;
 			//여기가 죽었을때 굴러가고 터지는 부분(몬스터가 죽으면? 불이 터짐)
+			CEffect::EFFECT_DESC EffectDesc;
 
+			EffectDesc.pWorldMatrix = m_pTransformCom->Get_WorldFloat4x4();
+			CEffectManager::GetInstance()->Car_Explosion(EffectDesc);
 		}
 		return true;
 	}
@@ -204,6 +207,7 @@ _bool CCarChase_Reactor::Check_Dead()
 
 			EffectDesc.pWorldMatrix = m_pTransformCom->Get_WorldFloat4x4();
 			CEffectManager::GetInstance()->Car_Fire(EffectDesc);
+			
 			return true;
 		}
 
@@ -215,8 +219,8 @@ _bool CCarChase_Reactor::Check_Dead()
 	CEffect::EFFECT_DESC EffectDesc;
 
 	EffectDesc.pWorldMatrix = m_pTransformCom->Get_WorldFloat4x4();
-	CEffectManager::GetInstance()->Car_Explosion(EffectDesc);
-	CEffectManager::GetInstance()->Car_Fire(EffectDesc);
+	CEffectManager::GetInstance()->Heli_Exp(EffectDesc);
+	CEffectManager::GetInstance()->Heli_Fire(EffectDesc);
 
 	return true;
 }

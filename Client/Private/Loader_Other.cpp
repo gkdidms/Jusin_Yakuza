@@ -493,6 +493,11 @@ HRESULT CLoader_Other::Loading_Default()
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/Fire/e_j_0070_fireani_aa.dds"), 1))))
 		return E_FAIL;
 
+	/* Prototype_Component_Texture_RoopSmoke */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Texture_RoopSmoke"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/Fire/e_f_0014_roop_smoke01.dds"), 1))))
+		return E_FAIL;
+
 #pragma endregion
 
 	return S_OK;

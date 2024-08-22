@@ -25,6 +25,9 @@ private:
     _uint m_iHitLevel = { 0 };
 
     _float m_fEndHit[3] = { -0.019 , -0.016, -0.017 };
+
+public:
+    void Change_Style(_uint iStyle);
 public:
     static CUILife* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg=nullptr);
     virtual void Free();
