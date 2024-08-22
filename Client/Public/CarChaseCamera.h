@@ -71,6 +71,8 @@ private:
 private:
     void Targeting(const _float& fTimeDelta);
 
+    void Focusing_Bullet(CGameObject* pTarget);
+
 public:
     static CCarChaseCamera* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
     virtual CGameObject* Clone(void* pArg);
