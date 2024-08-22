@@ -484,7 +484,7 @@ PS_OUT_COLOR PS_DYNAMIC_SMALL(PS_IN In)
     vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
     
     
-    if(vDiffuse.a < 0.3)
+    if(vDiffuse.a < 0.4)
         discard;
     
     vector emissiveColor = float4(0, 0, 0, 0);

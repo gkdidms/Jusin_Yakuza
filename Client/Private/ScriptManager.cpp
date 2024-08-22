@@ -142,8 +142,12 @@ void CScriptManager::Ready_Script_9()
 {
 	map<_int, SCRIPT_INFO> Scrpit = {};
 	_int iIndex = 0;
+	// 키류를 중점으로 비추면서 내려옴. 쿠제 머리 뒷통수까지만
+	// 쿠제 뒷통수만
 	Scrpit.emplace(iIndex++, SCRIPT_INFO(TEXT("쿠제"), TEXT("카자마 형님도 쓸만한 녀석을 스카우트 했군.")));
 	Scrpit.emplace(iIndex++, SCRIPT_INFO(TEXT("쿠제"), TEXT("내가 복싱을 했던 시절에 너와 만났더라면\\프로모터가 되고 싶을 정도야.")));
+
+	// 키류 얼굴 비추기
 	Scrpit.emplace(iIndex++, SCRIPT_INFO(TEXT("키류"), TEXT("쿠제......입을 더 놀릴 수 없게 되기 전에 말해.\\무슨 짓을 꾸미고 있는 거지?")));
 	Scrpit.emplace(iIndex++, SCRIPT_INFO(TEXT("쿠제"), TEXT("애송이 주제에 까부는구나.")));
 
@@ -154,6 +158,8 @@ void CScriptManager::Ready_Script_10()
 {
 	map<_int, SCRIPT_INFO> Scrpit = {};
 	_int iIndex = 0;
+	
+	// 쿠제 등 아래 -> 위 등
 	Scrpit.emplace(iIndex++, SCRIPT_INFO(TEXT("쿠제"), TEXT("밑에 있던 쓸모 없는 놈들 덕분에\\착각을 하나 본데......")));
 	Scrpit.emplace(iIndex++, SCRIPT_INFO(TEXT("쿠제"), TEXT("도지마를 얕잡아보지 마라, 키류")));
 

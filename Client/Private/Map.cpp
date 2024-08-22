@@ -113,6 +113,7 @@ void CMap::Tick(const _float& fTimeDelta)
 	}
 
 	m_fTimer += fTimeDelta * 2;
+
 	if (1 < m_fTimer)
 	{
 		m_fTimer = 0;
