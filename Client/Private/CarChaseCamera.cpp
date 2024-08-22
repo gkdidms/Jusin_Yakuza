@@ -49,11 +49,28 @@ void CCarChaseCamera::Tick(const _float& fTimeDelta)
 
 	Targeting(fTimeDelta);
 
+	if (m_pGameInstance->GetKeyState(DIK_RSHIFT) == TAP)
+	{
+		m_isShoulderView = !m_isShoulderView;
+	}
+
 	_float4 vCameraPosition;
-	vCameraPosition.x = XMVectorGetX(vPlayerPos) + cosf(XMConvertToRadians(m_fCamAngleX)) * cosf(XMConvertToRadians(m_fCamAngleY)) * m_fCamDistance,
-	vCameraPosition.y = XMVectorGetY(vPlayerPos) + m_fCamDistance * sinf(XMConvertToRadians(m_fCamAngleY)) + m_fHeight;
-	vCameraPosition.z = XMVectorGetZ(vPlayerPos) + sinf(XMConvertToRadians(m_fCamAngleX)) * cosf(XMConvertToRadians(m_fCamAngleY)),
-	vCameraPosition.w = 1.f;
+
+	if (!m_isShoulderView)
+	{
+		vCameraPosition.x = XMVectorGetX(vPlayerPos) + cosf(XMConvertToRadians(m_fCamAngleX)) * cosf(XMConvertToRadians(m_fCamAngleY)) * m_fCamDistance,
+		vCameraPosition.y = XMVectorGetY(vPlayerPos) + m_fCamDistance * sinf(XMConvertToRadians(m_fCamAngleY)) + m_fHeight;
+		vCameraPosition.z = XMVectorGetZ(vPlayerPos) + sinf(XMConvertToRadians(m_fCamAngleX)) * cosf(XMConvertToRadians(m_fCamAngleY)),
+		vCameraPosition.w = 1.f;
+	}
+	else
+	{
+		vCameraPosition.x = XMVectorGetX(vPlayerPos) + cosf(XMConvertToRadians(m_fCamAngleX)) * cosf(XMConvertToRadians(m_fCamAngleY)) * m_fCamDistance_X,
+		vCameraPosition.y = XMVectorGetY(vPlayerPos) + m_fCamDistance_Y * sinf(XMConvertToRadians(m_fCamAngleY)) + m_fHeight;
+		vCameraPosition.z = XMVectorGetZ(vPlayerPos) + sinf(XMConvertToRadians(m_fCamAngleX)) * cosf(XMConvertToRadians(m_fCamAngleY)) * m_fCamDistance_Z,
+		vCameraPosition.w = 1.f;
+	}
+
 
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&vCameraPosition));
 

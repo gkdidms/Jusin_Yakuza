@@ -46,6 +46,9 @@ HRESULT CHighway_Kiryu::Initialize(void* pArg)
 
 	Set_HandAnimIndex(HAND_GUN);
 
+	//m_pModelCom->Set_Separation_ParentBone("center_c_n", DEFAULT_ANIM);
+	//m_pModelCom->Set_Separation_SingleBone(m_isLeft ? "ude2_l_n" : "ude2_r_n", -1);
+
 	return S_OK;
 }
 
@@ -141,6 +144,7 @@ _bool CHighway_Kiryu::Checked_Animation_Ratio(_float fRatio)
 
 void CHighway_Kiryu::Key_Input()
 {
+
 	//공격 가능한 환경인지 체크한 후 진행한다.
 	//다른 스킬들도 막기 위해서 return;
 	// 발사
@@ -255,27 +259,27 @@ void CHighway_Kiryu::Play_Animing(_float fTimeDelta)
 
 	// 몬스터에 에임띄운거 나오고 나서 각도조절기능 추가예정
 
-	_uint iAnimIndex = 29;
+	_uint iAnimIndex = (m_isLeft ? 29 : 64);
 
-	// 0 앞, 1 앞 대각, 2 옆, 3 뒷 대각, 4 뒤
-	switch (m_iStageDir)
-	{
-	case 0:			//앞
-		iAnimIndex = (m_isLeft ? 17 : 52);
-		break;
-	case 1:		//앞 대각
-		iAnimIndex = (m_isLeft ? 18 : 53);
-		break;
-	case 2:		//옆
-		iAnimIndex = (m_isLeft ? 29 : 64);
-		break;
-	case 3:		//뒷 대각
-		iAnimIndex = (m_isLeft ? 6 : 41);
-		break;
-	case 4:		//뒤
-		iAnimIndex = (m_isLeft ? 7 : 42);
-		break;
-	}
+	//// 0 앞, 1 앞 대각, 2 옆, 3 뒷 대각, 4 뒤
+	//switch (m_iStageDir)
+	//{
+	//case 0:			//앞
+	//	iAnimIndex = (m_isLeft ? 17 : 52);
+	//	break;
+	//case 1:		//앞 대각
+	//	iAnimIndex = (m_isLeft ? 18 : 53);
+	//	break;
+	//case 2:		//옆
+	//	iAnimIndex = (m_isLeft ? 29 : 64);
+	//	break;
+	//case 3:		//뒷 대각
+	//	iAnimIndex = (m_isLeft ? 6 : 41);
+	//	break;
+	//case 4:		//뒤
+	//	iAnimIndex = (m_isLeft ? 7 : 42);
+	//	break;
+	//}
 
 	if (!m_isStarted)
 		m_pModelCom->Set_AnimationIndex((m_isLeft ? 71 : 74), 4.f);
@@ -349,25 +353,25 @@ void CHighway_Kiryu::Play_Shot(_float fTimeDelta)
 
 	_uint iAnimIndex = (m_isLeft ? 31 : 66);
 
-	// 0 앞, 1 앞 대각, 2 옆, 3 뒷 대각, 4 뒤
-	switch (m_iStageDir)
-	{
-	case 0:			//앞
-		iAnimIndex = (m_isLeft ? 17 : 52);
-		break;
-	case 1:		//앞 대각
-		iAnimIndex = (m_isLeft ? 31 : 66);
-		break;
-	case 2:		//옆
-		iAnimIndex = (m_isLeft ? 31 : 66);
-		break;
-	case 3:		//뒷 대각
-		iAnimIndex = (m_isLeft ? 31 : 66);
-		break;
-	case 4:		//뒤
-		iAnimIndex = (m_isLeft ? 8 : 43);
-		break;
-	}
+	//// 0 앞, 1 앞 대각, 2 옆, 3 뒷 대각, 4 뒤
+	//switch (m_iStageDir)
+	//{
+	//case 0:			//앞
+	//	iAnimIndex = (m_isLeft ? 17 : 52);
+	//	break;
+	//case 1:		//앞 대각
+	//	iAnimIndex = (m_isLeft ? 31 : 66);
+	//	break;
+	//case 2:		//옆
+	//	iAnimIndex = (m_isLeft ? 31 : 66);
+	//	break;
+	//case 3:		//뒷 대각
+	//	iAnimIndex = (m_isLeft ? 31 : 66);
+	//	break;
+	//case 4:		//뒤
+	//	iAnimIndex = (m_isLeft ? 8 : 43);
+	//	break;
+	//}
 	m_pModelCom->Set_AnimationIndex(iAnimIndex, 4.f);
 
 	if (m_pModelCom->Get_AnimFinished())
