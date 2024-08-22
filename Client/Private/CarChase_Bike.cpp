@@ -4,6 +4,8 @@
 
 #include "AI_Bike.h"
 
+#include "SocketModel.h"
+
 CCarChase_Bike::CCarChase_Bike(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CCarChase_Monster{ pDevice, pContext }
 {
@@ -24,6 +26,9 @@ HRESULT CCarChase_Bike::Initialize(void* pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
+	if (FAILED(Add_Objects()))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -34,6 +39,9 @@ void CCarChase_Bike::Priority_Tick(const _float& fTimeDelta)
 void CCarChase_Bike::Tick(const _float& fTimeDelta)
 {
 	__super::Tick(fTimeDelta);
+
+	if (nullptr != m_pWeapon)
+		m_pWeapon->Tick(fTimeDelta);
 }
 
 void CCarChase_Bike::Late_Tick(const _float& fTimeDelta)
@@ -41,6 +49,9 @@ void CCarChase_Bike::Late_Tick(const _float& fTimeDelta)
 	Set_ParentMatrix(fTimeDelta);
 
 	__super::Late_Tick(fTimeDelta);
+
+	if (nullptr != m_pWeapon)
+		m_pWeapon->Late_Tick(fTimeDelta);
 }
 
 void CCarChase_Bike::Change_Animation()
@@ -272,6 +283,31 @@ void CCarChase_Bike::Set_ParentMatrix(const _float& fTimeDelta)
 	XMStoreFloat4x4(&m_ModelWorldMatrix, m_pTransformCom->Get_WorldMatrix() * ParentMatrix);
 }
 
+HRESULT CCarChase_Bike::Add_Objects()
+{
+	if (GUN == m_iWeaponType)
+	{
+		CSocketObject::SOCKETOBJECT_DESC Desc{};
+		Desc.pParentMatrix = m_pParentMatrix;
+		Desc.pCombinedTransformationMatrix = m_pModelCom->Get_BoneCombinedTransformationMatrix("buki_r_n");
+		Desc.fRotatePecSec = XMConvertToRadians(90.f);
+		Desc.fSpeedPecSec = 1.f;
+		m_pWeapon = dynamic_cast<CSocketModel*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Gun_Cz75"), &Desc));
+	}
+	// 로켓런처
+	else if (RKT == m_iWeaponType)
+	{
+		CSocketObject::SOCKETOBJECT_DESC Desc{};
+		Desc.pParentMatrix = m_pParentMatrix;
+		Desc.pCombinedTransformationMatrix = m_pModelCom->Get_BoneCombinedTransformationMatrix("buki_r_n");
+		Desc.fRotatePecSec = XMConvertToRadians(90.f);
+		Desc.fSpeedPecSec = 1.f;
+		m_pWeapon = dynamic_cast<CSocketModel*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_RcktGun"), &Desc));
+	}
+
+	return S_OK;
+}
+
 CCarChase_Bike* CCarChase_Bike::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
 	CCarChase_Bike* pInstance = new CCarChase_Bike(pDevice, pContext);
@@ -295,4 +331,6 @@ CGameObject* CCarChase_Bike::Clone(void* pArg)
 void CCarChase_Bike::Free()
 {
 	__super::Free();
+
+	Safe_Release(m_pWeapon);
 }

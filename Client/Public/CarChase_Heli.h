@@ -20,6 +20,10 @@ public:
 private:
     virtual void Change_Animation();
     virtual HRESULT Add_Components() override;
+    HRESULT Add_Objects();
+
+private:
+    class CSocketModel* m_pWeapon = { nullptr };
 
 public:
     static CCarChase_Heli* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

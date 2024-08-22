@@ -3,6 +3,8 @@
 #include "GameInstance.h"
 #include "AI_Heli.h"
 
+#include "SocketModel.h"
+
 CCarChase_Heli::CCarChase_Heli(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CCarChase_Monster{ pDevice, pContext }
 {
@@ -23,6 +25,9 @@ HRESULT CCarChase_Heli::Initialize(void* pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
+	if(FAILED(Add_Objects()))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -33,6 +38,9 @@ void CCarChase_Heli::Priority_Tick(const _float& fTimeDelta)
 void CCarChase_Heli::Tick(const _float& fTimeDelta)
 {
 	__super::Tick(fTimeDelta);
+
+	if (nullptr != m_pWeapon)
+		m_pWeapon->Tick(fTimeDelta);
 }
 
 void CCarChase_Heli::Late_Tick(const _float& fTimeDelta)
@@ -40,6 +48,9 @@ void CCarChase_Heli::Late_Tick(const _float& fTimeDelta)
 	Set_ParentMatrix(fTimeDelta);
 	
 	__super::Late_Tick(fTimeDelta);
+
+	if (nullptr != m_pWeapon)
+		m_pWeapon->Late_Tick(fTimeDelta);
 }
 
 void CCarChase_Heli::Change_Animation()
@@ -155,6 +166,42 @@ HRESULT CCarChase_Heli::Add_Components()
 	return S_OK;
 }
 
+HRESULT CCarChase_Heli::Add_Objects()
+{
+	// 머신건
+	if (GAT == m_iWeaponType)
+	{
+		CSocketObject::SOCKETOBJECT_DESC Desc{};
+		Desc.pParentMatrix = m_pParentMatrix;
+		Desc.pCombinedTransformationMatrix = m_pModelCom->Get_BoneCombinedTransformationMatrix("buki_r_n");
+		Desc.fRotatePecSec = XMConvertToRadians(90.f);
+		Desc.fSpeedPecSec = 1.f;
+		m_pWeapon = dynamic_cast<CSocketModel*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_MchnGun"), &Desc));
+	}
+	// 권총
+	else if (GUN == m_iWeaponType)
+	{
+		CSocketObject::SOCKETOBJECT_DESC Desc{};
+		Desc.pParentMatrix = m_pParentMatrix;
+		Desc.pCombinedTransformationMatrix = m_pModelCom->Get_BoneCombinedTransformationMatrix("buki_r_n");
+		Desc.fRotatePecSec = XMConvertToRadians(90.f);
+		Desc.fSpeedPecSec = 1.f;
+		m_pWeapon = dynamic_cast<CSocketModel*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Gun_Cz75"), &Desc));
+	}
+	// 로켓런처
+	else if (RKT == m_iWeaponType)
+	{
+		CSocketObject::SOCKETOBJECT_DESC Desc{};
+		Desc.pParentMatrix = m_pParentMatrix;
+		Desc.pCombinedTransformationMatrix = m_pModelCom->Get_BoneCombinedTransformationMatrix("buki_r_n");
+		Desc.fRotatePecSec = XMConvertToRadians(90.f);
+		Desc.fSpeedPecSec = 1.f;
+		m_pWeapon = dynamic_cast<CSocketModel*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_RcktGun"), &Desc));
+	}
+
+	return S_OK;
+}
+
 CCarChase_Heli* CCarChase_Heli::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
 	CCarChase_Heli* pInstance = new CCarChase_Heli(pDevice, pContext);
@@ -178,4 +225,6 @@ CGameObject* CCarChase_Heli::Clone(void* pArg)
 void CCarChase_Heli::Free()
 {
 	__super::Free();
+
+	Safe_Release(m_pWeapon);
 }
