@@ -1,5 +1,5 @@
 #pragma once
-#include "GameObject.h"
+#include "CarChase_Monster.h"
 
 #include "Client_Defines.h"
 
@@ -12,7 +12,7 @@ END
 
 BEGIN(Client)
 class CCarChase_CATBullet :
-    public CGameObject
+    public CCarChase_Monster
 {
 public:
     typedef struct tBulletDesc {
@@ -22,6 +22,9 @@ private:
     CCarChase_CATBullet(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
     CCarChase_CATBullet(const CCarChase_CATBullet& rhs);
     virtual ~CCarChase_CATBullet() = default;
+
+public:
+    _vector Get_BulletPos();
 
 public:
     virtual HRESULT Initialize_Prototype() override;
@@ -38,16 +41,24 @@ private:
     CCollider* m_pColliderCom = { nullptr };
 
     class CHighway_Kiryu* m_pTarget = { nullptr };
-
+    class CUIManager* m_pUIManager = { nullptr };
     const _float4x4* m_pParentMatrix = { nullptr };
     _float4x4 m_WorldMatrix = {};
 
 private:
     _float m_fSpeed = { 10.f };
 
+    _float m_fGravite = { 9.8f };
+
 private:
     HRESULT Add_Components();
     HRESULT Bind_ResourceData();
+    virtual void Update_TargetingUI();
+
+private:
+    _float CalculateInitialVerticalSpeed(_vector vPlayerPos, _vector vPosition);
+
+    _bool Check_Coll();
 
 public:
     static CCarChase_CATBullet* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

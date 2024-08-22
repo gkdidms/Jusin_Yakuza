@@ -81,7 +81,11 @@ void CCarChase_Reactor::Tick(const _float& fTimeDelta)
 	//m_pColliderCom->Tick(m_pTransformCom->Get_WorldMatrix());
 
 	for (auto& pMonster : m_Monsters)
-		pMonster->Tick(fTimeDelta);
+	{
+		if (!pMonster->isDead())
+			pMonster->Tick(fTimeDelta);
+	}
+		
 }
 
 void CCarChase_Reactor::Late_Tick(const _float& fTimeDelta)
@@ -99,7 +103,11 @@ void CCarChase_Reactor::Late_Tick(const _float& fTimeDelta)
 	}
 
 	for (auto& pMonster : m_Monsters)
-		pMonster->Late_Tick(fTimeDelta);
+	{
+		if (!pMonster->isDead())
+			pMonster->Late_Tick(fTimeDelta);
+	}
+		
 }
 
 HRESULT CCarChase_Reactor::Render()

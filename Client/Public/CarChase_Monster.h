@@ -144,7 +144,7 @@ protected:
 
 protected: 
     virtual void Change_Animation();
-    void Update_TargetingUI();
+    virtual void Update_TargetingUI();
     void Get_LookDir();
     _uint DirFromPlayerPos();
 

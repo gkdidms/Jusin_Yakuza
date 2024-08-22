@@ -70,6 +70,7 @@ DIR_F, DIR_B 이 된다.
 */
 HRESULT CCarChaseManager::Ready_Stage()
 {
+	/*
 	//1 스테이지
 	vector<CCarChase::STAGE_MONSTER_INFO> MonsterInfo_1 = {
 		CCarChase::STAGE_MONSTER_INFO{
@@ -243,6 +244,8 @@ HRESULT CCarChaseManager::Ready_Stage()
 
 	m_Stages.emplace_back(pStage6);
 
+	*/
+
 	//7 스테이지
 	vector<CCarChase::STAGE_MONSTER_INFO> MonsterInfo_7 = {
 		CCarChase::STAGE_MONSTER_INFO{
@@ -261,6 +264,7 @@ HRESULT CCarChaseManager::Ready_Stage()
 		MonsterInfo_7
 	};
 
+	CCarChase::CARCHASE_DESC Desc{};
 	Desc.Info = StageInfo_7;
 	CCarChase* pStage7 = CCarChase::Create(&Desc);
 	if (nullptr == pStage7)
