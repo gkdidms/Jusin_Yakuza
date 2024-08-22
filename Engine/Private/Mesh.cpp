@@ -23,15 +23,18 @@ CMesh::CMesh(const CMesh& rhs)
 {
 	memcpy(&m_szName, &rhs.m_szName, sizeof(char) * _MAX_PATH);
 
-	//m_pIndices = new _uint[m_iNumIndices];
-	//ZeroMemory(m_pIndices, sizeof(_uint) * m_iNumIndices);
+	if(CModel::TYPE_PARTICLE ==m_iModelType)
+	{
+		m_pIndices = new _uint[m_iNumIndices];
+		ZeroMemory(m_pIndices, sizeof(_uint) * m_iNumIndices);
 
-	//memcpy(m_pIndices, rhs.m_pIndices, sizeof(_uint) * m_iNumIndices);
+		memcpy(m_pIndices, rhs.m_pIndices, sizeof(_uint) * m_iNumIndices);
 
-	//m_pVertices = new VTXMESH[m_iNumVertices];
-	//ZeroMemory(m_pVertices, sizeof(VTXMESH) * m_iNumVertices);	
+		m_pVertices = new VTXMESH[m_iNumVertices];
+		ZeroMemory(m_pVertices, sizeof(VTXMESH) * m_iNumVertices);
 
-	//memcpy(m_pVertices, rhs.m_pVertices, sizeof(VTXMESH) * m_iNumVertices);
+		memcpy(m_pVertices, rhs.m_pVertices, sizeof(VTXMESH) * m_iNumVertices);
+	}
 }
 
 HRESULT CMesh::Initialize_Prototype(CModel::MODELTYPE eModelType, const aiMesh* pAIMesh, _fmatrix PreTransformMatrix, const vector<class CBone*>& Bones, _bool isTool)
@@ -948,10 +951,11 @@ void CMesh::Free()
 {
 	__super::Free();
 
-	if (nullptr != m_pVertices)
+	if(CModel::TYPE_PARTICLE==m_iModelType)
+	{
 		Safe_Delete_Array(m_pVertices);
-	if (nullptr != m_pIndices)
 		Safe_Delete_Array(m_pIndices);
+	}
 
 	Safe_Release(m_pBoneMatrixBuffer);
 }

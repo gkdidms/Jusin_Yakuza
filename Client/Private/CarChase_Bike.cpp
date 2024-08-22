@@ -38,8 +38,7 @@ void CCarChase_Bike::Tick(const _float& fTimeDelta)
 
 void CCarChase_Bike::Late_Tick(const _float& fTimeDelta)
 {
-	m_pModelCom->Play_Animation_Monster(fTimeDelta, m_pAnimCom[m_iCurrentAnimType], m_isAnimLoop, false);
-	Set_ParentMatrix();
+	Set_ParentMatrix(fTimeDelta);
 
 	__super::Late_Tick(fTimeDelta);
 }
@@ -254,10 +253,25 @@ HRESULT CCarChase_Bike::Add_Components()
 	return S_OK;
 }
 
-void CCarChase_Bike::Set_ParentMatrix()
+void CCarChase_Bike::Set_ParentMatrix(const _float& fTimeDelta)
 {
+	m_pModelCom->Play_Animation_Monster(fTimeDelta, m_pAnimCom[m_iCurrentAnimType], m_isAnimLoop, false);
+
 	if (m_iWeaponType == RKT && (m_iState == CARCHASE_DED_R || m_iState == CARCHASE_DED_L) && *(m_pAnimCom[m_iCurrentAnimType]->Get_AnimPosition()) >= 33.f)
 		return;
+
+	_matrix ParentMatrix = XMLoadFloat4x4(m_pParentBoneMatrix) * XMLoadFloat4x4(m_pParentMatrix);
+	//ParentMatrix.r[3] = (XMLoadFloat4x4(m_pParentBoneMatrix) * XMLoadFloat4x4(m_pParentMatrix)).r[3];
+	//ParentMatrix.r[2] = XMLoadFloat4x4(m_pParentMatrix).r[2];
+	_matrix		RotationMatrix = XMMatrixRotationAxis(ParentMatrix.r[0], XMConvertToRadians(-90.f));
+
+	ParentMatrix.r[0] = XMVector3TransformNormal(ParentMatrix.r[0], RotationMatrix);
+	ParentMatrix.r[1] = XMVector3TransformNormal(ParentMatrix.r[1], RotationMatrix);
+	ParentMatrix.r[2] = XMVector3TransformNormal(ParentMatrix.r[2], RotationMatrix);
+
+	XMStoreFloat4x4(&m_ModelWorldMatrix, m_pTransformCom->Get_WorldMatrix() * ParentMatrix);
+
+
 
 	XMStoreFloat4x4(&m_ModelWorldMatrix, m_pTransformCom->Get_WorldMatrix() * XMLoadFloat4x4(m_pParentBoneMatrix) * XMLoadFloat4x4(m_pParentMatrix));
 }

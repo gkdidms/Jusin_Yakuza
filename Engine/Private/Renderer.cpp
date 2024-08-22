@@ -340,7 +340,7 @@ HRESULT CRenderer::Ready_Targets()
 		return E_FAIL;
 
 	/* Target_Specular */
-	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Specular"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
+	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Specular"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f), true)))
 		return E_FAIL;
 
 	/*Target_Ambient*/
@@ -514,8 +514,6 @@ HRESULT CRenderer::Ready_MRTs()
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_LightAcc"), TEXT("Target_Shade"))))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_LightAcc"), TEXT("Target_LightMap"))))
-		return E_FAIL;
-	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_LightAcc"), TEXT("Target_Specular"))))
 		return E_FAIL;
 
 	/*MRT_SSAO*/
@@ -900,6 +898,8 @@ void CRenderer::Draw()
 		Render_LuminanceResult();
 	}
 
+	Render_AdjustColor(); // 색감보정
+
 	Render_UI();
 
 #ifdef _DEBUG
@@ -1180,9 +1180,12 @@ void CRenderer::Render_PBR()
 	m_pGameInstance->Bind_ComputeRenderTargetSRV(TEXT("Target_Normal"), 1);
 	m_pGameInstance->Bind_ComputeRenderTargetSRV(TEXT("Target_Surface"), 2);
 	m_pGameInstance->Bind_ComputeRenderTargetSRV(TEXT("Target_Diffuse"), 3);
+	m_pGameInstance->Bind_ComputeRenderTargetSRV(TEXT("Target_OEShader"), 4);
+	m_pGameInstance->Bind_ComputeRenderTargetSRV(TEXT("Target_OESpecular"), 5);
 
 	m_pGameInstance->Bind_ComputeRenderTargetUAV(TEXT("Target_PBR"), 0);
-
+	m_pGameInstance->Bind_ComputeRenderTargetUAV(TEXT("Target_Specular"), 1);
+	
 	_uint GroupX = (1280 + 15) / 16;
 	_uint GroupY = (720 + 15) / 16;
 
@@ -1226,10 +1229,10 @@ void CRenderer::Render_LightAcc()
 		return;
 	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Depth"), m_pShader, "g_DepthTexture")))
 		return;
-	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_OEShader"), m_pShader, "g_OEShaderTexture")))
-		return;
-	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_OESpecular"), m_pShader, "g_OESpecularTexture")))
-		return;
+	//if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_OEShader"), m_pShader, "g_OEShaderTexture")))
+	//	return;
+	//if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_OESpecular"), m_pShader, "g_OESpecularTexture")))
+	//	return;
 	/*if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_GlassNormal"), m_pShader, "g_GlassNormalTexture")))
 		return;
 	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_GlassDepth"), m_pShader, "g_GlassDepthTexture")))
@@ -1291,13 +1294,11 @@ void CRenderer::Render_CopyBackBuffer()
 		return;
 	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_LightDepth"), m_pShader, "g_LightDepthTextureArray")))
 		return;
-	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Depth"), m_pShader, "g_DepthTexture")))
-		return;
 	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Specular"), m_pShader, "g_SpecularTexture")))
 		return;
-	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_LightMap"), m_pShader, "g_LightMapTexture")))
+	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Depth"), m_pShader, "g_DepthTexture")))
 		return;
-	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_OEShader"), m_pShader, "g_OEShaderTexture")))
+	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_LightMap"), m_pShader, "g_LightMapTexture")))
 		return;
 
 	m_pShader->Begin(3);
@@ -1902,11 +1903,8 @@ void CRenderer::Render_Vignette()
 
 void CRenderer::Render_FinalResult()
 {
-	if (m_isHDR)
-	{
-		if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_FinalResult"))))
-			return;
-	}
+	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_FinalResult"))))
+		return;
 
 	if (FAILED(m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix)))
 		return;
@@ -1915,7 +1913,7 @@ void CRenderer::Render_FinalResult()
 	if (FAILED(m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
 		return;
 
-	wstring strTexture = TEXT("Target_FinalEffect"); 
+	wstring strTexture = TEXT("Target_FinalEffect");
 
 	if (m_isBOF) strTexture = TEXT("Target_BOF");
 	if (m_isRadialBlur) strTexture = TEXT("Target_RadialBlur");
@@ -1930,11 +1928,8 @@ void CRenderer::Render_FinalResult()
 
 	m_pVIBuffer->Render();
 
-	if (m_isHDR)
-	{
-		if (FAILED(m_pGameInstance->End_MRT()))
-			return;
-	}
+	if (FAILED(m_pGameInstance->End_MRT()))
+		return;
 
 }
 
@@ -1994,6 +1989,9 @@ void CRenderer::Render_CopyLuminance()
 
 void CRenderer::Render_LuminanceResult()
 {
+	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_HDR"))))
+		return;
+
 	if (FAILED(m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix)))
 		return;
 	if (FAILED(m_pShader->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix)))
@@ -2012,8 +2010,37 @@ void CRenderer::Render_LuminanceResult()
 	m_pShader->Begin(9);
 
 	m_pVIBuffer->Render();
+
+	if (FAILED(m_pGameInstance->End_MRT()))
+		return;
 }
 #pragma endregion
+
+void CRenderer::Render_AdjustColor()
+{
+	if (FAILED(m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix)))
+		return;
+	if (FAILED(m_pShader->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix)))
+		return;
+	if (FAILED(m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
+		return;
+
+	if (FAILED(m_pShader->Bind_RawValue("g_fBrightness", &m_fAdjectBrightness, sizeof(_float))))
+		return;
+	if (FAILED(m_pShader->Bind_RawValue("g_fContrast", &m_fAdjectContrast, sizeof(_float))))
+		return;
+	if (FAILED(m_pShader->Bind_RawValue("g_fSaturation", &m_fAdjectSaturation, sizeof(_float))))
+		return;
+	if (FAILED(m_pShader->Bind_RawValue("g_vTint", &m_vAdjectTint, sizeof(_float4))))
+		return;
+
+	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(m_isHDR ? TEXT("Target_ToneMapping") : TEXT("Target_FinalResult"), m_pShader, "g_BackBufferTexture")))
+		return;
+
+	m_pShader->Begin(28);
+
+	m_pVIBuffer->Render();
+}
 
 void CRenderer::Render_UI()
 {
