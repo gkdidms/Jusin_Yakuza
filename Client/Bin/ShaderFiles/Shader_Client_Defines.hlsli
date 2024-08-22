@@ -21,6 +21,7 @@ Texture2D g_RSTexture;
 Texture2D g_RMTexture;
 Texture2D g_RDTexture;
 Texture2D g_RTTexture;
+Texture2D g_EmissiveTexture;
 
 float g_fProgress;
 
@@ -96,6 +97,8 @@ bool g_bReflExist;
 
 /* Map */
 bool g_bCompulsoryAlpha;
+bool g_bEmissiveTex;
+float g_fDynamicSpeed;
 
 /* Item */
 float g_fBrightTime;
