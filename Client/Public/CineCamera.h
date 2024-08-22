@@ -15,6 +15,7 @@ public:
         CAM_STATE_END
     };
 
+
 public:
     typedef struct tCineCameraDesc : public CAMERA_DESC
     {
@@ -38,10 +39,11 @@ public:
     HRESULT                                         Load_CamBin(int iFileNum);
     void                                            Setting_Start_Cinemachine(int iCineNum); /* 이미 생성 후 */
     void                                            Initialize_Camera_Class();
-
     void                                            Set_Loop(_bool isLoop) {
         m_isLoop = isLoop;
     };
+
+    int                                            Get_CameraIndex() { return m_iCurCamIndex; }
 
 private:
     HRESULT                                         Import_Bin_Cam_Data_OnTool(CAMERAOBJ_IO* camData, int iFileNum);
@@ -86,6 +88,7 @@ private:
     bool                                            m_bInitialize = { false };
 
     _bool                                           m_isLoop = { false };
+    _bool                                           m_bChangeNextCam = { false };
 
 
     XMVECTOR                                        m_vStartEye;
