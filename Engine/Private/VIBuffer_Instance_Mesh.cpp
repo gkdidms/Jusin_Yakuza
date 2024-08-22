@@ -62,7 +62,6 @@ HRESULT CVIBuffer_Instance_Mesh::Initialize(void* pArg)
 
 		_float3 p1 =pVertices[i].vPosition;
 		_float2 p2 =pVertices[i].vTexcoord;
-		int a = 1;
 	}
 
 	m_InitialData.pSysMem = pVertices;

@@ -76,7 +76,7 @@ private:
     class CUIManager* m_pUIManager = { nullptr };
     _uint m_iCurrentMusic = { 0 };//지금 진행하는 노래인덱스
     vector<class CNoteManager*> m_Music = {};//노래 노트 담는 벡터
-    MUSICINFO* m_MusicBoard[MUSIC_END];//최고점수 , 연주횟수 저장
+    //MUSICINFO* m_MusicBoard[MUSIC_END];//최고점수 , 연주횟수 저장
 
     _bool m_isStart = { false };
     _uint m_iCurrentScore = { 0 };//이번판 점수 기입
