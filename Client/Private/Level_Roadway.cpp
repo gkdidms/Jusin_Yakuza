@@ -48,6 +48,8 @@ HRESULT CLevel_Roadway::Initialize()
 	m_pFightManager->Set_FightStage(true);
 	m_pSystemManager->Set_Camera(CAMERA_CARCHASE);
 
+	m_fRadialTime = m_pGameInstance->Get_Random(MIN_TIME, MAX_TIME);
+
     return S_OK;
 }
 
@@ -57,17 +59,81 @@ void CLevel_Roadway::Tick(const _float& fTimeDelta)
 	{
 		m_pUIManager->Open_Scene(TEXT("Carchase"));
 		m_isTitleEnd = true;
+
+		// 상시 레디얼블러 켜기
+		m_pGameInstance->Set_RadialBlur(true);
+		m_pGameInstance->Set_RadialSample(static_cast<_uint>(RADIAL_SAMPLE_MIN));
 	}
 	
 	if (m_isTitleEnd)
+	{
 		m_pCarChaseManager->Tick();
 
-	m_pFightManager->Tick(fTimeDelta);
+		if (m_isRadialOnEventPlay)
+			RadialOnTimer(fTimeDelta);
+		else
+			RadialOffTimer(fTimeDelta);
 
+		RadialValue_Control();
+	}
+
+	m_pFightManager->Tick(fTimeDelta);
 
 #ifdef _DEBUG
     SetWindowText(g_hWnd, TEXT("총격전 맵"));
 #endif
+}
+
+void CLevel_Roadway::RadialOnTimer(const _float& fTimeDelta)
+{
+	m_fRadialTimer += fTimeDelta;
+
+	if (RADIAL_TIME <= m_fRadialTimer)
+	{
+		m_fRadialTimer = 0.f;
+		m_isRadialOnEventPlay = false;
+
+		m_fRadialTime = m_pGameInstance->Get_Random(MIN_TIME, MAX_TIME);
+
+		// 켜져있다가 꺼질 때
+		dynamic_cast<CHighway_Taxi*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Taxi"), 0))->Set_BoosterSpeed(1.f);
+	}
+}
+
+void CLevel_Roadway::RadialOffTimer(const _float& fTimeDelta)
+{
+	m_fRadialTimer += fTimeDelta;
+
+	if (m_fRadialTime <= m_fRadialTimer)
+	{
+		m_fRadialTimer = 0.f;
+		m_isRadialOnEventPlay = true;
+
+		// 꺼져있다가 켜질때
+		dynamic_cast<CHighway_Taxi*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Taxi"), 0))->Set_BoosterSpeed(1.2f);
+	}
+
+}
+
+void CLevel_Roadway::RadialValue_Control()
+{
+	// 켜져있을 때
+	if (m_isRadialOnEventPlay)
+	{
+		if (m_iRadialValue < RADIAL_SAMPLE_MAX)
+		{
+			m_iRadialValue++;
+			m_pGameInstance->Set_RadialSample(m_iRadialValue);
+		}
+	}
+	else
+	{
+		if (m_iRadialValue > RADIAL_SAMPLE_MIN)
+		{
+			m_iRadialValue--;
+			m_pGameInstance->Set_RadialSample(m_iRadialValue);
+		}
+	}
 }
 
 HRESULT CLevel_Roadway::Ready_Camera(const wstring& strLayerTag)
