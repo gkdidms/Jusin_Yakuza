@@ -185,15 +185,11 @@ _bool CCarChase_Reactor::Check_Dead()
 
 	for (auto& pMonster : m_Monsters)
 	{
-		if (!pMonster->isObjectDead())
-		{
-
-			return false;
-		}
-
 		//운전수가 죽으면 바로 죽게 된다.
 		if (pMonster->isObjectDead() && pMonster->Get_WeaponType() == CCarChase_Monster::DRV)
 		{
+			for (auto& pMonster : m_Monsters)
+				pMonster->Set_ReactorDead(true);
 			//자동차가 죽으면 멈추고 불난다.+연기
 
 			CEffect::EFFECT_DESC EffectDesc;
@@ -203,7 +199,10 @@ _bool CCarChase_Reactor::Check_Dead()
 			return true;
 		}
 
+		if (!pMonster->isObjectDead())
+			return false;
 	}
+
 	//헬기 폭파 이펙트
 	CEffect::EFFECT_DESC EffectDesc;
 
