@@ -22,6 +22,9 @@ private:
     class CFightManager* m_pFightManager = { nullptr };
 
 private:
+    _bool m_isTitleEnd = { false };
+
+private:
     HRESULT Ready_Camera(const wstring& strLayerTag);
     HRESULT Ready_Player(const wstring& strLayerTag);
 
