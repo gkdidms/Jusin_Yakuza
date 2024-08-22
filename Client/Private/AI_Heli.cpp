@@ -35,7 +35,7 @@ HRESULT CAI_Heli::Initialize(void* pArg)
 	if (*m_pWeaponType == CCarChase_Monster::GUN)
 		m_fDelayAttackDuration = 8.f;
 	else if (*m_pWeaponType == CCarChase_Monster::RKT)
-		m_fDelayAttackDuration = 5.f;
+		m_fDelayAttackDuration = 4.f;
 	else if (*m_pWeaponType == CCarChase_Monster::GAT)
 		m_fDelayAttackDuration = 3.f;
 
