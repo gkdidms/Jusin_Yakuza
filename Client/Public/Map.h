@@ -59,6 +59,7 @@ public:
 		SHADER_END
 	};
 
+
 public:
 	typedef struct tMapObjDesc : public CGameObject::GAMEOBJECT_DESC
 	{
@@ -105,7 +106,7 @@ public:
 
 	_bool isOcculusionDepth();
 	HRESULT Near_Render(_uint iRenderState);
-
+	HRESULT Far_Render(_uint iRenderState);
 public:
 	CTransform* Get_Transform() { return m_pTransformCom; }
 
@@ -118,6 +119,7 @@ public:
 
 private:
 	void						Add_Renderer(const _float& fTimeDelta);
+	void						Add_Renderer_Far(const _float& fTimeDelta);
 
 private:
 	CShader*	m_pShaderCom = { nullptr };

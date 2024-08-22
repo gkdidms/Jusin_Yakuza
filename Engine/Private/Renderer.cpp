@@ -188,62 +188,6 @@ HRESULT CRenderer::Initialize()
 		return E_FAIL;
 
 #endif // _DEBUG
-	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_Diffuse"), 50.f, 50.f, 100.f, 100.f)))
-		return E_FAIL;
-	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_Normal"), 50.f, 150.f, 100.f, 100.f)))
-		return E_FAIL;
-	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_Depth"), 50.f, 250.f, 100.f, 100.f)))
-		return E_FAIL;
-	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_Surface"), 50.f, 350.f, 100.f, 100.f)))
-		return E_FAIL;
-	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_OEShader"), 50.f, 550.f, 100.f, 100.f)))
-		return E_FAIL;
-	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_OESpecular"), 50.f, 650.f, 100.f, 100.f)))
-		return E_FAIL;
-
-	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_LightDepth"), ViewPort.Width - 150.0f, 150.0f, 300.f, 300.f)))
-		return E_FAIL;
-
-	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_Shade"), 150.f, 50.f, 100.f, 100.f)))
-		return E_FAIL;
-	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_SSAO"), 150.f, 150.f, 100.f, 100.f)))
-		return E_FAIL;
-	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_Ambient"), 150.f, 250.f, 100.f, 100.f)))
-		return E_FAIL;
-	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_BackBuffer"), 150.f, 350.f, 100.f, 100.f)))
-		return E_FAIL;
-	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_LightMap"), 150.f, 450.f, 100.f, 100.f)))
-		return E_FAIL;
-	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_PBR"), 150.f, 550.f, 100.f, 100.f)))
-		return E_FAIL;
-
-	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_FinalResult"), 250.f, 050.f, 100.f, 100.f)))
-		return E_FAIL;
-	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_Luminance"), 250.f, 150.f, 100.f, 100.f)))
-		return E_FAIL;
-	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_ToneMapping"), 250.f, 250.f, 100.f, 100.f)))
-		return E_FAIL;
-	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_BackBlurReverse"), 250.f, 350.f, 100.f, 100.f)))
-		return E_FAIL;
-
-	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_1x1"), 450.f, 250.f, 100.f, 100.f)))
-		return E_FAIL;
-
-	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_Effect"), 550.f, 50.f, 100.f, 100.f)))
-		return E_FAIL;
-	//if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_Blur_X"), 550.f, 150.f, 100.f, 100.f)))
-	//	return E_FAIL;
-	//if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_Blur_Y"), 550.f, 250.f, 100.f, 100.f)))
-	//	return E_FAIL;
-	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_AccumColor"), 750.f, 50.f, 100.f, 100.f)))
-		return E_FAIL;
-	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_AccumAlpha"), 750.f, 150.f, 100.f, 100.f)))
-		return E_FAIL;
-	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_Distortion"), 850.f, 50.f, 100.f, 100.f)))
-		return E_FAIL;
-
-	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_RimLight"), 650.f, 50.f, 100.f, 100.f)))
-		return E_FAIL;
 
 	return S_OK;
 }
@@ -815,7 +759,9 @@ void CRenderer::Add_Renderer(RENDERER_STATE eRenderState, CGameObject* pGameObje
 void CRenderer::Draw()
 {
 	Render_Priority();
-	Render_AnimSkinning();
+	//Render_AnimSkinning();
+
+	//Render_OcculusionDepth(); // 오쿨루젼 컬링 (먼저 연산해놓는다)
 
 	if (m_isShadow)
 	{
