@@ -66,7 +66,7 @@ public:
 
 private:
     virtual void Change_Animation();
-    _bool Checked_Animation_Ratio(_float fRatio);
+    
     void Key_Input();
 
     /* 애니메이션 */

@@ -3,6 +3,7 @@
 #include "GameInstance.h"
 
 #include "CarChase_Van.h"
+#include "CarChaseCamera.h"
 
 CReactor_Van::CReactor_Van(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CCarChase_Reactor{ pDevice, pContext }
@@ -80,8 +81,18 @@ void CReactor_Van::Change_Animation()
 	if (m_strAnimName == "w_mngcar_c_van_ded_1")
 		m_iAnim = 0;
 
+	if (m_iAnim == 6 && Checked_Animation_Ratio(0.3f))
+	{
+		// 카메라 쉐이킹
+		CCarChaseCamera* pCamera = dynamic_cast<CCarChaseCamera*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Camera"), CAMERA_CARCHASE));
+		pCamera->Set_Shaking(true, { 1.f, 1.f, 0.f }, 0.4, 0.6);
+	}
+
+
 	if (m_iAnim == 0 && m_pModelCom->Get_AnimFinished())
+	{
 		m_isDead = true;
+	}
 }
 
 HRESULT CReactor_Van::Add_Components()

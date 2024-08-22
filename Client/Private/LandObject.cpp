@@ -338,6 +338,14 @@ void CLandObject::Trail_Event()
 	}
 }
 
+_bool CLandObject::Checked_Animation_Ratio(_float fRatio)
+{
+	if (fRatio < *m_pModelCom->Get_AnimationCurrentPosition() / *m_pModelCom->Get_AnimationDuration())
+		return true;
+
+	return false;
+}
+
 // iHandType: 0 양손, 1 왼손, 2 오른손
 void CLandObject::On_Separation_Hand(_uint iHandType)
 {
