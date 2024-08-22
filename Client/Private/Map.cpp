@@ -166,7 +166,7 @@ void CMap::Late_Tick(const _float& fTimeDelta)
 
 	m_isFar = false;
 
-	if (fDistance > 30)
+	if (fDistance > 100)
 		m_isFar = true;
 
 	if (m_pGameInstance->Get_CurrentLevel() == LEVEL_TUTORIAL ||
