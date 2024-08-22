@@ -134,6 +134,7 @@ HRESULT CHighway_Kiryu::Render()
 void CHighway_Kiryu::OnHit(_float fDamage)
 {
 	m_fHP -= fDamage;
+	m_eCurrentBehavior = HIT;
 }
 
 void CHighway_Kiryu::Change_Animation()
@@ -150,6 +151,10 @@ _bool CHighway_Kiryu::Checked_Animation_Ratio(_float fRatio)
 
 void CHighway_Kiryu::Key_Input()
 {
+	if (m_pGameInstance->GetKeyState(DIK_RSHIFT) == TAP)
+	{
+		OnHit(10.f);
+	}
 
 	//공격 가능한 환경인지 체크한 후 진행한다.
 	//다른 스킬들도 막기 위해서 return;
@@ -330,22 +335,22 @@ void CHighway_Kiryu::Play_Hit(_float fTimeDelta)
 	* [59] [mngcar_c_car_gun_aimr_r_dam]
 	*/
 
-	_uint iAnimIndex = 2;
-	switch (m_iStageDir)
-	{
-	case DIR_F:
-		iAnimIndex = (m_isLeft ? 13 : 48);
-		break;
-	case DIR_B:
-		iAnimIndex = (m_isLeft ? 2 : 37);
-		break;
-	case DIR_L:
-		iAnimIndex = (m_isLeft ? 24 : 59);
-		break;
-	case DIR_R:
-		iAnimIndex = (m_isLeft ? 24 : 59);
-		break;
-	}
+	_uint iAnimIndex = (m_isLeft ? 24 : 59);
+	//switch (m_iStageDir)
+	//{
+	//case DIR_F:
+	//	iAnimIndex = (m_isLeft ? 13 : 48);
+	//	break;
+	//case DIR_B:
+	//	iAnimIndex = (m_isLeft ? 2 : 37);
+	//	break;
+	//case DIR_L:
+	//	iAnimIndex = (m_isLeft ? 24 : 59);
+	//	break;
+	//case DIR_R:
+	//	iAnimIndex = (m_isLeft ? 24 : 59);
+	//	break;
+	//}
 
 	m_pModelCom->Set_AnimationIndex(iAnimIndex, 4.f);
 
@@ -427,7 +432,7 @@ void CHighway_Kiryu::Change_Behavior(BEHAVIOR_TYPE eType)
 	{
 	case CHighway_Kiryu::AIMING:
 	{
-		if (m_eCurrentBehavior != SHOT)
+		if (m_eCurrentBehavior != SHOT && m_eCurrentBehavior != HIT)
 			m_isStarted = false;
 
 		break;
