@@ -101,6 +101,8 @@ CBTNode::NODE_STATE CAI_Van::Dead()
 	if (*m_pWeaponType != CCarChase_Monster::DRV)
 		*m_pState = CCarChase_Monster::CARCHASE_DED;
 
+	m_iSkill = SKILL_DEAD;
+
 	CEffect::EFFECT_DESC EffectDesc;
 
 	
