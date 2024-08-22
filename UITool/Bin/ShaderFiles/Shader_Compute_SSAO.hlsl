@@ -19,7 +19,9 @@ Texture2D g_SSAONoiseTexture : register(t0);
 Texture2D g_DepthTexture : register(t1);
 Texture2D g_NormalTexture : register(t2);
 
+
 RWTexture2D<float4> g_OutputTexture : register(u0);
+
 
 float3x3 Get_TBN(float3 vNormal, float2 vTexcoord)
 {

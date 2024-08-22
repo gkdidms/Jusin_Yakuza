@@ -141,6 +141,7 @@ protected:
     const _float4x4* m_pParentBoneMatrix = { nullptr }; // ºÎÂøÇÒ ºÎ¸ğÀÇ ·çÆ®»À
     const _float4x4* m_pTargetBoneMatrix = { nullptr }; // UI ºÎÂøÇÒ ¸ó½ºÅÍ »À
     _float4x4 m_pWorldMatrix;
+
 protected: 
     virtual void Change_Animation();
     void Update_TargetingUI();
@@ -150,7 +151,7 @@ protected:
 protected:
     virtual HRESULT Add_Components() override;
     virtual HRESULT Bind_ResourceData() override;
-    virtual void Set_ParentMatrix();
+    virtual void Set_ParentMatrix(const _float& fTimeDelta);
 
 public:
     virtual void Free();

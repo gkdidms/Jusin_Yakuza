@@ -375,6 +375,46 @@ void CGameInstance::Set_InvertSaturationColor(_bool isInvertLightnessColor)
 	m_pRenderer->Set_InvertSaturationColor(isInvertLightnessColor);
 }
 
+void CGameInstance::Set_AdjectBrightness(_float fBrightness)
+{
+	m_pRenderer->Set_AdjectBrightness(fBrightness);
+}
+
+void CGameInstance::Set_AdjectContrast(_float fContrast)
+{
+	m_pRenderer->Set_AdjectContrast(fContrast);
+}
+
+void CGameInstance::Set_AdjectSaturation(_float fSaturation)
+{
+	m_pRenderer->Set_AdjectSaturation(fSaturation);
+}
+
+void CGameInstance::Set_AdjectTint(_float4 vTine)
+{
+	m_pRenderer->Set_AdjectTint(vTine);
+}
+
+_float CGameInstance::Get_AdjectBrightness()
+{
+	return m_pRenderer->Get_AdjectBrightness();
+}
+
+_float CGameInstance::Get_AdjectContrast()
+{
+	return m_pRenderer->Get_AdjectContrast();
+}
+
+_float CGameInstance::Get_AdjectSaturation()
+{
+	return m_pRenderer->Get_AdjectSaturation();
+}
+
+_float4 CGameInstance::Get_AdjectTint()
+{
+	return m_pRenderer->Get_AdjectTint();
+}
+
 _float CGameInstance::Get_SSAOBlur()
 {
 	return m_pRenderer->Get_SSAOBlur();
