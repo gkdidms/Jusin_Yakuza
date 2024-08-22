@@ -9,6 +9,7 @@
 #include "SocketModel.h"
 #include "Weapon_Gun_Cz75.h"
 #include "UIManager.h"
+#include "CarChaseCamera.h"
 
 CHighway_Kiryu::CHighway_Kiryu(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLandObject{ pDevice, pContext }
@@ -68,7 +69,6 @@ void CHighway_Kiryu::Tick(const _float& fTimeDelta)
 
 	m_pModelCom->Play_Animation_Separation(fTimeDelta, m_iFaceAnimIndex, m_SeparationAnimComs[FACE_ANIM], false, (_int)FACE_ANIM);
 	m_pModelCom->Play_Animation_Separation(fTimeDelta, m_iHandAnimIndex, m_SeparationAnimComs[HAND_ANIM], false, (_int)HAND_ANIM);
-	m_pModelCom->Play_Animation_Separation(fTimeDelta, m_iUdeIndex, m_SeparationAnimComs[DEFAULT_ANIM], false, (_int)DEFAULT_ANIM);
 	Play_CurrentAnimation(fTimeDelta);
 
 	m_ModelMatrix = *pTaxiMatrix;
@@ -171,30 +171,28 @@ HRESULT CHighway_Kiryu::Render()
 void CHighway_Kiryu::OnHit(_float fDamage)
 {
 	m_fHP -= fDamage;
+	m_eCurrentBehavior = HIT;
 }
 
 void CHighway_Kiryu::Change_Animation()
 {
 }
 
-_bool CHighway_Kiryu::Checked_Animation_Ratio(_float fRatio)
-{
-	if (fRatio < *m_pModelCom->Get_AnimationCurrentPosition() / *m_pModelCom->Get_AnimationDuration())
-		return true;
-
-	return false;
-}
-
 void CHighway_Kiryu::Key_Input()
 {
+	if (m_pGameInstance->GetKeyState(DIK_RSHIFT) == TAP)
+	{
+		OnHit(10.f);
+	}
 
 	//공격 가능한 환경인지 체크한 후 진행한다.
 	//다른 스킬들도 막기 위해서 return;
 	// 발사
-	if (m_pGameInstance->GetMouseState(DIM_LB) == TAP)
-	{
-		Change_Behavior(SHOT);
-	}
+	//if (m_pGameInstance->GetMouseState(DIM_LB) == TAP)
+	//{
+	//	if(m_iCurrentAmmo > 0)
+	//		Change_Behavior(SHOT);
+	//}
 
 	// 히트아이 사용
 	if (m_pGameInstance->GetKeyState(DIK_LSHIFT) == HOLD)
@@ -227,11 +225,26 @@ void CHighway_Kiryu::Key_Input()
 	// 장전/숨기
 	if (m_pGameInstance->GetKeyState(DIK_E) == HOLD)
 	{
+		m_fAccReloadTimer += m_pGameInstance->Get_TimeDelta(TEXT("Timer_Game"));
+		if (RELOAD_TIME <= m_fAccReloadTimer)
+		{
+			m_iCurrentAmmo = MAX_AMMO;
+			m_fAccReloadTimer = 0.f;
+		}
+
 		Change_Behavior(HIDE);
+
+		CCarChaseCamera* pCamera = dynamic_cast<CCarChaseCamera*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Camera"), CAMERA_CARCHASE));
+		pCamera->ShoulderView_Off();
 	}
 	else if (m_pGameInstance->GetKeyState(DIK_E) == AWAY)
 	{
+		m_fAccReloadTimer = 0.f;
+
 		Change_Behavior(AIMING);
+
+		CCarChaseCamera* pCamera = dynamic_cast<CCarChaseCamera*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Camera"), CAMERA_CARCHASE));
+		pCamera->ShoulderView_On();
 	}
 
 	// 자리 바꾸기 (플레이어가 직접 조작하는 것이 아니라 디버깅용으로 추가한 버튼)
@@ -361,22 +374,22 @@ void CHighway_Kiryu::Play_Hit(_float fTimeDelta)
 	* [59] [mngcar_c_car_gun_aimr_r_dam]
 	*/
 
-	_uint iAnimIndex = 2;
-	switch (m_iStageDir)
-	{
-	case DIR_F:
-		iAnimIndex = (m_isLeft ? 13 : 48);
-		break;
-	case DIR_B:
-		iAnimIndex = (m_isLeft ? 2 : 37);
-		break;
-	case DIR_L:
-		iAnimIndex = (m_isLeft ? 24 : 59);
-		break;
-	case DIR_R:
-		iAnimIndex = (m_isLeft ? 24 : 59);
-		break;
-	}
+	_uint iAnimIndex = (m_isLeft ? 24 : 59);
+	//switch (m_iStageDir)
+	//{
+	//case DIR_F:
+	//	iAnimIndex = (m_isLeft ? 13 : 48);
+	//	break;
+	//case DIR_B:
+	//	iAnimIndex = (m_isLeft ? 2 : 37);
+	//	break;
+	//case DIR_L:
+	//	iAnimIndex = (m_isLeft ? 24 : 59);
+	//	break;
+	//case DIR_R:
+	//	iAnimIndex = (m_isLeft ? 24 : 59);
+	//	break;
+	//}
 
 	m_pModelCom->Set_AnimationIndex(iAnimIndex, 4.f);
 
@@ -458,7 +471,7 @@ void CHighway_Kiryu::Change_Behavior(BEHAVIOR_TYPE eType)
 	{
 	case CHighway_Kiryu::AIMING:
 	{
-		if (m_eCurrentBehavior != SHOT)
+		if (m_eCurrentBehavior != SHOT && m_eCurrentBehavior != HIT)
 			m_isStarted = false;
 
 		break;
@@ -478,6 +491,13 @@ void CHighway_Kiryu::Change_Behavior(BEHAVIOR_TYPE eType)
 	case CHighway_Kiryu::SHOT:
 	{
 		m_isStarted = true;
+		
+		if(m_eCurrentBehavior == SHOT && Checked_Animation_Ratio(0.4f))
+			m_pModelCom->Reset_Animation((m_isLeft ? 31 : 66));
+
+		// 카메라 쉐이킹
+		CCarChaseCamera* pCamera = dynamic_cast<CCarChaseCamera*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Camera"), CAMERA_CARCHASE));
+		pCamera->Set_Shaking(true, { 1.f, 1.f, 1.f }, 0.3, 0.5);
 
 		// 어깨 분리
 		//m_pModelCom->Set_Separation_ParentBone(m_isLeft ? "ude2_l_n" : "ude2_r_n", DEFAULT_ANIM);
@@ -605,6 +625,24 @@ HRESULT CHighway_Kiryu::Bind_ResourceData()
 		return E_FAIL;
 
 	return S_OK;
+}
+
+_bool CHighway_Kiryu::Shot()
+{
+	if (1 > m_iCurrentAmmo)		//0이면
+	{
+		m_iCurrentAmmo = 0;
+		return false;
+	} 
+
+	if ((m_eCurrentBehavior == SHOT && Checked_Animation_Ratio(0.7f)) || (m_eCurrentBehavior != SHOT))
+	{
+		Change_Behavior(SHOT);
+		m_iCurrentAmmo--;
+		return true;
+	}
+
+	return false;
 }
 
 CHighway_Kiryu* CHighway_Kiryu::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

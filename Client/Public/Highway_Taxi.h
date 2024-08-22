@@ -48,6 +48,9 @@ public:
 
     void    OnHit(_float fDamage);
 
+    void    Set_BoosterSpeed(_float fSpeed) { m_fBooster = fSpeed; }
+
+
 protected:
     class CHighway_Kiryu* m_pKiryu = { nullptr };
     _int        m_iNaviRouteNum = { 0 }; // 몬스터가 이동하는 네비게이션 위치
@@ -58,6 +61,8 @@ protected:
     //ui 연동용으로 제작
     _float m_fCarHp = { 400.f };
     _float m_fMaxCarHp = { 400.f };
+
+    _float m_fBooster = { 1.f };
 
 protected:
     virtual void Change_Animation();

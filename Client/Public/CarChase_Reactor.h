@@ -33,6 +33,9 @@ protected:
 public:
     virtual string Get_CurrentAnimationName();
     _bool isStart() { return m_isStart; }
+    virtual const vector<class CCarChase_Monster*>& const Get_Monsters() {
+        return m_Monsters;
+    }
 
 public:
     virtual HRESULT Initialize_Prototype() override;

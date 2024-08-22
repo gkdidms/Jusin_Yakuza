@@ -5,6 +5,7 @@
 #include "UIManager.h"
 
 #include "CarChase_CATBullet.h"
+#include "CarChase_Reactor.h"
 
 CCarChaseCamera::CCarChaseCamera(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CCamera{ pDevice, pContext },
@@ -50,36 +51,39 @@ void CCarChaseCamera::Tick(const _float& fTimeDelta)
 {
 	if (m_pSystemManager->Get_Camera() != CAMERA_CARCHASE) return;
 
-	_vector vPlayerPos = XMLoadFloat4x4(m_pPlayerMatrix).r[3];
 
 	//Adjust_Camera_Angle();
 	if (m_pUIManager->isTitleEnd())
 		Targeting(fTimeDelta);
 
-	if (m_pGameInstance->GetKeyState(DIK_RSHIFT) == TAP)
-	{
-		m_isShoulderView = !m_isShoulderView;
-	}
+	_vector vPlayerPos = XMLoadFloat4x4(m_pPlayerMatrix).r[3];
 
-	_float4 vCameraPosition;
+	_float4 vTargetPosition;
 
+	// 목표 위치 계산
 	if (!m_isShoulderView)
 	{
-		vCameraPosition.x = XMVectorGetX(vPlayerPos) + cosf(XMConvertToRadians(m_fCamAngleX)) * cosf(XMConvertToRadians(m_fCamAngleY)) * m_fCamDistance,
-		vCameraPosition.y = XMVectorGetY(vPlayerPos) + m_fCamDistance * sinf(XMConvertToRadians(m_fCamAngleY)) + m_fHeight;
-		vCameraPosition.z = XMVectorGetZ(vPlayerPos) + sinf(XMConvertToRadians(m_fCamAngleX)) * cosf(XMConvertToRadians(m_fCamAngleY)),
-		vCameraPosition.w = 1.f;
+		vTargetPosition.x = XMVectorGetX(vPlayerPos) + cosf(XMConvertToRadians(m_fCamAngleX)) * cosf(XMConvertToRadians(m_fCamAngleY)) * m_fCamDistance;
+		vTargetPosition.y = XMVectorGetY(vPlayerPos) + m_fCamDistance * sinf(XMConvertToRadians(m_fCamAngleY)) + m_fHeight;
+		vTargetPosition.z = XMVectorGetZ(vPlayerPos) + sinf(XMConvertToRadians(m_fCamAngleX)) * cosf(XMConvertToRadians(m_fCamAngleY));
+		vTargetPosition.w = 1.f;
 	}
 	else
 	{
-		vCameraPosition.x = XMVectorGetX(vPlayerPos) + cosf(XMConvertToRadians(m_fCamAngleX)) * cosf(XMConvertToRadians(m_fCamAngleY)) * m_fCamDistance_X,
-		vCameraPosition.y = XMVectorGetY(vPlayerPos) + m_fCamDistance_Y * sinf(XMConvertToRadians(m_fCamAngleY)) + m_fHeight;
-		vCameraPosition.z = XMVectorGetZ(vPlayerPos) + sinf(XMConvertToRadians(m_fCamAngleX)) * cosf(XMConvertToRadians(m_fCamAngleY)) * m_fCamDistance_Z,
-		vCameraPosition.w = 1.f;
+		vTargetPosition.x = XMVectorGetX(vPlayerPos) + cosf(XMConvertToRadians(m_fCamAngleX)) * cosf(XMConvertToRadians(m_fCamAngleY)) * m_fCamDistance_X;
+		vTargetPosition.y = XMVectorGetY(vPlayerPos) + m_fCamDistance_Y * sinf(XMConvertToRadians(m_fCamAngleY)) + m_fHeight;
+		vTargetPosition.z = XMVectorGetZ(vPlayerPos) + sinf(XMConvertToRadians(m_fCamAngleX)) * cosf(XMConvertToRadians(m_fCamAngleY)) * m_fCamDistance_Z;
+		vTargetPosition.w = 1.f;
 	}
 
+	// 현재 카메라 위치
+	_vector vCurrentPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMLoadFloat4(&vCameraPosition));
+	// 목표 위치로 선형 보간
+	float lerpFactor = 0.6f; // 보간 속도
+	_vector vNewCameraPosition = XMVectorLerp(vCurrentPosition, XMLoadFloat4(&vTargetPosition), lerpFactor);
+
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vNewCameraPosition);
 
 	
 	__super::Tick(fTimeDelta);
@@ -97,7 +101,7 @@ HRESULT CCarChaseCamera::Render()
 
 void CCarChaseCamera::Targeting(const _float& fTimeDelta)
 {
-	vector<CGameObject*> Bullets= m_pGameInstance->Get_GameObjects(m_iCurrentLevel, TEXT("Layer_Bullet"));
+	vector<CGameObject*> Bullets = m_pGameInstance->Get_GameObjects(m_iCurrentLevel, TEXT("Layer_Bullet"));
 	vector<CGameObject*> Reactors = m_pGameInstance->Get_GameObjects(m_iCurrentLevel, TEXT("Layer_Reactor"));
 	if (Reactors.size() >= 2)
 		m_isTargetPlayer = false;
@@ -122,12 +126,19 @@ void CCarChaseCamera::Targeting(const _float& fTimeDelta)
 		//불렛은 하나만 있다고 가정한다.
 		if (pTarget->isDead())
 		{
+			// 포커싱 초기화
+			m_isZooming = false;
+			m_pGameInstance->Set_TimeSpeed(TEXT("Timer_60"), 1.f);
+			Reset_ZoomVariables();
+
 			m_isTargetPlayer = true;
 			return;
 		}
 
 		vTargetingPos = dynamic_cast<CCarChase_CATBullet*>(pTarget)->Get_BulletPos();
 		vCamMoveDir = XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_POSITION) - vTargetingPos);
+
+		Focusing_Bullet(pTarget);
 	}
 	else {
 		//몬스터 타겟팅 일 경우
@@ -160,6 +171,43 @@ void CCarChaseCamera::Targeting(const _float& fTimeDelta)
 	m_fCamAngleY = XMConvertToDegrees(asinf(XMVectorGetY(vCamMoveDir) / m_fCamDistance));
 
 	m_pTransformCom->LookAt(vLerpDir, true);
+}
+
+void CCarChaseCamera::Focusing_Bullet(CGameObject* pTarget)
+{
+	_vector vTargetingPos = dynamic_cast<CCarChase_CATBullet*>(pTarget)->Get_BulletPos();
+	_vector vCamMoveDir = XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_POSITION) - vTargetingPos);
+
+	CCarChase_Reactor* pHeli = dynamic_cast<CCarChase_Reactor*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Reactor"), 0));
+	_matrix pMonsterMat = XMLoadFloat4x4(dynamic_cast<CCarChase_Monster*>(pHeli->Get_Monsters().front())->Get_ModelMatrix());
+
+	_vector vMonsterPos = pMonsterMat.r[CTransform::STATE_POSITION];
+	_vector vPlayerPos = m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Taxi"), 0)->Get_TransformCom()->Get_State(CTransform::STATE_POSITION);
+
+	// 플레이어와 몬스터간의 거리, Duration이 된다.
+	_float vMonsterDistance = XMVectorGetX(XMVector3Length(vPlayerPos - vMonsterPos));
+
+	// 플레이어와 불렛간의 거리, 비율이 된다.
+	_float vDistnace = XMVector3Length(vPlayerPos - vTargetingPos).m128_f32[0];
+
+	_float fRatio = vDistnace / vMonsterDistance;
+
+	m_pGameInstance->Set_TimeSpeed(TEXT("Timer_60"), fRatio);
+
+	if (vDistnace <= 3.f)
+		fRatio = 0.f;
+
+	if (fRatio < 0.1f)
+	{
+		fRatio = 0.f;
+		m_isZooming = false;
+		m_pGameInstance->Set_TimeSpeed(TEXT("Timer_60"), 1.f);
+		Reset_ZoomVariables();
+	}
+
+	Set_CustomRatio(fRatio);
+	Set_TargetFoV(XMConvertToRadians(20.f));
+	Start_Zoom();
 }
 
 CCarChaseCamera* CCarChaseCamera::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

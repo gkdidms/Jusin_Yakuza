@@ -3,6 +3,7 @@
 #include "GameInstance.h"
 
 #include "CarChase_Heli.h"
+#include "CarChaseCamera.h"
 
 CReactor_Heli::CReactor_Heli(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CCarChase_Reactor{ pDevice, pContext }
@@ -94,6 +95,14 @@ void CReactor_Heli::Change_Animation()
 		m_iAnim = 1;
 	if (m_strAnimName == "w_mngcar_e_hel_rkt_reload_1")
 		m_iAnim = 0;
+
+	if (m_iAnim == 0 && Checked_Animation_Ratio(0.3f))
+	{
+		// 카메라 쉐이킹
+		CCarChaseCamera* pCamera = dynamic_cast<CCarChaseCamera*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Camera"), CAMERA_CARCHASE));
+		pCamera->Set_Shaking(true, { 1.f, 1.f, 0.f }, 0.4, 0.7);
+	}
+
 
 	if (m_iAnim == 0 && m_pModelCom->Get_AnimFinished())
 		m_isDead = true;
