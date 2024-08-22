@@ -51,6 +51,8 @@ public:
 		SHADER_COMPULSORY_DECALBLEND, //10
 		SHADER_DYNAMIC_SIGN_SMALL, // 11
 		SHADER_GLASS_DIFFUSE, //12
+		SHADER_DYNAMIC_SIGN_BLOOM, // 13
+		SHADER_DYNAMIC_SIGN_FAST, // 14
 
 		// 무조건 제일 아래
 		SHADER_LIGHTDEPTH, //13
@@ -150,6 +152,7 @@ private:
 	vector<int>				m_vDynamicSignIndex;
 	vector<int>				m_vStrongBloomIndex;
 	vector<int>				m_vCompulsoryDecalBlendMeshIndex;
+	vector<int>				m_vFastDynamicSign;
 
 	_int					m_iLayerNum;
 	wstring					m_wstrModelName;

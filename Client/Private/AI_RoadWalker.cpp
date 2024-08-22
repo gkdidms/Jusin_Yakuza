@@ -46,8 +46,6 @@ void CAI_RoadWalker::Tick(const _float& fTimeDelta)
 	{
 		// waypoint 방향받기
 		// m_isTurn, m_iDir, m_isBack : 여기서 받음
-
-
 		_vector vDir = m_pNavigationCom->Compute_WayPointDir_Adv(m_pThis->Get_TransformCom()->Get_State(CTransform::STATE_POSITION), 
 			fTimeDelta, &m_isTurn, &m_iDir, &m_isBack);
 		m_pThis->Get_TransformCom()->LookAt_For_LandObject(vDir, true);

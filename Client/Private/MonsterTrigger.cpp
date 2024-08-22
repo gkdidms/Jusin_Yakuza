@@ -69,7 +69,7 @@ void CMonsterTrigger::Late_Tick(const _float& fTimeDelta)
 
 			if (true == bDeadCheck)
 			{
-				m_pFileMgr->Set_MapObj_In_Client_Trigger(m_tTriggerDesc.iLevelNum, m_iCurrentLevel);
+				m_pFileMgr->Set_MapObj_In_Client_Trigger(m_tTriggerDesc.iTriggerID, m_iCurrentLevel);
 				m_bTriggerDead = true;
 			}
 

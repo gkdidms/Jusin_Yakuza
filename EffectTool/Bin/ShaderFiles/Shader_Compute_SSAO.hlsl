@@ -37,7 +37,7 @@ float3x3 Get_TBN(float3 vNormal, float2 vTexcoord)
     vRandomVec = normalize(mul(vector(vRandomVec, 0.f), matWV)).xyz;
     
     float3 tangent = normalize(vRandomVec - vNormal * dot(vRandomVec, vNormal));
-    float3 bitangent = cross(vNormal, tangent);
+    float3 bitangent = vector(normalize(cross(vNormal.xyz, tangent.xyz)), 0.f);
     float3x3 TBN = float3x3(tangent, bitangent, vNormal);
     
     return TBN;

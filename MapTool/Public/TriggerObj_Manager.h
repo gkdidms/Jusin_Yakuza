@@ -30,7 +30,22 @@ public:
 		MONSTER_YONEDA,
 		MONSTER_KUZE,
 		LARGE_CONSTRUCTION,
+		ADTENTURE_SUIT,
+		MAP, /* 도로 맵 안의 큰 맵 */
 		MONSTER_WPH,
+		MONSTER_DEFAULT,
+		MAP_NONCULL,
+
+
+		ROADNML,
+		ROADCAB,
+		ROADSTANDING_NML,
+		ROADTISSUE,
+		ROADYOP,
+		NISHIKI,
+		ADVENTURE_REACTOR,
+
+		PLAYER_POSITION, // 포지션만 저장
 		OBJ_END
 	};
 
@@ -59,6 +74,11 @@ public:
 		int				iShaderPass;
 		int				iObjType;
 		int				iObjPropertyType;
+		int				iNPCDirection;
+		int				iNaviRouteNum;
+		int				iGroupMonster; //bool 역할
+		int				iGroupNum;
+		XMFLOAT4X4		vOffsetMatrix;
 	}MAPTOOL_OBJPLACE_DESC;
 
 
@@ -123,12 +143,15 @@ private:
 
 
 private:
-	vector<const char*>							m_Layers = { "Layer_GameObjects", "Layer_Monster", "Layer_Player" };
+	vector<const char*>							m_Layers = { "Layer_GameObjects", "Layer_Monster", "Layer_Player", "Layer_NPC" , "Layer_Item", "Layer_Passerby", "Layer_MonsterGroup", "Layer_Nishiki" , "Layer_AdventureReactor" };
 	/* object이름, cgameobject */
 	multimap<wstring, CGameObject*>				m_GameObjects; /* 추가한 오브젝트 저장 */
 	vector<char*>								m_ObjectNames_Map0; /* 추가한 오브젝트 이름들 */
 	vector<char*>								m_ObjectNames_Map1; /* 추가한 오브젝트 이름들 */
 	vector<char*>								m_ObjectNames_Map2; /* 추가한 오브젝트 이름들 */
+	vector<char*>								m_ObjectNames_Map3; /* 추가한 오브젝트 이름들 */
+	vector<char*>								m_ObjectNames_MapKaraoke; /* 추가한 오브젝트 이름들 */
+
 	vector<char*>								m_MonsterNames; /* 추가한 오브젝트 이름들 */
 
 	vector<char*>								m_FileNames; /* 맵마다 저장한 bin 리스트들 */
