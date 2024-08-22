@@ -196,20 +196,20 @@ _bool CCarChase_Reactor::Check_Dead()
 		{
 			//ÀÚµ¿Â÷°¡ Á×À¸¸é ¸ØÃß°í ºÒ³­´Ù.+¿¬±â
 
-			//CEffect::EFFECT_DESC EffectDesc;
+			CEffect::EFFECT_DESC EffectDesc;
 
-			//EffectDesc.pWorldMatrix = m_pTransformCom->Get_WorldFloat4x4();
-			//CEffectManager::GetInstance()->Car_Fire(EffectDesc);
+			EffectDesc.pWorldMatrix = m_pTransformCom->Get_WorldFloat4x4();
+			CEffectManager::GetInstance()->Car_Fire(EffectDesc);
 			return true;
 		}
 
 	}
 	//Çï±â ÆøÆÄ ÀÌÆåÆ®
-	//CEffect::EFFECT_DESC EffectDesc;
+	CEffect::EFFECT_DESC EffectDesc;
 
-	//EffectDesc.pWorldMatrix = m_pTransformCom->Get_WorldFloat4x4();
-	//CEffectManager::GetInstance()->Car_Explosion(EffectDesc);
-	//CEffectManager::GetInstance()->Car_Fire(EffectDesc);
+	EffectDesc.pWorldMatrix = m_pTransformCom->Get_WorldFloat4x4();
+	CEffectManager::GetInstance()->Car_Explosion(EffectDesc);
+	CEffectManager::GetInstance()->Car_Fire(EffectDesc);
 
 	return true;
 }

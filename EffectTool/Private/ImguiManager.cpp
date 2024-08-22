@@ -76,6 +76,9 @@ HRESULT CImguiManager::Initialize(void* pArg)
 	TextureTags.push_back(TEXT("Prototype_Component_Texture_BrokenGlass3"));
 	TextureTags.push_back(TEXT("Prototype_Component_Texture_BloodAnim"));
 	TextureTags.push_back(TEXT("Prototype_Component_Texture_DestroyerFlud"));
+	TextureTags.push_back(TEXT("Prototype_Component_Texture_FireRoundA"));
+	TextureTags.push_back(TEXT("Prototype_Component_Texture_FireRoundB"));
+	TextureTags.push_back(TEXT("Prototype_Component_Texture_FireRoundC"));
 
 
 	ToneTextureTags.push_back(TEXT("Prototype_Component_Texture_AuraTone"));
