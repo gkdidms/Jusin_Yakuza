@@ -37,20 +37,8 @@ void CCarChase_Heli::Tick(const _float& fTimeDelta)
 
 void CCarChase_Heli::Late_Tick(const _float& fTimeDelta)
 {
-	m_pModelCom->Play_Animation_Monster(fTimeDelta, m_pAnimCom[m_iCurrentAnimType], m_isAnimLoop, false);
-
-	_matrix ParentMatrix = XMLoadFloat4x4(m_pParentBoneMatrix) * XMLoadFloat4x4(m_pParentMatrix);
-	//ParentMatrix.r[3] = (XMLoadFloat4x4(m_pParentBoneMatrix) * XMLoadFloat4x4(m_pParentMatrix)).r[3];
-	//ParentMatrix.r[2] = XMLoadFloat4x4(m_pParentMatrix).r[2];
-	_matrix		RotationMatrix = XMMatrixRotationAxis(ParentMatrix.r[0], XMConvertToRadians(-90.f));
-
-	ParentMatrix.r[0] = XMVector3TransformNormal(ParentMatrix.r[0], RotationMatrix);
-	ParentMatrix.r[1] = XMVector3TransformNormal(ParentMatrix.r[1], RotationMatrix);
-	ParentMatrix.r[2] = XMVector3TransformNormal(ParentMatrix.r[2], RotationMatrix);
-
-	XMStoreFloat4x4(&m_ModelWorldMatrix, m_pTransformCom->Get_WorldMatrix() * ParentMatrix);
+	Set_ParentMatrix(fTimeDelta);
 	
-
 	__super::Late_Tick(fTimeDelta);
 }
 
