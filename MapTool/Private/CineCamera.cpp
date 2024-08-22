@@ -242,11 +242,11 @@ void CCineCamera::Cam_Move_Handle_Setting(const _float& fTimeDelta)
 				m_fStayTime = m_vCamerasObjDesc[m_iCurCamIndex].fStayTime;
 
 				XMVECTOR		camEye, camFocus;
-				camEye = XMLoadFloat4(&m_vCamerasObjDesc[m_iCurCamIndex].vEye);
+				//camEye = XMLoadFloat4(&m_vCamerasObjDesc[m_iCurCamIndex].vEye);
 				camFocus = XMLoadFloat4(&m_vCamerasObjDesc[m_iCurCamIndex].vFocus);
 				m_pTransformCom->LookAt(camFocus);
-				m_vEye = camEye;
-				m_pTransformCom->Set_State(CTransform::STATE_POSITION, camEye);
+				//m_vEye = camEye;
+				//m_pTransformCom->Set_State(CTransform::STATE_POSITION, camEye);
 
 				m_fLerpDeltaTime = 0;
 				

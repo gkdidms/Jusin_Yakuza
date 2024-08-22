@@ -312,6 +312,7 @@ void CTriggerObj_Manager::Show_Installed_GameObjectsList()
 		{
 			m_iCurrentObjectIndex = object_current_idx;
 			Get_CurrentGameObject_Desc(&m_tCurrentObjectDesc, m_iCurrentObjectIndex);
+			Update_ColliderList_In_Object();
 		}
 
 		/* 구조체 한번 더 업데이트 해줘야하는지 파악 */
@@ -431,6 +432,7 @@ void CTriggerObj_Manager::Save_GameObject(int iLevel)
 
 		/* iLayer -> construction에서 layer에 대한 정보를 읽어와서 이에 대해 저장 */
 		XMStoreFloat4x4(&pMapTotalInform.pMapObjDesc[iIndex].vTransform, iter.second->Get_TransformCom()->Get_WorldMatrix());
+		//XMStoreFloat4x4(&pMapTotalInform.pMapObjDesc[iIndex].vTransform, XMMatrixIdentity());
 		//string strlayer = m_pGameInstance->WstringToString(m_Layers[iLayer]);
 		strcpy(pMapTotalInform.pMapObjDesc[iIndex].strLayer, m_Layers[iLayer]);
 
@@ -484,7 +486,13 @@ void CTriggerObj_Manager::Load_GameObject(int iNum)
 		mapDesc.wstrModelName = m_pGameInstance->StringToWstring(mapTotalInform.pMapObjDesc[i].strModelCom);
 		mapDesc.iShaderPass = mapTotalInform.pMapObjDesc[i].iShaderPassNum;
 		mapDesc.iObjType = mapTotalInform.pMapObjDesc[i].iObjType;
+		mapDesc.iObjPropertyType = mapTotalInform.pMapObjDesc[i].iObjPropertyType;
+		mapDesc.iNPCDirection = mapTotalInform.pMapObjDesc[i].iNPCDirection;
+		mapDesc.iGroupMonster = mapTotalInform.pMapObjDesc[i].iGroupMonster;
+		mapDesc.iGroupNum = mapTotalInform.pMapObjDesc[i].iGroupNum;
 		mapDesc.iNaviNum = mapTotalInform.pMapObjDesc[i].iNaviNum;
+		mapDesc.iRouteNum = mapTotalInform.pMapObjDesc[i].iNaviRoute;
+		mapDesc.vOffsetMatrix = mapTotalInform.pMapObjDesc[i].vOffsetTransform;
 
 		mapDesc.iDecalNum = mapTotalInform.pMapObjDesc[i].iDecalNum;
 
@@ -573,6 +581,42 @@ void CTriggerObj_Manager::Edit_Installed_GameObject(int iNumObject)
 		m_tCurrentObjectDesc.iLayer = 2;
 	}
 
+	if (ImGui::RadioButton(m_Layers[3], m_tCurrentObjectDesc.iLayer == 3))
+	{
+		LayerType = 3;
+		m_tCurrentObjectDesc.iLayer = 3;
+	}
+
+	if (ImGui::RadioButton(m_Layers[4], m_tCurrentObjectDesc.iLayer == 4))
+	{
+		LayerType = 4;
+		m_tCurrentObjectDesc.iLayer = 4;
+	}
+
+	if (ImGui::RadioButton(m_Layers[5], m_tCurrentObjectDesc.iLayer == 5))
+	{
+		LayerType = 5;
+		m_tCurrentObjectDesc.iLayer = 5;
+	}
+
+	if (ImGui::RadioButton(m_Layers[6], m_tCurrentObjectDesc.iLayer == 6))
+	{
+		LayerType = 6;
+		m_tCurrentObjectDesc.iLayer = 6;
+	}
+
+	if (ImGui::RadioButton(m_Layers[7], m_tCurrentObjectDesc.iLayer == 7))
+	{
+		LayerType = 7;
+		m_tCurrentObjectDesc.iLayer = 7;
+	}
+
+	if (ImGui::RadioButton(m_Layers[8], m_tCurrentObjectDesc.iLayer == 8))
+	{
+		LayerType = 8;
+		m_tCurrentObjectDesc.iLayer = 8;
+	}
+
 
 	ImGui::NewLine();
 
@@ -650,6 +694,86 @@ void CTriggerObj_Manager::Edit_Installed_GameObject(int iNumObject)
 		m_tCurrentObjectDesc.iObjType = (int)OBJECT_TYPE::LARGE_CONSTRUCTION;
 	}
 
+	if (ImGui::RadioButton(u8"MONSTER - SUIT", m_tCurrentObjectDesc.iObjType == 12))
+	{
+		objectType = 12;
+		m_tCurrentObjectDesc.iObjType = (int)OBJECT_TYPE::ADTENTURE_SUIT;
+	}
+
+	if (ImGui::RadioButton(u8"Map", m_tCurrentObjectDesc.iObjType == 13))
+	{
+		objectType = 13;
+		m_tCurrentObjectDesc.iObjType = (int)OBJECT_TYPE::MAP;
+	}
+
+	if (ImGui::RadioButton(u8"MONSTER - WPH", m_tCurrentObjectDesc.iObjType == 14))
+	{
+		objectType = 14;
+		m_tCurrentObjectDesc.iObjType = (int)OBJECT_TYPE::MONSTER_WPH;
+	}
+
+	if (ImGui::RadioButton(u8"MONSTER - DEFAULT", m_tCurrentObjectDesc.iObjType == 15))
+	{
+		objectType = 15;
+		m_tCurrentObjectDesc.iObjType = (int)OBJECT_TYPE::MONSTER_DEFAULT;
+	}
+
+	if (ImGui::RadioButton(u8"MAP_NONCULL", m_tCurrentObjectDesc.iObjType == 16))
+	{
+		objectType = 16;
+		m_tCurrentObjectDesc.iObjType = (int)OBJECT_TYPE::MAP_NONCULL;
+	}
+
+	if (ImGui::RadioButton(u8"ROADNML", m_tCurrentObjectDesc.iObjType == 17))
+	{
+		objectType = 17;
+		m_tCurrentObjectDesc.iObjType = (int)OBJECT_TYPE::ROADNML;
+	}
+
+	if (ImGui::RadioButton(u8"ROADCAB", m_tCurrentObjectDesc.iObjType == 18))
+	{
+		objectType = 18;
+		m_tCurrentObjectDesc.iObjType = (int)OBJECT_TYPE::ROADCAB;
+	}
+
+	if (ImGui::RadioButton(u8"ROADSTANDING_NML", m_tCurrentObjectDesc.iObjType == 19))
+	{
+		objectType = 19;
+		m_tCurrentObjectDesc.iObjType = (int)OBJECT_TYPE::ROADSTANDING_NML;
+	}
+
+	if (ImGui::RadioButton(u8"ROADTISSUE", m_tCurrentObjectDesc.iObjType == 20))
+	{
+		objectType = 20;
+		m_tCurrentObjectDesc.iObjType = (int)OBJECT_TYPE::ROADTISSUE;
+	}
+
+	if (ImGui::RadioButton(u8"ROADYOP", m_tCurrentObjectDesc.iObjType == 21))
+	{
+		objectType = 21;
+		m_tCurrentObjectDesc.iObjType = (int)OBJECT_TYPE::ROADYOP;
+	}
+
+	if (ImGui::RadioButton(u8"NISHIKI", m_tCurrentObjectDesc.iObjType == 22))
+	{
+		objectType = 22;
+		m_tCurrentObjectDesc.iObjType = (int)OBJECT_TYPE::NISHIKI;
+	}
+
+	if (ImGui::RadioButton(u8"ADVENTURE_REACTOR", m_tCurrentObjectDesc.iObjType == 23))
+	{
+		objectType = 23;
+		m_tCurrentObjectDesc.iObjType = (int)OBJECT_TYPE::ADVENTURE_REACTOR;
+	}
+
+
+	if (ImGui::RadioButton(u8"Player Position", m_tCurrentObjectDesc.iObjType == 24))
+	{
+		objectType = 24;
+		m_tCurrentObjectDesc.iObjType = (int)OBJECT_TYPE::PLAYER_POSITION;
+	}
+
+
 	ImGui::NewLine();
 
 	ImGui::Text(u8"쉐이더");
@@ -670,7 +794,7 @@ void CTriggerObj_Manager::Edit_Installed_GameObject(int iNumObject)
 			m_tCurrentObjectDesc.iShaderPass = 1;
 		}
 
-		if (ImGui::RadioButton(u8"rm텍스처 적용한거 - 외부간판", m_tCurrentObjectDesc.iShaderPass == 2))
+		if (ImGui::RadioButton(u8"형광등자르기 + 알파 고려x", m_tCurrentObjectDesc.iShaderPass == 2))
 		{
 			shaderType = 2;
 			m_tCurrentObjectDesc.iShaderPass = 2;
@@ -700,6 +824,17 @@ void CTriggerObj_Manager::Edit_Installed_GameObject(int iNumObject)
 			m_tCurrentObjectDesc.iShaderPass = 6;
 		}
 
+		if (ImGui::RadioButton(u8"rm 적용한 외부간판", m_tCurrentObjectDesc.iShaderPass == 7))
+		{
+			shaderType = 7;
+			m_tCurrentObjectDesc.iShaderPass = 7;
+		}
+
+		if (ImGui::RadioButton(u8"rm 적용한 외부간판 - 빛나는", m_tCurrentObjectDesc.iShaderPass == 8))
+		{
+			shaderType = 8;
+			m_tCurrentObjectDesc.iShaderPass = 8;
+		}
 
 	}
 	else
@@ -735,6 +870,116 @@ void CTriggerObj_Manager::Edit_Installed_GameObject(int iNumObject)
 		}
 	}
 
+	ImGui::NewLine();
+
+	ImGui::Text(u8"여자남자");
+
+	static int objectPropertyType = m_tCurrentObjectDesc.iObjPropertyType;
+	ImGui::RadioButton(u8"여자", &m_tCurrentObjectDesc.iObjPropertyType, 0);
+	ImGui::RadioButton(u8"남자", &m_tCurrentObjectDesc.iObjPropertyType, 1);
+
+	ImGui::NewLine();
+
+	ImGui::Text(u8"npc 방향");
+
+	static int iNPCDirection = m_tCurrentObjectDesc.iNPCDirection;
+	ImGui::RadioButton(u8"정방향 - 수정", &m_tCurrentObjectDesc.iNPCDirection, 0);
+	ImGui::RadioButton(u8"역방향 - 수정", &m_tCurrentObjectDesc.iNPCDirection, 1);
+
+
+	ImGui::NewLine();
+	ImGui::Text(u8"몬스터 종류");
+
+	static int iMonsterType = m_tCurrentObjectDesc.iGroupMonster;
+	ImGui::RadioButton(u8"일반 몬스터 - 개별 - 수정", &m_tCurrentObjectDesc.iGroupMonster, 0);
+	ImGui::RadioButton(u8"그룹 몬스터 - 수정", &m_tCurrentObjectDesc.iGroupMonster, 1);
+
+
+	ImGui::NewLine();
+
+	static int iMonsterGroupNum = m_tCurrentObjectDesc.iGroupNum;
+	ImGui::InputInt(u8"몬스터그룹번호 - 수정", &m_tCurrentObjectDesc.iGroupNum);
+
+
+	ImGui::NewLine();
+
+	static int iRouteNum = m_tCurrentObjectDesc.iRouteNum;
+	ImGui::InputInt(u8"루트번호", &m_tCurrentObjectDesc.iRouteNum);
+
+
+
+
+
+
+	XMFLOAT4X4 myMatrix = { 1.0f, 0.0f, 0.0f, 0.0f,
+					   0.0f, 1.0f, 0.0f, 0.0f,
+					   0.0f, 0.0f, 1.0f, 0.0f,
+					   0.0f, 0.0f, 0.0f, 1.0f };
+
+	ImGui::Text("offsetmatrix");
+
+	ImGui::BeginGroup();
+	ImGui::SetNextItemWidth(50);
+	ImGui::InputFloat("M00", &m_tCurrentObjectDesc.vOffsetMatrix.m[0][0]);
+	ImGui::SameLine();
+	ImGui::SetNextItemWidth(50);
+	ImGui::InputFloat("M01", &m_tCurrentObjectDesc.vOffsetMatrix.m[0][1]);
+	ImGui::SameLine();
+	ImGui::SetNextItemWidth(50);
+	ImGui::InputFloat("M02", &m_tCurrentObjectDesc.vOffsetMatrix.m[0][2]);
+	ImGui::SameLine();
+	ImGui::SetNextItemWidth(50);
+	ImGui::InputFloat("M02", &m_tCurrentObjectDesc.vOffsetMatrix.m[0][3]);
+	ImGui::EndGroup();
+
+	ImGui::NewLine();
+
+	ImGui::BeginGroup();
+	ImGui::SetNextItemWidth(50);
+	ImGui::InputFloat("M10", &m_tCurrentObjectDesc.vOffsetMatrix.m[1][0]);
+	ImGui::SameLine();
+	ImGui::SetNextItemWidth(50);
+	ImGui::InputFloat("M11", &m_tCurrentObjectDesc.vOffsetMatrix.m[1][1]);
+	ImGui::SameLine();
+	ImGui::SetNextItemWidth(50);
+	ImGui::InputFloat("M12", &m_tCurrentObjectDesc.vOffsetMatrix.m[1][2]);
+	ImGui::SameLine();
+	ImGui::SetNextItemWidth(50);
+	ImGui::InputFloat("M02", &m_tCurrentObjectDesc.vOffsetMatrix.m[1][3]);
+
+	ImGui::EndGroup();
+
+	ImGui::NewLine();
+
+	ImGui::BeginGroup();
+	ImGui::SetNextItemWidth(50);
+	ImGui::InputFloat("M20", &m_tCurrentObjectDesc.vOffsetMatrix.m[2][0]);
+	ImGui::SameLine();
+	ImGui::SetNextItemWidth(50);
+	ImGui::InputFloat("M21", &m_tCurrentObjectDesc.vOffsetMatrix.m[2][1]);
+	ImGui::SameLine();
+	ImGui::SetNextItemWidth(50);
+	ImGui::InputFloat("M22", &m_tCurrentObjectDesc.vOffsetMatrix.m[2][2]);
+	ImGui::SameLine();
+	ImGui::SetNextItemWidth(50);
+	ImGui::InputFloat("M02", &m_tCurrentObjectDesc.vOffsetMatrix.m[2][3]);
+	ImGui::EndGroup();
+
+	ImGui::NewLine();
+
+	ImGui::BeginGroup();
+	ImGui::SetNextItemWidth(50);
+	ImGui::InputFloat("M30", &m_tCurrentObjectDesc.vOffsetMatrix.m[3][0]);
+	ImGui::SameLine();
+	ImGui::SetNextItemWidth(50);
+	ImGui::InputFloat("M31", &m_tCurrentObjectDesc.vOffsetMatrix.m[3][1]);
+	ImGui::SameLine();
+	ImGui::SetNextItemWidth(50);
+	ImGui::InputFloat("M32", &m_tCurrentObjectDesc.vOffsetMatrix.m[3][2]);
+	ImGui::SameLine();
+	ImGui::SetNextItemWidth(50);
+	ImGui::InputFloat("M02", &m_tCurrentObjectDesc.vOffsetMatrix.m[3][3]);
+	ImGui::EndGroup();
 
 }
 
@@ -805,10 +1050,10 @@ bool CTriggerObj_Manager::Add_CloneObject_Imgui(MAPTOOL_OBJPLACE_DESC objDesc, _
 
 		_matrix			startPos;
 		startPos = XMMatrixIdentity();
-		startPos.r[3].m128_f32[0] = vTargetPos.m128_f32[0];
-		startPos.r[3].m128_f32[1] = vTargetPos.m128_f32[1];
-		startPos.r[3].m128_f32[2] = vTargetPos.m128_f32[2];
-		startPos.r[3].m128_f32[3] = vTargetPos.m128_f32[3];
+		//startPos.r[3].m128_f32[0] = vTargetPos.m128_f32[0];
+		//startPos.r[3].m128_f32[1] = vTargetPos.m128_f32[1];
+		//startPos.r[3].m128_f32[2] = vTargetPos.m128_f32[2];
+		//startPos.r[3].m128_f32[3] = vTargetPos.m128_f32[3];
 
 
 		CConstruction::MAPOBJ_DESC		mapDesc;
@@ -818,9 +1063,14 @@ bool CTriggerObj_Manager::Add_CloneObject_Imgui(MAPTOOL_OBJPLACE_DESC objDesc, _
 		mapDesc.iShaderPass = objDesc.iShaderPass;
 		mapDesc.iObjType = objDesc.iObjType;
 		mapDesc.iObjPropertyType = objDesc.iObjPropertyType;
+		mapDesc.iNPCDirection = objDesc.iNPCDirection;
+		mapDesc.iGroupMonster = objDesc.iGroupMonster;
+		mapDesc.iGroupNum = objDesc.iGroupNum;
 		mapDesc.iDecalNum = 0;
 		mapDesc.pDecal = nullptr;
 		mapDesc.iColliderNum = 0;
+		mapDesc.iRouteNum = objDesc.iNaviRouteNum;
+		mapDesc.vOffsetMatrix = objDesc.vOffsetMatrix;
 
 		m_GameObjects.emplace(wstr, CGameInstance::GetInstance()->Clone_Object(TEXT("Prototype_GameObject_Construction"), &mapDesc));
 
@@ -836,7 +1086,7 @@ void CTriggerObj_Manager::Set_Map_Object()
 {
 	ImGui::Text(u8"LayerTag 이름");
 
-	const char* pLayerArray[] = { "Map0", "Map1", "Character", "Map2" };
+	const char* pLayerArray[] = { "Map0", "Map1", "Character", "Map2", "Map3", "Karaoke" };
 	static int folder_current_idx = 0;
 	if (ImGui::BeginListBox("listbox 1"))
 	{
@@ -906,12 +1156,46 @@ void CTriggerObj_Manager::Set_Map_Object()
 	if (3 == folder_current_idx)
 	{
 
-		if (ImGui::BeginListBox(u8"도지마조-2f"))
+		if (ImGui::BeginListBox(u8"도지마조"))
 		{
 			for (int n = 0; n < m_ObjectNames_Map2.size(); n++)
 			{
 				const bool is_selected = (object_current_idx == n);
 				if (ImGui::Selectable(m_ObjectNames_Map2[n], is_selected))
+					object_current_idx = n;
+
+				if (is_selected)
+					ImGui::SetItemDefaultFocus();
+			}
+			ImGui::EndListBox();
+		}
+	}
+	if (4 == folder_current_idx)
+	{
+
+		if (ImGui::BeginListBox(u8"고속도로"))
+		{
+			for (int n = 0; n < m_ObjectNames_Map3.size(); n++)
+			{
+				const bool is_selected = (object_current_idx == n);
+				if (ImGui::Selectable(m_ObjectNames_Map3[n], is_selected))
+					object_current_idx = n;
+
+				if (is_selected)
+					ImGui::SetItemDefaultFocus();
+			}
+			ImGui::EndListBox();
+		}
+	}
+	if (5 == folder_current_idx)
+	{
+
+		if (ImGui::BeginListBox(u8"가라오케"))
+		{
+			for (int n = 0; n < m_ObjectNames_MapKaraoke.size(); n++)
+			{
+				const bool is_selected = (object_current_idx == n);
+				if (ImGui::Selectable(m_ObjectNames_MapKaraoke[n], is_selected))
 					object_current_idx = n;
 
 				if (is_selected)
@@ -928,6 +1212,12 @@ void CTriggerObj_Manager::Set_Map_Object()
 	ImGui::RadioButton(m_Layers[0], &LayerType, 0);
 	ImGui::RadioButton(m_Layers[1], &LayerType, 1);
 	ImGui::RadioButton(m_Layers[2], &LayerType, 2);
+	ImGui::RadioButton(m_Layers[3], &LayerType, 3);
+	ImGui::RadioButton(m_Layers[4], &LayerType, 4);
+	ImGui::RadioButton(m_Layers[5], &LayerType, 5);
+	ImGui::RadioButton(m_Layers[6], &LayerType, 6);
+	ImGui::RadioButton(m_Layers[7], &LayerType, 7);
+	ImGui::RadioButton(m_Layers[8], &LayerType, 8);
 
 	/* 데이터 추가할때마다 수정 */
 	ImGui::NewLine();
@@ -946,6 +1236,20 @@ void CTriggerObj_Manager::Set_Map_Object()
 	ImGui::RadioButton(u8"몬스터 - yoneda", &objectType, OBJECT_TYPE::MONSTER_YONEDA);
 	ImGui::RadioButton(u8"몬스터 - kuze", &objectType, OBJECT_TYPE::MONSTER_KUZE);
 	ImGui::RadioButton(u8"통건물", &objectType, OBJECT_TYPE::LARGE_CONSTRUCTION);
+	ImGui::RadioButton(u8"몬스터 - SUIT", &objectType, OBJECT_TYPE::ADTENTURE_SUIT);
+	ImGui::RadioButton(u8"맵", &objectType, OBJECT_TYPE::MAP);
+	ImGui::RadioButton(u8"몬스터 - WPH", &objectType, OBJECT_TYPE::MONSTER_WPH);
+	ImGui::RadioButton(u8"몬스터 - Default", &objectType, OBJECT_TYPE::MONSTER_DEFAULT);
+	ImGui::RadioButton(u8"맵 - NONCULL", &objectType, OBJECT_TYPE::MAP_NONCULL);
+
+	ImGui::RadioButton(u8"ROADNML", &objectType, OBJECT_TYPE::ROADNML);
+	ImGui::RadioButton(u8"ROADCAB", &objectType, OBJECT_TYPE::ROADCAB);
+	ImGui::RadioButton(u8"ROADSTANDING_NML", &objectType, OBJECT_TYPE::ROADSTANDING_NML);
+	ImGui::RadioButton(u8"ROADTISSUE", &objectType, OBJECT_TYPE::ROADTISSUE);
+	ImGui::RadioButton(u8"ROADYOP", &objectType, OBJECT_TYPE::ROADYOP);
+	ImGui::RadioButton(u8"NISHIKI", &objectType, OBJECT_TYPE::NISHIKI);
+	ImGui::RadioButton(u8"ADVENTURE_REACTOR", &objectType, OBJECT_TYPE::ADVENTURE_REACTOR);
+	ImGui::RadioButton(u8"PLAYER_POSITION", &objectType, OBJECT_TYPE::PLAYER_POSITION);
 
 
 	ImGui::NewLine();
@@ -955,11 +1259,11 @@ void CTriggerObj_Manager::Set_Map_Object()
 
 	if (objectType == (int)OBJECT_TYPE::LIGHT)
 	{
-		ImGui::RadioButton(u8"그냥간판", &shaderType, 0);
+		ImGui::RadioButton(u8"형광등", &shaderType, 0);
 		ImGui::NewLine();
 		ImGui::RadioButton(u8"형광등자르기 + 알파", &shaderType, 1);
 		ImGui::NewLine();
-		ImGui::RadioButton(u8"rm 텍스처 적용 - 외부간판", &shaderType, 2);
+		ImGui::RadioButton(u8"형광등자르기 + 알파 적용x", &shaderType, 2);
 		ImGui::NewLine();
 		ImGui::RadioButton(u8"Lamp", &shaderType, 3);
 		ImGui::NewLine();
@@ -968,6 +1272,10 @@ void CTriggerObj_Manager::Set_Map_Object()
 		ImGui::RadioButton(u8"Emissive - 투명o", &shaderType, 5);
 		ImGui::NewLine();
 		ImGui::RadioButton(u8"Emissive - 투명x", &shaderType, 6);
+		ImGui::NewLine();
+		ImGui::RadioButton(u8"rm 텍스처 적용 - 외부간판", &shaderType, 7);
+		ImGui::NewLine();
+		ImGui::RadioButton(u8"rm 텍스처 적용 - 외부간판 - 빛남", &shaderType, 8);
 	}
 	else
 	{
@@ -985,11 +1293,98 @@ void CTriggerObj_Manager::Set_Map_Object()
 
 
 	ImGui::NewLine();
+	ImGui::Text(u8"오브젝트 속성");
 
-	ImGui::Text(u8"오브젝트속성유형 - 플레이어와 몬스터는 네비번호로 사용");
 	static int objectPropertyType = 0;
-	ImGui::RadioButton(u8"회복", &objectPropertyType, 0);
-	ImGui::RadioButton(u8"부수기", &objectPropertyType, 1);
+	ImGui::RadioButton(u8"여자", &objectPropertyType, 0);
+	ImGui::RadioButton(u8"남자", &objectPropertyType, 1);
+
+	ImGui::NewLine();
+
+	ImGui::Text(u8"npc 방향");
+
+	static int iNPCDirection = 0;
+	ImGui::RadioButton(u8"정방향", &iNPCDirection, 0);
+	ImGui::RadioButton(u8"역방향", &iNPCDirection, 1);
+
+	ImGui::NewLine();
+
+	ImGui::Text(u8"몬스터 종류");
+
+	static int iGroupMonster = 0;
+	ImGui::RadioButton(u8"일반 몬스터 - 개별", &iGroupMonster, 0);
+	ImGui::RadioButton(u8"그룹 몬스터", &iGroupMonster, 1);
+
+
+	ImGui::NewLine();
+
+	static int iGroupNum = 0;
+	ImGui::InputInt(u8"몬스터그룹번호", &iGroupNum);
+
+
+	ImGui::NewLine();
+
+	static int iRouteNum = 0;
+	ImGui::InputInt(u8"루트번호", &iRouteNum);
+
+
+	XMFLOAT4X4 myMatrix = { 1.0f, 0.0f, 0.0f, 0.0f,
+						   0.0f, 1.0f, 0.0f, 0.0f,
+						   0.0f, 0.0f, 1.0f, 0.0f,
+						   0.0f, 0.0f, 0.0f, 1.0f };
+
+	ImGui::Text("Enter Matrix Elements:");
+
+	ImGui::BeginGroup();
+	ImGui::SetNextItemWidth(50);
+	ImGui::InputFloat("M00", &myMatrix.m[0][0]);
+	ImGui::SameLine();
+	ImGui::SetNextItemWidth(50);
+	ImGui::InputFloat("M01", &myMatrix.m[0][1]);
+	ImGui::SameLine();
+	ImGui::SetNextItemWidth(50);
+	ImGui::InputFloat("M02", &myMatrix.m[0][2]);
+	ImGui::EndGroup();
+
+	ImGui::NewLine();
+
+	ImGui::BeginGroup();
+	ImGui::SetNextItemWidth(50);
+	ImGui::InputFloat("M10", &myMatrix.m[1][0]);
+	ImGui::SameLine();
+	ImGui::SetNextItemWidth(50);
+	ImGui::InputFloat("M11", &myMatrix.m[1][1]);
+	ImGui::SameLine();
+	ImGui::SetNextItemWidth(50);
+	ImGui::InputFloat("M12", &myMatrix.m[1][2]);
+	ImGui::SameLine();
+	ImGui::EndGroup();
+
+	ImGui::NewLine();
+
+	ImGui::BeginGroup();
+	ImGui::SetNextItemWidth(50);
+	ImGui::InputFloat("M20", &myMatrix.m[2][0]);
+	ImGui::SameLine();
+	ImGui::SetNextItemWidth(50);
+	ImGui::InputFloat("M21", &myMatrix.m[2][1]);
+	ImGui::SameLine();
+	ImGui::SetNextItemWidth(50);
+	ImGui::InputFloat("M22", &myMatrix.m[2][2]);
+	ImGui::EndGroup();
+
+	ImGui::NewLine();
+
+	ImGui::BeginGroup();
+	ImGui::SetNextItemWidth(50);
+	ImGui::InputFloat("M30", &myMatrix.m[3][0]);
+	ImGui::SameLine();
+	ImGui::SetNextItemWidth(50);
+	ImGui::InputFloat("M31", &myMatrix.m[3][1]);
+	ImGui::SameLine();
+	ImGui::SetNextItemWidth(50);
+	ImGui::InputFloat("M32", &myMatrix.m[3][2]);
+	ImGui::EndGroup();
 
 
 
@@ -1011,10 +1406,15 @@ void CTriggerObj_Manager::Set_Map_Object()
 	objDesc.iObjType = objectType;
 	objDesc.iShaderPass = shaderType;
 	objDesc.iObjPropertyType = objectPropertyType;
+	objDesc.iNPCDirection = iNPCDirection;
+	objDesc.iGroupMonster = iGroupMonster;
+	objDesc.iGroupNum = iGroupNum;
+	objDesc.iNaviRouteNum = iRouteNum;
+	objDesc.vOffsetMatrix = myMatrix;
 
 	Show_ExampleModel(objDesc, folder_current_idx, object_current_idx);
 
-
+	ImGui::Text(u8"오브젝트 추가 버튼 누르면 그냥 원점에 생성");
 	if (ImGui::Button(u8"Object 추가"))
 	{
 		m_bDoing_Place_Object = true;
@@ -1045,7 +1445,7 @@ void CTriggerObj_Manager::Load_ModelName()
 		string modifiedString = modifyString(vObjectNames[i]);
 
 		char* cfilename = new char[MAX_PATH];
-		strcpy(cfilename, StringToCharDIYTR(modifiedString));
+		strcpy(cfilename, StringToCharTR(modifiedString));
 		m_ObjectNames_Map0.push_back(cfilename);
 	}
 
@@ -1059,26 +1459,108 @@ void CTriggerObj_Manager::Load_ModelName()
 		string modifiedString = modifyString(vObjectNames[i]);
 
 		char* cfilename = new char[MAX_PATH];
-		strcpy(cfilename, StringToCharDIYTR(modifiedString));
+		strcpy(cfilename, StringToCharTR(modifiedString));
 		m_ObjectNames_Map1.push_back(cfilename);
 	}
 
 	vObjectNames.clear();
 
 	/* 몬스터 모델 로드*/
-	m_pGameInstance->Get_FileNames("../../Client/Bin/Resources/Models/Anim", vObjectNames);
+	m_pGameInstance->Get_FileNames("../../Client/Bin/Resources/Models/Anim/Monster/", vObjectNames);
 
 	for (int i = 0; i < vObjectNames.size(); i++)
 	{
 		string modifiedString = modifyString(vObjectNames[i]);
 
 		char* cfilename = new char[MAX_PATH];
-		strcpy(cfilename, StringToCharDIYTR(modifiedString));
+		strcpy(cfilename, StringToCharTR(modifiedString));
 		m_MonsterNames.push_back(cfilename);
 	}
 
 	vObjectNames.clear();
 
+
+	m_pGameInstance->Get_FileNames("../../Client/Bin/Resources/Models/Anim/Car/", vObjectNames);
+
+	for (int i = 0; i < vObjectNames.size(); i++)
+	{
+		string modifiedString = modifyString(vObjectNames[i]);
+
+		char* cfilename = new char[MAX_PATH];
+		strcpy(cfilename, StringToCharTR(modifiedString));
+		m_MonsterNames.push_back(cfilename);
+	}
+
+	vObjectNames.clear();
+
+
+	m_pGameInstance->Get_FileNames("../../Client/Bin/Resources/Models/Anim/Player/", vObjectNames);
+
+	for (int i = 0; i < vObjectNames.size(); i++)
+	{
+		string modifiedString = modifyString(vObjectNames[i]);
+
+		char* cfilename = new char[MAX_PATH];
+		strcpy(cfilename, StringToCharTR(modifiedString));
+		m_MonsterNames.push_back(cfilename);
+	}
+
+	vObjectNames.clear();
+
+
+	m_pGameInstance->Get_FileNames("../../Client/Bin/Resources/Models/Anim/NPC/", vObjectNames);
+
+	for (int i = 0; i < vObjectNames.size(); i++)
+	{
+		string modifiedString = modifyString(vObjectNames[i]);
+
+		char* cfilename = new char[MAX_PATH];
+		strcpy(cfilename, StringToCharTR(modifiedString));
+		m_MonsterNames.push_back(cfilename);
+	}
+
+	vObjectNames.clear();
+
+
+	/* map2 모델 로드*/
+	m_pGameInstance->Get_FileNames("../../Client/Bin/Resources/Models/NonAnim/Map/Map2/Bin", vObjectNames);
+
+	for (int i = 0; i < vObjectNames.size(); i++)
+	{
+		string modifiedString = modifyString(vObjectNames[i]);
+
+		char* cfilename = new char[MAX_PATH];
+		strcpy(cfilename, StringToCharTR(modifiedString));
+		m_ObjectNames_Map2.push_back(cfilename);
+	}
+
+	vObjectNames.clear();
+
+	/* map2 모델 로드*/
+	m_pGameInstance->Get_FileNames("../../Client/Bin/Resources/Models/NonAnim/Map/Map3/Bin", vObjectNames);
+
+	for (int i = 0; i < vObjectNames.size(); i++)
+	{
+		string modifiedString = modifyString(vObjectNames[i]);
+
+		char* cfilename = new char[MAX_PATH];
+		strcpy(cfilename, StringToCharTR(modifiedString));
+		m_ObjectNames_Map3.push_back(cfilename);
+	}
+
+	vObjectNames.clear();
+
+	/* map2 모델 로드*/
+	m_pGameInstance->Get_FileNames("../../Client/Bin/Resources/Models/NonAnim/Map/KaraokeMap/Bin", vObjectNames);
+
+	for (int i = 0; i < vObjectNames.size(); i++)
+	{
+		string modifiedString = modifyString(vObjectNames[i]);
+
+		char* cfilename = new char[MAX_PATH];
+		strcpy(cfilename, StringToCharTR(modifiedString));
+		m_ObjectNames_MapKaraoke.push_back(cfilename);
+	}
 
 }
 
@@ -1118,13 +1600,18 @@ HRESULT CTriggerObj_Manager::Import_Bin_Map_Data_OnTool(MAP_TOTALINFORM_DESC* ma
 		OBJECTPLACE_DESC* pMapObj = &mapObjData->pMapObjDesc[i];
 
 		in.read((char*)&pMapObj->vTransform, sizeof(XMFLOAT4X4));
+		in.read((char*)&pMapObj->vOffsetTransform, sizeof(XMFLOAT4X4));
 		in.read((char*)&pMapObj->strLayer, sizeof(char) * MAX_PATH);
 		in.read((char*)&pMapObj->strModelCom, sizeof(char) * MAX_PATH);
 		in.read((char*)&pMapObj->iShaderPassNum, sizeof(int));
 		in.read((char*)&pMapObj->iObjType, sizeof(int));
 		in.read((char*)&pMapObj->iObjPropertyType, sizeof(int));
+		in.read((char*)&pMapObj->iNPCDirection, sizeof(int));
+		in.read((char*)&pMapObj->iGroupMonster, sizeof(int));
+		in.read((char*)&pMapObj->iGroupNum, sizeof(int));
 
 		in.read((char*)&pMapObj->iNaviNum, sizeof(int));
+		in.read((char*)&pMapObj->iNaviRoute, sizeof(int));
 
 		in.read((char*)&pMapObj->iDecalNum, sizeof(int));
 
@@ -1198,14 +1685,20 @@ HRESULT CTriggerObj_Manager::Export_Bin_Map_Data(MAP_TOTALINFORM_DESC* mapObjDat
 		/*out.write((char*)&PObjPlaceDesc, sizeof(OBJECTPLACE_DESC));*/
 
 		out.write((char*)&PObjPlaceDesc.vTransform, sizeof(XMFLOAT4X4));
+		out.write((char*)&PObjPlaceDesc.vOffsetTransform, sizeof(XMFLOAT4X4));
+
 		out.write((char*)&PObjPlaceDesc.strLayer, sizeof(char) * MAX_PATH);
 		out.write((char*)&PObjPlaceDesc.strModelCom, sizeof(char) * MAX_PATH);
 		out.write((char*)&PObjPlaceDesc.iShaderPassNum, sizeof(int));
 		out.write((char*)&PObjPlaceDesc.iObjType, sizeof(int));
 		out.write((char*)&PObjPlaceDesc.iObjPropertyType, sizeof(int));
+		out.write((char*)&PObjPlaceDesc.iNPCDirection, sizeof(int));
+		out.write((char*)&PObjPlaceDesc.iGroupMonster, sizeof(int));
+		out.write((char*)&PObjPlaceDesc.iGroupNum, sizeof(int));
 
 		//추가
 		out.write((char*)&PObjPlaceDesc.iNaviNum, sizeof(int));
+		out.write((char*)&PObjPlaceDesc.iNaviRoute, sizeof(int));
 
 		out.write((char*)&PObjPlaceDesc.iDecalNum, sizeof(int));
 
@@ -1275,8 +1768,12 @@ void CTriggerObj_Manager::Show_ExampleModel(MAPTOOL_OBJPLACE_DESC objDesc, _uint
 			mapDesc.iShaderPass = objDesc.iShaderPass;
 			mapDesc.iObjType = objDesc.iObjType;
 			mapDesc.iObjPropertyType = objDesc.iObjPropertyType;
+			mapDesc.iNPCDirection = objDesc.iNPCDirection;
+			mapDesc.iGroupMonster = objDesc.iGroupMonster;
+			mapDesc.iGroupNum = objDesc.iGroupNum;
 			mapDesc.iDecalNum = 0;
 			mapDesc.pDecal = nullptr;
+			mapDesc.vOffsetMatrix = objDesc.vOffsetMatrix;
 			m_pShownObject = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Construction"), &mapDesc);
 
 
@@ -1302,9 +1799,14 @@ void CTriggerObj_Manager::Show_ExampleModel(MAPTOOL_OBJPLACE_DESC objDesc, _uint
 				mapDesc.iObjType = objDesc.iObjType;
 				mapDesc.iShaderPass = objDesc.iShaderPass;
 				mapDesc.iObjPropertyType = objDesc.iObjPropertyType;
+				mapDesc.iNPCDirection = objDesc.iNPCDirection;
+				mapDesc.iGroupMonster = objDesc.iGroupMonster;
+				mapDesc.iGroupNum = objDesc.iGroupNum;
+				mapDesc.iRouteNum = objDesc.iNaviRouteNum;
 				mapDesc.iDecalNum = 0;
 				mapDesc.pDecal = nullptr;
 				mapDesc.iColliderNum = 0;
+				mapDesc.vOffsetMatrix = objDesc.vOffsetMatrix;
 
 				m_GameObjects.emplace(wstr, CGameInstance::GetInstance()->Clone_Object(TEXT("Prototype_GameObject_Construction"), &mapDesc));
 
@@ -1342,6 +1844,14 @@ string CTriggerObj_Manager::Find_ModelName(_uint iFolderNum, _uint iObjectIndex)
 	else if (3 == iFolderNum)
 	{
 		strResult = m_ObjectNames_Map2[iObjectIndex];
+	}
+	else if (4 == iFolderNum)
+	{
+		strResult = m_ObjectNames_Map3[iObjectIndex];
+	}
+	else if (5 == iFolderNum)
+	{
+		strResult = m_ObjectNames_MapKaraoke[iObjectIndex];
 	}
 	return strResult;
 }
@@ -1622,6 +2132,11 @@ void CTriggerObj_Manager::Update_ColliderList_In_Object()
 	{
 		m_ObjectColliders.push_back(vCollider[i]);
 		Safe_AddRef(vCollider[i]);
+	}
+
+	if (0 < m_ObjectColliders.size())
+	{
+		m_tCurColliderDesc = dynamic_cast<CConstruction*>(iter->second)->Get_ColliderDesc(m_iCurColliderIndex);
 	}
 }
 
@@ -1941,11 +2456,7 @@ void CTriggerObj_Manager::Add_ObjectCollider_IMGUI()
 
 			dynamic_cast<CConstruction*>(iter->second)->Delete_Collider(collider_current_idx);
 
-
-			Update_ColliderList_In_Object();
-			Update_ColliderNameList();
-
-			if (m_ObjectColliders.size() <= collider_current_idx && m_ObjectColliders.size() - 1 >= 0)
+			if (m_ObjectColliders.size() - 1 <= collider_current_idx && m_ObjectColliders.size() - 1 > 0)
 			{
 				collider_current_idx = m_ObjectColliders.size() - 1;
 			}
@@ -1954,6 +2465,9 @@ void CTriggerObj_Manager::Add_ObjectCollider_IMGUI()
 				collider_current_idx = 0;
 				m_iCurColliderIndex = 0;
 			}
+
+			Update_ColliderList_In_Object();
+			Update_ColliderNameList();
 
 		}
 
@@ -2004,6 +2518,15 @@ void CTriggerObj_Manager::Add_ObjectCollider_IMGUI()
 
 		static XMFLOAT3		vQuaternion = _float3(0, 0, 0);
 		ImGui::InputFloat3(u8"Collider Quaternion", reinterpret_cast<float*>(&vQuaternion));
+
+		if (ImGui::Button(u8"현재 설치된 콜라이더값 불러오기"))
+		{
+			vCenter = m_tCurColliderDesc.vCenter;
+			vExtents = m_tCurColliderDesc.vExtents;
+			vQuaternion = m_tCurColliderDesc.vQuaternion;
+		}
+
+		ImGui::NewLine();
 
 		if (ImGui::Button(u8"콜라이더추가"))
 		{
@@ -2064,16 +2587,19 @@ void CTriggerObj_Manager::Add_ObjectCollider_IMGUI()
 			if (ImGui::RadioButton(u8"OJBAABB", m_tCurColliderDesc.iColliderType == (int)CCollider::COLLIDER_AABB))
 			{
 				CurColliderType = CCollider::COLLIDER_AABB;
+				m_tCurColliderDesc.iColliderType = CCollider::COLLIDER_AABB;
 			}
 			ImGui::SameLine();
 			if (ImGui::RadioButton(u8"OBJOBB", m_tCurColliderDesc.iColliderType == (int)CCollider::COLLIDER_OBB))
 			{
 				CurColliderType = CCollider::COLLIDER_OBB;
+				m_tCurColliderDesc.iColliderType = CCollider::COLLIDER_OBB;
 			}
 			ImGui::SameLine();
 			if (ImGui::RadioButton(u8"OBJSPHERE", m_tCurColliderDesc.iColliderType == (int)CCollider::COLLIDER_SPHERE))
 			{
 				CurColliderType = CCollider::COLLIDER_SPHERE;
+				m_tCurColliderDesc.iColliderType = CCollider::COLLIDER_SPHERE;
 			}
 
 
@@ -2084,6 +2610,13 @@ void CTriggerObj_Manager::Add_ObjectCollider_IMGUI()
 
 
 			ImGui::InputFloat3(u8"ObjCollider Quaternion", reinterpret_cast<float*>(&m_tCurColliderDesc.vQuaternion));
+
+
+			multimap<wstring, CGameObject*>::iterator iter = m_GameObjects.begin();
+
+
+
+
 		}
 
 
@@ -2114,6 +2647,14 @@ void CTriggerObj_Manager::Free()
 	for (auto& iter : m_ObjectNames_Map2)
 		Safe_Delete(iter);
 	m_ObjectNames_Map2.clear();
+
+	for (auto& iter : m_ObjectNames_Map3)
+		Safe_Delete(iter);
+	m_ObjectNames_Map3.clear();
+
+	for (auto& iter : m_ObjectNames_MapKaraoke)
+		Safe_Delete(iter);
+	m_ObjectNames_MapKaraoke.clear();
 
 	for (auto& iter : m_MonsterNames)
 		Safe_Delete(iter);

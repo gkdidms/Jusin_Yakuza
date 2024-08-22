@@ -574,6 +574,69 @@ PS_OUT_COLOR PS_GLASSCOLOR(PS_IN In)
 }
 
 
+PS_OUT_COLOR PS_DynamicBloom(PS_IN In)
+{
+    PS_OUT_COLOR Out = (PS_OUT_COLOR) 0;
+ 
+    In.vTexcoord.x += g_fTimeDelta;
+    
+    //if (1 < In.vTexcoord.x)
+    //    In.vTexcoord.x = 0;
+ 
+    vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
+    
+    
+    if (vDiffuse.a < 0.4)
+        discard;
+   
+    if (vDiffuse.r + vDiffuse.g + vDiffuse.b > 1)
+    {
+        // 약간만 bloom 되게끔
+        Out.vDiffuse = vDiffuse;
+    }
+    else
+    {
+        discard;
+    }
+    
+    return Out;
+  
+}
+
+PS_OUT_COLOR PS_DynamicFast(PS_IN In)
+{
+    PS_OUT_COLOR Out = (PS_OUT_COLOR) 0;
+
+    // 텍스처 컬러를 샘플링
+    vector diffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
+
+    // 특정 영역 계산
+    float2 emissiveCenter = float2(0.5, 0.5) + float2(sin(g_fTimeDelta), cos(g_fTimeDelta)) * 0.25;
+    float emissiveRadius = 0.2;
+    float distanceFromCenter = distance(In.vTexcoord, emissiveCenter);
+
+    // 특정 영역에 대한 emissive 효과 적용
+    float emissiveFactor = saturate(1.0 - distanceFromCenter / emissiveRadius);
+    
+
+    vector emissiveColor = diffuse * 0.4;
+    if (true == g_bEmissiveTex)
+        emissiveColor = g_EmissiveTexture.Sample(LinearSampler, In.vTexcoord);
+
+    // 최종 컬러 계산
+    float4 finalColor = diffuse;
+    
+    if (emissiveFactor > 0.8)
+        finalColor += emissiveColor;
+    
+    Out.vDiffuse = finalColor;
+
+    return Out;
+}
+
+
+
+
 struct PS_IN_LIGHTDEPTH
 {
     float4 vPosition : SV_POSITION;
@@ -768,6 +831,32 @@ technique11 DefaultTechnique
         PixelShader = compile ps_5_0 PS_GLASSCOLOR();
     }
 
+    //PS_DynamicBloom
+    pass DynaicBloomPass // 12
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        HullShader = NULL;
+        DomainShader = NULL;
+        PixelShader = compile ps_5_0 PS_DynamicBloom();
+    }
+
+    pass DynaicFastPass // 12
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        HullShader = NULL;
+        DomainShader = NULL;
+        PixelShader = compile ps_5_0 PS_DynamicFast();
+    }
    
     pass LightDepth // - construction , Construction의 render light depth에서 변경해주기
     {
