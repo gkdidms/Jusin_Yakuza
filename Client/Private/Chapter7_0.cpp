@@ -4,6 +4,8 @@
 #include "UIManager.h"
 #include "Background.h"
 
+#include "FileTotalMgr.h"
+
 CChapter7_0::CChapter7_0()
 	: CMainQuest{}
 {
@@ -18,6 +20,15 @@ HRESULT CChapter7_0::Initialize(void* pArg)
 	m_pUIManager->Open_Scene(TEXT("Talk"));
 	m_pUIManager->Start_Talk(m_iScriptIndex);
 
+	m_pKuze = dynamic_cast<CKuze*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Monster"), 0));
+	Safe_AddRef(m_pKuze);
+	m_pKuze->Set_Script(true);
+	m_pKuze->Set_Animation("e_kuz_stand_blend");
+
+	Player_Stop(true);
+
+	m_pFileTotalMgr->Setting_Start_Cinemachine(25);
+
 	return S_OK;
 }
 
@@ -25,7 +36,22 @@ HRESULT CChapter7_0::Initialize(void* pArg)
 _bool CChapter7_0::Execute()
 {
 	if (m_pUIManager->isTalkFinished())
+	{
+		m_pKuze->Set_Script(false);
+		Player_Stop(false);
 		return true;
+	}
+		
+	if (m_pGameInstance->GetKeyState(DIK_E) == TAP)
+	{
+		//UI틱이 더 느림 -> index를 하나 씩 더 느리게 봐야 함.
+		if (m_pUIManager->Get_CurrentPage() == 1)
+			m_pFileTotalMgr->Setting_Start_Cinemachine(26);
+		else if (m_pUIManager->Get_CurrentPage() == 2)
+			m_pFileTotalMgr->Setting_Start_Cinemachine(27);
+		else if (m_pUIManager->Get_CurrentPage() == 3)
+			m_pFileTotalMgr->Setting_Start_Cinemachine(28);
+	}
 
 	return false;
 }
@@ -43,4 +69,6 @@ CChapter7_0* CChapter7_0::Create(void* pArg)
 void CChapter7_0::Free()
 {
 	__super::Free();
+
+	Safe_Release(m_pKuze);
 }

@@ -187,7 +187,7 @@ PS_MAIN_OUT PS_MAIN(PS_IN In)
     Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_fFar, RimIndex, 0.f);
     Out.vNormal = vector(vNormalBTN.xyz * 0.5f + 0.5f, 0.f);
     Out.vDiffuse = vDiffuse;
-    Out.vSurface = vector(Result.fMetalness, Result.fRoughness, Result.fSpeclure, Engine);
+    Out.vSurface = vector(Result.fMetalness, Result.fRoughness, Result.fSpeclure, Result.fFactor);
     Out.vOEShader = vector(OEResult.fRouhness, OEResult.fMixShaderFactor, fMixMultiFactor, fDeffuseFactor);
     Out.vSpecular = vector(OEResult.vSpecular, 0.f);
     
@@ -243,7 +243,7 @@ PS_MAIN_OUT PS_MAIN_FAR(PS_IN In)
     Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_fFar, RimIndex, 0.f);
     Out.vNormal = vector(vNormalBTN.xyz * 0.5f + 0.5f, 0.f);
     Out.vDiffuse = vDiffuseDesc;
-    Out.vSurface = vector(Result.fMetalness, Result.fRoughness, Result.fSpeclure, Engine);
+    Out.vSurface = vector(Result.fMetalness, Result.fRoughness, Result.fSpeclure, Result.fFactor);
     Out.vOEShader = vector(0.f, 0.f, 0.f, 0.f);
     Out.vSpecular = vector(0.f, 0.f, 0.f, 0.f);
     
@@ -298,12 +298,10 @@ PS_MAIN_OUT PS_GLASSDOOR(PS_IN In)
     float fDeffuseFactor = vDiffuseDesc.a * 1.f;
     
     
-    vDiffuse = float4(0, 0, 0, 0);
-    
     Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_fFar, RimIndex, 0.f);
     Out.vNormal = vector(vNormalBTN.xyz * 0.5f + 0.5f, 0.f);
     Out.vDiffuse = vDiffuse;
-    Out.vSurface = vector(Result.fMetalness, Result.fRoughness, Result.fSpeclure, Engine);
+    Out.vSurface = vector(Result.fMetalness, Result.fRoughness, Result.fSpeclure, Result.fFactor);
     Out.vOEShader = vector(OEResult.fRouhness, OEResult.fMixShaderFactor, fMixMultiFactor, fDeffuseFactor);
     Out.vSpecular = vector(OEResult.vSpecular, 0.f);
     
@@ -364,7 +362,7 @@ PS_MAIN_OUT PS_MAIN_AlphaMask(PS_IN In)
     Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_fFar, RimIndex, 0.f);
     Out.vNormal = vector(vNormalBTN.xyz * 0.5f + 0.5f, 0.f);
     Out.vDiffuse = vDiffuse;
-    Out.vSurface = vector(Result.fMetalness, Result.fRoughness, Result.fSpeclure, Engine);
+    Out.vSurface = vector(Result.fMetalness, Result.fRoughness, Result.fSpeclure, Result.fFactor);
     Out.vOEShader = vector(OEResult.fRouhness, OEResult.fMixShaderFactor, fMixMultiFactor, fDeffuseFactor);
     Out.vSpecular = vector(OEResult.vSpecular, 0.f);
     
@@ -553,25 +551,6 @@ PS_OUT_COLOR PS_DYNAMIC_SMALL(PS_IN In)
 }
 
 
-
-PS_OUT_COLOR PS_GLASSCOLOR(PS_IN In)
-{
-    PS_OUT_COLOR Out = (PS_OUT_COLOR) 0;
-    
-    float2 vRefractTexCoord;
-    vRefractTexCoord.x = In.vProjPos.x / In.vProjPos.w / 2.0f + 0.5f;
-    vRefractTexCoord.y = -In.vProjPos.y / In.vProjPos.w / 2.0f + 0.5f;
-
-
-    // Refract - 유리 뒤에 비치는 씬
-    float4 vRefractColor = g_RefractionTexture.Sample(LinearSampler, vRefractTexCoord);
-    float4 vGlassTexColor = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
-    float4 vFinalColor = lerp(vRefractColor, vGlassTexColor, 0.5f);
-    
-    Out.vDiffuse = vFinalColor;
-    
-    return Out;
-}
 
 
 PS_OUT_COLOR PS_DynamicBloom(PS_IN In)
@@ -818,18 +797,6 @@ technique11 DefaultTechnique
         PixelShader = compile ps_5_0 PS_DYNAMIC_SMALL();
     }
 
-    pass GlassColorPass// 12
-    {
-        SetRasterizerState(RS_Default);
-        SetDepthStencilState(DSS_Default, 0);
-        SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
-
-        VertexShader = compile vs_5_0 VS_MAIN();
-        GeometryShader = NULL;
-        HullShader = NULL;
-        DomainShader = NULL;
-        PixelShader = compile ps_5_0 PS_GLASSCOLOR();
-    }
 
     //PS_DynamicBloom
     pass DynaicBloomPass // 12

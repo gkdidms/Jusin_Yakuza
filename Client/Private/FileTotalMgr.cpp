@@ -1975,6 +1975,11 @@ void CFileTotalMgr::Setting_Start_Cinemachine(int iCineNum)
     m_pCinemachineCam->Setting_Start_Cinemachine(iCineNum);
 }
 
+_uint CFileTotalMgr::Get_CineCameraIndex()
+{
+    return m_pCinemachineCam->Get_CameraIndex();
+}
+
 void CFileTotalMgr::Reset_Cinemachine()
 {
     if (nullptr != m_pCinemachineCam)

@@ -24,6 +24,9 @@ private:
     virtual ~CCarChase_CATBullet() = default;
 
 public:
+    virtual void Set_Coll();
+
+public:
     _vector Get_BulletPos();
 
 public:
