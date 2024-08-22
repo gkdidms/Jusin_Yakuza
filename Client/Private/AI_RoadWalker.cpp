@@ -46,13 +46,14 @@ void CAI_RoadWalker::Tick(const _float& fTimeDelta)
 	{
 		// waypoint 방향받기
 		// m_isTurn, m_iDir, m_isBack : 여기서 받음
+
+
 		_vector vDir = m_pNavigationCom->Compute_WayPointDir_Adv(m_pThis->Get_TransformCom()->Get_State(CTransform::STATE_POSITION), 
-			fTimeDelta, &m_isTurn, &m_iDir, &m_isBack, &m_bisMove);
+			fTimeDelta, &m_isTurn, &m_iDir, &m_isBack);
 		m_pThis->Get_TransformCom()->LookAt_For_LandObject(vDir, true);
 
-
 		m_vNextDir = vDir;
-		m_bisMove = false;
+
 	}
 
 }
@@ -110,8 +111,7 @@ CBTNode::NODE_STATE CAI_RoadWalker::Back()
 			m_isBack = false;
 			m_isTurn = false;
 			m_isWalk = true;
-			//m_pThis->Get_TransformCom()->LookAt_For_LandObject(m_vNextDir, true);
-			m_bisMove = true;
+			m_pThis->Get_TransformCom()->LookAt_For_LandObject(m_vNextDir, true);
 		}
 
 		return CBTNode::SUCCESS;
@@ -135,8 +135,8 @@ CBTNode::NODE_STATE CAI_RoadWalker::Turn()
 			m_isTurn = false;
 			m_isWalk = true;
 			m_isBack = false;
-			m_bisMove = true;
-			//m_pThis->Get_TransformCom()->LookAt_For_LandObject(m_vNextDir, true);
+			m_pThis->Get_TransformCom()->LookAt_For_LandObject(m_vNextDir, true);
+
 		}
 
 		return CBTNode::SUCCESS;

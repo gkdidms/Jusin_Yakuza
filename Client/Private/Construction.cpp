@@ -127,7 +127,7 @@ void CConstruction::Late_Tick(const _float& fTimeDelta)
 		}
 		else if (1 == m_iShaderPassNum)
 		{
-			//m_pGameInstance->Add_Renderer(CRenderer::RENDER_GLASS, this);
+			m_pGameInstance->Add_Renderer(CRenderer::RENDER_GLASS, this);
 		}
 		else if (2 == m_iShaderPassNum)
 		{
@@ -210,8 +210,6 @@ HRESULT CConstruction::Render()
 				return E_FAIL;
 		}
 
-		_float fFar = *m_pGameInstance->Get_CamFar();
-		m_pShaderCom->Bind_RawValue("g_fFar", &fFar, sizeof(_float));
 
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
 			return E_FAIL;
