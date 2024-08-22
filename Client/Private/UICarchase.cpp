@@ -50,6 +50,12 @@ HRESULT CUICarchase::Remove_Target(_uint iIndex)
     //Safe_Release(pTarget->pMonsterAddr);
     Safe_Release(pTarget->TargetingUI);
 
+    // 무언가를 삭제할 때, 현재저장하고 있는 값이라면 댕글링포인터가 되지 않게 초기화해준다.
+    if (&m_Targets.find(iIndex)->second == m_CurrentTarget)
+    {
+        m_CurrentTarget = nullptr;
+    }
+
     m_Targets.erase(iIndex);
 
     return S_OK;
