@@ -36,7 +36,6 @@ HRESULT CLevel_Roadway::Initialize()
 	if (nullptr == m_pCarChaseManager)
 		return E_FAIL;
 
-
 	m_pUIManager->Open_Scene(TEXT("Carchase"));
 
     /* Å¬¶ó ÆÄ½Ì */
@@ -56,7 +55,9 @@ HRESULT CLevel_Roadway::Initialize()
 
 void CLevel_Roadway::Tick(const _float& fTimeDelta)
 {
-	m_pCarChaseManager->Tick();
+	if (!m_pUIManager->isOpen(TEXT("Title")))
+		m_pCarChaseManager->Tick();
+
 	m_pFightManager->Tick(fTimeDelta);
 
 #ifdef _DEBUG

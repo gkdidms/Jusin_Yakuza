@@ -196,20 +196,20 @@ _bool CCarChase_Reactor::Check_Dead()
 		{
 			//자동차가 죽으면 멈추고 불난다.+연기
 
-			//CEffect::EFFECT_DESC EffectDesc;
+			CEffect::EFFECT_DESC EffectDesc;
 
-			//EffectDesc.pWorldMatrix = m_pTransformCom->Get_WorldFloat4x4();
-			//CEffectManager::GetInstance()->Car_Fire(EffectDesc);
+			EffectDesc.pWorldMatrix = m_pTransformCom->Get_WorldFloat4x4();
+			CEffectManager::GetInstance()->Car_Fire(EffectDesc);
 			return true;
 		}
 
 	}
 	//헬기 폭파 이펙트
-	//CEffect::EFFECT_DESC EffectDesc;
+	CEffect::EFFECT_DESC EffectDesc;
 
-	//EffectDesc.pWorldMatrix = m_pTransformCom->Get_WorldFloat4x4();
-	//CEffectManager::GetInstance()->Car_Explosion(EffectDesc);
-	//CEffectManager::GetInstance()->Car_Fire(EffectDesc);
+	EffectDesc.pWorldMatrix = m_pTransformCom->Get_WorldFloat4x4();
+	CEffectManager::GetInstance()->Car_Explosion(EffectDesc);
+	CEffectManager::GetInstance()->Car_Fire(EffectDesc);
 
 	return true;
 }
@@ -218,7 +218,7 @@ void CCarChase_Reactor::Move_Waypoint(const _float& fTimeDelta)
 {
 	if (m_isObjectDead)
 	{
-		m_fSpeed = m_fSpeed <= 0.f ? 0.f : m_fSpeed - fTimeDelta * 40.f;
+		m_fSpeed = m_fSpeed <= 0.f ? 0.f : m_fSpeed - fTimeDelta * 30.f;
 		m_pTransformCom->Go_Straight_CustumSpeed(m_fSpeed, fTimeDelta, m_pNavigationCom);
 		return;
 	}
@@ -260,10 +260,11 @@ void CCarChase_Reactor::Move_Waypoint(const _float& fTimeDelta)
 	_float fDistance = XMVectorGetX(XMVector3Length(m_pNavigationCom->Get_WaypointPos(iGoalIndex) - vPosition));
 
 	//스피드 값 지정
-	//스테이지 방향이 DIR_F이고 Start일 경우 
-	//앞에서 뒤로 이동하도록 함
+	//스테이지 방향이 DIR_F이고 Start일 경우 앞에서 뒤로 이동하도록 함
 	_float fBack = m_iStageDir == DIR_F && m_isStart ? -1.f : 1.f;
-	_float fFactor = fDistance / 20.f;
+
+	_float fFactor = min(fDistance, 20.f) / 20.f;
+
 	m_fSpeed = m_fMaxSpeed * fFactor * fBack;
 	if (m_fSpeed < m_fMinSpeed * fBack)
 	{

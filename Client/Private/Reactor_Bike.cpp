@@ -82,7 +82,7 @@ void CReactor_Bike::Change_Animation()
 		m_pModelCom->Set_AnimationIndex(m_iAnim, 4.f);
 	}
 
-	if (m_iAnim == 6 && m_pModelCom->Get_AnimFinished())
+	if (m_iAnim == 6 && m_pModelCom->Get_AnimFinished(6))
 		m_isDead = true;
 }
 
