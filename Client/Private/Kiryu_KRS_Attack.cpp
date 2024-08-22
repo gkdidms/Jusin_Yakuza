@@ -73,6 +73,15 @@ void CKiryu_KRS_Attack::Tick(const _float& fTimeDelta)
 	}
 
 	Shaking();
+
+	if (!m_isFreezeEventOn && m_iComboCount == 8 && m_AnimationIndices[m_iComboCount] == static_cast<CModel*>(m_pPlayer->Get_Component(TEXT("Com_Model")))->Get_CurrentAnimationIndex())
+	{
+		if (Checked_Animation_Ratio(0.38f))
+		{
+			m_isFreezeEventOn = true;
+			m_pPlayer->HitFreeze_On();
+		}
+	}
 }
 
 void CKiryu_KRS_Attack::Change_Animation()
@@ -99,6 +108,7 @@ void CKiryu_KRS_Attack::Reset()
 {
 	m_iComboCount = 0;
 	m_isShaked = false;
+	m_isFreezeEventOn = false;
 }
 
 void CKiryu_KRS_Attack::Combo_Count(_bool isFinAction)
@@ -154,7 +164,7 @@ void CKiryu_KRS_Attack::Combo_Count(_bool isFinAction)
 
 _bool CKiryu_KRS_Attack::IsFinishBlow()
 {
-	return 3 < m_iComboCount;
+	return (m_iComboCount != 6) && (3 < m_iComboCount) && (10 > m_iComboCount);
 }
 
 _bool CKiryu_KRS_Attack::Changeable_Combo_Animation()

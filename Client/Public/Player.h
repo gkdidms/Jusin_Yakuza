@@ -284,7 +284,7 @@ public:
     HRESULT Bind_RimLight();
 
     /* 기타 기능 */
-private:
+public:
     void HitFreeze_On();
     void HitFreeze_Off();
     void HitFreeze_Timer(const _float& fTimeDelta);

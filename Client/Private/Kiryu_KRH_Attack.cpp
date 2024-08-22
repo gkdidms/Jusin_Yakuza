@@ -150,7 +150,7 @@ void CKiryu_KRH_Attack::Setting_Value(void* pValue)
 
 _bool CKiryu_KRH_Attack::IsFinishBlow()
 {
-	return 7 < m_iComboCount;
+	return (7 < m_iComboCount) && (16 > m_iComboCount);
 }
 
 _bool CKiryu_KRH_Attack::Changeable_Combo_Animation()
