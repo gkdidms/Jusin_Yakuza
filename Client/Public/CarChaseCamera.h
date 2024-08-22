@@ -64,7 +64,7 @@ private:
     /* 숄더뷰로 진행하는 카메라 정보 */
     _float m_fCamDistance_X = { 0.f };
     _float m_fCamDistance_Y = { 0.5f };
-    _float m_fCamDistance_Z = { 0.5f };
+    _float m_fCamDistance_Z = { 0.f };
 
     _bool m_isTargetPlayer = { false };
     _float m_fHeight = { 2.f };

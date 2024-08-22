@@ -293,20 +293,18 @@ void CUICarchase::Coll_Aim()
 {
     if (m_pGameInstance->GetMouseState(DIM_LB) == TAP)
     {
-        //아래는 ui에서 확인한 코드 지워도됨
-        //_uint Level = m_pGameInstance->Get_CurrentLevel();
+        _uint Level = m_pGameInstance->Get_CurrentLevel();
 
-        //CHighway_Taxi* Taxi = dynamic_cast<CHighway_Taxi*>(m_pGameInstance->Get_GameObject(Level, TEXT("Layer_Taxi"), 0));
+        CHighway_Taxi* Taxi = dynamic_cast<CHighway_Taxi*>(m_pGameInstance->Get_GameObject(Level, TEXT("Layer_Taxi"), 0));
 
-        //CHighway_Kiryu* pKiryu = static_cast<CHighway_Kiryu*>(Taxi->Get_Kiryu());
-
-        //pKiryu->Shot();
-        //pKiryu->Damage();
-
-        if (nullptr != m_CurrentTarget)
+        CHighway_Kiryu* pKiryu = static_cast<CHighway_Kiryu*>(Taxi->Get_Kiryu());
+        if(pKiryu->Shot())
         {
-            m_CurrentTarget->TargetingUI->Show_UI();
-            m_CurrentTarget->pMonsterAddr->Set_Coll();
+            if (nullptr != m_CurrentTarget)
+            {
+                m_CurrentTarget->TargetingUI->Show_UI();
+                m_CurrentTarget->pMonsterAddr->Set_Coll();
+            }
         }
     }
 

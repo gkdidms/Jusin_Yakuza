@@ -244,7 +244,6 @@ HRESULT CCarChaseManager::Ready_Stage()
 
 	m_Stages.emplace_back(pStage6);
 
-	
 
 	//7 스테이지
 	vector<CCarChase::STAGE_MONSTER_INFO> MonsterInfo_7 = {
