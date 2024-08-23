@@ -63,9 +63,17 @@ HRESULT CUITutorial::Late_Tick(const _float& fTimeDelta)
 
 	if (!m_isAnimFin)
 	{
+
 		if (m_iState == TOTU_OK || m_iState == TOTU_START)
 		{
-			m_isStartEnd = true;
+			m_fStartTime += fTimeDelta;
+
+			if (m_fStartDuration < m_fStartTime)
+			{
+				m_fStartTime += fTimeDelta;
+				m_isStartEnd = true;
+			}
+				
 		}
 
 		Check_AimFin();

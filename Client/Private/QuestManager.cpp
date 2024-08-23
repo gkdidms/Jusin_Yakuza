@@ -208,14 +208,6 @@ HRESULT CQuestManager::Ready_Quest()
     vector<QUEST_INFO> Chapter6;
     Chapter6 = {
         QUEST_INFO(
-            QUEST_KILL,
-            0,
-
-            iQuestIndex++,
-            iNextQuestIndex++,
-            4001 // »çÃ¼¾÷ÀÚ
-        ),
-        QUEST_INFO(
             QUEST_MAIN,
             7,
 
@@ -419,7 +411,7 @@ HRESULT CQuestManager::Add_MainQuest(_int iQuestIndex, _int iNextQuestIndex, _in
 
         m_pCurrentQuest = pMainQuest;
     }
-    else if (iQuestIndex == 10) // »æÀïÀÌ Á×ÀÎ ÈÄ µ¶¹é
+    else if (iQuestIndex == 9) // »æÀïÀÌ Á×ÀÎ ÈÄ µ¶¹é
     {
         CChapter6_0* pMainQuest = CChapter6_0::Create(&Desc);
         if (nullptr == pMainQuest)
@@ -427,7 +419,7 @@ HRESULT CQuestManager::Add_MainQuest(_int iQuestIndex, _int iNextQuestIndex, _in
 
         m_pCurrentQuest = pMainQuest;
     }
-    else if (iQuestIndex == 12) // ÄíÁ¦
+    else if (iQuestIndex == 11) // ÄíÁ¦
     {
         CChapter7_0* pMainQuest = CChapter7_0::Create(&Desc);
         if (nullptr == pMainQuest)
