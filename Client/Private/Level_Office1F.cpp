@@ -45,7 +45,7 @@ HRESULT CLevel_Office1F::Initialize()
 
 	m_pUIManager->Fade_Out();
 	m_pSystemManager->Set_Camera(CAMERA_PLAYER);
-	m_pFightManager->Set_StreetFight(true);
+	m_pFightManager->Set_FightStage(true);
 
 	return S_OK;
 }
@@ -56,6 +56,7 @@ void CLevel_Office1F::Tick(const _float& fTimeDelta)
 	{
 		if (m_pUIManager->isFindFinished())
 		{
+			m_pUIManager->Close_Scene(TEXT("Fade"));
 			m_pFightManager->Set_FightStage(true);
 		}
 	}
@@ -70,21 +71,24 @@ void CLevel_Office1F::Tick(const _float& fTimeDelta)
 		else
 		{
 			if (m_pUIManager->isFindFinished())
+			{
 				m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_OFFICE_2F));
+				return;
+			}
 		}
 	}
 	
 	// 트리거 체크 - 씬 이동
-	//vector<CGameObject*> pTriggers = m_pGameInstance->Get_GameObjects(LEVEL_OFFICE_1F, TEXT("Layer_Trigger"));
+	vector<CGameObject*> pTriggers = m_pGameInstance->Get_GameObjects(LEVEL_OFFICE_1F, TEXT("Layer_Trigger"));
 
-	//for (int i = 0; i < pTriggers.size(); i++)
-	//{
-	//	int		iLevelNum;
-	//	if (true == dynamic_cast<CTrigger*>(pTriggers[i])->Move_Scene(iLevelNum))
-	//	{
-	//		m_bSceneChange = true;
-	//	}
-	//}
+	for (int i = 0; i < pTriggers.size(); i++)
+	{
+		int		iLevelNum;
+		if (true == dynamic_cast<CTrigger*>(pTriggers[i])->Move_Scene(iLevelNum))
+		{
+			m_bSceneChange = true;
+		}
+	}
 
 #ifdef _DEBUG
 	if (false == m_bSceneChange)
@@ -97,10 +101,10 @@ void CLevel_Office1F::Tick(const _float& fTimeDelta)
 	}
 #endif // _DEBUG
 
-	if (m_pFightManager->Tick(fTimeDelta))
-	{
-		m_bSceneChange = true;
-	}
+	//if (m_pFightManager->Tick(fTimeDelta))
+	//{
+	//	m_bSceneChange = true;
+	//}
 
 	if (!m_isTitleEnd && m_pUIManager->isBattleStart())
 	{
