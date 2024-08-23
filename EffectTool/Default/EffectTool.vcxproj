@@ -267,6 +267,9 @@ call Copy_Client.bat</Command>
   <ItemGroup>
     <ResourceCompile Include="EffectTool.rc" />
   </ItemGroup>
+  <ItemGroup>
+    <None Include="..\Bin\ShaderFiles\Shader_Neo.hlsli" />
+  </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
   </ImportGroup>
