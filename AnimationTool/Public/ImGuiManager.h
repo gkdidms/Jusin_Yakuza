@@ -201,7 +201,11 @@ private:
 	void Change_Model();
 
 private:
+	void Ready_SoundFolders();
+
+private:
 	ImGuiIO* io;
+	fs::path m_RootDir;
 
 private:
 	_bool					m_isOnToolWindows = { false };
@@ -309,11 +313,14 @@ private:
 	// first: 애니메이션 이름, second: 이벤트정보
 	multimap<string, Animation_RadialEventState>		m_RadialEvents;
 
+	/* 사운드 이벤트 윈도우 */
 private:
 	_bool						m_isSoundListWindow = { false };
 
 	_uint						m_iSoundType = { 0 };
-	vector<string>				m_SoundTypeList;
+	
+	vector<bool>				m_SoundFolderRadio;
+	vector<string>				m_SoundFolderNames;
 
 private:
 	_float						m_fTimeDeltaScale = { 1.f };
