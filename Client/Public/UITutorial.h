@@ -49,7 +49,7 @@ private:
     _uint m_iState = { TOTU_END };
     _bool m_isStartEnd = { false };
 
-    _float m_fStartDuration = { 3.f };
+    _float m_fStartDuration = { 1.f };
     _float m_fStartTime = { 0.f };
 
 public:

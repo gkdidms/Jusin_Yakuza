@@ -45,7 +45,6 @@ HRESULT CLevel_Office1F::Initialize()
 
 	m_pUIManager->Fade_Out();
 	m_pSystemManager->Set_Camera(CAMERA_PLAYER);
-	m_pFightManager->Set_StreetFight(true);
 
 	return S_OK;
 }
@@ -57,6 +56,7 @@ void CLevel_Office1F::Tick(const _float& fTimeDelta)
 		if (m_pUIManager->isFindFinished())
 		{
 			m_pFightManager->Set_FightStage(true);
+			m_isStart = true;
 		}
 	}
 
@@ -75,16 +75,16 @@ void CLevel_Office1F::Tick(const _float& fTimeDelta)
 	}
 	
 	// 트리거 체크 - 씬 이동
-	//vector<CGameObject*> pTriggers = m_pGameInstance->Get_GameObjects(LEVEL_OFFICE_1F, TEXT("Layer_Trigger"));
+	vector<CGameObject*> pTriggers = m_pGameInstance->Get_GameObjects(LEVEL_OFFICE_1F, TEXT("Layer_Trigger"));
 
-	//for (int i = 0; i < pTriggers.size(); i++)
-	//{
-	//	int		iLevelNum;
-	//	if (true == dynamic_cast<CTrigger*>(pTriggers[i])->Move_Scene(iLevelNum))
-	//	{
-	//		m_bSceneChange = true;
-	//	}
-	//}
+	for (int i = 0; i < pTriggers.size(); i++)
+	{
+		int		iLevelNum;
+		if (true == dynamic_cast<CTrigger*>(pTriggers[i])->Move_Scene(iLevelNum))
+		{
+			m_bSceneChange = true;
+		}
+	}
 
 #ifdef _DEBUG
 	if (false == m_bSceneChange)

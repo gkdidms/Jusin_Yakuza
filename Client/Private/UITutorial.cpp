@@ -26,7 +26,8 @@ void CUITutorial::Set_State(_uint iState)
 	m_iState = iState;
 	if (m_iState == TOTU_OK || m_iState == TOTU_START)
 	{
-		m_isStartEnd = true;
+		m_isStartEnd = false;
+		m_fStartTime = 0.f;
 	}
 
 	m_EventUI[m_iState]->Show_UI();
@@ -63,22 +64,22 @@ HRESULT CUITutorial::Late_Tick(const _float& fTimeDelta)
 
 	if (!m_isAnimFin)
 	{
-
+		Check_AimFin();
+	}
+	else
+	{
 		if (m_iState == TOTU_OK || m_iState == TOTU_START)
 		{
 			m_fStartTime += fTimeDelta;
 
 			if (m_fStartDuration < m_fStartTime)
 			{
-				m_fStartTime += fTimeDelta;
+				m_fStartTime = 0.f;
 				m_isStartEnd = true;
 			}
-				
-		}
 
-		Check_AimFin();
+		}
 	}
-		
 
 	return S_OK;
 }

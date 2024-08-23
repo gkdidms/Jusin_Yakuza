@@ -940,6 +940,7 @@ CBTNode::NODE_STATE CAI_Monster::StandUpAndDead()
 
 	if (m_pThis->isDown())
 	{
+		Reset_State();
 		//다운되어있는 애니메이션 상태인가?
 		if (!m_pAnimCom[*m_pCurrentAnimType]->Get_AnimFinished())
 			return CBTNode::RUNNING;

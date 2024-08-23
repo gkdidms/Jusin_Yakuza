@@ -48,6 +48,7 @@ private:
 	_bool m_isTitleEnd = { false };
 
 	_bool m_isTutorialEnd = { false };
+	_bool m_isTutorialStart = { false };
 
 public:
 	virtual void Free();

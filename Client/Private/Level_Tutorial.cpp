@@ -181,7 +181,7 @@ void CLevel_Tutorial::Free()
 
 	Safe_Release(m_pSystemManager);
 	Safe_Release(m_pFileTotalManager);
-	//Safe_Release(m_pFightManager);
+	Safe_Release(m_pFightManager);
 	Safe_Release(m_pQuestManager);
 	Safe_Release(m_pUIManager);
 }
