@@ -138,10 +138,6 @@ void CSocketCollider::ParentObject_Attack(CGameObject* pHitObejct, _bool isItem)
 
 void CSocketCollider::ParentObject_Hit(CSocketCollider* pAttackedCollider)
 {
-#ifdef _DEBUG
-	cout << " 충돌!!!!" << endl;
-#endif // DEBUG
-
 	// 나의 부모객체(플레이어 or 몬스터)의 데미지 입는 함수 실행
 	m_pParentObject->Take_Damage(m_eColliderPartType, pAttackedCollider->Get_MoveDir(), pAttackedCollider->Get_Damage() * pAttackedCollider->Get_Parent()->Get_DamageAmplify(), pAttackedCollider->Get_Parent());
 }

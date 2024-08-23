@@ -105,9 +105,10 @@ void CKiryu_KRS_Grab::Tick(const _float& fTimeDelta)
 		case ANIM_LOOP:
 			m_pPlayer->Set_HandAnimIndex(CPlayer::HAND_GU);
 			m_pPlayer->On_Separation_Hand();
+			static_cast<CMonster*>(m_pPlayer->Get_TargetObject())->Set_Sync("p_kru_sync_lapel_lp");
+
 			// 여기에 키인풋
 			Move_KeyInput(fTimeDelta);
-
 			break;
 		case ANIM_END:
 			// 놓치는게 end (p_kru_sync_neck_off)
@@ -206,7 +207,7 @@ void CKiryu_KRS_Grab::Setting_Value(void* pValue)
 	m_isGrabed = pDesc->isGrabed;
 	m_iDirection = pDesc->iDirection;
 
-	static_cast<CMonster*>(m_pPlayer->Get_TargetObject())->Set_Sync("p_kru_sync_lapel_lp");
+	static_cast<CMonster*>(m_pPlayer->Get_TargetObject())->Set_Sync("p_kru_sync_lapel_st");
 }
 
 void CKiryu_KRS_Grab::Event(void* pValue)

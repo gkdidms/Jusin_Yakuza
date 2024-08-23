@@ -162,7 +162,6 @@ void CPlayer::Tick(const _float& fTimeDelta)
 		if (m_pTargetObject)
 		{
 			Set_CutSceneAnim(m_eCutSceneType, 1);
-			static_cast<CMonster*>(Get_TargetObject())->Set_Sync(m_CutSceneAnimation[m_eCutSceneType]);
 		}
 	}
 
@@ -316,7 +315,7 @@ void CPlayer::Tick(const _float& fTimeDelta)
 	Setting_Target_Item();
 	//Setting_Target_Wall();
 
-	//m_pQTEMgr->Tick(fTimeDelta);
+	m_pQTEMgr->Tick(fTimeDelta);
 }
 
 void CPlayer::Late_Tick(const _float& fTimeDelta)
@@ -1359,7 +1358,6 @@ void CPlayer::KRS_KeyInput(const _float& fTimeDelta)
 					int a = 0;
 				}
 
-
 				m_pTransformCom->LookAt_For_LandObject(vLookPos);
 				isMove = true;
 			}
@@ -2170,6 +2168,7 @@ void CPlayer::Play_CutScene()
 		{
 			m_isCutSceneStartMotion = false;
 			Reset_CutSceneEvent();
+			m_pTargetObject->Set_Sync(m_CutSceneAnimation[m_eCutSceneType]);
 		}
 	}
 
@@ -2235,7 +2234,7 @@ void CPlayer::Play_CutScene()
 		m_pCameraModel->Set_AnimationIndex(Desc);
 
 		// 카메라 본 애니메이션 실행
-		m_pCameraModel->Play_Animation_CutScene(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")), nullptr, false, m_iCutSceneCamAnimIndex, false, "Camera");
+		m_pCameraModel->Play_Animation_CutScene(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")), nullptr, false, m_iCutSceneCamAnimIndex, false);
 	}
 }
 
@@ -2255,6 +2254,7 @@ void CPlayer::Reset_CutSceneEvent()
 		// 컷신으로 돌릴 때, 컷신 카메라를 초기화해준다.
 		CCutSceneCamera* pCutSceneCamera = dynamic_cast<CCutSceneCamera*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Camera"), CAMERA_CUTSCENE));
 		pCutSceneCamera->Reset_ReturnVariables();
+
 		break;
 	}
 
@@ -2268,7 +2268,8 @@ void CPlayer::Reset_CutSceneEvent()
 		pCutSceneCamera->On_Return();		
 
 		// 혹시모르니 대상 몬스터의 싱크를 해제해준다.
-		m_pTargetObject->Off_Sync();
+		if(nullptr != m_pTargetObject)
+			m_pTargetObject->Off_Sync();
 
 		break;
 	}
@@ -2296,7 +2297,6 @@ void CPlayer::HitAction_Down()
 		* DIR_END : 방향을 가져오지 못함
 		*/
 		Set_CutSceneAnim(m_pTargetObject->Get_DownDir() == DIR_F ? OI_TRAMPLE_AO : OI_KICKOVER_UTU_C, 1);
-			
 	}
 	else
 	{
@@ -2423,6 +2423,7 @@ void CPlayer::Effect_Control_Aura()
 void CPlayer::Setting_Target_Enemy()
 {
 	if (2 == m_iCurrentBehavior) return;
+	if (CUTSCENE == m_eAnimComType) return;				// 컷신진행중이면 타겟을 건들지 않는다.
 
 	if (m_pGameInstance->Get_CurrentLevel() == LEVEL_TUTORIAL)
 	{
@@ -2468,10 +2469,18 @@ void CPlayer::Setting_Target_Enemy()
 
 		if (nullptr != m_pTargetObject)
 		{
-			_float vDistance = XMVectorGetX(XMVector3Length(m_pTransformCom->Get_State(CTransform::STATE_POSITION) - m_pTargetObject->Get_TransformCom()->Get_State(CTransform::STATE_POSITION)));
+			_float vDistance = 99999.f;
+			if (m_pTargetObject->isObjectDead())
+			{
+				m_pTargetObject = nullptr;
+			}
+			else
+			{
+				vDistance = XMVectorGetX(XMVector3Length(m_pTransformCom->Get_State(CTransform::STATE_POSITION) - m_pTargetObject->Get_TransformCom()->Get_State(CTransform::STATE_POSITION)));
+			}
 
-			// 기존 타겟중이던 친구의 거리가 1.f 이상 멀어지면 그때 다시 타겟팅한다.
-			if (1.f < vDistance)
+			// 기존 타겟중이던 친구의 거리가 3.f 이상 멀어지면 그때 다시 타겟팅한다.
+			if (3.f < vDistance)
 			{
 				auto pMosnter = m_pCollisionManager->Get_Near_Object(this, pMonsters);
 				auto pYoneda = m_pCollisionManager->Get_Near_Object(this, pYonedas);

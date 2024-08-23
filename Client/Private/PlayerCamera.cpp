@@ -91,9 +91,6 @@ void CPlayerCamera::Tick(const _float& fTimeDelta)
 
 		m_pColliderCom->Tick(m_pTransformCom->Get_WorldMatrix());
 
-		// 카메라 변환 선형보간
-		//Return_PrevWorld(fTimeDelta);
-
 		if(m_isReturn)
 			Play_FovLerp(fTimeDelta);
 
