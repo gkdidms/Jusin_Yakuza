@@ -2137,7 +2137,8 @@ void CPlayer::Set_CutSceneAnim(CUTSCENE_ANIMATION_TYPE eType, _uint iFaceAnimInd
 		j++;
 	}
 
-	m_pTargetObject->Set_Sync(m_CutSceneAnimation[m_eCutSceneType]);
+	if(nullptr != m_pTargetObject)
+		m_pTargetObject->Set_Sync(m_CutSceneAnimation[m_eCutSceneType]);
 
 	m_pQTEMgr->Set_Animation(m_pAnimCom, m_CutSceneAnimation.at(eType));
 }
@@ -2253,6 +2254,10 @@ void CPlayer::Reset_CutSceneEvent()
 		_matrix LastMatrix = m_pGameInstance->Get_Transform_Matrix(CPipeLine::D3DTS_VIEW);
 		_float fLastFov = pCutSceneCamera->Get_Fov();
 		pCutSceneCamera->On_Return();		
+
+		// 혹시모르니 대상 몬스터의 싱크를 해제해준다.
+		m_pTargetObject->Off_Sync();
+
 		break;
 	}
 

@@ -37,6 +37,7 @@ HRESULT CLevel_Dogimazo::Initialize()
     m_pFileTotalManager->Set_MapObj_In_Client(STAGE_DOGIMAZO, LEVEL_DOGIMAZO);
     m_pFileTotalManager->Set_Lights_In_Client(STAGE_DOGIMAZO);
     m_pFileTotalManager->Set_Collider_In_Client(STAGE_DOGIMAZO, LEVEL_DOGIMAZO);
+	m_pFileTotalManager->Set_Trigger_In_Client(STAGE_DOGIMAZO, LEVEL_DOGIMAZO);			// 요네다 트리거용
 
 	/* 쇼파 몬스터 */
 	m_pFileTotalManager->Set_Trigger_In_Client(40, LEVEL_DOGIMAZO);
@@ -147,7 +148,7 @@ HRESULT CLevel_Dogimazo::Ready_Camera(const wstring& strLayerTag)
 	CutSceneCameraDesc.fSpeedPecSec = 10.f;
 	CutSceneCameraDesc.fRotatePecSec = XMConvertToRadians(90.f);
 
-	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_CutSceneCamera"), strLayerTag, &CutSceneCameraDesc)))
+	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_DOGIMAZO, TEXT("Prototype_GameObject_CutSceneCamera"), strLayerTag, &CutSceneCameraDesc)))
 		return E_FAIL;
 
 	return S_OK;

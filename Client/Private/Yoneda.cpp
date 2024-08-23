@@ -35,7 +35,7 @@ void CYoneda::Set_TriggerQte(_uint iWeaponChange, _uint iTriggerID)
 	{
 		//액션 변경 가능
 		m_iState = CMonster::MONSTER_A60350_000_2;
-	}
+	}              
 
 	m_isSynchronizing = true;
 	m_pTree->Set_Sync(true);
@@ -78,6 +78,14 @@ void CYoneda::Tick(const _float& fTimeDelta)
 void CYoneda::Late_Tick(const _float& fTimeDelta)
 {
 	__super::Late_Tick(fTimeDelta);
+}
+
+void CYoneda::Off_Sync()
+{
+	__super::Off_Sync();
+
+	//m_pNavigationCom->Set_Index(m_pNavigationCom->Find_PlayerMonster_Index(m_pGameInstance->Get_GameObject(m_iCurrentLevel, TEXT("Layer_Player"), 0)->Get_TransformCom()->Get_State(CTransform::STATE_POSITION)));
+	m_pNavigationCom->Set_Index(m_pNavigationCom->Find_PlayerMonster_Index(m_pTransformCom->Get_State(CTransform::STATE_POSITION)));
 }
 
 HRESULT CYoneda::Add_Components()
