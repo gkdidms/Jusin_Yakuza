@@ -22,9 +22,6 @@ private:
     class CUIManager* m_pUIManager = { nullptr };
 
 private:
-    _bool m_isLevelStarted = { false };
-
-private:
     HRESULT Ready_Camera(const wstring& strLayerTag);
     HRESULT Ready_Player(const wstring& strLayerTag);
 

@@ -69,6 +69,7 @@ public: //타이틀 용
     _bool isTitleStart();
     void Start_Title(_int iIndex);
     _bool isTitleEnd();
+    _bool isBattleStart();
 
 public: //페이드인페이드아웃
     _bool isFindFinished();
@@ -104,11 +105,18 @@ public: // 스토리 UI
     //카라오케 점수 전달용
 public:
     void Set_Score(_uint iScore);
+
     //파이트 스코어 (돈)
 public:
     void Set_Money(_uint Money) { m_Money = Money; }
     _uint Get_Money() { return m_Money; }
     void Set_AlwayUI(_bool isTrue) { m_isAlways = isTrue; }
+
+    //스타일 교체용(lifeUI)
+    public:
+        void Change_Style(_uint iStyle);
+
+
 private:
 
     ID3D11Device* m_pDevice = { nullptr };

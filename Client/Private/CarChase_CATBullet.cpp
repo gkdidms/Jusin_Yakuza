@@ -7,6 +7,8 @@
 
 #include "Highway_Kiryu.h"
 #include "Highway_Taxi.h"
+#include "EffectManager.h"
+
 
 CCarChase_CATBullet::CCarChase_CATBullet(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	:CCarChase_Monster{ pDevice, pContext },
@@ -72,7 +74,8 @@ HRESULT CCarChase_CATBullet::Initialize(void* pArg)
 
 	m_pUIManager->Add_Target(m_iObjectIndex, this);
 
-	m_Info.fMaxHP = 30.f;
+	m_Info.fMaxHP = 1.f;
+
 	m_Info.fHp = m_Info.fMaxHP;
 
 	return S_OK;
@@ -84,6 +87,16 @@ void CCarChase_CATBullet::Priority_Tick(const _float& fTimeDelta)
 
 void CCarChase_CATBullet::Tick(const _float& fTimeDelta)
 {
+	if (m_isObjectDead)
+	{
+		Set_Dead();
+		//이펙트 생성
+		CEffect::EFFECT_DESC EffectDesc;
+
+		EffectDesc.pWorldMatrix = &m_WorldMatrix;
+		CEffectManager::GetInstance()->Heli_BulletExp(EffectDesc);
+	}
+
 	_vector vPlayerPos = XMLoadFloat4((_float4*)&m_pTarget->Get_ModelMatrix()->m[3]);
 	_vector vThisPos = XMLoadFloat4((_float4*)&m_WorldMatrix.m[3]);
 	float fVerticalSpeed = CalculateInitialVerticalSpeed(vPlayerPos, vThisPos);
@@ -114,6 +127,8 @@ void CCarChase_CATBullet::Tick(const _float& fTimeDelta)
 	XMStoreFloat4x4(&m_WorldMatrix, m_pTransformCom->Get_WorldMatrix() * ParentMatrix);
 
 	m_pColliderCom->Tick(XMLoadFloat4x4(&m_WorldMatrix));
+
+		m_pEffect->Tick(fTimeDelta);
 }
 
 void CCarChase_CATBullet::Late_Tick(const _float& fTimeDelta)
@@ -125,6 +140,7 @@ void CCarChase_CATBullet::Late_Tick(const _float& fTimeDelta)
 
 	m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
 
+	m_pEffect->Late_Tick(fTimeDelta);
 	m_isColl = false;
 #ifdef _DEBUG
 	m_pGameInstance->Add_DebugComponent(m_pColliderCom);
@@ -223,6 +239,12 @@ HRESULT CCarChase_CATBullet::Add_Components()
 		TEXT("Com_Collider"), reinterpret_cast<CComponent**>(&m_pColliderCom), &ColliderDesc)))
 		return E_FAIL;
 
+	CEffect::EFFECT_DESC EffectDesc;
+	EffectDesc.pWorldMatrix = &m_WorldMatrix;
+
+	//연기
+	m_pEffect = reinterpret_cast<CEffect*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Particle_Point_HeliBullet_Smog"), &EffectDesc));
+
 	return S_OK;
 }
 
@@ -286,7 +308,11 @@ _bool CCarChase_CATBullet::Check_Coll()
 		//충돌이 일어남
 		Set_Dead();
 		m_pUIManager->Remove_Target(m_iObjectIndex);
+		//이펙트 생성
+		CEffect::EFFECT_DESC EffectDesc;
 
+		EffectDesc.pWorldMatrix = &m_WorldMatrix;
+		CEffectManager::GetInstance()->Heli_BulletExp(EffectDesc);
 		return true;
 	}
 	return false;
@@ -320,6 +346,7 @@ void CCarChase_CATBullet::Free()
 	Safe_Release(m_pModelCom);
 	Safe_Release(m_pMaterialCom);
 	Safe_Release(m_pColliderCom);
+	Safe_Release(m_pEffect);
 
 	Safe_Release(m_pTarget);
 

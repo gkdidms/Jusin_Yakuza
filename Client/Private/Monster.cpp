@@ -563,7 +563,7 @@ void CMonster::Take_Damage(_uint iHitColliderType, const _float3& vDir, _float f
 	if (m_pTree->isSway())
 		return;
 
-	//튜토리얼 용 
+	//튜토리얼 용 (카운트용)
 	if (m_iCurrentLevel == LEVEL_TUTORIAL || m_iCurrentLevel == LEVEL_TEST)
 		m_isTutorialAttack = true;
 
