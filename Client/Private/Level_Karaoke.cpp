@@ -43,6 +43,8 @@ HRESULT CLevel_Karaoke::Initialize()
 	if (FAILED(Ready_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
 
+	m_pUIManager->Fade_Out();
+
 	m_pFileTotalManager->Load_Cinemachine(4, LEVEL_KARAOKE);			// 가만히있는거
 	m_pFileTotalManager->Load_Cinemachine(5, LEVEL_KARAOKE);
 	m_pFileTotalManager->Setting_Start_Cinemachine(4);
