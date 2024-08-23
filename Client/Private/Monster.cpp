@@ -295,6 +295,21 @@ void CMonster::Set_Animation(string strAnimName, _bool isLoop)
 		return;
 }
 
+void CMonster::Reset_Monster()
+{
+	//테스트 데이터
+	m_Info.fMaxHP = 100.f;
+	m_Info.fHp = m_Info.fMaxHP;
+
+	m_iCurrentAnimType = DEFAULT;
+	m_iPreAnimType = DEFAULT;
+
+	m_pModelCom->Set_PreAnimations(m_pAnimCom[m_iPreAnimType]->Get_Animations());
+
+	m_isDead = false;
+	m_isObjectDead = false;
+}
+
 /*
 * DIR_F : 앞으로 누워잇음
 * DIR_B : 뒤로 엎어져잇음
@@ -776,10 +791,10 @@ HRESULT CMonster::Add_Components()
 	string strRemoveName = "Prototype_Component_Model_";
 	_int iPos = strModelName.find(strRemoveName);
 
-	if (iPos == string::npos)
-		return E_FAIL;
+	//if (iPos == string::npos)
+	//	return E_FAIL;
 
-	strModelName = strModelName.erase(iPos, strRemoveName.size());
+	//strModelName = strModelName.erase(iPos, strRemoveName.size());
 
 	wstring strMaterialName = TEXT("Prototype_Component_Material_") + m_pGameInstance->StringToWstring(strModelName);
 
