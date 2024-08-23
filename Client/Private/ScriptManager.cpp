@@ -124,14 +124,18 @@ void CScriptManager::Ready_Script_4()
 	m_Scripts.emplace_back(Scrpit);
 }
 
+//13
 void CScriptManager::Ready_Script_5()
 {
 	map<_int, SCRIPT_INFO> Scrpit = {};
 	_int iIndex = 0;
+	//30
 	Scrpit.emplace(iIndex++, SCRIPT_INFO(TEXT("니시키야마"), TEXT("그러고보니 최근에 쿠제랑 마찰이 있었다며.")));
 	Scrpit.emplace(iIndex++, SCRIPT_INFO(TEXT("키류"), TEXT("아아......")));
 	Scrpit.emplace(iIndex++, SCRIPT_INFO(TEXT("니시키야마"), TEXT("어쩌다가 쿠제와 엮였는지 모르겠지만, 조심하라고.")));
+	
 	Scrpit.emplace(iIndex++, SCRIPT_INFO(TEXT("니시키야마"), TEXT("쿠제가 널 찾고 있어.\\카자마 어르신과 관련된 일로 찾는 것일수 있으니 찾아가 보는게 좋겠어.")));
+	//31
 	Scrpit.emplace(iIndex++, SCRIPT_INFO(TEXT("니시키야마"), TEXT("동흥 크레디트로 가봐.\\그쪽으로 가면 쿠제에 관한 얘기를 들을 수 있을꺼야.")));
 
 	m_Scripts.emplace_back(Scrpit);
@@ -157,12 +161,17 @@ void CScriptManager::Ready_Script_7()
 	m_Scripts.emplace_back(Scrpit);
 }
 
+//
 void CScriptManager::Ready_Script_8()
 {
 	map<_int, SCRIPT_INFO> Scrpit = {};
 	_int iIndex = 0;
+	//35
 	Scrpit.emplace(iIndex++, SCRIPT_INFO(TEXT("키류"), TEXT("( 이녀석들, 바로 공격해오다니 무슨 속샘이지. )")));
+	
 	Scrpit.emplace(iIndex++, SCRIPT_INFO(TEXT("키류"), TEXT("( 이곳엔 쿠제가 없군......\\역시 도지마조 본부로 가야 하는 건가...... )")));
+
+	//36
 	Scrpit.emplace(iIndex++, SCRIPT_INFO(TEXT("키류"), TEXT("( 어서빨리 나가 직접 도지마조 본부로 가보자. )")));
 
 	m_Scripts.emplace_back(Scrpit);

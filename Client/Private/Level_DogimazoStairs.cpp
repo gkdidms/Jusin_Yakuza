@@ -36,7 +36,10 @@ HRESULT CLevel_DogimazoStairs::Initialize()
 	m_pFileTotalManager->Set_MapObj_In_Client(STAGE_DOGIMAZO_STAIRS, LEVEL_DOGIMAZO_STAIRS);
 	m_pFileTotalManager->Set_Lights_In_Client(STAGE_DOGIMAZO_STAIRS);
 	m_pFileTotalManager->Set_Collider_In_Client(STAGE_DOGIMAZO_STAIRS, LEVEL_DOGIMAZO_STAIRS);
-	m_pFileTotalManager->Set_Trigger_In_Client(STAGE_DOGIMAZO_STAIRS, LEVEL_DOGIMAZO_STAIRS);
+	//m_pFileTotalManager->Set_Trigger_In_Client(STAGE_DOGIMAZO_STAIRS, LEVEL_DOGIMAZO_STAIRS);
+
+	/* 계단 몬스터 */
+	m_pFileTotalManager->Set_Trigger_In_Client(42, LEVEL_DOGIMAZO_STAIRS);
 
 	if (FAILED(Ready_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
@@ -143,7 +146,7 @@ HRESULT CLevel_DogimazoStairs::Ready_Camera(const wstring& strLayerTag)
 	CutSceneCameraDesc.fSpeedPecSec = 10.f;
 	CutSceneCameraDesc.fRotatePecSec = XMConvertToRadians(90.f);
 
-	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_CutSceneCamera"), strLayerTag, &CutSceneCameraDesc)))
+	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_DOGIMAZO_STAIRS, TEXT("Prototype_GameObject_CutSceneCamera"), strLayerTag, &CutSceneCameraDesc)))
 		return E_FAIL;
 
 	return S_OK;

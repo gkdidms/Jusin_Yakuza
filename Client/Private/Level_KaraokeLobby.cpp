@@ -56,6 +56,9 @@ HRESULT CLevel_KaraokeLobby::Initialize()
 		m_pFileTotalManager->Set_Lights_In_Client(99);
 		//m_pFileTotalManager->Set_Trigger_In_Client(STAGE_KARAOKE_END, LEVEL_KARAOKE_END);
 		//m_pFileTotalManager->Set_Collider_In_Client(STAGE_KARAOKE, LEVEL_KARAOKE);
+
+		m_pFileTotalManager->Load_Cinemachine(30, LEVEL_KARAOKE_END);
+		m_pFileTotalManager->Load_Cinemachine(31, LEVEL_KARAOKE_END);
 	}
 
 	m_pKaraokeManager = CKaraokeManager::Create();

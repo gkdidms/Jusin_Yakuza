@@ -60,6 +60,13 @@ _bool CUIManager::isCloseTutorialUIAnim()
 	return pScene->isCloseCurrentUIAnim();
 }
 
+_bool CUIManager::isTutorialStartEnd()
+{
+	CUITutorial* pScene = dynamic_cast<CUITutorial*>(Find_Scene(TEXT("Tutorial")));
+
+	return pScene->isStartEnd();
+}
+
 void CUIManager::Set_TutorialState(_uint iType)
 {
 	CUITutorial* pScene = dynamic_cast<CUITutorial*>(Find_Scene(TEXT("Tutorial")));

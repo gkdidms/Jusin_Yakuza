@@ -28,6 +28,13 @@ public:
     virtual bool				Move_Scene(int& iLevelNum);
 
 private:
+    HRESULT Create_Yoneda();
+
+private:
+    _bool m_isColl = { false };
+    _uint m_iCollCount = { 0 };
+
+private:
     virtual HRESULT Add_Components(void* pArg) override;
 
 public:
