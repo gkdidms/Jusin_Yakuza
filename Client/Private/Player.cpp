@@ -473,6 +473,14 @@ HRESULT CPlayer::Render()
 
 					if (FAILED(m_pShaderCom->Bind_RawValue("g_fRimUV", &m_fRimTopUV, sizeof(_float2))))
 						return E_FAIL;
+
+					if (FAILED(m_pShaderCom->Bind_RawValue("g_fRimArmUV", &m_fRimArmUV, sizeof(_float2))))
+						return E_FAIL;
+
+					_bool isTop = true;
+					if (FAILED(m_pShaderCom->Bind_RawValue("g_isTop", &isTop, sizeof(_bool))))
+						return E_FAIL;
+					
 				}
 			}
 
