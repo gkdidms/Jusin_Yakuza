@@ -30,6 +30,9 @@ HRESULT CCineCamera::Initialize(void* pArg)
 		CINE_CAMERA_DESC* pDesc = static_cast<CINE_CAMERA_DESC*>(pArg);
 		Load_CamBin(pDesc->iFileNum);
 	}
+	m_vFocus = XMVectorSet(0, 0, 0, 1);
+	m_vEye = XMVectorSet(0, 10, 0, 1);
+
 
 	return S_OK;
 }
@@ -77,6 +80,10 @@ HRESULT CCineCamera::Load_CamBin(int iFileNum)
 	Import_Bin_Cam_Data_OnTool(&camIODesc, iFileNum);
 
 	m_CamerasStorage.emplace(iFileNum,camIODesc);
+
+
+	m_vFocus = XMVectorSet(0, 0, 0, 1);
+	m_vEye = XMVectorSet(0, 10, 0, 1);
 
 	//m_bFirstLerp = camIODesc.bFirstLerp;
 

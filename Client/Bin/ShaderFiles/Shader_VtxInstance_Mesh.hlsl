@@ -11,10 +11,11 @@ float g_fCurTime;
 
 
 Texture2D g_DiffuseTexture;
+
+
+float g_fFar = 3000.f;
 */
 bool g_isAttach;
-
-//float g_fFar = 3000.f;
 
 struct VS_IN
 {
@@ -61,7 +62,7 @@ VS_OUT VS_MAIN(VS_IN In)
     matWVP = mul(matWV, g_ProjMatrix);
     matVP = mul(g_ViewMatrix, g_ProjMatrix);
     
-    if(g_isAttach)
+    if (g_isAttach)
     {
         vector Right = In.TransformMatrix._11_12_13_14 * In.vRectSize.x;
         vector Up = In.TransformMatrix._21_22_23_24 * In.vRectSize.x;
@@ -110,7 +111,7 @@ VS_NONBLENDER_OUT VS_NONBLENDER(VS_IN In)
     matVP = mul(g_ViewMatrix, g_ProjMatrix);
     
     
-    if(g_isAttach)
+    if (g_isAttach)
     {
         vector Right = In.TransformMatrix._11_12_13_14 * In.vRectSize.x;
         vector Up = In.TransformMatrix._21_22_23_24 * In.vRectSize.x;
@@ -223,27 +224,24 @@ PS_NOBLENDER_OUT PS_NONBLEDNER(PS_NOBLENDER_IN In)
     vector vRM = vector(0.5f, 1.f, 0.5f, 1.f);
     vector vRT = vector(0.5f, 0.5f, 1.f, 0.5f);
     
+    //노말 벡터 구하기
+    vector vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexcoord);
+    
     //Neo Shader
     float fFactor = RepeatingPatternBlendFactor(vMulti);
-    vector vDiffuse = DiffusePortion(vParticle, vRS, vRD, fFactor, In.vTexcoord);
+    vector vDiffuseColor = DiffusePortion(vParticle, vRS, vRD, fFactor, In.vTexcoord);
     
     COMBINE_OUT Result = Neo_MetallicAndGlossiness(vMulti, vRM); // Metallic, Rouhness 최종
-    vDiffuse = Get_Diffuse(vMulti.a, vDiffuse); // Diffuse 최종
-
-    //OE_SPECULAR OEResult = Neo_OE_Specular(vMulti, vRM, vRS);
-    //float fMixMultiFactor = lerp(vMulti.y, 1.f, AssetShader);
-    //float fDeffuseFactor = vParticle.a * 1.f;
+    vDiffuseColor = Get_Diffuse(vMulti.a, vDiffuseColor); // Diffuse 최종
     
-    Out.vDiffuse = vParticle;
-    if(Out.vDiffuse.a<0.1f)
-       discard;
     Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_fFar, 0.f, 0.f);
     Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
+    Out.vDiffuse = vDiffuseColor;
+
     Out.vSurface = vector(Result.fMetalness, Result.fRoughness, Result.fSpeclure, Result.fFactor);
     
     return Out;
 }
-
 
 technique11 DefaultTechnique
 {

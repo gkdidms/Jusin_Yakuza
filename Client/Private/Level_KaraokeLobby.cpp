@@ -33,9 +33,6 @@ HRESULT CLevel_KaraokeLobby::Initialize()
     if (FAILED(Ready_Player(TEXT("Layer_Player"))))
         return E_FAIL;
 
-	if (FAILED(Ready_Camera(TEXT("Layer_Camera"))))
-		return E_FAIL;
-
 	m_pSystemManager->Set_Camera(CAMERA_PLAYER);
 
     ///* 클라 파싱 */
@@ -44,11 +41,6 @@ HRESULT CLevel_KaraokeLobby::Initialize()
 		m_pFileTotalManager->Set_MapObj_In_Client(STAGE_KARAOKE_START, LEVEL_KARAOKE_START);
 		m_pFileTotalManager->Set_Lights_In_Client(99);
 		m_pFileTotalManager->Set_Trigger_In_Client(STAGE_KARAOKE_START, LEVEL_KARAOKE_START);
-
-		m_pFileTotalManager->Load_Cinemachine(19, LEVEL_KARAOKE_START);
-		m_pFileTotalManager->Load_Cinemachine(20, LEVEL_KARAOKE_START);
-		m_pFileTotalManager->Load_Cinemachine(21, LEVEL_KARAOKE_START);
-		m_pFileTotalManager->Load_Cinemachine(22, LEVEL_KARAOKE_START);
 	}
 	if (m_pGameInstance->Get_CurrentLevel() == LEVEL_KARAOKE_END)
 	{
@@ -56,16 +48,23 @@ HRESULT CLevel_KaraokeLobby::Initialize()
 		m_pFileTotalManager->Set_Lights_In_Client(99);
 		//m_pFileTotalManager->Set_Trigger_In_Client(STAGE_KARAOKE_END, LEVEL_KARAOKE_END);
 		//m_pFileTotalManager->Set_Collider_In_Client(STAGE_KARAOKE, LEVEL_KARAOKE);
+	}
 
+	if (FAILED(Ready_Camera(TEXT("Layer_Camera"))))
+		return E_FAIL;
+
+	if (m_pGameInstance->Get_CurrentLevel() == LEVEL_KARAOKE_START)
+	{
+		m_pFileTotalManager->Load_Cinemachine(19, LEVEL_KARAOKE_START);
+		m_pFileTotalManager->Load_Cinemachine(20, LEVEL_KARAOKE_START);
+		m_pFileTotalManager->Load_Cinemachine(21, LEVEL_KARAOKE_START);
+		m_pFileTotalManager->Load_Cinemachine(22, LEVEL_KARAOKE_START);
+	}
+	if (m_pGameInstance->Get_CurrentLevel() == LEVEL_KARAOKE_END)
+	{
 		m_pFileTotalManager->Load_Cinemachine(30, LEVEL_KARAOKE_END);
 		m_pFileTotalManager->Load_Cinemachine(31, LEVEL_KARAOKE_END);
 	}
-
-	m_pKaraokeManager = CKaraokeManager::Create();
-	if (nullptr == m_pKaraokeManager)
-		return E_FAIL;
-
-
 
     return S_OK;
 }
@@ -104,6 +103,8 @@ void CLevel_KaraokeLobby::Tick(const _float& fTimeDelta)
 					m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_KARAOKE));
 				else if (m_pGameInstance->Get_CurrentLevel() == LEVEL_KARAOKE_END)
 					m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_TOKOSTREET));
+
+				return;
 			}
 		}
 	}
@@ -115,6 +116,8 @@ void CLevel_KaraokeLobby::Tick(const _float& fTimeDelta)
 
 HRESULT CLevel_KaraokeLobby::Ready_Camera(const wstring& strLayerTag)
 {
+	m_pFileTotalManager->Reset_Cinemachine();
+
 	/* 카메라 추가 시 Debug Camera를 첫번째로 놔두고 추가해주세요 (디버깅 툴에서 사용중)*/
 	const _float4x4* pPlayerFloat4x4 = dynamic_cast<CTransform*>(m_pGameInstance->Get_GameObject_Component(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"), TEXT("Com_Transform", 0)))->Get_WorldFloat4x4();
 
