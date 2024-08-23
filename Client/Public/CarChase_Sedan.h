@@ -28,6 +28,10 @@ private:
     virtual void Change_Animation() override;
     virtual HRESULT Add_Components() override;
     virtual void Set_ParentMatrix(const _float& fTimeDelta) override;
+    HRESULT Add_Objects();
+
+private:
+    class CSocketModel* m_pWeapon = { nullptr };
 
 private:
     _uint Change_Dir();

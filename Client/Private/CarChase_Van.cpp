@@ -38,14 +38,16 @@ HRESULT CCarChase_Van::Initialize(void* pArg)
 
 void CCarChase_Van::Priority_Tick(const _float& fTimeDelta)
 {
-	m_pShotGun->Priority_Tick(fTimeDelta);
+	if (nullptr != m_pShotGun)
+		m_pShotGun->Priority_Tick(fTimeDelta);
 }
 
 void CCarChase_Van::Tick(const _float& fTimeDelta)
 {
 	__super::Tick(fTimeDelta);
 
-	m_pShotGun->Tick(fTimeDelta);
+	if (nullptr != m_pShotGun)
+		m_pShotGun->Tick(fTimeDelta);
 }
 
 void CCarChase_Van::Late_Tick(const _float& fTimeDelta)
@@ -57,7 +59,8 @@ void CCarChase_Van::Late_Tick(const _float& fTimeDelta)
 
 	__super::Late_Tick(fTimeDelta);
 
-	m_pShotGun->Late_Tick(fTimeDelta);
+	if (nullptr != m_pShotGun)
+		m_pShotGun->Late_Tick(fTimeDelta);
 }
 
 void CCarChase_Van::Change_Animation()
@@ -228,12 +231,15 @@ HRESULT CCarChase_Van::Add_Components()
 
 HRESULT CCarChase_Van::Add_Objects()
 {
-	CSocketObject::SOCKETOBJECT_DESC Desc{};
-	Desc.pParentMatrix = m_pParentMatrix;
-	Desc.pCombinedTransformationMatrix = m_pModelCom->Get_BoneCombinedTransformationMatrix("buki_r_n");
-	Desc.fRotatePecSec = XMConvertToRadians(90.f);
-	Desc.fSpeedPecSec = 1.f;
-	m_pShotGun = dynamic_cast<CShotGun*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_ShotGun"), &Desc));
+	if (m_iWeaponType != DRV)
+	{
+		CSocketObject::SOCKETOBJECT_DESC Desc{};
+		Desc.pParentMatrix = m_pParentMatrix;
+		Desc.pCombinedTransformationMatrix = m_pModelCom->Get_BoneCombinedTransformationMatrix("buki_r_n");
+		Desc.fRotatePecSec = XMConvertToRadians(90.f);
+		Desc.fSpeedPecSec = 1.f;
+		m_pShotGun = dynamic_cast<CShotGun*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_ShotGun"), &Desc));
+	}
 
 	return S_OK;
 }

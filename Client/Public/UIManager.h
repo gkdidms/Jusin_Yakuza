@@ -69,6 +69,7 @@ public: //타이틀 용
     _bool isTitleStart();
     void Start_Title(_int iIndex);
     _bool isTitleEnd();
+    _bool isBattleStart();
 
 public: //페이드인페이드아웃
     _bool isFindFinished();

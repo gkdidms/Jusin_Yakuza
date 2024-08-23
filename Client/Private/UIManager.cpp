@@ -130,6 +130,13 @@ _bool CUIManager::isTitleEnd()
 	return pScene->isEnd();
 }
 
+_bool CUIManager::isBattleStart()
+{
+	CUITitle* pScene = dynamic_cast<CUITitle*>(Find_Scene(TEXT("Title")));
+
+	return pScene->isBattleStart();
+}
+
 _bool CUIManager::isFindFinished()
 {
 	CUIFade* pScene = dynamic_cast<CUIFade*>(Find_Scene(TEXT("Fade")));

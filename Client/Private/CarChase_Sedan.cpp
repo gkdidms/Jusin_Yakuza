@@ -5,6 +5,8 @@
 
 #include "AI_Sedan.h"
 
+#include "SocketModel.h"
+
 CCarChase_Sedan::CCarChase_Sedan(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CCarChase_Monster{ pDevice, pContext }
 {
@@ -26,6 +28,9 @@ HRESULT CCarChase_Sedan::Initialize(void* pArg)
 		return E_FAIL;
 
 	m_iDir = Change_Dir();
+
+	if (FAILED(Add_Objects()))
+		return E_FAIL;
 
 	return S_OK;
 }
@@ -541,6 +546,30 @@ void CCarChase_Sedan::Set_ParentMatrix(const _float& fTimeDelta)
 	XMStoreFloat4x4(&m_ModelWorldMatrix, m_pTransformCom->Get_WorldMatrix() * ParentMatrix);
 }
 
+HRESULT CCarChase_Sedan::Add_Objects()
+{
+	if (GUN_L == m_iWeaponType)
+	{
+		CSocketObject::SOCKETOBJECT_DESC Desc{};
+		Desc.pParentMatrix = m_pParentMatrix;
+		Desc.pCombinedTransformationMatrix = m_pModelCom->Get_BoneCombinedTransformationMatrix("buki_l_n");
+		Desc.fRotatePecSec = XMConvertToRadians(90.f);
+		Desc.fSpeedPecSec = 1.f;
+		m_pWeapon = dynamic_cast<CSocketModel*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Gun_Cz75"), &Desc));
+	}
+	else if (GUN_R == m_iWeaponType)
+	{
+		CSocketObject::SOCKETOBJECT_DESC Desc{};
+		Desc.pParentMatrix = m_pParentMatrix;
+		Desc.pCombinedTransformationMatrix = m_pModelCom->Get_BoneCombinedTransformationMatrix("buki_r_n");
+		Desc.fRotatePecSec = XMConvertToRadians(90.f);
+		Desc.fSpeedPecSec = 1.f;
+		m_pWeapon = dynamic_cast<CSocketModel*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Gun_Cz75"), &Desc));
+	}
+
+	return S_OK;
+}
+
 _uint CCarChase_Sedan::Change_Dir()
 {
 	//몬스터가 플레이어 왼쪽에 있다면
@@ -595,4 +624,6 @@ CGameObject* CCarChase_Sedan::Clone(void* pArg)
 void CCarChase_Sedan::Free()
 {
 	__super::Free();
+
+	Safe_Release(m_pWeapon);
 }

@@ -22,6 +22,7 @@ protected:
 protected:
     bool                m_bSceneChange = { false };
     _bool m_isStart = { false };
+    _bool m_isTitleEnd = { false };
 
 public:
     virtual void Free() override;

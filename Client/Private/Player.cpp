@@ -2415,7 +2415,6 @@ void CPlayer::Setting_Target_Enemy()
 		{
 			vector<CMonster*> pMonsters = dynamic_cast<CMonsterGroup*>(pGroup)->Get_Monsters();
 
-
 			for (auto& pMonster : pMonsters)
 			{
 				if (nullptr != m_pTargetObject)
@@ -2486,7 +2485,6 @@ void CPlayer::Setting_Target_Enemy()
 
 		}
 	}
-
 }
 
 void CPlayer::Setting_Target_Item()
