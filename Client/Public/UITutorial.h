@@ -34,6 +34,7 @@ public:
 public:
     void Set_State(_uint iState);
     _bool isShow(_uint iUIType) { return m_iState == iUIType; }
+    _bool isAnimFinished() { return m_isStartEnd; }
     void Set_Text(wstring strText);
 
 public:
@@ -45,6 +46,7 @@ public:
 
 private:
     _uint m_iState = { TOTU_END };
+    _bool m_isStartEnd = { false };
 
 public:
     static CUITutorial* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg = nullptr);

@@ -243,7 +243,8 @@ void CPlayer::Tick(const _float& fTimeDelta)
 	}
 	if (m_pGameInstance->GetKeyState(DIK_Q) == TAP)
 	{
-		m_pUIManager->Close_Scene();
+		if (m_pGameInstance->Get_CurrentLevel() != LEVEL_TUTORIAL)
+			m_pUIManager->Close_Scene();
 	}
 	if (m_pGameInstance->GetMouseState(DIM_LB) == TAP)
 	{
@@ -2399,13 +2400,14 @@ void CPlayer::Effect_Control_Aura()
 	}
 }
 
+
 void CPlayer::Setting_Target_Enemy()
 {
-	if (2 == m_iCurrentBehavior) return; 
+	if (2 == m_iCurrentBehavior) return;
 
 	if (m_pGameInstance->Get_CurrentLevel() == LEVEL_TUTORIAL)
 	{
-		auto pMonsterGroups = m_pGameInstance->Get_GameObjects(m_iCurrentLevel, TEXT("Layer_Monster"));
+		auto pMonsterGroups = m_pGameInstance->Get_GameObjects(m_iCurrentLevel, TEXT("Layer_MonsterGroup"));
 
 		for (auto& pGroup : pMonsterGroups)
 		{
@@ -2481,7 +2483,6 @@ void CPlayer::Setting_Target_Enemy()
 
 		}
 	}
-	
 }
 
 void CPlayer::Setting_Target_Item()

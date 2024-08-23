@@ -50,6 +50,9 @@ void CFightManager::Set_FightStage(_bool isFightStage, CMonsterGroup* pMonsterGr
 		case LEVEL_TEST:			//테스트용으로 그냥 암거나넣음
 			iTitleIndex = 15;
 			break;
+		case LEVEL_TUTORIAL:			//야큐자
+			iTitleIndex = 13;
+			break;
 		case LEVEL_STREET:			//삥쟁
 		{
 			// 거리에서 만난상황이면 야쿠자
@@ -119,6 +122,20 @@ void CFightManager::Tick(const _float& fTimeDelta)
 		//vector<CGameObject*> Monsters = m_pGameInstance->Get_GameObjects(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_MonsterGroup"));
 		if (m_pGameInstance->Get_CurrentLevel() == LEVEL_TUTORIAL)
 		{
+			if (m_isTutorialEnd)
+			{
+				m_fFinishTime += fTimeDelta;
+
+				if (m_fFinishDuration < m_fFinishTime)
+				{
+					Safe_Release(m_pCurrentMonsterGroup);
+					m_isFightStage = false;
+					m_pGameInstance->Set_InvertColor(false);
+					return;
+				}
+				m_pGameInstance->Set_InvertColor(true);
+			}
+
 			if (m_pUIManager->isTitleEnd())
 			{
 				if (!m_pUIManager->isOpen(TEXT("Tutorial")))
@@ -126,9 +143,15 @@ void CFightManager::Tick(const _float& fTimeDelta)
 					m_pTutorialManager->Start_Tutorial();
 					return;
 				}
-					
-				m_pTutorialManager->Tick();
+				
+				//아래에 있는 코드 복붙. 전투 끝.
+				if (m_pTutorialManager->Tick())
+				{
+					m_isTutorialEnd = true;
+				}
 			}
+
+			return;
 		}
 
 		vector<CMonster*> Monsters = m_pCurrentMonsterGroup->Get_Monsters();
@@ -152,6 +175,7 @@ void CFightManager::Tick(const _float& fTimeDelta)
 				Safe_Release(m_pCurrentMonsterGroup);
 				m_isFightStage = false;
 				m_pGameInstance->Set_InvertColor(false);
+				return;
 			}
 			m_pGameInstance->Set_InvertColor(true);
 		}

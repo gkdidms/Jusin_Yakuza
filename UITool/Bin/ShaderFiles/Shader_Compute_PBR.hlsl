@@ -56,11 +56,6 @@ float3 LinearToGamma(float3 color, float fGamma)
 }
 
 //F
-float3 FresnelSchlick(float cosTheta, float3 R0)
-{
-    return R0 + (1.f - R0) * pow(1.f - cosTheta, 5.0);
-}
-
 float3 FresnelSchlickRoughness(float cosTheta, float3 F0, float roughness)
 {
     return F0 + (max(float3(1.0 - roughness, 1.0 - roughness, 1.0 - roughness), F0) - F0) * pow(1.0 - cosTheta, 5.0);
@@ -157,11 +152,11 @@ float3 CookTorranceBRDF(float3 vNormal, float3 vLook, float roughness, float3 F0
     
     float NDF = DistributionGGX(vNormal, vHalfway, roughness, PI); // GGX Normal Distribution Function
     float G = GeometrySmith(vNormal, vLook, vLightDirection.xyz, roughness); // Geometry function
-    float3 F = FresnelSchlick(max(dot(vHalfway, vLook), 0.0), F0); // Fresnel Schlick
+    float3 F = FresnelSchlickRoughness(max(dot(vHalfway, vLook), 0.0), F0, roughness); // Fresnel Schlick
 
     float3 numerator = NDF * G * F;
     float denominator = 4.0 * max(dot(vNormal, vLook), 0.0) * max(dot(vNormal, vLightDirection.xyz), 0.0) + 0.001; // Avoid division by 0
-    return float3(0.f, 0.f, 0.f) + (numerator / denominator);
+    return numerator / denominator;
 }
 
 float3 OESpecular(float4 vPosition, int2 vTexcoord, float3 vNormal, float3 vLook)

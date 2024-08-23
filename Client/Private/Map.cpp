@@ -163,6 +163,7 @@ void CMap::Late_Tick(const _float& fTimeDelta)
 	m_vStrongBloomIndex.clear();
 	m_vCompulsoryDecalBlendMeshIndex.clear();
 
+
 	if (m_pGameInstance->Get_CurrentLevel() == LEVEL_TUTORIAL ||
 		m_pGameInstance->Get_CurrentLevel() == LEVEL_NISHIKIWALK ||
 		m_pGameInstance->Get_CurrentLevel() == LEVEL_TOKOSTREET || m_pGameInstance->Get_CurrentLevel() == LEVEL_TEST)

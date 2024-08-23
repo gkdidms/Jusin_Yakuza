@@ -51,6 +51,8 @@ private:
     _uint m_iState = { TUTORIAL_STATE_END };
     _uint m_iTutorialIndex = { 0 };
 
+    _bool m_isStart = { true };
+
 public:
     static CTutorial* Create(void* pArg);
     virtual void Free();
