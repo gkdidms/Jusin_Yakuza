@@ -384,22 +384,19 @@ void CMonster::Tick(const _float& fTimeDelta)
 		CTransform* pTrasnform = dynamic_cast<CTransform*>(m_pGameInstance->Get_GameObject_Component(m_iCurrentLevel, TEXT("Layer_Player"), TEXT("Com_Transform"), 0));
 		m_pTransformCom->Set_WorldMatrix(pTrasnform->Get_WorldMatrix());
 
-		if (!m_isKeepSynchronizing && m_pAnimCom[m_iCurrentAnimType]->Get_AnimFinished())
+		if (m_pAnimCom[m_iCurrentAnimType]->Get_CurrentAnimIndex() == 579)			//[579]	[p_kru_sync_lapel_nage]
 		{
-			if (m_pAnimCom[m_iCurrentAnimType]->Get_CurrentAnimIndex() == 579)			//[579]	[p_kru_sync_lapel_nage]
-			{
-				if(Checked_Animation_Ratio(0.5f))
-				{
-					Setting_SyncAnim_EndPosition();
-					m_isSynchronizing = false;
-				}
-			}
-			else
+			if (Checked_Animation_Ratio(0.4f))
 			{
 				Setting_SyncAnim_EndPosition();
 				m_isSynchronizing = false;
 			}
-			
+		}
+
+		if (!m_isKeepSynchronizing && m_pAnimCom[m_iCurrentAnimType]->Get_AnimFinished())
+		{
+			Setting_SyncAnim_EndPosition();
+			m_isSynchronizing = false;
 		}
 	}
 

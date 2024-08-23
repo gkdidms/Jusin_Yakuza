@@ -891,7 +891,6 @@ void CPlayer::Ready_RootFalseAnimation()
 	m_RootFalseAnims.push_back(564);		// [564]	p_krs_stand_btl_en[p_krs_stand_btl_en]
 	m_RootFalseAnims.push_back(751);		// [751]	[p_wpc_stand]
 
-	m_RootFalseAnims.push_back(584);		// [584] [p_kru_sync_lapel_st]
 	m_RootFalseAnims.push_back(578);		// [578] [p_kru_sync_lapel_lp]
 	m_RootFalseAnims.push_back(579);		// [579] [p_kru_sync_lapel_nage]
 }
