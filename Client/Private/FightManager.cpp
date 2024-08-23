@@ -25,6 +25,7 @@ CFightManager::CFightManager()
 void CFightManager::Set_FightStage(_bool isFightStage, CMonsterGroup* pMonsterGroup)
 {
 	m_isFightStage = isFightStage;
+	m_isInverseEnd = false;
 
 	if (m_isFightStage)
 	{
@@ -212,6 +213,7 @@ _bool CFightManager::Tick(const _float& fTimeDelta)
 				if (m_fFinishDuration < m_fFinishTime)
 				{
 					m_fFinishTime = 0.f;
+					m_isInverseEnd = true;
 					m_isFightStage = false;
 					m_pGameInstance->Set_InvertColor(false);
 

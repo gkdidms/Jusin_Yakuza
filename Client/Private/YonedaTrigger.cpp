@@ -2,6 +2,7 @@
 
 #include "Player.h"
 #include "Yoneda.h"
+#include "Navigation.h"
 
 CYonedaTrigger::CYonedaTrigger(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CTrigger{ pDevice, pContext }
@@ -44,28 +45,50 @@ void CYonedaTrigger::Tick(const _float& fTimeDelta)
 		//충돌 시 요네다에게 싱크 액션 전달
 		if (m_pColliderCom->Intersect(pPlayer->Get_PlayerCollider(), 3))
 		{
-			if (m_pGameInstance->GetKeyState(DIK_G) == TAP)
+			m_isColl = true;
+		}
+		else if (m_isColl && m_iCollCount < 1)				//충돌했다가 떨어지면
+		{
+			m_iCollCount++;
+			m_isColl = false;
+
+			// 요네다 트리거는 밟으면 요네다를 생성한다.
+
+			//YONEDA_H,                   //A60300 요네다 등장
+			//YONEDA_DOWN_ATTACK,         //A60330 요네다 복도
+			//YONEDA_DOSU,                //a60350 요네다 화장실
+			CPlayer::CUTSCENE_ANIMATION_TYPE eType = CPlayer::YONEDA_H;
+			if (m_tTriggerDesc.iTriggerID == 1000)
+				eType = CPlayer::YONEDA_H;
+			else if (m_tTriggerDesc.iTriggerID == 1001)
+				eType = CPlayer::YONEDA_DOWN_ATTACK;
+			else if (m_tTriggerDesc.iTriggerID == 1002)
+				eType = CPlayer::YONEDA_DOSU;
+
+			CYoneda* pYoneda = { nullptr };
+
+			// 복도 컷신을 제외하고는 새로생성해야함.
+			if (m_tTriggerDesc.iTriggerID != 1001)
 			{
-				CYoneda* pYoneda = dynamic_cast<CYoneda*>(m_pGameInstance->Get_GameObject(m_iCurrentLevel, TEXT("Layer_Yoneda"), 0));
-				pYoneda->Set_TriggerQte(m_tTriggerDesc.iYonedaKnife, m_tTriggerDesc.iTriggerID);
-
-				//MONSTER_A60300_000_2 : 1000
-				// 
-				//YONEDA_H,                   //A60300 요네다 등장
-				//YONEDA_DOWN_ATTACK,         //A60330 요네다 복도
-				//YONEDA_DOSU,                //a60350 요네다 화장실
-				CPlayer::CUTSCENE_ANIMATION_TYPE eType = CPlayer::YONEDA_H;
-				if (m_tTriggerDesc.iTriggerID == 1000)
-					eType = CPlayer::YONEDA_H;
-				else if(m_tTriggerDesc.iTriggerID == 1001)
-					eType = CPlayer::YONEDA_DOWN_ATTACK;
-				else if(m_tTriggerDesc.iTriggerID == 1002)
-					eType = CPlayer::YONEDA_DOSU;
-
-				pPlayer->Set_CutSceneAnim(eType, 1);
-
-				pYoneda->Get_TransformCom()->Set_State(CTransform::STATE_POSITION, pPlayer->Get_TransformCom()->Get_State(CTransform::STATE_POSITION));
+				Create_Yoneda();
 			}
+
+			// 요네다가 없다면 만들고나서 저장해줘야한다.
+			pYoneda = dynamic_cast<CYoneda*>(m_pGameInstance->Get_GameObject(m_iCurrentLevel, TEXT("Layer_Yoneda"), 0));
+			pPlayer->Set_TargetObject(pYoneda);
+			pYoneda->Get_TransformCom()->Set_State(CTransform::STATE_POSITION, pPlayer->Get_TransformCom()->Get_State(CTransform::STATE_POSITION));
+
+			// 복도씬이라면 리셋해주기
+			if (m_tTriggerDesc.iTriggerID == 1001)
+			{
+				pYoneda->Reset_Monster();
+			}
+
+			dynamic_cast<CNavigation*>(pYoneda->Get_Component(TEXT("Com_Navigation")))->Set_Index(
+				dynamic_cast<CNavigation*>(pYoneda->Get_Component(TEXT("Com_Navigation")))->Find_PlayerMonster_Index(m_pTransformCom->Get_State(CTransform::STATE_POSITION)));
+			pYoneda->Set_TriggerQte(m_tTriggerDesc.iYonedaKnife, m_tTriggerDesc.iTriggerID);
+
+			pPlayer->Set_CutSceneAnim(eType, 1);
 		}
 	}
 
@@ -87,6 +110,22 @@ HRESULT CYonedaTrigger::Render()
 bool CYonedaTrigger::Move_Scene(int& iLevelNum)
 {
 	return false;
+}
+
+HRESULT CYonedaTrigger::Create_Yoneda()
+{
+	CYoneda::MONSTER_IODESC		monsterDesc;
+	monsterDesc.vStartPos = m_pTransformCom->Get_WorldMatrix();
+	monsterDesc.wstrModelName = TEXT("Yoneda");
+
+	monsterDesc.fSpeedPecSec = 10.f;
+	monsterDesc.fRotatePecSec = XMConvertToRadians(0.f);
+	monsterDesc.fRotatePecSec = XMConvertToRadians(180.f);
+
+	if (FAILED(m_pGameInstance->Add_GameObject(m_iCurrentLevel, TEXT("Prototype_GameObject_Yoneda"), TEXT("Layer_Yoneda"), &monsterDesc)))
+		return E_FAIL;
+
+	return S_OK;
 }
 
 HRESULT CYonedaTrigger::Add_Components(void* pArg)

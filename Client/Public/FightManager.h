@@ -19,10 +19,11 @@ private:
 public:
 	_bool isFightStage() { return m_isFightStage; }
 	_bool isStreetFight() { return m_isStreetFight; }
+	_bool isInverseEnd() { return m_isInverseEnd; }
 
 public:
 	void Set_FightStage(_bool isFightStage, class CMonsterGroup* pMonsterGroup = nullptr);
-	void Set_StreetFight(_bool isStreetFight) { m_isStreetFight = isStreetFight; }
+	void Set_StreetFight(_bool isStreetFight) { m_isStreetFight = isStreetFight; m_isInverseEnd = false; }
 
 public:
 	HRESULT Initialize();
@@ -46,6 +47,7 @@ private:
 	_float m_fFinishTime = { 0.f };
 
 	_bool m_isTitleEnd = { false };
+	_bool m_isInverseEnd = { false };
 
 	_bool m_isTutorialEnd = { false };
 	_bool m_isTutorialStart = { false };

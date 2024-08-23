@@ -45,6 +45,7 @@ HRESULT CLevel_Office1F::Initialize()
 
 	m_pUIManager->Fade_Out();
 	m_pSystemManager->Set_Camera(CAMERA_PLAYER);
+	m_pFightManager->Set_FightStage(true);
 
 	return S_OK;
 }
@@ -55,8 +56,8 @@ void CLevel_Office1F::Tick(const _float& fTimeDelta)
 	{
 		if (m_pUIManager->isFindFinished())
 		{
+			m_pUIManager->Close_Scene(TEXT("Fade"));
 			m_pFightManager->Set_FightStage(true);
-			m_isStart = true;
 		}
 	}
 
@@ -70,7 +71,10 @@ void CLevel_Office1F::Tick(const _float& fTimeDelta)
 		else
 		{
 			if (m_pUIManager->isFindFinished())
+			{
 				m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_OFFICE_2F));
+				return;
+			}
 		}
 	}
 	
@@ -97,10 +101,10 @@ void CLevel_Office1F::Tick(const _float& fTimeDelta)
 	}
 #endif // _DEBUG
 
-	if (m_pFightManager->Tick(fTimeDelta))
-	{
-		m_bSceneChange = true;
-	}
+	//if (m_pFightManager->Tick(fTimeDelta))
+	//{
+	//	m_bSceneChange = true;
+	//}
 
 	if (!m_isTitleEnd && m_pUIManager->isBattleStart())
 	{
@@ -117,8 +121,6 @@ void CLevel_Office1F::Tick(const _float& fTimeDelta)
 
 HRESULT CLevel_Office1F::Ready_Camera(const wstring& strLayerTag)
 {
-	m_pFileTotalManager->Reset_Cinemachine();
-
 	/* 카메라 추가 시 Debug Camera를 첫번째로 놔두고 추가해주세요 (디버깅 툴에서 사용중)*/
 	const _float4x4* pPlayerFloat4x4 = dynamic_cast<CTransform*>(m_pGameInstance->Get_GameObject_Component(LEVEL_OFFICE_1F, TEXT("Layer_Player"), TEXT("Com_Transform", 0)))->Get_WorldFloat4x4();
 

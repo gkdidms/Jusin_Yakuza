@@ -157,6 +157,12 @@ public:
 
     void Set_PlayerStop(_bool isStop) { m_isStop = isStop; }
 
+
+    void Set_TargetObject(class CGameObject* pTargetObject) {
+        m_pTargetObject = reinterpret_cast<CMonster*>(m_pTargetObject);
+    }
+
+
     /* Getter */
 public:
     _uint Get_BattleStyle() { return m_eCurrentStyle; }
