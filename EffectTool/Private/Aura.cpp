@@ -338,6 +338,8 @@ HRESULT CAura::Add_Components()
 HRESULT CAura::Bind_ShaderResources()
 {
 
+
+
 	if (FAILED(m_pTransformCom->Bind_ShaderMatrix(m_pShaderCom, "g_WorldMatrix")))
 		return E_FAIL;
 

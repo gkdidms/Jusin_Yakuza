@@ -459,8 +459,29 @@ HRESULT CLoader::Loading_For_TestLevel()
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/e_j_0333_kenatugray_fine.dds"), 1))))
 		return E_FAIL;
 
+#pragma endregion
 
+#pragma region Fire_Texture
+	/* Prototype_Component_Texture_FireRoundA */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Texture_FireRoundA"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/Fire/e_j_0081_fireGround02.dds"), 1))))
+		return E_FAIL;
 	
+	/* Prototype_Component_Texture_FireRoundB */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Texture_FireRoundB"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/Fire/e_j_0081_fireGround11.dds"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_FireRoundC */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Texture_FireRoundC"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/Fire/e_j_0070_fireani_aa.dds"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_RoopSmoke */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Texture_RoopSmoke"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/Fire/e_f_0014_roop_smoke01.dds"), 1))))
+		return E_FAIL;
+
 #pragma endregion
 
 

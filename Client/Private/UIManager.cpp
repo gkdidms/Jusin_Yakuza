@@ -519,3 +519,10 @@ void CUIManager::Set_Score(_uint iScore)
 		dynamic_cast<CUIKaraoke_Score*>(m_PlayScene.back())->Set_Score(iScore);
 	}
 }
+
+void CUIManager::Change_Style(_uint iStyle)
+{
+	CUILife* pScene = dynamic_cast<CUILife*>(Find_Scene(TEXT("Life")));
+
+	pScene->Change_Style(iStyle);
+}

@@ -59,12 +59,6 @@ void CUILife::Update_PlayerInfo()
 		return;
 
 
-	_int Bts= pPlayer->Get_BattleStyle()-1;
-	if (-1 == Bts)
-		Bts = m_iBts;
-	
-	m_iBts = Bts;
-
 	m_iHitLevel = pPlayer->Get_CurrentHitLevel()+1;
 
 	//advbenture , krs , krh, krc 기본 , 불한당, 러쉬 , 파괴자.
@@ -108,6 +102,28 @@ void CUILife::Update_PlayerInfo()
 	 dynamic_cast<CGroup*>(m_EventUI[NUM])->Show_Choice(m_iHitLevel-1);
 	 dynamic_cast<CGroup*>(m_EventUI[LIGHT])->Show_Choice(m_iBts);
 
+
+
+
+
+	   
+}
+
+void CUILife::Change_Style(_uint iStyle)
+{
+	_int Bts = iStyle-1;
+
+	if (-1 == Bts)	
+		Bts = m_iBts;	
+
+	m_iBts = Bts;	
+
+	m_EventUI[m_iBts]->Show_UI();
+
+	for (size_t i = 0; i < 3; i++)
+	{
+		m_EventUI[i]->Set_isPlay(true);
+	}
 
 }
 
