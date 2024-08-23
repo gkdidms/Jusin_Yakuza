@@ -1,5 +1,6 @@
-#include "Engine_Shader_Defines.hlsli"
+#include "Shader_Neo.hlsli"
 
+/*
 matrix g_WorldMatrix, g_ViewMatrix, g_ProjMatrix;
 
 float g_fProgress;
@@ -8,11 +9,12 @@ float g_iSpriteIndex;
 float2 g_fUVCount;
 float g_fCurTime;
 
-Texture2D g_Texture;
+
 Texture2D g_DiffuseTexture;
+*/
 bool g_isAttach;
 
-float g_fFar = 3000.f;
+//float g_fFar = 3000.f;
 
 struct VS_IN
 {
@@ -177,10 +179,9 @@ struct PS_NOBLENDER_OUT
     vector vDiffuse : SV_TARGET0;
     vector vNormal : SV_TARGET1;
     vector vDepth : SV_TARGET2;
-    vector vRM : SV_TARGET3;
-    vector vRS : SV_Target4;
-    vector vMulti : SV_Target5;
-    vector vRD : SV_Target6;
+    vector vSurface : SV_TARGET3; // vector(metallic, goughness, speculer, 0.f)
+    vector vOEShader : SV_Target4;
+    vector vSpecular : SV_Target5;
 };
 
 
@@ -216,11 +217,30 @@ PS_NOBLENDER_OUT PS_NONBLEDNER(PS_NOBLENDER_IN In)
 
     vector vParticle = g_Texture.Sample(LinearSampler, In.vTexcoord);
     
+    vector vMulti = vector(0.f, 1.f, 0.f, 1.f);
+    vector vRD = vector(1.f, 1.f, 1.f, 1.f);
+    vector vRS = vector(1.f, 1.f, 1.f, 1.f);
+    vector vRM = vector(0.5f, 1.f, 0.5f, 1.f);
+    vector vRT = vector(0.5f, 0.5f, 1.f, 0.5f);
+    
+    //Neo Shader
+    float fFactor = RepeatingPatternBlendFactor(vMulti);
+    vector vDiffuse = DiffusePortion(vParticle, vRS, vRD, fFactor, In.vTexcoord);
+    
+    COMBINE_OUT Result = Neo_MetallicAndGlossiness(vMulti, vRM); // Metallic, Rouhness 최종
+    vDiffuse = Get_Diffuse(vMulti.a, vDiffuse); // Diffuse 최종
+
+    //OE_SPECULAR OEResult = Neo_OE_Specular(vMulti, vRM, vRS);
+    //float fMixMultiFactor = lerp(vMulti.y, 1.f, AssetShader);
+    //float fDeffuseFactor = vParticle.a * 1.f;
+    
     Out.vDiffuse = vParticle;
     if(Out.vDiffuse.a<0.1f)
        discard;
     Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_fFar, 0.f, 0.f);
     Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
+    Out.vSurface = vector(Result.fMetalness, Result.fRoughness, Result.fSpeclure, Result.fFactor);
+    
     return Out;
 }
 
