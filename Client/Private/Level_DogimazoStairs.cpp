@@ -36,7 +36,7 @@ HRESULT CLevel_DogimazoStairs::Initialize()
 	m_pFileTotalManager->Set_MapObj_In_Client(STAGE_DOGIMAZO_STAIRS, LEVEL_DOGIMAZO_STAIRS);
 	m_pFileTotalManager->Set_Lights_In_Client(STAGE_DOGIMAZO_STAIRS);
 	m_pFileTotalManager->Set_Collider_In_Client(STAGE_DOGIMAZO_STAIRS, LEVEL_DOGIMAZO_STAIRS);
-	m_pFileTotalManager->Set_Trigger_In_Client(STAGE_DOGIMAZO_STAIRS, LEVEL_DOGIMAZO_STAIRS);
+	//m_pFileTotalManager->Set_Trigger_In_Client(STAGE_DOGIMAZO_STAIRS, LEVEL_DOGIMAZO_STAIRS);
 
 	if (FAILED(Ready_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
@@ -130,6 +130,20 @@ HRESULT CLevel_DogimazoStairs::Ready_Camera(const wstring& strLayerTag)
 	PlayerCameraDesc.iCurLevel = LEVEL_DOGIMAZO_STAIRS;
 
 	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_DOGIMAZO_STAIRS, TEXT("Prototype_GameObject_PlayerCamera"), strLayerTag, &PlayerCameraDesc)))
+		return E_FAIL;
+
+	/* 3. 컷신용 카메라 */
+	CCamera::CAMERA_DESC		CutSceneCameraDesc{};
+	CutSceneCameraDesc.vEye = _float4(1.0f, 20.0f, -20.f, 1.f);
+	CutSceneCameraDesc.vFocus = _float4(0.f, 0.0f, 0.0f, 1.f);
+	CutSceneCameraDesc.fFovY = XMConvertToRadians(60.0f);
+	CutSceneCameraDesc.fAspect = g_iWinSizeX / (_float)g_iWinSizeY;
+	CutSceneCameraDesc.fNear = 0.1f;
+	CutSceneCameraDesc.fFar = 300.f;
+	CutSceneCameraDesc.fSpeedPecSec = 10.f;
+	CutSceneCameraDesc.fRotatePecSec = XMConvertToRadians(90.f);
+
+	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_DOGIMAZO_STAIRS, TEXT("Prototype_GameObject_CutSceneCamera"), strLayerTag, &CutSceneCameraDesc)))
 		return E_FAIL;
 
 	return S_OK;
