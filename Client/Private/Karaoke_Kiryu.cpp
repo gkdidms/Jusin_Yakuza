@@ -460,7 +460,7 @@ void CKaraoke_Kiryu::Play_CutScene(const _float& fTimeDelta)
 		m_pCameraModel->Set_AnimationIndex(Desc);
 
 		// 카메라 본 애니메이션 실행
-		m_pCameraModel->Play_Animation_CutScene(fTimeDelta, nullptr, false, m_iCutSceneCamAnimIndex, false, "Camera");
+		m_pCameraModel->Play_Animation_CutScene(fTimeDelta, nullptr, false, m_iCutSceneCamAnimIndex, false);
 	}
 }
 

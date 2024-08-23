@@ -69,9 +69,7 @@ void CYonedaTrigger::Tick(const _float& fTimeDelta)
 
 			// 복도 컷신을 제외하고는 새로생성해야함.
 			if (m_tTriggerDesc.iTriggerID != 1001)
-			{
 				Create_Yoneda();
-			}
 
 			// 요네다가 없다면 만들고나서 저장해줘야한다.
 			pYoneda = dynamic_cast<CYoneda*>(m_pGameInstance->Get_GameObject(m_iCurrentLevel, TEXT("Layer_Yoneda"), 0));
