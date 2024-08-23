@@ -241,7 +241,7 @@ HRESULT CCarChaseManager::Ready_Stage()
 	//CCarChase* pStage6 = CCarChase::Create(&Desc);
 	//if (nullptr == pStage6)
 	//	return E_FAIL;
-
+	// 
 	//m_Stages.emplace_back(pStage6);
 
 

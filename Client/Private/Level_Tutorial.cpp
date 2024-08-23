@@ -60,7 +60,6 @@ HRESULT CLevel_Tutorial::Initialize()
 	m_pFileTotalManager->Load_Cinemachine(14, LEVEL_TUTORIAL);
 	m_pFileTotalManager->Load_Cinemachine(15, LEVEL_TUTORIAL);
 
-
 	m_pSystemManager->Set_Camera(CAMERA_PLAYER);
 	m_pQuestManager->Start_Quest(CQuestManager::CHAPTER_1);
 	
@@ -87,7 +86,7 @@ void CLevel_Tutorial::Tick(const _float& fTimeDelta)
 	}
 
 #ifdef _DEBUG
-	SetWindowText(g_hWnd, TEXT("ÃÑ°ÝÀü ¸Ê"));
+	SetWindowText(g_hWnd, TEXT("Æ©Åä¸®¾ó ¸Ê"));
 #endif
 }
 

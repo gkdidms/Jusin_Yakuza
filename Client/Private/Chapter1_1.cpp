@@ -49,8 +49,8 @@ _bool CChapter1_1::Execute()
 	if (m_pUIManager->isTalkFinished())
 	{
 		m_pNishiki->Set_State(CNishiki::IDLE);
-		dynamic_cast<CPlayerCamera*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Camera"), 0))->Set_RotationBlock(false);
-		dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"), 0))->Set_PlayerStop(false);
+		Player_Stop(false);
+		PlayerCom_Stop(false);
 		return true;
 	}
 

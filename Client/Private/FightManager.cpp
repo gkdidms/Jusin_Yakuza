@@ -25,6 +25,7 @@ CFightManager::CFightManager()
 void CFightManager::Set_FightStage(_bool isFightStage, CMonsterGroup* pMonsterGroup)
 {
 	m_isFightStage = isFightStage;
+	m_isInverseEnd = false;
 
 	if (m_isFightStage)
 	{
@@ -49,6 +50,9 @@ void CFightManager::Set_FightStage(_bool isFightStage, CMonsterGroup* pMonsterGr
 			break;
 		case LEVEL_TEST:			//테스트용으로 그냥 암거나넣음
 			iTitleIndex = 15;
+			break;
+		case LEVEL_TUTORIAL:			//야큐자
+			iTitleIndex = 13;
 			break;
 		case LEVEL_STREET:			//삥쟁
 		{
@@ -108,10 +112,10 @@ HRESULT CFightManager::Initialize()
 	return S_OK;
 }
 
-void CFightManager::Tick(const _float& fTimeDelta)
+_bool CFightManager::Tick(const _float& fTimeDelta)
 {
 	//전투중이 아니면 바로 반환
-	if (!m_isFightStage) return;
+	if (!m_isFightStage) return false;
 
 	//길거리 일 때, 몬스터가 다 죽으면 전투가 끝난다.
 	if (m_isStreetFight)
@@ -119,16 +123,36 @@ void CFightManager::Tick(const _float& fTimeDelta)
 		//vector<CGameObject*> Monsters = m_pGameInstance->Get_GameObjects(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_MonsterGroup"));
 		if (m_pGameInstance->Get_CurrentLevel() == LEVEL_TUTORIAL)
 		{
+			if (m_isTutorialEnd)
+			{
+				m_fFinishTime += fTimeDelta;
+
+				if (m_fFinishDuration < m_fFinishTime)
+				{
+					Safe_Release(m_pCurrentMonsterGroup);
+					m_isFightStage = false;
+					m_pGameInstance->Set_InvertColor(false);
+					return true;
+				}
+				m_pGameInstance->Set_InvertColor(true);
+			}
+
 			if (m_pUIManager->isTitleEnd())
 			{
 				if (!m_pUIManager->isOpen(TEXT("Tutorial")))
 				{
 					m_pTutorialManager->Start_Tutorial();
-					return;
+					return false;
 				}
-					
-				m_pTutorialManager->Tick();
+				
+				//아래에 있는 코드 복붙. 전투 끝.
+				if (m_pTutorialManager->Tick())
+				{
+					m_isTutorialEnd = true;
+				}
 			}
+
+			return false;
 		}
 
 		vector<CMonster*> Monsters = m_pCurrentMonsterGroup->Get_Monsters();
@@ -152,6 +176,7 @@ void CFightManager::Tick(const _float& fTimeDelta)
 				Safe_Release(m_pCurrentMonsterGroup);
 				m_isFightStage = false;
 				m_pGameInstance->Set_InvertColor(false);
+				return true;
 			}
 			m_pGameInstance->Set_InvertColor(true);
 		}
@@ -184,6 +209,7 @@ void CFightManager::Tick(const _float& fTimeDelta)
 				if (m_fFinishDuration < m_fFinishTime)
 				{
 					m_fFinishTime = 0.f;
+					m_isInverseEnd = true;
 					m_isFightStage = false;
 					m_pGameInstance->Set_InvertColor(false);
 
@@ -193,7 +219,7 @@ void CFightManager::Tick(const _float& fTimeDelta)
 					// 스코어 창 닫아줘야하는데, 현재 UI가 쉐이더에 가려지는 문제때문에 디버깅을 위해 끄지않고있는중
 					m_pUIManager->Close_Scene(TEXT("FightScore"));
 						
-					return;
+					return true;
 				}
 				m_pGameInstance->Set_InvertColor(true);
 			}
@@ -216,7 +242,7 @@ void CFightManager::Tick(const _float& fTimeDelta)
 					m_pGameInstance->Set_TimeSpeed(TEXT("Timer_60"), 1.f);
 					m_pGameInstance->Set_TimeSpeed(TEXT("Timer_Player"), 1.f);
 
-					return;
+					return true;
 				}
 #ifdef _DEBUG
 				cout << "흑백 쉐이더 On" << endl;

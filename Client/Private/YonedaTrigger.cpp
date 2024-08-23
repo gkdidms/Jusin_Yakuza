@@ -75,8 +75,8 @@ void CYonedaTrigger::Tick(const _float& fTimeDelta)
 
 			// 요네다가 없다면 만들고나서 저장해줘야한다.
 			pYoneda = dynamic_cast<CYoneda*>(m_pGameInstance->Get_GameObject(m_iCurrentLevel, TEXT("Layer_Yoneda"), 0));
-			pYoneda->Get_TransformCom()->Set_State(CTransform::STATE_POSITION, pPlayer->Get_TransformCom()->Get_State(CTransform::STATE_POSITION));
 			pPlayer->Set_TargetObject(pYoneda);
+			pYoneda->Get_TransformCom()->Set_State(CTransform::STATE_POSITION, pPlayer->Get_TransformCom()->Get_State(CTransform::STATE_POSITION));
 
 			// 복도씬이라면 리셋해주기
 			if (m_tTriggerDesc.iTriggerID == 1001)

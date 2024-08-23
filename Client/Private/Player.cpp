@@ -243,7 +243,8 @@ void CPlayer::Tick(const _float& fTimeDelta)
 	}
 	if (m_pGameInstance->GetKeyState(DIK_Q) == TAP)
 	{
-		m_pUIManager->Close_Scene();
+		if (m_pGameInstance->Get_CurrentLevel() != LEVEL_TUTORIAL)
+			m_pUIManager->Close_Scene();
 	}
 	if (m_pGameInstance->GetMouseState(DIM_LB) == TAP)
 	{
@@ -568,6 +569,8 @@ void CPlayer::Attack_Event(CGameObject* pHitObject, _bool isItem)
 
 			if (m_iCurrentBehavior == (_uint)KRS_BEHAVIOR_STATE::ATTACK)
 			{
+				if (nullptr == m_pTargetObject) return;
+
 				_bool isTargetDead = m_pTargetObject->isObjectDead();
 
 				if (isTargetDead)
@@ -616,6 +619,8 @@ void CPlayer::Attack_Event(CGameObject* pHitObject, _bool isItem)
 
 			if (m_iCurrentBehavior == (_uint)KRC_BEHAVIOR_STATE::ATTACK)
 			{
+				if (nullptr == m_pTargetObject) return;
+
 				if (m_pTargetObject->isObjectDead())
 					HitRadial_On();
 				else if (static_cast<CKiryu_KRC_Attack*>(m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior))->IsFinishBlow())
@@ -1975,6 +1980,8 @@ void CPlayer::Style_Change(BATTLE_STYLE eStyle)
 	m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Reset();
 	m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Change_Animation();
 
+	m_pUIManager->Change_Style(eStyle);
+
 	Off_Aura(eStyle);
 }
 
@@ -2404,13 +2411,14 @@ void CPlayer::Effect_Control_Aura()
 	}
 }
 
+
 void CPlayer::Setting_Target_Enemy()
 {
-	if (2 == m_iCurrentBehavior) return; 
+	if (2 == m_iCurrentBehavior) return;
 
 	if (m_pGameInstance->Get_CurrentLevel() == LEVEL_TUTORIAL)
 	{
-		auto pMonsterGroups = m_pGameInstance->Get_GameObjects(m_iCurrentLevel, TEXT("Layer_Monster"));
+		auto pMonsterGroups = m_pGameInstance->Get_GameObjects(m_iCurrentLevel, TEXT("Layer_MonsterGroup"));
 
 		for (auto& pGroup : pMonsterGroups)
 		{
@@ -2454,8 +2462,8 @@ void CPlayer::Setting_Target_Enemy()
 		{
 			_float vDistance = XMVectorGetX(XMVector3Length(m_pTransformCom->Get_State(CTransform::STATE_POSITION) - m_pTargetObject->Get_TransformCom()->Get_State(CTransform::STATE_POSITION)));
 
-			// 기존 타겟중이던 친구의 거리가 3.f 이상 멀어지면 그때 다시 타겟팅한다.
-			if (3.f < vDistance)
+			// 기존 타겟중이던 친구의 거리가 1.f 이상 멀어지면 그때 다시 타겟팅한다.
+			if (1.f < vDistance)
 			{
 				auto pMosnter = m_pCollisionManager->Get_Near_Object(this, pMonsters);
 				auto pYoneda = m_pCollisionManager->Get_Near_Object(this, pYonedas);
@@ -2486,7 +2494,6 @@ void CPlayer::Setting_Target_Enemy()
 
 		}
 	}
-	
 }
 
 void CPlayer::Setting_Target_Item()

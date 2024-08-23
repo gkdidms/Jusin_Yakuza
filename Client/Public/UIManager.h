@@ -33,6 +33,7 @@ public:
 public: // 튜토리얼 용
     _bool isShowTutorialUI(_uint iUIType);
     _bool isCloseTutorialUIAnim();
+    _bool isTutorialStartEnd();
     void Set_TutorialState(_uint iType);
     void Set_TutorialText(wstring strText);
 
@@ -105,11 +106,18 @@ public: // 스토리 UI
     //카라오케 점수 전달용
 public:
     void Set_Score(_uint iScore);
+
     //파이트 스코어 (돈)
 public:
     void Set_Money(_uint Money) { m_Money = Money; }
     _uint Get_Money() { return m_Money; }
     void Set_AlwayUI(_bool isTrue) { m_isAlways = isTrue; }
+
+    //스타일 교체용(lifeUI)
+    public:
+        void Change_Style(_uint iStyle);
+
+
 private:
 
     ID3D11Device* m_pDevice = { nullptr };

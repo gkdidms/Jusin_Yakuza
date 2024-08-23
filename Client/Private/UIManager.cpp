@@ -60,6 +60,13 @@ _bool CUIManager::isCloseTutorialUIAnim()
 	return pScene->isCloseCurrentUIAnim();
 }
 
+_bool CUIManager::isTutorialStartEnd()
+{
+	CUITutorial* pScene = dynamic_cast<CUITutorial*>(Find_Scene(TEXT("Tutorial")));
+
+	return pScene->isStartEnd();
+}
+
 void CUIManager::Set_TutorialState(_uint iType)
 {
 	CUITutorial* pScene = dynamic_cast<CUITutorial*>(Find_Scene(TEXT("Tutorial")));
@@ -518,4 +525,11 @@ void CUIManager::Set_Score(_uint iScore)
 	{
 		dynamic_cast<CUIKaraoke_Score*>(m_PlayScene.back())->Set_Score(iScore);
 	}
+}
+
+void CUIManager::Change_Style(_uint iStyle)
+{
+	CUILife* pScene = dynamic_cast<CUILife*>(Find_Scene(TEXT("Life")));
+
+	pScene->Change_Style(iStyle);
 }

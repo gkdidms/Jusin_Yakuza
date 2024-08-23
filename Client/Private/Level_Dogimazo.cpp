@@ -39,6 +39,11 @@ HRESULT CLevel_Dogimazo::Initialize()
     m_pFileTotalManager->Set_Collider_In_Client(STAGE_DOGIMAZO, LEVEL_DOGIMAZO);
 	m_pFileTotalManager->Set_Trigger_In_Client(STAGE_DOGIMAZO, LEVEL_DOGIMAZO);			// 요네다 트리거용
 
+	/* 쇼파 몬스터 */
+	m_pFileTotalManager->Set_Trigger_In_Client(40, LEVEL_DOGIMAZO);
+	/* 계단 오른 후 몬스터 */
+	m_pFileTotalManager->Set_Trigger_In_Client(41, LEVEL_DOGIMAZO);
+
 
 	if (FAILED(Ready_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;

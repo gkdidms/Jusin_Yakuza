@@ -39,25 +39,25 @@ HRESULT CSocketCollider::Initialize(void * pArg)
 		{
 		case 0:
 		{
-			m_fDamage = 3.f;			// 원래는 3임
+			m_fDamage = 90.f;			// 원래는 3임
 
 			break;
 		}
 		case 1:
 		{
-			m_fDamage = 10.f;
+			m_fDamage = 16.f;
 
 			break;
 		}
 		case 2:
 		{
-			m_fDamage = 8.f;
+			m_fDamage = 13.f;
 
 			break;
 		}
 		case 3:
 		{
-			m_fDamage = 5.f;
+			m_fDamage = 8.f;
 			break;
 		}
 		}

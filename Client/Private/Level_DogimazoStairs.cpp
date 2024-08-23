@@ -38,6 +38,9 @@ HRESULT CLevel_DogimazoStairs::Initialize()
 	m_pFileTotalManager->Set_Collider_In_Client(STAGE_DOGIMAZO_STAIRS, LEVEL_DOGIMAZO_STAIRS);
 	//m_pFileTotalManager->Set_Trigger_In_Client(STAGE_DOGIMAZO_STAIRS, LEVEL_DOGIMAZO_STAIRS);
 
+	/* 계단 몬스터 */
+	m_pFileTotalManager->Set_Trigger_In_Client(42, LEVEL_DOGIMAZO_STAIRS);
+
 	if (FAILED(Ready_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
 

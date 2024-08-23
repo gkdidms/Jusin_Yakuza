@@ -4,7 +4,7 @@
 #include "SystemManager.h"
 #include "FileTotalMgr.h"
 #include "Collision_Manager.h"
-#include "QuestManager.h"
+#include "UIManager.h"
 
 #include "PlayerCamera.h"
 #include "CineCamera.h"
@@ -17,10 +17,12 @@
 CLevel_Karaoke::CLevel_Karaoke(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     : CLevel { pDevice, pContext },
     m_pSystemManager{ CSystemManager::GetInstance() },
-	m_pFileTotalManager{ CFileTotalMgr::GetInstance() }
+	m_pFileTotalManager{ CFileTotalMgr::GetInstance() },
+	m_pUIManager{ CUIManager::GetInstance()}
 {
     Safe_AddRef(m_pSystemManager);
     Safe_AddRef(m_pFileTotalManager);
+	Safe_AddRef(m_pUIManager);
 }
 
 HRESULT CLevel_Karaoke::Initialize()
@@ -41,6 +43,8 @@ HRESULT CLevel_Karaoke::Initialize()
 	if (FAILED(Ready_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
 
+	m_pUIManager->Fade_Out();
+
 	m_pFileTotalManager->Load_Cinemachine(4, LEVEL_KARAOKE);			// 가만히있는거
 	m_pFileTotalManager->Load_Cinemachine(5, LEVEL_KARAOKE);
 	m_pFileTotalManager->Setting_Start_Cinemachine(4);
@@ -48,35 +52,55 @@ HRESULT CLevel_Karaoke::Initialize()
 	CCineCamera* pCutSceneCamera = dynamic_cast<CCineCamera*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Camera"), CAMERA_CINEMACHINE));
 	pCutSceneCamera->Set_Loop(true);
 
-	m_pKaraokeManager->Set_MusicSelected(true);
-	m_pKaraokeManager->Open_SelectWindow();
-
     return S_OK;
 }
 
 void CLevel_Karaoke::Tick(const _float& fTimeDelta)
 {
-
-	m_pKaraokeManager->Tick(fTimeDelta);
-
-	// 노래시작 시 시네머신 카메라로 전환한다.
-	if (!m_isChanged && m_pGameInstance->Get_SoundStart(TEXT("Bakamita.mp3"), SOUND_BGM))
+	if (m_isStart == false)
 	{
-		m_isChanged = true;
-		m_pSystemManager->Set_Camera(CAMERA_CINEMACHINE);
-		m_pFileTotalManager->Setting_Start_Cinemachine(5);
+		if (m_pUIManager->isFindFinished())
+		{
+			m_pKaraokeManager->Set_MusicSelected(true);
+			m_pKaraokeManager->Open_SelectWindow();
+
+			m_isStart = true;
+		}
 	}
-
-	if (!m_isEnded && m_pGameInstance->Get_SoundEnd(TEXT("Bakamita.mp3"), SOUND_BGM))
+	else
 	{
-		m_isEnded = true;
-		m_pSystemManager->Set_Camera(CAMERA_CINEMACHINE);
-		m_pFileTotalManager->Setting_Start_Cinemachine(4);
+		m_pKaraokeManager->Tick(fTimeDelta);
+
+		// 노래시작 시 시네머신 카메라로 전환한다.
+		if (!m_isChanged && m_pGameInstance->Get_SoundStart(TEXT("Bakamita.mp3"), SOUND_BGM))
+		{
+			m_isChanged = true;
+			m_pSystemManager->Set_Camera(CAMERA_CINEMACHINE);
+			m_pFileTotalManager->Setting_Start_Cinemachine(5);
+		}
+
+		if (!m_isEnded && m_pGameInstance->Get_SoundEnd(TEXT("Bakamita.mp3"), SOUND_BGM))
+		{
+			m_isEnded = true;
+			m_pSystemManager->Set_Camera(CAMERA_CINEMACHINE);
+			m_pFileTotalManager->Setting_Start_Cinemachine(4);
+		}
 	}
 
 	if (m_pKaraokeManager->IsScoreEnd())
 	{
-		m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_KARAOKE_END));
+		if (!m_pUIManager->isOpen(TEXT("Fade")))
+		{
+			m_pUIManager->Open_Scene(TEXT("Fade"));
+			m_pUIManager->Fade_In();
+		}
+		else
+		{
+			if (m_pUIManager->isFindFinished())
+			{
+				m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_KARAOKE_END));
+			}
+		}
 	}
 
 #ifdef _DEBUG
@@ -175,4 +199,5 @@ void CLevel_Karaoke::Free()
     Safe_Release(m_pSystemManager);
     Safe_Release(m_pFileTotalManager);
     Safe_Release(m_pKaraokeManager);
+	Safe_Release(m_pUIManager);
 }

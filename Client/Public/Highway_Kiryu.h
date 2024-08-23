@@ -113,6 +113,8 @@ private:
 
     _float m_fAccReloadTimer = { 0.f };
 
+
+    _bool m_isShot = { false };
 public:
     _float Get_MaxHP() { return m_fMaxHP; }
     _float Get_HP() { return m_fHP; }

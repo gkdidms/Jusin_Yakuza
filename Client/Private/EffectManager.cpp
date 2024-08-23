@@ -24,18 +24,20 @@ void CEffectManager::Car_HitSpark(CEffect::EFFECT_DESC& EffectDesc)
 
 void CEffectManager::Car_Fire(CEffect::EFFECT_DESC& EffectDesc)
 {
-    m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Aura_FireA"), TEXT("Layer_Particle"), &EffectDesc);
+    m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Aura_FireRoundC"), TEXT("Layer_Particle"), &EffectDesc);
     m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Car_Smog"), TEXT("Layer_Particle"), &EffectDesc);
 }
 
 void CEffectManager::Car_Explosion(CEffect::EFFECT_DESC& EffectDesc)
 {
     m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Aura_ExpA"), TEXT("Layer_Particle"), &EffectDesc);
+    m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Aura_FireRoundC"), TEXT("Layer_Particle"), &EffectDesc);
 }
 
 void CEffectManager::Shot_Flash(CEffect::EFFECT_DESC& EffectDesc)
 {
-    m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Aura_ExpB"), TEXT("Layer_Particle"), &EffectDesc);
+    m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Shot_Exp"), TEXT("Layer_Particle"), &EffectDesc);
+    m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Shot_Glow"), TEXT("Layer_Particle"), &EffectDesc);
 }
 
 void CEffectManager::Cine_NoseBlood(CEffect::EFFECT_DESC& EffectDesc)
@@ -66,6 +68,23 @@ void CEffectManager::Money(CEffect::EFFECT_DESC& EffectDesc)
 {
     m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Mesh_Money"), TEXT("Layer_Particle"), &EffectDesc);
     m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Coin"), TEXT("Layer_Particle"), &EffectDesc);
+
+}
+
+void CEffectManager::Heli_Fire(CEffect::EFFECT_DESC& EffectDesc)
+{
+    m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Aura_ExpA"), TEXT("Layer_Particle"), &EffectDesc);
+    m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Aura_HeliFireC"), TEXT("Layer_Particle"), &EffectDesc);
+}
+
+void CEffectManager::Heli_Exp(CEffect::EFFECT_DESC& EffectDesc)
+{
+    m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Aura_Heli_ExpA"), TEXT("Layer_Particle"), &EffectDesc);
+}
+
+void CEffectManager::Heli_BulletExp(CEffect::EFFECT_DESC& EffectDesc)
+{
+    m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Aura_ExpA"), TEXT("Layer_Particle"), &EffectDesc);
 
 }
 

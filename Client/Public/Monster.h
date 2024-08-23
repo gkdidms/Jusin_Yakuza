@@ -246,6 +246,7 @@ public:
     _bool isTutorialAttack() {
         _bool isResult = m_isTutorialAttack;
         m_isTutorialAttack = false;
+        m_Info.fHp = m_Info.fMaxHP; // 초기화 해주기
 
         return isResult;
     }

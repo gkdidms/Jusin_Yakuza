@@ -1007,7 +1007,6 @@ CBTNode::NODE_STATE CAI_Monster::Check_PlayerDown()
 		if (m_iSkill == SKILL_DOWN)
 			m_isAttack = false;
 
-		Reset_State();
 
 		return CBTNode::FAIL;
 	}
@@ -1379,20 +1378,17 @@ CBTNode::NODE_STATE CAI_Monster::ShiftAndIdle()
 	{
 		m_iSkill = SKILL_IDLE;
 	}
+	iCount++;
+
+	if (iCount == 12)
+		m_iSkill = SKILL_SHIFT;
 	else
-	{
-		iCount++;
+		m_iSkill = SKILL_IDLE;
 
-		if (iCount == 12)
-			m_iSkill = SKILL_SHIFT;
-		else
-			m_iSkill = SKILL_IDLE;
+	if (iCount >= 20)
+		iCount = 0;
 
-		if (iCount >= 20)
-			iCount = 0;
-	}
-
-	m_fBreakDuration = m_pGameInstance->Get_Random(2.f, 4.f);
+	m_fBreakDuration = m_pGameInstance->Get_Random(4.f, 7.f);
 
 	return CBTNode::SUCCESS;
 }

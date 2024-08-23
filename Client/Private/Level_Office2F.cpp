@@ -34,14 +34,15 @@ HRESULT CLevel_Office2F::Initialize()
 
 	/* 클라 파싱 */
 	m_pFileTotalManager->Set_MapObj_In_Client(STAGE_OFFICE_2F, LEVEL_OFFICE_2F);
-	m_pFileTotalManager->Set_Lights_In_Client(STAGE_OFFICE_2F);
+	m_pFileTotalManager->Set_Lights_In_Client(99);
 	m_pFileTotalManager->Set_Collider_In_Client(STAGE_OFFICE_2F, LEVEL_OFFICE_2F);
 	m_pFileTotalManager->Set_Trigger_In_Client(STAGE_OFFICE_2F, LEVEL_OFFICE_2F);
 
 	if (FAILED(Ready_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
 
-	m_pFightManager->Initialize();
+	m_pUIManager->Fade_Out();
+	m_pSystemManager->Set_Camera(CAMERA_PLAYER);
 	m_pFightManager->Set_FightStage(true);
 
 	return S_OK	;
@@ -49,6 +50,32 @@ HRESULT CLevel_Office2F::Initialize()
 
 void CLevel_Office2F::Tick(const _float& fTimeDelta)
 {
+	if (m_isStart == false)
+	{
+		if (m_pUIManager->isFindFinished())
+		{
+			m_pUIManager->Close_Scene(TEXT("Fade"));
+			m_pFightManager->Set_FightStage(true);
+		}
+	}
+
+	if (m_bSceneChange)
+	{
+		if (!m_pUIManager->isOpen(TEXT("Fade")))
+		{
+			m_pUIManager->Open_Scene(TEXT("Fade"));
+			m_pUIManager->Fade_In();
+		}
+		else
+		{
+			if (m_pUIManager->isFindFinished())
+			{
+				m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_OFFICE_BOSS));
+				return;
+			}
+		}
+	}
+
 	// 트리거 체크 - 씬 이동
 	vector<CGameObject*> pTriggers = m_pGameInstance->Get_GameObjects(LEVEL_OFFICE_2F, TEXT("Layer_Trigger"));
 
@@ -58,11 +85,10 @@ void CLevel_Office2F::Tick(const _float& fTimeDelta)
 		if (true == dynamic_cast<CTrigger*>(pTriggers[i])->Move_Scene(iLevelNum))
 		{
 			m_bSceneChange = true;
-			m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, (LEVEL)iLevelNum));
 		}
 	}
 
-
+#ifdef _DEBUG
 	if (false == m_bSceneChange)
 	{
 		if (m_pGameInstance->GetKeyState(DIK_RETURN) == TAP)
@@ -71,8 +97,10 @@ void CLevel_Office2F::Tick(const _float& fTimeDelta)
 				return;
 		}
 	}
+#endif // _DEBUG
 
-	m_pFightManager->Tick(fTimeDelta);
+	//if (m_pFightManager->Tick(fTimeDelta))
+	//	m_bSceneChange = true;
 
 	if (!m_isTitleEnd)
 	{
