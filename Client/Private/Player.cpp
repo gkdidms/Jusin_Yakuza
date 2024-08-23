@@ -2139,7 +2139,7 @@ void CPlayer::Set_CutSceneAnim(CUTSCENE_ANIMATION_TYPE eType, _uint iFaceAnimInd
 		j++;
 	}
 
-	if(nullptr != m_pTargetObject)
+	if(nullptr != m_pTargetObject && !m_isCutSceneStartMotion)
 		m_pTargetObject->Set_Sync(m_CutSceneAnimation[m_eCutSceneType]);
 
 	m_pQTEMgr->Set_Animation(m_pAnimCom, m_CutSceneAnimation.at(eType));
