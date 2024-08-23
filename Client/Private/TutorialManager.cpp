@@ -43,6 +43,7 @@ _bool CTutorialManager::Tick()
 
 void CTutorialManager::Start_Tutorial()
 {
+	m_pUIManager->Close_Scene();
 	m_pUIManager->Open_Scene(TEXT("Tutorial"));
 	m_pUIManager->Change_TutorialUI(0);
 }
