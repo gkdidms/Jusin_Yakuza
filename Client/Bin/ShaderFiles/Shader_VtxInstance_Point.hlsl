@@ -272,7 +272,7 @@ void GS_DIRSCALE(point GS_IN In[1], inout TriangleStream<GS_OUT> Triangles)
 [maxvertexcount(6)] //방향성 x
 void GS_DISTORTION(point GS_NOBILL_IN In[1], inout TriangleStream<GS_OUT> Triangles)
 {
-    GS_OUT Out[4] = (GS_OUT[4])0;
+    GS_OUT Out[4];
 
     for (int i = 0; i < 4; ++i)
     {
@@ -329,7 +329,7 @@ void GS_DISTORTION(point GS_NOBILL_IN In[1], inout TriangleStream<GS_OUT> Triang
 [maxvertexcount(6)] //방향성 x
 void GS_NOBILLBOARD(point GS_NOBILL_IN In[1], inout TriangleStream<GS_NOBIL_OUT> Triangles)
 {
-    GS_NOBIL_OUT Out[4] = (GS_NOBIL_OUT[4])0;
+    GS_NOBIL_OUT Out[4];
 
     for (int i = 0; i < 4; ++i)
     {
@@ -394,7 +394,7 @@ void GS_NOBILLBOARD(point GS_NOBILL_IN In[1], inout TriangleStream<GS_NOBIL_OUT>
 [maxvertexcount(6)] //방향성 x
 void GS_FALL(point GS_NOBILL_IN In[1], inout TriangleStream<GS_NOBIL_OUT> Triangles)
 {
-    GS_NOBIL_OUT Out[4] = (GS_NOBIL_OUT[4])0;
+    GS_NOBIL_OUT Out[4];
 
     for (int i = 0; i < 4; ++i)
     {
@@ -510,7 +510,7 @@ float4x4 RotationMatrix(float3 axis, float angle)
 [maxvertexcount(6)] //방향성o 기본 회전 o 지속 회전은넘겨주는 각도를 계속 증가시켜주면될듯
 void GS_ROTSCALE(point GS_IN In[1], inout TriangleStream<GS_OUT> Triangles)
 {
-    GS_OUT Out[4] = (GS_OUT[4])0;
+    GS_OUT Out[4];
 
     for (int i = 0; i < 4; ++i)
     {

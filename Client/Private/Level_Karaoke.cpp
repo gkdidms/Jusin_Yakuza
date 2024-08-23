@@ -40,6 +40,7 @@ HRESULT CLevel_Karaoke::Initialize()
 	if (nullptr == m_pKaraokeManager)
 		return E_FAIL;
 
+	
 	if (FAILED(Ready_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
 
@@ -110,6 +111,8 @@ void CLevel_Karaoke::Tick(const _float& fTimeDelta)
 
 HRESULT CLevel_Karaoke::Ready_Camera(const wstring& strLayerTag)
 {
+	m_pFileTotalManager->Reset_Cinemachine();
+
 	/* 카메라 추가 시 Debug Camera를 첫번째로 놔두고 추가해주세요 (디버깅 툴에서 사용중)*/
 	const _float4x4* pPlayerFloat4x4 = dynamic_cast<CTransform*>(m_pGameInstance->Get_GameObject_Component(LEVEL_KARAOKE, TEXT("Layer_Player"), TEXT("Com_Transform", 0)))->Get_WorldFloat4x4();
 
