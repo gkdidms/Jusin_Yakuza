@@ -6,6 +6,7 @@
 #include "Collision_Manager.h"
 #include "FightManager.h"
 #include "UIManager.h"
+#include "QuestManager.h"
 
 #include "PlayerCamera.h"
 #include "CineCamera.h"
@@ -20,12 +21,14 @@ CLevel_OfficeBoss::CLevel_OfficeBoss(ID3D11Device* pDevice, ID3D11DeviceContext*
     m_pSystemManager{ CSystemManager::GetInstance() },
     m_pFileTotalManager{ CFileTotalMgr::GetInstance() },
 	m_pFightManager{ CFightManager::GetInstance() },
-	m_pUIManager{ CUIManager::GetInstance() }
+	m_pUIManager{ CUIManager::GetInstance() },
+	m_pQuestManager { CQuestManager::GetInstance() }
 {
     Safe_AddRef(m_pSystemManager);
     Safe_AddRef(m_pFileTotalManager);
 	Safe_AddRef(m_pFightManager);
 	Safe_AddRef(m_pUIManager);
+	Safe_AddRef(m_pQuestManager);
 }
 
 HRESULT CLevel_OfficeBoss::Initialize()
@@ -33,48 +36,69 @@ HRESULT CLevel_OfficeBoss::Initialize()
 	if (FAILED(Ready_Player(TEXT("Layer_Player"))))
 		return E_FAIL;
 
-
-
     /* 클라 파싱 */
     m_pFileTotalManager->Set_MapObj_In_Client(STAGE_OFFICE_BOSS, LEVEL_OFFICE_BOSS);
-    m_pFileTotalManager->Set_Lights_In_Client(STAGE_OFFICE_BOSS);
+    m_pFileTotalManager->Set_Lights_In_Client(99);
     m_pFileTotalManager->Set_Collider_In_Client(STAGE_OFFICE_BOSS, LEVEL_OFFICE_BOSS);
-
 
 	if (FAILED(Ready_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
 
-	m_pFightManager->Initialize();
-	m_pFightManager->Set_FightStage(true);
+	m_pUIManager->Fade_Out();
 
     return S_OK;
 }
 
 void CLevel_OfficeBoss::Tick(const _float& fTimeDelta)
 {
-	// 트리거 체크 - 씬 이동
-	vector<CGameObject*> pTriggers = m_pGameInstance->Get_GameObjects(LEVEL_OFFICE_BOSS, TEXT("Layer_Trigger"));
-
-	for (int i = 0; i < pTriggers.size(); i++)
+	if (m_isStart == false)
 	{
-		int		iLevelNum;
-		if (true == dynamic_cast<CTrigger*>(pTriggers[i])->Move_Scene(iLevelNum))
+		if (m_pUIManager->isFindFinished())
 		{
-			m_bSceneChange = true;
-			m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, (LEVEL)iLevelNum));
+			m_pFightManager->Set_FightStage(true);
 		}
 	}
 
+	// 트리거 체크 - 씬 이동
+	//vector<CGameObject*> pTriggers = m_pGameInstance->Get_GameObjects(LEVEL_OFFICE_BOSS, TEXT("Layer_Trigger"));
+
+	//for (int i = 0; i < pTriggers.size(); i++)
+	//{
+	//	int		iLevelNum;
+	//	if (true == dynamic_cast<CTrigger*>(pTriggers[i])->Move_Scene(iLevelNum))
+	//	{
+	//		m_bSceneChange = true;
+	//		//m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, (LEVEL)iLevelNum));
+	//	}
+	//}
+
+#ifdef _DEBUG
 	if (false == m_bSceneChange)
 	{
 		if (m_pGameInstance->GetKeyState(DIK_RETURN) == TAP)
 		{
-			if (FAILED(m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_DOGIMAZO))))
+			if (FAILED(m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_STREET))))
 				return;
 		}
 	}
+#endif // _DEBUG
 
-	m_pFightManager->Tick(fTimeDelta);
+	if (m_pFightManager->Tick(fTimeDelta))
+		m_pQuestManager->Start_Quest(CQuestManager::CHAPTER_6);
+
+	if (m_pQuestManager->Execute())
+	{
+		if (!m_pUIManager->isOpen(TEXT("Fade")))
+		{
+			m_pUIManager->Open_Scene(TEXT("Fade"));
+			m_pUIManager->Fade_In();
+		}
+		else
+		{
+			if (m_pUIManager->isFindFinished())
+				m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_STREET));
+		}
+	}
 
 	if (!m_isTitleEnd && m_pUIManager->isBattleStart())
 	{
@@ -183,4 +207,5 @@ void CLevel_OfficeBoss::Free()
     Safe_Release(m_pFileTotalManager);
 	Safe_Release(m_pFightManager);
 	Safe_Release(m_pUIManager);
+	Safe_Release(m_pQuestManager);
 }

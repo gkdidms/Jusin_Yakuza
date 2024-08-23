@@ -68,7 +68,7 @@ _bool CTutorial::Running()
 			return false;
 
 		if (m_pGameInstance->GetKeyState(DIK_E) == TAP || 
-			(m_pUIManager->isShowTutorialUI(CUITutorial::TOTU_START) && m_pUIManager->isCloseTutorialUIAnim()))
+			(m_pUIManager->isShowTutorialUI(CUITutorial::TOTU_START) && m_pUIManager->isTutorialStartEnd()))
 		{
 			if (m_TutorialUIIndex.size() - 1 > m_iTutorialIndex)
 			{
@@ -156,7 +156,7 @@ _bool CTutorial::End()
 	else
 	{
 		// OK 일 때, 애니메이션이 끝났는지 확인해야 함
-		if (m_pUIManager->isCloseTutorialUIAnim())
+		if (m_pUIManager->isTutorialStartEnd())
 			return true;
 	}
 

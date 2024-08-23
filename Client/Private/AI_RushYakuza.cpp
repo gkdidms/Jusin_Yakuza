@@ -162,7 +162,7 @@ CBTNode::NODE_STATE CAI_RushYakuza::Check_Adventure()
 		return CBTNode::SUCCESS;
 	}
 
-	Reset_State();
+	//Reset_State();
 	return CBTNode::FAIL;
 }
 

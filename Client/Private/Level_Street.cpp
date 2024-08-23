@@ -5,6 +5,7 @@
 #include "FileTotalMgr.h"
 #include "Collision_Manager.h"
 #include "QuestManager.h"
+#include "UIManager.h"
 
 #include "PlayerCamera.h"
 #include "CineCamera.h"
@@ -16,11 +17,13 @@ CLevel_Street::CLevel_Street(ID3D11Device* pDevice, ID3D11DeviceContext* pContex
     : CLevel { pDevice, pContext },
     m_pSystemManager{ CSystemManager::GetInstance() },
     m_pFileTotalManager{ CFileTotalMgr::GetInstance() },
-	m_pQuestManager { CQuestManager::GetInstance() }
+	m_pQuestManager { CQuestManager::GetInstance() },
+	m_pUIManager {CUIManager::GetInstance() }
 {
     Safe_AddRef(m_pSystemManager);
     Safe_AddRef(m_pFileTotalManager);
 	Safe_AddRef(m_pQuestManager);
+	Safe_AddRef(m_pUIManager);
 }
 
 HRESULT CLevel_Street::Initialize()
@@ -43,24 +46,44 @@ HRESULT CLevel_Street::Initialize()
 	m_pFileTotalManager->Set_Lights_In_Client(99);
    // m_pFileTotalManager->Set_Collider_In_Client(STAGE_STREET, LEVEL_STREET);
 
+	m_pUIManager->Fade_Out();
+
+	m_pSystemManager->Set_Camera(CAMERA_PLAYER);
 	if (FAILED(Ready_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
-
-	if (m_pGameInstance->Get_CurrentLevel() == LEVEL_TOKOSTREET)
-		m_pQuestManager->Start_Quest(CQuestManager::CHAPTER_5);
 
     return S_OK;
 }
 
 void CLevel_Street::Tick(const _float& fTimeDelta)
 {
+	if (m_isStart == false)
+	{
+		if (m_pUIManager->isFindFinished())
+		{
+			if (m_pGameInstance->Get_CurrentLevel() == LEVEL_TOKOSTREET)
+				m_pQuestManager->Start_Quest(CQuestManager::CHAPTER_5);
+		}
+	}
 	if (m_pQuestManager->Execute())
 	{
-		if (m_pGameInstance->Get_CurrentLevel() == LEVEL_TOKOSTREET)
-			m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_OFFICE_1F));
-		else if (m_pGameInstance->Get_CurrentLevel() == LEVEL_STREET)
-			m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_CARCHASE));
+		if (!m_pUIManager->isOpen(TEXT("Fade")))
+		{
+			m_pUIManager->Open_Scene(TEXT("Fade"));
+			m_pUIManager->Fade_In();
+		}
+		else
+		{
+			if (m_pUIManager->isFindFinished())
+			{
+				if (m_pGameInstance->Get_CurrentLevel() == LEVEL_TOKOSTREET)
+					m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_OFFICE_1F));
+				else if (m_pGameInstance->Get_CurrentLevel() == LEVEL_STREET)
+					m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_CARCHASE));
+			}
+		}
 	}
+
 
 #ifdef _DEBUG
     SetWindowText(g_hWnd, TEXT("±æ°Å¸® ¸Ê"));
@@ -159,4 +182,5 @@ void CLevel_Street::Free()
     Safe_Release(m_pSystemManager);
     Safe_Release(m_pFileTotalManager);
 	Safe_Release(m_pQuestManager);
+	Safe_Release(m_pUIManager);
 }
