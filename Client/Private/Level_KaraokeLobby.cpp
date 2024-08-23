@@ -65,7 +65,7 @@ HRESULT CLevel_KaraokeLobby::Initialize()
 		m_pFileTotalManager->Load_Cinemachine(30, LEVEL_KARAOKE_END);
 		m_pFileTotalManager->Load_Cinemachine(31, LEVEL_KARAOKE_END);
 	}
-	m_pUIManager->Fade_Out();
+
     return S_OK;
 }
 
@@ -90,39 +90,22 @@ void CLevel_KaraokeLobby::Tick(const _float& fTimeDelta)
 
 	if (m_pQuestManager->Execute())
 	{
-		//±âÁ¸
-		//if (!m_pUIManager->isOpen(TEXT("Fade")))
-		//{
-		//	m_pUIManager->Open_Scene(TEXT("Fade"));
-		//	m_pUIManager->Fade_In();
-		//}
-		//else
-		//{
-		//	if (m_pUIManager->isFindFinished())
-		//	{
-		//		if (m_pGameInstance->Get_CurrentLevel() == LEVEL_KARAOKE_START)
-		//			m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_KARAOKE));
-		//		else if (m_pGameInstance->Get_CurrentLevel() == LEVEL_KARAOKE_END)
-		//			m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_TOKOSTREET));
-
-		//		return;
-		//	}
-		//}
-
-		if (m_isFadeFin && m_pUIManager->isFindFinished())
-		{
-			if (m_pGameInstance->Get_CurrentLevel() == LEVEL_KARAOKE_START)
-				m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_KARAOKE));
-			else if (m_pGameInstance->Get_CurrentLevel() == LEVEL_KARAOKE_END)
-				m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_TOKOSTREET));
-
-			return;
-		}
-
 		if (!m_pUIManager->isOpen(TEXT("Fade")))
 		{
+			m_pUIManager->Open_Scene(TEXT("Fade"));
 			m_pUIManager->Fade_In();
-			m_isFadeFin = true;
+		}
+		else
+		{
+			if (m_pUIManager->isFindFinished())
+			{
+				if (m_pGameInstance->Get_CurrentLevel() == LEVEL_KARAOKE_START)
+					m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_KARAOKE));
+				else if (m_pGameInstance->Get_CurrentLevel() == LEVEL_KARAOKE_END)
+					m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_TOKOSTREET));
+
+				return;
+			}
 		}
 	}
 

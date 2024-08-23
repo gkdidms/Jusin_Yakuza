@@ -32,8 +32,6 @@ HRESULT CUIQTE::Close_Scene()
 	if (FAILED(__super::Close_Scene()))
 		return E_FAIL;
 
-	m_isPress = false;
-
 	return S_OK;
 }
 
@@ -64,9 +62,14 @@ HRESULT CUIQTE::Tick(const _float& fTimeDelta)
 	if (FAILED(__super::Tick(fTimeDelta)))
 		return E_FAIL;
 
-	if(!m_isPress)
-		m_EventUI[CIRCLE]->Tick(fTimeDelta);
-	else
+	if (m_pGameInstance->GetKeyState(DIK_N) == TAP)
+	{
+		m_isPress = true;
+	}
+
+	m_EventUI[CIRCLE]->Tick(fTimeDelta);
+
+	if(m_isPress)
 		m_EventUI[BUTTON]->Tick(fTimeDelta);
 
 	return S_OK;
@@ -83,7 +86,6 @@ HRESULT CUIQTE::Late_Tick(const _float& fTimeDelta)
 	if (m_EventUI[BUTTON]->Check_AnimFin())
 	{
 		m_isAnimFin = true;
-		m_isPress = false;
 		CUIManager::GetInstance()->Close_Scene(TEXT("QTE"));
 	}
 

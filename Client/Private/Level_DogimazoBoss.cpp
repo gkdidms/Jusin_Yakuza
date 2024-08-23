@@ -51,7 +51,6 @@ HRESULT CLevel_DogimazoBoss::Initialize()
 	
 	m_pQuestManager->Start_Quest(CQuestManager::CHAPTER_8);
 
-	m_pUIManager->Fade_Out();
     return S_OK;
 }
 

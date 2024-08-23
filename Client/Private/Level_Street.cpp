@@ -65,23 +65,23 @@ void CLevel_Street::Tick(const _float& fTimeDelta)
 				m_pQuestManager->Start_Quest(CQuestManager::CHAPTER_5);
 		}
 	}
-
 	if (m_pQuestManager->Execute())
 	{
-		if (m_isFadeFin && m_pUIManager->isFindFinished())
-		{
-			if (m_pGameInstance->Get_CurrentLevel() == LEVEL_TOKOSTREET)
-				m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_OFFICE_1F));
-			else if (m_pGameInstance->Get_CurrentLevel() == LEVEL_STREET)
-				m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_CARCHASE));
-		}
-
 		if (!m_pUIManager->isOpen(TEXT("Fade")))
 		{
+			m_pUIManager->Open_Scene(TEXT("Fade"));
 			m_pUIManager->Fade_In();
-			m_isFadeFin = true;
 		}
-
+		else
+		{
+			if (m_pUIManager->isFindFinished())
+			{
+				if (m_pGameInstance->Get_CurrentLevel() == LEVEL_TOKOSTREET)
+					m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_OFFICE_1F));
+				else if (m_pGameInstance->Get_CurrentLevel() == LEVEL_STREET)
+					m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_CARCHASE));
+			}
+		}
 	}
 
 

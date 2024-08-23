@@ -234,9 +234,7 @@ protected:
     // 림라이트 관련 정보
 protected:
     _float m_isRimLight ;//
-    _float2 m_fRimArmUV = { 0.5f , 0.7f };//0~1사이 [시작v,끝v]상의어께
     _float2 m_fRimTopUV = { 0.0f , 0.3f };//0~1사이 [시작v,끝v]상의
-
     _float2 m_fRimBotUV = { 0.9f, 1.0f };//0~1사이 [시작v,끝v]하의
     _float2 m_fRimPartsUV = { 0.0f, 1.0f };//0~1사이 [시작v,끝v]손,발
 

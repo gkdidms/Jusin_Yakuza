@@ -23,7 +23,6 @@ public:
     virtual HRESULT Late_Tick(const _float& fTimeDelta) override;
 
     void Set_Key(wstring strKey);
-    void Press() { m_isPress = true; }
 private:
     _bool m_isPress = false;
 public:

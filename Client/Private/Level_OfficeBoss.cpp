@@ -46,7 +46,7 @@ HRESULT CLevel_OfficeBoss::Initialize()
 
 	m_pUIManager->Fade_Out();
 	m_pSystemManager->Set_Camera(CAMERA_PLAYER);
-	//m_pFightManager->Set_FightStage(true);
+	m_pFightManager->Set_FightStage(true);
 
     return S_OK;
 }
@@ -57,8 +57,8 @@ void CLevel_OfficeBoss::Tick(const _float& fTimeDelta)
 	{
 		if (m_pUIManager->isFindFinished())
 		{
+			m_pUIManager->Close_Scene(TEXT("Fade"));
 			m_pFightManager->Set_FightStage(true);
-			m_isStart = true;
 		}
 	}
 
@@ -110,23 +110,22 @@ void CLevel_OfficeBoss::Tick(const _float& fTimeDelta)
 	{
 		m_bSceneChange = true;
 	}
+
 	if (m_bSceneChange)
 	{
-
-		if (m_isFadeFin && m_pUIManager->isFindFinished())
-		{
-			m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_STREET));
-			CCollision_Manager::GetInstance()->All_Clear();
-			return;
-		}
-
 		if (!m_pUIManager->isOpen(TEXT("Fade")))
 		{
+			m_pUIManager->Open_Scene(TEXT("Fade"));
 			m_pUIManager->Fade_In();
-			m_isFadeFin = true;
 		}
-
-
+		else
+		{
+			if (m_pFightManager->isInverseEnd())
+			{
+				m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_STREET));
+				return;
+			}
+		}
 	}
 
 	if (!m_isTitleEnd && m_pUIManager->isBattleStart())

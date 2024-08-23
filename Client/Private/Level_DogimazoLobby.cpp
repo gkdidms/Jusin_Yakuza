@@ -19,8 +19,7 @@ CLevel_DogimazoLobby::CLevel_DogimazoLobby(ID3D11Device* pDevice, ID3D11DeviceCo
     : CLevel{ pDevice, pContext },
 	m_pSystemManager{ CSystemManager::GetInstance() },
 	m_pFileTotalManager{ CFileTotalMgr::GetInstance() },
-	m_pFightManager{ CFightManager::GetInstance() },
-	m_pUIManager{CUIManager::GetInstance()}
+	m_pFightManager{ CFightManager::GetInstance() }
 {
 	Safe_AddRef(m_pSystemManager);
 	Safe_AddRef(m_pFileTotalManager);
@@ -46,14 +45,13 @@ HRESULT CLevel_DogimazoLobby::Initialize()
 
 	m_pFightManager->Initialize();
 	m_pSystemManager->Set_Camera(CAMERA_PLAYER);
-	//m_pFightManager->Set_FightStage(true);
-	m_pUIManager->Fade_Out();
+	m_pFightManager->Set_FightStage(true);
+
     return S_OK;
 }
 
 void CLevel_DogimazoLobby::Tick(const _float& fTimeDelta)
 {
-	/*//기존
 	if (m_isStart == false)
 	{
 		if (m_pUIManager->isFindFinished())
@@ -78,35 +76,7 @@ void CLevel_DogimazoLobby::Tick(const _float& fTimeDelta)
 				return;
 			}
 		}
-	}*/
-
-	if (m_isStart == false)
-	{
-		if (m_pUIManager->isFindFinished())
-		{
-			m_pFightManager->Set_FightStage(true);
-			m_isStart = true;
-		}
 	}
-
-	if (m_bSceneChange)
-	{
-
-		if (m_isFadeFin && m_pUIManager->isFindFinished())
-		{
-			m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_DOGIMAZO_BOSS));
-			CCollision_Manager::GetInstance()->All_Clear();
-			return;
-		}
-
-		if (!m_pUIManager->isOpen(TEXT("Fade")))
-		{
-			m_pUIManager->Fade_In();
-			m_isFadeFin = true;
-		}
-	}
-
-
 
 	// 트리거 체크 - 씬 이동
 	vector<CGameObject*> pTriggers = m_pGameInstance->Get_GameObjects(LEVEL_DOGIMAZO_LOBBY, TEXT("Layer_Trigger"));

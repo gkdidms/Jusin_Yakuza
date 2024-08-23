@@ -38,7 +38,6 @@ HRESULT CLevel_Tutorial::Initialize()
 	if (FAILED(m_pQuestManager->Initialize()))
 		return E_FAIL;
 	m_pFightManager->Initialize();
-	m_pUIManager->Fade_Out();
 	m_pFightManager->Set_StreetFight(true);
 
 	/* 클라 파싱 */
@@ -71,40 +70,18 @@ void CLevel_Tutorial::Tick(const _float& fTimeDelta)
 {
 	m_pFightManager->Tick(fTimeDelta);
 
-	if (m_isStart == false)
-	{
-		if (m_pUIManager->isFindFinished())
-		{
-			m_pFightManager->Set_FightStage(true);
-			m_isStart = true;
-		}
-	}
-
 	if (m_pQuestManager->Execute())
 	{
 		//true 이면 다음 스테이지로 이동
-		// 기존
-		//if (!m_pUIManager->isOpen(TEXT("Fade")))
-		//{
-		//	m_pUIManager->Open_Scene(TEXT("Fade"));
-		//	m_pUIManager->Fade_In();
-		//}
-		//else
-		//{
-		//	if (m_pUIManager->isFindFinished())
-		//		m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_NISHIKIWALK));
-		//}
-
-		if (m_isFadeFin && m_pUIManager->isFindFinished())
-		{
-			m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_NISHIKIWALK));
-			return;
-		}
-
 		if (!m_pUIManager->isOpen(TEXT("Fade")))
 		{
+			m_pUIManager->Open_Scene(TEXT("Fade"));
 			m_pUIManager->Fade_In();
-			m_isFadeFin = true;
+		}
+		else
+		{
+			if (m_pUIManager->isFindFinished())
+				m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_NISHIKIWALK));
 		}
 	}
 

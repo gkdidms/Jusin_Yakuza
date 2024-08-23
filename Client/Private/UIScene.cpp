@@ -58,7 +58,7 @@ HRESULT CUIScene::Show_Scene()
 
 	m_isAnimFin = false;
 	m_isClose = false;
-	m_isOpen = true;
+
 		
 		return S_OK;
 }

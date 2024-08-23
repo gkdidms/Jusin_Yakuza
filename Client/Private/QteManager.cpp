@@ -3,7 +3,6 @@
 #include "Animation.h"
 #include "Yoneda.h"
 #include "Player.h"
-#include "UIManager.h"
 
 Client::CQteManager::CQteManager(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     : CGameObject{ pDevice, pContext }
@@ -236,12 +235,10 @@ void Client::CQteManager::Slowing()
 
         if (Check_QTE())
         {
-            CUIManager::GetInstance()->PressKey();
             m_iSuccess = 1;
             Skip_KeyFrame();
             ResetVariables();
         }
-
     }
 }
 
@@ -262,14 +259,13 @@ void Client::CQteManager::Check_QTE_Section()
         if (!m_isSlowing && it->second.iStartKeyFrameIndex < *m_pPlayerAnimCom->Get_AnimPosition(animIndex))
         {
             m_isSlowing = true;
-            CUIManager::GetInstance()->Open_Scene(TEXT("QTE"));
         }
         if (m_isSlowing && it->second.iEndKeyFrameIndex < *m_pPlayerAnimCom->Get_AnimPosition(animIndex))
         {
-            CUIManager::GetInstance()->Close_Scene(TEXT("QTE"));
             m_iSuccess = 2;
             m_isSlowing = false;
             ResetVariables();
+
             Skip_KeyFrame();
         }        
     }
