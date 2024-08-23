@@ -319,6 +319,8 @@ protected:
     _float4         m_vPrevRotation;
     _float4x4       m_ModelWorldMatrix;
 
+    _vector         m_vPlayerDistance;          // 플레이어와 싱크액션을 맞추기위해 이동거리를 저장해둔다
+
 protected:
     string m_strAnimName = "";
     _uint m_iAnim = { 0 };
