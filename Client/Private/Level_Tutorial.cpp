@@ -60,7 +60,6 @@ HRESULT CLevel_Tutorial::Initialize()
 	m_pFileTotalManager->Load_Cinemachine(14, LEVEL_TUTORIAL);
 	m_pFileTotalManager->Load_Cinemachine(15, LEVEL_TUTORIAL);
 
-
 	m_pSystemManager->Set_Camera(CAMERA_PLAYER);
 	m_pQuestManager->Start_Quest(CQuestManager::CHAPTER_1);
 	
@@ -87,7 +86,7 @@ void CLevel_Tutorial::Tick(const _float& fTimeDelta)
 	}
 
 #ifdef _DEBUG
-	SetWindowText(g_hWnd, TEXT("ÃÑ°ÝÀü ¸Ê"));
+	SetWindowText(g_hWnd, TEXT("Æ©Åä¸®¾ó ¸Ê"));
 #endif
 }
 
@@ -134,6 +133,20 @@ HRESULT CLevel_Tutorial::Ready_Camera(const wstring& strLayerTag)
 	PlayerCameraDesc.iCurLevel = LEVEL_TUTORIAL;
 
 	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TUTORIAL, TEXT("Prototype_GameObject_PlayerCamera"), strLayerTag, &PlayerCameraDesc)))
+		return E_FAIL;
+
+	/* 3. ÄÆ½Å¿ë Ä«¸Þ¶ó */
+	CCamera::CAMERA_DESC		CutSceneCameraDesc{};
+	CutSceneCameraDesc.vEye = _float4(1.0f, 20.0f, -20.f, 1.f);
+	CutSceneCameraDesc.vFocus = _float4(0.f, 0.0f, 0.0f, 1.f);
+	CutSceneCameraDesc.fFovY = XMConvertToRadians(60.0f);
+	CutSceneCameraDesc.fAspect = g_iWinSizeX / (_float)g_iWinSizeY;
+	CutSceneCameraDesc.fNear = 0.1f;
+	CutSceneCameraDesc.fFar = 300.f;
+	CutSceneCameraDesc.fSpeedPecSec = 10.f;
+	CutSceneCameraDesc.fRotatePecSec = XMConvertToRadians(90.f);
+
+	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TUTORIAL, TEXT("Prototype_GameObject_CutSceneCamera"), strLayerTag, &CutSceneCameraDesc)))
 		return E_FAIL;
 
 	return S_OK;

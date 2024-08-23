@@ -43,6 +43,8 @@ HRESULT CLevel_NishikiWalk::Initialize()
 
 	m_pUIManager->Fade_Out();
 
+	m_pSystemManager->Set_Camera(CAMERA_PLAYER);
+
 	if (FAILED(Ready_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
 
@@ -74,7 +76,7 @@ void CLevel_NishikiWalk::Tick(const _float& fTimeDelta)
 		}
 	}
 #ifdef _DEBUG
-	SetWindowText(g_hWnd, TEXT("√—∞›¿¸ ∏ "));
+	SetWindowText(g_hWnd, TEXT("¥œΩ√≈∞ µ•¿Ã∆Æ ∏ "));
 #endif
 }
 

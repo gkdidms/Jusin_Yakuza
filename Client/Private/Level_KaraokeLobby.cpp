@@ -5,6 +5,7 @@
 #include "FileTotalMgr.h"
 #include "Collision_Manager.h"
 #include "QuestManager.h"
+#include "UIManager.h"
 
 #include "PlayerCamera.h"
 #include "CineCamera.h"
@@ -18,11 +19,13 @@ CLevel_KaraokeLobby::CLevel_KaraokeLobby(ID3D11Device* pDevice, ID3D11DeviceCont
     : CLevel { pDevice, pContext },
     m_pSystemManager{ CSystemManager::GetInstance() },
     m_pFileTotalManager{ CFileTotalMgr::GetInstance() },
-	m_pQuestManager{ CQuestManager::GetInstance() }
+	m_pQuestManager{ CQuestManager::GetInstance() },
+	m_pUIManager{CUIManager::GetInstance()}
 {
     Safe_AddRef(m_pSystemManager);
     Safe_AddRef(m_pFileTotalManager);
 	Safe_AddRef(m_pQuestManager);
+	Safe_AddRef(m_pUIManager);
 }
 
 HRESULT CLevel_KaraokeLobby::Initialize()
@@ -30,15 +33,22 @@ HRESULT CLevel_KaraokeLobby::Initialize()
     if (FAILED(Ready_Player(TEXT("Layer_Player"))))
         return E_FAIL;
 
+	if (FAILED(Ready_Camera(TEXT("Layer_Camera"))))
+		return E_FAIL;
+
+	m_pSystemManager->Set_Camera(CAMERA_PLAYER);
+
     ///* Å¬¶ó ÆÄ½Ì */
 	if (m_pGameInstance->Get_CurrentLevel() == LEVEL_KARAOKE_START)
 	{
 		m_pFileTotalManager->Set_MapObj_In_Client(STAGE_KARAOKE_START, LEVEL_KARAOKE_START);
 		m_pFileTotalManager->Set_Lights_In_Client(99);
 		m_pFileTotalManager->Set_Trigger_In_Client(STAGE_KARAOKE_START, LEVEL_KARAOKE_START);
-		//m_pFileTotalManager->Set_Collider_In_Client(STAGE_KARAOKE, LEVEL_KARAOKE);
 
-		m_pQuestManager->Start_Quest(CQuestManager::CHAPTER_3);
+		m_pFileTotalManager->Load_Cinemachine(19, LEVEL_KARAOKE_START);
+		m_pFileTotalManager->Load_Cinemachine(20, LEVEL_KARAOKE_START);
+		m_pFileTotalManager->Load_Cinemachine(21, LEVEL_KARAOKE_START);
+		m_pFileTotalManager->Load_Cinemachine(22, LEVEL_KARAOKE_START);
 	}
 	if (m_pGameInstance->Get_CurrentLevel() == LEVEL_KARAOKE_END)
 	{
@@ -46,8 +56,6 @@ HRESULT CLevel_KaraokeLobby::Initialize()
 		m_pFileTotalManager->Set_Lights_In_Client(99);
 		//m_pFileTotalManager->Set_Trigger_In_Client(STAGE_KARAOKE_END, LEVEL_KARAOKE_END);
 		//m_pFileTotalManager->Set_Collider_In_Client(STAGE_KARAOKE, LEVEL_KARAOKE);
-
-		m_pQuestManager->Start_Quest(CQuestManager::CHAPTER_4);
 	}
 
 	m_pKaraokeManager = CKaraokeManager::Create();
@@ -55,25 +63,48 @@ HRESULT CLevel_KaraokeLobby::Initialize()
 		return E_FAIL;
 
 
-	if (FAILED(Ready_Camera(TEXT("Layer_Camera"))))
-		return E_FAIL;
-
-	m_pSystemManager->Set_Camera(CAMERA_PLAYER);
 
     return S_OK;
 }
 
 void CLevel_KaraokeLobby::Tick(const _float& fTimeDelta)
 {
-	m_pKaraokeManager->Tick(fTimeDelta);
+	if (m_isStart == false)
+	{
+		if (m_pUIManager->isFindFinished())
+		{
+			if (m_pGameInstance->Get_CurrentLevel() == LEVEL_KARAOKE_START)
+			{
+				m_pQuestManager->Start_Quest(CQuestManager::CHAPTER_3);
+			}
+			if (m_pGameInstance->Get_CurrentLevel() == LEVEL_KARAOKE_END)
+			{
+				m_pQuestManager->Start_Quest(CQuestManager::CHAPTER_4);
+			}
+
+			m_isStart = true;
+		}
+	}
 
 	if (m_pQuestManager->Execute())
 	{
-		if (m_pGameInstance->Get_CurrentLevel() == LEVEL_KARAOKE_START)
-			m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_KARAOKE));
-		else if (m_pGameInstance->Get_CurrentLevel() == LEVEL_KARAOKE_END)
-			m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_TOKOSTREET));
+		if (!m_pUIManager->isOpen(TEXT("Fade")))
+		{
+			m_pUIManager->Open_Scene(TEXT("Fade"));
+			m_pUIManager->Fade_In();
+		}
+		else
+		{
+			if (m_pUIManager->isFindFinished())
+			{
+				if (m_pGameInstance->Get_CurrentLevel() == LEVEL_KARAOKE_START)
+					m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_KARAOKE));
+				else if (m_pGameInstance->Get_CurrentLevel() == LEVEL_KARAOKE_END)
+					m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_TOKOSTREET));
+			}
+		}
 	}
+
 #ifdef _DEBUG
     SetWindowText(g_hWnd, TEXT("°¡¶ó¿ÀÄÉ ¸Ê"));
 #endif
@@ -158,4 +189,5 @@ void CLevel_KaraokeLobby::Free()
     Safe_Release(m_pFileTotalManager);
     Safe_Release(m_pKaraokeManager);
 	Safe_Release(m_pQuestManager);
+	Safe_Release(m_pUIManager);
 }
