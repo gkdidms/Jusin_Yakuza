@@ -96,7 +96,7 @@ public:
 
 	const _float4x4*						Get_PlayerMatrix() { return &m_PlayerPosition.front(); }
 
-	
+
 
 private:
 	class CGameInstance* m_pGameInstance = { nullptr };

@@ -59,7 +59,7 @@ float g_fRadian;
 matrix g_ViewMatrixArray[3], g_ProjMatrixArray[3];
 matrix g_BoneMatrices[512];
 
-float g_fFar = { 200.f };
+float g_fFar;
 float g_fTimeDelta;
 
 float g_fOut = { 0.5f };

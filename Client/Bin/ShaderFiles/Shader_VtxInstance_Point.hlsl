@@ -159,15 +159,8 @@ struct GS_NOBIL_OUT
 [maxvertexcount(6)]//방향성 x
 void GS_DEAFULT(point GS_IN In[1], inout TriangleStream<GS_OUT> Triangles)
 {
-    GS_OUT Out[4];
-
-    for (int i = 0; i < 4; ++i)
-    {
-        Out[i].vPosition = float4(0.f, 0.f, 0.f, 0.f);
-        Out[i].vTexcoord = float2(0.f, 0.f);
-        Out[i].vLifeTime = float2(0.f, 0.f);
-    }
-
+    GS_OUT Out[4] = (GS_OUT[4]) 0;
+    
     vector vLook = g_vCamPosition - vector(In[0].vPosition, 1.f);//받아온건 월드.
     float3 vRight = normalize(cross(float3(0.f, 1.f, 0.f), vLook.xyz)) * In[0].vPSize.x * In[0].vRectSize.x * 0.5f;
     float3 vUp = normalize(cross(vLook.xyz, vRight)) * In[0].vPSize.y * In[0].vRectSize.x* 0.5f;
@@ -212,14 +205,7 @@ void GS_DEAFULT(point GS_IN In[1], inout TriangleStream<GS_OUT> Triangles)
 [maxvertexcount(6)]//방향성o 기본 회전 o 지속 회전은넘겨주는 각도를 계속 증가시켜주면될듯
 void GS_DIRSCALE(point GS_IN In[1], inout TriangleStream<GS_OUT> Triangles)
 {
-    GS_OUT Out[4];
-
-    for (int i = 0; i < 4; ++i)
-    {
-        Out[i].vPosition = float4(0.f, 0.f, 0.f, 0.f);
-        Out[i].vTexcoord = float2(0.f, 0.f);
-        Out[i].vLifeTime = float2(0.f, 0.f);
-    }
+    GS_OUT Out[4] = (GS_OUT[4]) 0;
 	
     float3 vDirection = In[0].vDir.xyz;
     //방향에 회전을 준다.
@@ -272,14 +258,7 @@ void GS_DIRSCALE(point GS_IN In[1], inout TriangleStream<GS_OUT> Triangles)
 [maxvertexcount(6)] //방향성 x
 void GS_DISTORTION(point GS_NOBILL_IN In[1], inout TriangleStream<GS_OUT> Triangles)
 {
-    GS_OUT Out[4];
-
-    for (int i = 0; i < 4; ++i)
-    {
-        Out[i].vPosition = float4(0.f, 0.f, 0.f, 0.f);
-        Out[i].vTexcoord = float2(0.f, 0.f);
-        Out[i].vLifeTime = float2(0.f, 0.f);
-    }
+    GS_OUT Out[4] = (GS_OUT[4]) 0;
 
     float3 vRight = In[0].TransformMatrix._11_12_13_14 * In[0].vPSize.x * In[0].vRectSize.x * 0.5f;
     float3 vUp = In[0].TransformMatrix._21_22_23_24 * In[0].vPSize.y * In[0].vRectSize.x * 0.5f;
@@ -329,18 +308,7 @@ void GS_DISTORTION(point GS_NOBILL_IN In[1], inout TriangleStream<GS_OUT> Triang
 [maxvertexcount(6)] //방향성 x
 void GS_NOBILLBOARD(point GS_NOBILL_IN In[1], inout TriangleStream<GS_NOBIL_OUT> Triangles)
 {
-    GS_NOBIL_OUT Out[4];
-
-    for (int i = 0; i < 4; ++i)
-    {
-        Out[i].vPosition = float4(0.f, 0.f, 0.f, 0.f);
-        Out[i].vTexcoord = float2(0.f, 0.f);
-        Out[i].vLifeTime = float2(0.f, 0.f);
-        Out[i].vProjPos = float4(0.f, 0.f, 0.f, 0.f);
-        Out[i].vNormal = float4(0.f, 0.f, 0.f, 0.f);
-        Out[i].vTangent = float4(0.f, 0.f, 0.f, 0.f);
-        Out[i].vBinormal = float4(0.f, 0.f, 0.f, 0.f);
-    }
+    GS_NOBIL_OUT Out[4] = (GS_NOBIL_OUT[4])0;
 
     float3 vRight = In[0].TransformMatrix._11_12_13_14 * In[0].vPSize.x * In[0].vRectSize.x * 0.5f;
     float3 vUp = In[0].TransformMatrix._21_22_23_24 * In[0].vPSize.y * In[0].vRectSize.x * 0.5f;
@@ -394,18 +362,7 @@ void GS_NOBILLBOARD(point GS_NOBILL_IN In[1], inout TriangleStream<GS_NOBIL_OUT>
 [maxvertexcount(6)] //방향성 x
 void GS_FALL(point GS_NOBILL_IN In[1], inout TriangleStream<GS_NOBIL_OUT> Triangles)
 {
-    GS_NOBIL_OUT Out[4];
-
-    for (int i = 0; i < 4; ++i)
-    {
-        Out[i].vPosition = float4(0.f, 0.f, 0.f, 0.f);
-        Out[i].vTexcoord = float2(0.f, 0.f);
-        Out[i].vLifeTime = float2(0.f, 0.f);
-        Out[i].vProjPos = float4(0.f, 0.f, 0.f, 0.f);
-        Out[i].vNormal = float4(0.f, 0.f, 0.f, 0.f);
-        Out[i].vTangent = float4(0.f, 0.f, 0.f, 0.f);
-        Out[i].vBinormal = float4(0.f, 0.f, 0.f, 0.f);
-    }
+    GS_NOBIL_OUT Out[4] = (GS_NOBIL_OUT[4]) 0;
 
     
     //float3 vDirection = In[0].vDir.xyz;
@@ -510,14 +467,8 @@ float4x4 RotationMatrix(float3 axis, float angle)
 [maxvertexcount(6)] //방향성o 기본 회전 o 지속 회전은넘겨주는 각도를 계속 증가시켜주면될듯
 void GS_ROTSCALE(point GS_IN In[1], inout TriangleStream<GS_OUT> Triangles)
 {
-    GS_OUT Out[4];
-
-    for (int i = 0; i < 4; ++i)
-    {
-        Out[i].vPosition = float4(0.f, 0.f, 0.f, 0.f);
-        Out[i].vTexcoord = float2(0.f, 0.f);
-        Out[i].vLifeTime = float2(0.f, 0.f);
-    }
+    GS_OUT Out[4] = (GS_OUT[4]) 0;
+    
 	
     float3 vDirection = In[0].vDir.xyz;
 
