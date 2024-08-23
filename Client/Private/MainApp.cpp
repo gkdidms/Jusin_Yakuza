@@ -460,7 +460,8 @@ void CMainApp::Free()
 
 	Safe_Release(m_pCollisionManager);
 	CCollision_Manager::DestroyInstance();
-
+	
+	CFightManager* pManager = CFightManager::GetInstance();
 	CFightManager::DestroyInstance();
 
 	Safe_Release(m_pUIManager);

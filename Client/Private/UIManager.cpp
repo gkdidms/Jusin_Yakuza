@@ -438,6 +438,13 @@ void CUIManager::Fade_Out()
 	dynamic_cast<CUIFade*>(m_PlayScene.back())->Fade_Out();
 }
 
+_bool CUIManager::Fade_Finished()
+{
+	CUIScene* pUIScene = Find_Scene(TEXT("Fade"));
+
+	return dynamic_cast<CUIFade*>(m_PlayScene.back())->isFinished();
+}
+
 CUIScene* CUIManager::Find_Scene(wstring strSceneName)
 {
 	auto PairScene =m_AllScene.find(strSceneName);

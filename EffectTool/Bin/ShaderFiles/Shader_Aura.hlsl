@@ -139,14 +139,7 @@ float4x4 RotationMatrix(float3 axis, float angle)
 [maxvertexcount(6)] //规氢己 x
 void GS_DEAFULT(point GS_IN In[1], inout TriangleStream<GS_OUT> Triangles)
 {
-    GS_OUT Out[4];
-
-    for (int i = 0; i < 4; ++i)
-    {
-        Out[i].vPosition = float4(0.f, 0.f, 0.f, 0.f);
-        Out[i].vTexcoord = float2(0.f, 0.f);
-        Out[i].vLifeTime = float2(0.f, 0.f);
-    }
+    GS_OUT Out[4] = (GS_OUT[4]) 0;
 	    
     float3 vLook = g_vCamPosition - vector(In[0].vPosition, 1.f);
     float3 vRight = normalize(cross(float3(0.f, 1.f, 0.f), vLook.xyz)) * In[0].vPSize.x * In[0].vRectSize.x * 0.5f;
@@ -226,14 +219,8 @@ void GS_DEAFULT(point GS_IN In[1], inout TriangleStream<GS_OUT> Triangles)
 [maxvertexcount(6)] //规氢己 x
 void GS_NOROTATE(point GS_IN In[1], inout TriangleStream<GS_OUT> Triangles)
 {
-    GS_OUT Out[4];
-
-    for (int i = 0; i < 4; ++i)
-    {
-        Out[i].vPosition = float4(0.f, 0.f, 0.f, 0.f);
-        Out[i].vTexcoord = float2(0.f, 0.f);
-        Out[i].vLifeTime = float2(0.f, 0.f);
-    }
+    GS_OUT Out[4] = (GS_OUT[4]) 0;
+    
 	    
     float3 vLook = g_vCamPosition - vector(In[0].vPosition, 1.f);
     float3 vRight = normalize(cross(float3(0.f, 1.f, 0.f), vLook.xyz)) * In[0].vPSize.x * In[0].vRectSize.x * 0.5f;
