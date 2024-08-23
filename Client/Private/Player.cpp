@@ -442,7 +442,17 @@ HRESULT CPlayer::Render()
 			{
 				_float2 fUV = m_fRimPartsUV;		// 기본적으로 파츠uv를 넣고
 				if (string_view("[l0]jacketw1") == string_view(m_strRimMeshName))
+				{
 					fUV = m_fRimTopUV;				// 상체일 때 탑을 넣어준다.
+
+					if (FAILED(m_pShaderCom->Bind_RawValue("g_fRimArmUV", &m_fRimArmUV, sizeof(_float2))))
+						return E_FAIL;
+
+					_bool isTop = true;
+					if (FAILED(m_pShaderCom->Bind_RawValue("g_isTop", &isTop, sizeof(_bool))))
+						return E_FAIL;
+
+				}
 				if(string_view("[l0]pants3") == string_view(m_strRimMeshName))
 					fUV = m_fRimBotUV;				// 바지일 때 바텀을 넣어준다.
 

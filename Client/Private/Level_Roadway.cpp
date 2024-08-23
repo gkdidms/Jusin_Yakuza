@@ -45,6 +45,7 @@ HRESULT CLevel_Roadway::Initialize()
 		return E_FAIL;
 
 	m_pFightManager->Initialize();
+	m_pUIManager->Fade_Out();
 	m_pFightManager->Set_FightStage(true);
 	m_pSystemManager->Set_Camera(CAMERA_CARCHASE);
 
