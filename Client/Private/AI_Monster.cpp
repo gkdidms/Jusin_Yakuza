@@ -18,6 +18,25 @@ CAI_Monster::CAI_Monster(const CAI_Monster& rhs)
 	Safe_AddRef(m_pGameInstance);
 }
 
+void CAI_Monster::Reset_AI()
+{
+	m_isStart = false;
+	m_isAdventer = false;
+	m_isAttack = false;
+	m_isAngry = false;
+	m_isSync = false;
+	m_isBreak = false;
+	m_isGuard = false;
+	m_isSway = false;
+	m_isPlayerDownAtk = false;
+	m_fAttackDelayTime = 0.f;
+	m_fBreakTime = 0.f;
+	m_fGuardTime = 0.f;
+	m_fSyncTime = 0.f;
+	m_fCmbCount = 0.f;
+	m_fGuardAtkAcc = 0.f;
+}
+
 HRESULT CAI_Monster::Initialize_Prototype()
 {
 	return S_OK;

@@ -13,6 +13,8 @@
 #include "Collision_Manager.h"
 #include "EffectManager.h"
 
+#include "Player.h"	
+
 
 CMonster::CMonster(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLandObject{ pDevice, pContext },
@@ -261,11 +263,6 @@ void CMonster::Set_Sync(string strPlayerAnim)
 	m_strAnimName = strPlayerAnim;
 	m_iCurrentAnimType = CMonster::CUTSCENE;
 
-	if (CMonster::CUTSCENE == m_iCurrentAnimType)
-	{
-		m_pData->Set_CurrentCutSceneAnimation(m_strAnimName);
-	}
-
 	m_pTree->Set_Sync(true);
 	Change_Animation();
 }
@@ -279,6 +276,13 @@ void CMonster::Off_Sync()
 {
 	m_isSynchronizing = false;
 	m_iCurrentAnimType = CMonster::DEFAULT;
+
+	_matrix mat = XMLoadFloat4x4(m_pModelCom->Get_BoneCombinedTransformationMatrix("center_c_n"));
+	
+	//_vector vPos;
+	//memcpy(&vPos, ->m[CTransform::STATE_POSITION], sizeof(_vector));
+
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, (mat * m_pGameInstance->Get_GameObject(m_iCurrentLevel, TEXT("Layer_Player"), 0)->Get_TransformCom()->Get_WorldMatrix()).r[CTransform::STATE_POSITION]);
 }
 
 void CMonster::Set_Start(_bool isStart)
@@ -308,6 +312,8 @@ void CMonster::Reset_Monster()
 
 	m_isDead = false;
 	m_isObjectDead = false;
+
+	m_pTree->Reset_AI();
 }
 
 /*
@@ -387,7 +393,10 @@ void CMonster::Tick(const _float& fTimeDelta)
 
 	_bool isRoot = m_iCurrentAnimType != CUTSCENE;
 
-	m_pModelCom->Play_Animation_Monster(fTimeDelta, m_pAnimCom[m_iCurrentAnimType], m_isAnimLoop, isRoot);
+	if (CMonster::CUTSCENE == m_iCurrentAnimType)
+		m_pModelCom->Play_Animation_CutScene(fTimeDelta, m_pAnimCom[m_iCurrentAnimType], false, -1, false);
+	else
+		m_pModelCom->Play_Animation_Monster(fTimeDelta, m_pAnimCom[m_iCurrentAnimType], m_isAnimLoop, isRoot);
 
 	Synchronize_Root(fTimeDelta);
 
@@ -590,6 +599,8 @@ void CMonster::Take_Damage(_uint iHitColliderType, const _float3& vDir, _float f
 	//데미지 처리하기 (가드사용하고있지 않을때)
 	if (!m_isObjectDead && !m_pTree->isGuard())
 	{
+		if (dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject(m_iCurrentLevel, TEXT("Layer_Player"), 0))->isGrab()) return;				// 그랩시에는 데미지X
+		
 		m_Info.fHp -= fDamage;
 		if (m_Info.fHp <= 0.f)
 			m_isObjectDead = true;

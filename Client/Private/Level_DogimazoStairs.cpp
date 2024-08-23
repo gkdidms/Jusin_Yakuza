@@ -45,6 +45,7 @@ HRESULT CLevel_DogimazoStairs::Initialize()
 		return E_FAIL;
 
 	m_pFightManager->Initialize();
+	m_pSystemManager->Set_Camera(CAMERA_PLAYER);
 	m_pFightManager->Set_FightStage(true);
 
 	return S_OK;
@@ -52,7 +53,31 @@ HRESULT CLevel_DogimazoStairs::Initialize()
 
 void CLevel_DogimazoStairs::Tick(const _float& fTimeDelta)
 {
+	if (m_isStart == false)
+	{
+		if (m_pUIManager->isFindFinished())
+		{
+			m_pUIManager->Close_Scene(TEXT("Fade"));
+			m_pFightManager->Set_FightStage(true);
+		}
+	}
 
+	if (m_bSceneChange)
+	{
+		if (!m_pUIManager->isOpen(TEXT("Fade")))
+		{
+			m_pUIManager->Open_Scene(TEXT("Fade"));
+			m_pUIManager->Fade_In();
+		}
+		else
+		{
+			if (m_pUIManager->isFindFinished())
+			{
+				m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_DOGIMAZO_LOBBY));
+				return;
+			}
+		}
+	}
 
 	// 트리거 체크 - 씬 이동
 	vector<CGameObject*> pTriggers = m_pGameInstance->Get_GameObjects(LEVEL_DOGIMAZO_STAIRS, TEXT("Layer_Trigger"));
@@ -67,6 +92,7 @@ void CLevel_DogimazoStairs::Tick(const _float& fTimeDelta)
 		}
 	}
 
+#ifdef _DEBUG
 	if (false == m_bSceneChange)
 	{
 		if (m_pGameInstance->GetKeyState(DIK_RETURN) == TAP)
@@ -75,6 +101,7 @@ void CLevel_DogimazoStairs::Tick(const _float& fTimeDelta)
 				return;
 		}
 	}
+#endif // _DEBUG
 
 	m_pFightManager->Tick(fTimeDelta);
 
