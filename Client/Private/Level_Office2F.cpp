@@ -5,6 +5,7 @@
 #include "FileTotalMgr.h"
 #include "FightManager.h"
 #include "UIManager.h"
+#include "Collision_Manager.h"
 
 #include "PlayerCamera.h"
 #include "CineCamera.h"
@@ -71,6 +72,7 @@ void CLevel_Office2F::Tick(const _float& fTimeDelta)
 			if (m_pUIManager->isFindFinished())
 			{
 				m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_OFFICE_BOSS));
+				CCollision_Manager::GetInstance()->All_Clear();
 				return;
 			}
 		}

@@ -162,7 +162,6 @@ void CPlayer::Tick(const _float& fTimeDelta)
 		if (m_pTargetObject)
 		{
 			Set_CutSceneAnim(m_eCutSceneType, 1);
-			static_cast<CMonster*>(Get_TargetObject())->Set_Sync(m_CutSceneAnimation[m_eCutSceneType]);
 		}
 	}
 
@@ -2161,6 +2160,7 @@ void CPlayer::Play_CutScene()
 		{
 			m_isCutSceneStartMotion = false;
 			Reset_CutSceneEvent();
+			m_pTargetObject->Set_Sync(m_CutSceneAnimation[m_eCutSceneType]);
 		}
 	}
 
@@ -2246,6 +2246,7 @@ void CPlayer::Reset_CutSceneEvent()
 		// 컷신으로 돌릴 때, 컷신 카메라를 초기화해준다.
 		CCutSceneCamera* pCutSceneCamera = dynamic_cast<CCutSceneCamera*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Camera"), CAMERA_CUTSCENE));
 		pCutSceneCamera->Reset_ReturnVariables();
+
 		break;
 	}
 
@@ -2460,10 +2461,18 @@ void CPlayer::Setting_Target_Enemy()
 
 		if (nullptr != m_pTargetObject)
 		{
-			_float vDistance = XMVectorGetX(XMVector3Length(m_pTransformCom->Get_State(CTransform::STATE_POSITION) - m_pTargetObject->Get_TransformCom()->Get_State(CTransform::STATE_POSITION)));
+			_float vDistance = 99999.f;
+			if (m_pTargetObject->isObjectDead())
+			{
+				m_pTargetObject = nullptr;
+			}
+			else
+			{
+				vDistance = XMVectorGetX(XMVector3Length(m_pTransformCom->Get_State(CTransform::STATE_POSITION) - m_pTargetObject->Get_TransformCom()->Get_State(CTransform::STATE_POSITION)));
+			}
 
-			// 기존 타겟중이던 친구의 거리가 1.f 이상 멀어지면 그때 다시 타겟팅한다.
-			if (1.f < vDistance)
+			// 기존 타겟중이던 친구의 거리가 3.f 이상 멀어지면 그때 다시 타겟팅한다.
+			if (3.f < vDistance)
 			{
 				auto pMosnter = m_pCollisionManager->Get_Near_Object(this, pMonsters);
 				auto pYoneda = m_pCollisionManager->Get_Near_Object(this, pYonedas);

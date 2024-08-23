@@ -64,7 +64,6 @@ void CLevel_Dogimazo::Tick(const _float& fTimeDelta)
 		if (m_pUIManager->isFindFinished())
 		{
 			m_pUIManager->Close_Scene(TEXT("Fade"));
-			m_pFightManager->Set_FightStage(true);
 		}
 	}
 

@@ -169,6 +169,8 @@ public:
 
     _bool isAttack() { return m_iCurrentBehavior == static_cast<_uint>(KRS_BEHAVIOR_STATE::ATTACK); }
     _bool isDown() { return m_iCurrentBehavior == static_cast<_uint>(KRS_BEHAVIOR_STATE::DOWN); }
+    _bool isGrab() { return (m_eCurrentStyle == KRS || m_eCurrentStyle == KRC) &&
+        m_iCurrentBehavior == static_cast<_uint>(KRS_BEHAVIOR_STATE::GRAB); }
     _uint Get_CurrentHitLevel() { return CPlayer::PlayerInfo.iCurrentHitLevel; }
     _float Get_HitGauage() {  return CPlayer::PlayerInfo.fHitGauge;}
 
