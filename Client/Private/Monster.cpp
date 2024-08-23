@@ -261,13 +261,15 @@ void CMonster::Set_Sync(string strPlayerAnim)
 	m_strAnimName = strPlayerAnim;
 	m_iCurrentAnimType = CMonster::CUTSCENE;
 
+	m_pTree->Set_Sync(true);
+	Change_Animation();
+
 	if (CMonster::CUTSCENE == m_iCurrentAnimType)
 	{
 		m_pData->Set_CurrentCutSceneAnimation(m_strAnimName);
-	}
 
-	m_pTree->Set_Sync(true);
-	Change_Animation();
+		m_pModelCom->Play_Animation_CutScene(m_pGameInstance->Get_TimeDelta(TEXT("Timer_60")), m_pAnimCom[m_iCurrentAnimType], false, -1, false);
+	}
 }
 
 void CMonster::Set_Adventure(_bool isAdventure)
@@ -387,7 +389,10 @@ void CMonster::Tick(const _float& fTimeDelta)
 
 	_bool isRoot = m_iCurrentAnimType != CUTSCENE;
 
-	m_pModelCom->Play_Animation_Monster(fTimeDelta, m_pAnimCom[m_iCurrentAnimType], m_isAnimLoop, isRoot);
+	if (CMonster::CUTSCENE == m_iCurrentAnimType)
+		m_pModelCom->Play_Animation_CutScene(fTimeDelta, m_pAnimCom[m_iCurrentAnimType], false, -1, false);
+	else
+		m_pModelCom->Play_Animation_Monster(fTimeDelta, m_pAnimCom[m_iCurrentAnimType], m_isAnimLoop, isRoot);
 
 	Synchronize_Root(fTimeDelta);
 

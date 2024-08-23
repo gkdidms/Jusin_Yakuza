@@ -316,7 +316,7 @@ void CPlayer::Tick(const _float& fTimeDelta)
 	Setting_Target_Item();
 	//Setting_Target_Wall();
 
-	//m_pQTEMgr->Tick(fTimeDelta);
+	m_pQTEMgr->Tick(fTimeDelta);
 }
 
 void CPlayer::Late_Tick(const _float& fTimeDelta)
@@ -1351,7 +1351,6 @@ void CPlayer::KRS_KeyInput(const _float& fTimeDelta)
 					int a = 0;
 				}
 
-
 				m_pTransformCom->LookAt_For_LandObject(vLookPos);
 				isMove = true;
 			}
@@ -2227,7 +2226,7 @@ void CPlayer::Play_CutScene()
 		m_pCameraModel->Set_AnimationIndex(Desc);
 
 		// 카메라 본 애니메이션 실행
-		m_pCameraModel->Play_Animation_CutScene(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")), nullptr, false, m_iCutSceneCamAnimIndex, false, "Camera");
+		m_pCameraModel->Play_Animation_CutScene(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")), nullptr, false, m_iCutSceneCamAnimIndex, false);
 	}
 }
 
@@ -2260,7 +2259,8 @@ void CPlayer::Reset_CutSceneEvent()
 		pCutSceneCamera->On_Return();		
 
 		// 혹시모르니 대상 몬스터의 싱크를 해제해준다.
-		m_pTargetObject->Off_Sync();
+		if(nullptr != m_pTargetObject)
+			m_pTargetObject->Off_Sync();
 
 		break;
 	}
@@ -2288,7 +2288,6 @@ void CPlayer::HitAction_Down()
 		* DIR_END : 방향을 가져오지 못함
 		*/
 		Set_CutSceneAnim(m_pTargetObject->Get_DownDir() == DIR_F ? OI_TRAMPLE_AO : OI_KICKOVER_UTU_C, 1);
-			
 	}
 	else
 	{
@@ -2415,6 +2414,7 @@ void CPlayer::Effect_Control_Aura()
 void CPlayer::Setting_Target_Enemy()
 {
 	if (2 == m_iCurrentBehavior) return;
+	if (CUTSCENE == m_eAnimComType) return;				// 컷신진행중이면 타겟을 건들지 않는다.
 
 	if (m_pGameInstance->Get_CurrentLevel() == LEVEL_TUTORIAL)
 	{
