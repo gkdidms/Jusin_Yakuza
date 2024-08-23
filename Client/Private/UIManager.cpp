@@ -130,6 +130,13 @@ _bool CUIManager::isTitleEnd()
 	return pScene->isEnd();
 }
 
+_bool CUIManager::isBattleStart()
+{
+	CUITitle* pScene = dynamic_cast<CUITitle*>(Find_Scene(TEXT("Title")));
+
+	return pScene->isBattleStart();
+}
+
 _bool CUIManager::isFindFinished()
 {
 	CUIFade* pScene = dynamic_cast<CUIFade*>(Find_Scene(TEXT("Fade")));
@@ -511,4 +518,11 @@ void CUIManager::Set_Score(_uint iScore)
 	{
 		dynamic_cast<CUIKaraoke_Score*>(m_PlayScene.back())->Set_Score(iScore);
 	}
+}
+
+void CUIManager::Change_Style(_uint iStyle)
+{
+	CUILife* pScene = dynamic_cast<CUILife*>(Find_Scene(TEXT("Life")));
+
+	pScene->Change_Style(iStyle);
 }

@@ -208,7 +208,6 @@ void CMap::Late_Tick(const _float& fTimeDelta)
 	{
 		Add_Renderer(fTimeDelta);
 	}
-
 }
 
 HRESULT CMap::Render()

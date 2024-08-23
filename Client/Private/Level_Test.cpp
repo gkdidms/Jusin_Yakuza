@@ -42,7 +42,7 @@ HRESULT CLevel_Test::Initialize()
 	// 테스트 다하면 지워라
 	/* For.Prototype_Component_Navigation */
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Navigation"),
-		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/NaviData/Navigation_7.dat")))))
+		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/NaviData/Navigation_90.dat")))))
 		return E_FAIL;
 
 	//m_pKaraokeManager = CKaraokeManager::Create();
@@ -67,13 +67,13 @@ HRESULT CLevel_Test::Initialize()
 	//	return E_FAIL;
 
 	// 혜원테스트용
-	//if (FAILED(Ready_Test_Hyewon()))
-	//	return E_FAIL;
+	if (FAILED(Ready_Test_Hyewon()))
+		return E_FAIL;
 
-	m_pFileTotalManager->Set_MapObj_In_Client(7, LEVEL_TEST);
-	m_pFileTotalManager->Set_Lights_In_Client(99);
-	m_pFileTotalManager->Set_Collider_In_Client(3, LEVEL_TEST);
-	m_pFileTotalManager->Set_Trigger_In_Client(80, LEVEL_TEST);
+	//m_pFileTotalManager->Set_MapObj_In_Client(7, LEVEL_TEST);
+	//m_pFileTotalManager->Set_Lights_In_Client(99);
+	//m_pFileTotalManager->Set_Collider_In_Client(3, LEVEL_TEST);
+	//m_pFileTotalManager->Set_Trigger_In_Client(80, LEVEL_TEST);
 
 	if (FAILED(Ready_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
@@ -87,8 +87,9 @@ HRESULT CLevel_Test::Initialize()
 
 void CLevel_Test::Tick(const _float& fTimeDelta)
 {
-	if (m_pUIManager->isTitleEnd())
+	if (!m_isTitleEnd && m_pUIManager->isBattleStart())
 	{
+		m_isTitleEnd = true;
 		CPlayer* pPlayer = dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"), 0));
 		pPlayer->Battle_Start();
 	}
@@ -216,6 +217,9 @@ HRESULT CLevel_Test::Ready_Test_Hyewon()
 	// 몬스터 깔린 네비: 3
 	// 과거의 길거리맵 79
 	// 과거의 길거리맵 네비: 79
+
+	// 빈 맵: 93
+	// 네비: 90
 	m_pFileTotalManager->Set_MapObj_In_Client(93, LEVEL_TEST);
 	m_pFileTotalManager->Set_Lights_In_Client(99);
 	m_pFileTotalManager->Set_Collider_In_Client(0, LEVEL_TEST);

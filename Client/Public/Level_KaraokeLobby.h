@@ -19,6 +19,7 @@ private:
     class CFileTotalMgr* m_pFileTotalManager = { nullptr };
     class CQuestManager* m_pQuestManager = { nullptr };
     class CKaraokeManager* m_pKaraokeManager = { nullptr };
+    class CUIManager* m_pUIManager = { nullptr };
 
 private:
     HRESULT Ready_Camera(const wstring& strLayerTag);

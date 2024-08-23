@@ -412,8 +412,10 @@ PS_OUT PS_MAIN_COLOR(PS_IN In)
     float Alphafactor = frac(In.vLifeTime.y / In.vLifeTime.x);
     
     float lerpAlpha = lerp(LifeAlpha.x, LifeAlpha.y, Alphafactor);
-  
-    vector FinalColor = BaseColor;
+    
+   
+    
+    vector FinalColor = BaseColor * LerpColor;
     FinalColor.a *= lerpAlpha;
 
     float3 ColorN = FinalColor.rgb;
