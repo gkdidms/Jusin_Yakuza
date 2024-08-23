@@ -19,32 +19,32 @@ HRESULT CTutorialManager::Initialize()
 	return S_OK;
 }
 
-void CTutorialManager::Tick()
+_bool CTutorialManager::Tick()
 {
-	if (m_pUIManager->isShowTutorialUI(CUITutorial::TOTU_NALNARI))
+	if (m_isFinished)
+		return true;
+
+	if (m_iCurrentIndex >= m_Tutorials.size())
 	{
-		if (m_pUIManager->isCloseTutorialUIAnim())
-			m_isStart = false;
+		m_isFinished = true;
+		m_pUIManager->Close_Scene();
+		return true;
 	}
 
-	if (!m_isStart)
+	if (m_Tutorials[m_iCurrentIndex]->Execute())
 	{
-		if (m_Tutorials[m_iCurrentIndex]->Execute())
-		{
-			m_iCurrentIndex++;
+		//튜토리얼보다 인덱스가 더 크다면 튜토리얼 끝.
 
-			//튜토리얼보다 인덱스가 더 크다면 튜토리얼 끝.
-			if (m_iCurrentIndex >= m_Tutorials.size())
-				m_isStart = true;
-		}
+		m_iCurrentIndex++;
 	}
+
+	return false;
 }
 
 void CTutorialManager::Start_Tutorial()
 {
 	m_pUIManager->Open_Scene(TEXT("Tutorial"));
-	m_pUIManager->Change_TutorialUI(CUITutorial::TOTU_NALNARI);
-	m_isStart = true;
+	m_pUIManager->Change_TutorialUI(0);
 }
 
 HRESULT CTutorialManager::Ready_Tutorial()
@@ -74,7 +74,7 @@ HRESULT CTutorialManager::Ready_Tutorial()
 
 	m_Tutorials.emplace_back(pTutorial);
 
-	Desc.iConstance = 6;
+	Desc.iConstance = 3;
 	Desc.TutorialUI = { CUITutorial::TOTU_HP, CUITutorial::TOTU_GRAB };
 	Desc.iTutorialCheckUI = CUITutorial::TOTU_GRAB_CHECKBOX;
 	Desc.strPlayerSkillName = "Grap";
