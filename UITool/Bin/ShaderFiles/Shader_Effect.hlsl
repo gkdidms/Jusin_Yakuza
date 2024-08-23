@@ -148,7 +148,7 @@ PS_OUT PS_RIMLIGHT(PS_IN In)//범위 지정 문해야됨
 
         vector FinColor = pow(fRim, fRimpower) * RimColor;
 
-        FinColor.a *=  0.6f;
+        FinColor.a *=  0.7f;
         Out.vColor = BackBuffer+FinColor;   
     }
     else

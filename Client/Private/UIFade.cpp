@@ -74,7 +74,7 @@ HRESULT CUIFade::Late_Tick(const _float& fTimeDelta)
     if (m_EventUI[0]->Check_AnimFin())
     {
         m_isFinished = true;
-        CUIManager::GetInstance()->Close_Scene(TEXT("Fade"));
+        //CUIManager::GetInstance()->Close_Scene(TEXT("Fade"));
     }
         
 
