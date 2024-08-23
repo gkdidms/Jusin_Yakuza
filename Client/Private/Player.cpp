@@ -28,6 +28,8 @@
 #include "EffectManager.h"
 #include "QteManager.h"
 
+#include "MonsterGroup.h"
+
 #pragma region 행동 관련 헤더들
 #include "Kiryu_KRS_Attack.h"
 #include "Kiryu_KRH_Attack.h"
@@ -2400,15 +2402,70 @@ void CPlayer::Effect_Control_Aura()
 void CPlayer::Setting_Target_Enemy()
 {
 	if (2 == m_iCurrentBehavior) return; 
-	auto pMonsters = m_pGameInstance->Get_GameObjects(m_iCurrentLevel, TEXT("Layer_Monster"));
-	auto pYonedas = m_pGameInstance->Get_GameObjects(m_iCurrentLevel, TEXT("Layer_Yoneda"));
-	
-	if (nullptr != m_pTargetObject)
+
+	if (m_pGameInstance->Get_CurrentLevel() == LEVEL_TUTORIAL)
 	{
-		_float vDistance = XMVectorGetX(XMVector3Length(m_pTransformCom->Get_State(CTransform::STATE_POSITION) - m_pTargetObject->Get_TransformCom()->Get_State(CTransform::STATE_POSITION)));
-		
-		// 기존 타겟중이던 친구의 거리가 3.f 이상 멀어지면 그때 다시 타겟팅한다.
-		if (3.f < vDistance)
+		auto pMonsterGroups = m_pGameInstance->Get_GameObjects(m_iCurrentLevel, TEXT("Layer_Monster"));
+
+		for (auto& pGroup : pMonsterGroups)
+		{
+			vector<CMonster*> pMonsters = dynamic_cast<CMonsterGroup*>(pGroup)->Get_Monsters();
+
+			for (auto& pMonster : pMonsters)
+			{
+				if (nullptr != m_pTargetObject)
+				{
+					_float vDistance = XMVectorGetX(XMVector3Length(m_pTransformCom->Get_State(CTransform::STATE_POSITION) - m_pTargetObject->Get_TransformCom()->Get_State(CTransform::STATE_POSITION)));
+
+					// 기존 타겟중이던 친구의 거리가 3.f 이상 멀어지면 그때 다시 타겟팅한다.
+					if (3.f < vDistance)
+					{
+						_float vMonsterLength = 999999.f;
+						_float vYonedaLength = 999999.f;
+						if (nullptr != pMonster)
+							vMonsterLength = XMVectorGetX(XMVector3Length(m_pTransformCom->Get_State(CTransform::STATE_POSITION) - pMonster->Get_TransformCom()->Get_State(CTransform::STATE_POSITION)));
+
+						m_pTargetObject = vMonsterLength < vYonedaLength ? static_cast<CMonster*>(pMonster) : static_cast<CMonster*>(pMonster);
+					}
+				}
+				else
+				{
+					_float vMonsterLength = 999999.f;
+					if (nullptr != pMonster)
+						vMonsterLength = XMVectorGetX(XMVector3Length(m_pTransformCom->Get_State(CTransform::STATE_POSITION) - pMonster->Get_TransformCom()->Get_State(CTransform::STATE_POSITION)));
+
+					m_pTargetObject = static_cast<CMonster*>(pMonster);
+				}
+			}
+
+		}
+	}
+	else
+	{
+		auto pMonsters = m_pGameInstance->Get_GameObjects(m_iCurrentLevel, TEXT("Layer_Monster"));
+		auto pYonedas = m_pGameInstance->Get_GameObjects(m_iCurrentLevel, TEXT("Layer_Yoneda"));
+
+		if (nullptr != m_pTargetObject)
+		{
+			_float vDistance = XMVectorGetX(XMVector3Length(m_pTransformCom->Get_State(CTransform::STATE_POSITION) - m_pTargetObject->Get_TransformCom()->Get_State(CTransform::STATE_POSITION)));
+
+			// 기존 타겟중이던 친구의 거리가 3.f 이상 멀어지면 그때 다시 타겟팅한다.
+			if (3.f < vDistance)
+			{
+				auto pMosnter = m_pCollisionManager->Get_Near_Object(this, pMonsters);
+				auto pYoneda = m_pCollisionManager->Get_Near_Object(this, pYonedas);
+
+				_float vMonsterLength = 999999.f;
+				_float vYonedaLength = 999999.f;
+				if (nullptr != pMosnter)
+					vMonsterLength = XMVectorGetX(XMVector3Length(m_pTransformCom->Get_State(CTransform::STATE_POSITION) - pMosnter->Get_TransformCom()->Get_State(CTransform::STATE_POSITION)));
+				if (nullptr != pYoneda)
+					vYonedaLength = XMVectorGetX(XMVector3Length(m_pTransformCom->Get_State(CTransform::STATE_POSITION) - pYoneda->Get_TransformCom()->Get_State(CTransform::STATE_POSITION)));
+
+				m_pTargetObject = vMonsterLength < vYonedaLength ? static_cast<CMonster*>(pMosnter) : static_cast<CMonster*>(pYoneda);
+			}
+		}
+		else
 		{
 			auto pMosnter = m_pCollisionManager->Get_Near_Object(this, pMonsters);
 			auto pYoneda = m_pCollisionManager->Get_Near_Object(this, pYonedas);
@@ -2421,23 +2478,10 @@ void CPlayer::Setting_Target_Enemy()
 				vYonedaLength = XMVectorGetX(XMVector3Length(m_pTransformCom->Get_State(CTransform::STATE_POSITION) - pYoneda->Get_TransformCom()->Get_State(CTransform::STATE_POSITION)));
 
 			m_pTargetObject = vMonsterLength < vYonedaLength ? static_cast<CMonster*>(pMosnter) : static_cast<CMonster*>(pYoneda);
+
 		}
 	}
-	else
-	{
-		auto pMosnter = m_pCollisionManager->Get_Near_Object(this, pMonsters);
-		auto pYoneda = m_pCollisionManager->Get_Near_Object(this, pYonedas);
-
-		_float vMonsterLength = 999999.f;
-		_float vYonedaLength = 999999.f;
-		if(nullptr != pMosnter)
-			vMonsterLength = XMVectorGetX(XMVector3Length(m_pTransformCom->Get_State(CTransform::STATE_POSITION) - pMosnter->Get_TransformCom()->Get_State(CTransform::STATE_POSITION)));
-		if (nullptr != pYoneda)
-			vYonedaLength = XMVectorGetX(XMVector3Length(m_pTransformCom->Get_State(CTransform::STATE_POSITION) - pYoneda->Get_TransformCom()->Get_State(CTransform::STATE_POSITION)));
-
-		m_pTargetObject = vMonsterLength < vYonedaLength ? static_cast<CMonster*>(pMosnter) : static_cast<CMonster*>(pYoneda);
-
-	}
+	
 }
 
 void CPlayer::Setting_Target_Item()

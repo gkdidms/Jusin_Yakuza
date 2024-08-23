@@ -9,6 +9,7 @@
 #include "MonsterGroup.h"
 
 #include "UIFightScore.h"
+#include "PlayerCamera.h"
 #include "Player.h"
 
 IMPLEMENT_SINGLETON(CFightManager)
@@ -102,6 +103,8 @@ HRESULT CFightManager::Initialize()
 	if (nullptr == m_pTutorialManager)
 		return E_FAIL;
 
+	m_pGameInstance->Set_InvertColorDuration(1.f);
+
 	return S_OK;
 }
 
@@ -172,6 +175,11 @@ void CFightManager::Tick(const _float& fTimeDelta)
 
 				m_pGameInstance->Set_TimeSpeed(TEXT("Timer_60"), fRatio < 0 ? 0.f : fRatio);
 				m_pGameInstance->Set_TimeSpeed(TEXT("Timer_Player"), fRatio < 0 ? 0.f : fRatio);
+
+				CPlayerCamera* pCamera = dynamic_cast<CPlayerCamera*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Camera"), CAMERA_PLAYER));
+				pCamera->Set_CustomRatio(fRatio);
+				pCamera->Set_TargetFoV(XMConvertToRadians(30.f));
+				pCamera->Start_Zoom();
 
 				if (m_fFinishDuration < m_fFinishTime)
 				{

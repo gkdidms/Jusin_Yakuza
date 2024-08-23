@@ -163,19 +163,19 @@ void CMap::Late_Tick(const _float& fTimeDelta)
 	m_vStrongBloomIndex.clear();
 	m_vCompulsoryDecalBlendMeshIndex.clear();
 
-	XMVECTOR vPlayerPos = dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"), 0))->Get_TransformCom()->Get_State(CTransform::STATE_POSITION);
-	XMVECTOR vThisPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-	_float fDistance = XMVector3Length(vPlayerPos - vThisPos).m128_f32[0]; // 거리 측정	
-
-	m_isFar = false;
-
-	if (fDistance > 700)
-		m_isFar = true;
-
 	if (m_pGameInstance->Get_CurrentLevel() == LEVEL_TUTORIAL ||
 		m_pGameInstance->Get_CurrentLevel() == LEVEL_NISHIKIWALK ||
 		m_pGameInstance->Get_CurrentLevel() == LEVEL_TOKOSTREET || m_pGameInstance->Get_CurrentLevel() == LEVEL_TEST)
 	{
+		XMVECTOR vPlayerPos = dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"), 0))->Get_TransformCom()->Get_State(CTransform::STATE_POSITION);
+		XMVECTOR vThisPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+		_float fDistance = XMVector3Length(vPlayerPos - vThisPos).m128_f32[0]; // 거리 측정	
+
+		m_isFar = false;
+
+		if (fDistance > 700)
+			m_isFar = true;
+
 		if (true == m_bOcculusionCulling && isOcculusionDepth())
 		{
 			if (m_isFar == true)
