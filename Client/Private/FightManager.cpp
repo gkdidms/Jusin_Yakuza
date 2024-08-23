@@ -132,6 +132,9 @@ _bool CFightManager::Tick(const _float& fTimeDelta)
 					Safe_Release(m_pCurrentMonsterGroup);
 					m_isFightStage = false;
 					m_pGameInstance->Set_InvertColor(false);
+					//플레이어도 다시 돌아온다.
+					CPlayer* pPlayer = dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"), 0));
+					pPlayer->Style_Change(CPlayer::ADVENTURE);
 					return true;
 				}
 				m_pGameInstance->Set_InvertColor(true);
@@ -139,12 +142,13 @@ _bool CFightManager::Tick(const _float& fTimeDelta)
 
 			if (m_pUIManager->isTitleEnd())
 			{
-				if (!m_pUIManager->isOpen(TEXT("Tutorial")))
+				if (!m_pUIManager->isOpen(TEXT("Tutorial")) && !m_isTutorialStart)
 				{
+					m_isTutorialStart = true;
 					m_pTutorialManager->Start_Tutorial();
 					return false;
 				}
-				
+
 				//아래에 있는 코드 복붙. 전투 끝.
 				if (m_pTutorialManager->Tick())
 				{
