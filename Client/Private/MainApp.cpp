@@ -92,8 +92,8 @@ void CMainApp::Tick(const _float& fTimeDelta)
 {
 	m_pGameInstance->Tick(fTimeDelta);
 	m_pCollisionManager->Tick();
-	m_pUIManager->Tick(fTimeDelta);
-	m_pUIManager->Late_Tick(fTimeDelta);
+	m_pUIManager->Tick(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Game")));
+	m_pUIManager->Late_Tick(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Game")));
 
 	//프레임 확인용 나중에 다시 디버그로 넣어야함
 	m_fTimeAcc += fTimeDelta;
@@ -460,7 +460,8 @@ void CMainApp::Free()
 
 	Safe_Release(m_pCollisionManager);
 	CCollision_Manager::DestroyInstance();
-
+	
+	CFightManager* pManager = CFightManager::GetInstance();
 	CFightManager::DestroyInstance();
 
 	Safe_Release(m_pUIManager);

@@ -84,6 +84,8 @@ void CLevel_DogimazoBoss::Tick(const _float& fTimeDelta)
 
 HRESULT CLevel_DogimazoBoss::Ready_Camera(const wstring& strLayerTag)
 {
+	m_pFileTotalManager->Reset_Cinemachine();
+
 	/* 카메라 추가 시 Debug Camera를 첫번째로 놔두고 추가해주세요 (디버깅 툴에서 사용중)*/
 	const _float4x4* pPlayerFloat4x4 = dynamic_cast<CTransform*>(m_pGameInstance->Get_GameObject_Component(LEVEL_DOGIMAZO_BOSS, TEXT("Layer_Player"), TEXT("Com_Transform", 0)))->Get_WorldFloat4x4();
 
@@ -138,7 +140,7 @@ HRESULT CLevel_DogimazoBoss::Ready_Camera(const wstring& strLayerTag)
 	CutSceneCameraDesc.fSpeedPecSec = 10.f;
 	CutSceneCameraDesc.fRotatePecSec = XMConvertToRadians(90.f);
 
-	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_CutSceneCamera"), strLayerTag, &CutSceneCameraDesc)))
+	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_DOGIMAZO_BOSS, TEXT("Prototype_GameObject_CutSceneCamera"), strLayerTag, &CutSceneCameraDesc)))
 		return E_FAIL;
 
 	return S_OK;

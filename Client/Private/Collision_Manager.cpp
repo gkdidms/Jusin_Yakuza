@@ -575,6 +575,7 @@ CGameObject* CCollision_Manager::Get_Near_Object(CGameObject* pObject, vector<CG
     {
         if (pTarget == pObject) continue;
         if (pTarget->isObjectDead()) continue;
+        if (pTarget->isDead()) continue;
 
         _vector vBasePosition = pObject->Get_TransformCom()->Get_State(CTransform::STATE_POSITION);
         _vector vTargetPosition = pTarget->Get_TransformCom()->Get_State(CTransform::STATE_POSITION);

@@ -60,6 +60,13 @@ _bool CUIManager::isCloseTutorialUIAnim()
 	return pScene->isCloseCurrentUIAnim();
 }
 
+_bool CUIManager::isTutorialStartEnd()
+{
+	CUITutorial* pScene = dynamic_cast<CUITutorial*>(Find_Scene(TEXT("Tutorial")));
+
+	return pScene->isStartEnd();
+}
+
 void CUIManager::Set_TutorialState(_uint iType)
 {
 	CUITutorial* pScene = dynamic_cast<CUITutorial*>(Find_Scene(TEXT("Tutorial")));
@@ -436,6 +443,13 @@ void CUIManager::Fade_Out()
 
 	m_PlayScene.push_back(pUIScene);
 	dynamic_cast<CUIFade*>(m_PlayScene.back())->Fade_Out();
+}
+
+_bool CUIManager::Fade_Finished()
+{
+	CUIScene* pUIScene = Find_Scene(TEXT("Fade"));
+
+	return dynamic_cast<CUIFade*>(m_PlayScene.back())->isFinished();
 }
 
 CUIScene* CUIManager::Find_Scene(wstring strSceneName)

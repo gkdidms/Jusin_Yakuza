@@ -33,6 +33,7 @@ public:
 public: // Æ©Åä¸®¾ó ¿ë
     _bool isShowTutorialUI(_uint iUIType);
     _bool isCloseTutorialUIAnim();
+    _bool isTutorialStartEnd();
     void Set_TutorialState(_uint iType);
     void Set_TutorialText(wstring strText);
 
@@ -147,6 +148,7 @@ private:
 public:
     void Fade_In();
     void Fade_Out();
+    _bool Fade_Finished();
 public:
    CUIScene* Find_Scene(wstring strSceneName);      
 

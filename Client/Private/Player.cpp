@@ -124,7 +124,7 @@ HRESULT CPlayer::Initialize(void* pArg)
 	m_Info.fHp = m_Info.fMaxHP;
 
 	PlayerInfo.iMoney = 100;
-
+	PlayerInfo.fHitGauge = 100.f;
 	ZeroMemory(&m_MoveDirection, sizeof(_bool) * MOVE_DIRECTION_END);
 	ZeroMemory(&m_InputDirection, sizeof(_bool) * MOVE_DIRECTION_END);
 
@@ -471,7 +471,7 @@ HRESULT CPlayer::Render()
 					if (FAILED(m_pShaderCom->Bind_RawValue("g_isRimLight", &m_isRimLight, sizeof(_float))))
 						return E_FAIL;
 
-					if (FAILED(m_pShaderCom->Bind_RawValue("g_fRimUV", &m_fRimPartsUV, sizeof(_float2))))
+					if (FAILED(m_pShaderCom->Bind_RawValue("g_fRimUV", &m_fRimTopUV, sizeof(_float2))))
 						return E_FAIL;
 				}
 			}
@@ -569,6 +569,8 @@ void CPlayer::Attack_Event(CGameObject* pHitObject, _bool isItem)
 
 			if (m_iCurrentBehavior == (_uint)KRS_BEHAVIOR_STATE::ATTACK)
 			{
+				if (nullptr == m_pTargetObject) return;
+
 				_bool isTargetDead = m_pTargetObject->isObjectDead();
 
 				if (isTargetDead)
@@ -617,6 +619,8 @@ void CPlayer::Attack_Event(CGameObject* pHitObject, _bool isItem)
 
 			if (m_iCurrentBehavior == (_uint)KRC_BEHAVIOR_STATE::ATTACK)
 			{
+				if (nullptr == m_pTargetObject) return;
+
 				if (m_pTargetObject->isObjectDead())
 					HitRadial_On();
 				else if (static_cast<CKiryu_KRC_Attack*>(m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior))->IsFinishBlow())
@@ -2137,7 +2141,8 @@ void CPlayer::Set_CutSceneAnim(CUTSCENE_ANIMATION_TYPE eType, _uint iFaceAnimInd
 		j++;
 	}
 
-	m_pTargetObject->Set_Sync(m_CutSceneAnimation[m_eCutSceneType]);
+	if(nullptr != m_pTargetObject)
+		m_pTargetObject->Set_Sync(m_CutSceneAnimation[m_eCutSceneType]);
 
 	m_pQTEMgr->Set_Animation(m_pAnimCom, m_CutSceneAnimation.at(eType));
 }
@@ -2253,6 +2258,10 @@ void CPlayer::Reset_CutSceneEvent()
 		_matrix LastMatrix = m_pGameInstance->Get_Transform_Matrix(CPipeLine::D3DTS_VIEW);
 		_float fLastFov = pCutSceneCamera->Get_Fov();
 		pCutSceneCamera->On_Return();		
+
+		// 혹시모르니 대상 몬스터의 싱크를 해제해준다.
+		m_pTargetObject->Off_Sync();
+
 		break;
 	}
 
@@ -2453,8 +2462,8 @@ void CPlayer::Setting_Target_Enemy()
 		{
 			_float vDistance = XMVectorGetX(XMVector3Length(m_pTransformCom->Get_State(CTransform::STATE_POSITION) - m_pTargetObject->Get_TransformCom()->Get_State(CTransform::STATE_POSITION)));
 
-			// 기존 타겟중이던 친구의 거리가 3.f 이상 멀어지면 그때 다시 타겟팅한다.
-			if (3.f < vDistance)
+			// 기존 타겟중이던 친구의 거리가 1.f 이상 멀어지면 그때 다시 타겟팅한다.
+			if (1.f < vDistance)
 			{
 				auto pMosnter = m_pCollisionManager->Get_Near_Object(this, pMonsters);
 				auto pYoneda = m_pCollisionManager->Get_Near_Object(this, pYonedas);

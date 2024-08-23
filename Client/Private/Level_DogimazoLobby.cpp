@@ -36,6 +36,7 @@ HRESULT CLevel_DogimazoLobby::Initialize()
     m_pFileTotalManager->Set_MapObj_In_Client(STAGE_DOGIMAZO_LOBBY, LEVEL_DOGIMAZO_LOBBY);
     m_pFileTotalManager->Set_Lights_In_Client(STAGE_DOGIMAZO_LOBBY);
     m_pFileTotalManager->Set_Collider_In_Client(STAGE_DOGIMAZO_LOBBY, LEVEL_DOGIMAZO_LOBBY);
+	m_pFileTotalManager->Set_Trigger_In_Client(4, LEVEL_DOGIMAZO_LOBBY);			// 요네다꺼
 
 	//m_pFileTotalManager->Set_Trigger_In_Client(STAGE_DOGIMAZO_LOBBY, LEVEL_DOGIMAZO_LOBBY);
 
@@ -90,6 +91,8 @@ void CLevel_DogimazoLobby::Tick(const _float& fTimeDelta)
 
 HRESULT CLevel_DogimazoLobby::Ready_Camera(const wstring& strLayerTag)
 {
+	m_pFileTotalManager->Reset_Cinemachine();
+
 	/* 카메라 추가 시 Debug Camera를 첫번째로 놔두고 추가해주세요 (디버깅 툴에서 사용중)*/
 	const _float4x4* pPlayerFloat4x4 = dynamic_cast<CTransform*>(m_pGameInstance->Get_GameObject_Component(LEVEL_DOGIMAZO_LOBBY, TEXT("Layer_Player"), TEXT("Com_Transform", 0)))->Get_WorldFloat4x4();
 
@@ -144,7 +147,7 @@ HRESULT CLevel_DogimazoLobby::Ready_Camera(const wstring& strLayerTag)
 	CutSceneCameraDesc.fSpeedPecSec = 10.f;
 	CutSceneCameraDesc.fRotatePecSec = XMConvertToRadians(90.f);
 
-	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_CutSceneCamera"), strLayerTag, &CutSceneCameraDesc)))
+	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_DOGIMAZO_LOBBY, TEXT("Prototype_GameObject_CutSceneCamera"), strLayerTag, &CutSceneCameraDesc)))
 		return E_FAIL;
 
 	return S_OK;
