@@ -35,12 +35,13 @@ _bool CMonster::isAttack()
 	return m_pTree->isAttack();
 }
 
-void CMonster::Set_Sync(string strPlayerAnim)
+void CMonster::Set_Sync(string strPlayerAnim, _bool isKeepSynchronizing)
 {
 	string_view strAnim = strPlayerAnim;
 
 	m_isDown = true;
 	m_isSynchronizing = true;
+	m_isKeepSynchronizing = isKeepSynchronizing;
 
 	//教农 咀记
 	if (strAnim == string_view("p_krc_sync_guard_counter_f"))
@@ -275,14 +276,10 @@ void CMonster::Set_Adventure(_bool isAdventure)
 void CMonster::Off_Sync()
 {
 	m_isSynchronizing = false;
+	m_isKeepSynchronizing = false;
 	m_iCurrentAnimType = CMonster::DEFAULT;
 
-	_matrix mat = XMLoadFloat4x4(m_pModelCom->Get_BoneCombinedTransformationMatrix("center_c_n"));
-	
-	//_vector vPos;
-	//memcpy(&vPos, ->m[CTransform::STATE_POSITION], sizeof(_vector));
-
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, (mat * m_pGameInstance->Get_GameObject(m_iCurrentLevel, TEXT("Layer_Player"), 0)->Get_TransformCom()->Get_WorldMatrix()).r[CTransform::STATE_POSITION]);
+	Setting_SyncAnim_EndPosition();
 }
 
 void CMonster::Set_Start(_bool isStart)
@@ -314,6 +311,13 @@ void CMonster::Reset_Monster()
 	m_isObjectDead = false;
 
 	m_pTree->Reset_AI();
+}
+
+void CMonster::Setting_SyncAnim_EndPosition()
+{
+	// 教农 场尘 锭 困摹 棱酒淋.
+	_matrix mat = XMLoadFloat4x4(m_pModelCom->Get_BoneCombinedTransformationMatrix("center_c_n"));
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, (mat * m_pGameInstance->Get_GameObject(m_iCurrentLevel, TEXT("Layer_Player"), 0)->Get_TransformCom()->Get_WorldMatrix()).r[CTransform::STATE_POSITION]);
 }
 
 /*
@@ -380,8 +384,23 @@ void CMonster::Tick(const _float& fTimeDelta)
 		CTransform* pTrasnform = dynamic_cast<CTransform*>(m_pGameInstance->Get_GameObject_Component(m_iCurrentLevel, TEXT("Layer_Player"), TEXT("Com_Transform"), 0));
 		m_pTransformCom->Set_WorldMatrix(pTrasnform->Get_WorldMatrix());
 
-		if (m_pAnimCom[m_iCurrentAnimType]->Get_AnimFinished())
-			m_isSynchronizing = false;
+		if (!m_isKeepSynchronizing && m_pAnimCom[m_iCurrentAnimType]->Get_AnimFinished())
+		{
+			if (m_pAnimCom[m_iCurrentAnimType]->Get_CurrentAnimIndex() == 579)			//[579]	[p_kru_sync_lapel_nage]
+			{
+				if(Checked_Animation_Ratio(0.5f))
+				{
+					Setting_SyncAnim_EndPosition();
+					m_isSynchronizing = false;
+				}
+			}
+			else
+			{
+				Setting_SyncAnim_EndPosition();
+				m_isSynchronizing = false;
+			}
+			
+		}
 	}
 
 	if (!m_isScript)

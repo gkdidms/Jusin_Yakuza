@@ -16,7 +16,7 @@ CKiryu_KRS_Grab::CKiryu_KRS_Grab()
 	
 	m_AnimationIndices.push_back(580);	//4 [580] [p_kru_sync_lapel_off]			// 잡고있다 놓침
 	m_AnimationIndices.push_back(581);	//5 [581] [p_kru_sync_lapel_off_hiza]		// 잡고있다가 놓치면서 배맞음
-	m_AnimationIndices.push_back(582);	//6 [582] [p_kru_sync_lapel_press]		// 잡고있다가 얼굴맞으면서 놓치고 넘어짐
+	m_AnimationIndices.push_back(582);	//6 [582] [p_kru_sync_lapel_press]			// 잡고있다가 얼굴맞으면서 놓치고 넘어짐
 	
 	m_AnimationIndices.push_back(583);	// 7 [583] [p_kru_sync_lapel_resist]		// 잡고 흔들림
 
@@ -33,7 +33,7 @@ CKiryu_KRS_Grab::CKiryu_KRS_Grab()
 	m_AnimationIndices.push_back(597);	// 15 [597] [p_kru_sync_neck_walk]
 
 	m_AnimationIndices.push_back(592);	// 16 [592] [p_kru_sync_neck_off]
-	m_AnimationIndices.push_back(593);	// 17 [593] [p_kru_sync_neck_off_uraken]	//잡고있다 끌려가면서 놓침
+	m_AnimationIndices.push_back(593);	// 17 [593] [p_kru_sync_neck_off_uraken]	// 잡고있다 끌려가면서 놓침
 	m_AnimationIndices.push_back(594);	// 18 [594] [p_kru_sync_neck_press]			// 잡고있다가 놓치고 넘어짐
 	
 	m_AnimationIndices.push_back(595);	// 19 [595] [p_kru_sync_neck_resist]
@@ -66,7 +66,7 @@ void CKiryu_KRS_Grab::Tick(const _float& fTimeDelta)
 {
 	CLandObject* pTargetObject = m_pPlayer->Get_TargetObject();
 
-	if (m_iCurrentIndex != 24 && !m_isCutScene)
+	if (m_iCurrentIndex != 12 && !m_isCutScene)
 	{
 		if (nullptr != pTargetObject)
 		{
@@ -103,13 +103,18 @@ void CKiryu_KRS_Grab::Tick(const _float& fTimeDelta)
 			break;
 		}
 		case ANIM_LOOP:
+		{
 			m_pPlayer->Set_HandAnimIndex(CPlayer::HAND_GU);
 			m_pPlayer->On_Separation_Hand();
-			static_cast<CMonster*>(m_pPlayer->Get_TargetObject())->Set_Sync("p_kru_sync_lapel_lp");
+
+			CMonster* pTargetMonster = static_cast<CMonster*>(m_pPlayer->Get_TargetObject());
+			if(nullptr != pTargetMonster)
+				pTargetMonster->Set_Sync("p_kru_sync_lapel_lp", true);
 
 			// 여기에 키인풋
 			Move_KeyInput(fTimeDelta);
 			break;
+		}
 		case ANIM_END:
 			// 놓치는게 end (p_kru_sync_neck_off)
 			break;
@@ -207,7 +212,9 @@ void CKiryu_KRS_Grab::Setting_Value(void* pValue)
 	m_isGrabed = pDesc->isGrabed;
 	m_iDirection = pDesc->iDirection;
 
-	static_cast<CMonster*>(m_pPlayer->Get_TargetObject())->Set_Sync("p_kru_sync_lapel_st");
+	CMonster* pTargetMonster = static_cast<CMonster*>(m_pPlayer->Get_TargetObject());
+	if (nullptr != pTargetMonster)
+		pTargetMonster->Set_Sync("p_kru_sync_lapel_st", true);
 }
 
 void CKiryu_KRS_Grab::Event(void* pValue)
@@ -238,7 +245,7 @@ _bool CKiryu_KRS_Grab::Changeable_Combo_Animation()
 
 void CKiryu_KRS_Grab::Shaking()
 {
-	if (m_iCurrentIndex == 24)						// 잡고 바닥에 내려찍는 애니메이션
+	if (m_iCurrentIndex == 12)						// 잡고 바닥에 내려찍는 애니메이션
 	{
 		if (!m_isShaked && Checked_Animation_Ratio(0.4))
 		{
@@ -267,11 +274,13 @@ void CKiryu_KRS_Grab::Move_KeyInput(const _float& fTimeDelta)
 	}
 	if (m_pGameInstance->GetKeyState(DIK_Q) == TAP)
 	{
-		m_iCurrentIndex = 24;
+		m_iCurrentIndex = 12;
 		m_eAnimState = ANIM_ONCE;
 		m_isStop = true;
 
-		static_cast<CMonster*>(m_pPlayer->Get_TargetObject())->Set_Sync("p_kru_sync_neck_nage");
+		CMonster* pTargetMonster = static_cast<CMonster*>(m_pPlayer->Get_TargetObject());
+		if (nullptr != pTargetMonster)
+			pTargetMonster->Set_Sync("p_kru_sync_lapel_nage");
 	}
 
 	//3 [585] [p_kru_sync_lapel_walk]
