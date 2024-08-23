@@ -45,6 +45,8 @@ HRESULT CLevel_OfficeBoss::Initialize()
 		return E_FAIL;
 
 	m_pUIManager->Fade_Out();
+	m_pSystemManager->Set_Camera(CAMERA_PLAYER);
+	m_pFightManager->Set_FightStage(true);
 
     return S_OK;
 }
@@ -55,6 +57,7 @@ void CLevel_OfficeBoss::Tick(const _float& fTimeDelta)
 	{
 		if (m_pUIManager->isFindFinished())
 		{
+			m_pUIManager->Close_Scene(TEXT("Fade"));
 			m_pFightManager->Set_FightStage(true);
 		}
 	}
@@ -83,10 +86,32 @@ void CLevel_OfficeBoss::Tick(const _float& fTimeDelta)
 	}
 #endif // _DEBUG
 
-	if (m_pFightManager->Tick(fTimeDelta))
-		m_pQuestManager->Start_Quest(CQuestManager::CHAPTER_6);
+	//if (m_pFightManager->Tick(fTimeDelta))
+	//	m_pQuestManager->Start_Quest(CQuestManager::CHAPTER_6);
 
-	if (m_pQuestManager->Execute())
+	//if (m_pQuestManager->Execute())
+	//{
+	//	if (!m_pUIManager->isOpen(TEXT("Fade")))
+	//	{
+	//		m_pUIManager->Open_Scene(TEXT("Fade"));
+	//		m_pUIManager->Fade_In();
+	//	}
+	//	else
+	//	{
+	//		if (m_pUIManager->isFindFinished())
+	//		{
+	//			m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_STREET));
+	//			return;
+	//		}
+	//	}
+	//}
+
+	if (m_pFightManager->Tick(fTimeDelta))
+	{
+		m_bSceneChange = true;
+	}
+
+	if (m_bSceneChange)
 	{
 		if (!m_pUIManager->isOpen(TEXT("Fade")))
 		{
@@ -95,8 +120,11 @@ void CLevel_OfficeBoss::Tick(const _float& fTimeDelta)
 		}
 		else
 		{
-			if (m_pUIManager->isFindFinished())
+			if (m_pFightManager->isInverseEnd())
+			{
 				m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_STREET));
+				return;
+			}
 		}
 	}
 
@@ -169,7 +197,7 @@ HRESULT CLevel_OfficeBoss::Ready_Camera(const wstring& strLayerTag)
 	CutSceneCameraDesc.fSpeedPecSec = 10.f;
 	CutSceneCameraDesc.fRotatePecSec = XMConvertToRadians(90.f);
 
-	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_TEST, TEXT("Prototype_GameObject_CutSceneCamera"), strLayerTag, &CutSceneCameraDesc)))
+	if (FAILED(m_pGameInstance->Add_GameObject(LEVEL_OFFICE_BOSS, TEXT("Prototype_GameObject_CutSceneCamera"), strLayerTag, &CutSceneCameraDesc)))
 		return E_FAIL;
 
 	return S_OK;

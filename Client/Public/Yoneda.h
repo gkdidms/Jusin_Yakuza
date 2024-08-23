@@ -25,6 +25,8 @@ public:
     virtual void Tick(const _float& fTimeDelta) override;
     virtual void Late_Tick(const _float& fTimeDelta) override;
 
+    virtual void Off_Sync() override;
+
 private:
     _uint m_iWeaponType = { WEAPON_END };
 

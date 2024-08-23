@@ -256,11 +256,13 @@ public:
     void Set_Down(_bool isDown) { m_isDown = isDown; }
     void Set_Sync(string strPlayerAnim);
     void Set_Adventure(_bool isAdventure);
-    void Off_Sync();
+    virtual void Off_Sync();
     void Set_RimLight(_float isRimLight) { m_isRimLight = isRimLight; }
     void Set_Start(_bool isStart); // 전투 시작 시 
     void Set_Script(_bool isScript) { m_isScript = isScript; }
     void Set_Animation(string strAnimName, _bool isLoop = true);
+
+    void Reset_Monster();
 
 public:
     _float Get_HitDamage() { return m_fHitDamage; }
