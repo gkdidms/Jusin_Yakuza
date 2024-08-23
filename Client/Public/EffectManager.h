@@ -38,8 +38,15 @@ public:
     void Car_BackTrail(CEffect::EFFECT_DESC& EffectDesc);
     //ÀÚµ¿Â÷ Ã¢¹® ±úÁü
     void Car_GlassBroke(CEffect::EFFECT_DESC& EffectDesc);
-
+    //µ·
     void Money(CEffect::EFFECT_DESC& EffectDesc);
+    //Çï¸®ÄßÅÍ ºÒ
+    void Heli_Fire(CEffect::EFFECT_DESC& EffectDesc);
+    //Çï¸®ÄßÅÍ ÆøÆÄ
+    void Heli_Exp(CEffect::EFFECT_DESC& EffectDesc);
+    //¹Ì»çÀÏÆøÆÅ
+    void Heli_BulletExp(CEffect::EFFECT_DESC& EffectDesc);
+
 
     void Player_Attack_Effect(CEffect::EFFECT_DESC& EffectDesc);
     void Enemy_Attack_Effect(CEffect::EFFECT_DESC& EffectDesc);

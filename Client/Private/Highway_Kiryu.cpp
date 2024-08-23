@@ -10,6 +10,7 @@
 #include "Weapon_Gun_Cz75.h"
 #include "UIManager.h"
 #include "CarChaseCamera.h"
+#include"EffectManager.h"
 
 CHighway_Kiryu::CHighway_Kiryu(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLandObject{ pDevice, pContext }
@@ -69,6 +70,7 @@ void CHighway_Kiryu::Tick(const _float& fTimeDelta)
 
 	m_pModelCom->Play_Animation_Separation(fTimeDelta, m_iFaceAnimIndex, m_SeparationAnimComs[FACE_ANIM], false, (_int)FACE_ANIM);
 	m_pModelCom->Play_Animation_Separation(fTimeDelta, m_iHandAnimIndex, m_SeparationAnimComs[HAND_ANIM], false, (_int)HAND_ANIM);
+
 	Play_CurrentAnimation(fTimeDelta);
 
 	m_ModelMatrix = *pTaxiMatrix;
@@ -364,6 +366,8 @@ void CHighway_Kiryu::Play_HideReload(_float fTimeDelta)
 
 void CHighway_Kiryu::Play_Hit(_float fTimeDelta)
 {
+
+
 	/*
 	* [2] [mngcar_c_car_gun_aiml_b_dam]
 	* [13] [mngcar_c_car_gun_aiml_f_dam]
@@ -394,12 +398,31 @@ void CHighway_Kiryu::Play_Hit(_float fTimeDelta)
 	m_pModelCom->Set_AnimationIndex(iAnimIndex, 4.f);
 
 	if (m_pModelCom->Get_AnimFinished())
+	{
 		Change_Behavior(AIMING);
+	}
+
 
 }
 
 void CHighway_Kiryu::Play_Shot(_float fTimeDelta)
 {
+	if (!m_isShot)
+	{
+		//ÀÌÆåÆ® »ý¼º
+		CEffect::EFFECT_DESC EffectDesc;
+
+
+		if (m_isLeft)
+			EffectDesc.pWorldMatrix = m_pGun_L->Get_PartWorldMatrix();
+		else
+			EffectDesc.pWorldMatrix = m_pGun_R->Get_PartWorldMatrix();
+
+
+		CEffectManager::GetInstance()->Shot_Flash(EffectDesc);
+		m_isShot = true;
+	}
+
 	// [31] [mngcar_c_car_gun_aiml_l_shot]
 	// [19] [mngcar_c_car_gun_aiml_f_shot]
 	// [8] [mngcar_c_car_gun_aiml_b_shot]
@@ -431,7 +454,11 @@ void CHighway_Kiryu::Play_Shot(_float fTimeDelta)
 	m_pModelCom->Set_AnimationIndex(iAnimIndex, 4.f);
 
 	if (m_pModelCom->Get_AnimFinished())
+	{
 		Change_Behavior(AIMING);
+		m_isShot = false;
+
+	}
 
 	//if(m_SeparationAnimComs[DEFAULT_ANIM]->Get_AnimFinished())
 	//	Change_Behavior(AIMING);
@@ -549,7 +576,6 @@ HRESULT CHighway_Kiryu::Add_Components()
 	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Model_Kiryu_CarChase"),
 		TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
 		return E_FAIL;
-
 
 	CBounding_AABB::BOUNDING_AABB_DESC		ColliderDesc{};
 

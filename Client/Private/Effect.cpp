@@ -88,7 +88,9 @@ void CEffect::Tick(const _float& fTimeDelta)
     //memcpy(&matWorld.r[CTransform::STATE_POSITION], m_pWorldMatrix->m[CTransform::STATE_POSITION], sizeof(_float4));
 
     if (nullptr != m_pWorldMatrix)
+    {
         m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(m_pWorldMatrix));
+    }
 }
 
 void CEffect::Late_Tick(const _float& fTimeDelta)
