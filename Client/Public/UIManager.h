@@ -148,6 +148,7 @@ private:
 public:
     void Fade_In();
     void Fade_Out();
+    _bool Fade_Finished();
 public:
    CUIScene* Find_Scene(wstring strSceneName);      
 

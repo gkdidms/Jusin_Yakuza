@@ -124,7 +124,7 @@ HRESULT CPlayer::Initialize(void* pArg)
 	m_Info.fHp = m_Info.fMaxHP;
 
 	PlayerInfo.iMoney = 100;
-
+	PlayerInfo.fHitGauge = 100.f;
 	ZeroMemory(&m_MoveDirection, sizeof(_bool) * MOVE_DIRECTION_END);
 	ZeroMemory(&m_InputDirection, sizeof(_bool) * MOVE_DIRECTION_END);
 
@@ -471,7 +471,7 @@ HRESULT CPlayer::Render()
 					if (FAILED(m_pShaderCom->Bind_RawValue("g_isRimLight", &m_isRimLight, sizeof(_float))))
 						return E_FAIL;
 
-					if (FAILED(m_pShaderCom->Bind_RawValue("g_fRimUV", &m_fRimPartsUV, sizeof(_float2))))
+					if (FAILED(m_pShaderCom->Bind_RawValue("g_fRimUV", &m_fRimTopUV, sizeof(_float2))))
 						return E_FAIL;
 				}
 			}
