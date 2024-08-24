@@ -30,7 +30,6 @@ CImguiManager::CImguiManager(ID3D11Device* pDevice, ID3D11DeviceContext* pContex
 HRESULT CImguiManager::Initialize(void* pArg)
 {
 	Setting_InitialData("Player/");
-	Ready_SoundFolders();
 
 	//ImGui
 	IMGUI_CHECKVERSION();
@@ -141,6 +140,7 @@ void CImguiManager::Tick(const _float& fTimeDelta)
 
 	}
 
+	Play_SoundEvent();
 }
 
 HRESULT CImguiManager::Render()
@@ -1172,34 +1172,118 @@ void CImguiManager::SoundListWindow()
 {
 	ImGui::Begin("Sound List", &m_isSoundListWindow);
 
-	for (size_t i = 0; i < m_SoundFolderNames.size(); i++)
-	{
-		if (ImGui::RadioButton(m_SoundFolderNames[i].c_str(), m_SoundFolderRadio[i]))
-		{
-			for (auto value : m_SoundFolderRadio)
-				value = false;
-
-			m_SoundFolderRadio[i] = true;
-		}
-		ImGui::SameLine();
-	}
-
-	if (ImGui::Button(u8"사운드 파일 목록"))
+	if (ImGui::Button(u8"사운드 파일 불러오기"))
 	{
 		IGFD::FileDialogConfig config;
 		config.path = (m_RootDir / "Client" / "Bin" / "Resources" / "Sounds" ).string();
-		ImGuiFileDialog::Instance()->OpenDialog("ChooseBinaryGroupSoundFiles", "Choose File", ".mp3, .wav", config);
+		ImGuiFileDialog::Instance()->OpenDialog("ChooseBinaryGroupSoundFiles", "Choose File", ".wav, .mp3", config);
 	}
+
 	if (ImGuiFileDialog::Instance()->Display("ChooseBinaryGroupSoundFiles"))
 	{
 		if (ImGuiFileDialog::Instance()->IsOk())
 		{
+			m_strSelectSoundFileName = ImGuiFileDialog::Instance()->GetCurrentFileName();
 
+			ImGuiFileDialog::Instance()->Close();
 		}
 	}
 
+	if (ImGui::Button(u8"사운드 듣기"))
+		m_pGameInstance->PlaySound_W(m_pGameInstance->StringToWstring(ImGuiFileDialog::Instance()->GetCurrentFileName()), SOUND_EFFECT);
+	if (ImGui::Button(u8"사운드 끄기"))
+		m_pGameInstance->StopAll();
 
-	ImGui::Text(u8"테스트용으로 띄웠습니다");
+	/*
+	* 		Animation_SoundEventState Desc{};
+			Desc.eChannel = m_eSoundCannel;
+			Desc.fAinmPosition = m_fAnimationPosition;
+			Desc.eChannel = m_eSoundCannel;
+
+
+			m_SoundEvents.emplace()
+	*/
+	ImGui::Text(u8"선택된 애니메이션: %s", m_AnimNameList[m_iAnimIndex].c_str());
+	ImGui::InputFloat(u8"애니메이션 포지션", &m_fAnimationPosition);
+
+	ImGui::Text(u8"선택된 사운드 파일: %s", m_strSelectSoundFileName.c_str());
+
+	/*
+	* 	enum CHANNELID {
+		SOUND_EFFECT,
+		SOUND_BGM,
+		SOUND_AMBIENT,
+		SOUND_PLAYER_VOICE,
+		SOUND_PLAYER_EFFECT,
+		SOUND_ENEMY_VOICE,
+		SOUND_ENEMY_EFFECT,
+		SOUND_UI,
+		SOUND_END
+	};
+	*/
+
+	ImGui::Text(u8"사운드 채널 종류");
+	if (ImGui::RadioButton(u8"EFFECT", m_eSoundCannel == SOUND_EFFECT))
+	{
+		m_eSoundCannel = SOUND_EFFECT;
+	}
+	if (ImGui::RadioButton(u8"BGM", m_eSoundCannel == SOUND_BGM))
+	{
+		m_eSoundCannel = SOUND_BGM;
+	}
+	if (ImGui::RadioButton(u8"AMBIENT", m_eSoundCannel == SOUND_AMBIENT))
+	{
+		m_eSoundCannel = SOUND_AMBIENT;
+	}
+	if (ImGui::RadioButton(u8"PLAYER_VOICE", m_eSoundCannel == SOUND_PLAYER_VOICE))
+	{
+		m_eSoundCannel = SOUND_PLAYER_VOICE;
+	}
+	if (ImGui::RadioButton(u8"PLAYER_EFFECT", m_eSoundCannel == SOUND_PLAYER_EFFECT))
+	{
+		m_eSoundCannel = SOUND_PLAYER_EFFECT;
+	}
+	if (ImGui::RadioButton(u8"ENEMY_VOICE", m_eSoundCannel == SOUND_ENEMY_VOICE))
+	{ 
+		m_eSoundCannel = SOUND_ENEMY_VOICE;
+	}
+	if (ImGui::RadioButton(u8"ENEMY_EFFECT", m_eSoundCannel == SOUND_ENEMY_EFFECT))
+	{
+		m_eSoundCannel = SOUND_ENEMY_EFFECT;
+	}
+
+	if (ImGui::Button(u8"사운드 추가하기"))
+	{
+		Animation_SoundEventState Desc{};
+
+		Desc.iChannel = static_cast<_uint>(m_eSoundCannel);
+		Desc.fAinmPosition = m_fAnimationPosition;
+		Desc.strSoundFileName = m_strSelectSoundFileName;
+
+		m_SoundEvents.emplace(m_AnimNameList[m_iAnimIndex], Desc);
+	}
+
+	if (ImGui::Button(u8"불러오기"))
+	{
+		string strDirectory = "../../Client/Bin/DataFiles/Character/" + m_ModelNameList[m_iModelSelectedIndex];
+		SoundEvent_Load(strDirectory);
+	}
+	ImGui::SameLine();
+	if (ImGui::Button(u8"삭제"))
+	{
+		auto iterator = m_SoundEvents.lower_bound(m_AnimNameList[m_iAnimIndex]);
+		for (size_t i = 0; i < m_iSoundEventIndex; i++)
+		{
+			iterator++;
+		}
+		m_SoundEvents.erase(iterator);
+	}
+	ImGui::SameLine();
+	if (ImGui::Button(u8"저장"))
+	{
+		string strDirectory = "../../Client/Bin/DataFiles/Character/" + m_ModelNameList[m_iModelSelectedIndex];
+		SoundEvent_Save(strDirectory);
+	}
 
 	ImGui::End();
 }
@@ -1287,7 +1371,7 @@ void CImguiManager::FaceEventWindow()
 	if (ImGui::Button(u8"삭제"))
 	{
 		auto iterator = m_FaceEvents.lower_bound(m_AnimNameList[m_iAnimIndex]);
-		for (size_t i = 0; i < m_iBloodEventIndex; i++)
+		for (size_t i = 0; i < m_iFaceEventIndex; i++)
 		{
 			iterator++;
 		}
@@ -1694,6 +1778,44 @@ void CImguiManager::Create_Effect(string& strBoneName, string& strEffectName, ws
 	m_EffectState.emplace(strBoneName, strEffectName);
 }
 
+void CImguiManager::Play_SoundEvent()
+{
+	auto Anims = m_Anims;
+	_float Duration = (_float)(*(Anims[m_iAnimIndex]->Get_Duration()));
+	_float CurrentPosition = (_float)(*(Anims[m_iAnimIndex]->Get_CurrentPosition()));
+
+	
+
+	auto lower_bound_iter = m_SoundEvents.lower_bound(m_AnimNameList[m_iAnimIndex]);
+	auto upper_bound_iter = m_SoundEvents.upper_bound(m_AnimNameList[m_iAnimIndex]);
+
+	for (; lower_bound_iter != upper_bound_iter; ++lower_bound_iter)
+	{
+		if (!lower_bound_iter->second.isPlay && CurrentPosition > lower_bound_iter->second.fAinmPosition)
+		{
+			lower_bound_iter->second.isPlay = true;
+			m_pGameInstance->PlaySound_W(m_pGameInstance->StringToWstring(m_strSelectSoundFileName), SOUND_EFFECT);
+		}
+	}
+
+
+	if (Anims[m_iAnimIndex]->Get_Restrat())
+	{
+		Reset_SoundEvent_Played();
+	}
+}
+
+void CImguiManager::Reset_SoundEvent_Played()
+{
+	auto lower_bound_iter = m_SoundEvents.lower_bound(m_AnimNameList[m_iAnimIndex]);
+	auto upper_bound_iter = m_SoundEvents.upper_bound(m_AnimNameList[m_iAnimIndex]);
+
+	for (; lower_bound_iter != upper_bound_iter; ++lower_bound_iter)
+	{
+		lower_bound_iter->second.isPlay = false;
+	}
+}
+
 void CImguiManager::Setting_Collider_Value(_uint iBoneIndex)
 {
 	auto& pBoneSpheres = m_pRenderModel->Get_BoneSpheres();
@@ -2042,6 +2164,34 @@ void CImguiManager::TrailEvent_Save(string strPath)
 		out << pair.second.strTrailProtoName << endl;
 		out << pair.second.iBoneIndex << endl;
 		out << pair.second.fAinmPosition << endl;
+	}
+
+	out.close();
+}
+
+void CImguiManager::SoundEvent_Save(string strPath)
+{
+	string strDirectory = strPath;
+	strDirectory += "/" + m_ModelNameList[m_iModelSelectedIndex] + "_SoundEvents.dat";
+
+	ofstream out(strDirectory, ios::binary);
+
+	_uint iNumEvents = m_SoundEvents.size();
+	// 총 몇개의 이펙트를 읽어올 것인지 작성한다
+	out << iNumEvents;
+
+	/*
+		_uint iChannel;
+		_float fAinmPosition;
+		string strSoundFileName;
+	*/
+
+	for (auto& pair : m_SoundEvents)
+	{
+		out << pair.first << endl;
+		out << pair.second.iChannel << endl;
+		out << pair.second.fAinmPosition << endl;
+		out << pair.second.strSoundFileName << endl;
 	}
 
 	out.close();
@@ -2437,6 +2587,45 @@ void CImguiManager::TrailEvent_Load(string strPath)
 	in.close();
 }
 
+void CImguiManager::SoundEvent_Load(string strPath)
+{
+	string strDirectory = strPath;
+	strDirectory += "/" + m_ModelNameList[m_iModelSelectedIndex] + "_SoundEvents.dat";
+
+	ifstream in(strDirectory, ios::binary);
+
+	if (!in.is_open()) {
+		MSG_BOX("SoundEvents 파일 개방 실패");
+		return;
+	}
+
+	m_SoundEvents.clear();
+
+	_uint iNumEvents{ 0 };
+	// 총 몇개의 이펙트를 읽어올 것인지 작성한다
+	in >> iNumEvents;
+
+	Animation_SoundEventState Event{};
+	string key;
+
+	/*
+		CHANNELID eChannel;
+		_float fAinmPosition;
+		string strSoundFileName;
+	*/
+	for (size_t i = 0; i < iNumEvents; i++)
+	{
+		in >> key;
+		in >> Event.iChannel;
+		in >> Event.fAinmPosition;
+		in >> Event.strSoundFileName;
+
+		m_SoundEvents.emplace(key, Event);
+	}
+
+	in.close();
+}
+
 void CImguiManager::FaceEvent_Load(string strPath)
 {
 	string strDirectory = strPath;
@@ -2449,7 +2638,7 @@ void CImguiManager::FaceEvent_Load(string strPath)
 		return;
 	}
 
-	m_BloodEvents.clear();
+	m_FaceEvents.clear();
 
 	_uint iNumEvents{ 0 };
 	// 총 몇개의 이펙트를 읽어올 것인지 작성한다
@@ -2678,14 +2867,6 @@ void CImguiManager::Change_Model()
 	}
 
 	m_pRenderModel->Change_Model(strModelName, strAnimName);
-}
-
-void CImguiManager::Ready_SoundFolders()
-{
-	string strDirPath = "../../Client/Bin/Resources/Sounds/";
-	m_pGameInstance->Get_DirectoryName(strDirPath, m_SoundFolderNames);
-
-	m_SoundFolderRadio.resize(m_SoundFolderNames.size());
 }
 
 void CImguiManager::Setting_InitialData(string strFolderType)

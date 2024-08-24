@@ -32,7 +32,7 @@ public:
 
     /*Sound_Manager*/
 public:
-    _bool PlaySound_W(const wstring pSoundKey, CHANNELID eID, float fVolume);
+    _bool PlaySound_W(const wstring pSoundKey, CHANNELID eID, float fVolume = 1.f);
     void PlayBGM(const wstring pSoundKey, float fVolume);
     void StopSound(CHANNELID eID);
     void StopAll();
