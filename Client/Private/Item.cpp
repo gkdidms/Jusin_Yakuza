@@ -428,6 +428,8 @@ _bool CItem::Decrease_Life()
 	if (0 > m_iLife)
 	{
 		Set_ObjectDead();
+		//Dissolve Ω√¿€
+		m_bDissovle = true;
 		return false;
 	}
 
