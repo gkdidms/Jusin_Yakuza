@@ -23,6 +23,7 @@ public:
 public:
     _bool isDead() { return m_isDead; }
     _bool isObjectDead() { return m_isObjectDead; }
+    _bool isCloned() { return m_isCloned; }
     _float Get_CamDistance() { return m_fCamDistance; }
 
 public:
@@ -70,6 +71,7 @@ protected:
     _uint m_iCurrentLevel = { 0 };
     _bool m_isDead = { false };
     _bool m_isObjectDead = { false };
+    _bool m_isCloned = { false };
 
     _uint   m_iObjectIndex = { 0 };
 
