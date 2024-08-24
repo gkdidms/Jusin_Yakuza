@@ -127,7 +127,7 @@ HRESULT CPlayer::Initialize(void* pArg)
 
 	// ±‚∫ª ∏ÛΩ∫≈Õ: 20
 	// ªÊ¿Ô¿Ã: 30
-	// ƒÌ¡¶: 100
+	// ƒÌ¡¶: 300
 	m_Info.fMaxHP = 150.f;
 	m_Info.fHp = m_Info.fMaxHP;
 
