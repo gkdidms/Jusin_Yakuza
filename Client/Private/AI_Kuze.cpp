@@ -202,13 +202,21 @@ CBTNode::NODE_STATE CAI_Kuze::QTE()
 	if (*m_pState == CMonster::MONSTER_H23250_000_2)
 	{
 		//키류 -> 애니메이션 넣어주고 -> 
-		return CBTNode::FAIL;
+		
+		if (m_pAnimCom[*m_pCurrentAnimType]->Get_AnimFinished())
+		{
+			*m_pCurrentAnimType = CLandObject::DEFAULT;
+
+			return CBTNode::SUCCESS;
+		}
+
+		return CBTNode::RUNNING;
 	}
 
 	if (m_iSkill == SKILL_QTE)
 	{
 		*m_pState = CMonster::MONSTER_H23250_000_2;
-
+		*m_pCurrentAnimType = CLandObject::CUTSCENE;
 		return CBTNode::SUCCESS;
 	}
 
