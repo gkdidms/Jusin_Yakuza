@@ -34,7 +34,7 @@ public:
 
 private:
 	void LoadSoundFile(const char* szBasePath = "../../Client/Bin/Resources/Sounds/");
-	void LoadCarchaseSoundFile();
+	//void LoadCarchaseSoundFile();
 
 private:
 	// 사운드 리소스 정보를 갖는 객체 

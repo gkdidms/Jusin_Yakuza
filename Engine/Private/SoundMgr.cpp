@@ -31,7 +31,7 @@ void Engine::CSoundMgr::Ready_Sound()
 
 
 	LoadSoundFile();
-	LoadCarchaseSoundFile();
+	//LoadCarchaseSoundFile();
 }
 
 _bool CSoundMgr::PlaySound_W(const wstring pSoundKey, CHANNELID eID, float fVolume)
