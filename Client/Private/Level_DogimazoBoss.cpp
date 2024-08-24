@@ -57,7 +57,7 @@ HRESULT CLevel_DogimazoBoss::Initialize()
 
 void CLevel_DogimazoBoss::Tick(const _float& fTimeDelta)
 {
-	m_pQuestManager->Execute();
+	
 
 	if (!m_isFightStart && m_pQuestManager->isFightStart())
 	{

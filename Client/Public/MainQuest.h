@@ -23,6 +23,7 @@ protected:
 
 protected:
     _uint m_iScriptIndex = { 0 };
+    _bool m_isFadeFin = { false };
 
 protected:
     void Player_Stop(_bool isStop);
