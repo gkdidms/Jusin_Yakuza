@@ -340,7 +340,7 @@ void CKaraoke_Kiryu::Free()
 #endif // _DEBUG
 	
 	Safe_Release(m_pUIManager);
-	Safe_Release(m_pNavigationCom);
+	//Safe_Release(m_pNavigationCom);
 	Safe_Release(m_pAnimCom);
 	Safe_Release(m_pCameraModel);
 

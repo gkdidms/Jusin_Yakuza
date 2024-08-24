@@ -23,6 +23,7 @@ public:
 public:
     _bool isDead() { return m_isDead; }
     _bool isObjectDead() { return m_isObjectDead; }
+    _bool isCloned() { return m_isCloned; }
     _float Get_CamDistance() { return m_fCamDistance; }
 
 public:

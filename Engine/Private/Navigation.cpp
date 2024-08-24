@@ -11,14 +11,17 @@ CNavigation::CNavigation(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 CNavigation::CNavigation(const CNavigation& rhs)
     : CComponent{ rhs },
     m_pShaderCom{ rhs.m_pShaderCom },
-    m_Cells{ rhs.m_Cells },
     m_Routes{ rhs.m_Routes }
 {
 
     Safe_AddRef(m_pShaderCom);
 
-    for (auto& pCell : m_Cells)
+    for (auto& pCell : rhs.m_Cells)
+    {
+        m_Cells.push_back(pCell);
         Safe_AddRef(pCell);
+    }
+        
 }
 
 void CNavigation::Set_Points(const _float3* vPoints, _int OptionType)
@@ -573,18 +576,20 @@ void CNavigation::Free()
 
     Safe_Release(m_pShaderCom);
 
-
+    
     for (auto& Pair : m_Routes)
     {
         for (auto& route : Pair.second)
         {
-            if(0 < route.iRouteNums && true == m_bOrigin)
+            if (0 < route.iRouteNums && true == m_bOrigin)
                 Safe_Delete(route.pRouteID);
         }
         Pair.second.clear();
     }
-        
+
     m_Routes.clear();
+    
+    
 
     for (auto& pCell : m_Cells)
         Safe_Release(pCell);
