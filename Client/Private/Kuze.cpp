@@ -98,6 +98,21 @@ HRESULT CKuze::Add_Components()
 		TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
 		return E_FAIL;
 
+	////Prototype_Component_Anim_KuzeFace
+	//CAnim* pAnimCom = { nullptr };
+	//if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Anim_KuzeFace"),
+	//	TEXT("Com_Anim_Face"), reinterpret_cast<CComponent**>(&pAnimCom))))
+	//	return E_FAIL;
+	//m_SeparationAnimComs.push_back(pAnimCom);
+
+	////Prototype_Component_Anim_Hand
+	//pAnimCom = { nullptr };
+	//if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Anim_Hand"),
+	//	TEXT("Com_Anim_Hand"), reinterpret_cast<CComponent**>(&pAnimCom))))
+	//	return E_FAIL;
+	//m_SeparationAnimComs.push_back(pAnimCom);
+
+
 	//행동트리 저장
 	CAI_Kuze::AI_MONSTER_DESC AIDesc{};
 	memcpy(AIDesc.pAnim, m_pAnimCom, sizeof(CAnim*) * ANIM_TYPE_END);
