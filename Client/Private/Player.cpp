@@ -2185,11 +2185,14 @@ void CPlayer::Play_CutScene()
 		_double fRatio = *m_pModelCom->Get_AnimationCurrentPosition() / *m_pModelCom->Get_AnimationDuration();
 		pCamera->Set_CustomRatio(static_cast<_float>(fRatio));
 
+		m_pGameInstance->Set_RadialBlur(true);
+
 		pCamera->Set_TargetFoV(XMConvertToRadians(30.f));
 		pCamera->Start_Zoom();
 		
 		if (m_pModelCom->Get_AnimFinished())
 		{
+			m_pGameInstance->Set_RadialBlur(false);
 			m_isCutSceneStartMotion = false;
 			Reset_CutSceneEvent();
 			m_pTargetObject->Set_Sync(m_CutSceneAnimation[m_eCutSceneType]);
