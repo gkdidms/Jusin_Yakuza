@@ -222,7 +222,7 @@ PS_OUT PS_MAIN_COPY_BACKBUFFER_RESULT(PS_IN In)
         vector vSpecular = g_SpecularTexture.Sample(LinearSampler, In.vTexcoord);
         vector vNeoShader = vector(vSpeculerRM.xyz, 1.f) * vShade;
         
-        Out.vColor = (vNeoShader + vSpecular) * vLightmap;
+        Out.vColor = (vNeoShader + vSpecular);
     }
     else
     {

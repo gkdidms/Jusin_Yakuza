@@ -33,8 +33,8 @@ public:
 	void Set_SoundPosition(const wstring pSoundKey, CHANNELID eID, _float fSeconds);
 
 private:
-	void LoadSoundFile();
-	void LoadCarchaseSoundFile();
+	void LoadSoundFile(const char* szBasePath = "../../Client/Bin/Resources/Sounds/");
+	//void LoadCarchaseSoundFile();
 
 private:
 	// 사운드 리소스 정보를 갖는 객체 
@@ -45,6 +45,8 @@ private:
 
 	// 사운드 ,채널 객체 및 장치를 관리하는 객체 
 	FMOD_SYSTEM* m_pSystem = { nullptr };
+
+	class CGameInstance* m_pGameInstance = { nullptr };
 
 public:
 	static CSoundMgr* Create();

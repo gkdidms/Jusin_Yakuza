@@ -353,7 +353,7 @@ void CKiryu_KRC_PickUp::Attack_KeyInput(const _float& fTimeDelta)
 	{
 		if (m_pPlayer->CanHitAction())
 		{
-			m_pPlayer->Set_CutSceneAnim(CPlayer::DORAMUKAN_88, 1);
+			m_pPlayer->Set_CutSceneAnim(CPlayer::DORAMUKAN_88);
 		}
 	}
 }

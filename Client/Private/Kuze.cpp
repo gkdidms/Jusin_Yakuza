@@ -6,6 +6,7 @@
 #include "Mesh.h"
 
 #include "SocketCollider.h"
+#include "Player.h"
 #include <Camera.h>
 
 CKuze::CKuze(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -33,7 +34,7 @@ HRESULT CKuze::Initialize(void* pArg)
 	if (FAILED(Add_CharacterData()))
 		return E_FAIL;
 
-	m_Info.fMaxHP = 100.f;
+	m_Info.fMaxHP = 300.f;
 	m_Info.fHp = m_Info.fMaxHP;
 
 	return S_OK;
@@ -46,6 +47,12 @@ void CKuze::Priority_Tick(const _float& fTimeDelta)
 void CKuze::Tick(const _float& fTimeDelta)
 {
 	__super::Tick(fTimeDelta);
+
+	if (m_pGameInstance->GetKeyState(DIK_RCONTROL) == TAP)
+	{
+		dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject(m_iCurrentLevel, TEXT("Layer_Player"), 0))->Play_Kuze_QTE(this);
+	}
+
 }
 
 void CKuze::Late_Tick(const _float& fTimeDelta)
@@ -72,7 +79,7 @@ void CKuze::Take_Damage(_uint iHitColliderType, const _float3& vDir, _float fDam
 		m_Info.fHp -= fDamage;
 
 		//무지성이라 변경해야함.
-		if (m_iPage == ONE && m_Info.fHp <= 50)
+		if (m_iPage == ONE && m_Info.fHp <= 150)
 		{
 			m_iPage = TWO;
 		}
@@ -90,6 +97,21 @@ HRESULT CKuze::Add_Components()
 	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Model_Kuze_Fight"),
 		TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
 		return E_FAIL;
+
+	////Prototype_Component_Anim_KuzeFace
+	//CAnim* pAnimCom = { nullptr };
+	//if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Anim_KuzeFace"),
+	//	TEXT("Com_Anim_Face"), reinterpret_cast<CComponent**>(&pAnimCom))))
+	//	return E_FAIL;
+	//m_SeparationAnimComs.push_back(pAnimCom);
+
+	////Prototype_Component_Anim_Hand
+	//pAnimCom = { nullptr };
+	//if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Anim_Hand"),
+	//	TEXT("Com_Anim_Hand"), reinterpret_cast<CComponent**>(&pAnimCom))))
+	//	return E_FAIL;
+	//m_SeparationAnimComs.push_back(pAnimCom);
+
 
 	//행동트리 저장
 	CAI_Kuze::AI_MONSTER_DESC AIDesc{};

@@ -55,6 +55,8 @@ _bool CChapter1_0::Execute()
 		if (!m_isTitleStart) // 타이틀 띄우기
 		{
 			m_pSystemManager->Set_Camera(CAMERA_PLAYER);
+
+			m_pUIManager->Close_Scene();
 			m_pUIManager->Open_Scene(TEXT("Title"));
 			m_pUIManager->Set_TitleStart(true); // 니시키야마를 찾아라
 			m_pUIManager->Start_Title(14);

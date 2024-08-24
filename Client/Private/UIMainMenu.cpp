@@ -26,6 +26,12 @@ HRESULT CUIMainMenu::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pCon
 HRESULT CUIMainMenu::Tick(const _float& fTimeDelta)
 {
 	__super::Tick(fTimeDelta);
+
+	if (!m_isBGM)
+	{
+		m_isBGM = true;
+		m_pGameInstance->PlayBGM(TEXT("Pandoras Place.mp3"), 0.7f);
+	}
 	
 	if (m_isAnimFin)
 	{
