@@ -140,6 +140,7 @@ void CImguiManager::Tick(const _float& fTimeDelta)
 
 	}
 
+	Play_SoundEvent();
 }
 
 HRESULT CImguiManager::Render()
