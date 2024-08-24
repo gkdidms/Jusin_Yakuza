@@ -194,6 +194,7 @@ void CQteManager::Cancle_KeyFrame()
     if ("" == m_strPlayingAnimName && !m_isKuze) return;
 
     auto iter = m_QTEs.find(m_strPlayingAnimName);
+    if (iter == m_QTEs.end() && m_iQteCount < 1) return;        // m_iQteCount가 1보다작은데 
 
     QTE_DESC m_eCurrentQTE = m_iQteCount > 0 ? m_KuzeSecondQTE : iter->second;
 
