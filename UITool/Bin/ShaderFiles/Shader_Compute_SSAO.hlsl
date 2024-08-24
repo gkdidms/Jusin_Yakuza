@@ -34,7 +34,7 @@ float3x3 Get_TBN(float3 vNormal, float2 vTexcoord)
     float3 vRandomVec = g_SSAONoiseTexture.Load(int3(intWrappedTexcoord, 0)).xyz;
     vRandomVec = vRandomVec * 2.f - 1.f;
     matrix matWV = mul(WorldMatrix, CamViewMatrix);
-    vRandomVec = normalize(mul(vector(vRandomVec, 0.f), matWV)).xyz;
+    vRandomVec = normalize(mul(vector(vRandomVec, 0.f), CamViewMatrix)).xyz;
     
     float3 tangent = normalize(vRandomVec - vNormal * dot(vRandomVec, vNormal));
     float3 bitangent = vector(normalize(cross(vNormal.xyz, tangent.xyz)), 0.f);
@@ -49,7 +49,7 @@ float4 SSAO(float3x3 TBN, float3 vPosition)
     
     for (int i = 0; i < 64; ++i)
     {
-        float3 vSample = vPosition + mul(SSAORandoms[i % 64].xyz, TBN) * fRadiuse; // ºä½ºÆäÀÌ½º
+        float3 vSample = vPosition + mul(SSAORandoms[i].xyz, TBN) * fRadiuse; // ºä½ºÆäÀÌ½º
        
         vector vOffset = vector(vSample, 1.f);
         vOffset = mul(vOffset, CamProjMatrix);

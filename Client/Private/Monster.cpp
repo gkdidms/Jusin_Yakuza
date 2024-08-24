@@ -35,12 +35,13 @@ _bool CMonster::isAttack()
 	return m_pTree->isAttack();
 }
 
-void CMonster::Set_Sync(string strPlayerAnim)
+void CMonster::Set_Sync(string strPlayerAnim, _bool isKeepSynchronizing)
 {
 	string_view strAnim = strPlayerAnim;
 
 	m_isDown = true;
 	m_isSynchronizing = true;
+	m_isKeepSynchronizing = isKeepSynchronizing;
 
 	//싱크 액션
 	if (strAnim == string_view("p_krc_sync_guard_counter_f"))
@@ -265,6 +266,8 @@ void CMonster::Set_Sync(string strPlayerAnim)
 
 	m_pTree->Set_Sync(true);
 	Change_Animation();
+
+	m_vPlayerDistance = m_pTransformCom->Get_State(CTransform::STATE_POSITION) - dynamic_cast<CTransform*>(m_pGameInstance->Get_GameObject_Component(m_iCurrentLevel, TEXT("Layer_Player"), TEXT("Com_Transform"), 0))->Get_WorldMatrix().r[CTransform::STATE_POSITION];
 }
 
 void CMonster::Set_Adventure(_bool isAdventure)
@@ -275,14 +278,10 @@ void CMonster::Set_Adventure(_bool isAdventure)
 void CMonster::Off_Sync()
 {
 	m_isSynchronizing = false;
+	m_isKeepSynchronizing = false;
 	m_iCurrentAnimType = CMonster::DEFAULT;
 
-	_matrix mat = XMLoadFloat4x4(m_pModelCom->Get_BoneCombinedTransformationMatrix("center_c_n"));
-	
-	//_vector vPos;
-	//memcpy(&vPos, ->m[CTransform::STATE_POSITION], sizeof(_vector));
-
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, (mat * m_pGameInstance->Get_GameObject(m_iCurrentLevel, TEXT("Layer_Player"), 0)->Get_TransformCom()->Get_WorldMatrix()).r[CTransform::STATE_POSITION]);
+	Setting_SyncAnim_EndPosition();
 }
 
 void CMonster::Set_Start(_bool isStart)
@@ -314,6 +313,13 @@ void CMonster::Reset_Monster()
 	m_isObjectDead = false;
 
 	m_pTree->Reset_AI();
+}
+
+void CMonster::Setting_SyncAnim_EndPosition()
+{
+	// 싱크 끝낼 때 위치 잡아줌.
+	_matrix mat = XMLoadFloat4x4(m_pModelCom->Get_BoneCombinedTransformationMatrix("center_c_n"));
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, (mat * m_pGameInstance->Get_GameObject(m_iCurrentLevel, TEXT("Layer_Player"), 0)->Get_TransformCom()->Get_WorldMatrix()).r[CTransform::STATE_POSITION]);
 }
 
 /*
@@ -377,11 +383,39 @@ void CMonster::Tick(const _float& fTimeDelta)
 	// 싱크액션 맞추는중에는 플레이어의 0.0에 맞춰줘야해서 그거 맞춰주는 코드
 	if (m_isSynchronizing)
 	{
-		CTransform* pTrasnform = dynamic_cast<CTransform*>(m_pGameInstance->Get_GameObject_Component(m_iCurrentLevel, TEXT("Layer_Player"), TEXT("Com_Transform"), 0));
-		m_pTransformCom->Set_WorldMatrix(pTrasnform->Get_WorldMatrix());
+		if (m_strAnimName == "p_kru_sync1_lapel_st")
+		{
+			_matrix PlayerMat = dynamic_cast<CTransform*>(m_pGameInstance->Get_GameObject_Component(m_iCurrentLevel, TEXT("Layer_Player"), TEXT("Com_Transform"), 0))->Get_WorldMatrix();
 
-		if (m_pAnimCom[m_iCurrentAnimType]->Get_AnimFinished())
+			_matrix TransMat = PlayerMat;
+
+			_vector vTransDistance = m_pTransformCom->Get_State(CTransform::STATE_POSITION) - PlayerMat.r[CTransform::STATE_POSITION];
+
+			TransMat.r[CTransform::STATE_POSITION] = m_pTransformCom->Get_State(CTransform::STATE_POSITION) + (m_vPlayerDistance - vTransDistance);
+			m_pTransformCom->Set_WorldMatrix(TransMat);
+		}
+		else
+		{
+			CTransform* pTrasnform = dynamic_cast<CTransform*>(m_pGameInstance->Get_GameObject_Component(m_iCurrentLevel, TEXT("Layer_Player"), TEXT("Com_Transform"), 0));
+			m_pTransformCom->Set_WorldMatrix(pTrasnform->Get_WorldMatrix());
+		}
+
+
+
+		//if (m_strAnimName == "p_kru_sync1_lapel_nage")
+		//{
+		//	if (Checked_Animation_Ratio(0.4f))
+		//	{
+		//		Setting_SyncAnim_EndPosition();
+		//		m_isSynchronizing = false;
+		//	}
+		//}
+
+		if (!m_isKeepSynchronizing && m_pAnimCom[m_iCurrentAnimType]->Get_AnimFinished())
+		{
+			Setting_SyncAnim_EndPosition();
 			m_isSynchronizing = false;
+		}
 	}
 
 	if (!m_isScript)
@@ -394,9 +428,16 @@ void CMonster::Tick(const _float& fTimeDelta)
 	_bool isRoot = m_iCurrentAnimType != CUTSCENE;
 
 	if (CMonster::CUTSCENE == m_iCurrentAnimType)
-		m_pModelCom->Play_Animation_CutScene(fTimeDelta, m_pAnimCom[m_iCurrentAnimType], false, -1, false);
+	{
+		if (m_strAnimName == "p_kru_sync1_lapel_st")
+			m_pModelCom->Play_Animation_CutScene(fTimeDelta, m_pAnimCom[m_iCurrentAnimType], false, -1, true);
+		else
+			m_pModelCom->Play_Animation_CutScene(fTimeDelta, m_pAnimCom[m_iCurrentAnimType], m_isAnimLoop, -1, false);
+	}
 	else
+	{
 		m_pModelCom->Play_Animation_Monster(fTimeDelta, m_pAnimCom[m_iCurrentAnimType], m_isAnimLoop, isRoot);
+	}
 
 	Synchronize_Root(fTimeDelta);
 

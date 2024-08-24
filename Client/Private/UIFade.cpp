@@ -26,7 +26,7 @@ HRESULT CUIFade::Close_Scene()
 {
     if (FAILED(__super::Close_Scene()))
         return E_FAIL;
-
+    m_isFinished = true;
     return S_OK;
 }
 
@@ -73,6 +73,8 @@ HRESULT CUIFade::Late_Tick(const _float& fTimeDelta)
 
     if (m_EventUI[0]->Check_AnimFin())
     {
+        m_isClose = true;
+        m_isOpen = false;
         m_isFinished = true;
         CUIManager::GetInstance()->Close_Scene(TEXT("Fade"));
     }
@@ -83,13 +85,19 @@ HRESULT CUIFade::Late_Tick(const _float& fTimeDelta)
 
 void CUIFade::Fade_Out()
 {
+    m_isAnimFin = false;
     m_isFinished = false;
+    m_isClose = false;
+    m_isOpen = true;
     m_EventUI[0]->Close_UI();
 }
 
 void CUIFade::Fade_In()
 {
+    m_isAnimFin = false;
     m_isFinished = false;
+    m_isClose = false;
+    m_isOpen = true;
     m_EventUI[0]->Show_UI();
 }
 

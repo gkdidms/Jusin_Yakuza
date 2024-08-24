@@ -69,8 +69,9 @@ float g_fTexcoordY = { 0.f };
 
 //림라이트
 float g_isRimLight;
+float2 g_fRimArmUV;
 float2 g_fRimUV;
-
+bool g_isTop;
 //디스토션
 float g_fDistortionWeight;
 /* Decal */

@@ -83,6 +83,7 @@ namespace Engine
 	enum CHANNELID {
 		SOUND_EFFECT,
 		SOUND_BGM,
+		SOUND_ATTACK,
 		SOUND_END
 	};
 
@@ -91,3 +92,5 @@ namespace Engine
 using namespace Engine;
 using namespace std;
 namespace fs = std::filesystem;
+
+

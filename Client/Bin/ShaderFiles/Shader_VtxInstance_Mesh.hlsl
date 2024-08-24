@@ -9,7 +9,7 @@ float g_iSpriteIndex;
 float2 g_fUVCount;
 float g_fCurTime;
 
-
+Texture2D g_Texture;
 Texture2D g_DiffuseTexture;
 
 
@@ -237,7 +237,6 @@ PS_NOBLENDER_OUT PS_NONBLEDNER(PS_NOBLENDER_IN In)
     Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_fFar, 0.f, 0.f);
     Out.vNormal = vector(In.vNormal.xyz * 0.5f + 0.5f, 0.f);
     Out.vDiffuse = vDiffuseColor;
-
     Out.vSurface = vector(Result.fMetalness, Result.fRoughness, Result.fSpeclure, Result.fFactor);
     
     return Out;
