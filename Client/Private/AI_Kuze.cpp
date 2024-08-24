@@ -184,6 +184,37 @@ void CAI_Kuze::Ready_Tree()
 	m_pRootNode = pRoot;
 }
 
+CBTNode::NODE_STATE CAI_Kuze::Check_QTE()
+{
+	CKuze* pKuze = dynamic_cast<CKuze*>(m_pThis);
+	if (pKuze->Get_KuzePage() == CKuze::TWO && !m_isQTE)
+	{
+		//쿠제가 2페이즈일 시 QTE 실행
+		m_iSkill = SKILL_QTE;
+		return CBTNode::SUCCESS;
+	}
+
+	return CBTNode::FAIL;
+}
+
+CBTNode::NODE_STATE CAI_Kuze::QTE()
+{
+	if (*m_pState == CMonster::MONSTER_H23250_000_2)
+	{
+		//키류 -> 애니메이션 넣어주고 -> 
+		return CBTNode::FAIL;
+	}
+
+	if (m_iSkill == SKILL_QTE)
+	{
+		*m_pState = CMonster::MONSTER_H23250_000_2;
+
+		return CBTNode::SUCCESS;
+	}
+
+	return CBTNode::SUCCESS;
+}
+
 CBTNode::NODE_STATE CAI_Kuze::Attack()
 {
 	if (m_isAttack)

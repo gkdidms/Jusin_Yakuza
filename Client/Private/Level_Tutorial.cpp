@@ -37,9 +37,8 @@ HRESULT CLevel_Tutorial::Initialize()
 
 	if (FAILED(m_pQuestManager->Initialize()))
 		return E_FAIL;
-	m_pFightManager->Initialize();
+
 	m_pUIManager->Fade_Out();
-	m_pFightManager->Set_StreetFight(true);
 
 	/* Å¬¶ó ÆÄ½Ì */
 	m_pFileTotalManager->Set_MapObj_In_Client(STAGE_TUTORIAL, LEVEL_TUTORIAL);
@@ -70,15 +69,6 @@ HRESULT CLevel_Tutorial::Initialize()
 void CLevel_Tutorial::Tick(const _float& fTimeDelta)
 {
 	m_pFightManager->Tick(fTimeDelta);
-
-	if (m_isStart == false)
-	{
-		if (m_pUIManager->isFindFinished())
-		{
-			m_pFightManager->Set_FightStage(true);
-			m_isStart = true;
-		}
-	}
 
 	if (m_pQuestManager->Execute())
 	{

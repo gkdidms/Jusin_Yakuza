@@ -37,6 +37,7 @@ public:
         SKILL_DOWN,
         SKILL_ANGRY_CHOP,
         SKILL_ANGRY_KICK,
+        SKILL_QTE,
 
         SKILL_GUARD,
         SKILL_DEAD,

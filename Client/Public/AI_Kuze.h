@@ -17,9 +17,15 @@ public:
     virtual NODE_STATE Execute();
 
 private:
+    _bool m_isQTE = { false };
+
+private:
     void Ready_Tree();
 
 private:
+    CBTNode::NODE_STATE Check_QTE();
+    CBTNode::NODE_STATE QTE();
+
     CBTNode::NODE_STATE Attack(); //공격 가능할때 공격 선택
     CBTNode::NODE_STATE ATK_Heavy();
     CBTNode::NODE_STATE ATK_Hiji_2Ren();

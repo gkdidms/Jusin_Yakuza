@@ -195,7 +195,10 @@ void CMonster::Set_Sync(string strPlayerAnim, _bool isKeepSynchronizing)
 	else if (strAnim == string_view("p_sync_leg_atk_kick"))
 		m_iState = MONSTER_SYNC1_LEG_ATK_KICK;
 	else if (strAnim == string_view("p_sync_leg_lp"))
+	{
 		m_iState = MONSTER_SYNC1_LEG_LP;
+	}
+
 	else if (strAnim == string_view("p_sync_leg_nage"))
 		m_iState = MONSTER_SYNC1_LEG_NAGE;
 	else if (strAnim == string_view("p_sync_leg_off"))
@@ -1375,6 +1378,7 @@ void CMonster::Change_Animation()
 		case MONSTER_KRU_SYNC1_LAPEL_LP:
 		{
 			m_strAnimName = "p_kru_sync1_lapel_lp";
+			m_isAnimLoop = true;
 			break;
 		}
 		case MONSTER_KRU_SYNC1_LAPEL_NAGE:
@@ -1500,6 +1504,7 @@ void CMonster::Change_Animation()
 		case MONSTER_SYNC1_LEG_LP:
 		{
 			m_strAnimName = "p_sync1_leg_lp";
+			m_isAnimLoop = true;
 			break;
 		}
 		case MONSTER_SYNC1_LEG_NAGE:
