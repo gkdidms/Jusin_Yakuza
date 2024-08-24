@@ -71,6 +71,8 @@ protected:
     _float  m_fDegree = { 0 };
     _vector m_vNextDir;
 
+    _float  m_fTurnTimer = { 0 };
+
 
 protected:
     virtual void Ready_Root() = 0;

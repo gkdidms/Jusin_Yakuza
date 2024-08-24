@@ -57,6 +57,7 @@ public:
     _bool isMove(_fvector vMovePos);
     _vector Compute_WayPointDir(_vector vPosition, const _float& fTimeDelta, _bool isStart = false);
     _vector Compute_WayPointDir_Adv(_vector vPosition, const _float& fTimeDelta, _bool* isTurn, _int* iDir, _bool* isBack);
+    _vector Compute_WayPointDir_Adv_AI(_vector vPosition, const _float& fTimeDelta, _bool* isTurn, _int* iDir, _bool* isBack);
     _vector Compute_NishikiDir(_fvector vPosition, const _float& fTimeDelta, _bool* isFinished);
     _float Compute_Height(_fvector vPosition);
 
@@ -94,6 +95,14 @@ private:
 
     _float m_fTime = {0.f};
 
+
+    _vector m_vTargetPoint;
+    _float  m_fMoveDistance = { 0.f };
+    _float  m_fTargetDelta = { 0 };
+
+
+    _vector m_vPrePosition; // 루트 찾기 전
+    _vector m_vPreWayPointPosition;
 
 private:
     bool        m_bOrigin = { false };

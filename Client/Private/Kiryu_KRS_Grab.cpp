@@ -275,7 +275,7 @@ void CKiryu_KRS_Grab::Move_KeyInput(const _float& fTimeDelta)
 	{
 		if (2 < m_pPlayer->Get_CurrentHitLevel())	// 히트게이지가 3단까지 풀이라면
 		{
-			m_pPlayer->Set_CutSceneAnim(CPlayer::GOUGEKI_C, 1);
+			m_pPlayer->Set_CutSceneAnim(CPlayer::GOUGEKI_C);
 
 			m_isCutScene = true;
 		}

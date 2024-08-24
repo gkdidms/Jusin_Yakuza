@@ -182,11 +182,6 @@ void CHighway_Kiryu::Change_Animation()
 
 void CHighway_Kiryu::Key_Input()
 {
-	if (m_pGameInstance->GetKeyState(DIK_RSHIFT) == TAP)
-	{
-		OnHit(10.f);
-	}
-
 	//공격 가능한 환경인지 체크한 후 진행한다.
 	//다른 스킬들도 막기 위해서 return;
 	// 발사

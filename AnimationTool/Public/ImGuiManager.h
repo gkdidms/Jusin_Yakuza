@@ -109,6 +109,14 @@ public:
 		_float fForce;
 	};
 
+	struct Animation_SoundEventState
+	{
+		_uint iChannel;
+		_float fAinmPosition;
+		string strSoundFileName;
+		_bool isPlay = { false };
+	};
+
 
 private:
 	CImguiManager(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
@@ -164,6 +172,8 @@ private:
 private:
 	void Create_Effect(string& strBoneName, string& strEffectName, wstring wstrLayer = TEXT("Layer_Effect"));
 
+	void Play_SoundEvent();
+	void Reset_SoundEvent_Played();
 
 private:
 	/* Save */
@@ -175,6 +185,7 @@ private:
 	void EffectState_Save(string strPath);
 	void RimEvent_Save(string strPath);
 	void TrailEvent_Save(string strPath);
+	void SoundEvent_Save(string strPath);
 	void FaceEvent_Save(string strPath);
 	void BloodEvent_Save(string strPath);
 	void RadialEvent_Save(string strPath);
@@ -188,6 +199,7 @@ private:
 	void EffectState_Load(string strPath);
 	void RimEvent_Load(string strPath);
 	void TrailEvent_Load(string strPath);
+	void SoundEvent_Load(string strPath);
 	void FaceEvent_Load(string strPath);
 	void BloodEvent_Load(string strPath);
 	void RadialEvent_Load(string strPath);
@@ -199,9 +211,6 @@ private:
 	void Setting_RimLight();				// 림라이트 매시 이름 적용하기
 	void Setting_Trail();				// 트레일 온오프 적용하기
 	void Change_Model();
-
-private:
-	void Ready_SoundFolders();
 
 private:
 	ImGuiIO* io;
@@ -316,11 +325,12 @@ private:
 	/* 사운드 이벤트 윈도우 */
 private:
 	_bool						m_isSoundListWindow = { false };
+	CHANNELID					m_eSoundCannel = { SOUND_EFFECT };
+	string						m_strSelectSoundFileName = "";
+	int							m_iSoundEventIndex = { 0 };
 
-	_uint						m_iSoundType = { 0 };
-	
-	vector<bool>				m_SoundFolderRadio;
-	vector<string>				m_SoundFolderNames;
+	// first: 애니메이션 이름, second: 이벤트정보
+	multimap<string, Animation_SoundEventState>		m_SoundEvents;
 
 private:
 	_float						m_fTimeDeltaScale = { 1.f };
