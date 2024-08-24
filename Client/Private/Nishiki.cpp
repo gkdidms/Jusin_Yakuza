@@ -22,8 +22,7 @@ HRESULT CNishiki::Initialize_Prototype()
 
 HRESULT CNishiki::Initialize(void* pArg)
 {
-	if (FAILED(__super::Initialize(pArg)))
-		return E_FAIL;
+	__super::Initialize(pArg);
 
 	m_iObjectIndex = 101;
 

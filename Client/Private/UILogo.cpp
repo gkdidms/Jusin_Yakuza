@@ -25,11 +25,13 @@ HRESULT CUILogo::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pContext
 
 HRESULT CUILogo::Tick(const _float& fTimeDelta)
 {
-
-
 	__super::Tick(fTimeDelta);
 
-
+	if (!m_isBGMStart)
+	{
+		m_isBGMStart = true;
+		m_pGameInstance->PlaySound_W(TEXT("title_logo_0.wav"), SOUND_EFFECT);
+	}
 
 	return S_OK;
 }

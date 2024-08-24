@@ -438,9 +438,13 @@ void CLandObject::Free()
 {
 	__super::Free();
 
-	for (auto& pCollider : m_pColliders)
-		Safe_Release(pCollider.second);
-	m_pColliders.clear();
+	if (m_pColliders.size() > 0)
+	{
+		for (auto& pCollider : m_pColliders)
+			Safe_Release(pCollider.second);
+		m_pColliders.clear();
+	}
+
 
 	for (auto& pEffect : m_pEffects)
 		Safe_Release(pEffect.second);
