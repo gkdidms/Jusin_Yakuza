@@ -1115,7 +1115,7 @@ void CRenderer::Render_PBR()
 	m_pGameInstance->Bind_ComputeRenderTargetSRV(TEXT("Target_Depth"), 0);
 	m_pGameInstance->Bind_ComputeRenderTargetSRV(TEXT("Target_Normal"), 1);
 	m_pGameInstance->Bind_ComputeRenderTargetSRV(TEXT("Target_Surface"), 2);
-	m_pGameInstance->Bind_ComputeRenderTargetSRV(TEXT("Target_Diffuse"), 3);
+	m_pGameInstance->Bind_ComputeRenderTargetSRV(TEXT("Target_DecalContainDiffuse"), 3);
 	m_pGameInstance->Bind_ComputeRenderTargetSRV(TEXT("Target_OEShader"), 4);
 
 	m_pGameInstance->Bind_ComputeRenderTargetUAV(TEXT("Target_PBR"), 0);

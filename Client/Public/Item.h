@@ -114,6 +114,7 @@ public:
 	void				Set_ItemMode(CItem::ITEM_MODE mode) { m_eItemMode = mode; }
 	void				Set_Grab(bool bGrab) { m_bCurGrab = bGrab;  m_eItemMode = ITEM_GRAB;}
 	void				Attacking(_bool isOn = true) { m_isAttacking = isOn; }
+	void				Set_Dissolve() { m_bDissovle = true; }
 
 public:
 	_uint				Get_ItemLife() { return m_iLife; }
