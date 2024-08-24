@@ -350,23 +350,56 @@ PS_OUT_COLOR PS_MAIN_LightMask_Alpha(PS_IN In)
 }
 
 
-PS_OUT_COLOR DEFAULT_SIGN_PASS(PS_IN In)
+PS_MAIN_OUT DEFAULT_SIGN_PASS(PS_IN In)
 {
-    PS_OUT_COLOR Out = (PS_OUT_COLOR) 0;
-
-    vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
-    vector vMultiDiffuce = g_MultiDiffuseTexture.Sample(LinearSampler, In.vTexcoord);
+    PS_MAIN_OUT Out = (PS_MAIN_OUT) 0;
+    UV_SHADER UV = (UV_SHADER) 0;
+    if (g_isUVShader)
+        UV = UV_Shader(In.vTexcoord);
     
-    vector emissiveColor = vDiffuse * 0.4;
+    vector vDiffuseDesc = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
    
-    vDiffuse += emissiveColor;
+    vector vMulti = g_isMulti ? g_MultiDiffuseTexture.Sample(LinearSampler, In.vTexcoord) : vector(0.f, 1.f, 0.f, 1.f);
+    vector vRD = g_isRD ? g_RDTexture.Sample(LinearSampler, g_isUVShader ? UV.RDRMRS : In.vTexcoord) : vector(1.f, 1.f, 1.f, 1.f);
+    vector vRS = g_isRS ? g_RSTexture.Sample(LinearSampler, g_isUVShader ? UV.RDRMRS : In.vTexcoord) : vector(1.f, 1.f, 1.f, 1.f);
+    vector vRM = g_isRM ? g_RMTexture.Sample(LinearSampler, g_isUVShader ? UV.RDRMRS : In.vTexcoord) : vector(0.5f, 1.f, 0.5f, 1.f);
+    vector vRT = g_isRT ? g_RTTexture.Sample(LinearSampler, g_isUVShader ? UV.RT : In.vTexcoord) : vector(0.5f, 0.5f, 1.f, 0.5f);
+    
+     //Neo Shader
+    float fFactor = RepeatingPatternBlendFactor(vMulti);
+    vector vDiffuse = DiffusePortion(vDiffuseDesc, vRS, vRD, fFactor, In.vTexcoord);
+    
+    COMBINE_OUT Result = Neo_MetallicAndGlossiness(vMulti, vRM); // Metallic, Rouhness 최종
+    vDiffuse = Get_Diffuse(vMulti.a, vDiffuse); // Diffuse 최종
+    
+    //노말 벡터 구하기
+    if (g_isNormal)
+    {
+        vector vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexcoord);
+            //Tangent Normal 구하기 
+        vNormalDesc = Get_Normal(vNormalDesc, vRT, fFactor);
+
+        vNormalDesc = vNormalDesc * 2.f - 1.f;
+        float3x3 WorldMatrix = float3x3(In.vTangent.xyz, In.vBinormal.xyz, In.vNormal.xyz);
+        vector vNormalBTN = normalize(vector(mul(vNormalDesc.xyz, WorldMatrix), 0.f));
+        Out.vNormal = vector(vNormalBTN.xyz * 0.5f + 0.5f, 0.f);
+    }
+    else
+    {
+        vector vNormalDesc = In.vNormal;
+        Out.vNormal = vector(vNormalDesc.xyz * 0.5f + 0.5f, 0.f);
+    }
+    
+    OE_SPECULAR OEResult = Neo_OE_Specular(vMulti, vRM, vRS);
+    
+    Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_fFar, 0.f, 0.f);
     Out.vDiffuse = vDiffuse;
-    
-    
+    Out.vSurface = vector(Result.fMetalness, Result.fRoughness, Result.fSpeclure, Result.fFactor);
+    Out.vOEShader = vector(OEResult.fRouhness, OEResult.vSpecular);
     
     return Out;
 }
-
+   
 PS_OUT PS_MAIN_Lamp(PS_IN In)
 {
     PS_OUT Out = (PS_OUT) 0;
@@ -687,7 +720,7 @@ technique11 DefaultTechnique
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_Default, 0);
-        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+        SetBlendState(BS_Blend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 
         VertexShader = compile vs_5_0 VS_MAIN();
         GeometryShader = NULL;
