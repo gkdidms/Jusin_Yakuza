@@ -1,8 +1,11 @@
 
 #include "SoundMgr.h"
+#include "GameInstance.h"
 
 CSoundMgr::CSoundMgr()
+	:m_pGameInstance{CGameInstance::GetInstance()}
 {
+	Safe_AddRef(m_pGameInstance);
 	m_pSystem = nullptr;
 }
 
@@ -215,42 +218,76 @@ void CSoundMgr::Set_SoundPosition(const wstring pSoundKey, CHANNELID eID, _float
 
 	FMOD_Channel_SetPosition(m_pChannelArr[eID], newPosition, FMOD_TIMEUNIT_MS);
 }
+#include <io.h>
+#include <string>
 
-void CSoundMgr::LoadSoundFile()
+#include <io.h>
+#include <string>
+
+#include <io.h>
+#include <string>
+
+void CSoundMgr::LoadSoundFile(const char* szBasePath)
 {
 	_wfinddata64_t fd;
-	__int64 handle = _wfindfirst64(L"../../Client/Bin/Resources/Sounds/Karaoke/Song/*.*", &fd);
-	if (handle == -1 || handle == 0)
+	intptr_t handle;
+	char szFullPath[MAX_PATH];
+	char szFilename[MAX_PATH];
+	wchar_t wPath[MAX_PATH];
+	std::string basePath(szBasePath);
+
+	// 검색할 경로를 지정하여 와이드 문자열로 변환
+	std::string searchPath = basePath + "*.*";
+	mbstowcs(wPath, searchPath.c_str(), MAX_PATH);
+
+	// 파일과 디렉토리를 검색
+	handle = _wfindfirst64(wPath, &fd);
+	if (handle == -1)
 		return;
 
-	int iResult = 0;
-
-	char szCurPath[128] = "../../Client/Bin/Resources/Sounds/Karaoke/Song/";
-	char szFullPath[128] = "";
-	char szFilename[MAX_PATH];
-	while (iResult != -1)
+	do
 	{
-		WideCharToMultiByte(CP_UTF8, 0, fd.name, -1, szFilename, sizeof(szFilename), NULL, NULL);
-		strcpy_s(szFullPath, szCurPath);
-		strcat_s(szFullPath, szFilename);
-		FMOD_SOUND* pSound = nullptr;
-
-		FMOD_RESULT eRes = FMOD_System_CreateSound(m_pSystem, szFullPath, FMOD_3D|0x00000020 , 0, &pSound);
-		if (eRes == FMOD_OK)
+		// 디렉토리일 경우, 재귀적으로 호출
+		if (fd.attrib & _A_SUBDIR)
 		{
-			int iLength = strlen(szFilename) + 1;
+			if (wcscmp(fd.name, L".") != 0 && wcscmp(fd.name, L"..") != 0)
+			{
+				// 하위 디렉토리를 탐색하기 위한 경로 생성
+				WideCharToMultiByte(CP_UTF8, 0, fd.name, -1, szFilename, sizeof(szFilename), NULL, NULL);
+				std::string newDir = basePath + szFilename + "/";
 
-			_tchar* pSoundKey = new _tchar[iLength];
-			ZeroMemory(pSoundKey, sizeof(_tchar) * iLength);
-			MultiByteToWideChar(CP_ACP, 0, szFilename, iLength, pSoundKey, iLength);
-
-			m_mapSound.emplace(pSoundKey, pSound);
+				// 재귀 호출하여 하위 디렉토리를 탐색
+				LoadSoundFile(newDir.c_str());
+			}
 		}
-		iResult = _wfindnext64(handle, &fd);
-	}
-	FMOD_System_Update(m_pSystem);
+		else
+		{
+			// 파일일 경우, 사운드 파일 로드
+			WideCharToMultiByte(CP_UTF8, 0, fd.name, -1, szFilename, sizeof(szFilename), NULL, NULL);
+			strcpy_s(szFullPath, basePath.c_str());
+			strcat_s(szFullPath, szFilename);
+
+			FMOD_SOUND* pSound = nullptr;
+			FMOD_RESULT eRes = FMOD_System_CreateSound(m_pSystem, szFullPath, FMOD_3D | 0x00000020, 0, &pSound);
+			if (eRes == FMOD_OK)
+			{
+				int iLength = strlen(szFilename) + 1;
+
+				_tchar* pSoundKey = new _tchar[iLength];
+				ZeroMemory(pSoundKey, sizeof(_tchar) * iLength);
+				MultiByteToWideChar(CP_ACP, 0, szFilename, iLength, pSoundKey, iLength);
+
+				m_mapSound.emplace(pSoundKey, pSound);
+			}
+		}
+	} while (_wfindnext64(handle, &fd) == 0);
+
 	_findclose(handle);
+
+	// FMOD 시스템 업데이트
+	FMOD_System_Update(m_pSystem);
 }
+
 
 CSoundMgr* CSoundMgr::Create()
 {
@@ -264,6 +301,8 @@ CSoundMgr* CSoundMgr::Create()
 
 void Engine::CSoundMgr::Free()
 {
+	Safe_Release(m_pGameInstance);
+
 	for (auto& Mypair : m_mapSound)
 	{
 		FMOD_Sound_Release(Mypair.second);
