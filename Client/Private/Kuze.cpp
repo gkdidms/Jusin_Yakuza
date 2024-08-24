@@ -34,7 +34,7 @@ HRESULT CKuze::Initialize(void* pArg)
 	if (FAILED(Add_CharacterData()))
 		return E_FAIL;
 
-	m_Info.fMaxHP = 100.f;
+	m_Info.fMaxHP = 300.f;
 	m_Info.fHp = m_Info.fMaxHP;
 
 	return S_OK;
@@ -79,7 +79,7 @@ void CKuze::Take_Damage(_uint iHitColliderType, const _float3& vDir, _float fDam
 		m_Info.fHp -= fDamage;
 
 		//무지성이라 변경해야함.
-		if (m_iPage == ONE && m_Info.fHp <= 50)
+		if (m_iPage == ONE && m_Info.fHp <= 150)
 		{
 			m_iPage = TWO;
 		}

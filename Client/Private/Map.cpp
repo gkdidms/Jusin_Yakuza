@@ -252,6 +252,29 @@ HRESULT CMap::Render()
 #pragma endregion
 
 
+#pragma region RenderGlass
+	if (iRenderState == CRenderer::RENDER_GLASS)
+	{
+		for (size_t k = 0; k < m_vRenderGlassMeshIndex.size(); k++)
+		{
+			int		i = m_vRenderGlassMeshIndex[k];
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
+				return E_FAIL;
+
+			// 유리문 처리
+			if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Diffuse"), m_pShaderCom, "g_RefractionTexture")))
+				return E_FAIL;
+
+			// 색상값 넣어주기
+			m_pShaderCom->Begin(SHADER_GLASS_COLOR);
+
+			m_pModelCom->Render(i);
+		}
+	}
+
+#pragma endregion
+
 
 
 
@@ -1293,6 +1316,9 @@ void CMap::Add_Renderer(const _float& fTimeDelta)
 	{
 		m_pGameInstance->Add_Renderer(CRenderer::RENDER_DECAL, this);
 	}
+
+	if (0 < m_vRenderGlassMeshIndex.size())
+		m_pGameInstance->Add_Renderer(CRenderer::RENDER_GLASS, this);
 
 	// 빛 영향 안받고 원색값 유지
 	if (0 < m_vSignMeshIndex.size() || 0 < m_vMaskSignIndex.size() || 0 < m_vDynamicSignIndex.size())

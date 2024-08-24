@@ -18,6 +18,9 @@ public:
     virtual void Action() override;
     virtual void OverAction() override;
 
+private:
+    _bool m_isBGMStart = { false };
+
 public:
     static CUILogo* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg = nullptr);
     virtual void Free();

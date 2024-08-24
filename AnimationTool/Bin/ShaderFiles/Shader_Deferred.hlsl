@@ -222,7 +222,7 @@ PS_OUT PS_MAIN_COPY_BACKBUFFER_RESULT(PS_IN In)
         vector vSpecular = g_SpecularTexture.Sample(LinearSampler, In.vTexcoord);
         vector vNeoShader = vector(vSpeculerRM.xyz, 1.f) * vShade;
         
-        Out.vColor = (vNeoShader + vSpecular) * vLightmap;
+        Out.vColor = (vNeoShader + vSpecular);
     }
     else
     {
@@ -272,7 +272,7 @@ PS_OUT PS_INCLUDE_GLASS(PS_IN In)
     vector vDiffuseColor = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
     vector vGlassDiffuseColor = g_GlassDiffuseTexture.Sample(LinearSampler, In.vTexcoord);
     
-    if (0 != vGlassDiffuseColor.r || 0 != vGlassDiffuseColor.g || 0 != vGlassDiffuseColor.b)
+    if (0 != vGlassDiffuseColor.a)
     {
         // Nonblend
         Out.vColor = vGlassDiffuseColor;
