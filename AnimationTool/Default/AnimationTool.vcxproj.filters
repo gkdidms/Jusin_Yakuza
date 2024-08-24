@@ -73,6 +73,9 @@
     <ClCompile Include="..\Private\Effect.cpp">
       <Filter>02.GameObjects\04.Effect</Filter>
     </ClCompile>
+    <ClCompile Include="..\Imgui\ImGuiFileDialog\ImGuiFileDialog.cpp">
+      <Filter>96.ImGui\Source</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\MainApp.h">
@@ -161,6 +164,18 @@
     </ClInclude>
     <ClInclude Include="..\Public\Effect.h">
       <Filter>02.GameObjects\04.Effect</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Imgui\ImGuiFileDialog\stb\stb_image.h">
+      <Filter>96.ImGui\Source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\Imgui\ImGuiFileDialog\stb\stb_image_resize2.h">
+      <Filter>96.ImGui\Source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Imgui\ImGuiFileDialog\ImGuiFileDialog.h">
+      <Filter>96.ImGui\Source</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Imgui\ImGuiFileDialog\dirent\dirent.h">
+      <Filter>96.ImGui\Source</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>

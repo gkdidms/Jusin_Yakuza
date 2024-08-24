@@ -908,6 +908,9 @@ void CPlayer::Ready_RootFalseAnimation()
 	m_RootFalseAnims.push_back(565);		// [565]	p_krs_stand_btl_lp[p_krs_stand_btl_lp]
 	m_RootFalseAnims.push_back(564);		// [564]	p_krs_stand_btl_en[p_krs_stand_btl_en]
 	m_RootFalseAnims.push_back(751);		// [751]	[p_wpc_stand]
+
+	m_RootFalseAnims.push_back(578);		// [578] [p_kru_sync_lapel_lp]
+	m_RootFalseAnims.push_back(579);		// [579] [p_kru_sync_lapel_nage]
 }
 
 // 현재 애니메이션의 y축을 제거하고 사용하는 상태이다 (혹시 애니메이션의 y축 이동도 적용이 필요하다면 로직 수정이 필요함
@@ -2157,7 +2160,7 @@ void CPlayer::Set_CutSceneAnim(CUTSCENE_ANIMATION_TYPE eType, _uint iFaceAnimInd
 		j++;
 	}
 
-	if(nullptr != m_pTargetObject)
+	if(nullptr != m_pTargetObject && !m_isCutSceneStartMotion)
 		m_pTargetObject->Set_Sync(m_CutSceneAnimation[m_eCutSceneType]);
 
 	m_pQTEMgr->Set_Animation(m_pAnimCom, m_CutSceneAnimation.at(eType));
