@@ -111,7 +111,6 @@ struct PS_OUT
     vector vDepth : SV_TARGET2;
     vector vSurface : SV_TARGET3; // vector(metallic, goughness, speculer, 0.f)
     vector vOEShader : SV_Target4;
-    vector vSpecular : SV_Target5;
 };
 
 PS_OUT PS_MAIN(PS_IN In)
@@ -164,8 +163,7 @@ PS_OUT PS_MAIN(PS_IN In)
     Out.vNormal = vector(vNormalBTN.xyz * 0.5f + 0.5f, 0.f);
     Out.vDiffuse = vDiffuse;
     Out.vSurface = vector(Result.fMetalness, Result.fRoughness, Result.fSpeclure, Result.fFactor);
-    Out.vOEShader = vector(OEResult.fRouhness, OEResult.fMixShaderFactor, fMixMultiFactor, fDeffuseFactor);
-    Out.vSpecular = vector(OEResult.vSpecular, 0.f);
+    Out.vOEShader = vector(OEResult.fRouhness, OEResult.vSpecular);
     
     return Out;
 }
@@ -212,14 +210,12 @@ PS_OUT PS_BLEND(PS_IN In)
     
     OE_SPECULAR OEResult = Neo_OE_Specular(vMulti, vRM, vRS);
     float fMixMultiFactor = lerp(vMulti.y, 1.f, AssetShader);
-    float fDeffuseFactor = vDiffuseDesc.a * 1.f;
     
     Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_fFar, RimIndex, 0.f);
     Out.vNormal = vector(vNormalBTN.xyz * 0.5f + 0.5f, 0.f);
     Out.vDiffuse = vDiffuseColor;
     Out.vSurface = vector(Result.fMetalness, Result.fRoughness, Result.fSpeclure, Result.fFactor);
-    Out.vOEShader = vector(OEResult.fRouhness, OEResult.fMixShaderFactor, fMixMultiFactor, fDeffuseFactor);
-    Out.vSpecular = vector(OEResult.vSpecular, 0.f);
+    Out.vOEShader = vector(OEResult.fRouhness, OEResult.vSpecular);
     
     return Out;
 }

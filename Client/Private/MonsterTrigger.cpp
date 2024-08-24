@@ -42,7 +42,6 @@ void CMonsterTrigger::Tick(const _float& fTimeDelta)
 {
 	m_pColliderCom->Tick(m_WorldMatrix);
 
-
 	__super::Tick(fTimeDelta);
 }
 

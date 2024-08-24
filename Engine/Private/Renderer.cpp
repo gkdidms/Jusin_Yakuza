@@ -134,8 +134,6 @@ HRESULT CRenderer::Initialize()
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_OEShader"), 50.f, 550.f, 100.f, 100.f)))
 		return E_FAIL;
-	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_OESpecular"), 50.f, 650.f, 100.f, 100.f)))
-		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_LightDepth"), ViewPort.Width - 150.0f, 150.0f, 300.f, 300.f)))
 		return E_FAIL;
@@ -217,10 +215,6 @@ HRESULT CRenderer::Ready_Targets()
 
 	/* Target_OEShader */
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_OEShader"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
-		return E_FAIL;
-
-	/* Target_OESpecular */
-	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_OESpecular"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
 
 	///*Target_Glass - Diffuse °°Àº*/
@@ -441,8 +435,6 @@ HRESULT CRenderer::Ready_MRTs()
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_NonBlend"), TEXT("Target_Surface"))))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_NonBlend"), TEXT("Target_OEShader"))))
-		return E_FAIL;
-	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_NonBlend"), TEXT("Target_OESpecular"))))
 		return E_FAIL;
 
 	/*MRT_PBR*/
@@ -1068,8 +1060,6 @@ void CRenderer::Render_SSAO()
 	BufferDesc.CamViewMatrix = XMMatrixTranspose(m_pGameInstance->Get_Transform_Matrix(CPipeLine::D3DTS_VIEW));
 	BufferDesc.CamProjMatrix = XMMatrixTranspose(m_pGameInstance->Get_Transform_Matrix(CPipeLine::D3DTS_PROJ));
 
-
-
 	m_pContext->UpdateSubresource(m_pSSAOBuffer, 0, nullptr, &BufferDesc, 0, 0);
 
 	m_pContext->CSSetConstantBuffers(0, 1, &m_pSSAOBuffer);
@@ -1127,7 +1117,6 @@ void CRenderer::Render_PBR()
 	m_pGameInstance->Bind_ComputeRenderTargetSRV(TEXT("Target_Surface"), 2);
 	m_pGameInstance->Bind_ComputeRenderTargetSRV(TEXT("Target_Diffuse"), 3);
 	m_pGameInstance->Bind_ComputeRenderTargetSRV(TEXT("Target_OEShader"), 4);
-	m_pGameInstance->Bind_ComputeRenderTargetSRV(TEXT("Target_OESpecular"), 5);
 
 	m_pGameInstance->Bind_ComputeRenderTargetUAV(TEXT("Target_PBR"), 0);
 	m_pGameInstance->Bind_ComputeRenderTargetUAV(TEXT("Target_Specular"), 1);
@@ -1176,8 +1165,6 @@ void CRenderer::Render_LightAcc()
 	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Depth"), m_pShader, "g_DepthTexture")))
 		return;
 	//if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_OEShader"), m_pShader, "g_OEShaderTexture")))
-	//	return;
-	//if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_OESpecular"), m_pShader, "g_OESpecularTexture")))
 	//	return;
 	/*if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_GlassNormal"), m_pShader, "g_GlassNormalTexture")))
 		return;

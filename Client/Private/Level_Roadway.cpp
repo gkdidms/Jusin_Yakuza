@@ -45,8 +45,10 @@ HRESULT CLevel_Roadway::Initialize()
 		return E_FAIL;
 
 	m_pFightManager->Initialize();
-	m_pFightManager->Set_FightStage(true);
+
 	m_pSystemManager->Set_Camera(CAMERA_CARCHASE);
+
+	m_pUIManager->Fade_Out();
 
 	m_fRadialTime = m_pGameInstance->Get_Random(MIN_TIME, MAX_TIME);
 
@@ -55,6 +57,15 @@ HRESULT CLevel_Roadway::Initialize()
 
 void CLevel_Roadway::Tick(const _float& fTimeDelta)
 {
+	if (m_isStart == false)
+	{
+		if (m_pUIManager->isFindFinished())
+		{
+			m_pFightManager->Set_FightStage(true);
+			m_isStart = true;
+		}
+	}
+
 	if (m_pUIManager->isTitleEnd() && !m_isTitleEnd)
 	{
 		m_pUIManager->Open_Scene(TEXT("Carchase"));
@@ -77,7 +88,19 @@ void CLevel_Roadway::Tick(const _float& fTimeDelta)
 		RadialValue_Control();
 	}
 
-	m_pFightManager->Tick(fTimeDelta);
+	if (m_pFightManager->Tick(fTimeDelta))
+	{
+		if (!m_pUIManager->isOpen(TEXT("Fade")))
+		{
+			m_pUIManager->Open_Scene(TEXT("Fade"));
+			m_pUIManager->Fade_In();
+	}
+		else
+		{
+			if (m_pUIManager->isFindFinished())
+				m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_DOGIMAZO));
+		}
+	}
 
 #ifdef _DEBUG
     SetWindowText(g_hWnd, TEXT("ÃÑ°ÝÀü ¸Ê"));
@@ -151,7 +174,7 @@ HRESULT CLevel_Roadway::Ready_Camera(const wstring& strLayerTag)
 	CameraDesc.fFovY = XMConvertToRadians(60.0f);
 	CameraDesc.fAspect = g_iWinSizeX / (_float)g_iWinSizeY;
 	CameraDesc.fNear = 0.1f;
-	CameraDesc.fFar = 3000.f;
+	CameraDesc.fFar = 300.f;
 	CameraDesc.fSpeedPecSec = 40.f;
 	CameraDesc.fRotatePecSec = XMConvertToRadians(90.f);
 	CameraDesc.pPlayerMatrix = pPlayerFloat4x4;
@@ -174,7 +197,7 @@ HRESULT CLevel_Roadway::Ready_Camera(const wstring& strLayerTag)
 	PlayerCameraDesc.fFovY = XMConvertToRadians(60.0f);
 	PlayerCameraDesc.fAspect = g_iWinSizeX / (_float)g_iWinSizeY;
 	PlayerCameraDesc.fNear = 0.1f;
-	PlayerCameraDesc.fFar = 3000.f;
+	PlayerCameraDesc.fFar = 300.f;
 	PlayerCameraDesc.fSpeedPecSec = 20.f;
 	PlayerCameraDesc.fRotatePecSec = XMConvertToRadians(90.f);
 	PlayerCameraDesc.pPlayerMatrix = pPlayerFloat4x4;
@@ -190,7 +213,7 @@ HRESULT CLevel_Roadway::Ready_Camera(const wstring& strLayerTag)
 	CutSceneCameraDesc.fFovY = XMConvertToRadians(60.0f);
 	CutSceneCameraDesc.fAspect = g_iWinSizeX / (_float)g_iWinSizeY;
 	CutSceneCameraDesc.fNear = 0.1f;
-	CutSceneCameraDesc.fFar = 3000.f;
+	CutSceneCameraDesc.fFar = 300.f;
 	CutSceneCameraDesc.fSpeedPecSec = 10.f;
 	CutSceneCameraDesc.fRotatePecSec = XMConvertToRadians(90.f);
 
@@ -204,7 +227,7 @@ HRESULT CLevel_Roadway::Ready_Camera(const wstring& strLayerTag)
 	CarChaseCameraDesc.fFovY = XMConvertToRadians(60.0f);
 	CarChaseCameraDesc.fAspect = g_iWinSizeX / (_float)g_iWinSizeY;
 	CarChaseCameraDesc.fNear = 0.1f;
-	CarChaseCameraDesc.fFar = 3000.f;
+	CarChaseCameraDesc.fFar = 300.f;
 	CarChaseCameraDesc.fSpeedPecSec = 10.f;
 	CarChaseCameraDesc.fRotatePecSec = XMConvertToRadians(90.f);
 	CarChaseCameraDesc.fSensor = 0.1f;
