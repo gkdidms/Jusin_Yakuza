@@ -242,7 +242,7 @@ void CKiryu_KRC_Grab::Move_KeyInput(const _float& fTimeDelta)
 	{
 		if (2 < m_pPlayer->Get_CurrentHitLevel())	// 히트게이지가 3단까지 풀이라면
 		{
-			m_pPlayer->Set_CutSceneAnim(CPlayer::LAPEL_OIUCHI_NECK, 1);
+			m_pPlayer->Set_CutSceneAnim(CPlayer::LAPEL_OIUCHI_NECK);
 		}
 	}
 	if (m_pGameInstance->GetKeyState(DIK_Q) == TAP)
