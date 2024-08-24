@@ -300,6 +300,7 @@ void CUICarchase::Coll_Aim()
 {
     if (m_pGameInstance->GetMouseState(DIM_LB) == TAP)
     {
+
         _uint Level = m_pGameInstance->Get_CurrentLevel();
 
         CHighway_Taxi* Taxi = dynamic_cast<CHighway_Taxi*>(m_pGameInstance->Get_GameObject(Level, TEXT("Layer_Taxi"), 0));
@@ -307,7 +308,7 @@ void CUICarchase::Coll_Aim()
         CHighway_Kiryu* pKiryu = static_cast<CHighway_Kiryu*>(Taxi->Get_Kiryu());
         if(pKiryu->Shot())
         {
-
+            m_pGameInstance->StopAndPlaySound(L"p_gunshot_def_0.wav", SOUND_ATTACK, 0.5f);
             if (nullptr != m_CurrentTarget)
             {
                 m_CurrentTarget->TargetingUI->Show_UI();
