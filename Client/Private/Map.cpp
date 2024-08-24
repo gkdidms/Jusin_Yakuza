@@ -190,7 +190,6 @@ void CMap::Late_Tick(const _float& fTimeDelta)
 			{
 				Add_Renderer(fTimeDelta);
 			}
-			m_pGameInstance->Add_Renderer(CRenderer::RENDER_SHADOWOBJ, this); //-> 건물들만 그려줌
 		}
 		else if (false == m_bOcculusionCulling)
 		{
@@ -208,6 +207,7 @@ void CMap::Late_Tick(const _float& fTimeDelta)
 	{
 		Add_Renderer(fTimeDelta);
 	}
+	m_pGameInstance->Add_Renderer(CRenderer::RENDER_SHADOWOBJ, this); //-> 건물들만 그려줌
 }
 
 HRESULT CMap::Render()

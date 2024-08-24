@@ -28,7 +28,6 @@ Texture2D g_NormalTexture : register(t1);
 Texture2D g_SurfaceTexture : register(t2);
 Texture2D g_DiffuseTexture : register(t3);
 Texture2D g_OETexture : register(t4);
-Texture2D g_SpecularTexture : register(t5);
 
 RWTexture2D<float4> g_OutputTexture : register(u0);
 RWTexture2D<float4> g_OutSpecularTexture : register(u1);
@@ -96,6 +95,13 @@ float GeometrySmith(float3 N, float3 V, float3 L, float roughness)
     return ggx1 * ggx2;
 }
 
+float3 CalculateSpecularTint(float3 F, float3 albedo, float specularTint)
+{
+    float3 tintedSpecular = lerp(F, F * albedo, specularTint);
+
+    return tintedSpecular;
+}
+
 float epsilon = 1e-6f;
 
 float4 BRDF(float4 vPosition, int2 vTexcoord, float4 vNormal, float4 vDepthDesc, float3 vLook)
@@ -104,19 +110,18 @@ float4 BRDF(float4 vPosition, int2 vTexcoord, float4 vNormal, float4 vDepthDesc,
     float fGamma = { 2.2f };
     
     float3 vAlbedo = g_DiffuseTexture.Load(int3(vTexcoord, 0)).xyz;
-    //vAlbedo = GammaToLinear(vAlbedo, fGamma);
     vector Combine = g_SurfaceTexture.Load(int3(vTexcoord, 0));
     
     /* Li */
     float fMetalic = Combine.r;
     float IOR = 1.45f;
-    float3 F0 = pow((IOR - 1.f) / (IOR + 1.f), 2.f) * Combine.b;
+    float3 F0 = Combine.b;
     F0 = lerp(F0, vAlbedo, fMetalic);
     
     //vector vLightDir = reflect(normalize(g_vLightDir), vNormal); //g_vLightDir * -1.f;
     float3 vLightDir = normalize(vLightDirection * -1.f);
     float3 vHalfway = normalize(vLook + vLightDir);
-    float3 vRadiance = vLightDiffuse;
+    float3 vRadiance = vLightDiffuse * 2.f;
     
     //BRDF
     float vRoughness = Combine.g;
@@ -125,51 +130,51 @@ float4 BRDF(float4 vPosition, int2 vTexcoord, float4 vNormal, float4 vDepthDesc,
     float cosTheta = max(dot(vNormal.xyz, vHalfway), 0.f);
     float3 F = FresnelSchlickRoughness(cosTheta, F0, vRoughness);
     
-    float3 nominator = D * G * F;
+    float3 specularWithTint = CalculateSpecularTint(F, vAlbedo, Combine.w);
     
-    float WoDotN = max(dot(vLook, vNormal.xyz), 0.f);
-    float WiDotN = max(dot(vLightDir, vNormal.xyz), 0.f);
+    float3 nominator = D * G * specularWithTint;
+    
+    float WoDotN = max(dot(vNormal.xyz, vLook), 0.f);
+    float WiDotN = max(dot(vNormal.xyz, vLightDir), 0.7f);
     float denominator = (WoDotN * WiDotN * 4.f) + 0.001f;
     
-    float3 vSpecular = (nominator / denominator) * Combine.w;
+    float3 vSpecular = (nominator / denominator);
     
-    float3 vKS = F;
+    float3 vKS = specularWithTint;
     float3 vKD = 1.f - vKS;
     vKD *= 1.f - fMetalic;
     
     float3 vDiffuse = vKD * vAlbedo / PI;
-    vDiffuse = (vDiffuse + vSpecular) * vRadiance;
-    //vDiffuse = LinearToGamma(vDiffuse, fGamma);
-    
+    vDiffuse = (vDiffuse + vSpecular) * (vRadiance * WiDotN);
     return vector(vDiffuse, 1.f);
 }
 
-float3 CookTorranceBRDF(float3 vNormal, float3 vLook, float roughness, float3 F0)
+float3 CookTorranceBRDF(float3 vNormal, float3 vLook, float roughness, float3 F0, float3 vLight)
 {
     float PI = { 3.14f };
     
-    float3 vHalfway = normalize(vLook + vLightDirection.xyz);
+    float3 vHalfway = normalize(vLook + vLight);
     
     float NDF = DistributionGGX(vNormal, vHalfway, roughness, PI); // GGX Normal Distribution Function
-    float G = GeometrySmith(vNormal, vLook, vLightDirection.xyz, roughness); // Geometry function
+    float G = GeometrySmith(vNormal, vLook, vLight, roughness); // Geometry function
     float3 F = FresnelSchlickRoughness(max(dot(vHalfway, vLook), 0.0), F0, roughness); // Fresnel Schlick
 
     float3 numerator = NDF * G * F;
-    float denominator = 4.0 * max(dot(vNormal, vLook), 0.0) * max(dot(vNormal, vLightDirection.xyz), 0.0) + 0.001; // Avoid division by 0
+    float denominator = 4.0 * max(dot(vNormal, vLook), 0.0) * max(dot(vNormal, vLight), 0.0) + 0.001; // Avoid division by 0
     return numerator / denominator;
 }
 
 float3 OESpecular(float4 vPosition, int2 vTexcoord, float3 vNormal, float3 vLook)
 {
-    float3 vOEShader = g_OETexture.Load(int3(vTexcoord, 0)).xyz;
-    float3 vSpecular = g_SpecularTexture.Load(int3(vTexcoord, 0)).xyz;
+    float3 vLight = vLightDirection.xyz * -1.f;
+    float4 vOEShader = g_OETexture.Load(int3(vTexcoord, 0));
+    float3 vSpecular = vOEShader.yzw;
+    float3 vHalfway = normalize(vLook + vLight);
     
-    float3 vHalfway = normalize(vLook + vLightDirection.xyz);
+    float3 F0 = vSpecular;
+    float3 SpecularColor = CookTorranceBRDF(vNormal, vLook, vOEShader.x, F0, vLight);
     
-    float F0 = 0.04f;
-    float3 SpecularColor = CookTorranceBRDF(vNormal, vLook, vOEShader.z, F0);
-    
-    return SpecularColor * vSpecular.xyz;
+    return SpecularColor;
 }
 
 [numthreads(16, 16, 1)]
@@ -200,5 +205,4 @@ void CS_Main(uint3 id : SV_DispatchThreadID)
     
     g_OutputTexture[vUV] = vResult;
     g_OutSpecularTexture[vUV] = vector(vSpecular, 0.f);
-
 }
