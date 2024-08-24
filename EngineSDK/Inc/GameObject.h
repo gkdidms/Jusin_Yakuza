@@ -70,6 +70,7 @@ protected:
     _uint m_iCurrentLevel = { 0 };
     _bool m_isDead = { false };
     _bool m_isObjectDead = { false };
+    _bool m_isCloned = { false };
 
     _uint   m_iObjectIndex = { 0 };
 

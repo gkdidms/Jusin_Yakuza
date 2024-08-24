@@ -437,26 +437,31 @@ HRESULT CLandObject::Bind_ResourceData()
 void CLandObject::Free()
 {
 	__super::Free();
-
-	if (m_pColliders.size() > 0)
+	
+	if (m_isCloned)
 	{
-		for (auto& pCollider : m_pColliders)
-			Safe_Release(pCollider.second);
-		m_pColliders.clear();
+		if (m_pColliders.size() > 0)
+		{
+			for (auto& pCollider : m_pColliders)
+				Safe_Release(pCollider.second);
+			m_pColliders.clear();
+		}
+
+		// 멀티맵이라 다르게 지워야한다.
+		for (auto iter = m_pEffects.begin(); iter != m_pEffects.end();)
+		{
+			Safe_Release(iter->second);
+			iter = m_pEffects.erase(iter);
+		}
+
+		for (auto& pEffect : m_pTrailEffects)
+			Safe_Release(pEffect.second);
+		m_pTrailEffects.clear();
+
+		for (auto& pEffect : m_pBloodEffects)
+			Safe_Release(pEffect.second);
+		m_pBloodEffects.clear();
 	}
-
-
-	for (auto& pEffect : m_pEffects)
-		Safe_Release(pEffect.second);
-	m_pEffects.clear();
-
-	for (auto& pEffect : m_pTrailEffects)
-		Safe_Release(pEffect.second);
-	m_pTrailEffects.clear();
-
-	for (auto& pEffect : m_pBloodEffects)
-		Safe_Release(pEffect.second);
-	m_pBloodEffects.clear();
 
 	for (auto pAnimCom : m_SeparationAnimComs)
 	{
