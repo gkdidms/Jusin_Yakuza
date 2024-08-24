@@ -1708,9 +1708,6 @@
     <Filter Include="95.Utility\05.UIManager\InventoryManager\ItemData">
       <UniqueIdentifier>{1b6edbda-4992-4482-8fe5-f74f11bf2ce4}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01.Levels\05.DogimazoStairs">
-      <UniqueIdentifier>{6ad6a7d5-8a3a-4b60-90c6-c60a0fc7b848}</UniqueIdentifier>
-    </Filter>
     <Filter Include="95.Utility\05.UIManager\UIScene\UILoading">
       <UniqueIdentifier>{28a57a2e-3ddc-4618-946e-d1f1d605ee62}</UniqueIdentifier>
     </Filter>
@@ -2322,6 +2319,9 @@
     </Filter>
     <Filter Include="02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby\01.Walker\01.YOP\AI">
       <UniqueIdentifier>{83021a8a-5cc4-4f65-9ce3-f04d8a18e962}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Levels\05.DogimazoStairs">
+      <UniqueIdentifier>{6ad6a7d5-8a3a-4b60-90c6-c60a0fc7b848}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

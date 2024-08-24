@@ -301,7 +301,9 @@ void CUIManager::Open_Scene(const wstring strSceneName)
 	if (pUIScene->Get_isLoading())
 	{
 		if(!m_PlayScene.empty())
-		m_PlayScene.pop_back();
+		{
+			m_PlayScene.pop_back();
+		}
 	}
 
 	pUIScene->Set_Open();
@@ -443,6 +445,27 @@ void CUIManager::Fade_Out()
 
 	m_PlayScene.push_back(pUIScene);
 	dynamic_cast<CUIFade*>(m_PlayScene.back())->Fade_Out();
+}
+
+_bool CUIManager::Fade_Finished()
+{
+	CUIScene* pUIScene = Find_Scene(TEXT("Fade"));
+
+	return dynamic_cast<CUIFade*>(m_PlayScene.back())->isFinished();
+}
+
+void CUIManager::PressKey()
+{
+	CUIScene* pUIScene = Find_Scene(TEXT("QTE"));
+
+	dynamic_cast<CUIQTE*>(pUIScene)->Press();
+}
+
+_bool CUIManager::QTE_Finished()
+{
+	CUIScene* pUIScene = Find_Scene(TEXT("QTE"));
+
+	return dynamic_cast<CUIQTE*>(pUIScene)->Get_isAnimFinish();
 }
 
 CUIScene* CUIManager::Find_Scene(wstring strSceneName)

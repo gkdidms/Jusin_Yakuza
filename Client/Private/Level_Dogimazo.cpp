@@ -43,32 +43,87 @@ HRESULT CLevel_Dogimazo::Initialize()
 	m_pFileTotalManager->Set_Trigger_In_Client(40, LEVEL_DOGIMAZO);
 	/* 계단 오른 후 몬스터 */
 	m_pFileTotalManager->Set_Trigger_In_Client(41, LEVEL_DOGIMAZO);
+	/* 계단 오른 후 몬스터 */
+	m_pFileTotalManager->Set_Trigger_In_Client(43, LEVEL_DOGIMAZO);
 
 
 	if (FAILED(Ready_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
 
 	m_pFightManager->Initialize();
-	m_pFightManager->Set_FightStage(true);
+	m_pSystemManager->Set_Camera(CAMERA_PLAYER);
+	m_pUIManager->Fade_Out();
+//	m_pFightManager->Set_FightStage(true);
 
     return S_OK;
 }
 
 void CLevel_Dogimazo::Tick(const _float& fTimeDelta)
 {
+	/*//기존
+	if (m_isStart == false)
+	{
+		if (m_pUIManager->isFindFinished())
+		{
+			m_pUIManager->Close_Scene(TEXT("Fade"));
+		}
+	}
+
+	if (m_bSceneChange)
+	{
+		if (!m_pUIManager->isOpen(TEXT("Fade")))
+		{
+			m_pUIManager->Open_Scene(TEXT("Fade"));
+			m_pUIManager->Fade_In();
+		}
+		else
+		{
+			if (m_pUIManager->isFindFinished())
+			{
+				m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_DOGIMAZO_STAIRS));
+				return;
+			}
+		}
+	}*/
+	if (m_isStart == false)
+	{
+		if (m_pUIManager->isFindFinished())
+		{
+			m_pFightManager->Set_FightStage(true);
+			m_isStart = true;
+		}
+	}
+
+	if (m_bSceneChange)
+	{
+
+		if (m_isFadeFin && m_pUIManager->isFindFinished())
+		{
+			m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_DOGIMAZO_STAIRS));
+			CCollision_Manager::GetInstance()->All_Clear();
+			return;
+		}
+
+		if (!m_pUIManager->isOpen(TEXT("Fade")))
+		{
+			m_pUIManager->Fade_In();
+			m_isFadeFin = true;
+		}
+	}
+
+
 	// 트리거 체크 - 씬 이동
 	vector<CGameObject*> pTriggers = m_pGameInstance->Get_GameObjects(LEVEL_DOGIMAZO, TEXT("Layer_Trigger"));
-
 	for (int i = 0; i < pTriggers.size(); i++)
 	{
 		int		iLevelNum;
 		if (true == dynamic_cast<CTrigger*>(pTriggers[i])->Move_Scene(iLevelNum))
 		{
 			m_bSceneChange = true;
-			m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, (LEVEL)iLevelNum));
 		}
 	}
 
+#ifdef _DEBUG
 	if (false == m_bSceneChange)
 	{
 		if (m_pGameInstance->GetKeyState(DIK_RETURN) == TAP)
@@ -77,6 +132,7 @@ void CLevel_Dogimazo::Tick(const _float& fTimeDelta)
 				return;
 		}
 	}
+#endif // _DEBUG
 	
 	m_pFightManager->Tick(fTimeDelta);
 

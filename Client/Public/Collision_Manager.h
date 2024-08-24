@@ -37,6 +37,9 @@ public:
     void Tick();
 
 public:
+    void All_Clear();
+
+public:
     /*
     * 실제 충돌처리를 비교할 함수
 

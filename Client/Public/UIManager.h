@@ -129,7 +129,6 @@ private:
     vector<class CUIScene*> m_AlwaysUI;//항상 떠있는 ui (피통 스킬상태 소지품)
     class CInventoryManager* m_pInventory = {nullptr};
 
-
 #ifdef _DEBUG
 private:
     _bool m_isRender = { true };
@@ -148,6 +147,11 @@ private:
 public:
     void Fade_In();
     void Fade_Out();
+    _bool Fade_Finished();
+
+ public://QTE
+    void PressKey();
+    _bool QTE_Finished();
 public:
    CUIScene* Find_Scene(wstring strSceneName);      
 

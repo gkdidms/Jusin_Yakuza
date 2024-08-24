@@ -66,6 +66,7 @@ public:
     void Set_Sync(_bool isSync) { m_isSync = isSync; }
     void Set_Start(_bool isStart) { m_isStart = isStart; }
     void Set_Adventure(_bool isAdventure) { m_isAdventer = isAdventure; }
+    void Reset_AI();
 
 public:
     virtual HRESULT Initialize_Prototype();

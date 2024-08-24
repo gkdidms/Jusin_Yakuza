@@ -5,6 +5,8 @@
 #include "ModelBoneSphere.h"
 #include "TRailEffect.h"
 
+#include "ImGuiFileDialog.h"
+
 #pragma region "Model"
 #include "Animation.h"
 #include "Anim.h"
@@ -28,6 +30,7 @@ CImguiManager::CImguiManager(ID3D11Device* pDevice, ID3D11DeviceContext* pContex
 HRESULT CImguiManager::Initialize(void* pArg)
 {
 	Setting_InitialData("Player/");
+	Ready_SoundFolders();
 
 	//ImGui
 	IMGUI_CHECKVERSION();
@@ -50,6 +53,10 @@ HRESULT CImguiManager::Initialize(void* pArg)
 
 	ImGui_ImplWin32_Init(g_hWnd);
 	ImGui_ImplDX11_Init(m_pDevice, m_pContext);
+
+	fs::path projectRootDir = fs::current_path();
+	fs::path ParentDir = projectRootDir.parent_path();
+	m_RootDir = ParentDir.parent_path();
 	return S_OK;
 }
 
@@ -1164,6 +1171,33 @@ void CImguiManager::TrailWindow()
 void CImguiManager::SoundListWindow()
 {
 	ImGui::Begin("Sound List", &m_isSoundListWindow);
+
+	for (size_t i = 0; i < m_SoundFolderNames.size(); i++)
+	{
+		if (ImGui::RadioButton(m_SoundFolderNames[i].c_str(), m_SoundFolderRadio[i]))
+		{
+			for (auto value : m_SoundFolderRadio)
+				value = false;
+
+			m_SoundFolderRadio[i] = true;
+		}
+		ImGui::SameLine();
+	}
+
+	if (ImGui::Button(u8"사운드 파일 목록"))
+	{
+		IGFD::FileDialogConfig config;
+		config.path = (m_RootDir / "Client" / "Bin" / "Resources" / "Sounds" ).string();
+		ImGuiFileDialog::Instance()->OpenDialog("ChooseBinaryGroupSoundFiles", "Choose File", ".mp3, .wav", config);
+	}
+	if (ImGuiFileDialog::Instance()->Display("ChooseBinaryGroupSoundFiles"))
+	{
+		if (ImGuiFileDialog::Instance()->IsOk())
+		{
+
+		}
+	}
+
 
 	ImGui::Text(u8"테스트용으로 띄웠습니다");
 
@@ -2644,6 +2678,14 @@ void CImguiManager::Change_Model()
 	}
 
 	m_pRenderModel->Change_Model(strModelName, strAnimName);
+}
+
+void CImguiManager::Ready_SoundFolders()
+{
+	string strDirPath = "../../Client/Bin/Resources/Sounds/";
+	m_pGameInstance->Get_DirectoryName(strDirPath, m_SoundFolderNames);
+
+	m_SoundFolderRadio.resize(m_SoundFolderNames.size());
 }
 
 void CImguiManager::Setting_InitialData(string strFolderType)

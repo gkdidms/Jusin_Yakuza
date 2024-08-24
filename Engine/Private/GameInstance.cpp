@@ -167,6 +167,16 @@ _bool CGameInstance::PlaySound_W(const wstring pSoundKey, CHANNELID eID, float f
 	return m_pSound_Manager->PlaySound_W(pSoundKey, eID, fVolume);
 }
 
+_bool CGameInstance::StopAndPlaySound(const wstring pSoundKey, CHANNELID eID, float fVolume)
+{
+	return m_pSound_Manager->StopAndPlaySound(pSoundKey, eID, fVolume);
+}
+
+_bool CGameInstance::PlaySoundIfNotPlay(const wstring pSoundKey, CHANNELID eID, float fVolume)
+{
+	return m_pSound_Manager->PlaySoundIfNotPlay(pSoundKey, eID, fVolume);
+}
+
 void CGameInstance::PlayBGM(const wstring pSoundKey, float fVolume)
 {
 	m_pSound_Manager->PlayBGM(pSoundKey, fVolume);
