@@ -1263,6 +1263,29 @@ void CImguiManager::SoundListWindow()
 		m_SoundEvents.emplace(m_AnimNameList[m_iAnimIndex], Desc);
 	}
 
+	ImGui::Text(u8"사운드 이벤트 리스트");
+
+	auto upper_bound_iter = m_SoundEvents.upper_bound(m_AnimNameList[m_iAnimIndex]);
+	auto lower_bound_iter = m_SoundEvents.lower_bound(m_AnimNameList[m_iAnimIndex]);
+
+	vector<const char*> items;
+	for (; lower_bound_iter != upper_bound_iter; ++lower_bound_iter)
+	{
+		items.push_back((*lower_bound_iter).second.strSoundFileName.c_str());
+	}
+
+	if (ImGui::ListBox("##", &m_iSoundEventIndex, items.data(), items.size()))
+	{
+		auto lower_bound_iter2 = m_SoundEvents.lower_bound(m_AnimNameList[m_iAnimIndex]);
+		for (size_t i = 0; i < m_iSoundEventIndex; i++)
+		{
+			lower_bound_iter2++;
+		}
+
+		m_strSelectSoundFileName = lower_bound_iter2->second.strSoundFileName;
+		m_fAnimationPosition = lower_bound_iter2->second.fAinmPosition;
+	}
+
 	if (ImGui::Button(u8"불러오기"))
 	{
 		string strDirectory = "../../Client/Bin/DataFiles/Character/" + m_ModelNameList[m_iModelSelectedIndex];
@@ -1780,11 +1803,11 @@ void CImguiManager::Create_Effect(string& strBoneName, string& strEffectName, ws
 
 void CImguiManager::Play_SoundEvent()
 {
+	if (m_Anims.size() < 1) return;
+
 	auto Anims = m_Anims;
 	_float Duration = (_float)(*(Anims[m_iAnimIndex]->Get_Duration()));
 	_float CurrentPosition = (_float)(*(Anims[m_iAnimIndex]->Get_CurrentPosition()));
-
-	
 
 	auto lower_bound_iter = m_SoundEvents.lower_bound(m_AnimNameList[m_iAnimIndex]);
 	auto upper_bound_iter = m_SoundEvents.upper_bound(m_AnimNameList[m_iAnimIndex]);
@@ -1794,15 +1817,12 @@ void CImguiManager::Play_SoundEvent()
 		if (!lower_bound_iter->second.isPlay && CurrentPosition > lower_bound_iter->second.fAinmPosition)
 		{
 			lower_bound_iter->second.isPlay = true;
-			m_pGameInstance->PlaySound_W(m_pGameInstance->StringToWstring(m_strSelectSoundFileName), SOUND_EFFECT);
+			m_pGameInstance->PlaySound_W(m_pGameInstance->StringToWstring(m_strSelectSoundFileName), static_cast<CHANNELID>(lower_bound_iter->second.iChannel));
 		}
 	}
 
-
 	if (Anims[m_iAnimIndex]->Get_Restrat())
-	{
 		Reset_SoundEvent_Played();
-	}
 }
 
 void CImguiManager::Reset_SoundEvent_Played()

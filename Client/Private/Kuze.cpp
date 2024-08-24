@@ -6,6 +6,7 @@
 #include "Mesh.h"
 
 #include "SocketCollider.h"
+#include "Player.h"
 #include <Camera.h>
 
 CKuze::CKuze(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -46,6 +47,12 @@ void CKuze::Priority_Tick(const _float& fTimeDelta)
 void CKuze::Tick(const _float& fTimeDelta)
 {
 	__super::Tick(fTimeDelta);
+
+	if (m_pGameInstance->GetKeyState(DIK_RCONTROL) == TAP)
+	{
+		dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject(m_iCurrentLevel, TEXT("Layer_Player"), 0))->Play_Kuze_QTE(this);
+	}
+
 }
 
 void CKuze::Late_Tick(const _float& fTimeDelta)

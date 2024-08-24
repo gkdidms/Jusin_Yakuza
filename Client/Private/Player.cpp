@@ -92,6 +92,14 @@ void CPlayer::Battle_Start()
 	m_eCurrentStyle = KRS;
 }
 
+void CPlayer::Play_Kuze_QTE(CMonster* pMonster)
+{
+	m_pQTEMgr->Set_Kuze(pMonster);
+	m_pQTEMgr->Set_Animation(m_pAnimCom, "h23250");
+
+	Set_CutSceneAnim(KUZE_RUSH);
+}
+
 HRESULT CPlayer::Initialize_Prototype()
 {
 	return S_OK;
@@ -161,7 +169,7 @@ void CPlayer::Tick(const _float& fTimeDelta)
 		//TODO: 여기에서 enum값을 필요한 애니메이션으로 바꾸면 해당하는 컷신이 실행된당
 		if (m_pTargetObject)
 		{
-			Set_CutSceneAnim(m_eCutSceneType, 1);
+			Set_CutSceneAnim(m_eCutSceneType);
 		}
 	}
 
@@ -842,6 +850,9 @@ void CPlayer::Ready_CutSceneAnimation()
 	m_CutSceneAnimation.emplace(YONEDA_H, "a60300");
 	m_CutSceneAnimation.emplace(YONEDA_DOWN_ATTACK, "a60330");
 	m_CutSceneAnimation.emplace(YONEDA_DOSU, "a60350");
+
+	/* 쿠제 QTE */
+	m_CutSceneAnimation.emplace(KUZE_RUSH, "h23250");
 }
 
 void CPlayer::Ready_AuraEffect()
@@ -2091,7 +2102,7 @@ void CPlayer::Set_CutSceneStartMotion(CUTSCENE_ANIMATION_TYPE eType)
 
 }
 
-void CPlayer::Set_CutSceneAnim(CUTSCENE_ANIMATION_TYPE eType, _uint iFaceAnimIndex)
+void CPlayer::Set_CutSceneAnim(CUTSCENE_ANIMATION_TYPE eType)
 {
 	if (CUTSCENE == m_eAnimComType) return;
 	Set_CutSceneStartMotion(eType);
@@ -2101,8 +2112,6 @@ void CPlayer::Set_CutSceneAnim(CUTSCENE_ANIMATION_TYPE eType, _uint iFaceAnimInd
 	if (m_CutSceneAnimation.end() == iter) return;
 
 	m_eCutSceneType = eType;
-
-	//m_iFaceAnimIndex = iFaceAnimIndex;
 
 	//On_Separation_Face();			// 얼굴 애니메이션 켜기
 	Off_Separation_Hand();			// 손 분리 애니메이션 끄기
@@ -2291,11 +2300,11 @@ void CPlayer::HitAction_Down()
 		* DIR_B : 뒤로 엎어져잇음
 		* DIR_END : 방향을 가져오지 못함
 		*/
-		Set_CutSceneAnim(m_pTargetObject->Get_DownDir() == DIR_F ? OI_TRAMPLE_AO : OI_KICKOVER_UTU_C, 1);
+		Set_CutSceneAnim(m_pTargetObject->Get_DownDir() == DIR_F ? OI_TRAMPLE_AO : OI_KICKOVER_UTU_C);
 	}
 	else
 	{
-		Set_CutSceneAnim(m_pTargetObject->Get_DownDir() == DIR_F ? OI_UPPER : OI_KICK, 1);
+		Set_CutSceneAnim(m_pTargetObject->Get_DownDir() == DIR_F ? OI_UPPER : OI_KICK);
 	}
 }
 
@@ -2321,13 +2330,13 @@ void CPlayer::HitAction_WallBack()
 		//vPos.m128_f32[0] += 1.f;
 		//m_pTransformCom->Set_State(CTransform::STATE_POSITION, vPos);
 
-		Set_CutSceneAnim(m_eCurrentStyle == KRS ? HAIHEKI_KICK : HAIHEKI_PUNCH, 1);
+		Set_CutSceneAnim(m_eCurrentStyle == KRS ? HAIHEKI_KICK : HAIHEKI_PUNCH);
 	}
 }
 
 void CPlayer::HitAction_CounterElbow()
 {
-	Set_CutSceneAnim(KOBUSHIKUDAKI, 8);
+	Set_CutSceneAnim(KOBUSHIKUDAKI);
 }
 
 void CPlayer::Update_RootFalseAnim()
