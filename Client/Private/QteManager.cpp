@@ -36,6 +36,16 @@ void Client::CQteManager::Tick(const _float& fTimeDelta)
     Check_QTE_Section();
     Slowing();
     Cancle_KeyFrame();
+
+    if (m_isKuze)
+        m_pTargetMonster->Set_QTEResult(m_iSuccess);
+    else
+    {
+        CMonster* pMonster = dynamic_cast<CMonster*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Yoneda"), 0));
+
+        if (nullptr != pMonster)
+            pMonster->Set_QTEResult(m_iSuccess);
+    }
 }
 
 void Client::CQteManager::Late_Tick(const _float& fTimeDelta)

@@ -251,16 +251,16 @@ HRESULT CLoader_Anim::Loading_Default()
 	//	return E_FAIL;
 
 	///* For.Prototype_Component_Anim_KuzeFace */
-	//if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Anim_KuzeFace"), CAnim::Create(m_pDevice, m_pContext, "../Bin/DataFiles/AnimationData/Animation_Kuze_Face.dat", false))))
-	//	return E_FAIL;
-	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Anim_KuzeFace"), CAnim::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Anim/Animation_Kuze_Face.fbx", true))))
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Anim_KuzeFace"), CAnim::Create(m_pDevice, m_pContext, "../Bin/DataFiles/AnimationData/Animation_Kuze_Face.dat", false))))
 		return E_FAIL;
+	//if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Anim_KuzeFace"), CAnim::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Anim/Animation_Kuze_Face.fbx", true))))
+	//	return E_FAIL;
 
 	///* For.Prototype_Component_Anim_YonedaFace */
-	//if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Anim_YonedaFace"), CAnim::Create(m_pDevice, m_pContext, "../Bin/DataFiles/AnimationData/Animation_Yoneda_Face.dat", false))))
-	//	return E_FAIL;
-	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Anim_YonedaFace"), CAnim::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Anim/Animation_Yoneda_Face.fbx", true))))
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Anim_YonedaFace"), CAnim::Create(m_pDevice, m_pContext, "../Bin/DataFiles/AnimationData/Animation_Yoneda_Face.dat", false))))
 		return E_FAIL;
+	//if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Anim_YonedaFace"), CAnim::Create(m_pDevice, m_pContext, "../Bin/Resources/Models/Anim/Animation_Yoneda_Face.fbx", true))))
+	//	return E_FAIL;
 
 
 #pragma endregion
