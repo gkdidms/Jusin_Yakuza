@@ -32,7 +32,6 @@ CLevel_Tutorial::CLevel_Tutorial(ID3D11Device* pDevice, ID3D11DeviceContext* pCo
 
 HRESULT CLevel_Tutorial::Initialize()
 {
-	m_pGameInstance->StopAll();
 	if (FAILED(Ready_Player(TEXT("Layer_Player"))))
 		return E_FAIL;
 
