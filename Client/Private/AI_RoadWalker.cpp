@@ -46,14 +46,18 @@ void CAI_RoadWalker::Tick(const _float& fTimeDelta)
 	{
 		// waypoint 방향받기
 		// m_isTurn, m_iDir, m_isBack : 여기서 받음
-		_vector vDir = m_pNavigationCom->Compute_WayPointDir_Adv(m_pThis->Get_TransformCom()->Get_State(CTransform::STATE_POSITION), 
+		_vector vDir = m_pNavigationCom->Compute_WayPointDir_Adv(m_pThis->Get_TransformCom()->Get_State(CTransform::STATE_POSITION),
 			fTimeDelta, &m_isTurn, &m_iDir, &m_isBack);
 		m_pThis->Get_TransformCom()->LookAt_For_LandObject(vDir, true);
 
 		m_vNextDir = vDir;
 
+		if (m_isTurn || m_isBack)
+			m_fTurnTimer = 0;
 	}
 
+	if (m_isTurn || m_isBack)
+		m_fTurnTimer += fTimeDelta;
 }
 
 CBTNode::NODE_STATE CAI_RoadWalker::Check_Coll()
@@ -104,7 +108,8 @@ CBTNode::NODE_STATE CAI_RoadWalker::Back()
 
 	if (m_iSkill == SKILL_BACK && *m_pState == CAdventure::ADVENTURE_TURN)
 	{
-		if (m_pAnimCom->Get_AnimFinished())
+		//if (m_pAnimCom->Get_AnimFinished())
+		if (m_fTurnTimer > 1.5f)
 		{
 			m_isBack = false;
 			m_isTurn = false;
@@ -128,13 +133,14 @@ CBTNode::NODE_STATE CAI_RoadWalker::Turn()
 
 	if (m_iSkill == SKILL_TURN && (*m_pState == CAdventure::ADVENTURE_TURN90_L || *m_pState == CAdventure::ADVENTURE_TURN90_R))
 	{
-		if (m_pAnimCom->Get_AnimFinished())
+		//if (m_pAnimCom->Get_AnimFinished())
+		if(m_fTurnTimer > 1.5f)
 		{
 			m_isTurn = false;
 			m_isWalk = true;
 			m_isBack = false;
 			m_pThis->Get_TransformCom()->LookAt_For_LandObject(m_vNextDir, true);
-
+			m_fTurnTimer = 0;
 		}
 
 		return CBTNode::SUCCESS;

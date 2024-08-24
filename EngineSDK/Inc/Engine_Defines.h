@@ -89,6 +89,7 @@ namespace Engine
 		SOUND_ENEMY_VOICE,
 		SOUND_ENEMY_EFFECT,
 		SOUND_UI,
+		SOUND_ATTACK,
 		SOUND_END
 	};
 
@@ -97,3 +98,5 @@ namespace Engine
 using namespace Engine;
 using namespace std;
 namespace fs = std::filesystem;
+
+

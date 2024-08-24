@@ -223,10 +223,14 @@ void CHighway_Kiryu::Key_Input()
 	if (m_pGameInstance->GetKeyState(DIK_E) == HOLD)
 	{
 		m_fAccReloadTimer += m_pGameInstance->Get_TimeDelta(TEXT("Timer_Game"));
-		if (RELOAD_TIME <= m_fAccReloadTimer)
+		if(m_iCurrentAmmo< MAX_AMMO)
 		{
-			m_iCurrentAmmo = MAX_AMMO;
-			m_fAccReloadTimer = 0.f;
+			if (RELOAD_TIME <= m_fAccReloadTimer)
+			{
+				m_pGameInstance->StopAndPlaySound(L"gun_reload_0.wav", SOUND_ATTACK, 1.f);
+				m_iCurrentAmmo = MAX_AMMO;
+				m_fAccReloadTimer = 0.f;
+			}
 		}
 
 		Change_Behavior(HIDE);

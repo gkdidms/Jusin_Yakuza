@@ -27,10 +27,7 @@ HRESULT CNishiki::Initialize(void* pArg)
 
 	m_iObjectIndex = 101;
 
-	if (m_iCurrentLevel == LEVEL_KARAOKE)
-		m_iState = CHEER;
-	else
-		m_iState = IDLE;
+	m_iCurrentLevel == LEVEL_KARAOKE ? m_iState = CHEER : m_iState = IDLE;
 
 	m_isAnimLoop = true;
 
