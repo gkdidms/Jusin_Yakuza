@@ -97,6 +97,7 @@ protected:
     _bool m_isBreak = { false };
     _bool m_isGuard = { false };
     _bool m_isSway = { false };
+    _bool m_isRun = { false };
 
     _bool m_isPlayerDownAtk = { false }; // 플레이어에게 다운 어택을 한번 사용했는가를 체크
 
@@ -189,6 +190,7 @@ protected:
         m_isBreak = false;
         m_isSway = false;
         m_isGuard = false;
+        m_isRun = false;
 
         m_fBreakTime = 0.f;
         m_fAttackDelayTime = 0.f;

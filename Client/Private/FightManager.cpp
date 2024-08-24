@@ -53,8 +53,12 @@ void CFightManager::Set_FightStage(_bool isFightStage, CMonsterGroup* pMonsterGr
 			iTitleIndex = 15;
 			break;
 		case LEVEL_TUTORIAL:			//야큐자
+		{
+			m_pGameInstance->PlayBGM(TEXT("Tutorial_Fight.mp3"), 1.f);
+			m_isStreetFight = true;
 			iTitleIndex = 13;
 			break;
+		}
 		case LEVEL_STREET:			//삥쟁
 		{
 			// 거리에서 만난상황이면 야쿠자

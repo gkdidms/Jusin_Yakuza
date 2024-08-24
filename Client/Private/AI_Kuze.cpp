@@ -70,10 +70,10 @@ HRESULT CAI_Kuze::Initialize(void* pArg)
 
 	Ready_Tree();
 
-	m_fDelayAttackDuration = 5.f;
+	m_fDelayAttackDuration = 1.f;
 	m_iMonsterType = CMonster::KUZE;
 
-	m_fSwayDistance = _float2(1.6f, 1.9f);
+	m_fSwayDistance = _float2(1.3f, 1.9f);
 
 	return S_OK;
 }
@@ -134,6 +134,12 @@ void CAI_Kuze::Ready_Tree()
 	pHitGuardSeq->Add_Children(pHitGuard);
 #pragma endregion
 
+#pragma region HIT/GUARD
+	CSequance* pQTESeq = CSequance::Create();
+	pQTESeq->Add_Children(CLeafNode::Create(bind(&CAI_Kuze::Check_QTE, this)));
+	pQTESeq->Add_Children(CLeafNode::Create(bind(&CAI_Kuze::QTE, this)));
+#pragma endregion
+
 #pragma region Attack
 	CSequance* pAttackSeq = CSequance::Create();
 	pAttackSeq->Add_Children(CLeafNode::Create(bind(&CAI_Kuze::Check_Attack, this)));
@@ -176,12 +182,60 @@ void CAI_Kuze::Ready_Tree()
 	pRoot->Add_Children(pPlayerDownSeq);
 	pRoot->Add_Children(pSwaySeq);
 	pRoot->Add_Children(pHitGuardSeq);
+	pRoot->Add_Children(pQTESeq);
 	pRoot->Add_Children(pAttackSeq);
 	pRoot->Add_Children(pStepSeq);
 	pRoot->Add_Children(pBreakSeq);
 #pragma endregion
 
 	m_pRootNode = pRoot;
+}
+
+CBTNode::NODE_STATE CAI_Kuze::Check_Sway()
+{
+	m_pThis->Set_Down(false);
+
+	if (m_isGuard || m_iSkill == SKILL_HIT || m_isAttack || m_isPlayerDownAtk)
+	{
+		m_isSway = false;
+		return CBTNode::FAIL;
+	}
+
+	if (m_isSway)
+	{
+		if (m_pAnimCom[*m_pCurrentAnimType]->Get_AnimFinished())
+		{
+			m_isSway = false;
+			//랜덤으로 반격함
+			_bool isAttack = m_pGameInstance->Get_Random(0, 1);
+			if (isAttack == 1)
+			{
+				*m_pState = CMonster::MONSTER_CMB_RENDA_1;
+				m_iSkill =SKILL_CMD_RENDA;
+				m_isAttack = true;
+				return CBTNode::SUCCESS;
+			}
+
+			return CBTNode::FAIL;
+		}
+
+		return CBTNode::RUNNING;
+	}
+
+	//플래이어가 현재 공격중인가? && 플레이어와 충돌하지 않았는가?
+	if (m_pPlayer->isAttack() && !m_pThis->isColl())
+	{
+		//플레이어와의 거리가 어느정도 있는 상태여야만 함
+		if (DistanceFromPlayer() >= m_fSwayDistance.x && DistanceFromPlayer() < m_fSwayDistance.y)
+		{
+			Reset_State();
+			return CBTNode::SUCCESS;
+		}
+	}
+
+	m_isSway = false;
+
+	return CBTNode::FAIL;
 }
 
 CBTNode::NODE_STATE CAI_Kuze::Check_QTE()
@@ -204,7 +258,7 @@ CBTNode::NODE_STATE CAI_Kuze::QTE()
 		//키류 -> 애니메이션 넣어주고 -> 
 		
 		if (m_pAnimCom[*m_pCurrentAnimType]->Get_AnimFinished())
-		{
+		{	
 			*m_pCurrentAnimType = CLandObject::DEFAULT;
 
 			return CBTNode::SUCCESS;
@@ -215,9 +269,31 @@ CBTNode::NODE_STATE CAI_Kuze::QTE()
 
 	if (m_iSkill == SKILL_QTE)
 	{
+		m_pPlayer->Play_Kuze_QTE(m_pThis);
 		*m_pState = CMonster::MONSTER_H23250_000_2;
 		*m_pCurrentAnimType = CLandObject::CUTSCENE;
 		return CBTNode::SUCCESS;
+	}
+
+	return CBTNode::SUCCESS;
+}
+
+CBTNode::NODE_STATE CAI_Kuze::Check_Attack()
+{
+	//플레이어가 다운상태면 공격하지 않음
+	if (m_pPlayer->isDown())
+		return CBTNode::FAIL;
+
+	if (m_fAttackCount > 0)
+		return CBTNode::SUCCESS;
+
+	if (!m_isAttack)
+	{
+		if (m_fDelayAttackDuration > m_fAttackDelayTime)
+			return CBTNode::FAIL;
+
+		m_fAttackCount = m_pGameInstance->Get_Random(1.f, 3.f);
+		m_fAttackDelayTime = 0.f;
 	}
 
 	return CBTNode::SUCCESS;
@@ -231,10 +307,11 @@ CBTNode::NODE_STATE CAI_Kuze::Attack()
 	LookAtPlayer();
 
 	//어택 정하기
-	if (DistanceFromPlayer() > 4.f)
+	if (DistanceFromPlayer() > 2.f)
 	{
 		//근접이 아니라면 공격하지않고 대기 상태로 있게 된다.
-
+		//뛰어온다.
+		m_isRun = true;
 		return CBTNode::FAIL;
 	}
 
@@ -242,7 +319,10 @@ CBTNode::NODE_STATE CAI_Kuze::Attack()
 	if (pKuze->Get_KuzePage() == CKuze::ONE)
 	{
 		//1페이즈
+		m_isRun = false;
 		static _uint iOneCount = 0;
+
+		m_fAttackCount--;
 
 		switch (iOneCount)
 		{
@@ -478,8 +558,6 @@ CBTNode::NODE_STATE CAI_Kuze::ATK_Renda()
 
 			return CBTNode::SUCCESS;
 		}
-
-		return CBTNode::RUNNING;
 	}
 
 	if (m_iSkill == SKILL_CMD_RENDA)
@@ -495,19 +573,19 @@ CBTNode::NODE_STATE CAI_Kuze::ATK_Renda()
 
 CBTNode::NODE_STATE CAI_Kuze::Check_Distance()
 {
-	if (m_isBreak)
-		return CBTNode::FAIL;
-
-	_float fDistance = DistanceFromPlayer();
-	if (fDistance > 2.f)
+	if (m_isRun)
 	{
-		if (m_iSkill == SKILL_RUN)
-			return CBTNode::SUCCESS;
+		_float fDistance = DistanceFromPlayer();
+		if (fDistance > 2.f)
+		{
+			if (m_iSkill == SKILL_RUN)
+				return CBTNode::SUCCESS;
 
-		_uint iRandom = m_pGameInstance->Get_Random(0, 100);
+			_uint iRandom = m_pGameInstance->Get_Random(0, 100);
 
-		if (iRandom == 84 || iRandom == 34 || iRandom == 67)
-			return CBTNode::SUCCESS;
+			if (iRandom == 84 || iRandom == 34 || iRandom == 67)
+				return CBTNode::SUCCESS;
+		}
 	}
 
 	return CBTNode::FAIL;

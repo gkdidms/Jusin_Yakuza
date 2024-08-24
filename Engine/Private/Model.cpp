@@ -126,8 +126,6 @@ HRESULT CModel::Initialize_Prototype(MODELTYPE eModelType, const _char* pModelFi
 		m_vModelLocalSize = _float3(abs(vMaxPosition.x - vMinPosition.x), abs(vMaxPosition.y - vMinPosition.y), abs(vMaxPosition.z - vMinPosition.z));
 	}
 
-
-
 	if (TYPE_NONANIM != eModelType && TYPE_PARTICLE != eModelType)
 	{
 		string pCameraFovFilePath = "../Bin/DataFiles/CameraFoVAnimationData/" + m_pGameInstance->Get_FileName(pModelFilePath) + "_camera_fov.csv";

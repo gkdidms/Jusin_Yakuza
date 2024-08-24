@@ -32,6 +32,7 @@ CLevel_Tutorial::CLevel_Tutorial(ID3D11Device* pDevice, ID3D11DeviceContext* pCo
 
 HRESULT CLevel_Tutorial::Initialize()
 {
+	m_pGameInstance->StopAll();
 	if (FAILED(Ready_Player(TEXT("Layer_Player"))))
 		return E_FAIL;
 
@@ -62,7 +63,9 @@ HRESULT CLevel_Tutorial::Initialize()
 
 	m_pSystemManager->Set_Camera(CAMERA_PLAYER);
 	m_pQuestManager->Start_Quest(CQuestManager::CHAPTER_1);
-	
+
+	m_pFightManager->Initialize();
+
 	return S_OK;
 }
 
