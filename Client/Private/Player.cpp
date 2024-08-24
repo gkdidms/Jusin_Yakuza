@@ -127,7 +127,7 @@ HRESULT CPlayer::Initialize(void* pArg)
 
 	// 기본 몬스터: 20
 	// 삥쟁이: 30
-	// 쿠제: 100
+	// 쿠제: 300
 	m_Info.fMaxHP = 150.f;
 	m_Info.fHp = m_Info.fMaxHP;
 
@@ -2837,7 +2837,7 @@ CGameObject* CPlayer::Clone(void* pArg)
 
 void CPlayer::Free()
 {
-	Safe_Release(m_pTargetObject);
+	//Safe_Release(m_pTargetObject);			// AddRef 하지않으므로 해제하지 않아도됨
 	Safe_Release(m_pQTEMgr);
 
 	for (size_t i = 0; i < BATTLE_STYLE_END; i++)
@@ -2864,20 +2864,22 @@ void CPlayer::Free()
 
 		m_AnimationTree[i].clear();
 	}
-	for (auto& pEffect : m_HooliganAura)
-	{
-		Safe_Release(pEffect);
-	}
+
+	// AddRef를 하지않아서 릴리즈 x 
+	//for (auto& pEffect : m_HooliganAura)
+	//{
+	//	Safe_Release(pEffect);
+	//}
 	m_HooliganAura.clear();
-	for (auto& pEffect : m_RushAura)
-	{
-		Safe_Release(pEffect);
-	}
+	//for (auto& pEffect : m_RushAura)
+	//{
+	//	Safe_Release(pEffect);
+	//}
 	m_RushAura.clear();
-	for (auto& pEffect : m_DestroyerAura)
-	{
-		Safe_Release(pEffect);
-	}
+	//for (auto& pEffect : m_DestroyerAura)
+	//{
+	//	Safe_Release(pEffect);
+	//}
 	m_DestroyerAura.clear();
 
 	__super::Free();

@@ -64,15 +64,16 @@ void CLevel_NishikiWalk::Tick(const _float& fTimeDelta)
 
 	if (m_pQuestManager->Execute())
 	{
+		if (m_isFadeFin && m_pUIManager->isFindFinished())
+		{
+			m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_KARAOKE_START));
+			return;
+		}
+
 		if (!m_pUIManager->isOpen(TEXT("Fade")))
 		{
-			m_pUIManager->Open_Scene(TEXT("Fade"));
 			m_pUIManager->Fade_In();
-		}
-		else
-		{
-			if (m_pUIManager->isFindFinished())
-				m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_KARAOKE_START));
+			m_isFadeFin = true;
 		}
 	}
 #ifdef _DEBUG

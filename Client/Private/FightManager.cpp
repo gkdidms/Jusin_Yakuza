@@ -141,6 +141,8 @@ _bool CFightManager::Tick(const _float& fTimeDelta)
 					//플레이어도 다시 돌아온다.
 					CPlayer* pPlayer = dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"), 0));
 					pPlayer->Style_Change(CPlayer::ADVENTURE);
+					m_pGameInstance->StopSound(SOUND_BGM);
+
 					return true;
 				}
 				m_pGameInstance->Set_InvertColor(true);
