@@ -25,6 +25,7 @@ CFightManager::CFightManager()
 void CFightManager::Set_FightStage(_bool isFightStage, CMonsterGroup* pMonsterGroup)
 {
 	m_isFightStage = isFightStage;
+	m_isStreetFight = false;
 	m_isInverseEnd = false;
 
 	if (m_isFightStage)

@@ -147,19 +147,61 @@ PS_OUT PS_MAIN(PS_IN In)
     //vector vNormalBTN = (vector(mul(vNormalDesc.xyz, WorldMatrix), 0.f));
     
     float RimIndex = 0.f;
+    float RimAlpha = 0.f;
     if (0.05f < g_isRimLight)
     {
-        if (In.vTexcoord.y >= g_fRimUV.x && In.vTexcoord.y < g_fRimUV.y)
+        if(g_isTop)
         {
-            RimIndex = g_isRimLight;
+            if (In.vTexcoord.y >= g_fRimUV.x && In.vTexcoord.y < g_fRimUV.y)
+            {
+                RimIndex = g_isRimLight;
+
+                float Range = g_fRimUV.y - g_fRimUV.x;
+                float FullRange = g_fRimUV.x + 0.75f * Range;
+    
+                if (In.vTexcoord.y <= FullRange)
+                {
+                    RimAlpha = 1.0f; // 75% 구간까지는 1로 유지
+                }
+                else
+                {
+                    float RemainingRange = g_fRimUV.y - FullRange;
+                    float NewDistance = In.vTexcoord.y - FullRange;
+        
+                    RimAlpha = 1.0f - (NewDistance / RemainingRange);
+                    RimAlpha = saturate(RimAlpha); 
+                }
+            }
+            else if (In.vTexcoord.y >= g_fRimArmUV.x && In.vTexcoord.y < g_fRimArmUV.y)
+            {
+                RimIndex = g_isRimLight;
+
+                float Range = g_fRimArmUV.y - g_fRimArmUV.x;
+                float FullRange = g_fRimArmUV.x + 0.75f * Range;
+    
+                if (In.vTexcoord.y <= FullRange)
+                {
+                    RimAlpha = 1.0f; // 75% 구간까지는 1로 유지
+                }
+                else
+                {
+                    float RemainingRange = g_fRimArmUV.y - FullRange;
+                    float NewDistance = In.vTexcoord.y - FullRange;
+        
+                    RimAlpha = 1.0f - (NewDistance / RemainingRange);
+                    RimAlpha = saturate(RimAlpha); 
+                }
+            }
         }
+        
+      
     }
     
     OE_SPECULAR OEResult = Neo_OE_Specular(vMulti, vRM, vRS);
     float fMixMultiFactor = lerp(vMulti.y, 1.f, AssetShader);
     float fDeffuseFactor = vDiffuseDesc.a * 1.f;
     
-    Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_fFar, RimIndex, 0.f);
+    Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_fFar, RimIndex, RimAlpha);
     Out.vNormal = vector(vNormalBTN.xyz * 0.5f + 0.5f, 0.f);
     Out.vDiffuse = vDiffuse;
     Out.vSurface = vector(Result.fMetalness, Result.fRoughness, Result.fSpeclure, Result.fFactor);

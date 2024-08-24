@@ -37,6 +37,8 @@ HRESULT CCarChaseManager::Initialize()
 	if (FAILED(m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Taxi"), TEXT("Layer_Taxi"), &Desc)))
 		return E_FAIL;
 
+	m_pGameInstance->PlayBGM(L"p_car_run_loop_0.wav", 1.f);
+
 	return S_OK;
 }
 

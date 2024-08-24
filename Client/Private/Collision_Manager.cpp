@@ -79,6 +79,12 @@ void CCollision_Manager::Tick()
     Battle_Clear();
 }
 
+void CCollision_Manager::All_Clear()
+{
+    Impulse_Clear();
+    Battle_Clear();
+}
+
 void CCollision_Manager::ImpulseResolution()
 {
     // 여기에 충돌처리 코드 구현
@@ -571,6 +577,8 @@ CGameObject* CCollision_Manager::Get_Near_Object(CGameObject* pObject, vector<CG
     // 5거리 이내에 있는 애들만 검색한다.
     CLandObject* pValue = { nullptr };
 
+    _float fMinDistance = 99999.f;
+
     for (auto& pTarget : pObjects)
     {
         if (pTarget == pObject) continue;
@@ -580,8 +588,9 @@ CGameObject* CCollision_Manager::Get_Near_Object(CGameObject* pObject, vector<CG
         _vector vBasePosition = pObject->Get_TransformCom()->Get_State(CTransform::STATE_POSITION);
         _vector vTargetPosition = pTarget->Get_TransformCom()->Get_State(CTransform::STATE_POSITION);
 
-        if (XMVectorGetX(XMVector3Length(vBasePosition - vTargetPosition)) < fDistance)
+        if (XMVectorGetX(XMVector3Length(vBasePosition - vTargetPosition)) < fDistance && XMVectorGetX(XMVector3Length(vBasePosition - vTargetPosition)) < fMinDistance)
         {
+            fMinDistance = XMVectorGetX(XMVector3Length(vBasePosition - vTargetPosition));
             pValue = static_cast<CLandObject*>(pTarget);
         }
     }
@@ -594,13 +603,16 @@ CCollider* CCollision_Manager::Get_Near_Collider(CGameObject* pObject, vector<CC
     // 5거리 이내에 있는 애들만 검색한다.
     CCollider* pValue = { nullptr };
 
+    _float fMinDistance = 99999.f;
+
     for (auto& pTarget : pColliders)
     {
         _vector vBasePosition = pObject->Get_TransformCom()->Get_State(CTransform::STATE_POSITION);
         _float3 vTargetCenter = pTarget->Get_Center();
 
-        if (XMVectorGetX(XMVector3Length(vBasePosition - XMLoadFloat3(&vTargetCenter))) < fDistance)
+        if (XMVectorGetX(XMVector3Length(vBasePosition - XMLoadFloat3(&vTargetCenter))) < fDistance && XMVectorGetX(XMVector3Length(vBasePosition - XMLoadFloat3(&vTargetCenter))) < fMinDistance)
         {
+            fMinDistance = XMVectorGetX(XMVector3Length(vBasePosition - XMLoadFloat3(&vTargetCenter)));
             pValue = pTarget;
         }
     }

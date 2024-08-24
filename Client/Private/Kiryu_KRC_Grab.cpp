@@ -79,12 +79,18 @@ void CKiryu_KRC_Grab::Tick(const _float& fTimeDelta)
 			break;
 		}
 		case ANIM_LOOP:
+		{
 			m_pPlayer->Set_HandAnimIndex(CPlayer::HAND_GU);
 			m_pPlayer->On_Separation_Hand();
+
+			CMonster* pTargetMonster = static_cast<CMonster*>(m_pPlayer->Get_TargetObject());
+			if (nullptr != pTargetMonster)
+				pTargetMonster->Set_Sync("p_kru_sync_lapel_lp");
 			// 여기에 키인풋
 			Move_KeyInput(fTimeDelta);
 
 			break;
+		}
 		case ANIM_END:
 			// 놓치는게 end (p_kru_sync_neck_off)
 			break;
@@ -181,7 +187,9 @@ void CKiryu_KRC_Grab::Setting_Value(void* pValue)
 	m_isGrabed = pDesc->isGrabed;
 	m_iDirection = pDesc->iDirection;
 
-	static_cast<CMonster*>(m_pPlayer->Get_TargetObject())->Set_Sync("p_kru_sync_lapel_lp");
+	CMonster* pTargetMonster = static_cast<CMonster*>(m_pPlayer->Get_TargetObject());
+	if (nullptr != pTargetMonster)
+		pTargetMonster->Set_Sync("p_kru_sync_lapel_st");
 }
 
 void CKiryu_KRC_Grab::Event(void* pValue)
@@ -243,7 +251,9 @@ void CKiryu_KRC_Grab::Move_KeyInput(const _float& fTimeDelta)
 		m_eAnimState = ANIM_ONCE;
 		m_isStop = true;
 
-		static_cast<CMonster*>(m_pPlayer->Get_TargetObject())->Set_Sync("p_krc_sync_lapel_nage");
+		CMonster* pTargetMonster = static_cast<CMonster*>(m_pPlayer->Get_TargetObject());
+		if (nullptr != pTargetMonster)
+			pTargetMonster->Set_Sync("p_krc_sync_lapel_nage");
 	}
 }
 

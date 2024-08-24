@@ -118,7 +118,7 @@ _bool CTutorial::Running()
 		//Grap일 경우
 		else if (string_view(m_strPlayerSkillName) == string_view("Grap"))
 		{
-			if (string_view(m_pPlayer->Get_CurrentAnimationName()) == string_view("p_kru_sync_neck_nage"))
+			if (string_view(m_pPlayer->Get_CurrentAnimationName()) == string_view("p_kru_sync_lapel_nage"))
 			{
 				vector<CMonster*> Monsters = dynamic_cast<CMonsterGroup*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_MonsterGroup"), 0))->Get_Monsters();
 				//몬스터들 돌려가면서 체크
