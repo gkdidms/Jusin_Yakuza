@@ -46,13 +46,14 @@ public:
 
 public:
     void Set_Animation(CAnim* pAnim, string strAnimName);
+    void Set_Kuze(class CMonster* pMonster);
 
 private:
     HRESULT Ready_SlowKeyFrame();
 
     void ResetVariables();
 
-    void Skip_KeyFrame();
+    void Skip_KeyFrame(QTE_DESC& Desc);
     void Cancle_KeyFrame();
 
 public:
@@ -74,7 +75,13 @@ private:
     string m_strAnimationName;
     string m_strPlayingAnimName;
 
+    _bool m_isKuze = { false };
+    _uint m_iQteCount = { 0 };
+
     unordered_map<string, QTE_DESC> m_QTEs;
+    QTE_DESC m_KuzeSecondQTE;
+
+    class CMonster* m_pTargetMonster = { nullptr };
 
 public:
     static CQteManager* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

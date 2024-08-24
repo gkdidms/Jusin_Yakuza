@@ -97,6 +97,8 @@ public:
         YONEDA_DOWN_ATTACK,         //A60330 요네다 복도
         YONEDA_DOSU,                //a60350 요네다 화장실
 
+        KUZE_RUSH,                  //h23250 요네다 화장실
+
         CUTSCENE_ANIMATION_END
     };
 
@@ -142,7 +144,7 @@ public:
 
 
 #endif // DEBUG
-    public:
+public:
     _bool CanHitAction() { return m_CanHitAction; }
 
     const map<CUTSCENE_ANIMATION_TYPE, string>& Get_CutSceneAnims() const
@@ -201,6 +203,9 @@ public:
 
     void Battle_Start();
 
+    void Play_Kuze_QTE(class CMonster* pMonster);
+
+
     /* Virtual Funtion */
 public:
     virtual HRESULT Initialize_Prototype() override;
@@ -256,7 +261,7 @@ public:
     void Reset_MoveDirection();
 
     void Set_CutSceneStartMotion(CUTSCENE_ANIMATION_TYPE eType);
-    void Set_CutSceneAnim(CUTSCENE_ANIMATION_TYPE eType, _uint iFaceAnimIndex);
+    void Set_CutSceneAnim(CUTSCENE_ANIMATION_TYPE eType);
     void Play_CutScene();
     void Reset_CutSceneEvent();
 

@@ -95,6 +95,14 @@ private:
     _float m_fTime = {0.f};
 
 
+    _vector m_vTargetPoint;
+    _float  m_fMoveDistance = { 0.f };
+    _float  m_fTargetDelta = { 0 };
+
+
+    _vector m_vPrePosition; // 루트 찾기 전
+    _vector m_vPreWayPointPosition;
+
 private:
     bool        m_bOrigin = { false };
 
@@ -104,7 +112,7 @@ private:
     HRESULT SetUp_Neighbors();
     void Find_WayPointIndex(_vector vPosition);
     void Swap_Route(vector<ROUTE_IO> CurrentRoute, _vector vCurrnetDir, _bool* isTurn, _int* iDir);
-    void Swap_Route_ADV(vector<ROUTE_IO> CurrentRoute, _vector vCurrnetDir, _bool* isTurn, _int* iDir);
+
 
 public:
     static CNavigation* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, const wstring strFilePath);

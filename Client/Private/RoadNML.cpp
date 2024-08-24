@@ -27,7 +27,6 @@ HRESULT CRoadNML::Initialize(void* pArg)
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
-	m_fOffset = 300;
 	return S_OK;
 }
 
