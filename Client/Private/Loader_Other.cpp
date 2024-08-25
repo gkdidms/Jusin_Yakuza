@@ -366,6 +366,11 @@ HRESULT CLoader_Other::Loading_Default()
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Texture_BloodAnim"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/Blood/e_j_0033_bfBloodSplash01.dds"), 1))))
 		return E_FAIL;
+
+	/* Prototype_Component_Texture_Coin*/
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Texture_Dissolve_0"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Dissovle_%d.dds"), 1))))
+		return E_FAIL;
 #pragma endregion
 
 #pragma region Component

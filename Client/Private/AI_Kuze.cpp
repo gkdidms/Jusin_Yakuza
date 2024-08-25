@@ -70,7 +70,7 @@ HRESULT CAI_Kuze::Initialize(void* pArg)
 
 	Ready_Tree();
 
-	m_fDelayAttackDuration = 1.f;
+	m_fDelayAttackDuration = 2.f;
 	m_iMonsterType = CMonster::KUZE;
 
 	m_fSwayDistance = _float2(1.2f, 1.9f);
@@ -211,7 +211,7 @@ CBTNode::NODE_STATE CAI_Kuze::Check_Sway()
 			if (isAttack == 1)
 			{
 				*m_pState = CMonster::MONSTER_CMB_RENDA_1;
-				m_iSkill =SKILL_CMD_RENDA;
+				m_iSkill = SKILL_CMD_RENDA;
 				m_isAttack = true;
 				return CBTNode::SUCCESS;
 			}
@@ -253,25 +253,11 @@ CBTNode::NODE_STATE CAI_Kuze::Check_QTE()
 
 CBTNode::NODE_STATE CAI_Kuze::QTE()
 {
-	if (*m_pState == CMonster::MONSTER_H23250_000_2)
-	{
-		//키류 -> 애니메이션 넣어주고 -> 
-		
-		if (m_pAnimCom[*m_pCurrentAnimType]->Get_AnimFinished())
-		{	
-			*m_pCurrentAnimType = CLandObject::DEFAULT;
-			m_isQTE = true;
-			return CBTNode::SUCCESS;
-		}
-
-		return CBTNode::RUNNING;
-	}
-
 	if (m_iSkill == SKILL_QTE)
 	{
 		m_pPlayer->Play_Kuze_QTE(m_pThis);
-		*m_pState = CMonster::MONSTER_H23250_000_2;
-		*m_pCurrentAnimType = CLandObject::CUTSCENE;
+		//*m_pState = CMonster::MONSTER_H23250_000_2;
+		//*m_pCurrentAnimType = CLandObject::CUTSCENE;
 		return CBTNode::SUCCESS;
 	}
 
@@ -301,10 +287,10 @@ CBTNode::NODE_STATE CAI_Kuze::Check_Attack()
 
 CBTNode::NODE_STATE CAI_Kuze::Attack()
 {
+	LookAtPlayer();
+
 	if (m_isAttack)
 		return CBTNode::SUCCESS;
-
-	LookAtPlayer();
 
 	//어택 정하기
 	if (DistanceFromPlayer() > 2.f)
@@ -377,7 +363,7 @@ CBTNode::NODE_STATE CAI_Kuze::Attack()
 			break;
 		}
 
-		if (iTwoCount <= 7)
+		if (iTwoCount >= 7)
 			iTwoCount = 0;
 		else
 			iTwoCount++;

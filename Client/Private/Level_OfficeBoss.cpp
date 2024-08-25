@@ -38,7 +38,7 @@ HRESULT CLevel_OfficeBoss::Initialize()
 
     /* Å¬¶ó ÆÄ½Ì */
     m_pFileTotalManager->Set_MapObj_In_Client(STAGE_OFFICE_BOSS, LEVEL_OFFICE_BOSS);
-    m_pFileTotalManager->Set_Lights_In_Client(99);
+    m_pFileTotalManager->Set_Lights_In_Client(STAGE_OFFICE_BOSS);
     m_pFileTotalManager->Set_Collider_In_Client(STAGE_OFFICE_BOSS, LEVEL_OFFICE_BOSS);
 
 	if (FAILED(Ready_Camera(TEXT("Layer_Camera"))))

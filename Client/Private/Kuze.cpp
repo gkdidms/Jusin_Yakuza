@@ -61,7 +61,6 @@ void CKuze::Tick(const _float& fTimeDelta)
 	{
 		dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject(m_iCurrentLevel, TEXT("Layer_Player"), 0))->Play_Kuze_QTE(this);
 	}
-
 }
 
 void CKuze::Late_Tick(const _float& fTimeDelta)

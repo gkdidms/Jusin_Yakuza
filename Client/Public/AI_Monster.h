@@ -99,6 +99,8 @@ protected:
     _bool m_isSway = { false };
     _bool m_isRun = { false };
 
+    _bool m_isQTE = { false }; // qte가 한번만 켜져야 해서 필요함.
+
     _bool m_isPlayerDownAtk = { false }; // 플레이어에게 다운 어택을 한번 사용했는가를 체크
 
     _uint m_iSkill = { SKILL_END };

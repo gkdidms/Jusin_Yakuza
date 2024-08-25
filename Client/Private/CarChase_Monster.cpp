@@ -96,7 +96,7 @@ void CCarChase_Monster::Set_Coll()
 	m_isColl = true;
 
 	//충돌처리
-	m_Info.fHp -= 10.f;
+	m_Info.fHp -= 30.f;
 	//피이펙트 출력
 	CEffect::EFFECT_DESC EffectDesc;
 
