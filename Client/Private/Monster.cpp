@@ -212,7 +212,14 @@ void CMonster::Set_Sync(string strPlayerAnim, _bool isKeepSynchronizing)
 		m_isDown = false;
 	}
 
-
+	if (m_isDown == true)
+	{
+		if (m_iMonsterType != KUZE)
+		{
+			m_pGameInstance->StopSound(SOUND_ENEMY_VOICE);
+			m_pGameInstance->PlaySound_W(TEXT("46a0 [22].wav"), SOUND_ENEMY_VOICE, 0.7f);
+		}
+	}
 	//컷 액션
 	else if (strAnim == string_view("h11250"))
 		m_iState = MONSTER_H11250_000_1;
@@ -1666,6 +1673,8 @@ void CMonster::Change_Animation()
 
 HRESULT CMonster::Setup_Animation()
 {
+	_uint iPrevAnimIndex = m_pAnimCom[m_iCurrentAnimType]->Get_CurrentAnimIndex();
+
 	m_iAnim = m_pAnimCom[m_iCurrentAnimType]->Get_AnimationIndex(m_strAnimName.c_str());
 
 	if (m_iAnim == -1)
@@ -1674,7 +1683,29 @@ HRESULT CMonster::Setup_Animation()
 	// 실제로 애니메이션 체인지가 일어났을 때 켜져있던 어택 콜라이더를 전부 끈다
 	if (m_pModelCom->Set_AnimationIndex(m_iAnim, m_pAnimCom[m_iCurrentAnimType]->Get_Animations(), m_fChangeInterval))
 	{
+		// 실제 체인지가 일어났을 때, 이전 애님 인덱스를 저장해준다.
+		m_pAnimCom[m_iCurrentAnimType]->Set_PrevAnimIndex(iPrevAnimIndex);
+
 		m_pModelCom->Set_PreAnimations(m_pAnimCom[m_iPreAnimType]->Get_Animations());
+
+		//_vector vQ1 = XMLoadFloat4(m_pModelCom->Get_LastKeyframe_Rotation(m_pAnimCom[m_iPreAnimType], iPrevAnimIndex));
+		//_vector vQ2 = XMLoadFloat4(m_pModelCom->Get_FirstKeyframe_Rotation(m_pAnimCom[m_iCurrentAnimType], m_iAnim));
+
+		//_vector vQ2 = XMLoadFloat4(m_pModelCom->Get_FirstKeyframe_Rotation(m_pAnimCom[m_iCurrentAnimType], m_iAnim));
+
+		//XMVECTOR rotationDifference = XMQuaternionInverse(XMQuaternionMultiply(XMQuaternionInverse(vQ1), vQ2));
+
+		//_float4 vQ = *m_pModelCom->Get_FirstKeyframe_Rotation(m_pAnimCom[m_iCurrentAnimType], m_iAnim);
+		//_float4 vQ; XMStoreFloat4(&vQ, rotationDifference);
+		//XMMATRIX correctedRotationMatrix = XMMatrixRotationQuaternion(rotationDifference);
+
+		//XMMATRIX World = m_pTransformCom->Get_WorldMatrix() * correctedRotationMatrix;
+		//_float4x4 World4x4;
+		//XMStoreFloat4x4(&World4x4, World);
+
+		//m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(&World4x4));
+
+		//m_pTransformCom->Change_Rotation_Quaternion(vQ);
 
 		Off_Attack_Colliders();
 		Reset_Shaking_Variable();

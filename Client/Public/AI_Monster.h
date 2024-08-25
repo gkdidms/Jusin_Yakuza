@@ -127,6 +127,10 @@ protected:
     _float m_fGuardAtkAcc = { 0.f };
 
 protected:
+    _float m_fSoundVoice = { 0.5f };
+    _float m_fSoundEffect = { 0.8f };
+
+protected:
     _float2 m_fSwayDistance = {};
 
 protected:

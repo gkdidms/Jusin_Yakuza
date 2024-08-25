@@ -30,9 +30,12 @@ HRESULT CKuze::Initialize(void* pArg)
 		return E_FAIL;
 
 	m_wstrModelName = TEXT("Jimu");
+	m_wstrScndModelName = TEXT("Kuze_Fight");
 
 	if (FAILED(Add_CharacterData()))
 		return E_FAIL;
+
+	m_iMonsterType = CMonster::KUZE;
 
 	m_Info.fMaxHP = 300.f;
 	m_Info.fHp = m_Info.fMaxHP;
@@ -61,6 +64,9 @@ void CKuze::Tick(const _float& fTimeDelta)
 	{
 		dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject(m_iCurrentLevel, TEXT("Layer_Player"), 0))->Play_Kuze_QTE(this);
 	}
+
+	//Trail_Event();
+
 }
 
 void CKuze::Late_Tick(const _float& fTimeDelta)
@@ -378,6 +384,8 @@ void CKuze::Change_Animation()
 	default:
 		break;
 	}
+
+	m_pData->Set_CurrentAnimation(m_strAnimName);
 
 	if (FAILED(Setup_Animation()))
 		return;

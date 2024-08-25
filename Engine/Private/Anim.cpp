@@ -88,6 +88,16 @@ const vector<_uint>* CAnim::Get_CurrentKeyFrameIndices(_uint iAnimIndex)
 	return m_Animations[iAnimIndex]->Get_CurrentKeyFrameIndices();
 }
 
+const _float4* CAnim::Get_LastKeyframe_Rotation(_uint iAnimIndex)
+{
+	return m_Animations[iAnimIndex == -1 ? m_iCurrentIndex : iAnimIndex]->Get_LastKeyframe_Rotation();
+}
+
+const _float4* CAnim::Get_FirstKeyframe_Rotation(_uint iAnimIndex)
+{
+	return m_Animations[iAnimIndex == -1 ? m_iCurrentIndex : iAnimIndex]->Get_FirstKeyframe_Rotation();
+}
+
 _bool CAnim::Get_AnimFinished() const
 {
 	return m_Animations[m_iCurrentIndex]->Get_Finished();

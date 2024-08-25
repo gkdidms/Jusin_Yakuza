@@ -29,6 +29,8 @@ HRESULT CWPAYakuza::Initialize(void* pArg)
 
 	m_wstrModelName = TEXT("Jimu");
 
+	m_iMonsterType = CMonster::WPA;
+
 	if (FAILED(Add_CharacterData()))
 		return E_FAIL;
 

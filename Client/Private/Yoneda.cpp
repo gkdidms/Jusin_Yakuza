@@ -61,6 +61,7 @@ HRESULT CYoneda::Initialize(void* pArg)
 	if (FAILED(Add_CharacterData()))
 		return E_FAIL;
 
+	m_iMonsterType = CMonster::YONEDA;
 
 	m_iWeaponType = KNIFE; // 무기 체인지 값
 

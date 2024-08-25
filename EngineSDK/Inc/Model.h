@@ -84,6 +84,7 @@ public:
 	_uint Get_NumAnimations() { return m_iAnimations; }
 	_uint Get_NumBones() { return m_iNumBones; }
 	_uint Get_CurrentAnimationIndex() { return m_AnimDesc.iAnimIndex; }
+	_uint Get_PrevAnimationIndex() { return m_iPrevAnimIndex; }
 	const char* Get_MaterialName(_uint iIndex) { return m_Materials[iIndex].strMaterialName; }
 	const vector<_uint>* Get_CurrentKeyFrameIndices(string strAnimationName = "");
 	const vector<_uint>* Get_CurrentKeyFrameIndices(_uint iAnimIndex);
@@ -123,6 +124,9 @@ public:
 	const _double* Get_AnimationDuration(class CAnim* pAnim = nullptr, _int iAnimIndex = -1);
 	const _float3* Get_AnimationCenterMove(class CAnim* pAnim = nullptr, _int iAnimIndex = -1);
 	const _float4* Get_AnimationCenterRotation(class CAnim* pAnim = nullptr, _int iAnimIndex = -1);
+
+	const _float4* Get_LastKeyframe_Rotation(class CAnim* pAnim = nullptr, _int iAnimIndex = -1);
+	const _float4* Get_FirstKeyframe_Rotation(class CAnim* pAnim = nullptr, _int iAnimIndex = -1);
 
 	// 로컬 절두체를 위한
 	_float4x4		Get_LocalMatrix();

@@ -24,6 +24,16 @@ CAnimation::CAnimation(const CAnimation& rhs)
 		Safe_AddRef(pChannel);
 }
 
+const _float4* CAnimation::Get_LastKeyframe_Rotation() const
+{
+	return &m_Channels.back()->Get_Last_KeyFrame().vRotation;
+}
+
+const _float4* CAnimation::Get_FirstKeyframe_Rotation() const
+{
+	return &m_Channels.back()->Get_First_KeyFrame().vRotation;
+}
+
 HRESULT CAnimation::Initialize(const aiAnimation* pAnimation, const vector<CBone*>& Bones)
 {
 	strcpy_s(m_szName, pAnimation->mName.data);

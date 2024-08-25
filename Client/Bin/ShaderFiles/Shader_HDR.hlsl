@@ -92,7 +92,7 @@ PS_OUT PS_MAIN_TONEMAPPING(PS_IN In) // 감마 콜렉션 & ACES 톤매핑
     
     float3 vColor = vDiffuse;
     
-    Out.vColor = vector(pow(vDiffuse, 1.f / 2.2f), 1.f) * vLuminance * g_fLumVar;
+    Out.vColor = vector(pow(vDiffuse, 1.f / 2.2f), 1.f) * g_fLumVar;
     
     return Out;
 }

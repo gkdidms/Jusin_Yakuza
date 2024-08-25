@@ -32,6 +32,8 @@ HRESULT CShakedown::Initialize(void* pArg)
 	if (FAILED(Add_CharacterData()))
 		return E_FAIL;
 
+	m_iMonsterType = CMonster::SHAKDDOWN;
+
 	m_pTransformCom->Set_Scale(1.2f, 1.2f, 1.2f);
 
 	m_Info.fMaxHP = 30.f;

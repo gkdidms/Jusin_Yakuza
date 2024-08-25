@@ -497,7 +497,7 @@
       <Filter>01.Levels\99.Loading\Loader\Multi</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Level_Test.cpp">
-      <Filter>01.Levels\98.Test</Filter>
+      <Filter>01.Levels\12.NishikiWalk\98.Test</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Highway_Kiryu.cpp">
       <Filter>02.GameObjects\02.Character\LandObject\03.CarChase\02.Taxi\Kiryu</Filter>
@@ -736,6 +736,12 @@
     <ClCompile Include="..\Private\Highway_Taxi.cpp">
       <Filter>02.GameObjects\02.Character\LandObject\03.CarChase\02.Taxi</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\Karaoke_Mic.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\04.Karaoke\Thing\Mic</Filter>
+    </ClCompile>
+    <ClCompile Include="..\Private\Karaoke_Glass.cpp">
+      <Filter>02.GameObjects\02.Character\LandObject\04.Karaoke\Thing\Glass</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\MainApp.h">
@@ -859,7 +865,7 @@
       <Filter>02.GameObjects\02.Character\PartObject</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Level_Test.h">
-      <Filter>01.Levels\98.Test</Filter>
+      <Filter>01.Levels\12.NishikiWalk\98.Test</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\SocketObject.h">
       <Filter>02.GameObjects\02.Character\PartObject\SocketObject</Filter>
@@ -1503,6 +1509,12 @@
     <ClInclude Include="..\Public\Highway_Taxi.h">
       <Filter>02.GameObjects\02.Character\LandObject\03.CarChase\02.Taxi</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\Karaoke_Mic.h">
+      <Filter>02.GameObjects\02.Character\LandObject\04.Karaoke\Thing\Mic</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Karaoke_Glass.h">
+      <Filter>02.GameObjects\02.Character\LandObject\04.Karaoke\Thing\Glass</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -1539,9 +1551,6 @@
     </Filter>
     <Filter Include="97.ShaderFiles">
       <UniqueIdentifier>{e27accf3-8246-4c7b-ac82-cf4f465ec7fb}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="01.Levels\98.Test">
-      <UniqueIdentifier>{a3687eeb-93e4-4da9-95c3-692e153c991f}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObjects\99.Camera">
       <UniqueIdentifier>{b978604e-76c6-4218-b76a-65d7fa390062}</UniqueIdentifier>
@@ -1611,6 +1620,9 @@
     </Filter>
     <Filter Include="01.Levels\02.Office2F">
       <UniqueIdentifier>{1248b5da-70c7-4199-9597-40c53e064f0a}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\04.CollisionManager">
+      <UniqueIdentifier>{43f7aea2-8b44-48b5-8565-d0e4557344a8}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObjects\04.Sky\Dome">
       <UniqueIdentifier>{81f7471f-237e-45ae-a6af-15b9cf067a60}</UniqueIdentifier>
@@ -1704,9 +1716,6 @@
     </Filter>
     <Filter Include="95.Utility\05.UIManager\InventoryManager\ItemData">
       <UniqueIdentifier>{1b6edbda-4992-4482-8fe5-f74f11bf2ce4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="01.Levels\05.DogimazoStairs">
-      <UniqueIdentifier>{6ad6a7d5-8a3a-4b60-90c6-c60a0fc7b848}</UniqueIdentifier>
     </Filter>
     <Filter Include="95.Utility\05.UIManager\UIScene\UILoading">
       <UniqueIdentifier>{28a57a2e-3ddc-4618-946e-d1f1d605ee62}</UniqueIdentifier>
@@ -1833,6 +1842,9 @@
     </Filter>
     <Filter Include="02.GameObjects\06.Effect\Mesh">
       <UniqueIdentifier>{1a4c277c-2284-46fe-9cf0-050678dc69ca}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\04.CollisionManager\MapCollider">
+      <UniqueIdentifier>{d0cac265-3330-4643-b000-4a4f602408a6}</UniqueIdentifier>
     </Filter>
     <Filter Include="02.GameObjects\02.Character">
       <UniqueIdentifier>{a666196a-f926-41d0-a823-380685d12205}</UniqueIdentifier>
@@ -2317,11 +2329,20 @@
     <Filter Include="02.GameObjects\02.Character\LandObject\02.Adventure\00.Passerby\01.Walker\01.YOP\AI">
       <UniqueIdentifier>{83021a8a-5cc4-4f65-9ce3-f04d8a18e962}</UniqueIdentifier>
     </Filter>
-    <Filter Include="95.Utility\04.CollisionManager">
-      <UniqueIdentifier>{43f7aea2-8b44-48b5-8565-d0e4557344a8}</UniqueIdentifier>
+    <Filter Include="01.Levels\05.DogimazoStairs">
+      <UniqueIdentifier>{6ad6a7d5-8a3a-4b60-90c6-c60a0fc7b848}</UniqueIdentifier>
     </Filter>
-    <Filter Include="95.Utility\04.CollisionManager\MapCollider">
-      <UniqueIdentifier>{d0cac265-3330-4643-b000-4a4f602408a6}</UniqueIdentifier>
+    <Filter Include="01.Levels\12.NishikiWalk\98.Test">
+      <UniqueIdentifier>{a3687eeb-93e4-4da9-95c3-692e153c991f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\04.Karaoke\Thing">
+      <UniqueIdentifier>{e51d47f9-f418-4d43-9357-eaa4ffcb12b9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\04.Karaoke\Thing\Mic">
+      <UniqueIdentifier>{3841a0f6-8406-478e-847a-7cf8a2642d30}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="02.GameObjects\02.Character\LandObject\04.Karaoke\Thing\Glass">
+      <UniqueIdentifier>{6abbd786-b687-4c66-a2a8-3776085812fe}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

@@ -269,6 +269,10 @@ public:
 
     void Setting_SyncAnim_EndPosition();
 
+    void Set_isColl(_bool isColl) {
+        m_isColl = isColl;
+    }
+
 public:
     _float Get_HitDamage() { return m_fHitDamage; }
     _uint Get_DownDir();
@@ -327,6 +331,8 @@ protected:
 protected:
     string m_strAnimName = "";
     _uint m_iAnim = { 0 };
+
+    _uint m_iMonsterType = { MONSTER_TYPE_END };
 
 protected:
     _float m_fHitDamage = { 0.f };
