@@ -195,7 +195,7 @@ CBTNode::NODE_STATE CAI_Kuze::Check_Sway()
 {
 	m_pThis->Set_Down(false);
 
-	if (m_isGuard || m_iSkill == SKILL_HIT || m_isAttack || m_isPlayerDownAtk)
+	if (m_isGuard || m_iSkill == SKILL_HIT || m_isAttack || m_isPlayerDownAtk || m_iSkill == SKILL_QTE)
 	{
 		m_isSway = false;
 		return CBTNode::FAIL;

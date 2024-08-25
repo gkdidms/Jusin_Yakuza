@@ -364,7 +364,7 @@ void CPlayerCamera::Set_StartPos()
 	}
 	else if (LEVEL::LEVEL_DOGIMAZO_BOSS == m_iCurrentLevel)
 	{
-		m_fCamAngleX = 0;
+		m_fCamAngleX = 30.f;
 	}
 }
 
