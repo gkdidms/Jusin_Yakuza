@@ -27,7 +27,8 @@ HRESULT CKaraoke_Glass::Initialize(void* pArg)
 		return E_FAIL;
 
 	m_pTransformCom->Change_Rotation(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), XMConvertToRadians(-90.f));
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0, 0.04, -0.03, 1));
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0, 0, 0, 1));
+	m_pTransformCom->Set_Scale(m_pTransformCom->Get_Scaled().x * 1.2f, m_pTransformCom->Get_Scaled().y * 1.2f, m_pTransformCom->Get_Scaled().z * 1.2f);
 
 	return S_OK;
 }

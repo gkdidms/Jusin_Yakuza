@@ -122,7 +122,7 @@ void CKaraoke_Kiryu::Tick(const _float& fTimeDelta)
 
 	Play_CutScene(fTimeDelta);
 
-	m_pRightHand->Tick(fTimeDelta);
+	m_pRightHand[m_eRHType]->Tick(fTimeDelta);
 }
 
 void CKaraoke_Kiryu::Late_Tick(const _float& fTimeDelta)
@@ -139,10 +139,12 @@ void CKaraoke_Kiryu::Late_Tick(const _float& fTimeDelta)
 #endif // _DEBUG
 
 
-	if(CUTSCENE != m_eAnimComType)
+	if (CUTSCENE != m_eAnimComType)
 		Compute_Height();
+	else
+		m_eRHType = GLASS;			// ÄÆ½ÅÀÌ ¾Æ´Ò¶© ÀÜµé°íÀÖÀ½
 
-	m_pRightHand->Late_Tick(fTimeDelta);
+	m_pRightHand[m_eRHType]->Late_Tick(fTimeDelta);
 }
 
 HRESULT CKaraoke_Kiryu::Render()
@@ -321,7 +323,9 @@ HRESULT CKaraoke_Kiryu::Add_Objects()
 	Desc.pCombinedTransformationMatrix = m_pModelCom->Get_BoneCombinedTransformationMatrix("buki_r_n");
 	Desc.fRotatePecSec = XMConvertToRadians(90.f);
 	Desc.fSpeedPecSec = 1.f;
-	m_pRightHand = dynamic_cast<CSocketObject*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Karaoke_Mic"), &Desc));
+	m_pRightHand.push_back(dynamic_cast<CSocketObject*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Karaoke_Mic"), &Desc)));
+
+	m_pRightHand.push_back(dynamic_cast<CSocketObject*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Karaoke_Glass"), &Desc)));
 
 	return S_OK;
 }
@@ -362,7 +366,12 @@ void CKaraoke_Kiryu::Free()
 	//Safe_Release(m_pNavigationCom);
 	Safe_Release(m_pAnimCom);
 	Safe_Release(m_pCameraModel);
-	Safe_Release(m_pRightHand);
+
+	for (auto& pObj : m_pRightHand)
+	{
+		Safe_Release(pObj);
+	}
+	m_pRightHand.clear();
 
 	__super::Free();
 }
