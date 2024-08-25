@@ -98,6 +98,8 @@ void CImguiManager::Tick(const _float& fTimeDelta)
 			RadialEventWindow();
 	}
 
+	Play_SoundEvent();
+
 	// 애니메이션 이벤트가 있는 콜라이더의 색상을 시안색으로 바꿔주는 기능
 	if (m_pGameInstance->Get_CurrentLevel() != LEVEL_LOADING)
 	{
@@ -140,7 +142,6 @@ void CImguiManager::Tick(const _float& fTimeDelta)
 
 	}
 
-	Play_SoundEvent();
 }
 
 HRESULT CImguiManager::Render()
