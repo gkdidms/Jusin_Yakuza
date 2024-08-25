@@ -1,6 +1,7 @@
 #include "Chapter6_0.h"
 
 #include "GameInstance.h"
+#include "FileTotalMgr.h"
 #include "UIManager.h"
 #include "Background.h"
 
@@ -21,6 +22,8 @@ HRESULT CChapter6_0::Initialize(void* pArg)
 	Player_Stop(true);
 	PlayerCom_Stop(true);
 
+	m_pFileTotalMgr->Setting_Start_Cinemachine(35);
+
 	return S_OK;
 }
 
@@ -32,6 +35,13 @@ _bool CChapter6_0::Execute()
 		Player_Stop(false);
 		PlayerCom_Stop(false);
 		return true;
+	}
+
+	if (m_pGameInstance->GetKeyState(DIK_E) == TAP)
+	{
+		//UI틱이 더 느림 -> index를 하나 씩 더 느리게 봐야 함.
+		if (m_pUIManager->Get_CurrentPage() == 1)
+			m_pFileTotalMgr->Setting_Start_Cinemachine(36);
 	}
 
 	return false;

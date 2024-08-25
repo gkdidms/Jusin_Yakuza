@@ -36,6 +36,16 @@ void Client::CQteManager::Tick(const _float& fTimeDelta)
     Check_QTE_Section();
     Slowing();
     Cancle_KeyFrame();
+
+    if (m_isKuze)
+        m_pTargetMonster->Set_QTEResult(m_iSuccess);
+    else
+    {
+        CMonster* pMonster = dynamic_cast<CMonster*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Yoneda"), 0));
+
+        if (nullptr != pMonster)
+            pMonster->Set_QTEResult(m_iSuccess);
+    }
 }
 
 void Client::CQteManager::Late_Tick(const _float& fTimeDelta)
@@ -194,6 +204,7 @@ void CQteManager::Cancle_KeyFrame()
     if ("" == m_strPlayingAnimName && !m_isKuze) return;
 
     auto iter = m_QTEs.find(m_strPlayingAnimName);
+    if (iter == m_QTEs.end() && m_iQteCount < 1) return;        // m_iQteCount가 1보다작은데 
 
     QTE_DESC m_eCurrentQTE = m_iQteCount > 0 ? m_KuzeSecondQTE : iter->second;
 

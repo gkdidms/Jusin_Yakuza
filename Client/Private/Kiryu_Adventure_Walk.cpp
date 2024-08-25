@@ -5,25 +5,18 @@
 CKiryu_Adventure_Walk::CKiryu_Adventure_Walk()
 	:CBehaviorAnimation{}
 {
-	m_AnimationIndices.push_back(644);		//[644]	[p_mov_walk_st]
 	m_AnimationIndices.push_back(642);		//[642]	[p_mov_walk_fast]
-	m_AnimationIndices.push_back(640);		//[640]	[p_mov_walk_en]
-	m_AnimationIndices.push_back(641);		//[641]	[p_mov_walk_en_mir]
 }
 
 void CKiryu_Adventure_Walk::Tick(const _float& fTimeDelta)
 {
-	m_pPlayer->Change_Animation(m_AnimationIndices[m_iCurrentIndex]);
+	m_pPlayer->Change_Animation(m_AnimationIndices[0]);
 }
 
 void CKiryu_Adventure_Walk::Change_Animation()
 {
 	m_pPlayer->Set_HandAnimIndex(CPlayer::HAND_MIDDLE2);
 	m_pPlayer->On_Separation_Hand();
-
-	const _bool* pDirction = m_pPlayer->Get_MoveDirection();
-
-	m_pPlayer->Change_Animation(m_AnimationIndices[m_iCurrentIndex]);
 }
 
 _bool CKiryu_Adventure_Walk::Get_AnimationEnd()
@@ -44,14 +37,7 @@ _bool CKiryu_Adventure_Walk::Get_AnimationEnd()
 
 void CKiryu_Adventure_Walk::Stop()
 {
-	if (m_eAnimState == ANIM_END) return; 
-	m_eAnimState = ANIM_END;
 
-	CModel* pModelCom = static_cast<CModel*>(m_pPlayer->Get_Component(TEXT("Com_Model")));
-	if (0.5 < (*pModelCom->Get_AnimationCurrentPosition() / *pModelCom->Get_AnimationDuration()))
-		m_iCurrentIndex = 2;
-	else
-		m_iCurrentIndex = 3;
 }
 
 CBehaviorAnimation* CKiryu_Adventure_Walk::Create(CPlayer* pPlayer)

@@ -49,9 +49,13 @@ private:
 
     _uint m_iAnimIndex = { 0 };
 
+    vector<_uint> m_RootBoneAnimList;
+
 private:
     void Change_Animation(const _float fTimeDelta);
     virtual HRESULT Add_Components() override;
+
+    void Ready_RootBoneAnimList();
 
 private:
     void Move(const _float& fTimeDelta);
