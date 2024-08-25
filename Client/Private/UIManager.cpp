@@ -461,6 +461,13 @@ void CUIManager::PressKey()
 	dynamic_cast<CUIQTE*>(pUIScene)->Press();
 }
 
+void CUIManager::Set_QTEKey(wstring strKey)
+{
+	CUIScene* pUIScene = Find_Scene(TEXT("QTE"));
+
+	dynamic_cast<CUIQTE*>(pUIScene)->Set_Key(strKey);
+}
+
 _bool CUIManager::QTE_Finished()
 {
 	CUIScene* pUIScene = Find_Scene(TEXT("QTE"));
