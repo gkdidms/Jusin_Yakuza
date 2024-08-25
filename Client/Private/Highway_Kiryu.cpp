@@ -97,6 +97,7 @@ void CHighway_Kiryu::Late_Tick(const _float& fTimeDelta)
 		m_pGun_L->Late_Tick(fTimeDelta);
 	else
 		m_pGun_R->Late_Tick(fTimeDelta);
+
 	m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
 }
 

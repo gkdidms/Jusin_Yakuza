@@ -44,6 +44,9 @@ HRESULT CLevel_OfficeBoss::Initialize()
 	if (FAILED(Ready_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
 
+	m_pFileTotalManager->Load_Cinemachine(35, LEVEL_OFFICE_BOSS);
+	m_pFileTotalManager->Load_Cinemachine(36, LEVEL_OFFICE_BOSS);
+
 	m_pUIManager->Fade_Out();
 	m_pSystemManager->Set_Camera(CAMERA_PLAYER);
 	//m_pFightManager->Set_FightStage(true);
