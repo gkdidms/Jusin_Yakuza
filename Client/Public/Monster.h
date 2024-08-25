@@ -328,6 +328,8 @@ protected:
     string m_strAnimName = "";
     _uint m_iAnim = { 0 };
 
+    _uint m_iMonsterType = { MONSTER_TYPE_END };
+
 protected:
     _float m_fHitDamage = { 0.f };
     _bool m_isColl = { false }; // 충돌되었는지 아닌지 체크해야함.

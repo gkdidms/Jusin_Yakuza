@@ -35,6 +35,8 @@ HRESULT CWPHYakuza::Initialize(void* pArg)
     if (FAILED(Add_CharacterData()))
         return E_FAIL;
 
+	m_iMonsterType = CMonster::WPH;
+
     if (FAILED(Add_Objects()))
         return E_FAIL;
 

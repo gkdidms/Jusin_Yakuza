@@ -74,7 +74,11 @@ void CLevel_Street::Tick(const _float& fTimeDelta)
 			if (m_pGameInstance->Get_CurrentLevel() == LEVEL_TOKOSTREET)
 				m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_OFFICE_1F));
 			else if (m_pGameInstance->Get_CurrentLevel() == LEVEL_STREET)
+			{
+				m_pGameInstance->PlaySound_W(TEXT("0001 [53].wav"), SOUND_EFFECT, 0.5f);
 				m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_CARCHASE));
+			}
+				
 		}
 
 		if (!m_pUIManager->isOpen(TEXT("Fade")))
