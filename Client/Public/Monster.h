@@ -251,6 +251,7 @@ public:
         return isResult;
     }
     _bool isScript() { return m_isScript; }
+    _bool isQTEResult() { return m_iQTEResult; }
 
 public:
     void Set_Down(_bool isDown) { m_isDown = isDown; }
