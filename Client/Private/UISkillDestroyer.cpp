@@ -16,9 +16,8 @@ CUISkillDestroyer::CUISkillDestroyer(const CUISkillDestroyer& rhs)
 {
 }
 
-HRESULT CUISkillDestroyer::Add_UIData(CUI_Object* pUIObject)
+HRESULT CUISkillDestroyer::Add_UIData(CUI_Object* pUIObject, wstring wstrPrototypeTag)
 {
-
 	if (pUIObject->Get_Event())
 	{
 		if (m_pBall.empty() || m_pBall.size() < 6)

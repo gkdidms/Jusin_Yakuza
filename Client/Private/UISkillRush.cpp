@@ -16,7 +16,7 @@ CUISkillRush::CUISkillRush(const CUISkillRush& rhs)
 {
 }
 
-HRESULT CUISkillRush::Add_UIData(CUI_Object* pUIObject)
+HRESULT CUISkillRush::Add_UIData(CUI_Object* pUIObject, wstring wstrPrototypeTag)
 {
 	if (pUIObject->Get_Event())
 	{

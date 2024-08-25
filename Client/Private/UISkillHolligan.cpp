@@ -16,7 +16,7 @@ CUISkillHolligan::CUISkillHolligan(const CUISkillHolligan& rhs)
 {
 }
 
-HRESULT CUISkillHolligan::Add_UIData(CUI_Object* pUIObject)
+HRESULT CUISkillHolligan::Add_UIData(CUI_Object* pUIObject, wstring wstrPrototypeTag)
 {
 	if (pUIObject->Get_Event())
 	{
@@ -292,9 +292,6 @@ HRESULT CUISkillHolligan::Late_Tick(const _float& fTimeDelta)
 
 			}
 		}
-
-
-
 	}
 
 	if (!m_isAnimFin)

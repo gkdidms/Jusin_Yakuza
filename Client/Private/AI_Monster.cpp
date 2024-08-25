@@ -855,9 +855,7 @@ _uint CAI_Monster::Get_DownDir()
 		|| *m_pState == CMonster::MONSTER_H10111_000_1
 		|| *m_pState == CMonster::MONSTER_H23060_000_4
 		|| *m_pState == CMonster::MONSTER_H1500_000_1
-		|| *m_pState == CMonster::MONSTER_H1511_000_4
 		|| *m_pState == CMonster::MONSTER_H3261_000_4
-		|| *m_pState == CMonster::MONSTER_H23010_000_4
 		|| *m_pState == CMonster::MONSTER_H23020_000_4
 		|| *m_pState == CMonster::MONSTER_H23070_000_4
 		|| *m_pState == CMonster::MONSTER_H23250_000_2
@@ -870,6 +868,8 @@ _uint CAI_Monster::Get_DownDir()
 		|| *m_pState == CMonster::MONSTER_DWN_BODY_B
 		|| *m_pState == CMonster::MONSTER_DWN_BODY_B_SP
 		|| *m_pState == CMonster::MONSTER_DWN_DNB_BOUND_G
+		|| *m_pState == CMonster::MONSTER_H23010_000_4
+		|| *m_pState == CMonster::MONSTER_H1511_000_4
 		|| *m_pState == CMonster::MONSTER_KRC_SYNC1_KAIHI_NAGE_F
 		|| *m_pState == CMonster::MONSTER_KRC_SYNC1_NECK_ATK_PUNCH
 		|| *m_pState == CMonster::MONSTER_KRC_SYNC1_NECK_NAGE

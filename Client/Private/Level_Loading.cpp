@@ -161,6 +161,9 @@ void CLevel_Loading::Tick(const _float& fTimeDelta)
 				case LEVEL_KARAOKE_END:
 					pNewLevel = CLevel_KaraokeLobby::Create(m_pDevice, m_pContext);
 					break;
+				case LEVEL_STREET:
+					pNewLevel = CLevel_Street::Create(m_pDevice, m_pContext);
+					break;
 				case LEVEL_TEST:
 					pNewLevel = CLevel_Test::Create(m_pDevice, m_pContext);
 					break;
