@@ -102,13 +102,13 @@ public:
 	virtual void Attack_Event(CGameObject* pHitObject, _bool isItem = false) override;
 
 public:
-	CTransform* Get_Transform() { return m_pTransformCom; }
+	CTransform*			Get_Transform() { return m_pTransformCom; }
 
 	// 붙이고 싶은 뼈의 행렬을 받아오는 함수
-	void		Set_ParentMatrix(const _float4x4* vParentMatrix) { m_vParentMatrix = vParentMatrix;  }
+	void				Set_ParentMatrix(const _float4x4* vParentMatrix) { m_vParentMatrix = vParentMatrix;  }
 
-	CCollider* Get_AABBCollider() { return m_pColliderCom; }
-	CCollider* Get_OBBCollider() { return m_pOBBColliderCom; }
+	CCollider*			Get_AABBCollider() { return m_pColliderCom; }
+	CCollider*			Get_OBBCollider() { return m_pOBBColliderCom; }
 
 	ITEM_MODE			Get_ItemMode() { return m_eItemMode; }
 	void				Set_ItemMode(CItem::ITEM_MODE mode) { m_eItemMode = mode; }

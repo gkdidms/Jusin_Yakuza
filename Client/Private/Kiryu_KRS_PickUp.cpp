@@ -97,6 +97,9 @@ void CKiryu_KRS_PickUp::Tick(const _float& fTimeDelta)
 
 				CItem* pItem = m_pPlayer->Get_CurrentItem();
 				pItem->Throw_On(Desc);
+
+
+				m_pPlayer->Get_CurrentItem()->Set_Dissolve();
 			}
 		}
 
@@ -332,6 +335,8 @@ void CKiryu_KRS_PickUp::Attack_KeyInput(const _float& fTimeDelta)
 	{
 		Combo_Count();
 		m_eAnimState = ANIM_ONCE;
+
+		m_pPlayer->Get_CurrentItem()->Decrease_Life();
 	}
 
 	if (m_pGameInstance->GetKeyState(DIK_Q) == TAP)
@@ -343,6 +348,8 @@ void CKiryu_KRS_PickUp::Attack_KeyInput(const _float& fTimeDelta)
 			m_eAnimState = ANIM_ONCE;
 			m_isStop = true;
 		}
+
+		m_pPlayer->Get_CurrentItem()->Set_Dissolve();
 	}
 }
 
