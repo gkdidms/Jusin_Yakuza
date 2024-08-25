@@ -92,6 +92,7 @@ namespace Engine
 		SOUND_WORD,
 		SOUND_UI,
 		SOUND_ATTACK,
+		SOUND_ENVIRONMENT,
 		SOUND_END
 	};
 
