@@ -182,6 +182,9 @@ HRESULT CLoader::Loading()
 	case LEVEL_KARAOKE_END:
 		hr = Loading_For_Karaoke();
 		break;
+	case LEVEL_STREET:
+		hr = Loading_For_Street();
+		break;
 	}
 
 	LeaveCriticalSection(&m_Critical_Section);

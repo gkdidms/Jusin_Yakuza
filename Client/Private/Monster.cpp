@@ -235,7 +235,10 @@ void CMonster::Set_Sync(string strPlayerAnim, _bool isKeepSynchronizing)
 	else if (strAnim == string_view("h11285"))
 		m_iState = MONSTER_H11285_000_1;
 	else if (strAnim == string_view("h1511"))
+	{
+		m_isDown = true;
 		m_iState = MONSTER_H1511_000_4;
+	}
 	else if (strAnim == string_view("h1540"))
 		m_iState = MONSTER_H1540_000_1;
 	else if (strAnim == string_view("h1620"))
@@ -245,9 +248,15 @@ void CMonster::Set_Sync(string strPlayerAnim, _bool isKeepSynchronizing)
 	else if (strAnim == string_view("h2040"))
 		m_iState = MONSTER_H2040_000_1;
 	else if (strAnim == string_view("h23010"))
+	{
 		m_iState = MONSTER_H23010_000_4;
+		m_isDown = true;
+	}
 	else if (strAnim == string_view("h23020"))
+	{
 		m_iState = MONSTER_H23020_000_4;
+		m_isDown = true;
+	}
 	else if (strAnim == string_view("h23060"))
 		m_iState = MONSTER_H23060_000_4;
 	else if (strAnim == string_view("h23070"))
@@ -259,7 +268,11 @@ void CMonster::Set_Sync(string strPlayerAnim, _bool isKeepSynchronizing)
 	else if (strAnim == string_view("h3261"))
 		m_iState = MONSTER_H3261_000_4;
 	else if (strAnim == string_view("h1500"))
+	{
 		m_iState = MONSTER_H1500_000_1;
+		m_isDown = true;
+	}
+		
 
 	m_strAnimName = strPlayerAnim;
 	m_iCurrentAnimType = CMonster::CUTSCENE;
