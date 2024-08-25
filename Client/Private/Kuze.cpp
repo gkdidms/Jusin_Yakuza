@@ -37,6 +37,12 @@ HRESULT CKuze::Initialize(void* pArg)
 	m_Info.fMaxHP = 300.f;
 	m_Info.fHp = m_Info.fMaxHP;
 
+	m_iHandAnimIndex = HAND_MIN;
+	On_Separation_Hand(0);			// 양손 분리 켜둠
+
+	m_iFaceAnimIndex = 0;
+	On_Separation_Face();
+
 	return S_OK;
 }
 
@@ -47,6 +53,9 @@ void CKuze::Priority_Tick(const _float& fTimeDelta)
 void CKuze::Tick(const _float& fTimeDelta)
 {
 	__super::Tick(fTimeDelta);
+
+	m_pModelCom->Play_Animation_Separation(fTimeDelta, m_iHandAnimIndex, m_SeparationAnimComs[HAND_ANIM], false, (_int)HAND_ANIM);
+	m_pModelCom->Play_Animation_Separation(fTimeDelta, m_iFaceAnimIndex, m_SeparationAnimComs[FACE_ANIM], false, (_int)FACE_ANIM);
 
 	if (m_pGameInstance->GetKeyState(DIK_RCONTROL) == TAP)
 	{
