@@ -1532,6 +1532,22 @@ const _float4* CModel::Get_AnimationCenterRotation(CAnim* pAnim, _int iAnimIndex
 		return pAnim->Get_AnimationCenterRotation();
 }
 
+const _float4* CModel::Get_LastKeyframe_Rotation(CAnim* pAnim, _int iAnimIndex)
+{
+	if (nullptr == pAnim)
+		return m_Animations[iAnimIndex == -1 ? m_AnimDesc.iAnimIndex : iAnimIndex]->Get_LastKeyframe_Rotation();
+	else
+		return pAnim->Get_LastKeyframe_Rotation(iAnimIndex);
+}
+
+const _float4* CModel::Get_FirstKeyframe_Rotation(CAnim* pAnim, _int iAnimIndex)
+{
+	if (nullptr == pAnim)
+		return m_Animations[iAnimIndex == -1 ? m_AnimDesc.iAnimIndex : iAnimIndex]->Get_FirstKeyframe_Rotation();
+	else
+		return pAnim->Get_FirstKeyframe_Rotation(iAnimIndex);
+}
+
 _float4x4 CModel::Get_LocalMatrix()
 {
 	if (0 == m_Meshes.size())

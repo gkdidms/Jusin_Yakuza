@@ -98,6 +98,8 @@ void CImguiManager::Tick(const _float& fTimeDelta)
 			RadialEventWindow();
 	}
 
+	Play_SoundEvent();
+
 	// 애니메이션 이벤트가 있는 콜라이더의 색상을 시안색으로 바꿔주는 기능
 	if (m_pGameInstance->Get_CurrentLevel() != LEVEL_LOADING)
 	{
@@ -140,7 +142,6 @@ void CImguiManager::Tick(const _float& fTimeDelta)
 
 	}
 
-	Play_SoundEvent();
 }
 
 HRESULT CImguiManager::Render()
@@ -1190,9 +1191,12 @@ void CImguiManager::SoundListWindow()
 	}
 
 	if (ImGui::Button(u8"사운드 듣기"))
-		m_pGameInstance->PlaySound_W(m_pGameInstance->StringToWstring(ImGuiFileDialog::Instance()->GetCurrentFileName()), SOUND_EFFECT);
+		m_pGameInstance->PlaySound_W(m_pGameInstance->StringToWstring(ImGuiFileDialog::Instance()->GetCurrentFileName()), m_eSoundCannel, m_fSoundVolume);
+	ImGui::SameLine();
 	if (ImGui::Button(u8"사운드 끄기"))
 		m_pGameInstance->StopAll();
+
+	ImGui::InputFloat(u8"사운드 볼륨", &m_fSoundVolume);
 
 	/*
 	* 		Animation_SoundEventState Desc{};
@@ -1205,7 +1209,6 @@ void CImguiManager::SoundListWindow()
 	*/
 	ImGui::Text(u8"선택된 애니메이션: %s", m_AnimNameList[m_iAnimIndex].c_str());
 	ImGui::InputFloat(u8"애니메이션 포지션", &m_fAnimationPosition);
-
 	ImGui::Text(u8"선택된 사운드 파일: %s", m_strSelectSoundFileName.c_str());
 
 	/*
@@ -1258,6 +1261,7 @@ void CImguiManager::SoundListWindow()
 
 		Desc.iChannel = static_cast<_uint>(m_eSoundCannel);
 		Desc.fAinmPosition = m_fAnimationPosition;
+		Desc.fSoundVolume = m_fSoundVolume;
 		Desc.strSoundFileName = m_strSelectSoundFileName;
 
 		m_SoundEvents.emplace(m_AnimNameList[m_iAnimIndex], Desc);
@@ -1284,6 +1288,7 @@ void CImguiManager::SoundListWindow()
 
 		m_strSelectSoundFileName = lower_bound_iter2->second.strSoundFileName;
 		m_fAnimationPosition = lower_bound_iter2->second.fAinmPosition;
+		m_fSoundVolume = lower_bound_iter2->second.fSoundVolume;
 	}
 
 	if (ImGui::Button(u8"불러오기"))
@@ -1817,7 +1822,7 @@ void CImguiManager::Play_SoundEvent()
 		if (!lower_bound_iter->second.isPlay && CurrentPosition > lower_bound_iter->second.fAinmPosition)
 		{
 			lower_bound_iter->second.isPlay = true;
-			m_pGameInstance->PlaySound_W(m_pGameInstance->StringToWstring(m_strSelectSoundFileName), static_cast<CHANNELID>(lower_bound_iter->second.iChannel));
+			m_pGameInstance->PlaySound_W(m_pGameInstance->StringToWstring(lower_bound_iter->second.strSoundFileName), static_cast<CHANNELID>(lower_bound_iter->second.iChannel), lower_bound_iter->second.fSoundVolume);
 		}
 	}
 
@@ -2211,6 +2216,7 @@ void CImguiManager::SoundEvent_Save(string strPath)
 		out << pair.first << endl;
 		out << pair.second.iChannel << endl;
 		out << pair.second.fAinmPosition << endl;
+		out << pair.second.fSoundVolume << endl;
 		out << pair.second.strSoundFileName << endl;
 	}
 
@@ -2638,6 +2644,7 @@ void CImguiManager::SoundEvent_Load(string strPath)
 		in >> key;
 		in >> Event.iChannel;
 		in >> Event.fAinmPosition;
+		in >> Event.fSoundVolume;
 		in >> Event.strSoundFileName;
 
 		m_SoundEvents.emplace(key, Event);

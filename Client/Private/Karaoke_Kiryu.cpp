@@ -16,6 +16,9 @@
 #include "CutSceneCamera.h"
 #include "FileTotalMgr.h"
 
+#include "Karaoke_Mic.h"
+#include "Karaoke_Glass.h"
+
 CKaraoke_Kiryu::CKaraoke_Kiryu(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLandObject{ pDevice, pContext },
 #ifdef _DEBUG
@@ -79,12 +82,12 @@ HRESULT CKaraoke_Kiryu::Initialize(void* pArg)
 		[	[4] p_oki_uta_sing_nml_lp[p_oki_uta_sing_nml_lp]		//Dancing
 
 	*/
-
-
-
-
 	CModel::ANIMATION_DESC Desc{ static_cast<_uint>(IDLE), true };
 	m_pModelCom->Set_AnimationIndex(Desc, 4.f);
+
+	if (FAILED(Add_Objects()))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -118,6 +121,8 @@ void CKaraoke_Kiryu::Tick(const _float& fTimeDelta)
 	m_pModelCom->Play_Animation_Separation(fTimeDelta, m_iFaceAnimIndex, m_SeparationAnimComs[FACE_ANIM], false, 3, 2.f);
 
 	Play_CutScene(fTimeDelta);
+
+	m_pRightHand[m_eRHType]->Tick(fTimeDelta);
 }
 
 void CKaraoke_Kiryu::Late_Tick(const _float& fTimeDelta)
@@ -134,8 +139,12 @@ void CKaraoke_Kiryu::Late_Tick(const _float& fTimeDelta)
 #endif // _DEBUG
 
 
-	if(CUTSCENE != m_eAnimComType)
+	if (CUTSCENE != m_eAnimComType)
 		Compute_Height();
+	else
+		m_eRHType = GLASS;			// ÄÆ½ÅÀÌ ¾Æ´Ò¶© ÀÜµé°íÀÖÀ½
+
+	m_pRightHand[m_eRHType]->Late_Tick(fTimeDelta);
 }
 
 HRESULT CKaraoke_Kiryu::Render()
@@ -307,6 +316,20 @@ void CKaraoke_Kiryu::Compute_Height()
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vCurrentPos);
 }
 
+HRESULT CKaraoke_Kiryu::Add_Objects()
+{
+	CKaraoke_Mic::SOCKETOBJECT_DESC Desc{};
+	Desc.pParentMatrix = m_pTransformCom->Get_WorldFloat4x4();
+	Desc.pCombinedTransformationMatrix = m_pModelCom->Get_BoneCombinedTransformationMatrix("buki_r_n");
+	Desc.fRotatePecSec = XMConvertToRadians(90.f);
+	Desc.fSpeedPecSec = 1.f;
+	m_pRightHand.push_back(dynamic_cast<CSocketObject*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Karaoke_Mic"), &Desc)));
+
+	m_pRightHand.push_back(dynamic_cast<CSocketObject*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Karaoke_Glass"), &Desc)));
+
+	return S_OK;
+}
+
 CKaraoke_Kiryu* CKaraoke_Kiryu::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 {
 	CKaraoke_Kiryu* pInstance = new CKaraoke_Kiryu(pDevice, pContext);
@@ -343,6 +366,12 @@ void CKaraoke_Kiryu::Free()
 	//Safe_Release(m_pNavigationCom);
 	Safe_Release(m_pAnimCom);
 	Safe_Release(m_pCameraModel);
+
+	for (auto& pObj : m_pRightHand)
+	{
+		Safe_Release(pObj);
+	}
+	m_pRightHand.clear();
 
 	__super::Free();
 }

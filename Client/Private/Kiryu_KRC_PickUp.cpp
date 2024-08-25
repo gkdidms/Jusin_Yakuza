@@ -348,6 +348,7 @@ void CKiryu_KRC_PickUp::Attack_KeyInput(const _float& fTimeDelta)
 	{
 		Combo_Count();
 		m_eAnimState = ANIM_ONCE;
+		m_pPlayer->Get_CurrentItem()->Decrease_Life();
 	}
 	if (m_pGameInstance->GetMouseState(DIM_RB) == TAP)
 	{

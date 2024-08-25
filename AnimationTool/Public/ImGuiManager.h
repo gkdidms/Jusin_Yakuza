@@ -113,6 +113,7 @@ public:
 	{
 		_uint iChannel;
 		_float fAinmPosition;
+		_float fSoundVolume;
 		string strSoundFileName;
 		_bool isPlay = { false };
 	};
@@ -328,6 +329,7 @@ private:
 	CHANNELID					m_eSoundCannel = { SOUND_EFFECT };
 	string						m_strSelectSoundFileName = "";
 	int							m_iSoundEventIndex = { 0 };
+	float						m_fSoundVolume = { 1.f };
 
 	// first: 애니메이션 이름, second: 이벤트정보
 	multimap<string, Animation_SoundEventState>		m_SoundEvents;

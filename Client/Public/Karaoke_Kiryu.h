@@ -24,6 +24,11 @@ public:
         CLAP, PASSIONATE_SINGING, IDLE, SINGING, DANCING, SINGING_ANIMATION_END
     };
 
+    enum RH_OBJ_TYPE
+    {
+        MIC, GLASS, RH_OBJ_TYPE_END
+    };
+
     struct PLAY_TIME_EVENT
     {
         _float fTime;
@@ -77,6 +82,8 @@ private:
 
     //ui
     class CUIManager* m_pUIManager = { nullptr };
+
+    vector<class CSocketObject*> m_pRightHand;
     
 #ifdef _DEBUG
     class CDebugManager* m_pDebugManager = { nullptr };
@@ -86,6 +93,7 @@ private:
     /* 애니메이션 관련 */
 private:
     ANIMATION_COMPONENT_TYPE    m_eAnimComType = { DEFAULT };
+    RH_OBJ_TYPE                 m_eRHType = { MIC };
 
     _uint                       m_iCutSceneAnimIndex = { 0 };
     _uint                       m_iCutSceneCamAnimIndex = { 0 };
@@ -109,6 +117,7 @@ private:
     virtual HRESULT Add_Components() override;
     virtual HRESULT Bind_ResourceData() override;
     virtual void Compute_Height() override;
+    HRESULT Add_Objects();
 
 public:
     static CKaraoke_Kiryu* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

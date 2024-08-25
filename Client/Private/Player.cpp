@@ -325,6 +325,7 @@ void CPlayer::Tick(const _float& fTimeDelta)
 	Trail_Event();
 	Radial_Event();
 	Face_Event();
+	Sound_Event();
 	Effect_Control_Aura();
 	Setting_Target_Enemy();
 	Setting_Target_Item();

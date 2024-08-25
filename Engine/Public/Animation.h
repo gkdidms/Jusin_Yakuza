@@ -52,6 +52,10 @@ public:
 		return &m_CurrentKeyFrameIndices;
 	}
 
+	const _float4* Get_LastKeyframe_Rotation() const;
+	const _float4* Get_FirstKeyframe_Rotation() const;
+
+
 public:
 	void Set_CurrentPosition(_double Position)	{
 		m_CurrentPosition = Position;

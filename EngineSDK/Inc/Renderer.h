@@ -255,7 +255,7 @@ private:
                 _bool m_isRimLight = { true };
 #else
             private:
-                _bool m_isHDR = { true };
+                _bool m_isHDR = { false };
                 _bool m_isSSAO = { true };
                 _bool m_isPBR = { true };
                 _bool m_isBOF = { true };
