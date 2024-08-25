@@ -83,23 +83,18 @@ void CLevel_Street::Tick(const _float& fTimeDelta)
 				m_pGameInstance->PlaySound_W(TEXT("0001 [53].wav"), SOUND_EFFECT, 0.5f);
 				m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_CARCHASE));
 
-			return;
-		}
+				return;
+			}
 
-		if (!m_pUIManager->isOpen(TEXT("Fade")))
-		{
-			m_pUIManager->Fade_In();
-			m_isFadeFin = true;
+			if (!m_pUIManager->isOpen(TEXT("Fade")))
+			{
+				m_pUIManager->Fade_In();
+				m_isFadeFin = true;
+			}
 		}
 	}
-
-
-	//Play_EnvironmentSound();
-
-
-
 #ifdef _DEBUG
-    SetWindowText(g_hWnd, TEXT("±æ°Å¸® ¸Ê"));
+		SetWindowText(g_hWnd, TEXT("±æ°Å¸® ¸Ê"));
 #endif
 }
 
@@ -190,8 +185,6 @@ void CLevel_Street::Play_EnvironmentSound()
 	{
 		m_pGameInstance->PlaySoundIfNotPlay(L"4899 [1].wav", SOUND_ENVIRONMENT, 0.5f);
 	}
-
-
 }
 
 CLevel_Street* CLevel_Street::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
