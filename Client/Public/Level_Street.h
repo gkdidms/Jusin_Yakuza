@@ -24,6 +24,8 @@ private:
     HRESULT Ready_Camera(const wstring& strLayerTag);
     HRESULT Ready_Player(const wstring& strLayerTag);
 
+    void    Play_EnvironmentSound();
+
 public:
     static CLevel_Street* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
     virtual void Free();
