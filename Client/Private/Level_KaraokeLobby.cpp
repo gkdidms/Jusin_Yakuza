@@ -66,6 +66,16 @@ HRESULT CLevel_KaraokeLobby::Initialize()
 		m_pFileTotalManager->Load_Cinemachine(31, LEVEL_KARAOKE_END);
 	}
 	m_pUIManager->Fade_Out();
+
+	if (m_pGameInstance->Get_CurrentLevel() == LEVEL_KARAOKE_START)
+	{
+		m_pQuestManager->Start_Quest(CQuestManager::CHAPTER_3);
+	}
+	if (m_pGameInstance->Get_CurrentLevel() == LEVEL_KARAOKE_END)
+	{
+		m_pQuestManager->Start_Quest(CQuestManager::CHAPTER_4);
+	}
+
     return S_OK;
 }
 
@@ -75,15 +85,6 @@ void CLevel_KaraokeLobby::Tick(const _float& fTimeDelta)
 	{
 		if (m_pUIManager->isFindFinished())
 		{
-			if (m_pGameInstance->Get_CurrentLevel() == LEVEL_KARAOKE_START)
-			{
-				m_pQuestManager->Start_Quest(CQuestManager::CHAPTER_3);
-			}
-			if (m_pGameInstance->Get_CurrentLevel() == LEVEL_KARAOKE_END)
-			{
-				m_pQuestManager->Start_Quest(CQuestManager::CHAPTER_4);
-			}
-
 			m_isStart = true;
 		}
 	}
