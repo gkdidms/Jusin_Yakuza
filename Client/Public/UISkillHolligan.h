@@ -10,7 +10,7 @@ protected:
     CUISkillHolligan(const CUISkillHolligan& rhs);
     virtual ~CUISkillHolligan() = default;
 public:
-    virtual HRESULT Add_UIData(class CUI_Object* pUIObject);
+    virtual HRESULT Add_UIData(class CUI_Object* pUIObject, wstring wstrPrototypeTag = TEXT("")) override;
 
     virtual HRESULT Show_Scene()override;//ui 애님 준비(초기화/열때 정방향 진행)
     virtual HRESULT Close_Scene()override;//ui 애님 준비(초기화/닫을떄 반대로진행)

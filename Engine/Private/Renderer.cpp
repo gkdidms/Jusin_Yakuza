@@ -1705,7 +1705,6 @@ void CRenderer::Render_BOF()
 		return;
 }
 
-
 /*HDR*/
 #pragma region HDR
 void CRenderer::Render_AvgLuminance()
@@ -1775,7 +1774,7 @@ void CRenderer::Render_LuminanceResult()
 	if (FAILED(m_pShader->Bind_RawValue("g_fLumVar", &m_fHDRLight, sizeof(_float))))
 		return;
 
-	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_FinalResult"), m_pShader, "g_BackBufferTexture")))
+	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(m_isBOF ? TEXT("Target_BOF") : TEXT("Target_FinalEffect"), m_pShader, "g_BackBufferTexture")))
 		return;
 	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Luminance"), m_pShader, "g_LuminanceTexture")))
 		return;
@@ -1788,6 +1787,7 @@ void CRenderer::Render_LuminanceResult()
 		return;
 }
 #pragma endregion
+
 
 void CRenderer::Render_RadialBlur()
 {
@@ -1806,7 +1806,7 @@ void CRenderer::Render_RadialBlur()
 	if (FAILED(m_pShader->Bind_RawValue("g_fPower", &m_fRadialPower, sizeof(_float))))
 		return;
 
-	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(m_isBOF ? TEXT("Target_BOF") : m_isHDR ? TEXT("Target_ToneMapping") : TEXT("Target_FinalEffect"), m_pShader, "g_DiffuseTexture")))
+	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(m_isHDR ? TEXT("Target_ToneMapping") : m_isBOF ? TEXT("Target_BOF") : TEXT("Target_FinalEffect"), m_pShader, "g_DiffuseTexture")))
 		return;
 
 	m_pShader->Begin(22);
@@ -1854,7 +1854,7 @@ void CRenderer::Render_InvertColor()
 		return;
 	if (FAILED(m_pShader->Bind_RawValue("g_fInvertDuration", &m_fInvertDuration, sizeof(_float))))
 		return;
-	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(m_isRadialBlur ? TEXT("Target_RadialBlur") : m_isBOF ? TEXT("Target_BOF") : TEXT("Target_FinalEffect"), m_pShader, "g_DiffuseTexture")))
+	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_FinalEffect"), m_pShader, "g_DiffuseTexture")))
 		return;
 
 	m_pShader->Begin(24);
@@ -1879,7 +1879,7 @@ void CRenderer::Render_InvertSaturationColor()
 
 	if (FAILED(m_pShader->Bind_RawValue("g_fSaturationFactor", &m_fSaturationFactor, sizeof(_float))))
 		return;
-	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(m_isRadialBlur ? TEXT("Target_RadialBlur") : m_isBOF ? TEXT("Target_BOF") : m_isHDR ? TEXT("Target_ToneMapping") : TEXT("Target_FinalEffect"), m_pShader, "g_DiffuseTexture")))
+	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(m_isRadialBlur ? TEXT("Target_RadialBlur") : m_isHDR ? TEXT("Target_ToneMapping") : m_isBOF ? TEXT("Target_BOF") : TEXT("Target_FinalEffect"), m_pShader, "g_DiffuseTexture")))
 		return;
 
 	m_pShader->Begin(27);
@@ -1906,7 +1906,7 @@ void CRenderer::Render_Vignette()
 		return;
 	if (FAILED(m_pShader->Bind_RawValue("g_fVignetteSmootness", &m_fVignetteSmootness, sizeof(_float))))
 		return;
-	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(m_isHDR ? TEXT("Target_ToneMapping") : TEXT("Target_FinalEffect"), m_pShader, "g_DiffuseTexture")))
+	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(m_isHDR ? TEXT("Target_ToneMapping") : m_isBOF ? TEXT("Target_BOF") : TEXT("Target_FinalEffect"), m_pShader, "g_DiffuseTexture")))
 		return;
 
 	m_pShader->Begin(25);
@@ -1950,6 +1950,7 @@ void CRenderer::Render_FinalResult()
 		return;
 
 }
+
 
 void CRenderer::Render_AdjustColor()
 {
