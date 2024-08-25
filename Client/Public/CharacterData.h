@@ -151,7 +151,7 @@ public:
         return m_CurrentRadialEvents;
     }
 
-    vector<ANIMATION_SOUNDEVENTSTATE>& Get_Current_SoundEvents() {
+    vector<ANIMATION_SOUNDEVENTSTATE*>& Get_Current_SoundEvents() {
         return m_CurrentSoundEvents;
     }
 
@@ -179,6 +179,8 @@ private:
     // 모델 전체에서의 각기 인덱스
     vector<_uint> m_AlphaMeshes;
     vector<_uint> m_LoopAnimations;
+
+    string m_iCurrentAnimName = "";
 
     // first: 애니메이션 이름
     multimap<string, ANIMATION_EVENT>               m_AnimationEvents;            
@@ -212,7 +214,7 @@ private:
     vector<ANIMATION_FACEEVENTSTATE> m_CurrentFaceEvents;
     vector<ANIMATION_BLOODEVENTSTATE> m_CurrentBloodEffectEvents;
     vector<ANIMATION_RADIALEVENTSTATE> m_CurrentRadialEvents;
-    vector<ANIMATION_SOUNDEVENTSTATE> m_CurrentSoundEvents;
+    vector<ANIMATION_SOUNDEVENTSTATE*> m_CurrentSoundEvents;
 
 public:
     static CCharacterData* Create(class CLandObject* pCharacter);

@@ -348,11 +348,11 @@ void CLandObject::Sound_Event()
 		_double CurPos = *(m_pModelCom->Get_AnimationCurrentPosition());
 		_double Duration = *(m_pModelCom->Get_AnimationDuration());
 
-		if (!pEvent.isPlayed && CurPos >= pEvent.fAinmPosition && CurPos < Duration)
+		if (!pEvent->isPlayed && CurPos >= pEvent->fAinmPosition && CurPos < Duration)
 		{
-			pEvent.isPlayed = true;
-			wstring wstrSoundFile = m_pGameInstance->StringToWstring(pEvent.strSoundFileName);
-			m_pGameInstance->PlaySound_W(wstrSoundFile, static_cast<CHANNELID>(pEvent.iChannel), pEvent.fSoundVolume);
+			pEvent->isPlayed = true;
+			wstring wstrSoundFile = m_pGameInstance->StringToWstring(pEvent->strSoundFileName);
+			m_pGameInstance->StopAndPlaySound(wstrSoundFile, static_cast<CHANNELID>(pEvent->iChannel), pEvent->fSoundVolume);
 		}
 	}
 }

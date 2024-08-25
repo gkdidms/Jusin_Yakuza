@@ -209,8 +209,14 @@ void CCharacterData::Set_CurrentAnimation(string strAnimName)
 
 	// 바꾸기 전에 초기화해주기.
 	// 어차피 복사생성돼서 안해도될듯
-	//for (auto& pSoundEvent : m_CurrentSoundEvents)
-	//	pSoundEvent.isPlayed = false;
+	
+	if (m_iCurrentAnimName != strAnimName)
+	{
+		for (auto& pSoundEvent : m_CurrentSoundEvents)
+			pSoundEvent->isPlayed = false;
+
+		m_iCurrentAnimName = strAnimName;
+	}
 
 	m_CurrentSoundEvents.clear();
 	auto sound_lower_bound_iter = m_SoundEvents.lower_bound(strAnimName);
@@ -222,13 +228,13 @@ void CCharacterData::Set_CurrentAnimation(string strAnimName)
 
 		if (sound_lower_bound_iter == sound_upper_bound_iter && sound_lower_bound_iter != m_SoundEvents.end())
 		{
-			m_CurrentSoundEvents.push_back((*sound_lower_bound_iter).second);
+			m_CurrentSoundEvents.push_back(&(*sound_lower_bound_iter).second);
 		}
 		else
 		{
 			for (; sound_lower_bound_iter != sound_upper_bound_iter; ++sound_lower_bound_iter)
 			{
-				m_CurrentSoundEvents.push_back((*sound_lower_bound_iter).second);
+				m_CurrentSoundEvents.push_back(&(*sound_lower_bound_iter).second);
 			}
 		}
 	}
