@@ -15,6 +15,9 @@
 #include "CarChase_CATBullet.h"
 
 #include "Adventure_Reactor.h"
+
+#include "Karaoke_Glass.h"
+#include "Karaoke_Mic.h"
 #pragma endregion
 
 #pragma region Map
@@ -203,6 +206,17 @@ HRESULT CLoader_Map::Loading_For_LogoLevel()
 	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_RcktGunBullet"),
 		CCarChase_CATBullet::Create(m_pDevice, m_pContext))))
 		return E_FAIL;
+
+	/* For.Prototype_GameObject_Karaoke_Mic*/
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Karaoke_Mic"),
+		CKaraoke_Mic::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
+	/* For.Prototype_GameObject_Karaoke_Glass*/
+	if (FAILED(m_pGameInstance->Add_GameObject_Prototype(TEXT("Prototype_GameObject_Karaoke_Glass"),
+		CKaraoke_Glass::Create(m_pDevice, m_pContext))))
+		return E_FAIL;
+
 
 	lstrcpy(m_szLoadingText, TEXT("객체 원형 를(을) 로딩 중 입니다."));
 	/* For.Prototype_GameObject_Sofa*/

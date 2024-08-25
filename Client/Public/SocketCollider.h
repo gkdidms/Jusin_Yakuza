@@ -103,7 +103,6 @@ private:
 	COLLIDER_PART_TYPE				m_eColliderPartType = { HAND_A };
 
 	CShader*						m_pShaderCom = { nullptr };
-	CModel*							m_pModelCom = { nullptr };
 	CCollider*						m_pColliderCom = { nullptr };
 
 

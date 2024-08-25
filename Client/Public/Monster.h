@@ -269,6 +269,10 @@ public:
 
     void Setting_SyncAnim_EndPosition();
 
+    void Set_isColl(_bool isColl) {
+        m_isColl = isColl;
+    }
+
 public:
     _float Get_HitDamage() { return m_fHitDamage; }
     _uint Get_DownDir();

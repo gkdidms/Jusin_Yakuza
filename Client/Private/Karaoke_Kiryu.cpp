@@ -16,6 +16,9 @@
 #include "CutSceneCamera.h"
 #include "FileTotalMgr.h"
 
+#include "Karaoke_Mic.h"
+#include "Karaoke_Glass.h"
+
 CKaraoke_Kiryu::CKaraoke_Kiryu(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLandObject{ pDevice, pContext },
 #ifdef _DEBUG
@@ -305,6 +308,18 @@ void CKaraoke_Kiryu::Compute_Height()
 
 	vCurrentPos = XMVectorSetY(vCurrentPos, fHeight);
 	m_pTransformCom->Set_State(CTransform::STATE_POSITION, vCurrentPos);
+}
+
+HRESULT CKaraoke_Kiryu::Add_Objects()
+{
+	CKaraoke_Mic::SOCKETOBJECT_DESC Desc{};
+	Desc.pParentMatrix = m_pTransformCom->Get_WorldFloat4x4();
+	Desc.pCombinedTransformationMatrix = m_pModelCom->Get_BoneCombinedTransformationMatrix("buki_r_n");
+	Desc.fRotatePecSec = XMConvertToRadians(90.f);
+	Desc.fSpeedPecSec = 1.f;
+	m_pRightHand = dynamic_cast<CSocketObject*>(m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_Karaoke_Mic"), &Desc));
+
+	return S_OK;
 }
 
 CKaraoke_Kiryu* CKaraoke_Kiryu::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

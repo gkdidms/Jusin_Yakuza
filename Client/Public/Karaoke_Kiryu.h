@@ -77,6 +77,8 @@ private:
 
     //ui
     class CUIManager* m_pUIManager = { nullptr };
+
+    class CSocketObject* m_pRightHand = { nullptr };
     
 #ifdef _DEBUG
     class CDebugManager* m_pDebugManager = { nullptr };
@@ -109,6 +111,7 @@ private:
     virtual HRESULT Add_Components() override;
     virtual HRESULT Bind_ResourceData() override;
     virtual void Compute_Height() override;
+    HRESULT Add_Objects();
 
 public:
     static CKaraoke_Kiryu* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

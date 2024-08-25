@@ -39,7 +39,7 @@ HRESULT CSocketCollider::Initialize(void * pArg)
 		{
 		case 0:
 		{
-			m_fDamage = 90.f;			// 원래는 3임
+			m_fDamage = 8.f;			// 원래는 8임
 
 			break;
 		}
@@ -243,5 +243,4 @@ void CSocketCollider::Free()
 
 	Safe_Release(m_pColliderCom);
 	Safe_Release(m_pShaderCom);
-	Safe_Release(m_pModelCom);
 }

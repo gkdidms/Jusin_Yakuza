@@ -440,12 +440,12 @@ void CLandObject::Free()
 	
 	if (m_isCloned)
 	{
-		if (m_pColliders.size() > 0)
-		{
-			for (auto& pCollider : m_pColliders)
-				Safe_Release(pCollider.second);
-			m_pColliders.clear();
-		}
+		//if (m_pColliders.size() > 0)
+		//{
+		//	for (auto& pCollider : m_pColliders)
+		//		Safe_Release(pCollider.second);
+		//	m_pColliders.clear();
+		//}
 
 		// 멀티맵이라 다르게 지워야한다.
 		for (auto iter = m_pEffects.begin(); iter != m_pEffects.end();)
