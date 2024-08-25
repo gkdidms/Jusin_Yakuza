@@ -52,6 +52,8 @@ HRESULT CLevel_Roadway::Initialize()
 	m_pSystemManager->Set_Camera(CAMERA_CARCHASE);
 
 	m_fRadialTime = m_pGameInstance->Get_Random(MIN_TIME, MAX_TIME);
+	
+	m_pGameInstance->PlayBGM(TEXT("Ultimate Road Rage.mp3"), 0.5f);
 
     return S_OK;
 }

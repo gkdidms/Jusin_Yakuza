@@ -39,6 +39,8 @@ public: // 애니메이션 관련
     const _float3* Get_AnimationCenterMove();
     const vector<_uint>* Get_CurrentKeyFrameIndices(string strAnimationName = "");
     const vector<_uint>* Get_CurrentKeyFrameIndices(_uint iAnimIndex);
+    const _float4* Get_LastKeyframe_Rotation(_uint iAnimIndex);
+    const _float4* Get_FirstKeyframe_Rotation(_uint iAnimIndex);
 
     _bool Get_AnimFinished() const;
     _bool Get_AnimChanged() const;

@@ -151,6 +151,11 @@ void CItem::Tick(const _float& fTimeDelta)
 	if (true == m_bDissovle)
 	{
 		m_fDissolveTime += fTimeDelta * 0.4;
+
+		if(3 < m_fDissolveTime)
+		{
+			m_isDead = true;
+		}
 	}
 	else if (0 != m_fBrightTime && ITEM_BRIGHT != m_eItemMode)
 	{
