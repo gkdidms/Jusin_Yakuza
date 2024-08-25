@@ -64,7 +64,6 @@ void CLevel_Office1F::Tick(const _float& fTimeDelta)
 
 	if (m_bSceneChange)
 	{
-
 		if (m_isFadeFin && m_pUIManager->isFindFinished())
 		{
 			m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_OFFICE_2F));
@@ -77,8 +76,6 @@ void CLevel_Office1F::Tick(const _float& fTimeDelta)
 			m_pUIManager->Fade_In();
 			m_isFadeFin = true;
 		}
-
-
 	}
 	
 	// 트리거 체크 - 씬 이동
