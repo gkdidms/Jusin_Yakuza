@@ -365,8 +365,6 @@ void CHighway_Kiryu::Play_HideReload(_float fTimeDelta)
 
 void CHighway_Kiryu::Play_Hit(_float fTimeDelta)
 {
-
-
 	/*
 	* [2] [mngcar_c_car_gun_aiml_b_dam]
 	* [13] [mngcar_c_car_gun_aiml_f_dam]
