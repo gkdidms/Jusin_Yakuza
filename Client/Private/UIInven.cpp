@@ -95,7 +95,6 @@ HRESULT CUIInven::Tick(const _float& fTimeDelta)
 				iter->Tick(fTimeDelta);
 		}
 	}
-
 	return S_OK;
 }
 
