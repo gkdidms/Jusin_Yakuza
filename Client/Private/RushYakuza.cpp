@@ -29,6 +29,8 @@ HRESULT CRushYakuza::Initialize(void* pArg)
 
 	m_wstrModelName = TEXT("Jimu");
 
+	m_iMonsterType = CMonster::RUSH;
+
 	if (FAILED(Add_CharacterData()))
 		return E_FAIL;
 

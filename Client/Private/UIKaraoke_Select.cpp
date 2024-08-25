@@ -113,6 +113,9 @@ HRESULT CUIKaraoke_Select::Late_Tick(const _float& fTimeDelta)
     if (m_pGameInstance->GetKeyState(DIK_E) == TAP)
     {
         m_isStart = true;
+
+        m_pGameInstance->StopSound(SOUND_UI);
+        m_pGameInstance->PlaySound_W(L"menu_decide.wav", SOUND_UI, 0.5f);
     }
 
     m_Disc->Late_Tick(fTimeDelta);

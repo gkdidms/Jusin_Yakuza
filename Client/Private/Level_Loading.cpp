@@ -35,7 +35,7 @@ CLevel_Loading::CLevel_Loading(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 
 HRESULT CLevel_Loading::Initialize(LEVEL eNextLevel)
 {
-	m_pGameInstance->StopAll();
+	m_pGameInstance->StopSound(SOUND_BGM);
 
 	m_eNextLevel = eNextLevel;
 

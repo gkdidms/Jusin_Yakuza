@@ -35,6 +35,8 @@ HRESULT CKuze::Initialize(void* pArg)
 	if (FAILED(Add_CharacterData()))
 		return E_FAIL;
 
+	m_iMonsterType = CMonster::KUZE;
+
 	m_Info.fMaxHP = 300.f;
 	m_Info.fHp = m_Info.fMaxHP;
 

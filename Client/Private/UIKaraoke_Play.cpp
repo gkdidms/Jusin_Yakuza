@@ -681,6 +681,7 @@ void CUIKaraoke_Play::Visible_Notes(_uint iLyricsIndex)
                 }
 
             }
+
             Verse_On_LongNote(lower_bound_iter->second, iLyricsIndex);
             break;
         }

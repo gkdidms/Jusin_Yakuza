@@ -80,6 +80,9 @@ void CFightManager::Set_FightStage(_bool isFightStage, CMonsterGroup* pMonsterGr
 		if (0 < iTitleIndex)
 		{
 			//타이틀 떠야 함.
+			m_pGameInstance->StopSound(SOUND_EFFECT);
+			m_pGameInstance->PlaySound_W(TEXT("47cd [5].wav"), SOUND_EFFECT, 0.5f);
+
 			m_pUIManager->Open_Scene(TEXT("Title"));
 
 			m_pUIManager->Start_Title(iTitleIndex);

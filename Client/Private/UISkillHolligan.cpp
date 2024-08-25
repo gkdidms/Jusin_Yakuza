@@ -48,6 +48,8 @@ HRESULT CUISkillHolligan::Show_Scene()
 {
 	__super::Show_Scene();
 
+	m_pGameInstance->StopSound(SOUND_UI);
+	m_pGameInstance->PlaySound_W(TEXT("4681 [20].wav"), SOUND_UI, 1.f);
 
 	for (size_t i = 0; i < m_pBall.size(); i++)
 	{
@@ -133,6 +135,7 @@ HRESULT CUISkillHolligan::Tick(const _float& fTimeDelta)
 
 			if (m_fGetTime <= m_fEndTime)
 			{
+				m_pGameInstance->PlaySound_W(TEXT("4681 [31].wav"), SOUND_UI, 0.5f);
 				m_fGetTime += fTimeDelta;
 
 				_float CurGauge = 1 - (m_fGetTime / m_fEndTime);
@@ -141,6 +144,13 @@ HRESULT CUISkillHolligan::Tick(const _float& fTimeDelta)
 
 			if (m_fGetTime > m_fEndTime)
 			{
+				if (!m_isMoneyEndStart)
+				{
+					m_pGameInstance->StopSound(SOUND_UI);
+					m_pGameInstance->PlaySound_W(TEXT("4681 [43].wav"), SOUND_UI, 0.5f);
+					m_isMoneyEndStart = true;
+				}
+
 				m_fGetTime = m_fEndTime;
 				m_isFinMoney = true;
 			}
@@ -171,6 +181,13 @@ HRESULT CUISkillHolligan::Tick(const _float& fTimeDelta)
 		}
 		if (m_isFinMoney)
 		{
+			if (!m_isFinishMoney)
+			{
+				m_pGameInstance->StopSound(SOUND_EFFECT);
+				m_pGameInstance->PlaySound_W(TEXT("4681 [41].wav"), SOUND_EFFECT, 0.5f);
+				m_isFinishMoney = true;
+			}
+
 			vector<CUI_Object*>* pPartObjects = dynamic_cast<CGroup*>(m_pGetter[4])->Get_pPartObjects();
 			if (!m_fCurFinAnim)
 			{
@@ -195,6 +212,8 @@ HRESULT CUISkillHolligan::Tick(const _float& fTimeDelta)
 				}
 				if (dynamic_cast<CUI_Texture*>((*pPartObjects)[8])->Check_AnimFin())
 				{
+
+
 					m_fCurFinAnim = true;
 					(*pPartObjects)[9]->Show_UI();
 				}
@@ -348,12 +367,17 @@ void CUISkillHolligan::Action()
 
 	if (!m_isSkill[m_iCurButton])
 	{
+		m_pGameInstance->StopSound(SOUND_UI);
+		m_pGameInstance->PlaySound_W(TEXT("4681 [8].wav"), SOUND_UI, 0.5f);
+
 		CUI_Object* pGauge = dynamic_cast<CGroup*>(m_pGetter[1])->Get_PartObject(0);
 		dynamic_cast<CImage_Texture*>(pGauge)->Change_Point(_float4(1.f, 0.f, 0.f, 0.f), _float4(1.f, 0.f, 0.f, 0.f));
 
 		(m_pGetter)[4]->Show_UI();
 		m_UI[3]->Show_UI();
 		m_isGet = true;
+		m_isMoneyEndStart = false;
+		m_isFinishMoney = false;
 	}
 }
 
@@ -361,6 +385,9 @@ void CUISkillHolligan::OverAction()
 {
 	if (m_iCurButton != m_iPrevButton)
 	{
+		m_pGameInstance->StopSound(SOUND_UI);
+		m_pGameInstance->PlaySound_W(TEXT("4681 [9].wav"), SOUND_UI, 0.5f);
+
 		m_EventUI[0]->Show_UI();
 		m_EventUI[m_iCurButton + 1]->Show_UI();
 		if (-1 != m_iPrevButton)

@@ -140,8 +140,21 @@ _uint CAI_Monster::Check_KRH(_uint iPlayerLv, _bool isBehine, _bool isAnimChange
 	if (Find_PlayerCurrentAnimationName("p_krh_atk_down")) // ´Ù¿îµÇ¾úÀ»¶§
 	{
 		if (isAnimChange)
+		{
 			*m_pState = iPlayerLv == 0 ? CMonster::MONSTER_DWN_DNF_BOUND : CMonster::MONSTER_DWN_DNF_BOUND_G;
-		m_pThis->Set_Down(true);
+
+			m_pThis->Set_Down(true);
+
+			if (m_iMonsterType != CMonster::KUZE)
+			{
+				m_pGameInstance->StopSound(SOUND_ENEMY_VOICE);
+				m_pGameInstance->PlaySound_W(TEXT("46a0 [22].wav"), SOUND_ENEMY_VOICE, m_fSoundVoice);
+			}
+
+			m_pGameInstance->StopSound(SOUND_ENEMY_EFFECT);
+			m_pGameInstance->PlaySound_W(TEXT("4812 [5].wav"), SOUND_ENEMY_EFFECT, m_fSoundEffect);
+		}
+
 		iDir = F;
 	}
 
@@ -156,6 +169,9 @@ _uint CAI_Monster::Check_KRH(_uint iPlayerLv, _bool isBehine, _bool isAnimChange
 					*m_pState = iPlayerLv == 0 ? CMonster::MONSTER_DAM_BODY_LV01_F : CMonster::MONSTER_DAM_BODY_LV02_F;
 				else
 					*m_pState = iPlayerLv == 0 ? CMonster::MONSTER_DAM_BODY_LV01_B : CMonster::MONSTER_DAM_BODY_LV02_B;
+
+				m_pGameInstance->StopSound(SOUND_ENEMY_VOICE);
+				m_pGameInstance->PlaySound_W(TEXT("46a0 [15].wav"), SOUND_ENEMY_VOICE, m_fSoundVoice);
 			}
 			else
 			{
@@ -163,7 +179,19 @@ _uint CAI_Monster::Check_KRH(_uint iPlayerLv, _bool isBehine, _bool isAnimChange
 					*m_pState = iPlayerLv == 0 ? CMonster::MONSTER_DWN_BODY_F_SP : CMonster::MONSTER_DWN_BODY_F_SP;
 				else
 					*m_pState = iPlayerLv == 0 ? CMonster::MONSTER_DWN_BODY_B_SP : CMonster::MONSTER_DWN_BODY_B_SP;
+
+				m_pThis->Set_Down(true);
+
+				if (m_iMonsterType != CMonster::KUZE)
+				{
+					m_pGameInstance->StopSound(SOUND_ENEMY_VOICE);
+					m_pGameInstance->PlaySound_W(TEXT("46a0 [16].wav"), SOUND_ENEMY_VOICE, m_fSoundVoice);
+				}
+
 			}
+
+			m_pGameInstance->StopSound(SOUND_ENEMY_EFFECT);
+			m_pGameInstance->PlaySound_W(TEXT("4717 [1].wav"), SOUND_ENEMY_EFFECT, m_fSoundEffect);
 		}
 
 		iDir = F;
@@ -182,6 +210,9 @@ _uint CAI_Monster::Check_KRH(_uint iPlayerLv, _bool isBehine, _bool isAnimChange
 					*m_pState = iPlayerLv == 0 ? CMonster::MONSTER_DAM_BODY_LV01_F : CMonster::MONSTER_DAM_BODY_LV02_F;
 				else
 					*m_pState = iPlayerLv == 0 ? CMonster::MONSTER_DAM_BODY_LV01_B : CMonster::MONSTER_DAM_BODY_LV02_B;
+
+				m_pGameInstance->StopSound(SOUND_ENEMY_VOICE);
+				m_pGameInstance->PlaySound_W(TEXT("46a0 [15].wav"), SOUND_ENEMY_VOICE, m_fSoundVoice);
 			}
 			else
 			{
@@ -189,7 +220,19 @@ _uint CAI_Monster::Check_KRH(_uint iPlayerLv, _bool isBehine, _bool isAnimChange
 					*m_pState = iPlayerLv == 0 ? CMonster::MONSTER_DWN_BODY_F : CMonster::MONSTER_DWN_BODY_F;
 				else
 					*m_pState = iPlayerLv == 0 ? CMonster::MONSTER_DWN_BODY_B : CMonster::MONSTER_DWN_BODY_B;
+
+				m_pThis->Set_Down(true);
+
+				if (m_iMonsterType != CMonster::KUZE)
+				{
+					m_pGameInstance->StopSound(SOUND_ENEMY_VOICE);
+					m_pGameInstance->PlaySound_W(TEXT("46a0 [17].wav"), SOUND_ENEMY_VOICE, m_fSoundVoice);
+				}
+
 			}
+
+			m_pGameInstance->StopSound(SOUND_ENEMY_EFFECT);
+			m_pGameInstance->PlaySound_W(TEXT("4717 [2].wav"), SOUND_ENEMY_EFFECT, m_fSoundEffect);
 		}
 
 		iDir = F;
@@ -205,6 +248,9 @@ _uint CAI_Monster::Check_KRH(_uint iPlayerLv, _bool isBehine, _bool isAnimChange
 					*m_pState = iPlayerLv == 0 ? CMonster::MONSTER_DAM_BODY_LV01_F : CMonster::MONSTER_DAM_BODY_LV02_F;
 				else
 					*m_pState = iPlayerLv == 0 ? CMonster::MONSTER_DAM_BODY_LV01_B : CMonster::MONSTER_DAM_BODY_LV02_B;
+
+				m_pGameInstance->StopSound(SOUND_ENEMY_VOICE);
+				m_pGameInstance->PlaySound_W(TEXT("46a0 [14].wav"), SOUND_ENEMY_VOICE, m_fSoundVoice);
 			}
 			else
 			{
@@ -212,7 +258,19 @@ _uint CAI_Monster::Check_KRH(_uint iPlayerLv, _bool isBehine, _bool isAnimChange
 					*m_pState = iPlayerLv == 0 ? CMonster::MONSTER_DWN_BODY_F : CMonster::MONSTER_DWN_BODY_F_SP;
 				else
 					*m_pState = iPlayerLv == 0 ? CMonster::MONSTER_DWN_BODY_B : CMonster::MONSTER_DWN_BODY_B_SP;
+
+				m_pThis->Set_Down(true);
+
+				if (m_iMonsterType != CMonster::KUZE)
+				{
+					m_pGameInstance->StopSound(SOUND_ENEMY_VOICE);
+					m_pGameInstance->PlaySound_W(TEXT("46a0 [20].wav"), SOUND_ENEMY_VOICE, m_fSoundVoice);
+				}
+
 			}
+
+			m_pGameInstance->StopSound(SOUND_ENEMY_EFFECT);
+			m_pGameInstance->PlaySound_W(TEXT("4718 [2].wav"), SOUND_ENEMY_EFFECT, m_fSoundEffect);
 		}
 
 		iDir = F;
@@ -228,6 +286,9 @@ _uint CAI_Monster::Check_KRH(_uint iPlayerLv, _bool isBehine, _bool isAnimChange
 					*m_pState = iPlayerLv == 0 ? CMonster::MONSTER_DAM_BODY_LV01_F : CMonster::MONSTER_DAM_BODY_LV02_F;
 				else
 					*m_pState = iPlayerLv == 0 ? CMonster::MONSTER_DAM_BODY_LV01_B : CMonster::MONSTER_DAM_BODY_LV02_B;
+
+				m_pGameInstance->StopSound(SOUND_ENEMY_VOICE);
+				m_pGameInstance->PlaySound_W(TEXT("46a0 [18].wav"), SOUND_ENEMY_VOICE, m_fSoundVoice);
 			}
 			else
 			{
@@ -235,7 +296,19 @@ _uint CAI_Monster::Check_KRH(_uint iPlayerLv, _bool isBehine, _bool isAnimChange
 					*m_pState = iPlayerLv == 0 ? CMonster::MONSTER_DWN_BODY_F : CMonster::MONSTER_DWN_BODY_F_SP;
 				else
 					*m_pState = iPlayerLv == 0 ? CMonster::MONSTER_DWN_BODY_B : CMonster::MONSTER_DWN_BODY_B_SP;
+
+				m_pThis->Set_Down(true);
+
+				if (m_iMonsterType != CMonster::KUZE)
+				{
+					m_pGameInstance->StopSound(SOUND_ENEMY_VOICE);
+					m_pGameInstance->PlaySound_W(TEXT("46a0 [21].wav"), SOUND_ENEMY_VOICE, m_fSoundVoice);
+				}
+
 			}
+
+			m_pGameInstance->StopSound(SOUND_ENEMY_EFFECT);
+			m_pGameInstance->PlaySound_W(TEXT("4717 [2].wav"), SOUND_ENEMY_EFFECT, m_fSoundEffect);
 		}
 
 
@@ -252,6 +325,9 @@ _uint CAI_Monster::Check_KRH(_uint iPlayerLv, _bool isBehine, _bool isAnimChange
 					*m_pState = iPlayerLv == 0 ? CMonster::MONSTER_DAM_BODY_LV01_F : CMonster::MONSTER_DAM_BODY_LV02_F;
 				else
 					*m_pState = iPlayerLv == 0 ? CMonster::MONSTER_DAM_BODY_LV01_B : CMonster::MONSTER_DAM_BODY_LV02_B;
+
+				m_pGameInstance->StopSound(SOUND_ENEMY_VOICE);
+				m_pGameInstance->PlaySound_W(TEXT("46a0 [18].wav"), SOUND_ENEMY_VOICE, m_fSoundVoice);
 			}
 			else
 			{
@@ -259,7 +335,18 @@ _uint CAI_Monster::Check_KRH(_uint iPlayerLv, _bool isBehine, _bool isAnimChange
 					*m_pState = iPlayerLv == 0 ? CMonster::MONSTER_DWN_BODY_F : CMonster::MONSTER_DWN_BODY_F_SP;
 				else
 					*m_pState = iPlayerLv == 0 ? CMonster::MONSTER_DWN_BODY_B : CMonster::MONSTER_DWN_BODY_B_SP;
+
+				m_pThis->Set_Down(true);
+
+				if (m_iMonsterType != CMonster::KUZE)
+				{
+					m_pGameInstance->StopSound(SOUND_ENEMY_VOICE);
+					m_pGameInstance->PlaySound_W(TEXT("46a0 [17].wav"), SOUND_ENEMY_VOICE, m_fSoundVoice);
+				}
 			}
+
+			m_pGameInstance->StopSound(SOUND_ENEMY_EFFECT);
+			m_pGameInstance->PlaySound_W(TEXT("4718 [2].wav"), SOUND_ENEMY_EFFECT, m_fSoundEffect);
 		}
 
 		iDir = F;
@@ -273,6 +360,16 @@ _uint CAI_Monster::Check_KRH(_uint iPlayerLv, _bool isBehine, _bool isAnimChange
 				*m_pState = iPlayerLv == 0 ? CMonster::MONSTER_DAM_HEAD_LV01_F : CMonster::MONSTER_DAM_HEAD_LV02_F;
 			else
 				*m_pState = iPlayerLv == 0 ? CMonster::MONSTER_DAM_HEAD_LV01_B : CMonster::MONSTER_DAM_HEAD_LV02_B;
+
+			if (m_iMonsterType != CMonster::KUZE)
+			{
+				m_pGameInstance->StopSound(SOUND_ENEMY_VOICE);
+				m_pGameInstance->PlaySound_W(TEXT("46a0 [17].wav"), SOUND_ENEMY_VOICE, m_fSoundVoice);
+			}
+
+
+			m_pGameInstance->StopSound(SOUND_ENEMY_EFFECT);
+			m_pGameInstance->PlaySound_W(TEXT("4701 [6].wav"), SOUND_ENEMY_EFFECT, m_fSoundEffect);
 		}
 
 		iDir = F;
@@ -286,6 +383,16 @@ _uint CAI_Monster::Check_KRH(_uint iPlayerLv, _bool isBehine, _bool isAnimChange
 				*m_pState = iPlayerLv == 0 ? CMonster::MONSTER_DAM_HEAD_LV01_L : CMonster::MONSTER_DAM_HEAD_LV02_L;
 			else
 				*m_pState = iPlayerLv == 0 ? CMonster::MONSTER_DAM_HEAD_LV01_B : CMonster::MONSTER_DAM_HEAD_LV02_B;
+			
+
+			if (m_iMonsterType != CMonster::KUZE)
+			{
+				m_pGameInstance->StopSound(SOUND_ENEMY_VOICE);
+				m_pGameInstance->PlaySound_W(TEXT("46a0 [18].wav"), SOUND_ENEMY_VOICE, m_fSoundVoice);
+			}
+
+			m_pGameInstance->StopSound(SOUND_ENEMY_EFFECT);
+			m_pGameInstance->PlaySound_W(TEXT("4701 [7].wav"), SOUND_ENEMY_EFFECT, m_fSoundEffect);
 		}
 
 		iDir = L;
@@ -299,8 +406,16 @@ _uint CAI_Monster::Check_KRH(_uint iPlayerLv, _bool isBehine, _bool isAnimChange
 				*m_pState = iPlayerLv == 0 ? CMonster::MONSTER_DAM_HEAD_LV01_R : CMonster::MONSTER_DAM_HEAD_LV02_R;
 			else
 				*m_pState = iPlayerLv == 0 ? CMonster::MONSTER_DAM_HEAD_LV01_B : CMonster::MONSTER_DAM_HEAD_LV02_B;
-		}
 
+			if (m_iMonsterType != CMonster::KUZE)
+			{
+				m_pGameInstance->StopSound(SOUND_ENEMY_VOICE);
+				m_pGameInstance->PlaySound_W(TEXT("46a0 [21].wav"), SOUND_ENEMY_VOICE, m_fSoundVoice);
+			}
+
+			m_pGameInstance->StopSound(SOUND_ENEMY_EFFECT);
+			m_pGameInstance->PlaySound_W(TEXT("4701 [7].wav"), SOUND_ENEMY_EFFECT, m_fSoundEffect);
+		}
 
 		iDir = R;
 	}
@@ -313,6 +428,15 @@ _uint CAI_Monster::Check_KRH(_uint iPlayerLv, _bool isBehine, _bool isAnimChange
 				*m_pState = iPlayerLv == 0 ? CMonster::MONSTER_DAM_BODY_LV01_F : CMonster::MONSTER_DAM_BODY_LV02_F;
 			else
 				*m_pState = iPlayerLv == 0 ? CMonster::MONSTER_DAM_BODY_LV01_B : CMonster::MONSTER_DAM_BODY_LV02_B;
+
+			if (m_iMonsterType != CMonster::KUZE)
+			{
+				m_pGameInstance->StopSound(SOUND_ENEMY_VOICE);
+				m_pGameInstance->PlaySound_W(TEXT("46a0 [18].wav"), SOUND_ENEMY_VOICE, m_fSoundVoice);
+			}
+
+			m_pGameInstance->StopSound(SOUND_ENEMY_EFFECT);
+			m_pGameInstance->PlaySound_W(TEXT("4701 [6].wav"), SOUND_ENEMY_EFFECT, m_fSoundEffect);
 		}
 
 		iDir = F;
@@ -326,8 +450,16 @@ _uint CAI_Monster::Check_KRH(_uint iPlayerLv, _bool isBehine, _bool isAnimChange
 				*m_pState = iPlayerLv == 0 ? CMonster::MONSTER_DAM_HEAD_LV01_F : CMonster::MONSTER_DAM_HEAD_LV02_F;
 			else
 				*m_pState = iPlayerLv == 0 ? CMonster::MONSTER_DAM_HEAD_LV01_B : CMonster::MONSTER_DAM_HEAD_LV02_B;
-		}
 
+			if (m_iMonsterType != CMonster::KUZE)
+			{
+				m_pGameInstance->StopSound(SOUND_ENEMY_VOICE);
+				m_pGameInstance->PlaySound_W(TEXT("46a0 [16].wav"), SOUND_ENEMY_VOICE, m_fSoundVoice);
+			}
+
+			m_pGameInstance->StopSound(SOUND_ENEMY_EFFECT);
+			m_pGameInstance->PlaySound_W(TEXT("4701 [7].wav"), SOUND_ENEMY_EFFECT, m_fSoundEffect);
+		}
 
 		iDir = F;
 	}
@@ -340,6 +472,15 @@ _uint CAI_Monster::Check_KRH(_uint iPlayerLv, _bool isBehine, _bool isAnimChange
 				*m_pState = iPlayerLv == 0 ? CMonster::MONSTER_DAM_BODY_LV01_D : CMonster::MONSTER_DAM_BODY_LV02_D;
 			else
 				*m_pState = iPlayerLv == 0 ? CMonster::MONSTER_DAM_BODY_LV01_B : CMonster::MONSTER_DAM_BODY_LV02_B;
+
+			if (m_iMonsterType != CMonster::KUZE)
+			{
+				m_pGameInstance->StopSound(SOUND_ENEMY_VOICE);
+				m_pGameInstance->PlaySound_W(TEXT("46a0 [16].wav"), SOUND_ENEMY_VOICE, m_fSoundVoice);
+			}
+
+			m_pGameInstance->StopSound(SOUND_ENEMY_EFFECT);
+			m_pGameInstance->PlaySound_W(TEXT("4701 [6].wav"), SOUND_ENEMY_EFFECT, m_fSoundEffect);
 		}
 
 		iDir = F;
@@ -355,6 +496,10 @@ _uint CAI_Monster::Check_KRH(_uint iPlayerLv, _bool isBehine, _bool isAnimChange
 					*m_pState = iPlayerLv == 0 ? CMonster::MONSTER_DAM_BODY_LV01_B : CMonster::MONSTER_DAM_BODY_LV02_B;
 				else
 					*m_pState = iPlayerLv == 0 ? CMonster::MONSTER_DAM_BODY_LV01_F : CMonster::MONSTER_DAM_BODY_LV02_F;
+
+				m_pGameInstance->StopSound(SOUND_ENEMY_VOICE);
+				m_pGameInstance->PlaySound_W(TEXT("46a0 [15].wav"), SOUND_ENEMY_VOICE, m_fSoundVoice);
+
 			}
 			else
 			{
@@ -363,7 +508,17 @@ _uint CAI_Monster::Check_KRH(_uint iPlayerLv, _bool isBehine, _bool isAnimChange
 					*m_pState = iPlayerLv == 0 ? CMonster::MONSTER_DWN_DIRECT_B : CMonster::MONSTER_DWN_DIRECT_B;
 				else
 					*m_pState = iPlayerLv == 0 ? CMonster::MONSTER_DWN_DIRECT_F : CMonster::MONSTER_DWN_DIRECT_F;
+
+				if (m_iMonsterType != CMonster::KUZE)
+				{
+					m_pGameInstance->StopSound(SOUND_ENEMY_VOICE);
+					m_pGameInstance->PlaySound_W(TEXT("46a0 [19].wav"), SOUND_ENEMY_VOICE, m_fSoundVoice);
+				}
+
 			}
+
+			m_pGameInstance->StopSound(SOUND_ENEMY_EFFECT);
+			m_pGameInstance->PlaySound_W(TEXT("4702 [4].wav"), SOUND_ENEMY_EFFECT, m_fSoundEffect);
 		}
 
 		iDir = F;
@@ -379,6 +534,9 @@ _uint CAI_Monster::Check_KRH(_uint iPlayerLv, _bool isBehine, _bool isAnimChange
 					*m_pState = iPlayerLv == 0 ? CMonster::MONSTER_DAM_BODY_LV01_F : CMonster::MONSTER_DAM_BODY_LV02_F;
 				else
 					*m_pState = iPlayerLv == 0 ? CMonster::MONSTER_DAM_BODY_LV01_B : CMonster::MONSTER_DAM_BODY_LV02_B;
+
+				m_pGameInstance->StopSound(SOUND_ENEMY_VOICE);
+				m_pGameInstance->PlaySound_W(TEXT("46a0 [17].wav"), SOUND_ENEMY_VOICE, m_fSoundVoice);
 			}
 			else
 			{
@@ -387,7 +545,16 @@ _uint CAI_Monster::Check_KRH(_uint iPlayerLv, _bool isBehine, _bool isAnimChange
 					*m_pState = iPlayerLv == 0 ? CMonster::MONSTER_DWN_BODY_F : CMonster::MONSTER_DWN_BODY_F_SP;
 				else
 					*m_pState = iPlayerLv == 0 ? CMonster::MONSTER_DWN_BODY_B : CMonster::MONSTER_DWN_BODY_B_SP;
+
+				if (m_iMonsterType != CMonster::KUZE)
+				{
+					m_pGameInstance->StopSound(SOUND_ENEMY_VOICE);
+					m_pGameInstance->PlaySound_W(TEXT("46a0 [21].wav"), SOUND_ENEMY_VOICE, m_fSoundVoice);
+				}
 			}
+
+			m_pGameInstance->StopSound(SOUND_ENEMY_EFFECT);
+			m_pGameInstance->PlaySound_W(TEXT("4702 [3].wav"), SOUND_ENEMY_EFFECT, m_fSoundEffect);
 
 		}
 
@@ -411,6 +578,9 @@ _uint CAI_Monster::Check_KRH(_uint iPlayerLv, _bool isBehine, _bool isAnimChange
 					*m_pState = iPlayerLv == 0 ? CMonster::MONSTER_DAM_BODY_LV01_F : CMonster::MONSTER_DAM_BODY_LV02_F;
 				else
 					*m_pState = iPlayerLv == 0 ? CMonster::MONSTER_DAM_BODY_LV01_B : CMonster::MONSTER_DAM_BODY_LV02_B;
+
+				m_pGameInstance->StopSound(SOUND_ENEMY_VOICE);
+				m_pGameInstance->PlaySound_W(TEXT("46a0 [15].wav"), SOUND_ENEMY_VOICE, m_fSoundVoice);
 			}
 			else
 			{
@@ -419,7 +589,17 @@ _uint CAI_Monster::Check_KRH(_uint iPlayerLv, _bool isBehine, _bool isAnimChange
 					*m_pState = CMonster::MONSTER_DWN_BODY_F_SP;
 				else
 					*m_pState = CMonster::MONSTER_DWN_BODY_B_SP;
+				
+				if (m_iMonsterType != CMonster::KUZE)
+				{
+					m_pGameInstance->StopSound(SOUND_ENEMY_VOICE);
+					m_pGameInstance->PlaySound_W(TEXT("46a0 [22].wav"), SOUND_ENEMY_VOICE, m_fSoundVoice);
+				}
+
 			}
+
+			m_pGameInstance->StopSound(SOUND_ENEMY_EFFECT);
+			m_pGameInstance->PlaySound_W(TEXT("4702 [4].wav"), SOUND_ENEMY_EFFECT, m_fSoundEffect);
 		}
 
 		iDir = F;
@@ -435,7 +615,20 @@ _uint CAI_Monster::Check_KRS(_uint iPlayerLv, _bool isBehine, _bool isAnimChange
 	if (Find_PlayerCurrentAnimationName("p_krs_atk_down_trample"))
 	{
 		if (isAnimChange)
+		{
 			*m_pState = iPlayerLv == 0 ? CMonster::MONSTER_DWN_DNF_BOUND : CMonster::MONSTER_DWN_DNF_BOUND_G;
+
+			if (m_iMonsterType != CMonster::KUZE)
+			{
+				m_pGameInstance->StopSound(SOUND_ENEMY_VOICE);
+				m_pGameInstance->PlaySound_W(TEXT("46a0 [22].wav"), SOUND_ENEMY_VOICE, m_fSoundVoice);
+			}
+
+
+			m_pGameInstance->StopSound(SOUND_ENEMY_EFFECT);
+			m_pGameInstance->PlaySound_W(TEXT("471c [1].wav"), SOUND_ENEMY_EFFECT, m_fSoundEffect);
+		}
+			
 
 		iDir = F;
 	}
@@ -449,6 +642,15 @@ _uint CAI_Monster::Check_KRS(_uint iPlayerLv, _bool isBehine, _bool isAnimChange
 				*m_pState = iPlayerLv == 0 ? CMonster::MONSTER_DAM_HEAD_LV01_L : CMonster::MONSTER_DAM_HEAD_LV01_L;
 			else
 				*m_pState = iPlayerLv == 0 ? CMonster::MONSTER_DAM_HEAD_LV01_B : CMonster::MONSTER_DAM_HEAD_LV01_B;
+
+			if (m_iMonsterType != CMonster::KUZE)
+			{
+				m_pGameInstance->StopSound(SOUND_ENEMY_VOICE);
+				m_pGameInstance->PlaySound_W(TEXT("46a0 [14].wav"), SOUND_ENEMY_VOICE, m_fSoundVoice);
+			}
+
+			m_pGameInstance->StopSound(SOUND_ENEMY_EFFECT);
+			m_pGameInstance->PlaySound_W(TEXT("4718 [3].wav"), SOUND_ENEMY_EFFECT, m_fSoundEffect);
 		}
 
 		iDir = F;
@@ -463,6 +665,16 @@ _uint CAI_Monster::Check_KRS(_uint iPlayerLv, _bool isBehine, _bool isAnimChange
 				*m_pState = iPlayerLv == 0 ? CMonster::MONSTER_DAM_HEAD_LV01_F : CMonster::MONSTER_DAM_HEAD_LV02_F;
 			else
 				*m_pState = iPlayerLv == 0 ? CMonster::MONSTER_DAM_HEAD_LV01_B : CMonster::MONSTER_DAM_HEAD_LV02_B;
+			
+			if (m_iMonsterType != CMonster::KUZE)
+			{
+				m_pGameInstance->StopSound(SOUND_ENEMY_VOICE);
+				m_pGameInstance->PlaySound_W(TEXT("46a0 [15].wav"), SOUND_ENEMY_VOICE, m_fSoundVoice);
+			}
+
+
+			m_pGameInstance->StopSound(SOUND_ENEMY_EFFECT);
+			m_pGameInstance->PlaySound_W(TEXT("4718 [2].wav"), SOUND_ENEMY_EFFECT, m_fSoundEffect);
 		}
 
 		iDir = F;
@@ -479,6 +691,9 @@ _uint CAI_Monster::Check_KRS(_uint iPlayerLv, _bool isBehine, _bool isAnimChange
 					*m_pState = iPlayerLv == 0 ? CMonster::MONSTER_DAM_BODY_LV01_F : CMonster::MONSTER_DAM_BODY_LV02_F;
 				else
 					*m_pState = iPlayerLv == 0 ? CMonster::MONSTER_DAM_BODY_LV01_B : CMonster::MONSTER_DAM_BODY_LV02_B;
+
+				m_pGameInstance->StopSound(SOUND_ENEMY_VOICE);
+				m_pGameInstance->PlaySound_W(TEXT("46a0 [16].wav"), SOUND_ENEMY_VOICE, m_fSoundVoice);
 			}
 			else
 			{
@@ -486,7 +701,17 @@ _uint CAI_Monster::Check_KRS(_uint iPlayerLv, _bool isBehine, _bool isAnimChange
 					*m_pState = iPlayerLv == 0 ? CMonster::MONSTER_DWN_BODY_F : CMonster::MONSTER_DWN_BODY_F;
 				else
 					*m_pState = iPlayerLv == 0 ? CMonster::MONSTER_DWN_BODY_B : CMonster::MONSTER_DWN_BODY_B;
+
+				if (m_iMonsterType != CMonster::KUZE)
+				{
+					m_pGameInstance->StopSound(SOUND_ENEMY_VOICE);
+					m_pGameInstance->PlaySound_W(TEXT("46a0 [22].wav"), SOUND_ENEMY_VOICE, m_fSoundVoice);
+				}
+
 			}
+
+			m_pGameInstance->StopSound(SOUND_ENEMY_EFFECT);
+			m_pGameInstance->PlaySound_W(TEXT("4701 [7].wav"), SOUND_ENEMY_EFFECT, m_fSoundEffect);
 		}
 
 		iDir = F;
@@ -503,6 +728,9 @@ _uint CAI_Monster::Check_KRS(_uint iPlayerLv, _bool isBehine, _bool isAnimChange
 					*m_pState = iPlayerLv == 0 ? CMonster::MONSTER_DAM_BODY_LV01_F : CMonster::MONSTER_DAM_BODY_LV02_F;
 				else
 					*m_pState = iPlayerLv == 0 ? CMonster::MONSTER_DAM_BODY_LV01_B : CMonster::MONSTER_DAM_BODY_LV02_B;
+
+				m_pGameInstance->StopSound(SOUND_ENEMY_VOICE);
+				m_pGameInstance->PlaySound_W(TEXT("46a0 [17].wav"), SOUND_ENEMY_VOICE, m_fSoundVoice);
 			}
 			else
 			{
@@ -510,7 +738,17 @@ _uint CAI_Monster::Check_KRS(_uint iPlayerLv, _bool isBehine, _bool isAnimChange
 					*m_pState = iPlayerLv == 0 ? CMonster::MONSTER_DWN_EXPLODE_F : CMonster::MONSTER_DWN_EXPLODE_F;
 				else
 					*m_pState = iPlayerLv == 0 ? CMonster::MONSTER_DWN_EXPLODE_B : CMonster::MONSTER_DWN_EXPLODE_B;
+
+				if (m_iMonsterType != CMonster::KUZE)
+				{
+					m_pGameInstance->StopSound(SOUND_ENEMY_VOICE);
+					m_pGameInstance->PlaySound_W(TEXT("46a0 [22].wav"), SOUND_ENEMY_VOICE, m_fSoundVoice);
+				}
+
 			}
+
+			m_pGameInstance->StopSound(SOUND_ENEMY_EFFECT);
+			m_pGameInstance->PlaySound_W(TEXT("4713 [1].wav"), SOUND_ENEMY_EFFECT, m_fSoundEffect);
 		}
 
 		iDir = F;
@@ -528,6 +766,16 @@ _uint CAI_Monster::Check_KRS(_uint iPlayerLv, _bool isBehine, _bool isAnimChange
 				*m_pState = iPlayerLv == 0 ? CMonster::MONSTER_DAM_HEAD_LV01_L : CMonster::MONSTER_DAM_HEAD_LV02_L;
 			else
 				*m_pState = iPlayerLv == 0 ? CMonster::MONSTER_DAM_HEAD_LV01_B : CMonster::MONSTER_DAM_HEAD_LV02_B;
+
+			if (m_iMonsterType != CMonster::KUZE)
+			{
+				m_pGameInstance->StopSound(SOUND_ENEMY_VOICE);
+				m_pGameInstance->PlaySound_W(TEXT("46a0 [14].wav"), SOUND_ENEMY_VOICE, m_fSoundVoice);
+			}
+
+
+			m_pGameInstance->StopSound(SOUND_ENEMY_EFFECT);
+			m_pGameInstance->PlaySound_W(TEXT("4701 [6].wav"), SOUND_ENEMY_EFFECT, m_fSoundEffect);
 		}
 
 		iDir = L;
@@ -541,6 +789,15 @@ _uint CAI_Monster::Check_KRS(_uint iPlayerLv, _bool isBehine, _bool isAnimChange
 				*m_pState = iPlayerLv == 0 ? CMonster::MONSTER_DAM_HEAD_LV01_R : CMonster::MONSTER_DAM_HEAD_LV02_R;
 			else
 				*m_pState = iPlayerLv == 0 ? CMonster::MONSTER_DAM_HEAD_LV01_B : CMonster::MONSTER_DAM_HEAD_LV02_B;
+
+			if (m_iMonsterType != CMonster::KUZE)
+			{
+				m_pGameInstance->StopSound(SOUND_ENEMY_VOICE);
+				m_pGameInstance->PlaySound_W(TEXT("46a0 [15].wav"), SOUND_ENEMY_VOICE, m_fSoundVoice);
+			}
+
+			m_pGameInstance->StopSound(SOUND_ENEMY_EFFECT);
+			m_pGameInstance->PlaySound_W(TEXT("4701 [6].wav"), SOUND_ENEMY_EFFECT, m_fSoundEffect);
 		}
 
 		iDir = R;
@@ -554,6 +811,16 @@ _uint CAI_Monster::Check_KRS(_uint iPlayerLv, _bool isBehine, _bool isAnimChange
 				*m_pState = iPlayerLv == 0 ? CMonster::MONSTER_DAM_HEAD_LV01_L : CMonster::MONSTER_DAM_HEAD_LV02_L;
 			else
 				*m_pState = iPlayerLv == 0 ? CMonster::MONSTER_DAM_HEAD_LV01_B : CMonster::MONSTER_DAM_HEAD_LV02_B;
+
+			if (m_iMonsterType != CMonster::KUZE)
+			{
+				m_pGameInstance->StopSound(SOUND_ENEMY_VOICE);
+				m_pGameInstance->PlaySound_W(TEXT("46a0 [14].wav"), SOUND_ENEMY_VOICE, m_fSoundVoice);
+			}
+
+
+			m_pGameInstance->StopSound(SOUND_ENEMY_EFFECT);
+			m_pGameInstance->PlaySound_W(TEXT("4717 [2].wav"), SOUND_ENEMY_EFFECT, m_fSoundEffect);
 		}
 
 		iDir = L;
@@ -567,6 +834,16 @@ _uint CAI_Monster::Check_KRS(_uint iPlayerLv, _bool isBehine, _bool isAnimChange
 				*m_pState = iPlayerLv == 0 ? CMonster::MONSTER_DAM_HEAD_LV01_R : CMonster::MONSTER_DAM_HEAD_LV02_R;
 			else
 				*m_pState = iPlayerLv == 0 ? CMonster::MONSTER_DAM_HEAD_LV01_B : CMonster::MONSTER_DAM_HEAD_LV02_B;
+
+			if (m_iMonsterType != CMonster::KUZE)
+			{
+				m_pGameInstance->StopSound(SOUND_ENEMY_VOICE);
+				m_pGameInstance->PlaySound_W(TEXT("46a0 [15].wav"), SOUND_ENEMY_VOICE, m_fSoundVoice);
+			}
+
+
+			m_pGameInstance->StopSound(SOUND_ENEMY_EFFECT);
+			m_pGameInstance->PlaySound_W(TEXT("4718 [2].wav"), SOUND_ENEMY_EFFECT, m_fSoundEffect);
 		}
 
 		iDir = R;
@@ -587,6 +864,9 @@ _uint CAI_Monster::Check_KRS(_uint iPlayerLv, _bool isBehine, _bool isAnimChange
 					*m_pState = iPlayerLv == 0 ? CMonster::MONSTER_DAM_BODY_LV01_F : CMonster::MONSTER_DAM_BODY_LV02_F;
 				else
 					*m_pState = iPlayerLv == 0 ? CMonster::MONSTER_DAM_BODY_LV01_B : CMonster::MONSTER_DAM_BODY_LV02_B;
+
+				m_pGameInstance->StopSound(SOUND_ENEMY_VOICE);
+				m_pGameInstance->PlaySound_W(TEXT("46a0 [16].wav"), SOUND_ENEMY_VOICE, m_fSoundVoice);
 			}
 			else
 			{
@@ -594,7 +874,17 @@ _uint CAI_Monster::Check_KRS(_uint iPlayerLv, _bool isBehine, _bool isAnimChange
 					*m_pState = iPlayerLv == 0 ? CMonster::MONSTER_DWN_BODY_F : CMonster::MONSTER_DWN_BODY_F;
 				else
 					*m_pState = iPlayerLv == 0 ? CMonster::MONSTER_DWN_BODY_B : CMonster::MONSTER_DWN_BODY_B;
+
+				if (m_iMonsterType != CMonster::KUZE)
+				{
+					m_pGameInstance->StopSound(SOUND_ENEMY_VOICE);
+					m_pGameInstance->PlaySound_W(TEXT("46a0 [20].wav"), SOUND_ENEMY_VOICE, m_fSoundVoice);
+				}
+
 			}
+
+			m_pGameInstance->StopSound(SOUND_ENEMY_EFFECT);
+			m_pGameInstance->PlaySound_W(TEXT("4702 [4].wav"), SOUND_ENEMY_EFFECT, m_fSoundEffect);
 		}
 
 		iDir = F;
@@ -611,6 +901,9 @@ _uint CAI_Monster::Check_KRS(_uint iPlayerLv, _bool isBehine, _bool isAnimChange
 					*m_pState = iPlayerLv == 0 ? CMonster::MONSTER_DAM_BODY_LV01_F : CMonster::MONSTER_DAM_BODY_LV02_F;
 				else
 					*m_pState = iPlayerLv == 0 ? CMonster::MONSTER_DAM_BODY_LV01_B : CMonster::MONSTER_DAM_BODY_LV02_B;
+
+				m_pGameInstance->StopSound(SOUND_ENEMY_VOICE);
+				m_pGameInstance->PlaySound_W(TEXT("46a0 [17].wav"), SOUND_ENEMY_VOICE, m_fSoundVoice);
 			}
 			else
 			{
@@ -618,7 +911,17 @@ _uint CAI_Monster::Check_KRS(_uint iPlayerLv, _bool isBehine, _bool isAnimChange
 					*m_pState = iPlayerLv == 0 ? CMonster::MONSTER_DWN_BODY_F_SP : CMonster::MONSTER_DWN_BODY_F_SP;
 				else
 					*m_pState = iPlayerLv == 0 ? CMonster::MONSTER_DWN_BODY_B_SP : CMonster::MONSTER_DWN_BODY_B_SP;
+
+				if (m_iMonsterType != CMonster::KUZE)
+				{
+					m_pGameInstance->StopSound(SOUND_ENEMY_VOICE);
+					m_pGameInstance->PlaySound_W(TEXT("46a0 [21].wav"), SOUND_ENEMY_VOICE, m_fSoundVoice);
+				}
+
 			}
+
+			m_pGameInstance->StopSound(SOUND_ENEMY_EFFECT);
+			m_pGameInstance->PlaySound_W(TEXT("4702 [3].wav"), SOUND_ENEMY_EFFECT, m_fSoundEffect);
 		}
 
 		iDir = F;
@@ -629,7 +932,8 @@ _uint CAI_Monster::Check_KRS(_uint iPlayerLv, _bool isBehine, _bool isAnimChange
 			*m_pState == CMonster::MONSTER_DWN_BODY_B ||
 			*m_pState == CMonster::MONSTER_DWN_BODY_F_SP ||
 			*m_pState == CMonster::MONSTER_DWN_BODY_B_SP ||
-			*m_pState == CMonster::MONSTER_DWN_EXPLODE_F)
+			*m_pState == CMonster::MONSTER_DWN_EXPLODE_F || 
+			*m_pState == CMonster::MONSTER_DWN_EXPLODE_B )
 	{
 		m_pThis->Set_Down(true);
 	}
@@ -645,9 +949,20 @@ _uint CAI_Monster::Check_KRC(_uint iPlayerLv, _bool isBehine, _bool isAnimChange
 	if (Find_PlayerCurrentAnimationName("p_krc_atk_down_trample"))
 	{
 		if (isAnimChange)
+		{
 			*m_pState = CMonster::MONSTER_DWN_DNF_BOUND_G;
-		m_pThis->Set_Down(true);
+			m_pThis->Set_Down(true);
 
+			if (m_iMonsterType != CMonster::KUZE)
+			{
+				m_pGameInstance->StopSound(SOUND_ENEMY_VOICE);
+				m_pGameInstance->PlaySound_W(TEXT("46a0 [22].wav"), SOUND_ENEMY_VOICE, m_fSoundVoice);
+			}
+
+			m_pGameInstance->StopSound(SOUND_ENEMY_EFFECT);
+			m_pGameInstance->PlaySound_W(TEXT("4718 [2].wav"), SOUND_ENEMY_EFFECT, m_fSoundEffect);
+		}
+			
 		iDir = F;
 	}
 
@@ -662,6 +977,9 @@ _uint CAI_Monster::Check_KRC(_uint iPlayerLv, _bool isBehine, _bool isAnimChange
 					*m_pState = CMonster::MONSTER_DAM_HEAD_LV02_F;
 				else
 					*m_pState = CMonster::MONSTER_DAM_HEAD_LV02_B;
+
+				m_pGameInstance->StopSound(SOUND_ENEMY_VOICE);
+				m_pGameInstance->PlaySound_W(TEXT("46a0 [18].wav"), SOUND_ENEMY_VOICE, m_fSoundVoice);
 			}
 			else
 			{
@@ -670,8 +988,17 @@ _uint CAI_Monster::Check_KRC(_uint iPlayerLv, _bool isBehine, _bool isAnimChange
 				else
 					*m_pState = CMonster::MONSTER_DWN_DIRECT_B_BOUND_G;
 
+				if (m_iMonsterType != CMonster::KUZE)
+				{
+					m_pGameInstance->StopSound(SOUND_ENEMY_VOICE);
+					m_pGameInstance->PlaySound_W(TEXT("46a0 [20].wav"), SOUND_ENEMY_VOICE, m_fSoundVoice);
+				}
+
 				m_pThis->Set_Down(true);
 			}
+
+			m_pGameInstance->StopSound(SOUND_ENEMY_EFFECT);
+			m_pGameInstance->PlaySound_W(TEXT("4717 [2].wav"), SOUND_ENEMY_EFFECT, m_fSoundEffect);
 		}
 
 		iDir = F;
@@ -687,6 +1014,9 @@ _uint CAI_Monster::Check_KRC(_uint iPlayerLv, _bool isBehine, _bool isAnimChange
 					*m_pState = CMonster::MONSTER_DAM_HEAD_LV02_F;
 				else
 					*m_pState = CMonster::MONSTER_DAM_HEAD_LV02_B;
+
+				m_pGameInstance->StopSound(SOUND_ENEMY_VOICE);
+				m_pGameInstance->PlaySound_W(TEXT("46a0 [19].wav"), SOUND_ENEMY_VOICE, m_fSoundVoice);
 			}
 			else
 			{
@@ -695,10 +1025,17 @@ _uint CAI_Monster::Check_KRC(_uint iPlayerLv, _bool isBehine, _bool isAnimChange
 				else
 					*m_pState = CMonster::MONSTER_DWN_DIRECT_B_BOUND_G;
 
+				if (m_iMonsterType != CMonster::KUZE)
+				{
+					m_pGameInstance->StopSound(SOUND_ENEMY_VOICE);
+					m_pGameInstance->PlaySound_W(TEXT("46a0 [21].wav"), SOUND_ENEMY_VOICE, m_fSoundVoice);
+				}
+
 				m_pThis->Set_Down(true);
 			}
+			m_pGameInstance->StopSound(SOUND_ENEMY_EFFECT);
+			m_pGameInstance->PlaySound_W(TEXT("4718 [3].wav"), SOUND_ENEMY_EFFECT, m_fSoundEffect);
 		}
-
 		iDir = F;
 	}
 
@@ -712,6 +1049,9 @@ _uint CAI_Monster::Check_KRC(_uint iPlayerLv, _bool isBehine, _bool isAnimChange
 					*m_pState = CMonster::MONSTER_DAM_HEAD_LV02_F;
 				else
 					*m_pState = CMonster::MONSTER_DAM_HEAD_LV02_B;
+
+				m_pGameInstance->StopSound(SOUND_ENEMY_VOICE);
+				m_pGameInstance->PlaySound_W(TEXT("46a0 [19].wav"), SOUND_ENEMY_VOICE, m_fSoundVoice);
 			}
 			else
 			{
@@ -720,8 +1060,16 @@ _uint CAI_Monster::Check_KRC(_uint iPlayerLv, _bool isBehine, _bool isAnimChange
 				else
 					*m_pState = CMonster::MONSTER_DWN_DIRECT_B_BOUND_G;
 
+				if (m_iMonsterType != CMonster::KUZE)
+				{
+					m_pGameInstance->StopSound(SOUND_ENEMY_VOICE);
+					m_pGameInstance->PlaySound_W(TEXT("46a0 [22].wav"), SOUND_ENEMY_VOICE, m_fSoundVoice);
+				}
+
 				m_pThis->Set_Down(true);
 			}
+			m_pGameInstance->StopSound(SOUND_ENEMY_EFFECT);
+			m_pGameInstance->PlaySound_W(TEXT("4717 [1].wav"), SOUND_ENEMY_EFFECT, m_fSoundEffect);
 		}
 
 		iDir = F;
@@ -741,6 +1089,16 @@ _uint CAI_Monster::Check_KRC(_uint iPlayerLv, _bool isBehine, _bool isAnimChange
 				*m_pState = CMonster::MONSTER_DAM_HEAD_LV02_L;
 			else
 				*m_pState = CMonster::MONSTER_DAM_HEAD_LV02_B;
+
+			if (m_iMonsterType != CMonster::KUZE)
+			{
+				m_pGameInstance->StopSound(SOUND_ENEMY_VOICE);
+				m_pGameInstance->PlaySound_W(TEXT("46a0 [19].wav"), SOUND_ENEMY_VOICE, m_fSoundVoice);
+			}
+
+
+			m_pGameInstance->StopSound(SOUND_ENEMY_EFFECT);
+			m_pGameInstance->PlaySound_W(TEXT("4714 [8].wav"), SOUND_ENEMY_EFFECT, m_fSoundEffect);
 		}
 
 		iDir = L;
@@ -757,6 +1115,16 @@ _uint CAI_Monster::Check_KRC(_uint iPlayerLv, _bool isBehine, _bool isAnimChange
 				*m_pState = CMonster::MONSTER_DAM_HEAD_LV02_R;
 			else
 				*m_pState = CMonster::MONSTER_DAM_HEAD_LV02_B;
+
+			if (m_iMonsterType != CMonster::KUZE)
+			{
+				m_pGameInstance->StopSound(SOUND_ENEMY_VOICE);
+				m_pGameInstance->PlaySound_W(TEXT("46a0 [18].wav"), SOUND_ENEMY_VOICE, m_fSoundVoice);
+			}
+
+
+			m_pGameInstance->StopSound(SOUND_ENEMY_EFFECT);
+			m_pGameInstance->PlaySound_W(TEXT("4714 [8].wav"), SOUND_ENEMY_EFFECT, m_fSoundEffect);
 		}
 
 		iDir = R;
@@ -770,6 +1138,16 @@ _uint CAI_Monster::Check_KRC(_uint iPlayerLv, _bool isBehine, _bool isAnimChange
 		{
 			if (!isBehine)
 				*m_pState = CMonster::MONSTER_DAM_HEAD_LV02_B;
+
+			if (m_iMonsterType != CMonster::KUZE)
+			{
+				m_pGameInstance->StopSound(SOUND_ENEMY_VOICE);
+				m_pGameInstance->PlaySound_W(TEXT("46a0 [19].wav"), SOUND_ENEMY_VOICE, m_fSoundVoice);
+			}
+
+
+			m_pGameInstance->StopSound(SOUND_ENEMY_EFFECT);
+			m_pGameInstance->PlaySound_W(TEXT("4717 [1].wav"), SOUND_ENEMY_EFFECT, m_fSoundEffect);
 		}
 
 		iDir = B;
@@ -790,6 +1168,9 @@ _uint CAI_Monster::Check_KRC(_uint iPlayerLv, _bool isBehine, _bool isAnimChange
 					*m_pState = CMonster::MONSTER_DAM_HEAD_LV02_F;
 				else
 					*m_pState = CMonster::MONSTER_DAM_HEAD_LV02_B;
+
+				m_pGameInstance->StopSound(SOUND_ENEMY_VOICE);
+				m_pGameInstance->PlaySound_W(TEXT("46a0 [18].wav"), SOUND_ENEMY_VOICE, m_fSoundVoice);
 			}
 			else
 			{
@@ -798,8 +1179,17 @@ _uint CAI_Monster::Check_KRC(_uint iPlayerLv, _bool isBehine, _bool isAnimChange
 				else
 					*m_pState = CMonster::MONSTER_DWN_BODY_B_SP;
 
+				if (m_iMonsterType != CMonster::KUZE)
+				{
+					m_pGameInstance->StopSound(SOUND_ENEMY_VOICE);
+					m_pGameInstance->PlaySound_W(TEXT("46a0 [21].wav"), SOUND_ENEMY_VOICE, m_fSoundVoice);
+				}
+
 				m_pThis->Set_Down(true);
 			}
+
+			m_pGameInstance->StopSound(SOUND_ENEMY_EFFECT);
+			m_pGameInstance->PlaySound_W(TEXT("47ce [5].wav"), SOUND_ENEMY_EFFECT, m_fSoundEffect);
 		}
 
 		iDir = F;
@@ -811,16 +1201,20 @@ _uint CAI_Monster::Check_KRC(_uint iPlayerLv, _bool isBehine, _bool isAnimChange
 _bool CAI_Monster::Check_StandUp()
 {
 	//¾ÕÀ» ¹Ù¶óº½
-	if (Get_DownDir() == DIR_F)
+	_uint iDir = Get_DownDir();
+	if (iDir == DIR_F)
 	{
 		*m_pState = *m_pState == CMonster::MONSTER_H23070_000_4 ? CMonster::MONSTER_DWN_STANDUP_HEAD_R_EN : CMonster::MONSTER_STANDUP_DNF_FAST;
 		return false;
 	}
-
-	//¾þ¾îÁ®ÀÕÀ½
-	if (Get_DownDir() == DIR_B)
+	else if (iDir == DIR_B)
 	{
 		*m_pState = CMonster::MONSTER_STANDUP_DNB_FAST;
+		return false;
+	}
+	else
+	{
+		m_pThis->Set_Down(false);
 		return false;
 	}
 
@@ -859,6 +1253,9 @@ _uint CAI_Monster::Get_DownDir()
 		|| *m_pState == CMonster::MONSTER_H23020_000_4
 		|| *m_pState == CMonster::MONSTER_H23070_000_4
 		|| *m_pState == CMonster::MONSTER_H23250_000_2
+		|| *m_pState == CMonster::MONSTER_A60300_000_2
+		|| *m_pState == CMonster::MONSTER_A60330_000_2
+		|| *m_pState == CMonster::MONSTER_A60350_000_2
 		|| *m_pState == CMonster::MONSTER_KRU_SYNC1_LAPEL_ATK_PUNCH
 		|| *m_pState == CMonster::MONSTER_KRU_SYNC1_NECK_ATK_KICK)
 		return DIR_F;
@@ -1005,7 +1402,9 @@ CBTNode::NODE_STATE CAI_Monster::StandUpAndDead()
 		if (*m_pState == CMonster::MONSTER_H23250_000_2
 			|| *m_pState == CMonster::MONSTER_A60300_000_2
 			|| *m_pState == CMonster::MONSTER_A60330_000_2
-			|| *m_pState == CMonster::MONSTER_A60350_000_2)
+			|| *m_pState == CMonster::MONSTER_A60350_000_2
+			|| *m_pState == CMonster::MONSTER_H23010_000_4
+			|| *m_pState == CMonster::MONSTER_H23020_000_4)
 			return CBTNode::SUCCESS;
 
 		if (!m_pAnimCom[*m_pCurrentAnimType]->Get_AnimFinished())
@@ -1060,6 +1459,8 @@ CBTNode::NODE_STATE CAI_Monster::Dead()
 			*m_pState = CMonster::MONSTER_DED_L;
 		else if (iDir == R)
 			*m_pState = CMonster::MONSTER_DED_R;
+
+		m_pGameInstance->PlaySound_W(TEXT("46a0 [24].wav"), SOUND_ENEMY_DEAD, 0.7f);
 	}
 
 	return CBTNode::SUCCESS;

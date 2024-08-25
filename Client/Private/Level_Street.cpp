@@ -13,6 +13,8 @@
 
 #include "Level_Loading.h"
 
+#include "Player.h"
+
 CLevel_Street::CLevel_Street(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
     : CLevel { pDevice, pContext },
     m_pSystemManager{ CSystemManager::GetInstance() },
@@ -63,6 +65,9 @@ void CLevel_Street::Tick(const _float& fTimeDelta)
 		{
 			if (m_pGameInstance->Get_CurrentLevel() == LEVEL_TOKOSTREET)
 				m_pQuestManager->Start_Quest(CQuestManager::CHAPTER_5);
+			else if (m_pGameInstance->Get_CurrentLevel() == LEVEL_STREET)
+				m_pQuestManager->Start_Quest(CQuestManager::CHAPTER_7);
+
 			m_isStart = true;
 		}
 	}
@@ -74,19 +79,22 @@ void CLevel_Street::Tick(const _float& fTimeDelta)
 			if (m_pGameInstance->Get_CurrentLevel() == LEVEL_TOKOSTREET)
 				m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_OFFICE_1F));
 			else if (m_pGameInstance->Get_CurrentLevel() == LEVEL_STREET)
+			{
+				m_pGameInstance->PlaySound_W(TEXT("0001 [53].wav"), SOUND_EFFECT, 0.5f);
 				m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_CARCHASE));
-		}
 
-		if (!m_pUIManager->isOpen(TEXT("Fade")))
-		{
-			m_pUIManager->Fade_In();
-			m_isFadeFin = true;
+				return;
+			}
+
+			if (!m_pUIManager->isOpen(TEXT("Fade")))
+			{
+				m_pUIManager->Fade_In();
+				m_isFadeFin = true;
+			}
 		}
 	}
-
-
 #ifdef _DEBUG
-    SetWindowText(g_hWnd, TEXT("±æ°Å¸® ¸Ê"));
+		SetWindowText(g_hWnd, TEXT("±æ°Å¸® ¸Ê"));
 #endif
 }
 
@@ -165,6 +173,18 @@ HRESULT CLevel_Street::Ready_Player(const wstring& strLayerTag)
 		return E_FAIL;
 
 	return S_OK;
+}
+
+void CLevel_Street::Play_EnvironmentSound()
+{
+	CPlayer* pPlayer = dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject(LEVEL_STREET, TEXT("Layer_Player"), 0));
+
+	_vector		vPlayerPos = pPlayer->Get_TransformCom()->Get_State(CTransform::STATE_POSITION);
+
+	if (-7 > vPlayerPos.m128_f32[2])
+	{
+		m_pGameInstance->PlaySoundIfNotPlay(L"4899 [1].wav", SOUND_ENVIRONMENT, 0.5f);
+	}
 }
 
 CLevel_Street* CLevel_Street::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

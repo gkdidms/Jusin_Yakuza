@@ -61,18 +61,22 @@ HRESULT CUIMenu::Late_Tick(const _float& fTimeDelta)
 			for (auto& iter : m_EventUI)
 				iter->Late_Tick(fTimeDelta);
 		}
-
-
 	}
 
 	if (!m_isAnimFin)
+	{
 		Check_AimFin();
 
+		m_pGameInstance->PlaySound_W(TEXT("4681 [30].wav"), SOUND_UI, 1.f);
+	}
+		
 	return S_OK;
 }
 
 void CUIMenu::Action()
 {
+
+
 	switch (m_iCurButton)
 	{
 	case 0://ÀÎº¥
@@ -108,6 +112,9 @@ void CUIMenu::OverAction()
 
 	if(m_iCurButton !=m_iPrevButton)
 	{
+		m_pGameInstance->StopSound(SOUND_UI);
+		m_pGameInstance->PlaySound_W(TEXT("4681 [9].wav"), SOUND_UI, 1.f);
+
 		m_Button[m_iCurButton]->Show_UI();
 
 		if (-1 != m_iPrevButton)

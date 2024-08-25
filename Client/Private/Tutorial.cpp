@@ -50,12 +50,18 @@ _bool CTutorial::Start()
 	{
 		if (m_pGameInstance->GetKeyState(DIK_E) == TAP)
 		{
+			m_pGameInstance->StopSound(SOUND_UI);
+			m_pGameInstance->PlaySound_W(TEXT("4681 [8].wav"), SOUND_UI, 0.5f);
+
 			m_pUIManager->Change_TutorialUI(CUITutorial::TOTU_START);
 			return true;
 		}	
 	}
 	else
+	{
 		m_pUIManager->Change_TutorialUI(m_TutorialUIIndex[m_iTutorialIndex]);
+	}
+		
 	
 	return false;
 }
@@ -76,7 +82,16 @@ _bool CTutorial::Running()
 				m_pUIManager->Change_TutorialUI(m_TutorialUIIndex[m_iTutorialIndex]);
 			}
 			else
+			{
+				if (!m_pUIManager->isShowTutorialUI(CUITutorial::TOTU_START))
+				{
+					m_pGameInstance->StopSound(SOUND_UI);
+					m_pGameInstance->PlaySound_W(TEXT("4681 [8].wav"), SOUND_UI, 0.8f);
+				}
+
 				m_pUIManager->Change_TutorialUI(m_iTutorialCheckUIIndex);
+			}
+				
 		}
 
 		return false;
@@ -97,7 +112,12 @@ _bool CTutorial::Running()
 				vector<CMonster*> Monsters = dynamic_cast<CMonsterGroup*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_MonsterGroup"), 0))->Get_Monsters();
 				//몬스터들 돌려가면서 체크
 				for (auto& pMonster : Monsters)
-					if (dynamic_cast<CMonster*>(pMonster)->isTutorialAttack()) m_iCount++;
+					if (dynamic_cast<CMonster*>(pMonster)->isTutorialAttack())
+					{
+						m_pGameInstance->StopSound(SOUND_EFFECT);
+						m_pGameInstance->PlaySound_W(TEXT("4681 [38].wav"), SOUND_EFFECT, 0.5f);
+						m_iCount++;
+					}
 			}
 		}
 		//FinishBlow일 경우

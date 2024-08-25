@@ -26,6 +26,8 @@ HRESULT CDefaultYakuza::Initialize(void* pArg)
 
 	m_wstrModelName = TEXT("Jimu");
 
+	m_iMonsterType = CMonster::MONSTER_DEFAULT;
+
 	if (FAILED(Add_CharacterData()))
 		return E_FAIL;
 

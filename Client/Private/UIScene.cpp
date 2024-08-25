@@ -40,6 +40,7 @@ HRESULT CUIScene::Add_UIData(CUI_Object* pUIObject, wstring wstrPrototypeTag)
 HRESULT CUIScene::Show_Scene()
 {
 
+
 	for (auto& iter : m_UI)
 	{
 		if (CUI_Object::TYPE_BTN != iter->Get_TypeIndex())
@@ -156,6 +157,8 @@ _bool CUIScene::Over_InterSect()
 			m_iCurButton = i;
 			if (m_iPrevButton != m_iCurButton)
 			{
+				m_pGameInstance->StopSound(SOUND_UI);
+				m_pGameInstance->PlaySound_W(TEXT("4681 [9].wav"), SOUND_UI, 0.5f);
 				OverAction();
 				m_iPrevButton = m_iCurButton;
 				return true;

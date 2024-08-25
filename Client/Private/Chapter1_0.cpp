@@ -38,6 +38,7 @@ HRESULT CChapter1_0::Initialize(void* pArg)
 
 	//플레이어 움직임 막기
 	Player_Stop(true);
+	PlayerCom_Stop(true);
 
 	return S_OK;
 }
@@ -47,6 +48,7 @@ _bool CChapter1_0::Execute()
 	if (m_isTitleFinished)
 	{
 		Player_Stop(false);
+		PlayerCom_Stop(false);
 		return true;
 	}
 
@@ -76,6 +78,9 @@ _bool CChapter1_0::Execute()
 			{
 				m_pSystemManager->Set_Camera(CAMERA_PLAYER);
 				m_pBackground->Set_Show(true);
+
+				m_pGameInstance->StopSound(SOUND_EFFECT);
+				m_pGameInstance->PlaySound_W(TEXT("pokebell_ring01.wav"), SOUND_EFFECT, 0.5f);
 			}
 				
 			return false;
