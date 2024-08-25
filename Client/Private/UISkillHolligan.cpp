@@ -144,9 +144,6 @@ HRESULT CUISkillHolligan::Tick(const _float& fTimeDelta)
 				m_fGetTime = m_fEndTime;
 				m_isFinMoney = true;
 			}
-
-
-
 		}
 		else
 		{
