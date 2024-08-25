@@ -19,6 +19,9 @@ HRESULT CUISkillMenu::Show_Scene()
 {
 	__super::Show_Scene();
 
+	m_pGameInstance->StopSound(SOUND_UI);
+	m_pGameInstance->PlaySound_W(TEXT("4681 [20].wav"), SOUND_UI, 1.f);
+
 	for (size_t i = 0; i < m_Button.size(); i++)
 	{
 		_matrix ButtonWorld = m_Button[i]->Get_TransformCom()->Get_WorldMatrix();
@@ -117,6 +120,9 @@ void CUISkillMenu::OverAction()
 
 	if (m_iCurButton != m_iPrevButton)
 	{
+		m_pGameInstance->StopSound(SOUND_UI);
+		m_pGameInstance->PlaySound_W(TEXT("4681 [8].wav"), SOUND_UI, 1.f);
+
 		m_EventUI[m_iCurButton * 2]->Show_UI();
 		m_EventUI[m_iCurButton * 2 + 1]->Show_UI();
 		if (-1 != m_iPrevButton)
