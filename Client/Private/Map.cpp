@@ -148,7 +148,6 @@ void CMap::Tick(const _float& fTimeDelta)
 
 void CMap::Late_Tick(const _float& fTimeDelta)
 {
-
 	// Renderer에 추가되는 mesh index 비워주고 시작
 	m_vRenderDefaulMeshIndex.clear();
 	m_vRenderGlassMeshIndex.clear();
@@ -163,9 +162,6 @@ void CMap::Late_Tick(const _float& fTimeDelta)
 	m_vStrongBloomIndex.clear();
 	m_vCompulsoryDecalBlendMeshIndex.clear();
 
-
-
-	
 
 	if (m_pGameInstance->Get_CurrentLevel() == LEVEL_TUTORIAL ||
 		m_pGameInstance->Get_CurrentLevel() == LEVEL_NISHIKIWALK ||
@@ -212,8 +208,6 @@ void CMap::Late_Tick(const _float& fTimeDelta)
 
 HRESULT CMap::Render()
 {
-
-
 	if (FAILED(Bind_ShaderResources()))
 		return E_FAIL;
 

@@ -52,7 +52,7 @@ void CKaraokeManager::Tick(const _float& fTimeDelta)
 		{
 			m_isScoreTimerOn = true;
 			m_pUIManager->Open_Scene(TEXT("Karaoke_Score"));
-
+			m_pGameInstance->StopSound(SOUND_UI);
 			//아래 점수 주면됨 현재 점수
 			m_iCurrentScore = 80;
 			m_pUIManager->Set_Score(m_iCurrentScore);
@@ -60,9 +60,14 @@ void CKaraokeManager::Tick(const _float& fTimeDelta)
 
 		if (m_isScoreTimerOn)
 		{
+			if(0 == m_fScoreTimer)
+				m_pGameInstance->StopAndPlaySound(L"result_count_finish.wav", SOUND_UI, 0.5f);
+
 			m_fScoreTimer += fTimeDelta;
 			if (SCORE_TIMER <= m_fScoreTimer)
 			{
+				m_pGameInstance->StopSound(SOUND_UI);
+				
 				m_pUIManager->Close_Scene();
 
 				m_isStart = false;
@@ -115,18 +120,21 @@ void CKaraokeManager::SingleNote_KeyInput(CNoteBase* pNote)
 		if (m_pGameInstance->GetKeyState(DIK_UP) == TAP)
 		{
 			Store_SingleNoteScore(pNote);
+			m_pGameInstance->StopAndPlaySound(L"snea_single01.wav", SOUND_UI, 0.5f);
 		}
 		break;
 	case 1:		//다운
 		if (m_pGameInstance->GetKeyState(DIK_DOWN) == TAP)
 		{
 			Store_SingleNoteScore(pNote);
+			m_pGameInstance->StopAndPlaySound(L"snea_single01.wav", SOUND_UI, 0.5f);
 		}
 		break;
 	case 2:		//레프트
 		if (m_pGameInstance->GetKeyState(DIK_LEFT) == TAP)
 		{
 			Store_SingleNoteScore(pNote);
+			m_pGameInstance->StopAndPlaySound(L"snea_single01.wav", SOUND_UI, 0.5f);
 		}
 
 		break;
@@ -134,6 +142,7 @@ void CKaraokeManager::SingleNote_KeyInput(CNoteBase* pNote)
 		if (m_pGameInstance->GetKeyState(DIK_RIGHT) == TAP)
 		{
 			Store_SingleNoteScore(pNote);
+			m_pGameInstance->StopAndPlaySound(L"snea_single01.wav", SOUND_UI, 0.5f);
 		}
 		break;
 	}
@@ -151,40 +160,48 @@ void CKaraokeManager::LongNote_KeyInput(CNoteBase* pNote)
 		if (m_pGameInstance->GetKeyState(DIK_UP) == HOLD)
 		{
 			Acc_LongNoteScore(pNote);
+			m_pGameInstance->PlaySoundIfNotPlay(L"snea_long.wav", SOUND_UI, 0.5f);
 		}
 		else if (m_pGameInstance->GetKeyState(DIK_UP) == AWAY)
 		{
 			Store_LongNoteScore(pNote);
+			m_pGameInstance->PlaySoundIfNotPlay(L"snea_long.wav", SOUND_UI, 0.5f);
 		}
 		break;
 	case 1:		//다운
 		if (m_pGameInstance->GetKeyState(DIK_DOWN) == HOLD)
 		{
 			Acc_LongNoteScore(pNote);
+			m_pGameInstance->PlaySoundIfNotPlay(L"snea_long.wav", SOUND_UI, 0.5f);
 		}
 		else if (m_pGameInstance->GetKeyState(DIK_DOWN) == AWAY)
 		{
 			Store_LongNoteScore(pNote);
+			m_pGameInstance->PlaySoundIfNotPlay(L"snea_long.wav", SOUND_UI, 0.5f);
 		}
 		break;
 	case 2:		//레프트
 		if (m_pGameInstance->GetKeyState(DIK_LEFT) == HOLD)
 		{
 			Acc_LongNoteScore(pNote);
+			m_pGameInstance->PlaySoundIfNotPlay(L"snea_long.wav", SOUND_UI, 0.5f);
 		}
 		else if (m_pGameInstance->GetKeyState(DIK_LEFT) == AWAY)
 		{
 			Store_LongNoteScore(pNote);
+			m_pGameInstance->PlaySoundIfNotPlay(L"snea_long.wav", SOUND_UI, 0.5f);
 		}
 		break;
 	case 3:		//롸이트
 		if (m_pGameInstance->GetKeyState(DIK_RIGHT) == HOLD)
 		{
 			Acc_LongNoteScore(pNote);
+			m_pGameInstance->PlaySoundIfNotPlay(L"snea_long.wav", SOUND_UI, 0.5f);
 		}
 		else if (m_pGameInstance->GetKeyState(DIK_RIGHT) == AWAY)
 		{
 			Store_LongNoteScore(pNote);
+			m_pGameInstance->PlaySoundIfNotPlay(L"snea_long.wav", SOUND_UI, 0.5f);
 		}
 		break;
 	}
@@ -199,6 +216,7 @@ void CKaraokeManager::BurstNote_KeyInput(CNoteBase* pNote)
 		if (m_pGameInstance->GetKeyState(DIK_UP) == TAP)
 		{
 			Acc_BurstNoteScore(pNote);
+			m_pGameInstance->StopAndPlaySound(L"snea_single01.wav", SOUND_UI, 0.5f);
 		}
 
 		break;
@@ -206,6 +224,7 @@ void CKaraokeManager::BurstNote_KeyInput(CNoteBase* pNote)
 		if (m_pGameInstance->GetKeyState(DIK_DOWN) == TAP)
 		{
 			Acc_BurstNoteScore(pNote);
+			m_pGameInstance->StopAndPlaySound(L"snea_single01.wav", SOUND_UI, 0.5f);
 		}
 
 		break;
@@ -213,6 +232,7 @@ void CKaraokeManager::BurstNote_KeyInput(CNoteBase* pNote)
 		if (m_pGameInstance->GetKeyState(DIK_LEFT) == TAP)
 		{
 			Acc_BurstNoteScore(pNote);
+			m_pGameInstance->StopAndPlaySound(L"snea_single01.wav", SOUND_UI, 0.5f);
 		}
 
 		break;
@@ -220,6 +240,7 @@ void CKaraokeManager::BurstNote_KeyInput(CNoteBase* pNote)
 		if (m_pGameInstance->GetKeyState(DIK_RIGHT) == TAP)
 		{
 			Acc_BurstNoteScore(pNote);
+			m_pGameInstance->StopAndPlaySound(L"snea_single01.wav", SOUND_UI, 0.5f);
 		}
 
 		break;

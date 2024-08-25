@@ -48,6 +48,8 @@ HRESULT CUISkillHolligan::Show_Scene()
 {
 	__super::Show_Scene();
 
+	m_pGameInstance->StopSound(SOUND_UI);
+	m_pGameInstance->PlaySound_W(TEXT("4681 [20].wav"), SOUND_UI, 1.f);
 
 	for (size_t i = 0; i < m_pBall.size(); i++)
 	{
