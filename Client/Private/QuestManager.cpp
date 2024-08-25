@@ -87,7 +87,10 @@ void CQuestManager::Start_Quest(_uint iChapter)
 
     m_iCurrentQuestIndex = 0;
     m_iCurrentChapter = iChapter;
-    Add_MainQuest(m_QuestInfo[m_iCurrentChapter][0].iQuestIndex, m_QuestInfo[m_iCurrentChapter][0].iNextQuestIndex, m_QuestInfo[m_iCurrentChapter][0].iObjectIndex, m_QuestInfo[m_iCurrentChapter][0].iScriptIndex);
+    if (m_QuestInfo[m_iCurrentChapter][0].iType == QUEST_MAIN)
+        Add_MainQuest(m_QuestInfo[m_iCurrentChapter][0].iQuestIndex, m_QuestInfo[m_iCurrentChapter][0].iNextQuestIndex, m_QuestInfo[m_iCurrentChapter][0].iObjectIndex, m_QuestInfo[m_iCurrentChapter][0].iScriptIndex);
+    else if (m_QuestInfo[m_iCurrentChapter][0].iType == QUEST_TALK)
+        Add_TalkQuest(m_QuestInfo[m_iCurrentChapter][0].iQuestIndex, m_QuestInfo[m_iCurrentChapter][0].iNextQuestIndex, m_QuestInfo[m_iCurrentChapter][0].iObjectIndex, m_QuestInfo[m_iCurrentChapter][0].iScriptIndex);
 }
 
 HRESULT CQuestManager::Ready_Quest()
