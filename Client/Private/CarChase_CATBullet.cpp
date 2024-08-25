@@ -72,7 +72,7 @@ HRESULT CCarChase_CATBullet::Initialize(void* pArg)
 		return E_FAIL;
 	Safe_AddRef(m_pTarget);
 
-	m_pUIManager->Add_Target(m_iObjectIndex, this);
+	m_pUIManager->Add_Target(m_iObjectIndex, this, true);
 
 	m_Info.fMaxHP = 1.f;
 

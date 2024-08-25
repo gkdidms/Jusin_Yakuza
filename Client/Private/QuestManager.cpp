@@ -242,14 +242,6 @@ HRESULT CQuestManager::Ready_Quest()
 
             iQuestIndex++,
             iNextQuestIndex++
-        ),
-        QUEST_INFO(
-            QUEST_KILL,
-            0,
-
-            iQuestIndex++,
-            iNextQuestIndex++,
-            10003 // ÄíÁ¦ ÀÎµ¦½º ¹øÈ£
         )
     };
     m_QuestInfo.emplace(CHAPTER_8, Chapter8);

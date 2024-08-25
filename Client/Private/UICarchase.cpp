@@ -33,16 +33,19 @@ HRESULT CUICarchase::Update_TargetMatrix(_uint iIndex, _matrix TargetMatrix, _fl
     _vector vTargetPos = TargetMatrix.r[3];
     pTarget->TargetingUI->Get_TransformCom()->Set_State(CTransform::STATE_POSITION, vTargetPos);
 
-    vTargetPos = XMVectorSetY(vTargetPos, XMVectorGetY(vTargetPos) - 60.f);
-    pTarget->HPBarBackUI->Get_TransformCom()->Set_State(CTransform::STATE_POSITION, vTargetPos);
-    pTarget->HPBarUI->Get_TransformCom()->Set_State(CTransform::STATE_POSITION, vTargetPos);
+    if (pTarget->HPBarBackUI != nullptr && pTarget->HPBarUI != nullptr)
+    {
+        vTargetPos = XMVectorSetY(vTargetPos, XMVectorGetY(vTargetPos) - 60.f);
 
-    _float LerpHp =m_pGameInstance->Lerp(-1.f, 0.f, iHP / 100.f);
+        pTarget->HPBarBackUI->Get_TransformCom()->Set_State(CTransform::STATE_POSITION, vTargetPos);
+        pTarget->HPBarUI->Get_TransformCom()->Set_State(CTransform::STATE_POSITION, vTargetPos);
 
-    static_cast<CUI_Texture*>(pTarget->HPBarUI)->Change_Point(_float4(0.f, 0.f, LerpHp, 0.f),_float4(0.f, 0.f, LerpHp,0.f));
+        _float LerpHp = m_pGameInstance->Lerp(-1.f, 0.f, iHP / 100.f);
 
-    pTarget->HPBarUI->Get_TransformCom()->Set_Scale(100.f, 6.f, 0.f);
+        static_cast<CUI_Texture*>(pTarget->HPBarUI)->Change_Point(_float4(0.f, 0.f, LerpHp, 0.f), _float4(0.f, 0.f, LerpHp, 0.f));
 
+        pTarget->HPBarUI->Get_TransformCom()->Set_Scale(100.f, 6.f, 0.f);
+    }
     return S_OK;
 }
 
@@ -133,8 +136,12 @@ HRESULT CUICarchase::Tick(const _float& fTimeDelta)
 
     for (auto& pTarget : m_Targets)
     {
-        pTarget.second.HPBarBackUI->Tick(fGameTimeDelta);
-        pTarget.second.HPBarUI->Tick(fGameTimeDelta);
+        if (pTarget.second.HPBarBackUI != nullptr && pTarget.second.HPBarUI != nullptr)
+        {
+            pTarget.second.HPBarBackUI->Tick(fGameTimeDelta);
+            pTarget.second.HPBarUI->Tick(fGameTimeDelta);
+        }
+
         pTarget.second.TargetingUI->Tick(fGameTimeDelta);
     }
 
@@ -152,8 +159,12 @@ HRESULT CUICarchase::Late_Tick(const _float& fTimeDelta)
 
     for (auto& pTarget : m_Targets)
     {
-        pTarget.second.HPBarBackUI->Late_Tick(fGameTimeDelta);
-        pTarget.second.HPBarUI->Late_Tick(fGameTimeDelta);
+        if (pTarget.second.HPBarBackUI != nullptr && pTarget.second.HPBarUI != nullptr)
+        {
+            pTarget.second.HPBarBackUI->Late_Tick(fGameTimeDelta);
+            pTarget.second.HPBarUI->Late_Tick(fGameTimeDelta);
+        }
+
         pTarget.second.TargetingUI->Late_Tick(fGameTimeDelta);
     }
 
@@ -173,7 +184,7 @@ void CUICarchase::OverAction()
 {
 }
 
-HRESULT CUICarchase::Add_TargetingRound(_uint iIndex, class CCarChase_Monster* pMonster)
+HRESULT CUICarchase::Add_TargetingRound(_uint iIndex, class CCarChase_Monster* pMonster, _bool isBullet)
 {
     if (nullptr != Find_TargetUI(iIndex))
         return E_FAIL;
@@ -184,17 +195,26 @@ HRESULT CUICarchase::Add_TargetingRound(_uint iIndex, class CCarChase_Monster* p
     if (nullptr == pTargeting)
         return E_FAIL;
 
-    CUI_Object* pHpBarBack = dynamic_cast<CUI_Object*>(m_EventUI[HPBAR_BACK]->Clone(nullptr));
-    if (nullptr == pHpBarBack)
-        return E_FAIL;
+    if (isBullet == false)
+    {
+        CUI_Object* pHpBarBack = dynamic_cast<CUI_Object*>(m_EventUI[HPBAR_BACK]->Clone(nullptr));
+        if (nullptr == pHpBarBack)
+            return E_FAIL;
 
-    CUI_Object* pHpBar = dynamic_cast<CUI_Object*>(m_EventUI[HPBAR]->Clone(nullptr));
-    if (nullptr == pHpBar)
-        return E_FAIL;
+        CUI_Object* pHpBar = dynamic_cast<CUI_Object*>(m_EventUI[HPBAR]->Clone(nullptr));
+        if (nullptr == pHpBar)
+            return E_FAIL;
+
+        Desc.HPBarBackUI = pHpBarBack;
+        Desc.HPBarUI = pHpBar;
+    }
+    else
+    {
+        Desc.HPBarBackUI = nullptr;
+        Desc.HPBarUI = nullptr;
+    }
 
     Desc.TargetingUI = pTargeting;
-    Desc.HPBarBackUI = pHpBarBack;
-    Desc.HPBarUI = pHpBar;
     Desc.pMonsterAddr = pMonster;
 
     m_Targets.emplace(iIndex, Desc);

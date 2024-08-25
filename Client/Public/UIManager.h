@@ -38,7 +38,7 @@ public: // 튜토리얼 용
     void Set_TutorialText(wstring strText);
 
 public: // 카체이스 용
-    HRESULT Add_Target(_uint iIndex, class CCarChase_Monster* pMonster);
+    HRESULT Add_Target(_uint iIndex, class CCarChase_Monster* pMonster, _bool isBullet = false);
     HRESULT Update_TargetMatrix(_uint iIndex, _matrix TargetMatrix, _float iHP);
     HRESULT Remove_Target(_uint iIndex);
     class CCarChase_Monster* Get_Target();
@@ -151,7 +151,9 @@ public:
 
  public://QTE
     void PressKey();
+    void Set_QTEKey(wstring strKey);
     _bool QTE_Finished();
+
 public:
    CUIScene* Find_Scene(wstring strSceneName);      
 

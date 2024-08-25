@@ -145,7 +145,7 @@ float4 BRDF(float4 vPosition, int2 vTexcoord, float4 vNormal, float4 vDepthDesc,
     vKD *= 1.f - fMetalic;
     
     float3 vDiffuse = vKD * vAlbedo / PI;
-    vDiffuse = (vDiffuse + vSpecular) * (vRadiance * WiDotN);
+    vDiffuse = (vDiffuse + vSpecular) * (vRadiance * 0.9f);
     return vector(vDiffuse, 1.f);
 }
 

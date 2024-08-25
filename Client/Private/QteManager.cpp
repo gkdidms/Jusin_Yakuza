@@ -1,17 +1,22 @@
 #include "QteManager.h"
 #include "GameInstance.h"
+#include "UIManager.h"
 #include "Animation.h"
 #include "Yoneda.h"
 #include "Player.h"
 
 Client::CQteManager::CQteManager(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-    : CGameObject{ pDevice, pContext }
+    : CGameObject{ pDevice, pContext },
+    m_pUIManager{ CUIManager::GetInstance() }
 {
+    Safe_AddRef(m_pUIManager);
 }
 
 Client::CQteManager::CQteManager(const CQteManager& rhs)
-    : CGameObject{ rhs }
+    : CGameObject{ rhs },
+    m_pUIManager{ rhs.m_pUIManager}
 {
+    Safe_AddRef(m_pUIManager);
 }
 
 HRESULT Client::CQteManager::Initialize_Prototype()
@@ -335,7 +340,7 @@ void Client::CQteManager::Slowing()
         if (Check_QTE())
         {
             m_iSuccess = 1;
-
+            m_pUIManager->PressKey();
             Skip_KeyFrame(m_eCurrentQTE);
 
             ResetVariables();
@@ -353,6 +358,14 @@ void Client::CQteManager::Check_QTE_Section()
     if (nullptr == m_pPlayerAnimCom) return;
     
     auto it = m_QTEs.find(m_strAnimationName);
+
+    if (!m_isQTEUI)
+    {
+        m_isQTEUI = true;
+        m_pUIManager->Close_Scene();
+        m_pUIManager->Open_Scene(TEXT("QTE"));
+    }
+
     if (it != m_QTEs.end()) 
     {
         _uint animIndex = it->second.iAnimIndex;
@@ -384,6 +397,7 @@ void Client::CQteManager::Check_QTE_Section()
                 }
                 if (m_isSlowing && it->second.iEndKeyFrameIndex < *m_pPlayerAnimCom->Get_AnimPosition(animIndex))
                 {
+                    m_pUIManager->Close_Scene();
                     m_iSuccess = 2;
                     m_isSlowing = false;
                     //ResetVariables();
@@ -443,4 +457,5 @@ void Client::CQteManager::Free()
     __super::Free();
 
     Safe_Release(m_pPlayerAnimCom);
+    Safe_Release(m_pUIManager);
 }

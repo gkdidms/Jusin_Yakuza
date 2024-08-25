@@ -330,7 +330,7 @@ HRESULT CBtn::Load_binary(ifstream& in)
 
 _bool CBtn::Click_Intersect(_int Index)
 {
-	return m_pGameInstance->Picking_UI(m_pTransformCom	);
+	return m_pGameInstance->Picking_UI(m_pTransformCom);
 }
 
 HRESULT CBtn::Show_UI()

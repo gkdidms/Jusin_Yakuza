@@ -34,7 +34,7 @@ public:
     virtual void OverAction() override;
 
 public:
-    HRESULT Add_TargetingRound(_uint iIndex, class CCarChase_Monster* pMonster);
+    HRESULT Add_TargetingRound(_uint iIndex, class CCarChase_Monster* pMonster, _bool isBullet);
     HRESULT Update_Player();
 private:
     map<_uint, CARCCHASE_UI_DESC> m_Targets; // 타겟팅 UI 저장

@@ -17,10 +17,11 @@ public:
     virtual NODE_STATE Execute();
 
 private:
-    _bool m_isQTE = { false };
+
 
 
     _float m_fAttackCount = 0;
+    
 
 private:
     void Ready_Tree();

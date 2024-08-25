@@ -24,8 +24,10 @@ public:
 
     void Set_Key(wstring strKey);
     void Press() { m_isPress = true; }
+
 private:
     _bool m_isPress = false;
+
 public:
     static CUIQTE* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg = nullptr);
     virtual void Free();

@@ -38,7 +38,7 @@ HRESULT CLevel_OfficeBoss::Initialize()
 
     /* 클라 파싱 */
     m_pFileTotalManager->Set_MapObj_In_Client(STAGE_OFFICE_BOSS, LEVEL_OFFICE_BOSS);
-    m_pFileTotalManager->Set_Lights_In_Client(99);
+    m_pFileTotalManager->Set_Lights_In_Client(STAGE_OFFICE_BOSS);
     m_pFileTotalManager->Set_Collider_In_Client(STAGE_OFFICE_BOSS, LEVEL_OFFICE_BOSS);
 
 	if (FAILED(Ready_Camera(TEXT("Layer_Camera"))))
@@ -64,7 +64,7 @@ void CLevel_OfficeBoss::Tick(const _float& fTimeDelta)
 
 	// 트리거 체크 - 씬 이동
 	//vector<CGameObject*> pTriggers = m_pGameInstance->Get_GameObjects(LEVEL_OFFICE_BOSS, TEXT("Layer_Trigger"));
-
+	//
 	//for (int i = 0; i < pTriggers.size(); i++)
 	//{
 	//	int		iLevelNum;
@@ -86,47 +86,29 @@ void CLevel_OfficeBoss::Tick(const _float& fTimeDelta)
 	}
 #endif // _DEBUG
 
-	//if (m_pFightManager->Tick(fTimeDelta))
-	//	m_pQuestManager->Start_Quest(CQuestManager::CHAPTER_6);
-
-	//if (m_pQuestManager->Execute())
-	//{
-	//	if (!m_pUIManager->isOpen(TEXT("Fade")))
-	//	{
-	//		m_pUIManager->Open_Scene(TEXT("Fade"));
-	//		m_pUIManager->Fade_In();
-	//	}
-	//	else
-	//	{
-	//		if (m_pUIManager->isFindFinished())
-	//		{
-	//			m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_STREET));
-	//			return;
-	//		}
-	//	}
-	//}
-
 	if (m_pFightManager->Tick(fTimeDelta))
 	{
-		m_bSceneChange = true;
+		m_pQuestManager->Start_Quest(CQuestManager::CHAPTER_6);
+		m_isFightEnd = true;
 	}
-	if (m_bSceneChange)
+	
+	if (m_isFightEnd)
 	{
-
-		if (m_isFadeFin && m_pUIManager->isFindFinished())
+		if (m_pQuestManager->Execute())
 		{
-			m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_STREET));
-			CCollision_Manager::GetInstance()->All_Clear();
-			return;
+			if (m_isFadeFin && m_pUIManager->isFindFinished())
+			{
+				m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_STREET));
+				CCollision_Manager::GetInstance()->All_Clear();
+				return;
+			}
+
+			if (!m_pUIManager->isOpen(TEXT("Fade")))
+			{
+				m_pUIManager->Fade_In();
+				m_isFadeFin = true;
+			}
 		}
-
-		if (!m_pUIManager->isOpen(TEXT("Fade")))
-		{
-			m_pUIManager->Fade_In();
-			m_isFadeFin = true;
-		}
-
-
 	}
 
 	if (!m_isTitleEnd && m_pUIManager->isBattleStart())

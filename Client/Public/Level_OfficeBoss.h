@@ -21,6 +21,7 @@ private:
     class CUIManager* m_pUIManager = { nullptr };
     class CQuestManager* m_pQuestManager = { nullptr };
 
+    _bool m_isFightEnd = { false };
 private:
     HRESULT Ready_Camera(const wstring& strLayerTag);
     HRESULT Ready_Player(const wstring& strLayerTag);
