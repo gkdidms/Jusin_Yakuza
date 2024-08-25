@@ -607,6 +607,10 @@ HRESULT CHighway_Kiryu::Add_Components()
 		return E_FAIL;
 	m_SeparationAnimComs.push_back(pAnimCom);
 
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Material_Kiryu"),
+		TEXT("Com_Material"), reinterpret_cast<CComponent**>(&m_pMaterialCom))))
+		return E_FAIL;
+
 	return S_OK;
 }
 
