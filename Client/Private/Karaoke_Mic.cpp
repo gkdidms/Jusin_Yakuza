@@ -26,8 +26,8 @@ HRESULT CKaraoke_Mic::Initialize(void* pArg)
 	if (FAILED(Add_Components()))
 		return E_FAIL;
 
-	m_pTransformCom->Change_Rotation(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), XMConvertToRadians(-90.f));
-	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0, 0.04, -0.03, 1));
+	//m_pTransformCom->Change_Rotation(m_pTransformCom->Get_State(CTransform::STATE_RIGHT), XMConvertToRadians(-90.f));
+	m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(0.1, -0.05, 0.02, 1));
 
 	return S_OK;
 }
@@ -40,6 +40,25 @@ void CKaraoke_Mic::Priority_Tick(const _float& fTimeDelta)
 void CKaraoke_Mic::Tick(const _float& fTimeDelta)
 {
 	__super::Tick(fTimeDelta);
+
+	if (m_pGameInstance->GetKeyState(DIK_RSHIFT) == HOLD)
+	{
+		m_pTransformCom->Go_Straight(fTimeDelta);
+	}
+	if (m_pGameInstance->GetKeyState(DIK_SLASH) == HOLD)
+	{
+		m_pTransformCom->Go_Backward(fTimeDelta);
+	}
+
+	if (m_pGameInstance->GetKeyState(DIK_RCONTROL) == HOLD)
+	{
+		m_pTransformCom->Go_Right(fTimeDelta);
+	}
+
+	if (m_pGameInstance->GetKeyState(DIK_SPACE) == HOLD)
+	{
+		m_pTransformCom->Go_Left(fTimeDelta);
+	}
 }
 
 void CKaraoke_Mic::Late_Tick(const _float& fTimeDelta)

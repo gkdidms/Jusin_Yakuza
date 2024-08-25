@@ -82,12 +82,12 @@ HRESULT CKaraoke_Kiryu::Initialize(void* pArg)
 		[	[4] p_oki_uta_sing_nml_lp[p_oki_uta_sing_nml_lp]		//Dancing
 
 	*/
-
-
-
-
 	CModel::ANIMATION_DESC Desc{ static_cast<_uint>(IDLE), true };
 	m_pModelCom->Set_AnimationIndex(Desc, 4.f);
+
+	if (FAILED(Add_Objects()))
+		return E_FAIL;
+
 	return S_OK;
 }
 
@@ -121,6 +121,8 @@ void CKaraoke_Kiryu::Tick(const _float& fTimeDelta)
 	m_pModelCom->Play_Animation_Separation(fTimeDelta, m_iFaceAnimIndex, m_SeparationAnimComs[FACE_ANIM], false, 3, 2.f);
 
 	Play_CutScene(fTimeDelta);
+
+	m_pRightHand->Tick(fTimeDelta);
 }
 
 void CKaraoke_Kiryu::Late_Tick(const _float& fTimeDelta)
@@ -139,6 +141,8 @@ void CKaraoke_Kiryu::Late_Tick(const _float& fTimeDelta)
 
 	if(CUTSCENE != m_eAnimComType)
 		Compute_Height();
+
+	m_pRightHand->Late_Tick(fTimeDelta);
 }
 
 HRESULT CKaraoke_Kiryu::Render()
@@ -358,6 +362,7 @@ void CKaraoke_Kiryu::Free()
 	//Safe_Release(m_pNavigationCom);
 	Safe_Release(m_pAnimCom);
 	Safe_Release(m_pCameraModel);
+	Safe_Release(m_pRightHand);
 
 	__super::Free();
 }

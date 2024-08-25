@@ -107,6 +107,11 @@ HRESULT CUIKaraoke_Play::Tick(const _float& fTimeDelta)
         pPlayer->Set_CutSceneAnim();
     }
 
+    if (m_pGameInstance->GetKeyState(DIK_LCONTROL))
+    {
+        m_pGameInstance->Set_SoundPosition(TEXT("Bakamita.mp3"), SOUND_BGM, 86.028);
+    }
+
     m_Lyrics->Tick(fTimeDelta);
 
     for (size_t i = 0; i < UILIST_END; i++)
