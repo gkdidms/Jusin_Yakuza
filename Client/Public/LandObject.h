@@ -111,6 +111,7 @@ protected:
     virtual void Animation_Event();
     virtual void RimLight_Event();
     virtual void Trail_Event();
+    virtual void Sound_Event();
 
     virtual _bool Checked_Animation_Ratio(_float fRatio);
 

@@ -340,6 +340,22 @@ void CLandObject::Trail_Event()
 	}
 }
 
+void CLandObject::Sound_Event()
+{
+	auto& pCurEvents = m_pData->Get_Current_SoundEvents();
+	for (auto& pEvent : pCurEvents)
+	{
+		_double CurPos = *(m_pModelCom->Get_AnimationCurrentPosition());
+		_double Duration = *(m_pModelCom->Get_AnimationDuration());
+
+		if (CurPos >= pEvent.fAinmPosition && CurPos < Duration)
+		{
+			wstring wstrSoundFile = m_pGameInstance->StringToWstring(pEvent.strSoundFileName);
+			m_pGameInstance->PlaySound_W(wstrSoundFile, static_cast<CHANNELID>(pEvent.iChannel), pEvent.fSoundVolume);
+		}
+	}
+}
+
 _bool CLandObject::Checked_Animation_Ratio(_float fRatio)
 {
 	if (fRatio < *m_pModelCom->Get_AnimationCurrentPosition() / *m_pModelCom->Get_AnimationDuration())

@@ -76,6 +76,14 @@ public:
         _float fForce;
     };
 
+    struct ANIMATION_SOUNDEVENTSTATE
+    {
+        _uint iChannel;
+        _float fAinmPosition;
+        _float fSoundVolume;
+        string strSoundFileName;
+    };
+
 
 private:
     CCharacterData();
@@ -114,6 +122,10 @@ public:
         return m_RadialEvents;
     }
 
+    const multimap<string, ANIMATION_SOUNDEVENTSTATE>& Get_SoundEvents() const {
+        return m_SoundEvents;
+    }
+
     const vector<ANIMATION_EVENT>& Get_CurrentEvents() const {
         return m_CurrentEvents;
     }
@@ -138,6 +150,10 @@ public:
         return m_CurrentRadialEvents;
     }
 
+    const vector<ANIMATION_SOUNDEVENTSTATE>& Get_Current_SoundEvents() const {
+        return m_CurrentSoundEvents;
+    }
+
 public:
     void Set_CurrentAnimation(string strAnimName);          //현재 애니메이션에 맞는 이벤트를 설정해둔다.
     void Set_CurrentCutSceneAnimation(string strAnimName);          //현재 애니메이션에 맞는 이벤트를 설정해둔다.
@@ -153,6 +169,7 @@ private:
     HRESULT Load_FaceEvent(string strFilePath);
     HRESULT Load_BloodEffectEvent(string strFilePath);
     HRESULT Load_RadialEvent(string strFilePath);
+    HRESULT Load_SoundEvent(string strFilePath);
 
 private:
     CGameInstance* m_pGameInstance = { nullptr };
@@ -184,6 +201,9 @@ private:
     // first: 애니메이션 이름, second: 래디얼 이벤트 정보
     multimap<string, ANIMATION_RADIALEVENTSTATE>		m_RadialEvents;
 
+    // first: 애니메이션 이름, second: 래디얼 이벤트 정보
+    multimap<string, ANIMATION_SOUNDEVENTSTATE>		m_SoundEvents;
+
 
     vector<ANIMATION_EVENT> m_CurrentEvents; 
     vector<ANIMATION_RIMLIGHTSTATE> m_CurrentRimEvents;
@@ -191,6 +211,7 @@ private:
     vector<ANIMATION_FACEEVENTSTATE> m_CurrentFaceEvents;
     vector<ANIMATION_BLOODEVENTSTATE> m_CurrentBloodEffectEvents;
     vector<ANIMATION_RADIALEVENTSTATE> m_CurrentRadialEvents;
+    vector<ANIMATION_SOUNDEVENTSTATE> m_CurrentSoundEvents;
 
 public:
     static CCharacterData* Create(class CLandObject* pCharacter);
