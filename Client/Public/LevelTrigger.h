@@ -23,6 +23,9 @@ public:
 private:
     virtual HRESULT Add_Components(void* pArg) override;
 
+private:
+    _float                      m_fMaxScale;
+
 public:
     static CLevelTrigger* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
     virtual CGameObject* Clone(void* pArg);

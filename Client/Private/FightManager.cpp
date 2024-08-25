@@ -91,6 +91,9 @@ void CFightManager::Set_FightStage(_bool isFightStage, CMonsterGroup* pMonsterGr
 			}
 			else
 			{
+				if (m_pGameInstance->Get_CurrentLevel() == LEVEL_CARCHASE)
+					return;
+
 				vector<CGameObject*> Monsters = m_pGameInstance->Get_GameObjects(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Monster"));
 
 				for (auto& pMonster : Monsters)
@@ -109,10 +112,12 @@ void CFightManager::Set_FightStage(_bool isFightStage, CMonsterGroup* pMonsterGr
 
 HRESULT CFightManager::Initialize()
 {
-	m_pTutorialManager = CTutorialManager::Create();
-	if (nullptr == m_pTutorialManager)
-		return E_FAIL;
-
+	if (m_pGameInstance->Get_CurrentLevel() == LEVEL_TUTORIAL)
+	{
+		m_pTutorialManager = CTutorialManager::Create();
+		if (nullptr == m_pTutorialManager)
+			return E_FAIL;
+	}
 	m_pGameInstance->Set_InvertColorDuration(1.f);
 
 	return S_OK;

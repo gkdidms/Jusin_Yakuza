@@ -81,11 +81,11 @@ void CUIManager::Set_TutorialText(wstring strText)
 	pScene->Set_Text(strText);
 }
 
-HRESULT CUIManager::Add_Target(_uint iIndex, class CCarChase_Monster* pMonster)
+HRESULT CUIManager::Add_Target(_uint iIndex, class CCarChase_Monster* pMonster, _bool isBullet)
 {
 	CUICarchase* pScene = dynamic_cast<CUICarchase*>(Find_Scene(TEXT("Carchase")));
 
-	return pScene->Add_TargetingRound(iIndex, pMonster);
+	return pScene->Add_TargetingRound(iIndex, pMonster, isBullet);
 }
 
 HRESULT CUIManager::Update_TargetMatrix(_uint iIndex, _matrix TargetMatrix, _float iHP)

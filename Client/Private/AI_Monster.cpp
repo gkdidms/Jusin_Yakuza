@@ -141,7 +141,7 @@ _uint CAI_Monster::Check_KRH(_uint iPlayerLv, _bool isBehine, _bool isAnimChange
 	{
 		if (isAnimChange)
 			*m_pState = iPlayerLv == 0 ? CMonster::MONSTER_DWN_DNF_BOUND : CMonster::MONSTER_DWN_DNF_BOUND_G;
-
+		m_pThis->Set_Down(true);
 		iDir = F;
 	}
 
@@ -848,6 +848,7 @@ _uint CAI_Monster::Get_DownDir()
 		|| *m_pState == CMonster::MONSTER_H23010_000_4
 		|| *m_pState == CMonster::MONSTER_H23020_000_4
 		|| *m_pState == CMonster::MONSTER_H23070_000_4
+		|| *m_pState == CMonster::MONSTER_H23250_000_2
 		|| *m_pState == CMonster::MONSTER_KRU_SYNC1_LAPEL_ATK_PUNCH
 		|| *m_pState == CMonster::MONSTER_KRU_SYNC1_NECK_ATK_KICK)
 		return DIR_F;
@@ -897,6 +898,33 @@ CBTNode::NODE_STATE CAI_Monster::Chcek_Sync()
 	{
 		m_fSyncTime = 0.f;
 		return CBTNode::FAIL;
+	}
+
+	//QTE에서 sync로 옮김
+	if (*m_pState == CMonster::MONSTER_H23250_000_2
+		|| *m_pState == CMonster::MONSTER_A60300_000_2
+		|| *m_pState == CMonster::MONSTER_A60330_000_2
+		|| *m_pState == CMonster::MONSTER_A60350_000_2)
+	{
+		if (m_pAnimCom[*m_pCurrentAnimType]->Get_AnimFinished())
+		{
+			if (m_pThis->isQTEResult() == 1)
+			{
+				//성공
+				m_pThis->Set_Down(true);
+			}
+			else if (m_pThis->isQTEResult() == 2)
+			{
+				*m_pCurrentAnimType = CLandObject::DEFAULT;
+				Reset_State();
+			}
+
+			m_isQTE = true;
+			m_isSync = false;
+			return CBTNode::SUCCESS;
+		}
+
+		return CBTNode::RUNNING;
 	}
 		
 	if (*m_pState == CMonster::MONSTER_SYNC1_LEG_LP ||
@@ -1074,7 +1102,7 @@ CBTNode::NODE_STATE CAI_Monster::Check_Sway()
 {
 	m_pThis->Set_Down(false);
 
-	if (m_isGuard || m_iSkill == SKILL_HIT || m_isAttack || m_isPlayerDownAtk)
+	if (m_isGuard || m_iSkill == SKILL_HIT || m_isAttack || m_isPlayerDownAtk || m_iSkill == SKILL_QTE)
 	{
 		m_isSway = false;
 		return CBTNode::FAIL;	

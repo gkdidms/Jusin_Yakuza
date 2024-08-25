@@ -39,6 +39,8 @@ HRESULT CChapter1_1::Initialize(void* pArg)
 	_matrix PlayerMoveMatrix = XMMatrixScaling(1.f, 1.f, 1.f)* XMMatrixRotationRollPitchYaw(XMConvertToRadians(0.f), XMConvertToRadians(88.167f), XMConvertToRadians(0.f))* XMMatrixTranslation(19.911f, 0.143f, 60.127f);
 	pPlayer->Get_TransformCom()->Set_WorldMatrix(PlayerMoveMatrix);
 
+	m_pUIManager->Fade_Out();
+
 	m_pFileTotalMgr->Setting_Start_Cinemachine(8);
 
 	return S_OK;

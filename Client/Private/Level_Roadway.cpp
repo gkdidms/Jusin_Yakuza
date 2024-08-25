@@ -47,10 +47,8 @@ HRESULT CLevel_Roadway::Initialize()
 	m_pFightManager->Initialize();
 
 	m_pUIManager->Fade_Out();
-	m_pFightManager->Set_FightStage(true);
-	m_pSystemManager->Set_Camera(CAMERA_CARCHASE);
 
-	m_pUIManager->Fade_Out();
+	m_pSystemManager->Set_Camera(CAMERA_CARCHASE);
 
 	m_fRadialTime = m_pGameInstance->Get_Random(MIN_TIME, MAX_TIME);
 
@@ -88,22 +86,22 @@ void CLevel_Roadway::Tick(const _float& fTimeDelta)
 			RadialOffTimer(fTimeDelta);
 
 		RadialValue_Control();
-	}
 
-	if (m_pFightManager->Tick(fTimeDelta))
-	{
-		if (!m_pUIManager->isOpen(TEXT("Fade")))
+		if (m_pFightManager->Tick(fTimeDelta))
 		{
-			m_pUIManager->Open_Scene(TEXT("Fade"));
-			m_pUIManager->Fade_In();
-	}
-		else
-		{
-			if (m_pUIManager->isFindFinished())
+			if (m_isFadeFin && m_pUIManager->isFindFinished())
+			{
 				m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_DOGIMAZO));
+				return;
+			}
+
+			if (!m_pUIManager->isOpen(TEXT("Fade")))
+			{
+				m_pUIManager->Fade_In();
+				m_isFadeFin = true;
+			}
 		}
 	}
-
 #ifdef _DEBUG
     SetWindowText(g_hWnd, TEXT("ÃÑ°ÝÀü ¸Ê"));
 #endif

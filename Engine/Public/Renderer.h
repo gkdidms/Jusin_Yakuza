@@ -255,7 +255,7 @@ private:
                 _bool m_isRimLight = { true };
 #else
             private:
-                _bool m_isHDR = { false };
+                _bool m_isHDR = { true };
                 _bool m_isSSAO = { true };
                 _bool m_isPBR = { true };
                 _bool m_isBOF = { true };
@@ -263,7 +263,7 @@ private:
                 _bool m_isRimLight = { true };
 #endif // DEBUG
 
-    _float m_fHDRLight = { 1.f };
+    _float m_fHDRLight = { 1.5f };
 
     _float m_fSSAORadiuse = { 0.04f };
     _float m_fSSAOBlur = { 2.f };
