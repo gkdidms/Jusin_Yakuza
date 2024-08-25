@@ -48,17 +48,40 @@ void CLevelTrigger::Late_Tick(const _float& fTimeDelta)
 
 	if (false == m_bTriggerDead)
 	{
+
 		// 조건 충족
-		if (m_pColliderCom->Intersect(dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject(m_iCurrentLevel, TEXT("Layer_Player"), 0))->Get_PlayerCollider(),5))
+		if (m_pColliderCom->Intersect(dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject(m_iCurrentLevel, TEXT("Layer_Player"), 0))->Get_PlayerCollider(), m_fMaxScale * 2))
 		{
+			// 몬스터 확인
 			vector<CGameObject*> pMonsters = m_pGameInstance->Get_GameObjects(m_iCurrentLevel, TEXT("Layer_Monster"));
 
 			bool		bDeadCheck = true;
-			for (int i = 0; i < pMonsters.size(); i++)
+
+			if (0 != pMonsters.size())
 			{
-				if (false == pMonsters[i]->isObjectDead())
+				for (int i = 0; i < pMonsters.size(); i++)
 				{
-					bDeadCheck = false;
+					if (false == pMonsters[i]->isObjectDead())
+					{
+						bDeadCheck = false;
+					}
+				}
+			}
+			
+
+			pMonsters.clear();
+
+			// 요네다 확인
+			pMonsters = m_pGameInstance->Get_GameObjects(m_iCurrentLevel, TEXT("Layer_Yoneda"));
+
+			if (0 != pMonsters.size())
+			{
+				for (int i = 0; i < pMonsters.size(); i++)
+				{
+					if (false == pMonsters[i]->isObjectDead())
+					{
+						bDeadCheck = false;
+					}
 				}
 			}
 
@@ -102,6 +125,14 @@ HRESULT CLevelTrigger::Add_Components(void* pArg)
 	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Collider"),
 		TEXT("Com_Collider"), reinterpret_cast<CComponent**>(&m_pColliderCom), &ColliderDesc)))
 		return E_FAIL;
+
+	float	fMaxScale = triggerDesc->tTriggerDesc.vTransform._11;
+
+	fMaxScale = fMaxScale < triggerDesc->tTriggerDesc.vTransform._22 ? triggerDesc->tTriggerDesc.vTransform._22 : fMaxScale;
+	fMaxScale = fMaxScale < triggerDesc->tTriggerDesc.vTransform._33 ? triggerDesc->tTriggerDesc.vTransform._33 : fMaxScale;
+
+	m_fMaxScale = fMaxScale;
+
 
 	return S_OK;
 }

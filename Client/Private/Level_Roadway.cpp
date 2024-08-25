@@ -44,14 +44,9 @@ HRESULT CLevel_Roadway::Initialize()
 	if (FAILED(Ready_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
 
-	m_pFightManager->Initialize();
-
 	m_pUIManager->Fade_Out();
-	m_pFightManager->Set_FightStage(true);
+
 	m_pSystemManager->Set_Camera(CAMERA_CARCHASE);
-
-	m_pUIManager->Fade_Out();
-
 	m_fRadialTime = m_pGameInstance->Get_Random(MIN_TIME, MAX_TIME);
 
     return S_OK;
@@ -67,7 +62,7 @@ void CLevel_Roadway::Tick(const _float& fTimeDelta)
 			m_isStart = true;
 		}
 	}
-
+	
 	if (m_pUIManager->isTitleEnd() && !m_isTitleEnd)
 	{
 		m_pUIManager->Open_Scene(TEXT("Carchase"));
@@ -78,9 +73,11 @@ void CLevel_Roadway::Tick(const _float& fTimeDelta)
 		m_pGameInstance->Set_RadialSample(static_cast<_uint>(RADIAL_SAMPLE_MIN));
 	}
 	
+	m_pCarChaseManager->Tick();
+
 	if (m_isTitleEnd)
 	{
-		m_pCarChaseManager->Tick();
+
 
 		if (m_isRadialOnEventPlay)
 			RadialOnTimer(fTimeDelta);

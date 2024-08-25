@@ -95,7 +95,7 @@ void CUIMainMenu::Action()
 	}
 	case 2:
 	{
-		if (FAILED(m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_TOKOSTREET))))
+		if (FAILED(m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_DOGIMAZO_LOBBY))))
 			return;
 		break;
 	}
