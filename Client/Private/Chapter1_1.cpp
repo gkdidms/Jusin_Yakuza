@@ -19,10 +19,6 @@ HRESULT CChapter1_1::Initialize(void* pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
-	//씬 카메라 이동 후 스크립트 텍스쳐 나옴
-	m_pUIManager->Open_Scene(TEXT("Talk"));
-	m_pUIManager->Start_Talk(m_iScriptIndex);
-
 	//dynamic_cast<CPlayerCamera*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Camera"), CAMERA_PLAYER))->Set_RotationBlock(true);
 	
 	m_pNishiki = dynamic_cast<CNishiki*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Nishiki"), 0));
@@ -48,36 +44,51 @@ HRESULT CChapter1_1::Initialize(void* pArg)
 
 _bool CChapter1_1::Execute()
 {
-	if (m_pUIManager->isTalkFinished())
+	if (m_isStart == false)
 	{
-		m_pNishiki->Set_State(CNishiki::IDLE);
-		Player_Stop(false);
-		PlayerCom_Stop(false);
-		return true;
+		if (m_pUIManager->isFindFinished())
+		{
+			//씬 카메라 이동 후 스크립트 텍스쳐 나옴
+			m_pUIManager->Close_Scene();
+			m_pUIManager->Open_Scene(TEXT("Talk"));
+			m_pUIManager->Start_Talk(m_iScriptIndex);
+
+			m_isStart = true;
+		}
+	}
+	else
+	{
+		if (m_pUIManager->isTalkFinished())
+		{
+			m_pNishiki->Set_State(CNishiki::IDLE);
+			Player_Stop(false);
+			PlayerCom_Stop(false);
+			return true;
+		}
+
+		//
+		if (m_pGameInstance->GetKeyState(DIK_E) == TAP)
+		{
+			//UI틱이 더 느림 -> index를 하나 씩 더 느리게 봐야 함.
+			if (m_pUIManager->Get_CurrentPage() == 2)
+				m_pFileTotalMgr->Setting_Start_Cinemachine(9);
+			else if (m_pUIManager->Get_CurrentPage() == 3)
+				m_pFileTotalMgr->Setting_Start_Cinemachine(10);
+			else if (m_pUIManager->Get_CurrentPage() == 5)
+				m_pFileTotalMgr->Setting_Start_Cinemachine(11);
+			else if (m_pUIManager->Get_CurrentPage() == 6)
+				m_pFileTotalMgr->Setting_Start_Cinemachine(12);
+			else if (m_pUIManager->Get_CurrentPage() == 7)
+				m_pFileTotalMgr->Setting_Start_Cinemachine(13);
+			else if (m_pUIManager->Get_CurrentPage() == 9)
+				m_pFileTotalMgr->Setting_Start_Cinemachine(14);
+			else if (m_pUIManager->Get_CurrentPage() == 10)
+				m_pFileTotalMgr->Setting_Start_Cinemachine(11);
+			else if (m_pUIManager->Get_CurrentPage() == 13)
+				m_pFileTotalMgr->Setting_Start_Cinemachine(15);
+		}
 	}
 
-	//
-	if (m_pGameInstance->GetKeyState(DIK_E) == TAP)
-	{
-		//UI틱이 더 느림 -> index를 하나 씩 더 느리게 봐야 함.
-		if (m_pUIManager->Get_CurrentPage() == 2)
-			m_pFileTotalMgr->Setting_Start_Cinemachine(9);
-		else if (m_pUIManager->Get_CurrentPage() == 3)
-			m_pFileTotalMgr->Setting_Start_Cinemachine(10);
-		else if (m_pUIManager->Get_CurrentPage() == 5)
-			m_pFileTotalMgr->Setting_Start_Cinemachine(11);
-		else if (m_pUIManager->Get_CurrentPage() == 6)
-			m_pFileTotalMgr->Setting_Start_Cinemachine(12);
-		else if (m_pUIManager->Get_CurrentPage() == 7)
-			m_pFileTotalMgr->Setting_Start_Cinemachine(13);
-		else if (m_pUIManager->Get_CurrentPage() == 9)
-			m_pFileTotalMgr->Setting_Start_Cinemachine(14);
-		else if (m_pUIManager->Get_CurrentPage() == 10)
-			m_pFileTotalMgr->Setting_Start_Cinemachine(11);
-		else if (m_pUIManager->Get_CurrentPage() == 13)
-			m_pFileTotalMgr->Setting_Start_Cinemachine(15);
-	}
-		
 	return false;
 }
 
