@@ -64,6 +64,12 @@ HRESULT CYoneda::Initialize(void* pArg)
 
 	m_iWeaponType = KNIFE; // 무기 체인지 값
 
+	m_iHandAnimIndex = HAND_MIN;
+	On_Separation_Hand(0);			// 양손 분리 켜둠
+
+	m_iFaceAnimIndex = 0;
+	On_Separation_Face();
+
 	return S_OK;
 }
 
@@ -74,6 +80,10 @@ void CYoneda::Priority_Tick(const _float& fTimeDelta)
 void CYoneda::Tick(const _float& fTimeDelta)
 {
 	__super::Tick(fTimeDelta);
+
+	m_pModelCom->Play_Animation_Separation(fTimeDelta, m_iHandAnimIndex, m_SeparationAnimComs[HAND_ANIM], false, (_int)HAND_ANIM);
+	m_pModelCom->Play_Animation_Separation(fTimeDelta, m_iFaceAnimIndex, m_SeparationAnimComs[FACE_ANIM], false, (_int)FACE_ANIM);
+
 }
 
 void CYoneda::Late_Tick(const _float& fTimeDelta)
@@ -98,19 +108,19 @@ HRESULT CYoneda::Add_Components()
 		TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
 		return E_FAIL;
 
-	////Prototype_Component_Anim_YonedaFace
-	//CAnim* pAnimCom = { nullptr };
-	//if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Anim_YonedaFace"),
-	//	TEXT("Com_Anim_Face"), reinterpret_cast<CComponent**>(&pAnimCom))))
-	//	return E_FAIL;
-	//m_SeparationAnimComs.push_back(pAnimCom);
+	//Prototype_Component_Anim_YonedaFace
+	CAnim* pAnimCom = { nullptr };
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Anim_YonedaFace"),
+		TEXT("Com_Anim_Face"), reinterpret_cast<CComponent**>(&pAnimCom))))
+		return E_FAIL;
+	m_SeparationAnimComs.push_back(pAnimCom);
 
-	////Prototype_Component_Anim_Hand
-	//pAnimCom = { nullptr };
-	//if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Anim_Hand"),
-	//	TEXT("Com_Anim_Hand"), reinterpret_cast<CComponent**>(&pAnimCom))))
-	//	return E_FAIL;
-	//m_SeparationAnimComs.push_back(pAnimCom);
+	//Prototype_Component_Anim_Hand
+	pAnimCom = { nullptr };
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Anim_Hand"),
+		TEXT("Com_Anim_Hand"), reinterpret_cast<CComponent**>(&pAnimCom))))
+		return E_FAIL;
+	m_SeparationAnimComs.push_back(pAnimCom);
 
 	//행동트리 저장
 	CAI_Yoneda::AI_YONEDA_DESC AIDesc{};

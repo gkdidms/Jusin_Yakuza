@@ -262,6 +262,8 @@ public:
     void Set_Script(_bool isScript) { m_isScript = isScript; }
     void Set_Animation(string strAnimName, _bool isLoop = true);
 
+    void Set_QTEResult(_uint iValue) { m_iQTEResult = iValue; }
+
     void Reset_Monster();
 
     void Setting_SyncAnim_EndPosition();
@@ -339,6 +341,8 @@ protected:
     _bool m_isKeepSynchronizing = { false };            // 싱크애님을 유지할것인지?
 
     int     m_iNaviRouteNum = { 0 };
+
+    _uint m_iQTEResult = { 0 };         //0: None(아직안함) 1: 성공 2: 실패
 
 private: // 스크립트 진행 용
     _bool m_isScript = { false };
