@@ -52,7 +52,7 @@ _bool CSoundMgr::PlaySound_W(const wstring pSoundKey, CHANNELID eID, float fVolu
 
 	if (FMOD_Channel_IsPlaying(m_pChannelArr[eID], &bPlay))
 	{
-		FMOD_System_PlaySound(m_pSystem, iter->second, nullptr, FALSE, &m_pChannelArr[eID]);
+ 		FMOD_System_PlaySound(m_pSystem, iter->second, nullptr, FALSE, &m_pChannelArr[eID]);
 		isPlay = true;
 	}
 

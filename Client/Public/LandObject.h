@@ -132,6 +132,7 @@ public:
     virtual string Get_CurrentAnimationName() = 0;
 
     virtual void Off_Attack_Colliders();                               // 어택 콜라이더만 전부 끄는 기능
+    virtual void Off_Trails();                               // 어택 콜라이더만 전부 끄는 기능
 
     /* Getter */
 public:

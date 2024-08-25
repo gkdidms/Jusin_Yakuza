@@ -70,8 +70,8 @@ void CEffectManager::Money(CEffect::EFFECT_DESC& EffectDesc)
     m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_Coin"), TEXT("Layer_Particle"), &EffectDesc);
 
     m_pGameInstance->PlaySound_W(TEXT("Money.wav"), SOUND_EFFECT);
-    //m_pGameInstance->PlaySound_W(TEXT("Coin_Get.wav"), SOUND_EFFECT_SUB);
-    //m_pGameInstance->PlaySound_W(TEXT("Coin.wav"), SOUND_EFFECT_SUB);
+    m_pGameInstance->PlaySound_W(TEXT("Coin_Get.wav"), SOUND_EFFECT_SUB);
+    m_pGameInstance->PlaySound_W(TEXT("Coin.wav"), SOUND_EFFECT_THIRD);
 }
 
 void CEffectManager::Heli_Fire(CEffect::EFFECT_DESC& EffectDesc)

@@ -99,6 +99,8 @@ namespace Engine
 		SOUND_VAN,
 		SOUND_SEDAN,
 		SOUND_HELI,
+		SOUND_EFFECT_SUB,
+		SOUND_EFFECT_THIRD,
 		SOUND_END
 	};
 
