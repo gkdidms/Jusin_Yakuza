@@ -112,14 +112,14 @@ HRESULT CQuestManager::Ready_Quest()
             QUEST_MAIN,
             0,
 
-            iQuestIndex++,
+            iQuestIndex++, // 0
             iNextQuestIndex++
         ),
         QUEST_INFO(
             QUEST_TALK,
             0,
 
-            iQuestIndex++,
+            iQuestIndex++, // 1
             iNextQuestIndex++,
             -1,
             -1,
@@ -129,7 +129,7 @@ HRESULT CQuestManager::Ready_Quest()
             QUEST_MAIN,
             1,
 
-            iQuestIndex++,
+            iQuestIndex++, // 2
             iNextQuestIndex++
         ),
     };
@@ -142,7 +142,7 @@ HRESULT CQuestManager::Ready_Quest()
             QUEST_MAIN,
             2,
 
-            iQuestIndex++,
+            iQuestIndex++, // 3
             iNextQuestIndex++
         )
     };
@@ -155,7 +155,7 @@ HRESULT CQuestManager::Ready_Quest()
             QUEST_MAIN,
             3,
 
-            iQuestIndex++,
+            iQuestIndex++, // 4
             iNextQuestIndex++
         )
     };
@@ -168,7 +168,7 @@ HRESULT CQuestManager::Ready_Quest()
             QUEST_MAIN,
             4,
 
-            iQuestIndex++,
+            iQuestIndex++, // 5
             iNextQuestIndex++
         )
     };
@@ -181,7 +181,7 @@ HRESULT CQuestManager::Ready_Quest()
             QUEST_MAIN,
             5,
 
-            iQuestIndex++,
+            iQuestIndex++, // 6
             iNextQuestIndex++
         ),
         QUEST_INFO(
