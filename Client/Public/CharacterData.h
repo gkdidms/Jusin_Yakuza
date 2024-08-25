@@ -82,6 +82,7 @@ public:
         _float fAinmPosition;
         _float fSoundVolume;
         string strSoundFileName;
+        _bool isPlayed = { false };
     };
 
 
@@ -150,7 +151,7 @@ public:
         return m_CurrentRadialEvents;
     }
 
-    const vector<ANIMATION_SOUNDEVENTSTATE>& Get_Current_SoundEvents() const {
+    vector<ANIMATION_SOUNDEVENTSTATE>& Get_Current_SoundEvents() {
         return m_CurrentSoundEvents;
     }
 

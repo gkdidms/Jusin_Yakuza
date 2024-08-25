@@ -207,6 +207,11 @@ void CCharacterData::Set_CurrentAnimation(string strAnimName)
 		}
 	}
 
+	// 바꾸기 전에 초기화해주기.
+	// 어차피 복사생성돼서 안해도될듯
+	//for (auto& pSoundEvent : m_CurrentSoundEvents)
+	//	pSoundEvent.isPlayed = false;
+
 	m_CurrentSoundEvents.clear();
 	auto sound_lower_bound_iter = m_SoundEvents.lower_bound(strAnimName);
 
