@@ -311,6 +311,7 @@ void CMonster::Set_Start(_bool isStart)
 
 void CMonster::Set_Animation(string strAnimName, _bool isLoop)
 {
+	m_iCurrentAnimType = CUTSCENE;
 	m_strAnimName = strAnimName;
 	m_isAnimLoop = isLoop;
 

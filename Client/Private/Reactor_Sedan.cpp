@@ -27,6 +27,8 @@ HRESULT CReactor_Sedan::Initialize(void* pArg)
 
 	//m_strAnimName = "w_mngcar_e_van_wpr_aim_st_1";
 
+	m_pGameInstance->Play_Loop(TEXT("e_car_appear_run_loop1_0.wav"), SOUND_SEDAN, 0.5f);
+
 	m_iAnim = 7;
 
 	return S_OK;
@@ -80,7 +82,8 @@ void CReactor_Sedan::Change_Animation()
 		m_strAnimName = "w_mngcar_c_car_ded_b_1";
 		if (!m_isSound)
 		{
-			m_pGameInstance->PlaySound_W(TEXT("467e [3].wav"), SOUND_ENEMY_EFFECT, m_fSound);
+			m_pGameInstance->StopSound(SOUND_SEDAN);
+			m_pGameInstance->PlaySound_W(TEXT("467e [3].wav"), SOUND_SEDAN, m_fSound);
 			m_isSound = true;
 		}
 	}

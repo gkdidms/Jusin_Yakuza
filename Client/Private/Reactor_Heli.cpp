@@ -27,6 +27,8 @@ HRESULT CReactor_Heli::Initialize(void* pArg)
 
 	m_strAnimName = "w_mngcar_e_hel_rkt_stand";
 
+	m_pGameInstance->Play_Loop(TEXT("467e [28].wav"), SOUND_HELI, 0.5f);
+
 	return S_OK;
 }
 
@@ -90,12 +92,6 @@ void CReactor_Heli::Change_Animation()
 	if (m_isObjectDead)
 	{
 		m_strAnimName = "w_mngcar_e_hel_rkt_reload_1";
-
-		if (!m_isSound)
-		{
-			m_pGameInstance->PlaySound_W(TEXT("e_bike_crush_0.wav"), SOUND_ENEMY_EFFECT, m_fSound);
-			m_isSound = true;
-		}
 	}
 
 
@@ -114,7 +110,11 @@ void CReactor_Heli::Change_Animation()
 
 
 	if (m_iAnim == 0 && m_pModelCom->Get_AnimFinished())
+	{
 		m_isDead = true;
+		m_pGameInstance->StopSound(SOUND_HELI);
+	}
+		
 }
 
 HRESULT CReactor_Heli::Add_Components()

@@ -130,6 +130,8 @@ CBTNode::NODE_STATE CAI_Heli::Hit()
 	*m_pState = CCarChase_Monster::CARCHASE_DAM_LV_2;
 	m_isHit = true;
 
+	Play_Hit();
+
 	return CBTNode::SUCCESS;
 }
 
@@ -190,17 +192,26 @@ CBTNode::NODE_STATE CAI_Heli::ATK_Shot()
 		m_isAttack = true;
 
 		if (*m_pWeaponType == CCarChase_Monster::GAT)
+		{
+			m_pGameInstance->PlaySound_W(TEXT("e_gunshot_gatling_0.wav"), SOUND_ENEMY_EFFECT, 0.5f);
+
 			*m_pState = CCarChase_Monster::CARCHASE_SHOT_F_ST;
-		else
+		}	
+		else if (*m_pWeaponType == CCarChase_Monster::RKT)
+		{
 			*m_pState = CCarChase_Monster::CARCHASE_AIM_SHOT;
 
-		if (*m_pWeaponType == CCarChase_Monster::RKT)
-		{
+			m_pGameInstance->PlaySound_W(TEXT("e_gunshot_rocket_0.wav"), SOUND_ENEMY_EFFECT, 0.5f);
 			//ºÒ·¿ »ý¼º
 			CCarChase_CATBullet::BULLET_DESC Desc{};
 			Desc.pParentMatrix = m_pThis->Get_ModelMatrix();
 			if (FAILED(m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_RcktGunBullet"), TEXT("Layer_Bullet"), &Desc)))
 				return CBTNode::FAIL;
+		}
+		else
+		{
+			m_pGameInstance->PlaySound_W(TEXT("e_gunshot_handgun_0.wav"), SOUND_ENEMY_EFFECT, 0.5f);
+			*m_pState = CCarChase_Monster::CARCHASE_AIM_SHOT;
 		}
 
 		m_pPlayer->OnHit(5.f);

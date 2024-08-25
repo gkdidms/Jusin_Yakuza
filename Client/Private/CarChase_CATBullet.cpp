@@ -37,6 +37,7 @@ void CCarChase_CATBullet::Set_Coll()
 		m_isDead = true;
 
 		m_pUIManager->Remove_Target(m_iObjectIndex);
+		m_pGameInstance->PlaySound_W(TEXT("rocket_damage_1.wav"), SOUND_EFFECT, 0.5f);
 	}
 }
 
@@ -307,6 +308,8 @@ _bool CCarChase_CATBullet::Check_Coll()
 	{
 		//충돌이 일어남
 		Set_Dead();
+		m_pGameInstance->PlaySound_W(TEXT("rocket_damage_0.wav"), SOUND_EFFECT, 0.5f);
+
 		m_pUIManager->Remove_Target(m_iObjectIndex);
 
 		m_pTarget = dynamic_cast<CHighway_Taxi*>(m_pGameInstance->Get_GameObject(m_iCurrentLevel, TEXT("Layer_Taxi"), 0))->Get_Kiryu();
