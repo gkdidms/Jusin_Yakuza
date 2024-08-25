@@ -27,6 +27,7 @@ void CFightManager::Set_FightStage(_bool isFightStage, CMonsterGroup* pMonsterGr
 	m_isFightStage = isFightStage;
 	m_isStreetFight = false;
 	m_isInverseEnd = false;
+	m_isMoney = false;
 
 	if (m_isFightStage)
 	{
@@ -140,6 +141,8 @@ _bool CFightManager::Tick(const _float& fTimeDelta)
 					//플레이어도 다시 돌아온다.
 					CPlayer* pPlayer = dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"), 0));
 					pPlayer->Style_Change(CPlayer::ADVENTURE);
+					m_pGameInstance->StopSound(SOUND_BGM);
+
 					return true;
 				}
 				m_pGameInstance->Set_InvertColor(true);
@@ -203,9 +206,12 @@ _bool CFightManager::Tick(const _float& fTimeDelta)
 
 				_float fRatio = (m_fFinishDuration - m_fFinishTime * 1.5f) / m_fFinishDuration;
 
-				m_pUIManager->Open_Scene(TEXT("FightScore"));
-
-				dynamic_cast<CUIFightScore*>(m_pUIManager->Find_Scene(TEXT("FightScore")))->AddMoney(CPlayer::PlayerInfo.iMoney);
+				if (!m_isMoney)
+				{
+					m_isMoney = true;
+					m_pUIManager->Open_Scene(TEXT("FightScore"));
+					dynamic_cast<CUIFightScore*>(m_pUIManager->Find_Scene(TEXT("FightScore")))->AddMoney(CPlayer::PlayerInfo.iMoney);
+				}
 
 				m_pGameInstance->Set_TimeSpeed(TEXT("Timer_60"), fRatio < 0 ? 0.f : fRatio);
 				m_pGameInstance->Set_TimeSpeed(TEXT("Timer_Player"), fRatio < 0 ? 0.f : fRatio);

@@ -56,6 +56,7 @@ _bool CChapter1_0::Execute()
 		{
 			m_pSystemManager->Set_Camera(CAMERA_PLAYER);
 
+			m_pGameInstance->PlaySound_W(TEXT("mission.wav"), SOUND_UI, 1.f);
 			m_pUIManager->Close_Scene();
 			m_pUIManager->Open_Scene(TEXT("Title"));
 			m_pUIManager->Set_TitleStart(true); // 니시키야마를 찾아라

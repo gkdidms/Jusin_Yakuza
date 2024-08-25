@@ -63,6 +63,7 @@ void CLevel_Street::Tick(const _float& fTimeDelta)
 		{
 			if (m_pGameInstance->Get_CurrentLevel() == LEVEL_TOKOSTREET)
 				m_pQuestManager->Start_Quest(CQuestManager::CHAPTER_5);
+			m_isStart = true;
 		}
 	}
 
@@ -81,7 +82,6 @@ void CLevel_Street::Tick(const _float& fTimeDelta)
 			m_pUIManager->Fade_In();
 			m_isFadeFin = true;
 		}
-
 	}
 
 

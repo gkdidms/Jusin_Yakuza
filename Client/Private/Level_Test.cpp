@@ -70,8 +70,8 @@ HRESULT CLevel_Test::Initialize()
 	if (FAILED(Ready_Test_Hyewon()))
 		return E_FAIL;
 
-	//m_pFileTotalManager->Set_MapObj_In_Client(71, LEVEL_TEST);
-	//m_pFileTotalManager->Set_Lights_In_Client(99);
+	//m_pFileTotalManager->Set_MapObj_In_Client(7, LEVEL_TEST);
+	//m_pFileTotalManager->Set_Lights_In_Client(7);
 	//m_pFileTotalManager->Set_Collider_In_Client(3, LEVEL_TEST);
 	//m_pFileTotalManager->Set_Trigger_In_Client(80, LEVEL_TEST);
 
