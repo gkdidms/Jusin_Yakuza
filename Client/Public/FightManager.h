@@ -52,6 +52,8 @@ private:
 	_bool m_isTutorialEnd = { false };
 	_bool m_isTutorialStart = { false };
 
+	_bool m_isMoney = { false };
+
 public:
 	virtual void Free();
 };

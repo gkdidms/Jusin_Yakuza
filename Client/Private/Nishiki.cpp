@@ -35,6 +35,8 @@ HRESULT CNishiki::Initialize(void* pArg)
 	if (FAILED(Add_CharacterData()))
 		return E_FAIL;
 
+	Ready_RootBoneAnimList();
+
 	return S_OK;
 }
 
@@ -65,7 +67,10 @@ void CNishiki::Tick(const _float& fTimeDelta)
 		m_pTransformCom->LookAt(pPlayer->Get_TransformCom()->Get_State(CTransform::STATE_POSITION));
 	}
 
-	Synchronize_Root(fTimeDelta);
+	if (m_iState == WALK_ST || m_iState == WALK_LP || m_iState == WALK_EN)
+	{
+		Synchronize_Root(fTimeDelta);
+	}
 }
 
 void CNishiki::Late_Tick(const _float& fTimeDelta)
@@ -106,10 +111,14 @@ void CNishiki::Change_Animation(const _float fTimeDelta)
 	CModel::ANIMATION_DESC Desc{ m_iAnimIndex, m_isAnimLoop};
 	m_pModelCom->Set_AnimLoop(m_iAnimIndex, m_isAnimLoop);
 	m_pModelCom->Set_AnimationIndex(m_iAnimIndex, m_fChangeInterval);
-	if(m_iState == CHEER)
-		m_pModelCom->Play_Animation(fTimeDelta * m_fOffset, Desc, false);
-	else
-		m_pModelCom->Play_Animation(fTimeDelta * m_fOffset, Desc);
+
+	//루트본 맞춰주는 기능
+	_bool isNoneRoot = { true };
+	for (_uint& index : m_RootBoneAnimList)
+	{
+		if (m_iAnimIndex == index) isNoneRoot = false;
+	}
+	m_pModelCom->Play_Animation(fTimeDelta * m_fOffset, Desc, isNoneRoot);
 }
 
 HRESULT CNishiki::Add_Components()
@@ -144,6 +153,22 @@ HRESULT CNishiki::Add_Components()
 	}
 
 	return S_OK;
+}
+
+void CNishiki::Ready_RootBoneAnimList()
+{
+	/*
+	*	[0]	m_nml_act_cheer_stand_clap[m_nml_act_cheer_stand_clap]
+		[1]	m_nml_act_talk_b_lp[m_nml_act_talk_b_lp]
+		[2]	m_nml_set_stand_lookfor_02[m_nml_set_stand_lookfor_02]
+		[3]	p_mov_walk_en[p_mov_walk_en]
+		[4]	p_mov_walk_fast[p_mov_walk_fast]
+		[5]	p_mov_walk_st[p_mov_walk_st]
+	*/
+
+	m_RootBoneAnimList.push_back(0);		//m_nml_act_cheer_stand_clap
+	m_RootBoneAnimList.push_back(1);		//m_nml_act_talk_b_lp
+	m_RootBoneAnimList.push_back(2);		//m_nml_set_stand_lookfor_02
 }
 
 void CNishiki::Move(const _float& fTimeDelta)

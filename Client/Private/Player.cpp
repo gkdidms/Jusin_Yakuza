@@ -196,13 +196,15 @@ void CPlayer::Tick(const _float& fTimeDelta)
 	{
 		m_pModelCom->Play_Animation_Separation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")), m_iHandAnimIndex, m_SeparationAnimComs[HAND_ANIM], false, (_int)HAND_ANIM);
 		m_pModelCom->Play_Animation_Separation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")), m_iFaceAnimIndex, m_SeparationAnimComs[FACE_ANIM], false, (_int)FACE_ANIM);
-		m_pModelCom->Play_Animation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")));
+		m_pModelCom->Play_Animation_Separation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")), m_iDefaultAnimIndex, m_SeparationAnimComs[DEFAULT_ANIM], false, (_int)DEFAULT_ANIM);
+		m_pModelCom->Play_Animation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")), m_isRootAnim);
 		Play_CutScene();
 	}
 	else
 	{
 		m_pModelCom->Play_Animation_Separation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")), m_iHandAnimIndex, m_SeparationAnimComs[HAND_ANIM], false, (_int)HAND_ANIM);
 		m_pModelCom->Play_Animation_Separation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")), m_iFaceAnimIndex, m_SeparationAnimComs[FACE_ANIM], false, (_int)FACE_ANIM);
+		m_pModelCom->Play_Animation_Separation(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")), m_iDefaultAnimIndex, m_SeparationAnimComs[DEFAULT_ANIM], false, (_int)DEFAULT_ANIM);
 		Play_CutScene();
 	}
 #endif // _DEBUG
@@ -2183,11 +2185,14 @@ void CPlayer::Play_CutScene()
 		_double fRatio = *m_pModelCom->Get_AnimationCurrentPosition() / *m_pModelCom->Get_AnimationDuration();
 		pCamera->Set_CustomRatio(static_cast<_float>(fRatio));
 
+		m_pGameInstance->Set_RadialBlur(true);
+
 		pCamera->Set_TargetFoV(XMConvertToRadians(30.f));
 		pCamera->Start_Zoom();
 		
 		if (m_pModelCom->Get_AnimFinished())
 		{
+			m_pGameInstance->Set_RadialBlur(false);
 			m_isCutSceneStartMotion = false;
 			Reset_CutSceneEvent();
 			m_pTargetObject->Set_Sync(m_CutSceneAnimation[m_eCutSceneType]);

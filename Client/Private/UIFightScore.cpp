@@ -88,6 +88,7 @@ HRESULT CUIFightScore::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pC
 
 HRESULT CUIFightScore::Tick(const _float& fTimeDelta)
 {
+#ifdef _DEBUG
 
 	if (m_pGameInstance->GetKeyState(DIK_8) == TAP)
 	{
@@ -109,6 +110,7 @@ HRESULT CUIFightScore::Tick(const _float& fTimeDelta)
 		}
 
 	}
+#endif // _DEBUG
 
 	if (0 != m_iAddMoney)
 	{
@@ -116,7 +118,7 @@ HRESULT CUIFightScore::Tick(const _float& fTimeDelta)
 	}
 
 	Set_Money();
-
+	
 	if(m_CurrentKiryuMoney != m_TargetKiryuMoney)
 		Money_Anim();
 	if (FAILED(__super::Tick(fTimeDelta)))
@@ -125,7 +127,6 @@ HRESULT CUIFightScore::Tick(const _float& fTimeDelta)
 	if(!m_isEnd)
 	{
 		m_iCurrentTime += fTimeDelta;
-
 
 		if (m_iCurrentTime > 5.f)
 		{
@@ -138,8 +139,6 @@ HRESULT CUIFightScore::Tick(const _float& fTimeDelta)
 			m_pAddMoney->Close_UI();
 		}
 	}
-
-
 
 	for (auto& iter : m_Bonus)
 		iter->Tick(fTimeDelta);
@@ -197,7 +196,7 @@ void CUIFightScore::Set_Money()
 {
 	m_TargetKiryuMoney = m_CurrentKiryuMoney + m_iAddMoney;
 
-	if (m_fGetTime > m_fEndTime)
+	if (m_fEndTime < m_fGetTime)
 		m_fGetTime = m_fEndTime;
 
 	m_iAnimMoney = m_pGameInstance->Lerp(m_CurrentKiryuMoney, m_TargetKiryuMoney, m_fGetTime / m_fEndTime);
@@ -258,7 +257,6 @@ void CUIFightScore::Money_Anim()
 {
 	vector<CUI_Object*> pMoneyGroup = m_pMoney->Get_PartObjects();
 
-
 	string Number = to_string(m_iAnimMoney);
 	_int iIndex = 0;
 
@@ -269,7 +267,6 @@ void CUIFightScore::Money_Anim()
 
 		_int Row = OneNum / 5;
 		_int Col = OneNum % 5;
-
 
 		_float U1 = Col * U;
 		_float V1 = Row * V;

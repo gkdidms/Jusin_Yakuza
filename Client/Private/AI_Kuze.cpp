@@ -73,7 +73,7 @@ HRESULT CAI_Kuze::Initialize(void* pArg)
 	m_fDelayAttackDuration = 1.f;
 	m_iMonsterType = CMonster::KUZE;
 
-	m_fSwayDistance = _float2(1.3f, 1.9f);
+	m_fSwayDistance = _float2(1.2f, 1.9f);
 
 	return S_OK;
 }
@@ -260,7 +260,7 @@ CBTNode::NODE_STATE CAI_Kuze::QTE()
 		if (m_pAnimCom[*m_pCurrentAnimType]->Get_AnimFinished())
 		{	
 			*m_pCurrentAnimType = CLandObject::DEFAULT;
-
+			m_isQTE = true;
 			return CBTNode::SUCCESS;
 		}
 
@@ -558,6 +558,8 @@ CBTNode::NODE_STATE CAI_Kuze::ATK_Renda()
 
 			return CBTNode::SUCCESS;
 		}
+
+		return CBTNode::RUNNING;
 	}
 
 	if (m_iSkill == SKILL_CMD_RENDA)
