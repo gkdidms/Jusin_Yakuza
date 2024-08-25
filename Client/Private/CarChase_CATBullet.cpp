@@ -308,6 +308,10 @@ _bool CCarChase_CATBullet::Check_Coll()
 		//충돌이 일어남
 		Set_Dead();
 		m_pUIManager->Remove_Target(m_iObjectIndex);
+
+		m_pTarget = dynamic_cast<CHighway_Taxi*>(m_pGameInstance->Get_GameObject(m_iCurrentLevel, TEXT("Layer_Taxi"), 0))->Get_Kiryu();
+		m_pTarget->OnHit(10.f);
+
 		//이펙트 생성
 		CEffect::EFFECT_DESC EffectDesc;
 

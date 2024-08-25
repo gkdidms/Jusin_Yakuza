@@ -76,7 +76,14 @@ HRESULT CReactor_Sedan::Ready_Monster(_int* pMonsterTypes)
 void CReactor_Sedan::Change_Animation()
 {
 	if (m_isObjectDead)
+	{
 		m_strAnimName = "w_mngcar_c_car_ded_b_1";
+		if (!m_isSound)
+		{
+			m_pGameInstance->PlaySound_W(TEXT("467e [3].wav"), SOUND_ENEMY_EFFECT, m_fSound);
+			m_isSound = true;
+		}
+	}
 
 	//벤에 관한 애니메이션 넣기
 	if (m_strAnimName == "w_mngcar_c_car_ded_b_1")

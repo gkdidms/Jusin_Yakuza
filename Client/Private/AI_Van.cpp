@@ -10,6 +10,8 @@
 #include "Selector.h"
 #include "EffectManager.h"
 
+#include "Highway_Taxi.h"
+
 CAI_Van::CAI_Van()
 	: CAI_CarChase{}
 {
@@ -200,6 +202,8 @@ CBTNode::NODE_STATE CAI_Van::ATK_Shot()
 			*m_pState = CCarChase_Monster::CARCHASE_SHOT_ST;
 		else if (*m_pWeaponType == CCarChase_Monster::WPJ)
 			*m_pState = CCarChase_Monster::CARCHASE_AIM_SHOT;
+
+		m_pPlayer->OnHit(5.f);
 
 		return CBTNode::SUCCESS;
 	}

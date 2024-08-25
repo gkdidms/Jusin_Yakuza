@@ -70,6 +70,8 @@ protected:
     _float m_fMaxSpeed = { 55.f };
     _float m_fMinSpeed = { 40.5f };
 
+    _bool m_isSound = { false };
+    _float m_fSound = { 0.5f };
 
 protected:
     virtual HRESULT Ready_Monster(_int* pMonsterTypes) = 0;

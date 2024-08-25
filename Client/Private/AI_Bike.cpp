@@ -9,6 +9,8 @@
 #include "Sequance.h"
 #include "Selector.h"
 
+#include "Highway_Taxi.h"
+
 CAI_Bike::CAI_Bike()
 	: CAI_CarChase{}
 {
@@ -104,6 +106,7 @@ CBTNode::NODE_STATE CAI_Bike::Dead()
 	else
 		*m_pState = CCarChase_Monster::CARCHASE_TENTOU_B;
 
+
 	return CBTNode::SUCCESS;
 }
 
@@ -190,6 +193,8 @@ CBTNode::NODE_STATE CAI_Bike::ATK_Shot()
 			else if (iDir == DIR_FL)
 				*m_pState = CCarChase_Monster::CARCHASE_AIM_SHOT_L;
 		}
+
+		m_pPlayer->OnHit(5.f);
 
 		return CBTNode::SUCCESS;
 	}

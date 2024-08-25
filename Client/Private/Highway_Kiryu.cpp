@@ -479,6 +479,12 @@ void CHighway_Kiryu::Play_Swap(_float fTimeDelta)
 	// 차로 들어가는 모션
 	if (!m_isStarted && Checked_Animation_Ratio(0.6))
 	{
+		_uint iRandom = m_pGameInstance->Get_Random(0, 1);
+		if (iRandom == 0)
+			m_pGameInstance->PlaySound_W(TEXT("4680#1 (kiryu_switch).wav"), SOUND_PLAYER_VOICE, 0.5f);
+		else if (iRandom == 1)
+			m_pGameInstance->PlaySound_W(TEXT("4680#2 (kiryu_switch).wav"), SOUND_PLAYER_VOICE, 0.5f);
+
 		m_isStarted = true;
 	}
 	else if (Checked_Animation_Ratio(0.6))

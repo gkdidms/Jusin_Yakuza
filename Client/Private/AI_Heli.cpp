@@ -10,6 +10,8 @@
 #include "Sequance.h"
 #include "Selector.h"
 
+#include "Highway_Taxi.h"
+
 CAI_Heli::CAI_Heli()
 	: CAI_CarChase{}
 {
@@ -200,6 +202,8 @@ CBTNode::NODE_STATE CAI_Heli::ATK_Shot()
 			if (FAILED(m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_RcktGunBullet"), TEXT("Layer_Bullet"), &Desc)))
 				return CBTNode::FAIL;
 		}
+
+		m_pPlayer->OnHit(5.f);
 
 		return CBTNode::SUCCESS;
 	}

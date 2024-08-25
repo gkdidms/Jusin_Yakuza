@@ -88,7 +88,16 @@ HRESULT CReactor_Heli::Ready_Monster(_int* pMonsterTypes)
 void CReactor_Heli::Change_Animation()
 {
 	if (m_isObjectDead)
+	{
 		m_strAnimName = "w_mngcar_e_hel_rkt_reload_1";
+
+		if (!m_isSound)
+		{
+			m_pGameInstance->PlaySound_W(TEXT("e_bike_crush_0.wav"), SOUND_ENEMY_EFFECT, m_fSound);
+			m_isSound = true;
+		}
+	}
+
 
 	//벤에 관한 애니메이션 넣기
 	if (m_strAnimName == "w_mngcar_e_hel_rkt_stand")

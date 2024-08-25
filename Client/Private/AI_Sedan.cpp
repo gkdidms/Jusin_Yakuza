@@ -9,6 +9,8 @@
 #include "Sequance.h"
 #include "Selector.h"
 
+#include "Highway_Taxi.h"
+
 CAI_Sedan::CAI_Sedan()
 	: CAI_CarChase{}
 {
@@ -176,6 +178,8 @@ CBTNode::NODE_STATE CAI_Sedan::ATK_Shot()
 			*m_pState = CCarChase_Monster::CARCHASE_AIML_SHOT;
 		else if (*m_pWeaponType == CCarChase_Monster::GUN_R)
 			*m_pState = CCarChase_Monster::CARCHASE_AIMR_SHOT;
+
+		m_pPlayer->OnHit(5.f);
 
 		return CBTNode::SUCCESS;
 	}

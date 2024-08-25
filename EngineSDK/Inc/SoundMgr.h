@@ -20,6 +20,7 @@ public:
 	//채널에 소리가 재생하지 않을때 재생
 	_bool PlaySoundIfNotPlay(const wstring pSoundKey, CHANNELID eID, float fVolume);
 	void PlayBGM(const wstring pSoundKey, float fVolume);
+	void Play_Loop(const wstring pSoundKey, CHANNELID eID, float fVolume);
 	void StopSound(CHANNELID eID);
 	void StopAll();
 	void SetChannelVolume(CHANNELID eID, float fVolume);
