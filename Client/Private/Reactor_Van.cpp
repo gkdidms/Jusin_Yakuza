@@ -27,6 +27,8 @@ HRESULT CReactor_Van::Initialize(void* pArg)
 
 	m_strAnimName = "w_mngcar_e_van_wpr_aim_st_1";
 
+	m_pGameInstance->Play_Loop(TEXT("e_van_appear_run_loop_0.wav"), SOUND_VAN, 0.5f);
+
 	return S_OK;
 }
 
@@ -73,7 +75,16 @@ HRESULT CReactor_Van::Ready_Monster(_int* pMonsterTypes)
 void CReactor_Van::Change_Animation()
 {
 	if (m_isObjectDead)
+	{
 		m_strAnimName = "w_mngcar_c_van_ded_1";
+		if (!m_isSound)
+		{
+			m_pGameInstance->StopSound(SOUND_VAN);
+			m_pGameInstance->PlaySound_W(TEXT("467e [2].wav"), SOUND_VAN, m_fSound);
+			m_isSound = true;
+		}
+	}
+		
 
 	//벤에 관한 애니메이션 넣기
 	if (m_strAnimName == "w_mngcar_e_van_wpr_aim_st_1")

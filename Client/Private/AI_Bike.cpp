@@ -9,6 +9,8 @@
 #include "Sequance.h"
 #include "Selector.h"
 
+#include "Highway_Taxi.h"
+
 CAI_Bike::CAI_Bike()
 	: CAI_CarChase{}
 {
@@ -104,6 +106,7 @@ CBTNode::NODE_STATE CAI_Bike::Dead()
 	else
 		*m_pState = CCarChase_Monster::CARCHASE_TENTOU_B;
 
+
 	return CBTNode::SUCCESS;
 }
 
@@ -122,6 +125,8 @@ CBTNode::NODE_STATE CAI_Bike::Hit()
 
 	*m_pState = CCarChase_Monster::CARCHASE_DAM_LV_2;
 	m_isHit = true;
+
+	Play_Hit();
 
 	return CBTNode::SUCCESS;
 }
@@ -174,6 +179,8 @@ CBTNode::NODE_STATE CAI_Bike::ATK_Shot()
 				*m_pState = CCarChase_Monster::CARCHASE_AIM_SHOT_L;
 			else if (*m_pDir == DIR_R)
 				*m_pState = CCarChase_Monster::CARCHASE_AIM_SHOT_R;
+
+			m_pGameInstance->PlaySound_W(TEXT("e_gunshot_rocket_0.wav"), SOUND_ENEMY_EFFECT, 0.5f);
 		}
 		else if (*m_pWeaponType == CCarChase_Monster::GUN)
 		{
@@ -189,7 +196,11 @@ CBTNode::NODE_STATE CAI_Bike::ATK_Shot()
 				*m_pState = CCarChase_Monster::CARCHASE_AIM_SHOT_L90;
 			else if (iDir == DIR_FL)
 				*m_pState = CCarChase_Monster::CARCHASE_AIM_SHOT_L;
+
+			m_pGameInstance->PlaySound_W(TEXT("e_gunshot_handgun_0.wav"), SOUND_ENEMY_EFFECT, 0.5f);
 		}
+
+		m_pPlayer->OnHit(5.f);
 
 		return CBTNode::SUCCESS;
 	}

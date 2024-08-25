@@ -23,7 +23,7 @@ HRESULT CChapter7_0::Initialize(void* pArg)
 	m_pKuze = dynamic_cast<CKuze*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Monster"), 0));
 	Safe_AddRef(m_pKuze);
 	m_pKuze->Set_Script(true);
-	m_pKuze->Set_Animation("e_kuz_stand_blend");
+	m_pKuze->Set_Animation("p_stand_nml");
 
 	Player_Stop(true);
 
@@ -50,7 +50,11 @@ _bool CChapter7_0::Execute()
 		else if (m_pUIManager->Get_CurrentPage() == 2)
 			m_pFileTotalMgr->Setting_Start_Cinemachine(27);
 		else if (m_pUIManager->Get_CurrentPage() == 3)
+		{
 			m_pFileTotalMgr->Setting_Start_Cinemachine(28);
+			m_pKuze->Set_Animation("e_kuz_stand_blend");
+		}
+			
 	}
 
 	return false;

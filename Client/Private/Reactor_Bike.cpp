@@ -27,6 +27,8 @@ HRESULT CReactor_Bike::Initialize(void* pArg)
 
 	m_iAnim = 3;
 
+	m_pGameInstance->Play_Loop(TEXT("e_bike_appear_run_loop1_0.wav"), SOUND_BIKE, 0.5f);
+
 	return S_OK;
 }
 
@@ -74,7 +76,15 @@ HRESULT CReactor_Bike::Ready_Monster(_int* pMonsterTypes)
 void CReactor_Bike::Change_Animation()
 {
 	if (m_isObjectDead)
+	{
 		m_strAnimName = "w_mngcar_bik_tentou_b_1";
+		if (!m_isSound)
+		{
+			m_pGameInstance->StopSound(SOUND_BIKE);
+			m_pGameInstance->PlaySound_W(TEXT("e_bike_crush_0.wav"), SOUND_BIKE, m_fSound);
+			m_isSound = true;
+		}
+	}
 
 	//바이크에 관한 애니메이션 넣기
 	if (m_strAnimName == "w_mngcar_bik_tentou_b_1")

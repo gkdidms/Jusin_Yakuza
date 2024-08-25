@@ -311,6 +311,7 @@ void CMonster::Set_Start(_bool isStart)
 
 void CMonster::Set_Animation(string strAnimName, _bool isLoop)
 {
+	m_iCurrentAnimType = CUTSCENE;
 	m_strAnimName = strAnimName;
 	m_isAnimLoop = isLoop;
 
@@ -383,7 +384,7 @@ HRESULT CMonster::Initialize(void* pArg)
 	m_pTransformCom->Set_Scale(0.95f, 0.95f, 0.95f);
 
 	//테스트 데이터
-	m_Info.fMaxHP = 100.f;
+	m_Info.fMaxHP = 70.f;
 	m_Info.fHp = m_Info.fMaxHP;
 
 	m_iCurrentAnimType = DEFAULT;

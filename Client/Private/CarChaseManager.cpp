@@ -93,7 +93,7 @@ HRESULT CCarChaseManager::Ready_Stage()
 
 	CCarChase::STAGE_INFO StageInfo_1 = CCarChase::STAGE_INFO{
 		LINE_A,
-		LINE_B,
+		LINE_A,
 		DIR_R,
 		MonsterInfo_1
 	};
@@ -118,7 +118,7 @@ HRESULT CCarChaseManager::Ready_Stage()
 		},
 		CCarChase::STAGE_MONSTER_INFO{
 			210000,
-			LINE_A,
+			LINE_B,
 			DIR_M,
 			CCarChase_Monster::REACTOR_BIKE,
 			{ CCarChase_Monster::GUN, -1}
@@ -126,9 +126,9 @@ HRESULT CCarChaseManager::Ready_Stage()
 	};
 
 	CCarChase::STAGE_INFO StageInfo_2 = CCarChase::STAGE_INFO{
+		LINE_A,
 		LINE_B,
-		LINE_C,
-		DIR_F,
+		DIR_R,
 		MonsterInfo_2
 	};
 
@@ -151,8 +151,8 @@ HRESULT CCarChaseManager::Ready_Stage()
 	};
 
 	CCarChase::STAGE_INFO StageInfo_3 = CCarChase::STAGE_INFO{
-		LINE_C,
-		LINE_C,
+		LINE_B,
+		LINE_B,
 		DIR_L,
 		MonsterInfo_3
 	};
@@ -168,24 +168,17 @@ HRESULT CCarChaseManager::Ready_Stage()
 	vector<CCarChase::STAGE_MONSTER_INFO> MonsterInfo_4 = {
 		CCarChase::STAGE_MONSTER_INFO{
 			400000,
-			LINE_B,
+			LINE_C,
 			DIR_M,
 			CCarChase_Monster::REACTOR_BIKE,
 			{ CCarChase_Monster::DRV, CCarChase_Monster::RKT}
-		},
-		CCarChase::STAGE_MONSTER_INFO{
-			410000,
-			LINE_A,
-			DIR_F,
-			CCarChase_Monster::REACTOR_SEDAN,
-			{ CCarChase_Monster::GUN_R, -1}
 		}
 	};
 
 	CCarChase::STAGE_INFO StageInfo_4 = CCarChase::STAGE_INFO{
+		LINE_B,
 		LINE_C,
-		LINE_A,
-		DIR_L,
+		DIR_R,
 		MonsterInfo_4
 	};
 
@@ -200,17 +193,24 @@ HRESULT CCarChaseManager::Ready_Stage()
 	vector<CCarChase::STAGE_MONSTER_INFO> MonsterInfo_5 = {
 		CCarChase::STAGE_MONSTER_INFO{
 			500000,
-			LINE_C,
+			LINE_A,
 			DIR_M,
-			CCarChase_Monster::REACTOR_VAN,
-			{ CCarChase_Monster::WPR, CCarChase_Monster::WPJ}
+			CCarChase_Monster::REACTOR_SEDAN,
+			{ CCarChase_Monster::GUN_L, CCarChase_Monster::GUN_R}
+		},
+		CCarChase::STAGE_MONSTER_INFO{
+			510000,
+			LINE_B,
+			DIR_B,
+			CCarChase_Monster::REACTOR_SEDAN,
+			{ CCarChase_Monster::GUN_L, -1}
 		}
 	};
 
 	CCarChase::STAGE_INFO StageInfo_5 = CCarChase::STAGE_INFO{
-		LINE_A,
-		LINE_A,
-		DIR_R,
+		LINE_C,
+		LINE_C,
+		DIR_L,
 		MonsterInfo_5
 	};
 
@@ -225,7 +225,7 @@ HRESULT CCarChaseManager::Ready_Stage()
 	vector<CCarChase::STAGE_MONSTER_INFO> MonsterInfo_6 = {
 		CCarChase::STAGE_MONSTER_INFO{
 			600000,
-			LINE_C,
+			LINE_A,
 			DIR_F,
 			CCarChase_Monster::REACTOR_SEDAN,
 			{ CCarChase_Monster::GUN_L, -1}
@@ -233,8 +233,8 @@ HRESULT CCarChaseManager::Ready_Stage()
 	};
 
 	CCarChase::STAGE_INFO StageInfo_6 = CCarChase::STAGE_INFO{
-		LINE_A,
-		LINE_A,
+		LINE_C,
+		LINE_B,
 		DIR_F,
 		MonsterInfo_6
 	};
@@ -259,8 +259,8 @@ HRESULT CCarChaseManager::Ready_Stage()
 	};
 
 	CCarChase::STAGE_INFO StageInfo_7 = CCarChase::STAGE_INFO{
-		LINE_A,
-		LINE_A,
+		LINE_B,
+		LINE_B,
 		DIR_R,
 		MonsterInfo_7
 	};

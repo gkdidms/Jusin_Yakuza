@@ -253,7 +253,12 @@ void CPlayer::Tick(const _float& fTimeDelta)
 	if (m_pGameInstance->GetKeyState(DIK_Q) == TAP)
 	{
 		if (m_pGameInstance->Get_CurrentLevel() != LEVEL_TUTORIAL)
+		{
+			m_pGameInstance->StopSound(SOUND_UI);
+			m_pGameInstance->PlaySound_W(TEXT("4a72 [10].wav"), SOUND_UI, 0.7f);
+
 			m_pUIManager->Close_Scene();
+		}
 	}
 	if (m_pGameInstance->GetMouseState(DIM_LB) == TAP)
 	{

@@ -141,6 +141,25 @@ void CSoundMgr::PlayBGM(const wstring pSoundKey, float fVolume)
 	FMOD_System_Update(m_pSystem);
 }
 
+void CSoundMgr::Play_Loop(const wstring pSoundKey, CHANNELID eID, float fVolume)
+{
+	map<const wstring, FMOD_SOUND*>::iterator iter;
+
+	// iter = find_if(m_mapSound.begin(), m_mapSound.end(), CTag_Finder(pSoundKey));
+	iter = find_if(m_mapSound.begin(), m_mapSound.end(), [&](auto& iter)->bool
+		{
+			return pSoundKey == iter.first;
+		});
+
+	if (iter == m_mapSound.end())
+		return;
+
+	FMOD_System_PlaySound(m_pSystem, iter->second, nullptr, FALSE, &m_pChannelArr[eID]);
+	FMOD_Channel_SetMode(m_pChannelArr[eID], FMOD_LOOP_NORMAL);
+	FMOD_Channel_SetVolume(m_pChannelArr[eID], fVolume);
+	FMOD_System_Update(m_pSystem);
+}
+
 void CSoundMgr::StopSound(CHANNELID eID)
 {
 	FMOD_Channel_Stop(m_pChannelArr[eID]);
