@@ -63,6 +63,7 @@ public:
 
 private:
     CAnim* m_pPlayerAnimCom = { nullptr };
+    class CUIManager* m_pUIManager = { nullptr };
 
     _float m_fSlowSpeed = { QTE_TIME_SPEED_MAX };
 
@@ -82,6 +83,8 @@ private:
     QTE_DESC m_KuzeSecondQTE;
 
     class CMonster* m_pTargetMonster = { nullptr };
+
+    _bool m_isQTEUI = { false };
 
 public:
     static CQteManager* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

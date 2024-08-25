@@ -151,7 +151,9 @@ public:
 
  public://QTE
     void PressKey();
+    void Set_QTEKey(wstring strKey);
     _bool QTE_Finished();
+
 public:
    CUIScene* Find_Scene(wstring strSceneName);      
 
