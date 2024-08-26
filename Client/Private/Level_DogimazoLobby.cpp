@@ -49,6 +49,9 @@ HRESULT CLevel_DogimazoLobby::Initialize()
 	m_pSystemManager->Set_Camera(CAMERA_PLAYER);
 	//m_pFightManager->Set_FightStage(true);
 	m_pUIManager->Fade_Out();
+
+	m_pGameInstance->PlayBGM(TEXT("Dozimazo_BGM.mp3"), 0.8f);
+
     return S_OK;
 }
 

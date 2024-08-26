@@ -306,6 +306,7 @@ public:
     _bool Checked_Animation_Ratio(_float fRatio);
 
     void BloodEffect_Event();
+    virtual void Sound_Event() override;
 
 protected:
     CAnim* m_pAnimCom[ANIM_TYPE_END] = {nullptr}; // 애니메이션만 따로 저장하고있는 애니메이션 컴포넌트

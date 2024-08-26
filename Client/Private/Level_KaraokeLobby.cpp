@@ -76,6 +76,8 @@ HRESULT CLevel_KaraokeLobby::Initialize()
 		m_pQuestManager->Start_Quest(CQuestManager::CHAPTER_4);
 	}
 
+	m_pGameInstance->PlayBGM(TEXT("Karaoke_BGM.wav"), 0.8f);
+
     return S_OK;
 }
 

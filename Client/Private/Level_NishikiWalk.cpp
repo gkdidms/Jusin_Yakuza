@@ -48,6 +48,8 @@ HRESULT CLevel_NishikiWalk::Initialize()
 	if (FAILED(Ready_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
 
+	m_pGameInstance->PlayBGM(TEXT("Street_BGM.wav"), 0.5f);
+
 	return S_OK;
 }
 
