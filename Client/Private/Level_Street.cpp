@@ -58,6 +58,11 @@ HRESULT CLevel_Street::Initialize()
 	m_pGameInstance->Set_HDRLight(1.6f);
 	m_pGameInstance->Set_AdjectTint(_float4(0.814f, 0.810f, 0.782f, 0.f));
 
+	m_pGameInstance->PlayBGM_Select(L"48e6 [1].wav", SOUND_BGM, 0.5f);
+	m_pGameInstance->PlayBGM_Select(L"48ed [1].wav", SOUND_BGM_2, 0.6f);
+	m_pGameInstance->PlayBGM_Select(L"4887 [1].wav", SOUND_BGM_3, 0.3f);
+	m_pGameInstance->PlayBGM_Select(L"4903 [1].wav", SOUND_BGM_1, 0.5f);
+
     return S_OK;
 }
 

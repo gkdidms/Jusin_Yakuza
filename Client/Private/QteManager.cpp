@@ -343,8 +343,6 @@ void Client::CQteManager::Slowing()
             m_pUIManager->PressKey();
             Skip_KeyFrame(m_eCurrentQTE);
 
-            m_pGameInstance->PlaySound_W(TEXT("4a9f [9].wav"), SOUND_UI, 0.5f);
-
             ResetVariables();
         }
     }
@@ -380,8 +378,6 @@ void Client::CQteManager::Check_QTE_Section()
             }
             if (m_isSlowing && it->second.iEndKeyFrameIndex < *m_pPlayerAnimCom->Get_AnimPosition(animIndex))
             {
-                m_pGameInstance->PlaySound_W(TEXT("4a9f [8].wav"), SOUND_UI, 0.5f);
-
                 m_iSuccess = 2;
                 m_isSlowing = false;
                 ResetVariables();
