@@ -134,6 +134,12 @@ HRESULT CCharacterData::Initialize(CLandObject* pCharacter)
 	strFileFullPath = strFilePath + strFileName;
 	if (FAILED(Load_SoundEvent(strFileFullPath)))
 		return E_FAIL;
+
+	// 레디얼 이벤트는 애니메이션 컴포넌트를 쓰고있기때문에, 사용 시 주의가 필요하다
+	strFileName = m_pGameInstance->WstringToString(m_pCharacter->Get_ModelName()) + "_CutSoundEvents.dat";
+	strFileFullPath = strFilePath + strFileName;
+	if (FAILED(Load_CutSceneSoundEvent(strFileFullPath)))
+		return E_FAIL;
 	
 	return S_OK;
 }
@@ -780,6 +786,52 @@ HRESULT CCharacterData::Load_SoundEvent(string strFilePath)
 			in >> Desc.strSoundFileName;
 
 			m_SoundEvents.emplace(strAnimName, Desc);
+		}
+
+		in.close();
+	}
+
+	return S_OK;
+}
+
+HRESULT CCharacterData::Load_CutSceneSoundEvent(string strFilePath)
+{
+	if (fs::exists(strFilePath))
+	{
+#ifdef _DEBUG
+		cout << "_CutSoundEvent Yes!!" << endl;
+#endif // _DEBUG
+
+		ifstream in(strFilePath, ios::binary);
+
+		if (!in.is_open()) {
+			MSG_BOX("CutSoundEvent 개방 실패");
+			return E_FAIL;
+		}
+
+		_uint iNumEvent = { 0 };
+		in >> iNumEvent;
+
+		/*
+		*   _uint iChannel;
+			_float fAinmPosition;
+			_float fSoundVolume;
+			string strSoundFileName;
+		*/
+
+		for (size_t i = 0; i < iNumEvent; i++)
+		{
+			string strAnimName = "";
+			in >> strAnimName;				//Key값으로 쓰일 애니메이션 이름
+
+			ANIMATION_SOUNDEVENTSTATE Desc{};
+
+			in >> Desc.iChannel;
+			in >> Desc.fAinmPosition;
+			in >> Desc.fSoundVolume;
+			in >> Desc.strSoundFileName;
+
+			m_CutSceneSoundEvents.emplace(strAnimName, Desc);
 		}
 
 		in.close();

@@ -171,6 +171,7 @@ private:
     HRESULT Load_BloodEffectEvent(string strFilePath);
     HRESULT Load_RadialEvent(string strFilePath);
     HRESULT Load_SoundEvent(string strFilePath);
+    HRESULT Load_CutSceneSoundEvent(string strFilePath);
 
 private:
     CGameInstance* m_pGameInstance = { nullptr };
@@ -205,7 +206,10 @@ private:
     multimap<string, ANIMATION_RADIALEVENTSTATE>		m_RadialEvents;
 
     // first: 애니메이션 이름, second: 래디얼 이벤트 정보
-    multimap<string, ANIMATION_SOUNDEVENTSTATE>		m_SoundEvents;
+    multimap<string, ANIMATION_SOUNDEVENTSTATE>		    m_SoundEvents;
+
+    // first: 애니메이션 이름, second: 래디얼 이벤트 정보
+    multimap<string, ANIMATION_SOUNDEVENTSTATE>		    m_CutSceneSoundEvents;
 
 
     vector<ANIMATION_EVENT> m_CurrentEvents; 
