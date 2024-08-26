@@ -214,10 +214,10 @@ void CMonster::Set_Sync(string strPlayerAnim, _bool isKeepSynchronizing)
 
 	if (m_isDown == true)
 	{
-		if (m_iMonsterType != KUZE)
+		if (m_iMonsterType != KUZE && m_iState != MONSTER_KRU_SYNC1_LAPEL_NAGE)
 		{
 			m_pGameInstance->StopSound(SOUND_ENEMY_VOICE);
-			m_pGameInstance->PlaySound_W(TEXT("46a0 [22].wav"), SOUND_ENEMY_VOICE, 0.7f);
+			m_pGameInstance->PlaySound_W(TEXT("46a0 [22].wav"), SOUND_ENEMY_VOICE, 0.8f);
 		}
 	}
 	//ÄÆ ¾×¼Ç

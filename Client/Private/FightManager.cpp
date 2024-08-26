@@ -216,6 +216,8 @@ _bool CFightManager::Tick(const _float& fTimeDelta)
 
 				if (!m_isMoney)
 				{
+					m_pGameInstance->PlaySound_W(TEXT("4681 [31].wav"), SOUND_UI, 0.5f);
+
 					m_isMoney = true;
 					m_pUIManager->Open_Scene(TEXT("FightScore"));
 					dynamic_cast<CUIFightScore*>(m_pUIManager->Find_Scene(TEXT("FightScore")))->AddMoney(CPlayer::PlayerInfo.iMoney);

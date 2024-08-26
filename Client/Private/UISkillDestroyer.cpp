@@ -134,6 +134,7 @@ HRESULT CUISkillDestroyer::Tick(const _float& fTimeDelta)
 
 			if(m_fGetTime <= m_fEndTime)
 			{
+				m_pGameInstance->PlaySound_W(TEXT("4681 [31].wav"), SOUND_UI, 0.5f);
 				m_fGetTime += fTimeDelta;
 
 				_float CurGauge = 1 - (m_fGetTime / m_fEndTime);
@@ -142,6 +143,13 @@ HRESULT CUISkillDestroyer::Tick(const _float& fTimeDelta)
 
 			if(m_fGetTime>m_fEndTime)
 			{
+				if (!m_isMoneyEndStart)
+				{
+					m_pGameInstance->StopSound(SOUND_UI);
+					m_pGameInstance->PlaySound_W(TEXT("4681 [43].wav"), SOUND_UI, 0.5f);
+					m_isMoneyEndStart = true;
+				}
+
 				m_fGetTime = m_fEndTime;
 				m_isFinMoney = true;
 			}
@@ -175,7 +183,14 @@ HRESULT CUISkillDestroyer::Tick(const _float& fTimeDelta)
 		}
 		if (m_isFinMoney)
 		{
-				vector<CUI_Object*>* pPartObjects = dynamic_cast<CGroup*>(m_pGetter[4])->Get_pPartObjects();
+			if (!m_isFinishMoney)
+			{
+				m_pGameInstance->StopSound(SOUND_EFFECT);
+				m_pGameInstance->PlaySound_W(TEXT("4681 [41].wav"), SOUND_EFFECT, 0.5f);
+				m_isFinishMoney = true;
+			}
+
+			vector<CUI_Object*>* pPartObjects = dynamic_cast<CGroup*>(m_pGetter[4])->Get_pPartObjects();
 			if(!m_fCurFinAnim)
 			{
 				m_fCurFinMoney += fTimeDelta;
@@ -250,6 +265,13 @@ HRESULT CUISkillDestroyer::Late_Tick(const _float& fTimeDelta)
 
 		if (m_isFinMoney)
 		{
+			if (!m_isFinishMoney)
+			{
+				m_pGameInstance->StopSound(SOUND_EFFECT);
+				m_pGameInstance->PlaySound_W(TEXT("4681 [41].wav"), SOUND_EFFECT, 0.5f);
+				m_isFinishMoney = true;
+			}
+
 			vector<CUI_Object*>* pPartObjects = dynamic_cast<CGroup*>(m_pGetter[4])->Get_pPartObjects();
 			if (!m_fCurFinAnim)
 			{

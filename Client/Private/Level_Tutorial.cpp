@@ -42,7 +42,7 @@ HRESULT CLevel_Tutorial::Initialize()
 
 	/* Å¬¶ó ÆÄ½Ì */
 	m_pFileTotalManager->Set_MapObj_In_Client(STAGE_TUTORIAL, LEVEL_TUTORIAL);
-	m_pFileTotalManager->Set_Lights_In_Client(99);
+	m_pFileTotalManager->Set_Lights_In_Client(7);
 	m_pFileTotalManager->Set_Trigger_In_Client(STAGE_TUTORIAL, LEVEL_TUTORIAL);
 	//m_pFileTotalManager->Set_Collider_In_Client(STAGE_TUTORIAL, LEVEL_TUTORIAL);
 
@@ -64,6 +64,10 @@ HRESULT CLevel_Tutorial::Initialize()
 	m_pQuestManager->Start_Quest(CQuestManager::CHAPTER_1);
 
 	m_pFightManager->Initialize();
+
+	/*¼ÎÀÌ´õ ¿É¼Ç°ª*/
+	m_pGameInstance->Set_HDRLight(1.6f);
+	m_pGameInstance->Set_AdjectTint(_float4(0.814f, 0.810f, 0.782f, 0.f));
 
 	return S_OK;
 }

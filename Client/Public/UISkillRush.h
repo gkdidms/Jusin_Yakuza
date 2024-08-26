@@ -44,6 +44,9 @@ private:
     _float m_fCurFinMoney = { 0.f };
     _bool m_fCurFinAnim = { false };
 
+    _bool m_isMoneyEndStart = { false };
+    _bool m_isFinishMoney = { false };
+
 public:
     static CUISkillRush* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext, void* pArg = nullptr);
     virtual void Free();

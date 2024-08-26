@@ -263,11 +263,11 @@ private:
                 _bool m_isRimLight = { true };
 #endif // DEBUG
 
-    _float m_fHDRLight = { 1.5f };
+    _float m_fHDRLight = { 1.2f };
 
-    _float m_fSSAORadiuse = { 0.04f };
+    _float m_fSSAORadiuse = { 0.02f };
     _float m_fSSAOBlur = { 2.f };
-    _float m_fSSAOBiae = { 0.03f };
+    _float m_fSSAOBiae = { 0.05f };
     _float4* m_vSSAOKernal;
 
     int      m_iRenderState = { RENDER_END };

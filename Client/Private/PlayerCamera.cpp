@@ -102,12 +102,6 @@ void CPlayerCamera::Tick(const _float& fTimeDelta)
 
 void CPlayerCamera::Late_Tick(const _float& fTimeDelta)
 {
-	if (m_pUIManager->isInvenClose())
-	{
-		SetCursorPos(g_iWinSizeX * 0.5f, g_iWinSizeY * 0.5f); // 마우스 좌표 적용해주기
-		ShowCursor(false);
-	}
-
 	if (LEVEL::LEVEL_CARCHASE != m_iCurrentLevel)
 	{
 		if (m_pSystemManager->Get_Camera() != CAMERA_PLAYER) return;
@@ -341,21 +335,23 @@ void CPlayerCamera::Set_StartPos()
 	}
 	else if (LEVEL::LEVEL_OFFICE_2F == m_iCurrentLevel)
 	{
-		m_fCamAngleX = -10;
-		m_fCamAngleY = 45;
+		m_fCamAngleX = 20;
+		m_fCamAngleY = -200;
 	}
 	else if (LEVEL::LEVEL_OFFICE_BOSS == m_iCurrentLevel)
 	{
 		m_fCamAngleX = 45.f;
-		m_fCamAngleY = 45;
+		m_fCamAngleY = 90;
 	}
 	else if (LEVEL::LEVEL_DOGIMAZO == m_iCurrentLevel)
 	{
+		m_fCamAngleY = 0;
+		m_fCamAngleX = 45.f;
 	}
 	else if (LEVEL::LEVEL_DOGIMAZO_STAIRS == m_iCurrentLevel)
 	{
 		m_fCamAngleY = 0;
-		m_fCamAngleX = 25.f;
+		m_fCamAngleX = 45.f;
 	}
 	else if (LEVEL::LEVEL_DOGIMAZO_LOBBY == m_iCurrentLevel)
 	{
@@ -365,6 +361,12 @@ void CPlayerCamera::Set_StartPos()
 	else if (LEVEL::LEVEL_DOGIMAZO_BOSS == m_iCurrentLevel)
 	{
 		m_fCamAngleX = 30.f;
+	}
+
+	if (m_iCurrentLevel != LEVEL_LOADING && m_iCurrentLevel != LEVEL_LOGO)
+	{
+		SetCursorPos(g_iWinSizeX * 0.5f, g_iWinSizeY * 0.5f); // 마우스 좌표 적용해주기
+		ShowCursor(false);
 	}
 }
 

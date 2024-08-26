@@ -37,7 +37,7 @@ HRESULT CLevel_DogimazoBoss::Initialize()
 
     /* Å¬¶ó ÆÄ½Ì */
     m_pFileTotalManager->Set_MapObj_In_Client(STAGE_DOGIMAZO_BOSS, LEVEL_DOGIMAZO_BOSS);
-    m_pFileTotalManager->Set_Lights_In_Client(99);
+    m_pFileTotalManager->Set_Lights_In_Client(STAGE_DOGIMAZO_BOSS);
     m_pFileTotalManager->Set_Collider_In_Client(STAGE_DOGIMAZO_BOSS, LEVEL_DOGIMAZO_BOSS);
 
 	if (FAILED(Ready_Camera(TEXT("Layer_Camera"))))
@@ -54,6 +54,11 @@ HRESULT CLevel_DogimazoBoss::Initialize()
 	m_pUIManager->Fade_Out();
 
 	m_pGameInstance->PlayBGM(TEXT("Kuze_BGM.mp3"), 0.5f);
+
+	/*¼ÎÀÌ´õ ¿É¼Ç°ª*/
+	m_pGameInstance->Set_HDRLight(1.2f);
+	m_pGameInstance->Set_AdjectTint(_float4(0.926f, 0.921f, 0.840f, 0.f));
+
 
     return S_OK;
 }
