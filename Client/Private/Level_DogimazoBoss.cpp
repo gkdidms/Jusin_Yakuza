@@ -52,6 +52,11 @@ HRESULT CLevel_DogimazoBoss::Initialize()
 	m_pQuestManager->Start_Quest(CQuestManager::CHAPTER_8);
 
 	m_pUIManager->Fade_Out();
+
+	/*셰이더 옵션값*/
+	m_pGameInstance->Set_HDRLight(1.2f);
+	m_pGameInstance->Set_AdjectTint(_float4(0.926f, 0.921f, 0.840f, 0.f));
+
     return S_OK;
 }
 

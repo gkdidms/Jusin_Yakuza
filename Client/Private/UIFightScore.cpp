@@ -130,6 +130,7 @@ HRESULT CUIFightScore::Tick(const _float& fTimeDelta)
 
 		if (m_iCurrentTime > 5.f)
 		{
+			m_pGameInstance->StopSound(SOUND_UI);
 			m_isEnd = true;
 			for (auto& iter : m_EventUI)
 				iter->Close_UI();

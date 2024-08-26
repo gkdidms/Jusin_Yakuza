@@ -497,7 +497,7 @@
       <Filter>01.Levels\99.Loading\Loader\Multi</Filter>
     </ClCompile>
     <ClCompile Include="..\private\Level_Test.cpp">
-      <Filter>01.Levels\12.NishikiWalk\98.Test</Filter>
+      <Filter>01.Levels\98.Test</Filter>
     </ClCompile>
     <ClCompile Include="..\Private\Highway_Kiryu.cpp">
       <Filter>02.GameObjects\02.Character\LandObject\03.CarChase\02.Taxi\Kiryu</Filter>
@@ -865,7 +865,7 @@
       <Filter>02.GameObjects\02.Character\PartObject</Filter>
     </ClInclude>
     <ClInclude Include="..\public\Level_Test.h">
-      <Filter>01.Levels\12.NishikiWalk\98.Test</Filter>
+      <Filter>01.Levels\98.Test</Filter>
     </ClInclude>
     <ClInclude Include="..\Public\SocketObject.h">
       <Filter>02.GameObjects\02.Character\PartObject\SocketObject</Filter>
@@ -2332,9 +2332,6 @@
     <Filter Include="01.Levels\05.DogimazoStairs">
       <UniqueIdentifier>{6ad6a7d5-8a3a-4b60-90c6-c60a0fc7b848}</UniqueIdentifier>
     </Filter>
-    <Filter Include="01.Levels\12.NishikiWalk\98.Test">
-      <UniqueIdentifier>{a3687eeb-93e4-4da9-95c3-692e153c991f}</UniqueIdentifier>
-    </Filter>
     <Filter Include="02.GameObjects\02.Character\LandObject\04.Karaoke\Thing">
       <UniqueIdentifier>{e51d47f9-f418-4d43-9357-eaa4ffcb12b9}</UniqueIdentifier>
     </Filter>
@@ -2343,6 +2340,9 @@
     </Filter>
     <Filter Include="02.GameObjects\02.Character\LandObject\04.Karaoke\Thing\Glass">
       <UniqueIdentifier>{6abbd786-b687-4c66-a2a8-3776085812fe}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="01.Levels\98.Test">
+      <UniqueIdentifier>{a3687eeb-93e4-4da9-95c3-692e153c991f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

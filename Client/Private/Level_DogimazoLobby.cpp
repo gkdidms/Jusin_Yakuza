@@ -49,6 +49,11 @@ HRESULT CLevel_DogimazoLobby::Initialize()
 	m_pSystemManager->Set_Camera(CAMERA_PLAYER);
 	//m_pFightManager->Set_FightStage(true);
 	m_pUIManager->Fade_Out();
+
+	/*셰이더 옵션값*/
+	m_pGameInstance->Set_HDRLight(1.2f);
+	m_pGameInstance->Set_AdjectTint(_float4(0.926f, 0.921f, 0.840f, 0.f));
+
     return S_OK;
 }
 

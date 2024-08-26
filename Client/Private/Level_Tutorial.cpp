@@ -65,6 +65,10 @@ HRESULT CLevel_Tutorial::Initialize()
 
 	m_pFightManager->Initialize();
 
+	/*셰이더 옵션값*/
+	m_pGameInstance->Set_HDRLight(1.6f);
+	m_pGameInstance->Set_AdjectTint(_float4(0.814f, 0.810f, 0.782f, 0.f));
+
 	return S_OK;
 }
 

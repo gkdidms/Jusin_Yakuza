@@ -48,6 +48,8 @@ HRESULT CLevel_Office1F::Initialize()
 	m_pSystemManager->Set_Camera(CAMERA_PLAYER);
 	//m_pFightManager->Set_FightStage(true);
 
+	m_pGameInstance->Set_HDRLight(1.5f);
+
 	return S_OK;
 }
 
