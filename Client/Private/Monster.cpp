@@ -460,7 +460,8 @@ void CMonster::Tick(const _float& fTimeDelta)
 		m_pModelCom->Play_Animation_Monster(fTimeDelta, m_pAnimCom[m_iCurrentAnimType], m_isAnimLoop, isRoot);
 	}
 
-	Synchronize_Root(fTimeDelta);
+	if(m_strAnimName != "e_pnc_stand")
+		Synchronize_Root(fTimeDelta);
 
 	m_pColliderCom->Tick(m_pTransformCom->Get_WorldMatrix());
 

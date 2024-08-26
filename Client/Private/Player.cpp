@@ -209,7 +209,8 @@ void CPlayer::Tick(const _float& fTimeDelta)
 	}
 #endif // _DEBUG
 
-	Synchronize_Root(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")));
+	if(m_pModelCom->Get_CurrentAnimationIndex() != 579)
+		Synchronize_Root(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")));
 
 	//대화중일 경우 플레이어는 움직이거나 공격하지 않는다.
 	if (m_isStop || m_pUIManager->isOpen(TEXT("Inven")))
@@ -331,7 +332,8 @@ void CPlayer::Tick(const _float& fTimeDelta)
 	Setting_Target_Item();
 	//Setting_Target_Wall();
 
-	m_pQTEMgr->Tick(fTimeDelta);
+	if(nullptr != m_pQTEMgr)
+		m_pQTEMgr->Tick(fTimeDelta);
 }
 
 void CPlayer::Late_Tick(const _float& fTimeDelta)

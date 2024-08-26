@@ -28,7 +28,7 @@ HRESULT CCollision_Manager::Initialize()
 
 HRESULT CCollision_Manager::Add_ImpulseResolution(CGameObject* pObejct)
 {
-    Safe_AddRef(pObejct);
+    //Safe_AddRef(pObejct);
     m_ImpulseResolutionObjects.push_back(pObejct);
 
     return S_OK;
@@ -36,7 +36,7 @@ HRESULT CCollision_Manager::Add_ImpulseResolution(CGameObject* pObejct)
 
 HRESULT CCollision_Manager::Add_AttackCollider(CSocketCollider* pCollider, COLLIDER_TYPE eType)
 {
-    Safe_AddRef(pCollider);
+    //Safe_AddRef(pCollider);
     m_AttackColliders[eType].push_back(pCollider);
 
     return S_OK;
@@ -44,7 +44,7 @@ HRESULT CCollision_Manager::Add_AttackCollider(CSocketCollider* pCollider, COLLI
 
 HRESULT CCollision_Manager::Add_HitCollider(CSocketCollider* pCollider, COLLIDER_TYPE eType)
 {
-    Safe_AddRef(pCollider);
+    //Safe_AddRef(pCollider);
     m_HitColliders[eType].push_back(pCollider);
 
     return S_OK;
@@ -52,7 +52,7 @@ HRESULT CCollision_Manager::Add_HitCollider(CSocketCollider* pCollider, COLLIDER
 
 HRESULT CCollision_Manager::Add_ItemCollider(CCollider* pCollider)
 {
-    Safe_AddRef(pCollider);
+    //Safe_AddRef(pCollider);
     m_ItemColliders.push_back(pCollider);
 
     return S_OK;
@@ -62,7 +62,7 @@ HRESULT CCollision_Manager::Add_MapCollider(CCollider* pCollider)
 {
     m_fIntersectDistance = 0;
 
-    Safe_AddRef(pCollider);
+    //Safe_AddRef(pCollider);
     m_MapColliders.push_back(pCollider);
 
     return S_OK;
@@ -625,8 +625,8 @@ CCollider* CCollision_Manager::Get_Near_Collider(CGameObject* pObject, vector<CC
 
 void CCollision_Manager::Impulse_Clear()
 {
-    for (auto& pObject : m_ImpulseResolutionObjects)
-        Safe_Release(pObject);
+    //for (auto& pObject : m_ImpulseResolutionObjects)
+    //    Safe_Release(pObject);
 
     m_ImpulseResolutionObjects.clear();
 }
@@ -635,11 +635,11 @@ void CCollision_Manager::Battle_Clear()
 {
     for (size_t i = 0; i < TYPE_END; i++)
     {
-        for (auto& pObject : m_AttackColliders[i])
-            Safe_Release(pObject);
+        //for (auto& pObject : m_AttackColliders[i])
+        //    Safe_Release(pObject);
 
-        for (auto& pObject : m_HitColliders[i])
-            Safe_Release(pObject);
+        //for (auto& pObject : m_HitColliders[i])
+        //    Safe_Release(pObject);
 
         m_AttackColliders[i].clear();
         m_HitColliders[i].clear();
