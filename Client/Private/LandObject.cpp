@@ -37,8 +37,6 @@ HRESULT CLandObject::Initialize(void* pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
-
-
 	return S_OK;
 }
 
@@ -433,6 +431,14 @@ void CLandObject::Off_Attack_Colliders()
 	{
 		if(pSocketCollider.second->Get_CollierType() == CSocketCollider::ATTACK)
 			pSocketCollider.second->Off();
+	}
+}
+
+void CLandObject::Off_Trails()
+{
+	for (auto& pTrail : m_pTrailEffects)
+	{
+		pTrail.second->Off();
 	}
 }
 

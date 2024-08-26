@@ -1196,6 +1196,8 @@ void CImguiManager::SoundListWindow()
 	if (ImGui::Button(u8"»ç¿îµå ²ô±â"))
 		m_pGameInstance->StopAll();
 
+	ImGui::Checkbox(u8"ÄÆ½Å¿ë", &m_isCutSceneEvents);
+
 	ImGui::InputFloat(u8"»ç¿îµå º¼·ý", &m_fSoundVolume);
 
 	/*
@@ -2197,7 +2199,7 @@ void CImguiManager::TrailEvent_Save(string strPath)
 void CImguiManager::SoundEvent_Save(string strPath)
 {
 	string strDirectory = strPath;
-	strDirectory += "/" + m_ModelNameList[m_iModelSelectedIndex] + "_SoundEvents.dat";
+	strDirectory += "/" + m_ModelNameList[m_iModelSelectedIndex] + (m_isCutSceneEvents ? "_CutSoundEvents.dat" : "_SoundEvents.dat");
 
 	ofstream out(strDirectory, ios::binary);
 
@@ -2616,7 +2618,7 @@ void CImguiManager::TrailEvent_Load(string strPath)
 void CImguiManager::SoundEvent_Load(string strPath)
 {
 	string strDirectory = strPath;
-	strDirectory += "/" + m_ModelNameList[m_iModelSelectedIndex] + "_SoundEvents.dat";
+	strDirectory += "/" + m_ModelNameList[m_iModelSelectedIndex] + (m_isCutSceneEvents ? "_CutSoundEvents.dat" : "_SoundEvents.dat");
 
 	ifstream in(strDirectory, ios::binary);
 

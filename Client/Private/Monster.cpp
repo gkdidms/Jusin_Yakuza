@@ -311,6 +311,7 @@ void CMonster::Set_Start(_bool isStart)
 
 void CMonster::Set_Animation(string strAnimName, _bool isLoop)
 {
+	m_iCurrentAnimType = CUTSCENE;
 	m_strAnimName = strAnimName;
 	m_isAnimLoop = isLoop;
 
@@ -383,7 +384,7 @@ HRESULT CMonster::Initialize(void* pArg)
 	m_pTransformCom->Set_Scale(0.95f, 0.95f, 0.95f);
 
 	//테스트 데이터
-	m_Info.fMaxHP = 100.f;
+	m_Info.fMaxHP = 70.f;
 	m_Info.fHp = m_Info.fMaxHP;
 
 	m_iCurrentAnimType = DEFAULT;
@@ -774,6 +775,23 @@ void CMonster::BloodEffect_Event()
 			{
 				pEvent.isPlayed = false;
 			}
+		}
+	}
+}
+
+void CMonster::Sound_Event()
+{
+	auto& pCurEvents = m_pData->Get_Current_SoundEvents();
+	for (auto& pEvent : pCurEvents)
+	{
+		_double CurPos = *(m_pModelCom->Get_AnimationCurrentPosition(m_pAnimCom[m_iCurrentAnimType]));
+		_double Duration = *(m_pModelCom->Get_AnimationDuration(m_pAnimCom[m_iCurrentAnimType]));
+
+		if (!pEvent->isPlayed && CurPos >= pEvent->fAinmPosition && CurPos < Duration)
+		{
+			pEvent->isPlayed = true;
+			wstring wstrSoundFile = m_pGameInstance->StringToWstring(pEvent->strSoundFileName);
+			m_pGameInstance->StopAndPlaySound(wstrSoundFile, static_cast<CHANNELID>(pEvent->iChannel), pEvent->fSoundVolume);
 		}
 	}
 }

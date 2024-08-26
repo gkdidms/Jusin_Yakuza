@@ -260,7 +260,7 @@ public:
     virtual void Off_Sync();
     void Set_RimLight(_float isRimLight) { m_isRimLight = isRimLight; }
     void Set_Start(_bool isStart); // 전투 시작 시 
-    void Set_Script(_bool isScript) { m_isScript = isScript; }
+    void Set_Script(_bool isScript) { m_isScript = isScript; m_iCurrentAnimType = DEFAULT; }
     void Set_Animation(string strAnimName, _bool isLoop = true);
 
     void Set_QTEResult(_uint iValue) { m_iQTEResult = iValue; }
@@ -306,6 +306,7 @@ public:
     _bool Checked_Animation_Ratio(_float fRatio);
 
     void BloodEffect_Event();
+    virtual void Sound_Event() override;
 
 protected:
     CAnim* m_pAnimCom[ANIM_TYPE_END] = {nullptr}; // 애니메이션만 따로 저장하고있는 애니메이션 컴포넌트

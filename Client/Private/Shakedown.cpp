@@ -36,7 +36,7 @@ HRESULT CShakedown::Initialize(void* pArg)
 
 	m_pTransformCom->Set_Scale(1.2f, 1.2f, 1.2f);
 
-	m_Info.fMaxHP = 30.f;
+	m_Info.fMaxHP = 150.f;
 	m_Info.fHp = m_Info.fMaxHP;
 
 

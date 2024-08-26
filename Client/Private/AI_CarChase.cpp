@@ -118,6 +118,20 @@ void CAI_CarChase::LookAtPlayer()
 	m_pThis->Get_TransformCom()->LookAt_For_LandObject(vPlayerPos);
 }
 
+void CAI_CarChase::Play_Hit()
+{
+	_uint iRandom = m_pGameInstance->Get_Random(0, 2);
+	wstring strName = TEXT("");
+	if (iRandom == 0)
+		strName = TEXT("gunshot_damage_0.wav");
+	else if (iRandom == 1)
+		strName = TEXT("gunshot_damage_1.wav");
+	else if (iRandom == 2)
+		strName = TEXT("gunshot_damage_2.wav");
+
+	m_pGameInstance->PlaySound_W(strName, SOUND_ENEMY_HIT, 0.5f);
+}
+
 _bool CAI_CarChase::Find_PlayerCurrentAnimationName(string strAnimName)
 {
 	string strPlayerAnimName = m_pPlayer->Get_CurrentAnimationName();

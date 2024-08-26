@@ -55,6 +55,9 @@ HRESULT CUITalk::Tick(const _float& fTimeDelta)
 			//E누르면 다음대화[다른곳에서 해도됨]
 			Ready_Talk();
 			
+			m_pGameInstance->StopSound(SOUND_UI);
+			m_pGameInstance->PlaySound_W(TEXT("4681 [8].wav"), SOUND_UI, 0.5f);
+
 			if (false == Read_Script())
 				Close_Scene();
 		}

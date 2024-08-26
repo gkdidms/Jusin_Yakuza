@@ -51,6 +51,8 @@ protected:
     _bool isBehine();
     void LookAtPlayer();
 
+    void Play_Hit();
+
 protected:
     CBTNode* m_pRootNode = { nullptr };
     CGameInstance* m_pGameInstance = { nullptr };

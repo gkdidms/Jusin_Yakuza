@@ -10,6 +10,8 @@
 #include "Selector.h"
 #include "EffectManager.h"
 
+#include "Highway_Taxi.h"
+
 CAI_Van::CAI_Van()
 	: CAI_CarChase{}
 {
@@ -147,6 +149,8 @@ CBTNode::NODE_STATE CAI_Van::Hit()
 	else if (*m_pWeaponType == CCarChase_Monster::DRV)
 		*m_pState = CCarChase_Monster::CARCHASE_SIT_DWN;
 
+	Play_Hit();
+
 	m_isHit = true;
 
 	return CBTNode::SUCCESS;
@@ -197,9 +201,18 @@ CBTNode::NODE_STATE CAI_Van::ATK_Shot()
 	{
 		m_isAttack = true;
 		if (*m_pWeaponType == CCarChase_Monster::WPR)
+		{
 			*m_pState = CCarChase_Monster::CARCHASE_SHOT_ST;
+			m_pGameInstance->PlaySound_W(TEXT("e_gunshot_shotgun_0.wav"), SOUND_ENEMY_EFFECT, 0.5f);
+		}
 		else if (*m_pWeaponType == CCarChase_Monster::WPJ)
+		{
 			*m_pState = CCarChase_Monster::CARCHASE_AIM_SHOT;
+			m_pGameInstance->PlaySound_W(TEXT("e_gunshot_gatling_0.wav"), SOUND_ENEMY_EFFECT, 0.5f);
+		}
+			
+
+		m_pPlayer->OnHit(5.f);
 
 		return CBTNode::SUCCESS;
 	}

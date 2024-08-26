@@ -359,15 +359,15 @@ void Client::CQteManager::Check_QTE_Section()
     
     auto it = m_QTEs.find(m_strAnimationName);
 
-    if (!m_isQTEUI)
-    {
-        m_isQTEUI = true;
-        m_pUIManager->Close_Scene();
-        m_pUIManager->Open_Scene(TEXT("QTE"));
-    }
-
     if (it != m_QTEs.end()) 
     {
+        if (!m_isQTEUI)
+        {
+            m_isQTEUI = true;
+            m_pUIManager->Close_Scene();
+            m_pUIManager->Open_Scene(TEXT("QTE"));
+        }
+
         _uint animIndex = it->second.iAnimIndex;
 
         if(!m_isKuze)
