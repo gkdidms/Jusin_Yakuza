@@ -66,7 +66,7 @@ void CKuze::Tick(const _float& fTimeDelta)
 	}
 
 	//Trail_Event();
-
+	Sound_Event();
 }
 
 void CKuze::Late_Tick(const _float& fTimeDelta)

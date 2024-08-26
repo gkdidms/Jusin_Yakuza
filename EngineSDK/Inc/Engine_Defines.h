@@ -105,6 +105,8 @@ namespace Engine
 		SOUND_BGM_1,
 		SOUND_BGM_2,
 		SOUND_BGM_3,
+		SOUND_EFFECT_SUB,
+		SOUND_EFFECT_THIRD,
 		SOUND_END
 	};
 

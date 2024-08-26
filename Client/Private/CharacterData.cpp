@@ -129,11 +129,43 @@ HRESULT CCharacterData::Initialize(CLandObject* pCharacter)
 	if (FAILED(Load_RadialEvent(strFileFullPath)))
 		return E_FAIL;
 
-	// 레디얼 이벤트는 애니메이션 컴포넌트를 쓰고있기때문에, 사용 시 주의가 필요하다
-	strFileName = m_pGameInstance->WstringToString(m_pCharacter->Get_ModelName()) + "_SoundEvents.dat";
-	strFileFullPath = strFilePath + strFileName;
-	if (FAILED(Load_SoundEvent(strFileFullPath)))
-		return E_FAIL;
+	//Get_ScndModelName 값이 비어있지않다면 알파메시는 다른 이름으로 읽어와야한다.
+	if (m_pCharacter->Get_ScndModelName() != TEXT(""))
+	{
+		wstring wstrFilePath_Scnd = TEXT("../Bin/DataFiles/Character/");
+		wstrFilePath_Scnd += m_pCharacter->Get_ScndModelName() + TEXT("/");
+
+		string strFilePath_Scnd = m_pGameInstance->WstringToString(wstrFilePath_Scnd);
+		string strFileName_Scnd = m_pGameInstance->WstringToString(m_pCharacter->Get_ScndModelName()) + "_SoundEvents.dat";
+
+		string strFileFullPath_Scnd = strFilePath_Scnd + strFileName_Scnd;
+		if (FAILED(Load_SoundEvent(strFileFullPath_Scnd)))
+			return E_FAIL;
+
+		strFilePath_Scnd = m_pGameInstance->WstringToString(wstrFilePath_Scnd);
+		strFileName_Scnd = m_pGameInstance->WstringToString(m_pCharacter->Get_ScndModelName()) + "_CutSoundEvents.dat";
+
+		strFileFullPath_Scnd = strFilePath_Scnd + strFileName_Scnd;
+		if (FAILED(Load_CutSceneSoundEvent(strFileFullPath_Scnd)))
+			return E_FAIL;
+	}
+	else
+	{
+		// 레디얼 이벤트는 애니메이션 컴포넌트를 쓰고있기때문에, 사용 시 주의가 필요하다
+		strFileName = m_pGameInstance->WstringToString(m_pCharacter->Get_ModelName()) + "_SoundEvents.dat";
+		strFileFullPath = strFilePath + strFileName;
+		if (FAILED(Load_SoundEvent(strFileFullPath)))
+			return E_FAIL;
+
+		// 레디얼 이벤트는 애니메이션 컴포넌트를 쓰고있기때문에, 사용 시 주의가 필요하다
+		strFileName = m_pGameInstance->WstringToString(m_pCharacter->Get_ModelName()) + "_CutSoundEvents.dat";
+		strFileFullPath = strFilePath + strFileName;
+		if (FAILED(Load_CutSceneSoundEvent(strFileFullPath)))
+			return E_FAIL;
+	}
+
+
+
 	
 	return S_OK;
 }
@@ -208,8 +240,6 @@ void CCharacterData::Set_CurrentAnimation(string strAnimName)
 	}
 
 	// 바꾸기 전에 초기화해주기.
-	// 어차피 복사생성돼서 안해도될듯
-	
 	if (m_iCurrentAnimName != strAnimName)
 	{
 		for (auto& pSoundEvent : m_CurrentSoundEvents)
@@ -319,6 +349,37 @@ void CCharacterData::Set_CurrentCutSceneAnimation(string strAnimName)
 			}
 		}
 	}
+
+	// 바꾸기 전에 초기화해주기.
+	if (m_iCurrentAnimName != strAnimName)
+	{
+		for (auto& pSoundEvent : m_CurrentSoundEvents)
+			pSoundEvent->isPlayed = false;
+
+		m_iCurrentAnimName = strAnimName;
+	}
+
+	m_CurrentSoundEvents.clear();
+	auto sound_lower_bound_iter = m_CutSceneSoundEvents.lower_bound(strAnimName);
+
+	// 반환된 iter의 키값이 다르다면 맵 내에 해당 키값이 존재하지 않는다는 뜻
+	if (!(sound_lower_bound_iter != m_CutSceneSoundEvents.end() && (*sound_lower_bound_iter).first != strAnimName))
+	{
+		auto sound_upper_bound_iter = m_CutSceneSoundEvents.upper_bound(strAnimName);
+
+		if (sound_lower_bound_iter == sound_upper_bound_iter && sound_lower_bound_iter != m_CutSceneSoundEvents.end())
+		{
+			m_CurrentSoundEvents.push_back(&(*sound_lower_bound_iter).second);
+		}
+		else
+		{
+			for (; sound_lower_bound_iter != sound_upper_bound_iter; ++sound_lower_bound_iter)
+			{
+				m_CurrentSoundEvents.push_back(&(*sound_lower_bound_iter).second);
+			}
+		}
+	}
+	
 }
 
 HRESULT CCharacterData::Load_AlphaMeshes(string strFilePath)
@@ -780,6 +841,52 @@ HRESULT CCharacterData::Load_SoundEvent(string strFilePath)
 			in >> Desc.strSoundFileName;
 
 			m_SoundEvents.emplace(strAnimName, Desc);
+		}
+
+		in.close();
+	}
+
+	return S_OK;
+}
+
+HRESULT CCharacterData::Load_CutSceneSoundEvent(string strFilePath)
+{
+	if (fs::exists(strFilePath))
+	{
+#ifdef _DEBUG
+		cout << "_CutSoundEvent Yes!!" << endl;
+#endif // _DEBUG
+
+		ifstream in(strFilePath, ios::binary);
+
+		if (!in.is_open()) {
+			MSG_BOX("CutSoundEvent 개방 실패");
+			return E_FAIL;
+		}
+
+		_uint iNumEvent = { 0 };
+		in >> iNumEvent;
+
+		/*
+		*   _uint iChannel;
+			_float fAinmPosition;
+			_float fSoundVolume;
+			string strSoundFileName;
+		*/
+
+		for (size_t i = 0; i < iNumEvent; i++)
+		{
+			string strAnimName = "";
+			in >> strAnimName;				//Key값으로 쓰일 애니메이션 이름
+
+			ANIMATION_SOUNDEVENTSTATE Desc{};
+
+			in >> Desc.iChannel;
+			in >> Desc.fAinmPosition;
+			in >> Desc.fSoundVolume;
+			in >> Desc.strSoundFileName;
+
+			m_CutSceneSoundEvents.emplace(strAnimName, Desc);
 		}
 
 		in.close();

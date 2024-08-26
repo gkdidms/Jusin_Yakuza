@@ -63,6 +63,8 @@ HRESULT CLevel_Street::Initialize()
 	m_pGameInstance->Play_Loop(L"4887 [1].wav", SOUND_BGM_3, 0.3f);
 	m_pGameInstance->Play_Loop(L"4899 [1].wav", SOUND_BGM_1, 0.5f);
 
+	m_pGameInstance->PlayBGM(TEXT("Street_BGM.wav"), 0.5f);
+
     return S_OK;
 }
 

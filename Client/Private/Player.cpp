@@ -1989,6 +1989,7 @@ void CPlayer::Change_Animation(_uint iIndex, _float fInterval)
 	{
 		// 실제로 애니메이션 체인지가 일어났을 때 켜져있던 어택 콜라이더를 전부 끈다
 		Off_Attack_Colliders();
+		Off_Trails();
 		XMStoreFloat4(&m_vPrevMove, XMVectorZero());
 		m_fPrevSpeed = 0.f;
 	}
@@ -2064,12 +2065,14 @@ void CPlayer::Set_CutSceneStartMotion(CUTSCENE_ANIMATION_TYPE eType)
 	{
 		//[657]	[p_sh20021_gougeki_c]
 		m_pModelCom->Set_AnimationIndex(657, 4.f);
+		m_pGameInstance->PlaySound_W(TEXT("HitAction_Start.wav"), SOUND_UI, 0.7f);
 		break;
 	}
 	case Client::CPlayer::OI_TRAMPLE_AO:
 	{
 		//[655]	[p_sh1550_oi_combo]
 		m_pModelCom->Set_AnimationIndex(655, 4.f);
+		m_pGameInstance->PlaySound_W(TEXT("HitAction_Start.wav"), SOUND_UI, 0.7f);
 		break;
 
 	}
@@ -2077,6 +2080,7 @@ void CPlayer::Set_CutSceneStartMotion(CUTSCENE_ANIMATION_TYPE eType)
 	{
 		//[651]	[p_sh1511_oi_kickover_utu_c]
 		m_pModelCom->Set_AnimationIndex(651, 4.f);
+		m_pGameInstance->PlaySound_W(TEXT("HitAction_Start.wav"), SOUND_UI, 0.7f);
 		break;
 
 	}
@@ -2084,6 +2088,7 @@ void CPlayer::Set_CutSceneStartMotion(CUTSCENE_ANIMATION_TYPE eType)
 	{
 		//[648]	[p_sh1010_kiryu_gswing]
 		m_pModelCom->Set_AnimationIndex(648, 4.f);
+		m_pGameInstance->PlaySound_W(TEXT("HitAction_Start.wav"), SOUND_UI, 0.7f);
 		break;
 
 	}
@@ -2091,6 +2096,7 @@ void CPlayer::Set_CutSceneStartMotion(CUTSCENE_ANIMATION_TYPE eType)
 	{
 		//[653]	[p_sh1530_nage_oiuchi_lapel]
 		m_pModelCom->Set_AnimationIndex(653, 4.f);
+		m_pGameInstance->PlaySound_W(TEXT("HitAction_Start.wav"), SOUND_UI, 0.7f);
 		break;
 
 	}
@@ -2098,6 +2104,7 @@ void CPlayer::Set_CutSceneStartMotion(CUTSCENE_ANIMATION_TYPE eType)
 	{
 		//[654]	[p_sh1540_nage_oiuchi_neck]
 		m_pModelCom->Set_AnimationIndex(651, 4.f);
+		m_pGameInstance->PlaySound_W(TEXT("HitAction_Start.wav"), SOUND_UI, 0.7f);
 		break;
 
 	}
@@ -2105,24 +2112,28 @@ void CPlayer::Set_CutSceneStartMotion(CUTSCENE_ANIMATION_TYPE eType)
 	{
 		//	[659]	[p_sh2040_pole_knock_lapel]
 		m_pModelCom->Set_AnimationIndex(659, 4.f);
+		m_pGameInstance->PlaySound_W(TEXT("HitAction_Start.wav"), SOUND_UI, 0.7f);
 		break;
 	}
 	case Client::CPlayer::DORAMUKAN_88:
 	{
 		//	[663]	[p_sh3261_doramukan_88]
 		m_pModelCom->Set_AnimationIndex(663, 4.f);
+		m_pGameInstance->PlaySound_W(TEXT("HitAction_Start.wav"), SOUND_UI, 0.7f);
 		break;
 	}
 	case Client::CPlayer::OI_KICK:
 	{
 		//[662]	[p_sh23020_oi_upper]
 		m_pModelCom->Set_AnimationIndex(662, 4.f);
+		m_pGameInstance->PlaySound_W(TEXT("HitAction_Start.wav"), SOUND_UI, 0.7f);
 		break;
 	}
 	case Client::CPlayer::OI_UPPER:
 	{
 		//[662]	[p_sh23020_oi_upper]
 		m_pModelCom->Set_AnimationIndex(662, 4.f);
+		m_pGameInstance->PlaySound_W(TEXT("HitAction_Start.wav"), SOUND_UI, 0.7f);
 		break;
 	}
 	// 시작 애니메이션이 없는 컷신이라면 false로 돌려준다.

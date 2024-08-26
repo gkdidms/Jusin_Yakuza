@@ -434,6 +434,14 @@ void CLandObject::Off_Attack_Colliders()
 	}
 }
 
+void CLandObject::Off_Trails()
+{
+	for (auto& pTrail : m_pTrailEffects)
+	{
+		pTrail.second->Off();
+	}
+}
+
 void CLandObject::Set_NavigationIndex(int iIndex)
 {
 	m_pNavigationCom->Set_Index(iIndex); 

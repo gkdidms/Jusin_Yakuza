@@ -325,6 +325,7 @@ private:
 
 	/* 사운드 이벤트 윈도우 */
 private:
+	_bool						m_isCutSceneEvents = { false };
 	_bool						m_isSoundListWindow = { false };
 	CHANNELID					m_eSoundCannel = { SOUND_EFFECT };
 	string						m_strSelectSoundFileName = "";

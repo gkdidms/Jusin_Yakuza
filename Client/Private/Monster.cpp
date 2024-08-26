@@ -779,6 +779,23 @@ void CMonster::BloodEffect_Event()
 	}
 }
 
+void CMonster::Sound_Event()
+{
+	auto& pCurEvents = m_pData->Get_Current_SoundEvents();
+	for (auto& pEvent : pCurEvents)
+	{
+		_double CurPos = *(m_pModelCom->Get_AnimationCurrentPosition(m_pAnimCom[m_iCurrentAnimType]));
+		_double Duration = *(m_pModelCom->Get_AnimationDuration(m_pAnimCom[m_iCurrentAnimType]));
+
+		if (!pEvent->isPlayed && CurPos >= pEvent->fAinmPosition && CurPos < Duration)
+		{
+			pEvent->isPlayed = true;
+			wstring wstrSoundFile = m_pGameInstance->StringToWstring(pEvent->strSoundFileName);
+			m_pGameInstance->StopAndPlaySound(wstrSoundFile, static_cast<CHANNELID>(pEvent->iChannel), pEvent->fSoundVolume);
+		}
+	}
+}
+
 void CMonster::Synchronize_Root(const _float& fTimeDelta)
 {
 	_vector vFF = XMVectorSetZ(XMLoadFloat3(m_pModelCom->Get_AnimationCenterMove(m_pAnimCom[m_iCurrentAnimType])), 0);
