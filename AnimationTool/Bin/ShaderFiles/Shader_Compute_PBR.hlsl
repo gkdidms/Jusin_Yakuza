@@ -130,22 +130,22 @@ float4 BRDF(float4 vPosition, int2 vTexcoord, float4 vNormal, float4 vDepthDesc,
     float cosTheta = max(dot(vNormal.xyz, vHalfway), 0.f);
     float3 F = FresnelSchlickRoughness(cosTheta, F0, vRoughness);
     
-    float3 specularWithTint = CalculateSpecularTint(F, vAlbedo, Combine.w);
+    //float3 specularWithTint = CalculateSpecularTint(F, vAlbedo, Combine.w);
     
-    float3 nominator = D * G * specularWithTint;
+    float3 nominator = D * G * F;
     
     float WoDotN = max(dot(vNormal.xyz, vLook), 0.f);
-    float WiDotN = max(dot(vNormal.xyz, vLightDir), 0.7f);
+    float WiDotN = max(dot(vNormal.xyz, vLightDir), 0.1f);
     float denominator = (WoDotN * WiDotN * 4.f) + 0.001f;
     
     float3 vSpecular = (nominator / denominator);
     
-    float3 vKS = specularWithTint;
+    float3 vKS = F;
     float3 vKD = 1.f - vKS;
     vKD *= 1.f - fMetalic;
     
     float3 vDiffuse = vKD * vAlbedo / PI;
-    vDiffuse = (vDiffuse + vSpecular) * (vRadiance * 0.9f);
+    vDiffuse = (vDiffuse + vSpecular) * (vRadiance);
     return vector(vDiffuse, 1.f);
 }
 

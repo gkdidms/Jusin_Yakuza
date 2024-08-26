@@ -127,6 +127,15 @@ void CAI_RoadStanding_NML::Execute_Anim()
 
 		_uint		iMotion = m_pGameInstance->Get_Random((int)MOTION_TYPE::MOTION_TALK_A, (int)MOTION_TYPE::MOTION_LISTEN);
 		*m_pMotionType = iMotion;
+
+		if (iMotion == MOTION_TALK_A || iMotion == MOTION_TALK_B)
+		{
+			const char* soundlist[6] = { "13b3 [1].wav", "13b8 [1].wav", "13ca [1].wav", "13d6 [1].wav", "13fd [1].wav", "13f7 [1].wav" };
+			int iIndex = m_pGameInstance->Get_Random(0, 5);
+
+			m_pGameInstance->PlaySound_W(m_pGameInstance->StringToWstring(soundlist[iIndex]), SOUND_NPC_1, 0.7f);
+
+		}
 	}
 
 }

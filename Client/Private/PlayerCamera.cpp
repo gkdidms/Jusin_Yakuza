@@ -341,21 +341,23 @@ void CPlayerCamera::Set_StartPos()
 	}
 	else if (LEVEL::LEVEL_OFFICE_2F == m_iCurrentLevel)
 	{
-		m_fCamAngleX = -10;
-		m_fCamAngleY = 45;
+		m_fCamAngleX = 20;
+		m_fCamAngleY = -200;
 	}
 	else if (LEVEL::LEVEL_OFFICE_BOSS == m_iCurrentLevel)
 	{
 		m_fCamAngleX = 45.f;
-		m_fCamAngleY = 45;
+		m_fCamAngleY = 90;
 	}
 	else if (LEVEL::LEVEL_DOGIMAZO == m_iCurrentLevel)
 	{
+		m_fCamAngleY = 0;
+		m_fCamAngleX = 45.f;
 	}
 	else if (LEVEL::LEVEL_DOGIMAZO_STAIRS == m_iCurrentLevel)
 	{
 		m_fCamAngleY = 0;
-		m_fCamAngleX = 25.f;
+		m_fCamAngleX = 45.f;
 	}
 	else if (LEVEL::LEVEL_DOGIMAZO_LOBBY == m_iCurrentLevel)
 	{
@@ -366,6 +368,7 @@ void CPlayerCamera::Set_StartPos()
 	{
 		m_fCamAngleX = 30.f;
 	}
+
 }
 
 void CPlayerCamera::Adjust_Camera_Angle()

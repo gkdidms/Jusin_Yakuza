@@ -37,7 +37,7 @@ HRESULT CLevel_DogimazoBoss::Initialize()
 
     /* Å¬¶ó ÆÄ½Ì */
     m_pFileTotalManager->Set_MapObj_In_Client(STAGE_DOGIMAZO_BOSS, LEVEL_DOGIMAZO_BOSS);
-    m_pFileTotalManager->Set_Lights_In_Client(99);
+    m_pFileTotalManager->Set_Lights_In_Client(STAGE_DOGIMAZO_BOSS);
     m_pFileTotalManager->Set_Collider_In_Client(STAGE_DOGIMAZO_BOSS, LEVEL_DOGIMAZO_BOSS);
 
 	if (FAILED(Ready_Camera(TEXT("Layer_Camera"))))

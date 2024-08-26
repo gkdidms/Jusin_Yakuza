@@ -85,7 +85,8 @@ public:
 protected:
     CAnim* m_pAnimCom = { nullptr }; // 애니메이션만 따로 저장하고있는 애니메이션 컴포넌트 
     CAStart* m_pAStartCom = { nullptr };
-    
+    CNeoShader* m_pMaterialCom = { nullptr };
+
 protected:
     _bool m_isAnimLoop = { false };
     _uint m_iState = { 0 };

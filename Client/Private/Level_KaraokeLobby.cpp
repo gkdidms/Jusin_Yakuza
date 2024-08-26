@@ -39,13 +39,13 @@ HRESULT CLevel_KaraokeLobby::Initialize()
 	if (m_pGameInstance->Get_CurrentLevel() == LEVEL_KARAOKE_START)
 	{
 		m_pFileTotalManager->Set_MapObj_In_Client(STAGE_KARAOKE_START, LEVEL_KARAOKE_START);
-		m_pFileTotalManager->Set_Lights_In_Client(99);
+		m_pFileTotalManager->Set_Lights_In_Client(STAGE_KARAOKE);
 		m_pFileTotalManager->Set_Trigger_In_Client(STAGE_KARAOKE_START, LEVEL_KARAOKE_START);
 	}
 	if (m_pGameInstance->Get_CurrentLevel() == LEVEL_KARAOKE_END)
 	{
 		m_pFileTotalManager->Set_MapObj_In_Client(STAGE_KARAOKE_END, LEVEL_KARAOKE_END);
-		m_pFileTotalManager->Set_Lights_In_Client(99);
+		m_pFileTotalManager->Set_Lights_In_Client(STAGE_KARAOKE);
 		//m_pFileTotalManager->Set_Trigger_In_Client(STAGE_KARAOKE_END, LEVEL_KARAOKE_END);
 		//m_pFileTotalManager->Set_Collider_In_Client(STAGE_KARAOKE, LEVEL_KARAOKE);
 	}
@@ -75,6 +75,10 @@ HRESULT CLevel_KaraokeLobby::Initialize()
 	{
 		m_pQuestManager->Start_Quest(CQuestManager::CHAPTER_4);
 	}
+
+	/*셰이더 옵션값*/
+	m_pGameInstance->Set_HDRLight(1.3f);
+	m_pGameInstance->Set_AdjectTint(_float4(0.887f, 0.735f, 0.653f, 0.f));
 
     return S_OK;
 }

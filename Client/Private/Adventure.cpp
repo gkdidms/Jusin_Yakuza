@@ -327,6 +327,23 @@ HRESULT CAdventure::Add_Components()
 		TEXT("Com_AStart"), reinterpret_cast<CComponent**>(&m_pAStartCom))))
 		return E_FAIL;
 
+
+	//모델 이름 추출
+	string strModelName = m_pGameInstance->WstringToString(m_wstrModelName);
+	string strRemoveName = "Prototype_Component_Model_";
+	_int iPos = strModelName.find(strRemoveName);
+
+	if (iPos == string::npos)
+		return E_FAIL;
+
+	strModelName = strModelName.erase(iPos, strRemoveName.size());
+
+	wstring strMaterialName = TEXT("Prototype_Component_Material_") + m_pGameInstance->StringToWstring(strModelName);
+
+	if (FAILED(__super::Add_Component(m_iCurrentLevel, strMaterialName,
+		TEXT("Com_Material"), reinterpret_cast<CComponent**>(&m_pMaterialCom))))
+		m_pMaterialCom = nullptr;
+
 	return S_OK;
 }
 
@@ -346,6 +363,7 @@ void CAdventure::Free()
 {
 	__super::Free();
 
+	Safe_Release(m_pMaterialCom);
 	Safe_Release(m_pAnimCom);
 	Safe_Release(m_pNavigationCom);
 	Safe_Release(m_pAStartCom);

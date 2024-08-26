@@ -35,7 +35,7 @@ HRESULT CLevel_DogimazoLobby::Initialize()
 
     /* Å¬¶ó ÆÄ½Ì */
     m_pFileTotalManager->Set_MapObj_In_Client(STAGE_DOGIMAZO_LOBBY, LEVEL_DOGIMAZO_LOBBY);
-    m_pFileTotalManager->Set_Lights_In_Client(90);
+    m_pFileTotalManager->Set_Lights_In_Client(STAGE_DOGIMAZO_LOBBY);
     m_pFileTotalManager->Set_Collider_In_Client(STAGE_DOGIMAZO_LOBBY, LEVEL_DOGIMAZO_LOBBY);
 	m_pFileTotalManager->Set_Trigger_In_Client(4, LEVEL_DOGIMAZO_LOBBY);			// ¿ä³×´Ù²¨
 

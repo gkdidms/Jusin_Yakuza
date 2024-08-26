@@ -32,7 +32,7 @@ HRESULT CLevel_Karaoke::Initialize()
 
     ///* Å¬¶ó ÆÄ½Ì */
     m_pFileTotalManager->Set_MapObj_In_Client(STAGE_KARAOKE, LEVEL_KARAOKE);
-    m_pFileTotalManager->Set_Lights_In_Client(99);
+    m_pFileTotalManager->Set_Lights_In_Client(9);
 	//m_pFileTotalManager->Set_Trigger_In_Client(STAGE_KARAOKE, LEVEL_KARAOKE);
     //m_pFileTotalManager->Set_Collider_In_Client(STAGE_KARAOKE, LEVEL_KARAOKE);
 
@@ -52,6 +52,11 @@ HRESULT CLevel_Karaoke::Initialize()
 
 	CCineCamera* pCutSceneCamera = dynamic_cast<CCineCamera*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Camera"), CAMERA_CINEMACHINE));
 	pCutSceneCamera->Set_Loop(true);
+
+	/*¼ÎÀÌ´õ ¿É¼Ç°ª*/
+	m_pGameInstance->Set_HDRLight(1.3f);
+	m_pGameInstance->Set_AdjectTint(_float4(0.887f, 0.735f, 0.653f, 0.f));
+
 
     return S_OK;
 }
