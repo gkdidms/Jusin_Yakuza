@@ -39,7 +39,7 @@ HRESULT CLevel_NishikiWalk::Initialize()
 
 	/* Å¬¶ó ÆÄ½Ì */
 	m_pFileTotalManager->Set_MapObj_In_Client(STAGE_NISHIKIWALK, LEVEL_NISHIKIWALK);
-	m_pFileTotalManager->Set_Lights_In_Client(99);
+	m_pFileTotalManager->Set_Lights_In_Client(7);
 
 	m_pUIManager->Fade_Out();
 
@@ -47,6 +47,10 @@ HRESULT CLevel_NishikiWalk::Initialize()
 
 	if (FAILED(Ready_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
+
+	/*¼ÎÀÌ´õ ¿É¼Ç°ª*/
+	m_pGameInstance->Set_HDRLight(1.6f);
+	m_pGameInstance->Set_AdjectTint(_float4(0.814f, 0.810f, 0.782f, 0.f));
 
 	m_pGameInstance->PlayBGM(TEXT("Street_BGM.wav"), 0.5f);
 

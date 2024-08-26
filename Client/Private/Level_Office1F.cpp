@@ -37,7 +37,7 @@ HRESULT CLevel_Office1F::Initialize()
 	// 플레이어 위치 받아서 player 위치 설정 후 카메라 위치 설정해줘야하기 때문
 	/* 클라 파싱 */
 	m_pFileTotalManager->Set_MapObj_In_Client(STAGE_OFFICE_1F, LEVEL_OFFICE_1F);
-	m_pFileTotalManager->Set_Lights_In_Client(99);
+	m_pFileTotalManager->Set_Lights_In_Client(STAGE_OFFICE_1F);
 	m_pFileTotalManager->Set_Collider_In_Client(STAGE_OFFICE_1F, LEVEL_OFFICE_1F);
 	m_pFileTotalManager->Set_Trigger_In_Client(STAGE_OFFICE_1F, LEVEL_OFFICE_1F);
 
@@ -47,6 +47,8 @@ HRESULT CLevel_Office1F::Initialize()
 	m_pUIManager->Fade_Out();
 	m_pSystemManager->Set_Camera(CAMERA_PLAYER);
 	//m_pFightManager->Set_FightStage(true);
+
+	m_pGameInstance->Set_HDRLight(1.5f);
 
 	m_pGameInstance->PlayBGM(TEXT("Office_BGM.mp3"), 0.8f);
 

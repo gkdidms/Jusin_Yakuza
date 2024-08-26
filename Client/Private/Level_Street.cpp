@@ -45,7 +45,7 @@ HRESULT CLevel_Street::Initialize()
 		m_pFileTotalManager->Set_Trigger_In_Client(STAGE_STREET, m_pGameInstance->Get_CurrentLevel());
 	}
     
-	m_pFileTotalManager->Set_Lights_In_Client(99);
+	m_pFileTotalManager->Set_Lights_In_Client(7);
    // m_pFileTotalManager->Set_Collider_In_Client(STAGE_STREET, LEVEL_STREET);
 
 	m_pUIManager->Fade_Out();
@@ -53,6 +53,15 @@ HRESULT CLevel_Street::Initialize()
 	m_pSystemManager->Set_Camera(CAMERA_PLAYER);
 	if (FAILED(Ready_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
+	
+	/*셰이더 옵션값*/
+	m_pGameInstance->Set_HDRLight(1.6f);
+	m_pGameInstance->Set_AdjectTint(_float4(0.814f, 0.810f, 0.782f, 0.f));
+
+	m_pGameInstance->Play_Loop(L"48e6 [1].wav", SOUND_BGM, 0.5f);
+	m_pGameInstance->Play_Loop(L"48a1 [1].wav", SOUND_BGM_2, 0.6f);
+	m_pGameInstance->Play_Loop(L"4887 [1].wav", SOUND_BGM_3, 0.3f);
+	m_pGameInstance->Play_Loop(L"4899 [1].wav", SOUND_BGM_1, 0.5f);
 
 	m_pGameInstance->PlayBGM(TEXT("Street_BGM.wav"), 0.5f);
 
