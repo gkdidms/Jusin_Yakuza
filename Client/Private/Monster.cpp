@@ -220,8 +220,9 @@ void CMonster::Set_Sync(string strPlayerAnim, _bool isKeepSynchronizing)
 			m_pGameInstance->PlaySound_W(TEXT("46a0 [22].wav"), SOUND_ENEMY_VOICE, 0.8f);
 		}
 	}
+
 	//ÄÆ ¾×¼Ç
-	else if (strAnim == string_view("h11250"))
+	if (strAnim == string_view("h11250"))
 		m_iState = MONSTER_H11250_000_1;
 	else if (strAnim == string_view("h20021"))
 		m_iState = MONSTER_H20021_000_2;
