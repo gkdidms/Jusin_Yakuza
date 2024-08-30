@@ -53,8 +53,8 @@ HRESULT CLevel_DogimazoLobby::Initialize()
 	m_pGameInstance->PlayBGM(TEXT("Dozimazo_BGM.mp3"), 0.8f);
 
 	/*셰이더 옵션값*/
-	m_pGameInstance->Set_HDRLight(1.3f);
-	m_pGameInstance->Set_AdjectTint(_float4(0.873f, 0.820f, 0.753f, 0.f));
+	//m_pGameInstance->Set_HDRLight(1.3f);
+	//m_pGameInstance->Set_AdjectTint(_float4(0.873f, 0.820f, 0.753f, 0.f));
 
 
     return S_OK;
