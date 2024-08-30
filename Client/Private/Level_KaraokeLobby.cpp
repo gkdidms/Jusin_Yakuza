@@ -76,11 +76,12 @@ HRESULT CLevel_KaraokeLobby::Initialize()
 		m_pQuestManager->Start_Quest(CQuestManager::CHAPTER_4);
 	}
 
+	m_pGameInstance->PlayBGM(TEXT("Karaoke_BGM.wav"), 0.8f);
+
 	/*셰이더 옵션값*/
 	m_pGameInstance->Set_HDRLight(1.3f);
 	m_pGameInstance->Set_AdjectTint(_float4(0.887f, 0.735f, 0.653f, 0.f));
 
-	m_pGameInstance->PlayBGM(TEXT("Karaoke_BGM.wav"), 0.8f);
 
     return S_OK;
 }
