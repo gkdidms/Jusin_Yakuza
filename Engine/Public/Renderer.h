@@ -289,7 +289,7 @@ private:
 
     /*AdjustColor*/
     float m_fAdjectBrightness = { 0.1f }; // 밝기 조정
-    float m_fAdjectContrast = { 1.25f }; // 대비 보정
+    float m_fAdjectContrast = { 1.050f }; // 대비 보정
     float m_fAdjectSaturation = { 1.1f }; // 채도 보정
     _float4 m_vAdjectTint = _float4(1.05f, 0.95f, 1.f, 0.f); // 색조 조정 (약간의 틴트를 추가)
 

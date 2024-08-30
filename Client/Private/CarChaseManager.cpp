@@ -37,7 +37,7 @@ HRESULT CCarChaseManager::Initialize()
 	if (FAILED(m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Taxi"), TEXT("Layer_Taxi"), &Desc)))
 		return E_FAIL;
 
-	m_pGameInstance->PlayBGM(L"p_car_run_loop_0.wav", 1.f);
+	m_pGameInstance->PlayBGM(L"p_car_run_loop_0.wav", 0.4f);
 
 	return S_OK;
 }
@@ -234,8 +234,8 @@ HRESULT CCarChaseManager::Ready_Stage()
 
 	CCarChase::STAGE_INFO StageInfo_6 = CCarChase::STAGE_INFO{
 		LINE_C,
-		LINE_B,
-		DIR_F,
+		LINE_A,
+		DIR_L,
 		MonsterInfo_6
 	};
 
@@ -251,7 +251,7 @@ HRESULT CCarChaseManager::Ready_Stage()
 	vector<CCarChase::STAGE_MONSTER_INFO> MonsterInfo_7 = {
 		CCarChase::STAGE_MONSTER_INFO{
 			700000,
-			LINE_D,
+			LINE_C,
 			DIR_M,
 			CCarChase_Monster::REACTOR_HELI,
 			{ CCarChase_Monster::RKT, CCarChase_Monster::GAT }
@@ -259,8 +259,8 @@ HRESULT CCarChaseManager::Ready_Stage()
 	};
 
 	CCarChase::STAGE_INFO StageInfo_7 = CCarChase::STAGE_INFO{
-		LINE_B,
-		LINE_B,
+		LINE_A,
+		LINE_A,
 		DIR_R,
 		MonsterInfo_7
 	};
