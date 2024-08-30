@@ -193,7 +193,7 @@ CBTNode::NODE_STATE CAI_Heli::ATK_Shot()
 
 		if (*m_pWeaponType == CCarChase_Monster::GAT)
 		{
-			m_pGameInstance->PlaySound_W(TEXT("e_gunshot_gatling_0.wav"), SOUND_ENEMY_EFFECT, 0.5f);
+			m_pGameInstance->PlaySound_W(TEXT("e_gunshot_gatling_0.wav"), SOUND_ENEMY_EFFECT, 0.8f);
 
 			*m_pState = CCarChase_Monster::CARCHASE_SHOT_F_ST;
 		}	
@@ -201,7 +201,7 @@ CBTNode::NODE_STATE CAI_Heli::ATK_Shot()
 		{
 			*m_pState = CCarChase_Monster::CARCHASE_AIM_SHOT;
 
-			m_pGameInstance->PlaySound_W(TEXT("e_gunshot_rocket_0.wav"), SOUND_ENEMY_EFFECT, 0.5f);
+			m_pGameInstance->PlaySound_W(TEXT("e_gunshot_rocket_0.wav"), SOUND_ENEMY_EFFECT, 0.8f);
 			//ºÒ·¿ »ý¼º
 			CCarChase_CATBullet::BULLET_DESC Desc{};
 			Desc.pParentMatrix = m_pThis->Get_ModelMatrix();
@@ -210,7 +210,7 @@ CBTNode::NODE_STATE CAI_Heli::ATK_Shot()
 		}
 		else
 		{
-			m_pGameInstance->PlaySound_W(TEXT("e_gunshot_handgun_0.wav"), SOUND_ENEMY_EFFECT, 0.5f);
+			m_pGameInstance->PlaySound_W(TEXT("e_gunshot_handgun_0.wav"), SOUND_ENEMY_EFFECT, 0.8f);
 			*m_pState = CCarChase_Monster::CARCHASE_AIM_SHOT;
 		}
 

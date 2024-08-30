@@ -29,6 +29,8 @@ void CFightManager::Set_FightStage(_bool isFightStage, CMonsterGroup* pMonsterGr
 	m_isInverseEnd = false;
 	m_isMoney = false;
 
+	m_pUIManager->Set_AlwayUI(true);
+
 	if (m_isFightStage)
 	{
 		_int iTitleIndex = -1;
@@ -55,7 +57,8 @@ void CFightManager::Set_FightStage(_bool isFightStage, CMonsterGroup* pMonsterGr
 			break;
 		case LEVEL_TUTORIAL:			//야큐자
 		{
-			m_pGameInstance->PlayBGM(TEXT("Tutorial_Fight.mp3"), 1.f);
+			m_pGameInstance->StopSound(SOUND_BGM);
+			m_pGameInstance->PlayBGM(TEXT("Tutorial_Fight.mp3"), 0.6f);
 			m_isStreetFight = true;
 			iTitleIndex = 13;
 			break;
@@ -139,7 +142,26 @@ _bool CFightManager::Tick(const _float& fTimeDelta)
 		{
 			if (m_isTutorialEnd)
 			{
-				m_fFinishTime += fTimeDelta;
+				m_fFinishTime += m_pGameInstance->Get_TimeDelta(TEXT("Timer_Game"));
+
+				_float fRatio = (m_fFinishDuration - m_fFinishTime * 1.5f) / m_fFinishDuration;
+
+				m_pGameInstance->Set_TimeSpeed(TEXT("Timer_60"), fRatio < 0 ? 0.f : fRatio);
+				m_pGameInstance->Set_TimeSpeed(TEXT("Timer_Player"), fRatio < 0 ? 0.f : fRatio);
+
+				if (!m_isMoney)
+				{
+					m_pGameInstance->PlaySound_W(TEXT("4681 [31].wav"), SOUND_UI, 0.5f);
+
+					m_isMoney = true;
+					m_pUIManager->Open_Scene(TEXT("FightScore"));
+					dynamic_cast<CUIFightScore*>(m_pUIManager->Find_Scene(TEXT("FightScore")))->AddMoney(CPlayer::PlayerInfo.iMoney);
+				}
+
+				CPlayerCamera* pCamera = dynamic_cast<CPlayerCamera*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Camera"), CAMERA_PLAYER));
+				pCamera->Set_CustomRatio(fRatio);
+				pCamera->Set_TargetFoV(XMConvertToRadians(30.f));
+				pCamera->Start_Zoom();
 
 				if (m_fFinishDuration < m_fFinishTime)
 				{
@@ -150,6 +172,16 @@ _bool CFightManager::Tick(const _float& fTimeDelta)
 					CPlayer* pPlayer = dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"), 0));
 					pPlayer->Style_Change(CPlayer::ADVENTURE);
 					m_pGameInstance->StopSound(SOUND_BGM);
+					m_pUIManager->Set_AlwayUI(false);
+
+					m_pGameInstance->PlayBGM(TEXT("Street_BGM.mp3"), 0.3f);
+
+					m_pGameInstance->Set_TimeSpeed(TEXT("Timer_60"), 1.f);
+					m_pGameInstance->Set_TimeSpeed(TEXT("Timer_Player"), 1.f);
+
+					m_pUIManager->Close_Scene(TEXT("FightScore"));
+
+					m_pGameInstance->StopSound(SOUND_UI);
 
 					return true;
 				}
@@ -241,8 +273,9 @@ _bool CFightManager::Tick(const _float& fTimeDelta)
 					m_pGameInstance->Set_TimeSpeed(TEXT("Timer_60"), 1.f);
 					m_pGameInstance->Set_TimeSpeed(TEXT("Timer_Player"), 1.f);
 
-					// 스코어 창 닫아줘야하는데, 현재 UI가 쉐이더에 가려지는 문제때문에 디버깅을 위해 끄지않고있는중
 					m_pUIManager->Close_Scene(TEXT("FightScore"));
+
+					m_pGameInstance->StopSound(SOUND_UI);
 						
 					return true;
 				}
@@ -258,6 +291,9 @@ _bool CFightManager::Tick(const _float& fTimeDelta)
 
 				if (0.5f < m_fFinishTime)
 				{
+
+					m_pUIManager->Set_AlwayUI(false);
+
 					m_fFinishTime = 0.f;
 					m_isFightStage = false;
 #ifdef _DEBUG

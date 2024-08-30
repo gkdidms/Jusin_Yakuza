@@ -1341,7 +1341,7 @@ CBTNode::NODE_STATE CAI_Monster::Chcek_Sync()
 	{
 		if (!m_isSycnSound)
 		{
-			if (*(m_pAnimCom[*m_pCurrentAnimType]->Get_AnimPosition()) >= 30.0)
+			if (*(m_pAnimCom[*m_pCurrentAnimType]->Get_AnimPosition()) >= 20.0)
 			{
 				m_isSycnSound = true;
 
@@ -1625,6 +1625,7 @@ CBTNode::NODE_STATE CAI_Monster::HitAndGuard()
 	{
 		if (m_pThis->isColl())
 		{
+			m_pGameInstance->PlaySound_W(TEXT("000b [3].wav"), SOUND_ENEMY_HIT, m_fSoundEffect);
 			//가드 상태에서 충돌을 했다면 데미지 누적
 			CEffect::EFFECT_DESC EffectDesc;
 
