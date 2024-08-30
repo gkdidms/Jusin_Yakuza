@@ -209,7 +209,8 @@ void CPlayer::Tick(const _float& fTimeDelta)
 	}
 #endif // _DEBUG
 
-	Synchronize_Root(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")));
+	if(m_pModelCom->Get_CurrentAnimationIndex() != 579)
+		Synchronize_Root(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Player")));
 
 	//대화중일 경우 플레이어는 움직이거나 공격하지 않는다.
 	if (m_isStop || m_pUIManager->isOpen(TEXT("Inven")))
@@ -249,6 +250,8 @@ void CPlayer::Tick(const _float& fTimeDelta)
 	if (m_pGameInstance->GetKeyState(DIK_I) == TAP)
 	{
 		m_pUIManager->Open_Scene(TEXT("Menu"));
+
+		ShowCursor(true);
 	}
 	if (m_pGameInstance->GetKeyState(DIK_Q) == TAP)
 	{
@@ -258,6 +261,12 @@ void CPlayer::Tick(const _float& fTimeDelta)
 			m_pGameInstance->PlaySound_W(TEXT("4a72 [10].wav"), SOUND_UI, 0.7f);
 
 			m_pUIManager->Close_Scene();
+
+			if (m_pUIManager->isInvenClose())
+			{
+				SetCursorPos(g_iWinSizeX * 0.5f, g_iWinSizeY * 0.5f); // 마우스 좌표 적용해주기
+				ShowCursor(false);
+			}
 		}
 	}
 	if (m_pGameInstance->GetMouseState(DIM_LB) == TAP)
@@ -331,7 +340,8 @@ void CPlayer::Tick(const _float& fTimeDelta)
 	Setting_Target_Item();
 	//Setting_Target_Wall();
 
-	m_pQTEMgr->Tick(fTimeDelta);
+	if(nullptr != m_pQTEMgr)
+		m_pQTEMgr->Tick(fTimeDelta);
 }
 
 void CPlayer::Late_Tick(const _float& fTimeDelta)

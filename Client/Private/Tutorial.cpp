@@ -62,7 +62,9 @@ _bool CTutorial::Start()
 		m_pUIManager->Change_TutorialUI(m_TutorialUIIndex[m_iTutorialIndex]);
 	}
 		
-	
+	//CPlayer* pPlayer = dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"), 0));
+	//pPlayer->Set_PlayerStop(true);
+
 	return false;
 }
 
@@ -91,11 +93,12 @@ _bool CTutorial::Running()
 
 				m_pUIManager->Change_TutorialUI(m_iTutorialCheckUIIndex);
 			}
-				
 		}
-
 		return false;
 	}
+
+	//CPlayer* pPlayer = dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"), 0));
+	//pPlayer->Set_PlayerStop(false);
 
 	//체크박스가 보이고 있다면
 	//플레이어에 관한 스킬 카운트 관리하기
@@ -138,7 +141,8 @@ _bool CTutorial::Running()
 		//Grap일 경우
 		else if (string_view(m_strPlayerSkillName) == string_view("Grap"))
 		{
-			if (string_view(m_pPlayer->Get_CurrentAnimationName()) == string_view("p_kru_sync_lapel_nage"))
+			if (string_view(m_pPlayer->Get_CurrentAnimationName()) == string_view("p_kru_sync_lapel_nage")
+				|| string_view(m_pPlayer->Get_CurrentAnimationName()) == string_view("h20021"))
 			{
 				vector<CMonster*> Monsters = dynamic_cast<CMonsterGroup*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_MonsterGroup"), 0))->Get_Monsters();
 				//몬스터들 돌려가면서 체크

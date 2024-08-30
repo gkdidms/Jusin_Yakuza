@@ -214,10 +214,10 @@ void CMonster::Set_Sync(string strPlayerAnim, _bool isKeepSynchronizing)
 
 	if (m_isDown == true)
 	{
-		if (m_iMonsterType != KUZE)
+		if (m_iMonsterType != KUZE && m_iState != MONSTER_KRU_SYNC1_LAPEL_NAGE)
 		{
 			m_pGameInstance->StopSound(SOUND_ENEMY_VOICE);
-			m_pGameInstance->PlaySound_W(TEXT("46a0 [22].wav"), SOUND_ENEMY_VOICE, 0.7f);
+			m_pGameInstance->PlaySound_W(TEXT("46a0 [22].wav"), SOUND_ENEMY_VOICE, 0.8f);
 		}
 	}
 	//ÄÆ ¾×¼Ç
@@ -460,7 +460,8 @@ void CMonster::Tick(const _float& fTimeDelta)
 		m_pModelCom->Play_Animation_Monster(fTimeDelta, m_pAnimCom[m_iCurrentAnimType], m_isAnimLoop, isRoot);
 	}
 
-	Synchronize_Root(fTimeDelta);
+	if(m_strAnimName != "e_pnc_stand")
+		Synchronize_Root(fTimeDelta);
 
 	m_pColliderCom->Tick(m_pTransformCom->Get_WorldMatrix());
 

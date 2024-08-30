@@ -1305,6 +1305,7 @@ CBTNode::NODE_STATE CAI_Monster::Chcek_Sync()
 {
 	if (!m_isSync)
 	{
+		m_isSycnSound = false;
 		m_fSyncTime = 0.f;
 		return CBTNode::FAIL;
 	}
@@ -1334,6 +1335,21 @@ CBTNode::NODE_STATE CAI_Monster::Chcek_Sync()
 		}
 
 		return CBTNode::RUNNING;
+	}
+
+	if (*m_pState == CMonster::MONSTER_KRU_SYNC1_LAPEL_NAGE)
+	{
+		if (!m_isSycnSound)
+		{
+			if (*(m_pAnimCom[*m_pCurrentAnimType]->Get_AnimPosition()) >= 30.0)
+			{
+				m_isSycnSound = true;
+
+				m_pGameInstance->StopSound(SOUND_ENEMY_VOICE);
+				m_pGameInstance->PlaySound_W(TEXT("46a0 [22].wav"), SOUND_ENEMY_VOICE, 0.8f);
+			}
+		}
+
 	}
 		
 	if (*m_pState == CMonster::MONSTER_SYNC1_LEG_LP ||

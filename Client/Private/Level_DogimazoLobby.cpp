@@ -245,6 +245,8 @@ void CLevel_DogimazoLobby::Free()
 {
 	__super::Free();
 
+	CCollision_Manager::GetInstance()->All_Clear();
+
 	Safe_Release(m_pSystemManager);
 	Safe_Release(m_pFileTotalManager);
 	Safe_Release(m_pFightManager);
