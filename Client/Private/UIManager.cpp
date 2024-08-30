@@ -563,3 +563,18 @@ void CUIManager::Change_Style(_uint iStyle)
 
 	pScene->Change_Style(iStyle);
 }
+
+_bool* CUIManager::Get_Skill_Holligan()
+{
+	return nullptr;
+}
+
+_bool* CUIManager::Get_Skill_Rush()
+{
+	return nullptr;
+}
+
+_bool* CUIManager::Get_Skill_Destoryer()
+{
+	return nullptr;
+}

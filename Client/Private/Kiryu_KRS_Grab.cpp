@@ -113,8 +113,11 @@ void CKiryu_KRS_Grab::Tick(const _float& fTimeDelta)
 			m_pPlayer->On_Separation_Hand();
 
 			CMonster* pTargetMonster = static_cast<CMonster*>(m_pPlayer->Get_TargetObject());
-			if(nullptr != pTargetMonster)
-				pTargetMonster->Set_Sync("p_kru_sync_lapel_lp", true);
+			if (nullptr != pTargetMonster)
+			{
+				if(m_pPlayer->Get_CurrentAnimType() != CPlayer::CUTSCENE)
+					pTargetMonster->Set_Sync("p_kru_sync_lapel_lp", true);
+			}
 
 			// 여기에 키인풋
 			Move_KeyInput(fTimeDelta);

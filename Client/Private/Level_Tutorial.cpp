@@ -78,6 +78,8 @@ HRESULT CLevel_Tutorial::Initialize()
 
 	m_pUIManager->Set_AlwayUI(false);
 
+	m_pGameInstance->PlayBGM(TEXT("Street_BGM.mp3"), 0.3f);
+
 	return S_OK;
 }
 
@@ -208,6 +210,8 @@ CLevel_Tutorial* CLevel_Tutorial::Create(ID3D11Device* pDevice, ID3D11DeviceCont
 void CLevel_Tutorial::Free()
 {
 	__super::Free();
+
+	CCollision_Manager::GetInstance()->All_Clear();
 
 	Safe_Release(m_pSystemManager);
 	Safe_Release(m_pFileTotalManager);

@@ -220,8 +220,9 @@ void CMonster::Set_Sync(string strPlayerAnim, _bool isKeepSynchronizing)
 			m_pGameInstance->PlaySound_W(TEXT("46a0 [22].wav"), SOUND_ENEMY_VOICE, 0.8f);
 		}
 	}
+
 	//ÄÆ ¾×¼Ç
-	else if (strAnim == string_view("h11250"))
+	if (strAnim == string_view("h11250"))
 		m_iState = MONSTER_H11250_000_1;
 	else if (strAnim == string_view("h20021"))
 		m_iState = MONSTER_H20021_000_2;
@@ -460,7 +461,8 @@ void CMonster::Tick(const _float& fTimeDelta)
 		m_pModelCom->Play_Animation_Monster(fTimeDelta, m_pAnimCom[m_iCurrentAnimType], m_isAnimLoop, isRoot);
 	}
 
-	Synchronize_Root(fTimeDelta);
+	if(m_strAnimName != "e_pnc_stand")
+		Synchronize_Root(fTimeDelta);
 
 	m_pColliderCom->Tick(m_pTransformCom->Get_WorldMatrix());
 
