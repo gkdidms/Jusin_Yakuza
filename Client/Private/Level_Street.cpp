@@ -45,7 +45,7 @@ HRESULT CLevel_Street::Initialize()
 		m_pFileTotalManager->Set_Trigger_In_Client(STAGE_STREET, m_pGameInstance->Get_CurrentLevel());
 	}
     
-	m_pFileTotalManager->Set_Lights_In_Client(7);
+	m_pFileTotalManager->Set_Lights_In_Client(10);
    // m_pFileTotalManager->Set_Collider_In_Client(STAGE_STREET, LEVEL_STREET);
 
 	m_pUIManager->Fade_Out();
@@ -56,14 +56,14 @@ HRESULT CLevel_Street::Initialize()
 	
 	/*셰이더 옵션값*/
 	m_pGameInstance->Set_HDRLight(1.6f);
-	m_pGameInstance->Set_AdjectTint(_float4(0.814f, 0.810f, 0.782f, 0.f));
+	m_pGameInstance->Set_AdjectTint(_float4(0.873f, 0.764f, 0.642f, 0.f));
 
 	m_pGameInstance->Play_Loop(L"48e6 [1].wav", SOUND_BGM, 0.5f);
 	m_pGameInstance->Play_Loop(L"48a1 [1].wav", SOUND_BGM_2, 0.6f);
 	m_pGameInstance->Play_Loop(L"4887 [1].wav", SOUND_BGM_3, 0.3f);
 	m_pGameInstance->Play_Loop(L"4899 [1].wav", SOUND_BGM_1, 0.5f);
 
-	m_pGameInstance->PlayBGM(TEXT("Street_BGM.wav"), 0.5f);
+	//m_pGameInstance->PlayBGM(TEXT("Street_BGM.wav"), 0.5f);
 
     return S_OK;
 }
@@ -96,12 +96,11 @@ void CLevel_Street::Tick(const _float& fTimeDelta)
 
 				return;
 			}
-
-			if (!m_pUIManager->isOpen(TEXT("Fade")))
-			{
-				m_pUIManager->Fade_In();
-				m_isFadeFin = true;
-			}
+		}
+		if (!m_pUIManager->isOpen(TEXT("Fade")))
+		{
+			m_pUIManager->Fade_In();
+			m_isFadeFin = true;
 		}
 	}
 #ifdef _DEBUG
@@ -211,6 +210,8 @@ CLevel_Street* CLevel_Street::Create(ID3D11Device* pDevice, ID3D11DeviceContext*
 void CLevel_Street::Free()
 {
     __super::Free();
+
+	CCollision_Manager::GetInstance()->All_Clear();
 
     Safe_Release(m_pSystemManager);
     Safe_Release(m_pFileTotalManager);

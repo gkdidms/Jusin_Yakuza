@@ -79,8 +79,8 @@ HRESULT CLevel_KaraokeLobby::Initialize()
 	m_pGameInstance->PlayBGM(TEXT("Karaoke_BGM.wav"), 0.8f);
 
 	/*셰이더 옵션값*/
-	m_pGameInstance->Set_HDRLight(1.3f);
-	m_pGameInstance->Set_AdjectTint(_float4(0.887f, 0.735f, 0.653f, 0.f));
+	m_pGameInstance->Set_HDRLight(1.2f);
+	m_pGameInstance->Set_AdjectTint(_float4(0.882, 0.742f, 0.683f, 0.f));
 
 
     return S_OK;
