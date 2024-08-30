@@ -95,7 +95,7 @@ void CUIMainMenu::Action()
 		m_pGameInstance->PlaySound_W(TEXT("4681 [8].wav"), SOUND_UI, 0.5f);
 
 		// 레벨지정
-		if (FAILED(m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_CARCHASE))))
+		if (FAILED(m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_DOGIMAZO_BOSS))))
 			return;
 		break;
 	}
@@ -104,7 +104,7 @@ void CUIMainMenu::Action()
 		m_pGameInstance->StopSound(SOUND_UI);
 		m_pGameInstance->PlaySound_W(TEXT("4681 [8].wav"), SOUND_UI, 0.5f);
 
-		if (FAILED(m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_STREET))))
+		if (FAILED(m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_NISHIKIWALK))))
 			return;
 		break;
 	}

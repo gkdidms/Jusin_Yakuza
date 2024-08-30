@@ -5,6 +5,7 @@
 #include "FileTotalMgr.h"
 #include "FightManager.h"
 #include "UIManager.h"
+#include "Collision_Manager.h"
 
 #include "PlayerCamera.h"
 #include "CineCamera.h"
@@ -244,6 +245,8 @@ CLevel_DogimazoStairs* CLevel_DogimazoStairs::Create(ID3D11Device* pDevice, ID3D
 void CLevel_DogimazoStairs::Free()
 {
 	__super::Free();
+
+	CCollision_Manager::GetInstance()->All_Clear();
 
 	Safe_Release(m_pSystemManager);
 	Safe_Release(m_pFileTotalManager);
