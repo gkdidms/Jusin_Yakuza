@@ -29,6 +29,8 @@ void CFightManager::Set_FightStage(_bool isFightStage, CMonsterGroup* pMonsterGr
 	m_isInverseEnd = false;
 	m_isMoney = false;
 
+	m_pUIManager->Set_AlwayUI(true);
+
 	if (m_isFightStage)
 	{
 		_int iTitleIndex = -1;
@@ -150,6 +152,7 @@ _bool CFightManager::Tick(const _float& fTimeDelta)
 					CPlayer* pPlayer = dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"), 0));
 					pPlayer->Style_Change(CPlayer::ADVENTURE);
 					m_pGameInstance->StopSound(SOUND_BGM);
+					m_pUIManager->Set_AlwayUI(false);
 
 					return true;
 				}
@@ -258,6 +261,9 @@ _bool CFightManager::Tick(const _float& fTimeDelta)
 
 				if (0.5f < m_fFinishTime)
 				{
+
+					m_pUIManager->Set_AlwayUI(false);
+
 					m_fFinishTime = 0.f;
 					m_isFightStage = false;
 #ifdef _DEBUG

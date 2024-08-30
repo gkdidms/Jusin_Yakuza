@@ -203,12 +203,12 @@ CBTNode::NODE_STATE CAI_Van::ATK_Shot()
 		if (*m_pWeaponType == CCarChase_Monster::WPR)
 		{
 			*m_pState = CCarChase_Monster::CARCHASE_SHOT_ST;
-			m_pGameInstance->PlaySound_W(TEXT("e_gunshot_shotgun_0.wav"), SOUND_ENEMY_EFFECT, 0.5f);
+			m_pGameInstance->PlaySound_W(TEXT("e_gunshot_shotgun_0.wav"), SOUND_ENEMY_EFFECT, 0.8f);
 		}
 		else if (*m_pWeaponType == CCarChase_Monster::WPJ)
 		{
 			*m_pState = CCarChase_Monster::CARCHASE_AIM_SHOT;
-			m_pGameInstance->PlaySound_W(TEXT("e_gunshot_gatling_0.wav"), SOUND_ENEMY_EFFECT, 0.5f);
+			m_pGameInstance->PlaySound_W(TEXT("e_gunshot_gatling_0.wav"), SOUND_ENEMY_EFFECT, 0.8f);
 		}
 			
 

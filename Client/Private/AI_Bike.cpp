@@ -180,7 +180,7 @@ CBTNode::NODE_STATE CAI_Bike::ATK_Shot()
 			else if (*m_pDir == DIR_R)
 				*m_pState = CCarChase_Monster::CARCHASE_AIM_SHOT_R;
 
-			m_pGameInstance->PlaySound_W(TEXT("e_gunshot_rocket_0.wav"), SOUND_ENEMY_EFFECT, 0.5f);
+			m_pGameInstance->PlaySound_W(TEXT("e_gunshot_rocket_0.wav"), SOUND_ENEMY_EFFECT, 0.8f);
 		}
 		else if (*m_pWeaponType == CCarChase_Monster::GUN)
 		{
@@ -197,7 +197,7 @@ CBTNode::NODE_STATE CAI_Bike::ATK_Shot()
 			else if (iDir == DIR_FL)
 				*m_pState = CCarChase_Monster::CARCHASE_AIM_SHOT_L;
 
-			m_pGameInstance->PlaySound_W(TEXT("e_gunshot_handgun_0.wav"), SOUND_ENEMY_EFFECT, 0.5f);
+			m_pGameInstance->PlaySound_W(TEXT("e_gunshot_handgun_0.wav"), SOUND_ENEMY_EFFECT, 0.8f);
 		}
 
 		m_pPlayer->OnHit(5.f);
