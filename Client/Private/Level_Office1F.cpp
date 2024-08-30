@@ -48,9 +48,9 @@ HRESULT CLevel_Office1F::Initialize()
 	m_pSystemManager->Set_Camera(CAMERA_PLAYER);
 	//m_pFightManager->Set_FightStage(true);
 
-	m_pGameInstance->Set_HDRLight(1.5f);
-
 	m_pGameInstance->PlayBGM(TEXT("Office_BGM.mp3"), 0.8f);
+
+	m_pGameInstance->Set_HDRLight(1.5f);
 
 
 	return S_OK;

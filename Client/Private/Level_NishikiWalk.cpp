@@ -48,11 +48,12 @@ HRESULT CLevel_NishikiWalk::Initialize()
 	if (FAILED(Ready_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
 
+	m_pGameInstance->PlayBGM(TEXT("Street_BGM.wav"), 0.5f);
+
 	/*셰이더 옵션값*/
 	m_pGameInstance->Set_HDRLight(1.6f);
 	m_pGameInstance->Set_AdjectTint(_float4(0.814f, 0.810f, 0.782f, 0.f));
 
-	m_pGameInstance->PlayBGM(TEXT("Street_BGM.mp3"), 0.3f);
 
 	return S_OK;
 }
@@ -163,8 +164,6 @@ CLevel_NishikiWalk* CLevel_NishikiWalk::Create(ID3D11Device* pDevice, ID3D11Devi
 void CLevel_NishikiWalk::Free()
 {
 	__super::Free();
-
-	CCollision_Manager::GetInstance()->All_Clear();
 
 	Safe_Release(m_pSystemManager);
 	Safe_Release(m_pFileTotalManager);

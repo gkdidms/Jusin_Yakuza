@@ -250,6 +250,8 @@ void CPlayer::Tick(const _float& fTimeDelta)
 	if (m_pGameInstance->GetKeyState(DIK_I) == TAP)
 	{
 		m_pUIManager->Open_Scene(TEXT("Menu"));
+
+		ShowCursor(true);
 	}
 	if (m_pGameInstance->GetKeyState(DIK_Q) == TAP)
 	{
@@ -259,6 +261,12 @@ void CPlayer::Tick(const _float& fTimeDelta)
 			m_pGameInstance->PlaySound_W(TEXT("4a72 [10].wav"), SOUND_UI, 0.7f);
 
 			m_pUIManager->Close_Scene();
+
+			if (m_pUIManager->isInvenClose())
+			{
+				SetCursorPos(g_iWinSizeX * 0.5f, g_iWinSizeY * 0.5f); // 마우스 좌표 적용해주기
+				ShowCursor(false);
+			}
 		}
 	}
 	if (m_pGameInstance->GetMouseState(DIM_LB) == TAP)

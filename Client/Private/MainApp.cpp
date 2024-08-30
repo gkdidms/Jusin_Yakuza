@@ -95,10 +95,10 @@ void CMainApp::Tick(const _float& fTimeDelta)
 	m_pUIManager->Tick(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Game")));
 	m_pUIManager->Late_Tick(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Game")));
 
-	//프레임 확인용 나중에 다시 디버그로 넣어야함
-	m_fTimeAcc += fTimeDelta;
-
 #ifdef _DEBUG
+	//프레임 확인용 나중에 다시 디버그로 넣어야함
+
+	m_fTimeAcc += fTimeDelta;
 	if (m_pGameInstance->GetKeyState(DIK_F4) == TAP)
 	{
 		m_pSystemManager->Set_Camera(m_pSystemManager->Get_Camera() == CAMERA_DEBUG ? CAMERA_CUTSCENE : CAMERA_DEBUG);
@@ -142,6 +142,9 @@ HRESULT CMainApp::Render()
 
 	m_pGameInstance->Draw();
 
+
+#ifdef _DEBUG
+	//프레임 확인용.
 	++m_iNumRender;
 
 	if (m_fTimeAcc >= 1.f)
@@ -154,8 +157,6 @@ HRESULT CMainApp::Render()
 
 	m_pGameInstance->Render_Font(TEXT("Font_Default"), m_szFPS, _float2(0.f, 0.f), XMVectorSet(1.f, 1.f, 0.f, 1.f));
 
-#ifdef _DEBUG
-	//프레임 확인용.
 
 	m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("!!!테스트용 키는 화면에 모두 작성할것 !!! "), _float2(500.f, 0.f), XMVectorSet(1.f, 0.f, 0.f, 1.f));
 	m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("!!!처음부터->TEST , 이어하기 ->OFFICE_1F!!! "), _float2(500.f, 20.f), XMVectorSet(1.f, 0.f, 0.f, 1.f));

@@ -106,6 +106,8 @@ protected:
     _uint m_iSkill = { SKILL_END };
     _uint m_iMonsterType = { 0 };
 
+    _bool m_isSycnSound = { false };
+
 protected:
     _float m_fDelayAttackDuration = { 2.f };
     _float m_fAttackDelayTime = { 0.f }; // 공격이 끝난 후 지속시간
@@ -127,7 +129,7 @@ protected:
     _float m_fGuardAtkAcc = { 0.f };
 
 protected:
-    _float m_fSoundVoice = { 0.5f };
+    _float m_fSoundVoice = { 0.8f };
     _float m_fSoundEffect = { 0.8f };
 
 protected:

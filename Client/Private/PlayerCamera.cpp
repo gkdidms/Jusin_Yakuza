@@ -102,12 +102,6 @@ void CPlayerCamera::Tick(const _float& fTimeDelta)
 
 void CPlayerCamera::Late_Tick(const _float& fTimeDelta)
 {
-	if (m_pUIManager->isInvenClose())
-	{
-		SetCursorPos(g_iWinSizeX * 0.5f, g_iWinSizeY * 0.5f); // 마우스 좌표 적용해주기
-		ShowCursor(false);
-	}
-
 	if (LEVEL::LEVEL_CARCHASE != m_iCurrentLevel)
 	{
 		if (m_pSystemManager->Get_Camera() != CAMERA_PLAYER) return;
@@ -369,6 +363,11 @@ void CPlayerCamera::Set_StartPos()
 		m_fCamAngleX = 30.f;
 	}
 
+	if (m_iCurrentLevel != LEVEL_LOADING && m_iCurrentLevel != LEVEL_LOGO)
+	{
+		SetCursorPos(g_iWinSizeX * 0.5f, g_iWinSizeY * 0.5f); // 마우스 좌표 적용해주기
+		ShowCursor(false);
+	}
 }
 
 void CPlayerCamera::Adjust_Camera_Angle()
