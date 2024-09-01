@@ -114,9 +114,14 @@ public:
     void Set_AlwayUI(_bool isTrue) { m_isAlways = isTrue; }
 
     //스타일 교체용(lifeUI)
-    public:
-        void Change_Style(_uint iStyle);
+public:
+    void Change_Style(_uint iStyle);
 
+/* 스킬창 용 */
+public:
+    _bool* Get_Skill_Holligan();
+    _bool* Get_Skill_Rush();
+    _bool* Get_Skill_Destoryer();
 
 private:
 

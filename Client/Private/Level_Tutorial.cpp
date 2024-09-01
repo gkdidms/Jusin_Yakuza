@@ -66,8 +66,8 @@ HRESULT CLevel_Tutorial::Initialize()
 	m_pFightManager->Initialize();
 
 	/*셰이더 옵션값*/
-	m_pGameInstance->Set_HDRLight(1.6f);
-	m_pGameInstance->Set_AdjectTint(_float4(0.873f, 0.764f, 0.642f, 0.f));
+	//m_pGameInstance->Set_HDRLight(1.6f);
+	//m_pGameInstance->Set_AdjectTint(_float4(0.873f, 0.764f, 0.642f, 0.f));
 
 	m_pGameInstance->Play_Loop(L"48e6 [1].wav", SOUND_BGM, 0.5f);
 	m_pGameInstance->Play_Loop(L"48a1 [1].wav", SOUND_BGM_2, 0.6f);
@@ -77,6 +77,8 @@ HRESULT CLevel_Tutorial::Initialize()
 	//m_pGameInstance->PlayBGM(TEXT("Street_BGM.wav"), 0.5f);
 
 	m_pUIManager->Set_AlwayUI(false);
+
+	m_pGameInstance->PlayBGM(TEXT("Street_BGM.mp3"), 0.3f);
 
 	return S_OK;
 }
@@ -208,6 +210,8 @@ CLevel_Tutorial* CLevel_Tutorial::Create(ID3D11Device* pDevice, ID3D11DeviceCont
 void CLevel_Tutorial::Free()
 {
 	__super::Free();
+
+	CCollision_Manager::GetInstance()->All_Clear();
 
 	Safe_Release(m_pSystemManager);
 	Safe_Release(m_pFileTotalManager);

@@ -192,6 +192,10 @@ public:
         return m_pTargetItem;
     }
 
+    _uint Get_CurrentAnimType() {
+        return m_eAnimComType;
+    }
+
     /* Setter */
 public:
     //void    Set_StartPos(XMMATRIX    vStartPos) { m_pTransformCom->Set_WorldMatrix(vStartPos); }
@@ -199,7 +203,7 @@ public:
     //void    Set_NaviRouteIndex(int iIndex) { m_iNaviRouteNum = iIndex; }
     void    Set_SeizeOff(_bool isOff = true);
     void    Set_ItemOff();
-    void Set_CurrentStyle(BATTLE_STYLE iStyle) { m_eCurrentStyle = iStyle; }
+    void    Set_CurrentStyle(BATTLE_STYLE iStyle) { m_eCurrentStyle = iStyle; }
 
     void Battle_Start();
 

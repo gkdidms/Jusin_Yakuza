@@ -56,8 +56,8 @@ HRESULT CLevel_DogimazoBoss::Initialize()
 	m_pGameInstance->PlayBGM(TEXT("Kuze_BGM.mp3"), 0.5f);
 
 	/*셰이더 옵션값*/
-	m_pGameInstance->Set_HDRLight(1.3f);
-	m_pGameInstance->Set_AdjectTint(_float4(0.873f, 0.820f, 0.753f, 0.f));
+	//m_pGameInstance->Set_HDRLight(1.3f);
+	//m_pGameInstance->Set_AdjectTint(_float4(0.873f, 0.820f, 0.753f, 0.f));
 
 
     return S_OK;
@@ -179,6 +179,8 @@ CLevel_DogimazoBoss* CLevel_DogimazoBoss::Create(ID3D11Device* pDevice, ID3D11De
 void CLevel_DogimazoBoss::Free()
 {
     __super::Free();
+
+	CCollision_Manager::GetInstance()->All_Clear();
 
     Safe_Release(m_pSystemManager);
     Safe_Release(m_pFileTotalManager);

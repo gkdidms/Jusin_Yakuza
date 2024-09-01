@@ -55,8 +55,8 @@ HRESULT CLevel_Street::Initialize()
 		return E_FAIL;
 	
 	/*셰이더 옵션값*/
-	m_pGameInstance->Set_HDRLight(1.6f);
-	m_pGameInstance->Set_AdjectTint(_float4(0.873f, 0.764f, 0.642f, 0.f));
+	//m_pGameInstance->Set_HDRLight(1.6f);
+	//m_pGameInstance->Set_AdjectTint(_float4(0.873f, 0.764f, 0.642f, 0.f));
 
 	m_pGameInstance->Play_Loop(L"48e6 [1].wav", SOUND_BGM, 0.5f);
 	m_pGameInstance->Play_Loop(L"48a1 [1].wav", SOUND_BGM_2, 0.6f);
@@ -210,6 +210,8 @@ CLevel_Street* CLevel_Street::Create(ID3D11Device* pDevice, ID3D11DeviceContext*
 void CLevel_Street::Free()
 {
     __super::Free();
+
+	CCollision_Manager::GetInstance()->All_Clear();
 
     Safe_Release(m_pSystemManager);
     Safe_Release(m_pFileTotalManager);
