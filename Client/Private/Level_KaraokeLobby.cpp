@@ -76,7 +76,7 @@ HRESULT CLevel_KaraokeLobby::Initialize()
 		m_pQuestManager->Start_Quest(CQuestManager::CHAPTER_4);
 	}
 
-	m_pGameInstance->PlayBGM(TEXT("Karaoke_BGM.wav"), 0.8f);
+	m_pGameInstance->PlayBGM(TEXT("Karaoke_BGM.wav"), DEFAULT_VOLUME);
 
 	/*셰이더 옵션값*/
 	//m_pGameInstance->Set_HDRLight(1.2f);

@@ -82,7 +82,8 @@ PS_OUT_LIGHT PS_MAIN_LIGHT_DIRECTIONAL(PS_IN In)
         vAmbient *= vAmbientDesc;
     
     Out.vShade = g_vLightDiffuse * saturate(max(dot(normalize(g_vLightDir) * -1.f, normalize(vNormal)), 0.f) + vAmbient);
-    
+    Out.vLightMap = g_vLightDiffuse;
+    /*
     if (g_isPBR)
     {
 
@@ -101,9 +102,9 @@ PS_OUT_LIGHT PS_MAIN_LIGHT_DIRECTIONAL(PS_IN In)
         
         float3 vLook = normalize(g_vCamPosition - vWorldPos).xyz;
         
-        Out.vLightMap = g_vLightDiffuse;
+
     }
-    
+    */
     //Grass
     /*
     vector vGlassNormalDesc = g_GlassNormalTexture.Sample(LinearSampler, In.vTexcoord);
