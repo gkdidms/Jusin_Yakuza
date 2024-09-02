@@ -119,15 +119,19 @@ float4 BRDF(float4 vPosition, int2 vTexcoord, float4 vNormal, float4 vDepthDesc,
     
     /* Li */
     float fMetalic = Combine.r;
-    //float IOR = 0.04f * Combine.b;
-    float3 F0 = Combine.b;
+    float3 F0 = max(0.04f, Combine.b);
     F0 = lerp(F0, vAlbedo, fMetalic);
+   
     
     //vector vLightDir = reflect(normalize(g_vLightDir), vNormal); //g_vLightDir * -1.f;
     float3 vLightDir = normalize(vLightDirection * -1.f);
     float3 vHalfway = normalize(vLook + vLightDir);
     float3 vRadiance = vLightDiffuse;
     
+    float WoDotN = max(dot(vNormal.xyz, vLook), 0.f);
+    float WiDotN = max(dot(vNormal.xyz, vLightDir), 0.f);
+    float denominator = (WoDotN * WiDotN * 4.f) + 0.001f;
+   
     //BRDF
     float vRoughness = Combine.g;
     float D = DistributionGGX(vNormal.xyz, vHalfway, vRoughness, PI);
@@ -138,20 +142,19 @@ float4 BRDF(float4 vPosition, int2 vTexcoord, float4 vNormal, float4 vDepthDesc,
     float3 specularWithTint = CalculateSpecularTint(F, vAlbedo, Combine.w);
     
     float3 nominator = D * G * specularWithTint;
-    
-    float WoDotN = max(dot(vNormal.xyz, vLook), 0.f);
-    float WiDotN = max(dot(vNormal.xyz, vLightDir), 0.f);
-    float denominator = (WoDotN * WiDotN * 4.f) + 0.001f;
-    
+        
     float3 vSpecular = (nominator / denominator);
-    
+        
     float3 vKS = F;
     float3 vKD = 1.f - vKS;
     vKD *= 1.f - fMetalic;
     
-    float3 vDiffuse = vKD * vAlbedo / PI;
-    vDiffuse = (vDiffuse + vSpecular) * (vRadiance);
+    // ¡÷∫Ø±§ √ﬂ∞°
+    float3 ambientComponent = vLightAmbient.xyz * vAlbedo;
     
+    float3 vDiffuse = vKD * (vAlbedo / PI);
+    vDiffuse = (vDiffuse + vSpecular) * (vRadiance * WiDotN) + ambientComponent;
+        
     return vector(vDiffuse, 1.f);
 }
 
