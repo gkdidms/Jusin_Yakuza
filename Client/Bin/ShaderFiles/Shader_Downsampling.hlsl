@@ -8,7 +8,7 @@ void CS_Main(uint3 dispatchThreadID : SV_DispatchThreadID)
     uint2 vTexSize;
     InputTexture.GetDimensions(vTexSize.x, vTexSize.y);
     
-    uint2 outputCoord = dispatchThreadID.xy * 2; // 픽셀의 고유번호 
+    uint2 outputCoord = dispatchThreadID.xy; // 픽셀의 고유번호 
 
     float4 colorSum = float4(0, 0, 0, 0);
 
@@ -17,10 +17,10 @@ void CS_Main(uint3 dispatchThreadID : SV_DispatchThreadID)
     {
         for (int y = 0; y < 2; ++y)
         {
-            uint2 vOffset = outputCoord + uint2(x, y);
+            uint2 vOffset = outputCoord * 2 + uint2(x, y);
             if (vOffset.x < vTexSize.x && vOffset.y < vTexSize.y)
             {
-                colorSum += InputTexture.Load(int3(vOffset, 0)).r;
+                colorSum += InputTexture.Load(int3(vOffset, 0));
 
             }
         }

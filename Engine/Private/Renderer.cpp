@@ -159,8 +159,23 @@ HRESULT CRenderer::Initialize()
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_BackBlurReverse"), 250.f, 350.f, 100.f, 100.f)))
 		return E_FAIL;
+	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_CopyLuminance"), 250.f, 450.f, 100.f, 100.f)))
+		return E_FAIL;
 
-	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_1x1"), 450.f, 250.f, 100.f, 100.f)))
+	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_640x360"), 350.f, 50.f, 100.f, 100.f)))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_320x180"), 350.f, 150.f, 100.f, 100.f)))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_160x90"), 350.f, 250.f, 100.f, 100.f)))
+		return E_FAIL;
+
+	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_10x6"), 450.f, 50.f, 100.f, 100.f)))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_5x3"), 450.f, 150.f, 100.f, 100.f)))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_3x2"), 450.f, 250.f, 100.f, 100.f)))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_1x1"), 450.f, 350.f, 100.f, 100.f)))
 		return E_FAIL;
 
 	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_Effect"), 550.f, 50.f, 100.f, 100.f)))
@@ -491,6 +506,18 @@ HRESULT CRenderer::Ready_MRTs()
 		return E_FAIL;
 
 	/*MRT_1*/
+	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_DownSampling"), TEXT("Target_640x360"))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_DownSampling"), TEXT("Target_320x180"))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_DownSampling"), TEXT("Target_160x90"))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_DownSampling"), TEXT("Target_10x6"))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_DownSampling"), TEXT("Target_5x3"))))
+		return E_FAIL;
+	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_DownSampling"), TEXT("Target_3x2"))))
+		return E_FAIL;
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_DownSampling"), TEXT("Target_1x1"))))
 		return E_FAIL;
 
@@ -1306,71 +1333,71 @@ void CRenderer::Render_DownSampling()
 		{
 			m_pGameInstance->Bind_ComputeRenderTargetSRV(TEXT("Target_BackBuffer"));
 			m_pGameInstance->Bind_ComputeRenderTargetUAV(TEXT("Target_640x360"));
-			threadGroupX = (1280 + 15) / 16;
-			threadGroupY = (720 + 15) / 16;
+			threadGroupX = (640 + 15) / 16;
+			threadGroupY = (320 + 15) / 16;
 		}
 		else if (i == 1)
 		{
 			m_pGameInstance->Bind_ComputeRenderTargetSRV(TEXT("Target_640x360"));
 			m_pGameInstance->Bind_ComputeRenderTargetUAV(TEXT("Target_320x180"));
-			threadGroupX = (640 + 15) / 16;
-			threadGroupY = (320 + 15) / 16;
+			threadGroupX = (320 + 15) / 16;
+			threadGroupY = (180 + 15) / 16;
 		}
 		else if (i == 2)
 		{
 			m_pGameInstance->Bind_ComputeRenderTargetSRV(TEXT("Target_320x180"));
 			m_pGameInstance->Bind_ComputeRenderTargetUAV(TEXT("Target_160x90"));
-			threadGroupX = (320 + 15) / 16;
-			threadGroupY = (180 + 15) / 16;
+			threadGroupX = (160 + 15) / 16;
+			threadGroupY = (90 + 15) / 16;
 		}
 		else if (i == 3)
 		{
 			m_pGameInstance->Bind_ComputeRenderTargetSRV(TEXT("Target_160x90"));
 			m_pGameInstance->Bind_ComputeRenderTargetUAV(TEXT("Target_80x45"));
-			threadGroupX = (160 + 15) / 16;
-			threadGroupY = (90 + 15) / 16;
+			threadGroupX = (80 + 15) / 16;
+			threadGroupY = (45 + 15) / 16;
 		}
 		else if (i == 4)
 		{
 			m_pGameInstance->Bind_ComputeRenderTargetSRV(TEXT("Target_80x45"));
 			m_pGameInstance->Bind_ComputeRenderTargetUAV(TEXT("Target_40x23"));
-			threadGroupX = (80 + 15) / 16;
-			threadGroupY = (45 + 15) / 16;
+			threadGroupX = (40 + 15) / 16;
+			threadGroupY = (23 + 15) / 16;
 		}
 		else if (i == 5)
 		{
 			m_pGameInstance->Bind_ComputeRenderTargetSRV(TEXT("Target_40x23"));
 			m_pGameInstance->Bind_ComputeRenderTargetUAV(TEXT("Target_20x12"));
-			threadGroupX = (40 + 15) / 16;
-			threadGroupY = (23 + 15) / 16;
+			threadGroupX = (20 + 15) / 16;
+			threadGroupY = (12 + 15) / 16;
 		}
 		else if (i == 6)
 		{
 			m_pGameInstance->Bind_ComputeRenderTargetSRV(TEXT("Target_20x12"));
 			m_pGameInstance->Bind_ComputeRenderTargetUAV(TEXT("Target_10x6"));
-			threadGroupX = (20 + 15) / 16;
-			threadGroupY = (12 + 15) / 16;
+			threadGroupX = (10 + 15) / 16;
+			threadGroupY = (6 + 15) / 16;
 		}
 		else if (i == 7)
 		{
 			m_pGameInstance->Bind_ComputeRenderTargetSRV(TEXT("Target_10x6"));
 			m_pGameInstance->Bind_ComputeRenderTargetUAV(TEXT("Target_5x3"));
-			threadGroupX = (10 + 15) / 16;
-			threadGroupY = (6 + 15) / 16;
-		}
-		else if (i == 8)
-		{
-			m_pGameInstance->Bind_ComputeRenderTargetSRV(TEXT("Target_5x3"));
-			m_pGameInstance->Bind_ComputeRenderTargetUAV(TEXT("Target_3x2"));
 			threadGroupX = (5 + 15) / 16;
 			threadGroupY = (3 + 15) / 16;
 		}
 		else if (i == 8)
 		{
-			m_pGameInstance->Bind_ComputeRenderTargetSRV(TEXT("Target_3x2"));
-			m_pGameInstance->Bind_ComputeRenderTargetUAV(TEXT("Target_1x1"));
+			m_pGameInstance->Bind_ComputeRenderTargetSRV(TEXT("Target_5x3"));
+			m_pGameInstance->Bind_ComputeRenderTargetUAV(TEXT("Target_3x2"));
 			threadGroupX = (3 + 15) / 16;
 			threadGroupY = (2 + 15) / 16;
+		}
+		else if (i == 9)
+		{
+			m_pGameInstance->Bind_ComputeRenderTargetSRV(TEXT("Target_3x2"));
+			m_pGameInstance->Bind_ComputeRenderTargetUAV(TEXT("Target_1x1"));
+			threadGroupX = (1 + 15) / 16;
+			threadGroupY = (1 + 15) / 16;
 		}
 
 		m_pComputeShader[DOWNSAMPLING]->Render(threadGroupX, threadGroupY, 1);
@@ -2073,6 +2100,8 @@ void CRenderer::Render_Debug()
 		if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_HDR"), m_pShader, m_pVIBuffer)))
 			return;
 		if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_Luminance"), m_pShader, m_pVIBuffer)))
+			return;
+		if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_CopyLuminance"), m_pShader, m_pVIBuffer)))
 			return;
 		if (FAILED(m_pGameInstance->Render_Debug(TEXT("MRT_DownSampling"), m_pShader, m_pVIBuffer)))
 			return;
