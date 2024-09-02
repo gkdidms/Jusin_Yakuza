@@ -48,8 +48,8 @@ HRESULT CLevel_Office2F::Initialize()
 
 	m_pGameInstance->PlayBGM(TEXT("Office_BGM.mp3"), 0.8f);
 
-	m_pGameInstance->Set_HDRLight(1.4f);
-	m_pGameInstance->Set_AdjectTint(_float4(0.757f, 0.816f, 0.863f, 0.f));
+	//m_pGameInstance->Set_HDRLight(1.4f);
+	//m_pGameInstance->Set_AdjectTint(_float4(0.757f, 0.816f, 0.863f, 0.f));
 
 	return S_OK	;
 }
