@@ -119,7 +119,7 @@ float4 BRDF(float4 vPosition, int2 vTexcoord, float4 vNormal, float4 vDepthDesc,
     
     /* Li */
     float fMetalic = Combine.r;
-    float IOR = 0.04f * Combine.b;
+    //float IOR = 0.04f * Combine.b;
     float3 F0 = Combine.b;
     F0 = lerp(F0, vAlbedo, fMetalic);
     
@@ -163,11 +163,14 @@ float3 CookTorranceBRDF(float3 vNormal, float3 vLook, float roughness, float3 F0
     
     float NDF = DistributionGGX(vNormal, vHalfway, roughness, PI); // GGX Normal Distribution Function
     float G = GeometrySmith(vNormal, vLook, vLight, roughness); // Geometry function
-    float3 F = FresnelSchlickRoughness(max(dot(vHalfway, vLook), 0.0), F0, roughness); // Fresnel Schlick
+    float3 F = FresnelSchlick(max(dot(vHalfway, vLook), 0.0), F0); // Fresnel Schlick
 
-    float3 numerator = NDF * G * F;
-    float denominator = 4.0 * max(dot(vNormal, vLook), 0.0) * max(dot(vNormal, vLight), 0.0) + 0.001f; // Avoid division by 0
-    return numerator / denominator;
+    float3 nominator = NDF * G * F;
+    float NdotL = max(dot(vNormal, vLight), 0.0);
+    float denominator = 4.0 * max(dot(vNormal, vLook), 0.0) * NdotL + 0.001f; // Avoid division by 0
+    float3 vSpecular = (nominator / denominator);
+    
+    return vSpecular * NdotL;
 }
 
 float3 OESpecular(float4 vPosition, int2 vTexcoord, float3 vNormal, float3 vLook)
@@ -202,8 +205,7 @@ void CS_Main(uint3 id : SV_DispatchThreadID)
     vWorldPos = vWorldPos * (vDepthDesc.y * fFar);
     vWorldPos = mul(vWorldPos, ProjMatrixInv);
     vWorldPos = mul(vWorldPos, ViewMatrixInv);
-
-    //vector vReflect = reflect(normalize(g_vLightDir), normalize(vNormal));
+    
     float3 vLook = normalize(vCamPosition - vWorldPos).xyz;
     
     vector vResult = BRDF(vWorldPos, vUV, normalize(vNormal), vDepthDesc, vLook);
