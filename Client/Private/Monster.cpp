@@ -1692,7 +1692,7 @@ HRESULT CMonster::Setup_Animation()
 	// 부 끈다
 	if (m_pModelCom->Set_AnimationIndex(m_iAnim, m_pAnimCom[m_iCurrentAnimType]->Get_Animations(), m_fChangeInterval))
 	{
-		// 일어날 때에만 회전값 맞춰주기.
+		// 잡혔다가 일어날 때에만 회전값 맞춰주기. (다른 상황에는 회전값 맞춰주지 않아도 됨)
 		if (m_isGrabStandup && (m_strAnimName == "c_standup_dnf_fast" || m_strAnimName == "c_standup_dnb_fast"))
 		{
 			m_isGrabStandup = false;
