@@ -51,7 +51,7 @@ HRESULT CLevel_DogimazoStairs::Initialize()
 	m_pUIManager->Fade_Out();
 	//m_pFightManager->Set_FightStage(true);
 
-	m_pGameInstance->PlayBGM(TEXT("Dozimazo_BGM.mp3"), 0.8f);
+	m_pGameInstance->PlayBGM(TEXT("Dozimazo_BGM.mp3"), DEFAULT_VOLUME);
 
 	/*셰이더 옵션값*/
 	//m_pGameInstance->Set_HDRLight(1.2f);

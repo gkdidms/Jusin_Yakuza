@@ -198,8 +198,6 @@ PS_OUT PS_MAIN(PS_IN In)
     }
     
     OE_SPECULAR OEResult = Neo_OE_Specular(vMulti, vRM, vRS);
-    float fMixMultiFactor = lerp(vMulti.y, 1.f, AssetShader);
-    float fDeffuseFactor = vDiffuseDesc.a * 1.f;
     
     Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_fFar, RimIndex, RimAlpha);
     Out.vNormal = vector(vNormalBTN.xyz * 0.5f + 0.5f, 0.f);
@@ -251,7 +249,6 @@ PS_OUT PS_BLEND(PS_IN In)
     }
     
     OE_SPECULAR OEResult = Neo_OE_Specular(vMulti, vRM, vRS);
-    float fMixMultiFactor = lerp(vMulti.y, 1.f, AssetShader);
     
     Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_fFar, RimIndex, 0.f);
     Out.vNormal = vector(vNormalBTN.xyz * 0.5f + 0.5f, 0.f);

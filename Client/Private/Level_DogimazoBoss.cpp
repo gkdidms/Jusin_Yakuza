@@ -53,7 +53,7 @@ HRESULT CLevel_DogimazoBoss::Initialize()
 
 	m_pUIManager->Fade_Out();
 
-	m_pGameInstance->PlayBGM(TEXT("Kuze_BGM.mp3"), 0.5f);
+	m_pGameInstance->PlayBGM(TEXT("Kuze_BGM.mp3"), DEFAULT_VOLUME);
 
 	/*셰이더 옵션값*/
 	//m_pGameInstance->Set_HDRLight(1.3f);
