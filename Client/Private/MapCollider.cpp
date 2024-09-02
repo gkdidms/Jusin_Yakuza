@@ -79,6 +79,8 @@ HRESULT CMapCollider::Add_Components(void* pArg)
 {
     COLLIDER_IO* colliderDescIO = (COLLIDER_IO*)pArg;
 
+    m_pCollisionManager->Clear_MapCollider();
+
     for (int i = 0; i < colliderDescIO->iColliderNum; i++)
     {
         COLLIDER_DESC       collderIOdesc = colliderDescIO->pColliderDesc[i];
