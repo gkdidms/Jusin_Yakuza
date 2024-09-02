@@ -1,5 +1,7 @@
 #pragma once
 
+#define DEFAULT_VOLUME 1
+
 #include <process.h>
 
 namespace Client

@@ -813,7 +813,7 @@ void CRenderer::Draw()
 		Render_BOF();
 	}
 
-	//최종적으로 백버퍼에 그림을 그려줌 (톤매핑)
+	//톤매핑 & 평균 휘도
 	if (m_isHDR)
 	{
 		Render_AvgLuminance();
@@ -834,7 +834,7 @@ void CRenderer::Draw()
 	if (m_isVignette)
 		Render_Vignette();
 
-	Render_FinalResult();
+	Render_FinalResult(); // 최종 후처리 
 
 	Render_AdjustColor(); // 색감보정
 
@@ -959,10 +959,6 @@ void CRenderer::Render_NonBlender()
 void CRenderer::Render_Decal()
 {
 	m_iRenderState = RENDER_DECAL;
-
-
-
-
 
 
 	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_Decals"))))
