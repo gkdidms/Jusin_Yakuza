@@ -280,7 +280,6 @@ void CMonster::Set_Sync(string strPlayerAnim, _bool isKeepSynchronizing)
 		m_iState = MONSTER_H1500_000_1;
 		m_isDown = true;
 	}
-		
 
 	m_strAnimName = strPlayerAnim;
 	m_iCurrentAnimType = CMonster::CUTSCENE;
@@ -1708,24 +1707,22 @@ HRESULT CMonster::Setup_Animation()
 
 		m_pModelCom->Set_PreAnimations(m_pAnimCom[m_iPreAnimType]->Get_Animations());
 
-		//_vector vQ1 = XMLoadFloat4(m_pModelCom->Get_LastKeyframe_Rotation(m_pAnimCom[m_iPreAnimType], iPrevAnimIndex));
-		//_vector vQ2 = XMLoadFloat4(m_pModelCom->Get_FirstKeyframe_Rotation(m_pAnimCom[m_iCurrentAnimType], m_iAnim));
+		// 일어날 때에만 회전값 맞춰주기.
+		if (m_strAnimName == "c_standup_dnf_fast" || m_strAnimName == "c_standup_dnb_fast")
+		{
+			_vector vLastPos = XMLoadFloat3(m_pModelCom->Get_LastKeyframe_Position("center_c_n", m_pAnimCom[m_iPreAnimType], iPrevAnimIndex));
+			// 높이값 죽이기
+			vLastPos = XMVectorSetY(vLastPos, 0);
 
-		//_vector vQ2 = XMLoadFloat4(m_pModelCom->Get_FirstKeyframe_Rotation(m_pAnimCom[m_iCurrentAnimType], m_iAnim));
+			// 이전 애니메이션의 마지막 키프레임에서 위치를 꺼내, 사이각을 구한다.
+			_vector vDir = XMVector3Normalize(vLastPos - XMVectorSet(0, 0, 0, 1));
+			vDir = XMVector3TransformNormal(vDir, m_pTransformCom->Get_WorldMatrix());
 
-		//XMVECTOR rotationDifference = XMQuaternionInverse(XMQuaternionMultiply(XMQuaternionInverse(vQ1), vQ2));
+			_float fTheta = acos(XMVectorGetX(XMVector3Dot(m_pTransformCom->Get_State(CTransform::STATE_LOOK), vDir)));
 
-		//_float4 vQ = *m_pModelCom->Get_FirstKeyframe_Rotation(m_pAnimCom[m_iCurrentAnimType], m_iAnim);
-		//_float4 vQ; XMStoreFloat4(&vQ, rotationDifference);
-		//XMMATRIX correctedRotationMatrix = XMMatrixRotationQuaternion(rotationDifference);
+			m_pTransformCom->Change_Rotation(m_pTransformCom->Get_State(CTransform::STATE_UP), fTheta);
+		}
 
-		//XMMATRIX World = m_pTransformCom->Get_WorldMatrix() * correctedRotationMatrix;
-		//_float4x4 World4x4;
-		//XMStoreFloat4x4(&World4x4, World);
-
-		//m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(&World4x4));
-
-		//m_pTransformCom->Change_Rotation_Quaternion(vQ);
 
 		Off_Attack_Colliders();
 		Reset_Shaking_Variable();
