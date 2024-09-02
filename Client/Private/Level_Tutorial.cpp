@@ -18,16 +18,16 @@
 CLevel_Tutorial::CLevel_Tutorial(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CLevel{ pDevice, pContext },
 	m_pSystemManager{ CSystemManager::GetInstance() },
-	m_pFileTotalManager{ CFileTotalMgr::GetInstance() }
-	//m_pFightManager{ CFightManager::GetInstance()}
-	//m_pQuestManager{ CQuestManager::GetInstance()},
-	//m_pUIManager { CUIManager::GetInstance() }
+	m_pFileTotalManager{ CFileTotalMgr::GetInstance() },
+	m_pFightManager{ CFightManager::GetInstance()},
+	m_pQuestManager{ CQuestManager::GetInstance()},
+	m_pUIManager { CUIManager::GetInstance() }
 {
 	Safe_AddRef(m_pSystemManager);
 	Safe_AddRef(m_pFileTotalManager);
-	//Safe_AddRef(m_pFightManager);
-	//Safe_AddRef(m_pQuestManager);
-	//Safe_AddRef(m_pUIManager);
+	Safe_AddRef(m_pFightManager);
+	Safe_AddRef(m_pQuestManager);
+	Safe_AddRef(m_pUIManager);
 }
 
 HRESULT CLevel_Tutorial::Initialize()
@@ -35,83 +35,70 @@ HRESULT CLevel_Tutorial::Initialize()
 	if (FAILED(Ready_Player(TEXT("Layer_Player"))))
 		return E_FAIL;
 
-	//if (FAILED(m_pQuestManager->Initialize()))
-	//	return E_FAIL;
+	if (FAILED(m_pQuestManager->Initialize()))
+		return E_FAIL;
 
-	//m_pUIManager->Fade_Out();
+	m_pUIManager->Fade_Out();
 
 	/* 클라 파싱 */
-	//m_pFileTotalManager->Set_MapObj_In_Client(STAGE_TUTORIAL, LEVEL_TUTORIAL);
+	m_pFileTotalManager->Set_MapObj_In_Client(STAGE_TUTORIAL, LEVEL_TUTORIAL);
 	m_pFileTotalManager->Set_Lights_In_Client(10);
-	//m_pFileTotalManager->Set_Trigger_In_Client(STAGE_TUTORIAL, LEVEL_TUTORIAL);
-	//m_pFileTotalManager->Set_Collider_In_Client(STAGE_TUTORIAL, LEVEL_TUTORIAL);
+	m_pFileTotalManager->Set_Trigger_In_Client(STAGE_TUTORIAL, LEVEL_TUTORIAL);
+	m_pFileTotalManager->Set_Collider_In_Client(STAGE_TUTORIAL, LEVEL_TUTORIAL);
 
-	//if (FAILED(Ready_Camera(TEXT("Layer_Camera"))))
-	//	return E_FAIL;
+	if (FAILED(Ready_Camera(TEXT("Layer_Camera"))))
+		return E_FAIL;
 
-	//m_pFileTotalManager->Load_Cinemachine(6, LEVEL_TUTORIAL);
-	//m_pFileTotalManager->Load_Cinemachine(7, LEVEL_TUTORIAL);
-	//m_pFileTotalManager->Load_Cinemachine(8, LEVEL_TUTORIAL);
-	//m_pFileTotalManager->Load_Cinemachine(9, LEVEL_TUTORIAL);
-	//m_pFileTotalManager->Load_Cinemachine(10, LEVEL_TUTORIAL);
-	//m_pFileTotalManager->Load_Cinemachine(11, LEVEL_TUTORIAL);
-	//m_pFileTotalManager->Load_Cinemachine(12, LEVEL_TUTORIAL);
-	//m_pFileTotalManager->Load_Cinemachine(13, LEVEL_TUTORIAL);
-	//m_pFileTotalManager->Load_Cinemachine(14, LEVEL_TUTORIAL);
-	//m_pFileTotalManager->Load_Cinemachine(15, LEVEL_TUTORIAL);
+	m_pFileTotalManager->Load_Cinemachine(6, LEVEL_TUTORIAL);
+	m_pFileTotalManager->Load_Cinemachine(7, LEVEL_TUTORIAL);
+	m_pFileTotalManager->Load_Cinemachine(8, LEVEL_TUTORIAL);
+	m_pFileTotalManager->Load_Cinemachine(9, LEVEL_TUTORIAL);
+	m_pFileTotalManager->Load_Cinemachine(10, LEVEL_TUTORIAL);
+	m_pFileTotalManager->Load_Cinemachine(11, LEVEL_TUTORIAL);
+	m_pFileTotalManager->Load_Cinemachine(12, LEVEL_TUTORIAL);
+	m_pFileTotalManager->Load_Cinemachine(13, LEVEL_TUTORIAL);
+	m_pFileTotalManager->Load_Cinemachine(14, LEVEL_TUTORIAL);
+	m_pFileTotalManager->Load_Cinemachine(15, LEVEL_TUTORIAL);
 
-	//m_pSystemManager->Set_Camera(CAMERA_PLAYER);
-	//m_pQuestManager->Start_Quest(CQuestManager::CHAPTER_1);
+	m_pSystemManager->Set_Camera(CAMERA_PLAYER);
+	m_pQuestManager->Start_Quest(CQuestManager::CHAPTER_1);
 
-	//m_pFightManager->Initialize();
+	m_pFightManager->Initialize();
 
 	/*셰이더 옵션값*/
 	//m_pGameInstance->Set_HDRLight(1.6f);
 	//m_pGameInstance->Set_AdjectTint(_float4(0.873f, 0.764f, 0.642f, 0.f));
 
-	/*m_pGameInstance->Play_Loop(L"48e6 [1].wav", SOUND_BGM, 0.5f);
+	m_pGameInstance->Play_Loop(L"48e6 [1].wav", SOUND_BGM, 0.5f);
 	m_pGameInstance->Play_Loop(L"48a1 [1].wav", SOUND_BGM_2, 0.6f);
 	m_pGameInstance->Play_Loop(L"4887 [1].wav", SOUND_BGM_3, 0.3f);
-	m_pGameInstance->Play_Loop(L"4899 [1].wav", SOUND_BGM_1, 0.5f);*/
+	m_pGameInstance->Play_Loop(L"4899 [1].wav", SOUND_BGM_1, 0.5f);
 
-	//m_pGameInstance->PlayBGM(TEXT("Street_BGM.wav"), 0.5f);
+	m_pGameInstance->PlayBGM(TEXT("Street_BGM.wav"), 0.5f);
 
-	//m_pUIManager->Set_AlwayUI(false);
+	m_pUIManager->Set_AlwayUI(false);
 
 	return S_OK;
 }
 
 void CLevel_Tutorial::Tick(const _float& fTimeDelta)
 {
-	//m_pFightManager->Tick(fTimeDelta);
+	m_pFightManager->Tick(fTimeDelta);
 
-	//if (m_pQuestManager->Execute())
-	//{
-	//	//true 이면 다음 스테이지로 이동
-	//	// 기존
-	//	//if (!m_pUIManager->isOpen(TEXT("Fade")))
-	//	//{
-	//	//	m_pUIManager->Open_Scene(TEXT("Fade"));
-	//	//	m_pUIManager->Fade_In();
-	//	//}
-	//	//else
-	//	//{
-	//	//	if (m_pUIManager->isFindFinished())
-	//	//		m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_NISHIKIWALK));
-	//	//}
+	if (m_pQuestManager->Execute())
+	{
+		if (m_isFadeFin && m_pUIManager->isFindFinished())
+		{
+			m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_NISHIKIWALK));
+			return;
+		}
 
-	//	if (m_isFadeFin && m_pUIManager->isFindFinished())
-	//	{
-	//		m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_NISHIKIWALK));
-	//		return;
-	//	}
-
-	//	if (!m_pUIManager->isOpen(TEXT("Fade")))
-	//	{
-	//		m_pUIManager->Fade_In();
-	//		m_isFadeFin = true;
-	//	}
-	//}
+		if (!m_pUIManager->isOpen(TEXT("Fade")))
+		{
+			m_pUIManager->Fade_In();
+			m_isFadeFin = true;
+		}
+	}
 
 #ifdef _DEBUG
 	SetWindowText(g_hWnd, TEXT("튜토리얼 맵"));
@@ -213,7 +200,7 @@ void CLevel_Tutorial::Free()
 
 	Safe_Release(m_pSystemManager);
 	Safe_Release(m_pFileTotalManager);
-	//Safe_Release(m_pFightManager);
-	//Safe_Release(m_pQuestManager);
-	//Safe_Release(m_pUIManager);
+	Safe_Release(m_pFightManager);
+	Safe_Release(m_pQuestManager);
+	Safe_Release(m_pUIManager);
 }
