@@ -136,6 +136,7 @@ HRESULT CNishiki::Add_Components()
 
 	if (m_iCurrentLevel == LEVEL_NISHIKIWALK)
 	{
+
 		CNavigation::NAVIGATION_DESC Desc{};
 		Desc.iCurrentLine = m_iNaviRouteNum;
 		Desc.iCurrentRouteDir = DIR_F;

@@ -33,6 +33,7 @@ public:
     HRESULT Add_ItemCollider(CCollider* pCollider);          // 서로 밀어내는 작업을 할 객체를 추가해주는 함수
 
     HRESULT Add_MapCollider(CCollider* pCollider);
+    void    Clear_MapCollider();
 
     void Tick();
 
