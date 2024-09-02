@@ -133,7 +133,7 @@ float4 BRDF(float4 vPosition, int2 vTexcoord, float4 vNormal, float4 vDepthDesc,
     float D = DistributionGGX(vNormal.xyz, vHalfway, vRoughness, PI);
     float G = GeometrySmith(vNormal.xyz, vLook, vLightDir, vRoughness);
     float cosTheta = max(dot(vNormal.xyz, vHalfway), 0.f);
-    float3 F = FresnelSchlick(cosTheta, F0);
+    float3 F = FresnelSchlickRoughness(cosTheta, F0, vRoughness);
     
     float3 specularWithTint = CalculateSpecularTint(F, vAlbedo, Combine.w);
     
@@ -166,7 +166,7 @@ float3 CookTorranceBRDF(float3 vNormal, float3 vLook, float roughness, float3 F0
     float3 F = FresnelSchlickRoughness(max(dot(vHalfway, vLook), 0.0), F0, roughness); // Fresnel Schlick
 
     float3 numerator = NDF * G * F;
-    float denominator = 4.0 * max(dot(vNormal, vLook), 0.0) * max(dot(vNormal, vLight), 0.0) + 0.001; // Avoid division by 0
+    float denominator = 4.0 * max(dot(vNormal, vLook), 0.0) * max(dot(vNormal, vLight), 0.0) + 0.001f; // Avoid division by 0
     return numerator / denominator;
 }
 
