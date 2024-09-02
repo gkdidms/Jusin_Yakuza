@@ -1334,7 +1334,7 @@ void CRenderer::Render_DownSampling()
 			m_pGameInstance->Bind_ComputeRenderTargetSRV(TEXT("Target_BackBuffer"));
 			m_pGameInstance->Bind_ComputeRenderTargetUAV(TEXT("Target_640x360"));
 			threadGroupX = (640 + 15) / 16;
-			threadGroupY = (320 + 15) / 16;
+			threadGroupY = (360 + 15) / 16;
 		}
 		else if (i == 1)
 		{
