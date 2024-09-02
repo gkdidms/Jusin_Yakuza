@@ -57,6 +57,7 @@ HRESULT CComputeShader::Render(_uint iGroupX, _uint iGroupY, _uint iGroupZ)
 
     m_pContext->Flush();
 
+    //ÃÊ±âÈ­
     m_pContext->CSSetUnorderedAccessViews(0, 1, &pUAV, nullptr);
 
     return S_OK;
