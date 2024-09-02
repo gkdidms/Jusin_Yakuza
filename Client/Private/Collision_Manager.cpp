@@ -62,10 +62,19 @@ HRESULT CCollision_Manager::Add_MapCollider(CCollider* pCollider)
 {
     m_fIntersectDistance = 0;
 
-    //Safe_AddRef(pCollider);
+    Safe_AddRef(pCollider);
     m_MapColliders.push_back(pCollider);
 
     return S_OK;
+}
+
+void CCollision_Manager::Clear_MapCollider()
+{
+    for (auto& pCollider : m_MapColliders)
+    {
+        Safe_Release(pCollider);
+    }
+    m_MapColliders.clear();
 }
 
 
@@ -566,7 +575,7 @@ _bool CCollision_Manager::Check_Map_Collision_Using_Position(CCollider* pCollide
 
     for (auto& pMapCollider : m_MapColliders)
     {
-        if (Check_PositionAABB_Collision(static_cast<BoundingSphere*>(pCollider->Get_Desc()), static_cast<BoundingBox*>(pMapCollider->Get_Desc()), vPosition, pCollisionPos))
+        if (Check_PositionAABB_Collision(static_cast<BoundingSphere*>(pCollider->Get_OriginDesc()), static_cast<BoundingBox*>(pMapCollider->Get_Desc()), vPosition, pCollisionPos))
         {
             return true;
         }
