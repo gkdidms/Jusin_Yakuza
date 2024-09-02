@@ -140,7 +140,7 @@ float4 BRDF(float4 vPosition, int2 vTexcoord, float4 vNormal, float4 vDepthDesc,
     
     float3 vSpecular = (nominator / denominator);
     
-    float3 vKS = specularWithTint;
+    float3 vKS = F;
     float3 vKD = 1.f - vKS;
     vKD *= 1.f - fMetalic;
     
