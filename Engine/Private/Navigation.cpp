@@ -534,7 +534,7 @@ _vector CNavigation::Compute_NishikiDir(_fvector vPosition, const _float& fTimeD
     _vector vDir = vCurrentWayPoint - vPosition;
     _float fDistance = XMVectorGetX(XMVector3Length(vDir));
 
-    if (fDistance <= 1.f)
+    if (fDistance <= 1.8f)
     {
         m_iCurrentWayPointIndex++;
 
