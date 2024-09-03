@@ -49,6 +49,7 @@ HRESULT CLevel_Tutorial::Initialize()
 	if (FAILED(Ready_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
 
+	// 메인스토리 컷신카메라용
 	m_pFileTotalManager->Load_Cinemachine(6, LEVEL_TUTORIAL);
 	m_pFileTotalManager->Load_Cinemachine(7, LEVEL_TUTORIAL);
 	m_pFileTotalManager->Load_Cinemachine(8, LEVEL_TUTORIAL);
