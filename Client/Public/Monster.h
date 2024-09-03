@@ -347,6 +347,7 @@ protected:
 
     _bool m_isSynchronizing = { false };            // 싱크애니메이션중인지?
     _bool m_isKeepSynchronizing = { false };            // 싱크애님을 유지할것인지?
+    _bool m_isGrabStandup = { false };            // 애니메이션 회전값 맞추기 위한 변수
 
     int     m_iNaviRouteNum = { 0 };
 

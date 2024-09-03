@@ -88,11 +88,11 @@ PS_OUT PS_MAIN_TONEMAPPING(PS_IN In) // 감마 콜렉션 & ACES 톤매핑
     vector vLuminance = g_LuminanceTexture.Sample(LinearSampler, In.vTexcoord);
     float3 vDiffuse = pow(g_BackBufferTexture.Sample(LinearSampler, In.vTexcoord).xyz, 2.2f);
     
-    vDiffuse = ToneMap(vDiffuse.xyz);
+    float fExposure = g_fLumVar / (vLuminance + 0.001f);
+
+    vDiffuse = ToneMap(vDiffuse.xyz * fExposure);
     
-    float3 vColor = vDiffuse;
-    
-    Out.vColor = vector(pow(vDiffuse, 1.f / 2.2f), 1.f) * g_fLumVar;
+    Out.vColor = vector(pow(vDiffuse, 1.f / 2.2f), 1.f);
     
     return Out;
 }
