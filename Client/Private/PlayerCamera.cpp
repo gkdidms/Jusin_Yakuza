@@ -161,72 +161,14 @@ void CPlayerCamera::Compute_View_During_Collision(const _float& fTimeDelta)
 
 	// 너무 멀리 떨어져있을경우 충돌됐어도 선형보간해서 따라가야함
 	float		fDistance = XMVectorGetX(XMVector3Length(vPlayerPosition - m_pTransformCom->Get_State(CTransform::STATE_POSITION)));
-	if (2 < fDistance)
-	{
-		m_bBlock = false;
-
-	}
-
-	// 마우스 입력을 이용한 카메라 회전
-	_long MouseMoveX = m_pGameInstance->Get_DIMouseMove(DIMS_X);
-	_long MouseMoveY = m_pGameInstance->Get_DIMouseMove(DIMS_Y);
-
-
-
-	float	fCamAngleY = m_fCamAngleY;
-	float	fCamAngleX = m_fCamAngleX;
-
-	// 회전 막기(외부에서) - 대화창용도
-	if (false == m_bBlockRotation)
-	{
-		fCamAngleY -= fTimeDelta * m_fSensor * MouseMoveX;
-		fCamAngleX += fTimeDelta * m_fSensor * MouseMoveY;
-
-		// 카메라 각도 제한 (수직 각도 제한)
-		if (fCamAngleX > 70.0f)  // 캐릭터를 아래서 보지 않도록 최대 각도를 45도로 제한
-			fCamAngleX = 70.0f;
-		if (fCamAngleX < 30) // 카메라가 수직 아래로 향하지 않도록 최소 각도를 -89도로 제한
-			fCamAngleX = 30;
-	}
-
-	// 이전 카메라 포지션 저장
-	_vector vPrevCamPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
-
-	// 카메라 포지션 계산
-	_vector vCamPosition = XMVectorSet(
-		m_fMaxDistance* cosf(XMConvertToRadians(fCamAngleY)) * cosf(XMConvertToRadians(fCamAngleX)),
-		m_fMaxDistance * sinf(XMConvertToRadians(fCamAngleX)),
-		m_fMaxDistance * sinf(XMConvertToRadians(fCamAngleY)) * cosf(XMConvertToRadians(fCamAngleX)),
-		1.f
-	);
-
-	vCamPosition += XMVectorSet(XMVectorGetX(vPlayerPosition), XMVectorGetY(vPlayerPosition), XMVectorGetZ(vPlayerPosition), 0);
-
-
-	XMVECTOR	vCollisionPos;
-	// 충돌 됐을때 막기
-	if (true == m_pCollisionManager->Check_Map_Collision_Using_Position(m_pColliderCom, vCamPosition, vCollisionPos))
-	{
-		if (false == m_bBlock)
-		{
-			// 계속 충돌 위치 바뀌지 않게 지정해주기
-			m_vLatestCollisionPos = vCamPosition;
-		}
-		m_bBlock = true;
-	}
-	else
+	if (MIN_LERP_DISTANCE < fDistance)
 	{
 		m_bBlock = false;
 	}
 
-
-	// 바뀐 카메라 위치와 콜라이더 충돌 체크함
 	if (true == m_bBlock)
 	{
-		// 고정 위치 구하기
-		m_pCollisionManager->Check_Map_Collision_Using_Position(m_pColliderCom, m_vLatestCollisionPos, vCollisionPos);
-
-		m_pTransformCom->Set_State(CTransform::STATE_POSITION, vCollisionPos);
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, m_vLatestCollisionPos);
 
 		_vector vLookAt = XMVectorSet(XMVectorGetX(vPlayerPosition), XMVectorGetY(vPlayerPosition) + 1.f, XMVectorGetZ(vPlayerPosition), 1);
 		m_pTransformCom->LookAt(vLookAt);
@@ -238,24 +180,78 @@ void CPlayerCamera::Compute_View_During_Collision(const _float& fTimeDelta)
 	}
 	else
 	{
+		// 마우스 입력을 이용한 카메라 회전
+		_long MouseMoveX = m_pGameInstance->Get_DIMouseMove(DIMS_X);
+		_long MouseMoveY = m_pGameInstance->Get_DIMouseMove(DIMS_Y);
+
+		float	fCamAngleY = m_fCamAngleY;
+		float	fCamAngleX = m_fCamAngleX;
+
+		// 회전 막기(외부에서) - 대화창용도
+		if (false == m_bBlockRotation)
+		{
+			fCamAngleY -= fTimeDelta * m_fSensor * MouseMoveX;
+			fCamAngleX += fTimeDelta * m_fSensor * MouseMoveY;
+
+			// 카메라 각도 제한 (수직 각도 제한)
+			if (fCamAngleX > 70.0f)  // 캐릭터를 아래서 보지 않도록 최대 각도를 45도로 제한
+				fCamAngleX = 70.0f;
+			if (fCamAngleX < 30) // 카메라가 수직 아래로 향하지 않도록 최소 각도를 -89도로 제한
+				fCamAngleX = 30;
+		}
+
+		// 이전 카메라 포지션 저장
+		_vector vPrevCamPosition = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
+
+		// 카메라 포지션 계산
+		_vector vCamPosition = XMVectorSet(
+			m_fMaxDistance * cosf(XMConvertToRadians(fCamAngleY)) * cosf(XMConvertToRadians(fCamAngleX)),
+			m_fMaxDistance * sinf(XMConvertToRadians(fCamAngleX)),
+			m_fMaxDistance * sinf(XMConvertToRadians(fCamAngleY)) * cosf(XMConvertToRadians(fCamAngleX)),
+			1.f
+		);
+
+		vCamPosition += XMVectorSet(XMVectorGetX(vPlayerPosition), XMVectorGetY(vPlayerPosition), XMVectorGetZ(vPlayerPosition), 0);
+
+
+		XMVECTOR	vCollisionPos;
+		// 충돌 됐을때 막기
+		if (true == m_pCollisionManager->Check_Map_Collision_Using_Position(m_pColliderCom, vCamPosition, vCollisionPos))
+		{
+			if (false == m_bBlock && false == m_bCamCollision)
+			{
+				// 계속 충돌 위치 바뀌지 않게 지정해주기
+				m_vLatestCollisionPos = vCamPosition;
+			}
+			m_bCamCollision = true;
+			m_bBlock = true;
+			return;
+		}
+		else
+		{
+			m_bBlock = false;
+		}
+
 		if (true == m_bCamCollision)
 		{
 			// 충돌 벗어남
 			m_bCamCollision = false;
 			m_bLerp = true;
+			m_fLerpDelta = 0;
 		}
-		
+
 
 		_vector vLerpedCamPosition = vCamPosition;
 
 		if (true == m_bLerp)
 		{
-			vLerpedCamPosition = XMVectorLerp(vPrevCamPosition, vCamPosition, fTimeDelta * 3);
+			m_fLerpDelta += fTimeDelta * 0.5;
+			vLerpedCamPosition = XMVectorLerp(vPrevCamPosition, vCamPosition, m_fLerpDelta);
 
 			float		fDistance = XMVectorGetX(XMVector3Length(vCamPosition - vLerpedCamPosition));
 
 
-			if (fDistance < m_fMinDistance)
+			if (fDistance < 0.1 || 1 < m_fLerpDelta)
 			{
 				m_bLerp = false;
 			}
@@ -280,6 +276,7 @@ void CPlayerCamera::Compute_View_During_Collision(const _float& fTimeDelta)
 		m_pTransformCom->LookAt(vLookAt);
 	}
 
+	
 
 }
 
