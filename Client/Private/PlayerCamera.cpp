@@ -329,35 +329,42 @@ void CPlayerCamera::Set_StartPos()
 	if (LEVEL::LEVEL_OFFICE_1F == m_iCurrentLevel)
 	{
 		m_fCamAngleY = -90;
+		_float MIN_LERP_DISTANCE = 3.f;
 	}
 	else if (LEVEL::LEVEL_OFFICE_2F == m_iCurrentLevel)
 	{
 		m_fCamAngleX = 20;
 		m_fCamAngleY = -200;
+		_float MIN_LERP_DISTANCE = 3.f;
 	}
 	else if (LEVEL::LEVEL_OFFICE_BOSS == m_iCurrentLevel)
 	{
 		m_fCamAngleX = 45.f;
 		m_fCamAngleY = 90;
+		_float MIN_LERP_DISTANCE = 3.f;
 	}
 	else if (LEVEL::LEVEL_DOGIMAZO == m_iCurrentLevel)
 	{
 		m_fCamAngleY = 0;
 		m_fCamAngleX = 45.f;
+		MIN_LERP_DISTANCE = 2.1f;
 	}
 	else if (LEVEL::LEVEL_DOGIMAZO_STAIRS == m_iCurrentLevel)
 	{
 		m_fCamAngleY = 0;
 		m_fCamAngleX = 45.f;
+		MIN_LERP_DISTANCE = 2.1f;
 	}
 	else if (LEVEL::LEVEL_DOGIMAZO_LOBBY == m_iCurrentLevel)
 	{
 		m_fCamAngleY = 0;
 		m_fCamAngleX = 25.f;
+		MIN_LERP_DISTANCE = 2.1f;
 	}
 	else if (LEVEL::LEVEL_DOGIMAZO_BOSS == m_iCurrentLevel)
 	{
 		m_fCamAngleX = 30.f;
+		MIN_LERP_DISTANCE = 2.1f;
 	}
 
 	if (m_iCurrentLevel != LEVEL_LOADING && m_iCurrentLevel != LEVEL_LOGO)

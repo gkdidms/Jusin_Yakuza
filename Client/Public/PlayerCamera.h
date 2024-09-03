@@ -25,7 +25,7 @@ private:
     //const _float MAX_DISTANCE = 3.1f;
     //const _float MIN_DISTANCE = 2.5f;
 
-    const _float MIN_LERP_DISTANCE = 3.f;
+    _float MIN_LERP_DISTANCE = 3.f;
 
     const _float MAX_DISTANCE = 4.1f;
     const _float MIN_DISTANCE = 3.5f;
