@@ -812,11 +812,13 @@ void CRenderer::Draw()
 	if (m_isRimLight)
 		Render_RimLight();
 
+	// 간판을 위해 임의로 남겨두기
+	Render_NonLight_NonBlur();
+
 	if (m_isHDR)
 		Render_DownSampling();
 
-	// 간판을 위해 임의로 남겨두기
-	Render_NonLight_NonBlur();
+	
 
 	// NonLight랑 Bloom은 같이 붙어있어야함
 	Render_NonLight();
