@@ -52,8 +52,11 @@ public:
 		return &m_CurrentKeyFrameIndices;
 	}
 
-	const _float4* Get_LastKeyframe_Rotation() const;
-	const _float4* Get_FirstKeyframe_Rotation() const;
+	const _float3* Get_LastKeyframe_Position(string strChannelName) const;
+	const _float3* Get_FirstKeyframe_Position(string strChannelName) const;
+
+	const _float4* Get_LastKeyframe_Rotation(string strChannelName) const;
+	const _float4* Get_FirstKeyframe_Rotation(string strChannelName) const;
 
 
 public:

@@ -220,7 +220,7 @@ HRESULT CUIManager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 	Desc.strSceneName = TEXT("SkillMenu");
 	pScene = CUISkillMenu::Create(m_pDevice, m_pContext, &Desc);
 	m_AllScene.emplace(make_pair(TEXT("SkillMenu"), pScene));
-
+	
 	Desc.strSceneName = TEXT("SkillHolligan");
 	pScene = CUISkillHolligan::Create(m_pDevice, m_pContext, &Desc);
 	m_AllScene.emplace(make_pair(TEXT("SkillHolligan"), pScene));
@@ -566,15 +566,18 @@ void CUIManager::Change_Style(_uint iStyle)
 
 _bool* CUIManager::Get_Skill_Holligan()
 {
-	return nullptr;
+	CUISkillHolligan* pScene = dynamic_cast<CUISkillHolligan*>(Find_Scene(TEXT("SkillHolligan")));
+	return pScene->Get_Skill();
 }
 
 _bool* CUIManager::Get_Skill_Rush()
 {
-	return nullptr;
+	CUISkillRush* pScene = dynamic_cast<CUISkillRush*>(Find_Scene(TEXT("SkillRush")));
+	return pScene->Get_Skill();
 }
 
 _bool* CUIManager::Get_Skill_Destoryer()
 {
-	return nullptr;
+	CUISkillDestroyer* pScene = dynamic_cast<CUISkillDestroyer*>(Find_Scene(TEXT("SkillDestroyer")));
+	return pScene->Get_Skill();
 }

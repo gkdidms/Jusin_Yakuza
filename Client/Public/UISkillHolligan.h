@@ -23,6 +23,10 @@ public:
     virtual void Action() override;
     virtual void OverAction() override;
 
+    _bool* Get_Skill() {
+        return m_isSkill;
+    }
+
 
 public:
     void Set_Skill(_int Index);

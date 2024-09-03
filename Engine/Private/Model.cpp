@@ -1532,20 +1532,36 @@ const _float4* CModel::Get_AnimationCenterRotation(CAnim* pAnim, _int iAnimIndex
 		return pAnim->Get_AnimationCenterRotation();
 }
 
-const _float4* CModel::Get_LastKeyframe_Rotation(CAnim* pAnim, _int iAnimIndex)
+const _float3* CModel::Get_LastKeyframe_Position(string strChannelName, CAnim* pAnim, _int iAnimIndex)
 {
 	if (nullptr == pAnim)
-		return m_Animations[iAnimIndex == -1 ? m_AnimDesc.iAnimIndex : iAnimIndex]->Get_LastKeyframe_Rotation();
+		return m_Animations[iAnimIndex == -1 ? m_AnimDesc.iAnimIndex : iAnimIndex]->Get_LastKeyframe_Position(strChannelName);
 	else
-		return pAnim->Get_LastKeyframe_Rotation(iAnimIndex);
+		return pAnim->Get_LastKeyframe_Position(iAnimIndex, strChannelName);
 }
 
-const _float4* CModel::Get_FirstKeyframe_Rotation(CAnim* pAnim, _int iAnimIndex)
+const _float3* CModel::Get_FirstKeyframe_Position(string strChannelName, CAnim* pAnim, _int iAnimIndex)
 {
 	if (nullptr == pAnim)
-		return m_Animations[iAnimIndex == -1 ? m_AnimDesc.iAnimIndex : iAnimIndex]->Get_FirstKeyframe_Rotation();
+		return m_Animations[iAnimIndex == -1 ? m_AnimDesc.iAnimIndex : iAnimIndex]->Get_FirstKeyframe_Position(strChannelName);
 	else
-		return pAnim->Get_FirstKeyframe_Rotation(iAnimIndex);
+		return pAnim->Get_FirstKeyframe_Position(iAnimIndex, strChannelName);
+}
+
+const _float4* CModel::Get_LastKeyframe_Rotation(string strChannelName, CAnim* pAnim, _int iAnimIndex)
+{
+	if (nullptr == pAnim)
+		return m_Animations[iAnimIndex == -1 ? m_AnimDesc.iAnimIndex : iAnimIndex]->Get_LastKeyframe_Rotation(strChannelName);
+	else
+		return pAnim->Get_LastKeyframe_Rotation(iAnimIndex, strChannelName);
+}
+
+const _float4* CModel::Get_FirstKeyframe_Rotation(string strChannelName, CAnim* pAnim, _int iAnimIndex)
+{
+	if (nullptr == pAnim)
+		return m_Animations[iAnimIndex == -1 ? m_AnimDesc.iAnimIndex : iAnimIndex]->Get_FirstKeyframe_Rotation(strChannelName);
+	else
+		return pAnim->Get_FirstKeyframe_Rotation(iAnimIndex, strChannelName);
 }
 
 _float4x4 CModel::Get_LocalMatrix()
