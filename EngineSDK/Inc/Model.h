@@ -125,8 +125,10 @@ public:
 	const _float3* Get_AnimationCenterMove(class CAnim* pAnim = nullptr, _int iAnimIndex = -1);
 	const _float4* Get_AnimationCenterRotation(class CAnim* pAnim = nullptr, _int iAnimIndex = -1);
 
-	const _float4* Get_LastKeyframe_Rotation(class CAnim* pAnim = nullptr, _int iAnimIndex = -1);
-	const _float4* Get_FirstKeyframe_Rotation(class CAnim* pAnim = nullptr, _int iAnimIndex = -1);
+	const _float3* Get_LastKeyframe_Position(string strChannelName = "center_c_n", class CAnim* pAnim = nullptr, _int iAnimIndex = -1);
+	const _float3* Get_FirstKeyframe_Position(string strChannelName = "center_c_n", class CAnim* pAnim = nullptr, _int iAnimIndex = -1);
+	const _float4* Get_LastKeyframe_Rotation(string strChannelName = "center_c_n", class CAnim* pAnim = nullptr, _int iAnimIndex = -1);
+	const _float4* Get_FirstKeyframe_Rotation(string strChannelName = "center_c_n", class CAnim* pAnim = nullptr, _int iAnimIndex = -1);
 
 	// 로컬 절두체를 위한
 	_float4x4		Get_LocalMatrix();

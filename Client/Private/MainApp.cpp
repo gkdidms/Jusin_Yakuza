@@ -142,7 +142,6 @@ HRESULT CMainApp::Render()
 
 	m_pGameInstance->Draw();
 
-
 #ifdef _DEBUG
 	//프레임 확인용.
 	++m_iNumRender;

@@ -1319,11 +1319,11 @@ void CPlayer::KRS_KeyInput(const _float& fTimeDelta)
 			// 현재 어택상태인지를 구분해서 마무리 액션을 실행시키거나
 			// 그에 맞는 커맨드 액션을 실행시ㅕ켜야 한다.
 
-			// 여기에 스킬트리가 완료되면 스킬을 보유중인지에 대한 조건식을 추가로 잡아야한다
 			_bool isHitActionPlay = { false };
 			if (m_CanHitAction)
 			{
-				if (m_pTargetWall != nullptr)
+				// 배벽의 극을 배운상태에서만 실행
+				if (m_pTargetWall != nullptr && m_pUIManager->Get_Skill_Holligan()[CUIManager::WALL_ATTACK])
 				{
 					isHitActionPlay = true;
 					HitAction_WallBack();
@@ -1347,7 +1347,8 @@ void CPlayer::KRS_KeyInput(const _float& fTimeDelta)
 					m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Combo_Count(true);
 				}
 				// 아무것도 아닌 상태에서 우클릭이 들어온다면 킥콤보를 실행
-				else
+				// 킥콤보를 배운 상태에서만 실행
+				else if(m_pUIManager->Get_Skill_Holligan()[CUIManager::KICK_COMBO])
 				{
 					m_iCurrentBehavior = (_uint)KRS_BEHAVIOR_STATE::SKILL_KICK_COMBO;
 					m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Combo_Count();
@@ -1393,13 +1394,6 @@ void CPlayer::KRS_KeyInput(const _float& fTimeDelta)
 				m_InputDirection[F] = true;
 				Compute_MoveDirection_FB();
 
-				// 직교깨지는 것 테스트
-				_float fTestValue = vLookPos.m128_f32[0];
-				if (isnan(fTestValue))
-				{
-					int a = 0;
-				}
-
 				m_pTransformCom->LookAt_For_LandObject(vLookPos);
 				isMove = true;
 			}
@@ -1412,13 +1406,6 @@ void CPlayer::KRS_KeyInput(const _float& fTimeDelta)
 				m_iCurrentBehavior = isShift ? (_uint)KRS_BEHAVIOR_STATE::WALK : (_uint)KRS_BEHAVIOR_STATE::RUN;
 				m_InputDirection[B] = true;
 				Compute_MoveDirection_FB();
-
-				// 직교깨지는 것 테스트
-				_float fTestValue = vLookPos.m128_f32[0];
-				if (isnan(fTestValue))
-				{
-					int a = 0;
-				}
 
 				m_pTransformCom->LookAt_For_LandObject(vLookPos);
 
@@ -1445,13 +1432,6 @@ void CPlayer::KRS_KeyInput(const _float& fTimeDelta)
 				m_iCurrentBehavior = isShift ? (_uint)KRS_BEHAVIOR_STATE::WALK : (_uint)KRS_BEHAVIOR_STATE::RUN;
 				m_InputDirection[R] = true;
 				Compute_MoveDirection_RL();
-
-				// 직교깨지는 것 테스트
-				_float fTestValue = vLookPos.m128_f32[0];
-				if (isnan(fTestValue))
-				{
-					int a = 0;
-				}
 
 				m_pTransformCom->LookAt_For_LandObject(vLookPos);
 				isMove = true;

@@ -24,14 +24,48 @@ CAnimation::CAnimation(const CAnimation& rhs)
 		Safe_AddRef(pChannel);
 }
 
-const _float4* CAnimation::Get_LastKeyframe_Rotation() const
+const _float3* CAnimation::Get_LastKeyframe_Position(string strChannelName) const
 {
-	return &m_Channels.back()->Get_Last_KeyFrame().vRotation;
+	for (auto& pChannel : m_Channels)
+	{
+		if(pChannel->Get_Name() == strChannelName)
+			return &pChannel->Get_Last_KeyFrame().vPosition;
+	}
+
+	return nullptr;
 }
 
-const _float4* CAnimation::Get_FirstKeyframe_Rotation() const
+const _float3* CAnimation::Get_FirstKeyframe_Position(string strChannelName) const
 {
-	return &m_Channels.back()->Get_First_KeyFrame().vRotation;
+	for (auto& pChannel : m_Channels)
+	{
+		if (pChannel->Get_Name() == strChannelName)
+			return &pChannel->Get_First_KeyFrame().vPosition;
+	}
+
+	return nullptr;
+}
+
+const _float4* CAnimation::Get_LastKeyframe_Rotation(string strChannelName) const
+{
+	for (auto& pChannel : m_Channels)
+	{
+		if (pChannel->Get_Name() == strChannelName)
+			return &pChannel->Get_Last_KeyFrame().vRotation;
+	}
+
+	return nullptr;
+}
+
+const _float4* CAnimation::Get_FirstKeyframe_Rotation(string strChannelName) const
+{
+	for (auto& pChannel : m_Channels)
+	{
+		if (pChannel->Get_Name() == strChannelName)
+			return &pChannel->Get_First_KeyFrame().vRotation;
+	}
+
+	return nullptr;
 }
 
 HRESULT CAnimation::Initialize(const aiAnimation* pAnimation, const vector<CBone*>& Bones)

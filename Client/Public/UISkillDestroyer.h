@@ -23,6 +23,10 @@ public:
     virtual void Action() override;
     virtual void OverAction() override;
 
+    _bool* Get_Skill() {
+        return m_isSkill;
+    }
+
 private:
     void Set_Money(const _float& fTimeDelta);
 private:

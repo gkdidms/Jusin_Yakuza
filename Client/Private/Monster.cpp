@@ -114,6 +114,7 @@ void CMonster::Set_Sync(string strPlayerAnim, _bool isKeepSynchronizing)
 	{
 		m_iState = MONSTER_KRU_SYNC1_LAPEL_ST;
 		m_isDown = false;
+		m_isGrabStandup = true;
 	}
 	else if (strAnim == string_view("p_kru_sync_lapel_walk"))
 	{
@@ -280,7 +281,6 @@ void CMonster::Set_Sync(string strPlayerAnim, _bool isKeepSynchronizing)
 		m_iState = MONSTER_H1500_000_1;
 		m_isDown = true;
 	}
-		
 
 	m_strAnimName = strPlayerAnim;
 	m_iCurrentAnimType = CMonster::CUTSCENE;
@@ -422,17 +422,6 @@ void CMonster::Tick(const _float& fTimeDelta)
 			m_pTransformCom->Set_WorldMatrix(pTrasnform->Get_WorldMatrix());
 		}
 
-
-
-		//if (m_strAnimName == "p_kru_sync1_lapel_nage")
-		//{
-		//	if (Checked_Animation_Ratio(0.4f))
-		//	{
-		//		Setting_SyncAnim_EndPosition();
-		//		m_isSynchronizing = false;
-		//	}
-		//}
-
 		if (!m_isKeepSynchronizing && m_pAnimCom[m_iCurrentAnimType]->Get_AnimFinished())
 		{
 			Setting_SyncAnim_EndPosition();
@@ -523,7 +512,6 @@ void CMonster::Late_Tick(const _float& fTimeDelta)
 			m_pCollisionManager->Add_HitCollider(pPair.second, CCollision_Manager::ENEMY);
 
 	}
-	//}
 
 	//높이값 태우기
 	_vector vCurrentPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
@@ -1700,32 +1688,31 @@ HRESULT CMonster::Setup_Animation()
 	if (m_iAnim == -1)
 		return E_FAIL;
 
-	// 실제로 애니메이션 체인지가 일어났을 때 켜져있던 어택 콜라이더를 전부 끈다
+	// 실제로 애니메이션 체인지가 일어났을 때 켜져있던 어택 콜라이더를 전
+	// 부 끈다
 	if (m_pModelCom->Set_AnimationIndex(m_iAnim, m_pAnimCom[m_iCurrentAnimType]->Get_Animations(), m_fChangeInterval))
 	{
+		// 잡혔다가 일어날 때에만 회전값 맞춰주기. (다른 상황에는 회전값 맞춰주지 않아도 됨)
+		if (m_isGrabStandup && (m_strAnimName == "c_standup_dnf_fast" || m_strAnimName == "c_standup_dnb_fast"))
+		{
+			m_isGrabStandup = false;
+			_vector vLastPos = XMLoadFloat3(m_pModelCom->Get_LastKeyframe_Position("center_c_n", m_pAnimCom[m_iPreAnimType], m_pAnimCom[m_iCurrentAnimType]->Get_PrevAnimIndex()));
+			// 높이값 죽이기
+			vLastPos = XMVectorSetY(vLastPos, 0);
+
+			// 이전 애니메이션의 마지막 키프레임에서 위치를 꺼내, 사이각을 구한다.
+			_vector vDir = XMVector3Normalize(vLastPos - XMVectorSet(0, 0, 0, 1));
+			vDir = XMVector3TransformNormal(vDir, m_pTransformCom->Get_WorldMatrix());
+
+			_float fTheta = acos(XMVectorGetX(XMVector3Dot(m_pTransformCom->Get_State(CTransform::STATE_LOOK), vDir)));
+
+			m_pTransformCom->Change_Rotation(m_pTransformCom->Get_State(CTransform::STATE_UP), fTheta);
+		}
+
 		// 실제 체인지가 일어났을 때, 이전 애님 인덱스를 저장해준다.
 		m_pAnimCom[m_iCurrentAnimType]->Set_PrevAnimIndex(iPrevAnimIndex);
 
 		m_pModelCom->Set_PreAnimations(m_pAnimCom[m_iPreAnimType]->Get_Animations());
-
-		//_vector vQ1 = XMLoadFloat4(m_pModelCom->Get_LastKeyframe_Rotation(m_pAnimCom[m_iPreAnimType], iPrevAnimIndex));
-		//_vector vQ2 = XMLoadFloat4(m_pModelCom->Get_FirstKeyframe_Rotation(m_pAnimCom[m_iCurrentAnimType], m_iAnim));
-
-		//_vector vQ2 = XMLoadFloat4(m_pModelCom->Get_FirstKeyframe_Rotation(m_pAnimCom[m_iCurrentAnimType], m_iAnim));
-
-		//XMVECTOR rotationDifference = XMQuaternionInverse(XMQuaternionMultiply(XMQuaternionInverse(vQ1), vQ2));
-
-		//_float4 vQ = *m_pModelCom->Get_FirstKeyframe_Rotation(m_pAnimCom[m_iCurrentAnimType], m_iAnim);
-		//_float4 vQ; XMStoreFloat4(&vQ, rotationDifference);
-		//XMMATRIX correctedRotationMatrix = XMMatrixRotationQuaternion(rotationDifference);
-
-		//XMMATRIX World = m_pTransformCom->Get_WorldMatrix() * correctedRotationMatrix;
-		//_float4x4 World4x4;
-		//XMStoreFloat4x4(&World4x4, World);
-
-		//m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(&World4x4));
-
-		//m_pTransformCom->Change_Rotation_Quaternion(vQ);
 
 		Off_Attack_Colliders();
 		Reset_Shaking_Variable();

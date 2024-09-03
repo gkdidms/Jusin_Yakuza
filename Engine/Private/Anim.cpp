@@ -88,14 +88,24 @@ const vector<_uint>* CAnim::Get_CurrentKeyFrameIndices(_uint iAnimIndex)
 	return m_Animations[iAnimIndex]->Get_CurrentKeyFrameIndices();
 }
 
-const _float4* CAnim::Get_LastKeyframe_Rotation(_uint iAnimIndex)
+const _float3* CAnim::Get_LastKeyframe_Position(_uint iAnimIndex, string strChannelName)
 {
-	return m_Animations[iAnimIndex == -1 ? m_iCurrentIndex : iAnimIndex]->Get_LastKeyframe_Rotation();
+	return m_Animations[iAnimIndex == -1 ? m_iCurrentIndex : iAnimIndex]->Get_LastKeyframe_Position(strChannelName);
 }
 
-const _float4* CAnim::Get_FirstKeyframe_Rotation(_uint iAnimIndex)
+const _float3* CAnim::Get_FirstKeyframe_Position(_uint iAnimIndex, string strChannelName)
 {
-	return m_Animations[iAnimIndex == -1 ? m_iCurrentIndex : iAnimIndex]->Get_FirstKeyframe_Rotation();
+	return m_Animations[iAnimIndex == -1 ? m_iCurrentIndex : iAnimIndex]->Get_FirstKeyframe_Position(strChannelName);
+}
+
+const _float4* CAnim::Get_LastKeyframe_Rotation(_uint iAnimIndex, string strChannelName)
+{
+	return m_Animations[iAnimIndex == -1 ? m_iCurrentIndex : iAnimIndex]->Get_LastKeyframe_Rotation(strChannelName);
+}
+
+const _float4* CAnim::Get_FirstKeyframe_Rotation(_uint iAnimIndex, string strChannelName)
+{
+	return m_Animations[iAnimIndex == -1 ? m_iCurrentIndex : iAnimIndex]->Get_FirstKeyframe_Rotation(strChannelName);
 }
 
 _bool CAnim::Get_AnimFinished() const
