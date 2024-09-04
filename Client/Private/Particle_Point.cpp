@@ -427,6 +427,8 @@ HRESULT CParticle_Point::Add_Components()
     /* For.Com_Shader */
     if (FAILED(__super::Add_Component(m_iCurrentLevel, TEXT("Prototype_Component_Shader_VtxInstance_Point"),
         TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
+
+
         return E_FAIL;
 
     /* For.Com_Texture */

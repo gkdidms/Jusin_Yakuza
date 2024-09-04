@@ -228,6 +228,8 @@ protected:
     _uint           m_iHandAnimIndex = HAND_MIDDLE;
     _uint           m_iFaceAnimIndex = { 0 };
 
+    _bool           m_isMonster = { true };        // 데이터 파싱 시 필요한 정보
+
 
 #ifdef _DEBUG
     _bool m_isObjectRender = { true };
