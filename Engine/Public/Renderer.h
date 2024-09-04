@@ -263,7 +263,7 @@ private:
                 _bool m_isRimLight = { true };
 #endif // DEBUG
 
-    _float m_fHDRLight = { 0.18f };
+    _float m_fHDRLight = { 1.f };
 
     _float m_fSSAORadiuse = { 0.02f };
     _float m_fSSAOBlur = { 2.f };

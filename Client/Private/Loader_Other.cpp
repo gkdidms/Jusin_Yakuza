@@ -72,6 +72,21 @@ HRESULT CLoader_Other::Loading_Default()
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/001_trc_n.dds"), 1))))
 		return E_FAIL;
 
+	/* Prototype_Component_Texture_KuzeTrail */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Texture_KuzeTrail"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/kuze/008_trc_n.dds"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_KuzeHand */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Texture_KuzeHand"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/kuze/008_trc_na.dds"), 1))))
+		return E_FAIL;
+
+	/* Prototype_Component_Texture_KuzeHandFire */
+	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Texture_KuzeHandFire"),
+		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/Particle/kuze/008_Kuze_handFire.dds"), 1))))
+		return E_FAIL;
+
 	/* Prototype_Component_Texture_Sky */
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(m_eNextLevel, TEXT("Prototype_Component_Texture_Sky"),
 		CTexture::Create(m_pDevice, m_pContext, TEXT("../../Client/Bin/Resources/Textures/SkyBox/Sky_%d.dds"), 5))))

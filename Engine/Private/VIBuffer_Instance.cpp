@@ -794,6 +794,69 @@ void CVIBuffer_Instance::MeshSpread(_float fTimeDelta)
 	m_pContext->Unmap(m_pVBInstance, 0);
 }
 
+void CVIBuffer_Instance::IntervalSpread(_float fTimeDelta)
+{
+	D3D11_MAPPED_SUBRESOURCE		SubResource{};
+
+	m_pContext->Map(m_pVBInstance, 0, D3D11_MAP_WRITE_NO_OVERWRITE, 0, &SubResource);
+
+	_uint LiveNum = 0;
+	_uint Next = 0;
+	if (0 != m_InstanceDesc->fDelay)
+	{
+		m_iCurrentTime += fTimeDelta;//시간추가 
+		LiveNum = m_iCurrentTime / m_InstanceDesc->fDelay;	
+	}
+
+	VTXMATRIX* pVertices = (VTXMATRIX*)SubResource.pData;
+
+	_vector WorlPosition = XMLoadFloat4x4(m_pCurrentWorldMatrix).r[3];
+
+	for (size_t i = 0; i < m_InstanceDesc->iNumInstance; i++)
+	{
+
+		if (pVertices[i].vLifeTime.y > pVertices[i].vLifeTime.x)
+		{
+			pVertices[i].vRectSize.x = 0.f;
+		}
+
+		if (i < LiveNum && pVertices[i].vLifeTime.y <= pVertices[i].vLifeTime.x)
+		{
+			if (false == m_pIsPlay[i])
+			{
+				pVertices[i].vTranslation = _float4(m_pOriginalPositions[i].x, m_pOriginalPositions[i].y, m_pOriginalPositions[i].z, 1.f);
+
+				XMStoreFloat4(&pVertices[i].vDirection, XMVectorSetW(XMLoadFloat4(&pVertices[i].vTranslation) - XMLoadFloat3(&m_pOriginalOffsets[i]), 0.f));
+
+				pVertices[i].vRectSize.x = m_pOriginalSize[i];
+
+				if (!m_InstanceDesc->isAttach)//항상 붙여다닐꺼?
+				{
+					pVertices[i].vTranslation.x += XMVectorGetX(WorlPosition);
+					pVertices[i].vTranslation.y += XMVectorGetY(WorlPosition);
+					pVertices[i].vTranslation.z += XMVectorGetZ(WorlPosition);
+				}
+				m_pIsPlay[i] = true;
+			}
+
+			pVertices[i].vLifeTime.y += fTimeDelta;
+			//x가 최종,y 가 current
+
+			_vector			vDir = XMLoadFloat4(&pVertices[i].vDirection);
+
+			XMStoreFloat4(&pVertices[i].vTranslation, XMLoadFloat4(&pVertices[i].vTranslation) + XMVector3Normalize(vDir) * m_pSpeeds[i] * fTimeDelta);
+		}
+		else
+		{
+			pVertices[i].vRectSize.x = 0.f;
+		}
+
+
+	}
+
+	m_pContext->Unmap(m_pVBInstance, 0);
+}
+
 void CVIBuffer_Instance::Reset()
 {
 	D3D11_MAPPED_SUBRESOURCE		SubResource{};
@@ -838,7 +901,11 @@ void CVIBuffer_Instance::Reset()
 		m_pSpeeds[i] = m_pGameInstance->Get_Random(m_InstanceDesc->vSpeed.x, m_InstanceDesc->vSpeed.y);
 
 		pVertices[i].vRectSize.y = m_pGameInstance->Get_Random(0.f, 360.f);//회전
+
+		if(0!=m_InstanceDesc->fDelay)
+			m_pIsPlay[i] = false;
 	}
+
 	m_isReset = true;
 	m_pContext->Unmap(m_pVBInstance, 0);
 }
@@ -883,17 +950,17 @@ void CVIBuffer_Instance::SizeUp_Time(_float fTimeDelta)
 
 			pVertices[i].vRectSize.x = (1.f + (pVertices[i].vLifeTime.y / pVertices[i].vLifeTime.x)) * m_pOriginalSize[i];
 
-			if (pVertices[i].vLifeTime.y >= pVertices[i].vLifeTime.x)
-			{
-				if (true == m_InstanceDesc->isLoop)
-				{
-					pVertices[i].vTranslation = _float4(m_pOriginalPositions[i].x, m_pOriginalPositions[i].y, m_pOriginalPositions[i].z, 1.f);
-					pVertices[i].vLifeTime.y = 0.f;
-					_vector			vDir = XMVectorSetW(XMLoadFloat4(&pVertices[i].vTranslation) - XMLoadFloat3(&m_InstanceDesc->vOffsetPos), 0.f);
-					XMStoreFloat4(&pVertices[i].vDirection, vDir);
-					pVertices[i].vRectSize.x = m_pGameInstance->Get_Random(m_InstanceDesc->vRectSize.x, m_InstanceDesc->vRectSize.y);
-				}
-			}
+			//if (pVertices[i].vLifeTime.y >= pVertices[i].vLifeTime.x)
+			//{
+			//	if (true == m_InstanceDesc->isLoop)
+			//	{
+			//		pVertices[i].vTranslation = _float4(m_pOriginalPositions[i].x, m_pOriginalPositions[i].y, m_pOriginalPositions[i].z, 1.f);
+			//		pVertices[i].vLifeTime.y = 0.f;
+			//		_vector			vDir = XMVectorSetW(XMLoadFloat4(&pVertices[i].vTranslation) - XMLoadFloat3(&m_InstanceDesc->vOffsetPos), 0.f);
+			//		XMStoreFloat4(&pVertices[i].vDirection, vDir);
+			//		pVertices[i].vRectSize.x = m_pGameInstance->Get_Random(m_InstanceDesc->vRectSize.x, m_InstanceDesc->vRectSize.y);
+			//	}
+			//}
 
 		}
 
@@ -916,17 +983,17 @@ void CVIBuffer_Instance::SizeDown_Time(_float fTimeDelta)
 			//x가 최종,y 가 current
 			pVertices[i].vRectSize.x = (1.f - (pVertices[i].vLifeTime.y / pVertices[i].vLifeTime.x)) * m_pOriginalSize[i];
 
-			if (pVertices[i].vLifeTime.y >= pVertices[i].vLifeTime.x)
-			{
-				if (true == m_InstanceDesc->isLoop)
-				{
-					pVertices[i].vTranslation = _float4(m_pOriginalPositions[i].x, m_pOriginalPositions[i].y, m_pOriginalPositions[i].z, 1.f);
-					pVertices[i].vLifeTime.y = 0.f;
-					_vector			vDir = XMVectorSetW(XMLoadFloat4(&pVertices[i].vTranslation) - XMLoadFloat3(&m_InstanceDesc->vOffsetPos), 0.f);
-					XMStoreFloat4(&pVertices[i].vDirection, vDir);
-					pVertices[i].vRectSize.x = m_pGameInstance->Get_Random(m_InstanceDesc->vRectSize.x, m_InstanceDesc->vRectSize.y);
-				}
-			}
+			//if (pVertices[i].vLifeTime.y >= pVertices[i].vLifeTime.x)
+			//{
+			//	if (true == m_InstanceDesc->isLoop)
+			//	{
+			//		pVertices[i].vTranslation = _float4(m_pOriginalPositions[i].x, m_pOriginalPositions[i].y, m_pOriginalPositions[i].z, 1.f);
+			//		pVertices[i].vLifeTime.y = 0.f;
+			//		_vector			vDir = XMVectorSetW(XMLoadFloat4(&pVertices[i].vTranslation) - XMLoadFloat3(&m_InstanceDesc->vOffsetPos), 0.f);
+			//		XMStoreFloat4(&pVertices[i].vDirection, vDir);
+			//		pVertices[i].vRectSize.x = m_pGameInstance->Get_Random(m_InstanceDesc->vRectSize.x, m_InstanceDesc->vRectSize.y);
+			//	}
+			//}
 
 		}
 
@@ -1081,6 +1148,7 @@ void CVIBuffer_Instance::Free()
 		Safe_Delete_Array(m_pWeight);
 		Safe_Delete_Array(m_pFrequency);
 		Safe_Delete_Array(m_pAmplitude);
+		Safe_Delete_Array(m_pIsPlay);
 	}
 
 	Safe_Release(m_pComputeShader);

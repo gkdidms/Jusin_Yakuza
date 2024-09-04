@@ -57,7 +57,6 @@ HRESULT CLevel_Karaoke::Initialize()
 	//m_pGameInstance->Set_HDRLight(1.2f);
 	//m_pGameInstance->Set_AdjectTint(_float4(0.882, 0.742f, 0.683f, 0.f));
 
-
     return S_OK;
 }
 
