@@ -25,16 +25,16 @@ private:
     //const _float MAX_DISTANCE = 3.1f;
     //const _float MIN_DISTANCE = 2.5f;
 
-    _float MIN_LERP_DISTANCE = 3.f;
+    _float MIN_LERP_DISTANCE = 2.5f;
 
     const _float MAX_DISTANCE = 4.1f;
     const _float MIN_DISTANCE = 3.5f;
 
-    const _float MAX_DISTANCE_ADV = 2.8;
-    const _float MIN_DISTANCE_ADV = 1.5;
+    _float MAX_DISTANCE_ADV = 2.8;
+    _float MIN_DISTANCE_ADV = 1.5;
 
-    const _float MAX_DISTANCE_BATTLE = 4.1f;
-    const _float MIN_DISTANCE_BATTLE = 3.5f;
+    _float MAX_DISTANCE_BATTLE = 4.1f;
+    _float MIN_DISTANCE_BATTLE = 3.5f;
 
 public:
     typedef struct tPlayerCameraDesc : public CAMERA_DESC
