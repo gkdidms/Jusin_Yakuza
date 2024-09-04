@@ -75,6 +75,7 @@ void CCarChase_Reactor::Tick(const _float& fTimeDelta)
 	if (m_pGameInstance->GetKeyState(DIK_LCONTROL) == TAP)
 		m_isStop = !m_isStop;
 #endif // _DEBUG
+
 	if (!m_isStop)
 		Move_Waypoint(fTimeDelta);
 
@@ -133,9 +134,6 @@ HRESULT CCarChase_Reactor::Render()
 		_float fFar = *m_pGameInstance->Get_CamFar();
 		m_pShaderCom->Bind_RawValue("g_fFar", &fFar, sizeof(_float));
 
-		//if (FAILED(m_pModelCom->Bind_BoneMatrices(m_pShaderCom, "g_BoneMatrices", i)))
-		//	return E_FAIL;
-
 		m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE);
 
 		m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS);
@@ -153,7 +151,6 @@ HRESULT CCarChase_Reactor::Render()
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RSTexture", i, aiTextureType_SPECULAR)))
 			isRS = false;
 		m_pShaderCom->Bind_RawValue("g_isRS", &isRS, sizeof(_bool));
-		m_pShaderCom->Bind_RawValue("IsY3Shader", &isRS, sizeof(_bool));
 
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RDTexture", i, aiTextureType_OPACITY)))
 			isRD = false;
@@ -166,7 +163,6 @@ HRESULT CCarChase_Reactor::Render()
 		if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RTTexture", i, aiTextureType_EMISSIVE)))
 			isRT = false;
 		m_pShaderCom->Bind_RawValue("g_isRT", &isRT, sizeof(_bool));
-
 
 		m_pShaderCom->Begin(0);		//디폴트
 		m_pModelCom->Render(i);
@@ -221,13 +217,6 @@ _bool CCarChase_Reactor::Check_Dead()
 			return false;
 	}
 
-	//헬기 폭파 이펙트
-	CEffect::EFFECT_DESC EffectDesc;
-
-	EffectDesc.pWorldMatrix = m_pTransformCom->Get_WorldFloat4x4();
-	CEffectManager::GetInstance()->Heli_Exp(EffectDesc);
-	CEffectManager::GetInstance()->Heli_Fire(EffectDesc);
-
 	return true;
 }
 
@@ -280,9 +269,10 @@ void CCarChase_Reactor::Move_Waypoint(const _float& fTimeDelta)
 	//스테이지 방향이 DIR_F이고 Start일 경우 앞에서 뒤로 이동하도록 함
 	_float fBack = m_iStageDir == DIR_F && m_isStart ? -1.f : 1.f;
 
-	//만약 몬스터가 플레이어보다 앞서나간다면 뒤로 이동하도록 한다.
-	if (fBack == 1.f && iPlayerCurrentWaypointIndex + 2 <= iCurrentWaypointIndex)
-		fBack *= 1.f;
+	//만약 몬스터가 플레이어보다 앞서 나가거나 너무 뒤로 이동한다면 반대방향으로 이동하도록 한다..
+	if (fBack == 1.f && iPlayerCurrentWaypointIndex + 2 <= iCurrentWaypointIndex
+		|| fBack == -1.f && iPlayerCurrentWaypointIndex - 3 >= iCurrentWaypointIndex)
+		fBack *= -1.f;
 
 	_float fFactor = min(fDistance, 20.f) / 20.f;
 
