@@ -124,6 +124,17 @@ void CKiryu_KRS_PickUp::Change_Animation()
 
 _bool CKiryu_KRS_PickUp::Get_AnimationEnd()
 {
+	// 아이템 라이프 끝났으면 상태 되돌리기
+	if (Checked_Animation_Ratio(0.6f))
+	{
+		if (m_pPlayer->Get_CurrentItem()->Get_ItemLife() <= 0)
+		{
+			m_pPlayer->Set_CurrentBehavior(1);
+			Reset();
+			return true;
+		}
+	}
+
 	CModel* pModelCom = static_cast<CModel*>(m_pPlayer->Get_Component(TEXT("Com_Model")));
 
 	if (pModelCom->Get_AnimFinished())
