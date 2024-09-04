@@ -232,50 +232,6 @@ HRESULT CRenderer::Ready_Targets()
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_OEShader"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
 
-	///*Target_Glass - Diffuse 같은*/
-	//if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_GlassDiffuse"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(0.f, 0.f, 0.f, 1.f))))
-	//	return E_FAIL;
-
-	///*Target_GlassNormal*/
-	//if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_GlassNormal"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 1.f))))
-	//	return E_FAIL;
-
-	///*Target_GlassDepth - NonBlendDepth와 비교해야해서 1로 초기화 */
-	//if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_GlassDepth"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(1.f, 1.f, 1.f, 1.f))))
-	//	return E_FAIL;
-
-	///* Target_GlassRM */
-	//if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_GlassRM"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(1.f, 0.f, 0.f, 0.f))))
-	//	return E_FAIL;
-
-	///* Target_GlassRS */
-	//if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_GlassRS"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(1.f, 0.f, 0.f, 0.f))))
-	//	return E_FAIL;
-
-	///*Target_Diffuse*/
-	//if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_FinishGlassDiffuse"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_B8G8R8A8_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
-	//	return E_FAIL;
-
-	///*Target_Diffuse*/
-	//if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Diffuse"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_B8G8R8A8_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
-	//	return E_FAIL;
-
-	///*Target_Normal*/
-	//if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Normal"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 1.f))))
-	//	return E_FAIL;
-
-	///*Target_Depth*/
-	//if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_Depth"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R32G32B32A32_FLOAT, _float4(0.f, 0.f, 0.f, 1.f))))
-	//	return E_FAIL;
-
-	///* Target_RM */
-	//if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_RM"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(1.f, 0.f, 0.f, 0.f))))
-	//	return E_FAIL;
-
-	///* Target_RS */
-	//if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_RS"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(1.f, 0.f, 0.f, 0.f))))
-	//	return E_FAIL;
-
 	/* Target_LightDepth */
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_LightDepth"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R32_FLOAT, _float4(1.f, 1.f, 1.f, 1.f), false, 3)))
 		return E_FAIL;
@@ -806,6 +762,7 @@ void CRenderer::Draw()
 	}
 
 	Render_LightAcc();
+
 	Render_CopyBackBuffer(); // 최종으로 그려서 백버퍼에 올라갈 이미지 복사
 	Render_DeferredResult(); // 복사한 이미지를 백버퍼에 넣어줌. (Deferred 최종)
 
