@@ -71,9 +71,12 @@ void CParticle_Point::Tick(const _float& fTimeDelta)
     m_fCurTime += fTimeDelta;
     if (!m_BufferInstance.isLoop)
     {
-        _float fTotalTime = m_fStartTime + m_BufferInstance.vLifeTime.y;
-        if (m_fCurTime > fTotalTime)
-            m_isDead = true;
+        if (0 == m_BufferInstance.fDelay)
+        {
+            _float fTotalTime = m_fStartTime + m_BufferInstance.vLifeTime.y;
+            if (m_fCurTime > fTotalTime)
+                m_isDead = true;
+        }
     }
 
 #ifdef _CLIENT
@@ -107,6 +110,10 @@ void CParticle_Point::Tick(const _float& fTimeDelta)
         if (m_iAction & iAction[ACTION_BLOOD])
         {
             m_pVIBufferCom->BloodSpread(fTimeDelta);
+        }
+        if (m_iAction & iAction[ACTION_INTERVAL])
+        {
+           m_pVIBufferCom->IntervalSpread(fTimeDelta);
         }
     }
 
@@ -257,6 +264,7 @@ HRESULT CParticle_Point::Save_Data(const string strDirectory)
     out.write((char*)&m_BufferInstance.vSpeed, sizeof(_float2));
     out.write((char*)&m_BufferInstance.vLifeTime, sizeof(_float2));
     out.write((char*)&m_BufferInstance.isLoop, sizeof(_bool));
+    out.write((char*)&m_BufferInstance.fDelay, sizeof(_float));
 
     if(7==m_iShaderPass)
     {
@@ -289,7 +297,6 @@ HRESULT CParticle_Point::Save_Data(const string strDirectory)
         out.write((char*)&m_BufferInstance.HighAngleVelocity, sizeof(_float3));
         out.write((char*)&m_BufferInstance.GravityScale, sizeof(_float));
         out.write((char*)&m_BufferInstance.CrossArea, sizeof(_float));
-        out.write((char*)&m_BufferInstance.fDelay, sizeof(_float));
 
     }
 
@@ -364,6 +371,7 @@ HRESULT CParticle_Point::Load_Data(const string strDirectory)
     in.read((char*)&m_BufferInstance.vSpeed, sizeof(_float2));
     in.read((char*)&m_BufferInstance.vLifeTime, sizeof(_float2));
     in.read((char*)&m_BufferInstance.isLoop, sizeof(_bool));
+    in.read((char*)&m_BufferInstance.fDelay, sizeof(_float));
 
     if (7 == m_iShaderPass)
     {
@@ -401,7 +409,7 @@ HRESULT CParticle_Point::Load_Data(const string strDirectory)
         in.read((char*)&m_BufferInstance.HighAngleVelocity, sizeof(_float3));
         in.read((char*)&m_BufferInstance.GravityScale, sizeof(_float));
         in.read((char*)&m_BufferInstance.CrossArea, sizeof(_float));
-        in.read((char*)&m_BufferInstance.fDelay, sizeof(_float));
+        
     }
     in.read((char*)&m_BufferInstance.isAttach, sizeof(_bool));
     in.close();
