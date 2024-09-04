@@ -113,6 +113,11 @@ HRESULT CVIBuffer_Instance_Point::Initialize(void* pArg)
 	m_pOriginalAngleVelocity = new _float3[m_InstanceDesc->iNumInstance];
 	ZeroMemory(m_pOriginalAngleVelocity, sizeof(_float3) * m_InstanceDesc->iNumInstance);
 
+	if (0 != m_InstanceDesc->fDelay)
+	{
+		m_pIsPlay = new _bool[m_InstanceDesc->iNumInstance];
+		ZeroMemory(m_pIsPlay, sizeof(_bool) * m_InstanceDesc->iNumInstance);
+	}
 
 	m_pCurrentWorldMatrix = m_InstanceDesc->WorldMatrix;
 
@@ -178,6 +183,8 @@ HRESULT CVIBuffer_Instance_Point::Initialize(void* pArg)
 			m_pOriginalAngleVelocity[i] = _float3(AngleVelocityX, AngleVelocityY, AngleVelocityZ);
 
 			m_pSpeeds[i] = m_pGameInstance->Get_Random(m_InstanceDesc->vSpeed.x, m_InstanceDesc->vSpeed.y);
+
+
 		}
 		else
 		{
@@ -222,7 +229,11 @@ HRESULT CVIBuffer_Instance_Point::Initialize(void* pArg)
 
 			m_pSpeeds[i] = Speed;
 		}
-
+		if (0 != m_InstanceDesc->fDelay)
+		{
+			pInstanceVertices[i].vRectSize.x = 0.f;
+			m_pIsPlay[i] = false;
+		}
 	}
 	
 	m_InitialData.pSysMem = pInstanceVertices;

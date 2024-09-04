@@ -1233,6 +1233,7 @@ _uint CAI_Monster::Get_DownDir()
 		|| *m_pState == CMonster::MONSTER_DWN_BODY_F_SP
 		|| *m_pState == CMonster::MONSTER_DWN_DIRECT_F_BOUND_G
 		|| *m_pState == CMonster::MONSTER_DWN_DIRECT_F
+		|| *m_pState == CMonster::MONSTER_DWN_DNF_BOUND
 		|| *m_pState == CMonster::MONSTER_DWN_DNF_BOUND_G
 		|| *m_pState == CMonster::MONSTER_KRC_SYNC1_GUARD_COUNTER_F
 		|| *m_pState == CMonster::MONSTER_KRC_SYNC1_KAIHI_NAGE_B

@@ -167,11 +167,12 @@ CMainApp* CMainApp::Create()
 
 void CMainApp::Free()
 {
-	Safe_Release(m_pGuimanager);
 	Safe_Release(m_pContext);
 	Safe_Release(m_pDevice);
 
 	/* 레퍼런스 카운트를 0으로만든다. */
 	Safe_Release(m_pGameInstance);
 	CGameInstance::Release_Engine();
+
+	Safe_Release(m_pGuimanager);
 }

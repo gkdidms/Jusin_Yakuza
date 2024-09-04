@@ -41,6 +41,7 @@ public:
         _bool isAttach;
         //blood
         _float fDelay;
+
     }INSTANCE_DESC;
 
 protected:
@@ -73,6 +74,7 @@ protected:
     _float* m_pWeight = { nullptr };
     _float3* m_pFrequency = { nullptr };
     _float3* m_pAmplitude = { nullptr };
+    _bool* m_pIsPlay = { nullptr };
 
     const _float4x4* m_pCurrentWorldMatrix = { nullptr };
 
@@ -110,6 +112,7 @@ public:
     void FallSpread(_float fTimeDelta);
     void BloodSpread(_float fTimeDelta);
     void MeshSpread(_float fTimeDelta);
+    void IntervalSpread(_float fTimeDelta);
     void Reset();
 
     _bool LifeTime_Check();

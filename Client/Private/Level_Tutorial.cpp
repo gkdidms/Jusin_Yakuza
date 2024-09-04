@@ -44,10 +44,12 @@ HRESULT CLevel_Tutorial::Initialize()
 	m_pFileTotalManager->Set_MapObj_In_Client(STAGE_TUTORIAL, LEVEL_TUTORIAL);
 	m_pFileTotalManager->Set_Lights_In_Client(10);
 	m_pFileTotalManager->Set_Trigger_In_Client(STAGE_TUTORIAL, LEVEL_TUTORIAL);
+	//m_pFileTotalManager->Set_Collider_In_Client(STAGE_TUTORIAL, LEVEL_TUTORIAL);
 
 	if (FAILED(Ready_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
 
+	// 메인스토리 컷신카메라용
 	m_pFileTotalManager->Load_Cinemachine(6, LEVEL_TUTORIAL);
 	m_pFileTotalManager->Load_Cinemachine(7, LEVEL_TUTORIAL);
 	m_pFileTotalManager->Load_Cinemachine(8, LEVEL_TUTORIAL);
@@ -72,8 +74,6 @@ HRESULT CLevel_Tutorial::Initialize()
 	m_pGameInstance->Play_Loop(L"48a1 [1].wav", SOUND_BGM_2, 0.6f);
 	m_pGameInstance->Play_Loop(L"4887 [1].wav", SOUND_BGM_3, 0.3f);
 	m_pGameInstance->Play_Loop(L"4899 [1].wav", SOUND_BGM_1, 0.5f);
-
-	m_pGameInstance->PlayBGM(TEXT("Street_BGM.wav"), 0.5f);
 
 	m_pUIManager->Set_AlwayUI(false);
 
