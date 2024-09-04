@@ -80,7 +80,7 @@ void CUILife::Update_PlayerInfo()
 	 for (size_t i = SKILL0; i < GAUAGE_END; i++)
 	 {
 		 if(i<m_iHitLevel)
-			 dynamic_cast<CUI_Texture*>((*pSkillGauage)[i])->Change_Point(_float4(0.f,0.f,0.f,0.f), _float4(0.f, 0.f,  m_fEndHit[i], 0.f));
+			 dynamic_cast<CUI_Texture*>((*pSkillGauage)[i])->Change_Point(_float4(0.f,0.f,0.f,0.f), _float4(0.f, 0.f,  m_fEndHit[i-1], 0.f));
 		 else if(m_iHitLevel<i)
 			 dynamic_cast<CUI_Texture*>((*pSkillGauage)[i])->Change_Point(_float4(0.f, 0.f, -1.f, 0.f), _float4(0.f, 0.f, -1.f, 0.f));
 		 else if (i == m_iHitLevel)
@@ -97,9 +97,14 @@ void CUILife::Update_PlayerInfo()
 		 }
 
 	 }
+	 _uint iGauageLevel = 0;
+	 if (m_iHitLevel > 3)
+		 iGauageLevel = m_iHitLevel - 1;
+	 else
+		 iGauageLevel = m_iHitLevel;
 
 
-	 dynamic_cast<CGroup*>(m_EventUI[NUM])->Show_Choice(m_iHitLevel-1);
+	 dynamic_cast<CGroup*>(m_EventUI[NUM])->Show_Choice(iGauageLevel -1);
 	 dynamic_cast<CGroup*>(m_EventUI[LIGHT])->Show_Choice(m_iBts);
 
 
