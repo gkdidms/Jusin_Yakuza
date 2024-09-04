@@ -81,6 +81,10 @@ HRESULT CImguiManager::Initialize(void* pArg)
 	TextureTags.push_back(TEXT("Prototype_Component_Texture_FireRoundC"));
 	TextureTags.push_back(TEXT("Prototype_Component_Texture_RoopSmoke"));
 
+	TextureTags.push_back(TEXT("Prototype_Component_Texture_KuzeTrail"));
+	TextureTags.push_back(TEXT("Prototype_Component_Texture_KuzeHand"));
+	TextureTags.push_back(TEXT("Prototype_Component_Texture_KuzeHandFire"));
+
 
 	ToneTextureTags.push_back(TEXT("Prototype_Component_Texture_AuraTone"));
 	ToneTextureTags.push_back(TEXT("Prototype_Component_Texture_AuraToneRush"));
@@ -1660,7 +1664,9 @@ HRESULT CImguiManager::Edit_Particle(_uint Index)
 			dynamic_cast<CEffect*>(m_EditParticle[Index])->Edit_Action(CEffect::ACTION_FALLSPREAD);
 		if (m_bBloodSpread)
 			dynamic_cast<CEffect*>(m_EditParticle[Index])->Edit_Action(CEffect::ACTION_BLOOD);
-		
+		if(m_bIntervalSpread)
+			dynamic_cast<CEffect*>(m_EditParticle[Index])->Edit_Action(CEffect::ACTION_INTERVAL);
+
 	}
 		break;
 	case MODE_TRAIL:
@@ -1883,6 +1889,11 @@ HRESULT CImguiManager::Load_Desc(_uint Index)
 			m_bBloodSpread = true;
 		else
 			m_bBloodSpread = false;
+
+		if (CheckAction & pEffect->iAction[CEffect::ACTION_INTERVAL])
+			m_bIntervalSpread = true;
+		else
+			m_bIntervalSpread = false;
 
 		
 	}
@@ -2538,6 +2549,18 @@ void CImguiManager::Editor_Tick(_float fTimeDelta)
 		}
 	}
 
+	if (PASS_COLOR == m_EffectDesc.iShaderPass)
+	{
+
+		if (ImGui::Checkbox("IntervalSpread", &m_bIntervalSpread))
+		{
+			if (-1 != m_iCurEditIndex)
+			{
+				CEffect* pParticle = dynamic_cast<CEffect*>(m_EditParticle[m_iCurEditIndex]);
+				pParticle->Edit_Action(CEffect::ACTION_INTERVAL);
+			}
+		}
+	}
 
 	ImGui::SameLine();
 	if (ImGui::Checkbox("SizeUP", &m_bSizeup))
@@ -2665,6 +2688,13 @@ void CImguiManager::Editor_Tick(_float fTimeDelta)
 	if (ImGui::InputFloat("StartTime", Temp))
 	{
 		memcpy(&m_EffectDesc.fStartTime, Temp, sizeof(_float));
+		bChange = true;
+	}
+
+	Temp = (_float*)&m_EffectDesc.BufferInstance.fDelay;
+	if (ImGui::InputFloat("fDelay", Temp))
+	{
+		memcpy(&m_EffectDesc.BufferInstance.fDelay, Temp, sizeof(_float));
 		bChange = true;
 	}
 

@@ -25,6 +25,8 @@ private:
     //const _float MAX_DISTANCE = 3.1f;
     //const _float MIN_DISTANCE = 2.5f;
 
+    _float MIN_LERP_DISTANCE = 3.f;
+
     const _float MAX_DISTANCE = 4.1f;
     const _float MIN_DISTANCE = 3.5f;
 
@@ -110,9 +112,9 @@ private:
     _float m_fPreMouseMoveY; // 이전 각도 값 저장
     _float m_fPreMouseMoveX;
 
-    XMVECTOR    m_vPlayerPos = { 0,0,0,1 }; // 카메라 충돌 되기 전 마지막 플레이어 위치 저장
-    XMVECTOR    m_vLatestCollisionPos;      // 가장 최근 충돌 위치
-    XMVECTOR    m_vSafePos;      // 가장 최근 충돌 위치
+    _vector     m_vPlayerPos = { 0,0,0,1 }; // 카메라 충돌 되기 전 마지막 플레이어 위치 저장
+    _vector     m_vLatestCollisionPos;      // 가장 최근 충돌 위치
+    
     
     bool        m_bPreCamCollision = { false };
     bool        m_bCamCollision = { false };
