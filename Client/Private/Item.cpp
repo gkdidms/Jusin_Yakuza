@@ -150,7 +150,7 @@ void CItem::Tick(const _float& fTimeDelta)
 
 	if (true == m_bDissovle)
 	{
-		m_fDissolveTime += fTimeDelta * 0.4;
+		m_fDissolveTime += fTimeDelta * 0.8;
 
 		if(3 < m_fDissolveTime)
 		{
@@ -217,7 +217,7 @@ void CItem::Tick(const _float& fTimeDelta)
 		if (nullptr != m_vParentMatrix)
 			ParentMatrix = XMLoadFloat4x4(m_vParentMatrix);
 
-		XMStoreFloat4x4(&m_WorldMatrix, /*offsetMatrix **/ ParentMatrix * PlayerMatrix);
+		XMStoreFloat4x4(&m_WorldMatrix, /*offsetMatrix **/offsetMatrix *  ParentMatrix * PlayerMatrix );
 
 		XMMATRIX worldMatrix = XMLoadFloat4x4(&m_WorldMatrix);
 		m_pTransformCom->Set_WorldMatrix(worldMatrix);

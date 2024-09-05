@@ -99,6 +99,7 @@ bool g_bReflExist;
 /* Map */
 bool g_bCompulsoryAlpha;
 bool g_bEmissiveTex;
+bool g_bLightCut; // 잘라낼건지
 float g_fDynamicSpeed;
 
 /* Item */
