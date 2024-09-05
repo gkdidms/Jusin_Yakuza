@@ -40,7 +40,7 @@ HRESULT CLevel_Roadway::Initialize()
     /* Å¬¶ó ÆÄ½Ì */
     m_pFileTotalManager->Set_MapObj_In_Client(STAGE_ROADWAY, LEVEL_CARCHASE);
     m_pFileTotalManager->Set_Lights_In_Client(7);
-    //m_pFileTotalManager->Set_Collider_In_Client(STAGE_ROADWAY, LEVEL_CARCHASE);
+
 
 	if (FAILED(Ready_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;

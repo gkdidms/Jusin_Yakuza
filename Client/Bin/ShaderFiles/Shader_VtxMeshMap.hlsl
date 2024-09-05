@@ -345,8 +345,11 @@ PS_OUT_COLOR PS_MAIN_LightMask_Alpha(PS_IN In)
 {
     // 모양대로 자르는거
     PS_OUT_COLOR Out = (PS_OUT_COLOR) 0;
-
+    
     vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
+    
+    if (vDiffuse.a < 0.6 || (0 == vDiffuse.r && 0 == vDiffuse.g && 0 == vDiffuse.b))
+        discard;
     
     Out.vDiffuse = vDiffuse;
     
