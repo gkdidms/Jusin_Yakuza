@@ -31,7 +31,7 @@ public:
     void Set_Money();
     //돈추가시 초기화
     void AddMoney(_uint AddMoney);
-
+    void StartAddMoney(_uint iAddMoney);
     void Money_Anim();
 private:
     vector<CUI_Object*>m_Bonus;

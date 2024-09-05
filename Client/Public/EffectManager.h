@@ -46,7 +46,8 @@ public:
     void Heli_Exp(CEffect::EFFECT_DESC& EffectDesc);
     //¹Ì»çÀÏÆøÆÅ
     void Heli_BulletExp(CEffect::EFFECT_DESC& EffectDesc);
-
+    //ÆÄ±«ÀÚ 2Å¸ ÀÌÆåÆ®
+    void KRC_Hand(CEffect::EFFECT_DESC& EffectDesc);
 
     void Player_Attack_Effect(CEffect::EFFECT_DESC& EffectDesc);
     void Enemy_Attack_Effect(CEffect::EFFECT_DESC& EffectDesc);

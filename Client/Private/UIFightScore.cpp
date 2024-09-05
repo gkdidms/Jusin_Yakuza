@@ -254,6 +254,26 @@ void CUIFightScore::AddMoney(_uint AddMoney)
 
 }
 
+void CUIFightScore::StartAddMoney(_uint iAddMoney)
+{
+	AddMoney(iAddMoney);
+	m_isEnd = false;
+	m_iCurrentTime = 0.f;
+	for (auto& iter : m_EventUI)
+	{
+		iter->Show_UI();
+		iter->Set_isPlay(true);
+	}
+	m_pAddMoney->Show_UI();
+	m_pAddMoney->Set_isPlay(true);
+
+	for (auto& iter : m_Bonus)
+	{
+		iter->Set_isPlay(true);
+		iter->Show_UI();
+	}
+}
+
 void CUIFightScore::Money_Anim()
 {
 	vector<CUI_Object*> pMoneyGroup = m_pMoney->Get_PartObjects();
