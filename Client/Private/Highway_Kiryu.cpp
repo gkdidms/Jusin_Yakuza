@@ -225,7 +225,7 @@ void CHighway_Kiryu::Key_Input()
 	{
 		m_fAccReloadTimer += m_pGameInstance->Get_TimeDelta(TEXT("Timer_Game"));
 
-		m_pGameInstance->PlaySoundIfNotPlay(L"gun_reload_0.wav", SOUND_ATTACK, 1.f);
+		m_pGameInstance->PlaySoundIfNotPlay(L"gun_reload_0.wav", SOUND_EFFECT, 1.f);
 
 		if(m_iCurrentAmmo< MAX_AMMO)
 		{
