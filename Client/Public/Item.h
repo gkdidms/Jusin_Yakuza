@@ -166,7 +166,7 @@ private:
 
 	bool					m_bCurGrab = { false }; // 현재 잡고있는지
 
-	_uint					m_iLife = { 3 };		// 적을 타격할 수 있는 횟수
+	_int					m_iLife = { 3 };		// 적을 타격할 수 있는 횟수
 	
 	_bool					m_isThrowing = { false };
 	_float					m_fThrowTimer = { 0.f };

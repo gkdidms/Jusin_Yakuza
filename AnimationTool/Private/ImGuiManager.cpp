@@ -1118,7 +1118,13 @@ void CImguiManager::TrailWindow()
 
 		for (size_t i = 0; i < m_iTrailEventIndex; i++)
 		{
-			lower_iter++;
+			if(lower_iter != m_TrailEvents.end())
+				lower_iter++;
+			else
+			{
+				MSG_BOX("트레일 이벤트 목록에서 iterator가 end입니다. 다시 선택해주세요.");
+				return;
+			}
 		}
 
 		if (lower_iter != upper_bound_iter && lower_iter != m_TrailEvents.end())
@@ -1811,6 +1817,7 @@ void CImguiManager::Create_Effect(string& strBoneName, string& strEffectName, ws
 void CImguiManager::Play_SoundEvent()
 {
 	if (m_Anims.size() < 1) return;
+	if (m_AnimNameList.size() < 1) return;
 
 	auto Anims = m_Anims;
 	_float Duration = (_float)(*(Anims[m_iAnimIndex]->Get_Duration()));
