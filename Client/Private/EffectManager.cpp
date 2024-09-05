@@ -91,6 +91,12 @@ void CEffectManager::Heli_BulletExp(CEffect::EFFECT_DESC& EffectDesc)
 
 }
 
+void CEffectManager::KRC_Hand(CEffect::EFFECT_DESC& EffectDesc)
+{
+    m_pGameInstance->Add_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Prototype_GameObject_Particle_Point_KuzeHand"), TEXT("Layer_Particle"), &EffectDesc);
+
+}
+
 void CEffectManager::Player_Attack_Effect(CEffect::EFFECT_DESC& EffectDesc)
 {
     // 플레이어 타격 이펙트 (== 몬스터 피격 이펙트)
