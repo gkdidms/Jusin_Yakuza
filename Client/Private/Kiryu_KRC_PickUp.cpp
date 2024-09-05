@@ -119,6 +119,13 @@ _bool CKiryu_KRC_PickUp::Get_AnimationEnd()
 {
 	CModel* pModelCom = static_cast<CModel*>(m_pPlayer->Get_Component(TEXT("Com_Model")));
 
+	// 아이템 라이프 끝났으면 상태 되돌리기
+	if (m_pPlayer->Get_CurrentItem()->Get_ItemLife() < 0)
+	{
+		Reset();
+		return true;
+	}
+
 	if (pModelCom->Get_AnimFinished())
 	{
 		// 잡지못했을 때에는 애니메이션 스테이트 관계없이 종료를 반환한다.

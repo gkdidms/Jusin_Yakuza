@@ -204,6 +204,7 @@ public:
     void    Set_SeizeOff(_bool isOff = true);
     void    Set_ItemOff();
     void    Set_CurrentStyle(BATTLE_STYLE iStyle) { m_eCurrentStyle = iStyle; }
+    void    Set_CurrentBehavior(_uint iStyle) { m_iCurrentBehavior = iStyle; }
 
     void Battle_Start();
 

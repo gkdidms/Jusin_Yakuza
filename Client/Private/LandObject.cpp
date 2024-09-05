@@ -202,27 +202,31 @@ void CLandObject::Apply_ChracterData()
 		it->second->Off();
 	}
 
-	auto& pTrailEvents = m_pData->Get_TrailEvents();
-
-	for (auto& pTrailEvent : pTrailEvents)
+	// 플레이어일 경우 기존 방식대로 트레일 이벤트 진행 몬스터의 경우, 트레일 안쓸거라 생성x
+	if (!m_isMonster)
 	{
-		CSocketEffect::SOKET_EFFECT_DESC Desc{};
-		Desc.pParentMatrix = m_pTransformCom->Get_WorldFloat4x4();
-		Desc.pCombinedTransformationMatrix = m_pModelCom->Get_BoneCombinedTransformationMatrix(pTrailEvent.second.strBonelName.c_str());
-		Desc.wstrEffectName = m_pGameInstance->StringToWstring(pTrailEvent.second.strTrailProtoName);
+		auto& pTrailEvents = m_pData->Get_TrailEvents();
 
-		CGameObject* pSoketEffect = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_SoketEffect"), &Desc);
-		if (nullptr == pSoketEffect)
-			return;
+		for (auto& pTrailEvent : pTrailEvents)
+		{
+			CSocketEffect::SOKET_EFFECT_DESC Desc{};
+			Desc.pParentMatrix = m_pTransformCom->Get_WorldFloat4x4();
+			Desc.pCombinedTransformationMatrix = m_pModelCom->Get_BoneCombinedTransformationMatrix(pTrailEvent.second.strBonelName.c_str());
+			Desc.wstrEffectName = m_pGameInstance->StringToWstring(pTrailEvent.second.strTrailProtoName);
 
-		auto it = m_pTrailEffects.emplace(pTrailEvent.second.strBonelName, static_cast<CSocketEffect*>(pSoketEffect));
+			CGameObject* pSoketEffect = m_pGameInstance->Clone_Object(TEXT("Prototype_GameObject_SoketEffect"), &Desc);
+			if (nullptr == pSoketEffect)
+				return;
 
-		if (it.second)
-			it.first->second->Off();
-		else
-			Safe_Release(pSoketEffect);
+			auto it = m_pTrailEffects.emplace(pTrailEvent.second.strBonelName, static_cast<CSocketEffect*>(pSoketEffect));
+
+			if (it.second)
+				it.first->second->Off();
+			else
+				Safe_Release(pSoketEffect);
+		}
+
 	}
-
 
 	auto& pBloodEffectEvents = m_pData->Get_BloodEffectEvents();
 
@@ -333,7 +337,7 @@ void CLandObject::Trail_Event()
 				auto iter = m_pTrailEffects.find(pEvent.strBonelName);
 				iter->second->Off();
 			}
-				
+
 		}
 	}
 }

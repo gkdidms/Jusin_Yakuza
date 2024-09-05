@@ -8,6 +8,7 @@
 #include "SocketCollider.h"
 #include "Player.h"
 #include <Camera.h>
+#include "SocketEffect.h"
 
 CKuze::CKuze(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CMonster{ pDevice, pContext }
@@ -65,7 +66,7 @@ void CKuze::Tick(const _float& fTimeDelta)
 		dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject(m_iCurrentLevel, TEXT("Layer_Player"), 0))->Play_Kuze_QTE(this);
 	}
 
-	//Trail_Event();
+	Trail_Event();
 	Sound_Event();
 }
 
@@ -389,6 +390,67 @@ void CKuze::Change_Animation()
 
 	if (FAILED(Setup_Animation()))
 		return;
+}
+
+void CKuze::Trail_Event()
+{
+	auto& pCurEvents = m_pData->Get_Current_Trail_Events();
+	for (auto& pEvent : pCurEvents)
+	{
+		_double CurPos = *(m_pAnimCom[m_iCurrentAnimType]->Get_AnimPosition());
+		_double Duration = *(m_pAnimCom[m_iCurrentAnimType]->Get_AnimDuration());
+
+		if (CurPos >= pEvent.fAinmPosition && CurPos < Duration)
+		{
+			if (pEvent.iType == 0)		// 트레일 켜주기
+			{
+				// 현재 본 이름을 가진 모든 이펙트를 온해주기
+				auto lower_bound_iter = m_pEffects.lower_bound(pEvent.strBonelName);
+
+				if (!(lower_bound_iter != m_pEffects.end() && (*lower_bound_iter).first != pEvent.strBonelName))
+				{
+					auto upper_bound_iter = m_pEffects.upper_bound(pEvent.strBonelName);
+
+					if (lower_bound_iter == upper_bound_iter && lower_bound_iter != m_pEffects.end())
+					{
+						lower_bound_iter->second->On();
+					}
+					else
+					{
+						for (; lower_bound_iter != upper_bound_iter; ++lower_bound_iter)
+						{
+							lower_bound_iter->second->On();
+						}
+					}
+
+				}
+
+			}
+			else
+			{
+				// 현재 본 이름을 가진 모든 이펙트를 온해주기
+				auto lower_bound_iter = m_pEffects.lower_bound(pEvent.strBonelName);
+
+				if (!(lower_bound_iter != m_pEffects.end() && (*lower_bound_iter).first != pEvent.strBonelName))
+				{
+					auto upper_bound_iter = m_pEffects.upper_bound(pEvent.strBonelName);
+
+					if (lower_bound_iter == upper_bound_iter && lower_bound_iter != m_pEffects.end())
+					{
+						lower_bound_iter->second->Off();
+					}
+					else
+					{
+						for (; lower_bound_iter != upper_bound_iter; ++lower_bound_iter)
+						{
+							lower_bound_iter->second->Off();
+						}
+					}
+				}
+			}
+
+		}
+	}
 }
 
 CKuze* CKuze::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
