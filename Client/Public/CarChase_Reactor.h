@@ -66,9 +66,9 @@ protected:
 
     _int     m_iNaviRouteNum = { 0 };
     _int m_iWaypointIndex = { -1 };
-    _float m_fSpeed = { 41.f };
-    _float m_fMaxSpeed = { 55.f };
-    _float m_fMinSpeed = { 40.5f };
+    _float m_fSpeed = { 35.f };
+    _float m_fMaxSpeed = { 50.f };
+    _float m_fMinSpeed = { 35.5f };
 
     _bool m_isSound = { false };
     _float m_fSound = { 0.5f };
@@ -76,7 +76,7 @@ protected:
 protected:
     virtual HRESULT Ready_Monster(_int* pMonsterTypes) = 0;
     virtual void Change_Animation();
-    _bool Check_Dead();
+    virtual _bool Check_Dead();
 
 protected:
     void Move_Waypoint(const _float& fTimeDelta);
