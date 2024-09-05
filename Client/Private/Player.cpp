@@ -58,6 +58,8 @@ CPlayer::CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	Safe_AddRef(m_pDebugManager);
 #endif // _DEBUG
 	Safe_AddRef(m_pUIManager);
+
+	m_isMonster = false;
 }
 
 CPlayer::CPlayer(const CPlayer& rhs)
@@ -71,6 +73,8 @@ CPlayer::CPlayer(const CPlayer& rhs)
 	Safe_AddRef(m_pDebugManager);
 #endif // _DEBUG
 	Safe_AddRef(m_pUIManager);
+
+	m_isMonster = false;
 }
 
 void CPlayer::Set_SeizeOff(_bool isOff)
@@ -108,6 +112,8 @@ HRESULT CPlayer::Initialize_Prototype()
 HRESULT CPlayer::Initialize(void* pArg)
 {
 	m_wstrModelName = TEXT("Kiryu");
+
+	m_isMonster = false;
 
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;

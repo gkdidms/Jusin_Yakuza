@@ -53,6 +53,7 @@ HRESULT CCollision_Manager::Add_HitCollider(CSocketCollider* pCollider, COLLIDER
 HRESULT CCollision_Manager::Add_ItemCollider(CCollider* pCollider)
 {
     //Safe_AddRef(pCollider);
+    m_ItemColliders.clear();
     m_ItemColliders.push_back(pCollider);
 
     return S_OK;
@@ -93,6 +94,7 @@ void CCollision_Manager::All_Clear()
 {
     Impulse_Clear();
     Battle_Clear();
+    Item_Clear();
 }
 
 void CCollision_Manager::ImpulseResolution()
@@ -412,14 +414,11 @@ void CCollision_Manager::Item_Attack_Collision()
     {
         for (auto& pEnemyHitCollider : m_HitColliders[ENEMY])
         {
-            if (pItemCollider->Intersect(pEnemyHitCollider->Get_Collider()))
+            if (pItemCollider->Intersect(pEnemyHitCollider->Get_Collider(), 1.f))
             {
                 // 데미지를 제외하고 나머지는 임의의값을 넣음 (몬스터쪽에서 안쓰는값들)
                 pEnemyHitCollider->Get_Parent()->Take_Damage(0, _float3(), 10.f, nullptr, false);
                 dynamic_cast<CMonster*>(pEnemyHitCollider->Get_Parent())->Set_isColl(true);
-
-                // 아이템 콜라이더의 부모를 어떻게 꺼내오지?
-
             }
         }
     }
@@ -655,6 +654,15 @@ void CCollision_Manager::Battle_Clear()
     }
 }
 
+void CCollision_Manager::Item_Clear()
+{
+    for (auto& pCollider : m_ItemColliders)
+    {
+        Safe_Release(pCollider);
+    }
+    m_ItemColliders.clear();
+}
+
 void CCollision_Manager::Free()
 {
     Safe_Release(m_pGameInstance);
@@ -669,10 +677,5 @@ void CCollision_Manager::Free()
     }
     m_MapColliders.clear();
 
-
-    for (auto& pCollider : m_ItemColliders)
-    {
-        Safe_Release(pCollider);
-    }
-    m_ItemColliders.clear();
+    Item_Clear();
 }

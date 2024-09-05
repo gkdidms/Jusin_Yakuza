@@ -802,10 +802,14 @@ void CVIBuffer_Instance::IntervalSpread(_float fTimeDelta)
 
 	_uint LiveNum = 0;
 	_uint Next = 0;
+
+	_bool LastFin = false;
+
 	if (0 != m_InstanceDesc->fDelay)
 	{
 		m_iCurrentTime += fTimeDelta;//시간추가 
 		LiveNum = m_iCurrentTime / m_InstanceDesc->fDelay;	
+
 	}
 
 	VTXMATRIX* pVertices = (VTXMATRIX*)SubResource.pData;
@@ -851,7 +855,14 @@ void CVIBuffer_Instance::IntervalSpread(_float fTimeDelta)
 			pVertices[i].vRectSize.x = 0.f;
 		}
 
+	}
 
+	if (m_InstanceDesc->isLoop)
+	{
+		if (LiveNum > m_InstanceDesc->iNumInstance)
+		{
+			Reset();
+		}
 	}
 
 	m_pContext->Unmap(m_pVBInstance, 0);
@@ -903,7 +914,10 @@ void CVIBuffer_Instance::Reset()
 		pVertices[i].vRectSize.y = m_pGameInstance->Get_Random(0.f, 360.f);//회전
 
 		if(0!=m_InstanceDesc->fDelay)
+		{
 			m_pIsPlay[i] = false;
+			m_iCurrentTime = 0.f;
+		}
 	}
 
 	m_isReset = true;

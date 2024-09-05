@@ -34,6 +34,7 @@ private:
     virtual void Take_Damage(_uint iHitColliderType, const _float3& vDir, _float fDamage, CLandObject* pAttackedObject, _bool isBlowAttack = false) override;
     virtual HRESULT Add_Components() override;
     virtual void Change_Animation() override;
+    virtual void Trail_Event() override;
 
 public:
     static CKuze* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
