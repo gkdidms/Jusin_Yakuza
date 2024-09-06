@@ -5,6 +5,9 @@
 #include "CarChase_Heli.h"
 #include "CarChaseCamera.h"
 
+#include "Effect.h"
+#include "EffectManager.h"
+
 CReactor_Heli::CReactor_Heli(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	: CCarChase_Reactor{ pDevice, pContext }
 {
@@ -27,7 +30,7 @@ HRESULT CReactor_Heli::Initialize(void* pArg)
 
 	m_strAnimName = "w_mngcar_e_hel_rkt_stand";
 
-	m_pGameInstance->Play_Loop(TEXT("467e [28].wav"), SOUND_HELI, 0.5f);
+	m_pGameInstance->Play_Loop(TEXT("467e [28].wav"), SOUND_HELI, 0.8f);
 
 	return S_OK;
 }
@@ -40,7 +43,7 @@ void CReactor_Heli::Tick(const _float& fTimeDelta)
 {
 	__super::Tick(fTimeDelta);
 
-	m_pTransformCom->Change_Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(90.f));
+	if (!m_isObjectDead) m_pTransformCom->Change_Rotation(XMVectorSet(0.f, 1.f, 0.f, 0.f), XMConvertToRadians(90.f));
 	m_isObjectDead = Check_Dead();
 }
 
@@ -94,7 +97,6 @@ void CReactor_Heli::Change_Animation()
 		m_strAnimName = "w_mngcar_e_hel_rkt_reload_1";
 	}
 
-
 	//벤에 관한 애니메이션 넣기
 	if (m_strAnimName == "w_mngcar_e_hel_rkt_stand")
 		m_iAnim = 1;
@@ -107,7 +109,6 @@ void CReactor_Heli::Change_Animation()
 		CCarChaseCamera* pCamera = dynamic_cast<CCarChaseCamera*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Camera"), CAMERA_CARCHASE));
 		pCamera->Set_Shaking(true, { 1.f, 1.f, 0.f }, 0.4, 0.7);
 	}
-
 
 	if (m_iAnim == 0 && m_pModelCom->Get_AnimFinished())
 	{
@@ -131,6 +132,33 @@ HRESULT CReactor_Heli::Add_Components()
 		return E_FAIL;
 
 	return S_OK;
+}
+
+_bool CReactor_Heli::Check_Dead()
+{
+	if (m_isObjectDead)
+	{
+		if (m_isFinishEffect)
+			return true;
+
+		m_isFinishEffect = true;
+		//헬기 폭파 이펙트
+		CEffect::EFFECT_DESC EffectDesc;
+
+		EffectDesc.pWorldMatrix = m_pTransformCom->Get_WorldFloat4x4();
+		CEffectManager::GetInstance()->Heli_Exp(EffectDesc);
+		CEffectManager::GetInstance()->Heli_Fire(EffectDesc);
+
+		return true;
+	}
+
+	for (auto& pMonster : m_Monsters)
+	{
+		if (!pMonster->isObjectDead())
+			return false;
+	}
+
+	return true;
 }
 
 CReactor_Heli* CReactor_Heli::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

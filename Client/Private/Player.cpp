@@ -58,6 +58,8 @@ CPlayer::CPlayer(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
 	Safe_AddRef(m_pDebugManager);
 #endif // _DEBUG
 	Safe_AddRef(m_pUIManager);
+
+	m_isMonster = false;
 }
 
 CPlayer::CPlayer(const CPlayer& rhs)
@@ -71,6 +73,8 @@ CPlayer::CPlayer(const CPlayer& rhs)
 	Safe_AddRef(m_pDebugManager);
 #endif // _DEBUG
 	Safe_AddRef(m_pUIManager);
+
+	m_isMonster = false;
 }
 
 void CPlayer::Set_SeizeOff(_bool isOff)
@@ -108,6 +112,8 @@ HRESULT CPlayer::Initialize_Prototype()
 HRESULT CPlayer::Initialize(void* pArg)
 {
 	m_wstrModelName = TEXT("Kiryu");
+
+	m_isMonster = false;
 
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
@@ -356,7 +362,7 @@ void CPlayer::Late_Tick(const _float& fTimeDelta)
 	}
 #else
 	m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
-	m_pGameInstance->Add_Renderer(CRenderer::RENDER_SHADOWOBJ, this); // Shadow¿ë ·»´õ Ãß°¡
+	//m_pGameInstance->Add_Renderer(CRenderer::RENDER_SHADOWOBJ, this); // Shadow¿ë ·»´õ Ãß°¡
 #endif // _DEBUG
 
 	for (auto& pCollider : m_pColliders)
@@ -538,11 +544,7 @@ HRESULT CPlayer::Render()
 		if (FAILED(m_pMaterialCom->Bind_Shader(m_pShaderCom, m_pModelCom->Get_MaterialName(pMesh->Get_MaterialIndex()))))
 			return E_FAIL;
 
-		//if (FAILED(m_pModelCom->Bind_BoneMatrices(m_pShaderCom, "g_BoneMatrices", i)))
-		//	return E_FAIL;
-
-		_float fFar = *m_pGameInstance->Get_CamFar();
-		m_pShaderCom->Bind_RawValue("g_fFar", &fFar, sizeof(_float));
+		m_pShaderCom->Bind_RawValue("g_fFar", m_pGameInstance->Get_CamFar(), sizeof(_float));
 
 		m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE);
 		

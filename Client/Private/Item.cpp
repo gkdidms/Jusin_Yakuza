@@ -265,7 +265,7 @@ void CItem::Late_Tick(const _float& fTimeDelta)
 	// 네비문제 해결되고 주석해제해야 밀림
 	//m_pCollisionManager->Add_ImpulseResolution(this);
 
-	if (m_isAttacking)
+	if (m_isAttacking && nullptr != m_pOBBColliderCom)
 		m_pCollisionManager->Add_ItemCollider(m_pOBBColliderCom);
 
 }
@@ -431,7 +431,7 @@ _bool CItem::Decrease_Life()
 	m_iLife--;
 
 	// 감소 이후 생명이 0보다 작아진다면 오브젝트 사망처리
-	if (0 > m_iLife)
+	if (0 >= m_iLife)
 	{
 		Set_ObjectDead();
 		//Dissolve 시작

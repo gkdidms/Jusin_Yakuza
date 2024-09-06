@@ -23,6 +23,7 @@ private:
 
 private:
     virtual HRESULT Add_Components() override;
+    virtual _bool Check_Dead() override;
 
 public:
     static CReactor_Heli* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);

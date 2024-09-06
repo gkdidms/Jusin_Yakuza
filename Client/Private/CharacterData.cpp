@@ -63,7 +63,7 @@ HRESULT CCharacterData::Initialize(CLandObject* pCharacter)
 	if (FAILED(Load_Colliders(strFileFullPath)))
 		return E_FAIL;
 
-	//Get_ScndModelName 값이 비어있지않다면 알파메시는 다른 이름으로 읽어와야한다.
+	//Get_ScndModelName 값이 비어있지않다면 다른 이름으로 읽어와야한다.
 	if (m_pCharacter->Get_ScndModelName() != TEXT(""))
 	{
 		wstring wstrFilePath_Scnd = TEXT("../Bin/DataFiles/Character/");
