@@ -127,7 +127,7 @@ HRESULT CItem::Initialize(void* pArg)
 
 	m_Casecade = { 0.f, 10.f, 24.f, 40.f };
 
-
+	m_iLife = 3;
 	m_eItemMode = ITEM_IDLE;
 
 	return S_OK;
@@ -196,9 +196,6 @@ void CItem::Tick(const _float& fTimeDelta)
 
 
 
-
-
-
 	if (ITEM_GRAB == m_eItemMode)
 	{
 		// 잡고 있을때 
@@ -217,7 +214,11 @@ void CItem::Tick(const _float& fTimeDelta)
 		if (nullptr != m_vParentMatrix)
 			ParentMatrix = XMLoadFloat4x4(m_vParentMatrix);
 
-		XMStoreFloat4x4(&m_WorldMatrix, /*offsetMatrix **/offsetMatrix *  ParentMatrix * PlayerMatrix );
+		_matrix	PlayerPosMatrix = XMMatrixIdentity();
+		PlayerPosMatrix.r[3] = PlayerMatrix.r[3];
+
+		//m_pTransformCom->Get_WorldMatrix() * SocketMatrix * XMLoadFloat4x4(m_pParentMatrix)
+		XMStoreFloat4x4(&m_WorldMatrix, offsetMatrix * ParentMatrix * PlayerMatrix);
 
 		XMMATRIX worldMatrix = XMLoadFloat4x4(&m_WorldMatrix);
 		m_pTransformCom->Set_WorldMatrix(worldMatrix);
@@ -456,7 +457,7 @@ void CItem::Throw_On(THROW_INFO_DESC& Desc)
 
 	// Dissolve 시작
 	m_bDissovle = true;
-
+	Set_ObjectDead();
 }
 
 void CItem::Throwing(const _float& fTimeDelta)

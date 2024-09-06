@@ -670,9 +670,9 @@ void CCollision_Manager::Free()
     m_MapColliders.clear();
 
 
-    for (auto& pCollider : m_ItemColliders)
-    {
-        Safe_Release(pCollider);
-    }
-    m_ItemColliders.clear();
+    //for (auto& pCollider : m_ItemColliders)
+    //{
+    //    Safe_Release(pCollider);
+    //}
+    //m_ItemColliders.clear();
 }
