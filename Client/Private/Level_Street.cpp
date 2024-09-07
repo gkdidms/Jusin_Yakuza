@@ -45,7 +45,7 @@ HRESULT CLevel_Street::Initialize()
 		m_pFileTotalManager->Set_Trigger_In_Client(STAGE_STREET, m_pGameInstance->Get_CurrentLevel());
 	}
     
-	m_pFileTotalManager->Set_Lights_In_Client(10);
+	m_pFileTotalManager->Set_Lights_In_Client(7);
    // m_pFileTotalManager->Set_Collider_In_Client(STAGE_STREET, LEVEL_STREET);
 
 	m_pUIManager->Fade_Out();

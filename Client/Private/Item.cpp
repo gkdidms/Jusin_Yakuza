@@ -218,7 +218,7 @@ void CItem::Tick(const _float& fTimeDelta)
 		PlayerPosMatrix.r[3] = PlayerMatrix.r[3];
 
 		//m_pTransformCom->Get_WorldMatrix() * SocketMatrix * XMLoadFloat4x4(m_pParentMatrix)
-		XMStoreFloat4x4(&m_WorldMatrix, offsetMatrix * ParentMatrix * PlayerMatrix);
+		XMStoreFloat4x4(&m_WorldMatrix, ParentMatrix * offsetMatrix * PlayerMatrix);
 
 		XMMATRIX worldMatrix = XMLoadFloat4x4(&m_WorldMatrix);
 		m_pTransformCom->Set_WorldMatrix(worldMatrix);

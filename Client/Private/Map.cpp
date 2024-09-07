@@ -1574,10 +1574,15 @@ HRESULT CMap::Add_Components(void* pArg)
 
 	strModelName = strModelName.erase(iPos, strRemoveName.size());
 
+	const char* gnrName = strModelName.c_str();
 	
 	if (strModelName == "doujima_gaikan")
 	{
 		m_bCompulsoryAlpha = { true };
+	}
+	else if (strstr(gnrName, "gnr_") != nullptr)
+	{
+		m_bExcludeSSAO = true;
 	}
 
 	wstring strMaterialName = TEXT("Prototype_Component_Material_") + m_pGameInstance->StringToWstring(strModelName);
