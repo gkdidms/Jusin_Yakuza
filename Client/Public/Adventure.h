@@ -64,7 +64,8 @@ public:
     _bool isColl() { return m_isColl; }
 
 public:
-    void Set_Cheer() { m_isCheer = true; }
+    void    Set_Cheer() { m_isCheer = true; }
+    _uint   Get_Gender() { return m_iGender; }
 
 public:
     virtual HRESULT Initialize_Prototype() override;
@@ -79,7 +80,6 @@ public:
     virtual void Take_Damage(_uint iHitColliderType, const _float3& vDir, _float fDamage, CLandObject* pAttackedObject, _bool isBlowAttack = false) override;
     virtual void Animation_Event() override;
     virtual string Get_CurrentAnimationName() override;
-
     _bool Checked_Animation_Ratio(_float fRatio);
 
 protected:
