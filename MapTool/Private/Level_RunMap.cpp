@@ -18,6 +18,8 @@ HRESULT CLevel_RunMap::Initialize()
 
 	if (FAILED(Ready_Layer_GameObject(TEXT("Layer_GameObject"))))
 		return E_FAIL;
+	
+	m_pGameInstance->Set_RimLight(false);
 
 	return S_OK;
 }
