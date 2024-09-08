@@ -1584,6 +1584,14 @@ HRESULT CMap::Add_Components(void* pArg)
 	{
 		m_bExcludeSSAO = true;
 	}
+	else if (strstr(gnrName, "gnd") != nullptr)
+	{
+		m_bExcludeSSAO = true;
+	}
+	else if (strstr(gnrName, "road") != nullptr)
+	{
+		m_bExcludeSSAO = true;
+	}
 
 	wstring strMaterialName = TEXT("Prototype_Component_Material_") + m_pGameInstance->StringToWstring(strModelName);
 
