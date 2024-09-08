@@ -2870,7 +2870,7 @@ void CPlayer::Free()
 	Safe_Release(m_pDebugManager);
 #endif // _DEBUG
 
-	Safe_Release(m_pTargetItem);
+	//Safe_Release(m_pTargetItem);
 	Safe_Release(m_pUIManager);
 	Safe_Release(m_pAnimCom);
 	Safe_Release(m_pCameraModel);
