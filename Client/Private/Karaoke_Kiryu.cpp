@@ -144,8 +144,8 @@ void CKaraoke_Kiryu::Late_Tick(const _float& fTimeDelta)
 	else
 		m_eRHType = GLASS;			// ÄÆ½ÅÀÌ ¾Æ´Ò¶© ÀÜµé°íÀÖÀ½
 
-	if(CUTSCENE == m_eAnimComType && !Checked_Animation_Ratio(0.7f))
-		m_pRightHand[m_eRHType]->Late_Tick(fTimeDelta);
+	if(!(CUTSCENE == m_eAnimComType && Checked_Animation_Ratio(0.75f)))
+ 		m_pRightHand[m_eRHType]->Late_Tick(fTimeDelta);
 }
 
 HRESULT CKaraoke_Kiryu::Render()
@@ -380,6 +380,14 @@ void CKaraoke_Kiryu::Free()
 string CKaraoke_Kiryu::Get_CurrentAnimationName()
 {
 	return ExtractString(m_pModelCom->Get_AnimationName(m_pModelCom->Get_CurrentAnimationIndex()));
+}
+
+_bool CKaraoke_Kiryu::Checked_Animation_Ratio(_float fRatio)
+{
+	if (fRatio < *m_pCameraModel->Get_AnimationCurrentPosition() / *m_pCameraModel->Get_AnimationDuration())
+		return true;
+
+	return false;
 }
 
 void CKaraoke_Kiryu::Change_SingingAnimaition(SINGING_ANIMATION eType)
