@@ -36,7 +36,17 @@ void CRoadStanding::Tick(const _float& fTimeDelta)
 	m_pTree->Tick(fTimeDelta);
 
 	Change_Animation();
-	m_pModelCom->Play_Animation(fTimeDelta * m_fOffset, m_pAnimCom, m_isAnimLoop);
+
+	if(m_iGender == GENDER_M)
+		m_pModelCom->Play_Animation(fTimeDelta * m_fOffset, m_pAnimCom, m_isAnimLoop);
+	else
+	{
+		CModel::ANIMATION_DESC Desc{ m_iAnim, m_isAnimLoop };
+		m_pModelCom->Set_AnimLoop(m_iAnim, m_isAnimLoop);
+		m_pModelCom->Set_AnimationIndex(m_iAnim, m_fChangeInterval);
+
+		m_pModelCom->Play_Animation(fTimeDelta * m_fOffset, Desc);
+	}
 
 	Synchronize_Root(fTimeDelta);
 }

@@ -81,6 +81,7 @@ public:
     virtual void Animation_Event() override;
     virtual string Get_CurrentAnimationName() override;
     _bool Checked_Animation_Ratio(_float fRatio);
+    CModel* Get_Model() { return m_pModelCom; }
 
 protected:
     CAnim* m_pAnimCom = { nullptr }; // 애니메이션만 따로 저장하고있는 애니메이션 컴포넌트 

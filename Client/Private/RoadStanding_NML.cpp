@@ -89,6 +89,16 @@ void CRoadStanding_NML::Change_Animation()
 			//	m_strAnimName = "f_nml_act_stand_atc_think_st";
 			else if (m_iMotionType == MOTION_LISTEN)
 				m_strAnimName = "f_nml_act_stand_atc_listen_st";
+
+
+			if (m_iMotionType == MOTION_TALK_A)
+				m_iAnim = 0;
+			else if (m_iMotionType == MOTION_TALK_B)
+				m_iAnim = 1;
+			//else if (m_iMotionType == MOTION_THINK)
+			//	m_strAnimName = "f_nml_act_stand_atc_think_st";
+			else if (m_iMotionType == MOTION_LISTEN)
+				m_iAnim = 2;
 		}
 		else if (m_iGender == GENDER_M)
 		{
@@ -115,6 +125,15 @@ void CRoadStanding_NML::Change_Animation()
 			//	m_strAnimName = "f_nml_act_stand_atc_think_lp";
 			else if (m_iMotionType == MOTION_LISTEN)
 				m_strAnimName = "f_nml_act_stand_atc_listen_lp";
+
+			if (m_iMotionType == MOTION_TALK_A)
+				m_iAnim = 3;
+			else if (m_iMotionType == MOTION_TALK_B)
+				m_iAnim = 4;
+			//else if (m_iMotionType == MOTION_THINK)
+			//	m_strAnimName = "f_nml_act_stand_atc_think_lp";
+			else if (m_iMotionType == MOTION_LISTEN)
+				m_iAnim = 5;
 		}
 		else if (m_iGender == GENDER_M)
 		{
@@ -134,7 +153,8 @@ void CRoadStanding_NML::Change_Animation()
 		break;
 	}
 
-	m_iAnim = m_pAnimCom->Get_AnimationIndex(m_strAnimName.c_str());
+	if(m_iGender == GENDER_M)
+		m_iAnim = m_pAnimCom->Get_AnimationIndex(m_strAnimName.c_str());
 
 	if (m_iAnim == -1)
 		return;
