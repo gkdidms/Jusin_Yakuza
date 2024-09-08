@@ -220,6 +220,8 @@ public:
     virtual void Late_Tick(const _float& fTimeDelta) override;
     virtual HRESULT Render() override;
 
+    virtual void Sound_Event() override;
+
     // 충돌함수
     virtual void Attack_Event(CGameObject* pHitObject, _bool isItem = false) override;
     virtual void Take_Damage(_uint iHitColliderType, const _float3& vDir, _float fDamage, CLandObject* pAttackedObject, _bool isBlowAttack = false) override;

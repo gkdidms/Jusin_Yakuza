@@ -144,7 +144,8 @@ void CKaraoke_Kiryu::Late_Tick(const _float& fTimeDelta)
 	else
 		m_eRHType = GLASS;			// ÄÆ½ÅÀÌ ¾Æ´Ò¶© ÀÜµé°íÀÖÀ½
 
-	m_pRightHand[m_eRHType]->Late_Tick(fTimeDelta);
+	if(CUTSCENE == m_eAnimComType && !Checked_Animation_Ratio(0.7f))
+		m_pRightHand[m_eRHType]->Late_Tick(fTimeDelta);
 }
 
 HRESULT CKaraoke_Kiryu::Render()
