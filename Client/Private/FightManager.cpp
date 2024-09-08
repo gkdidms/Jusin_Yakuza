@@ -155,7 +155,7 @@ _bool CFightManager::Tick(const _float& fTimeDelta)
 
 					m_isMoney = true;
 					m_pUIManager->Open_Scene(TEXT("FightScore"));
-					dynamic_cast<CUIFightScore*>(m_pUIManager->Find_Scene(TEXT("FightScore")))->AddMoney(CPlayer::PlayerInfo.iMoney);
+					dynamic_cast<CUIFightScore*>(m_pUIManager->Find_Scene(TEXT("FightScore")))->StartAddMoney(500000);
 				}
 
 				CPlayerCamera* pCamera = dynamic_cast<CPlayerCamera*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Camera"), CAMERA_PLAYER));
