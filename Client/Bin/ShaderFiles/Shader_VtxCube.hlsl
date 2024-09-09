@@ -93,7 +93,7 @@ PS_OUT PS_DECAL(PS_IN In)
     vLocalPos.z = vViewDepth.x; /* 0 ~ 1 */
     vLocalPos.w = 1.f;
     
-    vLocalPos = vLocalPos * (vViewDepth.y * 3000.f);
+    vLocalPos = vLocalPos * (vViewDepth.y * g_fFar);
     
     vLocalPos = mul(vLocalPos, g_ProjMatrixInv);
 
@@ -122,7 +122,6 @@ PS_OUT PS_DECAL(PS_IN In)
     
     Out.vColor = vDecalColor;
     
-    //Out.vColor = 1;
     
     return Out;
 }

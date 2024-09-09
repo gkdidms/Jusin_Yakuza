@@ -205,6 +205,8 @@ void CObjPlace_Manager::Tick(const _float& fTimeDelta)
 	{
 		m_pDecal->Tick(fTimeDelta);
 	}
+
+
 }
 
 void CObjPlace_Manager::Late_Tick(const _float& fTimeDelta)
@@ -221,6 +223,9 @@ void CObjPlace_Manager::Late_Tick(const _float& fTimeDelta)
 	{
 		m_pDecal->Late_Tick(fTimeDelta);
 	}
+
+	for (auto& iter : m_ObjectDecals)
+		iter->Late_Tick(fTimeDelta);
 }
 
 void CObjPlace_Manager::Render()
