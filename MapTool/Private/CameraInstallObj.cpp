@@ -34,6 +34,8 @@ HRESULT CCameraInstallObj::Initialize(void* pArg)
 	if (FAILED(Add_Components(pArg)))
 		return E_FAIL;
 
+	m_pTransformCom->Set_Scale(0.5, 0.5, 0.5);
+
 	return S_OK;
 }
 
