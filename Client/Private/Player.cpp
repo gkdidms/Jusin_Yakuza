@@ -629,6 +629,7 @@ void CPlayer::Attack_Event(CGameObject* pHitObject, _bool isItem)
 
 					EffectDesc.pWorldMatrix= pHitObject->Get_TransformCom()->Get_WorldFloat4x4();
 					CEffectManager::GetInstance()->Money(EffectDesc);	
+					CUIManager::GetInstance()->Add_MoneyEffect(pHitObject->Get_TransformCom()->Get_WorldMatrix(), 1000, 1);
 				}
 			}
 
@@ -647,6 +648,7 @@ void CPlayer::Attack_Event(CGameObject* pHitObject, _bool isItem)
 
 					EffectDesc.pWorldMatrix = pHitObject->Get_TransformCom()->Get_WorldFloat4x4();
 					CEffectManager::GetInstance()->Money(EffectDesc);
+					CUIManager::GetInstance()->Add_MoneyEffect(pHitObject->Get_TransformCom()->Get_WorldMatrix(), 4563, 2);
 				}
 			}
 
@@ -675,6 +677,7 @@ void CPlayer::Attack_Event(CGameObject* pHitObject, _bool isItem)
 
 					EffectDesc.pWorldMatrix = pHitObject->Get_TransformCom()->Get_WorldFloat4x4();
 					CEffectManager::GetInstance()->Money(EffectDesc);
+					CUIManager::GetInstance()->Add_MoneyEffect(pHitObject->Get_TransformCom()->Get_WorldMatrix(), 6993, 3);
 				}
 			}
 

@@ -399,8 +399,11 @@ private:
 
     class CQteManager* m_pQTEMgr = { nullptr };
 
+    public:
+        void Set_Money(_uint iMoney) { m_Money += iMoney; }
+        _uint Get_Money() { return m_Money; }
 private:
-    _uint m_Money = { 0 };
+    _uint m_Money = { 1000 };
     _bool m_isStop = { 0 };
 
 private:

@@ -23,6 +23,7 @@
 #include "UIStoreImage.h"
 #include "UIQTE.h"
 #include "UIFade.h"
+#include "UIDamageMoney.h"
 
 #include "UIKaraoke_Select.h"
 #include "UIKaraoke_Play.h"
@@ -197,7 +198,11 @@ HRESULT CUIManager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 	Safe_AddRef(pScene);
 	m_AlwaysUI.push_back(pScene);
 
-
+	Desc.strSceneName = TEXT("DamageMoney");
+	pScene = CUIDamageMoney::Create(m_pDevice, m_pContext, &Desc);
+	m_AllScene.emplace(make_pair(TEXT("DamageMoney"), pScene));
+	Safe_AddRef(pScene);
+	m_AlwaysUI.push_back(pScene);
 
 	CUIInven::IVENSCENE_DESC InvenDesc{};
 
@@ -276,6 +281,7 @@ HRESULT CUIManager::Initialize(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 	Desc.strSceneName = TEXT("Fade");
 	pScene = CUIFade::Create(m_pDevice, m_pContext, &Desc);
 	m_AllScene.emplace(make_pair(TEXT("Fade"), pScene));
+	
 
 
 	return S_OK;
@@ -473,6 +479,13 @@ _bool CUIManager::QTE_Finished()
 	CUIScene* pUIScene = Find_Scene(TEXT("QTE"));
 
 	return dynamic_cast<CUIQTE*>(pUIScene)->Get_isAnimFinish();
+}
+
+void CUIManager::Add_MoneyEffect(_fmatrix world, _uint iMoney, _uint iTime)
+{
+	CUIScene* pUIScene = Find_Scene(TEXT("DamageMoney"));
+
+	dynamic_cast<CUIDamageMoney*>(pUIScene)->Add_MoneyEffect(world, iMoney, iTime);
 }
 
 CUIScene* CUIManager::Find_Scene(wstring strSceneName)
