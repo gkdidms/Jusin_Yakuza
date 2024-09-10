@@ -35,7 +35,7 @@ HRESULT CLevel_Office2F::Initialize()
 
 	/* Å¬¶ó ÆÄ½Ì */
 	m_pFileTotalManager->Set_MapObj_In_Client(STAGE_OFFICE_2F, LEVEL_OFFICE_2F);
-	m_pFileTotalManager->Set_Lights_In_Client(STAGE_OFFICE_1F);
+	m_pFileTotalManager->Set_Lights_In_Client(STAGE_OFFICE_2F);
 	m_pFileTotalManager->Set_Collider_In_Client(STAGE_OFFICE_2F, LEVEL_OFFICE_2F);
 	m_pFileTotalManager->Set_Trigger_In_Client(STAGE_OFFICE_2F, LEVEL_OFFICE_2F);
 

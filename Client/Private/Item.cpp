@@ -4,7 +4,7 @@
 #include "SystemManager.h"
 #include "Collision_Manager.h"
 #include "Transform.h"
-
+#include "Player.h"
 #include "Mesh.h"
 
 CItem::CItem(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
@@ -127,7 +127,7 @@ HRESULT CItem::Initialize(void* pArg)
 
 	m_Casecade = { 0.f, 10.f, 24.f, 40.f };
 
-
+	m_iLife = 3;
 	m_eItemMode = ITEM_IDLE;
 
 	return S_OK;
@@ -150,7 +150,7 @@ void CItem::Tick(const _float& fTimeDelta)
 
 	if (true == m_bDissovle)
 	{
-		m_fDissolveTime += fTimeDelta * 0.4;
+		m_fDissolveTime += fTimeDelta * 0.8;
 
 		if(3 < m_fDissolveTime)
 		{
@@ -196,17 +196,10 @@ void CItem::Tick(const _float& fTimeDelta)
 
 
 
-
-
-
 	if (ITEM_GRAB == m_eItemMode)
 	{
 		// 잡고 있을때 
-		_matrix		offsetMatrix = XMLoadFloat4x4(&m_vOffsetMatrix);
-
-		offsetMatrix.r[0] = XMVector3Normalize(offsetMatrix.r[0]);
-		offsetMatrix.r[1] = XMVector3Normalize(offsetMatrix.r[1]);
-		offsetMatrix.r[2] = XMVector3Normalize(offsetMatrix.r[2]);
+		_matrix		offsetMatrix = XMMatrixIdentity();
 
 		_matrix PlayerMatrix, ParentMatrix;
 		PlayerMatrix = ParentMatrix = XMMatrixIdentity();
@@ -217,7 +210,35 @@ void CItem::Tick(const _float& fTimeDelta)
 		if (nullptr != m_vParentMatrix)
 			ParentMatrix = XMLoadFloat4x4(m_vParentMatrix);
 
-		XMStoreFloat4x4(&m_WorldMatrix, /*offsetMatrix **/ ParentMatrix * PlayerMatrix);
+		ParentMatrix.r[0] = XMVector3Normalize(ParentMatrix.r[0]);
+		ParentMatrix.r[1] = XMVector3Normalize(ParentMatrix.r[1]);
+		ParentMatrix.r[2] = XMVector3Normalize(ParentMatrix.r[2]);
+
+		// 플레이어의 회전 행렬에서 Y축 회전(방향) 추출
+		CPlayer* pPlayer = dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"), 0));
+		XMVECTOR playerForward = pPlayer->Get_TransformCom()->Get_State(CTransform::STATE_LOOK);
+		XMVECTOR playerRight = pPlayer->Get_TransformCom()->Get_State(CTransform::STATE_RIGHT);
+		XMVECTOR playerUp = pPlayer->Get_TransformCom()->Get_State(CTransform::STATE_UP);
+
+
+		float forwardOffset = m_vOffsetMatrix._41;
+		float rightOffset = m_vOffsetMatrix._43;
+		float upOffset = m_vOffsetMatrix._42;
+
+		XMFLOAT4X4 tempOffsetMatrix;
+		XMStoreFloat4x4(&tempOffsetMatrix, offsetMatrix);
+
+		// 플레이어의 방향에 맞춰 오프셋을 적용
+		tempOffsetMatrix._41 += forwardOffset * XMVectorGetX(playerForward);
+		tempOffsetMatrix._43 += forwardOffset * XMVectorGetZ(playerForward);
+		tempOffsetMatrix._41 += rightOffset * XMVectorGetX(playerRight);
+		tempOffsetMatrix._43 += rightOffset * XMVectorGetZ(playerRight);
+		tempOffsetMatrix._42 += upOffset * XMVectorGetY(playerUp);
+
+		offsetMatrix = XMLoadFloat4x4(&tempOffsetMatrix);
+
+		//m_pTransformCom->Get_WorldMatrix() * SocketMatrix * XMLoadFloat4x4(m_pParentMatrix)
+		XMStoreFloat4x4(&m_WorldMatrix, ParentMatrix * PlayerMatrix * offsetMatrix);
 
 		XMMATRIX worldMatrix = XMLoadFloat4x4(&m_WorldMatrix);
 		m_pTransformCom->Set_WorldMatrix(worldMatrix);
@@ -456,7 +477,7 @@ void CItem::Throw_On(THROW_INFO_DESC& Desc)
 
 	// Dissolve 시작
 	m_bDissovle = true;
-
+	Set_ObjectDead();
 }
 
 void CItem::Throwing(const _float& fTimeDelta)

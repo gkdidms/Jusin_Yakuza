@@ -114,7 +114,7 @@ void CLightConstruction::Late_Tick(const _float& fTimeDelta)
 		// 1 : 형광등자르기 + 알파
 		// 2 : rm 텍스처 적용 - 외부간판
 		// 3 : Lamp
-		// 4 : 형광등 + 투명
+		// 4 : 형광등 + 투명 - 소화전
 		// 5 : Emissive + 알파
 		// 6 : Emissive + 알파x
 		if (m_iShaderPassNum == 0 || m_iShaderPassNum == 2)

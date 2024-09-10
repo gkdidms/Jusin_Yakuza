@@ -185,7 +185,7 @@ void CNishiki::Move(const _float& fTimeDelta)
 	_bool isFinished = false;
 	_vector vDir = m_pNavigationCom->Compute_NishikiDir(m_pTransformCom->Get_State(CTransform::STATE_POSITION), fTimeDelta, &isFinished);
 
-	if (isFinished)
+	if (isFinished || 81 < m_pTransformCom->Get_State(CTransform::STATE_POSITION).m128_f32[0])
 	{
 		//≥°¿Ã≥µ¥Ÿ∏È?
 		m_iState = WALK_EN;

@@ -39,7 +39,7 @@ HRESULT CLevel_NishikiWalk::Initialize()
 
 	/* Å¬¶ó ÆÄ½Ì */
 	m_pFileTotalManager->Set_MapObj_In_Client(STAGE_NISHIKIWALK, LEVEL_NISHIKIWALK);
-	m_pFileTotalManager->Set_Lights_In_Client(10);
+	m_pFileTotalManager->Set_Lights_In_Client(7);
 
 	m_pUIManager->Fade_Out();
 
