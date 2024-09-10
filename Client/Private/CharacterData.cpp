@@ -360,23 +360,12 @@ void CCharacterData::Set_CurrentCutSceneAnimation(string strAnimName)
 	}
 
 	m_CurrentSoundEvents.clear();
-	auto sound_lower_bound_iter = m_CutSceneSoundEvents.lower_bound(strAnimName);
-
-	// 반환된 iter의 키값이 다르다면 맵 내에 해당 키값이 존재하지 않는다는 뜻
-	if (!(sound_lower_bound_iter != m_CutSceneSoundEvents.end() && (*sound_lower_bound_iter).first != strAnimName))
+	for (auto iter = m_CutSceneSoundEvents.begin(); iter != m_CutSceneSoundEvents.end(); ++iter)
 	{
-		auto sound_upper_bound_iter = m_CutSceneSoundEvents.upper_bound(strAnimName);
-
-		if (sound_lower_bound_iter == sound_upper_bound_iter && sound_lower_bound_iter != m_CutSceneSoundEvents.end())
+		// 키값이 strAnimName을 포함하고 있는지 확인
+		if (iter->first.find(strAnimName) != std::string::npos)
 		{
-			m_CurrentSoundEvents.push_back(&(*sound_lower_bound_iter).second);
-		}
-		else
-		{
-			for (; sound_lower_bound_iter != sound_upper_bound_iter; ++sound_lower_bound_iter)
-			{
-				m_CurrentSoundEvents.push_back(&(*sound_lower_bound_iter).second);
-			}
+			m_CurrentSoundEvents.push_back(&iter->second);
 		}
 	}
 	

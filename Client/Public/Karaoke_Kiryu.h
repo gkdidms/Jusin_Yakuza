@@ -56,6 +56,8 @@ public:
     // CLandObject을(를) 통해 상속됨
     string Get_CurrentAnimationName() override;
 
+    virtual _bool Checked_Animation_Ratio(_float fRatio) override;
+
 public:
     void Change_SingingAnimaition(SINGING_ANIMATION eType);
     void Set_CutSceneAnim();
