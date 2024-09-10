@@ -164,6 +164,9 @@ public:
     void Set_QTEKey(wstring strKey);
     _bool QTE_Finished();
 
+public://DamgeEffecdt
+    void Add_MoneyEffect(_fmatrix world, _uint iMoney, _uint iTime);
+
 public:
    CUIScene* Find_Scene(wstring strSceneName);      
 

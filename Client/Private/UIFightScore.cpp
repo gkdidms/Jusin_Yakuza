@@ -4,6 +4,7 @@
 #include "UI_Object.h"
 #include "Group.h"
 #include "Btn.h"
+#include "Player.h"
 #include"GameInstance.h"
 CUIFightScore::CUIFightScore()
 	:CUIScene{}
@@ -137,6 +138,10 @@ HRESULT CUIFightScore::Tick(const _float& fTimeDelta)
 			for (auto& iter : m_Bonus)
 				iter->Close_UI();
 
+			CGameObject* pPlayer = m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"), 0);
+
+			dynamic_cast<CPlayer*>(pPlayer)->Set_Money(m_iAddMoney);
+
 			m_pAddMoney->Close_UI();
 		}
 	}
@@ -195,6 +200,10 @@ void CUIFightScore::OverAction()
 
 void CUIFightScore::Set_Money()
 {
+	CGameObject* pPlayer = m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"), 0);
+
+	m_CurrentKiryuMoney = dynamic_cast<CPlayer*>(pPlayer)->Get_Money();
+
 	m_TargetKiryuMoney = m_CurrentKiryuMoney + m_iAddMoney;
 
 	if (m_fEndTime < m_fGetTime)

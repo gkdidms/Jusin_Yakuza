@@ -593,6 +593,42 @@ HRESULT CPlayer::Render()
 	return S_OK;
 }
 
+void CPlayer::Sound_Event()
+{
+	if (m_eAnimComType != CUTSCENE)
+	{
+		auto& pCurEvents = m_pData->Get_Current_SoundEvents();
+		for (auto& pEvent : pCurEvents)
+		{
+			_double CurPos = *(m_pModelCom->Get_AnimationCurrentPosition());
+			_double Duration = *(m_pModelCom->Get_AnimationDuration());
+
+			if (!pEvent->isPlayed && CurPos >= pEvent->fAinmPosition && CurPos < Duration)
+			{
+				pEvent->isPlayed = true;
+				wstring wstrSoundFile = m_pGameInstance->StringToWstring(pEvent->strSoundFileName);
+				m_pGameInstance->StopAndPlaySound(wstrSoundFile, static_cast<CHANNELID>(pEvent->iChannel), pEvent->fSoundVolume);
+			}
+		}
+	}
+	else
+	{
+		auto& pCurEvents = m_pData->Get_Current_SoundEvents();
+		for (auto& pEvent : pCurEvents)
+		{
+			_double CurPos = *(m_pCameraModel->Get_AnimationCurrentPosition());
+			_double Duration = *(m_pCameraModel->Get_AnimationDuration());
+
+			if (!pEvent->isPlayed && CurPos >= pEvent->fAinmPosition && CurPos < Duration)
+			{
+				pEvent->isPlayed = true;
+				wstring wstrSoundFile = m_pGameInstance->StringToWstring(pEvent->strSoundFileName);
+				m_pGameInstance->StopAndPlaySound(wstrSoundFile, static_cast<CHANNELID>(pEvent->iChannel), pEvent->fSoundVolume);
+			}
+		}
+	}
+}
+
 // 내 공격 콜라이더와 충돌했을 때
 void CPlayer::Attack_Event(CGameObject* pHitObject, _bool isItem)
 {
@@ -629,6 +665,7 @@ void CPlayer::Attack_Event(CGameObject* pHitObject, _bool isItem)
 
 					EffectDesc.pWorldMatrix= pHitObject->Get_TransformCom()->Get_WorldFloat4x4();
 					CEffectManager::GetInstance()->Money(EffectDesc);	
+					CUIManager::GetInstance()->Add_MoneyEffect(pHitObject->Get_TransformCom()->Get_WorldMatrix(), 1000, 1);
 				}
 			}
 
@@ -647,6 +684,7 @@ void CPlayer::Attack_Event(CGameObject* pHitObject, _bool isItem)
 
 					EffectDesc.pWorldMatrix = pHitObject->Get_TransformCom()->Get_WorldFloat4x4();
 					CEffectManager::GetInstance()->Money(EffectDesc);
+					CUIManager::GetInstance()->Add_MoneyEffect(pHitObject->Get_TransformCom()->Get_WorldMatrix(), 4563, 2);
 				}
 			}
 
@@ -675,6 +713,7 @@ void CPlayer::Attack_Event(CGameObject* pHitObject, _bool isItem)
 
 					EffectDesc.pWorldMatrix = pHitObject->Get_TransformCom()->Get_WorldFloat4x4();
 					CEffectManager::GetInstance()->Money(EffectDesc);
+					CUIManager::GetInstance()->Add_MoneyEffect(pHitObject->Get_TransformCom()->Get_WorldMatrix(), 6993, 3);
 				}
 			}
 
@@ -947,6 +986,8 @@ void CPlayer::Ready_RootFalseAnimation()
 // 현재 애니메이션의 y축을 제거하고 사용하는 상태이다 (혹시 애니메이션의 y축 이동도 적용이 필요하다면 로직 수정이 필요함
 void CPlayer::Synchronize_Root(const _float& fTimeDelta)
 {
+	if (m_eAnimComType == CUTSCENE) return;
+
 	_vector vCenterMove = XMLoadFloat3(m_pModelCom->Get_AnimationCenterMove());
 	_vector vDeleteZ = XMVectorSetZ(vCenterMove, 0);
 
@@ -1968,6 +2009,7 @@ void CPlayer::Compute_Height()
 void CPlayer::Change_Animation(_uint iIndex, _float fInterval)
 {
 	if (m_isCutSceneStartMotion) return;
+	if (m_eAnimComType == CUTSCENE) return;
 
 	if (m_pModelCom->Set_AnimationIndex(iIndex, fInterval))
 	{
@@ -2866,7 +2908,7 @@ void CPlayer::Free()
 	Safe_Release(m_pDebugManager);
 #endif // _DEBUG
 
-	Safe_Release(m_pTargetItem);
+	//Safe_Release(m_pTargetItem);
 	Safe_Release(m_pUIManager);
 	Safe_Release(m_pAnimCom);
 	Safe_Release(m_pCameraModel);

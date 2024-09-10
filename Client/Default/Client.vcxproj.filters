@@ -742,6 +742,9 @@
     <ClCompile Include="..\Private\Karaoke_Glass.cpp">
       <Filter>02.GameObjects\02.Character\LandObject\04.Karaoke\Thing\Glass</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\UIDamageMoney.cpp">
+      <Filter>95.Utility\05.UIManager\UIScene\UIDamageMoney</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\MainApp.h">
@@ -1515,6 +1518,9 @@
     <ClInclude Include="..\Public\Karaoke_Glass.h">
       <Filter>02.GameObjects\02.Character\LandObject\04.Karaoke\Thing\Glass</Filter>
     </ClInclude>
+    <ClInclude Include="..\Public\UIDamageMoney.h">
+      <Filter>95.Utility\05.UIManager\UIScene\UIDamageMoney</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <Image Include="Client.ico">
@@ -2248,9 +2254,6 @@
     <Filter Include="02.GameObjects\02.Character\LandObject\05.NPC\00.Nishiki">
       <UniqueIdentifier>{bee9ce01-3c08-40f1-b5ef-f93fd054e0ca}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\02.Character\LandObject\05.NPC\01.Kanekashi">
-      <UniqueIdentifier>{cfc40050-0b96-4c44-a0c2-60892605fe8f}</UniqueIdentifier>
-    </Filter>
     <Filter Include="03.QuestManager\Quest\Main">
       <UniqueIdentifier>{6b71c9eb-f3cc-4a45-9193-7c80a9cc3970}</UniqueIdentifier>
     </Filter>
@@ -2343,6 +2346,9 @@
     </Filter>
     <Filter Include="01.Levels\98.Test">
       <UniqueIdentifier>{a3687eeb-93e4-4da9-95c3-692e153c991f}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="95.Utility\05.UIManager\UIScene\UIDamageMoney">
+      <UniqueIdentifier>{ec5750ce-aa91-4b05-ae1e-947c4bcdc2d9}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
