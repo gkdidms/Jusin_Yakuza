@@ -736,7 +736,8 @@ HRESULT CFileTotalMgr::Set_GameObject_In_Client(int iStageLevel)
             monsterDesc.fRotatePecSec = XMConvertToRadians(180.f);
             monsterDesc.iNaviRouteNum = m_MapTotalInform.pMapObjDesc[i].iNaviRoute;
             monsterDesc.iNPCDirection = m_MapTotalInform.pMapObjDesc[i].iNPCDirection;
-            monsterDesc.iObjectPropertyType = m_MapTotalInform.pMapObjDesc[i].iNPCDirection;
+            monsterDesc.iObjectPropertyType = m_MapTotalInform.pMapObjDesc[i].iObjPropertyType;
+
 
             if (-1 == m_MapTotalInform.pMapObjDesc[i].iNaviNum)
             {

@@ -18,6 +18,8 @@ HRESULT CLevel_RunMap::Initialize()
 
 	if (FAILED(Ready_Layer_GameObject(TEXT("Layer_GameObject"))))
 		return E_FAIL;
+	
+	m_pGameInstance->Set_RimLight(false);
 
 	return S_OK;
 }
@@ -56,7 +58,7 @@ HRESULT CLevel_RunMap::Ready_Layer_Camera(const wstring& strLayerTag)
 	CameraDesc.fAspect = g_iWinSizeX / (_float)g_iWinSizeY;
 	CameraDesc.fNear = 0.1f;
 	CameraDesc.fFar = 3000;
-	CameraDesc.fSpeedPecSec = 40.f;
+	CameraDesc.fSpeedPecSec = 10.f;
 	CameraDesc.fRotatePecSec = XMConvertToRadians(90.f);
 
 

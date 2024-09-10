@@ -267,21 +267,41 @@ void CAdventure::Check_Separation()
 
 HRESULT CAdventure::Setup_Animation()
 {
-	m_iAnim = m_pAnimCom->Get_AnimationIndex(m_strAnimName.c_str());
-
-	if (m_iAnim == -1)
-		return E_FAIL;
-
-	// 실제로 애니메이션 체인지가 일어났을 때 켜져있던 어택 콜라이더를 전부 끈다
-	if (m_pModelCom->Set_AnimationIndex(m_iAnim, m_pAnimCom->Get_Animations(), m_fChangeInterval))
+	if (m_iGender == GENDER_M)
 	{
-		m_pModelCom->Set_PreAnimations(m_pAnimCom->Get_Animations());
+		m_iAnim = m_pAnimCom->Get_AnimationIndex(m_strAnimName.c_str());
 
-		Off_Attack_Colliders();
+		if (m_iAnim == -1)
+			return E_FAIL;
+
+		// 실제로 애니메이션 체인지가 일어났을 때 켜져있던 어택 콜라이더를 전부 끈다
+		if (m_pModelCom->Set_AnimationIndex(m_iAnim, m_pAnimCom->Get_Animations(), m_fChangeInterval))
+		{
+			m_pModelCom->Set_PreAnimations(m_pAnimCom->Get_Animations());
+
+			Off_Attack_Colliders();
+		}
+
+		if (nullptr != m_pData)
+			m_pData->Set_CurrentAnimation(m_strAnimName);
 	}
+	else
+	{
 
-	if (nullptr != m_pData)
-		m_pData->Set_CurrentAnimation(m_strAnimName);
+		if (m_iAnim == -1)
+			return E_FAIL;
+
+		// 실제로 애니메이션 체인지가 일어났을 때 켜져있던 어택 콜라이더를 전부 끈다
+		if (m_pModelCom->Set_AnimationIndex(m_iAnim, m_pAnimCom->Get_Animations(), m_fChangeInterval))
+		{
+			m_pModelCom->Set_PreAnimations(m_pAnimCom->Get_Animations());
+
+			Off_Attack_Colliders();
+		}
+
+		if (nullptr != m_pData)
+			m_pData->Set_CurrentAnimation(m_strAnimName);
+	}
 
 	return S_OK;
 }

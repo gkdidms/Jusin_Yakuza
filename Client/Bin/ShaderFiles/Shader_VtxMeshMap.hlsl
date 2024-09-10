@@ -348,8 +348,12 @@ PS_OUT_COLOR PS_MAIN_LightMask_Alpha(PS_IN In)
     
     vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
     
-    if (vDiffuse.a < 0.6 || (0 == vDiffuse.r && 0 == vDiffuse.g && 0 == vDiffuse.b))
-        discard;
+    if (true == g_bLightCut)
+    {
+        if (vDiffuse.a < 0.6 || (0 == vDiffuse.r && 0 == vDiffuse.g && 0 == vDiffuse.b))
+            discard;
+    }
+ 
     
     Out.vDiffuse = vDiffuse;
     

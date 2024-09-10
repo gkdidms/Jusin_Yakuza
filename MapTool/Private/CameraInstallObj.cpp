@@ -34,6 +34,8 @@ HRESULT CCameraInstallObj::Initialize(void* pArg)
 	if (FAILED(Add_Components(pArg)))
 		return E_FAIL;
 
+	m_pTransformCom->Set_Scale(0.5, 0.5, 0.5);
+
 	return S_OK;
 }
 
@@ -70,7 +72,7 @@ HRESULT CCameraInstallObj::Render()
 		}
 		else if (CAM_FOCUS == m_eInstallDesc)
 		{
-			m_pShaderCom->Begin(1);
+			m_pShaderCom->Begin(0);
 		}
 
 		m_pModelCom->Render(i);
@@ -84,12 +86,12 @@ HRESULT CCameraInstallObj::Render()
 HRESULT CCameraInstallObj::Add_Components(void* pArg)
 {
 	/* For.Com_Model */
-	if (FAILED(__super::Add_Component(LEVEL_RUNMAP, TEXT("Prototype_Component_Model_Gun_Cz75"),
+	if (FAILED(__super::Add_Component(LEVEL_RUNMAP, TEXT("Prototype_Component_Model_Bone_Sphere"),
 		TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
 		return E_FAIL;
 
 	/* For.Com_Shader */
-	if (FAILED(__super::Add_Component(LEVEL_RUNMAP, TEXT("Prototype_Component_Shader_VtxMesh_CamObj"),
+	if (FAILED(__super::Add_Component(LEVEL_RUNMAP, TEXT("Prototype_Component_Shader_VtxMesh"),
 		TEXT("Com_Shader"), reinterpret_cast<CComponent**>(&m_pShaderCom))))
 		return E_FAIL;
 

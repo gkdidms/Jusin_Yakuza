@@ -176,14 +176,14 @@ void CMainApp::Free()
 	Safe_Release(m_pContext);
 	Safe_Release(m_pDevice);
 
+	/* 레퍼런스 카운트를 0으로만든다. */
+	Safe_Release(m_pGameInstance);
+	CGameInstance::Release_Engine();
+
 	/* 여기서 instance release 해줌 */
 	Safe_Release(m_pIMGUI_Manager);
 	CImgui_Manager::GetInstance()->Release_Imgui();
 
 	Safe_Release(m_pObjectManager);
 	CObject_Manager::GetInstance()->Release_ObjectManager();
-
-	/* 레퍼런스 카운트를 0으로만든다. */
-	Safe_Release(m_pGameInstance);
-	CGameInstance::Release_Engine();
 }

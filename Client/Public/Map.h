@@ -176,6 +176,7 @@ private:
 
 
 	bool					m_bOcculusionCulling = { false };
+	bool					m_bExcludeSSAO = { false }; //SSAO Á¦¿Ü
 
 private:
 	ID3D11Query* m_pOcclusionQuery = { nullptr };
