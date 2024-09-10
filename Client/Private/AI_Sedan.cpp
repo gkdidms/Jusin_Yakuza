@@ -183,7 +183,7 @@ CBTNode::NODE_STATE CAI_Sedan::ATK_Shot()
 
 		m_pPlayer->OnHit(5.f);
 
-		m_pGameInstance->PlaySound_W(TEXT("e_gunshot_handgun_0.wav"), SOUND_ENEMY_EFFECT, 0.8f);
+		m_pGameInstance->PlaySound_W(TEXT("e_gunshot_handgun_0.wav"), SOUND_ENEMY_EFFECT, DEFAULT_EFFECT_VOLUME);
 
 		return CBTNode::SUCCESS;
 	}

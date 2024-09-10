@@ -27,7 +27,7 @@ HRESULT CReactor_Bike::Initialize(void* pArg)
 
 	m_iAnim = 3;
 
-	m_pGameInstance->Play_Loop(TEXT("e_bike_appear_run_loop1_0.wav"), SOUND_BIKE, 0.5f);
+	m_pGameInstance->Play_Loop(TEXT("e_bike_appear_run_loop1_0.wav"), SOUND_BIKE, m_fSound);
 
 	return S_OK;
 }

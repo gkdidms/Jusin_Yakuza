@@ -30,7 +30,7 @@ HRESULT CReactor_Heli::Initialize(void* pArg)
 
 	m_strAnimName = "w_mngcar_e_hel_rkt_stand";
 
-	m_pGameInstance->Play_Loop(TEXT("467e [28].wav"), SOUND_HELI, 0.8f);
+	m_pGameInstance->Play_Loop(TEXT("467e [28].wav"), SOUND_HELI, m_fSound);
 
 	return S_OK;
 }

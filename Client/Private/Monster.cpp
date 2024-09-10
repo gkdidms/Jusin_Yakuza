@@ -218,7 +218,7 @@ void CMonster::Set_Sync(string strPlayerAnim, _bool isKeepSynchronizing)
 		if (m_iMonsterType != KUZE && m_iState != MONSTER_KRU_SYNC1_LAPEL_NAGE)
 		{
 			m_pGameInstance->StopSound(SOUND_ENEMY_VOICE);
-			m_pGameInstance->PlaySound_W(TEXT("46a0 [22].wav"), SOUND_ENEMY_VOICE, 0.8f);
+			m_pGameInstance->PlaySound_W(TEXT("46a0 [22].wav"), SOUND_ENEMY_VOICE, DEFAULT_EFFECT_VOLUME);
 		}
 	}
 

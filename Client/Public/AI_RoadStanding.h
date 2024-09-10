@@ -59,6 +59,7 @@ protected:
 protected:
     _bool m_isGround = { false };
 
+    _float m_fSound = { 0.8f };
 protected:
     virtual void Ready_Root() = 0;
     _float DistanceFromPlayer();
