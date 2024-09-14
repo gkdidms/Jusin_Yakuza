@@ -176,7 +176,7 @@ PS_MAIN_OUT PS_MAIN(PS_IN In)
     
     OE_SPECULAR OEResult = Neo_OE_Specular(vMulti, vRM, vRS);
     
-    Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_fFar, 0.f, 0.f);
+    Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_fFar, 0.f, g_ExcludeSSAO < 0.1f ? 0.f : 1.f);
     Out.vDiffuse = vDiffuse;
     Out.vSurface = vector(Result.fMetalness, Result.fRoughness, Result.fSpeclure, Result.fFactor);
     Out.vOEShader = vector(OEResult.fRouhness, OEResult.vSpecular);
@@ -226,7 +226,7 @@ PS_MAIN_OUT PS_MAIN_FAR(PS_IN In)
     
     OE_SPECULAR OEResult = Neo_OE_Specular(vMulti, vRM, vRS);
     
-    Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_fFar, 0.f, 0.f);
+    Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_fFar, 0.f, g_ExcludeSSAO);
     Out.vDiffuse = vDiffuse;
     Out.vSurface = vector(Result.fMetalness, Result.fRoughness, Result.fSpeclure, Result.fFactor);
     Out.vOEShader = vector(OEResult.fRouhness, OEResult.vSpecular);
@@ -278,7 +278,7 @@ PS_MAIN_OUT PS_GLASSDOOR(PS_IN In)
     OE_SPECULAR OEResult = Neo_OE_Specular(vMulti, vRM, vRS);
     
     vDiffuse = vector(0, 0, 0, 0);
-    Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_fFar, 0.f, 0.f);
+    Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_fFar, 0.f, g_ExcludeSSAO);
     Out.vDiffuse = vDiffuse;
     Out.vSurface = vector(Result.fMetalness, Result.fRoughness, Result.fSpeclure, Result.fFactor);
     Out.vOEShader = vector(OEResult.fRouhness, OEResult.vSpecular);
@@ -333,7 +333,7 @@ PS_MAIN_OUT PS_MAIN_AlphaMask(PS_IN In)
     
     OE_SPECULAR OEResult = Neo_OE_Specular(vMulti, vRM, vRS);
     
-    Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_fFar, 0.f, 0.f);
+    Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_fFar, 0.f, g_ExcludeSSAO);
     Out.vDiffuse = vDiffuse;
     Out.vSurface = vector(Result.fMetalness, Result.fRoughness, Result.fSpeclure, Result.fFactor);
     Out.vOEShader = vector(OEResult.fRouhness, OEResult.vSpecular);
@@ -403,7 +403,7 @@ PS_MAIN_OUT DEFAULT_SIGN_PASS(PS_IN In)
     
     OE_SPECULAR OEResult = Neo_OE_Specular(vMulti, vRM, vRS);
     
-    Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_fFar, 0.f, 0.f);
+    Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_fFar, 0.f, g_ExcludeSSAO);
     Out.vDiffuse = vDiffuse;
     Out.vSurface = vector(Result.fMetalness, Result.fRoughness, Result.fSpeclure, Result.fFactor);
     Out.vOEShader = vector(OEResult.fRouhness, OEResult.vSpecular);

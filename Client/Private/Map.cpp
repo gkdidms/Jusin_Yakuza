@@ -203,7 +203,7 @@ void CMap::Late_Tick(const _float& fTimeDelta)
 	{
 		Add_Renderer(fTimeDelta);
 	}
-	m_pGameInstance->Add_Renderer(CRenderer::RENDER_SHADOWOBJ, this); //-> 건물들만 그려줌
+	
 }
 
 HRESULT CMap::Render()
@@ -215,6 +215,9 @@ HRESULT CMap::Render()
 	vector<CMesh*> Meshes = m_pModelCom->Get_Meshes();
 
 	int		iRenderState = m_pGameInstance->Get_RenderState();
+
+	//SSAO 변수 전달
+	m_pShaderCom->Bind_RawValue("g_ExcludeSSAO", &m_bExcludeSSAO, sizeof(_float));
 
 	//NonBlend - 일반메시, 
 
