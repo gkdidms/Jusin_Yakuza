@@ -255,9 +255,6 @@ PS_MAIN_COLOR_OUT PS_MAIN_Dissolve(PS_IN In)
     
     Out.vDiffuse = color;
 
-    //if (Out.vDiffuse.a < 0.1f)
-    //    discard;
-
     return Out;
 }
 

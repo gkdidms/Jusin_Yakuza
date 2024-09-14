@@ -190,8 +190,6 @@ void CObjPlace_Manager::Priority_Tick(const _float& fTimeDelta)
 
 void CObjPlace_Manager::Tick(const _float& fTimeDelta)
 {
-	//for (auto& iter : m_GameObjects)
-	//	iter->Tick(fTimeDelta);
 
 	for (auto& iter : m_GameObjects)
 		iter.second->Tick(fTimeDelta);

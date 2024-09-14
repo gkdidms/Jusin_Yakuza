@@ -87,7 +87,7 @@ Texture2D g_BlurReverseTexture;
 Texture2D g_ReflectionTexture;
 
 float g_fObjID;
-float g_fRefractionScale = { 0.001f };
+float g_fRefractionScale = { 0.01f };
 
 float g_fSpeed = 2.f;
 bool g_bExistNormalTex;
