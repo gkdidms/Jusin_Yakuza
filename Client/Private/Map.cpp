@@ -217,7 +217,8 @@ HRESULT CMap::Render()
 	int		iRenderState = m_pGameInstance->Get_RenderState();
 
 	//SSAO 변수 전달
-	m_pShaderCom->Bind_RawValue("g_ExcludeSSAO", &m_bExcludeSSAO, sizeof(_float));
+	m_pShaderCom->Bind_RawValue("g_ExcludeSSAO", &m_iExcludeSSAO, sizeof(_float));
+
 
 	//NonBlend - 일반메시, 
 
@@ -1535,6 +1536,9 @@ HRESULT CMap::Add_Components(void* pArg)
 	strModelName = strModelName.erase(iPos, strRemoveName.size());
 
 	const char* gnrName = strModelName.c_str();
+
+
+	m_ModelName = m_pGameInstance->WstringToString(gameobjDesc->wstrModelName);
 	
 	if (strModelName == "doujima_gaikan")
 	{
@@ -1542,15 +1546,15 @@ HRESULT CMap::Add_Components(void* pArg)
 	}
 	else if (strstr(gnrName, "gnr_") != nullptr)
 	{
-		m_bExcludeSSAO = true;
+		m_iExcludeSSAO = 1;
 	}
 	else if (strstr(gnrName, "gnd") != nullptr)
 	{
-		m_bExcludeSSAO = true;
+		m_iExcludeSSAO = 1;
 	}
 	else if (strstr(gnrName, "road") != nullptr)
 	{
-		m_bExcludeSSAO = true;
+		m_iExcludeSSAO = 1;
 	}
 
 	wstring strMaterialName = TEXT("Prototype_Component_Material_") + m_pGameInstance->StringToWstring(strModelName);
