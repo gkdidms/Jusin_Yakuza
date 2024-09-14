@@ -38,6 +38,8 @@ float2 g_StartUV;
 float2 g_EndUV;
 vector g_vCamPosition;
 
+float g_ExcludeSSAO; // 바닥 부분 SSAO 제외
+
 /* Aura */
 float2 g_lifeAlpha;
 float g_iSpriteIndex;
