@@ -2254,9 +2254,6 @@
     <Filter Include="02.GameObjects\02.Character\LandObject\05.NPC\00.Nishiki">
       <UniqueIdentifier>{bee9ce01-3c08-40f1-b5ef-f93fd054e0ca}</UniqueIdentifier>
     </Filter>
-    <Filter Include="02.GameObjects\02.Character\LandObject\05.NPC\01.Kanekashi">
-      <UniqueIdentifier>{cfc40050-0b96-4c44-a0c2-60892605fe8f}</UniqueIdentifier>
-    </Filter>
     <Filter Include="03.QuestManager\Quest\Main">
       <UniqueIdentifier>{6b71c9eb-f3cc-4a45-9193-7c80a9cc3970}</UniqueIdentifier>
     </Filter>

@@ -326,9 +326,6 @@ bool CCollision_Manager::Check_PositionAABB_Collision(BoundingSphere* sphere, Bo
     XMStoreFloat3(&push, XMVectorZero());
     XMStoreFloat3(&push, pushVector);
 
-    //sphere->Center.x += push.x;
-    //sphere->Center.y += push.y;
-    //sphere->Center.z += push.z;
 
     _vector vSpherePos = vPosition;
     vSpherePos.m128_f32[0] += push.x;

@@ -44,12 +44,8 @@ HRESULT CLevel_Office2F::Initialize()
 
 	m_pUIManager->Fade_Out();
 	m_pSystemManager->Set_Camera(CAMERA_PLAYER);
-	//m_pFightManager->Set_FightStage(true);
 
 	m_pGameInstance->PlayBGM(TEXT("Office_BGM.mp3"), DEFAULT_VOLUME);
-
-	//m_pGameInstance->Set_HDRLight(1.4f);
-	//m_pGameInstance->Set_AdjectTint(_float4(0.757f, 0.816f, 0.863f, 0.f));
 
 	return S_OK	;
 }

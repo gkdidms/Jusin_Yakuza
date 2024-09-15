@@ -86,7 +86,7 @@ void CS_Main(uint3 id : SV_DispatchThreadID)
     vector vNormalDesc = g_NormalTexture.Load(int3(uv, 0));
     vector vDepthDesc = g_DepthTexture.Load(int3(uv, 0));
 
-    if (vNormalDesc.a != 0.f)
+    if (vNormalDesc.a != 0.f || vDepthDesc.a != 0.f)
     {
         g_OutputTexture[uv] = float4(1.f, 1.f, 1.f, 1.f);
     }

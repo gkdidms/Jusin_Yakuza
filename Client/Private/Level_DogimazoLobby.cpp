@@ -37,9 +37,8 @@ HRESULT CLevel_DogimazoLobby::Initialize()
     m_pFileTotalManager->Set_MapObj_In_Client(STAGE_DOGIMAZO_LOBBY, LEVEL_DOGIMAZO_LOBBY);
     m_pFileTotalManager->Set_Lights_In_Client(STAGE_DOGIMAZO_LOBBY);
     m_pFileTotalManager->Set_Collider_In_Client(STAGE_DOGIMAZO_LOBBY, LEVEL_DOGIMAZO_LOBBY);
-	m_pFileTotalManager->Set_Trigger_In_Client(4, LEVEL_DOGIMAZO_LOBBY);			// ø‰≥◊¥Ÿ≤®
+	//m_pFileTotalManager->Set_Trigger_In_Client(4, LEVEL_DOGIMAZO_LOBBY);			// ø‰≥◊¥Ÿ≤®
 
-	//m_pFileTotalManager->Set_Trigger_In_Client(STAGE_DOGIMAZO_LOBBY, LEVEL_DOGIMAZO_LOBBY);
 	m_pFileTotalManager->Set_Trigger_In_Client(44, LEVEL_DOGIMAZO_LOBBY); // ∫∏Ω∫∑Î ¿‘¿Â
 
 	if (FAILED(Ready_Camera(TEXT("Layer_Camera"))))

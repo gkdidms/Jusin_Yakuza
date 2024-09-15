@@ -129,7 +129,7 @@ void CAI_CarChase::Play_Hit()
 	else if (iRandom == 2)
 		strName = TEXT("gunshot_damage_2.wav");
 
-	m_pGameInstance->PlaySound_W(strName, SOUND_ENEMY_HIT, 0.5f);
+	m_pGameInstance->PlaySound_W(strName, SOUND_ENEMY_HIT, DEFAULT_EFFECT_VOLUME);
 }
 
 _bool CAI_CarChase::Find_PlayerCurrentAnimationName(string strAnimName)

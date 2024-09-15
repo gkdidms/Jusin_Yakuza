@@ -128,8 +128,8 @@ void CConstruction::Late_Tick(const _float& fTimeDelta)
 
 	}
 
-	/*for (auto& iter : m_vDecals)
-		iter->Late_Tick(fTimeDelta);*/
+	for (auto& iter : m_vDecals)
+		iter->Late_Tick(fTimeDelta);
 
 	XMVECTOR worldPos = XMVectorZero();
 	worldPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
@@ -442,19 +442,6 @@ void CConstruction::Delete_Decal(int iIndex)
 
 void CConstruction::Add_Collider(OBJCOLLIDER_DESC tCollider)
 {
-	//CBounding_OBB::BOUNDING_OBB_DESC		ColliderDesc{};
-
-	//ColliderDesc.eType = (CCollider::TYPE)tCollider.iColliderType;
-	//ColliderDesc.vExtents = tCollider.vExtents;
-	//ColliderDesc.vCenter = tCollider.vCenter;
-	//ColliderDesc.vRotation = tCollider.vQuaternion;
-
-	//CCollider*	pCollider = dynamic_cast<CCollider*>(m_pGameInstance->Add_Component_Clone(LEVEL_RUNMAP, TEXT("Prototype_Component_Collider"), &ColliderDesc));
-
-	//m_vColliders.push_back(pCollider);
-
-	//m_vColliderDesc.push_back(tCollider);
-
 
 	if (CCollider::TYPE::COLLIDER_SPHERE == (CCollider::TYPE)tCollider.iColliderType)
 	{
