@@ -217,7 +217,8 @@ HRESULT CMap::Render()
 	int		iRenderState = m_pGameInstance->Get_RenderState();
 
 	//SSAO 변수 전달
-	m_pShaderCom->Bind_RawValue("g_ExcludeSSAO", &m_bExcludeSSAO, sizeof(_float));
+	m_pShaderCom->Bind_RawValue("g_ExcludeSSAO", &m_iExcludeSSAO, sizeof(_float));
+
 
 	//NonBlend - 일반메시, 
 
@@ -239,6 +240,7 @@ HRESULT CMap::Render()
 			
 			bool	bLightCut = true;
 
+			// 1층 2층은 discard하면 어색해서 예외처리
 			if (LEVEL_OFFICE_1F == m_iCurrentLevel || LEVEL_OFFICE_2F == m_iCurrentLevel)
 				bLightCut = false;
 
@@ -270,6 +272,17 @@ HRESULT CMap::Render()
 			// 유리문 처리
 			if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Diffuse"), m_pShaderCom, "g_RefractionTexture")))
 				return E_FAIL;
+
+			bool isNormal = true;
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS)))
+				isNormal = false;
+			m_pShaderCom->Bind_RawValue("g_isNormal", &isNormal, sizeof(_bool));
+
+			if (isNormal == true)
+			{
+				int a = 0;
+			}
+
 
 			// 색상값 넣어주기
 			m_pShaderCom->Begin(SHADER_GLASS_COLOR);
@@ -828,6 +841,7 @@ HRESULT CMap::Near_Render(_uint iRenderState)
 #pragma endregion
 
 #pragma region 일반
+		// 1층 맵에서 외부 유리창에 간판 랜더돼야해서
 		if (LEVEL_OFFICE_1F == m_iCurrentLevel)
 		{
 			for (size_t k = 0; k < m_vSignMeshIndex.size(); k++)
@@ -1056,63 +1070,7 @@ HRESULT CMap::Near_Render(_uint iRenderState)
 		}
 #pragma endregion
 
-#pragma region GLASS
-		//for (size_t k = 0; k < m_vRenderGlassMeshIndex.size(); k++)
-		//{
-		//	// GLASS NORMAL, DEPTH 등의 정보 넣기
-		//	int		i = m_vRenderGlassMeshIndex[k];
 
-		//	if (nullptr != m_pMaterialCom)
-		//		m_pMaterialCom->Bind_Shader(m_pShaderCom, m_pModelCom->Get_MaterialName(Meshes[i]->Get_MaterialIndex()));
-		//	else
-		//	{
-		//		_bool isUVShader = false;
-		//		if (FAILED(m_pShaderCom->Bind_RawValue("g_isUVShader", &isUVShader, sizeof(_bool))))
-		//			return E_FAIL;
-		//	}
-
-		//	_float fFar = *m_pGameInstance->Get_CamFar();
-		//	m_pShaderCom->Bind_RawValue("g_fFar", &fFar, sizeof(_float));
-
-		//	if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
-		//		return E_FAIL;
-
-		//	_bool isNormal = true;
-		//	_bool isRS = true;
-		//	_bool isRD = true;
-		//	_bool isRM = true;
-		//	_bool isRT = false;
-		//	_bool isMulti = true;
-		//	
-
-		//	if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS)))
-		//		isNormal = false;
-		//	m_pShaderCom->Bind_RawValue("g_isNormal", &isNormal, sizeof(_bool));
-
-		//	if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_MultiDiffuseTexture", i, aiTextureType_SHININESS)))
-		//		isMulti = false;
-		//	m_pShaderCom->Bind_RawValue("g_isMulti", &isMulti, sizeof(_bool));
-
-		//	if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RSTexture", i, aiTextureType_SPECULAR)))
-		//		isRS = false;
-		//	m_pShaderCom->Bind_RawValue("g_isRS", &isRS, sizeof(_bool));
-
-		//	if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RDTexture", i, aiTextureType_OPACITY)))
-		//		isRD = false;
-		//	m_pShaderCom->Bind_RawValue("g_isRD", &isRD, sizeof(_bool));
-
-		//	if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RMTexture", i, aiTextureType_METALNESS)))
-		//		isRM = false;
-		//	m_pShaderCom->Bind_RawValue("g_isRM", &isRM, sizeof(_bool));
-		//	m_pShaderCom->Bind_RawValue("g_isRT", &isRT, sizeof(_bool));
-
-		//	m_pShaderCom->Bind_RawValue("g_bCompulsoryAlpha", &m_bCompulsoryAlpha, sizeof(_bool));
-
-		//	m_pShaderCom->Begin(SHADER_GLASS_DEFAULT);
-
-		//	m_pModelCom->Render(i);
-		//}
-#pragma endregion
 
 #pragma region Mask_구Decal
 		for (size_t k = 0; k < m_vMaskMeshIndex.size(); k++)
@@ -1578,6 +1536,9 @@ HRESULT CMap::Add_Components(void* pArg)
 	strModelName = strModelName.erase(iPos, strRemoveName.size());
 
 	const char* gnrName = strModelName.c_str();
+
+
+	m_ModelName = m_pGameInstance->WstringToString(gameobjDesc->wstrModelName);
 	
 	if (strModelName == "doujima_gaikan")
 	{
@@ -1585,15 +1546,15 @@ HRESULT CMap::Add_Components(void* pArg)
 	}
 	else if (strstr(gnrName, "gnr_") != nullptr)
 	{
-		m_bExcludeSSAO = true;
+		m_iExcludeSSAO = 1;
 	}
 	else if (strstr(gnrName, "gnd") != nullptr)
 	{
-		m_bExcludeSSAO = true;
+		m_iExcludeSSAO = 1;
 	}
 	else if (strstr(gnrName, "road") != nullptr)
 	{
-		m_bExcludeSSAO = true;
+		m_iExcludeSSAO = 1;
 	}
 
 	wstring strMaterialName = TEXT("Prototype_Component_Material_") + m_pGameInstance->StringToWstring(strModelName);

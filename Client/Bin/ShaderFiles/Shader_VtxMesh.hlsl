@@ -121,6 +121,12 @@ struct PS_OUT
     vector vRD : SV_Target6;
 };
 
+struct PS_OUT_COLOR
+{
+    vector vDiffuse : SV_TARGET0;
+
+};
+
 struct PS_MAIN_OUT
 {
     vector vDiffuse : SV_TARGET0;
@@ -235,9 +241,9 @@ PS_OUT PS_GLASSDOOR(PS_IN In)
     return Out;
 }
 
-PS_OUT PS_PUDDLE(PS_IN In)
+PS_OUT_COLOR PS_PUDDLE(PS_IN In)
 {
-    PS_OUT Out = (PS_OUT) 0;
+    PS_OUT_COLOR Out = (PS_OUT_COLOR) 0;
     
     // 물 웅덩이 모양 잡기
     vector vMaskTexture = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
@@ -257,106 +263,73 @@ PS_OUT PS_PUDDLE(PS_IN In)
     vector vRefractionColor = g_RefractionTexture.Sample(LinearSampler, vRefractTexCoord + 0.02 * normal.xy);
 
     
-    float2 vScreenPos = In.vPosition.xy / g_RenderResolution;
-    float4 vViewDepth = g_DepthTexture.Sample(LinearSampler, vScreenPos.xy);
+ //   float2 vScreenPos = In.vPosition.xy / g_RenderResolution;
+ //   float4 vViewDepth = g_DepthTexture.Sample(LinearSampler, vScreenPos.xy);
     
-    vector vWorldPos;
-    vWorldPos.x = vScreenPos.x * 2.f - 1.f;
-    vWorldPos.y = vScreenPos.y * -2.f + 1.f;
-    vWorldPos.z = vViewDepth.x; /* 0 ~ 1 */
-    vWorldPos.w = 1.f;
+ //   vector vWorldPos;
+ //   vWorldPos.x = vScreenPos.x * 2.f - 1.f;
+ //   vWorldPos.y = vScreenPos.y * -2.f + 1.f;
+ //   vWorldPos.z = vViewDepth.x; /* 0 ~ 1 */
+ //   vWorldPos.w = 1.f;
     
-    vWorldPos = vWorldPos * (vViewDepth.y * g_fFar);
+ //   vWorldPos = vWorldPos * (vViewDepth.y * g_fFar);
     
-    vWorldPos = mul(vWorldPos, g_ProjMatrixInv);
-    vWorldPos = mul(vWorldPos, g_ViewMatrixInv); // world
+ //   vWorldPos = mul(vWorldPos, g_ProjMatrixInv);
+ //   vWorldPos = mul(vWorldPos, g_ViewMatrixInv); // world
     
-    float3 viewDir = normalize(vWorldPos.xyz - g_vCamPosition.xyz);
+ //   float3 viewDir = normalize(vWorldPos.xyz - g_vCamPosition.xyz);
 
-    float3 reflectedDir = normalize(reflect(viewDir, In.vNormal.xyz));
+ //   float3 reflectedDir = normalize(reflect(viewDir, In.vNormal.xyz));
     
-    float fLength = length(g_vCamPosition.xyz - vWorldPos.xyz);
+ //   float fLength = length(g_vCamPosition.xyz - vWorldPos.xyz);
     
-    float4 vReflectPos = vWorldPos + float4(reflectedDir.xyz, 0) * 1;
-    vReflectPos = float4(vReflectPos.xyz, 1);
-    vReflectPos.y -= 1;
+ //   float4 vReflectPos = vWorldPos + float4(reflectedDir.xyz, 0) * 1;
+ //   vReflectPos = float4(vReflectPos.xyz, 1);
+ //   vReflectPos.y -= 1;
     
-    float bReflect = true;
+ //   float bReflect = false;
     
-    float4 vReflectScreenPos = mul(vReflectPos, g_ViewMatrix);
-    vReflectScreenPos = mul(vReflectScreenPos, g_ProjMatrix);
-    vReflectScreenPos /= vReflectScreenPos.w;
-    vReflectScreenPos.x = vReflectScreenPos.x * 0.5 + 0.5;
-    vReflectScreenPos.y = vReflectScreenPos.y * -0.5 + 0.5;
+ //   float4 vReflectScreenPos = mul(vReflectPos, g_ViewMatrix);
+ //   vReflectScreenPos = mul(vReflectScreenPos, g_ProjMatrix);
+ //   vReflectScreenPos /= vReflectScreenPos.w;
+ //   vReflectScreenPos.x = vReflectScreenPos.x * 0.5 + 0.5;
+ //   vReflectScreenPos.y = vReflectScreenPos.y * -0.5 + 0.5;
     
-    vector vDepth = g_DepthTexture.Sample(LinearSampler, vReflectScreenPos.xy);
+ //   vector vDepth = g_DepthTexture.Sample(LinearSampler, vReflectScreenPos.xy);
     
-    vector vCalculateWorld = 0;
-    vCalculateWorld.x = vReflectScreenPos.x * 2.f - 1.f;
-    vCalculateWorld.y = vReflectScreenPos.y * -2.f + 1.f;
-    vCalculateWorld.z = vDepth.x; /* 0 ~ 1 */
-    vCalculateWorld.w = 1.f;
+ //   vector vCalculateWorld = 0;
+ //   vCalculateWorld.x = vReflectScreenPos.x * 2.f - 1.f;
+ //   vCalculateWorld.y = vReflectScreenPos.y * -2.f + 1.f;
+ //   vCalculateWorld.z = vDepth.x; /* 0 ~ 1 */
+ //   vCalculateWorld.w = 1.f;
     
-    vCalculateWorld = vCalculateWorld * (vDepth.y * g_fFar);
+ //   vCalculateWorld = vCalculateWorld * (vDepth.y * g_fFar);
     
-    vCalculateWorld = mul(vCalculateWorld, g_ProjMatrixInv);
+ //   vCalculateWorld = mul(vCalculateWorld, g_ProjMatrixInv);
 
-	/* 월드스페이스 상의 위치를 구한다. */
-    vCalculateWorld = mul(vCalculateWorld, g_ViewMatrixInv);
+	///* 월드스페이스 상의 위치를 구한다. */
+ //   vCalculateWorld = mul(vCalculateWorld, g_ViewMatrixInv);
     
-    float fDistance = length(g_vCamPosition.xyz - vCalculateWorld.xyz);
-    if (fDistance > 10)
-    {
-        bReflect = false;
-    }
+ //   float fDistance = length(g_vCamPosition.xyz - vCalculateWorld.xyz);
+ //   if (fDistance > 10)
+ //   {
+ //       bReflect = false;
+ //   }
 
-    if (true == bReflect)
-    {
-        vector reflectColor = g_BlurReverseTexture.Sample(PointSampler, vReflectScreenPos.xy + 0.02 * normal.xy);
+ //   if (true == bReflect)
+ //   {
+ //       vector reflectColor = g_BlurReverseTexture.Sample(PointSampler, vReflectScreenPos.xy + 0.02 * normal.xy);
 
-        Out.vDiffuse = reflectColor;
-    }
-    else
-    {
-        Out.vDiffuse = vRefractionColor;
-    }
+ //       Out.vDiffuse = reflectColor;
+ //   }
+ //   else
+ //   {
+ //       Out.vDiffuse = vRefractionColor;
+ //   }
     
-
+    Out.vDiffuse = vRefractionColor;
 	
-    // 투명할 경우(0.1보다 작으면 투명하니) 그리지 않음
-    if (Out.vDiffuse.a < 0.1f)
-        discard;
-    
-    float3 vNormal;
-    if (true == g_bExistNormalTex)
-    {
-        // 매핑되는 texture가 있을때
-        vector vNormalDesc = g_NormalTexture.Sample(LinearSampler, vTexUV);
-        vNormal = vNormalDesc.xyz * 2.f - 1.f;
-    
-        float3x3 WorldMatrix = float3x3(In.vTangent.xyz, In.vBinormal.xyz, In.vNormal.xyz);
-    
-        vNormal = mul(vNormal.xyz, WorldMatrix);
-    }
-    else
-    {
-        float3x3 WorldMatrix = float3x3(In.vTangent.xyz, In.vBinormal.xyz, In.vNormal.xyz);
-        // 텍스처 없을때
-        vNormal = mul(In.vNormal.xyz, WorldMatrix);
-    }
-    
-    // 반사에서 제외
-    //Out.vNormal = vector(vNormal.xyz * 0.5f + 0.5f, 0.f);
-    Out.vNormal = 0;
-    Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_fFar, 0.f, 1.f);
-    
-    // specularTex와 metalic 같은 rm 사용 - bool 값 같이 사용하기
-    if (true == g_bExistRMTex)
-    {
-        Out.vRM = g_RMTexture.Sample(LinearSampler, In.vTexcoord);
-    }
-    
-    
+
     return Out;
 }
 

@@ -568,8 +568,6 @@ PS_OUT_COLOR PS_DynamicBloom(PS_IN In)
  
     In.vTexcoord.x += g_fTimeDelta;
     
-    //if (1 < In.vTexcoord.x)
-    //    In.vTexcoord.x = 0;
  
     vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
     
@@ -579,7 +577,6 @@ PS_OUT_COLOR PS_DynamicBloom(PS_IN In)
    
     if (vDiffuse.r + vDiffuse.g + vDiffuse.b > 1)
     {
-        // 약간만 bloom 되게끔
         Out.vDiffuse = vDiffuse;
     }
     else
@@ -630,12 +627,21 @@ PS_OUT_COLOR PS_GLASSCOLOR(PS_IN In)
     float2 vRefractTexCoord;
     vRefractTexCoord.x = In.vProjPos.x / In.vProjPos.w / 2.0f + 0.5f;
     vRefractTexCoord.y = -In.vProjPos.y / In.vProjPos.w / 2.0f + 0.5f;
+    
+    if (true == g_isNormal)
+    {
+        // Normal texture 있으면 vTexcoord 다시
+        float3 normal;
+        vector vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexcoord);
+        normal = vNormalDesc.xyz * 2.f - 1.f;
+        vRefractTexCoord = vRefractTexCoord + (normal.xy * g_fRefractionScale);
+    }
 
 
     // Refract - 유리 뒤에 비치는 씬
     float4 vRefractColor = g_RefractionTexture.Sample(LinearSampler, vRefractTexCoord);
     float4 vGlassTexColor = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
-    float4 vFinalColor = lerp(vRefractColor, vGlassTexColor, 0.5f);
+    float4 vFinalColor = lerp(vRefractColor, vGlassTexColor, 0.8f);
     
     vFinalColor.a = 1;
     Out.vDiffuse = vFinalColor;

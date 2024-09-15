@@ -70,13 +70,13 @@ HRESULT CMainApp::Render()
 {
 	++m_iNumRender;
 
-	if (m_fTimeAcc >= 1.f)
-	{
-		wsprintf(m_szFPS, TEXT("FPS : %d"), m_iNumRender);
+	//if (m_fTimeAcc >= 1.f)
+	//{
+	//	wsprintf(m_szFPS, TEXT("FPS : %d"), m_iNumRender);
 
-		m_fTimeAcc = 0.f;
-		m_iNumRender = 0;
-	}
+	//	m_fTimeAcc = 0.f;
+	//	m_iNumRender = 0;
+	//}
 
 	/* ±×¸°´Ù. */
 	m_pGameInstance->Clear_BackBuffer_View(_float4(0.f, 0.f, 1.f, 1.f));
