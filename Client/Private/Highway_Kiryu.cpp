@@ -530,7 +530,7 @@ void CHighway_Kiryu::Change_Behavior(BEHAVIOR_TYPE eType)
 
 		// 카메라 쉐이킹
 		CCarChaseCamera* pCamera = dynamic_cast<CCarChaseCamera*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Camera"), CAMERA_CARCHASE));
-		pCamera->Set_Shaking(true, { 1.f, 1.f, 1.f }, 0.3, 0.5);
+		pCamera->Set_Shaking(true, { 1.f, 1.f, 1.f }, 0.2, 0.3);
 
 		// 어깨 분리
 		//m_pModelCom->Set_Separation_ParentBone(m_isLeft ? "ude2_l_n" : "ude2_r_n", DEFAULT_ANIM);
