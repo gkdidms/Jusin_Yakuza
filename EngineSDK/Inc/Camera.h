@@ -52,6 +52,7 @@ protected:
 protected:
     void Shaking(_float fTimeDelta);
     void Reset_ZoomVariables();
+    virtual void Mouse_Fix() {};
 
 public:
     const _float4x4* Get_WorldMatrix() const

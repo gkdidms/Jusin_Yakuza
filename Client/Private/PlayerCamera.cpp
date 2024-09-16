@@ -74,8 +74,6 @@ HRESULT CPlayerCamera::Initialize(void* pArg)
 		m_pTransformCom->Set_State(CTransform::STATE_POSITION, vCamPosition);
 
 	}
-
-	
 	return S_OK;
 }
 
@@ -95,9 +93,9 @@ void CPlayerCamera::Tick(const _float& fTimeDelta)
 			Play_FovLerp(fTimeDelta);
 
 		__super::Tick(fTimeDelta);
-	}
 
-	
+		Mouse_Fix();
+	}
 }
 
 void CPlayerCamera::Late_Tick(const _float& fTimeDelta)
@@ -150,6 +148,14 @@ void CPlayerCamera::Late_Tick(const _float& fTimeDelta)
 HRESULT CPlayerCamera::Render()
 {
 	return S_OK;
+}
+
+void CPlayerCamera::Mouse_Fix()
+{
+	POINT	pt{ g_iWinSizeX >> 1, g_iWinSizeY >> 1 };
+
+	ClientToScreen(g_hWnd, &pt);
+	SetCursorPos(pt.x, pt.y);
 }
 
 

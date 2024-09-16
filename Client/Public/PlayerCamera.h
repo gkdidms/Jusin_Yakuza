@@ -71,7 +71,7 @@ private:
 
     void    Play_FovLerp(const _float& fTimeDelta);
 
-
+    virtual void Mouse_Fix() override;
 
 public:
     void Store_PrevMatrix() {

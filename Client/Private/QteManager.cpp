@@ -343,6 +343,8 @@ void Client::CQteManager::Slowing()
             m_pUIManager->PressKey();
             Skip_KeyFrame(m_eCurrentQTE);
 
+            m_isQTEUI = false;
+
             ResetVariables();
         }
     }
