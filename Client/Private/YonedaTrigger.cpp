@@ -87,6 +87,8 @@ void CYonedaTrigger::Tick(const _float& fTimeDelta)
 			pYoneda->Set_TriggerQte(m_tTriggerDesc.iYonedaKnife, m_tTriggerDesc.iTriggerID);
 
 			pPlayer->Set_CutSceneAnim(eType);
+
+			m_bTriggerDead = true;
 		}
 	}
 
