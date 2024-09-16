@@ -82,8 +82,11 @@ void CYonedaTrigger::Tick(const _float& fTimeDelta)
 				pYoneda->Reset_Monster();
 			}
 
-			dynamic_cast<CNavigation*>(pYoneda->Get_Component(TEXT("Com_Navigation")))->Set_Index(
-				dynamic_cast<CNavigation*>(pYoneda->Get_Component(TEXT("Com_Navigation")))->Find_PlayerMonster_Index(m_pTransformCom->Get_State(CTransform::STATE_POSITION)));
+			_vector vTriggerPos;
+			memcpy(&vTriggerPos, &m_tTriggerDesc.vTransform.m[CTransform::STATE_POSITION], sizeof(_vector));
+			_int iNaviIndex = dynamic_cast<CNavigation*>(pYoneda->Get_Component(TEXT("Com_Navigation")))->Find_PlayerMonster_Index(vTriggerPos);
+
+			dynamic_cast<CNavigation*>(pYoneda->Get_Component(TEXT("Com_Navigation")))->Set_Index(iNaviIndex);
 			pYoneda->Set_TriggerQte(m_tTriggerDesc.iYonedaKnife, m_tTriggerDesc.iTriggerID);
 
 			pPlayer->Set_CutSceneAnim(eType);
