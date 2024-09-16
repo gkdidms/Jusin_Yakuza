@@ -42,7 +42,7 @@ HRESULT CLevel_Tutorial::Initialize()
 
 	/* Å¬¶ó ÆÄ½Ì */
 	m_pFileTotalManager->Set_MapObj_In_Client(STAGE_TUTORIAL, LEVEL_TUTORIAL);
-	m_pFileTotalManager->Set_Lights_In_Client(10);
+	m_pFileTotalManager->Set_Lights_In_Client(7);
 	m_pFileTotalManager->Set_Trigger_In_Client(STAGE_TUTORIAL, LEVEL_TUTORIAL);
 	//m_pFileTotalManager->Set_Collider_In_Client(STAGE_TUTORIAL, LEVEL_TUTORIAL);
 
@@ -67,13 +67,13 @@ HRESULT CLevel_Tutorial::Initialize()
 	m_pFightManager->Initialize();
 
 	/*¼ÎÀÌ´õ ¿É¼Ç°ª*/
-	//m_pGameInstance->Set_HDRLight(1.6f);
+	m_pGameInstance->Set_HDRLight(0.8f);
 	//m_pGameInstance->Set_AdjectTint(_float4(0.873f, 0.764f, 0.642f, 0.f));
 
-	m_pGameInstance->Play_Loop(L"48e6 [1].wav", SOUND_BGM, 0.5f);
-	m_pGameInstance->Play_Loop(L"48a1 [1].wav", SOUND_BGM_2, 0.6f);
-	m_pGameInstance->Play_Loop(L"4887 [1].wav", SOUND_BGM_3, 0.3f);
-	m_pGameInstance->Play_Loop(L"4899 [1].wav", SOUND_BGM_1, 0.5f);
+	m_pGameInstance->Play_Loop(L"48e6 [1].wav", SOUND_BGM, DEFAULT_VOLUME);
+	m_pGameInstance->Play_Loop(L"48a1 [1].wav", SOUND_BGM_2, DEFAULT_VOLUME);
+	m_pGameInstance->Play_Loop(L"4887 [1].wav", SOUND_BGM_3, DEFAULT_VOLUME);
+	m_pGameInstance->Play_Loop(L"4899 [1].wav", SOUND_BGM_1, DEFAULT_VOLUME);
 
 	m_pUIManager->Set_AlwayUI(false);
 

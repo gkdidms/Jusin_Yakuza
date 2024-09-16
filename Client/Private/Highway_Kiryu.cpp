@@ -225,7 +225,7 @@ void CHighway_Kiryu::Key_Input()
 	{
 		m_fAccReloadTimer += m_pGameInstance->Get_TimeDelta(TEXT("Timer_Game"));
 
-		m_pGameInstance->PlaySoundIfNotPlay(L"gun_reload_0.wav", SOUND_EFFECT, 1.f);
+		m_pGameInstance->PlaySoundIfNotPlay(L"gun_reload_0.wav", SOUND_EFFECT, DEFAULT_EFFECT_VOLUME);
 
 		if(m_iCurrentAmmo< MAX_AMMO)
 		{
@@ -481,9 +481,9 @@ void CHighway_Kiryu::Play_Swap(_float fTimeDelta)
 	{
 		_uint iRandom = m_pGameInstance->Get_Random(0, 1);
 		if (iRandom == 0)
-			m_pGameInstance->PlaySound_W(TEXT("4680#1 (kiryu_switch).wav"), SOUND_PLAYER_VOICE, 0.5f);
+			m_pGameInstance->PlaySound_W(TEXT("4680#1 (kiryu_switch).wav"), SOUND_PLAYER_VOICE, DEFAULT_EFFECT_VOLUME);
 		else if (iRandom == 1)
-			m_pGameInstance->PlaySound_W(TEXT("4680#2 (kiryu_switch).wav"), SOUND_PLAYER_VOICE, 0.5f);
+			m_pGameInstance->PlaySound_W(TEXT("4680#2 (kiryu_switch).wav"), SOUND_PLAYER_VOICE, DEFAULT_EFFECT_VOLUME);
 
 		m_isStarted = true;
 	}

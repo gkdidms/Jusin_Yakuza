@@ -35,6 +35,8 @@ private:
     _uint*      m_pMotionType = { 0 };
     int         m_iDelayDelta = { 0 };
 
+    _int         m_iPreSound = { -1 };
+
 private:
     virtual void Ready_Root();
 

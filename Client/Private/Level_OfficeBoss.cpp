@@ -38,7 +38,7 @@ HRESULT CLevel_OfficeBoss::Initialize()
 
     /* Å¬¶ó ÆÄ½Ì */
     m_pFileTotalManager->Set_MapObj_In_Client(STAGE_OFFICE_BOSS, LEVEL_OFFICE_BOSS);
-    m_pFileTotalManager->Set_Lights_In_Client(STAGE_OFFICE_1F);
+    m_pFileTotalManager->Set_Lights_In_Client(STAGE_OFFICE_BOSS);
     m_pFileTotalManager->Set_Collider_In_Client(STAGE_OFFICE_BOSS, LEVEL_OFFICE_BOSS);
 
 	if (FAILED(Ready_Camera(TEXT("Layer_Camera"))))
@@ -52,9 +52,6 @@ HRESULT CLevel_OfficeBoss::Initialize()
 	//m_pFightManager->Set_FightStage(true);
 
 	m_pGameInstance->PlayBGM(TEXT("ShakeDown_BGM.mp3"), DEFAULT_VOLUME);
-
-	/*m_pGameInstance->Set_HDRLight(1.4f);
-	m_pGameInstance->Set_AdjectTint(_float4(0.757f, 0.816f, 0.863f, 0.f));*/
 
     return S_OK;
 }

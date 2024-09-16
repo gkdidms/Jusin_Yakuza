@@ -59,7 +59,7 @@ void CAI_RoadTissue::Tick(const _float& fTimeDelta)
 					*m_pState = CAdventure::ADVENTURE_TISSUE_ST;
 					m_bStay = true;
 
-					m_pGameInstance->PlaySound_W(TEXT("13ff [1].wav"), SOUND_NPC_3, 1.f);
+					m_pGameInstance->PlaySound_W(TEXT("13ff [1].wav"), SOUND_NPC_3, m_fSound);
 				}
 		}
 		else

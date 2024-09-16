@@ -33,6 +33,8 @@ HRESULT CCameraObj::Initialize(void* pArg)
 	if (FAILED(Add_Components(pArg)))
 		return E_FAIL;
 
+	m_pTransformCom->Set_Scale(0.5, 0.5, 0.5);
+
 	return S_OK;
 }
 
@@ -77,7 +79,7 @@ HRESULT CCameraObj::Render()
 HRESULT CCameraObj::Add_Components(void* pArg)
 {
 	/* For.Com_Model */
-	if (FAILED(__super::Add_Component(LEVEL_RUNMAP, TEXT("Prototype_Component_Model_Gun_Cz75"),
+	if (FAILED(__super::Add_Component(LEVEL_RUNMAP, TEXT("Prototype_Component_Model_Bone_Sphere"),
 		TEXT("Com_Model"), reinterpret_cast<CComponent**>(&m_pModelCom))))
 		return E_FAIL;
 

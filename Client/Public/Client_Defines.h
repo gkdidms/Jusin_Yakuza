@@ -1,6 +1,7 @@
 #pragma once
 
-#define DEFAULT_VOLUME 1
+#define DEFAULT_VOLUME 0.5
+#define DEFAULT_EFFECT_VOLUME 1
 
 #include <process.h>
 

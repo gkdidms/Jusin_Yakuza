@@ -329,19 +329,25 @@ void CPlayerCamera::Set_StartPos()
 	if (LEVEL::LEVEL_OFFICE_1F == m_iCurrentLevel)
 	{
 		m_fCamAngleY = -90;
-		_float MIN_LERP_DISTANCE = 2.5f;
+		MIN_LERP_DISTANCE = 1.5f;
+
+		MAX_DISTANCE_ADV = 2.5f;
+		MIN_DISTANCE_ADV = 1.5f;
+
+		MAX_DISTANCE_BATTLE = 3.f;
+		MIN_DISTANCE_BATTLE = 2.f;
 	}
 	else if (LEVEL::LEVEL_OFFICE_2F == m_iCurrentLevel)
 	{
 		m_fCamAngleX = 20;
 		m_fCamAngleY = -200;
-		_float MIN_LERP_DISTANCE = 2.5f;
+		MIN_LERP_DISTANCE = 2.5f;
 	}
 	else if (LEVEL::LEVEL_OFFICE_BOSS == m_iCurrentLevel)
 	{
 		m_fCamAngleX = 45.f;
 		m_fCamAngleY = 90;
-		_float MIN_LERP_DISTANCE = 2.5f;
+		MIN_LERP_DISTANCE = 2.5f;
 	}
 	else if (LEVEL::LEVEL_DOGIMAZO == m_iCurrentLevel)
 	{

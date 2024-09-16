@@ -190,8 +190,6 @@ void CObjPlace_Manager::Priority_Tick(const _float& fTimeDelta)
 
 void CObjPlace_Manager::Tick(const _float& fTimeDelta)
 {
-	//for (auto& iter : m_GameObjects)
-	//	iter->Tick(fTimeDelta);
 
 	for (auto& iter : m_GameObjects)
 		iter.second->Tick(fTimeDelta);
@@ -205,6 +203,8 @@ void CObjPlace_Manager::Tick(const _float& fTimeDelta)
 	{
 		m_pDecal->Tick(fTimeDelta);
 	}
+
+
 }
 
 void CObjPlace_Manager::Late_Tick(const _float& fTimeDelta)
@@ -221,6 +221,9 @@ void CObjPlace_Manager::Late_Tick(const _float& fTimeDelta)
 	{
 		m_pDecal->Late_Tick(fTimeDelta);
 	}
+
+	for (auto& iter : m_ObjectDecals)
+		iter->Late_Tick(fTimeDelta);
 }
 
 void CObjPlace_Manager::Render()
@@ -930,7 +933,7 @@ void CObjPlace_Manager::Edit_Installed_GameObject(int iNumObject)
 	ImGui::InputFloat("M02", &m_tCurrentObjectDesc.vOffsetMatrix.m[0][2]);
 	ImGui::SameLine();
 	ImGui::SetNextItemWidth(50);
-	ImGui::InputFloat("M02", &m_tCurrentObjectDesc.vOffsetMatrix.m[0][3]);
+	ImGui::InputFloat("M03", &m_tCurrentObjectDesc.vOffsetMatrix.m[0][3]);
 	ImGui::EndGroup();
 
 	ImGui::NewLine();
@@ -946,7 +949,7 @@ void CObjPlace_Manager::Edit_Installed_GameObject(int iNumObject)
 	ImGui::InputFloat("M12", &m_tCurrentObjectDesc.vOffsetMatrix.m[1][2]);
 	ImGui::SameLine();
 	ImGui::SetNextItemWidth(50);
-	ImGui::InputFloat("M02", &m_tCurrentObjectDesc.vOffsetMatrix.m[1][3]);
+	ImGui::InputFloat("M13", &m_tCurrentObjectDesc.vOffsetMatrix.m[1][3]);
 
 	ImGui::EndGroup();
 
@@ -963,7 +966,7 @@ void CObjPlace_Manager::Edit_Installed_GameObject(int iNumObject)
 	ImGui::InputFloat("M22", &m_tCurrentObjectDesc.vOffsetMatrix.m[2][2]);
 	ImGui::SameLine();
 	ImGui::SetNextItemWidth(50);
-	ImGui::InputFloat("M02", &m_tCurrentObjectDesc.vOffsetMatrix.m[2][3]);
+	ImGui::InputFloat("M23", &m_tCurrentObjectDesc.vOffsetMatrix.m[2][3]);
 	ImGui::EndGroup();
 
 	ImGui::NewLine();
@@ -979,7 +982,7 @@ void CObjPlace_Manager::Edit_Installed_GameObject(int iNumObject)
 	ImGui::InputFloat("M32", &m_tCurrentObjectDesc.vOffsetMatrix.m[3][2]);
 	ImGui::SameLine();
 	ImGui::SetNextItemWidth(50);
-	ImGui::InputFloat("M02", &m_tCurrentObjectDesc.vOffsetMatrix.m[3][3]);
+	ImGui::InputFloat("M33", &m_tCurrentObjectDesc.vOffsetMatrix.m[3][3]);
 	ImGui::EndGroup();
 
 }

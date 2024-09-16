@@ -106,10 +106,11 @@ HRESULT CDecal::Bind_ShaderResources()
     if (FAILED(m_pShaderCubeCom->Bind_Matrix("g_WorldMatrixInv", &wordInvFloat)))
         return E_FAIL;
 
-    if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_NonBlendDepth"), m_pShaderCubeCom, "g_DepthTexture")))
+    if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Depth"), m_pShaderCubeCom, "g_DepthTexture")))
         return E_FAIL;
 
-
+    if (FAILED(m_pShaderCubeCom->Bind_RawValue("g_fFar", m_pGameInstance->Get_CamFar(), sizeof(_float))))
+        return E_FAIL;
 
 
     return S_OK;

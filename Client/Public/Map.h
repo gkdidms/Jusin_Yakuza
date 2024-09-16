@@ -176,6 +176,9 @@ private:
 
 
 	bool					m_bOcculusionCulling = { false };
+	float					m_iExcludeSSAO = { 0 }; //SSAO Á¦¿Ü
+
+	string			m_ModelName;
 
 private:
 	ID3D11Query* m_pOcclusionQuery = { nullptr };

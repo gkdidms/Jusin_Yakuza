@@ -29,6 +29,7 @@ HRESULT CRoadTissue::Initialize(void* pArg)
         return E_FAIL;
 
     m_fChangeInterval = 18.f;
+    m_iGender = GENDER_M;
     return S_OK;
 }
 

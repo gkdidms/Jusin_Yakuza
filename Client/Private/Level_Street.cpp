@@ -33,6 +33,8 @@ HRESULT CLevel_Street::Initialize()
     if (FAILED(Ready_Player(TEXT("Layer_Player"))))
         return E_FAIL;
 
+	m_pUIManager->Close_Scene();
+
     /* Å¬¶ó ÆÄ½Ì */
 	if (m_pGameInstance->Get_CurrentLevel() == LEVEL_TOKOSTREET)
 	{
@@ -45,8 +47,7 @@ HRESULT CLevel_Street::Initialize()
 		m_pFileTotalManager->Set_Trigger_In_Client(STAGE_STREET, m_pGameInstance->Get_CurrentLevel());
 	}
     
-	m_pFileTotalManager->Set_Lights_In_Client(10);
-   // m_pFileTotalManager->Set_Collider_In_Client(STAGE_STREET, LEVEL_STREET);
+	m_pFileTotalManager->Set_Lights_In_Client(7);
 
 	m_pUIManager->Fade_Out();
 
@@ -55,15 +56,12 @@ HRESULT CLevel_Street::Initialize()
 		return E_FAIL;
 	
 	/*¼ÎÀÌ´õ ¿É¼Ç°ª*/
-	//m_pGameInstance->Set_HDRLight(1.6f);
-	//m_pGameInstance->Set_AdjectTint(_float4(0.873f, 0.764f, 0.642f, 0.f));
+	m_pGameInstance->Set_HDRLight(0.8f);
 
-	m_pGameInstance->Play_Loop(L"48e6 [1].wav", SOUND_BGM, 0.5f);
-	m_pGameInstance->Play_Loop(L"48a1 [1].wav", SOUND_BGM_2, 0.6f);
-	m_pGameInstance->Play_Loop(L"4887 [1].wav", SOUND_BGM_3, 0.3f);
-	m_pGameInstance->Play_Loop(L"4899 [1].wav", SOUND_BGM_1, 0.5f);
-
-	//m_pGameInstance->PlayBGM(TEXT("Street_BGM.wav"), 0.5f);
+	m_pGameInstance->Play_Loop(L"48e6 [1].wav", SOUND_BGM, DEFAULT_VOLUME);
+	m_pGameInstance->Play_Loop(L"48a1 [1].wav", SOUND_BGM_2, DEFAULT_VOLUME);
+	m_pGameInstance->Play_Loop(L"4887 [1].wav", SOUND_BGM_3, DEFAULT_VOLUME);
+	m_pGameInstance->Play_Loop(L"4899 [1].wav", SOUND_BGM_1, DEFAULT_VOLUME);
 
     return S_OK;
 }
@@ -91,7 +89,7 @@ void CLevel_Street::Tick(const _float& fTimeDelta)
 				m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_OFFICE_1F));
 			else if (m_pGameInstance->Get_CurrentLevel() == LEVEL_STREET)
 			{
-				m_pGameInstance->PlaySound_W(TEXT("0001 [53].wav"), SOUND_EFFECT, 0.5f);
+				m_pGameInstance->PlaySound_W(TEXT("0001 [53].wav"), SOUND_EFFECT, DEFAULT_EFFECT_VOLUME);
 				m_pGameInstance->Open_Level(LEVEL_LOADING, CLevel_Loading::Create(m_pDevice, m_pContext, LEVEL_CARCHASE));
 
 				return;
