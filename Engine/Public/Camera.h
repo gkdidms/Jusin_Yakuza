@@ -104,6 +104,7 @@ protected:
 protected:
     _bool m_isShaking = { false };
     _bool m_isZooming = { false };
+    _bool m_isFixed = { false };
 
     _float m_fShakeTime = { 0.f };
     _float m_fShakeDuration = {}; //지속시간

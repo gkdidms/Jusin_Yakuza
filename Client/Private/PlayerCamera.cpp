@@ -94,7 +94,11 @@ void CPlayerCamera::Tick(const _float& fTimeDelta)
 
 		__super::Tick(fTimeDelta);
 
-		Mouse_Fix();
+		if (m_pGameInstance->GetKeyState(DIK_TAB) == TAP)
+			m_isFixed = !m_isFixed;
+
+		if(m_isFixed)
+			Mouse_Fix();
 	}
 }
 
