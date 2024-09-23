@@ -240,6 +240,7 @@ void CItem::Tick(const _float& fTimeDelta)
 		//m_pTransformCom->Get_WorldMatrix() * SocketMatrix * XMLoadFloat4x4(m_pParentMatrix)
 		XMStoreFloat4x4(&m_WorldMatrix, ParentMatrix * PlayerMatrix * offsetMatrix);
 
+
 		XMMATRIX worldMatrix = XMLoadFloat4x4(&m_WorldMatrix);
 		m_pTransformCom->Set_WorldMatrix(worldMatrix);
 	}
