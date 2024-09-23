@@ -443,7 +443,7 @@ void CCollision_Manager::ItemCollision()
                     CPlayer* pPlayer = dynamic_cast<CPlayer*>(pPlayerAttackCollider->Get_Parent());
                     CModel* pModel = dynamic_cast<CModel*>(pPlayer->Get_Component(TEXT("Com_Model")));
 
-                    dynamic_cast<CItem*>(item)->Set_ParentMatrix(pModel->Get_BoneCombinedTransformationMatrix("buki_r_n"));
+                    dynamic_cast<CItem*>(item)->Set_ParentMatrix(pModel->Get_BoneCombinedTransformationMatrix("buki_l_n"));
                     dynamic_cast<CItem*>(item)->Set_Grab(true);
 
                     pPlayerAttackCollider->ParentObject_Attack(item, true);
