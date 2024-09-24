@@ -18,15 +18,13 @@ HRESULT CChapter6_1::Initialize(void* pArg)
 	if (FAILED(__super::Initialize(pArg)))
 		return E_FAIL;
 
-	m_pUIManager->Fade_Out();
-
 	Player_Stop(true);
 	PlayerCom_Stop(true);
 
 	m_pShakedown = dynamic_cast<CShakedown*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Monster"), 0));
 	Safe_AddRef(m_pShakedown);
 	m_pShakedown->Set_Script(true);
-	m_pShakedown->Set_Animation("p_stand_nml");
+	m_pShakedown->Set_Animation("e_kta_stand", true, false);
 
 	m_pFileTotalMgr->Setting_Start_Cinemachine(61);
 
@@ -43,7 +41,7 @@ _bool CChapter6_1::Execute()
 		m_pShakedown->Set_Script(false);
 		Player_Stop(false);
 		PlayerCom_Stop(false);
-
+		
 		return true;
 	}
 

@@ -213,16 +213,9 @@ HRESULT CQuestManager::Ready_Quest()
     Chapter6 = {
         QUEST_INFO(
             QUEST_MAIN,
-            -1,
-
-            iQuestIndex++,//9
-            iNextQuestIndex++
-        ),
-        QUEST_INFO(
-            QUEST_MAIN,
             7,
 
-            iQuestIndex++,//10
+            iQuestIndex++,//9
             iNextQuestIndex++
         )
     };
@@ -235,7 +228,7 @@ HRESULT CQuestManager::Ready_Quest()
             QUEST_TALK,
             0,
 
-            iQuestIndex++,
+            iQuestIndex++, //10
             iNextQuestIndex++,
             -1,
             -1,
@@ -251,11 +244,24 @@ HRESULT CQuestManager::Ready_Quest()
             QUEST_MAIN,
             8,
 
-            iQuestIndex++,
+            iQuestIndex++, //11
             iNextQuestIndex++
         )
     };
     m_QuestInfo.emplace(CHAPTER_8, Chapter8);
+
+    /* ªÊ¿Ô¿Ã Ω√¿€ (√ﬂ∞°∫ª) */
+    vector<QUEST_INFO> Chapter9;
+    Chapter9 = {
+        QUEST_INFO(
+            QUEST_MAIN,
+            -1,
+
+            iQuestIndex++, //12
+            iNextQuestIndex++
+        )
+    };
+    m_QuestInfo.emplace(CHAPTER_9, Chapter9);
     
     return S_OK;
 }
@@ -414,15 +420,7 @@ HRESULT CQuestManager::Add_MainQuest(_int iQuestIndex, _int iNextQuestIndex, _in
 
         m_pCurrentQuest = pMainQuest;
     }
-    else if (iQuestIndex == 9) // ªÊ¿Ô¿Ã Ω√¿€
-    {
-        CChapter6_1* pMainQuest = CChapter6_1::Create(&Desc);
-        if (nullptr == pMainQuest)
-            return E_FAIL;
-
-        m_pCurrentQuest = pMainQuest;
-    }
-    else if (iQuestIndex == 10) // ªÊ¿Ô¿Ã ¡◊¿Œ »ƒ µ∂πÈ
+    else if (iQuestIndex == 9) // ªÊ¿Ô¿Ã ¡◊¿Œ »ƒ µ∂πÈ
     {
         CChapter6_0* pMainQuest = CChapter6_0::Create(&Desc);
         if (nullptr == pMainQuest)
@@ -430,9 +428,17 @@ HRESULT CQuestManager::Add_MainQuest(_int iQuestIndex, _int iNextQuestIndex, _in
 
         m_pCurrentQuest = pMainQuest;
     }
-    else if (iQuestIndex == 12) // ƒÌ¡¶
+    else if (iQuestIndex == 11) // ƒÌ¡¶
     {
         CChapter7_0* pMainQuest = CChapter7_0::Create(&Desc);
+        if (nullptr == pMainQuest)
+            return E_FAIL;
+
+        m_pCurrentQuest = pMainQuest;
+    }
+    else if (iQuestIndex == 12) // ªÊ¿Ô¿Ã Ω√¿€
+    {
+        CChapter6_1* pMainQuest = CChapter6_1::Create(&Desc);
         if (nullptr == pMainQuest)
             return E_FAIL;
 

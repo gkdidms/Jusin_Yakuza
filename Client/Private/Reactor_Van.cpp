@@ -84,7 +84,6 @@ void CReactor_Van::Change_Animation()
 			m_isSound = true;
 		}
 	}
-		
 
 	//벤에 관한 애니메이션 넣기
 	if (m_strAnimName == "w_mngcar_e_van_wpr_aim_st_1")

@@ -18,7 +18,7 @@ private:
 	class CShakedown* m_pShakedown = { nullptr };
 
 private:
-	_float m_fDuration = { 3.f };
+	_float m_fDuration = { 4.f };
 	_float m_fTotalTime = { 0.f };
 
 public:

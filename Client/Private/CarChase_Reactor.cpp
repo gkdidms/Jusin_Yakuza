@@ -193,6 +193,7 @@ _bool CCarChase_Reactor::Check_Dead()
 			EffectDesc.pWorldMatrix = m_pTransformCom->Get_WorldFloat4x4();
 			CEffectManager::GetInstance()->Heli_Exp(EffectDesc);
 		}
+
 		return true;
 	}
 
@@ -203,8 +204,8 @@ _bool CCarChase_Reactor::Check_Dead()
 		{
 			for (auto& pMonster : m_Monsters)
 				pMonster->Set_ReactorDead(true);
-			//자동차가 죽으면 멈추고 불난다.+연기
 
+			//자동차가 죽으면 멈추고 불난다.+연기
 			CEffect::EFFECT_DESC EffectDesc;
 
 			EffectDesc.pWorldMatrix = m_pTransformCom->Get_WorldFloat4x4();
@@ -286,7 +287,6 @@ void CCarChase_Reactor::Move_Waypoint(const _float& fTimeDelta)
 		m_fSpeed += 3.f;
 
 	m_pTransformCom->Go_Straight_CustumSpeed(m_fSpeed, fTimeDelta, m_pNavigationCom);
-
 }
 
 HRESULT CCarChase_Reactor::Add_Components()

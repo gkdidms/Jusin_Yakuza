@@ -48,10 +48,10 @@ HRESULT CLevel_OfficeBoss::Initialize()
 	m_pFileTotalManager->Load_Cinemachine(35, LEVEL_OFFICE_BOSS);
 	m_pFileTotalManager->Load_Cinemachine(36, LEVEL_OFFICE_BOSS);
 
-	m_pQuestManager->Start_Quest(CQuestManager::CHAPTER_6);
+	m_pQuestManager->Start_Quest(CQuestManager::CHAPTER_9);
 
 	m_pUIManager->Fade_Out();
-	m_pSystemManager->Set_Camera(CAMERA_PLAYER);
+	//m_pSystemManager->Set_Camera(CAMERA_PLAYER);
 	//m_pFightManager->Set_FightStage(true);
 
 	if (BGM_STOP)
@@ -95,12 +95,24 @@ void CLevel_OfficeBoss::Tick(const _float& fTimeDelta)
 	}
 #endif // _DEBUG
 
-	if (m_pFightManager->Tick(fTimeDelta))
+	if (m_pQuestManager->Execute())
 	{
-		m_pQuestManager->Start_Quest(CQuestManager::CHAPTER_6);
-		m_isFightEnd = true;
+		m_pSystemManager->Set_Camera(CAMERA_PLAYER);
+
+		if (m_pFightManager->Tick(fTimeDelta))
+		{
+			m_pQuestManager->Start_Quest(CQuestManager::CHAPTER_6);
+			m_isFightEnd = true;
+		}
+
+		if (!m_isTitleEnd && m_pUIManager->isBattleStart())
+		{
+			m_isTitleEnd = true;
+			CPlayer* pPlayer = dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"), 0));
+			pPlayer->Battle_Start();
+		}
 	}
-	
+
 	if (m_isFightEnd)
 	{
 		if (m_pQuestManager->Execute())
@@ -120,12 +132,7 @@ void CLevel_OfficeBoss::Tick(const _float& fTimeDelta)
 		}
 	}
 
-	if (!m_isTitleEnd && m_pUIManager->isBattleStart())
-	{
-		m_isTitleEnd = true;
-		CPlayer* pPlayer = dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"), 0));
-		pPlayer->Battle_Start();
-	}
+	
 
 #ifdef _DEBUG
 
