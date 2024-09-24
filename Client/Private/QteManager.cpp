@@ -343,6 +343,8 @@ void Client::CQteManager::Slowing()
             m_pUIManager->PressKey();
             Skip_KeyFrame(m_eCurrentQTE);
 
+            m_isQTEUI = false;
+
             ResetVariables();
         }
     }
@@ -361,13 +363,6 @@ void Client::CQteManager::Check_QTE_Section()
 
     if (it != m_QTEs.end()) 
     {
-        if (!m_isQTEUI)
-        {
-            m_isQTEUI = true;
-            m_pUIManager->Close_Scene();
-            m_pUIManager->Open_Scene(TEXT("QTE"));
-        }
-
         _uint animIndex = it->second.iAnimIndex;
 
         if(!m_isKuze)
@@ -422,6 +417,13 @@ void Client::CQteManager::Check_QTE_Section()
             }
         }
   
+        if (!m_isQTEUI && m_isSlowing)
+        {
+            m_isQTEUI = true;
+            m_pUIManager->Close_Scene();
+            m_pUIManager->Open_Scene(TEXT("QTE"));
+        }
+
     }
 
 }
