@@ -47,7 +47,7 @@ public:
 
 private:
     HRESULT                                         Import_Bin_Cam_Data_OnTool(CAMERAOBJ_IO* camData, int iFileNum);
-    void			                                Mouse_Fix();
+    virtual void			                        Mouse_Fix();
     void                                            Cam_Move_Handle_Setting(const _float& fTimeDelta);
     void                                            Cam_Lerp(const _float& fTimeDelta);
     void                                            Change_CamDesc();
