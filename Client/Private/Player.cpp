@@ -731,6 +731,9 @@ void CPlayer::Take_Damage(_uint iHitColliderType, const _float3& vDir, _float fD
 	// 데미지 감소율 설정 (파괴자 가드 시에는 딜을 평소보다 0.2배만큼만 받는다 (==딜감80퍼))
 	_float fDamageDownScale = 1.f;
 
+	m_pGameInstance->StopSound(SOUND_PLAYER_EFFECT);
+	m_pGameInstance->PlaySound_W(TEXT("4718 [3].wav"), SOUND_PLAYER_EFFECT, 1.f);
+
 	switch (m_eCurrentStyle)
 	{
 	case CPlayer::KRS:

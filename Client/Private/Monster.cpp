@@ -458,6 +458,11 @@ void CMonster::Tick(const _float& fTimeDelta)
 	//충돌처리 초기화
 	m_isColl = false;
 
+	if (m_pGameInstance->GetKeyState(DIK_RETURN) == TAP)
+	{
+		(m_pEffects.lower_bound("mune_c_n"))->second->On();
+	}
+
 	for (auto& pCollider : m_pColliders)
 		pCollider.second->Tick(fTimeDelta);
 
