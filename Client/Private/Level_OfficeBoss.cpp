@@ -54,7 +54,8 @@ HRESULT CLevel_OfficeBoss::Initialize()
 	m_pSystemManager->Set_Camera(CAMERA_PLAYER);
 	//m_pFightManager->Set_FightStage(true);
 
-	m_pGameInstance->PlayBGM(TEXT("ShakeDown_BGM.mp3"), DEFAULT_VOLUME);
+	if (BGM_STOP)
+		m_pGameInstance->PlayBGM(TEXT("ShakeDown_BGM.mp3"), DEFAULT_VOLUME);
 
     return S_OK;
 }
