@@ -150,14 +150,14 @@ _bool CCarChase::End(const _float& fTimeDelta)
 			pPlayer->Set_NavigationRouteIndex(m_Info.iNextPlayerLine);
 			pPlayer->Sit_Swap();
 		}
+	}
 
-		m_fTotalTime += fTimeDelta;
+	m_fTotalTime += fTimeDelta;
 
-		// 일정 시간이 되면 다음 스테이지로 넘어간다. 
-		if (m_fDuration <= m_fTotalTime)
-		{
-			return true;
-		}
+	// 일정 시간이 되면 다음 스테이지로 넘어간다. 
+	if (m_fDuration <= m_fTotalTime)
+	{
+		return true;
 	}
 
 	return false;
