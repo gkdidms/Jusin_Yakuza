@@ -83,7 +83,7 @@ void CLevel_Roadway::Tick(const _float& fTimeDelta)
 	
 	if (m_isTitleEnd)
 	{
-		m_pCarChaseManager->Tick();
+		m_pCarChaseManager->Tick(fTimeDelta);
 
 		if (m_isRadialOnEventPlay)
 			RadialOnTimer(fTimeDelta);
