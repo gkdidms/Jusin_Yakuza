@@ -198,6 +198,7 @@
     <ClInclude Include="..\Public\Chapter5_0.h" />
     <ClInclude Include="..\Public\Chapter5_1.h" />
     <ClInclude Include="..\Public\Chapter6_0.h" />
+    <ClInclude Include="..\Public\Chapter6_1.h" />
     <ClInclude Include="..\Public\Chapter7_0.h" />
     <ClInclude Include="..\Public\Chapter7_1.h" />
     <ClInclude Include="..\public\FightManager.h" />
@@ -456,6 +457,7 @@
     <ClCompile Include="..\Private\Chapter5_0.cpp" />
     <ClCompile Include="..\Private\Chapter5_1.cpp" />
     <ClCompile Include="..\Private\Chapter6_0.cpp" />
+    <ClCompile Include="..\Private\Chapter6_1.cpp" />
     <ClCompile Include="..\Private\Chapter7_0.cpp" />
     <ClCompile Include="..\Private\Chapter7_1.cpp" />
     <ClCompile Include="..\Private\HeadUI.cpp" />

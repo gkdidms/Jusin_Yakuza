@@ -66,7 +66,6 @@ _bool CChapter1_1::Execute()
 			return true;
 		}
 
-		//
 		if (m_pGameInstance->GetKeyState(DIK_E) == TAP)
 		{
 			//UI틱이 더 느림 -> index를 하나 씩 더 느리게 봐야 함.
