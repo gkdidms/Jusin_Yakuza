@@ -1,4 +1,4 @@
-100e_knk_atk_chop
+102e_knk_atk_chop
 0
 10
 buki_r_n
@@ -418,6 +418,16 @@ e_wpa_cmb_02
 5.9
 buki_r_n
 146
+e_wph_atk_heavy
+0
+20.69
+naka1_r_n
+134
+e_wph_atk_heavy
+1
+22.877
+naka1_r_n
+134
 p_krh_atk_heavy_f
 0
 10.4

@@ -2,15 +2,20 @@
 
 #include "GameInstance.h"
 #include "Shader.h"
+#include "Collision_Manager.h"
 
 CSofa::CSofa(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)
-	:CSocketModel{ pDevice, pContext }
+	:CSocketModel{ pDevice, pContext },
+	m_pCollisionManager{CCollision_Manager::GetInstance()}
 {
+	Safe_AddRef(m_pCollisionManager);
 }
 
 CSofa::CSofa(const CSofa& rhs)
-	:CSocketModel{ rhs }
+	:CSocketModel{ rhs },
+	m_pCollisionManager{ rhs.m_pCollisionManager }
 {
+	Safe_AddRef(m_pCollisionManager);
 }
 
 HRESULT CSofa::Initialize_Prototype()
@@ -39,6 +44,8 @@ void CSofa::Priority_Tick(const _float& fTimeDelta)
 
 void CSofa::Tick(const _float& fTimeDelta)
 {
+	__super::Tick(fTimeDelta);
+
 	if (m_pGameInstance->GetKeyState(DIK_M) == HOLD)
 	{
 		m_pTransformCom->Go_Straight(fTimeDelta);
@@ -47,8 +54,6 @@ void CSofa::Tick(const _float& fTimeDelta)
 	{
 		m_pTransformCom->Go_Backward(fTimeDelta);
 	}
-
-	__super::Tick(fTimeDelta);
 }
 
 void CSofa::Late_Tick(const _float& fTimeDelta)
@@ -129,4 +134,6 @@ CGameObject* CSofa::Clone(void* pArg)
 void CSofa::Free()
 {
 	__super::Free();
+
+	Safe_Release(m_pCollisionManager);
 }

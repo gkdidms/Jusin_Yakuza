@@ -52,7 +52,6 @@ HRESULT CCollision_Manager::Add_HitCollider(CSocketCollider* pCollider, COLLIDER
 
 HRESULT CCollision_Manager::Add_ItemCollider(CCollider* pCollider)
 {
-    //Safe_AddRef(pCollider);
     m_ItemColliders.clear();
     m_ItemColliders.push_back(pCollider);
 
@@ -653,10 +652,6 @@ void CCollision_Manager::Battle_Clear()
 
 void CCollision_Manager::Item_Clear()
 {
-    for (auto& pCollider : m_ItemColliders)
-    {
-        Safe_Release(pCollider);
-    }
     m_ItemColliders.clear();
 }
 

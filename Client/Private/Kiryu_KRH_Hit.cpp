@@ -970,6 +970,38 @@ void CKiryu_KRH_Hit::Setting_Value(void* pValue)
 		}
 		}
 	}
+	// ¼îÆÄ µç ¾Ö
+	else if ("e_wph_atk_heavy" == strAnimName)
+	{
+		/*22 c_dwn_body_b*/
+		/*23 c_dwn_body_f*/
+		/*24 c_dwn_body_l*/
+		/*25 c_dwn_body_r*/
+
+		switch (pDesc->iDirection)
+		{
+		case CPlayer::F:
+		{
+			m_iCurrentIndex = 23;
+			break;
+		}
+		case CPlayer::B:
+		{
+			m_iCurrentIndex = 22;
+			break;
+		}
+		case CPlayer::L:
+		{
+			m_iCurrentIndex = 22;
+			break;
+		}
+		case CPlayer::R:
+		{
+			m_iCurrentIndex = 23;
+			break;
+		}
+		}
+	}
 
 }
 
