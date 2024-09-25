@@ -124,18 +124,17 @@ void CKiryu_KRS_PickUp::Change_Animation()
 
 _bool CKiryu_KRS_PickUp::Get_AnimationEnd()
 {
+	CModel* pModelCom = static_cast<CModel*>(m_pPlayer->Get_Component(TEXT("Com_Model")));
+
 	// 아이템 라이프 끝났으면 상태 되돌리기
-	if (Checked_Animation_Ratio(0.6f))
+	if (m_pPlayer->Get_CurrentItem()->Get_ItemLife() < 1)
 	{
-		if (m_pPlayer->Get_CurrentItem()->Get_ItemLife() <= 0)
+		if (pModelCom->Get_AnimFinished())
 		{
-			m_pPlayer->Set_CurrentBehavior(1);
 			Reset();
 			return true;
 		}
 	}
-
-	CModel* pModelCom = static_cast<CModel*>(m_pPlayer->Get_Component(TEXT("Com_Model")));
 
 	if (pModelCom->Get_AnimFinished())
 	{
@@ -185,6 +184,8 @@ void CKiryu_KRS_PickUp::Combo_Count(_bool isFinAction)
 	{
 		m_iComboCount++;
 
+		m_pPlayer->Get_CurrentItem()->Decrease_Life();
+
 		if (m_iComboCount > 2)
 			m_iComboCount = 0;
 	}
@@ -213,7 +214,7 @@ void CKiryu_KRS_PickUp::Setting_Value(void* pValue)
 
 void CKiryu_KRS_PickUp::Event(void* pValue)
 {
-
+	m_pPlayer->Get_CurrentItem()->Decrease_Life();
 }
 
 _bool CKiryu_KRS_PickUp::Changeable_Combo_Animation()
@@ -346,8 +347,6 @@ void CKiryu_KRS_PickUp::Attack_KeyInput(const _float& fTimeDelta)
 	{
 		Combo_Count();
 		m_eAnimState = ANIM_ONCE;
-
-		m_pPlayer->Get_CurrentItem()->Decrease_Life();
 	}
 
 	if (m_pGameInstance->GetKeyState(DIK_Q) == TAP)

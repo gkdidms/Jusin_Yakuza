@@ -120,10 +120,13 @@ _bool CKiryu_KRC_PickUp::Get_AnimationEnd()
 	CModel* pModelCom = static_cast<CModel*>(m_pPlayer->Get_Component(TEXT("Com_Model")));
 
 	// 아이템 라이프 끝났으면 상태 되돌리기
-	if (m_pPlayer->Get_CurrentItem()->Get_ItemLife() < 0)
+	if (m_pPlayer->Get_CurrentItem()->Get_ItemLife() < 1)
 	{
-		Reset();
-		return true;
+		if (pModelCom->Get_AnimFinished())
+		{
+			Reset();
+			return true;
+		}
 	}
 
 	if (pModelCom->Get_AnimFinished())
@@ -162,17 +165,21 @@ void CKiryu_KRC_PickUp::Reset()
 	m_isShaked = false;
 	m_isStop = false;
 	m_iCurrentIndex = 0;
+
+	m_pPlayer->Get_CurrentItem()->Attacking(false);
 }
 
 void CKiryu_KRC_PickUp::Combo_Count(_bool isFinAction)
 {
+	m_pPlayer->Get_CurrentItem()->Attacking();
 	m_iCurrentIndex = 3;
-
 	m_eBehaviorState = ATTACK;
 
 	if (Changeable_Combo_Animation())
 	{
 		m_iComboCount++;
+
+		m_pPlayer->Get_CurrentItem()->Decrease_Life();
 
 		if (m_iComboCount > 3)
 		{
@@ -355,7 +362,6 @@ void CKiryu_KRC_PickUp::Attack_KeyInput(const _float& fTimeDelta)
 	{
 		Combo_Count();
 		m_eAnimState = ANIM_ONCE;
-		m_pPlayer->Get_CurrentItem()->Decrease_Life();
 	}
 	if (m_pGameInstance->GetMouseState(DIM_RB) == TAP)
 	{

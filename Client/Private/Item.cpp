@@ -155,6 +155,7 @@ void CItem::Tick(const _float& fTimeDelta)
 		if(3 < m_fDissolveTime)
 		{
 			m_isDead = true;
+			m_pCollisionManager->Item_Clear();
 		}
 	}
 	else if (0 != m_fBrightTime && ITEM_BRIGHT != m_eItemMode)
@@ -446,10 +447,10 @@ _bool CItem::Decrease_Life()
 {
 	m_iLife--;
 
-	// 감소 이후 생명이 0보다 작아진다면 오브젝트 사망처리
+	// 감소 이후 생명이 1보다 작아진다면 오브젝트 사망처리
 	if (0 >= m_iLife)
 	{
-		Set_ObjectDead();
+		//Set_ObjectDead();		// 디졸브 끝나고 삭제시켜줘야함
 		//Dissolve 시작
 		m_bDissovle = true;
 		return false;
@@ -473,7 +474,7 @@ void CItem::Throw_On(THROW_INFO_DESC& Desc)
 
 	// Dissolve 시작
 	m_bDissovle = true;
-	Set_ObjectDead();
+	//Set_ObjectDead();
 }
 
 void CItem::Throwing(const _float& fTimeDelta)
