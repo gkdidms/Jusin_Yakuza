@@ -222,7 +222,7 @@ HRESULT CLevel_Test::Ready_Test_Hyewon()
 	// 네비: 90
 	// 도지마조 로비: 98, 97(몬x), 96(쉐이크다운)
 	// 도지마조 로비 네비: 5
-	m_pFileTotalManager->Set_MapObj_In_Client(89, LEVEL_TEST);
+	m_pFileTotalManager->Set_MapObj_In_Client(97, LEVEL_TEST);
 	m_pFileTotalManager->Set_Lights_In_Client(5);
 	m_pFileTotalManager->Set_Collider_In_Client(0, LEVEL_TEST);
 	//m_pFileTotalManager->Set_Trigger_In_Client(79, LEVEL_TEST);

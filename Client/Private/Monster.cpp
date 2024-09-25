@@ -674,6 +674,7 @@ void CMonster::Animation_Event()
 
 		if (CurPos >= pEvent.fPlayPosition && CurPos < Duration)
 		{
+			// 콜라이더 정보는 뼈 인덱스를 Key로 사용중이며, 중복 key 불가.
 			CSocketCollider* pCollider = m_pColliders.at(pEvent.iBoneIndex);
 
 			switch (pEvent.iType)

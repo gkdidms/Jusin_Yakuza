@@ -5,6 +5,8 @@
 * 의자 들고있는 몬스터
 */
 
+// 소파 콜라이더는 애님툴에서 naka1_r_n 뼈에 붙임 (쇼파가 갖고있는거 X)
+
 BEGIN(Client)
 class CWPHYakuza :
     public CMonster
