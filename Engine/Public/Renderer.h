@@ -192,7 +192,7 @@ private:
     /*최종 렌더 (빼지마세요)*/
     void Render_FinalResult();
 
-    /*최종적으로 화면에 그려질 색사 보정*/
+    /*최종적으로 화면에 그려질 색상 보정*/
     void Render_AdjustColor();
 
     void Render_UI();
@@ -259,7 +259,7 @@ private:
                 _bool m_isSSAO = { true };
                 _bool m_isPBR = { true };
                 _bool m_isBOF = { true };
-                _bool m_isShadow = { false };
+                _bool m_isShadow = { true };
                 _bool m_isRimLight = { true };
 #endif // DEBUG
 

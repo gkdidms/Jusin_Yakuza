@@ -78,7 +78,7 @@ private:
     _float4x4 m_OldWorldMatrix = {};
     _float4x4 m_OldViewMatrix = {};
 
-    _float4 m_vLightDir = { -0.6f, -0.7f, 0.1f, 0.f };
+    _float4 m_vLightDir = { -0.6f, -2.0f, 0.1f, 0.f };
 
 public:
     static CPipeLine* Create();

@@ -392,7 +392,7 @@ void CPlayerCamera::Set_StartPos()
 	if (m_iCurrentLevel != LEVEL_LOADING && m_iCurrentLevel != LEVEL_LOGO)
 	{
 		SetCursorPos(g_iWinSizeX * 0.5f, g_iWinSizeY * 0.5f); // 마우스 좌표 적용해주기
-		ShowCursor(false);
+		//ShowCursor(false);
 	}
 }
 

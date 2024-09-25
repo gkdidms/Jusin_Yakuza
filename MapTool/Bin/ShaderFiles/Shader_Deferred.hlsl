@@ -173,6 +173,9 @@ PS_OUT_LIGHT PS_MAIN_LIGHT_POINT(PS_IN In)
 
 float PCF_Shadow(vector vWorldPos)
 {
+    if (vWorldPos.y > 0.3f)
+        return 1.f;
+    
     for (int i = 0; i < 3; ++i)
     {
         vector vLightPos = mul(vWorldPos, g_ViewMatrixArray[i]);
@@ -185,8 +188,8 @@ float PCF_Shadow(vector vWorldPos)
         if (vTexcoord.x < 0 || vTexcoord.x > 1 || vTexcoord.y < 0 || vTexcoord.y > 1)
             continue;
             
-        int dx = 1 / 1280;
-        int dy = 1 / 720;
+        int dx = 1; //1 / 1280;
+        int dy = 1; //1 / 720;
             
         int2 vOffset[9] =
         {
@@ -199,7 +202,7 @@ float PCF_Shadow(vector vWorldPos)
             
             [unroll]
         for (int j = 0; j < 9; j++)
-            fResult += g_LightDepthTextureArray.SampleCmpLevelZero(ShadowSampler, float3(vTexcoord, i), vLightPos.z - 0.001f, vOffset[j]).r;
+            fResult += g_LightDepthTextureArray.SampleCmpLevelZero(ShadowSampler, float3(vTexcoord, i), vLightPos.z - 0.0005f, vOffset[j]).r;
 
         fResult /= 9.f;
             
