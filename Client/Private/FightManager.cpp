@@ -11,6 +11,7 @@
 #include "UIFightScore.h"
 #include "PlayerCamera.h"
 #include "Player.h"
+#include "Trigger.h"
 
 IMPLEMENT_SINGLETON(CFightManager)
 
@@ -49,7 +50,7 @@ void CFightManager::Set_FightStage(_bool isFightStage, CMonsterGroup* pMonsterGr
 		case LEVEL_OFFICE_BOSS:		//삥쟁
 			iTitleIndex = 4;
 			break;
-		case LEVEL_CARCHASE:		//돔황챠
+		case LEVEL_CARCHASE:		//도망쳐라
 			iTitleIndex = 3;
 			break;
 		case LEVEL_TEST:			//테스트용으로 그냥 암거나넣음
@@ -207,6 +208,7 @@ _bool CFightManager::Tick(const _float& fTimeDelta)
 			return false;
 		}
 
+		// 남아있는 몬스터가 하나 이상 존재할 경우 finished
 		vector<CMonster*> Monsters = m_pCurrentMonsterGroup->Get_Monsters();
 		_bool isFinished = true;
 		for (auto& pMonster : Monsters)
@@ -217,6 +219,18 @@ _bool CFightManager::Tick(const _float& fTimeDelta)
 				break;
 			}
 		}
+
+		// 레벨 트리거를 제외한 트리거 중, 비활성화된 트리거가 존재한다면 아직 레벨이 끝나지않음.
+		auto pTriggers = m_pGameInstance->Get_GameObjects(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Trigger"));
+		for (auto& pTrigger : pTriggers)
+		{
+			if (dynamic_cast<CTrigger*>(pTrigger)->Get_TriggerType() != 0 && !dynamic_cast<CTrigger*>(pTrigger)->IsTriggerDead())
+			{
+				isFinished = false;
+				break;
+			}
+		}
+
 		
 		//전투가 끝났을 때 속도가 느려지며 invertcolor 셰이더 호출한다.
 		if (isFinished == true)

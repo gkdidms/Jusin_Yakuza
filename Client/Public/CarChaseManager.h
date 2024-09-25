@@ -24,7 +24,7 @@ private:
 
 public:
     HRESULT Initialize();
-    _bool Tick();
+    _bool Tick(const _float& fTimeDelta);
 
 private:
     CGameInstance* m_pGameInstance = { nullptr };

@@ -33,6 +33,12 @@ public:
 
 public:
 	virtual bool				Move_Scene(int& iLevelNum);
+	int Get_TriggerType() {
+		return m_tTriggerDesc.iTriggerType;
+	}
+	bool IsTriggerDead() {
+		return m_bTriggerDead;
+	}
 
 protected:
 	CShader*						m_pShaderCom = { nullptr };

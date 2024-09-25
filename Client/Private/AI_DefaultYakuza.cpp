@@ -91,6 +91,12 @@ void CAI_DefaultYakuza::Ready_Tree()
 	pHitGuardSeq->Add_Children(pHitGuard);
 #pragma endregion
 
+#pragma region Angry
+	CSequance* pAngrySeq = CSequance::Create();
+	pAngrySeq->Add_Children(CLeafNode::Create(bind(&CAI_DefaultYakuza::Check_Angry, this)));
+	pAngrySeq->Add_Children(CLeafNode::Create(bind(&CAI_DefaultYakuza::Angry, this)));
+#pragma endregion
+
 #pragma region Attack
 	CSequance* pAttackSeq = CSequance::Create();
 	pAttackSeq->Add_Children(CLeafNode::Create(bind(&CAI_DefaultYakuza::Check_Attack, this)));
@@ -123,6 +129,7 @@ void CAI_DefaultYakuza::Ready_Tree()
 	pRoot->Add_Children(pDownSeq);
 	pRoot->Add_Children(pSwaySeq);
 	pRoot->Add_Children(pHitGuardSeq);
+	pRoot->Add_Children(pAngrySeq);
 	pRoot->Add_Children(pAttackSeq);
 	pRoot->Add_Children(pBreakSeq);
 #pragma endregion

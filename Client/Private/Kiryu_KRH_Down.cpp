@@ -123,59 +123,16 @@ void CKiryu_KRH_Down::Setting_Value(void* pValue)
 	{
 		m_eAnimState = ANIM_ONCE;
 
-		_bool isTrample = { false };
-		
-		if (m_pGameInstance->Extract_String(pDownState->strAnimationName, '[', ']') == "e_kta_atk_down")	// 밟기
+		// 앞
+		if (m_isFront)
 		{
-			isTrample = true;
+			m_iCurrentIndex = 5;
 		}
-		//else if (pDownState->strAnimationName == "e_kuz_atk_down")	// 차기
+		else if (!m_isFront)
+		{
+			m_iCurrentIndex = 4;
+		}
 
-		//true: 밟기, false: 차기
-		if (isTrample)
-		{
-			// 앞
-			if (m_isFront)
-			{
-				m_iCurrentIndex = 5;
-			}
-			else if (!m_isFront)
-			{
-				m_iCurrentIndex = 4;
-			}
-		}
-		else
-		{
-			// 상대방이 내 기준 앞이나 오른쪽에서 나를 찼다!
-			// 그럼 왼쪽으로 구르자
-			if (pDownState->iDirection == CPlayer::F || pDownState->iDirection == CPlayer::R)
-			{
-				//그리고 나는 드러누워있는 상태
-				if (m_isFront)
-				{
-					m_iCurrentIndex = 8;
-				}
-				else if (!m_isFront)
-				{
-					m_iCurrentIndex = 6;
-				}
-			}
-			else if (!m_isFront)
-			{
-				//그리고 나는 드러누워있는 상태
-				if (m_isFront)
-				{
-					m_iCurrentIndex = 9;
-				}
-				else if (!m_isFront)
-				{
-					m_iCurrentIndex = 7;
-				}
-			}
-
-			// 굴러갈때는 앞뒤를 반대로 저장해야한다.
-			m_isFront = !m_isFront;
-		}
 	}
 }
 

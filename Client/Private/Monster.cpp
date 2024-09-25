@@ -310,9 +310,9 @@ void CMonster::Set_Start(_bool isStart)
 	m_pTree->Set_Start(isStart);
 }
 
-void CMonster::Set_Animation(string strAnimName, _bool isLoop)
+void CMonster::Set_Animation(string strAnimName, _bool isLoop, _bool isMotionChange)
 {
-	m_iCurrentAnimType = CUTSCENE;
+	if (isMotionChange) m_iCurrentAnimType = CUTSCENE;
 	m_strAnimName = strAnimName;
 	m_isAnimLoop = isLoop;
 
@@ -1023,6 +1023,7 @@ void CMonster::Change_Animation()
 	case MONSTER_DWN_DIRECT_B:
 	{
 		m_strAnimName = "c_dwn_direct_b";
+		m_isGrabStandup = true;
 		break;
 	}
 	case MONSTER_DWN_DIRECT_F:
@@ -1038,6 +1039,7 @@ void CMonster::Change_Animation()
 	case MONSTER_DWN_BODY_F_SP:
 	{
 		m_strAnimName = "c_dwn_body_f_sp";
+		m_isGrabStandup = true;
 		break;
 	}
 	case MONSTER_DWN_EXPLODE_F:
@@ -1068,6 +1070,7 @@ void CMonster::Change_Animation()
 	case MONSTER_DWN_DIRECT_B_BOUND_G:
 	{
 		m_strAnimName = "c_dwn_direct_b_bound_g";
+		m_isGrabStandup = true;
 		break;
 	}
 	case MONSTER_STANDUP_DNF_FAST:

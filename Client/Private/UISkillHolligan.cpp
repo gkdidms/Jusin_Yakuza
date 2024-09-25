@@ -6,6 +6,8 @@
 #include "Text.h"	
 #include "Image_Texture.h"
 #include"GameInstance.h"
+#include "Player.h"
+
 CUISkillHolligan::CUISkillHolligan()
 	:CUIScene{}
 {
@@ -307,6 +309,10 @@ HRESULT CUISkillHolligan::Late_Tick(const _float& fTimeDelta)
 					m_fCurFinMoney = 0.f;
 					(*pPartObjects)[9]->Close_UI();
 					m_UI[3]->Close_UI();
+
+					// 플레이어의 소지금을 가격만큼 빼준다.
+					_int iPrice = m_iPrice[m_iCurButton];
+					dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"), 0))->Set_Money((-iPrice));
 				}
 
 			}

@@ -43,12 +43,12 @@ private:
 
 public:
     HRESULT Initialize(void* pArg);
-    _bool Tick();
+    _bool Tick(const _float& fTimeDelta);
 
 public:
     _bool Start();
     _bool Running();
-    _bool End();
+    _bool End(const _float& fTimeDelta);
 
 private:
     void Set_TaxiStageDir();
@@ -62,6 +62,10 @@ private:
 
     _uint m_iState = { STAGE_STATE_END };
     _bool m_isPlayerMove = { false };
+
+private:
+    _float m_fDuration = { 3.f };
+    _float m_fTotalTime = { 0.f };
 
 public:
     static CCarChase* Create(void* pArg);

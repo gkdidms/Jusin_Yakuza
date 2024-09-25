@@ -36,14 +36,14 @@ HRESULT CCarChase::Initialize(void* pArg)
 }
 
 //틱을 돌면서 스테이트 관리를 시작한다.
-_bool CCarChase::Tick()
+_bool CCarChase::Tick(const _float& fTimeDelta)
 {
 	if (m_iState == START)
 		m_iState = Start() ? RUNNING : START;
 	else if (m_iState == RUNNING)
 		m_iState = Running() ? STAGE_END : RUNNING;
 	else
-		return End();
+		return End(fTimeDelta);
 		
 	return false;
 }
@@ -138,17 +138,29 @@ _bool CCarChase::Running()
 }
 
 //플레이어 자리 이동
-_bool CCarChase::End()
+_bool CCarChase::End(const _float& fTimeDelta)
 {
 	// 다음 스테이지 방향과 지금 스테이지 방향이 다르다면
 	if (m_Info.iPlayerLine != m_Info.iNextPlayerLine)
 	{
-		CHighway_Taxi* pPlayer = dynamic_cast<CHighway_Taxi*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Taxi"), 0));
-		pPlayer->Set_NavigationRouteIndex(m_Info.iNextPlayerLine);
-		pPlayer->Sit_Swap();
+		// 첫 진입 시에만 적용된다.
+		if (m_fTotalTime == 0.f)
+		{
+			CHighway_Taxi* pPlayer = dynamic_cast<CHighway_Taxi*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Taxi"), 0));
+			pPlayer->Set_NavigationRouteIndex(m_Info.iNextPlayerLine);
+			pPlayer->Sit_Swap();
+		}
 	}
 
-	return true;
+	m_fTotalTime += fTimeDelta;
+
+	// 일정 시간이 되면 다음 스테이지로 넘어간다. 
+	if (m_fDuration <= m_fTotalTime)
+	{
+		return true;
+	}
+
+	return false;
 }
 
 void CCarChase::Set_TaxiStageDir()
