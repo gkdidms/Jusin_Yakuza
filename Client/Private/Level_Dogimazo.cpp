@@ -62,6 +62,8 @@ HRESULT CLevel_Dogimazo::Initialize()
 	if (BGM_STOP)
 		m_pGameInstance->PlayBGM(TEXT("Dozimazo_BGM.mp3"), DEFAULT_VOLUME);
 
+	m_pGameInstance->Set_Shadow(true);
+
     return S_OK;
 }
 

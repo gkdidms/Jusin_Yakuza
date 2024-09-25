@@ -26,6 +26,7 @@ HRESULT CChapter7_0::Initialize(void* pArg)
 	m_pKuze->Set_Animation("p_stand_nml");
 
 	Player_Stop(true);
+	m_pGameInstance->Set_Vignette(true);
 
 	m_pFileTotalMgr->Setting_Start_Cinemachine(25);
 
@@ -39,6 +40,8 @@ _bool CChapter7_0::Execute()
 	{
 		m_pKuze->Set_Script(false);
 		Player_Stop(false);
+		m_pGameInstance->Set_Vignette(false);
+
 		return true;
 	}
 		

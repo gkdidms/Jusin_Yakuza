@@ -22,6 +22,7 @@ HRESULT CChapter3_1::Initialize(void* pArg)
 	m_pUIManager->Open_Scene(TEXT("Talk"));
 	m_pUIManager->Start_Talk(m_iScriptIndex);
 
+
 	return S_OK;
 }
 
