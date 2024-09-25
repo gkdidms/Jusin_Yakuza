@@ -30,7 +30,8 @@ void CFightManager::Set_FightStage(_bool isFightStage, CMonsterGroup* pMonsterGr
 	m_isInverseEnd = false;
 	m_isMoney = false;
 
-	m_pUIManager->Set_AlwayUI(true);
+	if (m_pGameInstance->Get_CurrentLevel() != LEVEL_OFFICE_BOSS)
+		m_pUIManager->Set_AlwayUI(true);
 
 	if (m_isFightStage)
 	{
@@ -48,8 +49,12 @@ void CFightManager::Set_FightStage(_bool isFightStage, CMonsterGroup* pMonsterGr
 			iTitleIndex = 17;
 			break;
 		case LEVEL_OFFICE_BOSS:		//»æÀï
+		{
+			//»æÀïÀÌ´Â ÀüÅõ UI ³ªÁß¿¡ ¶ßµµ·Ï ÇÔ
+			m_pUIManager->Set_AlwayUI(false);
 			iTitleIndex = 4;
 			break;
+		}
 		case LEVEL_CARCHASE:		//µµ¸ÁÃÄ¶ó
 			iTitleIndex = 3;
 			break;

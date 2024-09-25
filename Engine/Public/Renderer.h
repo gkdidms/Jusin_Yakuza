@@ -263,9 +263,9 @@ private:
                 _bool m_isRimLight = { true };
 #endif // DEBUG
 
-    _float m_fHDRLight = { 1.f };
+    _float m_fHDRLight = { 0.9f };
 
-    _float m_fSSAORadiuse = { 0.04f };
+    _float m_fSSAORadiuse = { 0.026f };
     _float m_fSSAOBlur = { 2.f };
     _float m_fSSAOBiae = { 0.225f };
     _float4* m_vSSAOKernal;
@@ -291,7 +291,7 @@ private:
     float m_fAdjectBrightness = { 0.f }; // 밝기 조정
     float m_fAdjectContrast = { 1.f }; // 대비 보정
     float m_fAdjectSaturation = { 1.f }; // 채도 보정
-    _float4 m_vAdjectTint = _float4(1.f, 1.f, 1.f, 0.f); // 색조 조정 (약간의 틴트를 추가)
+    _float4 m_vAdjectTint = _float4(1.f, 0.970f, 0.828f, 0.f); // 색조 조정 (약간의 틴트를 추가)
 
 #ifdef _DEBUG
     _bool m_isDebugView = { false };

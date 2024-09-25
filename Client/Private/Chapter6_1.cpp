@@ -35,6 +35,7 @@ HRESULT CChapter6_1::Initialize(void* pArg)
 _bool CChapter6_1::Execute()
 {
 	m_fTotalTime += m_pGameInstance->Get_TimeDelta(TEXT("Timer_Game"));
+	m_pUIManager->Set_AlwayUI(false);
 
 	if (m_fDuration <= m_fTotalTime)
 	{
