@@ -24,6 +24,7 @@ HRESULT CChapter5_0::Initialize(void* pArg)
 	PlayerCom_Stop(true);
 	Player_Stop(true);
 
+
 	return S_OK;
 }
 

@@ -1751,7 +1751,7 @@ CBTNode::NODE_STATE CAI_Monster::Check_Angry()
 	// 분노상태 전환 분기
 	if (!m_isAngry)
 	{
-		//플레이어와 충돌했을때 데미지가 13.f 이라면?
+		//플레이어와 충돌했을때 데미지가 13.f보다 크다면?
 		if (m_pThis->Get_HitDamage() > 13.f)
 		{
 			// 분노 상태로 이동
@@ -1775,6 +1775,7 @@ CBTNode::NODE_STATE CAI_Monster::Angry()
 {
 	m_isAngry = true;
 	*m_pState = CMonster::MONSTER_ANGRY_START;
+	m_pThis->Set_Effect();
 
 	return CBTNode::SUCCESS;
 }

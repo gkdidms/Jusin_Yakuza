@@ -681,8 +681,5 @@
     <None Include="..\..\EffectTool\Bin\ShaderFiles\Shader_Client_Defines.hlsli">
       <Filter>98.Shader</Filter>
     </None>
-    <None Include="..\..\EffectTool\Bin\ShaderFiles\Shader_NeoMetallic.hlsli">
-      <Filter>98.Shader</Filter>
-    </None>
   </ItemGroup>
 </Project>

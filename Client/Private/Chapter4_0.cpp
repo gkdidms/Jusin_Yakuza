@@ -23,6 +23,7 @@ HRESULT CChapter4_0::Initialize(void* pArg)
 	m_pNishiki->Set_State(CNishiki::TALK);
 
 	Player_Stop(true);
+	m_pGameInstance->Set_Vignette(true);
 
 	m_pFileTotalMgr->Setting_Start_Cinemachine(30);
 
@@ -48,6 +49,7 @@ _bool CChapter4_0::Execute()
 		if (m_pUIManager->isTalkFinished())
 		{
 			Player_Stop(false);
+			m_pGameInstance->Set_Vignette(false);
 			return true;
 		}
 

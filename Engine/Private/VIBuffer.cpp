@@ -91,11 +91,6 @@ HRESULT CVIBuffer::Create_Buffer(ID3D11Buffer** pOut)
 
 HRESULT CVIBuffer::Bind_Compute(CComputeShader* pShader)
 {
-	if (m_pVertexBufferSRV == nullptr && m_pResultBufferUAV == nullptr)
-	{
-
-	}
-
 	m_pContext->CopyResource(m_pSRVIn, m_pVB);
 	m_pContext->CSSetShaderResources(0, 1, &m_pVertexBufferSRV);
 	m_pContext->CSSetUnorderedAccessViews(0, 1, &m_pResultBufferUAV, nullptr);

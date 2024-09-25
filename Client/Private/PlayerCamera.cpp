@@ -311,7 +311,6 @@ void CPlayerCamera::Camera_FightMode_Change(const _float& fTimeDelta)
 
 	vCamPosition += XMVectorSet(XMVectorGetX(vPlayerPosition), XMVectorGetY(vPlayerPosition), XMVectorGetZ(vPlayerPosition), 0);
 
-
 	_vector vLerpedCamPosition = XMVectorLerp(vPrevCamPosition, vCamPosition, m_fLerpDelta);
 
 	float		fDistance = XMVectorGetX(XMVector3Length(vCamPosition - vLerpedCamPosition));
@@ -392,7 +391,7 @@ void CPlayerCamera::Set_StartPos()
 	if (m_iCurrentLevel != LEVEL_LOADING && m_iCurrentLevel != LEVEL_LOGO)
 	{
 		SetCursorPos(g_iWinSizeX * 0.5f, g_iWinSizeY * 0.5f); // 마우스 좌표 적용해주기
-		ShowCursor(false);
+		//ShowCursor(false);
 	}
 }
 
