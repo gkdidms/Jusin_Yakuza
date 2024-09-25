@@ -225,11 +225,9 @@ void CItem::Tick(const _float& fTimeDelta)
 		}
 
 		m_pTransformCom->Set_WorldMatrix(XMMatrixIdentity());
-		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(-0.21, -0.05, 0, 1));
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(-0.4, -0.5, 0, 1));
 
 		XMStoreFloat4x4(&m_WorldMatrix, offsetMatrix * SocketMatrix * XMLoadFloat4x4(m_pPlayerMatrix));
-
-
 	}
 	else
 	{
