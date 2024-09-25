@@ -26,7 +26,7 @@ HRESULT CChapter6_1::Initialize(void* pArg)
 	m_pShakedown->Set_Script(true);
 	m_pShakedown->Set_Animation("e_kta_stand", true, false);
 
-	m_pFileTotalMgr->Setting_Start_Cinemachine(64);
+	m_pFileTotalMgr->Setting_Start_Cinemachine(63);
 
 	return S_OK;
 }
