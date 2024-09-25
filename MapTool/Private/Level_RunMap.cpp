@@ -58,7 +58,7 @@ HRESULT CLevel_RunMap::Ready_Layer_Camera(const wstring& strLayerTag)
 	CameraDesc.fAspect = g_iWinSizeX / (_float)g_iWinSizeY;
 	CameraDesc.fNear = 0.1f;
 	CameraDesc.fFar = 3000;
-	CameraDesc.fSpeedPecSec = 10.f;
+	CameraDesc.fSpeedPecSec = 30.f;
 	CameraDesc.fRotatePecSec = XMConvertToRadians(90.f);
 
 
