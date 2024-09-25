@@ -474,26 +474,77 @@ PS_OUT_COLOR PS_BloomWhite(PS_IN In)
 }
 
 
-PS_OUT_COLOR PS_MaskEmissive(PS_IN In)
+PS_MAIN_OUT PS_MaskEmissive(PS_IN In)
 {
-    PS_OUT_COLOR Out = (PS_OUT_COLOR) 0;
- 
-    vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
+
+    PS_MAIN_OUT Out = (PS_MAIN_OUT) 0;
+    UV_SHADER UV = (UV_SHADER) 0;
+    if (g_isUVShader)
+        UV = UV_Shader(In.vTexcoord);
     
-    vector emissiveColor;
+    vector vDiffuseDesc = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
     
-    emissiveColor.rgb = vDiffuse.rgb * 0.4;
-    
-    emissiveColor.a = vDiffuse.a;
-    
-    if (vDiffuse.r < 0.3 && vDiffuse.g < 0.3 && vDiffuse.b < 0.3 && vDiffuse.a < 0.3)
+    if (vDiffuseDesc.r < 0.3 && vDiffuseDesc.g < 0.3 && vDiffuseDesc.b < 0.3 || vDiffuseDesc.a < 0.3)
+    {
         discard;
+    }
     
-    Out.vDiffuse = vDiffuse + emissiveColor;
+    if (vDiffuseDesc.a < 0.6)
+        discard;
+   
+    vector vMulti = g_isMulti ? g_MultiDiffuseTexture.Sample(LinearSampler, In.vTexcoord) : vector(0.f, 1.f, 0.f, 1.f);
+    vector vRD = g_isRD ? g_RDTexture.Sample(LinearSampler, g_isUVShader ? UV.RDRMRS : In.vTexcoord) : vector(1.f, 1.f, 1.f, 1.f);
+    vector vRS = g_isRS ? g_RSTexture.Sample(LinearSampler, g_isUVShader ? UV.RDRMRS : In.vTexcoord) : vector(1.f, 1.f, 1.f, 1.f);
+    vector vRM = g_isRM ? g_RMTexture.Sample(LinearSampler, g_isUVShader ? UV.RDRMRS : In.vTexcoord) : vector(0.5f, 1.f, 0.5f, 1.f);
+    vector vRT = g_isRT ? g_RTTexture.Sample(LinearSampler, g_isUVShader ? UV.RT : In.vTexcoord) : vector(0.5f, 0.5f, 1.f, 0.5f);
+    
+     //Neo Shader
+    float fFactor = RepeatingPatternBlendFactor(vMulti);
+    vector vDiffuse = DiffusePortion(vDiffuseDesc, vRS, vRD, fFactor, In.vTexcoord);
+    
+    COMBINE_OUT Result = Neo_MetallicAndGlossiness(vMulti, vRM); // Metallic, Rouhness 최종
+    vDiffuse = Get_Diffuse(vMulti.a, vDiffuse); // Diffuse 최종
+    
+    //노말 벡터 구하기
+    if (g_isNormal)
+    {
+        vector vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexcoord);
+            //Tangent Normal 구하기 
+        vNormalDesc = Get_Normal(vNormalDesc, vRT, fFactor);
+
+        vNormalDesc = vNormalDesc * 2.f - 1.f;
+        float3x3 WorldMatrix = float3x3(In.vTangent.xyz, In.vBinormal.xyz, In.vNormal.xyz);
+        vector vNormalBTN = normalize(vector(mul(vNormalDesc.xyz, WorldMatrix), 0.f));
+        Out.vNormal = vector(vNormalBTN.xyz * 0.5f + 0.5f, 0.f);
+    }
+    else
+    {
+        vector vNormalDesc = In.vNormal;
+        Out.vNormal = vector(vNormalDesc.xyz * 0.5f + 0.5f, 0.f);
+    }
+    
+    OE_SPECULAR OEResult = Neo_OE_Specular(vMulti, vRM, vRS);
+    
+    vector emissiveColor = float4(0, 0, 0, 0);
+    
+    emissiveColor.rgb = vDiffuse.rgb * 0.03;
+    
+    if (vDiffuse.r + vDiffuse.g + vDiffuse.b > 0.7)
+    {
+        // 약간만 bloom 되게끔
+        vDiffuse = vDiffuse * 0.2;
+    }
+    else
+    {
+        vDiffuse = vDiffuse * 0.4;
+    }
+    
+    Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_fFar, 0.f, g_ExcludeSSAO);
+    Out.vDiffuse = vDiffuse;
+    Out.vSurface = vector(Result.fMetalness, Result.fRoughness, Result.fSpeclure, Result.fFactor);
+    Out.vOEShader = vector(OEResult.fRouhness, OEResult.vSpecular);
     
     return Out;
-  
-
 }
 
 PS_OUT_COLOR PS_StrongBloom(PS_IN In)
@@ -533,30 +584,78 @@ PS_OUT_COLOR PS_Compulsory_DECAL(PS_IN In)
 }
 
 
-PS_OUT_COLOR PS_DYNAMIC_SMALL(PS_IN In)
+PS_MAIN_OUT PS_DYNAMIC_SMALL(PS_IN In)
 {
-    PS_OUT_COLOR Out = (PS_OUT_COLOR) 0;
-    
-    
-    
+
     In.vTexcoord.x += g_fTimeDelta;
-    
-    //if (1 < In.vTexcoord.x)
-    //    In.vTexcoord.x = 0;
  
-    vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
+    
+    PS_MAIN_OUT Out = (PS_MAIN_OUT) 0;
+    UV_SHADER UV = (UV_SHADER) 0;
+    if (g_isUVShader)
+        UV = UV_Shader(In.vTexcoord);
+    
+    vector vDiffuseDesc = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
     
     
-    if(vDiffuse.a < 0.4)
+    if (vDiffuseDesc.a < 0.6)
         discard;
+   
+    vector vMulti = g_isMulti ? g_MultiDiffuseTexture.Sample(LinearSampler, In.vTexcoord) : vector(0.f, 1.f, 0.f, 1.f);
+    vector vRD = g_isRD ? g_RDTexture.Sample(LinearSampler, g_isUVShader ? UV.RDRMRS : In.vTexcoord) : vector(1.f, 1.f, 1.f, 1.f);
+    vector vRS = g_isRS ? g_RSTexture.Sample(LinearSampler, g_isUVShader ? UV.RDRMRS : In.vTexcoord) : vector(1.f, 1.f, 1.f, 1.f);
+    vector vRM = g_isRM ? g_RMTexture.Sample(LinearSampler, g_isUVShader ? UV.RDRMRS : In.vTexcoord) : vector(0.5f, 1.f, 0.5f, 1.f);
+    vector vRT = g_isRT ? g_RTTexture.Sample(LinearSampler, g_isUVShader ? UV.RT : In.vTexcoord) : vector(0.5f, 0.5f, 1.f, 0.5f);
+    
+     //Neo Shader
+    float fFactor = RepeatingPatternBlendFactor(vMulti);
+    vector vDiffuse = DiffusePortion(vDiffuseDesc, vRS, vRD, fFactor, In.vTexcoord);
+    
+    COMBINE_OUT Result = Neo_MetallicAndGlossiness(vMulti, vRM); // Metallic, Rouhness 최종
+    vDiffuse = Get_Diffuse(vMulti.a, vDiffuse); // Diffuse 최종
+    
+    //노말 벡터 구하기
+    if (g_isNormal)
+    {
+        vector vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexcoord);
+            //Tangent Normal 구하기 
+        vNormalDesc = Get_Normal(vNormalDesc, vRT, fFactor);
+
+        vNormalDesc = vNormalDesc * 2.f - 1.f;
+        float3x3 WorldMatrix = float3x3(In.vTangent.xyz, In.vBinormal.xyz, In.vNormal.xyz);
+        vector vNormalBTN = normalize(vector(mul(vNormalDesc.xyz, WorldMatrix), 0.f));
+        Out.vNormal = vector(vNormalBTN.xyz * 0.5f + 0.5f, 0.f);
+    }
+    else
+    {
+        vector vNormalDesc = In.vNormal;
+        Out.vNormal = vector(vNormalDesc.xyz * 0.5f + 0.5f, 0.f);
+    }
+    
+    OE_SPECULAR OEResult = Neo_OE_Specular(vMulti, vRM, vRS);
     
     vector emissiveColor = float4(0, 0, 0, 0);
     
-    emissiveColor.rgb = vDiffuse.rgb * 0.4;
+    emissiveColor.rgb = vDiffuse.rgb * 0.03;
     
-    Out.vDiffuse = vDiffuse + emissiveColor;
+    if (vDiffuse.r + vDiffuse.g + vDiffuse.b > 0.7)
+    {
+        // 약간만 bloom 되게끔
+        vDiffuse = vDiffuse * 0.2;
+    }
+    else
+    {
+        vDiffuse = vDiffuse * 0.4;
+    }
+    
+    Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_fFar, 0.f, g_ExcludeSSAO);
+    Out.vDiffuse = vDiffuse;
+    Out.vSurface = vector(Result.fMetalness, Result.fRoughness, Result.fSpeclure, Result.fFactor);
+    Out.vOEShader = vector(OEResult.fRouhness, OEResult.vSpecular);
     
     return Out;
+    
+
 }
 
 
@@ -581,7 +680,7 @@ PS_OUT_COLOR PS_DynamicBloom(PS_IN In)
     }
     else
     {
-        discard;
+        Out.vDiffuse = vDiffuse * 0.6;
     }
     
     return Out;
@@ -650,17 +749,30 @@ PS_OUT_COLOR PS_GLASSCOLOR(PS_IN In)
 }
 
 
-PS_OUT_COLOR PS_Sign_ColorPass(PS_IN In)
+
+PS_MAIN_OUT PS_Sign_ColorPass(PS_IN In)
 {
-    PS_OUT_COLOR Out = (PS_OUT_COLOR) 0;
+    PS_MAIN_OUT Out = (PS_MAIN_OUT) 0;
+    UV_SHADER UV = (UV_SHADER) 0;
+    if (g_isUVShader)
+        UV = UV_Shader(In.vTexcoord);
     
- 
-    vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
+    vector vDiffuseDesc = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
+   
+    vector vMulti = g_isMulti ? g_MultiDiffuseTexture.Sample(LinearSampler, In.vTexcoord) : vector(0.f, 1.f, 0.f, 1.f);
+    vector vRD = g_isRD ? g_RDTexture.Sample(LinearSampler, g_isUVShader ? UV.RDRMRS : In.vTexcoord) : vector(1.f, 1.f, 1.f, 1.f);
+    vector vRS = g_isRS ? g_RSTexture.Sample(LinearSampler, g_isUVShader ? UV.RDRMRS : In.vTexcoord) : vector(1.f, 1.f, 1.f, 1.f);
+    vector vRM = g_isRM ? g_RMTexture.Sample(LinearSampler, g_isUVShader ? UV.RDRMRS : In.vTexcoord) : vector(0.5f, 1.f, 0.5f, 1.f);
+    vector vRT = g_isRT ? g_RTTexture.Sample(LinearSampler, g_isUVShader ? UV.RT : In.vTexcoord) : vector(0.5f, 0.5f, 1.f, 0.5f);
     
+     //Neo Shader
+    float fFactor = RepeatingPatternBlendFactor(vMulti);
+    vector vDiffuse = DiffusePortion(vDiffuseDesc, vRS, vRD, fFactor, In.vTexcoord);
     
-    if (vDiffuse.a < 0.4)
-        discard;
+    COMBINE_OUT Result = Neo_MetallicAndGlossiness(vMulti, vRM); // Metallic, Rouhness 최종
+    vDiffuse = Get_Diffuse(vMulti.a, vDiffuse); // Diffuse 최종
     
+
     vector emissiveColor = float4(0, 0, 0, 0);
     
     emissiveColor.rgb = vDiffuse.rgb * 0.03;
@@ -668,14 +780,37 @@ PS_OUT_COLOR PS_Sign_ColorPass(PS_IN In)
     if (vDiffuse.r + vDiffuse.g + vDiffuse.b > 0.7)
     {
         // 약간만 bloom 되게끔
-        Out.vDiffuse = vDiffuse * 0.1;
+        vDiffuse = vDiffuse * 0.2;
     }
     else
     {
-        emissiveColor.rgb = vDiffuse.rgb * 0.01;
-        Out.vDiffuse = vDiffuse + emissiveColor;
+        vDiffuse = vDiffuse * 0.4;
     }
-       
+    
+    //노말 벡터 구하기
+    if (g_isNormal)
+    {
+        vector vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexcoord);
+            //Tangent Normal 구하기 
+        vNormalDesc = Get_Normal(vNormalDesc, vRT, fFactor);
+
+        vNormalDesc = vNormalDesc * 2.f - 1.f;
+        float3x3 WorldMatrix = float3x3(In.vTangent.xyz, In.vBinormal.xyz, In.vNormal.xyz);
+        vector vNormalBTN = normalize(vector(mul(vNormalDesc.xyz, WorldMatrix), 0.f));
+        Out.vNormal = vector(vNormalBTN.xyz * 0.5f + 0.5f, 0.f);
+    }
+    else
+    {
+        vector vNormalDesc = In.vNormal;
+        Out.vNormal = vector(vNormalDesc.xyz * 0.5f + 0.5f, 0.f);
+    }
+    
+    OE_SPECULAR OEResult = Neo_OE_Specular(vMulti, vRM, vRS);
+    
+    Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_fFar, 0.f, g_ExcludeSSAO < 0.1f ? 0.f : 1.f);
+    Out.vDiffuse = vDiffuse;
+    Out.vSurface = vector(Result.fMetalness, Result.fRoughness, Result.fSpeclure, Result.fFactor);
+    Out.vOEShader = vector(OEResult.fRouhness, OEResult.vSpecular);
     
     return Out;
 }
@@ -696,7 +831,7 @@ PS_OUT_COLOR PS_Sign_Bloom(PS_IN In)
     }
     else
     {
-        discard;
+        Out.vDiffuse = vDiffuse * 0.6;
     }
     
     
@@ -704,6 +839,31 @@ PS_OUT_COLOR PS_Sign_Bloom(PS_IN In)
 }
 
 
+PS_OUT_COLOR PS_MaskSign_Bloom(PS_IN In)
+{
+    PS_OUT_COLOR Out = (PS_OUT_COLOR) 0;
+    
+    
+ 
+    vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
+    
+    if (vDiffuse.r < 0.3 && vDiffuse.g < 0.3 && vDiffuse.b < 0.3 && vDiffuse.a < 0.3)
+        discard;
+    
+    
+    if (vDiffuse.r + vDiffuse.g + vDiffuse.b > 0.7)
+    {
+        // 약간만 bloom 되게끔
+        Out.vDiffuse = vDiffuse * 0.9;
+    }
+    else
+    {
+        Out.vDiffuse = vDiffuse * 0.6;
+    }
+    
+    
+    return Out;
+}
 
 
 struct PS_IN_LIGHTDEPTH
@@ -838,7 +998,7 @@ technique11 DefaultTechnique
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_Default, 0);
-        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+        SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 
         VertexShader = compile vs_5_0 VS_MAIN();
         GeometryShader = NULL;
@@ -878,7 +1038,7 @@ technique11 DefaultTechnique
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_Default, 0);
-        SetBlendState(BS_AlphaBlend, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+        SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
 
         VertexShader = compile vs_5_0 VS_MAIN();
         GeometryShader = NULL;
@@ -952,6 +1112,19 @@ technique11 DefaultTechnique
         HullShader = NULL;
         DomainShader = NULL;
         PixelShader = compile ps_5_0 PS_Sign_Bloom();
+    }
+
+    pass MaskSignBloomPass // 16
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        HullShader = NULL;
+        DomainShader = NULL;
+        PixelShader = compile ps_5_0 PS_MaskSign_Bloom();
     }
    
     pass LightDepth // - construction , Construction의 render light depth에서 변경해주기
