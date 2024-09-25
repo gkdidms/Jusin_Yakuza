@@ -40,6 +40,9 @@ HRESULT CChapter1_0::Initialize(void* pArg)
 	Player_Stop(true);
 	PlayerCom_Stop(true);
 
+	//셰이더 추가
+	m_pGameInstance->Set_Vignette(true);
+
 	return S_OK;
 }
 
@@ -63,6 +66,7 @@ _bool CChapter1_0::Execute()
 			m_pUIManager->Open_Scene(TEXT("Title"));
 			m_pUIManager->Set_TitleStart(true); // 니시키야마를 찾아라
 			m_pUIManager->Start_Title(14);
+			m_pGameInstance->Set_Vignette(false);
 			m_isTitleStart = true;
 		}
 		else

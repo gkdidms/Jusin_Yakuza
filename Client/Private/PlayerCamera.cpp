@@ -311,7 +311,6 @@ void CPlayerCamera::Camera_FightMode_Change(const _float& fTimeDelta)
 
 	vCamPosition += XMVectorSet(XMVectorGetX(vPlayerPosition), XMVectorGetY(vPlayerPosition), XMVectorGetZ(vPlayerPosition), 0);
 
-
 	_vector vLerpedCamPosition = XMVectorLerp(vPrevCamPosition, vCamPosition, m_fLerpDelta);
 
 	float		fDistance = XMVectorGetX(XMVector3Length(vCamPosition - vLerpedCamPosition));

@@ -280,8 +280,8 @@ private:
     _float m_fSaturationFactor = { 0.2f };
 
     /* Vignette */
-    _float m_fVignetteIntensity = { 0.5f };
-    _float m_fVignetteSmootness = { 0.2f };
+    _float m_fVignetteIntensity = { 0.95f };
+    _float m_fVignetteSmootness = { 0.452f };
 
     /*RadialBlur*/
     _int m_iRadialSample = { 10 };
