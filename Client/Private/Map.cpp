@@ -823,6 +823,7 @@ HRESULT CMap::Near_Render(_uint iRenderState)
 			_bool isRD = true;
 			_bool isRM = true;
 			_bool isRT = false;
+			_bool isRefl = true;
 			_bool isMulti = true;
 
 			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS)))
@@ -844,6 +845,11 @@ HRESULT CMap::Near_Render(_uint iRenderState)
 			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RMTexture", i, aiTextureType_METALNESS)))
 				isRM = false;
 			m_pShaderCom->Bind_RawValue("g_isRM", &isRM, sizeof(_bool));
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_ReflTexture", i, aiTextureType_EMISSIVE)))
+				isRefl = false;
+			m_pShaderCom->Bind_RawValue("g_isRefl", &isRefl, sizeof(_bool));
+
 			m_pShaderCom->Bind_RawValue("g_isRT", &isRT, sizeof(_bool));
 
 			m_pShaderCom->Bind_RawValue("g_bCompulsoryAlpha", &m_bCompulsoryAlpha, sizeof(_bool));
@@ -883,6 +889,7 @@ HRESULT CMap::Near_Render(_uint iRenderState)
 				_bool isRD = true;
 				_bool isRM = true;
 				_bool isRT = false;
+				_bool isRefl = true;
 				_bool isMulti = true;
 
 				if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS)))
@@ -904,6 +911,11 @@ HRESULT CMap::Near_Render(_uint iRenderState)
 				if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RMTexture", i, aiTextureType_METALNESS)))
 					isRM = false;
 				m_pShaderCom->Bind_RawValue("g_isRM", &isRM, sizeof(_bool));
+
+				if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_ReflTexture", i, aiTextureType_EMISSIVE)))
+					isRefl = false;
+				m_pShaderCom->Bind_RawValue("g_isRefl", &isRefl, sizeof(_bool));
+
 				m_pShaderCom->Bind_RawValue("g_isRT", &isRT, sizeof(_bool));
 
 				m_pShaderCom->Bind_RawValue("g_bCompulsoryAlpha", &m_bCompulsoryAlpha, sizeof(_bool));
@@ -940,6 +952,7 @@ HRESULT CMap::Near_Render(_uint iRenderState)
 				_bool isRD = true;
 				_bool isRM = true;
 				_bool isRT = false;
+				_bool isRefl = true;
 				_bool isMulti = true;
 
 				if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS)))
@@ -961,6 +974,11 @@ HRESULT CMap::Near_Render(_uint iRenderState)
 				if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RMTexture", i, aiTextureType_METALNESS)))
 					isRM = false;
 				m_pShaderCom->Bind_RawValue("g_isRM", &isRM, sizeof(_bool));
+
+				if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_ReflTexture", i, aiTextureType_EMISSIVE)))
+					isRefl = false;
+				m_pShaderCom->Bind_RawValue("g_isRefl", &isRefl, sizeof(_bool));
+
 				m_pShaderCom->Bind_RawValue("g_isRT", &isRT, sizeof(_bool));
 
 				m_pShaderCom->Bind_RawValue("g_bCompulsoryAlpha", &m_bCompulsoryAlpha, sizeof(_bool));
@@ -996,6 +1014,7 @@ HRESULT CMap::Near_Render(_uint iRenderState)
 			_bool isRD = true;
 			_bool isRM = true;
 			_bool isRT = false;
+			_bool isRefl = true;
 			_bool isMulti = true;
 
 			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS)))
@@ -1017,6 +1036,11 @@ HRESULT CMap::Near_Render(_uint iRenderState)
 			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RMTexture", i, aiTextureType_METALNESS)))
 				isRM = false;
 			m_pShaderCom->Bind_RawValue("g_isRM", &isRM, sizeof(_bool));
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_ReflTexture", i, aiTextureType_EMISSIVE)))
+				isRefl = false;
+			m_pShaderCom->Bind_RawValue("g_isRefl", &isRefl, sizeof(_bool));
+
 			m_pShaderCom->Bind_RawValue("g_isRT", &isRT, sizeof(_bool));
 
 			m_pShaderCom->Bind_RawValue("g_bCompulsoryAlpha", &m_bCompulsoryAlpha, sizeof(_bool));
@@ -1051,6 +1075,7 @@ HRESULT CMap::Near_Render(_uint iRenderState)
 			_bool isRD = true;
 			_bool isRM = true;
 			_bool isRT = false;
+			_bool isRefl = true;
 			_bool isMulti = true;
 
 			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS)))
@@ -1072,6 +1097,11 @@ HRESULT CMap::Near_Render(_uint iRenderState)
 			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RMTexture", i, aiTextureType_METALNESS)))
 				isRM = false;
 			m_pShaderCom->Bind_RawValue("g_isRM", &isRM, sizeof(_bool));
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_ReflTexture", i, aiTextureType_EMISSIVE)))
+				isRefl = false;
+			m_pShaderCom->Bind_RawValue("g_isRefl", &isRefl, sizeof(_bool));
+
 			m_pShaderCom->Bind_RawValue("g_isRT", &isRT, sizeof(_bool));
 
 			m_pShaderCom->Bind_RawValue("g_bCompulsoryAlpha", &m_bCompulsoryAlpha, sizeof(_bool));
@@ -1096,6 +1126,7 @@ HRESULT CMap::Near_Render(_uint iRenderState)
 					return E_FAIL;
 			}
 
+
 			_float fFar = *m_pGameInstance->Get_CamFar();
 			m_pShaderCom->Bind_RawValue("g_fFar", &fFar, sizeof(_float));
 
@@ -1107,6 +1138,7 @@ HRESULT CMap::Near_Render(_uint iRenderState)
 			_bool isRD = true;
 			_bool isRM = true;
 			_bool isRT = false;
+			_bool isRefl = true;
 			_bool isMulti = true;
 
 			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS)))
@@ -1128,6 +1160,11 @@ HRESULT CMap::Near_Render(_uint iRenderState)
 			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RMTexture", i, aiTextureType_METALNESS)))
 				isRM = false;
 			m_pShaderCom->Bind_RawValue("g_isRM", &isRM, sizeof(_bool));
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_ReflTexture", i, aiTextureType_EMISSIVE)))
+				isRefl = false;
+			m_pShaderCom->Bind_RawValue("g_isRefl", &isRefl, sizeof(_bool));
+
 			m_pShaderCom->Bind_RawValue("g_isRT", &isRT, sizeof(_bool));
 
 			m_pShaderCom->Bind_RawValue("g_bCompulsoryAlpha", &m_bCompulsoryAlpha, sizeof(_bool));
@@ -1152,6 +1189,7 @@ HRESULT CMap::Near_Render(_uint iRenderState)
 					return E_FAIL;
 			}
 
+
 			_float fFar = *m_pGameInstance->Get_CamFar();
 			m_pShaderCom->Bind_RawValue("g_fFar", &fFar, sizeof(_float));
 
@@ -1163,6 +1201,7 @@ HRESULT CMap::Near_Render(_uint iRenderState)
 			_bool isRD = true;
 			_bool isRM = true;
 			_bool isRT = false;
+			_bool isRefl = true;
 			_bool isMulti = true;
 
 			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS)))
@@ -1184,6 +1223,11 @@ HRESULT CMap::Near_Render(_uint iRenderState)
 			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RMTexture", i, aiTextureType_METALNESS)))
 				isRM = false;
 			m_pShaderCom->Bind_RawValue("g_isRM", &isRM, sizeof(_bool));
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_ReflTexture", i, aiTextureType_EMISSIVE)))
+				isRefl = false;
+			m_pShaderCom->Bind_RawValue("g_isRefl", &isRefl, sizeof(_bool));
+
 			m_pShaderCom->Bind_RawValue("g_isRT", &isRT, sizeof(_bool));
 
 			m_pShaderCom->Bind_RawValue("g_bCompulsoryAlpha", &m_bCompulsoryAlpha, sizeof(_bool));
@@ -1209,6 +1253,7 @@ HRESULT CMap::Near_Render(_uint iRenderState)
 					return E_FAIL;
 			}
 
+
 			_float fFar = *m_pGameInstance->Get_CamFar();
 			m_pShaderCom->Bind_RawValue("g_fFar", &fFar, sizeof(_float));
 
@@ -1220,8 +1265,8 @@ HRESULT CMap::Near_Render(_uint iRenderState)
 			_bool isRD = true;
 			_bool isRM = true;
 			_bool isRT = false;
+			_bool isRefl = true;
 			_bool isMulti = true;
-
 
 			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS)))
 				isNormal = false;
@@ -1242,6 +1287,11 @@ HRESULT CMap::Near_Render(_uint iRenderState)
 			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RMTexture", i, aiTextureType_METALNESS)))
 				isRM = false;
 			m_pShaderCom->Bind_RawValue("g_isRM", &isRM, sizeof(_bool));
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_ReflTexture", i, aiTextureType_EMISSIVE)))
+				isRefl = false;
+			m_pShaderCom->Bind_RawValue("g_isRefl", &isRefl, sizeof(_bool));
+
 			m_pShaderCom->Bind_RawValue("g_isRT", &isRT, sizeof(_bool));
 
 			m_pShaderCom->Bind_RawValue("g_bCompulsoryAlpha", &m_bCompulsoryAlpha, sizeof(_bool));
@@ -1280,6 +1330,7 @@ HRESULT CMap::Near_Render(_uint iRenderState)
 			_bool isRD = true;
 			_bool isRM = true;
 			_bool isRT = false;
+			_bool isRefl = true;
 			_bool isMulti = true;
 
 			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS)))
@@ -1301,7 +1352,14 @@ HRESULT CMap::Near_Render(_uint iRenderState)
 			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RMTexture", i, aiTextureType_METALNESS)))
 				isRM = false;
 			m_pShaderCom->Bind_RawValue("g_isRM", &isRM, sizeof(_bool));
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_ReflTexture", i, aiTextureType_EMISSIVE)))
+				isRefl = false;
+			m_pShaderCom->Bind_RawValue("g_isRefl", &isRefl, sizeof(_bool));
+
 			m_pShaderCom->Bind_RawValue("g_isRT", &isRT, sizeof(_bool));
+
+			m_pShaderCom->Bind_RawValue("g_bCompulsoryAlpha", &m_bCompulsoryAlpha, sizeof(_bool));
 
 
 			m_pShaderCom->Begin(SHADER_DECAL_MASK);

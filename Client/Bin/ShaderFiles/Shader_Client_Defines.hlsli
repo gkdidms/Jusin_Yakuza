@@ -21,6 +21,7 @@ Texture2D g_RSTexture;
 Texture2D g_RMTexture;
 Texture2D g_RDTexture;
 Texture2D g_RTTexture;
+Texture2D g_ReflTexture;
 Texture2D g_EmissiveTexture;
 
 float g_fProgress;
@@ -119,6 +120,7 @@ bool g_isRS;
 bool g_isRD;
 bool g_isRM;
 bool g_isRT;
+bool g_isRefl;
 bool g_isNormal;
 bool g_isMulti;
 
