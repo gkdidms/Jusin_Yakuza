@@ -48,6 +48,11 @@ void CRoadWalker::Tick(const _float& fTimeDelta)
 
 void CRoadWalker::Late_Tick(const _float& fTimeDelta)
 {
+	if (true == m_pGameInstance->isIn_WorldFrustum(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 2))
+	{
+		m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
+	}
+	
 	__super::Late_Tick(fTimeDelta);
 }
 

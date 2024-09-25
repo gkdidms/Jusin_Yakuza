@@ -42,7 +42,7 @@ void CRoadYOP::Tick(const _float& fTimeDelta)
 
 void CRoadYOP::Late_Tick(const _float& fTimeDelta)
 {
-	m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
+
 
 	__super::Late_Tick(fTimeDelta);
 }
