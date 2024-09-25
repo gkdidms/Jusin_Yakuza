@@ -340,6 +340,7 @@ CBTNode::NODE_STATE CAI_Kuze::Attack()
 	{
 		//2ÆäÀÌÁî
 		static _uint iTwoCount = 0;
+		m_pThis->Set_Effect();
 
 		switch (iTwoCount)
 		{

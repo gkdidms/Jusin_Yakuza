@@ -380,7 +380,6 @@ call Copy.bat</Command>
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\EffectTool\Bin\ShaderFiles\Shader_Client_Defines.hlsli" />
-    <None Include="..\..\EffectTool\Bin\ShaderFiles\Shader_NeoMetallic.hlsli" />
     <None Include="..\Bin\ShaderFiles\Engine_Shader_Defines.hlsli" />
     <None Include="..\Bin\ShaderFiles\Shader_Deferred_Header.hlsli" />
   </ItemGroup>

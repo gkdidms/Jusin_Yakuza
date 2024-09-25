@@ -58,6 +58,7 @@ void CAdventure::Tick(const _float& fTimeDelta)
 
 void CAdventure::Late_Tick(const _float& fTimeDelta)
 {
+
 	//높이값 태우기
 	_vector vCurrentPos = m_pTransformCom->Get_State(CTransform::STATE_POSITION);
 	float fHeight = m_pNavigationCom->Compute_Height(vCurrentPos);

@@ -36,6 +36,7 @@ HRESULT CChapter1_1::Initialize(void* pArg)
 	pPlayer->Get_TransformCom()->Set_WorldMatrix(PlayerMoveMatrix);
 
 	m_pUIManager->Fade_Out();
+	m_pGameInstance->Set_Vignette(true);
 
 	m_pFileTotalMgr->Setting_Start_Cinemachine(8);
 
@@ -63,6 +64,7 @@ _bool CChapter1_1::Execute()
 			m_pNishiki->Set_State(CNishiki::IDLE);
 			Player_Stop(false);
 			PlayerCom_Stop(false);
+			m_pGameInstance->Set_Vignette(false);
 			return true;
 		}
 

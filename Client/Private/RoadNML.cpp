@@ -41,7 +41,6 @@ void CRoadNML::Tick(const _float& fTimeDelta)
 
 void CRoadNML::Late_Tick(const _float& fTimeDelta)
 {
-	m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
 
 	__super::Late_Tick(fTimeDelta);
 }

@@ -26,6 +26,7 @@ HRESULT CChapter6_0::Initialize(void* pArg)
 
 	Player_Stop(true);
 	PlayerCom_Stop(true);
+	m_pGameInstance->Set_Vignette(true);
 
 	m_pFileTotalMgr->Setting_Start_Cinemachine(35);
 
@@ -52,6 +53,8 @@ _bool CChapter6_0::Execute()
 		{
 			Player_Stop(false);
 			PlayerCom_Stop(false);
+			m_pGameInstance->Set_Vignette(false);
+
 			return true;
 		}
 
