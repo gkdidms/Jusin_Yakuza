@@ -52,7 +52,6 @@ HRESULT CCollision_Manager::Add_HitCollider(CSocketCollider* pCollider, COLLIDER
 
 HRESULT CCollision_Manager::Add_ItemCollider(CCollider* pCollider)
 {
-    //Safe_AddRef(pCollider);
     m_ItemColliders.clear();
     m_ItemColliders.push_back(pCollider);
 
@@ -326,9 +325,6 @@ bool CCollision_Manager::Check_PositionAABB_Collision(BoundingSphere* sphere, Bo
     XMStoreFloat3(&push, XMVectorZero());
     XMStoreFloat3(&push, pushVector);
 
-    //sphere->Center.x += push.x;
-    //sphere->Center.y += push.y;
-    //sphere->Center.z += push.z;
 
     _vector vSpherePos = vPosition;
     vSpherePos.m128_f32[0] += push.x;
@@ -446,7 +442,7 @@ void CCollision_Manager::ItemCollision()
                     CPlayer* pPlayer = dynamic_cast<CPlayer*>(pPlayerAttackCollider->Get_Parent());
                     CModel* pModel = dynamic_cast<CModel*>(pPlayer->Get_Component(TEXT("Com_Model")));
 
-                    dynamic_cast<CItem*>(item)->Set_ParentMatrix(pModel->Get_BoneCombinedTransformationMatrix("buki_r_n"));
+                    dynamic_cast<CItem*>(item)->Set_ParentMatrix(pModel->Get_BoneCombinedTransformationMatrix("buki_l_n"));
                     dynamic_cast<CItem*>(item)->Set_Grab(true);
 
                     pPlayerAttackCollider->ParentObject_Attack(item, true);
@@ -656,10 +652,6 @@ void CCollision_Manager::Battle_Clear()
 
 void CCollision_Manager::Item_Clear()
 {
-    for (auto& pCollider : m_ItemColliders)
-    {
-        Safe_Release(pCollider);
-    }
     m_ItemColliders.clear();
 }
 

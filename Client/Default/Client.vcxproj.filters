@@ -745,6 +745,9 @@
     <ClCompile Include="..\Private\UIDamageMoney.cpp">
       <Filter>95.Utility\05.UIManager\UIScene\UIDamageMoney</Filter>
     </ClCompile>
+    <ClCompile Include="..\Private\Chapter6_1.cpp">
+      <Filter>03.QuestManager\Quest\Main\Chapter_6\1</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\public\MainApp.h">
@@ -1520,6 +1523,9 @@
     </ClInclude>
     <ClInclude Include="..\Public\UIDamageMoney.h">
       <Filter>95.Utility\05.UIManager\UIScene\UIDamageMoney</Filter>
+    </ClInclude>
+    <ClInclude Include="..\Public\Chapter6_1.h">
+      <Filter>03.QuestManager\Quest\Main\Chapter_6\1</Filter>
     </ClInclude>
   </ItemGroup>
   <ItemGroup>
@@ -2349,6 +2355,9 @@
     </Filter>
     <Filter Include="95.Utility\05.UIManager\UIScene\UIDamageMoney">
       <UniqueIdentifier>{ec5750ce-aa91-4b05-ae1e-947c4bcdc2d9}</UniqueIdentifier>
+    </Filter>
+    <Filter Include="03.QuestManager\Quest\Main\Chapter_6\1">
+      <UniqueIdentifier>{4cb92cee-5b92-4047-96a0-c957672143da}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>

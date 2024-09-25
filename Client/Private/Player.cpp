@@ -137,8 +137,8 @@ HRESULT CPlayer::Initialize(void* pArg)
 	m_Info.fMaxHP = 150.f;
 	m_Info.fHp = m_Info.fMaxHP;
 
-	PlayerInfo.iMoney = 100;
-	PlayerInfo.fHitGauge = 100.f;
+	PlayerInfo.iMoney = 0;
+	PlayerInfo.fHitGauge = 150.f;
 	ZeroMemory(&m_MoveDirection, sizeof(_bool) * MOVE_DIRECTION_END);
 	ZeroMemory(&m_InputDirection, sizeof(_bool) * MOVE_DIRECTION_END);
 
@@ -358,7 +358,7 @@ void CPlayer::Late_Tick(const _float& fTimeDelta)
 	if (m_isObjectRender)
 	{
 		m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
-		//m_pGameInstance->Add_Renderer(CRenderer::RENDER_SHADOWOBJ, this); // Shadow용 렌더 추가
+		m_pGameInstance->Add_Renderer(CRenderer::RENDER_SHADOWOBJ, this); // Shadow용 렌더 추가
 	}
 #else
 	m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
@@ -731,6 +731,9 @@ void CPlayer::Take_Damage(_uint iHitColliderType, const _float3& vDir, _float fD
 	// 데미지 감소율 설정 (파괴자 가드 시에는 딜을 평소보다 0.2배만큼만 받는다 (==딜감80퍼))
 	_float fDamageDownScale = 1.f;
 
+	m_pGameInstance->StopSound(SOUND_PLAYER_EFFECT);
+	m_pGameInstance->PlaySound_W(TEXT("4718 [3].wav"), SOUND_PLAYER_EFFECT, 1.f);
+
 	switch (m_eCurrentStyle)
 	{
 	case CPlayer::KRS:
@@ -756,6 +759,9 @@ void CPlayer::Take_Damage(_uint iHitColliderType, const _float3& vDir, _float fD
 			CKiryu_KRS_PickUp::KRS_PICK_UP_HIT_DESC Desc{ m_AnimationTree[KRS].at((_uint)KRS_BEHAVIOR_STATE::HIT)->Get_AnimationIndex() };
 			m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Setting_Value((void*)&Desc);
 
+			// KRS일 때에만 Event 한번 실행시켜서 아이템 Life 횟수를 맞춰준다.
+			m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Event(nullptr);
+
 			// 사용을 다 했으면 다시 초기화해준다.
 			m_AnimationTree[KRS].at((_uint)KRS_BEHAVIOR_STATE::HIT)->Reset();
 
@@ -767,7 +773,6 @@ void CPlayer::Take_Damage(_uint iHitColliderType, const _float3& vDir, _float fD
 			m_iCurrentBehavior = (_uint)KRS_BEHAVIOR_STATE::HIT;
 			m_AnimationTree[m_eCurrentStyle].at(m_iCurrentBehavior)->Setting_Value((void*)&Desc);
 		}
-
 
 		break;
 	}

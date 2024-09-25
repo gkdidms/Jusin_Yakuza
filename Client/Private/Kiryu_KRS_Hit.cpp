@@ -90,7 +90,8 @@ void CKiryu_KRS_Hit::Setting_Value(void* pValue)
 {
 	KRS_Hit_DESC* pDesc = static_cast<KRS_Hit_DESC*>(pValue);
 
-	string strAnimName = m_pGameInstance->Extract_String(pDesc->strAnimationName, '[', ']');
+	//string strAnimName = m_pGameInstance->Extract_String(pDesc->strAnimationName, '[', ']');
+	string strAnimName = pDesc->strAnimationName;
 
 
 	if ("p_krh_cmb_01" == strAnimName)
@@ -410,12 +411,12 @@ void CKiryu_KRS_Hit::Setting_Value(void* pValue)
 		}
 		case CPlayer::L:
 		{
-			m_iCurrentIndex = 25;
+			m_iCurrentIndex = 22;
 			break;
 		}
 		case CPlayer::R:
 		{
-			m_iCurrentIndex = 24;
+			m_iCurrentIndex = 23;
 			break;
 		}
 		}
@@ -901,6 +902,38 @@ void CKiryu_KRS_Hit::Setting_Value(void* pValue)
 		case CPlayer::R:
 		{
 			m_iCurrentIndex = 13;
+			break;
+		}
+		}
+	}
+	// ¼îÆÄ µç ¾Ö
+	else if ("e_wph_atk_heavy" == strAnimName)
+	{
+		/*22 c_dwn_body_b*/
+		/*23 c_dwn_body_f*/
+		/*24 c_dwn_body_l*/
+		/*25 c_dwn_body_r*/
+
+		switch (pDesc->iDirection)
+		{
+		case CPlayer::F:
+		{
+			m_iCurrentIndex = 23;
+			break;
+		}
+		case CPlayer::B:
+		{
+			m_iCurrentIndex = 22;
+			break;
+		}
+		case CPlayer::L:
+		{
+			m_iCurrentIndex = 22;
+			break;
+		}
+		case CPlayer::R:
+		{
+			m_iCurrentIndex = 23;
 			break;
 		}
 		}

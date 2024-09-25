@@ -32,7 +32,9 @@ CLevel_Roadway::CLevel_Roadway(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 
 HRESULT CLevel_Roadway::Initialize()
 {
-	m_pGameInstance->PlayBGM(TEXT("Ultimate Road Rage.mp3"), DEFAULT_VOLUME);
+	if (BGM_STOP)
+		m_pGameInstance->PlayBGM(TEXT("Ultimate Road Rage.mp3"), DEFAULT_VOLUME);
+
 	m_pCarChaseManager = CCarChaseManager::Create(m_pDevice, m_pContext);
 	if (nullptr == m_pCarChaseManager)
 		return E_FAIL;
@@ -56,6 +58,8 @@ HRESULT CLevel_Roadway::Initialize()
 	/* 셰이더 옵션값 */
 	//m_pGameInstance->Set_HDRLight(1.6f);
 	//m_pGameInstance->Set_AdjectTint(_float4(0.814f, 0.810f, 0.782f, 0.f));
+
+	m_pGameInstance->Set_Shadow(false);
 
     return S_OK;
 }
@@ -83,7 +87,7 @@ void CLevel_Roadway::Tick(const _float& fTimeDelta)
 	
 	if (m_isTitleEnd)
 	{
-		m_pCarChaseManager->Tick();
+		m_pCarChaseManager->Tick(fTimeDelta);
 
 		if (m_isRadialOnEventPlay)
 			RadialOnTimer(fTimeDelta);

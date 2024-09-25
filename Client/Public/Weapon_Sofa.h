@@ -28,6 +28,9 @@ protected:
 	virtual HRESULT Add_Components() override;
 	virtual HRESULT Bind_ResourceData() override;
 
+private:
+	class CCollision_Manager* m_pCollisionManager = { nullptr };
+
 public:
 	static CSofa* Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext);
 	virtual CGameObject* Clone(void* pArg) override;

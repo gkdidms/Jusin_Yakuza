@@ -386,6 +386,10 @@ _bool CNavigation::isMove(_fvector vMovePos)
 {
     _int iNeighborsIndex = { -1 };
 
+    if (m_iCurrentIndex == -1)
+    {
+        return false;
+    }
     // 셀 안에 있는지?
     if (m_Cells[m_iCurrentIndex]->isIn(vMovePos, &iNeighborsIndex, m_vSlidingNormal))
         return true;

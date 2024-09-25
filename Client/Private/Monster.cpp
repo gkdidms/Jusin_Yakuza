@@ -310,14 +310,20 @@ void CMonster::Set_Start(_bool isStart)
 	m_pTree->Set_Start(isStart);
 }
 
-void CMonster::Set_Animation(string strAnimName, _bool isLoop)
+void CMonster::Set_Animation(string strAnimName, _bool isLoop, _bool isMotionChange)
 {
-	m_iCurrentAnimType = CUTSCENE;
+	if (isMotionChange) m_iCurrentAnimType = CUTSCENE;
 	m_strAnimName = strAnimName;
 	m_isAnimLoop = isLoop;
 
 	if (FAILED(Setup_Animation()))
 		return;
+}
+
+void CMonster::Set_Effect()
+{
+	(m_pEffects.lower_bound("mune_c_n"))->second->On();
+	m_isRimLight = true;
 }
 
 void CMonster::Reset_Monster()
@@ -450,7 +456,7 @@ void CMonster::Tick(const _float& fTimeDelta)
 		m_pModelCom->Play_Animation_Monster(fTimeDelta, m_pAnimCom[m_iCurrentAnimType], m_isAnimLoop, isRoot);
 	}
 
-	if(m_strAnimName != "e_pnc_stand")
+	if(m_strAnimName != "e_pnc_stand" && m_strAnimName != "e_wph_atk_heavy")
 		Synchronize_Root(fTimeDelta);
 
 	m_pColliderCom->Tick(m_pTransformCom->Get_WorldMatrix());
@@ -494,6 +500,7 @@ void CMonster::Late_Tick(const _float& fTimeDelta)
 	//if (m_pGameInstance->isIn_WorldFrustum(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 1.5f))
 	//{
 	m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
+	m_pGameInstance->Add_Renderer(CRenderer::RENDER_SHADOWOBJ, this);
 
 	if (!m_isSynchronizing)
 		m_pCollisionManager->Add_ImpulseResolution(this);
@@ -669,6 +676,7 @@ void CMonster::Animation_Event()
 
 		if (CurPos >= pEvent.fPlayPosition && CurPos < Duration)
 		{
+			// 콜라이더 정보는 뼈 인덱스를 Key로 사용중이며, 중복 key 불가.
 			CSocketCollider* pCollider = m_pColliders.at(pEvent.iBoneIndex);
 
 			switch (pEvent.iType)
@@ -1023,6 +1031,7 @@ void CMonster::Change_Animation()
 	case MONSTER_DWN_DIRECT_B:
 	{
 		m_strAnimName = "c_dwn_direct_b";
+		m_isGrabStandup = true;
 		break;
 	}
 	case MONSTER_DWN_DIRECT_F:
@@ -1038,6 +1047,7 @@ void CMonster::Change_Animation()
 	case MONSTER_DWN_BODY_F_SP:
 	{
 		m_strAnimName = "c_dwn_body_f_sp";
+		m_isGrabStandup = true;
 		break;
 	}
 	case MONSTER_DWN_EXPLODE_F:
@@ -1068,6 +1078,7 @@ void CMonster::Change_Animation()
 	case MONSTER_DWN_DIRECT_B_BOUND_G:
 	{
 		m_strAnimName = "c_dwn_direct_b_bound_g";
+		m_isGrabStandup = true;
 		break;
 	}
 	case MONSTER_STANDUP_DNF_FAST:

@@ -42,7 +42,7 @@ HRESULT CLevel_Test::Initialize()
 	// 테스트 다하면 지워라
 	/* For.Prototype_Component_Navigation */
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Navigation"),
-		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/NaviData/Navigation_7.dat")))))
+		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/NaviData/Navigation_5.dat")))))
 		return E_FAIL;
 
 	//m_pKaraokeManager = CKaraokeManager::Create();
@@ -67,13 +67,13 @@ HRESULT CLevel_Test::Initialize()
 	//	return E_FAIL;
 
 	// 혜원테스트용
-	//if (FAILED(Ready_Test_Hyewon()))
-	//	return E_FAIL;
+	if (FAILED(Ready_Test_Hyewon()))
+		return E_FAIL;
 
-	m_pFileTotalManager->Set_MapObj_In_Client(10, LEVEL_TEST);
-	m_pFileTotalManager->Set_Lights_In_Client(7);
-	m_pFileTotalManager->Set_Collider_In_Client(3, LEVEL_TEST);
-	m_pFileTotalManager->Set_Trigger_In_Client(80, LEVEL_TEST);
+	//m_pFileTotalManager->Set_MapObj_In_Client(79, LEVEL_TEST);
+	//m_pFileTotalManager->Set_Lights_In_Client(7);
+	//m_pFileTotalManager->Set_Collider_In_Client(3, LEVEL_TEST);
+	//m_pFileTotalManager->Set_Trigger_In_Client(80, LEVEL_TEST);
 
 	if (FAILED(Ready_Camera(TEXT("Layer_Camera"))))
 		return E_FAIL;
@@ -220,10 +220,12 @@ HRESULT CLevel_Test::Ready_Test_Hyewon()
 
 	// 빈 맵: 93
 	// 네비: 90
-	m_pFileTotalManager->Set_MapObj_In_Client(9, LEVEL_TEST);
-	m_pFileTotalManager->Set_Lights_In_Client(99);
+	// 도지마조 로비: 98, 97(몬x), 96(쉐이크다운)
+	// 도지마조 로비 네비: 5
+	m_pFileTotalManager->Set_MapObj_In_Client(97, LEVEL_TEST);
+	m_pFileTotalManager->Set_Lights_In_Client(5);
 	m_pFileTotalManager->Set_Collider_In_Client(0, LEVEL_TEST);
-	m_pFileTotalManager->Set_Trigger_In_Client(79, LEVEL_TEST);
+	//m_pFileTotalManager->Set_Trigger_In_Client(79, LEVEL_TEST);
 
 	return S_OK;
 }

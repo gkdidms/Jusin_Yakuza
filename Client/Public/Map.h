@@ -53,6 +53,8 @@ public:
 		SHADER_DYNAMIC_SIGN_BLOOM, // 12
 		SHADER_DYNAMIC_SIGN_FAST, // 13
 		SHADER_GLASS_COLOR, //14
+		SHADER_SIGN_COLOR,
+		SHADER_BLOOM_SIGN,
 
 		// 무조건 제일 아래
 		SHADER_LIGHTDEPTH, //14
@@ -176,7 +178,9 @@ private:
 
 
 	bool					m_bOcculusionCulling = { false };
-	bool					m_bExcludeSSAO = { false }; //SSAO 제외
+	float					m_iExcludeSSAO = { 0 }; //SSAO 제외
+
+	string			m_ModelName;
 
 private:
 	ID3D11Query* m_pOcclusionQuery = { nullptr };

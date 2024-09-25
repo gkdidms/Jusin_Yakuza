@@ -568,8 +568,6 @@ PS_OUT_COLOR PS_DynamicBloom(PS_IN In)
  
     In.vTexcoord.x += g_fTimeDelta;
     
-    //if (1 < In.vTexcoord.x)
-    //    In.vTexcoord.x = 0;
  
     vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
     
@@ -579,7 +577,6 @@ PS_OUT_COLOR PS_DynamicBloom(PS_IN In)
    
     if (vDiffuse.r + vDiffuse.g + vDiffuse.b > 1)
     {
-        // 약간만 bloom 되게끔
         Out.vDiffuse = vDiffuse;
     }
     else
@@ -630,18 +627,82 @@ PS_OUT_COLOR PS_GLASSCOLOR(PS_IN In)
     float2 vRefractTexCoord;
     vRefractTexCoord.x = In.vProjPos.x / In.vProjPos.w / 2.0f + 0.5f;
     vRefractTexCoord.y = -In.vProjPos.y / In.vProjPos.w / 2.0f + 0.5f;
+    
+    if (true == g_isNormal)
+    {
+        // Normal texture 있으면 vTexcoord 다시
+        float3 normal;
+        vector vNormalDesc = g_NormalTexture.Sample(LinearSampler, In.vTexcoord);
+        normal = vNormalDesc.xyz * 2.f - 1.f;
+        vRefractTexCoord = vRefractTexCoord + (normal.xy * g_fRefractionScale);
+    }
 
 
     // Refract - 유리 뒤에 비치는 씬
     float4 vRefractColor = g_RefractionTexture.Sample(LinearSampler, vRefractTexCoord);
     float4 vGlassTexColor = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
-    float4 vFinalColor = lerp(vRefractColor, vGlassTexColor, 0.5f);
+    float4 vFinalColor = lerp(vRefractColor, vGlassTexColor, 0.8f);
     
     vFinalColor.a = 1;
     Out.vDiffuse = vFinalColor;
     
     return Out;
 }
+
+
+PS_OUT_COLOR PS_Sign_ColorPass(PS_IN In)
+{
+    PS_OUT_COLOR Out = (PS_OUT_COLOR) 0;
+    
+ 
+    vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
+    
+    
+    if (vDiffuse.a < 0.4)
+        discard;
+    
+    vector emissiveColor = float4(0, 0, 0, 0);
+    
+    emissiveColor.rgb = vDiffuse.rgb * 0.03;
+    
+    if (vDiffuse.r + vDiffuse.g + vDiffuse.b > 0.7)
+    {
+        // 약간만 bloom 되게끔
+        Out.vDiffuse = vDiffuse * 0.1;
+    }
+    else
+    {
+        emissiveColor.rgb = vDiffuse.rgb * 0.01;
+        Out.vDiffuse = vDiffuse + emissiveColor;
+    }
+       
+    
+    return Out;
+}
+
+PS_OUT_COLOR PS_Sign_Bloom(PS_IN In)
+{
+    PS_OUT_COLOR Out = (PS_OUT_COLOR) 0;
+    
+    
+ 
+    vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
+    
+    
+    if (vDiffuse.r + vDiffuse.g + vDiffuse.b > 0.7)
+    {
+        // 약간만 bloom 되게끔
+        Out.vDiffuse = vDiffuse * 0.9;
+    }
+    else
+    {
+        discard;
+    }
+    
+    
+    return Out;
+}
+
 
 
 
@@ -841,7 +902,7 @@ technique11 DefaultTechnique
         PixelShader = compile ps_5_0 PS_DynamicBloom();
     }
 
-    pass DynaicFastPass // 12
+    pass DynaicFastPass // 13
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_Default, 0);
@@ -854,7 +915,7 @@ technique11 DefaultTechnique
         PixelShader = compile ps_5_0 PS_DynamicFast();
     }
 
-    pass GlassColorPass // 12
+    pass GlassColorPass // 14
     {
         SetRasterizerState(RS_Default);
         SetDepthStencilState(DSS_Default, 0);
@@ -865,6 +926,32 @@ technique11 DefaultTechnique
         HullShader = NULL;
         DomainShader = NULL;
         PixelShader = compile ps_5_0 PS_GLASSCOLOR();
+    }
+
+    pass SIGNCOLORPASS // 15
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        HullShader = NULL;
+        DomainShader = NULL;
+        PixelShader = compile ps_5_0 PS_Sign_ColorPass();
+    }
+
+    pass SignBloomPass // 16
+    {
+        SetRasterizerState(RS_Default);
+        SetDepthStencilState(DSS_Default, 0);
+        SetBlendState(BS_Default, float4(0.f, 0.f, 0.f, 0.f), 0xffffffff);
+
+        VertexShader = compile vs_5_0 VS_MAIN();
+        GeometryShader = NULL;
+        HullShader = NULL;
+        DomainShader = NULL;
+        PixelShader = compile ps_5_0 PS_Sign_Bloom();
     }
    
     pass LightDepth // - construction , Construction의 render light depth에서 변경해주기

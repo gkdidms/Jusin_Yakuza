@@ -37,9 +37,8 @@ HRESULT CLevel_DogimazoLobby::Initialize()
     m_pFileTotalManager->Set_MapObj_In_Client(STAGE_DOGIMAZO_LOBBY, LEVEL_DOGIMAZO_LOBBY);
     m_pFileTotalManager->Set_Lights_In_Client(STAGE_DOGIMAZO_LOBBY);
     m_pFileTotalManager->Set_Collider_In_Client(STAGE_DOGIMAZO_LOBBY, LEVEL_DOGIMAZO_LOBBY);
-	m_pFileTotalManager->Set_Trigger_In_Client(4, LEVEL_DOGIMAZO_LOBBY);			// ¿ä³×´Ù²¨
+	//m_pFileTotalManager->Set_Trigger_In_Client(4, LEVEL_DOGIMAZO_LOBBY);			// ¿ä³×´Ù²¨
 
-	//m_pFileTotalManager->Set_Trigger_In_Client(STAGE_DOGIMAZO_LOBBY, LEVEL_DOGIMAZO_LOBBY);
 	m_pFileTotalManager->Set_Trigger_In_Client(44, LEVEL_DOGIMAZO_LOBBY); // º¸½º·ë ÀÔÀå
 
 	if (FAILED(Ready_Camera(TEXT("Layer_Camera"))))
@@ -50,7 +49,8 @@ HRESULT CLevel_DogimazoLobby::Initialize()
 	//m_pFightManager->Set_FightStage(true);
 	m_pUIManager->Fade_Out();
 
-	m_pGameInstance->PlayBGM(TEXT("Dozimazo_BGM.mp3"), DEFAULT_VOLUME);
+	if (BGM_STOP)
+		m_pGameInstance->PlayBGM(TEXT("Dozimazo_BGM.mp3"), DEFAULT_VOLUME);
 
 	/*¼ÎÀÌ´õ ¿É¼Ç°ª*/
 	//m_pGameInstance->Set_HDRLight(1.3f);

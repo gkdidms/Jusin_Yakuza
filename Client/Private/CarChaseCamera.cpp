@@ -156,9 +156,11 @@ void CCarChaseCamera::Targeting(const _float& fTimeDelta)
 			pTarget = Reactors[Reactors.size() - 2];
 		}
 
-		m_fHeight = 2.f;
+		m_fHeight = 3.f;
+		//vTargetingPos = pTarget->Get_TransformCom()->Get_State(CTransform::STATE_POSITION);
+		//vCamMoveDir = XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_POSITION) - vTargetingPos);
 		vTargetingPos = pTarget->Get_TransformCom()->Get_State(CTransform::STATE_POSITION);
-		vCamMoveDir = XMVector3Normalize(m_pTransformCom->Get_State(CTransform::STATE_POSITION) - vTargetingPos);
+		vCamMoveDir = XMVector3Normalize(vTargetingPos - m_pTransformCom->Get_State(CTransform::STATE_POSITION));
 	}
 
 	//선형보간

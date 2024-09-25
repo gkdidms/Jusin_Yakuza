@@ -192,7 +192,7 @@ private:
     /*최종 렌더 (빼지마세요)*/
     void Render_FinalResult();
 
-    /*최종적으로 화면에 그려질 색사 보정*/
+    /*최종적으로 화면에 그려질 색상 보정*/
     void Render_AdjustColor();
 
     void Render_UI();
@@ -259,15 +259,15 @@ private:
                 _bool m_isSSAO = { true };
                 _bool m_isPBR = { true };
                 _bool m_isBOF = { true };
-                _bool m_isShadow = { false };
+                _bool m_isShadow = { true };
                 _bool m_isRimLight = { true };
 #endif // DEBUG
 
     _float m_fHDRLight = { 1.f };
 
-    _float m_fSSAORadiuse = { 0.02f };
+    _float m_fSSAORadiuse = { 0.04f };
     _float m_fSSAOBlur = { 2.f };
-    _float m_fSSAOBiae = { 0.05f };
+    _float m_fSSAOBiae = { 0.225f };
     _float4* m_vSSAOKernal;
 
     int      m_iRenderState = { RENDER_END };
@@ -280,8 +280,8 @@ private:
     _float m_fSaturationFactor = { 0.2f };
 
     /* Vignette */
-    _float m_fVignetteIntensity = { 0.5f };
-    _float m_fVignetteSmootness = { 0.2f };
+    _float m_fVignetteIntensity = { 0.95f };
+    _float m_fVignetteSmootness = { 0.452f };
 
     /*RadialBlur*/
     _int m_iRadialSample = { 10 };

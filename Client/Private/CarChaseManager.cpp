@@ -42,13 +42,13 @@ HRESULT CCarChaseManager::Initialize()
 	return S_OK;
 }
 
-_bool CCarChaseManager::Tick()
+_bool CCarChaseManager::Tick(const _float& fTimeDelta)
 {
 	if (m_isFinished)
 		return true;
 
 	//다음 스테이지로 넘어가기
-	if (m_Stages[m_iCurrentStage]->Tick())
+	if (m_Stages[m_iCurrentStage]->Tick(fTimeDelta))
 	{
 		m_iCurrentStage++;
 

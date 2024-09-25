@@ -334,7 +334,7 @@ HRESULT CRenderer::Ready_Targets()
 	/*Target_FinalEffect*/
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_FinalEffect"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
-	
+
 	/*Target_RadialBlur*/
 	if (FAILED(m_pGameInstance->Add_RenderTarget(TEXT("Target_RadialBlur"), ViewPort.Width, ViewPort.Height, DXGI_FORMAT_R16G16B16A16_UNORM, _float4(0.f, 0.f, 0.f, 0.f))))
 		return E_FAIL;
@@ -536,7 +536,7 @@ HRESULT CRenderer::Ready_MRTs()
 	/* MRT_FinalResult */
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_FinalResult"), TEXT("Target_FinalResult"))))
 		return E_FAIL;
-	
+
 
 	/* MRT_Occulusion */
 	if (FAILED(m_pGameInstance->Add_MRT(TEXT("MRT_Occulusion"), TEXT("Target_OcculusionDepth"))))
@@ -747,10 +747,14 @@ void CRenderer::Draw()
 	// 간판을 위해 임의로 남겨두기
 	Render_NonLight_NonBlur();
 
+	//톤매핑 & 평균 휘도
 	if (m_isHDR)
+	{
 		Render_DownSampling();
-
-	
+		Render_AvgLuminance();
+		Render_CopyLuminance();
+		Render_LuminanceResult();
+	}
 
 	// NonLight랑 Bloom은 같이 붙어있어야함
 	Render_NonLight();
@@ -770,14 +774,6 @@ void CRenderer::Draw()
 		//Render_Puddle();
 
 		Render_BOF();
-	}
-
-	//톤매핑 & 평균 휘도
-	if (m_isHDR)
-	{
-		Render_AvgLuminance();
-		Render_CopyLuminance();
-		Render_LuminanceResult();
 	}
 
 	if (m_isRadialBlur)
@@ -1038,7 +1034,7 @@ void CRenderer::Render_SSAOBlur()
 	_uint GroupX = (1280 + 255) / 256;
 
 	m_pComputeShader[BLURX]->Render(GroupX, 720, 1);
-	
+
 	_uint GroupY = (720 + 255) / 256;
 	m_pGameInstance->Bind_ComputeRenderTargetSRV(TEXT("Target_Blur_X"));
 	m_pGameInstance->Bind_ComputeRenderTargetUAV(TEXT("Target_SSAO"));
@@ -1075,7 +1071,7 @@ void CRenderer::Render_PBR()
 
 	m_pGameInstance->Bind_ComputeRenderTargetUAV(TEXT("Target_PBR"), 0);
 	m_pGameInstance->Bind_ComputeRenderTargetUAV(TEXT("Target_Specular"), 1);
-	
+
 	_uint GroupX = (1280 + 15) / 16;
 	_uint GroupY = (720 + 15) / 16;
 
@@ -1255,6 +1251,8 @@ void CRenderer::Render_DeferredResult() // 백버퍼에 Diffuse와 Shade를 더해서 그�
 	m_pVIBuffer->Render();
 }
 
+/*HDR*/
+#pragma region HDR
 void CRenderer::Render_DownSampling()
 {
 	//컴퓨트 다운샘플링 진행
@@ -1338,6 +1336,86 @@ void CRenderer::Render_DownSampling()
 	}
 
 }
+void CRenderer::Render_AvgLuminance()
+{
+	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_Luminance"))))
+		return;
+
+	if (FAILED(m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix)))
+		return;
+	if (FAILED(m_pShader->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix)))
+		return;
+	if (FAILED(m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
+		return;
+
+	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_1x1"), m_pShader, "g_LuminanceTexture")))
+		return;
+	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_CopyLuminance"), m_pShader, "g_CopyLuminanceTexture")))
+		return;
+
+	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_BackBuffer"), m_pShader, "g_BackBufferTexture")))
+		return;
+
+	m_pShader->Begin(7);
+
+	m_pVIBuffer->Render();
+
+	if (FAILED(m_pGameInstance->End_MRT()))
+		return;
+}
+
+void CRenderer::Render_CopyLuminance()
+{
+	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_CopyLuminance"))))
+		return;
+
+	if (FAILED(m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix)))
+		return;
+	if (FAILED(m_pShader->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix)))
+		return;
+	if (FAILED(m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
+		return;
+
+	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_1x1"), m_pShader, "g_LuminanceTexture")))
+		return;
+
+	m_pShader->Begin(8);
+
+	m_pVIBuffer->Render();
+
+	if (FAILED(m_pGameInstance->End_MRT()))
+		return;
+
+}
+
+void CRenderer::Render_LuminanceResult()
+{
+	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_HDR"))))
+		return;
+
+	if (FAILED(m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix)))
+		return;
+	if (FAILED(m_pShader->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix)))
+		return;
+	if (FAILED(m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
+		return;
+
+	if (FAILED(m_pShader->Bind_RawValue("g_fLumVar", &m_fHDRLight, sizeof(_float))))
+		return;
+
+	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_BackBuffer"), m_pShader, "g_BackBufferTexture")))
+		return;
+	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Luminance"), m_pShader, "g_LuminanceTexture")))
+		return;
+
+	m_pShader->Begin(9);
+
+	m_pVIBuffer->Render();
+
+	if (FAILED(m_pGameInstance->End_MRT()))
+		return;
+}
+#pragma endregion
 
 void CRenderer::Render_NonLight_NonBlur()
 {
@@ -1460,8 +1538,16 @@ void CRenderer::Render_Bloom()
 
 void CRenderer::Render_FinalEffectBlend()
 {
-	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_CopyBackBuffer"), nullptr, false)))
-		return;
+	if (m_isHDR)
+	{
+		if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_HDR"), nullptr, false)))
+			return;	
+	}
+	else
+	{
+		if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_CopyBackBuffer"), nullptr, false)))
+			return;
+	}
 
 	if (FAILED(m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix)))
 		return;
@@ -1532,8 +1618,16 @@ void CRenderer::Render_Effect()// 새로운 타겟에 파티클 그리기
 
 void CRenderer::Render_FinlaOIT() //파티클 그린 타겟 병합
 {
-	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_CopyBackBuffer"), nullptr, false)))
-		return;
+	if (m_isHDR)
+	{
+		if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_HDR"), nullptr, false)))
+			return;
+	}
+	else
+	{
+		if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_CopyBackBuffer"), nullptr, false)))
+			return;
+	}
 
 	if (FAILED(m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix)))
 		return;
@@ -1574,7 +1668,7 @@ void CRenderer::Render_Distortion()
 	if (FAILED(m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
 		return;
 
-	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_BackBuffer"), m_pShader, "g_ResultTexture")))//원본 최종
+	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(m_isHDR ? TEXT("Target_ToneMapping") : TEXT("Target_BackBuffer"), m_pShader, "g_ResultTexture")))//원본 최종
 		return;
 
 	m_pShader->Begin(20);//디스토션 제작
@@ -1644,90 +1738,6 @@ void CRenderer::Render_BOF()
 		return;
 }
 
-/*HDR*/
-#pragma region HDR
-void CRenderer::Render_AvgLuminance()
-{
-	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_Luminance"))))
-		return;
-
-	if (FAILED(m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix)))
-		return;
-	if (FAILED(m_pShader->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix)))
-		return;
-	if (FAILED(m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
-		return;
-
-	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_1x1"), m_pShader, "g_LuminanceTexture")))
-		return;
-	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_CopyLuminance"), m_pShader, "g_CopyLuminanceTexture")))
-		return;
-
-	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(m_isBOF ? TEXT("Target_BOF") : TEXT("Target_FinalEffect"), m_pShader, "g_BackBufferTexture")))
-		return;
-
-	m_pShader->Begin(7);
-
-	m_pVIBuffer->Render();
-
-	if (FAILED(m_pGameInstance->End_MRT()))
-		return;
-}
-
-void CRenderer::Render_CopyLuminance()
-{
-	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_CopyLuminance"))))
-		return;
-
-	if (FAILED(m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix)))
-		return;
-	if (FAILED(m_pShader->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix)))
-		return;
-	if (FAILED(m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
-		return;
-
-	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_1x1"), m_pShader, "g_LuminanceTexture")))
-		return;
-
-	m_pShader->Begin(8);
-
-	m_pVIBuffer->Render();
-
-	if (FAILED(m_pGameInstance->End_MRT()))
-		return;
-
-}
-
-void CRenderer::Render_LuminanceResult()
-{
-	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_HDR"))))
-		return;
-
-	if (FAILED(m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix)))
-		return;
-	if (FAILED(m_pShader->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix)))
-		return;
-	if (FAILED(m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
-		return;
-
-	if (FAILED(m_pShader->Bind_RawValue("g_fLumVar", &m_fHDRLight, sizeof(_float))))
-		return;
-
-	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(m_isBOF ? TEXT("Target_BOF") : TEXT("Target_FinalEffect"), m_pShader, "g_BackBufferTexture")))
-		return;
-	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Luminance"), m_pShader, "g_LuminanceTexture")))
-		return;
-
-	m_pShader->Begin(9);
-
-	m_pVIBuffer->Render();
-
-	if (FAILED(m_pGameInstance->End_MRT()))
-		return;
-}
-#pragma endregion
-
-
 void CRenderer::Render_RadialBlur()
 {
 	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_RadialBlur"))))
@@ -1745,7 +1755,7 @@ void CRenderer::Render_RadialBlur()
 	if (FAILED(m_pShader->Bind_RawValue("g_fPower", &m_fRadialPower, sizeof(_float))))
 		return;
 
-	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(m_isHDR ? TEXT("Target_ToneMapping") : m_isBOF ? TEXT("Target_BOF") : TEXT("Target_FinalEffect"), m_pShader, "g_DiffuseTexture")))
+	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(m_isBOF ? TEXT("Target_BOF") : TEXT("Target_FinalEffect"), m_pShader, "g_DiffuseTexture")))
 		return;
 
 	m_pShader->Begin(22);
@@ -1816,9 +1826,11 @@ void CRenderer::Render_InvertSaturationColor()
 	if (FAILED(m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
 		return;
 
+	if (FAILED(m_pShader->Bind_RawValue("g_fTimeDelta", &m_fInvertTime, sizeof(_float))))
+		return;
 	if (FAILED(m_pShader->Bind_RawValue("g_fSaturationFactor", &m_fSaturationFactor, sizeof(_float))))
 		return;
-	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(m_isRadialBlur ? TEXT("Target_RadialBlur") : m_isHDR ? TEXT("Target_ToneMapping") : m_isBOF ? TEXT("Target_BOF") : TEXT("Target_FinalEffect"), m_pShader, "g_DiffuseTexture")))
+	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(m_isRadialBlur ? TEXT("Target_RadialBlur") : m_isBOF ? TEXT("Target_BOF") : TEXT("Target_FinalEffect"), m_pShader, "g_DiffuseTexture")))
 		return;
 
 	m_pShader->Begin(27);
@@ -1845,7 +1857,7 @@ void CRenderer::Render_Vignette()
 		return;
 	if (FAILED(m_pShader->Bind_RawValue("g_fVignetteSmootness", &m_fVignetteSmootness, sizeof(_float))))
 		return;
-	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(m_isHDR ? TEXT("Target_ToneMapping") : m_isBOF ? TEXT("Target_BOF") : TEXT("Target_FinalEffect"), m_pShader, "g_DiffuseTexture")))
+	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(m_isBOF ? TEXT("Target_BOF") : TEXT("Target_FinalEffect"), m_pShader, "g_DiffuseTexture")))
 		return;
 
 	m_pShader->Begin(25);
@@ -1872,7 +1884,6 @@ void CRenderer::Render_FinalResult()
 	wstring strTexture = TEXT("Target_FinalEffect");
 
 	if (m_isBOF) strTexture = TEXT("Target_BOF");
-	if (m_isHDR) strTexture = TEXT("Target_ToneMapping");
 	if (m_isRadialBlur) strTexture = TEXT("Target_RadialBlur");
 	if (m_isInvertSaturationColor) strTexture = TEXT("Target_InvertLightnessColor");
 	if (m_isInvertColor) strTexture = TEXT("Target_InvertColor");
@@ -1960,7 +1971,7 @@ void CRenderer::Render_Debug()
 	}
 
 	m_DebugComponents.clear();
-	
+
 	if (!m_isDebugView) return;
 
 	if (FAILED(m_pShader->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix)))
@@ -2079,7 +2090,7 @@ void CRenderer::Free()
 	Safe_Release(m_pPBRBuffer);
 
 	Safe_Release(m_pShader);
-	for(auto& pShader : m_pComputeShader)
+	for (auto& pShader : m_pComputeShader)
 		Safe_Release(pShader);
 	Safe_Release(m_pVIBuffer);
 

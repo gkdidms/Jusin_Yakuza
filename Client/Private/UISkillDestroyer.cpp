@@ -6,6 +6,8 @@
 #include "Text.h"	
 #include "Image_Texture.h"
 #include"GameInstance.h"
+
+#include "Player.h"
 CUISkillDestroyer::CUISkillDestroyer()
     :CUIScene{}
 {
@@ -222,6 +224,10 @@ HRESULT CUISkillDestroyer::Tick(const _float& fTimeDelta)
 			{
 				(*pPartObjects)[0]->Tick(fTimeDelta);
 				(*pPartObjects)[9]->Tick(fTimeDelta);
+
+				// 플레이어의 소지금을 가격만큼 빼준다.
+				_int iPrice = m_iPrice[m_iCurButton];
+				dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"), 0))->Set_Money((-iPrice));
 			}
 		}
 	}

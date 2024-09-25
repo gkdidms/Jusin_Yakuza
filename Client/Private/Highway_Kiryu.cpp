@@ -225,7 +225,7 @@ void CHighway_Kiryu::Key_Input()
 	{
 		m_fAccReloadTimer += m_pGameInstance->Get_TimeDelta(TEXT("Timer_Game"));
 
-		m_pGameInstance->PlaySoundIfNotPlay(L"gun_reload_0.wav", SOUND_EFFECT, DEFAULT_EFFECT_VOLUME);
+		m_pGameInstance->PlaySound_W(L"gun_reload_0.wav", SOUND_EFFECT, DEFAULT_EFFECT_VOLUME);
 
 		if(m_iCurrentAmmo< MAX_AMMO)
 		{
@@ -251,9 +251,20 @@ void CHighway_Kiryu::Key_Input()
 		pCamera->ShoulderView_On();
 	}
 
-	// 자리 바꾸기 (플레이어가 직접 조작하는 것이 아니라 디버깅용으로 추가한 버튼)
-	if (m_pGameInstance->GetKeyState(DIK_C) == HOLD)
+	// 자리 바꾸기
+	if (m_pGameInstance->GetKeyState(DIK_C) == TAP)
 	{
+		wstring strSoundFile;
+		if (m_pGameInstance->Get_Random(0, 1))
+		{
+			strSoundFile = L"kiryu_switch_0.wav";
+		}
+		else
+		{
+			strSoundFile = L"kiryu_switch_1.wav";
+		}
+		m_pGameInstance->PlaySound_W(strSoundFile, SOUND_PLAYER_VOICE, DEFAULT_EFFECT_VOLUME);
+
 		Change_Behavior(SWAP);
 	}
 }
@@ -530,7 +541,7 @@ void CHighway_Kiryu::Change_Behavior(BEHAVIOR_TYPE eType)
 
 		// 카메라 쉐이킹
 		CCarChaseCamera* pCamera = dynamic_cast<CCarChaseCamera*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Camera"), CAMERA_CARCHASE));
-		pCamera->Set_Shaking(true, { 1.f, 1.f, 1.f }, 0.3, 0.5);
+		pCamera->Set_Shaking(true, { 1.f, 1.f, 1.f }, 0.2, 0.3);
 
 		// 어깨 분리
 		//m_pModelCom->Set_Separation_ParentBone(m_isLeft ? "ude2_l_n" : "ude2_r_n", DEFAULT_ANIM);

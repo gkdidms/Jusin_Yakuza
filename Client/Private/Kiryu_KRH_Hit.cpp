@@ -90,7 +90,8 @@ void CKiryu_KRH_Hit::Setting_Value(void* pValue)
 {
 	KRH_Hit_DESC* pDesc = static_cast<KRH_Hit_DESC*>(pValue);
 
-	string strAnimName = m_pGameInstance->Extract_String(pDesc->strAnimationName, '[', ']');
+	//string strAnimName = m_pGameInstance->Extract_String(pDesc->strAnimationName, '[', ']');
+	string strAnimName = pDesc->strAnimationName;
 
 	if ("p_krh_cmb_01" == strAnimName)
 	{
@@ -361,31 +362,61 @@ void CKiryu_KRH_Hit::Setting_Value(void* pValue)
 	}
 	else if ("e_kta_atk_rariatto" == strAnimName)
 	{
-		///*30*/m_AnimationNames.push_back("c_dwn_direct_b");
-		///*31*/m_AnimationNames.push_back("c_dwn_direct_f");
-		///*32*/m_AnimationNames.push_back("c_dwn_direct_l");
-		///*33*/m_AnimationNames.push_back("c_dwn_direct_r");
+		/////*30*/m_AnimationNames.push_back("c_dwn_direct_b");
+		/////*31*/m_AnimationNames.push_back("c_dwn_direct_f");
+		/////*32*/m_AnimationNames.push_back("c_dwn_direct_l");
+		/////*33*/m_AnimationNames.push_back("c_dwn_direct_r");
 
+		//switch (pDesc->iDirection)
+		//{
+		//case CPlayer::F:
+		//{
+		//	m_iCurrentIndex = 31;
+		//	break;
+		//}
+		//case CPlayer::B:
+		//{
+		//	m_iCurrentIndex = 30;
+		//	break;
+		//}
+		//case CPlayer::L:
+		//{
+		//	m_iCurrentIndex = 33;
+		//	break;
+		//}
+		//case CPlayer::R:
+		//{
+		//	m_iCurrentIndex = 32;
+		//	break;
+		//}
+		//}
+
+				/*22 c_dwn_body_b*/
+		/*23 c_dwn_body_f*/
+		/*24 c_dwn_body_l*/
+		/*25 c_dwn_body_r*/
+
+		// 맞으면 넘어지는 스킬
 		switch (pDesc->iDirection)
 		{
 		case CPlayer::F:
 		{
-			m_iCurrentIndex = 31;
+			m_iCurrentIndex = 23;
 			break;
 		}
 		case CPlayer::B:
 		{
-			m_iCurrentIndex = 30;
+			m_iCurrentIndex = 22;
 			break;
 		}
 		case CPlayer::L:
 		{
-			m_iCurrentIndex = 33;
+			m_iCurrentIndex = 22;
 			break;
 		}
 		case CPlayer::R:
 		{
-			m_iCurrentIndex = 32;
+			m_iCurrentIndex = 23;
 			break;
 		}
 		}
@@ -412,12 +443,12 @@ void CKiryu_KRH_Hit::Setting_Value(void* pValue)
 		}
 		case CPlayer::L:
 		{
-			m_iCurrentIndex = 25;
+			m_iCurrentIndex = 22;
 			break;
 		}
 		case CPlayer::R:
 		{
-			m_iCurrentIndex = 24;
+			m_iCurrentIndex = 23;
 			break;
 		}
 		}
@@ -488,36 +519,66 @@ void CKiryu_KRH_Hit::Setting_Value(void* pValue)
 	}
 	else if ("e_kta_cmb_a_03" == strAnimName)
 	{
-		///*30*/m_AnimationNames.push_back("c_dwn_direct_b");
-		///*31*/m_AnimationNames.push_back("c_dwn_direct_f");
-		///*32*/m_AnimationNames.push_back("c_dwn_direct_l");
-		///*33*/m_AnimationNames.push_back("c_dwn_direct_r");
+		/////*30*/m_AnimationNames.push_back("c_dwn_direct_b");
+		/////*31*/m_AnimationNames.push_back("c_dwn_direct_f");
+		/////*32*/m_AnimationNames.push_back("c_dwn_direct_l");
+		/////*33*/m_AnimationNames.push_back("c_dwn_direct_r");
 
+		//switch (pDesc->iDirection)
+		//{
+		//case CPlayer::F:
+		//{
+		//	m_iCurrentIndex = 31;
+		//	break;
+		//}
+		//case CPlayer::B:
+		//{
+		//	m_iCurrentIndex = 30;
+		//	break;
+		//}
+		//case CPlayer::L:
+		//{
+		//	m_iCurrentIndex = 33;
+		//	break;
+		//}
+		//case CPlayer::R:
+		//{
+		//	m_iCurrentIndex = 32;
+		//	break;
+		//}
+		//default:
+		//	m_iCurrentIndex = 31;
+		//	break;
+		//}
+
+				/*22 c_dwn_body_b*/
+		/*23 c_dwn_body_f*/
+		/*24 c_dwn_body_l*/
+		/*25 c_dwn_body_r*/
+
+		// 맞으면 넘어지는 스킬
 		switch (pDesc->iDirection)
 		{
 		case CPlayer::F:
 		{
-			m_iCurrentIndex = 31;
+			m_iCurrentIndex = 23;
 			break;
 		}
 		case CPlayer::B:
 		{
-			m_iCurrentIndex = 30;
+			m_iCurrentIndex = 22;
 			break;
 		}
 		case CPlayer::L:
 		{
-			m_iCurrentIndex = 33;
+			m_iCurrentIndex = 23;
 			break;
 		}
 		case CPlayer::R:
 		{
-			m_iCurrentIndex = 32;
+			m_iCurrentIndex = 22;
 			break;
 		}
-		default:
-			m_iCurrentIndex = 31;
-			break;
 		}
 	}
 	else if ("e_kuz_atk_jab" == strAnimName)
@@ -637,12 +698,12 @@ void CKiryu_KRH_Hit::Setting_Value(void* pValue)
 		}
 		case CPlayer::L:
 		{
-			m_iCurrentIndex = 24;
+			m_iCurrentIndex = 23;
 			break;
 		}
 		case CPlayer::R:
 		{
-			m_iCurrentIndex = 25;
+			m_iCurrentIndex = 22;
 			break;
 		}
 		}
@@ -905,6 +966,38 @@ void CKiryu_KRH_Hit::Setting_Value(void* pValue)
 		case CPlayer::R:
 		{
 			m_iCurrentIndex = 13;
+			break;
+		}
+		}
+	}
+	// 쇼파 든 애
+	else if ("e_wph_atk_heavy" == strAnimName)
+	{
+		/*22 c_dwn_body_b*/
+		/*23 c_dwn_body_f*/
+		/*24 c_dwn_body_l*/
+		/*25 c_dwn_body_r*/
+
+		switch (pDesc->iDirection)
+		{
+		case CPlayer::F:
+		{
+			m_iCurrentIndex = 23;
+			break;
+		}
+		case CPlayer::B:
+		{
+			m_iCurrentIndex = 22;
+			break;
+		}
+		case CPlayer::L:
+		{
+			m_iCurrentIndex = 22;
+			break;
+		}
+		case CPlayer::R:
+		{
+			m_iCurrentIndex = 23;
 			break;
 		}
 		}

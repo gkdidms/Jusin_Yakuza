@@ -155,6 +155,7 @@ void CItem::Tick(const _float& fTimeDelta)
 		if(3 < m_fDissolveTime)
 		{
 			m_isDead = true;
+			m_pCollisionManager->Item_Clear();
 		}
 	}
 	else if (0 != m_fBrightTime && ITEM_BRIGHT != m_eItemMode)
@@ -199,7 +200,8 @@ void CItem::Tick(const _float& fTimeDelta)
 	if (ITEM_GRAB == m_eItemMode)
 	{
 		// 잡고 있을때 
-		_matrix		offsetMatrix = XMMatrixIdentity();
+		_matrix		offsetMatrix = XMLoadFloat4x4(&m_vOffsetMatrix);
+		//_matrix		offsetMatrix = XMMatrixIdentity();
 
 		_matrix PlayerMatrix, ParentMatrix;
 		PlayerMatrix = ParentMatrix = XMMatrixIdentity();
@@ -214,45 +216,31 @@ void CItem::Tick(const _float& fTimeDelta)
 		ParentMatrix.r[1] = XMVector3Normalize(ParentMatrix.r[1]);
 		ParentMatrix.r[2] = XMVector3Normalize(ParentMatrix.r[2]);
 
-		// 플레이어의 회전 행렬에서 Y축 회전(방향) 추출
-		CPlayer* pPlayer = dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"), 0));
-		XMVECTOR playerForward = pPlayer->Get_TransformCom()->Get_State(CTransform::STATE_LOOK);
-		XMVECTOR playerRight = pPlayer->Get_TransformCom()->Get_State(CTransform::STATE_RIGHT);
-		XMVECTOR playerUp = pPlayer->Get_TransformCom()->Get_State(CTransform::STATE_UP);
 
 
-		float forwardOffset = m_vOffsetMatrix._41;
-		float rightOffset = m_vOffsetMatrix._43;
-		float upOffset = m_vOffsetMatrix._42;
+		_matrix		SocketMatrix = XMLoadFloat4x4(m_vParentMatrix);
 
-		XMFLOAT4X4 tempOffsetMatrix;
-		XMStoreFloat4x4(&tempOffsetMatrix, offsetMatrix);
+		for (size_t i = 0; i < 3; i++)
+		{
+			SocketMatrix.r[i] = XMVector3Normalize(SocketMatrix.r[i]);
+		}
 
-		// 플레이어의 방향에 맞춰 오프셋을 적용
-		tempOffsetMatrix._41 += forwardOffset * XMVectorGetX(playerForward);
-		tempOffsetMatrix._43 += forwardOffset * XMVectorGetZ(playerForward);
-		tempOffsetMatrix._41 += rightOffset * XMVectorGetX(playerRight);
-		tempOffsetMatrix._43 += rightOffset * XMVectorGetZ(playerRight);
-		tempOffsetMatrix._42 += upOffset * XMVectorGetY(playerUp);
+		m_pTransformCom->Set_WorldMatrix(XMMatrixIdentity());
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(-0.4, -0.5, 0, 1));
 
-		offsetMatrix = XMLoadFloat4x4(&tempOffsetMatrix);
-
-		//m_pTransformCom->Get_WorldMatrix() * SocketMatrix * XMLoadFloat4x4(m_pParentMatrix)
-		XMStoreFloat4x4(&m_WorldMatrix, ParentMatrix * PlayerMatrix * offsetMatrix);
-
-		XMMATRIX worldMatrix = XMLoadFloat4x4(&m_WorldMatrix);
-		m_pTransformCom->Set_WorldMatrix(worldMatrix);
+		XMStoreFloat4x4(&m_WorldMatrix, offsetMatrix * SocketMatrix * XMLoadFloat4x4(m_pPlayerMatrix));
 	}
 	else
 	{
-		//XMStoreFloat4x4(&m_WorldMatrix, m_pTransformCom->Get_WorldMatrix());
+		XMStoreFloat4x4(&m_WorldMatrix, m_pTransformCom->Get_WorldMatrix());
 		//m_pTransformCom->Set_WorldMatrix(XMLoadFloat4x4(&m_WorldMatrix));
 	}
 
 	if (m_isThrowing)
 		Throwing(fTimeDelta);	
 
-	_matrix		worldMatrix = m_pTransformCom->Get_WorldMatrix();
+	_matrix		worldMatrix = XMLoadFloat4x4(&m_WorldMatrix);
+	
 
 #ifdef _DEBUG
 	//for (auto& iter : m_vColliders)
@@ -274,9 +262,18 @@ void CItem::Tick(const _float& fTimeDelta)
 
 void CItem::Late_Tick(const _float& fTimeDelta)
 {
-	if (true == m_pGameInstance->isIn_WorldFrustum(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 3.f))
+	if (true == m_pGameInstance->isIn_WorldFrustum(m_pTransformCom->Get_State(CTransform::STATE_POSITION), 3.f) && ITEM_GRAB != m_eItemMode)
 	{
 		m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONLIGHT_NONBLUR, this);
+		m_pGameInstance->Add_Renderer(CRenderer::RENDER_SHADOWOBJ, this);
+
+		for (auto& iter : m_vDecals)
+			iter->Late_Tick(fTimeDelta);
+	}
+	else
+	{
+		m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONLIGHT_NONBLUR, this);
+		m_pGameInstance->Add_Renderer(CRenderer::RENDER_SHADOWOBJ, this);
 
 		for (auto& iter : m_vDecals)
 			iter->Late_Tick(fTimeDelta);
@@ -450,10 +447,10 @@ _bool CItem::Decrease_Life()
 {
 	m_iLife--;
 
-	// 감소 이후 생명이 0보다 작아진다면 오브젝트 사망처리
+	// 감소 이후 생명이 1보다 작아진다면 오브젝트 사망처리
 	if (0 >= m_iLife)
 	{
-		Set_ObjectDead();
+		//Set_ObjectDead();		// 디졸브 끝나고 삭제시켜줘야함
 		//Dissolve 시작
 		m_bDissovle = true;
 		return false;
@@ -477,7 +474,7 @@ void CItem::Throw_On(THROW_INFO_DESC& Desc)
 
 	// Dissolve 시작
 	m_bDissovle = true;
-	Set_ObjectDead();
+	//Set_ObjectDead();
 }
 
 void CItem::Throwing(const _float& fTimeDelta)
@@ -554,15 +551,15 @@ HRESULT CItem::Add_Components(void* pArg)
 
 HRESULT CItem::Bind_ShaderResources()
 {
-	if (FAILED(m_pTransformCom->Bind_ShaderMatrix(m_pShaderCom, "g_WorldMatrix")))
+	/*if (FAILED(m_pTransformCom->Bind_ShaderMatrix(m_pShaderCom, "g_WorldMatrix")))
+		return E_FAIL;*/
+	if (FAILED(m_pShaderCom->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix)))
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ViewMatrix", m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_VIEW))))
 		return E_FAIL;
 	if (FAILED(m_pShaderCom->Bind_Matrix("g_ProjMatrix", m_pGameInstance->Get_Transform_Float4x4(CPipeLine::D3DTS_PROJ))))
 		return E_FAIL;
 
-	if (FAILED(m_pShaderCom->Bind_RawValue("g_fFar", m_pGameInstance->Get_CamFar(), sizeof(_float))))
-		return E_FAIL;
 
 
 	return S_OK;
