@@ -665,10 +665,10 @@ PS_OUT_COLOR PS_Sign_ColorPass(PS_IN In)
     
     emissiveColor.rgb = vDiffuse.rgb * 0.03;
     
-    if (vDiffuse.r + vDiffuse.g + vDiffuse.b > 1.8)
+    if (vDiffuse.r + vDiffuse.g + vDiffuse.b > 0.7)
     {
         // 약간만 bloom 되게끔
-        Out.vDiffuse = vDiffuse + emissiveColor;
+        Out.vDiffuse = vDiffuse * 0.1;
     }
     else
     {
@@ -689,10 +689,10 @@ PS_OUT_COLOR PS_Sign_Bloom(PS_IN In)
     vector vDiffuse = g_DiffuseTexture.Sample(LinearSampler, In.vTexcoord);
     
     
-    if (vDiffuse.r + vDiffuse.g + vDiffuse.b > 1.2)
+    if (vDiffuse.r + vDiffuse.g + vDiffuse.b > 0.7)
     {
         // 약간만 bloom 되게끔
-        Out.vDiffuse = vDiffuse * 0.4;
+        Out.vDiffuse = vDiffuse * 0.9;
     }
     else
     {
