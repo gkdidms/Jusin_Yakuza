@@ -1647,6 +1647,9 @@ CBTNode::NODE_STATE CAI_Monster::HitAndGuard()
 
 	if (m_pThis->isColl())
 	{
+		if (*m_pState == CMonster::MONSTER_ANGRY_START)
+			return CBTNode::FAIL;
+
 		//충돌되면 플레이어 공격인지 아닌지 체크가 풀림
 		Reset_State();
 
@@ -1748,8 +1751,8 @@ CBTNode::NODE_STATE CAI_Monster::Check_Angry()
 	// 분노상태 전환 분기
 	if (!m_isAngry)
 	{
-		//플레이어와 충돌했을때 데미지가 30.f 이라면?
-		if (m_pThis->Get_HitDamage() < 30.f)
+		//플레이어와 충돌했을때 데미지가 13.f 이라면?
+		if (m_pThis->Get_HitDamage() > 13.f)
 		{
 			// 분노 상태로 이동
 			return CBTNode::SUCCESS;

@@ -12,7 +12,7 @@ class CQuestManager :
 
 public:
     enum QUEST_TYPE { QUEST_MAIN, QUEST_KILL, QUEST_MOVE, QUEST_TALK, QUEST_KARAOKE, QUEST_END };
-    enum CHAPTRE { CHAPTER_1, CHAPTER_2, CHAPTER_3, CHAPTER_4, CHAPTER_5, CHAPTER_6, CHAPTER_7, CHAPTER_8, CHAPTER_END }; //레벨 진입 마다 나오는거 
+    enum CHAPTRE { CHAPTER_1, CHAPTER_2, CHAPTER_3, CHAPTER_4, CHAPTER_5, CHAPTER_6, CHAPTER_7, CHAPTER_8, CHAPTER_9, CHAPTER_END }; //레벨 진입 마다 나오는거 
     typedef struct tQuestInfo {
         tQuestInfo(_uint iType, _uint iScriptIndex, _int iQuestIndex, _int iNextQuestIndex, _int iTargetIndex = -1, _int iTriggerIndex = -1, _int iObjectIndex = -1)
             : iType{ iType },

@@ -310,9 +310,9 @@ void CMonster::Set_Start(_bool isStart)
 	m_pTree->Set_Start(isStart);
 }
 
-void CMonster::Set_Animation(string strAnimName, _bool isLoop)
+void CMonster::Set_Animation(string strAnimName, _bool isLoop, _bool isMotionChange)
 {
-	m_iCurrentAnimType = CUTSCENE;
+	if (isMotionChange) m_iCurrentAnimType = CUTSCENE;
 	m_strAnimName = strAnimName;
 	m_isAnimLoop = isLoop;
 
@@ -457,6 +457,11 @@ void CMonster::Tick(const _float& fTimeDelta)
 
 	//충돌처리 초기화
 	m_isColl = false;
+
+	if (m_pGameInstance->GetKeyState(DIK_RETURN) == TAP)
+	{
+		(m_pEffects.lower_bound("mune_c_n"))->second->On();
+	}
 
 	for (auto& pCollider : m_pColliders)
 		pCollider.second->Tick(fTimeDelta);

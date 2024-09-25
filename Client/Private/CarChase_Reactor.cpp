@@ -193,6 +193,7 @@ _bool CCarChase_Reactor::Check_Dead()
 			EffectDesc.pWorldMatrix = m_pTransformCom->Get_WorldFloat4x4();
 			CEffectManager::GetInstance()->Heli_Exp(EffectDesc);
 		}
+
 		return true;
 	}
 
@@ -203,8 +204,8 @@ _bool CCarChase_Reactor::Check_Dead()
 		{
 			for (auto& pMonster : m_Monsters)
 				pMonster->Set_ReactorDead(true);
-			//자동차가 죽으면 멈추고 불난다.+연기
 
+			//자동차가 죽으면 멈추고 불난다.+연기
 			CEffect::EFFECT_DESC EffectDesc;
 
 			EffectDesc.pWorldMatrix = m_pTransformCom->Get_WorldFloat4x4();
@@ -268,12 +269,6 @@ void CCarChase_Reactor::Move_Waypoint(const _float& fTimeDelta)
 	//스피드 값 지정
 	//스테이지 방향이 DIR_F이고 Start일 경우 앞에서 뒤로 이동하도록 함
 	_float fBack = m_iStageDir == DIR_F && m_isStart ? -1.f : 1.f;
-
-	//만약 몬스터가 플레이어보다 앞서 나가거나 너무 뒤로 이동한다면 반대방향으로 이동하도록 한다..
-	if (fBack == 1.f && iPlayerCurrentWaypointIndex + 2 <= iCurrentWaypointIndex
-		|| fBack == -1.f && iPlayerCurrentWaypointIndex - 3 >= iCurrentWaypointIndex)
-		fBack *= -1.f;
-
 	_float fFactor = min(fDistance, 20.f) / 20.f;
 
 	m_fSpeed = m_fMaxSpeed * fFactor * fBack;
@@ -285,8 +280,13 @@ void CCarChase_Reactor::Move_Waypoint(const _float& fTimeDelta)
 	else if (m_fSpeed > m_fMaxSpeed * fBack)
 		m_fSpeed = m_fMaxSpeed * fBack;
 
-	m_pTransformCom->Go_Straight_CustumSpeed(m_fSpeed, fTimeDelta, m_pNavigationCom);
+	//만약 몬스터가 플레이어보다 앞서 나가거나 너무 뒤로 이동한다면 스피드를 조절한다.
+	if (fBack == 1.f && iPlayerCurrentWaypointIndex + 2 <= iCurrentWaypointIndex)
+		m_fSpeed -= 3.f;
+	else if (fBack == -1.f && iPlayerCurrentWaypointIndex - 3 >= iCurrentWaypointIndex)
+		m_fSpeed += 3.f;
 
+	m_pTransformCom->Go_Straight_CustumSpeed(m_fSpeed, fTimeDelta, m_pNavigationCom);
 }
 
 HRESULT CCarChase_Reactor::Add_Components()
