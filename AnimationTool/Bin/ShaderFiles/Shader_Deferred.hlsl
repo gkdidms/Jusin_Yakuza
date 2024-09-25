@@ -83,54 +83,6 @@ PS_OUT_LIGHT PS_MAIN_LIGHT_DIRECTIONAL(PS_IN In)
     
     Out.vShade = g_vLightDiffuse * saturate(max(dot(normalize(g_vLightDir) * -1.f, normalize(vNormal)), 0.f) + vAmbient);
     Out.vLightMap = g_vLightDiffuse;
-    /*
-    if (g_isPBR)
-    {
-
-        vector vWorldPos;
-
-        vWorldPos.x = In.vTexcoord.x * 2.f - 1.f;
-        vWorldPos.y = In.vTexcoord.y * -2.f + 1.f;
-        vWorldPos.z = vDepthDesc.x;
-        vWorldPos.w = 1.f;
-
-        vWorldPos = vWorldPos * (vDepthDesc.y * g_fFar);
-        
-        vWorldPos = mul(vWorldPos, g_ProjMatrixInv);
-        
-        vWorldPos = mul(vWorldPos, g_ViewMatrixInv);
-        
-        float3 vLook = normalize(g_vCamPosition - vWorldPos).xyz;
-        
-
-    }
-    */
-    //Grass
-    /*
-    vector vGlassNormalDesc = g_GlassNormalTexture.Sample(LinearSampler, In.vTexcoord);
-    vector vGlassNormal = vector(vGlassNormalDesc.xyz * 2.f - 1.f, 0.f);
-    if (vGlassNormalDesc.a == 0.f)
-    {
-        vector vGlassDepthDesc = g_GlassDepthTexture.Sample(PointSampler, In.vTexcoord);
-    
-        vector vWorldPos;
-
-        vWorldPos.x = In.vTexcoord.x * 2.f - 1.f;
-        vWorldPos.y = In.vTexcoord.y * -2.f + 1.f;
-        vWorldPos.z = vGlassDepthDesc.x;
-        vWorldPos.w = 1.f;
-
-        vWorldPos = vWorldPos * (vGlassDepthDesc.y * g_fFar);
-    
-        vWorldPos = mul(vWorldPos, g_ProjMatrixInv);
-        vWorldPos = mul(vWorldPos, g_ViewMatrixInv);
-
-        vector vReflect = reflect(normalize(g_vLightDir), normalize(vGlassNormal));
-        vector vLook = g_vCamPosition - vWorldPos;
-    
-        Out.vSpecular = pow(max(dot(normalize(vReflect), normalize(vLook)), 0.f), 30.f);
-    }
-    */
     
     return Out;
 }

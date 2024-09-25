@@ -1650,10 +1650,10 @@ CBTNode::NODE_STATE CAI_Monster::HitAndGuard()
 		//충돌되면 플레이어 공격인지 아닌지 체크가 풀림
 		Reset_State();
 
-		//랜덤으로 처리하기 (3 확률로 가드)
+		//랜덤으로 처리하기 (5 확률로 가드)
 		_uint iRandom = m_pGameInstance->Get_Random(0, 100);
 
-		if (iRandom == 95 || iRandom == 40 || iRandom == 67)
+		if (iRandom == 95 || iRandom == 40 || iRandom == 67 || iRandom == 78 || iRandom == 22)
 			m_iSkill = SKILL_GUARD;
 		else
 			m_iSkill = SKILL_HIT;
@@ -1749,7 +1749,7 @@ CBTNode::NODE_STATE CAI_Monster::Check_Angry()
 	if (!m_isAngry)
 	{
 		//플레이어와 충돌했을때 데미지가 30.f 이라면?
-		if (m_pThis->Get_HitDamage() < 30.f)
+		if (m_pThis->Get_HitDamage() < 10.f)
 		{
 			// 분노 상태로 이동
 			return CBTNode::SUCCESS;
