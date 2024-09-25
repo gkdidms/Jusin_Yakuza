@@ -359,7 +359,7 @@ HRESULT CMap::Render()
 				return E_FAIL;
 
 			//White 부분만 되게끔
-			m_pShaderCom->Begin(SHADER_BLOOM_WHITE);
+			m_pShaderCom->Begin(SHADER_BLOOM_SIGN);
 
 			m_pModelCom->Render(i);
 		}
@@ -427,8 +427,8 @@ HRESULT CMap::Render()
 #pragma region Render_NonLightNonBlur
 	if (iRenderState == CRenderer::RENDER_NONLIGHT_NONBLUR)
 	{
-		// 일반 마스크
-		// VtxMesh - Defulat_Pass - 2번
+		 //일반 마스크
+		 //VtxMesh - Defulat_Pass - 2번
 		for (size_t k = 0; k < m_vSignMeshIndex.size(); k++)
 		{
 			int		i = m_vSignMeshIndex[k];
@@ -436,7 +436,7 @@ HRESULT CMap::Render()
 			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
 				return E_FAIL;
 
-			m_pShaderCom->Begin(SHADER_SIGN);
+			m_pShaderCom->Begin(SHADER_SIGN_COLOR);
 
 			m_pModelCom->Render(i);
 		}
