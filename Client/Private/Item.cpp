@@ -215,32 +215,7 @@ void CItem::Tick(const _float& fTimeDelta)
 		ParentMatrix.r[1] = XMVector3Normalize(ParentMatrix.r[1]);
 		ParentMatrix.r[2] = XMVector3Normalize(ParentMatrix.r[2]);
 
-		// 플레이어의 회전 행렬에서 Y축 회전(방향) 추출
-		CPlayer* pPlayer = dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"), 0));
-		XMVECTOR playerForward = pPlayer->Get_TransformCom()->Get_State(CTransform::STATE_LOOK);
-		XMVECTOR playerRight = pPlayer->Get_TransformCom()->Get_State(CTransform::STATE_RIGHT);
-		XMVECTOR playerUp = pPlayer->Get_TransformCom()->Get_State(CTransform::STATE_UP);
 
-
-		float forwardOffset = m_vOffsetMatrix._41;
-		float rightOffset = m_vOffsetMatrix._43;
-		float upOffset = m_vOffsetMatrix._42;
-
-		//XMFLOAT4X4 tempOffsetMatrix;
-		//XMStoreFloat4x4(&tempOffsetMatrix, offsetMatrix);
-
-		//// 플레이어의 방향에 맞춰 오프셋을 적용
-		//tempOffsetMatrix._41 += forwardOffset * XMVectorGetX(playerForward);
-		//tempOffsetMatrix._43 += forwardOffset * XMVectorGetZ(playerForward);
-		//tempOffsetMatrix._41 += rightOffset * XMVectorGetX(playerRight);
-		//tempOffsetMatrix._43 += rightOffset * XMVectorGetZ(playerRight);
-
-
-		//offsetMatrix = XMLoadFloat4x4(&tempOffsetMatrix);
-
-		//m_pTransformCom->Get_WorldMatrix() * SocketMatrix * XMLoadFloat4x4(m_pParentMatrix)
-
-		/*XMStoreFloat4x4(&m_WorldMatrix, offsetMatrix * ParentMatrix * XMLoadFloat4x4(m_pPlayerMatrix));*/
 
 		_matrix		SocketMatrix = XMLoadFloat4x4(m_vParentMatrix);
 
@@ -249,14 +224,12 @@ void CItem::Tick(const _float& fTimeDelta)
 			SocketMatrix.r[i] = XMVector3Normalize(SocketMatrix.r[i]);
 		}
 
+		m_pTransformCom->Set_WorldMatrix(XMMatrixIdentity());
+		m_pTransformCom->Set_State(CTransform::STATE_POSITION, XMVectorSet(-0.21, -0.05, 0, 1));
+
 		XMStoreFloat4x4(&m_WorldMatrix, offsetMatrix * SocketMatrix * XMLoadFloat4x4(m_pPlayerMatrix));
 
-		//XMStoreFloat4x4(&m_WorldMatrix, offsetMatrix * XMLoadFloat4x4(m_pPlayerMatrix));
-		//XMStoreFloat4x4(&m_WorldMatrix, ParentMatrix * PlayerMatrix * offsetMatrix);
 
-
-		/*XMMATRIX worldMatrix = XMLoadFloat4x4(&m_WorldMatrix);*/
-		/*m_pTransformCom->Set_WorldMatrix(worldMatrix);*/
 	}
 	else
 	{
