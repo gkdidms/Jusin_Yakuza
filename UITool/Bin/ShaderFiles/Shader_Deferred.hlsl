@@ -314,7 +314,7 @@ PS_OUT PS_MAIN_BOF(PS_IN In)
     
     float fDistance = distance(vWorldPos.xyz, g_vCamPosition.xyz);
     
-    Out.vColor = lerp(vDiffuseDesc, vDiffuseBlurDesc, min(fDistance / g_fFar * 7.f, 1.f));
+    Out.vColor = lerp(vDiffuseDesc, vDiffuseBlurDesc, min(fDistance / g_fFar * 3.f, 1.f));
     
     return Out;
 }

@@ -1363,9 +1363,6 @@ void CMap::Add_Renderer_Far(const _float& fTimeDelta)
 	_uint	iNumMeshes = m_pModelCom->Get_NumMeshes();
 
 
-
-
-
 	for (size_t i = 0; i < iNumMeshes; i++)
 	{
 		_float4x4 vLocalMatrix = Meshes[i]->Get_LocalMatrix();
