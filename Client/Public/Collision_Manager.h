@@ -39,6 +39,7 @@ public:
 
 public:
     void All_Clear();
+    void Item_Clear();
 
 public:
     /*
@@ -101,7 +102,6 @@ private:
 private:
     void Impulse_Clear();
     void Battle_Clear();
-    void Item_Clear();
 
 public:
     virtual void Free();
