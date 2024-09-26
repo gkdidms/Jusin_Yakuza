@@ -53,6 +53,8 @@ HRESULT CLevel_Karaoke::Initialize()
 	CCineCamera* pCutSceneCamera = dynamic_cast<CCineCamera*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Camera"), CAMERA_CINEMACHINE));
 	pCutSceneCamera->Set_Loop(true);
 
+	m_pGameInstance->Set_Vignette(false);
+
 	/*셰이더 옵션값*/
 	//m_pGameInstance->Set_HDRLight(1.2f);
 	//m_pGameInstance->Set_AdjectTint(_float4(0.882, 0.742f, 0.683f, 0.f));

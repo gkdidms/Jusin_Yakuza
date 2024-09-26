@@ -58,7 +58,7 @@ HRESULT CLevel_Street::Initialize()
 	/*셰이더 옵션값*/
 	m_pGameInstance->Set_HDRLight(0.8f);
 
-	if (BGM_STOP)
+	if (BGM_STOP == 1)
 	{
 		m_pGameInstance->Play_Loop(L"48e6 [1].wav", SOUND_BGM, DEFAULT_VOLUME);
 		m_pGameInstance->Play_Loop(L"48a1 [1].wav", SOUND_BGM_2, DEFAULT_VOLUME);

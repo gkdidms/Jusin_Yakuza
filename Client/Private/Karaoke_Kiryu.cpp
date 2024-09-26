@@ -156,8 +156,11 @@ HRESULT CKaraoke_Kiryu::Render()
 	int i = 0;
 	for (auto& pMesh : m_pModelCom->Get_Meshes())
 	{
-		m_pModelCom->Bind_BoneMatrices(i);
-		m_pModelCom->Bind_Compute(m_pComputeShaderCom, i);
+		if (!m_pGameInstance->isShadow())
+		{
+			m_pModelCom->Bind_BoneMatrices(i);
+			m_pModelCom->Bind_Compute(m_pComputeShaderCom, i);
+		}
 
 		if (FAILED(m_pMaterialCom->Bind_Shader(m_pShaderCom, m_pModelCom->Get_MaterialName(pMesh->Get_MaterialIndex()))))
 			return E_FAIL;
