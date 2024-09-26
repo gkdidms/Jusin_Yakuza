@@ -218,11 +218,11 @@ HRESULT CLevel_Test::Ready_Test_Hyewon()
 	// 과거의 길거리맵 79
 	// 과거의 길거리맵 네비: 79
 
-	// 빈 맵: 93
 	// 네비: 90
-	// 도지마조 로비: 98, 97(몬x), 96(쉐이크다운)
+	// 도지마조 로비 배경 테스트맵
+	// 99(빈맵) 98(Rush) 97(WPH) 96(ShakeDown) 95(WPA) 94(요네다) 89(디폴트)
 	// 도지마조 로비 네비: 5
-	m_pFileTotalManager->Set_MapObj_In_Client(97, LEVEL_TEST);
+	m_pFileTotalManager->Set_MapObj_In_Client(99, LEVEL_TEST);
 	m_pFileTotalManager->Set_Lights_In_Client(5);
 	m_pFileTotalManager->Set_Collider_In_Client(0, LEVEL_TEST);
 	//m_pFileTotalManager->Set_Trigger_In_Client(79, LEVEL_TEST);

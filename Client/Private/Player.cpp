@@ -137,8 +137,8 @@ HRESULT CPlayer::Initialize(void* pArg)
 	m_Info.fMaxHP = 150.f;
 	m_Info.fHp = m_Info.fMaxHP;
 
-	PlayerInfo.iMoney = 0;
-	PlayerInfo.fHitGauge = 150.f;
+	//PlayerInfo.iMoney = 0;
+	//PlayerInfo.fHitGauge = 0.f;
 	ZeroMemory(&m_MoveDirection, sizeof(_bool) * MOVE_DIRECTION_END);
 	ZeroMemory(&m_InputDirection, sizeof(_bool) * MOVE_DIRECTION_END);
 
