@@ -158,6 +158,7 @@ private:
 	vector<int>				m_vDynamicSignIndex;
 	vector<int>				m_vStrongBloomIndex;
 	vector<int>				m_vCompulsoryDecalBlendMeshIndex;
+	vector<int>				m_vNightMeshIndex;
 
 	_int					m_iLayerNum;
 	wstring					m_wstrModelName;
