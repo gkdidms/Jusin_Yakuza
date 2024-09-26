@@ -1536,42 +1536,6 @@ void CRenderer::Render_Bloom()
 	m_pGameInstance->Bind_ComputeRenderTargetUAV(TEXT("Target_Blur_Y"));
 
 	m_pComputeShader[BLURY]->Render(1280, GroupY, 1);
-
-
-	/*
-	if (FAILED(m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix)))
-		return;
-	if (FAILED(m_pShader->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix)))
-		return;
-	if (FAILED(m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
-		return;
-
-	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_Blur_X"))))
-		return;
-
-	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Effect"), m_pShader, "g_EffectTexture")))
-		return;
-
-	m_pShader->Begin(11);
-
-	m_pVIBuffer->Render();
-
-	if (FAILED(m_pGameInstance->End_MRT()))
-		return;
-
-	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_Blur_Y"))))
-		return;
-
-	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Blur_X"), m_pShader, "g_EffectTexture")))
-		return;
-
-	m_pShader->Begin(12);
-
-	m_pVIBuffer->Render();
-
-	if (FAILED(m_pGameInstance->End_MRT()))
-		return;
-		*/
 }
 
 void CRenderer::Render_FinalEffectBlend()

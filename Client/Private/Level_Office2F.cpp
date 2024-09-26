@@ -45,7 +45,7 @@ HRESULT CLevel_Office2F::Initialize()
 	m_pUIManager->Fade_Out();
 	m_pSystemManager->Set_Camera(CAMERA_PLAYER);
 
-	if (BGM_STOP)
+	if (BGM_STOP == 1)
 		m_pGameInstance->PlayBGM(TEXT("Office_BGM.mp3"), DEFAULT_VOLUME);
 
 	return S_OK	;

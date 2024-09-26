@@ -148,12 +148,13 @@ PS_MAIN_OUT PS_MAIN(PS_IN In)
     vector vRS = g_isRS ? g_RSTexture.Sample(LinearSampler, g_isUVShader ? UV.RDRMRS : In.vTexcoord) : vector(1.f, 1.f, 1.f, 1.f);
     vector vRM = g_isRM ? g_RMTexture.Sample(LinearSampler, g_isUVShader ? UV.RDRMRS : In.vTexcoord) : vector(0.5f, 1.f, 0.5f, 1.f);
     vector vRT = g_isRT ? g_RTTexture.Sample(LinearSampler, g_isUVShader ? UV.RT : In.vTexcoord) : vector(0.5f, 0.5f, 1.f, 0.5f);
+    vector vRefl = g_isRefl ? g_ReflTexture.Sample(LinearSampler, In.vTexcoord) : vector(0.5f, 1.f, 0.5f, 1.f);
     
      //Neo Shader
     float fFactor = RepeatingPatternBlendFactor(vMulti);
     vector vDiffuse = DiffusePortion(vDiffuseDesc, vRS, vRD, fFactor, In.vTexcoord);
     
-    COMBINE_OUT Result = Neo_MetallicAndGlossiness(vMulti, vRM); // Metallic, Rouhness 최종
+    COMBINE_OUT Result = Neo_MetallicAndGlossiness(vMulti, vRM, vRefl); // Metallic, Rouhness 최종
     vDiffuse = Get_Diffuse(vMulti.a, vDiffuse); // Diffuse 최종
     
     //노말 벡터 구하기
@@ -198,12 +199,13 @@ PS_MAIN_OUT PS_MAIN_FAR(PS_IN In)
     vector vRS = g_isRS ? g_RSTexture.Sample(LinearSampler, g_isUVShader ? UV.RDRMRS : In.vTexcoord) : vector(1.f, 1.f, 1.f, 1.f);
     vector vRM = g_isRM ? g_RMTexture.Sample(LinearSampler, g_isUVShader ? UV.RDRMRS : In.vTexcoord) : vector(0.5f, 1.f, 0.5f, 1.f);
     vector vRT = g_isRT ? g_RTTexture.Sample(LinearSampler, g_isUVShader ? UV.RT : In.vTexcoord) : vector(0.5f, 0.5f, 1.f, 0.5f);
+    vector vRefl = g_isRefl ? g_ReflTexture.Sample(LinearSampler, In.vTexcoord) : vector(0.5f, 1.f, 0.5f, 1.f);
     
      //Neo Shader
     float fFactor = RepeatingPatternBlendFactor(vMulti);
     vector vDiffuse = DiffusePortion(vDiffuseDesc, vRS, vRD, fFactor, In.vTexcoord);
     
-    COMBINE_OUT Result = Neo_MetallicAndGlossiness(vMulti, vRM); // Metallic, Rouhness 최종
+    COMBINE_OUT Result = Neo_MetallicAndGlossiness(vMulti, vRM, vRefl); // Metallic, Rouhness 최종
     vDiffuse = Get_Diffuse(vMulti.a, vDiffuse); // Diffuse 최종
     
     //노말 벡터 구하기
@@ -249,12 +251,13 @@ PS_MAIN_OUT PS_GLASSDOOR(PS_IN In)
     vector vRS = g_isRS ? g_RSTexture.Sample(LinearSampler, g_isUVShader ? UV.RDRMRS : In.vTexcoord) : vector(1.f, 1.f, 1.f, 1.f);
     vector vRM = g_isRM ? g_RMTexture.Sample(LinearSampler, g_isUVShader ? UV.RDRMRS : In.vTexcoord) : vector(0.5f, 1.f, 0.5f, 1.f);
     vector vRT = g_isRT ? g_RTTexture.Sample(LinearSampler, g_isUVShader ? UV.RT : In.vTexcoord) : vector(0.5f, 0.5f, 1.f, 0.5f);
+    vector vRefl = g_isRefl ? g_ReflTexture.Sample(LinearSampler, In.vTexcoord) : vector(0.5f, 1.f, 0.5f, 1.f);
     
      //Neo Shader
     float fFactor = RepeatingPatternBlendFactor(vMulti);
     vector vDiffuse = DiffusePortion(vDiffuseDesc, vRS, vRD, fFactor, In.vTexcoord);
     
-    COMBINE_OUT Result = Neo_MetallicAndGlossiness(vMulti, vRM); // Metallic, Rouhness 최종
+    COMBINE_OUT Result = Neo_MetallicAndGlossiness(vMulti, vRM, vRefl); // Metallic, Rouhness 최종
     vDiffuse = Get_Diffuse(vMulti.a, vDiffuse); // Diffuse 최종
     
     //노말 벡터 구하기
@@ -305,12 +308,13 @@ PS_MAIN_OUT PS_MAIN_AlphaMask(PS_IN In)
     vector vRS = g_isRS ? g_RSTexture.Sample(LinearSampler, g_isUVShader ? UV.RDRMRS : In.vTexcoord) : vector(1.f, 1.f, 1.f, 1.f);
     vector vRM = g_isRM ? g_RMTexture.Sample(LinearSampler, g_isUVShader ? UV.RDRMRS : In.vTexcoord) : vector(0.5f, 1.f, 0.5f, 1.f);
     vector vRT = g_isRT ? g_RTTexture.Sample(LinearSampler, g_isUVShader ? UV.RT : In.vTexcoord) : vector(0.5f, 0.5f, 1.f, 0.5f);
+    vector vRefl = g_isRefl ? g_ReflTexture.Sample(LinearSampler, In.vTexcoord) : vector(0.5f, 1.f, 0.5f, 1.f);
     
      //Neo Shader
     float fFactor = RepeatingPatternBlendFactor(vMulti);
     vector vDiffuse = DiffusePortion(vDiffuseDesc, vRS, vRD, fFactor, In.vTexcoord);
     
-    COMBINE_OUT Result = Neo_MetallicAndGlossiness(vMulti, vRM); // Metallic, Rouhness 최종
+    COMBINE_OUT Result = Neo_MetallicAndGlossiness(vMulti, vRM, vRefl); // Metallic, Rouhness 최종
     vDiffuse = Get_Diffuse(vMulti.a, vDiffuse); // Diffuse 최종
     
     //노말 벡터 구하기
@@ -375,12 +379,13 @@ PS_MAIN_OUT DEFAULT_SIGN_PASS(PS_IN In)
     vector vRS = g_isRS ? g_RSTexture.Sample(LinearSampler, g_isUVShader ? UV.RDRMRS : In.vTexcoord) : vector(1.f, 1.f, 1.f, 1.f);
     vector vRM = g_isRM ? g_RMTexture.Sample(LinearSampler, g_isUVShader ? UV.RDRMRS : In.vTexcoord) : vector(0.5f, 1.f, 0.5f, 1.f);
     vector vRT = g_isRT ? g_RTTexture.Sample(LinearSampler, g_isUVShader ? UV.RT : In.vTexcoord) : vector(0.5f, 0.5f, 1.f, 0.5f);
+    vector vRefl = g_isRefl ? g_ReflTexture.Sample(LinearSampler, In.vTexcoord) : vector(0.5f, 1.f, 0.5f, 1.f);
     
      //Neo Shader
     float fFactor = RepeatingPatternBlendFactor(vMulti);
     vector vDiffuse = DiffusePortion(vDiffuseDesc, vRS, vRD, fFactor, In.vTexcoord);
     
-    COMBINE_OUT Result = Neo_MetallicAndGlossiness(vMulti, vRM); // Metallic, Rouhness 최종
+    COMBINE_OUT Result = Neo_MetallicAndGlossiness(vMulti, vRM, vRefl); // Metallic, Rouhness 최종
     vDiffuse = Get_Diffuse(vMulti.a, vDiffuse); // Diffuse 최종
     
     //노말 벡터 구하기
@@ -497,12 +502,12 @@ PS_MAIN_OUT PS_MaskEmissive(PS_IN In)
     vector vRS = g_isRS ? g_RSTexture.Sample(LinearSampler, g_isUVShader ? UV.RDRMRS : In.vTexcoord) : vector(1.f, 1.f, 1.f, 1.f);
     vector vRM = g_isRM ? g_RMTexture.Sample(LinearSampler, g_isUVShader ? UV.RDRMRS : In.vTexcoord) : vector(0.5f, 1.f, 0.5f, 1.f);
     vector vRT = g_isRT ? g_RTTexture.Sample(LinearSampler, g_isUVShader ? UV.RT : In.vTexcoord) : vector(0.5f, 0.5f, 1.f, 0.5f);
-    
+    vector vRefl = g_isRefl ? g_ReflTexture.Sample(LinearSampler, In.vTexcoord) : vector(0.5f, 1.f, 0.5f, 1.f);
      //Neo Shader
     float fFactor = RepeatingPatternBlendFactor(vMulti);
     vector vDiffuse = DiffusePortion(vDiffuseDesc, vRS, vRD, fFactor, In.vTexcoord);
     
-    COMBINE_OUT Result = Neo_MetallicAndGlossiness(vMulti, vRM); // Metallic, Rouhness 최종
+    COMBINE_OUT Result = Neo_MetallicAndGlossiness(vMulti, vRM, vRefl); // Metallic, Rouhness 최종
     vDiffuse = Get_Diffuse(vMulti.a, vDiffuse); // Diffuse 최종
     
     //노말 벡터 구하기
@@ -606,12 +611,13 @@ PS_MAIN_OUT PS_DYNAMIC_SMALL(PS_IN In)
     vector vRS = g_isRS ? g_RSTexture.Sample(LinearSampler, g_isUVShader ? UV.RDRMRS : In.vTexcoord) : vector(1.f, 1.f, 1.f, 1.f);
     vector vRM = g_isRM ? g_RMTexture.Sample(LinearSampler, g_isUVShader ? UV.RDRMRS : In.vTexcoord) : vector(0.5f, 1.f, 0.5f, 1.f);
     vector vRT = g_isRT ? g_RTTexture.Sample(LinearSampler, g_isUVShader ? UV.RT : In.vTexcoord) : vector(0.5f, 0.5f, 1.f, 0.5f);
+    vector vRefl = g_isRefl ? g_ReflTexture.Sample(LinearSampler, In.vTexcoord) : vector(0.5f, 1.f, 0.5f, 1.f);
     
      //Neo Shader
     float fFactor = RepeatingPatternBlendFactor(vMulti);
     vector vDiffuse = DiffusePortion(vDiffuseDesc, vRS, vRD, fFactor, In.vTexcoord);
     
-    COMBINE_OUT Result = Neo_MetallicAndGlossiness(vMulti, vRM); // Metallic, Rouhness 최종
+    COMBINE_OUT Result = Neo_MetallicAndGlossiness(vMulti, vRM, vRefl); // Metallic, Rouhness 최종
     vDiffuse = Get_Diffuse(vMulti.a, vDiffuse); // Diffuse 최종
     
     //노말 벡터 구하기
@@ -764,12 +770,13 @@ PS_MAIN_OUT PS_Sign_ColorPass(PS_IN In)
     vector vRS = g_isRS ? g_RSTexture.Sample(LinearSampler, g_isUVShader ? UV.RDRMRS : In.vTexcoord) : vector(1.f, 1.f, 1.f, 1.f);
     vector vRM = g_isRM ? g_RMTexture.Sample(LinearSampler, g_isUVShader ? UV.RDRMRS : In.vTexcoord) : vector(0.5f, 1.f, 0.5f, 1.f);
     vector vRT = g_isRT ? g_RTTexture.Sample(LinearSampler, g_isUVShader ? UV.RT : In.vTexcoord) : vector(0.5f, 0.5f, 1.f, 0.5f);
+    vector vRefl = g_isRefl ? g_ReflTexture.Sample(LinearSampler, In.vTexcoord) : vector(0.5f, 1.f, 0.5f, 1.f);
     
      //Neo Shader
     float fFactor = RepeatingPatternBlendFactor(vMulti);
     vector vDiffuse = DiffusePortion(vDiffuseDesc, vRS, vRD, fFactor, In.vTexcoord);
     
-    COMBINE_OUT Result = Neo_MetallicAndGlossiness(vMulti, vRM); // Metallic, Rouhness 최종
+    COMBINE_OUT Result = Neo_MetallicAndGlossiness(vMulti, vRM, vRefl); // Metallic, Rouhness 최종
     vDiffuse = Get_Diffuse(vMulti.a, vDiffuse); // Diffuse 최종
     
 

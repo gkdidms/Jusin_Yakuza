@@ -222,13 +222,12 @@ float Neo_Glossiness(float3 vColor, vector vMulti)
 }
 
 // Metallic과 Glossiness 구할 수 있음.
-COMBINE_OUT Neo_MetallicAndGlossiness(vector vMulti, vector vRM)
+COMBINE_OUT Neo_MetallicAndGlossiness(vector vMulti, vector vRM, vector vRefl)
 {
     COMBINE_OUT Out = (COMBINE_OUT) 0;
     
     COMBINE_OUT MultiAndRM = CombineMTAndRM(vMulti, vRM, 0.f, 0.f);
     
-    vector vRefl = vector(0.5f, 1.f, 0.5f, 1.f);
     vector vMultiAndRM = vector(MultiAndRM.fMetalness, 1.f, MultiAndRM.fRoughness, vMulti.a);
     
     COMBINE_OUT ReflCombine = CombineMTAndRM(vMultiAndRM, vRefl, 0.f, 0.f);

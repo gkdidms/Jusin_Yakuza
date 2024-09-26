@@ -161,7 +161,7 @@ PS_MAIN_OUT PS_MAIN(PS_IN In)
     float fFactor = RepeatingPatternBlendFactor(vMulti);
     vDiffuse = DiffusePortion(vDiffuse, vRS, vRD, fFactor, In.vTexcoord);
     
-    COMBINE_OUT Result = Neo_MetallicAndGlossiness(vMulti, vRM); // Metallic, Rouhness 최종
+    COMBINE_OUT Result = Neo_MetallicAndGlossiness(vMulti, vRM, vector(0.5f, 1.f, 0.5f, 1.f)); // Metallic, Rouhness 최종
     vDiffuse = Get_Diffuse(vMulti.a, vDiffuse); // Diffuse 최종
     
     //Tangent Normal 구하기 

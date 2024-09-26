@@ -54,7 +54,7 @@ HRESULT CLevel_OfficeBoss::Initialize()
 	//m_pSystemManager->Set_Camera(CAMERA_PLAYER);
 	//m_pFightManager->Set_FightStage(true);
 
-	if (BGM_STOP)
+	if (BGM_STOP == 1)
 		m_pGameInstance->PlayBGM(TEXT("ShakeDown_BGM.mp3"), DEFAULT_VOLUME);
 
     return S_OK;
@@ -110,6 +110,7 @@ void CLevel_OfficeBoss::Tick(const _float& fTimeDelta)
 			m_isTitleEnd = true;
 			CPlayer* pPlayer = dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"), 0));
 			pPlayer->Battle_Start();
+			m_pUIManager->Set_AlwayUI(true);
 		}
 	}
 

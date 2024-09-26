@@ -32,7 +32,7 @@ CLevel_Roadway::CLevel_Roadway(ID3D11Device* pDevice, ID3D11DeviceContext* pCont
 
 HRESULT CLevel_Roadway::Initialize()
 {
-	if (BGM_STOP)
+	if (BGM_STOP == 1)
 		m_pGameInstance->PlayBGM(TEXT("Ultimate Road Rage.mp3"), DEFAULT_VOLUME);
 
 	m_pCarChaseManager = CCarChaseManager::Create(m_pDevice, m_pContext);
