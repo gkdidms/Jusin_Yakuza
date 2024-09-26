@@ -282,9 +282,9 @@ void CCarChase_Reactor::Move_Waypoint(const _float& fTimeDelta)
 
 	//만약 몬스터가 플레이어보다 앞서 나가거나 너무 뒤로 이동한다면 스피드를 조절한다.
 	if (fBack == 1.f && iPlayerCurrentWaypointIndex + 2 <= iCurrentWaypointIndex)
-		m_fSpeed -= 3.f;
+		m_fSpeed -= 6.f;
 	else if (fBack == -1.f && iPlayerCurrentWaypointIndex - 3 >= iCurrentWaypointIndex)
-		m_fSpeed += 3.f;
+		m_fSpeed += 6.f;
 
 	m_pTransformCom->Go_Straight_CustumSpeed(m_fSpeed, fTimeDelta, m_pNavigationCom);
 }
