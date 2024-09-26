@@ -20,6 +20,12 @@ CKuze::CKuze(const CKuze& rhs)
 {
 }
 
+void CKuze::Set_Effect()
+{
+	(m_pEffects.lower_bound("mune_c_n"))->second->On();
+	m_isRimLight = 0.25f;
+}
+
 HRESULT CKuze::Initialize_Prototype()
 {
 	return S_OK;
