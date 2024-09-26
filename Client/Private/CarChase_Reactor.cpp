@@ -234,7 +234,7 @@ void CCarChase_Reactor::Move_Waypoint(const _float& fTimeDelta)
 
 	//웨이포인트 
 	_vector vDir = m_pNavigationCom->Compute_WayPointDir(vPosition, fTimeDelta, m_isStart);
-	m_pTransformCom->LookAt_For_LandObject(vDir, true);
+	m_pTransformCom->LookAt(vDir, true);
 	
 	//플레이어와 인덱스 값의 차이를 둬야 함
 	CHighway_Taxi* pPlayer = dynamic_cast<CHighway_Taxi*>(m_pGameInstance->Get_GameObject(m_iCurrentLevel, TEXT("Layer_Taxi"), 0));
