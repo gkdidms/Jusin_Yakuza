@@ -44,7 +44,7 @@ HRESULT CKuze::Initialize(void* pArg)
 
 	m_iMonsterType = CMonster::KUZE;
 
-	m_Info.fMaxHP = 300.f;
+	m_Info.fMaxHP = 600.f;
 	m_Info.fHp = m_Info.fMaxHP;
 
 	m_iHandAnimIndex = HAND_MIN;
@@ -100,7 +100,7 @@ void CKuze::Take_Damage(_uint iHitColliderType, const _float3& vDir, _float fDam
 		m_Info.fHp -= fDamage;
 
 		//무지성이라 변경해야함.
-		if (m_iPage == ONE && m_Info.fHp <= 150)
+		if (m_iPage == ONE && m_Info.fHp <= 300)
 		{
 			m_iPage = TWO;
 		}
