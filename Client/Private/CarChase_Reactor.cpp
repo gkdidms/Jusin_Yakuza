@@ -164,7 +164,10 @@ HRESULT CCarChase_Reactor::Render()
 			isRT = false;
 		m_pShaderCom->Bind_RawValue("g_isRT", &isRT, sizeof(_bool));
 
-		m_pShaderCom->Begin(0);		//디폴트
+		if (pMesh->Get_AlphaApply() && !strcmp("propeller001", pMesh->Get_Name()))
+			m_pShaderCom->Begin(1);     //블랜드
+		else
+			m_pShaderCom->Begin(0);		//디폴트
 		m_pModelCom->Render(i);
 
 		i++;
