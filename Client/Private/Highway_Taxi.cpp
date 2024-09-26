@@ -172,7 +172,7 @@ void CHighway_Taxi::Move_Waypoint(const _float& fTimeDelta)
 	//웨이포인트 
 	_float4 vMovePos;
 	_vector vDir = m_pNavigationCom->Compute_WayPointDir(vPosition, fTimeDelta);
-	m_pTransformCom->LookAt(vDir, true);
+	m_pTransformCom->LookAt_For_LandObject(vDir, true);
 
 	m_pTransformCom->Go_Straight_CustumSpeed(m_fSpeed, fTimeDelta, m_pNavigationCom);
 }
