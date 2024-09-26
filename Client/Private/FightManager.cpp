@@ -63,8 +63,12 @@ void CFightManager::Set_FightStage(_bool isFightStage, CMonsterGroup* pMonsterGr
 			break;
 		case LEVEL_TUTORIAL:			//¾ßÅ¥ÀÚ
 		{
-			m_pGameInstance->StopSound(SOUND_BGM);
-			m_pGameInstance->PlayBGM(TEXT("Tutorial_Fight.mp3"), 0.6f);
+			if (BGM_STOP == 1)
+			{
+				m_pGameInstance->StopSound(SOUND_BGM);
+				m_pGameInstance->PlayBGM(TEXT("Tutorial_Fight.mp3"), 0.6f);
+			}
+				
 			m_isStreetFight = true;
 			iTitleIndex = 13;
 			break;

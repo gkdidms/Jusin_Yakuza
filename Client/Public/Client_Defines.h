@@ -3,7 +3,7 @@
 #define DEFAULT_VOLUME 0.5
 #define DEFAULT_EFFECT_VOLUME 1
 
-#define BGM_STOP true
+#define BGM_STOP 0
 
 #include <process.h>
 
