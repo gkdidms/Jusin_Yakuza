@@ -181,10 +181,17 @@ _bool CFightManager::Tick(const _float& fTimeDelta)
 					//플레이어도 다시 돌아온다.
 					CPlayer* pPlayer = dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"), 0));
 					pPlayer->Style_Change(CPlayer::ADVENTURE);
-					m_pGameInstance->StopSound(SOUND_BGM);
+
 					m_pUIManager->Set_AlwayUI(false);
 
-					m_pGameInstance->PlayBGM(TEXT("Street_BGM.mp3"), 0.3f);
+					if (BGM_STOP == 1)
+					{
+						m_pGameInstance->StopSound(SOUND_BGM);
+						m_pGameInstance->Play_Loop(L"48e6 [1].wav", SOUND_BGM, DEFAULT_VOLUME);
+						m_pGameInstance->Play_Loop(L"48a1 [1].wav", SOUND_BGM_2, DEFAULT_VOLUME);
+						m_pGameInstance->Play_Loop(L"4887 [1].wav", SOUND_BGM_3, DEFAULT_VOLUME);
+						m_pGameInstance->Play_Loop(L"4899 [1].wav", SOUND_BGM_1, DEFAULT_VOLUME);
+					}
 
 					m_pGameInstance->Set_TimeSpeed(TEXT("Timer_60"), 1.f);
 					m_pGameInstance->Set_TimeSpeed(TEXT("Timer_Player"), 1.f);
