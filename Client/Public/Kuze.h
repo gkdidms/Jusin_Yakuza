@@ -18,6 +18,7 @@ public:
 
 public:
     void Set_KuzePage(_uint iPage) { m_iPage = iPage; }
+    virtual void Set_Effect();
 
 public:
     virtual HRESULT Initialize_Prototype() override;
