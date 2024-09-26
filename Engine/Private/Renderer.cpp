@@ -744,7 +744,8 @@ void CRenderer::Draw()
 	if (m_isRimLight)
 		Render_RimLight();
 
-
+	// 간판을 위해 임의로 남겨두기
+	Render_NonLight_NonBlur();
 
 	//톤매핑 & 평균 휘도
 	if (m_isHDR)
@@ -755,8 +756,7 @@ void CRenderer::Draw()
 		Render_LuminanceResult();
 	}
 
-	// 간판을 위해 임의로 남겨두기
-	Render_NonLight_NonBlur();
+
 
 	// NonLight랑 Bloom은 같이 붙어있어야함
 	Render_NonLight();
@@ -1536,42 +1536,6 @@ void CRenderer::Render_Bloom()
 	m_pGameInstance->Bind_ComputeRenderTargetUAV(TEXT("Target_Blur_Y"));
 
 	m_pComputeShader[BLURY]->Render(1280, GroupY, 1);
-
-
-	/*
-	if (FAILED(m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix)))
-		return;
-	if (FAILED(m_pShader->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix)))
-		return;
-	if (FAILED(m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
-		return;
-
-	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_Blur_X"))))
-		return;
-
-	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Effect"), m_pShader, "g_EffectTexture")))
-		return;
-
-	m_pShader->Begin(11);
-
-	m_pVIBuffer->Render();
-
-	if (FAILED(m_pGameInstance->End_MRT()))
-		return;
-
-	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_Blur_Y"))))
-		return;
-
-	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Blur_X"), m_pShader, "g_EffectTexture")))
-		return;
-
-	m_pShader->Begin(12);
-
-	m_pVIBuffer->Render();
-
-	if (FAILED(m_pGameInstance->End_MRT()))
-		return;
-		*/
 }
 
 void CRenderer::Render_FinalEffectBlend()

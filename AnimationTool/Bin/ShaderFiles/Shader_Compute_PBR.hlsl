@@ -123,7 +123,7 @@ float4 BRDF(float4 vPosition, int2 vTexcoord, float4 vNormal, float4 vDepthDesc,
     F0 = lerp(F0, vAlbedo, fMetalic);
    
     
-    //vector vLightDir = reflect(normalize(g_vLightDir), vNormal); //g_vLightDir * -1.f;
+   // float3 vLightDir = reflect(normalize(vLightDirection * -1.f), vNormal); //g_vLightDir * -1.f;
     float3 vLightDir = normalize(vLightDirection * -1.f);
     float3 vHalfway = normalize(vLook + vLightDir);
     float3 vRadiance = vLightDiffuse;
@@ -137,7 +137,7 @@ float4 BRDF(float4 vPosition, int2 vTexcoord, float4 vNormal, float4 vDepthDesc,
     float D = DistributionGGX(vNormal.xyz, vHalfway, vRoughness, PI);
     float G = GeometrySmith(vNormal.xyz, vLook, vLightDir, vRoughness);
     float cosTheta = max(dot(vNormal.xyz, vHalfway), 0.f);
-    float3 F = FresnelSchlickRoughness(cosTheta, F0, vRoughness);
+    float3 F = FresnelSchlick(cosTheta, F0);
     
     float3 specularWithTint = CalculateSpecularTint(F, vAlbedo, Combine.w);
     

@@ -161,6 +161,7 @@ void CMap::Late_Tick(const _float& fTimeDelta)
 	m_vDynamicSignIndex.clear();
 	m_vStrongBloomIndex.clear();
 	m_vCompulsoryDecalBlendMeshIndex.clear();
+	m_vNightMeshIndex.clear();
 
 
 	if (m_pGameInstance->Get_CurrentLevel() == LEVEL_TUTORIAL ||
@@ -347,6 +348,19 @@ HRESULT CMap::Render()
 
 			//White ºÎºÐ¸¸ µÇ°Ô²û
 			m_pShaderCom->Begin(SHADER_BLOOM_WHITE);
+
+			m_pModelCom->Render(i);
+		}
+
+		for (size_t k = 0; k < m_vNightMeshIndex.size(); k++)
+		{
+			int		i = m_vNightMeshIndex[k];
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
+				return E_FAIL;
+
+			//White ºÎºÐ¸¸ µÇ°Ô²û
+			m_pShaderCom->Begin(SHADER_BLOOM_SIGN);
 
 			m_pModelCom->Render(i);
 		}
@@ -823,6 +837,7 @@ HRESULT CMap::Near_Render(_uint iRenderState)
 			_bool isRD = true;
 			_bool isRM = true;
 			_bool isRT = false;
+			_bool isRefl = true;
 			_bool isMulti = true;
 
 			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS)))
@@ -844,6 +859,11 @@ HRESULT CMap::Near_Render(_uint iRenderState)
 			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RMTexture", i, aiTextureType_METALNESS)))
 				isRM = false;
 			m_pShaderCom->Bind_RawValue("g_isRM", &isRM, sizeof(_bool));
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_ReflTexture", i, aiTextureType_EMISSIVE)))
+				isRefl = false;
+			m_pShaderCom->Bind_RawValue("g_isRefl", &isRefl, sizeof(_bool));
+
 			m_pShaderCom->Bind_RawValue("g_isRT", &isRT, sizeof(_bool));
 
 			m_pShaderCom->Bind_RawValue("g_bCompulsoryAlpha", &m_bCompulsoryAlpha, sizeof(_bool));
@@ -883,6 +903,7 @@ HRESULT CMap::Near_Render(_uint iRenderState)
 				_bool isRD = true;
 				_bool isRM = true;
 				_bool isRT = false;
+				_bool isRefl = true;
 				_bool isMulti = true;
 
 				if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS)))
@@ -904,6 +925,11 @@ HRESULT CMap::Near_Render(_uint iRenderState)
 				if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RMTexture", i, aiTextureType_METALNESS)))
 					isRM = false;
 				m_pShaderCom->Bind_RawValue("g_isRM", &isRM, sizeof(_bool));
+
+				if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_ReflTexture", i, aiTextureType_EMISSIVE)))
+					isRefl = false;
+				m_pShaderCom->Bind_RawValue("g_isRefl", &isRefl, sizeof(_bool));
+
 				m_pShaderCom->Bind_RawValue("g_isRT", &isRT, sizeof(_bool));
 
 				m_pShaderCom->Bind_RawValue("g_bCompulsoryAlpha", &m_bCompulsoryAlpha, sizeof(_bool));
@@ -940,6 +966,7 @@ HRESULT CMap::Near_Render(_uint iRenderState)
 				_bool isRD = true;
 				_bool isRM = true;
 				_bool isRT = false;
+				_bool isRefl = true;
 				_bool isMulti = true;
 
 				if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS)))
@@ -961,6 +988,11 @@ HRESULT CMap::Near_Render(_uint iRenderState)
 				if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RMTexture", i, aiTextureType_METALNESS)))
 					isRM = false;
 				m_pShaderCom->Bind_RawValue("g_isRM", &isRM, sizeof(_bool));
+
+				if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_ReflTexture", i, aiTextureType_EMISSIVE)))
+					isRefl = false;
+				m_pShaderCom->Bind_RawValue("g_isRefl", &isRefl, sizeof(_bool));
+
 				m_pShaderCom->Bind_RawValue("g_isRT", &isRT, sizeof(_bool));
 
 				m_pShaderCom->Bind_RawValue("g_bCompulsoryAlpha", &m_bCompulsoryAlpha, sizeof(_bool));
@@ -996,6 +1028,7 @@ HRESULT CMap::Near_Render(_uint iRenderState)
 			_bool isRD = true;
 			_bool isRM = true;
 			_bool isRT = false;
+			_bool isRefl = true;
 			_bool isMulti = true;
 
 			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS)))
@@ -1017,6 +1050,11 @@ HRESULT CMap::Near_Render(_uint iRenderState)
 			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RMTexture", i, aiTextureType_METALNESS)))
 				isRM = false;
 			m_pShaderCom->Bind_RawValue("g_isRM", &isRM, sizeof(_bool));
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_ReflTexture", i, aiTextureType_EMISSIVE)))
+				isRefl = false;
+			m_pShaderCom->Bind_RawValue("g_isRefl", &isRefl, sizeof(_bool));
+
 			m_pShaderCom->Bind_RawValue("g_isRT", &isRT, sizeof(_bool));
 
 			m_pShaderCom->Bind_RawValue("g_bCompulsoryAlpha", &m_bCompulsoryAlpha, sizeof(_bool));
@@ -1051,6 +1089,7 @@ HRESULT CMap::Near_Render(_uint iRenderState)
 			_bool isRD = true;
 			_bool isRM = true;
 			_bool isRT = false;
+			_bool isRefl = true;
 			_bool isMulti = true;
 
 			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS)))
@@ -1069,9 +1108,14 @@ HRESULT CMap::Near_Render(_uint iRenderState)
 				isRD = false;
 			m_pShaderCom->Bind_RawValue("g_isRD", &isRD, sizeof(_bool));
 
-			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RMTexture", i, aiTextureType_METALNESS)))
+			 if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RMTexture", i, aiTextureType_METALNESS)))
 				isRM = false;
 			m_pShaderCom->Bind_RawValue("g_isRM", &isRM, sizeof(_bool));
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_ReflTexture", i, aiTextureType_EMISSIVE)))
+				isRefl = false;
+			m_pShaderCom->Bind_RawValue("g_isRefl", &isRefl, sizeof(_bool));
+
 			m_pShaderCom->Bind_RawValue("g_isRT", &isRT, sizeof(_bool));
 
 			m_pShaderCom->Bind_RawValue("g_bCompulsoryAlpha", &m_bCompulsoryAlpha, sizeof(_bool));
@@ -1096,6 +1140,7 @@ HRESULT CMap::Near_Render(_uint iRenderState)
 					return E_FAIL;
 			}
 
+
 			_float fFar = *m_pGameInstance->Get_CamFar();
 			m_pShaderCom->Bind_RawValue("g_fFar", &fFar, sizeof(_float));
 
@@ -1107,6 +1152,7 @@ HRESULT CMap::Near_Render(_uint iRenderState)
 			_bool isRD = true;
 			_bool isRM = true;
 			_bool isRT = false;
+			_bool isRefl = true;
 			_bool isMulti = true;
 
 			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS)))
@@ -1128,6 +1174,11 @@ HRESULT CMap::Near_Render(_uint iRenderState)
 			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RMTexture", i, aiTextureType_METALNESS)))
 				isRM = false;
 			m_pShaderCom->Bind_RawValue("g_isRM", &isRM, sizeof(_bool));
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_ReflTexture", i, aiTextureType_EMISSIVE)))
+				isRefl = false;
+			m_pShaderCom->Bind_RawValue("g_isRefl", &isRefl, sizeof(_bool));
+
 			m_pShaderCom->Bind_RawValue("g_isRT", &isRT, sizeof(_bool));
 
 			m_pShaderCom->Bind_RawValue("g_bCompulsoryAlpha", &m_bCompulsoryAlpha, sizeof(_bool));
@@ -1152,6 +1203,7 @@ HRESULT CMap::Near_Render(_uint iRenderState)
 					return E_FAIL;
 			}
 
+
 			_float fFar = *m_pGameInstance->Get_CamFar();
 			m_pShaderCom->Bind_RawValue("g_fFar", &fFar, sizeof(_float));
 
@@ -1163,6 +1215,7 @@ HRESULT CMap::Near_Render(_uint iRenderState)
 			_bool isRD = true;
 			_bool isRM = true;
 			_bool isRT = false;
+			_bool isRefl = true;
 			_bool isMulti = true;
 
 			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS)))
@@ -1184,6 +1237,11 @@ HRESULT CMap::Near_Render(_uint iRenderState)
 			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RMTexture", i, aiTextureType_METALNESS)))
 				isRM = false;
 			m_pShaderCom->Bind_RawValue("g_isRM", &isRM, sizeof(_bool));
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_ReflTexture", i, aiTextureType_EMISSIVE)))
+				isRefl = false;
+			m_pShaderCom->Bind_RawValue("g_isRefl", &isRefl, sizeof(_bool));
+
 			m_pShaderCom->Bind_RawValue("g_isRT", &isRT, sizeof(_bool));
 
 			m_pShaderCom->Bind_RawValue("g_bCompulsoryAlpha", &m_bCompulsoryAlpha, sizeof(_bool));
@@ -1209,6 +1267,7 @@ HRESULT CMap::Near_Render(_uint iRenderState)
 					return E_FAIL;
 			}
 
+
 			_float fFar = *m_pGameInstance->Get_CamFar();
 			m_pShaderCom->Bind_RawValue("g_fFar", &fFar, sizeof(_float));
 
@@ -1220,8 +1279,8 @@ HRESULT CMap::Near_Render(_uint iRenderState)
 			_bool isRD = true;
 			_bool isRM = true;
 			_bool isRT = false;
+			_bool isRefl = true;
 			_bool isMulti = true;
-
 
 			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS)))
 				isNormal = false;
@@ -1242,6 +1301,11 @@ HRESULT CMap::Near_Render(_uint iRenderState)
 			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RMTexture", i, aiTextureType_METALNESS)))
 				isRM = false;
 			m_pShaderCom->Bind_RawValue("g_isRM", &isRM, sizeof(_bool));
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_ReflTexture", i, aiTextureType_EMISSIVE)))
+				isRefl = false;
+			m_pShaderCom->Bind_RawValue("g_isRefl", &isRefl, sizeof(_bool));
+
 			m_pShaderCom->Bind_RawValue("g_isRT", &isRT, sizeof(_bool));
 
 			m_pShaderCom->Bind_RawValue("g_bCompulsoryAlpha", &m_bCompulsoryAlpha, sizeof(_bool));
@@ -1280,6 +1344,7 @@ HRESULT CMap::Near_Render(_uint iRenderState)
 			_bool isRD = true;
 			_bool isRM = true;
 			_bool isRT = false;
+			_bool isRefl = true;
 			_bool isMulti = true;
 
 			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS)))
@@ -1301,7 +1366,77 @@ HRESULT CMap::Near_Render(_uint iRenderState)
 			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RMTexture", i, aiTextureType_METALNESS)))
 				isRM = false;
 			m_pShaderCom->Bind_RawValue("g_isRM", &isRM, sizeof(_bool));
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_ReflTexture", i, aiTextureType_EMISSIVE)))
+				isRefl = false;
+			m_pShaderCom->Bind_RawValue("g_isRefl", &isRefl, sizeof(_bool));
+
 			m_pShaderCom->Bind_RawValue("g_isRT", &isRT, sizeof(_bool));
+
+			m_pShaderCom->Bind_RawValue("g_bCompulsoryAlpha", &m_bCompulsoryAlpha, sizeof(_bool));
+
+
+			m_pShaderCom->Begin(SHADER_DECAL_MASK);
+
+			m_pModelCom->Render(i);
+		}
+
+
+		for (size_t k = 0; k < m_vNightMeshIndex.size(); k++)
+		{
+			int		i = m_vNightMeshIndex[k];
+
+			if (nullptr != m_pMaterialCom)
+				m_pMaterialCom->Bind_Shader(m_pShaderCom, m_pModelCom->Get_MaterialName(Meshes[i]->Get_MaterialIndex()));
+			else
+			{
+				_bool isUVShader = false;
+				if (FAILED(m_pShaderCom->Bind_RawValue("g_isUVShader", &isUVShader, sizeof(_bool))))
+					return E_FAIL;
+			}
+
+
+			_float fFar = *m_pGameInstance->Get_CamFar();
+			m_pShaderCom->Bind_RawValue("g_fFar", &fFar, sizeof(_float));
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_DiffuseTexture", i, aiTextureType_DIFFUSE)))
+				return E_FAIL;
+
+			_bool isNormal = true;
+			_bool isRS = true;
+			_bool isRD = true;
+			_bool isRM = true;
+			_bool isRT = false;
+			_bool isRefl = true;
+			_bool isMulti = true;
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_NormalTexture", i, aiTextureType_NORMALS)))
+				isNormal = false;
+			m_pShaderCom->Bind_RawValue("g_isNormal", &isNormal, sizeof(_bool));
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_MultiDiffuseTexture", i, aiTextureType_SHININESS)))
+				isMulti = false;
+			m_pShaderCom->Bind_RawValue("g_isMulti", &isMulti, sizeof(_bool));
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RSTexture", i, aiTextureType_SPECULAR)))
+				isRS = false;
+			m_pShaderCom->Bind_RawValue("g_isRS", &isRS, sizeof(_bool));
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RDTexture", i, aiTextureType_OPACITY)))
+				isRD = false;
+			m_pShaderCom->Bind_RawValue("g_isRD", &isRD, sizeof(_bool));
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_RMTexture", i, aiTextureType_METALNESS)))
+				isRM = false;
+			m_pShaderCom->Bind_RawValue("g_isRM", &isRM, sizeof(_bool));
+
+			if (FAILED(m_pModelCom->Bind_Material(m_pShaderCom, "g_ReflTexture", i, aiTextureType_EMISSIVE)))
+				isRefl = false;
+			m_pShaderCom->Bind_RawValue("g_isRefl", &isRefl, sizeof(_bool));
+
+			m_pShaderCom->Bind_RawValue("g_isRT", &isRT, sizeof(_bool));
+
+			m_pShaderCom->Bind_RawValue("g_bCompulsoryAlpha", &m_bCompulsoryAlpha, sizeof(_bool));
 
 
 			m_pShaderCom->Begin(SHADER_DECAL_MASK);
@@ -1386,6 +1521,10 @@ void CMap::Add_Renderer(const _float& fTimeDelta)
 			{
 				m_vRenderDefaulMeshIndex.push_back(i);
 			}
+			else if (0 == strcmp(baseNameCStr, "NIGHTCONMESH"))
+			{
+				m_vNightMeshIndex.push_back(i);
+			}
 			else if (0 == strcmp(baseNameCStr, "GLASSMESH"))
 			{
 				m_vRenderGlassMeshIndex.push_back(i);
@@ -1452,6 +1591,10 @@ void CMap::Add_Renderer(const _float& fTimeDelta)
 				{
 					m_vRenderDefaulMeshIndex.push_back(i);
 				}
+				else if (0 == strcmp(baseNameCStr, "NIGHTCONMESH"))
+				{
+					m_vNightMeshIndex.push_back(i);
+				}
 				else if (0 == strcmp(baseNameCStr, "GLASSMESH"))
 				{
 					m_vRenderGlassMeshIndex.push_back(i);
@@ -1509,7 +1652,7 @@ void CMap::Add_Renderer(const _float& fTimeDelta)
 
 	// RENDER_NONBLEND µÅ¾ßÇÏ´Â ±×·ì
 	if (0 < m_vRenderDefaulMeshIndex.size() || 0 < m_vSignMeshIndex.size() || 0 < m_vLampMeshIndex.size() 
-		|| 0 < m_vBloomIndex.size() || 0 < m_vMaskMeshIndex.size() || 0 < m_vStrongBloomIndex.size() || 0 < m_vRenderGlassMeshIndex.size())
+		|| 0 < m_vBloomIndex.size() || 0 < m_vMaskMeshIndex.size() || 0 < m_vStrongBloomIndex.size() || 0 < m_vRenderGlassMeshIndex.size() || 0 < m_vNightMeshIndex.size())
 		m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
 
 	// RENDER_EFFECT µÅ¾ßÇÏ´Â ±×·ì
@@ -1530,7 +1673,7 @@ void CMap::Add_Renderer(const _float& fTimeDelta)
 		m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONLIGHT_NONBLUR, this);
 
 	//Bloom
-	if (0 < m_vBloomIndex.size() || 0 < m_vSignMeshIndex.size() || 0 < m_vLampMeshIndex.size() || 0 < m_vStrongBloomIndex.size())
+	if (0 < m_vBloomIndex.size() || 0 < m_vSignMeshIndex.size() || 0 < m_vLampMeshIndex.size() || 0 < m_vStrongBloomIndex.size() || 0 < m_vNightMeshIndex.size())
 		m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONLIGHT, this);
 
 
@@ -1577,6 +1720,10 @@ void CMap::Add_Renderer_Far(const _float& fTimeDelta)
 			else if (0 == strcmp(baseNameCStr, "DECALLIGHTMESH"))
 			{
 				m_vDecalLightMeshIndex.push_back(i);
+			}
+			else if (0 == strcmp(baseNameCStr, "NIGHTCONMESH"))
+			{
+				m_vNightMeshIndex.push_back(i);
 			}
 			else if (0 == strcmp(baseNameCStr, "SIGNMESH"))
 			{
@@ -1627,6 +1774,10 @@ void CMap::Add_Renderer_Far(const _float& fTimeDelta)
 					|| 0 == strcmp(baseNameCStr, "DECALBLENDMESH") || 0 == strcmp(baseNameCStr, "COMBLENDDECAL"))
 				{
 				}
+				else if (0 == strcmp(baseNameCStr, "NIGHTCONMESH"))
+				{
+					m_vNightMeshIndex.push_back(i);
+				}
 				else if (0 == strcmp(baseNameCStr, "SIGNMESH"))
 				{
 					m_vSignMeshIndex.push_back(i);
@@ -1668,7 +1819,7 @@ void CMap::Add_Renderer_Far(const _float& fTimeDelta)
 
 	// RENDER_NONBLEND µÅ¾ßÇÏ´Â ±×·ì
 	if (0 < m_vRenderDefaulMeshIndex.size() || 0 < m_vSignMeshIndex.size() || 0 < m_vLampMeshIndex.size()
-		|| 0 < m_vBloomIndex.size() || 0 < m_vMaskMeshIndex.size() || 0 < m_vStrongBloomIndex.size() || 0 < m_vRenderGlassMeshIndex.size())
+		|| 0 < m_vBloomIndex.size() || 0 < m_vMaskMeshIndex.size() || 0 < m_vStrongBloomIndex.size() || 0 < m_vRenderGlassMeshIndex.size() || 0 < m_vNightMeshIndex.size())
 		m_pGameInstance->Add_Renderer(CRenderer::RENDER_NONBLENDER, this);
 
 	// RENDER_EFFECT µÅ¾ßÇÏ´Â ±×·ì
@@ -1910,6 +2061,7 @@ void CMap::Free()
 	m_vDynamicSignIndex.clear();
 	m_vStrongBloomIndex.clear();
 	m_vCompulsoryDecalBlendMeshIndex.clear();
+	m_vNightMeshIndex.clear();
 
 	Safe_Release(m_pComputeShaderCom);
 	Safe_Release(m_pCubeShaderCom);

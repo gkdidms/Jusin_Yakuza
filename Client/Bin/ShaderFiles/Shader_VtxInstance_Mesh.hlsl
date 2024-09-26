@@ -231,7 +231,7 @@ PS_NOBLENDER_OUT PS_NONBLEDNER(PS_NOBLENDER_IN In)
     float fFactor = RepeatingPatternBlendFactor(vMulti);
     vector vDiffuseColor = DiffusePortion(vParticle, vRS, vRD, fFactor, In.vTexcoord);
     
-    COMBINE_OUT Result = Neo_MetallicAndGlossiness(vMulti, vRM); // Metallic, Rouhness 최종
+    COMBINE_OUT Result = Neo_MetallicAndGlossiness(vMulti, vRM, vector(0.5f, 1.f, 0.5f, 1.f)); // Metallic, Rouhness 최종
     vDiffuseColor = Get_Diffuse(vMulti.a, vDiffuseColor); // Diffuse 최종
     
     Out.vDepth = vector(In.vProjPos.z / In.vProjPos.w, In.vProjPos.w / g_fFar, 0.f, 0.f);
