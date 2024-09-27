@@ -427,7 +427,7 @@ _vector CNavigation::Compute_WayPointDir(_vector vPosition, const _float& fTimeD
     _vector vResultDir;
     if (m_vPreDir.m128_f32[0] == 0.f)
     {
-        vResultDir = XMVector3Normalize(vDir);
+        vResultDir = vDir;
     }
     else
     {
@@ -454,8 +454,8 @@ _vector CNavigation::Compute_WayPointDir(_vector vPosition, const _float& fTimeD
             return Compute_WayPointDir(vPosition, fTimeDelta, isStart);
         }
 
-        m_vPreDir = XMVector3Normalize(vDir);
-        m_vNextDir = XMVector3Normalize(XMLoadFloat4(&m_Routes[m_iCurrentRouteIndex][m_iCurrentWayPointIndex].vPosition) - XMLoadFloat4(&m_Routes[m_iCurrentRouteIndex][m_iPreWayPointIndex].vPosition));
+        m_vPreDir = vDir;
+        m_vNextDir = XMLoadFloat4(&m_Routes[m_iCurrentRouteIndex][m_iCurrentWayPointIndex].vPosition) - XMLoadFloat4(&m_Routes[m_iCurrentRouteIndex][m_iPreWayPointIndex].vPosition);
         m_fTime = 0.f;
         m_iPreWayPointIndex = m_iCurrentWayPointIndex;
     }

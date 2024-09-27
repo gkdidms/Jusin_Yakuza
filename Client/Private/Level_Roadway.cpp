@@ -87,16 +87,7 @@ void CLevel_Roadway::Tick(const _float& fTimeDelta)
 	
 	if (m_isTitleEnd)
 	{
-		m_pCarChaseManager->Tick(fTimeDelta);
-
-		if (m_isRadialOnEventPlay)
-			RadialOnTimer(fTimeDelta);
-		else
-			RadialOffTimer(fTimeDelta);
-
-		RadialValue_Control();
-
-		if (m_pFightManager->Tick(fTimeDelta))
+		if (m_pCarChaseManager->Tick(fTimeDelta))
 		{
 			if (m_isFadeFin && m_pUIManager->isFindFinished())
 			{
@@ -110,6 +101,15 @@ void CLevel_Roadway::Tick(const _float& fTimeDelta)
 				m_isFadeFin = true;
 			}
 		}
+
+		if (m_isRadialOnEventPlay)
+			RadialOnTimer(fTimeDelta);
+		else
+			RadialOffTimer(fTimeDelta);
+
+		RadialValue_Control();
+
+		m_pFightManager->Tick(fTimeDelta);
 	}
 #ifdef _DEBUG
     SetWindowText(g_hWnd, TEXT("ÃÑ°ÝÀü ¸Ê"));
