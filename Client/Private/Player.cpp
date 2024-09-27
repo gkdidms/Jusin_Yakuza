@@ -138,7 +138,7 @@ HRESULT CPlayer::Initialize(void* pArg)
 	m_Info.fHp = m_Info.fMaxHP;
 
 	//PlayerInfo.iMoney = 0;
-	//PlayerInfo.fHitGauge = 0.f;
+	PlayerInfo.fHitGauge = 150.f;
 	ZeroMemory(&m_MoveDirection, sizeof(_bool) * MOVE_DIRECTION_END);
 	ZeroMemory(&m_InputDirection, sizeof(_bool) * MOVE_DIRECTION_END);
 
@@ -1322,6 +1322,8 @@ void CPlayer::KRS_KeyInput(const _float& fTimeDelta)
 			_bool isHitActionPlay = { false };
 			if (m_CanHitAction)
 			{
+				CPlayer::PlayerInfo.fHitGauge -= 100.f;
+
 				// 배벽의 극을 배운상태에서만 실행
 				if (m_pTargetWall != nullptr && m_pUIManager->Get_Skill_Holligan()[CUIManager::WALL_ATTACK])
 				{
@@ -1535,6 +1537,8 @@ void CPlayer::KRH_KeyInput(const _float& fTimeDelta)
 
 			if (m_CanHitAction)
 			{
+				CPlayer::PlayerInfo.fHitGauge -= 100.f;
+
 				if (m_pTargetWall != nullptr)
 				{
 					isHitActionPlay = true;
@@ -1742,6 +1746,8 @@ void CPlayer::KRC_KeyInput(const _float& fTimeDelta)
 				_bool isHitActionPlay = { false };
 				if (m_CanHitAction)
 				{
+					CPlayer::PlayerInfo.fHitGauge -= 100.f;
+
 					if (m_pTargetObject == nullptr ? false : m_pTargetObject->isDown())
 					{
 						isHitActionPlay = true;
