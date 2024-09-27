@@ -246,17 +246,17 @@ HRESULT CCarChaseManager::Ready_Stage()
 	vector<CCarChase::STAGE_MONSTER_INFO> MonsterInfo_7 = {
 		CCarChase::STAGE_MONSTER_INFO{
 			600000,
-			LINE_A,
+			LINE_C,
 			DIR_F,
-			CCarChase_Monster::REACTOR_SEDAN,
-			{ CCarChase_Monster::GUN_L, -1}
+			CCarChase_Monster::REACTOR_BIKE,
+			{ CCarChase_Monster::GUN, -1}
 		}
 	};
 
 	CCarChase::STAGE_INFO StageInfo_7 = CCarChase::STAGE_INFO{
 		LINE_B,
 		LINE_A,
-		DIR_L,
+		DIR_R,
 		MonsterInfo_7
 	};
 
