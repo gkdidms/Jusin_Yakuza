@@ -273,7 +273,7 @@ HRESULT CCarChaseManager::Ready_Stage()
 	vector<CCarChase::STAGE_MONSTER_INFO> MonsterInfo_8 = {
 		CCarChase::STAGE_MONSTER_INFO{
 			700000,
-			LINE_D,
+			LINE_C,
 			DIR_M,
 			CCarChase_Monster::REACTOR_HELI,
 			{ CCarChase_Monster::RKT, CCarChase_Monster::GAT }
