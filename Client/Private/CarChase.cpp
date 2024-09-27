@@ -96,7 +96,7 @@ _bool CCarChase::Start()
 
 	//카메라에 스테이지 방향 넣어주기
 	CCarChaseCamera* pCamera = dynamic_cast<CCarChaseCamera*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Camera"), CAMERA_CARCHASE));
-	pCamera->Set_StageDir(m_Info.iStageDir);
+	pCamera->Set_StageDir(m_Info.iStageDir == DIR_L ? DIR_R : DIR_L);
 
 	return true;
 }
