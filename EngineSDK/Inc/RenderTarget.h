@@ -22,7 +22,7 @@ public:
     HRESULT Copy_Resource(ID3D11Texture2D* pDesc);
     HRESULT Create_Texture(const wstring& strSaveFilePath);
 
-#ifdef _DEBUG
+#ifdef DEBUG_TOOL == 1
 public:
     HRESULT Ready_Debug(_float fX, _float fY, _float fSizeX, _float fSizeY);
     HRESULT Render_Debug(class CShader* pShader, class CVIBuffer_Rect* pVIBuffer, _bool isArray);
@@ -37,7 +37,7 @@ private:
     ID3D11UnorderedAccessView* m_pUAV = { nullptr };
     ID3D11Texture2D* m_pTexture2D = { nullptr };
 
-#ifdef _DEBUG
+#ifdef DEBUG_TOOL == 1
 private:
     _float4x4 m_WorldMatrix;
 #endif // _DEBUG

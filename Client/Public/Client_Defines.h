@@ -5,6 +5,8 @@
 
 #define BGM_STOP 0
 
+#define DEBUG_TOOL 0
+
 #include <process.h>
 
 namespace Client

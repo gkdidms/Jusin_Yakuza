@@ -26,7 +26,7 @@ public:
     HRESULT Create_Texture(const wstring& strTargetTag, const wstring& strSaveFilePath);
     HRESULT Clear_RenderTarget(const wstring& strTargetTag);
 
-#ifdef _DEBUG
+#ifdef DEBUG_TOOL == 1
     HRESULT Ready_Debug(const wstring strRenderTargetTag, _float fX, _float fY, _float fSizeX, _float fSizeY);
     HRESULT Render_Debug(const wstring& strMRTTag, class CShader* pShader, class CVIBuffer_Rect* pVIBuffer, _bool isArray);
 #endif // _DEBUG

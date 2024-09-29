@@ -149,8 +149,12 @@ public:
 
     int Get_RenderState();
 #ifdef _DEBUG
+    public:
+        HRESULT Add_DebugComponent(class CComponent* pComponent);
+#endif // _DEBUG
+
+#ifdef DEBUG_TOOL == 1
 public:
-    HRESULT Add_DebugComponent(class CComponent* pComponent);
     void Set_DebugView(_bool isDebugView);
     _bool isDebugView();
 #endif // _DEBUG
@@ -223,7 +227,7 @@ public:
     _bool isIn_WorldFrustum(_fvector vPosition, _float fRange = 0.f);
     _bool isIn_LocalFrustum(_fvector vPosition, _float fRange = 0.f);
 
-#ifdef _DEBUG
+#ifdef DEBUG_TOOL
 public:
     HRESULT Ready_Debug(const wstring strRenderTargetTag, _float fX, _float fY, _float fSizeX, _float fSizeY);
     HRESULT Render_Debug(const wstring& strMRTTag, class CShader* pShader, class CVIBuffer_Rect* pVIBuffer, _bool isArray = false);
