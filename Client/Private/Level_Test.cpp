@@ -42,7 +42,7 @@ HRESULT CLevel_Test::Initialize()
 	// 테스트 다하면 지워라
 	/* For.Prototype_Component_Navigation */
 	if (FAILED(m_pGameInstance->Add_Component_Prototype(LEVEL_TEST, TEXT("Prototype_Component_Navigation"),
-		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/NaviData/Navigation_6.dat")))))
+		CNavigation::Create(m_pDevice, m_pContext, TEXT("../Bin/DataFiles/NaviData/Navigation_5.dat")))))
 		return E_FAIL;
 
 	//m_pKaraokeManager = CKaraokeManager::Create();
@@ -222,8 +222,8 @@ HRESULT CLevel_Test::Ready_Test_Hyewon()
 	// 도지마조 로비 배경 테스트맵
 	// 99(몬X, 아이템오프셋 수정본) 98(Rush) 97(WPH) 96(ShakeDown) 95(WPA) 94(요네다) 89(디폴트)
 	// 도지마조 로비 네비: 5
-	m_pFileTotalManager->Set_MapObj_In_Client(46, LEVEL_TEST);
-	m_pFileTotalManager->Set_Lights_In_Client(6);
+	m_pFileTotalManager->Set_MapObj_In_Client(99, LEVEL_TEST);
+	m_pFileTotalManager->Set_Lights_In_Client(5);
 	m_pFileTotalManager->Set_Collider_In_Client(0, LEVEL_TEST);
 	//m_pFileTotalManager->Set_Trigger_In_Client(79, LEVEL_TEST);
 
