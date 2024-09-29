@@ -80,7 +80,9 @@ HRESULT CMainApp::Initialize()
 #ifdef _DEBUG
 	if (FAILED(m_pDebugMananger->Initialize(m_pDevice, m_pContext)))
 		return E_FAIL;
+#endif // _DEBUG
 
+#ifdef _int(DEBUG_TOOL) == 1
 	m_pGameInstance->Set_DebugView(true);
 #endif // _DEBUG
 
