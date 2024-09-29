@@ -130,12 +130,16 @@ public:
 
 #ifdef _DEBUG
 public:
-    _bool isDebugView() { return m_isDebugView; }
-    void Set_DebugView(_bool isDebugView) { m_isDebugView = isDebugView; }
-
-public:
     HRESULT Add_DebugComponent(class CComponent* pComponent);
 #endif
+
+#ifdef DEBUG_TOOL == 1
+    public:
+        _bool isDebugView() { return m_isDebugView; }
+        void Set_DebugView(_bool isDebugView) { m_isDebugView = isDebugView; }
+
+#endif // DEBUG_TOOL == 1
+
 
 private:
     void Render_Priority();
@@ -210,10 +214,13 @@ private:
 #ifdef _DEBUG
 private:
     list<class CComponent*>	m_DebugComponents;
-
-private:
-    void Render_Debug();
 #endif // DEBUG
+
+#ifdef DEBUG_TOOL == 1
+    private:
+        void Render_Debug();
+#endif // DEBUG_TOOL == 1
+
 
 private:
     ID3D11Device* m_pDevice = { nullptr };
@@ -293,7 +300,7 @@ private:
     float m_fAdjectSaturation = { 1.f }; // 채도 보정
     _float4 m_vAdjectTint = _float4(1.f, 0.970f, 0.828f, 0.f); // 색조 조정 (약간의 틴트를 추가)
 
-#ifdef _DEBUG
+#ifdef DEBUG_TOOL == 1
     _bool m_isDebugView = { false };
 #endif // _DEBUG
 
