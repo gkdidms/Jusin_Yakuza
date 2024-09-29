@@ -323,7 +323,7 @@ void CMonster::Set_Animation(string strAnimName, _bool isLoop, _bool isMotionCha
 void CMonster::Set_Effect()
 {
 	(m_pEffects.lower_bound("mune_c_n"))->second->On();
-	m_isRimLight = true;
+	m_isRimLight = 0.05f;
 }
 
 void CMonster::Reset_Monster()

@@ -267,6 +267,10 @@ CBTNode::NODE_STATE CAI_Kuze::QTE()
 CBTNode::NODE_STATE CAI_Kuze::Check_Attack()
 {
 	//플레이어가 다운상태면 공격하지 않음
+	CKuze* pKuze = dynamic_cast<CKuze*>(m_pThis);
+	if (pKuze->Get_KuzePage() == CKuze::TWO)
+		m_pThis->Set_Effect();
+
 	if (m_pPlayer->isDown())
 		return CBTNode::FAIL;
 
@@ -340,7 +344,6 @@ CBTNode::NODE_STATE CAI_Kuze::Attack()
 	{
 		//2페이즈
 		static _uint iTwoCount = 0;
-		m_pThis->Set_Effect();
 
 		switch (iTwoCount)
 		{

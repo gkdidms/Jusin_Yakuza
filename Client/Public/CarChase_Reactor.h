@@ -66,9 +66,9 @@ protected:
 
     _int     m_iNaviRouteNum = { 0 };
     _int m_iWaypointIndex = { -1 };
-    _float m_fSpeed = { 35.f };
-    _float m_fMaxSpeed = { 50.f };
-    _float m_fMinSpeed = { 35.5f };
+    _float m_fSpeed = { 30.f };
+    _float m_fMaxSpeed = { 44.f };
+    _float m_fMinSpeed = { 30.5f };
 
     _bool m_isSound = { false };
     _float m_fSound = { 1.f };
