@@ -1752,7 +1752,7 @@ CBTNode::NODE_STATE CAI_Monster::Check_Angry()
 	if (!m_isAngry)
 	{
 		//플레이어와 충돌했을때 데미지가 20.f보다 크다면?
-		if (m_pThis->Get_HitDamage() > 20.f)
+		if (m_pThis->Get_HitDamage() > 15.f)
 		{
 			// 분노 상태로 이동
 			return CBTNode::SUCCESS;
