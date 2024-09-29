@@ -97,6 +97,16 @@ void CMainApp::Tick(const _float& fTimeDelta)
 	m_pUIManager->Tick(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Game")));
 	m_pUIManager->Late_Tick(m_pGameInstance->Get_TimeDelta(TEXT("Timer_Game")));
 
+	if (m_pGameInstance->GetKeyState(DIK_F1) == TAP)
+	{
+		m_pGameInstance->Set_SSAO(!m_pGameInstance->isSSAO());
+		m_pGameInstance->Set_PBR(!m_pGameInstance->isPBR());
+		m_pGameInstance->Set_BOF(!m_pGameInstance->isBOF());
+		m_pGameInstance->Set_HDR(!m_pGameInstance->isHDR());
+		m_pGameInstance->Set_Shadow(!m_pGameInstance->isShadow());
+		m_pGameInstance->Set_RimLight(!m_pGameInstance->isRimLight());
+	}
+
 #ifdef _DEBUG
 	//프레임 확인용 나중에 다시 디버그로 넣어야함
 
