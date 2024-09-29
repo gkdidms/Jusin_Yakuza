@@ -1,6 +1,6 @@
 #pragma once
 
-#define DEBUG_TOOL 0
+#define DEBUG_TOOL 1
 
 #include <d3d11.h>
 #include "dinput.h"

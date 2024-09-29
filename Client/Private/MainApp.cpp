@@ -82,7 +82,7 @@ HRESULT CMainApp::Initialize()
 		return E_FAIL;
 #endif // _DEBUG
 
-#ifdef _int(DEBUG_TOOL) == 1
+#if DEBUG_VIEW == 1
 	m_pGameInstance->Set_DebugView(true);
 #endif // _DEBUG
 

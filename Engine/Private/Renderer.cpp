@@ -123,7 +123,7 @@ HRESULT CRenderer::Initialize()
 	if (FAILED(Ready_SSAONoiseTexture()))
 		return E_FAIL;
 
-#ifdef DEBUG_TOOL == 1
+#if DEBUG_TOOL == 1
 	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_Diffuse"), 50.f, 50.f, 100.f, 100.f)))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_Normal"), 50.f, 150.f, 100.f, 100.f)))
@@ -797,7 +797,7 @@ void CRenderer::Draw()
 
 	Render_UI();
 
-#ifdef DEBUG_TOOL == 1
+#if DEBUG_TOOL == 1
 	Render_Debug();
 #endif // _DEBUG
 }
@@ -1963,7 +1963,7 @@ void CRenderer::Render_OcculusionDepth()
 		return;
 }
 
-#ifdef DEBUG_TOOL == 1
+#if DEBUG_TOOL == 1
 void CRenderer::Render_Debug()
 {
 #ifdef _DEBUG

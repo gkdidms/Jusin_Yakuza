@@ -3,9 +3,9 @@
 #define DEFAULT_VOLUME 0.5
 #define DEFAULT_EFFECT_VOLUME 1
 
-#define BGM_STOP 0
+#define BGM_STOP 1
 
-#define DEBUG_TOOL 0
+#define DEBUG_VIEW 1
 
 #include <process.h>
 
