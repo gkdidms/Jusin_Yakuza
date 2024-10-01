@@ -184,14 +184,13 @@ _bool CFightManager::Tick(const _float& fTimeDelta)
 
 					m_pUIManager->Set_AlwayUI(false);
 
-					if (BGM_STOP == 1)
-					{
-						m_pGameInstance->StopSound(SOUND_BGM);
-						m_pGameInstance->Play_Loop(L"48e6 [1].wav", SOUND_BGM, DEFAULT_VOLUME);
-						m_pGameInstance->Play_Loop(L"48a1 [1].wav", SOUND_BGM_2, DEFAULT_VOLUME);
-						m_pGameInstance->Play_Loop(L"4887 [1].wav", SOUND_BGM_3, DEFAULT_VOLUME);
-						m_pGameInstance->Play_Loop(L"4899 [1].wav", SOUND_BGM_1, DEFAULT_VOLUME);
-					}
+#if  BGM_STOP == 1
+					m_pGameInstance->StopSound(SOUND_BGM);
+					m_pGameInstance->Play_Loop(L"48e6 [1].wav", SOUND_BGM, DEFAULT_VOLUME);
+					m_pGameInstance->Play_Loop(L"48a1 [1].wav", SOUND_BGM_2, DEFAULT_VOLUME);
+					m_pGameInstance->Play_Loop(L"4887 [1].wav", SOUND_BGM_3, DEFAULT_VOLUME);
+					m_pGameInstance->Play_Loop(L"4899 [1].wav", SOUND_BGM_1, DEFAULT_VOLUME);
+#endif //  BGM_STOP == 1
 
 					m_pGameInstance->Set_TimeSpeed(TEXT("Timer_60"), 1.f);
 					m_pGameInstance->Set_TimeSpeed(TEXT("Timer_Player"), 1.f);

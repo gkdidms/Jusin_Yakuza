@@ -5,7 +5,7 @@
 
 #define BGM_STOP 1
 
-#define DEBUG_TOOL 1
+#define DEBUG_VIEW 1
 
 #include <process.h>
 

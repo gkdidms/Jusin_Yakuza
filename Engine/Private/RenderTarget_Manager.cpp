@@ -160,7 +160,7 @@ HRESULT CRenderTarget_Manager::Clear_RenderTarget(const wstring& strTargetTag)
 	return pRenderTarget->Clear();
 }
 
-#ifdef DEBUG_TOOL == 1
+#if DEBUG_TOOL == 1
 HRESULT CRenderTarget_Manager::Ready_Debug(const wstring strRenderTargetTag, _float fX, _float fY, _float fSizeX, _float fSizeY)
 {
 	CRenderTarget* pRenderTarget = Find_RenderTarget(strRenderTargetTag);

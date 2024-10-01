@@ -537,7 +537,7 @@ HRESULT CGameInstance::Add_DebugComponent(CComponent* pComponent)
 }
 #endif // _DEBUG
 
-#ifdef DEBUG_TOOL == 1
+#if DEBUG_TOOL == 1
 void CGameInstance::Set_DebugView(_bool isDebugView)
 {
 	m_pRenderer->Set_DebugView(isDebugView);
@@ -836,7 +836,7 @@ _bool CGameInstance::isIn_LocalFrustum(_fvector vPosition, _float fRange)
 	return m_pFrustum->isIn_LocalFrustum(vPosition, fRange);
 }
 
-#ifdef DEBUG_TOOL == 1
+#if DEBUG_TOOL == 1
 HRESULT CGameInstance::Ready_Debug(const wstring strRenderTargetTag, _float fX, _float fY, _float fSizeX, _float fSizeY)
 {
 	return m_pRenderTarget_Manager->Ready_Debug(strRenderTargetTag, fX, fY, fSizeX, fSizeY);

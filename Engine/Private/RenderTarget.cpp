@@ -114,7 +114,7 @@ HRESULT CRenderTarget::Create_Texture(const wstring& strSaveFilePath)
 	return SaveDDSTextureToFile(m_pContext, m_pTexture2D, strSaveFilePath.c_str());
 }
 
-#ifdef DEBUG_TOOL == 1
+#if DEBUG_TOOL == 1
 HRESULT CRenderTarget::Ready_Debug(_float fX, _float fY, _float fSizeX, _float fSizeY)
 {
 	D3D11_VIEWPORT ViewportDesc{};
