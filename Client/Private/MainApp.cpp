@@ -158,40 +158,40 @@ HRESULT CMainApp::Render()
 	//프레임 확인용.
 	++m_iNumRender;
 
-	if (m_fTimeAcc >= 1.f)
-	{
-		wsprintf(m_szFPS, TEXT("FPS : %d"), m_iNumRender);
+	//if (m_fTimeAcc >= 1.f)
+	//{
+	//	wsprintf(m_szFPS, TEXT("FPS : %d"), m_iNumRender);
 
-		m_fTimeAcc = 0.f;
-		m_iNumRender = 0;
-	}
+	//	m_fTimeAcc = 0.f;
+	//	m_iNumRender = 0;
+	//}
 
-	m_pGameInstance->Render_Font(TEXT("Font_Default"), m_szFPS, _float2(0.f, 0.f), XMVectorSet(1.f, 1.f, 0.f, 1.f));
+	//m_pGameInstance->Render_Font(TEXT("Font_Default"), m_szFPS, _float2(0.f, 0.f), XMVectorSet(1.f, 1.f, 0.f, 1.f));
 
 
-	m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("!!!테스트용 키는 화면에 모두 작성할것 !!! "), _float2(500.f, 0.f), XMVectorSet(1.f, 0.f, 0.f, 1.f));
-	m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("!!!처음부터->TEST , 이어하기 ->OFFICE_1F!!! "), _float2(500.f, 20.f), XMVectorSet(1.f, 0.f, 0.f, 1.f));
-	m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("!!!1~7 Office 1층 ~ 보스룸 // 무조건 test level이나 office1층 들어가야 함"), _float2(500.f, 40.f), XMVectorSet(1.f, 0.f, 0.f, 1.f));
-	_float fSize = 200.f;
+	//m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("!!!테스트용 키는 화면에 모두 작성할것 !!! "), _float2(500.f, 0.f), XMVectorSet(1.f, 0.f, 0.f, 1.f));
+	//m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("!!!처음부터->TEST , 이어하기 ->OFFICE_1F!!! "), _float2(500.f, 20.f), XMVectorSet(1.f, 0.f, 0.f, 1.f));
+	//m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("!!!1~7 Office 1층 ~ 보스룸 // 무조건 test level이나 office1층 들어가야 함"), _float2(500.f, 40.f), XMVectorSet(1.f, 0.f, 0.f, 1.f));
+	//_float fSize = 200.f;
 
-	_uint iInterval = 20.f;
-	_uint iIntervalCount = 0.f;
+	//_uint iInterval = 20.f;
+	//_uint iIntervalCount = 0.f;
 
-	m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("!!!카메라 단축키"), _float2(1000.f, fSize + 100.f + (++iIntervalCount * iInterval)), XMVectorSet(0.f, 0.f, 1.f, 1.f));
-	m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("F4 : CutScene Camera"), _float2(1000.f, fSize + 100.f + (++iIntervalCount * iInterval)), XMVectorSet(1.f, 1.f, 0.f, 1.f));
-	m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("F5 : Scene Camera Test"), _float2(1000.f, fSize + 100.f + (++iIntervalCount * iInterval)), XMVectorSet(1.f, 1.f, 0.f, 1.f));
-	m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("F6 : Scene Camera Test"), _float2(1000.f, fSize + 100.f + (++iIntervalCount * iInterval)), XMVectorSet(1.f, 1.f, 0.f, 1.f));
-	m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("F7 : Camera Change"), _float2(1000.f, fSize + 100.f + (++iIntervalCount * iInterval)), XMVectorSet(1.f, 1.f, 0.f, 1.f));
+	//m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("!!!카메라 단축키"), _float2(1000.f, fSize + 100.f + (++iIntervalCount * iInterval)), XMVectorSet(0.f, 0.f, 1.f, 1.f));
+	//m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("F4 : CutScene Camera"), _float2(1000.f, fSize + 100.f + (++iIntervalCount * iInterval)), XMVectorSet(1.f, 1.f, 0.f, 1.f));
+	//m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("F5 : Scene Camera Test"), _float2(1000.f, fSize + 100.f + (++iIntervalCount * iInterval)), XMVectorSet(1.f, 1.f, 0.f, 1.f));
+	//m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("F6 : Scene Camera Test"), _float2(1000.f, fSize + 100.f + (++iIntervalCount * iInterval)), XMVectorSet(1.f, 1.f, 0.f, 1.f));
+	//m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("F7 : Camera Change"), _float2(1000.f, fSize + 100.f + (++iIntervalCount * iInterval)), XMVectorSet(1.f, 1.f, 0.f, 1.f));
 
-	m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("!!!그 외"), _float2(1000.f, fSize + 100.f + (++iIntervalCount * iInterval)), XMVectorSet(0.f, 0.f, 1.f, 1.f));
-	m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("F8 : DebugView On/Off"), _float2(1000.f, fSize + 100.f + (++iIntervalCount * iInterval)), XMVectorSet(1.f, 1.f, 0.f, 1.f));
-	m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("F9 : Console"), _float2(1000.f, fSize + 100.f + (++iIntervalCount * iInterval)), XMVectorSet(1.f, 1.f, 0.f, 1.f));
-	m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("F10 : Debug Tool"), _float2(1000.f, fSize + 100.f + (++iIntervalCount * iInterval)), XMVectorSet(1.f, 1.f, 0.f, 1.f));
-	m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("TAP : Camera Pos Fix"), _float2(1000.f, fSize + 100.f + (++iIntervalCount * iInterval)), XMVectorSet(1.f, 1.f, 0.f, 1.f));
-	m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("Z : SyncAction Test"), _float2(1000.f, fSize + 100.f + (++iIntervalCount * iInterval)), XMVectorSet(1.f, 1.f, 0.f, 1.f));
-	m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("X : CarChase Kiryu Separation Test"), _float2(1000.f, fSize + 100.f + (++iIntervalCount * iInterval)), XMVectorSet(1.f, 1.f, 0.f, 1.f));
-	m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("C : CarChase Kiryu Model Test"), _float2(1000.f, fSize + 100.f + (++iIntervalCount * iInterval)), XMVectorSet(1.f, 1.f, 0.f, 1.f));
-	m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("L CTRL : CarChase Camera Pause"), _float2(1000.f, fSize + 100.f + (++iIntervalCount * iInterval)), XMVectorSet(1.f, 1.f, 0.f, 1.f));
+	//m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("!!!그 외"), _float2(1000.f, fSize + 100.f + (++iIntervalCount * iInterval)), XMVectorSet(0.f, 0.f, 1.f, 1.f));
+	//m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("F8 : DebugView On/Off"), _float2(1000.f, fSize + 100.f + (++iIntervalCount * iInterval)), XMVectorSet(1.f, 1.f, 0.f, 1.f));
+	//m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("F9 : Console"), _float2(1000.f, fSize + 100.f + (++iIntervalCount * iInterval)), XMVectorSet(1.f, 1.f, 0.f, 1.f));
+	//m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("F10 : Debug Tool"), _float2(1000.f, fSize + 100.f + (++iIntervalCount * iInterval)), XMVectorSet(1.f, 1.f, 0.f, 1.f));
+	//m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("TAP : Camera Pos Fix"), _float2(1000.f, fSize + 100.f + (++iIntervalCount * iInterval)), XMVectorSet(1.f, 1.f, 0.f, 1.f));
+	//m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("Z : SyncAction Test"), _float2(1000.f, fSize + 100.f + (++iIntervalCount * iInterval)), XMVectorSet(1.f, 1.f, 0.f, 1.f));
+	//m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("X : CarChase Kiryu Separation Test"), _float2(1000.f, fSize + 100.f + (++iIntervalCount * iInterval)), XMVectorSet(1.f, 1.f, 0.f, 1.f));
+	//m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("C : CarChase Kiryu Model Test"), _float2(1000.f, fSize + 100.f + (++iIntervalCount * iInterval)), XMVectorSet(1.f, 1.f, 0.f, 1.f));
+	//m_pGameInstance->Render_Font(TEXT("Font_Default"), TEXT("L CTRL : CarChase Camera Pause"), _float2(1000.f, fSize + 100.f + (++iIntervalCount * iInterval)), XMVectorSet(1.f, 1.f, 0.f, 1.f));
 
 
 	/* 플레이어/ 몬스터 용 테스트 키 작성 */

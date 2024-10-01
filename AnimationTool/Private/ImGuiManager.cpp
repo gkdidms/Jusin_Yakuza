@@ -965,7 +965,7 @@ void CImguiManager::EffectListWindow()
 
 void CImguiManager::RimLightWindow()
 {
-	ImGui::Begin(u8"림라이트 설정 창", &m_isRimLightWindow);
+	ImGui::Begin(u8"림라이트 설정 창!", &m_isRimLightWindow);
 
 	ImGui::Text(u8"선택된 애니메이션: %s", m_AnimNameList[m_iAnimIndex].c_str());
 	ImGui::Text(u8"선택된 메시: %s", m_MeshNameList[m_iMeshSelectedIndex].c_str());
