@@ -449,21 +449,15 @@ _vector CNavigation::Compute_WayPointDir(_vector vPosition, const _float& fTimeD
             return Compute_WayPointDir(vPosition, fTimeDelta, isStart);
         }
 
-        if (fDistance == 0.f)
-        {
-            return Compute_WayPointDir(vPosition, fTimeDelta, isStart);
-        }
-
         m_vPreDir = XMVector3Normalize(vDir);
-        m_vNextDir = XMVector3Normalize(XMLoadFloat4(&m_Routes[m_iCurrentRouteIndex][m_iCurrentWayPointIndex].vPosition) - XMLoadFloat4(&m_Routes[m_iCurrentRouteIndex][m_iPreWayPointIndex].vPosition));
+        m_vNextDir = XMVector3Normalize(XMLoadFloat4(&m_Routes[m_iCurrentRouteIndex][m_iCurrentWayPointIndex].vPosition) 
+            - XMLoadFloat4(&m_Routes[m_iCurrentRouteIndex][m_iPreWayPointIndex].vPosition));
         m_fTime = 0.f;
         m_iPreWayPointIndex = m_iCurrentWayPointIndex;
     }
 
     return vResultDir;
 }
-
-
 
 _vector CNavigation::Compute_WayPointDir_Adv(_vector vPosition, const _float& fTimeDelta, _bool* isTurn, _int* iDir, _bool* isBack)
 {

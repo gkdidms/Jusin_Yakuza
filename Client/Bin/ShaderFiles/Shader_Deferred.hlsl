@@ -83,55 +83,7 @@ PS_OUT_LIGHT PS_MAIN_LIGHT_DIRECTIONAL(PS_IN In)
     
     Out.vShade = g_vLightDiffuse * saturate(max(dot(normalize(g_vLightDir) * -1.f, normalize(vNormal)), 0.f) + vAmbient);
     Out.vLightMap = g_vLightDiffuse;
-    /*
-    if (g_isPBR)
-    {
 
-        vector vWorldPos;
-
-        vWorldPos.x = In.vTexcoord.x * 2.f - 1.f;
-        vWorldPos.y = In.vTexcoord.y * -2.f + 1.f;
-        vWorldPos.z = vDepthDesc.x;
-        vWorldPos.w = 1.f;
-
-        vWorldPos = vWorldPos * (vDepthDesc.y * g_fFar);
-        
-        vWorldPos = mul(vWorldPos, g_ProjMatrixInv);
-        
-        vWorldPos = mul(vWorldPos, g_ViewMatrixInv);
-        
-        float3 vLook = normalize(g_vCamPosition - vWorldPos).xyz;
-        
-
-    }
-    */
-    //Grass
-    /*
-    vector vGlassNormalDesc = g_GlassNormalTexture.Sample(LinearSampler, In.vTexcoord);
-    vector vGlassNormal = vector(vGlassNormalDesc.xyz * 2.f - 1.f, 0.f);
-    if (vGlassNormalDesc.a == 0.f)
-    {
-        vector vGlassDepthDesc = g_GlassDepthTexture.Sample(PointSampler, In.vTexcoord);
-    
-        vector vWorldPos;
-
-        vWorldPos.x = In.vTexcoord.x * 2.f - 1.f;
-        vWorldPos.y = In.vTexcoord.y * -2.f + 1.f;
-        vWorldPos.z = vGlassDepthDesc.x;
-        vWorldPos.w = 1.f;
-
-        vWorldPos = vWorldPos * (vGlassDepthDesc.y * g_fFar);
-    
-        vWorldPos = mul(vWorldPos, g_ProjMatrixInv);
-        vWorldPos = mul(vWorldPos, g_ViewMatrixInv);
-
-        vector vReflect = reflect(normalize(g_vLightDir), normalize(vGlassNormal));
-        vector vLook = g_vCamPosition - vWorldPos;
-    
-        Out.vSpecular = pow(max(dot(normalize(vReflect), normalize(vLook)), 0.f), 30.f);
-    }
-    */
-    
     return Out;
 }
 
@@ -178,18 +130,18 @@ float PCF_Shadow(vector vWorldPos)
     
     for (int i = 0; i < 3; ++i)
     {
-        vector vLightPos = mul(vWorldPos, g_ViewMatrixArray[i]);
-        vLightPos = mul(vLightPos, g_ProjMatrixArray[i]);
-        vLightPos = vector(vLightPos.xyz / vLightPos.w, vLightPos.w);
+        vector vVP = mul(vWorldPos, g_ViewMatrixArray[i]);
+        vVP = mul(vVP, g_ProjMatrixArray[i]);
+        vVP = vector(vVP.xyz / vVP.w, vVP.w);
             
         float2 vTexcoord;
-        vTexcoord.x = vLightPos.x * 0.5f + 0.5f;
-        vTexcoord.y = vLightPos.y * -0.5f + 0.5f;
+        vTexcoord.x = vVP.x * 0.5f + 0.5f;
+        vTexcoord.y = vVP.y * -0.5f + 0.5f;
         if (vTexcoord.x < 0 || vTexcoord.x > 1 || vTexcoord.y < 0 || vTexcoord.y > 1)
             continue;
             
-        int dx = 1; //1 / 1280;
-        int dy = 1; //1 / 720;
+        int dx = 1;
+        int dy = 1;
             
         int2 vOffset[9] =
         {
@@ -202,7 +154,7 @@ float PCF_Shadow(vector vWorldPos)
             
             [unroll]
         for (int j = 0; j < 9; j++)
-            fResult += g_LightDepthTextureArray.SampleCmpLevelZero(ShadowSampler, float3(vTexcoord, i), vLightPos.z - 0.0005f, vOffset[j]).r;
+            fResult += g_LightDepthTextureArray.SampleCmpLevelZero(ShadowSampler, float3(vTexcoord, i), vVP.z - 0.0005f, vOffset[j]).r;
 
         fResult /= 9.f;
             
@@ -303,12 +255,10 @@ PS_OUT PS_MAIN_BOF(PS_IN In)
 
     vWorldPos.x = In.vTexcoord.x * 2.f - 1.f;
     vWorldPos.y = In.vTexcoord.y * -2.f + 1.f;
-    vWorldPos.z = vDepthDesc.x; /* 0 ~ 1 */
+    vWorldPos.z = vDepthDesc.x;
     vWorldPos.w = 1.f;
 
     vWorldPos = vWorldPos * (vDepthDesc.y * g_fFar);
-
-	/* 뷰스페이스 상의 위치를 구한다. */
     vWorldPos = mul(vWorldPos, g_ProjMatrixInv);
     vWorldPos = mul(vWorldPos, g_ViewMatrixInv);
     

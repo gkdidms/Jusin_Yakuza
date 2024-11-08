@@ -72,8 +72,8 @@ public:
 public:
     virtual HRESULT Initialize_Prototype();
     virtual HRESULT Initialize(void* pArg);
-    virtual void Tick(const _float& fTimeDelta);
-    virtual NODE_STATE Execute() = 0;
+    virtual void Tick(const _float& fTimeDelta); // 매 틱마다 돌아감
+    virtual NODE_STATE Execute() = 0; // 실제 노드 실행 함수
 
     _bool Find_PlayerCurrentAnimationName(string strAnimName);
 

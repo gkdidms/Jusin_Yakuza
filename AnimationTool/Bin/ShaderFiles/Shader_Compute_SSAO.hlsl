@@ -49,7 +49,7 @@ float4 SSAO(float3x3 TBN, float3 vPosition)
     
     for (int i = 0; i < 64; ++i)
     {
-        float3 vSample = vPosition + mul(SSAORandoms[i].xyz, TBN) * fRadiuse; // ºä½ºÆäÀÌ½º
+        float3 vSample = vPosition + mul(SSAORandoms[i].xyz, TBN) * fRadiuse;
        
         vector vOffset = vector(vSample, 1.f);
         vOffset = mul(vOffset, CamProjMatrix);

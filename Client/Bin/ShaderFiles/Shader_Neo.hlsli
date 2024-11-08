@@ -45,7 +45,6 @@ vector Get_Diffuse(float fMultiAlpha,  vector vDiffuse)
 
     vector vDiffuseResult = lerp(vDiffuse, vector(1.f, 1.f, 1.f, 1.f), vMapRange2);
     vector vMix2 = lerp(vector(0.f, 0.f, 0.f, 0.f), vDiffuseResult, vMapRange1);
-    //vector vResultMix = vector(lerp(vMix2.xyz, vMix2.xyz, vMetallicFactor), 1.f);
     
     return vMix2;
 }

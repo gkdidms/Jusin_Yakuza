@@ -184,6 +184,7 @@ HRESULT CMesh::Render(_bool isTool)
 {
 	if (m_iModelType == CModel::TYPE_ANIM && !isTool)
 	{
+		// 컴퓨트 셰이더를 통해 구한 정점 정보를 버퍼에 복사해서 사용한다.
 		m_pContext->CopyResource(m_pProcessedVertexBuffer, m_pUAVOut);
 
 		ID3D11Buffer* pVertices[] = {

@@ -59,8 +59,6 @@ float3 FresnelSchlick(float cosTheta, float3 F0)
     return F0 + (1.0f - F0) * pow(1.0f - cosTheta, 5.0f);
 }
 
-
-//F
 float3 FresnelSchlickRoughness(float cosTheta, float3 F0, float roughness)
 {
     return F0 + (max(float3(1.0 - roughness, 1.0 - roughness, 1.0 - roughness), F0) - F0) * pow(1.0 - cosTheta, 5.0);
@@ -115,22 +113,20 @@ float4 BRDF(float4 vPosition, int2 vTexcoord, float4 vNormal, float4 vDepthDesc,
     float fGamma = { 2.2f };
     
     float3 vAlbedo = g_DiffuseTexture.Load(int3(vTexcoord, 0)).xyz;
-    vector Combine = g_SurfaceTexture.Load(int3(vTexcoord, 0));
+    vector Combine = g_SurfaceTexture.Load(int3(vTexcoord, 0)); //vector(fMetalness, fRoughness, fSpeclure, fFactor);
     
     /* Li */
     float fMetalic = Combine.r;
     float3 F0 = max(0.04f, Combine.b);
     F0 = lerp(F0, vAlbedo, fMetalic);
    
-    
-    //vector vLightDir = reflect(normalize(g_vLightDir), vNormal); //g_vLightDir * -1.f;
     float3 vLightDir = normalize(vLightDirection * -1.f);
     float3 vHalfway = normalize(vLook + vLightDir);
     float3 vRadiance = vLightDiffuse;
     
     float WoDotN = max(dot(vNormal.xyz, vLook), 0.f);
     float WiDotN = max(dot(vNormal.xyz, vLightDir), 0.f);
-    float denominator = (WoDotN * WiDotN * 4.f) + 0.001f;
+    float fDenominator = (WoDotN * WiDotN * 4.f) + 0.001f;
    
     //BRDF
     float vRoughness = Combine.g;
@@ -143,17 +139,17 @@ float4 BRDF(float4 vPosition, int2 vTexcoord, float4 vNormal, float4 vDepthDesc,
     
     float3 nominator = D * G * specularWithTint;
         
-    float3 vSpecular = (nominator / denominator);
+    float3 vSpecular = (nominator / fDenominator);
         
     float3 vKS = F;
     float3 vKD = 1.f - vKS;
     vKD *= 1.f - fMetalic;
     
     // ¡÷∫Ø±§ √ﬂ∞°
-    float3 ambientComponent = vLightAmbient.xyz * vAlbedo;
+    float3 vAmbientComponent = vLightAmbient.xyz * vAlbedo;
     
     float3 vDiffuse = vKD * (vAlbedo / PI);
-    vDiffuse = (vDiffuse + vSpecular) * (vRadiance * WiDotN) + ambientComponent;
+    vDiffuse = (vDiffuse + vSpecular) * (vRadiance * WiDotN) + vAmbientComponent;
         
     return vector(vDiffuse, 1.f);
 }
@@ -164,13 +160,13 @@ float3 CookTorranceBRDF(float3 vNormal, float3 vLook, float roughness, float3 F0
     
     float3 vHalfway = normalize(vLook + vLight);
     
-    float NDF = DistributionGGX(vNormal, vHalfway, roughness, PI); // GGX Normal Distribution Function
-    float G = GeometrySmith(vNormal, vLook, vLight, roughness); // Geometry function
-    float3 F = FresnelSchlick(max(dot(vHalfway, vLook), 0.0), F0); // Fresnel Schlick
-
+    float NDF = DistributionGGX(vNormal, vHalfway, roughness, PI);
+    float G = GeometrySmith(vNormal, vLook, vLight, roughness);
+    float3 F = FresnelSchlickRoughness(max(dot(vHalfway, vLook), 0.0), F0, roughness);
+    
     float3 nominator = NDF * G * F;
     float NdotL = max(dot(vNormal, vLight), 0.0);
-    float denominator = 4.0 * max(dot(vNormal, vLook), 0.0) * NdotL + 0.001f; // Avoid division by 0
+    float denominator = 4.0 * max(dot(vNormal, vLook), 0.0) * NdotL + 0.001f;
     float3 vSpecular = (nominator / denominator);
     
     return vSpecular * NdotL;
@@ -211,9 +207,9 @@ void CS_Main(uint3 id : SV_DispatchThreadID)
     
     float3 vLook = normalize(vCamPosition - vWorldPos).xyz;
     
-    vector vResult = BRDF(vWorldPos, vUV, normalize(vNormal), vDepthDesc, vLook);
+    vector vMainPBR = BRDF(vWorldPos, vUV, normalize(vNormal), vDepthDesc, vLook);
     float3 vSpecular = OESpecular(vWorldPos, vUV, normalize(vNormal).xyz, vLook);
     
-    g_OutputTexture[vUV] = vResult;
+    g_OutputTexture[vUV] = vMainPBR;
     g_OutSpecularTexture[vUV] = vector(vSpecular, 0.f);
 }

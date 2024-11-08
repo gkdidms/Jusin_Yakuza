@@ -123,21 +123,17 @@ void CPipeLine::Ready_ShadowFurstum()
 	
 	for (size_t i = 0; i < m_Casecade.size() - 1; ++i)
 	{
-		//큐브의 정점을 시야절두체 구간으로 변경
 		_float3 Frustum[8];
 		for (size_t j = 0; j < 8; ++j)
 			Frustum[j] = vFrustum[j];
 
 		for (size_t j = 0; j < 4; ++j)
 		{
-			//앞에서 뒤쪽으로 향하는 벡터
 			_vector vTemp = XMVector3Normalize(XMLoadFloat3(&Frustum[j + 4]) - XMLoadFloat3(&Frustum[j]));
 
-			//구간 시작, 끝으로 만들어주는 벡터
 			_vector n = vTemp * m_Casecade[i];
 			_vector f = vTemp * m_Casecade[i + 1];
 
-			//구간 시작, 끝으로 설정
 			XMStoreFloat3(&Frustum[j + 4], XMLoadFloat3(&Frustum[j]) + f);
 			XMStoreFloat3(&Frustum[j], XMLoadFloat3(&Frustum[j]) + n);
 		}
@@ -146,8 +142,6 @@ void CPipeLine::Ready_ShadowFurstum()
 		_vector vCenter{};
 		for (auto& v : Frustum)
 		{
-			//_matrix matCamInv = m_pGameInstance->Get_Transform_Inverse_Matrix(CPipeLine::D3DTS_VIEW);
-			//XMStoreFloat3(&v, XMVector3TransformCoord(XMLoadFloat3(&v), matCamInv));
 			vCenter = vCenter + XMLoadFloat3(&v);
 		}
 
@@ -165,7 +159,6 @@ void CPipeLine::Ready_ShadowFurstum()
 		_float4x4		ViewMatrix, ProjMatrix;
 
 		_vector vLightDir = XMVector3Normalize(XMLoadFloat4(&m_vLightDir));
-		//_vector vLightDir = XMVector3Normalize(XMVectorSet(0.f, 1.f, -1.f, 0.f));
 		_vector  shadowLightPos = vCenter + (vLightDir * -fRadius);
 		shadowLightPos = XMVectorSetW(shadowLightPos, 1.f);
 
