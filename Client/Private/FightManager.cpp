@@ -30,7 +30,8 @@ void CFightManager::Set_FightStage(_bool isFightStage, CMonsterGroup* pMonsterGr
 	m_isInverseEnd = false;
 	m_isMoney = false;
 
-	m_pUIManager->Set_AlwayUI(true);
+	if (m_pGameInstance->Get_CurrentLevel() != LEVEL_OFFICE_BOSS)
+		m_pUIManager->Set_AlwayUI(true);
 
 	if (m_isFightStage)
 	{
@@ -48,8 +49,12 @@ void CFightManager::Set_FightStage(_bool isFightStage, CMonsterGroup* pMonsterGr
 			iTitleIndex = 17;
 			break;
 		case LEVEL_OFFICE_BOSS:		//삥쟁
+		{
+			//삥쟁이는 전투 UI 나중에 뜨도록 함
+			m_pUIManager->Set_AlwayUI(false);
 			iTitleIndex = 4;
 			break;
+		}
 		case LEVEL_CARCHASE:		//도망쳐라
 			iTitleIndex = 3;
 			break;
@@ -58,8 +63,12 @@ void CFightManager::Set_FightStage(_bool isFightStage, CMonsterGroup* pMonsterGr
 			break;
 		case LEVEL_TUTORIAL:			//야큐자
 		{
-			m_pGameInstance->StopSound(SOUND_BGM);
-			m_pGameInstance->PlayBGM(TEXT("Tutorial_Fight.mp3"), 0.6f);
+			if (BGM_STOP == 1)
+			{
+				m_pGameInstance->StopSound(SOUND_BGM);
+				m_pGameInstance->PlayBGM(TEXT("Tutorial_Fight.mp3"), 0.6f);
+			}
+				
 			m_isStreetFight = true;
 			iTitleIndex = 13;
 			break;
@@ -172,10 +181,16 @@ _bool CFightManager::Tick(const _float& fTimeDelta)
 					//플레이어도 다시 돌아온다.
 					CPlayer* pPlayer = dynamic_cast<CPlayer*>(m_pGameInstance->Get_GameObject(m_pGameInstance->Get_CurrentLevel(), TEXT("Layer_Player"), 0));
 					pPlayer->Style_Change(CPlayer::ADVENTURE);
-					m_pGameInstance->StopSound(SOUND_BGM);
+
 					m_pUIManager->Set_AlwayUI(false);
 
-					m_pGameInstance->PlayBGM(TEXT("Street_BGM.mp3"), 0.3f);
+#if  BGM_STOP == 1
+					m_pGameInstance->StopSound(SOUND_BGM);
+					m_pGameInstance->Play_Loop(L"48e6 [1].wav", SOUND_BGM, DEFAULT_VOLUME);
+					m_pGameInstance->Play_Loop(L"48a1 [1].wav", SOUND_BGM_2, DEFAULT_VOLUME);
+					m_pGameInstance->Play_Loop(L"4887 [1].wav", SOUND_BGM_3, DEFAULT_VOLUME);
+					m_pGameInstance->Play_Loop(L"4899 [1].wav", SOUND_BGM_1, DEFAULT_VOLUME);
+#endif //  BGM_STOP == 1
 
 					m_pGameInstance->Set_TimeSpeed(TEXT("Timer_60"), 1.f);
 					m_pGameInstance->Set_TimeSpeed(TEXT("Timer_Player"), 1.f);

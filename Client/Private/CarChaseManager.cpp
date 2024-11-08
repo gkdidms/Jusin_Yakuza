@@ -47,11 +47,6 @@ _bool CCarChaseManager::Tick(const _float& fTimeDelta)
 	if (m_isFinished)
 		return true;
 
-	if (m_isStart)
-	{
-		//시작할 때 퀘스트 창 뜨도록 구현 
-	}
-
 	//다음 스테이지로 넘어가기
 	if (m_Stages[m_iCurrentStage]->Tick(fTimeDelta))
 	{
@@ -177,7 +172,7 @@ HRESULT CCarChaseManager::Ready_Stage()
 
 	CCarChase::STAGE_INFO StageInfo_4 = CCarChase::STAGE_INFO{
 		LINE_B,
-		LINE_C,
+		LINE_B,
 		DIR_R,
 		MonsterInfo_4
 	};
@@ -197,19 +192,12 @@ HRESULT CCarChaseManager::Ready_Stage()
 			DIR_M,
 			CCarChase_Monster::REACTOR_SEDAN,
 			{ CCarChase_Monster::GUN_L, CCarChase_Monster::GUN_R}
-		},
-		CCarChase::STAGE_MONSTER_INFO{
-			510000,
-			LINE_B,
-			DIR_B,
-			CCarChase_Monster::REACTOR_SEDAN,
-			{ CCarChase_Monster::GUN_L, -1}
 		}
 	};
 
 	CCarChase::STAGE_INFO StageInfo_5 = CCarChase::STAGE_INFO{
-		LINE_C,
-		LINE_C,
+		LINE_B,
+		LINE_B,
 		DIR_L,
 		MonsterInfo_5
 	};
@@ -225,7 +213,7 @@ HRESULT CCarChaseManager::Ready_Stage()
 	vector<CCarChase::STAGE_MONSTER_INFO> MonsterInfo_6 = {
 		CCarChase::STAGE_MONSTER_INFO{
 			600000,
-			LINE_A,
+			LINE_D,
 			DIR_F,
 			CCarChase_Monster::REACTOR_SEDAN,
 			{ CCarChase_Monster::GUN_L, -1}
@@ -233,12 +221,13 @@ HRESULT CCarChaseManager::Ready_Stage()
 	};
 
 	CCarChase::STAGE_INFO StageInfo_6 = CCarChase::STAGE_INFO{
-		LINE_C,
+		LINE_B,
 		LINE_A,
-		DIR_L,
+		DIR_R,
 		MonsterInfo_6
 	};
 
+	//CCarChase::CARCHASE_DESC Desc{};
 	Desc.Info = StageInfo_6;
 	CCarChase* pStage6 = CCarChase::Create(&Desc);
 	if (nullptr == pStage6)
@@ -246,9 +235,35 @@ HRESULT CCarChaseManager::Ready_Stage()
 	 
 	m_Stages.emplace_back(pStage6);
 
-
 	//7 스테이지
-	vector<CCarChase::STAGE_MONSTER_INFO> MonsterInfo_7 = {
+	//vector<CCarChase::STAGE_MONSTER_INFO> MonsterInfo_7 = {
+	//	CCarChase::STAGE_MONSTER_INFO{
+	//		600000,
+	//		LINE_C,
+	//		DIR_F,
+	//		CCarChase_Monster::REACTOR_BIKE,
+	//		{ CCarChase_Monster::GUN, -1}
+	//	}
+	//};
+
+	//CCarChase::STAGE_INFO StageInfo_7 = CCarChase::STAGE_INFO{
+	//	LINE_B,
+	//	LINE_A,
+	//	DIR_R,
+	//	MonsterInfo_7
+	//};
+
+	////CCarChase::CARCHASE_DESC Desc{};
+	//Desc.Info = StageInfo_7;
+	//CCarChase* pStage7 = CCarChase::Create(&Desc);
+	//if (nullptr == pStage7)
+	//	return E_FAIL;
+
+	//m_Stages.emplace_back(pStage7);
+
+
+	//8 스테이지
+	vector<CCarChase::STAGE_MONSTER_INFO> MonsterInfo_8 = {
 		CCarChase::STAGE_MONSTER_INFO{
 			700000,
 			LINE_C,
@@ -258,19 +273,19 @@ HRESULT CCarChaseManager::Ready_Stage()
 		}
 	};
 
-	CCarChase::STAGE_INFO StageInfo_7 = CCarChase::STAGE_INFO{
+	CCarChase::STAGE_INFO StageInfo_8 = CCarChase::STAGE_INFO{
 		LINE_A,
 		LINE_A,
 		DIR_R,
-		MonsterInfo_7
+		MonsterInfo_8
 	};
 
-	Desc.Info = StageInfo_7;
-	CCarChase* pStage7 = CCarChase::Create(&Desc);
-	if (nullptr == pStage7)
+	Desc.Info = StageInfo_8;
+	CCarChase* pStage8 = CCarChase::Create(&Desc);
+	if (nullptr == pStage8)
 		return E_FAIL;
 
-	m_Stages.emplace_back(pStage7);
+	m_Stages.emplace_back(pStage8);
 }
 
 CCarChaseManager* CCarChaseManager::Create(ID3D11Device* pDevice, ID3D11DeviceContext* pContext)

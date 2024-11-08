@@ -49,8 +49,9 @@ HRESULT CLevel_DogimazoLobby::Initialize()
 	//m_pFightManager->Set_FightStage(true);
 	m_pUIManager->Fade_Out();
 
-	if (BGM_STOP)
+#if BGM_STOP == 1
 		m_pGameInstance->PlayBGM(TEXT("Dozimazo_BGM.mp3"), DEFAULT_VOLUME);
+#endif
 
 	/*셰이더 옵션값*/
 	//m_pGameInstance->Set_HDRLight(1.3f);

@@ -133,7 +133,7 @@ float4 BRDF(float4 vPosition, int2 vTexcoord, float4 vNormal, float4 vDepthDesc,
     float D = DistributionGGX(vNormal.xyz, vHalfway, vRoughness, PI);
     float G = GeometrySmith(vNormal.xyz, vLook, vLightDir, vRoughness);
     float cosTheta = max(dot(vNormal.xyz, vHalfway), 0.f);
-    float3 F = FresnelSchlickRoughness(cosTheta, F0, vRoughness);
+    float3 F = FresnelSchlick(cosTheta, F0);
     
     float3 specularWithTint = CalculateSpecularTint(F, vAlbedo, Combine.w);
     

@@ -125,7 +125,7 @@ PS_OUT_LIGHT PS_MAIN_LIGHT_POINT(PS_IN In)
 
 float PCF_Shadow(vector vWorldPos)
 {
-    if (vWorldPos.y > 0.3f)
+    if (vWorldPos.y > 0.2f)
         return 1.f;
     
     for (int i = 0; i < 3; ++i)

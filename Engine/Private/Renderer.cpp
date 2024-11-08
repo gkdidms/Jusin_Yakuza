@@ -123,7 +123,7 @@ HRESULT CRenderer::Initialize()
 	if (FAILED(Ready_SSAONoiseTexture()))
 		return E_FAIL;
 
-#ifdef _DEBUG
+#if DEBUG_TOOL == 1
 	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_Diffuse"), 50.f, 50.f, 100.f, 100.f)))
 		return E_FAIL;
 	if (FAILED(m_pGameInstance->Ready_Debug(TEXT("Target_Normal"), 50.f, 150.f, 100.f, 100.f)))
@@ -756,6 +756,8 @@ void CRenderer::Draw()
 		Render_LuminanceResult();
 	}
 
+
+
 	// NonLight랑 Bloom은 같이 붙어있어야함
 	Render_NonLight();
 	Render_Bloom();
@@ -795,7 +797,7 @@ void CRenderer::Draw()
 
 	Render_UI();
 
-#ifdef _DEBUG
+#if DEBUG_TOOL == 1
 	Render_Debug();
 #endif // _DEBUG
 }
@@ -1534,42 +1536,6 @@ void CRenderer::Render_Bloom()
 	m_pGameInstance->Bind_ComputeRenderTargetUAV(TEXT("Target_Blur_Y"));
 
 	m_pComputeShader[BLURY]->Render(1280, GroupY, 1);
-
-
-	/*
-	if (FAILED(m_pShader->Bind_Matrix("g_WorldMatrix", &m_WorldMatrix)))
-		return;
-	if (FAILED(m_pShader->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix)))
-		return;
-	if (FAILED(m_pShader->Bind_Matrix("g_ProjMatrix", &m_ProjMatrix)))
-		return;
-
-	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_Blur_X"))))
-		return;
-
-	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Effect"), m_pShader, "g_EffectTexture")))
-		return;
-
-	m_pShader->Begin(11);
-
-	m_pVIBuffer->Render();
-
-	if (FAILED(m_pGameInstance->End_MRT()))
-		return;
-
-	if (FAILED(m_pGameInstance->Begin_MRT(TEXT("MRT_Blur_Y"))))
-		return;
-
-	if (FAILED(m_pGameInstance->Bind_RenderTargetSRV(TEXT("Target_Blur_X"), m_pShader, "g_EffectTexture")))
-		return;
-
-	m_pShader->Begin(12);
-
-	m_pVIBuffer->Render();
-
-	if (FAILED(m_pGameInstance->End_MRT()))
-		return;
-		*/
 }
 
 void CRenderer::Render_FinalEffectBlend()
@@ -1997,9 +1963,10 @@ void CRenderer::Render_OcculusionDepth()
 		return;
 }
 
-#ifdef _DEBUG
+#if DEBUG_TOOL == 1
 void CRenderer::Render_Debug()
 {
+#ifdef _DEBUG
 	for (auto& pDebugCom : m_DebugComponents)
 	{
 		pDebugCom->Render();
@@ -2008,6 +1975,7 @@ void CRenderer::Render_Debug()
 
 	m_DebugComponents.clear();
 
+#endif // _DEBUG
 	if (!m_isDebugView) return;
 
 	if (FAILED(m_pShader->Bind_Matrix("g_ViewMatrix", &m_ViewMatrix)))

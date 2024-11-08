@@ -323,7 +323,7 @@ void CMonster::Set_Animation(string strAnimName, _bool isLoop, _bool isMotionCha
 void CMonster::Set_Effect()
 {
 	(m_pEffects.lower_bound("mune_c_n"))->second->On();
-	m_isRimLight = true;
+	m_isRimLight = 0.05f;
 }
 
 void CMonster::Reset_Monster()
@@ -456,7 +456,7 @@ void CMonster::Tick(const _float& fTimeDelta)
 		m_pModelCom->Play_Animation_Monster(fTimeDelta, m_pAnimCom[m_iCurrentAnimType], m_isAnimLoop, isRoot);
 	}
 
-	if(m_strAnimName != "e_pnc_stand")
+	if(m_strAnimName != "e_pnc_stand" && m_strAnimName != "e_wph_atk_heavy")
 		Synchronize_Root(fTimeDelta);
 
 	m_pColliderCom->Tick(m_pTransformCom->Get_WorldMatrix());
@@ -676,6 +676,7 @@ void CMonster::Animation_Event()
 
 		if (CurPos >= pEvent.fPlayPosition && CurPos < Duration)
 		{
+			// 콜라이더 정보는 뼈 인덱스를 Key로 사용중이며, 중복 key 불가.
 			CSocketCollider* pCollider = m_pColliders.at(pEvent.iBoneIndex);
 
 			switch (pEvent.iType)

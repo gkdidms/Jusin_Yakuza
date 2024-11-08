@@ -136,7 +136,7 @@ PS_OUT PS_MAIN(PS_IN In)
     float fFactor = RepeatingPatternBlendFactor(vMulti);
     vector vDiffuse = DiffusePortion(vDiffuseDesc, vRS, vRD, fFactor, In.vTexcoord);
     
-    COMBINE_OUT Result = Neo_MetallicAndGlossiness(vMulti, vRM); // Metallic, Rouhness 최종
+    COMBINE_OUT Result = Neo_MetallicAndGlossiness(vMulti, vRM, vector(0.5f, 1.f, 0.5f, 1.f)); // Metallic, Rouhness 최종
     vDiffuse = Get_Diffuse(vMulti.a, vDiffuse); // Diffuse 최종
     
     //노말 벡터 구하기
@@ -232,7 +232,7 @@ PS_OUT PS_BLEND(PS_IN In)
     float fFactor = RepeatingPatternBlendFactor(vMulti);
     vector vDiffuseColor = DiffusePortion(vDiffuseDesc, vRS, vRD, fFactor, In.vTexcoord);
     
-    COMBINE_OUT Result = Neo_MetallicAndGlossiness(vMulti, vRM); // Metallic, Rouhness 최종
+    COMBINE_OUT Result = Neo_MetallicAndGlossiness(vMulti, vRM, vector(0.5f, 1.f, 0.5f, 1.f)); // Metallic, Rouhness 최종
     vDiffuseColor = Get_Diffuse(vMulti.a, vDiffuseColor); // Diffuse 최종
     vDiffuseColor.a = vDiffuseDesc.a;
     

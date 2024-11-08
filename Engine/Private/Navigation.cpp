@@ -427,7 +427,7 @@ _vector CNavigation::Compute_WayPointDir(_vector vPosition, const _float& fTimeD
     _vector vResultDir;
     if (m_vPreDir.m128_f32[0] == 0.f)
     {
-        vResultDir = XMVector3Normalize(vDir);
+        vResultDir = vDir;
     }
     else
     {

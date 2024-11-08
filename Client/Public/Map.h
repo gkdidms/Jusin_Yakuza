@@ -53,6 +53,9 @@ public:
 		SHADER_DYNAMIC_SIGN_BLOOM, // 12
 		SHADER_DYNAMIC_SIGN_FAST, // 13
 		SHADER_GLASS_COLOR, //14
+		SHADER_SIGN_COLOR,
+		SHADER_BLOOM_SIGN,
+		SHADER_BLOOM_MASK_SIGN,
 
 		// 무조건 제일 아래
 		SHADER_LIGHTDEPTH, //14
@@ -155,6 +158,7 @@ private:
 	vector<int>				m_vDynamicSignIndex;
 	vector<int>				m_vStrongBloomIndex;
 	vector<int>				m_vCompulsoryDecalBlendMeshIndex;
+	vector<int>				m_vNightMeshIndex;
 
 	_int					m_iLayerNum;
 	wstring					m_wstrModelName;

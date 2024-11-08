@@ -262,7 +262,7 @@ public:
     void Set_Start(_bool isStart); // 전투 시작 시 
     void Set_Script(_bool isScript) { m_isScript = isScript; m_iCurrentAnimType = DEFAULT; }
     void Set_Animation(string strAnimName, _bool isLoop = true, _bool isMotionChange = true);
-    void Set_Effect();
+    virtual void Set_Effect();
     void Set_QTEResult(_uint iValue) { m_iQTEResult = iValue; }
 
     void Reset_Monster();

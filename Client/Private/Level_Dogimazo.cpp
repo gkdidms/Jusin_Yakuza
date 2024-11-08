@@ -59,8 +59,9 @@ HRESULT CLevel_Dogimazo::Initialize()
 	//m_pGameInstance->Set_HDRLight(1.3f);
 	//m_pGameInstance->Set_AdjectTint(_float4(0.873f, 0.820f, 0.753f, 0.f));
 
-	if (BGM_STOP)
+#if BGM_STOP == 1
 		m_pGameInstance->PlayBGM(TEXT("Dozimazo_BGM.mp3"), DEFAULT_VOLUME);
+#endif
 
 	m_pGameInstance->Set_Shadow(true);
 
